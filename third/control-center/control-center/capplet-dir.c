@@ -1,4 +1,4 @@
-/* -*- mode: c; style: linux -*- */
+/* vim: set sw=8: -*- mode: c; style: linux -*- */
 
 /* capplet-dir.c
  * Copyright (C) 2000, 2001 Ximian, Inc.
@@ -54,44 +54,99 @@ CappletDirView *(*get_view_cb) (CappletDir *dir, CappletDirView *launcher);
 /* nice global table for capplet lookup */
 GHashTable *capplet_hash = NULL;
 
-static char * 
-find_icon (const char *icon, GnomeDesktopItem *dentry) 
+/********************************************************************
+ *
+ * Stolen from nautilus to keep control center and nautilus in sync
+ */
+static gboolean
+eel_str_has_suffix (const char *haystack, const char *needle)
 {
-        char *icon_file = NULL;
+	const char *h, *n;
 
-	if (icon && icon[0]) {
-		icon_file = g_strdup (icon);
+	if (needle == NULL) {
+		return TRUE;
+	}
+	if (haystack == NULL) {
+		return needle[0] == '\0';
+	}
+		
+	/* Eat one character at a time. */
+	h = haystack + strlen(haystack);
+	n = needle + strlen(needle);
+	do {
+		if (n == needle) {
+			return TRUE;
+		}
+		if (h == haystack) {
+			return FALSE;
+		}
+	} while (*--h == *--n);
+	return FALSE;
+}
+static char *   
+eel_str_strip_trailing_str (const char *source, const char *remove_this)
+{
+	const char *end;
+	if (source == NULL) {
+		return NULL;
+	}
+	if (remove_this == NULL) {
+		return g_strdup (source);
+	}
+	end = source + strlen (source);
+	if (strcmp (end - strlen (remove_this), remove_this) != 0) {
+		return g_strdup (source);
+	}
+	else {
+		return g_strndup (source, strlen (source) - strlen(remove_this));
 	}
 	
-	if (icon_file) {
-		if (icon_file[0] != '/')
-		{
-			gchar *old = icon_file;
-			icon_file = g_build_filename (GNOMECC_ICONS_DIR, old, NULL);
-			g_free (old);
-		}
-		if (!g_file_test (icon_file, G_FILE_TEST_EXISTS) || g_file_test(icon_file, G_FILE_TEST_IS_DIR))
-		{
-			const gchar *icon;
-			g_free (icon_file);
-			icon = gnome_desktop_item_get_string (dentry, GNOME_DESKTOP_ITEM_ICON);
-			if (icon)
-				icon_file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon, TRUE, NULL);
-	
-			if (!icon_file)
-				icon_file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gnome-unknown.png", TRUE, NULL);
-		}
-	} else {
-		icon_file = gnome_program_locate_file
-			(gnome_program_get (), GNOME_FILE_DOMAIN_APP_PIXMAP,
-			 "control-center2.png", TRUE, NULL);
-	}
+}
+static char *
+nautilus_remove_icon_file_name_suffix (const char *icon_name)
+{
+	guint i;
+	const char *suffix;
+	static const char *icon_file_name_suffixes[] = { ".svg", ".svgz", ".png", ".jpg", ".xpm" };
 
-	if (!icon_file) { /* if icon_file still NULL */
-		icon_file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gnome-unknown.png", TRUE, NULL);
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
+		suffix = icon_file_name_suffixes[i];
+		if (eel_str_has_suffix (icon_name, suffix)) {
+			return eel_str_strip_trailing_str (icon_name, suffix);
+		}
 	}
+	return g_strdup (icon_name);
+}
+/********************************************************************/
 
-	return icon_file;
+static GdkPixbuf * 
+find_icon (GnomeDesktopItem *dentry) 
+{
+	GdkPixbuf *res;
+	char const *icon;
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default ();
+
+	icon = gnome_desktop_item_get_string (dentry, GNOME_DESKTOP_ITEM_ICON);
+
+	if (icon == NULL || icon[0] == 0)
+		icon = "gnome-settings";
+	else if (g_path_is_absolute (icon))
+		res = gdk_pixbuf_new_from_file (icon, NULL);
+	else  {
+		char *no_suffix = nautilus_remove_icon_file_name_suffix (icon);
+		res = gtk_icon_theme_load_icon (icon_theme, no_suffix, 48, 0, NULL);
+		g_free (no_suffix);
+		if (res == NULL) {
+			char *path = g_build_filename (GNOMECC_ICONS_DIR, icon, NULL);
+			res = gdk_pixbuf_new_from_file (path, NULL);
+			g_free (path);
+		}
+	}
+	if (res == NULL)
+		res = gtk_icon_theme_load_icon (icon_theme, "gnome-unknown", 48, 0, NULL);
+	if (res == NULL)
+		res = gtk_icon_theme_load_icon (icon_theme, "gtk-missing-image", 48, 0, NULL);
+	return res;
 }
 
 CappletDirEntry *
@@ -138,8 +193,7 @@ capplet_new (CappletDir *dir, gchar *desktop_path)
 
 	entry->label = g_strdup (gnome_desktop_item_get_localestring (dentry,
 			GNOME_DESKTOP_ITEM_NAME));
-	entry->icon = find_icon (gnome_desktop_item_get_string (dentry, GNOME_DESKTOP_ITEM_ICON), dentry);
-	entry->pb = gdk_pixbuf_new_from_file (entry->icon, NULL);
+	entry->icon = find_icon (dentry);
 	entry->uri = gnome_vfs_uri_new (desktop_path);
 	entry->exec = vec;
 	entry->dir = dir;
@@ -187,16 +241,7 @@ capplet_dir_new (CappletDir *dir, gchar *dir_path)
 		entry->label = g_strdup (gnome_desktop_item_get_localestring (
 				entry->entry,
 				GNOME_DESKTOP_ITEM_NAME));
-		entry->icon = find_icon (gnome_desktop_item_get_string (entry->entry,
-									GNOME_DESKTOP_ITEM_ICON),
-					 entry->entry);
-
-		if (!entry->icon)
-			entry->icon = gnome_program_locate_file
-				(gnome_program_get (), GNOME_FILE_DOMAIN_APP_PIXMAP,
-				 "control-center2.png", TRUE, NULL);
-
-		entry->pb = gdk_pixbuf_new_from_file (entry->icon, NULL);
+		entry->icon = find_icon (entry->entry);
 	} else {
 		/* If the .directory file could not be found or read, abort */
 		g_free (capplet_dir);
@@ -228,7 +273,7 @@ capplet_dir_entry_destroy (CappletDirEntry *entry)
 	}
 
 	g_free (entry->label);
-	g_free (entry->icon);
+	g_object_unref (entry->icon);
 	gnome_vfs_uri_unref (entry->uri);
 	g_strfreev (entry->exec);
 	gnome_desktop_item_unref (entry->entry);
@@ -347,9 +392,11 @@ read_entries (CappletDir *dir)
 	result = gnome_vfs_directory_open_from_uri (&parent_dir, CAPPLET_DIR_ENTRY (dir)->uri,
 						    GNOME_VFS_FILE_INFO_DEFAULT);
 
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK) {
+		gnome_vfs_file_info_unref (child);
 	        return NULL;
-	
+	}
+		
 	while ( gnome_vfs_directory_read_next (parent_dir, child) == GNOME_VFS_OK ) {
       	        if (child->name[0] == '.')
 	                continue;
@@ -362,7 +409,7 @@ read_entries (CappletDir *dir)
 		if (child->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 		        entry = capplet_dir_new (dir, fullpath);
 		} else {
-			test = rindex(child->name, '.');
+			test = strrchr(child->name, '.');
 
 			/* if it's a .desktop file, it's interesting for sure! */
 			if (test && !strcmp (".desktop", test))
@@ -375,6 +422,7 @@ read_entries (CappletDir *dir)
 		g_free (fullpath);
         }
         
+	gnome_vfs_file_info_unref (child);
 	gnome_vfs_directory_close (parent_dir);
 
 	list = g_slist_sort (list, node_compare);

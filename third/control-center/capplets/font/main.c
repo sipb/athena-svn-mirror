@@ -9,6 +9,7 @@
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
 #include <stdarg.h>
+#include <math.h>
 
 #ifdef HAVE_XFT2
 #include <gdk/gdkx.h>
@@ -39,9 +40,13 @@ static void cb_show_details (GtkWidget *button,
 #define FONT_RGBA_ORDER_KEY   FONT_RENDER_DIR "/rgba_order"
 #define FONT_DPI_KEY          FONT_RENDER_DIR "/dpi"
 
-static gboolean in_change = FALSE;
 #endif /* HAVE_XFT2 */
+static gboolean in_change = FALSE;
+static gchar *old_font = NULL;
 
+#define MAX_FONT_POINT_WITHOUT_WARNING 32
+#define MAX_FONT_SIZE_WITHOUT_WARNING MAX_FONT_POINT_WITHOUT_WARNING*1024
+#define PICKER_DIALOG_DATA_STRING "picker-dialog-data-string"
 static GladeXML *
 create_dialog (void)
 {
@@ -57,7 +62,7 @@ cb_dialog_response (GtkDialog *dialog, gint response_id)
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			"wgoscustdesk.xml",
+			"user-guide.xml",
 			"goscustdesk-38");
 	else
 		gtk_main_quit ();
@@ -74,29 +79,29 @@ sample_size_request (GtkWidget      *darea,
 		     GtkRequisition *requisition)
 {
 	GdkPixbuf *pixbuf = g_object_get_data (G_OBJECT (darea), "sample-pixbuf");
-	
+
 	requisition->width = gdk_pixbuf_get_width (pixbuf) + 2;
 	requisition->height = gdk_pixbuf_get_height (pixbuf) + 2;
 }
 
 static void
 sample_expose (GtkWidget      *darea,
-	       GdkEventExpose  expose)
+	       GdkEventExpose *expose)
 {
 	GdkPixbuf *pixbuf = g_object_get_data (G_OBJECT (darea), "sample-pixbuf");
 	int width = gdk_pixbuf_get_width (pixbuf);
 	int height = gdk_pixbuf_get_height (pixbuf);
-	
+
 	int x = (darea->allocation.width - width) / 2;
 	int y = (darea->allocation.height - height) / 2;
-	
+
 	gdk_draw_rectangle (darea->window, darea->style->white_gc, TRUE,
 			    0, 0,
 			    darea->allocation.width, darea->allocation.height);
 	gdk_draw_rectangle (darea->window, darea->style->black_gc, FALSE,
 			    0, 0,
 			    darea->allocation.width - 1, darea->allocation.height - 1);
-	
+
 	gdk_pixbuf_render_to_drawable (pixbuf, darea->window, NULL,
 				       0, 0, x, y, width, height,
 				       GDK_RGB_DITHER_NORMAL, 0, 0);
@@ -153,25 +158,25 @@ open_pattern (FcPattern   *pattern,
 #ifdef FC_HINT_STYLE
 	static const int hintstyles[] = { FC_HINT_NONE, FC_HINT_SLIGHT, FC_HINT_MEDIUM, FC_HINT_FULL };
 #endif /* FC_HINT_STYLE */
-	
+
 	FcPattern *res_pattern;
 	FcResult result;
 	XftFont *font;
-	
+
 	Display *xdisplay = gdk_x11_get_default_xdisplay ();
 	int screen = gdk_x11_get_default_screen ();
-	
+
 	res_pattern = XftFontMatch (xdisplay, screen, pattern, &result);
 	if (res_pattern == NULL)
 		return NULL;
-	
+
 	FcPatternDel (res_pattern, FC_HINTING);
 	FcPatternAddBool (res_pattern, FC_HINTING, hinting != HINT_NONE);
 
-#ifdef FC_HINT_STYLE	
+#ifdef FC_HINT_STYLE
 	FcPatternDel (res_pattern, FC_HINT_STYLE);
 	FcPatternAddInteger (res_pattern, FC_HINT_STYLE, hintstyles[hinting]);
-#endif /* FC_HINT_STYLE */ 	
+#endif /* FC_HINT_STYLE */
 
 	FcPatternDel (res_pattern, FC_ANTIALIAS);
 	FcPatternAddBool (res_pattern, FC_ANTIALIAS, antialiasing != ANTIALIAS_NONE);
@@ -198,11 +203,11 @@ setup_font_sample (GtkWidget   *darea,
 	const char *string1 = "abcfgop AO ";
 	const char *string2 = "abcfgop";
 
-	XftColor black = { 0, {      0,      0,       0, 0xffff } };
-	XftColor white = { 0, { 0xffff, 0xffff,  0xffff, 0xffff } };
-	
+	XftColor black, white;
+	XRenderColor rendcolor;
+
 	Display *xdisplay = gdk_x11_get_default_xdisplay ();
-	
+
 	GdkColormap *colormap = gdk_rgb_get_colormap ();
 	Colormap xcolormap = GDK_COLORMAP_XCOLORMAP (colormap);
 
@@ -252,15 +257,26 @@ setup_font_sample (GtkWidget   *darea,
 		descent = MAX (descent, font1->descent);
 	if (font2)
 		descent = MAX (descent, font2->descent);
-	
+
 	width = extents1.xOff + extents2.xOff + 4;
-	
+
 	height = ascent + descent + 2;
 
 	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
-	
+
 	draw = XftDrawCreate (xdisplay, GDK_DRAWABLE_XID (pixmap), xvisual, xcolormap);
 
+	rendcolor.red = 0;
+	rendcolor.green = 0;
+	rendcolor.blue = 0;
+	rendcolor.alpha = 0xffff;
+	XftColorAllocValue (xdisplay, xvisual, xcolormap, &rendcolor, &black);
+	
+	rendcolor.red = 0xffff;
+	rendcolor.green = 0xffff;
+	rendcolor.blue = 0xffff;
+	rendcolor.alpha = 0xffff;
+	XftColorAllocValue (xdisplay, xvisual, xcolormap, &rendcolor, &white);
 	XftDrawRect (draw, &white, 0, 0, width, height);
 	if (font1)
 		XftDrawStringUtf8 (draw, &black, font1,
@@ -270,7 +286,7 @@ setup_font_sample (GtkWidget   *darea,
 		XftDrawStringUtf8 (draw, &black, font2,
 				   2 + extents1.xOff, 2 + ascent,
 				   (char *)string2, strlen (string2));
-	
+
 	XftDrawDestroy (draw);
 
 	if (font1)
@@ -306,13 +322,17 @@ font_render_get_gconf (Antialiasing *antialiasing,
 	int val;
 
 	val = ANTIALIAS_GRAYSCALE;
-	if (antialias_str)
+	if (antialias_str) {
 		gconf_string_to_enum (antialias_enums, antialias_str, &val);
+		g_free (antialias_str);
+	}
 	*antialiasing = val;
 
 	val = HINT_FULL;
-	if (hint_str)
+	if (hint_str) {
 		gconf_string_to_enum (hint_enums, hint_str, &val);
+		g_free (hint_str);
+	}
 	*hinting = val;
 
 	g_object_unref (client);
@@ -333,11 +353,11 @@ font_render_load (void)
 	Hinting hinting;
 	gboolean inconsistent = TRUE;
 	GSList *tmp_list;
-	
+
 	font_render_get_gconf (&antialiasing, &hinting);
 
 	in_change = TRUE;
-	
+
 	for (tmp_list = font_pairs; tmp_list; tmp_list = tmp_list->next) {
 		FontPair *pair = tmp_list->data;
 
@@ -352,7 +372,7 @@ font_render_load (void)
 
 		gtk_toggle_button_set_inconsistent (GTK_TOGGLE_BUTTON (pair->radio), inconsistent);
 	}
-	
+
 	in_change = FALSE;
 }
 
@@ -375,7 +395,7 @@ font_radio_toggled (GtkToggleButton *toggle_button,
 		gconf_client_set_string (client, FONT_ANTIALIASING_KEY,
 					 gconf_enum_to_string (antialias_enums, pair->antialiasing),
 					 NULL);
-		gconf_client_set_string (client, FONT_HINTING_KEY, 
+		gconf_client_set_string (client, FONT_HINTING_KEY,
 					 gconf_enum_to_string (hint_enums, pair->hinting),
 					 NULL);
 
@@ -427,6 +447,100 @@ metacity_changed (GConfClient *client,
 		metacity_titlebar_load_sensitivity (client, user_data);
 }
 
+
+
+/* returns 0 if the font is safe, otherwise returns the size in points. */
+static gint
+new_font_dangerous (const char *new_font)
+{
+	PangoFontDescription *pfd;
+	gboolean retval = 0;
+
+	pfd = pango_font_description_from_string (new_font);
+	if (pfd == NULL)
+		/* an invalid font was passed in.  This isn't our problem. */
+		return 0;
+
+	if (pango_font_description_get_set_fields (pfd) & PANGO_FONT_MASK_SIZE) {
+		if (pango_font_description_get_size (pfd) >= MAX_FONT_SIZE_WITHOUT_WARNING) {
+			retval = pango_font_description_get_size (pfd)/1024;
+		}
+	}
+	pango_font_description_free (pfd);
+
+	return retval;
+}
+
+static GConfValue *
+application_font_to_gconf (GConfPropertyEditor *peditor,
+			   GConfValue          *value)
+{
+	GConfValue *new_value;
+	const char *new_font;
+	GtkWidget *font_picker;
+	GladeXML *dialog;
+	gint danger_level;
+
+	font_picker = (GtkWidget *) gconf_property_editor_get_ui_control (peditor);
+	g_assert (font_picker);
+
+	dialog = glade_xml_new (GLADEDIR "/font-properties.glade", "font_size_warning_dialog", NULL);
+
+	new_value = gconf_value_new (GCONF_VALUE_STRING);
+	new_font = gconf_value_get_string (value);
+	if (new_font_dangerous (old_font)) {
+		/* If we're already too large, we don't warn again. */
+		gconf_value_set_string (new_value, new_font);
+		return new_value;
+	}
+
+	danger_level = new_font_dangerous (new_font);
+	if (danger_level) {
+		GtkWidget *font_size_warning_dialog;
+		gchar *warning_label;
+		gchar *warning_label2;
+
+		font_size_warning_dialog = WID ("font_size_warning_dialog");
+		if (danger_level > MAX_FONT_POINT_WITHOUT_WARNING) {
+			warning_label = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+							 _("Font may be too large"),
+							 ngettext ("The font selected is %d point large, and may make it difficult to effectively use the computer.  It is recommended that you select a size smaller than %d.",
+								   "The font selected is %d points large, and may make it difficult to effectively use the computer.  It is recommended that you select a size smaller than %d.",
+								   danger_level));
+			warning_label2 = g_strdup_printf (warning_label, danger_level, MAX_FONT_POINT_WITHOUT_WARNING);
+		} else {
+			warning_label = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%s",
+							 _("Font may be too large"),
+							 ngettext ("The font selected is %d point large, and may make it difficult to effectively use the computer.  It is recommended that you select a smaller sized font.",
+								   "The font selected is %d points large, and may make it difficult to effectively use the computer.  It is recommended that you select a smaller sized font.",
+								   danger_level));
+			warning_label2 = g_strdup_printf (warning_label, danger_level);
+		}
+		gtk_label_set_markup (GTK_LABEL (WID ("font_size_warning_label")), warning_label2);
+		if (gtk_dialog_run (GTK_DIALOG (font_size_warning_dialog)) == 1) {
+			gconf_value_set_string (new_value, new_font);
+		} else {
+			gconf_value_set_string (new_value, old_font);
+			gnome_font_picker_set_font_name (GNOME_FONT_PICKER (font_picker), old_font);
+		}
+		gtk_widget_destroy (font_size_warning_dialog);
+	} else {
+		gconf_value_set_string (new_value, new_font);
+	}
+
+	return new_value;
+}
+
+static void
+application_font_changed (GtkWidget *font_picker)
+{
+	const gchar *font;
+
+	font = gnome_font_picker_get_font_name (GNOME_FONT_PICKER (font_picker));
+	g_free (old_font);
+	old_font = g_strdup (font);
+}
+
 static void
 setup_dialog (GladeXML *dialog)
 {
@@ -439,14 +553,18 @@ setup_dialog (GladeXML *dialog)
   gconf_client_add_dir (client, "/desktop/gnome/interface", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
   gconf_client_add_dir (client, "/apps/nautilus/preferences", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
   gconf_client_add_dir (client, METACITY_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-#ifdef HAVE_XFT2  
+#ifdef HAVE_XFT2
   gconf_client_add_dir (client, FONT_RENDER_DIR, GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
 #endif  /* HAVE_XFT2 */
 
+  g_object_set_data (G_OBJECT (WID ("application_font")), PICKER_DIALOG_DATA_STRING, dialog);
   peditor = gconf_peditor_new_font (NULL, GTK_FONT_KEY,
 		  		    WID ("application_font"),
-				    PEDITOR_FONT_COMBINED, NULL);
-
+				    PEDITOR_FONT_COMBINED,
+				    "conv-from-widget-cb", application_font_to_gconf,
+				    NULL);
+  g_signal_connect_swapped (G_OBJECT (peditor), "value-changed", (GCallback) application_font_changed, WID ("application_font"));
+  application_font_changed (WID ("application_font"));
   peditor = gconf_peditor_new_font (NULL, DESKTOP_FONT_KEY,
 		  		    WID ("desktop_font"),
 				    PEDITOR_FONT_COMBINED, NULL);
@@ -466,37 +584,37 @@ setup_dialog (GladeXML *dialog)
   metacity_titlebar_load_sensitivity (client, dialog);
 
   widget = WID ("font_dialog");
-  capplet_set_icon (widget, "font-capplet.png");
+  capplet_set_icon (widget, "gnome-settings-font");
 
-#ifdef HAVE_XFT2  
+#ifdef HAVE_XFT2
   setup_font_pair (WID ("monochrome_radio"),    WID ("monochrome_sample"),    ANTIALIAS_NONE,      HINT_FULL);
   setup_font_pair (WID ("best_shapes_radio"),   WID ("best_shapes_sample"),   ANTIALIAS_GRAYSCALE, HINT_MEDIUM);
   setup_font_pair (WID ("best_contrast_radio"), WID ("best_contrast_sample"), ANTIALIAS_GRAYSCALE, HINT_FULL);
   setup_font_pair (WID ("subpixel_radio"),      WID ("subpixel_sample"),      ANTIALIAS_RGBA,      HINT_FULL);
-  
+
   font_render_load ();
-  
+
   gconf_client_notify_add (client, FONT_RENDER_DIR,
 			   font_render_changed,
 			   NULL, NULL, NULL);
 
-  g_signal_connect (WID ("details_button"), 
+  g_signal_connect (WID ("details_button"),
  		    "clicked",
  		    G_CALLBACK (cb_show_details), widget);
 #else /* !HAVE_XFT2 */
   gtk_widget_hide (WID ("font_render_frame"));
 #endif /* HAVE_XFT2 */
-  
+
   g_signal_connect (G_OBJECT (widget),
     "response",
     G_CALLBACK (cb_dialog_response), NULL);
- 
+
   gtk_widget_show (widget);
 
   g_object_unref (client);
 }
 
-#ifdef HAVE_XFT2 
+#ifdef HAVE_XFT2
 /*
  * EnumGroup - a group of radio buttons tied to a string enumeration
  *             value. We add this here because the gconf peditor
@@ -531,8 +649,10 @@ enum_group_load (EnumGroup *group)
 	if (str)
 		gconf_string_to_enum (group->enums, str, &val);
 
+	g_free (str);
+
 	in_change = TRUE;
-	
+
 	for (tmp_list = group->items; tmp_list; tmp_list = tmp_list->next) {
 		EnumItem *item = tmp_list->data;
 
@@ -540,7 +660,7 @@ enum_group_load (EnumGroup *group)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (item->widget), TRUE);
 	}
 
-	
+
 
 	in_change = FALSE;
 }
@@ -559,7 +679,7 @@ enum_item_toggled (GtkToggleButton *toggle_button,
 		   EnumItem      *item)
 {
 	EnumGroup *group = item->group;
-	
+
 	if (!in_change) {
 		gconf_client_set_string (group->client, group->gconf_key,
 					 gconf_enum_to_string (group->enums, item->value),
@@ -589,10 +709,10 @@ enum_group_create (const gchar         *gconf_key,
 	group->enums = enums;
 	group->default_value = default_value;
 	group->items = NULL;
-	
+
 	va_start (args, first_widget);
 
-	widget = first_widget;	
+	widget = first_widget;
 	while (widget)
 	{
 		EnumItem *item;
@@ -604,7 +724,7 @@ enum_group_create (const gchar         *gconf_key,
 
 		g_signal_connect (item->widget, "toggled",
 				  G_CALLBACK (enum_item_toggled), item);
-		
+
 		group->items = g_slist_prepend (group->items, item);
 
 		widget = va_arg (args, GtkWidget *);
@@ -629,6 +749,9 @@ dpi_load (GConfClient   *client,
 	  GtkSpinButton *spinner)
 {
 	gdouble dpi = gconf_client_get_float (client, FONT_DPI_KEY, NULL);
+
+	if (dpi < 50.)
+		dpi = 50.;
 
 	in_change = TRUE;
 	gtk_spin_button_set_value (spinner, dpi);
@@ -659,7 +782,7 @@ dpi_value_changed (GtkSpinButton *spinner,
 	gdouble new_dpi = gtk_spin_button_get_value (spinner);
 
 	gconf_client_set_float (client, FONT_DPI_KEY, new_dpi, NULL);
-	
+
 	dpi_load (client, spinner);
 }
 
@@ -668,9 +791,12 @@ cb_details_response (GtkDialog *dialog, gint response_id)
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			      "wgoscustdesk.xml",
+			      "user-guide.xml",
 			      "goscustdesk-38");
-	else
+	else if (response_id == 1) {
+		/* "Go to font folder" was clicked */
+		g_spawn_command_line_async ("nautilus --no-desktop fonts:///", NULL);
+	} else
 		gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
@@ -684,12 +810,31 @@ cb_show_details (GtkWidget *button,
 		GConfClient *client = gconf_client_get_default ();
 		GladeXML *dialog = glade_xml_new (GLADEDIR "/font-properties.glade", "render_details", NULL);
 		GtkWidget *dpi_spinner;
+		GnomeVFSURI *uri;
+		int dpi;
+		GtkAdjustment *adjustment;
 
 		details_dialog = WID ("render_details");
+		uri = gnome_vfs_uri_new ("fonts:///");
+		if (uri == NULL) {
+			gtk_widget_hide (WID ("go_to_font_button"));
+		} else {
+			gnome_vfs_uri_unref (uri);
+			gtk_widget_show (WID ("go_to_font_button"));
+		}
 
 		gtk_window_set_transient_for (GTK_WINDOW (details_dialog), parent);
 
 		dpi_spinner = WID ("dpi_spinner");
+
+		/* pick a sensible maximum dpi */
+		dpi = floor ((gdk_screen_width () / gdk_screen_width_mm () +
+			      gdk_screen_height () / gdk_screen_height_mm ()) * 25.4 / 2. + .5);
+		if (dpi < 50)
+			 dpi = 50; /* be extra careful */
+		adjustment = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (dpi_spinner));
+		adjustment->upper = dpi * 3;
+
 		dpi_load (client, GTK_SPIN_BUTTON (dpi_spinner));
 		g_signal_connect (dpi_spinner, "value_changed",
 				  G_CALLBACK (dpi_value_changed), client);
@@ -697,7 +842,7 @@ cb_show_details (GtkWidget *button,
 		gconf_client_notify_add (client, FONT_DPI_KEY,
 					 dpi_changed,
 					 dpi_spinner, NULL, NULL);
-		
+
 		setup_font_sample (WID ("antialias_none_sample"),      ANTIALIAS_NONE,      HINT_FULL);
 		setup_font_sample (WID ("antialias_grayscale_sample"), ANTIALIAS_GRAYSCALE, HINT_FULL);
 		setup_font_sample (WID ("antialias_subpixel_sample"),  ANTIALIAS_RGBA,      HINT_FULL);
@@ -712,7 +857,7 @@ cb_show_details (GtkWidget *button,
 		setup_font_sample (WID ("hint_slight_sample"),  ANTIALIAS_GRAYSCALE, HINT_SLIGHT);
 		setup_font_sample (WID ("hint_medium_sample"),  ANTIALIAS_GRAYSCALE, HINT_MEDIUM);
 		setup_font_sample (WID ("hint_full_sample"),    ANTIALIAS_GRAYSCALE, HINT_FULL);
-		
+
 		enum_group_create (FONT_HINTING_KEY, hint_enums, HINT_FULL,
 				   WID ("hint_none_radio"),   HINT_NONE,
 				   WID ("hint_slight_radio"), HINT_SLIGHT,
@@ -735,7 +880,7 @@ cb_show_details (GtkWidget *button,
 				   WID ("subpixel_vrgb_radio"), RGBA_VRGB,
 				   WID ("subpixel_vbgr_radio"), RGBA_VBGR,
 				   NULL);
-		
+
 		g_signal_connect (G_OBJECT (details_dialog),
 				  "response",
 				  G_CALLBACK (cb_details_response), NULL);
@@ -749,7 +894,7 @@ cb_show_details (GtkWidget *button,
 	gtk_window_present (GTK_WINDOW (details_dialog));
 }
 #endif /* HAVE_XFT2 */
-  
+
 int
 main (int argc, char *argv[])
 {

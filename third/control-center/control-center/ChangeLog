@@ -1,3 +1,126 @@
+2004-06-01  Jody Goldberg <jody@gnome.org>
+
+	* control-center.c (relayout_canvas) : minor layout tweaks
+	  and improved padding
+
+2004-05-27  Jody Goldberg <jody@gnome.org>
+
+	* gnomecc-rounded-rect.c : new canvas item to match nautilus.
+
+	* control-center.c (setup_entry) : add proper focus handling
+
+2004-05-26  Jody Goldberg <jody@gnome.org>
+
+	* control-center.c (single_click_activates) : support nautilus' single
+	  click policy.
+
+2004-05-18  Jody Goldberg <jody@gnome.org>
+
+	* control-center.c (select_entry) : Ensure that the selected
+	  entry is visible.
+
+2004-05-17  Jody Goldberg <jody@gnome.org>
+
+	* control-center-categories.c : merge the icon theme handling from the
+	  existing control center into the ximian shell.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* capplet-dir.c (find_icon) : pull in some code from nautilus and eel
+	  to ignore some image extensions.  Themed icons should have
+	  extensions.
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* capplet-dir-view.c: (help_menu_cb): Update help link to point
+	to user-guide.xml
+
+2004-01-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnomecc-ui.xml: Add F1 as an accelerator for the Help menu.
+	Patch by Mark Finlay. Closes bug #94265.
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-12-17  Jody Goldberg <jody@gnome.org>
+
+	* capplet-dir.c (find_icon) : Use gtk_icon_theme_get_default
+
+2003-12-16  Jody Goldberg <jody@gnome.org>
+
+	* capplet-dir.c (find_icon) : Use GtkIconTheme rather than
+	  GnomeIconTheme, and return a Pixbuf directly.
+
+	* capplet-dir-view-list.c (sidebar_populate) : Just use the icon
+	  directly.
+	(list_populate) : ditto.
+	* capplet-dir-view.c (capplet_dir_view_load_dir) : ditto.
+
+2003-12-15  Jody Goldberg <jody@gnome.org>
+
+	* gnomecc.desktop.in : Use themed icon
+	* capplet-dir.c (find_icon) : Support icon themes
+	* capplet-dir-view-list.c (list_create) : make icons wider and less
+	ugly.
+
+2003-12-12  Jody Goldberg <jody@gnome.org>
+
+	* gnomecc.desktop.in : Move to themeable icon
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-04-29  Kjartan Maraas  <set EMAIL_ADDRESS environment variable>
+
+	* capplet-dir.c: (read_entries): Plug a couple of leaks.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

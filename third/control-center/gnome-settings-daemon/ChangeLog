@@ -1,3 +1,355 @@
+2004-08-30  Carlos Garnacho Parro  <carlosg@gnome.org>
+
+	* gnome-settings-multimedia-keys.c: applied patch from Pierre Ossman
+	<drzeus-bugzilla@drzeus.cx> to display the volume dialog in the
+	correct place. Fixes #144490
+
+2004-08-22  Jeroen Zwartepoorte  <jeroen@xs4all.nl>
+
+	* actions/acme-fb-level.c: Use the parent type in the G_DEFINE_TYPE
+	macro, not its own type (fixes rh #130473).
+
+2004-07-16  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-alsa.c: (acme_volume_alsa_finalize),
+	(acme_volume_alsa_close_real), (acme_volume_alsa_open),
+	(acme_volume_alsa_init): fix a crash when there aren't any ALSA mixers
+	(or soundcards) present on the system
+
+2004-07-15  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-oss.c: fix OSS compilation on NetBSD
+
+2004-07-15  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-alsa.c: (acme_volume_alsa_finalize),
+	(acme_volume_alsa_set_mute), (acme_volume_alsa_get_mute),
+	(acme_volume_alsa_get_volume), (acme_volume_alsa_set_volume),
+	(acme_volume_alsa_close_real), (acme_volume_alsa_open),
+	(acme_volume_alsa_close), (acme_volume_alsa_init):
+	rework the ALSA mixer so that:
+	- the ALSA device isn't kept open at all times, only for 4 seconds
+	  after the last use (Closes: #141793)
+	- the hardware mute is used if it is available
+	  (Closes: #141404, #144489, #140937)
+	- lowering the volume doesn't move the balance to the right
+	- it doesn't leak alsa-lib mixers all around
+
+2004-06-18  Crispin Flowerday  <gnome@flowerday.cx>
+
+	* gnome-settings-xsettings.c: Translate the menus_have_icons
+	gconf key to the MenuImages xsetting (Closes bug #144201)
+
+2004-06-18  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume.c: make AcmeVolume descend of a GObject, not
+	itself (spotted by Mariano Suárez-Alvarez <mariano@gnome.org>)
+
+2004-06-15  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-fb-level.c: (acme_fblevel_init):
+	* actions/acme-volume-alsa.c: (acme_volume_alsa_init),
+	(acme_volume_alsa_class_init):
+	* actions/acme-volume-gstreamer.c: (acme_volume_gstreamer_init):
+	* actions/acme-volume-oss.c: (acme_volume_oss_init),
+	(acme_volume_oss_class_init):
+	* actions/acme-volume.c: (acme_volume_class_init),
+	(acme_volume_init): cleanups, and warning fixes
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-03-11  Chris Lahey  <clahey@rigger.boston.ximian.com>
+
+	* gnome-settings-background.c (applier_idle): Made this delay by a
+	tenth of a second.  This seems to make it not reload the
+	background more than once.
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-16  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-multimedia-keys.c (acme_error) : don't run a main
+	  loop in a situation where bonobo main still be initializing.
+
+Fri Mar 12 20:15:28 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-settings-xsettings.c: Add the FileChooserBackend as an
+	xsetting.
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-03-01  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-gstreamer.c:
+	(acme_volume_gstreamer_class_init): initialise GStreamer if we
+	want to use it ;) (Patch by Christophe Fergeau
+	<teuf@users.sourceforge.net>) (Closes: #131316)
+
+2004-02-29  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/acme-volume-alsa.c: (acme_volume_alsa_get_volume),
+	(acme_volume_alsa_set_volume): better ALSA volume steps, using
+	rounding up rather than normal float to int casting
+	(Closes: #124741)
+
+2004-02-25  Bastien Nocera  <hadess@hadess.net>
+
+	* actions/Makefile.am:
+	* actions/acme-volume-gstreamer.[ch]:
+	* actions/acme-volume.c: (acme_volume_class_init),
+	(acme_volume_new): add GStreamer mixer support
+
+2004-02-24  Mariano Suárez-Alvarez <mariano@gnome.org>
+
+	* gnome-settings-accessibility-keyboard.c
+	(ax_slowkeys_warning_dialog_post) : fix a typo in a variable name, bug
+	#134699.
+	
+2004-02-16  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-accessibility-keyboard.c
+	(ax_slowkeys_warning_dialog_post) : fix cut-n-paste-o in the message
+
+2004-02-16  Jody Goldberg <jody@gnome.org>
+
+	* gnome-settings-accessibility-keyboard.c : include
+	  libgnome/gnome-help.h to avoid potential crash on 64 bit arches.
+	(ax_response_callback) : actually display the error message on
+	  failure.
+
+2004-02-15  Anders Carlsson  <andersca@gnome.org>
+
+	* actions/Makefile.am: Link with ALSA_LIBS.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-settings-accessibility-keyboard.c: (ax_response_callback): Update
+	help link to point to user-guide.xml
+
+Mon Jan 19 11:49:03 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-settings-xsettings.c (gnome_xft_settings_get): Set the
+	correct default dpi.
+
+2004-01-16  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* Makefile.am: Add DESTDIR variable in install-data-hook section.
+
+2004-01-15  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-settings-multimedia-keys.c: fix locating the
+	pixmaps when compiling with a prefix not ending in '/'
+
+2004-01-14  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am:
+	* gnome-settings-multimedia-keys.c: fix build on Linux/PPC machines
+	(the only ones to use the FB-Level code)
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-01-14  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: fix compilation with FB Level enabled
+	* actions/acme.h: fix a stupid typo that made the WWW key not work
+	* gnome-settings-multimedia-keys.c: (acme_get_screen_from_event),
+	(acme_filter_events), (gnome_settings_multimedia_keys_init):
+	only get the current screen if we actually need to, fix locating the
+	glade file when compiling with a prefix not ending in '/'
+
+2004-01-13  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-settings-multimedia-keys.c: (acme_filter_events): let's
+	simplify some code
+
+Tue Jan 13 10:48:57 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-settings-daemon: Merge in acme.  We now have a variety of
+	actions for the keybinding capplet.
+
+2004-01-12  Federico Mena Quintero  <federico@ximian.com>
+
+	* gnome-settings-accessibility-keyboard.c
+	(ax_stickykeys_warning_dialog_post): Fix ; -> , typo.
+
+2004-01-10  Bill Haneman <billh@gnome.org>
+
+	* gnome-settings-accessibility-keyboard.c:
+	Removed we_are_changing_xkb_state flag and related logic, since it
+	didn't work anyway (due to async processing).
+	(set_bool): Fix a logic error that resulted in set_bool always
+	returning TRUE.
+	(ax_warning_dialog_post): New, creates/posts a warning dialog (below).
+	(ax_stickykeys_warning_dialog_post, ax_slowkeys_warning_dialog_post):
+	New functions, display warning dialog to user alerting them
+	when an AccessX feature (StickyKeys or SlowKeys) is turned on via
+	a keyboard shorcut.  See bug #105093.
+	(ax_slowkeys_response, ax_stickykeys_response, ax_response_callback):
+	New, these callbacks either dismiss the dialog, post help, or
+	revert the XKB change and dismiss the dialog(s).
+	(set_gconf_from_server):
+	Invoke dialog above if the Xkb setting for SlowKeys or StickyKeys
+	has changed in isolation, independent of the gconf setting.  This
+	indicates that a keyboard shortcut has been invoked.
+	
+	* ../po/POTFILES.in:
+	Added gnome-settings-accessibility-keyboard.c, since we now
+	have translatable strings in the warning dialog (above).
+	
+2004-01-09  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am : simplify and generate the file at the last possible
+	  instant.  CLickety Click, no mor eworries about tmp files.
+	* GNOME_SettingsDaemon.server.in: restore
+	* GNOME_SettingsDaemon.server.in.in: remove
+
+2004-01-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* GNOME_SettingsDaemon.server.in: Remove from CVS since it's
+	a generated file.
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Makefile.am (EXTRA_DIST) : don't ship the generated files
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-12-19  Diego Gonzalez Gonzalez  <diego@pemas.net>
+
+	* Makefile.am: install gnome-settings-daemon in the libexec
+	  directory
+	* GNOME_SettingsDaemon.server.in.in: new file that contains
+ 	  the new locations where the gnome-settings-daemon is to be
+	  found.
+
+2003-11-13  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* gnome-settings-xsettings.c:
+
+	Add a setting for gtk icon theme.
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+Fri Aug  1 14:51:02 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-mouse.c (set_locate_pointer): move declarations
+	around.  Patch from Damien Carbery <damien.carbery@sun.com>,
+	#118860
+
+Thu Jul 31 14:22:38 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-xsettings.c (translate_string_string_toolbar):
+	Patch from Anders Carlsson to special case "both-horiz".
+
+Thu Jul 31 14:06:51 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-mouse.c: Patch from Satyajit Kanungo
+	<satyajit.kanungo@wipro.com> to make locate pointer work in
+	a multi-screen environment.
+
+2003-07-17  Richard Hult  <richard@imendio.com>
+
+	* gnome-settings-typing-break.c (setup_typing_break): Start with
+	-n to avoid the warning about notification area.
+	(gnome_settings_typing_break_init): Fix a warning.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-07-03  Bastien Nocera  <hadess@hadess.net>
+
+	* gnome-settings-keybindings.c: (get_screens_list),
+	(screen_exec_display_string), (grab_key), (do_grab),
+	(gnome_settings_keybindings_load): grab keys on all the screens for the
+	current display
+
+Thu Jun 26 07:37:20 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-settings-typing-break.c: new module to handle the
+	typing-break-monitor.
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-06-12  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: Make IDL compile depend on compiler too.
+
+Mon Jun  2 13:23:25 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-xrdb.c (append_xresources): Patch from Jens
+	Granseuer <jensgr@gmx.net> to fix on non-C99 compilers.
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* xrdb/Makefile.am (EXTRA_DIST) : EXTRA_DIST the data files
+
+2003-05-02  Ross Burton  <ross@burtonini.com>
+
+	* gnome-settings-xrdb.c (scan_for_files): 
+	If ~/.gnome2/xrdb doesn't exist, don't stop.
+
+	* xrdb/.cvsignore:
+	Added.
+
+2003-05-02  Ross Burton  <ross@burtonini.com>
+
+	* xrdb/Makefile.am (xrdbdir):
+	$(datadir) is lowercase not uppercase! :(
+
+2003-05-01  Ross Burton  <ross@burtonini.com>
+
+	* gnome-settings-xrdb.[ch]:
+	Using the current GTK+ theme as a base for colours, set a bunch of
+	properties in the X resource database. And as if by magic, legacy
+	apps (Xaw, Tk, Motif) match GNOME!
+
+	* xrdb/*.ad:
+	Data files for above.
+
+Thu Feb  6 16:43:33 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-settings-font.c (load_xcursor_theme): handle xcursor so
+	that we support Xcursor files.
+
+	* gnome-settings-daemon.c: move
+	gnome_settings_daemon_spawn_with_input here so multiple modules
+	can use it.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

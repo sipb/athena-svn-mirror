@@ -1,3 +1,145 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-default-applications-properties.c: (create_dialog):
+	Use themed icon for WM hint.
+
+2004-07-13  David Sedeño <david@alderia.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=147244
+	* gnome-default-applications-properties.c: Only put the toggles
+	  inconsistent if there are not custom commands
+
+2004-06-08  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=143975
+	* gnome-default-applications-properties-structs.c : quick fix
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-06  Andrew Sobala  <aes@gnome.org>
+
+	* gnome-default-applications-properties-structs.c:
+	add evo 1.5 and 1.6 to the list
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* gnome-default-applications-properties.c : Unique-ify the lists so
+	  that we can handle multiple excutable names for the same browser
+	  when the list jumps to gconf.  Remove the vile hack specifict to
+	  evolution.
+
+	* gnome-default-applications-properties-structs.c (};) : remove the
+	  nremote flag and add a few new browsers.
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-default-applications-properties.c: (dialog_response): Update
+	help link to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-01-09  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-default-applications-properties.glade: Add accessible 
+	relations so accessible names are correctly reported. 
+	Fixes bug #127302.
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* gnome-default-applications-properties.glade: Patch to fix spacing 
+	between action area and vbox of preferences dialog.
+
+Fri Aug  1 15:49:03 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-default-applications-properties-structs.c
+	(possible_terminals): Add N_() calls to all the human readable
+	strings.  Based on a patch from Christophe Fergeau
+	<teuf@users.sourceforge.net>, #117085
+
+	* gnome-default-applications-properties-structs.c
+	(possible_terminals): remove help browsers.  We basically only
+	support yelp at this point.
+
+2003-07-19  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-default-applications-properties.c:  Added a window icon
+	to the capplet.
+
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-default-applications-properties.glade:  Very minor 
+	HIGification of widget padding.
+	
+2003-07-14  Christophe Fergeau  <teuf@gnome.org>
+
+	* gnome-default-applications-properties-structs.c: added a few more 
+	  mailers
+	* gnome-default-applications-properties.c:
+	(initialize_default_applications): only display Evolution once when
+	  both evo<=1.2 and evo>=1.4 are installed
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-25  Christophe Fergeau <teuf@users.sourceforge.net>
+
+	* capplets/default-applications/gnome-default-applications-properties-structs.c
+	* capplets/default-applications/gnome-default-applications-properties.c
+	* capplets/default-applications/gnome-default-applications-properties.glade
+	Added a tab to choose the preferred mailer, added epiphany to the list
+	known browsers, don't select any checkbox there is no default browser
+	or mailer	
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-02-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-default-application-properties.c: Fix a double free poop
+	that I made while fixing leaks. Spotted by jrb.
+	
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

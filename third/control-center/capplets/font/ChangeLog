@@ -1,3 +1,123 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* main.c: (setup_dialog):
+	Use themed iconf for WM hint.
+
+2004-05-17  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=142190
+	http://bugzilla.gnome.org/show_bug.cgi?id=142191
+	* font-properties.glade : fix conflicting mnemonics
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-16  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=134446
+	* font-properties.glade : removed space
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* main.c: (cb_dialog_response), (cb_details_response): Update help
+	link to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-11-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* font-properties.glade: Correct mnemonic widget for Window title font.
+	Move declaration of GnomeFontPicker for applications to immediately
+	after declaration of the label. This fixes bug #125689.
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=116710
+	* main.c (cb_show_details) : be smarter about selecting a maximum
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=115435
+	* font-properties.glade : some of the UI review changes.
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=124513
+	* main.c (setup_font_sample) : merge in patch to allocate black and
+	  white correctly on TruColor displays.
+
+2003-10-23  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=106489
+	* main.c (dpi_load) : add some protection again invalid dpi in the
+	  case of gconf failure.
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* font-properties.glade: Patch to fix spacing between action 
+	area and vbox of preferences dialog.
+
+Sat Aug  2 01:16:16 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* main.c (application_font_to_gconf): Warn when a font larger than
+	31 points is selected, #97653.
+
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* font-properties.glade:  Some HIGification of the dialog.
+	Fixes some of ui-review bug #98922.
+	
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+Wed Jan 15 12:50:34 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* main.c (cb_details_response): run "nautilus --no-desktop
+	fonts:///" if button pressed.
+
+	(cb_show_details): show a 'Go to font folder' button if fonts:///
+	exists.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

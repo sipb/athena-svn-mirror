@@ -59,7 +59,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
+AR = @AR@
 AS = @AS@
+AT_CAPPLET_CFLAGS = @AT_CAPPLET_CFLAGS@
+AT_CAPPLET_LIBS = @AT_CAPPLET_LIBS@
 BONOBO_ACTIVATION_IDL_DIR = @BONOBO_ACTIVATION_IDL_DIR@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -67,22 +72,42 @@ CC = @CC@
 CONFIG_ARCHIVER_INCLUDEDIR = @CONFIG_ARCHIVER_INCLUDEDIR@
 CONFIG_ARCHIVER_LIBDIR = @CONFIG_ARCHIVER_LIBDIR@
 CONFIG_ARCHIVER_LIBS = @CONFIG_ARCHIVER_LIBS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
+DISPLAY_CAPPLET_CFLAGS = @DISPLAY_CAPPLET_CFLAGS@
+DISPLAY_CAPPLET_LIBS = @DISPLAY_CAPPLET_LIBS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FONTILUS = @FONTILUS@
 FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
 FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
+FONT_CONTEXT_MENU_CFLAGS = @FONT_CONTEXT_MENU_CFLAGS@
+FONT_CONTEXT_MENU_LIBS = @FONT_CONTEXT_MENU_LIBS@
+FONT_METHOD_CFLAGS = @FONT_METHOD_CFLAGS@
+FONT_METHOD_LIBS = @FONT_METHOD_LIBS@
+FONT_THUMBNAILER_CFLAGS = @FONT_THUMBNAILER_CFLAGS@
+FONT_THUMBNAILER_LIBS = @FONT_THUMBNAILER_LIBS@
+FONT_VIEW_CFLAGS = @FONT_VIEW_CFLAGS@
+FONT_VIEW_LIBS = @FONT_VIEW_LIBS@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
+GDK_PIXBUF_CSOURCE_32 = @GDK_PIXBUF_CSOURCE_32@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMECC_CAPPLETS_CFLAGS = @GNOMECC_CAPPLETS_CFLAGS@
@@ -95,37 +120,54 @@ GNOMECC_GLADE_DIR = @GNOMECC_GLADE_DIR@
 GNOMECC_ICONS_DIR = @GNOMECC_ICONS_DIR@
 GNOMECC_LIBS = @GNOMECC_LIBS@
 GNOMECC_PIXMAPS_DIR = @GNOMECC_PIXMAPS_DIR@
+GNOME_CFLAGS = @GNOME_CFLAGS@
+GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
+GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
+GNOME_LIBS = @GNOME_LIBS@
 GNOME_SETTINGS_DAEMON_CFLAGS = @GNOME_SETTINGS_DAEMON_CFLAGS@
 GNOME_SETTINGS_DAEMON_LIBS = @GNOME_SETTINGS_DAEMON_LIBS@
+GST_CFLAGS = @GST_CFLAGS@
+GST_LIBS = @GST_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_LIBS = @GTK_LIBS@
+HAVE_LIB = @HAVE_LIB@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
 LIBBONOBO_IDL_DIR = @LIBBONOBO_IDL_DIR@
 LIBTOOL = @LIBTOOL@
+LIBXKLAVIER_CFLAGS = @LIBXKLAVIER_CFLAGS@
+LIBXKLAVIER_LIBS = @LIBXKLAVIER_LIBS@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 METACITY_CFLAGS = @METACITY_CFLAGS@
 METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+NAUTILUS_CFLAGS = @NAUTILUS_CFLAGS@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
@@ -133,10 +175,22 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
+SCREENSAVER_LIBS = @SCREENSAVER_LIBS@
 SOUND_CAPPLET_CFLAGS = @SOUND_CAPPLET_CFLAGS@
 SOUND_CAPPLET_LIBS = @SOUND_CAPPLET_LIBS@
 STRIP = @STRIP@
+THEME_METHOD_CFLAGS = @THEME_METHOD_CFLAGS@
+THEME_METHOD_LIBS = @THEME_METHOD_LIBS@
+THEMUS = @THEMUS@
+THEMUS_COMPONENT_CFLAGS = @THEMUS_COMPONENT_CFLAGS@
+THEMUS_COMPONENT_LIBS = @THEMUS_COMPONENT_LIBS@
+THEMUS_THUMBNAILER_CFLAGS = @THEMUS_THUMBNAILER_CFLAGS@
+THEMUS_THUMBNAILER_LIBS = @THEMUS_THUMBNAILER_LIBS@
+TYPING_BREAK = @TYPING_BREAK@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
@@ -171,19 +225,13 @@ cursorfont_DATA = \
 Gladedir = $(GNOMECC_GLADE_DIR)
 Glade_DATA = gnome-mouse-properties.glade
 
-iconsdir = $(GNOMECC_ICONS_DIR)
-icons_DATA = mouse-capplet.png
-
-desktop_iconsdir = $(datadir)/pixmaps
-desktop_icons_DATA = mouse-capplet.png
-
 desktopdir = $(GNOMECC_DESKTOP_DIR)
-Desktop_in_files = mouse.desktop.in
+Desktop_in_files = gnome-settings-mouse.desktop.in
 desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 
 INCLUDES = $(GNOMECC_CAPPLETS_CFLAGS)
 CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
-EXTRA_DIST = $(Glade_DATA) $(icons_DATA) $(Desktop_in_files) $(pixmap_DATA) $(cursorfont_DATA)
+EXTRA_DIST = $(Glade_DATA) $(Desktop_in_files) $(pixmap_DATA) $(cursorfont_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -207,8 +255,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(Glade_DATA) $(cursorfont_DATA) $(desktop_DATA) \
-$(desktop_icons_DATA) $(icons_DATA) $(pixmap_DATA)
+DATA =  $(Glade_DATA) $(cursorfont_DATA) $(desktop_DATA) $(pixmap_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -361,44 +408,6 @@ uninstall-desktopDATA:
 	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
 	done
 
-install-desktop_iconsDATA: $(desktop_icons_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(desktop_iconsdir)
-	@list='$(desktop_icons_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktop_iconsdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktop_iconsdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktop_iconsdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktop_iconsdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-desktop_iconsDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(desktop_icons_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(desktop_iconsdir)/$$p; \
-	done
-
-install-iconsDATA: $(icons_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(iconsdir)
-	@list='$(icons_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(iconsdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(iconsdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(iconsdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(iconsdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-iconsDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(icons_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(iconsdir)/$$p; \
-	done
-
 install-pixmapDATA: $(pixmap_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pixmapdir)
@@ -462,6 +471,11 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gnome-mouse-properties.o: gnome-mouse-properties.c ../../config.h \
+	../../capplets/common/capplet-util.h \
+	../../capplets/common/gconf-property-editor.h \
+	../../capplets/common/activate-settings-daemon.h \
+	../../capplets/common/capplet-stock-icons.h
 
 info-am:
 info: info-am
@@ -475,8 +489,7 @@ install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
 install-data-am: install-GladeDATA install-cursorfontDATA \
-		install-desktopDATA install-desktop_iconsDATA \
-		install-iconsDATA install-pixmapDATA
+		install-desktopDATA install-pixmapDATA
 install-data: install-data-am
 
 install-am: all-am
@@ -484,7 +497,6 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-GladeDATA \
 		uninstall-cursorfontDATA uninstall-desktopDATA \
-		uninstall-desktop_iconsDATA uninstall-iconsDATA \
 		uninstall-pixmapDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
@@ -494,7 +506,6 @@ install-strip:
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Gladedir) \
 		$(DESTDIR)$(cursorfontdir) $(DESTDIR)$(desktopdir) \
-		$(DESTDIR)$(desktop_iconsdir) $(DESTDIR)$(iconsdir) \
 		$(DESTDIR)$(pixmapdir)
 
 
@@ -540,15 +551,14 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-GladeDATA \
 install-GladeDATA uninstall-cursorfontDATA install-cursorfontDATA \
-uninstall-desktopDATA install-desktopDATA uninstall-desktop_iconsDATA \
-install-desktop_iconsDATA uninstall-iconsDATA install-iconsDATA \
-uninstall-pixmapDATA install-pixmapDATA tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+uninstall-desktopDATA install-desktopDATA uninstall-pixmapDATA \
+install-pixmapDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 @INTLTOOL_DESKTOP_RULE@

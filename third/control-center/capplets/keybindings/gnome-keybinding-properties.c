@@ -18,8 +18,13 @@
 #include "activate-settings-daemon.h"
 
 #define LABEL_DATA "gnome-keybinding-properties-label"
-#define KEY_THEME_KEY "/desktop/gnome/interface/gtk_key_theme"
-#define MAX_ELEMENTS_BEFORE_SCROLLING 8
+#define MAX_ELEMENTS_BEFORE_SCROLLING 10
+
+#if defined(__powerpc__) && defined (__linux__)
+#define USE_FBLEVEL
+#else
+#undef USE_FBLEVEL
+#endif
 
 typedef enum {
   ALWAYS_VISIBLE,
@@ -35,10 +40,36 @@ typedef struct
 
 const KeyListEntry desktop_key_list[] =
 {
-  { "/apps/panel/global/run_key", ALWAYS_VISIBLE, 0 },
-  { "/apps/panel/global/menu_key", ALWAYS_VISIBLE, 0 },
-  { "/apps/panel/global/screenshot_key", ALWAYS_VISIBLE, 0 },
-  { "/apps/panel/global/window_screenshot_key", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/help", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/power", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/sleep", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/screensaver", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/home", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/search", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/email", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/www", ALWAYS_VISIBLE, 0 },
+  { "/apps/metacity/global_keybindings/panel_run_dialog", ALWAYS_VISIBLE, 0 },
+  { "/apps/metacity/global_keybindings/panel_main_menu", ALWAYS_VISIBLE, 0 },
+  { "/apps/metacity/global_keybindings/run_command_screenshot", ALWAYS_VISIBLE, 0 },
+  { "/apps/metacity/global_keybindings/run_command_window_screenshot", ALWAYS_VISIBLE, 0 },
+#ifdef USE_FBLEVEL
+  { "/apps/gnome_settings_daemon/keybindings/brightness_down", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/brightness_up", ALWAYS_VISIBLE, 0 },
+#endif
+  { NULL }
+};
+const KeyListEntry sounds_key_list[] =
+{
+  { "/apps/gnome_settings_daemon/keybindings/volume_mute", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/volume_down", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/volume_up", ALWAYS_VISIBLE, 0 },
+  /* Other ones that need keysyms bindings */
+  { "/apps/gnome_settings_daemon/keybindings/play", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/pause", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/stop", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/previous", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/next", ALWAYS_VISIBLE, 0 },
+  { "/apps/gnome_settings_daemon/keybindings/eject", ALWAYS_VISIBLE, 0 },
   { NULL }
 };
 
@@ -112,6 +143,7 @@ typedef struct
 {
   char *gconf_key;
   guint keyval;
+  guint keycode;
   EggVirtualModifierType mask;
   gboolean editable;
   GtkTreeModel *model;
@@ -122,6 +154,7 @@ typedef struct
 static void  reload_key_entries (gpointer                wm_name,
                                  GladeXML               *dialog);
 static char* binding_name       (guint                   keyval,
+				 guint			 keycode,
                                  EggVirtualModifierType  mask,
                                  gboolean                translate);
 
@@ -141,48 +174,6 @@ get_real_model (GtkTreeView *tree_view)
   return submodel;
 }
 
-static void
-menu_item_activate (GtkWidget *menu_item,
-		    gpointer   unused)
-{
-  gchar *key_theme;
-  gchar *current_key_theme;
-  GConfClient *client;
-  GError *error = NULL;
-
-  client = gconf_client_get_default ();
-
-  key_theme = g_object_get_data (G_OBJECT (menu_item), LABEL_DATA);
-  g_return_if_fail (key_theme != NULL);
-
-  current_key_theme = gconf_client_get_string (client, KEY_THEME_KEY, &error);
-  if (current_key_theme && strcmp (current_key_theme, key_theme))
-    {
-      gconf_client_set_string (client, KEY_THEME_KEY, key_theme, NULL);
-    }
-}
-
-static GtkWidget *
-make_key_theme_menu_item (const gchar *key_theme)
-{
-  GtkWidget *retval;
-
-  if (!strcmp (key_theme, "Default"))
-    {
-      retval = gtk_menu_item_new_with_label ("GNOME Default");
-      g_object_set_data_full (G_OBJECT (retval), LABEL_DATA, g_strdup ("Default"), g_free);
-    }
-  else
-    {
-      retval = gtk_menu_item_new_with_label (key_theme);
-      g_object_set_data_full (G_OBJECT (retval), LABEL_DATA, g_strdup (key_theme), g_free);
-    }
-  g_signal_connect (G_OBJECT (retval), "activate", G_CALLBACK (menu_item_activate), NULL);
-  gtk_widget_show (retval);
-
-  return retval;
-}
-
 static GladeXML *
 create_dialog (void)
 {
@@ -195,11 +186,12 @@ create_dialog (void)
 
 static char*
 binding_name (guint                   keyval,
+	      guint		      keycode,
               EggVirtualModifierType  mask,
               gboolean                translate)
 {
-  if (keyval != 0)
-    return egg_virtual_accelerator_name (keyval, mask);
+  if (keyval != 0 || keycode != 0)
+    return egg_virtual_accelerator_name (keyval, keycode, mask);
   else
     return translate ? g_strdup (_("Disabled")) : g_strdup ("disabled");
 }
@@ -207,6 +199,7 @@ binding_name (guint                   keyval,
 static gboolean
 binding_from_string (const char             *str,
                      guint                  *accelerator_key,
+		     guint		    *keycode,
                      EggVirtualModifierType *accelerator_mods)
 {
   g_return_val_if_fail (accelerator_key != NULL, FALSE);
@@ -214,11 +207,12 @@ binding_from_string (const char             *str,
   if (str == NULL || (str && strcmp (str, "disabled") == 0))
     {
       *accelerator_key = 0;
+      *keycode = 0;
       *accelerator_mods = 0;
       return TRUE;
     }
 
-  egg_accelerator_parse_virtual (str, accelerator_key, accelerator_mods);
+  egg_accelerator_parse_virtual (str, accelerator_key, keycode, accelerator_mods);
   
   if (*accelerator_key == 0)
     return FALSE;
@@ -249,6 +243,7 @@ accel_set_func (GtkTreeViewColumn *tree_column,
 		  "editable", FALSE,
 		  "accel_key", key_entry->keyval,
 		  "accel_mask", key_entry->mask,
+		  "keycode", key_entry->keycode,
 		  "style", PANGO_STYLE_ITALIC,
 		  NULL);
   else
@@ -257,6 +252,7 @@ accel_set_func (GtkTreeViewColumn *tree_column,
 		  "editable", TRUE,
 		  "accel_key", key_entry->keyval,
 		  "accel_mask", key_entry->mask,
+		  "keycode", key_entry->keycode,
 		  "style", PANGO_STYLE_NORMAL,
 		  NULL);
 }
@@ -295,7 +291,7 @@ keybinding_key_changed (GConfClient *client,
   key_entry = (KeyEntry *)user_data;
   key_value = gconf_value_get_string (entry->value);
 
-  binding_from_string (key_value, &key_entry->keyval, &key_entry->mask);
+  binding_from_string (key_value, &key_entry->keyval, &key_entry->keycode, &key_entry->mask);
   key_entry->editable = gconf_entry_get_is_writable (entry);
 
   /* update the model */
@@ -329,6 +325,7 @@ keyentry_sort_func (GtkTreeModel *model,
   
   if (key_entry_a != NULL)
     name_a = binding_name (key_entry_a->keyval,
+		    	   key_entry_a->keycode,
                            key_entry_a->mask,
                            TRUE);
   else
@@ -336,6 +333,7 @@ keyentry_sort_func (GtkTreeModel *model,
 
   if (key_entry_b != NULL)
     name_b = binding_name (key_entry_b->keyval,
+		    	   key_entry_b->keycode,
                            key_entry_b->mask,
                            TRUE);
   else
@@ -514,7 +512,7 @@ append_keys_to_tree (GladeXML           *dialog,
 						       key_string,
 						       (GConfClientNotifyFunc) &keybinding_key_changed,
 						       key_entry, NULL, NULL);
-      binding_from_string (key_value, &key_entry->keyval, &key_entry->mask);
+      binding_from_string (key_value, &key_entry->keyval, &key_entry->keycode, &key_entry->mask);
       g_free (key_value);
       key_entry->description = g_strdup (gconf_schema_get_short_desc (schema));
 
@@ -557,6 +555,7 @@ reload_key_entries (gpointer wm_name, GladeXML *dialog)
   clear_old_model (dialog, WID ("shortcut_treeview"));
   
   append_keys_to_tree (dialog, _("Desktop"), desktop_key_list);
+  append_keys_to_tree (dialog, _("Sound"), sounds_key_list);
   
   if (strcmp((char *) wm_name, WM_COMMON_METACITY) == 0)
     {
@@ -573,74 +572,33 @@ key_entry_controlling_key_changed (GConfClient *client,
   reload_key_entries (wm_common_get_current_window_manager(), user_data);
 }
 
-static void
-key_theme_changed (GConfClient *client,
-		   guint        cnxn_id,
-		   GConfEntry  *entry,
-		   gpointer     user_data)
-{
-  GtkWidget *omenu = (GtkWidget *) user_data;
-  GtkWidget *menu;
-  GtkWidget *menu_item;
-  GConfValue *value;
-  const gchar *new_key_theme;
-  GList *list;
-  gint i = 0;
-
-  menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (omenu));
-  value = gconf_entry_get_value (entry);
-
-  g_return_if_fail (value != NULL);
-
-  new_key_theme = gconf_value_get_string (value);
-
-  for (list = GTK_MENU_SHELL (menu)->children; list; list = list->next, i++)
-    {
-      gchar *text;
-
-      menu_item = GTK_WIDGET (list->data);
-      text = g_object_get_data (G_OBJECT (menu_item), LABEL_DATA);
-      if (! strcmp (text, new_key_theme))
-	{
-	  if (gtk_option_menu_get_history (GTK_OPTION_MENU (omenu)) != i)
-	    gtk_option_menu_set_history (GTK_OPTION_MENU (omenu), i);
-	  return;
-	}
-    }
-
-  /* We didn't find our theme.  Add it to our list. */
-  menu_item = make_key_theme_menu_item (new_key_theme);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);  
-  gtk_option_menu_set_history (GTK_OPTION_MENU (omenu), i);
-}
-
-
 static gboolean
 cb_check_for_uniqueness (GtkTreeModel *model,
 			 GtkTreePath  *path,
 			 GtkTreeIter  *iter,
-			 gpointer      user_data)
+			 KeyEntry *new_key)
 {
-  KeyEntry *key_entry;
-  KeyEntry *tmp_key_entry;
+  KeyEntry *element;
 
-  key_entry = (KeyEntry *)user_data;
-  gtk_tree_model_get (key_entry->model, iter,
-		      KEYENTRY_COLUMN, &tmp_key_entry,
+  gtk_tree_model_get (new_key->model, iter,
+		      KEYENTRY_COLUMN, &element,
 		      -1);
 
-  if (tmp_key_entry != NULL &&
-      key_entry->keyval == tmp_key_entry->keyval &&
-      key_entry->mask   == tmp_key_entry->mask &&
-      /* be sure we don't claim a key is a dup of itself */
-      strcmp (key_entry->gconf_key, tmp_key_entry->gconf_key) != 0)
-    {
-      key_entry->editable = FALSE;
-      key_entry->gconf_key = tmp_key_entry->gconf_key;
-      key_entry->description = tmp_key_entry->description;
-      return TRUE;
-    }
-  return FALSE;
+  /* no conflict for : blanks, different modifiers, or ourselves */
+  if (element == NULL || new_key->mask != element->mask ||
+      !strcmp (new_key->gconf_key, element->gconf_key))
+    return FALSE;
+
+  if (new_key->keyval != 0) {
+      if (new_key->keyval != element->keyval)
+	  return FALSE;
+  } else if (element->keyval != 0 || new_key->keycode != element->keycode)
+    return FALSE;
+
+  new_key->editable = FALSE;
+  new_key->gconf_key = element->gconf_key;
+  new_key->description = element->description;
+  return TRUE;
 }
 
 static void
@@ -648,9 +606,10 @@ accel_edited_callback (GtkCellRendererText   *cell,
                        const char            *path_string,
                        guint                  keyval,
                        EggVirtualModifierType mask,
-		       guint                  keycode,
+		       guint		      keycode,
                        gpointer               data)
 {
+  GConfClient *client;
   GtkTreeView *view = (GtkTreeView *)data;
   GtkTreeModel *model;
   GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
@@ -659,28 +618,30 @@ accel_edited_callback (GtkCellRendererText   *cell,
   GError *err = NULL;
   char *str;
 
-  model = get_real_model (view);
+  model = gtk_tree_view_get_model (view);
   gtk_tree_model_get_iter (model, &iter, path);
+  gtk_tree_path_free (path);
   gtk_tree_model_get (model, &iter,
 		      KEYENTRY_COLUMN, &key_entry,
 		      -1);
 
   /* sanity check */
   if (key_entry == NULL)
-    {
-      gtk_tree_path_free (path);
-      return;
-    }
+    return;
 
+  model = get_real_model (view);
   tmp_key.model  = model;
   tmp_key.keyval = keyval;
+  tmp_key.keycode = keycode;
   tmp_key.mask   = mask;
   tmp_key.gconf_key = key_entry->gconf_key;
   tmp_key.description = NULL;
   tmp_key.editable = TRUE; /* kludge to stuff in a return flag */
 
-  if (keyval != 0) /* any number of keys can be disabled */
-    gtk_tree_model_foreach (model, cb_check_for_uniqueness, &tmp_key);
+  if (keyval != 0 || keycode != 0) /* any number of keys can be disabled */
+    gtk_tree_model_foreach (model,
+      (GtkTreeModelForeachFunc) cb_check_for_uniqueness,
+      &tmp_key);
 
   /* flag to see if the new accelerator was in use by something */
   if (!tmp_key.editable)
@@ -688,13 +649,13 @@ accel_edited_callback (GtkCellRendererText   *cell,
       GtkWidget *dialog;
       char *name;
 
-      name = egg_virtual_accelerator_name (keyval, mask);
+      name = egg_virtual_accelerator_name (keyval, keycode, mask);
       
       dialog =
         gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
                                 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                 GTK_MESSAGE_WARNING,
-                                GTK_BUTTONS_OK,
+                                GTK_BUTTONS_CANCEL,
                                 _("The shortcut \"%s\" is already used for:\n \"%s\"\n"),
                                 name,
                                 tmp_key.description ?
@@ -705,19 +666,20 @@ accel_edited_callback (GtkCellRendererText   *cell,
 
       /* set it back to its previous value. */
       egg_cell_renderer_keys_set_accelerator (EGG_CELL_RENDERER_KEYS (cell),
-					      key_entry->keyval, key_entry->mask);
-      gtk_tree_path_free (path);
+					      key_entry->keyval, key_entry->keycode, key_entry->mask);
       return;
     }
 
-  str = binding_name (keyval, mask, FALSE);
+  str = binding_name (keyval, keycode, mask, FALSE);
 
-  gconf_client_set_string (gconf_client_get_default(),
+  client = gconf_client_get_default();
+  gconf_client_set_string (client,
                            key_entry->gconf_key,
                            str,
                            &err);
   g_free (str);
-  
+  g_object_unref (G_OBJECT (client));
+
   if (err != NULL)
     {
       GtkWidget *dialog;
@@ -734,52 +696,56 @@ accel_edited_callback (GtkCellRendererText   *cell,
       g_error_free (err);
       key_entry->editable = FALSE;
     }
-  
-  gtk_tree_path_free (path);
 }
 
-
 static void
-theme_changed_func (gpointer  uri,
-		    GladeXML *dialog)
+accel_cleared_callback (GtkCellRendererText *cell,
+			const char          *path_string,
+			gpointer             data)
 {
   GConfClient *client;
-  GtkWidget *omenu;
-  GtkWidget *menu;
-  GtkWidget *menu_item;
-  GConfEntry *entry;
-  GList *key_theme_list;
-  GList *list;
+  GtkTreeView *view = (GtkTreeView *) data;
+  GtkTreePath *path = gtk_tree_path_new_from_string (path_string);
+  KeyEntry *key_entry;
+  GtkTreeIter iter;
+  GError *err = NULL;
+  GtkTreeModel *model;
 
-  client = gconf_client_get_default ();
-  key_theme_list = gnome_theme_info_find_by_type (GNOME_THEME_GTK_2_KEYBINDING);
+  model = gtk_tree_view_get_model (view);
+  gtk_tree_model_get_iter (model, &iter, path);
+  gtk_tree_path_free (path);
+  gtk_tree_model_get (model, &iter,
+		      KEYENTRY_COLUMN, &key_entry,
+		      -1);
 
-  omenu = WID ("key_theme_omenu");
-  menu = gtk_menu_new ();
-  for (list = key_theme_list; list; list = list->next)
+  /* sanity check */
+  if (key_entry == NULL)
+    return;
+
+  /* Unset the key */
+  client = gconf_client_get_default();
+  gconf_client_set_string (client,
+			   key_entry->gconf_key,
+			   "disabled",
+			   &err);
+  g_object_unref (G_OBJECT (client));
+
+  if (err != NULL)
     {
-      GnomeThemeInfo *info = list->data;
+      GtkWidget *dialog;
 
-      if (! info->has_keybinding)
-	continue;
+      dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+				       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+				       GTK_MESSAGE_WARNING,
+				       GTK_BUTTONS_OK,
+				       _("Error unsetting accelerator in configuration database: %s\n"),
+				       err->message);
+      gtk_dialog_run (GTK_DIALOG (dialog));
 
-      menu_item = make_key_theme_menu_item (info->name);
-      if (!strcmp (info->name, "Default"))
-      /* Put default first, always */
-        gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), menu_item);
-      else
-        gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+      gtk_widget_destroy (dialog);
+      g_error_free (err);
+      key_entry->editable = FALSE;
     }
-
-  gtk_widget_show (menu);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
-
-  /* Initialize the option menu */
-  entry = gconf_client_get_entry (client,
-				  KEY_THEME_KEY,
-				  NULL, TRUE, NULL);
-
-  key_theme_changed (client, 0, entry, omenu);
 }
 
 
@@ -841,7 +807,7 @@ cb_dialog_response (GtkWidget *widget, gint response_id, gpointer data)
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (widget),
-			      "wgoscustdesk.xml",
+			      "user-guide.xml",
 			      "goscustdesk-39");
 	else
 		gtk_main_quit ();
@@ -851,49 +817,11 @@ static void
 setup_dialog (GladeXML *dialog)
 {
   GConfClient *client;
-  GList *key_theme_list;
   GtkCellRenderer *renderer;
   GtkTreeViewColumn *column;
   GtkWidget *widget;
-  gboolean found_keys = FALSE;
-  GList *list;
 
   client = gconf_client_get_default ();
-
-  key_theme_list = gnome_theme_info_find_by_type (GNOME_THEME_GTK_2_KEYBINDING);
-
-  for (list = key_theme_list; list; list = list->next)
-    {
-      GnomeThemeInfo *info = list->data;
-      if (info->has_keybinding)
-	{
-	  found_keys = TRUE;
-	  break;
-	}
-
-    }
-  if (! found_keys)
-    {
-      GtkWidget *msg_dialog = gtk_message_dialog_new (NULL, 0,
-						      GTK_MESSAGE_ERROR,
-						      GTK_BUTTONS_OK,
-						      _("Unable to find any keyboard themes.  This means your GTK+ "
-							"installation has been incompletely installed."));
-      gtk_dialog_run (GTK_DIALOG (msg_dialog));
-      gtk_widget_destroy (msg_dialog);
-
-    }
-  else
-    {
-      theme_changed_func (NULL, dialog);
-      gnome_theme_info_register_theme_change ((GFunc) theme_changed_func, dialog);
-      gconf_client_add_dir (client, "/desktop/gnome/interface", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
-      gconf_client_notify_add (client,
-			       KEY_THEME_KEY,
-			       (GConfClientNotifyFunc) &key_theme_changed,
-			       WID ("key_theme_omenu"), NULL, NULL);
-    }
-
 
   g_signal_connect (GTK_TREE_VIEW (WID ("shortcut_treeview")),
 		    "button_press_event",
@@ -914,8 +842,13 @@ setup_dialog (GladeXML *dialog)
 					       NULL);
 
   g_signal_connect (G_OBJECT (renderer),
-		    "keys_edited",
+		    "accel_edited",
                     G_CALLBACK (accel_edited_callback),
+                    WID ("shortcut_treeview"));
+
+  g_signal_connect (G_OBJECT (renderer),
+		    "accel_cleared",
+                    G_CALLBACK (accel_cleared_callback),
                     WID ("shortcut_treeview"));
 
   column = gtk_tree_view_column_new_with_attributes (_("Shortcut"), renderer, NULL);
@@ -937,7 +870,7 @@ setup_dialog (GladeXML *dialog)
   reload_key_entries (wm_common_get_current_window_manager(), dialog);
 
   widget = WID ("gnome-keybinding-dialog");
-  capplet_set_icon (widget, "keyboard-shortcut.png");
+  capplet_set_icon (widget, "gnome-settings-keybindings");
   gtk_widget_show (widget);
 
   g_signal_connect (G_OBJECT (widget), "response", G_CALLBACK(cb_dialog_response), NULL);

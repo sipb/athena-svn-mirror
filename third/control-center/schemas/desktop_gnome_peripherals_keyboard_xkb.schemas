@@ -1,0 +1,1131 @@
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/keyboard/xkb/overrideSettings</key>
+      <applyto>/desktop/gnome/peripherals/keyboard/xkb/overrideSettings</applyto>
+      <owner>gnome</owner>    
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>XKB settings in gconf will be overridden from the system ASAP</short>
+        <long>Very soon, XKB settings in gconf will be overridden (from the system configuration)</long>
+      </locale>
+
+      <locale name="af">
+        <short>XKB-instellings in gconf sal oorheers vanaf die stelsel ASAP</short>
+        <long>XKB-instellings in gconf gaan binnekort vervang word (van die stelselkonfigurasie)</long>
+      </locale>
+
+      <locale name="ar">
+        <short>ستنمّق تعيينات XKB·في gconf من النظام في أسرع زقت ممكن</short>
+        <long>ستنمقّ تعيينات XKB في gconf قريبا (من قبل إعدادات النظام)</long>
+      </locale>
+
+      <locale name="az">
+        <short>Gconf-dakı XKB qurğuları tezliklə sisteminkilərlə əvəz ediləcəkdir</short>
+        <long>Çox yaxında, gconf-dakı XKB qurğuları sisteminizdəkilərlə əvəz ediləcəkdir.</long>
+      </locale>
+
+      <locale name="be">
+        <short>Усталёўкі XKB у gconf будуць перапісаны з сыстэмы ASAP</short>
+        <long>Вельмі хутка ўсталёўкі XKB будуць перазапісаныя з сыстэмнае наладкі</long>
+      </locale>
+
+      <locale name="bg">
+        <short>XKB настройките в gconf ще бъдат презаписани от системата веднага!</short>
+        <long>Много скоро, XKB настройките в gconf ще бъдат презаписани (от системната конфигурация)</long>
+      </locale>
+
+      <locale name="bn">
+        <short>যত দ্রুত সম্ভব সিস্টেম থেকে gconf-এর XKB সংক্রান্ত বৈশিষ্ট্যাবলী অগ্রাহ্য (Override) করা হবে</short>
+        <long>অল্প কিছুক্ষণের মধ্যেই gconf-এর XKB সংক্রান্ত বৈশিষ্ট্যাবলী অগ্রাহ্য (Override) করা হবে (সিস্টেম কনফিগারেশন থেকে)</long>
+      </locale>
+
+      <locale name="bs">
+        <short>XKB postavke u gconf će biti prebrisane iz sistema ASAP</short>
+        <long>Uskoro će XKB postavke u gconf-u biti prebrisane (iz podešavanja sistema)</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Els paràmetres d&apos;XKB del gconf es sobreescriuran amb els del sistema només siga possible</short>
+        <long>Molt prompte, els paràmetres d&apos;XKB emmagatzemats en gconf es sobreescriuran (des de la configuració del sistema)</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Nastavení XKB v gconf budou co nejdříve nahrazena nastaveními v systému</short>
+        <long>Velice brzo budou nastavení XKB v gconf ignorována (ve prospěch systémového nastavení)</long>
+      </locale>
+
+      <locale name="cy">
+        <short>Caiff osodiadau XKB yn gonf ei dirymu o&apos;r system mor fuan a phosib</short>
+        <long>Yn fuan iawn, caiff y gosodiadau XKB yn gconf eu dirymu (gan gyfluniad y system)</long>
+      </locale>
+
+      <locale name="da">
+        <short>XKB-indstillinger i GConf vil blive overskrevet af systemet så snart som muligt</short>
+        <long>Meget snart vil XKB-indstillinger i GConf blive overskrevet (fra systemets konfiguration)</long>
+      </locale>
+
+      <locale name="de">
+        <short>XKB-Einstellungen in GConf werden vom System so schnell wie möglich übergangen</short>
+        <long>Sehr bald werden XKB-Einstellungen in GConf übergangen (von der Systemkonfiguration)</long>
+      </locale>
+
+      <locale name="el">
+        <short>Οι ρυθμίσεις XKB στο gconf θα αντικατασταθούν από το σύστημα όσον το δυνατόν πιό γρήγορα.</short>
+        <long>Πολύ σύντομα, οι ρυθμίσεις XKB στο gconf θα αντικατασταθούν (από την ρύθμιση συστήματος)</long>
+      </locale>
+
+      <locale name="en_CA">
+        <short>XKB settings in gconf will be overridden from the system ASAP</short>
+        <long>Very soon, XKB settings in gconf will be overridden (from the system configuration)</long>
+      </locale>
+
+      <locale name="en_GB">
+        <short>XKB settings in gconf will be overridden from the system ASAP</short>
+        <long>Very soon, XKB settings in gconf will be overridden (from the system configuration)</long>
+      </locale>
+
+      <locale name="es">
+        <short>La configuración XKB en gconf será ignorada del sistema tan pronto como sea posible</short>
+        <long>Pronto, la configuración XKB en gconf será ignorada (de la configuración del sistema)</long>
+      </locale>
+
+      <locale name="fi">
+        <short>XKB-asetukset GConfissa tehdään tarpeettomiksi mahdollisimman nopeasti</short>
+        <long>Hyvin pian XKB-asetukset GConfissa jäävät tarpeettomiksi (ne siirtyvät järjestelmäasetuksiin)</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Les réglages XKB dans gconf seront bientôt écrasés par les réglages du système</short>
+        <long>Bientôt, les réglages XKB dans gconf seront écrasés (depuis la configuration du système)</long>
+      </locale>
+
+      <locale name="gu">
+        <short>સ્સ્ટમ ASAP માંથી જીકોન્ફમાં XKB સુયોજનો પર ફરીથી લખી શકાશે</short>
+        <long>હમણાં જ, જીકોન્ફના XKB સુયોજનો પર ફરીથી લખી શકાશે (સિસ્ટમની રુપરેખામાંથી)</long>
+      </locale>
+
+      <locale name="hi">
+        <short>तंत्र से जितना संभव हो जल्दी ही, जी-कॉन्फ़ में एक्सकेबी विन्यास ओवरराइड हो जाएँगे </short>
+        <long>बहुत जल्दी, जी-कॉन्फ़ में एक्सकेबी विन्यास ओवरराइड हो जाएँगे (तंत्र कॉन्फ़िगरेशन से)</long>
+      </locale>
+
+      <locale name="hr">
+        <short>Postavke XKB-a će biti prepisane sustavskim postavkama</short>
+        <long>Uskoro, XKB postavke u gconfu će biti prebrisane (od strane sustavske konfiguracije)</long>
+      </locale>
+
+      <locale name="hu">
+        <short>Amint lehetséges a gconf XKB beállításai felülíródnak a rendszer beállításaival</short>
+        <long>Hamarosan az XKB beállítások felül lesznek bírálva (a rendszer beállításaiból)</long>
+      </locale>
+
+      <locale name="id">
+        <short>Pengaturan XKB pada gconf akan dialihkan dari sistem ASAP</short>
+        <long>Sebentar lagi pengaturan XKB dari gconf akan dialihkan dari konfigurasi sistem</long>
+      </locale>
+
+      <locale name="it">
+        <short>Quanto prima le impostazioni XKB in GConf saranno sovrascritte dal sistema</short>
+        <long>Prossimamente, le impostazioni di XKB in GConf saranno sovrascritte (dalla configurazione di sistema)</long>
+      </locale>
+
+      <locale name="ja">
+        <short>XKB 設定 (システム設定) をすぐに上書きする必要があるかどうか</short>
+        <long>一瞬で GConf 内の XKB 設定 (システムの設定) が上書きされます</long>
+      </locale>
+
+      <locale name="ko">
+        <short>GConf의 XKB 설정을 가능한한 빨리 다시 지정합니다</short>
+        <long>곧, gconf의 XKB 설정을 (시스템 설정에서) 바꿉니다.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>XKB nustatymai esantys gconf bus perrašyti iš sistemos kiek įmanoma greičiau</short>
+        <long>Labai greitai, XKB nustatymai esantys gconf bus perrašyti (iš sistemos konfigūracijos)</long>
+      </locale>
+
+      <locale name="mk">
+        <short>XKB подесувањата во gconf ќе бидат заменети од страна на системот што е можно побрзо</short>
+        <long>Наскоро, XKB подесувањата во gconf ќе бидат заменети (од системската конфигурација)</long>
+      </locale>
+
+      <locale name="mn">
+        <short>ASAP системээс gconf дахь XKB тохиргоог дарах уу</short>
+        <long>Тун удахгүй XKB тохиргоо gconf руу орж ирнэ (системийн тохиргооноос)</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Tetapan XKB pada gconf akan ditindih drpd sistem secepat mungkin</short>
+        
+      </locale>
+
+      <locale name="nb">
+        <short>XKB-innstillinger i gconf overstyres fra systemet ASAP</short>
+        <long>Snart vil XKB-innstillinger i gconf bli overstyrt (fra systemkonfigurasjonen)</long>
+      </locale>
+
+      <locale name="nl">
+        <short>XKB instellingen in gconf zullen ASAP worden tenietgedaan door het systeem</short>
+        <long>Zeer binnenkort worden XKB instellingen in gconf tenietgedaan (vanuit de systeemconfiguratie)</long>
+      </locale>
+
+      <locale name="nn">
+        <short> XKB-innstillingar i GConf vil verta overstyrte frå systemet ASAP</short>
+        <long>Snart vil XKB-innstillingar i GConf verta overstyrte frå systemoppsettet</long>
+      </locale>
+
+      <locale name="no">
+        <short>XKB-innstillinger i gconf overstyres fra systemet ASAP</short>
+        <long>Snart vil XKB-innstillinger i gconf bli overstyrt (fra systemkonfigurasjonen)</long>
+      </locale>
+
+      <locale name="pa">
+        <short>ਜੀ-ਕਾਨਫ ਵਿੱਚ XKB ਨਿਰਧਾਰਨ ਨੂੰ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ ਸਿਸਟਮ ASAP ਨਾਲ</short>
+        <long>ਬੜੀ ਛੇਤੀ, ਜੀ-ਕਾਨਫ ਵਿੱਚ XKB ਨਿਰਧਾਰਨ ਤਬਦੀਲ ਕਰ ਦਿੱਤਾ ਜਾਵੇਗਾ (ਸਿਸਟਮ ਦੀ ਸੰਰਚਨਾ ਵਿੱਚੋ)</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Ustawienia XKB w gconf będą nadpisane przez system najszybciej jak to tylko możliwe</short>
+        <long>Niedługo, ustawienia XKB w gconf będą nadpisane (z konfiguracji systemu)</long>
+      </locale>
+
+      <locale name="pt">
+        <short>As definições XKB no gconf serão sobrepostas pelas do sistema LOGO QUE POSSÍVEL</short>
+        <long>Brevemente, as definições XKB no gconf serão sobrepostas (pelas da configuração do sistema)</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>Configurações XKB do gconf serão sobrescritas pelo sistema ASAP</short>
+        <long>Em breve suas configurações XKB serão sobrescritas (pelas configurações do
+sistema)</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Setarile XKB din GConf vor fi suprascrie de cele ale sistemul cât de curând posibil</short>
+        <long>Foarte curând setările XKB din GConf vor fi suprascrie de cele ale sistemului</long>
+      </locale>
+
+      <locale name="ru">
+        <short>Параметры XKB будут переписаны из gconf, как только это будет возможно</short>
+        <long>Очень скоро параметры XKB в gconf будут перезаписаны (из системной конфигурации)</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Nastavenie XKB v gconf sa prepíše okamžite podľa systému</short>
+        <long>Veľmi skoro sa nastavenie XKB v gconf prepíše podľa systému</long>
+      </locale>
+
+      <locale name="sq">
+        <short>Të·dhënat·e·XKB-së·në·gconf·do·anashkalohen·prej ASAP·(konfigurimit·të·sistemit)</short>
+        <long>Shumë shpejt, të dhënat e XKB-së në gconf do anashkalohen (prej konfigurimit të sistemit)</long>
+      </locale>
+
+      <locale name="sr">
+        <short>Подешавања XKB-а у ГКонфу ће убрзо бити превазиђена од стране система</short>
+        <long>Веома ускоро, подешавања XKB-а у ГКонфу ће бити превазиђена (из подешавања система)</long>
+      </locale>
+
+      <locale name="sr@Latn">
+        <short>Podešavanja XKB-a u GKonfu će ubrzo biti prevaziđena od strane sistema</short>
+        <long>Veoma uskoro, podešavanja XKB-a u GKonfu će biti prevaziđena (iz podešavanja sistema)</long>
+      </locale>
+
+      <locale name="sv">
+        <short>XKB-inställningar i gconf kommer att åsidosättas utav systemet så snart som möjligt</short>
+        <long>Snart kommer XKB-inställningar i gconf att åsidosättas (utav systemkonfigurationen)</long>
+      </locale>
+
+      <locale name="ta">
+        <short>gconf விலுள்ள XKB அமைப்புகள் ASAP முறைமையிலிருந்து அதிகமாக ஓட்டப்பட்டது</short>
+        <long>கூடிய சீக்கிரம், gconf விலுள்ள XKB அமைப்புகள் அதிகமாக ஓட்டப்படும்(முறைமை உள்ளமைவிலிருந்து)</long>
+      </locale>
+
+      <locale name="th">
+        <short>ค่าตั้ง XKB ใน gconf จะถูกบดบังโดยระบบ โดยเร็วที่สุดเท่าที่เป็นไปได้</short>
+        <long>อีกไม่นาน ค่าตั้ง XKB ใน gconf จะถูกเขียนทับ โดยค่าตั้งของระบบ</long>
+      </locale>
+
+      <locale name="tr">
+        <short>gconf XKB seçenekleri yerine sistem seçenekleri kullanılacak ASAP</short>
+        <long>Çok yakında, gconf içindeki XKB ayarları yerine sistem yapılandırması ayarları kullanılacak</long>
+      </locale>
+
+      <locale name="uk">
+        <short>Параметри XKB у gconf будуть перезаписуватись з системних параметрів якомога швидше</short>
+        <long>Дуже скоро, параметри XKB у gconf будуть перевизначені (з системних параметрів)</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Thiết lập XKB trong GConf sẽ bị ghi đè từ hệ thống ngay khi có thể</short>
+        <long>Thiết lập XKB trong GConf sẽ bị ghi đè trong chốc nữa (từ cấu hình hệ thống)</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>gconf 中的 XKB 设置将会被系统立即覆盖</short>
+        <long>gconf 中的 XKB 设置将会被立即覆盖(来自系统配置)</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>在 gconf 中的 XKB 設定，將會立即被系統取締</short>
+        <long>XKB 設定將會立即被取締（由系統設定所取締）</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/keyboard/xkb/model</key>
+      <applyto>/desktop/gnome/peripherals/keyboard/xkb/model</applyto>
+      <owner>gnome</owner>    
+      <type>string</type>
+      <default>pc105</default>
+      <locale name="C">
+        <short>XKB keyboard model</short>
+        <long>XKB keyboard model</long>
+      </locale>
+
+      <locale name="af">
+        <short>XKB-sleutelbord-model</short>
+        <long>XKB-sleutelbord-model</long>
+      </locale>
+
+      <locale name="ar">
+        <short>نسق لوحة مفاتيح XKB</short>
+        <long>نسق لوحة مفاتيح XKB</long>
+      </locale>
+
+      <locale name="az">
+        <short>XKB klaviatura modeli</short>
+        <long>XKB klaviatura modeli</long>
+      </locale>
+
+      <locale name="be">
+        <short>XKB мадэль клявіятуры</short>
+        <long>XKB мадэль клявіятуры</long>
+      </locale>
+
+      <locale name="bg">
+        <short>XKB клавиатурен модел</short>
+        <long>XKB клавиатурен модел</long>
+      </locale>
+
+      <locale name="bn">
+        <short>XKB কীবোর্ড মডেল</short>
+        <long>XKB কীবোর্ড মডেল</long>
+      </locale>
+
+      <locale name="bs">
+        <short>XKB model tastature</short>
+        <long>XKB model tastature</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Model de teclat XKB</short>
+        <long>Model de teclat XKB</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Model klávesnice XKB</short>
+        <long>Model klávesnice XKB</long>
+      </locale>
+
+      <locale name="cy">
+        <short>Model bysellfwrdd XKB</short>
+        <long>Model bysellfwrdd XKB</long>
+      </locale>
+
+      <locale name="da">
+        <short>XKB-tastaturmodel</short>
+        <long>XKB-tastaturmodel</long>
+      </locale>
+
+      <locale name="de">
+        <short>XKB-Tastaturmodell</short>
+        <long>XKB-Tastaturmodell</long>
+      </locale>
+
+      <locale name="el">
+        <short>Μοντέλο πληκτρολογίου XKB</short>
+        <long>Μοντέλο πληκτρολογίου XKB</long>
+      </locale>
+
+      <locale name="en_CA">
+        <short>XKB keyboard model</short>
+        <long>XKB keyboard model</long>
+      </locale>
+
+      <locale name="en_GB">
+        <short>XKB keyboard model</short>
+        <long>XKB keyboard model</long>
+      </locale>
+
+      <locale name="es">
+        <short>Modelo de teclado XKB</short>
+        <long>Modelo de teclado XKB</long>
+      </locale>
+
+      <locale name="eu">
+        <short>XKB teklatu modeloa</short>
+        <long>XKB teklatu modeloa</long>
+      </locale>
+
+      <locale name="fi">
+        <short>XKB-näppäimistömalli</short>
+        <long>XKB-näppäimistömalli</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Modèle de clavier XKB</short>
+        <long>Modèle de clavier XKB</long>
+      </locale>
+
+      <locale name="gu">
+        <short>XKB કીબોર્ડ મોડેલ</short>
+        <long>XKB કીબોર્ડ મોડેલ</long>
+      </locale>
+
+      <locale name="hi">
+        <short>एक्सकेबी कुंजीपटल मॉडल</short>
+        <long>एक्सकेबी कुंजीपटल मॉडल</long>
+      </locale>
+
+      <locale name="hr">
+        <short>Model tipkovnice XKB-a</short>
+        <long>Model tipkovnice XKB-a</long>
+      </locale>
+
+      <locale name="hu">
+        <short>XKB billentyűzetmodell</short>
+        <long>XKB billentyűzetmodell</long>
+      </locale>
+
+      <locale name="id">
+        <short>Model Keyboard XKB</short>
+        <long>Model Keyboard XKB</long>
+      </locale>
+
+      <locale name="it">
+        <short>Modello XKB per la tastiera</short>
+        <long>Modello XKB per la tastiera</long>
+      </locale>
+
+      <locale name="ja">
+        <short>XKB キーボードの型式</short>
+        <long>XKB キーボードの型式</long>
+      </locale>
+
+      <locale name="ko">
+        <short>XKB 키보드 모델</short>
+        <long>XKB 키보드 모델</long>
+      </locale>
+
+      <locale name="lt">
+        <short>XKB klaviatūros modelis</short>
+        <long>XKB klaviatūros modelis</long>
+      </locale>
+
+      <locale name="mk">
+        <short>XKB модел на тастатурата</short>
+        <long>XKB модел на тастатурата</long>
+      </locale>
+
+      <locale name="mn">
+        <short>XKB гарын загвар</short>
+        <long>XKB гарын загвар</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Model papan kekunci XKB</short>
+        <long>Model papan kekunci XKB</long>
+      </locale>
+
+      <locale name="nb">
+        <short>XKB tastaturmodell</short>
+        <long>XKB tastaturmodell</long>
+      </locale>
+
+      <locale name="nl">
+        <short>XKB toetsenbordmodel</short>
+        <long>XKB toetsenbordmodel</long>
+      </locale>
+
+      <locale name="nn">
+        <short>XKB-tastaturmodell</short>
+        <long>XKB-tastaturmodell</long>
+      </locale>
+
+      <locale name="no">
+        <short>XKB tastaturmodell</short>
+        <long>XKB tastaturmodell</long>
+      </locale>
+
+      <locale name="pa">
+        <short>XKB ਕੀ-ਬੋਰਡ ਮਾਡਲ</short>
+        <long>XKB ਕੀ-ਬੋਰਡ ਮਾਡਲ</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Model klawiatury XKB</short>
+        <long>Model klawiatury XKB</long>
+      </locale>
+
+      <locale name="pt">
+        <short>Modelo de teclado XKB</short>
+        <long>Modelo de teclado XKB</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>XKB modelo do teclado</short>
+        <long>XKB modelo do teclado</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Model de tastatură XKB</short>
+        <long>Model de tastatură XKB</long>
+      </locale>
+
+      <locale name="ru">
+        <short>Модель клавиатуры XKB</short>
+        <long>Модель клавиатуры XKB</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Model klávesnice XKB</short>
+        <long>Model klávesnice XKB</long>
+      </locale>
+
+      <locale name="sq">
+        <short>Modeli i tastierës XKB</short>
+        <long>Modeli i tastierës XKB</long>
+      </locale>
+
+      <locale name="sr">
+        <short>Модел XKB тастатуре</short>
+        <long>Модел XKB тастатуре</long>
+      </locale>
+
+      <locale name="sr@Latn">
+        <short>Model XKB tastature</short>
+        <long>Model XKB tastature</long>
+      </locale>
+
+      <locale name="sv">
+        <short>XKB-tangentbordsmodell</short>
+        <long>XKB-tangentbordsmodell</long>
+      </locale>
+
+      <locale name="ta">
+        <short>XKB விசைப்பலகை உருவரை</short>
+        <long>XKB விசைப்பலகை உருவரை</long>
+      </locale>
+
+      <locale name="th">
+        <short>รุ่นแป้นพิมพ์ XKB</short>
+        <long>รุ่นแป้นพิมพ์ XKB</long>
+      </locale>
+
+      <locale name="tr">
+        <short>XKB klavye modeli</short>
+        <long>XKB klavye modeli</long>
+      </locale>
+
+      <locale name="uk">
+        <short>XKB модуль клавіатури</short>
+        <long>XKB модуль клавіатури</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Kiểu bàn phím XKB</short>
+        <long>Kiểu bàn phím XKB</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>XKB 键盘型号</short>
+        <long>XKB 键盘型号</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>XKB 鍵盤模式</short>
+        <long>XKB 鍵盤模式</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/keyboard/xkb/layouts</key>
+      <applyto>/desktop/gnome/peripherals/keyboard/xkb/layouts</applyto>
+      <owner>gnome</owner>    
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[us]</default>
+      <locale name="C">
+        <short>XKB keyboard layout</short>
+        <long>XKB keyboard layout</long>
+      </locale>
+
+      <locale name="af">
+        <short>XKB-sleutelbord-uitleg</short>
+        <long>XKB-sleutelbord-uitleg</long>
+      </locale>
+
+      <locale name="ar">
+        <short>تصميم لوحة مفاتيح XKB</short>
+        <long>تصميم لوحة مفاتيح XKB</long>
+      </locale>
+
+      <locale name="az">
+        <short>XKB klaviatura düzülüşü</short>
+        <long>XKB klaviatura düzülüşü</long>
+      </locale>
+
+      <locale name="be">
+        <short>XKB раскладка клявіятуры</short>
+        <long>XKB раскладка клявіятуры</long>
+      </locale>
+
+      <locale name="bg">
+        <short>XKB клавиатурна подредба</short>
+        <long>XKB клавиатурна подредба</long>
+      </locale>
+
+      <locale name="bn">
+        <short>XKB কীবোর্ড বিন্যাস (Layout)</short>
+        <long>XKB কীবোর্ড বিন্যাস (Layout)</long>
+      </locale>
+
+      <locale name="bs">
+        <short>XKB raspored tastature</short>
+        <long>XKB raspored tastature</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Disposició de teclat XKB</short>
+        <long>Disposició de teclat XKB</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Rozložení klávesnice XKB</short>
+        <long>Rozložení klávesnice XKB</long>
+      </locale>
+
+      <locale name="cy">
+        <short>Cynllun Bysellfwrdd XKB</short>
+        <long>Cynllun Bysellfwrdd XKB</long>
+      </locale>
+
+      <locale name="da">
+        <short>XKB-tastaturlayout</short>
+        <long>XKB-tastaturlayout</long>
+      </locale>
+
+      <locale name="de">
+        <short>XKB-Tastaturbelegung</short>
+        <long>XKB-Tastaturbelegung</long>
+      </locale>
+
+      <locale name="el">
+        <short>Διάταξη πληκτρολογίου XKB</short>
+        <long>Διάταξη πληκτρολογίου XKB</long>
+      </locale>
+
+      <locale name="en_CA">
+        <short>XKB keyboard layout</short>
+        <long>XKB keyboard layout</long>
+      </locale>
+
+      <locale name="en_GB">
+        <short>XKB keyboard layout</short>
+        <long>XKB keyboard layout</long>
+      </locale>
+
+      <locale name="es">
+        <short>Distribución de teclado XKB</short>
+        <long>Distribución de teclado XKB</long>
+      </locale>
+
+      <locale name="eu">
+        <short>XKB teklatu-diseinua</short>
+        <long>XKB teklatu-diseinua</long>
+      </locale>
+
+      <locale name="fi">
+        <short>XKB-näppäimistöasettelu</short>
+        <long>XKB-näppäimistöasettelu</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Agencement clavier XKB</short>
+        <long>Agencement clavier XKB</long>
+      </locale>
+
+      <locale name="gu">
+        <short>XKB કીબોર્ડ દેખાવ</short>
+        <long>XKB કીબોર્ડ દેખાવ</long>
+      </locale>
+
+      <locale name="hi">
+        <short>एक्सकेबी कुंजीपटल अभिन्यास</short>
+        <long>एक्सकेबी कुंजीपटल अभिन्यास</long>
+      </locale>
+
+      <locale name="hr">
+        <short>Izgled tipkovnice XKB-a</short>
+        <long>Izgled tipkovnice XKB-a</long>
+      </locale>
+
+      <locale name="hu">
+        <short>XKB billentyűzet kiosztás</short>
+        <long>XKB billentyűzet kiosztás</long>
+      </locale>
+
+      <locale name="id">
+        <short>Layout Keyboad XKB</short>
+        <long>Layout Keyboad XKB</long>
+      </locale>
+
+      <locale name="it">
+        <short>Disposizione di XKB per la tastiera</short>
+        <long>Disposizione di XKB per la tastiera</long>
+      </locale>
+
+      <locale name="ja">
+        <short>XKB キーボード・レイアウト</short>
+        <long>XKB キーボード・レイアウト</long>
+      </locale>
+
+      <locale name="ko">
+        <short>XKB 키보드 배치</short>
+        <long>XKB 키보드 배치</long>
+      </locale>
+
+      <locale name="lt">
+        <short>XKB klaviatūros išdėstymas</short>
+        <long>XKB klaviatūros išdėstymas</long>
+      </locale>
+
+      <locale name="mk">
+        <short>XKB изглед на тастаурата</short>
+        <long>XKB изглед на тастаурата</long>
+      </locale>
+
+      <locale name="mn">
+        <short>XKB гарын байрлал</short>
+        <long>XKB гарын байрлал</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Susunatur papan kekunci XKB</short>
+        <long>Susunatur papan kekunci XKB</long>
+      </locale>
+
+      <locale name="nb">
+        <short>XKB-tastaturutforming</short>
+        <long>XKB-tastaturutforming</long>
+      </locale>
+
+      <locale name="nl">
+        <short>XKB toetsenbordindeling</short>
+        <long>XKB toetsenbordindeling</long>
+      </locale>
+
+      <locale name="nn">
+        <short>XKB-tastaturoppsett</short>
+        <long>XKB-tastaturoppsett</long>
+      </locale>
+
+      <locale name="no">
+        <short>XKB-tastaturutforming</short>
+        <long>XKB-tastaturutforming</long>
+      </locale>
+
+      <locale name="pa">
+        <short>XKB ਕੀ-ਬੋਰਡ ਖਾਕਾ</short>
+        <long>XKB ਕੀ-ਬੋਰਡ ਖਾਕਾ</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Układ klawiatury XKB</short>
+        <long>Układ klawiatury XKB</long>
+      </locale>
+
+      <locale name="pt">
+        <short>Disposição de teclado XKB</short>
+        <long>Disposição de teclado XKB</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>XKB layout de teclado</short>
+        <long>XKB layout de teclado</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Aranjament de taste XKB</short>
+        <long>Aranjament de taste XKB</long>
+      </locale>
+
+      <locale name="ru">
+        <short>Раскладка клавиатуры XKB</short>
+        <long>Раскладка клавиатуры XKB</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Rozloženie kláves XKB</short>
+        <long>Rozloženie kláves XKB</long>
+      </locale>
+
+      <locale name="sq">
+        <short>Modeli i tastierës XKB</short>
+        <long>Modeli i tastierës XKB</long>
+      </locale>
+
+      <locale name="sr">
+        <short>Распоред XKB тастатуре</short>
+        <long>Распоред XKB тастатуре</long>
+      </locale>
+
+      <locale name="sr@Latn">
+        <short>Raspored XKB tastature</short>
+        <long>Raspored XKB tastature</long>
+      </locale>
+
+      <locale name="sv">
+        <short>XKB-tangentbordslayout</short>
+        <long>XKB-tangentbordslayout</long>
+      </locale>
+
+      <locale name="ta">
+        <short>XKB விசைப்பலகை உருவரை</short>
+        <long>XKB விசைப்பலகை உருவரை</long>
+      </locale>
+
+      <locale name="th">
+        <short>ผังแป้นพิมพ์ XKB</short>
+        <long>ผังแป้นพิมพ์ XKB</long>
+      </locale>
+
+      <locale name="tr">
+        <short>XKB klavye düzeni</short>
+        <long>XKB klavye düzeni</long>
+      </locale>
+
+      <locale name="uk">
+        <short>XKB розкладка клавіатури</short>
+        <long>XKB розкладка клавіатури</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Bố cục bàn phím XKB</short>
+        <long>Bố cục bàn phím XKB</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>XKB 键盘布局</short>
+        <long>XKB 键盘布局</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>XKB 鍵盤配置</short>
+        <long>XKB 鍵盤配置</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/keyboard/xkb/options</key>
+      <applyto>/desktop/gnome/peripherals/keyboard/xkb/options</applyto>
+      <owner>gnome</owner>    
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+        <short>XKB options</short>
+        <long>XKB options</long>
+      </locale>
+
+      <locale name="af">
+        <short>XKB-opsies</short>
+        <long>XKB-opsies</long>
+      </locale>
+
+      <locale name="ar">
+        <short>خيارات XKB</short>
+        <long>خيارات XKB</long>
+      </locale>
+
+      <locale name="az">
+        <short>XKB seçimləri</short>
+        <long>XKB seçimləri</long>
+      </locale>
+
+      <locale name="be">
+        <short>XKB выбары</short>
+        <long>XKB выбары</long>
+      </locale>
+
+      <locale name="bg">
+        <short>XKB опции</short>
+        <long>XKB опции</long>
+      </locale>
+
+      <locale name="bn">
+        <short>XKB অপশন</short>
+        <long>XKB অপশন</long>
+      </locale>
+
+      <locale name="bs">
+        <short>XKB opcije</short>
+        <long>XKB opcije</long>
+      </locale>
+
+      <locale name="ca">
+        <short>Opcions d&apos;XKB</short>
+        <long>Opcions d&apos;XKB</long>
+      </locale>
+
+      <locale name="cs">
+        <short>Možnosti XKB</short>
+        <long>Možnosti XKB</long>
+      </locale>
+
+      <locale name="cy">
+        <short>Opsiynnau XKB</short>
+        <long>Opsiynnau XKB</long>
+      </locale>
+
+      <locale name="da">
+        <short>XKB-indstillinger</short>
+        <long>XKB-indstillinger</long>
+      </locale>
+
+      <locale name="de">
+        <short>XKB-Optionen</short>
+        <long>XKB-Optionen</long>
+      </locale>
+
+      <locale name="el">
+        <short>Επιλογές XKB</short>
+        <long>Επιλογές XKB</long>
+      </locale>
+
+      <locale name="en_CA">
+        <short>XKB options</short>
+        <long>XKB options</long>
+      </locale>
+
+      <locale name="en_GB">
+        <short>XKB options</short>
+        <long>XKB options</long>
+      </locale>
+
+      <locale name="es">
+        <short>Opciones de XKB</short>
+        <long>Opciones de XKB</long>
+      </locale>
+
+      <locale name="eu">
+        <short>XKB aukerak</short>
+        <long>XKB aukerak</long>
+      </locale>
+
+      <locale name="fi">
+        <short>XKB-valinnat</short>
+        <long>XKB-valinnat</long>
+      </locale>
+
+      <locale name="fr">
+        <short>Options XKB</short>
+        <long>Options XKB</long>
+      </locale>
+
+      <locale name="ga">
+        <short>Roghnachais XKB</short>
+        <long>Roghnachais XKB</long>
+      </locale>
+
+      <locale name="gu">
+        <short>XKB વિકલ્પો</short>
+        <long>XKB વિકલ્પો</long>
+      </locale>
+
+      <locale name="hi">
+        <short>एक्सकेबी विकल्प</short>
+        <long>एक्सकेबी विकल्प</long>
+      </locale>
+
+      <locale name="hr">
+        <short>Mogućnosti XKB-a</short>
+        <long>Mogućnosti XKB-a</long>
+      </locale>
+
+      <locale name="hu">
+        <short>XKB beállítások</short>
+        <long>XKB beállítások</long>
+      </locale>
+
+      <locale name="id">
+        <short>Pengaturan XKB</short>
+        <long>Pengaturan XKB</long>
+      </locale>
+
+      <locale name="it">
+        <short>Opzioni XKB</short>
+        <long>Opzioni XKB</long>
+      </locale>
+
+      <locale name="ja">
+        <short>XKB オプション</short>
+        <long>XKB オプション</long>
+      </locale>
+
+      <locale name="ko">
+        <short>XKB 옵션</short>
+        <long>XKB 옵션</long>
+      </locale>
+
+      <locale name="lt">
+        <short>XKB nustatymai</short>
+        <long>XKB nustatymai</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Опции за XKB</short>
+        <long>Опции за XKB</long>
+      </locale>
+
+      <locale name="mn">
+        <short>XKB сонголтууд</short>
+        <long>XKB сонголтууд</long>
+      </locale>
+
+      <locale name="ms">
+        <short>Opsyen XKB</short>
+        <long>Opsyen XKB</long>
+      </locale>
+
+      <locale name="nb">
+        <short>XKB-alternativer</short>
+        <long>XKB-alternativer</long>
+      </locale>
+
+      <locale name="nl">
+        <short>XKB opties</short>
+        <long>XKB opties</long>
+      </locale>
+
+      <locale name="nn">
+        <short>XKB-alternativ</short>
+        <long>XKB-alternativ</long>
+      </locale>
+
+      <locale name="no">
+        <short>XKB-alternativer</short>
+        <long>XKB-alternativer</long>
+      </locale>
+
+      <locale name="pa">
+        <short>XKB ਚੋਣ</short>
+        <long>XKB ਚੋਣ</long>
+      </locale>
+
+      <locale name="pl">
+        <short>Opcje XKB</short>
+        <long>Opcje XKB</long>
+      </locale>
+
+      <locale name="pt">
+        <short>Opções XKB</short>
+        <long>Opções XKB</long>
+      </locale>
+
+      <locale name="pt_BR">
+        <short>XKB opções</short>
+        <long>XKB opções</long>
+      </locale>
+
+      <locale name="ro">
+        <short>Opţiuni XKB</short>
+        <long>Opţiuni XKB</long>
+      </locale>
+
+      <locale name="ru">
+        <short>Параметры XKB</short>
+        <long>Параметры XKB</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Možnosti XKB</short>
+        <long>Možnosti XKB</long>
+      </locale>
+
+      <locale name="sq">
+        <short>Mundësitë e XKB-së</short>
+        <long>Mundësitë e XKB-së</long>
+      </locale>
+
+      <locale name="sr">
+        <short>XKB опције</short>
+        <long>XKB опције</long>
+      </locale>
+
+      <locale name="sr@Latn">
+        <short>XKB opcije</short>
+        <long>XKB opcije</long>
+      </locale>
+
+      <locale name="sv">
+        <short>XKB-alternativ</short>
+        <long>XKB-alternativ</long>
+      </locale>
+
+      <locale name="ta">
+        <short>XKB  தேர்வுகள்</short>
+        <long>XKB  தேர்வுகள்</long>
+      </locale>
+
+      <locale name="th">
+        <short>ตัวเลือก XKB</short>
+        <long>ตัวเลือก XKB</long>
+      </locale>
+
+      <locale name="tr">
+        <short>XKB seçenekleri</short>
+        <long>XKB seçenekleri</long>
+      </locale>
+
+      <locale name="uk">
+        <short>XKB параметри</short>
+        <long>XKB параметри</long>
+      </locale>
+
+      <locale name="vi">
+        <short>Tùy chọn XKB</short>
+        <long>Tùy chọn XKB</long>
+      </locale>
+
+      <locale name="zh_CN">
+        <short>XKB 选项</short>
+        <long>XKB 选项</long>
+      </locale>
+
+      <locale name="zh_TW">
+        <short>XKB 選項</short>
+        <long>XKB 選項</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/desktop/gnome/peripherals/keyboard/xkb/update_handlers</key>
+      <applyto>/desktop/gnome/peripherals/keyboard/xkb/update_handlers</applyto>
+      <owner>gnome</owner>    
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[]</default>
+      <locale name="C">
+	<!--
+        <short>XKB Update Handlers</short>
+	<long>A collection of scripts to run whenever the XKB state is
+		reloaded.  Useful for re-applying xmodmap based adjustments</long>
+		-->
+      </locale>
+    </schema>
+
+  </schemalist>
+</gconfschemafile>

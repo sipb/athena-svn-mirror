@@ -6,20 +6,6 @@
 #define ORBIT2_STUBS_API
 #include "GNOME_SettingsDaemon.h"
 
-void
-_ORBIT_skel_small_GNOME_SettingsDaemon_awake(POA_GNOME_SettingsDaemon *
-					     _o_servant, gpointer _o_retval,
-					     gpointer * _o_args,
-					     CORBA_Context _o_ctx,
-					     CORBA_Environment * _o_ev,
-					     CORBA_boolean(*_impl_awake)
-					     (PortableServer_Servant _servant,
-					      const CORBA_char * service,
-					      CORBA_Environment * ev))
-{
-   *(CORBA_boolean *) _o_retval =
-      _impl_awake(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
-}
 static ORBitSmallSkeleton
 get_skel_small_GNOME_SettingsDaemon(POA_GNOME_SettingsDaemon * servant,
 				    const char *opname, gpointer * m_data,
@@ -70,28 +56,17 @@ POA_GNOME_SettingsDaemon__init(PortableServer_Servant servant,
    static PortableServer_ClassInfo class_info =
       { NULL, (ORBit_small_impl_finder) & get_skel_small_GNOME_SettingsDaemon,
 "IDL:GNOME/SettingsDaemon:1.0", &GNOME_SettingsDaemon__classid, NULL, &GNOME_SettingsDaemon__iinterface };
-   POA_GNOME_SettingsDaemon__vepv *fakevepv = NULL;
-
-   if (((PortableServer_ServantBase *) servant)->vepv[0]->finalize == 0) {
-      ((PortableServer_ServantBase *) servant)->vepv[0]->finalize =
-	 POA_GNOME_SettingsDaemon__fini;
-   }
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    POA_Bonobo_Unknown__init(servant, env);
-   ORBit_classinfo_register(&class_info);
-   ORBIT_SERVANT_SET_CLASSINFO(servant, &class_info);
-
-   if (!class_info.vepvmap) {
-      class_info.vepvmap =
-	 g_new0(ORBit_VepvIdx, GNOME_SettingsDaemon__classid + 1);
-      class_info.vepvmap[Bonobo_Unknown__classid] =
-	 (((char *) &(fakevepv->Bonobo_Unknown_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-      class_info.vepvmap[GNOME_SettingsDaemon__classid] =
-	 (((char *) &(fakevepv->GNOME_SettingsDaemon_epv)) -
-	  ((char *) (fakevepv))) / sizeof(GFunc);
-   }
+   ORBit_skel_class_register(&class_info,
+			     servant, POA_GNOME_SettingsDaemon__fini,
+			     ORBIT_VEPV_OFFSET(POA_GNOME_SettingsDaemon__vepv,
+					       GNOME_SettingsDaemon_epv),
+			     (CORBA_unsigned_long) Bonobo_Unknown__classid,
+			     ORBIT_VEPV_OFFSET(POA_GNOME_SettingsDaemon__vepv,
+					       Bonobo_Unknown_epv),
+			     (CORBA_unsigned_long) 0);
 }
 
 void

@@ -12,6 +12,41 @@
                 <long>Run XScreenSaver at login</long>
             </locale>
 
+            <locale name="af">
+	        <short>Laai XScreenSaver</short>
+                <long>Laat XScreenSaver loop by aanmelding</long>
+            </locale>
+
+            <locale name="ar">
+	        <short>تشغيل XScreenSaver</short>
+                <long>تشغيل XScreenSaver عند تسجيل الدخول</long>
+            </locale>
+
+            <locale name="az">
+	        <short>XScreenSaver-i Başlat</short>
+                <long>Girişdə XScreenSaver-i işə sal</long>
+            </locale>
+
+            <locale name="be">
+	        <short>Запуск XScreenSaver</short>
+                <long>Запуск XScreenSaver пад час уваходу</long>
+            </locale>
+
+            <locale name="bg">
+	        <short>Стартиране на Екранния предпазител</short>
+                <long>Пускане на XScreenSaver при влизане в системата</long>
+            </locale>
+
+            <locale name="bn">
+	        <short>এক্সস্ক্রিনসেভার চালু করো</short>
+                <long>লগ-ইন-এর সময় এক্সস্ক্রিনসেভার চালাও</long>
+            </locale>
+
+            <locale name="bs">
+	        <short>Pokreni XScreenSaver</short>
+                <long>Pokreni XScreenSaver pri prijavi</long>
+            </locale>
+
             <locale name="ca">
 	        <short>Inicia l&apos;XScreenSaver</short>
                 <long>Executa XScreenSaver a l&apos;entrada</long>
@@ -19,12 +54,17 @@
 
             <locale name="cs">
 	        <short>Spustit XScreenSaver</short>
-                <long>Spusti XScreenSaver pÅi pÅihlÃ¡Å¡enÃ­</long>
+                <long>Spustit XScreenSaver při přihlášení</long>
+            </locale>
+
+            <locale name="cy">
+	        <short>Dechreuwch XScreenSaver</short>
+                <long>Rhedeg XScreenSaver wrth fewngofnodi</long>
             </locale>
 
             <locale name="da">
-	        <short>Start pauseskÃ¦rm</short>
-                <long>KÃ¸r pauseskÃ¦rm ved logind</long>
+	        <short>Start pauseskærm</short>
+                <long>Kør pauseskærm ved logind</long>
             </locale>
 
             <locale name="de">
@@ -33,53 +73,113 @@
             </locale>
 
             <locale name="el">
-	        <short>ÎÎ½Î±ÏÎ¾Î· Î¥ÏÎ·ÏÎµÏÎ¯Î±Ï Î ÏÎ¿ÏÏÎ»Î±Î¾Î·Ï ÎÎ¸ÏÎ½Î·Ï</short>
-                <long>ÎÎºÏÎ­Î»ÎµÏÎ· XScreenSaver ÎºÎ±ÏÎ¬ ÏÎ·Î½ ÎµÎ¯ÏÎ¿Î´Î¿</long>
+	        <short>Έναρξη Προφύλαξης Οθόνης Χ</short>
+                <long>Εκτέλεση XScreenSaver κατά την είσοδο</long>
+            </locale>
+
+            <locale name="en_CA">
+	        <short>Start XScreenSaver</short>
+                <long>Run XScreenSaver at login</long>
+            </locale>
+
+            <locale name="en_GB">
+	        <short>Start XScreenSaver</short>
+                <long>Run XScreenSaver at login</long>
             </locale>
 
             <locale name="es">
 	        <short>Iniciar XScreenSaver</short>
-                <long>Ejecutar XScreenSaver al iniciar la sesiÃ³n</long>
+                <long>Ejecutar XScreenSaver al iniciar la sesión</long>
+            </locale>
+
+            <locale name="eu">
+	        <short>Abiarazi XScreenSaver</short>
+                <long>Exekutatu X pantaila-babeslea saioa hastean</long>
+            </locale>
+
+            <locale name="fa">
+	        <short>آغاز XScreenSaver</short>
+                <long>اجرای XScreenSaver هنگام ورود به سیستم</long>
             </locale>
 
             <locale name="fi">
-	        <short>KÃ¤ynnistÃ¤ XScreenSaver</short>
-                <long>KÃ¤ynnistÃ¤ XSCreenSaver sisÃ¤Ã¤n kirjauduttaessa</long>
+	        <short>Käynnistä XScreenSaver</short>
+                <long>Käynnistä XSCreenSaver sisään kirjauduttaessa</long>
             </locale>
 
             <locale name="fr">
-	        <short>DÃ©marrer XScreenSaver</short>
-                <long>Lancer XScreenSaver Ã  la connexion</long>
+	        <short>Démarrer XScreenSaver</short>
+                <long>Lancer XScreenSaver à la connexion</long>
+            </locale>
+
+            <locale name="gu">
+	        <short>એક્સસ્ક્રીનસેવર ચાલુ કરો</short>
+                <long>પ્રવેશપ્રક્રિયા વખતે એક્સસ્ક્રીનસેવર ચાલુ કરો</long>
             </locale>
 
             <locale name="he">
-	        <short>××ª×× ××ª XScreenSaver</short>
-                <long>××¤×¢× ××ª XScreenSaver ×××ª×××¨××ª</long>
+	        <short>התחל את XScreenSaver</short>
+                <long>הפעל את XScreenSaver בהתחברות</long>
+            </locale>
+
+            <locale name="hi">
+	        <short>एक्स स्क्रीन सेवर प्रारंभ करें</short>
+                <long>एक्स स्क्रीन सेवर लॉगइन पर चलाएँ</long>
+            </locale>
+
+            <locale name="hr">
+	        <short>Pokreni XScreenSaver</short>
+                <long>Pokreni XScreenSaver pri prijavi</long>
             </locale>
 
             <locale name="hu">
-	        <short>KÃ©pernyÅvÃ©dÅ indÃ­tÃ¡sa</short>
-                <long>KÃ©pernyÅvÃ©dÅ futtatÃ¡sa a bejelentkezÃ©skor</long>
+	        <short>Képernyővédő indítása</short>
+                <long>Képernyővédő futtatása a bejelentkezéskor</long>
+            </locale>
+
+            <locale name="id">
+	        <short>Jalankan XScreenSaver</short>
+                <long>Jalankan XScreenSaver pada saat login</long>
+            </locale>
+
+            <locale name="is">
+	        <short>Ræsa XScreenSaver</short>
+                <long>Keyra XScreenSaver við innskráningu.</long>
+            </locale>
+
+            <locale name="it">
+	        <short>Avvia XScreenSaver</short>
+                <long>Avvia XScreenSaver al login</long>
             </locale>
 
             <locale name="ja">
-	        <short>XScreenSaver ãèµ·åãã</short>
-                <long>ã­ã°ã¤ã³æã« XScreenSaver ãèµ·åãã</long>
+	        <short>XScreenSaver を起動する</short>
+                <long>ログイン時に XScreenSaver を起動する</long>
             </locale>
 
             <locale name="ko">
-	        <short>XScreenSaver ìì</short>
-                <long>ë¡ê·¸ì¸í  ë XScreenSaver ì¤í</long>
+	        <short>XScreenSaver 시작</short>
+                <long>로그인할 때 XScreenSaver 실행</long>
+            </locale>
+
+            <locale name="lt">
+	        <short>Leisti XScreenSaver</short>
+                <long>Paleisti XScreenSaver prisijungimo metu</long>
             </locale>
 
             <locale name="lv">
-	        <short>SÄknÄt XScreenSaver</short>
-                <long>Palaist XScreenSaver pie pieteikÅ¡anÄs</long>
+	        <short>Sāknēt XScreenSaver</short>
+                <long>Palaist XScreenSaver pie pieteikšanās</long>
+            </locale>
+
+            <locale name="mk">
+	        <short>Подигни XScreenSaver</short>
+                <long>Изврши го XScreenSaver при најавување</long>
             </locale>
 
             <locale name="mn">
-	        <short>XScreenSaver ÑÑÐ»Ò¯Ò¯Ð»ÑÑ</short>
-                <long>ÐÒ¯ÑÐ³Ò¯Ò¯Ð»ÑÑÑÐ´ XScreenSaver ÑÑÐ»Ò¯Ò¯Ð»ÑÑ</long>
+	        <short>XScreenSaver эхлүүлэх</short>
+                <long>Бүргүүлэхэд XScreenSaver эхлүүлэх</long>
             </locale>
 
             <locale name="ms">
@@ -87,19 +187,39 @@
                 <long>Laksana Xcreensaver pada logmasuk</long>
             </locale>
 
+            <locale name="nb">
+	        <short>Start XScreenSaver</short>
+                <long>Kjør XScreenSaver ved pålogging</long>
+            </locale>
+
             <locale name="nl">
 	        <short>XScreenSaver starten</short>
                 <long>XScreenSaver uitvoeren bij aanmelden</long>
             </locale>
 
+            <locale name="nn">
+	        <short>Start XScreenSaver</short>
+                <long>Køyr XScreenSaver ved pålogging</long>
+            </locale>
+
             <locale name="no">
 	        <short>Start XScreenSaver</short>
-                <long>KjÃ¸re XScreenSaver ved pÃ¥logging</long>
+                <long>Kjør XScreenSaver ved pålogging</long>
+            </locale>
+
+            <locale name="pa">
+	        <short>X ਵਿਹਲਾ-ਪਰਦਾ ਸ਼ੁਰੂ ਕਰੋ</short>
+                <long>ਦਾਖਲੇ ਸਮੇ  X-ਵਿਹਲਾ-ਪਰਦਾ ਚਾਲੂ ਕਰੋ</long>
+            </locale>
+
+            <locale name="pl">
+	        <short>Uruchamianie programu XScreenSaver</short>
+                <long>Uruchamianie programu XScreenSaver przy logowaniu</long>
             </locale>
 
             <locale name="pt">
 	        <short>Iniciar XScreenSaver</short>
-                <long>Executar XScreenSaver ao iniciar sessÃ£o</long>
+                <long>Executar XScreenSaver ao iniciar sessão</long>
             </locale>
 
             <locale name="pt_BR">
@@ -108,53 +228,78 @@
             </locale>
 
             <locale name="ro">
-	        <short>PorneÅte XScreenSaver</short>
-                <long>RuleazÄ XScreenSaver la logare</long>
+	        <short>Porneşte XScreenSaver</short>
+                <long>Porneşte XScreenSaver la logare</long>
             </locale>
 
             <locale name="ru">
-	        <short>ÐÐ°Ð¿ÑÑÐºÐ°ÑÑ Ð¥ÑÐ°Ð½Ð¸ÑÐµÐ»Ñ ÑÐºÑÐ°Ð½Ð°</short>
-                <long>ÐÐ°Ð¿ÑÑÐºÐ°ÑÑ ÑÑÐ°Ð½Ð¸ÑÐµÐ»Ñ ÑÐºÑÐ°Ð½Ð° Ð¿ÑÐ¸ Ð½Ð°ÑÐ°Ð»Ðµ ÑÐµÐ°Ð½ÑÐ°</long>
+	        <short>Запускать Хранитель экрана</short>
+                <long>Запускать хранитель экрана при начале сеанса</long>
             </locale>
 
             <locale name="sk">
-	        <short>SpustiÅ¥ XScreenSaver</short>
-                <long>SpustiÅ¥ XScreenSaver pri prihlÃ¡senÃ­</long>
+	        <short>Spustiť XScreenSaver</short>
+                <long>Spustiť XScreenSaver pri prihlásení</long>
             </locale>
 
             <locale name="sl">
-	        <short>PoÅ¾eni XScreenSaver</short>
-                <long>Ob prijavi poÅ¾eni XScreenSaver</long>
+	        <short>Poženi XScreenSaver</short>
+                <long>Ob prijavi poženi XScreenSaver</long>
+            </locale>
+
+            <locale name="sq">
+	        <short>Fillo XScreenSaver</short>
+                <long>Ekzekuto XScreenSaver në login</long>
+            </locale>
+
+            <locale name="sr">
+	        <short>Покрени Икс чувара екрана</short>
+                <long>Покрени Икс чувара екрана при пријављивању</long>
+            </locale>
+
+            <locale name="sr@Latn">
+	        <short>Pokreni Iks čuvara ekrana</short>
+                <long>Pokreni Iks čuvara ekrana pri prijavljivanju</long>
             </locale>
 
             <locale name="sv">
 	        <short>Starta XScreenSaver</short>
-                <long>KÃ¶r XScreenSaver vid inloggning</long>
+                <long>Kör XScreenSaver vid inloggning</long>
+            </locale>
+
+            <locale name="ta">
+	        <short> Xதிரைகாப்பை தொடங்கு</short>
+                <long>புகுபதிகை செய்யும் போது Xதிரைகாப்பை இயக்கு</long>
+            </locale>
+
+            <locale name="th">
+	        <short>เริ่มใช้ XScreenSaver</short>
+                <long>เริ่มใช้ XScreenSaver เมื่อเข้าสู่ระบบ</long>
             </locale>
 
             <locale name="tr">
-	        <short>XScreenSaver&apos;Ä± ÃalÄ±ÅtÄ±r</short>
-                <long>GiriÅte XScreenSaver programÄ±nÄ± Ã§alÄ±ÅtÄ±r</long>
+	        <short>XScreenSaver&apos;ı Çalıştır</short>
+                <long>Girişte XScreenSaver programını çalıştır</long>
             </locale>
 
             <locale name="uk">
-	        <short>ÐÐ°Ð¿ÑÑÐºÐ°ÑÐ¸ Ð·ÑÑÐ³Ð°Ñ ÐµÐºÑÐ°Ð½Ð°</short>
-                <long>ÐÐ°Ð¿ÑÑÐºÐ°ÑÐ¸ Ð·Ð±ÐµÑÑÐ³Ð°Ñ ÐµÐºÑÐ°Ð½Ð° Ð¿ÑÐ´ ÑÐ°Ñ Ð·Ð°Ð¿ÑÑÐºÑ ÑÐ¸ÑÑÐµÐ¼Ð¸</long>
+	        <short>Запускати зберігач екрана</short>
+                <long>Запускати зберігач екрана під час запуску системи</long>
             </locale>
 
             <locale name="vi">
-	        <short>Báº¯t Äáº§u cháº¡y XScreenSaver</short>
-                <long>Cháº¡y XScreenSaver khi ÄÄng nháº­p</long>
+	        <short>Bắt đầu chạy XScreenSaver</short>
+                <long>Chạy XScreenSaver khi đăng nhập</long>
             </locale>
 
             <locale name="zh_CN">
-	        <short>å¯å¨ XScreenSaver</short>
-                <long>ç»å½æ¶è¿è¡ XScreenSaver</long>
+	        <short>启动 XScreenSaver</short>
+                <long>登录时运行 XScreenSaver</long>
             </locale>
 
             <locale name="zh_TW">
-	        <short>åå XScreenSaver</short>
-                <long>ç»å¥æå·è¡ XScreenSaver</long>
+	        <short>啟動 XScreenSaver</short>
+                <long>登入時執行 XScreenSaver</long>
             </locale>
         </schema>
 	<schema>
@@ -168,29 +313,79 @@
 	        <long>Display a dialog when there are errors running XScreenSaver</long>
 	    </locale>
 
+            <locale name="af">
+                <short>Wys Aanmeldingsfoute</short>
+	        <long>Vertoon &apos;n dialoog wanneer daar foute is met die loop van XScreenSaver</long>
+	    </locale>
+
+            <locale name="ar">
+                <short>اظهار أخطاء التشغيل</short>
+	        <long>عرض حوار عند وجود أخطاء تشغيل XScreenSaver</long>
+	    </locale>
+
+            <locale name="az">
+                <short>Başlanğıc Xətalarını Göstər</short>
+	        <long>XScreenSaver işlərkən yaranan xətaları dialoq qutusunda göstər</long>
+	    </locale>
+
+            <locale name="be">
+                <short>Адлюстроўваць памылкі загрузкі</short>
+	        <long>Адлюстроўваць дыялёг калі адбываюцца памылкі XScreenSaver</long>
+	    </locale>
+
+            <locale name="bg">
+                <short>Показване на грешки по време на стартирането</short>
+	        <long>Показване на прозорец, когато има грешки при XScreenSaver</long>
+	    </locale>
+
+            <locale name="bn">
+                <short>চালু হওয়ার সময় যেসব সমস্যা হবে তা প্রদর্শন করো</short>
+	        <long>এক্সস্ক্রিনসেভার চালাতে সমস্যা হলে একটি ডায়ালগ প্রদর্শন করো</long>
+	    </locale>
+
+            <locale name="bs">
+                <short>Prikaži greške pri pokretanju</short>
+	        <long>Prikaži dijalog kada se desi greška pri pokretanju XScreenSaver</long>
+	    </locale>
+
             <locale name="ca">
                 <short>Mostra els errors de l&apos;inici</short>
-	        <long>Mostra un diÃ leg quan hi ha errors a l&apos;executar XScreenSaver</long>
+	        <long>Mostra un diàleg quan hi ha errors a l&apos;executar XScreenSaver</long>
 	    </locale>
 
             <locale name="cs">
-                <short>Zobrazovat chyby pÅi spuÅ¡tÄnÃ­</short>
-	        <long>Zobrazit dialog, nastanou-li chyby pÅi spuÅ¡tÄnÃ­ XScreenSaver</long>
+                <short>Zobrazovat chyby při spuštění</short>
+	        <long>Zobrazit dialog, nastanou-li chyby při spuštění XScreenSaver</long>
+	    </locale>
+
+            <locale name="cy">
+                <short>Dangos Gwallau Ymgychwyn</short>
+	        <long>Dangos ymgom pan fo gwallau tra&apos;n rhedeg XScreenSaver</long>
 	    </locale>
 
             <locale name="da">
                 <short>Vis startfejl</short>
-	        <long>Vis et vindue nÃ¥r der opstÃ¥r fejl ved kÃ¸rsel af pauseskÃ¦rmen</long>
+	        <long>Vis et vindue når der opstår fejl ved kørsel af pauseskærmen</long>
 	    </locale>
 
             <locale name="de">
-                <short>Start-Fehler anzeigen</short>
-	        <long>Soll ein Dialog angezeigt werden, wenn beim AusfÃ¼hren von XScreenSaver ein Fehler auftritt?</long>
+                <short>Startfehler anzeigen</short>
+	        <long>Soll ein Dialog angezeigt werden, wenn beim Ausführen von XScreenSaver ein Fehler auftritt?</long>
 	    </locale>
 
             <locale name="el">
-                <short>ÎÎ¼ÏÎ¬Î½Î¹ÏÎ· ÏÏÎ±Î»Î¼Î¬ÏÏÎ½ ÎµÎºÎºÎ¯Î½Î·ÏÎ·Ï</short>
-	        <long>Î ÏÎ¿Î²Î¿Î»Î® Î´Î¹Î±Î»ÏÎ³Î¿Ï ÏÏÎ±Î½ ÏÏÎ¬ÏÏÎ¿ÏÎ½ ÏÏÎ¬Î»Î¼Î±ÏÎ± ÎºÎ±ÏÎ¬ ÏÎ·Î½ ÎµÎºÏÎ­Î»ÎµÏÎ· ÏÎ¿Ï XScreenSaver</long>
+                <short>Εμφάνιση Σφαλμάτων Εκκίνησης</short>
+	        <long>Προβολή διαλόγου όταν υπάρχουν σφάλματα κατά την εκτέλεση του XScreenSaver</long>
+	    </locale>
+
+            <locale name="en_CA">
+                <short>Show Startup Errors</short>
+	        <long>Display a dialog when there are errors running XScreenSaver</long>
+	    </locale>
+
+            <locale name="en_GB">
+                <short>Show Startup Errors</short>
+	        <long>Display a dialogue when there are errors running XScreenSaver</long>
 	    </locale>
 
             <locale name="es">
@@ -198,49 +393,104 @@
 	        <long>Mostrar una ventana cuando han ocurrido errores al ejecutar XScreenSaver</long>
 	    </locale>
 
+            <locale name="eu">
+                <short>Erakutsi abioko erroreak</short>
+	        <long>Bistaratu elkarrizketa-koadroa X pantaila-babeslea exekutatzean erroreak daudenean </long>
+	    </locale>
+
+            <locale name="fa">
+                <short>نمایش خطاهای راه‌اندازی</short>
+	        
+	    </locale>
+
             <locale name="fi">
-                <short>NÃ¤ytÃ¤ kÃ¤ynnistysvirheet</short>
-	        <long>NÃ¤ytÃ¤ ikkuna, kun XScreenSaverin suorittamisessa on ongelmia.</long>
+                <short>Näytä käynnistysvirheet</short>
+	        <long>Näytä ikkuna, kun XScreenSaverin suorittamisessa on ongelmia.</long>
 	    </locale>
 
             <locale name="fr">
-                <short>Afficher les erreurs de dÃ©marrage</short>
-	        <long>Afficher une boite de dialogue lorsqu&apos;il y a des erreurs Ã  l&apos;exÃ©cution de XScreenSaver</long>
+                <short>Afficher les erreurs de démarrage</short>
+	        <long>Afficher une boîte de dialogue lorsqu&apos;il y a des erreurs à l&apos;exécution de XScreenSaver</long>
+	    </locale>
+
+            <locale name="gu">
+                <short>ચાલુ થતી વખતની ભૂલો બતાવો</short>
+	        <long>જ્યારે એક્સસ્ક્રીનસેવર ચાલુ કરતાં ભૂલ આવે ત્યારે સંવાદ વાપરાે</long>
 	    </locale>
 
             <locale name="he">
-                <short>××¦× ×©×××××ª ××¤×¢××</short>
-	        <long>××¦× ×ª×××ª ××-×©×× ×××©×¨ ××©× × ×©×××××ª ×××¤×¢××ª XScreenSaver</long>
+                <short>הצג שגיאות הפעלה</short>
+	        <long>הצג תיבת דו-שיח כאשר ישנן שגיאות בהפעלת XScreenSaver</long>
+	    </locale>
+
+            <locale name="hi">
+                <short>प्रारंभ होने के समय की त्रुटियों को दिखाएँ</short>
+	        <long>जब एक्स स्क्रीन सेवर चलने में त्रुटि हो तो एक संवाद दिखाएँ</long>
+	    </locale>
+
+            <locale name="hr">
+                <short>Prikaži greške pri pokretanju</short>
+	        <long>Prikaži dijalog kada postoje greške u radu XScreenSavera</long>
 	    </locale>
 
             <locale name="hu">
-                <short>IndulÃ¡s kÃ¶zben tÃ¶rtÃ©nÅ hibÃ¡k megjelenÃ­tÃ©se</short>
-	        <long>PÃ¡rbeszÃ©dablak megjelenÃ­tÃ©se a kÃ©pernyÅvÃ©dÅ hibÃ¡ja esetÃ©n</long>
+                <short>Indulás közben történő hibák megjelenítése</short>
+	        <long>Párbeszédablak megjelenítése a képernyővédő hibája esetén</long>
+	    </locale>
+
+            <locale name="id">
+                <short>Tampilkan Error saat Startup</short>
+	        
+	    </locale>
+
+            <locale name="is">
+                <short>Sýna villur í ræsingu</short>
+	        <long>Sýna valglugga fyrir villur við keyrslu á XScreenSaver</long>
+	    </locale>
+
+            <locale name="it">
+                <short>Mostra gli errori che si verificano all&apos;avvio</short>
+	        <long>Mostra una finestra di dialogo se si verificano errori eseguendo XScreenSaver</long>
 	    </locale>
 
             <locale name="ja">
-                <short>èµ·åæã®ã¨ã©ã¼ãè¡¨ç¤ºãã</short>
-	        <long>XScreenSaver èµ·åä¸­ã«ã¨ã©ã¼ãçºçããããã¤ã¢ã­ã°ãè¡¨ç¤ºãã¾ã</long>
+                <short>起動時のエラーを表示する</short>
+	        <long>XScreenSaver 起動中にエラーが発生したらダイアログを表示します</long>
 	    </locale>
 
             <locale name="ko">
-                <short>ìì ì¤ë¥ ë³´ê¸°</short>
-	        <long>XScreenSaver ì±íì¤ì ì¤ë¥ê° ìê¸¸ ë ëíìì ë³´ì</long>
+                <short>시작 오류 보기</short>
+	        <long>XScreenSaver 싱행중에 오류가 생길 때 대화상자 보임</long>
+	    </locale>
+
+            <locale name="lt">
+                <short>Rodyti paleidimo klaidas</short>
+	        <long>Rodyti dialogą jeigu leidžiant XScreenSaver įvyks klaidų</long>
 	    </locale>
 
             <locale name="lv">
-                <short>ParÄdÄ«t SÄknÄÅ¡anas KÄ¼Å«das</short>
-	        <long>ParÄdÄ«t dialogu, kad ir kÄ¼Å«das palaiÅ¾ot XScreenSaver</long>
+                <short>Parādīt Sāknēšanas Kļūdas</short>
+	        <long>Parādīt dialogu, kad ir kļūdas palaižot XScreenSaver</long>
+	    </locale>
+
+            <locale name="mk">
+                <short>Прикажи грешки при подигнување</short>
+	        <long>Прикажи дијалог кога има грешки при работa на XScreenSaver</long>
 	    </locale>
 
             <locale name="mn">
-                <short>Ð­ÑÐ»ÑÐ» Ð°Ð»Ð´Ð°Ð°Ð³ ÑÐ°ÑÑÑÐ»Ð°Ñ</short>
-	        <long>XScreenSaver Ð°Ð¶Ð¸Ð»Ð»Ð°Ð¶ Ð±Ð°Ð¹Ñ Ò¯ÐµÐ´ Ð°Ð»Ð´Ð°Ð° Ð³Ð°ÑÐ²Ð°Ð» ÑÐ¼Ð°Ñ Ð½ÑÐ³ Ð´Ð¸Ð°Ð»Ð¾Ð³ ÑÐ°ÑÑÑÐ»Ð°Ñ ÑÑ?</long>
+                <short>Эхлэл алдааг харуулах</short>
+	        <long>XScreenSaver ажиллаж байх үед алдаа гарвал ямар нэг диалог харуулах уу?</long>
 	    </locale>
 
             <locale name="ms">
                 <short>Papar ralat permulaan</short>
-	        
+	        <long>Papar dialog bila ralat melaksanakan XScreenSaver</long>
+	    </locale>
+
+            <locale name="nb">
+                <short>Vis feil ved oppstart</short>
+	        <long>Vis en dialog når det oppstår problemer med å kjøre XScreenSaver</long>
 	    </locale>
 
             <locale name="nl">
@@ -248,69 +498,109 @@
 	        <long>Dialoogvenster weergeven bij fouten tijdens het uitvoeren van XScreenSaver</long>
 	    </locale>
 
+            <locale name="nn">
+                <short>Vis feil ved oppstarten</short>
+	        <long>Vis ein dialog når det skjer feil under køyring av XScreenSaver</long>
+	    </locale>
+
             <locale name="no">
                 <short>Vis feil ved oppstart</short>
-	        <long>Vis en dialog nÃ¥r det oppstÃ¥r problemer med Ã¥ kjÃ¸re XScreenSaver</long>
+	        <long>Vis en dialog når det oppstår problemer med å kjøre XScreenSaver</long>
+	    </locale>
+
+            <locale name="pa">
+                <short>ਸ਼ੁਰੂਆਤੀ ਗਲਤੀ ਵੇਖਾਉ</short>
+	        <long>ਤਖਤੀ ਵੇਖਾਉ, ਜਦੋ ਕਿ X-ਵਿਹਲਾ-ਪਰਦਾ ਚਲਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੋਵੇ</long>
+	    </locale>
+
+            <locale name="pl">
+                <short>Wyświetlanie błędów przy uruchamianiu</short>
+	        <long>Powoduje wyświetlanie okna dialogowego przy napotkaniu błędów w programie XScreenSaver</long>
 	    </locale>
 
             <locale name="pt">
-                <short>Mostrar Erros no Arranque</short>
-	        <long>Mostrar um diÃ¡logo quando ocorrerem erros ao executar o XScreenSaver</long>
+                <short>Apresentar Erros no Arranque</short>
+	        <long>Apresentar um diálogo quando ocorrerem erros ao executar o XScreenSaver</long>
 	    </locale>
 
             <locale name="pt_BR">
-                <short>Exibir Erros de InicializaÃ§Ã£o</short>
-	        <long>Exibir um diÃ¡logo quando houver erros ao executar o XScreenSaver</long>
+                <short>Exibir Erros de Inicialização</short>
+	        <long>Exibir um diálogo quando houver erros ao executar o XScreenSaver</long>
 	    </locale>
 
             <locale name="ro">
-                <short>AratÄ erorile de pornire</short>
-	        <long>AfiÅeazÄ un dialog la apariÅ£ia unei erori generate de XScreenSaver</long>
+                <short>Arată erorile de pornire</short>
+	        <long>Arată un dialog la apariţia unei erori generate de XScreenSaver</long>
 	    </locale>
 
             <locale name="ru">
-                <short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÑ Ð¾ÑÐ¸Ð±ÐºÐ¸ Ð¿ÑÐ¸ ÑÑÐ°ÑÑÐµ ÑÐ¸ÑÑÐµÐ¼Ñ</short>
-	        <long>ÐÑÐ¾Ð±ÑÐ°Ð¶Ð°ÑÑ Ð´Ð¸Ð°Ð»Ð¾Ð³, ÐºÐ¾Ð³Ð´Ð° Ð¿ÑÐ¾Ð¸ÑÑÐ¾Ð´ÑÑ Ð¾ÑÐ¸Ð±ÐºÐ¸ Ð¿ÑÐ¸ Ð·Ð°Ð¿ÑÑÐºÐµ ÑÑÐ°Ð½Ð¸ÑÐµÐ»Ñ ÑÐºÑÐ°Ð½Ð°</long>
+                <short>Показывать ошибки при старте системы</short>
+	        <long>Отображать диалог, когда происходят ошибки при запуске хранителя экрана</long>
 	    </locale>
 
             <locale name="sk">
-                <short>ZobraziÅ¥ chyby pri Å¡tarte</short>
-	        <long>ZobraziÅ¥ dialÃ³g, ak sa pri behu XScreenSaver vyskytli chyby</long>
+                <short>Zobraziť chyby pri štarte</short>
+	        <long>Zobraziť dialóg, ak sa pri behu XScreenSaver vyskytli chyby</long>
 	    </locale>
 
             <locale name="sl">
-                <short>KaÅ¾i napake programov ob zagonu</short>
-	        <long>Kadar se pojavi napaka ob zagonu XScreenSaver pokaÅ¾i dialog</long>
+                <short>Kaži napake programov ob zagonu</short>
+	        <long>Kadar se pojavi napaka ob zagonu XScreenSaver pokaži dialog</long>
+	    </locale>
+
+            <locale name="sq">
+                <short>Shfaq Gabimet e Nisjes</short>
+	        <long>Shfaq një dialog kur ka gabime në ekzekutimin e XScreenSaver</long>
+	    </locale>
+
+            <locale name="sr">
+                <short>Прикажи грешке при покретању</short>
+	        <long>Прикажи прозорче када дође до грешке током рада чувара Икс екрана</long>
+	    </locale>
+
+            <locale name="sr@Latn">
+                <short>Prikaži greške pri pokretanju</short>
+	        <long>Prikaži prozorče kada dođe do greške tokom rada čuvara Iks ekrana</long>
 	    </locale>
 
             <locale name="sv">
                 <short>Visa uppstartsfel</short>
-	        <long>Visa ett dialogfÃ¶nster nÃ¤r det uppstÃ¥r fel vid kÃ¶randet av XScreenSaver</long>
+	        <long>Visa ett dialogfönster när det uppstår fel vid körandet av XScreenSaver</long>
+	    </locale>
+
+            <locale name="ta">
+                <short>தொடங்கல் பிழையை காட்டு</short>
+	        <long>Xதிரைகாப்பு இயக்கும் போது எற்படும் பிழையை உரையாடல் பொட்டி காட்டும்</long>
+	    </locale>
+
+            <locale name="th">
+                <short>เตือนถ้าผิดพลาดเมื่อเริ่มทำงาน</short>
+	        <long>แสดงหน้าต่างเตือนถ้าเรียกใช้ XScreenSaver ไม่สำเร็จ</long>
 	    </locale>
 
             <locale name="tr">
-                <short>BaÅlangÄ±Ã§ HatalarÄ±nÄ± GÃ¶ster</short>
-	        
+                <short>Başlangıç Hatalarını Göster</short>
+	        <long>XScreenSaver çalıştırırken oluşan hatalarda bir iletişim penceresi göster</long>
 	    </locale>
 
             <locale name="uk">
-                <short>ÐÐ¾ÐºÐ°Ð·ÑÐ²Ð°ÑÐ¸ Ð¿Ð¾Ð¼Ð¸Ð»ÐºÐ¸ Ð·Ð°Ð¿ÑÑÐºÑ ÑÐ¸ÑÑÐµÐ¼Ð¸</short>
-	        <long>ÐÑÐ´Ð¾Ð±ÑÐ°Ð¶Ð°ÑÐ¸ Ð´ÑÐ°Ð»Ð¾Ð³, ÐºÐ¾Ð»Ð¸ ÑÑÐ°ÑÑÑÑÑ Ð¿Ð¾Ð¼Ð¸Ð»ÐºÐ¸ Ð½Ð° Ð·Ð°Ð¿ÑÑÐºÑ Ð·Ð±ÐµÑÑÐ³Ð°ÑÐ° ÐµÐºÑÐ°Ð½Ð°</long>
+                <short>Показувати помилки запуску системи</short>
+	        <long>Відображати діалог, при помилках запуску зберігача екрана</long>
 	    </locale>
 
             <locale name="vi">
-                <short>Hiá»n thá» lá»i khá»i cháº¡y</short>
-	        <long>Hiá»n thá» há»p thoáº¡i khi cÃ³ lá»i cháº¡y XScreenSaver</long>
+                <short>Hiển thị lỗi khởi chạy</short>
+	        <long>Hiển thị hộp thoại khi có lỗi chạy XScreenSaver</long>
 	    </locale>
 
             <locale name="zh_CN">
-                <short>æ¾ç¤ºå¯å¨éè¯¯</short>
-	        <long>è¿è¡ XScreenSaver åºéæ¶æ¾ç¤ºå¯¹è¯æ¡</long>
+                <short>显示启动错误</short>
+	        <long>运行 XScreenSaver 出错时显示对话框</long>
 	    </locale>
 
             <locale name="zh_TW">
-                <short>é¡¯ç¤ºååæç¼ççé¯èª¤</short>
-	        <long>å¦æå·è¡ XScreenSaver æåºç¾é¯èª¤åé¡¯ç¤ºå°è©±çª</long>
+                <short>顯示啟動時發生的錯誤</short>
+	        <long>如果執行 XScreenSaver 時出現錯誤則顯示對話方塊</long>
 	    </locale>
 	</schema>
     </schemalist>

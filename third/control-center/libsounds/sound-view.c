@@ -3,6 +3,7 @@
 #include "sound-view.h"
 #include <libgnome/libgnome.h>
 #include <libgnomeui/libgnomeui.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 
 static GtkVBoxClass *sound_view_parent_class;
 
@@ -20,6 +21,7 @@ struct _SoundViewPrivate
 	SoundProperties *props;
 	GtkWidget *play_button;
 	GtkWidget *entry;
+	GtkWidget *label;
 	GHashTable *event2path;
 	GSList *paths;
 	gboolean ignore_changed;
@@ -73,6 +75,7 @@ compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer data
 {
 	GValue val_a = {0};
 	GValue val_b = {0};
+	gint cmp;
 	const gchar *str_a, *str_b;
 
 	gtk_tree_model_get_value (model, a, SORT_DATA_COLUMN, &val_a);
@@ -80,12 +83,17 @@ compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer data
 	gtk_tree_model_get_value (model, b, SORT_DATA_COLUMN, &val_b);
 	str_b = g_value_get_string (&val_b);
 
+	cmp = g_ascii_strcasecmp (str_a?str_a:"", str_b?str_b:"");
+	
+	g_value_unset (&val_a);
+	g_value_unset (&val_b);
+	
 	if (!str_a)
 		return 1;
 	else if (!str_b)
 		return -1;
 	else
-		return g_ascii_strcasecmp (str_a, str_b);
+		return cmp;
 }
 
 static void
@@ -106,6 +114,22 @@ play_cb (GtkButton *button, SoundView *view)
 	if (!event->file)
 		return;
 
+	if (!strlen (event->file))      {
+		GtkWidget *md;
+		gchar *msg;
+
+		msg = _("The sound file for this event does not exist.");
+		md = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (button))),
+					     0,
+					     GTK_MESSAGE_ERROR,
+					     GTK_BUTTONS_CLOSE,
+					     msg);
+
+		gtk_dialog_run (GTK_DIALOG (md));
+		gtk_widget_destroy (md);
+		return ;
+	}
+
 	if ((event->file[0] == '/') || g_file_test (event->file, G_FILE_TEST_EXISTS))
 		filename = g_strdup (event->file);
 	else
@@ -125,6 +149,7 @@ play_cb (GtkButton *button, SoundView *view)
 				"You may want to install the gnome-audio package\n"
 				"for a set of default sounds.");
 		md = gtk_message_dialog_new (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, msg);
+		gtk_dialog_set_has_separator (GTK_DIALOG (md), FALSE);
 		gtk_dialog_run (GTK_DIALOG (md));
 		gtk_widget_destroy (md);
 	}
@@ -140,6 +165,7 @@ entry_changed_cb (GtkEditable *entry, SoundView *view)
 	GValue tval = {0};
 	GValue eval = {0};
 	SoundEvent *event;
+	gchar *mime_type;
 	
 	if (view->priv->ignore_changed)
 		return;
@@ -154,8 +180,23 @@ entry_changed_cb (GtkEditable *entry, SoundView *view)
 	event = g_value_get_pointer (&eval);
 
 	file = gtk_entry_get_text (GTK_ENTRY (entry));
-	sound_event_set_file (event, (gchar *) file);
-	sound_properties_event_changed (view->priv->props, event);
+	mime_type = gnome_vfs_get_mime_type (file);
+	if (mime_type) {
+		if (!strcmp (mime_type, "audio/x-wav")){
+			sound_event_set_file (event, (gchar *) file);
+			sound_properties_event_changed (view->priv->props, event);
+		} else {
+			GtkWidget *msg_dialog;
+			gchar *msg;
+
+			msg = g_strdup_printf (_("The file %s is not a valid wav file"),file);
+			msg_dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, msg);
+			gtk_dialog_run (GTK_DIALOG (msg_dialog));
+			gtk_widget_destroy (msg_dialog);
+			g_free (msg);
+		}
+		g_free (mime_type);
+	}
 }
 
 static void
@@ -185,7 +226,7 @@ sound_view_init (GtkObject *object)
 	SoundView *view = SOUND_VIEW (object);
 	GtkWidget *widget, *hbox, *bbox;
 	GtkWidget *vbox;
-	GtkWidget *frame, *label;
+	GtkWidget *label;
 	gchar *path;
 
 	view->priv = g_new0 (SoundViewPrivate, 1);
@@ -217,14 +258,18 @@ sound_view_init (GtkObject *object)
 							   renderer,
 							   "text", EVENT_COLUMN,
 							   NULL);
-	gtk_tree_view_column_set_clickable (column, FALSE);
+	gtk_tree_view_column_set_clickable (column, TRUE);
+	gtk_tree_view_column_set_resizable (column, TRUE);
+	gtk_tree_view_column_set_sort_column_id (column, EVENT_COLUMN);
 	gtk_tree_view_append_column (view->priv->view, column);
 
-	column = gtk_tree_view_column_new_with_attributes (_("File to play"),
+	column = gtk_tree_view_column_new_with_attributes (_("Sound File"),
 							   renderer,
 							   "text", FILE_COLUMN,
 							   NULL);
-	gtk_tree_view_column_set_clickable (column, FALSE);
+	gtk_tree_view_column_set_clickable (column, TRUE);
+	gtk_tree_view_column_set_resizable (column, TRUE);
+	gtk_tree_view_column_set_sort_column_id (column, FILE_COLUMN);
 	gtk_tree_view_append_column (view->priv->view, column);
 
 	widget = gtk_scrolled_window_new (NULL, NULL);
@@ -234,42 +279,56 @@ sound_view_init (GtkObject *object)
 	gtk_widget_set_size_request (widget, 350, -1);
 	gtk_container_add (GTK_CONTAINER (widget), GTK_WIDGET (view->priv->view));
 
-	frame = gtk_frame_new ("");
-	label = gtk_label_new_with_mnemonic (_("_Sounds"));
+	label = gtk_label_new_with_mnemonic (_("_Sounds:"));
+	g_object_set (G_OBJECT (label), "xalign", 0.0, NULL);
+	
 	gtk_label_set_mnemonic_widget (GTK_LABEL (label),
 				       GTK_WIDGET (view->priv->view));
-	gtk_frame_set_label_widget (GTK_FRAME (frame), label);
-	gtk_container_add (GTK_CONTAINER (frame), widget);
 
-	gtk_box_pack_start (GTK_BOX (view), frame, TRUE, TRUE, 0);
-	gtk_widget_show_all (frame);
+	gtk_box_set_spacing (GTK_BOX (view), 6);
+	gtk_box_pack_start (GTK_BOX (view), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (view), widget, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (view), hbox, FALSE, FALSE, GNOME_PAD);
-	view->priv->play_button = gtk_button_new ();
-	bbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (bbox), gtk_image_new_from_stock (GNOME_STOCK_VOLUME, GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (bbox), gtk_label_new_with_mnemonic (_("_Play")), FALSE, FALSE, GNOME_PAD);
-	gtk_container_add (GTK_CONTAINER (view->priv->play_button), bbox);
-	gtk_box_pack_start (GTK_BOX (hbox), view->priv->play_button, TRUE, FALSE, GNOME_PAD_SMALL);
-	g_object_set_data (G_OBJECT (view->priv->play_button), "gnome_disable_sound_events", GINT_TO_POINTER(1));
-	g_signal_connect (G_OBJECT (view->priv->play_button), "clicked", (GCallback) play_cb, view);
+	hbox = gtk_hbox_new (FALSE, 12);
+	gtk_box_pack_start (GTK_BOX (view), hbox, FALSE, FALSE, 6);
 
-	view->priv->entry = gnome_file_entry_new (NULL, _("Select sound file"));
+	view->priv->label = gtk_vbox_new (FALSE, 12);
+	label = gtk_label_new_with_mnemonic (_("Sound _file:"));
+	g_object_set (G_OBJECT (label), "xalign", 0.0, NULL);
+	gtk_box_pack_start (GTK_BOX (view->priv->label), label, FALSE, FALSE, 0);
+
+	view->priv->entry = gnome_file_entry_new (NULL, _("Select Sound File"));
 	gnome_file_entry_set_modal (GNOME_FILE_ENTRY (view->priv->entry), TRUE);
 	path = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_DATADIR, "sounds/", TRUE, NULL);
 	gnome_file_entry_set_default_path (GNOME_FILE_ENTRY (view->priv->entry), path);
+	g_object_set (G_OBJECT (view->priv->entry), "use-filechooser", TRUE, NULL);
+	/*
+	 * Added gnome_file_entry_gnome_entry to following call so that the 
+	 * mnemonic widget is the GtkCombo, i.e. GnomeEntry rather than its 
+	 * contained GtkEntry. Fixes bug #126972.
+	 */ 
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (view->priv->entry)));
 	g_free (path);
 
 	g_signal_connect (G_OBJECT (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (view->priv->entry))), "changed",
 			  (GCallback) entry_changed_cb, view);
 				       
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (vbox), view->priv->label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), view->priv->entry, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, FALSE, GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 
+	view->priv->play_button = gtk_button_new ();
+	bbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (bbox), gtk_image_new_from_stock (GNOME_STOCK_VOLUME, GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (bbox), gtk_label_new_with_mnemonic (_("_Play")), FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (view->priv->play_button), bbox);
+	gtk_box_pack_start (GTK_BOX (hbox), view->priv->play_button, FALSE, FALSE, 0);
+	g_object_set_data (G_OBJECT (view->priv->play_button), "gnome_disable_sound_events", GINT_TO_POINTER(1));
+	g_signal_connect (G_OBJECT (view->priv->play_button), "clicked", (GCallback) play_cb, view);
 
 	gtk_widget_set_sensitive (view->priv->play_button, FALSE);
+	gtk_widget_set_sensitive (view->priv->label, FALSE);	
 	gtk_widget_set_sensitive (view->priv->entry, FALSE);
 	
 	gtk_widget_show_all (hbox);
@@ -350,7 +409,7 @@ foreach_cb (gchar *category, gchar *desc, GList *events, SoundView *view)
 		gtk_tree_store_set (GTK_TREE_STORE (view->priv->model), &child_iter,
 				    EVENT_COLUMN, event->desc,
 				    FILE_COLUMN, event->file,
-				    SORT_DATA_COLUMN, event->desc,
+				    SORT_DATA_COLUMN, event->desc?event->desc:"",
 				    TYPE_COLUMN, (guint) EVENT,
 				    DATA_COLUMN, event,
 				    -1);
@@ -407,10 +466,12 @@ select_row_cb (GtkTreeSelection *sel, SoundView *view)
 		}
 
 		gtk_widget_set_sensitive (view->priv->play_button, TRUE);
+		gtk_widget_set_sensitive (view->priv->label, TRUE);
 		gtk_widget_set_sensitive (view->priv->entry, TRUE);
 	} else {
 		text = g_strdup ("");
 		gtk_widget_set_sensitive (view->priv->play_button, FALSE);
+		gtk_widget_set_sensitive (view->priv->label, FALSE);
 		gtk_widget_set_sensitive (view->priv->entry, FALSE);
 	}
 

@@ -59,7 +59,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
+AR = @AR@
 AS = @AS@
+AT_CAPPLET_CFLAGS = @AT_CAPPLET_CFLAGS@
+AT_CAPPLET_LIBS = @AT_CAPPLET_LIBS@
 BONOBO_ACTIVATION_IDL_DIR = @BONOBO_ACTIVATION_IDL_DIR@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
@@ -67,22 +72,42 @@ CC = @CC@
 CONFIG_ARCHIVER_INCLUDEDIR = @CONFIG_ARCHIVER_INCLUDEDIR@
 CONFIG_ARCHIVER_LIBDIR = @CONFIG_ARCHIVER_LIBDIR@
 CONFIG_ARCHIVER_LIBS = @CONFIG_ARCHIVER_LIBS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
+DISPLAY_CAPPLET_CFLAGS = @DISPLAY_CAPPLET_CFLAGS@
+DISPLAY_CAPPLET_LIBS = @DISPLAY_CAPPLET_LIBS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 ESD_SERVER = @ESD_SERVER@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FONTILUS = @FONTILUS@
 FONT_CAPPLET_CFLAGS = @FONT_CAPPLET_CFLAGS@
 FONT_CAPPLET_LIBS = @FONT_CAPPLET_LIBS@
+FONT_CONTEXT_MENU_CFLAGS = @FONT_CONTEXT_MENU_CFLAGS@
+FONT_CONTEXT_MENU_LIBS = @FONT_CONTEXT_MENU_LIBS@
+FONT_METHOD_CFLAGS = @FONT_METHOD_CFLAGS@
+FONT_METHOD_LIBS = @FONT_METHOD_LIBS@
+FONT_THUMBNAILER_CFLAGS = @FONT_THUMBNAILER_CFLAGS@
+FONT_THUMBNAILER_LIBS = @FONT_THUMBNAILER_LIBS@
+FONT_VIEW_CFLAGS = @FONT_VIEW_CFLAGS@
+FONT_VIEW_LIBS = @FONT_VIEW_LIBS@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
+GDK_PIXBUF_CSOURCE_32 = @GDK_PIXBUF_CSOURCE_32@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMECC_CAPPLETS_CFLAGS = @GNOMECC_CAPPLETS_CFLAGS@
@@ -95,37 +120,54 @@ GNOMECC_GLADE_DIR = @GNOMECC_GLADE_DIR@
 GNOMECC_ICONS_DIR = @GNOMECC_ICONS_DIR@
 GNOMECC_LIBS = @GNOMECC_LIBS@
 GNOMECC_PIXMAPS_DIR = @GNOMECC_PIXMAPS_DIR@
+GNOME_CFLAGS = @GNOME_CFLAGS@
+GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
+GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
+GNOME_LIBS = @GNOME_LIBS@
 GNOME_SETTINGS_DAEMON_CFLAGS = @GNOME_SETTINGS_DAEMON_CFLAGS@
 GNOME_SETTINGS_DAEMON_LIBS = @GNOME_SETTINGS_DAEMON_LIBS@
+GST_CFLAGS = @GST_CFLAGS@
+GST_LIBS = @GST_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_LIBS = @GTK_LIBS@
+HAVE_LIB = @HAVE_LIB@
 INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
 LIBBONOBO_IDL_DIR = @LIBBONOBO_IDL_DIR@
 LIBTOOL = @LIBTOOL@
+LIBXKLAVIER_CFLAGS = @LIBXKLAVIER_CFLAGS@
+LIBXKLAVIER_LIBS = @LIBXKLAVIER_LIBS@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 METACITY_CFLAGS = @METACITY_CFLAGS@
 METACITY_LIBS = @METACITY_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+NAUTILUS_CFLAGS = @NAUTILUS_CFLAGS@
+NAUTILUS_LIBS = @NAUTILUS_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 ORBIT_IDL = @ORBIT_IDL@
@@ -133,31 +175,54 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
+SCREENSAVER_LIBS = @SCREENSAVER_LIBS@
 SOUND_CAPPLET_CFLAGS = @SOUND_CAPPLET_CFLAGS@
 SOUND_CAPPLET_LIBS = @SOUND_CAPPLET_LIBS@
 STRIP = @STRIP@
+THEME_METHOD_CFLAGS = @THEME_METHOD_CFLAGS@
+THEME_METHOD_LIBS = @THEME_METHOD_LIBS@
+THEMUS = @THEMUS@
+THEMUS_COMPONENT_CFLAGS = @THEMUS_COMPONENT_CFLAGS@
+THEMUS_COMPONENT_LIBS = @THEMUS_COMPONENT_LIBS@
+THEMUS_THUMBNAILER_CFLAGS = @THEMUS_THUMBNAILER_CFLAGS@
+THEMUS_THUMBNAILER_LIBS = @THEMUS_THUMBNAILER_LIBS@
+TYPING_BREAK = @TYPING_BREAK@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VFS_CAPPLET_CFLAGS = @VFS_CAPPLET_CFLAGS@
 VFS_CAPPLET_LIBS = @VFS_CAPPLET_LIBS@
 XF86MISC_LIBS = @XF86MISC_LIBS@
 
-INCLUDES = $(GNOME_SETTINGS_DAEMON_CFLAGS) -I$(top_srcdir)/libbackground -I$(top_srcdir) \
-  -DGNOMELOCALEDIR="\"$(datadir)/locale\"" \
-  -DESD_SERVER="\"$(ESD_SERVER)\""	\
-  -DDATADIR="\"$(datadir)\""
+SUBDIRS = xrdb actions
 
-bin_PROGRAMS = gnome-settings-daemon
+INCLUDES = $(LIBXKLAVIER_CFLAGS) $(GNOME_SETTINGS_DAEMON_CFLAGS) -I$(top_srcdir)/libbackground -I$(top_srcdir) \
+  -DGNOMELOCALEDIR="\"$(datadir)/locale\"" 	\
+  -DESD_SERVER="\"$(ESD_SERVER)\""		\
+  -DDATADIR="\"$(datadir)\""			\
+  -DPIXMAPSDIR="\"$(GNOMECC_PIXMAPS_DIR)\""	\
+  $(FB_CFLAGS)
+
+
+libexec_PROGRAMS = gnome-settings-daemon
 
 gnome_settings_daemon_SOURCES = \
 	factory.c			\
+	eggaccelerators.h		\
+	eggaccelerators.c		\
 	gnome-settings-daemon.h		\
 	gnome-settings-daemon.c		\
 	gnome-settings-font.h		\
 	gnome-settings-font.c		\
 	gnome-settings-mouse.h		\
 	gnome-settings-mouse.c		\
+	gnome-settings-multimedia-keys.h \
+	gnome-settings-multimedia-keys.c \
+	gnome-settings-keyboard-xkb.h	\
+	gnome-settings-keyboard-xkb.c	\
 	gnome-settings-keyboard.h	\
 	gnome-settings-keyboard.c	\
 	gnome-settings-background.h	\
@@ -176,22 +241,31 @@ gnome_settings_daemon_SOURCES = \
 	gnome-settings-default-editor.h	\
 	gnome-settings-gtk1theme.c      \
 	gnome-settings-gtk1theme.h	\
+	gnome-settings-xrdb.c		\
+	gnome-settings-xrdb.h		\
 	xsettings-common.c		\
 	xsettings-manager.c		\
 	xsettings-common.h		\
 	xsettings-manager.h		\
 	gnome-settings-keybindings.c    \
 	gnome-settings-keybindings.h    \
+	gnome-settings-typing-break.c	\
+	gnome-settings-typing-break.h	\
+	reaper.c			\
+	reaper.h			\
 	$(CORBA_GENERATED)
 
 
 #	$(AccessX_files)		
 
 gnome_settings_daemon_LDADD = \
-	$(GNOME_SETTINGS_DAEMON_LIBS)					\
+	$(LIBXKLAVIER_LIBS)						\
 	$(top_builddir)/libbackground/libbackground.la			\
 	$(top_builddir)/libsounds/libsounds.a				\
-	-L$(top_builddir)/libwindow-settings/ -lgnome-window-settings 	\
+	$(top_builddir)/libgswitchit/libgswitchit.a			\
+	$(top_builddir)/libwindow-settings/libgnome-window-settings.la 	\
+	$(top_builddir)/gnome-settings-daemon/actions/libacme.la	\
+	$(GNOME_SETTINGS_DAEMON_LIBS)					\
 	$(XF86MISC_LIBS)
 
 
@@ -219,22 +293,16 @@ IDL_FLAGS = -D__GNOME_SettingsDaemon_COMPILATION -I $(idl_dir) -I $(datadir)/idl
         -I $(BONOBO_ACTIVATION_IDL_DIR)
 
 
+serverfile = GNOME_SettingsDaemon.server.in
 serverdir = $(libdir)/bonobo/servers
-server_in_files = GNOME_SettingsDaemon.server.in
-server_DATA = $(server_in_files:.server.in=.server)
 
+EXTRA_DIST = $(serverfile)
 CLEANFILES = $(BUILT_SOURCES)
-
-EXTRA_DIST = \
-	$(BUILT_SOURCES)				\
-	$(server_DATA) 					\
-	$(server_in_files)				\
-
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  gnome-settings-daemon$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+libexec_PROGRAMS =  gnome-settings-daemon$(EXEEXT)
+PROGRAMS =  $(libexec_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
@@ -246,29 +314,34 @@ X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 gnome_settings_daemon_OBJECTS =  factory.$(OBJEXT) \
-gnome-settings-daemon.$(OBJEXT) gnome-settings-font.$(OBJEXT) \
-gnome-settings-mouse.$(OBJEXT) gnome-settings-keyboard.$(OBJEXT) \
+eggaccelerators.$(OBJEXT) gnome-settings-daemon.$(OBJEXT) \
+gnome-settings-font.$(OBJEXT) gnome-settings-mouse.$(OBJEXT) \
+gnome-settings-multimedia-keys.$(OBJEXT) \
+gnome-settings-keyboard-xkb.$(OBJEXT) gnome-settings-keyboard.$(OBJEXT) \
 gnome-settings-background.$(OBJEXT) gnome-settings-xsettings.$(OBJEXT) \
 gnome-settings-locate-pointer.$(OBJEXT) gnome-settings-sound.$(OBJEXT) \
 gnome-settings-accessibility-keyboard.$(OBJEXT) \
 gnome-settings-screensaver.$(OBJEXT) \
 gnome-settings-default-editor.$(OBJEXT) \
-gnome-settings-gtk1theme.$(OBJEXT) xsettings-common.$(OBJEXT) \
-xsettings-manager.$(OBJEXT) gnome-settings-keybindings.$(OBJEXT) \
+gnome-settings-gtk1theme.$(OBJEXT) gnome-settings-xrdb.$(OBJEXT) \
+xsettings-common.$(OBJEXT) xsettings-manager.$(OBJEXT) \
+gnome-settings-keybindings.$(OBJEXT) \
+gnome-settings-typing-break.$(OBJEXT) reaper.$(OBJEXT) \
 GNOME_SettingsDaemon-common.$(OBJEXT) \
 GNOME_SettingsDaemon-stubs.$(OBJEXT) \
 GNOME_SettingsDaemon-skels.$(OBJEXT)
 gnome_settings_daemon_DEPENDENCIES =  \
 $(top_builddir)/libbackground/libbackground.la \
-$(top_builddir)/libsounds/libsounds.a
+$(top_builddir)/libsounds/libsounds.a \
+$(top_builddir)/libgswitchit/libgswitchit.a \
+$(top_builddir)/libwindow-settings/libgnome-window-settings.la \
+$(top_builddir)/gnome-settings-daemon/actions/libacme.la
 gnome_settings_daemon_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(server_DATA)
-
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
@@ -290,29 +363,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-binPROGRAMS:
+mostlyclean-libexecPROGRAMS:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-libexecPROGRAMS:
+	-test -z "$(libexec_PROGRAMS)" || rm -f $(libexec_PROGRAMS)
 
-distclean-binPROGRAMS:
+distclean-libexecPROGRAMS:
 
-maintainer-clean-binPROGRAMS:
+maintainer-clean-libexecPROGRAMS:
 
-install-binPROGRAMS: $(bin_PROGRAMS)
+install-libexecPROGRAMS: $(libexec_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	@list='$(libexec_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-binPROGRAMS:
+uninstall-libexecPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .c.o:
@@ -363,23 +436,59 @@ gnome-settings-daemon$(EXEEXT): $(gnome_settings_daemon_OBJECTS) $(gnome_setting
 	@rm -f gnome-settings-daemon$(EXEEXT)
 	$(LINK) $(gnome_settings_daemon_LDFLAGS) $(gnome_settings_daemon_OBJECTS) $(gnome_settings_daemon_LDADD) $(LIBS)
 
-install-serverDATA: $(server_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(serverdir)
-	@list='$(server_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
-	  fi; fi; \
-	done
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
 
-uninstall-serverDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(server_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+@SET_MAKE@
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $$MAKEFLAGS; amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $$MAKEFLAGS; amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
 	done
 
 tags: TAGS
@@ -392,9 +501,14 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -426,32 +540,119 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	for subdir in $(SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
+eggaccelerators.o: eggaccelerators.c eggaccelerators.h
+factory.o: factory.c ../config.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-accessibility-keyboard.o: \
+	gnome-settings-accessibility-keyboard.c ../config.h \
+	gnome-settings-accessibility-keyboard.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-background.o: gnome-settings-background.c ../config.h \
+	gnome-settings-keyboard.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h ../libbackground/preferences.h \
+	../libbackground/applier.h
+gnome-settings-daemon.o: gnome-settings-daemon.c ../config.h \
+	xsettings-manager.h xsettings-common.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h gnome-settings-font.h \
+	gnome-settings-xsettings.h gnome-settings-mouse.h \
+	gnome-settings-keyboard-xkb.h gnome-settings-keyboard.h \
+	gnome-settings-background.h gnome-settings-sound.h \
+	gnome-settings-accessibility-keyboard.h \
+	gnome-settings-screensaver.h gnome-settings-default-editor.h \
+	gnome-settings-keybindings.h gnome-settings-multimedia-keys.h \
+	gnome-settings-gtk1theme.h gnome-settings-xrdb.h \
+	gnome-settings-typing-break.h
+gnome-settings-default-editor.o: gnome-settings-default-editor.c \
+	../config.h gnome-settings-daemon.h GNOME_SettingsDaemon.h \
+	gnome-settings-default-editor.h
+gnome-settings-font.o: gnome-settings-font.c ../config.h \
+	gnome-settings-daemon.h GNOME_SettingsDaemon.h
+gnome-settings-gtk1theme.o: gnome-settings-gtk1theme.c \
+	gnome-settings-daemon.h GNOME_SettingsDaemon.h \
+	gnome-settings-gtk1theme.h
+gnome-settings-keybindings.o: gnome-settings-keybindings.c ../config.h \
+	gnome-settings-daemon.h GNOME_SettingsDaemon.h \
+	gnome-settings-keybindings.h eggaccelerators.h
+gnome-settings-keyboard-xkb.o: gnome-settings-keyboard-xkb.c ../config.h \
+	../libgswitchit/gswitchit_xkb_config.h \
+	gnome-settings-keyboard-xkb.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-keyboard.o: gnome-settings-keyboard.c ../config.h \
+	gnome-settings-keyboard.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-locate-pointer.o: gnome-settings-locate-pointer.c \
+	gnome-settings-locate-pointer.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-mouse.o: gnome-settings-mouse.c \
+	gnome-settings-locate-pointer.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-multimedia-keys.o: gnome-settings-multimedia-keys.c \
+	../config.h eggaccelerators.h actions/acme.h \
+	actions/acme-volume.h
+gnome-settings-screensaver.o: gnome-settings-screensaver.c ../config.h \
+	gnome-settings-screensaver.h
+gnome-settings-sound.o: gnome-settings-sound.c ../config.h \
+	../libsounds/sound-properties.h ../libsounds/sound-event.h \
+	gnome-settings-sound.h gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h
+gnome-settings-typing-break.o: gnome-settings-typing-break.c \
+	gnome-settings-daemon.h GNOME_SettingsDaemon.h \
+	gnome-settings-typing-break.h reaper.h
+gnome-settings-xrdb.o: gnome-settings-xrdb.c gnome-settings-daemon.h \
+	GNOME_SettingsDaemon.h gnome-settings-xrdb.h
+gnome-settings-xsettings.o: gnome-settings-xsettings.c ../config.h \
+	gnome-settings-daemon.h GNOME_SettingsDaemon.h \
+	gnome-settings-xsettings.h xsettings-manager.h \
+	xsettings-common.h
+GNOME_SettingsDaemon-common.o: GNOME_SettingsDaemon-common.c \
+	GNOME_SettingsDaemon.h
+GNOME_SettingsDaemon-skels.o: GNOME_SettingsDaemon-skels.c \
+	GNOME_SettingsDaemon.h
+GNOME_SettingsDaemon-stubs.o: GNOME_SettingsDaemon-stubs.c \
+	GNOME_SettingsDaemon.h
+reaper.o: reaper.c ../config.h reaper.h
+xsettings-common.o: xsettings-common.c xsettings-common.h
+xsettings-manager.o: xsettings-manager.c xsettings-manager.h \
+	xsettings-common.h
 
 info-am:
-info: info-am
+info: info-recursive
 dvi-am:
-dvi: dvi-am
+dvi: dvi-recursive
 check-am: all-am
-check: check-am
+check: check-recursive
 installcheck-am:
-installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
-install-exec: install-exec-am
+installcheck: installcheck-recursive
+install-exec-am: install-libexecPROGRAMS
+install-exec: install-exec-recursive
 
-install-data-am: install-serverDATA
-install-data: install-data-am
+install-data-am:
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-am
-uninstall-am: uninstall-binPROGRAMS uninstall-serverDATA
-uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS) $(DATA)
-all-redirect: all-am
+install: install-recursive
+uninstall-am: uninstall-libexecPROGRAMS
+uninstall: uninstall-recursive
+all-am: Makefile $(PROGRAMS)
+all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(serverdir)
+installdirs: installdirs-recursive
+installdirs-am:
+	$(mkinstalldirs)  $(DESTDIR)$(libexecdir)
 
 
 mostlyclean-generic:
@@ -465,50 +666,57 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+clean-am:  clean-libexecPROGRAMS clean-compile clean-libtool clean-tags \
 		clean-generic mostlyclean-am
 
-clean: clean-am
+clean: clean-recursive
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am
+distclean-am:  distclean-libexecPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
-distclean: distclean-am
+distclean: distclean-recursive
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
-mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-serverDATA \
-install-serverDATA tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
+clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
+uninstall-libexecPROGRAMS install-libexecPROGRAMS mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs-am \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-$(CORBA_GENERATED): $(idl_dir)/GNOME_SettingsDaemon.idl
+$(CORBA_GENERATED): $(idl_dir)/GNOME_SettingsDaemon.idl $(ORBIT_IDL)
 	$(ORBIT_IDL) $(IDL_FLAGS) $(idl_dir)/GNOME_SettingsDaemon.idl
-
-@INTLTOOL_SERVER_RULE@
+install-data-hook :
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $(srcdir)/$(serverfile) > $(DESTDIR)$(serverdir)/$(serverfile:.in=)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

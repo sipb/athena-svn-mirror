@@ -23,9 +23,7 @@
  * 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include <config.h>
 
 #include <string.h>
 #include <gnome.h>
@@ -83,7 +81,7 @@ enum
 {
 	DOUBLE_CLICK_TEST_OFF,
 	DOUBLE_CLICK_TEST_MAYBE,
-	DOUBLE_CLICK_TEST_ON,
+	DOUBLE_CLICK_TEST_ON
 };
 
 enum
@@ -98,9 +96,16 @@ enum
  * define the macro */
 
 #define DOUBLE_CLICK_KEY "/desktop/gnome/peripherals/mouse/double_click"
-#define CURSOR_FONT_KEY "/desktop/gnome/peripherals/mouse/cursor_font"
+#define CURSOR_FONT_KEY  "/desktop/gnome/peripherals/mouse/cursor_font"
+#define CURSOR_SIZE_KEY  "/desktop/gnome/peripherals/mouse/cursor_size"
 
 GConfClient *client;
+
+#ifdef HAVE_XCURSOR
+static gboolean server_supports_xcursor = TRUE;
+#else
+static gboolean server_supports_xcursor = FALSE;
+#endif
 
 /* State in testing the double-click speed. Global for a great deal of
  * convenience
@@ -116,21 +121,19 @@ double_click_from_gconf (GConfPropertyEditor *peditor, const GConfValue *value)
 {
 	GConfValue *new_value;
 
-	new_value = gconf_value_new (GCONF_VALUE_FLOAT);
-	gconf_value_set_float (new_value, CLAMP (floor ((gconf_value_get_int (value) + 50) / 100) * 100, 0, 1000) / 1000.0);
-	return new_value;
-}
-
-static GConfValue *
-double_click_to_gconf (GConfPropertyEditor *peditor, const GConfValue *value)
-{
-	GConfValue *new_value;
-
 	new_value = gconf_value_new (GCONF_VALUE_INT);
-	gconf_value_set_int (new_value, gconf_value_get_float (value) * 1000.0);
+	gconf_value_set_int (new_value, CLAMP ((int) floor ((gconf_value_get_int (value) + 50) / 100.0) * 100, 100, 1000));
 	return new_value;
 }
 
+static void
+delay_value_changed_cb (GtkWidget *range,
+			gpointer   dialog)
+{
+	gchar *message = g_strdup_printf ("%.1f %s", gtk_range_get_value (GTK_RANGE (WID ("delay_scale"))) / 1000.0, _("seconds"));
+	gtk_label_set_label ((GtkLabel*) WID ("delay_label"), message);
+	g_free (message);
+}
 
 static void
 get_default_mouse_info (int *default_numerator, int *default_denominator, int *default_threshold)
@@ -233,6 +236,60 @@ drag_threshold_from_gconf (GConfPropertyEditor *peditor,
 	new_value = gconf_value_new (GCONF_VALUE_FLOAT);
 
 	gconf_value_set_float (new_value, CLAMP (gconf_value_get_int (value), 1, 10));
+
+	return new_value;
+}
+
+static GConfValue *
+cursor_size_to_widget (GConfPropertyEditor *peditor, const GConfValue *value)
+{
+	GConfValue *new_value;
+	gint widget_val;
+
+	widget_val = gconf_value_get_int (value);
+
+	new_value = gconf_value_new (GCONF_VALUE_INT);
+	switch (widget_val) {
+	case 12:
+		gconf_value_set_int (new_value, 0);
+		break;
+	case 24:
+		gconf_value_set_int (new_value, 1);
+		break;
+	case 36:
+		gconf_value_set_int (new_value, 2);
+		break;
+	default:
+		gconf_value_set_int (new_value, -1);
+		break;
+	}
+
+	return new_value;
+}
+
+static GConfValue *
+cursor_size_from_widget (GConfPropertyEditor *peditor, const GConfValue *value)
+{
+	GConfValue *new_value;
+	gint radio_val;
+
+	radio_val = gconf_value_get_int (value);
+
+	new_value = gconf_value_new (GCONF_VALUE_INT);
+	switch (radio_val) {
+	case 0:
+		gconf_value_set_int (new_value, 12);
+		break;
+	case 1:
+		gconf_value_set_int (new_value, 24);
+		break;
+	case 2:
+		gconf_value_set_int (new_value, 36);
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
 
 	return new_value;
 }
@@ -385,13 +442,15 @@ read_cursor_font (void)
 				target[length] = '\0';
 				retval = g_strdup (target);
 				g_free (link_name);
+				closedir (dir);
 				return retval;
 			}
 			
 		}
 		g_free (link_name);
 	}
-	
+	g_free (dir_name);
+	closedir (dir);
 	return NULL;
 }
 
@@ -434,7 +493,7 @@ cursor_font_changed (GConfClient *client,
 
 	/* we didn't find it; we add it to the end. */
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
-	cursor_text = g_strdup_printf (_("<b>Unknown Cursor</b>\n%s"), cursor_font);
+	cursor_text = g_strdup_printf ("<b>%s</b>\n%s", _("Unknown Cursor"), cursor_font);
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
 			    COLUMN_TEXT, cursor_text,
 			    COLUMN_FONT_PATH, cursor_font,
@@ -459,10 +518,11 @@ cursor_changed (GtkTreeSelection *selection,
 	gtk_tree_model_get (model, &iter,
 			    COLUMN_FONT_PATH, &cursor_font,
 			    -1);
-	if (cursor_font != NULL)
+	if (cursor_font != NULL) {
 		gconf_client_set_string (gconf_client_get_default (),
 					 CURSOR_FONT_KEY, cursor_font, NULL);
-	else
+		g_free (cursor_font);
+	} else
 		gconf_client_unset (gconf_client_get_default (),
 				    CURSOR_FONT_KEY, NULL);
 }
@@ -486,6 +546,7 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 	gchar             *font_path;
 	gchar             *cursor_string;
 	gboolean           found_default;
+	gchar             *message;
 
 	program = gnome_program_get ();
 	found_default = FALSE;
@@ -502,15 +563,29 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 	gconf_value_free (value);
 
 	/* Double-click time */
+	peditor = gconf_peditor_new_numeric_range
+		(changeset, DOUBLE_CLICK_KEY, WID ("delay_scale"),
+		 "conv-to-widget-cb", double_click_from_gconf,
+		 NULL);
+	g_signal_connect (G_OBJECT (WID ("delay_scale")), "value_changed", (GCallback) delay_value_changed_cb, dialog);
+	gtk_widget_set_size_request (WID ("delay_scale"), 150, -1);
 	gtk_image_set_from_stock (GTK_IMAGE (WID ("double_click_image")), MOUSE_DBLCLCK_OFF, mouse_capplet_dblclck_icon_get_size ());
 	g_object_set_data (G_OBJECT (WID ("double_click_eventbox")), "image", WID ("double_click_image"));
 	g_signal_connect (WID ("double_click_eventbox"), "button_press_event",
 			  G_CALLBACK (event_box_button_press_event), changeset);
-
+	
+	/* set the timeout value  label with correct value of timeout */
+	message = g_strdup_printf ("%.1f %s", gtk_range_get_value (GTK_RANGE (WID ("delay_scale"))) / 1000.0, _("seconds"));
+	gtk_label_set_label ((GtkLabel*) WID ("delay_label"), message);
+	g_free (message); 
+	
 	/* Cursors page */
 	tree_view = WID ("cursor_tree");
 	cursor_font = read_cursor_font ();
 
+
+					
+	
 	model = (GtkTreeModel *) gtk_list_store_new (N_COLUMNS, GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_STRING);
 	gtk_tree_view_set_model (GTK_TREE_VIEW (tree_view), model);
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (tree_view));
@@ -535,10 +610,10 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	if (cursor_font == NULL) {
-		cursor_string = _("<b>Default Cursor - Current</b>\nThe default cursor that ships with X");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Default Cursor - Current"), _("The default cursor that ships with X"));
 		found_default = TRUE;
 	} else {
-		cursor_string = _("<b>Default Cursor</b>\nThe default cursor that ships with X");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Default Cursor"), _("The default cursor that ships with X"));
 	}
 
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -546,7 +621,7 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 			    COLUMN_TEXT, cursor_string,
 			    COLUMN_FONT_PATH, NULL,
 			    -1);
-
+	g_free (cursor_string);
 
 	/* Inverted cursor */
 	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "mouse-cursor-white.png", TRUE, NULL);
@@ -556,10 +631,10 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	if (cursor_font && ! strcmp (cursor_font, font_path)) {
-		cursor_string = _("<b>White Cursor - Current</b>\nThe default cursor inverted");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("White Cursor - Current"), _("The default cursor inverted"));
 		found_default = TRUE;
 	} else {
-		cursor_string = _("<b>White Cursor</b>\nThe default cursor inverted");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("White Cursor"), _("The default cursor inverted"));
 	}
 
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -568,7 +643,8 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 			    COLUMN_FONT_PATH, font_path,
 			    -1);
 	g_free (font_path);
-	
+	g_free (cursor_string);
+
 	/* Large cursor */
 	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "mouse-cursor-normal-large.png", TRUE, NULL);
 	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
@@ -577,10 +653,10 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	if (cursor_font && ! strcmp (cursor_font, font_path)) {
-		cursor_string = _("<b>Large Cursor - Current</b>\nLarge version of normal cursor");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Large Cursor - Current"), _("Large version of normal cursor"));
 		found_default = TRUE;
 	} else {
-		cursor_string = _("<b>Large Cursor</b>\nLarge version of normal cursor");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Large Cursor"), _("Large version of normal cursor"));
 	}
 
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -589,6 +665,7 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 			    COLUMN_FONT_PATH, font_path,
 			    -1);
 	g_free (font_path);
+	g_free (cursor_string);
 
 	/* Large inverted cursor */
 	filename = gnome_program_locate_file (program, GNOME_FILE_DOMAIN_APP_PIXMAP, "mouse-cursor-white-large.png", TRUE, NULL);
@@ -598,10 +675,10 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 
 	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 	if (cursor_font && ! strcmp (cursor_font, font_path)) {
-		cursor_string = _("<b>Large White Cursor - Current</b>\nLarge version of white cursor");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Large White Cursor - Current"), _("Large version of white cursor"));
 		found_default = TRUE;
 	} else {
-		cursor_string = _("<b>Large White Cursor</b>\nLarge version of white cursor");
+		cursor_string = g_strdup_printf ("<b>%s</b>\n%s", _("Large White Cursor"), _("Large version of white cursor"));
 	}
 
 	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
@@ -610,20 +687,26 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 			    COLUMN_FONT_PATH, font_path,
 			    -1);
 	g_free (font_path);
+	g_free (cursor_string);
+
+	g_free (cursor_font);
 
 	gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column);
 	
 	gconf_peditor_new_boolean
 		(changeset, "/desktop/gnome/peripherals/mouse/locate_pointer", WID ("locate_pointer_toggle"), NULL);
-	/* Motion page */
-	/* speed */
-	gconf_peditor_new_numeric_range
-		(changeset, DOUBLE_CLICK_KEY, WID ("delay_scale"),
-		 "conv-to-widget-cb", double_click_from_gconf,
-		 "conv-from-widget-cb", double_click_to_gconf,
-		 NULL);
 
-	gconf_peditor_new_numeric_range
+	gconf_peditor_new_select_radio (changeset,
+					CURSOR_SIZE_KEY,
+					gtk_radio_button_get_group (GTK_RADIO_BUTTON (WID ("cursor_size_small_radio"))),
+					"conv-to-widget-cb", cursor_size_to_widget,
+					"conv-from-widget-cb", cursor_size_from_widget,
+					NULL);
+					
+
+        /* Motion page */
+	/* speed */
+      	gconf_peditor_new_numeric_range
 		(changeset, "/desktop/gnome/peripherals/mouse/motion_acceleration", WID ("accel_scale"),
 		 "conv-to-widget-cb", motion_acceleration_from_gconf,
 		 "conv-from-widget-cb", motion_acceleration_to_gconf,
@@ -632,14 +715,12 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 	gconf_peditor_new_numeric_range
 		(changeset, "/desktop/gnome/peripherals/mouse/motion_threshold", WID ("sensitivity_scale"),
 		 "conv-to-widget-cb", threshold_from_gconf,
-		 "conv-from-widget-cb", gconf_value_float_to_int,
 		 NULL);
 
 	/* DnD threshold */
 	gconf_peditor_new_numeric_range
 		(changeset, "/desktop/gnome/peripherals/mouse/drag_threshold", WID ("drag_threshold_scale"),
 		 "conv-to-widget-cb", drag_threshold_from_gconf,
-		 "conv-from-widget-cb", gconf_value_float_to_int,
 		 NULL);
 
 	/* listen to cursors changing */
@@ -657,16 +738,35 @@ setup_dialog (GladeXML *dialog, GConfChangeSet *changeset)
 static GladeXML *
 create_dialog (void) 
 {
-	GtkWidget    *widget;
 	GladeXML     *dialog;
 	GtkSizeGroup *size_group;
+	gchar        *text;
 
 	/* register the custom type */
 	(void) mouse_capplet_check_button_get_type ();
 
 	dialog = glade_xml_new (GNOMECC_DATA_DIR "/interfaces/gnome-mouse-properties.glade", "mouse_properties_dialog", NULL);
-	widget = glade_xml_get_widget (dialog, "prefs_widget");
 
+	if (server_supports_xcursor) {
+		gtk_widget_hide (WID ("cursor_font_vbox"));
+		gtk_widget_show (WID ("cursor_size_vbox"));
+		text = g_strdup_printf ("<b>%s</b>", _("Cursor Size"));
+		gtk_label_set_markup (GTK_LABEL (WID ("cursor_category_label")), text);
+		g_free (text);
+		gtk_box_set_child_packing (GTK_BOX (WID ("cursors_vbox")),
+					   WID ("cursor_appearance_vbox"),
+					   FALSE, TRUE, 0, GTK_PACK_START);
+	} else {
+		gtk_widget_hide (WID ("cursor_size_vbox"));
+		gtk_widget_show (WID ("cursor_font_vbox"));
+		text = g_strdup_printf ("<b>%s</b>", _("Cursor Theme"));
+		gtk_label_set_markup (GTK_LABEL (WID ("cursor_category_label")), text);
+		g_free (text);
+		gtk_box_set_child_packing (GTK_BOX (WID ("cursors_vbox")),
+					   WID ("cursor_appearance_vbox"),
+					   TRUE, TRUE, 0, GTK_PACK_START);
+	}
+	
 	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget (size_group, WID ("acceleration_label"));
 	gtk_size_group_add_widget (size_group, WID ("sensitivity_label"));
@@ -692,8 +792,8 @@ dialog_response_cb (GtkDialog *dialog, gint response_id, GConfChangeSet *changes
 {
 	if (response_id == GTK_RESPONSE_HELP)
 		capplet_help (GTK_WINDOW (dialog),
-			"wgoscustdesk.xml",
-			"goscustperiph-5");
+			      "user-guide.xml",
+			      "goscustperiph-5");
 	else
 		gtk_main_quit ();
 }
@@ -741,8 +841,8 @@ main (int argc, char **argv)
 		g_signal_connect (dialog_win, "response",
 				  G_CALLBACK (dialog_response_cb), changeset);
 
-		capplet_set_icon (dialog_win, "mouse-capplet.png");
-		gtk_widget_show_all (dialog_win);
+		capplet_set_icon (dialog_win, "gnome-dev-mouse-optical");
+		gtk_widget_show (dialog_win);
 
 		gtk_main ();
 	}

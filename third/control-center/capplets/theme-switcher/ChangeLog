@@ -1,3 +1,262 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-theme-details.c: (gnome_theme_details_init):
+	* gnome-theme-manager.c: (setup_dialog):
+	* theme-switcher.c: (setup_dialog):
+	Use themed icon for WM hint.
+
+2004-07-31  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-theme-save.c: (setup_directory_structure): Remove
+	extra space in a string before question mark.
+
+2004-07-09  David Sedeño <david@alderia.com>
+
+	(http://bugzilla.gnome.org/show_bug.cgi?id=122970)
+	* gnome-theme-save.c (setup_directory_structure): 
+	If theme exists, show confirmation dialog to user.
+
+2004-06-20  David Sedeño <david@alderia.com>
+
+	(http://bugzilla.gnome.org/show_bug.cgi?id=143958)
+	* gnome-theme-manager.c, theme-properties.glade: Revert option added.
+	Two now gboolean global var: 'themes_loaded' to check if its the first 
+	time that has cold meta_theme_selection_changed. 'rervert' to known 
+	in the same function if the selection has change because a revert.
+	(meta_theme_selection_changed):  If it's the same time, save the
+	initial theme in initial_meta_theme_info. If the selection has change
+	because a revert click, set the sensitive of the revert button 
+	to false. 
+	(revert_theme_clicked): callback for the revert button clicked signal.
+	Set the initial_meta_theme and set sensitive to FALSE.
+	(setup_dialog): Added the revert button to the gtk_size_group, connect
+	the clicked callback and set sensitive initially to FALSE.
+ 
+2004-05-27  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* theme-properties.glade: Set accessible name for GtkTreeViews
+	in Theme Details dialog. Fixes bug #142402.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-07  Jody Goldberg <jody@gnome.org>
+
+	* gnome-theme-manager.c (update_settings_from_gconf_idle) : fix the
+	  selection when not running metacity.  That was damn irritating.
+
+2004-03-10  Chris Lahey  <clahey@ximian.com> 
+
+	* gnome-theme-manager.c: (pixbuf_async_func): rename function. Use
+	broken_image.
+	(pixbuf_async_data_free): rename function. Use PixbufAsyncData instead
+	of a GList.
+	(pixbuf_idle_func): rename function. Handle the case that things
+	change again while we're updating.  Stop what it's doing and start
+	from the beginning. 
+	(add_pixbuf_idle): 
+	(load_meta_themes): clean up. Remove model_meta_theme_info. 
+	(update_themes_from_disk): Remove the code to check for
+	have_meta_theme here.  It works with no metathemes installed.
+	(add_custom_row_to_meta_theme): handle the initial case too.
+	(remove_custom_row_from_meta_theme): removed.
+	(themes_equal): helper function for a fairly complicated comparison.
+	(update_settings_from_gconf_idle), (update_settings_from_gconf):
+	reamed. Instead of custom_theme_found to mean that there should be a
+	custom theme, we use current_theme_saved.
+	This means that there's a metatheme for the current theme.  Its
+	meaning is almost exactly the boolean opposite of the old
+	one but it's more understandable.  initial_theme_saved tells us 
+	whether the initial theme has a metatheme for it now. 
+	(theme_changed_idle), (theme_changed_func): Made this idle to reduce
+	rerunning
+	(setup_dialog): Load broken image.
+	(gnome_theme_manager_sort_func): Make it symmetric. 
+	* gnome-theme-manager.h: Remove THEME_FLAG_INITIAL.
+
+2004-04-02  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-theme-details.c (update_list_something): Check that cursor
+	position has changed before calling gtk_tree_view_set_cursor.
+	* gnome-theme-manager.c (update_settings_from_gconf): Check that 
+	cursor position has changed before calling gtk_tree_view_set_cursor.
+
+	Fixes bug #131538.
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-03-02  Jody Goldberg <jody@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes) : revert the commit on
+	  Wed Feb  4 00:05:11 2004  Jonathan Blandford  <jrb@gnome.org>
+	  exit if it is a non-compliant wm (eg, anything but metacity)
+
+2004-02-25  Fernando Herrera  <fherrera@onirica.com>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=132902
+	* theme-install.glade: use GtkFileChooser.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-theme-details.c: (cb_dialog_response):
+	* gnome-theme-installer.c: (install_dialog_response):
+	* gnome-theme-manager.c: (cb_dialog_response):
+	* theme-switcher.c: (install_dialog_response),
+	(cb_dialog_response): Update help links to point to user-guide.xml
+
+Sat Feb  7 00:34:45 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes): fix #106424
+
+Fri Feb  6 20:49:25 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-details.c (gnome_theme_details_init): Patch from
+	Frederic Crozat to install themes in the right place.
+
+Wed Feb  4 00:05:11 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes): exit if it is a
+	non-compliant wm (eg, anything but metacity)
+
+Tue Feb  3 23:36:25 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.c (load_meta_themes): use
+	g_markup_printf_escaped instead of g_strdup_printf, #110564
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2004-01-05  Muktha <muktha.narayan@wipro.com>
+
+	* theme-properties.glade: Add accessible name and description.
+	  Fixes bug #128377.
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-12-05 Srinivasa Ragavan <sragavan@novell.com>
+
+	* gnome-theme-installer.c (install_dialog_response): Fix for bug
+	  #127371, reporting invalid/ null file locations.
+
+2003-12-05 Srinivasa Ragavan <sragavan@novell.com>
+
+	* gnome-theme-installer.c (install_dialog_response): Fix for infinite 
+	  loop, when trying to install themes from ~/.themes , #116224
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+Tue Aug  5 15:38:31 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* theme-properties.glade: Fix from Christian Neumair to fix
+	default and focus, #116892
+
+	* theme-install.glade: ditto
+
+Mon Aug  4 14:14:53 2003  Jonathan Blandford  <jrb@redhat.com>
+
+ 	* gnome-theme-manager.c (idle_async_func): make sure that we have
+	a valid theme_id, #104824
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-theme-manager.c: (idle_async_func), (load_meta_themes):
+	use the default image if the thumbnailer fails.
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+Wed Jun 18 15:46:27 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* Makefile.am (EXTRA_DIST): add $(desktop_icons_DATA)
+
+2003-06-06 Mark Finlay <sisob@eircom.net>
+
+ 	* gnome-ccthemes.png
+	* Makefile.am
+
+	Add icon for the theme applet from gnome-desktop
+
+2003-05-28  Christian Neumair  <chris@gnome-de.org>
+
+	* theme-install.glade
+	* theme-properties.glade:
+
+	HIGified (#105004).
+
+2003-05-13  Andrew Sobala  <aes@gnome.org>
+
+	* Makefile.am: removed theme-thumbnail.[ch]
+	* gnome-theme-manager.c: (meta_theme_selection_changed):
+	theme-thumbnail is now in libcommon. Removed meta_theme_set; also now
+	in libcommon.
+	* theme-thumbnail.c: removed, now in libcommon
+	* theme-thumbnail.h: removed, now in libcommon
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* theme-thumbnail.c: (create_image): Unref the
+	icon_theme after using it.
+
+2003-05-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* theme-properties.glade: Add a colon for consistency.
+	Fixes bug #103923.
+
+2003-04-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-theme-manager.c: (main): Fix a typo. Adapted version
+	of a patch from <mitr@volny.cz>. Fixes bug #111849.
+
+2003-04-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* theme-thumbnail.c: (message_from_capplet), (message_from_child),
+	(generate_theme_thumbnail), (theme_thumbnail_factory_init): Plug
+	leaks and guard against invalid reads reported by valgrind.
+
+Wed Feb  5 17:03:26 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* gnome-theme-manager.[ch] (get_default_string_from_key): get the
+	default from the schema and always sort it at the top.
+
+	* gnome-theme-details.c: ditto
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

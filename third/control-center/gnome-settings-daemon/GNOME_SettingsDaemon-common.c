@@ -10,6 +10,23 @@
 
 static const CORBA_unsigned_long ORBit_zero_int = 0;
 
+#ifndef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
+void
+_ORBIT_skel_small_GNOME_SettingsDaemon_awake(POA_GNOME_SettingsDaemon *
+					     _o_servant, gpointer _o_retval,
+					     gpointer * _o_args,
+					     CORBA_Context _o_ctx,
+					     CORBA_Environment * _o_ev,
+					     CORBA_boolean(*_impl_awake)
+					     (PortableServer_Servant _servant,
+					      const CORBA_char * service,
+					      CORBA_Environment * ev))
+{
+   *(CORBA_boolean *) _o_retval =
+      _impl_awake(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
+}
+
+#endif
 #if ( (TC_IMPL_TC_GNOME_SettingsDaemon_0 == 'G') \
 && (TC_IMPL_TC_GNOME_SettingsDaemon_1 == 'N') \
 && (TC_IMPL_TC_GNOME_SettingsDaemon_2 == 'O') \

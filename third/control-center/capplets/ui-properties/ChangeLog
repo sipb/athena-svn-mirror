@@ -1,3 +1,91 @@
+2004-08-20  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gnome-ui-properties.c: (setup_dialog):
+	Use themed icon for window hint.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-ui-properties.c: (dialog_button_clicked_cb): Update help link
+	to point to user-guide.xml
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Rodney Dawes  <dobey@ximian.com>
+
+	* gnome-ui-properties.glade: Fix border width of example toolbar,
+	fixes #130064
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+2003-08-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* gnome-ui-properties.glade: Patch to fix spacing between action 
+	area and vbox of preferences dialog.
+
+2003-07-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-ui-properties.c, gnome-ui-properties.glade:
+	Apply patch from Christian - Manny Calavera - Neumair
+	<chris@gnome-de.org> for ui-review bug # 99537.
+
+2003-07-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-ui-properties.glade:  UI-Review fixes for bug
+	report #99537.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-ui-properties.c: Fix for both-horiz property
+	with eggtoolbar and bonobo. Fixes bug #104979.
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

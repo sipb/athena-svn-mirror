@@ -1,3 +1,133 @@
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-07  Jody Goldberg <jody@gnome.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=130623
+	* capplet-util.c (capplet_set_icon) : respect the icon theme
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-02-16  Jody Goldberg <jody@gnome.org>
+
+	* gconf-property-editor.c (peditor_image_clicked_cb) : Use the monitor
+	  size kludge for the vertical size of the new file selector.
+
+2003-12-07  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* gconf-property-editor.c: (peditor_image_set_filename),
+	(peditor_image_chooser_response_cb),
+	(peditor_image_chooser_update_preview_cb),
+	(peditor_image_clicked_cb): replace
+	PreviewFileSelection (GtkFileSelection) with GtkFileChooser, use new
+	gdk_pixbuf_new_from_file_at_size method to load a scaled image.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+Thu Aug  7 15:23:08 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gconf-property-editor.c (gconf_property_editor_set_prop): damn
+	it Jonathan.  Save the @#*&$@# file before committing.
+
+Mon Aug  4 14:35:22 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gconf-property-editor.c (gconf_property_editor_init): Reset the
+	old connection when setting a new one, #116232
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-07-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gconf-property-editor.c: (gconf_property_editor_finalize):
+	Merge Anders' fix from stable.
+
+2003-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Handle crashes of the thumbnailer child process a
+	little more gracefully.
+
+	* theme-thumbnail.c:
+	(generate_theme_thumbnail): if we get an EOF from
+	the child close the pipe, return NULL and return
+	NULL from any subsequent calls.
+	(generate_theme_thumbnail_async): return NULL if
+	the pipe has been closed.
+	(theme_thumbnail_factory_init): set pipe descriptos
+	to zero after closing them.
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-13  Andrew Sobala  <aes@gnome.org>
+
+	* Makefile.am: build fixes for the below
+	* gnome-theme-apply.c: pulled out from gnome-theme-manager.c
+	* gnome-theme-apply.h: pulled out from gnome-theme-manager.c
+	* theme-thumbnail.c: moved to libcommon
+	* theme-thumbnail.h: moved to libcommon
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-05-01  Ross Burton  <ross@burtonini.com>
+
+	* gnome-theme-info.c (real_add_top_theme_dir_monitor):
+	Monitor directories and symbolic links instead of just
+	directories. Fixes #111990.
+
+2003-04-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gconf-property-editor.c: (gconf_peditor_new): Plug a leak
+	* gnome-theme-info.c: (top_theme_dir_changed),
+	(top_icon_theme_dir_changed), (real_add_top_theme_dir_monitor):
+	Plug leaks and fix invalid reads reported by valgrind.
+
+2003-03-27  Andrew Sobala  <aes@gnome.org>
+
+	* gnome-theme-info.c: (gnome_theme_read_meta_theme),
+	(update_common_theme_dir_index):
+	s/read_meta_theme/gnome_theme_read_meta_theme/; enable the reading of
+	themes that just use [X-GNOME-Metatheme] without pretending to be a
+	.desktop file
+	* gnome-theme-info.h: exposed gnome_theme_read_meta_theme
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1

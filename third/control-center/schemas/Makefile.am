@@ -2,12 +2,15 @@ schemadir   = $(GCONF_SCHEMA_FILE_DIR)
 schema_in_files= \
 	apps_gnome_settings_daemon_screensaver.schemas.in	\
 	apps_gnome_settings_daemon_default_editor.schemas.in	\
-	desktop_gnome_font_rendering.schemas
+	desktop_gnome_font_rendering.schemas 			\
+	desktop_gnome_peripherals_keyboard_xkb.schemas.in	\
+	apps_gnome_settings_daemon_keybindings.schemas.in
 
 schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
 @INTLTOOL_SCHEMAS_RULE@
 
+if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
@@ -15,5 +18,8 @@ install-data-local:
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
 		done \
 	fi
+else
+install-data-local:
+endif
 
-EXTRA_DIST=$(schema_DATA)
+EXTRA_DIST=$(schema_in_files) $(schema_DATA)

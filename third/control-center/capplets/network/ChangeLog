@@ -1,3 +1,123 @@
+2004-06-26  Muktha <muktha.narayan@wipro.com>
+
+	* gnome-network-preferences.glade: Allow only numeric values in 
+	spin buttons. Fixes #138654.
+
+2004-06-21  David Sedeño <david@alderia.com>
+
+	* gnome-network-preferences.glade: Change mnemonic for Username.
+	Fixes bug #144333
+
+2004-05-18  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-network-preferences.glade: Mark accessible names for 
+	translation. Fixes bug #136291.
+
+2004-04-15  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.1
+
+2004-04-07  Jody Goldberg <jody@gnome.org>
+
+	* gnome-network-preferences.c : sync the icon with the desktop file
+
+2004-04-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.3
+
+2004-03-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0.1
+
+2004-03-23  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.6.0
+
+2004-03-11  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.4
+
+2004-03-05  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-network-preferences.glade: Add accessible names for port
+	entry fields. Fixes more of bug #126714.
+
+2004-02-13  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.3
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-network-preferences.c: (cb_dialog_response),
+	(cb_details_dialog_response): Update help link to point to
+	user-guide.xml
+
+2004-01-16  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* gnome-network-preferences.glade: Move some declarations so that
+	AtkRelations are defined. Fixes bug #126714.
+
+2004-01-14  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.2
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1.1
+
+2003-12-30  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.1
+
+2003-10-28  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.5.0
+
+Tue Aug 26 15:00:34 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-network-preferences.c (setup_dialog): Work around peditor
+	bug that resets the port when we start up for the first time,
+	#120111
+
+2003-07-18  Dennis Cranston <dennis_cranston at yahoo com>
+	
+	* gnome-network-capplet.png:  New file.
+
+	* Makefile.am, gnome-network-preferences.c:  Add the missing
+	window icon.
+
+2003-07-18  Christian Neumair  <chris@gnome-de.org>
+
+	* gnome-network-preferences.glade: Some more padding fixes.
+
+2003-07-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-network-preferences.glade:  Minor HIG widget padding
+	adjustments.  Fix a mnemonic conflict.
+
+2003-07-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.4
+
+2003-06-24  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.3
+
+2003-05-15  Malcolm Tredinnick <malcolm@commsecure.com.au>
+	
+	* gnome-network-preferences.desktop.in: Use Header
+	capitalisation for menu items. Fixes bug #112939.
+
+2003-05-07  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.3.1
+
+2003-02-05 Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	* gnome-network-preferences.c: Added "/system/proxy" and
+	"/system/http_proxy" to the list of directories GConfClient
+	will watch. Fixes #98596 
+
 Tue Feb  4 17:09:18 2003  Jonathan Blandford  <jrb@redhat.com>
 
 	* Release 2.2.0.1
