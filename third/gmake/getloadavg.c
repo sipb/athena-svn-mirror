@@ -471,7 +471,7 @@ extern int errno;
 # endif /* NeXT */
 
 # ifdef sgi
-#  include <sys/sysmp.h>
+#  include <sys/sysget.h>
 # endif /* sgi */
 
 # ifdef UMAX
@@ -524,7 +524,7 @@ static unsigned int samples;
 static struct dg_sys_info_load_info load_info;	/* what-a-mouthful! */
 # endif /* DGUX */
 
-#if !defined(HAVE_LIBKSTAT) && defined(LOAD_AVE_TYPE)
+#if !defined(HAVE_LIBKSTAT) && !defined(sgi) && defined(LOAD_AVE_TYPE)
 /* File descriptor open to /dev/kmem or VMS load ave driver.  */
 static int channel;
 /* Nonzero iff channel is valid.  */
@@ -625,6 +625,34 @@ getloadavg (loadavg, nelem)
     loadavg[elem++] = dyn_info.psd_avg_15_min;
 
 # endif /* hpux && HAVE_PSTAT_GETDYNAMIC */
+
+# if !defined (LDAV_DONE) && defined (sgi)
+#  define LDAV_DONE
+#  undef LOAD_AVE_TYPE
+
+  /* The sysget interface was added in IRIX 6.5, which allows us to
+   * install without setgid.
+   */
+  sgt_cookie_t cookie;
+  int avenrun[3];
+  int count;
+
+  SGT_COOKIE_INIT(&cookie);
+  SGT_COOKIE_SET_KSYM(&cookie, KSYM_AVENRUN);
+  count = sysget(SGT_KSYM, (char *)avenrun, sizeof(avenrun),
+		 SGT_READ, &cookie);
+  if (count < 0)
+    return -1;
+
+  /* Convert bytes returned to number of elements. */
+  count /= sizeof(avenrun[0]);
+
+  for (elem = 0; elem < nelem && elem < count; elem++)
+    loadavg[elem] = ((double) avenrun[elem]) / 1024.0;
+
+  return elem;
+
+# endif /* sgi */
 
 # if !defined (LDAV_DONE) && defined (__linux__)
 #  define LDAV_DONE
@@ -948,12 +976,6 @@ getloadavg (loadavg, nelem)
 	    offset = nl[0].n_value;
 	  }
 #   endif /* !SUNOS_5 */
-#  else  /* sgi */
-      int ldav_off;
-
-      ldav_off = sysmp (MP_KERNADDR, MPKA_AVENRUN);
-      if (ldav_off != -1)
-	offset = (long) ldav_off & 0x7fffffff;
 #  endif /* sgi */
     }
 
