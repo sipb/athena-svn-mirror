@@ -23,6 +23,9 @@
 #ifdef SOLARIS
 #include <sys/mkdev.h>
 #endif
+#ifdef hpux
+#define seteuid(x) setresuid(-1, (x), -1)
+#endif /* hpux */
 
 /* Function Name: ALisRemoteDir
  * Arguments: dir - name of the directory.
@@ -69,9 +72,13 @@ char *dir;
     return(1);
 #endif
     
-#if (defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
+#if (defined(hpux) || defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
 #define REMOTEDONE
-#if defined(vax) || defined(ibm032)
+#if defined(hpux)
+#undef major
+#define major(x) ((int)(((unsigned)(x)>>24)&0377))
+#endif
+#if defined(vax) || defined(ibm032) || defined(hpux)
 #define NFS_MAJOR 0xff
 #endif
 #if defined(sun)
