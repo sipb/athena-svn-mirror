@@ -40,8 +40,9 @@ Internet File Transfer Protocol server
 .SH SYNOPSIS
 .B ftpd
 [\fB\-d\fP] [\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP
-\fImaxtimeout\fP] [\fB\-p\fP \fIport\fP] [\fB\-r\fP \fIrealm-file\fP]
-[\fB\-s\fP \fIsrvtab\fP]
+\fImaxtimeout\fP] [\fB\-p\fP \fIport\fP] [\fb\-a [off]\fP]
+[\fB\-r\fP \fIrealm-file\fP]
+[\fB\-s\fP \fIsrvtab\fP] [\fB\-E\fP]
 .SH DESCRIPTION
 .B Ftpd
 is the
@@ -77,6 +78,12 @@ option.  The default limit is 2 hours.
 .TP
 .B \-a
 Only permit Kerberos authenticated or anonymous logins.
+.TP
+.B \-a off
+Don't allow automatic login of Kerberos authenticated logins.
+.TP
+.B \-E
+Don't allow passwords to be typed across unencrypted connections.
 .TP
 \fB\-p\fP \fIport\fP
 Run as a server and accept a connection on
