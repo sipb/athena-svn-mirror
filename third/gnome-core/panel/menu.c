@@ -65,6 +65,8 @@ extern char *kde_mini_icondir;
 
 extern GtkTooltips *panel_tooltips;
 
+static GtkStyle *title_style;
+
 enum {
 	HELP_BUTTON = 0,
 	REVERT_BUTTON,
@@ -141,6 +143,7 @@ init_menus (void)
 {
 	const DistributionInfo *distribution_info = get_distribution_info ();
 	char *menu;
+	GdkFont *font;
 
 	/*just load the menus from disk, don't make the widgets
 	  this just reads the .desktops of the top most directory
@@ -163,6 +166,14 @@ init_menus (void)
 	if (distribution_info != NULL &&
 	    distribution_info->menu_init_func != NULL)
 		distribution_info->menu_init_func ();
+
+	title_style = gtk_style_copy (gtk_widget_get_default_style ());
+	font = gdk_font_load ("-adobe-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-1");
+	if (font)
+	  {
+	    gdk_font_unref (title_style->font);
+	    title_style->font = font;
+	  }
 }
 
 /*the most important dialog in the whole application*/
@@ -1864,7 +1875,9 @@ setup_title_menuitem (GtkWidget *menuitem, GtkWidget *pixmap, char *title,
 	GtkWidget *label, *hbox=NULL, *align;
 	IconSize size = global_config.use_large_icons 
 		? MEDIUM_ICON_SIZE : SMALL_ICON_SIZE;
+	gtk_widget_push_style (title_style);
 	label = gtk_label_new (title);
+	gtk_widget_pop_style ();
 	gtk_misc_set_alignment (GTK_MISC(label), 0.0, 0.5);
 	gtk_widget_show (label);
 
@@ -1876,7 +1889,7 @@ setup_title_menuitem (GtkWidget *menuitem, GtkWidget *pixmap, char *title,
 	} else
 		gtk_container_add (GTK_CONTAINER (menuitem), label);
 	
-	if (gnome_preferences_get_menus_have_icons ()) {
+	if (0) {
 		align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
 		gtk_widget_show (align);
 		gtk_container_set_border_width (GTK_CONTAINER (align), 1);
