@@ -10,7 +10,7 @@ alias	j	jobs -l
 setenv TZ US/Eastern
 set history=40
 set cdpath=(/)
-set path=(/usr/athena/bin /etc/athena /etc /bin/athena  /bin /usr/ucb /usr/sbin /usr/athena/etc  /usr/openwin/bin .)
+set path=(/usr/athena/bin /etc/athena /sbin /bin/athena /bin /usr/ccs/bin /usr/ucb /usr/sbin /usr/athena/etc /usr/openwin/bin)
 if ($?prompt) then
 	set prompt="`uname -n`# "
 endif
