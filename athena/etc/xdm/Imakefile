@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.6 1995-10-02 22:10:58 cfields Exp $
+ * $Id: Imakefile,v 1.7 1995-11-27 23:51:54 cfields Exp $
  */
 
 WCL=wcl
@@ -9,8 +9,7 @@ DM=dm
 #ifdef sgi
 WCL=
 XDM=
-DM=
-#define WSUBDIRS wcl.r5
+DM=misc
 #endif
 
 #ifdef SOLARIS
@@ -18,14 +17,3 @@ XDM=
 #endif
 
 #define ISUBDIRS ${WCL} ${DM} ${XDM} xlogin console conf 
-
-
-/* In the imake template, ISUBDIRS is all built before XSUBDIRS,
-   but we need wcl.r5 to be built before xlogin. We also don't care
-   to install it. */
-#ifdef WSUBDIRS
-do_subdirs_xmakefile(WSUBDIRS)
-foreach_subdirs(all,WSUBDIRS)
-foreach_subdirs(clean,WSUBDIRS)
-foreach_subdirs(depend,WSUBDIRS)
-#endif
