@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.62 2003-04-22 16:29:47 ghudson Exp $
+# $Id: update_ws.sh,v 1.63 2003-05-13 22:05:46 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -247,19 +247,25 @@ esac
 case "$HOSTTYPE" in
 sun4)
 
-  # Set required filesystem sizes 9.1 release, and required filesystem
-  # space for the 9.1 update.  Filesystem overhead consumes about 7% of
+  # Set required filesystem sizes 9.2 release, and required filesystem
+  # space for the 9.2 update.  Filesystem overhead consumes about 7% of
   # a partition, so we check for a filesystem size 10% less than the
   # partition size we want.  We get some extra margin from minfree,
   # but we don't deliberately rely on that.
 
-  # For the 9.1 release, the size of /usr with sys_rvd.big actually
-  # decreased (due to the use of gnu ld), so there is no special check
-  # for sys_rvd.big machines.
-  reqrootsize=88473	# 96MB partition; measured use 66033K
-  requsrsize=184320	# 200MB partition; measured use 153465K
-  reqrootspace=10240	# 10MB; measured space increase 6837K
-  requsrspace=61440	# 60MB; measured space increase 51909K
+  if [ -h /usr/athena ]; then
+    # Multi-partition Sun.
+    reqrootsize=184320	# 200MB partition; measured use 92698K
+    requsrsize=184320	# 200MB partition; measured use 160819K
+    reqrootspace=30720	# 30MB; measured space increase 26338K
+    requsrspace=10240	# 10MB; measured space increase 3582K
+  else
+    # Single-partition Sun.
+    reqrootsize=2097152	# 2GB partition; measured use 1021038K
+    requsrsize=0
+    reqrootspace=614400	# 600MB; measured space increase 531949K
+    requsrspace=0
+  fi
 
   # Check filesystem sizes.
   rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
@@ -273,7 +279,7 @@ sun4)
 
   # Check free space if this is a full update to 9.1.
   case $version in
-  8.*|9.0.*)
+  9.1.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
     usrspace=`df -k /usr | awk '{ x = $4; } END { print x; }'`
     if [ "$reqrootspace" -gt "$rootspace" \
@@ -286,25 +292,6 @@ sun4)
     fi
     ;;
   esac
-
-  # The 9.1.14 release adds about 200MB of files to /usr/athena on
-  # sys_rvd.big machines.  Make sure we have enough space for that
-  # update if this is such a machine.  No need to add in numbers for
-  # the 9.0 to 9.1 update, since (as noted above) disk usage on
-  # sys_rvd.big machines went down between 9.0 and 9.1.13.
-  if [ ! -h /usr/athena ]; then
-    case $version in
-    8.*|9.0.*|9.1.[0-9]|9.1.1[0-3])
-      rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
-      if [ "$rootspace" -lt 204800 ]; then
-	echo "The / partition must have 204800K free for this update."
-	echo "Please clean local files."
-	logger -t "$HOST" -p user.notice / too full to take 9.1.14 update
-	failupdate
-      fi
-      ;;
-    esac
-  fi
 
   # Ultras with old enough OBP versions aren't able to boot the 64 bit
   # Solaris kernel without a firmware upgrade.  They will fail the 
