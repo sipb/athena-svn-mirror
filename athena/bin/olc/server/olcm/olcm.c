@@ -9,22 +9,24 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.6 1991-07-15 13:09:41 lwvanels Exp $
+ *      $Id: olcm.c,v 1.7 1991-09-22 11:44:37 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.6 1991-07-15 13:09:41 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.7 1991-09-22 11:44:37 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
 #include <olcm.h>
+#include <olc/olc.h>
 
 #include <stdio.h>
 #include <strings.h>
+#include <sys/errno.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/file.h>
@@ -34,8 +36,15 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <krb.h>
 #endif
 
-extern int errno;
-extern char *sys_errlist[];
+/* Need to set timeout to link with client library */
+int select_timeout=300;
+
+
+#ifdef NEEDS_ERRNO_DEFS
+extern int	errno;
+extern char	*sys_errlist[];
+extern int	sys_nerr;
+#endif
 
 #ifdef KERBEROS
 void
@@ -87,14 +96,19 @@ main(argc,argv)
   char ident[SNAME_SZ+INST_SZ+REALM_SZ+4];
 #endif
   char username[9];
+  char orig_address[BUFSIZ];
   char buf[BUFSIZ];
+  char mailbuf[BUFSIZ];
   char *p,*end;
+  ERRCODE errcode;
   int status;
   int fd;
-  FILE *f;
+  FILE *f, *mail;
   int c;
   extern char *optarg;
   extern int optind;
+  REQUEST Request;
+  int instance;
 
 #if defined(ultrix)
 #ifdef LOG_CONS
@@ -183,6 +197,9 @@ main(argc,argv)
 
       if (end != p) {
 	*end = '\0';
+	strcpy(orig_address,p);
+	end = index(orig_address,'>');
+	if (end != NULL) *end = '\0';
 	strncpy(username,p,8);
 	username[8] = '\0';
       }
@@ -203,20 +220,148 @@ main(argc,argv)
   /* Set ticket file correctly */
   get_krb_tkt(ident);
 #endif
-  sprintf(buf,"%s -server %s ask -topic %s -file %s %s", OLCR_PATH, server,
-	  topic, filename, username);
-  syslog(LOG_DEBUG,"Mailed in question from \"%s\" on \"%s\"",topic,username);
-  status = system(buf);
-  if (status != 0) {
+
+#ifdef PUTENV
+  sprintf(buf, "OLCD_HOST=%s", server);
+  putenv(buf);
+#else
+  (void)setenv("OLCD_HOST", server, 1);
+#endif
+
+  OInitialize();
+
+  if (fill_request(&Request) != SUCCESS) {
+    syslog(LOG_ERR,"fill_request unsuccessful");
+    exit(1);
+  }
+
+  (void) strcpy(Request.target.username, username);
+
+  instance = Request.requester.instance;
+  set_option(Request.options,VERIFY);
+  status = OAsk(&Request,topic,NULL);
+  unset_option(Request.options, VERIFY);
+
+  switch(status)
+    {
+    case SUCCESS:
+      break;
+
+    case INVALID_TOPIC:
+      syslog(LOG_ERR,"topic %s is invalid", topic);
+      fprintf(stderr,"unable to enter a question via mail\n");
+      exit(1);
+      break;
+
+    case ERROR:
+      syslog(LOG_ERR,"error contacting server %s", server);
+      fprintf(stderr,
+         "An error has occurred while contacting server.  Please try again.\n");
+      exit(1);
+      break;
+
+    case CONNECTED:
+      syslog(LOG_ERR,"user %s already connected", username);
+      fprintf(stderr, "You are already connected to olc.\n");
+      exit(1);
+      break;
+
+    case PERMISSION_DENIED:
+      fprintf(stderr,"You are not allowed to ask OLC questions.\n");
+      fprintf(stderr,"Does defeat the purpose of things, doesn't it?\n");
+      syslog(LOG_ERR,"user %s: permission denied", username);
+      exit(1);
+      break;
+
+    case MAX_ASK:
+    case ALREADY_HAVE_QUESTION:
+      syslog(LOG_ERR,"user %s already asking a question", username);
+      fprintf(stderr, "You are already asking a question. \n");
+      exit(1);
+      break;
+
+    case HAS_QUESTION:
+#if 0
+      syslog(LOG_ERR,"user %s already asking a question...splitting", username);
+      fprintf(stderr,
+	"Your current instance is busy, creating another one for you.\n");      
+      set_option(Request.options, SPLIT_OPT);
+      t_ask(Request,topic,filename);
+#else
+      exit(1);
+#endif
+      break;
+
+    case ALREADY_SIGNED_ON:
+      syslog(LOG_ERR,"user %s already a consultant on this instance", username);
+      fprintf(stderr,
+              "You cannot be a user and consult in the same instance.\n");
+      exit(1);
+      break;
+
+    default:
+#if 0
+      if((status = handle_response(status, &Request))!=SUCCESS)
+        {
+          if(OLC)
+            exit(1);
+          else
+            return(ERROR);
+        }
+#else
+      syslog(LOG_ERR,"OAsk (VERIFY) Error status %d\n", status);
+      fprintf(stderr,"Error status %d\n", status);
+      exit(1);
+#endif
+      break;
+    }
+
+    status = OAsk(&Request,topic,filename);
+    (void) unlink(filename);
+  switch(status)
+    {
+    case NOT_CONNECTED:
+      sprintf(mailbuf, "Your question has been received and will be forwarded to the first\navailable consultant.");
+      break;
+    case CONNECTED:
+      sprintf(mailbuf, "Your question has been received and a consultant is reviewing it now.");
+      break;
+    default:
+      syslog(LOG_ERR,"OAsk Error status %d\n", status);
+      fprintf(stderr,"Error status %d\n", status);
+      exit(1);
+      break;
+    }
+
+#if 0
+  sprintf(buf, "-topic %s %s -file %s", topic, username, filename);
+  printf("buf is %s\n", buf);
+  errcode = do_olc_ask(&buf);
+  if (errcode != SUCCESS) {
     syslog(LOG_ERR,"\"%s\" exited with status %d",buf,status);
     exit(1);
   }
+#endif
+
 #ifdef KERBEROS
   dest_tkt();
 #endif
 
-  unlink(filename);
-  exit(1);
+  sprintf(buf, "/usr/lib/sendmail -t");
+  mail = popen(buf, "w");
+  if (mail) {
+    fprintf(mail, "To: %s\n",orig_address);
+    fprintf(mail, "From: \"OLC Server\" <olc-test@matisse.local>\n");
+    fprintf(mail, "Subject: Your OLC question\n");
+
+    fprintf(mail, "%s\n", mailbuf);
+    fprintf(mail, "You will receive mail from a consultant when it has been answered.\nYou may also continue this question by using olc or xolc.\n");
+    fprintf(mail, "Do not reply directly to this message; it was automatically generated.\n");
+    fprintf(mail, ".\n");
+    pclose(mail);
+  } else {
+    syslog(LOG_ERR,"popen: /usr/lib/sendmail failed: %m");
+  }
 }
 
 
