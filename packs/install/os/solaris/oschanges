@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Copy some files and remove some files after the os pkgs were installed
-# $Id: oschanges,v 1.16 2001-10-30 18:53:40 ghudson Exp $
+# $Id: oschanges,v 1.17 2003-04-12 15:24:27 ghudson Exp $
 
 # copied from AFS
 rm -f $UPDATE_ROOT/usr/ucblib/libucb.so.1
@@ -11,6 +11,7 @@ ln -s libucb.so.1 $UPDATE_ROOT/usr/ucblib/libucb.so
 
 
 # removed
+rm -f $UPDATE_ROOT/etc/rc2.d/S25tsaldog
 rm -f $UPDATE_ROOT/etc/rc2.d/S76nscd
 rm -f $UPDATE_ROOT/etc/rc2.d/S85power
 rm -f $UPDATE_ROOT/etc/rc2.d/S88sendmail
