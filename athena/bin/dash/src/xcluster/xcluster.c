@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.6 1994-05-08 23:27:39 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.7 1994-05-09 17:46:28 cfields Exp $";
 #endif	/* lint */
 
 #include "mit-copyright.h"
@@ -24,17 +24,17 @@ static char rcsid[] =
 #include <sys/resource.h>
 #include <sys/param.h>
 #include <fcntl.h>
-#include "Jets.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xmu/WinUtil.h>
-#include "Window.h"
-#include "Button.h"
-#include "Label.h"
-#include "Form.h"
-#include "Tree.h"
-#include "Drawing.h"
+#include <X11/Xj/Jets.h>
+#include <X11/Xj/Window.h>
+#include <X11/Xj/Button.h>
+#include <X11/Xj/Label.h>
+#include <X11/Xj/Form.h>
+#include <X11/Xj/Tree.h>
+#include <X11/Xj/Drawing.h>
 
 #include "xcluster.h"
 #include "points.h"
