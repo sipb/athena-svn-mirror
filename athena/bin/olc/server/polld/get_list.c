@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v $
- *	$Id: get_list.c,v 1.1 1991-01-08 16:50:59 lwvanels Exp $
+ *	$Id: get_list.c,v 1.2 1991-01-16 13:30:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.1 1991-01-08 16:50:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/get_list.c,v 1.2 1991-01-16 13:30:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -78,5 +78,6 @@ get_user_list(users,max_people)
       }
     }
   }
+  fclose(f);
   return (n_people);
 }
