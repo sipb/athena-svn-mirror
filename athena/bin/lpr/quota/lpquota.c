@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.12 1991-02-09 16:47:24 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.13 1991-05-08 12:17:33 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.12 1991-02-09 16:47:24 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.13 1991-05-08 12:17:33 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -784,12 +784,12 @@ krb_ktext *auth;
     /* Now display the admin and users */
     if (count_admin > 1) {
 	printf("List of group account administrators :\n");
-	for(i = 1; i < count_admin; i++)
+	for(i = 0; i < count_admin; i++)
 	    printf("\t%s\n", admin[i]);
     }
     if (count_user > 1) {
 	printf("List of group account users :\n");
-	for(i = 1; i < count_user; i++)
+	for(i = 0; i < count_user; i++)
 	    printf("\t%s\n", user[i]);
     }
     return 0;
