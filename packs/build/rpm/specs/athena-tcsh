@@ -2,6 +2,7 @@ Name: athena-tcsh
 Summary: The T C shell, as modified for use on Athena.
 Copyright: BSD
 Group: System Environment/Shells
+Provides: /bin/athena/tcsh
 
 Requires: athena-hesiod
 
