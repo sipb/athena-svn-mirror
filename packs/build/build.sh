@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.40 2003-01-19 19:28:19 ghudson Exp $
+# $Id: build.sh,v 1.41 2003-01-26 06:18:20 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -111,7 +111,7 @@ for package in $packages; do
   PWD=$build/$package
   export PWD
   echo "**********************"
-  for op in dist prepare clean all install; do
+  for op in dist prepare all install; do
     echo "***** ${package}: $op"
     sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op"
     if [ $? -ne 0 ]; then
