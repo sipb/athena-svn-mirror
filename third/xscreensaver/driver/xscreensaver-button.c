@@ -27,6 +27,7 @@
 
 Widget create_menu(Widget toplevel);
 static Pixmap get_pixmap(Widget toplevel);
+static void usage(int argc, char **argv);
 void stop_ss(void);
 void die(void);
 void split_and_exec(char *cmd, pid_t *pid);
@@ -168,7 +169,7 @@ int main(int argc, char **argv)
      but continue anyway. */
 
   if (argc > 1)
-    usage (argc, argv);
+    usage(argc, argv);
   
   XtAppAddActions(context, actions, XtNumber(actions));
   XtVaGetApplicationResources(toplevel, &app_data,
@@ -234,9 +235,7 @@ static Pixmap get_pixmap(Widget toplevel)
   
 }
 
-static void usage(argc, argv)
-int argc;
-char * argv[];
+static void usage(int argc, char **argv)
 {
   int i;
 
