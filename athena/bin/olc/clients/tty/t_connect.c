@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.5 1989-08-22 13:53:09 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.6 1989-11-17 14:10:08 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -119,13 +119,14 @@ t_forward(Request)
   int status;
   int instance;
 
+  t_describe(Request,NULL,NULL,TRUE,FALSE);
   instance = Request->requester.instance;
   status = OForward(Request);
   
   switch (status) 
     {
     case SUCCESS:
-      printf("Question forwarded. ");
+      printf("Question forwarded.  ");
       if(is_option(Request->options, OFF_OPT))
 	printf("You have signed off OLC.\n");
       else
@@ -136,12 +137,12 @@ t_forward(Request)
       break;
 
     case CONNECTED:
-      printf("Question forwarded. You are now connected to another user.\n");
+      printf("Question forwarded.  You are now connected to another user.\n");
       status = SUCCESS;
       break;
 
     case SIGNED_OFF:
-      printf("Question forwarded. ");
+      printf("Question forwarded.  ");
       if(is_option(Request->options, OFF_OPT))
 	printf("You have signed off OLC.\n");
       else
@@ -162,7 +163,7 @@ t_forward(Request)
       break;
 
     case ERROR:
-      fprintf(stderr, "Unable to forward question. Dunno why.\n");
+      fprintf(stderr, "Unable to forward question.  Dunno why.\n");
       status = ERROR;
       break;
 
@@ -172,8 +173,9 @@ t_forward(Request)
     }
 
   if(instance != Request->requester.instance)
-    printf("You are %s (%d), again.\n",Request->requester.username,
-	   Request->requester.instance);
+    printf("%s (%d) has been deactivated.  You are now %s (%d), again!\n",
+	Request->requester.username,instance,
+	Request->requester.username, Request->requester.instance);
 
   return(status);
 }

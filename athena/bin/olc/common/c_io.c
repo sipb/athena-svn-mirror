@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.1 1989-07-07 13:20:36 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.2 1989-11-17 14:01:36 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -35,26 +35,63 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <errno.h>                 /* System error numbers. */
 #include <netdb.h>
 #include <signal.h>
+#include <sgtty.h>              /* Terminal param. definitions. */
+#include <setjmp.h>
 
 
-
-/* External Variables. */
-
-extern char DaemonHost[];			/* Name of daemon's machine. */
+extern char DaemonHost[];			
 extern int errno;
 
-static struct hostent *hp = (struct hostent *)NULL; /* daemon host */
-static struct servent *service = (struct servent *)NULL; /* service entry */
+static struct hostent *hp = (struct hostent *) NULL;      /* daemon host */
+static struct servent *service = (struct servent *) NULL; /* service entry */
+static jmp_buf env;
 
 struct hostent *gethostbyname(); /* Get host entry of a host. */
 
 #define	MIN(a,b)	((a)>(b)?(b):(a))
+
+extern int select_timeout;
 
 /*
  * Note: All functions that deal with I/O on sockets in this file use the
  *	functions "sread()" and "swrite()", which check to ensure that the
  *	socket is, in fact, connected to something.
  */
+
+
+send_dbinfo(fd,dbinfo)
+     int fd;
+     DBINFO *dbinfo;
+{
+  DBINFO dbi;
+
+  dbi = *dbinfo;
+  dbi.max_ask    =  (int) htonl((u_long) dbinfo->max_ask);
+  dbi.max_answer =  (int) htonl((u_long) dbinfo->max_answer);
+  if (swrite(fd, &dbi, sizeof(DBINFO)) != sizeof(DBINFO))
+    return(ERROR);
+
+  return(SUCCESS);
+}
+
+
+read_dbinfo(fd,dbinfo)
+     int fd;
+     DBINFO *dbinfo;
+{
+  DBINFO dbi;
+
+  if (sread(fd, (char *) &dbi, sizeof(DBINFO)) != sizeof(DBINFO))
+    return(ERROR);
+
+  dbinfo->max_ask    =  (int) ntohl((u_long) dbi.max_ask);
+  dbinfo->max_answer =  (int) ntohl((u_long) dbi.max_answer);
+  strcpy(dbinfo->title1, dbi.title1);
+  strcpy(dbinfo->title2, dbi.title2);
+
+  return(SUCCESS);
+}
+
 
 /*
  * Function:	send_response() sends a response the a user program.
@@ -290,7 +327,6 @@ write_file_to_fd(fd, filename)
       if (n_read == -1) 
 	{
 	  perror("write_file: Error reading text.");
-	  (void) unlink(filename);
 	  (void) close(filedes);
 	  return(ERROR);
 	}
@@ -306,7 +342,6 @@ write_file_to_fd(fd, filename)
 #endif	TEST
 		
 	  (void) close(filedes);
-	  (void) unlink(filename);
 	  return(ERROR);
 	}
       nbytes -= n_read;
@@ -520,12 +555,7 @@ sread(fd, buf, nbytes)
    *  A necessary evil so that the daemon doesn't hang.
    */
 
-#ifndef DAEMON
-  tval.tv_sec = CLIENT_TIME_OUT;
-#else   DAEMON
-  tval.tv_sec = DAEMON_TIME_OUT;
-#endif  DAEMON
-
+  tval.tv_sec = select_timeout;
   tval.tv_usec = 0;
   
   read_fds = 1 << fd;
@@ -534,11 +564,10 @@ sread(fd, buf, nbytes)
       if (s_val == 0)
 	errno = ETIMEDOUT;
 
-#ifdef	TEST
       perror("sread: select");
-#endif	TEST
       return(-1);
-	}
+    }
+
   n_read = read(fd, buf, nbytes);
   return(n_read);
 }
@@ -570,12 +599,7 @@ swrite(fd, buf, nbytes)
   if (nbytes <= 0)
     return(0);
 	
-#ifndef DAEMON
-  tval.tv_sec = CLIENT_TIME_OUT;
-#else   DAEMON
-  tval.tv_sec = DAEMON_TIME_OUT;
-#endif  DAEMON
- 
+  tval.tv_sec = select_timeout;
   tval.tv_usec = 0;
   
   write_fds = 1 << fd;

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.6 1989-08-22 13:54:13 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.7 1989-11-17 14:10:58 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -36,9 +36,16 @@ t_instance(Request,instance)
 
   if(instance == -2)
     {
+take:
+      buf[0] = '\0';
       get_prompted_input("enter new instance (<return> to exit): ",buf);
       if(buf[0] == '\0')
 	return(ERROR);
+      if(isnumber(buf) != SUCCESS)
+	{
+	  printf("Instance id \"%s\" is not a number.\n",buf);
+	  goto take;
+	}
       instance = atoi(buf);
     }
   else
@@ -52,21 +59,33 @@ t_instance(Request,instance)
   Request->target.instance = 0;
   while(1)
     {
-      status = OVerifyInstance(Request,instance);
-      if(status == SUCCESS)
+      status = OVerifyInstance(Request,&instance);
+      if((status == SUCCESS) || (status == OK))
 	{
 	  User.instance = instance;
-	  printf("You are now %s (%d)\n",User.username, User.instance);
+	  printf("You are now %s (%d).\n",User.username, User.instance);
+	  t_who(Request);
 	  return(SUCCESS);
 	}
+      
       else
 	{  
 	  printf("%s (%d) does not exist. Your status is... \n\n",User.username, instance);
 	  t_personal_status(Request,TRUE);
+take2:
+	  buf[0] = '\0';
 	  get_prompted_input("enter new instance (<return> to exit): ",buf);
+	  if(isnumber(buf) != SUCCESS)
+	    {
+	      printf("Instance id \"%s\" is not a number.\n",buf);
+	      goto take2;
+	    }
 	  instance = atoi(buf);
 	  if(buf[0] == '\0')
-	    return(ERROR);
+	    {
+	      User.instance = Request->requester.instance;
+	      return(ERROR);
+	    }
 	}
     }
 }

@@ -21,16 +21,16 @@
 
 /* Important files. */
 
-extern char *OLC_DATABASE;
 extern char *NF_PREFIX;
 extern char *LOG_DIR;
 extern char *BACKUP_FILE;
 extern char *BACKUP_TEMP;
 extern char *ERROR_LOG;
 extern char *STATUS_LOG;
+extern char *ADMIN_LOG;
 extern char *STDERR_LOG;
+extern char *DATABASE_FILE;
 extern char *TOPIC_FILE;
-extern char *USER_FILE;
 extern char *MOTD_FILE;
 extern char *SPECIALTY_DIR;
 extern char *ACL_DIR;
@@ -172,6 +172,7 @@ typedef struct t_ACL
 {
   int code;
   char *file;
+  char *name;
 } ACL;
 
 /* Declarations of functions. */
@@ -207,6 +208,12 @@ extern olc_cancel();
 extern olc_verify_topic();
 extern olc_verify_instance();
 extern olc_load_user();
+extern olc_change_motd();
+extern olc_change_acl();
+extern olc_get_dbinfo();
+extern olc_list_acl();
+extern olc_change_dbinfo();
+extern olc_get_accesses();
 
 /* Other external declarations. */
 
@@ -251,7 +258,7 @@ extern int              needs_backup;
 #define deactivate(k)           k->status = 0;
 #define is_me(r,t)              (r->user == t->user)
 #define is_connected_to(t,r)    (r->connected) && (t->connected) && \
-                                (r->connected == t->connected)
+                                (r->connected == t) && (t->connected == r)
 #define is_specialty(user,code) is_topic(user->specialties,code)
 
 #define ON_ACL                  1<<1
@@ -265,5 +272,5 @@ extern int              needs_backup;
 #define GMESSAGE_ACL            1<<9
 #define ADMIN_ACL               1<<10
 #define GCHTOPIC_ACL            1<<11
-
+#define MOTD_ACL                1<<12
 

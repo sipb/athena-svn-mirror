@@ -20,12 +20,15 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.6 1989-08-22 13:57:23 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.7 1989-11-17 14:20:41 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
+extern long lc_time;
+extern LIST list_cache;
+#define LIST_LIFETIME 60
 
-
+/*
 ERRCODE
 OGetConnectedPerson(Request,data)
      REQUEST *Request;
@@ -35,7 +38,9 @@ OGetConnectedPerson(Request,data)
   int status;
 
   Request->request_type = OLC_CONNECTED; 
-  fd = open_connection_to_daemon();
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
 
   status = send_request(fd,Request);
   if(status)
@@ -49,7 +54,7 @@ OGetConnectedPerson(Request,data)
     read_person(fd,data);
   close(fd);
   return(status);
-}
+}*/
 
 
 OListPerson(Request,data)
@@ -59,7 +64,7 @@ OListPerson(Request,data)
   int status;
 
   Request->options = LIST_PERSONAL;
-  status = OListQueue(Request,data,"","",0);
+  status = OListQueue(Request,data,"","","",0);
   return(status);
 }
 
@@ -70,11 +75,17 @@ OWho(Request,data)
 {
   int fd;
   int status;
-  int n;
   
+  if(((time(0) - lc_time) < LIST_LIFETIME) && (data->user.instance == Request->requester.instance)) 
+    {
+      *data = list_cache;
+      return(SUCCESS);
+    }
   Request->request_type = OLC_WHO;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -84,8 +95,11 @@ OWho(Request,data)
   read_response(fd, &status);
 
   if(status == SUCCESS)
-    status = OReadList(fd, &data, 1);
-
+    {
+      status = OReadList(fd, &data, 1);
+      list_cache = *data;
+      lc_time = time(0);
+    }
   (void) close(fd);
   return(status);
 }
@@ -120,4 +134,65 @@ OGetStatusCode(string,status)
     *status = 0;
   else
     *status = Status_Table[index].status;
+}
+
+
+OGetUsername(Request,username)
+     REQUEST *Request;
+     char *username;
+{
+  LIST list;
+  int status;
+
+  status = OWho(Request, &list);
+  if (status != SUCCESS)
+    return(status);
+
+  strcpy(username,list.user.username);
+  return(SUCCESS);
+}
+
+OGetHostname(Request,hostname)
+     REQUEST *Request;
+     char *hostname;
+{
+  LIST list;
+  int status;
+
+  status = OWho(Request, &list);
+  if (status != SUCCESS)
+    return(status);
+
+  strcpy(hostname,list.user.machine);
+  return(SUCCESS);
+}
+
+OGetConnectedUsername(Request,username)
+     REQUEST *Request;
+     char *username;
+{
+  LIST list;
+  int status;
+
+  status = OWho(Request, &list);
+  if (status != SUCCESS)
+    return(status);
+
+  strcpy(username,list.connected.username);
+  return(SUCCESS);
+}
+
+OGetConnectedHostname(Request,hostname)
+     REQUEST *Request;
+     char *hostname;
+{
+  LIST list;
+  int status;
+
+  status = OWho(Request, &list);
+  if (status != SUCCESS)
+    return(status);
+
+  strcpy(hostname,list.connected.machine);
+  return(SUCCESS);
 }

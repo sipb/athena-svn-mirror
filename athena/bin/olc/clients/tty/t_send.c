@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.5 1989-08-22 13:55:04 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.6 1989-11-17 14:12:19 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -172,7 +172,7 @@ t_comment(Request,file,editor)
       break;
 
     case ERROR:
-      fprintf(stderr, "An error has occurred while logging comment. Try resending.\n");
+      fprintf(stderr, "An error has occurred while logging comment.  Try resending.\n");
       status = ERROR;
       break;
 
@@ -192,14 +192,18 @@ t_comment(Request,file,editor)
 
 
 ERRCODE
-t_mail(Request,file,editor)
+t_mail(Request,file,editor,smargs, check)
      REQUEST *Request;
      char *file, *editor;
+     char **smargs;
+     int check;
 {
   int status;
-  char topic[TOPIC_SIZE];
   LIST list;
   struct stat statbuf;
+  char buf[BUF_SIZE];
+  char *username;
+  char *message;
 
   set_option(Request->options, VERIFY);
   status = OMail(Request,file);
@@ -215,13 +219,35 @@ t_mail(Request,file,editor)
 		"warning: Unable to get status of conversation... exitting\n");
 	  return(ERROR);
 	}
+  
+      if(isme(Request))
+        username = list.connected.username; 
+      else
+        username = Request->target.username;
+
+      if(check)
+	if(can_receive_mail(username) != SUCCESS)
+	  {
+	    printf("%s is not registered with local mail server.\n",username);
+	    get_prompted_input("continue? ",buf);
+	    if(buf[0]!='y')
+	      return(ERROR);
+	  }
 
       if(isme(Request))
-	(void) OMailHeader(Request,file,list.connected.username,
-			   list.topic,DEFAULT_MAILHUB);
-      else
-	(void) OMailHeader(Request,file,Request->target.username,
-			   list.topic,DEFAULT_MAILHUB);
+	set_option(Request->options, CONNECTED_OPT);
+      
+      status = OShowMessage(Request,&message);
+      if(status != SUCCESS)
+	{
+	  handle_response(status,Request);
+	}
+
+      if(!strncmp(message,"No new messages.", strlen("No new messages.")))
+	message = (char *) NULL;
+
+      (void) OMailHeader(Request,file,username, 
+			 list.topic,DEFAULT_MAILHUB,message);
 
       status = edit_message(file,editor);
       if(status == ERROR)
@@ -252,8 +278,8 @@ t_mail(Request,file,editor)
 	  printf("No message to send.\n");
 	  return(NO_ACTION);
 	}
-      if (mail_message(Request->target.username, 
-		       Request->requester.username,file) == SUCCESS)
+      if (mail_message(username, Request->requester.username,file, smargs)
+	  == SUCCESS)
 	printf("Mail message sent.\n");
       else 
 	{

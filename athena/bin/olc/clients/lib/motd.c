@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.4 1989-08-15 03:13:38 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.5 1989-11-17 14:19:49 tjcoppet Exp $";
 #endif
 
 
@@ -42,13 +42,14 @@ OGetMOTD(Request,type,file)
      char *file;
 {
   int fd;
-  RESPONSE response;
   int status;
 
   Request->request_type = OLC_MOTD;
-  Request->options = type;
-  fd = open_connection_to_daemon();
-  
+  set_option(Request->options, type);
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -56,13 +57,13 @@ OGetMOTD(Request,type,file)
       return(status);
     }
 
-  read_response(fd, &response);  
+  read_response(fd, &status);  
  
-  if(response == SUCCESS)
+  if(status == SUCCESS)
     read_text_into_file(fd,file);
 
   close(fd);
-  return(response);
+  return(status);
 }
 
 
@@ -80,29 +81,35 @@ OChangeMOTD(Request, type, file)
      char *file;
 {
   int fd;
-  RESPONSE response;
+  int status;
   
   Request->request_type = OLC_CHANGE_MOTD;
-  Request->options = type;
+  set_option(Request->options, type);
 
-  fd = open_connection_to_daemon();
-  response = send_request(fd, Request);
-  if(response)
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
+  status = send_request(fd, Request);
+  if(status)
     {
       close(fd);
-      return(response);
+      return(status);
     }
 
-  read_response(fd, &response);
+  read_response(fd, &status);
 
-  if(response == SUCCESS)
+  if(is_option(Request->options, VERIFY))
+    return(status);
+
+  if(status == SUCCESS)
     {
       write_file_to_fd(fd,file);
-      read_response(fd, &response);
+      read_response(fd, &status);
     }
 
   close(fd);
-  return(response);
+  return(status);
 }
 
 

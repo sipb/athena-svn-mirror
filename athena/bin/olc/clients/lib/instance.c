@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.5 1989-08-15 03:13:21 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.6 1989-11-17 14:17:51 tjcoppet Exp $";
 #endif
 
 
@@ -30,14 +30,19 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 ERRCODE
 OVerifyInstance(Request,instance)
      REQUEST *Request;
-     int instance;
+     int *instance;
 {
   int fd;
   int status;
 
+  if(instance == (int *) NULL)
+    return(ERROR);
+
   Request->request_type = OLC_VERIFY_INSTANCE;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd,Request);
   if(status)
     {
@@ -49,10 +54,13 @@ OVerifyInstance(Request,instance)
   
   if(status == SUCCESS)
     {
-      write_int_to_fd(fd,instance);
+      write_int_to_fd(fd,*instance);
       read_response(fd,&status);
     }
-  
+
+  if(status == OK)
+    read_int_from_fd(fd,instance);
+
   close(fd);
   return(status);
 }
@@ -67,8 +75,10 @@ OGetDefaultInstance(Request,instance)
 
   Request->request_type = OLC_DEFAULT_INSTANCE;
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd,Request);
   if(status)
     {

@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.12 1989-08-22 13:48:05 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.13 1989-11-17 14:04:55 tjcoppet Exp $";
 #endif 
 
 
@@ -36,10 +36,8 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <pwd.h>
 #include <netdb.h>
 
-extern  int subsystem;
 
 /* External declarations for OLC functions. */
 
@@ -69,9 +67,12 @@ extern do_olc_live();
 extern do_olc_whoami();
 extern do_olc_load_user();
 extern do_olc_who();
+extern do_olc_dbinfo();
+extern do_olc_queue();
 
+#ifdef KERBEROS
 extern int krb_ap_req_debug;
-
+#endif KERBEROS
 
 
 /*
@@ -113,8 +114,10 @@ COMMAND OLCR_Command_Table[] = {
   "ask",        do_olc_ask,      "Ask a question",
   "cancel",     do_olc_cancel,   "Cancel your question",
   "comment",    do_olc_comment,  "Make a comment",
-  "done",	do_olc_done,	 "Resolve question",               
+/*  "dbinfo",     do_olc_dbinfo,   "Display database info.",*/
   "describe",   do_olc_describe, "Show/Change summary info",
+  "done",	do_olc_done,	 "Resolve question",    
+  "exit",       do_quit,         "Quit",
   "forward",    do_olc_forward,  "Forward a question",
   "grab",       do_olc_grab,     "Grab a user",
   "instance",   do_olc_instance, "Show/Change default instance",
@@ -123,7 +126,8 @@ COMMAND OLCR_Command_Table[] = {
   "motd",       do_olc_motd,     "See motd",
   "off",        do_olc_off,      "Sign off",
   "on",         do_olc_on,       "Sign on",
-  "quit",	do_quit,	 "Temporarily exit OLC",
+/*  "queue",      do_olc_queue,    "Show/Change queues",*/
+  "quit",	do_quit,	 "Quit",
   "replay",	do_olc_replay,   "Replay the conversation",        
   "send",	do_olc_send,	 "Send a message",                     
   "show",       do_olc_show,	 "Show any new messages",
@@ -136,14 +140,9 @@ COMMAND OLCR_Command_Table[] = {
 
 
 COMMAND *Command_Table;
-
-/* Other global variables. */
-  
-PERSON User;				/* Structure describing user. */
-char DaemonHost[LINE_LENGTH];		/* Name of the daemon's machine. */
 char *program;
-
-int OLCR=0,OLC=0;
+int OLC=0;
+int select_timeout = 300;
 
 /*
  * Function:	main() is the startup for OLC.  It initializes the
@@ -171,18 +170,8 @@ main(argc, argv)
      int argc;
      char **argv;
 {
-  struct passwd *getpwuid();   /* Get a password entry based on the user ID.*/
-  struct passwd *pwent;	       /* Password entry. */
-  char hostname[LINE_LENGTH];  /* Name of local machine. */
-  struct hostent *host;
-  int uid;		       /* User ID number. */
-  char *tty;		       /* Terminal path name. */
+  char *tty;		       
   char *prompt;
-
-#ifdef HESIOD
-  char **hp;		       /* return value of Hesiod resolver */
-#endif
-
 
 /*
  * All client specific stuff should be initialized here, if they wish
@@ -211,7 +200,13 @@ main(argc, argv)
       HELP_FILE = OLCR_HELP_FILE;
       HELP_DIR =  OLCR_HELP_DIR;
       HELP_EXT =  OLCR_HELP_EXT;
-      OLCR=1;
+    }
+
+  if((argc > 1) && !strcmp(argv[1], "-prompt"))
+    {
+      argc -= 2;
+      prompt = argv[2];
+      ++argv; ++argv;
     }
 
   if ((tty = ttyname(fileno(stdin))) == (char *)NULL) 
@@ -235,56 +230,16 @@ main(argc, argv)
  no_tty:
 
 
-#ifdef HESIOD
-  if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
-    {	
-
-      fprintf(stderr,
-	      "Unable to get name of OLC server host from the Hesiod nameserver.\n");
-      fprintf(stderr, 
-	      "This means that you cannot use OLC at this time. Any problems \n");
-      fprintf(stderr,
-	      "you may be experiencing with your workstation may be the result of this\n");
-      fprintf(stderr,
-	      "problem. \n");
-      
-      exit(ERROR);
-    }
-  else 
-    (void) strcpy(DaemonHost, *hp);
-
-#endif HESIOD
-
-
-  uid = getuid();
-  pwent = getpwuid(uid);
-  (void) strcpy(User.username, pwent->pw_name);
-  (void) strcpy(User.realname, pwent->pw_gecos);
-  if (index(User.realname, ',') != 0)
-    *index(User.realname, ',') = '\0';
-  
-  gethostname(hostname, LINE_LENGTH);
-  host = gethostbyname(hostname);
-  (void) strcpy(User.machine, (host ? host->h_name : hostname));     
-  User.uid = uid;
- 
-  expand_hostname(DaemonHost,INSTANCE,REALM);
-
-#ifdef TEST
-printf("main: starting for %s/%s (%s)  on %s\n",User.realname, User.username,
-       User.uid, User.machine);
-#endif TEST
-
   signal(SIGPIPE, SIG_IGN);
   if (argc > 1) 
     {
+      OInitialize();
       do_command(Command_Table, ++argv);
       exit(SUCCESS);
     }
   else 
     {
-      subsystem = 1;
-      (void) olc_init();
+      (void) do_olc_init();
       command_loop(Command_Table, prompt);
     }
 }
@@ -304,47 +259,60 @@ printf("main: starting for %s/%s (%s)  on %s\n",User.realname, User.username,
  *	to the OLC main loop.
  */
 
-olc_init() 
+do_olc_init() 
 {
   int fd;			/* File descriptor for socket. */
-  RESPONSE response;	        /* Response code from daemon. */
   REQUEST Request;
   ERRCODE errcode=0;	        /* Error code to return. */
-  FILE *stdstr;
   int n,first=0;
   char file[NAME_LENGTH];
   char topic[TOPIC_SIZE];
   int status;
 
+#ifdef LAVIN
+  printf("Welcome to OLC, ");
+  printf("Project Athena's On-Line Consulting system. (v %s)\n",
+	 VERSION_STRING);
+  printf("Copyright (c) 1989 by ");
+  printf("the Massachusetts Institute of Technology.\n\n");
+#endif LAVIN
+  
+  OInitialize();
+
   fill_request(&Request);
   Request.request_type = OLC_STARTUP;
 
-  fd = open_connection_to_daemon();
+  status = open_connection_to_daemon(&Request, &fd);
+  if(status)
+    {
+      handle_response(status, &Request);
+      exit(ERROR);
+    }
   status = send_request(fd, &Request);
   if(status)
     {
       handle_response(status, &Request);
       exit(ERROR);
     }
-  read_response(fd, &response);
+  read_response(fd, &status);
 
 #ifdef TEST
   printf("do_olcinit: requester %s, response: %d\n",
-	 Request.requester.username, response);
+	 Request.requester.username, status);
 #endif TEST
 
-  switch(response) 
+  switch(status) 
     {
     case USER_NOT_FOUND:
-      if(subsystem)
-	{
-	  printf("Welcome to OLC, ");
-	  printf("Project Athena's On-Line Consulting system. (v %s)\n",
-		 VERSION_STRING);
-	  printf("Copyright (c) 1989 by ");
-	  printf("the Massachusetts Institute of Technology.\n\n");
-	  first = 1;
-	}
+#ifndef LAVIN
+      printf("Welcome to OLC, ");
+      printf("Project Athena's On-Line Consulting system. (v %s)\n",
+	     VERSION_STRING);
+      printf("Copyright (c) 1989 by ");
+      printf("the Massachusetts Institute of Technology.\n\n");
+#endif LAVIN
+      first = 1;
+	
 #ifdef TEST
       printf("do_olc_init: %s not found\n", Request.requester.username);
 #endif TEST
@@ -354,19 +322,26 @@ olc_init()
     case CONNECTED:
     case SUCCESS:
       read_int_from_fd(fd, &n);
+#ifndef LAVIN
       printf("Welcome back to OLC. ");
       printf("Project Athena's On-Line Consulting system. (v %s)\n",
 	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
-      t_set_default_instance(&Request);
-      t_personal_status(&Request,FALSE);
+#endif LAVIN
+
+      if(t_set_default_instance(&Request) != SUCCESS)
+	fprintf(stderr,"Error setting default instance... continuing.\n");
+
+      if(t_personal_status(&Request,FALSE) != SUCCESS)
+	fprintf(stderr,"Error getting status... continuing.\n");
+
       break; 
    case PERMISSION_DENIED:
       printf("You are not allowed to use OLC.\n");
       exit(1);
     default:
-      if(handle_response(response, &Request) == ERROR)
+      if(handle_response(status, &Request) == ERROR)
 	exit(ERROR);
     }
 

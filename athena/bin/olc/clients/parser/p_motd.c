@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.5 1989-08-07 14:45:44 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.6 1989-11-17 14:08:12 tjcoppet Exp $";
 #endif
 
 
@@ -34,8 +34,11 @@ do_olc_motd(arguments)
   REQUEST Request;
   char file[NAME_LENGTH];
   int status;
-  int save_file;
+  int save_file = 0;
   int type=0;
+  int change_flag = 0;
+  char editor[NAME_LENGTH];
+  char *editorP = (char *) NULL;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -58,26 +61,46 @@ do_olc_motd(arguments)
             }
 	  else
 	    (void) strcpy(file,*arguments);
-
+	  
 	  save_file = TRUE;
-	}
-      else
-	{
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
-	    return(ERROR);
+	  continue;
 	}
 
+       if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
+        {
+          ++arguments;
+          editorP = editor;
+          if(*arguments != (char *) NULL)
+            (void) strcpy(editorP, *arguments);
+          else
+            (void) strcpy(editorP, NO_EDITOR);
+        }
+
+      if(string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
+	{
+	  change_flag = TRUE;
+	  continue;
+	}
+
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
+	
       if(arguments == (char **) NULL)   /* error */
 	{
-	  fprintf(stderr,"Usage is: \tmotd  [-file <filename>]\n");
+	  printf("Usage is: \tmotd  [-file <filename>] [-change] ");
+	  printf("[-editor <editor>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
 	break;
     }
 
-  status = t_get_motd(&Request,type,file,TRUE);
+  if(!change_flag)
+    status = t_get_motd(&Request,type,file,!save_file);
+  else
+    status = t_change_motd(&Request,type,file,editorP, !save_file);
+
   if(!save_file)
     (void) unlink(file);
   return(status);

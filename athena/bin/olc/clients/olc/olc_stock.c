@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.6 1989-08-22 13:48:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.7 1989-11-17 14:05:22 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -55,7 +55,7 @@ do_olc_stock(arguments)
   int status;                 /* Status returned by whatnow */
   int find_topic=0;
   
-  dtopic[0] = '/';
+  dtopic[0] = '\0';
 
   if (stat(MAGIC, &statbuf) < 0) 
     {
@@ -75,12 +75,17 @@ do_olc_stock(arguments)
     {
       if(string_equiv(*arguments,"-t",2))
 	{
-	  if(*(++arguments)==(char *) NULL)
-	    find_topic=1;
+          ++arguments;
+	  if(*arguments==(char *) NULL)
+            {
+	      find_topic=1;
+              break;   
+            }
 	  else
 	    strcpy(dtopic,*arguments);
 	  continue;
 	}
+
       arguments = handle_argument(arguments, &Request);
       if(arguments == (char **) NULL)   /* error */
 	return(ERROR);
@@ -92,7 +97,7 @@ do_olc_stock(arguments)
 
   if(find_topic)
     {
-      status = t_get_topic(&Request,topic);
+      status = OGetTopic(&Request,topic);
       if(status != SUCCESS)
 	{
 	  fprintf(stderr,"Error occurred while trying to get topic.\n");

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.7 1989-08-22 13:55:35 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.8 1989-11-17 14:12:35 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -38,12 +38,17 @@ t_personal_status(Request,chart)
   switch (status)
     {
     case SUCCESS:
+      OSortListByUInstance(list);
       t_display_personal_status(Request,list,chart);
       free(list);
       break;
 
     case EMPTY_LIST:
-      printf("You are not doing anything in OLC\n");
+      if(isme(Request))
+	printf("You are not doing anything in OLC.\n");
+      else
+	printf("%s (%d) is not doing anything in OLC.\n",
+	       Request->target.username, Request->target.instance);
       break;
 
     case ERROR:
@@ -66,11 +71,6 @@ t_display_personal_status(Request,list,chart)
      int chart;
 {
   LIST *l;
-  char uinstbuf[10];
-  char cinstbuf[10];
-  char ustatusbuf[32];
-  char chstatusbuf[10];
-  char nseenbuf[5];
   char cbuf[32];
   char buf[32];
   int count=0;
@@ -143,7 +143,7 @@ t_display_personal_status(Request,list,chart)
     {
       printf("Status for: %s (%s@%s)\n\n",list->user.realname,
 	     list->user.username,list->user.machine);
-      printf("   instance     status     connected party    topic\n");
+      printf("   instance   nm     status     connected party     topic\n");
       for(l=list; l->ustatus != END_OF_LIST; ++l)
 	{
 	  if(Request->requester.instance == l->user.instance)
@@ -153,23 +153,30 @@ t_display_personal_status(Request,list,chart)
 	  if((l->nseen >=0) && (l->connected.uid >= 0))
 	    {
 	      OGetStatusString(l->ukstatus,cbuf);
-	      printf("[%d]          %-10.10s %-9.9s (%d)      %s\n",
-		     l->user.instance, cbuf, l->connected.username,
-		     l->connected.instance,l->topic);
+	      printf("[%d]%s       %c      %-10.10s %-9.9s (%d)%s      %s\n",
+		     l->user.instance, l->user.instance > 9 ? "" : " ",
+		     l->umessage ? '*' : ' ', cbuf, l->connected.username,
+		     l->connected.instance,
+		     l->connected.instance > 9 ? "" : " ",
+		     l->topic);
 	    }
 	  else
 	    if((l->nseen >= 0) && (l->connected.uid <0))
 	      {
 		OGetStatusString(l->ukstatus,cbuf);
-		printf("[%d]          %-10.10s %s      %s\n",    
-		       l->user.instance, cbuf, "not connected",l->topic);
+		printf("[%d]%s       %c      %-10.10s %s       %s\n",    
+		       l->user.instance, l->user.instance > 9 ? "" : " ",
+		       l->umessage ? '*' : ' ',
+		       cbuf, "not connected",l->topic);
 	      }
 	    else
 	      if((l->nseen < 0) && (l->connected.uid < 0))
 		{
 		  OGetStatusString(l->ukstatus,buf);
-		  printf("[%d]          %-10.10s %s\n",    
-			 l->user.instance, buf, "not connected");
+		  printf("[%d]%s       %c      %-10.10s %s\n",    
+			 l->user.instance, l->user.instance > 9 ? "" : " ",
+			 l->umessage ? '*' : ' ',
+			 buf, "not connected");
 		}
 	      else
 		{
@@ -213,7 +220,7 @@ t_who(Request)
 	{
 	  if(list.connected.uid > 0)
 	    printf("%s %s (%d) (%s@%s) is currently connected to %s %s (%d) (%s@%s).\n",
-		   list.user.title, list.user.realname, 
+		   cap(list.user.title), list.user.realname, 
 		   list.user.instance,list.user.username,
 		   list.user.machine, list.connected.title,
 		   list.connected.realname,list.connected.instance,
@@ -295,9 +302,10 @@ t_input_status(Request,string)
       printf("\t\tpending\n");
       printf("\t\treferred\n");
       printf("\t\tpickup\n");
-      
+     
+      buf[0] = '\0'; 
       get_prompted_input("enter new status (<return> to exit): ",buf);
-      if(buf == '\0')
+      if(buf[0] == '\0')
 	return(ERROR);
     }
 }

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.5 1989-08-22 13:50:06 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.6 1989-11-17 14:06:57 tjcoppet Exp $";
 #endif
 
 
@@ -54,6 +54,28 @@ do_olc_grab(arguments)
 	  flag = 1;
           continue;
 	}
+
+      if(string_equiv(*arguments,"-instance",max(strlen(*arguments),2)))
+	{
+	   if((*(++arguments) != (char *) NULL) && (*arguments[0] != '-'))
+	     {
+	       if(isnumber(*arguments) != SUCCESS)
+		 {
+		   printf("Specified instance id \"%s\" is not a number.\n", 
+			  *arguments);
+		   return(ERROR);
+		 }
+	       Request.requester.instance = atoi(*arguments);
+	       continue;
+	     }
+	   else
+	     {
+	       fprintf(stderr,
+		       "You must specify an instance after '-instance'.\n");
+	       return(ERROR);
+	     }
+	 }
+
       if(string_equiv(*arguments,"-do_not_change_instance",
 		      max(strlen(*arguments),2)))
 	{
@@ -66,7 +88,7 @@ do_olc_grab(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   
 	{
-	  fprintf(stderr,"Usage is: \tgrab  [<username> <instance id>] [-create_new_instance]\n\t\t[-do_not_change_instance]\n");
+	  printf("Usage is: \tgrab  [<username> <instance id>] [-create_new_instance]\n\t\t[-do_not_change_instance] [-instance <instance id>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
@@ -98,8 +120,6 @@ do_olc_forward(arguments)
 {
   REQUEST Request;
   int status;
-  int state = 0;
-  char buf[BUFSIZE];
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -126,7 +146,9 @@ do_olc_forward(arguments)
 	      return(ERROR);
 	    if(arguments == (char **) NULL)   /* error */
 	      {
-		fprintf(stderr,"Usage is: \tforward  [<username> <instance id>] [-off] [-unanswered]\n");
+		printf("Usage is: \tforward  [<username> <instance id>] ");
+                printf("[-status <status>]\n\t\t[-off] [-unanswered] ");
+		printf("[-instance <instance id>]\n");
 		return(ERROR);
 	      }
 	    if(*arguments == (char *) NULL)   /* end of list */

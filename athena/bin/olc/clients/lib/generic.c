@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/generic.c,v 1.4 1989-08-15 03:13:15 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/generic.c,v 1.5 1989-11-17 14:17:13 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -35,8 +35,10 @@ ORequest(Request,code)
   int status;
   
   Request->request_type = code;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd,Request);
   if(status)
     {

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.4 1989-08-15 03:13:32 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.5 1989-11-17 14:18:46 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,23 +30,32 @@ OReplayLog(Request,file)
      REQUEST *Request;
      char *file;
 {
-  return(OGetMessage(Request,file,OLC_REPLAY));
+  return(OGetMessage(Request,file,(char **) NULL,OLC_REPLAY));
 }
 
 
 ERRCODE
-OShowMessage(Request,file)
+OShowMessageIntoFile(Request,file)
      REQUEST *Request;
      char *file;
 {
-  return(OGetMessage(Request,file,OLC_SHOW));
+  return(OGetMessage(Request,file,(char **) NULL,OLC_SHOW));
+}
+
+
+OShowMessage(Request, buf)
+     REQUEST *Request;
+     char **buf;
+{
+  return(OGetMessage(Request,NULL,buf,OLC_SHOW));
 }
 
 
 ERRCODE
-OGetMessage(Request,file,code)
+OGetMessage(Request,file,buf,code)
      REQUEST *Request;
      char *file;
+     char **buf;
      int code;
 {
   int fd;
@@ -54,8 +63,10 @@ OGetMessage(Request,file,code)
 
   Request->request_type = code;
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -66,8 +77,12 @@ OGetMessage(Request,file,code)
   read_response(fd,&status);
   
   if(status == SUCCESS)
-      read_text_into_file(fd, file);
-
+    {
+      if(buf == (char **) NULL)
+	read_text_into_file(fd, file);
+      else
+	*buf = read_text_from_fd(fd);
+    }
   (void) close(fd);
   return(status);
 }
@@ -91,7 +106,7 @@ OWaitForMessage(Request,file, sender)
 	  strncpy(sender,message+4,LABEL_LENGTH);
 	  free(message);
 	  unsetenv("MORE");
-	  return(OShowMessage(Request,file));
+	  return(OShowMessageIntoFile(Request,file));
 	}
       free(message);
     }	

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.5 1989-08-22 13:51:04 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.6 1989-11-17 14:09:09 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -39,9 +39,14 @@ handle_argument(args, req, status)
   if(string_eq(args[0],"-help"))
     return((char **) NULL);
   
-  if (string_equiv(args[0], "-instance",strlen(args[0]))) 
+  if (string_equiv(args[0], "-instance",max(strlen(args[0]),2))) 
     if((*(++args) != (char *) NULL) && (*args[0] != '-'))
       {
+	if(isnumber(*args) != SUCCESS)
+	  {
+	    printf("Specified instance id \"%s\" is not a number.\n", *args);
+	    return((char **) NULL);
+	  }
 	req->requester.instance = atoi(*args);
 	return(args);
       }
@@ -51,9 +56,14 @@ handle_argument(args, req, status)
         *status = ERROR;
 	return((char **) NULL);
       }
-  else  if (string_equiv(args[0], "-j",2)) 
+  else  if (string_equiv(args[0], "-j",max(strlen(args[0]),2))) 
     if((*(++args) != (char *) NULL) && (*args[0] != '-'))
       {
+	if(isnumber(*args) != SUCCESS)
+	  {
+	    printf("Specified instance id \"%s\" is not a number.\n", *args);
+	    return((char **) NULL);
+	  }
 	req->target.instance = atoi(*args);
 	return(args);
       }
@@ -77,6 +87,12 @@ handle_argument(args, req, status)
 	  if((*(args+1) != (char *) NULL) && (*args[1] != '-'))
 	    {
 	      ++args;
+	      if(isnumber(*args) != SUCCESS)
+		{
+		  printf("Specified instance id \"%s\" is not a number.\n", 
+			 *args);
+		  return((char **) NULL);
+		}
 	      req->target.instance = atoi(*args); 	 
 	    }
 	  else

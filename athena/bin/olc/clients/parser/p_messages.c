@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.5 1989-08-07 14:45:11 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.6 1989-11-17 14:07:47 tjcoppet Exp $";
 #endif
 
 
@@ -52,8 +52,9 @@ do_olc_replay(arguments)
 {
   REQUEST Request;
   char file[NAME_LENGTH];
-  int savefile;
+  int savefile = FALSE;
   int status;
+  int sort = FALSE;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -79,23 +80,28 @@ do_olc_replay(arguments)
 	    (void) strcpy(file, *arguments);
 	
 	  savefile = TRUE;
+	  continue;
 	}
-      else 
+      
+      if (string_equiv(*arguments, "-sort",max(2,strlen(*arguments))))
 	{
-	  arguments = handle_argument(arguments, &Request, &status);
-	  if(status)
-	    return(ERROR);
+	  sort = TRUE;
+	  continue;
 	}
+
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
+	
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
-	    fprintf(stderr, 
-		    "Usage is: \treplay [-file <file name>]\n");
+	    printf("Usage is: \treplay [-file <file name>]\n");
 	  else
 	    {
-	      fprintf(stderr, 
-		      "Usage is: \treplay [<username> <instance id>] ");
-	      fprintf(stderr,"[-file <file name>]\n");
+	      printf("Usage is: \treplay [<username> <instance id>] ");
+	      printf("[-file <file name>]\n");
+	      printf("\t\t[-instance <instance id>]\n");
 	    }
 	  return(ERROR);
 	}
@@ -104,7 +110,7 @@ do_olc_replay(arguments)
     }
 
 
-  status = t_replay(&Request,file, !savefile);
+  status = t_replay(&Request,file, !savefile, sort);
   if((savefile == FALSE) || (status != SUCCESS))
     (void) unlink(file);
   return(status);
@@ -180,16 +186,15 @@ do_olc_show(arguments)
 	{
 	  if(OLC)
 	    {
-	      fprintf(stderr, 
-		      "Usage is: \tshow [-file <filename>] [-connected]");
-	      fprintf(stderr," [-noflush]\n");
+	      printf("Usage is: \tshow [-file <filename>] [-connected]");
+	      printf(" [-noflush]\n");
 	    }
 	  else
 	    {
-	      fprintf(stderr, 
-		      "Usage is: \tshow [<username> <instance id>] ");
-	      fprintf(stderr,"[-file <filename>]\n");
-	      fprintf(stderr,"\t\t[-connected] [-noflush]\n");
+	      printf("Usage is: \tshow [<username> <instance id>] ");
+	      printf("[-file <filename>]\n");
+	      printf("\t\t[-connected] [-noflush] ");
+	      printf("[-instance <instance id>]\n");
 	    }
 	  return(ERROR);
 	}

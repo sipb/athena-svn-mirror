@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.4 1989-08-15 03:13:58 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.5 1989-11-17 14:20:22 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -67,8 +67,10 @@ OSend(Request,type,file)
 
   Request->request_type = type;
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -93,23 +95,25 @@ OSend(Request,type,file)
     
 
 ERRCODE
-OMailHeader(Request,file,recipient,topic,destination)
+OMailHeader(Request,file,recipient,topic,destination,message)
      REQUEST *Request;
-     char *file, *recipient, *topic, *destination;
+     char *file, *recipient, *topic, *destination, *message;
 {
-  struct stat statbuf;
   FILE *fp;
   
-      fp = fopen(file, "w");
-      if(fp == NULL)
-	return(ERROR);
-      fprintf(fp, "To: %s@%s\n", recipient,destination);
-      fprintf(fp, "cc: \n");
-      fprintf(fp, "Subject: Your OLC question about %s\n", topic);
-      fprintf(fp, "--------\n\n");
-      
-      if(fclose(fp) < 0)
-	return(ERROR);
+  fp = fopen(file, "w");
+  if(fp == NULL)
+    return(ERROR);
+  fprintf(fp, "To: %s@%s\n", recipient,destination);
+  fprintf(fp, "cc: \n");
+  fprintf(fp, "Subject: Your OLC question about %s\n", topic);
+  fprintf(fp, "--------\n\n");
+  
+  if(message != (char *) NULL)
+    fprintf(fp,"Unseen messages:\n\n%s",message);
+
+  if(fclose(fp) < 0)
+    return(ERROR);
      
   return(SUCCESS);
 }

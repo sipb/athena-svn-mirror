@@ -1,6 +1,6 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains procedures for exectuting olc commands.
+ * It contains procedures for dealing with topics.
  *
  *      Win Treese
  *      Dan Morgan
@@ -13,43 +13,80 @@
  *      Tom Coppeto
  *      MIT Project Athena
  *
- *      Copyright (c) 1988 by the Massachusetts Institute of Technology
+ *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v $
  *      $Author: tjcoppet $
  */
 
+
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.7 1989-08-15 03:13:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.8 1989-11-17 14:19:57 tjcoppet Exp $";
 #endif
 
 
 #include <olc/olc.h>
 
+
+/*
+ * Function:	OListQueues() 
+ * Description: Lists the queues known to the service.
+ * Returns:	ERRCODE
+ */
+
 ERRCODE
-OListQueue(Request,list,queues,topics,users,stati)
+OListQueues(Request,file)
      REQUEST *Request;
-     LIST **list;
-     char *queues;
-     char *topics;
-     char *users;
-     int stati;
+     char *file;
 {
   int fd;
+  RESPONSE response;
   int status;
-  int n;
+/*
+  Request->request_type = OLC_LIST_QUEUES;
+*/
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
 
-  if(strlen(queues) > NAME_LENGTH)
-    return(ERROR);
+  status = send_request(fd, Request);
+  if(status)
+    {
+      close(fd);
+      return(status);
+    }
+  read_response(fd, &response);
 
-  if(strlen(topics) > NAME_LENGTH)
-    return(ERROR);
+  if(response == SUCCESS)
+    read_text_into_file(fd,file);
+      
+  close(fd);
+  return(response);
+}
 
-  if(strlen(users) > NAME_LENGTH)
-    return(ERROR);
 
-  Request->request_type = OLC_LIST;
-  fd = open_connection_to_daemon();
+
+/*
+ * Function:	OVerifyQueue() 
+ * Description: Verifies the conversation queue specified.
+ * Returns:	ERRCODE
+ */
+
+
+ERRCODE
+OChangeQueue(Request,queue)
+     REQUEST *Request;
+     char *queue;
+{
+  int fd;
+  RESPONSE response;
+  int status;
+/*
+  Request->request_type = OLC_CHANGE_QUEUE;
+  */
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
   
   status = send_request(fd, Request);
   if(status)
@@ -58,74 +95,16 @@ OListQueue(Request,list,queues,topics,users,stati)
       return(status);
     }
 
-  read_response(fd, &status);
+  read_response(fd, &response);
 
-  if(!is_option(Request->options,LIST_PERSONAL))
+  if(response == SUCCESS)
     {
-      if(status == SUCCESS)
-	{
-	  write_text_to_fd(fd,queues);
-	  write_text_to_fd(fd,topics);
-	  write_text_to_fd(fd,users);
-	  write_int_to_fd(fd,stati);
-	}
-      
-      read_response(fd, &status);
+      write_text_to_fd(fd,queue);
+      read_response(fd,&response);
     }
-
-  if(status == SUCCESS)
-    {
-      read_int_from_fd(fd, &n);
-
-#ifdef TEST
-      printf("reading %d list elements\n",n);
-#endif TEST
-       
-      if(!n)
-        {
-          *list = (LIST *) NULL;
-          status = EMPTY_LIST;
-        }
-      else 
-        {    
-          *list = (LIST *) malloc((unsigned) (sizeof(LIST) * (n+1)));
-          status = OReadList(fd, list,n);
-        }
-    }
-
-  (void) close(fd);
-  return(status);
+  
+  close(fd);
+  return(response);
 }
 
-
-
-
-OReadList(fd,list, size)
-     int fd;
-     LIST **list;
-     int size;
-{
-  LIST *l;
-  int i= 0;
-  int status;
-  int errflag = 0;
-
-  l = *list;
-  for(i=0;i<size;i++)
-    {
-      status = read_list(fd, l);
-      if(status == ERROR)
-	{
-	  i--;   ++errflag;
-	  if(errflag > 3)
-	    return(ERROR);
-	  continue;
-	}
-      if(l->ustatus == END_OF_LIST)
-	return(status);
-      ++l;
-    }
-  l->ustatus = END_OF_LIST;
-  return(status);
-}
 

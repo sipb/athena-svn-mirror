@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.1 1989-07-06 22:05:44 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_live.c,v 1.2 1989-11-17 14:11:14 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -37,7 +37,6 @@ t_live(Request,file)
      char *file;
 {
   int status;
-  struct stat statbuf;	
   char sender[LABEL_LENGTH];
   int port;
 

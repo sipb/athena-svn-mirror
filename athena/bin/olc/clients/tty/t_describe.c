@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.1 1989-08-04 11:12:03 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_describe.c,v 1.2 1989-11-17 14:10:48 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -44,7 +44,7 @@ t_describe(Request,file,note,dochnote,dochcomment)
   if(dochnote && (note == (char *) NULL))
     {
       buf[0] = '\0';
-      sprintf(mesg, "Enter your note (%d max chars):\n> ",NOTE_SIZE);
+      sprintf(mesg, "Enter your note (%d max chars):\n%15s",NOTE_SIZE,"> ");
       get_prompted_input(mesg, buf);
       strncpy(notebuf,buf,NOTE_SIZE-1);
      }
@@ -63,6 +63,7 @@ t_describe(Request,file,note,dochnote,dochcomment)
       set_option(Request->options,CHANGE_COMMENT_OPT);
     }
      
+  notebuf[NOTE_SIZE-1] = '\0';
   status = ODescribe(Request,&list,file,notebuf);
   
   switch(status)

@@ -20,20 +20,6 @@
  */
 
 
-char REALM[40];
-char INSTANCE[40];
-
-char *LOCAL_REALM = "ATHENA.MIT.EDU";
-char *LOCAL_REALMS[] = 
-{
-  "MIT.EDU",
-  "DU.MIT.EDU",
-  "SIPB.MIT.EDU",
-  "PIKA.MIT.EDU",
-  "CARLA.MIT.EDU",
-  "ZBT.MIT.EDU",
-  "",
-};
 
 #ifndef TESTHOST
 char *OLC_PROMPT = "olc> ";

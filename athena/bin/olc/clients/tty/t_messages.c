@@ -20,25 +20,32 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.4 1989-08-22 13:54:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.5 1989-11-17 14:11:21 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
 ERRCODE
-t_replay(Request,file, display)
+t_replay(Request,file, display, sort)
      REQUEST *Request;
      char *file;
      int display;
+     int sort;
 {
   int status;
+  char cmd[LINE_SIZE];
 
   status = OReplayLog(Request,file);
   
   switch (status)
     {
     case SUCCESS:
+      if(sort)
+	{
+	  sprintf(cmd,"/usr/bin/sort %s -o %s",file,file);
+	  system(cmd);
+	}
       if (display)
 	status = display_file(file, TRUE);
       break;
@@ -87,7 +94,7 @@ t_show_message(Request, file, display, connected, noflush)
   if(connected)
     set_option(Request->options, CONNECTED_OPT);
 
-  status = OShowMessage(Request,file);
+  status = OShowMessageIntoFile(Request,file);
    
   switch (status)
     {
@@ -108,10 +115,61 @@ t_show_message(Request, file, display, connected, noflush)
       fprintf(stderr, "Permission denied. \n");
       break;
 
+    case NO_MESSAGES:
+      printf("No new messages.\n");
+      break;
+
     default:
       status = handle_response(status, Request);
       break;
     }
 
+  return(status);
+}
+
+
+t_check_messages(Request)
+     REQUEST *Request;
+{
+  int status;
+  char file[NAME_LENGTH];
+  char buf[BUF_SIZE];
+
+  make_temp_name(file);
+  status = OShowMessageIntoFile(Request,file);
+  if(status == SUCCESS)
+    {
+      if(isme(Request))
+	printf("You have ");
+      else
+	printf("%s has ", Request->target.username);
+
+      *buf = '\0';
+      get_prompted_input("unread messages. Display? ", buf);
+      if(*buf == 'y')
+	display_file(file, TRUE);
+    }
+
+  return(status);
+}
+
+t_check_connected_messages(Request)
+     REQUEST *Request;
+{
+  int status;
+  char file[NAME_LENGTH];
+  char buf[BUF_SIZE];
+
+  make_temp_name(file);
+  set_option(Request->options,CONNECTED_OPT);
+  status = OShowMessageIntoFile(Request,file);
+  if(status == SUCCESS)
+    {
+      *buf = '\0';
+      get_prompted_input("User has unread messages. Display? ", buf);
+      if(*buf == 'y')
+	display_file(file, TRUE);
+    }
+  unset_option(Request->options,CONNECTED_OPT);
   return(status);
 }

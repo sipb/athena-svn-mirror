@@ -104,13 +104,13 @@ do_olc_done(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
-	    fprintf(stderr,"Usage is: \tdone\n");
+	    printf("Usage is: \tdone\n");
 	  else
 	    {
-	      fprintf(stderr,
-		      "Usage is: \tdone  [<username> <instance id>] ");
-	      fprintf(stderr,"[-off] ");
-	      fprintf(stderr,"[-title <title>]\n\t\t[-topic <topic>]\n");
+	      printf("Usage is: \tdone  [<username> <instance id>] ");
+	      printf("[-off] ");
+	      printf("[-title <title>]\n\t\t[-topic <topic>] ");
+	      printf("[-instance <instance id>]\n");
 	    }
 	  return(ERROR);
 	}
@@ -168,12 +168,12 @@ do_olc_cancel(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
-	    fprintf(stderr,"Usage is: \tcancel\n");
+	    printf("Usage is: \tcancel\n");
 	  else
 	    {
-	      fprintf(stderr, 
-		      "Usage is: \tcancel [<username> <instance id>] ");
-	      fprintf(stderr,"[-title <title>] [-off]\n");
+	      printf("Usage is: \tcancel [<username> <instance id>] ");
+	      printf("[-title <title>] [-off]\n");
+	      printf("\t\t[-instance <instance id>]\n");
 	    }
 	  return(ERROR);
 	}

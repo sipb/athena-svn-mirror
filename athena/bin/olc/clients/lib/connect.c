@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/connect.c,v 1.4 1989-08-15 03:12:54 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/connect.c,v 1.5 1989-11-17 14:16:30 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -31,9 +31,12 @@ OGrab(Request)
 {
   int fd;
   int status;
+
   Request->request_type = OLC_GRAB;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd,Request);
   if(status)
     {

@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.8 1989-08-22 13:56:10 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.9 1989-11-17 14:13:02 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -107,7 +107,7 @@ enter_message(file,editor)
     {
       if(isatty(1))
         {
-          printf("Please enter your message. ");
+          printf("Please enter your message.  ");
           printf("End with a ^D or '.' on a line by itself.\n");
         }
       status = input_text_into_file(file);
@@ -242,7 +242,7 @@ handle_response(response, req)
      REQUEST *req;
 {
 #ifdef KERBEROS
-  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc. If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
+  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc.  If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
 #endif KERBEROS
 
   switch(response)
@@ -309,7 +309,7 @@ handle_response(response, req)
       return(ERROR);       
 
     case REQUESTER_NOT_FOUND:
-      fprintf(stderr,"You [%s (%d)] are unknown. There is a problem.\n",
+      fprintf(stderr,"You [%s (%d)] are unknown.  There is a problem.\n",
 	      req->requester.username, 
 	      req->requester.instance);
       return(ERROR);       
@@ -331,19 +331,45 @@ handle_response(response, req)
 	      "The string %s is not unique.\n",req->target.username);
       return(ERROR);
 
+    case ERROR_NAME_RESOLVE:
+      fprintf(stderr, 
+	      "Unable to resolve name of OLC daemon host. Seek help.\n");
+      if(OLC)
+	exit(ERROR);
+      else
+	return(ERROR);
+      break;
+
+    case ERROR_SLOC:
+      fprintf(stderr,"Unable to locate OLC service. Seek help.\n");
+      if(OLC)
+	exit(ERROR);
+      else
+	return(ERROR);
+      break;
+
+    case ERROR_CONNECT:
+      fprintf(stderr,"Unable to connect to OLC daemon.  Please try ");
+      fprintf(stderr,"again later.\n");
+      if(OLC)
+	exit(ERROR);
+      else
+	return(ERROR);
+      break;
+
 #ifdef KERBEROS     /* these error codes are < 100 */
     case MK_AP_TGTEXP: 
     case RD_AP_EXP:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Your Kerberos ticket has expired. ");
-      printf("To renew your Kerberos tickets,\n");
+      printf("Your Kerberos tickets has expired. ");
+      printf(" To renew your Kerberos tickets,\n");
       printf("type:    kinit\n");
       if(OLC)
 	printf("%s\n",kmessage);
       exit(ERROR);
     case NO_TKT_FIL: 
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("You do not have a Kerberos ticket file. To ");
+      printf("You do not have a Kerberos ticket file.  To ");
       printf("get one, \ntype:    kinit\n");
       if(OLC)
 	printf("%s\n",kmessage);
@@ -370,7 +396,10 @@ handle_response(response, req)
       return(SUCCESS);     
 
     default:
-      fprintf(stderr, "Unknown response %d (fascinating)\n", response);
+      if(response < 100)   /* this isn't so great */
+	fprintf(stderr,"%s\n",krb_err_txt[response]);
+      else
+	fprintf(stderr, "Unknown response %d (fascinating)\n", response);
       return(ERROR); 	   
     }
 }
@@ -454,13 +483,17 @@ what_now(file, edit_first, editor)
 	  }
 	}
       
-      if (*inbuf == 'e')
+      if (string_equiv(inbuf,"edit",max(strlen(inbuf),1)))
 	edit_message(file, editor);
-      else if (*inbuf == 'q')
+      else if (string_equiv(inbuf,"quit",max(strlen(inbuf),1)))
 	return(NO_ACTION);
-      else if (*inbuf == 's')
+      else if (string_equiv(inbuf,"send",max(strlen(inbuf),1)) ||
+	       string_equiv(inbuf,"sned",max(strlen(inbuf),1)) ||
+	       string_equiv(inbuf,"sedn",max(strlen(inbuf),1)) ||
+	       string_equiv(inbuf,"sden",max(strlen(inbuf),1)) ||
+	       string_equiv(inbuf,"snde",max(strlen(inbuf),1)))
 	return(SUCCESS);
-      else if (*inbuf == 'l')
+      else if (string_equiv(inbuf,"list",max(strlen(inbuf),1)))
 	display_file(file,TRUE);
       else if (*inbuf == 'a')
 	printf("hello!\n");
@@ -484,8 +517,9 @@ edit_message(file, editor)
      char *file;
      char *editor;
 {
-  if(string_eq(editor,NO_EDITOR))
-    editor = (char *) NULL;
+  if(editor != (char *) NULL)
+    if(string_eq(editor,NO_EDITOR))
+      editor = (char *) NULL;
 
   if (editor == (char *) NULL) 
     {
@@ -517,8 +551,9 @@ edit_message(file, editor)
  */
 
 ERRCODE
-mail_message(user, consultant, msgfile) 
+mail_message(user, consultant, msgfile, args) 
      char *user, *consultant, *msgfile;
+     char **args;
 {
   int fd;			/* File descriptor for sendmail. */
   int filedes;		        /* File desriptor for msgfile. */
@@ -568,7 +603,7 @@ mail_message(user, consultant, msgfile)
       (void) close(filedes);
       return(ERROR);
     }
-  if ((fd = sendmail()) < 0) 
+  if ((fd = sendmail(args)) < 0) 
     {
       printf("Error sending mail.\n");
       free(msgbuf);
@@ -599,7 +634,7 @@ happy_message()
 {
   if(random()%3 == 1)
     {
-      switch(random()%10)
+      switch(random()%12)
 	{
 	case 1: return("Have a nice day");
 	case 2: return("Have a happy");
@@ -610,10 +645,12 @@ happy_message()
 	case 7: return("Have a nice day");
 	case 8: return("Have a happy");
 	case 9: return("Drive safely");
+        case 10: return("Do come again soon");
+	case 11: return("Have a good one");
 	default: return("Don't take any wooden nickels");
 	}
     }
-  return("Have a nice day.");      
+  return("Have a nice day");      
 }
 
 char *

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.3 1989-08-22 13:55:55 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.4 1989-11-17 14:12:46 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -51,7 +51,7 @@ t_input_topic(Request,topic,flags)
   if(flags)
     {
       printf("Please type a one-word topic for your question.");
-      printf(" Type ? for a list of\n");
+      printf("  Type ? for a list of\n");
       printf("available topics or ^D to exit.\n\n");
     }
 
@@ -212,7 +212,7 @@ t_change_topic(Request,topic)
   switch(status)
     {
     case SUCCESS:
-      printf("Topic changed to %s\n",topic);
+      printf("Topic changed to %s.\n",topic);
       break;
 
     case PERMISSION_DENIED:

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.3 1989-08-22 13:49:44 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_ask.c,v 1.4 1989-11-17 14:06:35 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -56,9 +56,22 @@ do_olc_ask(arguments)
             }
           else
             {
-              arguments = handle_argument(arguments, &Request);
-              if(arguments == (char **) NULL)   /* error */
-                return(ERROR);
+              arguments = handle_argument(arguments, &Request, &status);
+	      if(status)
+		return(ERROR);
+              if(arguments == (char **) NULL) 
+		{
+		  if(OLC)
+		    printf("Usage is: \task [-topic <topic>]\n");
+		  else
+		    {
+		      printf("Usage is: \task [-topic <topic>] ");
+		      printf("[<username> <instance id>]\n");
+		      printf("\t\t[-instance <instance id>\n");
+		    }
+		  
+		  return(ERROR);
+		}
               if(*arguments == (char *) NULL)   /* end of list */
                 break;
             }

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.5 1989-08-22 13:52:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.6 1989-11-17 14:09:56 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -60,7 +60,7 @@ t_ask(Request,topic)
 
     case ERROR:
       fprintf(stderr, 
-	 "An error has occurred while contacting server. Please try again.\n");
+	 "An error has occurred while contacting server.  Please try again.\n");
       if(OLC)
 	exit(1);
       else
@@ -166,14 +166,14 @@ t_ask(Request,topic)
   switch(status)
     {
     case NOT_CONNECTED:
-      printf("\nThere is no consultant currently");
-      printf(" available. Your");
-      printf(" request will be forwarded\nto the first available");
-      printf(" consultant.\n");
+      printf("Your question will be forwarded to the first available ");
+      printf("consultant.\n");
+#ifdef BETH
       printf("\nIf you would like to see answers to common questions,");
-      printf(" please type\n\"answers\" at the olc> prompt. If you find");
+      printf(" please type\n\"answers\" at the olc> prompt.  If you find");
       printf(" the answer to your question, type\n\"cancel\" at the olc> ");
       printf("prompt.\n");
+#endif BETH
       status = SUCCESS;
       break;
     case CONNECTED:

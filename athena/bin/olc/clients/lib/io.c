@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.4 1989-08-15 13:38:07 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.5 1989-11-17 14:18:03 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>        
@@ -71,16 +71,9 @@ send_request(fd, request)
      REQUEST *request;
 {
   IO_REQUEST net_rq;
-  int status;
 
 #ifdef KERBEROS
   int klength;
-#endif KERBEROS
-
-#ifdef KERBEROS
-  status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
-  if(status)
-    return(status);
 #endif KERBEROS
 
 #ifdef TEST
@@ -133,6 +126,7 @@ read_list(fd, list)
 {
   int size;
 
+  bzero(list, sizeof(LIST));
   size = sread(fd, list, sizeof(LIST));
 
   if(size == -1)        /* let's not hold up the server if we can't  */
@@ -154,6 +148,10 @@ read_list(fd, list)
   list->cstatus            = ntohl((u_long) list->cstatus);
   list->ukstatus           = ntohl((u_long) list->ukstatus);
   list->ckstatus           = ntohl((u_long) list->ckstatus);
+  list->utime              = ntohl((u_long) list->utime);
+  list->ctime              = ntohl((u_long) list->ctime);
+  list->umessage           = ntohl((u_long) list->umessage);
+  list->cmessage           = ntohl((u_long) list->cmessage);
   list->user.instance      = ntohl((u_long) list->user.instance);
   list->user.uid           = ntohl((u_long) list->user.uid);
   list->connected.instance = ntohl((u_long) list->connected.instance);
@@ -198,32 +196,37 @@ read_person(fd, person)
  */
 
 int
-open_connection_to_daemon()
+open_connection_to_daemon(request, fd)
+     REQUEST *request;
+     int *fd;
 {
-  int fd;
   struct hostent *hp = (struct hostent *)NULL; 
   struct servent *service = (struct servent *)NULL; 
   static struct sockaddr_in sin, *sptr = (struct sockaddr_in *) NULL;
-  
+  int status;
 
-  fd = socket(AF_INET, SOCK_STREAM, 0);
+#ifdef KERBEROS
+  status =  krb_mk_req(&(request->kticket), K_SERVICE, INSTANCE, REALM, 0);  
+  if(status)
+    return(status);
+#endif KERBEROS
+
+  *fd = socket(AF_INET, SOCK_STREAM, 0);
   
   if (sptr == (struct sockaddr_in *) NULL)
     {
       hp = gethostbyname(DaemonHost);
       if (hp == (struct hostent *)NULL) 
 	{
-	  printf("Unable to resolve name of OLC daemon host.  ");
-	  printf("Please try again later.\n");
-	  exit(ERROR);
+	  close(*fd);
+	  return(ERROR_NAME_RESOLVE);
 	}
       
       service = getservbyname(OLC_SERVICE, OLC_PROTOCOL);
       if (service == (struct servent *)NULL)
 	{
-	  printf("Unable to locate \"OLC\" service.  Please try");
-	  printf(" again later.\n");
-	  exit(ERROR);
+	 close(*fd);
+	 return(ERROR_SLOC);
 	}
   
       bzero(&sin, sizeof (sin));
@@ -234,14 +237,13 @@ open_connection_to_daemon()
       sptr = &sin;
     }
 
-  if (connect(fd, &sin, sizeof(sin)) < 0) 
+  if (connect(*fd, &sin, sizeof(sin)) < 0) 
     {
-      printf("Unable to connect to OLC daemon.  Please try");
-      printf(" again later.\n");
-      exit(ERROR);
+      close(*fd);
+      return(ERROR_CONNECT);
     }
   
-  return(fd);
+  return(SUCCESS);
 }
 
 

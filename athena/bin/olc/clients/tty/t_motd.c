@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.3 1989-08-10 03:11:52 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.4 1989-11-17 14:11:34 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -53,4 +53,65 @@ t_get_motd(Request,type,file,display_opts)
 
   return(status);
 }
+  
+
+ERRCODE
+t_change_motd(Request,type,file, editor, incflag)
+     REQUEST *Request;
+     int type;
+     char *file;
+     char *editor;
+     int incflag;
+{
+  int status;
+
+  set_option(Request->options, VERIFY);
+  status = OChangeMOTD(Request,type,file);
+  
+  switch(status)
+    {
+    case SUCCESS:
+      break;
+
+    case PERMISSION_DENIED:
+      fprintf(stderr,"No dice.\n");
+      status = ERROR;
+      break;
+
+    default:
+      status = handle_response(status,Request);
+      break;
+    }
+
+  if(status != SUCCESS)
+    return(status);
+
+  unset_option(Request->options, VERIFY);
+  if((editor != (char *) NULL) && incflag)
+    {
+      status = OGetMOTD(Request,type,file);
+      if(status != SUCCESS)
+	printf("Error getting motd, continuing...\n");
+    }
+    
+  status = enter_message(file,editor);
+  if(status)
+    return(status);
+
+  status = OChangeMOTD(Request,type,file);
+  
+  switch(status)
+    {
+    case SUCCESS:
+      printf("MOTD change succesful. \n");
+      break;
+      
+          default:
+      status =  handle_response(status, Request);
+      break;
+    }
+
+  return(status);
+}
+
   

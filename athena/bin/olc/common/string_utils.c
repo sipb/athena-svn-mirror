@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.2 1989-08-08 14:36:19 tjcoppet Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.3 1989-11-17 14:01:57 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -28,6 +28,16 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <signal.h>             /* System signal definitions. */
 #include <sys/time.h>           /* System time definitions. */
 
+char *wday[] = 
+{
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+} ;
+
+char *month[] = 
+{
+  "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December",
+};
 
 /*
  * Function:	uncase() converts a string to lower case letters. It also
@@ -63,6 +73,31 @@ uncase(string)
 }
 
 
+char *
+cap(string)
+     char *string;
+{
+  char buf[LINE_SIZE];
+  char c;
+
+  strncpy(buf,string,LINE_SIZE);
+  c = buf[0];
+  if(!isupper(buf[0]))
+    buf[0] = toupper(c);
+  return(buf);
+}
+
+isnumber(string)
+     char *string;
+{
+  while(string && *string)
+    {
+      if(!isdigit(*string))
+	return(ERROR);
+      ++string;
+    }
+  return(SUCCESS);
+}
 
 extern struct tm *localtime();
 
@@ -76,7 +111,7 @@ extern struct tm *localtime();
  *	the time through the minutes.
  */
 
-time_now(time_buf)
+time_now_old(time_buf)
      char *time_buf;		/* should be at least 18 chars */
 {
   long current_time;     	/* Current time. */
@@ -87,6 +122,33 @@ time_now(time_buf)
   (void) sprintf(time_buf, "%02d/%02d/%02d %02d:%02d:%02d",
 	  time_info->tm_year, time_info->tm_mon+1, time_info->tm_mday,
 	  time_info->tm_hour, time_info->tm_min, time_info->tm_sec);
+}
+
+time_now(time_buf)
+     char *time_buf;
+{
+  long current_time;     	/* Current time. */
+  struct tm *time_info;
+  int hour;
+
+  (void) time(&current_time);
+  time_info = localtime(&current_time);
+  hour = time_info->tm_hour;
+  if(hour > 12)
+    hour -= 12;
+
+  (void) sprintf(time_buf, "%3.3s %s%d-%3.3s-%s%d %s%d:%s%d%s",
+		 wday[time_info->tm_wday],
+		 time_info->tm_mday > 9 ? "" : "0", 
+		 time_info->tm_mday,
+		 month[time_info->tm_mon], 
+		 time_info->tm_year > 9 ? "" : "0",
+		 time_info->tm_year,
+		 hour > 9 ? "" : " ",
+		 hour,
+		 time_info->tm_min > 9 ? "" : "0", 
+		 time_info->tm_min,
+		 time_info->tm_hour > 11 ? "pm" : "am");
 }
 
 

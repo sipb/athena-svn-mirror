@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.4 1989-08-15 03:14:12 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.5 1989-11-17 14:20:48 tjcoppet Exp $";
 #endif
 
 
@@ -44,10 +44,13 @@ OGetTopic(Request,topic)
   RESPONSE response;
   int status;
   char *buf;
-  
+  LIST data;
+/*
   Request->request_type = OLC_TOPIC;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -66,6 +69,11 @@ OGetTopic(Request,topic)
 
   close(fd);
   return(response);
+*/
+  status = OWho(Request,&data);
+  if(status == SUCCESS)      
+    strcpy(topic,data.topic);
+  return(status);
 }
 
 
@@ -85,12 +93,14 @@ OChangeTopic(Request, topic)
   RESPONSE response;
   int status;
 
-  Request->request_type = OLC_CHANGE_TOPIC;
+  Request->request_type = OLC_SET_TOPIC;
   if(*topic == '\0')
     return(ERROR);
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -129,8 +139,10 @@ OListTopics(Request,file)
 
   Request->request_type = OLC_LIST_TOPICS;
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
@@ -166,7 +178,9 @@ OVerifyTopic(Request,topic)
 
   Request->request_type = OLC_VERIFY_TOPIC;
   
-  fd = open_connection_to_daemon();
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
   
   status = send_request(fd, Request);
   if(status)
@@ -207,8 +221,10 @@ OHelpTopic(Request,topic, buf)      /*ARGSUSED*/
   int status;
 
   Request->request_type = OLC_HELP_TOPIC;
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {

@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.4 1989-08-22 13:53:32 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_consult.c,v 1.5 1989-11-17 14:10:16 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -50,7 +50,7 @@ t_sign_on(Request,flag,hold)
       if(isme(Request))
 	printf("You have signed on to OLC.\n");
       else
-	printf("%s (%d) is signed on. I hope you told him.\n",
+	printf("%s (%d) is signed on.  I hope you told him.\n",
 	       Request->target.username,Request->target.instance);
       status = SUCCESS; 
       break; 
@@ -157,7 +157,7 @@ t_olc_off(Request)
       break;
 
     case NOT_CONNECTED:
-      printf("You have signed off. This instance has been terminated.\n");
+      printf("You have signed off.  This instance has been terminated.\n");
       status = SUCCESS;
       
       t_set_default_instance(Request);
@@ -165,7 +165,7 @@ t_olc_off(Request)
 
     case ERROR:
      fprintf(stderr,
-              "An error has occurred. You are not signed off.\n");
+              "An error has occurred.  You are not signed off.\n");
       status = ERROR;
       break;
 
@@ -175,8 +175,10 @@ t_olc_off(Request)
     }
 
   if(instance != Request->requester.instance)
-    printf("You are %s (%d), again. %s\n",Request->requester.username,
-           Request->requester.instance, happy_message());
+    printf("%s (%d) has been deactivated.  You are now %s (%d). %s\n",
+  	Request->requester.username, instance,
+        Request->requester.username, Request->requester.instance, 
+	happy_message());
 
   return(status);
 }

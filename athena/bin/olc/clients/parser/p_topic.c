@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.7 1989-08-22 13:50:41 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.8 1989-11-17 14:09:01 tjcoppet Exp $";
 #endif
 
 
@@ -65,7 +65,8 @@ do_olc_topic(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)))
+      if(string_equiv(*arguments,"-topic",max(strlen(*arguments),2)) ||
+	 string_equiv(*arguments,"-change",max(strlen(*arguments),2)))
 	{
 	  if(*(arguments+1) != (char *) NULL) 
 	    {
@@ -105,19 +106,17 @@ do_olc_topic(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  if(OLC)
-	    fprintf(stderr,
-		  "Usage is: \ttopic [-list] [-file <file name>] \n");
+	    printf("Usage is: \ttopic [-list] [-file <file name>] \n");
 	  else
 	    {
-	      fprintf(stderr,
-		      "Usage is: \ttopic  [<username> <instance id>] ");
-	      fprintf(stderr,
-		      "[-topic <topic>] [-list]\n\t\t[-file <file name>]\n");
+	      printf("Usage is: \ttopic  [<username> <instance id>] ");
+	      printf("[-topic <topic>] [-list]\n\t\t[-file <file name>] ");
+	      printf("[-change]\n");
+	      printf("\t\t[-instance <instance id>]\n");
 	    }
 	  return(ERROR);
 	}
-      if(arguments == (char **) NULL)   /* error */
-	return(ERROR);
+
       if(*arguments == (char *) NULL)   /* end of list */
 	break;
     }

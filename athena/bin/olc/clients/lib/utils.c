@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.5 1989-08-22 13:57:34 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.6 1989-11-17 14:20:58 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -28,6 +28,11 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <signal.h>
 #include <ctype.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/file.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 OFillRequest(req)
      REQUEST *req;
@@ -38,12 +43,12 @@ OFillRequest(req)
 fill_request(req)
      REQUEST *req;
 {
-  int status;
-
 #ifdef KERBEROS
-  int result;
   CREDENTIALS k_cred;
+  int status;
 #endif KERBEROS
+
+  bzero(req, sizeof(REQUEST));
 
   req->options = NO_OPT;
   req->version = CURRENT_VERSION;
@@ -52,23 +57,125 @@ fill_request(req)
   req->requester.uid      = User.uid;
   (void) strncpy(req->requester.username, User.username, LOGIN_SIZE);
   (void) strncpy(req->requester.realname, User.realname, NAME_LENGTH);
-  (void) strncpy(req->requester.machine,  User.machine,  NAME_LENGTH);
-  
+  (void) strncpy(req->requester.machine,  User.machine,
+		 sizeof(req->requester.machine));
+
   req->target.instance = User.instance;
   req->target.uid      = User.uid;
   (void) strncpy(req->target.username, User.username, LOGIN_SIZE);
   (void) strncpy(req->target.realname, User.realname, NAME_LENGTH);
-  (void) strncpy(req->target.machine,  User.machine,  NAME_LENGTH);
+  (void) strncpy(req->target.machine,  User.machine,
+		 sizeof(req->requester.machine));
 
 #ifdef KERBEROS
-  if(krb_get_cred(K_SERVICE,INSTANCE,REALM, &k_cred) == KSUCCESS)
+  if((status = krb_get_cred("krbtgt",REALM,REALM, &k_cred)) == KSUCCESS)
     {
       (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
       (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
     }
+  else
+    fprintf(stderr,"%s\n",krb_err_txt[status]);
 #endif KERBEROS
 
   return(SUCCESS);
+}
+
+#ifdef ATHENA
+
+#define MAIL_SUCCESS 250
+char *host = "athena.mit.edu";
+static struct hostent *hp_local = (struct hostent *) NULL;
+static struct servent *sp_local = (struct servent *) NULL;
+
+open_connection_to_mailhost()
+{
+  static struct sockaddr_in sin;
+  static int s;
+
+  hp_local = gethostbyname(host);
+
+  if (hp_local == (struct hostent *) NULL)
+    {
+      fprintf(stderr,"Unable to resolve name of local mail server %s.",host);
+      return(ERROR);
+    }
+
+  sp_local = getservbyname("smtp", "tcp");
+  if (sp_local == (struct servent *) NULL)
+    {
+      fprintf(stderr, "Unable to locate local mail service.");
+      return(ERROR);
+    }
+
+  s = socket(AF_INET, SOCK_STREAM, 0);
+  if (s < 0)
+     {
+       perror("no socket");
+       return(ERROR);
+     }
+
+  bzero((char *)&sin, sizeof (sin));
+  bcopy(hp_local->h_addr, (char *)&sin.sin_addr, hp_local->h_length);
+  sin.sin_family = AF_INET;
+  sin.sin_port = sp_local->s_port;
+  if (connect(s, &sin, sizeof(sin)) < 0)
+    {
+      fprintf(stderr,"Unable to connect to mailhost\n");
+      return(ERROR);
+    }
+  return(s);
+}
+
+query_mailhost(s,name)
+     int s;
+     char *name;
+{
+  char buf[LINE_LENGTH];
+  int code;
+
+  sread(s,buf,LINE_LENGTH * sizeof(char));
+  sprintf(buf,"vrfy %s\n",name);
+  swrite(s,buf,strlen(buf) * sizeof(char));
+
+  sread(s,buf,LINE_LENGTH * sizeof(char));
+  code = atoi(buf);
+
+  sprintf(buf, "quit\n");
+  swrite(s,buf,strlen(buf) * sizeof(char));
+
+  sread(s,buf,LINE_LENGTH * sizeof(char));
+
+  return(code);
+ }
+
+#endif ATHENA
+
+can_receive_mail(name)   /*ARGSUSED*/
+     char *name;
+{
+#ifdef ATHENA
+  static int fd, code;
+  int status;
+
+  fd = open_connection_to_mailhost();
+  if(fd == ERROR)
+    return(ERROR);
+
+  code = query_mailhost(fd,name);
+  status = close(fd);
+  if(status == ERROR)
+    {
+      perror("fatal error");
+      exit(1);
+    }
+  if(code != MAIL_SUCCESS)
+    return(ERROR);
+  else
+    return(SUCCESS);
+
+#else  ATHENA
+  return(SUCCESS);
+#endif ATHENA
 }
 
 
@@ -201,10 +308,26 @@ expand_hostname(hostname, instance, realm)
  */
 
 int
-sendmail()
+sendmail(smargs)
+     char **smargs;
 {
   int fildes[2];	/* File descriptor array. */
-  
+  char *args[NAME_LENGTH];
+  int i = 2;
+
+  args[0] = "sendmail";
+  args[1] = "-t";
+
+  if(smargs != (char **) NULL)
+    while (smargs && *smargs)
+      {
+	args[i] = *smargs;
+	++i;  ++smargs;
+	if(i > NAME_LENGTH)
+	  break;
+      }
+  args[i] = (char *) 0;
+
   (void) pipe(fildes);
   switch (fork()) 
     {
@@ -216,7 +339,7 @@ sendmail()
       (void) close(fildes[1]);
       (void) close(0);
       (void) dup2(fildes[0], 0);
-      execl("/usr/lib/sendmail", "sendmail", "-t", 0);
+      execv("/usr/lib/sendmail", args);
       perror("sendmail: exec");
       exit(1);
     default:

@@ -20,12 +20,13 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.3 1989-08-22 13:57:56 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.4 1989-11-17 14:16:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
 
 PERSON User;
+char DaemonHost[NAME_LENGTH];
 
 STATUS Status_Table[] = 
 {
@@ -51,3 +52,20 @@ STATUS Status_Table[] =
 };
 
 
+char REALM[40];
+char INSTANCE[40];
+
+char *LOCAL_REALM = "ATHENA.MIT.EDU";
+char *LOCAL_REALMS[] =
+{
+  "MIT.EDU",
+  "DU.MIT.EDU",
+  "SIPB.MIT.EDU",
+  "PIKA.MIT.EDU",
+  "CARLA.MIT.EDU",
+  "ZBT.MIT.EDU",
+  "",
+};
+
+LIST  list_cache;
+long  lc_time = 0;

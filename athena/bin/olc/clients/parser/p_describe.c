@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.1 1989-08-04 11:07:22 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_describe.c,v 1.2 1989-11-17 14:07:19 tjcoppet Exp $";
 #endif
 
 
@@ -89,7 +89,8 @@ do_olc_describe(arguments)
 
       if(arguments == (char **) NULL)   /* error */
 	{
-	  fprintf(stderr,"Usage is: \tdescribe  [user <instance id>] [-file <filename>] [-note <note>]\n\t\t[-comment]\n");
+	  printf("Usage is: \tdescribe  [user <instance id>] [-file <filename>] [-note <note>]\n\t\t[-comment] ");
+	  printf("[-instance <instance id>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
