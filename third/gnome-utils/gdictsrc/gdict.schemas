@@ -1376,7 +1376,7 @@
 
       <locale name="it">
         <short>Strategia di ricerca da usare</short>
-        <long>La strategia di ricerca da utilizzare. Dipende dalle strategie supportate dal server. Il valore predefinito è &quot;lev&quot; - trova parole con distanza di Levenshtein uno.</long>
+        <long>La strategia di ricerca da utilizzare. Dipende dalle strategie supportate dal server. Il valore predefinito è &quot;lev&quot; - trova parole con distanza di Levenshtein pari ad uno.</long>
       </locale>
 
       <locale name="ja">
@@ -1506,7 +1506,7 @@
 
       <locale name="th">
         <short>กลวิธีการค้นหาที่จะใช้</short>
-        
+        <long>วิธีการค้นหาที่ใช้  นี่ขึ้นอยู่กับว่าเซิร์ฟเวอร์พจนานุกรมรองรับวิธีไหนบ้าง  วิธีปริยายคือ &apos;lev&apos; ซึ่งหาคำที่ต่างกับคำที่ป้อนภายในหนึ่งหน่วย Levenshtein</long>
       </locale>
 
       <locale name="tr">
