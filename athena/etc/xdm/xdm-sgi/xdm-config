@@ -1,4 +1,4 @@
-DisplayManager.servers:			/etc/athena/login/xdm/Xservers
+DisplayManager.servers:			/var/X11/xdm/Xservers
 DisplayManager.errorLogFile:		/var/X11/xdm/xdm-errors
 DisplayManager.pidFile:			/var/X11/xdm/xdm-pid
 DisplayManager.keyFile:			/var/X11/xdm/xdm-keys
@@ -19,7 +19,7 @@ DisplayManager._1.session:		/var/X11/xdm/Xsession
 DisplayManager._2.session:		/var/X11/xdm/Xsession
 DisplayManager._3.session:		/var/X11/xdm/Xsession
 DisplayManager._0.openTimeout:		90
-DisplayManager._0.startAttempts:	1
+DisplayManager._0.startAttempts:	2
 DisplayManager._0.authFile:		/var/X11/xdm/xdm-auth
 DisplayManager._0.loginProgram:		/etc/athena/login/xdm/Xlogin
 DisplayManager._0.terminateServer:	True
