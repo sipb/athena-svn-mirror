@@ -1,25 +1,40 @@
-# $Id: Makefile.athena,v 1.16 2002-02-03 03:49:03 ghudson Exp $
+# $Id: Makefile.athena,v 1.17 2003-01-24 19:37:56 ghudson Exp $
 
 SHELL=/bin/sh
 
+# The install notes strongly recommend we build in an objdir which is
+# neither equal to nor underneath the srcdir.  We've seen complex
+# "gmake bootstrap" failures when we don't do this.
+
+# If we knew this coming into the game, we might import the gcc
+# sources into third/gcc/src.  But we didn't, and moving stuff around
+# in CVS is expensive.  So we'll move it around here.  (Which means
+# we have to remember what stuff is ours and move it back.)
 dist:
+	mkdir .src obj
+	mv * .src
+	mv .src src
+	mv src/Makefile.athena .
+	mv src/athena-version .
+	mv src/compiler .
 
 # We can't use the Athena config.site file because it specifies
 # cc to be gcc.
 prepare:
-	rm -f config.cache
-	. ./compiler && CC=$$cc ./configure --prefix=/usr/gcc --disable-shared
+	rm -f obj/config.cache
+	cd obj && . ../compiler \
+	 && CC=$$cc ../src/configure --prefix=/usr/athena --disable-shared
 
 clean:
-	${MAKE} clean
+	cd obj && ${MAKE} clean
 
 all:
-	${MAKE} bootstrap
+	cd obj && ${MAKE} bootstrap
 
 check:
 
 install: force
 	mkdir -p "$$SRVD/usr"
-	${MAKE} install "prefix=$$SRVD/usr/gcc"
+	cd obj && ${MAKE} install "prefix=$$SRVD/usr/athena"
 
 force:
