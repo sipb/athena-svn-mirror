@@ -1,6 +1,6 @@
 /* 
- *	$Id: Imakefile,v 1.12 1992-07-23 16:35:54 miki Exp $
- *	$Author: miki $
+ *	$Id: Imakefile,v 1.13 1993-05-10 13:48:09 vrt Exp $
+ *	$Author: vrt $
  *	$Locker:  $
  *
  *      Copyright 1990 Massachusetts Institute of Technology.
@@ -183,7 +183,7 @@ printcap.c:
 .c.o:
 	 $(CC) -tp -Bncs/cpp/ -c $(CFLAGS) $*.c
 #endif
-#if defined(sun)
+#if defined(sun)&&!defined(SOLARIS)
 DBMLIB=-ldbm
 .c.o:
 	 $(CC)  -c $(CFLAGS) $*.c

@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.9 1992-07-23 15:51:44 miki Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.10 1993-05-10 13:48:37 vrt Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  92/07/23  15:51:44  miki
+ * included fcntl.h for sun
+ * 
  * Revision 1.8  91/03/01  12:07:29  epeisach
  * RS/6000 fixes.
  * 
@@ -197,24 +200,30 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  */
 
+#ifdef POSIX
+#include <unistd.h>
+#endif
+
 #include <ctype.h>
 #include <setjmp.h>
+#ifndef POSIX
 #include <sgtty.h>
+#endif
 #include <signal.h>
 #include <stdio.h>
 #include <strings.h>
 #include <errno.h>
 
-#ifdef _AUX_SOURCE
 #include <sys/types.h>
+#ifdef _AUX_SOURCE
 #define _POSIX_SOURCE
+#endif
+#ifdef POSIX
 #include <termios.h>
 #endif
 #include <sys/file.h>
 #include <sys/ioctl.h>
-#if defined(sun)
 #include <fcntl.h>
-#endif
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
@@ -241,6 +250,15 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #endif
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
+#endif
+#ifdef SOLARIS
+/*
+ * flock operations.
+ */
+#define LOCK_SH               1       /* shared lock */
+#define LOCK_EX               2       /* exclusive lock */
+#define LOCK_NB               4       /* don't block when locking */
+#define LOCK_UN               8       /* unlock */
 #endif
 
 #if defined(_IBMR2) && !defined(FREAD)
@@ -317,7 +335,7 @@ private int	rpid = 0;	/* page reversal pid */
 private int	cpid = 0;	/* listener pid */
 private int	mpid = 0;	/* current process pid */
 private int     wpid;		/* Temp pid */
-#ifdef _IBMR2
+#ifdef POSIX
 private int status;	        /* Return value from wait() */
 #else
 private union wait status;	/* Return value from wait() */
@@ -1182,14 +1200,14 @@ int notify;
  * to abort.  Otherwise, the routine just returns.
  */
 private VOID listenexit(exitstatus)
-#if defined(_IBMR2) && !defined(_BSD)
+#if defined(POSIX)
 int exitstatus;     /* Status returned by the child */
 #else
 union wait exitstatus;     /* Status returned by the child */
 #endif
 {
     debugp((stderr,"%s: Listener return status: 0x%x\n",prog,exitstatus));
-#ifdef _IBMR2
+#ifdef POSIX
     if( WTERMSIG(exitstatus) > 0 ) {   /* Some signal got the child */
 	fprintf(stderr,"%s: Error: Listener process killed using signal=%d\n",
 	    prog,WTERMSIG(exitstatus));
@@ -1201,7 +1219,7 @@ union wait exitstatus;     /* Status returned by the child */
 	VOIDC fflush(stderr);
 	croak(TRY_AGAIN);
 	}
-#ifdef _IBMR2
+#ifdef POSIX
     else switch( WEXITSTATUS(exitstatus) ) {   /* Depends on child's exit status */
 #else
     else switch( exitstatus.w_retcode ) {   /* Depends on child's exit status */
