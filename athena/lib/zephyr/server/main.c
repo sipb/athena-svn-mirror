@@ -15,14 +15,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.23 1988-02-05 15:40:23 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.24 1988-02-06 00:11:28 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 2.5EXL2";
+char version[] = "Zephyr Server (DEBUG) 2.5";
 #else
-char version[] = "Zephyr Server 2.5EXL2";
+char version[] = "Zephyr Server 2.5";
 #endif DEBUG
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
