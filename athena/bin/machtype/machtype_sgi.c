@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.3 1996-05-14 17:07:33 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.4 1996-08-12 19:31:05 cfields Exp $
  *	$Locker:  $
  */
 
@@ -189,7 +189,7 @@ char	**argv;
     /* Print out local version from /etc/athena/version */
     if (dolocalV) {
       char buf[256],loc_version[256], *p;
-      if ((f = fopen("/etc/athena/sys_version","r")) == NULL) {
+      if ((f = fopen("/etc/athena/version","r")) == NULL) {
 	printf("Local version information unavailable\n");
       } else {
 	fseek(f,-100,2);
