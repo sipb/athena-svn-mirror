@@ -9,6 +9,13 @@
 #include <strings.h>
 #include "quota_db.h"
 
+/* These have to be defined here because quota_dba.o declares them */
+/* extern.   Normally, the are declared in qmain.c. */
+#ifdef DEBUG
+char *progname = "restore_db";
+int quota_debug=1;
+#endif
+
 int quota_db_create(), quota_db_set_name();
 
 main(argc, argv)
@@ -17,7 +24,7 @@ char *argv[];
 {
   FILE *fp;
   quota_rec qrec;
-  char temp[20], temp2[3];
+  char temp[20], temp2[4];
 
   if (argc != 3) {
       fprintf(stderr, "Usage: restore_db dump_file quota_db\n");
