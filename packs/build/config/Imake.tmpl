@@ -123,6 +123,9 @@
 #ifndef LdFlags
 #define LdFlags
 #endif
+#ifndef LdPath
+#define LdPath -L$(ATHLIBDIR)
+#endif
 #ifndef LdLibs
 #define LdLibs
 #endif
@@ -187,8 +190,8 @@ RM=RmCmd
 CDEBUG=CDebugFlags
 
 CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I/usr/athena/include
-LDFLAGS=LdFlags $(LDDEFS) -L/usr/athena/lib
-
+LDFLAGS=LdFlags $(LDDEFS)
+LDPATH=LdPath
 LDLIBS=LdLibs
 
 #include "Imake.rules"
