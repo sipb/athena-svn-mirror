@@ -17,6 +17,7 @@
 *window.mapNotifyProc:		mapnotify()
 *window.mapped:			False
 *window.cursorCode:		132
+*window.background:		gray
 
 !
 ! console is specified here because we really only want this resource
@@ -29,6 +30,7 @@ console*window*global:		true
 *scrollBarWindow.backgroundPixmap: /etc/athena/login/bitmaps/gray
 
 *scrollBar.changeProc:		newvalue()
+*scrollBar*background:		light gray
 
 *Button.highlightOnEnter:	false
 *Button.repeatDelay:		25
@@ -36,6 +38,7 @@ console*window*global:		true
 *Button.borderThickness:	0
 *Button.borderWidth:		0
 *Button*padding:		1
+*Button*background:		gray
 
 *hideButton.highlightOnEnter:	true
 *hideButton.Interval:		0
@@ -43,16 +46,20 @@ console*window*global:		true
 *hideButton.borderWidth:	1
 *hideButton*padding:		5
 *hide.borderWidth:		0
+*hide.background:		gray
 
 *Arrow.width:			13
 *Arrow.height:			13
 *scrolldownArrow.direction:	south
 
 *scrollup.borderWidth:		1
+*scrollup.background:		gray
 *scrolldown.borderWidth:	1
+*scrolldown.background:		gray
 *scrollupButton.activateProc:	scroll(-1)
 *scrolldownButton.activateProc:	scroll(1)
 
+*textDisplayWindow.background:	gray
 *textDisplayWindow.cursorCode:	152
 
 *textDisplay.font:		fixed
