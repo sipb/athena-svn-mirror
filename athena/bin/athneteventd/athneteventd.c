@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athneteventd.c,v 1.2 2002-11-06 20:01:28 ghudson Exp $";
+static const char rcsid[] = "$Id: athneteventd.c,v 1.3 2003-06-10 15:20:12 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -105,7 +105,7 @@ static void wait_for_events(int sock)
 	  /* In the child, run the client script (which should remove the
 	   * status file).
 	   */
-	  execl("/bin/sh", "-c", SCRIPT_PATH, tmpfile, NULL);
+	  execl("/bin/sh", "/bin/sh", SCRIPT_PATH, tmpfile, NULL);
 	  _exit(1);
 
 	default:
