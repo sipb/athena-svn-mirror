@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.4 $
+# $Revision: 1.5 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -391,6 +391,10 @@ case "$1" in
     # Send traffic for this host through lo0 for better performance
     HOSTRESORDER=local $ROUTE -q add host $if1addr $localhost 0 >/dev/null 2>&1
 
+    # Local Athena addition: suppress network daemons if requested.
+    if $IS_ON suppress-network-daemons; then
+	exit
+    fi
 
     $ECHO "Network daemons:\c"
 
@@ -557,11 +561,6 @@ case "$1" in
 	    $ECHO "."
 	fi
     fi
-
-    #
-    # Fire up AFS if configured - this needs to occur after networking
-    # is enabled but before nfsd's are run
-    #
 
     # Fire up NFS daemons if the kernel supports NFS and the daemons are
     # present and executable.  Also mount the NFS filesystems in /etc/fstab.
