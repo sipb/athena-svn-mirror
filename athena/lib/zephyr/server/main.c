@@ -15,14 +15,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.20 1987-12-14 19:26:35 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.21 1987-12-18 15:32:38 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 2.3";
+char version[] = "Zephyr Server (DEBUG) 2.4";
 #else
-char version[] = "Zephyr Server 2.3";
+char version[] = "Zephyr Server 2.4";
 #endif DEBUG
 /*
  * Server loop for Zephyr.
@@ -67,6 +67,9 @@ char version[] = "Zephyr Server 2.3";
 
 #include <netdb.h>
 #include <sys/socket.h>
+#ifdef lint
+#include <sys/uio.h>
+#endif lint
 #include <sys/param.h>
 #include <sys/ioctl.h>
 #include <signal.h>
@@ -187,6 +190,10 @@ char **argv;
 
 	if (initialize())
 		exit(1);
+
+	/* chdir to somewhere where a core dump will survive */
+	if (chdir("/usr/tmp") != 0)
+		syslog(LOG_ERR,"chdir failed (%m) (execution continuing)");
 
 	FD_ZERO(&interesting);
 	FD_SET(srv_socket, &interesting);
