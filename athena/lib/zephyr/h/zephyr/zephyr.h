@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.28 1988-06-29 16:45:48 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.29 1988-07-26 16:58:20 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -156,7 +156,7 @@ extern int errno;
 
 	/* Random declarations */
 extern char *ZGetSender(), *ZGetVariable();
-extern short ZGetWGPort();
+extern int ZGetWGPort();
 
 	/* Successful function return */
 #define ZERR_NONE		0
@@ -164,18 +164,10 @@ extern short ZGetWGPort();
 	/* Hostmanager wait time (in secs) */
 #define HM_TIMEOUT		30
 
-	/* Kerberos information */
-#define SERVER_SERVICE		"zephyr"
-#define SERVER_INSTANCE		"zephyr"
-#define SERVER_SRVTAB		"/usr/athena/lib/zephyr/srvtab"
-
-	/* Kerberos defines for ZFormatNotice, et al. */
+	/* Defines for ZFormatNotice, et al. */
 extern int ZMakeAuthentication();
 #define ZAUTH ZMakeAuthentication
 #define ZNOAUTH (int (*)())0
-
-	/* General filenames */
-#define DEFAULT_VARS_FILE	"/etc/athena/zephyr.vars"
 
 	/* Packet strings */
 
