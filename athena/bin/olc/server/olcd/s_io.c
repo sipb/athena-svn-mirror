@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.9 1990-02-15 18:50:00 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.10 1990-02-16 20:16:00 vanharen Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -102,7 +102,7 @@ read_request(fd, request)
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
-  if (request->version < VERSION_3)
+  if ((request->version > VERSION_5) || (request->version < VERSION_3))
     {
       sprintf(msgbuf,
 	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
