@@ -42,6 +42,9 @@ find $RPM_BUILD_ROOT -type f -or -type l |
 
 %post
 chkconfig --add athena-bind
+# Force a reset to what's specified in the rc file since we had to
+# change when named ran in the boot process for 9.0.
+chkconfig --level 345 athena-bind reset
 
 # For a while the SIPB installer was creating resolv.conf withthe
 # nameserver specified by the user (generally one of MITnet's
