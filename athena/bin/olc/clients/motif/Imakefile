@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.8 1991-07-11 15:18:50 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.9 1991-07-13 14:21:44 lwvanels Exp $
 # $Author: lwvanels $
 #
 # For copying and distribution information,
@@ -16,10 +16,10 @@ EXTRA_LOAD_FLAGS=-pg
 
 SRCS=		main.c procs.c visual.c \
 		x_ask.c x_instance.c x_motd.c x_resolve.c \
-		x_send.c x_topic.c x_utils.c Cursor.c converters.c
+		x_send.c x_topic.c x_utils.c Cursor.c
 OBJS=		main.o procs.o visual.o \
 		x_ask.o x_instance.o x_motd.o x_resolve.o \
-		x_send.o x_topic.o x_utils.o Cursor.o converters.o
+		x_send.o x_topic.o x_utils.o Cursor.o
 
 #if DoUsageLog
 LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB) $(LOGGERLIB)
@@ -28,7 +28,7 @@ LOCAL_LIBRARIES= $(CLIENTLIB) $(COMMONLIB)
 #endif
 
 SYS_LIBRARIES  =  $(HesiodLib) $(ComErrLib) $(KerberosLib) \
-		  $(MotifUtilLib) $(MotifResLib) $(MotifLib) $(XUtilLib) \
+		  $(MotifUtilLib) $(MotifResLib) $(MotifLib) \
 		  $(XtoolLib) $(XLib) 
 DEPLIBS= $(LOCAL_LIBRARIES)
 #ifdef InstallAltLoc
