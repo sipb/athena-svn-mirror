@@ -15,7 +15,9 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra files; see prep/athena-locker
 mkdir -p $RPM_BUILD_ROOT/etc/athena
-mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/{directory,locker,mountpoint}
+mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/directory
+mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/locker
+mkdir -p $RPM_BUILD_ROOT/var/athena/attachtab/mountpoint
 cp attach.conf $RPM_BUILD_ROOT/etc/athena/attach.conf
 
 %ifos linux
