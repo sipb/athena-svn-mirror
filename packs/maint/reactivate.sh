@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.34 1997-12-06 21:18:38 ghudson Exp $
+# $Id: reactivate.sh,v 1.35 1997-12-15 07:27:37 ghudson Exp $
 
 trap "" 1 15
 
@@ -55,12 +55,12 @@ if [ "$full" = true ]; then
 	case "$HOSTTYPE" in
 	sun4)
 		cp -p /tmp/ps_data /var/athena/ps_data
-		rm -rf /tmp/* /tmp/.[^.]* > /dev/null 2>&1
+		rm -rf /tmp/* > /dev/null 2>&1
 		cp -p /var/athena/ps_data /tmp/ps_data
 		rm -f /var/athena/ps_data
 		;;
 	*)
-		rm -rf /tmp/* /tmp/.[^.]* > /dev/null 2>&1
+		rm -rf /tmp/* > /dev/null 2>&1
 		;;
 	esac
 	rm -rf /var/athena/tmphomedir/* > /dev/null 2>&1
