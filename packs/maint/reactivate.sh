@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.2 1991-01-31 11:18:45 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.3 1991-01-31 15:22:49 probe Exp $
 
 trap "" 1 15
 
@@ -13,11 +13,9 @@ umask 22
 case "${SYSTEM}" in
 ULTRIX*)
 	cp=/bin/cp
-	partition=/var
 	;;
 *)
 	cp="/bin/cp -p"
-	partition=/site
 esac
 
 if [ "${USER}" = "" ]; then
@@ -43,12 +41,9 @@ if [ -f /etc/athena/zhm.pid ] ; then
 fi
 
 # Then clean temporary areas (including temporary home directories)
-/bin/mv /tmp/.X11-unix ${partition}/.X11-unix
+/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
 /bin/rm -rf /tmp/ > /dev/null 2>&1
-/bin/mv ${partition}/.X11-unix /tmp/.X11-unix
-if [ -f /usr/bin/find ] ;  then
-	/usr/bin/find /usr/tmp/ -mtime +4 -exec /bin/rm -f {} \; > /dev/null 2>&1
-fi
+/bin/mv /tmp/../.X11-unix /tmp/.X11-unix
 
 # Next, restore password, group, and AFS-cell files
 if [ -f /etc/passwd.local ] ; then
