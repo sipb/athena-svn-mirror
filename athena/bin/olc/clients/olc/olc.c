@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.20 1990-11-14 11:16:33 lwvanels Exp $
+ *	$Id: olc.c,v 1.21 1990-12-31 10:59:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.20 1990-11-14 11:16:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.21 1990-12-31 10:59:51 lwvanels Exp $";
 #endif
 #endif
 
@@ -121,13 +121,15 @@ COMMAND OLC_Command_Table[] = {
 COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,	"List available commands",
   "help",	do_olc_help,		"Describe the various commands",
+  "acl",	do_olc_acl,		"Display/Change accesses.",
 #ifndef LAVIN
   "answers",	do_olc_stock,		"Read answers to common questions",
 #endif
   "ask",	do_olc_ask,		"Ask a question",
   "cancel",	do_olc_cancel,		"Cancel a question",
   "comment",	do_olc_comment, 	"Make a comment",
-/*"dbinfo",	do_olc_dbinfo,		"Display database info.",*/
+  "dbinfo",	do_olc_dbinfo,		"Display database info.",
+  "dbload",	do_olc_load_user,	"Reload user attributes.",
   "describe",	do_olc_describe,	"Show/Change summary info",
   "done",	do_olc_done,		"Resolve question",	
   "exit",	do_quit,		"Quit",
