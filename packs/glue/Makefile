@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.27 1998-06-08 14:11:15 ghudson Exp $
+# $Id: Makefile,v 1.28 1998-09-03 01:10:15 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,8 +6,8 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
-	listmaint mailmaint moira mrcheck namespace olc_answers olh \
-	olh_ascii olh_motif pts usermaint userreg vos xinfo
+	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
+	olh_motif pts usermaint userreg vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
@@ -49,21 +49,12 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 	${MOIRA}/man/man8/update_server.8  ${ATHMANDIR}/man8/update_server.8 \
 	${MOIRA}/man/cat8/update_server.8  ${ATHMANDIR}/cat8/update_server.8
 
-all: ${ATTACHRUN} verify-message sis
+all: ${ATTACHRUN}
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 ${ATTACHRUN}: specs template.sh
-	set `grep '^$@[ 	]' specs`; locker=$$2; program=$${3-$$1}; \
-		sed -e "s|@LOCKER@|$$2|g" \
-			-e "s|@PROGRAM@|$$program|g" template.sh > $@
-
-sis: sis.in
-	bindir=`athdir -c -p /mit/infoagents -t bin`; \
-		sed -e "s|@BINDIR@|$$bindir|g" sis.in > $@
-
-verify-message: verify-message.in
-	path=`athdir -c -p /mit/pgp -t bin`/pgp; \
-		sed -e "s|@PATH@|$$path|g" verify-message.in > $@
+	set `grep '^$@[ 	]' specs`; sed -e "s|@LOCKER@|$$2|g" \
+		-e "s|@PROGRAM@|$@|g" template.sh > $@
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -98,10 +89,11 @@ install:
 	install -c -m 555 olh_motif ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
-	install -c -m 555 sis ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 verify-message ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 verify-message.sh \
+		${DESTDIR}${ATHBINDIR}/verify-message
 	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 xinfo ${DESTDIR}${ATHBINDIR}
 	install -c -m 444 xinfo.1 ${DESTDIR}${ATHMANDIR}/man1

@@ -12,7 +12,6 @@ mailmaint	moira
 moira		moira
 mrcheck		moira
 namespace	moira
-olc_answers	olc-stock	olc_browser
 olh		help
 olh_ascii	help
 olh_motif	help
