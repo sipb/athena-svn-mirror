@@ -1,0 +1,694 @@
+! $Id: Xlogin.linux.presed,v 1.1 1999-10-28 15:38:52 kcr Exp $
+
+xlogin.wcChildren:		login, savershell, instructions, \
+				warningShell, getSessionShell, queryShell
+
+!-------------------------------------------------------
+!  Program resources
+!-------------------------------------------------------
+*title:				xlogin
+*saveTimeout:			60
+*activateTimeout:		90
+*randomize:			180
+
+xlogin*top:			ChainTop
+xlogin*bottom:			ChainTop
+xlogin*right:			ChainLeft
+xlogin*left:			ChainLeft
+
+*login.wcClassName:		Form
+*login.wcChildren:		eyes, version, \
+				logo, welcome, host, clock, logo2, \
+				userName, password, \
+				name_input, pword_input, \
+				selection, \
+				loptions, ooptions, lmenu, omenu, \
+				register
+
+*savershell.wcConstructor:	XtCreateTransientShell
+*savershell.geometry:		2000x2000+0+0
+
+*instructions.wcConstructor:	XtCreateTransientShell
+*instructions.wcChildren:	hitanykey
+*instructions.allowShellResize:	true
+
+*hitanykey.wcClassName:		Form
+*hitanykey.wcChildren:		version, logo, welcome, host, clock, mesg, \
+				logo2, motd
+
+*warningShell.wcConstructor:	XtCreateTransientShell
+*warningShell.wcChildren:	warning
+
+*getSessionShell.wcConstructor:	XtCreateTransientShell
+*getSessionShell.wcChildren:	getsession
+
+*queryShell.wcConstructor:	XtCreateTransientShell
+*queryShell.wcChildren:		query
+
+
+! ------------------------------------------------------------
+!		General Resources.
+! ------------------------------------------------------------
+
+xlogin.Geometry: 		580x325+205+105
+*bitmapFilePath:		/etc/athena/login/bitmaps:/etc/athena/login
+*BorderWidth:			0
+*saveUnder:			False
+*Command.translations:		#override \
+				<BtnDown>: set() \n\
+				<BtnUp>: notify() unset()
+*Text.borderWidth:		3
+*Command.borderWidth:		1
+*SimpleMenu*leftMargin:		25
+*MenuButton.borderWidth:	1
+*SimpleMenu*borderWidth:	1
+*defaultDistance:		20
+*Font:				-adobe-new century schoolbook-bold-r-*-140-*
+
+
+! ------------------------------------------------------------
+! 		Greet Widget specifications.
+! ------------------------------------------------------------
+
+
+*logo.wcClassName:		Label
+*logo.bitmap:			owl
+
+*logo2.wcClassName:		Label
+*logo2.bitmap:			fuzzball.xbm
+*logo2.fromHoriz:		*welcome
+*logo2.horizDistance:		38
+*logo2.vertDistance:		26
+*logo2.internalWidth:		0
+*logo2.internalHeight:		0
+*logo2.label:			fuzzball.xbm \
+				fuzzball1.xbm \
+				fuzzball2.xbm \
+				fuzzball3.xbm \
+				fuzzball4.xbm \
+				fuzzball5.xbm
+
+*eyes.wcClassName:		Label
+*eyes.bitmap:			owleyes0.xbm
+*eyes.label:			owleyes0.xbm \
+				owleyes1.xbm \
+				owleyes2.xbm \
+				owleyes3.xbm \
+				owleyes4.xbm \
+				owleyes5.xbm
+!  defaultDistance = 20, plus offset into owl bitmap of 55, 26
+!  plus 4,2 for normal internal spacing.  geez!
+*eyes.horizDistance:		79
+*eyes.vertDistance:		48
+*eyes.internalWidth:		0
+*eyes.internalHeight:		0
+
+
+!  defaultDistance = 20, plus offset into owl bitmap of 32, 77
+!  plus 4,2 for normal internal spacing.  Then play with the numbers
+!  'til it looks ok...
+*version.wcClassName:		Label
+! there's a space after the version label to make the picture look right
+*version.label:			ATHENA_VERSION
+*version.horizDistance:		56
+*version.vertDistance:		99
+*version.internalWidth:		2
+*version.internalHeight:	0
+*version.font:			-adobe-new century schoolbook-bold-r-*-120-*
+
+*welcome.wcClassName:		Label
+*welcome.label: 		Welcome to Athena
+*welcome.fromHoriz:		*logo
+*welcome.horizDistance:		35
+*welcome.vertDistance:		45
+*welcome.font:			-adobe-new century schoolbook-bold-r-*-240-*
+
+*host.wcClassName:		Label
+*host.label:			hostname.mit.edu
+*host.width:			320
+*host.fromHoriz:		*logo
+*host.horizDistance:		5
+*host.vertDistance:		-5
+*host.fromVert:			*welcome
+*host.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*host.resize:			False
+
+*clock.wcClassName:		ClockWidget
+*clock.update:			1
+*clock.analog:			False
+*clock*font:			-adobe-new century schoolbook-medium-r-*-120-*
+*clock.fromVert:		*host
+*clock.fromHoriz:		*logo
+*clock.horizDistance:		90
+*clock.width:			200
+*clock.vertDistance:		-5
+
+*mesg.wcClassName:		Label
+*mesg.fromHoriz:		*logo
+*mesg.horizDistance:		5
+*mesg.vertDistance:		20
+*mesg.fromVert:			*clock
+*mesg.font:			-adobe-new century schoolbook-bold-r-*-240-*
+*mesg.label:			Press any key to start . . .
+
+*motdFile:			MOTD_FILE
+*motd.wcClassName:		Label
+*motd.horizDistance:		5
+*motd.vertDistance:		10
+*motd.fromVert:			*mesg
+*motd.font:			9x15
+*motd*resizable:		true
+
+*userName.wcClassName:		Label
+*userName.fromVert:		*welcome
+*userName.width:		110
+*userName.vertDistance:		72
+*userName.horizDistance:	100
+*userName.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*userName.label: 		Username:
+
+*name_input.wcClassName:	AsciiText
+*name_input*length:		8
+*name_input.borderColor: 	black
+*name_input*string:		
+*name_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
+*name_input*editType:		edit
+*name_input*useStringInPlace:	TRUE
+*name_input.fromVert:		*welcome
+*name_input.fromHoriz:		*userName
+*name_input.vertDistance:	70
+*name_input.width:		210
+*name_input.leftMargin:		4
+*name_input.translations:	#replace \n\
+	Ctrl<Key>a:	beginning-of-line() \n\
+	Ctrl<Key>b:	backward-character() \n\
+	Ctrl<Key>d:	delete-next-character() \n\
+	Ctrl<Key>e:	end-of-line() \n\
+	Ctrl<Key>f:	forward-character() \n\
+	Ctrl<Key>h:	delete-previous-character() \n\
+	Ctrl<Key>k:	kill-to-end-of-line() \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>t:	transpose-characters() \n\
+	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
+	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
+	:Meta<Key>d:	delete-next-word() \n\
+	:Meta<Key>h:	delete-previous-word() \n\
+	~Shift Meta<Key>Delete:		delete-previous-word() \n\
+	Shift Meta<Key>Delete:		backward-kill-word() \n\
+	~Shift Meta<Key>BackSpace:	delete-previous-word() \n\
+	Shift Meta<Key>BackSpace:	backward-kill-word() \n\
+	<Key>Right:	forward-character() \n\
+	<Key>Left:	backward-character() \n\
+	<Key>Delete:	delete-previous-character() \n\
+	<Key>BackSpace:	delete-previous-character() \n\
+	<FocusIn>:	focus-in() \n\
+	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
+	<Key>F1:	callbackACT(*lmenuEntry1) \n\
+	<Key>F2:	callbackACT(*lmenuEntry2) \n\
+	<Key>F3:	callbackACT(*lmenuEntry3) \n\
+	<Key>F4:	callbackACT(*lmenuEntry4) \n\
+	<Key>F5:	callbackACT(*lmenuEntry5) \n\
+	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>Return:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
+	<Key>KP_Enter:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
+	Ctrl<Key>m:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
+	<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*pword_input.borderColor: black) \
+			idleReset() \
+			setfocus(*pword_input) \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
+	<Key>:		insert-char() \
+			idleReset()
+
+*password.wcClassName:		Label
+*password.fromVert:		*userName
+*password.width:		110
+*password.vertDistance:		10
+*password.horizDistance:	100
+*password.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*password*label: 		Password:
+
+*pword_input.wcClassName:	AsciiText
+*pword_input.wcCallback:	WcSetValueCB(this.borderColor: white)
+*pword_input.borderColor: 	white
+*pword_input*length:		128
+*pword_input*string:		
+*pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
+*pword_input*editType:		edit
+*pword_input*useStringInPlace:	TRUE
+*pword_input.displayCaret:	FALSE
+*pword_input.fromVert:		*name_input
+*pword_input.fromHoriz:		*password
+*pword_input.vertDistance:	5
+*pword_input.Width:		210
+*pword_input*echo:		False
+*pword_input.translations:	#replace \n\
+	Ctrl<Key>a:	beginning-of-line() \n\
+	Ctrl<Key>b:	backward-character() \n\
+	Ctrl<Key>d:	delete-next-character() \n\
+	Ctrl<Key>e:	end-of-line() \n\
+	Ctrl<Key>f:	forward-character() \n\
+	Ctrl<Key>h:	delete-previous-character() \n\
+	Ctrl<Key>k:	kill-to-end-of-line() \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>t:	transpose-characters() \n\
+	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
+	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
+	:Meta<Key>d:	delete-next-word() \n\
+	:Meta<Key>h:	delete-previous-word() \n\
+	~Shift Meta<Key>Delete:		delete-previous-word() \n\
+	Shift Meta<Key>Delete:		backward-kill-word() \n\
+	~Shift Meta<Key>BackSpace:	delete-previous-word() \n\
+	Shift Meta<Key>BackSpace:	backward-kill-word() \n\
+	<Key>Right:	forward-character() \n\
+	<Key>Left:	backward-character() \n\
+	<Key>Delete:	delete-previous-character() \n\
+	<Key>BackSpace:	delete-previous-character() \n\
+	<FocusIn>:	focus-in() \n\
+	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
+	<Key>F1:	callbackACT(*lmenuEntry1) \n\
+	<Key>F2:	callbackACT(*lmenuEntry2) \n\
+	<Key>F3:	callbackACT(*lmenuEntry3) \n\
+	<Key>F4:	callbackACT(*lmenuEntry4) \n\
+	<Key>F5:	callbackACT(*lmenuEntry5) \n\
+	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>Return:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			login() \n\
+	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			login() \n\
+	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			login() \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
+	<Key>Up:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.displayCaret: TRUE) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			idleReset() \
+			setfocus(*name_input) \n\
+	Shift<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.displayCaret: TRUE) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			idleReset() \
+			setfocus(*name_input) \n\
+	<Key>:		insert-char() \
+			idleReset()
+
+*selection.wcClassName:		Label
+*selection.label:		
+*selection.width:		470
+*selection.horizDistance:	35
+*selection.fromVert:		*password
+*selection.vertDistance:	5
+*selection.font:		-adobe-new century schoolbook-bold-r-*-180-*
+
+*loptions.wcClassName:		MenuButton
+*loptions.vertDistance:		40
+*loptions.horizDistance:	105
+*loptions.label:		Login Options
+*loptions.fromVert:		*password
+*loptions.leftBitmap:		menu16
+*loptions.leftMargin:		20
+*loptions.menuName:		lmenu
+
+*ooptions.wcClassName:		MenuButton
+*ooptions.vertDistance:		40
+*ooptions.horizDistance:	100
+*ooptions.label:		Other Options
+*ooptions.fromVert:		*password
+*ooptions.fromHoriz:		*loptions
+*ooptions.leftBitmap:		menu16
+*ooptions.leftMargin:		20
+*ooptions.menuName:		omenu
+
+*SimpleMenu*popupCallback:	idleResetCB()
+*SimpleMenu*popdownCallback:	idleResetCB()
+
+*lmenu*rightMargin:		40
+*lmenu.wcClassName:		simpleMenu
+*lmenu.right:			ChainRight
+*lmenu.wcManaged:		False
+*lmenu.wcChildren:		lmenuEntry1, lmenuEntry2, lmenuEntry3, \
+				lmenuEntry4, lmenuEntry5, lmenuEntry6
+
+*lmenuEntry1.wcClassName:	SmeBSB
+*lmenuEntry2.wcClassName:	SmeBSB
+*lmenuEntry3.wcClassName:	SmeBSB
+*lmenuEntry4.wcClassName:	SmeBSB
+*lmenuEntry5.wcClassName:	SmeBSB
+*lmenuEntry6.wcClassName:	SmeBSB
+
+*lmenuEntry1.leftBitmap:	check
+*lmenuEntry2.leftBitmap:	white
+*lmenuEntry3.leftBitmap:	white
+*lmenuEntry4.leftBitmap:	white
+*lmenuEntry5.leftBitmap:	white
+
+*lmenuEntry1.rightBitmap:	F1
+*lmenuEntry2.rightBitmap:	F2
+*lmenuEntry3.rightBitmap:	F3
+*lmenuEntry4.rightBitmap:	F4
+*lmenuEntry5.rightBitmap:	F5
+*lmenuEntry6.rightBitmap:	F6
+
+*lmenuEntry1.label:		Your usual login session
+*lmenuEntry2.label:		Ignore your customizations
+*lmenuEntry3.label:		Terminal-style session
+*lmenuEntry4.label:		Check your email
+*lmenuEntry5.label:		Specify special login
+*lmenuEntry6.label:		Start Over
+
+*lmenuEntry1.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*selection.label: )
+*lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*selection.label: Ignore customizations selected)
+*lmenuEntry3.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*selection.label: Terminal-style login session selected)
+*lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*selection.label: Mail-check login session selected)
+*lmenuEntry5.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: check), \
+			WcSetValueCB(*selection.label: Special login session selected), \
+			WcPopupGrabCB(*getSessionShell), \
+			setfocusCB(*getsession*value)
+*lmenuEntry6.callback:	WcSetValueCB(*pword_input.borderColor: white), \
+			WcSetValueCB(*name_input.borderColor: black), \
+			WcPopdownCB(*getSessionShell), \
+			resetCB()
+
+*omenu*rightMargin:		77
+*omenu.wcClassName:		SimpleMenu
+*omenu.right:			ChainRight
+*omenu.wcManaged:		False
+*omenu.wcChildren:		omenuEntry1, omenuEntry2, omenuEntry3, \
+				omenuEntry4, omenuEntry5, omenuEntry6, \
+				omenuEntry6a, menuLine, \
+				omenuEntry7, omenuEntry8, omenuEntry9, \
+				omenuEntry10, omenuEntry11
+
+*menuLine.wcClassName:		SmeLine
+*omenuEntry1.wcClassName:	SmeBSB
+*omenuEntry2.wcClassName:	SmeBSB
+*omenuEntry3.wcClassName:	SmeBSB
+*omenuEntry4.wcClassName:	SmeBSB
+*omenuEntry5.wcClassName:	SmeBSB
+*omenuEntry6.wcClassName:	SmeBSB
+*omenuEntry6a.wcClassName:	SmeBSB
+*omenuEntry7.wcClassName:	SmeBSB
+*omenuEntry8.wcClassName:	SmeBSB
+*omenuEntry9.wcClassName:	SmeBSB
+*omenuEntry10.wcClassName:	SmeBSB
+*omenuEntry11.wcClassName:	SmeBSB
+
+*omenuEntry1.label:		Information
+*omenuEntry1.justify:		center
+*omenuEntry1.flipColors:	False
+*omenuEntry2.label:		Athena On-Line Help (olh)
+*omenuEntry2.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 olh -tty)
+*omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
+*omenuEntry3.callback:		runCB(xcluster -i 60 -display :0.0)
+*omenuEntry4.label:		MIT On-Line Information (TechInfo)
+*omenuEntry4.callback:		attachAndRunCB(techinfo,xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/techinfo/techinfo.prelogin)
+*omenuEntry5.label:		Library Access
+*omenuEntry5.callback:		attachAndRunCB(library,/mit/library/bin/library -timeout -geometry 80x25+270+270)
+*omenuEntry6.label:		MIT Campus Map (xinfo)
+*omenuEntry6.callback:		runCB(xinfo -inactive 180 -display :0.0)
+*omenuEntry6a.label:		Display Workstation Configuration
+*omenuEntry6a.callback:		runCB(xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 60 /etc/athena/login/machine)
+*omenuEntry7.label:		Other
+*omenuEntry7.justify:		center
+*omenuEntry7.flipColors:	False
+*omenuEntry8.label:		Login to MITVMA
+*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
+*omenuEntry9.label:		Update MIT Mailhub Info (Moira)
+*omenuEntry9.callback:		attachAndRunCB(moira,xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/moira/namespace)
+*omenuEntry10.label:		Display Console Window
+*omenuEntry10.callback:		signalConsoleCB(show)
+*omenuEntry11.label:		Shut Down Window System
+*omenuEntry11.callback:		WcExitCB(3)
+
+*omenuEntry2.rightBitmap:	Shift-F1
+*omenuEntry3.rightBitmap:	Shift-F2
+*omenuEntry4.rightBitmap:	Shift-F3
+*omenuEntry5.rightBitmap:	Shift-F4
+*omenuEntry6.rightBitmap:	Shift-F5
+*omenuEntry6a.rightBitmap:	Shift-F6
+*omenuEntry8.rightBitmap:	Shift-F7
+*omenuEntry9.rightBitmap:	Shift-F8
+*omenuEntry10.rightBitmap:	Prev
+*omenuEntry11.rightBitmap:	Ctrl-P
+
+*register.wcClassName:		Command
+*register.vertDistance:		10
+*register.horizDistance:	195
+*register.label:		Register for an Account
+*register.fromVert:		*loptions
+*register.callback:		attachAndRunCB(register,/afs/athena/system/register/xregister)
+
+
+! ------------------------------------------------------------
+! 		Option Shell Widget specifications.
+! ------------------------------------------------------------
+
+*getSessionShell.geometry:	+288+550
+
+*getsession.wcClassName:	Dialog
+*getsession.icon:		question
+*getsession.label:		Please enter the name of a shell script or program:
+*getsession.label.font:		-adobe-new century schoolbook-bold-r-*-180-*
+*getsession.wcChildren:		doit, abort
+
+*getsession*value.borderWidth:		2
+*getsession*value.horizDistance:	100
+*getsession*value.width:		300
+*getsession*value.length:		128
+*getsession*value.useStringInPlace:	True
+*getsession*value:			
+*getsession*value*resize:		False
+*getsession*value.translations:	#replace \n\
+	Ctrl<Key>a:	beginning-of-line() \n\
+	Ctrl<Key>b:	backward-character() \n\
+	Ctrl<Key>d:	delete-next-character() \n\
+	Ctrl<Key>e:	end-of-line() \n\
+	Ctrl<Key>f:	forward-character() \n\
+	Ctrl<Key>h:	delete-previous-character() \n\
+	Ctrl<Key>k:	kill-to-end-of-line() \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	Ctrl<Key>t:	transpose-characters() \n\
+	Ctrl<Key>u:	beginning-of-line() kill-to-end-of-line() \n\
+	Ctrl<Key>w:	beginning-of-line() kill-to-end-of-line() \n\
+	:Meta<Key>d:	delete-next-word() \n\
+	:Meta<Key>h:	delete-previous-word() \n\
+	~Shift Meta<Key>Delete:		delete-previous-word() \n\
+	Shift Meta<Key>Delete:		backward-kill-word() \n\
+	~Shift Meta<Key>BackSpace:	delete-previous-word() \n\
+	Shift Meta<Key>BackSpace:	backward-kill-word() \n\
+	<Key>Right:	forward-character() \n\
+	<Key>Left:	backward-character() \n\
+	<Key>Delete:	delete-previous-character() \n\
+	<Key>BackSpace:	delete-previous-character() \n\
+	<FocusIn>:	focus-in() \n\
+	<FocusOut>:	focus-out() \n\
+	Shift<Key>F1:	callbackACT(*omenuEntry2) \n\
+	Shift<Key>F2:	callbackACT(*omenuEntry3) \n\
+	Shift<Key>F3:	callbackACT(*omenuEntry4) \n\
+	Shift<Key>F4:	callbackACT(*omenuEntry5) \n\
+	Shift<Key>F5:	callbackACT(*omenuEntry6) \n\
+	Shift<Key>F6:	callbackACT(*omenuEntry6a) \n\
+	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
+	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
+	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
+	<Key>F1:	callbackACT(*lmenuEntry1) \n\
+	<Key>F2:	callbackACT(*lmenuEntry2) \n\
+	<Key>F3:	callbackACT(*lmenuEntry3) \n\
+	<Key>F4:	callbackACT(*lmenuEntry4) \n\
+	<Key>F5:	callbackACT(*lmenuEntry5) \n\
+	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>Return:	WcPopdownACT(*getSessionShell) \
+			setCorrectFocus(*name_input) \
+			idleReset() \n\
+	<Key>KP_Enter:	WcPopdownACT(*getSessionShell) \
+			setCorrectFocus(*name_input) \
+			idleReset() \n\
+	Ctrl<Key>m:	WcPopdownACT(*getSessionShell) \
+			setCorrectFocus(*name_input) \
+			idleReset() \n\
+	<Key>Prior:	signalConsoleACT(show) \n\
+	<Key>Next:	signalConsoleACT(hide) \n\
+	<Key>:		insert-char() \
+			idleReset()
+
+*doit.wcClassName:		Command
+*doit.label:			OK
+*doit.callback:			WcPopdownCB(*getSessionShell), \
+				setfocusCB(*name_input)
+*abort.wcClassName:		Command
+*abort.fromHoriz:		*doit
+*abort.label:			abort
+*abort.callback:		WcPopdownCB(*getSessionShell), \
+				setfocusCB(*name_input), \
+				WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
+				WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+				WcSetValueCB(*selection.label: )
+
+
+*queryShell.geometry:		400x300+376+350
+*queryShell.borderWidth:	3
+
+*query.wcClassName:		Dialog
+*query.icon:			question
+*query.label:			Login Incomplete
+*query.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*query.label.width:		250
+*query.value:			this will be replaced before it is used
+*query.wcChildren:		cont, giveup
+
+*cont.wcClassName:		Command
+*cont.label:			continue
+
+*giveup.wcClassName:		Command
+*giveup.label:			abort
+*giveup.fromHoriz:		*cont
+
+*query*value.width:		380
+*query*value.height:		160
+*query*value.borderWidth:	0
+*query*value.autoFill:		True
+*query*value.resize:		False
+*query*value.displayCaret:	False
+*query*value.translations:	#replace
+
+*warningShell.geometry:		400x300+376+350
+*warningShell.borderWidth:	3
+
+*warning.wcClassName:		Dialog
+*warning.icon:			warning
+*warning.label:			Login Failed
+*warning.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*warning.label.width:		200
+*warning.value:			this will be replaced before it is used
+*warning.wcChildren:		continue
+
+*warning*value.width:		380
+*warning*value.height:		160
+*warning*value.borderWidth:	0
+*warning*value.autoFill:	True
+*warning*value.resize:		False
+*warning*value.displayCaret:	False
+*warning*value.translations:	#replace \n\
+	Ctrl<Key>p:	WcExitACT(3) \n\
+	<Key>Return:	WcPopdownACT(*warningShell) \
+			reset() \n\
+	<Key>KP_Enter:	WcPopdownACT(*warningShell) \
+			reset() \n\
+	Ctrl<Key>m:	WcPopdownACT(*warningShell) \
+			reset()
+
+*continue.wcClassName:		Command
+*continue.callback:		WcPopdownCB(*warningShell), \
+				resetCB()
+
+!
+! ***************************** WARNING *************************************
+! This version of xlogin contains a color converter which is NON-STANDARD.
+! The syntax for the following resources should not be used when specifying
+! resources for other programs, as it will generate a warning from that
+! program.
+!
+! Also, the color converter does not deal with the "reverseVideo" resource,
+! for reasons too complicated to explain here.
+!
+! Having said all that...  when writing a color spec, you can use up to three
+! comma-seperated colors, which are applied as follows:
+!   - if three colors are given, they specify the color to use on mono,
+!     grayscale and color monitors, respectively.
+!   - if only two colors are given, the first is used for both mono and
+!     grayscale, and the second is for color.
+!   - if only one color is given, it is used for all three visual classes.
+!
+
+*login*background:		white
+*login*foreground:		black,gray55,black
+
+*login.logo.foreground:		black,gray15,red
+*login.eyes.foreground:		black,gray15,red
+*login.version.foreground:	black,gray15,red
+*login.logo2.foreground:	black,gray15,black
+
+! savershell is the big black window that covers the screen when the xlogin
+! "screensaver" kicks in.
+!
+*savershell*foreground:		white
+*savershell*background:		black
+
+! hitanykey is the window that bounces around on top of savershell when the
+! xlogin "screensaver" kicks in.
+!
+*hitanykey*foreground:		white,gray80,gray80
+*hitanykey*background:		black
+
+*hitanykey.logo.foreground:	white,gray75,red
+*hitanykey.version.foreground:	white,gray75,red
+*hitanykey.logo2.foreground:	white,gray75,red
+*hitanykey.logo2.bitmap:	is
+
+*queryShell.borderColor:	black
+*warningShell.borderColor:	black

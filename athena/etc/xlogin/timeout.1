@@ -1,0 +1,38 @@
+.\" $Id: timeout.1,v 1.1 1999-10-28 15:38:53 kcr Exp $
+.TH TIMEOUT 1 "16 November 1990"
+.ds ]W MIT Project Athena
+.SH NAME
+timeout \- run an application and force it to exit if the user is inactive
+.SH SYNOPSIS
+.nf
+timeout seconds application command line
+.fi
+.SH DESCRIPTION
+\fITimeout\fR will execute the specified command line.  If the user does
+not type anything for \fIseconds\fR seconds, \fItimeout\fR will kill
+the application and then exit itself.  If the application exits before
+it has been idle too long, \fItimeout\fR will exit as well.
+
+.SH EXAMPLE
+.nf
+timeout 60 olh -tty
+.fi
+This will run OnLine Help in terminal mode, and force it to quit if
+the user goes for more than 1 minute without typing anything.
+
+.SH DIAGNOSTICS
+.nf
+timeout: Failed to exec application ...
+.fi
+This is printed if it can't find the application.  Make sure you
+specify the complete path name.
+
+.nf
+MAX IDLE TIME REACHED.
+.fi
+This is printed just before \fItimeout\fR kills the application.
+
+.SH AUTHOR
+Mark Rosenstein, MIT Project Athena
+.br
+Copyright (c) 1990 Massachusetts Institute of Technology

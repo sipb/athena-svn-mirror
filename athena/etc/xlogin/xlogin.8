@@ -1,0 +1,150 @@
+.\" $Id: xlogin.8,v 1.1 1999-10-28 15:38:53 kcr Exp $
+.TH XLOGIN 8 "25 May 1994"
+.ds ]W MIT Project Athena
+.SH NAME
+xlogin \- open X login window with pre-login options and screen saver
+.SH SYNOPSIS
+.nf
+xlogin -config \fIdirectory\fR [X-options]
+.fi
+.SH DESCRIPTION
+\fIXlogin\fR is used to login users on the display head of a
+workstation.  It handles a number of login options, applications that
+can be run without logging in, and a screensaver mode.  It also
+handles reactivating the workstation while it is or should be idle.
+.PP
+If the user requests a console login, \fIXlogin\fR will exit with
+status 3.  On successful login, it will exec the session script.  On
+fatal errors or non recoverable login failures, it will exit.
+.SH OPTIONS
+The following command line options are available in addition to the
+usual X toolkit options and the resource file:
+.TP
+.B -config \fIdirectory\fR
+Names the directory the resource files are found in.  It will first
+load \fBXlogin\fR from that directory, then if \fBXlogin.local\fR
+exists, resources in this file will override those in the first file.
+.TP
+.B -save \fIseconds\fR
+Amount of idle time before the screen saver kicks in
+.TP
+.B -move \fIseconds\fR
+How often the message on the screen saver moves around the screen
+.TP
+.B -blink \fImilliseconds\fR
+How long to wait between show successive frames while blinking the
+owl's eyes.
+.TP
+.B -blankall
+Turns on blanking of all screens on a multi-screened X server.
+.TP
+.B -noblankall
+Turns off blanking of all screens on a multi-screened X server.
+.TP
+.B -reactivate \fIscript\fR
+Name of script to run to reactivate the workstation. \fIXlogin\fR runs
+this script once when it starts up, prior to prompting the user to log
+in and regardless of whether anyone is logged in, with the
+\fB-prelogin\fR option. It is also runs the script periodically later
+only if no one is logged in, occasionally with the \fB-detach\fR
+option.
+.TP
+.B -idle \fIseconds\fR
+How long to let the machine lie idle before attempting to reactivate it.
+.TP
+.B -wait
+How long to wait for a reactivation to finish before giving up and
+continuing.
+.TP
+.B -restart
+How long to spend in screensaver state before exiting so that the X
+server will be restarted.
+.TP
+.B -tty
+Name of the tty to log the user in on.
+.TP
+.B -session
+Name of the global session script to run when logging the user in.
+.TP
+.B -motdfile
+Name of the file to find the global message of the day to display in
+the idle screen.
+.TP
+.B -motd2file
+Name of the second motd file.  This is for a local message of the day
+to be appended to the global motd file.
+.SH RESOURCES
+There are keyboard accelerators for the menu items.  The six
+things on the "Login Options" menu may be selected using keys F1
+through F6, respectively.  The first nine things on the "Other
+Options" menu may be selected using keys SHIFT-F1 through SHIFT-F9.
+The "Page Up" or "Prev Screen" key will display the console window,
+while the "Page Down" or "Next Screen" key will remove it.  CONTROL-P
+will shutdown the window system.
+.PP
+The following resources correspond to the options named above:
+.TP
+.B *saveTimeout
+Amount of idle time before the screen saver kicks in
+.TP
+.B *moveTimeout
+How often the message on the screen saver moves around the screen
+.TP
+.B *blinkTimeout
+How long to wait between show successive frames while blinking the
+owl's eyes.
+.TP
+.B *blankAll
+Boolean value that determines whether to blank all screens on a
+multi-screened X server.  Default is "True".
+.TP
+.B *reactivateProg
+Name of script to run to reactivate the workstation. Same as
+\fB-reactivate\fR above.
+.TP
+.B *reactivateTimeout
+How long to let the machine lie idle before attempting to reactivate it.
+.TP
+.B *activateTimeout
+How long to wait for a reactivation to finish before giving up and
+continuing.
+.TP
+.B *restartTimeout
+How long to spend in screensaver state before exiting so that the X
+server will be restarted.
+.TP
+.B *loginTty
+Name of the tty to log the user in on.
+.TP
+.B *sessionScript
+Name of the global session script to run when logging the user in.
+The default is /etc/athena/login/Xsession.
+.PP
+The following resources may also be specified (typically in Xlogin.local):
+.TP
+.B *loginName
+Name to be displayed in Username field when logging in.  This is provided
+for private workstation owners.  Ctrl-U in the Username field may be used
+to erase the name so that others may log in.
+.TP
+.B *showMotd
+Boolean value that determines whether or not to display global
+Message-Of-The-Day in xlogin idle screen.  Default is "True".
+.TP
+.B *motdFile
+Name of the file in which to find the global message of the day for
+displaying in the idle screen, of the showMotd resource is True.  This
+defaults to /afs/athena.mit.edu/system/config/motd/login.74.
+.TP
+.B *motd2File
+Name of the file in which to find a local message of the day to append
+to the global one for the idle screen.  This defaults to an empty
+string, in which case it is ignored.
+.SH "SEE ALSO"
+dm(8), console(8), reactivate(8), access(5)
+.SH "BUGS"
+The login window sometimes looks strange when the moon is full.
+.SH AUTHORS
+Mark Rosenstein, Chris VanHaren, Craig Fields of MIT Project Athena
+.br
+Copyright (c) 1990, 1992, 1994 Massachusetts Institute of Technology
