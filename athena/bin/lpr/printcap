@@ -188,11 +188,14 @@ ln03-bldge40-2|Staff ln03 laser printer #2 -- E40-315:\
 	:lp=/dev/tty01:rp=ln03-bldge40-2:rm=E40-PRINT-SERVER-1.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-2:\
 	:br#2400:rw:fc#0000374:fs#0000003:xc#0:xs#0040040:mx#0:sf:sb:\
-	:if=/usr/athena/lib/ps/psif:\
-	:of=/usr/athena/lib/ps/psof:gf=/usr/athena/lib/ps/psgf:\
-	:nf=/usr/athena/lib/ps/psnf:tf=/usr/athena/lib/ps/pstf:\
-	:rf=/usr/athena/lib/ps/psrf:vf=/usr/athena/lib/ps/psvf:\
-	:cf=/usr/athena/lib/ps/pscf:df=/usr/athena/lib/ps/psdf:
+	:if=/usr/athena/lib/lpdfilters/psif:\
+	:of=/usr/athena/lib/lpdfilters/psof:\
+	:gf=/usr/athena/lib/lpdfilters/psgf:\
+	:nf=/usr/athena/lib/lpdfilters/psnf:\
+	:tf=/usr/athena/lib/lpdfilters/pstf:\
+	:rf=/usr/athena/lib/lpdfilters/psrf:\
+	:vf=/usr/athena/lib/lpdfilters/psvf:\
+	:cf=/usr/athena/lib/lpdfilters/pscf:df=/usr/athena/lib/lpdfilters/psdf:
 
 ln03-bldge40-3|Staff ln03 laser printer #3 -- E40-358:\
 	:lp=/dev/tty03:rp=ln03-bldge40-3:rm=E40-PRINT-SERVER-1.MIT.EDU:\
@@ -204,11 +207,13 @@ ln03-bldge40-4|ps-bldge40-1|Matrix|matrix|DEC Scout LN03R:\
 	:lp=/dev/tty02:rp=ln03-bldge40-4:rm=E40-PRINT-SERVER-1.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-4:\
 	:br#2400:rw:fc#0000374:fs#0000003:xc#0:xs#0040040:mx#0:sf:sb:\
-	:if=/usr/athena/lib/ps/psif:\
-	:of=/usr/athena/lib/ps/psof:gf=/usr/athena/lib/ps/psgf:\
-	:nf=/usr/athena/lib/ps/psnf:tf=/usr/athena/lib/ps/pstf:\
-	:rf=/usr/athena/lib/ps/psrf:vf=/usr/athena/ps/psvf:\
-	:cf=/usr/athena/lib/ps/pscf:df=/usr/athena/ps/psdf:
+	:if=/usr/athena/lib/lpdfilters/psif:\
+	:of=/usr/athena/lib/lpdfilters/psof:\
+	:gf=/usr/athena/lib/lpdfilters/psgf:\
+	:nf=/usr/athena/lib/lpdfilters/psnf:\
+	:tf=/usr/athena/lib/lpdfilters/pstf:\
+	:rf=/usr/athena/lib/lpdfilters/psrf:vf=/usr/athena/ps/psvf:\
+	:cf=/usr/athena/lib/lpdfilters/pscf:df=/usr/athena/ps/psdf:
 
 ln03-bldge40-5|Staff ln03 laser printer #5 (Demo Center) -- E40-302:\
 	:lp=/dev/cereal:rp=ln03-bldge40-5:rm=E40-302-10.MIT.EDU:\
@@ -220,11 +225,14 @@ ln03-bldge40-6|Staff ln03 laser printer #6 -- E40-337:\
 	:lp=/dev/cereal:rp=ln03-bldge40-6:rm=E40-337-1.MIT.EDU:\
 	:sd=/usr/spool/printer/ln03-bldge40-6:\
 	:br#2400:rw:fc#0000374:fs#0000003:xc#0:xs#0040040:mx#0:sf:sb:\
-	:if=/usr/athena/lib/ps/psif:\
-        :of=/usr/athena/lib/ps/psof:gf=/usr/athena/lib/ps/psgf:\
-        :nf=/usr/athena/lib/ps/psnf:tf=/usr/athena/lib/ps/pstf:\
-        :rf=/usr/athena/lib/ps/psrf:vf=/usr/athena/lib/ps/psvf:\
-        :cf=/usr/athena/lib/ps/pscf:df=/usr/athena/lib/ps/psdf:
+	:if=/usr/athena/lib/lpdfilters/psif:\
+        :of=/usr/athena/lib/lpdfilters/psof:\
+	:gf=/usr/athena/lib/lpdfilters/psgf:\
+        :nf=/usr/athena/lib/lpdfilters/psnf:\
+	:tf=/usr/athena/lib/lpdfilters/pstf:\
+        :rf=/usr/athena/lib/lpdfilters/psrf:\
+	:vf=/usr/athena/lib/lpdfilters/psvf:\
+        :cf=/usr/athena/lib/lpdfilters/pscf:df=/usr/athena/lib/lpdfilters/psdf:
 
 ln03-bldge40-7|ln03 laser printer -- (E40 basement):\
 	:lp=/dev/ttycp:rp=ln03-bldge40-7:rm=E40-008A-2.MIT.EDU:\
@@ -258,22 +266,27 @@ ps-bldge40-2|StarStone|starstone|Athena Staff LaserWriter:\
 	:lf=/usr/spool/printer/StarStone/StarStone-log:\
         :af=/usr/adm/StarStone.acct:\
         :br#9600:rw:fc#0000374:fs#0000003:xc#0:xs#0040040:mx#0:sf:sb:\
-	:if=/usr/athena/lib/ps/psif:\
-	:of=/usr/athena/lib/ps/psof:gf=/usr/athena/lib/ps/psgf:\
-	:nf=/usr/athena/lib/ps/psnf:tf=/usr/athena/lib/ps/pstf:\
-	:rf=/usr/athena/lib/ps/psrf:vf=/usr/athena/lib/ps/psvf:\
-	:cf=/usr/athena/lib/ps/pscf:df=/usr/athena/lib/ps/psdf:
+	:if=/usr/athena/lib/lpdfilters/psif:\
+	:of=/usr/athena/lib/lpdfilters/psof:\
+	:gf=/usr/athena/lib/lpdfilters/psgf:\
+	:nf=/usr/athena/lib/lpdfilters/psnf:\
+	:tf=/usr/athena/lib/lpdfilters/pstf:\
+	:rf=/usr/athena/lib/lpdfilters/psrf:\
+	:vf=/usr/athena/lib/lpdfilters/psvf:\
+	:cf=/usr/athena/lib/lpdfilters/pscf:df=/usr/athena/lib/lpdfilters/psdf:
 
 
 nil|lps40|eagle|Athena Staff LPS40:\
 	:lp=/dev/null:rp=nil:rm=CASTOR.MIT.EDU:\
 	:sd=/usr/spool/printer/nil:\
 	:sf:sb:\
-	:if=/usr/athena/lib/ps/psiflps40:\
-	:of=/usr/athena/lib/ps/psoflps40:gf=/usr/athena/lib/ps/psgf:\
-	:nf=/usr/athena/lib/ps/psnf:tf=/usr/athena/lib/ps/pstf:\
-	:rf=/usr/athena/lib/ps/psrf:vf=/usr/athena/ps/psvf:\
-	:cf=/usr/athena/lib/ps/pscf:df=/usr/athena/ps/psdf:\
+	:if=/usr/athena/lib/lpdfilters/psiflps40:\
+	:of=/usr/athena/lib/lpdfilters/psoflps40:\
+	:gf=/usr/athena/lib/lpdfilters/psgf:\
+	:nf=/usr/athena/lib/lpdfilters/psnf:\
+	:tf=/usr/athena/lib/lpdfilters/pstf:\
+	:rf=/usr/athena/lib/lpdfilters/psrf:vf=/usr/athena/ps/psvf:\
+	:cf=/usr/athena/lib/lpdfilters/pscf:df=/usr/athena/ps/psdf:\
 	:af=/usr/spool/printer/nil/lps40-acct:\
 	:lf=/usr/spool/printer/nil/lps40-log:
 
