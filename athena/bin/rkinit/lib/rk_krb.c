@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_krb.c,v 1.3 1990-07-17 13:22:12 qjb Exp $
+ * $Id: rk_krb.c,v 1.4 1991-06-26 12:41:45 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
- * $Author: qjb $
+ * $Author: probe $
  *
  * This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,25 +9,33 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.3 1990-07-17 13:22:12 qjb Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.4 1991-06-26 12:41:45 probe Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
-#include <sgtty.h>
 #include <netinet/in.h>
 #include <krb.h>
 #include <des.h>
 
-#ifdef _SYSV_SOURCE
-#include <sys/termio.h>
-#include <sys/ttychars.h>
-#endif /* SYSV */
+#include <signal.h>
+#include <setjmp.h>
+
+#ifdef POSIX
+#include <termios.h>
+#else
+#include <sgtty.h>
+#endif
 
 #include <rkinit.h>
 #include <rkinit_err.h>
 #include <rkinit_private.h>
+
+static jmp_buf env;
+static void sig_restore();
+static void push_signals();
+static void pop_signals();
 
 /* Information to be passed around within client get_in_tkt */
 typedef struct {
@@ -53,12 +61,13 @@ int rki_key_proc(user, instance, realm, arg, key)
 
 {
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
-#ifdef _SYSV_SOURCE
-    struct termio ttyb;
+    char password[BUFSIZ];
+    int ok = 0;
+#ifdef POSIX
+    struct termios ttyb;
 #else
     struct sgttyb ttyb;		/* For turning off echo */
-#endif /* SYSV */
-    char password[BUFSIZ];
+#endif
 
     SBCLEAR(ttyb);
     BCLEAR(password);
@@ -77,35 +86,28 @@ int rki_key_proc(user, instance, realm, arg, key)
 
     fflush(stdout);
 
-#ifndef _SYSV_SOURCE
+    push_signals();
+    if (setjmp(env)) {
+	ok = -1;
+	goto lose;
+    }
+    
+#ifndef POSIX
     ioctl(0, TIOCGETP, &ttyb);
     ttyb.sg_flags &= ~ECHO;
     ioctl(0, TIOCSETP, &ttyb);
 #else
-    ioctl(0, TCGETA, &ttyb);
+    (void) tcgetattr(0, &ttyb);
     ttyb.c_lflag &= ~ECHO;
-    ioctl(0, TCSETA, &ttyb);
-#endif /* SYSV */
+    (void) tcsetattr(0, TCSAFLUSH, &ttyb);
+#endif
 
     bzero(password, sizeof(password));
     if (read(0, password, sizeof(password)) == -1) {
-	/* 
-	 * For now, I won't worry about echo not being restored if read 
-	 * fails. 
-	 */
 	perror("read");
-	exit(1);
+	ok = -1;
+	goto lose;
     }
-
-#ifndef _SYSV_SOURCE
-    ttyb.sg_flags |= ECHO;
-    ioctl(0, TIOCSETP, &ttyb);
-#else
-    ttyb.c_lflag |= ECHO;
-    ioctl(0, TCSETA, &ttyb);
-#endif /* SYSV */
-
-    printf("\n");
 
     if (password[strlen(password)-1] == '\n')
 	password[strlen(password)-1] = 0;
@@ -114,8 +116,21 @@ int rki_key_proc(user, instance, realm, arg, key)
 
     des_string_to_key(password, key);
 
+lose:
     BCLEAR(password);
-    return(KSUCCESS);
+
+#ifndef POSIX
+    ttyb.sg_flags |= ECHO;
+    ioctl(0, TIOCSETP, &ttyb);
+#else
+    ttyb.c_lflag |= ECHO;
+    (void) tcsetattr(0, TCSAFLUSH, &ttyb);
+#endif
+
+    pop_signals();
+    printf("\n");
+
+    return(ok);
 }
 
 #ifdef __STDC__
@@ -271,4 +286,32 @@ int rki_get_tickets(version, host, r_krealm, info)
 	return(status);
 
     return(RKINIT_SUCCESS);
+}
+
+
+#ifdef POSIX
+static void (*old_sigfunc[NSIG])();
+#else
+static int (*old_sigfunc[NSIG])();
+#endif POSIX
+
+static void push_signals()
+{
+    register i;
+    for (i = 0; i < NSIG; i++)
+        old_sigfunc[i] = signal(i,sig_restore);
+}
+
+static void pop_signals()
+{
+    register i;
+    for (i = 0; i < NSIG; i++)
+        signal(i,old_sigfunc[i]);
+}
+
+static void sig_restore(sig,code,scp)
+    int sig,code;
+    struct sigcontext *scp;
+{
+    longjmp(env,1);
 }
