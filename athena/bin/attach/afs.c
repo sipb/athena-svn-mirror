@@ -3,12 +3,11 @@
  *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.2 1990-07-20 14:48:10 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.3 1990-07-20 15:37:56 probe Exp $";
 
-#include "config.h"
+#include "attach.h"
 
 #ifdef AFS
-#include "attach.h"
 
 #include <sys/stat.h>
 #include <sys/wait.h>
