@@ -1,7 +1,7 @@
 #
 # Makefile for etc subdirectory
 #
-# $Id: Makefile.in,v 1.4 1999-05-10 15:57:15 danw Exp $
+# $Id: Makefile.in,v 1.5 1999-06-02 00:20:47 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -70,15 +70,9 @@ install: install-files install-scripts
 install-files:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(etcdir)
 	for file in $(DIST_FILES); do \
-	  if [ -f $(DESTDIR)$(etcdir)/$$file ]; then \
-	    mv $(DESTDIR)$(etcdir)/$$file $(DESTDIR)$(etcdir)/$$file.old; \
-	  fi; \
 	  $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(etcdir)/$$file; \
 	done
 	for file in $(GEN_FILES); do \
-	  if [ -f $(DESTDIR)$(etcdir)/$$file ]; then \
-	    mv $(DESTDIR)$(etcdir)/$$file $(DESTDIR)$(etcdir)/$$file.old; \
-	  fi; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(etcdir)/$$file; \
 	done
 
