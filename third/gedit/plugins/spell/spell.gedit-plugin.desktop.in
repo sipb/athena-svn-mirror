@@ -1,0 +1,7 @@
+[Gedit Plugin]
+Location=spell
+_Name=Spell checker
+_Description=Checks the spelling of the current document.
+Author=Paolo Maggi <paolo.maggi@polito.it>
+Copyright=Copyright © 2002-2003 Paolo Maggi
+

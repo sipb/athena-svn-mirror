@@ -1,10 +1,590 @@
-2003-02-04  Paolo Maggi <paolo.maggi@polito.it>
+2004-08-30  Paolo Borelli  <pborelli@katamail.com>
 
-	* configure.in: bump version to 2.2.0.1,
+	* configure.in:
+	* README:
+	* NEWS: release 2.7.92
 
-	* README: bump version to 2.2.0.1
+2004-08-30  Paolo Borelli  <pborelli@katamail.com>
 
-	* NEW: updated
+	* HACKING: put patches in bugzilla
+	* AUTHORS: update email adresses
+	* MAINTAINERS: ditto
+	* Makefile.am: distribute MAINTAINERS
+
+2004-08-29 Akagic Amila  <bono@linux.org.ba>
+
+	* configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-24 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help/C/gedit.xml: Updated for GNOME 2.8, technical review draft
+	* help/C/gedit-C.omf: Updated for GNOME 2.8
+	* help/C/l10n.txt: Updated for GNOME 2.8
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-16  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.7.91
+
+2004-08-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in: bump required intltool to 0.31 as
+	suggested by Owen Taylor in bug #149219
+
+2004-08-01  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.7.90
+
+2004-07-21  Ray Strode  <rstrode@redhat.com>
+	* gedit/data/gedit.desktop.in: Add MimeType line to desktop file
+	new mime sytem.
+
+2004-07-19  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* .cvsignore: added omf.make and xmldocs.make
+
+2004-07-19  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* help/eu/.cvsignore: added
+
+2004-07-16  Paolo Borelli  <pborelli@katamail.com>
+
+	* data/gedit.1: document --encoding.
+
+2004-07-13  Paolo Borelli  <pborelli@katamail.com>
+
+	* data/gedit.1: small updates to man page.
+
+2004-07-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.7.1
+
+2004-06-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* merge gnome-2-6 branch fixes into HEAD.
+
+2004-06-25  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in:
+	* README:
+	* NEWS: release 2.6.2
+
+2004-05-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-05-26  Mohammad DAMT  <mdamt@bisnisweb.com>
+	
+	* po/id.po: Added Indonesian translation done by Ahmad Riza H Nst <rizahnst@eriagempita.co.id>
+	* configure.in: Added id to ALL_LINGUAS
+
+2004-05-05  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* gedit/recent-files/egg-recent-item.c: (egg_recent_item_new),
+	(egg_recent_item_set_private), (egg_recent_item_get_private):
+	* gedit/recent-files/egg-recent-item.h:
+	* gedit/recent-files/egg-recent-util.c: (egg_recent_util_get_icon):
+	* gedit/recent-files/egg-recent-view.h:
+	Resync recent-files with latest libegg version, so it doesn't
+	complain when icon theme is not set.
+
+2002-05-08  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* help/eu: Added Basque help files
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-05  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* data/gedit.schemas.in: fixed bug #138508 (default values 
+	in gedit.schemas are not gettexized). Thanks to Takao Fujiwara
+	<Takao.Fujiwara@Sun.COM> and Mark McLoughlin <mark@skynet.ie>
+
+2004-04-05  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* data/gedit.keys.in: bug #106911 fixed. The file contains
+	the right keys now.
+
+2004-04-05  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in: add changecase plugin to the build.
+
+2004-04-03  Sam√∫el J√≥n Gunnarsson  <sammi@techattack.nu>
+
+	is.po:  Added "is" to ALL_LINGUAS
+	
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-22  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in: 
+	* README: bump version to 2.6.0
+
+	* NEWS: updated
+
+2004-03-19  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-18  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "mr" for Marathi to ALL_LINGUAS.
+
+2004-03-17  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/*: Add back localized documentation from Sun's translation
+	team for de, es, fr, it, ja, ko, sv, zh_CN, zh_HK and zh_TW.
+
+2004-03-16  Paolo Borelli  <pborelli@katamail.com>
+
+	* configure.in: 
+	* README: bump version to 2.5.92
+
+	* NEWS: updated
+
+2004-03-14  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* configure.in: use ACLOCAL_AMFLAGS to make maintainer builds work
+
+2004-03-08  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: 
+	* README: bump version to 2.5.91
+
+	* NEWS: updated
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" for Punjabi in ALL_LINGUAS.
+
+2004-03-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* pixmaps/Makefile.am: Don't list pixmaps in SOURCES. Fixes #135824.
+
+2004-03-01 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help/C/gedit.xml: Updated for GNOME 2.6, technical review draft
+	* help/C/gedit-C.omf: Updated for GNOME 2.6
+	* help/C/l10n.txt: Updated for GNOME 2.6
+	* help/C/figures/gedit_window.png: Updated for GNOME 2.6
+	* help/C/figures/gedit_format_bold.png: Added for GNOME 2.6
+	* help/C/figures/gedit_format_italic.png: Added for GNOME 2.6
+	* help/C/figures/gedit_format_strikethrough.png: Added for GNOME 2.6
+	* help/C/figures/gedit_format_underline.png: Added for GNOME 2.6
+
+2004-02-25  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* AUTHORS: added Paolo Borelli
+
+2004-02-24  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	[ gedit 2.5.90 released ]
+
+2004-02-24  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: requires gtksourceview 0.9, sets version
+	to 2.5.90
+	
+	* README: bump version to 2.5.90
+
+	* NEWS: updated
+
+2004-02-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gedit/dialogs/gedit-close-confirmation-dialog.c
+	(gedit_close_confirmation_dialog_init): Set role to ATK_ROLE_ALERT.
+	Fixes bug #135000.
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+ 
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+ 
+2004-02-15  Tomasz K≈Çoczko <kloczek@pld.org.pl>
+
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS),
+	AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	substed by default.
+
+2004-02-12  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* data/gedit.schemas.in: removed unused key
+	schemas/apps/gedit-2/preferences/editor/save/save_encoding
+
+2004-02-09  Alexander Winston  <alexander.winston@comcast.net>
+
+	* acinclude.m4: Quoted definitions of macros
+	AM_PATH_PROG_WITH_TEST, AM_LC_MESSAGES, AM_WITH_NLS, and
+	AM_GNU_GETTEXT. Fixes #133178.
+
+2004-02-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add a --enable-deprecations flag
+	to switch on the DISABLE_DEPRECATED cflags. Also
+	re-use the gnome-common --enable-compile-warnings
+	impl. which doesn't touch CFLAGS.
+
+2004-01-27  Christian Rose  <menthos@menthos.com>
+ 
+        * configure.in: Added "mi" to ALL_LINGUAS.
+ 
+2004-01-15  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	[ gedit 2.5.3 released ]
+
+2004-01-15  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: requires intltool 0.29, sets version
+	to 2.5.3
+
+	* README: bump version to 2.5.3
+
+	* NEWS: updated
+
+	* Makefile.am: Removed OrigTree.pm to EXTRA_DIST
+
+2004-01-06  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* TODO: Updated
+
+2004-01-03  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: bump version to 2.5.2
+	
+	* README: bump version to 2.5.2
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2003-12-29  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	* Makefile.am: Added OrigTree.pm to EXTRA_DIST.
+
+	* configure.in: requires intltool 0.28
+
+2003-12-29  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	* data/gedit.1: removed an unknown macro in man page
+	(fixed bug #127693).
+
+	* configure.in: check for the ngettext function
+
+2003-11-24  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	[ gedit 2.5.0 released ]
+
+2003-10-21  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	* data/Makefile.am: don't distribute generated files (fixes
+	bug #103846)
+
+2003-10-20  Paolo Maggi  <paolo.maggi@polito.it> 
+
+	* configure.in: bump version to 2.5.0, set 
+	GEDIT_MAJOR to 2.6 and GETTEXT_PACKAGE to gedit-2.6,
+	updated requirements
+
+2003-09-18  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* TODO: Updated
+
+	* configure.in: show message-of-doom
+	
+	* message-of-doom: updated
+
+	* data/gedit.schemas.in: added the following keys:
+	  display_right_margin, right_margin_position and 
+	  syntax_highlighting/enable
+
+2003-09-09  Paolo Maggi  <paolo.maggi@polito.it>
+
+	[ gedit 2.4.0 released ]
+
+2003-09-09  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: bump version to 2.4.0
+	
+	* README: bump version to 2.4.0, updated requirements
+
+2003-09-06  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-09-05  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gedit.xml: updated the Help to reflect gedit 2.2.2 for GNOME 
+	  2.4 release
+	* help/C/gedit-C.omf: updated the manual version/release information
+	* help/C/l10n.txt: updated instructions for L10N teams
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-08-27  Paolo Maggi <paolo.maggi@polito.it>
+
+	* configure.in:
+	* README: bump version to 2.3.5, requires libgnomeprintui 2.3.1
+	instead of the still to be released 2.3.2
+
+	* NEWS: Updated
+
+2003-08-26  Paolo Maggi <paolo.maggi@polito.it>
+
+	* NEWS: Updated
+
+2003-08-26  Paolo Maggi <paolo.maggi@polito.it>
+
+	* configure.in:
+	* README: bump version to 2.3.4, updated dependences
+
+2003-08-11  Christian Rose  <menthos@menthos.com>
+ 
+        * configure.in: Added "ne" to ALL_LINGUAS.
+ 
+2003-07-04 John Fleck <jfleck@inkstain.net>
+
+	* autogen.sh
+	remove
+	* xmldocs.make, omf.make
+	Updated to new docs build system. Latest gnome-common required.
+	(omf.make and xmldocs.make are now pulled in from gnome-common)
+
+2003-07-02  Jordi Mallach  <jordi@sindominio.net>
+
+	* data/gedit.desktop.in: Add Encoding entry and fix Terminal.
+
+2002-06-30  Paolo Maggi <paolo.maggi@polito.it>
+
+	* configure.in:
+	* README: bump version to 2.3.3
+
+	* NEWS: Updated
+
+2003-06-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: don't use -Wsign-promo for C.
+
+2002-06-12  Paolo Maggi <paolo.maggi@polito.it>
+
+	* data/gedit.schemas.in: added 
+	preferences/print/page/print_syntax_highlighting key
+
+	* configure.in: updated dependences, set GETTEXT_PACKAGE to gedit-2.4
+
+2002-06-06  Paolo Maggi <paolo.maggi@polito.it>
+
+	* data/gedit.schemas.in: removed preferences/editor/load/encodings key,
+	added preferences/encodings/auto_detected and preferences/encodings/shown_in_menu
+	keys
+
+2003-06-04  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* data/GNOME_Gedit.server.in:
+	* data/GNOME_Gedit.server.in.in:
+	* data/Makefile.am:
+	* viewer/Makefile.am:
+	Move bonobo factory component in $(libdir)/bonobo and don't use a 
+	versionned module.
+
+2002-06-03  Paolo Maggi <paolo.maggi@polito.it>
+
+	Re-moved indent, taglist, shell_output and sort plugin from 
+	gedit-plugins.
+
+	* configure.in (AC_OUTPUT): update to compile the moved plugins
+
+2002-05-21  Paolo Maggi <paolo.maggi@polito.it>
+
+	[ gedit 2.3.2 released ]
+
+2003-05-21  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: bump version to 2.3.2, 
+	  requires GtkSourceView >= 0.2.1
+	
+	* README: bump version to 2.3.2, updated requirements
+
+	* NEWS: updated
+
+2002-05-12  Paolo Maggi <paolo.maggi@polito.it>
+
+	* data/gedit.schemas.in: removed statusbar_show_cursor_position and
+	statusbar_show_overwrite_mode keys
+
+2002-05-12  Paolo Maggi <paolo.maggi@polito.it>
+
+	* data/gedit.pc.in: fixed Requires
+
+2002-05-08  Paolo Maggi <paolo.maggi@polito.it>
+
+	* TODO: Updated
+
+2002-05-07  Paolo Maggi <paolo.maggi@polito.it>
+
+	[ gedit 2.3.1 released ]
+
+2003-05-06  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* Makefile.am: added distcleancheck_listfiles
+
+	* data/Makefile.am: added DISTCLEANFILES
+
+2003-05-06  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* Makefile.am: added distuninstallcheck_listfiles
+
+2003-05-06  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* Makefile.am: added DISTCLEANFILES
+
+2003-05-06  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: bump version to 2.3.1, 
+	  requires GtkSourceView >= 0.2.0
+	
+	* README: bump version to 2.3.1, updated requirements
+
+	* NEWS: updated
+
+2003-05-06  Danilo ≈†egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-05  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+        * configure.in: Added cy to ALL_LINGUAS
+        * po/cy.po: Added
+
+2003-04-18  Jeroen Zwartepoorte  <jeroen@xs4all.nl>
+
+	* data/GNOME_Gedit.server.in: Remove the ".so" extension from the
+	viewer factory so it works on other platforms.
+
+2003-04-18  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in:
+	* Makefile.am: fixed bug #106129 - Package should use the 
+	AM_GCONF_SOURCE_2 macro (patch by Julio Merino <jmmv@hispabsd.org>)
+
+2003-04-17  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* configure.in: fix the aspell/pspell check. It should fix bug #105563: 
+	gEdit (2.2.0.1) fail to compile with new Aspell/Pspell 0.50.3
+
+2003-04-16  Paolo Maggi  <paolo.maggi@polito.it>
+
+	* autogen.sh: updated
+
+2003-04-14  Jeroen Zwartepoorte  <jeroen@xs4all.nl>
+
+	* Makefile.am:
+	* configure.in:
+	* data/GNOME_Gedit.server.in:
+
+	Added new viewer control for nautilus with syntax highlighting thanks
+	to gtksourceview. Gedit now depends on gtksourceview 
+	(toward-gedit-integration branch). This viewer will eventually replace
+	the standard text viewer in nautilus.
+
+2003-04-14  Mike Lei <mike.lei@sun.com>
+
+	* configure.in: Added Makefile support for de es fr it sv
+	  ja ko zh_CN zh_TW
+	* help files for above languages
+
+2003-03-26  James Willcox  <jwillcox@gnome.org>
+
+	* NEWS:  Updated
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-07  Breda McColgan <Breda.McColgan@sun.com>
+
+        * help/C/gedit.xml: updated for GNOME 2.2.1
+        * help/C/l10n.txt: updated for GNOME 2.2.1
+        * help/C/gedit-C.omf: updated manual date and version number
+        * help/C/figures/gedit_window.png: updated screenshot
+          of the latest application
+        * help/C/figures/gedit_recent_files_menu_icon.png: new screenshot
+
+2003-02-24  James Willcox  <jwillcox@gnome.org>
+
+	* Makefile.am:
+	* configure.in:  
+	* data/Makefile.am:
+	* data/gedit.pc.in:  Moved from toplevel
+	* gedit/Makefile.am:
+
+	Passes distcheck now.
+
+2003-02-22  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-21  James Willcox  <jwillcox@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+	* po/POTFILES.in:
+
+	Clean up the build and enable buildling the plugins again.
+
+2003-02-20  James Willcox  <jwillcox@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+	* gedit-2.3.pc.in:
+	* gedit/Makefile.am:
+	* gedit/gedit-mdi-child.h:
+	* gedit/gedit-mdi.h:
+	* gedit/recent-files/Makefile.am:
+	* plugins/Makefile.am:
+
+	Install headers and stuff so we can build plugins externally.
+
+2003-02-20  James Willcox  <jwillcox@gnome.org>
+
+	* configure.in:
+	* gedit/dialogs/Makefile.am:
+	* plugins/*:
+
+	It actually builds now (sigh)
+
+2003-02-20  James Willcox  <jwillcox@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+	* src/: removed
+
+	Copied src/ to gedit/ to prepare for external plugins, and fixed the
+	build accordingly.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-01-27  James Willcox  <jwillcox@gnome.org>
+
+	* configure.in:
+	* message-of-doom:
+
+	Restore message-of-doom (HEAD is for 2.4 now)
 
 2003-01-27  Paolo Maggi <paolo.maggi@polito.it>
 
@@ -53,7 +633,7 @@
 
 2002-05-08  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-	* configure.in: Added Amhaaric (am) and Macedonian (mk) to ALL_LINGUAS
+	* configure.in: Added Amharic (am) and Macedonian (mk) to ALL_LINGUAS
 
 2003-01-05  Paolo Maggi <paolo.maggi@polito.it>
 
@@ -669,7 +1249,7 @@
 
 	* Makefile.am: removed unused code
 
-2002-02-14  Tıivo Leedj‰rv  <leedjarv@interest.ee>
+2002-02-14  T√µivo Leedj√§rv  <leedjarv@interest.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 
@@ -884,7 +1464,7 @@
 
 	* configure.in: bump version to 1.107.0
 
-2001-12-03  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-12-03  Carlos Perell√≥ Mar√≠n <carlos@gnome-db.org>
 
         * configure.in: Reverted my change about GETTEXT_PACKAGE. We should
 	use the "standar" name (gedit-2.0 instead of gedit-2).
@@ -898,11 +1478,11 @@
 	* configure.in: cleaned following the suggestions of the gnome2
 	  porting foc. Now libgnomeprintui-2.0 is required 
 
-2001-11-21  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-11-21  Carlos Perell√≥ Mar√≠n <carlos@gnome-db.org>
 
         * configure.in: Changed GETTEXT_PACKAGE from gedit-2.0 to gedit-2
 	
-2001-11-16  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-11-16  Carlos Perell√≥ Mar√≠n <carlos@gnome-db.org>
 
 	* Makefile.am, configure.in: Migrated from xml-i18n-tools to intltool
 	and added support to AM_GLIB_GNU_GETTEXT
@@ -912,6 +1492,6 @@
 
 	* Started the port to GNOME 2.0
 
-2001-11-16  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-11-16  Carlos Perell√≥ Mar√≠n <carlos@gnome-db.org>
 
 	* ChangeLog: rolled over to ChangeLog-20011116

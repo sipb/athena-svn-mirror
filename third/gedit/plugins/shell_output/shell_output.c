@@ -45,13 +45,13 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-#include <gedit-plugin.h>
-#include <gedit-debug.h>
-#include <gedit-utils.h>
-#include <gedit-menus.h>
-#include <gedit-file.h>
-#include <gedit-mdi.h>
-#include <gedit-output-window.h>
+#include <gedit/gedit-plugin.h>
+#include <gedit/gedit-debug.h>
+#include <gedit/gedit-utils.h>
+#include <gedit/gedit-menus.h>
+#include <gedit/gedit-file.h>
+#include <gedit/gedit-mdi.h>
+#include <gedit/gedit-output-window.h>
 
 #define MENU_ITEM_LABEL		N_("_Run Command...")
 #define MENU_ITEM_PATH		"/menu/Tools/ToolsOps_3/"
@@ -229,27 +229,7 @@ dialog_response_handler (GtkDialog *dlg, gint res_id,  ShellOutputDialog *dialog
 			gtk_widget_destroy (dialog->dialog);
 
 			break;
-
 		}
-}
-
-static void
-display_error_dialog (GtkWindow *parent)
-{
-	GtkWidget *err_dialog;
-	
-	err_dialog = gtk_message_dialog_new (
-			parent,
-			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-		   	GTK_MESSAGE_ERROR,
-		   	GTK_BUTTONS_OK,
-			_("An error occurs while running the selected command."));
-			
-	gtk_dialog_set_default_response (GTK_DIALOG (err_dialog), GTK_RESPONSE_OK);
-	gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
-
-	gtk_dialog_run (GTK_DIALOG (err_dialog));
-	gtk_widget_destroy (err_dialog);
 }
 
 static ShellOutputDialog*
@@ -284,10 +264,11 @@ get_dialog (void)
 
 	gui = glade_xml_new (GEDIT_GLADEDIR "shell_output.glade2",
 			     "shell_output_dialog_content", NULL);
-
-	if (!gui) {
-		g_warning
-		    ("Could not find shell_output.glade2, reinstall gedit.\n");
+	if (!gui)
+	{
+		gedit_warning (window,
+			       MISSING_FILE,	
+			       GEDIT_GLADEDIR "shell_output.glade2");
 		return NULL;
 	}
 
@@ -298,7 +279,6 @@ get_dialog (void)
 
 	dialog->toplevel_window = window;
 
-
 	dialog->dialog = gtk_dialog_new_with_buttons (_("Run Command"),
 						      window,
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -307,6 +287,9 @@ get_dialog (void)
 						      NULL);
 
 	g_return_val_if_fail (dialog->dialog != NULL, NULL);
+
+	gtk_window_set_resizable (GTK_WINDOW (dialog->dialog), FALSE);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog->dialog), FALSE);
 
 	/* Add the run button */
 	dialog->close_button = gtk_dialog_add_button (GTK_DIALOG (dialog->dialog), 
@@ -317,27 +300,29 @@ get_dialog (void)
 	dialog->run_button =  gedit_dialog_add_button (GTK_DIALOG (dialog->dialog), 
 				 _("_Run"), GTK_STOCK_EXECUTE, GTK_RESPONSE_OK);
 
-	content			= glade_xml_get_widget (gui, "shell_output_dialog_content");
-
-	g_return_val_if_fail (content != NULL, NULL);
-
+	content	= glade_xml_get_widget (gui, "shell_output_dialog_content");
 	dialog->command    	= glade_xml_get_widget (gui, "command_entry");
 	dialog->command_list   	= glade_xml_get_widget (gui, "command_entry_list");
-
 	dialog->directory  	= glade_xml_get_widget (gui, "directory_entry");
 	dialog->directory_fileentry = glade_xml_get_widget (gui, "directory_fileentry");
 	dialog->capture_output  = glade_xml_get_widget (gui, "capture_ouput_checkbutton");
-
 	dialog->command_label  	= glade_xml_get_widget (gui, "command_label");
 	dialog->directory_label	= glade_xml_get_widget (gui, "directory_label");
 
-	g_return_val_if_fail (dialog->command != NULL, NULL);
-	g_return_val_if_fail (dialog->command_label != NULL, NULL);
-	g_return_val_if_fail (dialog->command_list != NULL, NULL);
-	g_return_val_if_fail (dialog->directory != NULL, NULL);
-	g_return_val_if_fail (dialog->directory_fileentry != NULL, NULL);
-	g_return_val_if_fail (dialog->directory_label != NULL, NULL);
-	g_return_val_if_fail (dialog->capture_output != NULL, NULL);
+	if (!content ||
+	    !dialog->command             ||
+	    !dialog->command_label       ||
+	    !dialog->command_list        ||
+	    !dialog->directory           ||
+	    !dialog->directory_fileentry ||
+	    !dialog->directory_label     ||
+	    !dialog->capture_output)
+	{
+		gedit_warning (window,
+			       MISSING_WIDGETS,
+			       GEDIT_GLADEDIR "docinfo.glade2");
+		return NULL;
+	}
 
 	gtk_entry_set_text (GTK_ENTRY (dialog->directory), current_directory);
 
@@ -348,21 +333,18 @@ get_dialog (void)
 					 GTK_RESPONSE_OK);
 
 	g_signal_connect (G_OBJECT (dialog->dialog), "destroy",
-			   G_CALLBACK (dialog_destroyed), &dialog);
+			  G_CALLBACK (dialog_destroyed), &dialog);
 
 	g_signal_connect (G_OBJECT (dialog->dialog), "response",
-			   G_CALLBACK (dialog_response_handler), dialog);
+			  G_CALLBACK (dialog_response_handler), dialog);
 
 	g_object_unref (gui);
-
-	gtk_window_set_resizable (GTK_WINDOW (dialog->dialog), FALSE);
 
 	gtk_widget_grab_focus (dialog->command);
 
 	gtk_widget_show (dialog->dialog);
 
 	return dialog;
-
 }
 
 static void
@@ -373,28 +355,25 @@ run_command_cb (BonoboUIComponent *uic, gpointer user_data, const gchar* verbnam
 	gedit_debug (DEBUG_PLUGINS, "");
 
 	dialog = get_dialog ();
-	if (dialog == NULL) {
-		g_warning ("Could not create the Shell Output dialog");
+	if (!dialog)
 		return;
-	}
 }
-
 
 static gboolean
 handle_command_output (GIOChannel *ioc, GIOCondition condition, gpointer data) 
 {
 	gboolean not_running = FALSE;
-
+	
 	ShellOutputDialog *dialog = (ShellOutputDialog *)data;
 
 	gedit_debug (DEBUG_PLUGINS, "");
 
-	if ((condition == G_IO_IN) || (condition == G_IO_IN + G_IO_HUP)) { 
-	
+	if ((condition & G_IO_IN) != 0)
+	{       
 		GError	*error = NULL;
 		gchar   *string = NULL;
-		gint	 len = 0;
-		gint	 pos = 0;
+		gsize	 len = 0;
+		gsize	 pos = 0;
 		gchar 	*line;
 	
 		gedit_debug (DEBUG_PLUGINS, "1");
@@ -407,7 +386,6 @@ handle_command_output (GIOChannel *ioc, GIOCondition condition, gpointer data)
 		do 
 		{
 			gint  	 status;
-			gchar 	*p;
 
 			
 			if (running != RUNNING) 
@@ -422,6 +400,15 @@ handle_command_output (GIOChannel *ioc, GIOCondition condition, gpointer data)
 			{
 				status = g_io_channel_read_line (ioc, &string, &len, &pos, &error);
 				
+				if (len == 0)
+ 				{
+ 					/* G_IO_IN + EOF = G_IO_HUP
+ 					 * -> the pipe is broken
+ 					 */
+					not_running = TRUE;
+					break;
+				}
+				
 				while (gtk_events_pending ()) 
 				{
 					if (running == MAKE_IT_CLOSE) 
@@ -435,6 +422,9 @@ handle_command_output (GIOChannel *ioc, GIOCondition condition, gpointer data)
 
 				
 			} while (status == G_IO_STATUS_AGAIN);
+			
+			if (not_running)
+				break;
 			
 			if (status != G_IO_STATUS_NORMAL) 
 			{
@@ -456,11 +446,7 @@ handle_command_output (GIOChannel *ioc, GIOCondition condition, gpointer data)
 				
 			gedit_debug (DEBUG_PLUGINS, "1.3");
 
-			p = g_utf8_offset_to_pointer (string, pos);
-
-			*p = '\0';
-	
-			line = g_markup_escape_text (string, -1);
+			line = g_markup_escape_text (string, pos);
 
 			if (ioc == dialog->ioc_stdout)	
 			{
@@ -686,23 +672,9 @@ run_command_real (ShellOutputDialog *dialog)
 
 	if (command_string == NULL || (strlen (command_string) == 0))
 	{
-		GtkWidget *err_dialog;
-		
-		err_dialog = gtk_message_dialog_new (
-				GTK_WINDOW (dialog->dialog),
-				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			   	GTK_MESSAGE_ERROR,
-			   	GTK_BUTTONS_OK,
+		gedit_warning (GTK_WINDOW (dialog->dialog),
 				_("The shell command entry is empty.\n\n"
 				  "Please, insert a valid shell command."));
-			
-		gtk_dialog_set_default_response (GTK_DIALOG (err_dialog), GTK_RESPONSE_OK);
-
-		gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
-
-		gtk_dialog_run (GTK_DIALOG (err_dialog));
-  		gtk_widget_destroy (err_dialog);
-
 		return FALSE;
 	}
 
@@ -719,23 +691,9 @@ run_command_real (ShellOutputDialog *dialog)
                            NULL, &argv,
                            NULL))
 	{
-		GtkWidget *err_dialog;
-		
-		err_dialog = gtk_message_dialog_new (
-				GTK_WINDOW (dialog->dialog),
-				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-			   	GTK_MESSAGE_ERROR,
-			   	GTK_BUTTONS_OK,
+		gedit_warning (GTK_WINDOW (dialog->dialog),
 				_("Error parsing the shell command.\n\n"
 				  "Please, insert a valid shell command."));
-			
-		gtk_dialog_set_default_response (GTK_DIALOG (err_dialog), GTK_RESPONSE_OK);
-
-		gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
-
-		gtk_dialog_run (GTK_DIALOG (err_dialog));
-  		gtk_widget_destroy (err_dialog);
-
 		g_free (unescaped_command_string);
 		
 		return FALSE;
@@ -879,10 +837,10 @@ run_command_real (ShellOutputDialog *dialog)
 	{
 		running = NOT_RUNNING;
 
-		display_error_dialog (GTK_WINDOW (dialog->dialog));
-		
-		g_free (unescaped_command_string);
+		gedit_warning (GTK_WINDOW (dialog->dialog),
+			       _("An error occurred while running the selected command."));
 
+		g_free (unescaped_command_string);
 		gtk_widget_destroy (dialog->dialog);
 
 		return FALSE;

@@ -37,10 +37,10 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock-icons.h>
 
-#include <gedit-menus.h>
-#include <gedit-plugin.h>
-#include <gedit-debug.h>
-#include <gedit-prefs-manager.h>
+#include <gedit/gedit-menus.h>
+#include <gedit/gedit-plugin.h>
+#include <gedit/gedit-debug.h>
+#include <gedit/gedit-prefs-manager.h>
 
 #define MENU_INDENT_LABEL		N_("_Indent")
 #define MENU_INDENT_NAME		"Indent"	
@@ -65,6 +65,7 @@ indent_cb (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 	GeditView *view;
 	GtkTextIter start, end, iter;
 	gint i, start_line, end_line;
+	gchar *tab_buffer = NULL;
 
 	gedit_debug (DEBUG_PLUGINS, "");
 
@@ -81,13 +82,32 @@ indent_cb (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 	start_line = gtk_text_iter_get_line (&start);
 	end_line = gtk_text_iter_get_line (&end);
 
+	if ((gtk_text_iter_get_visible_line_offset (&end) == 0)  && (end_line > start_line))
+		end_line--;
+
+	if (gedit_prefs_manager_get_insert_spaces ())
+	{
+		gint tabs_size;
+
+		tabs_size = gedit_prefs_manager_get_tabs_size ();
+		tab_buffer = g_strnfill (tabs_size, ' ');
+	} else {
+		tab_buffer = g_strdup("\t");
+	}
+
 	for (i = start_line; i <= end_line; i++) 
 	{
 		gtk_text_buffer_get_iter_at_line (GTK_TEXT_BUFFER (doc), &iter, i);
-		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, "\t", 1);
+
+		/* don't add indentation on empty lines */
+		if (gtk_text_iter_ends_line (&iter))
+			continue;
+
+		gtk_text_buffer_insert (GTK_TEXT_BUFFER (doc), &iter, tab_buffer, -1);
 	}
 	
 	gedit_document_end_user_action (doc);
+	g_free(tab_buffer);
 }
 
 static void
@@ -111,6 +131,9 @@ unindent_cb (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 			
 	start_line = gtk_text_iter_get_line (&start);
 	end_line = gtk_text_iter_get_line (&end);
+
+	if ((gtk_text_iter_get_visible_line_offset (&end) == 0)  && (end_line > start_line))
+		end_line--;
 
 	for (i = start_line; i <= end_line; i++) 
 	{
@@ -154,28 +177,30 @@ unindent_cb (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 				gtk_text_buffer_delete (GTK_TEXT_BUFFER (doc), &iter, &iter2);
 			}
 		}
-
 	}
 	
 	gedit_document_end_user_action (doc);
 }
-
 
 G_MODULE_EXPORT GeditPluginState
 update_ui (GeditPlugin *plugin, BonoboWindow *window)
 {
 	BonoboUIComponent *uic;
 	GeditDocument *doc;
+	GeditMDI *mdi;
 	
 	gedit_debug (DEBUG_PLUGINS, "");
 	
+	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
+
+	mdi = gedit_get_mdi ();
 	g_return_val_if_fail (window != NULL, PLUGIN_ERROR);
 
 	uic = gedit_get_ui_component_from_window (window);
 
 	doc = gedit_get_active_document ();
 
-	if ((doc == NULL) || (gedit_document_is_readonly (doc)))
+	if ((doc == NULL) || (gedit_document_is_readonly (doc)) || (gedit_mdi_get_state (mdi) != GEDIT_STATE_NORMAL))
 	{		
 		gedit_menus_set_verb_sensitive (uic, "/commands/" MENU_INDENT_NAME, FALSE);
 		gedit_menus_set_verb_sensitive (uic, "/commands/" MENU_UNINDENT_NAME, FALSE);
@@ -247,7 +272,4 @@ init (GeditPlugin *pd)
 		
 	return PLUGIN_OK;
 }
-
-
-
 

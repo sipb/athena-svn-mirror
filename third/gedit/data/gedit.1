@@ -1,4 +1,4 @@
-.TH GEDIT l "05 Jan 2003"
+.TH GEDIT 1 "16 Jul 2004"
 .SH NAME
 \fBgedit\fP \- simple text editor for GNOME
 
@@ -7,7 +7,7 @@ The gedit application is a simple text editor. You can use gedit to create and e
 .SH SYNTAX
 .B gedit
 .RI [--help]
-.RI [--debug [-section]]
+.RI [--encoding]
 .RI [--new-window]
 .RI [--new-document]
 .RI [--quit]
@@ -22,9 +22,8 @@ is a text editor for the GNOME Desktop.
 \fB\-\-help\fR
 Prints the command line options.
 .TP
-\fB\-\-debug[-section]\fR
-Runs gedit in debug mode. In debug mode function names are dumped to the console when they are invoked. Specific sections for debugging are allowed.  The sections are: window, commands, document, file, plugins, prefs, print, search,
-undo, view and recent. Run `gedit \-\-help' for more information.
+\fB\-\-encoding\fR
+Set the character encoding to be used for opening the files listed on the command line".
 .TP
 \fB\-\-new\-window\fR
 Create a new toplevel window in an existing instance of gedit.
@@ -46,7 +45,6 @@ Gedit accepts pipes, so it can be run after another command to load the output i
 gedit. For example :
 .TP
 ls -l | gedit
-.PB
 .SH BUGS
 If you find a bug, please report it at http://bugzilla.gnome.org/enter_bug.cgi?product=gedit.
 

@@ -20,8 +20,8 @@
       <applyto>/apps/gedit-2/preferences/editor/font/editor_font</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Monospace 12</default>
       <locale name="C">
+        <default>Monospace 12</default>
 	<short>Editor Font</short>
 	<long>A custom font that will be used for the editing area.
 	This will only take effect if the "Use Default Font" option is
@@ -158,30 +158,6 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/gedit-2/preferences/editor/save/save_encoding</key>
-      <applyto>/apps/gedit-2/preferences/editor/save/save_encoding</applyto>
-      <owner>gedit</owner>
-      <type>string</type>
-      <default>GEDIT_SAVE_ALWAYS_UTF8</default>
-      <locale name="C">
-	<short>Encoding for Saving</short>
-	<long>The encoding method to use for saving files.  Possible
-	values are "GEDIT_SAVE_ALWAYS_UTF8" for mandatory UTF-8
-	saving, "GEDIT_SAVE_CURRENT_LOCALE_IF_POSSIBLE" if you
-	want gedit to try to convert the document it is saving to your
-	current locale's encoding, 
-	"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE" if you want gedit to try
-	to use the original file encoding (new files in UTF8) and 
-	"GEDIT_SAVE_ORIGINAL_FILE_ENCODING_IF_POSSIBLE_NCL" if you want gedit to try
-	to use the original file encoding (new files in current locale's encoding).  
-	If the conversion is successful,
-	it will be used.  Otherwise, UTF-8 will be used.  Note that
-	the values are case-sensitive, so make sure they appear
-	exactly as mentioned here.</long>
-      </locale>
-    </schema>
-
-    <schema>
       <key>/schemas/apps/gedit-2/preferences/editor/undo/undo_actions_limit</key>
       <applyto>/apps/gedit-2/preferences/editor/undo/undo_actions_limit</applyto>
       <owner>gedit</owner>
@@ -262,6 +238,31 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/gedit-2/preferences/editor/right_margin/display_right_margin</key>
+      <applyto>/apps/gedit-2/preferences/editor/right_margin/display_right_margin</applyto>
+      <owner>gedit</owner>
+      <type>bool</type>
+      <default>FALSE</default>
+      <locale name="C">
+	<short>Display Right Margin</short>
+	<long>Whether gedit should display the right margin in the editing
+	area.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gedit-2/preferences/editor/right_margin/right_margin_position</key>
+      <applyto>/apps/gedit-2/preferences/editor/right_margin/right_margin_position</applyto>
+      <owner>gedit</owner>
+      <type>int</type>
+      <default>80</default>
+      <locale name="C">
+	<short>Right Margin Position</short>
+	<long>Specifies the position of the right margin.</long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/gedit-2/preferences/ui/toolbar/toolbar_visible</key>
       <applyto>/apps/gedit-2/preferences/ui/toolbar/toolbar_visible</applyto>
       <owner>gedit</owner>
@@ -305,30 +306,15 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/gedit-2/preferences/ui/statusbar/statusbar_show_cursor_position</key>
-      <applyto>/apps/gedit-2/preferences/ui/statusbar/statusbar_show_cursor_position</applyto>
+      <key>/schemas/apps/gedit-2/preferences/print/page/print_syntax_highlighting</key>
+      <applyto>/apps/gedit-2/preferences/print/page/print_syntax_highlighting</applyto>
       <owner>gedit</owner>
       <type>bool</type>
       <default>TRUE</default>
       <locale name="C">
-	<short>Show Cursor Position</short>
-	<long>Whether the status bar should show the cursor position
-	in editing windows.  Make sure you turn on the "Status Bar is
-	Visible" option for this to take effect.</long>
-      </locale>
-    </schema>
-
-    <schema>
-      <key>/schemas/apps/gedit-2/preferences/ui/statusbar/statusbar_show_overwrite_mode</key>
-      <applyto>/apps/gedit-2/preferences/ui/statusbar/statusbar_show_overwrite_mode</applyto>
-      <owner>gedit</owner>
-      <type>bool</type>
-      <default>TRUE</default>
-      <locale name="C">
-	<short>Show Overwrite Mode</short>
-	<long>Whether the status bar should show the insert/overwrite
-	mode in editing windows.  Make sure you turn on the "Status
-	Bar is Visible" option for this to take effect.</long>
+	<short>Print Syntax Highlighting</short>
+	<long>Whether gedit should print syntax highlighting when
+	printing documents.</long>
       </locale>
     </schema>
 
@@ -350,7 +336,7 @@
       <applyto>/apps/gedit-2/preferences/print/page/print_wrap_mode</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>GTK_WRAP_CHAR</default>
+      <default>GTK_WRAP_WORD</default>
       <locale name="C">
 	<short>Printing Line Wrapping Mode</short>
 	<long>Specifies how to wrap long lines for printing.  Use
@@ -381,8 +367,8 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_body</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Monospace Regular 9</default>
       <locale name="C">
+        <default>Monospace Regular 9</default>
 	<short>Body Font for Printing</short>
 	<long>Specifies the font to use for a document's body when
 	printing documents.</long>
@@ -394,8 +380,8 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_header</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Sans Regular 11</default>
       <locale name="C">
+        <default>Sans Regular 11</default>
 	<short>Header Font for Printing</short>
 	<long>Specifies the font to use for page headers when printing
 	a document.  This will only take effect if the "Print Header"
@@ -408,8 +394,8 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_numbers</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Sans Regular 8</default>
       <locale name="C">
+        <default>Sans Regular 8</default>
 	<short>Line Number Font for Printing</short>
 	<long>Specifies the font to use for line numbers when
 	printing.  This will only take effect if the "Print Line
@@ -431,16 +417,42 @@
     </schema>
 
     <schema>
-      <key>/schemas/apps/gedit-2/preferences/editor/load/encodings</key>
-      <applyto>/apps/gedit-2/preferences/editor/load/encodings</applyto>
+      <key>/schemas/apps/gedit-2/preferences/encodings/auto_detected</key>
+      <applyto>/apps/gedit-2/preferences/encodings/auto_detected</applyto>
       <owner>gedit</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[ISO-8859-15]</default>
       <locale name="C">
-	<short>Encodings</short>
-	<long>List of encodings used by gedit for reading files not encoded
-	in UTF-8 or in the current locale encoding.</long>
+        <default>[UTF-8,CURRENT,ISO-8859-15]</default>
+	<short>Auto Detected Encodings</short>
+	<long>Sorted list of encodings used by gedit for auto-detecting the encoding of
+	a file. "CURRENT" is the current locale encoding. Only recognized encodings are used.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gedit-2/preferences/encodings/shown_in_menu</key>
+      <applyto>/apps/gedit-2/preferences/encodings/shown_in_menu</applyto>
+      <owner>gedit</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <locale name="C">
+        <default>[ISO-8859-15]</default>
+	<short>Encodings shown in menu</short>
+	<long>List of encodings shown in Character Coding menu in open/save file selector.
+	Only recognized encodings are used.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gedit-2/preferences/syntax_highlighting/enable</key>
+      <applyto>/apps/gedit-2/preferences/syntax_highlighting/enable</applyto>
+      <owner>gedit</owner>
+      <type>bool</type>
+      <default>TRUE</default>
+      <locale name="C">
+	<short>Enable Syntax Highlighting</short>
+	<long>Whether gedit should enable syntax highlighting.</long>
       </locale>
     </schema>
 
