@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.2 1987-07-30 16:58:01 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.3 1987-08-01 00:39:33 treese Exp $
 
 # First, source the standard login script.  If it can't be found, notify
 # the user and execute some backup commands.  In particular, set the path
@@ -61,4 +61,4 @@ endif
 # The following obscurity gets terminal characteristics into the
 # environment:
 
-set noglob; eval `tset -s -Q -m 'switch>1200:?vt100 -m 'switch<=1200:?vt100'`
+set noglob; eval `tset -s -Q -m 'switch>1200:?vt100' -m 'switch<=1200:?vt100'`
