@@ -1,3 +1,12 @@
+#	Copyright 1987,1988 Massachusetts Institute of Technology
+#
+#	For copying and distribution information, see the file
+#	"mit-copyright.h".
+# 
+#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/krb_err.et,v $
+#	$Author: jtkohl $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/krb_err.et,v 1.3 1988-08-02 09:34:55 jtkohl Exp $
+#
 	error_table	krb
 
 	ec		KSUCCESS,
