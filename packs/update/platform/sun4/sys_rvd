@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.10 1994-06-01 13:53:58 vrt Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.11 1994-06-13 09:31:38 miki Exp $
 	.:::
 		-> SUNW*
 		*4c
@@ -96,9 +96,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> aset
 		-> athena
 		-> andrew
+		-> cancel
 		-> ccs
 		-> demo
 		-> dict
+		-> disable
+		-> enable
 		-> etc
 		-> games
 		-> gcc
@@ -108,12 +111,14 @@ GLOBAL : *.CKP *.local *.pid :
 		 kvm.4c
 		-> local
 		lost+found
+		-> lp*
 		-> net
 		-> new
 		news
 		-> nserve
 		-> oasys
 		-> old
+		openwin
 		preserve
 		-> prototype_user
 		-> pub
@@ -128,7 +133,11 @@ GLOBAL : *.CKP *.local *.pid :
 		-> accept
 		-> add_drv
 		-> adm*
+		-> all*
+		-> aud*
+		-> asp*
 		-> convert*
+		-> deall*
 		-> *4x
 		-> group*
 		-> host*
@@ -136,14 +145,24 @@ GLOBAL : *.CKP *.local *.pid :
 		-> in.f*
 		-> in.rdisc
 		-> in.rwhod
+		-> in.rex*
+		-> in.rarpd
 		-> in.tn*
 		-> in.uu*
 		-> install4x
+		-> ker*
+		-> list*
 		-> lp*
+		-> make*
+		-> nis*
+		-> nls*
 		-> pkg*
 		-> pwconv
 		-> rf*
-		-> *nisd
+		-> snoop
+		-> spray
+		-> swm*
+		-> user*
 		-> whodo
 		-> yp*
 		:
@@ -221,9 +240,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> graph
 		-> indxbib
 		-> join
-		-> jsh
-		-> kdestroy
-		-> keylogin
+		-> kdestroy*
+		-> keylogin*
 		-> keylogout
 		-> ksh
 		-> kinit.sun
@@ -282,12 +300,18 @@ GLOBAL : *.CKP *.local *.pid :
 		-> uucp
 		:
 	/usr/openwin:::
+		-> SUNW*
+		-> demo
 		-> include
 		-> man
 		-> demo
+		server
 		lib
 		bin
 		share
+		:
+	/usr/openwin/server:::
+		-> etc
 		:
 	/usr/openwin/lib:::
 		-> C*
@@ -306,40 +330,14 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xman.help
 		:
 	/usr/openwin/lib/X11:::
+		-> C*
+		-> D*
 		fonts
 		:
 	/usr/openwin/lib/X11/fonts:::
-		-> A*
-		-> B*
-		-> C*
-		-> D*
-		-> E*
-		-> G*
-		-> H*
-		-> I*
-		-> K*
-		-> L*
-		-> O*
-		-> P*
-		-> R*
-		-> Sc*
+		-> F*
+		-> S*
 		-> T*
-		-> U*
-		-> Z*
-		-> a*
-		-> b*
-		-> c*
-		-> d*
-		-> e*
-		-> f1*
-		-> g*
-		-> h*
-		-> k*
-		-> nil*
-		-> o*
-		-> sy*
-		-> term*
-		-> tim*
 		-> 100dpi*
 		-> 75dpi*
 		:
