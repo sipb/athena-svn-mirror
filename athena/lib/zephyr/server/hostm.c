@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.12 1987-08-01 11:36:40 rfrench Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.13 1987-08-04 15:47:08 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -613,6 +613,7 @@ struct sockaddr_in *sin;
 	shutnotice.z_recipient = "hm@ATHENA.MIT.EDU";
 	shutnotice.z_message = NULL;
 	shutnotice.z_message_len = 0;
+	shutnotice.z_default_format = "";
 	
 	shutlen = sizeof(shutpack);
 	if ((retval = ZFormatNotice(&shutnotice,
