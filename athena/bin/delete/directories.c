@@ -12,6 +12,7 @@
 #include <strings.h>
 #include <errno.h>
 #include "directories.h"
+#include "util.h"
 
 extern char *malloc(), *realloc();
 extern char *whoami;
@@ -21,10 +22,55 @@ static filerec root_tree;
 static filerec cwd_tree;
 static char *error_buf;
 
-filerec *add_path_to_tree(), *add_file_to_parent(), *add_directory_to_parent();
-char *get_leaf_path(), *lastpart(), *firstpart();
-filetype find_file_type();
 
+
+static filerec default_cwd = {
+     ".",
+     FtDirectory,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     False,
+     False
+};
+
+static filerec default_root = {
+     "",
+     FtDirectory,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     False,
+     False
+};
+
+static filerec default_directory = {
+     "",
+     FtDirectory,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     False,
+     False
+};
+
+static filerec default_file = {
+     "",
+     FtFile,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     (filerec *) NULL,
+     False,
+     False
+};
 
 
 filerec *get_root_tree()
@@ -140,8 +186,6 @@ filerec *leaf;
 filerec *next_specified_leaf(leaf)
 filerec *leaf;
 {
-     char buf[MAXPATHLEN];
-     
      while (leaf = next_leaf(leaf))
      if (leaf->specified)
 	  return(leaf);
@@ -492,49 +536,4 @@ char leaf_buf[]; /* RETURN */
      } while (leaf);
      strcpy(leaf_buf, name_ptr);
      return(leaf_buf);
-}
-
-     
-
-char *lastpart(filename)
-char *filename;
-{
-     char *part;
-
-     part = rindex(filename, '/');
-
-     if (! part)
-	  part = filename;
-     else if (part == filename)
-	  part++;
-     else if (part - filename + 1 == strlen(filename)) {
-	  part = rindex(--part, '/');
-	  if (! part)
-	       part = filename;
-	  else
-	       part++;
-     }
-     else
-	  part++;
-
-     return(part);
-}
-     
-
-char *firstpart(filename, rest)
-char *filename;
-char *rest; /* RETURN */
-{
-     char *part;
-     static char buf[MAXPATHLEN];
-
-     strcpy(buf, filename);
-     part = index(buf, '/');
-     if (! part) {
-	  *rest = '\0';
-	  return(buf);
-     }
-     strcpy(rest, part + 1);
-     *part = '\0';
-     return(buf);
 }
