@@ -30,7 +30,7 @@ OBJS		=	console.o
 XJLIB		=	../lib/libXj.a
 C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
 
-#if defined(HasPutenv)
+#if (HasPutenv)
 PUTENV_DEF      =       -DHAS_PUTENV
 #else
 PUTENV_DEF      =
