@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
- *	$Id: x_utils.c,v 1.4 1991-03-24 23:23:21 lwvanels Exp $
+ *	$Id: x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.4 1991-03-24 23:23:21 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.5 1992-04-27 17:24:01 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -41,7 +41,7 @@ handle_response(response, req)
 #ifdef KERBEROS
   char kmessage[BUF_SIZE];
 
-  strcpy(kmessage,"\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `kinit'.\n\n");
+  strcpy(kmessage,"\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `renew'.\n\n");
 
 #ifdef ATHENA
   strcat(kmessage, "If you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n");
@@ -159,21 +159,21 @@ handle_response(response, req)
 #ifdef KERBEROS     /* these error codes are < 100 */
     case MK_AP_TGTEXP:
     case RD_AP_EXP:
-      strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        kinit"); 
+      strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        renew"); 
       if(OLC)
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
 
     case NO_TKT_FIL:
-      strcpy(message, "You do not have a Kerberos ticket file. To get one, type:\n\n        kinit"); 
+      strcpy(message, "You do not have a Kerberos ticket file. To get one, type:\n\n        renew"); 
       if(OLC)
 	strcat(message, kmessage);
       status = popup_option(message);
       return(status);
 
     case TKT_FIL_ACC:
-      strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        setenv   KRBTKFILE  /tmp/random\n        kinit");
+      strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        setenv   KRBTKFILE  /tmp/random\n        renew");
       if(OLC)
 	strcat(message, kmessage);
       status = popup_option(message);
