@@ -87,6 +87,7 @@ Distribution sites for software under third
 	gcc		prep.ai.mit.edu:pub/gnu
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
+	kermit		http://www.columbia.edu/kermit
 	krb5		athena-dist.mit.edu:pub/kerberos
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
@@ -245,7 +246,7 @@ rules to get the value of such variables):
 	HOSTTYPE	Platform name for this system
 	SRVD		Install destination directory (e.g. /srvd)
 	SOURCE		Source tree (e.g. /mit/source)
-	COMPILER	Appropriate compiler for this system
+	COMPILER	Appropriate compiler/linker for this system
 	CONFIGDIR	Location of Athena Imake templates
 	XCONFIGDIR	Location of X-style Imake templates
 	ATHTOOLROOT	Root of installed Athena tree
