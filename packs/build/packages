@@ -1,4 +1,4 @@
-# $Id: packages,v 1.235 2003-05-01 00:39:18 ghudson Exp $
+# $Id: packages,v 1.236 2003-05-01 00:49:56 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -165,7 +165,7 @@ third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
 third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
 third/gconf-editor		except linux requires gettext,intltool,GConf2,gtk2
 third/gdbm			except linux
-third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
+third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk,gnome-libs
 third/gedit			except linux requires gettext,intltool,GConf2,libgnomeui,libglade2,libgnomeprintui,eel,popt,glib2,ORBit2,libbonobo,bonobo-activation,scrollkeeper
 third/gettext			except linux requires libiconv
 third/glib
