@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.70 2002-02-14 05:37:04 zacheiss Exp $
+# $Id: do.sh,v 1.71 2002-02-26 03:11:56 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -9,7 +9,7 @@ n=""
 maybe=""
 
 usage() {
-  echo "Usage: do [-cnp] [-s srcdir] [-d destdir] [-t toolroot]" 1>&2
+  echo "Usage: do [-np] [-s srcdir] [-d destdir]" 1>&2
   echo "	[dist|prepare|clean|all|check|install]" 1>&2
   exit 1
 }
@@ -177,7 +177,7 @@ if [ -r Makefile.athena ]; then
   fi
   $MAKE $n -f Makefile.athena "$operation"
 elif [ -f configure.in -o -f configure.ac ]; then
-  if [ -x configure.athena ]; then
+  if [ -f configure.athena ]; then
     configure=configure.athena
   else
     configure=configure
