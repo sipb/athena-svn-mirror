@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.9 1999-06-01 19:13:21 danw Exp $
+# $Id: sendmail.cf,v 1.10 1999-06-22 19:30:41 danw Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -169,18 +169,17 @@ R$+			$:$>3$1				make canonical
 # handle special cases.....
 R@			$#local$:MAILER-DAEMON		handle <> form
 
-# extract special suffixes
-R$*<$*.LOCAL>$*		$1<$2>$3.LOCAL			Extract .LOCAL
-
 # deliver obviously local mail first so root's junk mail won't
 # get bounced to postmaster if we fall off the net and can't resolve our
 # hostname below.
 R$*<@$j>$*		$#local$:$1
 
 # Resolve name (so our CNAMES work)
+R$*<$*.LOCAL>$*		$:$1<$2.$D>$3			Rewrite .LOCAL
 R$*<@$+.$D>$*		$:$1<@$[$2$]>$3			@something.mit.edu
 R$*<@mit>$*		$:$1<@$D>$2			avoid mit.MIT.EDU
 R$*<@$->$*		$:$1<@$[$2$]>$3			@something [no .s]
+R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
@@ -195,8 +194,12 @@ Kdequote dequote
 # Check incoming smtp mail
 Scheck_rcpt
 
+# Canonicalize
+R<$+@$*.LOCAL>		$:<$1@$2.$D>
+R<$+@$*>		$:<$1@$[$2$]>
+
 # OK if addressed to a local recipient
-R<$+@$=w>		$@ OK
+R<$+@$=w.>		$@ OK
 
 # OK if originated locally, or from a friendly address
 R$*			$: $(dequote "" $&{client_name} $)
