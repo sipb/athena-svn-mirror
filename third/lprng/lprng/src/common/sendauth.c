@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendauth.c,v 1.6 2000-04-03 19:01:48 mwhitson Exp $";
+"$Id: sendauth.c,v 1.7 2000-05-11 22:01:45 rbasch Exp $";
 
 #include "lp.h"
 #include "lpd.h"
@@ -287,18 +287,11 @@ int Krb5_send( int *sock, int transfer_timeout, char *tempfile,
 			goto error;
 		}
 		close(fd);
-		if( !(principal = Find_str_value(info,"forward_principal",Value_sep))){
-			plp_snprintf( error, errlen, "no server keytab file" );
-			status = JFAIL;
-			goto error;
-		}
+		principal = Find_str_value(info,"forward_principal",
+					   Value_sep);
 	} else {
-		if( !(principal = Find_str_value(info,"server_principal",Value_sep))
-		 && !(principal = Find_str_value(info,"id",Value_sep)) ){
-			plp_snprintf( error, errlen, "no server keytab file" );
-			status = JFAIL;
-			goto error;
-		}
+		if( !(principal = Find_str_value(info,"server_principal",Value_sep)))
+			principal = Find_str_value(info,"id",Value_sep);
 	}
 	service = Find_str_value(info, "service", Value_sep );
 	life = Find_str_value(info, "life", Value_sep );
@@ -856,7 +849,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		key = "F";
 		from = Find_str_value(info,ID,Value_sep);
 		if(!from)from = Find_str_value(info,"server_principal",Value_sep);
-		if( from == 0 ){
+		if( from == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_id' info", tag, tag );
 			goto error;
@@ -869,7 +863,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 			client = (char *)Perm_check.auth_client_id;
 		}
 		if( client == 0 
-			&& !(client = Find_str_value(info,"default_client_name",Value_sep)) ){
+			&& !(client = Find_str_value(info,"default_client_name",Value_sep))
+			&& safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: security '%s' missing authenticated client", tag );
 			goto error;
@@ -877,7 +872,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		Set_str_value(info,CLIENT,client);
 		destination = Find_str_value(info,FORWARD_ID,Value_sep);
 		if(!destination)destination = Find_str_value(info,"forward_principal",Value_sep);
-		if( destination == 0 ){
+		if( destination == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_forward_id' info", tag, tag );
 			goto error;
@@ -891,7 +887,8 @@ struct security *Fix_send_auth( char *name, struct line_list *info,
 		Set_str_value(info,CLIENT,client);
 		destination = Find_str_value(info,ID,Value_sep);
 		if(!destination)destination = Find_str_value(info,"server_principal",Value_sep);
-		if( destination == 0 ){
+		if( destination == 0 && safestrcmp(tag, "kerberos")
+		    && safestrcmp(tag, "none") ){
 			plp_snprintf(error, errlen,
 			"Send_auth_transfer: '%s' security missing '%s_id' info", tag, tag );
 			goto error;
@@ -952,6 +949,7 @@ void Put_in_auth( int tempfd, const char *key, char *value )
 #endif
 	{ "pgp",       "pgp",      0,           Pgp_send },
 	{ "user",      "user",     0,           User_send },
+	{ "none",      "none",     0,           0 },
 #if defined(USER_SEND)
  USER_SEND
 #endif
