@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/standard_ports.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.7 1989-11-15 22:46:23 marc Exp $";
+static char rcsid_standard_ports_c[] = "$Id: standard_ports.c,v 1.8 1989-11-29 12:29:21 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -231,7 +231,9 @@ void init_standard_ports(pargc, argv)
         if (p->port_setup_status == DISABLED)
           continue;
 
-        if (p->port_init && (*(p->port_init))(p->port_name, pargc, argv)) {
+        if (p->port_init && (*(p->port_init))(p->port_name,
+					      *first_working_port,
+					      pargc, argv)) {
             p->port_setup_status = DISABLED;
             continue;
         }

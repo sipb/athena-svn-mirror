@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.6 1989-11-29 12:06:18 jtkohl Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.7 1989-11-29 12:29:17 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -301,6 +301,8 @@ int open_display_and_load_resources(pargc, argv)
 int X_driver_ioerror(display)
 Display *display;
 {
+    extern void finalize_zephyr();
+
     ERROR2("X IO error on display '%s'--exiting\n", display->display_name);
     finalize_zephyr();
     exit(1);
@@ -314,8 +316,9 @@ Display *display;
 extern void x_get_input();
 
 /*ARGSUSED*/
-int X_driver_init(drivername, pargc, argv)
+int X_driver_init(drivername, notfirst, pargc, argv)
      char *drivername;
+     char notfirst;
      int *pargc;
      char **argv;
 {
