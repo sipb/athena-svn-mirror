@@ -1,6 +1,6 @@
 /* smail.c - MH interface to SendMail/SMTP */
 #ifndef	lint
-static char ident[] = "@(#)$Id: smail.c,v 1.2 1997-12-14 00:32:53 ghudson Exp $";
+static char ident[] = "@(#)$Id: smail.c,v 1.3 1997-12-21 07:53:30 ghudson Exp $";
 #endif
 
 /* LINTLIBRARY */
@@ -113,6 +113,7 @@ char   *r1bindex ();
 static int	rclient(), sm_ierror(), smtalk(), sm_wrecord(), sm_wstream();
 static int	sm_werror(), smhear(), sm_rrecord(), sm_rerror();
 
+#ifdef MPOP
 extern	char  **brkstring (), **copyip (), *getcpy ();
 #endif
 
