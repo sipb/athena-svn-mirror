@@ -232,6 +232,12 @@ MISCFONTS = .;$TEXMF/fonts/misc//
 % See ftp://ftp.tug.org/tex/fontname.tar.gz.
 TEXFONTMAPS = .;$TEXMF/fontname
 
+% support non"k"-xdvi:
+PKFONTS.XDvi    = .:$TEXMF/%s:$VARTEXFONTS/pk/{%m,modeless}//
+VFFONTS.XDvi    = .:$TEXMF/%s
+PSHEADERS.XDvi  = .:$TEXMF/%q{dvips,fonts/type1}//
+TEXPICTS.XDvi   = .:$TEXMF/%q{dvips,tex}//
+
 % BibTeX bibliographies and style files.
 BIBINPUTS = .;$TEXMF/bibtex/{bib,}//
 BSTINPUTS = .;$TEXMF/bibtex/{bst,}//

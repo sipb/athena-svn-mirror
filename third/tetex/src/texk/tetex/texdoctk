@@ -2,7 +2,7 @@
 # We started with a hack provided by Thomas Esser. This expression replaces
 # the unix specific line \type {#!/usr/local/bin/perl -w}.
 ###############################################################################
-# texdoctk v.0.5.2 beta 3 (Jan 31, 2003) - GUI for TeX documentation access
+# texdoctk v.0.5.2 beta 4 (Feb 20, 2003) - GUI for TeX documentation access
 # Copyright (C) 2000-2002  Thomas Ruedas
 # This program is provided under the GNU Public License; see the README file
 # for details about requirements, installation, configuration and the full
@@ -51,12 +51,13 @@ if ($IsWin32) {
   $CmdConsole = "command /c ";
 }
 
-my $myrc="${HomeEnv}/${TeXDocRcDefaults}"; # optional personal settings file
+my $myrc="${HomeEnv}/.texdocrc"; # optional personal settings file
 
 my ($line,@dummy);
 my @tmpfiles;
 # read system-wide defaults from texdocrc.defaults
 my $sysrc=`kpsewhich --progname=texdoctk --format=${qq}other text files${qq} ${TeXDocRcDefaults}`;
+my $database=`kpsewhich --progname=texdoctk --format=${qq}other text files${qq} texdoctk.dat`;
 chomp $sysrc;
 &readrc($sysrc,1);
 @dummy=split("/",$sysrc);
@@ -73,7 +74,6 @@ my (@packname,@topic,@doc,@keywords,@maxind,%stydoc);
 # read database file
 my $i=-1;
 my $j;
-my $database="$datadir/texdoctk.dat";
 open(DATABASE,"$database") || &fatalmsg("Couldn't open database $database.\n");
 while ($line = <DATABASE>) {
   LINETYPE: {

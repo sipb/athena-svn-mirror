@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/config.h>
 #include <kpathsea/c-fopen.h>
 #include <kpathsea/c-ctype.h>
+#include <kpathsea/c-pathch.h>
 #include <kpathsea/cnf.h>
 #include <kpathsea/db.h>
 #include <kpathsea/hash.h>
@@ -126,22 +127,7 @@ do_line P1C(string, line)
      -DALLOW_SEMICOLON_IN_FILENAMES.  (And there's no way to get :'s in
      your filenames, sorry.)  */
      
-/* gcc -ansi doesn't predefine `unix', since ANSI forbids it.  And AIX
-   generally doesn't predefine unix, who knows why.  HP-UX is, of course,
-   also different.  Apple's MacOsX is also unix-like.  */
-#ifndef unix
-#if defined (__unix__) || defined (_AIX) || defined (_HPUX_SOURCE)
-#define unix
-#elif defined (__APPLE__) && defined (__MACH__)
-#define unix
-#elif defined (__NetBSD__)
-#define unix
-#endif
-#endif
-
-/* DJGPP defines `unix' (for portability), but generates MSDOS programs.  */
-#ifndef __DJGPP__
-#if !defined (ALLOW_SEMICOLON_IN_FILENAMES) && defined (unix)
+#if IS_ENV_SEP(':') && !defined (ALLOW_SEMICOLON_IN_FILENAMES)
   {
     string loc;
     for (loc = value; *loc; loc++) {
@@ -149,7 +135,6 @@ do_line P1C(string, line)
         *loc = ':';
     }
   }
-#endif
 #endif
 
   /* We want TEXINPUTS.prog to override plain TEXINPUTS.  The simplest

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 1996-2002 Han The Thanh, <thanh@pdftex.org>
+Copyright 1996,1997,1998,1999,2000,2001,2002,2003 Han The Thanh, <thanh@pdftex.org>
 
 This file is part of pdfTeX.
 
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: pdftoepdf.cc,v 1.1.1.2 2003-02-25 22:15:39 amb Exp $
+$Id: pdftoepdf.cc,v 1.1.1.3 2003-03-03 17:31:46 amb Exp $
 */
 
 #include <stdlib.h>
@@ -44,6 +44,9 @@ $Id: pdftoepdf.cc,v 1.1.1.2 2003-02-25 22:15:39 amb Exp $
 #include "Error.h"
 
 #include "epdf.h"
+
+static const char perforce_id[] = 
+    "$Id: pdftoepdf.cc,v 1.1.1.3 2003-03-03 17:31:46 amb Exp $";
 
 /* we avoid reading all necessary kpathsea headers, but we need xstrdup */
 #ifdef __cplusplus
@@ -153,7 +156,8 @@ struct PdfDocument {
     PDFDoc *doc;
     XRef *xref;
     InObj *inObjList;
-    int occurences;
+    int occurences;     // number of references to the document; the doc can be
+                        // deleted when this is negative
     PdfDocument *next;
 };
 
@@ -473,31 +477,34 @@ static void copyOtherResources(Object *obj, char *key)
     copyObject(obj);
 }
 
-static char *convertNumToPDF(double n) {
-    /* converts double to string; very small and very large numbers are NOT
-     * converted to scientific notation.
-     * n must be a number or real confirming to the implementation limits of
-     * PDF as specified in appendix C.1 of the pdf ref.  
-     * These are:
-     * maximum value of ints is +2^32
-     * maximum value of reals is +2^15
-     * smalles values of reals is 1/(2^16)
-     */
-    static int precision = 6;
-    static int fact = (int)1E6;   /* must be 10^precision */
-    static double epsilon = 1E-6; /* must be 10^-precision */
+/* converts double to string; very small and very large numbers are NOT
+ * converted to scientific notation.
+ * n must be a number or real confirming to the implementation limits of PDF as
+ * specified in appendix C.1 of the pdf ref.  
+ * These are:
+ * maximum value of ints is +2^32
+ * maximum value of reals is +2^15
+ * smalles values of reals is 1/(2^16)
+ */
+static char *
+convertNumToPDF(double n) 
+{
+    static const int precision = 6;
+    static const int fact = (int) 1E6;	/* must be 10^precision */
+    static const double epsilon = 0.5E-6; /* 2epsilon must be 10^-precision */
     static char buf[64];
     // handle very small values: return 0
     if (fabs(n) < epsilon) {buf[0] = '0'; buf[1] = '\0';}
     else {
         char ints[64];
         int bindex = 0, sindex = 0;
-        int ival, fval, i; 
+        int ival, fval; 
         // handle the sign part if n is negative
         if (n < 0) {
             buf[bindex++] = '-';
             n = -n;    
         }
+        n += epsilon; // for rounding
         // handle the integer part, simply with sprintf
         ival = (int)floor(n);
         n -= ival;
@@ -508,7 +515,8 @@ static char *convertNumToPDF(double n) {
         if (fval) {
             // set a dot
             buf[bindex++] = '.';
-            sindex = bindex + precision - 1;
+            sindex = bindex + precision;
+            buf[sindex--] = '\0';
             // fill up trailing zeros with the string terminator NULL
             while (((fval % 10) == 0) && (sindex >= bindex)) {
                 buf[sindex--] = '\0';
@@ -660,9 +668,15 @@ static void writeEncodings()
     }
 }
 
-// Returns the page number.
-integer read_pdf_info(char *image_name, char *page_name, integer page_num,
-                      integer pdf_version, integer always_use_pdf_pagebox)
+/* Reads various information about the pdf and sets it up for later inclusion.
+ * This will fail if the pdf version of the pdf is higher than
+ * minor_pdf_version_wanted or page_name is given and can not be found.
+ * It makes no sense to give page_name _and_ page_num.
+ * Returns the page number.
+ */
+integer 
+read_pdf_info(char *image_name, char *page_name, integer page_num,
+              integer minor_pdf_version_wanted, integer always_use_pdf_pagebox)
 {
     PdfDocument *pdf_doc;
     Page *page;
@@ -694,7 +708,7 @@ integer read_pdf_info(char *image_name, char *page_name, integer page_num,
     // than 1.x will not be backwards compatible to pdf 1.x, pdfTeX will
     // then have to changed drastically anyway.
     pdf_version_found = pdf_doc->doc->getPDFVersion();
-    pdf_version_wanted = 1 + (pdf_version * 0.1);
+    pdf_version_wanted = 1 + (minor_pdf_version_wanted * 0.1);
     if (pdf_version_found > pdf_version_wanted) {
         pdftex_fail("pdf inclusion: found pdf version <%.1f>, but at most version <%.1f> allowed",
              pdf_version_found, pdf_version_wanted);
@@ -703,16 +717,16 @@ integer read_pdf_info(char *image_name, char *page_name, integer page_num,
     if (page_name) {
         // get page by name
         GString name(page_name);
-    LinkDest *link = pdf_doc->doc->findDest(&name);
-    if (link == 0 || !link->isOk())
-        pdftex_fail("pdf inclusion: invalid destination <%s>",
-            page_name);
-    Ref ref = link->getPageRef();
-    page_num =  pdf_doc->doc->getCatalog()->findPage(ref.num, ref.gen);
-    if (page_num == 0)
-        pdftex_fail("pdf inclusion: destination is not a page <%s>",
-            page_name);
-    delete link;
+        LinkDest *link = pdf_doc->doc->findDest(&name);
+        if (link == 0 || !link->isOk())
+            pdftex_fail("pdf inclusion: invalid destination <%s>",
+                page_name);
+        Ref ref = link->getPageRef();
+        page_num = pdf_doc->doc->getCatalog()->findPage(ref.num, ref.gen);
+        if (page_num == 0)
+            pdftex_fail("pdf inclusion: destination is not a page <%s>",
+                page_name);
+        delete link;
     } else {
         // get page by number
         if (page_num <= 0 || page_num > epdf_num_pages)
@@ -722,6 +736,9 @@ integer read_pdf_info(char *image_name, char *page_name, integer page_num,
     // get the required page
     page = pdf_doc->doc->getCatalog()->getPage(page_num);
 
+    // get the pagebox (media, crop...) to use.
+    // always_use_pdf_pagebox can set in the config file to override the
+    // setting through pdfximage.
     if (always_use_pdf_pagebox < 1) {
         switch (pdflastpdfboxspec) {
         case pdfpdfboxspeccrop:
@@ -786,7 +803,12 @@ integer read_pdf_info(char *image_name, char *page_name, integer page_num,
     return page_num;
 }
 
-void write_epdf(void)
+/* writes the current epf_doc.
+ * Here the included pdf is copied, so most errors that can happen during pdf
+ * inclusion will arise here.
+ */
+void 
+write_epdf(void)
 {
     Page *page;
     PdfObject contents, obj1, obj2;
@@ -826,6 +848,9 @@ void write_epdf(void)
         pdf_printf("%d 0 R \n", addOther(info.getRef()));
         }
   
+    // get the pagebox (media, crop...) to use.
+    // epdf_always_use_pdf_pagebox is a copy of always_use_pdf_pagebox which
+    // can set in the config file to override the setting through pdfximage.
     if (epdf_always_use_pdf_pagebox < 1) {
         switch (epdf_page_box) {
         case pdfpdfboxspeccrop:
@@ -1012,11 +1037,10 @@ void write_epdf(void)
     pdf_doc->xref = xref;
 }
 
-// Called when an image has been written and it's resources in
-// image_tab are freed.  We cannot deallocate the PdfDocument yet, as
-// future pages of the same document may be embedded. As an
-// optimization, we do delete it if it's a one-page document.
-void epdf_delete()
+// Called when an image has been written and it's resources in image_tab are
+// freed and it's not referenced anymore.
+void 
+epdf_delete()
 {
     PdfDocument *pdf_doc = (PdfDocument *) epdf_doc;
     xref = pdf_doc->xref;

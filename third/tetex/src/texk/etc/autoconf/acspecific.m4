@@ -2514,12 +2514,14 @@ if test "$ac_x_libraries" = NO; then
 
   test -z "$x_direct_test_library" && x_direct_test_library=Xt
   test -z "$x_direct_test_function" && x_direct_test_function=XtMalloc
+  test -z "$x_direct_test_arguments" && x_direct_test_arguments=1
 
   # See if we find them without any special options.
   # Don't add to $LIBS permanently.
   ac_save_LIBS="$LIBS"
   LIBS="-l$x_direct_test_library $LIBS"
-AC_TRY_LINK([#include <X11/Intrinsic.h>], [${x_direct_test_function}()],
+AC_TRY_LINK([#include <${x_direct_test_include}>],
+[${x_direct_test_function}(${x_direct_test_arguments})],
 [LIBS="$ac_save_LIBS"
 # We can link X programs with no special library path.
 ac_x_libraries=],

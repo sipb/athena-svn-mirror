@@ -6,7 +6,7 @@
 
   1) prerequisites: disk space, ANSI C and C++ compiler (with header
      files + libraries), make utility, lexical scanner, parser generator,
-     clean environment
+     clean environment; eventually: perl/Tk
   2) getting the files
   3) install the inputs-tree
   4) unpack the sources
@@ -21,7 +21,7 @@
 ============================================================================
   1) prerequisites: disk space, ANSI C and C++ compiler (with header files
      + libraries), make utility, lexical scanner, parser generator,
-     clean environment
+     clean environment; eventually: perl/Tk
 ============================================================================
 
 The disk space you need (approx.):
@@ -40,6 +40,8 @@ oxdvi, you need the include files and libraries for the X Windows System
 (X11) including the Xaw library. On AIX 4.3.2, make sure to install
 the packages:
   X11.samples.lib.Core + X11.samples.common
+For building texinfo, you need a curses library with header files, e.g.
+ncurses.
 
 Note for Solaris 7 with Sun compilers. The following patches are needed:
   106327-04 SunOS 5.7: Shared library patch for C++
@@ -52,6 +54,9 @@ however.
 Before building teTeX, make sure you have not inadvertently set any
 of the environment variables listed in part 7 below, unless you know
 exactly what you're doing.
+
+For using the texdoctk and ConTeXt's helper utilities, you need the perl
+interpreter with the Tk module.
 
 =============================================================================
   2) getting the files

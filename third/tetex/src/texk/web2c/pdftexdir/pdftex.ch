@@ -5,7 +5,7 @@
 % (WEB2C!) indicates parts that may need adjusting in tex.pch
 % (ETEX!) indicates parts that may need adjusting in pdfetex.ch[12]
 %
-% Copyright (c) 1996-2002 Han Th\^e\llap{\raise 0.5ex\hbox{\'{}}} Th\`anh, <thanh@pdftex.org>
+% Copyright (c) 1996-2003 Han Th\^e\llap{\raise 0.5ex\hbox{\'{}}} Th\`anh, <thanh@pdftex.org>
 %
 % This file is part of pdfTeX.
 %
@@ -23,7 +23,7 @@
 % along with pdfTeX; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 %
-% $Id: pdftex.ch,v 1.1.1.2 2003-02-25 22:14:30 amb Exp $
+% $Id: pdftex.ch,v 1.1.1.3 2003-03-03 17:31:57 amb Exp $
 %
 % The TeX program is copyright (C) 1982 by D. E. Knuth.
 % TeX is a trademark of the American Mathematical Society.
@@ -48,8 +48,8 @@
 @d banner=='This is pdfTeX, Version 3.14159','-',pdftex_version_string
    {printed when \pdfTeX\ starts}
 @d pdftex_version==110 { \.{\\pdftexversion} }
-@d pdftex_revision=="a" { \.{\\pdftexrevision} }
-@d pdftex_version_string=='1.10a' {current pdf\TeX\ version}
+@d pdftex_revision=="b" { \.{\\pdftexrevision} }
+@d pdftex_version_string=='1.10b' {current pdf\TeX\ version}
 
 @z
 
@@ -1272,8 +1272,8 @@ begin
     str_in_str := false;
     if length(s) < i + length(r) then
         return;
-    j := str_start[s];
-    k := i + str_start[r];
+    j := i + str_start[s];
+    k := str_start[r];
     while (j < str_start[s + 1]) and (k < str_start[r + 1]) do begin
         if str_pool[j] <> str_pool[k] then
             return;
@@ -1593,9 +1593,16 @@ found:
 end;
 
 procedure pdf_begin_text; {begin a text section}
+var temp_cur_h, temp_cur_v: scaled;
 begin
     if not pdf_doing_text then begin
+        temp_cur_h := cur_h;
+        temp_cur_v := cur_v;
+        cur_h := 0;
+        cur_v := cur_page_height;
         pdf_set_origin;
+        cur_h := temp_cur_h;
+        cur_v := temp_cur_v;
         pdf_print_ln("BT");
         pdf_doing_text := true;
         pdf_f := null_font;
@@ -4208,7 +4215,7 @@ else begin
     @<Output name tree@>;
     @<Output article threads@>;
     @<Output the catalog object@>;
-    @<Output the info object@>;
+    pdf_print_info;
     @<Output the |obj_tab|@>;
     @<Output the trailer@>;
     pdf_flush;
@@ -4494,16 +4501,65 @@ if pdf_catalog_openaction <> 0 then
 pdf_str_entry_ln("PTEX.Fullbanner", pdftex_banner);
 pdf_end_dict
 
-@ @<Output the info object@>=
-pdf_new_dict(obj_type_others, 0);
-@<Print the Producer key@>;
-if pdf_info_toks <> null then begin
-    pdf_print_toks_ln(pdf_info_toks);
-    delete_toks(pdf_info_toks);
+@ If the same keys in a dictionary are given several times,
+then it is not defined which value is choosen by an application.
+Therefore the keys |/Producer| and |/Creator| are only set,
+if the token list |pdf_info_toks|, converted to a string does
+not contain these key strings.
+
+@p function substr_of_str(s, t: str_number):boolean;
+label continue,exit;
+var j, k, kk: pool_pointer; {running indices}
+begin
+    k:=str_start[t];
+    while (k < str_start[t+1] - length(s)) do begin
+        j:=str_start[s];
+        kk:=k;
+        while (j < str_start[s+1]) do begin
+            if str_pool[j] <> str_pool[kk] then
+                goto continue;
+            incr(j);
+            incr(kk);
+        end;
+        substr_of_str:=true;
+        return;
+        continue: incr(k);
+    end;
+    substr_of_str:=false;
 end;
-pdf_str_entry_ln("Creator", "TeX");
-@<Print the CreationDate key@>;
-pdf_end_dict
+
+procedure pdf_print_info; {print info object}
+var s: str_number;
+    creator_given, producer_given, creationdate_given: boolean;
+begin
+    pdf_new_dict(obj_type_others, 0);
+    creator_given:=false;
+    producer_given:=false;
+    creationdate_given:=false;
+    if pdf_info_toks <> null then begin
+        s:=tokens_to_string(pdf_info_toks);
+        creator_given:=substr_of_str("/Creator", s);
+        producer_given:=substr_of_str("/Producer", s);
+        creationdate_given:=substr_of_str("/CreationDate", s);
+    end;
+    if not producer_given then begin
+        @<Print the Producer key@>;
+    end;
+    if pdf_info_toks <> null then begin
+        if length(s) > 0 then begin
+            pdf_print(s);
+            pdf_print_nl;
+        end;
+        flush_str(s);
+        delete_toks(pdf_info_toks);
+    end;
+    if not creator_given then
+        pdf_str_entry_ln("Creator", "TeX");
+    if not creationdate_given then begin
+        @<Print the CreationDate key@>;
+    end;
+    pdf_end_dict
+end;
 
 @ @<Print the Producer key@>=
 pdf_print("/Producer (pdfTeX-");
@@ -8271,17 +8327,21 @@ begin
     if pdf_lookup_list(pdf_ximage_list, pdf_ximage_objnum(p)) = null then
         pdf_append_list(pdf_ximage_objnum(p))(pdf_ximage_list);
     if not is_pdf_image(image) then begin
-        pdf_print_bp(pdf_width(p)); pdf_print(" 0 0 ");
-        pdf_print_bp(pdf_height(p) + pdf_depth(p)); pdf_out(" ");
+        pdf_print_real(ext_xn_over_d(pdf_width(p), 
+                       10000, one_bp), 4); {1000000,6 leads to overflows with large images}
+        pdf_print(" 0 0 ");
+        pdf_print_real(ext_xn_over_d(pdf_height(p) + pdf_depth(p), 
+                       10000, one_bp), 4); {1000000,6 leads to overflows with large images}
+        pdf_out(" ");
         pdf_print_bp(pdf_x(cur_h)); pdf_out(" ");
         pdf_print_bp(pdf_y(cur_v));
     end
     else begin
-        pdf_print_bp(ext_xn_over_d(pdf_width(p), 
-                                   one_bp, image_width(image)));
+        pdf_print_real(ext_xn_over_d(pdf_width(p),
+                       1000000, image_width(image)), 6);
         pdf_print(" 0 0 ");
-        pdf_print_bp(ext_xn_over_d(pdf_height(p) + pdf_depth(p), 
-                                   one_bp, image_height(image)));
+        pdf_print_real(ext_xn_over_d(pdf_height(p) + pdf_depth(p),
+                       1000000, image_height(image)), 6);
         pdf_out(" ");
         pdf_print_bp(pdf_x(cur_h) -
                      ext_xn_over_d(pdf_width(p), epdf_orig_x(image), 

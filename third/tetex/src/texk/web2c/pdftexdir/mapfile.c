@@ -17,14 +17,20 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: mapfile.c,v 1.1.1.2 2003-02-25 22:09:33 amb Exp $
+$Id: mapfile.c,v 1.1.1.3 2003-03-03 17:31:40 amb Exp $
 */
 
+#include <math.h>
 #include "ptexlib.h"
 #include <kpathsea/c-auto.h>
 #include <kpathsea/c-memstr.h>
 
 #define FM_BUF_SIZE     1024
+#define FM_MAX_INC       256
+#define FMHT_SIZE_INC    683
+#define FMHT_MAX_INC    1024
+/* FMHT_SIZE_INC/FMHT_MAX_INC is maximal fill of hash table */
+#define FMHT_THETA 0.61803398875  /* (sqrt(5) - 1) / 2 */
 
 static FILE *fm_file;
 
@@ -69,9 +75,183 @@ static char *basefont_names[14] = {
         goto done;                                         \
 } while (0)
 
+/*
+  Ordered hashing with linear probing
+
+  The map file "pdftex.map" of TeX Live 7 has about 3000 entries.
+  Function fm_read_info uses most of the time for comparing
+  the current tfm file name with the old entries.
+  Complexity: N(N-1)/2 = O(N^2)
+  For better performance a data structure is needed with
+  the following properties:
+  * Efficient insertion.
+  * Fast check for entries that are not stored. If an entry
+    is already available, then pdfTeX will generate a warning,
+    therefore this is not the normal case.
+  Hashtables provide nearly O(1) for insertion and lookup.
+  But unfortunately the number of entries is not known
+  at start. The reorganization is implemented here by
+  reinsertion of all old entries. Therefore the complexity
+  remains O(N^2), but in practice the performance is much
+  better because of the factor of the square term:
+    N + N*N/chunk_size
+
+  Constants and variables:
+
+  fmht_tab: Array that contains pointers to the tfm file
+    names.
+  FMHT_MAX_INC: chunk size by which the hash table size
+    is increased.
+  FMHT_SIZE_INC: size of a chunk that may be filled by
+    entries.
+  FMHT_SIZE_INC = 256 means FMHT_MAX_INC = 386 that
+    the maximal fill of the hash table is 2/3.
+  fmht_max: current maximal size of the hash table
+  fmht_size: maximal allowed number of entries in the
+    hash table
+  fmht_curr_size: number of current entries in the hash table
+
+  Functions:
+
+  int fmht_get_hash_pos(char *str):
+    Parameter str: tfm font file name
+    Return value:  position in hash table
+    Description:
+      The font file name string is divided into four
+      byte parts that are combined by xor. Then the
+      hashing function uses the multiplicative method
+      for calculating the key for the hash table.
+
+   void fmht_entry_room():
+     Description:
+       The hashtable is increased. The old entries are
+       inserted in the larger new hashtable.
+
+   boolean fmht_check_and_insert(char *str):
+     Parameter str: tfm font file name
+     Return value:  true if tfm file is inserted,
+                    false if the name is already in the hashtable
+     Description:
+       The hash position is calculated and the entry
+       inserted, if this position is free.
+       Otherwise linear probing with ordering is used:
+       * Linear probing is easy to implement and it ensures,
+         that a free place will be found.
+       * Ordering improves the performance for
+         unsuccessful lookups. If an entry is found
+         that is greater, then the search can be aborted.
+         That means for inserting, that smaller entries
+         drive out larger ones.
+
+   void fmht_new_place(int pos):
+     Parameter pos: entry in hashtable that have to move away
+     Description:
+       The current entry in the hashtable is moved
+       to a free place.
+*/
+
+static int fmht_max = 0;
+static int fmht_size = 0;
+static int fmht_curr_size = 0;
+static char **fmht_tab = 0;
+
+static int fmht_get_hash_pos(char *str) {
+    double a;
+    int hash_code_upper = 0;
+    int hash_code_lower = 0;
+    int i;
+    for (i=0; *str; i++, str++) {
+        hash_code_upper ^= (*str << 8) + *++str;
+        if (!*str || !*++str) {
+            break;
+        }
+        hash_code_lower ^= (*str << 8) + *++str;
+        if (!*str) {
+            break;
+        }
+    }
+    a = ((hash_code_upper << 16) ^ hash_code_lower) * FMHT_THETA;
+    return fmht_max * (a - floor(a));
+}
+
+static void fmht_new_place(int pos) {
+    char *str = fmht_tab[pos];
+    int cmp;
+    do {
+        pos++;
+        pos %= fmht_max;
+        if (fmht_tab[pos] == 0) {
+            fmht_tab[pos] = str;
+            return;
+        }
+        cmp = strcmp(fmht_tab[pos], str);
+        if (cmp > 0) {
+            fmht_new_place(pos);
+            fmht_tab[pos] = str;
+            return;
+        }
+        if (cmp == 0) {
+            return;
+        }
+    }
+    while (1);
+}
+
+static boolean fmht_check_and_insert(char *str) {
+    int pos = fmht_get_hash_pos(str);
+    int cmp;
+    do {
+        if (fmht_tab[pos] == 0) {
+            fmht_tab[pos] = str;
+            return true;
+        }
+        cmp = strcmp(fmht_tab[pos], str);
+        if (cmp > 0) {
+            fmht_new_place(pos);
+            fmht_tab[pos] = str;
+            return true;
+        }
+        if (cmp == 0) {
+            return false;
+        }
+        pos++;
+        pos %= fmht_max;
+    }
+    while (1);
+}
+
+static void fmht_entry_room() {
+    int i;
+    if (fmht_tab == 0) {
+        fmht_max = FMHT_MAX_INC;
+        fmht_size = FMHT_SIZE_INC;
+        fmht_tab = xtalloc(fmht_max, char*);
+        for (i=0; i<fmht_max; i++) {
+            fmht_tab[i] = 0;
+        }
+    }
+    else {
+        char **fmht_tab_old = fmht_tab;
+        int fmht_max_old = fmht_max;
+
+        fmht_max += FMHT_MAX_INC;
+        fmht_size += FMHT_SIZE_INC;
+        fmht_tab = xtalloc(fmht_max, char*);
+        for (i=0; i<fmht_max; i++) {
+            fmht_tab[i] = 0;
+        }
+        for (i=0; i<fmht_max_old; i++) {
+            if (fmht_tab_old[i]) {
+                fmht_check_and_insert(fmht_tab_old[i]);
+            }
+        }
+        xfree(fmht_tab_old);
+    }
+}
+
 static void fm_new_entry(void)
 {
-    entry_room(fm, 1, 25);
+    entry_room(fm, 1, FM_MAX_INC);
     fm_ptr->tfm_name        = 0;
     fm_ptr->ps_name         = 0;
     fm_ptr->flags           = 0;
@@ -98,6 +278,7 @@ void fm_read_info(void)
     char fm_line[FM_BUF_SIZE], buf[FM_BUF_SIZE];
     fm_entry *e;
     char *p, *q, *r, *s, *n = mapfiles;
+    fmht_entry_room();
     for (;;) {
         if (fm_file == 0) {
             if (*n == 0) {
@@ -105,6 +286,7 @@ void fm_read_info(void)
                 cur_file_name = 0;
                 if (fm_tab == 0)
                      fm_new_entry();
+                xfree(fmht_tab);
                 return;
             }
             s = strchr(n, '\n');
@@ -139,12 +321,18 @@ void fm_read_info(void)
         if (strcmp(buf, nontfm) == 0)
             fm_ptr->tfm_name = nontfm;
         else {
-            for (e = fm_tab; e < fm_ptr; e++)
-                if (e->tfm_name != nontfm && strcmp(e->tfm_name, buf) == 0) {
+            if (fmht_curr_size >= fmht_size) {
+                /* increase hashtable if maximal fill is reached */
+                fmht_entry_room();
+            }
+            fm_ptr->tfm_name = xstrdup(buf);
+            if (fmht_check_and_insert(fm_ptr->tfm_name) == false) {
                     pdftex_warn("entry for `%s' already exists, duplicates ignored", buf);
                     goto bad_line;
                 }
-            set_field(tfm_name);
+            fmht_curr_size++;
+            if (*r == 10)
+                goto done;
         }
         p = r;
         read_field(r, q, buf);

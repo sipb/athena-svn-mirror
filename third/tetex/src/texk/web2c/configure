@@ -3122,7 +3122,7 @@ echo "configure:3120: checking for statically linking C++ runtime library" >&5
   old_ac_ext=$ac_ext
   old_ac_link=$ac_link
 
-  flags='-nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lgcc -lc'
+  flags='-nodefaultlibs -Wl,-Bstatic -lstdc++ -Wl,-Bdynamic -lm -lgcc -lc -lgcc'
   ac_ext=C
   ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS $flags 1>&5'
   cat > conftest.$ac_ext << EOF
@@ -3353,7 +3353,7 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 #include <X11/Intrinsic.h>
 int main() {
-${x_direct_test_function}()
+${x_direct_test_function}(1)
 ; return 0; }
 EOF
 if { (eval echo configure:3360: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then

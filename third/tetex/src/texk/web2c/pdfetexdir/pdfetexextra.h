@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: pdfetexextra.h,v 1.1.1.2 2003-02-25 22:14:29 amb Exp $
+$Id: pdfetexextra.h,v 1.1.1.3 2003-03-03 17:32:03 amb Exp $
 */
 
 /* pdfetexextra.h: banner etc. for pdfeTeX.
@@ -26,7 +26,7 @@ $Id: pdfetexextra.h,v 1.1.1.2 2003-02-25 22:14:29 amb Exp $
    (generated from ../lib/texmfmp.c).
 */
 
-#define BANNER "This is pdfeTeX, Version 3.14159-1.10a-2.1"
+#define BANNER "This is pdfeTeX, Version 3.14159-1.10b-2.1"
 #define COPYRIGHT_HOLDER "The NTS Team (eTeX)/Han The Thanh (pdfTeX)"
 #define AUTHOR NULL
 #define PROGRAM_HELP PDFETEXHELP

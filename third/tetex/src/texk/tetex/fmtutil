@@ -20,6 +20,7 @@
 
 ###############################################################################
 # program history:
+#   Wed Feb 19 21:14:52 CET 2003   add eomega support
 #   Sat Feb 15 22:01:35 CET 2003   let mf-nowin work without mf
 #   Wed Dec 25 09:47:44 CET 2002   bugfix for localized pool files
 #   Fri Oct 25 02:29:06 CEST 2002: now more careful about find_hyphenfile()
@@ -273,7 +274,7 @@ main()
       mktexfmtMode=true
       fullfmt=$1; shift
       case $fullfmt in
-        *.oft|*.fmt|*.efmt|*.mem|*.base)
+        *.eoft|*.oft|*.fmt|*.efmt|*.mem|*.base)
            set x --byfmt `echo $fullfmt | sed 's@\.[a-z]*$@@'` ${1+"$@"}; shift
            ;;
         *) abort "unknown format type: $fullfmt"
@@ -411,7 +412,7 @@ main()
     rm -f "$destdir/$i"
     mv "$i" "$destdir/$i"
   done
-  for i in *.oft *.fmt *.efmt *.mem *.base; do
+  for i in *.eoft *.oft *.fmt *.efmt *.mem *.base; do
     test -f "$i" || continue
     rm -f "$destdir/$i"
     if mv "$i" "$destdir/$i"; then
@@ -494,6 +495,7 @@ parse_line()
   case "$engine" in
     *etex)  fmtfile="$format.efmt"; kpsefmt=tex;;
     omega)  fmtfile="$format.oft";  kpsefmt=tex;;
+    eomega) fmtfile="$format.eoft"; kpsefmt=tex;;
     mpost)  fmtfile="$format.mem";  kpsefmt=mpost;;
     mf|mfw|mf-nowin) fmtfile="$format.base"; kpsefmt=mf;;
     *)      fmtfile="$format.fmt";  kpsefmt=tex;;

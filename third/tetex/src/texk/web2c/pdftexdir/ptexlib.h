@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: ptexlib.h,v 1.1.1.1 2003-02-25 22:16:38 amb Exp $
+$Id: ptexlib.h,v 1.1.1.2 2003-03-03 17:31:19 amb Exp $
 */
 
 #ifndef PDFTEXLIB

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with pdfTeX; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: ttf2afm.c,v 1.1.1.2 2003-02-25 22:09:44 amb Exp $
+$Id: ttf2afm.c,v 1.1.1.3 2003-03-03 17:32:11 amb Exp $
 */
 
 /*
@@ -161,6 +161,7 @@ typedef struct {
 
 char *FontName = 0;
 char *FullName = 0;
+char *FamilyName = 0;
 char *Notice = 0;
 TTF_LONG ItalicAngle = 0;
 TTF_LONG IsFixedPitch = 0;
@@ -548,7 +549,7 @@ void read_font()
         k = get_ushort();
         l = get_ushort();
         if ((platform_id == 1 && encoding_id == 0) &&
-            (k == 0 || k == 4 || k == 6)) {
+            (k == 0 || k == 1 || k == 4 || k == 6)) {
             seek_off("name", j + get_ushort());
             for (p = buf; l-- > 0; p++)
                 *p = get_char();
@@ -556,10 +557,11 @@ void read_font()
             p = xstrdup(buf);
             switch (k) {
             case 0:  Notice = p; break;
+            case 1:  FamilyName = p; break;
             case 4:  FullName = p; break;
             case 6:  FontName = p; break;
             }
-            if (Notice != 0 && FullName != 0 && FontName != 0)
+            if (Notice != 0 && FamilyName != 0 && FullName != 0 && FontName != 0)
                 break;
         }
         i += 6*TTF_USHORT_SIZE;
@@ -647,6 +649,7 @@ void print_afm(char *date, char *fontname)
     fputs("\nStartFontMetrics 2.0\n", outfile);
     print_str(FontName);
     print_str(FullName);
+    print_str(FamilyName);
     print_str(Notice);
     fprintf(outfile, "ItalicAngle %i", (int)(ItalicAngle/0x10000));
     if (ItalicAngle%0x10000 > 0)
