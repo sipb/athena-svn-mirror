@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.31 1991-09-10 13:41:21 lwvanels Exp $
+ *	$Id: olc.c,v 1.32 1991-10-30 16:18:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.31 1991-09-10 13:41:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.32 1991-10-30 16:18:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -224,6 +224,15 @@ main(argc, argv)
 	  (void) setenv ("OLCD_PORT", argv[1], 1);
 #endif
 	  ++argv, --argc;
+      }
+      else if (!strcmp (argv[0], "-inst")) {
+#ifdef PUTENV
+	sprintf(buf,"OLCD_INST=%s",argv[1]);
+	putenv(buf);
+#else
+	(void) setenv("OLCD_INST", argv[1], 1);
+#endif
+	++argv, --argc;
       }
       else {
 	  fprintf (stderr, "%s: unknown control argument %s\n",
