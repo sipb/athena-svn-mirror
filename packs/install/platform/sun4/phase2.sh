@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.4 1994-01-07 14:38:22 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.5 1994-01-25 11:25:15 root Exp $
 ### $Locker:  $
 
 
@@ -31,20 +31,28 @@ rvardrive=/dev/rdsk/c0t3d0s6
 
 
 echo "formatting  "
-if [ ${MACH}X = 4cX ]
-then
-        echo "formatting for 4c "
-        cat /util/format.input | format >/dev/null 2>&1
-else
-        cat /util/format.inq | format | grep SUN0535
-        if [ $? -ne 0 ] ; then
-                echo "formatting SUN0424"
-                cat /util/format.input.SUN0424 | /usr/sbin/format >/dev/null 2>&1
-        else
-                echo "formatting SUN0535"
-                cat /util/format.input.SUN0535 | /usr/sbin/format >/dev/null 2>&1
-        fi
-fi
+DISK=`/sbin/machtype -r`
+export DISK
+echo $DISK
+case $DISK in
+SUN0207)
+        echo "formatting SUN0270"
+        cat /util/format.input.SUN0270 | format >/dev/null 2>&1
+	;;
+SUN0424)
+         echo "formatting SUN0424"
+         cat /util/format.input.SUN0424 | /usr/sbin/format >/dev/null 2>&1
+	;;
+SUN0535)
+         echo "formatting SUN0535"
+         cat /util/format.input.SUN0535 | /usr/sbin/format >/dev/null 2>&1
+	 ;;
+*)
+         echo "can't format the disks - type unknown"
+         echo "Call an expert !"
+         exit 1
+         esac
+
 
 echo "Making the filesystems..."
 echo ""
