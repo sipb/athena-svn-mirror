@@ -1,11 +1,20 @@
 /*
- * $Id: Imakefile,v 1.9 1996-03-26 21:33:33 ghudson Exp $
+ * $Id: Imakefile,v 1.10 1997-04-17 20:34:49 ghudson Exp $
  */
 
 #define ISUBDIRS doc
 
 OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
 LIBS= -ll $(OSLIBS)
+
+/* This is really gross.  Solaris 2.5.1 bumps the version number on
+ * libresolv, so anything built with -lresolv doesn't work during the
+ * update.  We put -lresolv in LDLIBS in the Athena imake templates so
+ * that programs using Hesiod can be built.  Take it out for track, so
+ * that we can run track during the update. */
+#ifdef SOLARIS
+LDLIBS=-lsocket -lnsl -lelf -ldl
+#endif
 
 #ifdef _AUX_SOURCE
 OSLIBS= -lc -lPW
