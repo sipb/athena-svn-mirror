@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Remove the local shells added in our postinstall script.
+extrashells="/afs/sipb/project/tcsh/tcsh \
+             /afs/sipb/project/tcsh/t \
+             /afs/sipb/project/tcsh/betatcsh \
+             /afs/sipb/project/tcsh/b \
+             /afs/athena/project/gnu/bin/bash \
+             /afs/sipb/project/bash/bash"
+
+if [ -s $PKG_INSTALL_ROOT/etc/shells ]; then
+  for s in $extrashells; do
+    grep -v "^$s\$" < $PKG_INSTALL_ROOT/etc/shells \
+      > $PKG_INSTALL_ROOT/etc/shells.$PKGINST.rm
+     mv $PKG_INSTALL_ROOT/etc/shells.$PKGINST.rm $PKG_INSTALL_ROOT/etc/shells
+  done
+fi
+
+exit 0
