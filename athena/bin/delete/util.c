@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v $
- * $Author: miki $
+ * $Author: cfields $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,17 +11,12 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.28 1994-03-25 16:21:47 miki Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.29 1995-07-31 23:26:54 cfields Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
-#ifdef SYSV && !defined(hpux) /* SYSV doesn't define uid_t */
-#ifndef SOLARIS
-typedef unsigned short uid_t;
-#endif
-#endif
 #ifdef POSIX
 #include <dirent.h>
 #else
@@ -255,11 +250,7 @@ timed_out(file_ent, current_time, min_days)
 filerec *file_ent;
 time_t current_time, min_days;
 {
-#ifdef SOLARIS
-     if ((current_time - file_ent->specs.st_time) / 86400 >= min_days)
-#else
-     if ((current_time - file_ent->specs.st_ctime) / 86400 >= min_days)
-#endif
+     if ((current_time - file_ent->specs.st_chtime) / 86400 >= min_days)
 	  return(1);
      else
 	  return(0);
