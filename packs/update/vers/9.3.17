@@ -1,6 +1,34 @@
 #!/bin/sh
 
+# Remove the old Java packages.
+remove_pkg() {
+  pkg=$1
+  pkginfo -q $pkg && pkgrm -n -a $LIBDIR/noask $pkg
+}
+remove_pkg SUNWj3dvx
+remove_pkg SUNWj3dmx
+remove_pkg SUNWj3rtx
+remove_pkg SUNWj3jmp
+remove_pkg SUNWj3man
+remove_pkg SUNWj3dmo
+remove_pkg SUNWj3dev
+remove_pkg SUNWj3cfg
+remove_pkg SUNWj3rt
+
 echo "SUNWeuluf"					>> $PACKAGES
+echo "SUNWj3rt"						>> $PACKAGES
+echo "SUNWj3cfg"					>> $PACKAGES
+echo "SUNWj3dev"					>> $PACKAGES
+echo "SUNWj3dmo"					>> $PACKAGES
+echo "SUNWj3man"					>> $PACKAGES
+echo "SUNWj3jmp"					>> $PACKAGES
+echo "SUNWj3rtx"					>> $PACKAGES
+echo "SUNWj3dmx"					>> $PACKAGES
+echo "SUNWj3dvx"					>> $PACKAGES
+
+echo "113886-26"					>> $PATCHES
+echo "113887-26"					>> $PATCHES
+echo "112785-44"					>> $PATCHES
 echo "117171-12"					>> $PATCHES
 
 echo "OSCHANGES=true"					>> $CONFVARS
