@@ -293,6 +293,7 @@ krb5_error_code ktutil_write_srvtab(context, list, name)
     krb5_kt_list lp, lp1, prev, pruned = NULL;
     krb5_error_code retval = 0;
     FILE *fp;
+    int fd;
     char sname[SNAME_SZ];
     char sinst[INST_SZ];
     char srealm[REALM_SZ];
@@ -334,8 +335,14 @@ krb5_error_code ktutil_write_srvtab(context, list, name)
 	    /* Check if lp->entry is newer kvno; if so, update */
 	    lp1->entry = lp->entry;
     }
-    fp = fopen(name, "w");
+    fd = creat(name, S_IRUSR | S_IWUSR);
+    if (fd == -1) {
+	retval = EIO;
+	goto free_pruned;
+    }
+    fp = fdopen(fd, "w");
     if (!fp) {
+	close(fd);
 	retval = EIO;
 	goto free_pruned;
     }
