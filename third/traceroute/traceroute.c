@@ -24,7 +24,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1988, 1989, 1991, 1994, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.4 1999-12-27 17:52:37 danw Exp $ (LBL)";
+    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.5 2000-05-08 17:40:03 ghudson Exp $ (LBL)";
 #endif
 
 /*
@@ -442,7 +442,7 @@ main(int argc, char **argv)
 	}
 
 	if (!docksum)
-		Fprintf(stderr, "%s: Warning: ckecksums disabled\n", prog);
+		Fprintf(stderr, "%s: Warning: checksums disabled\n", prog);
 
 	if (lsrr > 0)
 		optlen = (lsrr + 1) * sizeof(gwlist[0]);
