@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2001-05-04 14:44:56 ghudson Exp $
+# $Id: Makefile,v 1.4 2001-06-27 02:33:54 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
@@ -19,6 +19,8 @@ install:
 	mkdir -p ${DESTDIR}/usr/vice/cache
 	install -c -m 444 libafs-2.4.2-2.mp.o ${DESTDIR}${VICE}/modload
 	install -c -m 444 libafs-2.4.2-2.o ${DESTDIR}${VICE}/modload
+	install -c -m 444 libafs-2.4.3-12.mp.o ${DESTDIR}${VICE}/modload
+	install -c -m 444 libafs-2.4.3-12.o ${DESTDIR}${VICE}/modload
 	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
