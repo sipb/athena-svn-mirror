@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.7 1991-01-22 16:14:42 probe Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.8 1991-06-02 23:36:30 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
@@ -139,7 +139,7 @@ detach(name)
     if (status == SUCCESS) {
 	if (verbose)
 		printf("%s: %s detached\n", progname, at.hesiodname);
-	if (at.fs->flags & FS_MNTPT)
+	if (at.fs->flags & AT_FS_MNTPT)
 		rm_mntpt(&at);
 	lock_attachtab();
 	get_attachtab();
@@ -154,7 +154,7 @@ detach(name)
 	 * Do Zephyr stuff as necessary
 	 */
 #ifdef ZEPHYR
-	if (use_zephyr && at.fs->flags & FS_REMOTE) {
+	if (use_zephyr && at.fs->flags & AT_FS_REMOTE) {
 		sprintf(instbfr, "%s:%s", at.host, at.hostdir);
 		zephyr_addsub(instbfr);
 		if (!host_occurs(at.host))

@@ -1,15 +1,15 @@
 #ifdef vax
 CC=cc
 #endif
+
 #ifdef _AUX_SOURCE
 XSRCS = emul_re.c
 XOBJS = emul_re.o
 XLIBS = -lPW -lc
-RPCLIB=-lrpcsvc
 #endif
 
-#if !defined(ultrix) && !define(_AUX_SOURCE)
-RPCLIB=-lrpclib
+#if !defined(ultrix)
+RPCLIB=-lrpcsvc
 #endif
 
 BINDIR=/bin/athena

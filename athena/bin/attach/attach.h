@@ -1,9 +1,9 @@
-/*	Created by:	Robert French
+/*
+ * $Id: attach.h,v 1.11 1991-06-02 23:36:27 probe Exp $
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.h,v $
- *	$Author: probe $
+ * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
- *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
+ * For redistribution rights, see "mit-copyright.h"
  */
 
 #include "config.h"
@@ -15,26 +15,31 @@
 #include <strings.h>
 
 #include <sys/types.h>
-#include <sys/param.h>			/* MAXPATHLEN */
+#include <sys/file.h>
+#include <sys/param.h>
+#include <sys/socket.h>
 #include <sys/time.h>
+
+#include <netinet/in.h>
+
 #ifdef NFS
 #include <rpc/rpc.h>
-#ifndef AIX
+#ifndef i386
 #include <nfs/nfs.h>
 #else
 #include <rpc/nfs.h>
 #endif
 #ifdef NeXT
-#include <nfs/nfs_mount.h>	/* Newer versions of NFS (?) */
+#include <nfs/nfs_mount.h>		/* Newer versions of NFS (?) */
 #endif /* NeXT */
-#ifdef _AUX_SOURCE
+#ifndef _AUX_SOURCE
+#include <rpcsvc/mount.h>
+#else
 #include <nfs/mount.h>
 #endif
-#else /* !NFS */
-#include <netinet/in.h>
 #endif /* NFS */
+
 #ifdef ultrix
-#include <sys/param.h>
 #include <ufs/ufs_mount.h>
 #ifdef NFS
 #include <nfs/nfs_gfs.h>
@@ -45,8 +50,9 @@
 #include <sys/fs_types.h>
 #undef KERNEL
 #endif /* ultrix */
+
 #include <sys/mount.h>
-#ifdef AIX
+#ifdef _AIX
 #include <sys/vmount.h>
 #define	M_RDONLY	MNT_READONLY
 #endif
@@ -54,6 +60,16 @@
 #if defined(_AUX_SOURCE) || defined(NeXT)
 #define	vfork	fork
 #endif
+
+/*
+ * If MOUNT_CMD or UMOUNT_CMD are defined, it will run the program
+ * specified rather than trying to use in-line code.
+ */
+#if defined(_IBMR2)
+#define MOUNT_CMD	"/etc/mount"
+#define UMOUNT_CMD	"/etc/umount"
+#endif
+
 
 #define MAXOWNERS 64
 
@@ -140,12 +156,22 @@ struct _fstypes {
 /*
  * Flags for _fstypes.flags
  */
-#define FS_MNTPT	1
-#define FS_REMOTE	2
-#define FS_PARENTMNTPT	4
-#define FS_MNTPT_CANON	8
+#define AT_FS_MNTPT		1
+#define AT_FS_REMOTE		2
+#define AT_FS_PARENTMNTPT	4
+#define AT_FS_MNTPT_CANON	8
 
 extern struct _fstypes fstypes[];
+
+/*
+ * Mount options
+ */
+#ifndef M_RDONLY
+#define M_RDONLY	0x01		/* mount fs read-only */
+#endif
+#ifndef M_NOSUID
+#define M_NOSUID	0x02		/* mount fs without setuid perms */
+#endif
 
 /*
  * Mount option table

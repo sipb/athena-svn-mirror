@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.10 1990-11-16 16:21:23 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.11 1991-06-02 23:36:40 probe Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -271,7 +271,7 @@ int make_mntpt(at)
     struct stat statbuf;
 
     strcpy(bfr, at->mntpt);
-    if (at->fs->flags & FS_PARENTMNTPT) {
+    if (at->fs->flags & AT_FS_PARENTMNTPT) {
 	    ptr = rindex(bfr, '/');
 	    if (ptr)
 		    *ptr = 0;
@@ -326,7 +326,7 @@ int rm_mntpt(at)
     strcpy(bfr, at->mntpt);
     ptr = bfr;
 
-    if (at->fs->flags & FS_PARENTMNTPT) {
+    if (at->fs->flags & AT_FS_PARENTMNTPT) {
 	    ptr = rindex(bfr, '/');
 	    if (ptr)
 		    *ptr = 0;

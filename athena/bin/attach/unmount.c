@@ -1,132 +1,167 @@
-/*	Created by:	Robert French
- *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v $
- *	$Author: epeisach $
- *
- *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
- */
-
 /*
- * NOTE!  A good deal of this file was stolen from BSD 4.3's umount.c.  It
- * is probably still protected under standard Berkeley copyright agreements.
+ * $Id: unmount.c,v 1.5 1991-06-02 23:36:38 probe Exp $
+ *
+ * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
+ *
+ * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.4 1991-03-04 12:58:13 epeisach Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.5 1991-06-02 23:36:38 probe Exp $";
 
 #include "attach.h"
-#include <sys/file.h>
-#include <sys/param.h>
-#ifndef ultrix
+
+
+#if !defined(ultrix) && !defined(_IBMR2)
 #include <mntent.h>
 #endif
+
 #if defined(_AIX) && (AIXV < 30)
 #include <rpc/nfsmount.h>
 #include <rpc/rpcmount.h>
-#else
-#include <rpcsvc/mount.h>
 #endif
-#ifdef AIX
+
+#ifdef _AIX
 #define unmount(x) umount(x)
 #endif
+
+#ifdef _IBMR2
+#include <sys/id.h>
+#endif
+
+
 /*
  * Unmount a filesystem.
  */
-
 unmount_42(errname, mntpt, dev)
-    char *errname;
-    char *mntpt;
-    char *dev;
+	char *errname;
+	char *mntpt;
+	char *dev;
 {
-    FILE *tmpmnt, *mnted;
-    char *tmpname;
-#ifndef ultrix
-    struct mntent *mnt;
+#ifdef UMOUNT_CMD
+
+	int status;
+
+#ifdef _IBMR2
+	if (setuidx(ID_REAL|ID_EFFECTIVE, 0))
+#else
+	if (setreuid(0,0))
 #endif
-    int tmpfd;
+	{
+		fprintf(stderr,"%s: unable to change the uid to 0\n", errname);
+		return(FAILURE);
+	}
+
+	switch (fork()) {
+	case -1:
+		fprintf(stderr, "%s: unable to fork\n", errname);
+		return(FAILURE);
+		/* NOTREACHED */
+	case 0:
+		execl(UMOUNT_CMD, UMOUNT_CMD, mntpt, (char *)0);
+		exit(1);
+		/* NOTREACHED */
+	default:
+		wait(&status);
+		break;
+	}
+
+	return(status ? FAILURE : SUCCESS);
+
+
+#else /* !UMOUNT_CMD */
+
+	
+	FILE *tmpmnt, *mnted;
+	char *tmpname;
+#ifndef ultrix
+	struct mntent *mnt;
+#endif
+	int tmpfd;
 
 #ifdef ultrix
-    int fsloc = 0, found = 0;
-    struct fs_data fsdata;
+	int fsloc = 0, found = 0;
+	struct fs_data fsdata;
 
-    while (getmountent(&fsloc, &fsdata, 1) > 0) {
-	if (!strcmp(fsdata.fd_path, mntpt)) {
-	    found = 1;
-	    break;
+	while (getmountent(&fsloc, &fsdata, 1) > 0) {
+		if (!strcmp(fsdata.fd_path, mntpt)) {
+			found = 1;
+			break;
+		}
 	}
-    }
-    if (!found) {
-	fprintf(stderr,
-		"%s: Directory %s appears to already be unmounted\n",
-		errname, mntpt);
-	return(SUCCESS);
-    }
-/* this hack to avoid ugly ifdef's */
-#define unmount(x) umount(fsdata.fd_dev)
-#endif /* ultrix */
-
-    if (unmount(dev ? dev : mntpt) < 0) {
-	if (errno == EINVAL || errno == ENOENT
-#ifdef _AIX
-	    || errno == ENOTBLK
-#endif
-	    ) {
+	if (!found) {
 		fprintf(stderr,
 			"%s: Directory %s appears to already be unmounted\n",
 			errname, mntpt);
-		/* Continue on, to flush mtab if necessary */
-	} else {
-		fprintf(stderr, "%s: Unable to unmount %s: %s\n", errname,
-			mntpt, sys_errlist[errno]);
-		return (FAILURE);
+		return(SUCCESS);
 	}
-    }
+	/* this hack to avoid ugly ifdef's */
+#define unmount(x) umount(fsdata.fd_dev)
+#endif						/* ultrix */
+
+	if (unmount(dev ? dev : mntpt) < 0) {
+		if (errno == EINVAL || errno == ENOENT
+#ifdef _AIX
+		    || errno == ENOTBLK
+#endif
+		    ) {
+			fprintf(stderr,
+				"%s: Directory %s appears to already be unmounted\n",
+				errname, mntpt);
+			/* Continue on, to flush mtab if necessary */
+		} else {
+			fprintf(stderr, "%s: Unable to unmount %s: %s\n", errname,
+				mntpt, sys_errlist[errno]);
+			return (FAILURE);
+		}
+	}
 
 #ifdef ultrix
 #undef unmount
-    return(SUCCESS);
-#else /* !ultrix */
+	return(SUCCESS);
+#else						/* !ultrix */
 
-    lock_mtab();
-    if (!(tmpname = malloc(strlen(mtab_fn)+7))) {
-	    fprintf(stderr, "Can't malloc temp filename for unmount!\n");
-	    exit(ERR_FATAL);
-    }
-    (void) strcpy(tmpname, mtab_fn);
-    (void) strcat(tmpname, "XXXXXX");
-    mktemp(tmpname);
-    if ((tmpfd = open(tmpname, O_RDWR|O_CREAT|O_TRUNC, 0644)) < 0) {
-	    fprintf(stderr, "Can't open temporary file for umount!\n");
-	    exit(ERR_FATAL);
-    }
-    close(tmpfd);
-    tmpmnt = setmntent(tmpname, "w");
-    if (!tmpmnt) {
-	    fprintf(stderr,
-		    "Can't open temporary file for writing in umount!\n");
-	    exit(ERR_FATAL);
-    }
-    mnted = setmntent(mtab_fn, "r");
-    if (!mnted) {
-	    fprintf(stderr, "Can't open %s for read:%s\n", mtab_fn,
-		    sys_errlist[errno]);
-	    exit(ERR_FATAL);
-    }
-    /* Delete filesystem from /etc/mtab */
-    while (mnt = getmntent(mnted))
-	if (strcmp(mnt->mnt_dir, mntpt))
-	    addmntent(tmpmnt, mnt);
+	lock_mtab();
+	if (!(tmpname = malloc(strlen(mtab_fn)+7))) {
+		fprintf(stderr, "Can't malloc temp filename for unmount!\n");
+		exit(ERR_FATAL);
+	}
+	(void) strcpy(tmpname, mtab_fn);
+	(void) strcat(tmpname, "XXXXXX");
+	mktemp(tmpname);
+	if ((tmpfd = open(tmpname, O_RDWR|O_CREAT|O_TRUNC, 0644)) < 0) {
+		fprintf(stderr, "Can't open temporary file for umount!\n");
+		exit(ERR_FATAL);
+	}
+	close(tmpfd);
+	tmpmnt = setmntent(tmpname, "w");
+	if (!tmpmnt) {
+		fprintf(stderr,
+			"Can't open temporary file for writing in umount!\n");
+		exit(ERR_FATAL);
+	}
+	mnted = setmntent(mtab_fn, "r");
+	if (!mnted) {
+		fprintf(stderr, "Can't open %s for read:%s\n", mtab_fn,
+			sys_errlist[errno]);
+		exit(ERR_FATAL);
+	}
+	/* Delete filesystem from /etc/mtab */
+	while (mnt = getmntent(mnted))
+		if (strcmp(mnt->mnt_dir, mntpt))
+			addmntent(tmpmnt, mnt);
 
-    endmntent(tmpmnt);
-    endmntent(mnted);
-    if (rename(tmpname, mtab_fn) < 0) {
-	    fprintf(stderr, "Unable to rename %s to %s: %s\n", tmpname,
-		    mtab_fn, sys_errlist[errno]);
-	    exit(ERR_FATAL);
-    }
-    unlock_mtab();
+	endmntent(tmpmnt);
+	endmntent(mnted);
+	if (rename(tmpname, mtab_fn) < 0) {
+		fprintf(stderr, "Unable to rename %s to %s: %s\n", tmpname,
+			mtab_fn, sys_errlist[errno]);
+		exit(ERR_FATAL);
+	}
+	unlock_mtab();
     
-    return (SUCCESS);
+	return (SUCCESS);
 #endif /* ultrix */
+#endif /* !UMOUNT_CMD */
 }
 
 #ifdef NFS

@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.8 1991-03-04 12:55:18 epeisach Exp $
+ *	$Author: probe $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.9 1991-06-02 23:36:29 probe Exp $
  */
 
 /*
@@ -22,18 +22,18 @@
  * some gratuitous name changes took place between the new and old
  * kerberos libraries.
  */
+
 #define NFS
 #define AFS
-#if !defined(_AUX_SOURCE)
+
+#if (defined(vax) && !defined(ultrix)) || defined(ibm032) || defined(i386)
 #define	RVD
+#endif
+
 #if !defined(_AIX)
-#define UFS
+#define	UFS
 #endif
-#endif
-/* hack, we don't have the necessary header files yet */
-#ifdef ultrix
-#undef RVD
-#endif
+
 #define ZEPHYR
 #define HESIOD
 #define KERBEROS
@@ -41,8 +41,7 @@
 /*
  * Other external filenames
  */
-
-#define ATTACHCONFFILE	"/etc/attach.conf"
+#define ATTACHCONFFILE	"/etc/athena/attach.conf"
 #define ATTACHTAB	"/usr/tmp/attachtab"
 #define FSCK_FULLNAME	"/etc/fsck"
 #define FSCK_SHORTNAME	"fsck"
@@ -51,6 +50,7 @@
 #define RVDGETM_FULLNAME "/etc/athena/rvdgetm"
 #define RVDGETM_SHORTNAME "rvdgetm"
 #define NOSUID_FILENAME	"/etc/nosuid"
+
 #if defined(_AIX) && defined(i386)
 #define MTAB		"/local/mtab"
 #else
@@ -75,17 +75,12 @@
  * This is the type of function required by signal.  Since it changes
  * from system to system, it is declared here.
  */
-#ifdef ultrix
+#if defined(POSIX) && !defined(vax)
 typedef void	sig_catch;
 #else
 typedef int	sig_catch;
-#endif
-
-/*
- * Here is a definition for malloc(), which may or may not be required
- * for various systems.
- */
 char *malloc();
+#endif
 
 
 /*
@@ -124,7 +119,7 @@ struct mntent {
 
 /* These are not defined or recognized by the system, but they are useful
    to allow common data structures with systems that do have these defines */
-#ifdef AIX
+#ifdef _AIX
 #define	MOUNT_UFS	1
 #define	MOUNT_NFS	2
 #endif

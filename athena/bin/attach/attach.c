@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.13 1991-01-22 16:14:16 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.14 1991-06-02 23:36:24 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -262,11 +262,11 @@ try_attach(name, hesline, errorout)
     }
 
     /*
-     * Note if a filesystem does nothave FS_MNTPT_CANON as a property,
+     * Note if a filesystem does nothave AT_FS_MNTPT_CANON as a property,
      * it must also somehow call check_mntpt, if it wants mountpoint
      * checking to happen at all.
      */
-    if (at.fs->flags & FS_MNTPT_CANON) {
+    if (at.fs->flags & AT_FS_MNTPT_CANON) {
 	    /* Perform path canonicalization */
 	    strcpy(at.mntpt, path_canon(at.mntpt));
 	    if (debug_flag)
@@ -305,7 +305,7 @@ try_attach(name, hesline, errorout)
 	    add_options(&mopt, "nosuid");
 	
     if (at.fs->attach) {
-	    if (at.fs->flags & FS_MNTPT) {
+	    if (at.fs->flags & AT_FS_MNTPT) {
 		    if (make_mntpt(&at) == FAILURE) {
 			    rm_mntpt(&at);
 			    return (FAILURE);
@@ -322,7 +322,7 @@ try_attach(name, hesline, errorout)
     
     if (status == SUCCESS) {
 	char	tmp[BUFSIZ];
-	if (at.fs->flags & FS_REMOTE)
+	if (at.fs->flags & AT_FS_REMOTE)
 		sprintf(tmp, "%s:%s", at.host, at.hostdir);
 	else
 		strcpy(tmp, at.hostdir);
@@ -347,7 +347,7 @@ try_attach(name, hesline, errorout)
 	 * Do Zephyr stuff as necessary
 	 */
 #ifdef ZEPHYR
-	if (use_zephyr && at.fs->flags & FS_REMOTE) {
+	if (use_zephyr && at.fs->flags & AT_FS_REMOTE) {
 		if(at.fs->type == TYPE_AFS) {
 			afs_zinit(at.hesiodname, at.hostdir);
 		} else {
@@ -359,7 +359,7 @@ try_attach(name, hesline, errorout)
 #endif
 	free_attachtab();
     } else
-	    if (at.fs->flags & FS_MNTPT)
+	    if (at.fs->flags & AT_FS_MNTPT)
 		    rm_mntpt(&at);
     return (status);
 }

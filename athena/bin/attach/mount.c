@@ -1,7 +1,7 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
@@ -13,22 +13,65 @@
  * (This may not be true anymore --- [tytso:19890720.2145EDT])
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.4 1991-03-04 12:56:12 epeisach Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.5 1991-06-02 23:36:34 probe Exp $";
 
 #include "attach.h"
-#include <sys/param.h>
+
+#ifdef MOUNT_CMD
+
+#ifdef _IBMR2
+#include <sys/id.h>
+#endif
+
+mountfs(at, fsname, mopt, errorout)
+	struct	_attachtab *at;
+	char	*fsname;
+	struct	mntopts *mopt;
+	int errorout;
+{
+	int status;
+
+#ifdef _IBMR2
+	if (setuidx(ID_REAL|ID_EFFECTIVE, 0))
+#else
+	if (setreuid(0,0))
+#endif
+	{
+		fprintf(stderr, "Unable to change the uid to 0\n");
+		return(FAILURE);
+	}
+
+	switch (fork()) {
+	case -1:
+		fprintf(stderr, "Unable to fork\n");
+		return(FAILURE);
+		/* NOTREACHED */
+	case 0:
+		execl(MOUNT_CMD, MOUNT_CMD,
+		      "-o", stropt(*mopt),
+		      fsname, at->mntpt,
+		      (char *)0);
+		exit(1);
+		/* NOTREACHED */
+	default:
+		wait(&status);
+		break;
+	}
+
+	return(status ? FAILURE : SUCCESS);
+}
+
+
+#else /* !MOUNT_CMD */
+
 #ifndef ultrix
 #include <mntent.h>
 #endif
-#ifdef AIX
-#include <sys/dstat.h>
-#endif
 #if defined(_AIX) && (AIXV < 30)
+#include <sys/dstat.h>
 #include <rpc/rpcmount.h>
 #include <rpc/nfsmount.h>
 struct ufs_args { char *fspec;};
-#else
-#include <rpcsvc/mount.h>
 #endif
 #ifdef _AUX_SOURCE
 #define	mount(type,dir,flags,data)	fsmount(type,dir,flags,data)
@@ -391,3 +434,5 @@ mounted(mntck)
 }
 
 #endif /* ultrix */
+
+#endif /* !MOUNT_CMD */

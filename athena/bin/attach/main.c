@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.20 1991-01-22 16:20:18 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.21 1991-06-02 23:36:32 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -63,20 +63,24 @@ int mul_attach(), mul_detach();
 struct _fstypes fstypes[] = {
     { "---", 0, -1, 0, (char *) 0, 0, null_detach, 0 },	/* The null type */
 #ifdef NFS
-    { "NFS", TYPE_NFS, MOUNT_NFS, FS_MNTPT | FS_REMOTE | FS_MNTPT_CANON, "rwnm",
-	      nfs_attach, nfs_detach, nfs_explicit },
+    { "NFS", TYPE_NFS, MOUNT_NFS,
+	  AT_FS_MNTPT | AT_FS_REMOTE | AT_FS_MNTPT_CANON,
+	  "rwnm", nfs_attach, nfs_detach, nfs_explicit },
 #endif
 #ifdef RVD
-    { "RVD", TYPE_RVD, MOUNT_UFS, FS_MNTPT | FS_REMOTE | FS_MNTPT_CANON, "rw",
-	      rvd_attach, rvd_detach, rvd_explicit },
+    { "RVD", TYPE_RVD, MOUNT_UFS,
+	  AT_FS_MNTPT | AT_FS_REMOTE | AT_FS_MNTPT_CANON,
+	  "rw", rvd_attach, rvd_detach, rvd_explicit },
 #endif
 #ifdef UFS
-    { "UFS", TYPE_UFS, MOUNT_UFS, FS_MNTPT | FS_MNTPT_CANON, "rw", 
-	      ufs_attach, ufs_detach, ufs_explicit },
+    { "UFS", TYPE_UFS, MOUNT_UFS,
+	  AT_FS_MNTPT | AT_FS_MNTPT_CANON,
+	  "rw", ufs_attach, ufs_detach, ufs_explicit },
 #endif
 #ifdef AFS
-    { "AFS", TYPE_AFS, -1, FS_MNTPT | FS_PARENTMNTPT, "nrw", afs_attach, 
-	      afs_detach, afs_explicit },
+    { "AFS", TYPE_AFS, -1,
+	  AT_FS_MNTPT | AT_FS_PARENTMNTPT,
+	  "nrw", afs_attach, afs_detach, afs_explicit },
 #endif
     { "ERR", TYPE_ERR, -1, 0, (char *) 0, err_attach, 0, 0 },
     { "MUL", TYPE_MUL, -1, 0, "-", mul_attach, mul_detach, 0 },
@@ -896,7 +900,7 @@ zinitcmd(argc, argv)
 			afs_zinit(p->hesiodname, p->hostdir);
 		else
 #endif
-		if (p->fs->flags & FS_REMOTE) {
+		if (p->fs->flags & AT_FS_REMOTE) {
 			sprintf(instbfr, "%s:%s", p->host, p->hostdir);
 			zephyr_addsub(instbfr);
 			zephyr_addsub(p->host);
