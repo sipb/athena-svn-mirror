@@ -12,7 +12,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "gf-pfb.h"
 
 #define noVERBOSE
