@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.5 1999-06-04 14:06:42 danw Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.5.2.1 1999-08-21 14:50:25 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -51,7 +51,13 @@ static int get_dirlock(locker_context context, locker_attachent *at,
 static void release_dirlock(locker_context context, locker_attachent *at);
 
 /* Canonicalize a path and optionally make sure that it doesn't pass
- * through any mountpoints or user-writable directories.
+ * through any mountpoints or user-writable directories.  *pathp must
+ * contain an allocated string, which may be freed and replaced with
+ * another allocated string containing the canonicalized path.  If
+ * buildfromp is not NULL, *buildfromp is set to an allocated string
+ * containing the first ancestor directory of the canonicalized path
+ * which doesn't exist, or to NULL if the canonicalized path already
+ * exists.
  */
 int locker__canonicalize_path(locker_context context, int check,
 			      char **pathp, char **buildfromp)
@@ -322,16 +328,9 @@ int locker__canonicalize_path(locker_context context, int check,
   if (p && !*(p + 1) && p > path)
     *p = '\0';
 
-  if (path != *pathp)
-    {
-      free(*pathp);
-      *pathp = path;
-    }
+  *pathp = path;
   if (buildfromp)
-    {
-      free(*buildfromp);
-      *buildfromp = buildfrom;
-    }
+    *buildfromp = buildfrom;
   else
     free(buildfrom);
 
