@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.8 2003-02-28 03:25:15 amb Exp $
+# $Id: Makefile.athena,v 1.9 2003-02-28 17:45:02 amb Exp $
 
 ATHBINDIR=/usr/athena/bin
 TEXMFDIR=/usr/athena/share/texmf
@@ -11,7 +11,7 @@ prepare:
 	rm -f src/config.cache
 	cd src && CONFIG_SITE=`pwd`/../config.site.athena \
 		./configure --without-odvipsk --without-oxdvik \
-		--disable-multiplatform
+		--disable-multiplatform --without-texinfo
 
 clean:
 	cd src && ${MAKE} clean
