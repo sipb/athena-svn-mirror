@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.26 1999-07-06 16:44:27 mwhitson Exp $
+# $Id: Makefile,v 1.27 2000-07-17 21:10:43 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
+ATHSHAREDIR=/usr/athena/share
 ATHMANDIR=/usr/athena/man
 CONFIG=/afs/athena.mit.edu/system/config
 
@@ -17,6 +18,7 @@ install:
 	mkdir -p ${DESTDIR}${ETCDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${ATHLIBDIR}
+	mkdir -p ${DESTDIR}${ATHSHAREDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}
 	install -c -m 0644 Dash.fallback ${DESTDIR}${ATHLIBDIR}
 	install -c -m 0644 athinfo.access ${DESTDIR}${ATHRETCDIR}
@@ -47,9 +49,9 @@ install:
 	rm -f ${DESTDIR}${ATHRETCDIR}/gdss_public_key
 	ln -s /afs/net.mit.edu/system/config/gdss_public_key \
 		${DESTDIR}${ATHRETCDIR}/gdss_public_key
-	rm -f ${DESTDIR}${ATHLIBDIR}/quickstations
+	rm -f ${DESTDIR}${ATHSHAREDIR}/quickstations
 	ln -s ${CONFIG}/quick/quickstations \
-		${DESTDIR}${ATHLIBDIR}/quickstations
+		${DESTDIR}${ATHSHAREDIR}/quickstations
 	rm -f ${DESTDIR}${ATHLIBDIR}/Dash.menus
 	. ../build/version; \
 		vers=$$major.$$minor; \
