@@ -1,7 +1,7 @@
 /* 
- * $Id: rk_krb.c,v 1.5 1993-04-30 18:04:26 miki Exp $
+ * $Id: rk_krb.c,v 1.6 1994-07-18 22:02:11 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
- * $Author: miki $
+ * $Author: cfields $
  *
  * This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.5 1993-04-30 18:04:26 miki Exp $";
+static char *rcsid = "$Id: rk_krb.c,v 1.6 1994-07-18 22:02:11 cfields Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -105,7 +105,7 @@ int rki_key_proc(user, instance, realm, arg, key)
     (void) tcsetattr(0, TCSAFLUSH, &ttyb);
 #endif
 
-    bzero(password, sizeof(password));
+    memset(password, 0, sizeof(password));
     if (read(0, password, sizeof(password)) == -1) {
 	perror("read");
 	ok = -1;
@@ -176,8 +176,8 @@ static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 		     (long) scip->length, key_s, key, 0);
 
     /* Get rid of all traces of key */
-    bzero((char *)key, sizeof(key));
-    bzero((char *)key_s, sizeof(key_s));
+    memset((char *)key, 0, sizeof(key));
+    memset((char *)key_s, 0, sizeof(key_s));
 
     return(0);
 }
@@ -225,7 +225,9 @@ int rki_get_tickets(version, host, r_krealm, info)
     rii.scip = &scip;
     rii.host = host;
     rii.username = info->username;
-
+    printf("the realm is %s\n", info-> realm);
+    printf("the instance is %s\n", info-> inst);
+    strcpy(info-> inst, "\0");
     if (status = krb_get_in_tkt(info->aname, info->inst, info->realm, 
 				"krbtgt", info->realm, 1,
 				rki_key_proc, rki_decrypt_tkt, (char *)&rii)) {
@@ -251,7 +253,11 @@ int rki_get_tickets(version, host, r_krealm, info)
     }
 
     /* Exctract the session key and make the schedule */
+#ifdef POSIX
+    memmove(key, cred.session,  sizeof(key));
+#else
     bcopy(cred.session, key, sizeof(key));
+#endif
     if (status = des_key_sched(key, sched)) {
 	sprintf(errbuf, "des_key_sched: %s", krb_err_txt[status]);
 	rkinit_errmsg(errbuf);
@@ -293,7 +299,7 @@ int rki_get_tickets(version, host, r_krealm, info)
 
 
 #ifdef POSIX
-static void (*old_sigfunc[NSIG])();
+static struct sigaction oact[NSIG];
 #else
 static int (*old_sigfunc[NSIG])();
 #endif POSIX
@@ -301,15 +307,34 @@ static int (*old_sigfunc[NSIG])();
 static void push_signals()
 {
     register i;
+#ifdef POSIX
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    act.sa_handler= (void (*)()) sig_restore;
+    for (i = 0; i < NSIG; i++) 
+        (void) sigaction (i, &act, &oact[i]);
+
+
+#else
     for (i = 0; i < NSIG; i++)
         old_sigfunc[i] = signal(i,sig_restore);
+#endif
 }
 
 static void pop_signals()
 {
     register i;
+#ifdef POSIX
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    for (i = 0; i < NSIG; i++)
+        (void) sigaction (i, &oact[i], NULL);
+#else
     for (i = 0; i < NSIG; i++)
         signal(i,old_sigfunc[i]);
+#endif
 }
 
 static void sig_restore(sig,code,scp)
