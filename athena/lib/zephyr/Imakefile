@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.1 1988-11-14 11:38:55 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.2 1989-01-20 09:18:16 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -34,6 +34,10 @@ clean::
 			$(MAKE) $(MFLAGS) clean ;	\
 			echo "### Done with" `pwd`);		\
 	done
+#else
+/* Need to make sure `all' is the first target */
+all::
+
 #endif /* LOCAL_LIBS */
 
 /**/# we need to remove these here; it's not appropriate to remove them
