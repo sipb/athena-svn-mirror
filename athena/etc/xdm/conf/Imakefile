@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.28 1997-04-01 21:45:50 ghudson Exp $
+# $Id: Imakefile,v 1.29 1997-05-22 02:47:13 danw Exp $
 
 SESSIONSCRIPT=Xsession
 KEYMAPS=/usr/athena/lib/X11/keymaps
@@ -20,8 +20,3 @@ SESSIONSCRIPT=Xsession.s/**/gi
 install_script($(SESSIONSCRIPT),,/etc/athena/login/Xsession)
 install_script(mitvma.x3270,,/usr/athena/lib/login/mitvma)
 install_script(machine,,/etc/athena/login/machine)
-
-install::
-	-for i in $(ETCSCRIPTS); do \
-		$(INSTALL) -m 0555 $$i $(DESTDIR)/etc/athena/login/$$i; \
-		done
