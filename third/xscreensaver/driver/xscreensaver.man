@@ -137,7 +137,7 @@ Default 10 minutes.
 .B lock\fP (class \fBBoolean\fP)
 Enable locking: before the screensaver will turn off, it will require you 
 to type the password of the logged-in user (really, the person who ran
-xss), or the root password.  (\fBNote:\fP this doesn't work if the
+xss).  (\fBNote:\fP this doesn't work if the
 screensaver is launched by
 .BR xdm (1)
 because it can't know the user-id of the logged-in user.  See 
