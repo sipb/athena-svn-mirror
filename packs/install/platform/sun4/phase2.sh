@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.33 1998-05-05 20:08:49 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.34 1998-11-17 19:24:50 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -153,6 +153,9 @@ DISK=`format < /dev/null | \
 export DISK
 echo $DISK
 
+# first make sure that the disk has an external label (set it just in case)
+cat /util/format.input.label | format ${drive} >/dev/null 2>&1
+
 case $CUSTOM in
 Y)
    echo "Partition the disk yourself? [n]"
@@ -209,6 +212,11 @@ Y)
     SUN4.2G)
        echo "formatting SUN4.2G"
        cat /util/format.input.SUN4.2G | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    ST34342A)
+       echo "formaatting ST34342A"
+       cat /util/format.input.ST34342A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     Seagate*)
