@@ -27,10 +27,8 @@ static char sccsid[] = "@(#)popen.c	5.3 (Berkeley) 11/30/88";
 #include <sys/types.h>
 #include <sys/signal.h>
 #include <stdio.h>
-#ifdef POSIX
-#include <strings.h>
+#include <string.h>
 #include <unistd.h>
-#endif
 /*
  * Special version of popen which avoids call to shell.  This insures noone
  * may create a pipe to a hidden program as a side effect of a list or dir
