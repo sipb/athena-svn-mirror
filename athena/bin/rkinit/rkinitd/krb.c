@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.5 1993-04-30 18:10:01 miki Exp $
+ * $Id: krb.c,v 1.6 1994-02-17 10:20:04 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: miki $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.5 1993-04-30 18:10:01 miki Exp $";
+static char *rcsid = "$Id: krb.c,v 1.6 1994-02-17 10:20:04 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -275,7 +275,11 @@ static int validate_user(aname, inst, realm, username, errmsg)
     strcpy(auth_dat.pinst, inst);
     strcpy(auth_dat.prealm, realm);
 
+#ifndef SOLARIS
     if (seteuid(pwnam->pw_uid) < 0) {
+#else
+    if (setuid(pwnam->pw_uid) < 0) {
+#endif
 	sprintf(errmsg, "Failure setting euid to %d: %s\n", pwnam->pw_uid, 
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
@@ -283,7 +287,11 @@ static int validate_user(aname, inst, realm, username, errmsg)
 	return(FAILURE);
     }
     kstatus = kuserok(&auth_dat, username);
+#ifndef SOLARIS
     if (seteuid(0) < 0) {
+#else
+     if (setuid(0) < 0) {
+#endif
 	sprintf(errmsg, "Failure setting euid to 0: %s\n", 
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
@@ -307,7 +315,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
      * of making the appropriate change. 
      */
 #ifdef SOLARIS
-    if (setreuid(pwnam->pw_uid) < 0) {
+    if (setuid(pwnam->pw_uid) < 0) {
 #else
     if (setruid(pwnam->pw_uid) < 0) {
 #endif
