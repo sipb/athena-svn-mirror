@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: jfc $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.6 1990-07-16 07:25:04 jfc Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.7 1990-08-30 13:17:54 epeisach Exp $";
 
 #include "attach.h"
 #include <sys/file.h>
@@ -23,6 +23,9 @@ static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #ifdef ultrix
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
+
+extern int sys_nerr;
+extern char *sys_errlist[];
 
 char exp_hesline[BUFSIZ];	/* Place to store explicit */
 char *exp_hesptr[2];		/* ``hesiod'' entry */
