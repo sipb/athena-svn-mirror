@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.24 1988-06-21 17:26:11 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.25 1988-06-23 11:12:52 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -151,6 +151,7 @@ extern int errno;
 
 	/* Random declarations */
 extern char *ZGetSender(), *ZGetVariable();
+extern u_short ZGetWGPort();
 
 	/* Successful function return */
 #define ZERR_NONE		0
