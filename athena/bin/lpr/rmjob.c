@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.3 1990-04-16 11:48:51 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.4 1990-07-05 14:44:19 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.3 1990-04-16 11:48:51 epeisach Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.4 1990-07-05 14:44:19 epeisach Exp $";
 #endif lint
 
 /*
@@ -40,26 +40,26 @@ int	cur_daemon;		/* daemon's pid */
 char	current[40];		/* active control file name */
 int	assasinated = 0;	/* 1 means we've killed the lpd */
 
-#ifdef KERBEROS && !(SERVER)
+#if defined(KERBEROS) && !defined(SERVER)
 extern int      use_kerberos;
 extern int      kerberos_override;
 short KA;
 KTEXT_ST kticket;
 long kerror;
-#endif KERBEROS
+#endif /* KERBEROS */
 
 #ifdef SERVER
 int	iscf();
-#endif SERVER
+#endif /* SERVER */
 
 rmjob()
 {
 #ifndef SERVER
 	register int i;
-#else SERVER
+#else /* SERVER */
 	register int i, nitems;
 	struct direct **files;
-#endif SERVER
+#endif /* SERVER */
 
 	assasinated = 0;	/* Haven't killed it yet! */
 #ifdef HESIOD
@@ -74,20 +74,20 @@ rmjob()
 		fatal("cannot open printer description file");
 	} else if (i == 0)
 		fatal("unknown printer");
-#endif HESIOD
+#endif /* HESIOD */
 #ifdef SERVER
 	if ((SD = pgetstr("sd", &bp)) == NULL)
 		SD = DEFSPOOL;
 	if ((LO = pgetstr("lo", &bp)) == NULL)
 		LO = DEFLOCK;
-#endif SERVER
+#endif /* SERVER */
 	if ((LP = pgetstr("lp", &bp)) == NULL)
 		LP = DEFDEVLP;
 	if ((RP = pgetstr("rp", &bp)) == NULL)
 		RP = DEFLP;
 	RM = pgetstr("rm", &bp);
 
-#ifdef KERBEROS && !(SERVER)
+#if defined(KERBEROS) && !defined(SERVER)
         KA = pgetnum("ka");
         if (KA > 0)
             use_kerberos = 1;
@@ -95,7 +95,7 @@ rmjob()
             use_kerberos = 0;
         if (kerberos_override > -1)
             use_kerberos = kerberos_override;
-#endif KERBEROS
+#endif /* KERBEROS */
 
 	/*
 	 * If the format was `lprm -' and the user isn't the super-user,
@@ -147,9 +147,9 @@ rmjob()
 	 */
 	if (assasinated && !startdaemon(printer))
 		fatal("cannot restart printer daemon\n");
-#else SERVER
+#else /* SERVER */
 	chkremote();
-#endif SERVER
+#endif /* SERVER */
 	exit(0);
 }
 
@@ -322,7 +322,7 @@ isowner(owner, file)
 #else
 	if (!strcmp(person, owner) && !strcmp(from, file+6))
 		return(1);
-#endif KERBEROS
+#endif /* KERBEROS */
 	if (from != host)
 		printf("%s: ", host);
 	printf("%s: Permission denied\n", file);
@@ -348,25 +348,25 @@ chkremote()
 #ifndef SERVER
 	char name[255];
 	struct hostent *hp;
-#else SERVER
+#else /* SERVER */
 	/*
 	 * Figure out whether the local machine is the same as the remote 
 	 * machine entry (if it exists).  If not, then ignore the local
 	 * queue information.
 	 */
-#endif SERVER
+#endif /* SERVER */
 
 #ifndef SERVER
 	if (RM == NULL) {
 		/* get the name of the local host */
-#else SERVER
+#else /* SERVER */
 	if (RM == (char *) NULL) return;
 	else {
 		char name[255];
 		struct hostent *hp;
 
 			/* get the name of the local host */
-#endif SERVER
+#endif /* SERVER */
 		gethostname (name, sizeof(name) - 1);
 		name[sizeof(name)-1] = '\0';
 #ifndef SERVER
@@ -374,7 +374,7 @@ chkremote()
 		if (hp =gethostbyname(name))
 			strcpy (name, hp->h_name);
 		RM = name;
-#else SERVER
+#else /* SERVER */
 			/* get the network standard name of the local host */
 		hp = gethostbyname (name);
 		if (hp == (struct hostent *) NULL) {
@@ -459,8 +459,8 @@ chkremote()
 			    else fatal("Syncronization error.\n");
 			}
 		    }
-#endif KERBEROS
-#endif !(SERVER)
+#endif /* KERBEROS */
+#endif /* !(SERVER) */
 		i = strlen(buf);
 		if (write(rem, buf, i) != i)
 			fatal("Lost connection");
