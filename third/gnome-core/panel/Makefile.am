@@ -271,7 +271,7 @@ pixmap_DATA = info.png logout-icon-menu.png
 
 athenadir = $(datadir)/gnome/athena
 athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
-athena_SCRIPTS = mail-script browser-script terminal-script editor-script
+athena_SCRIPTS = mail-script browser-script terminal-script editor-script setup
 AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
 
 install-data-local:
