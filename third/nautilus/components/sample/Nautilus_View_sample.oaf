@@ -12,20 +12,34 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus Sample view factory"/>
+	<oaf_attribute name="name-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#218;&#210;&#193;&#218;&#203;&#166;&#215; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#193;"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#252;&#248;&#231;&#242; &#196;&#229;&#223;&#227;&#236;&#225;&#244;&#239;&#242; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Fabrik for Nautilus pr&#248;vevisning"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus &#214;rnek g&#246;r&#252;n&#252;m mimarisi"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica da visualiza&#231;&#227;o exemplo do Nautilus"/>
 	<oaf_attribute name="name-es" type="string" value="Vista de ejemplo Nautilus Original"/>
-	<oaf_attribute name="name-sv" type="string" value="Fabrik f&#246;r Nautilus-exempelvyn"/>
+	<oaf_attribute name="name-sv" type="string" value="Fabrik f&#246;r Nautilus exempelvy"/>
 	<oaf_attribute name="name-de" type="string" value="Nautilus-Beispielansichten-Factory"/>
 	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
-	<oaf_attribute name="name-da" type="string" value="Fabrik for Nautilus pr&#248;vevisning"/>
+	<oaf_attribute name="name-hu" type="string" value="Factory a Nautilus p&#233;ldan&#233;zethez"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for Nautilus eksempelvisning"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre Uk&#225;&#190;kov&#253; poh&#181;ad pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusovih vzor&#232;nih pogledov"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen esimerkkin&#228;kym&#228;tehdas"/>
 	<oaf_attribute name="description" type="string" value="Sample content view component's factory"/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#252;&#248;&#231;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#228;&#229;&#223;&#227;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="description-da" type="string" value="Pr&#248;ve-indholdsvisningskomponentfabrik"/>
+	<oaf_attribute name="description-tr" type="string" value="&#214;rnek i&#231;erik g&#246;r&#252;n&#252;m bile&#254;en mimarisi"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica de componente exemplo de visualiza&#231;&#227;o de conte&#250;do"/>
 	<oaf_attribute name="description-es" type="string" value="Componente de vista de contenido original"/>
 	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r exempelinneh&#229;llsvykomponenten"/>
 	<oaf_attribute name="description-de" type="string" value="Beispielhafte Nautilus-Inhaltsansichts-Komponenten-Factory"/>
 	<oaf_attribute name="description-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for eksempelvisningskomponent"/>
+	<oaf_attribute name="description-hu" type="string" value="P&#233;lda tartlomn&#233;zet factory"/>
 	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent Uk&#225;&#190;kov&#233;ho poh&#181;adu"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Tovarna vzor&#232;nih komponent pogleda vsebine"/>
+	<oaf_attribute name="description-fi" type="string" value="Esimerkkisis&#228;lt&#246;n&#228;kym&#228;komponenttien tehdas"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae" type="factory" location="OAFIID:nautilus_sample_content_view_factory:3df6b028-be44-4a18-95c3-7720f50ca0c5">
@@ -36,24 +50,40 @@
 		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus Sample view"/>
+	<oaf_attribute name="name-uk" type="string" value="&#250;&#210;&#193;&#218;&#207;&#203; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#193;"/>
 	<oaf_attribute name="name-da" type="string" value="Nautilus pr&#248;vevisning"/>
-	<oaf_attribute name="name-es" type="string" value="Vista de ejemplo Nautilus"/>
-	<oaf_attribute name="name-sv" type="string" value="Nautilus-exempelvy"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus &#214;rnek G&#246;r&#252;n&#252;m"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus exempelvy"/>
 	<oaf_attribute name="name-de" type="string" value="Nautilus-Beispielansicht"/>
-	<oaf_attribute name="name-ko" type="string" value="&#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#191;&#185;&#193;&#166; &#186;&#184;&#177;&#226;"/>
 	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen esimerkkin&#228;kym&#228;"/>
+	<oaf_attribute name="name-el" type="string" value="&#188;&#248;&#231; &#196;&#229;&#223;&#227;&#236;&#225;&#244;&#239;&#242; &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="Visualiza&#231;&#227;o exemplo do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Vista de ejemplo Nautilus"/>
+	<oaf_attribute name="name-fr" type="string" value="Vue d'Exemple Nautilus"/>
+	<oaf_attribute name="name-ko" type="string" value="&#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#191;&#185;&#193;&#166; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-pl" type="string" value="Przyk&#179;adowy widok Nautilusa"/>
+	<oaf_attribute name="name-hu" type="string" value="Nautilus p&#233;ldan&#233;zet"/>
 	<oaf_attribute name="name-no" type="string" value="Nautilus eksempelvisning"/>
 	<oaf_attribute name="name-sk" type="string" value="Uk&#225;&#190;kov&#253; poh&#181;ad pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Nautilusov vzor&#232;ni pogled "/>
 	<oaf_attribute name="description" type="string" value="Sample content view component"/>
-	<oaf_attribute name="description-es" type="string" value="Componente de vista de contenido"/>
+	<oaf_attribute name="description-da" type="string" value="Pr&#248;ve-indholdsvisningskomponent"/>
+	<oaf_attribute name="description-tr" type="string" value="&#214;rnek i&#231;erik g&#246;r&#252;n&#252;m bile&#254;eni"/>
+	<oaf_attribute name="description-ru" type="string" value="&#240;&#210;&#201;&#205;&#197;&#210; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#193; &#238;&#193;&#213;&#212;&#201;&#204;&#213;&#211; &#196;&#204;&#209; &#208;&#210;&#207;&#211;&#205;&#207;&#212;&#210;&#193; &#211;&#207;&#211;&#212;&#193;&#215;&#193;."/>
 	<oaf_attribute name="description-sv" type="string" value="Exempelinneh&#229;llsvykomponent"/>
 	<oaf_attribute name="description-de" type="string" value="Beispielhafte Nautilus-Inhaltsansichts-Komponente"/>
-	<oaf_attribute name="description-ko" type="string" value="&#191;&#185;&#193;&#166; &#179;&#187;&#191;&#235;&#186;&#184;&#177;&#226; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
 	<oaf_attribute name="description-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="description-fi" type="string" value="Esimerkkisis&#228;lt&#246;n&#228;kym&#228;komponentti"/>
+	<oaf_attribute name="description-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#252;&#248;&#231;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; &#228;&#229;&#223;&#227;&#236;&#225;&#244;&#239;&#242;"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="Componente exemplo de visualiza&#231;&#227;o de conte&#250;do"/>
+	<oaf_attribute name="description-fr" type="string" value="Composant vue d'exemple"/>
+	<oaf_attribute name="description-es" type="string" value="Componente de vista de contenido"/>
+	<oaf_attribute name="description-ko" type="string" value="&#191;&#185;&#193;&#166; &#179;&#187;&#191;&#235;&#186;&#184;&#177;&#226; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
 	<oaf_attribute name="description-no" type="string" value="Eksempel p&#229; innholdsvisningskomponent"/>
+	<oaf_attribute name="description-hu" type="string" value="P&#233;lda tartalomn&#233;zet-komponens"/>
 	<oaf_attribute name="description-sk" type="string" value="Komponent Uk&#225;&#190;kov&#233;ho poh&#181;adu"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Vzor&#232;na komponenta pogleda vsebine"/>
 	<oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
 		<item value="*"/>
 	</oaf_attribute>
@@ -61,6 +91,7 @@
 		<item value="*"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" value="Sample"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#250;&#210;&#193;&#218;&#207;&#203;"/>
 	<oaf_attribute name="nautilus:view_as_name-zh_TW.Big5" type="string" value="&#189;d&#168;&#210;"/>
 	<oaf_attribute name="nautilus:view_as_name-ca" type="string" value="Mostra"/>
 	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Pr&#248;ve"/>
@@ -71,18 +102,53 @@
 	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Beispiel"/>
 	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;"/>
 	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="Esimerkki"/>
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#196;&#229;&#223;&#227;&#236;&#225;"/>
 	<oaf_attribute name="nautilus:view_as_name-gl" type="string" value="Exemplo"/>
 	<oaf_attribute name="nautilus:view_as_name-ta" type="string" value="&#193;&#161;&#190;&#162;&#195;&#162;"/>
 	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Exemplo"/>
 	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Exemple"/>
-	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Sample"/>
-	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#191;&#185;&#193;&#166;"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Ejemplo"/>
 	<oaf_attribute name="nautilus:view_as_name-nl" type="string" value="Voorbeeld"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#191;&#185;&#193;&#166;"/>
+	<oaf_attribute name="nautilus:view_as_name-az" type="string" value="N&#195;&#188;mun&#201;&#153;"/>
 	<oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Pr&#243;bka"/>
-	<oaf_attribute name="nautilus:view_as_name-it" type="string" value="Esempio"/>
+	<oaf_attribute name="nautilus:view_as_name-nn" type="string" value="Pr&#195;&#184;ve"/>
 	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Eksempel"/>
+	<oaf_attribute name="nautilus:view_as_name-it" type="string" value="Esempio"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="P&#233;lda"/>
 	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Uk&#225;&#190;ka"/>
-
+	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Vzorec"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" value="View as Sample"/>
+	<oaf_attribute name="nautilus:view_as_label-uk" type="string" value="&#240;&#207;&#203;&#193;&#218;&#193;&#212;&#201; &#209;&#203; &#218;&#210;&#193;&#218;&#207;&#203;"/>
+	<oaf_attribute name="nautilus:view_as_label-tr" type="string" value="&#214;rnek olarak g&#246;ster"/>
+	<oaf_attribute name="nautilus:view_as_label-ru" type="string" value="&#240;&#207;&#203;&#193;&#218;&#193;&#212;&#216; &#203;&#193;&#203; &#207;&#194;&#210;&#193;&#218;&#197;&#195;"/>
+	<oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som exempel"/>
+	<oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Beispiel betrachten"/>
+	<oaf_attribute name="nautilus:view_as_label-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#164;&#199;&#201;&#189;&#188;&#168;"/>
+	<oaf_attribute name="nautilus:view_as_label-fi" type="string" value="N&#228;yt&#228; esimerkkin&#228;"/>
+	<oaf_attribute name="nautilus:view_as_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#249;&#242; &#196;&#229;&#223;&#227;&#236;&#225;"/>
+	<oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant qu'Exemple"/>
+	<oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como Ejemplo"/>
+	<oaf_attribute name="nautilus:view_as_label-ko" type="string" value="&#191;&#185;&#193;&#166;&#183;&#206; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som eksempel"/>
+	<oaf_attribute name="nautilus:view_as_label-hu" type="string" value="P&#233;ldak&#233;nt"/>
+	<oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobrazi&#187; ako uk&#225;&#190;ku"/>
+	<oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot vzorec"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" value="Sample Viewer"/>
+	<oaf_attribute name="nautilus:viewer_label-uk" type="string" value="&#250;&#210;&#193;&#218;&#207;&#203; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213;"/>
+	<oaf_attribute name="nautilus:viewer_label-tr" type="string" value="&#214;rnek G&#246;r&#252;nt&#252;leyici"/>
+	<oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Exempelvisare"/>
+	<oaf_attribute name="nautilus:viewer_label-de" type="string" value="Beispiel-Betrachter"/>
+	<oaf_attribute name="nautilus:viewer_label-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:viewer_label-fi" type="string" value="Esimerkkikatselin"/>
+	<oaf_attribute name="nautilus:viewer_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#196;&#229;&#233;&#227;&#236;&#220;&#244;&#249;&#237;"/>
+	<oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur d'exemple"/>
+	<oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visualizador Ejemplo"/>
+	<oaf_attribute name="nautilus:viewer_label-ko" type="string" value="&#191;&#185;&#193;&#166; &#186;&#184;&#177;&#226; &#199;&#193;&#183;&#206;&#177;&#215;&#183;&#165;"/>
+	<oaf_attribute name="nautilus:viewer_label-no" type="string" value="Eksempelvisning"/>
+	<oaf_attribute name="nautilus:viewer_label-hu" type="string" value="P&#233;ldamegjelen&#237;t&#245;"/>
+	<oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Uk&#225;&#190;kov&#253; prehliada&#232;"/>
+	<oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik vzorcev"/>
 </oaf_server>
 
 </oaf_info>

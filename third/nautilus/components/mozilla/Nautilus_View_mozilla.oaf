@@ -5,17 +5,36 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Mozilla Nautilus view factory"/>
+	<oaf_attribute name="name-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; Mozilla &#215; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#166;"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#252;&#248;&#231;&#242; Mozilla &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Fabrik for Mozilla Nautilus-visning"/>
+	<oaf_attribute name="name-tr" type="string" value="Mozilla Nautilus izleme mimarisi"/>
+	<oaf_attribute name="name-ru" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#207;&#203;&#206;&#193; Mozilla &#215; Nautilus"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica de visualiza&#231;&#227;o mozilla do Nautilus"/>
 	<oaf_attribute name="name-es" type="string" value="Vista Mozilla Nautilus original"/>
 	<oaf_attribute name="name-sv" type="string" value="Nautilus-fabrik f&#246;r Mozilla-vyn"/>
 	<oaf_attribute name="name-de" type="string" value="Factory f&#252;r Mozilla-Nautilus-Ansichten"/>
+	<oaf_attribute name="name-ja" type="string" value="Mozilla Nautilus &#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-hu" type="string" value="Factory a Mozilla Nautilus n&#233;zethez"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for Mozilla Nautilus-visning"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre poh&#181;ad Mozilla pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusovih pogledov Mozille"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen Mozilla-n&#228;kym&#228;tehdas"/>
 	<oaf_attribute name="description" type="string" value="Mozilla content view component's factory"/>
+	<oaf_attribute name="description-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212;&#201; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#215;&#205;&#166;&#211;&#212;&#213; Mozilla"/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#239;&#253; &#229;&#236;&#246;&#220;&#237;&#233;&#243;&#231;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239;&#245; Mozilla"/>
+	<oaf_attribute name="description-da" type="string" value="Mozilla indholdsvisningskomponentfabrik"/>
+	<oaf_attribute name="description-tr" type="string" value="Mozilla i&#231;erik g&#246;r&#252;n&#252;m bile&#254;en mimarisi"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica dp componente de visualiza&#231;&#227;o de conte&#250;do mozilla"/>
 	<oaf_attribute name="description-es" type="string" value="Vista de contenido de componente Mozilla original"/>
 	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r Mozilla-inneh&#229;llsvykomponenten"/>
 	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r Mozilla-Inhaltsansichtskomponenten"/>
+	<oaf_attribute name="description-ja" type="string" value="Mozilla &#165;&#179;&#165;&#243;&#165;&#198;&#165;&#243;&#165;&#196;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for Mozilla innholdsvisningskomponent"/>
+	<oaf_attribute name="description-hu" type="string" value="Factory a Mozilla tartalomn&#233;zet-komponenshez"/>
 	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre komponent poh&#181;adu Mozilla"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Tovarna komponent pogleda vsebine Mozille"/>
+	<oaf_attribute name="description-fi" type="string" value="Mozilla-sis&#228;lt&#246;n&#228;kym&#228;komponenttien tehdas"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1" type="factory" location="OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b">
@@ -25,38 +44,97 @@
 		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Mozilla Nautilus view"/>
-	<oaf_attribute name="name-es" type="string" value="Vista Nautilus Mozilla"/>
+	<oaf_attribute name="name-uk" type="string" value="&#240;&#197;&#210;&#197;&#199;&#204;&#209;&#196; Mozilla &#215; &#238;&#193;&#213;&#212;&#166;&#204;&#213;&#211;&#166;"/>
+	<oaf_attribute name="name-da" type="string" value="Mozilla Nautilus-visning"/>
+	<oaf_attribute name="name-tr" type="string" value="Mozilla Nautilus g&#246;r&#252;nt&#252;s&#252;"/>
+	<oaf_attribute name="name-ru" type="string" value="&#239;&#203;&#206;&#207; Mozilla &#215; Nautilus"/>
 	<oaf_attribute name="name-sv" type="string" value="Mozilla-Nautilusvyn"/>
 	<oaf_attribute name="name-de" type="string" value="Mozilla-Nautilus-Ansicht"/>
-	<oaf_attribute name="name-ko" type="string" value="&#184;&#240;&#193;&#250;&#182;&#243; &#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#186;&#184;&#177;&#226;"/>
 	<oaf_attribute name="name-ja" type="string" value="Mozilla Nautilus &#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen Mozilla-n&#228;kym&#228;"/>
+	<oaf_attribute name="name-el" type="string" value="&#188;&#248;&#231; Mozilla &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="Visualiza&#231;&#227;o mozilla do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Vista Nautilus Mozilla"/>
+	<oaf_attribute name="name-fr" type="string" value="Vue Nautilus Mozilla"/>
+	<oaf_attribute name="name-ko" type="string" value="&#184;&#240;&#193;&#250;&#182;&#243; &#179;&#235;&#198;&#191;&#183;&#175;&#189;&#186; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-hu" type="string" value="Mozilla Nautilus n&#233;zet"/>
 	<oaf_attribute name="name-no" type="string" value="Mozilla Nautilus-visning"/>
 	<oaf_attribute name="name-sk" type="string" value="Mozilla pre Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Nautilusov pogled Mozille"/>
 	<oaf_attribute name="description" type="string" value="Mozilla content view component"/>
-	<oaf_attribute name="description-es" type="string" value="Componente de vista de contenido Mozilla"/>
+	<oaf_attribute name="description-uk" type="string" value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; &#208;&#197;&#210;&#197;&#199;&#204;&#209;&#196;&#213; &#215;&#205;&#166;&#211;&#212;&#213; Mozilla"/>
+	<oaf_attribute name="description-da" type="string" value="Mozilla indholdsvisningskomponent"/>
+	<oaf_attribute name="description-tr" type="string" value="Mozilla i&#231;erik izleme bile&#254;eni"/>
+	<oaf_attribute name="description-ru" type="string" value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; &#238;&#193;&#213;&#212;&#201;&#204;&#213;&#211; &#196;&#204;&#209; &#208;&#210;&#207;&#211;&#205;&#207;&#212;&#210;&#193; &#215; Mozilla."/>
 	<oaf_attribute name="description-sv" type="string" value="Mozilla-inneh&#229;llsvykomponent"/>
 	<oaf_attribute name="description-de" type="string" value="Mozilla-Inhaltsansichts-Komponente"/>
+	<oaf_attribute name="description-ja" type="string" value="Mozilla Nautilus &#165;&#211;&#165;&#229;&#161;&#188;&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
+	<oaf_attribute name="description-fi" type="string" value="Mozilla-sis&#228;lt&#246;n&#228;kym&#228;komponentti"/>
+	<oaf_attribute name="description-el" type="string" value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#229;&#236;&#246;&#220;&#237;&#233;&#243;&#231;&#242; &#240;&#229;&#241;&#233;&#229;&#247;&#239;&#236;&#221;&#237;&#239; &#244;&#239;&#245; Mozilla"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="Componente de visualiza&#231;&#227;o de conte&#250;do mozilla"/>
+	<oaf_attribute name="description-es" type="string" value="Componente de vista de contenido Mozilla"/>
 	<oaf_attribute name="description-ko" type="string" value="&#184;&#240;&#193;&#250;&#182;&#243; &#179;&#187;&#191;&#235; &#186;&#184;&#177;&#226; &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
-	<oaf_attribute name="description-ja" type="string" value="Mozilla Nautilus &#165;&#211;&#165;&#229;&#161;&#188;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-no" type="string" value="Mozilla innholdsvisningskomponent"/>
+	<oaf_attribute name="description-hu" type="string" value="Mozilla tartalomn&#233;zet-komponens"/>
 	<oaf_attribute name="description-sk" type="string" value="Komponent pre poh&#181;ad Mozilla"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Komponenta pogleda vsebine Mozille"/>
 	<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
 		<item value="text/html"/>
 		<item value="x-directory/webdav"/>
+		<item value="x-directory/webdav-prefer-directory"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" value="Web Page"/>
-	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="webside"/>
-	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="P&#225;gina Web"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#247;&#197;&#194;-&#211;&#212;&#207;&#210;&#166;&#206;&#203;&#193;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="Netside"/>
+	<oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Web Sayfas&#253;"/>
+	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="&#247;&#197;&#194;-&#211;&#212;&#210;&#193;&#206;&#201;&#195;&#193;"/>
 	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Webbsida"/>
 	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Webseite"/>
-	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#192;&#165; &#198;&#228;&#192;&#204;&#193;&#246;"/>
 	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#166;&#165;&#167;&#165;&#214;&#165;&#218;&#161;&#188;&#165;&#184;"/>
+	<oaf_attribute name="nautilus:view_as_name-fi" type="string" value="WWW-sivu"/>
+	<oaf_attribute name="nautilus:view_as_name-el" type="string" value="&#201;&#243;&#244;&#239;&#243;&#229;&#235;&#223;&#228;&#225;"/>
+	<oaf_attribute name="nautilus:view_as_name-gl" type="string" value="P&#225;xina Web"/>
+	<oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="P&#225;gina web"/>
+	<oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Page Web"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="P&#225;gina Web"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#192;&#165; &#198;&#228;&#192;&#204;&#193;&#246;"/>
+	<oaf_attribute name="nautilus:view_as_name-nn" type="string" value="Internettside"/>
 	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Webside"/>
+	<oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Weblap"/>
 	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="WWW str&#225;nka"/>
-
-
+	<oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Spletna stran"/>
+	<oaf_attribute name="nautilus:view_as_label" type="string" value="View as Web Page"/>
+	<oaf_attribute name="nautilus:view_as_label-uk" type="string" value="&#240;&#207;&#203;&#193;&#218;&#193;&#212;&#201; &#209;&#203; &#215;&#197;&#194;-&#211;&#212;&#207;&#210;&#166;&#206;&#203;&#213;"/>
+	<oaf_attribute name="nautilus:view_as_label-tr" type="string" value="Web Sayfas&#253; Olarak G&#246;r&#252;nt&#252;le"/>
+	<oaf_attribute name="nautilus:view_as_label-ru" type="string" value="&#247;&#197;&#194;-&#211;&#212;&#210;&#193;&#206;&#201;&#195;&#193;"/>
+	<oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som webbsida"/>
+	<oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Webseite betrachten"/>
+	<oaf_attribute name="nautilus:view_as_label-ja" type="string" value="&#165;&#166;&#165;&#167;&#165;&#214;&#165;&#218;&#161;&#188;&#165;&#184;&#164;&#199;&#201;&#189;&#188;&#168;"/>
+	<oaf_attribute name="nautilus:view_as_label-fi" type="string" value="N&#228;yt&#228; WWW-sivuna"/>
+	<oaf_attribute name="nautilus:view_as_label-el" type="string" value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#249;&#242; &#201;&#243;&#244;&#239;&#243;&#229;&#235;&#223;&#228;&#225;"/>
+	<oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant que Page Web"/>
+	<oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como P&#225;gina Web"/>
+	<oaf_attribute name="nautilus:view_as_label-ko" type="string" value="&#192;&#165; &#198;&#228;&#192;&#204;&#193;&#246;&#183;&#206; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som webside"/>
+	<oaf_attribute name="nautilus:view_as_label-hu" type="string" value="Weblapk&#233;nt"/>
+	<oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobrazi&#187; ako WWW str&#225;nku"/>
+	<oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot spletno stran"/>
+	<oaf_attribute name="nautilus:viewer_label" type="string" value="Web Page Viewer"/>
+	<oaf_attribute name="nautilus:viewer_label-uk" type="string" value="&#240;&#197;&#210;&#197;&#199;&#204;&#209;&#196; &#215;&#197;&#194;-&#211;&#212;&#207;&#210;&#166;&#206;&#207;&#203;"/>
+	<oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Web Sayfas&#253; G&#246;r&#252;nt&#252;leyici"/>
+	<oaf_attribute name="nautilus:viewer_label-ru" type="string" value="&#240;&#210;&#207;&#199;&#210;&#193;&#205;&#205;&#193; &#208;&#210;&#207;&#211;&#205;&#207;&#212;&#210;&#193; &#247;&#197;&#194;-&#211;&#212;&#210;&#193;&#206;&#201;&#195;"/>
+	<oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Webbsidevisare"/>
+	<oaf_attribute name="nautilus:viewer_label-de" type="string" value="Webseiten-Betrachter"/>
+	<oaf_attribute name="nautilus:viewer_label-ja" type="string" value="&#165;&#166;&#165;&#167;&#165;&#214;&#165;&#218;&#161;&#188;&#165;&#184;&#165;&#211;&#165;&#229;&#161;&#188;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:viewer_label-fi" type="string" value="WWW-sivukatselin"/>
+	<oaf_attribute name="nautilus:viewer_label-el" type="string" value="&#208;&#225;&#241;&#239;&#245;&#243;&#223;&#225;&#243;&#231; &#201;&#243;&#244;&#239;&#243;&#229;&#235;&#223;&#228;&#225;&#242;"/>
+	<oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur de Page Web"/>
+	<oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visualizador P&#225;gina Web"/>
+	<oaf_attribute name="nautilus:viewer_label-ko" type="string" value="&#192;&#165; &#198;&#228;&#192;&#204;&#193;&#246; &#186;&#184;&#177;&#226; &#199;&#193;&#183;&#206;&#177;&#215;&#183;&#165;"/>
+	<oaf_attribute name="nautilus:viewer_label-no" type="string" value="Webside-visning"/>
+	<oaf_attribute name="nautilus:viewer_label-hu" type="string" value="Weblap-megjelen&#237;t&#245;"/>
+	<oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Prehliada&#232; WWW str&#225;nok"/>
+	<oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik spletnih strani"/>
 </oaf_server>
 
 </oaf_info>

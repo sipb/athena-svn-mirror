@@ -5,12 +5,19 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="description" type="string" value="Factory for the sample service"/>
+	<oaf_attribute name="description-uk" type="string" value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#218;&#210;&#193;&#218;&#203;&#193; &#208;&#207;&#211;&#204;&#213;&#199;&#201;"/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#245;&#240;&#231;&#241;&#229;&#243;&#223;&#225;-&#228;&#229;&#223;&#227;&#236;&#225;"/>
+	<oaf_attribute name="description-da" type="string" value="Fabrik for pr&#248;vetjenesten"/>
+	<oaf_attribute name="description-tr" type="string" value="&#214;rnek servis i&#231;in mimari"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica do servi&#231;o exemplo"/>
 	<oaf_attribute name="description-es" type="string" value="Original para el servicio de ejemplo"/>
 	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r exempeltj&#228;nsten"/>
 	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r den beispielhaften Dienst"/>
 	<oaf_attribute name="description-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#181;&#161;&#188;&#165;&#211;&#165;&#185;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-no" type="string" value="Factory for eksempeltjeneste"/>
 	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre uk&#225;&#190;kov&#250; slu&#190;bu"/>
-
+	<oaf_attribute name="description-sl" type="string" value="Tovarna za vzor&#232;ne storitve"/>
+	<oaf_attribute name="description-fi" type="string" value="Tehdas, joka tuottaa esimerkkipalvelua"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:trilobite_eazel_sample_service:3d972cc6-d42d-4669-bd42-966998b3c306" type="factory" location="OAFIID:trilobite_eazel_sample_service_factory:19084a03-2f85-456e-95ed-bcebf8141e97">
@@ -21,6 +28,7 @@
 	</oaf_attribute>
 
 	<oaf_attribute name="trilobite:name" type="string" value="Sample"/>
+	<oaf_attribute name="trilobite:name-uk" type="string" value="&#250;&#210;&#193;&#218;&#207;&#203;"/>
 	<oaf_attribute name="trilobite:name-zh_TW.Big5" type="string" value="&#189;d&#168;&#210;"/>
 	<oaf_attribute name="trilobite:name-ca" type="string" value="Mostra"/>
 	<oaf_attribute name="trilobite:name-da" type="string" value="Pr&#248;ve"/>
@@ -31,18 +39,22 @@
 	<oaf_attribute name="trilobite:name-de" type="string" value="Beispiel"/>
 	<oaf_attribute name="trilobite:name-ja" type="string" value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;"/>
 	<oaf_attribute name="trilobite:name-fi" type="string" value="Esimerkki"/>
+	<oaf_attribute name="trilobite:name-el" type="string" value="&#196;&#229;&#223;&#227;&#236;&#225;"/>
 	<oaf_attribute name="trilobite:name-gl" type="string" value="Exemplo"/>
 	<oaf_attribute name="trilobite:name-ta" type="string" value="&#193;&#161;&#190;&#162;&#195;&#162;"/>
 	<oaf_attribute name="trilobite:name-pt_BR" type="string" value="Exemplo"/>
+	<oaf_attribute name="trilobite:name-es" type="string" value="Ejemplo"/>
 	<oaf_attribute name="trilobite:name-fr" type="string" value="Exemple"/>
-	<oaf_attribute name="trilobite:name-es" type="string" value="Sample"/>
 	<oaf_attribute name="trilobite:name-ko" type="string" value="&#191;&#185;&#193;&#166;"/>
 	<oaf_attribute name="trilobite:name-nl" type="string" value="Voorbeeld"/>
+	<oaf_attribute name="trilobite:name-az" type="string" value="N&#195;&#188;mun&#201;&#153;"/>
 	<oaf_attribute name="trilobite:name-pl" type="string" value="Pr&#243;bka"/>
-	<oaf_attribute name="trilobite:name-it" type="string" value="Esempio"/>
+	<oaf_attribute name="trilobite:name-nn" type="string" value="Pr&#195;&#184;ve"/>
 	<oaf_attribute name="trilobite:name-no" type="string" value="Eksempel"/>
+	<oaf_attribute name="trilobite:name-hu" type="string" value="P&#233;lda"/>
+	<oaf_attribute name="trilobite:name-it" type="string" value="Esempio"/>
 	<oaf_attribute name="trilobite:name-sk" type="string" value="Uk&#225;&#190;ka"/>
-
+	<oaf_attribute name="trilobite:name-sl" type="string" value="Vzorec"/>
 	<oaf_attribute name="trilobite:version" type="string" value="0.1"/>
 	<oaf_attribute name="trilobite:vendor_name" type="string" value="Eazel, Inc."/>
 	<oaf_attribute name="trilobite:vendor_url" type="string" value="http://www.eazel.com"/>

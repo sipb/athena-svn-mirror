@@ -6,15 +6,31 @@
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Factory for Nautilus component adapter factories"/>
-	<oaf_attribute name="name-es" type="string" value="Fabrica para las f&#225;bricas de componente adaptador de Nautilus"/>
-	<oaf_attribute name="name-sv" type="string" value="Fabrik f&#246;r Nautilus-komponentadapterfabriker"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#225; &#240;&#241;&#239;&#243;&#225;&#241;&#236;&#239;&#243;&#244;&#254;&#237; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#254;&#237; &#244;&#249;&#237; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus fabrik for komponentindpasningsfabrikker"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus bile&#254;en denetleyici mimarileri"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica para f&#225;bricas de adaptadores de componentes do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Original para las fabricas de componente adaptador Nautilus"/>
 	<oaf_attribute name="name-de" type="string" value="Factory f&#252;r Nautilus-Komponentenadapter-Factories"/>
-
+	<oaf_attribute name="name-sv" type="string" value="Fabrik f&#246;r Nautilus komponentadapterfabriker"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#165;&#162;&#165;&#192;&#165;&#215;&#165;&#191;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-hu" type="string" value="Factory a Nautilus komponensadapter factory-khoz"/>
+	<oaf_attribute name="name-no" type="string" value="Factory for Nautilus komponent-adapter factories"/>
+	<oaf_attribute name="name-fi" type="string" value="Tehdas, joka tuottaa Nautiluksen komponenttisovitintehtaita"/>
+	<oaf_attribute name="name-sl" type="string" value="Tovarna za tovarne adapterjev Nautilusovih komponent"/>
 	<oaf_attribute name="description" type="string" value="Factory for Nautilus component adapter factories "/>
-	<oaf_attribute name="description-es" type="string" value="Fabrica para las f&#225;bricas de componente adaptador de Nautilus"/>
-	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r Nautilus-komponentadapterfabriker "/>
+	<oaf_attribute name="description-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#229;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#225; &#240;&#241;&#239;&#243;&#225;&#241;&#236;&#239;&#243;&#244;&#254;&#237; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#254;&#237; &#244;&#249;&#237; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245; "/>
+	<oaf_attribute name="description-da" type="string" value="Nautilus fabrik for komponentindpasningsfabrikker "/>
+	<oaf_attribute name="description-tr" type="string" value="Nautilus bile&#254;en denetleyici mimarileri"/>
+	<oaf_attribute name="description-pt_BR" type="string" value="F&#225;brica para f&#225;bricas de adaptadores de componentes do Nautilus "/>
+	<oaf_attribute name="description-es" type="string" value="Original para las fabricas de componente adaptador Nautilus"/>
+	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r Nautilus komponentadapterfabriker "/>
 	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r Nautilus-Komponentenadapter-Factories "/>
-
+	<oaf_attribute name="description-ja" type="string" value="Nautilus&#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#165;&#162;&#165;&#192;&#165;&#215;&#165;&#191;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234; "/>
+	<oaf_attribute name="description-no" type="string" value="Factory for Nautilus komponent-adapter factories "/>
+	<oaf_attribute name="description-hu" type="string" value="Factory a Nautilus komponensadapter factory-khoz "/>
+	<oaf_attribute name="description-sl" type="string" value="Tovarna za tovarne adapterjev Nautilusovih komponent "/>
+	<oaf_attribute name="description-fi" type="string" value="Tehdas, joka tuottaa Nautiluksen komponenttisovitintehtaita"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4" type="factory" location="OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f">
@@ -23,14 +39,20 @@
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" value="Nautilus component adapter factory"/>
-	<oaf_attribute name="name-es" type="string" value="Fabrica de componentes adaptador de Nautilus"/>
-	<oaf_attribute name="name-sv" type="string" value="Nautilus-komponentadapterfabriken"/>
+	<oaf_attribute name="name-el" type="string" value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#245;&#240;&#239;&#228;&#239;&#247;&#222;&#242; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#254;&#237; &#244;&#239;&#245; &#205;&#225;&#245;&#244;&#223;&#235;&#239;&#245;"/>
+	<oaf_attribute name="name-da" type="string" value="Nautilus komponentindpasningsfabrik"/>
+	<oaf_attribute name="name-tr" type="string" value="Nautilus bile&#254;en denetleyici mimarisi"/>
+	<oaf_attribute name="name-pt_BR" type="string" value="F&#225;brica de adaptadores de compomentes do Nautilus"/>
+	<oaf_attribute name="name-es" type="string" value="Fabrica de componente adaptador Nautilus"/>
+	<oaf_attribute name="name-sv" type="string" value="Nautilus komponentadapterfabrik"/>
 	<oaf_attribute name="name-de" type="string" value="Nautilus-Komponentenadapter-Factory"/>
-	<oaf_attribute name="name-da" type="string" value="Nautilus fabrik for komponentadapter"/>
+	<oaf_attribute name="name-ja" type="string" value="Nautilus &#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;&#165;&#162;&#165;&#192;&#165;&#215;&#165;&#191;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="name-no" type="string" value="Nautilus komponent-adapter factory"/>
+	<oaf_attribute name="name-hu" type="string" value="Nautilus komponensadapter factory"/>
 	<oaf_attribute name="name-sk" type="string" value="Vytv&#225;racie rozhranie pre komponentov&#233; adapt&#233;ry Nautilus"/>
-
+	<oaf_attribute name="name-sl" type="string" value="Tovarna adapterjev Nautilusovih komponent"/>
+	<oaf_attribute name="name-fi" type="string" value="Nautiluksen komponenttisovitintehdas"/>
 	<oaf_attribute name="description" type="string" value="Factory for objects that wrap ordinary Bonobo Controls or Embeddables to look like Nautilus Views"/>
-
 </oaf_server>
 
 </oaf_info>
