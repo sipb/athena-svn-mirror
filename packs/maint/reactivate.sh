@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.11 1991-08-27 18:58:15 epeisach Exp $
+# $Id: reactivate.sh,v 1.12 1991-08-27 20:02:57 probe Exp $
 
 trap "" 1 15
 
@@ -117,7 +117,6 @@ EOF
 			/usr/ucb/logger -t `hostname` -p user.notice at revision $VERSION
 			cp /dev/null /usr/tmp/update.check
 		fi
-		sleep 15
 	fi
 fi
 
