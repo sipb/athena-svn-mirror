@@ -1,4 +1,4 @@
-# $Id: athena,v 1.19 2000-06-21 20:51:56 ghudson Exp $
+# $Id: athena,v 1.20 2000-12-30 12:12:53 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -198,6 +198,11 @@ if [ "$PUBLIC" = true ]; then
 	chmod a+r /dev/dsk/c0t6d0s0 /dev/dsk/c0t6d0s2
 
 	echo "Ending public workstation cleanup"
+fi
+
+if [ ! -h /usr/java -a ! -d /usr/java ]; then
+	logger -p user.notice "Replacing /usr/java symlink"
+	ln -s java1.1 /usr/java
 fi
 
 echo "Removing sendmail temporary files"
