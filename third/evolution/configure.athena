@@ -1,5 +1,0 @@
-#!/bin/sh
-exec ./configure "$@" --with-krb4=/usr/athena --with-krb5=/usr/athena \
-  --with-db3-include=/usr/athena/include --with-db3-libs=/usr/athena/lib \
-  --enable-openssl --with-openssl-includes=/usr/athena/include/openssl \
-  --with-openssl-libs=/usr/athena/lib
