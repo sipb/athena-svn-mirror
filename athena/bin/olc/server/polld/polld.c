@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.9 1991-09-22 11:40:38 lwvanels Exp $
+ *	$Id: polld.c,v 1.10 1991-11-05 13:45:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.9 1991-09-22 11:40:38 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.10 1991-11-05 13:45:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -261,6 +261,10 @@ main(argc, argv)
        /* Give up on this cycle- try again later */
        continue;
      }
+
+#ifdef ZEPHYR
+    check_zephyr();
+#endif
 
     for(i=0;i<n_people;i++) {
       /* get incoming datagrams for who's (later) */
