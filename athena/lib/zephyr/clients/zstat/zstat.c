@@ -12,7 +12,7 @@
  */
 
 #include <zephyr/zephyr.h>
-#include "../server/zserver.h"
+#include "../../server/zserver.h"
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -21,7 +21,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.7 1988-11-14 11:51:40 jtkohl Exp $";
+static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.8 1989-04-04 11:26:38 jtkohl Exp $";
 #endif SABER
 #endif lint
 		     
