@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/Imakefile,v $
- * $Id: Imakefile,v 1.1 1991-01-06 18:28:44 lwvanels Exp $
+ * $Id: Imakefile,v 1.2 1991-01-18 14:47:45 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -24,6 +24,12 @@ DEFINES=-DLOG -DSYSLOG
 NormalProgramTarget(lumberjack,$(OBJS),,,)
 
 SaberProgramTarget(lumberjack,$(SRCS),$(OBJS),,)
+
+#ifdef TestInstall
+InstallProgram(lumberjack,/mit/olcdev/@sys)
+#else
+InstallProgram(lumberjack,$(DESTDIR)/usr/etc)
+#endif
 
 DependTarget()
 LintTarget()
