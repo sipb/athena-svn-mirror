@@ -1,6 +1,3 @@
-#
-# Athena additions
-#
 
 klogin		543/tcp				# Kerberos authenticated rlogin
 kshell		544/tcp				# and remote shell
@@ -80,6 +77,3 @@ afsrmtsys		7009/udp	# remote cache manager service
 csnet-cs	105/tcp
 csnet-fi	106/tcp
 
-#
-# End of Athena additions
-#
