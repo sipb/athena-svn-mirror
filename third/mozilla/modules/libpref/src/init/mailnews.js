@@ -375,9 +375,12 @@ pref("mail.server.default.manualMark",false);
 pref("mail.server.default.manualMarkMode",0); // 0 == "move to junk folder", 1 == "delete"
 
 pref("mail.smtp.defaultserver","outgoing_mit_edu");
-pref("mail.smtpserver.default.auth_method", 0); // auth any
+pref("mail.smtpserver.default.auth_method", 1); // auth any
 pref("mail.smtpserver.default.try_ssl", 0);
 pref("mail.smtpserver.outgoing_mit_edu.hostname","outgoing.mit.edu");
+pref("mail.smtpserver.outgoing_mit_edu.auth_method", 1);
+pref("mail.smtpserver.outgoing_mit_edu.port", 587);
+pref("mail.smtpserver.outgoing_mit_edu.try_ssl", 2);
 
 // For the next 3 prefs, see <http://www.bucksch.org/1/projects/mozilla/16507>
 pref("mail.display_glyph", true);   // TXT->HTML :-) etc. in viewer
