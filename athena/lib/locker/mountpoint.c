@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.8 2000-01-31 20:23:15 danw Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.9 2000-08-29 15:45:14 rbasch Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -80,6 +80,7 @@ int locker__canonicalize_path(locker_context context, int check,
 	  locker__error(context, "Could not retrieve current working "
 			"directory:\n%s.\n", strerror(errno));
 	  free(path);
+	  *pathp = NULL;
 	  return LOCKER_EBADPATH;
 	}
       if (!strcmp(cwdbuf, "/"))
@@ -89,6 +90,7 @@ int locker__canonicalize_path(locker_context context, int check,
       if (!newpath)
 	{
 	  free(path);
+	  *pathp = NULL;
 	  locker__error(context, "Out of memory canonicalizing mountpoint.\n");
 	  return LOCKER_ENOMEM;
 	}
@@ -340,6 +342,7 @@ cleanup:
   if (status)
     {
       free(path);
+      *pathp = NULL;
       free(buildfrom);
     }
   return status;
