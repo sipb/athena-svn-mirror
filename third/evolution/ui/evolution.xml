@@ -43,7 +43,7 @@
 	<menuitem name="Folder" verb="NewFolder"
 		  _label="_Folder..."
 		  _tip="Create a new folder"
-		  accel="*Control**Shift*e"
+		  accel="*Control**Shift*f"
 		  pixtype="pixbuf"/>
 
 	<menuitem name="Shortcut" verb="NewShortcut"
@@ -70,7 +70,7 @@
                   verb="NewFolder"
 		  _label="_New Folder"
 		  _tip="Create a new folder"
-		  accel="*Control**Shift*e"
+		  accel="*Control**Shift*f"
 		  pixtype="pixbuf"/>
 
         <separator f="" name="eshell1"/>
@@ -171,7 +171,6 @@
       <separator/>
       <placeholder name="ComponentPlaceholder"/>
       <menuitem name="PilotSettings" verb="" _label="Pi_lot Settings..." _tip="Set up Pilot configuration"/>
-      <menuitem name="PilotConduitSettings" verb="" _label="Pilot Con_duit Settings..." _tip="Set up Pilot conduit configuration"/>
     </submenu>
 
     <placeholder name="SearchPlaceholder">
@@ -204,7 +203,7 @@
 	    behavior="exclusive"
 	    config="0"
 	    _tip="Main toolbar"
-	    hlook="text"
+	    hlook="both_horiz"
 	    vlook="icon">
 
     <control name="NewComboButton"/>
@@ -225,7 +224,7 @@
 	<menuitem name="Folder" verb="NewFolder"
 		  _label="_Folder..."
 		  _tip="Create a new folder"
-		  accel="*Control**Shift*e"
+		  accel="*Control**Shift*f"
 		  pixtype="pixbuf"/>
 
 	<menuitem name="Shortcut" verb="NewShortcut"
@@ -267,6 +266,11 @@
 
       <separator f="" name="eshell2"/>
 
+      <menuitem name="CreateNewFolder"
+                verb="NewFolder"
+                _label="_New Folder..."
+                _tip="Create a new folder"/>
+
       <menuitem name="DeleteFolder"
                 verb="DeleteFolder"
                 _label="_Delete"
@@ -276,11 +280,6 @@
                 verb="RenameFolder"
                 _label="_Rename..."
                 _tip="Change the name of this folder"/>
-
-      <menuitem name="CreateNewFolder"
-                verb="NewFolder"
-                _label="Create _New Folder..."
-                _tip="Create a new folder"/>
 
       <separator f="" name="eshell3"/>
 

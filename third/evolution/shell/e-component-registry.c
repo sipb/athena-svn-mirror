@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* e-component-registry.c
  *
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -31,14 +31,16 @@
 
 #include <gal/util/e-util.h>
 
+#include <bonobo-activation/bonobo-activation.h>
+
 #include "Evolution.h"
 
 #include "e-shell-utils.h"
 #include "evolution-shell-component-client.h"
 
 
-#define PARENT_TYPE GTK_TYPE_OBJECT
-static GtkObjectClass *parent_class = NULL;
+#define PARENT_TYPE G_TYPE_OBJECT
+static GObjectClass *parent_class = NULL;
 
 typedef struct _Component Component;
 
@@ -66,7 +68,7 @@ sleep_with_g_main_loop_timeout_callback (void *data)
 	GMainLoop *loop;
 
 	loop = (GMainLoop *) data;
-	g_main_quit (loop);
+	g_main_loop_quit (loop);
 
 	return FALSE;
 }
@@ -78,10 +80,10 @@ sleep_with_g_main_loop (int num_seconds)
 {
 	GMainLoop *loop;
 
-	loop = g_main_new (TRUE);
+	loop = g_main_loop_new (NULL, TRUE);
 	g_timeout_add (1000 * num_seconds, sleep_with_g_main_loop_timeout_callback, loop);
-	g_main_run (loop);
-	g_main_destroy (loop);
+	g_main_loop_run (loop);
+	g_main_loop_unref (loop);
 }
 
 static void
@@ -93,7 +95,7 @@ wait_for_corba_object_to_die (Bonobo_Unknown corba_objref,
 
 	count = 1;
 	while (1) {
-		alive = bonobo_unknown_ping (corba_objref);
+		alive = bonobo_unknown_ping (corba_objref, NULL);
 		if (! alive)
 			break;
 
@@ -112,7 +114,7 @@ component_new (const char *id,
 {
 	Component *new;
 
-	bonobo_object_ref (BONOBO_OBJECT (client));
+	g_object_ref (client);
 
 	new = g_new (Component, 1);
 	new->id                = g_strdup (id);
@@ -131,7 +133,7 @@ component_free (Component *component)
 
 	CORBA_exception_init (&ev);
 
-	corba_shell_component = bonobo_object_corba_objref (BONOBO_OBJECT (component->client));
+	corba_shell_component = evolution_shell_component_client_corba_objref (component->client);
 	corba_shell_component = CORBA_Object_duplicate (corba_shell_component, &ev);
 
 	GNOME_Evolution_ShellComponent_unsetOwner (corba_shell_component, &ev);
@@ -141,9 +143,12 @@ component_free (Component *component)
 		retval = FALSE;
 	CORBA_exception_free (&ev);
 
-	bonobo_object_unref (BONOBO_OBJECT (component->client));
+	g_object_unref (component->client);
 
-	wait_for_corba_object_to_die ((Bonobo_Unknown) corba_shell_component, component->id);
+	/* If the component is out-of-proc, wait for the process to die first.  */
+	if (bonobo_object (ORBit_small_get_servant (corba_shell_component)) == NULL)
+		wait_for_corba_object_to_die ((Bonobo_Unknown) corba_shell_component, component->id);
+
 	CORBA_Object_release (corba_shell_component, &ev);
 
 	e_free_string_list (component->folder_type_names);
@@ -227,8 +232,8 @@ register_component (EComponentRegistry *component_registry,
 	/* FIXME we could use the EvolutionShellComponentClient API here instead, but for
            now we don't care.  */
 
-	component_corba_interface = bonobo_object_corba_objref (BONOBO_OBJECT (client));
-	shell_corba_interface = bonobo_object_corba_objref (BONOBO_OBJECT (priv->shell));
+	component_corba_interface = evolution_shell_component_client_corba_objref (client);
+	shell_corba_interface = BONOBO_OBJREF (priv->shell);
 
 	CORBA_exception_init (&my_ev);
 
@@ -236,7 +241,7 @@ register_component (EComponentRegistry *component_registry,
 
 	supported_types = GNOME_Evolution_ShellComponent__get_supportedTypes (component_corba_interface, &my_ev);
 	if (my_ev._major != CORBA_NO_EXCEPTION || supported_types->_length == 0) {
-		bonobo_object_unref (BONOBO_OBJECT (client));
+		g_object_unref (client);
 		CORBA_exception_free (&my_ev);
 		return FALSE;
 	}
@@ -245,7 +250,7 @@ register_component (EComponentRegistry *component_registry,
 
 	component = component_new (id, client);
 	g_hash_table_insert (priv->component_id_to_component, component->id, component);
-	bonobo_object_unref (BONOBO_OBJECT (client));
+	g_object_unref (client);
 
 	for (i = 0; i < supported_types->_length; i++) {
 		const GNOME_Evolution_FolderType *type;
@@ -291,7 +296,7 @@ register_component (EComponentRegistry *component_registry,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
 component_id_foreach_free (void *key,
@@ -305,7 +310,7 @@ component_id_foreach_free (void *key,
 }
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EComponentRegistry *component_registry;
 	EComponentRegistryPrivate *priv;
@@ -313,25 +318,40 @@ destroy (GtkObject *object)
 	component_registry = E_COMPONENT_REGISTRY (object);
 	priv = component_registry->priv;
 
-	g_hash_table_foreach (priv->component_id_to_component, component_id_foreach_free, NULL);
-	g_hash_table_destroy (priv->component_id_to_component);
+	if (priv->component_id_to_component != NULL) {
+		g_hash_table_foreach (priv->component_id_to_component, component_id_foreach_free, NULL);
+		g_hash_table_destroy (priv->component_id_to_component);
+		priv->component_id_to_component = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EComponentRegistry *component_registry;
+	EComponentRegistryPrivate *priv;
+
+	component_registry = E_COMPONENT_REGISTRY (object);
+	priv = component_registry->priv;
 
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EComponentRegistryClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 
@@ -371,7 +391,7 @@ e_component_registry_new (EShell *shell)
 	g_return_val_if_fail (shell != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
 
-	component_registry = gtk_type_new (e_component_registry_get_type ());
+	component_registry = g_object_new (e_component_registry_get_type (), NULL);
 	e_component_registry_construct (component_registry, shell);
 
 	return component_registry;
@@ -486,7 +506,7 @@ e_component_registry_restart_component  (EComponentRegistry *component_registry,
 
 	g_hash_table_remove (priv->component_id_to_component, id);
 
-	corba_objref = CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (component->client)), &my_ev);
+	corba_objref = CORBA_Object_duplicate (evolution_shell_component_client_corba_objref (component->client), &my_ev);
 
 	component_free (component);
 

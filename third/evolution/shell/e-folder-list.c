@@ -22,17 +22,26 @@
  */
 
 #include <config.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-#include "e-folder-list.h"
+
+#include <string.h>
+
+#include <gtk/gtkframe.h>
+
+#include <libgnome/gnome-i18n.h>
+
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+
+#include <glade/glade.h>
+
 #include <gal/e-table/e-table-memory-store.h>
-#include <gal/widgets/e-unicode.h>
+#include <gal/util/e-xml-utils.h>
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-option-menu.h>
-#include <libgnome/gnome-i18n.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-#include <gal/util/e-xml-utils.h>
-#include <glade/glade.h>
+
+#include "e-folder-list.h"
+#include "e-shell-marshal.h"
+
 #include "Evolution.h"
 
 static GtkVBoxClass *parent_class = NULL;
@@ -48,9 +57,9 @@ static guint signals [LAST_SIGNAL] = { 0, };
 
 /* The arguments we take */
 enum {
-	ARG_0,
-	ARG_TITLE,
-	ARG_POSSIBLE_TYPES,
+	PROP_0,
+	PROP_TITLE,
+	PROP_POSSIBLE_TYPES,
 };
 
 struct _EFolderListPrivate {
@@ -124,23 +133,23 @@ create_display_string (EFolderList *efl, char *folder_uri, char *folder_name)
 static void
 e_folder_list_changed (EFolderList *efl)
 {
-	gtk_signal_emit (GTK_OBJECT (efl), signals[CHANGED]);
+	g_signal_emit (efl, signals[CHANGED], 0);
 }
 
 static void
-e_folder_list_destroy (GtkObject *object)
+e_folder_list_dispose (GObject *object)
 {
-	EFolderList *efl = E_FOLDER_LIST(object);
+	EFolderList *efl = E_FOLDER_LIST (object);
 
-	if (efl->priv->gui)
-		gtk_object_unref(GTK_OBJECT(efl->priv->gui));
-	if (efl->priv->client)
-		bonobo_object_client_unref(BONOBO_OBJECT_CLIENT(efl->priv->client), NULL);
-	g_free (efl->priv);
-	efl->priv = NULL;
+	if (efl->priv != NULL) {
+		g_object_unref (efl->priv->gui);
+		g_object_unref (efl->priv->client);
+		g_free (efl->priv);
+		efl->priv = NULL;
+	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		(* G_OBJECT_CLASS (parent_class)->dispose) (object);
 }
 
 static void
@@ -160,39 +169,46 @@ set_frame_label (EFolderList *efl)
 }
 
 static void
-e_folder_list_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_folder_list_set_property (GObject *object,
+			    guint property_id,
+			    const GValue *value,
+			    GParamSpec *pspec)
 {
 	EFolderList *efl = E_FOLDER_LIST(object);
 
-	switch (arg_id) {
-	case ARG_TITLE:
+	switch (property_id) {
+	case PROP_TITLE:
 		g_free (efl->priv->title);
-		efl->priv->title = g_strdup (GTK_VALUE_STRING (*arg));
+		efl->priv->title = g_strdup (g_value_get_string (value));
 		set_frame_label (efl);
 		break;
-	case ARG_POSSIBLE_TYPES:
+	case PROP_POSSIBLE_TYPES:
 		g_strfreev (efl->priv->possible_types);
-		efl->priv->possible_types = e_strdupv (GTK_VALUE_POINTER (*arg));
+		efl->priv->possible_types = e_strdupv (g_value_get_pointer (value));
 		break;
 	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
 	}
 }
 
 static void
-e_folder_list_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_folder_list_get_property (GObject *object,
+			    guint property_id,
+			    GValue *value,
+			    GParamSpec *pspec)
 {
 	EFolderList *efl = E_FOLDER_LIST(object);
 
-	switch (arg_id) {
-	case ARG_TITLE:
-		GTK_VALUE_STRING (*arg) = g_strdup (efl->priv->title);
+	switch (property_id) {
+	case PROP_TITLE:
+		g_value_set_string (value, efl->priv->title);
 		break;
-	case ARG_POSSIBLE_TYPES:
-		GTK_VALUE_POINTER (*arg) = e_strdupv ((const gchar **) efl->priv->possible_types);
+	case PROP_POSSIBLE_TYPES:
+		g_value_set_pointer (value, e_strdupv ((const gchar **) efl->priv->possible_types));
 		break;
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
 	}
 }
@@ -200,45 +216,54 @@ e_folder_list_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 static void
 e_folder_list_class_init (EFolderListClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkVBoxClass *vbox_class;
 
-	object_class               = (GtkObjectClass*) klass;
-	vbox_class                 = (GtkVBoxClass *) klass;
+	object_class = (GObjectClass*) klass;
+	vbox_class = (GtkVBoxClass *) klass;
+	parent_class = g_type_class_ref (PARENT_TYPE);
 
-	glade_gnome_init();
+	glade_init();
 
-	parent_class               = gtk_type_class (PARENT_TYPE);
-
-	object_class->set_arg      = e_folder_list_set_arg;
-	object_class->get_arg      = e_folder_list_get_arg;
-	object_class->destroy      = e_folder_list_destroy;
+	object_class->set_property = e_folder_list_set_property;
+	object_class->get_property = e_folder_list_get_property;
+	object_class->dispose      = e_folder_list_dispose;
 
 	klass->changed             = NULL;
 	klass->option_menu_changed = NULL;
 
 	signals [OPTION_MENU_CHANGED] =
-		gtk_signal_new ("option_menu_changed",
-				GTK_RUN_LAST,
-				E_OBJECT_CLASS_TYPE (object_class),
-				GTK_SIGNAL_OFFSET (EFolderListClass, option_menu_changed),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+		g_signal_new ("option_menu_changed",
+			      E_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EFolderListClass, option_menu_changed),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__INT,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_INT);
 
 	signals [CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				E_OBJECT_CLASS_TYPE (object_class),
-				GTK_SIGNAL_OFFSET (EFolderListClass, changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("changed",
+			      E_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EFolderListClass, changed),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	E_OBJECT_CLASS_ADD_SIGNALS (object_class, signals, LAST_SIGNAL);
 
-	gtk_object_add_arg_type ("EFolderList::title", GTK_TYPE_STRING,
-				 GTK_ARG_READWRITE, ARG_TITLE);
-	gtk_object_add_arg_type ("EFolderList::possible_types", GTK_TYPE_POINTER,
-				 GTK_ARG_READWRITE, ARG_POSSIBLE_TYPES);
+	g_object_class_install_property (object_class, PROP_TITLE,
+					 g_param_spec_string ("title",
+							      NULL,
+							      NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+	g_object_class_install_property (object_class, PROP_POSSIBLE_TYPES,
+					 g_param_spec_pointer ("possible_types",
+							       NULL,
+							       NULL,
+							       G_PARAM_READWRITE));
 }
 
 #define SPEC 	"<ETableSpecification cursor-mode=\"line\"" \
@@ -296,9 +321,10 @@ create_custom_folder_list (char *name, char *string1, char *string2, int int1, i
 {
 	ETableModel *model;
 	GtkWidget *scrolled;
+
 	model = e_table_memory_store_new (columns);
 	scrolled = e_table_scrolled_new (model, NULL, SPEC, NULL);
-	gtk_object_set_data (GTK_OBJECT (scrolled), "table-model", model);
+	g_object_set_data (G_OBJECT (scrolled), "table-model", model);
 	return scrolled;
 }
 
@@ -322,7 +348,7 @@ add_clicked (GtkButton *button, EFolderList *efl)
 		e_table_memory_store_insert (efl->priv->model, -1, NULL, pixbuf, display_string,
 					     folder->displayName, folder->evolutionUri, folder->physicalUri);
 		e_folder_list_changed (efl);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		g_free (display_string);
 	}
 }
@@ -363,7 +389,7 @@ remove_clicked (GtkButton *button, EFolderList *efl)
 static void
 optionmenu_changed (EOptionMenu *option_menu, int value, EFolderList *efl)
 {
-	gtk_signal_emit (GTK_OBJECT (efl), signals[OPTION_MENU_CHANGED], value);
+	g_signal_emit (efl, signals[OPTION_MENU_CHANGED], 0, value);
 }
 
 static void
@@ -400,7 +426,7 @@ e_folder_list_init (EFolderList *efl)
 
 	efl->priv = g_new (EFolderListPrivate, 1);
 
-	gui = glade_xml_new (EVOLUTION_GLADEDIR "/e-folder-list.glade", NULL);
+	gui = glade_xml_new (EVOLUTION_GLADEDIR "/e-folder-list.glade", NULL, NULL);
 	efl->priv->gui = gui;
 
 	efl->priv->title = NULL;
@@ -414,44 +440,52 @@ e_folder_list_init (EFolderList *efl)
 	efl->priv->option_menu = E_OPTION_MENU(glade_xml_get_widget (gui, "custom-optionmenu"));
 	e_folder_list_set_option_menu_strings (efl, NULL);
 	efl->priv->scrolled_table = E_TABLE_SCROLLED(glade_xml_get_widget(gui, "custom-folder-list"));
-	efl->priv->model = E_TABLE_MEMORY_STORE (gtk_object_get_data (GTK_OBJECT (efl->priv->scrolled_table), "table-model"));
+	efl->priv->model = E_TABLE_MEMORY_STORE (g_object_get_data (G_OBJECT (efl->priv->scrolled_table), "table-model"));
 
 	e_glade_xml_connect_widget (gui, "button-add", "clicked",
-				    GTK_SIGNAL_FUNC (add_clicked), efl);
+				    G_CALLBACK (add_clicked), efl);
 	e_glade_xml_connect_widget (gui, "button-remove", "clicked",
-				    GTK_SIGNAL_FUNC (remove_clicked), efl);
+				    G_CALLBACK (remove_clicked), efl);
 	e_glade_xml_connect_widget (gui, "custom-optionmenu", "changed",
-				    GTK_SIGNAL_FUNC (optionmenu_changed), efl);
+				    G_CALLBACK (optionmenu_changed), efl);
 
 	selection_model = e_table_get_selection_model (e_table_scrolled_get_table (efl->priv->scrolled_table));
 
-	gtk_signal_connect (GTK_OBJECT (selection_model), "selection_changed",
-			    GTK_SIGNAL_FUNC (selection_changed), efl);
-	gtk_signal_connect (GTK_OBJECT (selection_model), "cursor_changed",
-			    GTK_SIGNAL_FUNC (cursor_changed), efl);
+	g_signal_connect (selection_model, "selection_changed",
+			  G_CALLBACK (selection_changed), efl);
+	g_signal_connect (selection_model, "cursor_changed",
+			  G_CALLBACK (cursor_changed), efl);
+
+	/* XXX libglade2 seems to not show custom widgets even when
+	   they're flagged Visible.*/
+	gtk_widget_show_all (GTK_WIDGET (efl->priv->scrolled_table));
 
 	efl->priv->possible_types = NULL;
 	set_frame_label (efl);
 }
 
 EFolderListItem *
-e_folder_list_parse_xml (char *xml)
+e_folder_list_parse_xml (const char *xml)
 {
-	xmlDoc *doc;
+	xmlDoc *doc = NULL;
 	xmlNode *root;
 	xmlNode *node;
 	int i;
 	EFolderListItem *items;
 
-	if (xml == NULL || *xml == 0) {
+	if (xml && *xml) {
+		doc = xmlParseMemory (xml, strlen (xml));
+		if (!doc)
+			g_warning ("malformed EFolderList xml");
+	}
+
+	if (!doc) {
 		items = g_new (EFolderListItem, 1);
 		items[0].uri = NULL;
 		items[0].physical_uri = NULL;
 		items[0].display_name = NULL;
 		return items;
 	}
-
-	doc = xmlParseMemory (xml, strlen (xml));
 
 	root = xmlDocGetRootElement (doc);
 
@@ -460,10 +494,13 @@ e_folder_list_parse_xml (char *xml)
 
 	items = g_new (EFolderListItem, i + 1);
 
-	for (node = root->xmlChildrenNode, i = 0; node; node = node->next, i++) {
-		items[i].uri = e_xml_get_string_prop_by_name_with_default (node, "uri", "");
-		items[i].physical_uri = e_xml_get_string_prop_by_name_with_default (node, "physical-uri", "");
-		items[i].display_name = e_xml_get_string_prop_by_name_with_default (node, "display-name", "");
+	for (node = root->xmlChildrenNode, i = 0; node; node = node->next) {
+		if (node->name && !strcmp (node->name, "folder")) {
+			items[i].uri = e_xml_get_string_prop_by_name_with_default (node, "uri", "");
+			items[i].physical_uri = e_xml_get_string_prop_by_name_with_default (node, "physical-uri", "");
+			items[i].display_name = e_xml_get_string_prop_by_name_with_default (node, "display-name", "");
+			i++;
+		}
 	}
 	items[i].uri = NULL;
 	items[i].physical_uri = NULL;
@@ -519,44 +556,21 @@ e_folder_list_free_items (EFolderListItem *items)
 	g_free (items);
 }
 
-GtkType
-e_folder_list_get_type (void)
-{
-	static GtkType folder_list_type = 0;
-
-	if (!folder_list_type)
-		{
-			static const GtkTypeInfo folder_list_info =
-			{
-				"EFolderList",
-				sizeof (EFolderList),
-				sizeof (EFolderListClass),
-				(GtkClassInitFunc) e_folder_list_class_init,
-				(GtkObjectInitFunc) e_folder_list_init,
-				/* reserved_1 */ NULL,
-				/* reserved_2 */ NULL,
-				(GtkClassInitFunc) NULL,
-			};
-
-			folder_list_type = gtk_type_unique (PARENT_TYPE, &folder_list_info);
-		}
-
-	return folder_list_type;
-}
-
 GtkWidget*
-e_folder_list_new (EvolutionShellClient *client, char *xml)
+e_folder_list_new (EvolutionShellClient *client, const char *xml)
 {
-	GtkWidget *widget = GTK_WIDGET (gtk_type_new (e_folder_list_get_type ()));
+	GtkWidget *widget = GTK_WIDGET (g_object_new (e_folder_list_get_type (), NULL));
+
 	e_folder_list_construct (E_FOLDER_LIST (widget), client, xml);
 	return widget;
 }
 
 GtkWidget*
-e_folder_list_construct (EFolderList *efl, EvolutionShellClient *client, char *xml)
+e_folder_list_construct (EFolderList *efl, EvolutionShellClient *client, const char *xml)
 {
+	g_object_ref (client);
 	efl->priv->client = client;
-	bonobo_object_ref (BONOBO_OBJECT (efl->priv->client));
+
 	efl->priv->corba_storage_registry = evolution_shell_client_get_storage_registry_interface (client);
 	e_folder_list_set_xml (efl, xml);
 	return GTK_WIDGET (efl);
@@ -583,7 +597,7 @@ e_folder_list_set_items (EFolderList *efl, EFolderListItem *items)
 					     pixbuf, display_string,
 					     items[i].display_name, items[i].uri, items[i].physical_uri);
 		CORBA_free (folder);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 		g_free (display_string);
 	}
 }
@@ -611,7 +625,7 @@ e_folder_list_get_items (EFolderList *efl)
 }
 
 void
-e_folder_list_set_xml (EFolderList *efl, char *xml)
+e_folder_list_set_xml (EFolderList *efl, const char *xml)
 {
 	EFolderListItem *items;
 
@@ -634,7 +648,7 @@ e_folder_list_get_xml (EFolderList *efl)
 }
 
 void
-e_folder_list_set_option_menu_strings_from_array (EFolderList *efl, gchar **strings)
+e_folder_list_set_option_menu_strings_from_array (EFolderList *efl, const char **strings)
 {
 	e_option_menu_set_strings_from_array (efl->priv->option_menu, strings);
 	if (strings && *strings)
@@ -644,15 +658,22 @@ e_folder_list_set_option_menu_strings_from_array (EFolderList *efl, gchar **stri
 }
 
 void
-e_folder_list_set_option_menu_strings (EFolderList *efl, gchar *first_label, ...)
+e_folder_list_set_option_menu_strings (EFolderList *efl, const char *first_label, ...)
 {
-	char **array;
+	GPtrArray *labels;
+	va_list args;
+	char *s;
 
-	GET_STRING_ARRAY_FROM_ELLIPSIS (array, first_label);
+	labels = g_ptr_array_new ();
 
-	e_folder_list_set_option_menu_strings_from_array (efl, array);
+	va_start (args, first_label);
+	for (s = (char *)first_label; s; s = va_arg (args, char *))
+		g_ptr_array_add (labels, s);
+	va_end (args);
 
-	g_free (array);
+	e_folder_list_set_option_menu_strings_from_array (efl, (const char **)labels->pdata);
+
+	g_ptr_array_free (labels, TRUE);
 }
 
 int
@@ -666,3 +687,6 @@ e_folder_list_set_option_menu_value (EFolderList *efl, int value)
 {
 	gtk_option_menu_set_history (GTK_OPTION_MENU (efl->priv->option_menu), value);
 }
+
+
+E_MAKE_TYPE (e_folder_list, "EFolderList", EFolderList, e_folder_list_class_init, e_folder_list_init, PARENT_TYPE)

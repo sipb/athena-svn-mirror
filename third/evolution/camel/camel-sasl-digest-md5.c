@@ -2,7 +2,7 @@
 /*
  *  Authors: Jeffrey Stedfast <fejj@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc. (www.ximian.com)
+ *  Copyright 2001-2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -20,6 +20,7 @@
  *
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -28,12 +29,14 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <iconv.h>
-#include "camel-sasl-digest-md5.h"
-#include "camel-mime-utils.h"
-#include "camel-charset-map.h"
+
 #include <e-util/md5-utils.h>
+
 #include <gal/util/e-iconv.h>
+
+#include "camel-charset-map.h"
+#include "camel-mime-utils.h"
+#include "camel-sasl-digest-md5.h"
 
 #define d(x)
 
@@ -360,7 +363,7 @@ decode_data_type (DataType *dtype, const char *name)
 	int i;
 	
 	for (i = 0; dtype[i].name; i++) {
-		if (!g_strcasecmp (dtype[i].name, name))
+		if (!strcasecmp (dtype[i].name, name))
 			break;
 	}
 	
@@ -467,7 +470,7 @@ parse_server_challenge (const char *tokens, gboolean *abort)
 			break;
 		case DIGEST_STALE:
 			PARANOID (digest_abort (&got_stale, abort));
-			if (!g_strcasecmp (param->value, "true"))
+			if (!strcasecmp (param->value, "true"))
 				challenge->stale = TRUE;
 			else
 				challenge->stale = FALSE;
@@ -695,10 +698,10 @@ digest_response (struct _DigestResponse *resp)
 		char *username, *outbuf;
 		const char *charset;
 		size_t len, outlen;
-		const char *buf;
+		const char *inbuf;
 		iconv_t cd;
 		
-		charset = e_iconv_locale_charset();
+		charset = e_iconv_locale_charset ();
 		if (!charset)
 			charset = "iso-8859-1";
 		
@@ -708,8 +711,8 @@ digest_response (struct _DigestResponse *resp)
 		outlen = 2 * len; /* plenty of space */
 		
 		outbuf = username = g_malloc0 (outlen + 1);
-		buf = resp->username;
-		if (cd == (iconv_t) -1 || e_iconv (cd, &buf, &len, &outbuf, &outlen) == (size_t) -1) {
+		inbuf = resp->username;
+		if (cd == (iconv_t) -1 || e_iconv (cd, &inbuf, &len, &outbuf, &outlen) == (size_t) -1) {
 			/* We can't convert to UTF-8 - pretend we never got a charset param? */
 			g_free (resp->charset);
 			resp->charset = NULL;

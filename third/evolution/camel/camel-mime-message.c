@@ -30,24 +30,22 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include <gal/util/e-iconv.h>
 
-#include <errno.h>
+#include <e-util/e-time-utils.h>
 
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-stream-mem.h"
 #include "string-utils.h"
-#include "hash-table-utils.h"
 #include "camel-url.h"
 
 #include "camel-stream-filter.h"
 #include "camel-stream-null.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-bestenc.h"
-
-#include "e-time-utils.h"
 
 #define d(x)
 
@@ -105,7 +103,7 @@ camel_mime_message_class_init (CamelMimeMessageClass *camel_mime_message_class)
 
 	header_name_table = g_hash_table_new (g_strcase_hash, g_strcase_equal);
 	for (i=0;header_names[i];i++)
-		g_hash_table_insert (header_name_table, header_names[i], (gpointer)i+1);
+		g_hash_table_insert (header_name_table, header_names[i], GINT_TO_POINTER(i+1));
 
 	/* virtual method overload */
 	camel_data_wrapper_class->write_to_stream = write_to_stream;
@@ -451,7 +449,7 @@ static int
 construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 {
 	char *buf;
-	int len;
+	size_t len;
 	int state;
 	int ret;
 	int err;
@@ -480,9 +478,6 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 	}
 
 	d(printf("mime_message::construct_from_parser() leaving\n"));
-#ifndef NO_WARNINGS
-#warning "return a real error code"
-#endif
 	err = camel_mime_parser_errno(mp);
 	if (err != 0) {
 		errno = err;
@@ -545,9 +540,10 @@ process_header (CamelMedium *medium, const char *header_name, const char *header
 		break;
 	case HEADER_SUBJECT:
 		g_free (message->subject);
-		if (((CamelMimePart *)message)->content_type)
-			charset = e_iconv_charset_name(header_content_type_param(((CamelMimePart *)message)->content_type, "charset"));
-		else
+		if (((CamelMimePart *) message)->content_type) {
+			charset = header_content_type_param (((CamelMimePart *) message)->content_type, "charset");
+			charset = e_iconv_charset_name (charset);
+		} else
 			charset = NULL;
 		message->subject = g_strstrip (header_decode_string (header_value, charset));
 		break;
@@ -706,6 +702,7 @@ find_best_encoding (CamelMimePart *part, CamelBestencRequired required, CamelBes
 	istext = header_content_type_is (part->content_type, "text", "*");
 	if (istext) {
 		flags = CAMEL_BESTENC_GET_CHARSET | CAMEL_BESTENC_GET_ENCODING;
+		enctype |= CAMEL_BESTENC_TEXT;
 	} else {
 		flags = CAMEL_BESTENC_GET_ENCODING;
 	}
@@ -901,4 +898,69 @@ camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const char
 	camel_mime_message_foreach_part (message, check_content_id, &check);
 	
 	return check.part;
+}
+
+static char *tz_months[] = {
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
+
+static char *tz_days[] = {
+	"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+};
+
+char *
+camel_mime_message_build_mbox_from (CamelMimeMessage *message)
+{
+	struct _header_raw *header = ((CamelMimePart *)message)->headers;
+	GString *out = g_string_new("From ");
+	char *ret;
+	const char *tmp;
+	time_t thetime;
+	int offset;
+	struct tm tm;
+	
+	tmp = header_raw_find (&header, "Sender", NULL);
+	if (tmp == NULL)
+		tmp = header_raw_find (&header, "From", NULL);
+	if (tmp != NULL) {
+		struct _header_address *addr = header_address_decode (tmp, NULL);
+		
+		tmp = NULL;
+		if (addr) {
+			if (addr->type == HEADER_ADDRESS_NAME) {
+				g_string_append (out, addr->v.addr);
+				tmp = "";
+			}
+			header_address_unref (addr);
+		}
+	}
+	
+	if (tmp == NULL)
+		g_string_append (out, "unknown@nodomain.now.au");
+	
+	/* try use the received header to get the date */
+	tmp = header_raw_find (&header, "Received", NULL);
+	if (tmp) {
+		tmp = strrchr(tmp, ';');
+		if (tmp)
+			tmp++;
+	}
+	
+	/* if there isn't one, try the Date field */
+	if (tmp == NULL)
+		tmp = header_raw_find (&header, "Date", NULL);
+	
+	thetime = header_decode_date (tmp, &offset);
+	thetime += ((offset / 100) * (60 * 60)) + (offset % 100) * 60;
+	gmtime_r (&thetime, &tm);
+	g_string_append_printf (out, " %s %s %2d %02d:%02d:%02d %4d\n",
+				tz_days[tm.tm_wday], tz_months[tm.tm_mon],
+				tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
+				tm.tm_year + 1900);
+	
+	ret = out->str;
+	g_string_free (out, FALSE);
+	
+	return ret;
 }

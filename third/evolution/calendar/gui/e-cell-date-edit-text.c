@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h> 
 #include <libgnome/gnome-i18n.h>
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-unicode.h>
@@ -88,7 +88,7 @@ ecd_get_text (ECellText *cell, ETableModel *model, int col, int row)
 	e_time_format_date_and_time (&tmp_tm, ecd->use_24_hour_format,
 				     !dv->tt.is_date, FALSE,
 				     buffer, sizeof (buffer));
-	return e_utf8_from_locale_string (buffer);
+	return g_strdup (buffer);
 }
 
 
@@ -120,7 +120,7 @@ show_date_warning (ECellDateEditText *ecd)
 		/* strftime format of a weekday, a date and a time, 12-hour. */
 		format = _("%a %m/%d/%Y %I:%M:%S %p");
 
-	strftime (buffer, sizeof (buffer), format, tmp_tm);
+	e_utf8_strftime (buffer, sizeof (buffer), format, tmp_tm);
 
 	g_snprintf (message, 256,
 		    _("The date must be entered in the format: \n\n%s"),
@@ -222,7 +222,7 @@ ECell *
 e_cell_date_edit_text_new (const char *fontname,
 			   GtkJustification justify)
 {
-	ECellDateEditText *ecd = gtk_type_new (e_cell_date_edit_text_get_type ());
+	ECellDateEditText *ecd = g_object_new (e_cell_date_edit_text_get_type (), NULL);
 
 	e_cell_text_construct (E_CELL_TEXT (ecd), fontname, justify);
       

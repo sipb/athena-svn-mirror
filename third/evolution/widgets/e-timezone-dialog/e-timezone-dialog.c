@@ -28,7 +28,10 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include <widgets/misc/e-map.h>
+
 #include "e-timezone-dialog.h"
+
+#include <gal/util/e-util.h>
 
 #define E_TIMEZONE_DIALOG_MAP_POINT_NORMAL_RGBA 0xc070a0ff
 #define E_TIMEZONE_DIALOG_MAP_POINT_HOVER_RGBA 0xffff60ff
@@ -36,10 +39,9 @@
 #define E_TIMEZONE_DIALOG_MAP_POINT_SELECTED_2_RGBA 0x000000ff
 
 struct _ETimezoneDialogPrivate {
-	/* The TZID of the timezone. May be NULL for a 'local time' (i.e. when
-	   the displayed name is "") or for builtin timezones which we haven't
-	   loaded yet. */
-	char *tzid;
+	/* The selected timezone. May be NULL for a 'local time' (i.e. when
+	   the displayed name is ""). */
+	icaltimezone *zone;
 
 	/* Glade XML data */
 	GladeXML *xml;
@@ -63,7 +65,8 @@ struct _ETimezoneDialogPrivate {
 
 static void e_timezone_dialog_class_init	(ETimezoneDialogClass *class);
 static void e_timezone_dialog_init		(ETimezoneDialog      *etd);
-static void e_timezone_dialog_destroy		(GtkObject	*object);
+static void e_timezone_dialog_dispose		(GObject	*object);
+static void e_timezone_dialog_finalize		(GObject	*object);
 
 static gboolean get_widgets			(ETimezoneDialog *etd);
 static gboolean on_map_timeout			(gpointer	 data);
@@ -80,51 +83,28 @@ static gboolean on_map_button_pressed		(GtkWidget	*w,
 						 GdkEventButton *event,
 						 gpointer	 data);
 
-static char*	get_zone_from_point		(ETimezoneDialog *etd,
+static icaltimezone* get_zone_from_point	(ETimezoneDialog *etd,
 						 EMapPoint	*point);
-static void	find_selected_point		(ETimezoneDialog *etd);
+static void	set_map_timezone		(ETimezoneDialog *etd,
+						 icaltimezone    *zone);
 static void	on_combo_changed		(GtkEditable	*entry,
 						 ETimezoneDialog *etd);
 
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 
-
-GtkType
-e_timezone_dialog_get_type (void)
-{
-	static GtkType e_timezone_dialog_type = 0;
-
-	if (!e_timezone_dialog_type) {
-		static const GtkTypeInfo e_timezone_dialog_info = {
-			"ETimezoneDialog",
-			sizeof (ETimezoneDialog),
-			sizeof (ETimezoneDialogClass),
-			(GtkClassInitFunc) e_timezone_dialog_class_init,
-			(GtkObjectInitFunc) e_timezone_dialog_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_timezone_dialog_type = gtk_type_unique (GTK_TYPE_OBJECT,
-							  &e_timezone_dialog_info);
-	}
-
-	return e_timezone_dialog_type;
-}
 
 /* Class initialization function for the event editor */
 static void
 e_timezone_dialog_class_init (ETimezoneDialogClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = (GtkObjectClass *) class;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose  = e_timezone_dialog_dispose;
+	object_class->finalize = e_timezone_dialog_finalize;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
-
-	object_class->destroy = e_timezone_dialog_destroy;
+	parent_class = gtk_type_class (G_TYPE_OBJECT);
 }
 
 /* Object initialization function for the event editor */
@@ -133,20 +113,17 @@ e_timezone_dialog_init (ETimezoneDialog *etd)
 {
 	ETimezoneDialogPrivate *priv;
 
-	GTK_OBJECT_UNSET_FLAGS (etd, GTK_FLOATING);
-
 	priv = g_new0 (ETimezoneDialogPrivate, 1);
 	etd->priv = priv;
 
-	priv->tzid = NULL;
 	priv->point_selected = NULL;
 	priv->point_hover = NULL;
 	priv->timeout_id = 0;
 }
 
-/* Destroy handler for the event editor */
+/* Dispose handler for the event editor */
 static void
-e_timezone_dialog_destroy (GtkObject *object)
+e_timezone_dialog_dispose (GObject *object)
 {
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
@@ -159,11 +136,10 @@ e_timezone_dialog_destroy (GtkObject *object)
 	priv = etd->priv;
 
 	/* Destroy the actual dialog. */
-	dialog = e_timezone_dialog_get_toplevel (etd);
-	gtk_widget_destroy (dialog);
-
-	g_free (priv->tzid);
-	priv->tzid = NULL;
+	if (dialog != NULL) {
+		dialog = e_timezone_dialog_get_toplevel (etd);
+		gtk_widget_destroy (dialog);
+	}
 
 	if (priv->timeout_id) {
 		g_source_remove (priv->timeout_id);
@@ -171,15 +147,29 @@ e_timezone_dialog_destroy (GtkObject *object)
 	}
 
 	if (priv->xml) {
-		gtk_object_unref (GTK_OBJECT (priv->xml));
+		g_object_unref (priv->xml);
 		priv->xml = NULL;
 	}
 
-	g_free (priv);
-	etd->priv = NULL;
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+/* Finalize handler for the event editor */
+static void
+e_timezone_dialog_finalize (GObject *object)
+{
+	ETimezoneDialog *etd;
+	ETimezoneDialogPrivate *priv;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (E_IS_TIMEZONE_DIALOG (object));
+
+	etd = E_TIMEZONE_DIALOG (object);
+	priv = etd->priv;
+
+	g_free (priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -246,8 +236,7 @@ e_timezone_dialog_construct (ETimezoneDialog *etd)
 
 	/* Load the content widgets */
 
-	priv->xml = glade_xml_new (EVOLUTION_GLADEDIR "/e-timezone-dialog.glade",
-				   NULL);
+	priv->xml = glade_xml_new (EVOLUTION_GLADEDIR "/e-timezone-dialog.glade", NULL, NULL);
 	if (!priv->xml) {
 		g_message ("e_timezone_dialog_construct(): Could not load the Glade XML file!");
 		goto error;
@@ -258,8 +247,8 @@ e_timezone_dialog_construct (ETimezoneDialog *etd)
 		goto error;
 	}
 
-	map = GTK_WIDGET (e_map_new ());
-	priv->map = E_MAP (map);
+	priv->map = e_map_new ();
+	map = GTK_WIDGET (priv->map);
 	gtk_widget_set_events (map, gtk_widget_get_events (map)
 			       | GDK_LEAVE_NOTIFY_MASK
 			       | GDK_VISIBILITY_NOTIFY_MASK);
@@ -271,23 +260,21 @@ e_timezone_dialog_construct (ETimezoneDialog *etd)
 	gtk_container_add (GTK_CONTAINER (priv->map_window), map);
 	gtk_widget_show (map);
 
-        gtk_signal_connect (GTK_OBJECT (map), "motion-notify-event",
-			    GTK_SIGNAL_FUNC (on_map_motion), etd);
-        gtk_signal_connect (GTK_OBJECT (map), "leave-notify-event",
-			    GTK_SIGNAL_FUNC (on_map_leave), etd);
-        gtk_signal_connect (GTK_OBJECT (map), "visibility-notify-event",
-			    GTK_SIGNAL_FUNC (on_map_visibility_changed), etd);
-	gtk_signal_connect (GTK_OBJECT (map), "button-press-event",
-			    GTK_SIGNAL_FUNC (on_map_button_pressed), etd);
+	/* Ensure a reasonable minimum amount of map is visible */
+	gtk_widget_set_size_request (priv->map_window, 200, 200);
 
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (priv->timezone_combo)->entry), "changed", 
-			    GTK_SIGNAL_FUNC (on_combo_changed), etd);
+        g_signal_connect (map, "motion-notify-event", G_CALLBACK (on_map_motion), etd);
+        g_signal_connect (map, "leave-notify-event", G_CALLBACK (on_map_leave), etd);
+        g_signal_connect (map, "visibility-notify-event", G_CALLBACK (on_map_visibility_changed), etd);
+	g_signal_connect (map, "button-press-event", G_CALLBACK (on_map_button_pressed), etd);
+
+	g_signal_connect (GTK_COMBO (priv->timezone_combo)->entry, "changed", G_CALLBACK (on_combo_changed), etd);
 
 	return etd;
 
  error:
 
-	gtk_object_unref (GTK_OBJECT (etd));
+	g_object_unref (etd);
 	return NULL;
 }
 
@@ -331,10 +318,22 @@ e_timezone_dialog_new (void)
 {
 	ETimezoneDialog *etd;
 
-	etd = E_TIMEZONE_DIALOG (gtk_type_new (E_TYPE_TIMEZONE_DIALOG));
+	etd = E_TIMEZONE_DIALOG (g_object_new (E_TYPE_TIMEZONE_DIALOG, NULL));
 	return e_timezone_dialog_construct (E_TIMEZONE_DIALOG (etd));
 }
 
+
+static const char *
+zone_display_name (icaltimezone *zone)
+{
+	const char *display_name;
+
+	display_name = icaltimezone_get_display_name (zone);
+	if (icaltimezone_get_builtin_timezone (display_name))
+		display_name = _(display_name);
+
+	return display_name;
+}
 
 
 /* This flashes the currently selected timezone in the map. */
@@ -368,7 +367,9 @@ on_map_motion (GtkWidget *widget, GdkEventMotion *event, gpointer data)
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
 	double longitude, latitude;
-	char *old_zone, *new_zone;
+	char *old_zone_name;
+	const char *new_zone_name;
+	icaltimezone *new_zone;
 
 	etd = E_TIMEZONE_DIALOG (data);
 	priv = etd->priv;
@@ -387,11 +388,15 @@ on_map_motion (GtkWidget *widget, GdkEventMotion *event, gpointer data)
 	        e_map_point_set_color_rgba (priv->map, priv->point_hover,
 					    E_TIMEZONE_DIALOG_MAP_POINT_HOVER_RGBA);
 
-	gtk_label_get (GTK_LABEL (priv->timezone_preview), &old_zone);
+	gtk_label_get (GTK_LABEL (priv->timezone_preview), &old_zone_name);
 	new_zone = get_zone_from_point (etd, priv->point_hover);
-	if (strcmp (old_zone, new_zone))
-		gtk_label_set_text (GTK_LABEL (priv->timezone_preview),
-				    new_zone);
+	if (new_zone) {
+		new_zone_name = zone_display_name (new_zone);
+		if (strcmp (old_zone_name, new_zone_name)) {
+			gtk_label_set_text (GTK_LABEL (priv->timezone_preview),
+					    new_zone_name);
+		}
+	}
 
 	return TRUE;
 }
@@ -461,7 +466,6 @@ on_map_button_pressed (GtkWidget *w, GdkEventButton *event, gpointer data)
 	ETimezoneDialog *etd;
 	ETimezoneDialogPrivate *priv;
 	double longitude, latitude;
-	char *location;
 	
 	etd = E_TIMEZONE_DIALOG (data);
 	priv = etd->priv;
@@ -482,21 +486,18 @@ on_map_button_pressed (GtkWidget *w, GdkEventButton *event, gpointer data)
 						    E_TIMEZONE_DIALOG_MAP_POINT_NORMAL_RGBA);
 		priv->point_selected = priv->point_hover;
 		
-		location = get_zone_from_point (etd, priv->point_selected);
+		priv->zone = get_zone_from_point (etd, priv->point_selected);
 		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry),
-				    location);
-
-		g_free (priv->tzid);
-		priv->tzid = NULL;
+				    zone_display_name (priv->zone));
 	}
 	
 	return TRUE;
 }
 
 
-/* Returns the translated timezone location of the fiven EMapPoint,
-   e.g. "Europe/London", in the current locale's encoding (not UTF-8). */
-static char*
+/* Returns the translated timezone location of the given EMapPoint,
+   e.g. "Europe/London". */
+static icaltimezone *
 get_zone_from_point (ETimezoneDialog *etd,
 		     EMapPoint *point)
 {
@@ -508,7 +509,7 @@ get_zone_from_point (ETimezoneDialog *etd,
 	priv = etd->priv;
 
 	if (point == NULL)
-		return "";
+		return NULL;
 
 	e_map_point_get_location (point, &longitude, &latitude);
 
@@ -528,7 +529,7 @@ get_zone_from_point (ETimezoneDialog *etd,
 		    zone_latitude - 0.005 <= latitude &&
 		    zone_latitude + 0.005 >= latitude)
 		{
-			return _(icaltimezone_get_location (zone));
+			return zone;
 		}
 	}
 
@@ -538,56 +539,50 @@ get_zone_from_point (ETimezoneDialog *etd,
 }
 
 
-/* Returns the TZID of the timezone set, and optionally its displayed name.
-   The TZID may be NULL, in which case the builtin timezone with the city name
-   of display_name should be used. If display_name is also NULL or "", then it
-   is assumed to be a 'local time'. Note that display_name may be translated,
-   so you need to convert it back to English before trying to load it. 
-   It will be in the GTK+ encoding, i.e. not UTF-8. */
-char*
-e_timezone_dialog_get_timezone		(ETimezoneDialog  *etd,
-					 char		 **display_name)
+/**
+ * e_timezone_dialog_get_timezone:
+ * @etd: the timezone dialog
+ *
+ * Return value: the currently-selected timezone, or %NULL if no timezone
+ * is selected.
+ **/
+icaltimezone *
+e_timezone_dialog_get_timezone (ETimezoneDialog *etd)
 {
 	ETimezoneDialogPrivate *priv;
 
-	g_return_val_if_fail (etd != NULL, NULL);
 	g_return_val_if_fail (E_IS_TIMEZONE_DIALOG (etd), NULL);
 
 	priv = etd->priv;
 
-	if (display_name)
-		*display_name = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry));
-
-	return priv->tzid;
+	return priv->zone;
 }
 
-
-/* Sets the TZID and displayed name of the timezone. The TZID may be NULL for
-   a 'local time' (i.e. display_name is NULL or "") or if it is a builtin
-   timezone which hasn't been loaded yet. (This is done so we don't load
-   timezones until we really need them.) The display_name should be the
-   translated name in the GTK+ - it will be displayed exactly as it is. */
+/**
+ * e_timezone_dialog_set_timezone:
+ * @etd: the timezone dialog
+ * @zone: the timezone
+ *
+ * Sets the timezone of @etd to @zone. Updates the display name and
+ * selected location. The caller must ensure that @zone is not freed
+ * before @etd is destroyed.
+ **/
 void
-e_timezone_dialog_set_timezone		(ETimezoneDialog  *etd,
-					 char		  *tzid,
-					 char		  *display_name)
+e_timezone_dialog_set_timezone (ETimezoneDialog *etd,
+				icaltimezone    *zone)
 {
 	ETimezoneDialogPrivate *priv;
 
-	g_return_if_fail (etd != NULL);
 	g_return_if_fail (E_IS_TIMEZONE_DIALOG (etd));
 
 	priv = etd->priv;
 
-	if (priv->tzid)
-		g_free (priv->tzid);
-
-	priv->tzid = g_strdup (tzid);
+	priv->zone = zone;
 
 	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry),
-			    display_name ? display_name : "");
+			    zone ? zone_display_name (zone) : "");
 
-	find_selected_point (etd);
+	set_map_timezone (etd, zone);
 }
 
 
@@ -605,45 +600,24 @@ e_timezone_dialog_get_toplevel	(ETimezoneDialog  *etd)
 }
 
 
-/* This tries to find the timezone corresponding to the text in the combo,
-   and selects the point so that it flashes. */
 static void
-find_selected_point (ETimezoneDialog *etd)
+set_map_timezone (ETimezoneDialog *etd, icaltimezone *zone)
 {
 	ETimezoneDialogPrivate *priv;
-	icalarray *zones;
-	char *current_zone;
-	EMapPoint *point = NULL;
-	int i;
+	EMapPoint *point;
+	double zone_longitude, zone_latitude;
 
 	priv = etd->priv;
 
-	current_zone = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry));
-
-	/* Get the array of builtin timezones. */
-	zones = icaltimezone_get_builtin_timezones ();
-
-	for (i = 0; i < zones->num_elements; i++) {
-		icaltimezone *zone;
-		char *location;
-
-		zone = icalarray_element_at (zones, i);
-
-		location = _(icaltimezone_get_location (zone));
-
-		if (!strcmp (current_zone, location)) {
-			double zone_longitude, zone_latitude;
-
-			zone_longitude = icaltimezone_get_longitude (zone);
-			zone_latitude = icaltimezone_get_latitude (zone);
-
-			point = e_map_get_closest_point (priv->map,
-							 zone_longitude,
-							 zone_latitude,
-							 FALSE);
-			break;
-		}
-	}
+	if (zone) {
+		zone_longitude = icaltimezone_get_longitude (zone);
+		zone_latitude = icaltimezone_get_latitude (zone);
+		point = e_map_get_closest_point (priv->map,
+						 zone_longitude,
+						 zone_latitude,
+						 FALSE);
+	} else
+		point = NULL;
 
 	if (priv->point_selected)
 		e_map_point_set_color_rgba (priv->map, priv->point_selected,
@@ -657,13 +631,35 @@ static void
 on_combo_changed (GtkEditable *entry, ETimezoneDialog *etd)
 {
 	ETimezoneDialogPrivate *priv;
+	const char *new_zone_name;
+	icalarray *zones;
+	icaltimezone *map_zone = NULL;
+	char *location;
+	int i;
 
 	priv = etd->priv;
 
-	find_selected_point (etd);
+	new_zone_name = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (priv->timezone_combo)->entry));
 
-	g_free (priv->tzid);
-	priv->tzid = NULL;
+	if (!*new_zone_name)
+		priv->zone = NULL;
+	else if (!strcmp (new_zone_name, _("UTC")))
+		priv->zone = icaltimezone_get_utc_timezone ();
+	else {
+		priv->zone = NULL;
+
+		zones = icaltimezone_get_builtin_timezones ();
+		for (i = 0; i < zones->num_elements; i++) {
+			map_zone = icalarray_element_at (zones, i);
+			location = _(icaltimezone_get_location (map_zone));
+			if (!strcmp (new_zone_name, location)) {
+				priv->zone = map_zone;
+				break;
+			}
+		}
+	}
+
+	set_map_timezone (etd, map_zone);
 }
 
 /**
@@ -684,36 +680,5 @@ e_timezone_dialog_reparent (ETimezoneDialog *etd,
 	gtk_widget_reparent (priv->table, new_parent);
 }
 
-
-/* Returns the builtin timezone corresponding to display_name, which is
-   the translated location, e.g. 'Europe/London', in the locale's encoding.
-   If display_name is NULL or "" it returns NULL. */
-icaltimezone*
-e_timezone_dialog_get_builtin_timezone	(char		  *display_name)
-{
-	icalarray *zones;
-	int i;
-
-	/* If the field is empty, return NULL (i.e. a floating time). */
-	if (!display_name || !display_name[0])
-		return NULL;
-
-	/* Check for UTC. */
-	if (!strcmp (display_name, _("UTC")))
-		return icaltimezone_get_utc_timezone ();
-
-	/* Get the array of builtin timezones. */
-	zones = icaltimezone_get_builtin_timezones ();
-
-	for (i = 0; i < zones->num_elements; i++) {
-		icaltimezone *zone;
-		char *location;
-
-		zone = icalarray_element_at (zones, i);
-		location = icaltimezone_get_location (zone);
-		if (!strcmp (display_name, _(location)))
-			return zone;
-	}
-
-	return NULL;
-}
+E_MAKE_TYPE (e_timezone_dialog, "ETimezoneDialog", ETimezoneDialog,
+	     e_timezone_dialog_class_init, e_timezone_dialog_init, G_TYPE_OBJECT)

@@ -52,6 +52,7 @@ static void
 menu_position_cb (GtkMenu *menu,
 		  int *x,
 		  int *y,
+		  gboolean *push_in,
 		  void *data)
 {
 	EDropdownButton *dropdown_button;
@@ -84,8 +85,6 @@ menu_deactivate_cb (GtkMenuShell *menu_shell,
 		    void *data)
 {
 	EDropdownButton *dropdown_button;
-
-	puts (__FUNCTION__);
 
 	dropdown_button = E_DROPDOWN_BUTTON (data);
 
@@ -153,7 +152,7 @@ class_init (EDropdownButtonClass *klass)
 	object_class->destroy = impl_destroy;
 	toggle_class->toggled = impl_toggled;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 
@@ -216,7 +215,7 @@ e_dropdown_button_construct (EDropdownButton *dropdown_button,
 	priv->menu = GTK_WIDGET (menu);
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (priv->menu), "deactivate",
-					GTK_SIGNAL_FUNC (menu_deactivate_cb),
+					G_CALLBACK (menu_deactivate_cb),
 					dropdown_button, GTK_OBJECT (dropdown_button));
 }
 

@@ -29,6 +29,10 @@
 
 #include <gal/util/e-util.h>
 
+#include <gtk/gtksignal.h>
+
+#include <string.h>
+
 
 #define PARENT_TYPE bonobo_object_get_type ()
 static BonoboObjectClass *parent_class = NULL;
@@ -178,30 +182,6 @@ remove_listener (EvolutionStorageSetView *storage_set_view,
 
 /* CORBA interface implementation.  */
 
-static POA_GNOME_Evolution_StorageSetView__vepv StorageSetView_vepv;
-
-static POA_GNOME_Evolution_StorageSetView *
-create_servant (void)
-{
-	POA_GNOME_Evolution_StorageSetView *servant;
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-
-	servant = (POA_GNOME_Evolution_StorageSetView *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &StorageSetView_vepv;
-
-	POA_GNOME_Evolution_StorageSetView__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		servant = NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return servant;
-}
-
 static void
 impl_StorageSetView_add_listener (PortableServer_Servant servant,
 				  const GNOME_Evolution_StorageSetViewListener listener,
@@ -305,7 +285,7 @@ impl_StorageSetView__set_checkedFolders (PortableServer_Servant servant,
 	BonoboObject *bonobo_object;
 	EvolutionStorageSetView *storage_set_view;
 	EvolutionStorageSetViewPrivate *priv;
-	GList *path_list = NULL;
+	GSList *path_list = NULL;
 	int i;
 	
 	bonobo_object = bonobo_object_from_servant (servant);
@@ -316,13 +296,14 @@ impl_StorageSetView__set_checkedFolders (PortableServer_Servant servant,
 		if (strncmp (list->_buffer[i].evolutionUri, "evolution:", 10) != 0)
 			continue;
 
-		path_list = g_list_append (path_list, g_strdup (list->_buffer[i].evolutionUri + 10));
+		path_list = g_slist_append (path_list, g_strdup (list->_buffer[i].evolutionUri + 10));
 	}
 
 	e_storage_set_view_set_checkboxes_list (E_STORAGE_SET_VIEW (priv->storage_set_view_widget),
 						path_list);
 
-	e_free_string_list (path_list);
+	g_slist_foreach (path_list, (GFunc) g_free, NULL);
+	g_slist_free (path_list);
 }
 
 static GNOME_Evolution_FolderList *
@@ -334,8 +315,8 @@ impl_StorageSetView__get_checkedFolders (PortableServer_Servant servant,
 	EvolutionStorageSetViewPrivate *priv;
 	EStorageSet *storage_set;
 	GNOME_Evolution_FolderList *return_list;
-	GList *path_list;
-	GList *p;
+	GSList *path_list;
+	GSList *p;
 	int num_folders;
 	int i;
 
@@ -344,7 +325,7 @@ impl_StorageSetView__get_checkedFolders (PortableServer_Servant servant,
 	priv = storage_set_view->priv;
 
 	path_list = e_storage_set_view_get_checkboxes_list (E_STORAGE_SET_VIEW (priv->storage_set_view_widget));
-	num_folders = g_list_length (path_list);
+	num_folders = g_slist_length (path_list);
 
 	return_list = GNOME_Evolution_FolderList__alloc ();
 	return_list->_maximum = num_folders;
@@ -376,17 +357,26 @@ impl_StorageSetView__get_checkedFolders (PortableServer_Servant servant,
 		g_free (evolution_uri);
 	}
 
-	e_free_string_list (path_list);
+	g_slist_foreach (path_list, (GFunc) g_free, NULL);
+	g_slist_free (path_list);
 
 	CORBA_sequence_set_release (return_list, TRUE);
 	return return_list;
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
+{
+	/* (Nothing to do here.)  */
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
 {
 	EvolutionStorageSetView *storage_set_view;
 	EvolutionStorageSetViewPrivate *priv;
@@ -409,24 +399,21 @@ impl_destroy (GtkObject *object)
 
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
-corba_class_init (void)
+evolution_storage_set_view_class_init (EvolutionStorageSetViewClass *klass)
 {
-	POA_GNOME_Evolution_StorageSetView__vepv *vepv;
 	POA_GNOME_Evolution_StorageSetView__epv *epv;
-	PortableServer_ServantBase__epv *base_epv;
+	GObjectClass *object_class;
 
-	base_epv = g_new0 (PortableServer_ServantBase__epv, 1);
-	base_epv->_private    = NULL;
-	base_epv->finalize    = NULL;
-	base_epv->default_POA = NULL;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
-	epv = g_new0 (POA_GNOME_Evolution_StorageSetView__epv, 1);
+	epv = & (klass->epv);
 	epv->addListener         = impl_StorageSetView_add_listener;
 	epv->removeListener      = impl_StorageSetView_remove_listener;
 	epv->_set_showFolders    = impl_StorageSetView__set_showFolders;
@@ -436,27 +423,11 @@ corba_class_init (void)
 	epv->_set_checkedFolders = impl_StorageSetView__set_checkedFolders;
 	epv->_get_checkedFolders = impl_StorageSetView__get_checkedFolders;
 
-	vepv = &StorageSetView_vepv;
-	vepv->_base_epv                          = base_epv;
-	vepv->Bonobo_Unknown_epv                 = bonobo_object_get_epv ();
-	vepv->GNOME_Evolution_StorageSetView_epv = epv;
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 static void
-class_init (EvolutionStorageSetViewClass *klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
-
-	parent_class = gtk_type_class (bonobo_object_get_type ());
-
-	corba_class_init ();
-}
-
-static void
-init (EvolutionStorageSetView *storage_set_view)
+evolution_storage_set_view_init (EvolutionStorageSetView *storage_set_view)
 {
 	EvolutionStorageSetViewPrivate *priv;
 
@@ -470,52 +441,41 @@ init (EvolutionStorageSetView *storage_set_view)
 
 void
 evolution_storage_set_view_construct (EvolutionStorageSetView *storage_set_view,
-				      GNOME_Evolution_StorageSetView corba_object,
 				      EStorageSetView *storage_set_view_widget)
 {
 	EvolutionStorageSetViewPrivate *priv;
 
-	g_return_if_fail (storage_set_view != NULL);
 	g_return_if_fail (EVOLUTION_IS_STORAGE_SET_VIEW (storage_set_view));
-	g_return_if_fail (corba_object != CORBA_OBJECT_NIL);
-	g_return_if_fail (storage_set_view_widget != NULL);
 	g_return_if_fail (E_IS_STORAGE_SET_VIEW (storage_set_view_widget));
 
 	priv = storage_set_view->priv;
 
-	bonobo_object_construct (BONOBO_OBJECT (storage_set_view), corba_object);
-
 	g_assert (priv->storage_set_view_widget == NULL);
 	priv->storage_set_view_widget = GTK_WIDGET (storage_set_view_widget);
 
-	gtk_signal_connect (GTK_OBJECT (priv->storage_set_view_widget), "folder_selected",
-			    GTK_SIGNAL_FUNC (storage_set_view_widget_folder_selected_cb), storage_set_view);
-	gtk_signal_connect (GTK_OBJECT (priv->storage_set_view_widget), "checkboxes_changed",
-			    GTK_SIGNAL_FUNC (storage_set_view_widget_folder_toggled_cb), storage_set_view);
+	g_signal_connect (priv->storage_set_view_widget, "folder_selected",
+			  G_CALLBACK (storage_set_view_widget_folder_selected_cb), storage_set_view);
+	g_signal_connect (priv->storage_set_view_widget, "checkboxes_changed",
+			  G_CALLBACK (storage_set_view_widget_folder_toggled_cb), storage_set_view);
 }
 
 EvolutionStorageSetView *
 evolution_storage_set_view_new (EStorageSetView *storage_set_view_widget)
 {
-	POA_GNOME_Evolution_StorageSetView *servant;
-	GNOME_Evolution_StorageSetView corba_object;
 	EvolutionStorageSetView *new;
 
 	g_return_val_if_fail (storage_set_view_widget != NULL, NULL);
 	g_return_val_if_fail (E_IS_STORAGE_SET_VIEW (storage_set_view_widget), NULL);
 
-	servant = create_servant ();
-	if (servant == NULL)
-		return NULL;
+	new = g_object_new (evolution_storage_set_view_get_type (), NULL);
 
-	new = gtk_type_new (evolution_storage_set_view_get_type ());
-
-	corba_object = bonobo_object_activate_servant (BONOBO_OBJECT (new), servant);
-
-	evolution_storage_set_view_construct (new, corba_object, storage_set_view_widget);
+	evolution_storage_set_view_construct (new, storage_set_view_widget);
 
 	return new;
 }
 
 
-E_MAKE_TYPE (evolution_storage_set_view, "EvolutionStorageSetView", EvolutionStorageSetView, class_init, init, PARENT_TYPE)
+BONOBO_TYPE_FUNC_FULL (EvolutionStorageSetView,
+		       GNOME_Evolution_StorageSetView,
+		       PARENT_TYPE,
+		       evolution_storage_set_view)

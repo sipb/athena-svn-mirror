@@ -8,21 +8,24 @@
  */
 
 #include <config.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+
+#include <string.h>
+
 #include "e-cardlist-model.h"
 
 #define PARENT_TYPE e_table_model_get_type()
 
 static void
-e_cardlist_model_destroy(GtkObject *object)
+e_cardlist_model_dispose(GObject *object)
 {
 	ECardlistModel *model = E_CARDLIST_MODEL(object);
 	int i;
 
 	for ( i = 0; i < model->data_count; i++ ) {
-		gtk_object_unref(GTK_OBJECT(model->data[i]));
+		g_object_unref(model->data[i]);
 	}
 	g_free(model->data);
 }
@@ -60,16 +63,13 @@ static void
 e_cardlist_model_set_value_at (ETableModel *etc, int col, int row, const void *val)
 {
 	ECardlistModel *e_cardlist_model = E_CARDLIST_MODEL(etc);
-	ECard *card;
+
 	if ( col >= E_CARD_SIMPLE_FIELD_LAST - 1|| row >= e_cardlist_model->data_count )
 		return;
 	e_table_model_pre_change(etc);
 	e_card_simple_set(e_cardlist_model->data[row],
 			  col + 1,
 			  val);
-	gtk_object_get(GTK_OBJECT(e_cardlist_model->data[row]),
-		       "card", &card,
-		       NULL);
 
 	e_table_model_cell_changed(etc, col, row);
 }
@@ -131,7 +131,7 @@ e_cardlist_model_add(ECardlistModel *model,
 		}
 		if (!found) {
 			e_table_model_pre_change(E_TABLE_MODEL(model));
-			gtk_object_ref(GTK_OBJECT(cards[i]));
+			g_object_ref(cards[i]);
 			model->data[model->data_count++] = e_card_simple_new (cards[i]);
 			e_table_model_row_inserted(E_TABLE_MODEL(model), model->data_count - 1);
 		}
@@ -146,7 +146,7 @@ e_cardlist_model_remove(ECardlistModel *model,
 	for ( i = 0; i < model->data_count; i++) {
 		if ( !strcmp(e_card_simple_get_id(model->data[i]), id) ) {
 			e_table_model_pre_change(E_TABLE_MODEL(model));
-			gtk_object_unref(GTK_OBJECT(model->data[i]));
+			g_object_unref(model->data[i]);
 			memmove(model->data + i, model->data + i + 1, (model->data_count - i - 1) * sizeof (ECard *));
 			e_table_model_row_deleted(E_TABLE_MODEL(model), i);
 		}
@@ -154,11 +154,11 @@ e_cardlist_model_remove(ECardlistModel *model,
 }
 
 static void
-e_cardlist_model_class_init (GtkObjectClass *object_class)
+e_cardlist_model_class_init (GObjectClass *object_class)
 {
 	ETableModelClass *model_class = (ETableModelClass *) object_class;
 	
-	object_class->destroy = e_cardlist_model_destroy;
+	object_class->dispose = e_cardlist_model_dispose;
 
 	model_class->column_count = e_cardlist_model_col_count;
 	model_class->row_count = e_cardlist_model_row_count;
@@ -173,7 +173,7 @@ e_cardlist_model_class_init (GtkObjectClass *object_class)
 }
 
 static void
-e_cardlist_model_init (GtkObject *object)
+e_cardlist_model_init (GObject *object)
 {
 	ECardlistModel *model = E_CARDLIST_MODEL(object);
 	model->data = NULL;
@@ -186,36 +186,36 @@ e_cardlist_model_get(ECardlistModel *model,
 {
 	if (model->data && row < model->data_count) {
 		ECard *card;
-		gtk_object_get(GTK_OBJECT(model->data[row]),
-			       "card", &card,
-			       NULL);
-		gtk_object_ref(GTK_OBJECT(card));
+		g_object_get(model->data[row],
+			     "card", &card,
+			     NULL);
 		return card;
 	}
 	return NULL;
 }
 
-GtkType
+GType
 e_cardlist_model_get_type (void)
 {
-	static GtkType type = 0;
+	static GType aw_type = 0;
 
-	if (!type){
-		GtkTypeInfo info = {
-			"ECardlistModel",
-			sizeof (ECardlistModel),
+	if (!aw_type) {
+		static const GTypeInfo aw_info =  {
 			sizeof (ECardlistModelClass),
-			(GtkClassInitFunc) e_cardlist_model_class_init,
-			(GtkObjectInitFunc) e_cardlist_model_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_cardlist_model_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (ECardlistModel),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_cardlist_model_init,
 		};
 
-		type = gtk_type_unique (PARENT_TYPE, &info);
+		aw_type = g_type_register_static (PARENT_TYPE, "ECardlistModel", &aw_info, 0);
 	}
 
-	return type;
+	return aw_type;
 }
 
 ETableModel *
@@ -223,7 +223,7 @@ e_cardlist_model_new (void)
 {
 	ECardlistModel *et;
 
-	et = gtk_type_new (e_cardlist_model_get_type ());
+	et = g_object_new (E_TYPE_CARDLIST_MODEL, NULL);
 	
 	return E_TABLE_MODEL(et);
 }

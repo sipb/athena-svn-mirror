@@ -23,11 +23,10 @@
 #endif
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkmessagedialog.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
 #include <gal/widgets/e-unicode.h>
-#include "widgets/misc/e-messagebox.h"
 #include "../calendar-config.h"
 #include "delete-comp.h"
 
@@ -63,6 +62,7 @@ delete_component_dialog (CalComponent *comp,
 {
 	char *str;
 	GtkWidget *dialog;
+	int ret;
 
 	if (comp) {
 		g_return_val_if_fail (IS_CAL_COMPONENT (comp), FALSE);
@@ -86,7 +86,7 @@ delete_component_dialog (CalComponent *comp,
 
 		if (!consider_as_untitled) {
 			cal_component_get_summary (comp, &summary);
-			tmp = e_utf8_to_gtk_string (widget, summary.value);
+			tmp = g_strdup (summary.value);
 		} else
 			tmp = NULL;
 
@@ -150,16 +150,11 @@ delete_component_dialog (CalComponent *comp,
 		}
 	}
 
-	dialog = e_message_box_new (str, E_MESSAGE_BOX_QUESTION,
-				    GNOME_STOCK_BUTTON_YES,
-				    GNOME_STOCK_BUTTON_NO,
-				    NULL);
+	dialog = gtk_message_dialog_new (gtk_widget_get_toplevel (widget),
+					 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", str);
 	g_free (str);
+	ret = gtk_dialog_run ((GtkDialog *)dialog) == GTK_RESPONSE_YES;
+	gtk_widget_destroy (dialog);
 
-	gtk_widget_hide (e_message_box_get_checkbox (E_MESSAGE_BOX (dialog)));
-
-	if (gnome_dialog_run_and_close (GNOME_DIALOG (dialog)) == 0)
-		return TRUE;
-	else
-		return FALSE;
+	return ret;
 }

@@ -39,13 +39,11 @@
 #include <gtk/gtkvscrollbar.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-util.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <libgnomecanvas/gnome-canvas-pixbuf.h>
 #include <gal/e-text/e-text.h>
 #include <gal/widgets/e-canvas-utils.h>
 #include <gal/widgets/e-gui-utils.h>
@@ -53,6 +51,7 @@
 #include <e-util/e-categories-config.h>
 #include <e-util/e-dialog-utils.h>
 #include "dialogs/delete-comp.h"
+#include "dialogs/delete-error.h"
 #include "dialogs/send-comp.h"
 #include "dialogs/cancel-comp.h"
 #include "dialogs/recur-comp.h"
@@ -75,10 +74,7 @@
 #include "art/timezone-16.xpm"
 #include "art/jump.xpm"
 
-#define E_WEEK_VIEW_SMALL_FONT	\
-	"-adobe-utopia-regular-r-normal-*-*-100-*-*-p-*-iso8859-*"
-#define E_WEEK_VIEW_SMALL_FONT_FALLBACK	\
-	"-adobe-helvetica-medium-r-normal-*-*-80-*-*-p-*-iso8859-*"
+#define E_WEEK_VIEW_SMALL_FONT_PTSIZE 7
 
 #define E_WEEK_VIEW_JUMP_BUTTON_WIDTH	16
 #define E_WEEK_VIEW_JUMP_BUTTON_HEIGHT	8
@@ -118,8 +114,6 @@ static gint e_week_view_focus_out (GtkWidget *widget,
 				   GdkEventFocus *event);
 static gint e_week_view_expose_event (GtkWidget *widget,
 				      GdkEventExpose *event);
-static void e_week_view_draw (GtkWidget    *widget,
-			      GdkRectangle *area);
 static void e_week_view_draw_shadow (EWeekView *week_view);
 
 static gboolean e_week_view_on_button_press (GtkWidget *widget,
@@ -128,6 +122,9 @@ static gboolean e_week_view_on_button_press (GtkWidget *widget,
 static gboolean e_week_view_on_button_release (GtkWidget *widget,
 					       GdkEventButton *event,
 					       EWeekView *week_view);
+static gboolean e_week_view_on_scroll (GtkWidget *widget,
+				       GdkEventScroll *scroll,
+				       EWeekView *week_view);
 static gboolean e_week_view_on_motion (GtkWidget *widget,
 				       GdkEventMotion *event,
 				       EWeekView *week_view);
@@ -177,7 +174,11 @@ static gboolean e_week_view_on_text_item_event (GnomeCanvasItem *item,
 static gboolean e_week_view_on_jump_button_event (GnomeCanvasItem *item,
 						  GdkEvent *event,
 						  EWeekView *week_view);
-static gint e_week_view_key_press (GtkWidget *widget, GdkEventKey *event);
+static gboolean e_week_view_key_press (GtkWidget *widget, GdkEventKey *event);
+static gboolean e_week_view_do_key_press (GtkWidget *widget,
+					  GdkEventKey *event);
+static gboolean e_week_view_popup_menu (GtkWidget *widget);
+
 static void e_week_view_on_new_appointment (GtkWidget *widget,
 					    gpointer data);
 static void e_week_view_on_new_event       (GtkWidget *widget,
@@ -224,7 +225,6 @@ static gboolean e_week_view_remove_event_cb (EWeekView *week_view,
 					     gpointer data);
 static gboolean e_week_view_recalc_display_start_day	(EWeekView	*week_view);
 
-static void invisible_destroyed   (GtkWidget *invisible, EWeekView *week_view);
 static void selection_get         (GtkWidget *invisible,
 				   GtkSelectionData *selection_data,
 				   guint info,
@@ -242,36 +242,11 @@ static void e_week_view_queue_layout (EWeekView *week_view);
 static void e_week_view_cancel_layout (EWeekView *week_view);
 static gboolean e_week_view_layout_timeout_cb (gpointer data);
 
-
 static GtkTableClass *parent_class;
 static GdkAtom clipboard_atom = GDK_NONE;
 
-
-GtkType
-e_week_view_get_type (void)
-{
-	static GtkType e_week_view_type = 0;
-
-	if (!e_week_view_type){
-		GtkTypeInfo e_week_view_info = {
-			"EWeekView",
-			sizeof (EWeekView),
-			sizeof (EWeekViewClass),
-			(GtkClassInitFunc) e_week_view_class_init,
-			(GtkObjectInitFunc) e_week_view_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		parent_class = gtk_type_class (GTK_TYPE_TABLE);
-		e_week_view_type = gtk_type_unique (GTK_TYPE_TABLE,
-						    &e_week_view_info);
-	}
-
-	return e_week_view_type;
-}
-
+E_MAKE_TYPE (e_week_view, "EWeekView", EWeekView, e_week_view_class_init,
+	     e_week_view_init, GTK_TYPE_TABLE);
 
 static void
 e_week_view_class_init (EWeekViewClass *class)
@@ -279,18 +254,17 @@ e_week_view_class_init (EWeekViewClass *class)
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
+	parent_class = g_type_class_peek_parent (class);
 	object_class = (GtkObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 
 	e_week_view_signals[SELECTION_CHANGED] =
 		gtk_signal_new ("selection_changed",
 				GTK_RUN_LAST,
-				object_class->type,
+				G_TYPE_FROM_CLASS (object_class),
 				GTK_SIGNAL_OFFSET (EWeekViewClass, selection_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, e_week_view_signals, LAST_SIGNAL);
 
 	/* Method override */
 	object_class->destroy		= e_week_view_destroy;
@@ -302,8 +276,8 @@ e_week_view_class_init (EWeekViewClass *class)
 	widget_class->focus_in_event	= e_week_view_focus_in;
 	widget_class->focus_out_event	= e_week_view_focus_out;
 	widget_class->key_press_event	= e_week_view_key_press;
+	widget_class->popup_menu        = e_week_view_popup_menu;
 	widget_class->expose_event	= e_week_view_expose_event;
-	widget_class->draw		= e_week_view_draw;
 
 	class->selection_changed = NULL;
 
@@ -366,11 +340,11 @@ e_week_view_init (EWeekView *week_view)
 
 	/* Create the small font. */
 	week_view->use_small_font = TRUE;
-	week_view->small_font = gdk_font_load (E_WEEK_VIEW_SMALL_FONT);
-	if (!week_view->small_font)
-		week_view->small_font = gdk_font_load (E_WEEK_VIEW_SMALL_FONT_FALLBACK);
-	if (!week_view->small_font)
-		week_view->use_small_font = FALSE;
+
+	week_view->small_font_desc =
+		pango_font_description_copy (gtk_widget_get_style (GTK_WIDGET (week_view))->font_desc);
+	pango_font_description_set_size (week_view->small_font_desc,
+					 E_WEEK_VIEW_SMALL_FONT_PTSIZE * PANGO_SCALE);
 
 	/* String to use in 12-hour time format for times in the morning. */
 	week_view->am_string = _("am");
@@ -412,18 +386,14 @@ e_week_view_init (EWeekView *week_view)
 				       "EWeekViewMainItem::week_view", week_view,
 				       NULL);
 
-	gtk_signal_connect_after (GTK_OBJECT (week_view->main_canvas),
-				  "button_press_event",
-				  GTK_SIGNAL_FUNC (e_week_view_on_button_press),
-				  week_view);
-	gtk_signal_connect_after (GTK_OBJECT (week_view->main_canvas),
-				  "button_release_event",
-				  GTK_SIGNAL_FUNC (e_week_view_on_button_release),
-				  week_view);
-	gtk_signal_connect_after (GTK_OBJECT (week_view->main_canvas),
-				  "motion_notify_event",
-				  GTK_SIGNAL_FUNC (e_week_view_on_motion),
-				  week_view);
+	g_signal_connect_after (week_view->main_canvas, "button_press_event",
+				G_CALLBACK (e_week_view_on_button_press), week_view);
+	g_signal_connect (week_view->main_canvas, "button_release_event",
+			  G_CALLBACK (e_week_view_on_button_release), week_view);
+	g_signal_connect (week_view->main_canvas, "scroll_event",
+			  G_CALLBACK (e_week_view_on_scroll), week_view);
+	g_signal_connect (week_view->main_canvas, "motion_notify_event",
+			  G_CALLBACK (e_week_view_on_motion), week_view);
 
 	/* Create the buttons to jump to each days. */
 	pixbuf = gdk_pixbuf_new_from_xpm_data ((const char**) jump_xpm);
@@ -435,10 +405,8 @@ e_week_view_init (EWeekView *week_view)
 			 "GnomeCanvasPixbuf::pixbuf", pixbuf,
 			 NULL);
 
-		gtk_signal_connect (GTK_OBJECT (week_view->jump_buttons[i]),
-				    "event",
-				    GTK_SIGNAL_FUNC (e_week_view_on_jump_button_event),
-				    week_view);
+		g_signal_connect (week_view->jump_buttons[i], "event",
+				  G_CALLBACK (e_week_view_on_jump_button_event), week_view);
 	}
 	gdk_pixbuf_unref (pixbuf);
 
@@ -447,7 +415,7 @@ e_week_view_init (EWeekView *week_view)
 	 */
 	adjustment = gtk_adjustment_new (0, -52, 52, 1, 1, 1);
 	gtk_signal_connect (adjustment, "value_changed",
-			    GTK_SIGNAL_FUNC (e_week_view_on_adjustment_changed),
+			    G_CALLBACK (e_week_view_on_adjustment_changed),
 			    week_view);
 
 	week_view->vscrollbar = gtk_vscrollbar_new (GTK_ADJUSTMENT (adjustment));
@@ -467,22 +435,14 @@ e_week_view_init (EWeekView *week_view)
 				  clipboard_atom,
 				  GDK_SELECTION_TYPE_STRING,
 				  0);
-	gtk_signal_connect (GTK_OBJECT (week_view->invisible),
-			    "selection_get",
-			    GTK_SIGNAL_FUNC (selection_get),
-			    (gpointer) week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->invisible),
-			    "selection_clear_event",
-			    GTK_SIGNAL_FUNC (selection_clear_event),
-			    (gpointer) week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->invisible),
-			    "selection_received",
-			    GTK_SIGNAL_FUNC (selection_received),
-			    (gpointer) week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->invisible),
-			    "destroy",
-			    GTK_SIGNAL_FUNC (invisible_destroyed),
-			    (gpointer) week_view);
+
+	g_signal_connect (week_view->invisible, "selection_get",
+			  G_CALLBACK (selection_get), (gpointer) week_view);
+	g_signal_connect (week_view->invisible, "selection_clear_event",
+			  G_CALLBACK (selection_clear_event), (gpointer) week_view);
+	g_signal_connect (week_view->invisible, "selection_received",
+			  G_CALLBACK (selection_received), (gpointer) week_view);
+
 	week_view->clipboard_selection = NULL;
 
 	week_view->activity = NULL;
@@ -500,7 +460,7 @@ e_week_view_new (void)
 {
 	GtkWidget *week_view;
 
-	week_view = GTK_WIDGET (gtk_type_new (e_week_view_get_type ()));
+	week_view = GTK_WIDGET (g_object_new (e_week_view_get_type (), NULL));
 
 	return week_view;
 }
@@ -515,13 +475,15 @@ e_week_view_destroy (GtkObject *object)
 
 	e_week_view_cancel_layout (week_view);
 
-	e_week_view_free_events (week_view);
-	g_array_free (week_view->events, TRUE);
-	week_view->events = NULL;
-
+	if (week_view->events) {
+		e_week_view_free_events (week_view);
+		g_array_free (week_view->events, TRUE);
+		week_view->events = NULL;
+	}
+	
 	if (week_view->client) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (week_view->client), week_view);
-		gtk_object_unref (GTK_OBJECT (week_view->client));
+		g_signal_handlers_disconnect_matched (week_view->client, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, week_view);
+		g_object_unref (week_view->client);
 		week_view->client = NULL;
 	}
 
@@ -531,14 +493,15 @@ e_week_view_destroy (GtkObject *object)
 	}
 
 	if (week_view->query) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (week_view->query), week_view);
-		gtk_object_unref (GTK_OBJECT (week_view->query));
+		g_signal_handlers_disconnect_matched (week_view->query, G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL, NULL, week_view);
+		g_object_unref (week_view->query);
 		week_view->query = NULL;
 	}
 
-	if (week_view->small_font) {
-		gdk_font_unref (week_view->small_font);
-		week_view->small_font = NULL;
+	if (week_view->small_font_desc) {
+		pango_font_description_free (week_view->small_font_desc);
+		week_view->small_font_desc = NULL;
 	}
 
 	if (week_view->default_category) {
@@ -546,19 +509,30 @@ e_week_view_destroy (GtkObject *object)
 		week_view->default_category = NULL;
 	}
 
-	gdk_cursor_destroy (week_view->normal_cursor);
-	gdk_cursor_destroy (week_view->move_cursor);
-	gdk_cursor_destroy (week_view->resize_width_cursor);
-
-	if (week_view->invisible)
+	if (week_view->normal_cursor) {
+		gdk_cursor_unref (week_view->normal_cursor);
+		week_view->normal_cursor = NULL;
+	}
+	if (week_view->move_cursor) {
+		gdk_cursor_unref (week_view->move_cursor);
+		week_view->move_cursor = NULL;
+	}
+	if (week_view->resize_width_cursor) {
+		gdk_cursor_unref (week_view->resize_width_cursor);
+		week_view->resize_width_cursor = NULL;
+	}
+	
+	if (week_view->invisible) {
 		gtk_widget_destroy (week_view->invisible);
+		week_view->invisible = NULL;
+	}
 	if (week_view->clipboard_selection) {
 		g_free (week_view->clipboard_selection);
 		week_view->clipboard_selection = NULL;
 	}
 
 	if (week_view->activity) {
-		gtk_object_unref (GTK_OBJECT (week_view->activity));
+		g_object_unref (week_view->activity);
 		week_view->activity = NULL;
 	}
 
@@ -611,6 +585,10 @@ e_week_view_realize (GtkWidget *widget)
 	week_view->colors[E_WEEK_VIEW_COLOR_SELECTED].green = 0 * 257;
 	week_view->colors[E_WEEK_VIEW_COLOR_SELECTED].blue  = 156 * 257;
 
+	week_view->colors[E_WEEK_VIEW_COLOR_SELECTED_UNFOCUSSED].red   = 16 * 257;
+	week_view->colors[E_WEEK_VIEW_COLOR_SELECTED_UNFOCUSSED].green = 78 * 257;
+	week_view->colors[E_WEEK_VIEW_COLOR_SELECTED_UNFOCUSSED].blue  = 139 * 257;
+
 	week_view->colors[E_WEEK_VIEW_COLOR_DATES].red   = 0 * 257;
 	week_view->colors[E_WEEK_VIEW_COLOR_DATES].green = 0 * 257;
 	week_view->colors[E_WEEK_VIEW_COLOR_DATES].blue  = 0 * 257;
@@ -642,7 +620,6 @@ e_week_view_unrealize (GtkWidget *widget)
 {
 	EWeekView *week_view;
 	GdkColormap *colormap;
-	gint i;
 
 	week_view = E_WEEK_VIEW (widget);
 
@@ -650,8 +627,7 @@ e_week_view_unrealize (GtkWidget *widget)
 	week_view->main_gc = NULL;
 
 	colormap = gtk_widget_get_colormap (widget);
-	for (i = 0; i < E_WEEK_VIEW_COLOR_LAST; i++)
-		gdk_colors_free (colormap, &week_view->colors[i].pixel, 1, 0);
+	gdk_colormap_free_colors (colormap, week_view->colors, E_WEEK_VIEW_COLOR_LAST);
 
 	gdk_pixmap_unref (week_view->reminder_icon);
 	week_view->reminder_icon = NULL;
@@ -662,40 +638,87 @@ e_week_view_unrealize (GtkWidget *widget)
 		(*GTK_WIDGET_CLASS (parent_class)->unrealize)(widget);
 }
 
+static gint
+get_string_width (PangoLayout *layout, const gchar *string)
+{
+	gint width;
+
+	pango_layout_set_text (layout, string, -1);
+	pango_layout_get_pixel_size (layout, &width, NULL);
+	return width;
+}
+
+/* FIXME: This is also needed in e-day-view-time-item.c. We should probably use
+ * pango's approximation function, but it needs a language tag. Find out how to
+ * get one of those properly. */
+static gint
+get_digit_width (PangoLayout *layout)
+{
+	gint digit;
+	gint max_digit_width = 1;
+
+	for (digit = '0'; digit <= '9'; digit++) {
+		gchar digit_char;
+		gint  digit_width;
+
+		digit_char = digit;
+
+		pango_layout_set_text (layout, &digit_char, 1);
+		pango_layout_get_pixel_size (layout, &digit_width, NULL);
+
+		max_digit_width = MAX (max_digit_width, digit_width);
+	}
+
+	return max_digit_width;
+}
 
 static void
 e_week_view_style_set (GtkWidget *widget,
-		      GtkStyle  *previous_style)
+		       GtkStyle  *previous_style)
 {
 	EWeekView *week_view;
-	EWeekViewEventSpan *span;
-	GdkFont *font;
+	GtkStyle *style;
 	gint day, day_width, max_day_width, max_abbr_day_width;
 	gint month, month_width, max_month_width, max_abbr_month_width;
-	gint span_num;
 	GDate date;
 	gchar buffer[128];
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 	if (GTK_WIDGET_CLASS (parent_class)->style_set)
 		(*GTK_WIDGET_CLASS (parent_class)->style_set)(widget, previous_style);
 
 	week_view = E_WEEK_VIEW (widget);
-	font = widget->style->font;
+	style = gtk_widget_get_style (widget);
+
+	/* Set up Pango prerequisites */
+	font_desc = style->font_desc;
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+	layout = pango_layout_new (pango_context);
 
 	/* Recalculate the height of each row based on the font size. */
-	week_view->row_height = font->ascent + font->descent + E_WEEK_VIEW_EVENT_BORDER_HEIGHT * 2 + E_WEEK_VIEW_EVENT_TEXT_Y_PAD * 2;
+	week_view->row_height = PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics)) +
+		E_WEEK_VIEW_EVENT_BORDER_HEIGHT * 2 + E_WEEK_VIEW_EVENT_TEXT_Y_PAD * 2;
 	week_view->row_height = MAX (week_view->row_height, E_WEEK_VIEW_ICON_HEIGHT + E_WEEK_VIEW_ICON_Y_PAD + E_WEEK_VIEW_EVENT_BORDER_HEIGHT * 2);
 
 	/* Check that the small font is smaller than the default font.
 	   If it isn't, we won't use it. */
-	if (week_view->small_font) {
-		if (font->ascent + font->descent <= week_view->small_font->ascent + week_view->small_font->descent)
+	if (week_view->small_font_desc) {
+		if (PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		    PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics))
+		    <= E_WEEK_VIEW_SMALL_FONT_PTSIZE)
 			week_view->use_small_font = FALSE;
 	}
 
 	/* Set the height of the top canvas. */
 	gtk_widget_set_usize (week_view->titles_canvas, -1,
-			      font->ascent + font->descent + 5);
+			      PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+			      PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics)) + 5);
 
 	/* Save the sizes of various strings in the font, so we can quickly
 	   decide which date formats to use. */
@@ -706,12 +729,12 @@ e_week_view_style_set (GtkWidget *widget,
 	max_abbr_day_width = 0;
 	for (day = 0; day < 7; day++) {
 		g_date_strftime (buffer, 128, "%A", &date);
-		day_width = gdk_string_width (font, buffer);
+		day_width = get_string_width (layout, buffer);
 		week_view->day_widths[day] = day_width;
 		max_day_width = MAX (max_day_width, day_width);
 
 		g_date_strftime (buffer, 128, "%a", &date);
-		day_width = gdk_string_width (font, buffer);
+		day_width = get_string_width (layout, buffer);
 		week_view->abbr_day_widths[day] = day_width;
 		max_abbr_day_width = MAX (max_abbr_day_width, day_width);
 
@@ -724,44 +747,37 @@ e_week_view_style_set (GtkWidget *widget,
 		g_date_set_month (&date, month + 1);
 
 		g_date_strftime (buffer, 128, "%B", &date);
-		month_width = gdk_string_width (font, buffer);
+		month_width = get_string_width (layout, buffer);
 		week_view->month_widths[month] = month_width;
 		max_month_width = MAX (max_month_width, month_width);
 
 		g_date_strftime (buffer, 128, "%b", &date);
-		month_width = gdk_string_width (font, buffer);
+		month_width = get_string_width (layout, buffer);
 		week_view->abbr_month_widths[month] = month_width;
 		max_abbr_month_width = MAX (max_abbr_month_width, month_width);
 	}
 
-	week_view->space_width = gdk_string_width (font, " ");
-	week_view->colon_width = gdk_string_width (font, ":");
-	week_view->slash_width = gdk_string_width (font, "/");
-	week_view->digit_width = gdk_string_width (font, "5");
-	if (week_view->small_font)
-		week_view->small_digit_width = gdk_string_width (week_view->small_font, "5");
+	week_view->space_width = get_string_width (layout, " ");
+	week_view->colon_width = get_string_width (layout, ":");
+	week_view->slash_width = get_string_width (layout, "/");
+	week_view->digit_width = get_digit_width (layout);
+	if (week_view->small_font_desc) {
+		pango_layout_set_font_description (layout, week_view->small_font_desc);
+		week_view->small_digit_width = get_digit_width (layout);
+		pango_layout_set_font_description (layout, style->font_desc);
+	}
 	week_view->max_day_width = max_day_width;
 	week_view->max_abbr_day_width = max_abbr_day_width;
 	week_view->max_month_width = max_month_width;
 	week_view->max_abbr_month_width = max_abbr_month_width;
 
-	week_view->am_string_width = gdk_string_width (font,
+	week_view->am_string_width = get_string_width (layout,
 						       week_view->am_string);
-	week_view->pm_string_width = gdk_string_width (font,
+	week_view->pm_string_width = get_string_width (layout,
 						       week_view->pm_string);
 
-	/* Set the font of all the EText items. */
-	if (week_view->spans) {
-		for (span_num = 0; span_num < week_view->spans->len;
-		     span_num++) {
-			span = &g_array_index (week_view->spans,
-					       EWeekViewEventSpan, span_num);
-			if (span->text_item)
-				gnome_canvas_item_set (span->text_item,
-						       "font_gdk", font,
-						       NULL);
-		}
-	}
+	g_object_unref (layout);
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -812,8 +828,11 @@ e_week_view_recalc_cell_sizes (EWeekView *week_view)
 	gfloat canvas_width, canvas_height, offset;
 	gint row, col;
 	GtkWidget *widget;
-	GdkFont *font;
+	GtkStyle *style;
 	gint width, height, time_width;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
 
 	if (week_view->multi_week_view) {
 		week_view->rows = week_view->weeks_shown * 2;
@@ -860,20 +879,29 @@ e_week_view_recalc_cell_sizes (EWeekView *week_view)
 
 	/* If the font hasn't been set yet just return. */
 	widget = GTK_WIDGET (week_view);
-	if (!widget->style || ! widget->style->font)
+	style = gtk_widget_get_style (widget);
+	if (!style)
+		return;
+	font_desc = style->font_desc;
+	if (!font_desc)
 		return;
 
-	font = widget->style->font;
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+
 
 	/* Calculate the number of rows of events in each cell, for the large
 	   cells and the compressed weekend cells. */
 	if (week_view->multi_week_view) {
-		week_view->events_y_offset = E_WEEK_VIEW_DATE_T_PAD
-			+ font->ascent + font->descent
+		week_view->events_y_offset = E_WEEK_VIEW_DATE_T_PAD +
+			+ PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics))
+			+ PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics))
 			+ E_WEEK_VIEW_DATE_B_PAD;
 	} else {
 		week_view->events_y_offset = E_WEEK_VIEW_DATE_T_PAD
-			+ font->ascent + font->descent
+			+ PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics))
+			+ PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics))
 			+ E_WEEK_VIEW_DATE_LINE_T_PAD + 1
 			+ E_WEEK_VIEW_DATE_LINE_B_PAD;
 	}
@@ -897,7 +925,7 @@ e_week_view_recalc_cell_sizes (EWeekView *week_view)
 	time_width = e_week_view_get_time_string_width (week_view);
 
 	week_view->time_format = E_WEEK_VIEW_TIME_NONE;
-	if (week_view->use_small_font && week_view->small_font) {
+	if (week_view->use_small_font && week_view->small_font_desc) {
 		if (week_view->show_event_end_times
 		    && width / 2 > time_width * 2 + E_WEEK_VIEW_EVENT_TIME_SPACING)
 			week_view->time_format = E_WEEK_VIEW_TIME_BOTH_SMALL_MIN;
@@ -910,6 +938,8 @@ e_week_view_recalc_cell_sizes (EWeekView *week_view)
 		else if (width / 2 > time_width)
 			week_view->time_format = E_WEEK_VIEW_TIME_START;
 	}
+
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -967,22 +997,6 @@ e_week_view_expose_event (GtkWidget *widget,
 
 	return FALSE;
 }
-
-
-static void
-e_week_view_draw (GtkWidget    *widget,
-		  GdkRectangle *area)
-{
-	EWeekView *week_view;
-
-	week_view = E_WEEK_VIEW (widget);
-
-	e_week_view_draw_shadow (week_view);
-
-	if (GTK_WIDGET_CLASS (parent_class)->draw)
-		(*GTK_WIDGET_CLASS (parent_class)->draw)(widget, area);
-}
-
 
 static void
 e_week_view_draw_shadow (EWeekView *week_view)
@@ -1096,7 +1110,7 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 			g_print ("updated object's dates unchanged\n");
 #endif
 			e_week_view_foreach_event_with_uid (week_view, uid, e_week_view_update_event_cb, comp);
-			gtk_object_unref (GTK_OBJECT (comp));
+			g_object_unref (comp);
 			gtk_widget_queue_draw (week_view->main_canvas);
 			return;
 		}
@@ -1121,7 +1135,7 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 				      cal_client_resolve_tzid_cb, week_view->client,
 				      week_view->zone);
 
-	gtk_object_unref (GTK_OBJECT (comp));
+	g_object_unref (comp);
 
 	e_week_view_queue_layout (week_view);
 }
@@ -1227,8 +1241,9 @@ update_query (EWeekView *week_view)
 	week_view->query = NULL;
 
 	if (old_query) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (old_query), week_view);
-		gtk_object_unref (GTK_OBJECT (old_query));
+		g_signal_handlers_disconnect_matched (old_query, G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL, NULL, week_view);
+		g_object_unref (old_query);
 	}
 
 	g_assert (week_view->sexp != NULL);
@@ -1247,14 +1262,14 @@ update_query (EWeekView *week_view)
 		return;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (week_view->query), "obj_updated",
-			    GTK_SIGNAL_FUNC (query_obj_updated_cb), week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->query), "obj_removed",
-			    GTK_SIGNAL_FUNC (query_obj_removed_cb), week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->query), "query_done",
-			    GTK_SIGNAL_FUNC (query_query_done_cb), week_view);
-	gtk_signal_connect (GTK_OBJECT (week_view->query), "eval_error",
-			    GTK_SIGNAL_FUNC (query_eval_error_cb), week_view);
+	g_signal_connect (week_view->query, "obj_updated",
+			  G_CALLBACK (query_obj_updated_cb), week_view);
+	g_signal_connect (week_view->query, "obj_removed",
+			  G_CALLBACK (query_obj_removed_cb), week_view);
+	g_signal_connect (week_view->query, "query_done",
+			  G_CALLBACK (query_query_done_cb), week_view);
+	g_signal_connect (week_view->query, "eval_error",
+			  G_CALLBACK (query_eval_error_cb), week_view);
 }
 
 /* Callback used when the calendar client finishes opening */
@@ -1292,11 +1307,11 @@ e_week_view_set_cal_client	(EWeekView	*week_view,
 		g_return_if_fail (IS_CAL_CLIENT (client));
 
 	if (client)
-		gtk_object_ref (GTK_OBJECT (client));
+		g_object_ref (client);
 
 	if (week_view->client) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (week_view->client), week_view);
-		gtk_object_unref (GTK_OBJECT (week_view->client));
+		g_signal_handlers_disconnect_matched (week_view->client, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, week_view);
+		g_object_unref (week_view->client);
 	}
 
 	week_view->client = client;
@@ -1305,8 +1320,8 @@ e_week_view_set_cal_client	(EWeekView	*week_view,
 		if (cal_client_get_load_state (week_view->client) == CAL_CLIENT_LOAD_LOADED)
 			update_query (week_view);
 		else
-			gtk_signal_connect (GTK_OBJECT (week_view->client), "cal_opened",
-					    GTK_SIGNAL_FUNC (cal_opened_cb), week_view);
+			g_signal_connect (week_view->client, "cal_opened",
+					  G_CALLBACK (cal_opened_cb), week_view);
 	}
 }
 
@@ -1919,7 +1934,7 @@ e_week_view_cut_clipboard (EWeekView *week_view)
 
 	e_week_view_copy_clipboard (week_view);
 	cal_component_get_uid (event->comp, &uid);
-	cal_client_remove_object (week_view->client, uid);
+	delete_error_dialog (cal_client_remove_object (week_view->client, uid), CAL_COMPONENT_EVENT);
 
 	e_week_view_set_status_message (week_view, NULL);
 }
@@ -2006,9 +2021,9 @@ e_week_view_update_event_cb (EWeekView *week_view,
 
 	event = &g_array_index (week_view->events, EWeekViewEvent, event_num);
 
-	gtk_object_unref (GTK_OBJECT (event->comp));
+	g_object_unref (event->comp);
 	event->comp = comp;
-	gtk_object_ref (GTK_OBJECT (comp));
+	g_object_ref (comp);
 
 	for (span_num = 0; span_num < event->num_spans; span_num++) {
 		span = &g_array_index (week_view->spans, EWeekViewEventSpan,
@@ -2093,7 +2108,7 @@ e_week_view_remove_event_cb (EWeekView *week_view,
 		}
 	}
 
-	gtk_object_unref (GTK_OBJECT (event->comp));
+	g_object_unref (event->comp);
 
 	g_array_remove_index (week_view->events, event_num);
 	week_view->events_need_layout = TRUE;
@@ -2207,20 +2222,6 @@ e_week_view_on_button_press (GtkWidget *widget,
 		g_print (" item is pressed\n");
 #endif
 
-	/* Handle scroll wheel events */
-	if (event->button == 4 || event->button == 5) {
-		GtkAdjustment *adj = GTK_RANGE (week_view->vscrollbar)->adjustment;
-		gfloat new_value;
-
-		new_value = adj->value + ((event->button == 4) ?
-					  -adj->page_increment:
-					  adj->page_increment);
-		new_value = CLAMP (new_value, adj->lower, adj->upper - adj->page_size);
-		gtk_adjustment_set_value (adj, new_value);
-
-		return TRUE;
-	}
-
 	/* Convert the mouse position to a week & day. */
 	x = event->x;
 	y = event->y;
@@ -2269,7 +2270,7 @@ e_week_view_on_button_press (GtkWidget *widget,
 		e_week_view_show_popup_menu (week_view, event, -1);
 	}
 
-	return FALSE;
+	return TRUE;
 }
 
 
@@ -2295,6 +2296,31 @@ e_week_view_on_button_release (GtkWidget *widget,
 	}
 
 	return FALSE;
+}
+
+static gboolean
+e_week_view_on_scroll (GtkWidget *widget,
+		       GdkEventScroll *scroll,
+		       EWeekView *week_view)
+{
+	GtkAdjustment *adj = GTK_RANGE (week_view->vscrollbar)->adjustment;
+	gfloat new_value;
+	
+	switch (scroll->direction){
+	case GDK_SCROLL_UP:
+		new_value = adj->value - adj->page_increment;
+		break;
+	case GDK_SCROLL_DOWN:
+		new_value = adj->value + adj->page_increment;
+		break;
+	default:
+		return FALSE;
+	}
+	
+	new_value = CLAMP (new_value, adj->lower, adj->upper - adj->page_size);
+	gtk_adjustment_set_value (adj, new_value);
+	
+	return TRUE;
 }
 
 
@@ -2438,7 +2464,7 @@ e_week_view_free_events (EWeekView *week_view)
 	for (event_num = 0; event_num < week_view->events->len; event_num++) {
 		event = &g_array_index (week_view->events, EWeekViewEvent,
 					event_num);
-		gtk_object_unref (GTK_OBJECT (event->comp));
+		g_object_unref (event->comp);
 	}
 
 	g_array_set_size (week_view->events, 0);
@@ -2505,7 +2531,7 @@ e_week_view_add_event (CalComponent *comp,
 						week_view->zone);
 
 	event.comp = comp;
-	gtk_object_ref (GTK_OBJECT (event.comp));
+	g_object_ref (event.comp);
 	event.start = start;
 	event.end = end;
 	event.spans_index = 0;
@@ -2653,7 +2679,6 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 {
 	EWeekViewEvent *event;
 	EWeekViewEventSpan *span;
-	GdkFont *font;
 	gint span_x, span_y, span_w, num_icons, icons_width, time_width;
 	gint min_text_x, max_text_w, width;
 	gboolean show_icons = TRUE, use_max_width = FALSE;
@@ -2662,12 +2687,15 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 	gdouble text_x, text_y, text_w, text_h;
 	gchar *text, *end_of_line;
 	gint line_len, text_width;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 	event = &g_array_index (week_view->events, EWeekViewEvent, event_num);
 	span = &g_array_index (week_view->spans, EWeekViewEventSpan,
 			       event->spans_index + span_num);
 	comp = event->comp;
-	font = GTK_WIDGET (week_view)->style->font;
 
 	one_day_event = e_week_view_is_one_day_event (week_view, event_num);
 
@@ -2683,6 +2711,13 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 		span->text_item = NULL;
 		return;
 	}
+
+	/* Set up Pango prerequisites */
+	font_desc = gtk_widget_get_style (GTK_WIDGET (week_view))->font_desc;
+	pango_context = gtk_widget_get_pango_context (GTK_WIDGET (week_view));
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+	layout = pango_layout_new (pango_context);
 
 	/* If we are editing a long event we don't show the icons and the EText
 	   item uses the maximum width available. */
@@ -2739,20 +2774,18 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 		span->text_item =
 			gnome_canvas_item_new (GNOME_CANVAS_GROUP (GNOME_CANVAS (week_view->main_canvas)->root),
 					       e_text_get_type (),
-					       "font_gdk", GTK_WIDGET (week_view)->style->font,
 					       "anchor", GTK_ANCHOR_NW,
 					       "clip", TRUE,
-#if 0
 					       "max_lines", 1,
-#endif
 					       "editable", TRUE,
 					       "text", text.value ? text.value : "",
 					       "use_ellipsis", TRUE,
 					       "fill_color_rgba", GNOME_CANVAS_COLOR(0, 0, 0),
+					       "im_context", E_CANVAS (week_view->main_canvas)->im_context,
 					       NULL);
-		gtk_signal_connect (GTK_OBJECT (span->text_item), "event",
-				    GTK_SIGNAL_FUNC (e_week_view_on_text_item_event),
-				    week_view);
+		g_signal_connect (span->text_item, "event",
+				  G_CALLBACK (e_week_view_on_text_item_event),
+				  week_view);
 	}
 
 	/* Calculate the position of the text item.
@@ -2774,7 +2807,10 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 	/* The y position and height are the same for both event types. */
 	text_y = span_y + E_WEEK_VIEW_EVENT_BORDER_HEIGHT
 		+ E_WEEK_VIEW_EVENT_TEXT_Y_PAD;
-	text_h = font->ascent + font->descent;
+
+	text_h =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
 
 	if (one_day_event) {
 		/* Note that 1-day events don't have a border. Although we
@@ -2823,9 +2859,7 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 			/* Get the width of the text of the event. This is a
 			   bit of a hack. It would be better if EText could
 			   tell us this. */
-			gtk_object_get (GTK_OBJECT (span->text_item),
-					"text", &text,
-					NULL);
+			g_object_get (G_OBJECT (span->text_item), "text", &text, NULL);
 			text_width = 0;
 			if (text) {
 				/* It should only have one line of text in it.
@@ -2835,8 +2869,9 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 					line_len = end_of_line - text;
 				else
 					line_len = strlen (text);
-				text_width = gdk_text_width (font, text,
-							     line_len);
+
+				pango_layout_set_text (layout, text, line_len);
+				pango_layout_get_pixel_size (layout, &text_width, NULL);
 				g_free (text);
 			}
 
@@ -2887,6 +2922,9 @@ e_week_view_reshape_event_span (EWeekView *week_view,
 			       "clip_height", (gdouble) text_h,
 			       NULL);
 	e_canvas_item_move_absolute (span->text_item, text_x, text_y);
+
+	g_object_unref (layout);
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -2977,14 +3015,12 @@ e_week_view_start_editing_event (EWeekView *week_view,
 	e_canvas_item_grab_focus (span->text_item, TRUE);
 
 	/* Try to move the cursor to the end of the text. */
-	gtk_object_get (GTK_OBJECT (span->text_item),
-			"event_processor", &event_processor,
-			NULL);
+	g_object_get (G_OBJECT (span->text_item), "event_processor", &event_processor, NULL);
 	if (event_processor) {
 		command.action = E_TEP_MOVE;
 		command.position = E_TEP_END_OF_BUFFER;
-		gtk_signal_emit_by_name (GTK_OBJECT (event_processor),
-					 "command", &command);
+		g_signal_emit_by_name (event_processor,
+				       "command", &command);
 	}
 }
 
@@ -3026,9 +3062,7 @@ cancel_editing (EWeekView *week_view)
 	/* Reset the text to what was in the component */
 
 	cal_component_get_summary (event->comp, &summary);
-	gtk_object_set (GTK_OBJECT (span->text_item),
-			"text", summary.value ? summary.value : "",
-			NULL);
+	g_object_set (G_OBJECT (span->text_item), "text", summary.value ? summary.value : "", NULL);
 
 	/* Stop editing */
 	e_week_view_stop_editing_event (week_view);
@@ -3038,7 +3072,7 @@ cancel_editing (EWeekView *week_view)
  * a pointer to a boolean; will set it to TRUE.
  */
 static void
-comp_destroy_cb (GtkObject *object, gpointer data)
+comp_destroy_cb (gpointer data, GObject *deadbeef)
 {
 	gboolean *destroyed;
 
@@ -3074,6 +3108,8 @@ e_week_view_on_text_item_event (GnomeCanvasItem *item,
 		} else if (gdkevent->key.keyval == GDK_Escape) {
 			cancel_editing (week_view);
 			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
+			/* focus should go to week view when stop editing */
+			gtk_widget_grab_focus (GTK_WIDGET (week_view));
 			return TRUE;
 		}
 		break;
@@ -3098,22 +3134,20 @@ e_week_view_on_text_item_event (GnomeCanvasItem *item,
 						       &event_num, &span_num))
 			return FALSE;
 
-		if (gdkevent->button.button == 3) {
+		if (gdkevent->button.button == 3 && !E_TEXT (item)->editing) {
 			EWeekViewEvent *e;
 			gboolean destroyed;
-			int id;
 
 			e = &g_array_index (week_view->events, EWeekViewEvent, event_num);
 
 			destroyed = FALSE;
-			id = gtk_signal_connect (GTK_OBJECT (e->comp), "destroy",
-						 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+			g_object_weak_ref ((GObject *) e->comp, comp_destroy_cb, &destroyed);
 
 			if (!GTK_WIDGET_HAS_FOCUS (week_view))
 				gtk_widget_grab_focus (GTK_WIDGET (week_view));
 
 			if (!destroyed) {
-				gtk_signal_disconnect (GTK_OBJECT (e->comp), id);
+				g_object_weak_unref ((GObject *) e->comp, comp_destroy_cb, &destroyed);
 	
 				e_week_view_set_selected_time_range_visible (week_view, e->start, e->end);
 
@@ -3127,8 +3161,10 @@ e_week_view_on_text_item_event (GnomeCanvasItem *item,
 			return TRUE;
 		}
 
-		week_view->pressed_event_num = event_num;
-		week_view->pressed_span_num = span_num;
+		if (gdkevent->button.button != 3) {
+			week_view->pressed_event_num = event_num;
+			week_view->pressed_span_num = span_num;
+		}
 
 		/* Only let the EText handle the event while editing. */
 		if (!E_TEXT (item)->editing) {
@@ -3214,6 +3250,8 @@ e_week_view_on_editing_started (EWeekView *week_view,
 						span_num);
 	}
 
+	g_object_set (item, "handle_popup", TRUE, NULL);
+
 	gtk_signal_emit (GTK_OBJECT (week_view),
 			 e_week_view_signals[SELECTION_CHANGED]);
 }
@@ -3252,9 +3290,8 @@ e_week_view_on_editing_stopped (EWeekView *week_view,
 	if (!uid)
 		return;
 
-	gtk_object_get (GTK_OBJECT (span->text_item),
-			"text", &text,
-			NULL);
+	g_object_set (span->text_item, "handle_popup", FALSE, NULL);
+	g_object_get (G_OBJECT (span->text_item), "text", &text, NULL);
 	g_assert (text != NULL);
 
 	if (string_is_empty (text) && !cal_comp_is_on_server (event->comp, week_view->client)) {
@@ -3286,7 +3323,8 @@ e_week_view_on_editing_stopped (EWeekView *week_view,
 			if (recur_component_dialog (event->comp, &mod, NULL)) {
 				if (cal_client_update_object_with_mod (week_view->client, event->comp, mod) == CAL_CLIENT_RESULT_SUCCESS) {
 					if (itip_organizer_is_user (event->comp, week_view->client) 
-					    && send_component_dialog (week_view->client, event->comp, FALSE))
+					    && send_component_dialog (gtk_widget_get_toplevel (week_view),
+								      week_view->client, event->comp, FALSE))
 						itip_send_comp (CAL_COMPONENT_METHOD_REQUEST, event->comp, 
 								week_view->client, NULL);
 				} else {
@@ -3294,7 +3332,9 @@ e_week_view_on_editing_stopped (EWeekView *week_view,
 				}
 			}
 		} else if (cal_client_update_object (week_view->client, event->comp) == CAL_CLIENT_RESULT_SUCCESS) {
-			if (itip_organizer_is_user (event->comp, week_view->client) && send_component_dialog (week_view->client, event->comp, FALSE))
+			if (itip_organizer_is_user (event->comp, week_view->client) &&
+			    send_component_dialog (gtk_widget_get_toplevel (week_view),
+						   week_view->client, event->comp, FALSE))
 				itip_send_comp (CAL_COMPONENT_METHOD_REQUEST, event->comp,
 						week_view->client, NULL);
 		} else {
@@ -3399,9 +3439,8 @@ e_week_view_is_one_day_event	(EWeekView	*week_view,
 	return FALSE;
 }
 
-
-static gint
-e_week_view_key_press (GtkWidget *widget, GdkEventKey *event)
+static gboolean
+e_week_view_do_key_press (GtkWidget *widget, GdkEventKey *event)
 {
 	EWeekView *week_view;
 	CalComponent *comp;
@@ -3485,9 +3524,21 @@ e_week_view_key_press (GtkWidget *widget, GdkEventKey *event)
 	if (initial_text)
 		g_free (initial_text);
 
-	gtk_object_unref (GTK_OBJECT (comp));
+	g_object_unref (comp);
 
 	return TRUE;
+}
+
+static gboolean
+e_week_view_key_press (GtkWidget *widget, GdkEventKey *event)
+{
+	gboolean handled = FALSE;
+	handled = e_week_view_do_key_press (widget, event);
+
+	/* if not handled, try key bindings */
+	if (!handled)
+		handled = GTK_WIDGET_CLASS (parent_class)->key_press_event (widget, event);
+	return handled;
 }
 
 enum {
@@ -3532,60 +3583,60 @@ enum {
 };
 
 static EPopupMenu main_items [] = {
-	E_POPUP_ITEM (N_("New _Appointment..."), e_week_view_on_new_appointment, MASK_EDITABLE),
-	E_POPUP_ITEM (N_("New All Day _Event"), e_week_view_on_new_event, MASK_EDITABLE),
-	E_POPUP_ITEM (N_("New Meeting"), e_week_view_on_new_meeting, MASK_EDITABLE),
-	E_POPUP_ITEM (N_("New Task"), e_week_view_on_new_task, MASK_EDITABLE),
+	E_POPUP_ITEM (N_("New _Appointment..."), GTK_SIGNAL_FUNC (e_week_view_on_new_appointment), MASK_EDITABLE),
+	E_POPUP_ITEM (N_("New All Day _Event"), GTK_SIGNAL_FUNC (e_week_view_on_new_event), MASK_EDITABLE),
+	E_POPUP_ITEM (N_("New Meeting"), GTK_SIGNAL_FUNC (e_week_view_on_new_meeting), MASK_EDITABLE),
+	E_POPUP_ITEM (N_("New Task"), GTK_SIGNAL_FUNC (e_week_view_on_new_task), MASK_EDITABLE),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Print..."), e_week_view_on_print, 0),
+	E_POPUP_ITEM (N_("_Print..."), GTK_SIGNAL_FUNC (e_week_view_on_print), 0),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Paste"), e_week_view_on_paste, MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Paste"), GTK_SIGNAL_FUNC (e_week_view_on_paste), MASK_EDITABLE),
 
 	E_POPUP_SEPARATOR,
 
 	E_POPUP_SUBMENU (N_("Current View"), NULL, 0),
 	
-	E_POPUP_ITEM (N_("Go to _Today"), e_week_view_on_goto_today, 0),
-	E_POPUP_ITEM (N_("_Go to Date..."), e_week_view_on_goto_date, 0),
+	E_POPUP_ITEM (N_("Go to _Today"), GTK_SIGNAL_FUNC (e_week_view_on_goto_today), 0),
+	E_POPUP_ITEM (N_("_Go to Date..."), GTK_SIGNAL_FUNC (e_week_view_on_goto_date), 0),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Publish Free/Busy Information"), e_week_view_on_publish, 0),
+	E_POPUP_ITEM (N_("_Publish Free/Busy Information"), GTK_SIGNAL_FUNC (e_week_view_on_publish), 0),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Settings..."), e_week_view_on_settings, 0),
+	E_POPUP_ITEM (N_("_Settings..."), GTK_SIGNAL_FUNC (e_week_view_on_settings), 0),
 
 	E_POPUP_TERMINATOR
 };
 
 static EPopupMenu child_items [] = {
-	E_POPUP_ITEM (N_("_Open"), e_week_view_on_edit_appointment, MASK_EDITING),
-	E_POPUP_ITEM (N_("_Save As..."), e_week_view_on_save_as, MASK_EDITING),
-	E_POPUP_ITEM (N_("_Print..."), e_week_view_on_print_event, MASK_EDITING),
+	E_POPUP_ITEM (N_("_Open"), GTK_SIGNAL_FUNC (e_week_view_on_edit_appointment), MASK_EDITING),
+	E_POPUP_ITEM (N_("_Save As..."), GTK_SIGNAL_FUNC (e_week_view_on_save_as), MASK_EDITING),
+	E_POPUP_ITEM (N_("_Print..."), GTK_SIGNAL_FUNC (e_week_view_on_print_event), MASK_EDITING),
 
 	/* Only show this separator if one of the above is shown. */
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("C_ut"), e_week_view_on_cut, MASK_EDITING | MASK_EDITABLE | MASK_MEETING_ORGANIZER),
-	E_POPUP_ITEM (N_("_Copy"), e_week_view_on_copy, MASK_EDITING | MASK_MEETING_ORGANIZER),
-	E_POPUP_ITEM (N_("_Paste"), e_week_view_on_paste, MASK_EDITABLE),
+	E_POPUP_ITEM (N_("C_ut"), GTK_SIGNAL_FUNC (e_week_view_on_cut), MASK_EDITING | MASK_EDITABLE | MASK_MEETING_ORGANIZER),
+	E_POPUP_ITEM (N_("_Copy"), GTK_SIGNAL_FUNC (e_week_view_on_copy), MASK_EDITING | MASK_MEETING_ORGANIZER),
+	E_POPUP_ITEM (N_("_Paste"), GTK_SIGNAL_FUNC (e_week_view_on_paste), MASK_EDITABLE),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Schedule Meeting..."), e_week_view_on_meeting, MASK_EDITABLE | MASK_EDITING | MASK_MEETING),
-	E_POPUP_ITEM (N_("_Forward as iCalendar..."), e_week_view_on_forward, MASK_EDITING),
+	E_POPUP_ITEM (N_("_Schedule Meeting..."), GTK_SIGNAL_FUNC (e_week_view_on_meeting), MASK_EDITABLE | MASK_EDITING | MASK_MEETING),
+	E_POPUP_ITEM (N_("_Forward as iCalendar..."), GTK_SIGNAL_FUNC (e_week_view_on_forward), MASK_EDITING),
 
 	E_POPUP_SEPARATOR,
 
-	E_POPUP_ITEM (N_("_Delete"), e_week_view_on_delete_appointment, MASK_EDITABLE | MASK_SINGLE | MASK_EDITING),
-	E_POPUP_ITEM (N_("Make this Occurrence _Movable"), e_week_view_on_unrecur_appointment, MASK_RECURRING | MASK_EDITING | MASK_EDITABLE | MASK_INSTANCE),
-	E_POPUP_ITEM (N_("Delete this _Occurrence"), e_week_view_on_delete_occurrence, MASK_RECURRING | MASK_EDITING | MASK_EDITABLE),
-	E_POPUP_ITEM (N_("Delete _All Occurrences"), e_week_view_on_delete_appointment, MASK_RECURRING | MASK_EDITING | MASK_EDITABLE),
+	E_POPUP_ITEM (N_("_Delete"), GTK_SIGNAL_FUNC (e_week_view_on_delete_appointment), MASK_EDITABLE | MASK_SINGLE | MASK_EDITING),
+	E_POPUP_ITEM (N_("Make this Occurrence _Movable"), GTK_SIGNAL_FUNC (e_week_view_on_unrecur_appointment), MASK_RECURRING | MASK_EDITING | MASK_EDITABLE | MASK_INSTANCE),
+	E_POPUP_ITEM (N_("Delete this _Occurrence"), GTK_SIGNAL_FUNC (e_week_view_on_delete_occurrence), MASK_RECURRING | MASK_EDITING | MASK_EDITABLE),
+	E_POPUP_ITEM (N_("Delete _All Occurrences"), GTK_SIGNAL_FUNC (e_week_view_on_delete_appointment), MASK_RECURRING | MASK_EDITING | MASK_EDITABLE),
 
 	E_POPUP_TERMINATOR
 };
@@ -3657,11 +3708,18 @@ e_week_view_show_popup_menu (EWeekView	     *week_view,
 	week_view->popup_event_num = event_num;
 
 	popup = e_popup_menu_create (context_menu, disable_mask, hide_mask, week_view);
-	gtk_signal_connect (GTK_OBJECT (popup), "selection-done",
-			    GTK_SIGNAL_FUNC (free_view_popup), week_view);
+	g_signal_connect (popup, "selection-done", G_CALLBACK (free_view_popup), week_view);
 	e_popup_menu (popup, (GdkEvent *) bevent);
 }
 
+static gboolean
+e_week_view_popup_menu (GtkWidget *widget)
+{
+	EWeekView *week_view = E_WEEK_VIEW (widget);
+	e_week_view_show_popup_menu (week_view, NULL,
+				     week_view->editing_event_num);
+	return TRUE;
+}
 
 static void
 e_week_view_on_new_appointment (GtkWidget *widget, gpointer data)
@@ -3883,7 +3941,7 @@ e_week_view_on_publish (GtkWidget *widget, gpointer data)
 			itip_send_comp (CAL_COMPONENT_METHOD_PUBLISH, comp, 
 					week_view->client, NULL);
 
-			gtk_object_unref (GTK_OBJECT (comp));
+			g_object_unref (comp);
 		}
 
  		g_list_free (comp_list);
@@ -3901,44 +3959,6 @@ e_week_view_on_settings (GtkWidget *widget, gpointer data)
 }
 
 static void
-e_week_view_on_delete_occurrence (GtkWidget *widget, gpointer data)
-{
-	EWeekView *week_view;
-	EWeekViewEvent *event;
-	CalComponent *comp;
-
-	week_view = E_WEEK_VIEW (data);
-
-	if (week_view->popup_event_num == -1)
-		return;
-
-	event = &g_array_index (week_view->events, EWeekViewEvent,
-				week_view->popup_event_num);
-
-	if (cal_component_is_instance (event->comp)) {
-		const char *uid;
-
-		cal_component_get_uid (event->comp, &uid);
-		if (cal_client_remove_object_with_mod (week_view->client, uid, CALOBJ_MOD_THIS) != CAL_CLIENT_RESULT_SUCCESS)
-			g_message ("e_week_view_on_delete_occurrence(): Could not update the object!");
-
-		return;
-	}
-
-	/* We must duplicate the CalComponent, or we won't know it has changed
-	   when we get the "update_event" callback. */
-
-	comp = cal_component_clone (event->comp);
-	cal_comp_util_add_exdate (comp, event->start, week_view->zone);
-
-	if (cal_client_update_object (week_view->client, comp) != CAL_CLIENT_RESULT_SUCCESS)
-		g_message ("e_week_view_on_delete_occurrence(): Could not update the object!");
-
-	gtk_object_unref (GTK_OBJECT (comp));
-}
-
-
-static void
 e_week_view_delete_event_internal (EWeekView *week_view, gint event_num)
 {
 	CalComponentVType vtype;
@@ -3954,15 +3974,13 @@ e_week_view_delete_event_internal (EWeekView *week_view, gint event_num)
 		const char *uid;
 
 		if (itip_organizer_is_user (event->comp, week_view->client) 
-		    && cancel_component_dialog (week_view->client, event->comp, TRUE))
+		    && cancel_component_dialog ((GtkWindow *) gtk_widget_get_toplevel (week_view),
+						week_view->client, event->comp, TRUE))
 			itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, event->comp, week_view->client, NULL);
 
 		cal_component_get_uid (event->comp, &uid);
 
-		/* We don't check the return value; FALSE can mean the object
-		 * was not in the server anyways.
-		 */
-		cal_client_remove_object (week_view->client, uid);
+		delete_error_dialog (cal_client_remove_object (week_view->client, uid), CAL_COMPONENT_EVENT);
 	}
 }
 
@@ -3996,6 +4014,60 @@ e_week_view_delete_event		(EWeekView       *week_view)
 
 
 static void
+e_week_view_delete_occurrence_internal (EWeekView *week_view, gint event_num)
+{
+	EWeekViewEvent *event;
+	CalComponent *comp;
+
+	event = &g_array_index (week_view->events, EWeekViewEvent,
+				event_num);
+
+	if (cal_component_is_instance (event->comp)) {
+		const char *uid;
+
+		cal_component_get_uid (event->comp, &uid);
+		delete_error_dialog (cal_client_remove_object_with_mod (week_view->client, uid, CALOBJ_MOD_THIS),
+				     CAL_COMPONENT_EVENT);
+		return;
+	}
+
+	/* We must duplicate the CalComponent, or we won't know it has changed
+	   when we get the "update_event" callback. */
+
+	comp = cal_component_clone (event->comp);
+	cal_comp_util_add_exdate (comp, event->start, week_view->zone);
+
+	if (cal_client_update_object (week_view->client, comp) != CAL_CLIENT_RESULT_SUCCESS)
+		g_message ("e_week_view_on_delete_occurrence(): Could not update the object!");
+
+	g_object_unref (comp);
+}
+
+static void
+e_week_view_on_delete_occurrence (GtkWidget *widget, gpointer data)
+{
+	EWeekView *week_view;
+
+	week_view = E_WEEK_VIEW (data);
+
+	if (week_view->popup_event_num == -1)
+		return;
+
+	e_week_view_delete_occurrence_internal (week_view, week_view->popup_event_num);
+}
+
+void
+e_week_view_delete_occurrence (EWeekView *week_view)
+{
+	g_return_if_fail (E_IS_WEEK_VIEW (week_view));
+
+	if (week_view->editing_event_num == -1)
+		return;
+
+	e_week_view_delete_occurrence_internal (week_view, week_view->editing_event_num);
+}
+
+static void
 e_week_view_on_cut (GtkWidget *widget, gpointer data)
 {
 	EWeekView *week_view;
@@ -4013,11 +4085,12 @@ e_week_view_on_cut (GtkWidget *widget, gpointer data)
  				week_view->popup_event_num);
  
 	if (itip_organizer_is_user (event->comp, week_view->client) 
-	    && cancel_component_dialog (week_view->client, event->comp, TRUE))
+	    && cancel_component_dialog ((GtkWindow *) gtk_widget_get_toplevel (week_view),
+					week_view->client, event->comp, TRUE))
 		itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, event->comp, week_view->client, NULL);
 
  	cal_component_get_uid (event->comp, &uid);
- 	cal_client_remove_object (week_view->client, uid);
+ 	delete_error_dialog (cal_client_remove_object (week_view->client, uid), CAL_COMPONENT_EVENT);
 }
 
 static void
@@ -4114,12 +4187,12 @@ e_week_view_on_unrecur_appointment (GtkWidget *widget, gpointer data)
 	if (cal_client_update_object (week_view->client, comp) != CAL_CLIENT_RESULT_SUCCESS)
 		g_message ("e_week_view_on_unrecur_appointment(): Could not update the object!");
 
-	gtk_object_unref (GTK_OBJECT (comp));
+	g_object_unref (comp);
 
 	if (cal_client_update_object (week_view->client, new_comp) != CAL_CLIENT_RESULT_SUCCESS)
 		g_message ("e_week_view_on_unrecur_appointment(): Could not update the object!");
 
-	gtk_object_unref (GTK_OBJECT (new_comp));
+	g_object_unref (new_comp);
 }
 
 
@@ -4186,7 +4259,7 @@ e_week_view_get_time_string_width	(EWeekView	*week_view)
 {
 	gint time_width;
 
-	if (week_view->use_small_font && week_view->small_font)
+	if (week_view->use_small_font && week_view->small_font_desc)
 		time_width = week_view->digit_width * 2
 			+ week_view->small_digit_width * 2;
 	else
@@ -4198,13 +4271,6 @@ e_week_view_get_time_string_width	(EWeekView	*week_view)
 				   week_view->pm_string_width);
 
 	return time_width;
-}
-
-static void
-invisible_destroyed (GtkWidget *invisible, EWeekView *week_view)
-{
-	gtk_object_unref (GTK_OBJECT (week_view->invisible));
-	week_view->invisible = NULL;
 }
 
 static void
@@ -4321,7 +4387,7 @@ selection_received (GtkWidget *invisible,
 				cal_client_update_object (week_view->client, comp);
 
 				g_free (uid);
-				gtk_object_unref (GTK_OBJECT (comp));
+				g_object_unref (comp);
 			}
 			subcomp = icalcomponent_get_next_component (
 				icalcomp, ICAL_ANY_COMPONENT);
@@ -4359,11 +4425,12 @@ selection_received (GtkWidget *invisible,
 
 		cal_client_update_object (week_view->client, comp);
 
-		if (itip_organizer_is_user (comp, week_view->client) && send_component_dialog (week_view->client, comp, TRUE))
+		if (itip_organizer_is_user (comp, week_view->client) &&
+		    send_component_dialog (gtk_widget_get_toplevel (week_view), week_view->client, comp, TRUE))
 			itip_send_comp (CAL_COMPONENT_METHOD_REQUEST, comp, week_view->client, NULL);
 
 		g_free (uid);
-		gtk_object_unref (GTK_OBJECT (comp));
+		g_object_unref (comp);
 	}
 
 	e_week_view_set_status_message (week_view, NULL);
@@ -4433,6 +4500,21 @@ e_week_view_get_num_events_selected (EWeekView *week_view)
 	return (week_view->editing_event_num != -1) ? 1 : 0;
 }
 
+/* Returns the currently-selected event, or NULL if none */
+CalComponent *
+e_week_view_get_selected_event (EWeekView *week_view)
+{
+	EWeekViewEvent *event;
+
+	g_return_val_if_fail (E_IS_WEEK_VIEW (week_view), NULL);
+	g_return_val_if_fail (week_view->editing_event_num != -1, NULL);
+
+	event = &g_array_index (week_view->events, EWeekViewEvent,
+				week_view->editing_event_num);
+
+	return event ? event->comp : NULL;
+}
+
 /* Displays a message on the activity client. */
 void
 e_week_view_set_status_message (EWeekView *week_view, const char *message)
@@ -4443,7 +4525,7 @@ e_week_view_set_status_message (EWeekView *week_view, const char *message)
 
 	if (!message || !*message) {
 		if (week_view->activity) {
-			gtk_object_unref (GTK_OBJECT (week_view->activity));
+			g_object_unref (week_view->activity);
 			week_view->activity = NULL;
 		}
 	}
@@ -4452,7 +4534,7 @@ e_week_view_set_status_message (EWeekView *week_view, const char *message)
 		char *client_id = g_strdup_printf ("%p", week_view);
 
 		if (progress_icon[0] == NULL)
-			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_CALENDAR_PROGRESS_IMAGE);
+			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_CALENDAR_PROGRESS_IMAGE, NULL);
 		week_view->activity = evolution_activity_client_new (
 			global_shell_client, client_id,
 			progress_icon, message, TRUE, &display);

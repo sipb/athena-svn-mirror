@@ -51,7 +51,7 @@ struct _CamelStreamFilterPrivate {
 	size_t filteredlen;
 
 	int last_was_read:1;	/* was the last op read or write? */
-	int flushed:1           /* were the filters flushed? */
+	int flushed:1;          /* were the filters flushed? */
 };
 
 #define READ_PAD (128)		/* bytes padded before buffer */
@@ -225,7 +225,7 @@ do_read (CamelStream *stream, char *buffer, size_t n)
 	g_check(p->realbuffer);
 
 	if (p->filteredlen<=0) {
-		int presize = READ_PAD;
+		size_t presize = READ_PAD;
 
 		size = camel_stream_read(filter->source, p->buffer, READ_SIZE);
 		if (size <= 0) {
@@ -287,7 +287,7 @@ do_write (CamelStream *stream, const char *buf, size_t n)
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
 	struct _filter *f;
-	int presize;
+	size_t presize;
 	char *buffer = (char *)buf;
 	size_t len = n;
 
@@ -328,7 +328,7 @@ do_flush (CamelStream *stream)
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
 	struct _filter *f;
 	char *buffer;
-	int presize;
+	size_t presize;
 	size_t len;
 	
 	if (p->last_was_read) {
@@ -376,7 +376,7 @@ do_eos (CamelStream *stream)
 {
 	CamelStreamFilter *filter = (CamelStreamFilter *)stream;
 	struct _CamelStreamFilterPrivate *p = _PRIVATE(filter);
-
+	
 	if (p->filteredlen > 0)
 		return FALSE;
 	

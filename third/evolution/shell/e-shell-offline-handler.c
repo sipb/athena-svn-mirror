@@ -24,23 +24,33 @@
 #include <config.h>
 #endif
 
+#undef G_DISABLE_DEPRECATED	/* FIXME */
+#undef GTK_DISABLE_DEPRECATED	/* FIXME */
+
 #include "e-shell-offline-handler.h"
 
 #include "e-shell-offline-sync.h"
 
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkwidget.h>
+#include "e-shell-marshal.h"
+
+#include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkclist.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkliststore.h>
+#include <gtk/gtktreeview.h>
+#include <gtk/gtktypeutils.h>
+#include <gtk/gtkwidget.h>
 
 #include <gal/util/e-util.h>
 
-#include <libgnomeui/gnome-dialog.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <glade/glade-xml.h>
 
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-exception.h>
 
 
 #define GLADE_DIALOG_FILE_NAME EVOLUTION_GLADEDIR "/e-active-connection-dialog.glade"
@@ -145,8 +155,6 @@ progress_listener_servant_free (OfflineProgressListenerServant *servant)
 	PortableServer_POA_deactivate_object (bonobo_poa (), oid, &ev);
 	CORBA_free (oid);
 
-	POA_GNOME_Evolution_OfflineProgressListener__fini ((POA_GNOME_Evolution_OfflineProgressListener *) servant, &ev);
-
 	CORBA_exception_free (&ev);
 
 	g_free (servant->component_id);
@@ -211,7 +219,7 @@ impl_OfflineProgressListener_updateProgress (PortableServer_Servant servant,
 	update_dialog_clist (offline_handler);
 
 	if (priv->num_total_connections == 0 && ! priv->finished) {
-		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], TRUE);
+		g_signal_emit (offline_handler, signals[OFFLINE_PROCEDURE_FINISHED], 0, TRUE);
 		priv->finished = TRUE;
 	}
 }
@@ -371,7 +379,7 @@ cancel_offline (EShellOfflineHandler *offline_handler)
 	priv->num_total_connections = 0;
 
 	if (! priv->finished) {
-		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], FALSE);
+		g_signal_emit (offline_handler, signals[OFFLINE_PROCEDURE_FINISHED], 0, FALSE);
 		priv->finished = TRUE;
 	}
 }
@@ -421,7 +429,8 @@ prepare_for_offline (EShellOfflineHandler *offline_handler)
 
 		GNOME_Evolution_Offline_prepareForOffline (offline_interface, &active_connection_list, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("Cannot prepare component component to go offline -- %s [%s]", id, ev._repo_id);
+			g_warning ("Cannot prepare component component to go offline -- %s [%s]",
+				   id, BONOBO_EX_REPOID (&ev));
 
 			progress_listener_servant_free (progress_listener_servant);
 			
@@ -497,45 +506,41 @@ finalize_offline (EShellOfflineHandler *offline_handler)
 
 	priv = offline_handler->priv;
 
-	gtk_object_ref (GTK_OBJECT (offline_handler));
+	g_object_ref (offline_handler);
 
 	g_hash_table_foreach (priv->id_to_component_info, finalize_offline_hash_foreach, offline_handler);
 
 	if (priv->num_total_connections == 0 && ! priv->finished) {
 		/* Nothing else to do, we are all set.  */
-		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], TRUE);
+		g_signal_emit (offline_handler, signals[OFFLINE_PROCEDURE_FINISHED], 0, TRUE);
 		priv->finished = TRUE;
 	}
 
-	gtk_object_unref (GTK_OBJECT (offline_handler));
+	g_object_unref (offline_handler);
 }
 
 
 /* The confirmation dialog.  */
 
 static void
-update_dialog_clist_hash_foreach (void *key,
-				  void *data,
-				  void *user_data)
+update_dialog_tree_view_hash_foreach (void *key,
+				      void *data,
+				      void *user_data)
 {
 	ComponentInfo *component_info;
 	const GNOME_Evolution_Connection *p;
-	GtkWidget *clist;
+	GtkTreeModel *model = GTK_TREE_MODEL (user_data);
 	int i;
-
-	clist = GTK_WIDGET (user_data);
 
 	component_info = (ComponentInfo *) data;
 	for (i = 0, p = component_info->active_connection_list->_buffer;
 	     i < component_info->active_connection_list->_length;
 	     i++, p++) {
-		char *columns[3];
+		GtkTreeIter iter;
+		char *host = g_strdup_printf ("%s (%s)", p->hostName, p->type);
 
-		columns[0] = p->hostName;
-		columns[1] = p->type;
-		columns[2] = NULL;
-
-		gtk_clist_prepend (GTK_CLIST (clist), columns);
+		gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE (model), &iter, 0, host, -1);
 	}
 }
 
@@ -543,27 +548,32 @@ static void
 update_dialog_clist (EShellOfflineHandler *offline_handler)
 {
 	EShellOfflineHandlerPrivate *priv;
-	GtkWidget *clist;
+	GtkWidget *tree_view;
+	GtkListStore *model;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
 
 	priv = offline_handler->priv;
 	if (priv->dialog_gui == NULL)
 		return;
 
-	clist = glade_xml_get_widget (priv->dialog_gui, "active_connection_clist");
+        tree_view = glade_xml_get_widget (priv->dialog_gui, "active_connection_treeview");
+	g_assert (GTK_IS_TREE_VIEW (tree_view));
 
-	gtk_clist_set_auto_sort (GTK_CLIST (clist), TRUE);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tree_view), FALSE);
 
-	gtk_clist_freeze (GTK_CLIST (clist));
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes ("Host", renderer, "text", 0, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column);
 
-	/* Populate the GtkCList.  */
-	gtk_clist_clear (GTK_CLIST (clist));
-	g_hash_table_foreach (priv->id_to_component_info, update_dialog_clist_hash_foreach, clist);
+	model = gtk_list_store_new (1, G_TYPE_STRING);
+	g_hash_table_foreach (priv->id_to_component_info, update_dialog_tree_view_hash_foreach, model);
 
-	gtk_clist_thaw (GTK_CLIST (clist));
+	gtk_tree_view_set_model (GTK_TREE_VIEW (tree_view), GTK_TREE_MODEL(model));
 }
 
 static void
-dialog_handle_ok (GnomeDialog *dialog,
+dialog_handle_ok (GtkDialog *dialog,
 		  EShellOfflineHandler *offline_handler)
 {
 	EShellOfflineHandlerPrivate *priv;
@@ -571,7 +581,7 @@ dialog_handle_ok (GnomeDialog *dialog,
 
 	priv = offline_handler->priv;
 
-	gnome_dialog_set_sensitive (dialog, 0, FALSE);
+	gtk_dialog_set_response_sensitive (dialog, GTK_RESPONSE_OK, FALSE);
 
 	instruction_label = glade_xml_get_widget (priv->dialog_gui, "instruction_label");
 	g_assert (instruction_label != NULL);
@@ -585,7 +595,7 @@ dialog_handle_ok (GnomeDialog *dialog,
 }
 
 static void
-dialog_handle_cancel (GnomeDialog *dialog,
+dialog_handle_cancel (GtkDialog *dialog,
 		      EShellOfflineHandler *offline_handler)
 {
 	EShellOfflineHandlerPrivate *priv;
@@ -594,27 +604,27 @@ dialog_handle_cancel (GnomeDialog *dialog,
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 
-	gtk_object_unref (GTK_OBJECT (priv->dialog_gui));
+	g_object_unref (priv->dialog_gui);
 	priv->dialog_gui = NULL;
 
 	cancel_offline (offline_handler);
 }
 
 static void
-dialog_clicked_cb (GnomeDialog *dialog,
-		   int button_number,
-		   void *data)
+dialog_response_cb (GtkDialog *dialog,
+		    int response_id,
+		    void *data)
 {
 	EShellOfflineHandler *offline_handler;
 
 	offline_handler = E_SHELL_OFFLINE_HANDLER (data);
 
-	switch (button_number) {
-	case 0:			/* OK */
+	switch (response_id) {
+	case GTK_RESPONSE_OK:
 		dialog_handle_ok (dialog, offline_handler);
 		break;
 
-	case 1:			/* Cancel */
+	case GTK_RESPONSE_CANCEL:
 		dialog_handle_cancel (dialog, offline_handler);
 		break;
 
@@ -632,7 +642,7 @@ pop_up_confirmation_dialog (EShellOfflineHandler *offline_handler)
 	priv = offline_handler->priv;
 
 	if (priv->dialog_gui == NULL) {
-		priv->dialog_gui = glade_xml_new (GLADE_DIALOG_FILE_NAME, NULL);
+		priv->dialog_gui = glade_xml_new (GLADE_DIALOG_FILE_NAME, NULL, NULL);
 		if (priv->dialog_gui == NULL) {
 			g_warning ("Cannot load the active connection dialog (installation problem?) -- %s",
 				   GLADE_DIALOG_FILE_NAME);
@@ -647,21 +657,18 @@ pop_up_confirmation_dialog (EShellOfflineHandler *offline_handler)
 	/* gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (priv->parent_shell_view)); */
 	/* gtk_window_set_modal (GTK_WINDOW (dialog), TRUE); */
 
-	gnome_dialog_set_default (GNOME_DIALOG (dialog), 1);
-
 	update_dialog_clist (offline_handler);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), "clicked",
-			    GTK_SIGNAL_FUNC (dialog_clicked_cb), offline_handler);
+	g_signal_connect (dialog, "response", G_CALLBACK (dialog_response_cb), offline_handler);
 
 	gtk_widget_show (dialog);
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EShellOfflineHandler *offline_handler;
 	EShellOfflineHandlerPrivate *priv;
@@ -671,8 +678,11 @@ impl_destroy (GtkObject *object)
 
 	/* (We don't unref the shell, as it's our owner.)  */
 
-	g_hash_table_foreach (priv->id_to_component_info, hash_foreach_free_component_info, NULL);
-	g_hash_table_destroy (priv->id_to_component_info);
+	if (priv->id_to_component_info != NULL) {
+		g_hash_table_foreach (priv->id_to_component_info, hash_foreach_free_component_info, NULL);
+		g_hash_table_destroy (priv->id_to_component_info);
+		priv->id_to_component_info = NULL;
+	}
 
 	if (priv->dialog_gui != NULL) {
 		GtkWidget *dialog;
@@ -680,14 +690,25 @@ impl_destroy (GtkObject *object)
 		dialog = glade_xml_get_widget (priv->dialog_gui, "active_connection_dialog");
 		gtk_widget_destroy (dialog);
 
-		gtk_object_unref (GTK_OBJECT (priv->dialog_gui));
+		g_object_unref (priv->dialog_gui);
 		priv->dialog_gui = NULL;
 	}
 
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EShellOfflineHandler *offline_handler;
+	EShellOfflineHandlerPrivate *priv;
+
+	offline_handler = E_SHELL_OFFLINE_HANDLER (object);
+	priv = offline_handler->priv;
+
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -696,31 +717,32 @@ impl_destroy (GtkObject *object)
 static void
 class_init (EShellOfflineHandlerClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref(gtk_object_get_type ());
 
 	signals[OFFLINE_PROCEDURE_STARTED]
-		= gtk_signal_new ("offline_procedure_started",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EShellOfflineHandlerClass, offline_procedure_started),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		= g_signal_new ("offline_procedure_started",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EShellOfflineHandlerClass, offline_procedure_started),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	signals[OFFLINE_PROCEDURE_FINISHED]
-		= gtk_signal_new ("offline_procedure_finished",
-				  GTK_RUN_LAST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EShellOfflineHandlerClass, offline_procedure_finished),
-				  gtk_marshal_NONE__BOOL,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_BOOL);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		= g_signal_new ("offline_procedure_finished",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EShellOfflineHandlerClass, offline_procedure_finished),
+				NULL, NULL,
+				e_shell_marshal_NONE__BOOL,
+				G_TYPE_NONE, 1,
+				G_TYPE_BOOLEAN);
 }
 
 
@@ -786,7 +808,7 @@ e_shell_offline_handler_new (EShell *shell)
 
 	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
 
-	offline_handler = (EShellOfflineHandler *) gtk_type_new (e_shell_offline_handler_get_type ());
+	offline_handler = (EShellOfflineHandler *) g_object_new (e_shell_offline_handler_get_type (), NULL);
 	e_shell_offline_handler_construct (offline_handler, shell);
 
 	return offline_handler;
@@ -817,18 +839,18 @@ e_shell_offline_handler_put_components_offline (EShellOfflineHandler *offline_ha
 	/* Add an extra ref here as the signal handlers might want to unref
 	   us.  */
 
-	gtk_object_ref (GTK_OBJECT (offline_handler));
+	g_object_ref (offline_handler);
 
-	gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_STARTED]);
+	g_signal_emit (offline_handler, signals[OFFLINE_PROCEDURE_STARTED], 0);
 
 	priv->finished = FALSE;
 
 	if (! prepare_for_offline (offline_handler)) {
 		/* FIXME: Maybe do something smarter here.  */
 		g_warning ("Couldn't put components off-line");
-		gtk_signal_emit (GTK_OBJECT (offline_handler), signals[OFFLINE_PROCEDURE_FINISHED], FALSE);
+		g_signal_emit (offline_handler, signals[OFFLINE_PROCEDURE_FINISHED], 0, FALSE);
 		priv->finished = TRUE;
-		gtk_object_unref (GTK_OBJECT (offline_handler));
+		g_object_unref (offline_handler);
 		return;
 	}
 
@@ -840,7 +862,7 @@ e_shell_offline_handler_put_components_offline (EShellOfflineHandler *offline_ha
 		finalize_offline (offline_handler);
 	}
 
-	gtk_object_unref (GTK_OBJECT (offline_handler));
+	g_object_unref (offline_handler);
 }
 
 

@@ -14,7 +14,7 @@
 #  FILE: Makefile.am
 #  CREATOR: eric 
 #  
-#  $Id: Makefile.in,v 1.1.1.6 2002-12-19 15:33:54 ghudson Exp $
+#  $Id: Makefile.in,v 1.1.1.7 2003-07-13 04:59:16 ghudson Exp $
 #
 #
 # (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -106,22 +106,29 @@ RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
+privlibdir = @privlibdir@
 python_val = @python_val@
 
 DESIGNDATA = $(top_srcdir)/design-data
 ICALSCRIPTS = $(top_srcdir)/scripts
 
-lib_LTLIBRARIES = libical-evolution.la
+privlib_LTLIBRARIES = libical-evolution.la
 
 noinst_LTLIBRARIES = libical-static.la
 libical_static_la_SOURCES = $(libical_evolution_la_SOURCES)
 libical_static_la_LDFLAGS = --all-static
 
+# Make sure libical-evolution.la and libical-static.la are not built in
+# parallel when using a parallel make; libtool can't handle that.
+libical_static_la_DEPENDENCIES = libical-evolution.la
+
 YFLAGS = -d -v -t -pical_yy
 LFLAGS = -Pical_yy
 LEX_OUTPUT_ROOT = lex.ical_yy
 
-CPPFLAGS = -DPACKAGE_DATA_DIR=\""$(datadir)/$(PACKAGE)"\"
+CPPFLAGS = -DPACKAGE_DATA_DIR=\""$(privdatadir)"\"
 
 INCLUDES =  	-I$(top_builddir)		-I$(top_srcdir)/src		-I$(top_builddir)/src		-I$(srcdir)
 
@@ -132,7 +139,7 @@ libical_evolution_la_SOURCES =  	$(BUILT_SOURCES)		icalarray.c			icalarray.h			i
 
 
 #libicalincludedir = $(includedir)/$(PACKAGE)
-libicalincludedir = $(includedir)/evolution
+libicalincludedir = $(privincludedir)
 
 libicalinclude_HEADERS = ical.h 
 
@@ -176,22 +183,22 @@ EXTRA_DIST =  	icalderivedparameter.c.in 	icalderivedparameter.h.in 	icalderived
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
 CONFIG_HEADER = ../../config.h
-LTLIBRARIES =  $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES) $(privlib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libical_evolution_la_LIBADD = 
-libical_evolution_la_OBJECTS =  icalderivedparameter.lo \
+libical_static_la_LIBADD = 
+libical_static_la_OBJECTS =  icalderivedparameter.lo \
 icalderivedproperty.lo icalrestriction.lo icalderivedvalue.lo \
 icalarray.lo icalattendee.lo icalcomponent.lo icalenums.lo icalerror.lo \
 icallexer.lo icalmemory.lo icalmime.lo icalparameter.lo icalparser.lo \
 icalproperty.lo icalrecur.lo icaltime.lo icaltimezone.lo \
 icalduration.lo icalperiod.lo icaltypes.lo icalvalue.lo icalyacc.lo \
 pvl.lo sspm.lo vsnprintf.lo icallangbind.lo
-libical_static_la_LIBADD = 
-libical_static_la_OBJECTS =  icalderivedparameter.lo \
+libical_evolution_la_LIBADD = 
+libical_evolution_la_OBJECTS =  icalderivedparameter.lo \
 icalderivedproperty.lo icalrestriction.lo icalderivedvalue.lo \
 icalarray.lo icalattendee.lo icalcomponent.lo icalenums.lo icalerror.lo \
 icallexer.lo icalmemory.lo icalmime.lo icalparameter.lo icalparser.lo \
@@ -214,8 +221,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(libical_evolution_la_SOURCES) $(libical_static_la_SOURCES)
-OBJECTS = $(libical_evolution_la_OBJECTS) $(libical_static_la_OBJECTS)
+SOURCES = $(libical_static_la_SOURCES) $(libical_evolution_la_SOURCES)
+OBJECTS = $(libical_static_la_OBJECTS) $(libical_evolution_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -230,31 +237,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 icalversion.h: $(top_builddir)/config.status icalversion.h.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-mostlyclean-libLTLIBRARIES:
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-
-distclean-libLTLIBRARIES:
-
-maintainer-clean-libLTLIBRARIES:
-
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
-	done
-
 mostlyclean-noinstLTLIBRARIES:
 
 clean-noinstLTLIBRARIES:
@@ -263,6 +245,31 @@ clean-noinstLTLIBRARIES:
 distclean-noinstLTLIBRARIES:
 
 maintainer-clean-noinstLTLIBRARIES:
+
+mostlyclean-privlibLTLIBRARIES:
+
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
+
+distclean-privlibLTLIBRARIES:
+
+maintainer-clean-privlibLTLIBRARIES:
+
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-privlibLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
+	done
 
 .c.o:
 	$(COMPILE) -c $<
@@ -308,11 +315,11 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libical-evolution.la: $(libical_evolution_la_OBJECTS) $(libical_evolution_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libical_evolution_la_LDFLAGS) $(libical_evolution_la_OBJECTS) $(libical_evolution_la_LIBADD) $(LIBS)
-
 libical-static.la: $(libical_static_la_OBJECTS) $(libical_static_la_DEPENDENCIES)
 	$(LINK)  $(libical_static_la_LDFLAGS) $(libical_static_la_OBJECTS) $(libical_static_la_LIBADD) $(LIBS)
+
+libical-evolution.la: $(libical_evolution_la_OBJECTS) $(libical_evolution_la_DEPENDENCIES)
+	$(LINK) -rpath $(privlibdir) $(libical_evolution_la_LDFLAGS) $(libical_evolution_la_OBJECTS) $(libical_evolution_la_LIBADD) $(LIBS)
 .l.c:
 	$(LEX) $(AM_LFLAGS) $(LFLAGS) $< && mv $(LEX_OUTPUT_ROOT).c $@
 .y.c:
@@ -504,23 +511,26 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-libicalincludeHEADERS
+install-data-am: install-privlibLTLIBRARIES \
+		install-libicalincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-libicalincludeHEADERS
+uninstall-am: uninstall-privlibLTLIBRARIES \
+		uninstall-libicalincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(libicalincludedir)
+	$(mkinstalldirs)  $(DESTDIR)$(privlibdir) \
+		$(DESTDIR)$(libicalincludedir)
 
 
 mostlyclean-generic:
@@ -534,27 +544,28 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "icallexercicalyacchicalyaccc$(BUILT_SOURCES)" || rm -f icallexerc icalyacch icalyaccc $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-libLTLIBRARIES \
-		mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES \
+		mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-noinstLTLIBRARIES clean-compile \
-		clean-libtool clean-tags clean-generic mostlyclean-am
+clean-am:  clean-noinstLTLIBRARIES clean-privlibLTLIBRARIES \
+		clean-compile clean-libtool clean-tags clean-generic \
+		mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-noinstLTLIBRARIES \
+distclean-am:  distclean-noinstLTLIBRARIES distclean-privlibLTLIBRARIES \
 		distclean-compile distclean-libtool distclean-tags \
 		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-noinstLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
+		maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -563,11 +574,11 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES \
-mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
 clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-libicalincludeHEADERS \

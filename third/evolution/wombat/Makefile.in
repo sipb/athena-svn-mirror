@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,135 +168,126 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"wombat\"				-I$(top_srcdir)/e-util					-I$(top_srcdir)						-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-I$(top_srcdir)/calendar				-I$(top_srcdir)/calendar				-I$(top_builddir)/calendar				-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libical/src/libical			-DEVOLUTION_DATADIR=\""$(datadir)"\"            	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		$(WOMBAT_CFLAGS)
-
-
-bin_PROGRAMS =  	wombat
-
-
-WOMBAT_IDL = Evolution-Wombat.idl
-
-WOMBAT_IDL_GENERATED =  	Evolution-Wombat.h				Evolution-Wombat-common.c			Evolution-Wombat-skels.c			Evolution-Wombat-stubs.c
+INCLUDES =  	-DG_LOG_DOMAIN=\"wombat\"				-DPREFIX=\"$(prefix)\"					-DSYSCONFDIR=\"$(sysconfdir)\"				-DDATADIR=\"$(datadir)\"				-DLIBDIR=\"$(libdir)\"					-I$(top_srcdir)/e-util					-I$(top_srcdir)						-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-I$(top_srcdir)/calendar				-I$(top_srcdir)/calendar				-I$(top_builddir)/calendar				-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libical/src/libical			-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		$(WOMBAT_CFLAGS)
 
 
-idldir = $(datadir)/idl
+IDLS =  	Evolution-Wombat.idl
 
-idl_DATA = $(WOMBAT_IDL)
 
-wombat_SOURCES =  	$(WOMBAT_IDL_GENERATED)			wombat-interface-check.c		wombat-interface-check.h		wombat-moniker.c			wombat-moniker.h			wombat-private-moniker.c		wombat-private-moniker.h		wombat.c
+IDL_GENERATED_H =  	Evolution-Wombat.h
+
+
+IDL_GENERATED_C =  	Evolution-Wombat-common.c			Evolution-Wombat-skels.c			Evolution-Wombat-stubs.c
+
+
+IDL_GENERATED = $(IDL_GENERATED_H) $(IDL_GENERATED_C)
+
+privlibexec_PROGRAMS =  	evolution-wombat
+
+
+evolution_wombat_SOURCES =  	$(IDL_GENERATED)			wombat-interface-check.c		wombat-interface-check.h		wombat.c
 
 
 @ENABLE_LDAP_TRUE@LDAP_STUFF = 	$(top_builddir)/addressbook/backend/pas/libpasldap.a			$(LDAP_LIBS)
 
-wombat_LDADD =  	$(top_builddir)/addressbook/backend/pas/libpasfile.a			$(DB3_LDADD)								$(LDAP_STUFF)								$(top_builddir)/addressbook/backend/pas/libpas.a			$(top_builddir)/addressbook/backend/ebook/libebook.la			$(top_builddir)/camel/libcamel.la					$(top_builddir)/e-util/ename/libename.la				$(top_builddir)/calendar/pcs/libpcsfile.a				$(top_builddir)/calendar/pcs/libpcs.a					$(top_builddir)/calendar/cal-util/libcal-util.la			$(top_builddir)/libical/src/libical/libical-evolution.la		$(top_builddir)/libversit/libversit.a					$(top_builddir)/e-util/libedb3util.la					$(top_builddir)/e-util/libeutil.la					$(top_builddir)/libwombat/libwombat.la					$(WOMBAT_LIBS)
+evolution_wombat_LDADD =  	$(top_builddir)/addressbook/backend/pas/libpasfile.a			$(DB3_LDADD)								$(LDAP_STUFF)								$(top_builddir)/addressbook/backend/pas/libpas.a			$(top_builddir)/addressbook/backend/ebook/libebook.la			$(top_builddir)/calendar/pcs/libpcsfile.a				$(top_builddir)/calendar/pcs/libpcs.a					$(top_builddir)/calendar/cal-util/libcal-util.la			$(top_builddir)/e-util/libedb3util.la					$(top_builddir)/e-util/libeutil.la					$(top_builddir)/libwombat/libwombat.la					$(WOMBAT_LIBS)
+
+@ENABLE_LDAP_TRUE@SERVER_IN_FILE = GNOME_Evolution_WombatLDAP.server.in.in
+@ENABLE_LDAP_FALSE@SERVER_IN_FILE = GNOME_Evolution_WombatNOLDAP.server.in.in
+
+server_in_files = GNOME_Evolution_Wombat.server.in.in
+
+server_DATA = $(server_in_files:.server.in.in=.server)
+
+idl_DATA = $(IDLS)
+
+EXTRA_DIST = $(server_DATA)					$(server_in_files)					$(idl_DATA)						ChangeLog.pre-1-4					GNOME_Evolution_WombatLDAP.server.in.in			GNOME_Evolution_WombatNOLDAP.server.in.in
 
 
-oafdir = $(datadir)/oaf
-@ENABLE_LDAP_TRUE@OAF_IN_FILE = GNOME_Evolution_WombatLDAP.oaf.in
-@ENABLE_LDAP_FALSE@OAF_IN_FILE = GNOME_Evolution_WombatNOLDAP.oaf.in
-
-oaf_in_files = GNOME_Evolution_Wombat.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
-
-EXTRA_DIST = $(oaf_DATA) $(oaf_in_files) $(idl_DATA) 	     GNOME_Evolution_WombatLDAP.oaf.in GNOME_Evolution_WombatNOLDAP.oaf.in
-
+BUILT_SOURCES = $(IDL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
 
 @ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  wombat$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+privlibexec_PROGRAMS =  evolution-wombat$(EXEEXT)
+PROGRAMS =  $(privlibexec_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-wombat_OBJECTS =  Evolution-Wombat-common.$(OBJEXT) \
+evolution_wombat_OBJECTS =  Evolution-Wombat-common.$(OBJEXT) \
 Evolution-Wombat-skels.$(OBJEXT) Evolution-Wombat-stubs.$(OBJEXT) \
-wombat-interface-check.$(OBJEXT) wombat-moniker.$(OBJEXT) \
-wombat-private-moniker.$(OBJEXT) wombat.$(OBJEXT)
-@ENABLE_LDAP_FALSE@wombat_DEPENDENCIES =  \
+wombat-interface-check.$(OBJEXT) wombat.$(OBJEXT)
+@ENABLE_LDAP_FALSE@evolution_wombat_DEPENDENCIES =  \
 @ENABLE_LDAP_FALSE@$(top_builddir)/addressbook/backend/pas/libpasfile.a \
 @ENABLE_LDAP_FALSE@$(top_builddir)/addressbook/backend/pas/libpas.a \
 @ENABLE_LDAP_FALSE@$(top_builddir)/addressbook/backend/ebook/libebook.la \
-@ENABLE_LDAP_FALSE@$(top_builddir)/camel/libcamel.la \
-@ENABLE_LDAP_FALSE@$(top_builddir)/e-util/ename/libename.la \
 @ENABLE_LDAP_FALSE@$(top_builddir)/calendar/pcs/libpcsfile.a \
 @ENABLE_LDAP_FALSE@$(top_builddir)/calendar/pcs/libpcs.a \
 @ENABLE_LDAP_FALSE@$(top_builddir)/calendar/cal-util/libcal-util.la \
-@ENABLE_LDAP_FALSE@$(top_builddir)/libical/src/libical/libical-evolution.la \
-@ENABLE_LDAP_FALSE@$(top_builddir)/libversit/libversit.a \
 @ENABLE_LDAP_FALSE@$(top_builddir)/e-util/libedb3util.la \
 @ENABLE_LDAP_FALSE@$(top_builddir)/e-util/libeutil.la \
 @ENABLE_LDAP_FALSE@$(top_builddir)/libwombat/libwombat.la
-@ENABLE_LDAP_TRUE@wombat_DEPENDENCIES =  \
+@ENABLE_LDAP_TRUE@evolution_wombat_DEPENDENCIES =  \
 @ENABLE_LDAP_TRUE@$(top_builddir)/addressbook/backend/pas/libpasfile.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/addressbook/backend/pas/libpasldap.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/addressbook/backend/pas/libpas.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/addressbook/backend/ebook/libebook.la \
-@ENABLE_LDAP_TRUE@$(top_builddir)/camel/libcamel.la \
-@ENABLE_LDAP_TRUE@$(top_builddir)/e-util/ename/libename.la \
 @ENABLE_LDAP_TRUE@$(top_builddir)/calendar/pcs/libpcsfile.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/calendar/pcs/libpcs.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/calendar/cal-util/libcal-util.la \
-@ENABLE_LDAP_TRUE@$(top_builddir)/libical/src/libical/libical-evolution.la \
-@ENABLE_LDAP_TRUE@$(top_builddir)/libversit/libversit.a \
 @ENABLE_LDAP_TRUE@$(top_builddir)/e-util/libedb3util.la \
 @ENABLE_LDAP_TRUE@$(top_builddir)/e-util/libeutil.la \
 @ENABLE_LDAP_TRUE@$(top_builddir)/libwombat/libwombat.la
-wombat_LDFLAGS = 
+evolution_wombat_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(idl_DATA) $(oaf_DATA)
+DATA =  $(idl_DATA) $(server_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -313,8 +296,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(wombat_SOURCES)
-OBJECTS = $(wombat_OBJECTS)
+SOURCES = $(evolution_wombat_SOURCES)
+OBJECTS = $(evolution_wombat_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -327,29 +310,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-binPROGRAMS:
+mostlyclean-privlibexecPROGRAMS:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-privlibexecPROGRAMS:
+	-test -z "$(privlibexec_PROGRAMS)" || rm -f $(privlibexec_PROGRAMS)
 
-distclean-binPROGRAMS:
+distclean-privlibexecPROGRAMS:
 
-maintainer-clean-binPROGRAMS:
+maintainer-clean-privlibexecPROGRAMS:
 
-install-binPROGRAMS: $(bin_PROGRAMS)
+install-privlibexecPROGRAMS: $(privlibexec_PROGRAMS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(privlibexecdir)
+	@list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	  else :; fi; \
 	done
 
-uninstall-binPROGRAMS:
+uninstall-privlibexecPROGRAMS:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
 .c.o:
@@ -396,9 +379,9 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-wombat$(EXEEXT): $(wombat_OBJECTS) $(wombat_DEPENDENCIES)
-	@rm -f wombat$(EXEEXT)
-	$(LINK) $(wombat_LDFLAGS) $(wombat_OBJECTS) $(wombat_LDADD) $(LIBS)
+evolution-wombat$(EXEEXT): $(evolution_wombat_OBJECTS) $(evolution_wombat_DEPENDENCIES)
+	@rm -f evolution-wombat$(EXEEXT)
+	$(LINK) $(evolution_wombat_LDFLAGS) $(evolution_wombat_OBJECTS) $(evolution_wombat_LDADD) $(LIBS)
 
 install-idlDATA: $(idl_DATA)
 	@$(NORMAL_INSTALL)
@@ -419,23 +402,23 @@ uninstall-idlDATA:
 	  rm -f $(DESTDIR)$(idldir)/$$p; \
 	done
 
-install-oafDATA: $(oaf_DATA)
+install-serverDATA: $(server_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(oafdir)
-	@list='$(oaf_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-oafDATA:
+uninstall-serverDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(oaf_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(oafdir)/$$p; \
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
 	done
 
 tags: TAGS
@@ -487,10 +470,6 @@ Evolution-Wombat-skels.o: Evolution-Wombat-skels.c Evolution-Wombat.h
 Evolution-Wombat-stubs.o: Evolution-Wombat-stubs.c Evolution-Wombat.h
 wombat-interface-check.o: wombat-interface-check.c ../config.h \
 	wombat-interface-check.h Evolution-Wombat.h
-wombat-moniker.o: wombat-moniker.c ../config.h wombat-moniker.h \
-	wombat-interface-check.h Evolution-Wombat.h
-wombat-private-moniker.o: wombat-private-moniker.c ../config.h \
-	wombat-private-moniker.h
 wombat.o: wombat.c ../config.h \
 	../addressbook/backend/pas/pas-book-factory.h \
 	../addressbook/backend/pas/pas-backend.h \
@@ -508,8 +487,7 @@ wombat.o: wombat.c ../config.h \
 	../calendar/cal-util/cal-component.h \
 	../calendar/cal-util/cal-recur.h ../calendar/pcs/cal-common.h \
 	../calendar/pcs/cal.h ../calendar/pcs/query.h \
-	../addressbook/backend/pas/pas-backend-ldap.h wombat-moniker.h \
-	wombat-private-moniker.h
+	wombat-interface-check.h Evolution-Wombat.h
 
 info-am:
 info: info-am
@@ -519,53 +497,57 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-privlibexecPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-idlDATA install-oafDATA
+install-data-am: install-idlDATA install-serverDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS uninstall-idlDATA uninstall-oafDATA
+uninstall-am: uninstall-privlibexecPROGRAMS uninstall-idlDATA \
+		uninstall-serverDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA) all-local
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(idldir) \
-		$(DESTDIR)$(oafdir)
+	$(mkinstalldirs)  $(DESTDIR)$(privlibexecdir) $(DESTDIR)$(idldir) \
+		$(DESTDIR)$(serverdir)
 
 
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-privlibexecPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-privlibexecPROGRAMS clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am
+distclean-am:  distclean-privlibexecPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-privlibexecPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -574,33 +556,38 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+.PHONY: mostlyclean-privlibexecPROGRAMS distclean-privlibexecPROGRAMS \
+clean-privlibexecPROGRAMS maintainer-clean-privlibexecPROGRAMS \
+uninstall-privlibexecPROGRAMS install-privlibexecPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-idlDATA \
-install-idlDATA uninstall-oafDATA install-oafDATA tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-local all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
+install-idlDATA uninstall-serverDATA install-serverDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-am install-data \
+install-am install uninstall-am uninstall all-local all-redirect all-am \
+all installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-$(WOMBAT_IDL_GENERATED): $(WOMBAT_IDL)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl` $(WOMBAT_IDL)
+$(IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(srcdir)/Evolution-Wombat.idl
 
-GNOME_Evolution_Wombat.oaf.in: $(OAF_IN_FILE)
+$(IDL_GENERATED_C): $(IDL_GENERATED_H)
+
+GNOME_Evolution_Wombat.server.in.in: $(SERVER_IN_FILE) Makefile
 	cp $< $@
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" $< > $@
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-@ENABLE_PURIFY_TRUE@all-local: wombat.pure
+@ENABLE_PURIFY_TRUE@all-local: evolution-wombat.pure
 
-@ENABLE_PURIFY_TRUE@wombat.pure: wombat
-@ENABLE_PURIFY_TRUE@	@rm -f wombat.pure
-@ENABLE_PURIFY_TRUE@	$(PLINK) $(wombat_LDFLAGS) $(wombat_OBJECTS) $(wombat_LDADD) $(LIBS)
+@ENABLE_PURIFY_TRUE@evolution-wombat.pure: evolution-wombat
+@ENABLE_PURIFY_TRUE@	@rm -f evolution-wombat.pure
+@ENABLE_PURIFY_TRUE@	$(PLINK) $(evolution_wombat_LDFLAGS) $(evolution_wombat_OBJECTS) $(evolution_wombat_LDADD) $(LIBS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,72 +168,83 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 noinst_PROGRAMS = test-card test-client test-client-list
 
-bin_PROGRAMS = evolution-vcard-importer 			evolution-ldif-importer				load-pine-addressbook				load-gnomecard-addressbook
+privlibexec_PROGRAMS =  	evolution-vcard-importer			evolution-ldif-importer
 
 
-CORBA_SOURCE =  	addressbook.h				addressbook-common.c			addressbook-stubs.c			addressbook-skels.c		        Evolution-Composer.h                    Evolution-Composer-common.c             Evolution-Composer-skels.c              Evolution-Composer-stubs.c
+toolsdir = $(privlibexecdir)/
+tools_PROGRAMS =  	load-pine-addressbook				load-gnomecard-addressbook
 
 
-idls =  	$(srcdir)/../idl/addressbook.idl				$(srcdir)/../../../composer/Evolution-Composer.idl
+# CORBA stuff
 
+CORBA_ADDRESSBOOK_SOURCE_H =  	addressbook.h
 
-idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
+CORBA_ADDRESSBOOK_SOURCE_C =  	addressbook-common.c				addressbook-stubs.c				addressbook-skels.c
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"        		-DG_LOG_DOMAIN=\"EBook\"				-I$(top_srcdir) 					-I$(top_srcdir)/camel					-I$(top_srcdir)/addressbook/backend			-I$(top_srcdir)/addressbook/ename			-I$(top_builddir)/addressbook/backend			-I$(top_builddir)/addressbook/ename			-I$(top_builddir)/shell					-I$(top_srcdir)/shell				        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+CORBA_ADDRESSBOOK_IDL = $(srcdir)/../idl/addressbook.idl
+
+CORBA_SOURCE_H = $(CORBA_ADDRESSBOOK_SOURCE_H)
+CORBA_SOURCE_C = $(CORBA_ADDRESSBOOK_SOURCE_C)
+CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
+
+# The component 
+
+INCLUDES =  	-DPREFIX=\"$(prefix)\"					-DSYSCONFDIR=\"$(sysconfdir)\"				-DDATADIR=\"$(datadir)\"				-DLIBDIR=\"$(libdir)\"					-DG_LOG_DOMAIN=\"EBook\"				-I$(top_srcdir) 					-I$(top_srcdir)/camel					-I$(top_srcdir)/addressbook/backend			-I$(top_srcdir)/addressbook/ename			-I$(top_builddir)/addressbook/backend			-I$(top_builddir)/addressbook/ename			-I$(top_builddir)/shell					-I$(top_srcdir)/shell					-DG_DISABLE_DEPRECATED					-DLIBGNOME_DISABLE_DEPRECATED			        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
 privlib_LTLIBRARIES = libebook.la libebook-static.la
 
-libebook_la_SOURCES =  	$(CORBA_SOURCE)						e-book-listener.c					e-book-view-listener.c					e-book-view.c						e-book.c						e-book-util.c						e-card-cursor.c						e-card-simple.c						e-card.c						e-card-compare.c					e-destination.c
+# Make sure the libraries are not built in parallel when using a parallel make;
+# libtool can't handle that.
+libebook_static_la_DEPENDENCIES = libebook.la
+
+libebook_la_SOURCES =  	$(CORBA_SOURCE)						e-book-listener.c					e-book-marshal.c					e-book-view-listener.c					e-book-view.c						e-book.c						e-book-util.c						e-card-cursor.c						e-card-simple.c						e-card.c						e-card-compare.c					e-destination.c
 
 
-libebookincludedir = $(includedir)/evolution/ebook
+libebook_la_LIBADD =  	$(top_builddir)/libversit/libversit.la			$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/e-util/libeutil.la
+
+
+libebookincludedir = $(privincludedir)/ebook
 
 libebookinclude_HEADERS =  	e-book-listener.h					e-book-types.h						e-book-view-listener.h					e-book-view.h						e-book.h						e-book-util.h						e-card-cursor.h						e-card-simple.h						e-card-types.h						e-card.h						e-card-compare.h					e-destination.h						addressbook.h
 
@@ -252,60 +255,59 @@ libebookinclude_HEADERS =  	e-book-listener.h					e-book-types.h						e-book-vie
 libebook_static_la_SOURCES = $(libebook_la_SOURCES)
 libebook_static_la_LDFLAGS = -all-static
 
+MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
+
 test_client_SOURCES =  	test-client.c
 
 
-test_client_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)				$(top_builddir)/camel/libcamel.la			$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/e-util/libeutil.la
+test_client_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
 test_client_list_SOURCES =  	test-client-list.c
 
 
-test_client_list_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)				$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/libeutil.la
+test_client_list_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
 test_card_SOURCES =  	test-card.c
 
 
-test_card_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)				$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/libeutil.la
+test_card_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
 evolution_vcard_importer_SOURCES =  	evolution-vcard-importer.c
 
 
-evolution_vcard_importer_LDADD =  	libebook.la							$(EVOLUTION_ADDRESSBOOK_LIBS)					$(top_builddir)/camel/libcamel.la				$(top_builddir)/shell/importer/libevolution-importer.la 	$(DB3_LDADD)							$(top_builddir)/e-util/ename/libename.la			$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/libeutil.la
+evolution_vcard_importer_LDADD =  	libebook.la							$(EVOLUTION_ADDRESSBOOK_LIBS)					$(top_builddir)/shell/importer/libevolution-importer.la 	$(DB3_LDADD)
 
 
 evolution_ldif_importer_SOURCES =  	evolution-ldif-importer.c
 
 
-evolution_ldif_importer_LDADD =  	libebook.la							$(EVOLUTION_ADDRESSBOOK_LIBS)					$(top_builddir)/camel/libcamel.la				$(top_builddir)/shell/importer/libevolution-importer.la 	$(DB3_LDADD)							$(top_builddir)/e-util/ename/libename.la			$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/libeutil.la
+evolution_ldif_importer_LDADD =  	libebook.la							$(EVOLUTION_ADDRESSBOOK_LIBS)					$(top_builddir)/shell/importer/libevolution-importer.la 	$(DB3_LDADD)
 
 
 load_pine_addressbook_SOURCES =  	load-pine-addressbook.c
 
 
-load_pine_addressbook_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)				$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/libeutil.la
+load_pine_addressbook_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
 load_gnomecard_addressbook_SOURCES =  	load-gnomecard-addressbook.c
 
 
-load_gnomecard_addressbook_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)				$(top_builddir)/camel/libcamel.la			$(top_builddir)/e-util/ename/libename.la		$(top_builddir)/libversit/libversit.a			$(top_builddir)/e-util/libeutil.la
+load_gnomecard_addressbook_LDADD =  	libebook.la						$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
-BUILT_SOURCES = $(CORBA_SOURCE)
+BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
 
-oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Evolution_Addressbook_VCard_Importer.oaf.in 		GNOME_Evolution_Addressbook_LDIF_Importer.oaf.in
+server_in_files = GNOME_Evolution_Addressbook_VCard_Importer.server.in.in 		  GNOME_Evolution_Addressbook_LDIF_Importer.server.in.in
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
-# add this back when you add the file to the archive ;)
-#	GNOME_Evolution_Addressbook_Pine_Importer.oafinfo
+server_DATA = $(server_in_files:.server.in.in=.server)
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
+EXTRA_DIST = $(server_in_files) $(server_DATA) e-book-marshal.list
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -317,83 +319,59 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libebook_la_LDFLAGS = 
-libebook_la_LIBADD = 
+libebook_la_DEPENDENCIES =  $(top_builddir)/libversit/libversit.la \
+$(top_builddir)/camel/libcamel.la \
+$(top_builddir)/e-util/ename/libename.la \
+$(top_builddir)/e-util/libeutil.la
 libebook_la_OBJECTS =  addressbook-common.lo addressbook-stubs.lo \
-addressbook-skels.lo Evolution-Composer-common.lo \
-Evolution-Composer-skels.lo Evolution-Composer-stubs.lo \
-e-book-listener.lo e-book-view-listener.lo e-book-view.lo e-book.lo \
-e-book-util.lo e-card-cursor.lo e-card-simple.lo e-card.lo \
-e-card-compare.lo e-destination.lo
+addressbook-skels.lo e-book-listener.lo e-book-marshal.lo \
+e-book-view-listener.lo e-book-view.lo e-book.lo e-book-util.lo \
+e-card-cursor.lo e-card-simple.lo e-card.lo e-card-compare.lo \
+e-destination.lo
 libebook_static_la_LIBADD = 
 libebook_static_la_OBJECTS =  addressbook-common.lo addressbook-stubs.lo \
-addressbook-skels.lo Evolution-Composer-common.lo \
-Evolution-Composer-skels.lo Evolution-Composer-stubs.lo \
-e-book-listener.lo e-book-view-listener.lo e-book-view.lo e-book.lo \
-e-book-util.lo e-card-cursor.lo e-card-simple.lo e-card.lo \
-e-card-compare.lo e-destination.lo
-bin_PROGRAMS =  evolution-vcard-importer$(EXEEXT) \
-evolution-ldif-importer$(EXEEXT) load-pine-addressbook$(EXEEXT) \
-load-gnomecard-addressbook$(EXEEXT)
+addressbook-skels.lo e-book-listener.lo e-book-marshal.lo \
+e-book-view-listener.lo e-book-view.lo e-book.lo e-book-util.lo \
+e-card-cursor.lo e-card-simple.lo e-card.lo e-card-compare.lo \
+e-destination.lo
 noinst_PROGRAMS =  test-card$(EXEEXT) test-client$(EXEEXT) \
 test-client-list$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
+privlibexec_PROGRAMS =  evolution-vcard-importer$(EXEEXT) \
+evolution-ldif-importer$(EXEEXT)
+tools_PROGRAMS =  load-pine-addressbook$(EXEEXT) \
+load-gnomecard-addressbook$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS) $(privlibexec_PROGRAMS) $(tools_PROGRAMS)
 
+test_card_OBJECTS =  test-card.$(OBJEXT)
+test_card_DEPENDENCIES =  libebook.la
+test_card_LDFLAGS = 
+test_client_OBJECTS =  test-client.$(OBJEXT)
+test_client_DEPENDENCIES =  libebook.la
+test_client_LDFLAGS = 
+test_client_list_OBJECTS =  test-client-list.$(OBJEXT)
+test_client_list_DEPENDENCIES =  libebook.la
+test_client_list_LDFLAGS = 
 evolution_vcard_importer_OBJECTS =  evolution-vcard-importer.$(OBJEXT)
 evolution_vcard_importer_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/shell/importer/libevolution-importer.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
+$(top_builddir)/shell/importer/libevolution-importer.la
 evolution_vcard_importer_LDFLAGS = 
 evolution_ldif_importer_OBJECTS =  evolution-ldif-importer.$(OBJEXT)
 evolution_ldif_importer_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/shell/importer/libevolution-importer.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
+$(top_builddir)/shell/importer/libevolution-importer.la
 evolution_ldif_importer_LDFLAGS = 
 load_pine_addressbook_OBJECTS =  load-pine-addressbook.$(OBJEXT)
-load_pine_addressbook_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
+load_pine_addressbook_DEPENDENCIES =  libebook.la
 load_pine_addressbook_LDFLAGS = 
 load_gnomecard_addressbook_OBJECTS =  \
 load-gnomecard-addressbook.$(OBJEXT)
-load_gnomecard_addressbook_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
+load_gnomecard_addressbook_DEPENDENCIES =  libebook.la
 load_gnomecard_addressbook_LDFLAGS = 
-test_card_OBJECTS =  test-card.$(OBJEXT)
-test_card_DEPENDENCIES =  libebook.la $(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
-test_card_LDFLAGS = 
-test_client_OBJECTS =  test-client.$(OBJEXT)
-test_client_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la $(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/e-util/libeutil.la
-test_client_LDFLAGS = 
-test_client_list_OBJECTS =  test-client-list.$(OBJEXT)
-test_client_list_DEPENDENCIES =  libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la
-test_client_list_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(oaf_DATA)
+DATA =  $(server_DATA)
 
 HEADERS =  $(libebookinclude_HEADERS)
 
@@ -404,8 +382,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(libebook_la_SOURCES) $(libebook_static_la_SOURCES) $(evolution_vcard_importer_SOURCES) $(evolution_ldif_importer_SOURCES) $(load_pine_addressbook_SOURCES) $(load_gnomecard_addressbook_SOURCES) $(test_card_SOURCES) $(test_client_SOURCES) $(test_client_list_SOURCES)
-OBJECTS = $(libebook_la_OBJECTS) $(libebook_static_la_OBJECTS) $(evolution_vcard_importer_OBJECTS) $(evolution_ldif_importer_OBJECTS) $(load_pine_addressbook_OBJECTS) $(load_gnomecard_addressbook_OBJECTS) $(test_card_OBJECTS) $(test_client_OBJECTS) $(test_client_list_OBJECTS)
+SOURCES = $(libebook_la_SOURCES) $(libebook_static_la_SOURCES) $(test_card_SOURCES) $(test_client_SOURCES) $(test_client_list_SOURCES) $(evolution_vcard_importer_SOURCES) $(evolution_ldif_importer_SOURCES) $(load_pine_addressbook_SOURCES) $(load_gnomecard_addressbook_SOURCES)
+OBJECTS = $(libebook_la_OBJECTS) $(libebook_static_la_OBJECTS) $(test_card_OBJECTS) $(test_client_OBJECTS) $(test_client_list_OBJECTS) $(evolution_vcard_importer_OBJECTS) $(evolution_ldif_importer_OBJECTS) $(load_pine_addressbook_OBJECTS) $(load_gnomecard_addressbook_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -493,31 +471,6 @@ libebook.la: $(libebook_la_OBJECTS) $(libebook_la_DEPENDENCIES)
 libebook-static.la: $(libebook_static_la_OBJECTS) $(libebook_static_la_DEPENDENCIES)
 	$(LINK) -rpath $(privlibdir) $(libebook_static_la_LDFLAGS) $(libebook_static_la_OBJECTS) $(libebook_static_la_LIBADD) $(LIBS)
 
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
-
 mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
@@ -526,6 +479,68 @@ clean-noinstPROGRAMS:
 distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
+
+mostlyclean-privlibexecPROGRAMS:
+
+clean-privlibexecPROGRAMS:
+	-test -z "$(privlibexec_PROGRAMS)" || rm -f $(privlibexec_PROGRAMS)
+
+distclean-privlibexecPROGRAMS:
+
+maintainer-clean-privlibexecPROGRAMS:
+
+install-privlibexecPROGRAMS: $(privlibexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(privlibexecdir)
+	@list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-privlibexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+mostlyclean-toolsPROGRAMS:
+
+clean-toolsPROGRAMS:
+	-test -z "$(tools_PROGRAMS)" || rm -f $(tools_PROGRAMS)
+
+distclean-toolsPROGRAMS:
+
+maintainer-clean-toolsPROGRAMS:
+
+install-toolsPROGRAMS: $(tools_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(toolsdir)
+	@list='$(tools_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(toolsdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(toolsdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-toolsPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(tools_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(toolsdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+test-card$(EXEEXT): $(test_card_OBJECTS) $(test_card_DEPENDENCIES)
+	@rm -f test-card$(EXEEXT)
+	$(LINK) $(test_card_LDFLAGS) $(test_card_OBJECTS) $(test_card_LDADD) $(LIBS)
+
+test-client$(EXEEXT): $(test_client_OBJECTS) $(test_client_DEPENDENCIES)
+	@rm -f test-client$(EXEEXT)
+	$(LINK) $(test_client_LDFLAGS) $(test_client_OBJECTS) $(test_client_LDADD) $(LIBS)
+
+test-client-list$(EXEEXT): $(test_client_list_OBJECTS) $(test_client_list_DEPENDENCIES)
+	@rm -f test-client-list$(EXEEXT)
+	$(LINK) $(test_client_list_LDFLAGS) $(test_client_list_OBJECTS) $(test_client_list_LDADD) $(LIBS)
 
 evolution-vcard-importer$(EXEEXT): $(evolution_vcard_importer_OBJECTS) $(evolution_vcard_importer_DEPENDENCIES)
 	@rm -f evolution-vcard-importer$(EXEEXT)
@@ -543,35 +558,23 @@ load-gnomecard-addressbook$(EXEEXT): $(load_gnomecard_addressbook_OBJECTS) $(loa
 	@rm -f load-gnomecard-addressbook$(EXEEXT)
 	$(LINK) $(load_gnomecard_addressbook_LDFLAGS) $(load_gnomecard_addressbook_OBJECTS) $(load_gnomecard_addressbook_LDADD) $(LIBS)
 
-test-card$(EXEEXT): $(test_card_OBJECTS) $(test_card_DEPENDENCIES)
-	@rm -f test-card$(EXEEXT)
-	$(LINK) $(test_card_LDFLAGS) $(test_card_OBJECTS) $(test_card_LDADD) $(LIBS)
-
-test-client$(EXEEXT): $(test_client_OBJECTS) $(test_client_DEPENDENCIES)
-	@rm -f test-client$(EXEEXT)
-	$(LINK) $(test_client_LDFLAGS) $(test_client_OBJECTS) $(test_client_LDADD) $(LIBS)
-
-test-client-list$(EXEEXT): $(test_client_list_OBJECTS) $(test_client_list_DEPENDENCIES)
-	@rm -f test-client-list$(EXEEXT)
-	$(LINK) $(test_client_list_LDFLAGS) $(test_client_list_OBJECTS) $(test_client_list_LDADD) $(LIBS)
-
-install-oafDATA: $(oaf_DATA)
+install-serverDATA: $(server_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(oafdir)
-	@list='$(oaf_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-oafDATA:
+uninstall-serverDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(oaf_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(oafdir)/$$p; \
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
 	done
 
 install-libebookincludeHEADERS: $(libebookinclude_HEADERS)
@@ -643,36 +646,40 @@ addressbook-stubs.lo addressbook-stubs.o : addressbook-stubs.c \
 e-book-listener.lo e-book-listener.o : e-book-listener.c \
 	../../../config.h e-book-listener.h addressbook.h \
 	e-book-types.h ../../../e-util/e-list.h \
-	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-book-marshal.h
+e-book-marshal.lo e-book-marshal.o : e-book-marshal.c
 e-book-util.lo e-book-util.o : e-book-util.c ../../../config.h \
 	e-book-util.h e-book.h e-card.h e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
 	../../../e-util/e-iterator.h e-card-cursor.h addressbook.h \
 	e-book-view.h e-book-view-listener.h e-book-types.h \
-	e-card-compare.h e-card.h
+	../../../e-util/e-config-listener.h e-card-compare.h e-card.h
 e-book-view-listener.lo e-book-view-listener.o : e-book-view-listener.c \
 	../../../config.h e-book-view-listener.h e-book-types.h \
 	addressbook.h e-book-view.h e-card.h e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h e-book-view-listener.h e-card.h
+	../../../e-util/e-iterator.h e-book-view-listener.h e-card.h \
+	e-book-marshal.h
 e-book-view.lo e-book-view.o : e-book-view.c ../../../config.h \
 	addressbook.h e-card-cursor.h addressbook.h e-card.h \
 	e-card-types.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
 	e-book-view-listener.h e-book-types.h e-book-view.h \
-	e-book-view-listener.h e-book.h e-card-cursor.h e-book-view.h
+	e-book-view-listener.h e-book.h e-card-cursor.h e-book-view.h \
+	e-book-marshal.h
 e-book.lo e-book.o : e-book.c ../../../config.h addressbook.h \
 	e-card-cursor.h addressbook.h e-card.h e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
 	../../../e-util/e-iterator.h e-book-listener.h e-book-types.h \
 	e-book.h e-card-cursor.h e-book-view.h e-book-view-listener.h \
-	../../../e-util/e-component-listener.h
+	e-book-marshal.h ../../../e-util/e-component-listener.h
 e-card-compare.lo e-card-compare.o : e-card-compare.c ../../../config.h \
 	e-book-util.h e-book.h e-card.h e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
 	../../../e-util/e-iterator.h e-card-cursor.h addressbook.h \
 	e-book-view.h e-book-view-listener.h e-book-types.h \
-	e-card-compare.h e-card.h
+	../../../e-util/e-config-listener.h e-card-compare.h e-card.h
 e-card-cursor.lo e-card-cursor.o : e-card-cursor.c ../../../config.h \
 	addressbook.h e-card-cursor.h addressbook.h e-card.h \
 	e-card-types.h ../../../e-util/e-list.h \
@@ -689,17 +696,18 @@ e-card.lo e-card.o : e-card.c ../../../config.h e-card.h e-card-types.h \
 	../../../e-util/ename/e-name-western.h \
 	../../../e-util/ename/e-address-western.h e-book.h e-card.h \
 	e-card-cursor.h addressbook.h e-book-view.h \
-	e-book-view-listener.h e-book-types.h e-destination.h e-book.h \
-	Evolution-Composer.h
+	e-book-view-listener.h e-book-types.h
 e-destination.lo e-destination.o : e-destination.c ../../../config.h \
 	e-destination.h e-card.h e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
 	../../../e-util/e-iterator.h e-book.h e-card-cursor.h \
 	addressbook.h e-book-view.h e-book-view-listener.h \
-	e-book-types.h e-book.h e-book-util.h \
+	e-book-types.h e-book.h e-book-marshal.h e-book-util.h \
+	../../../e-util/e-config-listener.h \
 	../../../camel/camel-internet-address.h \
 	../../../camel/camel-address.h ../../../camel/camel-object.h \
-	../../../camel/camel-arg.h ../../../camel/camel-types.h
+	../../../camel/camel-arg.h ../../../camel/camel-types.h \
+	../../../camel/camel-i18n.h
 Evolution-Composer-common.lo Evolution-Composer-common.o : \
 	Evolution-Composer-common.c Evolution-Composer.h
 Evolution-Composer-skels.lo Evolution-Composer-skels.o : \
@@ -710,7 +718,8 @@ evolution-ldif-importer.o: evolution-ldif-importer.c ../../../config.h \
 	e-book.h e-card.h e-card-types.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
 	e-card-cursor.h addressbook.h e-book-view.h \
-	e-book-view-listener.h e-book-types.h e-card-simple.h \
+	e-book-view-listener.h e-book-types.h e-book-util.h \
+	../../../e-util/e-config-listener.h e-card-simple.h \
 	e-destination.h e-book.h \
 	../../../shell/importer/evolution-importer.h \
 	../../../shell/importer/GNOME_Evolution_Importer.h
@@ -718,7 +727,8 @@ evolution-vcard-importer.o: evolution-vcard-importer.c ../../../config.h \
 	e-book.h e-card.h e-card-types.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
 	e-card-cursor.h addressbook.h e-book-view.h \
-	e-book-view-listener.h e-book-types.h \
+	e-book-view-listener.h e-book-types.h e-book-util.h \
+	../../../e-util/e-config-listener.h \
 	../../../shell/importer/evolution-importer.h \
 	../../../shell/importer/GNOME_Evolution_Importer.h \
 	../../../e-util/e-path.h
@@ -744,7 +754,8 @@ test-client.o: test-client.c ../../../config.h e-book.h e-card.h \
 	e-card-types.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
 	e-card-cursor.h addressbook.h e-book-view.h \
-	e-book-view-listener.h e-book-types.h e-book-util.h
+	e-book-view-listener.h e-book-types.h e-book-util.h \
+	../../../e-util/e-config-listener.h
 
 info-am:
 info: info-am
@@ -754,26 +765,28 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-privlibexecPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-privlibLTLIBRARIES install-oafDATA \
-		install-libebookincludeHEADERS
+install-data-am: install-privlibLTLIBRARIES install-toolsPROGRAMS \
+		install-serverDATA install-libebookincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-privlibLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-oafDATA uninstall-libebookincludeHEADERS
+uninstall-am: uninstall-privlibLTLIBRARIES uninstall-privlibexecPROGRAMS \
+		uninstall-toolsPROGRAMS uninstall-serverDATA \
+		uninstall-libebookincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(privlibdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(oafdir) $(DESTDIR)$(libebookincludedir)
+	$(mkinstalldirs)  $(DESTDIR)$(privlibdir) $(DESTDIR)$(privlibexecdir) \
+		$(DESTDIR)$(toolsdir) $(DESTDIR)$(serverdir) \
+		$(DESTDIR)$(libebookincludedir)
 
 
 mostlyclean-generic:
@@ -788,30 +801,33 @@ distclean-generic:
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-noinstPROGRAMS mostlyclean-tags \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-privlibexecPROGRAMS \
+		mostlyclean-toolsPROGRAMS mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
 clean-am:  clean-privlibLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-noinstPROGRAMS clean-tags \
-		clean-generic mostlyclean-am
+		clean-noinstPROGRAMS clean-privlibexecPROGRAMS \
+		clean-toolsPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
 
 clean: clean-am
 
 distclean-am:  distclean-privlibLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS \
-		distclean-noinstPROGRAMS distclean-tags \
-		distclean-generic clean-am
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-privlibexecPROGRAMS distclean-toolsPROGRAMS \
+		distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS \
-		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-privlibexecPROGRAMS \
+		maintainer-clean-toolsPROGRAMS maintainer-clean-tags \
 		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
@@ -823,11 +839,15 @@ clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
 uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool mostlyclean-binPROGRAMS \
-distclean-binPROGRAMS clean-binPROGRAMS maintainer-clean-binPROGRAMS \
-uninstall-binPROGRAMS install-binPROGRAMS mostlyclean-noinstPROGRAMS \
+clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
-maintainer-clean-noinstPROGRAMS uninstall-oafDATA install-oafDATA \
+maintainer-clean-noinstPROGRAMS mostlyclean-privlibexecPROGRAMS \
+distclean-privlibexecPROGRAMS clean-privlibexecPROGRAMS \
+maintainer-clean-privlibexecPROGRAMS uninstall-privlibexecPROGRAMS \
+install-privlibexecPROGRAMS mostlyclean-toolsPROGRAMS \
+distclean-toolsPROGRAMS clean-toolsPROGRAMS \
+maintainer-clean-toolsPROGRAMS uninstall-toolsPROGRAMS \
+install-toolsPROGRAMS uninstall-serverDATA install-serverDATA \
 uninstall-libebookincludeHEADERS install-libebookincludeHEADERS tags \
 mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
 distdir info-am info dvi-am dvi check check-am installcheck-am \
@@ -837,13 +857,29 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-$(CORBA_SOURCE): $(idls)
-	$(ORBIT_IDL) -I $(srcdir) $(idls) $(idl_flags)
+$(CORBA_ADDRESSBOOK_SOURCE_H): $(CORBA_ADDRESSBOOK_IDL)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(CORBA_ADDRESSBOOK_IDL)
+
+$(CORBA_ADDRESSBOOK_SOURCE_C): $(CORBA_ADDRESSBOOK_SOURCE_H)
+
+# GLib marshalling cruft
+
+e-book-marshal.h: e-book-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_book_marshal e-book-marshal.list --header > e-book-marshal.h.tmp \
+	&& mv e-book-marshal.h.tmp e-book-marshal.h ) \
+	|| ( rm -f e-book-marshal.h.tmp && exit 1 )
+
+e-book-marshal.c: e-book-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_book_marshal e-book-marshal.list --body > e-book-marshal.c.tmp \
+	&& mv e-book-marshal.c.tmp e-book-marshal.c ) \
+	|| ( rm -f e-book-marshal.c.tmp && exit 1 )
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
+%.server.in: %.server.in.in
+	sed -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" $< > $@
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -30,6 +30,8 @@
 
 #include "evolution-storage-set-view-listener.h"
 
+#include "e-shell-marshal.h"
+
 
 #define PARENT_TYPE gtk_object_get_type ()
 static GtkObjectClass *parent_class = NULL;
@@ -69,7 +71,7 @@ impl_GNOME_Evolution_StorageSetViewListener_notifyFolderSelected (PortableServer
 
 	listener = gtk_object_from_servant (servant);
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[FOLDER_SELECTED], uri);
+	g_signal_emit (listener, signals[FOLDER_SELECTED], 0, uri);
 }
 
 static void
@@ -80,7 +82,7 @@ impl_GNOME_Evolution_StorageSetViewListener_notifyFolderToggled (PortableServer_
 
 	listener = gtk_object_from_servant (servant);
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[FOLDER_TOGGLED]);
+	g_signal_emit (listener, signals[FOLDER_TOGGLED], 0);
 }
 
 static EvolutionStorageSetViewListenerServant *
@@ -134,8 +136,10 @@ activate_servant (EvolutionStorageSetViewListener *listener,
 }
 
 
+/* GObject methods.  */
+
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EvolutionStorageSetViewListener *listener;
 	EvolutionStorageSetViewListenerPrivate *priv;
@@ -155,16 +159,13 @@ impl_destroy (GtkObject *object)
 		object_id = PortableServer_POA_servant_to_id (bonobo_poa(), priv->servant, &ev);
 		PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
 		CORBA_free (object_id);
-
-		POA_GNOME_Evolution_StorageSetViewListener__fini (priv->servant, &ev);
 	}
 
 	CORBA_exception_free (&ev);
 
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -192,28 +193,30 @@ corba_class_init (void)
 static void
 class_init (EvolutionStorageSetViewListenerClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref(gtk_object_get_type ());
 
-	signals[FOLDER_SELECTED] = gtk_signal_new ("folder_selected",
-						   GTK_RUN_FIRST,
-						   object_class->type,
-						   GTK_SIGNAL_OFFSET (EvolutionStorageSetViewListenerClass, folder_selected),
-						   gtk_marshal_NONE__STRING,
-						   GTK_TYPE_NONE, 1,
-						   GTK_TYPE_STRING);
-	signals[FOLDER_TOGGLED] = gtk_signal_new ("folder_toggled",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageSetViewListenerClass, folder_toggled),
-						  gtk_marshal_NONE__NONE,
-						  GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+	signals[FOLDER_SELECTED]
+		= g_signal_new ("folder_selected",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageSetViewListenerClass, folder_selected),
+				NULL, NULL,	
+				e_shell_marshal_NONE__STRING,
+				G_TYPE_NONE, 1,
+				G_TYPE_STRING);
+	signals[FOLDER_TOGGLED]
+		= g_signal_new ("folder_toggled",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageSetViewListenerClass, folder_toggled),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	corba_class_init ();
 }
@@ -256,7 +259,7 @@ evolution_storage_set_view_listener_new (void)
 	EvolutionStorageSetViewListenerPrivate *priv;
 	GNOME_Evolution_StorageSetViewListener corba_listener;
 
-	new = gtk_type_new (evolution_storage_set_view_listener_get_type ());
+	new = g_object_new (evolution_storage_set_view_listener_get_type (), NULL);
 	priv = new->priv;
 
 	priv->servant = create_servant (new);

@@ -12,7 +12,7 @@
 
 # Makefile for libversit.a
 
-# $Id: Makefile.in,v 1.1.1.6 2002-12-19 15:34:15 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.7 2003-07-13 04:59:18 ghudson Exp $
 
 
 SHELL = @SHELL@
@@ -64,9 +64,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -88,12 +87,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -101,54 +97,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -163,14 +158,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -180,56 +172,50 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 VERSIT_SRC =  	vcc.y			vcc.h			vobject.c		vobject.h		port.h			vcaltmp.c		vcaltmp.h
 
 
-privlib_LIBRARIES = libversit.a
+privlib_LTLIBRARIES = libversit.la
 
-libversit_a_SOURCES = $(VERSIT_SRC)
+libversit_la_SOURCES = $(VERSIT_SRC)
 
 EXTRA_DIST = README.TXT vcaltest.c vctest.c
 
@@ -237,16 +223,16 @@ YFLAGS = -pversit_
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(privlib_LIBRARIES)
+LTLIBRARIES =  $(privlib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libversit_a_LIBADD = 
-libversit_a_OBJECTS =  vcc.$(OBJEXT) vobject.$(OBJEXT) vcaltmp.$(OBJEXT)
-AR = ar
+libversit_la_LDFLAGS = 
+libversit_la_LIBADD = 
+libversit_la_OBJECTS =  vcc.lo vobject.lo vcaltmp.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -259,8 +245,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(libversit_a_SOURCES)
-OBJECTS = $(libversit_a_OBJECTS)
+SOURCES = $(libversit_la_SOURCES)
+OBJECTS = $(libversit_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -273,36 +259,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-privlibLIBRARIES:
+mostlyclean-privlibLTLIBRARIES:
 
-clean-privlibLIBRARIES:
-	-test -z "$(privlib_LIBRARIES)" || rm -f $(privlib_LIBRARIES)
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
 
-distclean-privlibLIBRARIES:
+distclean-privlibLTLIBRARIES:
 
-maintainer-clean-privlibLIBRARIES:
+maintainer-clean-privlibLTLIBRARIES:
 
-install-privlibLIBRARIES: $(privlib_LIBRARIES)
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
-	@list='$(privlib_LIBRARIES)'; for p in $$list; do \
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(privlibdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(privlibdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(privlib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(privlibdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(privlibdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-privlibLIBRARIES:
+uninstall-privlibLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(privlib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(privlibdir)/$$p; \
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
 	done
 
 .c.o:
@@ -349,10 +328,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libversit.a: $(libversit_a_OBJECTS) $(libversit_a_DEPENDENCIES)
-	-rm -f libversit.a
-	$(AR) cru libversit.a $(libversit_a_OBJECTS) $(libversit_a_LIBADD)
-	$(RANLIB) libversit.a
+libversit.la: $(libversit_la_OBJECTS) $(libversit_la_DEPENDENCIES)
+	$(LINK) -rpath $(privlibdir) $(libversit_la_LDFLAGS) $(libversit_la_OBJECTS) $(libversit_la_LIBADD) $(LIBS)
 .y.c:
 	$(YACC) $(AM_YFLAGS) $(YFLAGS) $< && mv y.tab.c $*.c
 	if test -f y.tab.h; then \
@@ -405,9 +382,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-vcaltmp.o: vcaltmp.c vcaltmp.h vcc.h vobject.h port.h
-vcc.o: vcc.c vcc.h vobject.h port.h
-vobject.o: vobject.c vobject.h port.h
+vcaltmp.lo vcaltmp.o : vcaltmp.c vcaltmp.h vcc.h vobject.h port.h
+vcc.lo vcc.o : vcc.c vcc.h vobject.h port.h
+vobject.lo vobject.o : vobject.c vobject.h port.h
 
 info-am:
 info: info-am
@@ -420,15 +397,15 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-privlibLIBRARIES
+install-data-am: install-privlibLTLIBRARIES
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-privlibLIBRARIES
+uninstall-am: uninstall-privlibLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -446,25 +423,25 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "vcchvccc" || rm -f vcch vccc
-mostlyclean-am:  mostlyclean-privlibLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-privlibLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-privlibLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-privlibLIBRARIES distclean-compile \
+distclean-am:  distclean-privlibLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-privlibLIBRARIES \
+maintainer-clean-am:  maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -473,18 +450,18 @@ maintainer-clean-am:  maintainer-clean-privlibLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-privlibLIBRARIES distclean-privlibLIBRARIES \
-clean-privlibLIBRARIES maintainer-clean-privlibLIBRARIES \
-uninstall-privlibLIBRARIES install-privlibLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

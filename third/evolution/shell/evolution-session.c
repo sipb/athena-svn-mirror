@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* evolution-session.c
  *
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -31,6 +31,8 @@
 
 #include "evolution-session.h"
 
+#include "e-shell-marshal.h"
+
 
 #define PARENT_TYPE bonobo_object_get_type ()
 static BonoboObjectClass *parent_class = NULL;
@@ -48,10 +50,18 @@ enum {
 static int signals[LAST_SIGNAL];
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
+{
+	/* Nothing to do here.  */
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
 {
 	EvolutionSession *session;
 	EvolutionSessionPrivate *priv;
@@ -61,7 +71,7 @@ impl_destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -75,7 +85,7 @@ impl_GNOME_Evolution_Session_saveConfiguration (PortableServer_Servant servant,
 	BonoboObject *self;
 
 	self = bonobo_object_from_servant (servant);
-	gtk_signal_emit (GTK_OBJECT (self), signals[SAVE_CONFIGURATION], prefix);
+	g_signal_emit (self, signals[SAVE_CONFIGURATION], 0, prefix);
 }
 
 static void
@@ -86,70 +96,57 @@ impl_GNOME_Evolution_Session_loadConfiguration (PortableServer_Servant servant,
 	BonoboObject *self;
 
 	self = bonobo_object_from_servant (servant);
-	gtk_signal_emit (GTK_OBJECT (self), signals[LOAD_CONFIGURATION], prefix);
+	g_signal_emit (self, signals[LOAD_CONFIGURATION], 0, prefix);
 }
 
 
 /* Initialization.  */
 
-static POA_GNOME_Evolution_Session__vepv GNOME_Evolution_Session_vepv;
-
 static void
-corba_class_init (void)
+corba_class_init (EvolutionSessionClass *klass)
 {
-	POA_GNOME_Evolution_Session__vepv *vepv;
-	POA_GNOME_Evolution_Session__epv *epv;
-	PortableServer_ServantBase__epv *base_epv;
-
-	base_epv = g_new0 (PortableServer_ServantBase__epv, 1);
-	base_epv->_private    = NULL;
-	base_epv->finalize    = NULL;
-	base_epv->default_POA = NULL;
+	POA_GNOME_Evolution_Session__epv *epv = & (EVOLUTION_SESSION_CLASS (klass)->epv);
 
 	epv = g_new0 (POA_GNOME_Evolution_Session__epv, 1);
 	epv->saveConfiguration = impl_GNOME_Evolution_Session_saveConfiguration;
 	epv->loadConfiguration = impl_GNOME_Evolution_Session_loadConfiguration;
-
-	vepv = &GNOME_Evolution_Session_vepv;
-	vepv->_base_epv             = base_epv;
-	vepv->Bonobo_Unknown_epv    = bonobo_object_get_epv ();
-	vepv->GNOME_Evolution_Session_epv = epv;
 }
 
 static void
-class_init (EvolutionSessionClass *klass)
+evolution_session_class_init (EvolutionSessionClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	parent_class = gtk_type_class (bonobo_object_get_type ());
+	object_class = G_OBJECT_CLASS (klass);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	signals[LOAD_CONFIGURATION]
-		= gtk_signal_new ("load_configuration",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionSessionClass, load_configuration),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_STRING);
+		= g_signal_new ("load_configuration",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionSessionClass, load_configuration),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING,
+				G_TYPE_NONE, 1,
+				G_TYPE_STRING);
 	signals[SAVE_CONFIGURATION]
-		= gtk_signal_new ("save_configuration",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionSessionClass, save_configuration),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_STRING);
+		= g_signal_new ("save_configuration",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionSessionClass, save_configuration),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING,
+				G_TYPE_NONE, 1,
+				G_TYPE_STRING);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	corba_class_init ();
+	corba_class_init (klass);
 }
 
 static void
-init (EvolutionSession *session)
+evolution_session_init (EvolutionSession *session)
 {
 	EvolutionSessionPrivate *priv;
 
@@ -159,55 +156,14 @@ init (EvolutionSession *session)
 }
 
 
-static GNOME_Evolution_Session
-create_corba_session (BonoboObject *object)
-{
-	POA_GNOME_Evolution_Session *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_GNOME_Evolution_Session *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &GNOME_Evolution_Session_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_GNOME_Evolution_Session__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-	return (GNOME_Evolution_Session) bonobo_object_activate_servant (object, servant);
-}
-
-void
-evolution_session_construct (EvolutionSession *session,
-			     CORBA_Object corba_session)
-{
-	g_return_if_fail (session != NULL);
-	g_return_if_fail (corba_session != CORBA_OBJECT_NIL);
-
-	bonobo_object_construct (BONOBO_OBJECT (session), corba_session);
-}
-
 EvolutionSession *
 evolution_session_new (void)
 {
-	EvolutionSession *session;
-	GNOME_Evolution_Session corba_session;
-
-	session = gtk_type_new (evolution_session_get_type ());
-
-	corba_session = create_corba_session (BONOBO_OBJECT (session));
-	if (corba_session == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (session));
-		return NULL;
-	}
-
-	evolution_session_construct (session, corba_session);
-	return session;
+	return g_object_new (evolution_session_get_type (), NULL);
 }
 
 
-E_MAKE_TYPE (evolution_session, "EvolutionSession", EvolutionSession, class_init, init, PARENT_TYPE)
+BONOBO_TYPE_FUNC_FULL (EvolutionSession,
+		       GNOME_Evolution_Session,
+		       PARENT_TYPE,
+		       evolution_session)

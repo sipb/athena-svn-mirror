@@ -25,6 +25,7 @@
 
 #include <gtk/gtkvbox.h>
 #include <bonobo/bonobo-ui-component.h>
+#include <bonobo/bonobo-control.h>
 #include "e-summary-type.h"
 #include "e-summary-mail.h"
 #include "e-summary-calendar.h"
@@ -37,10 +38,10 @@
 #include <Evolution.h>
 
 #define E_SUMMARY_TYPE (e_summary_get_type ())
-#define E_SUMMARY(obj) (GTK_CHECK_CAST ((obj), E_SUMMARY_TYPE, ESummary))
-#define E_SUMMARY_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), E_SUMMARY_TYPE, ESummaryClass))
-#define IS_E_SUMMARY(obj) (GTK_CHECK_TYPE ((obj), E_SUMMARY_TYPE))
-#define IS_E_SUMMARY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), E_SUMMARY_TYPE))
+#define E_SUMMARY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_SUMMARY_TYPE, ESummary))
+#define E_SUMMARY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), E_SUMMARY_TYPE, ESummaryClass))
+#define IS_E_SUMMARY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_SUMMARY_TYPE))
+#define IS_E_SUMMARY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_SUMMARY_TYPE))
 
 typedef struct _ESummaryPrivate ESummaryPrivate;
 typedef struct _ESummaryClass ESummaryClass;
@@ -86,16 +87,16 @@ struct _ESummaryPrefsFolder {
 struct _ESummaryPrefs {
 
 	/* Mail */
-	GList *display_folders; /* List of ESummaryPrefsFolder */
+	GSList *display_folders; /* List of ESummaryPrefsFolder */
 	gboolean show_full_path;
 
 	/* RDF */
-	GList *rdf_urls;
+	GSList *rdf_urls;
 	int rdf_refresh_time;
 	int limit;
 
 	/* Weather */
-	GList *stations;
+	GSList *stations;
 	ESummaryWeatherUnits units;
 	int weather_refresh_time;
 
@@ -117,9 +118,6 @@ struct _ESummary {
 
 	ESummaryPrivate *priv;
 
-	GNOME_Evolution_Shell shell;
-	GNOME_Evolution_ShellView shell_view_interface;
-
 	gboolean online;
 
 	char *timezone;
@@ -132,8 +130,11 @@ struct _ESummaryClass {
 
 
 GtkType e_summary_get_type (void);
-GtkWidget *e_summary_new (const GNOME_Evolution_Shell shell,
-			  ESummaryPrefs *prefs);
+GtkWidget *e_summary_new (ESummaryPrefs *prefs);
+
+BonoboControl *e_summary_get_control (ESummary *summary);
+void e_summary_set_control (ESummary *summary, 
+			    BonoboControl *control);
 
 void e_summary_print (BonoboUIComponent *component,
 		      gpointer user_data,

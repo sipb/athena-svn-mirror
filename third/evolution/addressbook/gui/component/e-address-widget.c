@@ -26,6 +26,9 @@
 
 #include <config.h>
 #include <ctype.h>
+#include <string.h>
+#include <gtk/gtklabel.h>
+#include <libgnomeui/gnome-popup-menu.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
 #include <bonobo/bonobo-generic-factory.h>
@@ -52,7 +55,7 @@ e_address_widget_class_init (EAddressWidgetClass *klass)
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
 	GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-	parent_class = GTK_OBJECT_CLASS (gtk_type_class (gtk_event_box_get_type ()));
+	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->destroy = e_address_widget_destroy;
 
@@ -77,7 +80,7 @@ e_address_widget_destroy (GtkObject *obj)
 		e_book_simple_query_cancel (common_book, addr->query_tag);
 
 	if (addr->query_idle_tag)
-		gtk_idle_remove (addr->query_idle_tag);
+		g_source_remove (addr->query_idle_tag);
 }
 
 static gint
@@ -92,23 +95,25 @@ e_address_widget_button_press_handler (GtkWidget *w, GdkEventButton *ev)
 	return FALSE;
 }
 
-GtkType
+GType
 e_address_widget_get_type (void)
 {
-	static GtkType aw_type = 0;
+	static GType aw_type = 0;
 
 	if (!aw_type) {
-		GtkTypeInfo aw_info = {
-			"EAddressWidget",
-			sizeof (EAddressWidget),
+		static const GTypeInfo aw_info =  {
 			sizeof (EAddressWidgetClass),
-			(GtkClassInitFunc) e_address_widget_class_init,
-			(GtkObjectInitFunc) e_address_widget_init,
-			NULL, NULL, /* reserved... but for what sinister purpose? */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_address_widget_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (EAddressWidget),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_address_widget_init,
 		};
 
-		aw_type = gtk_type_unique (gtk_event_box_get_type (), &aw_info);
+		aw_type = g_type_register_static (gtk_event_box_get_type (), "EAddressWidget", &aw_info, 0);
 	}
 
 	return aw_type;
@@ -222,7 +227,7 @@ e_address_widget_construct (EAddressWidget *addr)
 GtkWidget *
 e_address_widget_new (void)
 {
-	EAddressWidget *addr = gtk_type_new (e_address_widget_get_type ());
+	EAddressWidget *addr = g_object_new (E_TYPE_ADDRESS_WIDGET, NULL);
 	e_address_widget_construct (addr);
 	return GTK_WIDGET (addr);
 }
@@ -240,9 +245,9 @@ e_address_widget_cardify (EAddressWidget *addr, ECard *card, gboolean known_emai
 
 		if (addr->card != card) {
 			if (addr->card)
-				gtk_object_unref (GTK_OBJECT (addr->card));
+				g_object_unref (addr->card);
 			addr->card = card;
-			gtk_object_ref (GTK_OBJECT (addr->card));
+			g_object_ref (addr->card);
 		}
 
 		addr->known_email = known_email;
@@ -283,9 +288,9 @@ book_ready_cb (EBook *book, EBookStatus status, gpointer user_data)
 
 	if (common_book == NULL) {
 		common_book = book;
-		gtk_object_ref (GTK_OBJECT (common_book));
+		g_object_ref (common_book);
 	} else
-		gtk_object_unref (GTK_OBJECT (book));
+		g_object_unref (book);
 
 	e_address_widget_do_query (addr);
 }
@@ -310,7 +315,7 @@ e_address_widget_schedule_query (EAddressWidget *addr)
 {
 	if (addr->query_idle_tag || !doing_queries)
 		return;
-	addr->query_idle_tag = gtk_idle_add (query_idle_fn, addr);
+	addr->query_idle_tag = g_idle_add (query_idle_fn, addr);
 }
 
 /*
@@ -441,7 +446,7 @@ e_address_widget_popup (EAddressWidget *addr, GdkEventButton *ev)
 	pop = addr->card ? popup_menu_card (addr) : popup_menu_nocard (addr);
 
 	if (pop)
-		gnome_popup_menu_do_popup (pop, NULL, NULL, ev, addr);
+		gnome_popup_menu_do_popup (pop, NULL, NULL, ev, addr, GTK_WIDGET (addr));
 }
 
 /*
@@ -518,7 +523,7 @@ set_prop (BonoboPropertyBag *bag, const BonoboArg *arg, guint arg_id, CORBA_Envi
 	}
 }
 
-static BonoboControl *
+BonoboControl *
 e_address_widget_factory_new_control (void)
 {
 	BonoboControl *control;
@@ -547,30 +552,8 @@ e_address_widget_factory_new_control (void)
 				 BONOBO_ARG_INT, NULL, NULL,
 				 BONOBO_PROPERTY_WRITEABLE);
 
-	bonobo_control_set_properties (control, bag);
+	bonobo_control_set_properties (control, bonobo_object_corba_objref (BONOBO_OBJECT (bag)), NULL);
 	bonobo_object_unref (BONOBO_OBJECT (bag));
 
 	return control;
 }
-
-static BonoboObject *
-e_address_widget_factory (BonoboGenericFactory *factory, gpointer user_data)
-{
-	return BONOBO_OBJECT (e_address_widget_factory_new_control ());
-}
-
-void
-e_address_widget_factory_init (void)
-{
-	static BonoboGenericFactory *factory = NULL;
-
-	if (factory != NULL)
-		return;
-
-	factory = bonobo_generic_factory_new ("OAFIID:GNOME_Evolution_Addressbook_AddressWidgetFactory",
-					      e_address_widget_factory, NULL);
-
-	if (factory == NULL)
-		g_error ("I could not register an AddressWidget factory.");
-}
-

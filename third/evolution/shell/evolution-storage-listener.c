@@ -30,6 +30,8 @@
 
 #include "evolution-storage-listener.h"
 
+#include "e-shell-marshal.h"
+
 
 #define PARENT_TYPE gtk_object_get_type ()
 static GtkObjectClass *parent_class = NULL;
@@ -74,7 +76,7 @@ impl_GNOME_Evolution_StorageListener_notifyDestroyed (PortableServer_Servant ser
 	listener = gtk_object_from_servant (servant);
 	priv = listener->priv;
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[DESTROYED]);
+	g_signal_emit (listener, signals[DESTROYED], 0);
 }
 
 static void
@@ -89,7 +91,7 @@ impl_GNOME_Evolution_StorageListener_notifyFolderCreated (PortableServer_Servant
 	listener = gtk_object_from_servant (servant);
 	priv = listener->priv;
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[NEW_FOLDER], path, folder);
+	g_signal_emit (listener, signals[NEW_FOLDER], 0, path, folder);
 }
 
 static void
@@ -104,8 +106,7 @@ impl_GNOME_Evolution_StorageListener_notifyFolderUpdated (PortableServer_Servant
 	listener = gtk_object_from_servant (servant);
 	priv = listener->priv;
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[UPDATE_FOLDER], path,
-			 unread_count);
+	g_signal_emit (listener, signals[UPDATE_FOLDER], 0, path, unread_count);
 }
 
 static void
@@ -119,7 +120,7 @@ impl_GNOME_Evolution_StorageListener_notifyFolderRemoved (PortableServer_Servant
 	listener = gtk_object_from_servant (servant);
 	priv = listener->priv;
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[REMOVED_FOLDER], path);
+	g_signal_emit (listener, signals[REMOVED_FOLDER], 0, path);
 }
 
 static void
@@ -134,7 +135,7 @@ impl_GNOME_Evolution_StorageListener_notifyHasSubfolders (PortableServer_Servant
 	listener = gtk_object_from_servant (servant);
 	priv = listener->priv;
 
-	gtk_signal_emit (GTK_OBJECT (listener), signals[HAS_SUBFOLDERS], path, message);
+	g_signal_emit (listener, signals[HAS_SUBFOLDERS], 0, path, message);
 }
 
 static EvolutionStorageListenerServant *
@@ -188,10 +189,10 @@ activate_servant (EvolutionStorageListener *listener,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EvolutionStorageListener *storage_listener;
 	EvolutionStorageListenerPrivate *priv;
@@ -211,15 +212,13 @@ impl_destroy (GtkObject *object)
 		object_id = PortableServer_POA_servant_to_id (bonobo_poa(), priv->servant, &ev);
 		PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
 		CORBA_free (object_id);
-
-		POA_GNOME_Evolution_StorageListener__fini (priv->servant, &ev);
 	}
 
 	CORBA_exception_free (&ev);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -250,56 +249,64 @@ corba_class_init (void)
 static void
 class_init (EvolutionStorageListenerClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
-	signals[DESTROYED]      = gtk_signal_new ("destroyed",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, destroyed),
-						  gtk_marshal_NONE__NONE,
-						  GTK_TYPE_NONE, 0);
+	signals[DESTROYED]
+		= g_signal_new ("destroyed",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageListenerClass, destroyed),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
-	signals[NEW_FOLDER]     = gtk_signal_new ("new_folder",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, new_folder),
-						  gtk_marshal_NONE__POINTER_POINTER,
-						  GTK_TYPE_NONE, 2,
-						  GTK_TYPE_STRING,
-						  GTK_TYPE_POINTER);
+	signals[NEW_FOLDER]  
+		= g_signal_new ("new_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageListenerClass, new_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_POINTER,
+				G_TYPE_NONE, 2,
+				G_TYPE_STRING,
+				G_TYPE_POINTER);
 
-	signals[UPDATE_FOLDER]  = gtk_signal_new ("update_folder",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, update_folder),
-						  gtk_marshal_NONE__POINTER_INT,
-						  GTK_TYPE_NONE, 2,
-						  GTK_TYPE_STRING,
-						  GTK_TYPE_INT);
+	signals[UPDATE_FOLDER]  
+		= g_signal_new ("update_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageListenerClass, update_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_INT,
+				G_TYPE_NONE, 2,
+				G_TYPE_STRING,
+				G_TYPE_INT);
 
-	signals[REMOVED_FOLDER] = gtk_signal_new ("removed_folder",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, removed_folder),
-						  gtk_marshal_NONE__POINTER,
-						  GTK_TYPE_NONE, 1,
-						  GTK_TYPE_STRING);
+	signals[REMOVED_FOLDER] 
+		= g_signal_new ("removed_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageListenerClass, removed_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING,
+				G_TYPE_NONE, 1,
+				G_TYPE_STRING);
 
-	signals[HAS_SUBFOLDERS] = gtk_signal_new ("has_subfolders",
-						  GTK_RUN_FIRST,
-						  object_class->type,
-						  GTK_SIGNAL_OFFSET (EvolutionStorageListenerClass, has_subfolders),
-						  gtk_marshal_NONE__POINTER_POINTER,
-						  GTK_TYPE_NONE, 2,
-						  GTK_TYPE_STRING,
-						  GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+	signals[HAS_SUBFOLDERS] 
+		= g_signal_new ("has_subfolders",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageListenerClass, has_subfolders),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_STRING,
+				G_TYPE_NONE, 2,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
 
 	corba_class_init ();
 }
@@ -341,7 +348,7 @@ evolution_storage_listener_new (void)
 	EvolutionStorageListenerPrivate *priv;
 	GNOME_Evolution_StorageListener corba_objref;
 
-	new = gtk_type_new (evolution_storage_listener_get_type ());
+	new = g_object_new (evolution_storage_listener_get_type (), NULL);
 	priv = new->priv;
 
 	priv->servant = create_servant (new);

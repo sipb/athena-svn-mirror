@@ -22,7 +22,7 @@
 #define COMP_EDITOR_H
 
 #include <gtk/gtk.h>
-#include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-window.h>
 #include <bonobo/bonobo-ui-engine.h>
 #include <bonobo/bonobo-ui-component.h>
 #include "cal-client.h"
@@ -30,15 +30,15 @@
 #include "comp-editor-page.h"
 #include "evolution-shell-component-utils.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define TYPE_COMP_EDITOR            (comp_editor_get_type ())
-#define COMP_EDITOR(obj)            (GTK_CHECK_CAST ((obj), TYPE_COMP_EDITOR, CompEditor))
-#define COMP_EDITOR_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), TYPE_COMP_EDITOR, CompEditorClass))
-#define IS_COMP_EDITOR(obj)         (GTK_CHECK_TYPE ((obj), TYPE_COMP_EDITOR))
-#define IS_COMP_EDITOR_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), TYPE_COMP_EDITOR))
+#define COMP_EDITOR(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_COMP_EDITOR, CompEditor))
+#define COMP_EDITOR_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_COMP_EDITOR, CompEditorClass))
+#define IS_COMP_EDITOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_COMP_EDITOR))
+#define IS_COMP_EDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_COMP_EDITOR))
 
 typedef struct _CompEditorPrivate CompEditorPrivate;
 
@@ -104,6 +104,6 @@ void          comp_editor_focus            (CompEditor             *editor);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

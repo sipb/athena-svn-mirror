@@ -23,11 +23,10 @@
 #ifndef CAL_RECUR_H
 #define CAL_RECUR_H
 
-#include <libgnome/gnome-defs.h>
 #include <glib.h>
 #include <cal-util/cal-component.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef gboolean (* CalRecurInstanceFn) (CalComponent *comp,
 					 time_t        instance_start,
@@ -64,6 +63,9 @@ void	cal_recur_generate_instances	(CalComponent		*comp,
 					 gpointer		   tz_cb_data,
 					 icaltimezone		*default_timezone);
 
-END_GNOME_DECLS
+/* Localized nth-day-of-month strings. (Use with _() ) */
+extern const char *cal_recur_nth[31];
+
+G_END_DECLS
 
 #endif

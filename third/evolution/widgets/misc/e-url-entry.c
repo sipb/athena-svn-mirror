@@ -27,7 +27,6 @@
 
 #include <gtk/gtk.h>
 #include <libgnome/gnome-url.h>
-#include "art/connect_to_url-16.xpm"
 #include "e-url-entry.h"
 
 struct _EUrlEntryPrivate {
@@ -76,7 +75,7 @@ class_init (EUrlEntryClass *klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_hbox_get_type ());
+	parent_class = g_type_class_ref(gtk_hbox_get_type ());
 	
 	object_class->destroy = destroy;
 }
@@ -86,9 +85,6 @@ static void
 init (EUrlEntry *url_entry)
 {
 	EUrlEntryPrivate *priv;
-	GdkColormap *colormap;
-	GdkPixmap *url_icon;
-	GdkBitmap *url_mask;
 	GtkWidget *pixmap;
 
 	priv = g_new0 (EUrlEntryPrivate, 1);
@@ -98,33 +94,27 @@ init (EUrlEntry *url_entry)
 	gtk_box_pack_start (GTK_BOX (url_entry), priv->entry, TRUE, TRUE, 0);
 	priv->button = gtk_button_new ();
 	gtk_box_pack_start (GTK_BOX (url_entry), priv->button, FALSE, FALSE, 0);
-	
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (priv->button));
-	url_icon = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, 
-							  &url_mask, NULL,
-							  connect_to_url_16_xpm);
-	
-	pixmap = gtk_pixmap_new (url_icon, url_mask);
+	pixmap = gtk_image_new_from_file (MAP_DIR "/connect_to_url-16.xpm");
 	gtk_container_add (GTK_CONTAINER (priv->button), pixmap);
 	gtk_widget_show (pixmap);
 
 	gtk_widget_show (priv->button);
 	gtk_widget_show (priv->entry);
 	
-	gtk_signal_connect (GTK_OBJECT (priv->button), "clicked",
-			    GTK_SIGNAL_FUNC (button_clicked_cb), url_entry);
+	g_signal_connect((priv->button), "clicked",
+			    G_CALLBACK (button_clicked_cb), url_entry);
 }
 
 static void
 destroy (GtkObject *obj)
 {
 	EUrlEntry *url_entry;
-	EUrlEntryPrivate *priv;
 	
 	url_entry = E_URL_ENTRY (obj);
-	priv = url_entry->priv;
-
-	g_free (priv);
+	if (url_entry->priv) {
+		g_free (url_entry->priv);
+		url_entry->priv = NULL;
+	}
 }
 
 
@@ -160,6 +150,6 @@ button_clicked_cb (GtkWidget *widget, gpointer data)
 	priv = url_entry->priv;
 	
 	url = gtk_editable_get_chars (GTK_EDITABLE (priv->entry), 0, -1);
-	gnome_url_show (url);
+	gnome_url_show (url, NULL);
 	g_free (url);
 }

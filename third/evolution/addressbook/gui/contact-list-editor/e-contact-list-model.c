@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <config.h>
+#include <string.h>
 #include "e-contact-list-model.h"
 
 #define PARENT_TYPE e_table_model_get_type()
@@ -29,7 +30,7 @@ contact_list_value_at (ETableModel *etc, int col, int row)
 {
 	EContactListModel *model = E_CONTACT_LIST_MODEL (etc);
 
-	return (void *) e_destination_get_address (model->data[row]);
+	return (void *) e_destination_get_textrep (model->data[row], TRUE);
 }
 
 /* This function sets the value at a particular point in our ETableModel. */
@@ -85,7 +86,7 @@ contact_list_model_destroy (GtkObject *o)
 	int i;
 
 	for (i = 0; i < model->data_count; i ++) {
-		gtk_object_unref (GTK_OBJECT (model->data[i]));
+		g_object_unref (model->data[i]);
 	}
 	g_free (model->data);
 
@@ -98,7 +99,7 @@ e_contact_list_model_class_init (GtkObjectClass *object_class)
 {
 	ETableModelClass *model_class = (ETableModelClass *) object_class;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref (PARENT_TYPE);
 
 	object_class->destroy = contact_list_model_destroy;
 
@@ -124,27 +125,28 @@ e_contact_list_model_init (GtkObject *object)
 	model->data = g_new (EDestination*, model->data_alloc);
 }
 
-GtkType
+GType
 e_contact_list_model_get_type (void)
 {
-	static GtkType type = 0;
+	static GType cle_type = 0;
 
-	if (!type){
-		GtkTypeInfo info = {
-			"EContactListModel",
-			sizeof (EContactListModel),
+	if (!cle_type) {
+		static const GTypeInfo cle_info =  {
 			sizeof (EContactListModelClass),
-			(GtkClassInitFunc) e_contact_list_model_class_init,
-			(GtkObjectInitFunc) e_contact_list_model_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_contact_list_model_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (EContactListModel),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_contact_list_model_init,
 		};
 
-		type = gtk_type_unique (PARENT_TYPE, &info);
+		cle_type = g_type_register_static (E_TABLE_MODEL_TYPE, "EContactListModel", &cle_info, 0);
 	}
 
-	return type;
+	return cle_type;
 }
 
 void
@@ -157,7 +159,7 @@ e_contact_list_model_new ()
 {
 	EContactListModel *model;
 
-	model = gtk_type_new (e_contact_list_model_get_type ());
+	model = g_object_new (E_TYPE_CONTACT_LIST_MODEL, NULL);
 
 	e_contact_list_model_construct (model);
 
@@ -170,16 +172,17 @@ e_contact_list_model_add_destination (EContactListModel *model, EDestination *de
 	g_return_if_fail (E_IS_CONTACT_LIST_MODEL (model));
 	g_return_if_fail (E_IS_DESTINATION (dest));
 
+	e_table_model_pre_change (E_TABLE_MODEL (model));
+
 	if (model->data_count + 1 >= model->data_alloc) {
 		model->data_alloc *= 2;
 		model->data = g_renew (EDestination*, model->data, model->data_alloc);
 	}
 
 	model->data[model->data_count ++] = dest;
-	gtk_object_ref (GTK_OBJECT (dest));
-	gtk_object_sink (GTK_OBJECT (dest));
+	g_object_ref (dest);
 
-	e_table_model_changed (E_TABLE_MODEL (model));
+	e_table_model_row_inserted (E_TABLE_MODEL (model), model->data_count - 1);
 }
 
 void
@@ -218,11 +221,13 @@ e_contact_list_model_remove_row (EContactListModel *model, int row)
 	g_return_if_fail (E_IS_CONTACT_LIST_MODEL (model));
 	g_return_if_fail (0 <= row && row < model->data_count);
 
-	gtk_object_unref (GTK_OBJECT (model->data[row]));
+	e_table_model_pre_change (E_TABLE_MODEL (model));
+
+	g_object_unref (model->data[row]);
 	memmove (model->data + row, model->data + row + 1, sizeof (EDestination*) * (model->data_count - row - 1));
 	model->data_count --;
 
-	e_table_model_changed (E_TABLE_MODEL (model));
+	e_table_model_row_deleted (E_TABLE_MODEL (model), row);
 }
 
 void
@@ -232,8 +237,10 @@ e_contact_list_model_remove_all (EContactListModel *model)
 
 	g_return_if_fail (E_IS_CONTACT_LIST_MODEL (model));
 
+	e_table_model_pre_change (E_TABLE_MODEL (model));
+
 	for (i = 0; i < model->data_count; i ++) {
-		gtk_object_unref (GTK_OBJECT (model->data[i]));
+		g_object_unref (model->data[i]);
 		model->data[i] = NULL;
 	}
 

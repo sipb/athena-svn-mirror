@@ -1,5 +1,6 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2000, 2001 Ximian Inc.
+ *  Copyright (C) 2000-2002 Ximian Inc.
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *           Jeffrey Stedfast <fejj@ximian.com>
@@ -19,96 +20,77 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
 
-#include <glib.h>
-#include <gtk/gtkframe.h>
-#include <gtk/gtkmenuitem.h>
-#include <gtk/gtkoptionmenu.h>
-#include <libgnome/gnome-defs.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
-#include <glade/glade.h>
-#include <gal/widgets/e-unicode.h>
 
 #include "filter-editor.h"
-#include "filter-context.h"
 #include "filter-filter.h"
 
 #define d(x)
 
-static FilterRule * create_rule(RuleEditor *re);
+static FilterRule *create_rule (RuleEditor *re);
 
-static void filter_editor_class_init (FilterEditorClass *class);
-static void filter_editor_init (FilterEditor *gspaper);
-static void filter_editor_finalise (GtkObject *obj);
+static void filter_editor_class_init (FilterEditorClass *klass);
+static void filter_editor_init (FilterEditor *fe);
+static void filter_editor_finalise (GObject *obj);
 
-#define _PRIVATE(x) (((FilterEditor *)(x))->priv)
 
-struct _FilterEditorPrivate {
-};
+static RuleEditorClass *parent_class = NULL;
 
-static GnomeDialogClass *parent_class;
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
-guint
+GtkType
 filter_editor_get_type (void)
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"FilterEditor",
-			sizeof(FilterEditor),
-			sizeof(FilterEditorClass),
-			(GtkClassInitFunc)filter_editor_class_init,
-			(GtkObjectInitFunc)filter_editor_init,
-			(GtkArgSetFunc)NULL,
-			(GtkArgGetFunc)NULL
+		static const GTypeInfo info = {
+			sizeof (FilterEditorClass),
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) filter_editor_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (FilterEditor),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) filter_editor_init,
 		};
 		
-		type = gtk_type_unique (rule_editor_get_type (), &type_info);
+		type = g_type_register_static (RULE_TYPE_EDITOR, "FilterEditor", &info, 0);
 	}
 	
 	return type;
 }
 
 static void
-filter_editor_class_init (FilterEditorClass *class)
+filter_editor_class_init (FilterEditorClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *)class;
-	RuleEditorClass *re_class = (RuleEditorClass *)class;
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	RuleEditorClass *re_class = (RuleEditorClass *) klass;
 	
-	parent_class = gtk_type_class (gnome_dialog_get_type ());
+	parent_class = g_type_class_ref (rule_editor_get_type ());
 	
-	object_class->finalize = filter_editor_finalise;
+	gobject_class->finalize = filter_editor_finalise;
 	
 	/* override methods */
 	re_class->create_rule = create_rule;
-	
-	/* signals */
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
-filter_editor_init (FilterEditor *o)
+filter_editor_init (FilterEditor *fe)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	;
 }
 
 static void
-filter_editor_finalise (GtkObject *obj)
+filter_editor_finalise (GObject *obj)
 {
-	FilterEditor *o = (FilterEditor *)obj;
-	
-	g_free(o->priv);
-	
-        ((GtkObjectClass *)(parent_class))->finalize (obj);
+        G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 /**
@@ -119,21 +101,21 @@ filter_editor_finalise (GtkObject *obj)
  * Return value: A new #FilterEditor object.
  **/
 FilterEditor *
-filter_editor_new(FilterContext *f, const char **source_names)
+filter_editor_new (FilterContext *fc, const char **source_names)
 {
-	FilterEditor *o = (FilterEditor *)gtk_type_new (filter_editor_get_type ());
+	FilterEditor *fe = (FilterEditor *) g_object_new (FILTER_TYPE_EDITOR, NULL);
 	GladeXML *gui;
 	GtkWidget *w;
 	
-	gui = glade_xml_new (FILTER_GLADEDIR "/filter.glade", "rule_editor");
-	filter_editor_construct (o, f, gui, source_names);
+	gui = glade_xml_new (FILTER_GLADEDIR "/filter.glade", "rule_editor", NULL);
+	filter_editor_construct (fe, fc, gui, source_names);
 	
-        w = glade_xml_get_widget (gui, "rule_frame");
+	w = glade_xml_get_widget (gui, "rule_frame");
 	gtk_frame_set_label (GTK_FRAME (w), _("Filter Rules"));
 	
-	gtk_object_unref (GTK_OBJECT (gui));
+	g_object_unref (gui);
 	
-	return o;
+	return fe;
 }
 
 static void
@@ -141,7 +123,7 @@ select_source (GtkMenuItem *mi, FilterEditor *fe)
 {
 	char *source;
 	
-	source = gtk_object_get_data (GTK_OBJECT (mi), "source");
+	source = g_object_get_data(G_OBJECT(mi), "source");
 	g_assert (source);
 	
 	rule_editor_set_source ((RuleEditor *)fe, source);
@@ -159,15 +141,15 @@ filter_editor_construct (FilterEditor *fe, FilterContext *fc, GladeXML *gui, con
 	
 	for (i = 0; source_names[i]; i++) {
 		item = gtk_menu_item_new_with_label (_(source_names[i]));
-		gtk_object_set_data_full (GTK_OBJECT (item), "source", g_strdup (source_names[i]), g_free);
-		gtk_menu_append (GTK_MENU (menu), item);
+		g_object_set_data_full (G_OBJECT (item), "source", g_strdup (source_names[i]), g_free);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show (item);
-		gtk_signal_connect (GTK_OBJECT (item), "activate", select_source, fe);
+		g_signal_connect (item, "activate", G_CALLBACK (select_source), fe);
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
 	gtk_widget_show (omenu);
 	
-	rule_editor_construct ((RuleEditor *)fe, (RuleContext *)fc, gui, source_names[0]);
+	rule_editor_construct ((RuleEditor *) fe, (RuleContext *) fc, gui, source_names[0]);
 }
 
 static FilterRule *

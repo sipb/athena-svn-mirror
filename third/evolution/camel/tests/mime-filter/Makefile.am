@@ -13,9 +13,7 @@ INCLUDES =						\
 LDADD = \
 	$(top_builddir)/camel/libcamel.la 		\
 	$(top_builddir)/e-util/libeutil.la		\
-	$(GNOME_LIBDIR) 				\
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
-	$(GNOMEUI_LIBS) 				\
 	$(INTLLIBS) 					\
 	$(EVOLUTION_MAIL_LIBS)
 
@@ -29,9 +27,10 @@ EXTRA_DIST =				\
 
 check_PROGRAMS =  		\
 	test-crlf		\
-	test-charset
+	test-charset		\
+	test-tohtml
 
-TESTS = test-crlf test-charset
+TESTS = test-crlf test-charset test-tohtml
 
 
 

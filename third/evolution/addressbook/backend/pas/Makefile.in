@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,49 +168,43 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 CORBA_SOURCE_H = addressbook.h
 
@@ -230,9 +216,7 @@ CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
 idls =  	$(srcdir)/../idl/addressbook.idl
 
 
-idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
-
-INCLUDES =  	$(DB3_CFLAGS)						$(LDAP_CFLAGS)					        -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"wombat-pas\"				-I$(top_srcdir) 					-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend		        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+INCLUDES =  	$(DB3_CFLAGS)						$(LDAP_CFLAGS)						-DG_LOG_DOMAIN=\"wombat-pas\"				-I$(top_srcdir) 					-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-DG_DISABLE_DEPRECATED					-DLIBGNOME_DISABLE_DEPRECATED			        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
 LDAP_SCHEMA =  	evolutionperson.schema
@@ -243,19 +227,18 @@ LDAP_BACKEND_FILES =  	pas-backend-ldap.c					pas-backend-ldap.h
 
 @ENABLE_LDAP_TRUE@LDAP_BACKEND = libpasldap.a
 
-ldapschemadir = $(datadir)/evolution
-
+ldapschemadir = $(privdatadir)
 ldapschema_DATA = $(LDAP_SCHEMA)
 
 privlib_LIBRARIES = libpas.a
 noinst_LIBRARIES = libpasfile.a $(LDAP_BACKEND)
 
-pasincludedir = $(includedir)/evolution/pas
+pasincludedir = $(privincludedir)/pas
 
 pasinclude_HEADERS =  	$(CORBA_SOURCE_H)					pas-book-factory.h					pas-book-view.h						pas-book.h						pas-backend-card-sexp.h					pas-backend.h						pas-backend-summary.h					pas-card-cursor.h
 
 
-libpas_a_SOURCES =  	$(pasinclude_HEADERS)					$(CORBA_SOURCE_C)					pas-book-factory.c					pas-book-view.c						pas-book.c						pas-backend-card-sexp.c					pas-backend-file.c					pas-backend.c						pas-backend-summary.c					pas-card-cursor.c
+libpas_a_SOURCES =  	$(pasinclude_HEADERS)					$(CORBA_SOURCE_C)					pas-book-factory.c					pas-book-view.c						pas-book.c						pas-backend-card-sexp.c					pas-backend-file.c					pas-backend.c						pas-backend-summary.c					pas-card-cursor.c					pas-marshal.c
 
 
 libpasfile_a_SOURCES =  	pas-backend-file.c					pas-backend-file.h
@@ -263,10 +246,12 @@ libpasfile_a_SOURCES =  	pas-backend-file.c					pas-backend-file.h
 
 @ENABLE_LDAP_TRUE@libpasldap_a_SOURCES = 	$(LDAP_BACKEND_FILES)
 
-BUILT_SOURCES = $(CORBA_SOURCE)
+MARSHAL_GENERATED = pas-marshal.c pas-marshal.h
+
+BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 
-EXTRA_DIST = $(LDAP_BACKEND_FILES) $(LDAP_SCHEMA)
+EXTRA_DIST = $(LDAP_BACKEND_FILES) $(LDAP_SCHEMA) pas-marshal.list
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
@@ -287,7 +272,7 @@ addressbook-stubs.$(OBJEXT) addressbook-skels.$(OBJEXT) \
 pas-book-factory.$(OBJEXT) pas-book-view.$(OBJEXT) pas-book.$(OBJEXT) \
 pas-backend-card-sexp.$(OBJEXT) pas-backend-file.$(OBJEXT) \
 pas-backend.$(OBJEXT) pas-backend-summary.$(OBJEXT) \
-pas-card-cursor.$(OBJEXT)
+pas-card-cursor.$(OBJEXT) pas-marshal.$(OBJEXT)
 AR = ar
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -502,12 +487,11 @@ addressbook-common.o: addressbook-common.c addressbook.h
 addressbook-skels.o: addressbook-skels.c addressbook.h
 addressbook-stubs.o: addressbook-stubs.c addressbook.h
 pas-backend-card-sexp.o: pas-backend-card-sexp.c pas-backend-card-sexp.h \
-	../../../e-util/e-sexp.h \
-	../../../addressbook/backend/ebook/e-card-simple.h \
 	../../../addressbook/backend/ebook/e-card.h \
 	../../../addressbook/backend/ebook/e-card-types.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h
+	../../../e-util/e-iterator.h ../../../e-util/e-sexp.h \
+	../../../addressbook/backend/ebook/e-card-simple.h
 pas-backend-file.o: pas-backend-file.c ../../../config.h \
 	pas-backend-file.h pas-backend.h addressbook.h pas-book.h \
 	pas-book-view.h ../../../e-util/e-list.h \
@@ -538,20 +522,22 @@ pas-backend-summary.o: pas-backend-summary.c ../../../config.h \
 pas-backend.o: pas-backend.c ../../../config.h pas-backend.h \
 	addressbook.h pas-book.h pas-book-view.h \
 	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
-	../../../e-util/e-iterator.h pas-backend.h pas-card-cursor.h
+	../../../e-util/e-iterator.h pas-backend.h pas-card-cursor.h \
+	pas-marshal.h
 pas-book-factory.o: pas-book-factory.c ../../../config.h addressbook.h \
 	pas-book-factory.h pas-backend.h addressbook.h pas-book.h \
 	pas-book-view.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
-	pas-card-cursor.h
+	pas-card-cursor.h pas-marshal.h
 pas-book-view.o: pas-book-view.c ../../../config.h pas-book-view.h \
 	addressbook.h
 pas-book.o: pas-book.c ../../../config.h ../../../e-util/e-list.h \
 	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
-	pas-book.h addressbook.h pas-book-view.h pas-backend.h \
-	pas-book.h pas-card-cursor.h
+	pas-backend.h addressbook.h pas-book.h pas-book-view.h \
+	pas-backend.h pas-card-cursor.h pas-marshal.h
 pas-card-cursor.o: pas-card-cursor.c ../../../config.h addressbook.h \
 	pas-card-cursor.h addressbook.h
+pas-marshal.o: pas-marshal.c
 
 info-am:
 info: info-am
@@ -641,8 +627,22 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-$(CORBA_SOURCE): $(idls)
-	$(ORBIT_IDL) -I $(srcdir) $(srcdir)/../idl/addressbook.idl $(idl_flags)
+$(CORBA_SOURCE_H): $(idls)
+	$(ORBIT_IDL)  $(IDL_INCLUDES) -I $(srcdir) $(srcdir)/../idl/addressbook.idl
+
+$(CORBA_SOURCE_C): $(CORBA_SOURCE_H)
+
+# GLib marshalling cruft
+
+pas-marshal.h: pas-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=pas_marshal pas-marshal.list --header > pas-marshal.tmp \
+	&& mv pas-marshal.tmp pas-marshal.h ) \
+	|| ( rm -f pas-marshal.tmp && exit 1 )
+
+pas-marshal.c: pas-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=pas_marshal pas-marshal.list --body > pas-marshal.tmp \
+	&& mv pas-marshal.tmp pas-marshal.c ) \
+	|| ( rm -f pas-marshal.tmp && exit 1 )
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

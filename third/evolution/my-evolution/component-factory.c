@@ -24,10 +24,13 @@
 #include <config.h>
 #endif
 
+#include <string.h>
+
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-context.h>
 #include <bonobo/bonobo-shlib-factory.h>
+#include <bonobo/bonobo-main.h>
 
 #include <shell/evolution-shell-component.h>
 #include <shell/Evolution.h>
@@ -41,8 +44,10 @@
 
 #include "component-factory.h"
 
-#define COMPONENT_ID         "OAFIID:GNOME_Evolution_Summary_ShellComponent"
-#define COMPONENT_FACTORY_ID "OAFIID:GNOME_Evolution_Summary_ShellComponentFactory"
+#define FACTORY_ID             "OAFIID:GNOME_Evolution_Summary_ComponentFactory"
+
+#define COMPONENT_ID           "OAFIID:GNOME_Evolution_Summary_ShellComponent"
+#define PREFERENCES_CONTROL_ID "OAFIID:GNOME_Evolution_Summary_ConfigControl"
 
 static gint running_objects = 0;
 static ESummaryPrefs *global_preferences = NULL;
@@ -73,10 +78,9 @@ create_view (EvolutionShellComponent *shell,
 		return EVOLUTION_SHELL_COMPONENT_UNSUPPORTEDTYPE;
 	}
 
-	offline_handler = gtk_object_get_data (GTK_OBJECT (shell), 
-					       "offline-handler");
+	offline_handler = g_object_get_data (G_OBJECT (shell), "offline-handler");
 	shell_client = evolution_shell_component_get_owner (shell);
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 	control = e_summary_factory_new_control (physical_uri, corba_shell,
 						 offline_handler, global_preferences);
 	if (!control)
@@ -99,35 +103,24 @@ owner_set_cb (EvolutionShellComponent *shell_component,
 		evolution_dir = g_strdup (evolution_homedir);
 	}
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 	
 	e_summary_folder_init_folder_store (corba_shell);
-	e_summary_preferences_register_config_control_factory (corba_shell);
+	e_summary_preferences_init_control (corba_shell);
 }
 
 static void
 owner_unset_cb (EvolutionShellComponent *shell_component,
 		gpointer user_data)
 {
-	gtk_main_quit ();
-}
+	g_free (evolution_dir);
+	evolution_dir = NULL;
 
-static void
-component_destroy (BonoboObject *factory,
-		 gpointer user_data)
-{
-	running_objects--;
-
-	if (running_objects > 0) {
-		return;
-	}
-
-	gtk_main_quit ();
+	e_summary_folder_clear_folder_store ();
 }
 
 static BonoboObject *
-create_component (BonoboGenericFactory *factory,
-		  void *data)
+create_shell_component (void)
 {
 	EvolutionShellComponent *shell_component;
 	ESummaryOfflineHandler *offline_handler;
@@ -145,34 +138,31 @@ create_component (BonoboGenericFactory *factory,
 							 NULL, NULL,
 							 NULL, NULL,
 							 NULL, NULL);
-	gtk_signal_connect (GTK_OBJECT (shell_component), "destroy",
-			    GTK_SIGNAL_FUNC (component_destroy), NULL);
-	gtk_signal_connect (GTK_OBJECT (shell_component), "owner_set",
-			    GTK_SIGNAL_FUNC (owner_set_cb), NULL);
-	gtk_signal_connect (GTK_OBJECT (shell_component), "owner_unset",
-			    GTK_SIGNAL_FUNC (owner_unset_cb), NULL);
+
+	g_signal_connect (shell_component, "owner_set", G_CALLBACK (owner_set_cb), NULL);
+	g_signal_connect (shell_component, "owner_unset", G_CALLBACK (owner_unset_cb), NULL);
 
 	offline_handler = e_summary_offline_handler_new ();
-	gtk_object_set_data (GTK_OBJECT (shell_component), "offline-handler",
-			     offline_handler);
+	g_object_set_data (G_OBJECT (shell_component), "offline-handler", offline_handler);
 	bonobo_object_add_interface (BONOBO_OBJECT (shell_component), BONOBO_OBJECT (offline_handler));
 
 	return BONOBO_OBJECT (shell_component);
 }
 
-/* Factory for the out-of-proc case.  */
-void
-component_factory_init (void)
+static BonoboObject *
+factory (BonoboGenericFactory *this,
+	 const char *object_id,
+	 void *data)
 {
-	BonoboGenericFactory *factory;
+	if (strcmp (object_id, COMPONENT_ID) == 0)
+		return create_shell_component ();
 
-	factory = bonobo_generic_factory_new (COMPONENT_FACTORY_ID,
-					      create_component,
-					      NULL);
+	if (strcmp (object_id, PREFERENCES_CONTROL_ID) == 0)
+		return e_summary_preferences_create_control ();
 
-	if (factory == NULL)
-		g_error ("Cannot register Evolution Summary component factory.");
+	g_warning (FACTORY_ID ": Don't know anything about %s", object_id);
+
+	return NULL;
 }
 
-/* Factory for the shlib case.  */
-BONOBO_OAF_SHLIB_FACTORY (COMPONENT_FACTORY_ID, "Evolution Summary component", create_component, NULL)
+BONOBO_ACTIVATION_SHLIB_FACTORY (FACTORY_ID, "Evolution Summary component factory", factory, NULL)

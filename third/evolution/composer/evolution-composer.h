@@ -35,10 +35,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define EVOLUTION_TYPE_COMPOSER            (evolution_composer_get_type ())
-#define EVOLUTION_COMPOSER(obj)            (GTK_CHECK_CAST ((obj), EVOLUTION_TYPE_COMPOSER, EvolutionComposer))
-#define EVOLUTION_COMPOSER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_COMPOSER, EvolutionComposerClass))
-#define EVOLUTION_IS_COMPOSER(obj)         (GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_COMPOSER))
-#define EVOLUTION_IS_COMPOSER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_COMPOSER))
+#define EVOLUTION_COMPOSER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EVOLUTION_TYPE_COMPOSER, EvolutionComposer))
+#define EVOLUTION_COMPOSER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_COMPOSER, EvolutionComposerClass))
+#define EVOLUTION_IS_COMPOSER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EVOLUTION_TYPE_COMPOSER))
+#define EVOLUTION_IS_COMPOSER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_COMPOSER))
 
 typedef struct _EvolutionComposer        EvolutionComposer;
 typedef struct _EvolutionComposerClass   EvolutionComposerClass;
@@ -46,11 +46,15 @@ typedef struct _EvolutionComposerClass   EvolutionComposerClass;
 struct _EvolutionComposer {
 	BonoboObject parent;
 
+	struct _EvolutionComposerPrivate *priv;
+
 	EMsgComposer *composer;
 };
 
 struct _EvolutionComposerClass {
 	BonoboObjectClass parent_class;
+
+	POA_GNOME_Evolution_Composer__epv epv;
 };
 
 POA_GNOME_Evolution_Composer__epv *evolution_composer_get_epv            (void);
@@ -58,7 +62,8 @@ POA_GNOME_Evolution_Composer__epv *evolution_composer_get_epv            (void);
 GtkType            evolution_composer_get_type     (void);
 void               evolution_composer_construct    (EvolutionComposer *,
 						    GNOME_Evolution_Composer);
-EvolutionComposer *evolution_composer_new          (void);
+EvolutionComposer *evolution_composer_new          (void (*send_cb) (EMsgComposer *, gpointer),
+						    void (*save_draft_cb) (EMsgComposer *, int, gpointer));
 
 void               evolution_composer_factory_init (void (*send) (EMsgComposer *, gpointer),
 						    void (*save_draft) (EMsgComposer *, int, gpointer));

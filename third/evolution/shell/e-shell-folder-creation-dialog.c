@@ -24,21 +24,26 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+
+#include <gtk/gtkentry.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkscrolledwindow.h>
+
 #include <glade/glade-xml.h>
 
 #include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
-#include <gal/widgets/e-gui-utils.h>
-
-#include <gal/widgets/e-scroll-frame.h>
 
 #include "e-storage-set.h"
 #include "e-storage-set-view.h"
 #include "e-shell-utils.h"
+
+#include "e-util/e-dialog-utils.h"
 
 #include "e-shell-folder-creation-dialog.h"
 
@@ -46,6 +51,10 @@
 #define GLADE_FILE_NAME  EVOLUTION_GLADEDIR "/e-shell-folder-creation-dialog.glade"
 
 
+/* Forward declarations for the weak references.  */
+static void dialog_destroy_notify (void *data, GObject *where_the_dialog_was);
+static void shell_destroy_notify (void *data, GObject *where_the_shell_was);
+
 /* Data for the callbacks.  */
 struct _DialogData {
 	GtkWidget *dialog;
@@ -72,6 +81,12 @@ dialog_data_destroy (DialogData *dialog_data)
 	e_free_string_list (dialog_data->folder_types);
 	g_free (dialog_data->folder_path);
 
+	if (dialog_data->dialog != NULL)
+		g_object_weak_unref (G_OBJECT (dialog_data->dialog), dialog_destroy_notify, dialog_data);
+
+	if (dialog_data->shell != NULL)
+		g_object_weak_unref (G_OBJECT (dialog_data->shell), shell_destroy_notify, dialog_data);
+
 	g_free (dialog_data);
 }
 
@@ -89,8 +104,8 @@ async_create_cb (EStorageSet *storage_set,
 
 	dialog_data->creation_in_progress = FALSE;
 
-	gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, TRUE);
-	gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 1, TRUE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_OK, TRUE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_CANCEL, TRUE);
 
 	if (result == E_STORAGE_OK) {
 		/* Success! Tell the callback of this, then return */
@@ -118,7 +133,7 @@ async_create_cb (EStorageSet *storage_set,
 						  dialog_data->folder_path,
 						  dialog_data->result_callback_data);
 
-	e_notice (GTK_WINDOW (dialog_data->dialog), GNOME_MESSAGE_BOX_ERROR,
+	e_notice (dialog_data->dialog, GTK_MESSAGE_ERROR,
 		  _("Cannot create the specified folder:\n%s"),
 		  e_storage_result_to_string (result));
 
@@ -133,9 +148,9 @@ async_create_cb (EStorageSet *storage_set,
 /* Dialog signal callbacks.  */
 
 static void
-dialog_clicked_cb (GnomeDialog *dialog,
-		   int button_number,
-		   void *data)
+dialog_response_cb (GtkDialog *dialog,
+		    int response_id,
+		    void *data)
 {
 	DialogData *dialog_data;
 	EStorageSet *storage_set;
@@ -143,12 +158,12 @@ dialog_clicked_cb (GnomeDialog *dialog,
 	const char *folder_type;
 	const char *parent_path;
 	const char *reason;
-	char *folder_name;
+	const char *folder_name;
 	char *path;
 
 	dialog_data = (DialogData *) data;
 
-	if (button_number != 0) {
+	if (response_id != GTK_RESPONSE_OK) {
 		if (dialog_data->result_callback != NULL)
 			(* dialog_data->result_callback) (dialog_data->shell,
 							  E_SHELL_FOLDER_CREATION_DIALOG_RESULT_CANCEL,
@@ -158,10 +173,10 @@ dialog_clicked_cb (GnomeDialog *dialog,
 		return;
 	}
 
-	folder_name = e_utf8_gtk_entry_get_text (GTK_ENTRY (dialog_data->folder_name_entry));
+	folder_name = gtk_entry_get_text(GTK_ENTRY (dialog_data->folder_name_entry));
 
 	if (! e_shell_folder_name_is_valid (folder_name, &reason)) {
-		e_notice (GTK_WINDOW (dialog), GNOME_MESSAGE_BOX_ERROR,
+		e_notice (dialog, GTK_MESSAGE_ERROR,
 			  _("The specified folder name is not valid: %s"), reason);
 		return;
 	}
@@ -178,13 +193,12 @@ dialog_clicked_cb (GnomeDialog *dialog,
 		return;
 	}
 
-	path = g_concat_dir_and_file (parent_path, folder_name);
-	g_free (folder_name);
+	path = g_build_filename (parent_path, folder_name, NULL);
 
 	storage_set = e_shell_get_storage_set (dialog_data->shell);
 
 	folder_type_menu_item = GTK_OPTION_MENU (dialog_data->folder_type_option_menu)->menu_item;
-	folder_type = gtk_object_get_data (GTK_OBJECT (folder_type_menu_item), "folder_type");
+	folder_type = g_object_get_data (G_OBJECT (folder_type_menu_item), "folder_type");
 
 	if (folder_type == NULL) {
 		g_warning ("Cannot get folder type for selected GtkOptionMenu item.");
@@ -194,8 +208,8 @@ dialog_clicked_cb (GnomeDialog *dialog,
 	g_free (dialog_data->folder_path);
 	dialog_data->folder_path = path;
 
-	gnome_dialog_set_sensitive (dialog, 0, FALSE);
-	gnome_dialog_set_sensitive (dialog, 1, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL, FALSE);
 
 	dialog_data->creation_in_progress = TRUE;
 
@@ -207,18 +221,18 @@ dialog_clicked_cb (GnomeDialog *dialog,
 }
 
 static void
-dialog_destroy_cb (GtkObject *object,
-		   void *data)
+dialog_destroy_notify (void *data,
+		       GObject *where_the_dialog_was)
 {
 	DialogData *dialog_data;
 
 	dialog_data = (DialogData *) data;
+	dialog_data->dialog = NULL;
 
 	if (dialog_data->creation_in_progress) {
 		/* If the dialog has been closed before we are done creating
 		   the folder, the dialog_data will be freed after the creation
 		   is completed.  */
-		dialog_data->dialog = NULL;
 		dialog_data->folder_name_entry = NULL;
 		dialog_data->storage_set_view = NULL;
 		dialog_data->folder_type_option_menu = NULL;
@@ -226,6 +240,22 @@ dialog_destroy_cb (GtkObject *object,
 	}
 
 	dialog_data_destroy (dialog_data);
+}
+
+static void
+folder_name_entry_activate_cb (GtkEntry *entry,
+			       void *data)
+{
+	DialogData *dialog_data;
+	const char *parent_path;
+	
+	dialog_data = (DialogData *) data;
+
+	parent_path = e_storage_set_view_get_current_folder (E_STORAGE_SET_VIEW (dialog_data->storage_set_view));
+
+	if (parent_path != NULL
+	    && GTK_ENTRY (dialog_data->folder_name_entry)->text_length > 0)
+		gtk_dialog_response (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_OK);	
 }
 
 static void
@@ -241,9 +271,9 @@ folder_name_entry_changed_cb (GtkEditable *editable,
 
 	if (parent_path != NULL
 	    && GTK_ENTRY (dialog_data->folder_name_entry)->text_length > 0)
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_OK, TRUE);
 	else
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_OK, FALSE);
 }
 
 static void
@@ -256,20 +286,20 @@ storage_set_view_folder_selected_cb (EStorageSetView *storage_set_view,
 	dialog_data = (DialogData *) data;
 
 	if (GTK_ENTRY (dialog_data->folder_name_entry)->text_length > 0)
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog_data->dialog), GTK_RESPONSE_OK, TRUE);
 }
 
 
 /* Shell signal callbacks.  */
 
 static void
-shell_destroy_cb (GtkObject *object,
-		  void *data)
+shell_destroy_notify (void *data,
+		      GObject *where_the_shell_was)
 {
-	GnomeDialog *dialog;
+	DialogData *dialog_data = (DialogData *) data;
 
-	dialog = GNOME_DIALOG (data);
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	dialog_data->shell = NULL;
+	gtk_widget_destroy (GTK_WIDGET (dialog_data->dialog));
 }
 
 
@@ -287,8 +317,9 @@ setup_dialog (GtkWidget *dialog,
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Create New Folder"));
 
-	gnome_dialog_set_default   (GNOME_DIALOG (dialog), 0);
-	gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 0, FALSE);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
 
 	gtk_widget_show (dialog);
 }
@@ -301,8 +332,6 @@ setup_folder_name_entry (GtkWidget *dialog,
 	GtkWidget *folder_name_entry;
 
 	folder_name_entry = glade_xml_get_widget (gui, "folder_name_entry");
-
-	gnome_dialog_editable_enters (GNOME_DIALOG (dialog), GTK_EDITABLE (folder_name_entry));
 }
 
 static GtkWidget *
@@ -313,7 +342,7 @@ add_storage_set_view (GtkWidget *dialog,
 {
 	EStorageSet *storage_set;
 	GtkWidget *storage_set_view;
-	GtkWidget *scroll_frame;
+	GtkWidget *scrolled_window;
 	GtkWidget *vbox;
 
 	storage_set = e_shell_get_storage_set (shell);
@@ -329,14 +358,14 @@ add_storage_set_view (GtkWidget *dialog,
 
 	vbox = glade_xml_get_widget (gui, "main_vbox");
 
-	scroll_frame = e_scroll_frame_new (NULL, NULL);
-	e_scroll_frame_set_policy (E_SCROLL_FRAME (scroll_frame), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	e_scroll_frame_set_shadow_type (E_SCROLL_FRAME (scroll_frame), GTK_SHADOW_IN);
-	gtk_box_pack_start (GTK_BOX (vbox), scroll_frame, TRUE, TRUE, 0);
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
+	gtk_box_pack_start (GTK_BOX (vbox), scrolled_window, TRUE, TRUE, 6);
 
-	gtk_container_add (GTK_CONTAINER (scroll_frame), storage_set_view);
+	gtk_container_add (GTK_CONTAINER (scrolled_window), storage_set_view);
 
-	gtk_widget_show (scroll_frame);
+	gtk_widget_show (scrolled_window);
 	gtk_widget_show (storage_set_view);
 
 	return storage_set_view;
@@ -352,11 +381,22 @@ static int
 type_with_display_name_compare_func (const void *a, const void *b)
 {
 	const TypeWithDisplayName *val_a, *val_b;
+	char *a_display_name_casefolded;
+	char *b_display_name_casefolded;
+	int retval;
 
 	val_a = (const TypeWithDisplayName *) a;
 	val_b = (const TypeWithDisplayName *) b;
 
-	return g_strcasecmp (val_a->display_name, val_b->display_name);
+	a_display_name_casefolded = g_utf8_casefold (val_a->display_name, -1);
+	b_display_name_casefolded = g_utf8_casefold (val_b->display_name, -1);
+
+	retval = g_utf8_collate (a_display_name_casefolded, b_display_name_casefolded);
+
+	g_free (a_display_name_casefolded);
+	g_free (b_display_name_casefolded);
+
+	return retval;
 }
 
 static GList *
@@ -372,21 +412,11 @@ add_folder_types (GtkWidget *dialog,
 	GList *types_with_display_names;
 	GList *p;
 	int default_item;
-	int i;
+	int i, len;
 
 	folder_type_option_menu = glade_xml_get_widget (gui, "folder_type_option_menu");
 
-	/* KLUDGE.  So, GtkOptionMenu is badly broken.  It calculates its size
-           in `gtk_option_menu_set_menu()' instead of using `size_request()' as
-           any sane widget would do.  So, in order to avoid the "narrow
-           GtkOptionMenu" bug, we have to destroy the existing associated menu
-           and create a new one.  Life sucks.  */
-
 	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (folder_type_option_menu));
-	g_assert (menu != NULL);
-	gtk_widget_destroy (menu);
-
-	menu = gtk_menu_new ();
 
 	folder_type_registry = e_shell_get_folder_type_registry (shell);
 	g_assert (folder_type_registry != NULL);
@@ -410,7 +440,7 @@ add_folder_types (GtkWidget *dialog,
 
 	/* FIXME: Add icon (I don't feel like writing an alpha-capable thingie again).  */
 
-	default_item = 0;
+	default_item = -1;
 	i = 0;
 	for (p = types_with_display_names; p != NULL; p = p->next) {
 		const TypeWithDisplayName *type;
@@ -423,15 +453,23 @@ add_folder_types (GtkWidget *dialog,
 
 		menu_item = gtk_menu_item_new_with_label (type->display_name);
 		gtk_widget_show (menu_item);
-		gtk_menu_append (GTK_MENU (menu), menu_item);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
 
-		gtk_object_set_data_full (GTK_OBJECT (menu_item), "folder_type", g_strdup (type->type), g_free);
+		g_object_set_data_full (G_OBJECT (menu_item), "folder_type", g_strdup (type->type), g_free);
 
-		if (strcmp (type->type, default_type ? default_type : "mail") == 0)
+		if (strcmp (type->type, default_type) == 0)
 			default_item = i;
+		else if (default_item == -1) {
+			len = strlen (type->type);
+			if (strncmp (type->type, default_type, len) == 0 &&
+			    default_type[len] == '/')
+				default_item = i;
+		}
 
 		i ++;
 	}
+	if (default_item == -1)
+		default_item = 0;
 
 	for (p = types_with_display_names; p != NULL; p = p->next)
 		g_free (p->data);
@@ -489,7 +527,7 @@ e_shell_show_folder_creation_dialog (EShell *shell,
 	g_return_if_fail (shell != NULL);
 	g_return_if_fail (E_IS_SHELL (shell));
 
-	gui = glade_xml_new (GLADE_FILE_NAME, NULL);
+	gui = glade_xml_new (GLADE_FILE_NAME, NULL, NULL);
 	if (gui == NULL) {
 		g_warning ("Cannot load Glade description file for the folder creation dialog -- %s",
 			   GLADE_FILE_NAME);
@@ -523,20 +561,20 @@ e_shell_show_folder_creation_dialog (EShell *shell,
 	dialog_data->result_callback_data    = result_callback_data;
 	dialog_data->creation_in_progress    = FALSE;
 
-	gtk_signal_connect (GTK_OBJECT (dialog), "clicked",
-			    GTK_SIGNAL_FUNC (dialog_clicked_cb), dialog_data);
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-			    GTK_SIGNAL_FUNC (dialog_destroy_cb), dialog_data);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (dialog_response_cb), dialog_data);
+	g_object_weak_ref (G_OBJECT (dialog), dialog_destroy_notify, dialog_data);
 
-	gtk_signal_connect (GTK_OBJECT (dialog_data->folder_name_entry), "changed",
-			    GTK_SIGNAL_FUNC (folder_name_entry_changed_cb), dialog_data);
+	g_signal_connect (dialog_data->folder_name_entry, "changed",
+			  G_CALLBACK (folder_name_entry_changed_cb), dialog_data);
 
-	gtk_signal_connect (GTK_OBJECT (dialog_data->storage_set_view), "folder_selected",
-			    storage_set_view_folder_selected_cb, dialog_data);
+	g_signal_connect (dialog_data->folder_name_entry, "activate",
+			  G_CALLBACK (folder_name_entry_activate_cb), dialog_data);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (shell), "destroy",
-					GTK_SIGNAL_FUNC (shell_destroy_cb), dialog_data,
-					GTK_OBJECT (dialog));
+	g_signal_connect (dialog_data->storage_set_view, "folder_selected",
+			  G_CALLBACK (storage_set_view_folder_selected_cb), dialog_data);
 
-	gtk_object_unref (GTK_OBJECT (gui));
+	g_object_weak_ref (G_OBJECT (shell), shell_destroy_notify, dialog_data);
+
+	g_object_unref (gui);
 }

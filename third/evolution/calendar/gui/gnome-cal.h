@@ -26,7 +26,6 @@
 #define GNOME_CALENDAR_APP_H
 
 #include <time.h>
-#include <libgnome/gnome-defs.h>
 #include <gtk/gtkvbox.h>
 #include <bonobo/bonobo-ui-component.h>
 #include <gal/widgets/e-popup-menu.h>
@@ -35,7 +34,7 @@
 
 #include "e-calendar-table.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
@@ -109,6 +108,7 @@ GnomeCalendarViewType gnome_calendar_get_view (GnomeCalendar *gcal);
 void gnome_calendar_set_view (GnomeCalendar *gcal, GnomeCalendarViewType view_type,
 			      gboolean range_selected, gboolean grab_focus);
 
+GtkWidget *gnome_calendar_get_current_view_widget (GnomeCalendar *gcal);
 void gnome_calendar_setup_view_menus (GnomeCalendar *gcal, BonoboUIComponent *uic);
 void gnome_calendar_discard_view_menus (GnomeCalendar *gcal);
 
@@ -168,9 +168,10 @@ void       gnome_calendar_copy_clipboard        (GnomeCalendar  *gcal);
 void       gnome_calendar_paste_clipboard       (GnomeCalendar  *gcal);
 
 void       gnome_calendar_delete_selection	(GnomeCalendar  *gcal);
+void       gnome_calendar_delete_selected_occurrence (GnomeCalendar *gcal);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

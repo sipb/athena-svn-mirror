@@ -81,30 +81,8 @@ enum {
 	ARG_DAY_VIEW
 };
 
-
-GtkType
-e_day_view_main_item_get_type (void)
-{
-	static GtkType e_day_view_main_item_type = 0;
-
-	if (!e_day_view_main_item_type) {
-		GtkTypeInfo e_day_view_main_item_info = {
-			"EDayViewMainItem",
-			sizeof (EDayViewMainItem),
-			sizeof (EDayViewMainItemClass),
-			(GtkClassInitFunc) e_day_view_main_item_class_init,
-			(GtkObjectInitFunc) e_day_view_main_item_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_day_view_main_item_type = gtk_type_unique (gnome_canvas_item_get_type (), &e_day_view_main_item_info);
-	}
-
-	return e_day_view_main_item_type;
-}
-
+E_MAKE_TYPE (e_day_view_main_item, "EDayViewMainItem", EDayViewMainItem,
+	     e_day_view_main_item_class_init, e_day_view_main_item_init, GNOME_TYPE_CANVAS_ITEM);
 
 static void
 e_day_view_main_item_class_init (EDayViewMainItemClass *class)
@@ -112,7 +90,7 @@ e_day_view_main_item_class_init (EDayViewMainItemClass *class)
 	GtkObjectClass  *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type());
+	parent_class = g_type_class_peek_parent (class);
 
 	object_class = (GtkObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
@@ -184,7 +162,6 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 	EDayView *day_view;
 	GtkStyle *style;
 	GdkGC *gc;
-	GdkFont *font;
 	gint row, row_y, grid_x1, grid_x2;
 	gint day, grid_y1, grid_y2;
 	gint work_day_start_y, work_day_end_y;
@@ -201,8 +178,7 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 	day_view = dvmitem->day_view;
 	g_return_if_fail (day_view != NULL);
 
-	style = GTK_WIDGET (day_view)->style;
-	font = style->font;
+	style = gtk_widget_get_style (GTK_WIDGET (day_view));
 
 	/* Paint the background colors. */
 	gc = day_view->main_gc;
@@ -240,8 +216,7 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 	}
 
 	/* Paint the selection background. */
-	if (GTK_WIDGET_HAS_FOCUS (day_view)
-	    && day_view->selection_start_day != -1
+	if (day_view->selection_start_day != -1
 	    && !day_view->selection_in_top_canvas) {
 		for (day = day_view->selection_start_day;
 		     day <= day_view->selection_end_day;
@@ -262,7 +237,10 @@ e_day_view_main_item_draw (GnomeCanvasItem *canvas_item, GdkDrawable *drawable,
 			rect_y = start_row * day_view->row_height - y;
 			rect_height = (end_row - start_row + 1) * day_view->row_height;
 
-			gdk_gc_set_foreground (gc, &day_view->colors[E_DAY_VIEW_COLOR_BG_SELECTED]);
+			if (GTK_WIDGET_HAS_FOCUS(day_view))
+				gdk_gc_set_foreground (gc, &day_view->colors[E_DAY_VIEW_COLOR_BG_SELECTED]);
+			else
+				gdk_gc_set_foreground (gc, &day_view->colors[E_DAY_VIEW_COLOR_BG_SELECTED_UNFOCUSSED]);
 			gdk_draw_rectangle (drawable, gc, TRUE,
 					    rect_x, rect_y,
 					    rect_width, rect_height);

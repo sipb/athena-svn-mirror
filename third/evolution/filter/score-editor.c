@@ -1,5 +1,6 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2001 Ximian Inc.
+ *  Copyright (C) 2001-2002 Ximian Inc.
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *           Jeffrey Stedfast <fejj@ximian.com>
@@ -19,94 +20,77 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
 
-#include <glib.h>
-#include <gtk/gtkframe.h>
-#include <libgnome/gnome-defs.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
-#include <glade/glade.h>
-#include <gal/widgets/e-unicode.h>
 
 #include "score-editor.h"
-#include "score-context.h"
 #include "score-rule.h"
 
 #define d(x)
 
 static FilterRule * create_rule(RuleEditor *re);
 
-static void score_editor_class_init (ScoreEditorClass *class);
-static void score_editor_init	(ScoreEditor *gspaper);
-static void score_editor_finalise (GtkObject *obj);
+static void score_editor_class_init (ScoreEditorClass *klass);
+static void score_editor_init (ScoreEditor *se);
+static void score_editor_finalise (GObject *obj);
 
-#define _PRIVATE(x) (((ScoreEditor *)(x))->priv)
 
-struct _ScoreEditorPrivate {
-};
+static RuleEditorClass *parent_class = NULL;
 
-static RuleEditorClass *parent_class;
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
-guint
+GtkType
 score_editor_get_type (void)
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"ScoreEditor",
-			sizeof(ScoreEditor),
-			sizeof(ScoreEditorClass),
-			(GtkClassInitFunc)score_editor_class_init,
-			(GtkObjectInitFunc)score_editor_init,
-			(GtkArgSetFunc)NULL,
-			(GtkArgGetFunc)NULL
+		static const GTypeInfo info = {
+			sizeof (ScoreEditorClass),
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) score_editor_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (ScoreEditor),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) score_editor_init,
 		};
 		
-		type = gtk_type_unique (rule_editor_get_type (), &type_info);
+		type = g_type_register_static (RULE_TYPE_EDITOR, "ScoreEditor", &info, 0);
 	}
 	
 	return type;
 }
 
 static void
-score_editor_class_init (ScoreEditorClass *class)
+score_editor_class_init (ScoreEditorClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *)class;
-	RuleEditorClass *re_class = (RuleEditorClass *)class;
-
-	parent_class = gtk_type_class (rule_editor_get_type ());
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	RuleEditorClass *re_class = (RuleEditorClass *) klass;
 	
-	object_class->finalize = score_editor_finalise;
-
+	parent_class = g_type_class_ref(rule_editor_get_type ());
+	
+	gobject_class->finalize = score_editor_finalise;
+	
 	/* override methods */
 	re_class->create_rule = create_rule;
-
-	/* signals */
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
-score_editor_init (ScoreEditor *o)
+score_editor_init (ScoreEditor *se)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	;
 }
 
 static void
-score_editor_finalise(GtkObject *obj)
+score_editor_finalise (GObject *obj)
 {
-	ScoreEditor *o = (ScoreEditor *)obj;
-
-	g_free(o->priv);
-
-        ((GtkObjectClass *)(parent_class))->finalize(obj);
+        G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 /**
@@ -117,33 +101,33 @@ score_editor_finalise(GtkObject *obj)
  * Return value: A new #ScoreEditor object.
  **/
 ScoreEditor *
-score_editor_new(ScoreContext *f)
+score_editor_new (ScoreContext *sc)
 {
+	ScoreEditor *se = (ScoreEditor *) g_object_new (SCORE_TYPE_EDITOR, NULL);
 	GladeXML *gui;
-	ScoreEditor *o = (ScoreEditor *)gtk_type_new (score_editor_get_type ());
 	GtkWidget *w;
-
-	gui = glade_xml_new(FILTER_GLADEDIR "/filter.glade", "rule_editor");
-	rule_editor_construct((RuleEditor *)o, (RuleContext *)f, gui, NULL);
-
-        w = glade_xml_get_widget(gui, "rule_frame");
-	gtk_frame_set_label((GtkFrame *)w, _("Score Rules"));
-
-	gtk_object_unref((GtkObject *)gui);
 	
-	return o;
+	gui = glade_xml_new (FILTER_GLADEDIR "/filter.glade", "rule_editor", NULL);
+	rule_editor_construct ((RuleEditor *) se, (RuleContext *) sc, gui, NULL);
+	
+        w = glade_xml_get_widget (gui, "rule_frame");
+	gtk_frame_set_label ((GtkFrame *) w, _("Score Rules"));
+	
+	g_object_unref (gui);
+	
+	return se;
 }
 
 static FilterRule *
-create_rule(RuleEditor *re)
+create_rule (RuleEditor *re)
 {
-	FilterRule *rule = filter_rule_new();
+	FilterRule *rule = filter_rule_new ();
 	FilterPart *part;
-
+	
 	/* create a rule with 1 part in it */
-	rule = (FilterRule *)score_rule_new ();
-	part = rule_context_next_part(re->context, NULL);
-	filter_rule_add_part(rule, filter_part_clone(part));
-
+	rule = (FilterRule *) score_rule_new ();
+	part = rule_context_next_part (re->context, NULL);
+	filter_rule_add_part (rule, filter_part_clone (part));
+	
 	return rule;
 }

@@ -26,7 +26,11 @@
 #include <config.h>
 #endif
 
-#include <libgnome/gnome-defs.h>
+#include <string.h>
+
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
 #include <libgnome/gnome-util.h> /* gnome_util_prepend_user_home */
 
 #include <bonobo/bonobo-exception.h>
@@ -38,6 +42,9 @@
 #include <gal/menus/gal-view-factory-etable.h>
 #include <gal/menus/gal-view-etable.h>
 
+#include "e-util/e-meta.h"
+
+#include "mail-config.h"
 #include "mail-callbacks.h" /* almost all the verbs */
 #include "mail-session.h" /* mail_session_forget_passwords */
 
@@ -305,8 +312,8 @@ ui_add (FolderBrowser *fb, const char *name, BonoboUIVerb verb[], EPixmap pixcac
 	
 	/*bonobo_ui_component_freeze (uic, NULL);*/
 	
-	file = g_strconcat ("evolution-mail-", name, ".xml", NULL);
-	bonobo_ui_util_set_ui (uic, EVOLUTION_DATADIR, file, "evolution-mail");
+	file = g_strconcat (EVOLUTION_UIDIR "/evolution-mail-", name, ".xml", NULL);
+	bonobo_ui_util_set_ui (uic, PREFIX, file, "evolution-mail", NULL);
 	g_free (file);
 	
 	e_pixmaps_update (uic, pixcache);
@@ -348,29 +355,28 @@ folder_browser_ui_setup_view_menus (FolderBrowser *fb)
 		char *local_dir;
 		GalViewFactory *factory;
 		
-		collection = gal_view_collection_new();
+		collection = gal_view_collection_new ();
 		
 		gal_view_collection_set_title (collection, _("Mail"));
 		
 		local_dir = gnome_util_prepend_user_home ("/evolution/views/mail/");
-		gal_view_collection_set_storage_directories
-			(collection,
-			 EVOLUTION_DATADIR "/evolution/views/mail/",
-			 local_dir);
+		gal_view_collection_set_storage_directories (collection,
+							     EVOLUTION_GALVIEWSDIR "/mail/",
+							     local_dir);
 		g_free (local_dir);
 		
-		spec = e_table_specification_new();
-		e_table_specification_load_from_file(spec, EVOLUTION_ETSPECDIR "/message-list.etspec");
+		spec = e_table_specification_new ();
+		e_table_specification_load_from_file (spec, EVOLUTION_ETSPECDIR "/message-list.etspec");
 		
 		factory = gal_view_factory_etable_new (spec);
-		gtk_object_unref (GTK_OBJECT (spec));
+		g_object_unref (spec);
 		gal_view_collection_add_factory (collection, factory);
-		gtk_object_unref (GTK_OBJECT (factory));
+		g_object_unref (factory);
 		
-		gal_view_collection_load(collection);
+		gal_view_collection_load (collection);
 	}
 	
-	id = mail_config_folder_to_safe_url(fb->folder);
+	id = mail_config_folder_to_safe_url (fb->folder);
 	fb->view_instance = gal_view_instance_new (collection, id);
 	g_free (id);
 	
@@ -390,17 +396,17 @@ folder_browser_ui_setup_view_menus (FolderBrowser *fb)
 			GalView *view;
 			
 			spec = e_table_specification_new();
-			e_table_specification_load_from_file(spec, EVOLUTION_ETSPECDIR "/message-list.etspec");
-			view = gal_view_etable_new(spec, "");
-			gtk_object_unref (GTK_OBJECT (spec));
+			e_table_specification_load_from_file (spec, EVOLUTION_ETSPECDIR "/message-list.etspec");
+			view = gal_view_etable_new (spec, "");
+			g_object_unref (spec);
 			
 			state = e_table_state_new ();
 			e_table_state_load_from_file (state, path);
 			gal_view_etable_set_state (GAL_VIEW_ETABLE (view), state);
-			gtk_object_unref (GTK_OBJECT (state));
+			g_object_unref (state);
 			
 			gal_view_instance_set_custom_view (fb->view_instance, view);
-			gtk_object_unref (GTK_OBJECT (view));
+			g_object_unref (view);
 		}
 		g_free (path);
 	}
@@ -411,9 +417,9 @@ folder_browser_ui_setup_view_menus (FolderBrowser *fb)
 	/* Due to CORBA reentrancy, the view could be gone now. */
 	if (fb->view_instance == NULL)
 		return;
-
-	gtk_signal_connect (GTK_OBJECT (fb->view_instance), "display_view",
-			    display_view, fb);
+	
+	g_signal_connect (fb->view_instance, "display_view", G_CALLBACK (display_view), fb);
+	
 	display_view (fb->view_instance, gal_view_instance_get_current_view (fb->view_instance), fb);
 }
 
@@ -424,10 +430,10 @@ folder_browser_ui_discard_view_menus (FolderBrowser *fb)
 	g_assert (fb->view_instance != NULL);
 	g_assert (fb->view_menus != NULL);
 	
-	gtk_object_unref (GTK_OBJECT (fb->view_instance));
+	g_object_unref (fb->view_instance);
 	fb->view_instance = NULL;
 	
-	gtk_object_unref (GTK_OBJECT (fb->view_menus));
+	g_object_unref (fb->view_menus);
 	fb->view_menus = NULL;
 }
 
@@ -453,6 +459,19 @@ folder_browser_ui_message_list_unfocus (FolderBrowser *fb)
 	  "sensitive", "0", NULL);*/
 }
 
+static const char *
+basename (const char *path)
+{
+	const char *base;
+	
+	if (!(base = strrchr (path, '/')))
+		base = path;
+	else
+		base++;
+	
+	return base;
+}
+
 static void
 folder_browser_setup_property_menu (FolderBrowser *fb, BonoboUIComponent *uic)
 {
@@ -460,14 +479,10 @@ folder_browser_setup_property_menu (FolderBrowser *fb, BonoboUIComponent *uic)
 	CamelURL *url;
 	
 	url = camel_url_new (fb->uri, NULL);
-	if (url) {
-		if (url->fragment)
-			base = g_basename (url->fragment);
-		else
-			base = g_basename (url->path);
-	}
+	if (url)
+		base = g_path_get_basename(url->fragment?url->fragment:url->path);
 	
-	if (base && base [0] != 0)
+	if (base && base[0] != '\0')
 		name = g_strdup_printf (_("Properties for \"%s\""), base);
 	else
 		name = g_strdup (_("Properties"));
@@ -476,7 +491,8 @@ folder_browser_setup_property_menu (FolderBrowser *fb, BonoboUIComponent *uic)
 		uic, "/menu/File/Folder/ComponentPlaceholder/ChangeFolderProperties",
 		"label", name, NULL);
 	g_free (name);
-	
+	g_free(base);
+
 	if (url)
 		camel_url_free (url);
 	
@@ -497,9 +513,12 @@ char *message_display_styles[] = {
 void 
 folder_browser_ui_add_message (FolderBrowser *fb)
 {
-	int state;
 	BonoboUIComponent *uic = fb->uicomp;
 	FolderBrowserSelectionState prev_state;
+	GConfClient *gconf;
+	int style;
+	
+	gconf = mail_config_get_gconf_client ();
 	
 	if (fb->sensitise_state) {
 		g_hash_table_destroy(fb->sensitise_state);
@@ -509,15 +528,16 @@ folder_browser_ui_add_message (FolderBrowser *fb)
 	ui_add (fb, "message", message_verbs, message_pixcache);
 	
 	/* Display Style */
-	state = fb->mail_display->display_style;
-	bonobo_ui_component_set_prop (uic, message_display_styles[state],
-				      "state", "1", NULL);
+	style = gconf_client_get_int (gconf, "/apps/evolution/mail/display/message_style", NULL);
+	style = style >= 0 && style < MAIL_CONFIG_DISPLAY_MAX ? style : 0;
+	bonobo_ui_component_set_prop (uic, message_display_styles[style], "state", "1", NULL);
 	bonobo_ui_component_add_listener (uic, "ViewNormal", folder_browser_set_message_display_style, fb);
 	bonobo_ui_component_add_listener (uic, "ViewFullHeaders", folder_browser_set_message_display_style, fb);
 	bonobo_ui_component_add_listener (uic, "ViewSource", folder_browser_set_message_display_style, fb);
-	/* FIXME: this kind of bypasses bonobo but seems the only way when we change components */
-	folder_browser_set_message_display_style (uic, strrchr (message_display_styles[state], '/') + 1,
-						  Bonobo_UIComponent_STATE_CHANGED, "1", fb);
+	if (fb->mail_display->display_style != style) {
+		fb->mail_display->display_style = style;
+		mail_display_redisplay (fb->mail_display, TRUE);
+	}
 	
 	/* Resend Message */
 	if (fb->folder && !folder_browser_is_sent (fb)) 
@@ -530,43 +550,45 @@ folder_browser_ui_add_message (FolderBrowser *fb)
 	
 	/* Charset picker */
 	e_charset_picker_bonobo_ui_populate (uic, "/menu/View", FB_DEFAULT_CHARSET,
-					     folder_browser_charset_changed,
-					     fb);
+					     folder_browser_charset_changed, fb);
 }
 
 void 
 folder_browser_ui_add_list (FolderBrowser *fb)
 {
 	BonoboUIComponent *uic = fb->uicomp;
+	GConfClient *gconf;
 	int state;
 	
+	gconf = mail_config_get_gconf_client ();
+	
 	if (fb->sensitise_state) {
-		g_hash_table_destroy(fb->sensitise_state);
+		g_hash_table_destroy (fb->sensitise_state);
 		fb->sensitise_state = NULL;
 	}
 	
 	ui_add (fb, "list", list_verbs, list_pixcache);
 	
 	/* Hide Deleted */
-	if (fb->folder && (fb->folder->folder_flags & CAMEL_FOLDER_IS_TRASH)) {
-		fbui_sensitise_item (fb, "HideDeleted", FALSE);
-		state = FALSE;
-	} else {
-		state = mail_config_get_hide_deleted ();
-	}
+	state = !gconf_client_get_bool (gconf, "/apps/evolution/mail/display/show_deleted", NULL);
 	bonobo_ui_component_set_prop (uic, "/commands/HideDeleted", "state", state ? "1" : "0", NULL);
 	bonobo_ui_component_add_listener (uic, "HideDeleted", folder_browser_toggle_hide_deleted, fb);
-	/* FIXME: this kind of bypasses bonobo but seems the only way when we change components */
-	folder_browser_toggle_hide_deleted (uic, "", Bonobo_UIComponent_STATE_CHANGED,
-					    state ? "1" : "0", fb);
+	if (!(fb->folder && (fb->folder->folder_flags & CAMEL_FOLDER_IS_TRASH)))
+		message_list_set_hidedeleted (fb->message_list, state);
+	else
+		fbui_sensitise_item (fb, "HideDeleted", FALSE);
 	
 	/* Threaded toggle */
-	state = mail_config_get_thread_list (FOLDER_BROWSER (fb)->uri);
+	state = gconf_client_get_bool (gconf, "/apps/evolution/mail/display/thread_list", NULL);
+	if (fb->meta)
+		state = e_meta_get_bool(fb->meta, "thread_list", state);
+
 	bonobo_ui_component_set_prop (uic, "/commands/ViewThreaded", "state", state ? "1" : "0", NULL);
 	bonobo_ui_component_add_listener (uic, "ViewThreaded", folder_browser_toggle_threads, fb);
-	/* FIXME: this kind of bypasses bonobo but seems the only way when we change components */
-	folder_browser_toggle_threads (uic, "", Bonobo_UIComponent_STATE_CHANGED,
-				       state ? "1" : "0", fb);
+	message_list_set_threaded (fb->message_list, state);
+	state = fb->selection_state;
+	fb->selection_state = FB_SELSTATE_UNDEFINED;
+	folder_browser_ui_set_selection_state (fb, state);
 	
 	/* Property menu */
 	folder_browser_setup_property_menu (fb, fb->uicomp);
@@ -587,37 +609,53 @@ folder_browser_ui_rm_list (FolderBrowser *fb)
 void 
 folder_browser_ui_add_global (FolderBrowser *fb)
 {
-	int state;
 	BonoboUIComponent *uic = fb->uicomp;
-
+	gboolean show_preview;
+	GConfClient *gconf;
+	int paned_size;
+	
+	gconf = mail_config_get_gconf_client ();
+	
 	if (fb->sensitise_state) {
-		g_hash_table_destroy(fb->sensitise_state);
+		g_hash_table_destroy (fb->sensitise_state);
 		fb->sensitise_state = NULL;
 	}
 	
 	ui_add (fb, "global", global_verbs, global_pixcache);
 	
-	/* (Pre)view toggle */
+	/* (Pre)view pane size (do this first because it affects the
+           preview settings - see folder_browser_set_message_preview()
+           internals for details) */
+	paned_size = gconf_client_get_int (gconf, "/apps/evolution/mail/display/paned_size", NULL);
+	g_signal_handler_block (fb->vpaned, fb->paned_resize_id);
+	gtk_paned_set_position (GTK_PANED (fb->vpaned), paned_size);
+	g_signal_handler_unblock (fb->vpaned, fb->paned_resize_id);
 	
-	state = mail_config_get_show_preview (FOLDER_BROWSER (fb)->uri);
-	bonobo_ui_component_set_prop (uic, "/commands/ViewPreview", "state", state ? "1" : "0", NULL);
+	/* (Pre)view toggle */
+	show_preview = gconf_client_get_bool (gconf, "/apps/evolution/mail/display/show_preview", NULL);
+	if (fb->meta)
+		show_preview = e_meta_get_bool(fb->meta, "show_preview", show_preview);
+	bonobo_ui_component_set_prop (uic, "/commands/ViewPreview", "state", show_preview ? "1" : "0", NULL);
+	folder_browser_set_message_preview (fb, show_preview);
+	
+	/* listen for user-changes */
 	bonobo_ui_component_add_listener (uic, "ViewPreview", folder_browser_toggle_preview, fb);
-	/* FIXME: this kind of bypasses bonobo but seems the only way when we change components */
-	folder_browser_toggle_preview (uic, "", Bonobo_UIComponent_STATE_CHANGED, state ? "1" : "0", fb);
 	
 	/* Stop button */
 	/* TODO: Go through cache, but we can't becaus eof mail-mt.c:set_stop at the moment */
-	bonobo_ui_component_set_prop(uic, "/commands/MailStop", "sensitive", "0", NULL);
+	bonobo_ui_component_set_prop (uic, "/commands/MailStop", "sensitive", "0", NULL);
 }
 
 void 
 folder_browser_ui_rm_all (FolderBrowser *fb)
 {
 	BonoboUIComponent *uic = fb->uicomp;
-	
-	bonobo_ui_component_rm (uic, "/", NULL);
- 	bonobo_ui_component_unset_container (uic);
-	
+
+	if (bonobo_ui_component_get_container (uic) != NULL) {
+		bonobo_ui_component_rm (uic, "/", NULL);
+		bonobo_ui_component_unset_container (uic, NULL);
+	}
+
 	if (fb->sensitise_state) {
 		g_hash_table_destroy (fb->sensitise_state);
 		fb->sensitise_state = NULL;
@@ -628,22 +666,24 @@ void
 fbui_sensitise_item (FolderBrowser *fb, const char *item, int state)
 {
 	char *name, *key;
+	gpointer val_ptr;
 	int val;
 	
 	/* If this whole caching idea doesn't work, remove it here */
 	if (fb->sensitise_state == NULL)
 		fb->sensitise_state = g_hash_table_new (g_str_hash, g_str_equal);
 	
-	if (g_hash_table_lookup_extended (fb->sensitise_state, item, (void **)&key, (void **)&val)) {
+	if (g_hash_table_lookup_extended (fb->sensitise_state, item, (void **)&key, &val_ptr)) {
+		val = GPOINTER_TO_INT(val_ptr);
 		if (val == state)
 			return;
 	}
 	
 	if (fb->uicomp) {
-		name = alloca (strlen (item) + strlen ("/commands/") + 1);
+		name = g_alloca (strlen (item) + strlen ("/commands/") + 1);
 		sprintf (name, "/commands/%s", item);
 		bonobo_ui_component_set_prop (fb->uicomp, name, "sensitive", state ? "1" : "0", NULL);
-		g_hash_table_insert (fb->sensitise_state, (char *) item, (gpointer) state);
+		g_hash_table_insert (fb->sensitise_state, (char *) item, GINT_TO_POINTER(state));
 	}
 }
 
@@ -676,16 +716,15 @@ folder_browser_ui_scan_selection (FolderBrowser *fb)
 		message_list_foreach (fb->message_list, enumerate_msg, uids);
 
 		for (i = 0; i < uids->len; i++) {
-
 			info = camel_folder_get_message_info (fb->folder, uids->pdata[i]);
 			if (info == NULL)
 				continue;
-
+			
 			if (info->flags & CAMEL_MESSAGE_DELETED)
 				temp_mask |= HAS_DELETED;
 			else
 				temp_mask |= HAS_UNDELETED;
-
+			
 			if (info->flags & CAMEL_MESSAGE_SEEN)
 				temp_mask |= HAS_READ;
 			else
@@ -695,14 +734,13 @@ folder_browser_ui_scan_selection (FolderBrowser *fb)
 				temp_mask |= HAS_IMPORTANT;
 			else
 				temp_mask |= HAS_UNIMPORTANT;
-
-
+			
 			camel_folder_free_message_info (fb->folder, info);
 			g_free (uids->pdata[i]);
 		}
-
+		
 		g_ptr_array_free (uids, TRUE);
-
+		
 		/* yeah, the naming is a bit backwards, but we need to support
 		 * the case when, say, both a deleted and an undeleted message
 		 * are selected. Both the Delete and Undelete menu items should
@@ -711,10 +749,10 @@ folder_browser_ui_scan_selection (FolderBrowser *fb)
 		 * so that it's sensible both above and in the definition of
 		 * the UI items, so deal with it.
 		 */
-
+		
 		enable_mask |= (~temp_mask & HAS_FLAGS);
 	}
-
+	
 	if (folder_browser_is_drafts (fb)) {
 		enable_mask |= IS_DRAFTS_FOLDER;
 		outgoing = TRUE;
@@ -750,7 +788,7 @@ folder_browser_ui_scan_selection (FolderBrowser *fb)
 		enable_mask |= SELECTION_NONE;
 		break;
 	}
-
+	
 	fbui_sensitize_items (fb, enable_mask);
 }
 
@@ -762,7 +800,7 @@ folder_browser_ui_set_selection_state (FolderBrowser *fb, FolderBrowserSelection
 	 * a recheck of the flags of the selected
 	 * messages.
 	 */
-
+	
 	if (state == fb->selection_state && 
 	    state != FB_SELSTATE_SINGLE &&
 	    state != FB_SELSTATE_MULTIPLE)

@@ -93,7 +93,7 @@ camel_pop3_folder_get_type (void)
 	return camel_pop3_folder_type;
 }
 
-void
+static void
 pop3_finalize (CamelObject *object)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (object);
@@ -199,7 +199,7 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 				if ((pop3_store->engine->capa & CAMEL_POP3_CAP_UIDL) == 0)
 					fi->cmd = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_builduid, fi, "TOP %u 0\r\n", id);
 				g_ptr_array_add(((CamelPOP3Folder *)folder)->uids, fi);
-				g_hash_table_insert(((CamelPOP3Folder *)folder)->uids_id, (void *)id, fi);
+				g_hash_table_insert(((CamelPOP3Folder *)folder)->uids_id, GINT_TO_POINTER(id), fi);
 			}
 		}
 	} while (ret>0);
@@ -218,11 +218,11 @@ cmd_uidl(CamelPOP3Engine *pe, CamelPOP3Stream *stream, void *data)
 	
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
-		if (ret>=0) {			
+		if (ret>=0) {
 			if (strlen(line) > 1024)
 				line[1024] = 0;
 			if (sscanf(line, "%u %s", &id, uid) == 2) {
-				fi = g_hash_table_lookup(folder->uids_id, (void *)id);
+				fi = g_hash_table_lookup(folder->uids_id, GINT_TO_POINTER(id));
 				if (fi) {
 					camel_operation_progress(NULL, (fi->index+1) * 100 / folder->uids->len);
 					fi->uid = g_strdup(uid);
@@ -261,7 +261,9 @@ pop3_refresh_info (CamelFolder *folder, CamelException *ex)
 		if (errno == EINTR)
 			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
 		else
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get POP summary: %s"), strerror(errno));
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+					      _("Cannot get POP summary: %s"),
+					      g_strerror (errno));
 	}
 
 	/* TODO: check every id has a uid & commands returned OK too? */
@@ -426,7 +428,9 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 			if (fi->err == EINTR)
 				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
 			else
-				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), uid, strerror(fi->err));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+						      _("Cannot get message %s: %s"),
+						      uid, g_strerror (fi->err));
 			goto fail;
 		}
 	}
@@ -485,12 +489,13 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 			if (fi->err == EINTR)
 				camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
 			else
-				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), uid, strerror(fi->err));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+						      _("Cannot get message %s: %s"),
+						      uid, g_strerror (fi->err));
 			goto done;
 		}
 
-		if (camel_stream_read(stream, buffer, 1) != 1
-		    || buffer[0] != '#') {
+		if (camel_stream_read(stream, buffer, 1) != 1 || buffer[0] != '#') {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 					     _("Cannot get message %s: %s"), uid, _("Unknown reason"));
 			goto done;
@@ -502,7 +507,9 @@ pop3_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 		if (errno == EINTR)
 			camel_exception_setv(ex, CAMEL_EXCEPTION_USER_CANCEL, _("User cancelled"));
 		else
-			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM, _("Cannot get message %s: %s"), uid, strerror(errno));
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+					      _("Cannot get message %s: %s"),
+					      uid, g_strerror (errno));
 		camel_object_unref((CamelObject *)message);
 		message = NULL;
 	}

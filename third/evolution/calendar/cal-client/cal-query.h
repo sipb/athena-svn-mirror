@@ -21,20 +21,21 @@
 #ifndef CAL_QUERY_H
 #define CAL_QUERY_H
 
-#include <libgnome/gnome-defs.h>
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 
 #include "evolution-calendar.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_QUERY_TYPE            (cal_query_get_type ())
-#define CAL_QUERY(obj)            (GTK_CHECK_CAST ((obj), CAL_QUERY_TYPE, CalQuery))
-#define CAL_QUERY_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_QUERY_TYPE, CalQueryClass))
-#define IS_CAL_QUERY(obj)         (GTK_CHECK_TYPE ((obj), CAL_QUERY_TYPE))
-#define IS_CAL_QUERY_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_QUERY_TYPE))
+#define CAL_QUERY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_QUERY_TYPE, CalQuery))
+#define CAL_QUERY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_QUERY_TYPE, CalQueryClass))
+#define IS_CAL_QUERY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_QUERY_TYPE))
+#define IS_CAL_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_QUERY_TYPE))
+
+#define CAL_QUERY_DONE_STATUS_ENUM_TYPE (cal_query_done_status_enum_get_type ())
 
 /* Status values when a query terminates */
 typedef enum {
@@ -45,14 +46,14 @@ typedef enum {
 typedef struct _CalQueryPrivate CalQueryPrivate;
 
 typedef struct {
-	GtkObject object;
+	GObject object;
 
 	/* Private data */
 	CalQueryPrivate *priv;
 } CalQuery;
 
 typedef struct {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Notification signals */
 
@@ -65,7 +66,9 @@ typedef struct {
 	void (* eval_error) (CalQuery *query, const char *error_str);
 } CalQueryClass;
 
-GtkType cal_query_get_type (void);
+GType     cal_query_get_type (void);
+
+GType     cal_query_done_status_enum_get_type (void);
 
 CalQuery *cal_query_construct (CalQuery *query,
 			       GNOME_Evolution_Calendar_Cal cal,
@@ -76,6 +79,6 @@ CalQuery *cal_query_new (GNOME_Evolution_Calendar_Cal cal,
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

@@ -22,14 +22,14 @@
 
 #include "e-contact-list-editor.h"
 
+#include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-window.h>
 #include <gal/e-table/e-table-scrolled.h>
-#include <gal/widgets/e-unicode.h>
 #include "shell/evolution-shell-component-utils.h"
 
 #include "addressbook/gui/widgets/e-addressbook-util.h"
@@ -37,6 +37,7 @@
 #include "e-contact-editor.h"
 #include "e-contact-save-as.h"
 #include "e-contact-list-model.h"
+#include "e-contact-list-editor-marshal.h"
 
 /* Signal IDs */
 enum {
@@ -49,9 +50,9 @@ enum {
 
 static void e_contact_list_editor_init		(EContactListEditor		 *editor);
 static void e_contact_list_editor_class_init	(EContactListEditorClass	 *klass);
-static void e_contact_list_editor_set_arg (GtkObject *o, GtkArg *arg, guint arg_id);
-static void e_contact_list_editor_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void e_contact_list_editor_destroy (GtkObject *object);
+static void e_contact_list_editor_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void e_contact_list_editor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
+static void e_contact_list_editor_dispose (GObject *object);
 
 static void create_ui (EContactListEditor *ce);
 static void set_editable (EContactListEditor *editor);
@@ -91,117 +92,117 @@ static const int num_drag_types = sizeof (drag_types) / sizeof (drag_types[0]);
 
 /* The arguments we take */
 enum {
-	ARG_0,
-	ARG_BOOK,
-	ARG_CARD,
-	ARG_IS_NEW_LIST,
-	ARG_EDITABLE
+	PROP_0,
+	PROP_BOOK,
+	PROP_CARD,
+	PROP_IS_NEW_LIST,
+	PROP_EDITABLE
 };
 
 static GSList *all_contact_list_editors = NULL;
 
-GtkType
+GType
 e_contact_list_editor_get_type (void)
 {
-  static GtkType contact_list_editor_type = 0;
+	static GType cle_type = 0;
 
-  if (!contact_list_editor_type)
-    {
-      static const GtkTypeInfo contact_list_editor_info =
-      {
-        "EContactListEditor",
-        sizeof (EContactListEditor),
-        sizeof (EContactListEditorClass),
-        (GtkClassInitFunc) e_contact_list_editor_class_init,
-        (GtkObjectInitFunc) e_contact_list_editor_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!cle_type) {
+		static const GTypeInfo cle_info =  {
+			sizeof (EContactListEditorClass),
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_contact_list_editor_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (EContactListEditor),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_contact_list_editor_init,
+		};
 
-      contact_list_editor_type = gtk_type_unique (GTK_TYPE_OBJECT, &contact_list_editor_info);
-    }
+		cle_type = g_type_register_static (GTK_TYPE_OBJECT, "EContactListEditor", &cle_info, 0);
+	}
 
-  return contact_list_editor_type;
+	return cle_type;
 }
 
-
-typedef void (*GtkSignal_NONE__INT_OBJECT) (GtkObject * object,
-					    gint arg1,
-					    GtkObject *arg2,
-					    gpointer user_data);
-
-static void
-e_marshal_NONE__INT_OBJECT (GtkObject * object,
-			    GtkSignalFunc func,
-			    gpointer func_data, GtkArg * args)
-{
-	GtkSignal_NONE__INT_OBJECT rfunc;
-	rfunc = (GtkSignal_NONE__INT_OBJECT) func;
-	(*rfunc) (object,
-		  GTK_VALUE_INT (args[0]),
-		  GTK_VALUE_OBJECT (args[1]),
-		  func_data);
-}
 
 static void
 e_contact_list_editor_class_init (EContactListEditorClass *klass)
 {
-  GtkObjectClass *object_class;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  object_class = (GtkObjectClass*) klass;
+	parent_class = g_type_class_ref (GTK_TYPE_OBJECT);
 
-  parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	object_class->set_property = e_contact_list_editor_set_property;
+	object_class->get_property = e_contact_list_editor_get_property;
+	/* object_class->dispose = e_contact_list_editor_dispose;*/
 
-  gtk_object_add_arg_type ("EContactListEditor::book", GTK_TYPE_OBJECT, 
-			   GTK_ARG_READWRITE, ARG_BOOK);
-  gtk_object_add_arg_type ("EContactListEditor::card", GTK_TYPE_OBJECT, 
-			   GTK_ARG_READWRITE, ARG_CARD);
-  gtk_object_add_arg_type ("EContactListEditor::is_new_list", GTK_TYPE_BOOL,
-			   GTK_ARG_READWRITE, ARG_IS_NEW_LIST);
-  gtk_object_add_arg_type ("EContactListEditor::editable", GTK_TYPE_BOOL,
-			   GTK_ARG_READWRITE, ARG_EDITABLE);
+	g_object_class_install_property (object_class, PROP_BOOK, 
+					 g_param_spec_object ("book",
+							      _("Book"),
+							      /*_( */"XXX blurb" /*)*/,
+							      E_TYPE_BOOK,
+							      G_PARAM_READWRITE));
 
-  contact_list_editor_signals[LIST_ADDED] =
-	  gtk_signal_new ("list_added",
-			  GTK_RUN_FIRST,
-			  object_class->type,
-			  GTK_SIGNAL_OFFSET (EContactListEditorClass, list_added),
-			  e_marshal_NONE__INT_OBJECT,
-			  GTK_TYPE_NONE, 2,
-			  GTK_TYPE_INT, GTK_TYPE_OBJECT);
+	g_object_class_install_property (object_class, PROP_CARD, 
+					 g_param_spec_object ("card",
+							      _("Card"),
+							      /*_( */"XXX blurb" /*)*/,
+							      E_TYPE_CARD,
+							      G_PARAM_READWRITE));
 
-  contact_list_editor_signals[LIST_MODIFIED] =
-	  gtk_signal_new ("list_modified",
-			  GTK_RUN_FIRST,
-			  object_class->type,
-			  GTK_SIGNAL_OFFSET (EContactListEditorClass, list_modified),
-			  e_marshal_NONE__INT_OBJECT,
-			  GTK_TYPE_NONE, 2,
-			  GTK_TYPE_INT, GTK_TYPE_OBJECT);
+	g_object_class_install_property (object_class, PROP_IS_NEW_LIST, 
+					 g_param_spec_boolean ("is_new_list",
+							       _("Is New List"),
+							       /*_( */"XXX blurb" /*)*/,
+							       FALSE,
+							       G_PARAM_READWRITE));
 
-  contact_list_editor_signals[LIST_DELETED] =
-	  gtk_signal_new ("list_deleted",
-			  GTK_RUN_FIRST,
-			  object_class->type,
-			  GTK_SIGNAL_OFFSET (EContactListEditorClass, list_deleted),
-			  e_marshal_NONE__INT_OBJECT,
-			  GTK_TYPE_NONE, 2,
-			  GTK_TYPE_INT, GTK_TYPE_OBJECT);
+	g_object_class_install_property (object_class, PROP_EDITABLE, 
+					 g_param_spec_boolean ("editable",
+							       _("Editable"),
+							       /*_( */"XXX blurb" /*)*/,
+							       FALSE,
+							       G_PARAM_READWRITE));
 
-  contact_list_editor_signals[EDITOR_CLOSED] =
-	  gtk_signal_new ("editor_closed",
-			  GTK_RUN_FIRST,
-			  object_class->type,
-			  GTK_SIGNAL_OFFSET (EContactListEditorClass, editor_closed),
-			  gtk_marshal_NONE__NONE,
-			  GTK_TYPE_NONE, 0);
+	contact_list_editor_signals[LIST_ADDED] =
+		g_signal_new ("list_added",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EContactListEditorClass, list_added),
+			      NULL, NULL,
+			      ecle_marshal_NONE__INT_OBJECT,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_INT, G_TYPE_OBJECT);
 
-  gtk_object_class_add_signals (object_class, contact_list_editor_signals, LAST_SIGNAL);
- 
-  object_class->set_arg = e_contact_list_editor_set_arg;
-  object_class->get_arg = e_contact_list_editor_get_arg;
-  object_class->destroy = e_contact_list_editor_destroy;
+	contact_list_editor_signals[LIST_MODIFIED] =
+		g_signal_new ("list_modified",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EContactListEditorClass, list_modified),
+			      NULL, NULL,
+			      ecle_marshal_NONE__INT_OBJECT,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_INT, G_TYPE_OBJECT);
+
+	contact_list_editor_signals[LIST_DELETED] =
+		g_signal_new ("list_deleted",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EContactListEditorClass, list_deleted),
+			      NULL, NULL,
+			      ecle_marshal_NONE__INT_OBJECT,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_INT, G_TYPE_OBJECT);
+
+	contact_list_editor_signals[EDITOR_CLOSED] =
+		g_signal_new ("editor_closed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EContactListEditorClass, editor_closed),
+			      NULL, NULL,
+			      ecle_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 }
 
 static void
@@ -218,13 +219,16 @@ e_contact_list_editor_init (EContactListEditor *editor)
 	editor->in_async_call = FALSE;
 	editor->is_new_list = FALSE;
 
-	gui = glade_xml_new (EVOLUTION_GLADEDIR "/contact-list-editor.glade", NULL);
+	gui = glade_xml_new (EVOLUTION_GLADEDIR "/contact-list-editor.glade", NULL, NULL);
 	editor->gui = gui;
 
 	editor->app = glade_xml_get_widget (gui, "contact list editor");
 
 	editor->table = glade_xml_get_widget (gui, "contact-list-table");
-	editor->model = gtk_object_get_data (GTK_OBJECT(editor->table), "model");
+	editor->model = g_object_get_data (G_OBJECT(editor->table), "model");
+
+	/* XXX need this for libglade-2 it seems */
+	gtk_widget_show (editor->table);
 
 	editor->add_button = glade_xml_get_widget (editor->gui, "add-email-button");
 	editor->remove_button = glade_xml_get_widget (editor->gui, "remove-button");
@@ -241,8 +245,8 @@ e_contact_list_editor_init (EContactListEditor *editor)
 	{
 		GtkWidget *contents;
 
-		contents = gnome_dock_get_client_area (
-			GNOME_DOCK (GNOME_APP (editor->app)->dock));
+		contents = bonobo_dock_get_client_area (gnome_app_get_dock (GNOME_APP (editor->app)));
+
 		if (!contents) {
 			g_message ("contact_list_editor_construct(): Could not get contents");
 			return;
@@ -256,8 +260,7 @@ e_contact_list_editor_init (EContactListEditor *editor)
 
 	/* Build the menu and toolbar */
 
-	container = bonobo_ui_container_new ();
-	bonobo_ui_container_set_win (container, BONOBO_WINDOW (editor->app));
+	container = bonobo_window_get_ui_container (BONOBO_WINDOW (editor->app));
 
 	editor->uic = bonobo_ui_component_new_default ();
 	if (!editor->uic) {
@@ -266,48 +269,49 @@ e_contact_list_editor_init (EContactListEditor *editor)
 	}
 	bonobo_ui_component_set_container (editor->uic,
 					   bonobo_object_corba_objref (
-								       BONOBO_OBJECT (container)));
+								       BONOBO_OBJECT (container)), NULL);
 
 	create_ui (editor);
 
 	/* connect signals */
-	gtk_signal_connect (GTK_OBJECT(editor->add_button),
-			    "clicked", GTK_SIGNAL_FUNC(add_email_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(editor->email_entry),
-			    "activate", GTK_SIGNAL_FUNC(add_email_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(editor->remove_button),
-			    "clicked", GTK_SIGNAL_FUNC(remove_entry_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(editor->list_name_entry),
-			    "changed", GTK_SIGNAL_FUNC(list_name_changed_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(editor->visible_addrs_checkbutton),
-			    "toggled", GTK_SIGNAL_FUNC(visible_addrs_toggled_cb), editor);
+	g_signal_connect (editor->add_button,
+			  "clicked", G_CALLBACK(add_email_cb), editor);
+	g_signal_connect (editor->email_entry,
+			  "activate", G_CALLBACK(add_email_cb), editor);
+	g_signal_connect (editor->remove_button,
+			  "clicked", G_CALLBACK(remove_entry_cb), editor);
+	g_signal_connect (editor->list_name_entry,
+			  "changed", G_CALLBACK(list_name_changed_cb), editor);
+	g_signal_connect (editor->visible_addrs_checkbutton,
+			  "toggled", G_CALLBACK(visible_addrs_toggled_cb), editor);
 
 	e_table_drag_dest_set (e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table)),
 			       0, drag_types, num_drag_types, GDK_ACTION_LINK);
 
-	gtk_signal_connect (GTK_OBJECT(e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table))),
-			    "table_drag_motion", GTK_SIGNAL_FUNC(table_drag_motion_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table))),
-			    "table_drag_drop", GTK_SIGNAL_FUNC(table_drag_drop_cb), editor);
-	gtk_signal_connect (GTK_OBJECT(e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table))),
-			    "table_drag_data_received", GTK_SIGNAL_FUNC(table_drag_data_received_cb), editor);
+	g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table)),
+			  "table_drag_motion", G_CALLBACK(table_drag_motion_cb), editor);
+	g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table)),
+			  "table_drag_drop", G_CALLBACK (table_drag_drop_cb), editor);
+	g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (editor->table)),
+			  "table_drag_data_received", G_CALLBACK(table_drag_data_received_cb), editor);
 
 	command_state_changed (editor);
 
 	/* Connect to the deletion of the dialog */
 
-	gtk_signal_connect (GTK_OBJECT (editor->app), "delete_event",
-			    GTK_SIGNAL_FUNC (app_delete_event_cb), editor);
+	g_signal_connect (editor->app, "delete_event",
+			  G_CALLBACK (app_delete_event_cb), editor);
 
 	/* set the icon */
-	icon_path = g_concat_dir_and_file (EVOLUTION_ICONSDIR, "contact-list-16.png");
+	icon_path = g_build_filename (EVOLUTION_IMAGESDIR, "contact-list-16.png", NULL);
 	gnome_window_icon_set_from_file (GTK_WINDOW (editor->app), icon_path);
 	g_free (icon_path);
 }
 
 static void
-e_contact_list_editor_destroy (GtkObject *object)
+e_contact_list_editor_dispose (GObject *object)
 {
+	/* XXX need to call parent dispose */
 }
 
 typedef struct {
@@ -327,8 +331,8 @@ list_added_cb (EBook *book, EBookStatus status, const char *id, EditorCloseStruc
 
 	e_card_set_id (cle->card, id);
 
-	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_ADDED],
-			 status, cle->card);
+	g_signal_emit (cle, contact_list_editor_signals[LIST_ADDED], 0,
+		       status, cle->card);
 
 	if (status == E_BOOK_STATUS_SUCCESS) {
 		cle->is_new_list = FALSE;
@@ -339,7 +343,7 @@ list_added_cb (EBook *book, EBookStatus status, const char *id, EditorCloseStruc
 			command_state_changed (cle);
 	}
 
-	gtk_object_unref (GTK_OBJECT (cle));
+	g_object_unref (cle);
 	g_free (ecs);
 }
 
@@ -353,15 +357,15 @@ list_modified_cb (EBook *book, EBookStatus status, EditorCloseStruct *ecs)
 		gtk_widget_set_sensitive (cle->app, TRUE);
 	cle->in_async_call = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_MODIFIED],
-			 status, cle->card);
+	g_signal_emit (cle, contact_list_editor_signals[LIST_MODIFIED], 0,
+		       status, cle->card);
 
 	if (status == E_BOOK_STATUS_SUCCESS) {
 		if (should_close)
 			close_dialog (cle);
 	}
 
-	gtk_object_unref (GTK_OBJECT (cle)); /* release ref held for ebook callback */
+	g_object_unref (cle); /* release ref held for ebook callback */
 	g_free (ecs);
 }
 
@@ -374,7 +378,7 @@ save_card (EContactListEditor *cle, gboolean should_close)
 		EditorCloseStruct *ecs = g_new(EditorCloseStruct, 1);
 		
 		ecs->cle = cle;
-		gtk_object_ref (GTK_OBJECT (cle));
+		g_object_ref (cle);
 		ecs->should_close = should_close;
 
 		if (cle->app)
@@ -382,9 +386,9 @@ save_card (EContactListEditor *cle, gboolean should_close)
 		cle->in_async_call = TRUE;
 
 		if (cle->is_new_list)
-			e_book_add_card (cle->book, cle->card, GTK_SIGNAL_FUNC(list_added_cb), ecs);
+			e_book_add_card (cle->book, cle->card, (EBookIdCallback)list_added_cb, ecs);
 		else
-			e_book_commit_card (cle->book, cle->card, GTK_SIGNAL_FUNC(list_modified_cb), ecs);
+			e_book_commit_card (cle->book, cle->card, (EBookCallback)list_modified_cb, ecs);
 
 		cle->changed = FALSE;
 	}
@@ -393,7 +397,7 @@ save_card (EContactListEditor *cle, gboolean should_close)
 static gboolean
 is_named (EContactListEditor *editor)
 {
-	char *string = e_utf8_gtk_editable_get_chars(GTK_EDITABLE (editor->list_name_entry), 0, -1);
+	char *string = gtk_editable_get_chars(GTK_EDITABLE (editor->list_name_entry), 0, -1);
 	gboolean named = FALSE;
 
 	if (string && *string) {
@@ -412,12 +416,12 @@ prompt_to_save_changes (EContactListEditor *editor)
 		return TRUE;
 
 	switch (e_addressbook_prompt_save_dialog (GTK_WINDOW(editor->app))) {
-	case 0: /* Save */
+	case GTK_RESPONSE_YES:
 		save_card (editor, FALSE);
 		return TRUE;
-	case 1: /* Discard */
+	case GTK_RESPONSE_NO:
 		return TRUE;
-	case 2: /* Cancel */
+	case GTK_RESPONSE_CANCEL:
 	default:
 		return FALSE;
 	}
@@ -459,7 +463,7 @@ file_send_as_cb (GtkWidget *widget, gpointer data)
 
 	extract_info (cle);
 
-	e_card_send(cle->card, E_CARD_DISPOSITION_AS_ATTACHMENT);
+	e_addressbook_send_card(cle->card, E_ADDRESSBOOK_DISPOSITION_AS_ATTACHMENT);
 }
 
 static void
@@ -469,7 +473,7 @@ file_send_to_cb (GtkWidget *widget, gpointer data)
 
 	extract_info (cle);
 
-	e_card_send(cle->card, E_CARD_DISPOSITION_AS_TO);
+	e_addressbook_send_card(cle->card, E_ADDRESSBOOK_DISPOSITION_AS_TO);
 }
 
 static void
@@ -486,14 +490,14 @@ list_deleted_cb (EBook *book, EBookStatus status, EContactListEditor *cle)
 		gtk_widget_set_sensitive (cle->app, TRUE);
 	cle->in_async_call = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_DELETED],
-			 status, cle->card);
+	g_signal_emit (cle, contact_list_editor_signals[LIST_DELETED], 0,
+		       status, cle->card);
 
 	/* always close the dialog after we successfully delete a list */
 	if (status == E_BOOK_STATUS_SUCCESS)
 		close_dialog (cle);
 
-	gtk_object_unref (GTK_OBJECT (cle)); /* release reference held for callback */
+	g_object_unref (cle); /* release reference held for callback */
 }
 
 static void
@@ -502,7 +506,7 @@ delete_cb (GtkWidget *widget, gpointer data)
 	EContactListEditor *cle = E_CONTACT_LIST_EDITOR (data);
 	ECard *card = cle->card;
 
-	gtk_object_ref(GTK_OBJECT(card));
+	g_object_ref (card);
 
 	if (e_contact_editor_confirm_delete(GTK_WINDOW(cle->app))) {
 
@@ -512,12 +516,12 @@ delete_cb (GtkWidget *widget, gpointer data)
 			gtk_widget_set_sensitive (cle->app, FALSE);
 			cle->in_async_call = TRUE;
 			
-			gtk_object_ref (GTK_OBJECT (cle)); /* hold reference for callback */
-			e_book_remove_card (cle->book, card, GTK_SIGNAL_FUNC(list_deleted_cb), cle);
+			g_object_ref (cle); /* hold reference for callback */
+			e_book_remove_card (cle->book, card, (EBookCallback)list_deleted_cb, cle);
 		}
 	}
 
-	gtk_object_unref(GTK_OBJECT(card));
+	g_object_unref (card);
 }
 
 static
@@ -555,15 +559,16 @@ create_ui (EContactListEditor *ce)
 	bonobo_ui_component_add_verb_list_with_data (
 		ce->uic, verbs, ce);
 
-	bonobo_ui_util_set_ui (ce->uic, EVOLUTION_DATADIR,
-			       "evolution-contact-list-editor.xml",
-			       "evolution-contact-list-editor");
+	bonobo_ui_util_set_ui (ce->uic, PREFIX,
+			       EVOLUTION_UIDIR "/evolution-contact-list-editor.xml",
+			       "evolution-contact-list-editor", NULL);
 
 	e_pixmaps_update (ce->uic, pixmaps);
 }
 
 static void
-contact_list_editor_destroy_notify (void *data)
+contact_list_editor_destroy_notify (gpointer data,
+				    GObject *where_the_object_was)
 {
 	EContactListEditor *ce = E_CONTACT_LIST_EDITOR (data);
 
@@ -576,60 +581,60 @@ e_contact_list_editor_new (EBook *book,
 			   gboolean is_new_list,
 			   gboolean editable)
 {
-	EContactListEditor *ce;
-
-	ce = E_CONTACT_LIST_EDITOR (gtk_type_new (E_CONTACT_LIST_EDITOR_TYPE));
+	EContactListEditor *ce = g_object_new (E_TYPE_CONTACT_LIST_EDITOR, NULL);
 
 	all_contact_list_editors = g_slist_prepend (all_contact_list_editors, ce);
-	gtk_object_weakref (GTK_OBJECT (ce), contact_list_editor_destroy_notify, ce);
+	g_object_weak_ref (G_OBJECT (ce), contact_list_editor_destroy_notify, ce);
 
-	gtk_object_set (GTK_OBJECT (ce),
-			"book", book,
-			"card", list_card,
-			"is_new_list", is_new_list,
-			"editable", editable,
-			NULL);
+	g_object_ref (ce);
+	gtk_object_sink (GTK_OBJECT (ce));
+
+	g_object_set (ce,
+		      "book", book,
+		      "card", list_card,
+		      "is_new_list", is_new_list,
+		      "editable", editable,
+		      NULL);
 
 	return ce;
 }
 
 static void
-e_contact_list_editor_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
+e_contact_list_editor_set_property (GObject *object, guint prop_id,
+				    const GValue *value, GParamSpec *pspec)
 {
 	EContactListEditor *editor;
 
-	editor = E_CONTACT_LIST_EDITOR (o);
+	editor = E_CONTACT_LIST_EDITOR (object);
 	
-	switch (arg_id){
-	case ARG_BOOK:
+	switch (prop_id){
+	case PROP_BOOK:
 		if (editor->book)
-			gtk_object_unref(GTK_OBJECT(editor->book));
-		editor->book = E_BOOK(GTK_VALUE_OBJECT (*arg));
-		gtk_object_ref (GTK_OBJECT (editor->book));
+			g_object_unref (editor->book);
+		editor->book = E_BOOK(g_value_get_object (value));
+		g_object_ref (editor->book);
 		/* XXX more here about editable/etc. */
 		break;
-	case ARG_CARD:
+	case PROP_CARD:
 		if (editor->card)
-			gtk_object_unref(GTK_OBJECT(editor->card));
-		editor->card = e_card_duplicate(E_CARD(GTK_VALUE_OBJECT (*arg)));
+			g_object_unref (editor->card);
+		editor->card = e_card_duplicate(E_CARD(g_value_get_object (value)));
 		fill_in_info(editor);
 		editor->changed = FALSE;
 		command_state_changed (editor);
 		break;
-
-	case ARG_IS_NEW_LIST: {
-		gboolean new_value = GTK_VALUE_BOOL (*arg) ? TRUE : FALSE;
+	case PROP_IS_NEW_LIST: {
+		gboolean new_value = g_value_get_boolean (value);
 		gboolean changed = (editor->is_new_list != new_value);
 
 		editor->is_new_list = new_value;
-
+		
 		if (changed)
 			command_state_changed (editor);
 		break;
 	}
-
-	case ARG_EDITABLE: {
-		gboolean new_value = GTK_VALUE_BOOL (*arg) ? TRUE : FALSE;
+	case PROP_EDITABLE: {
+		gboolean new_value = g_value_get_boolean (value);
 		gboolean changed = (editor->editable != new_value);
 
 		editor->editable = new_value;
@@ -640,36 +645,39 @@ e_contact_list_editor_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 		}
 		break;
 	}
-
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
 	}
 }
 
 static void
-e_contact_list_editor_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_contact_list_editor_get_property (GObject *object, guint prop_id,
+				    GValue *value, GParamSpec *pspec)
 {
 	EContactListEditor *editor;
 
 	editor = E_CONTACT_LIST_EDITOR (object);
 
-	switch (arg_id) {
-	case ARG_BOOK:
-		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT(editor->book);
+	switch (prop_id) {
+	case PROP_BOOK:
+		g_value_set_object (value, editor->book);
 		break;
 
-	case ARG_CARD:
+	case PROP_CARD:
 		extract_info(editor);
-		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT(editor->card);
+		g_value_set_object (value, editor->card);
 		break;
 
-	case ARG_IS_NEW_LIST:
-		GTK_VALUE_BOOL (*arg) = editor->is_new_list ? TRUE : FALSE;
+	case PROP_IS_NEW_LIST:
+		g_value_set_boolean (value, editor->is_new_list);
 		break;
 
-	case ARG_EDITABLE:
-		GTK_VALUE_BOOL (*arg) = editor->editable ? TRUE : FALSE;
+	case PROP_EDITABLE:
+		g_value_set_boolean (value, editor->editable);
 		break;
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
 }
@@ -707,7 +715,7 @@ e_contact_list_editor_create_table(gchar *name,
 				      EVOLUTION_ETSPECDIR "/e-contact-list-editor.etspec",
 				      NULL);
 
-	gtk_object_set_data(GTK_OBJECT(table), "model", model);
+	g_object_set_data(G_OBJECT(table), "model", model);
 
 	return table;
 }
@@ -715,8 +723,8 @@ e_contact_list_editor_create_table(gchar *name,
 static void
 add_email_cb (GtkWidget *w, EContactListEditor *editor)
 {
-	GtkAdjustment *adj = e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (editor->table));
-	char *text = gtk_entry_get_text (GTK_ENTRY(editor->email_entry));
+	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (editor->table));
+	const char *text = gtk_entry_get_text (GTK_ENTRY(editor->email_entry));
 
 	if (text && *text) {
 		e_contact_list_model_add_email (E_CONTACT_LIST_MODEL(editor->model), text);
@@ -781,7 +789,7 @@ close_dialog (EContactListEditor *cle)
 	gtk_widget_destroy (cle->app);
 	cle->app = NULL;
 
-	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[EDITOR_CLOSED]);
+	g_signal_emit (cle, contact_list_editor_signals[EDITOR_CLOSED], 0);
 }
 
 /* Callback used when the editor is destroyed */
@@ -831,14 +839,14 @@ table_drag_drop_cb (ETable *table, int row, int col,
 		    GdkDragContext *context,
 		    gint x, gint y, guint time, EContactListEditor *editor)
 {
-	if (context->targets != NULL) {
-		gtk_drag_get_data (GTK_WIDGET (table), context,
-				   GPOINTER_TO_INT (context->targets->data),
-				   time);
-		return TRUE;
-	}
+	if (context->targets == NULL)
+		return FALSE;
 
-	return FALSE;
+
+	gtk_drag_get_data (GTK_WIDGET (table), context,
+			   GDK_POINTER_TO_ATOM (context->targets->data),
+			   time);
+	return TRUE;
 }
 
 static void
@@ -848,9 +856,10 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 			     GtkSelectionData *selection_data,
 			     guint info, guint time, EContactListEditor *editor)
 {
-	GtkAdjustment *adj = e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (editor->table));
+	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (editor->table));
 	char *target_type;
 	gboolean changed = FALSE;
+	gboolean handled = FALSE;
 
 	target_type = gdk_atom_name (selection_data->target);
 
@@ -858,6 +867,9 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 
 		GList *card_list = e_card_load_cards_from_string_with_default_charset (selection_data->data, "ISO-8859-1");
 		GList *c;
+
+		if (card_list)
+			handled = TRUE;
 
 		for (c = card_list; c; c = c->next) {
 			ECard *ecard = c->data;
@@ -868,23 +880,25 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 				e_contact_list_model_add_card (E_CONTACT_LIST_MODEL (editor->model),
 							       simple);
 
-				gtk_object_unref (GTK_OBJECT (simple));
+				g_object_unref (simple);
 
 				changed = TRUE;
 			}
 		}
-		g_list_foreach (card_list, (GFunc)gtk_object_unref, NULL);
+		g_list_foreach (card_list, (GFunc)g_object_unref, NULL);
 		g_list_free (card_list);
 
 		/* Skip to the end of the list */
 		if (adj->upper - adj->lower > adj->page_size)
 			gtk_adjustment_set_value (adj, adj->upper);
+
+		if (changed) {
+			editor->changed = TRUE;
+			command_state_changed (editor);
+		}
 	}
 
-	if (changed) {
-		editor->changed = TRUE;
-		command_state_changed (editor);
-	}
+	gtk_drag_finish (context, handled, FALSE, time);
 }
 
 static void
@@ -916,10 +930,10 @@ extract_info(EContactListEditor *editor)
 		int i;
 		EList *email_list;
 		EIterator *email_iter;
-		char *string = e_utf8_gtk_editable_get_chars(GTK_EDITABLE (editor->list_name_entry), 0, -1);
+		char *string = gtk_editable_get_chars(GTK_EDITABLE (editor->list_name_entry), 0, -1);
 
 		if (string && *string)
-			gtk_object_set(GTK_OBJECT(card),
+			g_object_set (card,
 				       "file_as", string,
 				       "full_name", string,
 				       NULL);
@@ -927,13 +941,13 @@ extract_info(EContactListEditor *editor)
 		g_free (string);
 
 		
-		gtk_object_set (GTK_OBJECT(card),
+		g_object_set (card,
 				"list", GINT_TO_POINTER (TRUE),
 				"list_show_addresses",
 				GINT_TO_POINTER (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(editor->visible_addrs_checkbutton))),
 				NULL);
 
-		gtk_object_get (GTK_OBJECT(card),
+		g_object_get (card,
 				"email", &email_list,
 				NULL);
 
@@ -943,7 +957,7 @@ extract_info(EContactListEditor *editor)
 		while (e_iterator_is_valid (E_ITERATOR (email_iter))) {
 			e_iterator_delete (E_ITERATOR (email_iter));
 		}
-		gtk_object_unref (GTK_OBJECT (email_iter));
+		g_object_unref (email_iter);
 
 		/* then refill it from the contact list model */
 		for (i = 0; i < e_table_model_row_count (editor->model); i ++) {
@@ -954,6 +968,7 @@ extract_info(EContactListEditor *editor)
 			}
 			g_free (dest_xml);
 		}
+		g_object_unref (email_list);
 	}
 }
 
@@ -967,7 +982,7 @@ fill_in_info(EContactListEditor *editor)
 		EList *email_list;
 		EIterator *email_iter;
 
-		gtk_object_get (GTK_OBJECT (editor->card),
+		g_object_get (editor->card,
 				"file_as", &file_as,
 				"email", &email_list,
 				"list", &is_evolution_list,
@@ -977,9 +992,8 @@ fill_in_info(EContactListEditor *editor)
 		gtk_editable_delete_text (GTK_EDITABLE (editor->list_name_entry), 0, -1);
 		if (file_as) {
 			int position = 0;
-			gchar *u = e_utf8_to_gtk_string (editor->list_name_entry, file_as);
-			gtk_editable_insert_text (GTK_EDITABLE (editor->list_name_entry), u, strlen (u), &position);
-			g_free (u);
+			gtk_editable_insert_text (GTK_EDITABLE (editor->list_name_entry), file_as, strlen (file_as), &position);
+			g_free (file_as);
 		}
 
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(editor->visible_addrs_checkbutton), !show_addresses);
@@ -1001,6 +1015,7 @@ fill_in_info(EContactListEditor *editor)
 
 			e_iterator_next (email_iter);
 		}
+		g_object_unref (email_list);
 	}
 }
 

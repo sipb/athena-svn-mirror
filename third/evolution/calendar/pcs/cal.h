@@ -23,37 +23,36 @@
 #ifndef CAL_H
 #define CAL_H
 
-#include <libgnome/gnome-defs.h>
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include "pcs/evolution-calendar.h"
 #include "pcs/cal-common.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_TYPE            (cal_get_type ())
-#define CAL(obj)            (GTK_CHECK_CAST ((obj), CAL_TYPE, Cal))
-#define CAL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_TYPE, CalClass))
-#define IS_CAL(obj)         (GTK_CHECK_TYPE ((obj), CAL_TYPE))
-#define IS_CAL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_TYPE))
+#define CAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_TYPE, Cal))
+#define CAL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_TYPE, CalClass))
+#define IS_CAL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_TYPE))
+#define IS_CAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_TYPE))
 
 typedef struct _CalPrivate CalPrivate;
 
 struct _Cal {
-	BonoboXObject object;
+	BonoboObject object;
 
 	/* Private data */
 	CalPrivate *priv;
 };
 
 struct _CalClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_Calendar_Cal__epv epv;
 };
 
-GtkType cal_get_type (void);
+GType cal_get_type (void);
 
 Cal *cal_construct (Cal *cal,
 		    CalBackend *backend,
@@ -75,6 +74,6 @@ void  cal_forget_password (Cal *cal, const char *key);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

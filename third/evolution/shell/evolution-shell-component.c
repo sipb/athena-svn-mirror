@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* evolution-shell-component.c
  *
- * Copyright (C) 2000, 2001 Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -27,8 +27,10 @@
 #include "evolution-shell-component.h"
 
 #include "e-shell-corba-icon-utils.h"
+#include "e-shell-marshal.h"
 
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <gtk/gtksignal.h>
@@ -41,9 +43,9 @@
 #define PING_DELAY 10000
 
 
-#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
+#define PARENT_TYPE BONOBO_OBJECT_TYPE
 
-static BonoboXObjectClass *parent_class = NULL;
+static BonoboObjectClass *parent_class = NULL;
 
 struct _UserCreatableItemType {
 	char *id;
@@ -76,6 +78,8 @@ struct _EvolutionShellComponentPrivate {
 	/* This is used for
 	   populateFolderContextMenu/unpopulateFolderContextMenu.  */
 	BonoboUIComponent *uic;
+
+	gulong parent_view_xid;
 
 	int ping_timeout_id;
 
@@ -121,7 +125,7 @@ user_creatable_item_type_new (const char *id,
 	if (icon == NULL)
 		type->icon = NULL;
 	else
-		type->icon = gdk_pixbuf_ref (icon);
+		type->icon = g_object_ref (icon);
 
 	return type;
 }
@@ -135,7 +139,7 @@ user_creatable_item_type_free (UserCreatableItemType *type)
 	g_free (type->folder_type);
 
 	if (type->icon != NULL)
-		gdk_pixbuf_unref (type->icon);
+		g_object_unref (type->icon);
 
 	g_free (type);
 }
@@ -198,6 +202,7 @@ fill_corba_sequence_from_null_terminated_string_array (CORBA_sequence_CORBA_stri
 }
 
 
+#if 0
 /* Owner pinging.  */
 
 static gboolean
@@ -212,7 +217,7 @@ owner_ping_callback (void *data)
 	shell_component = EVOLUTION_SHELL_COMPONENT (data);
 	priv = shell_component->priv;
 
-	owner_objref = bonobo_object_corba_objref (BONOBO_OBJECT (priv->owner_client));
+	owner_objref = evolution_shell_client_corba_objref (priv->owner_client);
 
 	if (owner_objref == CORBA_OBJECT_NIL)
 		return FALSE;
@@ -224,7 +229,7 @@ owner_ping_callback (void *data)
 	CORBA_exception_init (&ev);
 	owner_objref = CORBA_Object_duplicate (owner_objref, &ev);
 
-	alive = bonobo_unknown_ping (owner_objref);
+	alive = bonobo_unknown_ping (owner_objref, NULL);
 
 	CORBA_Object_release (owner_objref, &ev);
 	CORBA_exception_free (&ev);
@@ -238,7 +243,7 @@ owner_ping_callback (void *data)
 	
 	if (priv->owner_client != NULL) {
 		g_print ("\t*** The shell has disappeared\n");
-		gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_DIED]);
+		g_signal_emit (shell_component, signals[OWNER_DIED], 0);
 	}
 
 	priv->ping_timeout_id = -1;
@@ -250,14 +255,18 @@ static void
 setup_owner_pinging (EvolutionShellComponent *shell_component)
 {
 	EvolutionShellComponentPrivate *priv;
+	GNOME_Evolution_Shell shell_corba_objref;
 
 	priv = shell_component->priv;
+
+	shell_corba_objref = evolution_shell_client_corba_objref (priv->owner_client);
 
 	if (priv->ping_timeout_id != -1)
 		g_source_remove (priv->ping_timeout_id);
 
 	priv->ping_timeout_id = g_timeout_add (PING_DELAY, owner_ping_callback, shell_component);
 }
+#endif
 
 
 /* CORBA interface implementation.  */
@@ -395,20 +404,17 @@ impl_setOwner (PortableServer_Servant servant,
 	       const CORBA_char *evolution_homedir,
 	       CORBA_Environment *ev)
 {
-	BonoboObject *bonobo_object;
 	EvolutionShellComponent *shell_component;
 	EvolutionShellComponentPrivate *priv;
-	GNOME_Evolution_Shell shell_duplicate;
 
-	bonobo_object = bonobo_object_from_servant (servant);
-	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object);
+	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object_from_servant (servant));
 	priv = shell_component->priv;
 
 	if (priv->owner_client != NULL) {
 		int owner_is_dead;
 
 		owner_is_dead = CORBA_Object_non_existent
-			(bonobo_object_corba_objref (BONOBO_OBJECT (priv->owner_client)), ev);
+			(evolution_shell_client_corba_objref (priv->owner_client), ev);
 		if (ev->_major != CORBA_NO_EXCEPTION)
 			owner_is_dead = TRUE;
 
@@ -419,19 +425,27 @@ impl_setOwner (PortableServer_Servant servant,
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 					     ex_GNOME_Evolution_ShellComponent_OldOwnerHasDied, NULL);
 
-			gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_DIED]);
+			g_signal_emit (shell_component, signals[OWNER_DIED], 0);
 		}
 
 		return;
 	}
 
-	shell_duplicate = CORBA_Object_duplicate (shell, ev);
-
 	if (ev->_major == CORBA_NO_EXCEPTION) {
-		priv->owner_client = evolution_shell_client_new (shell_duplicate);
-		gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_SET], priv->owner_client, evolution_homedir);
+#if 0
+		BonoboObject *local_object;
+#endif
 
-		setup_owner_pinging (shell_component);
+		priv->owner_client = evolution_shell_client_new (shell);
+		g_signal_emit (shell_component, signals[OWNER_SET], 0, priv->owner_client, evolution_homedir);
+
+#if 0
+		/* Set up pinging of the shell (to realize if it's gone unexpectedly) when in the
+		   non-local case.  */
+		local_object = bonobo_object (ORBit_small_get_servant (shell));
+		if (local_object == NULL)
+			setup_owner_pinging (shell_component);
+#endif
 	}
 }
 
@@ -453,7 +467,7 @@ impl_unsetOwner (PortableServer_Servant servant,
 		return;
 	}
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_UNSET]);
+	g_signal_emit (shell_component, signals[OWNER_UNSET], 0);
 }
 
 static void
@@ -476,12 +490,13 @@ impl_debug (PortableServer_Servant servant,
 	dup2 (fd, STDERR_FILENO);
 	close (fd);
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[DEBUG]);
+	g_signal_emit (shell_component, signals[DEBUG], 0);
 }
 
 static void
 impl_interactive (PortableServer_Servant servant,
 		  CORBA_boolean interactive,
+		  CORBA_unsigned_long new_view_xid,
 		  CORBA_Environment *ev)
 {
 	BonoboObject *bonobo_object;
@@ -490,7 +505,13 @@ impl_interactive (PortableServer_Servant servant,
 	bonobo_object = bonobo_object_from_servant (servant);
 	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object);
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[INTERACTIVE], interactive);
+	if (interactive)
+		shell_component->priv->parent_view_xid = new_view_xid;
+	else
+		shell_component->priv->parent_view_xid = 0L;
+
+	g_signal_emit (shell_component, signals[INTERACTIVE], 0,
+		       interactive, new_view_xid);
 }
 
 static Bonobo_Control
@@ -546,7 +567,7 @@ impl_handleExternalURI (PortableServer_Servant servant,
 
 	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object_from_servant (servant));
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[HANDLE_EXTERNAL_URI], uri);
+	g_signal_emit (shell_component, signals[HANDLE_EXTERNAL_URI], 0, uri);
 }
 
 static void
@@ -658,8 +679,7 @@ impl_populateFolderContextMenu (PortableServer_Servant servant,
 	}
 
 	priv->uic = bonobo_ui_component_new_default ();
-	bonobo_ui_component_set_container (priv->uic, corba_uih);
-	bonobo_object_release_unref (corba_uih, NULL);
+	bonobo_ui_component_set_container (priv->uic, corba_uih, NULL);
 
 	(* priv->populate_folder_context_menu_fn) (shell_component, priv->uic, physical_uri, type, priv->closure);
 }
@@ -710,7 +730,7 @@ impl_userCreateNewItem (PortableServer_Servant servant,
 
 	/* FIXME: Check that the type is good.  */
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[USER_CREATE_NEW_ITEM], id, parent_physical_uri, parent_type);
+	g_signal_emit (shell_component, signals[USER_CREATE_NEW_ITEM], 0, id, parent_physical_uri, parent_type);
 }
 
 static void
@@ -721,7 +741,7 @@ impl_sendReceive (PortableServer_Servant servant,
 	EvolutionShellComponent *shell_component;
 
 	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object_from_servant (servant));
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[SEND_RECEIVE], show_dialog);
+	g_signal_emit (shell_component, signals[SEND_RECEIVE], 0, show_dialog);
 }
 
 static void
@@ -751,16 +771,13 @@ impl_requestQuit (PortableServer_Servant servant,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EvolutionShellComponent *shell_component;
 	EvolutionShellComponentPrivate *priv;
-	CORBA_Environment ev;
-	GSList *sp;
-	GList *p;
 
 	shell_component = EVOLUTION_SHELL_COMPONENT (object);
 
@@ -771,17 +788,30 @@ destroy (GtkObject *object)
 		priv->ping_timeout_id = -1;
 	}
 
-	CORBA_exception_init (&ev);
-
 	if (priv->owner_client != NULL) {
-		BonoboObject *owner_client_object;
-
-		owner_client_object = BONOBO_OBJECT (priv->owner_client);
+		g_object_unref (priv->owner_client);
 		priv->owner_client = NULL;
-		bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
 	}
 
-	CORBA_exception_free (&ev);
+	if (priv->uic != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (priv->uic));
+		priv->uic = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EvolutionShellComponent *shell_component;
+	EvolutionShellComponentPrivate *priv;
+	GSList *sp;
+	GList *p;
+
+	shell_component = EVOLUTION_SHELL_COMPONENT (object);
+
+	priv = shell_component->priv;
 
 	for (p = priv->folder_types; p != NULL; p = p->next) {
 		EvolutionShellComponentFolderType *folder_type;
@@ -803,12 +833,9 @@ destroy (GtkObject *object)
 		user_creatable_item_type_free ((UserCreatableItemType *) sp->data);
 	g_slist_free (priv->user_creatable_item_types);
 
-	if (priv->uic != NULL)
-		bonobo_object_unref (BONOBO_OBJECT (priv->uic));
-
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -818,7 +845,6 @@ static void
 impl_owner_unset (EvolutionShellComponent *shell_component)
 {
 	EvolutionShellComponentPrivate *priv;
-	BonoboObject *owner_client_object;
 
 	priv = shell_component->priv;
 
@@ -827,118 +853,123 @@ impl_owner_unset (EvolutionShellComponent *shell_component)
 		priv->ping_timeout_id = -1;
 	}
 
-	owner_client_object = BONOBO_OBJECT (priv->owner_client);
+	g_object_unref (priv->owner_client);
 	priv->owner_client = NULL;
-	bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
 }
 
 static void
 impl_owner_died (EvolutionShellComponent *shell_component)
 {
 	EvolutionShellComponentPrivate *priv;
-	BonoboObject *owner_client_object;
 
 	priv = shell_component->priv;
 
-	owner_client_object = BONOBO_OBJECT (priv->owner_client);
+	g_object_unref (priv->owner_client);
 	priv->owner_client = NULL;
-	bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
 
 	/* The default implementation for ::owner_died emits ::owner_unset, so
 	   that we make the behavior for old components kind of correct without
 	   even if they don't handle the new ::owner_died signal correctly
 	   yet.  */
 
-	gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_UNSET]);
+	g_signal_emit (shell_component, signals[OWNER_UNSET], 0);
 }
 
 
 /* Initialization.  */
 
 static void
-class_init (EvolutionShellComponentClass *klass)
+evolution_shell_component_class_init (EvolutionShellComponentClass *klass)
 {
 	EvolutionShellComponentClass *shell_component_class;
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	POA_GNOME_Evolution_ShellComponent__epv *epv = &klass->epv;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	signals[OWNER_SET]
-		= gtk_signal_new ("owner_set",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, owner_set),
-				  gtk_marshal_NONE__POINTER_POINTER,
-				  GTK_TYPE_NONE, 2,
-				  GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+		= g_signal_new ("owner_set",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, owner_set),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_POINTER,
+				G_TYPE_NONE, 2,
+				G_TYPE_POINTER, G_TYPE_POINTER);
 
 	signals[OWNER_DIED]
-		= gtk_signal_new ("owner_died",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, owner_died),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		= g_signal_new ("owner_died",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, owner_died),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	signals[OWNER_UNSET]
-		= gtk_signal_new ("owner_unset",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, owner_unset),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		= g_signal_new ("owner_unset",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, owner_unset),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	signals[DEBUG]
-		= gtk_signal_new ("debug",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, debug),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		= g_signal_new ("debug",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, debug),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	signals[INTERACTIVE]
-		= gtk_signal_new ("interactive",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, interactive),
-				  gtk_marshal_NONE__BOOL,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_BOOL);
+		= g_signal_new ("interactive",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, interactive),
+				NULL, NULL,
+				e_shell_marshal_NONE__BOOL_INT,
+				G_TYPE_NONE, 2,
+				G_TYPE_BOOLEAN,
+				G_TYPE_INT);
 
 	signals[HANDLE_EXTERNAL_URI]
-		= gtk_signal_new ("handle_external_uri",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, handle_external_uri),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_STRING);
+		= g_signal_new ("handle_external_uri",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, handle_external_uri),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING,
+				G_TYPE_NONE, 1,
+				G_TYPE_STRING);
 
 	signals[USER_CREATE_NEW_ITEM]
-		= gtk_signal_new ("user_create_new_item",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, user_create_new_item),
-				  gtk_marshal_NONE__POINTER_POINTER_POINTER,
-				  GTK_TYPE_NONE, 3,
-				  GTK_TYPE_STRING,
-				  GTK_TYPE_STRING,
-				  GTK_TYPE_STRING);
+		= g_signal_new ("user_create_new_item",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, user_create_new_item),
+				NULL, NULL,
+				e_shell_marshal_VOID__STRING_STRING_STRING,
+				G_TYPE_NONE, 3,
+				G_TYPE_STRING,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
 
 	signals[SEND_RECEIVE]
-		= gtk_signal_new ("send_receive",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, send_receive),
-				  gtk_marshal_NONE__BOOL,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_BOOL);
+		= g_signal_new ("send_receive",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionShellComponentClass, send_receive),
+				NULL, NULL,
+				e_shell_marshal_NONE__BOOL,
+				G_TYPE_NONE, 1,
+				G_TYPE_BOOLEAN);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
 	epv->_get_supportedTypes         = impl__get_supportedTypes;
 	epv->_get_externalUriSchemas     = impl__get_externalUriSchemas;
@@ -964,7 +995,7 @@ class_init (EvolutionShellComponentClass *klass)
 }
 
 static void
-init (EvolutionShellComponent *shell_component)
+evolution_shell_component_init (EvolutionShellComponent *shell_component)
 {
 	EvolutionShellComponentPrivate *priv;
 
@@ -1076,7 +1107,7 @@ evolution_shell_component_new (const EvolutionShellComponentFolderType folder_ty
 
 	g_return_val_if_fail (folder_types != NULL, NULL);
 
-	new = gtk_type_new (evolution_shell_component_get_type ());
+	new = g_object_new (evolution_shell_component_get_type (), NULL);
 
 	evolution_shell_component_construct (new,
 					     folder_types,
@@ -1101,6 +1132,14 @@ evolution_shell_component_get_owner  (EvolutionShellComponent *shell_component)
 	g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT (shell_component), NULL);
 
 	return shell_component->priv->owner_client;
+}
+
+gulong evolution_shell_component_get_parent_view_xid(EvolutionShellComponent                            *shell_component)
+{
+	g_return_val_if_fail (shell_component != NULL, 0);
+	g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT (shell_component), 0);
+
+	return shell_component->priv->parent_view_xid;
 }
 
 
@@ -1182,7 +1221,7 @@ evolution_shell_component_result_to_string (EvolutionShellComponentResult result
 }
 
 
-E_MAKE_X_TYPE (evolution_shell_component, "EvolutionShellComponent", EvolutionShellComponent,
-	       class_init, init, PARENT_TYPE,
-	       POA_GNOME_Evolution_ShellComponent__init,
-	       GTK_STRUCT_OFFSET (EvolutionShellComponentClass, epv))
+BONOBO_TYPE_FUNC_FULL (EvolutionShellComponent,
+		       GNOME_Evolution_ShellComponent,
+		       PARENT_TYPE,
+		       evolution_shell_component)

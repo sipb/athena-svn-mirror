@@ -23,10 +23,10 @@
 #ifndef CAL_BACKEND_UTIL_H
 #define CAL_BACKEND_UTIL_H
 
-#include <bonobo-conf/bonobo-config-database.h>
+#include <e-util/e-config-listener.h>
 #include <pcs/cal-backend.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /*
  * CORBA utility functions
@@ -39,13 +39,11 @@ void cal_backend_util_fill_alarm_instances_seq (
  * Functions for accessing mail configuration
  */
 
-void     cal_backend_mail_account_get (Bonobo_ConfigDatabase db, gint def,
-				       char **address, char **name);
-gboolean cal_backend_mail_account_get_default (Bonobo_ConfigDatabase db,
+gboolean cal_backend_mail_account_get_default (EConfigListener *db,
 					       char **address, char **name);
-gboolean cal_backend_mail_account_is_valid (Bonobo_ConfigDatabase db,
+gboolean cal_backend_mail_account_is_valid (EConfigListener *db,
 					    char *user, char **name);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

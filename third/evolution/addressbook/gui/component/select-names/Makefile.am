@@ -1,29 +1,28 @@
 # CORBA stuff
 
-idldir = $(datadir)/idl
-
 idl_DATA = \
 	Evolution-Addressbook-SelectNames.idl
 
-IDL_GENERATED = \
-	Evolution-Addressbook-SelectNames.h		\
+IDL_GENERATED_H = 					\
+	Evolution-Addressbook-SelectNames.h
+IDL_GENERATED_C = 					\
 	Evolution-Addressbook-SelectNames-common.c	\
 	Evolution-Addressbook-SelectNames-skels.c	\
 	Evolution-Addressbook-SelectNames-stubs.c
+IDL_GENERATED = $(IDL_GENERATED_C) $(IDL_GENERATED_H)
 
-Evolution-Addressbook-SelectNames-impl.o: Evolution-Addressbook-SelectNames.h
-
-$(IDL_GENERATED): $(idl_DATA)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
+$(IDL_GENERATED_H): $(idl_DATA)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) \
 		$(srcdir)/Evolution-Addressbook-SelectNames.idl
+$(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
-oafdir = $(datadir)/oaf
+server_in_files = GNOME_Evolution_Addressbook_SelectNames.server.in.in
 
-oaf_in_files = GNOME_Evolution_Addressbook_SelectNames.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in.in=.server)
+%.server.in: %.server.in.in
+	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
 
-@XML_I18N_MERGE_OAF_RULE@
-
+@INTLTOOL_SERVER_RULE@
 
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"evolution-addressbook\"	\
@@ -38,14 +37,19 @@ INCLUDES =						\
 	-I$(top_srcdir)/addressbook/contact-editor	\
 	-I$(top_srcdir)/addressbook/backend		\
 	-I$(top_builddir)/addressbook/backend		\
+	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"	\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
-	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"		\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
-	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"	\
+	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"	\
+	-DPREFIX=\""$(prefix)"\"	\
+	-DG_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DLIBGNOME_DISABLE_DEPRECATED			\
+	-DLIBGNOMEUI_DISABLE_DEPRECATED			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-lib_LTLIBRARIES = libeselectnames.la
+privlib_LTLIBRARIES = libeselectnames.la
 
 libeselectnames_la_SOURCES = 			\
 	$(IDL_GENERATED)			\
@@ -53,10 +57,9 @@ libeselectnames_la_SOURCES = 			\
 	e-select-names-bonobo.h			\
 	e-select-names-completion.c		\
 	e-select-names-completion.h		\
-	e-select-names-factory.c		\
-	e-select-names-factory.h		\
 	e-select-names-manager.c		\
 	e-select-names-manager.h		\
+	e-select-names-marshal.c		\
 	e-select-names-model.c			\
 	e-select-names-model.h			\
 	e-select-names-popup.c			\
@@ -70,20 +73,42 @@ libeselectnames_la_SOURCES = 			\
 	e-simple-card-bonobo.c			\
 	e-simple-card-bonobo.h
 
-gladedir   = $(datadir)/evolution/glade
-glade_DATA = select-names.glade
+libeselectnames_la_LIBADD =					\
+	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
+	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-etspecdir   = $(datadir)/evolution/etspec
-etspec_DATA = e-select-names.etspec
+# We'll need these again when we split out the select names control
+# into its own shlib factory, but for now they're redundant.
+#
+#	e-select-names-factory.c
+#	e-select-names-factory.h
+
+# GLib marshalling cruft
+
+e-select-names-marshal.h: e-select-names-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_select_names_marshal e-select-names-marshal.list --header > e-select-names-marshal.tmp \
+	&& mv e-select-names-marshal.tmp e-select-names-marshal.h ) \
+	|| ( rm -f e-select-names-marshal.tmp && exit 1 )
+
+e-select-names-marshal.c: e-select-names-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_select_names_marshal e-select-names-marshal.list --body > e-select-names-marshal.tmp \
+	&& mv e-select-names-marshal.tmp e-select-names-marshal.c ) \
+	|| ( rm -f e-select-names-marshal.tmp && exit 1 )
+
+MARSHAL_GENERATED = e-select-names-marshal.c e-select-names-marshal.h
+
+glade_DATA = select-names.glade
+etspec_DATA = e-select-names.etspec e-select-names-section.etspec
 
 EXTRA_DIST = 			\
 	$(glade_DATA)		\
-	$(oaf_in_files)		\
-	$(oaf_DATA)		\
+	$(server_in_files)	\
+	$(server_DATA)		\
 	$(idl_DATA)		\
-	$(etspec_DATA)
+	$(etspec_DATA)		\
+	e-select-names-marshal.list
 
-BUILT_SOURCES = $(IDL_GENERATED)
+BUILT_SOURCES = $(IDL_GENERATED) $(MARSHAL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
 
 dist-hook:

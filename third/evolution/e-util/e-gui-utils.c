@@ -2,65 +2,78 @@
 /*
  * GUI utility functions
  *
- * Author:
+ * Authors:
  *   Miguel de Icaza (miguel@ximian.com)
+ *   Chris Toshok (toshok@ximian.com)
  *
- * (C) 1999 Miguel de Icaza
- * (C) 2000 Ximian, Inc.
+ * Copyright (C) 1999 Miguel de Icaza
+ * Copyright (C) 2000-2003 Ximian, Inc.
  */
 #include <config.h>
 
 #include "e-gui-utils.h"
 
 #include <glib.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkalignment.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhbox.h>
 
 GtkWidget *e_create_image_widget(gchar *name,
 				 gchar *string1, gchar *string2,
 				 gint int1, gint int2)
 {
 	char *filename;
-	GdkPixbuf *pixbuf;
-	double width, height;
-	GtkWidget *canvas, *alignment;
+	GtkWidget *alignment = NULL;
 	if (string1) {
+		GtkWidget *w;
+
 		if (*string1 == '/')
 			filename = g_strdup(string1);
 		else
-			filename = g_concat_dir_and_file(EVOLUTION_IMAGES, string1);
-		pixbuf = gdk_pixbuf_new_from_file(filename);
-		width = gdk_pixbuf_get_width(pixbuf);
-		height = gdk_pixbuf_get_height(pixbuf);
+			filename = g_build_filename (EVOLUTION_IMAGES, string1, NULL);
 
-		canvas = gnome_canvas_new_aa();
-		GTK_OBJECT_UNSET_FLAGS(GTK_WIDGET(canvas), GTK_CAN_FOCUS);
-		gnome_canvas_item_new(gnome_canvas_root(GNOME_CANVAS(canvas)),
-				      gnome_canvas_pixbuf_get_type(),
-				      "pixbuf", pixbuf,
-				      NULL);
+		w = gtk_image_new_from_file (filename);
 
 		alignment = gtk_widget_new(gtk_alignment_get_type(),
-					   "child", canvas,
+					   "child", w,
 					   "xalign", (double) 0,
 					   "yalign", (double) 0,
 					   "xscale", (double) 0,
 					   "yscale", (double) 0,
 					   NULL);
-	
-		gtk_widget_set_usize(canvas, width, height);
 
-		gdk_pixbuf_unref(pixbuf);
+		gtk_widget_show_all (alignment);
+		g_free (filename);
+	}
 
-		gtk_widget_show(canvas);
-		gtk_widget_show(alignment);
-		g_free(filename);
-
-		return alignment;
-	} else
-		return NULL;
+	return alignment;
 }
+
+GtkWidget *
+e_button_new_with_stock_icon (const char *label_str, const char *stockid)
+{
+	GtkWidget *button, *hbox, *label, *align, *image;
+
+	button = gtk_button_new ();
+
+	label = gtk_label_new_with_mnemonic (label_str);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), button);
+
+	image = gtk_image_new_from_stock (stockid, GTK_ICON_SIZE_BUTTON);
+	hbox = gtk_hbox_new (FALSE, 2);
+
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+      
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+      
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+	gtk_widget_show_all (align);
+
+	return button;
+}
+

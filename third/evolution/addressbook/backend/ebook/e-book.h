@@ -11,26 +11,34 @@
 #ifndef __E_BOOK_H__
 #define __E_BOOK_H__
 
-#include <libgnome/gnome-defs.h>
+#include <glib.h>
+#include <glib-object.h>
 
 #include <ebook/e-card.h>
 #include <ebook/e-card-cursor.h>
 #include <ebook/e-book-view.h>
 #include <ebook/e-book-types.h>
 
-BEGIN_GNOME_DECLS
+#define E_TYPE_BOOK        (e_book_get_type ())
+#define E_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK, EBook))
+#define E_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_BOOK, EBookClass))
+#define E_IS_BOOK(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK))
+#define E_IS_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK))
+#define E_BOOK_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK, EBookClass))
+
+G_BEGIN_DECLS
 
 typedef struct _EBook        EBook;
 typedef struct _EBookClass   EBookClass;
 typedef struct _EBookPrivate EBookPrivate;
 
 struct _EBook {
-	GtkObject     parent;
+	GObject       parent;
 	EBookPrivate *priv;
 };
 
 struct _EBookClass {
-	GtkObjectClass parent;
+	GObjectClass parent;
 
 	/*
 	 * Signals.
@@ -52,11 +60,12 @@ typedef void (*EBookCardCallback)     (EBook *book, EBookStatus status, ECard *c
 typedef void (*EBookCursorCallback)   (EBook *book, EBookStatus status, ECardCursor *cursor, gpointer closure);
 typedef void (*EBookBookViewCallback) (EBook *book, EBookStatus status, EBookView *book_view, gpointer closure);
 typedef void (*EBookFieldsCallback)   (EBook *book, EBookStatus status, EList *fields, gpointer closure);
+typedef void (*EBookAuthMethodsCallback) (EBook *book, EBookStatus status, EList *auth_methods, gpointer closure);
 
 /* Creating a new addressbook. */
 EBook    *e_book_new                      (void);
 
-gboolean  e_book_load_uri                 (EBook                 *book,
+void      e_book_load_uri                 (EBook                 *book,
 					   const char            *uri,
 					   EBookCallback          open_response,
 					   gpointer               closure);
@@ -65,11 +74,15 @@ void      e_book_unload_uri               (EBook                 *book);
 const char *e_book_get_uri                (EBook                 *book);
 
 char     *e_book_get_static_capabilities  (EBook                 *book);
+gboolean  e_book_check_static_capability  (EBook                 *book, const char *cap);
 
 guint     e_book_get_supported_fields     (EBook                 *book,
 					   EBookFieldsCallback    cb,
 					   gpointer               closure);
 
+guint     e_book_get_supported_auth_methods (EBook                    *book,
+					     EBookAuthMethodsCallback  cb,
+					     gpointer                  closure);
 
 /* User authentication. */
 void      e_book_authenticate_user        (EBook                 *book,
@@ -92,6 +105,11 @@ gboolean  e_book_remove_card              (EBook                 *book,
 					   gpointer               closure);
 gboolean  e_book_remove_card_by_id        (EBook                 *book,
 					   const char            *id,
+					   EBookCallback          cb,
+					   gpointer               closure);
+
+gboolean e_book_remove_cards              (EBook                 *book,
+					   GList                 *id_list,
 					   EBookCallback          cb,
 					   gpointer               closure);
 
@@ -145,14 +163,8 @@ void      e_book_cancel                   (EBook                 *book,
 /* Getting the name of the repository. */
 char     *e_book_get_name                 (EBook                 *book);
 
-GtkType   e_book_get_type                 (void);
+GType     e_book_get_type                 (void);
 
-#define E_BOOK_TYPE        (e_book_get_type ())
-#define E_BOOK(o)          (GTK_CHECK_CAST ((o), E_BOOK_TYPE, EBook))
-#define E_BOOK_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), E_BOOK_TYPE, EBookClass))
-#define E_IS_BOOK(o)       (GTK_CHECK_TYPE ((o), E_BOOK_TYPE))
-#define E_IS_BOOK_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_BOOK_TYPE))
-
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* ! __E_BOOK_H__ */

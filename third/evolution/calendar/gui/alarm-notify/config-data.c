@@ -49,7 +49,7 @@ locale_supports_12_hour_format (void)
 static void
 do_cleanup (void)
 {
-	gtk_object_unref (GTK_OBJECT (config));
+	g_object_unref (G_OBJECT (config));
 	config = NULL;
 	inited = FALSE;
 }
@@ -88,7 +88,7 @@ config_data_get_timezone (void)
 	ensure_inited ();
 
 	location = e_config_listener_get_string_with_default (config, 
-							      "/Calendar/Display/Timezone",
+							      "/apps/evolution/calendar/display/timezone",
 							      "UTC", NULL);
 	if (location && location[0]) {
 		local_timezone = icaltimezone_get_builtin_timezone (location);
@@ -109,7 +109,7 @@ config_data_get_24_hour_format (void)
 	if (locale_supports_12_hour_format ()) {
 		return e_config_listener_get_boolean_with_default (
 			config,
-			"/Calendar/Display/Use24HourFormat", FALSE, NULL);
+			"/apps/evolution/calendar/display/use_24hour_format", FALSE, NULL);
 	}
 
 	return TRUE;

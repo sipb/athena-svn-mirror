@@ -24,7 +24,7 @@
 #define EVOLUTION_IMPORTER_H
 
 #include <glib.h>
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include <importer/GNOME_Evolution_Importer.h>
 
 #ifdef __cplusplus
@@ -33,10 +33,10 @@ extern "C" {
 #endif /* cplusplus */
 
 #define EVOLUTION_TYPE_IMPORTER            (evolution_importer_get_type ())
-#define EVOLUTION_IMPORTER(obj)            (GTK_CHECK_CAST ((obj), EVOLUTION_TYPE_IMPORTER, EvolutionImporter))
-#define EVOLUTION_IMPORTER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_IMPORTER, EvolutionImporterClass))
-#define EVOLUTION_IS_IMPORTER(obj)         (GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_IMPORTER))
-#define EVOLUTION_IS_IMPORTER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_IMPORTER))
+#define EVOLUTION_IMPORTER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EVOLUTION_TYPE_IMPORTER, EvolutionImporter))
+#define EVOLUTION_IMPORTER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_IMPORTER, EvolutionImporterClass))
+#define EVOLUTION_IS_IMPORTER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EVOLUTION_TYPE_IMPORTER))
+#define EVOLUTION_IS_IMPORTER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_IMPORTER))
 
 typedef struct _EvolutionImporter        EvolutionImporter;
 typedef struct _EvolutionImporterPrivate EvolutionImporterPrivate;
@@ -47,7 +47,8 @@ typedef gboolean (* EvolutionImporterSupportFormatFn) (EvolutionImporter *import
 						       void *closure);
 typedef gboolean (* EvolutionImporterLoadFileFn) (EvolutionImporter *importer,
 						  const char *filename,
-						  const char *folderpath,
+						  const char *physical_uri,
+						  const char *folder_type,
 						  void *closure);
 typedef void (* EvolutionImporterProcessItemFn) (EvolutionImporter *importer,
 						 CORBA_Object listener,
@@ -69,18 +70,18 @@ typedef enum {
 } EvolutionImporterResult;
 
 struct _EvolutionImporter {
-	BonoboXObject parent;
+	BonoboObject parent;
 	
 	EvolutionImporterPrivate *priv;
 };
 
 struct _EvolutionImporterClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 	
 	POA_GNOME_Evolution_Importer__epv epv;
 };
 
-GtkType evolution_importer_get_type (void);
+GType evolution_importer_get_type (void);
 
 EvolutionImporter *evolution_importer_new (EvolutionImporterSupportFormatFn support_format_fn,
 					   EvolutionImporterLoadFileFn load_file_fn,

@@ -39,8 +39,6 @@
 #define MAXHOSTNAMELEN 1024
 #endif
 
-#include <iconv.h>
-
 #include <time.h>
 
 #include <ctype.h>
@@ -48,9 +46,8 @@
 #include <regex.h>
 
 #include <glib.h>
-#include <gal/unicode/gunicode.h>
 #include <gal/util/e-iconv.h>
-#include "e-time-utils.h"
+#include <e-util/e-time-utils.h>
 
 #include "camel-mime-utils.h"
 #include "camel-charset-map.h"
@@ -1014,7 +1011,7 @@ rfc2047_decode_word(const char *in, size_t len)
 		d(printf("found ?, encoding is '%c'\n", inptr[0]));
 		inptr++;
 		tmplen = inend-inptr-2;
-		decword = alloca(tmplen); /* this will always be more-than-enough room */
+		decword = g_alloca (tmplen); /* this will always be more-than-enough room */
 		switch(toupper(inptr[0])) {
 		case 'Q':
 			inlen = quoted_decode(inptr+2, tmplen, decword);
@@ -1035,7 +1032,7 @@ rfc2047_decode_word(const char *in, size_t len)
 		if (inlen > 0) {
 			/* yuck, all this snot is to setup iconv! */
 			tmplen = inptr - in - 3;
-			encname = alloca (tmplen + 1);
+			encname = g_alloca (tmplen + 1);
 			memcpy (encname, in + 2, tmplen);
 			encname[tmplen] = '\0';
 			
@@ -1056,7 +1053,7 @@ rfc2047_decode_word(const char *in, size_t len)
 			inbuf = decword;
 			
 			outlen = inlen * 6 + 16;
-			outbase = alloca (outlen);
+			outbase = g_alloca (outlen);
 			outbuf = outbase;
 			
 		retry:
@@ -1071,7 +1068,7 @@ rfc2047_decode_word(const char *in, size_t len)
 				e_iconv_close (ic);
 			} else {
 				w(g_warning ("Cannot decode charset, header display may be corrupt: %s: %s",
-					     charset, g_strerror (errno)));
+					     charset, strerror (errno)));
 				
 				if (!retried) {
 					charset = e_iconv_locale_charset ();
@@ -1091,18 +1088,6 @@ rfc2047_decode_word(const char *in, size_t len)
 	d(printf("decoded '%s'\n", decoded));
 	
 	return decoded;
-}
-
-/* grrr, glib should have this ! */
-static GString *
-g_string_append_len(GString *st, const char *s, size_t l)
-{
-	char *tmp;
-
-	tmp = alloca(l+1);
-	tmp[l]=0;
-	memcpy(tmp, s, l);
-	return g_string_append(st, tmp);
 }
 
 /* ok, a lot of mailers are BROKEN, and send iso-latin1 encoded
@@ -1141,17 +1126,17 @@ append_8bit (GString *out, const char *inbuf, size_t inlen, const char *charset)
 	outlen = inlen * 6 + 16;
 	outbuf = outbase = g_malloc(outlen);
 	
-	if (e_iconv(ic, &inbuf, &inlen, &outbuf, &outlen) == (size_t) -1) {
-		w(g_warning("Conversion to '%s' failed: %s", charset, strerror(errno)));
+	if (e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen) == (size_t) -1) {
+		w(g_warning("Conversion to '%s' failed: %s", charset, strerror (errno)));
 		g_free(outbase);
-		e_iconv_close(ic);
+		e_iconv_close (ic);
 		return FALSE;
 	}
 
 	*outbuf = 0;
 	g_string_append(out, outbase);
 	g_free(outbase);
-	e_iconv_close(ic);
+	e_iconv_close (ic);
 
 	return TRUE;
 	
@@ -1164,10 +1149,10 @@ header_decode_text (const char *in, size_t inlen, const char *default_charset)
 	GString *out;
 	const char *inptr, *inend, *start, *chunk, *locale_charset;
 	char *dword = NULL;
-
-	locale_charset = e_iconv_locale_charset();
-
-	out = g_string_new("");
+	
+	locale_charset = e_iconv_locale_charset ();
+	
+	out = g_string_new ("");
 	inptr = in;
 	inend = inptr + inlen;
 	chunk = NULL;
@@ -1238,11 +1223,11 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 
 	/* convert utf8->encoding */
 	bufflen = len * 6 + 16;
-	buffer = alloca (bufflen);
+	buffer = g_alloca (bufflen);
 	inlen = len;
 	inptr = in;
 	
-	ascii = alloca (bufflen);
+	ascii = g_alloca (bufflen);
 	
 	if (strcasecmp (type, "UTF-8") != 0)
 		ic = e_iconv_open (type, "UTF-8");
@@ -1294,12 +1279,12 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 			convlen = MIN(inlen, CAMEL_FOLD_PREENCODED);
 			p = inptr;
 			if (e_iconv (ic, &inptr, &convlen, &out, &outlen) == (size_t) -1) {
-				w(g_warning("Conversion problem: conversion truncated: %s", strerror(errno)));
+				w(g_warning("Conversion problem: conversion truncated: %s", strerror (errno)));
 				/* blah, we include it anyway, better than infinite loop ... */
 				inptr = p + convlen;
 			} else {
 				/* make sure we flush out any shift state */
-				e_iconv(ic, NULL, 0, &out, &outlen);
+				e_iconv (ic, NULL, 0, &out, &outlen);
 			}
 			inlen -= (inptr - p);
 		}
@@ -1324,7 +1309,7 @@ rfc2047_encode_word(GString *outstring, const char *in, size_t len, const char *
 	}
 
 	if (ic != (iconv_t) -1)
-		e_iconv_close(ic);
+		e_iconv_close (ic);
 }
 
 
@@ -1576,6 +1561,8 @@ header_encode_phrase_get_words (const unsigned char *in)
 	return words;
 }
 
+#define MERGED_WORD_LT_FOLDLEN(wordlen, type) ((type) == WORD_2047 ? (wordlen) < CAMEL_FOLD_PREENCODED : (wordlen) < (CAMEL_FOLD_SIZE - 8))
+
 static gboolean
 header_encode_phrase_merge_words (GList **wordsp)
 {
@@ -1593,13 +1580,15 @@ header_encode_phrase_merge_words (GList **wordsp)
 			next = nextl->data;
 			/* merge nodes of the same type AND we are not creating too long a string */
 			if (word_types_compatable (word->type, next->type)) {
-				if (next->end - word->start < CAMEL_FOLD_PREENCODED) {
+				if (MERGED_WORD_LT_FOLDLEN (next->end - word->start, MAX (word->type, next->type))) {
 					/* the resulting word type is the MAX of the 2 types */
 					word->type = MAX(word->type, next->type);
 					
 					word->end = next->end;
 					words = g_list_remove_link (words, nextl);
+					g_list_free_1 (nextl);
 					g_free (next);
+					
 					nextl = g_list_next (wordl);
 					
 					merged = TRUE;
@@ -1788,18 +1777,36 @@ header_decode_atom(const char **in)
 }
 
 static char *
-header_decode_word(const char **in)
+header_decode_word(const char **in, const char *charset)
 {
-	const char *inptr = *in;
+	char *out;
 
-	header_decode_lwsp(&inptr);
-	if (*inptr == '"') {
-		*in = inptr;
-		return header_decode_quoted_string(in);
-	} else {
-		*in = inptr;
-		return header_decode_atom(in);
+	header_decode_lwsp(in);
+	if (**in == '"')
+		out = header_decode_quoted_string(in);
+	else
+		out = header_decode_atom(in);
+
+	/* FIXME: temporary workaround for non-ascii-data problem, see bug #42710 */
+	if (out) {
+		char *p;
+
+		for (p=out;*p;p++) {
+			if ((*p) & 0x80) {
+				GString *newstr = g_string_new("");
+
+				if (charset == NULL || !append_8bit(newstr, out, strlen(out), charset))
+					append_latin1(newstr, out, strlen(out));
+
+				g_free(out);
+				out = newstr->str;
+				g_string_free(newstr, FALSE);
+				break;
+			}
+		}
 	}
+
+	return out;
 }
 
 static char *
@@ -2293,7 +2300,7 @@ header_decode_addrspec(const char **in)
 	header_decode_lwsp(&inptr);
 
 	/* addr-spec */
-	word = header_decode_word(&inptr);
+	word = header_decode_word(&inptr, NULL);
 	if (word) {
 		addr = g_string_append(addr, word);
 		header_decode_lwsp(&inptr);
@@ -2301,7 +2308,7 @@ header_decode_addrspec(const char **in)
 		while (*inptr == '.' && word) {
 			inptr++;
 			addr = g_string_append_c(addr, '.');
-			word = header_decode_word(&inptr);
+			word = header_decode_word(&inptr, NULL);
 			if (word) {
 				addr = g_string_append(addr, word);
 				header_decode_lwsp(&inptr);
@@ -2349,7 +2356,7 @@ header_decode_addrspec(const char **in)
    */
 
 static struct _header_address *
-header_decode_mailbox(const char **in)
+header_decode_mailbox(const char **in, const char *charset)
 {
 	const char *inptr = *in;
 	char *pre;
@@ -2362,7 +2369,7 @@ header_decode_mailbox(const char **in)
 	addr = g_string_new("");
 
 	/* for each address */
-	pre = header_decode_word(&inptr);
+	pre = header_decode_word(&inptr, charset);
 	header_decode_lwsp(&inptr);
 	if (!(*inptr == '.' || *inptr == '@' || *inptr==',' || *inptr=='\0')) {
 		/* ',' and '\0' required incase it is a simple address, no @ domain part (buggy writer) */
@@ -2371,12 +2378,12 @@ header_decode_mailbox(const char **in)
 			char *text, *last;
 
 			/* perform internationalised decoding, and append */
-			text = header_decode_string (pre, NULL);
+			text = header_decode_string (pre, charset);
 			g_string_append (name, text);
 			last = pre;
 			g_free(text);
 
-			pre = header_decode_word(&inptr);
+			pre = header_decode_word(&inptr, charset);
 			if (pre) {
 				size_t l = strlen (last);
 				size_t p = strlen (pre);
@@ -2394,7 +2401,7 @@ header_decode_mailbox(const char **in)
 				while (!pre && *inptr && *inptr != '<') {
 					w(g_warning("Working around stupid mailer bug #5: unescaped characters in names"));
 					name = g_string_append_c(name, *inptr++);
-					pre = header_decode_word(&inptr);
+					pre = header_decode_word(&inptr, charset);
 				}
 			}
 			g_free(last);
@@ -2421,7 +2428,7 @@ header_decode_mailbox(const char **in)
 					w(g_warning("broken route-address, missing ':': %s", *in));
 				}
 			}
-			pre = header_decode_word(&inptr);
+			pre = header_decode_word(&inptr, charset);
 			header_decode_lwsp(&inptr);
 		} else {
 			w(g_warning("broken address? %s", *in));
@@ -2438,7 +2445,7 @@ header_decode_mailbox(const char **in)
 	while (*inptr == '.' && pre) {
 		inptr++;
 		g_free(pre);
-		pre = header_decode_word(&inptr);
+		pre = header_decode_word(&inptr, charset);
 		addr = g_string_append_c(addr, '.');
 		if (pre)
 			addr = g_string_append(addr, pre);
@@ -2473,7 +2480,7 @@ header_decode_mailbox(const char **in)
 				g_string_append_c(addr, *inptr);
 
 			/* check for address is encoded word ... */
-			text = header_decode_string(addr->str, NULL);
+			text = header_decode_string(addr->str, charset);
 			if (name == NULL) {
 				name = addr;
 				addr = g_string_new("");
@@ -2529,7 +2536,7 @@ header_decode_mailbox(const char **in)
 			if (comend > comstart) {
 				d(printf("  looking at subset '%.*s'\n", comend-comstart, comstart));
 				tmp = g_strndup (comstart, comend-comstart);
-				text = header_decode_string (tmp, NULL);
+				text = header_decode_string (tmp, charset);
 				name = g_string_new (text);
 				g_free (tmp);
 				g_free (text);
@@ -2552,7 +2559,7 @@ header_decode_mailbox(const char **in)
 }
 
 static struct _header_address *
-header_decode_address(const char **in)
+header_decode_address(const char **in, const char *charset)
 {
 	const char *inptr = *in;
 	char *pre;
@@ -2561,7 +2568,7 @@ header_decode_address(const char **in)
 
 	/* pre-scan, trying to work out format, discard results */
 	header_decode_lwsp(&inptr);
-	while ( (pre = header_decode_word(&inptr)) ) {
+	while ( (pre = header_decode_word(&inptr, charset)) ) {
 		group = g_string_append(group, pre);
 		group = g_string_append(group, " ");
 		g_free(pre);
@@ -2577,7 +2584,7 @@ header_decode_address(const char **in)
 		if (*inptr != ';') {
 			int go = TRUE;
 			do {
-				member = header_decode_mailbox(&inptr);
+				member = header_decode_mailbox(&inptr, charset);
 				if (member)
 					header_address_add_member(addr, member);
 				header_decode_lwsp(&inptr);
@@ -2596,7 +2603,7 @@ header_decode_address(const char **in)
 		}
 		*in = inptr;
 	} else {
-		addr = header_decode_mailbox(in);
+		addr = header_decode_mailbox(in, charset);
 	}
 
 	g_string_free(group, TRUE);
@@ -2676,7 +2683,7 @@ header_contentid_decode (const char *in)
 	}
 	
 	/* Eudora has been known to use <.@> as a content-id */
-	if (!(buf = header_decode_word (&inptr)) && !strchr (".@", *inptr))
+	if (!(buf = header_decode_word (&inptr, NULL)) && !strchr (".@", *inptr))
 		return NULL;
 	
 	addr = g_string_new ("");
@@ -2691,10 +2698,10 @@ header_contentid_decode (const char *in)
 		if (!at) {
 			if (*inptr == '.') {
 				g_string_append_c (addr, *inptr++);
-				buf = header_decode_word (&inptr);
+				buf = header_decode_word (&inptr, NULL);
 			} else if (*inptr == '@') {
 				g_string_append_c (addr, *inptr++);
-				buf = header_decode_word (&inptr);
+				buf = header_decode_word (&inptr, NULL);
 				at = TRUE;
 			}
 		} else if (strchr (".[]", *inptr)) {
@@ -2767,7 +2774,7 @@ header_references_decode_single (const char **in, struct _header_references **he
 				break;
 			}
 		} else {
-			word = header_decode_word (&inptr);
+			word = header_decode_word (&inptr, NULL);
 			if (word)
 				g_free (word);
 			else if (*inptr != '\0')
@@ -2822,16 +2829,16 @@ header_references_dup(const struct _header_references *list)
 }
 
 struct _header_address *
-header_mailbox_decode(const char *in)
+header_mailbox_decode(const char *in, const char *charset)
 {
 	if (in == NULL)
 		return NULL;
 
-	return header_decode_mailbox(&in);
+	return header_decode_mailbox(&in, charset);
 }
 
 struct _header_address *
-header_address_decode(const char *in)
+header_address_decode(const char *in, const char *charset)
 {
 	const char *inptr = in, *last;
 	struct _header_address *list = NULL, *addr;
@@ -2847,7 +2854,7 @@ header_address_decode(const char *in)
 
 	do {
 		last = inptr;
-		addr = header_decode_address(&inptr);
+		addr = header_decode_address(&inptr, charset);
 		if (addr)
 			header_address_list_append(&list, addr);
 		header_decode_lwsp(&inptr);
@@ -3066,7 +3073,7 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 		inbuf = in;
 		
 		if (e_iconv (cd, &inbuf, &inleft, &outptr, &outleft) == (size_t) -1) {
-			w(g_warning ("Conversion problem: conversion truncated: %s", g_strerror (errno)));
+			w(g_warning ("Conversion problem: conversion truncated: %s", strerror (errno)));
 		} else {
 			e_iconv (cd, NULL, 0, &outptr, &outleft);
 		}
@@ -3079,7 +3086,7 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 	
 	/* FIXME: set the 'language' as well, assuming we can get that info...? */
 	out = g_string_new ("");
-	g_string_sprintfa (out, "%s''", charset);
+	g_string_append_printf (out, "%s''", charset);
 	
 	while (inptr < inend) {
 		unsigned char c = *inptr++;
@@ -3087,9 +3094,9 @@ header_encode_param (const unsigned char *in, gboolean *encoded)
 		/* FIXME: make sure that '\'', '*', and ';' are also encoded */
 		
 		if (c > 127) {
-			g_string_sprintfa (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
+			g_string_append_printf (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
 		} else if (is_lwsp (c) || !(camel_mime_special_table[c] & IS_ESAFE)) {
-			g_string_sprintfa (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
+			g_string_append_printf (out, "%%%c%c", tohex[(c >> 4) & 0xf], tohex[c & 0xf]);
 		} else {
 			g_string_append_c (out, c);
 		}
@@ -3176,7 +3183,7 @@ header_param_list_format_append (GString *out, struct _header_param *p)
 					used = 0;
 				}
 				
-				g_string_sprintfa (out, "%s*%d%s=", p->name, i++, encoded ? "*" : "");
+				g_string_append_printf (out, "%s*%d%s=", p->name, i++, encoded ? "*" : "");
 				if (encoded || !quote)
 					g_string_append_len (out, inptr, ptr - inptr);
 				else
@@ -3189,7 +3196,7 @@ header_param_list_format_append (GString *out, struct _header_param *p)
 				inptr = ptr;
 			}
 		} else {
-			g_string_sprintfa (out, "%s%s=", p->name, encoded ? "*" : "");
+			g_string_append_printf (out, "%s%s=", p->name, encoded ? "*" : "");
 			
 			if (encoded || !quote)
 				g_string_append (out, value);
@@ -3275,31 +3282,32 @@ header_content_type_dump(struct _header_content_type *ct)
 }
 
 char *
-header_content_type_format(struct _header_content_type *ct)
+header_content_type_format (struct _header_content_type *ct)
 {
 	GString *out;
 	char *ret;
-
-	if (ct==NULL)
+	
+	if (ct == NULL)
 		return NULL;
-
-	out = g_string_new("");
+	
+	out = g_string_new ("");
 	if (ct->type == NULL) {
-		g_string_sprintfa(out, "text/plain");
-		w(g_warning("Content-Type with no main type"));
+		g_string_append_printf (out, "text/plain");
+		w(g_warning ("Content-Type with no main type"));
 	} else if (ct->subtype == NULL) {
-		w(g_warning("Content-Type with no sub type: %s", ct->type));
-		if (!strcasecmp(ct->type, "multipart"))
-			g_string_sprintfa(out, "%s/mixed", ct->type);
+		w(g_warning ("Content-Type with no sub type: %s", ct->type));
+		if (!strcasecmp (ct->type, "multipart"))
+			g_string_append_printf (out, "%s/mixed", ct->type);
 		else
-			g_string_sprintfa(out, "%s", ct->type);
+			g_string_append_printf (out, "%s", ct->type);
 	} else {
-		g_string_sprintfa(out, "%s/%s", ct->type, ct->subtype);
+		g_string_append_printf (out, "%s/%s", ct->type, ct->subtype);
 	}
-	header_param_list_format_append(out, ct->params);
-
+	header_param_list_format_append (out, ct->params);
+	
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
+	
 	return ret;
 }
 
@@ -3516,9 +3524,13 @@ header_decode_date(const char *in, int *saveoffset)
 		offset = (*inptr++)=='-'?-1:1;
 		offset = offset * header_decode_int(&inptr);
 		d(printf("abs signed offset = %d\n", offset));
+		if (offset < -1200 || offset > 1200)
+			offset = 0;
 	} else if (isdigit(*inptr)) {
 		offset = header_decode_int(&inptr);
 		d(printf("abs offset = %d\n", offset));
+		if (offset < -1200 || offset > 1200)
+			offset = 0;
 	} else {
 		char *tz = decode_token(&inptr);
 
@@ -3627,7 +3639,7 @@ header_raw_append_parse(struct _header_raw **list, const char *header, int offse
 		printf("Invalid header line: '%s'\n", header);
 		return;
 	}
-	name = alloca(fieldlen+1);
+	name = g_alloca (fieldlen + 1);
 	memcpy(name, header, fieldlen);
 	name[fieldlen] = 0;
 
@@ -4012,10 +4024,10 @@ void header_address_list_clear(struct _header_address **l)
 /* if encode is true, then the result is suitable for mailing, otherwise
    the result is suitable for display only (and may not even be re-parsable) */
 static void
-header_address_list_encode_append(GString *out, int encode, struct _header_address *a)
+header_address_list_encode_append (GString *out, int encode, struct _header_address *a)
 {
 	char *text;
-
+	
 	while (a) {
 		switch (a->type) {
 		case HEADER_ADDRESS_NAME:
@@ -4024,64 +4036,65 @@ header_address_list_encode_append(GString *out, int encode, struct _header_addre
 			else
 				text = a->name;
 			if (text && *text)
-				g_string_sprintfa(out, "%s <%s>", text, a->v.addr);
+				g_string_append_printf (out, "%s <%s>", text, a->v.addr);
 			else
-				g_string_append(out, a->v.addr);
+				g_string_append (out, a->v.addr);
 			if (encode)
-				g_free(text);
+				g_free (text);
 			break;
 		case HEADER_ADDRESS_GROUP:
 			if (encode)
-				text = header_encode_phrase(a->name);
+				text = header_encode_phrase (a->name);
 			else
 				text = a->name;
-			g_string_sprintfa(out, "%s: ", text);
-			header_address_list_encode_append(out, encode, a->v.members);
-			g_string_sprintfa(out, ";");
+			g_string_append_printf (out, "%s: ", text);
+			header_address_list_encode_append (out, encode, a->v.members);
+			g_string_append_printf (out, ";");
 			if (encode)
-				g_free(text);
+				g_free (text);
 			break;
 		default:
-			g_warning("Invalid address type");
+			g_warning ("Invalid address type");
 			break;
 		}
 		a = a->next;
 		if (a)
-			g_string_append(out, ", ");
+			g_string_append (out, ", ");
 	}
 }
 
 char *
-header_address_list_encode(struct _header_address *a)
+header_address_list_encode (struct _header_address *a)
 {
 	GString *out;
 	char *ret;
-
+	
 	if (a == NULL)
 		return NULL;
-
-	out = g_string_new("");
-
-	header_address_list_encode_append(out, TRUE, a);
+	
+	out = g_string_new ("");
+	header_address_list_encode_append (out, TRUE, a);
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
+	
 	return ret;
 }
 
 char *
-header_address_list_format(struct _header_address *a)
+header_address_list_format (struct _header_address *a)
 {
 	GString *out;
 	char *ret;
-
+	
 	if (a == NULL)
 		return NULL;
-
-	out = g_string_new("");
-
-	header_address_list_encode_append(out, FALSE, a);
+	
+	out = g_string_new ("");
+	
+	header_address_list_encode_append (out, FALSE, a);
 	ret = out->str;
-	g_string_free(out, FALSE);
+	g_string_free (out, FALSE);
+	
 	return ret;
 }
 

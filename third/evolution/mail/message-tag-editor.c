@@ -25,39 +25,38 @@
 #include <config.h>
 #endif
 
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-window-icon.h>
-#include "message-tag-editor.h"
+#include <gtk/gtkstock.h>
 
+#include "message-tag-editor.h"
 
 static void message_tag_editor_class_init (MessageTagEditorClass *class);
 static void message_tag_editor_init (MessageTagEditor *editor);
-static void message_tag_editor_finalise (GtkObject *obj);
+static void message_tag_editor_finalise (GObject *obj);
 
 static CamelTag *get_tag_list (MessageTagEditor *editor);
 static void set_tag_list (MessageTagEditor *editor, CamelTag *value);
 
+static GtkDialogClass *parent_class = NULL;
 
-static GnomeDialogClass *parent_class = NULL;
-
-
-GtkType
+GType
 message_tag_editor_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"MessageTagEditor",
-			sizeof (MessageTagEditor),
+		static const GTypeInfo info = {
 			sizeof (MessageTagEditorClass),
-			(GtkClassInitFunc) message_tag_editor_class_init,
-			(GtkObjectInitFunc) message_tag_editor_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) message_tag_editor_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (MessageTagEditor),
+			0,
+			(GInstanceInitFunc) message_tag_editor_init,
 		};
 		
-		type = gtk_type_unique (gnome_dialog_get_type (), &type_info);
+		type = g_type_register_static (gtk_dialog_get_type (), "MessageTagEditor", &info, 0);
 	}
 	
 	return type;
@@ -66,10 +65,9 @@ message_tag_editor_get_type (void)
 static void
 message_tag_editor_class_init (MessageTagEditorClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	
-	object_class = (GtkObjectClass *) klass;
-	parent_class = gtk_type_class (gnome_dialog_get_type ());
+	parent_class = g_type_class_ref (gtk_dialog_get_type ());
 	
 	object_class->finalize = message_tag_editor_finalise;
 	
@@ -80,23 +78,22 @@ message_tag_editor_class_init (MessageTagEditorClass *klass)
 static void
 message_tag_editor_init (MessageTagEditor *editor)
 {
-	gtk_window_set_policy (GTK_WINDOW (editor), FALSE, TRUE, FALSE);
+	gtk_window_set_default_size((GtkWindow *)editor, 400, 500);
+	gtk_dialog_add_buttons (GTK_DIALOG (editor),
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_OK, GTK_RESPONSE_OK,
+				NULL);
 	
-	gnome_dialog_append_buttons (GNOME_DIALOG (editor),
-				     GNOME_STOCK_BUTTON_OK,
-				     GNOME_STOCK_BUTTON_CANCEL,
-				     NULL);
-	
-	gnome_dialog_set_default (GNOME_DIALOG (editor), 0);
+	gtk_dialog_set_default_response (GTK_DIALOG (editor), GTK_RESPONSE_OK);
 }
 
 
 static void
-message_tag_editor_finalise (GtkObject *obj)
+message_tag_editor_finalise (GObject *obj)
 {
-	/*	MessageTagEditor *editor = (MessageTagEditor *) obj;*/
+	/*MessageTagEditor *editor = (MessageTagEditor *) obj;*/
 	
-        ((GtkObjectClass *)(parent_class))->finalize (obj);
+        G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static CamelTag *
@@ -110,7 +107,7 @@ message_tag_editor_get_tag_list (MessageTagEditor *editor)
 {
 	g_return_val_if_fail (IS_MESSAGE_TAG_EDITOR (editor), NULL);
 	
-	return ((MessageTagEditorClass *)((GtkObject *) editor)->klass)->get_tag_list (editor);
+	return MESSAGE_TAG_EDITOR_GET_CLASS (editor)->get_tag_list (editor);
 }
 
 
@@ -127,5 +124,5 @@ message_tag_editor_set_tag_list (MessageTagEditor *editor, CamelTag *tags)
 	g_return_if_fail (IS_MESSAGE_TAG_EDITOR (editor));
 	g_return_if_fail (tags != NULL);
 	
-	((MessageTagEditorClass *)((GtkObject *) editor)->klass)->set_tag_list (editor, tags);
+	MESSAGE_TAG_EDITOR_GET_CLASS (editor)->set_tag_list (editor, tags);
 }

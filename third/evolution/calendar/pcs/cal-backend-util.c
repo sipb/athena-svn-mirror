@@ -20,7 +20,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
 #include "cal-backend-util.h"
+#include <e-util/e-account-list.h>
+
+static EAccountList *accounts;
 
 void
 cal_backend_util_fill_alarm_instances_seq (GNOME_Evolution_Calendar_CalAlarmInstanceSeq *seq,
@@ -52,65 +56,36 @@ cal_backend_util_fill_alarm_instances_seq (GNOME_Evolution_Calendar_CalAlarmInst
 	}
 }
 
-void
-cal_backend_mail_account_get (Bonobo_ConfigDatabase db,
-			      gint def,
-			      char **address,
-			      char **name)
-{
-	gchar *path;
-	
-	*address = NULL;
-	*name = NULL;
-	
-	/* get the identity info */
-	path = g_strdup_printf ("/Mail/Accounts/identity_name_%d", def);
-	*name = bonobo_config_get_string (db, path, NULL);
-	g_free (path);
-	
-	path = g_strdup_printf ("/Mail/Accounts/identity_address_%d", def);
-	*address = bonobo_config_get_string (db, path, NULL);
-	g_free (path);
-}
-
 gboolean
-cal_backend_mail_account_get_default (Bonobo_ConfigDatabase db,
+cal_backend_mail_account_get_default (EConfigListener *db,
 				      char **address,
 				      char **name)
 {
-	glong def, len;
-	
-	*address = NULL;
-	*name = NULL;
-	
-	len = bonobo_config_get_long_with_default (db, "/Mail/Accounts/num", 0, NULL);
-	def = bonobo_config_get_long_with_default (db, "/Mail/Accounts/default_account", 0, NULL);
+	const EAccount *account;
 
-	if (def < len)
-		cal_backend_mail_account_get (db, def, address, name);
-	else
-		return FALSE;
-	
-	return TRUE;
+	if (accounts == NULL)
+		accounts = e_account_list_new(gconf_client_get_default());
+
+	account = e_account_list_get_default(accounts);
+	if (account) {
+		*address = g_strdup(account->id->address);
+		*name = g_strdup(account->id->name);
+	}
+
+	return account != NULL;
 }
 
 gboolean
-cal_backend_mail_account_is_valid (Bonobo_ConfigDatabase db, char *user, char **name)
+cal_backend_mail_account_is_valid (EConfigListener *db, char *user, char **name)
 {
-	gchar *address;
-	glong len, i;
-	
-	len = bonobo_config_get_long_with_default (db, "/Mail/Accounts/num", 0, NULL);
+	const EAccount *account;
 
-	for (i = 0; i < len; i++) {
-		cal_backend_mail_account_get (db, i, &address, name);
-		if (address != NULL && !strcmp (address, user)) {
-			g_free (address);
-			return TRUE;
-		}		
-		g_free (address);
-		g_free (*name);		
-	}
+	if (accounts == NULL)
+		accounts = e_account_list_new(gconf_client_get_default());
 
-	return FALSE;	
+	account = e_account_list_find(accounts, E_ACCOUNT_FIND_ID_ADDRESS, user);
+	if (account)
+		*name = g_strdup(account->id->name);
+
+	return account != NULL;
 }

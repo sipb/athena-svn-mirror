@@ -23,27 +23,27 @@
 
 #include <cal-client/cal-client.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define CAL_CLIENT_MULTI_TYPE            (cal_client_multi_get_type ())
-#define CAL_CLIENT_MULTI(obj)            (GTK_CHECK_CAST ((obj), CAL_CLIENT_MULTI_TYPE, CalClientMulti))
-#define CAL_CLIENT_MULTI_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_CLIENT_MULTI_TYPE, CalClientMultiClass))
-#define IS_CAL_CLIENT_MULTI(obj)         (GTK_CHECK_TYPE ((obj), CAL_CLIENT_MULTI_TYPE))
-#define IS_CAL_CLIENT_MULTI_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_CLIENT_MULTI_TYPE))
+#define CAL_CLIENT_MULTI(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_CLIENT_MULTI_TYPE, CalClientMulti))
+#define CAL_CLIENT_MULTI_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_CLIENT_MULTI_TYPE, CalClientMultiClass))
+#define IS_CAL_CLIENT_MULTI(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_CLIENT_MULTI_TYPE))
+#define IS_CAL_CLIENT_MULTI_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_CLIENT_MULTI_TYPE))
 
 typedef struct _CalClientMulti        CalClientMulti;
 typedef struct _CalClientMultiClass   CalClientMultiClass;
 typedef struct _CalClientMultiPrivate CalClientMultiPrivate;
 
 struct _CalClientMulti {
-	GtkObject object;
+	GObject object;
 
 	/* Private data */
 	CalClientMultiPrivate *priv;
 };
 
 struct _CalClientMultiClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* notification signals */
 	void (* cal_opened) (CalClientMulti *multi, CalClient *client, CalClientOpenStatus status);
@@ -56,7 +56,7 @@ struct _CalClientMultiClass {
 	void (* forget_password) (CalClientMulti *multi, CalClient *client, const char *key);
 };
 
-GtkType            cal_client_multi_get_type (void);
+GType              cal_client_multi_get_type (void);
 
 CalClientMulti    *cal_client_multi_new (void);
 
@@ -99,6 +99,6 @@ void               cal_client_multi_generate_instances (CalClientMulti *multi,
 GSList            *cal_client_multi_get_alarms_in_range (CalClientMulti *multi,
 							 time_t start, time_t end);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

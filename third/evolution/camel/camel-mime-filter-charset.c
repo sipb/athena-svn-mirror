@@ -20,7 +20,9 @@
  */
 
 
-#include <iconv.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <string.h>
 #include <errno.h>
@@ -63,8 +65,8 @@ camel_mime_filter_charset_finalize(CamelObject *o)
 
 	g_free(f->from);
 	g_free(f->to);
-	if (f->ic != (iconv_t)-1) {
-		e_iconv_close(f->ic);
+	if (f->ic != (iconv_t) -1) {
+		e_iconv_close (f->ic);
 		f->ic = (iconv_t) -1;
 	}
 }
@@ -76,11 +78,11 @@ reset(CamelMimeFilter *mf)
 	char buf[16];
 	char *buffer;
 	size_t outlen = 16;
-
+	
 	/* what happens with the output bytes if this resets the state? */
 	if (f->ic != (iconv_t) -1) {
 		buffer = buf;
-		e_iconv(f->ic, NULL, 0, &buffer, &outlen);
+		e_iconv (f->ic, NULL, 0, &buffer, &outlen);
 	}
 }
 
@@ -248,19 +250,23 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *obj)
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new (void)
 {
-	CamelMimeFilterCharset *new = CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
-	return new;
+	return CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
 }
 
 CamelMimeFilterCharset *
 camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_charset)
 {
-	CamelMimeFilterCharset *new = CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
+	CamelMimeFilterCharset *new;
+	
+	new = CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
 	
 	new->ic = e_iconv_open (to_charset, from_charset);
 	if (new->ic == (iconv_t) -1) {
-		g_warning("Cannot create charset conversion from %s to %s: %s", from_charset, to_charset, strerror(errno));
-		camel_object_unref ((CamelObject *)new);
+		g_warning ("Cannot create charset conversion from %s to %s: %s",
+			   from_charset ? from_charset : "(null)",
+			   to_charset ? to_charset : "(null)",
+			   g_strerror (errno));
+		camel_object_unref (new);
 		new = NULL;
 	} else {
 		new->from = g_strdup (from_charset);

@@ -31,18 +31,16 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkobject.h>
 #include <gtk/gtkwidget.h>
-#include <libgnome/gnome-defs.h>
-#include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-book-util.h>
 #include <addressbook/backend/ebook/e-card.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
-#define E_ADDRESS_WIDGET_TYPE        (e_address_widget_get_type ())
-#define E_ADDRESS_WIDGET(o)          (GTK_CHECK_CAST ((o), E_ADDRESS_WIDGET_TYPE, EAddressWidget))
-#define E_ADDRESS_WIDGET_CLASS(k)    (GTK_CHECK_CLASS_CAST ((k), E_ADDRESS_WIDGET_TYPE, EAddressWidgetClass))
-#define E_IS_ADDRESS_WIDGET(o)       (GTK_CHECK_TYPE ((o), E_ADDRESS_WIDGET_TYPE))
-#define E_IS_ADDRESS_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_ADDRESS_WIDGET_TYPE))
+#define E_TYPE_ADDRESS_WIDGET        (e_address_widget_get_type ())
+#define E_ADDRESS_WIDGET(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_ADDRESS_WIDGET, EAddressWidget))
+#define E_ADDRESS_WIDGET_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_ADDRESS_WIDGET, EAddressWidgetClass))
+#define E_IS_ADDRESS_WIDGET(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_ADDRESS_WIDGET))
+#define E_IS_ADDRESS_WIDGET_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_ADDRESS_WIDGET))
 
 typedef struct _EAddressWidget EAddressWidget;
 typedef struct _EAddressWidgetClass EAddressWidgetClass;
@@ -68,7 +66,7 @@ struct _EAddressWidgetClass {
 	GtkEventBoxClass parent_class;
 };
 
-GtkType e_address_widget_get_type (void);
+GType e_address_widget_get_type (void);
 
 void e_address_widget_set_name  (EAddressWidget *, const gchar *name);
 void e_address_widget_set_email (EAddressWidget *, const gchar *email);
@@ -77,26 +75,8 @@ void e_address_widget_set_text  (EAddressWidget *, const gchar *text);
 void e_address_widget_construct (EAddressWidget *);
 GtkWidget *e_address_widget_new (void);
 
+BonoboControl *e_address_widget_new_control (void);
 
-void e_address_widget_factory_init (void);
-
-
-
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* __E_ADDRESS_WIDGET_H__ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -44,7 +44,7 @@
 #include "camel-block-file.h"
 #include "camel-partition-table.h"
 
-#include <gal/unicode/gunicode.h>
+#include <glib/gunicode.h>
 
 #include <stdio.h>
 
@@ -190,11 +190,13 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 			data = 0;
 			wordid = camel_key_table_add(p->word_index, word, 0, 0);
 			if (wordid == 0){
-				g_warning("Could not create key entry for word '%s': %s\n", word, strerror(errno));
+				g_warning ("Could not create key entry for word '%s': %s\n",
+					   word, strerror (errno));
 				return;
 			}
 			if (camel_partition_table_add(p->word_hash, word, wordid) == -1) {
-				g_warning("Could not create hash entry for word '%s': %s\n", word, strerror(errno));
+				g_warning ("Could not create hash entry for word '%s': %s\n",
+					   word, strerror (errno));
 				return;
 			}
 			rb->words++;
@@ -202,7 +204,8 @@ text_index_add_name_to_word(CamelIndex *idx, const char *word, camel_key_t namei
 		} else {
 			data = camel_key_table_lookup(p->word_index, wordid, NULL, 0);
 			if (data == 0) {
-				g_warning("Could not find key entry for word '%s': %s\n", word, strerror(errno));
+				g_warning ("Could not find key entry for word '%s': %s\n",
+					   word, strerror (errno));
 				return;
 			}
 		}
@@ -424,7 +427,7 @@ text_index_compress_nosync(CamelIndex *idx)
 				goto fail;
 			rb->names++;
 			camel_partition_table_add(newp->name_hash, name, newkeyid);
-			g_hash_table_insert(remap, (void *)oldkeyid, (void *)newkeyid);
+			g_hash_table_insert(remap, GINT_TO_POINTER(oldkeyid), GINT_TO_POINTER(newkeyid));
 		} else
 			io(printf("deleted name '%s'\n", name));
 		g_free(name);
@@ -450,7 +453,7 @@ text_index_compress_nosync(CamelIndex *idx)
 				goto fail;
 			}
 			for (i=0;i<count;i++) {
-				newkeyid = (camel_key_t)g_hash_table_lookup(remap, (void *)records[i]);
+				newkeyid = (camel_key_t)GPOINTER_TO_INT(g_hash_table_lookup(remap, GINT_TO_POINTER(records[i])));
 				if (newkeyid) {
 					newrecords[newcount++] = newkeyid;
 					if (newcount == sizeof(newrecords)/sizeof(newrecords[0])) {
@@ -528,7 +531,15 @@ fail:
 static int
 text_index_delete(CamelIndex *idx)
 {
-	return camel_text_index_remove(idx->path);
+	struct _CamelTextIndexPrivate *p = CTI_PRIVATE(idx);
+	int ret = 0;
+
+	if (camel_block_file_delete(p->blocks) == -1)
+		ret = -1;
+	if (camel_key_file_delete(p->links) == -1)
+		ret = -1;
+
+	return ret;
 }
 
 static int
@@ -818,8 +829,8 @@ text_index_normalise(CamelIndex *idx, const char *in, void *data)
 	char *word;
 
 	/* Sigh, this is really expensive */
-	word = g_strdup(in); /*g_utf8_normalize(in, strlen(in), G_NORMALIZE_ALL);*/
-	g_utf8_strdown(word);
+	/*g_utf8_normalize(in, strlen(in), G_NORMALIZE_ALL);*/
+	word = g_utf8_strdown(in, -1);
 
 	return word;
 }
@@ -902,14 +913,14 @@ camel_text_index_check(const char *path)
 	sprintf(block, "%s.index", path);
 	blocks = camel_block_file_new(block, O_RDONLY, CAMEL_TEXT_INDEX_VERSION, CAMEL_BLOCK_SIZE);
 	if (blocks == NULL) {
-		io(printf("Check failed: No block file: %s\n", strerror(errno)));
+		io(printf("Check failed: No block file: %s\n", strerror (errno)));
 		return -1;
 	}
 	key = alloca(strlen(path)+12);
 	sprintf(key, "%s.index.data", path);
 	keys = camel_key_file_new(key, O_RDONLY, CAMEL_TEXT_INDEX_KEY_VERSION);
 	if (keys == NULL) {
-		io(printf("Check failed: No key file: %s\n", strerror(errno)));
+		io(printf("Check failed: No key file: %s\n", strerror (errno)));
 		camel_object_unref((CamelObject *)blocks);
 		return -1;
 	}
@@ -1264,16 +1275,16 @@ camel_text_index_validate(CamelTextIndex *idx)
 
 	keyid = 0;
 	while ( (keyid = camel_key_table_next(p->name_index, keyid, &word, &flags, &data)) ) {
-		if ((oldword = g_hash_table_lookup(names, (void *)keyid)) != NULL
-		    || (oldword = g_hash_table_lookup(deleted, (void *)keyid)) != NULL) {
+		if ((oldword = g_hash_table_lookup(names, GINT_TO_POINTER(keyid))) != NULL
+		    || (oldword = g_hash_table_lookup(deleted, GINT_TO_POINTER(keyid))) != NULL) {
 			printf("Warning, name '%s' duplicates key (%x) with name '%s'\n", word, keyid, oldword);
 			g_free(word);
 		} else {
 			g_hash_table_insert(name_word, word, (void *)1);
 			if ((flags & 1) == 0) {
-				g_hash_table_insert(names, (void *)keyid, word);
+				g_hash_table_insert(names, GINT_TO_POINTER(keyid), word);
 			} else {
-				g_hash_table_insert(deleted, (void *)keyid, word);
+				g_hash_table_insert(deleted, GINT_TO_POINTER(keyid), word);
 			}
 		}
 	}
@@ -1286,12 +1297,12 @@ camel_text_index_validate(CamelTextIndex *idx)
 		GHashTable *used;
 
 		/* first, check for duplicates of keyid, and data */
-		if ((oldword = g_hash_table_lookup(words, (void *)keyid)) != NULL) {
+		if ((oldword = g_hash_table_lookup(words, GINT_TO_POINTER(keyid))) != NULL) {
 			printf("Warning, word '%s' duplicates key (%x) with name '%s'\n", word, keyid, oldword);
 			g_free(word);
 			word = oldword;
 		} else {
-			g_hash_table_insert(words, (void *)keyid, word);
+			g_hash_table_insert(words, GINT_TO_POINTER(keyid), word);
 		}
 
 		if (data == 0) {
@@ -1299,10 +1310,10 @@ camel_text_index_validate(CamelTextIndex *idx)
 			   though it is a problem if its a fresh index */
 			printf("Word '%s' has no data associated with it\n", word);
 		} else {
-			if ((oldword = g_hash_table_lookup(keys, (void *)data)) != NULL) {
+			if ((oldword = g_hash_table_lookup(keys, GUINT_TO_POINTER(data))) != NULL) {
 				printf("Warning, word '%s' duplicates data (%x) with name '%s'\n", word, data, oldword);
 			} else {
-				g_hash_table_insert(keys, (void *)data, word);
+				g_hash_table_insert(keys, GUINT_TO_POINTER(data), word);
 			}
 		}
 
@@ -1381,7 +1392,7 @@ text_index_name_add_word(CamelIndexName *idn, const char *word)
    Because it doesn't hang/loop forever on bad data
    Used to clean up utf8 before it gets further */
 
-static __inline__ guint32
+static inline guint32
 camel_utf8_next(const unsigned char **ptr, const unsigned char *ptrend)
 {
 	register unsigned char *p = (unsigned char *)*ptr;

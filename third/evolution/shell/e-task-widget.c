@@ -29,10 +29,9 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtktooltips.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <gal/util/e-util.h>
@@ -50,14 +49,37 @@ struct _ETaskWidgetPrivate {
 
 	GdkPixbuf *icon_pixbuf;
 	GtkWidget *label;
-	GtkWidget *pixmap;
+	GtkWidget *image;
 };
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
+{
+	ETaskWidget *task_widget;
+	ETaskWidgetPrivate *priv;
+
+	task_widget = E_TASK_WIDGET (object);
+
+	priv = task_widget->priv;
+
+	if (priv->tooltips != NULL) {
+		g_object_unref (priv->tooltips);
+		priv->tooltips = NULL;
+	}
+
+	if (priv->icon_pixbuf != NULL) {
+		g_object_unref (priv->icon_pixbuf);
+		priv->icon_pixbuf = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
 {
 	ETaskWidget *task_widget;
 	ETaskWidgetPrivate *priv;
@@ -66,23 +88,19 @@ impl_destroy (GtkObject *object)
 	priv = task_widget->priv;
 
 	g_free (priv->component_id);
-
-	gtk_object_unref (GTK_OBJECT (priv->tooltips));
-
-	gdk_pixbuf_unref (priv->icon_pixbuf);
-
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
-class_init (GtkObjectClass *object_class)
+class_init (GObjectClass *object_class)
 {
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 }
 
 static void
@@ -96,7 +114,7 @@ init (ETaskWidget *task_widget)
 	priv->tooltips     = NULL;
 	priv->icon_pixbuf  = NULL;
 	priv->label        = NULL;
-	priv->pixmap       = NULL;
+	priv->image        = NULL;
 
 	task_widget->priv = priv;
 }
@@ -133,15 +151,15 @@ e_task_widget_construct (ETaskWidget *task_widget,
 	gtk_container_add (GTK_CONTAINER (frame), box);
 	gtk_widget_show (box);
 
-	gtk_widget_set_usize (box, 1, -1);
+	gtk_widget_set_size_request (box, 1, -1);
 
-	priv->icon_pixbuf = gdk_pixbuf_ref (icon_pixbuf);
+	priv->icon_pixbuf = g_object_ref (icon_pixbuf);
 
 	gdk_pixbuf_render_pixmap_and_mask (icon_pixbuf, &pixmap, &mask, 128);
 
-	priv->pixmap = gtk_pixmap_new (pixmap, mask);
-	gtk_widget_show (priv->pixmap);
-	gtk_box_pack_start (GTK_BOX (box), priv->pixmap, FALSE, TRUE, 0);
+	priv->image = gtk_image_new_from_pixmap (pixmap, mask);
+	gtk_widget_show (priv->image);
+	gtk_box_pack_start (GTK_BOX (box), priv->image, FALSE, TRUE, 0);
 
 	priv->label = gtk_label_new ("");
 	gtk_misc_set_alignment (GTK_MISC (priv->label), 0.0, 0.5);
@@ -149,9 +167,11 @@ e_task_widget_construct (ETaskWidget *task_widget,
 	gtk_box_pack_start (GTK_BOX (box), priv->label, TRUE, TRUE, 0);
 
 	gdk_pixmap_unref (pixmap);
-	gdk_bitmap_unref (mask);
+	g_object_unref (mask);
 
 	priv->tooltips = gtk_tooltips_new ();
+	g_object_ref (priv->tooltips);
+	gtk_object_sink (GTK_OBJECT (priv->tooltips));
 
 	e_task_widget_update (task_widget, information, -1.0);
 }
@@ -166,7 +186,7 @@ e_task_widget_new (GdkPixbuf *icon_pixbuf,
 	g_return_val_if_fail (icon_pixbuf != NULL, NULL);
 	g_return_val_if_fail (information != NULL, NULL);
 
-	task_widget = gtk_type_new (e_task_widget_get_type ());
+	task_widget = g_object_new (e_task_widget_get_type (), NULL);
 	e_task_widget_construct (task_widget, icon_pixbuf, component_id, information);
 
 	return GTK_WIDGET (task_widget);

@@ -26,10 +26,11 @@
 #define __ADDRESSBOOK_CONFIG_H__
 
 #include "addressbook-storage.h"
+#include "evolution-config-control.h"
 
-void  addressbook_config_create_new_source  (const char            *new_source,
-					     GtkWidget             *parent);
+EvolutionConfigControl *addressbook_config_control_new (void);
 
-gboolean  addressbook_config_register_factory  (GNOME_Evolution_Shell shell);
+void  addressbook_config_create_new_source  (const char *new_source,
+					     GtkWidget  *parent);
 
 #endif /* __ADDRESSBOOK_CONFIG_H__ */

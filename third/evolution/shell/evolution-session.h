@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* evolution-session.h
  *
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -50,14 +50,14 @@ struct _EvolutionSession {
 struct _EvolutionSessionClass {
 	BonoboObjectClass parent_class;
 
+	POA_GNOME_Evolution_Session__epv epv;
+
 	void (* save_configuration) (EvolutionSession *session, const char *prefix);
 	void (* load_configuration) (EvolutionSession *session, const char *prefix);
 };
 
 
 GtkType           evolution_session_get_type   (void);
-void              evolution_session_construct  (EvolutionSession *session,
-						CORBA_Object      corba_session);
 EvolutionSession *evolution_session_new        (void);
 
 #ifdef __cplusplus

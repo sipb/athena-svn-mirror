@@ -1,8 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* control-factory.c
  *
- * Copyright (C) 2000  Ximian, Inc.
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002, 2003  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -22,14 +21,14 @@
  */
 
 #include <config.h>
+#include <gtk/gtksignal.h>
 #include <glade/glade.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-persist-file.h>
 #include <bonobo/bonobo-context.h>
+#include <bonobo/bonobo-property-bag.h>
 #include <glade/glade.h>
-
-#include <liboaf/liboaf.h>
 
 #include <cal-util/timeutil.h>
 #include <gui/gnome-cal.h>
@@ -43,12 +42,9 @@
 #define PROPERTY_CALENDAR_VIEW     "view"
 #define PROPERTY_CALENDAR_VIEW_IDX 2
 
-#define CONTROL_FACTORY_ID   "OAFIID:GNOME_Evolution_Calendar_ControlFactory"
-
 
 CORBA_Environment ev;
 CORBA_ORB orb;
-
 
 static void
 control_activate_cb (BonoboControl *control, gboolean activate, gpointer data)
@@ -130,14 +126,16 @@ set_prop (BonoboPropertyBag *bag,
 
 	case PROPERTY_CALENDAR_VIEW_IDX:
 		string = BONOBO_ARG_GET_STRING (arg);
-		if (!g_strcasecmp (string, "week"))
+		if (!strcmp (string, "week"))
 			view = GNOME_CAL_WEEK_VIEW;
-		else if (!g_strcasecmp (string, "workweek"))
+		else if (!strcmp (string, "workweek"))
 			view = GNOME_CAL_WORK_WEEK_VIEW;
-		else if (!g_strcasecmp (string, "month"))
+		else if (!strcmp (string, "month"))
 			view = GNOME_CAL_MONTH_VIEW;
-		else
+		else if (!strcmp (string, "day"))
 			view = GNOME_CAL_DAY_VIEW;
+		else
+			view = calendar_config_get_default_view ();
 
 		/* This doesn't actually work, because the GalView
 		 * comes along and resets the view. FIXME.
@@ -174,67 +172,9 @@ calendar_properties_init (GnomeCalendar *gcal, BonoboControl *control)
 				 _("The type of view to show"),
 				 0);
 
-	bonobo_control_set_properties (control, pbag);
+	bonobo_control_set_properties (control, bonobo_object_corba_objref (BONOBO_OBJECT (pbag)), NULL);
 	bonobo_object_unref (BONOBO_OBJECT (pbag));
 }
-
-/* Callback factory function for calendar controls */
-static BonoboObject *
-control_factory_fn (BonoboGenericFactory *Factory, void *data)
-{
-	BonoboControl *control;
-
-	control = control_factory_new_control ();
-
-	if (control)
-		return BONOBO_OBJECT (control);
-	else
-		return NULL;
-}
-
-
-void
-control_factory_init (void)
-{
-	static BonoboGenericFactory *factory = NULL;
-
-	if (factory != NULL)
-		return;
-
-	factory = bonobo_generic_factory_new (CONTROL_FACTORY_ID, control_factory_fn, NULL);
-	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
-	
-	if (factory == NULL)
-		g_error ("I could not register a Calendar control factory.");
-}
-
-#if 0
-static int
-load_calendar (BonoboPersistFile *pf, const CORBA_char *filename, CORBA_Environment *ev, void *closure)
-{
-	GnomeCalendar *gcal = closure;
-	
-	return gnome_calendar_open (gcal, filename);
-}
-
-static int
-save_calendar (BonoboPersistFile *pf, const CORBA_char *filename,
-	       CORBA_Environment *ev,
-	       void *closure)
-{
-	/* Do not know how to save stuff yet */
-	return -1;
-}
-
-static void
-calendar_persist_init (GnomeCalendar *gcal, BonoboControl *control)
-{
-	BonoboPersistFile *f;
-
-	f = bonobo_persist_file_new (load_calendar, save_calendar, gcal);
-	bonobo_object_add_interface (BONOBO_OBJECT (control), BONOBO_OBJECT (f));
-}
-#endif
 
 BonoboControl *
 control_factory_new_control (void)
@@ -253,15 +193,11 @@ control_factory_new_control (void)
 		g_message ("control_factory_fn(): could not create the control!");
 		return NULL;
 	}
-	gtk_object_set_data (GTK_OBJECT (gcal), "control", control);
+	g_object_set_data (G_OBJECT (gcal), "control", control);
 
 	calendar_properties_init (gcal, control);
-#if 0
-	calendar_persist_init (gcal, control);
-#endif
 					      
-	gtk_signal_connect (GTK_OBJECT (control), "activate",
-			    GTK_SIGNAL_FUNC (control_activate_cb), gcal);
+	g_signal_connect (control, "activate", G_CALLBACK (control_activate_cb), gcal);
 
 	return control;
 }

@@ -21,32 +21,31 @@
 #ifndef CAL_LISTENER_H
 #define CAL_LISTENER_H
 
-#include <libgnome/gnome-defs.h>
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include "evolution-calendar.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_LISTENER_TYPE            (cal_listener_get_type ())
-#define CAL_LISTENER(obj)            (GTK_CHECK_CAST ((obj), CAL_LISTENER_TYPE, CalListener))
-#define CAL_LISTENER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_LISTENER_TYPE,	\
+#define CAL_LISTENER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_LISTENER_TYPE, CalListener))
+#define CAL_LISTENER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_LISTENER_TYPE,	\
 				      CalListenerClass))
-#define IS_CAL_LISTENER(obj)         (GTK_CHECK_TYPE ((obj), CAL_LISTENER_TYPE))
-#define IS_CAL_LISTENER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_LISTENER_TYPE))
+#define IS_CAL_LISTENER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_LISTENER_TYPE))
+#define IS_CAL_LISTENER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_LISTENER_TYPE))
 
 typedef struct CalListenerPrivate CalListenerPrivate;
 
 typedef struct {
-	BonoboXObject xobject;
+	BonoboObject xobject;
 
 	/* Private data */
 	CalListenerPrivate *priv;
 } CalListener;
 
 typedef struct {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_Calendar_Listener__epv epv;
 } CalListenerClass;
@@ -63,10 +62,10 @@ typedef void (* CalListenerCalSetModeFn) (CalListener *listener,
 					  gpointer data);
 
 typedef void (* CalListenerObjUpdatedFn) (CalListener *listener,
-					  const GNOME_Evolution_Calendar_CalObjUID uid,
+					  const CORBA_char *uid,
 					  gpointer data);
 typedef void (* CalListenerObjRemovedFn) (CalListener *listener,
-					  const GNOME_Evolution_Calendar_CalObjUID uid,
+					  const CORBA_char *uid,
 					  gpointer data);
 
 typedef void (* CalListenerErrorOccurredFn) (CalListener *listener,
@@ -78,7 +77,7 @@ typedef void (* CalListenerCategoriesChangedFn) (CalListener *listener,
 						 gpointer data);
 
 
-GtkType cal_listener_get_type (void);
+GType cal_listener_get_type (void);
 
 CalListener *cal_listener_construct (CalListener *listener,
 				     CalListenerCalOpenedFn cal_opened_fn,
@@ -101,6 +100,6 @@ void cal_listener_stop_notification (CalListener *listener);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

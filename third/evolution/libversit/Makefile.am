@@ -1,6 +1,6 @@
 # Makefile for libversit.a
 
-# $Id: Makefile.am,v 1.1.1.2 2002-12-19 15:25:24 ghudson Exp $
+# $Id: Makefile.am,v 1.1.1.3 2003-07-13 04:51:12 ghudson Exp $
 
 VERSIT_SRC =		\
 	vcc.y		\
@@ -11,9 +11,9 @@ VERSIT_SRC =		\
 	vcaltmp.c	\
 	vcaltmp.h
 
-privlib_LIBRARIES = libversit.a
+privlib_LTLIBRARIES = libversit.la
 
-libversit_a_SOURCES = $(VERSIT_SRC)
+libversit_la_SOURCES = $(VERSIT_SRC)
 
 EXTRA_DIST = README.TXT vcaltest.c vctest.c
 

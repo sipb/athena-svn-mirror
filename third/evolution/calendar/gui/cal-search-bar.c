@@ -29,9 +29,9 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/widgets/e-unicode.h>
+#include <gal/util/e-util.h>
 #include "cal-search-bar.h"
 
 
@@ -86,36 +86,8 @@ static guint cal_search_bar_signals[LAST_SIGNAL] = { 0 };
 
 
 
-/**
- * cal_search_bar_get_type:
- * 
- * Registers the #CalSearchBar class if necessary and returns the type ID
- * associated to it.
- * 
- * Return value: The type ID of the #CalSearchBar class.
- **/
-GtkType
-cal_search_bar_get_type (void)
-{
-	static GtkType cal_search_bar_type = 0;
-
-	if (!cal_search_bar_type) {
-		static const GtkTypeInfo cal_search_bar_info = {
-			"CalSearchBar",
-			sizeof (CalSearchBar),
-			sizeof (CalSearchBarClass),
-			(GtkClassInitFunc) cal_search_bar_class_init,
-			(GtkObjectInitFunc) cal_search_bar_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		cal_search_bar_type = gtk_type_unique (E_SEARCH_BAR_TYPE, &cal_search_bar_info);
-	}
-
-	return cal_search_bar_type;
-}
+E_MAKE_TYPE (cal_search_bar, "CalSearchBar", CalSearchBar, cal_search_bar_class_init,
+	     cal_search_bar_init, E_SEARCH_BAR_TYPE);
 
 /* Class initialization function for the calendar search bar */
 static void
@@ -127,12 +99,12 @@ cal_search_bar_class_init (CalSearchBarClass *class)
 	e_search_bar_class = (ESearchBarClass *) class;
 	object_class = (GtkObjectClass *) class;
 
-	parent_class = gtk_type_class (E_SEARCH_BAR_TYPE);
+	parent_class = g_type_class_peek_parent (class);
 
 	cal_search_bar_signals[SEXP_CHANGED] =
 		gtk_signal_new ("sexp_changed",
 				GTK_RUN_FIRST,
-				object_class->type,
+				G_TYPE_FROM_CLASS (object_class),
 				GTK_SIGNAL_OFFSET (CalSearchBarClass, sexp_changed),
 				gtk_marshal_NONE__STRING,
 				GTK_TYPE_NONE, 1,
@@ -141,13 +113,11 @@ cal_search_bar_class_init (CalSearchBarClass *class)
 	cal_search_bar_signals[CATEGORY_CHANGED] =
 		gtk_signal_new ("category_changed",
 				GTK_RUN_FIRST,
-				object_class->type,
+				G_TYPE_FROM_CLASS (object_class),
 				GTK_SIGNAL_OFFSET (CalSearchBarClass, category_changed),
 				gtk_marshal_NONE__STRING,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_class, cal_search_bar_signals, LAST_SIGNAL);
 
 	class->sexp_changed = NULL;
 	class->category_changed = NULL;
@@ -197,14 +167,16 @@ cal_search_bar_destroy (GtkObject *object)
 	cal_search = CAL_SEARCH_BAR (object);
 	priv = cal_search->priv;
 
-	if (priv->categories) {
-		free_categories (priv->categories);
-		priv->categories = NULL;
+	if (priv) {
+		if (priv->categories) {
+			free_categories (priv->categories);
+			priv->categories = NULL;
+		}
+		
+		g_free (priv);
+		cal_search->priv = NULL;
 	}
-
-	g_free (priv);
-	cal_search->priv = NULL;
-
+	
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -398,9 +370,7 @@ make_suboptions (CalSearchBar *cal_search)
 			char *str;
 
 			category = priv->categories->pdata[i];
-			str = e_utf8_to_gtk_string (GTK_WIDGET (cal_search), category);
-			if (!str)
-				str = g_strdup ("");
+			str = g_strdup (category ? category : "");
 
 			subitems[i + CATEGORIES_OFFSET].text      = str;
 			subitems[i + CATEGORIES_OFFSET].id        = i + CATEGORIES_OFFSET;
@@ -455,7 +425,7 @@ cal_search_bar_new (void)
 {
 	CalSearchBar *cal_search;
 
-	cal_search = gtk_type_new (TYPE_CAL_SEARCH_BAR);
+	cal_search = g_object_new (TYPE_CAL_SEARCH_BAR, NULL);
 	return GTK_WIDGET (cal_search_bar_construct (cal_search));
 }
 

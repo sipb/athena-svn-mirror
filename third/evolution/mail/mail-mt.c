@@ -3,24 +3,19 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <errno.h>
 
 #include <glib.h>
 
-#include <gtk/gtkentry.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
-#include <gtk/gtkcheckbutton.h>
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-stock.h>
 #include <gal/widgets/e-gui-utils.h>
-#include <gal/widgets/e-unicode.h>
 
 #include "folder-browser-factory.h"
 #include "e-util/e-msgport.h"
@@ -119,11 +114,11 @@ void *mail_msg_new(mail_msg_op_t *ops, EMsgPort *reply_port, size_t size)
 	msg->ops = ops;
 	msg->seq = mail_msg_seq++;
 	msg->msg.reply_port = reply_port;
-	msg->cancel = camel_operation_new(mail_operation_status, (void *)msg->seq);
+	msg->cancel = camel_operation_new(mail_operation_status, GINT_TO_POINTER(msg->seq));
 	camel_exception_init(&msg->ex);
 	msg->priv = g_malloc0(sizeof(*msg->priv));
 
-	g_hash_table_insert(mail_msg_active_table, (void *)msg->seq, msg);
+	g_hash_table_insert(mail_msg_active_table, GINT_TO_POINTER(msg->seq), msg);
 
 	d(printf("New message %p\n", msg));
 
@@ -140,7 +135,7 @@ void *mail_msg_new(mail_msg_op_t *ops, EMsgPort *reply_port, size_t size)
 static void destroy_objects(CamelObject *o, void *event_data, void *data)
 {
 	if (event_data)
-		gtk_object_unref(event_data);
+		g_object_unref(event_data);
 }
 
 #ifdef MALLOC_CHECK
@@ -189,7 +184,7 @@ void mail_msg_free(void *msg)
 		fprintf(log, "%p: Free  (exception `%s')\n", msg,
 			camel_exception_get_description(&m->ex)?camel_exception_get_description(&m->ex):"None");
 #endif
-	g_hash_table_remove(mail_msg_active_table, (void *)m->seq);
+	g_hash_table_remove(mail_msg_active_table, GINT_TO_POINTER(m->seq));
 	pthread_cond_broadcast(&mail_msg_cond);
 
 	/* We need to make sure we dont lose a reference here YUCK YUCK */
@@ -221,9 +216,14 @@ void mail_msg_free(void *msg)
 /* hash table of ops->dialogue of active errors */
 static GHashTable *active_errors = NULL;
 
-static void error_gone(GtkObject *o, void *data)
+static void error_destroy(GtkObject *o, void *data)
 {
 	g_hash_table_remove(active_errors, data);
+}
+
+static void error_response(GtkObject *o, int button, void *data)
+{
+	gtk_widget_destroy((GtkWidget *)o);
 }
 
 void mail_msg_check_error(void *msg)
@@ -231,7 +231,7 @@ void mail_msg_check_error(void *msg)
 	struct _mail_msg *m = msg;
 	char *what = NULL;
 	char *text;
-	GnomeDialog *gd;
+	GtkDialog *gd;
 	
 #ifdef MALLOC_CHECK
 	checkmem(m);
@@ -268,12 +268,12 @@ void mail_msg_check_error(void *msg)
 		return;
 	}
 
-	gd = (GnomeDialog *)gnome_error_dialog(text);
+	gd = (GtkDialog *)gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", text);
 	g_hash_table_insert(active_errors, m->ops, gd);
-	g_free(text);
-	gtk_signal_connect((GtkObject *)gd, "destroy", error_gone, m->ops);
-	gnome_dialog_set_close(gd, TRUE);
+	g_signal_connect(gd, "response", G_CALLBACK(error_response), m->ops);
+	g_signal_connect(gd, "destroy", G_CALLBACK(error_destroy), m->ops);
 	gtk_widget_show((GtkWidget *)gd);
+	g_free (text);
 }
 
 void mail_msg_cancel(unsigned int msgid)
@@ -281,7 +281,7 @@ void mail_msg_cancel(unsigned int msgid)
 	struct _mail_msg *m;
 
 	MAIL_MT_LOCK(mail_msg_lock);
-	m = g_hash_table_lookup(mail_msg_active_table, (void *)msgid);
+	m = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid));
 
 	if (m && m->cancel)
 		camel_operation_cancel(m->cancel);
@@ -299,20 +299,20 @@ void mail_msg_wait(unsigned int msgid)
 
 	if (ismain) {
 		MAIL_MT_LOCK(mail_msg_lock);
-		m = g_hash_table_lookup(mail_msg_active_table, (void *)msgid);
+		m = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid));
 		while (m) {
 			MAIL_MT_UNLOCK(mail_msg_lock);
 			gtk_main_iteration();
 			MAIL_MT_LOCK(mail_msg_lock);
-			m = g_hash_table_lookup(mail_msg_active_table, (void *)msgid);
+			m = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid));
 		}
 		MAIL_MT_UNLOCK(mail_msg_lock);
 	} else {
 		MAIL_MT_LOCK(mail_msg_lock);
-		m = g_hash_table_lookup(mail_msg_active_table, (void *)msgid);
+		m = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid));
 		while (m) {
 			pthread_cond_wait(&mail_msg_cond, &mail_msg_lock);
-			m = g_hash_table_lookup(mail_msg_active_table, (void *)msgid);
+			m = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid));
 		}
 		MAIL_MT_UNLOCK(mail_msg_lock);
 	}
@@ -326,7 +326,7 @@ int mail_msg_active(unsigned int msgid)
 	if (msgid == (unsigned int)-1) 
 		active = g_hash_table_size(mail_msg_active_table) > 0;
 	else
-		active = g_hash_table_lookup(mail_msg_active_table, (void *)msgid) != NULL;
+		active = g_hash_table_lookup(mail_msg_active_table, GINT_TO_POINTER(msgid)) != NULL;
 	MAIL_MT_UNLOCK(mail_msg_lock);
 
 	return active;
@@ -919,7 +919,7 @@ static void do_op_status(struct _mail_msg *mm)
 			if (data->activity_state == 3) {
 				MAIL_MT_UNLOCK (mail_msg_lock);
 				if (activity)
-					gtk_object_unref (GTK_OBJECT (activity));
+					g_object_unref(activity);
 				if (msg->cancel)
 					camel_operation_unref (msg->cancel);
 				camel_exception_clear (&msg->ex);
@@ -934,11 +934,11 @@ static void do_op_status(struct _mail_msg *mm)
 		}
 	} else if (data->activity) {
 		activity = data->activity;
-		gtk_object_ref (GTK_OBJECT (activity));
+		g_object_ref((activity));
 		MAIL_MT_UNLOCK (mail_msg_lock);
 			
 		evolution_activity_client_update (activity, out, (double)(pc/100.0));
-		gtk_object_unref (GTK_OBJECT (activity));
+		g_object_unref(activity);
 	} else {
 		MAIL_MT_UNLOCK (mail_msg_lock);
 	}
@@ -1009,6 +1009,6 @@ set_stop(int sensitive)
 
 		bonobo_ui_component_set_prop(uic, "/commands/MailStop", "sensitive", sensitive?"1":"0", NULL);
 	}
-	gtk_object_unref(GTK_OBJECT(it));
+	g_object_unref(it);
 	last = sensitive;
 }

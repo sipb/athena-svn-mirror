@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* e-shell.c
  *
- * Copyright (C) 2000, 2001 Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -24,30 +24,7 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
-
-#include <gtk/gtkmain.h>
-#include <gtk/gtksignal.h>
-#include <gdk/gdkx.h>
-
-#include <X11/Xatom.h>
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
-
-/* (For the displayName stuff.)  */
-#include <gdk/gdkprivate.h>
-#include <X11/Xlib.h>
-
-#include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-moniker-util.h>
-
-#include <gal/widgets/e-gui-utils.h>
-#include <gal/util/e-util.h>
-#include <gal/util/e-unicode-i18n.h>
-
-#include "Evolution.h"
+#include "e-shell.h"
 
 #include "e-util/e-dialog-utils.h"
 
@@ -70,17 +47,43 @@
 #include "e-splash.h"
 #include "e-uri-schema-registry.h"
 
+#include "e-shell-marshal.h"
+
 #include "evolution-shell-component-client.h"
 #include "evolution-shell-component-utils.h"
 #include "evolution-storage-set-view-factory.h"
 
-#include "e-shell.h"
-
 #include "importer/intelligent.h"
 
+#include <glib.h>
+
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <gdk/gdkx.h>
+
+#include <X11/Xatom.h>
+
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+
+/* (For the displayName stuff.)  */
+#include <gdk/gdkprivate.h>
+#include <X11/Xlib.h>
+
+#include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-moniker-util.h>
+
+#include <gal/util/e-util.h>
+
+#include <gconf/gconf-client.h>
+
+#include <string.h>
+
+#include "Evolution.h"
+
 
-#define PARENT_TYPE bonobo_x_object_get_type ()
-static BonoboXObjectClass *parent_class = NULL;
+#define PARENT_TYPE bonobo_object_get_type ()
+static BonoboObjectClass *parent_class = NULL;
 
 struct _EShellPrivate {
 	/* IID for registering the object on OAF.  */
@@ -124,9 +127,6 @@ struct _EShellPrivate {
 	/* Settings Dialog */
 	GtkWidget *settings_dialog;
 	
-	/* Configuration Database */
-	Bonobo_ConfigDatabase db;
-
 	/* Whether the shell is succesfully initialized.  This is needed during
 	   the start-up sequence, to avoid CORBA calls to do make wrong things
 	   to happen while the shell is initializing.  */
@@ -171,12 +171,27 @@ pop_up_activation_error_dialog (ESplash *splash,
 	char *error_message;
 
 	error_message = e_get_activation_failure_msg (ev);
-	e_notice (GTK_WINDOW (splash), GNOME_MESSAGE_BOX_ERROR,
+	e_notice (splash, GTK_MESSAGE_ERROR,
 		  _("Cannot activate component %s :\n"
 		    "The error from the activation system is:\n"
 		    "%s"),
 		  id, error_message);
 	g_free (error_message);
+}
+
+static gboolean
+get_config_start_offline (void)
+{
+	GConfClient *client;
+	gboolean value;
+
+	client = gconf_client_get_default ();
+
+	value = gconf_client_get_bool (client, "/apps/evolution/shell/start_offline", NULL);
+
+	g_object_unref (client);
+
+	return value;
 }
 
 
@@ -188,6 +203,7 @@ set_interactive (EShell *shell,
 {
 	EShellPrivate *priv;
 	GList *id_list, *p;
+	Window new_view_xid;
 
 	priv = shell->priv;
 
@@ -195,6 +211,16 @@ set_interactive (EShell *shell,
 		return;
 
 	priv->is_interactive = interactive;
+
+	if (interactive) {
+		GtkWidget *new_view;
+
+		g_return_if_fail (priv->views && priv->views->data);
+		new_view = priv->views->data;
+
+		new_view_xid = GDK_WINDOW_XWINDOW (new_view->window);
+	} else
+		new_view_xid = None;
 
 	id_list = e_component_registry_get_id_list (priv->component_registry);
 	for (p = id_list; p != NULL; p = p->next) {
@@ -205,14 +231,14 @@ set_interactive (EShell *shell,
 
 		id = (const char *) p->data;
 		shell_component_client = e_component_registry_get_component_by_id (priv->component_registry, id);
-		shell_component_objref = bonobo_object_corba_objref (BONOBO_OBJECT (shell_component_client));
+		shell_component_objref = evolution_shell_component_client_corba_objref (shell_component_client);
 
 		CORBA_exception_init (&ev);
 
-		GNOME_Evolution_ShellComponent_interactive (shell_component_objref, interactive, &ev);
+		GNOME_Evolution_ShellComponent_interactive (shell_component_objref, interactive, new_view_xid, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("Error changing interactive status of component %s to %s -- %s\n",
-				   id, interactive ? "TRUE" : "FALSE", ev._repo_id);
+				   id, interactive ? "TRUE" : "FALSE", BONOBO_EX_REPOID (&ev));
 
 		CORBA_exception_free (&ev);
 	}
@@ -230,7 +256,7 @@ folder_selection_dialog_cancelled_cb (EShellFolderSelectionDialog *folder_select
 	GNOME_Evolution_FolderSelectionListener listener;
 	CORBA_Environment ev;
 
-	listener = gtk_object_get_data (GTK_OBJECT (folder_selection_dialog), "corba_listener");
+	listener = g_object_get_data (G_OBJECT (folder_selection_dialog), "corba_listener");
 
 	CORBA_exception_init (&ev);
 
@@ -254,7 +280,7 @@ folder_selection_dialog_folder_selected_cb (EShellFolderSelectionDialog *folder_
 	GNOME_Evolution_Folder corba_folder;
 
 	shell = E_SHELL (data);
-	listener = gtk_object_get_data (GTK_OBJECT (folder_selection_dialog), "corba_listener");
+	listener = g_object_get_data (G_OBJECT (folder_selection_dialog), "corba_listener");
 
 	CORBA_exception_init (&ev);
 
@@ -311,26 +337,6 @@ raise_exception_if_not_ready (PortableServer_Servant servant,
 	return FALSE;
 }
 
-static CORBA_char *
-impl_Shell__get_displayName (PortableServer_Servant servant,
-			     CORBA_Environment *ev)
-{
-	char *display_string;
-	CORBA_char *retval;
-
-	if (raise_exception_if_not_ready (servant, ev))
-		return NULL;
-
-	display_string = DisplayString (gdk_display);
-	if (display_string == NULL) 
-		return CORBA_string_dup ("");
-
-	retval = CORBA_string_dup (display_string);
-	XFree (display_string);
-
-	return retval;
-}
-
 static GNOME_Evolution_ShellComponent
 impl_Shell_getComponentByType (PortableServer_Servant servant,
 			       const CORBA_char *type,
@@ -356,7 +362,7 @@ impl_Shell_getComponentByType (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	corba_component = bonobo_object_corba_objref (BONOBO_OBJECT (handler));
+	corba_component = evolution_shell_component_client_corba_objref (handler);
 	Bonobo_Unknown_ref (corba_component, ev);
 
 	return CORBA_Object_duplicate (corba_component, ev);
@@ -415,7 +421,7 @@ impl_Shell_createNewView (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	shell_view = e_shell_create_view_from_uri_and_settings (shell, uri, 0);
+	shell_view = e_shell_create_view (shell, uri, NULL);
 	if (shell_view == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Shell_NotFound, NULL);
@@ -452,7 +458,7 @@ impl_Shell_handleURI (PortableServer_Servant servant,
 
 	if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0
 	    || strncmp (uri, E_SHELL_DEFAULTURI_PREFIX, E_SHELL_DEFAULTURI_PREFIX_LEN) == 0) {
-		e_shell_create_view_from_uri_and_settings (shell, uri, 0);
+		e_shell_create_view (shell, uri, NULL);
 		return;
 	}
 
@@ -531,18 +537,23 @@ impl_Shell_selectUserFolder (PortableServer_Servant servant,
 								       title,
 								       NULL,
 								       default_folder,
-								       allowed_type_names);
+								       allowed_type_names,
+								       TRUE);
 
 
 	listener_duplicate = CORBA_Object_duplicate (listener, ev);
-	gtk_object_set_data_full (GTK_OBJECT (folder_selection_dialog), "corba_listener",
-				  listener_duplicate, corba_listener_destroy_notify);
+	g_object_set_data_full (G_OBJECT (folder_selection_dialog), "corba_listener",
+				listener_duplicate, corba_listener_destroy_notify);
 
-	gtk_signal_connect (GTK_OBJECT (folder_selection_dialog), "folder_selected",
-			    GTK_SIGNAL_FUNC (folder_selection_dialog_folder_selected_cb), shell);
-	gtk_signal_connect (GTK_OBJECT (folder_selection_dialog), "cancelled",
-			    GTK_SIGNAL_FUNC (folder_selection_dialog_cancelled_cb), shell);
+	g_signal_connect (folder_selection_dialog, "folder_selected",
+			  G_CALLBACK (folder_selection_dialog_folder_selected_cb), shell);
+	g_signal_connect (folder_selection_dialog, "cancelled",
+			  G_CALLBACK (folder_selection_dialog_cancelled_cb), shell);
 
+	if (parent_xid)
+		e_dialog_set_transient_for_xid (GTK_WINDOW (folder_selection_dialog), parent_xid);
+
+#if NASTY_HACK_FOR_OUT_OF_PROC_COMPONENTS
 	if (parent_xid == 0) {
 		gtk_widget_show (folder_selection_dialog);
 	} else {
@@ -552,8 +563,6 @@ impl_Shell_selectUserFolder (PortableServer_Servant servant,
 		/* Set the WM class and the WindowGroup hint to be the same as
 		   the foreign parent window's.  This way smartass window
 		   managers like Sawfish don't get confused.  */
-
-		e_set_dialog_parent_from_xid (GTK_WINDOW (folder_selection_dialog), parent_xid);
 
 		if (XGetClassHint (GDK_DISPLAY (), (Window) parent_xid, &class_hints)) {
 			gtk_window_set_wmclass (GTK_WINDOW (folder_selection_dialog),
@@ -580,6 +589,9 @@ impl_Shell_selectUserFolder (PortableServer_Servant servant,
 			XFree (parent_wm_hints);
 		}
 	}
+#else
+	gtk_widget_show (folder_selection_dialog);
+#endif
 }
 
 static GNOME_Evolution_Storage
@@ -647,16 +659,6 @@ impl_Shell_setLineStatus (PortableServer_Servant servant,
 		e_shell_go_online (shell, NULL);
 	else
 		e_shell_go_offline (shell, NULL);
-}
-
-
-void
-e_shell_set_interactive (EShell *shell,
-			 gboolean interactive)
-{
-	g_return_if_fail (E_IS_SHELL (shell));
-
-	set_interactive (shell, interactive);
 }
 
 
@@ -733,7 +735,7 @@ setup_local_storage (EShell *shell)
 	g_assert (priv->folder_type_registry != NULL);
 	g_assert (priv->local_storage == NULL);
 
-	local_storage_path = g_concat_dir_and_file (priv->local_directory, LOCAL_STORAGE_DIRECTORY);
+	local_storage_path = g_build_filename (priv->local_directory, LOCAL_STORAGE_DIRECTORY, NULL);
 	local_storage = e_local_storage_open (priv->folder_type_registry, local_storage_path);
 	if (local_storage == NULL) {
 		g_warning (_("Cannot set up local storage -- %s"), local_storage_path);
@@ -745,7 +747,7 @@ setup_local_storage (EShell *shell)
 	e_storage_set_add_storage (priv->storage_set, local_storage);
 	priv->local_storage = E_LOCAL_STORAGE (local_storage);
 
-	summary_folder = e_folder_new (U_("Summary"), "summary", "");
+	summary_folder = e_folder_new (_("Summary"), "summary", "");
 	e_folder_set_physical_uri (summary_folder, "/");
 	e_folder_set_is_stock (summary_folder, TRUE);
 	priv->summary_storage = e_storage_new (E_SUMMARY_STORAGE_NAME,
@@ -759,17 +761,17 @@ setup_local_storage (EShell *shell)
 /* Initialization of the components.  */
 
 static char *
-get_icon_path_for_component_info (const OAF_ServerInfo *info)
+get_icon_path_for_component_info (const Bonobo_ServerInfo *info)
 {
-	OAF_Property *property;
+	Bonobo_ActivationProperty *property;
 	const char *shell_component_icon_value;
 
-	/* FIXME: liboaf is not const-safe.  */
-	property = oaf_server_info_prop_find ((OAF_ServerInfo *) info,
-					      "evolution:shell_component_icon");
+	property = bonobo_server_info_prop_find ((Bonobo_ServerInfo *) info,
+						 "evolution:shell_component_icon");
 
-	if (property == NULL || property->v._d != OAF_P_STRING)
-		return gnome_pixmap_file ("gnome-question.png");
+	if (property == NULL || property->v._d != Bonobo_ACTIVATION_P_STRING)
+		return gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gnome-question.png",
+						  TRUE, NULL);
 
 	shell_component_icon_value = property->v._u.value_string;
 
@@ -777,7 +779,7 @@ get_icon_path_for_component_info (const OAF_ServerInfo *info)
 		return g_strdup (shell_component_icon_value);
 
 	else
-		return g_concat_dir_and_file (EVOLUTION_IMAGES, shell_component_icon_value);
+		return g_build_filename (EVOLUTION_IMAGES, shell_component_icon_value, NULL);
 }
 
 static void
@@ -786,7 +788,7 @@ setup_components (EShell *shell,
 {
 	EShellPrivate *priv;
 	char *const selection_order[] = { "0-evolution:shell_component_launch_order", NULL };
-	OAF_ServerInfoList *info_list;
+	Bonobo_ServerInfoList *info_list;
 	CORBA_Environment ev;
 	int i;
 
@@ -795,7 +797,7 @@ setup_components (EShell *shell,
 	priv = shell->priv;
 	priv->component_registry = e_component_registry_new (shell);
 
-	info_list = oaf_query ("repo_ids.has ('IDL:GNOME/Evolution/ShellComponent:1.0')", selection_order, &ev);
+	info_list = bonobo_activation_query ("repo_ids.has ('IDL:GNOME/Evolution/ShellComponent:1.0')", selection_order, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION)
 		g_error ("Eeek!  Cannot perform OAF query for Evolution components.");
@@ -804,7 +806,7 @@ setup_components (EShell *shell,
 		g_warning ("No Evolution components installed.");
 
 	for (i = 0; i < info_list->_length; i++) {
-		const OAF_ServerInfo *info;
+		const Bonobo_ServerInfo *info;
 		GdkPixbuf *icon_pixbuf;
 		char *icon_path;
 
@@ -812,12 +814,12 @@ setup_components (EShell *shell,
 
 		icon_path = get_icon_path_for_component_info (info);
 
-		icon_pixbuf = gdk_pixbuf_new_from_file (icon_path);
+		icon_pixbuf = gdk_pixbuf_new_from_file (icon_path, NULL);
 
 		if (splash != NULL)
 			e_splash_add_icon (splash, icon_pixbuf);
 
-		gdk_pixbuf_unref (icon_pixbuf);
+		g_object_unref (icon_pixbuf);
 
 		g_free (icon_path);
 	}
@@ -826,7 +828,7 @@ setup_components (EShell *shell,
 		gtk_main_iteration ();
 
 	for (i = 0; i < info_list->_length; i++) {
-		const OAF_ServerInfo *info;
+		const Bonobo_ServerInfo *info;
 		CORBA_Environment ev;
 
 		info = info_list->_buffer + i;
@@ -870,7 +872,7 @@ set_owner_on_components (EShell *shell,
 	priv = shell->priv;
 	local_directory = e_shell_get_local_directory (shell);
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell));
+	corba_shell = BONOBO_OBJREF (shell);
 
 	id_list = e_component_registry_get_id_list (priv->component_registry);
 	for (p = id_list; p != NULL; p = p->next) {
@@ -956,14 +958,28 @@ view_delete_event_cb (GtkWidget *widget,
 	return ! e_shell_request_close_view (shell, E_SHELL_VIEW (widget));
 }
 
+static gboolean
+notify_no_views_left_idle_cb (void *data)
+{
+	EShell *shell;
+
+	shell = E_SHELL (data);
+
+	set_interactive (shell, FALSE);
+
+	g_signal_emit (shell, signals [NO_VIEWS_LEFT], 0);
+
+	bonobo_object_unref (BONOBO_OBJECT (shell));
+
+	return FALSE;
+}
+
 static void
-view_destroy_cb (GtkObject *object,
-		 void *data)
+view_weak_notify (void *data,
+		  GObject *where_the_object_was)
 {
 	EShell *shell;
 	int num_views;
-
-	g_assert (E_IS_SHELL_VIEW (object));
 
 	shell = E_SHELL (data);
 
@@ -972,17 +988,14 @@ view_destroy_cb (GtkObject *object,
 	/* If this is our last view, save settings now because in the callback
 	   for no_views_left shell->priv->views will be NULL and settings won't
 	   be saved because of that.  */
-	if (num_views - 1 == 0)
+	if (num_views == 1)
 		e_shell_save_settings (shell);
 
-	shell->priv->views = g_list_remove (shell->priv->views, object);
+	shell->priv->views = g_list_remove (shell->priv->views, where_the_object_was);
 
 	if (shell->priv->views == NULL) {
-		set_interactive (shell, FALSE);
-
 		bonobo_object_ref (BONOBO_OBJECT (shell));
-		gtk_signal_emit (GTK_OBJECT (shell), signals [NO_VIEWS_LEFT]);
-		bonobo_object_unref (BONOBO_OBJECT (shell));
+		g_idle_add (notify_no_views_left_idle_cb, shell);
 	}
 }
 
@@ -997,12 +1010,12 @@ create_view (EShell *shell,
 
 	priv = shell->priv;
 
-	view = e_shell_view_new (shell);
+	view = e_shell_view_new (shell, uri);
 
-	gtk_signal_connect (GTK_OBJECT (view), "delete_event",
-			    GTK_SIGNAL_FUNC (view_delete_event_cb), shell);
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    GTK_SIGNAL_FUNC (view_destroy_cb), shell);
+	g_signal_connect (view, "delete_event",
+			  G_CALLBACK (view_delete_event_cb), shell);
+
+	g_object_weak_ref (G_OBJECT (view), view_weak_notify, shell);
 
 	if (uri != NULL)
 		e_shell_view_display_uri (E_SHELL_VIEW (view), uri, TRUE);
@@ -1017,16 +1030,16 @@ create_view (EShell *shell,
 		e_shell_view_show_shortcut_bar (view, e_shell_view_shortcut_bar_shown (template_view));
 	}
 
-	gtk_signal_emit (GTK_OBJECT (shell), signals[NEW_VIEW_CREATED], view);
+	g_signal_emit (shell, signals[NEW_VIEW_CREATED], 0, view);
 
 	return view;
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EShell *shell;
 	EShellPrivate *priv;
@@ -1037,55 +1050,60 @@ destroy (GtkObject *object)
 
 	priv->is_initialized = FALSE;
 
-	e_shell_disconnect_db (shell);
-
-	if (priv->iid != NULL)
-		oaf_active_server_unregister (priv->iid, bonobo_object_corba_objref (BONOBO_OBJECT (shell)));
-
-	g_free (priv->local_directory);
-
 	if (priv->storage_set != NULL) {
-		gtk_object_unref (GTK_OBJECT (priv->storage_set));
+		g_object_unref (priv->storage_set);
 		priv->storage_set = NULL;
 	}
 
-	if (priv->local_storage != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->local_storage));
+	if (priv->local_storage != NULL) {
+		g_object_unref (priv->local_storage);
+		priv->local_storage = NULL;
+	}
 
-	if (priv->summary_storage != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->summary_storage));
+	if (priv->summary_storage != NULL) {
+		g_object_unref (priv->summary_storage);
+		priv->summary_storage = NULL;
+	}
 
-	if (priv->shortcuts != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->shortcuts));
+	if (priv->shortcuts != NULL) {
+		g_object_unref (priv->shortcuts);
+		priv->shortcuts = NULL;
+	}
 
-	if (priv->folder_type_registry != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->folder_type_registry));
+	if (priv->folder_type_registry != NULL) {
+		g_object_unref (priv->folder_type_registry);
+		priv->folder_type_registry = NULL;
+	}
 
-	if (priv->uri_schema_registry != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->uri_schema_registry));
+	if (priv->uri_schema_registry != NULL) {
+		g_object_unref (priv->uri_schema_registry);
+		priv->uri_schema_registry = NULL;
+	}
 
-	if (priv->component_registry != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->component_registry));
+	if (priv->component_registry != NULL) {
+		g_object_unref (priv->component_registry);
+		priv->component_registry = NULL;
+	}
 
-	if (priv->user_creatable_items_handler != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->user_creatable_items_handler));
+	if (priv->user_creatable_items_handler != NULL) {
+		g_object_unref (priv->user_creatable_items_handler);
+		priv->user_creatable_items_handler = NULL;
+	}
 
 	for (p = priv->views; p != NULL; p = p->next) {
 		EShellView *view;
 
 		view = E_SHELL_VIEW (p->data);
 
-		gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-					       GTK_SIGNAL_FUNC (view_delete_event_cb),
-					       shell);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-					       GTK_SIGNAL_FUNC (view_destroy_cb),
-					       shell);
+		g_signal_handlers_disconnect_by_func (view, G_CALLBACK (view_delete_event_cb), shell);
+
+		g_object_weak_unref (G_OBJECT (view), view_weak_notify, shell);
 
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 
 	g_list_free (priv->views);
+	priv->views = NULL;
 
 	/* No unreffing for these as they are aggregate.  */
 	/* bonobo_object_unref (BONOBO_OBJECT (priv->corba_storage_registry)); */
@@ -1093,60 +1111,86 @@ destroy (GtkObject *object)
 	/* bonobo_object_unref (BONOBO_OBJECT (priv->corba_shortcuts)); */
 
 	/* FIXME.  Maybe we should do something special here.  */
-	if (priv->offline_handler != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->offline_handler));
+	if (priv->offline_handler != NULL) {
+		g_object_unref (priv->offline_handler);
+		priv->offline_handler = NULL;
+	}
+
+	if (priv->settings_dialog != NULL) {
+		gtk_widget_destroy (priv->settings_dialog);
+		priv->settings_dialog = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EShell *shell;
+	EShellPrivate *priv;
+
+	shell = E_SHELL (object);
+	priv = shell->priv;
+
+	if (priv->iid != NULL)
+		bonobo_activation_active_server_unregister (priv->iid,
+							    bonobo_object_corba_objref (BONOBO_OBJECT (shell)));
+
+	g_free (priv->local_directory);
 
 	e_free_string_list (priv->crash_type_names);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 /* Initialization.  */
 
 static void
-class_init (EShellClass *klass)
+e_shell_class_init (EShellClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	POA_GNOME_Evolution_Shell__epv *epv;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	signals[NO_VIEWS_LEFT] =
-		gtk_signal_new ("no_views_left",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EShellClass, no_views_left),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("no_views_left",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EShellClass, no_views_left),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	signals[LINE_STATUS_CHANGED] =
-		gtk_signal_new ("line_status_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EShellClass, line_status_changed),
-				gtk_marshal_NONE__ENUM,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_ENUM);
+		g_signal_new ("line_status_changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EShellClass, line_status_changed),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__INT,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_INT);
 
 	signals[NEW_VIEW_CREATED] =
-		gtk_signal_new ("new_view_created",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EShellClass, new_view_created),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("new_view_created",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EShellClass, new_view_created),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__POINTER,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_POINTER);
 
 	epv = & klass->epv;
-	epv->_get_displayName     = impl_Shell__get_displayName;
 	epv->getComponentByType   = impl_Shell_getComponentByType;
 	epv->getIconByType        = impl_Shell_getIconByType;
 	epv->createNewView        = impl_Shell_createNewView;
@@ -1158,7 +1202,7 @@ class_init (EShellClass *klass)
 }
 
 static void
-init (EShell *shell)
+e_shell_init (EShell *shell)
 {
 	EShellPrivate *priv;
 
@@ -1183,7 +1227,6 @@ init (EShell *shell)
 	priv->crash_type_names             = NULL;
 	priv->line_status                  = E_SHELL_LINE_STATUS_OFFLINE;
 	priv->settings_dialog              = NULL;
-	priv->db                           = CORBA_OBJECT_NIL;
 	priv->is_initialized               = FALSE;
 	priv->is_interactive               = FALSE;
 	priv->preparing_to_quit            = FALSE;
@@ -1212,10 +1255,9 @@ e_shell_construct (EShell *shell,
 		   gboolean show_splash,
 		   EShellStartupLineMode startup_line_mode)
 {
-	GtkWidget *splash;
+	GtkWidget *splash = NULL;
 	EShellPrivate *priv;
 	CORBA_Object corba_object;
-	CORBA_Environment ev;
 	gchar *shortcut_path;
 	gboolean start_online;
 
@@ -1236,10 +1278,9 @@ e_shell_construct (EShell *shell,
 	priv->uri_schema_registry  = e_uri_schema_registry_new ();
 	priv->storage_set          = e_storage_set_new (priv->folder_type_registry);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->storage_set), "moved_folder",
-					GTK_SIGNAL_FUNC (storage_set_moved_folder_callback),
-					shell,
-					GTK_OBJECT (shell));
+	g_signal_connect_object (priv->storage_set, "moved_folder",
+				 G_CALLBACK (storage_set_moved_folder_callback),
+				 shell, 0);
 	
 	e_folder_type_registry_register_type (priv->folder_type_registry,
 					      "noselect", "empty.gif",
@@ -1254,57 +1295,34 @@ e_shell_construct (EShell *shell,
            cannot register their own storages.  */
 	if (! setup_corba_storages (shell))
 		return FALSE;
-	
-	CORBA_exception_init (&ev);
-	
-	priv->db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	if (BONOBO_EX (&ev) || priv->db == CORBA_OBJECT_NIL) {
-		g_warning ("Cannot access Bonobo/ConfigDatabase on wombat: (%s)", ev._repo_id);
-		
-		/* Make sure the DB object is NIL so we don't mess up
-		   (`bonobo_get_object()' might return an undefined value in
-		   the case of an exception).  */
-		priv->db = CORBA_OBJECT_NIL;
-		
-		CORBA_exception_free (&ev);
-		return E_SHELL_CONSTRUCT_RESULT_NOCONFIGDB;
- 	}
-	e_setup_check_db (priv->db, local_directory);
-	
-	CORBA_exception_free (&ev);
 
+	e_setup_check_config (local_directory);
+	
 	/* Now we can register into OAF.  Notice that we shouldn't be
 	   registering into OAF until we are sure we can complete.  */
 	
 	/* FIXME: Multi-display stuff.  */
 	corba_object = bonobo_object_corba_objref (BONOBO_OBJECT (shell));
-	if (oaf_active_server_register (iid, corba_object) != OAF_REG_SUCCESS) {
-		CORBA_exception_free (&ev);
+	if (bonobo_activation_active_server_register (iid, corba_object) != Bonobo_ACTIVATION_REG_SUCCESS)
 		return E_SHELL_CONSTRUCT_RESULT_CANNOTREGISTER;
-	}
 
-	if (! show_splash) {
-		splash = NULL;
-	} else {
-		splash = e_splash_new ();
-		gtk_signal_connect (GTK_OBJECT (splash), "delete_event",
-				    GTK_SIGNAL_FUNC (gtk_widget_hide_on_delete), NULL);
+	if (show_splash
+	    && (splash = e_splash_new ())) {
+		g_signal_connect (splash, "delete_event",
+				  G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 		gtk_widget_show (splash);
 	}
-	
+
 	while (gtk_events_pending ())
 		gtk_main_iteration ();
 	
 	priv->user_creatable_items_handler = e_shell_user_creatable_items_handler_new ();
 	
-	if (show_splash)
-		setup_components (shell, E_SPLASH (splash));
-	else
-		setup_components (shell, NULL);
+	setup_components (shell, (ESplash *)splash);
 	
 	/* Set up the shortcuts.  */
 	
-	shortcut_path = g_concat_dir_and_file (local_directory, "shortcuts.xml");
+	shortcut_path = g_build_filename (local_directory, "shortcuts.xml", NULL);
 	priv->shortcuts = e_shortcuts_new_from_file (shell, shortcut_path);
 	g_assert (priv->shortcuts != NULL);
 	
@@ -1327,9 +1345,9 @@ e_shell_construct (EShell *shell,
 	
 	/* Now that we have a local storage and all the interfaces set up, we
 	   can tell the components we are here.  */
-	set_owner_on_components (shell, E_SPLASH (splash));
+	set_owner_on_components (shell, (ESplash *)splash);
 	
-	if (show_splash)
+	if (splash)
 		gtk_widget_destroy (splash);
 	
 	if (e_shell_startup_wizard_create () == FALSE) {
@@ -1343,7 +1361,7 @@ e_shell_construct (EShell *shell,
 
 	switch (startup_line_mode) {
 	case E_SHELL_STARTUP_LINE_MODE_CONFIG:
-		start_online = ! bonobo_config_get_boolean_with_default (priv->db, "/Shell/StartOffline", FALSE, NULL);
+		start_online = ! get_config_start_offline ();
 		break;
 	case E_SHELL_STARTUP_LINE_MODE_ONLINE:
 		start_online = TRUE;
@@ -1387,7 +1405,7 @@ e_shell_new (const char *local_directory,
 	g_return_val_if_fail (local_directory != NULL, NULL);
 	g_return_val_if_fail (*local_directory != '\0', NULL);
 
-	new = gtk_type_new (e_shell_get_type ());
+	new = g_object_new (e_shell_get_type (), NULL);
 
 	construct_result = e_shell_construct (new,
 					      E_SHELL_OAFIID,
@@ -1447,28 +1465,6 @@ e_shell_create_view (EShell *shell,
 	return view;
 }
 
-EShellView *
-e_shell_create_view_from_uri_and_settings (EShell *shell,
-					   const char *uri,
-					   int view_num)
-{
-	EShellView *view;
-
-	g_return_val_if_fail (shell != NULL, NULL);
-	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
-
-	view = create_view (shell, uri, NULL);
-	e_shell_view_load_settings (view, view_num);
-
-	gtk_widget_show (GTK_WIDGET (view));
-	while (gtk_events_pending ())
-		gtk_main_iteration ();
-
-	set_interactive (shell, TRUE);
-
-	return view;
-}
-
 gboolean
 e_shell_request_close_view (EShell *shell,
 			    EShellView *shell_view)
@@ -1486,7 +1482,11 @@ e_shell_request_close_view (EShell *shell,
 	if (shell->priv->preparing_to_quit)
 		return FALSE;
 
-	/* If it's the last view, ask for confirm. */
+	/* If it's the last view, save settings and ask for confirmation before
+	   quitting. */
+
+	e_shell_view_save_defaults (shell_view);
+
 	if (e_shell_prepare_for_quit (shell))
 		return TRUE;
 	else
@@ -1598,39 +1598,6 @@ e_shell_get_local_storage (EShell *shell)
 
 
 static gboolean
-save_settings_for_views (EShell *shell)
-{
-	CORBA_Environment ev;
-	EShellPrivate *priv;
-	GList *p;
-	gboolean retval;
-	int i;
-
-	priv = shell->priv;
-	retval = TRUE;
-
-	for (p = priv->views, i = 0; p != NULL; p = p->next, i++) {
-		EShellView *view;
-
-		view = E_SHELL_VIEW (p->data);
-
-		if (! e_shell_view_save_settings (view, i)) {
-			g_warning ("Cannot save settings for view -- %d", i);
-			retval = FALSE;
-		}
-	}
-
-	bonobo_config_set_long (priv->db, "/Shell/Views/NumberOfViews", 
-				g_list_length (priv->views), NULL);
-
-	CORBA_exception_init (&ev);
-	Bonobo_ConfigDatabase_sync (priv->db, &ev);
-	CORBA_exception_free (&ev);
-
-	return TRUE;
-}
-
-static gboolean
 save_settings_for_component (EShell *shell,
 			     const char *id,
 			     EvolutionShellComponentClient *client)
@@ -1641,7 +1608,7 @@ save_settings_for_component (EShell *shell,
 	char *prefix;
 	gboolean retval;
 
-	unknown_interface = bonobo_object_corba_objref (BONOBO_OBJECT (client));
+	unknown_interface = evolution_shell_component_client_corba_objref (client);
 	g_assert (unknown_interface != CORBA_OBJECT_NIL);
 
 	CORBA_exception_init (&ev);
@@ -1653,7 +1620,7 @@ save_settings_for_component (EShell *shell,
 		return TRUE;
 	}
 
-	prefix = g_strconcat ("/apps/Evolution/Shell/Components/", id, NULL);
+	prefix = g_strconcat ("/apps/evolution/shell/components/", id, NULL);
 	GNOME_Evolution_Session_saveConfiguration (session_interface, prefix, &ev);
 
 	if (ev._major == CORBA_NO_EXCEPTION)
@@ -1664,6 +1631,8 @@ save_settings_for_component (EShell *shell,
 	g_free (prefix);
 
 	CORBA_exception_free (&ev);
+
+	bonobo_object_release_unref (session_interface, NULL);
 
 	return retval;
 }
@@ -1701,13 +1670,17 @@ save_settings_for_components (EShell *shell)
 static gboolean
 save_misc_settings (EShell *shell)
 {
+	GConfClient *client;
 	EShellPrivate *priv;
 	gboolean is_offline;
 
 	priv = shell->priv;
 
 	is_offline = ( e_shell_get_line_status (shell) == E_SHELL_LINE_STATUS_OFFLINE );
-	bonobo_config_set_boolean (priv->db, "/Shell/StartOffline", is_offline, NULL);
+
+	client = gconf_client_get_default ();
+	gconf_client_set_bool (client, "/apps/evolution/shell/start_offline", is_offline, NULL);
+	g_object_unref (client);
 
 	return TRUE;
 }
@@ -1725,56 +1698,16 @@ save_misc_settings (EShell *shell)
 gboolean
 e_shell_save_settings (EShell *shell)
 {
-	gboolean views_saved;
 	gboolean components_saved;
 	gboolean misc_saved;
 
 	g_return_val_if_fail (shell != NULL, FALSE);
 	g_return_val_if_fail (E_IS_SHELL (shell), FALSE);
 
-	views_saved      = save_settings_for_views (shell);
 	components_saved = save_settings_for_components (shell);
 	misc_saved       = save_misc_settings (shell);
 
-	return views_saved && components_saved && misc_saved;
-}
-
-/**
- * e_shell_restore_from_settings:
- * @shell: An EShell object.
- * @restore_all_views: whether to restore all the views
- * 
- * Restore the existing views from the saved configuration.  The shell must
- * have no views for this to work.  If @restore_all_views is TRUE, restore all
- * the views; otherwise, just the first one.
- * 
- * Return value: %FALSE if the shell has some open views or there is no saved
- * configuration.  %TRUE if the configuration could be restored successfully.
- **/
-gboolean
-e_shell_restore_from_settings (EShell *shell,
-			       gboolean restore_all_views)
-{
-	EShellPrivate *priv;
-	int num_views;
-	int i;
-
-	g_return_val_if_fail (shell != NULL, FALSE);
-	g_return_val_if_fail (E_IS_SHELL (shell), FALSE);
-	g_return_val_if_fail (shell->priv->views == NULL, FALSE);
-
-	priv = shell->priv;
-
-	num_views = bonobo_config_get_long_with_default (priv->db, "/Shell/Views/NumberOfViews", 0, NULL);
-
-	for (i = 0; i < num_views; i++) {
-		e_shell_create_view_from_uri_and_settings (shell, NULL, i);
-
-		if (! restore_all_views)
-			break;
-	}
-
-	return (num_views > 0);
+	return components_saved && misc_saved;
 }
 
 /**
@@ -1827,7 +1760,6 @@ e_shell_component_maybe_crashed   (EShell *shell,
 				   EShellView *shell_view)
 {
 	EShellPrivate *priv;
-	GtkWindow *parent_window;
 	EvolutionShellComponentClient *component;
 	GList *p;
 
@@ -1849,7 +1781,7 @@ e_shell_component_maybe_crashed   (EShell *shell,
 
 	component = e_folder_type_registry_get_handler_for_type (priv->folder_type_registry, type_name);
 	if (component != NULL
-	    && bonobo_unknown_ping (bonobo_object_corba_objref (BONOBO_OBJECT (component))))
+	    && bonobo_unknown_ping (evolution_shell_component_client_corba_objref (component), NULL))
 		return;
 
 	/* See if that type has caused a crash already.  */
@@ -1868,19 +1800,14 @@ e_shell_component_maybe_crashed   (EShell *shell,
 
 	priv->crash_type_names = g_list_prepend (priv->crash_type_names, g_strdup (type_name));
 
-	if (shell_view == NULL)
-		parent_window = NULL;
-	else
-		parent_window = GTK_WINDOW (shell_view);
-
-	e_notice (parent_window, GNOME_MESSAGE_BOX_ERROR,
+	e_notice (shell_view, GTK_MESSAGE_ERROR,
 		  _("The Evolution component that handles folders of type \"%s\"\n"
 		    "has unexpectedly quit. You will need to quit Evolution and restart\n"
 		    "in order to access that data again."),
 		  type_name);
 
 	if (shell_view)
-		bonobo_window_deregister_dead_components (BONOBO_WINDOW (shell_view));
+		bonobo_ui_engine_deregister_dead_components (bonobo_window_get_ui_engine (BONOBO_WINDOW (shell_view)));
 
 	/* FIXME: we should probably re-start the component here */
 }
@@ -1899,7 +1826,7 @@ offline_procedure_started_cb (EShellOfflineHandler *offline_handler,
 	priv = shell->priv;
 
 	priv->line_status = E_SHELL_LINE_STATUS_GOING_OFFLINE;
-	gtk_signal_emit (GTK_OBJECT (shell), signals[LINE_STATUS_CHANGED], priv->line_status);
+	g_signal_emit (shell, signals[LINE_STATUS_CHANGED], 0, priv->line_status);
 }
 
 static void
@@ -1918,10 +1845,10 @@ offline_procedure_finished_cb (EShellOfflineHandler *offline_handler,
 	else
 		priv->line_status = E_SHELL_LINE_STATUS_ONLINE;
 
-	gtk_object_unref (GTK_OBJECT (priv->offline_handler));
+	g_object_unref (priv->offline_handler);
 	priv->offline_handler = NULL;
 
-	gtk_signal_emit (GTK_OBJECT (shell), signals[LINE_STATUS_CHANGED], priv->line_status);
+	g_signal_emit (shell, signals[LINE_STATUS_CHANGED], 0, priv->line_status);
 }
 
 /**
@@ -1968,10 +1895,10 @@ e_shell_go_offline (EShell *shell,
 
 	priv->offline_handler = e_shell_offline_handler_new (shell);
 
-	gtk_signal_connect (GTK_OBJECT (priv->offline_handler), "offline_procedure_started",
-			    GTK_SIGNAL_FUNC (offline_procedure_started_cb), shell);
-	gtk_signal_connect (GTK_OBJECT (priv->offline_handler), "offline_procedure_finished",
-			    GTK_SIGNAL_FUNC (offline_procedure_finished_cb), shell);
+	g_signal_connect (priv->offline_handler, "offline_procedure_started",
+			  G_CALLBACK (offline_procedure_started_cb), shell);
+	g_signal_connect (priv->offline_handler, "offline_procedure_finished",
+			  G_CALLBACK (offline_procedure_finished_cb), shell);
 
 	e_shell_offline_handler_put_components_offline (priv->offline_handler, action_view);
 }
@@ -2027,7 +1954,7 @@ e_shell_go_online (EShell *shell,
 	e_free_string_list (component_ids);
 
 	priv->line_status = E_SHELL_LINE_STATUS_ONLINE;
-	gtk_signal_emit (GTK_OBJECT (shell), signals[LINE_STATUS_CHANGED], priv->line_status);
+	g_signal_emit (shell, signals[LINE_STATUS_CHANGED], 0, priv->line_status);
 }
 
 
@@ -2055,27 +1982,15 @@ e_shell_send_receive (EShell *shell)
 		CORBA_exception_init (&ev);
 
 		GNOME_Evolution_ShellComponent_sendReceive
-			(bonobo_object_corba_objref (BONOBO_OBJECT (component_client)), TRUE, &ev);
+			(evolution_shell_component_client_corba_objref (component_client), TRUE, &ev);
 
 		if (BONOBO_EX (&ev))
-			g_warning ("Error invoking Send/Receive on %s -- %s", id, BONOBO_EX_ID (&ev));
+			g_warning ("Error invoking Send/Receive on %s -- %s", id, BONOBO_EX_REPOID (&ev));
 
 		CORBA_exception_free (&ev);
 	}
 
 	e_free_string_list (id_list);
-}
-
-static void
-settings_dialog_destroy_cb (GtkWidget *widget, void *data)
-{
-	EShell *shell;
-	EShellPrivate *priv;
-	
-	shell = E_SHELL (data);
-	priv = shell->priv;
-	
-	priv->settings_dialog = NULL;
 }
 
 void
@@ -2085,7 +2000,6 @@ e_shell_show_settings (EShell *shell, const char *type, EShellView *shell_view)
 	
 	g_return_if_fail (shell != NULL);
 	g_return_if_fail (E_IS_SHELL (shell));
-	g_return_if_fail (type != NULL);
 
 	priv = shell->priv;
 	
@@ -2096,23 +2010,16 @@ e_shell_show_settings (EShell *shell, const char *type, EShellView *shell_view)
 	}
 	
 	priv->settings_dialog = e_shell_settings_dialog_new ();
-	e_shell_settings_dialog_show_type (E_SHELL_SETTINGS_DIALOG (priv->settings_dialog), type);
 
-	gtk_signal_connect (GTK_OBJECT (priv->settings_dialog), "destroy",
-			    GTK_SIGNAL_FUNC (settings_dialog_destroy_cb), shell);
+	if (type != NULL)
+		e_shell_settings_dialog_show_type (E_SHELL_SETTINGS_DIALOG (priv->settings_dialog), type);
+
+	g_object_add_weak_pointer (G_OBJECT (priv->settings_dialog), (void **) & priv->settings_dialog);
 
 	gtk_widget_show (priv->settings_dialog);
 }
 
 
-Bonobo_ConfigDatabase 
-e_shell_get_config_db (EShell *shell)
-{
-	g_return_val_if_fail (E_IS_SHELL (shell), CORBA_OBJECT_NIL);
-
-	return shell->priv->db;
-}
-
 EComponentRegistry *
 e_shell_get_component_registry (EShell *shell)
 {
@@ -2147,24 +2054,8 @@ e_shell_unregister_all (EShell *shell)
 
 	priv->is_initialized = FALSE;
 
-	gtk_object_unref (GTK_OBJECT (priv->component_registry));
+	g_object_unref (priv->component_registry);
 	priv->component_registry = NULL;
-}
-
-void
-e_shell_disconnect_db (EShell *shell)
-{
-	EShellPrivate *priv;
-
-	g_return_if_fail (E_IS_SHELL (shell));
-
-	priv = shell->priv;
-
-	if (priv->db == CORBA_OBJECT_NIL)
-		return;
-
-	bonobo_object_release_unref (priv->db, NULL);
-	priv->db = CORBA_OBJECT_NIL;
 }
 
 
@@ -2261,12 +2152,12 @@ parse_default_uri (EShell *shell,
 		   char **path_return,
 		   char **extra_return)
 {
+	GConfClient *client;
 	const char *component_start;
-	const char *component;
+	char *component;
 	const char *p;
-	char *db_path;
+	char *config_path;
 	char *path;
-	gboolean is_default;
 
 	component_start = uri + E_SHELL_DEFAULTURI_PREFIX_LEN;
 	p = strchr (uri, '#');
@@ -2276,13 +2167,22 @@ parse_default_uri (EShell *shell,
 	else
 		component = g_strndup (component_start, p - component_start);
 
-	db_path = g_strdup_printf ("/DefaultFolders/%s_path", component);
-	path = bonobo_config_get_string_with_default (e_shell_get_config_db (shell),
-						      db_path, NULL, &is_default);
+	if (strchr (component, '/') != NULL) {
+		g_free (component);
+		return FALSE;
+	}
+
+	client = gconf_client_get_default ();
+
+	config_path = g_strdup_printf ("/apps/evolution/shell/default_folders/%s_path", component);
+	path = gconf_client_get_string (client, config_path, NULL);
+	g_object_unref (client);
+	g_free (component);
+	g_free (config_path);
 
 	/* We expect an evolution: URI here, if we don't get it then something
 	   is messed up.  */
-	if (strncmp (path, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) != 0 || is_default) {
+	if (path == NULL || strncmp (path, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) != 0) {
 		g_free (path);
 		if (path_return != NULL)
 			*path_return = NULL;
@@ -2301,6 +2201,7 @@ parse_default_uri (EShell *shell,
 			*extra_return = g_strdup (p + 1);
 	}
 
+	g_free (path);
 	return TRUE;
 }
 
@@ -2352,7 +2253,7 @@ e_shell_parse_uri (EShell *shell,
 }
 
 
-E_MAKE_X_TYPE (e_shell, "EShell", EShell,
-	       class_init, init, PARENT_TYPE,
-	       POA_GNOME_Evolution_Shell__init,
-	       GTK_STRUCT_OFFSET (EShellClass, epv));
+BONOBO_TYPE_FUNC_FULL (EShell,
+		       GNOME_Evolution_Shell,
+		       PARENT_TYPE,
+		       e_shell)

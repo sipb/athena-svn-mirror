@@ -31,10 +31,10 @@
 #include <gtkhtml/htmltokenizer.h>
 
 #define E_TYPE_SEARCHING_TOKENIZER        (e_searching_tokenizer_get_type ())
-#define E_SEARCHING_TOKENIZER(o)          (GTK_CHECK_CAST ((o), E_TYPE_SEARCHING_TOKENIZER, ESearchingTokenizer))
-#define E_SEARCHING_TOKENIZER_CLASS(k)    (GTK_CHECK_CLASS_CAST ((k), E_TYPE_SEARCHING_TOKENIZER, ESearchingTokenizerClass))
-#define E_IS_SEARCHING_TOKENIZER(o)       (GTK_CHECK_TYPE ((o), E_TYPE_SEARCHING_TOKENIZER))
-#define E_IS_SEARCHING_TOKENIZER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_TYPE_SEARCHING_TOKENIZER))
+#define E_SEARCHING_TOKENIZER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_SEARCHING_TOKENIZER, ESearchingTokenizer))
+#define E_SEARCHING_TOKENIZER_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_SEARCHING_TOKENIZER, ESearchingTokenizerClass))
+#define E_IS_SEARCHING_TOKENIZER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_SEARCHING_TOKENIZER))
+#define E_IS_SEARCHING_TOKENIZER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_SEARCHING_TOKENIZER))
 
 typedef struct _ESearchingTokenizer ESearchingTokenizer;
 typedef struct _ESearchingTokenizerClass ESearchingTokenizerClass;
@@ -43,33 +43,32 @@ struct _ESearchingTokenizerPrivate;
 
 struct _ESearchingTokenizer {
 	HTMLTokenizer parent;
-
+	
 	struct _ESearchingTokenizerPrivate *priv;
 };
 
 struct _ESearchingTokenizerClass {
 	HTMLTokenizerClass parent_class;
-
+	
 	void (*match) (ESearchingTokenizer *);
 };
 
-GtkType e_searching_tokenizer_get_type (void);
+GType e_searching_tokenizer_get_type (void);
 
 HTMLTokenizer *e_searching_tokenizer_new (void);
 
 /* For now, just a simple API */
 
-void e_searching_tokenizer_set_primary_search_string    (ESearchingTokenizer *, const gchar *);
-void e_searching_tokenizer_add_primary_search_string    (ESearchingTokenizer *, const gchar *);
+void e_searching_tokenizer_set_primary_search_string    (ESearchingTokenizer *, const char *);
+void e_searching_tokenizer_add_primary_search_string    (ESearchingTokenizer *, const char *);
 void e_searching_tokenizer_set_primary_case_sensitivity (ESearchingTokenizer *, gboolean is_case_sensitive);
 
-void e_searching_tokenizer_set_secondary_search_string    (ESearchingTokenizer *, const gchar *);
-void e_searching_tokenizer_add_secondary_search_string (ESearchingTokenizer *st, const gchar *search_str);
+void e_searching_tokenizer_set_secondary_search_string    (ESearchingTokenizer *, const char *);
+void e_searching_tokenizer_add_secondary_search_string (ESearchingTokenizer *st, const char *search_str);
 void e_searching_tokenizer_set_secondary_case_sensitivity (ESearchingTokenizer *, gboolean is_case_sensitive);
 
 
-gint e_searching_tokenizer_match_count          (ESearchingTokenizer *);
+int e_searching_tokenizer_match_count          (ESearchingTokenizer *);
 
 
 #endif /* __E_SEARCHING_TOKENIZER_H__ */
-

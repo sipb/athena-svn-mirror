@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,149 +168,110 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-bin_SCRIPTS =  	csv2vcard				evolution-move-tasks			evolution-addressbook-clean		killev
+privlibexec_SCRIPTS =  	csv2vcard				evolution-addressbook-clean
 
 
-bin_PROGRAMS =  	evolution-addressbook-import		evolution-addressbook-export		evolution-launch-composer
+privlibexec_PROGRAMS =  	evolution-addressbook-import		killev
 
 
 noinst_PROGRAMS = evolution-addressbook-abuse
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"evolution-tools\"			-I$(top_srcdir)						-I$(top_builddir)					-DEVOLUTION_BINDIR=\""$(bindir)"\"			-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		-I$(top_srcdir)/addressbook				-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			$(GNOME_FULL_CFLAGS)
+INCLUDES =  	-DG_LOG_DOMAIN=\"evolution-tools\"			-I$(top_srcdir)						-I$(top_builddir)					-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		-DPREFIX=\""$(prefix)"\"				-DSYSCONFDIR=\""$(sysconfdir)"\"			-DDATADIR=\""$(datadir)"\"				-DLIBDIR=\""$(libdir)"\"				-I$(top_srcdir)/addressbook				-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED		$(GNOME_FULL_CFLAGS)
+
+
+EXTRA_DIST = $(privlibexec_SCRIPTS) verify-evolution-install.sh 	evolution-addressbook-clean.in
 
 
 CORBA_SOURCE =          Evolution-Composer.h                    Evolution-Composer-common.c             Evolution-Composer-skels.c              Evolution-Composer-stubs.c
 
 
-idls =  	$(top_srcdir)/composer/Evolution-Composer.idl
-
-
-idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
-
 BUILT_SOURCES = $(CORBA_SOURCE)
 
-EXTRA_DIST = $(bin_SCRIPTS) verify-evolution-install.sh 	evolution-addressbook-clean.in
+idls =          $(top_srcdir)/composer/Evolution-Composer.idl
 
 
-evolution_launch_composer_SOURCES =  	$(CORBA_SOURCE)						evolution-launch-composer.c
-
-
-evolution_launch_composer_LDADD =  	$(GNOME_FULL_LIBS)						$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/camel/libcamel.la				$(top_builddir)/e-util/ename/libename.la			$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/libeutil.la				$(top_builddir)/widgets/menus/libmenus.la
-
-
-evolution_addressbook_import_LDADD =  	$(GNOME_FULL_LIBS)						$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/camel/libcamel.la				$(top_builddir)/e-util/ename/libename.la			$(top_builddir)/libversit/libversit.a				$(top_builddir)/e-util/libeutil.la				$(top_builddir)/widgets/menus/libmenus.la
-
-
-evolution_addressbook_export_LDADD =  	$(evolution_addressbook_import_LDADD)
+evolution_addressbook_import_LDADD =  	$(GNOME_FULL_LIBS)						$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/widgets/menus/libmenus.la
 
 
 evolution_addressbook_abuse_LDADD =  	$(evolution_addressbook_import_LDADD)
+
+
+killev_SOURCES =  	killev.c
+
+
+killev_LDADD =  	$(top_builddir)/e-util/libeutil.la
 
 
 CLEANFILES = evolution-addressbook-clean $(BUILT_SOURCES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  evolution-addressbook-import$(EXEEXT) \
-evolution-addressbook-export$(EXEEXT) \
-evolution-launch-composer$(EXEEXT)
 noinst_PROGRAMS =  evolution-addressbook-abuse$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
+privlibexec_PROGRAMS =  evolution-addressbook-import$(EXEEXT) \
+killev$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS) $(privlibexec_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-evolution_addressbook_import_SOURCES = evolution-addressbook-import.c
-evolution_addressbook_import_OBJECTS =  \
-evolution-addressbook-import.$(OBJEXT)
-evolution_addressbook_import_DEPENDENCIES =  \
-$(top_builddir)/addressbook/backend/ebook/libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la \
-$(top_builddir)/widgets/menus/libmenus.la
-evolution_addressbook_import_LDFLAGS = 
-evolution_addressbook_export_SOURCES = evolution-addressbook-export.c
-evolution_addressbook_export_OBJECTS =  \
-evolution-addressbook-export.$(OBJEXT)
-evolution_addressbook_export_DEPENDENCIES =  \
-$(top_builddir)/addressbook/backend/ebook/libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la \
-$(top_builddir)/widgets/menus/libmenus.la
-evolution_addressbook_export_LDFLAGS = 
-evolution_launch_composer_OBJECTS =  Evolution-Composer-common.$(OBJEXT) \
-Evolution-Composer-skels.$(OBJEXT) Evolution-Composer-stubs.$(OBJEXT) \
-evolution-launch-composer.$(OBJEXT)
-evolution_launch_composer_DEPENDENCIES =  \
-$(top_builddir)/addressbook/backend/ebook/libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la \
-$(top_builddir)/widgets/menus/libmenus.la
-evolution_launch_composer_LDFLAGS = 
 evolution_addressbook_abuse_SOURCES = evolution-addressbook-abuse.c
 evolution_addressbook_abuse_OBJECTS =  \
 evolution-addressbook-abuse.$(OBJEXT)
 evolution_addressbook_abuse_DEPENDENCIES =  \
 $(top_builddir)/addressbook/backend/ebook/libebook.la \
-$(top_builddir)/camel/libcamel.la \
-$(top_builddir)/e-util/ename/libename.la \
-$(top_builddir)/libversit/libversit.a \
-$(top_builddir)/e-util/libeutil.la \
 $(top_builddir)/widgets/menus/libmenus.la
 evolution_addressbook_abuse_LDFLAGS = 
-SCRIPTS =  $(bin_SCRIPTS)
+evolution_addressbook_import_SOURCES = evolution-addressbook-import.c
+evolution_addressbook_import_OBJECTS =  \
+evolution-addressbook-import.$(OBJEXT)
+evolution_addressbook_import_DEPENDENCIES =  \
+$(top_builddir)/addressbook/backend/ebook/libebook.la \
+$(top_builddir)/widgets/menus/libmenus.la
+evolution_addressbook_import_LDFLAGS = 
+killev_OBJECTS =  killev.$(OBJEXT)
+killev_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
+killev_LDFLAGS = 
+SCRIPTS =  $(privlibexec_SCRIPTS)
 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -332,8 +285,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = evolution-addressbook-import.c evolution-addressbook-export.c $(evolution_launch_composer_SOURCES) evolution-addressbook-abuse.c
-OBJECTS = evolution-addressbook-import.$(OBJEXT) evolution-addressbook-export.$(OBJEXT) $(evolution_launch_composer_OBJECTS) evolution-addressbook-abuse.$(OBJEXT)
+SOURCES = evolution-addressbook-abuse.c evolution-addressbook-import.c $(killev_SOURCES)
+OBJECTS = evolution-addressbook-abuse.$(OBJEXT) evolution-addressbook-import.$(OBJEXT) $(killev_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -346,31 +299,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
-
 mostlyclean-noinstPROGRAMS:
 
 clean-noinstPROGRAMS:
@@ -379,6 +307,31 @@ clean-noinstPROGRAMS:
 distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
+
+mostlyclean-privlibexecPROGRAMS:
+
+clean-privlibexecPROGRAMS:
+	-test -z "$(privlibexec_PROGRAMS)" || rm -f $(privlibexec_PROGRAMS)
+
+distclean-privlibexecPROGRAMS:
+
+maintainer-clean-privlibexecPROGRAMS:
+
+install-privlibexecPROGRAMS: $(privlibexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(privlibexecdir)
+	@list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-privlibexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(privlibexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(privlibexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
 
 .c.o:
 	$(COMPILE) -c $<
@@ -424,39 +377,35 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-evolution-addressbook-import$(EXEEXT): $(evolution_addressbook_import_OBJECTS) $(evolution_addressbook_import_DEPENDENCIES)
-	@rm -f evolution-addressbook-import$(EXEEXT)
-	$(LINK) $(evolution_addressbook_import_LDFLAGS) $(evolution_addressbook_import_OBJECTS) $(evolution_addressbook_import_LDADD) $(LIBS)
-
-evolution-addressbook-export$(EXEEXT): $(evolution_addressbook_export_OBJECTS) $(evolution_addressbook_export_DEPENDENCIES)
-	@rm -f evolution-addressbook-export$(EXEEXT)
-	$(LINK) $(evolution_addressbook_export_LDFLAGS) $(evolution_addressbook_export_OBJECTS) $(evolution_addressbook_export_LDADD) $(LIBS)
-
-evolution-launch-composer$(EXEEXT): $(evolution_launch_composer_OBJECTS) $(evolution_launch_composer_DEPENDENCIES)
-	@rm -f evolution-launch-composer$(EXEEXT)
-	$(LINK) $(evolution_launch_composer_LDFLAGS) $(evolution_launch_composer_OBJECTS) $(evolution_launch_composer_LDADD) $(LIBS)
-
 evolution-addressbook-abuse$(EXEEXT): $(evolution_addressbook_abuse_OBJECTS) $(evolution_addressbook_abuse_DEPENDENCIES)
 	@rm -f evolution-addressbook-abuse$(EXEEXT)
 	$(LINK) $(evolution_addressbook_abuse_LDFLAGS) $(evolution_addressbook_abuse_OBJECTS) $(evolution_addressbook_abuse_LDADD) $(LIBS)
 
-install-binSCRIPTS: $(bin_SCRIPTS)
+evolution-addressbook-import$(EXEEXT): $(evolution_addressbook_import_OBJECTS) $(evolution_addressbook_import_DEPENDENCIES)
+	@rm -f evolution-addressbook-import$(EXEEXT)
+	$(LINK) $(evolution_addressbook_import_LDFLAGS) $(evolution_addressbook_import_OBJECTS) $(evolution_addressbook_import_LDADD) $(LIBS)
+
+killev$(EXEEXT): $(killev_OBJECTS) $(killev_DEPENDENCIES)
+	@rm -f killev$(EXEEXT)
+	$(LINK) $(killev_LDFLAGS) $(killev_OBJECTS) $(killev_LDADD) $(LIBS)
+
+install-privlibexecSCRIPTS: $(privlibexec_SCRIPTS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(privlibexecdir)
+	@list='$(privlibexec_SCRIPTS)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed '$(transform)'`; \
 	  else if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
-	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(privlibexecdir)/`echo $$p|sed '$(transform)'`; \
 	  else :; fi; fi; \
 	done
 
-uninstall-binSCRIPTS:
+uninstall-privlibexecSCRIPTS:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_SCRIPTS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	list='$(privlibexec_SCRIPTS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(privlibexecdir)/`echo $$p|sed '$(transform)'`; \
 	done
 
 tags: TAGS
@@ -503,7 +452,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 evolution-addressbook-abuse.o: evolution-addressbook-abuse.c ../config.h \
 	../addressbook/backend/ebook/e-book-util.h \
 	../addressbook/backend/ebook/e-book.h \
@@ -514,7 +462,8 @@ evolution-addressbook-abuse.o: evolution-addressbook-abuse.c ../config.h \
 	../addressbook/backend/ebook/addressbook.h \
 	../addressbook/backend/ebook/e-book-view.h \
 	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
+	../addressbook/backend/ebook/e-book-types.h \
+	../e-util/e-config-listener.h
 evolution-addressbook-export.o: evolution-addressbook-export.c \
 	../config.h ../addressbook/backend/ebook/e-book-util.h \
 	../addressbook/backend/ebook/e-book.h \
@@ -525,7 +474,8 @@ evolution-addressbook-export.o: evolution-addressbook-export.c \
 	../addressbook/backend/ebook/addressbook.h \
 	../addressbook/backend/ebook/e-book-view.h \
 	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
+	../addressbook/backend/ebook/e-book-types.h \
+	../e-util/e-config-listener.h
 evolution-addressbook-import.o: evolution-addressbook-import.c \
 	../config.h ../addressbook/backend/ebook/e-book-util.h \
 	../addressbook/backend/ebook/e-book.h \
@@ -536,15 +486,14 @@ evolution-addressbook-import.o: evolution-addressbook-import.c \
 	../addressbook/backend/ebook/addressbook.h \
 	../addressbook/backend/ebook/e-book-view.h \
 	../addressbook/backend/ebook/e-book-view-listener.h \
-	../addressbook/backend/ebook/e-book-types.h
-Evolution-Composer-common.o: Evolution-Composer-common.c \
-	Evolution-Composer.h
-Evolution-Composer-skels.o: Evolution-Composer-skels.c \
-	Evolution-Composer.h
-Evolution-Composer-stubs.o: Evolution-Composer-stubs.c \
-	Evolution-Composer.h
+	../addressbook/backend/ebook/e-book-types.h \
+	../e-util/e-config-listener.h
+Evolution-Composer-common.o: Evolution-Composer-common.c
+Evolution-Composer-skels.o: Evolution-Composer-skels.c
+Evolution-Composer-stubs.o: Evolution-Composer-stubs.c
 evolution-launch-composer.o: evolution-launch-composer.c ../config.h \
 	Evolution-Composer.h
+killev.o: killev.c ../config.h ../e-util/e-lang-utils.h
 
 info-am:
 info: info-am
@@ -554,7 +503,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS install-binSCRIPTS
+install-exec-am: install-privlibexecPROGRAMS install-privlibexecSCRIPTS
 install-exec: install-exec-am
 
 install-data-am:
@@ -563,14 +512,15 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS
+uninstall-am: uninstall-privlibexecPROGRAMS uninstall-privlibexecSCRIPTS
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(SCRIPTS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(bindir)
+	$(mkinstalldirs)  $(DESTDIR)$(privlibexecdir) \
+		$(DESTDIR)$(privlibexecdir)
 
 
 mostlyclean-generic:
@@ -584,26 +534,27 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-noinstPROGRAMS \
-		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-generic
+mostlyclean-am:  mostlyclean-noinstPROGRAMS \
+		mostlyclean-privlibexecPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-noinstPROGRAMS clean-compile \
+clean-am:  clean-noinstPROGRAMS clean-privlibexecPROGRAMS clean-compile \
 		clean-libtool clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-noinstPROGRAMS \
+distclean-am:  distclean-noinstPROGRAMS distclean-privlibexecPROGRAMS \
 		distclean-compile distclean-libtool distclean-tags \
 		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
-		maintainer-clean-noinstPROGRAMS \
+maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
+		maintainer-clean-privlibexecPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -612,16 +563,17 @@ maintainer-clean-am:  maintainer-clean-binPROGRAMS \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
-mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
+.PHONY: mostlyclean-noinstPROGRAMS distclean-noinstPROGRAMS \
 clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
+mostlyclean-privlibexecPROGRAMS distclean-privlibexecPROGRAMS \
+clean-privlibexecPROGRAMS maintainer-clean-privlibexecPROGRAMS \
+uninstall-privlibexecPROGRAMS install-privlibexecPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-binSCRIPTS \
-install-binSCRIPTS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
+clean-libtool maintainer-clean-libtool uninstall-privlibexecSCRIPTS \
+install-privlibexecSCRIPTS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
@@ -629,13 +581,10 @@ mostlyclean distclean maintainer-clean
 
 
 $(CORBA_SOURCE): $(idls)
-	$(ORBIT_IDL) -I $(srcdir) $(idls) $(idl_flags)
-
-dist-hook:
-	cd $(distdir); rm -f $(BUILT_SOURCES)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(idls)
 
 evolution-addressbook-clean: evolution-addressbook-clean.in Makefile
-	sed -e 's?\@EVOLUTION_BINDIR\@?$(bindir)?g' \
+	sed -e 's?\@EVOLUTION_TOOLSDIR\@?$(privlibexecdir)?g' \
 	   < $(srcdir)/evolution-addressbook-clean.in > evolution-addressbook-clean.tmp \
 	  && mv evolution-addressbook-clean.tmp evolution-addressbook-clean
 

@@ -10,10 +10,10 @@
 #include "mail-types.h"
 
 #define MESSAGE_LIST_TYPE        (message_list_get_type ())
-#define MESSAGE_LIST(o)          (GTK_CHECK_CAST ((o), MESSAGE_LIST_TYPE, MessageList))
-#define MESSAGE_LIST_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MESSAGE_LIST_TYPE, MessageListClass))
-#define IS_MESSAGE_LIST(o)       (GTK_CHECK_TYPE ((o), MESSAGE_LIST_TYPE))
-#define IS_MESSAGE_LIST_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MESSAGE_LIST_TYPE))
+#define MESSAGE_LIST(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MESSAGE_LIST_TYPE, MessageList))
+#define MESSAGE_LIST_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MESSAGE_LIST_TYPE, MessageListClass))
+#define IS_MESSAGE_LIST(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MESSAGE_LIST_TYPE))
+#define IS_MESSAGE_LIST_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MESSAGE_LIST_TYPE))
 
 enum {
 	COL_MESSAGE_STATUS,
@@ -72,17 +72,21 @@ struct _MessageList {
 	/* IMPORTANT: You MUST have obtained the hide lock, to operate on this data */
 	GHashTable	 *hidden;
 	struct _EMemPool *hidden_pool;
-	int hide_unhidden, /* total length, before hiding */
-		hide_before, hide_after; /* hide ranges of messages */
-
+	int hide_unhidden;           /* total length, before hiding */
+	int hide_before, hide_after; /* hide ranges of messages */
+	
 	/* Current search string, or %NULL */
 	char *search;
-
+	
 	/* Are we displaying threaded view? */
-	gboolean threaded;
+	guint threaded : 1;
+	
 	/* do we automatically hide deleted messages? */
-	gboolean hidedeleted;
-
+	guint hidedeleted : 1;
+	
+	/* is the message-list object in a destroyed state? */
+	guint destroyed : 1;
+	
 	/* Where the ETree cursor is. */
 	int cursor_row;
 	char *cursor_uid;
@@ -153,6 +157,8 @@ void	       message_list_hide_clear(MessageList *ml);
 void	       message_list_set_threaded(MessageList *ml, gboolean threaded);
 void	       message_list_set_hidedeleted(MessageList *ml, gboolean hidedeleted);
 void	       message_list_set_search(MessageList *ml, const char *search);
+
+void           message_list_save_state (MessageList *ml);
 
 #define MESSAGE_LIST_LOCK(m, l) g_mutex_lock(((MessageList *)m)->l)
 #define MESSAGE_LIST_UNLOCK(m, l) g_mutex_unlock(((MessageList *)m)->l)

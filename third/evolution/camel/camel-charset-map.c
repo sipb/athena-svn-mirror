@@ -3,9 +3,10 @@
 /* 
  * Authors:
  *   Michael Zucchi <notzed@ximian.com>
+ *   Jeffrey Stedfast <fejj@ximian.com>
  *   Dan Winship <danw@ximian.com>
  *
- * Copyright 2000, 2001 Ximian, Inc. (www.ximian.com)
+ * Copyright 2000, 2003 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of version 2 of the GNU General Public 
@@ -22,12 +23,15 @@
  * USA
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 /*
   if you want to build the charset map, compile this with something like:
@@ -199,17 +203,17 @@ int main (void)
 
 #include "camel-charset-map.h"
 #include "camel-charset-map-private.h"
-#include "hash-table-utils.h"
-#include <gal/unicode/gunicode.h>
-#include <locale.h>
-#include <string.h>
-#include <ctype.h>
+#include "string-utils.h"
+
 #include <glib.h>
+#include <glib/gunicode.h>
+#include <locale.h>
+#include <ctype.h>
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 #endif
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
+#ifdef HAVE_CODESET
+#include <langinfo.h>
 #endif
 
 void
@@ -297,7 +301,7 @@ camel_charset_best (const char *in, int len)
 
 /**
  * camel_charset_iso_to_windows:
- * @isocharset: an ISO charset
+ * @isocharset: a canonicalised ISO charset
  *
  * Returns the equivalent Windows charset.
  **/
@@ -351,4 +355,3 @@ camel_charset_iso_to_windows (const char *isocharset)
 }
 
 #endif /* !BUILD_MAP */
-

@@ -40,7 +40,6 @@
 
 #include <glib.h>
 #include <gdk/gdki18n.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
 
@@ -53,8 +52,9 @@ static void e_clipped_label_size_allocate (GtkWidget *widget,
 static gint e_clipped_label_expose (GtkWidget      *widget,
 				    GdkEventExpose *event);
 static void e_clipped_label_recalc_chars_displayed (EClippedLabel *label);
-static void e_clipped_label_destroy                (GtkObject *object);
+static void e_clipped_label_finalize               (GObject *object);
 
+static void build_layout (EClippedLabel *label, const char *text);
 
 static GtkMiscClass *parent_class;
 
@@ -83,7 +83,7 @@ e_clipped_label_get_type (void)
 			(GtkClassInitFunc) NULL
 		};
 
-		parent_class = gtk_type_class (GTK_TYPE_MISC);
+		parent_class = g_type_class_ref(GTK_TYPE_MISC);
 		e_clipped_label_type = gtk_type_unique (GTK_TYPE_MISC,
 							&e_clipped_label_info);
 	}
@@ -95,10 +95,10 @@ e_clipped_label_get_type (void)
 static void
 e_clipped_label_class_init (EClippedLabelClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 
-	object_class = (GtkObjectClass *) class;
+	object_class = (GObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 
 	/* Method override */
@@ -106,7 +106,7 @@ e_clipped_label_class_init (EClippedLabelClass *class)
  	widget_class->size_allocate	= e_clipped_label_size_allocate;
 	widget_class->expose_event	= e_clipped_label_expose;
 
-	object_class->destroy           = e_clipped_label_destroy;
+	object_class->finalize          = e_clipped_label_finalize;
 
 	e_clipped_label_ellipsis = _("...");
 }
@@ -118,7 +118,6 @@ e_clipped_label_init (EClippedLabel *label)
 	GTK_WIDGET_SET_FLAGS (label, GTK_NO_WINDOW);
 
 	label->label = NULL;
-	label->label_wc = NULL;
 	label->chars_displayed = E_CLIPPED_LABEL_NEED_RECALC;
 }
 
@@ -132,35 +131,66 @@ e_clipped_label_init (EClippedLabel *label)
  * Creates a new #EClippedLabel with the given text.
  **/
 GtkWidget *
-e_clipped_label_new (const gchar *text)
+e_clipped_label_new (const gchar *text,
+		     PangoWeight font_weight,
+		     gfloat font_size)
 {
 	GtkWidget *label;
+	EClippedLabel *clipped;
 
 	label = GTK_WIDGET (gtk_type_new (e_clipped_label_get_type ()));
 
+	clipped = E_CLIPPED_LABEL (label);
+
+	clipped->font_size = font_size;
+	clipped->font_weight = font_weight;
+	clipped->layout = NULL;
+
+	build_layout (clipped, e_clipped_label_ellipsis);
+	pango_layout_get_pixel_size (clipped->layout, &clipped->ellipsis_width, NULL);
+
 	if (text && *text)
-		e_clipped_label_set_text (E_CLIPPED_LABEL (label), text);
+		e_clipped_label_set_text (clipped, text);
 
 	return label;
 }
 
+static void
+build_layout (EClippedLabel *label, const char *text)
+{
+	if (!label->layout) {
+		GtkStyle *style = gtk_widget_get_style (GTK_WIDGET (label));
+		PangoFontDescription *desc = pango_font_description_copy (style->font_desc);
+
+		label->layout = gtk_widget_create_pango_layout (GTK_WIDGET (label), text);
+
+		pango_font_description_set_size (desc, pango_font_description_get_size (desc) * label->font_size);
+		
+		pango_font_description_set_weight (desc, label->font_weight);
+		pango_layout_set_font_description (label->layout, desc);
+		pango_font_description_free (desc);
+	}
+
+	pango_layout_set_text (label->layout, text, -1);
+}
 
 static void
 e_clipped_label_size_request (GtkWidget      *widget,
 			      GtkRequisition *requisition)
 {
 	EClippedLabel *label;
-	GdkFont *font;
-  
+	int height;
+	int width;
+
 	g_return_if_fail (E_IS_CLIPPED_LABEL (widget));
 	g_return_if_fail (requisition != NULL);
   
 	label = E_CLIPPED_LABEL (widget);
-	font = widget->style->font;
+
+	pango_layout_get_pixel_size (label->layout, &width, &height);
 
 	requisition->width = 0;
-	requisition->height = font->ascent + font->descent
-		+ 2 * GTK_MISC (widget)->ypad;
+	requisition->height = height + 2 * GTK_MISC (widget)->ypad;
 }
 
 
@@ -185,16 +215,14 @@ e_clipped_label_expose (GtkWidget      *widget,
 {
 	EClippedLabel *label;
 	GtkMisc *misc;
-	gint x, y;
-	GdkFont *font;
-	gchar *tmp_str, tmp_ch;
+	gint x;
+	PangoRectangle rect;
 
 	g_return_val_if_fail (E_IS_CLIPPED_LABEL (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
   
 	label = E_CLIPPED_LABEL (widget);
 	misc = GTK_MISC (widget);
-	font = widget->style->font;
 
 	/* If the label isn't visible or has no text, just return. */
 	if (!GTK_WIDGET_VISIBLE (widget) || !GTK_WIDGET_MAPPED (widget)
@@ -212,11 +240,8 @@ e_clipped_label_expose (GtkWidget      *widget,
 				   &event->area);
 	gdk_gc_set_clip_rectangle (widget->style->fg_gc[widget->state],
 				   &event->area);
-      
-	y = floor (widget->allocation.y + (gint)misc->ypad 
-		   + (((gint)widget->allocation.height - 2 * (gint)misc->ypad
-		       - (gint)font->ascent - font->descent)
-		      * misc->yalign) + 0.5) + font->ascent;
+
+	pango_layout_get_pixel_extents (label->layout, &rect, NULL);
 
 	if (label->chars_displayed == E_CLIPPED_LABEL_SHOW_ENTIRE_LABEL) {
 		x = floor (widget->allocation.x + (gint)misc->xpad
@@ -224,29 +249,34 @@ e_clipped_label_expose (GtkWidget      *widget,
 			       (gint)label->label_width - 2 * (gint)misc->xpad)
 			      * misc->xalign) + 0.5);
 
-		gtk_paint_string (widget->style, widget->window, widget->state,
-				  &event->area, widget, "label", 
-				  x, y, label->label);
+		gdk_draw_layout (widget->window, widget->style->fg_gc[widget->state],
+				 x, label->label_y, label->layout);
 	} else {
+		int layout_width;
+
 		x = widget->allocation.x + (gint)misc->xpad;
 
-		tmp_ch = label->label_wc[label->chars_displayed];
-		label->label_wc[label->chars_displayed] = '\0';
-		tmp_str = gdk_wcstombs (label->label_wc);
-		if (tmp_str) {
-			gtk_paint_string (widget->style, widget->window,
-					  widget->state, &event->area,
-					  widget, "label", 
-					  x, y, tmp_str);
-			g_free (tmp_str);
-		}
-		label->label_wc[label->chars_displayed] = tmp_ch;
+		/* trim the layout to the number of characters we're displaying */
+		pango_layout_set_text (label->layout, label->label, label->chars_displayed);
 
+		/* draw it */
+		gdk_draw_layout (widget->window, widget->style->fg_gc[widget->state],
+				 x, label->label_y, label->layout);
+
+		pango_layout_get_pixel_size (label->layout, &layout_width, NULL);
+
+		/* offset the X position for the ellipsis */
 		x = widget->allocation.x + (gint)misc->xpad
 			+ label->ellipsis_x;
-		gtk_paint_string (widget->style, widget->window, widget->state,
-				  &event->area, widget, "label", 
-				  x, y, e_clipped_label_ellipsis);
+
+		/* then draw the ellipsis */
+		pango_layout_set_text (label->layout, e_clipped_label_ellipsis, strlen (e_clipped_label_ellipsis));
+
+		gdk_draw_layout (widget->window, widget->style->fg_gc[widget->state],
+				 x, label->label_y, label->layout);
+		
+		/* then reset the layout to our original label text */
+		pango_layout_set_text (label->layout, label->label, -1);
 	}
 
 	gdk_gc_set_clip_mask (widget->style->white_gc, NULL);
@@ -257,7 +287,7 @@ e_clipped_label_expose (GtkWidget      *widget,
 
 
 static void
-e_clipped_label_destroy (GtkObject *object)
+e_clipped_label_finalize (GObject *object)
 {
 	EClippedLabel *label;
 
@@ -266,10 +296,10 @@ e_clipped_label_destroy (GtkObject *object)
 	label = E_CLIPPED_LABEL(object);
 
 	g_free (label->label);
-	g_free (label->label_wc);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	g_object_unref (label->layout);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -302,25 +332,17 @@ void
 e_clipped_label_set_text (EClippedLabel *label,
 			  const gchar *text)
 {
-	gint len;
-
 	g_return_if_fail (E_IS_CLIPPED_LABEL (label));
 
 	if (label->label != text || !label->label || !text
 	    || strcmp (label->label, text)) {
 		g_free (label->label);
-		g_free (label->label_wc);
 		label->label = NULL;
-		label->label_wc = NULL;
 
-		if (text) {
+		if (text)
 			label->label = g_strdup (text);
-			len = strlen (text);
-			label->label_wc = g_new (GdkWChar, len + 1);
-			label->wc_len = gdk_mbstowcs (label->label_wc,
-						      label->label, len + 1);
-			label->label_wc[label->wc_len] = '\0';
-		}
+
+		build_layout (label, text);
 
 		/* Reset the number of characters displayed, so it is
 		   recalculated when needed. */
@@ -336,11 +358,14 @@ e_clipped_label_set_text (EClippedLabel *label,
 static void
 e_clipped_label_recalc_chars_displayed (EClippedLabel *label)
 {
-	GdkFont *font;
-	gint max_width, width, ch, last_width;
-
-	font = GTK_WIDGET (label)->style->font;
-
+	gint max_width, width;
+	GSList *lines;
+	PangoLayoutLine *line;
+	int index;
+	PangoRectangle rect;
+	GtkWidget *widget = GTK_WIDGET (label);
+	GtkMisc *misc = GTK_MISC (label);
+		
 	max_width = GTK_WIDGET (label)->allocation.width
 		- 2 * GTK_MISC (label)->xpad;
 
@@ -350,14 +375,20 @@ e_clipped_label_recalc_chars_displayed (EClippedLabel *label)
 	}
 
 	/* See if the entire label fits in the allocated width. */
-	label->label_width = gdk_string_width (font, label->label);
+	pango_layout_set_text (label->layout, label->label, -1);
+
+	pango_layout_get_pixel_extents (label->layout, &rect, NULL);
+
+	label->label_y = floor (widget->allocation.y + (gint)misc->ypad 
+				+ (((gint)widget->allocation.height - 2 * (gint)misc->ypad
+				    + (gint)PANGO_ASCENT (rect) - PANGO_DESCENT(rect))
+				   * misc->yalign) + 0.5);
+
+	pango_layout_get_pixel_size (label->layout, &label->label_width, NULL);
 	if (label->label_width <= max_width) {
 		label->chars_displayed = E_CLIPPED_LABEL_SHOW_ENTIRE_LABEL;
 		return;
 	}
-
-	/* Calculate the width of the ellipsis string. */
-	max_width -= gdk_string_measure (font, e_clipped_label_ellipsis);
 
 	if (max_width <= 0) {
 		label->chars_displayed = 0;
@@ -365,22 +396,28 @@ e_clipped_label_recalc_chars_displayed (EClippedLabel *label)
 		return;
 	}
 
-	/* Step through the wide-char label, adding on the widths of the
-	   characters, until we can't fit any more in. */
-	width = last_width = 0;
-	for (ch = 0; ch < label->wc_len; ch++) {
-		width += gdk_char_width_wc (font, label->label_wc[ch]);
+	max_width -= label->ellipsis_width;
 
-		if (width > max_width) {
-			label->chars_displayed = ch;
-			label->ellipsis_x = last_width;
-			return;
-		}
+	lines = pango_layout_get_lines (label->layout);
+	line = lines->data;
 
-		last_width = width;
+	if (!pango_layout_line_x_to_index (line,
+					   max_width * PANGO_SCALE,
+					   &index,
+					   NULL)) {
+		g_warning ("pango_layout_line_x_to_index returned false");
+		return;
 	}
 
-	g_warning ("Clipped label width not exceeded as expected");
-	label->chars_displayed = E_CLIPPED_LABEL_SHOW_ENTIRE_LABEL;
-}
+#if 0
+	g_slist_foreach (lines, (GFunc)pango_layout_line_unref, NULL);
+	g_slist_free (lines);
+#endif
 
+	label->chars_displayed = index;
+
+	pango_layout_set_text (label->layout, label->label, label->chars_displayed);
+	pango_layout_get_pixel_size (label->layout, &width, NULL);
+
+	label->ellipsis_x = width;
+}

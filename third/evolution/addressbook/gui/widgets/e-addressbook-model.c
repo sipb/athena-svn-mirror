@@ -8,35 +8,38 @@
  */
 
 #include <config.h>
+#include "e-addressbook-marshal.h"
 #include "e-addressbook-model.h"
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <gnome.h>
 #include <gal/widgets/e-gui-utils.h>
 #include "e-addressbook-util.h"
+#include "e-addressbook-marshal.h"
 
-#define PARENT_TYPE gtk_object_get_type()
-GtkObjectClass *parent_class;
+#define PARENT_TYPE G_TYPE_OBJECT
+static GObjectClass *parent_class;
 
 /*
  * EAddressbookModel callbacks
  * These are the callbacks that define the behavior of our custom model.
  */
-static void e_addressbook_model_set_arg (GtkObject *o, GtkArg *arg, guint arg_id);
-static void e_addressbook_model_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+static void e_addressbook_model_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void e_addressbook_model_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 
 enum {
-	ARG_0,
-	ARG_BOOK,
-	ARG_QUERY,
-	ARG_EDITABLE,
+	PROP_0,
+	PROP_BOOK,
+	PROP_QUERY,
+	PROP_EDITABLE,
 };
 
 enum {
 	WRITABLE_STATUS,
 	STATUS_MESSAGE,
+	SEARCH_STARTED,
 	SEARCH_RESULT,
 	FOLDER_BAR_MESSAGE,
 	CARD_ADDED,
@@ -55,36 +58,38 @@ static guint e_addressbook_model_signals [LAST_SIGNAL] = {0, };
 static void
 free_data (EAddressbookModel *model)
 {
-	int i;
+	if (model->data) {
+		int i;
 
-	for ( i = 0; i < model->data_count; i++ ) {
-		gtk_object_unref(GTK_OBJECT(model->data[i]));
+		for ( i = 0; i < model->data_count; i++ ) {
+			g_object_unref (model->data[i]);
+		}
+
+		g_free(model->data);
+		model->data = NULL;
+		model->data_count = 0;
+		model->allocated_count = 0;
 	}
-
-	g_free(model->data);
-	model->data = NULL;
-	model->data_count = 0;
-	model->allocated_count = 0;
 }
 
 static void
 remove_book_view(EAddressbookModel *model)
 {
 	if (model->book_view && model->create_card_id)
-		gtk_signal_disconnect(GTK_OBJECT (model->book_view),
-				      model->create_card_id);
+		g_signal_handler_disconnect (model->book_view,
+					     model->create_card_id);
 	if (model->book_view && model->remove_card_id)
-		gtk_signal_disconnect(GTK_OBJECT (model->book_view),
-				      model->remove_card_id);
+		g_signal_handler_disconnect (model->book_view,
+					     model->remove_card_id);
 	if (model->book_view && model->modify_card_id)
-		gtk_signal_disconnect(GTK_OBJECT (model->book_view),
-				      model->modify_card_id);
+		g_signal_handler_disconnect (model->book_view,
+					     model->modify_card_id);
 	if (model->book_view && model->status_message_id)
-		gtk_signal_disconnect(GTK_OBJECT (model->book_view),
-				      model->status_message_id);
+		g_signal_handler_disconnect (model->book_view,
+					     model->status_message_id);
 	if (model->book_view && model->sequence_complete_id)
-		gtk_signal_disconnect(GTK_OBJECT (model->book_view),
-				      model->sequence_complete_id);
+		g_signal_handler_disconnect (model->book_view,
+					     model->sequence_complete_id);
 
 	model->create_card_id = 0;
 	model->remove_card_id = 0;
@@ -96,14 +101,13 @@ remove_book_view(EAddressbookModel *model)
 
 	if (model->book_view) {
 		e_book_view_stop (model->book_view);
-		gtk_object_unref(GTK_OBJECT(model->book_view));
+		g_object_unref (model->book_view);
+		model->book_view = NULL;
 	}
-
-	model->book_view = NULL;
 }
 
 static void
-addressbook_destroy(GtkObject *object)
+addressbook_dispose(GObject *object)
 {
 	EAddressbookModel *model = E_ADDRESSBOOK_MODEL(object);
 
@@ -117,20 +121,26 @@ addressbook_destroy(GtkObject *object)
 
 	if (model->book) {
 		if (model->writable_status_id)
-			gtk_signal_disconnect(GTK_OBJECT (model->book),
-					      model->writable_status_id);
+			g_signal_handler_disconnect (model->book,
+						     model->writable_status_id);
 		model->writable_status_id = 0;
 
 		if (model->backend_died_id)
-			gtk_signal_disconnect(GTK_OBJECT (model->book),
-					      model->backend_died_id);
+			g_signal_handler_disconnect (model->book,
+						     model->backend_died_id);
 		model->backend_died_id = 0;
 
-		gtk_object_unref(GTK_OBJECT(model->book));
+		g_object_unref (model->book);
 		model->book = NULL;
 	}
 
-	g_free (model->query);
+	if (model->query) {
+		g_free (model->query);
+		model->query = NULL;
+	}
+
+	if (G_OBJECT_CLASS(parent_class)->dispose)
+		G_OBJECT_CLASS(parent_class)->dispose(object);
 }
 
 static void
@@ -153,9 +163,9 @@ update_folder_bar_message (EAddressbookModel *model)
 		break;
 	}
 
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [FOLDER_BAR_MESSAGE],
-			 message);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [FOLDER_BAR_MESSAGE], 0,
+		       message);
 
 	g_free (message);
 }
@@ -176,36 +186,42 @@ create_card(EBookView *book_view,
 
 	for ( ; cards; cards = cards->next) {
 		model->data[model->data_count++] = cards->data;
-		gtk_object_ref (cards->data);
+		g_object_ref (cards->data);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [CARD_ADDED],
-			 old_count, model->data_count - old_count);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [CARD_ADDED], 0,
+		       old_count, model->data_count - old_count);
 
 	update_folder_bar_message (model);
 }
 
 static void
 remove_card(EBookView *book_view,
-	    const char *id,
+	    GList *ids,
 	    EAddressbookModel *model)
 {
-	int i;
+	int i = 0;
+	GList *l;
 
-	for ( i = 0; i < model->data_count; i++) {
-		if ( !strcmp(e_card_get_id(model->data[i]), id) ) {
-			gtk_object_unref(GTK_OBJECT(model->data[i]));
-			memmove(model->data + i, model->data + i + 1, (model->data_count - i - 1) * sizeof (ECard *));
-			model->data_count--;
+	for (l = ids; l; l = l->next) {
+		char *id = l->data;
+		for ( i = 0; i < model->data_count; i++) {
+			if ( !strcmp(e_card_get_id(model->data[i]), id) ) {
+				g_object_unref (model->data[i]);
+				memmove(model->data + i, model->data + i + 1, (model->data_count - i - 1) * sizeof (ECard *));
+				model->data_count--;
 
-			gtk_signal_emit (GTK_OBJECT (model),
-					 e_addressbook_model_signals [CARD_REMOVED],
-					 i);
-			update_folder_bar_message (model);
-			break;
+				g_signal_emit (model,
+					       e_addressbook_model_signals [CARD_REMOVED], 0,
+					       i);
+
+				break;
+			}
 		}
 	}
+
+	update_folder_bar_message (model);
 }
 
 static void
@@ -217,11 +233,11 @@ modify_card(EBookView *book_view,
 		int i;
 		for ( i = 0; i < model->data_count; i++) {
 			if ( !strcmp(e_card_get_id(model->data[i]), e_card_get_id(E_CARD(cards->data))) ) {
-				gtk_object_unref(GTK_OBJECT(model->data[i]));
+				g_object_unref (model->data[i]);
 				model->data[i] = e_card_duplicate(E_CARD(cards->data));
-				gtk_signal_emit (GTK_OBJECT (model),
-						 e_addressbook_model_signals [CARD_CHANGED],
-						 i);
+				g_signal_emit (model,
+					       e_addressbook_model_signals [CARD_CHANGED], 0,
+					       i);
 				break;
 			}
 		}
@@ -233,9 +249,9 @@ status_message (EBookView *book_view,
 		char* status,
 		EAddressbookModel *model)
 {
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [STATUS_MESSAGE],
-			 status);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [STATUS_MESSAGE], 0,
+		       status);
 }
 
 static void
@@ -245,11 +261,11 @@ sequence_complete (EBookView *book_view,
 {
 	model->search_in_progress = FALSE;
 	status_message (book_view, NULL, model);
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [SEARCH_RESULT],
-			 status);
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [STOP_STATE_CHANGED]);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [SEARCH_RESULT], 0,
+		       status);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [STOP_STATE_CHANGED], 0);
 }
 
 static void
@@ -260,9 +276,9 @@ writable_status (EBook *book,
 	if (!model->editable_set) {
 		model->editable = writable;
 
-		gtk_signal_emit (GTK_OBJECT (model),
-				 e_addressbook_model_signals [WRITABLE_STATUS],
-				 writable);
+		g_signal_emit (model,
+			       e_addressbook_model_signals [WRITABLE_STATUS], 0,
+			       writable);
 	}
 }
 
@@ -270,111 +286,144 @@ static void
 backend_died (EBook *book,
 	      EAddressbookModel *model)
 {
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [BACKEND_DIED]);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [BACKEND_DIED], 0);
 }
 
 static void
-e_addressbook_model_class_init (GtkObjectClass *object_class)
+e_addressbook_model_class_init (GObjectClass *object_class)
 {
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref (PARENT_TYPE);
 
-	object_class->destroy = addressbook_destroy;
-	object_class->set_arg   = e_addressbook_model_set_arg;
-	object_class->get_arg   = e_addressbook_model_get_arg;
+	object_class->dispose = addressbook_dispose;
+	object_class->set_property   = e_addressbook_model_set_property;
+	object_class->get_property   = e_addressbook_model_get_property;
 
-	gtk_object_add_arg_type ("EAddressbookModel::book", GTK_TYPE_OBJECT, 
-				 GTK_ARG_READWRITE, ARG_BOOK);
-	gtk_object_add_arg_type ("EAddressbookModel::query", GTK_TYPE_STRING,
-				 GTK_ARG_READWRITE, ARG_QUERY);
-	gtk_object_add_arg_type ("EAddressbookModel::editable", GTK_TYPE_BOOL,
-				 GTK_ARG_READWRITE, ARG_EDITABLE);
+	g_object_class_install_property (object_class, PROP_BOOK,
+					 g_param_spec_object ("book",
+							      _("Book"),
+							      /*_( */"XXX blurb" /*)*/,
+							      E_TYPE_BOOK,
+							      G_PARAM_READWRITE));
+
+	g_object_class_install_property (object_class, PROP_QUERY,
+					 g_param_spec_string ("query",
+							      _("Query"),
+							      /*_( */"XXX blurb" /*)*/,
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	g_object_class_install_property (object_class, PROP_EDITABLE,
+					 g_param_spec_boolean ("editable",
+							       _("Editable"),
+							       /*_( */"XXX blurb" /*)*/,
+							       FALSE,
+							       G_PARAM_READWRITE));
 
 	e_addressbook_model_signals [WRITABLE_STATUS] =
-		gtk_signal_new ("writable_status",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, writable_status),
-				gtk_marshal_NONE__BOOL,
-				GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
+		g_signal_new ("writable_status",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, writable_status),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__BOOL,
+			      G_TYPE_NONE,
+			      1, G_TYPE_BOOLEAN);
 
 	e_addressbook_model_signals [STATUS_MESSAGE] =
-		gtk_signal_new ("status_message",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, status_message),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("status_message",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, status_message),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__POINTER,
+			      G_TYPE_NONE,
+			      1, G_TYPE_POINTER);
 
+	e_addressbook_model_signals [SEARCH_STARTED] =
+		g_signal_new ("search_started",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, search_started),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
+	
 	e_addressbook_model_signals [SEARCH_RESULT] =
-		gtk_signal_new ("search_result",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, search_result),
-				gtk_marshal_NONE__ENUM,
-				GTK_TYPE_NONE, 1, GTK_TYPE_ENUM);
-
+		g_signal_new ("search_result",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, search_result),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__INT,
+			      G_TYPE_NONE, 1, G_TYPE_INT);
+	
 	e_addressbook_model_signals [FOLDER_BAR_MESSAGE] =
-		gtk_signal_new ("folder_bar_message",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, folder_bar_message),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("folder_bar_message",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, folder_bar_message),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__POINTER,
+			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	e_addressbook_model_signals [CARD_ADDED] =
-		gtk_signal_new ("card_added",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, card_added),
-				gtk_marshal_NONE__INT_INT,
-				GTK_TYPE_NONE, 2, GTK_TYPE_INT, GTK_TYPE_INT);
+		g_signal_new ("card_added",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, card_added),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__INT_INT,
+			      G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
 
 	e_addressbook_model_signals [CARD_REMOVED] =
-		gtk_signal_new ("card_removed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, card_removed),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+		g_signal_new ("card_removed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, card_removed),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__INT,
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 
 	e_addressbook_model_signals [CARD_CHANGED] =
-		gtk_signal_new ("card_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, card_changed),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+		g_signal_new ("card_changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, card_changed),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__INT,
+			      G_TYPE_NONE, 1, G_TYPE_INT);
 
 	e_addressbook_model_signals [MODEL_CHANGED] =
-		gtk_signal_new ("model_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, model_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("model_changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, model_changed),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_addressbook_model_signals [STOP_STATE_CHANGED] =
-		gtk_signal_new ("stop_state_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, stop_state_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("stop_state_changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, stop_state_changed),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_addressbook_model_signals [BACKEND_DIED] =
-		gtk_signal_new ("backend_died",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EAddressbookModelClass, backend_died),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, e_addressbook_model_signals, LAST_SIGNAL);
+		g_signal_new ("backend_died",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EAddressbookModelClass, backend_died),
+			      NULL, NULL,
+			      e_addressbook_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 }
 
 static void
-e_addressbook_model_init (GtkObject *object)
+e_addressbook_model_init (GObject *object)
 {
 	EAddressbookModel *model = E_ADDRESSBOOK_MODEL(object);
 	model->book = NULL;
@@ -411,35 +460,37 @@ book_view_loaded (EBook *book, EBookStatus status, EBookView *book_view, gpointe
 
 	model->book_view = book_view;
 	if (model->book_view)
-		gtk_object_ref(GTK_OBJECT(model->book_view));
-	model->create_card_id = gtk_signal_connect(GTK_OBJECT(model->book_view),
-						  "card_added",
-						  GTK_SIGNAL_FUNC(create_card),
-						  model);
-	model->remove_card_id = gtk_signal_connect(GTK_OBJECT(model->book_view),
-						  "card_removed",
-						  GTK_SIGNAL_FUNC(remove_card),
-						  model);
-	model->modify_card_id = gtk_signal_connect(GTK_OBJECT(model->book_view),
-						  "card_changed",
-						  GTK_SIGNAL_FUNC(modify_card),
-						  model);
-	model->status_message_id = gtk_signal_connect(GTK_OBJECT(model->book_view),
-						      "status_message",
-						      GTK_SIGNAL_FUNC(status_message),
-						      model);
-	model->sequence_complete_id = gtk_signal_connect(GTK_OBJECT(model->book_view),
-							 "sequence_complete",
-							 GTK_SIGNAL_FUNC(sequence_complete),
-							 model);
+		g_object_ref (model->book_view);
+	model->create_card_id = g_signal_connect(model->book_view,
+						 "card_added",
+						 G_CALLBACK (create_card),
+						 model);
+	model->remove_card_id = g_signal_connect(model->book_view,
+						 "card_removed",
+						 G_CALLBACK (remove_card),
+						 model);
+	model->modify_card_id = g_signal_connect(model->book_view,
+						 "card_changed",
+						 G_CALLBACK(modify_card),
+						 model);
+	model->status_message_id = g_signal_connect(model->book_view,
+						    "status_message",
+						    G_CALLBACK(status_message),
+						    model);
+	model->sequence_complete_id = g_signal_connect(model->book_view,
+						       "sequence_complete",
+						       G_CALLBACK(sequence_complete),
+						       model);
 
 	free_data (model);
 
 	model->search_in_progress = TRUE;
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [MODEL_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [STOP_STATE_CHANGED]);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [MODEL_CHANGED], 0);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [SEARCH_STARTED], 0);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [STOP_STATE_CHANGED], 0);
 }
 
 static gboolean
@@ -447,20 +498,17 @@ get_view (EAddressbookModel *model)
 {
 	if (model->book && model->query) {
 		if (model->first_get_view) {
-			char *capabilities;
-			capabilities = e_book_get_static_capabilities (model->book);
-			if (capabilities && strstr (capabilities, "do-initial-query")) {
+			if (e_book_check_static_capability (model->book, "do-initial-query")) {
 				e_book_get_book_view (model->book, model->query, book_view_loaded, model);
 			} else {
 				remove_book_view(model);
 				free_data (model);
-				gtk_signal_emit (GTK_OBJECT (model),
-						 e_addressbook_model_signals [MODEL_CHANGED]);
-				gtk_signal_emit (GTK_OBJECT (model),
-						 e_addressbook_model_signals [STOP_STATE_CHANGED]);
+				g_signal_emit (model,
+					       e_addressbook_model_signals [MODEL_CHANGED], 0);
+				g_signal_emit (model,
+					       e_addressbook_model_signals [STOP_STATE_CHANGED], 0);
 			}
 			model->first_get_view = FALSE;
-			g_free (capabilities);
 		}
 		else
 			e_book_get_book_view (model->book, model->query, book_view_loaded, model);
@@ -493,96 +541,100 @@ e_addressbook_model_peek_card(EAddressbookModel *model,
 }
 
 static void
-e_addressbook_model_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
+e_addressbook_model_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	EAddressbookModel *model;
 
-	model = E_ADDRESSBOOK_MODEL (o);
+	model = E_ADDRESSBOOK_MODEL (object);
 	
-	switch (arg_id){
-	case ARG_BOOK:
+	switch (prop_id){
+	case PROP_BOOK:
 		if (model->book) {
 			if (model->writable_status_id)
-				gtk_signal_disconnect(GTK_OBJECT (model->book),
-						      model->writable_status_id);
+				g_signal_handler_disconnect (model->book,
+							     model->writable_status_id);
 			model->writable_status_id = 0;
 
 			if (model->backend_died_id)
-				gtk_signal_disconnect(GTK_OBJECT (model->book),
-						      model->backend_died_id);
+				g_signal_handler_disconnect (model->book,
+							     model->backend_died_id);
 			model->backend_died_id = 0;
 
-			gtk_object_unref(GTK_OBJECT(model->book));
+			g_object_unref (model->book);
 		}
-		model->book = E_BOOK(GTK_VALUE_OBJECT (*arg));
+		model->book = E_BOOK(g_value_get_object (value));
 		if (model->book) {
 			model->first_get_view = TRUE;
-			gtk_object_ref(GTK_OBJECT(model->book));
+			g_object_ref (model->book);
 			if (model->get_view_idle == 0)
 				model->get_view_idle = g_idle_add((GSourceFunc)get_view, model);
-			gtk_signal_connect (GTK_OBJECT(model->book),
-					    "writable_status",
-					    writable_status, model);
-			gtk_signal_connect (GTK_OBJECT(model->book),
-					    "backend_died",
-					    backend_died, model);
+			g_signal_connect (model->book,
+					  "writable_status",
+					  G_CALLBACK (writable_status), model);
+			g_signal_connect (model->book,
+					  "backend_died",
+					  G_CALLBACK (backend_died), model);
 		}
 		break;
-	case ARG_QUERY:
+	case PROP_QUERY:
 		if (model->query)
 			g_free(model->query);
-		model->query = g_strdup(GTK_VALUE_STRING (*arg));
+		model->query = g_strdup(g_value_get_string (value));
 		if (model->get_view_idle == 0)
 			model->get_view_idle = g_idle_add((GSourceFunc)get_view, model);
 		break;
-	case ARG_EDITABLE:
-		model->editable = GTK_VALUE_BOOL (*arg);
+	case PROP_EDITABLE:
+		model->editable = g_value_get_boolean (value);
 		model->editable_set = TRUE;
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
 }
 
 static void
-e_addressbook_model_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_addressbook_model_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	EAddressbookModel *e_addressbook_model;
 
 	e_addressbook_model = E_ADDRESSBOOK_MODEL (object);
 
-	switch (arg_id) {
-	case ARG_BOOK:
-		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT(e_addressbook_model->book);
+	switch (prop_id) {
+	case PROP_BOOK:
+		g_value_set_object (value, e_addressbook_model->book);
 		break;
-	case ARG_QUERY:
-		GTK_VALUE_STRING (*arg) = g_strdup(e_addressbook_model->query);
+	case PROP_QUERY:
+		g_value_set_string (value, g_strdup(e_addressbook_model->query));
 		break;
-	case ARG_EDITABLE:
-		GTK_VALUE_BOOL (*arg) = e_addressbook_model->editable;
+	case PROP_EDITABLE:
+		g_value_set_boolean (value, e_addressbook_model->editable);
 		break;
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
 }
 
-GtkType
+GType
 e_addressbook_model_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 
-	if (!type){
-		GtkTypeInfo info = {
-			"EAddressbookModel",
-			sizeof (EAddressbookModel),
+	if (!type) {
+		static const GTypeInfo info =  {
 			sizeof (EAddressbookModelClass),
-			(GtkClassInitFunc) e_addressbook_model_class_init,
-			(GtkObjectInitFunc) e_addressbook_model_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_addressbook_model_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (EAddressbookModel),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_addressbook_model_init,
 		};
 
-		type = gtk_type_unique (PARENT_TYPE, &info);
+		type = g_type_register_static (PARENT_TYPE, "EAddressbookModel", &info, 0);
 	}
 
 	return type;
@@ -593,7 +645,7 @@ e_addressbook_model_new (void)
 {
 	EAddressbookModel *et;
 
-	et = gtk_type_new (e_addressbook_model_get_type ());
+	et = g_object_new (E_TYPE_ADDRESSBOOK_MODEL, NULL);
 	
 	return et;
 }
@@ -601,11 +653,11 @@ e_addressbook_model_new (void)
 void   e_addressbook_model_stop    (EAddressbookModel *model)
 {
 	remove_book_view(model);
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [STOP_STATE_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (model),
-			 e_addressbook_model_signals [STATUS_MESSAGE],
-			 "Search Interrupted.");
+	g_signal_emit (model,
+		       e_addressbook_model_signals [STOP_STATE_CHANGED], 0);
+	g_signal_emit (model,
+		       e_addressbook_model_signals [STATUS_MESSAGE], 0,
+		       "Search Interrupted.");
 }
 
 gboolean

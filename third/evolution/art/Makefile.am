@@ -1,4 +1,3 @@
-imagesdir = $(datadir)/images/evolution
 images_DATA = \
 	16_copy.png			\
 	16_customize.png		\
@@ -150,6 +149,8 @@ images_DATA = \
 	settings-16.png			\
 	show_all_messages.xpm		\
 	splash.png			\
+	stock-edit-16.png		\
+	stock-edit-24.png		\
 	summary-settings.png		\
 	summary_preferences-16.png	\
 	talking-heads.png		\
@@ -166,7 +167,6 @@ images_DATA = \
 	working-16.png			\
 	world_map-960.png
 
-buttonsdir = $(datadir)/images/evolution/buttons
 buttons_DATA = 				\
 	arrow-right-24.png		\
 	arrow-left-24.png		\
@@ -200,7 +200,6 @@ buttons_DATA = 				\
 	workweekview.xpm		\
 	yearview.xpm
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA = 					\
 	evolution.png				\
 	import.png				\
@@ -213,7 +212,7 @@ glade_DATA = 					\
 	thankyou.png				\
 	timezone-48.png
 
-conduitsdir = $(datadir)/images/evolution/conduits
+conduitsdir = $(imagesdir)/conduits
 conduits_DATA =				\
 	evo-16-address-conduit.png   	\
 	evo-16-todo-conduit.png     	\
@@ -222,14 +221,20 @@ conduits_DATA =				\
 	evo-48-address-conduit.png  	\
 	evo-48-todo-conduit.png
 
-appicondir = $(datadir)/pixmaps
-appicon_DATA = evolution.png
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(datadir)/pixmaps
+	$(INSTALL_DATA) $(srcdir)/evolution.png  $(DESTDIR)$(datadir)/pixmaps/evolution-$(BASE_VERSION).png
+if DEFAULT_BINARY
+	cd $(DESTDIR)$(datadir)/pixmaps && rm -f evolution.png && $(LN_S) evolution-$(BASE_VERSION).png evolution.png
+endif
 
-EXTRA_DIST = \
+EXTRA_DIST = 				\
+	ChangeLog.pre-1-4		\
 	attachment.xpm			\
 	bell.xpm			\
 	check-filled.xpm		\
 	empty.xpm			\
+	evolution.png			\
 	jump.xpm			\
 	mail-need-reply.xpm		\
 	mail-new.xpm			\
@@ -256,5 +261,4 @@ EXTRA_DIST = \
 	$(images_DATA)			\
 	$(buttons_DATA)			\
 	$(conduits_DATA)		\
-	$(glade_DATA)			\
-	$(appicon_DATA)
+	$(glade_DATA)

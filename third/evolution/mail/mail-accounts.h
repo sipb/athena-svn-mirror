@@ -33,6 +33,7 @@ extern "C" {
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkclist.h>
 #include <glade/glade.h>
+#include <gtk/gtktreeview.h>
 
 #include <gal/e-table/e-table.h>
 
@@ -42,10 +43,10 @@ extern "C" {
 
 
 #define MAIL_ACCOUNTS_TAB_TYPE        (mail_accounts_tab_get_type ())
-#define MAIL_ACCOUNTS_TAB(o)          (GTK_CHECK_CAST ((o), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTab))
-#define MAIL_ACCOUNTS_TAB_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTabClass))
-#define IS_MAIL_ACCOUNTS_TAB(o)       (GTK_CHECK_TYPE ((o), MAIL_ACCOUNTS_TAB_TYPE))
-#define IS_MAIL_ACCOUNTS_TAB_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNTS_TAB_TYPE))
+#define MAIL_ACCOUNTS_TAB(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTab))
+#define MAIL_ACCOUNTS_TAB_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MAIL_ACCOUNTS_TAB_TYPE, MailAccountsTabClass))
+#define IS_MAIL_ACCOUNTS_TAB(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MAIL_ACCOUNTS_TAB_TYPE))
+#define IS_MAIL_ACCOUNTS_TAB_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNTS_TAB_TYPE))
 
 typedef struct _MailAccountsTab MailAccountsTab;
 typedef struct _MailAccountsTabClass MailAccountsTabClass;
@@ -63,11 +64,7 @@ struct _MailAccountsTab {
 	GdkPixmap *mark_pixmap;
 	GdkBitmap *mark_bitmap;
 	
-	GtkCList *table;
-#if 0
-	ETable *table;
-	ETableModel *model;
-#endif
+	GtkTreeView *table;
 	
 	GtkButton *mail_add;
 	GtkButton *mail_edit;
@@ -75,12 +72,7 @@ struct _MailAccountsTab {
 	GtkButton *mail_default;
 	GtkButton *mail_able;
 	
-	GtkCList *news;
-	int news_row;
-	GtkButton *news_add;
-	GtkButton *news_edit;
-	GtkButton *news_delete;
-	GtkWidget *news_editor;
+	guint destroyed : 1;
 };
 
 struct _MailAccountsTabClass {

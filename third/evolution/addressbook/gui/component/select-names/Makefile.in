@@ -62,9 +62,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -86,12 +85,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -99,54 +95,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -161,14 +156,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -178,86 +170,82 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
-
-idldir = $(datadir)/idl
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 idl_DATA =  	Evolution-Addressbook-SelectNames.idl
 
 
-IDL_GENERATED =  	Evolution-Addressbook-SelectNames.h			Evolution-Addressbook-SelectNames-common.c		Evolution-Addressbook-SelectNames-skels.c		Evolution-Addressbook-SelectNames-stubs.c
+IDL_GENERATED_H =  	Evolution-Addressbook-SelectNames.h
+
+IDL_GENERATED_C =  	Evolution-Addressbook-SelectNames-common.c		Evolution-Addressbook-SelectNames-skels.c		Evolution-Addressbook-SelectNames-stubs.c
+
+IDL_GENERATED = $(IDL_GENERATED_C) $(IDL_GENERATED_H)
+
+server_in_files = GNOME_Evolution_Addressbook_SelectNames.server.in.in
+
+server_DATA = $(server_in_files:.server.in.in=.server)
+
+INCLUDES =  	-DG_LOG_DOMAIN=\"evolution-addressbook\"		-I$(top_srcdir)						-I$(top_builddir)					-I$(top_srcdir)/shell					-I$(top_builddir)/shell					-I$(top_srcdir)/widgets/e-text				-I$(top_srcdir)/widgets/e-table				-I$(top_srcdir)/addressbook/gui/minicard		-I$(top_srcdir)/addressbook/gui/widgets			-I$(top_srcdir)/addressbook/contact-editor		-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"		-DEVOLUTION_DATADIR=\""$(datadir)"\"			-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"		-DPREFIX=\""$(prefix)"\"		-DG_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED				-DLIBGNOME_DISABLE_DEPRECATED				-DLIBGNOMEUI_DISABLE_DEPRECATED				$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 
-oafdir = $(datadir)/oaf
+privlib_LTLIBRARIES = libeselectnames.la
 
-oaf_in_files = GNOME_Evolution_Addressbook_SelectNames.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
-
-INCLUDES =  	-DG_LOG_DOMAIN=\"evolution-addressbook\"		-I$(top_srcdir)						-I$(top_builddir)					-I$(top_srcdir)/shell					-I$(top_builddir)/shell					-I$(top_srcdir)/widgets/e-text				-I$(top_srcdir)/widgets/e-table				-I$(top_srcdir)/addressbook/gui/minicard		-I$(top_srcdir)/addressbook/gui/widgets			-I$(top_srcdir)/addressbook/contact-editor		-I$(top_srcdir)/addressbook/backend			-I$(top_builddir)/addressbook/backend			-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"			-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"		$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+libeselectnames_la_SOURCES =  	$(IDL_GENERATED)				e-select-names-bonobo.c				e-select-names-bonobo.h				e-select-names-completion.c			e-select-names-completion.h			e-select-names-manager.c			e-select-names-manager.h			e-select-names-marshal.c			e-select-names-model.c				e-select-names-model.h				e-select-names-popup.c				e-select-names-popup.h				e-select-names-table-model.c			e-select-names-table-model.h			e-select-names-text-model.c			e-select-names-text-model.h			e-select-names.c				e-select-names.h				e-simple-card-bonobo.c				e-simple-card-bonobo.h
 
 
-lib_LTLIBRARIES = libeselectnames.la
-
-libeselectnames_la_SOURCES =  	$(IDL_GENERATED)				e-select-names-bonobo.c				e-select-names-bonobo.h				e-select-names-completion.c			e-select-names-completion.h			e-select-names-factory.c			e-select-names-factory.h			e-select-names-manager.c			e-select-names-manager.h			e-select-names-model.c				e-select-names-model.h				e-select-names-popup.c				e-select-names-popup.h				e-select-names-table-model.c			e-select-names-table-model.h			e-select-names-text-model.c			e-select-names-text-model.h			e-select-names.c				e-select-names.h				e-simple-card-bonobo.c				e-simple-card-bonobo.h
+libeselectnames_la_LIBADD =  	$(top_builddir)/addressbook/backend/ebook/libebook.la		$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 
-gladedir = $(datadir)/evolution/glade
+MARSHAL_GENERATED = e-select-names-marshal.c e-select-names-marshal.h
+
 glade_DATA = select-names.glade
+etspec_DATA = e-select-names.etspec e-select-names-section.etspec
 
-etspecdir = $(datadir)/evolution/etspec
-etspec_DATA = e-select-names.etspec
-
-EXTRA_DIST =  	$(glade_DATA)			$(oaf_in_files)			$(oaf_DATA)			$(idl_DATA)			$(etspec_DATA)
+EXTRA_DIST =  	$(glade_DATA)			$(server_in_files)		$(server_DATA)			$(idl_DATA)			$(etspec_DATA)			e-select-names-marshal.list
 
 
-BUILT_SOURCES = $(IDL_GENERATED)
+BUILT_SOURCES = $(IDL_GENERATED) $(MARSHAL_GENERATED) $(server_DATA)
 CLEANFILES = $(BUILT_SOURCES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+LTLIBRARIES =  $(privlib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../../..
@@ -265,13 +253,14 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libeselectnames_la_LDFLAGS = 
-libeselectnames_la_LIBADD = 
+libeselectnames_la_DEPENDENCIES =  \
+$(top_builddir)/addressbook/backend/ebook/libebook.la
 libeselectnames_la_OBJECTS =  \
 Evolution-Addressbook-SelectNames-common.lo \
 Evolution-Addressbook-SelectNames-skels.lo \
 Evolution-Addressbook-SelectNames-stubs.lo e-select-names-bonobo.lo \
-e-select-names-completion.lo e-select-names-factory.lo \
-e-select-names-manager.lo e-select-names-model.lo \
+e-select-names-completion.lo e-select-names-manager.lo \
+e-select-names-marshal.lo e-select-names-model.lo \
 e-select-names-popup.lo e-select-names-table-model.lo \
 e-select-names-text-model.lo e-select-names.lo e-simple-card-bonobo.lo
 CFLAGS = @CFLAGS@
@@ -279,7 +268,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(etspec_DATA) $(glade_DATA) $(idl_DATA) $(oaf_DATA)
+DATA =  $(etspec_DATA) $(glade_DATA) $(idl_DATA) $(server_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -302,29 +291,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLTLIBRARIES:
+mostlyclean-privlibLTLIBRARIES:
 
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
 
-distclean-libLTLIBRARIES:
+distclean-privlibLTLIBRARIES:
 
-maintainer-clean-libLTLIBRARIES:
+maintainer-clean-privlibLTLIBRARIES:
 
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLTLIBRARIES:
+uninstall-privlibLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
 	done
 
 .c.o:
@@ -372,7 +361,7 @@ distclean-libtool:
 maintainer-clean-libtool:
 
 libeselectnames.la: $(libeselectnames_la_OBJECTS) $(libeselectnames_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libeselectnames_la_LDFLAGS) $(libeselectnames_la_OBJECTS) $(libeselectnames_la_LIBADD) $(LIBS)
+	$(LINK) -rpath $(privlibdir) $(libeselectnames_la_LDFLAGS) $(libeselectnames_la_OBJECTS) $(libeselectnames_la_LIBADD) $(LIBS)
 
 install-etspecDATA: $(etspec_DATA)
 	@$(NORMAL_INSTALL)
@@ -431,23 +420,23 @@ uninstall-idlDATA:
 	  rm -f $(DESTDIR)$(idldir)/$$p; \
 	done
 
-install-oafDATA: $(oaf_DATA)
+install-serverDATA: $(server_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(oafdir)
-	@list='$(oaf_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-oafDATA:
+uninstall-serverDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(oaf_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(oafdir)/$$p; \
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
 	done
 
 tags: TAGS
@@ -504,7 +493,9 @@ e-select-names-bonobo.lo e-select-names-bonobo.o : \
 	../../../../addressbook/backend/ebook/e-card-types.h \
 	../../../../e-util/e-list.h \
 	../../../../e-util/e-list-iterator.h \
-	../../../../e-util/e-iterator.h e-select-names-manager.h \
+	../../../../e-util/e-iterator.h \
+	../../../../shell/evolution-shell-client.h \
+	../../../../shell/Evolution.h e-select-names-manager.h \
 	e-select-names.h \
 	../../../../addressbook/gui/widgets/e-addressbook-model.h \
 	../../../../addressbook/backend/ebook/e-book.h \
@@ -533,6 +524,7 @@ e-select-names-completion.lo e-select-names-completion.o : \
 	e-select-names-text-model.h e-select-names-model.h \
 	../../../../addressbook/backend/ebook/e-destination.h \
 	../../../../addressbook/backend/ebook/e-book-util.h \
+	../../../../e-util/e-config-listener.h \
 	../../../../addressbook/backend/ebook/e-card-simple.h \
 	../../../../addressbook/backend/ebook/e-card-compare.h
 e-select-names-factory.lo e-select-names-factory.o : \
@@ -544,6 +536,8 @@ e-select-names-manager.lo e-select-names-manager.o : \
 	e-select-names-manager.h ../../../../e-util/e-list.h \
 	../../../../e-util/e-list-iterator.h \
 	../../../../e-util/e-iterator.h e-select-names.h \
+	../../../../shell/evolution-shell-client.h \
+	../../../../shell/Evolution.h \
 	../../../../addressbook/gui/widgets/e-addressbook-model.h \
 	../../../../addressbook/backend/ebook/e-book.h \
 	../../../../addressbook/backend/ebook/e-card.h \
@@ -556,12 +550,14 @@ e-select-names-manager.lo e-select-names-manager.o : \
 	../../../../addressbook/backend/ebook/e-card-simple.h \
 	e-select-names-model.h \
 	../../../../addressbook/backend/ebook/e-destination.h \
-	e-select-names-text-model.h e-select-names-completion.h \
-	e-select-names-popup.h ../../../../shell/e-folder-list.h \
-	../../../../shell/evolution-shell-client.h \
-	../../../../shell/Evolution.h \
+	e-select-names-marshal.h e-select-names-text-model.h \
+	e-select-names-completion.h e-select-names-popup.h \
+	../../../../shell/e-folder-list.h \
 	../../../../addressbook/backend/ebook/e-book-util.h \
+	../../../../e-util/e-config-listener.h \
 	../../../../addressbook/gui/component/addressbook.h
+e-select-names-marshal.lo e-select-names-marshal.o : \
+	e-select-names-marshal.c
 e-select-names-model.lo e-select-names-model.o : e-select-names-model.c \
 	../../../../config.h e-select-names-model.h \
 	../../../../e-util/e-list.h \
@@ -576,6 +572,7 @@ e-select-names-model.lo e-select-names-model.o : e-select-names-model.c \
 	../../../../addressbook/backend/ebook/e-book-view.h \
 	../../../../addressbook/backend/ebook/e-book-view-listener.h \
 	../../../../addressbook/backend/ebook/e-book-types.h \
+	e-select-names-marshal.h \
 	../../../../addressbook/backend/ebook/e-card-simple.h
 e-select-names-popup.lo e-select-names-popup.o : e-select-names-popup.c \
 	../../../../config.h \
@@ -591,17 +588,15 @@ e-select-names-popup.lo e-select-names-popup.o : e-select-names-popup.c \
 	../../../../addressbook/backend/ebook/e-book-view.h \
 	../../../../addressbook/backend/ebook/e-book-view-listener.h \
 	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../e-util/e-config-listener.h \
 	../../../../addressbook/gui/contact-editor/e-contact-editor.h \
-	e-select-names-manager.h e-select-names.h \
-	../../../../addressbook/gui/widgets/e-addressbook-model.h \
 	../../../../addressbook/backend/ebook/e-card-simple.h \
-	e-select-names-model.h \
-	../../../../addressbook/backend/ebook/e-destination.h \
 	../../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
 	../../../../addressbook/gui/widgets/e-addressbook-util.h \
 	../../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
 	e-select-names-popup.h e-select-names-text-model.h \
-	e-select-names-model.h
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h
 e-select-names-table-model.lo e-select-names-table-model.o : \
 	e-select-names-table-model.c ../../../../config.h \
 	e-select-names-table-model.h e-select-names-model.h \
@@ -621,22 +616,20 @@ e-select-names-table-model.lo e-select-names-table-model.o : \
 e-select-names-text-model.lo e-select-names-text-model.o : \
 	e-select-names-text-model.c ../../../../config.h \
 	../../../../addressbook/gui/contact-editor/e-contact-editor.h \
-	e-select-names-manager.h ../../../../e-util/e-list.h \
-	../../../../e-util/e-list-iterator.h \
-	../../../../e-util/e-iterator.h e-select-names.h \
-	../../../../addressbook/gui/widgets/e-addressbook-model.h \
 	../../../../addressbook/backend/ebook/e-book.h \
 	../../../../addressbook/backend/ebook/e-card.h \
 	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
 	../../../../addressbook/backend/ebook/e-card-cursor.h \
 	../../../../addressbook/backend/ebook/addressbook.h \
 	../../../../addressbook/backend/ebook/e-book-view.h \
 	../../../../addressbook/backend/ebook/e-book-view-listener.h \
 	../../../../addressbook/backend/ebook/e-book-types.h \
 	../../../../addressbook/backend/ebook/e-card-simple.h \
-	e-select-names-model.h \
-	../../../../addressbook/backend/ebook/e-destination.h \
 	e-select-names-text-model.h e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
 	../../../../addressbook/gui/widgets/e-addressbook-util.h \
 	../../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
 e-select-names.lo e-select-names.o : e-select-names.c \
@@ -657,6 +650,7 @@ e-select-names.lo e-select-names.o : e-select-names.c \
 	../../../../addressbook/gui/widgets/e-addressbook-table-adapter.h \
 	../../../../addressbook/gui/component/e-cardlist-model.h \
 	../../../../addressbook/backend/ebook/e-book-util.h \
+	../../../../e-util/e-config-listener.h \
 	../../../../addressbook/gui/component/addressbook-component.h \
 	../../../../shell/evolution-shell-component.h \
 	../../../../shell/Evolution.h \
@@ -667,8 +661,9 @@ e-select-names.lo e-select-names.o : e-select-names.c \
 	../../../../shell/evolution-folder-selector-button.h \
 	e-select-names.h e-select-names-model.h \
 	../../../../addressbook/backend/ebook/e-destination.h \
-	e-select-names-text-model.h \
-	../../../../e-util/e-categories-master-list-wombat.h
+	e-select-names-table-model.h \
+	../../../../e-util/e-categories-master-list-wombat.h \
+	../../../../e-util/e-sexp.h
 e-simple-card-bonobo.lo e-simple-card-bonobo.o : e-simple-card-bonobo.c \
 	../../../../config.h e-simple-card-bonobo.h \
 	Evolution-Addressbook-SelectNames.h \
@@ -696,27 +691,28 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES
+install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-etspecDATA install-gladeDATA install-idlDATA \
-		install-oafDATA
+install-data-am: install-privlibLTLIBRARIES install-etspecDATA \
+		install-gladeDATA install-idlDATA install-serverDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-etspecDATA \
-		uninstall-gladeDATA uninstall-idlDATA uninstall-oafDATA
+uninstall-am: uninstall-privlibLTLIBRARIES uninstall-etspecDATA \
+		uninstall-gladeDATA uninstall-idlDATA \
+		uninstall-serverDATA
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(etspecdir) \
+	$(mkinstalldirs)  $(DESTDIR)$(privlibdir) $(DESTDIR)$(etspecdir) \
 		$(DESTDIR)$(gladedir) $(DESTDIR)$(idldir) \
-		$(DESTDIR)$(oafdir)
+		$(DESTDIR)$(serverdir)
 
 
 mostlyclean-generic:
@@ -730,25 +726,25 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-privlibLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+distclean-am:  distclean-privlibLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -757,29 +753,49 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-etspecDATA install-etspecDATA \
-uninstall-gladeDATA install-gladeDATA uninstall-idlDATA install-idlDATA \
-uninstall-oafDATA install-oafDATA tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
+.PHONY: mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-etspecDATA \
+install-etspecDATA uninstall-gladeDATA install-gladeDATA \
+uninstall-idlDATA install-idlDATA uninstall-serverDATA \
+install-serverDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-Evolution-Addressbook-SelectNames-impl.o: Evolution-Addressbook-SelectNames.h
-
-$(IDL_GENERATED): $(idl_DATA)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
+$(IDL_GENERATED_H): $(idl_DATA)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) \
 		$(srcdir)/Evolution-Addressbook-SelectNames.idl
+$(IDL_GENERATED_C): $(IDL_GENERATED_H)
+%.server.in: %.server.in.in
+	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
+
+# We'll need these again when we split out the select names control
+# into its own shlib factory, but for now they're redundant.
+#
+#	e-select-names-factory.c
+#	e-select-names-factory.h
+
+# GLib marshalling cruft
+
+e-select-names-marshal.h: e-select-names-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_select_names_marshal e-select-names-marshal.list --header > e-select-names-marshal.tmp \
+	&& mv e-select-names-marshal.tmp e-select-names-marshal.h ) \
+	|| ( rm -f e-select-names-marshal.tmp && exit 1 )
+
+e-select-names-marshal.c: e-select-names-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_select_names_marshal e-select-names-marshal.list --body > e-select-names-marshal.tmp \
+	&& mv e-select-names-marshal.tmp e-select-names-marshal.c ) \
+	|| ( rm -f e-select-names-marshal.tmp && exit 1 )
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

@@ -27,9 +27,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <gtk/gtkhbox.h>
+#include <gtk/gtkalignment.h>
+#include <gtk/gtkbutton.h>
 #include <gtk/gtkenums.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkvbox.h>
 
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-gui-utils.h>
@@ -48,8 +54,6 @@
 #include <gal/e-table/e-tree-table-adapter.h>
 
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
-#include <libgnomeui/gnome-stock.h>
 
 #include "e-summary-shown.h"
 
@@ -60,7 +64,7 @@
 <ETableColumn model_col=\"0\" _title=\"%s\" resizable=\"true\" cell=\"tree-string\" compare=\"string\"/> \
 <ETableState> \
 <column source=\"0\"/> \
-<grouping></grouping> \
+<grouping><leaf column=\"0\" ascending=\"true\"/></grouping> \
 </ETableState> \
 </ETableSpecification>"
 
@@ -204,18 +208,17 @@ e_summary_shown_class_init (GtkObjectClass *object_class)
 
 	shown_signals[ITEM_CHANGED] = gtk_signal_new ("item-changed",
 						      GTK_RUN_LAST,
-						      object_class->type,
+						      GTK_CLASS_TYPE (object_class),
 						      GTK_SIGNAL_OFFSET (ESummaryShownClass, item_changed),
 						      gtk_marshal_NONE__NONE,
 						      GTK_TYPE_NONE, 0);
 	shown_signals[SELECTION_CHANGED] = gtk_signal_new ("selection-changed",
 							   GTK_RUN_LAST,
-							   object_class->type,
+							   GTK_CLASS_TYPE (object_class),
 							   GTK_SIGNAL_OFFSET (ESummaryShownClass, selection_changed),
 							   gtk_marshal_NONE__POINTER,
 							   GTK_TYPE_NONE, 1,
 							   GTK_TYPE_POINTER);
-	gtk_object_class_add_signals (object_class, shown_signals, LAST_SIGNAL);
 }
 
 static gboolean
@@ -371,7 +374,7 @@ add_clicked (GtkWidget *button,
 
 	for (iterator = list; iterator; iterator = iterator->next) {
 		ESummaryShownModelEntry *new_entry = iterator->data;
-		e_summary_shown_add_node (shown, FALSE, new_entry, NULL, TRUE, NULL);
+		e_summary_shown_add_node (shown, FALSE, new_entry, NULL, FALSE, NULL);
 	}
 
 	g_list_free (list);
@@ -458,11 +461,8 @@ make_table (GHashTable *data_model,
 					       value_to_string,
 					       
 					       data_model);
-	gtk_object_ref (GTK_OBJECT (td->etm));
-	gtk_object_sink (GTK_OBJECT (td->etm));
-	
 	etmm = E_TREE_MEMORY (td->etm);
-	e_tree_memory_set_expanded_default (etmm, TRUE);
+	e_tree_memory_set_expanded_default (etmm, FALSE);
 
 	td->root = e_tree_memory_node_insert (etmm, NULL, 0, NULL);
 
@@ -472,33 +472,10 @@ make_table (GHashTable *data_model,
 
 	tree = e_tree_scrolled_get_tree (E_TREE_SCROLLED (td->etable));
 	e_tree_root_node_set_visible (tree, FALSE);
-	gtk_signal_connect (GTK_OBJECT (tree), "selection-change",
-			    callback, closure);
+	g_signal_connect (tree, "selection-change", callback, closure);
 
 	td->contents = NULL;
 	return td;
-}
-
-static GtkWidget *
-construct_pixmap_button (const char *text,
-			 const char *image)
-{
-	GtkWidget *box, *button, *pixmap, *label;
-
-	box = gtk_hbox_new (FALSE, 1);
-
-	pixmap = gnome_stock_pixmap_widget (NULL, image);
-	gtk_box_pack_start (GTK_BOX (box), pixmap, FALSE, FALSE, 0);
-	
-	label = gtk_label_new (text);
-	gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
-
-	button = gtk_button_new ();
-	gtk_container_add (GTK_CONTAINER (button), box);
-
-	gtk_widget_show_all (box);
-
-	return button;
 }
 	
 static void
@@ -516,7 +493,7 @@ e_summary_shown_init (ESummaryShown *shown)
 	priv = g_new (ESummaryShownPrivate, 1);
 	shown->priv = priv;
 
-	priv->all = make_table (shown->all_model, _("All"), GTK_SIGNAL_FUNC (all_selection_changed), shown);
+	priv->all = make_table (shown->all_model, _("All"), G_CALLBACK (all_selection_changed), shown);
 	
 	gtk_box_pack_start (GTK_BOX (shown), priv->all->etable, TRUE, TRUE, 2);
 	gtk_widget_show (priv->all->etable);
@@ -528,22 +505,20 @@ e_summary_shown_init (ESummaryShown *shown)
 	gtk_box_pack_start (GTK_BOX (shown), align, FALSE, FALSE, 3);
 
 	/* Fixme: nice GFX version */
-	priv->add = construct_pixmap_button (_("Add"), GNOME_STOCK_BUTTON_NEXT);
+	priv->add = gtk_button_new_from_stock (GTK_STOCK_ADD);
 	gtk_widget_set_sensitive (priv->add, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox), priv->add, TRUE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (priv->add), "clicked",
-			    GTK_SIGNAL_FUNC (add_clicked), shown);
+	g_signal_connect (priv->add, "clicked", G_CALLBACK (add_clicked), shown);
 
 	/* Fixme: Ditto */
-	priv->remove = construct_pixmap_button (_("Remove"), GNOME_STOCK_BUTTON_PREV);
+	priv->remove = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
 	gtk_widget_set_sensitive (priv->remove, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox), priv->remove, TRUE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (priv->remove), "clicked",
-			    GTK_SIGNAL_FUNC (remove_clicked), shown);
+	g_signal_connect (priv->remove, "clicked", G_CALLBACK (remove_clicked), shown);
 
 	gtk_widget_show_all (align);
 
-	priv->shown = make_table (shown->shown_model, _("Shown"), GTK_SIGNAL_FUNC (shown_selection_changed), shown);
+	priv->shown = make_table (shown->shown_model, _("Shown"), G_CALLBACK (shown_selection_changed), shown);
 
 	gtk_box_pack_start (GTK_BOX (shown), priv->shown->etable, TRUE, TRUE, 2);
 	gtk_widget_show (priv->shown->etable);
@@ -559,22 +534,6 @@ e_summary_shown_new (void)
 
 	shown = gtk_type_new (e_summary_shown_get_type ());
 	return GTK_WIDGET (shown);
-}
-
-static ETreePath
-e_tree_model_node_append (ETreeModel *etm,
-			  ETreePath parent,
-			  gpointer data)
-{
-	ETreeMemory *etmm;
-	ETreePath path;
-	
-	etmm = E_TREE_MEMORY (etm);
-	e_tree_memory_freeze (etmm);
-	path = e_tree_memory_node_insert (etmm, parent, -1, data);
-	e_tree_memory_thaw (etmm);
-
-	return path;
 }
 
 ETreePath
@@ -606,10 +565,11 @@ e_summary_shown_add_node (ESummaryShown *shown,
 	}
 
 	etmm = E_TREE_MEMORY (td->etm);
-	path = e_tree_model_node_append (td->etm, parent, data);
+	path = e_tree_memory_node_insert (etmm, parent, -1, data);
 
 	tree = e_tree_scrolled_get_tree (E_TREE_SCROLLED (td->etable));
-	e_tree_node_set_expanded (tree, path, expanded);
+	if (e_tree_model_get_expanded_default (E_TREE_MODEL(etmm)) != expanded)
+		e_tree_node_set_expanded (tree, path, expanded);
 
 	entry->path = path;
 	
@@ -653,6 +613,24 @@ e_summary_shown_remove_node (ESummaryShown *shown,
 
 }
 
+void
+e_summary_shown_freeze (ESummaryShown *shown)
+{
+	g_return_if_fail (IS_E_SUMMARY_SHOWN (shown));
+
+	e_tree_memory_freeze (E_TREE_MEMORY (shown->priv->all->etm));
+	e_tree_memory_freeze (E_TREE_MEMORY (shown->priv->shown->etm));
+}
+
+void
+e_summary_shown_thaw (ESummaryShown *shown)
+{
+	g_return_if_fail (IS_E_SUMMARY_SHOWN (shown));
+
+	e_tree_memory_thaw (E_TREE_MEMORY (shown->priv->all->etm));
+	e_tree_memory_thaw (E_TREE_MEMORY (shown->priv->shown->etm));
+}
+
 static void
 make_list (ETreePath path,
 	   gpointer data)
@@ -683,5 +661,3 @@ e_summary_shown_get_selection (ESummaryShown *shown,
 
 	return list;
 }
-	
-			       
