@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType sbits manager (body).                                       */
 /*                                                                         */
-/*  Copyright 2000-2001 by                                                 */
+/*  Copyright 2000-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -26,8 +26,6 @@
 
 #include "ftcerror.h"
 
-#include <string.h>         /* memcmp() */
-
 
 #define FTC_SBIT_ITEMS_PER_NODE  16
 
@@ -48,7 +46,7 @@
   typedef struct  FTC_SBitQueryRec_
   {
     FTC_GlyphQueryRec  gquery;
-    FTC_ImageDesc      desc;
+    FTC_ImageTypeRec   type;
 
   } FTC_SBitQueryRec, *FTC_SBitQuery;
 
@@ -62,11 +60,11 @@
   typedef struct  FTC_SBitFamilyRec_
   {
     FTC_GlyphFamilyRec  gfam;
-    FTC_ImageDesc       desc;
+    FTC_ImageTypeRec    type;
 
   } FTC_SBitFamilyRec;
- 
-  
+
+
 #define FTC_SBIT_FAMILY( x )         ( (FTC_SBitFamily)( x ) )
 #define FTC_SBIT_FAMILY_MEMORY( x )  FTC_GLYPH_FAMILY_MEMORY( &( x )->cset )
 
@@ -95,8 +93,8 @@
 
     size = (FT_ULong)( pitch * bitmap->rows );
 
-    if ( !ALLOC( sbit->buffer, size ) )
-      MEM_Copy( sbit->buffer, bitmap->buffer, size );
+    if ( !FT_ALLOC( sbit->buffer, size ) )
+      FT_MEM_COPY( sbit->buffer, bitmap->buffer, size );
 
     return error;
   }
@@ -106,13 +104,13 @@
   ftc_sbit_node_done( FTC_SBitNode  snode,
                       FTC_Cache     cache )
   {
-    FTC_SBit   sbit  = snode->sbits;
-    FT_UInt    count = FTC_GLYPH_NODE( snode )->item_count;
+    FTC_SBit   sbit   = snode->sbits;
+    FT_UInt    count  = FTC_GLYPH_NODE( snode )->item_count;
     FT_Memory  memory = cache->memory;
 
 
     for ( ; count > 0; sbit++, count-- )
-      FREE( sbit->buffer );
+      FT_FREE( sbit->buffer );
 
     ftc_glyph_node_done( FTC_GLYPH_NODE( snode ), cache );
   }
@@ -144,48 +142,14 @@
 
     sbit = snode->sbits + ( gindex - gnode->item_start );
 
-    error = FTC_Manager_Lookup_Size( manager, &sfam->desc.font,
+    error = FTC_Manager_Lookup_Size( manager, &sfam->type.font,
                                      &face, &size );
     if ( !error )
     {
-      FT_UInt  load_flags = FT_LOAD_DEFAULT;
-      FT_UInt  type       = sfam->desc.type;
-
-
-      /* determine load flags, depending on the font description's */
-      /* image type                                                */
-
-      if ( FTC_IMAGE_FORMAT( type ) == ftc_image_format_bitmap )
-      {
-        if ( type & ftc_image_flag_monochrome )
-          load_flags |= FT_LOAD_MONOCHROME;
-
-        /* disable embedded bitmaps loading if necessary */
-        if ( type & ftc_image_flag_no_sbits )
-          load_flags |= FT_LOAD_NO_BITMAP;
-      }
-      else
-      {
-        FT_ERROR((
-          "ftc_sbit_node_load: cannot load scalable glyphs in an"
-          " sbit cache, please check your arguments!\n" ));
-        error = FTC_Err_Invalid_Argument;
-        goto Exit;
-      }
-
-      /* always render glyphs to bitmaps */
-      load_flags |= FT_LOAD_RENDER;
-
-      if ( type & ftc_image_flag_unhinted )
-        load_flags |= FT_LOAD_NO_HINTING;
-
-      if ( type & ftc_image_flag_autohinted )
-        load_flags |= FT_LOAD_FORCE_AUTOHINT;
-
       /* by default, indicates a `missing' glyph */
       sbit->buffer = 0;
 
-      error = FT_Load_Glyph( face, gindex, load_flags );
+      error = FT_Load_Glyph( face, gindex, sfam->type.flags | FT_LOAD_RENDER );
       if ( !error )
       {
         FT_Int        temp;
@@ -215,22 +179,26 @@
              CHECK_CHAR( xadvance )          &&
              CHECK_CHAR( yadvance )          )
         {
-          sbit->width    = (FT_Byte)bitmap->width;
-          sbit->height   = (FT_Byte)bitmap->rows;
-          sbit->pitch    = (FT_Char)bitmap->pitch;
-          sbit->left     = (FT_Char)slot->bitmap_left;
-          sbit->top      = (FT_Char)slot->bitmap_top;
-          sbit->xadvance = (FT_Char)xadvance;
-          sbit->yadvance = (FT_Char)yadvance;
-          sbit->format   = (FT_Byte)bitmap->pixel_mode;
+          sbit->width     = (FT_Byte)bitmap->width;
+          sbit->height    = (FT_Byte)bitmap->rows;
+          sbit->pitch     = (FT_Char)bitmap->pitch;
+          sbit->left      = (FT_Char)slot->bitmap_left;
+          sbit->top       = (FT_Char)slot->bitmap_top;
+          sbit->xadvance  = (FT_Char)xadvance;
+          sbit->yadvance  = (FT_Char)yadvance;
+          sbit->format    = (FT_Byte)bitmap->pixel_mode;
+          sbit->max_grays = (FT_Byte)(bitmap->num_grays - 1);
 
-          /* grab the bitmap when possible - this is a hack !! */
-          if ( slot->flags & ft_glyph_own_bitmap )
+#if 0 /* this doesn't work well with embedded bitmaps !! */
+
+          /* grab the bitmap when possible - this is a hack! */
+          if ( slot->flags & FT_GLYPH_OWN_BITMAP )
           {
-            slot->flags &= ~ft_glyph_own_bitmap;
+            slot->flags &= ~FT_GLYPH_OWN_BITMAP;
             sbit->buffer = bitmap->buffer;
           }
           else
+#endif
           {
             /* copy the bitmap into a new buffer -- ignore error */
             error = ftc_sbit_copy_bitmap( sbit, bitmap, memory );
@@ -256,7 +224,6 @@
       }
     }
 
-  Exit:
     return error;
   }
 
@@ -375,16 +342,16 @@
     FT_Face      face;
 
 
-    sfam->desc = squery->desc;
+    sfam->type = squery->type;
 
     /* we need to compute "cquery.item_total" now */
     error = FTC_Manager_Lookup_Face( manager,
-                                     squery->desc.font.face_id,
+                                     squery->type.font.face_id,
                                      &face );
     if ( !error )
     {
       error = ftc_glyph_family_init( FTC_GLYPH_FAMILY( sfam ),
-                                     FTC_IMAGE_DESC_HASH( &sfam->desc ),
+                                     FTC_IMAGE_TYPE_HASH( &sfam->type ),
                                      FTC_SBIT_ITEMS_PER_NODE,
                                      face->num_glyphs,
                                      FTC_GLYPH_QUERY( squery ),
@@ -405,7 +372,7 @@
     /* we need to set the "cquery.cset" field or our query for */
     /* faster glyph comparisons in ftc_sbit_node_compare       */
     /*                                                         */
-    result = FT_BOOL( FTC_IMAGE_DESC_COMPARE( &sfam->desc, &squery->desc ) );
+    result = FT_BOOL( FTC_IMAGE_TYPE_COMPARE( &sfam->type, &squery->type ) );
     if ( result )
       FTC_GLYPH_FAMILY_FOUND( sfam, squery );
 
@@ -457,9 +424,26 @@
 
   /* documentation is in ftcsbits.h */
 
+#ifdef FTC_CACHE_USE_INLINE
+
+#define GEN_CACHE_FAMILY_COMPARE( f, q, c ) \
+          ftc_sbit_family_compare( (FTC_SBitFamily)(f), (FTC_SBitQuery)(q) )
+
+#define GEN_CACHE_NODE_COMPARE( n, q, c ) \
+          ftc_sbit_node_compare( (FTC_SBitNode)(n), (FTC_SBitQuery)(q), c )
+
+#define GEN_CACHE_LOOKUP  ftc_sbit_cache_lookup
+#include "ftccache.i"
+
+#else  /* !FTC_CACHE_USE_INLINE */
+
+#define ftc_sbit_cache_lookup  ftc_cache_lookup
+
+#endif /* !FTC_CACHE_USE_INLINE */
+
   FT_EXPORT_DEF( FT_Error )
   FTC_SBitCache_Lookup( FTC_SBitCache   cache,
-                        FTC_ImageDesc*  desc,
+                        FTC_ImageType   type,
                         FT_UInt         gindex,
                         FTC_SBit       *ansbit,
                         FTC_Node       *anode )
@@ -479,11 +463,11 @@
       *anode = NULL;
 
     squery.gquery.gindex = gindex;
-    squery.desc          = *desc;
+    squery.type          = *type;
 
-    error = ftc_cache_lookup( FTC_CACHE( cache ),
-                              FTC_QUERY( &squery ),
-                              (FTC_Node*)&node );
+    error = ftc_sbit_cache_lookup( FTC_CACHE( cache ),
+                                   FTC_QUERY( &squery ),
+                                   (FTC_Node*)&node );
     if ( !error )
     {
       *ansbit = node->sbits + ( gindex - FTC_GLYPH_NODE( node )->item_start );
@@ -514,17 +498,56 @@
                          FT_UInt          gindex,
                          FTC_SBit        *ansbit )
   {
-    FTC_ImageDesc  desc0;
-    
+    FTC_ImageTypeRec  type0;
+
 
     if ( !desc )
-      return FT_Err_Invalid_Argument;
-      
-    desc0.font = desc->font;
-    desc0.type = (FT_UInt32)desc->image_type;
+      return FTC_Err_Invalid_Argument;
+
+    type0.font  = desc->font;
+    type0.flags = 0;
+
+    /* convert image type flags to load flags */
+    {
+      FT_UInt  load_flags = FT_LOAD_DEFAULT;
+      FT_UInt  type       = desc->image_type;
+
+
+      /* determine load flags, depending on the font description's */
+      /* image type                                                */
+
+      if ( ftc_image_format( type ) == ftc_image_format_bitmap )
+      {
+        if ( type & ftc_image_flag_monochrome )
+          load_flags |= FT_LOAD_MONOCHROME;
+
+        /* disable embedded bitmaps loading if necessary */
+        if ( type & ftc_image_flag_no_sbits )
+          load_flags |= FT_LOAD_NO_BITMAP;
+      }
+      else
+      {
+        /* we want an outline, don't load embedded bitmaps */
+        load_flags |= FT_LOAD_NO_BITMAP;
+
+        if ( type & ftc_image_flag_unscaled )
+          load_flags |= FT_LOAD_NO_SCALE;
+      }
+
+      /* always render glyphs to bitmaps */
+      load_flags |= FT_LOAD_RENDER;
+
+      if ( type & ftc_image_flag_unhinted )
+        load_flags |= FT_LOAD_NO_HINTING;
+
+      if ( type & ftc_image_flag_autohinted )
+        load_flags |= FT_LOAD_FORCE_AUTOHINT;
+
+      type0.flags = load_flags;
+    }
 
     return FTC_SBitCache_Lookup( (FTC_SBitCache)cache,
-                                  &desc0,
+                                  &type0,
                                   gindex,
                                   ansbit,
                                   NULL );

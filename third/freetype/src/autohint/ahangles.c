@@ -5,7 +5,7 @@
 /*    A routine used to compute vector angles with limited accuracy        */
 /*    and very high speed (body).                                          */
 /*                                                                         */
-/*  Copyright 2000-2001 Catharon Productions Inc.                          */
+/*  Copyright 2000-2001, 2002 Catharon Productions Inc.                    */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -64,7 +64,7 @@
   };
 
 
-  FT_LOCAL_DEF AH_Angle
+  FT_LOCAL_DEF( AH_Angle )
   ah_angle( FT_Vector*  v )
   {
     FT_Pos    dx, dy;
@@ -126,5 +126,22 @@
     return angle;
   }
 
+
+  FT_LOCAL_DEF( AH_Angle )
+  ah_angle_diff( AH_Angle  angle1,
+                 AH_Angle  angle2 )
+  {
+    AH_Angle  delta;
+    
+
+    delta = ( angle2 - angle1 );
+    if ( delta < 0 )
+      delta += AH_2PI;
+    
+    if ( delta > AH_PI )
+      delta -= AH_2PI;
+    
+    return delta;
+  }                 
 
 /* END */

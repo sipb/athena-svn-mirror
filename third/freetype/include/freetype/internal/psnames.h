@@ -5,7 +5,7 @@
 /*    High-level interface for the `PSNames' module (in charge of          */
 /*    various functions related to Postscript glyph names conversion).     */
 /*                                                                         */
-/*  Copyright 1996-2001 by                                                 */
+/*  Copyright 1996-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -52,7 +52,7 @@ FT_BEGIN_HEADER
   /*    This function will not be compiled if the configuration macro      */
   /*    FT_CONFIG_OPTION_ADOBE_GLYPH_LIST is undefined.                    */
   /*                                                                       */
-  typedef FT_ULong
+  typedef FT_UInt32
   (*PS_Unicode_Value_Func)( const char*  glyph_name );
 
 
@@ -226,7 +226,11 @@ FT_BEGIN_HEADER
     const unsigned short*      adobe_expert_encoding;
 
     PS_Next_Unicode_Func       next_unicode;
+
   } PSNames_Interface;
+
+
+  typedef PSNames_Interface*  PSNames_Service;
 
 
 FT_END_HEADER

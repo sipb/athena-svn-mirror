@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    OpenType objects manager (specification).                            */
 /*                                                                         */
-/*  Copyright 1996-2001 by                                                 */
+/*  Copyright 1996-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -23,6 +23,7 @@
 #include <ft2build.h>
 #include FT_INTERNAL_OBJECTS_H
 #include FT_INTERNAL_CFF_TYPES_H
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 #include FT_INTERNAL_POSTSCRIPT_NAMES_H
 
 
@@ -109,45 +110,46 @@ FT_BEGIN_HEADER
   } CFF_DriverRec;
 
 
-  FT_LOCAL FT_Error
-  CFF_Size_Init( CFF_Size  size );
+  FT_LOCAL( FT_Error )
+  cff_size_init( CFF_Size  size );
 
-  FT_LOCAL void
-  CFF_Size_Done( CFF_Size  size );
+  FT_LOCAL( void )
+  cff_size_done( CFF_Size  size );
 
-  FT_LOCAL FT_Error
-  CFF_Size_Reset( CFF_Size  size );
+  FT_LOCAL( FT_Error )
+  cff_size_reset( CFF_Size  size );
 
-  FT_LOCAL void
-  CFF_GlyphSlot_Done( CFF_GlyphSlot  slot );
+  FT_LOCAL( void )
+  cff_slot_done( CFF_GlyphSlot  slot );
 
-  FT_LOCAL FT_Error
-  CFF_GlyphSlot_Init( CFF_GlyphSlot   slot );
+  FT_LOCAL( FT_Error )
+  cff_slot_init( CFF_GlyphSlot   slot );
+
 
   /*************************************************************************/
   /*                                                                       */
   /* Face functions                                                        */
   /*                                                                       */
-  FT_LOCAL FT_Error
-  CFF_Face_Init( FT_Stream      stream,
+  FT_LOCAL( FT_Error )
+  cff_face_init( FT_Stream      stream,
                  CFF_Face       face,
                  FT_Int         face_index,
                  FT_Int         num_params,
                  FT_Parameter*  params );
 
-  FT_LOCAL void
-  CFF_Face_Done( CFF_Face  face );
+  FT_LOCAL( void )
+  cff_face_done( CFF_Face  face );
 
 
   /*************************************************************************/
   /*                                                                       */
   /* Driver functions                                                      */
   /*                                                                       */
-  FT_LOCAL FT_Error
-  CFF_Driver_Init( CFF_Driver  driver );
+  FT_LOCAL( FT_Error )
+  cff_driver_init( CFF_Driver  driver );
 
-  FT_LOCAL void
-  CFF_Driver_Done( CFF_Driver  driver );
+  FT_LOCAL( void )
+  cff_driver_done( CFF_Driver  driver );
 
 
 FT_END_HEADER

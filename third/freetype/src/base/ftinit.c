@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType initialization layer (body).                                */
 /*                                                                         */
-/*  Copyright 1996-2001 by                                                 */
+/*  Copyright 1996-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -93,7 +93,7 @@
       /* notify errors, but don't stop */
       if ( error )
       {
-        FT_ERROR(( "FT_Add_Default_Module: Cannot install `%s', error = %x\n",
+        FT_ERROR(( "FT_Add_Default_Module: Cannot install `%s', error = 0x%x\n",
                    (*cur)->module_name, error ));
       }
       cur++;
@@ -125,7 +125,13 @@
 
     error = FT_New_Library( memory, alibrary );
     if ( !error )
+    {
+      (*alibrary)->version_major = FREETYPE_MAJOR;
+      (*alibrary)->version_minor = FREETYPE_MINOR;
+      (*alibrary)->version_patch = FREETYPE_PATCH;
+
       FT_Add_Default_Modules( *alibrary );
+    }
 
     return error;
   }
