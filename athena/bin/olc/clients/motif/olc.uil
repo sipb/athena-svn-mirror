@@ -11,7 +11,7 @@ module olc
 		separator = gadget;
 		label = gadget;
 		text = widget;
-		push_button = widget;
+		push_button = gadget;
 		toggle_button = widget;
 		cascade_button = widget;
 	}
@@ -37,26 +37,15 @@ procedure
 	dlg_ok		(integer);
 	dlg_cancel	(integer);
 	widget_create	(integer);
+	MuSetWaitCursor	();
+	MuSetStandardCursor	();
+	Help		(string);
 
 !
 ! Value declarations.
 !
 
 value
-
-! Fonts.
-
-	TitleFont:	font('-adobe-times-bold-i-*-*-*-240-*');
-	WelcomeFont:	font('-adobe-times-bold-i-*-*-*-180-*');
-	CopyrightFont:	font('-adobe-times-bold-i-*-*-*-140-*');
-	ButtonFont1:	font('-adobe-times-medium-i-*-*-*-140-*');
-	ButtonFont2:	font('-adobe-times-bold-i-*-*-*-140-*');
-	DialogFont:	font('-adobe-times-medium-r-*-*-*-140-*');
-	LabelFont1:	font('-adobe-times-medium-r-*-*-*-120-*');
-	LabelFont2:	font('-adobe-times-medium-i-*-*-*-120-*');
-	Courier12:	font('-adobe-courier-medium-r-*-*-*-120-*');
-	Courier14:	font('-adobe-courier-medium-r-*-*-*-140-*');
-	Fixed:		font('fixed');
 
 ! Widget_create callback values.
 
@@ -100,21 +89,11 @@ value
 
 ! Labels, Text strings
 
-	New_Ques_label:	"Ask a question in OLC";
-	Cont_Ques_label:"Continue your question in OLC";
-	Stock_label:	"Browse the stock answers";
-	Send_label:	"Send message";
-	Done_label:	"Done question";
-	Cancel_label:	"Cancel question";
-	Save_label:	"Save log...";
-	Motd_label:	"MOTD";
-	Update_label:	"Update status";
-	Quit_label:	"QUIT OLC";
-	Help_label:	"HELP";
-	Welcome_text:	"Welcome to Project Athena's On-Line Consulting system.";
-	Copyright_text:	"Copyright (c) 1989 by the Massachusetts Institute of Technology.";
-!	Help_text:	"Help is not yet implemented.";
-	Topic_text:	"Your question topic is: ";
+	Welcome_label:		"Welcome to Project Athena's On-Line Consulting system.";
+	Copyright_label:	"Copyright  © 1989 by the Massachusetts Institute of Technology.";
+	Your_topic_label:	"Your question topic is: ";
+	YES:			"Yes";
+	NO:			"No";
 !
 ! The main form of the interface.  This is actually a "topbox" that lets
 !  the user select whether to ask a question or go somewhere else for
@@ -137,7 +116,7 @@ object main:	form {
 		push_button quit_btn;
 		push_button help_btn;
 		unmanaged form cont_ques_form;
-		unmanaged form motd_form;
+		form motd_form;
 		unmanaged message_dialog motd_dlg;
 		unmanaged message_dialog help_dlg;
 		unmanaged message_dialog quit_dlg;
@@ -149,12 +128,11 @@ object new_ques_btn:	push_button {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
-		font_list = ButtonFont1;
-		label_string = New_Ques_label;
 	};
 	callbacks {
 		create = procedure widget_create(NEWQ_BTN);
 		activate = procedure olc_new_ques ();
+		help = procedure Help("This is the new question button.");
 	};
 };
 
@@ -163,12 +141,11 @@ object cont_ques_btn:	push_button {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
 !		left_widget = push_button new_ques_btn;
-		font_list = ButtonFont1;
-		label_string = Cont_Ques_label;
 	};
 	callbacks {
 		create = procedure widget_create(CONTQ_BTN);
 		activate = procedure olc_cont_ques ();
+		help = procedure Help("This is the continue question button.");
 	};
 };
 
@@ -177,12 +154,11 @@ object stock_btn:	push_button {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_WIDGET;
 		left_widget = push_button cont_ques_btn;
-		font_list = ButtonFont1;
-		label_string = Stock_label;
 	};
 	callbacks {
 		create = procedure widget_create(STOCK_BTN);
 		activate = procedure olc_stock ();
+		help = procedure Help("This is the stock button.");
 	};
 };
 
@@ -191,13 +167,12 @@ object quit_btn:	push_button {
 		top_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_WIDGET;
 		right_widget = push_button help_btn;
-		font_list = ButtonFont2;
-		label_string = Quit_label;
-		margin_bottom = 2;
+!		margin_bottom = 2;
 	};
 	callbacks {
 		create = procedure widget_create(QUIT_BTN);
 		activate = procedure olc_quit ();
+		help = procedure Help("This is the quit button.");
 	};
 };
 
@@ -205,13 +180,15 @@ object help_btn:	push_button {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
-		font_list = ButtonFont2;
-		label_string = Help_label;
-		margin_bottom = 2;
+!		margin_bottom = 2;
 	};
 	callbacks {
 		create = procedure widget_create(HELP_BTN);
-		activate = procedure olc_help ();
+		activate = procedures { MuSetWaitCursor();
+					olc_help();
+					MuSetStandardCursor();
+		                      };
+		help = procedure Help("This is the help button.");
 	};
 };
 
@@ -234,8 +211,8 @@ object cont_ques_form:	form {
 		horizontal_spacing = Horiz_spacing;
 		shadow_thickness = NONE;
 		border_width = NONE;
-		margin_width = NONE;
-		margin_height = NONE;
+!		margin_width = NONE;
+!		margin_height = NONE;
 	};
 	controls {
 		separator title_separator;
@@ -267,7 +244,7 @@ object status_form:	form {
 	};
 	controls {
 		label connect_lbl;
-		label topic_text;
+		label your_topic_lbl;
 		label topic_lbl;
 	};
 };
@@ -278,7 +255,6 @@ object connect_lbl:	label {
 		left_attachment = XmATTACH_FORM;
 		bottom_attachment = XmATTACH_FORM;
 		alignment = XmALIGNMENT_CENTER;
-		font_list = LabelFont1;
 		label_label = "Status unknown.";
 	};
 	callbacks {
@@ -286,15 +262,14 @@ object connect_lbl:	label {
 	};
 };
 
-object topic_text:	label {
+object your_topic_lbl:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		bottom_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_WIDGET;
 		right_widget = label topic_lbl;
 		alignment = XmALIGNMENT_CENTER;
-		font_list = LabelFont1;
-		label_label = Topic_text;
+		label_label = Your_topic_label;
 	};
 };
 
@@ -304,7 +279,6 @@ object topic_lbl:	label {
 		bottom_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
 		alignment = XmALIGNMENT_CENTER;
-		font_list = LabelFont2;
 		label_label = "unknown";
 	};
 	callbacks {
@@ -324,15 +298,17 @@ object replay_frame:	frame {
 		shadow_thickness = NONE;
 	};
 	controls {
-		scrolled_text replay_scrl;
+		text replay_scrl;
+	};
+	callbacks {
+		create = procedure widget_create(NONE);
 	};
 };
 
-object replay_scrl:	scrolled_text  {
+object replay_scrl:	text  {
 	arguments {
 		editable = false;
 		edit_mode = XmMULTI_LINE_EDIT;
-		font_list = Fixed;
 		word_wrap = true;
 		scroll_horizontal = false;
 		scroll_vertical = true;
@@ -366,76 +342,64 @@ object options_rowcol:	row_column {
 
 object send_btn:		push_button {
 	arguments {
-		font_list = ButtonFont1;
-		label_string = Send_label;
 	};
 	callbacks {
 		create = procedure widget_create(SEND_BTN);
 		activate = procedure olc_send ();
+		help = procedure Help("This is the send button.");
 	};
 };
 
 object done_btn:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Done_label;
-	};
 	callbacks {
 		create = procedure widget_create(DONE_BTN);
 		activate = procedure olc_done ();
+		help = procedure Help("This is the done button.");
 	};
 };
 
 object cancel_btn:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Cancel_label;
-	};
 	callbacks {
 		create = procedure widget_create(CANCEL_BTN);
 		activate = procedure olc_cancel ();
+		help = procedure Help("This is the cancel button.");
 	};
 };
 
 object savelog_btn:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Save_label;
-	};
 	callbacks {
 		create = procedure widget_create(SAVELOG_BTN);
 		activate = procedure olc_savelog ();
+		help = procedure Help("This is the savelog button.");
 	};
 };
 
 object motd_btn:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Motd_label;
-	};
 	callbacks {
 		create = procedure widget_create(MOTD_BTN);
-		activate = procedure olc_motd ();
+		activate = procedures { MuSetWaitCursor();
+					olc_motd ();
+					MuSetStandardCursor();
+		                      };
+		help = procedure Help("This is the motd button.");
 	};
 };
 
 object update_btn:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Update_label;
-	};
 	callbacks {
 		create = procedure widget_create(UPDATE_BTN);
-		activate = procedure olc_update ();
+		activate = procedures { MuSetWaitCursor();
+					olc_update ();
+					MuSetStandardCursor();
+		                      };
+		help = procedure Help("This is the update button.");
 	};
 };
 
 object motd_dlg:		message_dialog {
 	arguments {
-		dialog_style = XmDIALOG_APPLICATION_MODAL;
+		dialog_style = XmDIALOG_MODELESS;
 !		dialog_type = XmDIALOG_INFORMATION;
-		button_font_list = ButtonFont1;
-		text_font_list = DialogFont;
 		message_alignment = XmALIGNMENT_BEGINNING;
 		border_width = Normal_border;
 	};
@@ -447,9 +411,7 @@ object motd_dlg:		message_dialog {
 
 object help_dlg:		message_dialog {
 	arguments {
-		dialog_style = XmDIALOG_APPLICATION_MODAL;
-		button_font_list = ButtonFont1;
-		text_font_list = DialogFont;
+		dialog_style = XmDIALOG_MODELESS;
 		message_alignment = XmALIGNMENT_BEGINNING;
 		border_width = Normal_border;
 	};
@@ -462,10 +424,11 @@ object help_dlg:		message_dialog {
 object quit_dlg:		message_dialog {
 	arguments {
 		dialog_style = XmDIALOG_APPLICATION_MODAL;
-		button_font_list = ButtonFont1;
-		text_font_list = DialogFont;
 		message_alignment = XmALIGNMENT_BEGINNING;
 		border_width = Normal_border;
+		ok_label_string = YES;
+		cancel_label_string = NO;
+		default_button_type = XmDIALOG_CANCEL_BUTTON;
 	};
 	callbacks {
 		create = procedure widget_create(QUIT_DLG);
@@ -477,10 +440,7 @@ object quit_dlg:		message_dialog {
 object error_dlg:	message_dialog {
 	arguments {
 		dialog_style = XmDIALOG_APPLICATION_MODAL;
-		button_font_list = ButtonFont1;
-		text_font_list = DialogFont;
 		message_alignment = XmALIGNMENT_BEGINNING;
-!		default_button_type = XmDIALOG_OK_BUTTON;
 		border_width = Normal_border;
 	};
 	callbacks {
@@ -514,8 +474,8 @@ object motd_form:	form {
 		horizontal_spacing = Horiz_spacing;
 		shadow_thickness = NONE;
 		border_width = NONE;
-		margin_width = NONE;
-		margin_height = NONE;
+!		margin_width = NONE;
+!		margin_height = NONE;
 	};
 	controls {
 		separator motd_separator;
@@ -545,8 +505,7 @@ object welcome_lbl:	label {
 		alignment = XmALIGNMENT_CENTER;
 		top_attachment = XmATTACH_WIDGET;
 		top_widget = separator motd_separator;
-		font_list = WelcomeFont;
-		label_label = Welcome_text;
+		label_label = Welcome_label;
 	};
 };
 
@@ -557,8 +516,7 @@ object copyright_lbl:		label {
 		alignment = XmALIGNMENT_CENTER;
 		top_attachment = XmATTACH_WIDGET;
 		top_widget = label welcome_lbl;
-		font_list = CopyrightFont;
-		label_label = Copyright_text;
+		label_label = Copyright_label;
 	};
 };
 
@@ -573,19 +531,18 @@ object motd_frame:	frame {
 		shadow_thickness = NONE;
 	};
 	controls {
-		scrolled_text motd_scrl;
+		text motd_scrl;
+	};
+	callbacks {
+		create = procedure widget_create(NONE);
 	};
 };
 
-object motd_scrl:	scrolled_text  {
+object motd_scrl:	text  {
 	arguments {
 		editable = false;
 		edit_mode = XmMULTI_LINE_EDIT;
-		font_list = DialogFont;
 		word_wrap = true;
-!
-!  Serious brain damage here.  Have to leave the horizontal scrollbar on
-!  in order to display the motd correctly.
 		scroll_horizontal = false;
 		scroll_vertical = true;
 		scroll_left_side = true;
