@@ -1,45 +1,44 @@
-/* 
- * $Id: rk_rpc.c,v 1.10 1999-01-22 23:15:04 ghudson Exp $
+/* Copyright 1989, 1999 by the Massachusetts Institute of Technology.
  *
- * This file contains functions that are used for network communication.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* This file contains functions that are used for network communication.
  * See the comment at the top of rk_lib.c for a description of the naming
  * conventions used within the rkinit library.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_rpc.c,v 1.10 1999-01-22 23:15:04 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+static const char rcsid[] = "$Id: rk_rpc.c,v 1.1 1999-10-05 17:09:54 danw Exp $";
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include <rkinit.h>
 #include <rkinit_err.h>
-#include <rkinit_private.h>
 
 static int sock;
 struct sockaddr_in saddr;
 
 static char errbuf[BUFSIZ];
 
-char *calloc();
-
-char *rki_mt_to_string();
-
-#ifdef __STDC__
 int rki_send_packet(int sock, char type, u_long length, char *data)
-#else
-int rki_send_packet(sock, type, length, data)
-  int sock;
-  char type;
-  u_long length;
-  char *data;
-#endif /* __STDC__ */
 {
     int len;
     u_char *packet;
@@ -74,15 +73,7 @@ int rki_send_packet(sock, type, length, data)
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 int rki_get_packet(int sock, char type, u_long *length, char *data)
-#else
-int rki_get_packet(sock, type, length, data)
-  int sock;
-  char type;
-  u_long *length;
-  char *data;
-#endif /* __STDC__ */
 {
     u_char header[PKT_DATA];
     int packet_length, data_length, count, len;
@@ -145,12 +136,7 @@ int rki_get_packet(sock, type, length, data)
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 int rki_setup_rpc(char *host)
-#else
-int rki_setup_rpc(host)
-  char *host;
-#endif /* __STDC__ */
 {
     struct hostent *hp;
     struct servent *sp;
@@ -192,17 +178,8 @@ int rki_setup_rpc(host)
     return(RKINIT_SUCCESS);
 }    
 
-#ifdef __STDC__
 int rki_rpc_exchange_version_info(int c_lversion, int c_hversion, 
 				  int *s_lversion, int *s_hversion)
-#else
-int rki_rpc_exchange_version_info(c_lversion, c_hversion, 
-				  s_lversion, s_hversion)
-  int c_lversion;
-  int c_hversion;
-  int *s_lversion;
-  int *s_hversion;
-#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     u_char version_info[VERSION_INFO_SIZE];
@@ -225,12 +202,7 @@ int rki_rpc_exchange_version_info(c_lversion, c_hversion,
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 int rki_rpc_send_rkinit_info(rkinit_info *info)
-#else
-int rki_rpc_send_rkinit_info(info)
-  rkinit_info *info;
-#endif /* __STDC__ */
 {
     rkinit_info info_copy;
     
@@ -240,11 +212,7 @@ int rki_rpc_send_rkinit_info(info)
 			   (char *)&info_copy));
 }
 
-#ifdef __STDC__
 int rki_rpc_get_status(void)
-#else
-int rki_rpc_get_status()
-#endif /* __STDC__ */
 {
     char msg[BUFSIZ];
     int status = RKINIT_SUCCESS;
@@ -261,14 +229,7 @@ int rki_rpc_get_status()
     }
 }
 
-#ifdef __STDC__
 int rki_rpc_get_ktext(int sock, KTEXT auth, u_char type)
-#else
-int rki_rpc_get_ktext(sock, auth, type)
-  int sock;
-  KTEXT auth;
-  u_char type;
-#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     u_long length = MAX_KTXT_LEN;
@@ -281,45 +242,24 @@ int rki_rpc_get_ktext(sock, auth, type)
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 int rki_rpc_sendauth(KTEXT auth)
-#else
-int rki_rpc_sendauth(auth)
-  KTEXT auth;
-#endif /* __STDC__ */
 {
     return(rki_send_packet(sock, MT_AUTH, auth->length, (char *)auth->dat));
 }
 
 
-#ifdef __STDC__
 int rki_rpc_get_skdc(KTEXT scip)
-#else
-int rki_rpc_get_skdc(scip)
-  KTEXT scip;
-#endif /* __STDC__ */
 {
     return(rki_rpc_get_ktext(sock, scip, MT_SKDC));
 }
 
-#ifdef __STDC__
 int rki_rpc_send_ckdc(MSG_DAT *scip)
-#else
-int rki_rpc_send_ckdc(scip)
-  MSG_DAT *scip;
-#endif /* __STDC__ */
 {
     return(rki_send_packet(sock, MT_CKDC, scip->app_length, 
 			   (char *)scip->app_data));
 }
 
-#ifdef __STDC__
 int rki_get_csaddr(struct sockaddr_in *caddrp, struct sockaddr_in *saddrp)
-#else
-int rki_get_csaddr(caddrp, saddrp)
-  struct sockaddr_in *caddrp;
-  struct sockaddr_in *saddrp;
-#endif /* __STDC__ */
 {
     int addrlen = sizeof(struct sockaddr_in);
     
@@ -334,20 +274,12 @@ int rki_get_csaddr(caddrp, saddrp)
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 void rki_drop_server(void)
-#else
-void rki_drop_server()
-#endif /* __STDC__ */
 {
     (void) rki_send_packet(sock, MT_DROP, 0, "");
 }
 
-#ifdef __STDC__
 void rki_cleanup_rpc(void)
-#else
-void rki_cleanup_rpc()
-#endif /* __STDC__ */
 {
     rki_drop_server();
     (void) close(sock);

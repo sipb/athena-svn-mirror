@@ -1,7 +1,19 @@
-/* 
- * $Id: rk_lib.c,v 1.5 1999-01-22 23:15:04 ghudson Exp $
+/* Copyright 1989, 1999 by the Massachusetts Institute of Technology.
  *
- * This file contains the non-rpc top-level rkinit library routines.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* This file contains the non-rpc top-level rkinit library routines.
  * The routines in the rkinit library that should be called from clients
  * are exactly those defined in this file.
  *
@@ -13,28 +25,19 @@
  * Static functions can be named in any fashion.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_lib.c,v 1.5 1999-01-22 23:15:04 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+static const char rcsid[] = "$Id: rk_lib.c,v 1.1 1999-10-05 17:09:54 danw Exp $";
 
 #include <stdio.h>
 #include <string.h>
 #include <setjmp.h>
-#include <krb.h>
-
-#ifdef SYSV
 #include <netdb.h>
-#endif
+#include <unistd.h>
+
+#include <krb.h>
 #include <rkinit.h>
-#include <rkinit_private.h>
 #include <rkinit_err.h>
 
-#ifdef __STDC__
 char *rkinit_errmsg(char *string)
-#else
-char *rkinit_errmsg(string)
-  char *string;
-#endif /* __STDC__ */
 {
     static char errmsg[BUFSIZ];
 
@@ -46,15 +49,7 @@ char *rkinit_errmsg(string)
     return(errmsg);
 }
 
-#ifdef __STDC__
 int rkinit(char *host, char *r_krealm, rkinit_info *info, int timeout)
-#else
-int rkinit(host, r_krealm, info, timeout)
-  char *host;
-  char *r_krealm;
-  rkinit_info *info;
-  int timeout;
-#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     int version = 0;

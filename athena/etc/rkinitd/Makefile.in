@@ -1,0 +1,45 @@
+# $Id: Makefile.in,v 1.1 1999-10-05 17:09:58 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+sbindir=@sbindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS}
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+KRB4_LIBS=@KRB4_LIBS@
+LIBS=@LIBS@
+ALL_LIBS=-lrkinit ${KRB4_LIBS} -lcom_err ${LIBS}
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+OBJS=rkinitd.o util.o rpc.o krb.o
+
+all: rkinitd
+
+rkinitd: ${OBJS}
+	${CC} ${LDFLAGS} -o rkinitd ${OBJS} ${ALL_LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL_PROGRAM} rkinitd ${DESTDIR}${sbindir}
+	${INSTALL} -m 444 ${srcdir}/rkinitd.8 ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f ${OBJS} rkinitd
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

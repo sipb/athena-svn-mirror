@@ -1,40 +1,42 @@
-/* 
- * $Id: rk_krb.c,v 1.10 1999-01-22 23:15:03 ghudson Exp $
+/* Copyright 1989, 1999 by the Massachusetts Institute of Technology.
  *
- * This file contains the kerberos parts of the rkinit library.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* This file contains the kerberos parts of the rkinit library.
  * See the comment at the top of rk_lib.c for a description of the naming
  * conventions used within the rkinit library.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_krb.c,v 1.10 1999-01-22 23:15:03 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+static const char rcsid[] = "$Id: rk_krb.c,v 1.1 1999-10-05 17:09:53 danw Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <netinet/in.h>
-#include <krb.h>
-#ifdef SYSV
 #include <netdb.h>
-#endif
-#include <des.h>
-
+#include <termios.h>
 #include <signal.h>
 #include <setjmp.h>
 
-#ifdef POSIX
-#include <termios.h>
-#else
-#include <sgtty.h>
-#endif
+#include <krb.h>
+#include <des.h>
 
 #include <rkinit.h>
 #include <rkinit_err.h>
-#include <rkinit_private.h>
 
-static jmp_buf env;
+static sigjmp_buf env;
 static void sig_restore();
 static void push_signals();
 static void pop_signals();
@@ -48,28 +50,13 @@ typedef struct {
     
 static char errbuf[BUFSIZ];
 
-/* The compiler complains if this is declared static. */
-#ifdef __STDC__
-int rki_key_proc(char *user, char *instance, char *realm, char *arg, 
-		 des_cblock key)
-#else
-int rki_key_proc(user, instance, realm, arg, key)
-  char *user;
-  char *instance;
-  char *realm;
-  char *arg;
-  des_cblock key;
-#endif /* __STDC__ */
-
+static int rki_key_proc(char *user, char *instance, char *realm, char *arg, 
+			des_cblock key)
 {
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
     char password[BUFSIZ];
     int ok = 0;
-#ifdef POSIX
     struct termios ttyb;
-#else
-    struct sgttyb ttyb;		/* For turning off echo */
-#endif
 
     SBCLEAR(ttyb);
     BCLEAR(password);
@@ -94,15 +81,9 @@ int rki_key_proc(user, instance, realm, arg, key)
 	goto lose;
     }
     
-#ifndef POSIX
-    ioctl(0, TIOCGETP, &ttyb);
-    ttyb.sg_flags &= ~ECHO;
-    ioctl(0, TIOCSETP, &ttyb);
-#else
     (void) tcgetattr(0, &ttyb);
     ttyb.c_lflag &= ~ECHO;
     (void) tcsetattr(0, TCSAFLUSH, &ttyb);
-#endif
 
     memset(password, 0, sizeof(password));
     if (read(0, password, sizeof(password)) == -1) {
@@ -121,13 +102,8 @@ int rki_key_proc(user, instance, realm, arg, key)
 lose:
     BCLEAR(password);
 
-#ifndef POSIX
-    ttyb.sg_flags |= ECHO;
-    ioctl(0, TIOCSETP, &ttyb);
-#else
     ttyb.c_lflag |= ECHO;
     (void) tcsetattr(0, TCSAFLUSH, &ttyb);
-#endif
 
     pop_signals();
     printf("\n");
@@ -135,18 +111,8 @@ lose:
     return(ok);
 }
 
-#ifdef __STDC__
 static int rki_decrypt_tkt(char *user, char *instance, char *realm, 
 			   char *arg, int (*key_proc)(), KTEXT *cipp)
-#else
-static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
-  char *user;
-  char *instance;
-  char *realm;
-  char *arg;
-  int (*key_proc)();
-  KTEXT *cipp;
-#endif /* __STDC__ */
 {
     KTEXT cip = *cipp;
     C_Block key;		/* Key for decrypting cipher */
@@ -181,15 +147,7 @@ static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
     return(0);
 }
 
-#ifdef __STDC__
 int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
-#else
-int rki_get_tickets(version, host, r_krealm, info)
-  int version;
-  char *host;
-  char *r_krealm;
-  rkinit_info *info;
-#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     KTEXT_ST auth;
@@ -300,48 +258,32 @@ int rki_get_tickets(version, host, r_krealm, info)
 }
 
 
-#ifdef POSIX
 static struct sigaction oact[NSIG];
-#else
-static int (*old_sigfunc[NSIG])();
-#endif POSIX
 
 static void push_signals()
 {
     register i;
-#ifdef POSIX
     struct sigaction act;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     act.sa_handler= (void (*)()) sig_restore;
     for (i = 0; i < NSIG; i++) 
         (void) sigaction (i, &act, &oact[i]);
-
-
-#else
-    for (i = 0; i < NSIG; i++)
-        old_sigfunc[i] = signal(i,sig_restore);
-#endif
 }
 
 static void pop_signals()
 {
     register i;
-#ifdef POSIX
     struct sigaction act;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     for (i = 0; i < NSIG; i++)
         (void) sigaction (i, &oact[i], NULL);
-#else
-    for (i = 0; i < NSIG; i++)
-        signal(i,old_sigfunc[i]);
-#endif
 }
 
 static void sig_restore(sig,code,scp)
     int sig,code;
     struct sigcontext *scp;
 {
-    longjmp(env,1);
+    siglongjmp(env,1);
 }

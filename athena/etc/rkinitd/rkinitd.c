@@ -1,12 +1,21 @@
-/* 
- * $Id: rkinitd.c,v 1.6 1999-01-22 23:15:17 ghudson Exp $
+/* Copyright 1989,1999 by the Massachusetts Institute of Technology.
  *
- * This is the main source file for rkinit
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinitd.c,v 1.6 1999-01-22 23:15:17 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+/* This is the main source file for rkinit. */
+
+static const char rcsid[] = "$Id: rkinitd.c,v 1.1 1999-10-05 17:09:59 danw Exp $";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -26,27 +35,18 @@ static char *rcsid = "$Id: rkinitd.c,v 1.6 1999-01-22 23:15:17 ghudson Exp $";
 
 #include <rkinit.h>
 #include <rkinit_err.h>
-#include <rkinit_private.h>
 
 #include "rkinitd.h"
 
 static int inetd = TRUE;	/* True if we were started by inetd */
 
-#ifdef __STDC__
 static void usage(void) 
-#else
-static void usage()
-#endif /* __STDC__ */
 {
     syslog(LOG_ERR, "rkinitd usage: rkinitd [-notimeout]\n");
     exit(1);
 }
 
-#ifdef __STDC__
 void error(void)
-#else
-void error()
-#endif /* __STDC__ */
 {
     char errbuf[BUFSIZ];
     
@@ -59,13 +59,7 @@ void error()
     }
 }
 
-#ifdef __STDC__
-main(int argc, char *argv[])
-#else
-main(argc, argv)
-  int argc;
-  char *argv[];
-#endif /* __STDC__ */
+int main(int argc, char *argv[])
 {
     int version;		/* Version of the transaction */
 

@@ -1,12 +1,21 @@
-/* 
- * $Id: krb.c,v 1.14 1999-01-22 23:15:16 ghudson Exp $
+/* Copyright 1989,1999 by the Massachusetts Institute of Technology.
  *
- * This file contains all of the kerberos part of rkinitd.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.14 1999-01-22 23:15:16 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+/* This file contains all of the kerberos part of rkinitd. */
+
+static const char rcsid[] = "$Id: krb.c,v 1.1 1999-10-05 17:09:59 danw Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -21,7 +30,6 @@ static char *rcsid = "$Id: krb.c,v 1.14 1999-01-22 23:15:16 ghudson Exp $";
 #include <des.h>
 
 #include <rkinit.h>
-#include <rkinit_private.h>
 #include <rkinit_err.h>
 
 #include "rkinitd.h"
@@ -36,13 +44,7 @@ typedef struct {
 
 static uid_t user_id;
 
-#ifdef __STDC__
 static void this_phost(char *host, int hostlen)
-#else
-static void this_phost(host, hostlen)
-  char *host;
-  int hostlen;
-#endif /* __STDC__ */
 {
     char this_host[MAXHOSTNAMELEN + 1];
 
@@ -58,18 +60,8 @@ static void this_phost(host, hostlen)
     strncpy(host, krb_get_phost(this_host), hostlen - 1);
 }
 
-#ifdef __STDC__
 static int decrypt_tkt(char *user, char *instance, char *realm, char *arg, 
 		       int (*key_proc)(), KTEXT *cipp)
-#else
-static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
-  char *user;
-  char *instance;
-  char *realm;
-  char *arg;
-  int (*key_proc)();
-  KTEXT *cipp;
-#endif /* __STDC__ */
 {
     MSG_DAT msg_data;		/* Message data containing decrypted data */
     KTEXT_ST auth;		/* Authenticator */
@@ -163,17 +155,8 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
     return(KSUCCESS);
 }
 
-#ifdef __STDC__
 static int validate_user(char *aname, char *inst, char *realm, 
 			 char *username, char *errmsg)
-#else
-static int validate_user(aname, inst, realm, username, errmsg)
-  char *aname;
-  char *inst;
-  char *realm;
-  char *username;
-  char *errmsg;
-#endif /* __STDC__ */
 {
     struct passwd *pwnam;	/* For access_check and uid */
     AUTH_DAT auth_dat;
@@ -206,12 +189,7 @@ static int validate_user(aname, inst, realm, username, errmsg)
     return(RKINIT_SUCCESS);
 }
 
-#ifdef __STDC__
 int get_tickets(int version)
-#else
-int get_tickets(version)
-  int version;
-#endif /* __STDC__ */
 {
     rkinit_info info;
     AUTH_DAT auth_dat;

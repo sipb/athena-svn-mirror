@@ -1,11 +1,11 @@
 /* 
- * $Id: rkinit.c,v 1.8 1999-01-22 23:15:14 ghudson Exp $
+ * $Id: rkinit.c,v 1.1 1999-10-05 17:08:34 danw Exp $
  *
  * This is an rkinit client
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.8 1999-01-22 23:15:14 ghudson Exp $";
+static char *rcsid = "$Id: rkinit.c,v 1.1 1999-10-05 17:08:34 danw Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -13,6 +13,9 @@ static char *rcsid = "$Id: rkinit.c,v 1.8 1999-01-22 23:15:14 ghudson Exp $";
 #include <sys/types.h>
 #include <netdb.h>
 #include <pwd.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <com_err.h>
 #include <krb.h>
 #include <des.h>
 

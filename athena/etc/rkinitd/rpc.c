@@ -1,12 +1,21 @@
-/* 
- * $Id: rpc.c,v 1.5 1999-01-22 23:15:19 ghudson Exp $
+/* Copyright 1989,1999 by the Massachusetts Institute of Technology.
  *
- * This file contains the network parts of the rkinit server.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rpc.c,v 1.5 1999-01-22 23:15:19 ghudson Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+/* This file contains the network parts of the rkinit server. */
+
+static const char rcsid[] = "$Id: rpc.c,v 1.1 1999-10-05 17:10:00 danw Exp $";
 
 #include <stdio.h>
 #include <string.h>
@@ -19,7 +28,6 @@ static char *rcsid = "$Id: rpc.c,v 1.5 1999-01-22 23:15:19 ghudson Exp $";
 
 #include <rkinit.h>
 #include <rkinit_err.h>
-#include <rkinit_private.h>
 
 #include "rkinitd.h"
 
@@ -32,11 +40,7 @@ static char errbuf[BUFSIZ];
 
 void error();
 
-#ifdef __STDC__
 static int timeout(void)
-#else
-static int timeout()
-#endif /* __STDC__ */
 {
     syslog(LOG_WARNING, "rkinitd timed out.\n");
     exit(1);
@@ -50,20 +54,13 @@ static int timeout()
  * we were started from the commandline.
  * It causes the program to exit if there is an error. 
  */
-#ifdef __STDC__
 int setup_rpc(int notimeout)		
-#else
-int setup_rpc(notimeout)
-  int notimeout; /* True if we should not timeout */
-#endif /* __STDC__ */
 {
     struct itimerval timer;	/* Time structure for timeout */
-#ifdef POSIX
-   struct sigaction act, oact;
+    struct sigaction act, oact;
+
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
-#endif
-
 
     /* For now, support only inetd. */
     in = 0;
@@ -86,27 +83,15 @@ int setup_rpc(notimeout)
 	    exit(1);
 	}
 
-#ifdef POSIX
-      act.sa_handler= (void (*)()) timeout;
-      (void) sigaction (SIGALRM, &act, NULL);
-#else
-	signal(SIGALRM, timeout);
-#endif
+	act.sa_handler= (void (*)()) timeout;
+	(void) sigaction (SIGALRM, &act, NULL);
     }
 
     return(TRUE);
 }
 
-#ifdef __STDC__
 void rpc_exchange_version_info(int *c_lversion, int *c_hversion, 
 			       int s_lversion, int s_hversion)
-#else
-void rpc_exchange_version_info(c_lversion, c_hversion, s_lversion, s_hversion)
-  int *c_lversion;
-  int *c_hversion;
-  int s_lversion;
-  int s_hversion;
-#endif /* __STDC__ */
 {
     u_char version_info[VERSION_INFO_SIZE];
     u_long length = sizeof(version_info);
@@ -130,12 +115,7 @@ void rpc_exchange_version_info(c_lversion, c_hversion, s_lversion, s_hversion)
     }
 }
     
-#ifdef __STDC__
 void rpc_get_rkinit_info(rkinit_info *info)
-#else
-void rpc_get_rkinit_info(info)
-  rkinit_info *info;
-#endif /* __STDC__ */
 {
     u_long length = sizeof(rkinit_info);
     
@@ -147,12 +127,7 @@ void rpc_get_rkinit_info(info)
     info->lifetime = ntohl(info->lifetime);
 }
 
-#ifdef __STDC__
 void rpc_send_error(char *errmsg)
-#else
-void rpc_send_error(errmsg)
-  char *errmsg;
-#endif /* __STDC__ */
 {
     if (rki_send_packet(out, MT_STATUS, strlen(errmsg), errmsg)) {
 	error();
@@ -160,11 +135,7 @@ void rpc_send_error(errmsg)
     }
 }
 
-#ifdef __STDC__
 void rpc_send_success(void)
-#else
-void rpc_send_success()
-#endif /* __STDC__ */
 {
     if (rki_send_packet(out, MT_STATUS, 0, "")) {
 	error();
@@ -172,13 +143,7 @@ void rpc_send_success()
     }
 }
 
-#ifdef __STDC__
 void rpc_exchange_tkt(KTEXT cip, MSG_DAT *scip)
-#else
-void rpc_exchange_tkt(cip, scip)
-  KTEXT cip;
-  MSG_DAT *scip;
-#endif /* __STDC__ */
 {
     u_long length = MAX_KTXT_LEN;
 
@@ -194,15 +159,8 @@ void rpc_exchange_tkt(cip, scip)
     scip->app_length = length;
 }
 
-#ifdef __STDC__
 void rpc_getauth(KTEXT auth, struct sockaddr_in *caddr, 
 		 struct sockaddr_in *saddr)
-#else
-void rpc_getauth(auth, caddr, saddr)
-  KTEXT auth;
-  struct sockaddr_in *caddr;
-  struct sockaddr_in *saddr;
-#endif /* __STDC__ */
 {
     int addrlen = sizeof(struct sockaddr_in);
 

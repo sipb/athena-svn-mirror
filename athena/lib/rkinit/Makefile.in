@@ -1,0 +1,56 @@
+# $Id: Makefile.in,v 1.1 1999-10-05 17:09:52 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS}
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+OBJS=rk_lib.o rk_rpc.o rk_util.o rk_krb.o rkinit_err.o
+
+all: librkinit.a
+
+librkinit.a: ${OBJS}
+	ar cru $@ ${OBJS}
+	${RANLIB} $@
+
+${OBJS}: rkinit.h rkinit_err.h
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+rkinit_err.h rkinit_err.c: rkinit_err.et
+	compile_et rkinit_err.et
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 644 librkinit.a ${DESTDIR}${libdir}
+	${RANLIB} ${DESTDIR}${libdir}/librkinit.a
+	chmod u-w ${DESTDIR}${libdir}/librkinit.a
+	${INSTALL} -m 444 ${srcdir}/rkinit.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/rkinit_err.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/rkinit.3 ${DESTDIR}${mandir}/man3
+
+clean:
+	rm -f ${OBJS} librkinit.a rkinit_err.c rkinit_err.h
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
