@@ -1,4 +1,4 @@
-# /* @(#)keytable.map	1.2 14 Apr 1993 SunSoft */
+# /* @(#)keytable.map	35.5 01 Mar 1995 SunSoft */
 #ident	"@(#)keytable.map	1.7 91/07/12 KEYTABLES SMI"
 #
 # Copyright (c) 1990, Sun Microsystems, Inc.  RESTRICTED RIGHTS LEGEND:
@@ -31,7 +31,6 @@
 Type    Layout  Filename
 0	0	US4.kt			# Default keytable
 #
-2	0	US2.kt
 3	0	US3.kt
 #
 # Type 4 Keyboards
@@ -82,6 +81,7 @@ Type    Layout  Filename
 4	48	Taiwan5.kt
 4	49	Japan5.kt
 4	50	Canada_Fr5.kt
+4	63	Canada_Fr5_TBITS5.kt
 #
 # Type 5 Hobo Keyboards
 #
@@ -103,3 +103,27 @@ Type    Layout  Filename
 4	95	Taiwan5_Hobo.kt
 4	96	Japan5_Hobo.kt
 4	97	Canada_Fr5_Hobo.kt
+#
+# Type 101 keyboards (Solaris x86)
+#
+101	0	US101A_x86.kt
+101	1	US101A_x86.kt
+101	34	J3100_x86.kt
+101	35	France_x86.kt
+101	36	Denmark_x86.kt
+101	37	Germany_x86.kt
+101	38	Italy_x86.kt
+101	39	Netherland_x86.kt
+101	40	Norway_x86.kt
+101	41	Portugal_x86.kt
+101	42	Spain_x86.kt
+101	43	Sweden_x86.kt
+101	44	Switzer_Fr_x86.kt
+101	45	Switzer_Ge_x86.kt
+101	46	UK_x86.kt
+103	47      Korea_x86.kt
+101	48      Taiwan_x86.kt
+106	49	Japan_x86.kt
+101	50	Canada_Fr2_x86.kt
+101	1001	MS_US101A_x86.kt	# Choose 1000+1 
+
