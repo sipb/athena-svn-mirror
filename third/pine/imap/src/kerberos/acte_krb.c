@@ -37,8 +37,6 @@
 
 #include "acte.h"
 
-extern char *lcase P((char *str));
-
 #ifndef HAVE_KRB_GET_PHOST
 extern char *krb_get_phost P((char *));
 #endif
