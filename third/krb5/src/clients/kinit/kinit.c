@@ -30,7 +30,6 @@
 #include <krb5.h>
 #ifdef KRB5_KRB4_COMPAT
 #include <kerberosIV/krb.h>
-#include <kerberosIV/krb4-proto.h>
 #endif
 #include <string.h>
 #include <stdio.h>
