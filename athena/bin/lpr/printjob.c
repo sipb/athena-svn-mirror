@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.11 1990-07-03 16:09:37 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.12 1990-07-04 12:04:24 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.11 1990-07-03 16:09:37 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.12 1990-07-04 12:04:24 epeisach Exp $";
 #endif lint
 
 /*
@@ -976,7 +976,7 @@ scnline(key, p, c)
 	register char key, *p;
 	char c;
 {
-	register scnwidth;
+	register int scnwidth;
 
 	for (scnwidth = WIDTH; --scnwidth;) {
 		key <<= 1;
