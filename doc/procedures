@@ -4,11 +4,11 @@ the use of CVS, it is not a CVS tutorial; read the CVS info pages
 (available in M-x info in emacs on Athena) for a general introduction
 to CVS.  Areas covered in this file are:
 
-	Checking out a working directory
-	Preparing changes for review
-	Reviewing changes
-	Early checkins
-	Third-party sources
+  Checking out a working directory
+  Preparing changes for review
+  Reviewing changes
+  Early checkins
+  Third-party sources
 
 You should use cvs from the gnu locker with the source repository.
 People without write access to the repository can use "cvs -u" (a
@@ -47,46 +47,44 @@ a result of changes to the source tree documentation.
 For changes to other parts of the tree, you should perform the
 following steps while preparing your changes for review:
 
-	1. Do a "cvs update" in your working directory to merge in
-	   changes other people may have made.  (You can do "cvs -n
-	   update" if you want to see what needs to be merged in
-	   without actually doing the merge.)
+  1. Do a "cvs update" in your working directory to merge in changes
+     other people may have made.  (You can do "cvs -n update" if you
+     want to see what needs to be merged in without actually doing the
+     merge.)
 
-	2. Be sure to test your changes.
+  2. Be sure to test your changes.
 
-	3. Make sure your changes are made in reviewable chunks to the
-	   greatest extent possible.  If you have many changes to make
-	   of several different types, prepare one patch for each type
-	   of change; in particular, if you have some cosmetic changes
-	   to make and some functional fixes to make, submit them as
-	   two different patches if they add up to a significant
-	   number of changes.  This requirement creates more work for
-	   the submitter, but it greatly increases the effectiveness
-	   of the review process.
+  3. Make sure your changes are made in reviewable chunks to the
+     greatest extent possible.  If you have many changes to make of
+     several different types, prepare one patch for each type of
+     change; in particular, if you have some cosmetic changes to make
+     and some functional fixes to make, submit them as two different
+     patches if they add up to a significant number of changes.  This
+     requirement creates more work for the submitter, but it greatly
+     increases the effectiveness of the review process.
 
-	4. Use "cvs diff -u -N" piped to a file to prepare your
-	   changes.  (Do not cut and paste diffs from an xterm; your
-	   tabs will be converted to spaces.)  If your change
-	   involves reindentation of code, you may want to also use
-	   the "-w" flag to diff.  If you find that your change is
-	   clearer when presented as a context diff ("-c" instead of
-	   "-u"), feel free to submit it that way.
+  4. Use "cvs diff -u -N" piped to a file to prepare your changes.  (Do
+     not cut and paste diffs from an xterm; your tabs will be
+     converted to spaces.)  If your change involves reindentation of
+     code, you may want to also use the "-w" flag to diff.  If you
+     find that your change is clearer when presented as a context diff
+     ("-c" instead of "-u"), feel free to submit it that way.
 
-	5. Look over your diffs.  Make sure you haven't been sloppy
-	   about spacing, punctuation, and naming, and that you have
-	   tried to conform to the guidelines in the file "standards"
-	   in this directory 
+  5. Look over your diffs.  Make sure you haven't been sloppy about
+     spacing, punctuation, and naming, and that you have tried to
+     conform to the guidelines in the file "standards" in this
+     directory
 
-	6. Send your diffs, along with a clear description of the
-	   change you are making, to source-reviewers@mit.edu.  If the
-	   diffs are very large (more than 50K), put the changes
-	   somewhere world-readable (unless the source code in
-	   question is restricted) and mail a pointer.
+  6. Send your diffs, along with a clear description of the change you
+     are making, to source-reviewers@mit.edu.  If the diffs are very
+     large (more than 50K), put the changes somewhere world-readable
+     (unless the source code in question is restricted) and mail a
+     pointer.
 
-	7. If you do not have write access to the source tree and
-	   submitted your diff using the -w flag, submit it again
-	   without the -w flag so that the full patch can be checked
-	   in by someone with write access.
+  7. If you do not have write access to the source tree and submitted
+     your diff using the -w flag, submit it again without the -w flag
+     so that the full patch can be checked in by someone with write
+     access.
 
 Ideally, at least one person will respond to your mail within a day or
 two, either expressing concerns or signing onto your change.  You
@@ -134,12 +132,12 @@ In some cases it may be appropriate to check in a change in advance of
 the normal review period.  The following should be true of those
 cases:
 
-	1. The change is obvious and noncontroversial, such as a fix
-	   for a syntax error.
+  1. The change is obvious and noncontroversial, such as a fix for a
+     syntax error.
 
-	2. The problem being fixed is causing an immediate difficulty,
-	   usually "I'm doing a build of /mit/source and it blows out
-	   at this point."
+  2. The problem being fixed is causing an immediate difficulty,
+     usually "I'm doing a build of /mit/source and it blows out at
+     this point."
 
 The change should still be sent to source-reviewers with a note about
 the early checkin.  If the immediate difficulty is "the wash is broken
@@ -183,11 +181,11 @@ Here is an example of how one might import a hypothetical new version
 of emacs (assuming the CVSROOT environment variable is set to point at
 the Athena repository):
 
-	gtar xzf emacs-22.3.tar.gz
-	cd emacs-22.3
-	find . -name .cvsignore -print | xargs rm
-	perl $CVSROOT/CVSROOT/timestamps.pl
-	cvs import -d -m "Import emacs 22.3." third/emacs vendor emacs-22_3
+  gtar xzf emacs-22.3.tar.gz
+  cd emacs-22.3
+  find . -name .cvsignore -print | xargs rm
+  perl $CVSROOT/CVSROOT/timestamps.pl
+  cvs import -d -m "Import emacs 22.3." third/emacs vendor emacs-22_3
 
 Make sure to use the literal word "vendor" for the vendor branch name.
 
@@ -195,24 +193,24 @@ After importing, you should take care of files which have been removed
 from one version to the next, since CVS doesn't do a good job.  Here
 is an example:
 
-	cd /tmp
-	cvs co -r vendor third/emacs
-	cd third/emacs
-	cvs update -j emacs-22_2 -j emacs-22_3
-	cvs ci -m "Not present in emacs 22.3."
+  cd /tmp
+  cvs co -r vendor third/emacs
+  cd third/emacs
+  cvs update -j emacs-22_2 -j emacs-22_3
+  cvs ci -m "Not present in emacs 22.3."
 
 It is important to remove such files on the vendor branch, so that
 diffs against the vendor branch will work properly.
 
 Now you can do the merge.  Here is an example of how you might do one:
 
-	cd /tmp
-	rm -rf third/emacs
-	cvs co -kk third/emacs
-	cd third/emacs
-	cvs update -kk -j emacs-22_2 -j emacs-22_3
-	# Resolve conflicts.
-	cvs ci -m "Merge with emacs 22.3."
+  cd /tmp
+  rm -rf third/emacs
+  cvs co -kk third/emacs
+  cd third/emacs
+  cvs update -kk -j emacs-22_2 -j emacs-22_3
+  # Resolve conflicts.
+  cvs ci -m "Merge with emacs 22.3."
 
 Using a "-kk" working directory and merge will prevent merge conflicts
 based on RCS IDs; it is unnecessary for a package which does not use
@@ -230,38 +228,37 @@ new versions of software.
 Here are some things to pay attention to when adding or updating a
 piece of third-party software:
 
-	* If the package's build system does not use autoconf, you
-	  will probably need to write a Makefile.athena file telling
-	  the build system how to build it.
+  * If the package's build system does not use autoconf, you will
+    probably need to write a Makefile.athena file telling the build
+    system how to build it.
 
-	* If the package's build system does use autoconf, you may
-	  need to write a configure.athena giving special options to
-	  pass to the configure script.
+  * If the package's build system does use autoconf, you may need to
+    write a configure.athena giving special options to pass to the
+    configure script.
 
-	* Most packages will need to be taught how to use DESTDIR.
-	  Make sure that DESTDIR references don't make it into the
-	  installed program.
+  * Most packages will need to be taught how to use DESTDIR.  Make
+    sure that DESTDIR references don't make it into the installed
+    program.
 
-	* If the package installs a file setuid, it needs to specify
-	  the owner (probably "-o root" if it didn't specify one
-	  before).  Likewise, a setgid program needs a specified group
-	  owner, although this is usually done already.  Other than
-	  that, our fix_owners program will coerce unspecified owners
-	  and groups to 0.
+  * If the package installs a file setuid, it needs to specify the
+    owner (probably "-o root" if it didn't specify one before).
+    Likewise, a setgid program needs a specified group owner, although
+    this is usually done already.  Other than that, our fix_owners
+    program will coerce unspecified owners and groups to 0.
 
-	* The package should create directories before installing
-	  files in them.
+  * The package should create directories before installing files in
+    them.
 
-	* Test your package's build and install.  Preferrably, use the
-	  "do" command, something like:
+  * Test your package's build and install.  Preferrably, use the "do"
+    command, something like:
 
-		do prepare
-		do clean
-		do
-		do check
-		do -d /var/tmp/inst install
+      do prepare
+      do clean
+      do
+      do check
+      do -d /var/tmp/inst install
 
-	  (Replace "do" with "sh /mit/source/packs/build/do.sh" or use
-	  a shell alias.)  If the package relies on libraries, you can
-	  use "-c -d /afs/dev.mit.edu/system/<sysname>/srvd-current"
-	  in the non-install steps to point at them.
+    (Replace "do" with "sh /mit/source/packs/build/do.sh" or use a
+    shell alias.)  If the package relies on libraries, you can use "-c
+    -d /afs/dev.mit.edu/system/<sysname>/srvd-current" in the
+    non-install steps to point at them.
