@@ -12,7 +12,7 @@
  * C.  Grump grump...
  */
 #if ! __GNUC__
-#if !defined(__osf__)
+#if !defined(__osf__) && !defined(sgi)
 #define VARARGS 1
 #endif
 #endif
@@ -48,7 +48,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.5 1993-10-23 13:18:09 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.6 1995-06-25 01:20:42 cfields Exp $";
 #endif	/* ! lint */
 
 static void
