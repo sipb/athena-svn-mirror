@@ -1,0 +1,30 @@
+This is the X version of the On-Line Consulting program.
+
+If you wish to send a message to the consultant, click on the `send' button.
+Another window will pop up below this one, and you can enter your text
+there.  Click on the `send' button in that window to send the message off.
+The "send window" will remain open until you `close' it, so that you may
+send multiple messages easily.
+
+When you are satisfied that your question has been answered completely,
+click on the `done' button.  You will be asked to confirm that you actually
+want to mark the question done.
+
+If, after entering a question, you decide you no longer want to continue the
+question, or if you discover the answer on your own, you can remove your
+question with the `cancel' button.  You will be asked to confirm that you
+actually want to cancel your question.
+
+The `save to file' button will allow you to keep a copy of this conversation
+in a file.  You will be prompted for a filename to save the conversation in.
+
+The `motd' button will show you the OLC Message Of The Day.  The
+Message Of The Day often contains information that consultants feel you
+may want to know.  If there is a problem with the system, the MOTD
+may be able to tell you how you can deal with the problem.
+
+The `update/show' button will check the status of the consultant (tells you
+whether you are connected or not, and to whom), and updates the contents
+of the conversation.  This currently forces the scrollbar to the top of the
+window, so you may need to scroll down to the bottom to see any new
+messages.
