@@ -15,15 +15,15 @@
  */
 
 #ifndef lint
-static char Productid[] = "@(#) $Revision: 1.1 $";
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v 1.1 1993-10-12 05:28:10 probe Exp $";
+static char Productid[] = "@(#) $Revision: 1.2 $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v 1.2 1995-07-11 21:11:03 miki Exp $";
 #endif
 
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/hpquery.c,v $
- * $Revision: 1.1 $
+ * $Revision: 1.2 $
  * $State: Exp $ $Locker:  $
- * $Date: 1993-10-12 05:28:10 $
+ * $Date: 1995-07-11 21:11:03 $
  *
  * hpnpadmin.c - send SNMP GetRequests and SetRequests to a network
  *               peripheral using the CMU SNMP library routines.
@@ -282,7 +282,7 @@ char	*message;
 		community);
 #endif
 
-	bzero((char *)&session_var, sizeof(struct snmp_session));
+	memset((char *)&session_var, 0, sizeof(struct snmp_session));
 	session_var.peername = peripheral;
 	session_var.community = (u_char *)community;
 	session_var.community_len = strlen((char *)community);
@@ -459,7 +459,7 @@ snmp_add_typed_var(pdu, name, name_length, type, value, flag)
 
     vars->next_variable = NULL;
     vars->name = (oid *)malloc(name_length * sizeof(oid));
-    bcopy((char *)name, (char *)vars->name, name_length * sizeof(oid));
+    memcpy((char *)vars->name, (char *)name, name_length * sizeof(oid));
     vars->name_length = name_length;
     vars->type = type;
     switch (type) {
@@ -640,7 +640,8 @@ char						*message;
 	    /** It is NOT READY OR Printing **/
 		if((strncmp(buf, "ready", 5) == 0) ||
 			(strncmp(buf, "print", 5) == 0) ||
-			(strncmp(buf, "toner", 5) == 0)) {		
+			(strncmp(buf, "plott", 5) == 0) ||
+			(strncmp(buf, "toner", 5) == 0)) {
 			/* do nothing */
 		}
 		else {
