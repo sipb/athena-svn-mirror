@@ -1,0 +1,28 @@
+#
+# $Id: Imakefile,v 1.1 1989-12-28 15:26:05 raeburn Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
+#
+# Imakefile for top level directory.
+#
+
+#define IHaveSubdirs
+SUBDIRS=common clients server+ lib
+RM=rm -f
+MV=mv -f
+
+all::
+
+world::
+	make ${MFLAGS} Makefile
+	@make ${MFLAGS} -f Makefile world2
+
+world2:
+	make ${MFLAGS} Makefiles
+	make ${MFLAGS} depend
+	make ${MFLAGS} all
+
+#if 0		/* so resulting Makefile doesn't get it twice */
+Makefile::
+	-$(RM) Makefile.bak ; $(MV) Makefile Makefile.bak
+	imake -Iconfig -DNEW_TOP=. -s Makefile
+#endif
