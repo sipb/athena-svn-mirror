@@ -31,7 +31,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-$cvs_id = '@(#) $RCSfile: oidgen.perl,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 13:56:01 $ $Name: not supported by cvs2svn $';
+$cvs_id = '@(#) $RCSfile: oidgen.perl,v $ $Revision: 1.1.1.9 $ $Date: 2005-03-30 17:36:51 $ $Name: not supported by cvs2svn $';
 $cfile = shift;
 $hfile = shift;
 $count = -1;
