@@ -4,7 +4,15 @@ AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 #ifdef _AIX
 LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lodm -lcfg -ls
 #else
+#ifdef ultrix
+LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lnsyslog
+#else
+#ifdef SOLARIS
+LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lbsd
+#else
 LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod
+#endif
+#endif
 #endif
 
 CFILES	=	ftpd.c athena_ftpd.c ftpcmd.y glob.c logwtmp.c\
