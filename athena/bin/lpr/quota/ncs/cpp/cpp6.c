@@ -927,6 +927,7 @@ char		*arg;			/* Something for the message	*/
 	    if (tp[strlen(tp) - 1] != '\n')	/* there's a newline	*/
 		putc('\n', stderr);
 	}
+#if 0
 	while ((file = file->parent) != NULL) {	/* Print #includes, too	*/
 	    if (file->fp == NULL)
 		fprintf(stderr, "from macro %s\n", file->filename);
@@ -940,6 +941,7 @@ char		*arg;			/* Something for the message	*/
 		    putc('\n', stderr);
 	    }
 	}
+#endif
 }
 
 cerror(format, sarg)
