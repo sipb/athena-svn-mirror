@@ -1,4 +1,4 @@
-# $Id: packages,v 1.262 2004-03-10 16:53:15 ghudson Exp $
+# $Id: packages,v 1.263 2004-03-10 17:48:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -196,8 +196,8 @@ third/gnome-themes		requires gettext,intltool,gtk2,gtk-engines,gtk-thinice-engin
 third/gnome-utils		requires gettext,intltool,libgnome,libgnomeui,libglade2,libbonoboui,gnome-vfs2,gnome-panel,popt,pango,scrollkeeper
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2,gnome-mime-data
 third/gnome-vfs2		requires gettext,glib2,libxml2,GConf2,libbonobo,bonobo-activation,ORBit2,gnome-mime-data,bzip2,openssl,openafs,popt
-third/gst-plugins		except linux requires GConf2,gstreamer,glib2,gnome-vfs2,jpeg,libpng,freetype
-third/gstreamer			except linux requires glib2,libxml2,popt
+third/gst-plugins		requires GConf2,gstreamer,glib2,gnome-vfs2,jpeg,libpng,freetype
+third/gstreamer			requires glib2,libxml2,popt
 third/gtk-engines		except linux requires gtk2
 third/gtk-thinice-engine	except linux requires gtk2
 third/gtk			requires glib,gettext
