@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.9 1988-06-23 10:34:20 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.10 1988-06-25 17:25:02 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.9 1988-06-23 10:34:20 jtkohl Exp $";
+static char rcsid_Zinternal_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.10 1988-06-25 17:25:02 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -470,6 +470,8 @@ Code_t Z_AddNoticeToEntry(qptr, notice, part)
     return (ZERR_NONE);
 }
 
+static char version[BUFSIZ] = "";	/* init so version[0] = '\0'; */
+
 Code_t Z_FormatHeader(notice, buffer, buffer_len, len, cert_routine)
     ZNotice_t *notice;
     char *buffer;
@@ -478,7 +480,6 @@ Code_t Z_FormatHeader(notice, buffer, buffer_len, len, cert_routine)
     int (*cert_routine)();
 {
     Code_t retval;
-    char version[BUFSIZ];
 	
     if (!notice->z_sender)
 	notice->z_sender = ZGetSender();
@@ -497,12 +498,11 @@ Code_t Z_FormatHeader(notice, buffer, buffer_len, len, cert_routine)
     bcopy((char *)&notice->z_uid,
 	  (char *)&notice->z_multiuid, sizeof(ZUnique_Id_t));
 
-    (void) sprintf(version, "%s%d.%d", ZVERSIONHDR, ZVERSIONMAJOR,
-		   ZVERSIONMINOR);
-    notice->z_version = (char *)malloc((unsigned)strlen(version)+1);
-    if (!notice->z_version)
-	    return(ENOMEM);
-    (void) strcpy(notice->z_version, version);
+    if (!*version)
+	    (void) sprintf(version, "%s%d.%d", ZVERSIONHDR, ZVERSIONMAJOR,
+			   ZVERSIONMINOR);
+    notice->z_version = version;
+
     if (!cert_routine) {
 	notice->z_auth = 0;
 	notice->z_authent_len = 0;
