@@ -87,7 +87,6 @@ struct NautilusWindowDetails
         gboolean           throbber_active;
         gboolean           throbber_activating;
 	Bonobo_PropertyBag throbber_property_bag;
-	Bonobo_Listener    throbber_listener;
 
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
@@ -95,6 +94,10 @@ struct NautilusWindowDetails
 
         /* Location bar */
         gboolean temporary_navigation_bar;
+
+        /* Side Pane */
+        int side_pane_width;
+        GtkWidget *current_side_panel;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"
@@ -169,5 +172,6 @@ void               nautilus_window_add_current_location_to_history_list  (Nautil
 void               nautilus_remove_from_history_list_no_notify           (const char        *location);
 GList *            nautilus_get_history_list                             (void);
 void               nautilus_window_bookmarks_preference_changed_callback (gpointer           user_data);
+void		   nautilus_window_update_icon				 (NautilusWindow    *window);
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

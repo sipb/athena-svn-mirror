@@ -45,6 +45,7 @@ typedef struct {
 	double x, y;
 	
 	/* Scale factor (stretches icon). */
+	/* ALEX TODO: only allow once scale */
 	double scale_x, scale_y;
 
 	/* Whether this item is selected. */
@@ -62,7 +63,7 @@ typedef struct {
 
 	double start_x, start_y;
 
-	GnomeCanvasItem *selection_rectangle;
+	EelCanvasItem *selection_rectangle;
 
 	guint timer_id;
 
@@ -100,8 +101,10 @@ typedef struct {
 enum {
 	LABEL_COLOR,
 	LABEL_COLOR_HIGHLIGHT,
+	LABEL_COLOR_ACTIVE,
 	LABEL_INFO_COLOR,
 	LABEL_INFO_COLOR_HIGHLIGHT,
+	LABEL_INFO_COLOR_ACTIVE,
 	LAST_LABEL_COLOR
 };
 
@@ -156,7 +159,7 @@ struct NautilusIconContainerDetails {
 
 	/* Renaming Details */
 	gboolean renaming;
-	GnomeIconTextItem *rename_widget;	/* Editable text item */
+	GtkWidget *rename_widget;	/* Editable text item */
 	char *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */
@@ -182,8 +185,8 @@ struct NautilusIconContainerDetails {
 
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;
-	GdkColor   highlight_color;
 	guint32    highlight_color_rgba;
+	guint32    active_color_rgba;
 	
 	/* colors for text labels */
 	GdkGC   *label_gcs    [LAST_LABEL_COLOR];
@@ -208,6 +211,9 @@ struct NautilusIconContainerDetails {
 	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
+	
+	/* Is the container for a desktop window */
+	gboolean is_desktop;
 
 	/* Ignore the visible area the next time the scroll region is recomputed */
 	gboolean reset_scroll_region_trigger;

@@ -75,6 +75,8 @@ DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EEL_REQUIRED = @EEL_REQUIRED@
+EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
+EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
@@ -100,7 +102,6 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -109,6 +110,7 @@ INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
+LIBEGG_CFLAGS = @LIBEGG_CFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
 LIBNAUTILUS_IDL_INCLUDES = @LIBNAUTILUS_IDL_INCLUDES@
@@ -119,14 +121,9 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MUSIC_COMPONENT_CFLAGS = @MUSIC_COMPONENT_CFLAGS@
-MUSIC_COMPONENT_LIBS = @MUSIC_COMPONENT_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
@@ -142,27 +139,32 @@ NULL =
 
 SUBDIRS = file-manager
 
-bin_PROGRAMS = nautilus
+bin_PROGRAMS = \
+	nautilus				\
+	nautilus-file-management-properties     \
+	nautilus-server-connect
+
 
 INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	-I$(top_builddir)/libnautilus-private \
-	$(CORE_CFLAGS) \
-	-DDATADIR=\""$(datadir)"\" \
+	-I$(top_srcdir) 					\
+	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox 	\
+	-I$(top_srcdir)/cut-n-paste-code			\
+	-I$(top_builddir)/libnautilus-private 			\
+	$(CORE_CFLAGS) 						\
+	-DDATADIR=\""$(datadir)"\" 				\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
-	-DLIBDIR=\""$(libdir)"\" \
-	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
-	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" \
-	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
-	-DPREFIX=\""$(prefix)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\" \
-	-DVERSION="\"$(VERSION)\"" \
-	-DG_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED \
+	-DLIBDIR=\""$(libdir)"\" 				\
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
+	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" 		\
+	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\
+	-DPREFIX=\""$(prefix)"\" 				\
+	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
+	-DVERSION="\"$(VERSION)\"" 				\
+	-DG_DISABLE_DEPRECATED 					\
+	-DGDK_DISABLE_DEPRECATED 				\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED 			\
+	-DGTK_DISABLE_DEPRECATED 				\
+	-DGNOME_DISABLE_DEPRECATED 				\
 	$(NULL)
 
 
@@ -174,6 +176,16 @@ LDADD = \
 	$(CORE_LIBS) \
 	$(NULL)
 
+
+nautilus_server_connect_SOURCES = nautilus-server-connect.c
+
+desktop_in_files = nautilus-server-connect.desktop.in network-scheme.desktop.in
+desktop_files = $(desktop_in_files:.desktop.in=.desktop)
+desktopdir = $(datadir)/gnome/network/
+desktop_DATA = nautilus-server-connect.desktop
+
+schemedir = $(datadir)/applications
+scheme_DATA = network-scheme.desktop
 
 nautilus_shell_interface_idl_sources = \
 	nautilus-shell-interface-stubs.c	\
@@ -193,24 +205,22 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
+	nautilus-information-panel.c            \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
-	nautilus-preferences-dialog.c		\
 	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
 	nautilus-shell.c			\
-	nautilus-sidebar-tabs.c			\
+	nautilus-side-pane.c                    \
 	nautilus-sidebar-title.c		\
-	nautilus-sidebar.c			\
 	nautilus-signaller.c			\
 	nautilus-simple-search-bar.c		\
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
-	nautilus-theme-selector.c		\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
@@ -227,10 +237,10 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
+	nautilus-information-panel.h            \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h		\
 	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
@@ -239,20 +249,27 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell.h			\
-	nautilus-sidebar-tabs.h			\
+	nautilus-side-pane.h			\
 	nautilus-sidebar-title.h		\
-	nautilus-sidebar.h			\
 	nautilus-signaller.h			\
 	nautilus-simple-search-bar.h		\
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
-	nautilus-theme-selector.h		\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
+	nautilus-file-management-properties.c	\
+	nautilus-file-management-properties.h	\
+	$(NULL)
+
+
+nautilus_file_management_properties_SOURCES = \
+	nautilus-file-management-properties.c		\
+	nautilus-file-management-properties.h		\
+	nautilus-file-management-properties-main.c	\
 	$(NULL)
 
 
@@ -269,7 +286,12 @@ ui_DATA = \
 
 
 gladedir = $(datadir)/nautilus/glade
-glade_DATA = nautilus-bookmarks-window.glade
+glade_DATA = \
+	nautilus-bookmarks-window.glade			\
+	nautilus-file-management-properties.glade	\
+	nautilus-server-connect.glade                   \
+	$(NULL)
+
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -284,6 +306,7 @@ EXTRA_DIST = \
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
+	$(desktop_in_files) $(desktop_files)	\
 	$(NULL)
 
 
@@ -294,7 +317,9 @@ BUILT_SOURCES = \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  nautilus$(EXEEXT)
+bin_PROGRAMS =  nautilus$(EXEEXT) \
+nautilus-file-management-properties$(EXEEXT) \
+nautilus-server-connect$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -315,20 +340,20 @@ nautilus-bookmarks-window.$(OBJEXT) \
 nautilus-complex-search-bar.$(OBJEXT) \
 nautilus-component-adapter-factory.$(OBJEXT) \
 nautilus-desktop-window.$(OBJEXT) nautilus-first-time-druid.$(OBJEXT) \
-nautilus-location-bar.$(OBJEXT) nautilus-main.$(OBJEXT) \
-nautilus-navigation-bar.$(OBJEXT) nautilus-preferences-dialog.$(OBJEXT) \
+nautilus-information-panel.$(OBJEXT) nautilus-location-bar.$(OBJEXT) \
+nautilus-main.$(OBJEXT) nautilus-navigation-bar.$(OBJEXT) \
 nautilus-profiler.$(OBJEXT) nautilus-property-browser.$(OBJEXT) \
 nautilus-search-bar-criterion.$(OBJEXT) nautilus-search-bar.$(OBJEXT) \
 nautilus-self-check-functions.$(OBJEXT) nautilus-shell.$(OBJEXT) \
-nautilus-sidebar-tabs.$(OBJEXT) nautilus-sidebar-title.$(OBJEXT) \
-nautilus-sidebar.$(OBJEXT) nautilus-signaller.$(OBJEXT) \
-nautilus-simple-search-bar.$(OBJEXT) \
+nautilus-side-pane.$(OBJEXT) nautilus-sidebar-title.$(OBJEXT) \
+nautilus-signaller.$(OBJEXT) nautilus-simple-search-bar.$(OBJEXT) \
 nautilus-switchable-navigation-bar.$(OBJEXT) \
 nautilus-switchable-search-bar.$(OBJEXT) \
-nautilus-theme-selector.$(OBJEXT) nautilus-view-frame-corba.$(OBJEXT) \
-nautilus-view-frame.$(OBJEXT) nautilus-window-manage-views.$(OBJEXT) \
-nautilus-window-menus.$(OBJEXT) nautilus-window-toolbars.$(OBJEXT) \
-nautilus-window.$(OBJEXT) nautilus-zoom-control.$(OBJEXT)
+nautilus-view-frame-corba.$(OBJEXT) nautilus-view-frame.$(OBJEXT) \
+nautilus-window-manage-views.$(OBJEXT) nautilus-window-menus.$(OBJEXT) \
+nautilus-window-toolbars.$(OBJEXT) nautilus-window.$(OBJEXT) \
+nautilus-zoom-control.$(OBJEXT) \
+nautilus-file-management-properties.$(OBJEXT)
 nautilus_LDADD = $(LDADD)
 nautilus_DEPENDENCIES =  \
 $(top_builddir)/src/file-manager/libnautilus-file-manager.la \
@@ -336,12 +361,31 @@ $(top_builddir)/libnautilus/libnautilus.la \
 $(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 $(top_builddir)/libnautilus-private/libnautilus-private.la
 nautilus_LDFLAGS = 
+nautilus_file_management_properties_OBJECTS =  \
+nautilus-file-management-properties.$(OBJEXT) \
+nautilus-file-management-properties-main.$(OBJEXT)
+nautilus_file_management_properties_LDADD = $(LDADD)
+nautilus_file_management_properties_DEPENDENCIES =  \
+$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
+$(top_builddir)/libnautilus-private/libnautilus-private.la
+nautilus_file_management_properties_LDFLAGS = 
+nautilus_server_connect_OBJECTS =  nautilus-server-connect.$(OBJEXT)
+nautilus_server_connect_LDADD = $(LDADD)
+nautilus_server_connect_DEPENDENCIES =  \
+$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
+$(top_builddir)/libnautilus/libnautilus.la \
+$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
+$(top_builddir)/libnautilus-private/libnautilus-private.la
+nautilus_server_connect_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(glade_DATA) $(server_DATA) $(ui_DATA)
+DATA =  $(desktop_DATA) $(glade_DATA) $(scheme_DATA) $(server_DATA) \
+$(ui_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -350,8 +394,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(nautilus_SOURCES)
-OBJECTS = $(nautilus_OBJECTS)
+SOURCES = $(nautilus_SOURCES) $(nautilus_file_management_properties_SOURCES) $(nautilus_server_connect_SOURCES)
+OBJECTS = $(nautilus_OBJECTS) $(nautilus_file_management_properties_OBJECTS) $(nautilus_server_connect_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -437,6 +481,33 @@ nautilus$(EXEEXT): $(nautilus_OBJECTS) $(nautilus_DEPENDENCIES)
 	@rm -f nautilus$(EXEEXT)
 	$(LINK) $(nautilus_LDFLAGS) $(nautilus_OBJECTS) $(nautilus_LDADD) $(LIBS)
 
+nautilus-file-management-properties$(EXEEXT): $(nautilus_file_management_properties_OBJECTS) $(nautilus_file_management_properties_DEPENDENCIES)
+	@rm -f nautilus-file-management-properties$(EXEEXT)
+	$(LINK) $(nautilus_file_management_properties_LDFLAGS) $(nautilus_file_management_properties_OBJECTS) $(nautilus_file_management_properties_LDADD) $(LIBS)
+
+nautilus-server-connect$(EXEEXT): $(nautilus_server_connect_OBJECTS) $(nautilus_server_connect_DEPENDENCIES)
+	@rm -f nautilus-server-connect$(EXEEXT)
+	$(LINK) $(nautilus_server_connect_LDFLAGS) $(nautilus_server_connect_OBJECTS) $(nautilus_server_connect_LDADD) $(LIBS)
+
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir)
+	@list='$(desktop_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(desktopdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(desktopdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(desktop_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(desktopdir)/$$p; \
+	done
+
 install-gladeDATA: $(glade_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(gladedir)
@@ -454,6 +525,25 @@ uninstall-gladeDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(glade_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(gladedir)/$$p; \
+	done
+
+install-schemeDATA: $(scheme_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemedir)
+	@list='$(scheme_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(scheme_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemedir)/$$p; \
 	done
 
 install-serverDATA: $(server_DATA)
@@ -647,13 +737,15 @@ installcheck: installcheck-recursive
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-recursive
 
-install-data-am: install-gladeDATA install-serverDATA install-uiDATA
+install-data-am: install-desktopDATA install-gladeDATA \
+		install-schemeDATA install-serverDATA install-uiDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binPROGRAMS uninstall-gladeDATA \
+uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
+		uninstall-gladeDATA uninstall-schemeDATA \
 		uninstall-serverDATA uninstall-uiDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(PROGRAMS) $(DATA)
@@ -662,7 +754,8 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(gladedir) \
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(desktopdir) \
+		$(DESTDIR)$(gladedir) $(DESTDIR)$(schemedir) \
 		$(DESTDIR)$(serverdir) $(DESTDIR)$(uidir)
 
 
@@ -707,10 +800,11 @@ maintainer-clean: maintainer-clean-recursive
 maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-gladeDATA \
-install-gladeDATA uninstall-serverDATA install-serverDATA \
-uninstall-uiDATA install-uiDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
+clean-libtool maintainer-clean-libtool uninstall-desktopDATA \
+install-desktopDATA uninstall-gladeDATA install-gladeDATA \
+uninstall-schemeDATA install-schemeDATA uninstall-serverDATA \
+install-serverDATA uninstall-uiDATA install-uiDATA \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
@@ -722,6 +816,8 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+@INTLTOOL_DESKTOP_RULE@
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL) $(top_srcdir)/libnautilus/nautilus-view-component.idl

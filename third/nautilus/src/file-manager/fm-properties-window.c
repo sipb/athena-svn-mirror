@@ -54,6 +54,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
+#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
@@ -64,10 +65,16 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-undo.h>
+#include <libnautilus/nautilus-view.h>
+#include <bonobo/bonobo-widget.h>
+#include <bonobo/bonobo-exception.h>
 #include <string.h>
 
 static GHashTable *windows;
@@ -127,6 +134,12 @@ typedef struct {
 	FMDirectoryView *directory_view;
 } StartupData;
 
+typedef struct {
+	FMPropertiesWindow *window;
+	GtkWidget *vbox;
+	char *view_name;
+} ActivationData;
+
 
 /* drag and drop definitions */
 
@@ -141,8 +154,6 @@ static GtkTargetEntry target_table[] = {
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
 	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
-
-#define ERASE_EMBLEM_FILENAME	"erase.png"
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 #define STANDARD_EMBLEM_HEIGHT			52
@@ -165,8 +176,10 @@ static void remove_pending_file                   (StartupData             *data
 						   gboolean                 cancel_timed_wait,
 						   gboolean                 cancel_destroy_handler);
 
+static void append_bonobo_pages                   (FMPropertiesWindow *window);
+
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
-			 GtkWindow, GTK_TYPE_WINDOW)
+			 GtkWindow, GTK_TYPE_WINDOW);
 
 typedef struct {
 	NautilusFile *file;
@@ -614,7 +627,37 @@ update_properties_window_title (GtkWindow *window, NautilusFile *file)
 }
 
 static void
-properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
+clear_bonobo_pages (FMPropertiesWindow *window)
+{
+	int i;
+	int num_pages;
+	GtkWidget *page;
+
+	num_pages = gtk_notebook_get_n_pages
+				(GTK_NOTEBOOK (window->details->notebook));
+
+	for (i=0; i <  num_pages; i++) {
+		page = gtk_notebook_get_nth_page
+				(GTK_NOTEBOOK (window->details->notebook), i);
+
+		if (g_object_get_data (G_OBJECT (page), "is-bonobo-page")) {
+			gtk_notebook_remove_page
+				(GTK_NOTEBOOK (window->details->notebook), i);
+			num_pages--;
+			i--;
+		}
+	}
+}
+
+static void
+refresh_bonobo_pages (FMPropertiesWindow *window)
+{
+	clear_bonobo_pages (window);
+	append_bonobo_pages (window);	
+}
+
+static void
+properties_window_file_changed_callback (FMPropertiesWindow *window, NautilusFile *file)
 {
 	g_assert (GTK_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -622,7 +665,26 @@ properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
 	if (nautilus_file_is_gone (file)) {
 		gtk_widget_destroy (GTK_WIDGET (window));
 	} else {
-		update_properties_window_title (window, file);
+		char *orig_mime_type;
+		char *new_mime_type;
+
+		orig_mime_type = nautilus_file_get_mime_type
+						(window->details->target_file);
+		nautilus_file_unref (window->details->target_file);
+
+		window->details->target_file = nautilus_file_ref (file);
+
+		update_properties_window_title (GTK_WINDOW (window), file);
+
+		new_mime_type = nautilus_file_get_mime_type
+						(window->details->target_file);
+
+		if (strcmp (orig_mime_type, new_mime_type) != 0) {
+			refresh_bonobo_pages (window);
+		}
+
+		g_free (orig_mime_type);
+		g_free (new_mime_type);
 	}
 }
 
@@ -1678,13 +1740,14 @@ create_basic_page (FMPropertiesWindow *window)
 static void
 create_emblems_page (FMPropertiesWindow *window)
 {
-	NautilusCustomizationData *customization_data;
 	GtkWidget *emblems_table, *button, *scroller;
-	char *emblem_name, *dot_pos;
+	char *emblem_name;
 	GdkPixbuf *pixbuf;
 	char *label;
 	NautilusFile *file;
+	GList *icons, *l;
 
+	
 	file = window->details->target_file;
 
 	/* The emblems wrapped table */
@@ -1696,28 +1759,28 @@ create_emblems_page (FMPropertiesWindow *window)
 
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));
-	
-	/* Use nautilus_customization to make the emblem widgets */
-	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
-							      NAUTILUS_ICON_SIZE_SMALL, 
-							      NAUTILUS_ICON_SIZE_SMALL);
-	
-	while (nautilus_customization_data_get_next_element_for_display (customization_data,
-									 &emblem_name,
-									 &pixbuf,
-									 &label) == GNOME_VFS_OK) {	
 
-		/* strip the suffix, if any */
-		dot_pos = strrchr(emblem_name, '.');
-		if (dot_pos) {
-			*dot_pos = '\0';
+	icons = nautilus_emblem_list_availible ();
+
+	l = icons;
+	while (l != NULL) {
+		emblem_name = l->data;
+		l = l->next;
+		
+		if (!nautilus_emblem_should_show_in_list (emblem_name)) {
+			continue;
 		}
 		
-		if (strcmp (emblem_name, "erase") == 0) {
-			g_object_unref (pixbuf);
-			g_free (label);
-			g_free (emblem_name);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (emblem_name, NULL,
+								     NAUTILUS_ICON_SIZE_SMALL,
+								     &label);
+
+		if (pixbuf == NULL) {
 			continue;
+		}
+
+		if (label == NULL) {
+			label = nautilus_emblem_get_keyword_from_icon_name (emblem_name);
 		}
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
@@ -1729,7 +1792,7 @@ create_emblems_page (FMPropertiesWindow *window)
 
 		/* Attach parameters and signal handler. */
 		g_object_set_data_full (G_OBJECT (button), "nautilus_property_name",
-					emblem_name, g_free);
+					nautilus_emblem_get_keyword_from_icon_name (emblem_name), g_free);
 				     
 		nautilus_file_ref (file);
 		g_object_set_data_full (G_OBJECT (button), "nautilus_file",
@@ -1748,6 +1811,8 @@ create_emblems_page (FMPropertiesWindow *window)
 
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
 	}
+	eel_g_list_free_deep (icons);
+	
 	gtk_widget_show_all (emblems_table);
 }
 
@@ -2099,6 +2164,134 @@ create_permissions_page (FMPropertiesWindow *window)
 	}
 }
 
+static GtkWidget *
+bonobo_page_error_message (const char *view_name,
+			   const char *msg)
+{
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *image;
+
+	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
+					  GTK_ICON_SIZE_DIALOG);
+
+	msg = g_strdup_printf ("There was an error while trying to create the view named `%s':  %s", view_name, msg);
+	label = gtk_label_new (msg);
+
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox);
+
+	return hbox;
+}
+
+static void
+bonobo_page_activate_callback (CORBA_Object obj,
+			       const char *error_reason,
+			       gpointer user_data)
+{
+	ActivationData *data;
+	FMPropertiesWindow *window;
+	GtkWidget *widget;
+	CORBA_Environment ev;
+
+	data = (ActivationData *)user_data;
+	window = data->window;
+
+	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (window));
+
+	CORBA_exception_init (&ev);
+	widget = NULL;
+
+	if (obj != CORBA_OBJECT_NIL) {
+		Bonobo_Control control;
+		Bonobo_PropertyBag pb;
+		BonoboArg *arg;
+		char *uri;
+		
+		uri = nautilus_file_get_uri (window->details->target_file);
+
+		control = Bonobo_Unknown_queryInterface
+				(obj, "IDL:Bonobo/Control:1.0", &ev);
+
+
+		pb = Bonobo_Control_getProperties (control, &ev);
+
+		if (!BONOBO_EX (&ev)) {
+			arg = bonobo_arg_new (BONOBO_ARG_STRING);
+			BONOBO_ARG_SET_STRING (arg, uri);
+
+			bonobo_pbclient_set_value_async (pb, "URI", arg, &ev);
+			bonobo_arg_release (arg);
+			bonobo_object_release_unref (pb, NULL);
+
+			if (!BONOBO_EX (&ev)) {
+				widget = bonobo_widget_new_control_from_objref
+							(control, CORBA_OBJECT_NIL);
+				bonobo_object_release_unref (control, &ev);
+			}
+		}
+
+		g_free (uri);
+	}
+
+	if (widget == NULL) {
+		widget = bonobo_page_error_message (data->view_name,
+						    error_reason);
+	}
+
+	gtk_container_add (GTK_CONTAINER (data->vbox), widget);
+	gtk_widget_show (widget);
+
+	g_free (data->view_name);
+	g_free (data);
+}
+
+static void
+append_bonobo_pages (FMPropertiesWindow *window)
+{
+	GList *components, *l;
+	CORBA_Environment ev;
+
+	/* find all the property pages for this file */
+	components = nautilus_mime_get_property_components_for_file
+					(window->details->target_file);
+	
+	CORBA_exception_init (&ev);
+
+	l = components;
+	while (l != NULL) {
+		NautilusViewIdentifier *view_id;
+		Bonobo_ServerInfo *server;
+		ActivationData *data;
+		GtkWidget *vbox;
+
+		server = l->data;
+		l = l->next;
+
+		view_id = nautilus_view_identifier_new_from_property_page (server);
+		vbox = create_page_with_vbox (window->details->notebook,
+					      view_id->name);
+
+		/* just a tag...the value doesn't matter */
+		g_object_set_data (G_OBJECT (vbox), "is-bonobo-page",
+				  vbox);
+
+		data = g_new (ActivationData, 1);
+		data->window = window;
+		data->vbox = vbox;
+		data->view_name = g_strdup (view_id->name);
+
+		bonobo_activation_activate_from_id_async (view_id->iid,
+					0, bonobo_page_activate_callback,
+					data, &ev);
+	}
+
+}
+
 static gboolean
 should_show_emblems (FMPropertiesWindow *window) 
 {
@@ -2150,6 +2343,26 @@ startup_data_free (StartupData *data)
 	g_free (data);
 }
 
+static void
+help_button_callback (GtkWidget *widget, GtkWidget *property_window)
+{
+	GError *error = NULL;
+	char *message;
+
+	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51",
+					    gtk_window_get_screen (GTK_WINDOW (property_window)),
+&error);
+
+	if (error) {
+		message = g_strdup_printf (_("There was an error displaying help: \n%s"),
+					   error->message);
+		eel_show_error_dialog (message, _("Couldn't show help"),
+				       GTK_WINDOW (property_window));
+		g_error_free (error);
+		g_free (message);
+	}
+}
+
 static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
@@ -2164,8 +2377,10 @@ create_properties_window (StartupData *startup_data)
 	window->details->original_file = nautilus_file_ref (startup_data->original_file);
 	window->details->target_file = nautilus_file_ref (startup_data->target_file);
 	
-  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
+	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+	gtk_window_set_screen (GTK_WINDOW (window),
+			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
 
 	/* Set initial window title */
 	update_properties_window_title (GTK_WINDOW (window), window->details->target_file);
@@ -2198,8 +2413,9 @@ create_properties_window (StartupData *startup_data)
 
 	/* Create box for notebook and button box. */
 	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (window), 
+	gtk_container_add (GTK_CONTAINER (window),
 			   GTK_WIDGET (vbox));
 
 	/* Create the notebook tabs. */
@@ -2218,19 +2434,27 @@ create_properties_window (StartupData *startup_data)
 	if (should_show_permissions (window)) {
 		create_permissions_page (window);
 	}
-	
-	/* Create box for close button. */
+
+	/* append pages from available views */
+	append_bonobo_pages (window);
+
+	/* Create box for help and close buttons. */
 	hbox = gtk_hbutton_box_new ();
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox),
-			    FALSE, TRUE, 5);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox),
-				   GTK_BUTTONBOX_END);  
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox), FALSE, TRUE, 5);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox), GTK_BUTTONBOX_EDGE);
 
-	/* Create close button. */
-	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	button = gtk_button_new_from_stock (GTK_STOCK_HELP);
  	gtk_widget_show (button);
 	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button),
+			    FALSE, TRUE, 0);
+	g_signal_connect_object (button, "clicked",
+				 G_CALLBACK (help_button_callback),
+				 window, 0);
+	
+	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	gtk_widget_show (button);
+	gtk_box_pack_end (GTK_BOX (hbox), GTK_WIDGET (button),
 			    FALSE, TRUE, 0);
 	g_signal_connect_swapped (button, "clicked",
 				  G_CALLBACK (gtk_widget_destroy),
@@ -2369,6 +2593,8 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	/* Look to see if there's already a window for this file. */
 	existing_window = g_hash_table_lookup (windows, original_file);
 	if (existing_window != NULL) {
+		gtk_window_set_screen (existing_window,
+				       gtk_widget_get_screen (GTK_WIDGET (directory_view)));
 		gtk_window_present (existing_window);
 		return;
 	}

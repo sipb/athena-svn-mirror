@@ -2,7 +2,9 @@ include $(top_srcdir)/Makefile.shared
 
 @INTLTOOL_DESKTOP_RULE@
 
-DESKTOP_IN_FILES=nautilus.desktop.in
+DESKTOP_IN_FILES= 					\
+	nautilus.desktop.in				\
+	nautilus-file-management-properties.desktop
 DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS =			\
@@ -28,8 +30,6 @@ EXTRA_DIST=					\
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
-	gnome-starthere-96.png			\
-	gnome-starthere.png			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
@@ -42,10 +42,6 @@ EXTRA_DIST=					\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\
 	$(NULL)
-
-appicondir = $(datadir)/pixmaps
-appicon_DATA = 	gnome-starthere-96.png		\
-		gnome-starthere.png
 
 Applicationsdir = $(datadir)/applications
 Applications_DATA = $(DESKTOP_FILES)

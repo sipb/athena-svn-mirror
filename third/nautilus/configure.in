@@ -4,17 +4,18 @@ dnl ===========================================================================
 
 ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=1.0.0
-BONOBO_REQUIRED=2.0.0
+BONOBO_REQUIRED=2.1.0
 BONOBO_UI_REQUIRED=2.0.0
-EEL_REQUIRED=2.0.4
+EEL_REQUIRED=2.2.0
 ESOUND_REQUIRED=0.2.27
 GLIB_REQUIRED=2
-GNOME_CANVAS_REQUIRED=2.0
-GNOME_DESKTOP_REQUIRED=2.0.3
-GNOME_REQUIRED=2.0.1
-GNOME_UI_REQUIRED=2.0
-GNOME_VFS_REQUIRED=1.9
-GTK_REQUIRED=2.0.5
+GNOME_DESKTOP_REQUIRED=2.1.0
+GNOME_REQUIRED=2.1.1
+GNOME_UI_REQUIRED=2.1.1
+GNOME_VFS_REQUIRED=2.1.5
+ORBIT_REQUIRED=2.4.0
+PANGO_REQUIRED=1.1.2
+GTK_REQUIRED=2.1.1
 MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=2.0.1
 XML_REQUIRED=2.4.7
@@ -27,7 +28,7 @@ AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.0.8)
+AM_INIT_AUTOMAKE(nautilus, 2.2.0.2)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -44,8 +45,6 @@ AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-AM_PATH_ORBIT2
-
 PKG_CHECK_MODULES(ALL, \
 	esound >= $ESOUND_REQUIRED \
 	bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED \
@@ -53,18 +52,19 @@ PKG_CHECK_MODULES(ALL, \
 	glib-2.0 >= $GLIB_REQUIRED \
 	gnome-desktop-2.0 >= $GNOME_DESKTOP_REQUIRED \
 	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED \
+	ORBit-2.0 >= $ORBIT_REQUIRED\
+	pango >= $PANGO_REQUIRED \
 	gtk+-2.0 >= $GTK_REQUIRED \
 	libart-2.0 >= $ART_REQUIRED \
 	libbonobo-2.0 >= $BONOBO_REQUIRED \
 	libbonoboui-2.0 >= $BONOBO_UI_REQUIRED \
 	libgnome-2.0 >= $GNOME_REQUIRED \
-	libgnomecanvas-2.0 >= $GNOME_CANVAS_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
 	libxml-2.0 >= $XML_REQUIRED)
 dnl ==========================================================================
 
-ALL_LINGUAS="am az be bg ca cs da de el en_GB es et eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
 
 GETTEXT_PACKAGE=nautilus
 AC_SUBST(GETTEXT_PACKAGE)
@@ -99,20 +99,17 @@ AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
 
 dnl ==========================================================================
 
+ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
+AC_SUBST(ORBIT_IDL)
+
+dnl ==========================================================================
+
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt getmntinfo)
 AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h)
 
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setenv unsetenv putenv)
-
-dnl ==========================================================================
-
-dnl x86 checks (used by audio routines in music component)
-
-_system_is_x86="no"
-AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
-AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
 
 dnl ==========================================================================
 
@@ -257,6 +254,11 @@ GIMPHWRAPBOX_MODULES="gtk+-2.0"
 GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
 AC_SUBST(GIMPHWRAPBOX_CFLAGS)
 
+dnl libegg
+LIBEGG_MODULES="gtk+-2.0 libgnome-2.0"
+LIBEGG_CFLAGS="`$PKG_CONFIG --cflags $LIBEGG_MODULES`"
+AC_SUBST(LIBEGG_CFLAGS)
+
 dnl libnautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
 LIBNAUTILUS_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
 LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
@@ -282,20 +284,23 @@ AC_SUBST(COMPONENT_CFLAGS)
 COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_LIBS)
 
-dnl music component
-MUSIC_COMPONENT_MODULES="$COMPONENT_MODULES esound"
-MUSIC_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $MUSIC_COMPONENT_MODULES`"
-AC_SUBST(MUSIC_COMPONENT_CFLAGS)
-MUSIC_COMPONENT_LIBS="`$PKG_CONFIG --libs $MUSIC_COMPONENT_MODULES`"
-AC_SUBST(MUSIC_COMPONENT_LIBS)
+dnl emblems component
+EMBLEM_COMPONENT_MODULES="$COMPONENT_MODULES librsvg-2.0"
+EMBLEM_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $EMBLEM_COMPONENT_MODULES`"
+AC_SUBST(EMBLEM_COMPONENT_CFLAGS)
+EMBLEM_COMPONENT_LIBS="`$PKG_CONFIG --libs $EMBLEM_COMPONENT_MODULES`"
+AC_SUBST(EMBLEM_COMPONENT_LIBS)
 
 DISABLE_DEPRECATED_CFLAGS=" \
 	-DG_DISABLE_DEPRECATED \
 	-DGDK_DISABLE_DEPRECATED \
 	-DGDK_PIXBUF_DISABLE_DEPRECATED \
 	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED \
-	-DBONOBO_DISABLE_DEPRECATED"
+	-DGNOME_DISABLE_DEPRECATED"
+
+dnl FIXME: put this back once the registration_id stuff is cleared up.
+dnl	-DBONOBO_DISABLE_DEPRECATED
+
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
 dnl
@@ -334,37 +339,28 @@ components/adapter/Makefile
 components/hardware/Makefile
 components/hardware/icons/Makefile
 components/history/Makefile
-components/loser/Makefile
-components/loser/content/Makefile
-components/loser/sidebar/Makefile
-components/music/Makefile
 components/notes/Makefile
-components/sample/Makefile
 components/text/Makefile
 components/text/services/Makefile
 components/throbber/Makefile
 components/tree/Makefile
+components/emblem/Makefile
+components/image_properties/Makefile
 cut-n-paste-code/Makefile
+cut-n-paste-code/libegg/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/gimphwrapbox/Makefile
 data/Makefile
-data/emblems/Makefile
 data/patterns/Makefile
 docs/Makefile
 icons/Makefile
 icons/crux_eggplant/Makefile
-icons/crux_eggplant/backgrounds/Makefile
-icons/crux_eggplant/sidebar_tab_pieces/Makefile
 icons/crux_eggplant/throbber/Makefile
 icons/crux_teal/Makefile
-icons/crux_teal/backgrounds/Makefile
-icons/crux_teal/sidebar_tab_pieces/Makefile
 icons/crux_teal/throbber/Makefile
 icons/default/Makefile
 icons/gnome/Makefile
-icons/gnome/sidebar_tab_pieces/Makefile
 icons/gnome/throbber/Makefile
-icons/sidebar_tab_pieces/Makefile
 icons/sierra/Makefile
 icons/tahoe/Makefile
 icons/throbber/Makefile

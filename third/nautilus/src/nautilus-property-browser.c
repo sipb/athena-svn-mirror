@@ -66,6 +66,7 @@
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
+#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-help.h>
@@ -77,7 +78,9 @@
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-drag-window.h>
+#include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -214,7 +217,6 @@ static GtkTargetEntry drag_types[] = {
 	{ "text/uri-list",  0, PROPERTY_TYPE }
 };
 
-static NautilusPropertyBrowser *main_browser = NULL;
 
 EEL_CLASS_BOILERPLATE (NautilusPropertyBrowser,
 				   nautilus_property_browser,
@@ -490,15 +492,13 @@ nautilus_property_browser_destroy (GtkObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					 nautilus_property_browser_theme_changed,
 					 property_browser);
-	if (object == GTK_OBJECT (main_browser))
-		main_browser = NULL;
 		
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* create a new instance */
 NautilusPropertyBrowser *
-nautilus_property_browser_new (void)
+nautilus_property_browser_new (GdkScreen *screen)
 {
 	NautilusPropertyBrowser *browser;
 
@@ -506,6 +506,7 @@ nautilus_property_browser_new (void)
 		(gtk_widget_new (nautilus_property_browser_get_type (), NULL));
 
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
+	gtk_window_set_screen (GTK_WINDOW (browser), screen);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
 	return browser;
@@ -514,12 +515,17 @@ nautilus_property_browser_new (void)
 /* show the main property browser */
 
 void
-nautilus_property_browser_show (void)
+nautilus_property_browser_show (GdkScreen *screen)
 {
-	if (main_browser == NULL) {
-		main_browser = nautilus_property_browser_new ();
+	static GtkWindow *browser = NULL;
+
+	if (browser == NULL) {
+		browser = GTK_WINDOW (nautilus_property_browser_new (screen));
+		g_object_add_weak_pointer (G_OBJECT (browser),
+					   (gpointer *) &browser);
 	} else {
-		gtk_window_present (GTK_WINDOW (main_browser));
+		gtk_window_set_screen (browser, screen);
+		gtk_window_present (browser);
 	}
 }
 
@@ -684,8 +690,18 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 {
 	GdkPixbuf *pixbuf, *orig_pixbuf;
 	char *image_file_name;
+	char *icon_name;
 	gboolean is_reset;
-	
+
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
+		icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
+								     NAUTILUS_ICON_SIZE_STANDARD,
+								     NULL);
+		g_free (icon_name);
+		return pixbuf;
+	}
+
 	image_file_name = g_strdup_printf ("%s/%s/%s",
 					   NAUTILUS_DATADIR,
 					   property_browser->details->category,
@@ -1272,61 +1288,16 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 	}
 }
 
-/* utility to make sure the passed-in keyword only contains alphanumeric characters */
-static gboolean
-emblem_keyword_valid (const char *keyword)
-{
-	const char *p;
-	gunichar c;
-	
-	for (p = keyword; *p; p = g_utf8_next_char (p)) {
-		c = g_utf8_get_char (p);
-
-		if (!g_unichar_isalnum (c) &&
-		    !g_unichar_isspace (c)) {
-			return FALSE;
-		}
-	}
-	
-	return TRUE;
-}
-
-
-/* check for reserved keywords */
-static gboolean
-is_reserved_keyword (NautilusPropertyBrowser *property_browser, const char *keyword)
-{	
-	/* check intrinsic emblems */
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
-		return TRUE;
-	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
-		return TRUE;
-	}
-	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
-		return TRUE;
-	}
-	
-	/* see if the keyword already exists */
-	return g_list_find_custom (property_browser->details->keywords,
-				   (char *) keyword,
-				   (GCompareFunc) eel_strcasecmp) != NULL;				
-}
-
 /* here's where we handle clicks in the emblem dialog buttons */
 static void
 emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrowser *property_browser)
 {
-	char *directory_uri, *error_string;
-	GnomeVFSResult result;
-	
+	const char *new_keyword;
+	char *stripped_keyword;
+	char *emblem_path, *emblem_uri;
+	GdkPixbuf *pixbuf;
+	 
 	if (which_button == GTK_RESPONSE_OK) {
-		char *destination_name, *extension;
-		const char *new_keyword;
-		char *stripped_keyword;
-		char *emblem_path, *emblem_uri;
-		char *user_directory;	
-		char *directory_path;
 
 		/* update the image path from the file entry */
 		if (property_browser->details->file_entry) {
@@ -1348,6 +1319,16 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			}
 		}
 		
+		emblem_uri = gnome_vfs_get_uri_from_local_path (property_browser->details->image_path);
+		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (emblem_uri);
+		g_free (emblem_uri);
+
+		if (pixbuf == NULL) {
+			char *message = g_strdup_printf
+				(_("Sorry, but '%s' is not a usable image file!"), property_browser->details->image_path);
+			eel_show_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
+		}
+		
 		new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));		
 		if (new_keyword == NULL) {
 			stripped_keyword = NULL;
@@ -1355,60 +1336,19 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			stripped_keyword = g_strstrip (g_strdup (new_keyword));
 		}
 		
-		if (stripped_keyword == NULL || strlen (stripped_keyword) == 0) {
-			eel_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
-						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
-		} else if (!emblem_keyword_valid (stripped_keyword)) {
-			eel_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
-						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
-		} else if (is_reserved_keyword (property_browser, stripped_keyword)) {
-			error_string = g_strdup_printf (_("Sorry, but \"%s\" is an existing keyword.  Please choose a different name for it."), stripped_keyword);
-			eel_show_error_dialog (error_string, 
-						    _("Couldn't install emblem"), GTK_WINDOW (property_browser));
-			g_free (error_string);
-		} else {		
-			user_directory = nautilus_get_user_directory ();
 
-			/* get the path for emblems in the user's home directory */
-			directory_path = g_build_filename (user_directory,
-							   "emblems",
-							   NULL);
-			g_free (user_directory);
-
-			/* make the directory if it doesn't exist */
-			if (!g_file_test (directory_path, G_FILE_TEST_EXISTS)) {
-				directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-				gnome_vfs_make_directory(directory_uri,
-						 	GNOME_VFS_PERM_USER_ALL
-						 	| GNOME_VFS_PERM_GROUP_ALL
-						 	| GNOME_VFS_PERM_OTHER_READ);
-				g_free(directory_uri);
-			}
-
-			/* formulate the destination file name */
-			extension = strrchr(property_browser->details->image_path, '.');
-			destination_name = g_strdup_printf("%s/%s.%s", directory_path, stripped_keyword, extension + 1);
-			g_free(directory_path);
-				
-			/* perform the actual copy */
-			result = eel_copy_uri_simple (property_browser->details->image_path, destination_name);		
+		nautilus_emblem_install_custom_emblem (pixbuf,
+						       stripped_keyword,
+						       stripped_keyword,
+						       GTK_WINDOW (property_browser));
 		
-			if (result != GNOME_VFS_OK) {
-				char *message = g_strdup_printf (_("Sorry, but the image at %s couldn't be installed as an emblem."), property_browser->details->image_path);
-				eel_show_error_dialog (message, _("Couldn't install emblem"), GTK_WINDOW (property_browser));
-				g_free (message);
-			} else {
-				emit_emblems_changed_signal ();	
-			}
-			
-			g_free(destination_name);
-				
-			nautilus_property_browser_update_contents(property_browser);
-		}
+		emit_emblems_changed_signal ();	
+		nautilus_property_browser_update_contents (property_browser);
+		
 		g_free (stripped_keyword);
 	}
 	
-	gtk_widget_destroy(dialog);
+	gtk_widget_destroy (dialog);
 	
 	property_browser->details->keyword = NULL;
 	property_browser->details->emblem_image = NULL;
@@ -1486,12 +1426,12 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml", "gosnautilus-50",
-				    &error);
+	egg_help_display_desktop_on_screen (
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-50",
+		gtk_window_get_screen (GTK_WINDOW (property_browser)), &error);
+
 	if (error) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (widget),
+		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,
@@ -1535,6 +1475,7 @@ element_clicked_callback (GtkWidget *image_table,
 	int x_delta, y_delta;
 	const char *element_name;
 	int scroll_offset_x, scroll_offset_y;
+	GdkDragAction action;
 
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (image_table));
 	g_return_if_fail (EEL_IS_LABELED_IMAGE (child));
@@ -1564,10 +1505,11 @@ element_clicked_callback (GtkWidget *image_table,
 	
 	target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
+	action = event->button == 3 ? GDK_ACTION_ASK : GDK_ACTION_MOVE | GDK_ACTION_COPY;
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
 				  target_list,
-				  GDK_ACTION_MOVE | GDK_ACTION_COPY,
+				  GDK_ACTION_ASK | GDK_ACTION_MOVE | GDK_ACTION_COPY,
 				  event->button,
 				  event->event);
 	gtk_target_list_unref (target_list);
@@ -1665,6 +1607,11 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	EelImageTable *image_table;
 	GtkWidget *reset_object = NULL;
 	GtkWidget *erase_object = NULL;
+	GList *icons, *l;
+	char *icon_name;
+	char *keyword;
+	char *extension;
+	GtkWidget *property_image;
 
 	g_return_if_fail (NAUTILUS_IS_PROPERTY_BROWSER (property_browser));
 	g_return_if_fail (EEL_IS_IMAGE_TABLE (property_browser->details->content_table));
@@ -1674,65 +1621,93 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
 		eel_g_list_free_deep (property_browser->details->keywords);	
 		property_browser->details->keywords = NULL;
-	}
-	
-	customization_data = nautilus_customization_data_new (property_browser->details->category,
-							      !property_browser->details->remove_mode,
-							      FALSE,
-							      MAX_ICON_WIDTH,
-							      MAX_ICON_HEIGHT);
-	if (customization_data == NULL) {
-		return;
-	}
 
-	/* interate through the set of objects and display each */
-	while (nautilus_customization_data_get_next_element_for_display (customization_data,
-									 &object_name,
-									 &object_pixbuf,
-									 &object_label) == GNOME_VFS_OK) {
-		GtkWidget *property_image;
+		icons = nautilus_emblem_list_availible ();
 
-		property_image = labeled_image_new (object_label, object_pixbuf, object_name, PANGO_SCALE_LARGE);
-		
-		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {		
-			char *keyword;
-			char *extension;
-			
-			keyword = g_strdup (object_name);
-			extension = strchr (keyword, '.');
+		l = icons;
+		while (l != NULL) {
+			icon_name = (char *)l->data;
+			l = l->next;
 
+			if (!nautilus_emblem_should_show_in_list (icon_name)) {
+				continue;
+			}
+			object_name = nautilus_emblem_get_keyword_from_icon_name (icon_name);
+			object_pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
+										    NAUTILUS_ICON_SIZE_SMALL,
+										    &object_label);
+			if (object_label == NULL) {
+				object_label = g_strdup (object_name);
+			}
+
+			property_image = labeled_image_new (object_label, object_pixbuf, object_name, PANGO_SCALE_LARGE);
 			eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
+			keyword = g_strdup (object_name);
+			extension = strchr (keyword, '.');
 			if (extension) {
 				*extension = '\0';
 			}
-
 			property_browser->details->keywords = g_list_prepend (property_browser->details->keywords,
 									      keyword);
+
+			gtk_container_add (GTK_CONTAINER (image_table), property_image);
+			gtk_widget_show (property_image);
+
+			/* Keep track of ERASE objects to place them prominently later */
+			if (eel_str_is_equal (object_name, ERASE_OBJECT_NAME)) {
+				g_assert (erase_object == NULL);
+				erase_object = property_image;
+				/* Keep track of RESET objects to place them prominently later */
+			}
+			
+			gtk_widget_show (property_image);
+					
+			g_free (object_name);
+			g_free (object_label);
+			g_object_unref (object_pixbuf);
+		}
+		eel_g_list_free_deep (icons);
+		property_browser->details->has_local = FALSE;
+	} else {
+		customization_data = nautilus_customization_data_new (property_browser->details->category,
+								      !property_browser->details->remove_mode,
+								      FALSE,
+								      MAX_ICON_WIDTH,
+								      MAX_ICON_HEIGHT);
+		if (customization_data == NULL) {
+			return;
 		}
 		
-		gtk_container_add (GTK_CONTAINER (image_table), property_image);
-		gtk_widget_show (property_image);
-
-		/* Keep track of ERASE objects to place them prominently later */
-		if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM
-		    && eel_str_is_equal (object_name, ERASE_OBJECT_NAME)) {
-			g_assert (erase_object == NULL);
-			erase_object = property_image;
-		/* Keep track of RESET objects to place them prominently later */
-		} else if (property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN
-			   && eel_str_is_equal (object_name, RESET_IMAGE_NAME)) {
-			g_assert (reset_object == NULL);
-			reset_object = property_image;
+		/* interate through the set of objects and display each */
+		while (nautilus_customization_data_get_next_element_for_display (customization_data,
+										 &object_name,
+										 &object_pixbuf,
+										 &object_label) == GNOME_VFS_OK) {
+			
+			property_image = labeled_image_new (object_label, object_pixbuf, object_name, PANGO_SCALE_LARGE);
+			
+			gtk_container_add (GTK_CONTAINER (image_table), property_image);
+			gtk_widget_show (property_image);
+			
+			/* Keep track of ERASE objects to place them prominently later */
+			if (property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN
+			    && eel_str_is_equal (object_name, RESET_IMAGE_NAME)) {
+				g_assert (reset_object == NULL);
+				reset_object = property_image;
+			}
+			
+			gtk_widget_show (property_image);
+			
+			g_free (object_name);
+			g_free (object_label);
+			g_object_unref (object_pixbuf);
 		}
 		
-		gtk_widget_show (property_image);
-
-		g_free (object_name);
-		g_free (object_label);
-		g_object_unref (object_pixbuf);
+		property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
+		nautilus_customization_data_destroy (customization_data);
 	}
-
+	
 	/*
 	 * We place ERASE objects (for emblems) at the end with a blank in between.
 	 */
@@ -1767,8 +1742,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 						   0);
 	}
 
-	property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
-	nautilus_customization_data_destroy (customization_data);
 }
 
 /* utility routine to add a reset property in the first position */
@@ -2057,7 +2030,6 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	xmlFreeDoc (document);
 
 	/* update the title and button */
-
 
 	if (property_browser->details->category == NULL) {
 		gtk_label_set_text (GTK_LABEL (property_browser->details->title_label), _("Select A Category:"));

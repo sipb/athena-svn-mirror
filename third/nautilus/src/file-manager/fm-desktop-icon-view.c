@@ -45,6 +45,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libegg/egg-screen-exec.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
@@ -85,6 +86,7 @@ struct FMDesktopIconViewDetails
 {
 	BonoboUIComponent *ui;
 	GList *mount_black_list;
+	GdkWindow *root_window;
 
 	/* For the desktop rescanning
 	 */
@@ -153,6 +155,7 @@ get_icon_container (FMDesktopIconView *icon_view)
 
 static void
 icon_container_set_workarea (NautilusIconContainer *icon_container,
+			     GdkScreen             *screen,
 			     long                  *workareas,
 			     int                    n_items)
 {
@@ -162,14 +165,17 @@ icon_container_set_workarea (NautilusIconContainer *icon_container,
 
 	left = right = top = bottom = 0;
 
-	screen_width  = gdk_screen_width ();
-	screen_height = gdk_screen_height ();
+	screen_width  = gdk_screen_get_width (screen);
+	screen_height = gdk_screen_get_height (screen);
 
 	for (i = 0; i < n_items; i += 4) {
 		int x      = workareas [i];
 		int y      = workareas [i + 1];
 		int width  = workareas [i + 2];
 		int height = workareas [i + 3];
+
+		if ((x + width) > screen_width || (y + height) > screen_height)
+			continue;
 
 		left   = MAX (left, x);
 		right  = MAX (right, screen_width - width - x);
@@ -182,49 +188,48 @@ icon_container_set_workarea (NautilusIconContainer *icon_container,
 }
 
 static void
-net_workarea_changed (FMDesktopIconView *icon_view)
+net_workarea_changed (FMDesktopIconView *icon_view,
+		      GdkWindow         *window)
 {
 	long *workareas = NULL;
-	Atom type_returned;
+	GdkAtom type_returned;
 	int format_returned;
-	unsigned long items_returned;
-	unsigned long bytes_after_return;
+	int length_returned;
 	NautilusIconContainer *icon_container;
+	GdkScreen *screen;
 
 	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view));
 
 	icon_container = get_icon_container (icon_view);
 
 	gdk_error_trap_push ();
-	if (XGetWindowProperty (GDK_DISPLAY (),
-				GDK_ROOT_WINDOW (),
-				gdk_x11_get_xatom_by_name ("_NET_WORKAREA"),
-				0, G_MAXLONG, False,
-				XA_CARDINAL,
-				&type_returned,
-				&format_returned,
-				&items_returned,
-				&bytes_after_return,
-				(unsigned char **)&workareas) != Success) {
-		if (workareas != NULL)
-			XFree (workareas);
+	if (!gdk_property_get (window,
+			       gdk_atom_intern ("_NET_WORKAREA", FALSE),
+			       gdk_x11_xatom_to_atom (XA_CARDINAL),
+			       0, G_MAXLONG, FALSE,
+			       &type_returned,
+			       &format_returned,
+			       &length_returned,
+			       (guchar **) &workareas)) {
 		workareas = NULL;
 	}
-			    
+
 	if (gdk_error_trap_pop ()
 	    || workareas == NULL
-	    || type_returned != XA_CARDINAL
-	    || (items_returned % 4) != 0
+	    || type_returned != gdk_x11_xatom_to_atom (XA_CARDINAL)
+	    || (length_returned % 4) != 0
 	    || format_returned != 32) {
 		nautilus_icon_container_set_margins (icon_container,
 						     0, 0, 0, 0);
 	} else {
+		screen = gdk_drawable_get_screen (GDK_DRAWABLE (window));
+
 		icon_container_set_workarea (
-				icon_container, workareas, items_returned);
+			icon_container, screen, workareas, length_returned / sizeof (long));
 	}
 
 	if (workareas != NULL)
-		XFree (workareas);
+		g_free (workareas);
 }
 
 static GdkFilterReturn
@@ -240,7 +245,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 	switch (xevent->type) {
 	case PropertyNotify:
 		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WORKAREA"))
-			net_workarea_changed (icon_view);
+			net_workarea_changed (icon_view, event->any.window);
 		break;
 	default:
 		break;
@@ -255,11 +260,6 @@ fm_desktop_icon_view_finalize (GObject *object)
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
-
-	/* Remove the property filter */
-	gdk_window_remove_filter (gdk_get_default_root_window (),
-				  desktop_icon_view_property_filter,
-				  icon_view);
 
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
@@ -435,35 +435,35 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 
 	/* Get icon type */
-	icon_name = "i-blockdev";
+	icon_name = "gnome-dev-harddisk";
 	switch (nautilus_volume_get_device_type (volume)) {
 	case NAUTILUS_DEVICE_AUDIO_CD:
 	case NAUTILUS_DEVICE_CDROM_DRIVE:
-		icon_name = "i-cdrom";
+		icon_name = "gnome-dev-cdrom";
 		break;
 
 	case NAUTILUS_DEVICE_FLOPPY_DRIVE:
-		icon_name = "i-floppy";
+		icon_name = "gnome-dev-floppy";
 		break;
 
 	case NAUTILUS_DEVICE_JAZ_DRIVE:
-		icon_name = "i-zipdisk2";
+		icon_name = "gnome-dev-jazdisk";
 		break;
 
 	case NAUTILUS_DEVICE_MEMORY_STICK:
-		icon_name = "gnome-ccperiph";
+		icon_name = "gnome-dev-memory";
 		break;
 	
 	case NAUTILUS_DEVICE_NFS:
-		icon_name = "i-nfs";
+		icon_name = "gnome-fs-nfs";
 		break;
 
 	case NAUTILUS_DEVICE_SMB:
-		icon_name = "i-smb";
+		icon_name = "gnome-fs-smb";
 		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "i-zipdisk";
+		icon_name = "gome-fs-zipdisk";
 		break;
 
 	case NAUTILUS_DEVICE_APPLE:
@@ -496,6 +496,38 @@ event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_i
 {
 }
 
+static void
+unrealized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
+{
+	g_return_if_fail (desktop_icon_view->details->root_window != NULL);
+
+	/* Remove the property filter */
+	gdk_window_remove_filter (desktop_icon_view->details->root_window,
+				  desktop_icon_view_property_filter,
+				  desktop_icon_view);
+	desktop_icon_view->details->root_window = NULL;
+}
+
+static void
+realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
+{
+	GdkWindow *root_window;
+
+	g_return_if_fail (desktop_icon_view->details->root_window == NULL);
+
+	root_window = gdk_screen_get_root_window (gtk_widget_get_screen (widget));
+
+	desktop_icon_view->details->root_window = root_window;
+
+	/* Read out the workarea geometry and update the icon container accordingly */
+	net_workarea_changed (desktop_icon_view, root_window);
+
+	/* Setup the property filter */
+	gdk_window_set_events (root_window, GDK_PROPERTY_NOTIFY);
+	gdk_window_add_filter (root_window,
+			       desktop_icon_view_property_filter,
+			       desktop_icon_view);
+}
 
 static NautilusZoomLevel
 get_default_zoom_level (void)
@@ -633,8 +665,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 		desktop_directory_changed_callback (NULL);
 	}
 
+	fm_icon_view_filter_by_screen (FM_ICON_VIEW (desktop_icon_view), TRUE);
 	icon_container = get_icon_container (desktop_icon_view);
-
 	nautilus_icon_container_set_use_drop_shadows (icon_container, TRUE);
 	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
 
@@ -651,6 +683,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
+	nautilus_icon_container_set_is_desktop (icon_container, TRUE);
 
 	/* Set up default mount black list */
 	list = g_list_prepend (NULL, g_strdup ("/proc"));
@@ -694,6 +727,10 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 				 G_CALLBACK (volume_mounted_callback), desktop_icon_view, 0);
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), desktop_icon_view, 0);
+	g_signal_connect_object (desktop_icon_view, "realize",
+				 G_CALLBACK (realized_callback), desktop_icon_view, 0);
+	g_signal_connect_object (desktop_icon_view, "unrealize",
+				 G_CALLBACK (unrealized_callback), desktop_icon_view, 0);
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 				      home_uri_changed,
@@ -709,32 +746,27 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	default_zoom_level_changed (desktop_icon_view);
 	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
-
-	/* Read out the workarea geometry and update the icon container accordingly */
-	net_workarea_changed (desktop_icon_view);
-
-	/* Setup the property filter */
-	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), PropertyChangeMask);
-
-	gdk_window_add_filter (gdk_get_default_root_window (),
-			       desktop_icon_view_property_filter,
-			       desktop_icon_view);
 }
 
 static void
 new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
-	eel_gnome_open_terminal (NULL);
+        g_assert (FM_DIRECTORY_VIEW (data));
+
+	eel_gnome_open_terminal_on_screen (NULL, gtk_widget_get_screen (GTK_WIDGET (data)));
 }
 
 static void
 new_launcher_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
 	char *desktop_directory;
-	
+
+        g_assert (FM_DIRECTORY_VIEW (data));
+
 	desktop_directory = nautilus_get_desktop_directory ();
 
-	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit --create-new",
 						  desktop_directory, 
 						  FALSE);
@@ -747,9 +779,13 @@ change_background_callback (BonoboUIComponent *component,
 	  		    gpointer data, 
 			    const char *verb)
 {
-	nautilus_launch_application_from_command 
-		(_("Background"),
-		 "gnome-background-properties", NULL, FALSE);
+        g_assert (FM_DIRECTORY_VIEW (data));
+
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
+						  _("Background"),
+						  "gnome-background-properties",
+						  NULL,
+						  FALSE);
 }
 
 static void
@@ -768,7 +804,8 @@ reset_background_callback (BonoboUIComponent *component,
 			   const char *verb)
 {
 	eel_background_reset 
-		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
+		(fm_directory_view_get_background 
+		 (FM_DIRECTORY_VIEW (data)));
 }
 
 static gboolean
@@ -831,7 +868,7 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	gboolean status;
 	GError *error;
 	GtkWidget *dialog;
-
+	GdkScreen *screen;
 
         g_assert (FM_IS_DIRECTORY_VIEW (data));
         
@@ -915,13 +952,17 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 
 		if (command) {
 			error = NULL;
-			status = g_spawn_command_line_async (command, &error);
+
+			screen = gtk_widget_get_screen (GTK_WIDGET (view));
+
+			status = egg_screen_execute_command_line_async (screen, command, &error);
 			if (!status) {
 				dialog = gtk_message_dialog_new (NULL, 0,
 								 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
 								 _("Error executing utility program '%s': %s"), command, error->message);
 				g_signal_connect (G_OBJECT (dialog), "response", 
 						  G_CALLBACK (gtk_widget_destroy), NULL);
+				gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 				gtk_widget_show (dialog);
 				g_error_free (error);
 			}
@@ -1036,7 +1077,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 
 	path = g_build_filename (desktop_directory, TRASH_LINK_NAME, NULL);
 
-	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
+	nautilus_link_local_set_icon (path, state ? "gnome-fs-trash-empty" : "gnome-fs-trash-full");
 
 	g_free (path);
 }
@@ -1223,13 +1264,6 @@ real_update_menus (FMDirectoryView *view)
 
 	/* Disks menu */
 	update_disks_menu (desktop_view);
-
-	/* Reset Background */
-	nautilus_bonobo_set_sensitive 
-		(desktop_view->details->ui, 
-		 FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND,
-		 nautilus_file_background_is_set 
-		 	(fm_directory_view_get_background (view)));
 
 	/* Empty Trash */
 	include_empty_trash = trash_link_is_selection (view);
@@ -1523,6 +1557,7 @@ update_desktop_directory (UpdateType type)
 			if (!found_home_link &&
 			    nautilus_link_local_is_utf8 (link_path, info)) {
 				nautilus_link_local_set_link_uri (link_path, home_uri);
+				nautilus_link_local_set_icon (link_path, "gnome-fs-home");
 				found_home_link = TRUE;
 			} else {
 				unlink_and_notify (link_path); /* kill duplicates */
@@ -1549,7 +1584,7 @@ update_desktop_directory (UpdateType type)
 	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		nautilus_link_local_create (desktop_directory,
 					    home_link_name,
-					    "desktop-home", 
+					    "gnome-fs-home", 
 					    home_uri,
 					    NULL,
 					    NAUTILUS_LINK_HOME);
@@ -1559,7 +1594,7 @@ update_desktop_directory (UpdateType type)
 		if (!found_trash_link) {
 			nautilus_link_local_create (desktop_directory,
 						    TRASH_LINK_NAME,
-						    "trash-empty", 
+						    "gnome-fs-trash-empty", 
 						    EEL_TRASH_URI,
 						    NULL,
 						    NAUTILUS_LINK_TRASH);

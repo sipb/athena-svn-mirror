@@ -2,27 +2,31 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS=file-manager
 
-bin_PROGRAMS=nautilus
+bin_PROGRAMS=					\
+	nautilus				\
+	nautilus-file-management-properties     \
+	nautilus-server-connect
 
-INCLUDES =\
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	-I$(top_builddir)/libnautilus-private \
-	$(CORE_CFLAGS) \
-	-DDATADIR=\""$(datadir)"\" \
+INCLUDES =							\
+	-I$(top_srcdir) 					\
+	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox 	\
+	-I$(top_srcdir)/cut-n-paste-code			\
+	-I$(top_builddir)/libnautilus-private 			\
+	$(CORE_CFLAGS) 						\
+	-DDATADIR=\""$(datadir)"\" 				\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
-	-DLIBDIR=\""$(libdir)"\" \
-	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
-	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" \
-	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
-	-DPREFIX=\""$(prefix)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\" \
-	-DVERSION="\"$(VERSION)\"" \
-	-DG_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED \
+	-DLIBDIR=\""$(libdir)"\" 				\
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
+	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" 		\
+	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\
+	-DPREFIX=\""$(prefix)"\" 				\
+	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
+	-DVERSION="\"$(VERSION)\"" 				\
+	-DG_DISABLE_DEPRECATED 					\
+	-DGDK_DISABLE_DEPRECATED 				\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED 			\
+	-DGTK_DISABLE_DEPRECATED 				\
+	-DGNOME_DISABLE_DEPRECATED 				\
 	$(NULL)
 
 LDADD =\
@@ -32,6 +36,18 @@ LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(CORE_LIBS) \
 	$(NULL)
+
+@INTLTOOL_DESKTOP_RULE@
+
+nautilus_server_connect_SOURCES = nautilus-server-connect.c
+
+desktop_in_files=nautilus-server-connect.desktop.in network-scheme.desktop.in
+desktop_files=$(desktop_in_files:.desktop.in=.desktop)
+desktopdir = $(datadir)/gnome/network/
+desktop_DATA = nautilus-server-connect.desktop
+
+schemedir = $(datadir)/applications
+scheme_DATA = network-scheme.desktop
 
 nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface-stubs.c	\
@@ -50,24 +66,22 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
+	nautilus-information-panel.c            \
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
-	nautilus-preferences-dialog.c		\
 	nautilus-profiler.c			\
 	nautilus-property-browser.c     	\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
 	nautilus-shell.c			\
-	nautilus-sidebar-tabs.c			\
+	nautilus-side-pane.c                    \
 	nautilus-sidebar-title.c		\
-	nautilus-sidebar.c			\
 	nautilus-signaller.c			\
 	nautilus-simple-search-bar.c		\
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
-	nautilus-theme-selector.c		\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
@@ -84,10 +98,10 @@ nautilus_SOURCES = \
 	nautilus-component-adapter-factory.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
+	nautilus-information-panel.h            \
 	nautilus-location-bar.h			\
 	nautilus-main.h				\
 	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h		\
 	nautilus-profiler.h			\
 	nautilus-property-browser.h		\
 	nautilus-search-bar-criterion-private.h	\
@@ -96,20 +110,26 @@ nautilus_SOURCES = \
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell.h			\
-	nautilus-sidebar-tabs.h			\
+	nautilus-side-pane.h			\
 	nautilus-sidebar-title.h		\
-	nautilus-sidebar.h			\
 	nautilus-signaller.h			\
 	nautilus-simple-search-bar.h		\
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
-	nautilus-theme-selector.h		\
 	nautilus-view-frame-private.h		\
 	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
+	nautilus-file-management-properties.c	\
+	nautilus-file-management-properties.h	\
+	$(NULL)
+
+nautilus_file_management_properties_SOURCES= \
+	nautilus-file-management-properties.c		\
+	nautilus-file-management-properties.h		\
+	nautilus-file-management-properties-main.c	\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
@@ -133,7 +153,11 @@ ui_DATA = 					\
 	$(NULL)
 
 gladedir = $(datadir)/nautilus/glade
-glade_DATA = nautilus-bookmarks-window.glade
+glade_DATA = \
+	nautilus-bookmarks-window.glade			\
+	nautilus-file-management-properties.glade	\
+	nautilus-server-connect.glade                   \
+	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -147,6 +171,7 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
+	$(desktop_in_files) $(desktop_files)	\
 	$(NULL)
 
 BUILT_SOURCES = \

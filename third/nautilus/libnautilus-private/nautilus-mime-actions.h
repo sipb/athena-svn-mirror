@@ -43,7 +43,12 @@ GList *                  nautilus_mime_get_short_list_applications_for_file     
 GList *                  nautilus_mime_get_short_list_components_for_file          (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_applications_for_file               (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_components_for_file                 (NautilusFile           *file);
-gboolean                 nautilus_mime_has_any_components_for_file                 (NautilusFile           *file);
+GList *                  nautilus_mime_get_all_components_for_file_extended        (NautilusFile           *file, char *extra_requirements);
+GList *                  nautilus_mime_get_popup_components_for_file               (NautilusFile           *file);
+GList *                  nautilus_mime_get_popup_components_for_files              (GList                  *files);
+GList *                  nautilus_mime_get_property_components_for_file            (NautilusFile           *file);
+ gboolean                 nautilus_mime_has_any_components_for_file                 (NautilusFile           *file);
+ gboolean                 nautilus_mime_has_any_components_for_file_extended        (NautilusFile           *file, char *extra_requirements);
 gboolean                 nautilus_mime_has_any_applications_for_file               (NautilusFile           *file);
 gboolean                 nautilus_mime_has_any_applications_for_file_type          (NautilusFile           *file);
 GnomeVFSResult           nautilus_mime_set_default_action_type_for_file            (NautilusFile           *file,

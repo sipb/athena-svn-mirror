@@ -27,7 +27,6 @@
 #include <config.h>
 #include "nautilus-sidebar-title.h"
 
-#include "nautilus-sidebar.h"
 #include "nautilus-window.h"
 
 #include <bonobo/bonobo-exception.h>
@@ -56,6 +55,7 @@
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 		256
@@ -367,7 +367,7 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 
 	pixbuf = NULL;
 	if (icon_name != NULL && icon_name[0] != '\0') {
-		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, NULL);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
 								    "accept",
@@ -575,17 +575,16 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	/* loop through the list of emblems, installing them in the box */
 	for (p = icons; p != NULL; p = p->next) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data,
-			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 NULL, FALSE);
+			(p->data, NULL, NULL,
+			 NAUTILUS_ICON_SIZE_STANDARD,
+			 NULL, FALSE, NULL);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			g_object_unref (pixbuf);
 		}
 	}
 	
-	nautilus_scalable_icon_list_free (icons);
+	eel_g_list_free_deep (icons);
 }
 
 static void

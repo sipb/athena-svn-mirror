@@ -423,7 +423,7 @@ finalize (GObject *object)
 	}
 	g_free (file->details->top_left_text);
 	g_free (file->details->display_name);
-	g_free (file->details->custom_icon_uri);
+	g_free (file->details->custom_icon);
 	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
 	
@@ -913,6 +913,7 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 	char *old_relative_uri;
 	char *old_uri;
 	char *new_uri;
+	GList name_attribute = { 0, };
 
 	op = callback_data;
 	g_assert (handle == op->handle);
@@ -949,6 +950,17 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		nautilus_directory_moved (old_uri, new_uri);
 		g_free (new_uri);
 		g_free (old_uri);
+
+
+		/* the rename could have affected the display name if e.g.
+		 * we're in a vfolder where the name comes from a desktop file
+		 * and a rename affects the contents of the desktop file.
+		 */
+		if (op->file->details->display_name != NULL) {
+			name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+			nautilus_file_invalidate_attributes (op->file, 
+							     &name_attribute);
+		}
 	}
 	operation_complete (op, result);
 }
@@ -1241,7 +1253,6 @@ update_info_internal (NautilusFile *file,
 	GList *node;
 	GnomeVFSFileInfo *info_copy;
 	char *new_relative_uri;
-	GList name_attribute = {0, };
 
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1282,17 +1293,6 @@ update_info_internal (NautilusFile *file,
 			g_free (file->details->relative_uri);
 			file->details->relative_uri = new_relative_uri;
 			nautilus_file_clear_cached_display_name (file);
-
-			/* the rename could have affected the display name if e.g.
-                         * we're in a vfolder where the name comes from a desktop file
-                         * and a rename affects the contents of the desktop file.
-                         */
-                        if (file->details->display_name != NULL) {
-                                name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
-                                nautilus_file_invalidate_attributes (file, 
-                                                                     &name_attribute);
-                        }
-
 			nautilus_directory_end_file_name_change
 				(file->details->directory, file, node);
 		}
@@ -1861,9 +1861,6 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 {
 	int compare;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file_1), 0);
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file_2), 0);
-
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		compare = compare_by_display_name (file_1, file_2);
@@ -2261,6 +2258,7 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 	char *name, *utf8_name;
 	gboolean broken_filenames;
 	gboolean validated;
+	GnomeVFSURI *vfs_uri;
 
 	if (file == NULL) {
 		return NULL;
@@ -2305,6 +2303,12 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 					/* name was valid, no need to re-validate */
 					validated = TRUE;
 				}
+			} else if (strcmp (name, "/") == 0) {
+				/* Special-case the display name for roots that are not local files */
+				g_free (name);
+				vfs_uri = gnome_vfs_uri_new (file->details->directory->details->uri);
+				name = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_PASSWORD);
+				gnome_vfs_uri_unref (vfs_uri);
 			}
 		}
 	}
@@ -2408,7 +2412,7 @@ nautilus_file_get_drop_target_uri (NautilusFile *file)
 }
 
 char *
-nautilus_file_get_custom_icon_uri (NautilusFile *file)
+nautilus_file_get_custom_icon (NautilusFile *file)
 {
 	char *uri;
 
@@ -2420,7 +2424,7 @@ nautilus_file_get_custom_icon_uri (NautilusFile *file)
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 
 	if (uri == NULL && file->details->got_link_info) {
-		uri = g_strdup (file->details->custom_icon_uri);
+		uri = g_strdup (file->details->custom_icon);
 	}
 
 	return uri;
@@ -2912,6 +2916,13 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 		}
 	}
 }
+
+GnomeVFSFileInfo *
+nautilus_file_peek_vfs_file_info (NautilusFile *file)
+{
+	return file->details->info;
+}
+
 
 /**
  * nautilus_file_get_directory_item_mime_types
@@ -4658,6 +4669,38 @@ nautilus_file_is_executable (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_peek_top_left_text
+ * 
+ * Peek at the text from the top left of the file.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: NULL if there is no text readable, otherwise, the text.
+ *          This string is owned by the file object and should not
+ *          be kept around or freed.
+ * 
+ **/
+char *
+nautilus_file_peek_top_left_text (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (!nautilus_file_should_get_top_left_text (file)) {
+		return NULL;
+	}
+
+	/* Show " ..." in the file until we read the contents in. */
+	if (!file->details->got_top_left_text) {
+		if (nautilus_file_contains_text (file)) {
+			return " ...";
+		}
+		return NULL;
+	}
+
+	/* Show what we read in. */
+	return file->details->top_left_text;
+}
+
+/**
  * nautilus_file_get_top_left_text
  * 
  * Get the text from the top left of the file.
@@ -4669,23 +4712,9 @@ nautilus_file_is_executable (NautilusFile *file)
 char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	if (!nautilus_file_should_get_top_left_text (file)) {
-		return NULL;
-	}
-
-	/* Show " ..." in the file until we read the contents in. */
-	if (!file->details->got_top_left_text) {
-		if (nautilus_file_contains_text (file)) {
-			return g_strdup (" ...");
-		}
-		return NULL;
-	}
-
-	/* Show what we read in. */
-	return g_strdup (file->details->top_left_text);
+	return g_strdup (nautilus_file_peek_top_left_text (file));
 }
+
 
 void
 nautilus_file_mark_gone (NautilusFile *file)
@@ -5319,9 +5348,15 @@ nautilus_self_check_file (void)
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
 	nautilus_file_unref (file_1);
 
+#if 0
+	/* ALEX: I removed this, because it was breaking distchecks.
+	 * It used to work, but when canonical uris changed from
+	 * foo: to foo:/// it broke. I don't expect it to matter
+	 * in real life */
 	file_1 = nautilus_file_get (":");
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), ":");
 	nautilus_file_unref (file_1);
+#endif
 
 	file_1 = nautilus_file_get ("eazel:");
 	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "eazel");

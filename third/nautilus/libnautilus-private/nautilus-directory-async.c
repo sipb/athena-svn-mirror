@@ -1229,17 +1229,23 @@ ready_callback_key_compare (gconstpointer a, gconstpointer b)
 		return 1;
 	}
 	if (callback_a->file == NULL) {
-		if (callback_a->callback.directory < callback_b->callback.directory) {
+		/* ANSI C doesn't allow ordered compares of function pointers, so we cast them to
+		 * normal pointers to make some overly pedantic compilers (*cough* HP-UX *cough*)
+		 * compile this. Of course, on any compiler where ordered function pointers actually
+		 * break this probably won't work, but at least it will compile on platforms where it
+		 * works, but stupid compilers won't let you use it.
+		 */
+		if ((void *)callback_a->callback.directory < (void *)callback_b->callback.directory) {
 			return -1;
 		}
-		if (callback_a->callback.directory > callback_b->callback.directory) {
+		if ((void *)callback_a->callback.directory > (void *)callback_b->callback.directory) {
 			return 1;
 		}
 	} else {
-		if (callback_a->callback.file < callback_b->callback.file) {
+		if ((void *)callback_a->callback.file < (void *)callback_b->callback.file) {
 			return -1;
 		}
-		if (callback_a->callback.file > callback_b->callback.file) {
+		if ((void *)callback_a->callback.file > (void *)callback_b->callback.file) {
 			return 1;
 		}
 	}
@@ -1691,12 +1697,14 @@ should_look_for_dot_directory_file (NautilusFile *file)
 
 	const char *schemes [] = {
 		"preferences:",
+		"preferences-all-users:",
 		"all-preferences:",
 		"system-settings:",
 		"server-settings:",
 		"favorites:",
 		"start-here:",
 		"applications:",
+		"applications-all-users:",
 		"all-applications:"
 	};
 
@@ -2825,10 +2833,10 @@ link_info_done (NautilusDirectory *directory,
 	file->details->got_link_info = TRUE;
 	g_free (file->details->activation_uri);
 	g_free (file->details->display_name);
-	g_free (file->details->custom_icon_uri);
+	g_free (file->details->custom_icon);
 	file->details->activation_uri = g_strdup (uri);
 	file->details->display_name = g_strdup (name);
-	file->details->custom_icon_uri = g_strdup (icon);
+	file->details->custom_icon = g_strdup (icon);
  	nautilus_file_clear_cached_display_name (file);
 
 	nautilus_directory_async_state_changed (directory);

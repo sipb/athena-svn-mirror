@@ -918,7 +918,7 @@ nautilus_directory_notify_files_added (GList *uris)
 	NautilusDirectory *directory;
 	GHashTable *parent_directories;
 	const char *uri;
-	const char *directory_uri;
+	char *directory_uri;
 	GnomeVFSURI *vfs_uri;
 	NautilusFile *file;
 
@@ -941,6 +941,7 @@ nautilus_directory_notify_files_added (GList *uris)
 			
 			directory_uri = uri_get_directory_part (uri);
 			file = nautilus_file_get_existing (directory_uri);
+			g_free (directory_uri);
 
 			if (file != NULL) {
 				nautilus_file_invalidate_count_and_mime_list (file);
@@ -1446,6 +1447,7 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 	const NautilusFileChangesQueuePosition *item;
 	NautilusFile *file;
 	char *position_string;
+	char *screen_string;
 
 	for (p = position_setting_list; p != NULL; p = p->next) {
 		item = (NautilusFileChangesQueuePosition *) p->data;
@@ -1464,6 +1466,14 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 			 NULL,
 			 position_string);
 		g_free (position_string);
+
+		screen_string = g_strdup_printf ("%d", item->screen);
+		nautilus_file_set_metadata
+			(file,
+			 NAUTILUS_METADATA_KEY_SCREEN,
+			 NULL,
+			 screen_string);
+		g_free (screen_string);
 		
 		nautilus_file_unref (file);
 	}

@@ -32,7 +32,7 @@
 ## Release information
 my $PROGRAM      = "intltool-extract";
 my $PACKAGE      = "intltool";
-my $VERSION      = "0.22";
+my $VERSION      = "0.25";
 
 ## Loaded modules
 use strict; 
@@ -246,11 +246,13 @@ sub type_xml {
         $messages{entity_decode_minimal($1)} = [];
     }
 
-    while ($input =~ /<_($w+)>(.+?)<\/_\1>/sg) {
-        $_ = $2;
-        s/\s+/ /g;
-	s/^ //;
-	s/ $//;
+    while ($input =~ /<_($w+)(?: xml:space="($w+)")?>(.+?)<\/_\1>/sg) {
+        $_ = $3;
+        if (!defined($2) || $2 ne "preserve") {
+            s/\s+/ /g;
+            s/^ //;
+            s/ $//;
+        }
         $messages{entity_decode_minimal($_)} = [];
     }
 }
@@ -259,12 +261,19 @@ sub type_schemas {
     ### For schemas XML files ###
          
     # FIXME: We should handle escaped < (less than)
-    while ($input =~ /<(default|short|long)>([^<]+)<\/\1>/sg) {
-        $_ = $2;
+    while ($input =~ /
+                      <locale\ name="C">\s*
+                          (<default>\s*(.*?)\s*<\/default>\s*)?
+                          (<short>\s*(.*?)\s*<\/short>\s*)?
+                          (<long>\s*(.*?)\s*<\/long>\s*)?
+                      <\/locale>
+                     /sgx) {
+        my @totranslate = ($2,$4,$6);
+        foreach (@totranslate) {
+            next if !$_;
         s/\s+/ /g;
-	s/^ //;
-	s/ $//;
         $messages{entity_decode_minimal($_)} = [];
+        }
     }
 }
 
@@ -307,13 +316,12 @@ sub rfc822deb_split {
             $str =~ s/\s*$//;
             push(@list, $str);
             $str = '';
-        } elsif ($line =~s/^\s(\s+.*)/$1/) {
+        } elsif ($line =~ /^\s/) {
             #  Line which must not be reformatted
             $str .= "\n" if length ($str) && $str !~ /\n$/;
             $str .= $line."\n";
         } else {
             #  Continuation line, remove newline
-            $line =~ s/^\s+//;
             $str .= " " if length ($str) && $str !~ /[\n ]$/;
             $str .= $line;
         }
@@ -360,7 +368,7 @@ sub msg_write {
     for my $message (sort keys %messages) { 
    	print OUT "/* xgettext:no-c-format */\n" if $message =~ /%/;
         
-    	my @lines = split (/\n/, $message);
+    	my @lines = split (/\n/, $message, -1);
     	for (my $n = 0; $n < @lines; $n++) {
             if ($n == 0) { 
  		print OUT "char *s = N_(\""; 

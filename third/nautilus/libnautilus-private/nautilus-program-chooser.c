@@ -32,6 +32,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
+#include <libegg/egg-screen-help.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -180,15 +181,12 @@ help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
 		break;
 	}
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml",
-				    section,
-				    &error);
+	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", section,
+					    gtk_window_get_screen (GTK_WINDOW (program_chooser)), &error);
 
 	if (error) {
 		GtkWidget *err_dialog;
-		err_dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (button)),
+		err_dialog = gtk_message_dialog_new (GTK_WINDOW (program_chooser),
 						     GTK_DIALOG_MODAL,
 						     GTK_MESSAGE_ERROR,
 						     GTK_BUTTONS_CLOSE,
@@ -434,7 +432,7 @@ repopulate_program_list (NautilusProgramChooser *program_chooser)
 	gchar *program_name, *status_text;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	
+
 	type = program_chooser->details->action_type;
 
 	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
@@ -442,7 +440,7 @@ repopulate_program_list (NautilusProgramChooser *program_chooser)
 	
 
 	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
-		? nautilus_mime_get_all_components_for_file (program_chooser->details->file)
+		? nautilus_mime_get_all_components_for_file_extended (program_chooser->details->file, "NOT nautilus:property_page_name.defined()")
 		: nautilus_mime_get_all_applications_for_file (program_chooser->details->file);
 
 	list_store = program_chooser->details->list_store;
@@ -961,9 +959,13 @@ set_default_for_item (ProgramFilePair *pair)
 }
 
 static void
-launch_mime_capplet (NautilusFile *file)
+launch_mime_capplet (NautilusFile *file,
+		     GtkDialog    *parent_dialog)
 {
+	GdkScreen *screen;
 	char *command, *tmp, *mime_type, *file_name;
+
+	screen = gtk_window_get_screen (GTK_WINDOW (parent_dialog));
 
 	tmp = nautilus_file_get_mime_type (file);
 	mime_type = g_shell_quote (tmp);
@@ -973,7 +975,8 @@ launch_mime_capplet (NautilusFile *file)
 	g_free (tmp);
 
 	command = g_strconcat (FILE_TYPES_CAPPLET_NAME, " ", mime_type, " ", file_name, NULL);
-	nautilus_launch_application_from_command (FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
+	nautilus_launch_application_from_command (screen, FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
+
 	g_free (command);
 	g_free (file_name);
 	g_free (mime_type);
@@ -985,7 +988,7 @@ launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_da
 	g_assert (GTK_IS_DIALOG (dialog));
 
 	if (response == GTK_RESPONSE_YES) {
-		launch_mime_capplet (callback_data);
+		launch_mime_capplet (callback_data, dialog);
 	}
 	gtk_object_destroy (GTK_OBJECT (dialog));
 }
@@ -998,7 +1001,7 @@ launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 	g_assert (GTK_IS_BUTTON (button));
 
 	file_pair = get_selected_program_file_pair (NAUTILUS_PROGRAM_CHOOSER (callback_data));
- 	launch_mime_capplet (file_pair->file);
+ 	launch_mime_capplet (file_pair->file, GTK_DIALOG (callback_data));
 	gtk_dialog_response (GTK_DIALOG (callback_data),
 		GTK_RESPONSE_DELETE_EVENT);
 }
