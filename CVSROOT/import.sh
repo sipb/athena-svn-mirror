@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.8 2004-09-25 05:36:17 ghudson Exp $
+# $Id: import.sh,v 1.9 2004-10-26 16:25:59 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -165,6 +165,8 @@ confirmrun "Import" \
 
 # If there's no old version to merge with, that's it.
 if [ -z "$oldtag" ]; then
+  cd "$HOME"
+  rm -rf "$tmpdir"
   exit
 fi
 
