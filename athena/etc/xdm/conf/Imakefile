@@ -1,28 +1,36 @@
-# $Id: Imakefile,v 1.22 1993-09-14 15:24:20 vrt Exp $
+# $Id: Imakefile,v 1.23 1995-05-25 22:08:20 cfields Exp $
 
+#ifdef SOLARIS
+USRSCRIPTS=
+#else
 USRSCRIPTS=mitvma
+#endif
 
 # These here only for 7.2 backwards compat; should eventually be removed
 COMPATSCRIPTS=library lucy moira register techinfo xcluster xinfo
 
 ETCSCRIPTS=machine
 BITMAPS=menu16
+KEYMAPS=/usr/athena/lib/X11/keymaps
 
 create_dir(/etc/athena/login)
 create_dir(/usr/athena/lib/login)
+create_dir($(KEYMAPS))
 
 #ifdef SOLARIS
 install_file(config.solaris,/etc/athena/login/config)
-install_script(Xsession.sun4,,/etc/athena/login/Xsession)
+install_file(AthenaMods.sun4,$(KEYMAPS)/AthenaMods)
+install_script(mitvma.sun4,,/usr/athena/lib/login/mitvma)
 #else
 #ifdef _IBMR2
 install_file(config.rsaix,/etc/athena/login/config)
-install_script(Xsession,,/etc/athena/login/Xsession)
+install_file(AthenaMods.rsaix,$(KEYMAPS)/AthenaMods)
 #else
 install_file(config,/etc/athena/login/config)
+#endif
+#endif
+
 install_script(Xsession,,/etc/athena/login/Xsession)
-#endif
-#endif
 
 install::
 	-for i in $(USRSCRIPTS); do \
