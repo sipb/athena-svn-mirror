@@ -95,6 +95,8 @@ typedef enum {
 
 void          gconf_log      (GConfLogPriority pri, const gchar* format, ...) G_GNUC_PRINTF (2, 3);
 
+extern gboolean gconf_log_debug_messages;
+
 /* return FALSE and set error if the key is bad */
 gboolean      gconf_key_check(const gchar* key, GError** err);
 
@@ -140,12 +142,13 @@ gchar* gconf_quote_percents (const gchar* src);
  */
 
 GConfValue* gconf_value_list_from_primitive_list (GConfValueType  list_type,
-                                                  GSList         *list);
+                                                  GSList         *list,
+                                                  GError        **err);
 GConfValue* gconf_value_pair_from_primitive_pair (GConfValueType  car_type,
                                                   GConfValueType  cdr_type,
                                                   gconstpointer   address_of_car,
-                                                  gconstpointer   address_of_cdr);
-
+                                                  gconstpointer   address_of_cdr,
+                                                  GError        **err);
 
 GSList*  gconf_value_list_to_primitive_list_destructive (GConfValue      *val,
                                                          GConfValueType   list_type,
@@ -174,9 +177,10 @@ GConfLock* gconf_get_lock     (const gchar  *lock_directory,
                                GError      **err);
 gboolean   gconf_release_lock (GConfLock    *lock,
                                GError      **err);
-
-
-
+GConfLock* gconf_get_lock_or_current_holder (const gchar  *lock_directory,
+                                             ConfigServer *current_server,
+                                             GError      **err);
+ConfigServer gconf_get_current_lock_holder  (const gchar *lock_directory);
 
 GError*  gconf_error_new  (GConfError en,
                            const gchar* format, ...) G_GNUC_PRINTF (2, 3);
@@ -187,6 +191,25 @@ void     gconf_set_error  (GError** err,
 
 /* merge two errors into a single message */
 GError*  gconf_compose_errors (GError* err1, GError* err2);
+
+CORBA_ORB gconf_orb_get (void);
+
+ConfigServer gconf_activate_server (gboolean  start_if_not_found,
+                                    GError  **error);
+
+char*     gconf_get_lock_dir (void);
+char*     gconf_get_daemon_dir (void);
+
+gboolean gconf_schema_validate (GConfSchema *sc,
+                                GError     **err);
+gboolean gconf_value_validate  (GConfValue *value,
+                                GError    **err);
+
+#define g_utf8_validate gconf_g_utf8_validate
+
+gboolean gconf_g_utf8_validate (const gchar  *str,
+                                gssize        max_len,    
+                                const gchar **end);
 
 #ifdef ENABLE_NLS
 #    include <libintl.h>

@@ -1,4 +1,3 @@
-
 /* GConf
  * Copyright (C) 1999, 2000 Red Hat Inc.
  *
@@ -118,8 +117,19 @@ gconf_value_new_from_string(GConfValueType type, const gchar* value_str,
           }
       }
       break;
-    case GCONF_VALUE_STRING:
-      gconf_value_set_string(value, value_str);
+    case GCONF_VALUE_STRING:      
+      if (!g_utf8_validate (value_str, -1, NULL))
+        {
+          g_set_error (err, GCONF_ERROR,
+                       GCONF_ERROR_PARSE_ERROR,
+                       _("Text contains invalid UTF-8"));
+          gconf_value_free(value);
+          value = NULL;
+        }
+      else
+        {
+          gconf_value_set_string(value, value_str);
+        }
       break;
     case GCONF_VALUE_BOOL:
       switch (*value_str)
@@ -207,6 +217,14 @@ gconf_value_new_list_from_string(GConfValueType list_type,
   g_return_val_if_fail(list_type != GCONF_VALUE_LIST, NULL);
   g_return_val_if_fail(list_type != GCONF_VALUE_PAIR, NULL);
 
+  if (!g_utf8_validate (str, -1, NULL))
+    {
+      g_set_error (err, GCONF_ERROR,
+                   GCONF_ERROR_PARSE_ERROR,
+                   _("Text contains invalid UTF-8"));
+      return NULL;
+    }
+  
   if (str[0] != '[')
     {
       if (err)
@@ -341,6 +359,14 @@ gconf_value_new_pair_from_string(GConfValueType car_type,
   g_return_val_if_fail(cdr_type != GCONF_VALUE_LIST, NULL);
   g_return_val_if_fail(cdr_type != GCONF_VALUE_PAIR, NULL);
 
+  if (!g_utf8_validate (str, -1, NULL))
+    {
+      g_set_error (err, GCONF_ERROR,
+                   GCONF_ERROR_PARSE_ERROR,
+                   _("Text contains invalid UTF-8"));
+      return NULL;
+    }
+  
   if (str[0] != '(')
     {
       if (err)
@@ -987,6 +1013,8 @@ gconf_entry_free(GConfEntry* pair)
   g_free(pair->key);
   if (pair->value)
     gconf_value_free(pair->value);
+  if (pair->schema_name)
+    g_free (pair->schema_name);
   g_free(pair);
 }
 
@@ -1041,3 +1069,32 @@ gconf_entry_set_is_writable (GConfEntry  *entry,
 }
 
 
+gboolean
+gconf_value_validate (GConfValue *value,
+                      GError    **err)
+{
+  switch (value->type)
+    {
+    case GCONF_VALUE_STRING:
+      if (value->d.string_data &&
+          !g_utf8_validate (value->d.string_data, -1, NULL))
+        {
+          g_set_error (err, GCONF_ERROR,
+                       GCONF_ERROR_FAILED,
+                       _("Text contains invalid UTF-8"));
+          return FALSE;
+        }
+      break;
+
+    case GCONF_VALUE_SCHEMA:
+      if (value->d.schema_data)
+        return gconf_schema_validate (value->d.schema_data,
+                                      err);
+      break;
+
+    default:
+      break;
+    }
+
+  return TRUE;
+}

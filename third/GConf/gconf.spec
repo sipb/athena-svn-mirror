@@ -1,14 +1,16 @@
 #
 # Note that this is NOT a relocatable package
-# $Id: gconf.spec,v 1.1.1.2 2001-04-03 17:50:26 ghudson Exp $
+# $Id: gconf.spec,v 1.1.1.3 2002-02-12 16:24:24 ghudson Exp $
 #
-%define ver      1.0.0
-%define rel      1
+%define ver      1.0.8
+%define rel      0_cvs_0
 %define	prefix   %{_prefix}
 %define name	 GConf
 %define sysconfdir	/etc
 
 Summary: Gnome Config System
+Distribution:	GNOME
+Vendor:		CVS
 Name: %name
 Version: %ver
 Release: %rel
@@ -86,8 +88,10 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README
-%config %{sysconfdir}/gconf/1/*.example
+%config %{sysconfdir}/gconf/1/path
 %config %{sysconfdir}/gconf/schemas/*.schemas
+%dir	%{sysconfdir}/gconf/gconf.xml.defaults
+%dir	%{sysconfdir}/gconf/gconf.xml.mandatory
 %{prefix}/bin/gconf-config
 %{prefix}/bin/gconf-config-1
 %{prefix}/bin/gconfd-1
@@ -96,6 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/*.0
 %{prefix}/lib/*.1
 %{prefix}/lib/*.so
+%{prefix}/lib/pkgconfig/*
 %{prefix}/lib/GConf/1/*.so
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/oaf/*.oafinfo

@@ -116,7 +116,11 @@
 
 #ifndef BDB_H
 
+#ifdef HAVE_DB3_DB_H
+#include <db3/db.h>
+#else
 #include <db.h>
+#endif
 #include <glib.h>
 #include <gconf/gconf.h>
 
@@ -151,10 +155,10 @@ BDB_Store *bdb_new (const char *dir, int flags);
 
 extern DBT *temp_string_key (const char *key);
 extern DBT *temp_int_key (int akey);
-extern uint32_t get_dir_id (BDB_Store * bdb, const char *dir);
+extern guint32 get_dir_id (BDB_Store * bdb, const char *dir);
 extern void add_key (BDB_Store * bdb, const char *dir, const char *keypath);
 extern void bdb_set_sysname (const char *name);
-extern uint32_t get_or_create_dir (BDB_Store * bdb, const char *dir);
+extern guint32 get_or_create_dir (BDB_Store * bdb, const char *dir);
 
 int bdb_create (BDB_Store * bdb, const char *dir);
 int bdb_open (BDB_Store * bdb, const char *dir, int flags);

@@ -208,7 +208,7 @@ gboolean bdb_is_default_locale (const gchar * locale)
 static void
 vtable_bdb_shutdown (GError ** err)
 {
-  gconf_log (GCL_INFO, _("Unloading BerkeleyDB (BDB) backend module."));
+  gconf_log (GCL_DEBUG, _("Unloading BerkeleyDB (BDB) backend module."));
 }
 
 /* vtable_bdb_resolve_address:
@@ -231,7 +231,7 @@ vtable_bdb_resolve_address (const gchar * address, GError ** err)
     _gconf_get_root_dir (address, &source->flags, "BerkeleyDB", err);
   xsource->bdb = bdb_new (xsource->root_dir, DB_CREATE);
 
-  gconf_log (GCL_INFO, _("Opened BerkeleyDB source at root %s"),
+  gconf_log (GCL_DEBUG, _("Opened BerkeleyDB source at root %s"),
 	     xsource->root_dir);
 
   return source;

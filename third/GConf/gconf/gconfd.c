@@ -52,7 +52,6 @@
 #include <ctype.h>
 #include <syslog.h>
 #include <time.h>
-#include <liboaf/liboaf.h>
 
 /* This makes hash table safer when debugging */
 #ifndef GCONF_ENABLE_DEBUG
@@ -124,6 +123,7 @@ static gboolean in_shutdown = FALSE;
 
 static ConfigServer server = CORBA_OBJECT_NIL;
 static PortableServer_POA the_poa;
+static GConfLock *daemon_lock = NULL;
 
 static ConfigDatabase
 gconfd_get_default_database(PortableServer_Servant servant,
@@ -244,7 +244,7 @@ gconfd_shutdown(PortableServer_Servant servant, CORBA_Environment *ev)
   if (gconfd_check_in_shutdown (ev))
     return;
   
-  gconf_log(GCL_INFO, _("Shutdown request received"));
+  gconf_log(GCL_DEBUG, _("Shutdown request received"));
 
   gconf_main_quit();
 }
@@ -294,7 +294,7 @@ gconf_server_load_sources(void)
 
       addresses[1] = NULL;
       
-      gconf_log(GCL_INFO, _("No configuration files found, trying to use the default config source `%s'"), addresses[0]);
+      gconf_log(GCL_DEBUG, _("No configuration files found, trying to use the default config source `%s'"), addresses[0]);
     }
   
   if (addresses == NULL)
@@ -410,6 +410,11 @@ signal_handler (int signo)
     if (gconf_main_is_running ())
       gconf_main_quit ();
     break;
+
+  case SIGUSR1:
+    /* it'd be nice to log a message here but it's not very safe, so */
+    gconf_log_debug_messages = !gconf_log_debug_messages;
+    break;
     
   default:
     break;
@@ -470,18 +475,35 @@ main(int argc, char** argv)
   const gchar* username;
   guint len;
   gchar* ior;
-  OAF_RegistrationResult result;
   int exit_code = 0;
-
-
+  GError *err;
+  char *lock_dir;
+  char *gconfd_dir;
+  int dev_null_fd;
+  int write_byte_fd;
+  
+  /* Now this is an argument parser */
+  if (argc > 1)
+    write_byte_fd = atoi (argv[1]);
+  else
+    write_byte_fd = -1;
+  
   chdir ("/");
 
   /* This is so we don't prevent unmounting of devices. We divert
    * all messages to syslog
    */
-  close (0);
-  close (1);
-  close (2);
+
+  if (!g_getenv ("GCONF_DEBUG_OUTPUT"))
+    {
+      dev_null_fd = open ("/dev/null", O_RDWR);
+      if (dev_null_fd >= 0)
+        {
+	  dup2 (dev_null_fd, 0);
+	  dup2 (dev_null_fd, 1);
+	  dup2 (dev_null_fd, 2);
+	}
+    }
   
   umask (022);
   
@@ -526,16 +548,10 @@ main(int argc, char** argv)
 
   CORBA_exception_init(&ev);
 
-  if (!oaf_init(argc, argv))
-    {
-      gconf_log(GCL_ERR, _("Failed to init Object Activation Framework: please mail bug report to OAF maintainers"));
-      exit(1);
-    }
-
   init_databases ();
 
-  orb = oaf_orb_get();
-
+  orb = gconf_orb_get();
+  
   POA_ConfigServer__init(&poa_server_servant, &ev);
   
   the_poa = (PortableServer_POA)CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
@@ -553,35 +569,56 @@ main(int argc, char** argv)
     }
 
   /* Needs to be done before loading sources */
-  ior = CORBA_ORB_object_to_string(orb, server, &ev);
-  gconf_set_daemon_ior(ior);
-  CORBA_free(ior);
-  
-  /* Needs to be done right before registration,
-     after setting up the POA etc. */
-  gconf_server_load_sources();
-  
-  result = oaf_active_server_register(IID, server);
+  ior = CORBA_ORB_object_to_string (orb, server, &ev);
+  gconf_set_daemon_ior (ior);
+  CORBA_free (ior);
 
-  if (result != OAF_REG_SUCCESS)
+  gconfd_dir = gconf_get_daemon_dir ();
+  lock_dir = gconf_get_lock_dir ();
+
+  if (mkdir (gconfd_dir, 0700) < 0 && errno != EEXIST)
+    gconf_log (GCL_WARNING, _("Failed to create %s: %s"),
+               gconfd_dir, g_strerror (errno));
+  
+  
+  err = NULL;
+  daemon_lock = gconf_get_lock (lock_dir, &err);
+
+  if (daemon_lock != NULL)
     {
-      switch (result)
+      /* This loads backends and so on. It needs to be done before
+       * we can handle any requests, so before we hit the
+       * main loop. if daemon_lock == NULL we won't hit the
+       * main loop.
+       */
+      gconf_server_load_sources ();
+    }
+  
+  /* notify caller that we're done either getting the lock
+   * or not getting it
+   */
+  if (write_byte_fd >= 0)
+    {
+      char buf[1] = { 'g' };
+      if (write (write_byte_fd, buf, 1) != 1)
         {
-        case OAF_REG_NOT_LISTED:
-          gconf_log(GCL_ERR, _("OAF doesn't know about our IID; indicates broken installation; can't register; exiting\n"));
-          break;
-          
-        case OAF_REG_ALREADY_ACTIVE:
-          gconf_log(GCL_ERR, _("Another gconfd already registered with OAF; exiting\n"));
-          break;
-
-        case OAF_REG_ERROR:
-        default:
-          gconf_log(GCL_ERR, _("Unknown error registering gconfd with OAF; exiting\n"));
-          break;
+          gconf_log (GCL_ERR, _("Failed to write byte to pipe fd %d so client program may hang: %s"), write_byte_fd, g_strerror (errno));
         }
+
+      close (write_byte_fd);
+    }
+  
+  if (daemon_lock == NULL)
+    {
+      g_assert (err);
+
+      gconf_log (GCL_WARNING, _("Failed to get lock for daemon, exiting: %s"),
+                 err->message);
+      g_error_free (err);
+
       enter_shutdown ();
       shutdown_databases ();
+      
       return 1;
     }
 
@@ -607,13 +644,23 @@ main(int argc, char** argv)
 
   gconfd_locale_cache_drop ();
 
-  /* Now we can unregister with OAF, after everything is fixed up. */  
+  /* Now we can release the lock */
 
-  if (server != CORBA_OBJECT_NIL)
+  server = CORBA_OBJECT_NIL;
+
+  if (daemon_lock)
     {
-      oaf_active_server_unregister ("", server);
-      server = CORBA_OBJECT_NIL;
+      err = NULL;
+      gconf_release_lock (daemon_lock, &err);
+      if (err != NULL)
+        {
+          gconf_log (GCL_WARNING, _("Error releasing lockfile: %s"),
+                     err->message);
+          g_error_free (err);
+        }
     }
+
+  daemon_lock = NULL;
   
   gconf_log (GCL_INFO, _("Exiting"));
   
@@ -680,7 +727,7 @@ gconf_main(void)
 #ifdef GCONF_ENABLE_DEBUG
       gulong timeout_len = 1000*60*1; /* 1 sec * 60 s/min * 1 min */
 #else
-      gulong timeout_len = 1000*60*15; /* 1 sec * 60 s/min * 15 min */
+      gulong timeout_len = 1000*60*15; /* 1 sec * 60 s/min * 2 min */
 #endif
       
       g_assert(timeout_id == 0);
@@ -989,11 +1036,21 @@ gconf_set_exception(GError** error,
       case GCONF_ERROR_IN_SHUTDOWN:
         ce->err_no = ConfigInShutdown;
         break;
-        
+      case GCONF_ERROR_OVERRIDDEN:
+        ce->err_no = ConfigOverridden;
+        break;
+      case GCONF_ERROR_LOCK_FAILED:
+        ce->err_no = ConfigLockFailed;
+        break;
+
+      case GCONF_ERROR_OAF_ERROR:
+      case GCONF_ERROR_LOCAL_ENGINE:
       case GCONF_ERROR_NO_SERVER:
       case GCONF_ERROR_SUCCESS:
       default:
+        gconf_log (GCL_ERR, "Unhandled error code %d", en);
         g_assert_not_reached();
+        break;
       }
 
     CORBA_exception_set(ev, CORBA_USER_EXCEPTION,
@@ -1583,7 +1640,7 @@ restore_client (const gchar *ior)
   
   CORBA_exception_init (&ev);
   
-  cl = CORBA_ORB_string_to_object (oaf_orb_get (),
+  cl = CORBA_ORB_string_to_object (gconf_orb_get (),
                                    (gchar*)ior,
                                    &ev);
 
@@ -1632,7 +1689,7 @@ restore_listener (GConfDatabase* db,
   
   CORBA_exception_init (&ev);
   
-  cl = CORBA_ORB_string_to_object (oaf_orb_get (),
+  cl = CORBA_ORB_string_to_object (gconf_orb_get (),
                                    lle->ior,
                                    &ev);
 
