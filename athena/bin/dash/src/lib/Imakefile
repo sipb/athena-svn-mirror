@@ -83,7 +83,6 @@ NOTUSED		=	Icon.c StripChart.c get_load.c get_cpu.c List.c
 
 SIN_LIBS	=	-lm
 
-#ifdef MacIIArchitecture
 #if  defined(UltrixArchitecture) \
   || defined(AIXArchitecture) \
   || defined(MacIIArchitecture) \
@@ -93,6 +92,7 @@ ERRNO_DEF       =       -DNEED_ERRNO_DEFS
 ERRNO_DEF       =
 #endif
 
+#ifdef MacIIArchitecture
 MAC_DEF		=	-DMAC_ARCH
 #else
 MAC_DEF		=
