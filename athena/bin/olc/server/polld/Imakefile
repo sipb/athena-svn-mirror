@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/Imakefile,v $
- * $Id: Imakefile,v 1.6 1991-03-29 01:12:34 lwvanels Exp $
+ * $Id: Imakefile,v 1.7 1991-04-10 15:02:04 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -16,11 +16,11 @@ OBJS=comm.o get_list.o locate.o polld.o hosthash.o
 LOCAL_LIBRARIES=$(COMMONLIB) $(CLIENTLIB)
 
 #ifdef Profiling
-DEFINES=-DSYSLOG -DPROFILE
+DEFINES= -DPROFILE
 .c.o:
 	$(CC) -pg -c $(CFLAGS) $*.c
 #else
-DEFINES=-DSYSLOG
+DEFINES=
 #endif /* Profiling */
 
 DEPLIBS=$(LOCAL_LIBRARIES)
@@ -30,7 +30,6 @@ SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(ComErrLib)
 #else
 SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(ComErrLib)
 #endif
-INCLUDES= -I.
 
 NormalProgramTarget(polld,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
