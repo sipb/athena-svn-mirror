@@ -425,7 +425,7 @@ gst_xvideosink_getcaps (GstPad *pad, GstCaps *caps)
 
   xvideosink = GST_XVIDEOSINK (gst_pad_get_parent (pad));
 
-  return gst_xvideosink_get_pad_template_caps (!xvideosink->disable_xv);
+  return xvideosink->formats;
 }
 
 static void

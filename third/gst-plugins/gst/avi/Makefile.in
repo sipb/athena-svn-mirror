@@ -213,20 +213,19 @@ plugindir = $(libdir)/gstreamer-@GST_MAJORMINOR@
 
 plugin_LTLIBRARIES = \
 		libgstavimux.la \
-		libgstavidemux.la \
-		libgstaviparse.la
+		libgstavidemux.la 
 
 
+#		libgstaviparse.la
 #		libgstaviaudiodecoder.la
-libgstavidemux_la_SOURCES = gstavidemux.c 
+libgstavidemux_la_SOURCES = gstavidemux.c
 libgstavimux_la_SOURCES = gstavimux.c 
-libgstaviparse_la_SOURCES = gstaviparse.c riff.c
 
+#libgstaviparse_la_SOURCES = gstaviparse.c
 # libgstaviaudiodecoder_la_SOURCES = gstaviaudiodecoder.c 
 noinst_HEADERS = \
 		gstavimux.h \
 		gstavidemux.h \
-		riff.h \
 		gstaviaudiodecoder.h
 
 
@@ -240,10 +239,10 @@ libgstavimux_la_CFLAGS = -O2 -ffast-math $(GST_CFLAGS)
 libgstavimux_la_LIBADD = 
 libgstavimux_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 
-libgstaviparse_la_CFLAGS = -O2 -ffast-math $(GST_CFLAGS)
-libgstaviparse_la_LIBADD = 
-libgstaviparse_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 
+#libgstaviparse_la_CFLAGS = -O2 -ffast-math $(GST_CFLAGS)
+#libgstaviparse_la_LIBADD =
+#libgstaviparse_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
 
 # libgstaviaudiodecoder_la_CFLAGS = -O2 -ffast-math $(GST_CFLAGS)
 # libgstaviaudiodecoder_la_LIBADD =
@@ -261,10 +260,6 @@ libgstavidemux_la_OBJECTS = $(am_libgstavidemux_la_OBJECTS)
 libgstavimux_la_DEPENDENCIES =
 am_libgstavimux_la_OBJECTS = libgstavimux_la-gstavimux.lo
 libgstavimux_la_OBJECTS = $(am_libgstavimux_la_OBJECTS)
-libgstaviparse_la_DEPENDENCIES =
-am_libgstaviparse_la_OBJECTS = libgstaviparse_la-gstaviparse.lo \
-	libgstaviparse_la-riff.lo
-libgstaviparse_la_OBJECTS = $(am_libgstaviparse_la_OBJECTS)
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -272,9 +267,7 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libgstavidemux_la-gstavidemux.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libgstavimux_la-gstavimux.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libgstaviparse_la-gstaviparse.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libgstaviparse_la-riff.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/libgstavimux_la-gstavimux.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -283,12 +276,11 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libgstavidemux_la_SOURCES) $(libgstavimux_la_SOURCES) \
-	$(libgstaviparse_la_SOURCES)
+DIST_SOURCES = $(libgstavidemux_la_SOURCES) $(libgstavimux_la_SOURCES)
 HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = README $(noinst_HEADERS) Makefile.am Makefile.in
-SOURCES = $(libgstavidemux_la_SOURCES) $(libgstavimux_la_SOURCES) $(libgstaviparse_la_SOURCES)
+SOURCES = $(libgstavidemux_la_SOURCES) $(libgstavimux_la_SOURCES)
 
 all: all-am
 
@@ -333,10 +325,6 @@ libgstavidemux.la: $(libgstavidemux_la_OBJECTS) $(libgstavidemux_la_DEPENDENCIES
 libgstavimux_la-gstavimux.lo: gstavimux.c
 libgstavimux.la: $(libgstavimux_la_OBJECTS) $(libgstavimux_la_DEPENDENCIES) 
 	$(LINK) -rpath $(plugindir) $(libgstavimux_la_LDFLAGS) $(libgstavimux_la_OBJECTS) $(libgstavimux_la_LIBADD) $(LIBS)
-libgstaviparse_la-gstaviparse.lo: gstaviparse.c
-libgstaviparse_la-riff.lo: riff.c
-libgstaviparse.la: $(libgstaviparse_la_OBJECTS) $(libgstaviparse_la_DEPENDENCIES) 
-	$(LINK) -rpath $(plugindir) $(libgstaviparse_la_LDFLAGS) $(libgstaviparse_la_OBJECTS) $(libgstaviparse_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -346,8 +334,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstavidemux_la-gstavidemux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstavimux_la-gstavimux.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaviparse_la-gstaviparse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgstaviparse_la-riff.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -405,42 +391,6 @@ libgstavimux_la-gstavimux.lo: gstavimux.c
 @AMDEP_TRUE@	depfile='$(DEPDIR)/libgstavimux_la-gstavimux.Plo' tmpdepfile='$(DEPDIR)/libgstavimux_la-gstavimux.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstavimux_la_CFLAGS) $(CFLAGS) -c -o libgstavimux_la-gstavimux.lo `test -f 'gstavimux.c' || echo '$(srcdir)/'`gstavimux.c
-
-libgstaviparse_la-gstaviparse.o: gstaviparse.c
-@AMDEP_TRUE@	source='gstaviparse.c' object='libgstaviparse_la-gstaviparse.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.Po' tmpdepfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-gstaviparse.o `test -f 'gstaviparse.c' || echo '$(srcdir)/'`gstaviparse.c
-
-libgstaviparse_la-gstaviparse.obj: gstaviparse.c
-@AMDEP_TRUE@	source='gstaviparse.c' object='libgstaviparse_la-gstaviparse.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.Po' tmpdepfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-gstaviparse.obj `cygpath -w gstaviparse.c`
-
-libgstaviparse_la-gstaviparse.lo: gstaviparse.c
-@AMDEP_TRUE@	source='gstaviparse.c' object='libgstaviparse_la-gstaviparse.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.Plo' tmpdepfile='$(DEPDIR)/libgstaviparse_la-gstaviparse.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-gstaviparse.lo `test -f 'gstaviparse.c' || echo '$(srcdir)/'`gstaviparse.c
-
-libgstaviparse_la-riff.o: riff.c
-@AMDEP_TRUE@	source='riff.c' object='libgstaviparse_la-riff.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-riff.Po' tmpdepfile='$(DEPDIR)/libgstaviparse_la-riff.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-riff.o `test -f 'riff.c' || echo '$(srcdir)/'`riff.c
-
-libgstaviparse_la-riff.obj: riff.c
-@AMDEP_TRUE@	source='riff.c' object='libgstaviparse_la-riff.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-riff.Po' tmpdepfile='$(DEPDIR)/libgstaviparse_la-riff.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-riff.obj `cygpath -w riff.c`
-
-libgstaviparse_la-riff.lo: riff.c
-@AMDEP_TRUE@	source='riff.c' object='libgstaviparse_la-riff.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/libgstaviparse_la-riff.Plo' tmpdepfile='$(DEPDIR)/libgstaviparse_la-riff.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libgstaviparse_la_CFLAGS) $(CFLAGS) -c -o libgstaviparse_la-riff.lo `test -f 'riff.c' || echo '$(srcdir)/'`riff.c
 CCDEPMODE = @CCDEPMODE@
 
 mostlyclean-libtool:

@@ -12,8 +12,10 @@ AM_MAINTAINER_MODE
 
 dnl when going to/from release please set the nano (fourth number) right !
 dnl releases only do Wall, cvs and prerelease does Werror too
-AS_VERSION(gst-plugins, GST_PLUGINS_VERSION, 0, 5, 2, 0, GST_ERROR="-Wall", GST_ERROR="-Wall -Werror")
+AS_VERSION(gst-plugins, GST_PLUGINS_VERSION, 0, 6, 0, 0, GST_ERROR="-Wall", GST_ERROR="-Wall -Werror")
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+dnl fix errors properly then remove this again
+GST_ERROR=
 
 dnl our libraries and install dirs use major.minor as a version
 GST_MAJORMINOR=$GST_PLUGINS_VERSION_MAJOR.$GST_PLUGINS_VERSION_MINOR
@@ -24,7 +26,7 @@ dnl - library source changed -> increment REVISION
 dnl - interfaces added/removed/changed -> increment CURRENT, REVISION = 0
 dnl - interfaces added -> increment AGE
 dnl - interfaces removed -> AGE = 0
-AS_LIBTOOL(GST_PLUGINS, 2, 0, 0)
+AS_LIBTOOL(GST_PLUGINS, 0, 0, 0)
 
 dnl FIXME take something else ?
 AC_CONFIG_SRCDIR([gst/law/alaw.c])
@@ -996,10 +998,6 @@ dnl #########################
 
 AC_CONFIG_FILES(
 Makefile
-gstreamer-libs.pc
-gstreamer-libs-uninstalled.pc
-gstreamer-play.pc
-gstreamer-play-uninstalled.pc
 gst-plugins.spec
 gst/Makefile
 gst/ac3parse/Makefile
@@ -1117,6 +1115,8 @@ gst-libs/gst/Makefile
 gst-libs/gst/audio/Makefile
 gst-libs/gst/floatcast/Makefile
 gst-libs/gst/gconf/Makefile
+gst-libs/gst/gconf/gstreamer-gconf.pc
+gst-libs/gst/gconf/gstreamer-gconf-uninstalled.pc
 gst-libs/gst/idct/Makefile
 gst-libs/gst/media-info/Makefile
 gst-libs/gst/play/Makefile
@@ -1135,6 +1135,11 @@ testsuite/spider/Makefile
 testsuite/Makefile
 tools/Makefile
 gconf/Makefile
+pkgconfig/Makefile
+pkgconfig/gstreamer-libs.pc
+pkgconfig/gstreamer-libs-uninstalled.pc
+pkgconfig/gstreamer-play.pc
+pkgconfig/gstreamer-play-uninstalled.pc
 )
 AC_OUTPUT
 

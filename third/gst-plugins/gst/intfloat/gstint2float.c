@@ -164,8 +164,8 @@ gst_int2float_connect (GstPad *pad, GstCaps *caps)
         floatcaps = gst_caps_copy (gst_pad_template_get_caps (int2float_src_factory ()));
         gst_caps_get_int (caps, "rate", &filter->rate);
         gst_caps_set (floatcaps, "rate", GST_PROPS_INT (filter->rate));
-        floatcaps->fixed = TRUE;
-        floatcaps->properties->fixed = TRUE;
+        GST_CAPS_FLAG_SET (floatcaps, GST_CAPS_FIXED);
+        GST_PROPS_FLAG_SET (floatcaps->properties, GST_PROPS_FIXED);
 
         filter->in_capsnego = TRUE;
 
@@ -182,17 +182,17 @@ gst_int2float_connect (GstPad *pad, GstCaps *caps)
         return GST_PAD_LINK_OK;
       } else { 
         gst_caps_set (filter->intcaps, "channels", GST_PROPS_INT_RANGE (1, G_MAXINT));
-        filter->intcaps->fixed = FALSE;
+        GST_CAPS_FLAG_UNSET (filter->intcaps, GST_CAPS_FIXED);
         if (gst_caps_intersect (caps, filter->intcaps)) {
           gst_caps_get_int (caps, "channels", &filter->channels);
           gst_caps_set (filter->intcaps, "channels", GST_PROPS_INT (filter->channels));
-          filter->intcaps->fixed = TRUE;
-          filter->intcaps->properties->fixed = TRUE;
+	  GST_CAPS_FLAG_SET (filter->intcaps, GST_CAPS_FIXED);
+          GST_PROPS_FLAG_SET (filter->intcaps->properties, GST_PROPS_FIXED);
           return GST_PAD_LINK_OK;
         } else {
           gst_caps_set (filter->intcaps, "channels", GST_PROPS_INT (filter->channels));
-          filter->intcaps->fixed = TRUE;
-          filter->intcaps->properties->fixed = TRUE;
+	  GST_CAPS_FLAG_SET (filter->intcaps, GST_CAPS_FIXED);
+          GST_PROPS_FLAG_SET (filter->intcaps->properties, GST_PROPS_FIXED);
           return GST_PAD_LINK_REFUSED;
         }
       }
@@ -240,8 +240,8 @@ gst_int2float_connect (GstPad *pad, GstCaps *caps)
         } else {
           /* we assume channels is equal to the number of source pads */
           gst_caps_set (intcaps, "channels", GST_PROPS_INT (filter->numsrcpads), NULL);
-          intcaps->fixed = TRUE;
-          intcaps->properties->fixed = TRUE;
+	  GST_CAPS_FLAG_SET (intcaps, GST_CAPS_FIXED);
+          GST_PROPS_FLAG_SET (intcaps->properties, GST_PROPS_FIXED);
           filter->channels = filter->numsrcpads;
         
           if (gst_pad_try_set_caps (filter->sinkpad, intcaps) <= 0)

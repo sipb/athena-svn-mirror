@@ -226,10 +226,12 @@ test_gconf_LDADD = $(GST_LIBS) $(GCONF_LIBS) libgstgconf-@GST_MAJORMINOR@.la
 libgstgconf_@GST_MAJORMINOR@_la_LIBADD = $(GCONF_LIBS)
 libgstgconf_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS) $(GCONF_CFLAGS)
 libgstgconf_@GST_MAJORMINOR@_la_LDFLAGS = @GST_PLUGINS_LT_LDFLAGS@ -version-info @GST_PLUGINS_LIBVERSION@
+
+EXTRA_DIST = gstreamer-gconf.pc.in gstreamer-gconf-uninstalled.pc.in
 subdir = gst-libs/gst/gconf
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = gstreamer-gconf.pc gstreamer-gconf-uninstalled.pc
 LTLIBRARIES = $(library_LTLIBRARIES)
 
 libgstgconf_@GST_MAJORMINOR@_la_DEPENDENCIES =
@@ -265,7 +267,8 @@ DIST_SOURCES = $(libgstgconf_@GST_MAJORMINOR@_la_SOURCES) test-gconf.c
 HEADERS = $(libgstgconf_@GST_MAJORMINOR@include_HEADERS)
 
 DIST_COMMON = $(libgstgconf_@GST_MAJORMINOR@include_HEADERS) \
-	Makefile.am Makefile.in
+	Makefile.am Makefile.in gstreamer-gconf-uninstalled.pc.in \
+	gstreamer-gconf.pc.in
 SOURCES = $(libgstgconf_@GST_MAJORMINOR@_la_SOURCES) test-gconf.c
 
 all: all-am
@@ -277,6 +280,10 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --gnu  gst-libs/gst/gconf/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
+gstreamer-gconf.pc: $(top_builddir)/config.status gstreamer-gconf.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+gstreamer-gconf-uninstalled.pc: $(top_builddir)/config.status gstreamer-gconf-uninstalled.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libraryLTLIBRARIES_INSTALL = $(INSTALL)
 install-libraryLTLIBRARIES: $(library_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
