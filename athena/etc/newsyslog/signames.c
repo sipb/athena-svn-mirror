@@ -1,12 +1,10 @@
 /*
  * 	signals.c -- deal with concerting signal names to numbers and back.
  *
- * 	$Id: signames.c,v 1.4 1999-01-22 23:15:52 ghudson Exp $
+ * 	$Id: signames.c,v 1.5 1999-10-19 20:22:28 danw Exp $
  */
 
-#ifndef lint
-static char *rcsid = "$Id: signames.c,v 1.4 1999-01-22 23:15:52 ghudson Exp $";
-#endif
+static const char rcsid[] = "$Id: signames.c,v 1.5 1999-10-19 20:22:28 danw Exp $";
 
 #include <string.h>
 #include <signal.h>

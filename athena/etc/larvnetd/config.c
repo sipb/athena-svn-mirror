@@ -17,7 +17,7 @@
  * functions to read and reread the configuration file.
  */
 
-static const char rcsid[] = "$Id: config.c,v 1.3 1998-10-21 20:02:05 ghudson Exp $";
+static const char rcsid[] = "$Id: config.c,v 1.4 1999-10-19 20:23:31 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -230,10 +230,10 @@ static int read_config(const char *configfile, struct config *config)
       if (!*p)
 	continue;
       q = p + strlen(p) - 1;
-      while (q > p && isspace(*q))
+      while (q > p && isspace((unsigned char)*q))
 	*q-- = 0;
 
-      if (strncmp(p, "cluster", 7) == 0 && isspace(p[7]))
+      if (strncmp(p, "cluster", 7) == 0 && isspace((unsigned char)p[7]))
 	{
 	  if (config->nclusters == clsize)
 	    {
@@ -259,7 +259,7 @@ static int read_config(const char *configfile, struct config *config)
 	  cluster_index = config->nclusters;
 	  config->nclusters++;
 	}
-      else if (strncmp(p, "printer", 7) == 0 && isspace(p[7]))
+      else if (strncmp(p, "printer", 7) == 0 && isspace((unsigned char)p[7]))
 	{
 	  if (cluster_index == -1)
 	    {
@@ -291,7 +291,7 @@ static int read_config(const char *configfile, struct config *config)
 
 	  config->nprinters++;
 	}
-      else if (strncmp(p, "ws", 2) == 0 && isspace(p[2]))
+      else if (strncmp(p, "ws", 2) == 0 && isspace((unsigned char)p[2]))
 	{
 	  if (cluster_index == -1)
 	    {
@@ -320,7 +320,7 @@ static int read_config(const char *configfile, struct config *config)
 	  else
 	    add_machine(config, &machsize, p, cluster_index);
 	}
-      else if (strncmp(p, "cgroup", 6) == 0 && isspace(p[6]))
+      else if (strncmp(p, "cgroup", 6) == 0 && isspace((unsigned char)p[6]))
 	{
 	  if (config->ncgroups == cgsize)
 	    {
@@ -365,12 +365,14 @@ static int read_config(const char *configfile, struct config *config)
 	      config->clusters[i].cgroup = config->ncgroups - 1;
 	    }
 	}
-      else if (strncmp(p, "option", 6) == 0 && isspace(p[6]))
+      else if (strncmp(p, "option", 6) == 0 && isspace((unsigned char)p[6]))
 	{
 	  p = skip_spaces(p + 6);
-	  if (strncmp(p, "report-other", 12) == 0 && isspace(p[12]))
+	  if (strncmp(p, "report-other", 12) == 0 &&
+	      isspace((unsigned char)p[12]))
 	    config->report_other = estrdup(skip_spaces(p + 12));
-	  else if (strncmp(p, "report-unknown", 14) == 0 && isspace(p[14]))
+	  else if (strncmp(p, "report-unknown", 14) == 0 &&
+		   isspace((unsigned char)p[14]))
 	    config->report_unknown = estrdup(skip_spaces(p + 14));
 	  else
 	    {
@@ -415,7 +417,7 @@ static int find_numeric_range(const char *name, const char **start,
 
   /* Read the range beginning. */
   p++;
-  if (!isdigit(*p))
+  if (!isdigit((unsigned char)*p))
     return 0;
   *first = strtol(p, (char **) &p, 0);
 
@@ -425,7 +427,7 @@ static int find_numeric_range(const char *name, const char **start,
   p++;
 
   /* Read the range end. */
-  if (!isdigit(*p))
+  if (!isdigit((unsigned char)*p))
     return 0;
   *last = strtol(p, (char **) &p, 0);
 
@@ -506,14 +508,14 @@ static void freeconfig(struct config *config)
 
 static char *skip_spaces(char *p)
 {
-  while (isspace(*p))
+  while (isspace((unsigned char)*p))
     p++;
   return p;
 }
 
 static char *skip_nonspaces(char *p)
 {
-  while (*p && !isspace(*p))
+  while (*p && !isspace((unsigned char)*p))
     p++;
   return p;
 }

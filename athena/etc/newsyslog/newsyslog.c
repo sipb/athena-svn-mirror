@@ -2,12 +2,10 @@
  * 	newsyslog - roll over selected logs at the appropriate time,
  * 		keeping the a specified number of backup files around.
  *
- * 	$Id: newsyslog.c,v 1.10 1999-01-27 04:49:10 ghudson Exp $
+ * 	$Id: newsyslog.c,v 1.11 1999-10-19 20:22:28 danw Exp $
  */
 
-#ifndef lint
-static char *rcsid = "$Id: newsyslog.c,v 1.10 1999-01-27 04:49:10 ghudson Exp $";
-#endif  /* lint */
+static const char rcsid[] = "$Id: newsyslog.c,v 1.11 1999-10-19 20:22:28 danw Exp $";
 
 #include "config.h"
 
@@ -153,26 +151,26 @@ struct flag_entry *flags;	/* List of all config-file flags */
 /*** support functions ***/
 
 /* Skip Over Blanks */
-char *sob (register char *p)
+static char *sob (register char *p)
 {
-    while (p && *p && isspace(*p))
+    while (p && *p && isspace((unsigned char)*p))
 	p++;
     return(p);
 }
 
 /* Skip Over Non-Blanks */
-char *son (register char *p)
+static char *son (register char *p)
 {
-    while (p && *p && !isspace(*p))
+    while (p && *p && !isspace((unsigned char)*p))
 	p++;
     return(p);
 }
 
 /* Check if string is actually a number */
-int isnumber(char *string)
+static int isnumber(char *string)
 {
     while (*string != '\0') {
-	if (! isdigit(*string)) return(0);
+	if (! isdigit((unsigned char)*string)) return(0);
 	string++;
     }
     return(1);
@@ -180,18 +178,18 @@ int isnumber(char *string)
 
 #ifndef HAVE_STRDUP
 /* Duplicate a string using malloc */
-char *strdup (register char *strp)
+static char *strdup (register char *strp)
 {
     register char *cp;
 
-    if ((cp = malloc((unsigned) strlen(strp) + 1)) == NULL)
+    if ((cp = malloc(strlen(strp) + 1)) == NULL)
 	abort();
     return(strcpy (cp, strp));
 }
 #endif
 
 /* Tack a character to the end of a string. (Inefficient...) */
-char *grow_option_string (char **strp, char new)
+static char *grow_option_string (char **strp, char new)
 {
     size_t len;
 
@@ -199,10 +197,10 @@ char *grow_option_string (char **strp, char new)
 	return NULL;
     else if (! *strp) {
 	len = 0;
-	(*strp) = (char*) malloc(2);
+	(*strp) = malloc(2);
     } else {
 	len = strlen(*strp);
-	(*strp) = (char*) realloc(*strp, len + 2);
+	(*strp) = realloc(*strp, len + 2);
     }
 
     if (! *strp) abort();
@@ -216,7 +214,7 @@ char *grow_option_string (char **strp, char new)
 /*** finding the appropriate logfile, whatever its extension ***/
 
 /* Check if the filename extension is composed of valid components */
-int valid_extension(char* ext)
+static int valid_extension(char* ext)
 {
     struct flag_entry *cfl = flags;
     int len;
@@ -246,7 +244,7 @@ int valid_extension(char* ext)
 }
 
 /* Check if the string is empty, or a dot followed by a valid extension */
-int valid_dot_ext(char* dot)
+static int valid_dot_ext(char* dot)
 {
     if (!dot)
 	return 0;
@@ -259,16 +257,18 @@ int valid_dot_ext(char* dot)
 }
 
 /* Check if the string is a valid date (YYYYMMDD) plus extension */
-int valid_date_ext(char* date)
+static int valid_date_ext(char* date)
 {
     /* if we're still compiling C code in 2099, something is horribly wrong */
     return (((date[0]=='1' && date[1]=='9')
 	     || (date[0]=='2' && date[1]=='0')) &&
-	    isdigit(date[2]) && isdigit(date[3]) &&
+	    isdigit((unsigned char)date[2]) &&
+	    isdigit((unsigned char)date[3]) &&
 	    ((date[4]=='0' && (date[5]>='1' && date[5]<='9'))
 	     || (date[4]=='1' && (date[5]>='0' && date[5]<='2'))) &&
 	    ((date[6]=='0' && (date[7]>='1' && date[7]<='9'))
-	     || ((date[6]=='1' || date[6]=='2') && isdigit(date[7]))
+	     || ((date[6]=='1' || date[6]=='2') &&
+		 isdigit((unsigned char)date[7]))
 	     || (date[6]=='3' && (date[7]>='0' && date[7]<='1'))) &&
 	    valid_dot_ext(date + 8)) ;
 }
@@ -285,8 +285,8 @@ int valid_date_ext(char* date)
  *     for all the files it was compared to.
  * Look below for more directly useful functions that call this one.
  */
-char *matching_file_compared (char* name, char* root,
-			      int cmp(char*,char*,size_t), int limit)
+static char *matching_file_compared (char* name, char* root,
+				     int cmp(char*,char*,size_t), int limit)
 {
     DIR *parent;
     struct dirent *dent;
@@ -368,25 +368,25 @@ char *matching_file_compared (char* name, char* root,
 }
 
 /* Comparison functions: true if file1's date is earlier than file2's */
-int cmp_earliest_date (char* file1, char* file2, size_t n)
+static int cmp_earliest_date (char* file1, char* file2, size_t n)
 {
     return ( strncmp(file1, file2, n) < 0 );
 }
 
 /* Comparison functions: true if file1's date is later than file2's */
-int cmp_latest_date (char* file1, char* file2, size_t n)
+static int cmp_latest_date (char* file1, char* file2, size_t n)
 {
     return ( strncmp(file1, file2, n) > 0 );
 }
 
 /* Find the file whose name matches one given, with a valid extension */
-char *matching_file(char* name)
+static char *matching_file(char* name)
 {
     return matching_file_compared (name, NULL, NULL, -1);
 }
 
 /* Find the newest logfile: ".0" if it exists, or the latest-dated one */
-char *newest_log(char* file)
+static char *newest_log(char* file)
 {
     char tmp[MAXPATHLEN];
 
@@ -397,7 +397,7 @@ char *newest_log(char* file)
 /* Find the oldest logfile: ".${numlogs}" if it exists, or else the
  * first-dated file if there are more than ${numlogs} dated files.
  */
-char *oldest_log(char* file, int numlogs)
+static char *oldest_log(char* file, int numlogs)
 {
     char tmp[MAXPATHLEN];
     char num[MAXPATHLEN];
@@ -411,7 +411,7 @@ char *oldest_log(char* file, int numlogs)
 /*** examining linked lists of flags ***/
 
 /* return the flag_entry for option letter (if it's currently used), or NULL */
-struct flag_entry *get_flag_entry (char option, struct flag_entry *flags)
+static struct flag_entry *get_flag_entry(char option, struct flag_entry *flags)
 {
 #ifdef DBG_FLAG_ENTRY
     { int debuggers_suck_when_breakpoint_is_a_while_loop = 1; }
@@ -428,7 +428,7 @@ struct flag_entry *get_flag_entry (char option, struct flag_entry *flags)
 }
 
 /* check if an option letter is already used for a flag */
-int already_used (char option, struct flag_entry *flags)
+static int already_used (char option, struct flag_entry *flags)
 {
     /* these letters cannot be redefined! */
     if ((option == FL_BINARY) || (option == FL_DATED))
@@ -443,7 +443,7 @@ int already_used (char option, struct flag_entry *flags)
 
 /*** command-line parsing ***/
 
-void usage(void)
+static void usage(void)
 {
     fprintf(stderr,
 	    "Usage: %s [-nrv] [-f config-file] [-t restart-time]\n", progname);
@@ -451,7 +451,7 @@ void usage(void)
 }
 
 /* Parse the command-line arguments */
-void PRS(int argc, char **argv)
+static void PRS(int argc, char **argv)
 {
     int	c;
     char    *end;
@@ -502,7 +502,7 @@ void PRS(int argc, char **argv)
 /*** config file parsing ***/
 
 /* Complain if the first argument is NULL, return it otherwise. */
-char *missing_field(char *p, char *errline)
+static char *missing_field(char *p, char *errline)
 {
     if (!p || !*p) {
 	fprintf(stderr,"Missing field in config file:\n");
@@ -515,8 +515,8 @@ char *missing_field(char *p, char *errline)
 /* Parse a logfile description from the configuration file and update
  * the linked list of logfiles
  */
-void parse_logfile_line(char *line, struct log_entry **first,
-			struct flag_entry *flags_list)
+static void parse_logfile_line(char *line, struct log_entry **first,
+			       struct flag_entry *flags_list)
 {
     char   *parse, *q;
     char	  *errline, *group = NULL;
@@ -603,14 +603,14 @@ void parse_logfile_line(char *line, struct log_entry **first,
 
     q = parse = missing_field(sob(++parse),errline);
     *(parse = son(parse)) = '\0';
-    if (isdigit(*q))
+    if (isdigit((unsigned char)*q))
 	working->size = atoi(q);
     else
 	working->size = -1;
 
     q = parse = missing_field(sob(++parse),errline);
     *(parse = son(parse)) = '\0';
-    if (isdigit(*q))
+    if (isdigit((unsigned char)*q))
 	working->hours = atoi(q);
     else
 	working->hours = -1;
@@ -621,7 +621,7 @@ void parse_logfile_line(char *line, struct log_entry **first,
     working->exec_flags = NULL;
     working->pid_flags = NULL;
 
-    while (q && *q && !isspace(*q)) {
+    while (q && *q && !isspace((unsigned char)*q)) {
 	char qq = toupper(*q);
 	if (qq == FL_BINARY)
 	    working->flags |= CE_BINARY;
@@ -648,11 +648,10 @@ void parse_logfile_line(char *line, struct log_entry **first,
 /* Parse a program-to-run description from the configuration file and update
  * the linked list of flag entries
  */
-void parse_exec_line(char *line, struct flag_entry **first)
+static void parse_exec_line(char *line, struct flag_entry **first)
 {
     char *parse, *q;
     char *errline;
-    char **arg;
     struct flag_entry *working = (*first);
     int num_args, i;
 
@@ -685,7 +684,7 @@ void parse_exec_line(char *line, struct flag_entry **first)
 	exit(1);
     }
     working->option = toupper(*parse);
-    if (!isspace(*(++parse))) {
+    if (!isspace((unsigned char)*(++parse))) {
 	fprintf(stderr,
 		"Error in config file; more than one option letter:\n");
 	fputs(errline,stderr);
@@ -709,7 +708,7 @@ void parse_exec_line(char *line, struct flag_entry **first)
 	if (q && (*q))
 	    q = sob(q);
     }
-    arg = working->args = (char**) malloc((num_args+2)*sizeof(char*));
+    working->args = (char**) malloc((num_args+2)*sizeof(char*));
     if (! working->args) abort();
     for (i=0; i<num_args; i++) {
 	q = missing_field(parse,errline);
@@ -727,7 +726,7 @@ void parse_exec_line(char *line, struct flag_entry **first)
 /* Parse a process-to-restart description from the configuration file and
  * update the linked list of flag entries
  */
-void parse_pid_line(char *line, struct flag_entry **first)
+static void parse_pid_line(char *line, struct flag_entry **first)
 {
     char *parse, *q, *end;
     char	*errline;
@@ -754,7 +753,7 @@ void parse_pid_line(char *line, struct flag_entry **first)
     parse = missing_field(sob(line),errline);
 
     if (!strncasecmp(parse, KEYWORD_PID, sizeof(KEYWORD_PID)-1)
-	&& isspace(parse[sizeof(KEYWORD_PID)-1]))
+	&& isspace((unsigned char)parse[sizeof(KEYWORD_PID)-1]))
       working->type = PID;
     else
       working->type = PNAME;
@@ -770,7 +769,7 @@ void parse_pid_line(char *line, struct flag_entry **first)
 	exit(1);
     }
     working->option = toupper(*parse);
-    if (!isspace(*(++parse))) {
+    if (!isspace((unsigned char)*(++parse))) {
 	fprintf(stderr,
 		"Error in config file; more than one option letter:\n");
 	fputs(errline,stderr);
@@ -810,7 +809,7 @@ void parse_pid_line(char *line, struct flag_entry **first)
 
 /* Add support for default flags to the linked list of flag entries.
  */
-void add_default_flags(struct flag_entry **first)
+static void add_default_flags(struct flag_entry **first)
 {
     struct flag_entry *working = (*first);
 
@@ -871,7 +870,7 @@ void add_default_flags(struct flag_entry **first)
 /* Parse a configuration file and return all relevant data in several
  * linked lists
  */
-void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
+static void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
 {
     FILE	*f;
     char	line[BUFSIZ];
@@ -893,12 +892,12 @@ void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
 	if ((line[0]== '\n') || (line[0] == '#'))
 	    continue;
 	if (!strncasecmp(line, KEYWORD_EXEC, sizeof(KEYWORD_EXEC)-1)
-	    && isspace(line[sizeof(KEYWORD_EXEC)-1])) {
+	    && isspace((unsigned char)line[sizeof(KEYWORD_EXEC)-1])) {
 	    parse_exec_line(line, flags);
 	    continue;
 	}
 	if ((!strncasecmp(line, KEYWORD_PID, sizeof(KEYWORD_PID)-1)
-	     && isspace(line[sizeof(KEYWORD_PID)-1]))
+	     && isspace((unsigned char)line[sizeof(KEYWORD_PID)-1]))
 #ifdef ALLOW_PROCNAME
 	    || (!strncasecmp(line, KEYWORD_PNAME, sizeof(KEYWORD_PNAME)-1)
 		&& isspace(line[sizeof(KEYWORD_PNAME)-1]))) {
@@ -925,7 +924,7 @@ void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
 /*** support functions for turning logfiles over ***/
 
 /* Return size in kilobytes of a file */
-int sizefile (char *file)
+static int sizefile (char *file)
 {
     struct stat sb;
 
@@ -935,7 +934,7 @@ int sizefile (char *file)
 }
 
 /* Return the age of old log file (file.0) */
-int age_old_log (char *file)
+static int age_old_log (char *file)
 {
     struct stat sb;
     char* last = newest_log(file);
@@ -952,7 +951,7 @@ int age_old_log (char *file)
 }
 
 /* Log the fact that the logs were turned over */
-int log_trim(char *log)
+static int log_trim(char *log)
 {
     FILE	*f;
     if ((f = fopen(log,"a")) == NULL)
@@ -967,7 +966,7 @@ int log_trim(char *log)
 }
 
 /* Fork a program to compress or otherwise process the old log file */
-void compress_log(char *log, struct flag_entry *flag)
+static void compress_log(char *log, struct flag_entry *flag)
 {
     int	pid;
     int     i;
@@ -998,7 +997,7 @@ void compress_log(char *log, struct flag_entry *flag)
 }
 
 /* Restart the process whose PID is given in the specified file */
-void restart_proc(char *pidfile, int signum)
+static void restart_proc(char *pidfile, int signum)
 {
     FILE	*f;
     char	line[BUFSIZ];
@@ -1081,7 +1080,7 @@ static int run(char *what)
   return -2;
 }
 
-int killproc(char *procname, int signum)
+static int killproc(char *procname, int signum)
 {
     char line[BUFSIZ];
 
@@ -1090,7 +1089,7 @@ int killproc(char *procname, int signum)
 }
 
 /* Restart the process whose name has been specified */
-void restart_procname(char *procname, int signum)
+static void restart_procname(char *procname, int signum)
 {
     char *signame;
 
@@ -1116,7 +1115,7 @@ void restart_procname(char *procname, int signum)
 /* Examine an entry and figure out whether the logfile needs to be
  * turned over; if it does, mark it with CE_ACTIVE flag.
  */
-void do_entry(struct log_entry *ent)
+static void do_entry(struct log_entry *ent)
 {
     int	size, modtime;
 
@@ -1153,7 +1152,7 @@ void do_entry(struct log_entry *ent)
 /* Turn over the logfiles and create a new one, in preparation for a
  * restart of the logging process(es)
  */
-void do_trim(struct log_entry *ent)
+static void do_trim(struct log_entry *ent)
 {
     char    file1[MAXPATHLEN], file2[MAXPATHLEN];
     char    *zfile1, zfile2[MAXPATHLEN];
@@ -1273,7 +1272,7 @@ void do_trim(struct log_entry *ent)
 /* Take the old logfile, mark it with current time, then run the
  * apropriate program(s) on it.
  */
-void do_compress(struct log_entry *ent)
+static void do_compress(struct log_entry *ent)
 {
     struct flag_entry *flg;
     char* exec;
@@ -1349,7 +1348,7 @@ int main(int argc, char **argv)
 	}
     }
 
-    exit(0);
+    return 0;
 }
 
 /*

@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.5 1999-08-13 22:27:02 danw Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.6 1999-10-19 20:23:21 danw Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -30,9 +30,11 @@ static const char rcsid[] = "$Id: desync.c,v 1.5 1999-08-13 22:27:02 danw Exp $"
 #include <ctype.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned long) -1)
@@ -124,7 +126,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
-static unsigned long get_addr()
+static unsigned long get_addr(void)
 {
   FILE *fp;
   char buf[128], *p, *q;
@@ -146,17 +148,17 @@ static unsigned long get_addr()
 	{
 	  /* Find the value (or go on if ADDR isn't followed by '='). */
 	  p = buf + 4;
-	  while (isspace(*p))
+	  while (isspace((unsigned char)*p))
 	    p++;
 	  if (*p != '=')
 	    continue;
 	  p++;
-	  while (isspace(*p))
+	  while (isspace((unsigned char)*p))
 	    p++;
 
 	  /* Truncate after the address. */
 	  q = p;
-	  while (isdigit(*q) || *q == '.')
+	  while (isdigit((unsigned char)*q) || *q == '.')
 	    q++;
 	  *q = 0;
 

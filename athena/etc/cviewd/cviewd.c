@@ -17,7 +17,7 @@
  * according to a command line from stdin.
  */
 
-static const char rcsid[] = "$Id: cviewd.c,v 1.3 1998-10-23 20:47:39 ghudson Exp $";
+static const char rcsid[] = "$Id: cviewd.c,v 1.4 1999-10-19 20:23:11 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -100,7 +100,7 @@ static void *emalloc(size_t size);
 static void *erealloc(void *ptr, size_t size);
 static char *estrndup(const char *s, size_t n);
 
-int main()
+int main(int argc, char **argv)
 {
   char *line = NULL;
   const char *p;
@@ -571,7 +571,8 @@ static int first_field_matches(const char *s, const char *word)
 {
   int len = strlen(word);
 
-  return (strncasecmp(s, word, len) == 0 && (isspace(s[len]) || !s[len]));
+  return (strncasecmp(s, word, len) == 0 &&
+	  (isspace((unsigned char)s[len]) || !s[len]));
 }
 
 static int cluster_matches(const char *s, struct cluster *cluster)
@@ -639,14 +640,14 @@ static int read_line(FILE *fp, char **buf, int *bufsize)
 
 static const char *skip_spaces(const char *p)
 {
-  while (isspace(*p))
+  while (isspace((unsigned char)*p))
     p++;
   return p;
 }
 
 static const char *skip_nonspaces(const char *p)
 {
-  while (*p && !isspace(*p))
+  while (*p && !isspace((unsigned char)*p))
     p++;
   return p;
 }

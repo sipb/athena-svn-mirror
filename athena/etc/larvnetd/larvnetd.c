@@ -17,7 +17,7 @@
  * the main loop.
  */
 
-static const char rcsid[] = "$Id: larvnetd.c,v 1.3 1998-10-13 17:12:58 ghudson Exp $";
+static const char rcsid[] = "$Id: larvnetd.c,v 1.4 1999-10-19 20:23:31 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,7 +43,7 @@ extern int optind;
 static volatile int reload;
 
 static void usage(const char *progname);
-static void hup_handler();
+static void hup_handler(void);
 
 int main(int argc, char **argv)
 {
