@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.51 2000-03-29 19:48:44 ghudson Exp $
+# $Id: do.sh,v 1.52 2000-03-31 14:44:13 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -65,12 +65,15 @@ esac
 
 # Set up the build environment.
 umask 022
-export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS CONFIG_SITE PATH M4
-CONFIG_SITE=$source/packs/build/config.site
+export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS PATH M4
 M4=$athtoolroot/usr/athena/bin/m4
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
+"SunOS 5.7 sun4"*)
+	ATHENA_SYS=sun4x_57
+	ATHENA_SYS_COMPAT=sun4x_56:sun4x_55:sun4m_54:sun4m_53:sun4m_412
+	;;
 "SunOS 5.6 sun4"*)
 	ATHENA_SYS=sun4x_56
 	ATHENA_SYS_COMPAT=sun4x_55:sun4m_54:sun4m_53:sun4m_412
@@ -174,12 +177,16 @@ fi
 export WARN_CFLAGS ERROR_CFLAGS CC MAKE
 
 if [ -r Makefile.athena ]; then
-	export SRVD SOURCE COMPILER XCONFIGDIR ATHTOOLROOT
+	export SRVD SOURCE COMPILER ATHTOOLROOT
 	SRVD=$srvd
 	SOURCE=$source
 	COMPILER=$CC
-	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
+	if [ prep = "$operation" ]; then
+		export CONFIG_SITE XCONFIGDIR
+		CONFIG_SITE=$source/packs/build/config.site
+		XCONFIGDIR=$source/packs/build/xconfig
+	fi
 	$MAKE $n -f Makefile.athena "$operation"
 elif [ -f configure.in ]; then
 	export ATHTOOLROOT
@@ -197,11 +204,14 @@ elif [ -f configure.in ]; then
 			$maybe touch config.do
 			$maybe rm -f mkinstalldirs install-sh config.guess
 			$maybe rm -f config.sub aclocal.m4
-			$maybe cp "$source/packs/build/autoconf/mkinstalldirs" .
+			$maybe cp \
+				"$source/packs/build/autoconf/mkinstalldirs" .
 			$maybe cp "$source/packs/build/autoconf/install-sh" .
 			$maybe cp "$source/packs/build/autoconf/config.guess" .
 			$maybe cp "$source/packs/build/autoconf/config.sub" .
 			$maybe cp "$source/packs/build/aclocal.m4" .
+			$maybe cp "$source/packs/build/config.site" \
+				config.site.athena
 			$maybe autoconf \
 				-m ${ATHTOOLROOT}/usr/athena/share/autoconf \
 				|| exit 1
@@ -209,7 +219,7 @@ elif [ -f configure.in ]; then
 		;;
 	prepare)
 		$maybe rm -f config.cache
-		$maybe "./$configure"
+		CONFIG_SITE=`pwd`/config.site.athena $maybe "./$configure"
 		;;
 	clean)
 		$MAKE $n clean
