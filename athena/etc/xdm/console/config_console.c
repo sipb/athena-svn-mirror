@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.3 1991-06-28 20:28:32 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.4 1991-08-09 10:39:29 lwvanels Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -79,6 +79,9 @@ char **argv;
 	perror(buf);
 	exit(1);
     }
+
+    if (sig != SIGHUP)
+      exit(0);
 
     do {
 	sleep(1);
