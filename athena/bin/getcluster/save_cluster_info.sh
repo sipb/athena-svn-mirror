@@ -3,11 +3,11 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.13 1997-07-04 00:52:39 ghudson Exp $
+# $Id: save_cluster_info.sh,v 1.14 1998-01-28 04:25:08 danw Exp $
 #
 # Use old data from last session if getcluster fails.
 
-PATH=/bin:/usr/ucb:/usr/bsd; export PATH
+PATH=/bin:/usr/bin:/usr/ucb:/usr/bsd; export PATH
 
 . /etc/athena/rc.conf
 VERSION=`awk '{vers = $5}; END {print vers}' /etc/athena/version`
