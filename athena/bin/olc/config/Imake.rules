@@ -1,7 +1,9 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.8 1991-04-15 15:54:27 lwvanels Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.9 1991-04-19 00:59:56 lwvanels Exp $
 
+/* Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h". */
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
  *

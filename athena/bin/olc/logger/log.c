@@ -3,16 +3,20 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.5 1991-04-14 20:40:43 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.6 1991-04-19 00:55:34 lwvanels Exp $
  *
- * Copyright (c) 1990, Massachusetts Institute of Technology
+ *
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.5 1991-04-14 20:40:43 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.6 1991-04-19 00:55:34 lwvanels Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
 
 #include <sys/types.h>
 #include <sys/param.h>

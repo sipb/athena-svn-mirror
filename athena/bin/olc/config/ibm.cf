@@ -1,4 +1,7 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.7 1991-04-16 08:14:57 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.8 1991-04-19 00:59:34 lwvanels Exp $ */
+/* Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h". */
+
 #ifdef PS2Architecture
 #define RanlibCmd		/bin/true
 #define CcCmd 			/bin/cc

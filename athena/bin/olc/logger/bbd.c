@@ -3,16 +3,20 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.4 1991-04-10 15:32:13 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.5 1991-04-19 00:55:27 lwvanels Exp $
  *
- * Copyright (c) 1990, Massachusetts Institute of Technology
+#
+# Copyright (C) 1991 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.4 1991-04-10 15:32:13 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.5 1991-04-19 00:55:27 lwvanels Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
 
 #include <syslog.h>
 #include <sys/types.h>
