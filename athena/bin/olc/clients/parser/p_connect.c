@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.6 1989-11-17 14:06:57 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.7 1990-04-25 16:40:27 vanharen Exp $";
 #endif
 
 
@@ -124,36 +124,43 @@ do_olc_forward(arguments)
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 	
-  for (arguments++; *arguments != (char *)NULL; arguments++) 
+  for (arguments++; *arguments != (char *)NULL; ) 
     {
-      if (string_equiv(*arguments, "-off", max(strlen(*arguments),2)))
-	set_option(Request.options,OFF_OPT);
-      else 
-	if(string_equiv(*arguments,"-unanswered",max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-off", max(strlen(*arguments), 2)))
+	{
+	  set_option(Request.options, OFF_OPT);
+	  arguments++;
+	  continue;
+	}
+
+      if(string_equiv(*arguments, "-unanswered", max(strlen(*arguments), 2)))
+	{
 	  set_option(Request.options, FORWARD_UNANSWERED);
-	else
-	  if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
-	    {
-	      ++arguments;
-	      status = t_input_status(&Request,*arguments);
-	      if(status)
-		return(status);
-	    }
-	else 
-	  {
-	    arguments = handle_argument(arguments, &Request, &status);
-	    if(status)
-	      return(ERROR);
-	    if(arguments == (char **) NULL)   /* error */
-	      {
-		printf("Usage is: \tforward  [<username> <instance id>] ");
-                printf("[-status <status>]\n\t\t[-off] [-unanswered] ");
-		printf("[-instance <instance id>]\n");
-		return(ERROR);
-	      }
-	    if(*arguments == (char *) NULL)   /* end of list */
-	      break;    
-	  }
+	  arguments++;
+	  continue;
+	}
+
+      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
+	{
+	  arguments++;
+	  status = t_input_status(&Request, *arguments);
+	  if(status)
+	    return(status);
+	  if(*arguments != (char *) NULL)
+	    arguments++;
+	  continue;
+	}
+
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
+      if(arguments == (char **) NULL)   /* error */
+	{
+	  printf("Usage is: \tforward  [<username> <instance id>] ");
+	  printf("[-status <status>]\n\t\t[-off] [-unanswered] ");
+	  printf("[-instance <instance id>]\n");
+	  return(ERROR);
+	}
     }
 
   status = t_forward(&Request);
