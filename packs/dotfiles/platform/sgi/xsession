@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.9 1996-10-12 15:21:33 ghudson Exp $
+# $Id: xsession,v 1.10 1997-12-28 18:16:29 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -37,8 +37,7 @@ if ($?bad_args) then
         unset bad_args
 endif
 
-# Do not echo status messages if noninteractive shell.  For interactive shells,
-# echo messages unless user has ~/.hushlogin file AND the session was not 
+# Echo messages unless user has ~/.hushlogin file AND the session was not 
 # started using the xlogin "SYSTEM" option.
 
 	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose_login
