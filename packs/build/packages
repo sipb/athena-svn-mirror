@@ -1,4 +1,4 @@
-# $Id: packages,v 1.20 1997-03-20 23:01:31 ghudson Exp $
+# $Id: packages,v 1.21 1997-03-25 09:16:08 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -36,6 +36,7 @@ third/jot
 third/lam
 third/rs
 third/mh
+third/mwm			sun4
 third/x3270
 third/xmh
 third/talk			sun4,sgi
