@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1991-07-08 09:19:40 probe Exp $
+# $Id: Imakefile,v 1.5 1994-04-30 13:12:53 vrt Exp $
 #
 
 PROJECT= gms
@@ -11,7 +11,12 @@ OBJS= get_a_message.o get_fallback_file.o get_message.o get_message_from_server.
 DEFINES= -I.
 
 LIB= lib${PROJECT}.a
+
+#ifdef ultrix
+LIBS= -lhesiod -lcom_err -lnsyslog
+#else
 LIBS= -lhesiod -lcom_err
+#endif
 
 error_table(gethost_err)
 error_table(globalmessage_err)
