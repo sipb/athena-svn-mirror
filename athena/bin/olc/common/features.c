@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v $
- *      $Id: features.c,v 1.2 1996-09-20 02:19:26 ghudson Exp $
+ *      $Id: features.c,v 1.3 1997-04-30 18:09:20 ghudson Exp $
  *      $Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v 1.2 1996-09-20 02:19:26 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v 1.3 1997-04-30 18:09:20 ghudson Exp $";
 #endif
 #endif
 
@@ -23,7 +23,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/stat.h>
 
 
-#if defined(__STDC__) && !defined(ibm032)
+#if defined(__STDC__)
 #include <stdlib.h>
 #endif
 
@@ -58,7 +58,8 @@ get_features_from_file(filename, data, num)
   int fd, retval;
   char *buf;
 
-  if ((fd = open(filename,O_RDONLY,0)) < 0)
+  fd = open(filename,O_RDONLY,0);
+  if (fd < 0)
     return(OLCC_BAD_OPEN);
 
   if (fstat(fd,&statb) != 0) {
@@ -66,7 +67,8 @@ get_features_from_file(filename, data, num)
     return(OLCC_BAD_STAT);
   }
 
-  if ((buf = (char *)malloc(statb.st_size)) == NULL) {
+  buf = malloc(statb.st_size);
+  if ((buf == NULL) {
     close(fd);
     return(OLCC_NOMEM);
   }
@@ -105,21 +107,24 @@ get_features_from_buf(buf, buflen, data, num)
     while(isspace(*buf))
       buf++;
     kwd = buf;
-    if ((p = strchr(buf,' ')) == NULL)
+    p = strchr(buf,' ');
+    if (p == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of keyword string */
     buf = p+1;
     while(isspace(*buf))
       buf++;
     v_num = buf;
-    if ((p = strchr(buf,' ')) == NULL)
+    p = strchr(buf,' ');
+    if (p == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of version number */
     while(isspace(*buf))
       buf++;
     buf = p+1;
     kwd_data = buf;
-    if ((p = strchr(buf,'\n')) == NULL)
+    p = strchr(buf,'\n');
+    if (p == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of keyword data */
     buf = p + 1;
@@ -129,7 +134,8 @@ get_features_from_buf(buf, buflen, data, num)
     for(i=0;i<*num;i++) {
       if ((strcasecmp(kwd,data[i].keyword) == 0) &&
 	  (version == data[i].vers)) {
-	if ((data[i].value = (char *)malloc(strlen(kwd_data)+1)) == NULL) {
+	data[i].value = malloc(strlen(kwd_data)+1);
+	if (data[i].value == NULL) {
 	  return(-1);
 	}
 	strcpy(data[i].value, kwd_data);
