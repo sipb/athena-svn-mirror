@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.6 1990-01-17 02:54:23 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.7 1990-04-25 16:43:58 vanharen Exp $";
 #endif
 
 
@@ -33,35 +33,35 @@ do_olc_send(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_SIZE];
-  char editor[NAME_SIZE];
-  char *editorP = (char *) NULL;
-  char *fileP = (char *) NULL;
+  char file[NAME_SIZE] = "";
+  char editor[NAME_SIZE] = "";
   int temp = FALSE;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
 	{
-	  ++arguments;
-	  editorP = editor;
-	  if(*arguments != (char *) NULL)
-	    (void) strcpy(editorP, *arguments);
+	  arguments++;
+	  if(*arguments != (char *) NULL) {
+	    (void) strcpy(editor, *arguments);
+	    arguments++;
+	  }
 	  else
-	    (void) strcpy(editorP, NO_EDITOR);
+	    (void) strcpy(editor, NO_EDITOR);
 	  continue;
 	}
 
       if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
 	{
-	  ++arguments;
+	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
+	      (void) strcpy(file, *arguments);
+	      arguments++;
 	    }
 	  continue;
 	}
@@ -85,18 +85,15 @@ do_olc_send(arguments)
 	    }
 	  return(ERROR);
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
     }
   
-  if(fileP == (char *) NULL)
+  if(string_eq(file, ""))
     {
       make_temp_name(file);
-      fileP = file;
       temp = TRUE;
     }
 
-  status = t_reply(&Request,fileP,editorP);
+  status = t_reply(&Request,file,editor);
   if(temp)
     (void) unlink(file);
 
@@ -113,35 +110,35 @@ do_olc_comment(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_SIZE];
-  char editor[NAME_SIZE];
-  char *editorP = (char *) NULL;
-  char *fileP = (char *) NULL;
+  char file[NAME_SIZE] = "";
+  char editor[NAME_SIZE] = "";
   int temp = FALSE;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
-  
-  for (arguments++; *arguments != (char *) NULL; arguments++) 
+
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
-	  ++arguments;
-	  editorP = editor;
-	  if(*arguments != (char *) NULL)
-	    (void) strcpy(editorP, *arguments);
+	  arguments++;
+	  if(*arguments != (char *) NULL) {
+	    (void) strcpy(editor, *arguments);
+	    arguments++;
+	  }
 	  else
-	    (void) strcpy(editorP, NO_EDITOR);
+	    (void) strcpy(editor, NO_EDITOR);
 	  continue;
 	}
    
       if(string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
 	{
-	  ++arguments;
+	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
+	      (void) strcpy(file, *arguments);
+	      arguments++;
 	    }
 	  continue;
 	}
@@ -157,18 +154,15 @@ do_olc_comment(arguments)
 	  printf("[-instance <instance id>]\n");
 	  return(ERROR);
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
     }
   
-  if(fileP == (char *) NULL)
+  if(string_eq(file, ""))
     {
       make_temp_name(file);
-      fileP = file;
       temp = TRUE;
     }
 
-  status = t_comment(&Request,fileP,editorP);
+  status = t_comment(&Request,file,editor);
   if(temp)
     (void) unlink(file);
 
@@ -182,10 +176,8 @@ do_olc_mail(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_SIZE];
-  char editor[NAME_SIZE];
-  char *editorP = (char *) NULL;
-  char *fileP = (char *) NULL;
+  char file[NAME_SIZE] = "";
+  char editor[NAME_SIZE] = "";
   char smargs[NAME_SIZE][NAME_SIZE];
   char *smargsP[NAME_SIZE];
   int status;
@@ -198,26 +190,28 @@ do_olc_mail(arguments)
   
   smargsP[0] = (char *) NULL;
 
-  for(++arguments; *arguments != (char *) NULL; arguments++)
+  arguments++;
+  while(*arguments != (char *) NULL)
     {
       if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
-	  ++arguments;
-	  editorP = editor;
-	  if(*arguments != (char *) NULL)
-	    (void) strcpy(editorP, *arguments);
+	  arguments++;
+	  if(*arguments != (char *) NULL) {
+	    (void) strcpy(editor, *arguments);
+	    arguments++;
+	  }
 	  else
-	    (void) strcpy(editorP,NO_EDITOR);
+	    (void) strcpy(editor,NO_EDITOR);
 	  continue;
 	}
 
       if (string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
 	{
-	  ++arguments;
+	  arguments++;
 	  if(*arguments != (char *) NULL)
 	    {
-	      fileP = file;
-	      (void) strcpy(fileP, *arguments);
+	      (void) strcpy(file, *arguments);
+	      arguments++;
 	    }
 	  continue;
 	}
@@ -225,6 +219,7 @@ do_olc_mail(arguments)
       if (string_equiv(*arguments, "-checkhub", max(strlen(*arguments),2)))
 	{
 	  checkhub = TRUE;
+	  arguments++;
 	  continue;
 	}
 
@@ -288,18 +283,15 @@ do_olc_mail(arguments)
 	  printf("\t\t[-instance <instance id>]\n");
 	  return(ERROR);
 	}
-      if(*arguments == (char *) NULL)   /* end of list */
-	break;
     }
   
-  if(fileP == (char *) NULL)
+  if(string_eq(file, ""))
     {
       make_temp_name(file);
-      fileP = file;
       temp = TRUE;
     }
 
-  status = t_mail(&Request,fileP, editorP, smargsP, checkhub);
+  status = t_mail(&Request, file, editor, smargsP, checkhub);
   if(temp)
     (void) unlink(file);
   
