@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.19 1992-01-27 07:12:30 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.20 1992-04-28 17:15:58 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -17,6 +17,9 @@
 #include <hesiod.h>
 #include <errno.h>
 #include <syslog.h>
+#ifdef XDM
+#include "dm.h"
+#endif
 
 #ifdef _IBMR2
 #include <userpw.h>
@@ -65,7 +68,10 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/n
 
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
-char *get_tickets(), *attachhomedir(), *malloc(), *strsave(), *add_to_group();
+char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
+#ifndef POSIX
+char *malloc();
+#endif
 int abort_verify();
 extern int attach_state, attach_pid, attachhelp_state, attachhelp_pid;
 extern int errno, quota_pid;
@@ -74,7 +80,12 @@ int homedir_status = HD_LOCAL;
 int added_to_passwd = FALSE;
 
 
+#ifdef XDM
+char *dologin(user, passwd, option, script, tty, session, display, verify)
+struct verify_info *verify;
+#else /* XDM */
 char *dologin(user, passwd, option, script, tty, session, display)
+#endif /* XDM */
 char *user;
 char *passwd;
 int option;
@@ -301,7 +312,7 @@ char *display;
       return("Out of memory while trying to initialize user environment variables.");
 
     i = 0;
-#if defined(_AIX) && defined(_IBMR2)
+#if defined(_AIX) && defined(_IBMR2) && !defined(XDM)
     environment[i++] = "USRENVIRON:";
 #endif
     sprintf(errbuf, "HOME=%s", pwd->pw_dir);
@@ -338,7 +349,9 @@ char *display;
 	environment[i++] = strsave(errbuf);
     }
 #if defined(_AIX) && defined(_IBMR2)
+#ifndef XDM
     environment[i++] = "SYSENVIRON:";
+#endif
     sprintf(errbuf,"LOGIN=%s",pwd->pw_name);
     environment[i++] = strsave(errbuf);
     sprintf(errbuf,"LOGNAME=%s",pwd->pw_name);
@@ -363,6 +376,23 @@ char *display;
     times[1].tv_sec = times[0].tv_sec;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
+
+#ifdef XDM
+    {
+	static char *newargv[4];
+
+	verify->uid = pwd->pw_uid;
+	getGroups(pwd->pw_name, verify, pwd->pw_gid);
+	verify->userEnviron = environment;
+	newargv[0] = script;
+	sprintf(errbuf, "%d", option);
+	newargv[1] = errbuf;
+	newargv[2] = session;
+	newargv[3] = NULL;
+	verify->argv = newargv;
+	return(0);
+    }
+#endif /* XDM */
 
 #if defined(_AIX) && defined(_IBMR2)
     i = setgidx(ID_SAVED|ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
@@ -392,7 +422,8 @@ char *display;
     newargv[1] = errbuf;
     newargv[2] = script;
     newargv[3] = NULL;
-    setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,environment,newargv);
+    setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,
+	    environment,(char *)newargv);
 #else
     execle(session, "sh", errbuf, script, NULL, environment);
 #endif
@@ -542,17 +573,17 @@ struct passwd *p;
 /* /etc/security/{environ, limits, user} files so that they pick up */
 /* the default values */
     putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_NEW);
-    putuserattr(p->pw_name,S_ID,p->pw_uid,SEC_INT);
-    putuserattr(p->pw_name,S_PWD,"!",SEC_CHAR);
-    putuserattr(p->pw_name,S_PGRP,"mit",SEC_CHAR);
-    putuserattr(p->pw_name,S_HOME,p->pw_dir,SEC_CHAR);
-    putuserattr(p->pw_name,S_SHELL,p->pw_shell,SEC_CHAR);
-    putuserattr(p->pw_name,S_GECOS,p->pw_gecos,SEC_CHAR);
-    putuserattr(p->pw_name,S_LOGINCHK,1,SEC_BOOL);
-    putuserattr(p->pw_name,S_SUCHK,1,SEC_BOOL);
-    putuserattr(p->pw_name,S_RLOGINCHK,1,SEC_BOOL);
-    putuserattr(p->pw_name,S_ADMIN,0,SEC_BOOL);
-    putuserattr(p->pw_name,"athena_temp",1,SEC_INT);
+    putuserattr(p->pw_name,S_ID,(void *)(p->pw_uid),SEC_INT);
+    putuserattr(p->pw_name,S_PWD,(void *)"!",SEC_CHAR);
+    putuserattr(p->pw_name,S_PGRP,(void *)"mit",SEC_CHAR);
+    putuserattr(p->pw_name,S_HOME,(void *)(p->pw_dir),SEC_CHAR);
+    putuserattr(p->pw_name,S_SHELL,(void *)(p->pw_shell),SEC_CHAR);
+    putuserattr(p->pw_name,S_GECOS,(void *)(p->pw_gecos),SEC_CHAR);
+    putuserattr(p->pw_name,S_LOGINCHK,(void *)1,SEC_BOOL);
+    putuserattr(p->pw_name,S_SUCHK,(void *)1,SEC_BOOL);
+    putuserattr(p->pw_name,S_RLOGINCHK,(void *)1,SEC_BOOL);
+    putuserattr(p->pw_name,S_ADMIN,(void *)0,SEC_BOOL);
+    putuserattr(p->pw_name,"athena_temp",(void *)1,SEC_INT);
     putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_COMMIT);
     enduserdb();
 
@@ -611,7 +642,9 @@ struct passwd *p;
     /* This tells the display manager to cleanup the password file for
      * us after we exit
      */
+#ifndef XDM
     kill(getppid(), SIGUSR2);
+#endif
     added_to_passwd = TRUE;
     return(0);
 }
@@ -1014,9 +1047,9 @@ char *glist;
 	  fprintf(stderr,"Error creating group %s (%d)\n",gname,gid);
 	  continue;
 	}
-	putgroupattr(gname,S_ID,gid,SEC_INT);
-	putgroupattr(gname,S_ADMIN,0,SEC_BOOL);
-	putgroupattr(gname,"athena_temp",1,SEC_BOOL);
+	putgroupattr(gname,S_ID,(void *)gid,SEC_INT);
+	putgroupattr(gname,S_ADMIN,(void *)0,SEC_BOOL);
+	putgroupattr(gname,"athena_temp",(void *)1,SEC_BOOL);
 	putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT);
       }
     }
