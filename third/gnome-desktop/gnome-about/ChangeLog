@@ -1,3 +1,119 @@
+2003-01-14  Glynn Foster  <glynn.foster@sun.com>
+
+	* contributors.h: Added Jordi Mallach.
+
+2003-01-13  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * contributors.h: Added myself.
+
+Fri Jan  3 21:37:31 2003  HideToshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* contributors.h (contributors): Added myself(approved by Mark:-).
+
+2002-12-17  German Poo Caaman~o <gpoo@ubiobio.cl
+
+	* contributors.h: Added myself.
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (init_version_strings):
+	initialise version string even when we
+	can't find gnome-version.xml. Fixes
+	#100774.
+
+2002-12-09  Glynn Foster <glynn.foster@sun.com>
+
+	* contributors.h: Added Arvind Samptur.
+
+2002-12-06  Andy Tai <atai@gnu.org>
+ 
+	* gnome-about.c: add a HRef to the GNU website in the about dialog.
+
+2002-12-04  James Willcox  <jwillcox@gnome.org>
+
+	* contributors.h: Added myself.
+
+2002-12-04  Pat Costello <patrick.costello@sun.com>
+
+	* contributors.h: Added meself.
+
+2002-11-28  Brian Cameron <brian.cameron@sun.com>
+
+	* contributors.h: Added myself.
+
+2002-11-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (make_contributors_logo_accessible):
+	s/Gnome Logo/GNOME Logo/g
+
+2002-11-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* contributors.h: Add Ross Burton.
+
+2002-11-07  Andrew Sobala  <andrew@sobala.net>
+
+	* contributors.h: Added myself.
+
+2002-11-05  Mark McLoughlin  <mark@skynet.ie>
+
+	Display the GNOME version, vendor and build date in
+	the about dialog. Based on a patch from Mike Newman,
+	<mike@gnorthern.demon.co.uk>. Fixes #8562.
+
+	* gnome-about.c:
+	(init_version_strings): read the GNOME version,
+	vendor and build date from gnome-version.xml.
+	(get_intro_message): build the intro message
+	and include the GNOME version.
+	(draw_intro): don't allow intro and first name
+	to overlap.
+	(get_max_width): also calculate the into message
+	width.
+	(main): put the GNOME version, vendor and build
+	date in the title.
+
+2002-11-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (draw_intro), (draw_end): do not
+	translate pango markup, only translate the strings
+	themeselves. Fixes #84779, #97073.
+
+2002-11-04  Kristian Rietveld  <kris@gtk.org>
+
+	* contributors.h: Added myself.
+
+2002-11-01  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* logo.xpm:  Replaced logo with the GNOME 2.x version.
+	* gnome-about.c:  Updated sparkle locations for the new logo.
+	* contributors.h:  Added myself.
+	
+2002-10-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* contributors.h (contributors): Added Larry Ewing and myself (we
+	were feeling unloved).
+
+2002-10-24  Luis Villa <louie@ximian.com>
+
+	* contributors.h: Add five bug volunteers who've each closed over
+	400 bugs in bugzilla- Heath Harrelson [over 1,100], Vincent Untz
+	[over 700], and Wayne Schuller, Dave Bordoley, and Ben
+	Frantzdale.
+	
+2002-10-09  Glynn Foster  <glynn.foster@sun.com>
+
+	* contributors.h: Added Frederic 'but I didn't say anything
+	about Mandrakesoft' Crozat.
+
+2002-10-09  Glynn Foster  <glynn.foster@sun.com>
+
+	* contributors.h: Added Luis 'im the bugzilla 
+	bitch' Villa and Jeff 'perkypants' Waugh.
+
+2002-09-27 Erwann Chenede - <erwann.chenede@sun.com>
+
+	* contributors.h: Added Gman and meself.
+
 2002-08-27  Mark McLoughlin  <mark@skynet.ie>
 
 	* contributors.h: re-order Deepa's name so

@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Summary:          The gnome desktop programs for the GNOME GUI desktop environment.
 Name:             gnome-desktop
-Version:          2.0.10
+Version:          2.2.0
 Release:          1
 License:          LGPL
 Group:            System Environment/Base
@@ -9,13 +9,13 @@ Source:           %{name}-%{version}.tar.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 URL:              http://www.gnome.org
 BuildRequires:    pkgconfig >= 0.8
-Requires:         gtk2 >= 2.0.3
-Requires:         libgnomeui >= 2.0.0
-Requires:         gnome-vfs2 >= 1.9.16
+Requires:         gtk2 >= 2.1.2
+Requires:         libgnomeui >= 2.1.0
+Requires:         gnome-vfs2 >= @GNOME_VFS_MODULE_REQUIRED@
 Requires:         libgnomecanvas >= 2.0.0
-BuildRequires:    gtk2-devel >= 2.0.3
-BuildRequires:    libgnomeui-devel >= 2.0.0
-BuildRequires:    gnome-vfs2-devel >= 1.9.16
+BuildRequires:    gtk2-devel >= 2.1.2
+BuildRequires:    libgnomeui-devel >= 2.1.0
+BuildRequires:    gnome-vfs2-devel >= @GNOME_VFS_MODULE_REQUIRED@
 BuildRequires:    libgnomecanvas-devel >= 2.0.0
 
 
@@ -35,12 +35,12 @@ Summary:          GNOME desktop core libraries, includes, and more.
 Group:            Development/Libraries
 Requires:         %name = %version
 Requires:         pkgconfig >= 0.8
-Requires:         gtk2 >= 2.0.3
-Requires:         gtk2-devel >= 2.0.3
-Requires:         libgnomeui >= 2.0.0
-Requires:         libgnomeui-devel >= 2.0.0
-Requires:         gnome-vfs2 >= 1.9.16
-Requires:         gnome-vfs2-devel >= 1.9.16
+Requires:         gtk2 >= 2.1.2
+Requires:         gtk2-devel >= 2.1.2
+Requires:         libgnomeui >= 2.1.0
+Requires:         libgnomeui-devel >= 2.1.0
+Requires:         gnome-vfs2 >= @GNOME_VFS_MODULE_REQUIRED@
+Requires:         gnome-vfs2-devel >= @GNOME_VFS_MODULE_REQUIRED@
 Requires:         libgnomecanvas >= 2.0.0
 Requires:         libgnomecanvas-devel >= 2.0.0
 

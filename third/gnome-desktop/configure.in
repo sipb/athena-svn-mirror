@@ -1,6 +1,6 @@
 AC_INIT(libgnome-desktop)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-desktop, 2.0.10)
+AM_INIT_AUTOMAKE(gnome-desktop, 2.2.0)
 
 # Before making a release, the LT_VERSION string should be modified.
 # The string is of the form C:R:A.
@@ -10,7 +10,7 @@ AM_INIT_AUTOMAKE(gnome-desktop, 2.0.10)
 #   change to C+1:0:0
 # - If the interface is the same as the previous version, change to C:R+1:A
 
-LT_VERSION=0:6:0
+LT_VERSION=3:4:1
 AC_SUBST(LT_VERSION)
 
 AM_MAINTAINER_MODE
@@ -22,41 +22,55 @@ AC_PROG_CC
 AC_STDC_HEADERS
 AC_ARG_PROGRAM
 AM_PROG_LIBTOOL
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 
 GNOME_COMPILE_WARNINGS(yes)
 
 GNOME_PLATFORM=2
-GNOME_MINOR=0
-GNOME_MICRO=3
-GNOME_VENDOR=""
-GNOME_DATE=""
-GNOME_DESCRIPTION=""
+GNOME_MINOR=2
+GNOME_MICRO=0
+GNOME_VENDOR="Gnome.Org"
+GNOME_DATE="Tuesday, January 21st 2003"
 
 AC_SUBST(GNOME_PLATFORM)
 AC_SUBST(GNOME_MINOR)
 AC_SUBST(GNOME_MICRO)
 AC_SUBST(GNOME_VENDOR)
 AC_SUBST(GNOME_DATE)
-AC_SUBST(GNOME_DESCRIPTION)
 
 dnl If you add a version number here, you *must* add an AC_SUBST line for
 dnl it too, or it will never make it into the spec file!
 
 GDK_PIXBUF_REQUIRED=2.0.3
-GTK_REQUIRED=2.0.3
+GTK_REQUIRED=2.1.2
 LIBGNOMECANVAS_REQUIRED=2.0.0
-LIBGNOMEUI_REQUIRED=2.0.0
-GNOME_VFS_MODULE_REQUIRED=1.9.16
+LIBGNOMEUI_REQUIRED=2.1.0
+GNOME_VFS_REQUIRED=2.0.0
+STARTUP_NOTIFICATION_REQUIRED=0.5
 
 AC_SUBST(GTK_REQUIRED)
 AC_SUBST(GDK_PIXBUF_REQUIRED)
 AC_SUBST(LIBGNOMEUI_REQUIRED)
 AC_SUBST(LIBGNOMECANVAS_REQUIRED)
-AC_SUBST(GNOME_VFS_MODULE_REQUIRED)
+AC_SUBST(GNOME_VFS_REQUIRED)
+AC_SUBST(STARTUP_NOTIFICATION_REQUIRED)
+
+if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_REQUIRED libstartup-notification-1.0; then
+  echo "Building with libstartup-notification"
+  AC_DEFINE(HAVE_STARTUP_NOTIFICATION)
+  with_startup_notification=yes
+  STARTUP_NOTIFICATION_PACKAGE=libstartup-notification-1.0
+else
+  echo "***** WARNING: Building without libstartup-notification"
+  with_startup_notification=no
+  STARTUP_NOTIFICATION_PACKAGE=
+fi
+
+AC_SUBST(STARTUP_NOTIFICATION_PACKAGE)
 
 dnl pkg-config dependency checks
 
-PKG_CHECK_MODULES(GNOME_DESKTOP, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED gnome-vfs-module-2.0 >= $GNOME_VFS_MODULE_REQUIRED)
+PKG_CHECK_MODULES(GNOME_DESKTOP, gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED gtk+-2.0 >= $GTK_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED $STARTUP_NOTIFICATION_PACKAGE)
 AC_SUBST(GNOME_DESKTOP_CFLAGS)
 AC_SUBST(GNOME_DESKTOP_LIBS)
 
@@ -71,7 +85,7 @@ GETTEXT_PACKAGE=gnome-desktop-2.0
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 
-ALL_LINGUAS="am ar az be bg bs ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="ar az be bg bs ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mk ms nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta th tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 

@@ -80,19 +80,16 @@ GMSGFMT = @GMSGFMT@
 GNOME_ABOUT_CFLAGS = @GNOME_ABOUT_CFLAGS@
 GNOME_ABOUT_LIBS = @GNOME_ABOUT_LIBS@
 GNOME_DATE = @GNOME_DATE@
-GNOME_DESCRIPTION = @GNOME_DESCRIPTION@
 GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
 GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
 GNOME_MICRO = @GNOME_MICRO@
 GNOME_MINOR = @GNOME_MINOR@
 GNOME_PLATFORM = @GNOME_PLATFORM@
 GNOME_VENDOR = @GNOME_VENDOR@
-GNOME_VFS_MODULE_REQUIRED = @GNOME_VFS_MODULE_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTK_REQUIRED = @GTK_REQUIRED@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -107,6 +104,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -126,8 +124,12 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
+STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
+STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -141,13 +143,13 @@ INCLUDES =  	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale\""  	-DGNOME_DE
 
 lib_LTLIBRARIES = libgnome-desktop-2.la
 
-noinst_PROGRAMS = test-ditem test-hint test-ditem-edit test-icon-theme
+noinst_PROGRAMS = test-ditem test-hint test-ditem-edit
 
-libgnome_desktop_2_la_SOURCES =  	gnome-theme-parser.h		gnome-icon-loader.c		gnome-theme-parser.c		gnome-desktop-item.c		gnome-ditem-edit.c		gnome-hint.c
+libgnome_desktop_2_la_SOURCES =  	gnome-desktop-item.c		gnome-ditem-edit.c		gnome-hint.c			$(EGGFILES)
 
 
 libgnome_desktopdir = $(includedir)/gnome-desktop-2.0/libgnome
-libgnome_desktop_HEADERS =  	gnome-icon-loader.h		gnome-desktop-item.h
+libgnome_desktop_HEADERS =  	gnome-desktop-item.h
 
 
 libgnomeui_desktopdir = $(includedir)/gnome-desktop-2.0/libgnomeui
@@ -158,12 +160,6 @@ libgnome_desktop_2_la_LIBADD =  	$(GNOME_DESKTOP_LIBS)
 
 
 libgnome_desktop_2_la_LDFLAGS =  	-version-info $(LT_VERSION)
-
-
-test_icon_theme_SOURCES =  	test-icon-theme.c
-
-
-test_icon_theme_LDADD =  	libgnome-desktop-2.la			$(GNOME_DESKTOP_LIBS)
 
 
 test_ditem_SOURCES =  	test-ditem.c
@@ -188,6 +184,11 @@ pkgconfig_DATA = gnome-desktop-2.0.pc
 
 EXTRA_DIST =  	gnome-desktop-2.0.pc.in
 
+
+EGGFILES =  	egg-spawn.h		egg-spawn.c
+
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  gnome-desktop-2.0.pc
@@ -197,11 +198,10 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
 libgnome_desktop_2_la_DEPENDENCIES = 
-libgnome_desktop_2_la_OBJECTS =  gnome-icon-loader.lo \
-gnome-theme-parser.lo gnome-desktop-item.lo gnome-ditem-edit.lo \
-gnome-hint.lo
+libgnome_desktop_2_la_OBJECTS =  gnome-desktop-item.lo \
+gnome-ditem-edit.lo gnome-hint.lo egg-spawn.lo
 noinst_PROGRAMS =  test-ditem$(EXEEXT) test-hint$(EXEEXT) \
-test-ditem-edit$(EXEEXT) test-icon-theme$(EXEEXT)
+test-ditem-edit$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_ditem_OBJECTS =  test-ditem.$(OBJEXT)
@@ -213,9 +213,6 @@ test_hint_LDFLAGS =
 test_ditem_edit_OBJECTS =  test-ditem-edit.$(OBJEXT)
 test_ditem_edit_DEPENDENCIES =  libgnome-desktop-2.la
 test_ditem_edit_LDFLAGS = 
-test_icon_theme_OBJECTS =  test-icon-theme.$(OBJEXT)
-test_icon_theme_DEPENDENCIES =  libgnome-desktop-2.la
-test_icon_theme_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -231,8 +228,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgnome_desktop_2_la_SOURCES) $(test_ditem_SOURCES) $(test_hint_SOURCES) $(test_ditem_edit_SOURCES) $(test_icon_theme_SOURCES)
-OBJECTS = $(libgnome_desktop_2_la_OBJECTS) $(test_ditem_OBJECTS) $(test_hint_OBJECTS) $(test_ditem_edit_OBJECTS) $(test_icon_theme_OBJECTS)
+SOURCES = $(libgnome_desktop_2_la_SOURCES) $(test_ditem_SOURCES) $(test_hint_SOURCES) $(test_ditem_edit_SOURCES)
+OBJECTS = $(libgnome_desktop_2_la_OBJECTS) $(test_ditem_OBJECTS) $(test_hint_OBJECTS) $(test_ditem_edit_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -340,10 +337,6 @@ test-ditem-edit$(EXEEXT): $(test_ditem_edit_OBJECTS) $(test_ditem_edit_DEPENDENC
 	@rm -f test-ditem-edit$(EXEEXT)
 	$(LINK) $(test_ditem_edit_LDFLAGS) $(test_ditem_edit_OBJECTS) $(test_ditem_edit_LDADD) $(LIBS)
 
-test-icon-theme$(EXEEXT): $(test_icon_theme_OBJECTS) $(test_icon_theme_DEPENDENCIES)
-	@rm -f test-icon-theme$(EXEEXT)
-	$(LINK) $(test_icon_theme_LDFLAGS) $(test_icon_theme_OBJECTS) $(test_icon_theme_LDADD) $(LIBS)
-
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
@@ -437,19 +430,19 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+egg-spawn.lo egg-spawn.o : egg-spawn.c ../config.h egg-spawn.h
 gnome-desktop-item.lo gnome-desktop-item.o : gnome-desktop-item.c \
-	../config.h gnome-desktop-item.h gnome-icon-loader.h
+	../config.h egg-spawn.h gnome-desktop-item.h
 gnome-ditem-edit.lo gnome-ditem-edit.o : gnome-ditem-edit.c ../config.h \
-	gnome-desktop-item.h gnome-icon-loader.h gnome-ditem-edit.h
+	gnome-desktop-item.h gnome-ditem-edit.h
 gnome-hint.lo gnome-hint.o : gnome-hint.c ../config.h gnome-hint.h
 gnome-icon-loader.lo gnome-icon-loader.o : gnome-icon-loader.c \
 	gnome-icon-loader.h gnome-theme-parser.h
 gnome-theme-parser.lo gnome-theme-parser.o : gnome-theme-parser.c \
 	gnome-theme-parser.h
 test-ditem-edit.o: test-ditem-edit.c ../config.h gnome-ditem-edit.h \
-	gnome-desktop-item.h gnome-icon-loader.h
-test-ditem.o: test-ditem.c ../config.h gnome-desktop-item.h \
-	gnome-icon-loader.h
+	gnome-desktop-item.h
+test-ditem.o: test-ditem.c ../config.h gnome-desktop-item.h
 test-hint.o: test-hint.c ../config.h gnome-hint.h
 test-icon-theme.o: test-icon-theme.c gnome-icon-loader.h
 
@@ -540,6 +533,9 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

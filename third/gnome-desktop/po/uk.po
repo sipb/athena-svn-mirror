@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-core 1.5.4\n"
-"POT-Creation-Date: 2002-10-14 13:08+1300\n"
-"PO-Revision-Date: 2002-11-05 11:38--500\n"
+"POT-Creation-Date: 2003-01-21 17:24+1300\n"
+"PO-Revision-Date: 2002-05-28 13:04+0200\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: desktop-links/Accessories.directory.in.h:1
@@ -18,8 +18,9 @@ msgid "Accessories"
 msgstr "Приладдя"
 
 #: desktop-links/Accessories.directory.in.h:2
+#, fuzzy
 msgid "Accessories menu"
-msgstr "Меню приладдя"
+msgstr "Приладдя"
 
 #: desktop-links/Applications.directory.in.h:1
 msgid "Applications without a category"
@@ -52,14 +53,6 @@ msgstr "Графіка"
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
 msgstr "Меню графічних програм"
-
-#: desktop-links/Home.directory.in.h:1
-msgid "Home"
-msgstr "Домівка"
-
-#: desktop-links/Home.directory.in.h:2
-msgid "Home Applications"
-msgstr "Додатки для дому"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
@@ -123,218 +116,251 @@ msgstr "Szabolcs \"Shooby\" Ban"
 msgid "Jerome Bolliet"
 msgstr "Джером Больє"
 
+#. if your encoding allows it, use eacute (U00E9) for the first
+#. * and the last 'e' in 'Chenede'
+#: gnome-about/contributors.h:54
+msgid "Erwann Chenede"
+msgstr ""
+
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
-#: gnome-about/contributors.h:51
+#: gnome-about/contributors.h:57
 msgid "Abel Cheung"
 msgstr "Абель Чунґ"
 
+#. if you encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:70
+#, fuzzy
+msgid "Frederic Crozat"
+msgstr "Frederic Devernay"
+
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:66
+#: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
 msgstr "Frederic Devernay"
 
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:79
+#: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
 msgstr "Ґерґо Ерді"
 
-#: gnome-about/contributors.h:86
+#: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
 msgstr "Рауль Перускіа Флорес"
 
-#: gnome-about/contributors.h:98
+#: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
 msgstr "Таємничий GEGL"
 
-#: gnome-about/contributors.h:100
+#: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
 msgstr "Bjoern Giesler"
 
-#: gnome-about/contributors.h:106
+#: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
 msgstr "Дов Ґробґелд"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:128
+#: gnome-about/contributors.h:143
 msgid "Wang Jian"
 msgstr "Ванґ Джіан"
 
-#: gnome-about/contributors.h:137
+#: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
 msgstr "Гельмут Коеберле"
 
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
 msgstr "Метью Мар'яновіч"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:197
+#: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
 msgstr "Alexandre Muniz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:199
+#: gnome-about/contributors.h:215
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:208
+#: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
 msgstr "Мартін Норбаек"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
 msgstr "Томас Оеґрен"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:225
+#: gnome-about/contributors.h:241
 msgid "Carlos Perello Marin"
 msgstr "Карлос Перелло Мартін"
 
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#. If your encoding allows it, use aacute (U00E1) for the 'a'
+#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
+msgid "German Poo-Caamano"
+msgstr ""
+
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:271
 msgid "Kazuhiro Sasayama"
 msgstr "Кацухіро Сасаяма"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:281
 msgid "Inigo Serna"
 msgstr "Інґіо Серна"
 
-#: gnome-about/contributors.h:263
+#: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
 msgstr "Мірослав Сіволіч"
 
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:273
+#: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
 msgstr "Ґумовий Ґном"
 
-#: gnome-about/contributors.h:280
+#: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
 msgstr "Іштван Секереш"
 
-#: gnome-about/contributors.h:291
+#: gnome-about/contributors.h:317
 msgid "Manish Vachharajani"
 msgstr "Маніш Вашхараяні"
 
-#: gnome-about/contributors.h:292
+#: gnome-about/contributors.h:318
 msgid "Neil Vachharajani"
 msgstr "Нейл Вашхараяні"
 
-#: gnome-about/contributors.h:299
+#: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
 msgstr "Ванда - рибка з GNOME"
 
-#: gnome-about/gnome-about.c:267
+#: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
 msgstr "Клацніть тут, щоб відвідати сайт:"
 
-#: gnome-about/gnome-about.c:279
+#: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
 msgstr "Список розробників GNOME"
 
-#: gnome-about/gnome-about.c:281
-msgid "Gnome Logo Image"
+#: gnome-about/gnome-about.c:287
+#, fuzzy
+msgid "GNOME Logo Image"
 msgstr "Зображення логотипу GNOME"
 
-#: gnome-about/gnome-about.c:289
+#: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
 msgstr "Імена розробників"
 
-#: gnome-about/gnome-about.c:291
-msgid "Gnome Logo"
+#: gnome-about/gnome-about.c:297
+#, fuzzy
+msgid "GNOME Logo"
 msgstr "Логотип GNOME"
 
-#: gnome-about/gnome-about.c:435
-msgid "<big><b>GNOME Was Brought To You By</b></big>"
-msgstr "<big><b>Середовище GNOME було створено для вас</b></big>"
-
-#: gnome-about/gnome-about.c:569
-msgid "<big><b>And Many More ...</b></big>"
-msgstr "<big><b>І багато інших...</b></big>"
-
-#: gnome-about/gnome-about.c:725
-msgid "About GNOME"
+#: gnome-about/gnome-about.c:506
+#, fuzzy
+msgid "GNOME"
 msgstr "Про GNOME"
 
-#: gnome-about/gnome-about.c:829
+#: gnome-about/gnome-about.c:660
+#, fuzzy
+msgid "And Many More ..."
+msgstr "<big><b>І багато інших...</b></big>"
+
+#: gnome-about/gnome-about.c:838
+#, fuzzy, c-format
+msgid "About GNOME%s%s%s"
+msgstr "Про GNOME"
+
+#: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
 msgstr "Сайт Новин GNOME"
 
-#: gnome-about/gnome-about.c:833
+#: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
 msgstr "http://www.gnome.org/"
 
-#: gnome-about/gnome-about.c:834
+#: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
 msgstr "Головний сайт GNOME"
 
-#: gnome-about/gnome-about.c:839
+#: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
 msgstr "Сайт Розробників GNOME"
 
-#: libgnome-desktop/gnome-desktop-item.c:199
-#: libgnome-desktop/gnome-desktop-item.c:569
+#: gnome-about/gnome-about.c:981
+msgid "GNOME is a part of the GNU Project"
+msgstr ""
+
+#: libgnome-desktop/gnome-desktop-item.c:208
+#: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "Помилка зчитування файлу \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:267
+#: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Помилка перемотування файлу \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:584
+#: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "Файл \"%s\" не є звичайним файлом чи каталогом."
 
-#: libgnome-desktop/gnome-desktop-item.c:600
+#: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
 msgstr "Файл \"%s\" має неправильний тип MIME: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:751
+#: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
 msgstr "Немає назви файлу для збереження"
 
-#: libgnome-desktop/gnome-desktop-item.c:1709
+#: libgnome-desktop/gnome-desktop-item.c:1736
+#, c-format
+msgid "Starting %s"
+msgstr ""
+
+#: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
 msgstr "Немає URL для запуску"
 
-#: libgnome-desktop/gnome-desktop-item.c:1719
+#: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
 msgstr "Елемент не можна запускати"
 
-#: libgnome-desktop/gnome-desktop-item.c:1729
+#: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
 msgstr "Немає команди для запуску"
 
-#: libgnome-desktop/gnome-desktop-item.c:1742
+#: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
 msgstr "Неправильна команда для запуску"
 
-#: libgnome-desktop/gnome-desktop-item.c:3242
+#: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
 msgstr "Немає назви"
 
-#: libgnome-desktop/gnome-desktop-item.c:3299
+#: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Невідоме кодування %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3530
+#: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Помилка запису файлу \"%s\": %s"
@@ -357,8 +383,8 @@ msgid "FSDevice"
 msgstr "Повноекранний пристрій"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
-msgid "MimeType"
-msgstr "Тип MIME"
+msgid "MIME Type"
+msgstr ""
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
@@ -471,3 +497,15 @@ msgstr "Додаткові"
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
 msgstr "_Показувати поради на запуску"
+
+#~ msgid "Home"
+#~ msgstr "Домівка"
+
+#~ msgid "Home Applications"
+#~ msgstr "Додатки для дому"
+
+#~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
+#~ msgstr "<big><b>Середовище GNOME було створено для вас</b></big>"
+
+#~ msgid "MimeType"
+#~ msgstr "Тип MIME"

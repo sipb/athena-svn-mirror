@@ -31,11 +31,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#ifdef GNOME_CORE_INTERNAL
-# include "gnome-icon-loader.h"
-#else
-# include <libgnome/gnome-icon-loader.h>
-#endif
+#include <gdk/gdk.h>
+#include <libgnomeui/gnome-icon-theme.h>
 
 G_BEGIN_DECLS
 
@@ -176,6 +173,12 @@ int			gnome_desktop_item_launch_with_env   (const GnomeDesktopItem     *item,
 							      char                      **envp,
 							      GError                    **error);
 
+int                     gnome_desktop_item_launch_on_screen  (const GnomeDesktopItem       *item,
+							      GList                        *file_list,
+							      GnomeDesktopItemLaunchFlags   flags,
+							      GdkScreen                    *screen,
+							      int                           workspace,
+							      GError                      **error);
 
 /* A list of files or urls dropped onto an icon This is the output
  * of gnome_vfs_uri_list_parse */
@@ -183,6 +186,12 @@ int                     gnome_desktop_item_drop_uri_list     (const GnomeDesktop
 							      const char                 *uri_list,
 							      GnomeDesktopItemLaunchFlags flags,
 							      GError                    **error);
+
+int                     gnome_desktop_item_drop_uri_list_with_env    (const GnomeDesktopItem     *item,
+								      const char                 *uri_list,
+								      GnomeDesktopItemLaunchFlags flags,
+								      char                      **envp,
+								      GError                    **error);
 
 gboolean                gnome_desktop_item_exists            (const GnomeDesktopItem     *item);
 
@@ -204,9 +213,9 @@ GnomeDesktopItemStatus  gnome_desktop_item_get_file_status   (const GnomeDesktop
  * it and returns %NULL if it can't
  */
 char *                  gnome_desktop_item_get_icon          (const GnomeDesktopItem     *item,
-							      GnomeIconLoader            *icon_loader);
+							      GnomeIconTheme             *icon_theme);
 
-char *                  gnome_desktop_item_find_icon         (GnomeIconLoader            *icon_loader,
+char *                  gnome_desktop_item_find_icon         (GnomeIconTheme             *icon_theme,
 							      const char                 *icon,
 							      /* size is only a suggestion */
 							      int                         desired_size,

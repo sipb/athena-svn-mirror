@@ -1,105 +1,105 @@
-# Norwegian translation of gnome-core (bokmål dialect).
-# Copyright (C) 1998-2001 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 1998-2001.
+# Thai translations for PACKAGE NAME.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# Paisa Seeluangsawat <paisa@colorado.edu>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-desktop 2.0\n"
+"Project-Id-Version: gnome-desktop\n"
 "POT-Creation-Date: 2003-01-21 17:24+1300\n"
-"PO-Revision-Date: 2003-01-02 18:45+0100\n"
-"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
-"Language-Team: Norwegian <no@li.org>\n"
+"PO-Revision-Date: 2003-01-02 19:49-0700\n"
+"Last-Translator: Paisa Seeluangsawat <paisa@colorado.edu>\n"
+"Language-Team: Thai <gnome-th-devel@sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: desktop-links/Accessories.directory.in.h:1
 msgid "Accessories"
-msgstr "Tilbehør"
+msgstr "เบ็ดเตล็ด"
 
 #: desktop-links/Accessories.directory.in.h:2
 msgid "Accessories menu"
-msgstr "Meny for tilbehør"
+msgstr "เมนูเบ็ดเตล็ด"
 
 #: desktop-links/Applications.directory.in.h:1
 msgid "Applications without a category"
-msgstr "Applikasjoner uten kategori"
+msgstr ""
 
 #: desktop-links/Applications.directory.in.h:2
 msgid "Other"
-msgstr "Annet"
+msgstr ""
 
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
-msgstr "Utvikling"
+msgstr "เขียนโปรแกรม"
 
 #: desktop-links/Development.directory.in.h:2
 msgid "Tools for software development"
-msgstr "Verktøy for programvareutvikling"
+msgstr "เครื่องมือสำหรับพัฒนาซอฟต์แวร์"
 
 #: desktop-links/Games.directory.in.h:1
 msgid "Games"
-msgstr "Spill"
+msgstr "เกมส์"
 
 #: desktop-links/Games.directory.in.h:2
 msgid "Games menu"
-msgstr "Spillmeny"
+msgstr "เมนูเกมส์"
 
 #: desktop-links/Graphics.directory.in.h:1
 msgid "Graphics"
-msgstr "Grafikk"
+msgstr "รูปภาพ"
 
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
-msgstr "Grafikkmeny"
+msgstr "เมนูรูปภาพ"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
-msgstr "Internett"
+msgstr "อินเตอร์เน็ต"
 
 #: desktop-links/Internet.directory.in.h:2
 msgid "Programs for Internet and networks"
-msgstr "Programmer for bruk av internett-tjenester"
+msgstr "โปรแกรมสำหรับอิินเตอร์เน็ตและระบบเครือคร่าย"
 
 #: desktop-links/Multimedia.directory.in.h:1
 msgid "Multimedia menu"
-msgstr "Multimedia meny"
+msgstr "เมนูมัลติมีเดีย"
 
 #: desktop-links/Multimedia.directory.in.h:2
 msgid "Sound & Video"
-msgstr "Multimedia"
+msgstr "ภาพและเสียง"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
-msgstr "Kontor"
+msgstr "สำนักงาน"
 
 #: desktop-links/Office.directory.in.h:2
 msgid "Office Applications"
-msgstr "Kontorapplikasjoner"
+msgstr "โปรแกรมสำหรับสำนักงาน"
 
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
-msgstr "Programmer"
+msgstr "โปรแกรม"
 
 #: desktop-links/Root.directory.in.h:2
 msgid "Programs menu"
-msgstr "Programmer meny"
+msgstr "เมนูโปรแกรม"
 
 #: desktop-links/Settings.directory.in.h:1
 msgid "Desktop Preferences"
-msgstr "Brukervalg"
+msgstr ""
 
 #: desktop-links/Settings.directory.in.h:2
 msgid "Preferences that affect the whole GNOME desktop"
-msgstr "Brukervalg som påvirker hele GNOME skrivebordet"
+msgstr ""
 
 #: desktop-links/System.directory.in.h:1
 msgid "System Tools"
-msgstr "System"
+msgstr "เครื่องมือดูแลระบบ"
 
 #: desktop-links/System.directory.in.h:2
 msgid "System menu"
-msgstr "Systemmeny"
+msgstr "เมนูระบบ"
 
 #: gnome-about/contributors.h:20
 msgid "Timur I. Bakeyev"
@@ -109,7 +109,7 @@ msgstr "Timur I. Bakeyev"
 #. * for the 'a' of 'Ban'
 #: gnome-about/contributors.h:23
 msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs 'Shooby' Bán"
+msgstr "Szabolcs 'Shooby' Ban"
 
 #: gnome-about/contributors.h:36
 msgid "Jerome Bolliet"
@@ -119,7 +119,7 @@ msgstr "Jerome Bolliet"
 #. * and the last 'e' in 'Chenede'
 #: gnome-about/contributors.h:54
 msgid "Erwann Chenede"
-msgstr "Erwann Chénedé"
+msgstr "Erwann Chenede"
 
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
@@ -131,19 +131,19 @@ msgstr "Abel Cheung"
 #. * 'e' of 'Frederic'
 #: gnome-about/contributors.h:70
 msgid "Frederic Crozat"
-msgstr "Frédéric Crozat"
+msgstr "Frederic Crozat"
 
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
 #: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
-msgstr "Frédéric Devernay"
+msgstr "Frederic Devernay"
 
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
 #: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
-msgstr "Gergo Érdi"
+msgstr "Gergo Erdi"
 
 #: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
@@ -151,11 +151,11 @@ msgstr "Raul Perusquia Flores"
 
 #: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
-msgstr "Den mysteriske GEGL"
+msgstr "The Mysterious GEGL"
 
 #: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
-msgstr "Bjørn Giesler"
+msgstr "Bjoern Giesler"
 
 #: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
@@ -169,7 +169,7 @@ msgstr "Wang Jian"
 
 #: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
-msgstr "Helmut Köberle"
+msgstr "Helmut Koeberle"
 
 #: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
@@ -179,7 +179,7 @@ msgstr "Matthew Marjanovic"
 #. * of 'Muniz'
 #: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
-msgstr "Alexandre Muñiz"
+msgstr "Alexandre Muniz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
 #: gnome-about/contributors.h:215
@@ -190,13 +190,13 @@ msgstr "Sung-Hyun Nam"
 #. * of 'Norbaeck'
 #: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
-msgstr "Martin Norbäck"
+msgstr "Martin Norbaeck"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
 #: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
-msgstr "Tomas Ögren"
+msgstr "Tomas Oegren"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
@@ -208,7 +208,7 @@ msgstr "Carlos Perello Marin"
 #. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
 msgid "German Poo-Caamano"
-msgstr "Germán Poo-Caamaño"
+msgstr "German Poo-Caamano"
 
 #. Name in Japanese is: U7b39 U5c71 U548c U5b8f
 #: gnome-about/contributors.h:271
@@ -219,7 +219,7 @@ msgstr "Kazuhiro Sasayama"
 #. * of 'Inigo'
 #: gnome-about/contributors.h:281
 msgid "Inigo Serna"
-msgstr "Iñigo Serna"
+msgstr "Inigo Serna"
 
 #: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
@@ -228,7 +228,7 @@ msgstr "Miroslav Silovic"
 #. not really a person name :) translate its meaning
 #: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
-msgstr "Den knirkende gummignomen"
+msgstr "The Squeaky Rubber Gnome"
 
 #: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
@@ -244,27 +244,27 @@ msgstr "Neil Vachharajani"
 
 #: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
-msgstr "GNOME fisken Wanda"
+msgstr "Wanda the GNOME Fish"
 
 #: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
-msgstr "Klikk her for å besøke nettstedet : "
+msgstr "เยี่ยมชมเวบไซต์ : "
 
 #: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
-msgstr "Liste over GNOMEs bidragsytere"
+msgstr "รายชื่อผู้ร่วมมือของ GNOME"
 
 #: gnome-about/gnome-about.c:287
 msgid "GNOME Logo Image"
-msgstr "Bilde for GNOME logo"
+msgstr "สัญลักษ์ GNOME"
 
 #: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
-msgstr "Navn på bidragsytere"
+msgstr "ชื่อผู้ร่วมมือของ GNOME"
 
 #: gnome-about/gnome-about.c:297
 msgid "GNOME Logo"
-msgstr "GNOME logo"
+msgstr "สัญลักษ์ GNOME"
 
 #: gnome-about/gnome-about.c:506
 msgid "GNOME"
@@ -272,16 +272,16 @@ msgstr "GNOME"
 
 #: gnome-about/gnome-about.c:660
 msgid "And Many More ..."
-msgstr "Og mange flere..."
+msgstr "และอื่นๆอีกมาก..."
 
 #: gnome-about/gnome-about.c:838
 #, c-format
 msgid "About GNOME%s%s%s"
-msgstr "Om GNOME%s%s%s"
+msgstr "เกี่ยวกับ GNOME%s%s%s"
 
 #: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
-msgstr "GNOME Nettsted for nyheter"
+msgstr "ไซต์รวมข่าว GNOME"
 
 #: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
@@ -289,104 +289,104 @@ msgstr "http://www.gnome.org/"
 
 #: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
-msgstr "GNOME Nettsted"
+msgstr "ไซต์หลักของ GNOME"
 
 #: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
-msgstr "GNOME Utviklernettsted"
+msgstr "ไซต์ผู้พัฒนาโปรแกรม GNOME"
 
 #: gnome-about/gnome-about.c:981
 msgid "GNOME is a part of the GNU Project"
-msgstr "GNOME er en del av GNU-prosjektet"
+msgstr "GNOME เป็นส่วนหนึ่งของ GNU Project"
 
 #: libgnome-desktop/gnome-desktop-item.c:208
 #: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
-msgstr "Feil under lesing av fil «%s»: %s"
+msgstr "ผิดพลาดขณะอ่านแฟ้ม '%s': %s"
 
 #: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
-msgstr "Feil under tilbakespoling av fil «%s»: %s"
+msgstr ""
 
 #: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
-msgstr "Filen «%s» er ikke en vanlig fil eller katalog."
+msgstr "แฟ้ม '%s' ไม่ใช่แฟ้มปรกติหรือโฟลเดอร์"
 
 #: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
-msgstr "Filen «%s» har en ugyldig MIME-type: %s"
+msgstr "MIME type ในแฟ้ม '%s' เสีย: %s"
 
 #: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
-msgstr "Ingen filnavn å lagre til"
+msgstr "ไม่มีชื่อแฟ้มที่จะใช้บันทึก"
 
 #: libgnome-desktop/gnome-desktop-item.c:1736
 #, c-format
 msgid "Starting %s"
-msgstr "Starter %s"
+msgstr "กำลังเริ่ม %s"
 
 #: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
-msgstr "Ingen URL å starte"
+msgstr "ไม่มี URL จะเปิด"
 
 #: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
-msgstr "Oppføringen kan ikke startes"
+msgstr "เรียกใช้ไม่ได้"
 
 #: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
-msgstr "Ingen kommando (Exec) å starte"
+msgstr "ไม่มีคำสั่ง (Exec) จะเรียก"
 
 #: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
-msgstr "Forsøk på å starte ugyldig kommando (Exec)"
+msgstr "คำสั่งที่จะเรียก (Exec) นั้นใช้ไม่ได้"
 
 #: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
-msgstr "Uten navn"
+msgstr "ไม่มีชื่อ"
 
 #: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
-msgstr "Ukjent koding for: %s"
+msgstr ""
 
 #: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
-msgstr "Feil under skriving av fil «%s»: %s"
+msgstr "ผิดพลาดขณะเขียนแฟ้ม '%s': %s"
 
 #: libgnome-desktop/gnome-ditem-edit.c:209
 #: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Directory"
-msgstr "Katalog"
+msgstr "โฟลเดอร์"
 
 #: libgnome-desktop/gnome-ditem-edit.c:213
 msgid "Application"
-msgstr "Applikasjon"
+msgstr "โปรแกรม"
 
 #: libgnome-desktop/gnome-ditem-edit.c:220
 msgid "Link"
-msgstr "Lenke"
+msgstr "ลิ้งค์"
 
 #: libgnome-desktop/gnome-ditem-edit.c:222
 msgid "FSDevice"
-msgstr "FSEnhet"
+msgstr "FSDevice"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
 msgid "MIME Type"
-msgstr "MIME-type"
+msgstr "MIME Type"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
-msgstr "Tjeneste"
+msgstr ""
 
 #: libgnome-desktop/gnome-ditem-edit.c:228
 msgid "ServiceType"
-msgstr "Tjenestetype"
+msgstr ""
 
 #: libgnome-desktop/gnome-ditem-edit.c:314
 msgid "URL:"
@@ -395,105 +395,103 @@ msgstr "URL:"
 #: libgnome-desktop/gnome-ditem-edit.c:317
 #: libgnome-desktop/gnome-ditem-edit.c:387
 msgid "Command:"
-msgstr "Kommando:"
+msgstr "คำสั่ง:"
 
 #. Name
 #: libgnome-desktop/gnome-ditem-edit.c:338
 msgid "Name:"
-msgstr "Navn:"
+msgstr "ชื่อ:"
 
+# waiting to see the doc what this is for
 #. Generic Name
 #: libgnome-desktop/gnome-ditem-edit.c:356
 msgid "Generic name:"
-msgstr "Vanlig navn:"
+msgstr ""
 
 #. Comment
 #: libgnome-desktop/gnome-ditem-edit.c:374
 msgid "Comment:"
-msgstr "Kommentar:"
+msgstr "คำอธิบาย:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:391
 msgid "Browse"
-msgstr "Bla gjennom"
+msgstr "เลือกแฟ้ม"
 
 #: libgnome-desktop/gnome-ditem-edit.c:401
 msgid "Type:"
-msgstr "Type:"
+msgstr "ชนิด:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:419
 msgid "Icon:"
-msgstr "Ikon:"
+msgstr "สัญลักษ์"
 
 #: libgnome-desktop/gnome-ditem-edit.c:429
 msgid "Browse icons"
-msgstr "Bla gjennom ikoner"
+msgstr "เลือกสัญลักษ์"
 
 #: libgnome-desktop/gnome-ditem-edit.c:444
 msgid "Run in Terminal"
-msgstr "Kjør i terminal"
+msgstr "เรียกใช้ในเทอมินอล"
 
 #: libgnome-desktop/gnome-ditem-edit.c:658
 #: libgnome-desktop/gnome-ditem-edit.c:757
 msgid "Language"
-msgstr "Språk"
+msgstr "ภาษา"
 
 #: libgnome-desktop/gnome-ditem-edit.c:663
 #: libgnome-desktop/gnome-ditem-edit.c:765
 msgid "Name"
-msgstr "Navn"
+msgstr "ชื่อ"
 
 #: libgnome-desktop/gnome-ditem-edit.c:668
 #: libgnome-desktop/gnome-ditem-edit.c:773
 msgid "Generic name"
-msgstr "Vanlig navn"
+msgstr ""
 
 #: libgnome-desktop/gnome-ditem-edit.c:673
 #: libgnome-desktop/gnome-ditem-edit.c:783
 msgid "Comment"
-msgstr "Kommentar"
+msgstr "คำอธิบาย:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:709
 msgid "Try this before using:"
-msgstr "Prøv dette før bruk:"
+msgstr "ลองนี่ก่อนที่จะใช้"
 
 #: libgnome-desktop/gnome-ditem-edit.c:721
 msgid "Documentation:"
-msgstr "Dokumentasjon:"
+msgstr "คู่มือ:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:733
 msgid "Name/Comment translations:"
-msgstr "Oversettelser av navn/kommentar:"
+msgstr "คำแปลของชื่อและคำอธิบาย:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:786
 msgid "Add/Set"
-msgstr "Legg til/sett"
+msgstr "เพิ่ม/ตั้ง"
 
 #: libgnome-desktop/gnome-ditem-edit.c:792
 msgid "Add or Set Name/Comment Translations"
-msgstr "Legg til eller sett oversettelser av navn/kommentar"
+msgstr "เพิ่มหรือตั้งคำแปลของ ชื่อและคำอธิบาย"
 
 #: libgnome-desktop/gnome-ditem-edit.c:794
 msgid "Remove"
-msgstr "Fjern"
+msgstr "ลบ"
 
 #: libgnome-desktop/gnome-ditem-edit.c:799
 msgid "Remove Name/Comment Translation"
-msgstr "Fjern oversettelser av navn/kommentar"
+msgstr "ลบคำแปลของชื่อและคำอธิบาย"
 
 #: libgnome-desktop/gnome-ditem-edit.c:815
 msgid "Basic"
-msgstr "Grunnleggende"
+msgstr "พื้นฐาน"
 
 #: libgnome-desktop/gnome-ditem-edit.c:823
 msgid "Advanced"
-msgstr "Avansert"
+msgstr "ขั้นสูง"
 
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
-msgstr "_Vis hint ved oppstart"
+msgstr "แสดงคำแนะนำตอนเริ่มโปรแกรม (_show)"
 
 #~ msgid "Home"
-#~ msgstr "Hjem"
-
-#~ msgid "Home Applications"
-#~ msgstr "Hjemmeapplikasjoner"
+#~ msgstr "บ้าน"
