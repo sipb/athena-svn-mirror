@@ -1,6 +1,6 @@
 %!
 
-% $Id: banner.ps,v 1.3 1999-09-04 05:12:02 mwhitson Exp $
+% $Id: banner.ps,v 1.4 2000-03-01 20:00:29 mwhitson Exp $
 
 % The following should be defined by a wrapper (such as banner.pl):
 
@@ -213,13 +213,13 @@ inchwidth inch 0 translate 90 rotate
 		dup llx exch moveto urx exch lineto stroke
 	} for
 	[r 2 r mul] r setdash
-	lly urx llx sub r div 3 div cvi 3 r mul mul s30 div c30 mul sub
+	lly urx llx sub r div 3 div 0.5 add cvi 3 r mul mul s30 div c30 mul sub
 	2 r c30 mul mul ury {
 		dup llx exch moveto
 		ury exch sub c30 div s30 mul llx add ury lineto stroke
 	} for
 	lly 2 r c30 mul mul
-	ury urx llx sub r div 3 div cvi 3 r mul mul s30 div c30 mul add
+	ury urx llx sub r div 3 div 0.5 add cvi 3 r mul mul s30 div c30 mul add
 	{
 		dup llx exch moveto
 		llx sub c30 div s30 mul llx add lly lineto stroke
