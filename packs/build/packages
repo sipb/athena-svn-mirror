@@ -1,4 +1,4 @@
-# $Id: packages,v 1.185 2002-12-11 18:54:12 ghudson Exp $
+# $Id: packages,v 1.186 2002-12-24 15:51:01 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -144,7 +144,7 @@ third/eel			requires librsvg
 third/emacs			requires hesiod,krb5,texinfo
 third/enscript
 third/esound			requires audiofile
-third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,bison
+third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,soup,bison
 third/flex			on solaris
 third/freetype
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
@@ -212,6 +212,7 @@ third/rs
 third/sawfish			requires rep-gtk,gnome-libs,control-center
 third/scrollkeeper
 third/sendmail			requires hesiod,tcp_wrappers
+third/soup			requires glib,libxml,popt,openssl
 third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
