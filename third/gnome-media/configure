@@ -1608,7 +1608,7 @@ fi
 
 PACKAGE=gnome-media
 
-VERSION=2.2.0
+VERSION=2.2.1.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -9999,7 +9999,7 @@ _ACEOF
     fi
 fi
 
-ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mn ms nl nn no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_TW zh_CN"
+ALL_LINGUAS="am ar az be bg ca cs da de el en_GB es et eu fi fr ga gl he hi hu it ja ko lt lv mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_TW zh_CN"
 
 
 for ac_header in locale.h
@@ -12019,7 +12019,7 @@ PROGRAMS_GRECORD="grecord"
 # FIXME: COMMON_MODULES should go because it is silly ...
 # ... and I'm sure we can narrow down some of these dependencies because
 # ... they depend on each other
-COMMON_MODULES="gtk+-2.0 gconf-2.0 libgnomeui-2.0 libglade-2.0 >= 1.99.12 libglade-2.0 gconf-2.0 gnome-desktop-2.0 gstreamer-0.5 gstreamer-libs-0.5"
+COMMON_MODULES="gtk+-2.0 gconf-2.0 libgnomeui-2.0 libglade-2.0 >= 1.99.12 libglade-2.0 gconf-2.0 gnome-desktop-2.0 gstreamer-$GST_MAJORMINOR gstreamer-libs-$GST_MAJORMINOR"
 
   succeeded=no
 
@@ -12117,7 +12117,7 @@ echo "${ECHO_T}$GSTPROPS_LIBS" >&6
   fi
 
 
-GSTPROPS_LIBS="$GSTPROPS_LIBS $x_libs -lgstgconf-0.5"
+GSTPROPS_LIBS="$GSTPROPS_LIBS $x_libs -lgstgconf-$GST_MAJORMINOR"
 
 
 

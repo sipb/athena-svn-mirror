@@ -1,16 +1,16 @@
 # Swedish messages for gnome-media.
-# Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Martin Wahlen <mva@sbbs.se>, 1998, 1999.
 # Andreas Hyden <a.hyden@cyberpoint.se>, 2000.
-# Christian Rose <menthos@menthos.com>, 2001, 2002.
+# Christian Rose <menthos@menthos.com>, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.3 2003-01-29 21:50:23 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2003-03-24 04:47:30 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media\n"
-"POT-Creation-Date: 2002-12-22 17:46+0100\n"
-"PO-Revision-Date: 2002-12-22 17:47+0100\n"
+"POT-Creation-Date: 2003-01-30 00:34+0100\n"
+"PO-Revision-Date: 2003-01-30 00:35+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1294,7 +1294,7 @@ msgstr "Okänt album"
 
 #: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
 msgid "Playing"
-msgstr "Uppspelning"
+msgstr "Spelar"
 
 #. Update the tray icon tooltip
 #: gnome-cd/callbacks.c:557
@@ -1357,7 +1357,7 @@ msgid ""
 "c) %s is not the CD drive.\n"
 msgstr ""
 "%s verkar inte peka till en giltig cd-enhet. Detta kan bero på att:\n"
-"a) Cd-stöd är inte inkompilerad i din maskin\n"
+"a) Cd-stöd finns inte i din maskin\n"
 "b) Du har inte rätt rättigheter för att komma åt cd-enheten\n"
 "c) %s är inte cd-enheten.\n"
 
@@ -1504,20 +1504,20 @@ msgstr "Mata ut cd"
 msgid "Eject"
 msgstr "Mata ut"
 
-#: gnome-cd/gnome-cd.c:731
+#: gnome-cd/gnome-cd.c:734
 msgid "CD device to use"
 msgstr "Cd-enhet att använda"
 
-#: gnome-cd/gnome-cd.c:740
+#: gnome-cd/gnome-cd.c:736
 msgid "Only start if there isn't already a CD player application running"
 msgstr "Starta endast om det inte finns ett annat cd-spelarprogram som kör"
 
-#: gnome-cd/gnome-cd.c:742
+#: gnome-cd/gnome-cd.c:738
 msgid "Play the CD on startup"
 msgstr "Spela cd-skivan vid uppstart"
 
 #. Stick a message box here?
-#: gnome-cd/gnome-cd.c:773
+#: gnome-cd/gnome-cd.c:769
 msgid "Cannot create player"
 msgstr "Kan inte skapa spelare"
 
@@ -1559,16 +1559,16 @@ msgid ""
 "What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
 "playing, 2 = Eject the CD, 3 = Attempt to close the tray"
 msgstr ""
-"Vilken åtgärd ska cd-spelaren utföra vid avslut? 0 = ingenting, 1 = stoppa "
-"spelande, 2 = mata ut cd-skivan, 3 = försök stänga luckan"
+"Vilken åtgärd ska cd-spelaren utföra vid avslut? 0 = ingenting, 1 = sluta "
+"spela, 2 = mata ut cd-skivan, 3 = försök stänga luckan"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:9
 msgid ""
 "What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
 "playing, 2 = Stop playing"
 msgstr ""
-"Vilken åtgärd ska cd-spelaren utföra vid uppstart? 0 = ingenting, 1 = starta "
-"spelande, 2 = stoppa spelande"
+"Vilken åtgärd ska cd-spelaren utföra vid uppstart? 0 = ingenting, 1 = börja "
+"spela, 2 = sluta spela"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:10
 msgid "What theme should the CD player use for it's appearance"
@@ -2481,10 +2481,9 @@ msgstr "Ljud_utgång:"
 msgid "Click Ok to finish"
 msgstr "Klicka på OK för att avsluta"
 
-# Osäker
 #: gstreamer-properties/gstreamer-properties.glade.h:7
 msgid "Default Sink"
-msgstr "Standardslask"
+msgstr "Standardutgång"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:8
 msgid "Default Source"
@@ -2500,11 +2499,11 @@ msgstr "Pipeline:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:11
 msgid "Test..."
-msgstr "Test..."
+msgstr "Testa..."
 
 #: gstreamer-properties/gstreamer-properties.glade.h:12
 msgid "Testing Pipeline"
-msgstr "Testpipeline"
+msgstr "Testar pipeline"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:14
 msgid "Video _Input:"

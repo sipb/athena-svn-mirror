@@ -1,15 +1,15 @@
 # French translation of gnome-media.
-# Copyright (C) 1998-2002 Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 Free Software Foundation, Inc.
 # Vincent Renardias <vincent@ldsol.com>, 1998-1999.
 # Thibaut Cousin <Thibaut.Cousin@clermont.in2p3.fr>, 1999.
-# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2000-2002.
+# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2000-2003.
 # Christophe Fergeau <teuf@users.sourceforge.net>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-media 2.1.3\n"
-"POT-Creation-Date: 2002-12-20 13:23+0100\n"
-"PO-Revision-Date: 2002-12-20 12:42+0100\n"
+"Project-Id-Version: gnome-media 2.2.0\n"
+"POT-Creation-Date: 2003-01-26 00:44+0100\n"
+"PO-Revision-Date: 2003-01-26 00:32+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: Gnome French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr "_Ne pas envoyer d'informations"
 
 #: cddb-slave2/cddb-slave-capplet.c:666
 msgid "Send real _info"
-msgstr "Envoyer les informations _ré_elles"
+msgstr "Envoyer les informations _réelles"
 
 #: cddb-slave2/cddb-slave-capplet.c:675
 msgid "Send _other info..."
@@ -1192,7 +1192,7 @@ msgstr "%s Enreg."
 #: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
-msgstr "Contrôle du volume"
+msgstr "Contrôleur de volume"
 
 #: gmix/gmix.c:1748
 msgid "GNOME Volume Control"
@@ -1205,7 +1205,7 @@ msgstr "Un mixeur pour les périphériques sonores"
 #: gmix/gnome-volume-control.desktop.in.in.h:1
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:1
 msgid "Adjust the volume level"
-msgstr "Ajuste le volume"
+msgstr "Ajuste le niveau du volume"
 
 #: gmix/prefs.c:193 gmix/prefs.c:196
 msgid "Shown"
@@ -1507,22 +1507,22 @@ msgstr "Éjecter le CD"
 msgid "Eject"
 msgstr "Éjecter"
 
-#: gnome-cd/gnome-cd.c:731
+#: gnome-cd/gnome-cd.c:734
 msgid "CD device to use"
 msgstr "Périphérique CD à utiliser"
 
-#: gnome-cd/gnome-cd.c:740
+#: gnome-cd/gnome-cd.c:736
 msgid "Only start if there isn't already a CD player application running"
 msgstr ""
 "Ne démarrer que s'il n'y a pas déjà une application de lecture de CD en "
 "fonctionnement"
 
-#: gnome-cd/gnome-cd.c:742
+#: gnome-cd/gnome-cd.c:738
 msgid "Play the CD on startup"
 msgstr "Jouer le CD au démarrage"
 
 #. Stick a message box here?
-#: gnome-cd/gnome-cd.c:773
+#: gnome-cd/gnome-cd.c:769
 msgid "Cannot create player"
 msgstr "Impossible de créer le lecteur"
 
@@ -1682,7 +1682,7 @@ msgstr "Enregistre des échantillons sonores"
 #: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
 #: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 msgid "Sound Recorder"
-msgstr "Enregistreur de son"
+msgstr "Enregistreur de sons"
 
 #: grecord/src/grec.c:56
 msgid "Sound Recorder:"

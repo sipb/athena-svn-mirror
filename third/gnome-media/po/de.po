@@ -1,15 +1,15 @@
 # German gnome-media translation
 # Copyright (C) 2000, 2001 Free Software Foundation, Inc.
+# Matthias Warkus <mawa@iname.com>, 1999.
 # Karl Eichwalder <ke@suse.de>, 1999, 2000.
 # Christian Meyer <chrisime@gnome.org>, 2000, 2001, 2002.
 # Christian Neumair <chris@gnome-de.org>, 2002, 2003.
-# Matthias Warkus <mawa@iname.com>, 1999.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media 2.2.x\n"
-"POT-Creation-Date: 2003-01-21 20:30+0100\n"
-"PO-Revision-Date: 2003-01-21 20:29+0100\n"
+"POT-Creation-Date: 2003-02-01 01:26+0100\n"
+"PO-Revision-Date: 2003-02-01 01:29+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -785,21 +785,21 @@ msgstr "_Interpret:"
 
 #: cddb-slave2/cddb-track-editor.c:640
 msgid "Disc _Title:"
-msgstr "CD-_Titel:"
+msgstr "_CD-Titel:"
 
 # At the moment we don't have enough room to avoid an abbrev... -ke-
 #: cddb-slave2/cddb-track-editor.c:650
 msgid "Show advanced disc options"
-msgstr "Erweiterte CD-Optionen zeigen"
+msgstr "Erweiterte CD-Einstellungen anzeigen"
 
 #: cddb-slave2/cddb-track-editor.c:651
 msgid "Hide advanced disc options"
-msgstr "Erweiterte CD-Optionen verbergen"
+msgstr "Erweiterte CD-Einstellungen verbergen"
 
 #. Top box: Disc comments. Maybe should be a GtkText?
 #: cddb-slave2/cddb-track-editor.c:664
 msgid "_Disc comments:"
-msgstr "_CD-Kommentare:"
+msgstr "CD-_Kommentar:"
 
 #. Genre
 #: cddb-slave2/cddb-track-editor.c:679
@@ -822,11 +822,11 @@ msgstr "Dauer"
 #. More advanced options
 #: cddb-slave2/cddb-track-editor.c:755
 msgid "Show advanced track options"
-msgstr "Erweiterte Titeloptionen zeigen"
+msgstr "Erweiterte Titeleinstellungen anzeigen"
 
 #: cddb-slave2/cddb-track-editor.c:756
 msgid "Hide advanced track options"
-msgstr "Erweiterte Titeloptionen verbergen"
+msgstr "Erweiterte Titeleinstellungen verbergen"
 
 #. Extra data
 #: cddb-slave2/cddb-track-editor.c:764
@@ -994,7 +994,7 @@ msgstr "Digitales Loopback"
 
 #: gmix/device_labels_linux.h:7
 msgid "Vol  "
-msgstr "Vol  "
+msgstr "Ausg.  "
 
 #: gmix/device_labels_linux.h:7
 msgid "Bass "
@@ -1099,13 +1099,13 @@ msgid ""
 "\n"
 "Press Quit to exit Volume control"
 msgstr ""
-"Die Lautstärkeregelung konnte nicht gestartet werden.\n"
+"Der Lautstärkeregler konnte nicht gestartet werden.\n"
 "\n"
 "Das Audio-Gerät »%s«  konnte nicht geöffnet werden.\n"
-"Bitte überprüfen Sie, ob Sie die Rechte haben, uauf »%s«zuzugreifen und im "
-"kernel Audio-Unterstützung einkompiliert is.\n"
+"Bitte überprüfen Sie, ob Sie die Rechte haben, um auf »%s«zuzugreifen und im "
+"Kernel Audio-Unterstützung einkompiliert ist.\n"
 "\n"
-"Klicken Sie den Knopf »Beenden«, um die Lautstärkeregelung zu beenden"
+"Klicken Sie den Knopf »Beenden« an, um die Lautstärkeregler zu beenden"
 
 #: gmix/gmix.c:381
 msgid ""
@@ -1115,12 +1115,12 @@ msgid ""
 "\n"
 "Press Quit to quit Volume control"
 msgstr ""
-"Die Lautstärkeregelung konnte nicht gestartet werden.\n"
+"Der Lautstärkeregler konnte nicht gestartet werden.\n"
 "\n"
-"Drücken Sie den Knopf »Details«, um detailiertere Informationen zum Grund "
+"Klicken Sie den Knopf »Details« an, um detailiertere Informationen zum Grund "
 "des Problems zu erhalten.\n"
 "\n"
-"Klicken Sie den Knopf »Beenden«, um die Lautstärkeregelung zu beenden"
+"Klicken Sie den Knopf »Beenden« an, um den Lautstärkeregler zu beenden"
 
 #: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
 msgid "_Details"
@@ -1137,7 +1137,7 @@ msgid ""
 "OSS version %d.%d.%d, and your system is running\n"
 "a version prior to 3.6.0.\n"
 msgstr ""
-"Warnung: Diese Version der GNOME-Lautstärkeregelung wurde mit der\n"
+"Warnung: Diese Version des GNOME-Lautstärkereglers wurde mit der\n"
 "OSS-Version %d.%d.%d kompiliert und auf Ihrem System\n"
 "ist eine ältere Version als 3.6.0 installiert.\n"
 
@@ -1148,7 +1148,7 @@ msgid ""
 "OSS version %d.%d.%d, and your system is running\n"
 "version %d.%d.%d.\n"
 msgstr ""
-"Warnung: Diese Version der GNOME-Lautstärkeregelung wurde mit der\n"
+"Warnung: Diese Version des GNOME-Lautstärkereglers wurde mit der\n"
 "OSS-Version %d.%d.%d kompiliert und auf Ihrem System\n"
 "ist Version %d.%d.%d installiert.\n"
 
@@ -1182,7 +1182,7 @@ msgstr "%s Stumm"
 
 #: gmix/gmix.c:1258
 msgid "Rec."
-msgstr "Aufn."
+msgstr "Aufnahme"
 
 #: gmix/gmix.c:1270
 #, c-format
@@ -1218,7 +1218,7 @@ msgstr "Mischpult-Beschriftung"
 #. Add the label reset button
 #: gmix/prefs.c:216
 msgid "_Reset labels to their defaults"
-msgstr "Beschriftungen auf Vorgaben zu_rücksetzen"
+msgstr "Beschriftungen auf Vorgaben _zurücksetzen"
 
 #: gmix/prefs.c:313
 msgid "Gnome Volume Control Preferences"
@@ -1243,7 +1243,8 @@ msgstr "Zeitzeile"
 #: gnome-cd/access/cddisplayaccessible.c:189
 msgid "Line for displaying the time elapsed for the current track"
 msgstr ""
-"Zeile um die beim Abspielen des aktuellen Titels vergangene Zeit anzuzeigen"
+"Zeile um die bei der Wiedergabe des aktuellen Titels verstrichene Zeit "
+"anzuzeigen"
 
 #: gnome-cd/access/cddisplayaccessible.c:192
 msgid "Info Line"
@@ -1273,7 +1274,7 @@ msgstr "Zeile um den Namen des Albums anzuzeigen"
 #: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
 #: grecord/gsr.xml.h:13
 msgid "Play"
-msgstr "Abspielen"
+msgstr "Wiedergabe"
 
 #: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
 #: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
@@ -1379,7 +1380,7 @@ msgstr "%d - Unbekannt"
 
 #: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
-msgstr "Vohe_riger Titel"
+msgstr "_Vorheriger Titel"
 
 #: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
@@ -1387,7 +1388,7 @@ msgstr "_Stopp"
 
 #: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
-msgstr "Abs_pielen / Pause"
+msgstr "_Wiedergabe / Pause"
 
 #: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
@@ -1436,10 +1437,10 @@ msgid ""
 msgstr ""
 "Der CD-Player konnte nicht gestartet werden.\n"
 "\n"
-"Drücken Sie den Details-Knopf, um detailiertere Informationen zum Grund für "
-"das Problem zu erhalten.\n"
+"Klicken Sie den Details-Knopf an, um detailiertere Informationen zum Grund "
+"dieses Problems zu erhalten.\n"
 "\n"
-"Klicken Sie auf den »Gerät festlegen«-Knopf, um zu einem Dialog zu gelangen, "
+"Klicken Sie den »Gerät festlegen«-Knopf an, um zu einem Dialog zu gelangen, "
 "mit dem Sie das Gerät festlegen können oder klicken Sie »Beenden« an, um den "
 "GNOME-CD-Player zu beenden"
 
@@ -1489,7 +1490,7 @@ msgstr "Rückwärts"
 
 #: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
-msgstr "Abspielen / Pause"
+msgstr "Wiedergabe / Pause"
 
 #: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
@@ -1530,7 +1531,7 @@ msgstr "Player konnte nicht erzeugt werden"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
-msgstr "Audio-CDs abspielen"
+msgstr "Audio-CDs wiedergeben"
 
 #: gnome-cd/gnome-cd.schemas.in.in.h:1
 msgid "Action on application exit"
@@ -1628,7 +1629,7 @@ msgstr "CD abs_pielen"
 
 #: gnome-cd/preferences.c:901
 msgid "Start playing CD when CD Player starts"
-msgstr "CD beim Start des CD-Players abspielen"
+msgstr "CD beim Start des CD-Players wiedergeben"
 
 #: gnome-cd/preferences.c:910
 msgid "_Stop playing CD"
@@ -2021,7 +2022,7 @@ msgstr "_Mischpult aufrufen"
 
 #: grecord/src/gui.c:55
 msgid "Run GNOME Volume Control"
-msgstr "GNOME-Lautstärkeregler ausführen"
+msgstr "Den GNOME-Lautstärkeregler ausführen"
 
 #: grecord/src/gui.c:69
 msgid "Add echo"
@@ -2172,7 +2173,7 @@ msgstr "Den Klang _wiederholen"
 
 #: grecord/src/gui.c:846
 msgid "Play the sound _once only."
-msgstr "Den Klang _einmal abspielen"
+msgstr "Den Klang _einmal ausgeben"
 
 #: grecord/src/gui.c:852
 msgid "Repeat _forever"
@@ -2217,14 +2218,15 @@ msgstr "Sound"
 # At the moment we don't have enough room to avoid an abbrev... -ke-
 #: grecord/src/gui.c:970
 msgid "Sound options"
-msgstr "Audio-Optionen"
+msgstr "Audio-Einstellungen"
 
 #: grecord/src/gui.c:979
 msgid ""
 "Note: These options only take effect whenever a new sound sample\n"
 "is created. They do not operate on an existing sample."
 msgstr ""
-"Hinweis: Diese Optionen werden erst wirksam, sobald ein neues Audiosample\n"
+"Hinweis: Diese Einstellungen werden erst wirksam, sobald ein neues "
+"Audiosample\n"
 "erstellt wird. Sie verändern nichts an einer bereits existierenden Datei."
 
 #: grecord/src/gui.c:992
@@ -2331,7 +2333,7 @@ msgstr "Hilfe zum Audio-Recorder anzeigen"
 
 #: grecord/gsr.xml.h:8
 msgid "File _Information"
-msgstr "Datei_informationen"
+msgstr "_Informationen"
 
 #: grecord/gsr.xml.h:9
 msgid "Main toolbar"
@@ -2343,7 +2345,7 @@ msgstr "Öffnen"
 
 #: grecord/gsr.xml.h:14
 msgid "Play sound"
-msgstr "Die Sound-Datei wiedergeben"
+msgstr "Die Audio-Aufnahme wiedergeben"
 
 #: grecord/gsr.xml.h:15
 msgid "Quit"
@@ -2359,7 +2361,7 @@ msgstr "_Zuletzt geöffnete Dateien"
 
 #: grecord/gsr.xml.h:19
 msgid "Record sound"
-msgstr "Den Sound aufnehmen"
+msgstr "Die Audio-Ausgabe mitschneiden"
 
 #: grecord/gsr.xml.h:20
 msgid "Run Mixer"
@@ -2407,7 +2409,7 @@ msgstr "_Info"
 
 #: grecord/gsr.xml.h:33
 msgid "_Close Window"
-msgstr "Fenster S_chließen"
+msgstr "Fenster s_chließen"
 
 #: grecord/gsr.xml.h:34
 msgid "_Contents"
@@ -2482,7 +2484,7 @@ msgstr "Audio-_Ausgabe:"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:6
 msgid "Click Ok to finish"
-msgstr "Klicken Sie auf den OK-Knopf, um diesen Vorgang abzuschließen"
+msgstr "Klicken Sie den OK-Knopf an, um diesen Vorgang abzuschließen"
 
 #: gstreamer-properties/gstreamer-properties.glade.h:7
 msgid "Default Sink"
