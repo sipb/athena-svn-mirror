@@ -2316,8 +2316,8 @@ telnet(user)
 		break;
 	    }
 	    if (auth_has_failed) {
-		printf("\nAuthentication negotation has failed, which is required for\n");
-		printf("encryption.");
+		printf("\nAuthentication negotiation has failed, which is required for\n");
+		printf("encryption.\n\r");
 		break;
 	    }
 	    if (my_want_state_is_dont(TELOPT_ENCRYPT) ||
@@ -2345,6 +2345,7 @@ telnet(user)
 	    }
 	    telnet_spin();
 	}
+	fflush(stdout);
 	if (intr_waiting) {
 		intr_waiting = 0;
 		setconnmode(0);
