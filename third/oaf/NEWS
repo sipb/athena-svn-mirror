@@ -1,4 +1,14 @@
 ===================================
+oaf-0.6.8
+---------
+
+New in this release:
+
+* Fix oaf-slay username detection (Laszlo)
+* Fix for multiple activation race condition (Michael)
+* New translations (Wang Jian, Pablo Saratxaga)
+
+===================================
 oaf-0.6.7
 ---------
 

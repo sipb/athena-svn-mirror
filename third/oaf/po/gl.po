@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"POT-Creation-Date: 2002-01-17 19:59-0800\n"
 "PO-Revision-Date: 2001-08-19 02:30+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -169,7 +169,7 @@ msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Aínda non está soportada a activación de obxectos shlib nun proceso remoto"
 
-#: oafd/od-corba.c:462
+#: oafd/od-corba.c:488
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

@@ -1,3 +1,80 @@
+2002-01-18  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	reviewed by: <delete if not using a buddy>
+
+	* az.po:
+	* bg.po:
+	* da.po:
+	* de.po:
+	* el.po:
+	* es.po:
+	* eu.po:
+	* fi.po:
+	* fr.po:
+	* ga.po:
+	* gl.po:
+	* hu.po:
+	* it.po:
+	* ja.po:
+	* ko.po:
+	* nl.po:
+	* nn.po:
+	* no.po:
+	* pl.po:
+	* pt.po:
+	* pt_BR.po:
+	* ro.po:
+	* ru.po:
+	* sk.po:
+	* sl.po:
+	* sv.po:
+	* ta.po:
+	* tr.po:
+	* uk.po:
+	* zh_CN.po:
+	* zh_TW.po:
+
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Added Basque file
+
+2001-12-26  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Small correction in the charset field of the po file.
+
+2001-12-06  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Updated German translation.
+
+2001-11-20  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-11-19  Pablo Saratxaga  <pablo@mandrakesoftcom>
+
+	* az.po: Updated Azeri file
+
+2001-11-14  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2001-11-09  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Simplified Chinese translation converted from
+	bonobo-activation, and updated, by Wang Jian.
+
+2001-11-06  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Nilgün.
+
+2001-10-28  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) language.
+
+2001-10-28  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
 2001-10-26  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* az.po, da.po, de.po, el.po, es.po, fi.po, fr.po, ga.po, gl.po,

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: OAF 0.6.x\n"
-"POT-Creation-Date: 2001-10-24 11:43-0700\n"
-"PO-Revision-Date: 2001-07-31 00:45+0200\n"
+"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"PO-Revision-Date: 2001-12-06 01:03+0100\n"
 "Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -79,22 +79,22 @@ msgstr "OAF-Optionen"
 #: liboaf/oaf-plugin.c:99
 #, c-format
 msgid "g_module_open of `%s' failed with `%s'"
-msgstr ""
+msgstr "g_module_open von `%s' schlug fehl mit `%s'"
 
 #: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
 #, c-format
 msgid "Can't find symbol OAF_Plugin_info in `%s'"
-msgstr ""
+msgstr "OAF_Plugin_info-Symbol kann nicht in `%s' gefunden werden"
 
 #: liboaf/oaf-plugin.c:203
 #, c-format
 msgid "Factory '%s' returned NIL for `%s'"
-msgstr ""
+msgstr "Fabrik '%s' gab NIL für `%s' zurück"
 
 #: liboaf/oaf-plugin.c:220
 #, c-format
 msgid "Shlib '%s' didn't contain `%s'"
-msgstr ""
+msgstr "Shlib '%s' enthielt `%s' nicht"
 
 #: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
@@ -125,9 +125,8 @@ msgid "Could not activate server: "
 msgstr "Der Server konnte nicht aktiviert werden: "
 
 #: oafd/main.c:62
-#, fuzzy
 msgid "Directory to read .oaf files from"
-msgstr "Verzeichnis, von dem aus .oafinfo-Dateien gelesen werden soll"
+msgstr "Verzeichnis, von dem aus .oaf-Dateien gelesen werden soll"
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -162,12 +161,14 @@ msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Es können noch keine shlib-Objekte in einem fernen Prozess aktiviert werden"
 
-#: oafd/od-corba.c:462
+#: oafd/od-corba.c:488
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "
 "missing or incorrectly installed .oaf file."
 msgstr ""
+"Aktivierungsaufzeichnung für Server '%s' konnte nicht gefunden werden. "
+"Wahrscheinlich ist eine .oaf-Datei falsch installiert oder fehlt."
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
@@ -263,6 +264,3 @@ msgstr "Verzeichnisse in der OAF-Konfigurationsdatei zeigen"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Pfad zur OAF-Konfigurationsdatei zeigen"
-
-#~ msgid "Exec failed: %d (%s)\n"
-#~ msgstr "Ausführen gescheitert: %d (%s)\n"
