@@ -1,7 +1,7 @@
 ;; tar-file-handler.jl -- pretend that tar files are (read-only) directories
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
-;; $Id: tar.jl,v 1.1.1.1 2000-11-12 06:11:17 ghudson Exp $
+;; $Id: tar.jl,v 1.2 2001-06-22 03:42:53 rbasch Exp $
 
 ;; This file is part of librep.
 
@@ -102,17 +102,18 @@
     (error "Can't find/execute GNU tar")))
 
 (defun tarfh-call-tar (input-file output op tar-file #!rest args)
-  (unless tarfh-gnu-tar-version
-    (tarfh-check-tar-program))
   ;; XXX handle non-local files by copying
   ;; XXX but then again, that's a bad idea in gaolled code..
-  (setq tar-file (local-file-name tar-file))
-  (let*
-      ((process (make-process output))
-       (mode (cdr (assoc-regexp tar-file tarfh-compression-modes)))
-       (all-args `(,op ,@(and mode (list mode)) "--file" ,tar-file ,@args)))
-    (zerop (apply call-process process input-file
-		  tarfh-gnu-tar-program all-args))))
+  (when (file-exists-p tar-file)
+    (setq tar-file (local-file-name tar-file))
+    (unless tarfh-gnu-tar-version
+      (tarfh-check-tar-program))
+    (let* ((process (make-process output))
+	   (mode (cdr (assoc-regexp tar-file tarfh-compression-modes)))
+	   (all-args `(,op ,@(and mode (list mode))
+		       "--file" ,tar-file ,@args)))
+      (zerop (apply call-process process input-file
+		    tarfh-gnu-tar-program all-args)))))
 
 
 ;; extracting files (with caching)
