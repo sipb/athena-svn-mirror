@@ -1,13 +1,16 @@
-# $Id: Makefile,v 1.2 1997-04-01 19:06:41 ghudson Exp $
+# $Id: Makefile,v 1.3 1997-04-01 19:16:40 ghudson Exp $
 
 SHELL=/bin/sh
 ATHMANDIR=/usr/athena/man
+USRETC=/usr/etc
 
 all:
 
 check:
 
 install:
+	-mkdir -p ${DESTDIR}${USRETC}
+	install -c -m 555 -o 0 -g 0 snmpd ${DESTDIR}${USRETC}
 	cd ${DESTDIR}${ATHMANDIR} && /usr/lib/makewhatis -M . whatis
 	cd ${DESTDIR}${ATHMANDIR} && for n in 1 2 3 4 5 6 7 8; do \
 		if [ ! -f man$$n/* ]; then \
