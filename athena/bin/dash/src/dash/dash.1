@@ -1,5 +1,5 @@
 .\" This file uses -man macros.
-.TH DASH 1 "August 8, 1991"
+.TH DASH 1 "December 14, 1994"
 .SH NAME
 dash \- Athena Dashboard
 .SH SYNOPSIS
@@ -36,25 +36,6 @@ widgets which will be added in the future. Replacing other screen
 accessory programs with \fIdash\fR widgets can significantly increase
 system performance, especially on older systems with less real memory.
 .PP
-For example,
-.I dash
-can emulate the
-.I xlogout
-program on a vax in 220K of memory space as opposed to 440K for the X
-Toolkit version of
-.I xlogout.
-Much more significantly, \fIdash\fR can replace several screen
-accessories at a fraction of the cost of running each separately, as
-each added widget adds only a few kilobytes of memory to
-.I dash's
-running size.
-.I Dash
-configured to put a clock and logout button on the screen will use 222K
-on a vax, compared to the 760K required to run \fIxclock\fR and
-\fIxlogout\fR together.  On older workstations which often have only
-four megabytes of memory, the difference in system response time is
-immediately noticeable.
-.PP
 .I Dash's
 menu widget is of special note.  It allows the user to specify a list of
 desired menu items and their general desired locations, and will
@@ -66,11 +47,11 @@ below for details and an example on specifying menu widgets.
 .I Dash
 accepts many of the standard X Toolkit command line options:
 .TP
-.B \(+-reverse
+.B\(+-reverse
 .br
 .ns
 .HP 9
-.B \(+-rv
+.B\(+-rv
 .br
 This option causes
 .I dash
@@ -165,14 +146,14 @@ instead of the default menus file listed in the "*Menu.file" resource.
 If more specific menu file resources are specifed, they will not be
 overriden by this option.
 .TP 9
-.B \(+-rude
+.B\(+-rude
 Specifies whether or not \fIdash\fR grabs the mouse pointer whenever one
 of its menus is opened.  \fI-rude\fR causes the pointer to be grabbed
 and is the default.  \fI+rude\fR leaves the pointer free while menus are
 open; this allows to you work in other windows without closing
 \fIdash\fR menus first.
 .TP 9
-.B \(+-verify
+.B\(+-verify
 Specifies whether or not \fIdash\fR attempts to verify all menu-selected
 actions (i.e. callbacks) by popping up a dialog box which asks the user
 to confirm or cancel the action.  \fI+verify\fR will cause \fIdash\fR to
@@ -224,7 +205,7 @@ already be running, and start up no matter what.
 .br
 .ns
 .HP 9
-.B \(+-\fIoption\fR ...
+.B\(+-\fIoption\fR ...
 .br
 These options are the reason that \fIdash\fR's signal sending ability
 exists. With them, you may tell an already running \fIdash\fR to hide
@@ -267,7 +248,7 @@ windows. If you wish to try it without this set, try specifying
 
 .TP 9
 .B rude
-Specifies whether \fIÿdash\fR keeps the mouse grabbed when one of its
+Specifies whether \fIdash\fR keeps the mouse grabbed when one of its
 menus is opened.  The default is "True".  Specfiying "dash*rude:False"
 will allow you for example to click away zephyrgrams while leaving a
 menu open.
@@ -380,28 +361,36 @@ Used with a \fImenu\fR entry, specifies that this menu is to be
 displayed vertically on the screen.  This is the default.
 
 .TP 9
-.B \(+-verify
+.B\(+-verify
 Used with an \fIitem\fR entry, specifies whether this item should or
 should not try to verify its selection by popping up a dialog box on the
 screen, which is the default.
 
 .TP
+.B\(+-sgi
+.br
+.ns
+.TP
+.B\(+-sun4
+.br
+.ns
+.TP
 .B\(+-decmips
+.br
+.ns
+.TP
+.B\(+-rsaix
 .br
 .ns
 .TP
 .B\(+-rt
 .br
 .ns
-.TP
+.HP 9
 .B\(+-vax
 .br
-.ns
-.HP 9
-.B\(+-rsaix
-.br
 Used with an \fIitem\fR entry, specifies that this item is or is not
-available specifically on decmips, rt, vax, or rsaix workstation platforms.
+available specifically on specified workstation platforms.
 Default is + for all platforms.  If an \fIitem\fR is specified as
 not available for the platform on which \fIdash\fR is running, it will
 appear dimmed on the screen.
@@ -471,8 +460,16 @@ line \fIcommand\fR.  See \fIsh\fR(1).
 .B exec(\fIcommand\fR)
 Causes \fIdash\fR to fork and execute \fIcommand\fR. In the string
 passed to exec, ~ will be interpreted from the HOME environment
-variable, and %M will be expanded to one of vax, rt, or decmips, as
-appropriate.
+variable. %M will be expanded to one of vax, rt, decmips, rsaix, sun4,
+or sgi as appropriate (the return value of \fImachtype\fR in the Athena
+environment, compiled into \fIdash\fR directly). %S will be expanded to
+values such as pmax_ul4, sgi_52, etc. (the return value of AFS's \fIfs\fR
+sysname, or @sys value) as determined by the environment variable
+ATHENA_SYS. Finally, %B, when used as part of a full path
+specification (such as "/mit/lockername/%B/program") will expand to
+"arch/%S/bin" if that directory exists under /mit/lockername, or else
+fall back to "%Mbin". See \fIlockers\fR(7) and \fIadd\fR(1) for more 
+details on this behavior.
 
 .TP 9
 .B cd(\fIdirectory\fR)
@@ -486,7 +483,7 @@ Causes \fIdash\fR to attach \fIfilesystem\fR.  See \fIattach\fR(1).
 .TP 9
 .B add(\fIfilesystem\fR)
 Causes \fIdash\fR to "add" \fIfilesystem\fR, which means that
-\fIfilesystem\fR is attached, and \fIfilesystem\fR/%Mbin is added to the
+\fIfilesystem\fR is attached, and \fIfilesystem\fR/%B is added to the
 directory search path for the next \fIexec\fR callback.
 
 .TP 9
@@ -570,23 +567,16 @@ help quit:
 /usr/athena/lib/Dash.menus               Athena default menus
 
 .SH SEE ALSO
-X(1)
+X(1), add(1), lockers(7), machtype(1), fs(1)
 
 .SH "BUGS"
 .PP
-Some things don't interpret "~" and "%M" that probably should.
+Some things don't interpret ~, %M, %S, and %B that probably should.
 
 Quotes may not be passed in callback strings.
 
 Attempting to place menu bars other than at +0+0 causes the program to
 get confused when submenus try to go off the side of the screen.
-
-.SH "CUSTOMIZATION AND DOCUMENTATION"
-A detailed document on using and customizing the Athena Dashboard is
-pending from Athena. It will explain the detailed subject of
-setting up complicated widget hierarchies. It may also include
-documentation of features that there was no time to include in this
-manual page.
 
 .SH AUTHORS
 Craig Fields, Paul Boutin, and Chris VanHaren,  MIT Project Athena
