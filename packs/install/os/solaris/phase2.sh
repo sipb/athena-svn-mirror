@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.5.2.2 2000-08-22 04:47:13 jweiss Exp $
+### $Id: phase2.sh,v 1.5.2.3 2000-08-22 05:00:42 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -221,6 +221,11 @@ Y)
     SUN9.0G)
        echo "formatting SUN9.0G"
        cat /util/format.input.SUN9.0G | \
+                format ${drive} >/dev/null 2>&1
+       ;;
+    SUN18G)
+       echo "formatting SUN18G"
+       cat /util/format.input.SUN18G | \
                 format ${drive} >/dev/null 2>&1
        ;;
     ST34321A)
