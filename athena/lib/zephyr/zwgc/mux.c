@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/mux.c,v $
- *      $Author: jtkohl $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.3 1989-11-09 12:27:59 jtkohl Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.4 1990-12-12 02:15:18 jfc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -32,6 +32,10 @@ static char rcsid_mux_c[] = "$Id: mux.c,v 1.3 1989-11-09 12:27:59 jtkohl Exp $";
 #include "error.h"
 #include "zwgc.h"
 #include "pointer.h"
+
+#ifdef _AIX
+#include <sys/select.h>
+#endif
 
 /*
  * mux_end_loop_p - Setting this to true during a mux_loop causes the mux_loop
