@@ -49,6 +49,10 @@ static char sccsid[] = "@(#)ftpd.c	5.19 (Berkeley) 11/30/88 + portability hacks 
 #include <errno.h>
 #include <strings.h>
 #include <syslog.h>
+#ifdef ATHENA
+#include "athena_ftpd.h"
+#include "krb.h"
+#endif
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN	64
@@ -72,7 +76,7 @@ extern	char version[];
 extern	char *home;		/* pointer to home directory for glob */
 extern	FILE *ftpd_popen(), *fopen(), *freopen();
 extern	int  pclose(), fclose();
-extern	char *getline();
+extern	char *getline(), *getwd();
 extern	char cbuf[];
 
 struct	sockaddr_in ctrl_addr;
@@ -84,6 +88,9 @@ int	data;
 jmp_buf	errcatch, urgcatch;
 int	logged_in;
 struct	passwd *pw;
+#ifdef ATHENA
+int	athena;
+#endif
 int	debug;
 int	timeout = 900;    /* timeout after 15 minutes of inactivity */
 int	logging;
@@ -113,6 +120,9 @@ int	swaitmax = SWAITMAX;
 int	swaitint = SWAITINT;
 
 int	lostconn();
+#ifdef ATHENA
+int	dologout();
+#endif
 int	myoob();
 FILE	*getdatasock(), *dataconn();
 
@@ -139,13 +149,22 @@ main(argc, argv)
 	}
 	data_source.sin_port = htons(ntohs(ctrl_addr.sin_port) - 1);
 	debug = 0;
+#ifdef ATHENA
+	athena = 0;
+#endif
 #ifdef LOG_LOCAL3
 	openlog("ftpd", LOG_PID, LOG_LOCAL3);
 #else
 	openlog("ftpd", LOG_PID);
 #endif
-	argc--, argv++;
+#ifdef ATHENA
+	while ((cp = getopt(argc, argv, "avdlt:b:")) != EOF) switch (cp) {
+	case 'a':
+		athena = 1;
+		break;
+#else
 	while ((cp = getopt(argc, argv, "vdlt:b:")) != EOF) switch (cp) {
+#endif
 	case 'v':
 		debug = 1;
 		break;
@@ -177,6 +196,13 @@ main(argc, argv)
 #endif
 	(void) freopen("/dev/null", "w", stderr);
 	(void) signal(SIGPIPE, lostconn);
+#ifdef ATHENA
+	if (athena)
+	  {
+	    (void) signal(SIGHUP, dologout);
+	    (void) signal(SIGTERM, dologout);
+	  }
+#endif
 	(void) signal(SIGCHLD, SIG_IGN);
 	if ((int)signal(SIGURG, myoob) < 0)
 		syslog(LOG_ERR, "signal: %m");
@@ -262,12 +288,19 @@ sgetpwnam(name)
 	register struct passwd *p;
 	char *sgetsave();
 
+#ifdef ATHENA
+	if ((p = (athena ? athena_getpwnam(name)
+		  	 : getpwnam(name))) == NULL)
+#else
 	if ((p = getpwnam(name)) == NULL)
+#endif
 		return (p);
 	if (save.pw_name) {
 		free(save.pw_name);
 		free(save.pw_passwd);
+#ifndef _IBMR2
 		free(save.pw_comment);
+#endif
 		free(save.pw_gecos);
 		free(save.pw_dir);
 		free(save.pw_shell);
@@ -275,7 +308,9 @@ sgetpwnam(name)
 	save = *p;
 	save.pw_name = sgetsave(p->pw_name);
 	save.pw_passwd = sgetsave(p->pw_passwd);
+#ifndef _IBMR2
 	save.pw_comment = sgetsave(p->pw_comment);
+#endif
 	save.pw_gecos = sgetsave(p->pw_gecos);
 	save.pw_dir = sgetsave(p->pw_dir);
 	save.pw_shell = sgetsave(p->pw_shell);
@@ -286,31 +321,93 @@ pass(passwd)
 	char *passwd;
 {
 	char *xpasswd;
+#ifdef ATHENA
+	char *athena_auth_errtext, *athena_attach_errtext;
+#endif
 
 	if (logged_in || pw == NULL) {
 		reply(503, "Login with USER first.");
 		return;
 	}
 	if (!guest) {		/* "ftp" is only account allowed no password */
+#ifdef ATHENA
+	  if (athena)
+	    {
+	      athena_auth_errtext = athena_authenticate(pw->pw_name, passwd);
+	      switch(athena_login)
+		{
+		case LOGIN_KERBEROS:
+		  break;
+		case LOGIN_LOCAL:
+		  break;
+		case LOGIN_NONE:
+		  reply(530, athena_auth_errtext);
+		  pw = NULL;
+		  return;
+		  break;
+		}
+	    }
+	  else
+	    {
+#endif
 		xpasswd = crypt(passwd, pw->pw_passwd);
 		/* The strcmp does not catch null passwords! */
 		if (*pw->pw_passwd == '\0' || strcmp(xpasswd, pw->pw_passwd)) {
 			reply(530, "Login incorrect.");
-			pw = NULL;
+			pw = NULL; /* pw = NULL's are small memory leaks XXX */
 			return;
 		}
+#ifdef ATHENA
+	    }
+#endif
 	}
+#if defined(_IBMR2)
+	setegid_rios(pw->pw_gid);
+#else
 	setegid(pw->pw_gid);
+#endif
 	initgroups(pw->pw_name, pw->pw_gid);
+
+#ifdef ATHENA
+	if (athena)
+	  athena_attach_errtext = athena_attachhomedir(pw,
+				  (athena_login == LOGIN_KERBEROS) ? 1 : 0);
+#endif
+
+/*
+ * Bleah. If chdir is done as root, nonlocal fascists lose.
+ * This is fine, except for the fact that nonlocal fascists
+ * tend to run things. :-)
+ */
+#if defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
+	seteuid(pw->pw_uid);
+#endif
 	if (chdir(pw->pw_dir)) {
+#ifdef ATHENA
+	        if (athena && athena_attach_errtext)
+		  lreply(530, athena_attach_errtext);
+#endif
 		reply(530, "User %s: can't change directory to %s.",
 			pw->pw_name, pw->pw_dir);
 		goto bad;
 	}
+#if defined(_IBMR2)
+	seteuid_rios(0);
+#else
+	seteuid(0);
+#endif
 
 	/* open wtmp before chroot */
 	(void)sprintf(ttyline, "ftp%d", getpid());
+#ifdef ATHENA
+	if (athena)
+	  loguwtmp(ttyline, pw->pw_name, remotehost);
+	else
+#endif
 	logwtmp(ttyline, pw->pw_name, remotehost);
+
 	logged_in = 1;
 
 	if (guest) {
@@ -320,12 +417,54 @@ pass(passwd)
 		}
 		reply(230, "Guest login ok, access restrictions apply.");
 	} else
+#ifdef ATHENA
+	  if (athena)
+	    {
+	      switch(athena_login)
+		{
+		case LOGIN_LOCAL:
+		  lreply(230, "User %s logged in without authentication:",
+			 pw->pw_name);
+		  if (athena_attach_errtext)
+		    lreply(230, athena_attach_errtext);
+		  reply(230, athena_auth_errtext);
+		  break;
+		case LOGIN_KERBEROS:
+		  if (athena_auth_errtext)
+		    lreply(230, athena_auth_errtext);
+		  if (athena_attach_errtext)
+		    lreply(230, athena_attach_errtext);
+		  reply(230, "User %s%s logged in with Kerberos tickets.", pw->pw_name,
+			(athena_auth_errtext ? " mostly" : ""));
+		  break;
+		default:
+		  reply(530, "User %s shouldn't be at this point in the code.",
+			pw->pw_name);
+		  pw = NULL;
+		  return;
+		  break;
+		}
+	    }
+	  else
+#endif
 		reply(230, "User %s logged in.", pw->pw_name);
+#if defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 	home = pw->pw_dir;		/* home dir for globbing */
 	return;
 bad:
+#if defined(_IBMR2)
+	seteuid_rios(0);
+#else
 	seteuid(0);
+#endif
+#ifdef ATHENA
+	if (athena)
+	  athena_logout(pw);
+#endif
 	pw = NULL;
 }
 
@@ -441,7 +580,11 @@ getdatasock(mode)
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s < 0)
 		return (NULL);
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(0);
+#else
 	seteuid(0);
+#endif
 	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof (on)) < 0)
 		goto bad;
 	/* anchor socket to avoid multi-homing problems */
@@ -449,10 +592,18 @@ getdatasock(mode)
 	data_source.sin_addr = ctrl_addr.sin_addr;
 	if (bind(s, &data_source, sizeof (data_source)) < 0)
 		goto bad;
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 	return (fdopen(s, mode));
 bad:
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 	(void) close(s);
 	return (NULL);
 }
@@ -656,7 +807,8 @@ fatal(s)
 
 reply(n, s, p0, p1, p2, p3, p4, p5)
 	int n;
-	char *s;
+	char *s, *p0, *p1, *p2, *p3, *p4, *p5;
+     /* declaring p0-5 as char * reduces number of errors from hc2 */
 {
 
 	printf("%d ", n);
@@ -671,7 +823,7 @@ reply(n, s, p0, p1, p2, p3, p4, p5)
 
 lreply(n, s, p0, p1, p2, p3, p4)
 	int n;
-	char *s;
+	char *s, *p0, *p1, *p2, *p3, *p4;
 {
 	printf("%d-", n);
 	printf(s, p0, p1, p2, p3, p4);
@@ -746,12 +898,20 @@ makedir(name)
 	unsigned short oldeuid;
 
 	oldeuid = geteuid();
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 	if (mkdir(name, 0777) < 0)
 		reply(550, "%s: %s.", name, sys_errlist[errno]);
 	else
 		reply(257, "MKD command successful.");
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(oldeuid);
+#else
 	seteuid(oldeuid);
+#endif
 }
 
 removedir(name)
@@ -828,10 +988,23 @@ dolog(sin)
 dologout(status)
 	int status;
 {
+#if defined(ATHENA) && defined(_IBMR2)
+  	seteuid_rios(0);
+#else
+	seteuid(0);
+#endif
 	if (logged_in) {
-		(void) seteuid(0);
+#ifdef ATHENA
+	  if (athena)
+		loguwtmp(ttyline, "", "");
+	  else
+#endif
 		logwtmp(ttyline, "", "");
 	}
+#ifdef ATHENA
+	if (athena)
+	  athena_logout(pw);
+#endif
 	/* beware of flushing buffers after a SIGPIPE */
 	_exit(status);
 }
@@ -865,7 +1038,7 @@ checkftpusers(name)
 
 
 /*
- * Check user requesting login priviledges.
+ * Check user requesting login privileges.
  * Disallow anyone who does not have a standard
  * shell returned by getusershell() (/etc/shells).
  * Then, call checkftpusers() to disallow anyone
@@ -880,7 +1053,14 @@ checkuser(name)
 	char *shell;
 	char *getusershell();
 
+#ifdef ATHENA
+	if (athena ? 
+	             (((p = athena_getpwnam(name)) == NULL) ||
+		        athena_notallowed(name))
+	           : ((p = getpwnam(name)) == NULL))
+#else
 	if ((p = getpwnam(name)) == NULL)
+#endif
 		return (0);
 	if ((shell = p->pw_shell) == NULL || *shell == 0)
 		shell = "/bin/sh";
@@ -932,15 +1112,27 @@ passive()
 	}
 	tmp = ctrl_addr;
 	tmp.sin_port = 0;
+#if defined(_IBMR2)
+	seteuid_rios(0);
+#else
 	seteuid(0);
+#endif
 	if (bind(pdata, (struct sockaddr *) &tmp, sizeof(tmp)) < 0) {
+#if defined(ATHENA) && defined(_IBMR2)
+	  	seteuid_rios(pw->pw_uid);
+#else
 		seteuid(pw->pw_uid);
+#endif
 		(void) close(pdata);
 		pdata = -1;
 		reply(530, "Can't open passive connection");
 		return;
 	}
+#if defined(ATHENA) && defined(_IBMR2)
+	seteuid_rios(pw->pw_uid);
+#else
 	seteuid(pw->pw_uid);
+#endif
 	len = sizeof(tmp);
 	if (getsockname(pdata, (char *) &tmp, &len) < 0) {
 		(void) close(pdata);
