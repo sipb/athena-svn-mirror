@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.5 1999-09-15 20:30:27 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2000-03-29 19:54:22 ghudson Exp $
 
 SHELL=/bin/sh
+
+dist:
 
 prepare:
 	@test -f Makefile || { echo "You must build third/krb5 before building third/krb5/appl"; exit 1; }

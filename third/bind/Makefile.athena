@@ -1,8 +1,8 @@
-# $Id: Makefile.athena,v 1.9 1999-03-26 21:50:13 ghudson Exp $
+# $Id: Makefile.athena,v 1.10 2000-03-29 19:53:52 ghudson Exp $
 
 SHELL=/bin/sh
 
-prepare:
+dist prepare:
 
 clean:
 	cd src && ${MAKE} clean

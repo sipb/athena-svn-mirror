@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.20 1999-12-26 15:44:35 ghudson Exp $
+# $Id: Makefile.athena,v 1.21 2000-03-29 19:54:06 ghudson Exp $
 
 SHELL=/bin/sh
+
+dist:
 
 prepare:
 	rm -f src/config.cache

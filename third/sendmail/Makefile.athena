@@ -1,7 +1,9 @@
-# $Id: Makefile.athena,v 1.7 1999-09-17 15:09:26 danw Exp $
+# $Id: Makefile.athena,v 1.8 2000-03-29 19:55:55 ghudson Exp $
 
 SHELL=/bin/sh
 BUILD=`pwd`/BuildTools/bin/Build
+
+dist:
 
 prepare:
 	rm -rf */obj.*

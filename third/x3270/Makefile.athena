@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.5 2000-03-04 05:36:36 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2000-03-29 19:54:47 ghudson Exp $
 
 SHELL=/bin/sh
+
+dist:
 
 prepare:
 	imake "-I$$XCONFIGDIR" -DUseInstalled "-DXCONFIGDIR=$$XCONFIGDIR"

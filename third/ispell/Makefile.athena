@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 1998-01-31 03:56:57 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 2000-03-29 19:55:07 ghudson Exp $
 
 SHELL=/bin/sh
 IMAN=buildhash.1 findaffix.1 munchlist.1 tryaffix.1
@@ -7,6 +7,8 @@ ATHBINDIR=/usr/athena/bin
 ATHSHAREDIR=/usr/athena/share
 ATHMANDIR=/usr/athena/man
 ATHINFODIR=/usr/athena/info
+
+dist:
 
 prepare:
 	rm -f local.h

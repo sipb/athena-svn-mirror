@@ -1,6 +1,8 @@
-# $Id: Makefile.athena,v 1.1 2000-03-17 21:54:24 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2000-03-29 19:55:14 ghudson Exp $
 
 TEXMFDIR=/usr/athena/share/texmf
+
+dist:
 
 prepare:
 
