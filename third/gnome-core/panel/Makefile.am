@@ -264,22 +264,19 @@ sys_DATA = gnome-panel-properties.desktop
 deskdir = $(datadir)/gnome/apps/Settings/Desktop/
 desk_DATA = gnome-panel-properties.desktop
 
-athenadir = $(datadir)/gnome/athena/
+athenadir = $(datadir)/gnome/athena
 athena_DATA = mail.desktop browser.desktop terminal.desktop editor.desktop
 athena_SCRIPTS = mail-script browser-script terminal-script editor-script
 AFSMENUS = /afs/athena.mit.edu/system/config/panel/menus
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(athenadir)
-	rm -f $(DESTDIR)$(athenadir)/mail-icon
-	ln -s ../../pixmaps/gnome-mailcheck.png \
-		$(DESTDIR)$(athenadir)/mail-icon
-	rm -f $(DESTDIR)$(athenadir)/browser-icon
-	ln -s ../../pixmaps/netscape.png $(DESTDIR)$(athenadir)/browser-icon
-	rm -f $(DESTDIR)$(athenadir)/terminal-icon
-	ln -s ../../pixmaps/gnome-term.png $(DESTDIR)$(athenadir)/terminal-icon
-	rm -f $(DESTDIR)$(athenadir)/editor-icon
-	ln -s ../../pixmaps/gnome-word.png $(DESTDIR)$(athenadir)/editor-icon
+	install -c -m 644 mail.png $(DESTDIR)$(athenadir)/mail-icon
+	install -c -m 644 browser.png $(DESTDIR)$(athenadir)/browser-icon
+	install -c -m 644 terminal.png $(DESTDIR)$(athenadir)/terminal-icon
+	install -c -m 644 editor.png $(DESTDIR)$(athenadir)/editor-icon
+	install -c -m 644 logout.png $(DESTDIR)$(athenadir)/logout-icon
+	install -c -m 644 menu.png $(DESTDIR)$(athenadir)/menu-icon
 	rm -f $(DESTDIR)$(athenadir)/menus
 	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
 		$(DESTDIR)$(athenadir)/menus
