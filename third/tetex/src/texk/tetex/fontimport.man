@@ -1,0 +1,69 @@
+.TH fontimport 1 "4/99" "teTeX" "teTeX"
+.SH NAME
+fontimport \- import fonts into the teTeX directory structure
+.SH SYNOPSIS
+.B fontimport [\-d] [\-f] [\-t] [\-m MF\-mode] path ...
+.SH DESCRIPTION
+.I fontimport
+imports TFM and PK font files into appropriate places in the teTeX directory
+tree and revises teTeX's filename database accordingly.
+
+Each
+.B path
+may be a font file or a directory, either absolute or relative to the current
+directory.  All subdirectories of a given directory are searched for font
+files.  Don't specify directory names that are symbolic links, however, since
+(at least some versions of)
+.BR find (1)
+won't dereference them.
+
+A font's destination is determined by variables in the file texmf.cnf.
+By default,
+.I fontimport
+will issue a warning to
+.B stderr
+instead of overwriting an existing font file.  The
+.IR \-f
+flag forces overwriting.
+
+.I fontimport
+can cope with font names conforming the 8.3\-namescheme, too, so you can import
+fonts from either a TDS-compliant or MSDOS installation. emTeX's font libraries
+are not supported. If you want to import fonts from a font library, you need to
+unpack it with emTeX's fontlib utility first.
+
+The full pathname of each font successfully imported is echoed to stdout.
+When
+.I fontimport
+can not parse a font's name, it will import the font using a path element of
+"/unknown/" and issue a warning on
+.B stderr.
+
+.IR fontimport
+tries to guess the mode of PK files.  With the
+.IR -m
+flag you may specify a fallback mode to be used if the mode can't be guessed.
+
+Options:
+.TP
+.PD 0
+.TP
+.BI \-m " MF-MODE"
+default Metafont mode for PK files if autodetection fails
+.TP
+.BI \-d " delete"
+delete font files after copying (i.e., move them)
+.TP
+.BI \-f " force"
+overwrite existing fonts
+.TP
+.BI \-t " test"
+just echo each font's destination (if any); don't move or copy
+.PD
+.SH "SEE ALSO"
+.BR allec (1),
+.BR allneeded (1),
+.BR fontexport (1),
+.B Fontname:  Filenames for TeX Fonts (http://tug.org/fontname).
+.SH AUTHOR
+Thomas Esser (te@informatik.uni\-hannover.de)

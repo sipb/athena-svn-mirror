@@ -1,0 +1,24 @@
+if test "${enable_multiplatform+set}" != set \
+  && test "x$bindir" = 'x${exec_prefix}/bin'
+then
+  enable_multiplatform=yes; export enable_multiplatform
+  bindir="$bindir/$host";
+fi
+test "${enable_nls+set}" = set || { enable_nls=no; export enable_nls; }
+
+AC_PREFIX_DEFAULT(/usr/local/teTeX)
+if test "x$prefix" = xNONE; then
+  prefix=$ac_default_prefix
+  ac_configure_args="$ac_configure_args --prefix=$ac_default_prefix"
+fi
+
+case "$target" in
+  *nextstep3*|*NEXTSTEP*)
+     with_xdvik=no; with_oxdvik=no; enable_ipc=yes
+     with_nextwin=yes; with_ps=dps; with_mfw=no
+     export with_xdvik with_oxdvik enable_ipc with_nextwin with_ps;;
+esac
+
+: ${with_mfw=yes}
+: ${with_x=yes}
+export with_mfw with_x

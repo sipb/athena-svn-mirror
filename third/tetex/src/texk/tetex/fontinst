@@ -1,0 +1,3 @@
+#!/bin/sh
+
+tex -progname=fontinst \&tex ${1+"$@"}

@@ -1,0 +1,75 @@
+-*- Text -*-
+This file can be used to give emacs (and xemacs/lemacs) access to the
+info files contained in this directory.
+
+===============================> Usage: <==================================
+   add to .emacs:
+   (setq Info-default-directory-list
+        (append Info-default-directory-list '("/usr/local/teTeX/info/")))
+===========================================================================
+
+
+
+File: dir	Node: Top	This is the top of the INFO tree
+* Menu: 
+
+teTeX:
+
+* Fontname: (fontname.info).        File Names for TeX Fonts.
+* Makeinfo: (makeinfo.info).        Converting "Texinfo" into "Info" files.
+
+Texinfo documentation system
+* Info: (info).                 Documentation browsing system.
+* Texinfo: (texinfo).           The GNU documentation format.
+* install-info: (texinfo)Invoking install-info. Updating info/dir entries.
+* texi2dvi: (texinfo)Format with texi2dvi.      Printing Texinfo documentation.
+* texindex: (texinfo)Format with tex/texindex.  Sorting Texinfo index files.
+* makeinfo: (texinfo)makeinfo Preferred.        Translate Texinfo source.
+* info program: (info-stnd).    Standalone Info-reading program.
+* makeinfo: (makeinfo).         Convert Texinfo source to Info or plain ASCII.
+
+TeX
+* DVI-to-Postscript: (dvips).        Translating TeX DVI files to PostScript.
+* LaTeX2e: (latex).                  A document preparation system.
+* afm2tfm: (dvips)Invoking afm2tfm.  Making Type 1 fonts available to TeX.
+* dvips: (dvips)Invoking Dvips.      DVI-to-PostScript translator.
+* Kpathsea: (kpathsea).                       File lookup along search paths.
+* Web2c: (web2c).                    TeX, Metafont, and companion programs.
+* bibtex: (web2c)bibtex invocation.             Maintaining bibliographies.
+* dmp: (web2c)dmp invocation.                   Troff->MPX (MetaPost pictures).
+* dvicopy: (web2c)dvicopy invocation.           Virtual font expansion
+* dvitomp: (web2c)dvitomp invocation.           DVI to MPX (MetaPost pictures).
+* dvitype: (web2c)dvitype invocation.           DVI to human-readable text.
+* gftodvi: (web2c)gftodvi invocation.           Generic font proofsheets.
+* gftopk: (web2c)gftopk invocation.             Generic to packed fonts.
+* gftype: (web2c)gftype invocation.             GF to human-readable text.
+* inimf: (web2c)inimf invocation.               Initial Metafont.
+* inimpost: (web2c)inimpost invocation.         Initial MetaPost.
+* initex: (web2c)initex invocation.             Initial TeX.
+* makempx: (web2c)makempx invocation.           MetaPost label typesetting.
+* mf: (web2c)mf invocation.                     Creating typeface families.
+* mft: (web2c)mft invocation.                   Prettyprinting Metafont source.
+* mltex: (web2c)MLTeX.                          Multi-lingual TeX.
+* mpost: (web2c)mpost invocation.               Creating technical diagrams.
+* mpto: (web2c)mpto invocation.                 MetaPost label extraction.
+* newer: (web2c)newer invocation.               Compare modification times.
+* patgen: (web2c)patgen invocation.             Creating hyphenation patterns.
+* pktogf: (web2c)pktogf invocation.             Packed to generic fonts.
+* pktype: (web2c)pktype invocation.             PK to human-readable text.
+* pltotf: (web2c)pltotf invocation.             Property list to TFM.
+* pooltype: (web2c)pooltype invocation.         Display WEB pool files.
+* tangle: (web2c)tangle invocation.             WEB to Pascal.
+* tex: (web2c)tex invocation.                   Typesetting.
+* tftopl: (web2c)tftopl invocation.             TFM -> property list.
+* vftovp: (web2c)vftovp invocation.             Virtual font -> virtual pl.
+* virmf: (web2c)virmf invocation.               Virgin Metafont.
+* virmpost: (web2c)virmpost invocation.         Virgin MetaPost.
+* virtex: (web2c)virtex invocation.             Virgin TeX.
+* vptovf: (web2c)vptovf invocation.             Virtual pl -> virtual font.
+* weave: (web2c)weave invocation.               WEB to TeX.
+* kpsewhich: (kpathsea)Invoking kpsewhich.    TeX file searching.
+* mktexmf: (kpathsea)mktex scripts.           MF source generation.
+* mktexpk: (kpathsea)mktex scripts.           PK bitmap generation.
+* mktextex: (kpathsea)mktex scripts.          TeX source generation.
+* mktextfm: (kpathsea)mktex scripts.          TeX font metric generation.
+* mktexlsr: (kpathsea)Filename database.      Update ls-R.

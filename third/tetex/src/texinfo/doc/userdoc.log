@@ -1,0 +1,25 @@
+This is TeX, Version 3.14159 (Web2C 7.3) (format=tex 1999.3.30)  3 APR 1999 20:10
+**\input /tmp/txi2d.18501/userdoc.texi
+(/tmp/txi2d.18501/userdoc.texi [1] [2]
+! Missing $ inserted.
+<inserted text> 
+                $
+<to be read again> 
+                   \delimiter 
+\}->\delimiter 
+               "5267309 
+l.288 ...t line.  Lines which wrap have a @samp{\}
+                                                   appearing
+? 
+! Emergency stop.
+<inserted text> 
+                $
+<to be read again> 
+                   \delimiter 
+\}->\delimiter 
+               "5267309 
+l.288 ...t line.  Lines which wrap have a @samp{\}
+                                                   appearing
+End of file on the terminal!
+
+Output written on userdoc.dvi (2 pages, 11232 bytes).

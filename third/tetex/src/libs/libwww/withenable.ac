@@ -1,0 +1,84 @@
+AC_CHECK_PROG(BINPWD, pwd, pwd)
+
+try_system_wwwlib=no
+AC_ARG_WITH(system-wwwlib,
+        [  --with-system-wwwlib    check for installed libwww library],
+        [test "$withval" = "yes" && try_system_wwwlib=yes],
+        [try_system_wwwlib=no])
+
+#
+# Bother about W3C Reference library wich has no standard installation place...
+#
+AC_ARG_WITH(libwww,
+[  --with-libwww=DIR       Specify path to W3C Reference Library distribution.],
+[
+  try_system_wwwlib=yes
+  if test "${with_libwww+set}" = "set" ;
+   then
+    if test "${with_libwww}" != "no" ;
+     then
+      libwww_dir="${with_libwww}"
+      if test -d ${libwww_dir} ;
+       then
+        libwww_dir="`cd $libwww_dir ; $BINPWD`"
+       else
+        AC_MSG_WARN(${libwww_dir} doesn't exist)
+        libwww_dir=
+      fi
+    fi
+  fi
+]
+)
+
+AC_ARG_WITH(libwww_libdir,
+[  --with-libwww-libdir=DIR
+                          Specify directory where the libwww.a resides.],
+[
+  try_system_wwwlib=yes
+  if test "${with_libwww_libdir+set}" = "set" ;
+   then
+    if test "${with_libwww_libdir}" != "no" ;
+     then
+      libwww_library_dir="${with_libwww_libdir}"
+      if test -d ${libwww_library_dir} ;
+       then
+        libwww_library_dir="`cd $libwww_library_dir ; $BINPWD`"
+       else
+        AC_MSG_WARN(${libwww_library_dir} doesn't exist)
+        libwww_library_dir=
+      fi
+    fi
+  fi
+]
+)
+
+AC_ARG_WITH(libwww_include,
+[  --with-libwww-include=DIR
+                          Specify the libwww header files location.],
+[
+  try_system_wwwlib=yes
+  if test "${with_libwww_include+set}" = "set" ;
+   then
+    if test "${with_libwww_include}" != "no" ;
+     then
+      libwww_include="${with_libwww_include}"
+      if test -d ${libwww_include};
+       then
+        libwww_include="`cd $libwww_include ; $BINPWD`"
+       else
+        AC_MSG_WARN(${libwww_include} doesn't exist)
+        libwww_include=
+      fi
+    fi
+  fi
+]
+)
+
+AC_ARG_WITH(libwww-config,
+[  --with-libwww-config=PROG
+                          Use PROG as libwww-config program.],
+[
+  libwww_config=$with_libwww_config
+  try_system_wwwlib=yes
+]
+)

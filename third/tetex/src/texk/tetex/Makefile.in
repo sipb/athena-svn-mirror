@@ -1,0 +1,85 @@
+# Makefile for teTeX's extra scripts - te@informatik.uni-hannover.de.
+# Public domain.
+
+ac_include ../make/paths.mk
+ac_include ../make/common.mk
+ac_include ../make/programs.mk
+
+SCRIPTS= dvi2fax ps2frag texconfig dvired pslatex texi2html allcm allneeded fontexport fontimport kpsetool mkfontdesc MakeTeXPK fontinst rubibtex rumakeindex fmtutil texdoc texlinks texutil texexec texshow
+PDFSCRIPTS=e2pall epstopdf texi2pdf thumbpdf
+manpgs=texi2html texconfig ps2frag allcm allneeded dvired fontexport fontimport allec
+INFOFILES= latex.info latex.info-1 latex.info-2 latex.info-3
+all: $(SCRIPTS) $(PDFSCRIPTS)
+default: all
+
+install: install-data install-exec
+check:
+
+# Auxiliary files.
+install-data:: $(INFOFILES)
+	$(SHELL) $(top_srcdir)/../mkinstalldirs $(mandir)
+	for p in $(manpgs); do \
+	  $(INSTALL_DATA) $(srcdir)/$$p.man $(mandir)/$$p.$(manext); \
+	done
+	cd $(mandir); rm -f allec.$(manext) einitex.$(manext) \
+	  elatex.$(manext) evirtex.$(manext) \
+	  inimf.$(manext) inimpost.$(manext) iniomega.$(manext) \
+	  initex.$(manext) kpsepath.$(manext) kpsexpand.$(manext) \
+	  lambda.$(manext) pdfinitex.$(manext) pdfvirtex.$(manext) \
+	  texhash.$(manext) virmf.$(manext) virmpost.$(manext) \
+	  viromega.$(manext) virtex.$(manext) pdflatex.$(manext) \
+	  MakeTeXPK.$(manext) \
+	  cont-de.$(manext) cont-nl.$(manext) cont-en.$(manext)
+	ln -s allcm.$(manext) $(mandir)/allec.$(manext)
+	ln -s mktexlsr.$(manext) $(mandir)/texhash.$(manext)
+	ln -s tex.$(manext) $(mandir)/initex.$(manext)
+	ln -s tex.$(manext) $(mandir)/virtex.$(manext)
+	ln -s etex.$(manext) $(mandir)/einitex.$(manext)
+	ln -s etex.$(manext) $(mandir)/evirtex.$(manext)
+	ln -s etex.$(manext) $(mandir)/elatex.$(manext)
+	ln -s mf.$(manext) $(mandir)/inimf.$(manext)
+	ln -s mf.$(manext) $(mandir)/virmf.$(manext)
+	ln -s mpost.$(manext) $(mandir)/inimpost.$(manext)
+	ln -s mpost.$(manext) $(mandir)/virmpost.$(manext)
+	ln -s omega.$(manext) $(mandir)/iniomega.$(manext)
+	ln -s omega.$(manext) $(mandir)/viromega.$(manext)
+	ln -s omega.$(manext) $(mandir)/lambda.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/pdfinitex.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/pdfvirtex.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/pdflatex.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/cont-de.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/cont-nl.$(manext)
+	ln -s pdftex.$(manext) $(mandir)/cont-en.$(manext)
+	ln -s mktexpk.$(manext) $(mandir)/MakeTeXPK.$(manext)
+	test -r latex.info || cd $(srcdir) && for i in latex.info*; do \
+	  $(INSTALL_DATA) $$i $(infodir)/$$i; done
+	if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
+	  install-info --info-dir=$(infodir) $(infodir)/latex.info; \
+	else true; fi
+
+
+install-exec:
+	-$(SHELL) $(srcdir)/../mkinstalldirs $(scriptdir)
+	for s in $(SCRIPTS); do \
+	  $(INSTALL_SCRIPT) $(srcdir)/$$s $(scriptdir)/$$s; \
+	done
+	if test -f $(bindir)/pdftex; then \
+	  for s in $(PDFSCRIPTS); do \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$s $(scriptdir)/$$s; \
+	  done; \
+	else \
+	  true; \
+	fi
+	cd $(scriptdir); rm -f allec kpsepath kpsexpand texhash; \
+	  ln -s allcm allec; \
+	  ln -s kpsetool kpsepath; \
+	  ln -s kpsetool kpsexpand; \
+	  ln -s mktexlsr texhash
+
+ac_include ../make/clean.mk
+
+config.status: $(srcdir)/configure
+	$(SHELL) $(srcdir)/configure --no-create --verbose
+
+Makefile: $(srcdir)/Makefile.in config.status
+	$(SHELL) config.status

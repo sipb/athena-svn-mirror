@@ -1,0 +1,49 @@
+Subject: ANNOUNCE: xpdf 0.80 - a PDF viewer for X
+
+
+I've just released a new version of xpdf, my Portable Document Format
+(PDF) viewer for X.
+
+Xpdf runs under the X Window System on Unix, VMS, and OS/2.  The non-X
+components of the package (pdftops, pdftotext, etc.) also run on Win32
+systems.
+
+!!! Please note my new email/web/ftp addresses. !!!
+
+The most noticeable changes are:
+
+* Support for some Japanese fonts (Type 0 fonts using the
+  Adobe-Japan1-2 character collection, horizontal only).
+* Added pdfinfo application.
+* Added pdftopbm application.
+* Added pdfimages application.
+* Xpdf is now licensed under the GPL.
+
+See the `CHANGES' file for a complete list.
+
+Source (C++ and C) is available, and it should be fairly easy to
+compile for UNIX, VMS, or OS/2.
+
+More information, source code, and precompiled binaries are on the
+xpdf web page and ftp site:
+
+    http://www.foolabs.com/xpdf/
+    ftp://ftp.foolabs.com/pub/xpdf/
+
+Source and Linux binaries are on sunsite.unc.edu, currently in
+the incoming directory, but they will be moved to:
+
+    ftp://sunsite.unc.edu/pub/Linux/apps/graphics/viewers/X
+
+The following will be available soon --
+
+    RPM packages for RedHat 5.x Linux systems:
+        ftp://contrib.redhat.com/
+
+    Decryption patches:
+        ftp://ftp.sci.usq.edu.au/pub/linux/xpdf/
+
+    Decryption-enabled Linux binaries:
+        ftp://ftp.replay.com/pub/replay/linux/redhat/
+
+- Derek

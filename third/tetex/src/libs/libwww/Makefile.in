@@ -1,0 +1,46 @@
+# Makefile for libwww - te@informatik.uni-hannover.de
+
+ac_include ../../texk/make/common.mk
+ac_include ../../texk/make/programs.mk
+ac_include ../../texk/make/library.mk
+
+XDEFS=
+
+UNUSED = HTANSI.o HTBTree.o HTDemux.o HTDescpt.o HTEPtoCl.o HTHist.o \
+  HTMemLog.o HTMuxCh.o HTMuxTx.o HTNetTxt.o HTSocket.o HTStyle.o \
+  HTTPRes.o HTTPServ.o HTWSRC.o HTXParse.o
+
+OBJS = HTEscape.o HTTrace.o HTMemory.o HTList.o HTParse.o HTString.o \
+	HTReqMan.o HTProfil.o HTInit.o HTEvtLst.o HTEvent.o HTInet.o \
+	HTDNS.o HTTimer.o HTMIMImp.o HTWWWStr.o HTUser.o HTResponse.o \
+	HTAssoc.o HTNet.o HTHost.o HTChannl.o HTAnchor.o HTTCP.o HTAlert.o \
+	HTAtom.o HTMethod.o HTArray.o HTLink.o HTProt.o HTHome.o HTLib.o \
+	HTUTree.o HTAABrow.o HTAAUtil.o HTDigest.o md5.o HTUU.o HTTrans.o \
+	HTBind.o HTRules.o HTStream.o HTChunk.o HTFormat.o HTFWrite.o \
+	HTProxy.o HTIcons.o HTFilter.o HTHeader.o HTMIMPrs.o HTLog.o \
+	HTAccess.o HTCache.o HTTP.o HTTPReq.o HTTee.o HTSChunk.o \
+	HTTPGen.o HTError.o HTMIMERq.o HTLocal.o HTTelnet.o HTFile.o \
+	HTGopher.o HTMLGen.o HTMLPDTD.o HTMulti.o HTDir.o HTNews.o \
+	HTFTP.o HTBufWrt.o HTWriter.o HTFTPDir.o HTNewsLs.o HTNDir.o \
+	HTReader.o HTConLen.o HTDialog.o HTPEP.o HTNewsRq.o HTTChunk.o \
+	HTGuess.o HTMIME.o HTMerge.o HTBound.o HTBInit.o HTHInit.o \
+	HTTeXGen.o HTML.o SGML.o HText.o HTPlain.o
+
+# We'd like to disable telnet, news and probably some other protocols and
+# their support routines.
+
+libwww.a: $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+	$(RANLIB) $@
+
+all: libwww.a
+uninstall:
+
+mostlyclean clean:
+	rm -f *.o libwww.a
+
+distclean realclean extraclean configclean: clean
+	rm -f config.status config.log Makefile config.cache config.h stamp-h
+	rm -f wwwconf.h libtool
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

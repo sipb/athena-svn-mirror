@@ -1,0 +1,790 @@
+This is Info file latex.info, produced by Makeinfo version 1.68 from
+the input file latex2e.texi.
+
+INFO-DIR-SECTION TeX
+START-INFO-DIR-ENTRY
+* LaTeX2e: (latex).                  LaTeXe help 1.6.
+END-INFO-DIR-ENTRY
+
+   This file documents LaTeX2e, a document preparation system. LaTeX2e
+is a macro package for TeX.
+
+   This is edition 1.6 of the LaTeX2e documentation, and is for the
+Texinfo that is distributed as part of Version 19 of GNU Emacs. It uses
+version 2.134 or later of the texinfo.tex input file.
+
+   This is translated from LATEX.HLP v1.0a in the VMS Help Library.  The
+pre-translation version was written by George D. Greenwade of Sam
+Houston State University.
+
+   The LaTeX 2.09 version was written by Stephen Gilmore
+<stg@dcs.ed.ac.uk>.
+
+   The LaTeX2e version was adapted from this by Torsten Martinsen
+<bullestock@dk-online.dk>.
+
+   Copyright 1988,1994 Free Software Foundation, Inc.  Copyright
+1994-1996 Torsten Martinsen.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "Distribution" and "General
+Public License" may be included in a translation approved by the author
+instead of in the original English.
+
+
+File: latex.info,  Node: \addcontentsline,  Next: \addtocontents,  Prev: Table of Contents,  Up: Table of Contents
+
+\addcontentsline
+----------------
+
+   `\addcontentsline{file}{sec_unit}{entry}'
+
+   The `\addcontentsline' command adds an entry to the specified list
+or table where:
+
+   * `file' is the extension of the file on which information is to be
+     written: `toc' (table of contents), `lof' (list of figures), or
+     `lot' (list of tables).
+
+   * `sec_unit' controls the formatting of the entry.  It should be one
+     of the following, depending upon the value of the file argument:
+       1. `toc' -- the name of the sectional unit, such as part or
+          subsection.
+
+       2. `lof' -- figure
+
+       3. `lot' -- table
+
+   * `entry' is the text of the entry.
+
+
+File: latex.info,  Node: \addtocontents,  Prev: \addcontentsline,  Up: Table of Contents
+
+\addtocontents
+--------------
+
+   `\addtocontents{file}{text}'
+
+   The `\addtocontents' command adds text (or formatting commands)
+directly to the file that generates the table of contents or list of
+figures or tables.
+
+   * `file' is the extension of the file on which information is to be
+     written: `toc' (table of contents), `lof' (list of figures), or
+     `lot' (list of tables).
+
+   * `text' is the information to be written.
+
+
+File: latex.info,  Node: Terminal Input/Output,  Next: Typefaces,  Prev: Table of Contents,  Up: Commands
+
+Terminal Input/Output
+=====================
+
+* Menu:
+
+* \typein::             Read text from the terminal.
+* \typeout::            Write text to the terminal.
+
+
+File: latex.info,  Node: \typein,  Next: \typeout,  Up: Terminal Input/Output
+
+\typein
+-------
+
+   `\typein[cmd]{msg}'
+
+   Prints `msg' on the terminal and causes LaTeX to stop and wait for
+you to type a line of input, ending with return.  If the `cmd' argument
+is missing, the typed input is processed as if it had been included in
+the input file in place of the `\typein' command.  If the `cmd'
+argument is present, it must be a command name.  This command name is
+then defined or redefined to be the typed input.
+
+
+File: latex.info,  Node: \typeout,  Prev: \typein,  Up: Terminal Input/Output
+
+\typeout
+--------
+
+   `\typeout{msg}'
+
+   Prints `msg' on the terminal and in the `log' file.  Commands in
+`msg' that are defined with `\newcommand' or `\renewcommand' are
+replaced by their definitions before being printed.
+
+   LaTeX's usual rules for treating multiple spaces as a single space
+and ignoring spaces after a command name apply to `msg'.  A `\space'
+command in `msg' causes a single space to be printed. A `^^J' in `msg'
+prints a newline.
+
+
+File: latex.info,  Node: Typefaces,  Prev: Terminal Input/Output,  Up: Commands
+
+Typefaces
+=========
+
+   The `typeface' is specified by giving the "size" and "style".  A
+typeface is also called a "font".
+
+* Menu:
+
+* Styles::                      Select roman, italics etc.
+* Sizes::                       Select point size.
+* Low-level font commands::     Commands for wizards.
+
+
+File: latex.info,  Node: Styles,  Next: Sizes,  Prev: Typefaces,  Up: Typefaces
+
+\Styles
+-------
+
+   The following type style commands are supported by LaTeX.
+
+   These commands are used like `\textit{italics text}'. The
+corresponding command in parenthesis is the "declaration form", which
+takes no arguments. The scope of the declaration form lasts until the
+next type style command or the end of the current group.
+
+   The declaration forms are cumulative; i.e., you can say
+`\sffamily\bfseries' to get sans serif boldface.
+
+   You can also use the environment form of the declaration forms; e.g.
+`\begin{ttfamily}...\end{ttfamily}'.
+
+`\textrm (\rmfamily)'
+     Roman.
+
+`\textit (\itshape)'
+
+`\emph'
+     Emphasis (toggles between \textit and \textrm).
+
+`\textmd (\mdseries)'
+     Medium weight (default). The opposite of boldface.
+
+`\textbf (\bfseries)'
+     Boldface.
+
+`\textup (\upshape)'
+     Upright (default). The opposite of slanted.
+
+`\textsl (\slshape)'
+     Slanted.
+
+`\textsf (\sffamily)'
+     Sans serif.
+
+`\textsc (\scshape)'
+     Small caps.
+
+`\texttt (\ttfamily)'
+     Typewriter.
+
+`\textnormal (\normalfont)'
+     Main document font.
+
+`\mathrm'
+     Roman, for use in math mode.
+
+`\mathbf'
+     Boldface, for use in math mode.
+
+`\mathsf'
+     Sans serif, for use in math mode.
+
+`\mathtt'
+     Typewriter, for use in math mode.
+
+`\mathit'
+     Italics, for use in math mode, e.g. variable names with several
+     letters.
+
+`\mathnormal'
+     For use in math mode, e.g. inside another type style declaration.
+
+`\mathcal'
+     `Calligraphic' letters, for use in math mode.
+
+   In addition, the command `\mathversion{bold}' can be used for
+switching to bold letters and symbols in formulas.
+`\mathversion{normal}' restores the default.
+
+
+File: latex.info,  Node: Sizes,  Next: Low-level font commands,  Prev: Styles,  Up: Typefaces
+
+Sizes
+-----
+
+   The following standard type size commands are supported by LaTeX.
+
+   The commands as listed here are "declaration forms". The scope of the
+declaration form lasts until the next type style command or the end of
+the current group.
+
+   You can also use the environment form of these commands; e.g.
+`\begin{tiny}...\end{tiny}'.
+
+`\tiny'
+
+`\scriptsize'
+
+`\footnotesize'
+
+`\small'
+
+`\normalsize'
+     (default)
+
+`\large'
+
+`\Large'
+
+`\LARGE'
+
+`\huge'
+
+`\Huge'
+
+File: latex.info,  Node: Low-level font commands,  Prev: Sizes,  Up: Typefaces
+
+Low-level font commands
+-----------------------
+
+   These commands are primarily intended for writers of macros and
+packages.  The commands listed here are only a subset of the available
+ones. For full details, you should consult Chapter 7 of `The LaTeX
+Companion'.
+
+`\fontencoding{enc}'
+     Select font encoding. Valid encodings include `OT1' and `T1'.
+
+`\fontfamily{family}'
+     Select font family. Valid families include:
+
+        * `cmr'  for Computer Modern Roman
+
+        * `cmss' for Computer Modern Sans Serif
+
+        * `cmtt' for Computer Modern Typewriter
+
+     and numerous others.
+
+`\fontseries{series}'
+     Select font series. Valid series include:
+
+        * `m'  Medium (normal)
+
+        * `b'  Bold
+
+        * `c'  Condensed
+
+        * `bc' Bold condensed
+
+        * `bx' Bold extended
+
+     and various other combinations.
+
+`\fontshape{shape}'
+     Select font shape. Valid shapes are:
+
+        * `n'  Upright (normal)
+
+        * `it' Italic
+
+        * `sl' Slanted (oblique)
+
+        * `sc' Small caps
+
+        * `ui' Upright italics
+
+        * `ol' Outline
+
+     The two last shapes are not available for most font families.
+
+`\fontsize{size}{skip}'
+     Set font size. The first parameter is the font size to switch to;
+     the second is the `\baselineskip' to use. The unit of both
+     parameters defaults to pt. A rule of thumb is that the
+     baselineskip should be 1.2 times the font size.
+
+`\selectfont'
+     The changes made by calling the four font commands described above
+     do not come into effect until `\selectfont' is called.
+
+`\usefont{enc}{family}{series}{shape}'
+     Equivalent to calling `\fontencoding', `\fontfamily',
+     `\fontseries' and `\fontshape' with the given parameters, followed
+     by `\selectfont'.
+
+
+File: latex.info,  Node: Parameters,  Next: Concept Index,  Prev: Commands,  Up: Top
+
+Parameters
+**********
+
+   The input file specification indicates the file to be formatted; TeX
+uses `.tex' as a default file extension.  If you omit the input file
+entirely, TeX accepts input from the terminal.  You specify command
+options by supplying a string as a parameter to the command; e.g.
+
+   `latex ``\scrollmode\input foo.tex'''
+
+   will process `foo.tex' without pausing after every error.
+
+   Output files are always created in the current directory. When you
+fail to specify an input file name, TeX bases the output names on the
+file specification associated with the logical name TEX_OUTPUT,
+typically `texput.log'.
+
+
+File: latex.info,  Node: Concept Index,  Next: Command Index,  Prev: Parameters,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* Accessing any character of a font:     Special Characters.
+* Aligning Equations:                    eqnarray.
+* Appendix, creating:                    Sectioning.
+* Arrays, math:                          array.
+* article class:                         Document Classes.
+* Author, for titlepage:                 \author.
+* Bibliography, creating (automatically): Using BibTeX.
+* Bibliography, creating (manually):     thebibliography.
+* BibTeX, using:                         Using BibTeX.
+* book class:                            Document Classes.
+* Boxes:                                 Spaces & Boxes.
+* Cc list:                               \cc.
+* Centering text:                        \centering.
+* Centering text, environment for:       center.
+* Characters, reserved:                  Special Characters.
+* Characters, special:                   Special Characters.
+* Classes of document:                   Document Classes.
+* Commands, defining new ones:           \newcommand.
+* Computer programs, typesetting:        verbatim.
+* Counters, a list of:                   Counters.
+* Counters, creating:                    \newcounter.
+* Counters, getting the value of:        \value.
+* Counters, setting:                     \setcounter.
+* Creating letters:                      Letters.
+* Creating pictures:                     picture.
+* Creating tables:                       table.
+* Cross referencing:                     Cross References.
+* Cross referencing using page number:   \pageref.
+* Cross referencing using section number: \ref.
+* Date, for titlepage:                   \date.
+* Defining a new command:                \newcommand.
+* Defining new environments:             \newenvironment.
+* Defining new fonts:                    \newfont.
+* Defining new theorems:                 \newtheorem.
+* Displaying quoted text:                quote.
+* Displaying quoted text with paragraph indentation: quotation.
+* Document Classes:                      Document Classes.
+* Enclosed material:                     \encl.
+* Ending & Starting:                     Starting & Ending.
+* Enlarge current page:                  \enlargethispage.
+* Environments:                          Environments.
+* Environments, defining:                \newenvironment.
+* Equations, aligning:                   eqnarray.
+* Equations, environment for:            equation.
+* exponent:                              Math Formulae.
+* Figures, footnotes in:                 minipage.
+* Flushing a page:                       \clearpage.
+* Font commands, low-level:              Low-level font commands.
+* Font Sizes:                            Sizes.
+* Font Styles:                           Styles.
+* Fonts:                                 Typefaces.
+* Fonts, new commands for:               \newfont.
+* Footnotes in figures:                  minipage.
+* Footnotes, creating:                   Footnotes.
+* Formatting Text:                       \centering.
+* Formulae, environment for:             equation.
+* Formulae, maths:                       Math Formulae.
+* Global options:                        Document Classes.
+* Greek letters:                         Math Symbols.
+* Hyphenation, defining:                 \hyphenation.
+* Hyphenation, forcing:                  \- (hyphenation).
+* Indent, forcing:                       \indent.
+* Indent, suppressing:                   \noindent.
+* Input file, splitting:                 Splitting the Input.
+* Input/Output:                          Terminal Input/Output.
+* Inserting figures:                     figure.
+* Justification, ragged left:            \raggedleft.
+* Justification, ragged right:           \raggedright.
+* Labelled lists, creating:              description.
+* LaTeX overview:                        Overview.
+* Layout commands:                       Layout.
+* Left-justifying text:                  \raggedright.
+* Left-justifying text, environment for: flushleft.
+* Left-to-right mode:                    Modes.
+* Lengths, adding to:                    \addtolength.
+* Lengths, defining a new:               \newlength.
+* Lengths, defining and using:           Lengths.
+* Lengths, predefined:                   Predefined lengths.
+* Lengths, setting value of:             \setlength.
+* letter class:                          Document Classes.
+* Letters:                               Letters.
+* Letters, ending:                       \closing.
+* Letters, starting:                     \opening.
+* Line Breaking:                         Line & Page Breaking.
+* Line breaks:                           \linebreak.
+* Lines in tables:                       tabular.
+* Lining text up in columns using tab stops: tabbing.
+* Lining text up in tables:              tabular.
+* Lists of items:                        itemize.
+* Lists of items, generic:               list.
+* Lists of items, numbered:              enumerate.
+* Loading additional packages:           Document Classes.
+* Low-level font commands:               Low-level font commands.
+* LR mode:                               Modes.
+* Making a title page:                   titlepage.
+* Making paragraphs:                     Making Paragraphs.
+* Margin Notes:                          Margin Notes.
+* Math Formulae:                         Math Formulae.
+* Math mode:                             Modes.
+* Math mode, entering:                   Math Formulae.
+* Math mode, spacing:                    Spacing in Math Mode.
+* Maths Miscellany:                      Math Miscellany.
+* Maths symbols:                         Math Symbols.
+* Minipage, creating a:                  minipage.
+* Modes:                                 Modes.
+* Multicolumn text:                      \twocolumn.
+* New line, starting:                    \\.
+* New line, starting (paragraph mode):   \newline.
+* New Page:                              \newpage.
+* Notes in the margin:                   Margin Notes.
+* Options, global:                       Document Classes.
+* Overview of LaTeX:                     Overview.
+* Packages, loading:                     Document Classes.
+* Page break, forcing:                   \pagebreak.
+* Page Breaking:                         Line & Page Breaking.
+* Page Formatting:                       Line & Page Breaking.
+* Page numbering:                        \pagenumbering.
+* Page styles:                           Page Styles.
+* Paragraph mode:                        Modes.
+* Paragraph, starting a new:             \par.
+* Paragraphs:                            Making Paragraphs.
+* Pictures, creating:                    picture.
+* Poetry, an environment for:            verse.
+* Predefined lengths:                    Predefined lengths.
+* Programs, typesetting:                 verbatim.
+* Quoted text with paragraph indentation, displaying: quotation.
+* Quoted text, displaying:               quote.
+* Ragged left text:                      \raggedleft.
+* Ragged left text, environment for:     flushright.
+* Ragged right text:                     \raggedright.
+* Ragged right text, environment for:    flushleft.
+* Remarks in the margin:                 Margin Notes.
+* report class:                          Document Classes.
+* Reserved Characters:                   Special Characters.
+* Right-justifying text:                 \raggedleft.
+* Right-justifying text, environment for: flushright.
+* Sectioning:                            Sectioning.
+* Simulating typed text:                 verbatim.
+* Sizes of text:                         Sizes.
+* Space, inserting vertical:             \addvspace.
+* Spaces:                                Spaces & Boxes.
+* Spacing, within Math mode:             Spacing in Math Mode.
+* Special Characters:                    Special Characters.
+* Splitting the input file:              Splitting the Input.
+* Starting & Ending:                     Starting & Ending.
+* Starting on a  right-hand page:        \cleardoublepage.
+* Styles of text:                        Styles.
+* Styles, page:                          Page Styles.
+* Subscript:                             Subscripts & Superscripts.
+* Superscript:                           Subscripts & Superscripts.
+* Symbols:                               Math Symbols.
+* Tab stops, using:                      tabbing.
+* Table of Contents, creating:           Table of Contents.
+* Tables, creating:                      table.
+* Terminal Input/Output:                 Terminal Input/Output.
+* Thanks, for titlepage:                 \thanks.
+* Theorems, defining:                    \newtheorem.
+* Theorems, typesetting:                 theorem.
+* Title making:                          \maketitle.
+* Title pages, creating:                 titlepage.
+* Title, for titlepage:                  \title.
+* Typed text, simulating:                verbatim.
+* Typeface Sizes:                        Sizes.
+* Typeface Styles:                       Styles.
+* Typefaces:                             Typefaces.
+* Using BibTeX:                          Using BibTeX.
+* Variables, a list of:                  Counters.
+* Verbatim text:                         \verb.
+* Vertical space, inserting:             \addvspace.
+
+
+File: latex.info,  Node: Command Index,  Prev: Concept Index,  Up: Top
+
+Command Index
+*************
+
+* Menu:
+
+* $:                                     Math Formulae.
+* \!:                                    Spacing in Math Mode.
+* \' (tabbing):                          tabbing.
+* \(:                                    Math Formulae.
+* \):                                    Math Formulae.
+* \+:                                    tabbing.
+* \,:                                    Spacing in Math Mode.
+* \- (hyphenation):                      \- (hyphenation).
+* \- (tabbing):                          tabbing.
+* \;:                                    Spacing in Math Mode.
+* \<:                                    tabbing.
+* \=:                                    tabbing.
+* \>:                                    tabbing.
+* \[:                                    Math Formulae.
+* \\:                                    \\.
+* \]:                                    Math Formulae.
+* \` (tabbing):                          tabbing.
+* \a:                                    tabbing.
+* \addcontentsline:                      \addcontentsline.
+* \address:                              \address.
+* \addtocontents:                        \addtocontents.
+* \addtocounter:                         \addtocounter.
+* \addtolength:                          \addtolength.
+* \addvspace:                            \addvspace.
+* \Alph:                                 \alph.
+* \alph:                                 \alph.
+* \appendix:                             Sectioning.
+* \arabic:                               \arabic.
+* \author:                               \author.
+* \backslash:                            Special Characters.
+* \begin:                                Environments.
+* \bfseries:                             Styles.
+* \bibitem:                              \bibitem.
+* \bibliography:                         Using BibTeX.
+* \bibliographystyle:                    Using BibTeX.
+* \bigskip:                              \bigskip.
+* \caption:                              figure.
+* \cc:                                   \cc.
+* \cdots:                                Math Miscellany.
+* \centering:                            \centering.
+* \chapter:                              Sectioning.
+* \circle:                               \circle.
+* \cite:                                 \cite.
+* \cleardoublepage:                      \cleardoublepage.
+* \clearpage:                            \clearpage.
+* \cline:                                \cline.
+* \closing:                              \closing.
+* \COLON:                                Spacing in Math Mode.
+* \dashbox:                              \dashbox.
+* \date:                                 \date.
+* \ddots:                                Math Miscellany.
+* \depth:                                Predefined lengths.
+* \documentclass:                        Document Classes.
+* \dotfill:                              \dotfill.
+* \emph:                                 Styles.
+* \encl:                                 \encl.
+* \end:                                  Environments.
+* \enlargethispage:                      \enlargethispage.
+* \fbox:                                 \fbox.
+* \flushbottom:                          \flushbottom.
+* \fnsymbol:                             \fnsymbol.
+* \fontencoding:                         Low-level font commands.
+* \fontfamily:                           Low-level font commands.
+* \fontseries:                           Low-level font commands.
+* \fontshape:                            Low-level font commands.
+* \fontsize:                             Low-level font commands.
+* \footnote:                             \footnote.
+* \footnotemark:                         \footnotemark.
+* \footnotesize:                         Sizes.
+* \footnotetext:                         \footnotetext.
+* \frac:                                 Math Miscellany.
+* \frame:                                \frame.
+* \framebox <1>:                         \framebox.
+* \framebox:                             \framebox (picture).
+* \fussy:                                \fussy.
+* \height:                               Predefined lengths.
+* \hfill:                                \hfill.
+* \hline:                                \hline.
+* \hrulefill:                            \hrulefill.
+* \hspace:                               \hspace.
+* \Huge:                                 Sizes.
+* \huge:                                 Sizes.
+* \hyphenation:                          \hyphenation.
+* \include:                              \include.
+* \includeonly:                          \includeonly.
+* \indent:                               \indent.
+* \input:                                \input.
+* \item:                                 itemize.
+* \itshape:                              Styles.
+* \kill:                                 tabbing.
+* \label:                                \label.
+* \LARGE:                                Sizes.
+* \Large:                                Sizes.
+* \large:                                Sizes.
+* \ldots:                                Math Miscellany.
+* \lefteqn:                              eqnarray.
+* \line:                                 \line.
+* \linebreak:                            \linebreak.
+* \linethickness:                        \linethickness.
+* \listoffigures:                        Table of Contents.
+* \listoftables:                         Table of Contents.
+* \location:                             \location.
+* \makebox:                              \makebox.
+* \makebox (picture):                    \makebox (picture).
+* \makelabels:                           \makelabels.
+* \maketitle:                            \maketitle.
+* \markboth:                             \markboth.
+* \markright:                            \markright.
+* \mathbf:                               Styles.
+* \mathcal:                              Styles.
+* \mathit:                               Styles.
+* \mathnormal:                           Styles.
+* \mathrm:                               Styles.
+* \mathsf:                               Styles.
+* \mathtt:                               Styles.
+* \mathversion:                          Styles.
+* \mbox:                                 \mbox.
+* \mdseries:                             Styles.
+* \medskip:                              \medskip.
+* \multicolumn:                          \multicolumn.
+* \multiput:                             \multiput.
+* \name:                                 \name.
+* \newcommand:                           \newcommand.
+* \newcounter:                           \newcounter.
+* \newenvironment:                       \newenvironment.
+* \newfont:                              \newfont.
+* \newlength:                            \newlength.
+* \newline:                              \newline.
+* \newpage:                              \newpage.
+* \newsavebox:                           \newsavebox.
+* \newtheorem:                           \newtheorem.
+* \nocite:                               \nocite.
+* \nofiles:                              Table of Contents.
+* \noindent:                             \noindent.
+* \nolinebreak:                          \nolinebreak.
+* \nopagebreak:                          \nopagebreak.
+* \normalfont:                           Styles.
+* \normalsize:                           Sizes.
+* \onecolumn:                            \onecolumn.
+* \opening:                              \opening.
+* \oval:                                 \oval.
+* \overbrace:                            Math Miscellany.
+* \overline:                             Math Miscellany.
+* \pagebreak:                            \pagebreak.
+* \pagenumbering:                        \pagenumbering.
+* \pageref:                              \pageref.
+* \pagestyle:                            \pagestyle.
+* \par:                                  \par.
+* \paragraph:                            Sectioning.
+* \parbox:                               \parbox.
+* \poptabs:                              tabbing.
+* \ps:                                   \ps.
+* \pushtabs:                             tabbing.
+* \put:                                  \put.
+* \raggedbottom:                         \raggedbottom.
+* \raggedleft:                           \raggedleft.
+* \raggedright:                          \raggedright.
+* \raisebox:                             \raisebox.
+* \ref:                                  \ref.
+* \refstepcounter:                       \refstepcounter.
+* \rmfamily:                             Styles.
+* \Roman:                                \roman.
+* \roman:                                \roman.
+* \rule:                                 \rule.
+* \savebox:                              \savebox.
+* \sbox:                                 \sbox.
+* \scriptsize:                           Sizes.
+* \scshape:                              Styles.
+* \selectfont:                           Low-level font commands.
+* \setcounter:                           \setcounter.
+* \setlength:                            \setlength.
+* \settodepth:                           \settodepth.
+* \settoheight:                          \settoheight.
+* \settowidth:                           \settowidth.
+* \sffamily:                             Styles.
+* \shortstack:                           \shortstack.
+* \signature:                            \signature.
+* \sloppy:                               \sloppy.
+* \slshape:                              Styles.
+* \small:                                Sizes.
+* \smallskip:                            \smallskip.
+* \sqrt:                                 Math Miscellany.
+* \startbreaks:                          \startbreaks.
+* \stepcounter:                          \stepcounter.
+* \stopbreaks:                           \stopbreaks.
+* \subparagraph:                         Sectioning.
+* \subsection:                           Sectioning.
+* \subsubsection:                        Sectioning.
+* \symbol:                               Special Characters.
+* \tableofcontents:                      Table of Contents.
+* \telephone:                            \telephone.
+* \textbf:                               Styles.
+* \textit:                               Styles.
+* \textmd:                               Styles.
+* \textnormal:                           Styles.
+* \textrm:                               Styles.
+* \textsc:                               Styles.
+* \textsf:                               Styles.
+* \textsl:                               Styles.
+* \texttt:                               Styles.
+* \textup:                               Styles.
+* \thanks:                               \thanks.
+* \thispagestyle:                        \thispagestyle.
+* \tiny:                                 Sizes.
+* \title:                                \title.
+* \today:                                titlepage.
+* \totalheight:                          Predefined lengths.
+* \ttfamily:                             Styles.
+* \twocolumn:                            \twocolumn.
+* \typein:                               \typein.
+* \typeout:                              \typeout.
+* \underbrace:                           Math Miscellany.
+* \underline:                            Math Miscellany.
+* \upshape:                              Styles.
+* \usebox:                               \usebox.
+* \usecounter:                           \usecounter.
+* \usefont:                              Low-level font commands.
+* \usepackage:                           Document Classes.
+* \value:                                \value.
+* \vdots:                                Math Miscellany.
+* \vector:                               \vector.
+* \verb:                                 \verb.
+* \vfill:                                \vfill.
+* \vline:                                \vline.
+* \vspace:                               \vspace.
+* \width:                                Predefined lengths.
+* ^:                                     Subscripts & Superscripts.
+* _:                                     Subscripts & Superscripts.
+* array:                                 array.
+* center:                                center.
+* description:                           description.
+* enumerate:                             enumerate.
+* eqnarray:                              eqnarray.
+* equation:                              equation.
+* figure:                                figure.
+* flushleft:                             flushleft.
+* flushright:                            flushright.
+* itemize:                               itemize.
+* letter:                                letter.
+* list:                                  list.
+* lrbox:                                 lrbox.
+* minipage:                              minipage.
+* picture:                               picture.
+* quotation:                             quotation.
+* quote:                                 quote.
+* tabbing:                               tabbing.
+* table:                                 table.
+* tabular:                               tabular.
+* thebibliography:                       thebibliography.
+* theorem:                               theorem.
+* titlepage:                             titlepage.
+* verbatim:                              verbatim.
+* verse:                                 verse.
+
+

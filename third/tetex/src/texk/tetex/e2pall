@@ -1,0 +1,52 @@
+eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}' && eval 'exec perl -S $0 $argv:q'
+        if 0;
+
+# recursively finds all your eps files.  Looks down \input{fname}.
+# CAVEATS:
+# 1) cannot handle \input{fname} or \includegraphics{fname} split over
+# more than one line.
+# 2) Must be run from same directory as the Latex file.
+# 3) Does not look down $TEXINPUTS or anything fancy like that...
+# 4) Does not handle \include (though I guess its trivial)
+# 5) Assumes *all* your graphics inclusions are eps.  But don't
+# fret, because if they are not epstopdf dies anyhow....
+
+# EDIT these two lines for your system....
+
+$Eps2PdfCom = "epstopdf";
+$ThisFunCom = "e2pall";
+
+$fname=$ARGV[0];
+
+# check for a *.tex at the end...
+if ($fname !~ /.tex$/){
+    $fname = "$fname.tex";
+}
+
+open(TEXFILE,$fname) or die "Cannot open file $fname";
+# print "Finding *.eps files in $fname\n";
+
+while($line=<TEXFILE>){
+    # truncate $line after % sign....
+    $line=~s/%.*//;
+    # check for /input....
+    if ($line=~/input{(.*)}/){
+        print `$ThisFunCom $1`;
+    }
+    if ($line=~/includegraphics.*{(.*)}/){
+        # check that the eps version is newer than the pdf version....
+        if ((-M "$1.pdf") >= (-M "$1.eps")){
+            print "Constructing $1.pdf from $1.eps\n";
+            print `$Eps2PdfCom $1.eps`;
+        }
+        elsif ((-M "$1.pdf")==""){
+            print "Constructing \t $1.pdf from $1.eps\n";
+            print `$Eps2PdfCom $1.eps`;
+        }
+        else{
+            print "$1.pdf \t is up to date with $1.eps\n";
+        }
+
+    };
+}
+close(TEXFILE);

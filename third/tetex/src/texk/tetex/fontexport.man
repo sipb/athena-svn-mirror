@@ -1,0 +1,20 @@
+.TH fontexport 1 "11/94" "teTeX" "teTeX"
+.SH NAME
+fontexport \- export fonts from the teTeX directory structure
+.SH SYNOPSIS
+.B fontexport [\-d] destination files ...
+.SH DESCRIPTION
+.I fontexport
+exports font files from the teTeX directory tree.
+
+.I fontexport
+can cope with fontnames conforming the 8.3\-namescheme, too, just give it the
+.IR \-d \-flag
+(d as "dos").
+So you can export your teTeX fonts for someone else to use them with his or her emTeX.
+
+.SH "SEE ALSO"
+fontimport(1).
+
+.SH AUTHOR
+Thomas Esser (te@informatik.uni\-hannover.de)
