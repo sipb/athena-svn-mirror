@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.5 1996-06-06 18:26:49 cfields Exp $
+# $Id: update_ws.sh,v 1.6 1996-06-08 00:01:00 ghudson Exp $
 #
 
 trap "" 1 15
@@ -14,12 +14,12 @@ trap "" 1 15
 ROOT="${ROOT-}"; export ROOT
 CONFDIR="${CONFDIR-/etc/athena}"; export CONFDIR
 LIBDIR=/srvd/usr/athena/lib/update;	export LIBDIR
-PATH=/bin:/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/srvd/usr/etc:/srvd/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
+PATH=/bin:/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/srvd/usr/etc:/srvd/usr/os:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
 
 RC=nothing
-HOSTNAME=/usr/ucb/hostname
-WHOAMI=/usr/ucb/whoami
-LOGGER=/usr/ucb/logger
+HOSTNAME=hostname
+WHOAMI=whoami
+LOGGER=logger
 
 case `/bin/athena/machtype` in
 sgi)
@@ -66,6 +66,16 @@ if [ `expr $0 : '.*auto_update'` != "0" ]; then
 	AUTO=true;
 fi
 
+/etc/athena/save_cluster_info
+if [ ! -f /etc/athena/clusterinfo.bsh ]; then
+	# No updates for machines without cluster info.
+	if [ "$AUTO" = false ]; then
+		echo "Cannot find Hesiod information for this machine, aborting update."
+	fi
+	exit 1
+fi
+. /etc/athena/clusterinfo.bsh
+
 case `echo $VERSION $NEWVERS | awk '(NR==1) { \
 	if ($1 == "Update") {print "OOPS"} \
 	else if ($1 >= $2) {print "OK"} \
@@ -83,7 +93,38 @@ OOPS)
 	;;
 OK)
 	if [ "${AUTO}" != "true" ]; then
-		echo "It appears you already have this update."
+		# User ran update_ws; display something appropriate.
+		if [ -n "$NEW_PRODUCTION_RELEASE" -o \
+		     -n "$NEW_TESTING_RELEASE" ]; then
+			echo "Your workstation software already matches the"
+			echo "version on the system packs.  You must manually"
+			echo "attach a newer version of the system packs to"
+			echo "update beyond this point."
+		else
+			echo "It appears you already have this update."
+		fi
+	else
+		# System ran auto_update; point out new releases if available.
+		if [ -n "$NEW_PRODUCTION_RELEASE" ]; then
+			/bin/cat <<EOF
+
+A new Athena release ($NEW_PRODUCTION_RELEASE) is available.  Since it may be
+incompatible with your workstation software, your workstation
+is still using the old system packs.  Please contact Athena
+Hotline (x3-1410) to have your workstation updated.
+EOF
+		fi
+		if [ -n "$NEW_TESTING_RELEASE" ]; then
+			/bin/cat << EOF
+
+A new Athena release ($NEW_TESTING_RELEASE) is now in testing.  You are
+theoretically interested in this phase of testing, but
+because there may be bugs which would inconvenience
+your work, you must update to this release manually.
+Please contact Athena Hotline (x3-1410) if you have
+not received instructions on how to do so.
+EOF
+		fi
 	fi
 	exit 0
 	;;
@@ -168,13 +209,6 @@ if [ -d ${SITE}/server ] ; then
 fi
 
 if [ `/bin/athena/machtype` = sgi ]; then
-	/etc/athena/save_cluster_info
-	if [ ! -f /etc/athena/clusterinfo.bsh ]; then
-		echo "Cannot find Hesiod information for this machine, aborting update."
-		exit 1
-	fi
-
-	. /etc/athena/clusterinfo.bsh
 	if [ ! -n "$INSTLIB" ]; then
 		echo "No installation library set in Hesiod information, aborting update."
 		exit 1
