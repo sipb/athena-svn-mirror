@@ -1,6 +1,8 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/Makefile.in,v 1.3 1996-05-07 19:55:01 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/Makefile.in,v 1.4 1996-05-23 04:59:18 ghudson Exp $
 
 ### programs used in building/installing for Athena
+
+SHELL=/bin/sh
 
 CC=@CC@
 LN_S=@LN_S@
