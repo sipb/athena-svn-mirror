@@ -3,7 +3,7 @@
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
 #	$Author: don $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.8 1988-05-17 18:58:06 don Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.9 1988-05-17 20:16:53 don Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
@@ -11,9 +11,9 @@ LIBS= -ll
 
 PROGS= track # nullmail
 
-TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o
+TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o cksum.o
 
-TRACK_SRCS= track.c y.tab.c stamp.c except.c files.c misc.c update.c
+TRACK_SRCS= track.c y.tab.c stamp.c except.c files.c misc.c update.c cksum.c
 
 TRACK_DEP= track.h track.c stamp.c except.c files.c misc.c update.c nullmail.c
 
