@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.9 1990-05-26 12:00:14 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: t_resolve.c,v 1.10 1990-07-16 08:09:56 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.9 1990-05-26 12:00:14 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.10 1990-07-16 08:09:56 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
