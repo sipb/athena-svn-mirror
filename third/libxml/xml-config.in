@@ -53,11 +53,11 @@ while test $# -gt 0; do
 	;;
 
     --cflags)
-       	echo @XML_INCLUDEDIR@ @XML_CFLAGS@
+       	echo -I$ATHTOOLROOT${includedir}/gnome-xml @XML_CFLAGS@
        	;;
 
     --libs)
-       	echo -L@libdir@ @XML_LIBS@ @LIBS@
+       	echo -L$ATHTOOLROOT@libdir@ @XML_LIBS@ @LIBS@
        	;;
 
     *)

@@ -834,9 +834,9 @@ cat >> confdefs.h <<EOF
 EOF
 
 
-LIBIDL_INCLUDEDIR='@GLIB_CFLAGS@ -I${includedir}'
-LIBIDL_LIBDIR='-L${libdir}'
-LIBIDL_LIBS="-lIDL @GLIB_LIBS@"
+LIBIDL_INCLUDEDIR='`glib-config --cflags` -I$$ATHTOOLROOT${includedir}'
+LIBIDL_LIBDIR='-L$$ATHTOOLROOT${libdir}'
+LIBIDL_LIBS='-lIDL `glib-config --libs`'
 
 
 
