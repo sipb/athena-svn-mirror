@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: cfields $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.27 1995-11-28 23:07:03 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.27.2.1 1997-06-28 19:14:47 ghudson Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.27 1995-11-28 23:07:03 cfields Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.27.2.1 1997-06-28 19:14:47 ghudson Exp $";
 #endif
 
 /*
@@ -837,7 +837,7 @@ sendit(file)
 			fino = i;
 			continue;
 		}
-		if (line[0] >= 'a' && line[0] <= 'z') {
+		if (line[0] >= 'a' && line[0] <= 'z' && line[0] != 'q') {
 			strcpy(last, line);
 			while (i = getline(cfp))
 				if (strcmp(last, line))
@@ -1354,8 +1354,13 @@ init()
 			  printf ("unable to get hostname for remote machine %s\n",
 				  RM);
 			}
-			/* if printer is not on local machine, ignore LP */
-			else if (strcasecmp(name, hp->h_name) != 0) *LP = '\0';
+			/* if printer is not on local machine,
+			   ignore LP and SD */
+			else if (strcasecmp(name, hp->h_name) != 0) {
+			        if (lflag) syslog(LOG_INFO, "printer is remote; ignoring LP");
+			        *LP = '\0';
+				SD = DEFSPOOL;
+			}
 		      }
 
 	     }
