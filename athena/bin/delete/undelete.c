@@ -11,14 +11,20 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.19 1989-12-15 04:39:31 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.20 1990-06-06 19:06:43 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <sys/param.h>
+#ifdef SYSV
+#include <string.h>
+#define index strchr
+#define rindex strrchr
+#else
 #include <strings.h>
+#endif /* SYSV */
 #include <sys/stat.h>
 #include <com_err.h>
 #include <errno.h>

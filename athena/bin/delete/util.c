@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.15 1990-01-11 03:47:11 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.16 1990-06-06 19:06:49 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -19,7 +19,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/dir.h>
+#ifdef SYSV
+#include <string.h>
+#define index strchr
+#define rindex strrchr
+#else
 #include <strings.h>
+#endif /* SYSV */
 #include <pwd.h>
 #include <errno.h>
 #ifdef AFS_MOUNTPOINTS
