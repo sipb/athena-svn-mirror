@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.31 1999-09-27 16:14:13 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.31.2.1 2000-11-08 22:01:10 ghudson Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -419,8 +419,7 @@ static void attach_lookup(locker_context context, char *filesystem)
     {
       printf("%s resolves to:\n", filesystem);
       for (i = 0; fs[i]; i++)
-	printf("%s", fs[i]);
-      printf("\n");
+	printf("%s\n", fs[i]);
       locker_free_filesys(context, fs, cleanup);
     }
 }
