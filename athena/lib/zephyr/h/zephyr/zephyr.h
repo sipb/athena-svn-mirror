@@ -1,7 +1,21 @@
+#ifndef __ZEPHYR_H__
+#define __ZEPHYR_H__
+/* This file is part of the Project Athena Zephyr Notification System.
+ * It contains global definitions
+ *
+ *	Created by:	Robert French
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
+ *	$Author: jtkohl $
+ *
+ *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	For copying and distribution information, see the file
+ *	"mit-copyright.h". 
+ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.3 1987-03-19 21:34:51 jtkohl Exp $ */
+
 #include <zephyr/mit-copyright.h>
 
-/* $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $ */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.2 1987-03-18 19:01:16 jtkohl Exp $ */
 
 #include <errno.h>
 #include <sys/types.h>
@@ -81,3 +95,4 @@ extern int errno;
 
 #define	ZERR_S_FIRST		2000	/* internal server error codes */
 #define	ZERR_S_LAST		3000
+#endif !__ZEPHYR_H__
