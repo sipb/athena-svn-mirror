@@ -3,7 +3,7 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.8 1995-11-28 23:28:07 cfields Exp $
+# $Id: save_cluster_info.sh,v 1.9 1996-06-06 05:35:55 ghudson Exp $
 #
 # Errors from getcluster guarantee that stdout will be size 0,
 # therefore a size # 0 is a sufficient test.
@@ -22,14 +22,14 @@ if [ "${VERSION}" = "Update" ]; then
 fi
 
 /bin/athena/getcluster -b ${HOSTNAME} ${VERSION} > /tmp/clusterinfo.bsh
-if [ -s /tmp/clusterinfo.bsh ]
+if [ $? -eq 0 -a -s /tmp/clusterinfo.bsh ]
 then
 	cp /tmp/clusterinfo.bsh /etc/athena/clusterinfo.bsh
-	chmod 666 /etc/athena/clusterinfo.bsh 2>/dev/null
+	chmod 644 /etc/athena/clusterinfo.bsh 2>/dev/null
 fi
 /bin/athena/getcluster ${HOSTNAME} ${VERSION} > /tmp/clusterinfo
-if [ -s /tmp/clusterinfo ]
+if [ $? -eq 0 -a -s /tmp/clusterinfo ]
 then
 	cp /tmp/clusterinfo /etc/athena/clusterinfo
-	chmod 666 /etc/athena/clusterinfo 2>/dev/null
+	chmod 644 /etc/athena/clusterinfo 2>/dev/null
 fi
