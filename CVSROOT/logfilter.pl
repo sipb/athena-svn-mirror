@@ -11,8 +11,16 @@
 # specific to the Athena environment in that it assumes the existence
 # of /usr/athena/bin/perl and of mhmail.
 
-open(COMMITMAIL, "|mhmail -s '$ARGV[0]' $ARGV[1]");
-open(DIFFMAIL, "|mhmail -s '$ARGV[0]' $ARGV[2]");
+$sendmail = ( -x "/usr/sbin/sendmail") ? "/usr/sbin/sendmail"
+    : "/usr/lib/sendmail";
+
+open(COMMITMAIL, "|$sendmail $ARGV[1]");
+print COMMITMAIL "To: $ARGV[1]\n";
+print COMMITMAIL "Subject: $ARGV[0]\n\n";
+
+open(DIFFMAIL, "|$sendmail $ARGV[2]");
+print DIFFMAIL "To: $ARGV[1]\n";
+print DIFFMAIL "Subject: $ARGV[0]\n\n";
 
 # Display the commit log as proffered by CVS.  Remember the repository
 # directory, the branch, and the added and modified files.
@@ -21,9 +29,6 @@ while (<STDIN>) {
 	print DIFFMAIL;
 	if (/^Update of (.*)$/) {
 		$repdir = $1;
-	}
-	if (/^Revision\/Branch: (.*)$/) {
-		$branch = $1;
 	}
 	if (/^Added Files:$/) {
 		$line = <STDIN>;
