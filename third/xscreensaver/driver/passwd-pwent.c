@@ -187,16 +187,16 @@ get_encrypted_passwd(const char *user)
 
 
 
-#ifndef VMS
-
 /* This has to be called before we've changed our effective user ID,
    because it might need privileges to get at the encrypted passwords.
    Returns false if we weren't able to get any passwords, and therefore,
    locking isn't possible.  (It will also have written to stderr.)
  */
 
-void
-pwent_priv_init (int argc, char **argv)
+#ifndef VMS
+
+Bool
+pwent_priv_init (int argc, char **argv, Bool verbose_p)
 {
   char *u;
 
@@ -208,6 +208,11 @@ pwent_priv_init (int argc, char **argv)
   u = user_name();
   encrypted_user_passwd = get_encrypted_passwd(u);
   if (u) free (u);
+
+  if (encrypted_user_passwd)
+    return True;
+  else
+    return False;
 }
 
 Bool
