@@ -1,6 +1,6 @@
 Name:		libxml
 Summary:	libXML library
-Version:	1.8.16
+Version:	1.8.17
 Release:	1
 License:	LGPL
 Group:		Development/Libraries
@@ -58,9 +58,9 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} libdir=$RPM_BUILD_ROOT%{_libdir} \
 # hack to get libxml.so.0 too !
 # Get rid of it once deps to libxml.so.0 have disapeared.
 #
-#if [ -f $RPM_BUILD_ROOT/%{prefix}/lib/libxml.so.1.8.16 ]
+#if [ -f $RPM_BUILD_ROOT/%{prefix}/lib/libxml.so.1.8.17 ]
 #then
-#   (cd $RPM_BUILD_ROOT/%{prefix}/lib/ ; cp libxml.so.1.8.16 libxml.so.0.99.0 ; ln -sf libxml.so.0.99.0 libxml.so.0)
+#   (cd $RPM_BUILD_ROOT/%{prefix}/lib/ ; cp libxml.so.1.8.17 libxml.so.0.99.0 ; ln -sf libxml.so.0.99.0 libxml.so.0)
 #fi
 #
 # another hack to get /usr/include/gnome-xml/libxml/
