@@ -1,3 +1,13 @@
-# $Id: configure.athena,v 1.6 2002-04-18 20:37:44 rbasch Exp $
-./configure --with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
-	    --with-hesiod --with-kerberos
+# $Id: configure.athena,v 1.7 2002-07-01 21:30:03 rbasch Exp $
+
+options="--with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
+	    --with-hesiod --with-kerberos"
+
+case $OS in
+irix)
+  CC=cc ./configure $options
+  ;;
+*)
+  ./configure $options
+  ;;
+esac
