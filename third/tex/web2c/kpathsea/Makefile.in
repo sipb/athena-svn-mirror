@@ -159,7 +159,7 @@ install-exec: kpsewhich
 	$(INSTALL_SCRIPT) $(srcdir)/mktexnam $(DESTDIR)$(web2cdir)/mktexnam
 	$(INSTALL_SCRIPT) $(srcdir)/mktexnam.opt \
 	  $(DESTDIR)$(web2cdir)/mktexnam.opt
-	$(INSTALL_SCRIPT) $(srcdir)/mktexupd $(DESTDIR) $(web2cdir)/mktexupd
+	$(INSTALL_SCRIPT) $(srcdir)/mktexupd $(DESTDIR)$(web2cdir)/mktexupd
 	$(INSTALL_LIBTOOL_LIBS) $(DESTDIR)$(libdir) lib$(library).la
 	$(INSTALL_LIBTOOL_PROG) $(DESTDIR)$(bindir) kpsewhich
 	$(INSTALL_PROGRAM) kpsestat $(DESTDIR)$(bindir)
