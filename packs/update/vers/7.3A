@@ -1,0 +1,120 @@
+#!/bin/sh -
+
+case "${MACH}" in
+RT*|VAX*|VS*)
+	if [ "${KNETD}" = "true" ]; then
+		echo "Changing KNETD to false in /etc/rc.conf."
+		if [ ! -f /etc/rc.conf.orig ]; then
+			cp /etc/rc.conf /etc/rc.conf.orig
+		fi
+		sed /KNETD=/s/true/false/ < /etc/rc.conf > /tmp/rc.conf
+		cp /tmp/rc.conf /etc/rc.conf
+	fi
+	if [ `/bin/athena/machtype` = "vax" ]; then
+		echo "Removing extra X servers"
+		rm -f /etc/Xplx /etc/Xqdss /etc/Xqvss
+	fi
+	if [ -f /etc/net.conf ]; then
+		echo "Moving net.conf to /etc/athena."
+		mv -f /etc/net.conf /etc/athena/net.conf
+	fi
+	if [ ! -f /etc/crontab ]; then
+		echo "Moving crontab files to /etc."
+		mv -f /site/usr/lib/crontab /etc/
+		if [ -f /site/usr/lib/crontab.local ]; then
+			mv -f /site/usr/lib/crontab.local /etc/
+		fi
+	fi
+	;;
+DS3100)
+	echo "Creating new devices"	
+	if [ "${SYSTEM}" = "ULTRIX31" -a -f /etc/rc.conf ]; then
+		echo "Changing SYSTEM to ULTRIX42 in rc.conf."
+		if [ ! -f /etc/athena/rc.conf.orig ]; then
+			cp /etc/rc.conf /etc/athena/rc.conf.orig
+		fi
+		sed -e '/SYSTEM=/s/31/42/' < /etc/rc.conf > /tmp/rc.conf
+		cp /tmp/rc.conf /etc/rc.conf
+	fi
+	NETDEV=${NETDEV-NODEV}
+	if [ "${NETDEV}" = "NODEV" -a -f /etc/rc.conf ]; then
+		echo "Adding NETDEV to rc.conf."
+		echo "NETDEV=ln0;		export NETDEV	# Network device" >> /etc/rc.conf
+	fi
+	
+	echo "Changing group id's in /etc/group"
+	sed -e '/^kmem:\*:2:/s/2/6/' -e '/^tty:\*:885:/s/885/5/' /etc/group > /etc/group.$$
+	if [ -f /etc/group.$$ ]; then
+		rm -f /etc/group
+		mv /etc/group.$$ /etc/group
+	fi
+	if [ -f /etc/group.local ]; then
+		echo "Changing group id's in /etc/group.local"
+		sed -e '/^kmem:\*:2:/s/2/6/' \
+		-e '/^tty:\*:885:/s/885/5/' /etc/group.local > /etc/group.$$
+		if [ -f /etc/group.$$ ]; then
+			rm -f /etc/group.local
+			mv /etc/group.$$ /etc/group.local
+		fi
+	fi
+
+	mkdir /dev.new
+	echo "NEWDEV=true"		>> ${CONFVARS}
+	/srvd/bin/cp -p /srvd/dev/MAKEDEV /dev.new/MAKEDEV
+	cd /dev.new
+	if [ ! -f /etc/sizer ]; then 
+		ln -s /usr/athena/lib/update/fakesizer /etc/sizer
+	fi
+	./MAKEDEV DECstation xcons
+	chmod 662 xcons
+	chgrp daemon xcons
+	rm -f floppy
+	./MAKEDEV `/bin/athena/machtype -r | awk -F: '{print \$1}'`
+	floppy=`/bin/athena/machtype -r | grep "RX23"| awk -F: '{print \$1}'`
+	if [ ${floppy}x != 'x' ]; then
+		echo "Creating floppy links"
+		rm -f ${floppy} r${floppy} floppy rfloppy
+		./MAKEDEV ${floppy}
+		chmod 666 ${floppy}
+		chmod 666 r${floppy}
+		ln -s ${floppy} floppy
+		ln -s r${floppy} rfloppy
+	fi
+	if [ ! -d /var/adm/lmf ]; then
+		echo "Creating /var/adm/lmf"
+		mkdir /var/adm/lmf
+	fi
+	;;
+esac
+
+echo "NEWUNIX=true"		>> ${CONFVARS}
+echo "NEWTTYS=true"		>> ${CONFVARS}
+echo "/etc/crontab"		>> ${CONFCHG}
+echo "/etc/inetd.conf"		>> ${CONFCHG}
+echo "/.cshrc"			>> ${CONFCHG}
+echo "/.xsession"		>> ${CONFCHG}
+
+if [ ! -f /etc/athena/attach.conf ]; then
+	echo "Moving attach.conf file to /etc/athena."
+	mv -f /etc/attach.conf /etc/athena/
+fi
+if [ ! -f /etc/athena/srvtab -a -f /etc/srvtab ]; then
+	echo "Moving srvtab files to /etc/athena."
+	mv -f /etc/srvtab /etc/athena/
+	ln -s athena/srvtab /etc/srvtab
+fi
+if [ ! -f /etc/athena/version ]; then
+	echo "Moving srvtab files to /etc/athena."
+	mv -f /etc/version /etc/athena/
+fi
+if [ ! -f /etc/athena/rc.conf ]; then
+	echo "Moving rc.conf files to /etc/athena."
+	mv -f /etc/rc.conf /etc/athena/
+fi
+if [ ! -f /etc/athena/galatea.conf -a -f /etc/galatea.conf ]; then
+	echo "Moving galetea.conf to /etc/athena."
+	mv -f /etc/galetea.conf /etc/athena/
+	ln -s athena/galatea.conf /etc/galatea.conf
+fi
+
+# Need to remove old symlinks - /etc/timedc
