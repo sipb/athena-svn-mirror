@@ -1,5 +1,5 @@
 /* 
- * $Id: rkinitd.c,v 1.2 1990-07-16 14:16:34 qjb Exp $
+ * $Id: rkinitd.c,v 1.3 1990-08-01 11:56:13 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v $
  * $Author: qjb $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinitd.c,v 1.2 1990-07-16 14:16:34 qjb Exp $";
+static char *rcsid = "$Id: rkinitd.c,v 1.3 1990-08-01 11:56:13 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -56,10 +56,12 @@ void error()
     char errbuf[BUFSIZ];
     
     strcpy(errbuf, rkinit_errmsg(0));
-    if (inetd)
-	syslog(LOG_ERR, "rkinitd: %s", errbuf);
-    else
-	fprintf(stderr, "rkinitd: %s\n", errbuf);
+    if (strlen(errbuf)) {
+	if (inetd)
+	    syslog(LOG_ERR, "rkinitd: %s", errbuf);
+	else
+	    fprintf(stderr, "rkinitd: %s\n", errbuf);
+    }
 }
 
 #ifdef __STDC__
