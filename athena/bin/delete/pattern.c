@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.17 1990-06-06 19:06:37 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.18 1990-06-07 22:33:45 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -416,6 +416,9 @@ Boolean match_undeleted, match_deleted;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      int retval;
      int strsize;
+#ifdef PATTERN_DEBUG
+     int j;
+#endif
      
 #ifdef DEBUG
      printf("do_match: looking for %s\n", name);
@@ -435,6 +438,9 @@ Boolean match_undeleted, match_deleted;
      if (! *found) {
 	  set_error(errno);
 	  error("Malloc");
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: return 1.\n");
+#endif
 	  return error_code;
      }
      *num_found = 0;
@@ -443,6 +449,9 @@ Boolean match_undeleted, match_deleted;
      if (! dirp) {
 	  set_error(errno);
 	  error(base);
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: return 2.\n");
+#endif
 	  return error_code;
      }
      (void) strcpy(first, firstpart(name, rest));
@@ -451,9 +460,15 @@ Boolean match_undeleted, match_deleted;
 	  if (retval) {
 	       error("add_str");
 	       (void) popall();
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "do_match: return 3.\n");
+#endif
 	       return retval;
 	  }
 	  (*num_found)++;
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: return 4.\n");
+#endif
 	  return 0;
      }
      
@@ -462,6 +477,10 @@ Boolean match_undeleted, match_deleted;
 	  if (! dp) goto updir;
 
 	  retval = reg_cmp(first, dp->d_name);
+#ifdef PATTERN_DEBUG
+	fprintf(stderr, "do_match: comparing %s to %s returns %d.\n",
+		first, dp->d_name, retval);
+#endif
 	  if (retval < 0) {
 	       error("reg_cmp");
 	       goto updir;
@@ -471,6 +490,11 @@ Boolean match_undeleted, match_deleted;
 
 	  if (is_deleted(dp->d_name) && match_deleted) {
 	       retval = reg_cmp(first, &dp->d_name[2]);
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr,
+		       "do_match: deleted compare of %s to %s returns %d.\n",
+		       first, &dp->d_name[2], retval);
+#endif
 	       if (retval < 0) {
 		    error("reg_cmp");
 		    goto updir;
@@ -485,12 +509,21 @@ Boolean match_undeleted, match_deleted;
 	       continue;
 
      downdir:
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: downdir\n");
+#endif
 	  retval = push(&dirp, sizeof(DIR *));
 	  if (retval) {
 	       error("push");
 	       (void) popall();
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "do_match: return 5.\n");
+#endif
 	       return retval;
 	  }
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: pushing %s, %s, %s\n", first, rest, base);
+#endif
 	  string_push(first);
 	  string_push(rest);
 	  string_push(base);
@@ -503,6 +536,9 @@ Boolean match_undeleted, match_deleted;
 			 if (retval) {
 			      error("add_str");
 			      (void) popall();
+#ifdef PATTERN_DEBUG
+			      fprintf(stderr, "do_match: return 6.\n");
+#endif
 			      return retval;
 			 }
 			 (*num_found)++;
@@ -513,6 +549,9 @@ Boolean match_undeleted, match_deleted;
 		    if (retval) {
 			 error("add_str");
 			 (void) popall();
+#ifdef PATTERN_DEBUG
+			 fprintf(stderr, "do_match: return 7.\n");
+#endif
 			 return retval;
 		    }
 		    (*num_found)++;
@@ -520,6 +559,10 @@ Boolean match_undeleted, match_deleted;
 	       string_pop(base);
 	       string_pop(rest);
 	       string_pop(first);
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "do_match: popped %s, %s, %s\n", first,
+		       rest, base);
+#endif
 	       (void) pop(&dirp, sizeof(DIR *));
 	       continue;
 	  }
@@ -533,6 +576,10 @@ Boolean match_undeleted, match_deleted;
 	       string_pop(base);
 	       string_pop(rest);
 	       string_pop(first);
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "do_match: popped %s, %s, %s\n", first,
+		       rest, base);
+#endif
 	       (void) pop(&dirp, sizeof(DIR *));
 	       continue;
 	  }
@@ -540,22 +587,45 @@ Boolean match_undeleted, match_deleted;
 	       continue;
 
      updir:
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: updir\n");
+#endif
 	  closedir(dirp);
 	  string_pop(base);
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: popped %s\n", base);
+#endif
 	  if (retval) {
 	       if (retval != STACK_EMPTY) {
 		    error("pop");
 		    (void) popall();
+#ifdef PATTERN_DEBUG
+		    fprintf(stderr, "do_match: return 8.\n");
+#endif
 		    return retval;
 	       }
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "Returning %d word%s from do_match:\n",
+		       *num_found,
+		       *num_found == 1 ? "" : "s");
+	       for (j = 0; j < *num_found; j++)
+		    fprintf(stderr, "\t%s\n", (*found)[j]);
+	       fprintf(stderr, "do_match: return 9.\n");
+#endif
 	       return 0;
 	  }
 	  string_pop(rest);
 	  string_pop(first);
+#ifdef PATTERN_DEBUG
+	  fprintf(stderr, "do_match: popped %s, %s\n", rest, first);
+#endif
 	  retval = pop(&dirp, sizeof(DIR *));
 	  if (retval) {
 	       error("pop");
 	       (void) popall();
+#ifdef PATTERN_DEBUG
+	       fprintf(stderr, "do_match: return 10.\n");
+#endif
 	       return retval;
 	  }
 	  continue;
