@@ -1,4 +1,4 @@
-.\" $Id: locker_attach.3,v 1.1 1999-02-26 19:05:07 danw Exp $
+.\" $Id: locker_attach.3,v 1.1.10.1 2002-12-09 22:14:02 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -158,6 +158,10 @@ Get Zephyr subscriptions for the attached lockers.
 .TP 12
 .I LOCKER_ATTACH_OPT_REAUTH
 Authenticate to the locker even if it is already attached.
+.TP 12
+.I LOCKER_ATTACH_OPT_MASTER
+Attach the master copy of the locker even if a local copy of the
+locker is present.
 .PP
 .B locker_attach
 uses
