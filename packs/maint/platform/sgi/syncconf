@@ -1,8 +1,11 @@
 #!/bin/sh
 
+debug=1
+
 CONFIG=/etc/config
 SETCONFIG="/sbin/chkconfig -f"
-debug=1
+RCCONF="/etc/athena/rc.conf"
+RCTIME="/etc/athena/.rc.conf.sync"
 
 configbool()
 {
@@ -82,9 +85,25 @@ usage()
   echo ""
 }
 
-ALL="TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
+if [ $debug = 1 ]; then
+  RCCONF=/tmp/rc.conf
+  RCTIME=/tmp/rc.conf.sync
+fi
 
-. /etc/athena/rc.conf
+# ALL="TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
+ALL="timesrv afsclient nfssrv sendmail snmp savecore account quotas host"
+
+if test -f $RCTIME; then
+  update=`find $RCTIME -newer $RCCONF -print`
+fi
+
+if test $update; then
+  exit
+fi
+
+touch $RCTIME
+
+. $RCCONF
 
 j="$*"
 
@@ -94,12 +113,12 @@ fi
 
 for i in $j; do
   case "$i" in
-  TIMESRV)
+  TIMESRV|timesrv)
     # gettime and AFS time synchronization
     syncvar timed $TIMESRV
     ;;
 
-  AFSCLIENT)
+  AFSCLIENT|afsclient)
     if [ "${AFSCLIENT}" != "false" ]; then
 
       syncvar afsml true
@@ -120,7 +139,7 @@ for i in $j; do
     fi
     ;;
 
-  NFSSRV|NFSCLIENT)
+  NFSSRV|nfssrv|NFSCLIENT|nfsclient)
     if [ "${NFSSRV}" != "false" -o "${NFSCLIENT}" != "false" ]; then
       syncvar nfs true
 
@@ -139,7 +158,7 @@ for i in $j; do
     fi
     ;;
 
-  SENDMAIL)
+  SENDMAIL|sendmail)
     if [ "${SENDMAIL}" = "false" ]; then
       move /etc/rc2.d/S50mail /etc/rc2.d/s50mail
     else
@@ -147,11 +166,11 @@ for i in $j; do
     fi
     ;;
 
-  SNMP)
+  SNMP|snmp)
     syncvar snmpd $SNMP
     ;;
 
-  SAVECORE)
+  SAVECORE|savecore)
     case "${SAVECORE}" {
        true)  minfree=30000000 ;;
       false)  minfree=2000000000 ;;
@@ -160,16 +179,16 @@ for i in $j; do
     put /var/adm/crash/minfree $minfree
     ;;
 
-  ACCOUNT)
+  ACCOUNT|account)
     syncvar acct ${ACCOUNT}
     ;;
 
-  QUOTAS)
+  QUOTAS|quotas)
     syncvar quotacheck ${QUOTAS}
     syncvar quotas ${QUOTAS}
     ;;
 
-  HOST|ADDR)
+  HOST|host|ADDR|addr)
     move /etc/sys_id /etc/sys_id.saved
     move /etc/hosts /etc/hosts.saved
     move $CONFIG/staticroute.options $CONFIG/staticroute.options.saved
@@ -179,8 +198,8 @@ for i in $j; do
     GATEWAY=$NET.0.1
     BROADCAST=$NET.255.255
 
-    put /etc/sys_id $HOST
-    put $CONFIG/staticroute.options $GATEWAY
+    put    /etc/sys_id $HOST
+    put    $CONFIG/staticroute.options $GATEWAY
     put    $CONFIG/ifconfig-1.options "netmask 0xffff0000"
     append $CONFIG/ifconfig-1.options "broadcast $BROADCAST"
     put    /etc/hosts "#"
