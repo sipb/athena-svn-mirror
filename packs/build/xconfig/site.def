@@ -45,7 +45,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define ProjectRoot		/usr/athena
 
 #undef ConfigDir
-#define ConfigDir		SRCDIR/packs/build/xconfig
+#define ConfigDir		SRCDIR/xconfig
 
 #ifdef SunArchitecture
 #define SiteIncludes		-I/usr/openwin/include -I/usr/dt/include
