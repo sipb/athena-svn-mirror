@@ -15,7 +15,7 @@
 
 /* Routines for finding mounted/attached filesystems */
 
-static const char rcsid[] = "$Id: fslist.c,v 1.2 1999-07-31 08:17:46 mwhitson Exp $";
+static const char rcsid[] = "$Id: fslist.c,v 1.3 1999-10-07 16:59:29 rbasch Exp $";
 
 /* There are two basic ways of reading the mounted-filesystems table:
  * the 4.3+BSD way (getfsstat), and the old way (reading a file in
@@ -155,7 +155,7 @@ struct quota_fs *get_fslist(uid_t uid)
   struct mntent *mnt;
   FILE *mtab;
 
-  mtab = setmntent(MNTTAB, "r");
+  mtab = setmntent(MOUNTTAB, "r");
   while ((mnt = GETMNTENT(mtab)) != NULL)
     {
       if ((
