@@ -5,8 +5,8 @@
 
 # Do special preparation for the kernel build.
 
-sys=var/sysgen
-configdir=${AIS_ROOT}/${sys}/system
+sys=/var/sysgen
+configdir=${AIS_ROOT}${sys}/system
 
 case ${AIS_MODE} in
     root|swap)
@@ -19,7 +19,7 @@ case ${AIS_MODE} in
 	# legit, but it works.
 	# Information on these paramenters is available from system(4).
 
-	DCONFIG=${AIS_ROOT}/${sys}/system/irix.sm
+	DCONFIG=${configdir}/irix.sm
 	mv ${DCONFIG} ${DCONFIG}.plain
 	if [ ${AIS_MODE} = "root" ]; then
 	    sed -e "s-ROOTDEV: .*-ROOTDEV: ${disk}s0-g" ${DCONFIG}.plain | \
@@ -38,7 +38,7 @@ case ${AIS_MODE} in
 	# amongst other things. If we decide we want XFS filesystems,
 	# this obviously needs to be changed.
 
-	configdir=${AIS_ROOT}/${sys}/system.dl
+	configdir=${AIS_ROOT}${sys}/system.dl
 
 #	The idea was to inhibit swapping for the diskless clients
 #	here, but apparently once again this config file is not the
@@ -59,20 +59,15 @@ case ${AIS_MODE} in
 	# We also want a ramdrive to hold machine-specific config
 	# info while we decide what to do with the local disk.
 	cp ${AIS_LIB}/ramdrive/ramdrive.master \
-	    ${AIS_ROOT}/${sys}/master.d/ramdrive
-	cp ${AIS_LIB}/ramdrive/ramdrive.sm ${AIS_ROOT}/${sys}/system.dl
-	cp ${AIS_LIB}/ramdrive/ramdrive.c /tmp
-	cp ${AIS_LIB}/ramdrive/ramdrive.h /tmp
-	case "${AIS_OSVERSION}" in
-	    6.[23])
-		ramdrive_cc_extra="-32 -mips2 -Wc,-pic0"
-		;;
-	    *)
-		ramdrive_cc_extra="-n32 -mips3"
-		;;
-	esac
-	(cd /tmp; cc -c ramdrive.c -DAIS_OPSSYS=${AIS_OPSSYS} -D_K32U32 -D_KERNEL -DSTATIC=static -D_PAGESZ=4096 -D_MIPS32 -DIP22 -DR4000 -G 0 -non_shared -elf -xansi -fullwarn ${ramdrive_cc_extra})
-	cp /tmp/ramdrive.o ${AIS_ROOT}/${sys}/boot
+	    ${AIS_ROOT}${sys}/master.d/ramdrive
+	cp ${AIS_LIB}/ramdrive/ramdrive.sm $configdir
+	rm -rf /tmp/ramdrive
+	mkdir /tmp/ramdrive
+	cp ${AIS_LIB}/ramdrive/ramdrive.c /tmp/ramdrive
+	cp ${AIS_LIB}/ramdrive/ramdrive.h /tmp/ramdrive
+	cp ${AIS_LIB}/ramdrive/Makefile /tmp/ramdrive
+	(cd /tmp/ramdrive && eval "${AIS_BOARD}" && export CPUBOARD && make)
+	cp /tmp/ramdrive/ramdrive.o ${AIS_ROOT}${sys}/boot
 	;;
 
     afs)
@@ -90,13 +85,13 @@ case ${AIS_MODE} in
 	# chroot into the target root to build the kernel.
 	# This obviates the need to have /var/sysgen/root/usr/bin/cc, etc.
 	# in the miniroot.
-	chroot ${AIS_ROOT} /usr/sbin/lboot -u /unix
+	chroot ${AIS_ROOT} /usr/sbin/lboot -r / -u /unix -w $sys
 	;;
 
     *)
-	TOOLROOT=${AIS_ROOT}/${sys}/root; export TOOLROOT
+	TOOLROOT=${AIS_ROOT}${sys}/root; export TOOLROOT
 	${AIS_ROOT}/usr/sbin/lboot -r ${AIS_ROOT} -u ${AIS_ROOT}/unix \
-	    -s $configdir -w ${AIS_ROOT}/${sys}
+	    -s $configdir -w ${AIS_ROOT}${sys}
 	;;
 esac
 
