@@ -62,38 +62,8 @@ if [ "${AFSSRV}" = "true" ]; then
 	fi
 fi
 
-# Start up afsd in foreground, in case any daemons are coming off AFS
+# afsd is started by init.d/afs. We just do our little additions here.
 if [ "${AFSCLIENT}" != "false" ]; then
-	echo ""							>/dev/console
-	echo  "Starting AFS client: \c"				>/dev/console
-
-	if [ \( "${AFSADJUST}" = "true" -o "${PUBLIC}" = "true" \) \
-	     -a -d /usr/vice/cache/ ]; then
-
-		echo "Adjusting the cache size..."		>/dev/console
-		rm -f /usr/vice/etc/cacheinfo.old
-		mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
-		/bin/df -bk /usr/vice/cache/ | \
-		  /bin/awk ' \
-			(NR == 2) { x = int($2*3/4); \
-			printf("/afs:/usr/vice/cache:%d\n",x);};' \
-		  > /usr/vice/etc/cacheinfo
-
-		sed -n -e '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
-			/usr/vice/etc/cacheinfo 		>/dev/console
-	fi
-
-	modload /kernel/fs/afs
-
-	if [ "${TIMESRV}" = "true" -o "${TIMECLIENT}" != "true" ]; then
-		AFSOPTS="-nosettime"
-	fi
-	if [ "${AFSCLIENT-true}" = "true" ]; then
-		AFSCLIENT=4
-	fi
-	AFSOPTS="${AFSOPTS} -stat 2000 -dcache 800 -volumes 70"
-	AFSOPTS="${AFSOPTS} -daemons ${AFSCLIENT}"
-	/etc/afsd ${AFSOPTS}
 	sh /etc/athena/config_afs
 fi
 
