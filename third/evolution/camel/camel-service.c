@@ -33,6 +33,10 @@
 #include <string.h>
 #include <errno.h>
 
+#include <arpa/nameser.h>
+#include <ares.h>
+#include <hesiod.h>
+
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 #include "e-util/e-msgport.h"
@@ -522,6 +526,32 @@ camel_service_query_auth_types (CamelService *service, CamelException *ex)
 
 /* URL utility routines */
 
+struct cbargs {
+	void *context;
+	char *hostname;
+};
+
+static void callback(void *arg, int status, unsigned char *abuf, int alen)
+{
+	struct cbargs *args = arg;
+	char **vec;
+	const char *p, *q;
+
+	if (status != ARES_SUCCESS)
+		return;
+	vec = hesiod_parse_result(args->context, abuf, alen);
+	if (vec && *vec && strncmp(*vec, "POP ", 4) == 0) {
+		p = *vec + 4;
+		while (isspace(*p))
+			p++;
+		q = strchr(p, ' ');
+		if (q != NULL)
+			args->hostname = g_strndup(p, q - p);
+	}
+	if (vec)
+		hesiod_free_list(args->context, vec);
+}
+
 /**
  * camel_service_gethost:
  * @service: a CamelService
@@ -541,6 +571,53 @@ camel_service_gethost (CamelService *service, CamelException *ex)
 		hostname = service->url->host;
 	else
 		hostname = "localhost";
+
+	if (strcmp(hostname, "_hesiod") == 0) {
+		void *context = NULL;
+		char *domain;
+		ares_channel channel = NULL;
+		int nfds, count;
+		fd_set readers, writers;
+		struct timeval tv, *tvp;
+		struct cbargs args;
+		struct hostent *host;
+
+		args.hostname = NULL;
+		if (hesiod_init(&context) != 0)
+			goto lose;
+		args.context = context;
+		domain = hesiod_to_bind(context, getenv("USER"), "pobox");
+		if (domain == NULL)
+			goto lose;
+		if (ares_init(&channel) != ARES_SUCCESS)
+			goto lose;
+		ares_query(channel, domain, C_IN, T_TXT, callback, &args);
+		hesiod_free_string(context, domain);
+		while (1) {
+			FD_ZERO(&readers);
+			FD_ZERO(&writers);
+			nfds = ares_fds(channel, &readers, &writers);
+			if (nfds == 0)
+				break;
+			tvp = ares_timeout(channel, NULL, &tv);
+			count = select(nfds, &readers, &writers, NULL, tvp);
+			ares_process(channel, &readers, &writers);
+		}
+
+	lose:   /* Or win, if args.hostname is set. */
+		if (channel)
+			ares_destroy(channel);
+		if (context)
+			hesiod_end(context);
+		if (args.hostname == NULL) {
+			camel_exception_set(ex, 1, "Hesiod lookup failure");
+			return NULL;
+		}
+
+		host = camel_get_host_byname(args.hostname, ex);
+		g_free(args.hostname);
+		return host;
+	}
 	
 	return camel_get_host_byname(hostname, ex);
 }
