@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/acl_files.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.7 1992-08-10 13:48:01 lwvanels Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.8 1993-09-24 16:22:26 probe Exp $";
 #endif
 
 /*** Routines for manipulating access control list files ***/
@@ -28,6 +28,7 @@ static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.7 1992-08-10 13:48:01 lw
 #include <zephyr/zephyr.h>
 #include <strings.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <ctype.h>
 #include <sys/param.h>			/* for MAXHOSTNAMELEN */
@@ -68,8 +69,8 @@ char *canon;
     char *dot, *atsign, *end;
     int len;
 
-    dot = index(principal, INST_SEP);
-    atsign = index(principal, REALM_SEP);
+    dot = strchr(principal, INST_SEP);
+    atsign = strchr(principal, REALM_SEP);
 
     /* Maybe we're done already */
     if(dot != NULL && atsign != NULL) {
@@ -477,8 +478,8 @@ char *principal;
 	return 1;
 
     /* Try the wildcards */
-    realm = index(canon, REALM_SEP);
-    *index(canon, INST_SEP) = '\0';	/* Chuck the instance */
+    realm = strchr(canon, REALM_SEP);
+    *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
 
     sprintf(buf, "%s.*%s", canon, realm);
     if(acl_exact_match(acl, buf)) return 1;
