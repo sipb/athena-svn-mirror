@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v $
-#	$Author: builder $
+#	$Author: treese $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.1 1985-04-23 20:40:50 builder Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.2 1986-11-23 00:07:42 treese Exp $
 #
 
 
@@ -20,6 +20,7 @@ just: just.o
 
 install: all
 	install -c -s just ${DESTDIR}${CONFDIR}/just
+	rm -f ${DESTDIR}${CONFDIR}/fill
 	ln ${DESTDIR}${CONFDIR}/just ${DESTDIR}${CONFDIR}/fill
 
 clean:
