@@ -38,7 +38,6 @@ echo "Untarring miniroot..."
 
 echo "Miniroot customization: hostname and address, gateway, netmasks.."
 cp -p /etc/name_to_major "$swapmount/etc" || die
-cp -p /etc/name_to_sysnum "$swapmount/etc" || die
 cp -p /etc/driver_* "$swapmount/etc" || die
 cp -p /etc/device.tab "$swapmount/etc" || die
 cp -p /etc/devlink.tab "$swapmount/etc" || die
