@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.27 1988-06-23 17:29:43 jtkohl Exp $";
+static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.28 1988-07-19 10:12:40 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -336,6 +336,8 @@ losinghost *which;
 	ZServerDesc_t *server;
 	ZNotice_t notice;
 	struct sockaddr_in who;
+	Code_t retval;
+	char **buffer;
 
 	int omask = sigblock(sigmask(SIGFPE)); /* don't start db dumps */
 
@@ -352,6 +354,8 @@ losinghost *which;
 	xremque(which);
 	hostm_flush(which->lh_host, server);
 
+	bzero((caddr_t)&notice, sizeof(notice));
+
 	/* tell other servers to flush this host */
 	notice.z_kind = HMCTL;
 	notice.z_auth = 0;
@@ -364,6 +368,12 @@ losinghost *which;
 	notice.z_default_format = "";
 	notice.z_num_other_fields = 0;
 	notice.z_message_len = 0;
+
+	/* generate the other fields */
+	retval = ZFormatNotice(notice, &buffer, &len, ZNOAUTH);
+	if (retval != ZERR_NONE)
+	    return;
+	xfree(*buffer);
 
 	/* forge a from address */
 	bzero((char *) &who, sizeof(who));
