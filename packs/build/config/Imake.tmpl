@@ -12,11 +12,21 @@
 
 #include <site.def>
 
-#ifndef NEWTOP
-#define NEWTOP .
+/* 
+ * WARNING - HACK HACK HACK
+ * To allow xmkmf to work with our setup, if TOPDIR is set, then NEWTOP 
+ * is set to TOPDIR.
+ */
+#ifdef TOPDIR
+#define UseInstalled
+#define CONFDIR TOPDIR
 #endif
+
 #ifndef CONFDIR
 #define CONFDIR ${TOP}/imake
+#endif
+#ifndef NEWTOP
+#define NEWTOP .
 #endif
 #ifndef ALibDir
 #define ALibDir /usr/athena/lib
@@ -70,13 +80,19 @@
 SHELL=/bin/sh
 MAKESHELL=/bin/sh
 
+
 TOP = NEWTOP
 DESTDIR=
 CONFIGSRC = CONFDIR
 
 IRULESRC = $(CONFIGSRC)		
-IMAKE= ${IRULESRC}/imake
-IFLAGS= -I${IRULESRC}
+#ifdef UseInstalled
+IMAKE= imake
+IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
+#else
+IMAKE= $(IRULESRC)/imake
+IFLAGS= -I$(IRULESRC)
+#endif
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= sh $(CONFIGSRC)/mkdirhier.sh
