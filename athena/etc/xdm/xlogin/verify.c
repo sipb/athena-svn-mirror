@@ -1,15 +1,15 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.87 1997-12-20 21:41:48 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.88 1997-12-31 22:49:14 danw Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include <unistd.h>
+#include <signal.h>
+#include <fcntl.h>
 #ifdef SYSV
 #include <shadow.h>
-#include <unistd.h>
 #include <limits.h>
 #include <utmpx.h>
-#include <sys/fcntl.h>
-#include <sys/signal.h>
 #include <sys/sysmacros.h>
 #endif
 #include <grp.h>
@@ -17,19 +17,12 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
-#ifdef SYSV
 #include <utime.h>
 #include <dirent.h>
-#else
-#include <sys/dir.h>
-#endif
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <utmp.h>
 #include <netdb.h>
-#ifndef SYSV
-#include <ttyent.h>
-#endif
 #ifdef sgi
 #include <sys/statfs.h>
 #endif
@@ -133,11 +126,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
 #endif
   struct passwd *pwd;
   struct group *gr;
-#ifdef SYSV
   struct utimbuf times;
-#else
-  struct timeval times[2];
-#endif
   long salt;
   char saltc[2], c;
   char encrypt[PASSWORD_LEN + 1];
@@ -536,15 +525,8 @@ char *dologin(user, passwd, option, script, tty, session, display)
   chown(errbuf, pwd->pw_uid, gr ? gr->gr_gid : pwd->pw_gid);
   chmod(errbuf, 0620);
 
-#ifdef SYSV
   times.actime = times.modtime = time(NULL);
   utime(errbuf, &times);
-#else
-  gettimeofday(&times[0], NULL);
-  times[1].tv_sec = times[0].tv_sec;
-  times[1].tv_usec = times[0].tv_usec;
-  utimes(errbuf, times);
-#endif
 
 #ifdef XDM
   {

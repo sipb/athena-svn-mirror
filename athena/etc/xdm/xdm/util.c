@@ -195,12 +195,7 @@ freeArgs (argv)
 
 CleanUpChild ()
 {
-#if defined(SYSV) || defined(SVR4)
-	setpgrp ();
-#else
-	setpgrp (0, getpid ());
-	sigsetmask (0);
-#endif
+	setsid();
 #ifdef SIGCHLD
 	(void) Signal (SIGCHLD, SIG_DFL);
 #endif

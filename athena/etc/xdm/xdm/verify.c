@@ -2,7 +2,7 @@
  * xdm - display manager daemon
  *
  * $XConsortium: verify.c,v 1.24 91/07/18 22:22:45 rws Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.5 1997-10-03 17:44:56 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.6 1997-12-31 22:48:44 danw Exp $
  *
  * Copyright 1988 Massachusetts Institute of Technology
  *
@@ -255,7 +255,7 @@ struct verify_info	*verify;
 #ifdef _AIX
 		    utmp.ut_type = EMPTY;
 #endif
-		    lseek(file, (long) -sizeof(utmp), L_INCR);
+		    lseek(file, (long) -sizeof(utmp), SEEK_CUR);
 		    write(file, (char *) &utmp, sizeof(utmp));
 		    found = 1;
 		}

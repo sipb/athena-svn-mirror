@@ -52,11 +52,7 @@ BecomeDaemon ()
      * Close standard file descriptors and get rid of controlling tty
      */
 
-#if defined(SYSV) || defined(SVR4)
-    setpgrp ();
-#else
-    setpgrp (0, getpid());
-#endif
+    setsid();
 
     close (0); 
     close (1);
