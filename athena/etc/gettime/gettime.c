@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.6 1992-02-17 16:48:04 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.7 1992-05-03 19:00:14 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.6 1992-02-17 16:48:04 epeisach Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.7 1992-05-03 19:00:14 epeisach Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -51,7 +51,7 @@ main(argc, argv)
 	long hosttime;
 	register int *nettime;
 	char hostname[64];
-	int c;
+	int cc;
 #if !defined(ultrix) && defined(vax)
 	int attempts = 0;
 #else
