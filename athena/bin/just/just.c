@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.1 1993-10-12 05:29:55 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.2 1994-03-30 10:30:51 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.1 1993-10-12 05:29:55 probe Exp $";
+static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.2 1994-03-30 10:30:51 miki Exp $";
 #endif	lint
 
 /*
@@ -35,7 +35,7 @@ static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 /* Macros to convert Version 6 cc and BBN library to 4.2bsd and V7 */
 
 #define seq(a,b)	(strcmp (a,b) == 0)
-#define scopy(a,b,c)	(index (strcpy (b,a), '\0'))
+#define scopy(a,b,c)	(strchr (strcpy (b,a), '\0'))
 #define slength		strlen
 #define errmsg		perror
 
@@ -61,7 +61,7 @@ char   *inptr = inbuf,
        *wordptr = wordbuf;
 
 char   *me;
-char   *index ();
+
 
 /* Next Page */
 
@@ -69,14 +69,14 @@ main (argc, argv)
 int     argc;
 char   *argv[];
 {
-    char   *fgets (),
-           *rindex ();
+    char   *fgets ();
+
 
     int     nlp = 0;		/* # lines in current paragraph */
     int     i;
     char    c;
 
-    me = rindex (argv[0], '/');	/* fill or just? */
+    me = strrchr (argv[0], '/');	/* fill or just? */
     if (me == NULL)		/* No prefix to strip? */
 	me = argv[0];
 
