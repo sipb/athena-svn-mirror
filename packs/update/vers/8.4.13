@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "SUNWglh"					>> $LINKPACKAGES
+  echo "/etc/inet/inetd.conf"				>> $CONFCHG
+  ;;
+
+sgi)
+  echo "/etc/inetd.conf"				>> $CONFCHG
+  ;;
+esac
