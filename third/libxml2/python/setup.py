@@ -159,7 +159,7 @@ if with_xslt == 1:
 
 
 descr = "libxml2 package"
-modules = [ 'libxml2' ]
+modules = [ 'libxml2', 'drv_libxml2' ]
 if WITHDLLS:
     modules.append('libxmlmods.__init__')
 c_files = ['libxml2-py.c', 'libxml.c', 'types.c' ]
@@ -209,7 +209,11 @@ if missing("MANIFEST"):
 
 if WITHDLLS:
     ext_package = "libxmlmods"
-    data_files = [("lib/site-packages/libxmlmods",dlls)]
+    if sys.version >= "2.2":
+        base = "lib/site-packages/"
+    else:
+        base = ""
+    data_files = [(base+"libxmlmods",dlls)]
 else:
     ext_package = None
     data_files = []
@@ -217,7 +221,7 @@ else:
 setup (name = "libxml2-python",
        # On *nix, the version number is created from setup.py.in
        # On windows, it is set by configure.js
-       version = "2.4.30",
+       version = "2.5.1",
        description = descr,
        author = "Daniel Veillard",
        author_email = "veillard@redhat.com",

@@ -1769,7 +1769,8 @@ xmlSplitQName(xmlParserCtxtPtr ctxt, const xmlChar *name, xmlChar **prefix) {
 	    int first = CUR_SCHAR(cur, l);
 
 	    if (!IS_LETTER(first) && (first != '_')) {
-		if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+		if ((ctxt != NULL) && (ctxt->sax != NULL) &&
+		    (ctxt->sax->error != NULL))
 		    ctxt->sax->error(ctxt->userData,
 			    "Name %s is not XML Namespace compliant\n",
 			             name);
@@ -1790,7 +1791,8 @@ xmlSplitQName(xmlParserCtxtPtr ctxt, const xmlChar *name, xmlChar **prefix) {
 	    
 	    buffer = (xmlChar *) xmlMalloc(max * sizeof(xmlChar));
 	    if (buffer == NULL) {
-		if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+		if ((ctxt != NULL) && (ctxt->sax != NULL) &&
+	            (ctxt->sax->error != NULL))
 		    ctxt->sax->error(ctxt->userData,
 				     "xmlSplitQName: out of memory\n");
 		return(NULL);
@@ -1802,7 +1804,8 @@ xmlSplitQName(xmlParserCtxtPtr ctxt, const xmlChar *name, xmlChar **prefix) {
 		    buffer = (xmlChar *) xmlRealloc(buffer,
 						    max * sizeof(xmlChar));
 		    if (buffer == NULL) {
-			if ((ctxt->sax != NULL) && (ctxt->sax->error != NULL))
+			if ((ctxt != NULL) && (ctxt->sax != NULL) &&
+			    (ctxt->sax->error != NULL))
 			    ctxt->sax->error(ctxt->userData,
 					     "xmlSplitQName: out of memory\n");
 			return(NULL);
@@ -5471,6 +5474,7 @@ xmlParseReference(xmlParserCtxtPtr ctxt) {
 			    (ent->children == NULL)) {
 			    ent->children = list;
 			    ent->last = list;
+			    ent->owner = 1;
 			    list->parent = (xmlNodePtr) ent;
 			} else {
 			    xmlFreeNodeList(list);
@@ -5536,7 +5540,9 @@ xmlParseReference(xmlParserCtxtPtr ctxt) {
 				    (list->next == NULL)) {
 				    list->parent = (xmlNodePtr) ent;
 				    list = NULL;
+				    ent->owner = 1;
 				} else {
+				    ent->owner = 0;
 				    while (list != NULL) {
 					list->parent = (xmlNodePtr) ctxt->node;
 					list->doc = ctxt->myDoc;
@@ -5549,6 +5555,7 @@ xmlParseReference(xmlParserCtxtPtr ctxt) {
 				      xmlAddEntityReference(ent, list, NULL);
 				}
 			    } else {
+				ent->owner = 1;
 				while (list != NULL) {
 				    list->parent = (xmlNodePtr) ent;
 				    if (list->next == NULL)
@@ -6685,6 +6692,7 @@ xmlParseStartTag(xmlParserCtxtPtr ctxt) {
 
 failed:     
 
+	GROW
 	if ((RAW == '>') || (((RAW == '/') && (NXT(1) == '>'))))
 	    break;
 	if (!IS_BLANK(RAW)) {
@@ -9469,6 +9477,7 @@ xmlParseCtxtExternalEntity(xmlParserCtxtPtr ctx, const xmlChar *URL,
     ctxt = xmlCreateEntityParserCtxt(URL, ID, NULL);
     if (ctxt == NULL) return(-1);
     ctxt->userData = ctxt;
+    ctxt->_private = ctx->_private;
     oldsax = ctxt->sax;
     ctxt->sax = ctx->sax;
     newDoc = xmlNewDoc(BAD_CAST "1.0");

@@ -909,6 +909,9 @@
      <exports symbol='xmlValidateOneAttribute'/>
      <exports symbol='xmlValidateOneElement'/>
      <exports symbol='xmlValidateOneNamespace'/>
+     <exports symbol='xmlValidatePopElement'/>
+     <exports symbol='xmlValidatePushCData'/>
+     <exports symbol='xmlValidatePushElement'/>
      <exports symbol='xmlValidateRoot'/>
      <exports symbol='xmlValidityErrorFunc'/>
      <exports symbol='xmlValidityWarningFunc'/>
@@ -1087,25 +1090,52 @@
      <exports symbol='xmlSubstituteEntitiesDefaultValue'/>
     </file>
     <file name='xmlreader'>
+     <exports symbol='XML_PARSER_DEFAULTATTRS'/>
+     <exports symbol='XML_PARSER_LOADDTD'/>
+     <exports symbol='XML_PARSER_SUBST_ENTITIES'/>
+     <exports symbol='XML_PARSER_VALIDATE'/>
      <exports symbol='xmlFreeTextReader'/>
      <exports symbol='xmlNewTextReader'/>
      <exports symbol='xmlNewTextReaderFilename'/>
+     <exports symbol='xmlParserProperties'/>
      <exports symbol='xmlTextReader'/>
      <exports symbol='xmlTextReaderAttributeCount'/>
      <exports symbol='xmlTextReaderBaseUri'/>
+     <exports symbol='xmlTextReaderClose'/>
+     <exports symbol='xmlTextReaderCurrentDoc'/>
+     <exports symbol='xmlTextReaderCurrentNode'/>
      <exports symbol='xmlTextReaderDepth'/>
+     <exports symbol='xmlTextReaderGetAttribute'/>
+     <exports symbol='xmlTextReaderGetAttributeNo'/>
+     <exports symbol='xmlTextReaderGetAttributeNs'/>
+     <exports symbol='xmlTextReaderGetParserProp'/>
+     <exports symbol='xmlTextReaderGetRemainder'/>
      <exports symbol='xmlTextReaderHasAttributes'/>
      <exports symbol='xmlTextReaderHasValue'/>
      <exports symbol='xmlTextReaderIsDefault'/>
      <exports symbol='xmlTextReaderIsEmptyElement'/>
      <exports symbol='xmlTextReaderLocalName'/>
+     <exports symbol='xmlTextReaderLookupNamespace'/>
+     <exports symbol='xmlTextReaderMoveToAttribute'/>
+     <exports symbol='xmlTextReaderMoveToAttributeNo'/>
+     <exports symbol='xmlTextReaderMoveToAttributeNs'/>
+     <exports symbol='xmlTextReaderMoveToElement'/>
+     <exports symbol='xmlTextReaderMoveToFirstAttribute'/>
+     <exports symbol='xmlTextReaderMoveToNextAttribute'/>
      <exports symbol='xmlTextReaderName'/>
      <exports symbol='xmlTextReaderNamespaceUri'/>
      <exports symbol='xmlTextReaderNodeType'/>
+     <exports symbol='xmlTextReaderNormalization'/>
      <exports symbol='xmlTextReaderPrefix'/>
      <exports symbol='xmlTextReaderPtr'/>
      <exports symbol='xmlTextReaderQuoteChar'/>
      <exports symbol='xmlTextReaderRead'/>
+     <exports symbol='xmlTextReaderReadAttributeValue'/>
+     <exports symbol='xmlTextReaderReadInnerXml'/>
+     <exports symbol='xmlTextReaderReadOuterXml'/>
+     <exports symbol='xmlTextReaderReadState'/>
+     <exports symbol='xmlTextReaderReadString'/>
+     <exports symbol='xmlTextReaderSetParserProp'/>
      <exports symbol='xmlTextReaderValue'/>
      <exports symbol='xmlTextReaderXmlLang'/>
     </file>
@@ -1125,6 +1155,10 @@
      <exports symbol='xmlDefaultSAXHandler'/>
      <exports symbol='xmlDefaultSAXLocator'/>
      <exports symbol='xmlDefaultSAXLocator'/>
+     <exports symbol='xmlDeregisterNodeDefault'/>
+     <exports symbol='xmlDeregisterNodeDefaultValue'/>
+     <exports symbol='xmlDeregisterNodeDefaultValue'/>
+     <exports symbol='xmlDeregisterNodeFunc'/>
      <exports symbol='xmlDoValidityCheckingDefaultValue'/>
      <exports symbol='xmlDoValidityCheckingDefaultValue'/>
      <exports symbol='xmlFree'/>
@@ -1158,6 +1192,10 @@
      <exports symbol='xmlPedanticParserDefaultValue'/>
      <exports symbol='xmlRealloc'/>
      <exports symbol='xmlRealloc'/>
+     <exports symbol='xmlRegisterNodeDefault'/>
+     <exports symbol='xmlRegisterNodeDefaultValue'/>
+     <exports symbol='xmlRegisterNodeDefaultValue'/>
+     <exports symbol='xmlRegisterNodeFunc'/>
      <exports symbol='xmlSaveNoEmptyTags'/>
      <exports symbol='xmlSaveNoEmptyTags'/>
      <exports symbol='xmlSubstituteEntitiesDefaultValue'/>
@@ -2340,6 +2378,7 @@
     <enum name='XML_PARSER_CDATA_SECTION' file='parser' value='8' type='xmlParserInputState' info='within a CDATA section'/>
     <enum name='XML_PARSER_COMMENT' file='parser' value='5' type='xmlParserInputState' info='within a comment'/>
     <enum name='XML_PARSER_CONTENT' file='parser' value='7' type='xmlParserInputState' info='within the content'/>
+    <enum name='XML_PARSER_DEFAULTATTRS' file='xmlreader' value='2' type='xmlParserProperties'/>
     <enum name='XML_PARSER_DTD' file='parser' value='3' type='xmlParserInputState' info='within some DTD content'/>
     <enum name='XML_PARSER_END_TAG' file='parser' value='9' type='xmlParserInputState' info='within a closing tag'/>
     <enum name='XML_PARSER_ENTITY_DECL' file='parser' value='10' type='xmlParserInputState' info='within an entity declaration'/>
@@ -2347,13 +2386,16 @@
     <enum name='XML_PARSER_EOF' file='parser' value='-1' type='xmlParserInputState' info='nothing is to be parsed'/>
     <enum name='XML_PARSER_EPILOG' file='parser' value='14' type='xmlParserInputState' info='the Misc* after the last end tag'/>
     <enum name='XML_PARSER_IGNORE' file='parser' value='15' type='xmlParserInputState' info='within an IGNORED section'/>
+    <enum name='XML_PARSER_LOADDTD' file='xmlreader' value='1' type='xmlParserProperties'/>
     <enum name='XML_PARSER_MISC' file='parser' value='1' type='xmlParserInputState' info='Misc* before int subset'/>
     <enum name='XML_PARSER_PI' file='parser' value='2' type='xmlParserInputState' info='Within a processing instruction'/>
     <enum name='XML_PARSER_PROLOG' file='parser' value='4' type='xmlParserInputState' info='Misc* after internal subset'/>
     <enum name='XML_PARSER_PUBLIC_LITERAL' file='parser' value='16' type='xmlParserInputState' info=' within a PUBLIC value'/>
     <enum name='XML_PARSER_START' file='parser' value='0' type='xmlParserInputState' info='nothing has been parsed'/>
     <enum name='XML_PARSER_START_TAG' file='parser' value='6' type='xmlParserInputState' info='within a start tag'/>
+    <enum name='XML_PARSER_SUBST_ENTITIES' file='xmlreader' value='4' type='xmlParserProperties'/>
     <enum name='XML_PARSER_SYSTEM_LITERAL' file='parser' value='13' type='xmlParserInputState' info='within a SYSTEM value'/>
+    <enum name='XML_PARSER_VALIDATE' file='xmlreader' value='3' type='xmlParserProperties'/>
     <enum name='XML_PI_NODE' file='tree' value='7' type='xmlElementType'/>
     <enum name='XML_TEXT_NODE' file='tree' value='3' type='xmlElementType'/>
     <enum name='XML_WAR_CATALOG_PI' file='xmlerror' value='93' type='xmlParserErrors' info='93'/>
@@ -2600,6 +2642,7 @@ actually an xmlCharEncoding'/>
       <field name='SystemID' type='const xmlChar *' info=' URI for a SYSTEM or PUBLIC Entity'/>
       <field name='nexte' type='struct _xmlEntity *' info=' unused'/>
       <field name='URI' type='const xmlChar *' info=' the full URI as computed'/>
+      <field name='owner' type='int' info=' does the entity own the childrens'/>
     </struct>
     <typedef name='xmlEntityPtr' file='tree' type='xmlEntity *'/>
     <typedef name='xmlEntityType' file='entities' type='enum'/>
@@ -2634,6 +2677,8 @@ actually an xmlCharEncoding'/>
       <field name='xmlSaveNoEmptyTags' type='int' info=''/>
       <field name='xmlIndentTreeOutput' type='int' info=''/>
       <field name='xmlTreeIndentString' type='const char *' info=''/>
+      <field name='xmlRegisterNodeDefaultValue' type='xmlRegisterNodeFunc' info=''/>
+      <field name='xmlDeregisterNodeDefaultValue' type='xmlDeregisterNodeFunc' info=''/>
     </struct>
     <typedef name='xmlGlobalStatePtr' file='globals' type='xmlGlobalState *'/>
     <struct name='xmlHashTable' file='hash' type='struct _xmlHashTable'/>
@@ -2642,6 +2687,8 @@ actually an xmlCharEncoding'/>
       <field name='next' type='struct _xmlID *' info=' next ID'/>
       <field name='value' type='const xmlChar *' info=' The ID name'/>
       <field name='attr' type='xmlAttrPtr' info=' The attribute holding it'/>
+      <field name='name' type='const xmlChar *' info=' The attribute if attr is not available'/>
+      <field name='lineno' type='int' info=' The line number if attr is not available'/>
     </struct>
     <typedef name='xmlIDPtr' file='tree' type='xmlID *'/>
     <struct name='xmlIDTable' file='valid' type='struct _xmlHashTable'/>
@@ -2809,12 +2856,15 @@ actually an xmlCharEncoding'/>
       <field name='buffer' type='xmlParserNodeInfo *' info=''/>
     </struct>
     <typedef name='xmlParserNodeInfoSeqPtr' file='parser' type='xmlParserNodeInfoSeq *'/>
+    <typedef name='xmlParserProperties' file='xmlreader' type='enum'/>
     <struct name='xmlRMutex' file='threads' type='struct _xmlRMutex'/>
     <typedef name='xmlRMutexPtr' file='threads' type='xmlRMutex *'/>
     <struct name='xmlRef' file='tree' type='struct _xmlRef'>
       <field name='next' type='struct _xmlRef *' info=' next Ref'/>
       <field name='value' type='const xmlChar *' info=' The Ref name'/>
       <field name='attr' type='xmlAttrPtr' info=' The attribute holding it'/>
+      <field name='name' type='const xmlChar *' info=' The attribute if attr is not available'/>
+      <field name='lineno' type='int' info=' The line number if attr is not available'/>
     </struct>
     <typedef name='xmlRefPtr' file='tree' type='xmlRef *'/>
     <struct name='xmlRefTable' file='valid' type='struct _xmlHashTable'/>
@@ -3001,6 +3051,7 @@ actually an xmlCharEncoding'/>
     <variable name='xmlDefaultBufferSize' file='globals' type='int'/>
     <variable name='xmlDefaultSAXHandler' file='globals' type='xmlSAXHandler'/>
     <variable name='xmlDefaultSAXLocator' file='globals' type='xmlSAXLocator'/>
+    <variable name='xmlDeregisterNodeDefaultValue' file='globals' type='xmlDeregisterNodeFunc'/>
     <variable name='xmlDoValidityCheckingDefaultValue' file='globals' type='int'/>
     <variable name='xmlFree' file='globals' type='xmlFreeFunc'/>
     <variable name='xmlGenericError' file='globals' type='xmlGenericErrorFunc'/>
@@ -3016,6 +3067,7 @@ actually an xmlCharEncoding'/>
     <variable name='xmlParserVersion' file='parser' type='const char *'/>
     <variable name='xmlPedanticParserDefaultValue' file='globals' type='int'/>
     <variable name='xmlRealloc' file='globals' type='xmlReallocFunc'/>
+    <variable name='xmlRegisterNodeDefaultValue' file='globals' type='xmlRegisterNodeFunc'/>
     <variable name='xmlSaveNoEmptyTags' file='globals' type='int'/>
     <variable name='xmlStringComment' file='parserInternals' type='const xmlCharxmlStringComment[]'/>
     <variable name='xmlStringText' file='parserInternals' type='const xmlCharxmlStringText[]'/>
@@ -4822,6 +4874,16 @@ actually an xmlCharEncoding'/>
       <return type='int' info='0 in case of success, -1 in case of error'/>
       <arg name='alias' type='const char *' info='the alias name as parsed, in UTF-8 format (ASCII actually)'/>
     </function>
+    <function name='xmlDeregisterNodeDefault' file='globals'>
+      <info></info>
+      <return type='xmlDeregisterNodeFunc' info='the previous value of the deregistration function'/>
+      <arg name='func' type='xmlDeregisterNodeFunc' info='function pointer to the new DeregisterNodeFunc'/>
+    </function>
+    <functype name='xmlDeregisterNodeFunc' file='globals'>
+      <info></info>
+      <return type='void'/>
+      <arg name='node' type='xmlNodePtr' info=''/>
+    </functype>
     <function name='xmlDetectCharEncoding' file='encoding'>
       <info>Guess the encoding of the entity using the first bytes of the entity content accordingly of the non-normative appendix F of the XML-1.0 recommendation.</info>
       <return type='xmlCharEncoding' info='one of the XML_CHAR_ENCODING_... values.'/>
@@ -6465,6 +6527,7 @@ actually an xmlCharEncoding'/>
       <info>Create an xmlTextReader structure fed with @input</info>
       <return type='xmlTextReaderPtr' info='the new xmlTextReaderPtr or NULL in case of error'/>
       <arg name='input' type='xmlParserInputBufferPtr' info='the xmlParserInputBufferPtr used to read data'/>
+      <arg name='URI' type='const char *' info='the URI information for the source if available'/>
     </function>
     <function name='xmlNewTextReaderFilename' file='xmlreader'>
       <info>Create an xmlTextReader structure fed with the resource at @URI</info>
@@ -7248,7 +7311,7 @@ actually an xmlCharEncoding'/>
     <function name='xmlRegExecPushString' file='xmlregexp'>
       <info>Push one input token in the execution context</info>
       <return type='int' info='1 if the regexp reached a final state, 0 if non-final, and a negative value in case of error.'/>
-      <arg name='exec' type='xmlRegExecCtxtPtr' info='a regexp execution context'/>
+      <arg name='exec' type='xmlRegExecCtxtPtr' info='a regexp execution context or NULL to indicate the end'/>
       <arg name='value' type='const xmlChar *' info='a string token input'/>
       <arg name='data' type='void *' info='data associated to the token to reuse in callbacks'/>
     </function>
@@ -7316,6 +7379,16 @@ actually an xmlCharEncoding'/>
       <arg name='readFunc' type='xmlInputReadCallback' info='the xmlInputReadCallback'/>
       <arg name='closeFunc' type='xmlInputCloseCallback' info='the xmlInputCloseCallback'/>
     </function>
+    <function name='xmlRegisterNodeDefault' file='globals'>
+      <info></info>
+      <return type='xmlRegisterNodeFunc' info='the previous value of the registration function'/>
+      <arg name='func' type='xmlRegisterNodeFunc' info='function pointer to the new RegisterNodeFunc'/>
+    </function>
+    <functype name='xmlRegisterNodeFunc' file='globals'>
+      <info></info>
+      <return type='void'/>
+      <arg name='node' type='xmlNodePtr' info=''/>
+    </functype>
     <function name='xmlRegisterOutputCallbacks' file='xmlIO'>
       <info>Register a new set of I/O callback for handling output.</info>
       <return type='int' info='the registered handler number or -1 in case of error'/>
@@ -7876,9 +7949,54 @@ actually an xmlCharEncoding'/>
       <return type='xmlChar *' info='the base URI or NULL if not available'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
     </function>
+    <function name='xmlTextReaderClose' file='xmlreader'>
+      <info>This method releases any resources allocated by the current instance changes the state to Closed and close any underlying input.</info>
+      <return type='int' info='0 or -1 in case of error'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderCurrentDoc' file='xmlreader'>
+      <info>Hacking interface allowing to get the xmlDocPtr correponding to the current document being accessed by the xmlTextReader. This is dangerous because the associated node may be destroyed on the next Reads.</info>
+      <return type='xmlDocPtr' info='the xmlDocPtr or NULL in case of error.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderCurrentNode' file='xmlreader'>
+      <info>Hacking interface allowing to get the xmlNodePtr correponding to the current node being accessed by the xmlTextReader. This is dangerous because the underlying node may be destroyed on the next Reads.</info>
+      <return type='xmlNodePtr' info='the xmlNodePtr or NULL in case of error.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
     <function name='xmlTextReaderDepth' file='xmlreader'>
       <info>The depth of the node in the tree.</info>
       <return type='int' info='the depth or -1 in case of error'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderGetAttribute' file='xmlreader'>
+      <info>Provides the value of the attribute with the specified qualified name.</info>
+      <return type='xmlChar *' info='a string containing the value of the specified attribute, or NULL in case of error. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='name' type='const xmlChar *' info='the qualified name of the attribute.'/>
+    </function>
+    <function name='xmlTextReaderGetAttributeNo' file='xmlreader'>
+      <info>Provides the value of the attribute with the specified index relative to the containing element.</info>
+      <return type='xmlChar *' info='a string containing the value of the specified attribute, or NULL in case of error. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='no' type='int' info='the zero-based index of the attribute relative to the containing element'/>
+    </function>
+    <function name='xmlTextReaderGetAttributeNs' file='xmlreader'>
+      <info>Provides the value of the specified attribute</info>
+      <return type='xmlChar *' info='a string containing the value of the specified attribute, or NULL in case of error. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='localName' type='const xmlChar *' info='the local name of the attribute.'/>
+      <arg name='namespaceURI' type='const xmlChar *' info='the namespace URI of the attribute.'/>
+    </function>
+    <function name='xmlTextReaderGetParserProp' file='xmlreader'>
+      <info>Read the parser internal property.</info>
+      <return type='int' info='the value, usually 0 or 1, or -1 in case of error.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='prop' type='int' info='the xmlParserProperties to get'/>
+    </function>
+    <function name='xmlTextReaderGetRemainder' file='xmlreader'>
+      <info>Method to get the remainder of the buffered XML. this method stops the parser, set its state to End Of File and return the input stream with what is left that the parser did not use.</info>
+      <return type='xmlParserInputBufferPtr' info='the xmlParserInputBufferPtr attached to the XML or NULL in case of error.'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
     </function>
     <function name='xmlTextReaderHasAttributes' file='xmlreader'>
@@ -7906,6 +8024,46 @@ actually an xmlCharEncoding'/>
       <return type='xmlChar *' info='the local name or NULL if not available'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
     </function>
+    <function name='xmlTextReaderLookupNamespace' file='xmlreader'>
+      <info>Resolves a namespace prefix in the scope of the current element.</info>
+      <return type='xmlChar *' info='a string containing the namespace URI to which the prefix maps or NULL in case of error. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='prefix' type='const xmlChar *' info='the prefix whose namespace URI is to be resolved. To return the default namespace, specify NULL'/>
+    </function>
+    <function name='xmlTextReaderMoveToAttribute' file='xmlreader'>
+      <info>Moves the position of the current instance to the attribute with the specified qualified name.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not found'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='name' type='const xmlChar *' info='the qualified name of the attribute.'/>
+    </function>
+    <function name='xmlTextReaderMoveToAttributeNo' file='xmlreader'>
+      <info>Moves the position of the current instance to the attribute with the specified index relative to the containing element.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not found'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='no' type='int' info='the zero-based index of the attribute relative to the containing element.'/>
+    </function>
+    <function name='xmlTextReaderMoveToAttributeNs' file='xmlreader'>
+      <info>Moves the position of the current instance to the attribute with the specified local name and namespace URI.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not found'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='localName' type='const xmlChar *' info='the local name of the attribute.'/>
+      <arg name='namespaceURI' type='const xmlChar *' info='the namespace URI of the attribute.'/>
+    </function>
+    <function name='xmlTextReaderMoveToElement' file='xmlreader'>
+      <info>Moves the position of the current instance to the node that contains the current Attribute  node.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not moved'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderMoveToFirstAttribute' file='xmlreader'>
+      <info>Moves the position of the current instance to the first attribute associated with the current node.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not found'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderMoveToNextAttribute' file='xmlreader'>
+      <info>Moves the position of the current instance to the next attribute associated with the current node.</info>
+      <return type='int' info='1 in case of success, -1 in case of error, 0 if not found'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
     <function name='xmlTextReaderName' file='xmlreader'>
       <info>The qualified name of the node, equal to Prefix :LocalName.</info>
       <return type='xmlChar *' info='the local name or NULL if not available'/>
@@ -7919,6 +8077,11 @@ actually an xmlCharEncoding'/>
     <function name='xmlTextReaderNodeType' file='xmlreader'>
       <info>Get the node type of the current node Reference: http://dotgnu.org/pnetlib-doc/System/Xml/XmlNodeType.html</info>
       <return type='int' info='the xmlNodeType of the current node or -1 in case of error'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderNormalization' file='xmlreader'>
+      <info>The value indicating whether to normalize white space and attribute values. Since attribute value and end of line normalizations are a MUST in the XML specification only the value true is accepted. The broken bahaviour of accepting out of range character entities like &amp;#0; is of course not supported either.</info>
+      <return type='int' info='1 or -1 in case of error.'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
     </function>
     <function name='xmlTextReaderPrefix' file='xmlreader'>
@@ -7935,6 +8098,38 @@ actually an xmlCharEncoding'/>
       <info>Moves the position of the current instance to the next node in the stream, exposing its properties.</info>
       <return type='int' info='1 if the node was read successfully, 0 if there is no more nodes to read, or -1 in case of error'/>
       <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderReadAttributeValue' file='xmlreader'>
+      <info>Parses an attribute value into one or more Text and EntityReference nodes.</info>
+      <return type='int' info='1 in case of success, 0 if the reader was not positionned on an ttribute node or all the attribute values have been read, or -1 in case of error.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderReadInnerXml' file='xmlreader'>
+      <info>Reads the contents of the current node, including child nodes and markup.</info>
+      <return type='xmlChar *' info='a string containing the XML content, or NULL if the current node is neither an element nor attribute, or has no child nodes. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderReadOuterXml' file='xmlreader'>
+      <info>Reads the contents of the current node, including child nodes and markup.</info>
+      <return type='xmlChar *' info='a string containing the XML content, or NULL if the current node is neither an element nor attribute, or has no child nodes. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderReadState' file='xmlreader'>
+      <info>Gets the read state of the reader.</info>
+      <return type='int' info='the state value, or -1 in case of error'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderReadString' file='xmlreader'>
+      <info>Reads the contents of an element or a text node as a string.</info>
+      <return type='xmlChar *' info='a string containing the contents of the Element or Text node, or NULL if the reader is positioned on any other type of node. The string must be deallocated by the caller.'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+    </function>
+    <function name='xmlTextReaderSetParserProp' file='xmlreader'>
+      <info>Change the parser processing behaviour by changing some of its internal properties. Note that some properties can only be changed before any read has been done.</info>
+      <return type='int' info='0 if the call was successful, or -1 in case of error'/>
+      <arg name='reader' type='xmlTextReaderPtr' info='the xmlTextReaderPtr used'/>
+      <arg name='prop' type='int' info='the xmlParserProperties to set'/>
+      <arg name='value' type='int' info='usually 0 or 1 to (de)activate it'/>
     </function>
     <function name='xmlTextReaderValue' file='xmlreader'>
       <info>Provides the text value of the node if present</info>
@@ -8844,6 +9039,29 @@ actually an xmlCharEncoding'/>
       <arg name='prefix' type='const xmlChar *' info='the namespace prefix'/>
       <arg name='ns' type='xmlNsPtr' info='an namespace declaration instance'/>
       <arg name='value' type='const xmlChar *' info='the attribute value (without entities processing)'/>
+    </function>
+    <function name='xmlValidatePopElement' file='valid'>
+      <info>Pop the element end from the validation stack.</info>
+      <return type='int' info='1 if no validation problem was found or 0 otherwise'/>
+      <arg name='ctxt' type='xmlValidCtxtPtr' info='the validation context'/>
+      <arg name='doc' type='xmlDocPtr' info='a document instance'/>
+      <arg name='elem' type='xmlNodePtr' info='an element instance'/>
+      <arg name='qname' type='const xmlChar *' info='the qualified name as appearing in the serialization'/>
+    </function>
+    <function name='xmlValidatePushCData' file='valid'>
+      <info>check the CData parsed for validation in the current stack</info>
+      <return type='int' info='1 if no validation problem was found or 0 otherwise'/>
+      <arg name='ctxt' type='xmlValidCtxtPtr' info='the validation context'/>
+      <arg name='data' type='const xmlChar *' info='some character data read'/>
+      <arg name='len' type='int' info='the lenght of the data'/>
+    </function>
+    <function name='xmlValidatePushElement' file='valid'>
+      <info>Push a new element start on the validation stack.</info>
+      <return type='int' info='1 if no validation problem was found or 0 otherwise'/>
+      <arg name='ctxt' type='xmlValidCtxtPtr' info='the validation context'/>
+      <arg name='doc' type='xmlDocPtr' info='a document instance'/>
+      <arg name='elem' type='xmlNodePtr' info='an element instance'/>
+      <arg name='qname' type='const xmlChar *' info='the qualified name as appearing in the serialization'/>
     </function>
     <function name='xmlValidateRoot' file='valid'>
       <info>Try to validate a the root element basically it does the following check as described by the XML-1.0 recommendation: - [ VC: Root Element Type ] it doesn&apos;t try to recurse or apply other check to the element</info>

@@ -115,6 +115,8 @@ xmlStrdupFunc xmlMemStrdup = (xmlStrdupFunc) xmlStrdup;
 #undef	xmlPedanticParserDefaultValue
 #undef	xmlSaveNoEmptyTags
 #undef	xmlSubstituteEntitiesDefaultValue
+#undef	xmlRegisterNodeDefaultValue
+#undef	xmlDeregisterNodeDefaultValue
 
 #undef	xmlFree
 #undef	xmlMalloc
@@ -218,6 +220,9 @@ int xmlKeepBlanksDefaultValue = 1;
  * engine does not handle entities references transparently.
  */
 int xmlSubstituteEntitiesDefaultValue = 0;
+
+xmlRegisterNodeFunc xmlRegisterNodeDefaultValue = NULL;
+xmlDeregisterNodeFunc xmlDeregisterNodeDefaultValue = NULL;
 
 /*
  * Error handling
@@ -450,7 +455,41 @@ xmlInitializeGlobalState(xmlGlobalStatePtr gs)
     gs->xmlPedanticParserDefaultValue = 0;
     gs->xmlSaveNoEmptyTags = 0;
     gs->xmlSubstituteEntitiesDefaultValue = 0;
+
+    gs->xmlRegisterNodeDefaultValue = NULL;
+    gs->xmlDeregisterNodeDefaultValue = NULL;
 }
+
+/**
+ * xmlRegisterNodeDefault:
+ * @func: function pointer to the new RegisterNodeFunc
+ *
+ * Returns the previous value of the registration function
+ */
+xmlRegisterNodeFunc
+xmlRegisterNodeDefault(xmlRegisterNodeFunc func)
+{
+    xmlRegisterNodeFunc old = xmlRegisterNodeDefaultValue;
+    
+    xmlRegisterNodeDefaultValue = func;
+    return(old);
+}
+
+/**
+ * xmlDeregisterNodeDefault:
+ * @func: function pointer to the new DeregisterNodeFunc
+ *
+ * Returns the previous value of the deregistration function
+ */
+xmlDeregisterNodeFunc
+xmlDeregisterNodeDefault(xmlDeregisterNodeFunc func)
+{
+    xmlDeregisterNodeFunc old = xmlDeregisterNodeDefaultValue;
+    
+    xmlDeregisterNodeDefaultValue = func;
+    return(old);
+}
+
 
 #ifdef LIBXML_DOCB_ENABLED
 #undef	docbDefaultSAXHandler
@@ -650,4 +689,22 @@ __xmlSubstituteEntitiesDefaultValue(void) {
 	return (&xmlSubstituteEntitiesDefaultValue);
     else
 	return (&xmlGetGlobalState()->xmlSubstituteEntitiesDefaultValue);
+}
+
+#undef	xmlRegisterNodeDefaultValue
+xmlRegisterNodeFunc *
+__xmlRegisterNodeDefaultValue(void) {
+    if (IS_MAIN_THREAD)
+	return (&xmlRegisterNodeDefaultValue);
+    else
+	return (&xmlGetGlobalState()->xmlRegisterNodeDefaultValue);
+}
+
+#undef	xmlDeregisterNodeDefaultValue
+xmlDeregisterNodeFunc *
+__xmlDeregisterNodeDefaultValue(void) {
+    if (IS_MAIN_THREAD)
+	return (&xmlDeregisterNodeDefaultValue);
+    else
+	return (&xmlGetGlobalState()->xmlDeregisterNodeDefaultValue);
 }

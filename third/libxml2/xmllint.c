@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdarg.h>
 
+#include <assert.h>
+
 #if defined (_WIN32) && !defined(__CYGWIN__)
 #ifdef _MSC_VER
 #include <winsock2.h>
@@ -81,12 +83,13 @@
 #include <libxml/DOCBparser.h>
 #endif
 #include <libxml/globals.h>
+#include <libxml/xmlreader.h>
 
 #ifdef LIBXML_DEBUG_ENABLED
-static int debug = 0;
 static int shell = 0;
 static int debugent = 0;
 #endif
+static int debug = 0;
 static int copy = 0;
 static int recovery = 0;
 static int noent = 0;
@@ -124,6 +127,8 @@ static int dropdtd = 0;
 static int catalogs = 0;
 static int nocatalogs = 0;
 #endif
+static int stream = 0;
+static int chkregister = 0;
 static const char *output = NULL;
 
 
@@ -505,6 +510,7 @@ xmlHTMLValidityWarning(void *ctx, const char *msg, ...)
  * 			Shell Interface					*
  * 									*
  ************************************************************************/
+#ifdef LIBXML_DEBUG_ENABLED
 /**
  * xmlShellReadline:
  * @prompt:  the prompt value
@@ -545,6 +551,7 @@ xmlShellReadline(char *prompt) {
     return(ret);
 #endif
 }
+#endif /* LIBXML_DEBUG_ENABLED */
 
 /************************************************************************
  * 									*
@@ -563,7 +570,73 @@ static void myClose(FILE *f) {
 
 /************************************************************************
  * 									*
- * 			Test processing					*
+ * 			Stream Test processing				*
+ * 									*
+ ************************************************************************/
+static int count = 0;
+static int elem, attrs;
+
+static void processNode(xmlTextReaderPtr reader) {
+    xmlChar *name, *value;
+
+    name = xmlTextReaderName(reader);
+    if (name == NULL)
+	name = xmlStrdup(BAD_CAST "--");
+    value = xmlTextReaderValue(reader);
+
+    printf("%d %d %s %d", 
+	    xmlTextReaderDepth(reader),
+	    xmlTextReaderNodeType(reader),
+	    name,
+	    xmlTextReaderIsEmptyElement(reader));
+    xmlFree(name);
+    if (value == NULL)
+	printf("\n");
+    else {
+	printf(" %s\n", value);
+	xmlFree(value);
+    }
+}
+
+static void streamFile(char *filename) {
+    xmlTextReaderPtr reader;
+    int ret;
+
+    if (count) {
+	elem = 0;
+	attrs = 0;
+    }
+
+    reader = xmlNewTextReaderFilename(filename);
+    if (reader != NULL) {
+	if (valid)
+	    xmlTextReaderSetParserProp(reader, XML_PARSER_VALIDATE, 1);
+
+	/*
+	 * Process all nodes in sequence
+	 */
+	ret = xmlTextReaderRead(reader);
+	while (ret == 1) {
+	    if (debug)
+		processNode(reader);
+	    ret = xmlTextReaderRead(reader);
+	}
+
+	/*
+	 * Done, cleanup and status
+	 */
+	xmlFreeTextReader(reader);
+	if (ret != 0) {
+	    printf("%s : failed to parse\n", filename);
+	}
+    } else {
+	fprintf(stderr, "Unable to open %s\n", filename);
+    }
+}
+
+/************************************************************************
+ * 									*
+ * 			Tree Test processing				*
  * 									*
  ************************************************************************/
 static void parseAndPrintFile(char *filename) {
@@ -743,8 +816,29 @@ static void parseAndPrintFile(char *filename) {
 	    doc = xmlParseMemory((char *) base, info.st_size);
 	    munmap((char *) base, info.st_size);
 #endif
-	} else
+	} else if (valid) {
+	    int ret;
+	    xmlParserCtxtPtr ctxt;
+
+	    ctxt = xmlCreateFileParserCtxt(filename);
+
+	    if (ctxt == NULL) {	      
+	      doc = NULL;
+	    } else {
+	      xmlParseDocument(ctxt);
+	      if (ctxt->valid == 0)
+		  progresult = 4;
+	      ret = ctxt->wellFormed;
+	      doc = ctxt->myDoc;
+	      xmlFreeParserCtxt(ctxt);
+	      if (!ret) {
+		xmlFreeDoc(doc);
+		doc = NULL;
+	      }
+	    }
+	} else {
 	    doc = xmlParseFile(filename);
+	}
     }
 
     /*
@@ -819,7 +913,7 @@ static void parseAndPrintFile(char *filename) {
 		    printf("%d element types can be inserted under root:\n",
 		           nb);
 		    for (i = 0;i < nb;i++) {
-			 printf("%s\n", list[i]);
+			 printf("%s\n", (char *) list[i]);
 		    }
 		}
 	    }
@@ -1040,6 +1134,8 @@ static void usage(const char *name) {
     printf("\t--debug : dump a debug tree of the in-memory document\n");
     printf("\t--shell : run a navigating shell\n");
     printf("\t--debugent : debug the entities defined in the document\n");
+#else
+    printf("\t--debug : dump the nodes content when using --stream\n");
 #endif
     printf("\t--copy : used to test the internal copy implementation\n");
     printf("\t--recover : output what was parsable on broken XML documents\n");
@@ -1085,12 +1181,28 @@ static void usage(const char *name) {
     printf("\t--loaddtd : fetch external DTD\n");
     printf("\t--dtdattr : loaddtd + populate the tree with inherited attributes \n");
     printf("\t--dropdtd : remove the DOCTYPE of the input docs\n");
+    printf("\t--stream : use the streaming interface to process very large files\n");
+    printf("\t--chkregister : verify the node registration code\n");
     printf("\nLibxml project home page: http://xmlsoft.org/\n");
     printf("To report bugs or get some help check: http://xmlsoft.org/bugs.html\n");
 }
+
+static void registerNode(xmlNodePtr node)
+{
+    node->_private = malloc(sizeof(long));
+    *(long*)node->_private = (long) 0x81726354;
+}
+
+static void deregisterNode(xmlNodePtr node)
+{
+    assert(node->_private != NULL);
+    assert(*(long*)node->_private == (long) 0x81726354);
+    free(node->_private);
+}
+
 int
 main(int argc, char **argv) {
-    int i, count;
+    int i, acount;
     int files = 0;
     int version = 0;
 
@@ -1105,10 +1217,11 @@ main(int argc, char **argv) {
 
 	if (argv[i][0] != '-')
 	    continue;
-#ifdef LIBXML_DEBUG_ENABLED
 	if ((!strcmp(argv[i], "-debug")) || (!strcmp(argv[i], "--debug")))
 	    debug++;
-	else if ((!strcmp(argv[i], "-shell")) ||
+	else
+#ifdef LIBXML_DEBUG_ENABLED
+	if ((!strcmp(argv[i], "-shell")) ||
 	         (!strcmp(argv[i], "--shell"))) {
 	    shell++;
             noout = 1;
@@ -1256,6 +1369,14 @@ main(int argc, char **argv) {
 	     noblanks++;
 	     format++;
 	     xmlKeepBlanksDefault(0);
+	}
+	else if ((!strcmp(argv[i], "-stream")) ||
+	         (!strcmp(argv[i], "--stream"))) {
+	     stream++;
+	}
+	else if ((!strcmp(argv[i], "-chkregister")) ||
+	         (!strcmp(argv[i], "--chkregister"))) {
+	     chkregister++;
 	} else {
 	    fprintf(stderr, "Unknown option %s\n", argv[i]);
 	    usage(argv[0]);
@@ -1277,6 +1398,12 @@ main(int argc, char **argv) {
 	}
     }
 #endif
+
+    if (chkregister) {
+	xmlRegisterNodeDefault(registerNode);
+	xmlDeregisterNodeDefault(deregisterNode);
+    }
+
     xmlLineNumbersDefault(1);
     if (loaddtd != 0)
 	xmlLoadExtDtdDefaultValue |= XML_DETECT_IDS;
@@ -1317,10 +1444,17 @@ main(int argc, char **argv) {
 	/* Remember file names.  "-" means stdin.  <sven@zen.org> */
 	if ((argv[i][0] != '-') || (strcmp(argv[i], "-") == 0)) {
 	    if (repeat) {
-		for (count = 0;count < 100 * repeat;count++)
+		for (acount = 0;acount < 100 * repeat;acount++)
+		    if (stream != 0)
+			streamFile(argv[i]);
+		    else
+			parseAndPrintFile(argv[i]);
+	    } else {
+		if (stream != 0)
+		    streamFile(argv[i]);
+		else
 		    parseAndPrintFile(argv[i]);
-	    } else
-		parseAndPrintFile(argv[i]);
+	    }
 	    files ++;
 	    if ((timing) && (repeat)) {
 		endTimer("100 iterations");

@@ -128,7 +128,9 @@
           </xsl:element>
         </li>
       </xsl:for-each>
+      <li><a href="xmlreader.html">The Reader Interface</a></li>
       <li><a href="tutorial/index.html">Tutorial</a></li>
+      <li><a href="guidelines.html">XML Guidelines</a></li>
       <li><a href="xml.html">flat page</a>, <a href="site.xsl">stylesheet</a></li>
     </ul>
   </xsl:variable>
@@ -153,7 +155,7 @@
       <li><a href="http://phd.cs.unibo.it/gdome2/">DOM gdome2</a></li>
       <li><a href="http://www.aleksey.com/xmlsec/">XML-DSig xmlsec</a></li>
       <li><a href="ftp://xmlsoft.org/">FTP</a></li>
-      <li><a href="http://www.fh-frankfurt.de/~igor/projects/libxml/">Windows binaries</a></li>
+      <li><a href="http://www.zlatkovic.com/projects/libxml/">Windows binaries</a></li>
       <li><a href="http://garypennington.net/libxml2/">Solaris binaries</a></li>
       <li><a href="http://www.zveno.com/open_source/libxml2xslt.html">MacOsX binaries</a></li>
       <li><a href="http://sourceforge.net/projects/libxml2-pas/">Pascal bindings</a></li>

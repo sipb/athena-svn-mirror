@@ -1271,7 +1271,8 @@ xmllint.o: xmllint.c libxml.h config.h include/libxml/xmlversion.h \
 	include/libxml/HTMLparser.h include/libxml/HTMLtree.h \
 	include/libxml/xpath.h include/libxml/hash.h \
 	include/libxml/debugXML.h include/libxml/xinclude.h \
-	include/libxml/catalog.h include/libxml/DOCBparser.h
+	include/libxml/catalog.h include/libxml/DOCBparser.h \
+	include/libxml/xmlreader.h
 xmlmemory.lo xmlmemory.o : xmlmemory.c libxml.h config.h \
 	include/libxml/xmlversion.h include/libxml/xmlmemory.h \
 	include/libxml/threads.h include/libxml/globals.h \

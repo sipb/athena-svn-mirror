@@ -338,13 +338,18 @@ xmlEntityPtr
 getEntity(void *ctx, const xmlChar *name)
 {
     xmlParserCtxtPtr ctxt = (xmlParserCtxtPtr) ctx;
-    xmlEntityPtr ret;
+    xmlEntityPtr ret = NULL;
 
 #ifdef DEBUG_SAX
     xmlGenericError(xmlGenericErrorContext,
 	    "SAX.getEntity(%s)\n", name);
 #endif
 
+    if (ctxt->inSubset == 0) {
+	ret = xmlGetPredefinedEntity(name);
+	if (ret != NULL)
+	    return(ret);
+    }
     if ((ctxt->myDoc != NULL) && (ctxt->myDoc->standalone == 1)) {
 	if (ctxt->inSubset == 2) {
 	    ctxt->myDoc->standalone = 0;
@@ -369,7 +374,9 @@ getEntity(void *ctx, const xmlChar *name)
     } else {
 	ret = xmlGetDocEntity(ctxt->myDoc, name);
     }
-    if ((ret != NULL) && (ctxt->validate) && (ret->children == NULL) &&
+    if ((ret != NULL) &&
+	((ctxt->validate) || (ctxt->replaceEntities)) &&
+	(ret->children == NULL) &&
 	(ret->etype == XML_EXTERNAL_GENERAL_PARSED_ENTITY)) {
 	/*
 	 * for validation purposes we really need to fetch and
@@ -379,6 +386,7 @@ getEntity(void *ctx, const xmlChar *name)
 
         xmlParseCtxtExternalEntity(ctxt, ret->URI, ret->ExternalID, &children);
 	xmlAddChildList((xmlNodePtr) ret, children);
+	ret->owner = 1;
     }
     return(ret);
 }
@@ -863,7 +871,7 @@ my_attribute(void *ctx, const xmlChar *fullname, const xmlChar *value,
 		if (uri->scheme == NULL) {
 		    if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
 			ctxt->sax->warning(ctxt->userData, 
-			     "nmlns: URI %s is not absolute\n", value);
+			     "xmlns: URI %s is not absolute\n", value);
 		}
 		xmlFreeURI(uri);
 	    }
@@ -896,6 +904,24 @@ my_attribute(void *ctx, const xmlChar *fullname, const xmlChar *value,
 		ctxt->sax->error(ctxt->userData, 
 		     "Empty namespace name for prefix %s\n", name);
 	}
+	if ((ctxt->pedantic != 0) && (value[0] != 0)) {
+	    xmlURIPtr uri;
+
+	    uri = xmlParseURI((const char *)value);
+	    if (uri == NULL) {
+		if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+		    ctxt->sax->warning(ctxt->userData, 
+			 "xmlns:%s: %s not a valid URI\n", name, value);
+	    } else {
+		if (uri->scheme == NULL) {
+		    if ((ctxt->sax != NULL) && (ctxt->sax->warning != NULL))
+			ctxt->sax->warning(ctxt->userData, 
+			   "xmlns:%s: URI %s is not absolute\n", name, value);
+		}
+		xmlFreeURI(uri);
+	    }
+	}
+
 	/* a standard namespace definition */
 	nsret = xmlNewNs(ctxt->node, value, name);
 	xmlFree(ns);
