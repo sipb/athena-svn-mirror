@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.7 1999-06-23 21:40:59 ghudson Exp $
+# $Id: bashrc,v 1.8 1999-08-09 19:30:41 tb Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -116,7 +116,7 @@ if [ "${ENV_SET+set}" != set ]; then
 	# Special version of ADD for the .bash_environment file.
 
 	add () {
-		eval "$( /bin/athena/attach -b -Padd -P"$athena_path" "$@" )"
+		eval "$( /bin/athena/attach -Padd -b -P"$athena_path" "$@" )"
 	}
 
 	# Run user environment customizations identified in your
