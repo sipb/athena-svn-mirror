@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: strutil.c,v 1.1.1.1 1996-10-07 20:16:49 ghudson Exp $";
+static char *RCSid = "$Id: strutil.c,v 1.1.1.2 1998-02-12 21:31:59 ghudson Exp $";
 #endif
 
 /*
@@ -65,10 +66,19 @@ StrToArgv(List, SepChars, ArgvPtr)
     register int		Count;
     register int		i;
 
+    if (!List)
+	return(0);
+
     String = List;
     for (Count = 0, Ptr = String; Ptr && *Ptr; ++Ptr)
 	if (IsSep(*Ptr, SepChars))
 	    ++Count;
+
+    /*
+     * Watch for ending seperator
+     */
+    if (IsSep(*(Ptr-1), SepChars))
+	--Count;
 
     /*
      * There's only one argument with no seperator?
@@ -105,11 +115,13 @@ StrToArgv(List, SepChars, ArgvPtr)
 	    ++End;
 	}
 	if (End > Start) {
-	    Argv[i] = xmalloc( (End - Start) + 1 );
+	    Argv[i] = (char *) xmalloc( (End - Start) + 1 );
 	    (void) strncpy(Argv[i], Start, End - Start);
 	    Argv[i][End - Start] = CNULL;
 	}
 	Ptr = Next;
+	if (!Next)
+	    break;
     }
 
     *ArgvPtr = Argv;

@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: netif.c,v 1.1.1.1 1996-10-07 20:16:53 ghudson Exp $";
+static char *RCSid = "$Id: netif.c,v 1.1.1.2 1998-02-12 21:32:16 ghudson Exp $";
 #endif
 
 
@@ -413,7 +414,10 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
     static char			buff[BUFSIZ];
     static int			sock = -1;
     register int		n;
+    register char	      **cpp;
+    register char 	       *Alias = NULL;
     AddrFamily_t	       *AddrFamPtr;
+    int				NameMatch = FALSE;
 
     if (Debug) printf("ProbeNetif() '%s'\n", name);
 
@@ -442,9 +446,30 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
 	 --n >= 0; ifreq++) {
 
 	/*
+	 * Compare the hardware name as passed to us, the config file name
+	 * and all config file aliases.
 	 * Check to see if this is the interface we want.
 	 */
-	if (!EQ(name, ifreq->ifr_name))
+	if (EQ(name, ifreq->ifr_name))
+	    NameMatch = TRUE;
+
+	if (DevDefine && DevData && !NameMatch) {
+	    /* Check config file name */
+	    Alias = MkDevName(DevDefine->Name, DevData->DevUnit,
+			      DevDefine->Type, DevDefine->Flags);
+	    if (EQ(Alias, ifreq->ifr_name))
+		NameMatch = TRUE;
+	  
+	    /* Check all name aliases */
+	    for (cpp = DevDefine->Aliases; !NameMatch && cpp && *cpp; ++cpp) {
+		Alias = MkDevName(*cpp, DevData->DevUnit,
+				  DevDefine->Type, DevDefine->Flags);
+		if (EQ(Alias, ifreq->ifr_name))
+		    NameMatch = TRUE;
+	    }
+	}
+	
+	if (!NameMatch)
 	    continue;
 
 	/*
@@ -474,7 +499,7 @@ extern DevInfo_t *ProbeNetif(name, DevData, DevDefine)
 	    if (AddrFamPtr = GetAddrFamily(hostaddr.sin_family)) {
 		if (ni = (*AddrFamPtr->GetNetIF)(AddrFamPtr, &hostaddr, 
 						 &maskaddr)) {
-		    SetMacInfo(name, ni, DevInfo);
+		    SetMacInfo(DevInfo->Name, ni, DevInfo);
 		    DevInfo->DevSpec = (caddr_t *) ni;
 		}
 	    } else

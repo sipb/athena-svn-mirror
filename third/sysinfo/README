@@ -1,13 +1,11 @@
 
-			    SYSINFO 3.2.2
+			    SYSINFO 3.3.1
 
 			  Michael A. Cooper
 			  MagniComp Systems
 			MCooper@MagniComp.Com
-				-or-
-			   MCooper@USC.Edu
 
-	 $Id: README,v 1.1.1.1 1996-10-07 20:16:47 ghudson Exp $
+	 $Id: README,v 1.1.1.2 1998-02-12 21:31:49 ghudson Exp $
 
 			 GENERAL INFORMATION
 
@@ -44,18 +42,18 @@ PLATFORM			General	Device	Kernel	SysConf
 Sun SPARC / SunOS 4.1.4		   X	   X	   X	   X
 (SunOS 4.1.4 /usr/ucb/cc)
 ---------------------------------------------------------------
-Sun SPARC / SunOS 5.4, 5.5	   X	   X	   X	   X
-(SunC 3.0.1)
+Sun SPARC / SunOS 5.5, 5.5.1,	   X	   X	   X	   X
+5.6beta (SunC 3.0.1)
 ---------------------------------------------------------------
 x86 / SunOS 5.4			   X	   X	   X	   X
 (SunC 3.0.1)
 ---------------------------------------------------------------
-IBM RS6000 / AIX 3.2.5		   X	   X		   X
+IBM RS6000 / AIX 3.2.5, 4.1	   X	   X		   X
 (XLC ??)
 ---------------------------------------------------------------
-SGI IRIX 5.3, 6.1		   X	   X	   X	   X
+SGI IRIX 5.3, 6.1, 6.2		   X	   X	   X	   X
 ---------------------------------------------------------------
-HP 9000/700 / HP-UX 9.05	   X		   X	   X
+HP 9000/700 / HP-UX 10.20	   X		   X	   X
 (HP-UX C)
 ---------------------------------------------------------------
 Convex SPP / SPP-UX 3.1		   X			   X
@@ -65,7 +63,23 @@ Convex SPP / SPP-UX 3.1		   X			   X
 			 RELEASE INFORMATION
 
 A list of major changes from version to version is listed below.
-For more details, please read the `ChangeLog' file.
+For more details, please read the `CHANGES' file.
+
+CHANGES FROM 3.3 to 3.3.1
+
+Updates for new Sun hardware.  Floppies on Sun's now appear again.
+CDROM drives on Suns are now identified.  Updated and slightly
+improved SGI hardware information, including another (hopefully final)
+fix for compiling on IRIX 6.2.  Fixes for HPUX 10.20.
+
+CHANGES FROM 3.2.2 to 3.3
+
+Bug fixes especially for "-format report" and IRIX 6.2 compile time support.
+
+Now shows info for removable media devices when available (i.e. not
+under control of Volume Manager) and no media is loaded.
+
+Add support for direct SCSI device inquiries under Solaris.
 
 CHANGES FROM 3.2.1 to 3.2.2
 

@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-sunos5.c,v 1.1.1.1 1996-10-07 20:16:54 ghudson Exp $";
+static char *RCSid = "$Id: os-sunos5.c,v 1.1.1.2 1998-02-12 21:32:18 ghudson Exp $";
 #endif
 
 /*
@@ -15,6 +16,7 @@ static char *RCSid = "$Id: os-sunos5.c,v 1.1.1.1 1996-10-07 20:16:54 ghudson Exp
 #include "defs.h"
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sys/cdio.h>
 
 /*
  * CPU (model) symbol
@@ -162,6 +164,7 @@ extern DevInfo_t *ProbeTapeDrive(TapeName, DevData, DevDefine)
     struct mtget 		mtget;
     register char	       *cp;
     int 			fd;
+    DevDesc_t		       *ScsiDevDesc;
 
     FileNum = GetDeviceFile(DevData, DevDefine, _PATH_DEV_RMT, &FileList);
     if (FileNum < 1) {
@@ -191,7 +194,11 @@ extern DevInfo_t *ProbeTapeDrive(TapeName, DevData, DevDefine)
     /* Use the no rewind file */
     (void) sprintf(DevFilen, "%sn", DevFile);
 
-    if ((fd = open(DevFilen, O_RDONLY)) < 0) {
+    /*
+     * The O_NDELAY flag will allow the device to be opened even if no
+     * media is loaded.
+     */
+    if ((fd = open(DevFilen, O_RDONLY|O_NDELAY)) < 0) {
 	if (Debug)
 	    Error("%s Cannot open for read: %s.", DevFilen, SYSERR);
 
@@ -220,8 +227,6 @@ extern DevInfo_t *ProbeTapeDrive(TapeName, DevData, DevDefine)
 	return((DevInfo_t *) NULL);
     }
 
-    (void) close(fd);
-
     cp = GetTapeModel(mtget.mt_type);
     if (cp)
 	Model = strdup(cp);
@@ -229,9 +234,10 @@ extern DevInfo_t *ProbeTapeDrive(TapeName, DevData, DevDefine)
 	Model = "unknown";
 
     /*
-     * Create and set device info
+     * Set device info
      */
-    DevInfo 			= NewDevInfo(NULL);
+    DevInfo = NewDevInfo(NULL);
+
     DevInfo->Name 		= strdup(DevName);
     DevInfo->AltName 		= strdup(TapeName);
     DevInfo->Type 		= DT_TAPEDRIVE;
@@ -243,6 +249,11 @@ extern DevInfo_t *ProbeTapeDrive(TapeName, DevData, DevDefine)
     DevInfo->Unit 		= DevData->DevUnit;
     DevInfo->ModelDesc 		= DevDefine->Desc;
     DevInfo->Master 		= MkMasterFromDevData(DevData);
+
+    (void) ScsiGetDesc(DevInfo, fd);
+
+    (void) close(fd);
+
 
     return(DevInfo);
 }
@@ -511,9 +522,10 @@ static DevInfo_t *GetDkCtlrDevice(DevData, dk_cinfo)
 /*
  * Convert all we've learned about a disk to a DevInfo_t.
  */
-static DevInfo_t *DKtoDiskDrive(DevName, DevData,
-				dk_vtoc, dk_cinfo, dk_geom, dk_type)
+static DevInfo_t *CreateDiskDrive(DevName, DevFD, DevData,
+				  dk_vtoc, dk_cinfo, dk_geom, dk_type)
     char 		       *DevName;
+    int				DevFD;
     DevData_t 		       *DevData;
     DKvtoc		       *dk_vtoc;
     DKcinfo	 	       *dk_cinfo;
@@ -521,11 +533,23 @@ static DevInfo_t *DKtoDiskDrive(DevName, DevData,
     DKtype 		       *dk_type;
 {
     DevInfo_t 		       *DevInfo, *DiskCtlr;
-    DiskDrive_t 		       *DiskDrive;
+    static DevInfo_t		ScsiDevInfo;
+    int				GotScsi = FALSE;
+    DiskDrive_t 	       *DiskDrive;
+
+    memset(&ScsiDevInfo, 0, sizeof(DevInfo_t));
+    if (ScsiGetDesc(&ScsiDevInfo, DevFD) == 0)
+	GotScsi = TRUE;
 
     if ((DevInfo = NewDevInfo(NULL)) == NULL) {
 	Error("Cannot create new device entry.");
 	return((DevInfo_t *) NULL);
+    }
+
+    if (dk_vtoc == NULL) {
+	if (Debug) Error("%s: No table of contents found on disk.", DevName);
+	if (!GotScsi)
+	    return((DevInfo_t *) NULL);
     }
 
     if ((DiskCtlr = NewDevInfo(NULL)) == NULL) {
@@ -547,10 +571,12 @@ static DevInfo_t *DKtoDiskDrive(DevName, DevData,
     /*
      * Only read partition info we we're going to print it later.
      */
-    if (VL_ALL)
-	DiskDrive->DiskPart 	= GetDiskPart(DevName, dk_vtoc);
-    DiskDrive->Label 	= GetDiskLabel(dk_vtoc);
-    DevInfo->Model 		= DiskDrive->Label;
+    if (dk_vtoc) {
+	if (VL_ALL)
+	    DiskDrive->DiskPart	= GetDiskPart(DevName, dk_vtoc);
+	DiskDrive->Label 	= GetDiskLabel(dk_vtoc);
+	DevInfo->Model 		= DiskDrive->Label;
+    }
 
     if (dk_cinfo) {
 	DiskDrive->Unit 	= dk_cinfo->dki_unit;
@@ -562,8 +588,8 @@ static DevInfo_t *DKtoDiskDrive(DevName, DevData,
 	DiskDrive->AltCyl 	= dk_geom->dkg_acyl;
 	DiskDrive->Heads 	= dk_geom->dkg_nhead;
 	DiskDrive->Sect 	= dk_geom->dkg_nsect;
-	DiskDrive->APC 	= dk_geom->dkg_apc;
-	DiskDrive->RPM 	= dk_geom->dkg_rpm;
+	DiskDrive->APC 		= dk_geom->dkg_apc;
+	DiskDrive->RPM 		= dk_geom->dkg_rpm;
 	DiskDrive->IntrLv 	= dk_geom->dkg_intrlv;
     }
 #if	defined(HAVE_HDIO)
@@ -572,18 +598,63 @@ static DevInfo_t *DKtoDiskDrive(DevName, DevData,
 	DiskDrive->PROMRev 	= dk_type->hdkt_promrev;
     }
 #endif	/* HAVE_HDIO */
-    DiskDrive->SecSize 	= dk_vtoc->v_sectorsz;
 
-    if (dk_vtoc->v_volume[0]) {
-	(void) sprintf(Buff, "\"%.*s\"", 
-		       sizeof(dk_vtoc->v_volume), dk_vtoc->v_volume);
-	AddDevDesc(DevInfo, Buff, "Volume Name", DA_APPEND);
+    /*
+     * Use SCSI inquiry info if available
+     */
+    if (GotScsi) {
+	DevInfo->DescList	= ScsiDevInfo.DescList;
+	if (!DevInfo->Model && ScsiDevInfo.Model)
+	    DevInfo->Model	= strdup(ScsiDevInfo.Model);
+    }
+
+    if (dk_vtoc) {
+	DiskDrive->SecSize 	= dk_vtoc->v_sectorsz;
+
+	if (dk_vtoc->v_volume[0]) {
+	    (void) sprintf(Buff, "\"%.*s\"", 
+			   sizeof(dk_vtoc->v_volume), dk_vtoc->v_volume);
+	    AddDevDesc(DevInfo, Buff, "Volume Name", DA_APPEND);
+	}
     }
 
     DiskCtlr 			= GetDkCtlrDevice(DevData, dk_cinfo);
 
     DevInfo->DevSpec 		= (caddr_t *) DiskDrive;
     DevInfo->Master 		= DiskCtlr;
+
+    return(DevInfo);
+}
+
+/*
+ * Create CDROM device
+ */
+static DevInfo_t *CreateCDROM(DevName, DiskName, DevData, DevDefine, CDspeed)
+    /*ARGSUSED*/
+    char 		       *DevName;
+    char 		       *DiskName;
+    DevData_t 		       *DevData;
+    DevDefine_t	     	       *DevDefine;
+    int				CDspeed;
+{
+    DevInfo_t 		       *DevInfo;
+    Define_t		       *Def;
+
+    DevInfo = NewDevInfo((DevInfo_t *) NULL);
+    DevInfo->Name = strdup(DevName);
+    if (DiskName)
+	DevInfo->AltName = strdup(DiskName);
+
+    DevInfo->Unit = DevData->DevUnit;
+    DevInfo->Master = MkMasterFromDevData(DevData);
+    DevInfo->Type = DT_CDROM;
+    DevInfo->NodeID = DevData->NodeID;
+    DevInfo->Model = DevDefine->Model;
+    Def = DefGet(DL_CDSPEED, NULL, CDspeed, 0);
+    if (Def)
+	DevInfo->ModelDesc = Def->ValStr1;
+    else if (Debug)
+	Error("Unknown CDROM Speed: 0x%x", CDspeed);
 
     return(DevInfo);
 }
@@ -605,8 +676,10 @@ static DevInfo_t *_ProbeDiskDrive(DiskName, DevFile, DevData, DevDefine)
     DKvtoc 		       *dk_vtoc;
     char		       *DevName;
     char		       *cp;
+    int				CDspeed = 0;
     int				Len;
     int				fd;
+    int				Status;
 
     if (!DevFile)
 	return((DevInfo_t *)NULL);
@@ -623,13 +696,16 @@ static DevInfo_t *_ProbeDiskDrive(DiskName, DevFile, DevData, DevDefine)
      * Try opening the disk device.  Usually this will be the "s0" device.
      * If that fails, and then try opening "s2".  Sometimes there's no "s0"
      * partition, but there is an "s2".
+     * 
+     * The O_NDELAY flag will allow the device to be opened even if no
+     * media is loaded.
      */
-    fd = open(DevFile, O_RDONLY);
+    fd = open(DevFile, O_RDONLY|O_NDELAY);
     if (fd < 0) {
 	Len = strlen(DevFile);
 	if (DevFile[Len-1] == '0') {
 	    DevFile[Len-1] = '2';
-	    fd = open(DevFile, O_RDONLY);
+	    fd = open(DevFile, O_RDONLY|O_NDELAY);
 	}
     }
     if (fd < 0) {
@@ -661,24 +737,31 @@ static DevInfo_t *_ProbeDiskDrive(DiskName, DevFile, DevData, DevDefine)
 	    return((DevInfo_t *) NULL);
     }
 
-    if ((dk_vtoc = GETvtoc(fd, DevFile)) == NULL)
-	if (Debug) Error("%s: get vtoc failed.", DevFile);
-    if ((dk_cinfo = GETdk_cinfo(fd, DevFile)) == NULL)
-	if (Debug) Error("%s: get dk_cinfo failed.", DevFile);
-    if ((dk_geom = GETdk_geom(fd, DevFile)) == NULL)
-	if (Debug) Error("%s: get dk_geom failed.", DevFile);
+    Status = -1;
+#if	defined(CDROMGDRVSPEED)
+    Status = ioctl(fd, CDROMGDRVSPEED, &CDspeed);
+#endif
+    if (Status == 0)
+	DevInfo = CreateCDROM(DevName, DiskName, DevData, DevDefine, CDspeed);
+    else {
+	if ((dk_vtoc = GETvtoc(fd, DevFile)) == NULL)
+	    if (Debug) Error("%s: get vtoc failed.", DevFile);
+	if ((dk_cinfo = GETdk_cinfo(fd, DevFile)) == NULL)
+	    if (Debug) Error("%s: get dk_cinfo failed.", DevFile);
+	if ((dk_geom = GETdk_geom(fd, DevFile)) == NULL)
+	    if (Debug) Error("%s: get dk_geom failed.", DevFile);
 #if	defined(HAVE_HDIO)
-    if ((dk_type = GETdk_type(fd, DevFile)) == NULL)
-	if (Debug) Error("%s: no dk_type info available.", DevFile);
+	if ((dk_type = GETdk_type(fd, DevFile)) == NULL)
+	    if (Debug) Error("%s: no dk_type info available.", DevFile);
 #endif	/* HAVE_HDIO */
 
-    close(fd);
-
-    if (!(DevInfo = DKtoDiskDrive(DevName, DevData,
-				  dk_vtoc, dk_cinfo, dk_geom, dk_type))) {
-	Error("%s: Cannot convert DiskDrive information.", DevName);
-	return((DevInfo_t *) NULL);
+	if (!(DevInfo = CreateDiskDrive(DevName, fd, DevData,
+					dk_vtoc, dk_cinfo, dk_geom, dk_type)))
+	    if (Debug) 
+		Error("%s: Cannot convert DiskDrive information.", DevName);
     }
+
+    close(fd);
 
     return(DevInfo);
 }

@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: devices.c,v 1.1.1.1 1996-10-07 20:16:48 ghudson Exp $";
+static char *RCSid = "$Id: devices.c,v 1.1.1.2 1998-02-12 21:31:52 ghudson Exp $";
 #endif
 
 /*
@@ -21,7 +22,6 @@ extern void PrintNetIf();
 extern void PrintDevice();
 extern void PrintGeneric();
 
-static DevInfo_t 	       *RootDev = NULL;
 static float 			TotalDisk = 0;
 extern int			OffSetAmt;
 
@@ -134,6 +134,7 @@ extern void DeviceShow(MyInfo, Names)
     ClassInfo_t		       *MyInfo;
     char		      **Names;
 {
+    static DevInfo_t 	       *RootDev = NULL;
     static char		       *RptData[2];
 
 #if	defined(HAVE_DEVICE_SUPPORT)
@@ -519,16 +520,17 @@ static void PrintDiskPartReport(Disk, DevInfo)
     for (pp = Disk->DiskPart; pp; pp = pp->Next) {
 	(void) sprintf(StartBuff, "%d", pp->StartSect);
 	(void) sprintf(NumBuff, "%d", pp->NumSect);
-	(void) sprintf(SizeBuff, "%d", 
+	(void) sprintf(SizeBuff, "%9.2f", 
 		       bytes_to_mbytes(nsect_to_bytes(pp->NumSect, 
 						      Disk->SecSize)));
-	RptData[0] = pp->Name;
-	RptData[1] = StartBuff;
-	RptData[2] = NumBuff;
-	RptData[3] = SizeBuff;
-	RptData[4] = PS(pp->Type);
-	RptData[5] = PS(pp->Usage);
-	Report(CN_DEVICE, R_DESC, R_PART, RptData, 5);
+	RptData[0] = R_PART;
+	RptData[1] = PS(pp->Name);
+	RptData[2] = StartBuff;
+	RptData[3] = NumBuff;
+	RptData[4] = SizeBuff;
+	RptData[5] = PS(pp->Type);
+	RptData[6] = PS(pp->Usage);
+	Report(CN_DEVICE, R_DESC, PS(DevInfo->Name), RptData, 7);
     }
 }
 
@@ -631,7 +633,7 @@ static void PrintDiskDriveReport(DevInfo, DevType, Disk, DiskSize)
     static char		       *RptData[3];
     static char			Buff[50];
 
-    if (strlen(DiskSize) < sizeof(RptData[0])) {
+    if (DiskSize && (strlen(DiskSize) < sizeof(RptData[0]))) {
 	(void) strcpy(Buff, PS(DiskSize));
 	RptData[0] = "capacity";
 	RptData[1] = Buff;
@@ -700,8 +702,16 @@ extern void PrintDiskdrive(DevInfo, DevType, OffSet)
     DiskDrive_t		       *Disk = NULL;
     char		       *DiskSize = NULL;
 
-    if (DevInfo && DevInfo->DevSpec)
+    if (DevInfo && DevInfo->DevSpec) {
 	Disk = (DiskDrive_t *) DevInfo->DevSpec;
+#if	defined(sunos)
+	/* 
+	 * Validate Disk. (Only sunos sets Disk->Label)
+	 */
+	if (!Disk->Label)
+	    Disk = NULL;
+#endif
+    }
 
     if (Disk && !DevInfo->ModelDesc && (DiskSize = GetDiskSize(Disk)))
 	DevInfo->ModelDesc = DiskSize;

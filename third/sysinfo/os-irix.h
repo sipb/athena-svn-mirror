@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 /*
- * $Id: os-irix.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Id: os-irix.h,v 1.1.1.2 1998-02-12 21:32:27 ghudson Exp $
  */
 
 #ifndef __os_irix_h__
@@ -16,6 +17,10 @@
 #include <sys/param.h>
 #include <stdlib.h>
 #include <nlist.h>
+#if	OSVER > 61
+#include <sys/sema.h>		/* for <netinet/in_var.h> in netif.c */
+#include <sys/hashing.h>	/* for <netinet/in_var.h> in netif.c */
+#endif
 
 #define IS_POSIX_SOURCE		1
 #define KMEMFILE		"/dev/kmem"

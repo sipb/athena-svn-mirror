@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 1992-1996 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-irix.c,v 1.1.1.1 1996-10-07 20:16:54 ghudson Exp $";
+static char *RCSid = "$Id: os-irix.c,v 1.1.1.2 1998-02-12 21:32:19 ghudson Exp $";
 #endif
 
 /*
@@ -1335,9 +1336,11 @@ static DevInfo_t *InvGetGraphics(Inv)
     Define_t		       *Def;
     Define_t		       *DefList;
     char		       *ListName = NULL;
+    char		       *GrType = NULL;
     char			Model[256];
     char			Desc[256];
     char			DevName[256];
+    static char			GrTmp[128];
 
     Model[0] = DevName[0] = CNULL;
 
@@ -1372,6 +1375,7 @@ static DevInfo_t *InvGetGraphics(Inv)
 	    break;
 	case INV_GR2:
 	    ListName = "GR2States";
+	    GrType = "GR2";
 	    break;
 	case INV_NEWPORT:
 	    ListName = "NEWPORTStates";
@@ -1382,6 +1386,19 @@ static DevInfo_t *InvGetGraphics(Inv)
 	for (Def = DefGetList(ListName); Def; Def = Def->Next)
 	    if ((Inv->inv_state & Def->KeyNum) && Def->ValStr1)
 		AddDevDesc(DevInfo, Def->ValStr1, NULL, 0);
+
+    /*
+     * See if there's a more specific submodel defined.
+     */
+    if (GrType) {
+	if (Debug) 
+	    printf("DEBUG: GraphicsType=`%s' class=%d type=%d state=0x%x",
+		   GrType, Inv->inv_class, Inv->inv_type, Inv->inv_state);
+	(void) sprintf(GrTmp, "%sconfigs", GrType);
+	Def = DefGetList(GrTmp, NULL, Inv->inv_state, 0);
+	if (Def)
+	    DevInfo->Model = Def->ValStr1;
+    }
 
     return(DevInfo);
 }

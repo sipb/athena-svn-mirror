@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: type.c,v 1.1.1.1 1996-10-07 20:16:49 ghudson Exp $";
+static char *RCSid = "$Id: type.c,v 1.1.1.2 1998-02-12 21:31:57 ghudson Exp $";
 #endif
 
 /*
@@ -59,54 +60,6 @@ extern void TypeList()
 	printf("%-20s %s\n", PS(TypePtr->Name), PS(TypePtr->Desc));
 }
 
-/*
- * Lookup a type named Name.
- */
-static DevType_t *TypeGetName(Name)
-    char		       *Name;
-{
-    register DevType_t	       *TypePtr;
-
-    for (TypePtr = DevTypes; TypePtr->Name; ++TypePtr)
-	if (EQ(Name, TypePtr->Name))
-	    return(TypePtr);
-
-    return((DevType_t *) NULL);
-}
-
-/*
- * Set type information
- */
-extern void TypeSetInfo(Names)
-    char		       *Names;
-{
-    register DevType_t	       *TypePtr;
-    register char	       *cp;
-    char		       *String;
-
-    if (Names) {
-	/*
-	 * Enable a specific list of typees.
-	 * The Names variable is a `,' seperated list
-	 * of type names.
-	 */
-	String = Names;		/* XXX Names param is altered */
-	for (cp = strtok(Names, ","); cp; cp = strtok((char *)NULL, ",")) {
-	    TypePtr = TypeGetName(cp);
-	    if (!TypePtr) {
-		Error("The type name `%s' is invalid.", cp);
-		TypeList();
-		exit(1);
-	    }
-	    TypePtr->Enabled = TRUE;
-	}
-    } else 
-	/*
-	 * No specific type names were specified so enabled all of them.
-	 */
-	for (TypePtr = DevTypes; TypePtr->Name; ++TypePtr)
-	    TypePtr->Enabled = TRUE;
-}
 
 /*
  * Get a device type.
@@ -142,4 +95,38 @@ extern DevType_t *TypeGetByName(Name)
 	    return(TypePtr);
 
     return((DevType_t *) NULL);
+}
+
+/*
+ * Set type information
+ */
+extern void TypeSetInfo(Names)
+    char		       *Names;
+{
+    register DevType_t	       *TypePtr;
+    register char	       *cp;
+    char		       *String;
+
+    if (Names) {
+	/*
+	 * Enable a specific list of typees.
+	 * The Names variable is a `,' seperated list
+	 * of type names.
+	 */
+	String = Names;		/* XXX Names param is altered */
+	for (cp = strtok(Names, ","); cp; cp = strtok((char *)NULL, ",")) {
+	    TypePtr = TypeGetByName(cp);
+	    if (!TypePtr) {
+		Error("The type name `%s' is invalid.", cp);
+		TypeList();
+		exit(1);
+	    }
+	    TypePtr->Enabled = TRUE;
+	}
+    } else 
+	/*
+	 * No specific type names were specified so enabled all of them.
+	 */
+	for (TypePtr = DevTypes; TypePtr->Name; ++TypePtr)
+	    TypePtr->Enabled = TRUE;
 }

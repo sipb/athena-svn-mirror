@@ -5,7 +5,7 @@
  */
 
 #ifndef lint
-static char *RCSid = "$Id: sysinfo.c,v 1.1.1.1 1996-10-07 20:16:48 ghudson Exp $";
+static char *RCSid = "$Id: sysinfo.c,v 1.1.1.2 1998-02-12 21:31:52 ghudson Exp $";
 #endif
 
 /*
@@ -329,7 +329,7 @@ void PrintVersion()
     if (PATCHLEVEL)
 	printf("%s.%d", VERSION_STR, PATCHLEVEL);
     else
-	printf("%s", VERSION_STR, PATCHLEVEL);
+	printf("%s", VERSION_STR);
 
 
     if (!VL_TERSE) {
@@ -373,9 +373,10 @@ main(Argc, Argv, Envp)
     /*
      * Show version info
      */
-    if (DoPrintVersion) {
+    if (DoPrintVersion || Debug) {
 	PrintVersion();
-	exit(0);
+	if (!Debug)
+	    exit(0);
     }
  
     /*

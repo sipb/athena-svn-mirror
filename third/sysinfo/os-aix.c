@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 #ifndef lint
-static char *RCSid = "$Id: os-aix.c,v 1.1.1.1 1996-10-07 20:16:54 ghudson Exp $";
+static char *RCSid = "$Id: os-aix.c,v 1.1.1.2 1998-02-12 21:32:21 ghudson Exp $";
 #endif
 
 /*
@@ -101,7 +102,7 @@ static char *odmerror()
 {
     static char odmerrstr[BUFSIZ];
 
-    if (odm_err_msg(odmerrno, &odmerrstr) != 0)
+    if (odm_err_msg(odmerrno, (char **) &odmerrstr))
 	(void) sprintf(odmerrstr, "unknown ODM error %d", odmerrno);
 
     return(odmerrstr);
@@ -122,7 +123,7 @@ static char *GetAttrVal(Name, Attr)
 
     if (odm_initialize() == -1) {
 	Error("ODM initialize failed: %s", odmerror());
-	return(-1);
+	return((char *) NULL);
     }
 
     (void) sprintf(Buff, "attribute = '%s' and name = '%s'", Attr, Name);
@@ -590,7 +591,7 @@ static char *GetDescript(CuDvPtr, PdDvPtr)
 	     * avoid a bug in AIX that fails to find any catalogs in 
 	     * this case.
 	     */
-	    cp = getenv("LANG");
+	    cp = (char *) getenv("LANG");
 	    if (!cp || (cp && EQ(cp, "C"))) {
 		(void) sprintf(Buff, "LANG=%s", DEFAULT_LANG);
 		if (putenv(strdup(Buff)) != 0)
@@ -646,7 +647,7 @@ extern DevInfo_t *ProbeODM(DevData, TreePtr, CuDvPtr)
 	PdDvPtr = GetPdDv(Buff);
     } else {
 	if (Debug) Error("No PdDv link value for '%s'.", DevName);
-	return((char *) NULL);
+	return((DevInfo_t *) NULL);
     }
 
     /*

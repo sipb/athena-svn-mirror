@@ -1,19 +1,6 @@
 #ifndef lint
-static char *RCSid = "$Id: strerror.c,v 1.1.1.1 1996-10-07 20:16:52 ghudson Exp $";
+static char *RCSid = "$Id: strerror.c,v 1.1.1.2 1998-02-12 21:32:11 ghudson Exp $";
 #endif
-
-/*
- * $Log: not supported by cvs2svn $
- * Revision 1.3  1994/11/03  00:04:48  mcooper
- * Update RCS header
- *
- * Revision 1.2  1994/10/11  02:04:56  mcooper
- * Revamp to read definetion info from externel file
- *
- * Revision 1.1  1992/03/21  02:48:11  mcooper
- * Initial revision
- *
- */
 
 #include <stdio.h>
 #include <sys/errno.h>

@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 1992-1994 Michael A. Cooper.
- * This software may be freely distributed provided it is not sold for 
- * profit and the author is credited appropriately.
+ * Copyright (c) 1992-1996 Michael A. Cooper.
+ * This software may be freely used and distributed provided it is not sold 
+ * for profit or used for commercial gain and the author is credited 
+ * appropriately.
  */
 
 /*
- * $Id: os-sunos.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Id: os-sunos.h,v 1.1.1.2 1998-02-12 21:32:27 ghudson Exp $
  */
 
 #ifndef __os_sunos_h__
@@ -21,6 +22,7 @@
 /*
  * OBP keywords
  */
+#define OBP_ALIASES		"aliases"
 #define OBP_BANNERNAME		"banner-name"
 #define OBP_BOARD		"board#"
 #define OBP_BOARDTYPE		"board-type"
@@ -37,6 +39,9 @@
 #define OBP_NAME		"name"
 #define OBP_SIZE		"size"
 #define OBP_SYSBOARD		"sysboard"
+#ifndef OBP_CPU
+#define OBP_CPU			"cpu"
+#endif
 
 #endif	/* HAVE_OPENPROM */
 
