@@ -1,4 +1,4 @@
-# $Id: packages,v 1.254 2003-11-26 00:28:13 rbasch Exp $
+# $Id: packages,v 1.255 2004-01-21 23:21:27 rbasch Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -80,6 +80,10 @@ athena/bin/machtype
 athena/bin/mail-dialog		requires gnome-libs
 athena/bin/mailquota		requires cyrus-imapd,perl
 athena/bin/mailusage		requires cyrus-imapd,perl
+athena/bin/mitmaildel		requires cyrus-imapd,perl
+athena/bin/mitmailexp		requires cyrus-imapd,perl
+athena/bin/mitmailscan		requires cyrus-imapd,perl
+athena/bin/mitmailshow		requires cyrus-imapd,perl
 athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires openafs
 athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
