@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.40 1994-04-30 00:14:19 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.41 1994-05-02 10:35:27 vrt Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -9,6 +9,9 @@
  */
 
 #include <mit-copyright.h>
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -24,7 +27,6 @@
 #include <strings.h>
 #include <errno.h>
 #ifdef SOLARIS
-#include <unistd.h>
 #include <sys/strredir.h>
 #include <sys/stropts.h>
 #include <utmpx.h>
@@ -56,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.40 1994-04-30 00:14:19 cfields Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.41 1994-05-02 10:35:27 vrt Exp $";
 #endif
 
 #ifndef NULL
