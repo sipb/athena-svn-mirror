@@ -2,6 +2,7 @@ Name: athena-scrollkeeper
 Summary: A cataloging system for documentation on open systems, for Athena
 Copyright: LGPL
 Group: System Environment/Base
+Provides: scrollkeeper = 0.2
 
 %description
 ScrollKeeper is a cataloging system for documentation. It manages

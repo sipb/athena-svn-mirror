@@ -2,6 +2,7 @@ Name: athena-gtk
 Summary: The gtk user interface library, for Athena
 Copyright: GPL
 Group: User Interface/X
+Provides: gtk = 1.2.10
 
 Requires: athena-glib
 

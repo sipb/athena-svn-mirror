@@ -2,6 +2,7 @@ Name: athena-gnome-media
 Summary: GNOME media programs, for Athena
 Copyright: LGPL
 Group: X11/Libraries
+Provides: gnome-media = 1.2.3
 
 Requires: athena-esound athena-gnome-libs
 

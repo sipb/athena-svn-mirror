@@ -2,6 +2,7 @@ Name: athena-gnome-utils
 Summary: GNOME utility programs, for Athena
 Copyright: GPL
 Group: Applications/System
+Provides: gnome-utils = 1.4.1.2
 
 Requires: athena-gnome-libs athena-libxml athena-libglade athena-gnome-core
 

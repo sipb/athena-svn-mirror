@@ -2,6 +2,7 @@ Name: athena-libglade
 Summary: The Glade user interface library, for Athena
 Copyright: GPL
 Group: System Environment/Libraries
+Provides: libglade = 0.17
 
 Requires: athena-gtk
 
