@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.c,v $
- *      $Author: raeburn $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Id: port.c,v 1.7 1990-10-19 06:51:30 raeburn Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.8 1994-02-14 09:56:02 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -507,7 +507,7 @@ void create_file_append_port(name, filename)
     oumask = umask(077);		/* allow read/write for us only */
     out = fopen(filename, "a");
     (void) umask(oumask);
-    if (errno) {
+    if (out == NULL) {
 	var_set_variable("error", perror_to_string(errno));
 	return;
     }
@@ -523,7 +523,7 @@ void create_file_input_port(name, filename)
 
     errno = 0;
     in = fopen(filename, "r");
-    if (errno) {
+    if (in == NULL) {
 	var_set_variable("error", perror_to_string(errno));
 	return;
     }
@@ -543,7 +543,7 @@ void create_file_output_port(name, filename)
     oumask = umask(077);		/* allow read/write for us only */
     out = fopen(filename, "w");
     (void) umask(oumask);
-    if (errno) {
+    if (out == NULL) {
 	var_set_variable("error", perror_to_string(errno));
 	return;
     }
