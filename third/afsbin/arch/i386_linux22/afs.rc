@@ -18,7 +18,8 @@ if [ -f /etc/sysconfig/afs ]; then
 	. /etc/sysconfig/afs
 fi
 
-# Athena addition
+# Athena additions
+AFS_POST_INIT=/etc/athena/config_afs
 athena_afsadjust () {
 	. /etc/athena/rc.conf
 	if [ "true" = "$AFSADJUST" -o "true" = "$PUBLIC" ] ; then
