@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 1996-10-13 16:17:14 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 1996-10-13 16:41:22 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -15,8 +15,8 @@ clean:
 	${MAKE} clean
 
 all:
-	compiler=`${MAKE} "compiler.$${HOSTTYPE}"`; \
-	${MAKE} all CC="$compiler" LANGUAGES=c
+	compiler=`${MAKE} -f Makefile.athena "compiler.$${HOSTTYPE}"`; \
+	${MAKE} all CC="$$compiler" LANGUAGES=c
 	${MAKE} stage1
 	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=C
 
