@@ -1,6 +1,0 @@
-#
-# $Id: Imakefile,v 1.2 1994-08-14 16:38:21 cfields Exp $
-#
-
-SimpleProgram(dent,dent.o,,$(ATHBINDIR))
-install_man(dent.1,dent.1)
