@@ -35,7 +35,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.31.1";
+my $VERSION = "0.31.3";
 
 ## Loaded modules
 use strict; 
@@ -91,7 +91,7 @@ my $OUTFILE;
 
 my %po_files_by_lang = ();
 my %translations = ();
-my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
+my $iconv = $ENV{"ICONV"} || $ENV{"INTLTOOL_ICONV"} || "@INTLTOOL_ICONV@";
 
 # Use this instead of \w for XML files to handle more possible characters.
 my $w = "[-A-Za-z0-9._:]";
@@ -255,7 +255,7 @@ sub gather_po_files
 sub get_local_charset
 {
     my ($encoding) = @_;
-    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/home/gustavo/local/gnome-unstable/lib/charset.alias";
+    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/opt/gnomecvs/lib/charset.alias";
 
     # seek character encoding aliases in charset.alias (glib)
 
@@ -664,7 +664,7 @@ sub getXMLstring
 	    # We've got CDATA
 	    if ($content) {
 		# lets strip the whitespace here, and *ONLY* here
-		$content =~ s/\s+/ /gs;
+                $content =~ s/\s+/ /gs if (!((exists $attrs->{"xml:space"}) && ($attrs->{"xml:space"} =~ /^["']?preserve["']?$/)));
 		$result .= ($content);
 	    } else {
 		#print "no cdata content when expected it\n"; # is this possible, is this ok?
@@ -718,8 +718,10 @@ sub traverse
 	print $fh "<$nodename$outattr";
 	if ($translate) {
 	    $lookup = getXMLstring($content);
-	    $lookup =~ s/^\s+//s;
-	    $lookup =~ s/\s+$//s;
+            if (!((exists $attrs->{"xml:space"}) && ($attrs->{"xml:space"} =~ /^["']?preserve["']?$/))) {
+                $lookup =~ s/^\s+//s;
+                $lookup =~ s/\s+$//s;
+            }
 
 	    if ($lookup) {
                 my $translation = $translations{$language, $lookup};

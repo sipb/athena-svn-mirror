@@ -267,8 +267,7 @@ struct      <link linkend="GtkPatternTagClass">GtkPatternTagClass</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gtk-block-comment-tag-new"/>gtk_block_comment_tag_new</title>
-<indexterm><primary>gtk_block_comment_tag_new</primary></indexterm><programlisting>#define gtk_block_comment_tag_new	gtk_syntax_tag_new
-</programlisting>
+<indexterm><primary>gtk_block_comment_tag_new</primary></indexterm><programlisting>#define     gtk_block_comment_tag_new</programlisting>
 <para>
 
 </para></refsect2>

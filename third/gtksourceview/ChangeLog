@@ -1,3 +1,52 @@
+=== gtksourceview 1.1.1 ===
+
+2004-10-13  Paolo Borelli  <pborelli@katamail.com>
+
+	* NEWS:
+	* README: Release 1.1.1
+
+2004-10-07  Paolo Borelli  <pborelli@katamail.com>
+
+	* gtksourceview/language-specs/c.lang: handle #if 0 ... #else,
+	patch by John Spray (bug #153765)
+
+2004-10-07  Paolo Borelli  <pborelli@katamail.com>
+
+	* gtksourceview/gtksourcetagtable.c (gtk_source_tag_table_remove_tag):
+	fix leak, patch by David A Knight (bug #152767)
+
+2004-09-05  Theppitak Karoonboonyanan  <thep@linux.thai.net>
+
+	* configure.in (ALL_LINGUAS): Added 'th' (Thai).
+
+2004-08-28  Akagic Amila  <bono@linux.org.ba>
+
+        * configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in:
+
+2004-08-16  Owen Taylor  <otaylor@redhat.com>
+
+	* gtksourceview/gtksourceprintjob.c (get_text_with_style): Handle
+	the case where a tag toggle falls exactly at the paragraph
+	separator.
+
+2004-08-08  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+
+	* gtksourceview/language-specs/css.lang: CSS highlighting spec, by
+	Scott Martin (bug #130597)
+	* gtksourceview/language-specs/fortran.lang: Fortran highlighting,
+	by John Spray (bug #143970)
+	* gtksourceview/language-specs/javascript.lang: Javascript
+	highlighting rules, by Scott Martin (bug #139871)
+	* gtksourceview/language-specs/pascal.lang: Pascal highlighting
+	rules, by Andrew Johnson (bug #138863)
+	* gtksourceview/language-specs/Makefile.am: Added new files.
+
+=== gtksourceview 1.1.0 ===
+
 2004-08-01  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
 
 	* NEWS:
