@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.8 2001-01-12 18:28:31 ghudson Exp $
+# $Id: xsession,v 1.9 2001-01-13 15:31:16 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -85,10 +85,10 @@ endif
 
 if ($?ATHENA_DASH_INTERFACE) then
 	set default_windowmanager=mwm
-	set terminal=xterm
+	set terminal='xterm -geometry 80x48+0+38'
 else
 	set default_windowmanager=sawfish
-	set terminal=gnome-terminal
+	set terminal='gnome-terminal --geometry 80x48+0+30'
 endif
 
 
@@ -158,7 +158,7 @@ endif
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	($terminal -geometry 80x48+0+30 &)
+	($terminal &)
 endif
 
 # Run default system startup activities.  To skip these, put the command
