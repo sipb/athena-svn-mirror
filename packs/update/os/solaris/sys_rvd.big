@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.2 2002-04-05 18:09:54 ghudson Exp $
+## $Id: sys_rvd.big,v 1.3 2002-08-05 14:48:02 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -68,24 +68,15 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 
 		! lib/gdk-pixbuf
 		! lib/gdk-pixbuf/*
+		! lib/evolution
+		! lib/evolution/*
 		! lib/init
 		! lib/init/*
-		! libexec/rep
-		! libexec/rep/*
-		! libexec/sawfish
-		! libexec/sawfish/*
-		! share/applets
-		! share/applets/*
-		! share/gtkrc
-		! share/gtkrc/*
-		! share/pixmaps
-		! share/pixmaps/*
-		! share/rep
-		! share/rep/*
-		! share/sawfish
-		! share/sawfish/*
-		! share/zephyr
-		! share/zephyr/*
+		! libexec/*
+		-> libexec/xscreensaver
+		! share/*
+		-> share/texmf
+		-> share/locale
 
 		! bin/access_off
 		! bin/access_on
@@ -93,6 +84,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		! bin/bugme
 		! bin/background-properties-capplet
 		! bin/emacs
+		! bin/evolution*
 		! bin/esd
 		! bin/from
 		! bin/get_message
@@ -111,52 +103,12 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		! bin/session_gate
 		! bin/sound-properties
 		! bin/tasklist_applet
+		! bin/wombat
 		! bin/xalf
 		! bin/xmh
 		! bin/xss
 		! bin/zwgc
-		! lib/libIIOP.so*
-		! lib/libImlib.so*
-		! lib/libORBit.so*
-		! lib/libORBitCosNaming.so*
-		! lib/libORBitutil.so*
-		! lib/libart_lgpl.so*
-		! lib/libaudiofile.so*
-		! lib/libcapplet.so*
-		! lib/libcom_err.so*
-		! lib/libdes425.so*
-		! lib/libesd.so*
-		! lib/libgdk-1.2.so*
-		! lib/libgdk_imlib.so*
-		! lib/libgdk_pixbuf.so*
-		! lib/libgen_util_applet.so*
-		! lib/libglade-gnome.so*
-		! lib/libglade.so*
-		! lib/libglib-1.2.so*
-		! lib/libgmodule-1.2.so*
-		! lib/libgmp.so*
-		! lib/libgnome.so*
-		! lib/libgnomesupport.so*
-		! lib/libgnomeui.so*
-		! lib/libpanel_applet.so*
-		! lib/libgnorba.so*
-		! lib/libgnorbagtk.so*
-		! lib/libgtk-1.2.so*
-		! lib/libhistory.so*
-		! lib/libimlib-png.so*
-		! lib/libjpeg.so*
-		! lib/libk5crypto.so*
-		! lib/libkrb4.so*
-		! lib/libkrb5.so*
-		! lib/libpng.so*
-		! lib/libpty.so*
-		! lib/libreadline.so*
-		! lib/librep.so*
-		! lib/libungif.so*
-		! lib/libxalflaunch.so*
-		! lib/libxml.so*
-		! lib/libz.so*
-		! lib/libzvt.so*
+		! lib/*.so*
 		-> *
 		:
 	/var:::
