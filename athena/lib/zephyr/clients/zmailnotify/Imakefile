@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v $
 /**/#	$Author: probe $
-/**/#	$Id: Imakefile,v 1.7 1993-11-21 04:11:48 probe Exp $
+/**/#	$Id: Imakefile,v 1.8 1993-11-21 04:16:08 probe Exp $
 /**/#
 
 #if defined(KERBEROS)
@@ -16,10 +16,4 @@ OBJS = zmailnotify.o
 
 zprogram(zmailnotify,$(LIB_HES))
 install_man(zmailnotify.1,zmailnotify.1)
-
-#ifdef ATHENA_COMPAT
-install::
-	$(RM) $(DESTDIR)/usr/athena/zmailnotify
-	ln -s $(CLIENTDIR)/zmailnotify $(DESTDIR)/usr/athena/zmailnofity
-#endif
 #endif
