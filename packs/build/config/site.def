@@ -1,4 +1,4 @@
-#ifdef SOLARIS
+#if defined(sun) && defined(SVR4)
 #define NOLINT
 #define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
 #define CcFlags LintFlags
