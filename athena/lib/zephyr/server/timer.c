@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_timer_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.c,v 1.3 1987-07-01 04:27:39 jtkohl Exp $";
+static char rcsid_timer_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.c,v 1.4 1987-07-02 19:09:23 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -38,6 +38,26 @@ make no representations about the suitability of
 this software for any purpose.  It is provided "as is"
 without express or implied warranty.
 
+ */
+
+
+/*
+ * External functions:
+ *
+ * timer timer_set_rel (time_rel, proc, arg)
+ *	long time_rel;
+ *	void (*proc)();
+ *	caddr_t arg;
+ * timer timer_set_abs (time_abs, proc, arg)
+ *	long time_abs;
+ *	void (*proc)();
+ *	caddr_t arg;
+ *
+ * void timer_reset(tmr)
+ *	timer tmr;
+ *
+ * void timer_process()
+ *
  */
 
 #include <stdio.h>
@@ -210,7 +230,6 @@ insert_timer(new_t)
 void
 timer_process()
 {
-	register int i;
 	register struct _timer *t;
 	void (*queue)();
 	caddr_t queue_arg;
@@ -256,15 +275,4 @@ timer_botch()
 {
 	syslog(LOG_CRIT, "Timer botch\n");
 	abort();
-}
-
-void
-print_timers()
-{
-	register timer t;
-
-	printf("\nIt's currently %ld\n", NOW);
-	for (t=ALARM_NEXT(timers); t != timers; t = ALARM_NEXT(t)) {
-		printf("Timer %x: time %d\n", t, ALARM_TIME(t));
-	}
 }
