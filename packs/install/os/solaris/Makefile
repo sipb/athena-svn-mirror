@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.15 2003-09-12 01:52:02 ghudson Exp $
+# $Id: Makefile,v 1.16 2004-03-12 20:35:09 zacheiss Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -37,7 +37,6 @@ install:
 	install -c -m 0444 format.input.Seagate.medalist ${DESTDIR}${INSTALL}
 	install -c -m 0444 install1.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 install2.sh ${DESTDIR}${INSTALL}
-	install -c -m 0444 update2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0555 oschanges ${DESTDIR}${INSTALL}
 	install -c -m 0444 os-link-2.6 ${DESTDIR}${INSTALL}
 	install -c -m 0444 startup ${DESTDIR}${INSTALL}
