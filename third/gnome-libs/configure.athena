@@ -1,0 +1,9 @@
+# $Id: configure.athena,v 1.1 2001-04-03 21:42:03 ghudson Exp $
+case OS in
+linux)
+  ./configure "$@" --enable-prefer-db1
+  ;;
+*)
+  ./configure "$@"
+  ;;
+esac
