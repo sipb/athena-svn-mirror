@@ -1,0 +1,23 @@
+SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
+	data.c notify.c utils.c list.c  acl_files.c   \
+	requests_olc.c requests_admin.c
+
+OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
+	data.o notify.o utils.o list.o acl_files.o \
+	requests_olc.o requests_admin.o
+
+LOCAL_LIBRARIES=$(COMMONLIB)
+DEFINES=-DLOG -DTEST -DOLZ
+DEPLIBS=$(LOCAL_LIBRARIES)
+
+SYS_LIBRARIES=	$(HesiodLib) $(DbmLib) $(ZephyrLib) $(ComErrLib) $(KerberosLib)
+
+INCLUDES= -I../include
+
+NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
+
+DependTarget()
+LintTarget()
+TagsTarget()
+
+AllTarget(olcd)
