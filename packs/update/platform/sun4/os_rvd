@@ -1,10 +1,9 @@
 GLOBAL : *.CKP *.local *.pid :
+## $Id: os_rvd,v 1.7 1996-12-27 22:12:59 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
 ##
-##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.6 1996-07-21 18:43:37 ghudson Exp $
 	.:::
 		dev
 		devices
@@ -602,4 +601,4 @@ GLOBAL : *.CKP *.local *.pid :
 		-> T*
 		-> UK*
 		:
-
+	/var/sadm::::
