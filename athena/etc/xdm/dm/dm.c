@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.5 1990-11-01 12:10:40 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.6 1990-11-15 18:30:26 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,11 +22,15 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.5 1990-11-01 12:10:40 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.6 1990-11-15 18:30:26 mar Exp $";
 #endif
 
 #ifndef NULL
 #define NULL 0
+#endif
+
+#ifndef __STDC__
+#define volatile
 #endif
 
 /* Process states */
@@ -39,18 +43,19 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #define TRUE		(!FALSE)
 
 /* flags used by signal handlers */
-int alarm_running = NONEXISTANT;
-int xpid, x_running = NONEXISTANT;
-int consolepid, console_running = NONEXISTANT;
-int loginpid, login_running = NONEXISTANT;
-int clflag;
+volatile int alarm_running = NONEXISTANT;
+volatile int xpid, x_running = NONEXISTANT;
+volatile int consolepid, console_running = NONEXISTANT;
+volatile int console_tty = 0, console_failed = FALSE;
+volatile int loginpid, login_running = NONEXISTANT;
+volatile int clflag;
 
 /* Programs */
 #ifdef ultrix
 char *login_prog = "/etc/athena/console-getty";
 #else
 char *login_prog = "/bin/login";
-#endif ultrix
+#endif /* ultrix */
 
 /* Files */
 char *utmpf =	"/etc/utmp";
@@ -61,8 +66,19 @@ char *xpidf = 	"/usr/tmp/X0.pid";
 char *consolepidf = "/etc/console.pid";
 char *dmpidf =	"/etc/dm.pid";
 char *consolef ="/dev/console";
+char *consolelog = "/usr/tmp/console.log";
+char *mousedev = "/dev/mouse";
+char *displaydev = "/dev/cons";
+#ifdef ultrix
+char *ultrixcons = "/dev/xcons";
+#endif
+
+/* the console process will run as daemon */
+#define DAEMON 1
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
+#define X_STOP_WAIT	3	/* (seconds / 2) wait for graceful shutdown */
+#define LOGIN_START_WAIT 60	/* wait up to 1 minute for Xlogin */
 #define BUFSIZ		1024
 
 
@@ -74,42 +90,43 @@ int argc;
 char **argv;
 {
     void die(), child(), catchalarm(), xready(), setclflag(), shutdown();
+    void loginready();
     char *logintty, *consoletty, *conf, *p, *number(), *getconf();
-    char **xargv, **consoleargv, **loginargv, **parseargs();
-    char line[16];
-    int pgrp, file, tries, console = TRUE;
+    char **xargv, **consoleargv = NULL, **loginargv, **parseargs();
+    char line[16], buf[256];
+    fd_set readfds;
+    int pgrp, file, tries, console = TRUE, mask;
 
     if (argc != 4 &&
 	(argc != 5 || strcmp(argv[3], "-noconsole"))) {
 	message("usage: ");
 	message(argv[0]);
 	message(" configfile logintty [-noconsole] consoletty\n");
-	exit(1);
+	console_login(NULL);
     }
     if (argc == 5) console = FALSE;
 
+    /* parse argument lists */
     conf = argv[1];
+#ifndef ultrix
     logintty = argv[2];
+#else
+    logintty = "console";
+#endif /* ultrix */
     consoletty = argv[argc-1];
     p = getconf(conf, "X");
-    if (p == NULL) {
-	message("Can't find X command line\n");
-	exit(1);
-    }
+    if (p == NULL)
+      console_login("dm: Can't find X command line\n");
     xargv = parseargs(p, NULL);
     if (console) {
 	p = getconf(conf, "console");
-	if (p == NULL) {
-	    message("Can't find console command line\n");
-	    exit(1);
-	}
+	if (p == NULL)
+	  console_login("dm: Can't find console command line\n");
 	consoleargv = parseargs(p, NULL);
     }
     p = getconf(conf, "login");
-    if (p == NULL) {
-	message("Can't find login command line\n");
-	exit(1);
-    }
+    if (p == NULL)
+      console_login("dm: Can't find login command line\n");
     loginargv = parseargs(p, logintty);
 
     /* Signal Setup */
@@ -125,6 +142,7 @@ char **argv;
     signal(SIGALRM, catchalarm);
     signal(SIGUSR2, setclflag);
 
+    /* setup ttys */
     close(0);
     close(1);
     close(2);
@@ -138,11 +156,12 @@ char **argv;
 #ifdef TIOCCONS
     if (console)
       ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-#endif TIOCCONS
+#endif  /* TIOCCONS */
     setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
     ioctl (0, TIOCSPGRP, &pgrp);
 #endif
 
+    /* save our pid file */
     if ((file = open(dmpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
 	write(file, number(getpid()), strlen(number(getpid())));
 	close(file);
@@ -167,10 +186,10 @@ char **argv;
 	    p = *xargv;
 	    *xargv = "-";
 	    execv(p, xargv);
-	    message("X server failed exec\n");
-	    exit(1);
+	    message("dm: X server failed exec\n");
+	    _exit(1);
 	case -1:
-	    message("Unable to start X server\n");
+	    message("dm: Unable to fork to start X server\n");
 	    break;
 	default:
 	    signal(SIGUSR1, xready);
@@ -187,20 +206,25 @@ char **argv;
 	    sigpause(0);
 	    if (x_running != RUNNING) {
 		if (alarm_running == NONEXISTANT)
-		  message("Unable to start X\n");
+		  message("dm: Unable to start X\n");
 		else
-		  message("X failed to become ready\n");
+		  message("dm: X failed to become ready\n");
 	    }
 	    signal(SIGUSR1, SIG_IGN);
 	}
 	if (x_running == RUNNING) break;
     }
     alarm(0);
-    if (x_running != RUNNING) console_login();
+    if (x_running != RUNNING)
+      console_login("Unable to start X, doing console login instead.\n");
 
+    /* start up console */
     strcpy(line, "/dev/");
     strcat(line, logintty);
     if (console) start_console(line, consoleargv);
+    /* had to use a different tty, make sure xlogin uses it too */
+    if (strcmp(logintty, &line[5]))
+      strcpy(logintty, &line[5]);
 
     /* Fire up the X login */
     for (tries = 0; tries < 3; tries++) {
@@ -208,37 +232,93 @@ char **argv;
 	message("Starting X Login\n");
 #endif
 	clflag = FALSE;
+	login_running = STARTUP;
+	signal(SIGUSR1, loginready);
 	loginpid = fork();
 	switch (loginpid) {
 	case 0:
+	    for (file = 0; file < getdtablesize(); file++)
+	      close(file);
+	    file = open("/dev/tty", O_RDWR|O_NDELAY);
+	    if (file >= 0) {
+		(void) ioctl(file, TIOCNOTTY, (char *)NULL);
+		(void) close(file);
+	    }
+	    open("/dev/null", O_RDONLY, 0);
+	    strcpy(line, "/dev/");
+	    strcat(line, logintty);
+	    open(line, O_WRONLY, 0);
+	    dup2(1, 2);
+	    /* chase away anyone else using this tty */
+	    signal(SIGHUP, SIG_IGN);
+	    vhangup();
 	    sigsetmask(0);
+	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
+	     * when it is ready
+	     */
+	    signal(SIGUSR1, SIG_IGN);
 	    execv(loginargv[0], loginargv);
-	    message("X login failed exec\n");
-	    exit(1);
+	    message("dm: X login failed exec\n");
+	    _exit(1);
 	case -1:
-	    message("Unable to start X login\n");
+	    message("dm: Unable to fork to start X login\n");
 	    break;
 	default:
-	    login_running = RUNNING;
+	    alarm(LOGIN_START_WAIT);
+	    alarm_running = RUNNING;
+	    while (login_running == STARTUP && alarm_running == RUNNING)
+	      sigpause(0);
+	    if (login_running != RUNNING) {
+		kill(loginpid, SIGKILL);
+		if (alarm_running != NONEXISTANT)
+		  message("dm: Unable to start Xlogin\n");
+		else
+		  message("dm: Xlogin failed to become ready\n");
+	    }
 	}
 	if (login_running == RUNNING) break;
     }
-    if (login_running != RUNNING) console_login();
+    signal(SIGUSR1, SIG_IGN);
+    alarm(0);
+    if (login_running != RUNNING)
+      console_login("Unable to start xlogin, doing console login instead.\n");
 
+    /* main loop.  Wait for SIGCHLD, waking up every minute anyway. */
+    sigblock(sigmask(SIGCHLD));
     while (1) {
 #ifdef DEBUG
 	message("waiting...\n");
 #endif
 	/* Wait for something to hapen */
-	sigpause(0);
+	if (console_failed) {
+	    /* if no console is running, we must copy bits from the console
+	     * (master side of pty) to the real console to appear as black
+	     * bar messages.
+	     */
+	    FD_ZERO(&readfds);
+	    FD_SET(console_tty, &readfds);
+	    mask = sigsetmask(0);
+	    select(console_tty + 1, &readfds, NULL, NULL, NULL);
+	    sigblock(mask);
+	    if (FD_ISSET(console_tty, &readfds)) {
+		file = read(console_tty, buf, sizeof(buf));
+		write(1, buf, file);
+	    }
+	} else {
+	    alarm(60);
+	    sigpause(0);
+	}
 
-	if (login_running == STARTUP)
-	  console_login();
+	if (login_running == STARTUP) {
+	    sigsetmask(0);
+	    console_login("Console login requested.\n");
+	}
 	if (console && console_running == NONEXISTANT)
 	  start_console(line, consoleargv);
 	if (login_running == NONEXISTANT || x_running == NONEXISTANT) {
+	    sigsetmask(0);
 	    cleanup(logintty);
-	    exit(0);
+	    _exit(0);
 	}
     }
 }
@@ -246,9 +326,10 @@ char **argv;
 
 /* Start a login on the raw console */
 
-console_login()
+console_login(msg)
+char *msg;
 {
-    int pgrp, i;
+    int pgrp, i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
     struct sgttyb mode;
     char *nl = "\r\n";
 
@@ -256,22 +337,34 @@ console_login()
     message("starting console login\n");
 #endif
 
-    for (i = 0; i < 10; i++) {
-	if (x_running != NONEXISTANT)
-	  kill(xpid, SIGKILL);
-	if (console_running != NONEXISTANT)
-	  kill(consolepid, SIGKILL);
+    for (i = 0; i < X_STOP_WAIT; i++) {
 	if (login_running != NONEXISTANT && login_running != STARTUP)
 	  kill(loginpid, SIGKILL);
+	if (console_running != NONEXISTANT) {
+	    if (cfirst)
+	      kill(consolepid, SIGHUP);
+	    else
+	      kill(consolepid, SIGKILL);
+	    cfirst = FALSE;	
+	}
+	if (x_running != NONEXISTANT) {
+	    if (xfirst)
+	      kill(xpid, SIGTERM);
+	    else
+	      kill(xpid, SIGKILL);
+	    xfirst = FALSE;
+	}
 
 	/* wait 1 sec for children to exit */
-	alarm(1);
+	alarm(2);
 	sigpause(0);
 
 	if (x_running == NONEXISTANT &&
 	    console_running == NONEXISTANT &&
-	    (login_running == NONEXISTANT || login_running == STARTUP))
-	  break;
+	    (login_running == NONEXISTANT || login_running == STARTUP)) {
+	    gracefull = TRUE;
+	    break;
+	}
     }
 
 #ifndef BROKEN_CONSOLE_DRIVER
@@ -279,45 +372,94 @@ console_login()
     ioctl(0, TIOCSPGRP, &pgrp);
 #ifdef TIOCCONSx
     ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-#endif TIOCCONS
+    ioctl (1, TIOCCONS, 0);		/* Grab the console   */
+#endif  /* TIOCCONS */
 #endif
+
+#ifdef vax
+    /* attempt to reset the display head */
+    if (!gracefull) {
+	i = open(mousedev, O_RDWR, 0);
+	if (i >= 0) {
+	    alarm(2);
+	    sigpause(0);
+	    close(i);
+	}
+	i = open(displaydev, O_RDWR, 0);
+	if (i >= 0) {
+	    alarm(2);
+	    sigpause(0);
+	    close(i);
+	}
+    }
+#endif
+
     ioctl(0, TIOCGETP, &mode);
     mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
     ioctl(0, TIOCSETP, &mode);
+    sigsetmask(0);
 
-    message(nl);
+    if (msg)
+      message(msg);
+    else
+      message(nl);
     execl(login_prog, login_prog, 0);
-    message("Unable to start console login\n");
-    exit(1);
+    message("dm: Unable to start console login\n");
+    _exit(1);
 }
 
 
 /* start the console program.  It will have stdin set to the controling
- * side of the console pty, and stdout set to the slave side.
+ * side of the console pty, and stdout set to /dev/console inherited 
+ * from the display manager.
  */
 
 start_console(line, argv)
 char *line;
 char **argv;
 {
-    static int con = 0;
     static struct timeval last_try = { 0, 0 };
     struct timeval now;
-    int file, pgrp;
-    char *number();
+    int file, pgrp, i;
+    char *number(), c;
 
 #ifdef DEBUG
     message("Starting Console\n");
 #endif
 
-    if (con == 0) {
+    if (console_tty == 0) {
+#ifndef ultrix
 	/* Open master side of pty */
 	line[5] = 'p';
-	con = open(line, O_RDWR, 0);
-#ifdef TIOCCONS
-	ioctl (con, TIOCCONS, 0);		/* Grab the console   */
-#endif TIOCCONS
+	console_tty = open(line, O_RDWR, 0);
+#else
+	console_tty = open(ultrixcons, O_RDWR, 0);
+#endif /* ultrix */
+	if (console_tty < 0) {
+	    /* failed to open this tty, find another one */
+	    for (c = 'p'; c <= 's'; c++) {
+		line[8] = c;
+		for (i = 0; i < 16; i++) {
+		    line[9] = "0123456789abcdef"[i];
+		    console_tty = open(line, O_RDWR, 0);
+		    if (console_tty >= 0) break;
+		}
+		if (console_tty >= 0) break;
+	    }
+	}
+	/* out of ptys, use stdout (/dev/console) */
+	if (console_tty < 0) console_tty = 1;
+	/* Create console log file owned by daemon */
+	if (access(consolelog, F_OK) != 0) {
+	    file = open(consolelog, O_CREAT, 0644);
+	    close(file);
+	}
+	chown(consolelog, DAEMON, 0);
     }
+#ifdef TIOCCONS
+    ioctl (console_tty, TIOCCONS, 0);		/* Grab the console   */
+#endif /* TIOCCONS */
+    line[5] = 't';
 
     gettimeofday(&now, 0);
     if (now.tv_sec <= last_try.tv_sec + 3) {
@@ -329,37 +471,47 @@ char **argv;
 	/* Set the console characteristics so we don't lose later */
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-#endif TIOCCONS
+#endif /* TIOCCONS */
 	setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
 	ioctl (0, TIOCSPGRP, &pgrp);
 #endif
+	console_failed = TRUE;
 	return;
     }
     last_try.tv_sec = now.tv_sec;
 
 
+    console_running = RUNNING; 
     consolepid = fork();
     switch (consolepid) {
     case 0:
-	/* Close all file descriptors */
-	for (file = 0; file < getdtablesize(); file++)
-	  if (file != con)
+	/* Close all file descriptors except stdout/stderr */
+	close(0);
+	for (file = 3; file < getdtablesize(); file++)
+	  if (file != console_tty)
 	    close(file);
-	dup2(con, 0);
-	close(con);
-	/* Open slave side of pty */
-	line[5] = 't';
-	open(line, O_RDWR, 0);
+	file = open("/dev/tty", O_RDWR|O_NDELAY);
+	if (file >= 0) {
+	    (void) ioctl(file, TIOCNOTTY, (char *)NULL);
+	    (void) close(file);
+	}
+	dup2(console_tty, 0);
+	close(console_tty);
+#ifdef DEBUG
+	close(1);
+	close(2);
+	open("/tmp/console.err", O_CREAT|O_APPEND|O_WRONLY, 0644);
 	dup2(1, 2);
+#endif
+	setreuid(DAEMON, DAEMON);
 	sigsetmask(0);
 	execv(argv[0], argv);
-	message("Failed to exec console\n");
-	exit(1);
+	message("dm: Failed to exec console\n");
+	_exit(1);
     case -1:
-	message("Unable to start console\n");
-	exit(1);
+	message("dm: Unable to fork to start console\n");
+	_exit(1);
     default:
-	console_running = RUNNING;
 	if ((file = open(consolepidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
 	    write(file, number(consolepid), strlen(number(consolepid)));
 	    close(file);
@@ -406,7 +558,7 @@ char *tty;
     found = 0;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
-	    if (!strncmp(utmp.ut_line, tty)) {
+	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))) {
 		strncpy(login, utmp.ut_name, 8);
 		login[8] = 0;
 		utmp.ut_name[0] = 0;
@@ -420,8 +572,8 @@ char *tty;
     if (found) {
 	if ((file = open(wtmpf, O_WRONLY|O_APPEND, 0644)) >= 0) {
 	    strcpy(utmp.ut_line, tty);
-	    strcpy(utmp.ut_name, "");
-	    strcpy(utmp.ut_host, "");
+	    utmp.ut_name[0] = 0;
+	    utmp.ut_host[0] = 0;
 	    time(&utmp.ut_time);
 	    write(file, (char *) &utmp, sizeof(utmp));
 	    close(file);
@@ -446,6 +598,7 @@ void child()
     char *number();
 
     pid = wait3(&status, WNOHANG, 0);
+    if (pid == 0) return;
 
 #ifdef DEBUG
     message("Child exited "); message(number(pid));
@@ -454,22 +607,34 @@ void child()
 #ifdef DEBUG
 	message("X Server exited\n");
 #endif
+#ifdef TRACE
+	trace("X Server exited status ");
+	trace(number(status.w_retcode));
+#endif
 	x_running = NONEXISTANT;
     } else if (pid == consolepid) {
 #ifdef DEBUG
 	message("Console exited\n");
+#endif
+#ifdef TRACE
+	trace("Console exited status ");
+	trace(number(status.w_retcode));
 #endif
 	console_running = NONEXISTANT;
     } else if (pid == loginpid) {
 #ifdef DEBUG
 	message("X Login exited\n");
 #endif
+#ifdef TRACE
+	trace("X Login exited status ");
+	trace(number(status.w_retcode));
+#endif
 	if (status.w_retcode == CONSOLELOGIN)
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTANT;
     } else {
-	message("Unexpected SIGCHLD from pid ");message(number(pid));
+	message("dm: Unexpected SIGCHLD from pid ");message(number(pid));
     }
 }
 
@@ -482,10 +647,18 @@ void xready()
     x_running = RUNNING;
 }
 
+void loginready()
+{
+#ifdef DEBUG
+    message("X Login ready\n");
+#endif
+    login_running = RUNNING;
+}
+
 void setclflag()
 {
 #ifdef DEBUG
-    message("Received Cear Login Flag signal\n");
+    message("Received Clear Login Flag signal\n");
 #endif
     clflag = TRUE;
 }
@@ -515,7 +688,7 @@ void die()
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
       kill(xpid, SIGKILL);
-    exit(0);
+    _exit(0);
 }
 
 
@@ -709,3 +882,17 @@ char *name;
     }
     return(NULL);
 }
+
+
+#ifdef TRACE
+trace(msg)
+char *msg;
+{
+    int f;
+
+    f = open("/tmp/dm.log", O_WRONLY|O_CREAT|O_APPEND, 0644);
+    if (!f) return;
+    write(f, msg, strlen(msg));
+    close(f);
+}
+#endif
