@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.5 1996-08-06 18:36:29 ghudson Exp $
+# $Id: phase3.sh,v 1.6 1996-08-08 22:01:24 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -7,8 +7,8 @@
 
 if [ `/srvd/bin/athena/machtype -c` = SPARC/4 ]; then
 	echo "Setting monitor resolution..."
-	eeprom output-device=screen:r1152x900x94
-	eeprom fcode-debug?=true
+	/os/usr/sbin/eeprom output-device=screen:r1152x900x94
+	/os/usr/sbin/eeprom fcode-debug?=true
 fi
 
 ROOT=/root; export ROOT
