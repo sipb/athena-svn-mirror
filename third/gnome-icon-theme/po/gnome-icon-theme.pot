@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-01-13 14:52+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-02 11:50-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,102 +16,186 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: index.theme.in.h:1
-msgid "Default Gnome Theme"
-msgstr ""
-
-#: index.theme.in.h:2
-msgid "Gnome"
+#: 48x48/emblems/emblem-OK.icon.in.h:1
+msgid "OK"
 msgstr ""
 
 #: 48x48/emblems/emblem-art.icon.in.h:1
 msgid "Art"
 msgstr ""
 
+#: 48x48/emblems/emblem-bin.icon.in.h:1
+msgid "Binary"
+msgstr ""
+
 #: 48x48/emblems/emblem-camera.icon.in.h:1
 msgid "Camera"
+msgstr ""
+
+#: 48x48/emblems/emblem-certified.icon.in.h:1
+msgid "Certified"
+msgstr ""
+
+#: 48x48/emblems/emblem-cool.icon.in.h:1
+msgid "Cool"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-added.icon.in.h:1
+msgid "cvs-added"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-conflict.icon.in.h:1
+msgid "cvs-conflict"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-controlled.icon.in.h:1
+msgid "cvs-controlled"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-modified.icon.in.h:1
+msgid "cvs-modified"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-new-file.icon.in.h:1
+msgid "cvs-new-file"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-removed.icon.in.h:1
+msgid "cvs-removed"
+msgstr ""
+
+#: 48x48/emblems/emblem-cvs-sticky-tag.icon.in.h:1
+msgid "cvs-sticky-tag"
+msgstr ""
+
+#: 48x48/emblems/emblem-danger.icon.in.h:1
+msgid "Danger"
+msgstr ""
+
+#: 48x48/emblems/emblem-desktop.icon.in.h:1
+msgid "Desktop"
+msgstr ""
+
+#: 48x48/emblems/emblem-distinguished.icon.in.h:1
+msgid "Distinguished"
 msgstr ""
 
 #: 48x48/emblems/emblem-documents.icon.in.h:1
 msgid "Documents"
 msgstr ""
 
+#: 48x48/emblems/emblem-draft.icon.in.h:1
+msgid "Draft"
+msgstr ""
+
+#: 48x48/emblems/emblem-favorite.icon.in.h:1
+msgid "Favorite"
+msgstr ""
+
+#: 48x48/emblems/emblem-generic.icon.in.h:1
+msgid "Generic"
+msgstr ""
+
+#: 48x48/emblems/emblem-handshake.icon.in.h:1
+msgid "Handshake"
+msgstr ""
+
+#: 48x48/emblems/emblem-important.icon.in.h:1
+msgid "Important"
+msgstr ""
+
 #: 48x48/emblems/emblem-mail.icon.in.h:1
 msgid "Mail"
+msgstr ""
+
+#: 48x48/emblems/emblem-marketing.icon.in.h:1
+msgid "Marketing"
+msgstr ""
+
+#: 48x48/emblems/emblem-money.icon.in.h:1
+msgid "Money"
 msgstr ""
 
 #: 48x48/emblems/emblem-multimedia.icon.in.h:1
 msgid "Multimedia"
 msgstr ""
 
+#: 48x48/emblems/emblem-new.icon.in.h:1
+msgid "New"
+msgstr ""
+
+#: 48x48/emblems/emblem-noread.icon.in.h:1
+msgid "No read"
+msgstr ""
+
+#: 48x48/emblems/emblem-note.icon.in.h:1
+msgid "Note"
+msgstr ""
+
+#: 48x48/emblems/emblem-nowrite.icon.in.h:1
+msgid "No write"
+msgstr ""
+
+#: 48x48/emblems/emblem-ohno.icon.in.h:1
+msgid "Oh no!"
+msgstr ""
+
 #: 48x48/emblems/emblem-package.icon.in.h:1
 msgid "Package"
+msgstr ""
+
+#: 48x48/emblems/emblem-people.icon.in.h:1
+msgid "People"
+msgstr ""
+
+#: 48x48/emblems/emblem-personal.icon.in.h:1
+msgid "Personal"
 msgstr ""
 
 #: 48x48/emblems/emblem-pictures.icon.in.h:1
 msgid "Pictures"
 msgstr ""
 
+#: 48x48/emblems/emblem-plan.icon.in.h:1
+msgid "Plan"
+msgstr ""
+
+#: 48x48/emblems/emblem-presentation.icon.in.h:1
+msgid "Presentation"
+msgstr ""
+
+#: 48x48/emblems/emblem-sales.icon.in.h:1
+msgid "Sales"
+msgstr ""
+
 #: 48x48/emblems/emblem-sound.icon.in.h:1
 msgid "Sound"
+msgstr ""
+
+#: 48x48/emblems/emblem-symbolic-link.icon.in.h:1
+msgid "Symbolic link"
+msgstr ""
+
+#: 48x48/emblems/emblem-special.icon.in.h:1
+msgid "Special"
+msgstr ""
+
+#: 48x48/emblems/emblem-trash.icon.in.h:1
+msgid "Trash"
+msgstr ""
+
+#: 48x48/emblems/emblem-urgent.icon.in.h:1
+msgid "Urgent"
 msgstr ""
 
 #: 48x48/emblems/emblem-web.icon.in.h:1
 msgid "Web"
 msgstr ""
 
-#: scalable/emblems/emblem-certified.icon.in.h:1
-msgid "Certified"
+#: index.theme.in.h:1
+msgid "Default GNOME Theme"
 msgstr ""
 
-#: scalable/emblems/emblem-cool.icon.in.h:1
-msgid "Cool"
-msgstr ""
-
-#: scalable/emblems/emblem-danger.icon.in.h:1
-msgid "Danger"
-msgstr ""
-
-#: scalable/emblems/emblem-distinguished.icon.in.h:1
-msgid "Distinguished"
-msgstr ""
-
-#: scalable/emblems/emblem-draft.icon.in.h:1
-msgid "Draft"
-msgstr ""
-
-#: scalable/emblems/emblem-favorite.icon.in.h:1
-msgid "Favorite"
-msgstr ""
-
-#: scalable/emblems/emblem-generic.icon.in.h:1
-msgid "Generic"
-msgstr ""
-
-#: scalable/emblems/emblem-important.icon.in.h:1
-msgid "Important"
-msgstr ""
-
-#: scalable/emblems/emblem-new.icon.in.h:1
-msgid "New"
-msgstr ""
-
-#: scalable/emblems/emblem-ohno.icon.in.h:1
-msgid "Oh No!"
-msgstr ""
-
-#: scalable/emblems/emblem-OK.icon.in.h:1
-msgid "OK"
-msgstr ""
-
-#: scalable/emblems/emblem-personal.icon.in.h:1
-msgid "Personal"
-msgstr ""
-
-#: scalable/emblems/emblem-special.icon.in.h:1
-msgid "Special"
-msgstr ""
-
-#: scalable/emblems/emblem-urgent.icon.in.h:1
-msgid "Urgent"
+#: index.theme.in.h:2
+msgid "GNOME"
 msgstr ""

@@ -1,3 +1,147 @@
-Version 1.0.0
+Version 2.8.0
+
+Changes since 2.7.90
+
+* New mime icon for WordPerfect documents
+* New 16x16 and 24x24 stock_new-tab icons
+* Updated translations [cy, th, zh_TW]
+
+Changes since 1.3.7
+
+* New translations [bs, nb]
+* Updated translations [az, ca, es, eu, fi, ne, sq, sv, uk]
+
+Changes since 1.3.6
+
+* New device icons
+* Updated translations [fi, fr, ms, sr, zh_CN]
+
+Changes since 1.3.5
+
+* Add open lock icons, Fixes #141458
+* Add bittorrent icon, Fixes #148226
+* Add ipod icons
+* Add 32 and 48 px icons for mail-send-receive
+* Updated translations [bg, da, hi, hu, ko, pt_BR, sq]
+
+Changes since 1.3.4
+
+* Updated translations [sq, da, bg, pt_BR]
+
+Changes since 1.3.3:
+
+* Added stock_3dsound and stock_headphones icons for 24 and 16 pixel sizes
+* Added text/x-objcsrc mime type icon, Fixes #144987
+
+Changes since 1.3.2:
+
+* Fix API breakage for stock_save_as vs. stock_save-as
+* Fix build so that make distcheck works
+
+Changes since 1.2.1:
+
+* new smiley icons
+* new stock icons
+* Bugs Fixed: #142977, #142001, #138612
+
+Changes since 1.2.0:
+* new im icons
+* some mime icon updates
+* Some new evolution icons
+
+Changes since 1.1.91:
+* duplex and tumble icon for printing
+
+Changes since 1.1.90:
+* More translations
+
+Changes since 1.1.8:
+* indent icon polish
+* renamed csharp mime icon due to changed mimetype
+
+Changes since 1.1.7:
+* New gnome-fs-directory-visiting icon
+* more small size stock icons
+
+Changes since 1.1.6:
+* new stock icons
+* make install DESTDIR fix
+
+Changes since 1.1.5:
+* new stock icons
+
+Changes since 1.1.4:
+* searchtool icons
+* more evo icons
+* new visiting icon
+* test for hicolor installed at build time
+
+Changes since 1.1.3:
+* Lots of new icons
+* pkg-config file
+
+Changes since 1.1.2:
+* more icons needed for evo
+
+Changes since 1.1.1:
+* web calendar icon
+* vcard mimetype icon
+
+Changes since 1.1.0:
+* Media icons in menu size
+* New emblems
+* Flags
+* removable device icons
+* other icons
+
+Changes since 1.0.9
+* Lots of new icons.
+
+Changes since 1.0.8
+* more evo icons
+
+Changes since 1.0.7
+* Updated translations
+* New icons: todo, cell-phone, addressbook,
+  appointment-reminder
+
+Changes since 1.0.6
+* Remove adobe logo
+* new stock mail open icon
+* build fixes
+
+Changes since 1.0.5:
+* Lots of new icons from jimmac
+
+Changes since 1.0.4:
+* Moved some icons from gnome-desktop
+
+Changes since 1.0.3:
+* Added gnome-spinner
+
+Changes since 1.0.2:
+* desktop emblem
+* notification area icon
+* gnucash mime icon
+* tar mime icon
+* ipod firmware mime icon
+
+Changes since 1.0.1:
+
+* Added a notes emblem
+
+Version 1.0.1
+
+Changes since 1.0.0:
+
+* shockwave flash icon
+
+* OOo draw icon
+
+* scheme icon
+
+* translations
+
+1.0.0:
 
 This is the inital stable release of the gnome icon theme.
