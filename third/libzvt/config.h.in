@@ -1,0 +1,136 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+#undef ENABLE_NLS
+#undef HAVE_CATGETS
+#undef HAVE_GETTEXT
+#undef HAVE_LC_MESSAGES
+#undef HAVE_STPCPY
+
+#undef HAVE_STROPTS_H
+
+/* We define macro, which expands to utmp or utmpx when available */
+#undef UTMP
+
+#undef HAVE_UT_UT_PID
+#undef HAVE_UT_UT_ID
+#undef HAVE_UT_UT_USER
+#undef HAVE_UT_UT_NAME
+#undef HAVE_UT_UT_TYPE
+#undef HAVE_UT_UT_HOST
+#undef HAVE_UT_UT_TV
+#undef HAVE_UT_UT_TIME
+#undef HAVE_UT_UT_SYSLEN
+#undef HAVE_UT_UT_EXIT_E_TERMINATION
+
+#undef HAVE_SETEUID
+#undef HAVE_SETREUID
+
+#undef HAVE_OPENPTY
+#undef HAVE_LOGIN_TTY
+#undef HAVE_SENDMSG
+
+/* Defined, if there is struct lastlog */
+#undef HAVE_LASTLOG
+
+/* define if needed to include sa_len member in struct sockaddr */
+#undef _SOCKADDR_LEN
+
+#undef HAVE_LIBUTIL
+
+/* Define if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define if you have the `fcntl' function. */
+#undef HAVE_FCNTL
+
+/* Define if you have the `flock' function. */
+#undef HAVE_FLOCK
+
+/* Define if you have the `getttyent' function. */
+#undef HAVE_GETTTYENT
+
+/* Define if you have the `getutent' function. */
+#undef HAVE_GETUTENT
+
+/* Define if you have the `getutmpx' function. */
+#undef HAVE_GETUTMPX
+
+/* Define if you have the `grantpt' function. */
+#undef HAVE_GRANTPT
+
+/* Define if you have the `pt' library (-lpt). */
+#undef HAVE_LIBPT
+
+/* Define if you have the <libutil.h> header file. */
+#undef HAVE_LIBUTIL_H
+
+/* Define if you have the <paths.h> header file. */
+#undef HAVE_PATHS_H
+
+/* Define if you have the <pty.h> header file. */
+#undef HAVE_PTY_H
+
+/* Define if you have the `seteuid' function. */
+#undef HAVE_SETEUID
+
+/* Define if you have the `setresuid' function. */
+#undef HAVE_SETRESUID
+
+/* Define if you have the `setreuid' function. */
+#undef HAVE_SETREUID
+
+/* Define if you have the <stropts.h> header file. */
+#undef HAVE_STROPTS_H
+
+/* Define if you have the `strrchr' function. */
+#undef HAVE_STRRCHR
+
+/* Define if you have the <sys/fsuid.h> header file. */
+#undef HAVE_SYS_FSUID_H
+
+/* Define if you have the <sys/select.h> header file. */
+#undef HAVE_SYS_SELECT_H
+
+/* Define if you have the <sys/syslimits.h> header file. */
+#undef HAVE_SYS_SYSLIMITS_H
+
+/* Define if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/un.h> header file. */
+#undef HAVE_SYS_UN_H
+
+/* Define if you have the <ttyent.h> header file. */
+#undef HAVE_TTYENT_H
+
+/* Define if you have the `updwtmp' function. */
+#undef HAVE_UPDWTMP
+
+/* Define if you have the `updwtmpx' function. */
+#undef HAVE_UPDWTMPX
+
+/* Define if you have the <util.h> header file. */
+#undef HAVE_UTIL_H
+
+/* Define if you have the `utmpname' function. */
+#undef HAVE_UTMPNAME
+
+/* Define if you have the `utmpxname' function. */
+#undef HAVE_UTMPXNAME
+
+/* Define if you have the <utmpx.h> header file. */
+#undef HAVE_UTMPX_H
+
+/* Define if you have the <utmp.h> header file. */
+#undef HAVE_UTMP_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>. */
+#undef TIME_WITH_SYS_TIME
+
+/* Version number of package */
+#undef VERSION
