@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-09-28 22:07:17 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-09-30 16:21:39 danw Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -94,6 +94,7 @@ install:
 clean:
 	rm -f ${OBJS} libfxcl.a fx
 	rm -f fxcl_err.c fxcl_err.h fxserver_err.c fxserver_err.h
+	rm -f mk_krb_err krb_err.et
 	rm -f krb_err.c krb_err.h rpc_err.c rpc_err.h
 	rm -f fx_prot.h fx_prot_clnt.c fx_prot_svc.c fx_prot_xdr.c
 
