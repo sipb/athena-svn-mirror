@@ -165,7 +165,8 @@ ln -s j2sdk$latest /usr/java/j2sdk
 # priority.
 /usr/sbin/alternatives \
   --install /usr/bin/java java /usr/java/j2sdk/bin/java 200 \
-  --slave /usr/bin/rmiregistry rmiregistry /usr/java/j2sdk/bin/rmiregistry
+  --slave /usr/bin/rmiregistry rmiregistry /usr/java/j2sdk/bin/rmiregistry \
+  --slave /usr/bin/javaws javaws /usr/java/j2sdk/jre/javaws/javaws
 /usr/sbin/alternatives --set java /usr/java/j2sdk/bin/java
 /usr/sbin/alternatives \
   --install /usr/bin/javac javac /usr/java/j2sdk/bin/javac 200 \
