@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.14 1997-07-30 16:10:28 ghudson Exp $
+# $Id: build.sh,v 1.15 1997-09-24 06:54:27 ghudson Exp $
 
 source="/mit/source"
 build="/build"
@@ -81,8 +81,8 @@ for package in $packages; do
 	echo "**********************"
 	for op in prepare clean all check install; do
 		echo "***** ${package}: $op"
-		sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op" ||
-			{ echo "We bombed in $package"; exit 1; }
+		sh $source/packs/build/do.sh -c -s "$source" -d "$srvd" "$op" \
+			|| { echo "We bombed in $package"; exit 1; }
 
 		# Redo the output redirection command to flush the log file.
 		exec >> "$logfile" 2>&1
