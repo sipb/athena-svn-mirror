@@ -1,0 +1,9 @@
+Name: athena-texinfo
+Summary: The GNU texinfo documentation system, for Athena
+Copyright: GPL
+Group: Applications/Publishing
+
+%description
+Texinfo is a documentation system that can produce both online
+information and printed output from a single source file. The GNU
+Project uses the Texinfo file format for most of its documentation.
