@@ -234,6 +234,8 @@ camel_lock_helper_SOURCES = 			\
 	camel-lock.c				\
 	camel-lock.h
 
+camel_lock_helper_LDADD = $(INTLLIBS)
+
 camel_index_control_SOURCES =			\
 	camel-index-control.c
 

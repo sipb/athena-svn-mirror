@@ -462,6 +462,8 @@ camel_lock_helper_SOURCES = \
 	camel-lock.h
 
 
+camel_lock_helper_LDADD = $(INTLLIBS)
+
 camel_index_control_SOURCES = \
 	camel-index-control.c
 
@@ -569,7 +571,6 @@ PROGRAMS =  $(sbin_PROGRAMS)
 
 camel_lock_helper_OBJECTS =  camel-lock-helper.$(OBJEXT) \
 camel-lock.$(OBJEXT)
-camel_lock_helper_LDADD = $(LDADD)
 camel_lock_helper_DEPENDENCIES = 
 camel_lock_helper_LDFLAGS = 
 camel_index_control_OBJECTS =  camel-index-control.$(OBJEXT)
