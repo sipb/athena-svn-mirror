@@ -103,6 +103,7 @@
 #define ERR_KERB_REALM    9
 #define ERR_KERB_FAKE     10
 #define ERR_KERB_CRED     11
+#define ERR_FILE          12
 
 #define ERR_KERB_AUTH   109
 #define ERR_TIMEOUT     110
