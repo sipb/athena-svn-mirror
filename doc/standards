@@ -10,20 +10,20 @@ incorporated into the Athena source tree.  Here are the areas covered:
 Portability considerations for code we maintain
 -----------------------------------------------
 
-Your code should assume a POSIX-compliant and ANSI C-compliant
-development environment unless given evience to the contrary.  Do not,
-for instance, put sigaction() calls inside "#ifdef SOLARIS" or "#ifdef
-POSIX" and have the code compile with signal() calls by default; have
-your code use sigaction() on all platforms.  If for some reason the
-code needs to compile on a platform which does not have sigaction(),
-you can #ifdef for that platform or use a feature test (see below).
-Under no circumstances should code use non-POSIX interfaces by
-default.
+In general, your code should assume a POSIX-compliant and ANSI
+C-compliant development environment.  In cases where your code needs
+to compile on a platform which violates these standards, make sure the
+default case assumes POSIX-compliance.  Do not, for instance, put
+sigaction() calls inside "#ifdef SOLARIS" or "#ifdef POSIX" and have
+your code compile with signal() calls by default; have your code use
+sigaction() on all platforms.  If for some reason the code needs to
+compile on a platform which does not have sigaction(), you can #ifdef
+for that platform or use a feature test (see below).
 
-Some of our platforms have bugs in POSIX interfaces but not in BSD
-interfaces (e.g. under Ultrix 4.2, setpgid() works but setsid() does
-not).  See the file "lossage" in this directory for descriptions of
-particular bugs and incompatibilities and how to handle them.
+Sometimes our platforms may have bugs in POSIX interfaces but not in
+BSD interfaces (e.g. under Ultrix 4.2, setpgid() works but setsid()
+does not).  See the file "lossage" in this directory for descriptions
+of particular bugs and incompatibilities and how to handle them.
 
 Some important operations (especially in code in the Athena
 environment) are not covered by the ANSI C or POSIX specifications.
