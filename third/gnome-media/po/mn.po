@@ -1,0 +1,2769 @@
+# translation of gnome-media.HEAD.mn.po to Mongolian
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Sukhochir <sukhochir@csms.edu.mn>, 2003
+# Sanlig Badral <badral@chinggis.com>, 2003
+
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-media.HEAD.mn\n"
+"POT-Creation-Date: 2003-01-08 06:00+0100\n"
+"PO-Revision-Date: 2003-01-22 12:00+0100\n"
+"Last-Translator: Sanlig Badral <badral@chinggis.com>\n"
+"Language-Team: Mongolian <mn@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.1\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr "CD query-рүү хандах серверийн хаяг"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "Порт"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+msgid "Server name"
+msgstr "Серверийн нэр"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr "Бүх хүсэлттэй илгээх хостын нэр"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr "Серверийн өгөгдлийн баазтай ажиллах портыг дугаар"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+msgid "The username"
+msgstr "Хэрэглэгчийн нэр"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr "Бүх хүсэлттэй илгээх хэрэглэгчийн нэр"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid "Your hostname"
+msgstr "Таны хостын нэр"
+
+#: cddb-slave2/cddb-disclosure.c:245
+msgid "Expander Size"
+msgstr "Өргөтгөх хэмжээ"
+
+#: cddb-slave2/cddb-disclosure.c:246
+msgid "Size of the expander arrow"
+msgstr "Өргөтгөх хэмжээг нэмэх"
+
+#. Log on info
+#: cddb-slave2/cddb-slave-capplet.c:648
+msgid "Log on information"
+msgstr "Орогчдын мэдээлэл"
+
+#: cddb-slave2/cddb-slave-capplet.c:657
+msgid "Send _no info"
+msgstr "бус мэдээ илгээх"
+
+#: cddb-slave2/cddb-slave-capplet.c:666
+msgid "Send real _info"
+msgstr "Бодит мэдээг илгээх"
+
+#: cddb-slave2/cddb-slave-capplet.c:675
+msgid "Send _other info..."
+msgstr "Бусад мэдээг илгээх"
+
+#: cddb-slave2/cddb-slave-capplet.c:692
+msgid "N_ame:"
+msgstr "Нэр:"
+
+#: cddb-slave2/cddb-slave-capplet.c:711
+msgid "_Hostname:"
+msgstr "Хост нэр:"
+
+#. Server info
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
+msgid "Server"
+msgstr "Сервер"
+
+#: cddb-slave2/cddb-slave-capplet.c:741
+msgid "FreeDB _round robin server"
+msgstr "Давтах  FreeDB сервер"
+
+#: cddb-slave2/cddb-slave-capplet.c:747
+msgid "Other _FreeDB server..."
+msgstr "Бусад  FreeDB сервер"
+
+#: cddb-slave2/cddb-slave-capplet.c:779
+msgid "Location"
+msgstr "Байршил"
+
+#: cddb-slave2/cddb-slave-capplet.c:785
+msgid "Update server list"
+msgstr "Серверийн жагсаалт сэргээх"
+
+#: cddb-slave2/cddb-slave-capplet.c:792
+msgid "Other _server..."
+msgstr "Бу сад с_ервер..."
+
+#: cddb-slave2/cddb-slave-capplet.c:804
+msgid "Hostname:"
+msgstr "Хост нэр:"
+
+#: cddb-slave2/cddb-slave-capplet.c:816
+msgid "_Port:"
+msgstr "Пор_т:"
+
+#: cddb-slave2/cddb-slave-capplet.c:866
+msgid "CD Database Preferences"
+msgstr "CD өгөгдлийн базын давуу эрх"
+
+#: cddb-slave2/cddb-slave.c:213
+msgid "Unknown / Unknown"
+msgstr "Нэрлэгдээгүй/ Нэрлэгдээгүй"
+
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
+msgid "Unknown"
+msgstr "Нэрлэгдээгүй"
+
+#: cddb-slave2/cddb-slave.c:441
+msgid "Multiple matches..."
+msgstr "Харьцуулах ..."
+
+#: cddb-slave2/cddb-slave.c:446
+msgid ""
+"There were multiple matches found in the database.\n"
+"Below is a list of possible matches, please choose the best match"
+msgstr ""
+"Базад хэд хэдэн тохирох үр дүн олдлоо.\n"
+"Доорх жагсаалтаас хамгийн илүү тохирохыг нь сонгоно уу."
+
+#: cddb-slave2/cddb-slave.c:457
+msgid "Category"
+msgstr "Категори"
+
+#: cddb-slave2/cddb-slave.c:461
+msgid "Disc ID"
+msgstr "Дискийн ID "
+
+#: cddb-slave2/cddb-slave.c:465
+msgid "Artist and Title"
+msgstr "Зохиогч ба нэр"
+
+#: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
+#: gnome-cd/gnome-cd.c:130
+msgid "Unknown track"
+msgstr "Тодорхойгүй зам"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:1
+msgid "CD Database"
+msgstr "CD өгөгдлийн сан"
+
+#: cddb-slave2/cddb-slave.desktop.in.h:2
+msgid "Modify your CD database preferences"
+msgstr "CD өгөгдлийн сангийн тохиргоог өөрчлөх"
+
+#: cddb-slave2/cddb-track-editor.c:78
+msgid "Blues"
+msgstr "Блюз"
+
+#: cddb-slave2/cddb-track-editor.c:79
+msgid "Classical Rock"
+msgstr "Классик рок"
+
+#: cddb-slave2/cddb-track-editor.c:80
+msgid "Country"
+msgstr "Кантри"
+
+#: cddb-slave2/cddb-track-editor.c:81
+msgid "Dance"
+msgstr "Дээнс"
+
+#: cddb-slave2/cddb-track-editor.c:82
+msgid "Disco"
+msgstr "Диско"
+
+#: cddb-slave2/cddb-track-editor.c:83
+msgid "Funk"
+msgstr "Фанк"
+
+#: cddb-slave2/cddb-track-editor.c:84
+msgid "Grunge"
+msgstr "Гранж"
+
+#: cddb-slave2/cddb-track-editor.c:85
+msgid "Hip-Hop"
+msgstr "Хип-Хоп"
+
+#: cddb-slave2/cddb-track-editor.c:86
+msgid "Jazz"
+msgstr "Джаз"
+
+#: cddb-slave2/cddb-track-editor.c:87
+msgid "Metal"
+msgstr "Металл"
+
+#: cddb-slave2/cddb-track-editor.c:88
+msgid "New Age"
+msgstr "Нью-эйдж"
+
+#: cddb-slave2/cddb-track-editor.c:89
+msgid "Oldies"
+msgstr "Өүлдиэз"
+
+#: cddb-slave2/cddb-track-editor.c:90
+msgid "Other"
+msgstr "Отдэ"
+
+#: cddb-slave2/cddb-track-editor.c:91
+msgid "Pop"
+msgstr "Поп"
+
+#: cddb-slave2/cddb-track-editor.c:92
+msgid "R&B"
+msgstr "Рок энд блюз"
+
+#: cddb-slave2/cddb-track-editor.c:93
+msgid "Rap"
+msgstr "Рэп"
+
+#: cddb-slave2/cddb-track-editor.c:94
+msgid "Reggae"
+msgstr "Рэггей"
+
+#: cddb-slave2/cddb-track-editor.c:95
+msgid "Rock"
+msgstr "Рок"
+
+#: cddb-slave2/cddb-track-editor.c:96
+msgid "Techno"
+msgstr "Техно"
+
+#: cddb-slave2/cddb-track-editor.c:97
+msgid "Industrial"
+msgstr "Индастриал"
+
+#: cddb-slave2/cddb-track-editor.c:98
+msgid "Alternative"
+msgstr "Альтернатив"
+
+#: cddb-slave2/cddb-track-editor.c:99
+msgid "Ska"
+msgstr "Ска"
+
+#: cddb-slave2/cddb-track-editor.c:100
+msgid "Death Metal"
+msgstr "Дийтх металл"
+
+#: cddb-slave2/cddb-track-editor.c:101
+msgid "Pranks"
+msgstr "Праэнкс"
+
+#: cddb-slave2/cddb-track-editor.c:102
+msgid "Soundtrack"
+msgstr "Дуу"
+
+#: cddb-slave2/cddb-track-editor.c:103
+msgid "Euro-Techno"
+msgstr "Евро-техно"
+
+#: cddb-slave2/cddb-track-editor.c:104
+msgid "Ambient"
+msgstr "Амбиент"
+
+#: cddb-slave2/cddb-track-editor.c:105
+msgid "Trip-Hop"
+msgstr "Трип-хоп"
+
+#: cddb-slave2/cddb-track-editor.c:106
+msgid "Vocal"
+msgstr "Вокал"
+
+#: cddb-slave2/cddb-track-editor.c:107
+msgid "Jazz+Funk"
+msgstr "Джаз+Фанк"
+
+#: cddb-slave2/cddb-track-editor.c:108
+msgid "Fusion"
+msgstr "Фьюжн"
+
+#: cddb-slave2/cddb-track-editor.c:109
+msgid "Trance"
+msgstr "Транс"
+
+#: cddb-slave2/cddb-track-editor.c:110
+msgid "Classical"
+msgstr "Классик"
+
+#: cddb-slave2/cddb-track-editor.c:111
+msgid "Instrumental"
+msgstr "Инструментал"
+
+#: cddb-slave2/cddb-track-editor.c:112
+msgid "Acid"
+msgstr "Асид"
+
+#: cddb-slave2/cddb-track-editor.c:113
+msgid "House"
+msgstr "Хаус"
+
+#: cddb-slave2/cddb-track-editor.c:114
+msgid "Game"
+msgstr "Гейм"
+
+#: cddb-slave2/cddb-track-editor.c:115
+msgid "Sound Clip"
+msgstr "Клип"
+
+#: cddb-slave2/cddb-track-editor.c:116
+msgid "Gospel"
+msgstr "Госпел"
+
+#: cddb-slave2/cddb-track-editor.c:117
+msgid "Noise"
+msgstr "Шуугиан"
+
+#: cddb-slave2/cddb-track-editor.c:118
+msgid "Alt"
+msgstr "Alt"
+
+#. groups
+#. max 24 chars
+#: cddb-slave2/cddb-track-editor.c:119 gmix/device_labels_alsa.h:37
+msgid "Bass"
+msgstr "Басс"
+
+#: cddb-slave2/cddb-track-editor.c:120
+msgid "Soul"
+msgstr "Соул"
+
+#: cddb-slave2/cddb-track-editor.c:121
+msgid "Punk"
+msgstr "Панк"
+
+#: cddb-slave2/cddb-track-editor.c:122
+msgid "Space"
+msgstr "Спейс"
+
+#: cddb-slave2/cddb-track-editor.c:123
+msgid "Meditative"
+msgstr "Медитатив"
+
+#: cddb-slave2/cddb-track-editor.c:124
+msgid "Instrumental Pop"
+msgstr "Инструментал поп"
+
+#: cddb-slave2/cddb-track-editor.c:125
+msgid "Instrumental Rock"
+msgstr "Инструментал рок"
+
+#: cddb-slave2/cddb-track-editor.c:126
+msgid "Ethnic"
+msgstr "Этьнник"
+
+#: cddb-slave2/cddb-track-editor.c:127
+msgid "Gothic"
+msgstr "Готхик"
+
+#: cddb-slave2/cddb-track-editor.c:128
+msgid "Darkwave"
+msgstr "Даарквейв"
+
+#: cddb-slave2/cddb-track-editor.c:129
+msgid "Techno-Industrial"
+msgstr "Техно-индустриал"
+
+#: cddb-slave2/cddb-track-editor.c:130
+msgid "Electronic"
+msgstr "Электрон"
+
+#: cddb-slave2/cddb-track-editor.c:131
+msgid "Pop-Folk"
+msgstr "Поп-фолк"
+
+#: cddb-slave2/cddb-track-editor.c:132
+msgid "Eurodance"
+msgstr "Евроданс"
+
+#: cddb-slave2/cddb-track-editor.c:133
+msgid "Dream"
+msgstr "Дрийм"
+
+#: cddb-slave2/cddb-track-editor.c:134
+msgid "Southern Rock"
+msgstr "Соутхерн рок"
+
+#: cddb-slave2/cddb-track-editor.c:135
+msgid "Comedy"
+msgstr "Комеди"
+
+#: cddb-slave2/cddb-track-editor.c:136
+msgid "Cult"
+msgstr "Культ"
+
+#: cddb-slave2/cddb-track-editor.c:137
+msgid "Gangsta Rap"
+msgstr "Гангстэ рэп"
+
+#: cddb-slave2/cddb-track-editor.c:138
+msgid "Top 40"
+msgstr "Шилдэг 40"
+
+#: cddb-slave2/cddb-track-editor.c:139
+msgid "Christian Rap"
+msgstr "Христиан рэп"
+
+#: cddb-slave2/cddb-track-editor.c:140
+msgid "Pop/Funk"
+msgstr "Поп/Фанк"
+
+#: cddb-slave2/cddb-track-editor.c:141
+msgid "Jungle"
+msgstr "Джангл"
+
+#: cddb-slave2/cddb-track-editor.c:142
+msgid "Native American"
+msgstr "Америк маягийн"
+
+#: cddb-slave2/cddb-track-editor.c:143
+msgid "Cabaret"
+msgstr "Кабаре"
+
+#: cddb-slave2/cddb-track-editor.c:144
+msgid "New Wave"
+msgstr "Шинэ аялгуу"
+
+#: cddb-slave2/cddb-track-editor.c:145
+msgid "Psychedelic"
+msgstr "Фичеделик"
+
+#: cddb-slave2/cddb-track-editor.c:146
+msgid "Rave"
+msgstr "Рэйв"
+
+#: cddb-slave2/cddb-track-editor.c:147
+msgid "Showtunes"
+msgstr "Шоутюнес"
+
+#: cddb-slave2/cddb-track-editor.c:148
+msgid "Trailer"
+msgstr "Чиргүүл"
+
+#: cddb-slave2/cddb-track-editor.c:149
+msgid "Lo-Fi"
+msgstr "Lo-Fi"
+
+#: cddb-slave2/cddb-track-editor.c:150
+msgid "Tribal"
+msgstr "Овгийн"
+
+#: cddb-slave2/cddb-track-editor.c:151
+msgid "Acid Punk"
+msgstr "Асид панк"
+
+#: cddb-slave2/cddb-track-editor.c:152
+msgid "Acid Jazz"
+msgstr "Асид джаз"
+
+#: cddb-slave2/cddb-track-editor.c:153
+msgid "Polka"
+msgstr "Полька"
+
+#: cddb-slave2/cddb-track-editor.c:154
+msgid "Retro"
+msgstr "Ретро"
+
+#: cddb-slave2/cddb-track-editor.c:155
+msgid "Musical"
+msgstr "Мюзикл"
+
+#: cddb-slave2/cddb-track-editor.c:156
+msgid "Rock & Roll"
+msgstr "Рок-н-ролл"
+
+#: cddb-slave2/cddb-track-editor.c:157
+msgid "Hard Rock"
+msgstr "Хард-рок"
+
+#: cddb-slave2/cddb-track-editor.c:158
+msgid "Folk"
+msgstr "Фолк"
+
+#: cddb-slave2/cddb-track-editor.c:159
+msgid "Folk/Rock"
+msgstr "Фолк/Рок"
+
+#: cddb-slave2/cddb-track-editor.c:160
+msgid "National Folk"
+msgstr "Нэйшнл фолк"
+
+#: cddb-slave2/cddb-track-editor.c:161
+msgid "Swing"
+msgstr "Хэмнэл"
+
+#: cddb-slave2/cddb-track-editor.c:162
+msgid "Fast-Fusion"
+msgstr "Фааст фьюжн"
+
+#: cddb-slave2/cddb-track-editor.c:163
+msgid "Bebop"
+msgstr "Би-Боп"
+
+#: cddb-slave2/cddb-track-editor.c:164
+msgid "Latin"
+msgstr "Латин Америк"
+
+#: cddb-slave2/cddb-track-editor.c:165
+msgid "Revival"
+msgstr "Ревивал"
+
+#: cddb-slave2/cddb-track-editor.c:166
+msgid "Celtic"
+msgstr "Кельтик"
+
+#: cddb-slave2/cddb-track-editor.c:167
+msgid "Bluegrass"
+msgstr "Блюгрэсс"
+
+#: cddb-slave2/cddb-track-editor.c:168
+msgid "Avantgarde"
+msgstr "Авангард"
+
+#: cddb-slave2/cddb-track-editor.c:169
+msgid "Gothic Rock"
+msgstr "Готхик рок"
+
+#: cddb-slave2/cddb-track-editor.c:170
+msgid "Progressive Rock"
+msgstr "Прогрессив рок"
+
+#: cddb-slave2/cddb-track-editor.c:171
+msgid "Psychedelic Rock"
+msgstr "Псичиделик рок"
+
+#: cddb-slave2/cddb-track-editor.c:172
+msgid "Symphonic Rock"
+msgstr "Симфони рок"
+
+#: cddb-slave2/cddb-track-editor.c:173
+msgid "Slow Rock"
+msgstr "Слөү рок"
+
+#: cddb-slave2/cddb-track-editor.c:174
+msgid "Big Band"
+msgstr "Биг-бэнд"
+
+#: cddb-slave2/cddb-track-editor.c:175
+msgid "Chorus"
+msgstr "Хорус"
+
+#: cddb-slave2/cddb-track-editor.c:176
+msgid "Easy Listening"
+msgstr "Зөөлөн намуун"
+
+#: cddb-slave2/cddb-track-editor.c:177
+msgid "Acoustic"
+msgstr "Акустик"
+
+#: cddb-slave2/cddb-track-editor.c:178
+msgid "Humour"
+msgstr "Шог"
+
+#: cddb-slave2/cddb-track-editor.c:179
+msgid "Speech"
+msgstr "Яриа"
+
+#: cddb-slave2/cddb-track-editor.c:180
+msgid "Chanson"
+msgstr "Шансон"
+
+#: cddb-slave2/cddb-track-editor.c:181
+msgid "Opera"
+msgstr "Опера"
+
+#: cddb-slave2/cddb-track-editor.c:182
+msgid "Chamber Music"
+msgstr "Чаэмбэр Мюзик"
+
+#: cddb-slave2/cddb-track-editor.c:183
+msgid "Sonata"
+msgstr "Сонат"
+
+#: cddb-slave2/cddb-track-editor.c:184
+msgid "Symphony"
+msgstr "Симфони"
+
+#: cddb-slave2/cddb-track-editor.c:185
+msgid "Booty Bass"
+msgstr "Бүүти басс"
+
+#: cddb-slave2/cddb-track-editor.c:186
+msgid "Primus"
+msgstr "Примус"
+
+#: cddb-slave2/cddb-track-editor.c:187
+msgid "Porn Groove"
+msgstr "Порн Грүүв"
+
+#: cddb-slave2/cddb-track-editor.c:188
+msgid "Satire"
+msgstr "Сатира"
+
+#: cddb-slave2/cddb-track-editor.c:189
+msgid "Slow Jam"
+msgstr "Слөү Джейм"
+
+#: cddb-slave2/cddb-track-editor.c:190
+msgid "Club"
+msgstr "Клуб"
+
+#: cddb-slave2/cddb-track-editor.c:191
+msgid "Tango"
+msgstr "Танго"
+
+#: cddb-slave2/cddb-track-editor.c:192
+msgid "Samba"
+msgstr "Самба"
+
+#: cddb-slave2/cddb-track-editor.c:193
+msgid "Folklore"
+msgstr "Фолклоор"
+
+#: cddb-slave2/cddb-track-editor.c:194
+msgid "Ballad"
+msgstr "Баллад"
+
+#: cddb-slave2/cddb-track-editor.c:195
+msgid "Power Ballad"
+msgstr "Пауэр баллада"
+
+#: cddb-slave2/cddb-track-editor.c:196
+msgid "Rythmic Soul"
+msgstr "Ритхмик соул"
+
+#: cddb-slave2/cddb-track-editor.c:197
+msgid "Freestyle"
+msgstr "Фрее стиль"
+
+#: cddb-slave2/cddb-track-editor.c:198
+msgid "Duet"
+msgstr "Дуэт"
+
+#: cddb-slave2/cddb-track-editor.c:199
+msgid "Punk Rock"
+msgstr "Панк-рок"
+
+#: cddb-slave2/cddb-track-editor.c:200
+msgid "Drum Solo"
+msgstr "Драам соло"
+
+#: cddb-slave2/cddb-track-editor.c:201
+msgid "A Cappella"
+msgstr "А капелла"
+
+#: cddb-slave2/cddb-track-editor.c:202
+msgid "Euro-House"
+msgstr "Евро-хаус"
+
+#: cddb-slave2/cddb-track-editor.c:203
+msgid "Dance Hall"
+msgstr "Дэйнс Холл"
+
+#: cddb-slave2/cddb-track-editor.c:204
+msgid "Goa"
+msgstr "Гоаү"
+
+#: cddb-slave2/cddb-track-editor.c:205
+msgid "Drum & Bass"
+msgstr "Драам эйнд Басс"
+
+#: cddb-slave2/cddb-track-editor.c:206
+msgid "Club-House"
+msgstr "Клуб-хаус"
+
+#: cddb-slave2/cddb-track-editor.c:207
+msgid "Hardcore"
+msgstr "Хардкоре"
+
+#: cddb-slave2/cddb-track-editor.c:208
+msgid "Terror"
+msgstr "Террор"
+
+#: cddb-slave2/cddb-track-editor.c:209
+msgid "Indie"
+msgstr "Индий"
+
+#: cddb-slave2/cddb-track-editor.c:210
+msgid "BritPop"
+msgstr "Брит-поп"
+
+#: cddb-slave2/cddb-track-editor.c:211
+msgid "Negerpunk"
+msgstr "Негрпанк"
+
+#: cddb-slave2/cddb-track-editor.c:212
+msgid "Polsk Punk"
+msgstr "Польш панк"
+
+#: cddb-slave2/cddb-track-editor.c:213
+msgid "Beat"
+msgstr "Бийт"
+
+#: cddb-slave2/cddb-track-editor.c:214
+msgid "Christian Gangsta Rap"
+msgstr "Христиан Гангстэ Реп"
+
+#: cddb-slave2/cddb-track-editor.c:215
+msgid "Heavy Metal"
+msgstr "Хэви-металл"
+
+#: cddb-slave2/cddb-track-editor.c:216
+msgid "Black Metal"
+msgstr "Блэк-металл"
+
+#: cddb-slave2/cddb-track-editor.c:217
+msgid "Crossover"
+msgstr "Кроссоувэр"
+
+#: cddb-slave2/cddb-track-editor.c:218
+msgid "Contemporary Christian"
+msgstr "Контемпорари христиан"
+
+#: cddb-slave2/cddb-track-editor.c:219
+msgid "Christian Rock"
+msgstr "Христиан рок"
+
+#: cddb-slave2/cddb-track-editor.c:220
+msgid "Merengue"
+msgstr "Меренга"
+
+#: cddb-slave2/cddb-track-editor.c:221
+msgid "Salsa"
+msgstr "Сальса"
+
+#: cddb-slave2/cddb-track-editor.c:222
+msgid "Thrash Metal"
+msgstr "Трэш-металл"
+
+#: cddb-slave2/cddb-track-editor.c:223
+msgid "Anime"
+msgstr "Аэнимэ"
+
+#: cddb-slave2/cddb-track-editor.c:224
+msgid "JPop"
+msgstr "ЖПоп"
+
+#: cddb-slave2/cddb-track-editor.c:225
+msgid "Synthpop"
+msgstr "Синтпоп"
+
+#: cddb-slave2/cddb-track-editor.c:226
+msgid "Nu-Metal"
+msgstr "Ну-Металл"
+
+#: cddb-slave2/cddb-track-editor.c:227
+msgid "Art Rock"
+msgstr "Арт-рок"
+
+#: cddb-slave2/cddb-track-editor.c:525
+#, c-format
+msgid "Editing Disc ID: %s"
+msgstr "ID : %s дискийн засвар"
+
+#. Info label
+#: cddb-slave2/cddb-track-editor.c:615
+msgid "Editing Disc ID: "
+msgstr "Дискийн ID-г засварлах"
+
+#: cddb-slave2/cddb-track-editor.c:626
+msgid "_Artist:"
+msgstr "_Зохиогч:"
+
+#: cddb-slave2/cddb-track-editor.c:640
+msgid "Disc _Title:"
+msgstr "_Дискийн нэр:"
+
+#: cddb-slave2/cddb-track-editor.c:650
+msgid "Show advanced disc options"
+msgstr "Дискийн дэлгэрэнгүй тохиргоог харуулах"
+
+#: cddb-slave2/cddb-track-editor.c:651
+msgid "Hide advanced disc options"
+msgstr "Дискийн дэлгэрэнгүй тохиргоог нууцлах"
+
+#. Top box: Disc comments. Maybe should be a GtkText?
+#: cddb-slave2/cddb-track-editor.c:664
+msgid "_Disc comments:"
+msgstr "Дискийн т_айлбар:"
+
+#. Genre
+#: cddb-slave2/cddb-track-editor.c:679
+msgid "_Genre:"
+msgstr "_Төрөл:"
+
+#. Year
+#: cddb-slave2/cddb-track-editor.c:695
+msgid "_Year:"
+msgstr "_Он:"
+
+#: cddb-slave2/cddb-track-editor.c:734
+msgid "Title"
+msgstr "Нэр"
+
+#: cddb-slave2/cddb-track-editor.c:741
+msgid "Length"
+msgstr "Үргэлжлэх хугацаа"
+
+#. More advanced options
+#: cddb-slave2/cddb-track-editor.c:755
+msgid "Show advanced track options"
+msgstr "Замын нэмэлт тохиргоог харуулах"
+
+#: cddb-slave2/cddb-track-editor.c:756
+msgid "Hide advanced track options"
+msgstr "Замын нэмэлт тохиргоог нууцлах"
+
+#. Extra data
+#: cddb-slave2/cddb-track-editor.c:764
+msgid "_Extra track data:"
+msgstr "Нэмэлт _замын өгөгдөл:"
+
+#: cddb-slave2/cddb-track-editor.c:891
+msgid "CDDB Track Editor"
+msgstr "CDDB дуу засварлагч"
+
+#: cddb-slave2/cddb-track-editor.c:1021
+msgid ""
+"Cannot create CDDBTrackEditor factory.\n"
+"This may be caused by another copy of cddb-track-editor already running.\n"
+msgstr ""
+"CDDB дуу засварлагчийг үүсгэх боломжгүй.\n"
+"Өөр CDDB дуу засварлагчид хуулж ажиллуулж байна.\n"
+
+#: gmix/device_labels_alsa.h:7 gmix/device_labels_linux.h:7
+msgid "Synth"
+msgstr "Нийлэг"
+
+#: gmix/device_labels_alsa.h:8
+msgid "PCM"
+msgstr "PCM"
+
+#: gmix/device_labels_alsa.h:9
+msgid "DAC"
+msgstr "DAC"
+
+#: gmix/device_labels_alsa.h:10
+msgid "FM"
+msgstr "FM"
+
+#: gmix/device_labels_alsa.h:11
+msgid "DSP Input"
+msgstr "DSP оролт"
+
+#: gmix/device_labels_alsa.h:12
+msgid "Line"
+msgstr "Суваг"
+
+#: gmix/device_labels_alsa.h:13
+msgid "MIC"
+msgstr "Микрофон"
+
+#: gmix/device_labels_alsa.h:14
+msgid "CD"
+msgstr "CD"
+
+#: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
+msgid "Video"
+msgstr "Видео"
+
+#: gmix/device_labels_alsa.h:16 gmix/device_labels_linux.h:10
+msgid "Radio"
+msgstr "Радио"
+
+#: gmix/device_labels_alsa.h:17
+msgid "Phone"
+msgstr "Телефон"
+
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
+msgid "Mono"
+msgstr "Моно"
+
+#: gmix/device_labels_alsa.h:19
+msgid "PC Speaker"
+msgstr "Компьютерын яригч"
+
+#: gmix/device_labels_alsa.h:20
+msgid "Aux"
+msgstr "Нэмэлт"
+
+#: gmix/device_labels_alsa.h:21
+msgid "Center Input"
+msgstr "Төв оролт"
+
+#: gmix/device_labels_alsa.h:22
+msgid "Woofer Input"
+msgstr "Woofer оролт"
+
+#: gmix/device_labels_alsa.h:23
+msgid "Surround Input"
+msgstr "Surround оролт"
+
+#. outputs
+#. max 24 chars
+#: gmix/device_labels_alsa.h:26
+msgid "Master"
+msgstr "Үндсэн"
+
+#: gmix/device_labels_alsa.h:27
+msgid "Master Mono"
+msgstr "Моно үндсэн гаралт"
+
+#: gmix/device_labels_alsa.h:28
+msgid "Master Digital"
+msgstr "Тоон үндсэн гаралт"
+
+#: gmix/device_labels_alsa.h:29
+msgid "Headphone"
+msgstr "Чихэвч"
+
+#: gmix/device_labels_alsa.h:30
+msgid "Phone Output"
+msgstr "Телефоны гаралт"
+
+#: gmix/device_labels_alsa.h:31
+msgid "Center"
+msgstr "Төв"
+
+#: gmix/device_labels_alsa.h:32
+msgid "Woofer"
+msgstr "Woofer"
+
+#: gmix/device_labels_alsa.h:33
+msgid "Surround"
+msgstr "Surround"
+
+#: gmix/device_labels_alsa.h:34
+msgid "DSP Output"
+msgstr "DSP гаралт"
+
+#: gmix/device_labels_alsa.h:38
+msgid "Treble"
+msgstr "Өндөр"
+
+#: gmix/device_labels_alsa.h:39
+msgid "Equalizer"
+msgstr "Equalizer"
+
+#: gmix/device_labels_alsa.h:40
+msgid "Fader"
+msgstr "Fader"
+
+#: gmix/device_labels_alsa.h:41
+msgid "Effect"
+msgstr "Эффект"
+
+#: gmix/device_labels_alsa.h:42
+msgid "3D Effect"
+msgstr "3D эффект"
+
+#: gmix/device_labels_alsa.h:43
+msgid "Mic Gain"
+msgstr "Микрофоны өсгөлт"
+
+#: gmix/device_labels_alsa.h:44
+msgid "Input Gain"
+msgstr "Оролтон дээр өсгөх"
+
+#: gmix/device_labels_alsa.h:45
+msgid "Output Gain"
+msgstr "Гаралтан дээр өсгөх"
+
+#: gmix/device_labels_alsa.h:46
+msgid "Analog Loopback"
+msgstr "Аналог буцалт"
+
+#: gmix/device_labels_alsa.h:47
+msgid "Digital Loopback"
+msgstr "Тоон буцалт"
+
+#: gmix/device_labels_linux.h:7
+msgid "Vol  "
+msgstr "Дуу"
+
+#: gmix/device_labels_linux.h:7
+msgid "Bass "
+msgstr "Нарийн"
+
+#: gmix/device_labels_linux.h:7
+msgid "Trebl"
+msgstr "Өндөр"
+
+#: gmix/device_labels_linux.h:7
+msgid "Pcm  "
+msgstr "Pcm  "
+
+#: gmix/device_labels_linux.h:7
+msgid "Spkr "
+msgstr "Динамик"
+
+#: gmix/device_labels_linux.h:7
+msgid "Line "
+msgstr "Суваг"
+
+#: gmix/device_labels_linux.h:8
+msgid "Mic  "
+msgstr "Микрофон"
+
+#: gmix/device_labels_linux.h:8
+msgid "CD   "
+msgstr "CD"
+
+#: gmix/device_labels_linux.h:8
+msgid "Mix  "
+msgstr "Микшер"
+
+#: gmix/device_labels_linux.h:8
+msgid "Pcm2 "
+msgstr "Pcm2 "
+
+#: gmix/device_labels_linux.h:8
+msgid "Rec  "
+msgstr "Бичлэг"
+
+#: gmix/device_labels_linux.h:8
+msgid "IGain"
+msgstr "Оролтон дээр нэмэх"
+
+#: gmix/device_labels_linux.h:8
+msgid "OGain"
+msgstr "Гаралтан дээр нэмэх"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line1"
+msgstr "Суваг1"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line2"
+msgstr "Суваг2"
+
+#: gmix/device_labels_linux.h:9
+msgid "Line3"
+msgstr "Суваг3"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital1"
+msgstr "Тоон суваг1"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital2"
+msgstr "Тоон суваг2"
+
+#: gmix/device_labels_linux.h:9
+msgid "Digital3"
+msgstr "Тоон суваг3"
+
+#: gmix/device_labels_linux.h:10
+msgid "PhoneIn"
+msgstr "Телефоны оролт"
+
+#: gmix/device_labels_linux.h:10
+msgid "PhoneOut"
+msgstr "Телефоны гаралт"
+
+#: gmix/device_labels_linux.h:10
+msgid "Monitor"
+msgstr "Дэлгэц"
+
+#: gmix/gmix.c:115
+msgid "Help"
+msgstr "Тусламж"
+
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr "Микшер төхөөрөмж хэрэглэгдэж байна"
+
+#: gmix/gmix.c:327
+#, c-format
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
+msgstr ""
+"Дууны хянагч зөв ажиллахгүй.\n"
+"\n"
+"Аудио төхөөрөмж нээгдэхгүй '%s'.\n"
+"Өөрийн орон зөвшөөрлөө тэмдэглээд '%s'\n"
+"үйлдлийн системд чинь дууны төхөөрөмж суусан эсэхийг нь шалга.\n"
+"\n"
+"'Гарах'-ыг дарж дууны хянагчаас гарна уу."
+
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+"Хэмжээ шалгалт зөв ажиллах боломжгүй.\n"
+"\n"
+"Тодруулга товчийг дарж дэлгэлэнгүй шалтгааныг үзнэ үү.\n"
+"\n"
+"Гарахыг дарна уу."
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+msgid "_Details"
+msgstr "Тодруулга"
+
+#: gmix/gmix.c:387
+msgid "Invalid mixer device"
+msgstr "Буруу микшер төхөөрөмж"
+
+#: gmix/gmix.c:626
+#, c-format
+msgid ""
+"Warning: This version of the Gnome Volume Control was compiled with\n"
+"OSS version %d.%d.%d, and your system is running\n"
+"a version prior to 3.6.0.\n"
+msgstr ""
+"Анхаар: Gnome дууны хянагчийн энэ хувилбар нь\n"
+"%d.%d.%d OSS хувилбартай хамт суусан, ба та өөрийн\n"
+"системдээ 3.6.0 хувилбарыг ажиллуулж байна.\n"
+
+#: gmix/gmix.c:634
+#, c-format
+msgid ""
+"Warning: This version of the Gnome Volume Control was compiled with\n"
+"OSS version %d.%d.%d, and your system is running\n"
+"version %d.%d.%d.\n"
+msgstr ""
+"Анхаар: Gnome дууны хянагчийн энэ хувилбар нь\n"
+"%d.%d.%d OSS хувилбартай хамт суусан, ба та өөрийн\n"
+"системдээ %d.%d.%d хувилбарыг ажиллуулж байна.\n"
+
+#: gmix/gmix.c:1088
+#, c-format
+msgid "left %s"
+msgstr "Зүүн %s"
+
+#: gmix/gmix.c:1114
+#, c-format
+msgid "Right %s"
+msgstr "Баруун %s"
+
+#: gmix/gmix.c:1207
+msgid "Lock"
+msgstr "Түгжих."
+
+#: gmix/gmix.c:1220
+#, c-format
+msgid "%s Lock"
+msgstr "%s түгжих."
+
+#: gmix/gmix.c:1231
+msgid "Mute"
+msgstr "Хаах."
+
+#: gmix/gmix.c:1244
+#, c-format
+msgid "%s Mute"
+msgstr "%s хаах."
+
+#: gmix/gmix.c:1258
+msgid "Rec."
+msgstr "Бичлэг"
+
+#: gmix/gmix.c:1270
+#, c-format
+msgid "%s Record"
+msgstr "%s Бичлэг"
+
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:2
+msgid "Volume Control"
+msgstr "Дууны хянагч"
+
+#: gmix/gmix.c:1748
+msgid "GNOME Volume Control"
+msgstr "GNOME дууны хянагч"
+
+#: gmix/gmix.c:1751
+msgid "A mixer for sound devices"
+msgstr "Сонсох төхөөрөмжний микшер."
+
+#: gmix/gnome-volume-control.desktop.in.in.h:1
+#: gnome-volume-control/gnome-volume-control.desktop.in.h:1
+msgid "Adjust the volume level"
+msgstr "Дууны түвшиг тохируулах"
+
+#: gmix/prefs.c:193 gmix/prefs.c:196
+msgid "Shown"
+msgstr "Үзүүлэх"
+
+#: gmix/prefs.c:204 gmix/prefs.c:207
+msgid "Mixer label"
+msgstr "Микшерийн түвшин"
+
+#. Add the label reset button
+#: gmix/prefs.c:216
+msgid "_Reset labels to their defaults"
+msgstr "Түвшингүүдийг анхны утгатгаар тодорхойлох"
+
+#: gmix/prefs.c:313
+msgid "Gnome Volume Control Preferences"
+msgstr "GNOME-ийн дууны хянагчийн тохиргоо"
+
+#: gnome-cd/access/cddisplayaccessible.c:117
+msgid "CD Display"
+msgstr "CD дэлгэц"
+
+#: gnome-cd/access/cddisplayaccessible.c:119
+msgid ""
+"Displays information about the currently playing album, artist and time "
+"elapsed"
+msgstr "Тоглож буй цомог,гүйцэтгэгч, тоглосон хугацааны тухай мэдээлэл"
+
+#: gnome-cd/access/cddisplayaccessible.c:188
+msgid "Time Line"
+msgstr "Хугацааны мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:189
+msgid "Line for displaying the time elapsed for the current track"
+msgstr "Идэвхтэй дууны тоглосон хугацааг харуулах мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:192
+msgid "Info Line"
+msgstr "Мэдээллийн мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:193
+msgid "Line for displaying information"
+msgstr "Мэдээллийг үзүүлэх мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:196
+msgid "Artist Line"
+msgstr "Гүйцэтгэгчийн мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:197
+msgid "Line for displaying the name of the artist"
+msgstr "Гүйцэтгэгчийн нэсрийг үзүүлэх мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:200
+msgid "Album Line"
+msgstr "Цомогийн мөр"
+
+#: gnome-cd/access/cddisplayaccessible.c:201
+msgid "Line for displaying the name of the album"
+msgstr "Цомогийн нэрийг үзүүлэх мөр"
+
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
+msgid "Play"
+msgstr "Тоглох"
+
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
+msgid "Pause"
+msgstr "Түр зогсоох"
+
+#: gnome-cd/callbacks.c:530
+#, c-format
+msgid "Playing %s - %s"
+msgstr "%s - %s тоглож байна"
+
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
+msgid "Unknown Artist"
+msgstr "Тодорхойлогдоогүй гүйцэтэгч"
+
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
+msgid "Unknown Album"
+msgstr "Тодорхойлогдоогүй цомог"
+
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:824
+msgid "Playing"
+msgstr "Тоглож байна"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+msgid "Paused"
+msgstr "Түр зогсоосон"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "СD тоглуулагч"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+msgid "Stopped"
+msgstr "Зогсоосон"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr "Дискний алдаа"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
+msgid "No disc"
+msgstr "Диск байхгүй байна"
+
+#: gnome-cd/callbacks.c:742
+msgid "Drive open"
+msgstr "Дискний төхөөрөмж нээлттэй байна"
+
+#: gnome-cd/callbacks.c:766
+msgid "Data CD"
+msgstr "Өгөгдөлтэй CD"
+
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
+msgid "No Cdrom"
+msgstr "CD төхөөрөмж байхгүй байна"
+
+#: gnome-cd/callbacks.c:803
+msgid "Drive Error"
+msgstr "Дискний төхөөрөмжийн алдаа"
+
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr "GNOME -д зориулсан CD тоглуулагч"
+
+#: gnome-cd/cdrom.c:367
+#, c-format
+msgid "You do not seem to have permission to access %s."
+msgstr " %s-д хандах эрх танд алга байна."
+
+#: gnome-cd/cdrom.c:373
+#, c-format
+msgid ""
+"%s does not appear to point to a valid CD device. This may be because:\n"
+"a) CD support is not present in your machine\n"
+"b) You do not have the correct permissions to access the CD drive\n"
+"c) %s is not the CD drive.\n"
+msgstr ""
+"%s CD төхөөрөмжөөс ирж буй мэдээлэл алдаатай байна. \n"
+"Иймээс:\n"
+"а) Таны машинд CD төхөөрөмж тохирохгүй байна\n"
+"б) CD төхөөрөмжид хандах эрх зөв тодорхойлогдоогүй байна\n"
+"в) %s CD төхөөрөмж алга.\n"
+
+#: gnome-cd/display.c:74
+msgid "Unknown artist"
+msgstr "Тодорхойлогдоогүй гүйцэтгэгч"
+
+#: gnome-cd/display.c:75
+msgid "Unknown disc"
+msgstr "Тодорхойлогдоогүй диск"
+
+#: gnome-cd/gnome-cd.c:156
+#, c-format
+msgid "%d - Unknown"
+msgstr "%d - Тодорхойлогдоогүй"
+
+#: gnome-cd/gnome-cd.c:300
+msgid "P_revious track"
+msgstr "Өмнөх дуу"
+
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
+msgid "_Stop"
+msgstr "Зогс"
+
+#: gnome-cd/gnome-cd.c:302
+msgid "_Play / Pause"
+msgstr "Тогло / Түр зогс"
+
+#: gnome-cd/gnome-cd.c:303
+msgid "_Next track"
+msgstr "Дараагийн дуу"
+
+#: gnome-cd/gnome-cd.c:304
+msgid "_Eject disc"
+msgstr "Диск гаргах"
+
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
+msgid "_Help"
+msgstr "Тусламж"
+
+#: gnome-cd/gnome-cd.c:306
+msgid "_About CD player"
+msgstr "CD тоглуулагчийн тухай"
+
+#: gnome-cd/gnome-cd.c:414
+msgid ""
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
+msgstr ""
+"CD төхөөрөмж сонгоогүй байна. CD тоглуулагч ажиллахгүй \n"
+"байж магадгүй 'Төхөөрөмж сонгох' товч дарж төхөөрөмжөө\n"
+"сонгох эсвэл 'Гарах' товч дарж CD тоглуулагчаас гар "
+
+#: gnome-cd/gnome-cd.c:418
+msgid "Set device"
+msgstr "Төхөөрөмж сонгох"
+
+#: gnome-cd/gnome-cd.c:420
+msgid "No CD device"
+msgstr "CD төхөөрөмж алга"
+
+#: gnome-cd/gnome-cd.c:474
+msgid ""
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
+msgstr ""
+"CD тоглуулагч зөв ажиллаж чадахгүй.\n"
+"\n"
+"Алдаатай холбоотой дэлгэнгүй мэдээлийг авах бол 'Дэлгэрэнгүй'-г дар.\n"
+"\n"
+"'Төхөөрөмж суулгах' товч дарвал та төхөөрөмжөө сонгоно эсвэл 'Гарах' "
+"товч дарж CD тоглуулагчаас гар"
+
+#: gnome-cd/gnome-cd.c:479
+msgid "_Set device"
+msgstr "Төхөөрөмж сонгох"
+
+#: gnome-cd/gnome-cd.c:481
+msgid "Invalid CD device"
+msgstr "Буруу CD төхөөрөмж"
+
+#: gnome-cd/gnome-cd.c:542
+msgid "Volume control"
+msgstr "Дууны удирдлага"
+
+#: gnome-cd/gnome-cd.c:551
+msgid "Open track editor"
+msgstr "Дуу хянагчийг нээх"
+
+#: gnome-cd/gnome-cd.c:552
+msgid "Track editor"
+msgstr "Дуу хянагч"
+
+#: gnome-cd/gnome-cd.c:559
+msgid "Open preferences"
+msgstr "Тохиргоог нээх"
+
+#: gnome-cd/gnome-cd.c:560
+msgid "Preferences"
+msgstr "Тохиргоо"
+
+#: gnome-cd/gnome-cd.c:568
+msgid "Track List"
+msgstr "Дууны жагсаалт"
+
+#: gnome-cd/gnome-cd.c:589
+msgid "Previous track"
+msgstr "Өмнөх дуу"
+
+#: gnome-cd/gnome-cd.c:589
+msgid "Previous"
+msgstr "Өмнөх"
+
+#: gnome-cd/gnome-cd.c:593
+msgid "Rewind"
+msgstr "Дахих"
+
+#: gnome-cd/gnome-cd.c:610
+msgid "Play / Pause"
+msgstr "Тогло./Түр зогс"
+
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
+msgid "Stop"
+msgstr "Зогс"
+
+#: gnome-cd/gnome-cd.c:619
+msgid "Fast forward"
+msgstr "Сүүлийн дуу"
+
+#: gnome-cd/gnome-cd.c:627
+msgid "Next track"
+msgstr "Дараагийн дуу"
+
+#: gnome-cd/gnome-cd.c:631
+msgid "Eject CD"
+msgstr "CD гаргах"
+
+#: gnome-cd/gnome-cd.c:631
+msgid "Eject"
+msgstr "Гаргах"
+
+#: gnome-cd/gnome-cd.c:731
+msgid "CD device to use"
+msgstr "CD төхөөрөмж хэрэглэгдэж байна"
+
+#: gnome-cd/gnome-cd.c:740
+msgid "Only start if there isn't already a CD player application running"
+msgstr "Хэрвээ CD тогдуулагч х.программ ажиллаж байвал эхлүүлнэ"
+
+#: gnome-cd/gnome-cd.c:742
+msgid "Play the CD on startup"
+msgstr "Эхлэлд CD тоглуулах"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:773
+msgid "Cannot create player"
+msgstr "Тоглогчийг үүсгэх боломжгүй"
+
+#: gnome-cd/gnome-cd.desktop.in.h:2
+msgid "Play audio CDs"
+msgstr "CD ээс дуу тоглуулах"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr "Х.программаас гарах үйлдэл"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+msgid "Action on start"
+msgstr "Эхлэх үйлдэл"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+msgid "CD player theme"
+msgstr "CD тоглуулагч "
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr "Төхөөрөмжийн зам"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr "CD тоглуулагч эхлэлд CD хөтлөгчтийг хаахыг оролдох хэрэгтэй юу?"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr "CD хөтлөгчийг эхлэлд хаах"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr "CD-тоглуулагчийн хэрэглэх CD-хөтлөчийн зам"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
+msgid ""
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+"CD-тоглуулагч төгсөхдөө ямар үйлдэл хийх хэрэгтэй вэ? Боломжит утгууд "
+"0 (юу ч хийхгүй), 1 (CD түлхэх) ба 2 (CD-хөтлөгч хаах)"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+"CD-тоглуулагч эхлэхдээ ямар үйлдэл хийх хэрэгтэй вэ? Боломжит утгууд "
+"0 (юу ч хийхгүй), 1 (тоглуулж эхлэх) ба 2 (тоглуулахгүй зогсоох)"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
+msgstr "CD-тоглуулагч өөрийн үзэмжид ямар хэлбэр хэрэглэх вэ?"
+
+#: gnome-cd/preferences.c:83
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+"%s\n"
+"Энэ нь тухайн CD тоглуулагчийг ажиллуулах боломжгүйг илэрхийлж байна."
+
+#: gnome-cd/preferences.c:84
+msgid "Error setting device"
+msgstr "Төхөөрөмж тохируулах алдаа"
+
+#: gnome-cd/preferences.c:824
+msgid "CD Player Preferences"
+msgstr "CD тоглуулагчийн тохиргоонууд"
+
+#: gnome-cd/preferences.c:853
+msgid "CD player de_vice:"
+msgstr "_CD тоглуулагч төхөөрөмж"
+
+#: gnome-cd/preferences.c:868
+msgid "_Apply change"
+msgstr "_Өөрчлөлтийг идэвхжүүлэх"
+
+#. left side
+#: gnome-cd/preferences.c:881
+msgid "When CD player starts"
+msgstr "CD тоглуулагчийг эхлүүлсэн үед "
+
+#: gnome-cd/preferences.c:889
+msgid "Do _nothing"
+msgstr "Юу ч хийхгүй байх"
+
+#: gnome-cd/preferences.c:890
+msgid "Do nothing when CD Player starts"
+msgstr "CD тоглуулагчийг эхлүүлсэн үед юу ч хийхгүй байх"
+
+#: gnome-cd/preferences.c:900
+msgid "Start _playing CD"
+msgstr " CD тоглуулж эхлэх"
+
+#: gnome-cd/preferences.c:901
+msgid "Start playing CD when CD Player starts"
+msgstr "CD тоглуулагчийг цуцалсан үед CD тоглуулж эхлүүлэх"
+
+#: gnome-cd/preferences.c:910
+msgid "_Stop playing CD"
+msgstr "_CD тоглуулахыг зогсоох"
+
+#: gnome-cd/preferences.c:911
+msgid "Stop playing CD when CD Player starts"
+msgstr "CD тоглуулагчийг эхлүүлсэн үед CD тоглуулахыг зогсоох"
+
+#: gnome-cd/preferences.c:925
+msgid "Attempt to _close CD tray"
+msgstr "CD дүрслэлээс хаахыг оролдох"
+
+#. Right side
+#: gnome-cd/preferences.c:937
+msgid "When CD player quits"
+msgstr "CD тоглуулагчийг цуцласан үед"
+
+#: gnome-cd/preferences.c:945
+msgid "Do not_hing"
+msgstr "Юу ч хийхгүй байх"
+
+#: gnome-cd/preferences.c:946
+msgid "Do nothing when CD Player exits"
+msgstr "CD Тоглуулагч идэвхтэй үед юу ч хийхгүй байх"
+
+#: gnome-cd/preferences.c:955
+msgid "S_top playing CD"
+msgstr "CD тоглуулахыг зогсоох"
+
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr "CD тоглуулагчийг цуцалсан үед CD тоглуулахыг зогсоох"
+
+#: gnome-cd/preferences.c:966
+msgid "Attempt to _open CD tray"
+msgstr "CD дүрслэлээс нээхийг оролдох"
+
+#: gnome-cd/preferences.c:967
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr "CD тоглуулагч байгаа үед CD дүрслэлээс нээхийг оролдох"
+
+#: gnome-cd/preferences.c:977
+msgid "Attempt to c_lose CD tray"
+msgstr "CD дүрслэлээс хаахыг оролдох"
+
+#: gnome-cd/preferences.c:1008
+msgid "Theme name"
+msgstr "Аяны  нэр"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:1
+msgid "Record sound clips"
+msgstr "Дууны клипуудыг бичих"
+
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
+msgid "Sound Recorder"
+msgstr "Дуу Бичигч"
+
+#: grecord/src/grec.c:56
+msgid "Sound Recorder:"
+msgstr "Дуу Бичигч:"
+
+#: grecord/src/grec.c:108 grecord/src/main.c:248
+msgid "Don't show this message again."
+msgstr "Энэ мэдээг дахин харагдуулахгүй байх."
+
+#: grecord/src/grec.c:110 grecord/src/main.c:250
+#, c-format
+msgid ""
+"Could not find '%s'.\n"
+"Set the correct path to sox inpreferences under the tab 'paths'.\n"
+"\n"
+"If you don't have sox, you will not be able to record or do any effects."
+msgstr ""
+"'%s' хайх боломжгүй.\n"
+"\"Зам\" талбар доорх sox тохиргоонд зөв замыг оруул.\n"
+"\n"
+"Хэрвээ танд sox байхгүй бол та бичлэг хийх эсвэл \n"
+"дурын үйлчилгээ хийх боломжгүй болох юм"
+
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
+msgid "Could not fork child process"
+msgstr "Хүү процесс руу салаалах боломжгүй"
+
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
+msgid "Recording..."
+msgstr "Бичлэг хийж байна..."
+
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
+msgid "Playing..."
+msgstr "Тоглуулж байна..."
+
+#: grecord/src/grec.c:272
+msgid "Converting file..."
+msgstr "Файлыг хөрвүүлж байна..."
+
+#: grecord/src/grec.c:302 grecord/src/grec.c:436
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
+msgid "Audioformat: "
+msgstr "Дуу авианы формат:"
+
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
+msgid "Sample rate: "
+msgstr "Жишээний үнэлэмж:"
+
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
+msgid "Channels: "
+msgstr "Сувгууд:"
+
+#: grecord/src/grec.c:381
+msgid "Cancel open"
+msgstr "Нээхийг цуцлах"
+
+#: grecord/src/grec.c:390
+msgid "Select a sound file"
+msgstr "Дууны файлыг сонго"
+
+#: grecord/src/grec.c:516
+#, c-format
+msgid "%s is not installed in the path"
+msgstr "%s нь замдаа суулгагдаагүй байна"
+
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
+#, c-format
+msgid "There was an error starting %s: %s"
+msgstr "%s эхлүүлэх үед алдаа гарлаа: %s"
+
+#: grecord/src/grec.c:615
+msgid "Undoing all changes..."
+msgstr "Бүх өөрчлөлтүүдийг буцааж байна..."
+
+#: grecord/src/grec.c:718
+#, c-format
+msgid ""
+"'%s' is a folder.\n"
+"Please select a sound file to be opened."
+msgstr ""
+"\"%s\" - нь сан байна.\n"
+"Нээх ёстой дууны файлыг сонгоно уу."
+
+#: grecord/src/grec.c:730
+#, c-format
+msgid ""
+"File '%s' doesn't exist.\n"
+"Please select an existing sound file to be opened."
+msgstr ""
+" \"%s\" файл нь үүсгэгдээгүй байна.\n"
+"Өмнө нь үүсгэгдсэн дууны файлуудаас нээх ёстойг нь сонгоно уу."
+
+#: grecord/src/grec.c:743
+#, c-format
+msgid "File '%s isn't a valid sound file."
+msgstr "\"%s\" файл нь зөв дууны файл биш байна."
+
+#: grecord/src/grec.c:819
+#, c-format
+msgid ""
+"'%s' is a folder.\n"
+"Please enter another filename."
+msgstr ""
+"\"%s\" -нь сан байна.\n"
+"Өөр файлын нэр оруулна уу."
+
+#: grecord/src/grec.c:831
+#, c-format
+msgid ""
+"<b>File '%s' already exists.</b>\n"
+"Do you want to overwrite it?"
+msgstr ""
+"<b> \"%s\"  файл нь өмнө нь үүсгэгдсэн байна.</b>\n"
+"Та түүнийг дарж бичих уу?"
+
+#: grecord/src/grec.c:834
+msgid "Cancel save"
+msgstr "Хадгалахыг цуцлах"
+
+#: grecord/src/grec.c:835
+msgid "Overwrite"
+msgstr "Дарж бичих"
+
+#: grecord/src/grec.c:862
+#, c-format
+msgid "Error saving '%s'"
+msgstr "\"%s\" хадгалах алдаа "
+
+#: grecord/src/grec.c:976
+#, c-format
+msgid ""
+"<b>Do you want to save the changes you made to \"%s\"?</b>\n"
+"\n"
+"Your changes will be lost if you don't save them."
+msgstr ""
+"<b>Та \"%s\" -д хийсэн өөрчлөлтүүдээ хадгалах уу ?</b>\n"
+"\n"
+"Хэрвээ хадгалахгүй бол таны хийсэн өөрчлөлтүүд алдагдах болно."
+
+#: grecord/src/grec.c:981
+msgid "Do_n't save"
+msgstr "Хадгалахгүй"
+
+#: grecord/src/grec.c:988
+#, c-format
+msgid "Save %s?"
+msgstr "Хадгалах уу %s?"
+
+#. Save the file
+#: grecord/src/grec.c:1012
+msgid "Saving..."
+msgstr "Хадгалж байна..."
+
+#: grecord/src/grec.c:1142
+#, c-format
+msgid ""
+"The size of the current sample is more than\n"
+"%i Mb!"
+msgstr ""
+"Идэвхтэй жишээний хэмжээ \n"
+"%i Mb-аас хэтэрсэн байна!"
+
+#: grecord/src/grec.c:1198
+msgid "Save sound file"
+msgstr "Дууны файлыг хадгалах"
+
+#: grecord/src/grec.c:1429
+msgid ""
+"The sound device is not ready. Please check that there isn't\n"
+"another program running that is using the device."
+msgstr ""
+"Дууны төхөөрөмж нь бэлэн биш байна.Өөр ямар нэг програм\n"
+"энэ төхөөрөмжийг ашиглаж буйг шалгана уу."
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr "цаг"
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr "цаг"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:753
+msgid "minutes"
+msgstr "минут"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+msgid "minute"
+msgstr "минут"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+msgid "seconds"
+msgstr "секунд"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+msgid "second"
+msgstr "секунд"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+msgid "Open a file"
+msgstr "Файл нээх"
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr "Бэлэн"
+
+#: grecord/src/gsr-window.c:541
+#, c-format
+msgid "Saving %s..."
+msgstr "Хадгалж байна %s..."
+
+#: grecord/src/gsr-window.c:600
+msgid "Save file as"
+msgstr "Файлыг хадгалах"
+
+#: grecord/src/gsr-window.c:654
+#, c-format
+msgid "%s is not installed in the path."
+msgstr "%s нь замдаа суулгагдсангүй"
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr "%s (хадгалагдсангүй)"
+
+#: grecord/src/gsr-window.c:751
+msgid "Unknown size"
+msgstr "Мэдэгдээгүй хэмжээ"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr "%.1f kб/с"
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr "%.0f kб/с"
+
+#: grecord/src/gsr-window.c:792
+msgid "1 (mono)"
+msgstr "1 (моно)"
+
+#: grecord/src/gsr-window.c:796
+msgid "2 (stereo)"
+msgstr "2 (стерео)"
+
+#: grecord/src/gsr-window.c:825
+#, c-format
+msgid "%s Information"
+msgstr "%s Мэдээлэл"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+msgid "File Information"
+msgstr "Файлын мэдээлэл"
+
+#: grecord/src/gsr-window.c:859
+msgid "Folder:"
+msgstr "Сангууд:"
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr "Файлын нэр:"
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr "Файлын хэмжээ:"
+
+#: grecord/src/gsr-window.c:880
+msgid "Audio Information"
+msgstr "Дууны мэдээлэл"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr "Дууны урт:"
+
+#: grecord/src/gsr-window.c:900
+msgid "Number of channels:"
+msgstr "Сувгуудын тоо:"
+
+#: grecord/src/gsr-window.c:906
+msgid "Sample rate:"
+msgstr "Жишээний үнэлэмж:"
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr "Бит үнэлэмж:"
+
+#: grecord/src/gsr-window.c:982
+msgid "A sound recorder for GNOME"
+msgstr "GNOME-д зориулсан дуу бичигч"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, c-format
+msgid "%s - Sound Recorder"
+msgstr "%s - Дуу Бичигч"
+
+#: grecord/src/gsr-window.c:1548
+msgid "File information"
+msgstr "Файлын мэдээлэл"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr "<байхгүй>"
+
+#: grecord/src/gsr-window.c:1578
+msgid "Length:"
+msgstr "Урт"
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
+msgid "_New"
+msgstr "_Үүсгэх"
+
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
+msgid "Create a new sample"
+msgstr "Шинэ жишээ үүсгэх"
+
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
+msgid "Run _Mixer"
+msgstr "Микшерийг ажиллуулах"
+
+#: grecord/src/gui.c:55
+msgid "Run GNOME Volume Control"
+msgstr "GNOME Дууны Удирдлагыг ажиллуулах"
+
+#: grecord/src/gui.c:69
+msgid "Add echo"
+msgstr "Цуурай нэмэх"
+
+#: grecord/src/gui.c:70
+msgid "Add echo to the current sample"
+msgstr "Идэвхтэй жишээн дээр цуурай нэмэх"
+
+#: grecord/src/gui.c:103
+msgid "Echo"
+msgstr "Цуурай"
+
+#: grecord/src/gui.c:112
+msgid "_Undo All"
+msgstr "Бүгдийг буцаах"
+
+#: grecord/src/gui.c:113
+msgid "Undo all changes made on the current sample"
+msgstr "Идэвхтэй жишээн дээр хийгдсэн бүх өөрчлөлтүүдийг буцаах"
+
+#: grecord/src/gui.c:120
+msgid "Effects"
+msgstr "Үйлчилгээнүүд"
+
+#: grecord/src/gui.c:197
+msgid "16bit PCM"
+msgstr "16 бит PCM"
+
+#: grecord/src/gui.c:199
+msgid "8bit PCM"
+msgstr "8 бит PCM"
+
+#: grecord/src/gui.c:202
+msgid "stereo"
+msgstr "стерео"
+
+#: grecord/src/gui.c:204
+msgid "mono"
+msgstr "моно"
+
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
+msgid "New"
+msgstr "Үүсгэх"
+
+#: grecord/src/gui.c:218
+msgid "Create new sample"
+msgstr "Шинээр жишээ үүсгэх"
+
+#: grecord/src/gui.c:234
+msgid "Play current sample"
+msgstr "Идэвхтэй жишээг тоглуулах"
+
+#: grecord/src/gui.c:248
+msgid "Stop playing/recording"
+msgstr "Тоглуулах/бичихийг зогсоох"
+
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
+msgid "Record"
+msgstr "Бичлэг"
+
+#: grecord/src/gui.c:262
+msgid "Start recording"
+msgstr "Бичлэг эхлэх"
+
+#: grecord/src/gui.c:301
+msgid "Audio format: "
+msgstr "Дууны формат: "
+
+#: grecord/src/gui.c:358
+#, c-format
+msgid "File '%s' doesn't exist; using default."
+msgstr "Файл \"%s\" байхгүй байна; анхын төлөвт шилжүүлж ашиглаж байна."
+
+#: grecord/src/gui.c:382
+#, c-format
+msgid "File '%s' isn't a supported soundfile."
+msgstr "Файл \"%s\" нь тохирох дууны файл биш байна."
+
+#: grecord/src/gui.c:425
+msgid "translator_credits"
+msgstr ""
+"Х.Зөвлөхбаатар\n"
+"Э.Баярсайхан "
+"Г.Ганбат"
+
+#: grecord/src/gui.c:429
+msgid "GNOME Sound Recorder"
+msgstr "GNOME дуу бичигч"
+
+#: grecord/src/gui.c:431
+msgid ""
+"A simple soundrecorder and soundplayer for GNOME.\n"
+"Dedicated to my cat, Malte."
+msgstr ""
+"Gnome-д зориулсан энгийн дуубичигч мөн дуутоглуулагч програм.\n"
+"Өөрийн мууртаа зориулав, Malte."
+
+#: grecord/src/gui.c:700
+msgid "Gnome Sound Recorder Preferences"
+msgstr "GNOME дуу бичигчийн тохиргоонууд"
+
+#: grecord/src/gui.c:707
+msgid "Sound Recorder Preferences"
+msgstr "Дуу бичигчийн тохиргоонууд"
+
+#: grecord/src/gui.c:719
+msgid "Recording"
+msgstr "Бичлэг хийх"
+
+#: grecord/src/gui.c:724
+msgid "Time"
+msgstr "Хугацаа"
+
+#: grecord/src/gui.c:737
+msgid "_Recording timeout: "
+msgstr "_Бичлэгийн завсарлага: "
+
+#: grecord/src/gui.c:760
+msgid "_Stop recording on timeout"
+msgstr "Завсарлагын үед бичлэгийг зогсоох"
+
+#: grecord/src/gui.c:768
+msgid "_Open save dialog when recording is finished"
+msgstr "_Бичиглэл дууссан хойно хадгалах цонхийг нээх"
+
+#: grecord/src/gui.c:775
+msgid "Size"
+msgstr "Хэмжээ"
+
+#: grecord/src/gui.c:784
+msgid "Show warning _message if size (MB) of sample becomes bigger than:"
+msgstr "Хэрвээ хэмжээ хэтэрвэл анхааруулах мэдээ харуулах жишээний хэмжээ (MB):"
+
+#: grecord/src/gui.c:802
+msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
+msgstr "Хэрвээ хэмжээ хэтэрвэл бичлэгийг зогсоох жишээний хэмжээ (MB):"
+
+#: grecord/src/gui.c:829
+msgid "Repetition"
+msgstr "Давталт"
+
+#: grecord/src/gui.c:839
+msgid "_Repeat the sound"
+msgstr "Дууг давтах"
+
+#: grecord/src/gui.c:846
+msgid "Play the sound _once only."
+msgstr "Дууг зөвхөн нэг удаа тоглуулах"
+
+#: grecord/src/gui.c:852
+msgid "Repeat _forever"
+msgstr "Байнга давтах"
+
+#: grecord/src/gui.c:863
+msgid "_Number of times:"
+msgstr "_Давтамжийн тоо:"
+
+#: grecord/src/gui.c:885
+msgid "Paths"
+msgstr "Замууд"
+
+#: grecord/src/gui.c:890
+msgid "Program files"
+msgstr "Програмын файлууд"
+
+#: grecord/src/gui.c:903
+msgid "_Path to sox:"
+msgstr "sox-д хүрэх зам:"
+
+#: grecord/src/gui.c:917
+msgid "_Apply"
+msgstr "_Идэвхжүүлэх"
+
+#: grecord/src/gui.c:926
+msgid "Folders"
+msgstr "Сангууд"
+
+#: grecord/src/gui.c:939
+msgid "_Temporary folder:"
+msgstr "Түр хадгалах сан:"
+
+#: grecord/src/gui.c:953
+msgid "Apply"
+msgstr "Идэвхжүүлэх"
+
+#: grecord/src/gui.c:965
+msgid "Sound"
+msgstr "Дуу"
+
+#: grecord/src/gui.c:970
+msgid "Sound options"
+msgstr "Дууны тохиргоонууд"
+
+#: grecord/src/gui.c:979
+msgid ""
+"Note: These options only take effect whenever a new sound sample\n"
+"is created. They do not operate on an existing sample."
+msgstr ""
+"Тэмдэглэл: Эдгээр тохиргоонууд нь зөвхөн шинэ дууны жишээ үүсгэхэд үйлчилдэг\n"
+"Тэд үүсгэгдсэн жишээн дээр ажилладаггүй."
+
+#: grecord/src/gui.c:992
+msgid "Audio format:"
+msgstr "Дуу авианы формат"
+
+#: grecord/src/gui.c:1001
+msgid "8 _bit PCM"
+msgstr "_8 бит PCM"
+
+#: grecord/src/gui.c:1007
+msgid "16 b_it PCM"
+msgstr "_16 бит PCM"
+
+#. If only combos didn't suck!
+#: grecord/src/gui.c:1021
+msgid "S_ample rate:"
+msgstr "Жишээний үнэлэмж"
+
+#: grecord/src/gui.c:1052
+msgid "Mono or Stereo:"
+msgstr "Моно эсвэл Стерео"
+
+#: grecord/src/gui.c:1061
+msgid "_Mono"
+msgstr "_Моно"
+
+#: grecord/src/gui.c:1067
+msgid "_Stereo"
+msgstr "_Cтерео"
+
+#: grecord/src/gui.c:1088
+msgid "Stereo"
+msgstr "Cтерео"
+
+#: grecord/src/main.c:50
+msgid "Specify the geometry of the main window"
+msgstr "Үндсэн цонхны геометрийг тодорхойлох"
+
+#: grecord/src/main.c:51
+msgid "GEOMETRY"
+msgstr "ГЕОМЕТР"
+
+#: grecord/src/main.c:59
+msgid "Specify a file to be opened"
+msgstr "Ямар файл нээхийг тодорхойлох"
+
+#: grecord/src/main.c:68
+msgid "Specify a file to start recording"
+msgstr "Бичиж эхлэхийн тулд файлыг тодорхойл"
+
+#: grecord/src/main.c:77
+msgid "Specify a file to start playing"
+msgstr "Тоглуулж эхлэхийн тулд файлыг тодорхойл"
+
+#: grecord/src/main.c:172
+msgid "Sound recorder"
+msgstr "Дуу бичигч"
+
+#: grecord/src/preferences.c:201
+msgid "Audio format: 8bit PCM"
+msgstr "Дуу авианы формат: 8bit PCM"
+
+#: grecord/src/preferences.c:201
+msgid "Audio format: 16bit PCM"
+msgstr "Дуу авианы формат: 16bit PCM"
+
+#: grecord/src/preferences.c:222
+#, c-format
+msgid "Sample rate: %s"
+msgstr "Жишээний үнэлэмж: %s"
+
+#: grecord/src/preferences.c:240
+msgid "Channels: mono"
+msgstr "Сувгууд: моно"
+
+#: grecord/src/preferences.c:240
+msgid "Channels: stereo"
+msgstr "Сувгууд: стерео"
+
+#: grecord/src/sound.c:137
+msgid "Adding echo to sample..."
+msgstr "Жишээн дээр цуурай нэмэх"
+
+#: grecord/gsr.xml.h:1
+msgid "About"
+msgstr "Тухай"
+
+#: grecord/gsr.xml.h:2
+msgid "Close"
+msgstr "Хаах"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr "Энэ цонхыг хаах"
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr "Агуулгууд"
+
+#: grecord/gsr.xml.h:6
+msgid "Display help for Sound Recorder"
+msgstr "Дуу бичигчид зориулсан тусламж дүрслэх"
+
+#: grecord/gsr.xml.h:8
+msgid "File _Information"
+msgstr "Файлын тухай мэдээлэл"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr "Үндсэн хэрэгсэлийн мөр"
+
+#: grecord/gsr.xml.h:11
+msgid "Open"
+msgstr "Нээх"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr "Дуу тоглуулах"
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "Гарах"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr "Программаас гарах"
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr "Нөөцлөгдсөн файлууд"
+
+#: grecord/gsr.xml.h:19
+msgid "Record sound"
+msgstr "Дуу бичлэг"
+
+#: grecord/gsr.xml.h:20
+msgid "Run Mixer"
+msgstr "Холигчийг ажиллуулах"
+
+#: grecord/gsr.xml.h:22
+msgid "Run the audio mixer"
+msgstr "Дуу авиа холигчийг ажиллуулах"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr "Хадгалах"
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr "Хадгалах?"
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr "Хадгалах %s?"
+
+#: grecord/gsr.xml.h:26
+msgid "Save the current file"
+msgstr "Идэвхтэй файлыг хадгалах"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr "Идэвхтэй файлыгөөр нэрээр хадгалах"
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr "Идэвхтэй файлын тухай мэдээллийг харуулах"
+
+#: grecord/gsr.xml.h:29
+msgid "Show information for Sound Recorder"
+msgstr "Дуу бичигчид мэдээллийг харуулах"
+
+#: grecord/gsr.xml.h:31
+msgid "Stop sound"
+msgstr "Дууг зогсоох"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr "Тухай"
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr "Цонх хаах"
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr "Агуулгууд"
+
+#: grecord/gsr.xml.h:35
+msgid "_Control"
+msgstr "Удирдлага"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr "Файл"
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr "Нээх"
+
+#: grecord/gsr.xml.h:40
+msgid "_Play"
+msgstr "Тоглуулах"
+
+#: grecord/gsr.xml.h:41
+msgid "_Quit"
+msgstr "Гарах"
+
+#: grecord/gsr.xml.h:42
+msgid "_Record"
+msgstr "Бичих"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr "Хадгалах"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:263
+msgid "Failure instantiating main window"
+msgstr "Үндсэн цонхыг яаруулах боломжгүй"
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:303
+#, c-format
+msgid "Could not load UI resource %s"
+msgstr "%s нөөцийг ачааллах боломжгүй"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr "Тоглоомны авианы програмуудын анхдагч утгыг тогтоох"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "GStreamer"
+msgstr "Тоглоомны авиа"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr "<span weight=\"bold\" size=\"x-large\">Туршиж байна...</span>"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+msgid "Audio"
+msgstr "Дуу авиа"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+msgid "Audio _Input:"
+msgstr "Дуу авианы оролт"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+msgid "Audio _Output:"
+msgstr "Дуу авианы гаралт"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr "Дуусгахын тулд ОК товч дар"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr "Анхдагч хазайлт"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr "Анхдагч бичиглэл"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+msgid "GStreamer Properties"
+msgstr "CDDBSlave 2 тохируулагч"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Pipeline:"
+msgstr "Дамжуулах хоолой:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr "Туршилт..."
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "Testing Pipeline"
+msgstr "Дамжуулах хоолойг турших"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr "Видео оролт"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+msgid "Video _Output:"
+msgstr "Видео гаралт"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr "'%s'-ны дамжуулах хоолойн туршилтыг явуулах боломжгүй"
+
+#: vu-meter/main.c:120
+msgid ""
+"Cannot connect to sound daemon.\n"
+"Please run 'esd' at a command prompt."
+msgstr ""
+"Дууны сервертэй холбогдох боломжгүй байна.\n"
+"Командын оролт дээрх 'esd'-ийг ажиллуулна уу."
+
+#: vu-meter/main.c:246
+msgid "Specify the X position of the meter."
+msgstr "Хэмжигч дээрх Х-координатыг тодорхойлох"
+
+#: vu-meter/main.c:247
+msgid "X-Position"
+msgstr "Х-координат"
+
+#: vu-meter/main.c:249
+msgid "Specify the Y position of the meter."
+msgstr "Хэмжигч дээрх Y-координатыг тодорхойлох"
+
+#: vu-meter/main.c:250
+msgid "Y-Position"
+msgstr "Y-координат"
+
+#: vu-meter/main.c:252
+msgid "Connect to the esd server on this host."
+msgstr "Энэ систем дээрх esd сервертэй холболт тогтоох"
+
+#: vu-meter/main.c:253
+msgid "ESD Server Host"
+msgstr "ESD серверийн хост"
+
+#: vu-meter/main.c:255
+msgid "Open a vertical version of the meter."
+msgstr "Хэмжигчийн босоо хувилбарыг нээнэ"
+
+#: vu-meter/main.c:257
+msgid "Act as recording level meter."
+msgstr "Бичилтийн түвшин хэмжигчийн адил ажилладаг"
+
+#: vu-meter/main.c:274
+#, c-format
+msgid "Host is %s\n"
+msgstr "Хостын нэр: %s\n"
+
+#: vu-meter/main.c:291
+msgid "Recording level"
+msgstr "Бичилтийн түвшин"
+
+#: vu-meter/main.c:291
+msgid "Volume Meter"
+msgstr "Дуу хэмжигч"
+
+#: vu-meter/reclevel.desktop.in.h:1
+msgid "Monitor the recording input volume"
+msgstr "Бичилтийн оролтын дууг илэрхийлэгч"
+
+#: vu-meter/reclevel.desktop.in.h:2
+msgid "Recording level monitor"
+msgstr "Бичилтийн түвшин илэрхийлэгч"
+
+#: vu-meter/vumeter.desktop.in.h:1
+msgid "Monitor the sound output volume"
+msgstr "Дуу авиа гаргалтыг илэрхийлэгч"
+
+#: vu-meter/vumeter.desktop.in.h:2
+msgid "Volume monitor"
+msgstr "Дуу илэрхийлэгч"
+
+#~ msgid "Andreas Hyden <a.hyden@cyberpoint.se>"
+#~ msgstr "Andreas Hyden <a.hyden@cyberpoint.se>"
+
+#~ msgid "Gnome Volume Control"
+#~ msgstr "Управление громкостью в GNOME"
+
+#~ msgid "Copyright (C) 2001, 2002"
+#~ msgstr "Авторское право (С)  2001, 2002"
+
+#~ msgid "A GNOME cd player"
+#~ msgstr "Проигрыватель компакт-дисков для среды GNOME"
+
+#~ msgid "_About Gnome-CD"
+#~ msgstr "_О программе Gnome-CD"
+
+#~ msgid "don't restore mixer-settings from configuration"
+#~ msgstr "не восстанавливать настройки микшера из конфигурации"
+
+#~ msgid "restore mixer-settings from configuration"
+#~ msgstr "восстановить настройки микшера из конфигурации"
+
+#~ msgid "initialise the mixer(s) from stored configuration and exit"
+#~ msgstr "инициализировать микшер(ы) из сохраненной конфигурации и выйти"
+
+#~ msgid "don't save (modified) mixer-settings into configuration"
+#~ msgstr "не сохранять (измененные) настройки микшера в конфигурацию"
+
+#~ msgid "On startup"
+#~ msgstr "При запуске"
+
+#~ msgid "Restore saved mixer levels on startup"
+#~ msgstr "Восстанавливать сохраненные уровни при старте"
+
+#~ msgid "GUI"
+#~ msgstr "GUI"
+
+#~ msgid "Show mixer icons"
+#~ msgstr "Показывать пиктограммы микшера"
+
+#~ msgid "Show mixer labels"
+#~ msgstr "Показывать метки микшера"
+
+#~ msgid "Labels"
+#~ msgstr "Метки"
+
+#~ msgid "CDDB"
+#~ msgstr "База данных компкт-дисков"
+
+#~ msgid "CDDB Properties"
+#~ msgstr "Настроить Базу данных компакт-дисков"
+
+#~ msgid "Error opening CD"
+#~ msgstr "Ошибка открытия устройства чтения компакт-дисков"
+
+#~ msgid "Error reading CD header"
+#~ msgstr "Ошибка считывания заголовка компакт-диска"
+
+#~ msgid "IOCtl failed"
+#~ msgstr "Сбой при вызове IOCtl"
+
+#~ msgid "Error getting leadout"
+#~ msgstr "Ошибка получения leadout"
+
+#~ msgid ""
+#~ "CD changed\n"
+#~ "Track count: %d\n"
+#~ "------------------\n"
+#~ msgstr ""
+#~ "Компакт-диск был сменён\n"
+#~ "Количество дорожек: %d\n"
+#~ "------------------\n"
+
+#~ msgid "(eject): ioctl failed: %s"
+#~ msgstr "(извлечь): сбой при вызове ioctl: %s"
+
+#~ msgid "(freebsd_cdrom_play): Drive not ready"
+#~ msgstr "(freebsd_cdrom_play): Устройство не готово"
+
+#~ msgid "(freebsd_cdrom_play): Drive still not ready"
+#~ msgstr "(_cdrom_play): Устройство ешё не готово"
+
+#~ msgid "(freebsd_cdrom_play) ioctl failed %s"
+#~ msgstr "(_cdrom_play) сбой при вызове ioctl %s"
+
+#~ msgid "(freebsd_cdrom_pause): Drive not ready"
+#~ msgstr "(freebsd_cdrom_pause): Устройство не готово"
+
+#~ msgid "(freebsd_cdrom_pause): Resume failed %s"
+#~ msgstr "(_cdrom_pause): Сбой продолжения %s"
+
+#~ msgid "(freebsd_cdrom_pause): ioctl failed %s"
+#~ msgstr "(_cdrom_pause): сбой при вызове ioctl %s"
+
+#~ msgid "(freebsd_cdrom_stop) ioctl failed %s"
+#~ msgstr "(freebsd_cdrom_stop) сбой при вызове ioctl %s"
+
+#~ msgid "(freebsd_cdrom_get_status): ioctl error %s"
+#~ msgstr "(freebsd_cdrom_get_status): ошибка при вызове ioctl %s"
+
+#~ msgid "(freebsd_cdrom_get_status): CDIOCREADSUBCHANNEL ioctl failed %s"
+#~ msgstr ""
+#~ "(freebsd_cdrom_get_status): ошибка при вызове CDIOCREADSUBCHANNEL ioctl %s"
+
+#~ msgid "(freebsd_cdrom_get_status): CDIOCGETVOL ioctl failed %s"
+#~ msgstr "(freebsd_cdrom_get_status): ошибка при вызове CDIOCGETVOL ioctl %s"
+
+#~ msgid "(freebsd_cdrom_close_tray): ioctl failed %s"
+#~ msgstr "(freebsd_cdrom_close_tray): ошибка при вызове ioctl %s"
+
+#~ msgid "(freebsd_cdrom_set_volume:1): ioctl failed %s"
+#~ msgstr "(freebsd_cdrom_set_volume:1): ошибка при вызове ioctl %s"
+
+#~ msgid "%s is not a CDROM drive\n"
+#~ msgstr "%s не является устройством чтения компакт-дисков\n"
+
+#~ msgid "%s is a CDROM drive\n"
+#~ msgstr "%s не является устройством чтения компакт-дисков\n"
+
+#~ msgid "(linux_cdrom_play): Drive not ready"
+#~ msgstr "(linux_cdrom_play): Устройство не готово"
+
+#~ msgid "(linux_cdrom_play): Drive still not ready"
+#~ msgstr "(linux_cdrom_play): Устройство ешё не готово"
+
+#~ msgid "(linux_cdrom_play) ioctl failed %s"
+#~ msgstr "linux_cdrom_play) сбой при вызове ioctl %s"
+
+#~ msgid "(linux_cdrom_pause): Drive not ready"
+#~ msgstr "(linux_cdrom_pause): Устройство не готово"
+
+#~ msgid "(linux_cdrom_pause): Resume failed %s"
+#~ msgstr "(linux_cdrom_pause): Сбой продолжения %s"
+
+#~ msgid "(linux_cdrom_pause): ioctl failed %s"
+#~ msgstr "(linux_cdrom_pause): сбой при вызове ioctl %s"
+
+#~ msgid "(linux_cdrom_stop) ioctl failed %s"
+#~ msgstr "(linux_cdrom_stop) сбой при вызове ioctl %s"
+
+#~ msgid "(linux_cdrom_get_status): ioctl error %s"
+#~ msgstr "(linux_cdrom_get_status): ошибка при вызове ioctl %s"
+
+#~ msgid "(linux_cdrom_get_status): CDROMSUBCHNL ioctl failed %s"
+#~ msgstr "(linux_cdrom_get_status): ошибка при вызове CDROMSUBCHNL ioctl %s"
+
+#~ msgid "(linux_cdrom_get_status): CDROMVOLREAD ioctl failed %s"
+#~ msgstr "(linux_cdrom_get_status): ошибка при вызове CDROMVOLREAD ioctl %s"
+
+#~ msgid "(linux_cdrom_close_tray): ioctl failed %s"
+#~ msgstr "(linux_cdrom_close_tray): ошибка при вызове ioctl %s"
+
+#~ msgid "(linux_cdrom_set_volume:1): ioctl failed %s"
+#~ msgstr "(linux_cdrom_set_volume:1): ошибка при вызове ioctl %s"
+
+#~ msgid "%s is not a CDROM drive"
+#~ msgstr "%s не является устройством чтения компакт-дисков"
+
+#~ msgid ""
+#~ "%s does not appear to point to a valid CDRom device. This may be "
+#~ "because:\n"
+#~ "a) CD support is not compiled into Linux\n"
+#~ "b) You do not have the correct permissions to access the CD drive\n"
+#~ "c) %s is not the CD drive.\n"
+#~ msgstr ""
+#~ "%s не указывет на допустимое устройство чтения компакт-дисков.\n"
+#~ "Это может случится по следующим причинам:\n"
+#~ "а) поддержка устройства чтения компакт-дисков  не скомпилирована в ядре "
+#~ "Linux\n"
+#~ "б) Отсутствуют необходимые права на доступ к устройству чтения компакт-"
+#~ "дисков\n"
+#~ "в) %s не является устройством чтения компакт-дисков.\n"
+
+#~ msgid ""
+#~ "The CD device that is set is not a CDRom drive. This means that GnomeCD\n"
+#~ "will be unable to run correctly. Press Set device to go to a dialog\n"
+#~ "where you can set the device, or click Quit to quit GnomeCD"
+#~ msgstr ""
+#~ "Установленное устройство CD не является дисководом CD. Это значит, что "
+#~ "GnomeCD\n"
+#~ "не сможет работать правильно. Нажмите \"Установить устройство\", чтобы "
+#~ "перейти\n"
+#~ "к диалогу установки устройства или \"Выйти\", чтобы выйти из GnomeCD."
+
+#~ msgid "Open Mixer"
+#~ msgstr "Открыть микшер"
+
+#~ msgid "Change volume"
+#~ msgstr "Изменить громкость"
+
+#~ msgid "Volume"
+#~ msgstr "Громкость"
+

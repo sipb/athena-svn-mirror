@@ -6,7 +6,8 @@ EXTRA_DIST = \
 	$(pixmap_DATA)		\
 	$(Icon_DATA)		\
 	gnome-grecord.png	\
-	gnome-sound-recorder.schemas.in
+	gnome-sound-recorder.schemas.in	\
+	gsr.xml
 
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_SCHEMAS_RULE@
@@ -23,6 +24,9 @@ pixmapdir = $(datadir)/pixmaps/gnome-media/gnome-sound-recorder
 pixmap_DATA = media-rec.png		\
 	      media-play.png		\
 	      media-stop.png
+
+uidir = $(datadir)/gnome-sound-recorder/ui
+ui_DATA = gsr.xml
 
 schemadir=$(sysconfdir)/gconf/schemas
 schema_DATA=gnome-sound-recorder.schemas

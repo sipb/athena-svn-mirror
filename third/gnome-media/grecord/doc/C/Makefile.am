@@ -1,5 +1,5 @@
 figdir = figures
-docname = grecord
+docname = gnome-sound-recorder
 lang = C
 omffile = grecord-C.omf
 entities = legal.xml

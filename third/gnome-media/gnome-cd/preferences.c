@@ -71,7 +71,8 @@ do_device_changed (GnomeCDPreferences *prefs,
 	}
 
 	prefs->device = g_strdup (device);
-	if (prefs->gcd->cdrom != NULL) {
+	if (prefs->gcd->cdrom != NULL &&
+	    prefs->gcd->device_override == NULL) {
 		ret = gnome_cdrom_set_device (prefs->gcd->cdrom, prefs->device, &error);
 		if (ret == FALSE) {
 			GtkWidget *dialog;
@@ -79,13 +80,16 @@ do_device_changed (GnomeCDPreferences *prefs,
 			dialog = gtk_message_dialog_new (NULL, 0,
 							 GTK_MESSAGE_ERROR,
 							 GTK_BUTTONS_OK,
-							 _("%s\nThis means that Gnome-CD will not be able to run."), error->message);
+							 _("%s\nThis means that the CD player will not be able to run."), error->message);
 			gtk_window_set_title (GTK_WINDOW (dialog), _("Error setting device"));
 			g_signal_connect (G_OBJECT (dialog), "response",
 					  G_CALLBACK (gtk_widget_destroy), dialog);
 			gtk_widget_show (dialog);
 			g_error_free (error);
 		}
+		
+		cd_selection_stop (prefs->gcd->cd_selection);
+		prefs->gcd->cd_selection = cd_selection_start (prefs->device);
 	}
 }
 
@@ -195,7 +199,7 @@ restore_preferences (GnomeCDPreferences *prefs)
 						 "/apps/gnome-cd/device", NULL);
 	if (prefs->device == NULL) {
 		g_warning ("GConf schemas are not correctly installed.");
-		prefs->device = g_strdup ("/dev/cdrom");
+		prefs->device = g_strdup (default_cd_device);
 	}
 	
 	prefs->device_id = gconf_client_notify_add (client,
@@ -370,6 +374,7 @@ apply_clicked_cb (GtkWidget *apply,
 		  PropertyDialog *pd)
 {
 	const char *new_device;
+	GnomeCDRom *dummy;
 
 	new_device = gtk_entry_get_text (GTK_ENTRY (pd->cd_device));
 	
@@ -382,6 +387,19 @@ apply_clicked_cb (GtkWidget *apply,
 	
 	gconf_client_set_string (client, "/apps/gnome-cd/device", new_device, NULL);
 	gtk_widget_set_sensitive (pd->apply, FALSE);
+
+	dummy = gnome_cdrom_new (new_device, GNOME_CDROM_UPDATE_NEVER, NULL);
+	if (dummy == NULL) {
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (pd->window),
+						   GTK_RESPONSE_CLOSE,
+						   FALSE);
+	} else {
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (pd->window),
+						   GTK_RESPONSE_CLOSE,
+						   TRUE);
+		g_object_unref (G_OBJECT (dummy));
+	}
+
 }
 
 static void
@@ -720,6 +738,8 @@ create_theme_model (PropertyDialog *pd,
 		*/
 	}
 
+	closedir (dir);
+	
 	return GTK_TREE_MODEL (store);
 }
 
@@ -767,6 +787,17 @@ add_paired_relations (GtkWidget *target1,
 	add_relation (set2, target2_type, atk_target1);
 }
 
+static void
+add_description (GtkWidget *widget, 
+		 const gchar *desc)
+{
+	AtkObject *atk_widget;
+
+	atk_widget = gtk_widget_get_accessible (widget);
+	atk_object_set_description (atk_widget, desc);
+}
+
+
 GtkWidget *
 preferences_dialog_show (GnomeCD *gcd,
 			 gboolean only_device)
@@ -790,16 +821,25 @@ preferences_dialog_show (GnomeCD *gcd,
 		windy = NULL;
 	}
 	
-	pd->window = gtk_dialog_new_with_buttons (_("Gnome CD Player Preferences"),
+	pd->window = gtk_dialog_new_with_buttons (_("CD Player Preferences"),
 						  windy,
 						  GTK_DIALOG_DESTROY_WITH_PARENT,
 						  GTK_STOCK_HELP, GTK_RESPONSE_HELP,
 						  GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
 	gtk_window_set_default_size (GTK_WINDOW (pd->window), 390, 375);
+       
 	if (only_device == FALSE) {
 		g_signal_connect (G_OBJECT (pd->window), "response",
 				  G_CALLBACK (prefs_response_cb), pd);
+	} else {
+		/* A bit of a cheat:
+		   but if we're only setting the device,
+		   that means the device is wrong... */
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (pd->window),
+						   GTK_RESPONSE_CLOSE,
+						   FALSE);
 	}
+
 	g_signal_connect (G_OBJECT (pd->window), "destroy",
 			  G_CALLBACK (prefs_destroy_cb), pd);
 
@@ -838,7 +878,7 @@ preferences_dialog_show (GnomeCD *gcd,
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (pd->window)->vbox), hbox, FALSE, FALSE, 4);
 
 	/* left side */
-	frame = gtk_frame_new (_("When Gnome CD Player starts"));
+	frame = gtk_frame_new (_("When CD player starts"));
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
 	gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
 	
@@ -847,6 +887,8 @@ preferences_dialog_show (GnomeCD *gcd,
 	gtk_container_add (GTK_CONTAINER (frame), vbox);
 	
 	pd->start_nothing = gtk_radio_button_new_with_mnemonic (NULL, _("Do _nothing"));
+	add_description (pd->start_nothing, _("Do nothing when CD Player starts"));
+
 	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_NOTHING) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_nothing), TRUE);
 	}
@@ -856,6 +898,7 @@ preferences_dialog_show (GnomeCD *gcd,
 
 	pd->start_play = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->start_nothing),
 									 _("Start _playing CD"));
+	add_description (pd->start_play, _("Start playing CD when CD Player starts"));
 	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_START) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_play), TRUE);
 	}
@@ -865,6 +908,8 @@ preferences_dialog_show (GnomeCD *gcd,
 	
 	pd->start_stop = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->start_play),
 									 _("_Stop playing CD"));
+	add_description (pd->start_stop, _("Stop playing CD when CD Player starts"));
+
 	if (gcd->preferences->start == GNOME_CD_PREFERENCES_START_STOP) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->start_stop), TRUE);
 	}
@@ -889,7 +934,7 @@ preferences_dialog_show (GnomeCD *gcd,
 						change_start_close_widget, pd, NULL, NULL);
 #endif
 	/* Right side */
-	frame = gtk_frame_new (_("When Gnome CD Player quits"));
+	frame = gtk_frame_new (_("When CD player quits"));
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
 	gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
 
@@ -898,6 +943,7 @@ preferences_dialog_show (GnomeCD *gcd,
 	gtk_container_add (GTK_CONTAINER (frame), vbox);
 
 	pd->stop_nothing = gtk_radio_button_new_with_mnemonic (NULL, _("Do not_hing"));
+	add_description (pd->stop_nothing, _("Do nothing when CD Player exits"));
 	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_NOTHING) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_nothing), TRUE);
 	}
@@ -907,6 +953,8 @@ preferences_dialog_show (GnomeCD *gcd,
 
 	pd->stop_stop = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->stop_nothing),
 									_("S_top playing CD"));
+	add_description (pd->stop_stop, _("Stop playing CD when CD player quits"));
+
 	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_STOP) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_stop), TRUE);
 	}
@@ -916,6 +964,7 @@ preferences_dialog_show (GnomeCD *gcd,
 
 	pd->stop_open = gtk_radio_button_new_with_mnemonic_from_widget (GTK_RADIO_BUTTON (pd->stop_stop),
 									_("Attempt to _open CD tray"));
+	add_description (pd->stop_open, _("Attempt to open CD tray when CD Player exits"));
 	if (gcd->preferences->stop == GNOME_CD_PREFERENCES_STOP_OPEN) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (pd->stop_open), TRUE);
 	}

@@ -44,8 +44,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBTrackEditor_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBTrackEditor_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBTrackEditor_21 '2'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_Media_CDDBTrackEditor_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBTrackEditor_struct;
 #define TC_GNOME_Media_CDDBTrackEditor ((CORBA_TypeCode)&TC_GNOME_Media_CDDBTrackEditor_struct)
 #endif
 #endif
@@ -78,7 +82,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_21 '2'
-   extern const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_struct;
 #define TC_GNOME_Media_CDDBSlave2 ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_struct)
 #endif
 #endif
@@ -117,8 +126,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_Result_21 '2'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_Media_CDDBSlave2_Result_struct;
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GNOME_Media_CDDBSlave2_Result_struct;
 #define TC_GNOME_Media_CDDBSlave2_Result ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_Result_struct)
 #endif
 #endif
@@ -155,7 +168,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_QueryResult_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_QueryResult_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_QueryResult_21 '2'
-   extern const struct CORBA_TypeCode_struct
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
       TC_GNOME_Media_CDDBSlave2_QueryResult_struct;
 #define TC_GNOME_Media_CDDBSlave2_QueryResult ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_QueryResult_struct)
 #endif
@@ -196,7 +214,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackInfo_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackInfo_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackInfo_21 '2'
-   extern const struct CORBA_TypeCode_struct
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
       TC_GNOME_Media_CDDBSlave2_TrackInfo_struct;
 #define TC_GNOME_Media_CDDBSlave2_TrackInfo ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_TrackInfo_struct)
 #endif
@@ -261,7 +284,12 @@ extern "C"
 #define TC_IMPL_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_19 'v'
 #define TC_IMPL_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_20 'e'
 #define TC_IMPL_TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_21 '2'
-   extern const struct CORBA_TypeCode_struct
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
       TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_struct;
 #define TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_struct)
 #endif
@@ -299,7 +327,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackList_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackList_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_TrackList_21 '2'
-   extern const struct CORBA_TypeCode_struct
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
       TC_GNOME_Media_CDDBSlave2_TrackList_struct;
 #define TC_GNOME_Media_CDDBSlave2_TrackList ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_TrackList_struct)
 #endif
@@ -307,6 +340,7 @@ extern "C"
 #define GNOME_Media_CDDBSlave2_TrackList__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo,(m),(d))
 #define GNOME_Media_CDDBSlave2_TrackList_allocbuf(l) ((GNOME_Media_CDDBSlave2_TrackInfo*)ORBit_small_allocbuf (TC_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo, (l)))
 #endif
+#undef ex_GNOME_Media_CDDBSlave2_UnknownDiscID
 #define ex_GNOME_Media_CDDBSlave2_UnknownDiscID "IDL:GNOME/Media/CDDBSlave2/UnknownDiscID:1.0"
 #if !defined(_GNOME_Media_CDDBSlave2_UnknownDiscID_defined)
 #define _GNOME_Media_CDDBSlave2_UnknownDiscID_defined 1
@@ -340,7 +374,12 @@ extern "C"
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_UnknownDiscID_19 'v'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_UnknownDiscID_20 'e'
 #define TC_IMPL_TC_GNOME_Media_CDDBSlave2_UnknownDiscID_21 '2'
-   extern const struct CORBA_TypeCode_struct
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
       TC_GNOME_Media_CDDBSlave2_UnknownDiscID_struct;
 #define TC_GNOME_Media_CDDBSlave2_UnknownDiscID ((CORBA_TypeCode)&TC_GNOME_Media_CDDBSlave2_UnknownDiscID_struct)
 #endif
@@ -667,88 +706,37 @@ extern "C"
 					const CORBA_char * discid,
 					const CORBA_char * genre,
 					CORBA_Environment * ev);
-
-/** more internals **/
-#if !defined(MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_0)
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_0 'G'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_1 'N'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_2 'O'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_3 'M'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_4 'E'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_5 '_'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_6 'M'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_7 'e'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_8 'd'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_9 'i'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_10 'a'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_11 '_'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_12 'C'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_13 'D'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_14 'D'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_15 'B'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_16 'S'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_17 'l'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_18 'a'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_19 'v'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_20 'e'
-#define MARSHAL_IMPL_CORBA_sequence_GNOME_Media_CDDBSlave2_TrackInfo_21 '2'
-#endif
-#if !defined(MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_0)
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_0 'G'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_1 'N'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_2 'O'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_3 'M'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_4 'E'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_5 '_'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_6 'M'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_7 'e'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_8 'd'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_9 'i'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_10 'a'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_11 '_'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_12 'C'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_13 'D'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_14 'D'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_15 'B'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_16 'S'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_17 'l'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_18 'a'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_19 'v'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_20 'e'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_QueryResult_21 '2'
-#endif
-#if !defined(MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_0)
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_0 'G'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_1 'N'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_2 'O'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_3 'M'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_4 'E'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_5 '_'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_6 'M'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_7 'e'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_8 'd'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_9 'i'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_10 'a'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_11 '_'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_12 'C'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_13 'D'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_14 'D'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_15 'B'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_16 'S'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_17 'l'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_18 'a'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_19 'v'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_20 'e'
-#define MARSHAL_IMPL_GNOME_Media_CDDBSlave2_TrackInfo_21 '2'
-#endif
 #include <orbit/orb-core/orbit-interface.h>
 
-   extern ORBit_IInterface GNOME_Media_CDDBTrackEditor__iinterface;
-   extern ORBit_IMethod GNOME_Media_CDDBTrackEditor__imethods[];
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   ORBit_IInterface GNOME_Media_CDDBTrackEditor__iinterface;
 #define GNOME_Media_CDDBTrackEditor_IMETHODS_LEN 2
-   extern ORBit_IInterface GNOME_Media_CDDBSlave2__iinterface;
-   extern ORBit_IMethod GNOME_Media_CDDBSlave2__imethods[];
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   ORBit_IMethod
+      GNOME_Media_CDDBTrackEditor__imethods
+      [GNOME_Media_CDDBTrackEditor_IMETHODS_LEN];
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   ORBit_IInterface GNOME_Media_CDDBSlave2__iinterface;
 #define GNOME_Media_CDDBSlave2_IMETHODS_LEN 15
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Media_CDDBSlave2
+   static
+#else
+   extern
+#endif
+   ORBit_IMethod
+      GNOME_Media_CDDBSlave2__imethods[GNOME_Media_CDDBSlave2_IMETHODS_LEN];
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

@@ -118,7 +118,8 @@ cddb_free_disc_info (GnomeCDDiscInfo *info)
 	g_free (info->title);
 	g_free (info->artist);
 
-	cddb_slave_client_free_track_info (info->track_info);
+	if (info->track_info)
+		cddb_slave_client_free_track_info (info->track_info);
 	g_free (info);
 }
 

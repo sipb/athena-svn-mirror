@@ -37,6 +37,8 @@ $(IDL_GENERATED): $(IDLS)
 bin_PROGRAMS = gnome-cd
 gnome_cd_SOURCES =		\
 	$(IDL_GENERATED)	\
+	eggtrayicon.c		\
+	eggtrayicon.h		\
 	gnome-cd.c		\
 	gnome-cd.h		\
 	gnome-cd-type.h		\
@@ -52,6 +54,8 @@ gnome_cd_SOURCES =		\
 	$(CDROM_HOST)-cdrom.h	\
 	preferences.c		\
 	preferences.h		\
+	cd-selection.c		\
+	cd-selection.h		\
 	theme.c
 
 ACCESS_LT_LIB = $(top_builddir)/gnome-cd/access/libgnomecdaccess.la

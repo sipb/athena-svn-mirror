@@ -88,11 +88,18 @@ GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMIX_LIBS = @GMIX_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOMECC_DESKTOP_DIR = @GNOMECC_DESKTOP_DIR@
+GSR_CFLAGS = @GSR_CFLAGS@
+GSR_LIBS = @GSR_LIBS@
+GSTPROPS_CFLAGS = @GSTPROPS_CFLAGS@
+GSTPROPS_GLADE_DIR = @GSTPROPS_GLADE_DIR@
+GSTPROPS_ICONS_DIR = @GSTPROPS_ICONS_DIR@
+GSTPROPS_LIBS = @GSTPROPS_LIBS@
+GSTPROPS_MEDIA_DIR = @GSTPROPS_MEDIA_DIR@
+GSTPROPS_PIXMAPS_DIR = @GSTPROPS_PIXMAPS_DIR@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +109,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -125,14 +134,16 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PROGRAMS_GMIX = @PROGRAMS_GMIX@
 PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
 PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
+PROGRAMS_GSTPROPS = @PROGRAMS_GSTPROPS@
 PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
 RANLIB = @RANLIB@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
-SOX_PATH = @SOX_PATH@
 STRIP = @STRIP@
 USE_CD_CHANGER = @USE_CD_CHANGER@
 USE_NLS = @USE_NLS@
@@ -140,7 +151,6 @@ VERSION = @VERSION@
 VUMETER_CFLAGS = @VUMETER_CFLAGS@
 VUMETER_LIBS = @VUMETER_LIBS@
 default_cd_device = @default_cd_device@
-path_to_sox = @path_to_sox@
 
 SUBDIRS = src doc
 
@@ -150,7 +160,8 @@ EXTRA_DIST = \
 	$(pixmap_DATA)		\
 	$(Icon_DATA)		\
 	gnome-grecord.png	\
-	gnome-sound-recorder.schemas.in
+	gnome-sound-recorder.schemas.in	\
+	gsr.xml
 
 
 Applicationsdir = $(datadir)/applications
@@ -166,12 +177,16 @@ pixmap_DATA = media-rec.png		\
 	      media-stop.png
 
 
+uidir = $(datadir)/gnome-sound-recorder/ui
+ui_DATA = gsr.xml
+
 schemadir = $(sysconfdir)/gconf/schemas
 schema_DATA = gnome-sound-recorder.schemas
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  gnome-sound-recorder.schemas.in
-DATA =  $(Applications_DATA) $(Icon_DATA) $(pixmap_DATA) $(schema_DATA)
+DATA =  $(Applications_DATA) $(Icon_DATA) $(pixmap_DATA) $(schema_DATA) \
+$(ui_DATA)
 
 DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
 Makefile.in NEWS gnome-sound-recorder.schemas.in.in
@@ -267,6 +282,25 @@ uninstall-schemaDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(schema_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(schemadir)/$$p; \
+	done
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -396,7 +430,7 @@ install-exec-am:
 install-exec: install-exec-recursive
 
 install-data-am: install-ApplicationsDATA install-IconDATA \
-		install-pixmapDATA install-schemaDATA \
+		install-pixmapDATA install-schemaDATA install-uiDATA \
 		install-data-local
 install-data: install-data-recursive
 
@@ -404,7 +438,8 @@ install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-ApplicationsDATA uninstall-IconDATA \
-		uninstall-pixmapDATA uninstall-schemaDATA
+		uninstall-pixmapDATA uninstall-schemaDATA \
+		uninstall-uiDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA)
 all-redirect: all-recursive
@@ -413,7 +448,8 @@ install-strip:
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(Applicationsdir) $(DESTDIR)$(Icondir) \
-		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(schemadir)
+		$(DESTDIR)$(pixmapdir) $(DESTDIR)$(schemadir) \
+		$(DESTDIR)$(uidir)
 
 
 mostlyclean-generic:
@@ -448,7 +484,8 @@ maintainer-clean: maintainer-clean-recursive
 .PHONY: uninstall-ApplicationsDATA install-ApplicationsDATA \
 uninstall-IconDATA install-IconDATA uninstall-pixmapDATA \
 install-pixmapDATA uninstall-schemaDATA install-schemaDATA \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
+uninstall-uiDATA install-uiDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

@@ -6,13 +6,47 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-media 1.2.4\n"
-"POT-Creation-Date: 2002-11-18 23:59+0000\n"
+"POT-Creation-Date: 2002-12-07 15:16+0000\n"
 "PO-Revision-Date: 2002-01-25 06:30+0100\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: Norwegian/Nynorsk <nn@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:1
+msgid "Address of the server to contact for CD queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:2 cddb-slave2/cddb-slave-capplet.c:776
+msgid "Port"
+msgstr "Port"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:3
+#, fuzzy
+msgid "Server name"
+msgstr "SOCKS tenar"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:4
+msgid "The hostname that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:5
+msgid "The port that the server is running the database on"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:6
+#, fuzzy
+msgid "The username"
+msgstr "Brukarnamn"
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:7
+msgid "The username that will be sent with all queries"
+msgstr ""
+
+#: cddb-slave2/CDDB-Slave2.schemas.in.h:8
+msgid "Your hostname"
+msgstr ""
 
 #: cddb-slave2/cddb-disclosure.c:245
 msgid "Expander Size"
@@ -44,51 +78,47 @@ msgstr ""
 msgid "N_ame:"
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:710
+#: cddb-slave2/cddb-slave-capplet.c:711
 msgid "_Hostname:"
 msgstr ""
 
 #. Server info
-#: cddb-slave2/cddb-slave-capplet.c:731 cddb-slave2/cddb-slave-capplet.c:771
+#: cddb-slave2/cddb-slave-capplet.c:733 cddb-slave2/cddb-slave-capplet.c:773
 #, fuzzy
 msgid "Server"
 msgstr "SOCKS tenar"
 
-#: cddb-slave2/cddb-slave-capplet.c:739
+#: cddb-slave2/cddb-slave-capplet.c:741
 msgid "FreeDB _round robin server"
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:745
+#: cddb-slave2/cddb-slave-capplet.c:747
 msgid "Other _FreeDB server..."
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:774
-msgid "Port"
-msgstr "Port"
-
-#: cddb-slave2/cddb-slave-capplet.c:777
+#: cddb-slave2/cddb-slave-capplet.c:779
 #, fuzzy
 msgid "Location"
 msgstr "Handling"
 
-#: cddb-slave2/cddb-slave-capplet.c:783
+#: cddb-slave2/cddb-slave-capplet.c:785
 msgid "Update server list"
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:790
+#: cddb-slave2/cddb-slave-capplet.c:792
 msgid "Other _server..."
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:802
+#: cddb-slave2/cddb-slave-capplet.c:804
 msgid "Hostname:"
 msgstr ""
 
-#: cddb-slave2/cddb-slave-capplet.c:814
+#: cddb-slave2/cddb-slave-capplet.c:816
 #, fuzzy
 msgid "_Port:"
 msgstr "Port"
 
-#: cddb-slave2/cddb-slave-capplet.c:863
+#: cddb-slave2/cddb-slave-capplet.c:866
 #, fuzzy
 msgid "CD Database Preferences"
 msgstr "Brukarval"
@@ -98,7 +128,10 @@ msgstr "Brukarval"
 msgid "Unknown / Unknown"
 msgstr "%d - ukjend"
 
-#: cddb-slave2/cddb-slave.c:219
+#. Attempts to get length ran out.
+#: cddb-slave2/cddb-slave.c:219 grecord/src/gsr-window.c:760
+#: grecord/src/gsr-window.c:769 grecord/src/gsr-window.c:778
+#: grecord/src/gsr-window.c:788 grecord/src/gsr-window.c:1108
 #, fuzzy
 msgid "Unknown"
 msgstr "Ukjend disk"
@@ -128,7 +161,7 @@ msgid "Artist and Title"
 msgstr "Artist og tittel"
 
 #: cddb-slave2/cddb-slave.c:1282 cddb-slave2/cddb-slave.c:1284
-#: gnome-cd/gnome-cd.c:125
+#: gnome-cd/gnome-cd.c:130
 #, fuzzy
 msgid "Unknown track"
 msgstr "Ukjend disk"
@@ -873,6 +906,7 @@ msgid "CD"
 msgstr "CD"
 
 #: gmix/device_labels_alsa.h:15 gmix/device_labels_linux.h:10
+#: gstreamer-properties/gstreamer-properties.glade.h:13
 msgid "Video"
 msgstr "Video"
 
@@ -884,7 +918,7 @@ msgstr "Radio"
 msgid "Phone"
 msgstr "Telefon"
 
-#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1087
+#: gmix/device_labels_alsa.h:18 grecord/src/gui.c:1090
 msgid "Mono"
 msgstr "Mono"
 
@@ -1078,33 +1112,45 @@ msgstr "Monitor"
 msgid "Help"
 msgstr "Hjelp"
 
-#: gmix/gmix.c:147
-msgid "don't restore mixer-settings from configuration"
-msgstr "ikkje gjenopprett miksarinnstillingar frå konfigurasjon"
+#: gmix/gmix.c:146
+msgid "Mixer device to use"
+msgstr ""
 
-#: gmix/gmix.c:148
-msgid "restore mixer-settings from configuration"
-msgstr "gjenopprett miksarinnstillingar frå konfigurasjon"
-
-#: gmix/gmix.c:149
-msgid "initialise the mixer(s) from stored configuration and exit"
-msgstr "initialiser miksar(ane) frå lagre konfigurasjon og avslutt"
-
-#: gmix/gmix.c:150
-msgid "don't save (modified) mixer-settings into configuration"
-msgstr "ikkje lagre (endra) mikserinnstillage til konfigurasjonen"
-
-#: gmix/gmix.c:382
+#: gmix/gmix.c:327
+#, fuzzy, c-format
 msgid ""
-"I was not able to open your audio device.\n"
-"Please check that you have permission to open /dev/mixer\n"
-"and make sure you have sound support compiled into your kernel."
+"Volume control is unable to run correctly.\n"
+"\n"
+"Unable to open audio device '%s'.\n"
+"Please check that you have permissions to open '%s'\n"
+"and that you have sound support in your kernel.\n"
+"\n"
+"Press Quit to exit Volume control"
 msgstr ""
 "Klarte ikkje å opne lydeininga.\n"
 "Sjekk at du rettar til å opne /dev/mixer\n"
 "og sjekk at du har lydstøtte kompilert inn i kjerna."
 
-#: gmix/gmix.c:603
+#: gmix/gmix.c:381
+msgid ""
+"Volume control is unable to run correctly.\n"
+"\n"
+"Press the details button for more details on the reasons for failure.\n"
+"\n"
+"Press Quit to quit Volume control"
+msgstr ""
+
+#: gmix/gmix.c:384 gnome-cd/gnome-cd.c:478
+#, fuzzy
+msgid "_Details"
+msgstr "Forval"
+
+#: gmix/gmix.c:387
+#, fuzzy
+msgid "Invalid mixer device"
+msgstr "CDROM-eining"
+
+#: gmix/gmix.c:626
 #, fuzzy, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1115,7 +1161,7 @@ msgstr ""
 "OSS versjon %d.%d.%d, og systemet ditt køyrer ein\n"
 "versjon tidlegare enn 3.6.0\n"
 
-#: gmix/gmix.c:611
+#: gmix/gmix.c:634
 #, fuzzy, c-format
 msgid ""
 "Warning: This version of the Gnome Volume Control was compiled with\n"
@@ -1126,55 +1172,62 @@ msgstr ""
 "OSS versjon %d.%d.%d, og systemet ditt køyrer\n"
 "versjon %d.%d.%d\n"
 
-#: gmix/gmix.c:1065
+#: gmix/gmix.c:1088
 #, c-format
 msgid "left %s"
 msgstr ""
 
-#: gmix/gmix.c:1091
+#: gmix/gmix.c:1114
 #, c-format
 msgid "Right %s"
 msgstr ""
 
-#: gmix/gmix.c:1184
+#: gmix/gmix.c:1207
 msgid "Lock"
 msgstr "Lås"
 
-#: gmix/gmix.c:1197
+#: gmix/gmix.c:1220
 #, fuzzy, c-format
 msgid "%s Lock"
 msgstr "Lås"
 
-#: gmix/gmix.c:1208
+#: gmix/gmix.c:1231
 msgid "Mute"
 msgstr "Demp"
 
-#: gmix/gmix.c:1221
+#: gmix/gmix.c:1244
 #, fuzzy, c-format
 msgid "%s Mute"
 msgstr "Demp"
 
-#: gmix/gmix.c:1235
+#: gmix/gmix.c:1258
 msgid "Rec."
 msgstr "Innsp."
 
-#: gmix/gmix.c:1247
+#: gmix/gmix.c:1270
 #, fuzzy, c-format
 msgid "%s Record"
 msgstr "Ta opp"
 
-#: gmix/gmix.c:1319 gmix/gnome-volume-control.desktop.in.in.h:2
+#: gmix/gmix.c:1342 gmix/gnome-volume-control.desktop.in.in.h:2
 #: gnome-volume-control/gnome-volume-control.desktop.in.h:2
 msgid "Volume Control"
 msgstr "Volumkontroll"
 
-#: gmix/gmix.c:1725
+#: gmix/gmix.c:1748
 #, fuzzy
-msgid "Gnome Volume Control"
+msgid "GNOME Volume Control"
 msgstr "Volumkontroll"
 
-#: gmix/gmix.c:1728
-msgid "This is a mixer for sound devices"
+#: gmix/gmix.c:1749
+msgid ""
+"(C) 1998 Jens Ch. Restemeier\n"
+"(C) 2001 Iain Holmes"
+msgstr ""
+
+#: gmix/gmix.c:1751
+#, fuzzy
+msgid "A mixer for sound devices"
 msgstr "Dette er ein miksar for lyd-einingar."
 
 #: gmix/gnome-volume-control.desktop.in.in.h:1
@@ -1248,71 +1301,102 @@ msgstr ""
 msgid "Line for displaying the name of the album"
 msgstr ""
 
-#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:164 gnome-cd/callbacks.c:263
-#: gnome-cd/callbacks.c:531 gnome-cd/gnome-cd.c:555 grecord/src/gui.c:233
+#: gnome-cd/callbacks.c:77 gnome-cd/callbacks.c:165 gnome-cd/callbacks.c:264
+#: gnome-cd/callbacks.c:545 gnome-cd/gnome-cd.c:610 grecord/src/gui.c:233
+#: grecord/gsr.xml.h:13
 msgid "Play"
 msgstr "Spel"
 
-#: gnome-cd/callbacks.c:149 gnome-cd/callbacks.c:195 gnome-cd/callbacks.c:225
-#: gnome-cd/callbacks.c:305 gnome-cd/callbacks.c:345 gnome-cd/callbacks.c:369
-#: gnome-cd/callbacks.c:410 gnome-cd/callbacks.c:497
+#: gnome-cd/callbacks.c:150 gnome-cd/callbacks.c:196 gnome-cd/callbacks.c:226
+#: gnome-cd/callbacks.c:306 gnome-cd/callbacks.c:346 gnome-cd/callbacks.c:370
+#: gnome-cd/callbacks.c:411 gnome-cd/callbacks.c:499
 msgid "Pause"
 msgstr "Pause"
 
-#: gnome-cd/callbacks.c:603
-msgid "Disc error"
-msgstr ""
+#: gnome-cd/callbacks.c:530
+#, fuzzy, c-format
+msgid "Playing %s - %s"
+msgstr "Spelar"
 
-#: gnome-cd/callbacks.c:636 gnome-cd/callbacks.c:647
+#: gnome-cd/callbacks.c:531 gnome-cd/callbacks.c:662 gnome-cd/callbacks.c:673
 #, fuzzy
 msgid "Unknown Artist"
 msgstr "Ukjend artist"
 
-#: gnome-cd/callbacks.c:639 gnome-cd/callbacks.c:651
+#: gnome-cd/callbacks.c:532 gnome-cd/callbacks.c:665 gnome-cd/callbacks.c:677
 #, fuzzy
 msgid "Unknown Album"
 msgstr "Ukjend disk"
 
-#: gnome-cd/callbacks.c:690
+#: gnome-cd/callbacks.c:534 grecord/src/gui.c:827
+msgid "Playing"
+msgstr "Spelar"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:557
+#, fuzzy
+msgid "Paused"
+msgstr "Pause"
+
+#. Update tray icon tooltip
+#: gnome-cd/callbacks.c:602 gnome-cd/callbacks.c:823 gnome-cd/gnome-cd.c:55
+#: gnome-cd/gnome-cd.c:495 gnome-cd/gnome-cd.c:653
+#: gnome-cd/gnome-cd.desktop.in.h:1
+msgid "CD Player"
+msgstr "CD-spelar"
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:620
+#, fuzzy
+msgid "Stopped"
+msgstr "Stopp"
+
+#: gnome-cd/callbacks.c:626
+msgid "Disc error"
+msgstr ""
+
+#. Update the tray icon tooltip
+#: gnome-cd/callbacks.c:637 gnome-cd/callbacks.c:716
 #, fuzzy
 msgid "No disc"
 msgstr "Ingen plate"
 
-#: gnome-cd/callbacks.c:716
+#: gnome-cd/callbacks.c:742
 msgid "Drive open"
 msgstr ""
 
-#: gnome-cd/callbacks.c:740
+#: gnome-cd/callbacks.c:766
 msgid "Data CD"
 msgstr ""
 
-#: gnome-cd/callbacks.c:762
+#. Updated the tray icon tooltip
+#: gnome-cd/callbacks.c:788 gnome-cd/callbacks.c:792
 msgid "No Cdrom"
 msgstr ""
 
-#: gnome-cd/callbacks.c:774
+#: gnome-cd/callbacks.c:803
 #, fuzzy
 msgid "Drive Error"
 msgstr "Feil"
 
-#: gnome-cd/callbacks.c:795
-msgid "Copyright (C) 2001, 2002"
-msgstr "Opphavsrett © 2001, 2002"
+#: gnome-cd/callbacks.c:824
+msgid "(C) 2001 Iain Holmes"
+msgstr ""
 
-#: gnome-cd/callbacks.c:796
-msgid "A GNOME cd player"
-msgstr "Ein GNOME cd-spelar"
+#: gnome-cd/callbacks.c:825
+msgid "A CD player for GNOME"
+msgstr ""
 
-#: gnome-cd/cdrom.c:362
+#: gnome-cd/cdrom.c:367
 #, c-format
 msgid "You do not seem to have permission to access %s."
 msgstr ""
 
-#: gnome-cd/cdrom.c:368
+#: gnome-cd/cdrom.c:373
 #, c-format
 msgid ""
 "%s does not appear to point to a valid CD device. This may be because:\n"
-"a) CD support is not compiled into Linux\n"
+"a) CD support is not present in your machine\n"
 "b) You do not have the correct permissions to access the CD drive\n"
 "c) %s is not the CD drive.\n"
 msgstr ""
@@ -1325,225 +1409,310 @@ msgstr "Ukjend artist"
 msgid "Unknown disc"
 msgstr "Ukjend disk"
 
-#: gnome-cd/gnome-cd.c:51 gnome-cd/gnome-cd.c:441
-msgid "Gnome CD Player"
-msgstr "Gnome CD-spelar"
-
-#: gnome-cd/gnome-cd.c:151
+#: gnome-cd/gnome-cd.c:156
 #, c-format
 msgid "%d - Unknown"
 msgstr "%d - ukjend"
 
-#: gnome-cd/gnome-cd.c:295
+#: gnome-cd/gnome-cd.c:300
 msgid "P_revious track"
 msgstr "F_orrige spor"
 
-#: gnome-cd/gnome-cd.c:296
+#: gnome-cd/gnome-cd.c:301 grecord/gsr.xml.h:44
 msgid "_Stop"
 msgstr "_Stopp"
 
-#: gnome-cd/gnome-cd.c:297
+#: gnome-cd/gnome-cd.c:302
 msgid "_Play / Pause"
 msgstr "S_pel / pause"
 
-#: gnome-cd/gnome-cd.c:298
+#: gnome-cd/gnome-cd.c:303
 msgid "_Next track"
 msgstr "_Neste spor"
 
-#: gnome-cd/gnome-cd.c:299
+#: gnome-cd/gnome-cd.c:304
 msgid "_Eject disc"
 msgstr "_Løys ut"
 
-#: gnome-cd/gnome-cd.c:300
+#: gnome-cd/gnome-cd.c:305 grecord/gsr.xml.h:37
 #, fuzzy
 msgid "_Help"
 msgstr "Hjelp"
 
-#: gnome-cd/gnome-cd.c:301
-msgid "_About Gnome-CD"
-msgstr "_Om Gnome-cd"
+#: gnome-cd/gnome-cd.c:306
+#, fuzzy
+msgid "_About CD player"
+msgstr "Gnome CD-spelar"
 
-#: gnome-cd/gnome-cd.c:375
+#: gnome-cd/gnome-cd.c:414
 msgid ""
-"There is no CD device set. This means that GnomeCD\n"
-"will be unable to run. Press Set device to go to a dialog\n"
-"where you can set the device, or click Quit to quit GnomeCD"
+"There is no CD device set. This means that the CD player\n"
+"will be unable to run. Click 'Set device' to go to a dialog\n"
+"where you can set the device, or click 'Quit' to quit the CD player."
 msgstr ""
 
-#: gnome-cd/gnome-cd.c:379 gnome-cd/gnome-cd.c:418
+#: gnome-cd/gnome-cd.c:418
 #, fuzzy
 msgid "Set device"
 msgstr "CDROM-eining"
 
-#: gnome-cd/gnome-cd.c:381
+#: gnome-cd/gnome-cd.c:420
 #, fuzzy
 msgid "No CD device"
 msgstr "CDROM-eining"
 
-#: gnome-cd/gnome-cd.c:414
-#, c-format
+#: gnome-cd/gnome-cd.c:474
 msgid ""
-"%s\n"
-"This means that GnomeCD will be unable to run correctly. Press Set device to "
-"go to a dialog where you can set the device, or click Quit to quit GnomeCD"
+"The CD player is unable to run correctly.\n"
+"\n"
+"Press 'Details' for more details on reasons for the failure.\n"
+"\n"
+"Press 'Set device' to go to a dialog where you can set the device, or press "
+"'Quit' to quit the CD player"
 msgstr ""
 
-#: gnome-cd/gnome-cd.c:420
+#: gnome-cd/gnome-cd.c:479
+#, fuzzy
+msgid "_Set device"
+msgstr "CDROM-eining"
+
+#: gnome-cd/gnome-cd.c:481
 #, fuzzy
 msgid "Invalid CD device"
 msgstr "CDROM-eining"
 
-#: gnome-cd/gnome-cd.c:488
+#: gnome-cd/gnome-cd.c:542
 #, fuzzy
 msgid "Volume control"
 msgstr "Volumkontroll"
 
-#: gnome-cd/gnome-cd.c:497
+#: gnome-cd/gnome-cd.c:551
 msgid "Open track editor"
 msgstr "Opne sporredigering"
 
-#: gnome-cd/gnome-cd.c:498
+#: gnome-cd/gnome-cd.c:552
 msgid "Track editor"
 msgstr "Sporredigering"
 
-#: gnome-cd/gnome-cd.c:505
+#: gnome-cd/gnome-cd.c:559
 #, fuzzy
 msgid "Open preferences"
 msgstr "Brukarval"
 
-#: gnome-cd/gnome-cd.c:506
+#: gnome-cd/gnome-cd.c:560
 msgid "Preferences"
 msgstr "Brukarval"
 
-#: gnome-cd/gnome-cd.c:514
+#: gnome-cd/gnome-cd.c:568
 #, fuzzy
 msgid "Track List"
 msgstr "Sporredigering"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous track"
 msgstr "Forrige spor"
 
-#: gnome-cd/gnome-cd.c:534
+#: gnome-cd/gnome-cd.c:589
 msgid "Previous"
 msgstr "Forrige"
 
-#: gnome-cd/gnome-cd.c:538
+#: gnome-cd/gnome-cd.c:593
 msgid "Rewind"
 msgstr "Spol tilbake"
 
-#: gnome-cd/gnome-cd.c:555
+#: gnome-cd/gnome-cd.c:610
 msgid "Play / Pause"
 msgstr "Spel / pause"
 
-#: gnome-cd/gnome-cd.c:560 grecord/src/gui.c:247
+#: gnome-cd/gnome-cd.c:615 grecord/src/gui.c:247 grecord/gsr.xml.h:30
 msgid "Stop"
 msgstr "Stopp"
 
-#: gnome-cd/gnome-cd.c:564
+#: gnome-cd/gnome-cd.c:619
 msgid "Fast forward"
 msgstr "Fort framover"
 
-#: gnome-cd/gnome-cd.c:572
+#: gnome-cd/gnome-cd.c:627
 msgid "Next track"
 msgstr "Neste spor"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject CD"
 msgstr "Løys ut cd"
 
-#: gnome-cd/gnome-cd.c:576
+#: gnome-cd/gnome-cd.c:631
 msgid "Eject"
 msgstr "Løys ut"
 
-#: gnome-cd/gnome-cd.c:640
+#: gnome-cd/gnome-cd.c:731
+#, fuzzy
+msgid "CD device to use"
+msgstr "CDROM-eining"
+
+#: gnome-cd/gnome-cd.c:740
+msgid "Only start if there isn't already a CD player application running"
+msgstr ""
+
+#: gnome-cd/gnome-cd.c:742
+#, fuzzy
+msgid "Play the CD on startup"
+msgstr "Køyr ved oppstart"
+
+#. Stick a message box here?
+#: gnome-cd/gnome-cd.c:773
 msgid "Cannot create player"
 msgstr "Klarar ikkje å opprette spelar"
-
-#: gnome-cd/gnome-cd.desktop.in.h:1
-msgid "CD Player"
-msgstr "CD-spelar"
 
 #: gnome-cd/gnome-cd.desktop.in.h:2
 msgid "Play audio CDs"
 msgstr "Spel lyd-cdar"
 
-#: gnome-cd/preferences.c:82
-#, c-format
+#: gnome-cd/gnome-cd.schemas.in.in.h:1
+msgid "Action on application exit"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:2
+#, fuzzy
+msgid "Action on start"
+msgstr "Gøym menyen ved oppstart"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:3
+#, fuzzy
+msgid "CD player theme"
+msgstr "CDROM-eining"
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:4
+msgid "Device path"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:5
+msgid "Should the CD player attempt to shut the CD drive on start up?"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:6
+msgid "Shut the CD tray on start"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:7
+msgid "The path to the CD drive that the CD player should use to play CDs"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:8
 msgid ""
-"%s\n"
-"This means that Gnome-CD will not be able to run."
+"What action should the CD player perform on exit? 0 = Nothing, 1 = Stop "
+"playing, 2 = Eject the CD, 3 = Attempt to close the tray"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:9
+msgid ""
+"What action should the CD player perform on start up? 0 = Nothing, 1 = Start "
+"playing, 2 = Stop playing"
+msgstr ""
+
+#: gnome-cd/gnome-cd.schemas.in.in.h:10
+msgid "What theme should the CD player use for it's appearance"
 msgstr ""
 
 #: gnome-cd/preferences.c:83
+#, c-format
+msgid ""
+"%s\n"
+"This means that the CD player will not be able to run."
+msgstr ""
+
+#: gnome-cd/preferences.c:84
 #, fuzzy
 msgid "Error setting device"
 msgstr "Feil ved lagring av lydfil"
 
-#: gnome-cd/preferences.c:793
+#: gnome-cd/preferences.c:824
 #, fuzzy
-msgid "Gnome CD Player Preferences"
+msgid "CD Player Preferences"
 msgstr "Brukarval"
 
-#: gnome-cd/preferences.c:813
+#: gnome-cd/preferences.c:853
 #, fuzzy
 msgid "CD player de_vice:"
 msgstr "CDROM-eining"
 
-#: gnome-cd/preferences.c:828
+#: gnome-cd/preferences.c:868
 msgid "_Apply change"
 msgstr ""
 
 #. left side
-#: gnome-cd/preferences.c:841
+#: gnome-cd/preferences.c:881
 #, fuzzy
-msgid "When Gnome CD Player starts"
+msgid "When CD player starts"
 msgstr "Gnome CD-spelar"
 
-#: gnome-cd/preferences.c:849
+#: gnome-cd/preferences.c:889
 #, fuzzy
 msgid "Do _nothing"
 msgstr "Ikkje gjer noko"
 
-#: gnome-cd/preferences.c:858
+#: gnome-cd/preferences.c:890
+msgid "Do nothing when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:900
 #, fuzzy
 msgid "Start _playing CD"
 msgstr "Start speling"
 
-#: gnome-cd/preferences.c:867
+#: gnome-cd/preferences.c:901
+msgid "Start playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:910
 #, fuzzy
 msgid "_Stop playing CD"
 msgstr "Stopp spelinga"
 
-#: gnome-cd/preferences.c:880
+#: gnome-cd/preferences.c:911
+msgid "Stop playing CD when CD Player starts"
+msgstr ""
+
+#: gnome-cd/preferences.c:925
 msgid "Attempt to _close CD tray"
 msgstr ""
 
 #. Right side
-#: gnome-cd/preferences.c:892
+#: gnome-cd/preferences.c:937
 #, fuzzy
-msgid "When Gnome CD Player quits"
+msgid "When CD player quits"
 msgstr "Gnome CD-spelar"
 
-#: gnome-cd/preferences.c:900
+#: gnome-cd/preferences.c:945
 #, fuzzy
 msgid "Do not_hing"
 msgstr "Ikkje gjer noko"
 
-#: gnome-cd/preferences.c:909
+#: gnome-cd/preferences.c:946
+msgid "Do nothing when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:955
 #, fuzzy
 msgid "S_top playing CD"
 msgstr "Stopp spelinga"
 
-#: gnome-cd/preferences.c:918
+#: gnome-cd/preferences.c:956
+msgid "Stop playing CD when CD player quits"
+msgstr ""
+
+#: gnome-cd/preferences.c:966
 msgid "Attempt to _open CD tray"
 msgstr ""
 
-#: gnome-cd/preferences.c:928
+#: gnome-cd/preferences.c:967
+msgid "Attempt to open CD tray when CD Player exits"
+msgstr ""
+
+#: gnome-cd/preferences.c:977
 msgid "Attempt to c_lose CD tray"
 msgstr ""
 
-#: gnome-cd/preferences.c:959
+#: gnome-cd/preferences.c:1008
 msgid "Theme name"
 msgstr ""
 
@@ -1551,7 +1720,8 @@ msgstr ""
 msgid "Record sound clips"
 msgstr "Tek opp lydklipp"
 
-#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gui.c:193
+#: grecord/gnome-sound-recorder.desktop.in.h:2 grecord/src/gsr-window.c:980
+#: grecord/src/gsr-window.c:1507 grecord/src/gui.c:193
 #, fuzzy
 msgid "Sound Recorder"
 msgstr "Lydmiksar"
@@ -1577,15 +1747,15 @@ msgstr ""
 "Vel korrekt sti til sox, utan den vil du ikkje vere i stand til å ta opp "
 "eller lage noken effekter."
 
-#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1359
+#: grecord/src/grec.c:171 grecord/src/grec.c:218 grecord/src/grec.c:1361
 msgid "Could not fork child process"
 msgstr "Klarte ikkje å starte prosess"
 
-#: grecord/src/grec.c:173
+#: grecord/src/grec.c:173 grecord/src/gsr-window.c:1342
 msgid "Recording..."
 msgstr "Tek opp ..."
 
-#: grecord/src/grec.c:220
+#: grecord/src/grec.c:220 grecord/src/gsr-window.c:1221
 msgid "Playing..."
 msgstr "Spelar ..."
 
@@ -1598,15 +1768,15 @@ msgstr "Konverterar fil ..."
 msgid "Cancel"
 msgstr "Kanalar: "
 
-#: grecord/src/grec.c:345 grecord/src/grec.c:793
+#: grecord/src/grec.c:345 grecord/src/grec.c:795
 msgid "Audioformat: "
 msgstr "Lydformat: "
 
-#: grecord/src/grec.c:349 grecord/src/grec.c:779 grecord/src/gui.c:308
+#: grecord/src/grec.c:349 grecord/src/grec.c:781 grecord/src/gui.c:308
 msgid "Sample rate: "
 msgstr "Samplingsrate: "
 
-#: grecord/src/grec.c:359 grecord/src/grec.c:783 grecord/src/gui.c:315
+#: grecord/src/grec.c:359 grecord/src/grec.c:785 grecord/src/gui.c:315
 msgid "Channels: "
 msgstr "Kanalar: "
 
@@ -1623,7 +1793,7 @@ msgstr "Vel ei lydfil"
 msgid "%s is not installed in the path"
 msgstr ""
 
-#: grecord/src/grec.c:523
+#: grecord/src/grec.c:523 grecord/src/gsr-window.c:661
 #, c-format
 msgid "There was an error starting %s: %s"
 msgstr ""
@@ -1655,7 +1825,7 @@ msgstr ""
 msgid "File '%s isn't a valid sound file."
 msgstr "Fila '%s' er ikkje ei gyldig lydfil."
 
-#: grecord/src/grec.c:817
+#: grecord/src/grec.c:819
 #, fuzzy, c-format
 msgid ""
 "'%s' is a folder.\n"
@@ -1664,7 +1834,7 @@ msgstr ""
 "'%s' er ein katalog.\n"
 "Tast inn eit anna filnamn."
 
-#: grecord/src/grec.c:829
+#: grecord/src/grec.c:831
 #, fuzzy, c-format
 msgid ""
 "<b>File '%s' already exists.</b>\n"
@@ -1673,20 +1843,20 @@ msgstr ""
 "Fila %s finst alt.\n"
 "vil du skriva over den?"
 
-#: grecord/src/grec.c:832
+#: grecord/src/grec.c:834
 msgid "Cancel save"
 msgstr ""
 
-#: grecord/src/grec.c:833
+#: grecord/src/grec.c:835
 msgid "Overwrite"
 msgstr ""
 
-#: grecord/src/grec.c:860
+#: grecord/src/grec.c:862
 #, fuzzy, c-format
 msgid "Error saving '%s'"
 msgstr "Feil ved lesing [%s]\n"
 
-#: grecord/src/grec.c:974
+#: grecord/src/grec.c:976
 #, c-format
 msgid ""
 "<b>Do you want to save the changes you made to \"%s\"?</b>\n"
@@ -1694,32 +1864,32 @@ msgid ""
 "Your changes will be lost if you don't save them."
 msgstr ""
 
-#: grecord/src/grec.c:979
+#: grecord/src/grec.c:981
 msgid "Do_n't save"
 msgstr ""
 
-#: grecord/src/grec.c:986
+#: grecord/src/grec.c:988
 #, c-format
 msgid "Save %s?"
 msgstr ""
 
 #. Save the file
-#: grecord/src/grec.c:1010
+#: grecord/src/grec.c:1012
 msgid "Saving..."
 msgstr "Lagrar ..."
 
-#: grecord/src/grec.c:1140
+#: grecord/src/grec.c:1142
 #, fuzzy, c-format
 msgid ""
 "The size of the current sample is more than\n"
 "%i Mb!"
 msgstr "Storleiken på aktivt sample er meir enn %i Mb!"
 
-#: grecord/src/grec.c:1196
+#: grecord/src/grec.c:1198
 msgid "Save sound file"
 msgstr "Lagre lydfil"
 
-#: grecord/src/grec.c:1425
+#: grecord/src/grec.c:1429
 #, fuzzy
 msgid ""
 "The sound device is not ready. Please check that there isn't\n"
@@ -1728,15 +1898,178 @@ msgstr ""
 "Lydeininga er ikkje klar! Sjekk at det ikkje er eit\n"
 "anna program som brukar den."
 
-#: grecord/src/gui.c:45
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hours"
+msgstr ""
+
+#: grecord/src/gsr-window.c:250 grecord/src/gsr-window.c:255
+#: grecord/src/gsr-window.c:261 grecord/src/gsr-window.c:265
+msgid "hour"
+msgstr ""
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#: grecord/src/gui.c:756
+msgid "minutes"
+msgstr "minutt"
+
+#: grecord/src/gsr-window.c:251 grecord/src/gsr-window.c:256
+#: grecord/src/gsr-window.c:272 grecord/src/gsr-window.c:276
+#, fuzzy
+msgid "minute"
+msgstr "minutt"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:281
+#: grecord/src/gsr-window.c:284
+#, fuzzy
+msgid "seconds"
+msgstr "Ta opp"
+
+#: grecord/src/gsr-window.c:252 grecord/src/gsr-window.c:262
+#: grecord/src/gsr-window.c:273 grecord/src/gsr-window.c:284
+#, fuzzy
+msgid "second"
+msgstr "Ta opp"
+
+#: grecord/src/gsr-window.c:367 grecord/gsr.xml.h:12
+#, fuzzy
+msgid "Open a file"
+msgstr "Opne miksar"
+
+#: grecord/src/gsr-window.c:445 grecord/src/gsr-window.c:1243
+#: grecord/src/gsr-window.c:1364 grecord/src/gsr-window.c:1436
+msgid "Ready"
+msgstr ""
+
+#: grecord/src/gsr-window.c:541
+#, fuzzy, c-format
+msgid "Saving %s..."
+msgstr "Lagrar ..."
+
+#: grecord/src/gsr-window.c:600
+#, fuzzy
+msgid "Save file as"
+msgstr "Lagre lydfil"
+
+#: grecord/src/gsr-window.c:654
+#, c-format
+msgid "%s is not installed in the path."
+msgstr ""
+
+#: grecord/src/gsr-window.c:736
+#, c-format
+msgid "%s (Has not been saved)"
+msgstr ""
+
+#: grecord/src/gsr-window.c:751
+#, fuzzy
+msgid "Unknown size"
+msgstr "Ukjend disk"
+
+#: grecord/src/gsr-window.c:771
+#, c-format
+msgid "%.1f kHz"
+msgstr ""
+
+#: grecord/src/gsr-window.c:780
+#, c-format
+msgid "%.0f kb/s"
+msgstr ""
+
+#: grecord/src/gsr-window.c:792
+#, fuzzy
+msgid "1 (mono)"
+msgstr "mono"
+
+#: grecord/src/gsr-window.c:796
+#, fuzzy
+msgid "2 (stereo)"
+msgstr "stereo"
+
+#: grecord/src/gsr-window.c:825
+#, fuzzy, c-format
+msgid "%s Information"
+msgstr "Informasjon om spor"
+
+#: grecord/src/gsr-window.c:845 grecord/gsr.xml.h:7
+#, fuzzy
+msgid "File Information"
+msgstr "Send inn informasjon"
+
+#: grecord/src/gsr-window.c:859
+#, fuzzy
+msgid "Folder:"
+msgstr "Fader"
+
+#: grecord/src/gsr-window.c:865 grecord/src/gsr-window.c:1563
+msgid "Filename:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:871
+msgid "File size:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:880
+#, fuzzy
+msgid "Audio Information"
+msgstr "Lydformat:"
+
+#: grecord/src/gsr-window.c:894
+msgid "Song length:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:900
+#, fuzzy
+msgid "Number of channels:"
+msgstr "Tal på gangar:"
+
+#: grecord/src/gsr-window.c:906
+#, fuzzy
+msgid "Sample rate:"
+msgstr "Samplingsrate: "
+
+#: grecord/src/gsr-window.c:912
+msgid "Bit rate:"
+msgstr ""
+
+#: grecord/src/gsr-window.c:981
+msgid "(C) 2002 Iain Holmes"
+msgstr ""
+
+#: grecord/src/gsr-window.c:982
+#, fuzzy
+msgid "A sound recorder for GNOME"
+msgstr "Eit enkelt lydredigeringsprogram for GNOME"
+
+#: grecord/src/gsr-window.c:1503 grecord/src/gui.c:155
+#, fuzzy, c-format
+msgid "%s - Sound Recorder"
+msgstr "Lydmiksar"
+
+#: grecord/src/gsr-window.c:1548
+#, fuzzy
+msgid "File information"
+msgstr "Vis lydinformasjon"
+
+#: grecord/src/gsr-window.c:1569
+msgid "<none>"
+msgstr ""
+
+#: grecord/src/gsr-window.c:1578
+msgid "Length:"
+msgstr ""
+
+#: grecord/src/gui.c:45 grecord/gsr.xml.h:38
 msgid "_New"
 msgstr "_Ny"
 
-#: grecord/src/gui.c:46
+#: grecord/src/gui.c:46 grecord/gsr.xml.h:5
 msgid "Create a new sample"
 msgstr "Lag nytt sample"
 
-#: grecord/src/gui.c:54
+#: grecord/src/gui.c:54 grecord/gsr.xml.h:21
 #, fuzzy
 msgid "Run _Mixer"
 msgstr "Køyr miksar ..."
@@ -1770,11 +2103,6 @@ msgstr "Gjer om alle endringar gjort på aktivt sample"
 msgid "Effects"
 msgstr "Effekter"
 
-#: grecord/src/gui.c:155
-#, fuzzy, c-format
-msgid "%s - Sound Recorder"
-msgstr "Lydmiksar"
-
 #: grecord/src/gui.c:197
 #, fuzzy
 msgid "16bit PCM"
@@ -1793,7 +2121,7 @@ msgstr "stereo"
 msgid "mono"
 msgstr "mono"
 
-#: grecord/src/gui.c:217
+#: grecord/src/gui.c:217 grecord/gsr.xml.h:10
 msgid "New"
 msgstr "Ny"
 
@@ -1809,7 +2137,7 @@ msgstr "Spel aktiv sampling"
 msgid "Stop playing/recording"
 msgstr "Stopp speling/opptak"
 
-#: grecord/src/gui.c:261
+#: grecord/src/gui.c:261 grecord/gsr.xml.h:18
 msgid "Record"
 msgstr "Ta opp"
 
@@ -1844,13 +2172,14 @@ msgstr ""
 
 #: grecord/src/gui.c:431
 #, fuzzy
-msgid "Gnome Sound Recorder"
-msgstr "Lydmiksar"
+msgid "GNOME Sound Recorder"
+msgstr "GNOME lydopptakar"
 
 #. if your charset allows it, replace the
 #. "e" of Hyden by an "eacute" (U00E9)
 #: grecord/src/gui.c:434
-msgid "Copyright (C)  2000 Andreas Hyden"
+#, fuzzy
+msgid "(C) 2000 Andreas Hyden"
 msgstr "Opphavsrett © 2000 Andreas Hyden"
 
 #: grecord/src/gui.c:435
@@ -1861,162 +2190,154 @@ msgstr ""
 "Ein enkel lydopptakar and lydspelar for GNOME.\n"
 "Dedikert til katten min, Malte."
 
-#: grecord/src/gui.c:701
+#: grecord/src/gui.c:703
 #, fuzzy
 msgid "Gnome Sound Recorder Preferences"
 msgstr "Brukarval"
 
-#: grecord/src/gui.c:708
+#: grecord/src/gui.c:710
 #, fuzzy
 msgid "Sound Recorder Preferences"
 msgstr "Lydmiksar"
 
-#: grecord/src/gui.c:720
+#: grecord/src/gui.c:722
 msgid "Recording"
 msgstr "Opptak"
 
-#: grecord/src/gui.c:725
+#: grecord/src/gui.c:727
 msgid "Time"
 msgstr "Tid"
 
-#: grecord/src/gui.c:738
+#: grecord/src/gui.c:740
 #, fuzzy
 msgid "_Recording timeout: "
 msgstr "Tidsavbrot for opptak: "
 
-#: grecord/src/gui.c:754
-msgid "minutes"
-msgstr "minutt"
-
-#: grecord/src/gui.c:761
+#: grecord/src/gui.c:763
 #, fuzzy
 msgid "_Stop recording on timeout"
 msgstr "Stopp opptak på tidsavbrot"
 
-#: grecord/src/gui.c:769
+#: grecord/src/gui.c:771
 #, fuzzy
 msgid "_Open save dialog when recording is finished"
 msgstr "Vis lagre-dialog når opptaket er ferdig"
 
-#: grecord/src/gui.c:776
+#: grecord/src/gui.c:778
 msgid "Size"
 msgstr "Storleik"
 
-#: grecord/src/gui.c:785
+#: grecord/src/gui.c:787
 #, fuzzy
 msgid "Show warning _message if size (MB) of sample becomes bigger than:"
 msgstr "Vis åtvaring of storleiken overstig (Mb):"
 
-#: grecord/src/gui.c:803
+#: grecord/src/gui.c:805
 #, fuzzy
 msgid "Sto_p recording if size (MB) of sample becomes bigger than:"
 msgstr "Stopp opptak om storleiken (Mb) overstig:"
 
-#: grecord/src/gui.c:825
-msgid "Playing"
-msgstr "Spelar"
-
-#: grecord/src/gui.c:830
+#: grecord/src/gui.c:832
 #, fuzzy
 msgid "Repetition"
 msgstr "Repeter"
 
-#: grecord/src/gui.c:840
+#: grecord/src/gui.c:842
 msgid "_Repeat the sound"
 msgstr ""
 
-#: grecord/src/gui.c:847
+#: grecord/src/gui.c:849
 msgid "Play the sound _once only."
 msgstr ""
 
-#: grecord/src/gui.c:853
+#: grecord/src/gui.c:855
 msgid "Repeat _forever"
 msgstr ""
 
-#: grecord/src/gui.c:864
+#: grecord/src/gui.c:866
 #, fuzzy
 msgid "_Number of times:"
 msgstr "Tal på gangar:"
 
-#: grecord/src/gui.c:885
+#: grecord/src/gui.c:888
 msgid "Paths"
 msgstr "Stiar"
 
-#: grecord/src/gui.c:890
+#: grecord/src/gui.c:893
 msgid "Program files"
 msgstr "Programfiler"
 
-#: grecord/src/gui.c:903
+#: grecord/src/gui.c:906
 #, fuzzy
 msgid "_Path to sox:"
 msgstr "Sti til sox:"
 
-#: grecord/src/gui.c:917
+#: grecord/src/gui.c:920
 msgid "_Apply"
 msgstr ""
 
-#: grecord/src/gui.c:926
+#: grecord/src/gui.c:929
 #, fuzzy
 msgid "Folders"
 msgstr "Fader"
 
-#: grecord/src/gui.c:939
+#: grecord/src/gui.c:942
 msgid "_Temporary folder:"
 msgstr ""
 
-#: grecord/src/gui.c:953
+#: grecord/src/gui.c:956
 msgid "Apply"
 msgstr ""
 
-#: grecord/src/gui.c:965
+#: grecord/src/gui.c:968
 msgid "Sound"
 msgstr "Lyd"
 
-#: grecord/src/gui.c:970
+#: grecord/src/gui.c:973
 msgid "Sound options"
 msgstr "Alternativ for lyd"
 
-#: grecord/src/gui.c:979
+#: grecord/src/gui.c:982
 msgid ""
 "Note: These options only take effect whenever a new sound sample\n"
 "is created. They do not operate on an existing sample."
 msgstr ""
 
-#: grecord/src/gui.c:992
+#: grecord/src/gui.c:995
 #, fuzzy
 msgid "Audio format:"
 msgstr "Lydformat:"
 
-#: grecord/src/gui.c:1001
+#: grecord/src/gui.c:1004
 msgid "8 _bit PCM"
 msgstr ""
 
-#: grecord/src/gui.c:1007
+#: grecord/src/gui.c:1010
 msgid "16 b_it PCM"
 msgstr ""
 
 #. If only combos didn't suck!
-#: grecord/src/gui.c:1021
+#: grecord/src/gui.c:1024
 #, fuzzy
 msgid "S_ample rate:"
 msgstr "Samplingsrate:"
 
-#: grecord/src/gui.c:1052
+#: grecord/src/gui.c:1055
 #, fuzzy
 msgid "Mono or Stereo:"
 msgstr "mono/stereo"
 
-#: grecord/src/gui.c:1061
+#: grecord/src/gui.c:1064
 #, fuzzy
 msgid "_Mono"
 msgstr "Mono"
 
-#: grecord/src/gui.c:1067
+#: grecord/src/gui.c:1070
 #, fuzzy
 msgid "_Stereo"
 msgstr "stereo"
 
-#: grecord/src/gui.c:1088
+#: grecord/src/gui.c:1091
 #, fuzzy
 msgid "Stereo"
 msgstr "stereo"
@@ -2045,34 +2366,267 @@ msgstr "Spesifiser ei fil for å starte å spele"
 msgid "Sound recorder"
 msgstr "Lydmiksar"
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 #, fuzzy
 msgid "Audio format: 8bit PCM"
 msgstr "Lydformat: "
 
-#: grecord/src/preferences.c:192
+#: grecord/src/preferences.c:201
 #, fuzzy
 msgid "Audio format: 16bit PCM"
 msgstr "Lydformat: "
 
-#: grecord/src/preferences.c:213
+#: grecord/src/preferences.c:222
 #, fuzzy, c-format
 msgid "Sample rate: %s"
 msgstr "Samplingsrate: "
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 #, fuzzy
 msgid "Channels: mono"
 msgstr "Kanalar: "
 
-#: grecord/src/preferences.c:231
+#: grecord/src/preferences.c:240
 #, fuzzy
 msgid "Channels: stereo"
 msgstr "Kanalar: "
 
-#: grecord/src/sound.c:136
+#: grecord/src/sound.c:137
 msgid "Adding echo to sample..."
 msgstr "Legg til ekko på samplinga ..."
+
+#: grecord/gsr.xml.h:1
+#, fuzzy
+msgid "About"
+msgstr "Om"
+
+#: grecord/gsr.xml.h:2
+#, fuzzy
+msgid "Close"
+msgstr "Nedre skuff"
+
+#: grecord/gsr.xml.h:3
+msgid "Close this window"
+msgstr ""
+
+#: grecord/gsr.xml.h:4
+msgid "Contents"
+msgstr ""
+
+#: grecord/gsr.xml.h:6
+#, fuzzy
+msgid "Display help for Sound Recorder"
+msgstr "Lydmiksar"
+
+#: grecord/gsr.xml.h:8
+#, fuzzy
+msgid "File _Information"
+msgstr "Send inn informasjon"
+
+#: grecord/gsr.xml.h:9
+msgid "Main toolbar"
+msgstr ""
+
+#: grecord/gsr.xml.h:11
+#, fuzzy
+msgid "Open"
+msgstr "Opne skuff"
+
+#: grecord/gsr.xml.h:14
+msgid "Play sound"
+msgstr ""
+
+#: grecord/gsr.xml.h:15
+msgid "Quit"
+msgstr "Avslutt"
+
+#: grecord/gsr.xml.h:16
+msgid "Quit the application"
+msgstr ""
+
+#: grecord/gsr.xml.h:17
+msgid "Recent _Files"
+msgstr ""
+
+#: grecord/gsr.xml.h:19
+#, fuzzy
+msgid "Record sound"
+msgstr "Tek opp lydklipp"
+
+#: grecord/gsr.xml.h:20
+#, fuzzy
+msgid "Run Mixer"
+msgstr "Køyr miksar ..."
+
+#: grecord/gsr.xml.h:22
+#, fuzzy
+msgid "Run the audio mixer"
+msgstr "Sti til miksar:"
+
+#: grecord/gsr.xml.h:23
+msgid "Save"
+msgstr ""
+
+#: grecord/gsr.xml.h:24
+msgid "Save As"
+msgstr ""
+
+#: grecord/gsr.xml.h:25
+msgid "Save _As..."
+msgstr ""
+
+#: grecord/gsr.xml.h:26
+#, fuzzy
+msgid "Save the current file"
+msgstr "Lagre lydfil"
+
+#: grecord/gsr.xml.h:27
+msgid "Save the current file with a different name"
+msgstr ""
+
+#: grecord/gsr.xml.h:28
+msgid "Show information about the current file"
+msgstr ""
+
+#: grecord/gsr.xml.h:29
+#, fuzzy
+msgid "Show information for Sound Recorder"
+msgstr "Lydmiksar"
+
+#: grecord/gsr.xml.h:31
+#, fuzzy
+msgid "Stop sound"
+msgstr "Lyd"
+
+#: grecord/gsr.xml.h:32
+msgid "_About"
+msgstr ""
+
+#: grecord/gsr.xml.h:33
+msgid "_Close Window"
+msgstr ""
+
+#: grecord/gsr.xml.h:34
+msgid "_Contents"
+msgstr ""
+
+#: grecord/gsr.xml.h:35
+#, fuzzy
+msgid "_Control"
+msgstr "Senter"
+
+#: grecord/gsr.xml.h:36
+msgid "_File"
+msgstr ""
+
+#: grecord/gsr.xml.h:39
+msgid "_Open..."
+msgstr ""
+
+#: grecord/gsr.xml.h:40
+#, fuzzy
+msgid "_Play"
+msgstr "Spel"
+
+#: grecord/gsr.xml.h:41
+#, fuzzy
+msgid "_Quit"
+msgstr "Avslutt"
+
+#: grecord/gsr.xml.h:42
+#, fuzzy
+msgid "_Record"
+msgstr "Ta opp"
+
+#: grecord/gsr.xml.h:43
+msgid "_Save"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:249
+msgid "Failure instantiating main window"
+msgstr ""
+
+#. Fatal error
+#: gstreamer-properties/gstreamer-properties.c:289
+#, fuzzy, c-format
+msgid "Could not load UI resource %s"
+msgstr "Klarte ikkje å starte prosess"
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:1
+msgid "Configure defaults for GStreamer applications"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.desktop.in.h:2
+msgid "GStreamer"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:1
+msgid "*"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:2
+msgid "<span weight=\"bold\" size=\"x-large\">Testing...</span>"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:3
+#, fuzzy
+msgid "Audio"
+msgstr "Lydmiksar"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:4
+#, fuzzy
+msgid "Audio _Input:"
+msgstr "Lydformat:"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:5
+#, fuzzy
+msgid "Audio _Output:"
+msgstr "Phone ut"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:6
+msgid "Click Ok to finish"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:7
+msgid "Default Sink"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:8
+msgid "Default Source"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:9
+#, fuzzy
+msgid "GStreamer Properties"
+msgstr "CDDB-innstillingar"
+
+#: gstreamer-properties/gstreamer-properties.glade.h:10
+msgid "Pipeline:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:11
+msgid "Test..."
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:12
+msgid "Testing Pipeline"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:14
+msgid "Video _Input:"
+msgstr ""
+
+#: gstreamer-properties/gstreamer-properties.glade.h:15
+#, fuzzy
+msgid "Video _Output:"
+msgstr "Phone ut"
+
+#: gstreamer-properties/pipeline-test-old.c:215
+#: gstreamer-properties/pipeline-tests.c:111
+#, c-format
+msgid "Failed to construct test pipeline for '%s'"
+msgstr ""
 
 #: vu-meter/main.c:120
 msgid ""
@@ -2146,12 +2700,33 @@ msgid "Volume monitor"
 msgstr "Volummålar"
 
 #, fuzzy
+#~ msgid "Gnome Volume Control"
+#~ msgstr "Volumkontroll"
+
+#~ msgid "Copyright (C) 2001, 2002"
+#~ msgstr "Opphavsrett © 2001, 2002"
+
+#~ msgid "A GNOME cd player"
+#~ msgstr "Ein GNOME cd-spelar"
+
+#~ msgid "_About Gnome-CD"
+#~ msgstr "_Om Gnome-cd"
+
+#, fuzzy
 #~ msgid "CDDB"
 #~ msgstr "CD"
 
-#, fuzzy
-#~ msgid "CDDB Properties"
-#~ msgstr "CDDB-innstillingar"
+#~ msgid "don't restore mixer-settings from configuration"
+#~ msgstr "ikkje gjenopprett miksarinnstillingar frå konfigurasjon"
+
+#~ msgid "restore mixer-settings from configuration"
+#~ msgstr "gjenopprett miksarinnstillingar frå konfigurasjon"
+
+#~ msgid "initialise the mixer(s) from stored configuration and exit"
+#~ msgstr "initialiser miksar(ane) frå lagre konfigurasjon og avslutt"
+
+#~ msgid "don't save (modified) mixer-settings into configuration"
+#~ msgstr "ikkje lagre (endra) mikserinnstillage til konfigurasjonen"
 
 #~ msgid "On startup"
 #~ msgstr "Ved oppstart"
@@ -2187,15 +2762,6 @@ msgstr "Volummålar"
 
 #~ msgid "GMIX - The Gnome Mixer"
 #~ msgstr "GMIX - Gnome miksaren"
-
-#~ msgid "Hide menu on start"
-#~ msgstr "Gøym menyen ved oppstart"
-
-#~ msgid "Defaults"
-#~ msgstr "Forval"
-
-#~ msgid "Open mixer"
-#~ msgstr "Opne miksar"
 
 #~ msgid "Open Mixer"
 #~ msgstr "Opne miksar"
@@ -2233,9 +2799,6 @@ msgstr "Volummålar"
 #~ msgid "Forever"
 #~ msgstr "For alltid"
 
-#~ msgid "Path to mixer:"
-#~ msgstr "Sti til miksar:"
-
 #~ msgid "Directories"
 #~ msgstr "Katalogar"
 
@@ -2247,9 +2810,6 @@ msgstr "Volummålar"
 
 #~ msgid "User interface"
 #~ msgstr "Brukargrensesnitt"
-
-#~ msgid "GNOME Sound recorder"
-#~ msgstr "GNOME lydopptakar"
 
 #~ msgid ""
 #~ "You havn't entered a sox command; you will not be able to record.\n"
@@ -2384,9 +2944,6 @@ msgstr "Volummålar"
 #~ msgid "Use proxy authentication"
 #~ msgstr "Bruk proxy-autentisering"
 
-#~ msgid "Username"
-#~ msgstr "Brukarnamn"
-
 #~ msgid "Password"
 #~ msgstr "Passord"
 
@@ -2444,9 +3001,6 @@ msgstr "Volummålar"
 #~ msgid "Skip forwards"
 #~ msgstr "Spol framover"
 
-#~ msgid "Quit"
-#~ msgstr "Avslutt"
-
 #~ msgid "Volume Up"
 #~ msgstr "Auk lydstyrke"
 
@@ -2470,17 +3024,11 @@ msgstr "Volummålar"
 #~ msgid "FILE"
 #~ msgstr "FILE"
 
-#~ msgid "Play CD on startup"
-#~ msgstr "Køyr ved oppstart"
-
 #~ msgid "Trk"
 #~ msgstr "Spor"
 
 #~ msgid "Disc Information (%02u:%02u minutes)"
 #~ msgstr "Plateinformasjon (%02u:02u minutt)"
-
-#~ msgid "Track Information"
-#~ msgstr "Informasjon om spor"
 
 #~ msgid "Clear"
 #~ msgstr "Tøm"
@@ -2490,9 +3038,6 @@ msgstr "Volummålar"
 
 #~ msgid "Submit"
 #~ msgstr "Send"
-
-#~ msgid "Submit Information"
-#~ msgstr "Send inn informasjon"
 
 #~ msgid ""
 #~ "Submit information about\n"
@@ -2529,9 +3074,6 @@ msgstr "Volummålar"
 
 #~ msgid "Mixer..."
 #~ msgstr "Miksar ..."
-
-#~ msgid "Close tray"
-#~ msgstr "Nedre skuff"
 
 #~ msgid "Mixer Command"
 #~ msgstr "Mikserkommando"
@@ -2580,9 +3122,3 @@ msgstr "Volummålar"
 
 #~ msgid "ESD Volume Meter"
 #~ msgstr "ESD lydmålar"
-
-#~ msgid "A simple soundrecording program for GNOME"
-#~ msgstr "Eit enkelt lydredigeringsprogram for GNOME"
-
-#~ msgid "Audio Mixer"
-#~ msgstr "Lydmiksar"

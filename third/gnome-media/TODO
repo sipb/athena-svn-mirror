@@ -29,6 +29,11 @@ CDDBSlave:
 VU-Meter:
  * Done.
 
+gstreamer-properties:
+ * spec it
+ * fix it
+ * make it run uninstalled
+
 Misc:
  * Documentation.
 

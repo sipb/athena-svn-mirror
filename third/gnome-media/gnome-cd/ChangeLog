@@ -1,3 +1,141 @@
+2003-01-23  Irene Ryan <irene.ryan@sun.com>
+
+	* help/C/gnome-cd.xml: updated the help manual for GNOME 2.2
+	* help/C/gnome-cd-C.omf: updated the manual release info  
+	
+2003-01-11 Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* linux-cdrom.c (linux_cdrom_play): Added a break statment 
+	* solaris-cdrom.c (solaris_cdrom_play): Added a break statment 
+	* freebsd-cdrom.c (freebsd_cdrom_play): Added a break statment 
+
+2003-01-09 Iain <iain@prettypeople.org>
+
+	* gnome-cd.c (main): Apply patch from Owen Taylor for bug 102984
+
+2002-12-16  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore: Updated.
+	* callbacks.c: Revamped about dialog.
+
+2002-12-09 Iain <iain@prettypeople.org>
+
+	* callbacks.c (about_cb): Remove translation, add extra copyright
+
+2002-12-07 Iain <iain@prettypeople.org>
+
+	* gnome-cd.c: Register buttons as stock buttons
+
+	* theme.c: Remove loads of crap.
+
+2002-12-07 Iain <iain@prettypeople.org>
+
+	* gnome-cd.c (main): Show the window initially.
+
+2002-12-07 Iain <iain@prettypeople.org>
+
+	* callbacks.c (status_ok): Fix memory leak, check we don't deref a 0x0
+
+2002-12-03  Christian Neumair  <chris@gnome-de.org>
+
+	* callbacks.c: Revamped about dialog.
+
+2002-10-09  Havoc Pennington  <hp@pobox.com>
+
+	* preferences.c (preferences_dialog_show): call it "CD Player"
+
+	* gnome-cd.c (gnome_cd_set_window_title): change title to "CD
+	Player"
+	(init_player): change title to "CD Player", and set 
+	window role instead of window class for ICCCM compliance.
+	Matched window stuff should still be able to key off the role, 
+	I know it can in Sawfish.
+
+2002-10-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* preferences (create_theme_model): Add call to closedir().
+	Fixes a leak.
+	
+2002-10-10 Iain <iain@prettypeople.org>
+
+	* gnome-cd.c (gnome_cd_set_window_title): Swap the title and artist
+	around.
+	(init_player): Make the error dialogs have good grammar form. :)
+	Call it the CD player everywhere.
+	(callbacks.c): Call it CD player.
+	(preferences.c: Call it CD player.
+
+2002-10-09 Iain <iain@prettypeople.org>
+
+	*: Applied Redhat patches from Owen Taylor.
+
+2002-08-30  Pier Luigi Fiorini  <plfiorini@supereva.it>
+
+       * Makefile.am: Added eggtrayicon.[ch] to the SOURCES.
+
+       * gnome-cd.c (init_player), gnome-cd.h:
+       * callbacks.c (tray_icon_clicked):
+       * callbacks.c (status_ok):
+       Added the tray icon support, fixed bug #57553.
+
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* gnome-cd.[ch]:
+	* preferences.c: Applied Owen's patch to add a --device option.
+	 
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* gnome-cd.schemas.in.in: Added descriptions
+
+2002-10-08 Iain <iain@prettypeople.org>
+
+	* gnome-cd.schemas: Made the default on ext to stop
+
+2002-09-24 Muktha <muktha.narayan@wipro.com>
+
+	* preferences.c: Added accessible descriptions for the
+	  radio buttons. Fixes issue 2 of #90550.
+
+2002-10-07 Iain <iain@prettypeople.org>
+
+	* preferences.c (preferences_dialog_show): Don't allow the close button
+	to work if the device isn't right.
+	(apply_clicked_cb): Ditto
+
+	* cdrom.c (cdrom_get_status): Free status in the right place.
+
+2002-10-07 Iain <iain@prettypeople.org>
+
+	* cdrom.c (cdrom_set_device): Check if the device is ! NULL.
+	(cdrom_init): Set the device to /dev/cdrom.
+	(timeout_update_cd): When get_status returns FALSE, status is not valid.
+
+	* gnome-cd.c (init_player): Get a new cdrom device once the device is 
+	set. If it is not valid, get it again.
+
+	* linux-cdrom (linux_cdrom_get_status): Free real status
+
+2002-10-07  Iain <iain@prettypeople.org>
+
+	* gnome-cd.c
+	freebsd-cdrom.c
+	linux-cdrom.c
+	cdrom.c
+	solaris-cdrom.c: Fixed memory leaks
+
+2002-08-30  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* gnome-cd.c (init_player): Made changes so that the "Invalid CD 
+	Device" error message shows error details only after clicking 
+	Details button.  Bug#91776
+	
+	* cdrom.c : Changed the the linux specific error message to a 
+	generic one.  Bug#91776
+
+2002-10-07 Iain <iain@prettypeople.org>
+
+	* solaris.c: Remove debugging spew from Bala
+
 2002-09-23 Iain <iain@prettypeople.org>
 
 	* gnome-cd.desktop.in: Fixed spelling

@@ -50,7 +50,7 @@ gnet_io_channel_writen (GIOChannel    *channel,
 			guint         *bytes_written)
 {
   guint nleft;
-  guint nwritten;
+  gsize nwritten;
   gchar* ptr;
   GIOError error = G_IO_ERROR_NONE;
 
@@ -107,7 +107,7 @@ gnet_io_channel_readn (GIOChannel    *channel,
 		       guint         *bytes_read)
 {
   guint nleft;
-  guint nread;
+  gsize nread;
   gchar* ptr;
   GIOError error = G_IO_ERROR_NONE;
 

@@ -88,11 +88,18 @@ GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMIX_LIBS = @GMIX_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOMECC_DESKTOP_DIR = @GNOMECC_DESKTOP_DIR@
+GSR_CFLAGS = @GSR_CFLAGS@
+GSR_LIBS = @GSR_LIBS@
+GSTPROPS_CFLAGS = @GSTPROPS_CFLAGS@
+GSTPROPS_GLADE_DIR = @GSTPROPS_GLADE_DIR@
+GSTPROPS_ICONS_DIR = @GSTPROPS_ICONS_DIR@
+GSTPROPS_LIBS = @GSTPROPS_LIBS@
+GSTPROPS_MEDIA_DIR = @GSTPROPS_MEDIA_DIR@
+GSTPROPS_PIXMAPS_DIR = @GSTPROPS_PIXMAPS_DIR@
 HAVE_JW = @HAVE_JW@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -102,10 +109,12 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -125,14 +134,16 @@ PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PROGRAMS_GMIX = @PROGRAMS_GMIX@
 PROGRAMS_GNOME_CD = @PROGRAMS_GNOME_CD@
 PROGRAMS_GRECORD = @PROGRAMS_GRECORD@
+PROGRAMS_GSTPROPS = @PROGRAMS_GSTPROPS@
 PROGRAMS_VUMETER = @PROGRAMS_VUMETER@
 RANLIB = @RANLIB@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SDTAUDIOCONTROL = @SDTAUDIOCONTROL@
-SOX_PATH = @SOX_PATH@
 STRIP = @STRIP@
 USE_CD_CHANGER = @USE_CD_CHANGER@
 USE_NLS = @USE_NLS@
@@ -140,28 +151,34 @@ VERSION = @VERSION@
 VUMETER_CFLAGS = @VUMETER_CFLAGS@
 VUMETER_LIBS = @VUMETER_LIBS@
 default_cd_device = @default_cd_device@
-path_to_sox = @path_to_sox@
 
 INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-I$(top_srcdir)/intl \
-	$(MEDIA_CFLAGS)		\
+	$(GSR_CFLAGS)		\
 	-DDATADIR=\""$(datadir)"\"		\
+	-DGSR_DATADIR=\""$(datadir)/gnome-sound-recorder"\"	\
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\"
 
 
 bin_PROGRAMS = gnome-sound-recorder
 
+#gnome_sound_recorder_SOURCES = \
+#	main.c \
+#	gui.c gui.h \
+#	grec.c grec.h \
+#	preferences.c preferences.h \
+#	sound.c sound.h \
+#	prog.h
+
 gnome_sound_recorder_SOURCES = \
-	main.c \
-	gui.c gui.h \
-	grec.c grec.h \
-	preferences.c preferences.h \
-	sound.c sound.h \
-	prog.h
+	gnome-recorder.c	\
+	gnome-recorder.h	\
+	gsr-window.c		\
+	gsr-window.h
 
 
-gnome_sound_recorder_LDADD = $(MEDIA_LIBS) $(INTLLIBS)
+gnome_sound_recorder_LDADD = $(GSR_LIBS) $(INTLLIBS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -171,8 +188,8 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LIBS = @LIBS@
-gnome_sound_recorder_OBJECTS =  main.$(OBJEXT) gui.$(OBJEXT) \
-grec.$(OBJEXT) preferences.$(OBJEXT) sound.$(OBJEXT)
+gnome_sound_recorder_OBJECTS =  gnome-recorder.$(OBJEXT) \
+gsr-window.$(OBJEXT)
 gnome_sound_recorder_DEPENDENCIES = 
 gnome_sound_recorder_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -317,12 +334,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-grec.o: grec.c ../../config.h grec.h gui.h preferences.h sound.h prog.h
-gui.o: gui.c ../../config.h grec.h gui.h preferences.h sound.h prog.h
-main.o: main.c ../../config.h gui.h grec.h prog.h preferences.h
-preferences.o: preferences.c ../../config.h gui.h grec.h preferences.h \
-	prog.h
-sound.o: sound.c ../../config.h sound.h gui.h grec.h prog.h
+gnome-recorder.o: gnome-recorder.c ../../config.h gnome-recorder.h \
+	gsr-window.h
+gsr-window.o: gsr-window.c ../../config.h gnome-recorder.h gsr-window.h
 
 info-am:
 info: info-am

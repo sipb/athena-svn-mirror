@@ -16,16 +16,16 @@ GNOME_Media_CDDBTrackEditor_setDiscID(GNOME_Media_CDDBTrackEditor _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBTrackEditor__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBTrackEditor__classid))->setDiscID) {
+	(POA_GNOME_Media_CDDBTrackEditor__epv *) ORBIT_STUB_GetEpv(_obj,
+								   GNOME_Media_CDDBTrackEditor__classid))->
+       setDiscID) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setDiscID(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBTrackEditor__iinterface.
 				methods, 0, NULL, _args, NULL, ev);
@@ -41,8 +41,8 @@ GNOME_Media_CDDBTrackEditor_showWindow(GNOME_Media_CDDBTrackEditor _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBTrackEditor__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBTrackEditor__classid))->
+	(POA_GNOME_Media_CDDBTrackEditor__epv *) ORBIT_STUB_GetEpv(_obj,
+								   GNOME_Media_CDDBTrackEditor__classid))->
        showWindow) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->showWindow(ORBIT_STUB_GetServant(_obj), ev);
@@ -68,17 +68,22 @@ GNOME_Media_CDDBSlave2_query(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->query) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       query) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->query(ORBIT_STUB_GetServant(_obj), discid, ntrks, offsets,
 			nsecs, name, version, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & ntrks, (gpointer) & offsets,
-	    (gpointer) & nsecs, (gpointer) & name, (gpointer) & version
-      };
+      gpointer _args[6];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & ntrks;
+      _args[2] = (gpointer) & offsets;
+      _args[3] = (gpointer) & nsecs;
+      _args[4] = (gpointer) & name;
+      _args[5] = (gpointer) & version;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				0, NULL, _args, NULL, ev);
@@ -94,15 +99,16 @@ GNOME_Media_CDDBSlave2_save(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->save) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       save) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->save(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				1, NULL, _args, NULL, ev);
@@ -120,17 +126,17 @@ GNOME_Media_CDDBSlave2_getArtist(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->getArtist) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getArtist) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getArtist(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				2, &_ORBIT_retval, _args, NULL, ev);
@@ -150,16 +156,17 @@ GNOME_Media_CDDBSlave2_setArtist(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->setArtist) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setArtist) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setArtist(ORBIT_STUB_GetServant(_obj), discid, artist, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & artist
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & artist;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				3, NULL, _args, NULL, ev);
@@ -177,17 +184,17 @@ GNOME_Media_CDDBSlave2_getDiscTitle(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->getDiscTitle) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getDiscTitle) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getDiscTitle(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				4, &_ORBIT_retval, _args, NULL, ev);
@@ -207,17 +214,18 @@ GNOME_Media_CDDBSlave2_setDiscTitle(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->setDiscTitle) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setDiscTitle) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setDiscTitle(ORBIT_STUB_GetServant(_obj), discid, disctitle,
 			       ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & disctitle
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & disctitle;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				5, NULL, _args, NULL, ev);
@@ -235,16 +243,17 @@ GNOME_Media_CDDBSlave2_getNTrks(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->getNTrks) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getNTrks) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getNTrks(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				6, &_ORBIT_retval, _args, NULL, ev);
@@ -264,17 +273,18 @@ GNOME_Media_CDDBSlave2_getAllTracks(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->getAllTracks) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getAllTracks) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->getAllTracks(ORBIT_STUB_GetServant(_obj), discid, names,
 			       ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, names
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = names;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				7, NULL, _args, NULL, ev);
@@ -292,17 +302,18 @@ GNOME_Media_CDDBSlave2_setAllTracks(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->setAllTracks) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setAllTracks) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setAllTracks(ORBIT_STUB_GetServant(_obj), discid, names,
 			       ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) names
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) names;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				8, NULL, _args, NULL, ev);
@@ -320,17 +331,17 @@ GNOME_Media_CDDBSlave2_getComment(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->getComment) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getComment) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getComment(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				9, &_ORBIT_retval, _args, NULL, ev);
@@ -350,17 +361,18 @@ GNOME_Media_CDDBSlave2_setComment(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj,
-			  GNOME_Media_CDDBSlave2__classid))->setComment) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setComment) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setComment(ORBIT_STUB_GetServant(_obj), discid, comment,
 			     ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & comment
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & comment;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				10, NULL, _args, NULL, ev);
@@ -378,16 +390,17 @@ GNOME_Media_CDDBSlave2_getYear(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->getYear) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getYear) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getYear(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				11, &_ORBIT_retval, _args, NULL, ev);
@@ -406,15 +419,17 @@ GNOME_Media_CDDBSlave2_setYear(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->setYear) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setYear) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setYear(ORBIT_STUB_GetServant(_obj), discid, year, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & year
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & year;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				12, NULL, _args, NULL, ev);
@@ -432,16 +447,17 @@ GNOME_Media_CDDBSlave2_getGenre(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->getGenre) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       getGenre) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval =
 	 _ORBIT_epv->getGenre(ORBIT_STUB_GetServant(_obj), discid, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & discid;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				13, &_ORBIT_retval, _args, NULL, ev);
@@ -461,15 +477,17 @@ GNOME_Media_CDDBSlave2_setGenre(GNOME_Media_CDDBSlave2 _obj,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Media_CDDBSlave2__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Media_CDDBSlave2__classid))->setGenre) {
+	(POA_GNOME_Media_CDDBSlave2__epv *) ORBIT_STUB_GetEpv(_obj,
+							      GNOME_Media_CDDBSlave2__classid))->
+       setGenre) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->setGenre(ORBIT_STUB_GetServant(_obj), discid, genre, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & discid, (gpointer) & genre
-      };
+      gpointer _args[2];
 
+      _args[0] = (gpointer) & discid;
+      _args[1] = (gpointer) & genre;
       ORBit_small_invoke_stub_n(_obj,
 				&GNOME_Media_CDDBSlave2__iinterface.methods,
 				14, NULL, _args, NULL, ev);

@@ -12,21 +12,4 @@
 
 		<image location="middle">middle.png</image>
 	</display>
-
-	<icons>
-		<image button="previous">a-first.png</image>
-		<image button="rewind">a-rwnd.png</image>
-		<image button="play">a-play.png</image>
-		<image button="pause">a-pause.png</image>
-		<image button="stop">a-stop.png</image>
-		<image button="forward">a-fwd.png</image>
-		<image button="next">a-last.png</image>
-		<image button="eject">a-eject.png</image>
-		
-		<image menu="previous">a-first-menu.png</image>
-		<image menu="stop">a-stop-menu.png</image>
-		<image menu="play">a-play-menu.png</image>
-		<image menu="next">a-last-menu.png</image>
-		<image menu="eject">a-eject-menu.png</image>
-	</icons>
 </gnome-cd>

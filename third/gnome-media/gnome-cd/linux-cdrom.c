@@ -232,6 +232,7 @@ linux_cdrom_eject (GnomeCDRom *cdrom,
 
 	if (gnome_cdrom_get_status (cdrom, &status, error) == FALSE) {
 		linux_cdrom_close (lcd);
+		g_free (status);
 		return FALSE;
 	}
 
@@ -411,6 +412,7 @@ linux_cdrom_play (GnomeCDRom *cdrom,
 
 	if (gnome_cdrom_get_status (cdrom, &status, error) == FALSE) {
 		linux_cdrom_close (lcd);
+		g_free (status);
 		return FALSE;
 	}
 
@@ -438,6 +440,7 @@ linux_cdrom_play (GnomeCDRom *cdrom,
 	/* Get the status again: It might have changed */
 	if (gnome_cdrom_get_status (GNOME_CDROM (lcd), &status, error) == FALSE) {
 		linux_cdrom_close (lcd);
+		g_free (status);
 		return FALSE;
 	}
 	if (status->cd != GNOME_CDROM_STATUS_OK) {
@@ -460,6 +463,7 @@ linux_cdrom_play (GnomeCDRom *cdrom,
 			linux_cdrom_close (lcd);
 			return FALSE;
 		}
+		break;
 
 	case GNOME_CDROM_AUDIO_NOTHING:
 	case GNOME_CDROM_AUDIO_COMPLETE:
@@ -539,6 +543,7 @@ linux_cdrom_pause (GnomeCDRom *cdrom,
 
 	if (gnome_cdrom_get_status (cdrom, &status, error) == FALSE) {
 		linux_cdrom_close (lcd);
+		g_free (status);
 		return FALSE;
 	}
 
@@ -607,6 +612,7 @@ linux_cdrom_stop (GnomeCDRom *cdrom,
 
 	if (gnome_cdrom_get_status (cdrom, &status, error) == FALSE) {
 		linux_cdrom_close (lcd);
+		g_free (status);
 		return FALSE;
 	}
 
@@ -792,8 +798,9 @@ linux_cdrom_get_status (GnomeCDRom *cdrom,
 	realstatus->volume = 0;
 	
 	if (linux_cdrom_open (lcd, error) == FALSE) {
-		g_free (realstatus);
 		linux_cdrom_close (lcd);
+		g_free (realstatus);
+		*status = NULL;
 		return FALSE;
 	}
 
@@ -846,6 +853,7 @@ linux_cdrom_get_status (GnomeCDRom *cdrom,
 
 		linux_cdrom_close (lcd);
 		g_free (realstatus);
+		*status = NULL;
 		return FALSE;
 	}
 
@@ -860,6 +868,7 @@ linux_cdrom_get_status (GnomeCDRom *cdrom,
 
 		linux_cdrom_close (lcd);
 		g_free (realstatus);
+		*status = NULL;
 		return FALSE;
 	}
 

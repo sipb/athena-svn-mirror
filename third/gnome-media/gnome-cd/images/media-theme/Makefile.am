@@ -9,20 +9,7 @@ BITMAPS = 		\
 	    middle-right.png	\
 	    top.png		\
 	    bottom.png		\
-	    middle.png		\
-	    a-eject-menu.png	\
-	    media-eject.png		\
-	    a-first-menu.png	\
-	    media-prev.png		\
-	    media-fwd.png		\
-	    a-last-menu.png	\
-	    media-next.png		\
-	    media-pause.png		\
-	    a-play-menu.png	\
-	    media-play.png		\
-	    media-rew.png		\
-	    a-stop-menu.png	\
-	    media-stop.png
+	    middle.png
 	    
 pixmap_DATA = $(BITMAPS) media.theme
 
