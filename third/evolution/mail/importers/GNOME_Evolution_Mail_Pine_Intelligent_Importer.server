@@ -26,10 +26,14 @@
 		       value="Evolution Pine-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Pine di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Pine インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution pine-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Pine for Evolutions"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Pine dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Pine do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -70,10 +74,14 @@
 		       value="Evolution Pine-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Pine di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Pine インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution pine-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Pine for Evolutions"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Pine dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Pine do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

@@ -14,6 +14,8 @@
                        value="Кніга адрэсаў &quot;Эвалюцыі&quot;"/>
 	<oaf_attribute name="name-cs" type="string"
                        value="Adresář Evolution"/>
+	<oaf_attribute name="name-cy" type="string"
+                       value="Llyfr Cyfeiriadau Evolution"/>
 	<oaf_attribute name="name-da" type="string"
                        value="Evolution adressebog"/>
 	<oaf_attribute name="name-de" type="string"
@@ -28,14 +30,20 @@
                        value="Evolution Címjegyzék"/>
 	<oaf_attribute name="name-it" type="string"
                        value="Rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+                       value="Evolution アドレス帳"/>
 	<oaf_attribute name="name-ko" type="string"
                        value="Evolution 주소록"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Evolution адресар"/>
+	<oaf_attribute name="name-ms" type="string"
+                       value="Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution adresboek"/>
 	<oaf_attribute name="name-no" type="string"
                        value="Evolution adressebok"/>
+	<oaf_attribute name="name-pl" type="string"
+                       value="Książka adresowa Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
                        value="Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -87,12 +95,18 @@
 		       value="Evolution Címjegyzék kártyanéző"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Visualizzatore di card della rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution アドレス帳カード・ビューア"/>
 	<oaf_attribute name="name-mk" type="string"
 		       value="Еволутион адресар прегледувач на карти"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Pemandang kad Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution adresboek kaartweergave"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Evolution adressebok kortvisning"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Przeglądarka kart książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Visualizador de cartões do Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -137,12 +151,18 @@
                        value="Evolution Címjegyzék mappanéző"/>
 	<oaf_attribute name="name-it" type="string"
                        value="Visualizzatore di cartelle della rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+                       value="Evolution アドレス帳フォルダ・ビューア"/>
 	<oaf_attribute name="name-mk" type="string"
                        value="Еволутион адресар прегледувач на датотека"/>
+	<oaf_attribute name="name-ms" type="string"
+                       value="Pemandang folder Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution adresboek mapweergave"/>
 	<oaf_attribute name="name-no" type="string"
                        value="Evolution adressebok mappevisning"/>
+	<oaf_attribute name="name-pl" type="string"
+                       value="Przeglądarka folderów książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
                        value="Visualizador de pasta de Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -188,12 +208,18 @@
 	               value="Evolution Címjegyzék komponens"/>
 	<oaf_attribute name="name-it" type="string"
 	               value="Componente della rubrica di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+	               value="Evolution アドレス帳コンポーネント"/>
 	<oaf_attribute name="name-mk" type="string"
 	               value="Еволутион адресар компонента"/>
+	<oaf_attribute name="name-ms" type="string"
+	               value="Komponen Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
 	               value="Evolution adresboekcomponent"/>
 	<oaf_attribute name="name-no" type="string"
 	               value="Evolution adressebok-komponent"/>
+	<oaf_attribute name="name-pl" type="string"
+	               value="Komponent książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 	               value="Componente de Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -243,12 +269,18 @@
 		       value="Evolution Címjegyzék címnéző"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Visualizzatore di indirizzi della rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution アドレス帳アドレス・ビューア"/>
 	<oaf_attribute name="name-mk" type="string"
 		       value="Еволутион адресар прегледувач на адреса"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Pemandang alamat Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution adresboek adresweergave"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Evolution adressebok adressevisning"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Przeglądarka adresów książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Visualizador de endereços do Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -293,10 +325,16 @@
 		       value="Evolution Címjegyzék előugró címek"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Pop-up della rubrica di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolutoin アドレス帳アドレス・ポップアップ"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Pop-up alamat Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution adresboek adrespopup"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Evolution adressebok adressedialog"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Wyskakujące okno zawierające adres z książki adresowej Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Popup de endereços do Livro de Endereços Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -341,19 +379,23 @@
 	<oaf_attribute name="evolution:config_item:title-it" type="string"
 		       value="Server di directory"/>
 	<oaf_attribute name="evolution:config_item:title-ja" type="string"
-		       value="ディレクトリサーバー"/>
+		       value="ディレクトリ・サーバ"/>
 	<oaf_attribute name="evolution:config_item:title-ko" type="string"
 		       value="디렉토리 서버"/>
 	<oaf_attribute name="evolution:config_item:title-lv" type="string"
 		       value="Direktoriju serveri"/>
 	<oaf_attribute name="evolution:config_item:title-mk" type="string"
 		       value="Directory сервери"/>
+	<oaf_attribute name="evolution:config_item:title-ms" type="string"
+		       value="Pelayan Direktori"/>
 	<oaf_attribute name="evolution:config_item:title-nl" type="string"
 		       value="Adresboekservers"/>
 	<oaf_attribute name="evolution:config_item:title-nn" type="string"
 		       value="Katalogtenarar"/>
 	<oaf_attribute name="evolution:config_item:title-no" type="string"
 		       value="Katalogtjenere"/>
+	<oaf_attribute name="evolution:config_item:title-pl" type="string"
+		       value="Serwery katalogowe"/>
 	<oaf_attribute name="evolution:config_item:title-pt" type="string"
 		       value="Servidores Directório"/>
 	<oaf_attribute name="evolution:config_item:title-pt_BR" type="string"
@@ -399,14 +441,20 @@
 		       value="Itt állíthatod be az LDAP címtárkiszolgálók elérését."/>
 	<oaf_attribute name="evolution:config_item:description-it" type="string"
 		       value="Configura qui l&apos;accesso ai server di directory LDAP"/>
+	<oaf_attribute name="evolution:config_item:description-ja" type="string"
+		       value="この LDAP ディレクトリ・サーバへのアクセス設定"/>
 	<oaf_attribute name="evolution:config_item:description-lv" type="string"
 		       value="Šeit konfigurējiet pieeju LDAP direktoriju serveriem"/>
 	<oaf_attribute name="evolution:config_item:description-mk" type="string"
 		       value="Тука подеси го пристапот до LDAP серверот"/>
+	<oaf_attribute name="evolution:config_item:description-ms" type="string"
+		       value="Membuat konfigurasi capaian kepada pelayan direktori LDAP di sini"/>
 	<oaf_attribute name="evolution:config_item:description-nl" type="string"
-		       value="Hier kunt u de toegang tot LDAP servers instellen"/>
+		       value="Hier kunt u de toegang tot LDAP-servers instellen"/>
 	<oaf_attribute name="evolution:config_item:description-no" type="string"
 		       value="Konfigurer tilgang til LDAP-katalogtjenere her"/>
+	<oaf_attribute name="evolution:config_item:description-pl" type="string"
+		       value="Konfiguracja dostępu do serwerów katalogowych LDAP"/>
 	<oaf_attribute name="evolution:config_item:description-pt" type="string"
 		       value="Configurar aqui acesso a servidores de directório LDAP"/>
 	<oaf_attribute name="evolution:config_item:description-pt_BR" type="string"
@@ -459,8 +507,12 @@
 		       value="Evolution Címjegyzék LDAP-beállító vezérlője"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Controllo di configurazione per la rubrica LDAP di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution アドレス帳 LDAP 設定コントロール"/>
 	<oaf_attribute name="name-mk" type="string"
 		       value="Еволутион адресар LDAP  Конфигурациона контрола"/>
+	<oaf_attribute name="name-ms" type="string"
+		       value="Kawalan Konfigurasi LDAP Buku Alamat Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution adresboek LDAP-configuratie"/>
 	<oaf_attribute name="name-no" type="string"
