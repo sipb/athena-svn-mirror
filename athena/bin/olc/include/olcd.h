@@ -13,12 +13,15 @@
  *      Tom Coppeto
  *      MIT Project Athena
  *
- *      Copyright (c) 1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: vanharen $
- *      $Id: olcd.h,v 1.17 1990-04-26 08:41:59 vanharen Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
+ *	$Id: olcd.h,v 1.18 1990-05-26 11:06:17 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 #ifndef __olcd_h
 #define __olcd_h __FILE__

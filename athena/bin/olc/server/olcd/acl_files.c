@@ -1,24 +1,25 @@
 /*
+ * This file is part of the OLC On-Line Consulting system.
+ * It contains modified acl library code.
+ *
+ * Copyright (C) 1987,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Author: raeburn $
+ *	$Id: acl_files.c,v 1.5 1990-05-26 11:03:46 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.4 1989-12-14 22:55:55 raeburn Exp $";
-#endif lint
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.5 1990-05-26 11:03:46 vanharen Exp $";
+#endif
+
+#include <mit-copyright.h>
 
 /* CHANGES from std. file:  fixed fd leak and null ptr. deref.
  *                          increased cache size
  *                          decreased lock time
  */
-
-/*
-
-Copyright 1987 by the Massachusetts Institute of Technology
-
-All Rights Reserved.
-
-*/
 
 /*** Routines for manipulating access control list files ***/
 

@@ -15,13 +15,22 @@
  *      converted to use Hesiod in place of clustertab
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: raeburn $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
+ *	$Id: olcd.c,v 1.22 1990-05-26 11:06:11 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#ifndef lint
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.22 1990-05-26 11:06:11 vanharen Exp $";
+#endif
+
+#include <mit-copyright.h>
 
 #include <olc/lang.h>
 
@@ -51,9 +60,6 @@ extern "C" {
 #if is_cplusplus
 };
 #endif
-
-static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.21 1990-02-27 14:40:51 raeburn Exp $";
 
 /* Global variables. */
 

@@ -4,9 +4,18 @@
  * messages.
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- * $Id: syslog.c,v 1.4 1990-02-08 14:48:52 vanharen Exp $
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
+ *	$Id: syslog.c,v 1.5 1990-05-26 11:07:00 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#ifndef lint
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.5 1990-05-26 11:07:00 vanharen Exp $";
+#endif
+
+#include <mit-copyright.h>
 
 /*
  * If we're compiling with TEST, we want to use the stderr log, so
@@ -24,9 +33,6 @@
 #include <com_err.h>
 #include <olc/olc.h>
 #include "olcd.h"
-
-static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.4 1990-02-08 14:48:52 vanharen Exp $";
 
 #ifndef SYSLOG
 
