@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef _Jets_h
-#define _Jets_h
+#ifndef _Xj_Jets_h
+#define _Xj_Jets_h
 
 #include <strings.h>
 #include <X11/Xlib.h>
@@ -186,6 +186,8 @@ extern void XjStdinCallback();
 #define XjNcenterY "centerY"
 #define XjCJustify "Justify"
 #define XjNjustify "justify"
+#define XjNjustifyX "justifyX"
+#define XjNjustifyY "justifyY"
 #define XjCPixmap "Pixmap"
 #define XjNpixmap "pixmap"
 #define XjCPadding "Padding"
@@ -211,10 +213,14 @@ extern void XjStdinCallback();
 #define XjDefaultBackground "XjDefaultBackground"
 #define XjLeftJustify "left"
 #define XjRightJustify "right"
+#define XjTopJustify "top"
+#define XjBottomJustify "bottom"
 #define XjCenterJustify "center"
 #define XjVertical "vertical"
 #define XjHorizontal "horizontal"
 
+#define Top        -1
+#define Bottom      1
 #define Left       -1
 #define Right       1
 #define Center      0
@@ -306,4 +312,4 @@ typedef struct _RootClassRec *RootJetClass;
 #endif
 #endif
 
-#endif /* _Jets_h */
+#endif /* _Xj_Jets_h */
