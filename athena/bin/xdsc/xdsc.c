@@ -14,8 +14,12 @@ this software for any purpose.  It is provided "as is"
 without express or implied warranty.
 */
 
+#ifdef POSIX
+#include	<unistd.h>
+#endif
 #include	<stdio.h>
 #include	<strings.h>
+#include	<fcntl.h>
 
 #include	<X11/IntrinsicP.h>
 #include	<X11/StringDefs.h>
@@ -38,12 +42,11 @@ without express or implied warranty.
 #include	<X11/Xaw/Dialog.h>
 #include	<X11/Xaw/Form.h>
 #include	<X11/Xaw/Label.h>
-#ifdef SOLARIS
-#include        <sys/fcntl.h>
-#endif
 
 #include	"xdsc.h"
-
+#ifdef sgi
+#define vfork fork
+#endif
 static char rcsid[] = "";
 
 /*
@@ -365,7 +368,11 @@ SetUpEdsc()
 #ifdef sparc
 		strcpy (machtype, "sparc");
 #else
+#ifdef sgi
+		strcpy(machtype, "sgi");
+#else
 		Need to define for this machine
+#endif
 #endif
 #endif
 #endif
