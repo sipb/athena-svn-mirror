@@ -276,6 +276,7 @@ endif # installonly
 	( cd /build/$package ;  make depend >>& $outfile)
 	( cd /build/$package ;  make >>& $outfile)
 	( cd /build/$package ;  make test >>& $outfile)
+	( cd /build/$package ;  make install DESTDIR=$SRVD >>& $outfile)
 	breaksw
 
 	case third/unsupported/sysinfo
