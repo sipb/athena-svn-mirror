@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.19 2001-05-30 19:10:15 ghudson Exp $
+# $Id: xsession,v 1.20 2001-06-05 19:10:07 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -54,9 +54,12 @@ endif
 
 if (-r ~/.athena_dash_interface && ! $?NOCALLS) then
 	setenv ATHENA_DASH_INTERFACE
-else
+endif
+
+if (! $?ATHENA_DASH_INTERFACE) then
 	# Don't use the SGI desktop with the new interface by default,
-	# since it doesn't work especially well.
+	# since it doesn't work especially well.  The user can "unset
+	# skip_sgi" in .environment to override.
 	set skip_sgi
 endif
 
