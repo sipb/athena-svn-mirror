@@ -1,8 +1,0 @@
-#
-# comerr library Macintosh export file
-#
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/et/et.exp,v 1.1.1.2 2001-12-05 20:48:41 rbasch Exp $
-
-error_message
-add_error_table
-remove_error_table
