@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992  Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.2 1996-10-14 04:57:22 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.2.6.1 1999-08-04 19:19:59 ghudson Exp $";
 #endif
 /* enscript.c
  *
@@ -246,8 +246,6 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  * 
  *
  */
-#define POSTSCRIPTPRINTER "PostScript"
-
 #define BODYROMAN "Courier"
 #define HEADFONT "Courier-Bold"
 
@@ -1938,12 +1936,11 @@ private VOID SpoolIt()
 #ifdef SYSV
     addarg(argstr, "-c", &nargs);
 
-    if ((PrinterName == NULL) && ((PrinterName = envget("LPDEST")) == NULL)) {
-	PrinterName = POSTSCRIPTPRINTER;
+    if (PrinterName != NULL) {
+        VOIDC sprintf(temparg,"-d%s",PrinterName);
+        addarg(argstr, temparg, &nargs);
+        if (!BeQuiet) fprintf(stderr,"spooled to %s\n",PrinterName);
     }
-    VOIDC sprintf(temparg,"-d%s",PrinterName);
-    addarg(argstr, temparg, &nargs);
-    if (!BeQuiet) fprintf(stderr,"spooled to %s\n",PrinterName);
 
     if (spoolNotify) {
 	VOIDC sprintf(temparg,"-%c",spoolNotify);
@@ -1973,12 +1970,11 @@ private VOID SpoolIt()
 	VOIDC sprintf(temparg,"-#%s",spoolCopies);
 	addarg(argstr, temparg, &nargs);
     }
-    if ((PrinterName == NULL) && ((PrinterName = envget("PRINTER")) == NULL)){
-	PrinterName = POSTSCRIPTPRINTER;
+    if (PrinterName != NULL) {
+        VOIDC sprintf(temparg,"-P%s",PrinterName);
+	addarg(argstr, temparg, &nargs);
+	if (!BeQuiet) fprintf(stderr,"spooled to %s\n",PrinterName);
     }
-    VOIDC sprintf(temparg,"-P%s",PrinterName);
-    addarg(argstr, temparg, &nargs);
-    if (!BeQuiet) fprintf(stderr,"spooled to %s\n",PrinterName);
 
     if (spoolJobClass) {
 	addarg(argstr, "-C", &nargs);
@@ -2069,12 +2065,6 @@ main(argc, argv)
 
     if ((libdir = envget("PSLIBDIR")) == NULL) libdir = PSLibDir;
     if ((tempdir = envget("PSTEMPDIR")) == NULL) tempdir = TempDir;
-#ifdef SYSV
-    PrinterName = envget("LPDEST");
-#endif /* SYSV */
-#ifdef BSD
-    PrinterName = envget("PRINTER");
-#endif
 
     Roman = CurFont = DefineFont (BODYROMAN, 10);
     HeaderFont = DefineFont (HEADFONT, 10);
