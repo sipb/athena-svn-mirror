@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.9 1990-12-17 15:14:08 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.10 1990-12-21 15:54:02 mar Exp $
  */
 
 #include <stdio.h>
@@ -683,8 +683,8 @@ char *display;
      * xlogin's, it happens when you run xlogin from an xterm, then 
      * ttyslot returns wrong value for sessionPtr->ttydev
      */
-    sprintf(ut_entry.ut_line, tty);
-    strcpy(ut_entry.ut_name, user);
+    strncpy(ut_entry.ut_line, tty, 8);
+    strncpy(ut_entry.ut_name, user, 8);
     /* leave space for \0 */
     strncpy(ut_entry.ut_host, display, 15);
     ut_entry.ut_host[15] = 0;
