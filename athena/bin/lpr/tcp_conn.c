@@ -34,9 +34,6 @@ char *rhost;
     char hostString[512];
     char serviceName[512];
 
-    extern int sys_nerr;
-    extern char *sys_errlist[];
-
     /*
      * Get the host address and port number to connect to.
      */
@@ -59,11 +56,8 @@ char *rhost;
     sin.sin_family = AF_INET;
     sin.sin_port = sp->s_port;
 
-    if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        if ((errno > 0) && (errno <= sys_nerr))
-            fatal("Can't get socket: %s",sys_errlist[errno]);
-        else    fatal("Can't get socket, errno=%d",errno);
-    }
+    if ((s = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	fatal("Can't get socket: %s",strerror(errno));
     retries = 0;
     while (1) {
         if (connect(s, (caddr_t)&sin, sizeof(sin)) < 0) {
