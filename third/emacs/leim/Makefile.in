@@ -156,6 +156,7 @@ leim-list.el: ${SUBDIRS} ${WORLD}
 	fi
 
 install: all
+	$(srcdir)/../mkinstalldirs ${INSTALLDIR}
 	if [ x`(cd ${INSTALLDIR}; /bin/pwd)` != x`(/bin/pwd)` ] ; then \
 	  rm -rf ${INSTALLDIR}/leim-list.el; \
 	  rm -rf ${INSTALLDIR}/quail ${INSTALLDIR}/skk ; \
