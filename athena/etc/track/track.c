@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.3 1988-06-10 15:56:55 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.4 1988-06-20 18:53:42 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.3  88/06/10  15:56:55  don
+ * fixed two bugs: now, /tmp/sys_rvd.started is ug+w, thus deletable.
+ * also, -F/ & -T/ don't make paths that begin // anymore.
+ * 
  * Revision 4.2  88/06/10  12:27:18  don
  * added -I option, and changed -I to -d, -d to -W.
  * changed the way default subscriptiolist & statfile names get made.
@@ -106,7 +110,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.3 1988-06-10 15:56:55 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.4 1988-06-20 18:53:42 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -379,8 +383,16 @@ char **argv;
 
 	if ( writeflag)		/* -w: Write the exporting statfile */
 		writestat();
-	else	readstat();
-
+	else {
+		/* update in two passes: links & their parent-dirs first,
+		 * which frees up file-system space when links replace files,
+		 * then everything else. re-update dirs in second pass,
+		 * to facilitate statfile-traversal.
+		 */
+		readstat( "ld");
+		rewind( statfile);
+		readstat( "fdbc");
+	}
 	closestat();
 
 	clearlocks();
@@ -501,8 +513,8 @@ clearlocks()
 {
 	if ( !*lockpath) return;
 	if ( unlink( lockpath)) {
-		sprintf( errmsg, "can't remove lockfile %s", lockpath);
-		do_gripe();
+		fprintf( stderr, "can't remove lockfile %s", lockpath);
+		perror( "system error is: ");
 	}
 	else if ( verboseflag)
 		fprintf( stderr, "cleared lock %s\n",lockpath);
