@@ -1,0 +1,47 @@
+.\" $Id: athinfo.defs.5,v 1.1 1998-11-03 17:57:42 ghudson Exp $
+.\"
+.\" Copyright 1998 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.TH ATHINFO.DEFS 5 "30 Oct 1998"
+.SH NAME
+/etc/athena/athinfo.defs \- Define athinfo queries
+.SH DESCRIPTION
+The file
+.B /etc/athena/athinfo.defs
+defines the queries understood by the athinfo daemon (see
+.BR athinfod (8)).
+Blank lines and lines beginning with '#' are ignored.  Each line
+consists of a word giving the query name and a command to be executed
+by /bin/sh in response to the query.  The command executed will not
+receive input from the athinfo client.  For security reasons, the
+command should not depend on a network filesystem.
+.SH EXAMPLE
+The following example defines two queries, one to display the routing
+table and another to display the rc.conf file.
+.PP
+.RS
+.nf
+# Query		Command
+
+routes		netstat -rn
+rc.conf		cat /etc/athena/rc.conf
+.fi
+.RE
+.SH "SEE ALSO"
+.BR athinfod (8),
+.BR athinfo.access (5)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.
