@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.4 1987-08-01 15:30:26 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.5 1987-08-05 16:49:09 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.4 1987-08-01 15:30:26 rfrench Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.5 1987-08-05 16:49:09 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -43,6 +43,7 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 	notice.z_opcode = CLIENT_GIMMESUBS;
 	notice.z_sender = 0;
 	notice.z_recipient = "";
+	notice.z_default_format = 0;
 	notice.z_message_len = 0;
 
 	if ((retval = ZSendNotice(&notice,ZAUTH)) != ZERR_NONE)
