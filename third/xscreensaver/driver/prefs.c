@@ -1061,7 +1061,7 @@ merge_system_screenhacks (saver_preferences *p,
               made_space = 10;
               p->screenhacks = (screenhack **)
                 realloc (p->screenhacks,
-                         (p->screenhacks_count + made_space) 
+                         (p->screenhacks_count + made_space + 1)
                          * sizeof(screenhack));
               if (!p->screenhacks) abort();
             }
@@ -1072,6 +1072,7 @@ merge_system_screenhacks (saver_preferences *p,
           nh->command   = oh->command ? strdup(oh->command) : 0;
 
           p->screenhacks[p->screenhacks_count++] = nh;
+          p->screenhacks[p->screenhacks_count] = 0;
           made_space--;
 
 #if 0
@@ -1299,7 +1300,7 @@ format_hack (screenhack *hack, Bool wrap_p)
 static void
 get_screenhacks (saver_preferences *p)
 {
-  int i = 0;
+  int i, j;
   int start = 0;
   int end = 0;
   int size;
@@ -1332,15 +1333,14 @@ get_screenhacks (saver_preferences *p)
 
 
   /* Count up the number of newlines (which will be equal to or larger than
-     the number of hacks.)
+     one less than the number of hacks.)
    */
-  i = 0;
-  for (i = 0; d[i]; i++)
+  for (i = j = 0; d[i]; i++)
     if (d[i] == '\n')
-      i++;
-  i++;
+      j++;
+  j++;
 
-  p->screenhacks = (screenhack **) calloc (sizeof (screenhack *), i+1);
+  p->screenhacks = (screenhack **) calloc (j + 1, sizeof (screenhack *));
 
   /* Iterate over the lines in `d' (the string with newlines)
      and make new strings to stuff into the `screenhacks' array.
