@@ -1,12 +1,12 @@
 #!/bin/sh
-# $Id: do.sh,v 1.33 1999-04-04 16:03:16 ghudson Exp $
+# $Id: do.sh,v 1.34 1999-04-20 19:59:30 danw Exp $
 
 source=/mit/source
 srvd=/.srvd
 contained=false
 n=""
 maybe=""
-usage="do [-cn] [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
+usage="Usage: do [-cn] [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
 while getopts cd:ns: opt; do
 	case "$opt" in
@@ -31,6 +31,16 @@ while getopts cd:ns: opt; do
 done
 shift `expr "$OPTIND" - 1`
 operation=${1-all}
+
+case "$operation" in
+prepare|clean|all|check|install)
+	;;
+*)
+	echo Unknown operation \"$operation\" 1>&2
+	echo "$usage" 1>&2
+	exit 1
+	;;
+esac
 
 case $contained in
 true)
@@ -185,4 +195,7 @@ elif [ -r Makefile ]; then
 		install)	$make $n install "DESTDIR=$srvd" \
 					"ATHTOOLROOT=$athtoolroot";;
 	esac
+else
+	echo Nothing to do in `pwd` 1>&2
+	exit 1
 fi
