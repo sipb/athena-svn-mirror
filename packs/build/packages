@@ -1,4 +1,4 @@
-# $Id: packages,v 1.141 2001-11-04 13:38:35 ghudson Exp $
+# $Id: packages,v 1.142 2001-11-26 06:23:15 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -180,6 +180,8 @@ third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
+third/openssh			requires openssl
+third/openssl			
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
