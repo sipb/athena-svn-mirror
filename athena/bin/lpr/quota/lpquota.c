@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.11 1991-01-23 13:41:14 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.12 1991-02-09 16:47:24 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.11 1991-01-23 13:41:14 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.12 1991-02-09 16:47:24 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -130,6 +130,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     int query_flag=0;		/* Query user */
     int create_flag=0;		/* Create user */
     int print_flag=0;		/* Allow printing status */
+    int inqst_flag=0;		/* Determine status of servers */
     modify_user_type set_allow_printing;
     modify_account_type set_group_printing;
     int allow_printing = -1;
@@ -200,6 +201,10 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		    argc--;
 		    service = *++argv;
 		} else usage();
+		break;
+
+	    case 'I':
+		inqst_flag++;
 		break;
 
 	    case 'c':
@@ -373,7 +378,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 	}
     }
 
-    if(adj_flag + inc_flag + dec_flag + set_flag + create_flag +
+    if(inqst_flag + adj_flag + inc_flag + dec_flag + set_flag + create_flag +
        print_flag + query_flag + l_flag + add_admin_flag +
        del_admin_flag + add_user_flag + del_user_flag == 0) query_flag++; 
 
@@ -543,6 +548,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     }
 #endif
 
+    if (inqst_flag) qstatus(h,&auth);
 
     if (!grp_flag) {
 	if(create_flag) {
@@ -970,6 +976,18 @@ krb_ktext *auth;
 	return(query_logs(h, qid, auth));
 }
 
+qstatus(h,auth)
+handle_t h;
+krb_ktext *auth;
+    {
+	quota_error_code qerr;
+	quota_message msg;
+	if(qerr = QuotaServerStatus(h, auth, msg)) 
+	    return(quota_error(qerr));
+	else
+	    printf("%s\n", msg);
+	return 0;
+}
 
 /*VARARGS1*/
 fatal(msg, a1, a2, a3)
