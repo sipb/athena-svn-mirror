@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.9 1999-04-19 13:20:48 rbasch Exp $
+# $Id: Makefile,v 1.10 1999-05-12 18:20:46 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
 DEFAULT=/etc/default
 ATHRETCDIR=/etc/athena
+ATHLOGINDIR=${ATHRETCDIR}/login
 ATHX11LIB=/usr/athena/lib/X11
 APPDEFS=${ATHX11LIB}/app-defaults
 X11LIB=/usr/lib/X11
@@ -39,7 +40,7 @@ install:
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 4DWm ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
-	install -c -m 0644 Console ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Console ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
 	install -c -m 0644 Mwm ${DESTDIR}${X11APPDEFS}

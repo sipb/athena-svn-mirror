@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.6 1999-04-20 19:41:34 ghudson Exp $
+# $Id: Makefile,v 1.7 1999-05-12 18:21:08 rbasch Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
+ATHLOGINDIR=${ATHRETCDIR}/login
 ATHX11LIB=/usr/athena/lib/X11
 KEYMAPS=${ATHX11LIB}/keymaps
 APPDEFS=${ATHX11LIB}/app-defaults
@@ -42,7 +43,7 @@ install:
 	install -c -m 0644 AthenaModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 AthenaType5Keypad ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
-	install -c -m 0644 Console ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Console ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 SunModifiers ${DESTDIR}${KEYMAPS}
