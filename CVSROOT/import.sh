@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: import.sh,v 1.5 2003-02-26 03:32:38 ghudson Exp $
+# $Id: import.sh,v 1.6 2003-02-26 05:41:50 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
@@ -127,7 +127,8 @@ perl "$CVSROOT/CVSROOT/timestamps.pl"
 
 # Do the import.
 confirmrun "Import" \
-  cvs import -d -I ! -m "Import $pkgname $pkgver." "$repdir" vendor "$tag"
+  cvs import -d -I ! -m "Import $pkgname $pkgver." "$repdir" vendor "$tag" \
+  || true   # Exits with status 1 on many non-fatal errors.
 
 # If there's no old version to merge with, that's it.
 if [ -z "$oldtag" ]; then
