@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.18 2000-11-08 23:17:02 ghudson Exp $
+/* $Id: dm.c,v 1.19 2001-03-19 20:13:05 rbasch Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.18 2000-11-08 23:17:02 ghudson Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.19 2001-03-19 20:13:05 rbasch Exp $";
 #endif
 
 /* Process states */
@@ -843,7 +843,7 @@ static void child(int signo)
 	{
 	  syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
 		 pid, status);
-	  if (WEXITSTATUS(status) == CONSOLELOGIN)
+	  if (WIFEXITED(status) && WEXITSTATUS(status) == CONSOLELOGIN)
 	    login_running = STARTUP;
 	  else
 	    login_running = NONEXISTENT;
