@@ -169,7 +169,7 @@ Makefile:: $(ICONFIGFILE)						@@\
         	echo "  $(RM) Makefile.bak; mv Makefile Makefile.bak"; \ @@\
 		$(RM) Makefile.bak; mv Makefile Makefile.bak; \		@@\
         else exit 0; fi                                                 @@\
-	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP) -DNEWCURDIR=$(CURDIR) @@\
+	$(IMAKE) $(IFLAGS) $(IPROJ) -DNEWTOP=$(TOP) -DNEWCWD=$(CWD) @@\
 									@@\
 XMakefile::								@@\
 	-@if [ -f Makefile ]; then \                                    @@\
@@ -183,9 +183,9 @@ XMakefile::								@@\
 name:: FRC								@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
-		(cd $$d; echo "### Making" name "in $(CURDIR)/$$d"; \	@@\
+		(cd $$d; echo "### Making" name "in $(CWD)/$$d"; \	@@\
 			make $(MFLAGS) flgs DESTDIR=$(DESTDIR) name; \	@@\
-			echo "### Done with $(CURDIR)/$$d"); \		@@\
+			echo "### Done with $(CWD)/$$d"); \		@@\
 	done
 
 #define do_subdirs_flags(subdirs,flgs)					@@\
@@ -194,9 +194,9 @@ name:: FRC								@@\
 	foreach_subdirs_flags(clean, subdirs, flgs)			@@\
 	foreach_subdirs_flags(depend, subdirs, flgs)			@@\
 subdirs:: FRC								@@\
-	@(cd $@; echo "### Making" all "in $(CURDIR)/$@"; \		@@\
+	@(cd $@; echo "### Making" all "in $(CWD)/$@"; \		@@\
 		make $(MFLAGS) flgs DESTDIR=$(DESTDIR) all ; \		@@\
-		echo "### Done with $(CURDIR)/$@")
+		echo "### Done with $(CWD)/$@")
 
 #define foreach_subdirs(name,subdirs)					@@\
 	foreach_subdirs_flags(name,subdirs,)
@@ -206,7 +206,7 @@ subdirs:: FRC								@@\
 
 #define do_subdirs_imakefile(subdirs)					@@\
 Makefiles:: Makefile							@@\
-	@echo "### Making Makefiles in $(CURDIR)"			@@\
+	@echo "### Making Makefiles in $(CWD)"				@@\
 	@-for d in subdirs; \						@@\
 	do \								@@\
 		case "$$d" in \						@@\
@@ -220,20 +220,20 @@ Makefiles:: Makefile							@@\
                 *)		newtop=.. ;; \				@@\
                 esac; \							@@\
 		( cd $$d; \						@@\
-		  echo "### Making Makefile in $(CURDIR)/$$d"; \	@@\
+		  echo "### Making Makefile in $(CWD)/$$d"; \		@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
 		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
-			CURDIR=$(CURDIR)/$$d Makefile; \		@@\
+			CWD=$(CWD)/$$d Makefile; \			@@\
 		  make $(MFLAGS) Makefiles; \				@@\
-		  echo "### Done with $(CURDIR)/$$d" ) ; \		@@\
+		  echo "### Done with $(CWD)/$$d" ) ; \			@@\
 	done
 
 #define do_subdirs_xmakefile(subdirs)					@@\
 	foreach_subdirs(install.man,subdirs)				@@\
 Makefiles:: Makefile							@@\
-	@echo "### Making Makefiles in $(CURDIR)"			@@\
+	@echo "### Making Makefiles in $(CWD)"				@@\
 	@-for d in subdirs; \						@@\
 	do \								@@\
 		case "$$d" in \						@@\
@@ -247,14 +247,14 @@ Makefiles:: Makefile							@@\
                 *)		newtop=.. ;; \				@@\
                 esac; \							@@\
 		( cd $$d; \						@@\
-		  echo "### Making Makefile in $(CURDIR)/$$d"; \	@@\
+		  echo "### Making Makefile in $(CWD)/$$d"; \		@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
 		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
-			CURDIR=$(CURDIR)/$$d XMakefile; \		@@\
+			CWD=$(CWD)/$$d XMakefile; \			@@\
 		  make $(MFLAGS) Makefiles; \				@@\
-		  echo "### Done with $(CURDIR)/$$d" ) ; \		@@\
+		  echo "### Done with $(CWD)/$$d" ) ; \			@@\
 	done
 
 #define create_depend(files)						@@\

@@ -33,8 +33,8 @@
 #ifndef NEWTOP
 #define NEWTOP .
 #endif
-#ifndef NEWCURDIR
-#define NEWCURDIR .
+#ifndef NEWCWD
+#define NEWCWD .
 #endif
 #ifndef ALibDir
 #define ALibDir $(ATHBASEDIR)/lib
@@ -142,7 +142,7 @@ MAKESHELL=/bin/sh
 
 
 TOP = NEWTOP
-CURDIR = NEWCURDIR
+CWD = NEWCWD
 CONFIGSRC = ConfDir
 DESTDIR=
 
@@ -157,7 +157,7 @@ UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
 IFLAGS= -I$(IRULESRC)
 XTOP=$(TOP)/third/common/X11R4
-XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CURDIR)
+XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 #endif
 
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
