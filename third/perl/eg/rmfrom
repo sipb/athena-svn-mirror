@@ -1,0 +1,7 @@
+#!/usr/bin/perl -n
+
+# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/rmfrom,v 1.1.1.1 1996-10-02 06:40:05 ghudson Exp $
+
+# A handy (but dangerous) script to put after a find ... -print.
+
+chop; unlink;
