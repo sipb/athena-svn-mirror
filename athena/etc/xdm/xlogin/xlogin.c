@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.32 1993-02-25 15:13:21 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.33 1993-04-23 16:14:07 miki Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -16,6 +16,9 @@
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
 #include <X11/Xaw/Form.h>
+#ifdef SOLARIS
+#include <X11/Xaw/SmeBSB.h>
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Shell.h>
@@ -31,6 +34,7 @@
 #define BROKEN_AUTO_REP
 #define DISABLE_AUTO_REP
 #endif
+
 
 #if defined(_IBMR2)
 #include <time.h>
@@ -161,8 +165,13 @@ static XtResource my_resources[] = {
      Offset(session), XtRImmediate, (caddr_t) "/etc/athena/login/Xsession"},
   {"srvdcheck", XtCFile, XtRString, sizeof(String),
      Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
+#ifdef SOLARIS
   {"fontPath", XtCString, XtRString, sizeof(String),
-     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/" },
+     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/openwin/lib/fonts/" },
+#else
+  {"fontPath", XtCString, XtRString, sizeof(String),
+     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/" },
+#endif
   {"loginName", XtCString, XtRString, sizeof(String),
      Offset(loginName), XtRImmediate, (caddr_t) "" },
   {"blankAllScreens", XtCBoolean, XtRBoolean, sizeof(Boolean),
@@ -244,7 +253,9 @@ main(argc, argv)
   Arg args[1];
   int i;
   unsigned acc = 0;
-
+#ifdef SOLARIS
+   static char buf[1024];
+#endif
   signal(SIGCHLD, catch_child);
 
   /* Have to find this argument before initializing the toolkit.
@@ -332,7 +343,6 @@ main(argc, argv)
     acc = (acc << 1) ^ *c++;
   srandom(acc);
   resources.reactivate_timeout += random() % resources.randomize;
-
   saver = WcFullNameToWidget(appShell, "*savershell");
   ins = WcFullNameToWidget(appShell, "*instructions");
   hitanykey = WcFullNameToWidget(appShell, "*hitanykey");
@@ -348,7 +358,6 @@ main(argc, argv)
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
-
   if (access(resources.srvdcheck, F_OK) != 0)
     start_reactivate(NULL, NULL);
   else
@@ -367,8 +376,10 @@ main(argc, argv)
   }
 
   setenv("PATH", defaultpath, 1);
-
-
+#ifdef SOLARIS
+   sprintf(buf,"hosttype=%s","sun4");
+   putenv(buf);
+#endif
   /* create shells to blank out all other screens, if any... */
   num_screens = 1;		/* cover ourselves by setting number of */
 				/* screens to one, and */
@@ -481,7 +492,11 @@ start_reactivate(data, timerid)
     struct utmp utmp;
     struct timeval now;
 
+#ifdef SOLARIS
+    gettimeofday(&now);
+#else
     gettimeofday(&now, NULL);
+#endif
     if (now.tv_sec - starttime.tv_sec > resources.restart_timeout) {
 	fprintf(stderr, "Restarting X Server\n");
 	exit(0);
@@ -762,6 +777,7 @@ Cardinal *n;
     XtGetValues(WcFullNameToWidget(appShell, "*name_input"), args, 1);
     XtSetArg(args[0], XtNstring, &passwd);
     XtGetValues(WcFullNameToWidget(appShell, "*pword_input"), args, 1);
+
 
     XtSetArg(args[0], XtNleftBitmap, &bm1);
     XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry1"), args, 1);
@@ -1497,14 +1513,21 @@ String s;
 static void catch_child()
 {
     int pid;
+#ifndef SOLARIS
     union wait status;
+#else
+    int status;
+#endif
     char *number();
 
     /* Necessary on the rios- it sets the signal handler to SIG_DFL */
     /* during the execution of a signal handler */
     signal(SIGCHLD,catch_child);
+#ifdef SOLARIS
+    pid = waitpid(-1, &status, WNOHANG);
+#else
     pid = wait3(&status, WNOHANG, 0);
-
+#endif
     if (pid == activation_pid) {
 	switch (activation_state) {
 	case REACTIVATING:
@@ -1516,14 +1539,27 @@ static void catch_child()
 	    fprintf(stderr, "XLogin: child %d exited\n", pid);
 	}
     } else if (pid == attach_pid) {
+#ifdef SOLARIS
+	attach_state = WEXITSTATUS(status);
+#else
 	attach_state = status.w_retcode;
+#endif
     } else if (pid == attachhelp_pid) {
-	attachhelp_state = status.w_retcode;
+#ifdef SOLARIS
+	attachhelp_state =  WEXITSTATUS(status);
+#else
+	attachhelp_state =  status.w_retcode;
+#endif
     } else if (pid == quota_pid) {
 	quota_pid = 0;
     } else
+#ifdef SOLARIS
+      fprintf(stderr, "XLogin: child %d exited with status %d\n",
+	      pid, WEXITSTATUS(status));
+#else
       fprintf(stderr, "XLogin: child %d exited with status %d\n",
 	      pid, status.w_retcode);
+#endif
 }
 
 
@@ -1592,3 +1628,4 @@ static int getAutoRepeat()
 #endif
 }
 #endif 
+

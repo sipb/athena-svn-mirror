@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.4 1991-06-28 20:27:28 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.5 1993-04-23 16:16:19 miki Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -82,17 +82,31 @@ char **argv;
 
 void child()
 {
+#ifdef SOLARIS
+    int status;
+#else
     union wait status;
+#endif
     int pid;
 
+#ifdef SOLARIS
     pid = wait3(&status, WNOHANG, 0);
+#else
+    pid = waitpid(-1, &status, WNOHANG);
+#endif
     if (pid != app_pid || WIFSTOPPED(status))
       return;
     app_running = FALSE;
     if (WIFEXITED(status))
+#ifdef SOLARIS
+      app_exit_status =  WEXITSTATUS(status);
+    else
+      app_exit_status = WTERMSIG(status);
+#else
       app_exit_status = status.w_retcode;
     else
       app_exit_status = -status.w_termsig;
+#endif
 }
 
 void wakeup()
