@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.17 1988-02-05 14:07:14 jtkohl Exp $";
+static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.18 1988-02-05 14:58:04 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -853,9 +853,9 @@ char *vers;
 	     host != server->zs_hosts;
 	     host = host->q_forw) {
 		/* for each host */
+#ifdef CONCURRENT
 		host->zh_locked = 1;
 
-#ifdef CONCURRENT
 		readable = initial;
 		tv.tv_sec = tv.tv_usec = 0;
 
