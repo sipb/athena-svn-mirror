@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: man.c,v 1.7 89/02/15 16:06:44 kit Exp $
+ * $Athena: xquota.h,v 1.1 89/03/05 20:58:32 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -56,7 +56,7 @@ disk quota.  You must remove %d %s IMMEDIATELY.  All files are subject to \
 deletion or truncation until get under quota.")
 
 #define DEFAULT_WARNING 80
-#define DEFAULT_UPDATE   5
+#define DEFAULT_UPDATE  15
 #define MIN_UPDATE       5
 
 typedef struct _Info {
