@@ -4,48 +4,13 @@
  * For copyright information, see copyright.h.
  */
 
-#ifndef _ss_ss_internal_h
-#define _ss_ss_internal_h __FILE__
+#ifndef SS__INTERNAL_H
+#define SS__INTERNAL_H
 #include <stdio.h>
 #include <string.h>
-
-#ifdef __STDC__
-
-#define PROTOTYPE(p) p
-typedef void * pointer;
-
-#else
-
-#define const
-#define volatile
-#define PROTOTYPE(p) ()
-typedef char * pointer;
-
-#endif /* not __STDC__ */
+#include <stdlib.h>
 
 #include "ss.h"
-
-#if defined(__GNUC__)
-#define LOCAL_ALLOC(x) __builtin_alloca(x)
-#define LOCAL_FREE(x)
-#else
-#if defined(vax)
-#define LOCAL_ALLOC(x) alloca(x)
-#define LOCAL_FREE(x)
-extern pointer alloca PROTOTYPE((unsigned));
-#else
-#if defined(__HIGHC__)	/* Barf! */
-pragma on(alloca);
-#define LOCAL_ALLOC(x) alloca(x)
-#define LOCAL_FREE(x)
-extern pointer alloca PROTOTYPE((unsigned));
-#else
-/* no alloca? */
-#define LOCAL_ALLOC(x) malloc(x)
-#define LOCAL_FREE(x) free(x)
-#endif
-#endif
-#endif				/* LOCAL_ALLOC stuff */
 
 typedef char BOOL;
 
@@ -76,7 +41,7 @@ typedef struct _ss_data {	/* init values */
     /* info directory for 'help' */
     char **info_dirs;
     /* to be extracted by subroutines */
-    pointer info_ptr;		/* (void *) NULL */
+    void *info_ptr;		/* (void *) NULL */
     /* for ss_listen processing */
     char *prompt;
     ss_request_table **rqt_tables;
@@ -99,17 +64,10 @@ void ss_unknown_function();
 void ss_delete_info_dir();
 int ss_execute_line();
 char **ss_parse();
-ss_abbrev_info *ss_abbrev_initialize PROTOTYPE((char *, int *));
+ss_abbrev_info *ss_abbrev_initialize(char *, int *);
 void ss_page_stdin();
 
 extern ss_data **_ss_table;
 extern char *ss_et_msgs[];
 
-extern pointer malloc PROTOTYPE((unsigned));
-extern pointer realloc PROTOTYPE((pointer, unsigned));
-extern pointer calloc PROTOTYPE((unsigned, unsigned));
-#ifndef sun
-extern int exit PROTOTYPE((int));
-#endif
-
-#endif /* _ss_internal_h */
+#endif /* SS__INTERNAL_H */

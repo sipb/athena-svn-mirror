@@ -8,10 +8,7 @@
 #include "copyright.h"
 #include <stdio.h>
 
-#ifndef lint
-static char const rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/execute_cmd.c,v 1.2 1992-08-20 18:42:23 lwvanels Exp $";
-#endif
+static const char rcsid[] = "$Id: execute_cmd.c,v 1.3 1997-12-19 05:00:33 ghudson Exp $";
 
 /*
  * get_request(tbl, idx)
@@ -31,19 +28,7 @@ static char const rcsid[] =
  *      Has been replaced by a macro.
  */
 
-#ifdef __SABER__
-/* sigh.  saber won't deal with pointer-to-const-struct */
-static struct _ss_request_entry * get_request (tbl, idx)
-    ss_request_table * tbl;
-    int idx;
-{
-    struct _ss_request_table *tbl1 = (struct _ss_request_table *) tbl;
-    struct _ss_request_entry *e = (struct _ss_request_entry *) tbl1->requests;
-    return e + idx;
-}
-#else
 #define get_request(tbl,idx)    ((tbl) -> requests + (idx))
-#endif
 
 /*
  * check_request_table(rqtbl, argc, argv, sci_idx)
@@ -73,11 +58,7 @@ static int check_request_table (rqtbl, argc, argv, sci_idx)
     char *argv[];
     int sci_idx;
 {
-#ifdef __SABER__
     struct _ss_request_entry *request;
-#else
-    register ss_request_entry *request;
-#endif
     register ss_data *info;
     register char const * const * name;
     char *string = argv[0];

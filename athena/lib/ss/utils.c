@@ -5,13 +5,11 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "copyright.h"
 #include "ss_internal.h"	/* includes stdio and string */
 
 extern FILE *output_file;
-#ifndef sun
-extern int exit();
-#endif
 char *gensym(), *str_concat3(), *quote(), *ds();
 extern long gensym_n;
 
@@ -49,7 +47,7 @@ void generate_function_definition(func)
 {
     fputs("extern void ", output_file);
     fputs(func, output_file);
-    fputs(" __SS_PROTO;\n", output_file);
+    fputs("(int, const char *const *, int, void *);\n", output_file);
 }
 
 char * generate_rqte(func_name, info_string, cmds, options)

@@ -7,17 +7,7 @@
 
 #include <stdio.h>
 
-/*
- * Our standalone dpANS environment on the RT doesn't include any
- * header files.
- */
-#if defined(__STDC__) && !defined(ibm032)
 #include <stdarg.h>
-#define STDARG
-#else
-#include <varargs.h>
-#define ss_error ss_error_external
-#endif
 
 #include "copyright.h"
 #include <com_err.h>
@@ -63,26 +53,12 @@ char * ss_name(sci_idx)
     }
 }
 
-#ifdef STDARG
 void ss_error (int sci_idx, long code, const char * fmt, ...)
-#else
-void ss_error (va_alist)
-    va_dcl
-#endif
 {
-    register char const *whoami;
+    register char *whoami;
     va_list pvar;
-#ifndef STDARG
-    int sci_idx;
-    long code;
-    char * fmt;
-    va_start (pvar);
-    sci_idx = va_arg (pvar, int);
-    code = va_arg (pvar, long);
-    fmt = va_arg (pvar, char *);
-#else
+
     va_start (pvar, fmt);
-#endif
     whoami = ss_name (sci_idx);
     com_err_va (whoami, code, fmt, pvar);
     free (whoami);

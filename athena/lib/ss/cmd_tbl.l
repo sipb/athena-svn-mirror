@@ -1,6 +1,13 @@
 %{
 #undef yywrap
 int num_lines = 0;
+
+static int l_command_table(void);
+static int l_request(void);
+static int l_unimplemented(void);
+static int l_end(void);
+static int l_quoted_string(void);
+static int l_string(void);
 %}
 
 N	[0-9]
@@ -40,36 +47,36 @@ end		return l_end();
  */
 
 #include <string.h>
-#include "ct.tab.h"
+#include "y.tab.h"
 #include "copyright.h"
 
 extern char *last_token, *ds();
 
-static l_command_table()
+static int l_command_table()
 {
      last_token = "command_table";
      return COMMAND_TABLE;
 }
 
-static l_request()
+static int l_request()
 {
      last_token = "request";
      return REQUEST;
 }
 
-static l_unimplemented()
+static int l_unimplemented()
 {
      last_token = "unimplemented";
      return UNIMPLEMENTED;
 }
 
-static l_end()
+static int l_end()
 {
      last_token = "end";
      return END;
 }
 
-static l_quoted_string()
+static int l_quoted_string()
 {
      register char *p;
      yylval.dynstr = ds(yytext+1);
@@ -79,7 +86,7 @@ static l_quoted_string()
      return STRING;
 }
 
-static l_string()
+static int l_string()
 {
      yylval.dynstr = ds(yytext);
      last_token = ds(yylval.dynstr);

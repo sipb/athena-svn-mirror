@@ -7,10 +7,7 @@
 #include "copyright.h"
 #define	size	sizeof(ss_data *)
 
-#ifndef lint
-static char const rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/invocation.c,v 1.1 1993-10-12 02:50:27 probe Exp $";
-#endif
+static const char rcsid[] = "$Id: invocation.c,v 1.2 1997-12-19 05:00:34 ghudson Exp $";
 
 int ss_create_invocation(subsystem_name, version_string, info_ptr,
 			 request_table_ptr, code_ptr)
@@ -50,11 +47,7 @@ int ss_create_invocation(subsystem_name, version_string, info_ptr,
 	new_table->prompt = malloc((unsigned)strlen(subsystem_name)+4);
 	strcpy(new_table->prompt, subsystem_name);
 	strcat(new_table->prompt, ":  ");
-#ifdef silly
-	new_table->abbrev_info = ss_abbrev_initialize("/etc/passwd", code_ptr);
-#else
 	new_table->abbrev_info = NULL;
-#endif
 	new_table->flags.escape_disabled = 0;
 	new_table->flags.abbrevs_disabled = 0;
 	new_table->rqt_tables =

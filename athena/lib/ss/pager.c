@@ -28,7 +28,6 @@ extern int errno;
  */
 void ss_page_stdin();
 
-#ifndef NO_FORK
 int ss_pager_create() 
 {
 	int filedes[2];
@@ -55,43 +54,23 @@ int ss_pager_create()
 		return(filedes[1]);
 	}
 }
-#else /* don't fork */
-int ss_pager_create()
-{
-    int fd;
-    fd = open("/dev/tty", O_WRONLY, 0);
-    return fd;
-}
-#endif
 
 void ss_page_stdin()
 {
 	int i;
-#ifdef POSIX
 	struct sigaction sa;
 	sigset_t mask;
-#endif
 	
 	for (i = 3; i < 32; i++)
 		(void) close(i);
-#ifdef POSIX
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, (struct sigaction *)0);
-#else
-	(void) signal(SIGINT, SIG_DFL);
-#endif
 	{
-#ifdef POSIX
 		sigemptyset(&mask);
 		sigaddset(&mask, SIGINT);
 		sigprocmask(SIG_UNBLOCK, &mask, (sigset_t *)0);
-#else
-		register int mask = sigblock(0);
-		mask &= ~sigmask(SIGINT);
-		sigsetmask(mask);
-#endif
 	}
 	if (_ss_pager_name == (char *)NULL) {
 		if ((_ss_pager_name = getenv("PAGER")) == (char *)NULL)

@@ -5,11 +5,10 @@
  * For copyright info, see copyright.h.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "copyright.h"
 
-#ifndef sgi
-char *str_concat3(), *ds(), *generate_rqte(), *malloc(), *realloc(), *quote();
-#endif
+char *str_concat3(), *ds(), *generate_rqte(), *quote();
 long flag_value();
 char *last_token = (char *)NULL;
 FILE *output_file;

@@ -7,10 +7,7 @@
 #include "ss_internal.h"
 #include "copyright.h"
 
-#ifndef lint
-static char const rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/parse.c,v 1.2 1993-04-10 17:18:22 epeisach Exp $";
-#endif
+static const char rcsid[] = "$Id: parse.c,v 1.3 1997-12-19 05:00:37 ghudson Exp $";
 
 enum parse_mode { WHITESPACE, TOKEN, QUOTED_STRING };
 
@@ -56,9 +53,7 @@ char **ss_parse (sci_idx, line_ptr, argc_ptr)
     cp = line_ptr;		/* cp is for output */
     while (1) {
 #ifdef DEBUG
-	{
-	    printf ("character `%c', mode %d\n", *line_ptr, parse_mode);
-	}
+	printf ("character `%c', mode %d\n", *line_ptr, parse_mode);
 #endif
 	while (parse_mode == WHITESPACE) {
 	    if (*line_ptr == '\0')

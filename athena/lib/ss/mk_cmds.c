@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.6 1997-11-02 23:44:01 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.7 1997-12-19 05:00:36 ghudson Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -11,6 +11,7 @@
 
 #include "copyright.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/file.h>
@@ -20,7 +21,6 @@
 static const char copyright[] =
     "Copyright 1987 by MIT Student Information Processing Board";
 
-extern pointer malloc PROTOTYPE((unsigned));
 extern char *last_token;
 extern FILE *output_file;
 
