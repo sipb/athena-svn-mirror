@@ -1,12 +1,12 @@
 #
-# $Id: Imakefile,v 1.18 1993-04-29 17:05:23 vrt Exp $
+# $Id: Imakefile,v 1.19 1993-04-29 17:26:27 vrt Exp $
 #
 # Remember: most conditionalization should be done in the package, not here.
 
 #ifdef SOLARIS
 #define ISUBDIRS cleanup inetd netconfig newsyslog nfsc rvd synctree track traceroute xdm
 #else
-#define ISUBDIRS cleanup ftpd inetd netconfig newsyslog nfsc rvd synctree track traceroute xdm
+#define ISUBDIRS cleanup ftpd inetd newsyslog nfsc rvd synctree track traceroute xdm
 #endif
 
 #ifdef ultrix
