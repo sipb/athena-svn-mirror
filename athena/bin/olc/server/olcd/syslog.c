@@ -7,13 +7,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.15 1991-04-10 14:52:33 lwvanels Exp $
+ *	$Id: syslog.c,v 1.16 1991-11-06 15:45:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.15 1991-04-10 14:52:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.16 1991-11-06 15:45:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -50,17 +50,17 @@ static void log_to_syslogd P((int level , char *text ));
 
 #undef P
 
-#ifndef SYSLOG
-
-static FILE *status_log = (FILE *)NULL;
-static FILE *error_log = (FILE *)NULL;
-static FILE *admin_log = (FILE *) NULL;
-
 #ifdef NEEDS_ERRNO_DEFS
 extern int      errno;
 extern char     *sys_errlist[];
 extern int      sys_nerr;
 #endif
+
+#ifndef SYSLOG
+
+static FILE *status_log = (FILE *)NULL;
+static FILE *error_log = (FILE *)NULL;
+static FILE *admin_log = (FILE *) NULL;
 
 /*
  * Function:	open_log
@@ -164,6 +164,10 @@ void
 log_error (message)
      char *message;
 {
+  char buf[BUFSIZ], *p;
+  char buf2[BUFSIZ];
+  int found = 0;
+
 #ifdef SYSLOG
 
   log_to_syslogd (LOG_ERR, message);
@@ -175,7 +179,22 @@ log_error (message)
 
   log_to_file (error_log, message);
 #endif
-  olc_broadcast_message("syserror",message, "system");
+  /* Replace %m with the actual error message */
+  
+  strcpy(buf,message);
+  for(p=buf;*p != '\0';p++) {
+    if ((*p == '%') && (*(p+1) == 'm')) {
+      p++;
+      found = 1;
+      *p = 's';
+    }
+  }
+  if (found) {
+    sprintf(buf2,buf,sys_errlist[errno]);
+    olc_broadcast_message("syserror",buf2, "system");
+  } else {
+    olc_broadcast_message("syserror",buf, "system");
+  }
 }
 
 /*
