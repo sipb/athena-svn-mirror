@@ -90,8 +90,10 @@ terminit ()
 #else
 	int tpgrp;
 	int onstop();
-	extern short ospeed;
-
+#ifndef _IBMR2
+/* Only fakes termcap- doesn't have ospeed. */
+	extern short ospeed; */
+#endif
 retry:
 	(void) sigsetmask(1<<SIGTSTP | 1<<SIGTTIN | 1<<SIGTTOU);
 	if (ioctl(0, TIOCGPGRP, &tpgrp) != 0) {
@@ -116,8 +118,9 @@ retry:
 
 	erasechar = sbuf.sg_erase;
 	killchar = sbuf.sg_kill;
+#ifndef _IBMR2
 	ospeed = sbuf.sg_ospeed;
-
+#endif
 	(void) signal (SIGINT, done);
 
 	(void) sigsetmask(0);

@@ -46,8 +46,8 @@ install_file(expand1.sed,$(LIBDIR))
 install_file(expand2.sed,$(LIBDIR))
 install_man(ispell.1,ispell.1)
 
-install:: 
-	install -c -m 755 munchlist $(DESTDIR)/$(ATHBINDIR)/munchlist
+install::
+	$(INSTALL) -m 755 munchlist $(DESTDIR)$(ATHBINDIR)/munchlist
 
 munchlist:	munchlist.X Makefile
 	sed -e 's@!!LIBDIR!!@$(LIBDIR)@' -e 's@!!DEFDICT!!@$(DEFDICT)@' \

@@ -16,6 +16,9 @@
  ******************************************************************************/
 
 #include <curses.h>
+#ifdef POSIX
+#include <term.h>
+#endif
 #include <signal.h>
 
 #define	NextLine	fgets(buf,sizeof buf,input)
@@ -79,13 +82,13 @@ main(argc,argv)
 		if(deathflag == 1)goto die;
 	}
 die:
-signal(SIGINT,SIG_IGN);
-if (input != NULL)
-	pclose(input);
-clear();
-refresh();
-endwin();
-exit(0);
+	signal(SIGINT,SIG_IGN);
+	if (input != NULL)
+	  pclose(input);
+	clear();
+	refresh();
+	endwin();
+	exit(0);
 }
 
 endrep()
