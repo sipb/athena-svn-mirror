@@ -132,6 +132,86 @@ for cfg in /usr/share/libgnomeprint/*/{models,printers}/*; do
   fi
 done
 
+%triggerin -- j2sdk
+# Sun's JDK package installs into a version-dependent directory.
+# Determine the correct directory, and make appropriate symlinks
+# for /usr/bin/java, etc.
+
+# Find all of the existing JDK directories.
+jdk_dirs=`ls -1d /usr/java/j2sdk[[:alnum:]]* 2>/dev/null`
+
+# Find the latest version of the JDK, by sorting the version numbers
+# in the directory paths.  Ignore empty directories, by checking for
+# the existence of a valid java binary.
+latest=`(for i in $jdk_dirs ; do
+  if [ -x $i/bin/java ]; then
+    echo $i | sed -e 's|^/usr/java/j2sdk||'
+  fi
+done) | sort | tail -1`
+
+# Make sure we have a valid version.
+if [ -z "$latest" ]; then
+  echo "Cannot find a valid version of the JDK"
+  exit 0
+fi
+
+# Make a link to the latest version.
+rm -f /usr/java/j2sdk
+ln -s j2sdk$latest /usr/java/j2sdk
+
+# Set the alternatives system to point java, javac, and their
+# respective slaves at the latest JDK.  Also set them to "manual"
+# mode, so that no other alternative can override this with a higher
+# priority.
+/usr/sbin/alternatives \
+  --install /usr/bin/java java /usr/java/j2sdk/bin/java 200 \
+  --slave /usr/bin/rmiregistry rmiregistry /usr/java/j2sdk/bin/rmiregistry
+/usr/sbin/alternatives --set java /usr/java/j2sdk/bin/java
+/usr/sbin/alternatives \
+  --install /usr/bin/javac javac /usr/java/j2sdk/bin/javac 200 \
+  --slave /usr/bin/jar jar /usr/java/j2sdk/bin/jar \
+  --slave /usr/bin/rmic rmic /usr/java/j2sdk/bin/rmic
+/usr/sbin/alternatives --set javac /usr/java/j2sdk/bin/javac
+
+%triggerun -- j2sdk
+# If no instance of this package remains, or no package of j2sdk
+# remains, clean up the alternatives system and the symlink made in
+# the triggerin script above.
+if [ $1 = 0 -o $2 = 0 ]; then
+  /usr/sbin/alternatives --auto javac
+  /usr/sbin/alternatives --remove javac /usr/java/j2sdk/bin/javac
+  /usr/sbin/alternatives --auto java
+  /usr/sbin/alternatives --remove java /usr/java/j2sdk/bin/java
+  rm -f /usr/java/j2sdk
+fi
+
+%triggerpostun -- j2sdk
+# An instance of j2sdk has been removed.  If any instance remains,
+# make sure our symlink points at the latest version.  The case
+# where no instance remains is handled in the triggerun script above.
+[ $2 = 0 ] && exit 0
+
+# Find the remaining JDK directories.
+jdk_dirs=`ls -1d /usr/java/j2sdk[[:alnum:]]* 2>/dev/null`
+
+# Find the latest remaining version of the JDK.
+latest=`(for i in $jdk_dirs ; do
+  if [ -x $i/bin/java ]; then
+    echo $i | sed -e 's|^/usr/java/j2sdk||'
+  fi
+done) | sort | tail -1`
+
+# Make sure we have a valid version.
+if [ -z "$latest" ]; then
+  echo "Cannot find a valid version of the JDK"
+  exit 0
+fi
+
+# Make a link to the latest version.
+rm -f /usr/java/j2sdk
+ln -s j2sdk$latest /usr/java/j2sdk
+
+
 %triggerpostun -- kernel
 # With the old kernel out of the way, we can safely create a single-user
 # boot option for what remains.
