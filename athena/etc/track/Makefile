@@ -1,9 +1,9 @@
 # Makefile for "track" automatic update program
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
-#	$Author: shanzer $
+#	$Author: don $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.5 1987-09-08 16:03:24 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.6 1987-12-03 20:48:09 don Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
@@ -29,7 +29,7 @@ y.tab.c : sub_gram.y
 	yacc sub_gram.y
 
 lex.yy.c : input.l
-	@echo IGNORE THE WARNINGS --
+	@echo IGNORE FIVE "Non-Portable Character Class" WARNINGS --
 	lex input.l
 
 nullmail : nullmail.c
