@@ -17,7 +17,7 @@
 
 #ifndef lint
 static char rcsid_zwmnotify_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.12 1991-02-20 15:50:03 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.13 1991-02-22 21:56:58 raeburn Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -62,7 +62,8 @@ char *prog = "zmailnotify";
 
 /* This entire program is a kludge - beware! */
 
-main()
+main(argc, argv)
+    char *argv[];
 {
 	FILE *lock;
 	int nmsgs;
