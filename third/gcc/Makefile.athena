@@ -1,16 +1,12 @@
-# $Id: Makefile.athena,v 1.10 2000-03-15 20:50:21 ghudson Exp $
+# $Id: Makefile.athena,v 1.11 2000-03-28 21:52:55 ghudson Exp $
 
 SHELL=/bin/sh
-
-compiler.sun4:
-	@/bin/athena/attach -h -q sunsoft
-	@echo /mit/sunsoft/sun4bin/cc
 
 # We can't use the Athena config.site file because it specifies
 # cc to be gcc.
 prepare:
-	CC=`${MAKE} -f Makefile.athena "compiler.$$HOSTTYPE"` CONFIG_SITE= \
-		./configure --prefix=/usr/gcc
+	rm -f config.cache
+	. ./compiler && CC=$$cc CONFIG_SITE= ./configure --prefix=/usr/gcc
 
 clean:
 	${MAKE} clean

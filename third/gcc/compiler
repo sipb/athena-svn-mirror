@@ -1,0 +1,6 @@
+case $OS in
+solaris)
+	/bin/athena/attach -h -q sunsoft
+	cc=/mit/sunsoft/sun4bin/cc
+	;;
+esac
