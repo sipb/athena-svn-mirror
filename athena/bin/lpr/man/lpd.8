@@ -13,6 +13,10 @@ lpd \- line printer daemon
 .B /usr/lib/lpd
 [
 .B \-l
+] [
+.B \-u
+] [
+.B \-k
 ] [ port # ]
 .SH DESCRIPTION
 .I Lpd
@@ -103,6 +107,8 @@ This is used to verify ownership by
 .IR lprm .
 .IP M
 Send mail to the specified user when the current print job completes.
+.IP Z
+Send a Zephyrgram the specified user when the current print job completes.
 .IP f
 Formatted File.  Name of a file to print which is already formatted.
 .IP l
@@ -151,6 +157,8 @@ Unlink.  Name of file to remove upon completion of printing.
 .IP N
 File name.  The name of the file which is being printed, or a blank
 for the standard input (when 
+.IP A
+Account number. Eventually will be used to support account numbers.
 .I lpr
 is invoked in a pipeline).
 .in -5
@@ -199,6 +207,7 @@ pac(1),
 lpr(1),
 lpq(1),
 lprm(1),
+zephyr(1),
 syslog(3),
 printcap(5)
 .br
