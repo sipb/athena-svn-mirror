@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.37 1991-04-08 21:12:21 lwvanels Exp $
+ *	$Id: log.c,v 1.38 1991-04-09 14:03:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.37 1991-04-08 21:12:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.38 1991-04-09 14:03:52 lwvanels Exp $";
 #endif
 #endif
 
@@ -152,45 +152,6 @@ log_log (knuckle, message, header, is_private)
   return(SUCCESS);
 }
 
-
-char *
-vfmt (format, pvar)
-     char *format;
-     va_list pvar;
-{
-    static char buf[BUFSIZ];
-    FILE strbuf;
-
-    /* copied from sprintf.c, BSD */
-    strbuf._flag = _IOWRT + _IOSTRG;
-    strbuf._ptr = buf;
-    strbuf._cnt = 32767;
-    bzero (buf, sizeof (buf));
-    _doprnt (format, pvar, &strbuf);
-    return buf;
-}
-
-#ifdef HAS_STDARG 
-char * fmt (char * format, ...)
-#else
-char * fmt (va_alist) va_dcl
-#endif
-{
-    va_list pvar;
-    char *result;
-
-#ifdef HAS_STDARG
-    va_start (pvar, format);
-#else
-    char *format;
-    va_start (pvar);
-    format = va_arg (pvar, char *);
-#endif
-    result = vfmt (format, pvar);
-    va_end (pvar);
-    return result;
-}
-    
 
 void
 log_daemon(knuckle, message)
