@@ -1,10 +1,3 @@
-/*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v $
- *	$Author: treese $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.1 1986-01-18 18:09:46 treese Exp $
- */
-
 /* This file is part of the CREF finder.  It contains general definitions.
  *
  *	Win Treese
@@ -12,9 +5,11 @@
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Log: not supported by cvs2svn $
- *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v $
+ *	$Author: treese $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.2 1986-01-22 18:04:08 treese Exp $
  */
+
 
 /* General type definitions. */
 
@@ -24,7 +19,7 @@ typedef int ERRCODE;				/* An error code. */
 /* Size variables. */
 
 #define TITLE_SIZE	128			/* Size of a section title. */
-#define	FILENAME_SIZE	80			/* Size of a filename. */
+#define	FILENAME_SIZE	120			/* Size of a filename. */
 #define	MAX_ENTRIES	100			/* Maximum number of entries.*/
 #define LINE_LENGTH	80			/* Length of a line of text. */
 #define	ERRSIZE		200			/* Size of an error message. */
@@ -48,24 +43,23 @@ typedef struct tCOMMAND {
 
 /* Where things are. */
 
-#define	ROOT_DIR	"/mit/c/r/cref"
+#define	CREF_ROOT	"/mit/c/r/cref/Ref"
 #define	CONTENTS	"Contents.index"
 #define MANUAL_DIR	"Crm"
 
 /* Other important definitions. */
 
-#define	CREF_HEADER	"Consultants On-line Reference System"
-#define	CREF_PROMPT	"ufi> "			/* Prompt string. */
+#define	CREF_HEADER	"Consultant's On-line Reference System"
+#define	CREF_PROMPT	"cref> "	/* Prompt string. */
 
-#define	CREF_ENTRY	"entry"			/* String for a file entry. */
-#define	CREF_FILE	100			/* Code for a file entry. */
-#define CREF_DIR	101			/* Code for a directory. */
+#define	CREF_ENTRY	"entry"		/* String for a file entry. */
+#define	CREF_FILE	100		/* Code for a file entry. */
+#define CREF_DIR	101		/* Code for a directory. */
 
-#define	COMMENT_CHAR	'#'			/* Comment char in contents. */
-#define CONTENTS_DELIM	':'			/* Delimiter in contents. */
+#define	COMMENT_CHAR	'#'		/* Comment char in contents. */
+#define CONTENTS_DELIM	':'		/* Delimiter in contents. */
 
 #define	CONSULT_GROUP	"consult"		/* Consultants group. */
-#define	ALT_GROUP	"econsult"		/* Alternate group. */
 
 /* Error Codes. */
 
