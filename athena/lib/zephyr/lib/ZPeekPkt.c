@@ -10,16 +10,17 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.1 1987-06-10 12:35:14 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.2 1987-06-20 19:21:39 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-Code_t ZPeekPacket(buffer,buffer_len,ret_len)
+Code_t ZPeekPacket(buffer,buffer_len,ret_len,from)
 	ZPacket_t	buffer;
 	int		buffer_len;
 	int		*ret_len;
+	struct		sockaddr_in *from;
 {
 	int retval;
 	
@@ -40,6 +41,7 @@ Code_t ZPeekPacket(buffer,buffer_len,ret_len)
 	}
 	
 	bcopy(__Q_Head->packet,buffer,*ret_len);
-
+	bcopy(&__Q_Head->from,from,sizeof(struct sockaddr_in));
+	
 	return (retval);
 }

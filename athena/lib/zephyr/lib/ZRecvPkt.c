@@ -10,19 +10,19 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.3 1987-06-13 16:26:42 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.4 1987-06-20 19:21:47 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
-#include <sys/socket.h>
 
 #define min(a,b) ((a)<(b)?(a):(b))
 	
-Code_t ZReceivePacket(buffer,buffer_len,ret_len)
+Code_t ZReceivePacket(buffer,buffer_len,ret_len,from)
 	ZPacket_t	buffer;
 	int		buffer_len;
 	int		*ret_len;
+	struct		sockaddr_in *from;
 {
 	int retval;
 	
@@ -43,7 +43,8 @@ Code_t ZReceivePacket(buffer,buffer_len,ret_len)
 	}
 	
 	bcopy(__Q_Head->packet,buffer,*ret_len);
-
+	bcopy(&__Q_Head->from,from,sizeof(struct sockaddr_in));
+	
 	Z_RemQueue(__Q_Head);
 
 	return (retval);

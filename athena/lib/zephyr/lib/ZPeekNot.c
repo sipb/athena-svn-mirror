@@ -10,22 +10,23 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekNot.c,v 1.1 1987-06-10 12:35:09 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekNot.c,v 1.2 1987-06-20 19:21:36 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-Code_t ZPeekNotice(buffer,buffer_len,notice,auth)
+Code_t ZPeekNotice(buffer,buffer_len,notice,auth,from)
 	ZPacket_t	buffer;
 	int		buffer_len;
 	ZNotice_t	*notice;
 	int		*auth;
+	struct		sockaddr_in *from;
 {
 	int len;
 	Code_t retval;
 
-	if ((retval = ZPeekPacket(buffer,buffer_len,&len)) !=
+	if ((retval = ZPeekPacket(buffer,buffer_len,&len,from)) !=
 	    ZERR_NONE)
 		return (retval);
 
