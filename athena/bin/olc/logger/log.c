@@ -1,9 +1,9 @@
 /**********************************************************************
  * usage tracking library
  *
- * $Author: lwvanels $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.9 1991-09-10 11:07:13 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.10 1996-09-20 02:27:28 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.9 1991-09-10 11:07:13 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.10 1996-09-20 02:27:28 ghudson Exp $";
 #endif
 #endif
 
@@ -31,19 +31,8 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <hesiod.h>
-
-#ifdef NEEDS_SELECT_MACROS
-#define NBBY    8 /* number of bits in a byte */
-#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
-
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
-#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
-
-#endif
 
 #define HESIOD_LOG_TYPE	"tloc"
 
@@ -80,7 +69,7 @@ log_startup(type)
     return;
   }
 
-  if (p = index(*hesinfo,' ')) {
+  if (p = strchr(*hesinfo,' ')) {
     *p++ = '\0';
     (void) strcpy(log_host,*hesinfo);
     port = htons(atoi(p));
@@ -104,7 +93,7 @@ log_startup(type)
     return;
   }
   
-  bcopy(hp->h_addr,&name.sin_addr,hp->h_length);
+  memcpy(&name.sin_addr,hp->h_addr,hp->h_length);
   name.sin_family = AF_INET;
   name.sin_port = port;
   
@@ -117,7 +106,7 @@ log_startup(type)
 
   now = time(0);
   t = ctime(&now);
-  p = index(t,'\n');
+  p = strchr(t,'\n');
   if (p != NULL) *p = '\0';
   sprintf(buf,"S%s %s %s",t,hostnm,type);
 
@@ -150,7 +139,7 @@ log_view(view_id)
   
   now = time(0);
   t = ctime(&now);
-  p = index(t,'\n');
+  p = strchr(t,'\n');
   if (p != NULL)
     *p = '\0';
   sprintf(buf,"M%d %s %s", session_id, t, view_id);
