@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.5 1989-12-22 16:20:27 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.6 1990-01-03 23:37:29 raeburn Exp $";
 #endif
 
 
@@ -55,6 +55,9 @@ extern PROC         Proc_List[];
  *           is_specialty()
  */
 
+static int validate_instance (KNUCKLE *);
+static int assign_instance (USER *);
+static int was_connected (KNUCKLE *, KNUCKLE *);
 
 
 /*
@@ -210,7 +213,7 @@ create_knuckle(user)
  *          Inserts a knuckle to the Knuckle List. 
  */
 
-insert_knuckle(knuckle)
+int insert_knuckle(knuckle)
      KNUCKLE *knuckle;
 {
   KNUCKLE **k_ptr;
@@ -293,7 +296,7 @@ insert_knuckle(knuckle)
  *          Inserts a knuckle to the User list. 
  */
 
-insert_knuckle_in_user(knuckle, user)
+int insert_knuckle_in_user(knuckle, user)
      KNUCKLE *knuckle;
      USER *user;
 {
@@ -347,7 +350,7 @@ insert_knuckle_in_user(knuckle, user)
  *          the database. The List manipulation is the same.
  */
 
-insert_topic(t)
+int insert_topic(t)
      TOPIC *t;
 {
   int n_topics;
@@ -507,7 +510,7 @@ init_user(knuckle,person)
 }
 
 
-init_dbinfo(user)
+void init_dbinfo(user)
     USER *user;
 {
   (void) strcpy(user->title1, DEFAULT_TITLE);
@@ -520,7 +523,7 @@ init_dbinfo(user)
 }
 
 
-init_question(k,topic,text)
+int init_question(k,topic,text)
      KNUCKLE *k;
      char *topic;
      char *text;
@@ -807,7 +810,7 @@ verify_instance(knuckle,instance)
 }
       
 
-validate_instance(knuckle)
+static int validate_instance(knuckle)
      KNUCKLE *knuckle;
 {
   int i;
@@ -819,7 +822,7 @@ validate_instance(knuckle)
     return(knuckle->instance);
 }
 
-int
+static int
 assign_instance(user)
      USER *user;
 {
@@ -860,7 +863,7 @@ assign_instance(user)
  * Notes:
  */
 
-connect_knuckles(a,b)
+int connect_knuckles(a,b)
      KNUCKLE *a, *b;
 {
   char msg[BUFSIZ];
@@ -941,7 +944,7 @@ connect_knuckles(a,b)
  * Notes:
  */
 
-match_maker(knuckle)
+int match_maker(knuckle)
      KNUCKLE *knuckle;
 {
   KNUCKLE **k_ptr, *temp = (KNUCKLE *) NULL;	
@@ -962,7 +965,7 @@ match_maker(knuckle)
 #ifdef TEST
       printf("match_maker: %s (%d) has no question\n", 
 	     knuckle->user->username, knuckle->instance);
-#endif TEST
+#endif
 
       for(k_ptr = Knuckle_List; *k_ptr != (KNUCKLE *) NULL; k_ptr++)
 	{
@@ -974,7 +977,7 @@ match_maker(knuckle)
 	  printf("match_maker: status: %d   %d queue: %d   ts:  %d\n",
 		 knuckle->status, knuckle->user->status,
 		 knuckle->queue, knuckle->timestamp);
-#endif TEST
+#endif
 	  
 	  if(!has_question((*k_ptr)))
 	    continue;
@@ -1137,7 +1140,7 @@ match_maker(knuckle)
  *	to point at the right string.
  */
 
-new_message(msg_field, sender, message)
+void new_message(msg_field, sender, message)
      char **msg_field;	/* Place to store the new message. */
      KNUCKLE *sender;
      char *message;		/* Message string. */
@@ -1250,7 +1253,7 @@ verify_topic(topic)
 
 
   
-owns_question(knuckle)
+int owns_question(knuckle)
      KNUCKLE *knuckle;
 {
   if(knuckle == (KNUCKLE *) NULL)
@@ -1266,7 +1269,7 @@ owns_question(knuckle)
 }
 
 
-is_topic(topics,code)
+int is_topic(topics,code)
      int *topics;
      int code;
 {
@@ -1281,7 +1284,7 @@ is_topic(topics,code)
   return(FALSE);
 }
 
-was_connected(a,b)
+static int was_connected(a,b)
      KNUCKLE *a, *b;
 {
   int i = 0;
