@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.31 1991-06-04 20:37:09 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.32 1991-06-04 22:17:28 jik Exp $
 #
 
 # If you are compiling on a system that has an st_blocks field in
@@ -13,6 +13,10 @@
 # blocks taken up by the file, add -DUSE_BLOCKS to the DEFINES
 # variable below.  If you don't know whether or not to define it, run
 # "make block-test".
+# 
+# If you are using a system where malloc(0) returns 0 even when it
+# succeeds, then set MALLOC below to -DMALLOC_0_RETURNS_NULL.  If you
+# don't know whether or not to define it, run "make malloc-test".
 
 DESTDIR=
 TARGETS= 	delete undelete expunge purge lsdel
@@ -24,7 +28,8 @@ CC= 		cc
 DEPEND=		/usr/bin/X11/makedepend
 COMPILE_ET= 	compile_et
 LINT= 		lint
-DEFINES=	
+MALLOC=
+DEFINES=	$(MALLOC)
 
 
 # These variables apply only if you want this program to recognize
@@ -79,7 +84,7 @@ MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
 
 ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(MANS)\
-		$(ETSRCS) block-test.sh
+		$(ETSRCS) block-test.sh malloc-test.c
 ARCHIVEDIRS= 	man1
 
 DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
@@ -192,6 +197,11 @@ depend:: $(SRCS) $(INCS) $(ETS)
 
 block-test: block-test.sh
 	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . ./block-test.sh
+
+malloc-test: malloc-test.c
+	@$(CC) -o malloc-test malloc-test.c
+	@./malloc-test
+	@rm malloc-test
 
 $(DELETEOBJS): delete_errs.h
 $(EXPUNGEOBJS): delete_errs.h
