@@ -10,7 +10,7 @@ Third-party stuff not under third
 	* packs/config/named.root
 
 		This file contains the named.root file available at
-		rs.internic.edu:/domain/named.root.
+		rs.internic.net:/domain/named.root.
 
 	* packs/config/Dash.fallback
 
