@@ -9,9 +9,10 @@ DS*)
 RSAIX)
 	;;
 SUN*)
+	rm /etc/rc*.d/*     
 	cp -p /srvd/usr/lib/ld.so.1  /usr/lib/ld.so.1-new
 	/usr/sbin/static/mv /usr/lib/ld.so.1     /usr/lib/ld.so.1.old
 	/usr/sbin/static/mv /usr/lib/ld.so.1-new        /usr/lib/ld.so.1
-	/usr/sbin/static/mv /etc/lib/ld.so.1            /etc/lib/ld.so.1-orig
+	/usr/sbin/static/mv /etc/lib/ld.so.1            /etc/lib/ld.so.1.old
 	cp -p /usr/lib/ld.so.1  /etc/lib/ld.so.1
 esac
