@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
  *	$Author: raeburn $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.2 1990-12-12 01:19:26 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.3 1991-03-06 20:46:18 raeburn Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -35,10 +35,10 @@
 
 /* client defines */
 #define	REXMIT_SECS	((long) 20)	/* rexmit delay on normal notices */
-#define	NUM_REXMITS	(5)		/* number of rexmits */
+#define	NUM_REXMITS	(9)		/* number of rexmits */
 
 /* hostmanager defines */
-#define	LOSE_TIMO	(30)		/* time during which a losing host
+#define	LOSE_TIMO	(60)		/* time during which a losing host
 					   must respond to a ping */
 
 /* server-server defines */
