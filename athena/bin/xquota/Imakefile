@@ -3,22 +3,22 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.3 1991-06-26 18:09:19 probe Exp $
+ * $Id: Imakefile,v 1.4 1991-07-03 13:17:12 probe Exp $
  *
  *       
  * Copyright (c) 1987, 1988, 1991 by the Massachusetts Institute of Technology.
  *   
  *       For further information on copyright and distribution 
  *       see the file mit-copyright.h
-*/
+ */
     
 #if defined(vax) && !defined(ultrix) || defined(ibm032)
 INCFLAGS= -I. -I/usr/local/include
 LIBS= -lXaw -lXt -lXmu -lX11 -lhesiod -lrpcsvc /usr/local/lib/afs/libsys.a
 
-HELPFILES= -DDEFAULTS_FILE=\"${XAPPDEFDIR}/Xquota.ad\"\
-	   -DTOP_HELP_FILE=\"${XAPPDEFDIR}/top_help.txt\"\
-	   -DPOPUP_HELP_FILE=\"${XAPPDEFDIR}/pop_help.txt\"
+HELPFILES= -DDEFAULTS_FILE=\"${ATHXAPPDIR}/Xquota.ad\"\
+	   -DTOP_HELP_FILE=\"${ATHXAPPDIR}/top_help.txt\"\
+	   -DPOPUP_HELP_FILE=\"${ATHXAPPDIR}/pop_help.txt\"
 
 DEFINES= ${INCFLAGS} ${HELPFILES}
 
@@ -27,9 +27,9 @@ OBJS=handler.o main.o widgets.o nfs.o afs.o
 SimpleProgram(xquota,${OBJS},${LIBS},$(ATHBINDIR))
 		cc ${CFLAGS} ${LDFLAGS}  -o xquota ${LIBS}
 
-install_file(Xquota.ad,${XAPPDEFDIR})
-install_file(top_help.txt,${XAPPDEFDIR})
-install_file(pop_help.txt,${XAPPDEFDIR})
+install_file(Xquota.ad,${ATHXAPPDIR})
+install_file(top_help.txt,${ATHXAPPDIR})
+install_file(pop_help.txt,${ATHXAPPDIR})
 
 #else
 all::
