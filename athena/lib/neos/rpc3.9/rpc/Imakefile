@@ -11,7 +11,7 @@ CHOWN=chown
 CHOWN=/etc/chown
 #endif
 
-#if defined(_IBMR2) || defined(sun)
+#ifndef ultrix
 
 DEFINES =
 SRCS = vers_ctl.c
