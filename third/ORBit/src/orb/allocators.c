@@ -200,7 +200,7 @@ ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
 		    ORBit_free_via_TypeCode(mem, &subtc, free_strings);
 		    /* the end of the body (subtc) may not be the
 		     * same as the end of the union */
-		    retval = mem + sz;
+		    retval = (char *)mem + sz;
 		}
 		break;
 	case CORBA_tk_wstring:

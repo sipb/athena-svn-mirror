@@ -707,7 +707,7 @@ CORBA_char *CORBA_ORB_object_to_string(CORBA_ORB orb,
 
 	  if (CORBA_Object_is_nil(obj, &myev)) {
 		  g_warning("Bug in %s, created bad IOR `%s'\n",
-			    __FUNCTION__, rc);
+			    "CORBA_ORB_object_to_string", rc);
 		  CORBA_free(rc);
 		  return NULL;
 	  }

@@ -35,6 +35,9 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 
 /* Section 4.2.1 */
 CORBA_InterfaceDef CORBA_Object_get_interface(CORBA_Object obj, CORBA_Environment *ev)

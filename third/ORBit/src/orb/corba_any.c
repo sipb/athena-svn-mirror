@@ -276,18 +276,18 @@ static glong ORBit_get_union_switch(CORBA_TypeCode tc, gpointer *val, gboolean u
     case CORBA_tk_long:
     case CORBA_tk_enum:
 	retval = *(CORBA_long *)*val;
-	if(update) *val += sizeof(CORBA_long);
+	if(update) *val = (char *)val + sizeof(CORBA_long);
 	break;
     case CORBA_tk_ushort:
     case CORBA_tk_short:
 	retval = *(CORBA_short *)*val;
-	if(update) *val += sizeof(CORBA_short);
+	if(update) *val = (char *)val + sizeof(CORBA_short);
 	break;
     case CORBA_tk_char:
     case CORBA_tk_boolean:
     case CORBA_tk_octet:
 	retval = *(CORBA_octet *)*val;
-	if(update) *val += sizeof(CORBA_char);
+	if(update) val = (char *)val + sizeof(CORBA_char);
 	break;
     case CORBA_tk_alias:
 	return ORBit_get_union_switch(tc->subtypes[0], val, update);
