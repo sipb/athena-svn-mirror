@@ -1,0 +1,61 @@
+/*
+ *  Imakefile for Athena Dashboard
+ *  Copyright (c) 1991, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/Imakefile,v $
+ *   $Author: vanharen $ 
+ *
+ * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+#include "../Xj.tmpl"
+
+#include "mit-copyright.h"
+
+CONSOLE		=	console
+
+#ifdef MacIIArchitecture
+M_LIB		=	-lmalloc
+#else
+M_LIB		=
+#endif
+
+SRCS		=	console.c
+OBJS		=	console.o
+
+XJLIB		=	../lib/libXj.a
+C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
+
+#ifdef RtArchitecture
+DEFINES		=	-D_BSD -D_BSD_INCLUDES -DAIXV=12
+#else
+DEFINES		=
+#endif
+
+INCLUDES	=	-I.. ${LOCAL_INCLUDES}
+
+AllTarget(${CONSOLE})
+NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
+InstallProgram($(CONSOLE),$(ATHRETCDIR))
+
+InstallNonExec(${CONSOLE}.8,${ATHMANDIR}/${CONSOLE}.8)
+InstallNonExec(Console,/etc/athena/login/Console)
+InstallNonExec(console.xbm,/etc/athena/login/bitmaps/console.xbm)
+InstallNonExec(gray,/etc/athena/login/bitmaps/gray)
+
+DependTarget()
+
+/* .c.o:
+ *	${CC} ${CFLAGS} -E $*.c | xstr -c -
+ *	${CC} ${CFLAGS} -c x.c
+ *	mv x.o $*.o
+ *	${RM} x.c
+ *
+ *xs.o:
+ *	xstr
+ *	${CC} ${CFLAGS} -c xs.c
+ */
