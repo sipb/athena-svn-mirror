@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.6 1993-07-02 17:20:59 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.7 1993-11-01 18:02:32 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -877,7 +877,6 @@ input(fd, name)
   close(fd);
 }
 
-
 int exec(info, what, data)
      MenuInfo *info;
      char *what;
@@ -1002,6 +1001,30 @@ int exec(info, what, data)
       _exit(42);
     }
   return 42;			/* never reached, but makes saber happy... */
+}
+
+#ifdef SOLARIS
+static char xtermstart[] = "xterm -e inittty ";
+#else
+static char xtermstart[] = "xterm -e ";
+#endif
+
+int xterm(info, what, data)
+     MenuInfo *info;
+     char *what;
+     caddr_t data;
+{
+  char *whatstring;
+  int ret;
+
+  whatstring = (char *)malloc(strlen(what) + sizeof(xtermstart) + 1);
+  if (whatstring == NULL)
+    return exec(info, what, data); /* Just go for it. */
+  strcpy(whatstring, xtermstart);
+  strcat(whatstring, what);
+  ret = exec(info, whatstring, data);
+  free(whatstring);
+  return ret;
 }
 
 int restart(info, what, data)
@@ -1643,6 +1666,7 @@ XjCallbackRec callbacks[] =
   /* misc */
   { "quit", quit },
   { "exec", exec },
+  { "xterm", xterm },
   { "sh", sh },
   { "toggleHelp", toggleHelp },
   { "toggleVerify", toggleVerify },
