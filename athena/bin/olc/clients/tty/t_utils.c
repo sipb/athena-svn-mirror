@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.3 1989-08-04 11:13:47 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.4 1989-08-07 13:48:46 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -288,12 +288,12 @@ handle_response(response, req)
       return(NO_ACTION);   
  
     case TARGET_NOT_FOUND:
-      fprintf(stderr,"Target user %s (%d) unknown.\n",  req->target.username,
+      fprintf(stderr,"Target user %s (%d) not found.\n",  req->target.username,
 	      req->target.instance);
       return(ERROR);       
 
     case REQUESTER_NOT_FOUND:
-      fprintf(stderr,"You [%s (%d)] are unknown.\n",
+      fprintf(stderr,"You [%s (%d)] are unknown. There is a problem.\n",
 	      req->requester.username, 
 	      req->requester.instance);
       return(ERROR);       
@@ -307,7 +307,7 @@ handle_response(response, req)
       return(ERROR); 	   
 
     case USER_NOT_FOUND:
-      fprintf(stderr,"User, %s, not found.\n",req->target.username);
+      fprintf(stderr,"User \"%s\" not found.\n",req->target.username);
       return(ERROR); 
 
     case NAME_NOT_UNIQUE:
