@@ -82,7 +82,7 @@ main(argc, argv)
   make_abbrev_table();
   make_display();
 #ifdef LOG_USAGE
-  log_startup("stock",LOGGER_HOST);
+  log_startup("tty_stock");
 #endif  
   command_loop();
 }

@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.7 1991-04-18 22:44:55 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.8 1991-06-30 12:28:10 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -103,7 +103,7 @@ void main(argc, argv)
     kill(spid,SIGUSR1);
   }
 #ifdef LOG_USAGE
-  log_startup("xstock",LOGGER_HOST);
+  log_startup("x_stock");
 #endif
   XtMainLoop();
 }
