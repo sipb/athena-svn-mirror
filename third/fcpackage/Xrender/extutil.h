@@ -173,9 +173,9 @@ extern XExtDisplayInfo *XextFindDisplay(
 
 #define XextHasExtension(i) ((i) && ((i)->codes))
 #define XextCheckExtension(dpy,i,name,val) \
-  if (!XextHasExtension(i)) { XMissingExtension (dpy, name); return val; }
+  if (!XextHasExtension(i)) { return val; }
 #define XextSimpleCheckExtension(dpy,i,name) \
-  if (!XextHasExtension(i)) { XMissingExtension (dpy, name); return; }
+  if (!XextHasExtension(i)) { return; }
 
 
 /*
