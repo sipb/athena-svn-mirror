@@ -1,7 +1,7 @@
-# $Id: Makefile.athena,v 1.4 2000-05-31 19:25:58 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 2000-05-31 19:37:39 ghudson Exp $
 
 TEXMFDIR=/usr/athena/share/texmf
-TEXCONFIG=${DESTDIR}/usr/athena/bin/texconfig
+TEXCONFIG=$$SRVD/usr/athena/bin/texconfig
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
