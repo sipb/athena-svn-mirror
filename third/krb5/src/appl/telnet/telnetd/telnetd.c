@@ -159,7 +159,7 @@ char valid_opts[] = {
 	'D', ':',
 #endif
 #ifdef	ENCRYPTION
-	'e', ':', 'x',
+	'e',
 #endif
 #if	defined(CRAY) && defined(NEWINIT)
 	'I', ':',
@@ -272,6 +272,9 @@ main(argc, argv)
 				diagnostic |= TD_PTYDATA;
 			} else if (!strcmp(optarg, "options")) {
 				diagnostic |= TD_OPTIONS;
+			} else if (!strcmp(optarg, "encrypt")) {
+				extern int encrypt_debug_mode;
+				encrypt_debug_mode = 1;
 			} else {
 				usage();
 				/* NOT REACHED */
@@ -281,13 +284,7 @@ main(argc, argv)
 
 #ifdef	ENCRYPTION
 		case 'e':
-			if (strcmp(optarg, "debug") == 0) {
-				extern int encrypt_debug_mode;
-				encrypt_debug_mode = 1;
-				break;
-			}
-			usage();
-			/* NOTREACHED */
+			must_encrypt = 1;
 			break;
 #endif	/* ENCRYPTION */
 
@@ -409,12 +406,6 @@ main(argc, argv)
 		case 'U':
 			registerd_host_only = 1;
 			break;
-
-#ifdef	ENCRYPTION
-		case 'x':
-			must_encrypt = 1;
-			break;
-#endif
 
 #ifdef	AUTHENTICATION
 		case 'X':
