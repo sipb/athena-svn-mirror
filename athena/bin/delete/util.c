@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.27 1993-04-29 18:36:02 miki Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.28 1994-03-25 16:21:47 miki Exp $";
 #endif
 
 #include <stdio.h>
@@ -368,7 +368,7 @@ struct stat *oldbuf;
 	  blob.in_size = strlen(name) + 1;
 	  blob.out = retbuf;
 	  blob.out_size = MAXPATHLEN;
-	  bzero(retbuf, MAXPATHLEN);
+	  memset(retbuf, 0, MAXPATHLEN);
      }
      else {
 	  strncpy(buf, name, shortname - name - 1);
@@ -379,7 +379,7 @@ struct stat *oldbuf;
 	  blob.in_size = strlen(shortname) + 1;
 	  blob.out = retbuf;
 	  blob.out_size = MAXPATHLEN;
-	  bzero(retbuf, MAXPATHLEN);
+	  memset(retbuf, 0, MAXPATHLEN);
      }
 
      retval = pioctl(buf, VIOC_AFS_STAT_MT_PT, &blob, 0);
