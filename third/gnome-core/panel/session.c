@@ -1455,6 +1455,8 @@ init_user_panels(void)
 			g_string_sprintf (buf, "orient=%d", ORIENT_UP);
 			orient = gnome_config_get_int (buf->str);
 
+			/* FIXME: there are some issues with auto hiding drawers */
+
 			avoid_on_maximize = gnome_config_get_bool
 				("avoid_on_maximize=FALSE");
 
