@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v $
- *	$Id: p_live.c,v 1.5 1990-07-16 08:21:09 lwvanels Exp $
+ *	$Id: p_live.c,v 1.6 1990-10-18 06:09:49 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v 1.5 1990-07-16 08:21:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_live.c,v 1.6 1990-10-18 06:09:49 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -63,7 +63,7 @@ do_olc_live(arguments)
 	}
      else 
        {
-	 arguments = handle_argument(arguments, &Request);
+	 arguments = handle_argument(arguments, &Request,&status);
 	 if(arguments == (char **) NULL)   /* error */
 	   return(ERROR);
 	 if(*arguments == (char *) NULL)   /* end of list */
