@@ -1,6 +1,10 @@
 /*
- * $Id: Imakefile,v 1.1 1991-05-27 16:24:50 epeisach Exp $
+ * $Id: Imakefile,v 1.2 1991-05-27 16:25:16 epeisach Exp $
  */
+
+#ifdef ULTRIX40
+DEFINES=-DULTRIX_40
+#endif
 
 #if defined(_IBMR2)
 #define DONE
