@@ -138,8 +138,10 @@
 		    break;
 		if (copylink(srcname,targname,srcmode))
 		    update_error("copy of symbolic link failed.");
+#if !defined(_AIX)
 		else if (pflag && chown(targname,srcuid,srcgid))
 		    update_error("chown() failed.");
+#endif
 		break;
 	      
 	    case TYPE_D:
