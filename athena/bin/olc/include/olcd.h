@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: vanharen $
- *      $Id: olcd.h,v 1.13 1990-01-17 05:44:48 vanharen Exp $
+ *      $Id: olcd.h,v 1.14 1990-02-05 00:19:26 vanharen Exp $
  */
 
 #ifndef __olcd_h
@@ -32,6 +32,8 @@ extern char *LOG_DIR;
 extern char *BACKUP_FILE;
 extern char *BACKUP_TEMP;
 extern char *ERROR_LOG;
+extern char *REQ_STATS_LOG;
+extern char *QUES_STATS_LOG;
 extern char *STATUS_LOG;
 extern char *ADMIN_LOG;
 extern char *STDERR_LOG;
@@ -297,6 +299,10 @@ extern char *fmt ();
 extern KNUCKLE          **Knuckle_List;
 extern TOPIC            **Topic_List;
 extern int              needs_backup;
+extern PROC  Proc_List[];	/* OLC Proceedure Table */
+extern int request_count;
+extern int request_counts[OLC_NUM_REQUESTS];
+extern long start_time;
 
 /* useful macros */
 
