@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.9 1988-06-29 16:40:56 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.10 1989-10-26 11:25:39 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.9 1988-06-29 16:40:56 jtkohl Exp $";
+static char rcsid_ZIfNotice_c[] = "$Id: ZIfNotice.c,v 1.10 1989-10-26 11:25:39 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -59,5 +59,8 @@ Code_t ZIfNotice(notice, from, predicate, args)
 	}
 	if ((retval = Z_ReadWait()) != ZERR_NONE)
 	    return (retval);
+	qptr = Z_GetFirstComplete();	/* need to look over all of
+					   the queued messages, in case
+					   a fragment has been reassembled */
     }
 }
