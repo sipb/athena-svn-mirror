@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.19 1995-11-30 19:42:37 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.19.2.1 1997-06-28 19:14:11 ghudson Exp $
  */
 
 /*
@@ -17,7 +17,7 @@ char copyright[] =
  All rights reserved.\n";
 
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-static char *rcsid_lpd_c = "$Id: lpd.c,v 1.19 1995-11-30 19:42:37 miki Exp $";
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.19.2.1 1997-06-28 19:14:11 ghudson Exp $";
 #endif
 
 /*
@@ -96,7 +96,7 @@ main(argc, argv)
 	int argc;
 	char **argv;
 {
-	int f, funix, finet, options=0, defreadfds, fromlen;
+	int f, funix, finet, options=0, defreadfds, fromlen, one=1;
 	struct sockaddr_un sockun, fromunix;
 	struct sockaddr_in sin, frominet;
 	struct hostent *hp;
@@ -241,6 +241,7 @@ main(argc, argv)
 		sin.sin_family = AF_INET;
 		sin.sin_addr.s_addr = INADDR_ANY;
 		sin.sin_port = sp->s_port;
+		setsockopt(finet, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(one));
 		if (bind(finet, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 			syslog(LOG_ERR, "bind: %m");
 			mcleanup();
@@ -677,7 +678,7 @@ again:
 		goto again;
 	}
 	printer = (char *) NULL;
-	fatal("Your host does not have line printer access");
+	fatal("%s: Your host does not have line printer access", from);
 }
 
 /*
