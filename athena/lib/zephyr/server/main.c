@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.61 1994-10-31 05:35:24 ghudson Exp $";
+    "$Id: main.c,v 1.62 1994-11-11 19:09:26 ghudson Exp $";
 #endif
 #endif
 
@@ -297,8 +297,10 @@ main(argc, argv)
 	sigaction(SIGFPE, &action, NULL);
 	sigaction(SIGXCPU, &action, NULL);
 
+#ifdef SIGEMT
 	action.sa_handler = sig_dump_strings;
 	sigaction(SIGEMT, &action, NULL);
+#endif
 
 	action.sa_handler = reset;
 	sigaction(SIGHUP, &action, NULL);
@@ -310,7 +312,9 @@ main(argc, argv)
 	(void) signal(SIGCHLD, reap);
 	(void) signal(SIGFPE, sig_dump_db);
 	(void) signal(SIGXCPU, sig_dump_db);
+#ifdef SIGEMT
 	(void) signal(SIGEMT, sig_dump_strings);
+#endif
 	(void) signal(SIGHUP, reset);
 #endif /* POSIX */
 
