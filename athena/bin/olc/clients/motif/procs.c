@@ -14,7 +14,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.8 1991-03-24 14:23:17 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.9 1991-03-24 23:10:05 lwvanels Exp $";
 #endif
 
 #include <signal.h>
@@ -64,13 +64,13 @@ reaper(sig)
   signal(SIGCHLD, reaper);
   pid = wait3(&foo,WNOHANG,0);
   if (pid <= 0)
-    return;
+    return(0);
   if (pid == sa_pid) {
     sa_pid = 0;
     XtSetArg(args[0],XmNsensitive,TRUE);
     XtSetValues(w_stock_btn, args, 1);
   }
-  return;
+  return(0);
 }
 
 static int
@@ -78,6 +78,7 @@ view_ready(sig)
 {
   signal(SIGUSR1, SIG_IGN);
   STANDARD_CURSOR;
+  return(0);
 }  
 
 void
@@ -283,7 +284,6 @@ olc_replay()
   int status;
   int fd;
   int actlen;
-  long pos;
   Arg Args[2];
   Widget sb,w;
   int sb_value, sb_slider_size, sb_inc, sb_pinc, sb_max;
@@ -357,7 +357,6 @@ olc_done (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  int status;
 
   WAIT_CURSOR;
   if (fill_request(&Request) != SUCCESS) {
@@ -398,8 +397,6 @@ olc_savelog (w, tag, callback_data)
 {
   char *homedir;
   char file[BUF_SIZE];
-  REQUEST Request;
-  int status;
   Widget W;
   Arg A[1];
 
@@ -493,19 +490,20 @@ olc_stock (w, tag, callback_data)
      caddr_t *tag;
      XmAnyCallbackStruct *callback_data;
 {
-  char message[BUF_SIZE];
   Arg args[1];
-  
+  char pidascii[7];
+
   WAIT_CURSOR;
   XtSetArg(args[0],XmNsensitive,FALSE);
   XtSetValues(w_stock_btn, args, 1);
   
+  sprintf(pidascii,"%d",getpid());
   if ((sa_pid = vfork()) == -1) {
     MuError("Error in vfork; cannot start stock answer browser");
     return;
   }
   if (sa_pid == 0) {
-    if (execl(SA_LOC,SA_ARGV0,0) == -1) {
+    if (execl(SA_LOC,SA_ARGV0,"-signal",pidascii,0) == -1) {
       fprintf(stderr,"Error in execl; cannot start stock answer browser");
       _exit(1);
     }
