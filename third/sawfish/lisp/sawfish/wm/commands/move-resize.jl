@@ -1,5 +1,5 @@
 ;; move-resize.jl -- interactive moving and resizing of windows
-;; $Id: move-resize.jl,v 1.1.1.2 2001-03-09 19:35:27 ghudson Exp $
+;; $Id: move-resize.jl,v 1.1.1.3 2002-03-20 05:00:01 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -36,6 +36,7 @@
 	  sawfish.wm.commands
 	  sawfish.wm.custom
 	  sawfish.wm.events
+	  sawfish.wm.cursors
 	  sawfish.wm.util.stacking
 	  sawfish.wm.util.edges)
 
@@ -137,8 +138,8 @@
 			   (bottom-left-corner bottom left)
 			   (bottom-right-corner bottom right)))
 
-  (defvar move-cursor-shape 'hand2)
-  (defvar resize-cursor-shape 'hand2)
+  (defvar move-cursor-shape (default-cursor))
+  (defvar resize-cursor-shape (default-cursor))
 
   ;; specials, should make these fluids (external users?)
   (defvar move-resize-window nil)
@@ -225,6 +226,7 @@
 	   (old-frame-state-mutex (frame-state-mutex 'clicked))
 	   (old-synthetic-configure-mutex
 	    (synthetic-configure-mutex move-resize-inhibit-configure))
+	   (was-successful nil)
 	   server-grabbed)
 
       (when (and move-resize-raise-window (eq move-resize-mode 'opaque))
@@ -257,17 +259,19 @@
 				  (+ move-resize-width
 				     (car move-resize-frame))
 				  (+ move-resize-height
-				     (cdr move-resize-frame))))
-		      (apply draw-window-outline move-resize-last-outline))
+				     (cdr move-resize-frame)))))
 		    (if (eq move-resize-function 'resize)
 			(unless (eq resize-edge-mode 'grab)
 			  (infer-anchor))
 		      (infer-directions))
 		    (when (viable-move-resize-p)
-		      (catch 'move-resize-done
-			(when from-motion-event
-			  (motion))
-			(recursive-edit))))
+		      (unless (eq move-resize-mode 'opaque)
+			(apply draw-window-outline move-resize-last-outline))
+		      (setq was-successful
+			    (catch 'move-resize-done
+			      (when from-motion-event
+				(motion))
+			      (recursive-edit)))))
 		(ungrab-keyboard)
 		(ungrab-pointer))))
 
@@ -283,9 +287,12 @@
       (when (and move-resize-raise-window (not (eq move-resize-mode 'opaque)))
 	(raise-window* w))
       (if (eq function 'move)
-	  (call-window-hook 'after-move-hook w (list move-resize-directions))
+	  (call-window-hook 'after-move-hook w
+			    (list move-resize-directions
+				  #:successful was-successful))
 	(call-window-hook 'after-resize-hook w
-			  (list move-resize-moving-edges)))))
+			  (list move-resize-moving-edges
+				#:successful was-successful)))))
 
   (define (update-edges)
     (setq move-resize-edges

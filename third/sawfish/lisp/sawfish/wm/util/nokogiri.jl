@@ -1,6 +1,6 @@
 #| nokogiri-sawfish.jl -- code to load into window manager
 
-   $Id: nokogiri.jl,v 1.1.1.2 2001-01-13 14:57:50 ghudson Exp $
+   $Id: nokogiri.jl,v 1.1.1.3 2002-03-20 04:59:35 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -119,7 +119,10 @@
 
   (define (nokogiri-apply-changes changes)
     (mapc (lambda (cell)
-	    (customize-set (car cell) (cdr cell))) changes))
+	    (customize-set (car cell)
+			   (custom-deserialize (cdr cell)
+					       (variable-type (car cell)))))
+	  changes))
 
   (define (nokogiri-report-commands)
     (mapcar (lambda (sym)

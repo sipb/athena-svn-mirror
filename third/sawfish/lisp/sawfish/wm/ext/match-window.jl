@@ -1,5 +1,5 @@
 ;; match-window.jl -- match windows to properties
-;; $Id: match-window.jl,v 1.1.1.3 2001-03-09 19:35:14 ghudson Exp $
+;; $Id: match-window.jl,v 1.1.1.4 2002-03-20 05:00:17 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -50,13 +50,7 @@
     (open rep
 	  rep.system
 	  rep.regexp
-	  sawfish.wm.custom
-	  sawfish.wm.frames
-	  sawfish.wm.windows
-	  sawfish.wm.workspace
-	  sawfish.wm.viewport
-	  sawfish.wm.focus
-	  sawfish.wm.misc
+	  sawfish.wm
 	  sawfish.wm.util.groups)
 
   (define-structure-alias match-window sawfish.wm.ext.match-window)
@@ -64,7 +58,7 @@
 
 ;;; configuration and customize stuff
 
-  (defvar match-window-x-properties
+  (i18n-defvar match-window-x-properties
     '((WM_NAME . "Name")
       (WM_CLASS . "Class")
       (WM_ICON_NAME . "Icon Name")
@@ -73,7 +67,7 @@
       (WM_COMMAND . "Command")
       (WM_LOCALE_NAME . "Locale")))
 
-  (defvar match-window-properties
+  (i18n-defvar match-window-properties
     `((placement ,(_ "Placement")
        (avoid boolean)
        (ignore-program-position boolean)
@@ -155,10 +149,8 @@
     :require sawfish.wm.ext.match-window)
 
   ;; used by sawmill-ui when grabbing property values
-  (define (match-window-grab-x-property prop-name)
-    (let ((real-prop (or (car (rassoc prop-name match-window-x-properties))
-			 (intern prop-name)))
-	  (window (select-window))
+  (define (match-window-grab-x-property real-prop)
+    (let ((window (select-window))
 	  prop)
       (when window
 	(setq prop (get-x-property window real-prop))

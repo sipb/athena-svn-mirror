@@ -1,5 +1,5 @@
 ;; maximize.jl -- window maximization
-;; $Id: maximize.jl,v 1.1.1.3 2001-03-09 19:34:52 ghudson Exp $
+;; $Id: maximize.jl,v 1.1.1.4 2002-03-20 05:00:31 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -30,6 +30,8 @@
 	    frame-part-movable-p
 	    maximize-truncate-dims
 	    maximize-find-workarea
+	    window-locked-vertically-p
+	    window-locked-horizontally-p
 	    maximize-window
 	    unmaximize-window
 	    maximize-window-vertically
@@ -147,13 +149,15 @@
 		 (not (window-maximized-horizontally-p w)))
 	(window-put w 'unmaximized-geometry nil))))
 
-  (define (maximize-discard-move w directions)
-    (maximize-discard w (memq 'horizontal directions)
-		      (memq 'vertical directions)))
+  (define (maximize-discard-move w directions #!key successful)
+    (when successful
+      (maximize-discard w (memq 'horizontal directions)
+			(memq 'vertical directions))))
 
-  (define (maximize-discard-resize w edges)
-    (maximize-discard w (or (memq 'left edges) (memq 'right edges))
-		      (or (memq 'top edges) (memq 'bottom edges))))
+  (define (maximize-discard-resize w edges #!key successful)
+    (when successful
+      (maximize-discard w (or (memq 'left edges) (memq 'right edges))
+			(or (memq 'top edges) (memq 'bottom edges)))))
 
 
 ;;; 1D packing
@@ -326,12 +330,22 @@
   (define (maximize-find-workarea #!optional w #!key head)
     "Return the rectangle representing the largest rectangle on the screen that
 doesn't overlap any avoided windows, or nil."
+    (unless head
+      (setq head (current-head w)))
     (let* ((avoided (avoided-windows w))
 	   (edges (get-visible-window-edges
 		   #:with-ignored-windows t
 		   #:windows avoided
-		   #:include-heads (list (or head (current-head))))))
-      (find-max-rectangle avoided edges (current-head w))))
+		   #:include-heads (list head))))
+      (find-max-rectangle avoided edges head)))
+
+  (define (window-locked-vertically-p w)
+    (and move-lock-when-maximized
+	 (window-maximized-vertically-p w)))
+
+  (define (window-locked-horizontally-p w)
+    (and move-lock-when-maximized
+	 (window-maximized-horizontally-p w)))
 
   (define (frame-part-movable-p w part)
     (if (not move-lock-when-maximized)
@@ -360,7 +374,7 @@ doesn't overlap any avoided windows, or nil."
 	   (edges (get-visible-window-edges
 		   #:with-ignored-windows t
 		   #:windows avoided
-		   #:include-heads (list (current-head)))))
+		   #:include-heads (list (current-head w)))))
       (when (window-maximizable-p w direction hints)
 	(unless (window-get w 'unmaximized-geometry)
 	  (window-put w 'unmaximized-geometry (list (car coords) (cdr coords)
@@ -538,14 +552,23 @@ unmaximized."
       (check-if-maximizable w)))
 
   (add-hook 'property-notify-hook property-notify)
-  (add-hook 'add-window-hook check-if-maximizable)
+
+  (add-hook 'after-initialization-hook
+	    (lambda ()
+	      (map-windows check-if-maximizable)
+	      ;; Don't install this hook until after all windows have
+	      ;; initially been adopted, to avoid maximizing over
+	      ;; avoided windows
+	      (add-hook 'add-window-hook check-if-maximizable)))
 
   (sm-add-saved-properties
    'unmaximized-geometry 'maximized-vertically 'maximized-horizontally)
   (add-swapped-properties
    'unmaximized-geometry 'maximized-vertically 'maximized-horizontally)
 
-  (add-hook 'after-move-hook maximize-discard-move)
+  ;; This is now disabled - it doesn't really make sense for moving..
+  ;; (add-hook 'after-move-hook maximize-discard-move)
+
   (add-hook 'after-resize-hook maximize-discard-resize)
 
   (gaol-add window-maximized-p window-maximized-horizontally-p

@@ -1,3 +1,142 @@
+2001-10-14  John Harper  <jsh@unfactored.org>
+
+	* version 1.0.1
+
+2001-08-31  John Harper  <jsh@pixelslut.com>
+
+	* windows.c (focus_on_window): subtract one from the last seen
+	server timestamp when sending the WM_TAKE_FOCUS message. The
+	explanatory comment in the source reads:
+
+	The -1 is an Ugly Hack. The problem is with the case where the
+	window focuses itself after receiving the WM_TAKE_FOCUS
+	message. If during the time between us sending the client
+	message and the window focusing itself we focused another
+	window using the same timestamp, the original window (that
+	received the client message) will still get focused.
+
+	I'm assuming that it's unlikely that two events will arrive
+	generating focus changes with timestamps that only differ by
+	one..
+
+2001-08-24  John Harper  <jsh@pixelslut.com>
+
+	* events.c (unmap_notify): call remove_window () on unmapped
+	(withdrawn) windows. This fixes some standards-compliance bugs
+	due to us handling windows differently the second time they're
+	mapped than the first
+
+2001-07-02  John Harper  <jsh@pixelslut.com>
+
+	* version 0.99
+
+2001-06-20  John Harper  <jsh@pixelslut.com>
+
+	* sawmill_subrs.h, multihead.c, main.c, Makefile.in: support a
+	`--multiehead' command-line option. When given and the X server
+	has more than one screen, fork extra copies of sawfish for each
+	extra screen. This has some fundamental problems (e.g. the
+	copies share files in ~/.sawfish without any synchronization),
+	but seems to be useful for some people..
+
+	The other people who contributed to this feature are Michael
+	Vogt and Mahmood Ali
+
+2001-06-12  John Harper  <jsh@pixelslut.com>
+
+	* display.c (sys_init): if XQueryShapeExtension fails, print a
+	message and terminate the wm
+
+2001-06-04  John Harper  <jsh@pixelslut.com>
+
+	* windows.c (focus_on_window): don't update focus_window after
+	calling XSetInputFocus (), instead wait for the focus-in event
+	to do this
+
+	(pending_focus_window): new variable to make this work
+	correctly
+
+	(focus_off_window): new function, called when a window becomes
+	unfocusable
+
+	* events.c (unmap_notify): call focus_off_window
+	(focus_in): nullify pending_focus_window if it actually gets
+	focused
+
+2001-05-22  John Harper  <jsh@pixelslut.com>
+
+	Fixed bug 8220 (Having Ctrl as default "modifier key used for
+	default WM shortcuts" breaks everything...):
+
+	* keys.c (wm_mod): default window manager modifier is once more
+	`M-' instead of `C-'
+
+2001-05-04  John Harper  <jsh@eazel.com>
+
+	* keys.h, keys.c: added support for Off2 and Off3 event types
+	(button release events). Also changed it so that Click1 events
+	now print as `Click'
+
+2001-04-22  John Harper  <jsh@eazel.com>
+
+	* colors.c (colors_init): use `#000000' instead of `black'.
+	This will still work even if rgb.txt doesn't exist. Also check
+	for Fget_color () throwing an exception
+
+2001-04-11  John Harper  <jsh@eazel.com>
+
+	Fixed bug 6970 (X plugin doesn't update width and height of
+	drawable structure):
+
+	* x.c (x_window_note_changes): new function, called by
+	Fx_configure_window () after making changes
+
+2001-03-29  John Harper  <jsh@eazel.com>
+
+	Fixed an ICCCM compliance problem:
+
+	* functions.c, events.c (configure_request, Fresize_window_to,
+	Fmove_resize_window_to): don't send a synthetic configure
+	notify event if the window was resized (in which case a real
+	configure notify was generated)
+
+2001-03-21  John Harper  <jsh@eazel.com>
+
+	* fonts.c (x_create_font_set): reverted the last change to
+	merge calls to setlocale (). (I had failed to realize that the
+	result of calling setlocale describes the current locale not
+	the original one). Also added some code to copy the returned
+	locale name since it's in a static buffer
+
+2001-03-19  John Harper  <jsh@eazel.com>
+
+	* windows.c, sawmill.h: moved XUrgencyHint definition to
+	sawmill.h
+
+2001-03-14  John Harper  <jsh@eazel.com>
+
+	* version 0.38
+
+2001-03-09  John Harper  <jsh@eazel.com>
+
+	* cursors.c (cursors_init): set default_cursor to Qnil when in
+	batch mode (to prevent Fdefault_cursor () returning a null
+	value)
+
+2001-03-07  John Harper  <jsh@eazel.com>
+
+	* functions.c (Fx_raise_window, Fx_lower_window): when these
+	functions are given a sibling, check if it has been destroyed.
+	If so, do nothing to the stacking order
+
+	(This should fix a failed assertion that Ramiro and Duane were
+	seeing)
+
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	* keys.c (wm_mod): changed default value from EV_MOD_META to
+	ControlMask. Part of my fix to bug 7073
+
 2001-02-19  John Harper  <jsh@eazel.com>
 
 	* version 0.37.3
@@ -31,7 +170,7 @@
 	* sawmill.h (WINDOW_IS_GONE_P): new macro, evaluates to true
 	when the window object no longer has an associated client
 	window
-
+      	
 	* windows.c, frames.c, display.c, keys.c: use the above macro
 	instead of `w->id == 0'
 

@@ -7,6 +7,169 @@ they occurred between. For more detailed information see the
 @file{ChangeLog} files in the Sawfish source tree.
 
 
+@heading 1.0.1
+
+@itemize @bullet
+
+@item Translation updates: pt (Carlos Perelló Marín), it (Michele
+Campeotto), pl (Zbigniew Chyla), zh_CN (Wang Jian), zh_TW (Abel
+Cheung), es (Eneko Lacunza), tr (Ömer Fadýl USTA), sv (Göran Uddeborg,
+Christian Rose), da (Ole Laursen), gl (Jesus Bravo Alvarez)
+
+@item Bug fixes:
+
+@itemize @minus
+
+@item Fixed typo in @code{apply-command-keys} function (David Bustos)
+
+@item Fixed bug in @code{wm-spec} module causing nautilus desktop
+window to cover panel
+
+@item Adopt windows with a maximized hint correctly
+
+@item Fixed bug in @code{display-window} function that can prevent the
+window getting focused
+
+@item Don't allow windows to be moved or resized by third-parties when
+they're maximized (and the necessary option is set)
+
+@item Fixed problem with localizing property names in the
+matched-windows configuration widget
+
+@item Handle window gravity more correctly (Owen Taylor)
+
+@item Forget everything about withdrawn windows -- better ICCCM
+compliance
+
+@item Fixed root-window event proxying (the infamous gmc bug)
+
+@item Don't use dlmalloc on sparcs (Brian Nitz)
+
+@end itemize
+@end itemize
+
+
+@heading 0.99
+
+@itemize @bullet
+
+@item Requires @code{librep} 0.14 or newer
+
+@item Translation updates: ja (Sato Satoru), no (Kjartan Maraas), es
+(Carlos Perelló Marín), fi (Antti Ahvensalmi), cs (Jiri Cerny), fr
+(Christian Marillat), de (Matthias Warkus, Christian Meyer), da (Ole
+Laursen), sk (Stanislav Visnovsky), tr (Özgür), sv (Christian Rose,
+Peter Winnberg), gl (Jesus Bravo Alvarez)
+
+@item Do i18n on more text strings (Vlad Harchev, me)
+
+@item Broken support for multiple-screen displays. Supplying the new
+@samp{--multihead} option will fork extra copies of sawfish for each
+extra screen. This has some fundamental problems, but some people seem
+to want it (Michael Vogt, Mahmood Ali, me)
+
+@item Window manager virtual modifier once again defaults to @kbd{M-}
+instead of @kbd{C-}
+
+@item Added support for @kbd{Off2} and @kbd{Off3} events
+
+@item @code{menu-program-stays-running} variable now defaults to true
+by popular demand
+
+@item New command @code{focus-desktop}
+
+@item Switch viewports more efficiently (by choosing the best order to
+move windows, to minimize the exposed area)
+
+@item Monitor the @code{_WIN_WORKSPACE} property of each window
+
+@item Bug fixes:
+
+@itemize @minus
+@item Check for X SHAPE extension, exit if it's not available
+
+@item Wait for the focus-in event before changing sawfish's knowledge
+of the focused window when moving focus from one window to another
+
+@item Be more ICCCM-compliant, don't send synthetic configure notify
+events when the window was resized
+
+@item Fixed locale font handling
+
+@item Don't leave grid traces when trying to move/resize a window
+that's locked in place
+
+@item Fixed bug where the pointer being over the message window could
+confuse focus after window cycling
+
+@item @code{decorate-transients} option works again with shaded windows
+
+@item Documentation appears in tooltips again
+
+@item Handle sticky properties better in the @code{window-history}
+module
+
+@item Maximization fixes for multi-headed displays (Florent Guillaume)
+
+@item Cancelling a resize of a maximized window no longer discards the
+window's maximized state
+
+@end itemize
+@end itemize
+
+
+@heading 0.38
+
+@itemize @bullet
+
+@item Translation updates: gl (Jesus Bravo Alvarez), sv (Martin
+Norbäck), de (Matthias Warkus, Christian Meyer), ru (Vlad Harchev), es
+(Joseba García Etxebarria), pl (Daniel Koc), fi (Antti Ahvensalmi), sk
+(Stanislav Visnovsky), az (Pablo Saratxaga), cz (Stanislav Brabec), no
+(Kjartan Maraas), el (Simos Xenitellis), it (Michele Campeotto), fr
+(Christian Marillat), ro (Marius Andreiana), ko (?)
+
+Extract some more translatable strings (Vlad Harchev)
+
+@item @code{Crux} theme now has an extra button mode: @code{Default},
+like Mac OS Platinum but also has an iconify button. Used by default
+
+@item The @code{grow-pack} module now works with windows which specify
+increments (Kai Großjohann)
+
+@item New command @code{kill-client}
+
+@item Fixed bugs:
+
+@itemize @minus
+
+@item Don't return a null pointer when no default cursor has been set,
+return @code{nil} instead
+
+@item Avoid triggering assertions in the stacking list code when
+raising or lowering windows and the given sibling has been destroyed
+
+@item Turned off the annoying code that beeps and prints a message when
+unfocusable windows are detected
+
+@item The GNOME hints now listen for the @code{_WIN_WORKSPACE} property
+changing and will move the window in response
+
+@item Don't forget maximized state of windows when they're moved, only
+if they're resized
+
+@item Don't show special cursors when moving or resizing windows, or
+when hovering over the title bar
+
+@item Corrected off-by-one error in `smart' placement modes
+
+@item Identified and fixed some problems in the new GNOME/KDE window
+manager hints implementation (Rob Hodges, me)
+
+@end itemize
+@end itemize
+
+
 @heading 0.37
 
 @itemize @bullet

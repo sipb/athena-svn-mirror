@@ -1,5 +1,5 @@
 /* keys.h -- Event structures
-   $Id: keys.h,v 1.1.1.2 2001-01-13 14:58:37 ghudson Exp $
+   $Id: keys.h,v 1.1.1.3 2002-03-20 04:59:51 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,8 +37,10 @@ enum {
     EV_CODE_MOUSE_CLICK1 = 1,
     EV_CODE_MOUSE_CLICK2,
     EV_CODE_MOUSE_MOVE,
-    EV_CODE_MOUSE_UP,
+    EV_CODE_MOUSE_UP1,
     EV_CODE_MOUSE_CLICK3,
+    EV_CODE_MOUSE_UP2,
+    EV_CODE_MOUSE_UP3,
 };
 
 /* The low 16 bits of the MODS is the standard X modifier mask. Bits

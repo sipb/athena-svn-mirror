@@ -16,7 +16,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: theme.jl,v 1.1.1.1 2001-03-09 19:35:20 ghudson Exp $
+   $Id: theme.jl,v 1.1.1.2 2002-03-20 04:59:45 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>
 |#
@@ -40,9 +40,28 @@
   :group (appearance Crux)
   :after-set (lambda () (rebuild-all)))
 
-(defcustom Crux:button-theme 'windows
+(defvar Crux:button-themes '((default
+			      ((close-button)
+			       . (iconify-button maximize-button shade-button)))
+			     (platinum
+			      ((close-button) . (maximize-button shade-button)))
+			     (macos-x
+			      ((close-button maximize-button iconify-button)))
+			     (windows
+			      ((menu-button)
+			       . (iconify-button maximize-button close-button))
+			      ((menu-button)))
+			     (next
+			      ((iconify-button) . (close-button))
+			      ((iconify-button) . (close-button)))))
+			       
+
+(defcustom Crux:button-theme 'default
   "Display title buttons to mimic: \\w"
-  :type (choice (platinum "Mac OS Platinum")
+  ;; XXX it would be better if the choices were extracted from
+  ;; XXX the above alist somehow
+  :type (choice (default "Default")
+		(platinum "Mac OS Platinum")
 		(macos-x "Mac OS X")
 		(windows "MS Windows")
 		(next "NeXTSTEP"))
@@ -139,13 +158,6 @@
 	(make-image "active:bottom-right-corner.png")))
 
 ;; 16x16
-(define menu-button
-  `((inactive . ,(make-image "inactive:menu-button.png"))
-    (focused . ,(make-image "active:menu-button.png"))
-    (inactive-highlighted . ,(make-image "inactive:menu-button-hilight.png"))
-    (highlighted . ,(make-image "active:menu-button-hilight.png"))
-    (inactive-clicked . ,(make-image "inactive:menu-button-pressed.png"))
-    (clicked . ,(make-image "active:menu-button-pressed.png"))))
 (define button-background
   `((inactive . ,(make-image "inactive:button.png"))
     (focused . ,(make-image "active:button.png"))
@@ -153,6 +165,13 @@
     (highlighted . ,(make-image "active:button-hilight.png"))
     (inactive-clicked . ,(make-image "inactive:button-pressed.png"))
     (clicked . ,(make-image "active:button-pressed.png"))))
+(define menu-button
+  `((inactive . ,(make-image "inactive:menu-button.png"))
+    (focused . ,(make-image "active:menu-button.png"))
+    (inactive-highlighted . ,(make-image "inactive:menu-button-hilight.png"))
+    (highlighted . ,(make-image "active:menu-button-hilight.png"))
+    (inactive-clicked . ,(make-image "inactive:menu-button-pressed.png"))
+    (clicked . ,(make-image "active:menu-button-pressed.png"))))
 
 (let ((make-button-fg
        (lambda (inactive active)
@@ -364,19 +383,11 @@
     (shade-button . ,shade-fg)))
 
 (define (button-theme type)
-  (case Crux:button-theme
-    ((platinum)
-     (if (eq type 'transient)
-	 '((close-button) . ())
-       '((close-button) . (maximize-button shade-button))))
-    ((macos-x)
-     '((close-button maximize-button iconify-button) . ()))
-    ((windows)
-     (if (eq type 'transient)
-	 '((menu-button) . (close-button))
-       '((menu-button) . (iconify-button maximize-button close-button))))
-    ((next)
-     '((iconify-button) . (close-button)))))
+  (let ((style (cdr (or (assq Crux:button-theme Crux:button-themes)
+			(assq 'default Crux:button-themes)))))
+    (if (eq type 'transient)
+	(cadr style)
+      (car style))))
 
 (define (make-buttons spec background edge)
 

@@ -1,5 +1,5 @@
 ;; menus.jl -- popup menus
-;; $Id: menus.jl,v 1.1.1.2 2001-01-13 14:58:45 ghudson Exp $
+;; $Id: menus.jl,v 1.1.1.3 2002-03-20 05:00:22 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -60,10 +60,10 @@
   (defvar menu-program (expand-file-name "sawfish-menu" sawfish-exec-directory)
     "Location of the program implementing sawfish's menu interface.")
 
-  (defvar menu-program-stays-running 60
-    "When non-nil, the user-interface program is never stopped. If a number,
-then this is taken as the number of seconds to let the process hang around
-unused before killing it.")
+  (defvar menu-program-stays-running t
+    "When non-nil, the menu program is never stopped. If a number, then this
+is taken as the number of seconds to let the process hang around unused
+before killing it.")
 
   ;; the active user interface process
   (define menu-process nil)
@@ -152,7 +152,8 @@ unused before killing it.")
       (setq menu-timer nil))
     (unless (and menu-process (process-in-use-p menu-process))
       (when menu-process
-	(kill-process menu-process))
+	(kill-process menu-process)
+	(setq menu-process nil))
       (let ((menu-sentinel (lambda ()
 			     (when (and menu-process
 					(not (process-in-use-p menu-process)))
@@ -186,8 +187,9 @@ unused before killing it.")
 	     ;; number of seconds to let it hang around for
 	     (require 'rep.io.timers)
 	     (setq menu-timer (make-timer (lambda ()
-					    (kill-process menu-process)
-					    (setq menu-process nil)
+					    (when menu-process
+					      (kill-process menu-process)
+					      (setq menu-process nil))
 					    (setq menu-timer nil))
 					  menu-program-stays-running)))
 	    ((or force (not menu-program-stays-running))

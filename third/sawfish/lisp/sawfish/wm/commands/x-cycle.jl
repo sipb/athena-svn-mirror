@@ -1,5 +1,5 @@
 ;; x-cycle.jl -- stack-based window cycling
-;; $Id: x-cycle.jl,v 1.1.1.2 2001-01-13 14:58:27 ghudson Exp $
+;; $Id: x-cycle.jl,v 1.1.1.3 2002-03-20 04:59:43 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -71,6 +71,7 @@
     (open rep
 	  rep.system
 	  rep.regexp
+	  rep.io.timers
 	  sawfish.wm.misc
 	  sawfish.wm.windows
 	  sawfish.wm.util.window-order
@@ -322,11 +323,15 @@
 		  (catch 'x-cycle-exit
 		    ;; do the first step
 		    (cycle-next windows step)
+		    (setq focus-ignore-pointer-events t)
 		    (recursive-edit))
 		  (when (fluid x-cycle-current)
 		    (display-window (fluid x-cycle-current))))
 	      (remove-message)
-	      (ungrab-keyboard)))))
+	      (ungrab-keyboard)
+	      (make-timer (lambda ()
+			    (setq focus-ignore-pointer-events nil))
+			  0 100)))))
 
       (when tail-command
 	;; make sure that the command operates on the newly-focused

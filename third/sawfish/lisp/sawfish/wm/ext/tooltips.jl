@@ -1,5 +1,5 @@
 ;; tooltips.jl -- display frame-part keymap descriptions
-;; $Id: tooltips.jl,v 1.1.1.2 2001-01-13 14:58:04 ghudson Exp $
+;; $Id: tooltips.jl,v 1.1.1.3 2002-03-20 04:59:31 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -29,6 +29,7 @@
 	  rep.system
 	  rep.regexp
 	  rep.io.timers
+	  sawfish.wm.commands
 	  sawfish.wm.custom
 	  sawfish.wm.misc
 	  sawfish.wm.windows
@@ -68,7 +69,7 @@
   (defcustom tooltips-delay 500
     "Number of milliseconds before displaying tooltips."
     :type number
-    :range (0)
+    :range (1)
     :depends tooltips-enabled
     :group (misc tooltips))
 
@@ -76,7 +77,7 @@
     "Number of milliseconds before removing tooltips."
     :type number
     :user-level expert
-    :range (0)
+    :range (1)
     :depends tooltips-enabled
     :group (misc tooltips))
 
@@ -197,9 +198,7 @@
     (let (doc)
       (if (and tooltips-show-doc-strings command
 	       (symbolp command)
-	       (progn
-		 (require 'rep.lang.doc)
-		 (setq doc (documentation command))))
+	       (setq doc (command-documentation command)))
 	  (_ doc)
 	(format nil "%S" command))))
 

@@ -1,5 +1,5 @@
 ;; grow-pack.jl -- window resize and movement
-;; $Id: grow-pack.jl,v 1.1.1.2 2001-01-13 14:58:44 ghudson Exp $
+;; $Id: grow-pack.jl,v 1.1.1.3 2002-03-20 04:59:23 ghudson Exp $
 ;; Id: grow-pack.jl,v 1.9 2000/08/04 16:42:43 grossjoh Exp 
 
 ;; Copyright (C) 2000 Kai Grossjohann <Kai.Grossjohann@CS.Uni-Dortmund.DE>
@@ -151,23 +151,26 @@ already in the window, then does like `maybe'.
 	   (nleft   wleft)
 	   (ntop    wtop)
 	   (nright  wright)
-	   (nbottom wbottom))
+	   (nbottom wbottom)
+	   (szhints (window-size-hints w))
+	   (winc    (or (cdr (assq 'width-inc szhints)) 1))
+	   (hinc    (or (cdr (assq 'height-inc szhints)) 1)))
       (when (eq direction 'left)
 	(setq nleft 0)
 	(when grow-window-repeat
-	  (setq wleft (max (- wleft 1) 0))))
+	  (setq wleft (max (- wleft winc) 0))))
       (when (eq direction 'right)
 	(setq nright (screen-width))
 	(when grow-window-repeat
-	  (setq wright (min (+ wright 1) (screen-width)))))
+	  (setq wright (min (+ wright winc) (screen-width)))))
       (when (eq direction 'up)
 	(setq ntop 0)
 	(when grow-window-repeat
-	  (setq wtop (max (- wtop 1) 0))))
+	  (setq wtop (max (- wtop hinc) 0))))
       (when (eq direction 'down)
 	(setq nbottom (screen-height))
 	(when grow-window-repeat
-	  (setq wbottom (min (+ wbottom 1) (screen-height)))))
+	  (setq wbottom (min (+ wbottom hinc) (screen-height)))))
       (filter-windows
        (lambda (x)
 	 (let* ((xpos (window-position x))
@@ -293,3 +296,4 @@ already in the window, then does like `maybe'.
       (call-window-hook 'after-move-hook w
 			(list (list (if (memq direction '(left right))
 					'horizontal 'vertical)))))))
+;; grow-pack.jl ends here.

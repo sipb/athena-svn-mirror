@@ -1,6 +1,6 @@
 #| nokogiri-widgets/match-window.jl -- match-window widget
 
-   $Id: match-window.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: match-window.jl,v 1.1.1.2 2002-03-20 05:00:18 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -38,8 +38,13 @@
   ;; (match-window:matchers x-properties)
 
   (define (make-match-window:matchers changed-callback x-properties)
+    (declare (unused changed-callback))
+
     (let ((frame (gtk-frame-new (_ "Matchers")))
 	  (table (gtk-table-new matcher-count 3 nil))
+	  (l10n-x-properties (mapcar (lambda (x)
+				       (cons (car x) (_ (cdr x))))
+				     x-properties))
 	  (widgets '()))
 
       (do ((i 0 (1+ i)))
@@ -48,15 +53,17 @@
 	      (entry (gtk-entry-new))
 	      (button (gtk-button-new-with-label (_ "Grab..."))))
 	  (gtk-combo-set-popdown-strings
-	   combo (cons "" (mapcar cdr x-properties)))
+	   combo (cons "" (mapcar cdr l10n-x-properties)))
 	  (gtk-table-attach-defaults table combo 0 1 i (1+ i))
 	  (gtk-table-attach-defaults table entry 1 2 i (1+ i))
 	  (gtk-table-attach-defaults table button 2 3 i (1+ i))
 	  (gtk-signal-connect button "clicked"
 	   (lambda ()
-	     (let ((string (gtk-entry-get-text (gtk-combo-entry combo))))
+	     (let* ((string (gtk-entry-get-text (gtk-combo-entry combo)))
+		    (x-prop (and string (car (rassoc string
+						     l10n-x-properties)))))
 	       (when string
-		 (let ((prop (wm-grab-x-property string)))
+		 (let ((prop (wm-grab-x-property (or x-prop (intern string)))))
 		   (gtk-entry-set-text entry (if (stringp prop)
 						 prop
 					       "")))))))
@@ -82,7 +89,7 @@
 		 ((or (null cells) (null rest)))
 	       (gtk-entry-set-text
 		(gtk-combo-entry (caar cells))
-		(or (or (cdr (assq (caar rest) x-properties)) (caar rest))))
+		(or (cdr (assq (caar rest) l10n-x-properties)) (caar rest)))
 	       (gtk-entry-set-text (cdar cells) (cdar rest)))))
 	  ((ref)
 	   (lambda ()
@@ -95,7 +102,7 @@
 		       (value (gtk-entry-get-text (cdar cells))))
 		   (if (or (string= name "") (string= value ""))
 		       (loop (cdr cells) out)
-		     (let ((prop (rassoc name x-properties)))
+		     (let ((prop (rassoc name l10n-x-properties)))
 		       (if prop
 			   (setq name (car prop))
 			 (setq name (intern name))))
@@ -109,6 +116,8 @@
 ;;; the widget representing the `Actions' frame
 
   (define (make-match-window:actions changed-callback properties)
+    (declare (unused changed-callback))
+
     (let ((frame (gtk-frame-new (_ "Actions")))
 	  (book (gtk-notebook-new))
 	  (widgets '()))
@@ -174,6 +183,7 @@
       (gtk-box-pack-end hbox (gtk-label-new string))
       hbox))
   
+  ;; also in sawfish-xgettext
   (define (beautify-symbol-name symbol)
     (cond ((stringp symbol) symbol)
 	  ((not (symbolp symbol)) (format "%s" symbol))
@@ -183,7 +193,7 @@
 	       (setq name (concat (substring name 0 (match-start))
 				  ?  (substring name (match-end)))))
 	     (aset name 0 (char-upcase (aref name 0)))
-	     name))))
+	     (_ name)))))
 
 
 ;;; the main widget
@@ -205,6 +215,7 @@
 	    (mapconcat print-action (cdr x) ", ")))
 
     (define (dialog title callback #!key for value)
+      (declare (unused title))
       (let ((vbox (gtk-vbox-new nil box-spacing))
 	    (matcher-widget (make-widget
 			     `(match-window:matchers ,x-properties)))

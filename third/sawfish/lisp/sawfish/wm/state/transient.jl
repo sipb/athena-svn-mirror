@@ -1,5 +1,5 @@
 ;; transient.jl -- support transient windows
-;; $Id: transient.jl,v 1.1.1.3 2001-03-09 19:35:04 ghudson Exp $
+;; $Id: transient.jl,v 1.1.1.4 2002-03-20 04:59:32 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -157,7 +157,7 @@ the level of any transient windows it has."
     (if (and decorate-transients (window-transient-p w))
 	(case type
 	  ((transient) 'default)
-	  ((shaped-transient) 'shaped)
+	  ((shaded-transient) 'shaded)
 	  (t type))
       type))
 

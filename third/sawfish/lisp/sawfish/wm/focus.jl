@@ -1,5 +1,5 @@
 ;; focus.jl -- implement standard focus behaviour
-;; $Id: focus.jl,v 1.1.1.2 2001-01-13 14:58:55 ghudson Exp $
+;; $Id: focus.jl,v 1.1.1.3 2002-03-20 04:59:42 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -60,6 +60,9 @@
   (defvar focus-dont-push nil
     "When t, focusing a window doesn't change it's position in the stack of
 most-recently focused windows.")
+
+  (defvar focus-ignore-pointer-events nil
+    "When t, pointer in/out events don't cause focus changes.")
 
   (define focus-within-click-event (make-fluid nil)
     "When non-nil, the current command is being called from within a
@@ -204,16 +207,18 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
 ;;; hooks
 
   (define (focus-enter-fun w mode)
-    (cond ((desktop-window-p w)
-	   (focus-invoke-mode w 'enter-root mode))
-	  ((windowp w)
-	   (focus-invoke-mode w 'pointer-in mode))))
+    (unless focus-ignore-pointer-events
+      (cond ((desktop-window-p w)
+	     (focus-invoke-mode w 'enter-root mode))
+	    ((windowp w)
+	     (focus-invoke-mode w 'pointer-in mode)))))
 
   (define (focus-leave-fun w mode)
-    (cond ((desktop-window-p w)
-	   (focus-invoke-mode w 'leave-root mode))
-	  ((windowp w)
-	   (focus-invoke-mode w 'pointer-out mode))))
+    (unless focus-ignore-pointer-events
+      (cond ((desktop-window-p w)
+	     (focus-invoke-mode w 'leave-root mode))
+	    ((windowp w)
+	     (focus-invoke-mode w 'pointer-out mode)))))
 
   (define (focus-in-fun w)
     (focus-invoke-mode w 'focus-in)
@@ -257,10 +262,10 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
 				 (not (window-really-wants-input-p w))
 				 (eq (window-get w 'keymap)
 				     click-to-focus-map))
-		       (format standard-error
-			       "Window lost focus keymap: %s, %s\n"
-			       (window-name w) (window-get w 'keymap))
-		       (beep) (beep)
+;		       (format standard-error
+;			       "Window lost focus keymap: %s, %s\n"
+;			       (window-name w) (window-get w 'keymap))
+;		       (beep) (beep)
 		       (focus-push-map w click-to-focus-map))))))
 
   (add-hook 'idle-hook scan-windows-for-bugs))

@@ -1,6 +1,6 @@
 #| windows.jl -- miscellaneous window mgmt functions
 
-   $Id: windows.jl,v 1.1.1.2 2001-01-13 14:58:50 ghudson Exp $
+   $Id: windows.jl,v 1.1.1.3 2002-03-20 05:00:15 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -125,6 +125,14 @@ Returns nil if no such window is found."
     "Mark that the window associated with object W is a desktop window."
     (window-put w 'desktop t)
     (window-put w 'keymap root-window-keymap))
+
+  (define (focus-desktop)
+    "Transfer input focus to the desktop window (if one exists)."
+    (let ((desktop-window (car (filter-windows desktop-window-p))))
+      (when desktop-window
+	(set-input-focus desktop-window))))
+
+  (define-command 'focus-desktop focus-desktop)
 
   (define (window-in-cycle-p w)
     "Returns true if the window W should be included when cycling between
@@ -261,11 +269,23 @@ If HINTS is non-nil, then it is the size hints structure to use. Otherwise
 	  (rplaca coords (- (car coords)
 			    (* sign (+ (car br-off)
 				       (* -2 (window-border-width w)))))))
+	(when (memq grav '(north center south))
+	  ;; relative to the horizontal center of the frame
+	  (rplaca coords (- (car coords)
+			    (* sign (quotient (+ (car br-off)
+				                 (* -2 (window-border-width w)))
+                                              2)))))
 	(when (memq grav '(south south-east south-west))
 	  ;; relative to the bottom of the frame
 	  (rplacd coords (- (cdr coords)
 			    (* sign (+ (cdr br-off)
-				       (* -2 (window-border-width w))))))))
+				       (* -2 (window-border-width w)))))))
+	(when (memq grav '(east center west))
+	  ;; relative to the vertical center of the frame
+	  (rplacd coords (- (cdr coords)
+			    (* sign (quotient (+ (cdr br-off)
+				                 (* -2 (window-border-width w)))
+                            	              2))))))
       coords))
 
 

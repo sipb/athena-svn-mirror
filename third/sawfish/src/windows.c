@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.1.1.3 2001-03-09 19:35:36 ghudson Exp $
+   $Id: windows.c,v 1.1.1.4 2002-03-20 05:00:24 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -23,15 +23,10 @@
 #include <assert.h>
 #include <X11/extensions/shape.h>
 
-/* Work around for X11R5 and earlier */
-#ifndef XUrgencyHint
-#define XUrgencyHint (1 << 8)
-#endif
-
 Lisp_Window *window_list;
 int window_type;
 
-Lisp_Window *focus_window;
+Lisp_Window *focus_window, *pending_focus_window;
 
 int pending_destroys;
 
@@ -127,7 +122,21 @@ focus_on_window (Lisp_Window *w)
 	    if (w->does_wm_take_focus)
 	    {
 		DB(("  sending WM_TAKE_FOCUS message\n"));
-		send_client_message (w->id, xa_wm_take_focus, last_event_time);
+
+		/* The -1 is an Ugly Hack. The problem is with the case
+		   where the window focuses itself after receiving the
+		   WM_TAKE_FOCUS message. If during the time between us
+		   sending the client message and the window focusing
+		   itself we focused another window using the same
+		   timestamp, the original window (that received the
+		   client message) will still get focused.
+
+		   I'm assuming that it's unlikely that two events will
+		   arrive generating focus changes with timestamps that
+		   only differ by one.. */
+
+		send_client_message (w->id, xa_wm_take_focus,
+				     last_event_time - 1);
 
 		/* Only focus on the window if accepts-input is true */
 		if (window_input_hint_p (w))
@@ -143,15 +152,29 @@ focus_on_window (Lisp_Window *w)
 	if (focus != 0)
 	{
 	    XSetInputFocus (dpy, focus, RevertToParent, last_event_time);
-	    focus_window = w;
+	    pending_focus_window = w;
 	}
     }
     else
     {
 	DB(("focus_on_window (nil)\n"));
 	XSetInputFocus (dpy, no_focus_window, RevertToNone, last_event_time);
-	focus_window = 0;
+	pending_focus_window = 0;
     }
+}
+
+/* Should be called when W is no longer focusable. */
+void
+focus_off_window (Lisp_Window *w)
+{
+    if (focus_window == w)
+    {
+	focus_window = 0;
+	if (pending_focus_window == 0 || pending_focus_window == w)
+	    focus_on_window (0);
+    }
+    if (pending_focus_window == w)
+	pending_focus_window = 0;
 }
 
 /* Set flags in W relating to which window manager protocols are recognised
@@ -485,7 +508,11 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
 	int revert_to;
 	XGetInputFocus (dpy, &focus, &revert_to);
 	if (focus == None || focus == PointerRoot)
-	    focus_on_window (focus_window);
+	{
+	    DB (("lost focus (%ld)\n", focus));
+	    focus_on_window (pending_focus_window
+			     ? pending_focus_window : focus_window);
+	}
     }
 }
 
@@ -516,8 +543,7 @@ emit_pending_destroys (void)
 		Fcall_window_hook (Qdestroy_notify_hook,
 				   rep_VAL(w), Qnil, Qnil);
 
-		if (focus_window == w)
-		    focus_on_window (0);
+		focus_off_window (w);
 
 		/* gc may have reordered the list, so we have to start
 		   at the beginning again.. */

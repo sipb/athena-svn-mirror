@@ -1,5 +1,5 @@
 ;; place-window.jl -- decide where to initially place a window
-;; $Id: placement.jl,v 1.1.1.3 2001-03-09 19:34:51 ghudson Exp $
+;; $Id: placement.jl,v 1.1.1.4 2002-03-20 05:00:19 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -102,14 +102,15 @@ this mode. The single argument is the window to be placed."
 		   (not ignore-program-positions)
 		   (cdr (assq 'program-position hints))
 		   (or (window-get w 'ignored)
-		       (acceptable-placement w (window-position w)))))
+		       (acceptable-placement w (window-position w))))
+	      (window-get w 'fixed-position))
 	  (adjust-window-for-gravity w (window-gravity w))
 	(let ((mode (or (window-get w 'place-mode)
 			(if (window-transient-p w)
 			    place-transient-mode
 			  place-window-mode))))
-	  ((or (placement-mode mode) place-window-randomly) w)
-	  t))))
+	  ((or (placement-mode mode) place-window-randomly) w)))
+      t))
 
   (define (unplace-window w)
     (adjust-window-for-gravity w (window-gravity w) t))
@@ -130,19 +131,13 @@ this mode. The single argument is the window to be placed."
 	   (rect-pos (if max-rect
 			 (cons (nth 0 max-rect) (nth 1 max-rect))
 		       (current-head-offset)))
-	   (x (+ (cond
-		  ((< (car dims) (car rect-dims))
-		   (+ (car rect-pos) (random (- (car rect-dims) (car dims)))))
-		  ((< (car dims) (car (current-head-dimensions)))
-		   (random (- (car (current-head-dimensions)) (car dims))))
-		  (t 0))
+	   (x (+ (if (< (car dims) (car rect-dims))
+		     (+ (car rect-pos) (random (- (car rect-dims) (car dims))))
+		   0)
 		 (car (current-head-offset))))
-	   (y (+ (cond
-		  ((< (cdr dims) (cdr rect-dims))
-		   (+ (cdr rect-pos) (random (- (cdr rect-dims) (cdr dims)))))
-		  ((< (cdr dims) (cdr (current-head-dimensions)))
-		   (random (- (cdr (current-head-dimensions)) (cdr dims))))
-		  (t 0))
+	   (y (+ (if (< (cdr dims) (cdr rect-dims))
+		     (+ (cdr rect-pos) (random (- (cdr rect-dims) (cdr dims))))
+		   0)
 		 (cdr (current-head-offset)))))
       (move-window-to w x y)))
 
