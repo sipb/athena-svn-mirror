@@ -5,68 +5,119 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.10 1989-06-11 18:58:05 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.11 1989-10-23 13:46:21 jik Exp $
 #
 
+MACHINE= vax
 DESTDIR =
 TARGETS = delete undelete expunge purge lsdel
-INSTALLDIR = /bin/athena
+INSTALLDIR = /mit/jik/${MACHINE}bin
 CC = cc
+COMPILE_ET = compile_et
+LINT = lint
+LINTFLAGS =
+LINTLIBS =
 CFLAGS = -O
+LIBS = -lcom_err
 SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
-	lsdel.c col.c
+	lsdel.c col.c shell_regexp.c delete_errs.c errors.c
 INCS = col.h delete.h directories.h expunge.h lsdel.h mit-copyright.h\
-	pattern.h undelete.h util.h
+	pattern.h undelete.h util.h shell_regexp.h delete_errs.h errors.h
 MANS = man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 	man1/undelete.1
 ARCHIVE = README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS) $(MANS)
 ARCHIVEDIRS = man1
 
+DELETEOBJS= delete.o util.o delete_errs.o errors.o
+UNDELETEOBJS= undelete.o directories.o util.o pattern.o\
+	shell_regexp.o delete_errs.o errors.o
+EXPUNGEOBJS= expunge.o directories.o pattern.o util.o col.o\
+	shell_regexp.o delete_errs.o errors.o
+LSDELOBJS= lsdel.o util.o directories.o pattern.o col.o\
+	shell_regexp.o delete_errs.o errors.o
+
+DELETESRC= delete.c util.c delete_errs.c errors.o
+UNDELETESRC= undelete.c directories.c util.c pattern.c\
+	shell_regexp.c delete_errs.c errors.o
+EXPUNGESRC= expunge.c directories.c pattern.c util.c col.c\
+	shell_regexp.c delete_errs.c errors.o
+LSDELSRC= lsdel.c util.c directories.c pattern.c col.c\
+	shell_regexp.c delete_errs.c errors.o
+
+.SUFFIXES: .c .h .et
+
+.et.h: ; ${COMPILE_ET} $*.et
+.et.c: ; ${COMPILE_ET} $*.et
+
 all: $(TARGETS)
 
-install:
-	for i in $(TARGETS) ;\
-	do \
-	install -c -s $$i $(DESTDIR)$(INSTALLDIR) ; \
-	install -c man1/$$i.1 $(DESTDIR)/usr/man/man1 ; \
+lint_all: lint_delete lint_undelete lint_expunge lint_lsdel
+
+install: bin_install man_install
+
+man_install:
+	for i in $(TARGETS) ; do\
+	  install -c man1/$$i.1 $(DESTDIR)/usr/man/man1 ; \
 	done
 
-delete: delete.o util.o
-	cc $(CFLAGS) -o delete delete.o util.o
+bin_install: $(TARGETS)
+	for i in $(TARGETS) ; do\
+          if [ -f $(DESTDIR)$(INSTALLDIR)/$$i ]; then\
+            mv $(DESTDIR)$(INSTALLDIR)/$$i $(DESTDIR)$(INSTALLDIR)/.#$$i ; \
+          fi; \
+	  install -c -s $$i $(DESTDIR)$(INSTALLDIR) ; \
+        done
+
+delete: $(DELETEOBJS)
+	$(CC) $(CFLAGS) -o delete $(DELETEOBJS) $(LIBS)
 
 saber_delete:
 	#alias s step
 	#alias n next
-	#load delete.c util.c
+	#setopt program_name delete
+	#load $(CFLAGS) $(DELETESRC) $(LIBS)
 
-undelete: undelete.o directories.o util.o pattern.o
-	cc $(CFLAGS) -o undelete undelete.o directories.o util.o pattern.o
+lint_delete: $(DELETESRC)
+	$(LINT) $(LINTFLAGS) $(DELETESRC) $(LINTLIBS)
+
+undelete: $(UNDELETEOBJS)
+	$(CC) $(CFLAGS) -o undelete $(UNDELETEOBJS) $(LIBS)
 
 saber_undelete:
 	#alias s step
 	#alias n next
-	#load undelete.c directories.c util.c pattern.c
+	#setopt program_name undelete
+	#load $(CFLAGS) $(UNDELETESRC) $(LIBS)
 
-expunge: expunge.o directories.o pattern.o util.o col.o
-	cc $(CFLAGS) -o expunge expunge.o directories.o pattern.o \
-		util.o col.o
+lint_undelete: $(UNDELETESRC)
+	$(LINT) $(LINTFLAGS) $(UNDELETESRC) $(LINTLIBS)
 
+expunge: $(EXPUNGEOBJS)
+	$(CC) $(CFLAGS) -o expunge $(EXPUNGEOBJS) $(LIBS)
 
 saber_expunge:
 	#alias s step
 	#alias n next
-	#load expunge.c directories.c pattern.c util.c col.c
+	#setopt program_name expunge
+	#load $(CFLAGS) $(EXPUNGESRC) $(LIBS)
+
+lint_expunge: $(EXPUNGESRC)
+	$(LINT) $(LINTFLAGS) $(EXPUNGESRC) $(LINTLIBS)
 
 purge: expunge
 	ln -s expunge purge
 
-lsdel: lsdel.o util.o directories.o pattern.o col.o
-	cc $(CFLAGS) -o lsdel lsdel.o util.o directories.o pattern.o col.o
+lsdel: $(LSDELOBJS)
+	$(CC) $(CFLAGS) -o lsdel $(LSDELOBJS) $(LIBS)
+
+lint_lsdel: $(LSDELSRC)
+	$(LINT) $(LINTFLAGS) $(LSDELSRC) $(LINTLIBS)
 
 saber_lsdel:
 	#alias s step
 	#alias n next
-	#load lsdel.c util.c directories.c pattern.c col.c
+	#setopt program_name lsdel
+	#load $(CFLAGS) $(LSDELSRC) $(LIBS)
 
 tar: $(ARCHIVE)
 	@echo "Checking to see if everything's checked in...."
@@ -110,71 +161,10 @@ patch: $(ARCHIVE)
 	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
 
 clean:
-	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge
+	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge\
+		delete_errs.h delete_errs.c
 
-depend: delete.c undelete.c
+depend: $(SRCS) $(INCS)
 	/usr/athena/makedepend -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
 
 # DO NOT DELETE THIS LINE -- makedepend depends on it
-
-delete.o: /usr/include/sys/types.h /usr/include/stdio.h
-delete.o: /usr/include/sys/stat.h /usr/include/sys/dir.h
-delete.o: /usr/include/strings.h /usr/include/sys/param.h
-# /usr/include/sys/param.h includes:
-#	machine/machparam.h
-#	signal.h
-#	sys/types.h
-delete.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
-delete.o: /usr/include/sys/file.h util.h
-# util.h includes:
-#	mit-copyright.h
-delete.o: mit-copyright.h delete.h
-# delete.h includes:
-#	mit-copyright.h
-undelete.o: /usr/include/stdio.h /usr/include/sys/types.h
-undelete.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-undelete.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
-undelete.o: /usr/include/strings.h /usr/include/sys/stat.h directories.h
-# directories.h includes:
-#	mit-copyright.h
-undelete.o: mit-copyright.h pattern.h
-# pattern.h includes:
-#	mit-copyright.h
-undelete.o: util.h undelete.h
-# undelete.h includes:
-#	mit-copyright.h
-directories.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-directories.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
-directories.o: /usr/include/sys/signal.h /usr/include/sys/dir.h
-directories.o: /usr/include/strings.h directories.h mit-copyright.h util.h
-pattern.o: /usr/include/stdio.h /usr/include/sys/types.h
-pattern.o: /usr/include/sys/dir.h /usr/include/sys/param.h
-pattern.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
-pattern.o: /usr/include/strings.h /usr/include/sys/stat.h directories.h
-pattern.o: mit-copyright.h pattern.h util.h undelete.h
-util.o: /usr/include/stdio.h /usr/include/sys/param.h
-util.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
-util.o: /usr/include/sys/types.h /usr/include/sys/stat.h
-util.o: /usr/include/sys/dir.h /usr/include/strings.h /usr/include/pwd.h
-util.o: directories.h mit-copyright.h util.h
-expunge.o: /usr/include/stdio.h /usr/include/sys/types.h
-expunge.o: /usr/include/sys/time.h
-# /usr/include/sys/time.h includes:
-#	time.h
-expunge.o: /usr/include/sys/time.h /usr/include/sys/dir.h
-expunge.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
-expunge.o: /usr/include/sys/signal.h /usr/include/strings.h
-expunge.o: /usr/include/sys/stat.h col.h
-# col.h includes:
-#	mit-copyright.h
-expunge.o: mit-copyright.h directories.h util.h pattern.h expunge.h
-# expunge.h includes:
-#	mit-copyright.h
-lsdel.o: /usr/include/stdio.h /usr/include/sys/types.h /usr/include/sys/dir.h
-lsdel.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
-lsdel.o: /usr/include/sys/signal.h /usr/include/sys/stat.h
-lsdel.o: /usr/include/strings.h col.h mit-copyright.h util.h directories.h
-lsdel.o: pattern.h lsdel.h
-# lsdel.h includes:
-#	mit-copyright.h
-col.o: /usr/include/stdio.h /usr/include/strings.h col.h mit-copyright.h
