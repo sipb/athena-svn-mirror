@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_misc.c,v 1.1.1.1 2002-01-31 21:34:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_misc.c,v 1.2 2002-03-08 18:11:15 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -51,7 +51,8 @@ int osi_lookupname(char *aname, uio_seg_t seg, int followlink,
 	if (nd.dentry->d_inode) {
 	    *dpp = dget(nd.dentry);
 	    code = 0;
-	}
+	} else
+	  code = ENOENT;
 	path_release(&nd);
     }
 #else
