@@ -2,11 +2,18 @@
 GnomeCanvasGroup
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Canvas item group
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+A canvas item that groups other canvas items. A canvas group is used
+for organization, determining drawing stacking order, and for
+applying transforms on all items in the group.
+</para>
 
+<para>
+The #GnomeCanvas widget contains a toplevel "root" group which can be
+queried with a call to gnome_canvas_root().
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -16,10 +23,18 @@ GnomeCanvasGroup
 
 <!-- ##### STRUCT GnomeCanvasGroup ##### -->
 <para>
-
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
 </para>
 
-@item: 
-@item_list: 
-@item_list_end: 
+
+<!-- ##### ARG GnomeCanvasGroup:x ##### -->
+<para>
+X coordinate of group's origin.
+</para>
+
+<!-- ##### ARG GnomeCanvasGroup:y ##### -->
+<para>
+Y coordinate of group's origin.
+</para>
 

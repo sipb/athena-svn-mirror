@@ -59,6 +59,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CANVAS_GLADE_CFLAGS = @CANVAS_GLADE_CFLAGS@
@@ -68,10 +69,16 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -105,6 +112,7 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -112,43 +120,20 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 cxxflags_set = @cxxflags_set@
+gnomelocaledir = @gnomelocaledir@
 
-INCLUDES = \
-	-I$(top_srcdir) 				\
-	-I$(top_builddir)				\
-	$(WARN_CFLAGS)					\
-	$(LIBGNOMECANVAS_CFLAGS)			\
-        -DGNOMECANVASLIBDIR=\""$(libdir)"\" 		\
-        -DGNOMECANVASDATADIR=\""$(datadir)"\" 		\
-        -DGNOMECANVASPIXMAPDIR=\""$(datadir)/pixmaps"\"	\
-        -DGNOMECANVASBINDIR=\""$(bindir)"\" 		\
-        -DGNOMECANVASLOCALSTATEDIR=\""$(localstatedir)"\" 	\
-        -DGNOMECANVASLOCALEDIR=\""$(gnomelocaledir)"\" 	\
-	-DGTK_VERSION=\""$(GTK_VERSION)"\"		\
-	-DG_LOG_DOMAIN=\"GnomeCanvas\"			\
-	-DVERSION=\"$(VERSION)\"
+INCLUDES =  	-I$(top_srcdir) 					-I$(top_builddir)					$(WARN_CFLAGS)						$(LIBGNOMECANVAS_CFLAGS)			        -DGNOMECANVASLIBDIR=\""$(libdir)"\" 		        -DGNOMECANVASDATADIR=\""$(datadir)"\" 		        -DGNOMECANVASPIXMAPDIR=\""$(datadir)/pixmaps"\"	        -DGNOMECANVASBINDIR=\""$(bindir)"\" 		        -DGNOMECANVASLOCALSTATEDIR=\""$(localstatedir)"\" 	        -DGNOMECANVASLOCALEDIR=\""$(gnomelocaledir)"\" 		-DGTK_VERSION=\""$(GTK_VERSION)"\"			-DG_LOG_DOMAIN=\"GnomeCanvas\"				-DVERSION=\"$(VERSION)\"
 
 
-LDADD = \
-	$(top_builddir)/libgnomecanvas/libgnomecanvas-2.la \
-	$(INTLLIBS)
+LDADD =  	$(top_builddir)/libgnomecanvas/libgnomecanvas-2.la 	$(INTLLIBS)
 
 
 noinst_PROGRAMS = canvas_demo
 
-canvas_demo_SOURCES = \
-	canvas.c		\
-	canvas-primitives.c	\
-	canvas-arrowhead.c	\
-	canvas-features.c	\
-	canvas-fifteen.c	\
-	canvas-rich-text.c	\
-	canvas-curve.c		\
-	canvas_demo.h
+canvas_demo_SOURCES =  	canvas.c			canvas-primitives.c		canvas-arrowhead.c		canvas-features.c		canvas-fifteen.c		canvas-rich-text.c		canvas-curve.c			canvas_demo.h
 
 
-EXTRA_DIST = \
-	toroid.png
+EXTRA_DIST =  	toroid.png
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -293,104 +278,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-canvas-arrowhead.o: canvas-arrowhead.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
-canvas-curve.o: canvas-curve.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
-canvas-features.o: canvas-features.c ../config.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h canvas_demo.h
-canvas-fifteen.o: canvas-fifteen.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
-canvas-primitives.o: canvas-primitives.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
-canvas-rich-text.o: canvas-rich-text.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
-canvas.o: canvas.c ../config.h canvas_demo.h \
-	../libgnomecanvas/libgnomecanvas.h \
-	../libgnomecanvas/gnome-canvas.h \
-	../libgnomecanvas/gnome-canvas-line.h \
-	../libgnomecanvas/gnome-canvas-text.h \
-	../libgnomecanvas/gnome-canvas-rich-text.h \
-	../libgnomecanvas/gnome-canvas-polygon.h \
-	../libgnomecanvas/gnome-canvas-shape.h \
-	../libgnomecanvas/gnome-canvas-path-def.h \
-	../libgnomecanvas/gnome-canvas-pixbuf.h \
-	../libgnomecanvas/gnome-canvas-widget.h \
-	../libgnomecanvas/gnome-canvas-rect-ellipse.h \
-	../libgnomecanvas/gnome-canvas-bpath.h \
-	../libgnomecanvas/gnome-canvas-util.h
 
 info-am:
 info: info-am

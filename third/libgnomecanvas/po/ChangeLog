@@ -1,3 +1,60 @@
+2003-05-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* sr.po, sr@Latn.po: Added Serbian translation by
+	Dušan Marjanović <mdfk@root.co.yu>.
+
+2003-04-29  Abel Cheung  <maddog@linux.org.hk>
+
+	* hi.po: Fix header (msgfmt check failed).
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* yi.po: Added Yiddish translation by
+	Raphael Finkel <raphael@cs.uky.edu>.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translation by 
+	FSF-India <locale@gnu.org.in>
+
+2003-03-19  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * ga.po: Added Irish Translation.
+
+2003-03-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2003-02-21  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* fa.po: Added Persian translation.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* kn.po: Added Kannada translation by
+	Pramod <rpramod@postmaster.co.uk>.
+
+2003-02-07  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Erkan.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* id.po: Added Indonesian translation by
+	Mohammad Damt <mdamt@bisnisweb.com>.
+
+2003-02-01  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Gorkem.
+
 2003-01-22  Christian Rose  <menthos@menthos.com>
 
 	* mn.po: Added Mongolian translation by

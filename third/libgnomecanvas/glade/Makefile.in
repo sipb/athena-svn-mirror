@@ -59,6 +59,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CANVAS_GLADE_CFLAGS = @CANVAS_GLADE_CFLAGS@
@@ -68,10 +69,16 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -105,6 +112,7 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -112,30 +120,23 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 cxxflags_set = @cxxflags_set@
+gnomelocaledir = @gnomelocaledir@
 
-@PLATFORM_WIN32_TRUE@no_undefined = @PLATFORM_WIN32_TRUE@-no-undefined
+@PLATFORM_WIN32_TRUE@no_undefined = -no-undefined
 
-INCLUDES = \
-	-I$(top_builddir)				\
-	-I$(top_srcdir)					\
-	-DG_LOG_DOMAIN=\"GnomeCanvas\"			\
-	$(CANVAS_GLADE_CFLAGS)
+INCLUDES =  	-I$(top_builddir)					-I$(top_srcdir)						-DG_LOG_DOMAIN=\"GnomeCanvas\"				$(CANVAS_GLADE_CFLAGS)
 
 
 glademoduledir = $(libdir)/libglade/2.0
 glademodule_LTLIBRARIES = libcanvas.la
 
-libcanvas_la_LIBADD = \
-	$(top_builddir)/libgnomecanvas/libgnomecanvas-2.la	\
-	$(CANVAS_GLADE_LIBS)
+libcanvas_la_LIBADD =  	$(top_builddir)/libgnomecanvas/libgnomecanvas-2.la		$(CANVAS_GLADE_LIBS)
 
 
-libcanvas_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version $(no_undefined)
+libcanvas_la_LDFLAGS =  	-export-dynamic -module -avoid-version $(no_undefined)
 
 
-libcanvas_la_SOURCES = \
-	glade-canvas.c
+libcanvas_la_SOURCES =  	glade-canvas.c
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -289,8 +290,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-glade-canvas.lo glade-canvas.o : glade-canvas.c ../config.h \
-	../libgnomecanvas/gnome-canvas.h
 
 info-am:
 info: info-am

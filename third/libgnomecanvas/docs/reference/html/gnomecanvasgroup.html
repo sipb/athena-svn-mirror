@@ -1,0 +1,41 @@
+<HTML><HEAD><TITLE>GnomeCanvasGroup</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK REL="HOME" TITLE="GNOME Canvas Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="GNOME Canvas Library (libgnomecanvas)" HREF="c35.html"><LINK REL="PREVIOUS" TITLE="GnomeCanvasEllipse" HREF="gnomecanvasellipse.html"><LINK REL="NEXT" TITLE="GnomeCanvasItem" HREF="gnomecanvasitem.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.1 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="gnomecanvasellipse.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="c35.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME Canvas Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="gnomecanvasitem.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="GNOMECANVASGROUP"></A>GnomeCanvasGroup</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN1155"></A><H2>Name</H2>GnomeCanvasGroup&nbsp;--&nbsp;Canvas item group</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN1158"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <A HREF="gnomecanvasgroup.html#GNOMECANVASGROUP-STRUCT">GnomeCanvasGroup</A>;&#13;</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1162"></A><H2>Object Hierarchy</H2><PRE CLASS="SYNOPSIS">&#13;  GObject
+   +----GtkObject
+         +----<A HREF="gnomecanvasitem.html">GnomeCanvasItem</A>
+               +----GnomeCanvasGroup</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1168"></A><H2>Properties</H2><PRE CLASS="SYNOPSIS">&#13;  &quot;<A HREF="gnomecanvasgroup.html#GNOMECANVASGROUP--X">x</A>&quot;                    gdouble              : Read / Write
+  &quot;<A HREF="gnomecanvasgroup.html#GNOMECANVASGROUP--Y">y</A>&quot;                    gdouble              : Read / Write</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1175"></A><H2>Description</H2><P>A canvas item that groups other canvas items. A canvas group is used
+for organization, determining drawing stacking order, and for
+applying transforms on all items in the group.</P><P>The <A HREF="gnomecanvas.html">GnomeCanvas</A> widget contains a toplevel "root" group which can be
+queried with a call to <A HREF="gnomecanvas.html#GNOME-CANVAS-ROOT">gnome_canvas_root</A>().</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1181"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN1183"></A><H3><A NAME="GNOMECANVASGROUP-STRUCT"></A>struct GnomeCanvasGroup</H3><PRE CLASS="PROGRAMLISTING">struct GnomeCanvasGroup;</PRE><P>This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.</P></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN1188"></A><H2>Properties</H2><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN1191"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASGROUP--X"></A>&quot;<TT CLASS="LITERAL">x</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>X coordinate of group's origin.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN1198"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASGROUP--Y"></A>&quot;<TT CLASS="LITERAL">y</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Y coordinate of group's origin.</P></TD></TR></TBODY></TABLE></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="gnomecanvasellipse.html"><B>&lt;&lt;&lt;&nbsp;GnomeCanvasEllipse</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="gnomecanvasitem.html"><B>GnomeCanvasItem&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>

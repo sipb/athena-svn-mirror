@@ -1,4 +1,4 @@
-<refentry id="libgnomecanvas-GnomeCanvasItem">
+<refentry id="GnomeCanvasItem">
 <refmeta>
 <refentrytitle>GnomeCanvasItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GnomeCanvasItem</refname><refpurpose></refpurpose>
+<refname>GnomeCanvasItem</refname><refpurpose>Base class for all canvas items</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -16,8 +16,8 @@
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
 
 
-struct      <link linkend="GnomeCanvasItem">GnomeCanvasItem</link>;
-
+struct      <link linkend="GnomeCanvasItem-struct">GnomeCanvasItem</link>;
+struct      <link linkend="GnomeCanvasItemClass">GnomeCanvasItemClass</link>;
 <link linkend="GnomeCanvasItem">GnomeCanvasItem</link>* <link linkend="gnome-canvas-item-new">gnome_canvas_item_new</link>      (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
                                              <link linkend="GType">GType</link> type,
                                              const <link linkend="gchar">gchar</link> *first_arg_name,
@@ -80,47 +80,264 @@ void        <link linkend="gnome-canvas-item-request-update">gnome_canvas_item_r
 </synopsis>
 </refsynopsisdiv>
 
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----GnomeCanvasItem
+</synopsis>
+
+</refsect1>
 
 
 
+<refsect1>
+<title>Properties</title>
+<synopsis>
 
+  &quot;<link linkend="GnomeCanvasItem--parent">parent</link>&quot;               <link linkend="GnomeCanvasItem">GnomeCanvasItem</link>      : Read / Write
+</synopsis>
+</refsect1>
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GnomeCanvasItem-event">event</link>&quot;     <link linkend="gboolean">gboolean</link>    user_function      (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *canvasitem,
+                                            <link linkend="GdkEvent">GdkEvent</link> *event,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
 
 
 <refsect1>
 <title>Description</title>
 <para>
+This is the base class for all canvas items. Canvas items are the drawing
+elements of a <link linkend="GnomeCanvas">GnomeCanvas</link>. Example items include lines,
+ellipses, polygons, images, text, curves and even arbitrary GTK+ widgets.
+</para>
 
+<para>
+Canvas items use the GObject property system to query and set parameters.
+Properties are inherited so, for example, a <link linkend="GnomeCanvasPolygon">GnomeCanvasPolygon</link> has
+a "fill-color" property that is inherited from its parent class object
+<link linkend="GnomeCanvasShape">GnomeCanvasShape</link>. So be sure to check the parent classes of <link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+objects when looking for item properties. More information on GObject
+properties can be found in the glib library GObject API reference
+documentation.
+</para>
+
+<para>
+To create a new canvas item call <link linkend="gnome-canvas-item-new">gnome_canvas_item_new</link>() which takes a
+parent <link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link>, GType of the item to create, and a NULL terminated
+list of name/value GObject properties to set for the new item.
+</para>
+
+<para>
+To change an existing canvas item's properties call <link linkend="gnome-canvas-item-set">gnome_canvas_item_set</link>(),
+or <link linkend="g-object-set">g_object_set</link>() can also be used.
+</para>
+
+<para>
+There are several functions to change the drawing stacking order of an item.
+Call <link linkend="gnome-canvas-item-raise">gnome_canvas_item_raise</link>() to raise an item a specified number of
+positions or <link linkend="gnome-canvas-item-lower">gnome_canvas_item_lower</link>() to lower it. To raise an item to the
+top call <link linkend="gnome-canvas-item-raise-to-top">gnome_canvas_item_raise_to_top</link>(). The
+<link linkend="gnome-canvas-item-lower-to-bottom">gnome_canvas_item_lower_to_bottom</link>() function will put it at the bottom.
+</para>
+
+<para>
+To show an item call <link linkend="gnome-canvas-item-show">gnome_canvas_item_show</link>(). Note that canvas item's are
+shown by default and so do not need to be explicitly shown after creation
+(contrary to GTK+ widget behavior). Call <link linkend="gnome-canvas-item-hide">gnome_canvas_item_hide</link>() to hide an
+item.
+</para>
+
+<para>
+To move an item relative to its current position (item coordinates) call
+<link linkend="gnome-canvas-item-move">gnome_canvas_item_move</link>() or <link linkend="gnome-canvas-item-affine-relative">gnome_canvas_item_affine_relative</link>() for more
+complex transforms. <link linkend="gnome-canvas-item-affine-absolute">gnome_canvas_item_affine_absolute</link>() can be used to
+set an item's transform to specific values (not offsets).
+</para>
+
+<para>
+To convert between world and item coordinate systems call
+<link linkend="gnome-canvas-item-w2i">gnome_canvas_item_w2i</link>(), and to convert in the other direction call
+<link linkend="gnome-canvas-item-i2w">gnome_canvas_item_i2w</link>(). To get the transform for converting from item
+to world coordinates use <link linkend="gnome-canvas-item-i2w-affine">gnome_canvas_item_i2w_affine</link>() or for converting
+item to canvas coordinates, <link linkend="gnome-canvas-item-i2c-affine">gnome_canvas_item_i2c_affine</link>().
+</para>
+
+<para>
+Handling user input for interactive items is accomplished through a
+few functions and the "event" signal. To grab the mouse cursor call
+<link linkend="gnome-canvas-item-grab">gnome_canvas_item_grab</link>(), it can be ungrabbed with
+<link linkend="gnome-canvas-item-ungrab">gnome_canvas_item_ungrab</link>() (see <link linkend="gdk-pointer-grab">gdk_pointer_grab</link>() of the GTK+ library
+for details). To grab keyboard focus call
+<link linkend="gnome-canvas-item-grab-focus">gnome_canvas_item_grab_focus</link>().  Received events will be signaled via
+the "event" signal.
+</para>
+
+<para>
+Some other useful functions include a reparenting routine,
+<link linkend="gnome-canvas-item-reparent">gnome_canvas_item_reparent</link>(), and a function to query the bounding
+box of an item (a minumum rectangular area containing all parts of the item),
+<link linkend="gnome-canvas-item-get-bounds">gnome_canvas_item_get_bounds</link>().
 </para>
 </refsect1>
 
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeCanvasItem">struct GnomeCanvasItem</title>
-<programlisting>struct GnomeCanvasItem {
+<title><anchor id="GnomeCanvasItem-struct">struct GnomeCanvasItem</title>
+<programlisting>struct GnomeCanvasItem;</programlisting>
+<para>
+This structure should not be accessed directly. Use the object's properties
+and functions for querying or changing its parameters.
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeCanvasItemClass">struct GnomeCanvasItemClass</title>
+<programlisting>struct GnomeCanvasItemClass {
 
-	GtkObject object;
+	GtkObjectClass parent_class;
 
-	/* Parent canvas for this item */
-	GnomeCanvas *canvas;
-
-	/* Parent canvas group for this item (a GnomeCanvasGroup) */
-	GnomeCanvasItem *parent;
-
-	/* If NULL, assumed to be the identity tranform.  If flags does not have
-	 * AFFINE_FULL, then a two-element array containing a translation.  If
-	 * flags contains AFFINE_FULL, a six-element array containing an affine
-	 * transformation.
+	/* Tell the item to update itself.  The flags are from the update flags
+	 * defined above.  The item should update its internal state from its
+	 * queued state, and recompute and request its repaint area.  The
+	 * affine, if used, is a pointer to a 6-element array of doubles.  The
+	 * update method also recomputes the bounding box of the item.
 	 */
-	double *xform;
+	void (* update) (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 
-	/* Bounding box for this item (in canvas coordinates) */
-	double x1, y1, x2, y2;
+	/* Realize an item -- create GCs, etc. */
+	void (* realize) (GnomeCanvasItem *item);
+
+	/* Unrealize an item */
+	void (* unrealize) (GnomeCanvasItem *item);
+
+	/* Map an item - normally only need by items with their own GdkWindows */
+	void (* map) (GnomeCanvasItem *item);
+
+	/* Unmap an item */
+	void (* unmap) (GnomeCanvasItem *item);
+
+	/* Return the microtile coverage of the item */
+	ArtUta *(* coverage) (GnomeCanvasItem *item);
+
+	/* Draw an item of this type.  (x, y) are the upper-left canvas pixel
+	 * coordinates of the drawable, a temporary pixmap, where things get
+	 * drawn.  (width, height) are the dimensions of the drawable.
+	 */
+	void (* draw) (GnomeCanvasItem *item, GdkDrawable *drawable,
+		       int x, int y, int width, int height);
+
+	/* Render the item over the buffer given.  The buf data structure
+	 * contains both a pointer to a packed 24-bit RGB array, and the
+	 * coordinates.  This method is only used for antialiased canvases.
+	 *
+	 * TODO: figure out where clip paths fit into the rendering framework.
+	 */
+	void (* render) (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
+
+	/* Calculate the distance from an item to the specified point.  It also
+         * returns a canvas item which is the item itself in the case of the
+         * object being an actual leaf item, or a child in case of the object
+         * being a canvas group.  (cx, cy) are the canvas pixel coordinates that
+         * correspond to the item-relative coordinates (x, y).
+	 */
+	double (* point) (GnomeCanvasItem *item, double x, double y, int cx, int cy,
+			  GnomeCanvasItem **actual_item);
+
+	/* Fetch the item's bounding box (need not be exactly tight).  This
+	 * should be in item-relative coordinates.
+	 */
+	void (* bounds) (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2);
+
+	/* Signal: an event ocurred for an item of this type.  The (x, y)
+	 * coordinates are in the canvas world coordinate system.
+	 */
+	gboolean (* event)                (GnomeCanvasItem *item, GdkEvent *event);
+
+	/* Reserved for future expansion */
+	gpointer spare_vmethods [4];
 };
 </programlisting>
 <para>
+The internals of this class structure are of interest to those creating
+objects derived from <link linkend="GnomeCanvasItem">GnomeCanvasItem</link>.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="GtkObjectClass">GtkObjectClass</link> <structfield>parent_class</structfield></term>
+<listitem><simpara>Parent derived class.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>update</structfield>) (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)</term>
+<listitem><simpara>Update method called to tell the item to update itself.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>realize</structfield>) (GnomeCanvasItem *item)</term>
+<listitem><simpara>Realize an item (create graphics contexts, etc).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>unrealize</structfield>) (GnomeCanvasItem *item)</term>
+<listitem><simpara>Unrealize an item.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>map</structfield>) (GnomeCanvasItem *item)</term>
+<listitem><simpara>Map an item - normally only needed by items with their own GdkWindows.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>unmap</structfield>) (GnomeCanvasItem *item)</term>
+<listitem><simpara>Unmap an item.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="ArtUta">ArtUta</link>* (*<structfield>coverage</structfield>) (GnomeCanvasItem *item)</term>
+<listitem><simpara>Return the microtile coverage of the item.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>draw</structfield>) (GnomeCanvasItem *item, GdkDrawable *drawable,
+		       int x, int y, int width, int height)</term>
+<listitem><simpara>Draw an item of this type.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>render</structfield>) (GnomeCanvasItem *item, GnomeCanvasBuf *buf)</term>
+<listitem><simpara>Render the item for anti-aliased canvases.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="double">double</link> (*<structfield>point</structfield>) (GnomeCanvasItem *item, double x, double y, int cx, int cy,
+			  GnomeCanvasItem **actual_item)</term>
+<listitem><simpara>Calculate the distance from an item to a point.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term>void (*<structfield>bounds</structfield>) (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2)</term>
+<listitem><simpara>Fetch the item's bounding box (rectangular area it occupies).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gboolean">gboolean</link> (*<structfield>event</structfield>) (GnomeCanvasItem *item, GdkEvent *event)</term>
+<listitem><simpara>The class signal method for the "event" signal.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="gpointer">gpointer</link> <structfield>spare_vmethods</structfield>[4]</term>
+<listitem><simpara>Reserved.
 
-</para></refsect2>
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-canvas-item-new">gnome_canvas_item_new ()</title>
 <programlisting><link linkend="GnomeCanvasItem">GnomeCanvasItem</link>* gnome_canvas_item_new      (<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> *parent,
@@ -569,7 +786,46 @@ update for the specified item.</para>
 </variablelist></refsect2>
 
 </refsect1>
+<refsect1>
+<title>Properties</title>
+<variablelist>
+<varlistentry><term><anchor id="GnomeCanvasItem--parent">&quot;<literal>parent</literal>&quot; (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> : Read / Write)</term>
+<listitem>
+<para>
+Parent <link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link> that contains the item.
+</para>
+</listitem></varlistentry>
 
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GnomeCanvasItem-event">The &quot;event&quot; signal</title>
+<programlisting><link linkend="gboolean">gboolean</link>    user_function                  (<link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *canvasitem,
+                                            <link linkend="GdkEvent">GdkEvent</link> *event,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Signals mouse button clicks, motion, enter/leave, and key press events
+on canvas items. Use this signal to create user interactive items.
+The <structfield>x</structfield> and <structfield>y</structfield>
+coordinates of the <parameter>event</parameter> structure have been converted to canvas world
+coordinates.
+</para><variablelist role="params">
+<varlistentry><term><parameter>canvasitem</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>event</parameter>&nbsp;:</term>
+<listitem><simpara>A GdkEvent structure containing the event that occured.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>Signal handlers should return <literal>TRUE</literal> to stop signal emission or <literal>FALSE</literal>
+to allow other signal handlers to process this event.
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
 
 
 
