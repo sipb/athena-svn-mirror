@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.4 2002-11-11 22:18:29 ghudson Exp $
+## $Id: sys_rvd.big,v 1.5 2003-04-02 15:40:10 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -62,55 +62,17 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		:
 	/usr/vice/etc::::
 	/usr/athena:::
-		! bin
-		! lib
-		! libexec
-		! share
-
-		! lib/gdk-pixbuf
-		! lib/gdk-pixbuf/*
-		! lib/evolution
-		! lib/evolution/*
-		! lib/init
-		! lib/init/*
-		! libexec/*
-		-> libexec/xscreensaver
-		! share/*
-		-> share/texmf
+		-> include
+		-> lib/*.a
+		-> lib/gcc-lib
+		-> lib/locale
+		-> lib/sparcv9
+		-> man
+		-> share/gnome/help
+		-> share/gtk-doc
+		-> share/idl
 		-> share/locale
-
-		! bin/access_off
-		! bin/access_on
-		! bin/athdir
-		! bin/bugme
-		! bin/background-properties-capplet
-		! bin/emacs
-		! bin/evolution*
-		! bin/esd
-		! bin/from
-		! bin/get_message
-		! bin/gnome-name-service
-		! bin/gnome-terminal
-		! bin/keyboard-properties
-		! bin/kdestroy
-		! bin/lert
-		! bin/mouse-properties-capplet
-		! bin/olc
-		! bin/panel-wrapper
-		! bin/panel
-		! bin/quota
-		! bin/rep
-		! bin/sawfish
-		! bin/session_gate
-		! bin/sound-properties
-		! bin/tasklist_applet
-		! bin/wombat
-		! bin/xalf
-		! bin/xmh
-		! bin/xss
-		! bin/zwgc
-		! lib/*.so*
-		-> *
+		-> share/texmf
 		:
 	/var:::
 		spool
