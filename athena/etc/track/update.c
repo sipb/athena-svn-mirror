@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.2 1988-05-27 20:15:21 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.3 1988-06-10 15:55:29 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  88/05/27  20:15:21  don
+ * fixed two bugs at once: the nopulflag bug, and -I wasn't preserving
+ * mode-bits at all. see update().
+ * 
  * Revision 4.1  88/05/25  21:42:09  don
  * added -I option. needs compatible track.h & track.c.
  * 
@@ -52,7 +56,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.2 1988-05-27 20:15:21 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.3 1988-06-10 15:55:29 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -91,7 +95,7 @@ currency_diff( l, r) struct currentness *l, *r; {
 	diff = UID( *s) || GID( *s) || s->st_mode;
 
 	TIME( *s) = 0;
-	DEV( *s) = 0;
+	RDEV( *s) = 0;
 	*d.link = '\0';
 	d.cksum = 0;
 
@@ -110,9 +114,8 @@ currency_diff( l, r) struct currentness *l, *r; {
 
 	case S_IFCHR:
 	case S_IFBLK:
-		if (! incl_devs) return( NULL);
-		DEV( *s) = DIFF( *l, *r, st_dev);
-		diff |= DEV( *s);
+		RDEV( *s) = DIFF( *l, *r, st_rdev);
+		diff |= RDEV( *s);
 		break;
 
 	case S_IFMT:
@@ -314,7 +317,7 @@ struct currentness *r, *l;
 			: 0 );
 	case S_IFBLK:
 	case S_IFCHR:
-		if ( !exists && mknod( localname, remote_type, DEV( r->sbuf))) {
+		if ( !exists && mknod( localname, remote_type,RDEV( r->sbuf))){
 			sprintf(errmsg, "can't make device %s\n", localname);
 			do_gripe();
 			return(-1);
@@ -551,9 +554,9 @@ struct currentness *r, *l, *d;
 		n =  GID( *ls);
 		m =  GID( *rs);
 		format =	"%s %s%s %s ( group-id=%d)\n"; }
-	else if   (  DEV( *ds)) {
-		n =  DEV( *ls);
-		m =  DEV( *rs);
+	else if   (  RDEV( *ds)) {
+		n =  RDEV( *ls);
+		m =  RDEV( *rs);
 		format =	"%s %s%s %s ( device-type=%d)\n"; }
 
 	fprintf( stderr, format, "Updating", ltype, lfill, lname, n);
