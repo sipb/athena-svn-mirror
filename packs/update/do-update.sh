@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.6 1997-02-05 00:02:44 ghudson Exp $
+# $Id: do-update.sh,v 1.7 1997-02-11 18:34:48 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -103,7 +103,11 @@ if [ -s "$CONFCHG" ]; then
 	fi
 	for i in $conf; do
 		rm -rf $i
-		cp -p /srvd/$i $i
+		if [ -f /srvd$i ]; then
+			cp -p /srvd$i $i
+		else
+			cp -p /os$i $i
+		fi
 	done
 fi
 
@@ -243,7 +247,9 @@ if [ "$NEWBOOT" = true ]; then
 	case "$HOSTTYPE" in
 	sun4)
 		cp -p /os/ufsboot /
-		/usr/sbin/installboot /lib/fs/ufs/bootblk /dev/rdsk/c0t3d0s0
+		/usr/sbin/installboot \
+			/usr/platform/`uname -i`/lib/fs/ufs/bootblk \
+			/dev/rdsk/c0t3d0s0
 		;;
 	esac
 fi
