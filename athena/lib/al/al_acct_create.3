@@ -1,4 +1,4 @@
-.\" $Id: al_acct_create.3,v 1.7 2003-10-03 18:36:31 ghudson Exp $
+.\" $Id: al_acct_create.3,v 1.8 2004-05-16 21:29:54 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -22,9 +22,8 @@ al_acct_create \- Set up a local account for a user
 .B #include <al.h>
 .PP
 .B
-int al_acct_create(const char *\fIusername\fP, const char *\fIcryptpw\fP,
-.B 	pid_t \fIsessionpid\fP, int \fIhavecred\fP, int \fItmphomedir\fP,
-.B 	int **\fIwarnings\fP)
+int al_acct_create(const char *\fIusername\fP, pid_t \fIsessionpid\fP,
+.B 	int \fIhavecred\fP, int \fItmphomedir\fP, int **\fIwarnings\fP)
 .PP
 .B cc file.c -lal -lhesiod
 .fi
@@ -46,9 +45,6 @@ are as follows:
 .TP 15
 .I username
 Gives the name of the user whose local account is to be created. 
-.TP 15
-.I cryptpw
-This argument no longer has any effect.
 .TP 15
 .I sessionpid
 Gives the pid of the login session (which should generally always be

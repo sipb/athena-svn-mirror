@@ -1,4 +1,4 @@
-/* $Id: al.h,v 1.5 1998-05-07 17:08:38 ghudson Exp $ */
+/* $Id: al.h,v 1.6 2004-05-16 21:29:54 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -49,9 +49,8 @@
 /* Public functions */
 int al_login_allowed(const char *username, int isremote, int *local_acct,
 		     char **text);
-int al_acct_create(const char *username, const char *cryptpw,
-		   pid_t sessionpid, int havecred, int tmphomedir,
-		   int **warnings);
+int al_acct_create(const char *username, pid_t sessionpid, int havecred,
+		   int tmphomedir, int **warnings);
 int al_acct_revert(const char *username, pid_t sessionpid);
 int al_acct_cleanup(const char *username);
 const char *al_strerror(int code, char **mem);

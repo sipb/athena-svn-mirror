@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.13 2004-02-14 18:18:54 rbasch Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.14 2004-05-16 21:29:53 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -76,9 +76,8 @@ static const char rcsid[] = "$Id: acct.c,v 1.13 2004-02-14 18:18:54 rbasch Exp $
  */
 
 
-int al_acct_create(const char *username, const char *cryptpw,
-		   pid_t sessionpid, int havecred, int tmphomedir,
-		   int **warnings)
+int al_acct_create(const char *username, pid_t sessionpid, int havecred,
+		   int tmphomedir, int **warnings)
 {
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i, existed;
   struct al_record record;
