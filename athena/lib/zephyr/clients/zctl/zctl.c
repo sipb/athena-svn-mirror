@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.4 1987-11-16 21:50:44 jtkohl Exp $";
+static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.5 1988-02-07 21:00:51 rfrench Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -253,10 +253,11 @@ set_var(argc,argv)
 	int argc;
 	char *argv[];
 {
-	int retval,setting_exp;
+	int retval,setting_exp,i;
 	char *exp_level,*newargv[1];
+	char varcat[BUFSIZ];
 	
-	if (argc != 2 && argc != 3) {
+	if (argc < 2) {
 		fprintf(stderr,"Usage: %s <varname> [value]\n",
 			argv[0]);
 		return;
@@ -297,8 +298,15 @@ set_var(argc,argv)
 	} 
 	if (argc == 2)
 		retval = ZSetVariable(argv[1],"");
-	else
-		retval = ZSetVariable(argv[1],argv[2]);
+	else {
+		varcat[0] = '\0';
+		for (i=2;i<argc;i++) {
+			if (i != 2)
+				strcat(varcat," ");
+			strcat(varcat,argv[i]);
+		} 
+		retval = ZSetVariable(argv[1],varcat);
+	} 
 
 	if (retval != ZERR_NONE) {
 		ss_perror(sci_idx,retval,"while setting variable value");
