@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.1 1989-11-13 15:05:32 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v 1.2 1989-11-13 15:09:40 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/Makefile,v $
 #  $Author: qjb $
 #
@@ -44,6 +44,6 @@ install:
 	install -s librkinit.a $(DESTDIR)$(INSTALLDIR)/librkinit.a
 
 clean:
-	rm -f core *.o *~ librkinit.a rkinit_err.h rkinit_err.c
+	rm -f core *.o *~ *.bak librkinit.a rkinit_err.h rkinit_err.c
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.

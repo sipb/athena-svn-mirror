@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.1 1989-11-13 15:04:58 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v 1.2 1989-11-13 15:10:23 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/Makefile,v $
 #  $Author: qjb $
 #
@@ -46,6 +46,6 @@ install:
 	install -s rkinit $(DESTDIR)$(INSTALLDIR)/rkinit
 
 clean:
-	rm -f core *.o *~ rkinit
+	rm -f core *.o *~ *.bak rkinit
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
