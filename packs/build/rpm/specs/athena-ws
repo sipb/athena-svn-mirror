@@ -81,6 +81,7 @@ chkconfig --add syncconf
 # there is no generic tool, but if we know what kind of card to do, then
 # we can do it.
 if pnpdump | grep -q CS4236B ; then
+  touch /etc/conf.modules
   if grep -q cs4232 /etc/conf.modules ; then true ; else
 	cat >> /etc/conf.modules << EOF
 alias sound cs4232
