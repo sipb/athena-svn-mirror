@@ -4,8 +4,8 @@
 #       By:		Chris D. Peterson
 #    
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v $
-#       $Author: epeisach $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.6 1989-05-31 17:47:06 epeisach Exp $
+#       $Author: probe $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.7 1989-06-13 18:28:51 probe Exp $
 #       
 #          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #    
@@ -38,9 +38,9 @@ clean: 	;
 
 install: 	xquota
 	install -c -s xquota ${DESTDIR}/usr/athena/xquota
-	install -c Xquota.ad ${DESTDIR}${LIBDIR}Xquota.ad
-	install -c top_help.txt ${DESTDIR}${LIBDIR}top_help.txt
-	install -c pop_help.txt ${DESTDIR}${LIBDIR}pop_help.txt
+	install -c Xquota.ad ${DESTDIR}${LIBDIR}/Xquota.ad
+	install -c top_help.txt ${DESTDIR}${LIBDIR}/top_help.txt
+	install -c pop_help.txt ${DESTDIR}${LIBDIR}/pop_help.txt
 
 depend:
 	makedepend  -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
