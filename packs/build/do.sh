@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.71 2002-02-26 03:11:56 ghudson Exp $
+# $Id: do.sh,v 1.72 2002-03-04 14:16:11 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -164,6 +164,12 @@ else
 fi
 
 export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
+
+if [ dist = "$operation" ]; then
+  # Force all source files to the same timestamp, to prevent third-party
+  # build systems from thinking some are out of date with respect to others.
+  find . ! -type l -exec touch -t `date +%Y%m%d%H%M.%S` {} \;
+fi
 
 if [ -r Makefile.athena ]; then
   export SRVD SOURCE COMPILER
