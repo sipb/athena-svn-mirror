@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.35 1991-01-15 17:53:54 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.36 1991-01-16 09:34:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.35 1991-01-15 17:53:54 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.36 1991-01-16 09:34:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -1229,7 +1229,7 @@ olc_off(fd, request)
 }
 
 /*
- * Function:	olc_send() sends a message to the user.
+* Function:	olc_send() sends a message to the user.
  * Arguments:	fd:		   File descriptor of socket.
  *		request:	   The request structure from olcr.
  * Returns:	NOT_SIGNED_ON:	   Consultant is not signed on to OLC.
@@ -1300,7 +1300,7 @@ olc_send(fd, request)
   if ((msg = read_text_from_fd(fd)) == (char *) NULL)
     return(send_response(fd, ERROR));
   
-  if (!isme(request))
+  if (target != requester)
     new_message(target, requester,  msg);
 
   log_message(target,requester,msg);
