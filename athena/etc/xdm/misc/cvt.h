@@ -9,5 +9,7 @@ typedef struct {
 extern char *cvt_query;
 extern int cvt_buf2vars(varlist *, buffer *);
 extern int cvt_strings2buf(buffer **, char **);
+extern int cvt_var2strings(varlist *, char *, char ***);
+extern int cvt_freeStrings(char **);
 extern int cvt_vars2buf(buffer **, varlist *);
 #endif /* _CVT_H_ */
