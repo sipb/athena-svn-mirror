@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v $
- *      $Id: olcm.c,v 1.7 1991-09-22 11:44:37 lwvanels Exp $
+ *      $Id: olcm.c,v 1.8 1991-11-05 13:45:42 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.7 1991-09-22 11:44:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/olcm.c,v 1.8 1991-11-05 13:45:42 lwvanels Exp $";
 #endif
 #endif
 
@@ -239,7 +239,7 @@ main(argc,argv)
 
   instance = Request.requester.instance;
   set_option(Request.options,VERIFY);
-  status = OAsk(&Request,topic,NULL);
+  status = OAsk_buffer(&Request,topic,NULL);
   unset_option(Request.options, VERIFY);
 
   switch(status)
@@ -316,7 +316,7 @@ main(argc,argv)
       break;
     }
 
-    status = OAsk(&Request,topic,filename);
+    status = OAsk_file(&Request,topic,filename);
     (void) unlink(filename);
   switch(status)
     {
