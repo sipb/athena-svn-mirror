@@ -18,12 +18,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v $
- *      $Id: x_ask.c,v 1.3 1991-03-24 14:33:27 lwvanels Exp $
+ *      $Id: x_ask.c,v 1.4 1991-10-31 14:57:09 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.3 1991-03-24 14:33:27 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.4 1991-10-31 14:57:09 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -42,7 +42,7 @@ x_ask(Request, topic, question)
   char buf[BUFSIZ];
 
   set_option(Request->options,VERIFY);
-  status = OAsk(Request,topic,NULL);
+  status = OAsk_buffer(Request,topic,NULL);
   unset_option(Request->options, VERIFY);
 
   switch(status)
@@ -113,7 +113,7 @@ x_ask(Request, topic, question)
     }
   (void) close(fd);
 
-  status = OAsk(Request,topic,file);
+  status = OAsk_file(Request,topic,file);
 
   (void) unlink(file);
 
