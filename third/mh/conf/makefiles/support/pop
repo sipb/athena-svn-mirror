@@ -2,7 +2,7 @@
 #	Instructions to Make, for POP support processes
 #
 #	@(MHWARNING)
-# @(#)$Id: pop,v 1.4 1998-03-11 20:29:28 ghudson Exp $
+# @(#)$Id: pop,v 1.5 1999-01-29 18:10:51 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -113,7 +113,7 @@ $(ETCDIR)/popd:	xpopd
 		-@ls -l $@
 		-@echo ""
 
-popd:		xpopd
+popd:		xpopd;
 
 xpopd:		popd.o popser.o syslog.o \
 			../../uip/dropsbr.o \
@@ -149,7 +149,7 @@ $(LIBDIR)/popaka:	xpopaka
 		-@ls -l $@
 		-@echo ""
 
-popaka:		xpopaka
+popaka:		xpopaka;
 
 xpopaka:	popaka.o $(LIBES1)
 		$(LD) $(LDFLAGS) -o $@ popaka.o $(LDLIBS1)
@@ -196,7 +196,7 @@ $(LIBDIR)/popwrd:	xpopwrd
 		-@ls -l $@
 		-@echo ""
 
-popwrd:		xpopwrd
+popwrd:		xpopwrd;
 
 xpopwrd:	popwrd.o $(LIBES1)
 		$(LD) $(LDFLAGS) -o $@ popwrd.o $(LDLIBS1)
