@@ -6,8 +6,8 @@
  *	By:		Chris D. Peterson
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v $
- *      $Author: epeisach $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.3 1990-05-01 14:48:52 epeisach Exp $
+ *      $Author: vrt $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/more.h,v 1.4 1993-05-05 13:26:06 vrt Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -19,7 +19,11 @@
 
 #include <stdio.h>
 #include <X11/Xos.h>
+#ifdef POSIX
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/stat.h>
 
 /* X include files */
