@@ -4,7 +4,7 @@ abiword
 	can_open_multiple_files=true
 	expects_uris=false
 	requires_terminal=false
-	mime_types=text/*,text/abiword,application/rtf,application/msword
+	mime_types=text/*,text/abiword,application/x-abiword,application/rtf,application/msword
 
 acroread
 	command=acroread
@@ -78,6 +78,22 @@ eog
 	requires_terminal=false
 	mime_types=image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/x-xpixmap,image/x-bmp,image/x-png,image/x-portable-anymap,image/x-portable-bitmap,image/x-portable-graymap,image/x-portable-pixmap
 
+file-roller
+	command=file-roller
+	name=File-roller
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=application/x-bzip,application/x-bzip-compressed-tar,application/x-arj,application/x-compress,application/x-compressed-tar,application/x-gtar,application/x-gzip,application/x-lha,application/x-lhz,application/x-tar,application/zip,application/x-rar-compressed,application/x-rar
+
+file-roller-pack
+	command=file-roller --add
+	name=File Roller
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=*/*
+
 freeamp
 	command=freeamp
 	name=FreeAmp
@@ -85,7 +101,15 @@ freeamp
 	expects_uris=true
 	requires_terminal=false
 	supported_uri_schemes=http,file
-	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-mpegurl,audio/x-wav
+	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav
+
+freeamp-no-uris
+	command=freeamp
+	name=FreeAmp (No URI's)
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=audio/x-mp3-playlist,audio/x-mpegurl,audio/x-scpls
 
 galeon
 	command=galeon
@@ -100,9 +124,10 @@ gedit
 	command=gedit
 	name=gedit
 	can_open_multiple_files=false
-	expects_uris=false
+	expects_uris=true
 	requires_terminal=false
 	mime_types=text/*,text/html,text/plain
+	supported_uri_schemes=file,http,ftp
 
 ggv
 	command=ggv
@@ -113,7 +138,7 @@ ggv
 	mime_types=application/pdf,application/postscript
 
 gimp
-	command=gimp
+	command=gimp-remote --new
 	name=The GIMP
 	can_open_multiple_files=true
 	expects_uris=non-file
@@ -162,7 +187,7 @@ gnumeric
 	mime_types=application/x-gnumeric,application/x-applix-spreadsheet,application/vnd.ms-excel,application/vnd.lotus-1-2-3,application/x-oleo,application/x-xbase,text/spreadsheet,text/x-comma-separated-values,text/tab-separated-values
 
 grecord
-	command=grecord
+	command=gnome-sound-recorder
 	name=Sound Recorder
 	can_open_multiple_files=false
 	expects_uris=false
@@ -267,7 +292,7 @@ kword
 	expects_uris=true
 	requires_terminal=false
 	supported_uri_schemes=file,http,ftp
-	mime_types=application/x-kword,text/abiword,application/msword
+	mime_types=application/x-kword,text/abiword,application/x-abiword,application/msword
 
 lpr
 	command=lpr
@@ -370,6 +395,14 @@ omsomi
 	requires_terminal=false
 	mime_types=video/mpeg,video/x-msvideo,audio/ac3
 
+openoffice
+	command=ooffice
+	name=OpenOffice.org
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=text/abiword,application/x-abiword,application/vnd.ms-excel,application/rtf,application/msword,application/vnd.ms-powerpoint,application/vnd.stardivision.calc,application/vnd.stardivision.chart,application/vnd.stardivision.draw,application/vnd.stardivision.impress,application/vnd.stardivision.mail,application/vnd.stardivision.math,application/vnd.stardivision.writer,application/vnd.sun.xml.calc,application/vnd.sun.xml.calc.template,application/vnd.sun.xml.draw,application/vnd.sun.xml.draw.template,application/vnd.sun.xml.impress,application/vnd.sun.xml.impress.template,application/vnd.sun.xml.math,application/vnd.sun.xml.writer,application/vnd.sun.xml.writer.global,application/vnd.sun.xml.writer.template,image/x-emf,image/x-pcx,image/x-photo-cd,image/x-pict
+
 pico
 	command=jpico --help
 	name=jpico
@@ -417,7 +450,7 @@ staroffice
 	can_open_multiple_files=true
 	expects_uris=false
 	requires_terminal=false
-	mime_types=application/x-staroffice-presentation,application/x-staroffice-spreadsheet,application/x-staroffice-words,text/abiword,application/vnd.ms-excel,application/rtf,application/msword,application/vnd.ms-powerpoint
+	mime_types=text/abiword,application/x-abiword,application/vnd.ms-excel,application/rtf,application/msword,application/vnd.ms-powerpoint,application/vnd.stardivision.calc,application/vnd.stardivision.chart,application/vnd.stardivision.draw,application/vnd.stardivision.impress,application/vnd.stardivision.mail,application/vnd.stardivision.math,application/vnd.stardivision.writer,application/vnd.sun.xml.calc,application/vnd.sun.xml.calc.template,application/vnd.sun.xml.draw,application/vnd.sun.xml.draw.template,application/vnd.sun.xml.impress,application/vnd.sun.xml.impress.template,application/vnd.sun.xml.math,application/vnd.sun.xml.writer,application/vnd.sun.xml.writer.global,application/vnd.sun.xml.writer.template,image/x-emf,image/x-pcx,image/x-photo-cd,image/x-pict
 
 vi
 	command=vi
@@ -435,6 +468,13 @@ vlc
 	supported_uri_schemes=http,ftp,file
 	requires_terminal=false
 	mime_types=video/mpeg
+
+wine
+	command=wine
+	name=Wine
+	can_open_multiple_files=false
+	expects_uris=false
+	mime_types=application/x-ms-dos-executable
 
 xanim
 	command=xanim
@@ -483,7 +523,15 @@ xmms
 	expects_uris=true
 	requires_terminal=false
 	supported_uri_schemes=http,ftp,file
-	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-mpegurl,audio/x-wav,audio/x-riff
+	mime_types=audio/x-mp3,audio/x-mpeg,application/x-ogg,audio/x-wav,audio/x-riff
+
+xmms-no-uris
+	command=xmms
+	name=X Multimedia System (No URI's)
+	can_open_multiple_files=true
+	expects_uris=false
+	requires_terminal=false
+	mime_types=audio/x-mp3-playlist,audio/x-mpegurl,audio/x-scpls
 
 xmps
 	command=xmps

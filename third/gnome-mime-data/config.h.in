@@ -24,6 +24,9 @@
 /* Define if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* always defined to indicate that i18n is enabled */
+#undef ENABLE_NLS
+
 /* Define if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
@@ -41,6 +44,9 @@
 
 /* Define if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
 
 /* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H

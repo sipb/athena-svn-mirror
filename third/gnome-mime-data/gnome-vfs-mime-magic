@@ -35,11 +35,19 @@
 # misidentified.
 
 0	string		%PDF-					application/pdf
+0	string		\177ELF\ \ \ \ \ \ \ \ \ \ \ \ \004 &0xffffffff000000000000000000000000ff application/x-core-file
+0	string		\177ELF\ \ \ \ \ \ \ \ \ \ \ \ \003 &0xffffffff000000000000000000000000ff application/x-shared-library
 0	string		\177ELF					application/x-executable-binary
-0	string		PK\003\004				application/zip
+
+# Disable zip because detecting StarOffice files correctly is more imporant in the release
+# than detecting the occasional zip file without an extension
+#0	string		PK\003\004				application/zip
+
 0	string		\004%!					application/postscript
 0	string		\000\000\001\272			video/mpeg
 0	string		\000\000\001\263			video/mpeg
+# .mmv, mpeg transport stream created by movieshaker
+0       string          \x47\x3f\xff\x10                        video/mpeg
 0	string		\377\330\377				image/jpeg
 # The below ignores the details available (architecture, type, version)
 0	string		\xed\xab\xee\xdb			application/x-rpm
@@ -47,8 +55,10 @@
 0	string		GIF8					image/gif
 4	string		moov					video/quicktime
 4	string		mdat					video/quicktime
+8	string		mp42					video/quicktime
 12	string		mdat					video/quicktime
 0	string		MThd					audio/x-midi
+0	string		IMPM					audio/x-it
 2	string		-lh0-					application/x-lha
 2	string		-lh1-					application/x-lha
 2	string		-lz4-					application/x-lha
@@ -61,7 +71,12 @@
 2	string		-lh4-					application/x-lha
 2	string		-lh5-					application/x-lha
 20      string		\375\304\247\334			application/x-zoo
+0	string		StuffIt\ 				application/x-stuffit
+11	string		must\ be\ converted\ with\ BinHex	application/mac-binhex40
+102	string		mBIN					application/x-macbinary
+4	string		gtktalog\ 				application/x-gtktalog
 0	string		diff\ 					text/x-patch
+0	string		Index:					text/x-patch
 0	string		***\ 					text/x-patch
 0	string		Only\ in\ 				text/x-patch
 0	string		Common\ subdirectories:\ 		text/x-patch
@@ -72,6 +87,15 @@
 0	string		\x89PNG					image/png
 0	string		8BPS\ \ \000\000\000\000 &0xffffffff0000ffffffff image/x-psd
 0	string		#LyX					text/x-lyx
+0	string		DCMw					image/x-dcm
+0	belong		0x59a66a95				image/x-sun-raster
+0	belong		0x01da0000 &0xfcfeffff			image/x-sgi
+0	belong		0xb168de3a				image/x-pcx
+0	string          \x28\x00\x00\x00                        image/x-dib
+0	string          SIMPLE\ \ =                             image/x-fits
+0	belong          0x46506978                              image/x-fpx
+0	belong		0x00000200				image/x-icb
+0	belong		0x53445058				image/x-dpx
 
 # Desktop file support - slightly wrong, since comments can be before
 # the [Desktop Entry] line in the current spec - probably should fix
@@ -88,7 +112,7 @@
 0	string		/*\ XPM\ */				image/x-xpixmap
 
 # svg rules need to go before html
-0:64	string		\<!DOCTYPE\ svg				image/svg
+0:256	string		\<!DOCTYPE\ svg				image/svg
 0:64	string		\<svg					image/svg
 # php rules need to go before html
 0:64	string		\<?php					application/x-php
@@ -101,14 +125,12 @@
 0:64	string		\<html					text/html
 0:64	string		\<HTML					text/html
 0	string		{\\rtf					application/rtf
-0:32	string		\#include				text/x-c
-0:32	string		\#ifndef				text/x-c
-0:32	string		\#ifdef					text/x-c
 0	string		#!/bin/sh				text/x-sh
 0	string		#!/bin/bash				text/x-sh
 0	string		#!/bin/csh				text/x-csh
 0	string		#!/bin/ksh				text/x-ksh
 0	string		#!/bin/perl				text/x-perl
+0	string		#!/bin/zsh				text/x-zsh
 1:16	string		/bin/sh					text/x-sh
 1:16	string		/bin/bash				text/x-sh
 1:16	string		/bin/csh				text/x-csh
@@ -122,9 +144,9 @@
 8	string		AIFC					audio/x-aifc
 8	string		AIFF					audio/x-aiff
 0	string		.ra\375					audio/x-real-audio
-0	string		RIFF					audio/x-riff
 8	string		WAVE					audio/x-wav
 8	string		WAV\ 					audio/x-wav
+0	string		RIFF					audio/x-riff
 # The below is set to 'application/x-ogg' at the request of Ogg Vorbis developers
 0	string		OggS					application/x-ogg
 0	string		SIT! 					application/x-stuffit
@@ -135,7 +157,8 @@
 0	string		\x31\xbe\x00\x00			application/msword
 0       string  	PO^Q`           			application/msword
 0:64	string		gmr:Workbook				application/x-gnumeric
-0:64	string		\<abiword				text/abiword
+0:64	string		\<abiword				application/x-abiword
+0:64    string          \<\!DOCTYPE\ abiword                    application/x-abiword
 0	string		*BEGIN\ SPREADSHEETS			application/x-applix-spreadsheet
 0	string		\x00\x00\x02\x00			application/vnd.lotus-1-2-3
 0	string		PSID					audio/prs.sid
@@ -178,3 +201,9 @@
 0	string		From:					message/rfc822
 0	string		Article					message/news
 0	string		Received:				message/rfc822
+0	string		[playlist]				audio/x-scpls
+
+
+
+
+

@@ -65,6 +65,48 @@ application/vnd.ms-excel
 application/vnd.ms-powerpoint
 	ext: ppt
 
+# StarOffice 5.x document types
+application/vnd.stardivision.calc
+	ext: sdc
+application/vnd.stardivision.chart
+	ext: sds
+application/vnd.stardivision.draw
+	ext: sda
+application/vnd.stardivision.impress
+	ext: sdd sdp
+application/vnd.stardivision.mail
+	ext: smd
+application/vnd.stardivision.math
+	ext: smf
+application/vnd.stardivision.writer
+	ext: sdw vor sgl
+
+# OpenOffice 6.x document types
+application/vnd.sun.xml.calc
+	ext: sxc
+application/vnd.sun.xml.calc.template
+	ext: stc
+application/vnd.sun.xml.draw
+	ext: sxd
+application/vnd.sun.xml.draw.template
+	ext: std
+application/vnd.sun.xml.impress
+	ext: sxi
+application/vnd.sun.xml.impress.template
+	ext: sti
+application/vnd.sun.xml.math
+	ext: sxm
+application/vnd.sun.xml.writer
+	ext: sxw
+application/vnd.sun.xml.writer.global
+	ext: sxg
+application/vnd.sun.xml.writer.template
+	ext: stw
+
+
+application/x-abiword
+	ext: abw
+
 application/x-applix-spreadsheet
 	ext: as
 
@@ -111,6 +153,9 @@ application/x-cpio
 application/x-cpio-compressed
 	regex: \.cpio\.gz$
 
+application/x-dc-rom
+	ext: dc
+
 application/x-deb
 	ext: deb
 
@@ -143,6 +188,12 @@ application/x-font-ttf
 
 application/x-font-type1
 	ext: pfa pfb
+
+application/x-gameboy-rom
+	ext: gb
+
+application/x-genesis-rom
+	ext: gen md
 
 application/x-glade
 	ext: glade
@@ -195,6 +246,21 @@ application/x-lhz
 application/x-mif
 	ext: mif
 
+application/x-mrproject
+	ext: mrp
+
+application/x-ms-dos-executable
+	ext: exe
+
+application/x-msx-rom
+	ext: msx
+
+application/x-n64-rom
+	ext: n64
+
+application/x-nes-rom
+	ext: nes
+
 application/x-netcdf
 	ext: cdf nc
 
@@ -212,6 +278,9 @@ application/x-php
 
 application/x-profile
 	regex: gmon\.out$
+
+application/x-python-byte-code
+	ext: pyc
 
 application/x-qw
 	ext: qif
@@ -243,14 +312,8 @@ application/x-shockwave-flash
 application/x-smil
 	ext: smil smi sml
 
-application/x-staroffice-presentation
-	ext: sdd
-
-application/x-staroffice-spreadsheet
-	ext: sdc
-
-application/x-staroffice-words
-	ext: sdw
+application/x-sms-rom
+	ext: sms gg
 
 application/x-sv4cpio
 	ext: sv4cpio
@@ -320,6 +383,9 @@ audio/x-real-audio
 audio/x-s3m
 	ext: S3M s3m
 
+audio/x-scpls
+	ext: pls
+
 audio/x-stm
 	ext: STM stm
 
@@ -385,6 +451,21 @@ image/x-compressed-xcf
 	regex,2: \.xcf\.gz$
 	regex,2: \.xcf\.bz2$
 
+image/x-dcm
+	ext: dcm
+
+image/x-emf
+	ext: emf
+
+image/x-fits
+	ext: fits
+
+image/x-gray
+	ext: gray
+
+image/x-icb
+	ext: icb
+
 image/x-ico
 	ext: ico
 
@@ -399,6 +480,21 @@ image/x-lwo
 
 image/x-lws
 	ext: lws
+
+image/x-miff
+	ext: miff
+
+image/x-palm
+	ext: palm
+
+image/x-pcx
+	ext: pcx
+
+image/x-photo-cd
+	ext: pcd
+
+image/x-pict
+	ext: pct pict
 
 image/x-portable-anymap
 	ext: pnm
@@ -417,6 +513,12 @@ image/x-psd
 
 image/x-rgb
 	ext: rgb
+
+image/x-sgi
+	ext: sgi
+
+image/x-sun-raster
+	ext: sun
 
 image/x-tga
 	ext: tga
@@ -449,7 +551,7 @@ model/vrml
 
 
 text/abiword
-	ext: abw
+	ext:
 
 text/bib
 	ext: bib
@@ -491,7 +593,7 @@ text/x-c++
 	ext: cc C cpp c++
 
 text/x-c-header
-	ext: h H h++ hp
+	ext: h H h++ hpp
 
 text/x-comma-separated-values
 	ext: csv
@@ -523,6 +625,9 @@ text/x-fortran
 text/x-gtkrc
 	regex: [.|]gtkrc
 
+text/x-haskell
+	ext: hs
+
 text/x-idl
 	ext: idl
 
@@ -531,6 +636,9 @@ text/x-install
 
 text/x-java
 	ext: java
+
+text/x-literate-haskell
+	ext: lhs
 
 text/x-lyx
 	ext: lyx
@@ -563,7 +671,7 @@ text/x-tcl
 	ext: tcl
 
 text/x-tex
-	ext: tex
+	ext: tex cls sty
 
 text/x-texinfo
 	ext: texi texinfo
@@ -602,7 +710,7 @@ video/quicktime
 	ext: mov qt
 
 video/x-anim
-	regex: *.anim[1-9j]
+	regex: \.anim[1-9j]$
 
 video/x-flc
 	ext: flc
@@ -612,6 +720,9 @@ video/x-fli
 
 video/x-ms-asf
 	ext: asf asx
+
+video/x-ms-wmv
+	ext: wmv
 
 video/x-msvideo
 	ext: avi

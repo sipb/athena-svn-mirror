@@ -1,6 +1,6 @@
 %define		localstatedir /var/lib
 
-Name:		gnome_mime_data
+Name:		gnome-mime-data
 Summary:	The GNOME virtual file-system libraries
 Version:	@VERSION@
 Release:	1_cvs
@@ -8,7 +8,7 @@ License:	LGPL
 Group:		System Environment/Libraries
 Source:		ftp://ftp.gnome.org/pub/GNOME/stable/sources/%name/%name-%{version}.tar.gz
 URL:		http://www.gnome.org/
-BuildRoot:	/var/tmp/%{name}-root
+BuildRoot:	%{_tmppath}/%{name}-root
 
 %description
 The GNOME MIME database contains a basic set of applications and MIME
@@ -31,7 +31,7 @@ if [ ! -f configure ]; then
 	--enable-more-warnings --prefix=%{_prefix} \
 	--localstatedir=%{localstatedir} --sysconfdir=%{_sysconfdir} \
 	--mandir=%{_mandir} --libdir=%{_libdir} \
-	--includedir=%{_includedir} --bindir=%{_bindir}
+	--includedir=%{_includedir} --bindir=%{_bindir} --help
 fi
 
 CFLAGS="$MYCFLAGS" ./configure $MYARCH_FLAGS --enable-more-warnings \
@@ -57,7 +57,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-, root, root)
-
 %doc AUTHORS COPYING ChangeLog NEWS README
 %config %{_sysconfdir}/gnome-vfs-mime-magic
 %dir %{_datadir}/application-registry
@@ -66,7 +65,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mime-info/*.mime
 %{_libdir}/pkgconfig/*.pc
 
+
 %changelog
+* Mon Feb 11 2002 Gregory Leblanc <gleblanc@linuxweasel.com>
+- fixed name
+- disabled double-run of configure (hackish solution)
+- fixed buildroot
 
 * Sun Oct 21 2001 Gregory Leblanc <gleblanc@linuxweasel.com>
 - some messing around with Requires: and BuildRequires
