@@ -1,8 +1,8 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.10 1991-01-08 16:47:49 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.11 1991-03-28 08:43:02 lwvanels Exp $
  */
 
-#include "requests.h"
+#include "nl_requests.h"
 #include "system.h"
 
 #include <sys/types.h>
