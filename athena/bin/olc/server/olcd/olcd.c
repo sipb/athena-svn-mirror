@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.60 1995-05-14 01:10:22 cfields Exp $
- *	$Author: cfields $
+ *	$Id: olcd.c,v 1.61 1996-09-20 02:36:37 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.60 1995-05-14 01:10:22 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.61 1996-09-20 02:36:37 ghudson Exp $";
 #endif
 #endif
 
@@ -49,32 +49,19 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>		/* Standard error numbers. */
 #include <pwd.h>		/* Password entry defintions. */
 #include <signal.h>		/* Signal definitions. */
-#include <strings.h>
+#include <string.h>
+#include <dirent.h>
 
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
 #endif /* ZEPHYR */
 
 #include <netdb.h>		/* Network database defs. */
-#ifndef DIRSIZ
-#include <sys/dir.h>		/* Directory entry format */
-#endif
 #include <arpa/inet.h>		/* inet_* defs */
 
 #include <olcd.h>
 
 /* Global variables. */
-
-#ifdef NEEDS_SELECT_MACROS
-#define NBBY    8 /* number of bits in a byte */
-#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
-
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
-#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
-
-#endif
 
 extern PROC  Proc_List[];	/* OLC Proceedure Table */
 extern PROC  Maint_Proc_List[];	/* OLC "Maintenance Mode" Proceedure Table */
@@ -755,11 +742,7 @@ flush_olc_userlogs()
      */
 
     DIR *dirp;
-#ifdef _POSIX_SOURCE
     struct dirent *dp;
-#else
-    struct direct *dp;
-#endif
     dirp = opendir(LOG_DIR);
 
     if (dirp == (DIR *)NULL)
@@ -768,17 +751,13 @@ flush_olc_userlogs()
 	return;
     }
 
-#ifdef _POSIX_SOURCE
     for (dp = readdir(dirp); dp != (struct dirent *)NULL; dp = readdir(dirp))
-#else
-    for (dp = readdir(dirp); dp != (struct direct *)NULL; dp = readdir(dirp))
-#endif
     {
-	if (!strcmp(dp->d_name+dp->d_namlen-4, ".log"))
+	if (!strcmp(dp->d_name+strlen(dp->d_name), ".log"))
 	{
 	    char msgbuf[BUFSIZ];
 	    (void) strcpy(msgbuf, "Found log file ");
-	    (void) strncat(msgbuf, dp->d_name, dp->d_namlen);
+	    (void) strcat(msgbuf, dp->d_name);
 	    log_status(msgbuf);
 	    /* check for username among active questions */
 	    /* (yet to be implemented) */
@@ -841,11 +820,7 @@ static int
 reap_child(sig)
      int sig;
 {
-#ifdef _POSIX_SOURCE
   int status;
-#else
-  union wait status;
-#endif
   int pid;
 
 #ifdef SABER
@@ -955,7 +930,7 @@ get_kerberos_ticket()
     {
       strcpy(principal,K_SERVICE);
       strcpy(sinstance,DaemonHost);
-      ptr = index(sinstance,'.');
+      ptr = strchr(sinstance,'.');
       if (ptr)
 	*ptr = '\0';
       uncase(sinstance);

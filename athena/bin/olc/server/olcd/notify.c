@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.38 1993-08-05 19:10:41 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: notify.c,v 1.39 1996-09-20 02:36:35 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.38 1993-08-05 19:10:41 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.39 1996-09-20 02:36:35 ghudson Exp $";
 #endif
 #endif
 
@@ -160,7 +160,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		return(ERROR);
 	}
 	sin.sin_family = host->h_addrtype;
-	bcopy(host->h_addr, (char *) &sin.sin_addr, host->h_length);
+	memcpy(&sin.sin_addr, host->h_addr, host->h_length);
 	sin.sin_port = write_port;
 	fds = socket(host->h_addrtype, SOCK_STREAM, 0);
 	if (fds < 0) {
@@ -399,7 +399,7 @@ zsend_message(c_class, instance, opcode, username, message)
 
   if (signature[0] == 0)
     sprintf(signature,"From: %s Service\n",DaemonInst);
-  bzero(&notice, sizeof(ZNotice_t));
+  memset(&notice, 0, sizeof(ZNotice_t));
 
   notice.z_kind = (username && username[0]) ? ACKED : UNSAFE;
   notice.z_port = 0;
@@ -439,7 +439,8 @@ static ERRCODE
 zsend(notice)
      ZNotice_t *notice;
 {
-  int ret,sigm;
+  int ret;
+  sigset_t mask, omask;
   ZNotice_t retnotice;
   char buf[BUFSIZ];
 
@@ -480,13 +481,15 @@ zsend(notice)
    * system call error message.
    */
 
-  sigm = sigblock(sigmask(SIGCHLD));
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
   if ((ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
 		       ZCompareUIDPred, (char *) &notice->z_uid)) !=
       ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      sigsetmask(sigm);
+      sigprocmask(SIG_SETMASK, &omask, NULL);
       sprintf(buf,"zsend: error %s from ZIfNotice",error_message(ret));
       log_zephyr_error(buf);
       ZFreeNotice(&retnotice);
@@ -495,7 +498,7 @@ zsend(notice)
       return(ERROR);
     }
 
-  sigsetmask(sigm);
+  sigprocmask(SIG_SETMASK, &omask, NULL);
   alarm(0);			/* If ZIfNotice came back, shut off alarm. */
   signal(SIGALRM, SIG_IGN);
 
