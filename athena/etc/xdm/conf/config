@@ -20,7 +20,11 @@ X	/etc/Xws GRAY -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #endif
 #ifdef RSAIX
+#if defined(POWER_Gt1)
+X       /usr/bin/X11/X -n :0 -c 0 -a 2
+#else
 X       /usr/bin/X11/X -v -n :0 -c 0 -a 2
+#endif
 #endif
 
 #ifdef ultrix
