@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8 1995-07-11 20:39:25 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8.2.1 1997-10-17 07:01:35 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8 1995-07-11 20:39:25 miki Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.8.2.1 1997-10-17 07:01:35 ghudson Exp $";
 #endif lint
 
 /*
@@ -230,14 +230,15 @@ process(file)
 		case 'U':  /* unlink associated files */
 			if (from != host)
 				printf("%s: ", host);
-			printf(UNLINK(line+1) ? "cannot dequeue %s\n" :
+			printf(spool_unlink(line+1, 'd', 1) ? "cannot dequeue %s\n" :
 				"%s dequeued\n", line+1);
 		}
 	}
 	(void) fclose(cfp);
 	if (from != host)
 		printf("%s: ", host);
-	printf(UNLINK(file) ? "cannot dequeue %s\n" : "%s dequeued\n", file);
+	printf(spool_unlink(file, 'c', 1) ? 
+	       "cannot dequeue %s\n" : "%s dequeued\n", file);
 }
 
 /*
@@ -326,7 +327,7 @@ chkremote()
 	register int resp;
 	int n;
 	char buf[BUFSIZ];
-	char name[255];
+	char name[MAXHOSTNAMELEN + 1];
 	struct hostent *hp;
 
 	/* get the name of the local host */
@@ -339,7 +340,10 @@ chkremote()
 	    printf ("unable to get hostname for local machine %s\n",
 			name);
 	    return;
-	} else strcpy (name, hp->h_name);
+	} else {
+	    strncpy (name, hp->h_name, sizeof(name));
+	    name[sizeof(name) - 1] = '\0';
+	}		
 
 	if (RM == (char *)0)
 		RM = name;
@@ -458,4 +462,37 @@ int fd;
 		return(-1);
 	}
 	return(resp);
+}
+
+/*
+ * Wrapper for unlink() when used to remove files from the spools.
+ * These filenames are passed from the client and not necessarily
+ * trusted.
+ */
+
+int spool_unlink(afile, aflag, wflag)
+	char *afile, aflag;
+	int wflag;
+{
+	struct stat st;
+
+	if (lstat(afile, &st) == -1)
+		return(-1);
+
+	if ((st.st_mode & S_IFMT) != S_IFREG)
+		return(-2);
+	  
+	if (afile[0] == '.' || strchr(afile, '/')) {
+		syslog(LOG_ERR, "lpd attempted to unlink %s", afile);
+		return(-2);
+	}
+	if (wflag && 
+	    (afile[0] != aflag || afile[1] != 'f' ||
+	     afile[2] != 'A' || !isxdigit(afile[3]) ||
+	     !isxdigit(afile[4]) || !isxdigit(afile[5])))
+		syslog(LOG_NOTICE,
+		       "nonstandard job character for spool_unlink in %d.%d.%d.%d.%d.%d",
+		       afile[0], afile[1], afile[2], afile[3],
+		       afile[4], afile[5]);
+	return(UNLINK(afile));
 }
