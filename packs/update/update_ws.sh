@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.12 1997-02-06 22:56:11 ghudson Exp $
+# $Id: update_ws.sh,v 1.13 1997-02-19 17:38:14 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -96,7 +96,7 @@ if [ "$VERSION" = Update ]; then
 	fi
 
 	echo "This system is in the middle of an update.  Please contact"
-	echo "Athena Operations at x3-1410. Thank you. -Athena Operations"
+	echo "Athena Hotline at x3-1410. Thank you. -Athena Operations"
 	exit 1
 fi
 
