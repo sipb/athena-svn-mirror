@@ -6,7 +6,7 @@
  */
 
 #ifndef lint
-static char rcsid_nfs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.2 1990-04-19 12:11:30 jfc Exp $";
+static char rcsid_nfs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.3 1990-04-21 17:40:58 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -89,6 +89,11 @@ nfs_attach(at, mopt, errorout)
 				       at->hesiodname);
 				/* So the mount rpc wins */
 				clear_errored(at->hostaddr); 
+			} else if(at->mode == 'm') {
+				printf("%s: Warning, mapping failed.\n", 
+				       at->hesiodname);
+				error_status = 0;
+				clear_errored(at->hostaddr);
 			} else
 				return (FAILURE);
 		}
