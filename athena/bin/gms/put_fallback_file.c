@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.1 1988-09-26 15:29:16 eichin Exp $";
+static char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.2 1988-09-27 00:47:15 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -50,7 +50,7 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
      * doesn't, we want to leave it missing.
      */
     errstat = open(message_filename, O_RDONLY, 0);
-    if(errstat) {
+    if(errstat == -1) {
       if(errno == ENOENT) {
 	/* it didn't exist, so we want to leave it that way. */
 	return(0);
@@ -78,7 +78,8 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
    * the clock backwards on the file and letting the daily find job do
    * the work.
    */
-  message_filedesc = open(message_filename, O_CREAT|O_WRONLY, 0666);
+  message_filedesc = open(message_filename,
+			  O_CREAT|O_WRONLY|O_TRUNC, 0666);
 
   /* Just return the error if something fails. This will be later
    * ignored, since this is a non critical stage...
@@ -93,19 +94,35 @@ Code_t put_fallback_file(message_data, message_size, message_filename)
    */
   errstat = write(message_filedesc, message_data, message_size);
   close(message_filedesc);
+  /*
+   * if we don't want to force the timestamps, we can exit now on an
+   * error instead of waiting.
+   */
+  if((ftime>0) && errstat == -1) {
+    return(errno);
+  }
 
   /*
    * if the file should really go away, warp the clock back as well,
    * so the cron job can nuke it....
    */
-  if(ftime == 0) {
+  if(ftime>0) {
+    long time();
     /*
-     * We can reuse errstat, since if the write fails, we still want
-     * to try the utimes in the hope that the file will really go
-     * away.
+     * set the file time to the current time; hit both access and
+     * modify (since the call does it). Since writing to the file only
+     * sets the modify time, if we've warped it back once it'll get
+     * deleted that day no matter what. Of course, once it is gone
+     * we're OK, but why lose when we can win? So we set both of them
+     * here.
      */
-    errstat = utimes(message_filename, tvp);
+    tvp[0].tv_sec = tvp[1].tv_sec = time(0);
   }
+  /*
+   * We can reuse errstat, since if the write fails, we still want to
+   * try the utimes in the hope that the file will really go away.
+   */
+  errstat = utimes(message_filename, tvp);
   if(errstat == -1) {
     return(errno);
   }
