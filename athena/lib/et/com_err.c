@@ -20,7 +20,7 @@
 /* We don't have the v*printf routines... */
 #define vfprintf(stream,fmt,args) _doprnt(fmt,args,stream)
 
-#if __STDC__ && !VARARGS
+#if (__STDC__ || defined(SOLARIS)) && !VARARGS
 #	include <stdarg.h>
 #else /* varargs: not STDC or no <stdarg> */
 	/* Non-ANSI, always take <varargs.h> path. */
@@ -48,7 +48,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.6 1995-06-25 01:20:42 cfields Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.7 1995-07-12 04:25:46 cfields Exp $";
 #endif	/* ! lint */
 
 static void
