@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.23 2004-04-30 04:19:47 rbasch Exp $
+# $Id: Makefile,v 1.24 2005-03-31 16:33:53 rbasch Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -43,6 +43,11 @@ install:
 	install -c -m 0555 vers/solaris-9.2-srvd-files ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.3-patches ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris-9.3-pkgs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.3-oldpatches ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.3-oldpkgs ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.4-ospreserve ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris-9.4-pkgs ${DESTDIR}${UPDATE}
+
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris251-26 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris26-pkgs ${DESTDIR}${UPDATE}
