@@ -1,0 +1,1 @@
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
