@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm_server.c,v 1.16 1999-08-13 00:19:49 danw Exp $
+ *      $Id: zhm_server.c,v 1.17 1999-10-14 18:37:35 ghudson Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Id: zhm_server.c,v 1.16 1999-08-13 00:19:49 danw Exp $";
+static char rcsid_hm_server_c[] = "$Id: zhm_server.c,v 1.17 1999-10-14 18:37:35 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -31,7 +31,6 @@ extern int numserv;
 extern char **serv_list;
 extern char cur_serv[], prim_serv[];
 extern void die_gracefully();
-extern unsigned long inet_addr();
 
 void hm_control(), send_back(), new_server();
 
