@@ -1,11 +1,11 @@
 /*
- * $Id: aklog.c,v 1.7 1999-09-24 20:12:45 danw Exp $
+ * $Id: aklog.c,v 1.8 2000-05-03 13:40:29 rbasch Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog.c,v 1.7 1999-09-24 20:12:45 danw Exp $";
+static const char rcsid[] = "$Id: aklog.c,v 1.8 2000-05-03 13:40:29 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -622,7 +622,7 @@ static int auth_to_path(char *path)
 	{
 	  struct stat st;
 
-	  if (lstat(path, &st) < 0)
+	  if (lstat(pathtocheck, &st) < 0)
 	    {
 	      /*
 	       * If we've logged and still can't stat, there's
