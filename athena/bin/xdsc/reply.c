@@ -10,7 +10,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.5 1990-12-12 14:30:22 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.6 1990-12-20 15:23:55 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -21,10 +21,8 @@ extern Widget	topW, paneW;
 extern TextWidget	bottextW;
 extern int	char_width;
 
-static int	replynum;
 static char	sourcefile[80];
 
-static Widget	sendPopupW = 0, sendSubjectTextW, sendTextW;
 static void	SendCB();
 
 static Widget	writePopupW = 0, writeDialogW;
@@ -43,40 +41,45 @@ static Widget	helpPopupW = 0;
 
 static char *GetDefaultValue();
 
+typedef struct {
+	Widget	sendPopupW;
+	Widget	sendButtonW;
+	Widget	subjectTextW;
+	Widget	bodyTextW;
+	char	mtg[80];
+	int	replynum;
+} senddata, *senddataptr;
+
 void
 SubmitTransaction(myreplynum)
 int	myreplynum;
 {
 	Arg		args[5];
 	unsigned int	n;
-	char		subjectline[80];
+	char		*subjectline;
 	char		buffer[80];
 	char		*ptr1, *ptr2;
 	char		*returndata;
-	Widget		localPaneW, box1W, box2W, button1W, button2W;
+	Widget		localPaneW, box1W, box2W, buttonW;
+	senddataptr	data;
 
-	if (sendPopupW)
-		return;
-
+	data = (senddataptr) malloc (sizeof (senddata));
 /*
-**  Save passed reply number
+**  Save current meeting name and reply number
 */
-
-	replynum = myreplynum;
+	strcpy (data->mtg, CurrentMtg(0));
+	data->replynum = myreplynum;
 
 /*
 **  Find and use the subject of the previous transaction if we are replying.
 */
-	if (replynum != 0) {
-		sprintf (buffer, "(gti %d %s)\n", replynum, CurrentMtg(0));
+	if (myreplynum != 0) {
+		sprintf (buffer, "(gti %d %s)\n", myreplynum, CurrentMtg(0));
 		returndata = RunCommand (buffer, NULL, NULL, True);
 
 		if ((int) returndata <= 0)  {
 			return;
 		}
-		/*
-		sscanf (returndata, "(%*[^\"]\"%*[^\"]\"%*[^\"]\"%[^\"]%*s", buffer);
-		*/
 
 /*
 **  Find the third quote
@@ -96,20 +99,23 @@ int	myreplynum;
 		*ptr2 = '\0';
 
 		if (!strncmp (buffer, "Re: ", 4)) {
+			subjectline = (char *) malloc (strlen(buffer) + 1);
 			sprintf (subjectline, "%s", buffer);
 		}
 		else {
+			subjectline = (char *) malloc (strlen(buffer) + 5);
 			sprintf (subjectline, "Re: %s", buffer);
 		}
 		myfree(returndata);
 	}
 	else {
+		subjectline = (char *) malloc (80);
 		sprintf (subjectline, "");
 	}
 
 	n = 0;
 	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
-	sendPopupW = XtCreatePopupShell(	
+	data->sendPopupW = XtCreatePopupShell(	
 			"enterpopup",
 			topLevelShellWidgetClass,
 			topW,
@@ -120,11 +126,11 @@ int	myreplynum;
 	localPaneW = XtCreateManagedWidget(
 			"pane",
 			panedWidgetClass,
-			sendPopupW,
+			data->sendPopupW,
 			args,
 			n);
 
-	if (replynum == 0) {
+	if (myreplynum == 0) {
 		sprintf (	buffer,
 				" (Entering new transaction in %s)", 
 				CurrentMtg(0));
@@ -133,7 +139,7 @@ int	myreplynum;
 	else {
 		sprintf (	buffer,
 				" (Replying to transaction %d in %s)",
-				replynum, CurrentMtg(0));
+				myreplynum, CurrentMtg(0));
 	}
 
 	n = 0;
@@ -168,17 +174,18 @@ int	myreplynum;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 	XtSetArg(args[n], XtNwidth, 60 * char_width);		n++;
-	sendSubjectTextW = XtCreateManagedWidget(
+	data->subjectTextW = XtCreateManagedWidget(
 			"subjecttext",
 			asciiTextWidgetClass,
 			box1W,
 			args,
 			n);
+	myfree(subjectline);
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
-	sendTextW = XtCreateManagedWidget(
+	data->bodyTextW = XtCreateManagedWidget(
 			"bodytext",
 			asciiTextWidgetClass,
 			localPaneW,
@@ -195,23 +202,24 @@ int	myreplynum;
 			n);
 
 	n = 0;
-	button1W = XtCreateManagedWidget(
+	data->sendButtonW = XtCreateManagedWidget(
 			"send",
 			commandWidgetClass,
 			box2W,
 			args,
 			n);
-	XtAddCallback (button1W, XtNcallback, SendCB, True);
+
+	XtAddCallback (data->sendButtonW, XtNcallback, SendCB, data);
 
 	n = 0;
-	button2W = XtCreateManagedWidget(
+	buttonW = XtCreateManagedWidget(
 			"abort",
 			commandWidgetClass,
 			box2W,
 			args,
 			n);
-	XtAddCallback (button2W, XtNcallback, SendCB, False);
-	XtPopup(sendPopupW, XtGrabNone);
+	XtAddCallback (buttonW, XtNcallback, SendCB, data);
+	XtPopup(data->sendPopupW, XtGrabNone);
 }
 
 static void
@@ -227,14 +235,15 @@ XtPointer	call_data;
 	char		filename[50];
 	FILE		*fp;
 	char		*returndata;
+	senddataptr	data = (senddataptr) client_data;
 
-	if ((Boolean) client_data) {
+	if (data->sendButtonW == w) {
 		n = 0;
 		XtSetArg(args[n], XtNstring, &tempstring);		n++;
-		XtGetValues (sendTextW, args, n);
+		XtGetValues (data->bodyTextW, args, n);
 	
 		sprintf (	filename, "%s-%dr", 
-				filebase, replynum);
+				filebase, data->replynum);
 		if ((fp = fopen(filename, "w")) == (FILE *) NULL) {
 			sprintf (command, "could not open file'%s'\n", filename);
 			PutUpWarning("WARNING", command, False);
@@ -248,12 +257,13 @@ XtPointer	call_data;
 ** on the next line.  (No parens around subject line)
 */
 			sprintf(command, "(at %d %s %s)\n",
-				replynum, filename, CurrentMtg(0));
+				data->replynum, filename, data->mtg);
 			(void) RunCommand (command, NULL, NULL, False);
 
 			n = 0;
 			XtSetArg(args[n], XtNstring, &tempstring);		n++;
-			XtGetValues (sendSubjectTextW, args, n);
+			XtGetValues (data->subjectTextW, args, n);
+
 			sprintf(command, "%s\n",tempstring);
 
 			returndata =  RunCommand (command, NULL, NULL, True);
@@ -263,19 +273,10 @@ XtPointer	call_data;
 		}
 	}
 
-	XtDestroyWidget(sendPopupW);
+	XtDestroyWidget(data->sendPopupW);
+	myfree (data);
 
-	sendPopupW = 0;
-	(void) HighestTransaction();
-	sprintf (command, "Reading %s [%d-%d], #%d", 
-			CurrentMtg(0),
-			TransactionNum(FIRST),
-			TransactionNum(LAST),
-			TransactionNum(CURRENT));
-
-	PutUpStatusMessage(command);
-
-	CheckButtonSensitivity(BUTTONS_UPDATE);
+	GoToTransaction (TransactionNum(CURRENT), False);
 
 	XFlush(XtDisplay(topW));
 }
@@ -947,7 +948,7 @@ XtPointer	call_data;
 
 static char *helptext1 =
 "                      Actions on main screen\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
   down meeting	Move to the next meeting with new transactions\n\
   up meeting	Move to the previous meeting with new transactions\n\
   inc		Check for new transactions\n\
@@ -955,7 +956,7 @@ static char *helptext1 =
   show trns	Change mode to show transaction headers\n\
   HELP 		Display this screen\n\
   QUIT 		Quit\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
   next		Read the next transaction in the\n\
 		current meeting\n\
   prev		Read the previous transaction in the\n\
@@ -970,9 +971,9 @@ static char *helptext1 =
   last		Go to the last transaction in the meeting\n\
   spacebar	'do the right thing'\n\
   backspace	reverse what space did\n\
-+-------------------------------------------------------------------+\n\
-You can also enter a meeting by clicking on its title in\n\
-the upper window.\n\
+---------------------------------------------------------------------\n\
+You can also enter a meeting by clicking on its title with mouse\n\
+button two or three.\n\
 \n\
 The keyboard equivalent for clicking on a button is always the first\n\
 character on the button.  Note that uppercase and lowercase\n\
@@ -985,7 +986,7 @@ transaction in a meeting.\n\
 
 static char *helptext2 =
 "                Actions while editting meeting list\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
   add meeting		Put a new meeting on the list of\n\
 			meetings you attend\n\
   delete meeting	Remove a meeting from the list of\n\
@@ -993,14 +994,14 @@ static char *helptext2 =
   main screen		Go back to the main screen\n\
   HELP 			Display this screen\n\
   QUIT 			Quit\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
 The keyboard equivalent for clicking on a button is always the first\n\
 character of the button's label\n\
 ";
 
 static char *helptext3 =
 "              Actions while showing transaction headers\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
   unread	Show headers of unread transactions\n\
   all		Show headers of all transactions\n\
 			(This can take a while!)\n\
@@ -1008,7 +1009,7 @@ static char *helptext3 =
   main screen	Go back to the main screen\n\
   HELP 		Display this screen\n\
   QUIT 		Quit\n\
-+-------------------------------------------------------------------+\n\
+---------------------------------------------------------------------\n\
   next		Read the next transaction\n\
   prev		Read the previous transaction\n\
   Next in chain	Read the next transaction in this chain\n\
@@ -1020,8 +1021,9 @@ static char *helptext3 =
   last		Go to the last transaction in the meeting\n\
   spacebar	'do the right thing'\n\
   backspace	reverse what space did\n\
-+-------------------------------------------------------------------+\n\
-You can read a specific transaction by clicking on its header.\n\
+---------------------------------------------------------------------\n\
+You can read a specific transaction by clicking on its header with\n\
+mouse button two or three.\n\
 \n\
 The keyboard equivalent for clicking on a button is always the first\n\
 character on the button.  Note that uppercase and lowercase\n\
