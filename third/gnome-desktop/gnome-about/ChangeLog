@@ -1,3 +1,265 @@
+==================== 2.7.92 ====================
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Alan Horkan <horkana@tcd.ie> in bug #151345
+
+	* gnome-about.c: (create_canvas): link to news.gnome.org
+	rather than gnomedesktop.org
+
+==================== 2.7.91 ====================
+
+2004-08-04  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* gnome-about.c: Allow 24 bytes for the translated date string
+	so that traditional Chinese (zh_TW) dates show up in full (bug
+	#149119).
+
+2004-08-03  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* contributors.h: Added myself.
+
+==================== 2.7.90 ====================
+
+2004-07-30  Matthew Garrett  <mjg59@srcf.ucam.org>
+
+	* contributors.h: Added myself.
+	
+2004-07-30  Davyd Madeley  <davyd@ucc.asn.au>
+
+	* contributors.h: Added self.
+
+==================== 2.7.4 ====================
+
+==================== 2.7.3 ====================
+
+==================== 2.7.1 ====================
+
+2004-05-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* contributors.h: Added Carlos Garnacho.
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0.1 ====================
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Kjartan Maraas in bug #138393 to fix brokeness
+	with previous leak fix. 
+
+	* gnome-about.c: (get_description_messages): free best_value
+	in a different place.
+
+==================== 2.6.0 ====================
+
+2004-03-16  Paolo Bacchilega  <paobac@cvs.gnome.org>
+
+	* contributors.h (contributors): added myself :)
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+2004-03-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (create_date_string): remove the dependancy
+	on strptime(). Fixes #135922.
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+==================== 2.5.4 ====================
+
+2004-02-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* gnome-about.c: (get_description_messages),
+	(display_version_info): Plug some leaks in the about dialog.
+	Closes bug #133163.
+
+2004-01-22  Fernando Herrera  <fherrera@onirica.com>
+
+	* gnome-about.c: (display_introduction_message): Set intro text as
+	non-editable. Fixs bug #132161
+
+==================== 2.5.3 ====================
+
+2003-12-08  Alex Duggan  <aldug@astrolinux.com>
+
+	* gnome-about.c: Update the contact link to use the new contact page
+	at http://www.gnome.org/contact/
+
+==================== 2.5.2 ====================
+
+==================== 2.5.1 ====================
+
+2003-11-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use $(DISABLE_DEPRECATED_FLAGS).
+
+==================== 2.4.1.1 ====================
+
+==================== 2.4.1 ====================
+
+==================== 2.4.0 ====================
+
+2003-09-03  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Young-Ho, Cha <ganadist@chollian.net> in
+	bug #121329.
+
+	* gnome-about.c: (create_date_string): fix off-by-one
+	error with the month. tm_mon begins at zero.
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+==================== 2.3.6.1 ====================
+
+2003-08-09  Gael Chamoulaud (strider) <strider@gnome.org>
+
+	* contributors.h: Added Dodji Seketeli <dodji@gnome.org>,
+	Christophe Fergeau <teuf@gnome.org> and myself
+
+==================== 2.3.6 ====================
+
+2003-08-05  Ted Gould <ted@gould.cx>
+
+	* contributors.h: Added myself.
+
+2003-07-28  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* contributors.h: Added myself.
+
+	* gnome-about.c:
+	- Extract the paragraphs for the about box for the appropriate
+	  locale. Fixes bug #115193 in a fashion that will work for now.
+	- Include new links for some of the titles (supplied by Luis
+	  Villa).
+
+2003-07-13  Rob Adams  <robadams@ucla.edu>
+
+	* contributors.h: Added myself
+	
+2003-07-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (href_item_event_callback): handle
+	errors from gnome_url_show(). Patch from Olav Vitters
+	in bug #115153.
+
+==================== 2.3.4 ====================
+
+2003-07-13  Hasbullah Bin Pit  <sebol@ikhlas.com>
+
+	* contributors.h: Added a comma behind my name
+
+==================== 2.3.3.1 ====================
+
+2003-06-21  Mike Newman  <mikegtn@gnome.org>
+
+	* contributors.h: Added me.
+
+2003-06-13  Abel Cheung  <maddog@linux.org.hk>
+
+	* contributors.h: Fix name for  Kazuhiro Sasayama.
+
+2003-06-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* gnome-about.c: (load_random_header): Build with
+	gcc 2.95. Patch from textshell@neutronstar.dyndns.org.
+
+==================== 2.3.3 ====================
+
+2003-06-06  Mark Finlay  <sisob@eircom.net>
+
+	* contributors.h: Add Mark Finlay (myself)
+
+Thu Jun  5 22:04:12 2003  Kristian Rietveld  <kris@gtk.org>
+
+	Fix the residue during the intro messages. Only two pixels remain
+	during the last message. Hrm. I blame that on libgnomecanvas.
+
+	* gnome-about.c (animate_text), (display_introduction_message): use
+	group +	white rect to remove residue.
+
+Thu Jun  5 21:23:04 2003  Kristian Rietveld  <kris@gtk.org>
+
+	New GNOME About merge point.
+
+Thu Jun  5 20:58:02 2003  Kristian Rietveld  <kris@gtk.org>
+
+	* gnome-about.c (animate_contributor): change tmpcolor difference to
+	6 (avoids blink of the name in the middle),
+	(animate_contributor), (display_contributors): fix the residue
+	problem by having a white rectangle below the text item, with
+	a bit wider bounding box,
+	(create_canvas): update the links, so you don't get 404s. FIXME:
+	need to update these links when the new website comes online.
+
+Tue Jun  3 17:59:59 2003  Kristian Rietveld  <kris@gtk.org>
+
+	Of course I can get nothing right at once P:
+
+	* gnome-64.gif: added, forgot to add it at first.
+				    
+Sat May 31 22:32:23 2003  Kristian Rietveld  <kris@gtk.org>
+
+	* gnome-about.c: apply patch from Fernando Herrera
+	<fherrera@onirica.com>, for a s/Vendor/Distributor/.
+
+Sat May 31 22:22:12 2003  Kristian Rietveld  <kris@gtk.org>
+
+	Wooo! New GNOME about dialog.
+
+	* gnome-about.c: rewritten.
+
+	* Makefile.am: remove contributors.dat, logo.xpm, added gnome-64.gif
+	and the headers to SUBDIRS.
+
+	* logo.xpm, contributors.dat: removed.
+
+	* gnome-64.gif, headers/Makefile.am, headers/*png: new files.
+
+2003-05-25  Hasbullah Bin Pit  <sebol@ikhlas.com>
+
+	* contributors.h: Add Hasbullah Bin Pit (myself)
+
+==================== 2.3.2 ====================
+
+2003-05-08  Christian Neumair  <chris@gnome-de.org>
+
+	* contributors.h: Hex-escaped non-ASCII characters, removed many
+	gettext_noop calls, added myself.
+	* gnome-about.c (get_intro_message): Made gnome_intro_message string
+	much more flexible for translators by not hardcoding it's order.
+
+2003-05-02  Alex Duggan  <aldug@astrolinux.com>
+
+	* contributors.h: Add Elijah Newren and myself
+
+2003-04-05  Mike Newman  <mike@gtnorthern.demon.co.uk>
+
+	* ChangeLog:
+	* gnome-about.c: (init_version_strings), (main):
+
+2003-04-04  Mike Newman <mike@greatnorthern.demon.co.uk>
+
+	* gnome-about.c: cope with 'vendor' or 'distributor' in xml file.
+
+2003-03-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* contributors.h: add missing comma. bug #107933.
+
+2003-02-24  James Willcox  <jwillcox@gnome.org>
+
+	* contributors.h: added Johan Dahlin.
+
+Sun Feb 23 13:16:08 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* contributors.h: added myself
+
 2003-01-26  Rodrigo Moya <rodrigo@gnome-db.org>
 
 	* contributors.h: added myself.
@@ -280,7 +542,7 @@ Mon, 19 Nov 2001 01:50:15 -0500 Frank Belew <frb@ximian.com>
 	Use accessor function for style->font.
 	
 
-2001-09-04  Carlos Perell� Mar�n <carlos@gnome-db.org>
+2001-09-04  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* contributors.h: Added myself.
 
@@ -316,7 +578,7 @@ Mon, 19 Nov 2001 01:50:15 -0500 Frank Belew <frb@ximian.com>
 
 	* contributors.h: Added myself.
 
-2001-01-24  Martin Norbäck  <d95mback@dtek.chalmers.se>
+2001-01-24  Martin NorbÃ€ck  <d95mback@dtek.chalmers.se>
 
 	* gnome-about.c (get_max_width): Using translated string to
 	calculate max width.

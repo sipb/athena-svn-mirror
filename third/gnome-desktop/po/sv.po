@@ -1,18 +1,19 @@
 # Swedish messages for gnome-desktop.
-# Copyright (C) 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1998, 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Martin Wahlen <mva@sbbs.se>, 1998.
 # Anders Carlsson <anders.carlsson@tordata.se>, 1999.
 # Andreas Hyden  <a.hyden@cyberpoint.se>, 2000.
 # Martin Norbäck <d95mback@dtek.chalmers.se>, 2000, 2001.
-# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002.
+# Christian Rose <menthos@menthos.com>, 2000, 2001, 2002, 2003.
 #
-# $Id: sv.po,v 1.1.1.3 2003-02-12 06:46:48 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2004-09-27 20:54:22 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-desktop\n"
-"POT-Creation-Date: 2003-02-04 11:52+1300\n"
-"PO-Revision-Date: 2002-12-19 09:37+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:31+0100\n"
+"PO-Revision-Date: 2003-08-08 16:57+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,12 +29,8 @@ msgid "Accessories menu"
 msgstr "Tillbehörsmeny"
 
 #: desktop-links/Applications.directory.in.h:1
-msgid "Applications without a category"
-msgstr "Program utan en kategori"
-
-#: desktop-links/Applications.directory.in.h:2
-msgid "Other"
-msgstr "Annat"
+msgid "Applications"
+msgstr "Program"
 
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
@@ -68,12 +65,12 @@ msgid "Programs for Internet and networks"
 msgstr "Program för Internet och nätverk"
 
 #: desktop-links/Multimedia.directory.in.h:1
-msgid "Multimedia menu"
-msgstr "Multimediameny"
+msgid "Multimedia"
+msgstr "Multimedia"
 
 #: desktop-links/Multimedia.directory.in.h:2
-msgid "Sound & Video"
-msgstr "Ljud och video"
+msgid "Multimedia menu"
+msgstr "Multimediameny"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
@@ -82,6 +79,14 @@ msgstr "Kontor"
 #: desktop-links/Office.directory.in.h:2
 msgid "Office Applications"
 msgstr "Kontorsprogram"
+
+#: desktop-links/Other.directory.in.h:1
+msgid "Applications without a category"
+msgstr "Program utan en kategori"
+
+#: desktop-links/Other.directory.in.h:2
+msgid "Other"
+msgstr "Annat"
 
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
@@ -108,396 +113,545 @@ msgstr "Systemverktyg"
 msgid "System menu"
 msgstr "Systemmeny"
 
-#: gnome-about/contributors.h:20
-msgid "Timur I. Bakeyev"
-msgstr "Timur I. Bakeyev"
-
-#. if your encoding allows it, use aacute (U00E1)
-#. * for the 'a' of 'Ban'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs \"Shooby\" Bán"
-
-#: gnome-about/contributors.h:36
-msgid "Jerome Bolliet"
-msgstr "Jerome Bolliet"
-
-#. if your encoding allows it, use eacute (U00E9) for the first
-#. * and the last 'e' in 'Chenede'
-#: gnome-about/contributors.h:54
-msgid "Erwann Chenede"
-msgstr "Erwann Chénedé"
-
-#. CJK people please use (U5F35) (U570B) (U51A0) to replace
-#. * this name
-#: gnome-about/contributors.h:57
-msgid "Abel Cheung"
-msgstr "Abel Cheung"
-
-#. if you encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:70
-msgid "Frederic Crozat"
-msgstr "Frédéric Crozat"
-
-#. if your encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:77
-msgid "Frederic Devernay"
-msgstr "Frédéric Devernay"
-
-#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
-#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:91
-msgid "Gergo Erdi"
-msgstr "Gergö Érdi"
-
-#: gnome-about/contributors.h:98
-msgid "Raul Perusquia Flores"
-msgstr "Raul Perusquia Flores"
-
-#: gnome-about/contributors.h:112
+#: gnome-about/contributors.h:107
 msgid "The Mysterious GEGL"
 msgstr "Den mystiske GEGL"
 
-#: gnome-about/contributors.h:114
-msgid "Bjoern Giesler"
-msgstr "Björn Giesler"
-
-#: gnome-about/contributors.h:120
-msgid "Dov Grobgeld"
-msgstr "Dov Grobgeld"
-
-#. Wang is the surname. CJK people, please use (U738B) (U5251)
-#. * to replace this name.
-#: gnome-about/contributors.h:144
-msgid "Wang Jian"
-msgstr "Wang Jian"
-
-#: gnome-about/contributors.h:153
-msgid "Helmut Koeberle"
-msgstr "Helmut Köberle"
-
-#: gnome-about/contributors.h:190
-msgid "Matthew Marjanovic"
-msgstr "Matthew Marjanovic"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Muniz'
-#: gnome-about/contributors.h:215
-msgid "Alexandre Muniz"
-msgstr "Alexandre Muñiz"
-
-#. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:217
-msgid "Sung-Hyun Nam"
-msgstr "Sung-Hyun Nam"
-
-#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
-#. * of 'Norbaeck'
-#: gnome-about/contributors.h:226
-msgid "Martin Norbaeck"
-msgstr "Martin Norbäck"
-
-#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
-#. * of 'Oegren'
-#: gnome-about/contributors.h:233
-msgid "Tomas Oegren"
-msgstr "Tomas Ögren"
-
-#. If your encoding allows it, use oacute (U00F3) for the 'o'
-#. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:243
-msgid "Carlos Perello Marin"
-msgstr "Carlos Perelló Marín"
-
-#. If your encoding allows it, use aacute (U00E1) for the 'a'
-#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
-#: gnome-about/contributors.h:252
-msgid "German Poo-Caamano"
-msgstr "Germán Poo-Caamaño"
-
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
-#: gnome-about/contributors.h:273
-msgid "Kazuhiro Sasayama"
-msgstr "Kazuhiro Sasayama"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Inigo'
-#: gnome-about/contributors.h:283
-msgid "Inigo Serna"
-msgstr "Iñigo Serna"
-
-#: gnome-about/contributors.h:287
-msgid "Miroslav Silovic"
-msgstr "Miroslav Silovic"
-
-#. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:298
+#: gnome-about/contributors.h:291
 msgid "The Squeaky Rubber Gnome"
 msgstr "Den pipande gummi-gnomen"
 
-#: gnome-about/contributors.h:306
-msgid "Istvan Szekeres"
-msgstr "Istvan Szekeres"
-
-#: gnome-about/contributors.h:319
-msgid "Manish Vachharajani"
-msgstr "Manish Vachharajani"
-
-#: gnome-about/contributors.h:320
-msgid "Neil Vachharajani"
-msgstr "Neil Vachharajani"
-
-#: gnome-about/contributors.h:328
-msgid "Wanda the GNOME Fish"
+#: gnome-about/contributors.h:324
+msgid "Wanda The GNOME Fish"
 msgstr "GNOME-fisken Wanda"
 
-#: gnome-about/gnome-about.c:273
-msgid "Click here to visit the site : "
-msgstr "Klicka här för att besöka webbplatsen: "
+#: gnome-about/gnome-about.c:139
+msgid "The End!"
+msgstr "Slutet!"
 
-#: gnome-about/gnome-about.c:285
-msgid "List of GNOME Contributors"
-msgstr "Lista med bidragsgivare till GNOME"
+#: gnome-about/gnome-about.c:428
+msgid "Could not locate the directory with header images."
+msgstr "Kunde inte hitta katalogen med huvudbilder."
 
-#: gnome-about/gnome-about.c:287
-msgid "GNOME Logo Image"
-msgstr "GNOME-logotypbild"
-
-#: gnome-about/gnome-about.c:295
-msgid "Contributors' Names"
-msgstr "Bidragsgivares namn"
-
-#: gnome-about/gnome-about.c:297
-msgid "GNOME Logo"
-msgstr "GNOME-logotyp"
-
-#: gnome-about/gnome-about.c:506
-msgid "GNOME"
-msgstr "GNOME"
-
-#: gnome-about/gnome-about.c:660
-msgid "And Many More ..."
-msgstr "Och många fler..."
-
-#: gnome-about/gnome-about.c:838
+#: gnome-about/gnome-about.c:437
 #, c-format
-msgid "About GNOME%s%s%s"
-msgstr "Om GNOME%s%s%s"
+msgid "Failed to open directory with header images: %s"
+msgstr "Misslyckades med att öppna katalogen med huvudbilder: %s"
 
-#: gnome-about/gnome-about.c:949
-msgid "GNOME News Site"
-msgstr "GNOME:s nyhetswebbplats"
+#: gnome-about/gnome-about.c:470
+#, c-format
+msgid "Unable to load header image: %s"
+msgstr "Kan inte läsa in huvudbild: %s"
 
-#: gnome-about/gnome-about.c:953
-msgid "http://www.gnome.org/"
-msgstr "http://www.gnome.org/"
+#: gnome-about/gnome-about.c:495
+msgid "Could not locate the GNOME logo button."
+msgstr "Kunde inte hitta knappen med GNOME-logotypen."
 
-#: gnome-about/gnome-about.c:954
-msgid "GNOME Main Site"
-msgstr "GNOME:s huvudwebbplats"
+#: gnome-about/gnome-about.c:504
+#, c-format
+msgid "Unable to load '%s': %s"
+msgstr "Kan inte läsa in \"%s\": %s"
 
-#: gnome-about/gnome-about.c:959
-msgid "GNOME Developers' Site"
-msgstr "GNOME:s utvecklarwebbplats"
+#: gnome-about/gnome-about.c:557
+#, c-format
+msgid "Could not open the address \"%s\": %s"
+msgstr "Kunde inte öppna adressen \"%s\": %s"
 
-#: gnome-about/gnome-about.c:981
-msgid "GNOME is a part of the GNU Project"
-msgstr "GNOME är en del av GNU-projektet"
+#: gnome-about/gnome-about.c:809
+msgid "Could not locate the file with GNOME version information."
+msgstr "Kunde inte läsa in filen med GNOME-versionsinformation."
 
-#: libgnome-desktop/gnome-desktop-item.c:208
-#: libgnome-desktop/gnome-desktop-item.c:578
+#: gnome-about/gnome-about.c:878
+msgid "Version"
+msgstr "Version"
+
+#: gnome-about/gnome-about.c:897
+msgid "Distributor"
+msgstr "Distributör"
+
+#: gnome-about/gnome-about.c:916
+msgid "Build Date"
+msgstr "Byggdatum"
+
+#: gnome-about/gnome-about.c:998
+msgid "About GNOME"
+msgstr "Om GNOME"
+
+#: gnome-about/gnome-about.c:1012
+msgid "News"
+msgstr "Nyheter"
+
+#: gnome-about/gnome-about.c:1022
+msgid "Software"
+msgstr "Programvara"
+
+#: gnome-about/gnome-about.c:1028
+msgid "Developers"
+msgstr "Utvecklare"
+
+#: gnome-about/gnome-about.c:1034
+msgid "Friends of GNOME"
+msgstr "Vänner till GNOME"
+
+#: gnome-about/gnome-about.c:1040
+msgid "Contact"
+msgstr "Kontakta"
+
+#: gnome-about/gnome-about.c:1077
+msgid "Welcome to the GNOME Desktop"
+msgstr "Välkommen till GNOME-skrivbordet"
+
+#: gnome-about/gnome-about.c:1094
+msgid "Brought to you by:"
+msgstr "Presenteras av:"
+
+#: gnome-about/gnome-about.c:1142
+msgid "About the GNOME Desktop"
+msgstr "Om skrivbordsmiljön GNOME"
+
+#: gnome-version.xml.in.in.h:1
+msgid ""
+"GNOME also includes a complete development platform for applications "
+"programmers, allowing the creation of powerful and complex applications."
+msgstr ""
+"GNOME innehåller också en utvecklingsplattform som för programmerare "
+"möjliggör skapandet av kraftfulla och komplexa program."
+
+#: gnome-version.xml.in.in.h:2
+msgid ""
+"GNOME includes most of what you see on your computer, including the file "
+"manager, web browser, menus, and many applications."
+msgstr ""
+"GNOME innehåller det mesta av vad du ser på din dator, inklusive "
+"filhanteraren, webbläsaren, menyer, och många program."
+
+#. NOTE TO AUTHORS: Do not put anything in the following paragraphs that
+#. will be substituted by the configure script. Otherwise you will break
+#. the translations.
+#: gnome-version.xml.in.in.h:6
+msgid ""
+"GNOME is a Free, usable, stable, accessible desktop environment for the Unix-"
+"like family of operating systems."
+msgstr ""
+"GNOME är en fri, användbar, stabil och åtkomlig skrivbordsmiljö för den Unix-"
+"liknande familjen av operativsystem."
+
+#: gnome-version.xml.in.in.h:7
+msgid ""
+"GNOME's focus on usability and accessibility, regular release cycle, and "
+"strong corporate backing make it unique among Free Software desktops."
+msgstr ""
+"GNOME:s fokus på användbarhet och åtkomlighet, regelbundna utgåvecykel och "
+"starka stöd från företag gör den unik bland skrivbordsmiljöer inom fri "
+"programvara."
+
+#: gnome-version.xml.in.in.h:8
+msgid ""
+"GNOME's greatest strength is our strong community. Virtually anyone, with or "
+"without coding skills, can contribute to making GNOME better."
+msgstr ""
+"GNOME:s största styrka är vår starka gemenskap. Nästan alla, med eller utan "
+"programmeringskunskaper, kan bidra till att förbättra GNOME."
+
+#: gnome-version.xml.in.in.h:9
+msgid ""
+"Hundreds of people have contributed code to GNOME since it was started in "
+"1997; many more have contributed in other important ways, including "
+"translations, documentation, and quality assurance."
+msgstr ""
+"Hundratals personer har bidragit med kod till GNOME sedan projektet "
+"startades 1997. Långt flera har bidragit på andra viktiga sätt, inklusive "
+"översättningar, dokumentation, och kvalitetssäkring."
+
+#: libgnome-desktop/gnome-desktop-item.c:210
+#: libgnome-desktop/gnome-desktop-item.c:580
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "Fel vid läsning av filen \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:276
+#: libgnome-desktop/gnome-desktop-item.c:278
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Fel vid återspolning av filen \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:593
+#: libgnome-desktop/gnome-desktop-item.c:362
+#: libgnome-desktop/gnome-desktop-item.c:3585
+msgid "No name"
+msgstr "Inget namn"
+
+#: libgnome-desktop/gnome-desktop-item.c:595
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "Filen \"%s\" är inte en vanlig fil eller katalog."
 
-#: libgnome-desktop/gnome-desktop-item.c:609
-#, c-format
-msgid "File '%s' has invalid MIME type: %s"
-msgstr "Filen \"%s\" har en ogiltig MIME-typ: %s"
-
-#: libgnome-desktop/gnome-desktop-item.c:760
+#: libgnome-desktop/gnome-desktop-item.c:746
 msgid "No filename to save to"
 msgstr "Inget filnamn att spara till"
 
-#: libgnome-desktop/gnome-desktop-item.c:1736
+#: libgnome-desktop/gnome-desktop-item.c:1700
 #, c-format
 msgid "Starting %s"
 msgstr "Startar %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:1956
+#: libgnome-desktop/gnome-desktop-item.c:1930
 msgid "No URL to launch"
 msgstr "Ingen URL att starta"
 
-#: libgnome-desktop/gnome-desktop-item.c:1966
+#: libgnome-desktop/gnome-desktop-item.c:1940
 msgid "Not a launchable item"
 msgstr "Inget startbart objekt"
 
-#: libgnome-desktop/gnome-desktop-item.c:1976
+#: libgnome-desktop/gnome-desktop-item.c:1950
 msgid "No command (Exec) to launch"
 msgstr "Inget kommando (Exec) att starta"
 
-#: libgnome-desktop/gnome-desktop-item.c:1989
+#: libgnome-desktop/gnome-desktop-item.c:1963
 msgid "Bad command (Exec) to launch"
 msgstr "Felaktigt kommando (Exec) att starta"
 
-#: libgnome-desktop/gnome-desktop-item.c:3619
-msgid "No name"
-msgstr "Inget namn"
-
-#: libgnome-desktop/gnome-desktop-item.c:3676
+#: libgnome-desktop/gnome-desktop-item.c:3642
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Okänd kodning av: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3907
+#: libgnome-desktop/gnome-desktop-item.c:3873
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Fel vid skrivning av filen \"%s\": %s"
 
-#: libgnome-desktop/gnome-ditem-edit.c:209
-#: libgnome-desktop/gnome-ditem-edit.c:217
+#: libgnome-desktop/gnome-ditem-edit.c:206
+#: libgnome-desktop/gnome-ditem-edit.c:214
 msgid "Directory"
 msgstr "Katalog"
 
-#: libgnome-desktop/gnome-ditem-edit.c:213
+#: libgnome-desktop/gnome-ditem-edit.c:210
 msgid "Application"
 msgstr "Program"
 
-#: libgnome-desktop/gnome-ditem-edit.c:220
+#: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Link"
 msgstr "Länk"
 
-#: libgnome-desktop/gnome-ditem-edit.c:222
+#: libgnome-desktop/gnome-ditem-edit.c:219
 msgid "FSDevice"
 msgstr "FS-enhet"
 
-#: libgnome-desktop/gnome-ditem-edit.c:224
+#: libgnome-desktop/gnome-ditem-edit.c:221
 msgid "MIME Type"
 msgstr "MIME-typ"
 
-#: libgnome-desktop/gnome-ditem-edit.c:226
+#: libgnome-desktop/gnome-ditem-edit.c:223
 msgid "Service"
 msgstr "Tjänst"
 
-#: libgnome-desktop/gnome-ditem-edit.c:228
+#: libgnome-desktop/gnome-ditem-edit.c:225
 msgid "ServiceType"
 msgstr "Tjänstetyp"
 
-#: libgnome-desktop/gnome-ditem-edit.c:314
-msgid "URL:"
-msgstr "URL:"
+#: libgnome-desktop/gnome-ditem-edit.c:311
+msgid "_URL:"
+msgstr "_URL:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:317
-#: libgnome-desktop/gnome-ditem-edit.c:387
-msgid "Command:"
-msgstr "Kommando:"
+#: libgnome-desktop/gnome-ditem-edit.c:314
+#: libgnome-desktop/gnome-ditem-edit.c:381
+msgid "Comm_and:"
+msgstr "Komm_ando:"
 
 #. Name
-#: libgnome-desktop/gnome-ditem-edit.c:338
-msgid "Name:"
-msgstr "Namn:"
+#: libgnome-desktop/gnome-ditem-edit.c:335
+msgid "_Name:"
+msgstr "_Namn:"
 
 #. Generic Name
-#: libgnome-desktop/gnome-ditem-edit.c:356
-msgid "Generic name:"
-msgstr "Allmänt namn:"
+#: libgnome-desktop/gnome-ditem-edit.c:352
+msgid "_Generic name:"
+msgstr "_Allmänt namn:"
 
 #. Comment
-#: libgnome-desktop/gnome-ditem-edit.c:374
-msgid "Comment:"
-msgstr "Kommentar:"
+#: libgnome-desktop/gnome-ditem-edit.c:369
+msgid "Co_mment:"
+msgstr "Ko_mmentar:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:391
+#: libgnome-desktop/gnome-ditem-edit.c:385
 msgid "Browse"
 msgstr "Bläddra"
 
-#: libgnome-desktop/gnome-ditem-edit.c:401
-msgid "Type:"
-msgstr "Typ:"
+#: libgnome-desktop/gnome-ditem-edit.c:396
+msgid "_Type:"
+msgstr "_Typ:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:419
-msgid "Icon:"
-msgstr "Ikon:"
+#: libgnome-desktop/gnome-ditem-edit.c:413
+msgid "_Icon:"
+msgstr "_Ikon:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:429
+#: libgnome-desktop/gnome-ditem-edit.c:423
 msgid "Browse icons"
 msgstr "Bläddra bland ikoner"
 
-#: libgnome-desktop/gnome-ditem-edit.c:444
-msgid "Run in Terminal"
-msgstr "Kör i terminal"
+#: libgnome-desktop/gnome-ditem-edit.c:437
+msgid "Run in t_erminal"
+msgstr "Kör i t_erminal"
 
-#: libgnome-desktop/gnome-ditem-edit.c:658
-#: libgnome-desktop/gnome-ditem-edit.c:757
+#: libgnome-desktop/gnome-ditem-edit.c:653
+#: libgnome-desktop/gnome-ditem-edit.c:751
 msgid "Language"
 msgstr "Språk"
 
-#: libgnome-desktop/gnome-ditem-edit.c:663
-#: libgnome-desktop/gnome-ditem-edit.c:765
+#: libgnome-desktop/gnome-ditem-edit.c:658
+#: libgnome-desktop/gnome-ditem-edit.c:758
 msgid "Name"
 msgstr "Namn"
 
-#: libgnome-desktop/gnome-ditem-edit.c:668
-#: libgnome-desktop/gnome-ditem-edit.c:773
+#: libgnome-desktop/gnome-ditem-edit.c:663
+#: libgnome-desktop/gnome-ditem-edit.c:765
 msgid "Generic name"
 msgstr "Allmänt namn"
 
-#: libgnome-desktop/gnome-ditem-edit.c:673
-#: libgnome-desktop/gnome-ditem-edit.c:783
+#: libgnome-desktop/gnome-ditem-edit.c:668
+#: libgnome-desktop/gnome-ditem-edit.c:774
 msgid "Comment"
 msgstr "Kommentar"
 
-#: libgnome-desktop/gnome-ditem-edit.c:709
-msgid "Try this before using:"
-msgstr "Försök med detta innan användande:"
+#: libgnome-desktop/gnome-ditem-edit.c:703
+msgid "_Try this before using:"
+msgstr "_Försök med detta innan användande:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:721
-msgid "Documentation:"
-msgstr "Dokumentation:"
+#: libgnome-desktop/gnome-ditem-edit.c:714
+msgid "_Documentation:"
+msgstr "_Dokumentation:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:733
-msgid "Name/Comment translations:"
-msgstr "Namn/Kommentar för översättningar:"
+#: libgnome-desktop/gnome-ditem-edit.c:725
+msgid "_Name/Comment translations:"
+msgstr "_Namn/Kommentar för översättningar:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:786
-msgid "Add/Set"
-msgstr "Lägg till/Ställ in"
+#: libgnome-desktop/gnome-ditem-edit.c:776
+msgid "_Add/Set"
+msgstr "_Lägg till/Ställ in"
 
-#: libgnome-desktop/gnome-ditem-edit.c:792
+#: libgnome-desktop/gnome-ditem-edit.c:782
 msgid "Add or Set Name/Comment Translations"
 msgstr "Lägg till eller ställ in namn/Kommentar för översättningar"
 
-#: libgnome-desktop/gnome-ditem-edit.c:794
-msgid "Remove"
-msgstr "Ta bort"
+#: libgnome-desktop/gnome-ditem-edit.c:784
+msgid "Re_move"
+msgstr "_Ta bort"
 
-#: libgnome-desktop/gnome-ditem-edit.c:799
+#: libgnome-desktop/gnome-ditem-edit.c:789
 msgid "Remove Name/Comment Translation"
 msgstr "Ta bort namn/Kommentar för översättning"
 
-#: libgnome-desktop/gnome-ditem-edit.c:815
+#: libgnome-desktop/gnome-ditem-edit.c:805
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: libgnome-desktop/gnome-ditem-edit.c:823
+#: libgnome-desktop/gnome-ditem-edit.c:813
 msgid "Advanced"
 msgstr "Avancerat"
 
-#: libgnome-desktop/gnome-hint.c:175
+#: libgnome-desktop/gnome-hint.c:176
 msgid "_Show Hints at Startup"
 msgstr "_Visa tips vid uppstart"
+
+#~ msgid ""
+#~ "GNOME is developed by an active community of volunteers who want to "
+#~ "provide a desktop and a suite of user friendly applications. Because "
+#~ "GNOME needs documentors, translators, and many other types of people, "
+#~ "virtually anyone, with or without coding skills, can contribute to GNOME."
+#~ msgstr ""
+#~ "GNOME utvecklas av en aktiv gemenskap av frivilliga som vill "
+#~ "tillhandahålla en skrivbordsmiljö och en samling användarvänliga program. "
+#~ "Eftersom GNOME behöver dokumentatörer, översättare och många andra typer "
+#~ "av bidragsgivare kan nästan alla, med eller utan programmeringskunskaper, "
+#~ "bidra till GNOME."
+
+#~ msgid "Download"
+#~ msgstr "Hämta"
+
+#~ msgid "Users"
+#~ msgstr "Användare"
+
+#~ msgid "Foundation"
+#~ msgstr "Stiftelse"
+
+#~ msgid "URL:"
+#~ msgstr "URL:"
+
+#~ msgid "Command:"
+#~ msgstr "Kommando:"
+
+#~ msgid "Name:"
+#~ msgstr "Namn:"
+
+#~ msgid "Generic name:"
+#~ msgstr "Allmänt namn:"
+
+#~ msgid "Comment:"
+#~ msgstr "Kommentar:"
+
+#~ msgid "Type:"
+#~ msgstr "Typ:"
+
+#~ msgid "Icon:"
+#~ msgstr "Ikon:"
+
+#~ msgid "Run in terminal"
+#~ msgstr "Kör i terminal"
+
+#~ msgid "Try this before using:"
+#~ msgstr "Försök med detta innan användande:"
+
+#~ msgid "Documentation:"
+#~ msgstr "Dokumentation:"
+
+#~ msgid "Name/Comment translations:"
+#~ msgstr "Namn/Kommentar för översättningar:"
+
+#~ msgid "Add/Set"
+#~ msgstr "Lägg till/Ställ in"
+
+#~ msgid "Remove"
+#~ msgstr "Ta bort"
+
+#~ msgid "Sound & Video"
+#~ msgstr "Ljud och video"
+
+#~ msgid "Run in Terminal"
+#~ msgstr "Kör i terminal"
+
+#~ msgid "Version:"
+#~ msgstr "Version:"
+
+#~ msgid "Distributor:"
+#~ msgstr "Distributör:"
+
+#~ msgid "Build Date:"
+#~ msgstr "Byggdatum:"
+
+#~ msgid "Click here to visit the site : "
+#~ msgstr "Klicka här för att besöka webbplatsen: "
+
+#~ msgid "List of GNOME Contributors"
+#~ msgstr "Lista med bidragsgivare till GNOME"
+
+#~ msgid "GNOME Logo Image"
+#~ msgstr "GNOME-logotypbild"
+
+#~ msgid "Contributors' Names"
+#~ msgstr "Bidragsgivares namn"
+
+#~ msgid "GNOME Logo"
+#~ msgstr "GNOME-logotyp"
+
+#~ msgid "GNOME %s Was Brought To You By"
+#~ msgstr "GNOME %s presenteras av"
+
+#~ msgid "And Many More ..."
+#~ msgstr "Och många fler..."
+
+#~ msgid "About GNOME%s%s%s"
+#~ msgstr "Om GNOME%s%s%s"
+
+#~ msgid "GNOME News Site"
+#~ msgstr "GNOME:s nyhetswebbplats"
+
+#~ msgid "http://www.gnome.org/"
+#~ msgstr "http://www.gnome.org/"
+
+#~ msgid "GNOME Main Site"
+#~ msgstr "GNOME:s huvudwebbplats"
+
+#~ msgid "GNOME Developers' Site"
+#~ msgstr "GNOME:s utvecklarwebbplats"
+
+#~ msgid "GNOME is a part of the GNU Project"
+#~ msgstr "GNOME är en del av GNU-projektet"
+
+#~ msgid "Wanda the GNOME Fish"
+#~ msgstr "GNOME-fisken Wanda"
+
+#~ msgid "Timur I. Bakeyev"
+#~ msgstr "Timur I. Bakeyev"
+
+#~ msgid "Szabolcs 'Shooby' Ban"
+#~ msgstr "Szabolcs \"Shooby\" Bán"
+
+#~ msgid "Jerome Bolliet"
+#~ msgstr "Jerome Bolliet"
+
+#~ msgid "Erwann Chenede"
+#~ msgstr "Erwann Chénedé"
+
+#~ msgid "Abel Cheung"
+#~ msgstr "Abel Cheung"
+
+#~ msgid "Frederic Crozat"
+#~ msgstr "Frédéric Crozat"
+
+#~ msgid "Frederic Devernay"
+#~ msgstr "Frédéric Devernay"
+
+#~ msgid "Gergo Erdi"
+#~ msgstr "Gergö Érdi"
+
+#~ msgid "Raul Perusquia Flores"
+#~ msgstr "Raul Perusquia Flores"
+
+#~ msgid "Bjoern Giesler"
+#~ msgstr "Björn Giesler"
+
+#~ msgid "Dov Grobgeld"
+#~ msgstr "Dov Grobgeld"
+
+#~ msgid "Wang Jian"
+#~ msgstr "Wang Jian"
+
+#~ msgid "Helmut Koeberle"
+#~ msgstr "Helmut Köberle"
+
+#~ msgid "Matthew Marjanovic"
+#~ msgstr "Matthew Marjanovic"
+
+#~ msgid "Alexandre Muniz"
+#~ msgstr "Alexandre Muñiz"
+
+#~ msgid "Sung-Hyun Nam"
+#~ msgstr "Sung-Hyun Nam"
+
+#~ msgid "Martin Norbaeck"
+#~ msgstr "Martin Norbäck"
+
+#~ msgid "Tomas Oegren"
+#~ msgstr "Tomas Ögren"
+
+#~ msgid "Carlos Perello Marin"
+#~ msgstr "Carlos Perelló Marín"
+
+#~ msgid "German Poo-Caamano"
+#~ msgstr "Germán Poo-Caamaño"
+
+#~ msgid "Kazuhiro Sasayama"
+#~ msgstr "Kazuhiro Sasayama"
+
+#~ msgid "Inigo Serna"
+#~ msgstr "Iñigo Serna"
+
+#~ msgid "Miroslav Silovic"
+#~ msgstr "Miroslav Silovic"
+
+#~ msgid "Istvan Szekeres"
+#~ msgstr "Istvan Szekeres"
+
+#~ msgid "Manish Vachharajani"
+#~ msgstr "Manish Vachharajani"
+
+#~ msgid "Neil Vachharajani"
+#~ msgstr "Neil Vachharajani"
+
+#~ msgid "GNOME"
+#~ msgstr "GNOME"
+
+#~ msgid "File '%s' has invalid MIME type: %s"
+#~ msgstr "Filen \"%s\" har en ogiltig MIME-typ: %s"
 
 #~ msgid "Home"
 #~ msgstr "Hem"
@@ -510,9 +664,6 @@ msgstr "_Visa tips vid uppstart"
 
 #~ msgid "Gnome Logo"
 #~ msgstr "Gnomelogotyp"
-
-#~ msgid "About GNOME"
-#~ msgstr "Om GNOME"
 
 #~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
 #~ msgstr "<big><b>GNOME togs fram för dig av</b></big>"
@@ -529,17 +680,11 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "1.0"
 #~ msgstr "1.0"
 
-#~ msgid "Applications"
-#~ msgstr "Program"
-
 #~ msgid "Applications menu"
 #~ msgstr "Programmeny"
 
 #~ msgid "Desktop Settings"
 #~ msgstr "Skrivbordsinställningar"
-
-#~ msgid "GNOME Was Brought To You By"
-#~ msgstr "GNOME togs fram för dig av"
 
 #~ msgid "... and many more"
 #~ msgstr "...och många fler"
@@ -1310,9 +1455,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "Session Properties"
 #~ msgstr "Sessionsegenskaper"
 
-#~ msgid "Session"
-#~ msgstr "Session"
-
 #~ msgid "Session Chooser"
 #~ msgstr "Sessionsväljare"
 
@@ -1375,9 +1517,6 @@ msgstr "_Visa tips vid uppstart"
 
 #~ msgid "Starting GNOME: done"
 #~ msgstr "Startar GNOME: klart"
-
-#~ msgid "Starting GNOME"
-#~ msgstr "Startar GNOME"
 
 #~ msgid "The Applet's containing Panel's orientation"
 #~ msgstr "Panelprogrammet innehåller panelens orientering"
@@ -1782,9 +1921,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "Log Out"
 #~ msgstr "Logga ut"
 
-#~ msgid "Quit from the GNOME desktop"
-#~ msgstr "Avsluta GNOME-skrivbordet"
-
 #~ msgid "Actions"
 #~ msgstr "Händelser"
 
@@ -2067,9 +2203,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "Browse..."
 #~ msgstr "Bläddra..."
 
-#~ msgid "Run in terminal"
-#~ msgstr "Kör i terminal"
-
 #~ msgid "Will run '%s'"
 #~ msgstr "Kommer att köra \"%s\""
 
@@ -2234,9 +2367,6 @@ msgstr "_Visa tips vid uppstart"
 #~ "Detaljer: %s\n"
 
 #~ msgid "Could not get file name from path: %s"
-#~ msgstr "Kunde inte urskilja filnamn från sökväg: %s"
-
-#~ msgid "Could not get directory name from path: %s"
 #~ msgstr "Kunde inte urskilja filnamn från sökväg: %s"
 
 #~ msgid "No 'Exec' or 'URL' field in entry"
@@ -2743,9 +2873,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "http://mail.gnome.org/mailman/listinfo/"
 #~ msgstr "http://mail.gnome.org/mailman/listinfo/"
 
-#~ msgid "Software (www)"
-#~ msgstr "Programvara (www)"
-
 #~ msgid "http://www.gnome.org/applist/list-martin.phtml"
 #~ msgstr "http://www.gnome.org/applist/list-martin.phtml"
 
@@ -2802,9 +2929,6 @@ msgstr "_Visa tips vid uppstart"
 
 #~ msgid "Could not get file from path: %s"
 #~ msgstr "Kunde inte hämta fil från sökväg: %s"
-
-#~ msgid "Could not open .order file: %s"
-#~ msgstr "Kunde inte öppna .order-fil: %s"
 
 #~ msgid "Could not open file '%s' for writing"
 #~ msgstr "Kunde inte öppna filen \"%s\" för skrivning"
@@ -3289,9 +3413,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "Unable to retrieve GNOME installation directory\n"
 #~ msgstr "Kan inte hitta GNOME:s installationskatalog\n"
 
-#~ msgid "Unable to create file: %s\n"
-#~ msgstr "Kan inte skapa filen: %s\n"
-
 #~ msgid "unable to remove .order file: %s\n"
 #~ msgstr "kan inte ta bort .order-fil: %s\n"
 
@@ -3651,9 +3772,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "%b %d, %Y %H:%M"
 #~ msgstr "%d %b %Y %H.%M"
 
-#~ msgid "Count"
-#~ msgstr "Räkna"
-
 #~ msgid "Gnome Help History"
 #~ msgstr "Historik för Gnome Hjälp"
 
@@ -3903,9 +4021,6 @@ msgstr "_Visa tips vid uppstart"
 #~ msgid "can't fine real path"
 #~ msgstr "kan inte hitta verklig sökväg"
 
-#~ msgid "Distribution: "
-#~ msgstr "Distribution: "
-
 #~ msgid "KDE: "
 #~ msgstr "KDE: "
 
@@ -4139,9 +4254,6 @@ msgstr "_Visa tips vid uppstart"
 
 #~ msgid "Expand"
 #~ msgstr "Fäll ut"
-
-#~ msgid "Development"
-#~ msgstr "Programutveckling"
 
 #~ msgid "Emacs"
 #~ msgstr "Emacs"

@@ -1,11 +1,585 @@
+=============
+Version 2.8.0
+=============
+
+  Translators
+
+	* Mətin Əmirov (az)
+	* Amila Akagić (bs)
+	* Adam Weinberger (en_CA)
+	* Jesús Bravo Álvarez (gl)
+	* Gabor Kelemen (hu)
+	* Takeshi AIHANA (ja)
+	* Mişu Moldovan (ro)
+
+==============
+Version 2.7.92
+==============
+
+  Fixes
+
+	* Change link in gnome-about from gnomedesktop.org to news.gnome.org (Alan Horkan)
+
+  Translators
+
+	* Kemal Sanjta (bs)
+	* Jordi Mallach (ca)
+	* Pauli Virtanen (fi)
+	* Kjartan Maraas (nb)
+	* Elian Myftiu (sq)
+	* Maxim Dziumanenko (uk)
+
+==============
+Version 2.7.91
+==============
+
+  Fixes
+
+	* Fix memory leak (Mark)
+	* Fix crash with some .desktop files (Vincent Untz)
+	* Fix compilation without startup-notification (Mariano Suárez-Alvarez)
+
+==============
+Version 2.7.90
+==============
+
+  Fixes
+
+	* Randomize the order of the credits in gnome-about (Matthew Garrett)
+	* Fix end of list corruption in gnome-about (Matthew Garrett)
+
+  Translators
+
+	* Elian Myftiu (sq)
+	* Abayomi Mobolaji Onibudo (yo)
+
+=============
+Version 2.7.4
+=============
+
+  Fixes
+
+	* Use the correct X timestamp with startup-notification (Elijah Newren, Mark)
+	* Remove egg_spawn usage from libgnome-desktop (Mark)
+	* Fix DTD validation errors in omf files (Frederic Crozat, Mariano Suárez-Alvarez)
+
+  Translators
+
+	* Peter "Peshka" Slavov (bg)
+	* Pawan Chitrakar (ne)
+	* Laurent Dhima (sq)
+
+=============
+Version 2.7.3
+=============
+
+  Translators
+
+	* Suman Raj Tiwari (ne)
+	* Elian Myftiu (sq)
+
+=============
+Version 2.7.1
+=============
+
+  Fixes
+
+	* Make the languages list in .desktop editor use GTK_SHADOW_IN (Jorn Baayen)
+
+  Help Docs
+
+	* Basque documentation translations (Pablo Saratxaga)
+
+  Translators
+
+	* Žygimantas Beručka (lt)
+	* Gurban Mühemmet Tewekgeli (tk)
+
+=============
+Version 2.6.1
+=============
+
+  Translators
+
+	* Hizkuntza Politikarako Sailburuordetza (eu)
+	* Guntupalli Karunaka (gu)
+	* Laszlo Dvornik (hu)
+	* Mohammad DAMT (id)
+	* John C Barstow (mi)
+	* Tino Meinen (nl)
+	* Kjartan Maraas (no)
+	* Baris Cicek (tr)
+
 ===============
-Version 2.2.0.1
+Version 2.6.0.1
 ===============
+
+  Fixes
+
+	* Fix some memory corruption in gnome-about (Kjartan)
+	* Dist the .directory.in files instead of the .directory files (Glynn)
+
+  Translators
+
+	* Zuza Software Foundation (af)
+
+=============
+Version 2.6.0
+=============
+
+  Translators
+
+	* Gareth Owen (en_GB)
+
+==============
+Version 2.5.92
+==============
+
+  Translations
+
+	* Sayed Jaffer Al-Mosawi (ar)
+	* Peter \"Peshka\" Slavov (bg)
+	* Alexander Winston (en_CA)
+	* Elian Myftiu (sq)
+	* Danilo Segan (sr)
+	* Gurban Mohemmet Tewekgeli (tk)
+	* Maxim Dziumanenko (uk)
+
+==============
+Version 2.5.91
+==============
+
+  libgnome-desktop
+
+	* Fix issue where dragging a file from an nfs mounted dir onto
+	  a launcher wouldn't work (Mark)
+	* Make the launcher editor use GtkFileChooser (Brian Skahan)
+
+  Misc
+
+	* Don't depend on strptime (Mark)
+	* Check for scrollkeeper in configure (Mark)
+	* Fixup OMF files to validate with latest scrollkeeper (Mark)
+
+  Translations
+
+	* Laszlo Dvornik (hu)
+	* Luca Ferretti (it)
+	* Amanpreet Singh Alam (pa)
+	* Duarte Loreto (pt)
+	* Elian Myftiu (sq)
+	* Dinesh Nadarajah (ta)
+	* Paisa Seeluangsawat (th)
+
+==============
+Version 2.5.90
+==============
+
+  Misc
+
+	* Allow build against an uninstalled build (Laszlo Peter)
+
+=============
+Version 2.5.5
+=============
+
+  Misc
+
+	* Use the new applications icon for the Applications menu (Mark)
+
+=============
+Version 2.5.4
+=============
+
+  About Dialog
+
+	* Set intro text as non-editable (Fernando Herrera)
+	* Plug some leaks (Kjartan Maraas)
+
+  libgnome-desktop
+
+	* Include correct i18n header to fix warnings (The Written Word)
+
+  Misc
+
+	* Use the common docs build system (Malcolm Tredinnick)
+	* Small configure.in cleanup (Tomasz K³oczko)
+	* Fix underquoted AM_PATH_ESD issue (Alexander Winston)
+	* Don't included generated .desktop files in tarball (Mark)
+	* Distcheck fix (Mark)
+
+  Translators
+
+	* Christophe Merlet (RedFox) (fr)
+	* Kjartan Maraas (no)
+	* Miloslav Trmac (cs)
+
+=============
+Version 2.5.3
+=============
+
+  About Dialog
+
+	* Update the "Contact" link (Alex Duggan)
+
+  Misc
+
+	* FDL/GPL/LGPL docs updates (Eric Baudais)
+
+  Translators 
+
+	* Dmitry G. Mastrukov (ru)
+
+=============
+Version 2.5.2
+=============
+
+  libgnome-desktop
+
+	* Handle g_filename_from_utf8() failure (Dennis Cranston)
+
+  Translators
+
+	* Danilo Segan (sr)
+	* Kjartan Maraas (no)
+	* Kostas Papadimas (el)
+
+=============
+Version 2.5.1
+=============
+
+  libgnome-desktop
+
+	* Remove unnecessary accessibility code (Padraig)
+	* Use the correct mnemonic widget for the command entry (Padraig)
+
+  Misc
+
+	* Add a --enable-deprecations build flag (Mark)
+
+  Translators
+
+	Abel Cheung (zh_TW)
+	G Karunakar (hi)
+	Jordi Mallach (ca)
+	Ole Laursen (da)
+	Sanlig Badral (mn)
+
+===============
+Version 2.4.1.1
+===============
+
+  libgnome-desktop
+
+	* Make the localte keystring matching with the desktop entry
+	  specification by not removing the modifier from the
+	  localestring before matching (Danilo Segan)
+
+=============
+Version 2.4.1
+=============
+
+  Misc
+
+	* Mark a missing string for translation (Hidetoshi Tajima)
+	* Fix build issue with install location of icons (George)
+	* Use GRandom instead of srandom() and random() (George)
+
+  Translators
+
+	Alessio Frusciante (it)
+	Andras Timar (hu)
+	Åsmund Skjæveland (nn, no)
+	Francisco Javier F. Serrador (es)
+	Francis Tyers (br)
+	Gil 'Dolfin' Osher (he)
+	Görkem Çetin (tr)
+	Jitendra Shah (mr)
+	Priit Laes (et)
+	Yuriy Syrota (uk)
+	Žygimantas Beručka (lt)
+
+=============
+Version 2.4.0
+=============
+
+  gnome-about
+
+	* Fix off by one error with the build date (Young-Ho Cha)
+
+  Translators
+
+	Arangel Angov (mk)
+	G Karunakar (hi)
+	Gnome PL Team (pl)
+	Joël Brich (eo)
+	Mugurel Tudor (ro)
+	Pablo Saratxaga (wa)
+	Stanislav Visnovsky (sk)
+	Takeshi AIHANA (ja)
+	Trinh Minh Thanh (vi)
+
+==============
+Version 2.3.90
+==============
+
+  Translators
+
+	Alessio Frusciante (it)
+	Dafydd Harries (cy)
+	Francisco Javier F. Serrador (es)
+	Samuel Jon Gunnarsson (is)
+	Takeshi AIHANA (ja)
+	Taneem Ahmed (bn)
+	Tino Meinen (nl)
+
+=============
+Version 2.3.7
+=============
+
+  Translators
+
+	Ales Nyakhaychyk (be)
+	Changwoo Ryu (ko)
+	Christophe Merlet (RedFox) (fr)
+	Dmitry G. Mastrukov (ru)
+	Duarte Loreto (pt)
+	Francisco Javier F. Serrador (es)
+	Gnome PL Team (pl)
+	Görkem Çetin (tr)
+	Jordi Mallach (ca)
+	Kjartan Maraas (no)
+	Mətin Əmirov (az)
+	Nikos Charonitakis (el)
+	Paisa Seeluangsawat (th)
+	Pauli Virtanen (fi)
+	Samuel Jon Gunnarsson (is)
+	Suman Raj Tiwari (ne)
+	Tino Meinen (nl)
+	Tõivo Leedjärv (et)
+
+===============
+Version 2.3.6.1
+===============
+
+  gnome-about
+
+	+ Clean up introductory text (Luis Villa)
+
+  Translators
+
+	Ales Nyakhaychyk (be)
+	Christian Neumair (de)
+	Christian Rose (sv)
+	Dafydd Harries (cy)
+	Danilo Segan (sr)
+	Duarte Loreto (pt)
+	Evandro Fernandes Giovanini (pt_BR)
+	G Karunakar (hi)
+	Gnome PL Team (pl)
+	Hasbullah Bin Pit (ms)
+	Laurent Dhima (sq)
+	Miloslav Trmac (cs)
+	Mətin Əmirov (az)
+	Ole Laursen (da)
+	Takeshi AIHANA (ja)
+	Tino Meinen (nl)
+	Wang Jian (zh_CN)
+
+=============
+Version 2.3.6
+=============
+
+  gnome-about
+
+	+ Internalionalize gnome-version.xml so that the descriptive
+	  intro and date  can be translated (Malcolm Tredinnick)
+	+ Handle errors when clicking on links (Olav Vitters)
+
+  Misc
+
+	+ Follow KDE behaviour when substituting %i, %m, %c and %k
+	  in .desktop files (George)
+	+ Allow custom icons with the same name as a themed icon to
+	  be selected in GnomeDitemEdit (George)
+	+ Build fix (Thomas Vander Stichele)
+
+  Translators
+
+	Ales Nyakhaychyk (be)
+	Alessio Frusciante (it)
+	Changwoo Ryu (ko)
+	Christian Neumair (de)
+	Christian Rose (sv)
+	Christophe Fergeau (fr)
+	Dafydd Harries (cy)
+	Danilo Segan (sr)
+	Duarte Loreto (pt)
+	Evandro Fernandes Giovanini (pt_BR)
+	Gil 'Dolfin' Osher (he)
+	Gnome PL Team (pl)
+	Jordi Mallach (ca)
+	Kostas Papadimas (el)
+	Miloslav Trmac (cs)
+	Pablo G. del Campo (es)
+	Tino Meinen (nl)
+	Wang Jian (zh_CN)
+
+=============
+Version 2.3.4
+=============
+
+  Misc
+
+	* Allow vendor and date to be configured using configure (Frederic Crozat)
+	* Ship the .directory.in files in the distributed tarball (Mark)
+
+  Translators
+
+	Abel Cheung (zh_TW)
+	Dafydd Harries (cy)
+	Danilo Segan (sr)
+	Dmitry G. Mastrukov (ru)
+	Emese Kovacs (hu)
+	Evandro Fernandes Giovanini (pt_BR)
+	Francisco Javier F. Serrador (es)
+	Marius Andreiana (ro)
+	Mətin Əmirov (az)
+	Pablo Saratxaga (wa)
+	Vincent van Adrighem (nl)
+
+===============
+Version 2.3.3.1
+===============
+
+  Misc
+
+	* Added a default desktop background image (Mark Finlay)
+	* Removed icons which belong to gnome-control-center (Mark Finlay)
+	* Use macros in gnome-version.xml so we have the correct version
+	  number (Andrew Sebola)
+	* Renamed "Sound & Video" to "Multimedia (Mark)
+	* Use different icon for the "Other" menu (Mark)
+	* Fix issues with backwards compat with old icon names (Mark Finlay)
+	* Fix gnome-about build with gcc 2.95 (Mark)
+	* HIG fixes for .desktop file editing dialog (Dennis Cranston)
+
+  Translators
+
+	* Abel Cheung (zh_TW), Christian Neumair (de), Christian Rose (sv),
+	  Christophe Merlet (RedFox) (fr), Christopher R. Gabriel (it),
+	  Dafydd Harries (cy), Dmitry G. Mastrukov (ru), Gil 'Dolfin' Osher (he),
+	  Gnome PL Team (pl), Görkem Çetin (tr), Hasbullah Bin Pit (ms),
+	  Jordi Mallach (ca), Juan Manuel García Molina (es), Kjartan Maraas (no),
+	  Miloslav Trmac (cs), Ole Laursen (da), Paul Duffy (ga), 
+	  Samuel Jon Gunnarsson (is) and Vincent van Adrighem (nl).
+
+=============
+Version 2.3.3
+=============
+
+	* New GNOME About Dialog ! (Kristian Rietveld,
+	                            Mark McLoughlin,
+	                            Glynn Foster,
+	                            Jeff Waugh)
+
+Misc
+	* Moved some icons to gnome-icon-theme (Mark Finlay)
+	* Change icon for Accessories, Games and Programming menus (Mark Finlay)
+
+Translators
+
+	* Christian Rose (sv.po), Dafydd Harries (cy.po), Dinesh Nadarajah (ta.po),
+	  Dmitry G. Mastrukov (ru.po), Jordi Mallach (ca.po), Mathieu van Woerkom (li.po)
+	  and Paul Duffy (ga.po).
+
+=============
+Version 2.3.2
+=============
+
+gnome-about
+
+	* Hexify contributors list so it doesn't need to be translated and
+	  make a format string much easier to translate (Christian Neumair )
+
+Misc
+	* Removed gnome-panel icons (Mark)
+	* Removed gnome-games icons (Luca Ferretti)
+	* Cygwin fixes (Masahiro Sakai)
+	* Fix sgmldocs.make (Art Haas)
+
+Translators
+
+	* Abel Cheung (zh_TW), Christian Rose (sv), Christophe Merlet (fr),
+	  Dafydd Harries  (cy), Danilo Šegan  (sr, sq@Latn), Duarte Loreto (pt),
+	  Elian Myftiu (sq), Hasbullah Bin Pit (ms), KAMAGASAKO Masatoshi (ja),
+	  Miloslav Trmac (cs), Ole Laursen (da), Paul Duffy (ga) and
+	  Vincent van Adrighem (nl).
+
+=============
+Version 2.3.1
+=============
+
+	* s/Vendor/Distributor (Mike Newman)
 
 Translations
 
+	* ga(Paul Duffy), ms(Hasbullah Bin Pit), yi(Raphael Finkel)
+
+=============
+Version 2.3.0
+=============
+
+Translations
+
+	*  ga(Paul Duffy) and ml(FSF-India).
+
+=============
+Version 2.2.2
+=============
+
+libgnome-desktop
+
+	* Don't unescape special characteres (e.g. %20) (Bala)
+
+Translations
+
+	* Belarusian team (be), Danilo Å egan (sr), Guntupalli Karunakar (hi),
+	Fatih Demir (ta), FSF-India (ml), Paul Duffy (ga) and Raphael Finkel (yi).
+
+=============
+Version 2.2.1
+=============
+
+libgnome-desktop
+
+	* Fix issue with gettext (Frederic Crozat)
+	* Don't crash when adding translations to a new Ditem (Arvind)
+	* Remove mime type checking from .desktop file loader (Andrew Sobala)
+	* Fix memory corruption when DESKTOP_STARTUP_ID is already set (fourdan@xfce.org)
+	* Fix silly bug in the option menu of the Ditem edit dialog (Kalle Olavi Niemitalo)
+
+Miscellanous
+
+	* Update the "Reporting Bugs" docs (Alexander Kirillov)
+	* Build fix (Dan Mills)
+	* New screenshot icon (Jakub Steiner)
+
+Translations
+
+	* Dmitry G. Mastrukov, JoÃ«l Brich, Metin Amiroff, Miloslav Trmac,
+	  Mohammad DAMT, Paisa Seeluangsawat, Paul Duffy, Pramod, Roozbeh Pournader,
+	  SamÃºel JÃ³n Gunnarsson, Takeshi AIHANA, Taneem Ahmed and
+	  Vincent van Adrighem.
+
+===============
+Version 2.2.0.1
+===============
+                                                                                                             
+Translations
+                                                                                                             
 	* Abel Cheung, Alessio Frusciante, Duarte Loreto, Elian Myftiu,
-	  Fatih Demir, Sanlig Badral and Tõivo Leedjärv.
+	  Fatih Demir, Sanlig Badral and TÃµivo LeedjÃ¤rv.
 
 =============
 Version 2.2.0
@@ -18,7 +592,7 @@ Translations
 	* Alexander Shopov, Anurag Seetha, Christian Neumair,
 	  Daniel Yacob, Dmitry G. Mastrukov, Funda Wang, Jordi
 	  Mallach, Kostas Papadimas, Pablo Gonzalo del Campo,
-	  Tõivo Leedjärv and Young-Ho, Cha.
+	  TÃµivo LeedjÃ¤rv and Young-Ho, Cha.
 
 ==============
 Version 2.1.90
@@ -100,7 +674,7 @@ Version 2.1.2
 
 Translations
 
-	* Andras Timar, Dmitry G. Mastrukov, Juan Manuel Garc�a Molina and
+	* Andras Timar, Dmitry G. Mastrukov, Juan Manuel García Molina and
 	  Kjartan Maraas.
 
 =============
@@ -132,7 +706,7 @@ Version 2.0.8
 
 Translations
 
-	* German Poo-Caama�o, Gil 'Dolfin' Osher, He Qiangqiang,
+	* German Poo-Caamaño, Gil 'Dolfin' Osher, He Qiangqiang,
 	  Kjartan Maraas and Takayuki KUSANO. 
 
 =============
@@ -161,7 +735,7 @@ GnomeIconLoader
 
 Translations
 
-	* Simos Xenitellis and T�ivo Leedj�rv.
+	* Simos Xenitellis and Tõivo Leedjärv.
 
 =============
 Version 2.0.5
@@ -247,7 +821,7 @@ Version 2.0.0
 
 Translations
 
-	* Carlos Perell� Mar�n, Christophe Merlet, T�ivo Leedj�rv and
+	* Carlos Perelló Marín, Christophe Merlet, Tõivo Leedjärv and
 	  Vincent van Adrighem.
 
 ==============
@@ -260,8 +834,8 @@ libgnome-desktop
 
 Translations
 
-	* Carlos Perell� Mar�n, Christian Rose, Duarte Loreto, George
-	  Lebl, Jesus Bravo Alvarez, Jordi Mallach and T�ivo Leedj�rv. 
+	* Carlos Perelló Marín, Christian Rose, Duarte Loreto, George
+	  Lebl, Jesus Bravo Alvarez, Jordi Mallach and Tõivo Leedjärv. 
 
 ==============
 Version 1.5.21
@@ -370,7 +944,7 @@ Translations
 
 	* Abel Cheung, Changwoo Ryu, Christian Rose, Christophe Merlet,
 	  Gustavo Maciel Dias Vieira, Hasbullah Bin Pit, Ole Laursen,
-	  Pauli Virtanen, Stanislav Visnovsky, T�ivo Leedj�rv,
+	  Pauli Virtanen, Stanislav Visnovsky, Tõivo Leedjärv,
 	  Valek Filippov and Zbigniew Chyla.
 
 ==============
@@ -393,20 +967,20 @@ libgnome-desktop
 Translations
 
 	* Changwoo Ryu, Duarte Loreto, Hasbullah Bin Pit,
-	  Kjartan Maraas, T�ivo Leedj�rv and Zbigniew Chyla
+	  Kjartan Maraas, Tõivo Leedjärv and Zbigniew Chyla
 
 ==============
 Version 1.5.14
 ==============
 
-	* Fix infinite loop in gnome_desktop_item_set_location_file (Diego Gonz�lez)
+	* Fix infinite loop in gnome_desktop_item_set_location_file (Diego González)
 	* Fix weird rendering bug and core dump in gnome-about (Mark)
 	* Set default response in gnome-about (Deepa)
 
 Translations
 
 	* Changwoo Ryu, Ole Laursen, Pauli Virtanen, Takayuki KUSANO,
-	  T�ivo Leedj�rv and Valek Filippov.
+	  Tõivo Leedjärv and Valek Filippov.
 
 ==============
 Version 1.5.13
@@ -446,7 +1020,7 @@ Misc
 Translations
 
 	* Christian Meyer, Stanislav Visnovsky, Zbigniew Chyla,
-	Fatih Demir, Ole Laursen, Pauli Virtanen, T�ivo Leedj�rv,
+	Fatih Demir, Ole Laursen, Pauli Virtanen, Tõivo Leedjärv,
 	Kjartan Maraas and Christopher R. Gabriel.
 
 ==============
@@ -485,7 +1059,7 @@ Version 1.5.10
 
 Translations
 
-	* Takayuki KUSANO, T�ivo Leedj�rv and Christophe Merlet.
+	* Takayuki KUSANO, Tõivo Leedjärv and Christophe Merlet.
 
 =============
 Version 1.5.9

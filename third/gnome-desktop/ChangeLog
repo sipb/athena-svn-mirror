@@ -1,10 +1,615 @@
-2002-02-04  Mark McLoughlin  <mark@skynet.ie>
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.2.0.1.
+	* configure.in: Version 2.8.0.
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.93.
+
+==================== 2.7.92 ====================
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.92.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.92.
+
+==================== 2.7.91 ====================
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.91.
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.91.
+
+==================== 2.7.90 ====================
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.90.
+
+2004-07-30  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yo" to ALL_LINGUAS.
+
+2004-07-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.5.
+
+==================== 2.7.4 ====================
+
+2004-07-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.4.
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.4.
+
+==================== 2.7.3 ====================
+
+2004-07-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.3.
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.2.
+
+==================== 2.7.1 ====================
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.1.
+
+2004-05-28  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Update GNOME_MINOR version number.
+
+2004-05-13  Mark McLoughlin  <mark@skynet.ie>
+	
+	* configure.in: bump version to 2.7.1. 2.6.x development
+	is now on the gnome-2-6 branch.
+
+2004-04-25  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* docs/*/eu/: Added Basque help files
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.2
+
+==================== 2.6.1 ====================
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.1.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-09  John C Barstow  <jbowtie@amathaine.com>
+
+	* configure.in: Added "mi" to ALL_LINGUAS.
+
+2004-03-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.1.
+
+==================== 2.6.0.1 ====================
+
+2004-03-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.1.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+==================== 2.6.0 ====================
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0
+
+==================== 2.5.92 ====================
+
+2004-03-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.92.
+
+2004-03-13  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-03-12  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+==================== 2.5.91 ====================
+
+2004-03-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.91.
+
+2004-03-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: remove the XOPEN_SOUCE define since
+	we don't use strptime anymore.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-02-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Add a check for scrollkeeper - bug #134986.
+
+==================== 2.5.90 ====================
+
+2004-02-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.90.
+
+2004-02-18  Laszlo Peter  <laca@sun.com>
+
+	Moving 3 headers around to make it possible to build against
+	uninstalled gnome-desktop; adding uninstalled.pc file.
+
+	* libgnome-desktop/gnome-desktop-item.c: 
+
+	* libgnome-desktop/gnome-desktop-item.h: move this to libgnome/
+	  subdir
+
+	* libgnome-desktop/gnome-ditem-edit.h: move to libgnomeui/ subdir
+
+	* libgnome-desktop/gnome-hint.h: move to libgnomeui/ subdir
+
+	* libgnome-desktop/libgnome/Makefile.am: new file
+
+	* libgnome-desktop/libgnomeui/Makefile.am: new file
+
+	* libgnome-desktop/gnome-ditem-edit.c: update #include's of the moved
+	  headers
+
+	* libgnome-desktop/gnome-hint.c: update #include
+
+	* libgnome-desktop/test-ditem-edit.c: update #include
+
+	* libgnome-desktop/test-ditem.c: update #include
+
+	* libgnome-desktop/test-hint.c: update #include
+
+	* libgnome-desktop/gnome-desktop-2.0-uninstalled.pc.in: new file
+
+	* libgnome-desktop/Makefile.am: remove the installed headers
+          from here, add libgnome, libgnomeui subdirs
+
+	* configure.in: add the new pc file and Makefiles.
+
+==================== 2.5.5 ====================
+
+2004-02-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.5.
+
+==================== 2.5.4 ====================
+
+2004-02-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.4.
+	
+2004-02-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't try and dist non-existant sgmldocs.make.
+
+2004-02-03  Alexander Winston  <alexander.winston@comcast.net>
+
+	* acinclude.m4: Quoted definition of macro AM_PATH_ESD. Fixes
+	#133215.
+
+2004-02-03  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* configure.in: Trival cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are substed
+	  by default.
+
+2004-01-26  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* autogen.sh: Update the build system to use the makefile
+	fragments from gnome-common for the docs build. Should fix the
+	last part of bug #131607.
+
+	* xmldocs.make, omf.make, sgmldocs.make: Removed. The first two
+	are now supplied from gnome-common when autogen.sh is run. The
+	latter has not been used in a long time.
+
+	* .cvsignore: Ignore copied files.
+
+==================== 2.5.3 ====================
+
+2004-01-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.3
+
+==================== 2.5.2 ====================
+
+2003-12-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.2.
+
+2003-11-12  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-desktop-item.c: (ditem_execute) prevent crash if
+	g_filename_form_utf8() returns NULL.
+	
+==================== 2.5.1 ====================
+
+2003-11-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.1.
+
+2003-11-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add a --enable-deprecations flag.
+
+2003-11-11  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgnome-desktop/gnome-ditem.edit.c (make_easy_page):
+	Set mnemonic widget for Command to be GtkCombo withing GomeFileEntry
+	widget. Fixes bug #126175.
+
+2003-11-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "hr" to ALL_LINGUAS.
+
+==================== 2.4.1.1 ====================
+
+2003-10-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.4.1.1.
+
+==================== 2.4.1 ====================
+
+2003-10-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.4.1.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+Fri Sep 19 15:49:50 2003  George Lebl <jirka@5z.com>
+
+	* configure.in, acconfig.h: whack the definition of GNOME_ICONDIR here,
+	  it's not neccessary as only gnome-about uses it and it was wrong anyway
+	  if --prefix was not given it would start with NULL.  gnome-about
+	  correctly does it inside the Makefile.am
+
+2003-09-18  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "br" to ALL_LINGUAS.
+
+==================== 2.4.0 ====================
+
+2003-09-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.4.0.
+
+==================== 2.3.90 ====================
+
+2003-09-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.90.
+
+==================== 2.3.7 ====================
+
+2003-08-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.7.
+
+2003-08-14  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ne" to ALL_LINGUAS.
+
+==================== 2.3.6.1 ====================
+
+2003-08-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: 2.3.6.1.
+
+==================== 2.3.6 ====================
+2003-08-08  Luis Villa <louie@ximian.com>
+
+	* gnome-version.xml.in.in: reduce wordiness, increase focus
+	
+2003-08-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.6.
+
+2003-08-05  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in: add ACLOCAL_AMFLAGS to configure.in
+
+Tue Jul 29 15:03:56 2003  George Lebl <jirka@5z.com>
+
+	* libgnome-desktop/gnome-desktop-item.c: Follow KDE behaviour on %i,
+	  %m, %c and %k to launch KDE apps properly.  The spec is incredibly
+	  vague on these and no GNOME apps really use these.
+
+2003-07-29  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in, Makefile.am, gnome-version.xml.in.in,
+	* po/POTFILES.in: Internationalise the gnome-version.xml file.
+	Fixes bug #115193. A side-effect of this is that the option to
+	set the build date on the configure command line has been
+	removed; the build date is computed using date(1) now.
+
+	* gnome-version.xml.in: Removed.
+
+	* gnome-version.xml.in.in: Include some new paragraph text from
+	Luis Villa.
+
+==================== 2.3.4 ====================
+
+2003-07-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.4.
+
+2003-07-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: Allow GNOME Distributor and
+	Date to be set on configure command-line.
+
+==================== 2.3.3.1 ====================
+
+2003-07-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.3.1.
+
+2003-06-29 Mark Finlay <sisob@eircom.net>
+
+	* pixmaps/gnome-background-pattern.png:
+        Add a background pattern to be used with solid background color #76848F
+
+2003-06-20 Andrew Sobala  <aes@gnome.org>
+
+	* gnome-version.xml.in: use macros to get the right GNOME version
+	in the blurb.
+
+2003-06-13 Mark Finlay <sisob@eircom.net>
+
+	* pixmaps/gnome-background-image.png:
+	Replace with a less shiny, more gnomey one.
+
+2003-06-07 Mark Finlay <sisob@eircom.net>
+
+	* pixmaps/gnome-background-image.png:
+
+	Adding translucent gnome foot background image.
+
+2003-06-06 Mark Finlay <sisob@eircom.net>
+	
+	* pixmaps/gnome-ccthemes.png 
+	* pixmaps/gnome-cckeyboard-bell.png 
+	* pixmaps/gnome-cckeyboard.png
+	* pixmaps/Makefile.am
+
+	Removing icons - they're in the control center already
+
+==================== 2.3.3 ====================
+
+2003-06-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.3.3.
+
+2003-06-06 Mark Finlay <sisob@eircom.net>
+	
+	* pixmaps/gnome-audio2.png:
+	* pixmaps//gnome-joystick.png:
+	* pixmaps/gnome-globe.png:
+	* pixmaps/gnome-graphics.png:
+	* pixmaps/gnome-help.png:
+	* pixmaps/gnome-multimedia.png:
+	* pixmaps/gnome-devel.png:
+	* pixmaps/gnome-settings.png:
+	* pixmaps/gnome-unknown.png:
+	* pixmaps/gnome-system.png:
+	* pixmaps/MakeFile.am:
+
+	Removing Icons, they've been moved to gnome-icon-theme
+
+Thu Jun  5 21:25:23 2003  Kristian Rietveld  <kris@gtk.org>
+
+	New GNOME about mergepoint.
+
+Sat Mar 31 22:19:23 2003  Kristian Rietveld  <kris@gtk.org>
+
+	* configure.in: add gnome-about/headers/Makefile to AC_OUTPUT.
+
+	* gnome-version.xml.in: Rewritten description with paragraphs and
+	stuff. I think it's from Glynn Foster, but I am not sure.
+
+2003-05-26  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added 'li' to ALL_LINGUAS
+
+==================== 2.3.2 ====================
+
+2003-05-20  Mark McLoughlin <mark@skynet.ie>
+
+	* configure.in: Version 2.3.2.
+		
+2003-05-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* pixmaps/Makefile.am: remove gnome-games pixmaps.
+
+2003-05-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* sgmldocs.make: replace leading spaces with tabs.
+	Fix from Art Haas.
+
+2003-05-14  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL which is necessary for
+	building shared library on win32 platform.
+
+	* libgnome-desktop/Makefile.am (libgnome_desktop_2_la_LDFLAGS):
+	add -no-undefined which is necessary for building shared library
+	on some platforms (e.g. Win32 and BeOS).
+
+2003-05-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* pixmaps/Makefile.am:
+	* pixmaps/cdeappmenu.png:
+	* pixmaps/gnome-amusements.png:
+	* pixmaps/gnome-clock.png:
+	* pixmaps/gnome-gegl.png:
+	* pixmaps/gnome-gegl2-2.png:
+	* pixmaps/gnome-gegl2.png:
+	* pixmaps/gnome-lockscreen.png:
+	* pixmaps/gnome-panel-type-corner.png:
+	* pixmaps/gnome-panel-type-edge.png:
+	* pixmaps/gnome-panel-type-floating.png:
+	* pixmaps/gnome-panel-type-menu.png:
+	* pixmaps/gnome-panel-type-sliding.png:
+	* pixmaps/gnome-panel.png:
+	* pixmaps/gnome-run.png:
+	* pixmaps/gnome-screenshot.png:
+	* pixmaps/panel-arrow-down.png:
+	* pixmaps/panel-arrow-left.png:
+	* pixmaps/panel-arrow-right.png:
+	* pixmaps/panel-arrow-up.png:
+	* pixmaps/panel-corner-left.png:
+	* pixmaps/panel-corner-right.png:
+	* pixmaps/panel-drawer.png:
+	* pixmaps/panel-folder.png:
+	* pixmaps/panel-knob.png:
+	* pixmaps/panel-menu-main.png:
+	* pixmaps/tile-blue-down.png:
+	* pixmaps/tile-blue-up.png:
+	* pixmaps/tile-coral-down.png:
+	* pixmaps/tile-coral-up.png:
+	* pixmaps/tile-drc-1-down.png:
+	* pixmaps/tile-drc-1-up.png:
+	* pixmaps/tile-drc-2-down.png:
+	* pixmaps/tile-drc-2-up.png:
+	* pixmaps/tile-drc-4-down.png:
+	* pixmaps/tile-drc-4-up.png:
+	* pixmaps/tile-green-down.png:
+	* pixmaps/tile-green-up.png:
+	* pixmaps/tile-moon-down.png:
+	* pixmaps/tile-moon-up.png:
+	* pixmaps/tile-normal-down.png:
+	* pixmaps/tile-normal-up.png:
+	* pixmaps/tile-purple-down.png:
+	* pixmaps/tile-purple-up.png:
+	* pixmaps/tile-sand-down.png:
+	* pixmaps/tile-sand-up.png: remove all these. They've either
+	been moved to gnome-panel or aren't used by the panel anymore.
+
+2003-05-06  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Removed "sp" and added "sr@Latn" to ALL_LINGUAS.
+
+2003-05-05  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * configure.in: Added cy to ALL_LINGUAS
+        * po/cy.po: Added
+
+2003-05-04  Arvind Samptur <arvind.samptur>
+
+	* configure.in: Version 2.3.1
+	* News: Update for 2.3.1
+
+2003-04-05  Mike Newman  <mike@gtnorthern.demon.co.uk>
+
+	* configure.in: s/vendor/distributor/ everywhere.
+	* gnome-version.xml.in:
+	* gnome-about/gnome-about.c:
+
+2003-04-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: s/Gnome/GNOME/
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-26  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* configure.in: bump version back to 2.3.0.
+	Guess, Mark missed that 2.3.0 was on.
+
+2003-03-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: bump version number to 2.3.1.
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2002-03-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.2.1.
+
+2003-03-04  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-03-02  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINUGUAS
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* pixmaps/gnome-screenshot.png: add a 48x48 version
+	of this. From jimmac via Alex Duggan.
+
+2003-02-10  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-07  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-02-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "am" to ALL_LINGUAS.
 
 2003-01-24  Laurent Dhima  <laurenti@alblinux.net>
 
 	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-01-22  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libgnome-desktop/Makefile.am:
+	* libgnome-desktop/gnome-desktop-i18n.c: (_gnome_desktop_gettext):
+	* libgnome-desktop/gnome-desktop-i18n.h:
+	* libgnome-desktop/gnome-desktop-item.c:
+	* libgnome-desktop/gnome-ditem-edit.c:
+	(gnome_ditem_edit_class_init):
+	* libgnome-desktop/gnome-hint.c:
+	ensure gettext is correctly initialized before using it
 
 2003-01-22  Christian Rose  <menthos@menthos.com>
 

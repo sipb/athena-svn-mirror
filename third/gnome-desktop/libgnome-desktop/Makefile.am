@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = 1.4
 
+SUBDIRS = libgnome libgnomeui
+
 INCLUDES =							\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale\""  \
 	-DGNOME_DESKTOP_SYSCONFDIR=\""$(sysconfdir)"\"		\
@@ -7,6 +9,7 @@ INCLUDES =							\
 	-DGNOME_DESKTOP_ICONDIR=\""$(datadir)/icons"\"		\
 	-DGNOME_CORE_INTERNAL					\
 	$(WARN_CFLAGS)						\
+	$(DISABLE_DEPRECATED_CFLAGS)				\
 	$(GNOME_DESKTOP_CFLAGS)
 
 lib_LTLIBRARIES = libgnome-desktop-2.la
@@ -17,23 +20,15 @@ libgnome_desktop_2_la_SOURCES = \
 	gnome-desktop-item.c	\
 	gnome-ditem-edit.c	\
 	gnome-hint.c		\
-	$(EGGFILES)
-
-
-libgnome_desktopdir = $(includedir)/gnome-desktop-2.0/libgnome
-libgnome_desktop_HEADERS = \
-	gnome-desktop-item.h
-
-libgnomeui_desktopdir = $(includedir)/gnome-desktop-2.0/libgnomeui
-libgnomeui_desktop_HEADERS = \
-	gnome-ditem-edit.h \
-	gnome-hint.h
+	gnome-desktop-i18n.c	\
+	gnome-desktop-i18n.h
 
 libgnome_desktop_2_la_LIBADD = \
 	$(GNOME_DESKTOP_LIBS)
 
 libgnome_desktop_2_la_LDFLAGS = \
-	-version-info $(LT_VERSION)
+	-version-info $(LT_VERSION) \
+	-no-undefined
 
 test_ditem_SOURCES = \
 	test-ditem.c
@@ -59,13 +54,5 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gnome-desktop-2.0.pc
 
 EXTRA_DIST = \
-	gnome-desktop-2.0.pc.in
-
-EGGFILES =		\
-	egg-spawn.h	\
-	egg-spawn.c
-
-EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
-
-regenerate-built-sources:
-	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
+	gnome-desktop-2.0.pc.in                \
+	gnome-desktop-2.0-uninstalled.pc.in

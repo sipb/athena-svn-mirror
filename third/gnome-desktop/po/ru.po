@@ -2,14 +2,17 @@
 # Max Valianskiy <maxcom@vinchi.ru>, 1998-1999
 # Sergey Panov <sipan@mit.edu>, 1999
 # Valek Filippov <frob@df.ru>, 2000-2002
-# Dmitry Mastrykov <dmitry@taurussoft.org>, 2002
+# Dmitry Mastrukov <dmitry@taurussoft.org>, 2002-2003
+# Leonid Kanter <leon@asplinux.ru>, 2003
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-desktop\n"
-"POT-Creation-Date: 2003-02-04 11:52+1300\n"
-"PO-Revision-Date: 2003-01-08 11:45+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:31+0100\n"
+"PO-Revision-Date: 2003-12-10 11:30+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,20 +26,16 @@ msgid "Accessories menu"
 msgstr "Стандартные программы"
 
 #: desktop-links/Applications.directory.in.h:1
-msgid "Applications without a category"
-msgstr "Приложения без категории"
-
-#: desktop-links/Applications.directory.in.h:2
-msgid "Other"
-msgstr "Прочие"
+msgid "Applications"
+msgstr "Приложения"
 
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
-msgstr "Программирование"
+msgstr "Разработка"
 
 #: desktop-links/Development.directory.in.h:2
 msgid "Tools for software development"
-msgstr "Инструменты для разработки программ"
+msgstr "Средства для разработки программ"
 
 #: desktop-links/Games.directory.in.h:1
 msgid "Games"
@@ -52,7 +51,7 @@ msgstr "Графика"
 
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
-msgstr "Программы для работы с графикой"
+msgstr "Приложения для работы с графикой"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
@@ -60,15 +59,15 @@ msgstr "Интернет"
 
 #: desktop-links/Internet.directory.in.h:2
 msgid "Programs for Internet and networks"
-msgstr "Программы для работы в сети и Интернете"
+msgstr "Приложения для работы в Интернете и сетях"
 
 #: desktop-links/Multimedia.directory.in.h:1
-msgid "Multimedia menu"
-msgstr "Программы для работы со звуком и изображением"
+msgid "Multimedia"
+msgstr "Мультимедия"
 
 #: desktop-links/Multimedia.directory.in.h:2
-msgid "Sound & Video"
-msgstr "Мультимедия"
+msgid "Multimedia menu"
+msgstr "Приложения для работы со звуком и видео"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
@@ -77,6 +76,14 @@ msgstr "Офис"
 #: desktop-links/Office.directory.in.h:2
 msgid "Office Applications"
 msgstr "Приложения для офисной работы"
+
+#: desktop-links/Other.directory.in.h:1
+msgid "Applications without a category"
+msgstr "Приложения без категории"
+
+#: desktop-links/Other.directory.in.h:2
+msgid "Other"
+msgstr "Прочие"
 
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
@@ -92,7 +99,7 @@ msgstr "Настройки Рабочего стола"
 
 #: desktop-links/Settings.directory.in.h:2
 msgid "Preferences that affect the whole GNOME desktop"
-msgstr "Настойки, которые применяются ко всему рабочему столу среды GNOME"
+msgstr "Настройки, которые применяются ко всему рабочему столу среды Гном"
 
 #: desktop-links/System.directory.in.h:1
 msgid "System Tools"
@@ -100,425 +107,357 @@ msgstr "Системные"
 
 #: desktop-links/System.directory.in.h:2
 msgid "System menu"
-msgstr "Инструменты для обслуживания системы"
+msgstr "Системные утилиты"
 
-#: gnome-about/contributors.h:20
-msgid "Timur I. Bakeyev"
-msgstr "Тимур И. Бакеев"
-
-#. if your encoding allows it, use aacute (U00E1)
-#. * for the 'a' of 'Ban'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs 'Snooby' B&#x00E1;n"
-
-#: gnome-about/contributors.h:36
-msgid "Jerome Bolliet"
-msgstr "Jerome Bolliet"
-
-#. if your encoding allows it, use eacute (U00E9) for the first
-#. * and the last 'e' in 'Chenede'
-#: gnome-about/contributors.h:54
-msgid "Erwann Chenede"
-msgstr "Erwann Ch&#xe9;ned&#xe9;"
-
-#. CJK people please use (U5F35) (U570B) (U51A0) to replace
-#. * this name
-#: gnome-about/contributors.h:57
-msgid "Abel Cheung"
-msgstr "Abel Cheung"
-
-#. if you encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:70
-msgid "Frederic Crozat"
-msgstr "Fr&#xe9;d&#xe9;ric Crozat"
-
-#. if your encoding allows it, use eacute (U00E9) for the two
-#. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:77
-msgid "Frederic Devernay"
-msgstr "Fr&#xe9;d&#xe9;ric Devernay"
-
-#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
-#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:91
-msgid "Gergo Erdi"
-msgstr "Gerg&#x151; &#xc9;rdi"
-
-#: gnome-about/contributors.h:98
-msgid "Raul Perusquia Flores"
-msgstr "Raul Perusquia Flores"
-
-#: gnome-about/contributors.h:112
+#: gnome-about/contributors.h:107
 msgid "The Mysterious GEGL"
-msgstr "Таинственный GEGL"
+msgstr "Таинственный ГЕГЛ"
 
-#: gnome-about/contributors.h:114
-msgid "Bjoern Giesler"
-msgstr "Bjoern Giesler"
-
-#: gnome-about/contributors.h:120
-msgid "Dov Grobgeld"
-msgstr "Dov Grobgeld"
-
-#. Wang is the surname. CJK people, please use (U738B) (U5251)
-#. * to replace this name.
-#: gnome-about/contributors.h:144
-msgid "Wang Jian"
-msgstr "Wang Jian"
-
-#: gnome-about/contributors.h:153
-msgid "Helmut Koeberle"
-msgstr "Helmut Koeberle"
-
-#: gnome-about/contributors.h:190
-msgid "Matthew Marjanovic"
-msgstr "Matthew Marjanovic"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Muniz'
-#: gnome-about/contributors.h:215
-msgid "Alexandre Muniz"
-msgstr "Alexandre Mu&#xf1;iz"
-
-#. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:217
-msgid "Sung-Hyun Nam"
-msgstr "Sung-Hyun Nam"
-
-#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
-#. * of 'Norbaeck'
-#: gnome-about/contributors.h:226
-msgid "Martin Norbaeck"
-msgstr "Martin Norb&#xe4;ck"
-
-#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
-#. * of 'Oegren'
-#: gnome-about/contributors.h:233
-msgid "Tomas Oegren"
-msgstr "Tomas &#xd6;gren"
-
-#. If your encoding allows it, use oacute (U00F3) for the 'o'
-#. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:243
-msgid "Carlos Perello Marin"
-msgstr "Carlos Perell&#xf3; Mar&#xED;n"
-
-#. If your encoding allows it, use aacute (U00E1) for the 'a'
-#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
-#: gnome-about/contributors.h:252
-msgid "German Poo-Caamano"
-msgstr "Germ&#xE1;n Poo-Caama&#xF1;o"
-
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
-#: gnome-about/contributors.h:273
-msgid "Kazuhiro Sasayama"
-msgstr "Kazuhiro Sasayama"
-
-#. If your encodings allows it, use ntilde (U00F1) for the 'n'
-#. * of 'Inigo'
-#: gnome-about/contributors.h:283
-msgid "Inigo Serna"
-msgstr "I&#xF1;igo Serna"
-
-#: gnome-about/contributors.h:287
-msgid "Miroslav Silovic"
-msgstr "Miroslav Silovic"
-
-#. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:298
+#: gnome-about/contributors.h:291
 msgid "The Squeaky Rubber Gnome"
 msgstr "Пищащий резиновый гном"
 
-#: gnome-about/contributors.h:306
-msgid "Istvan Szekeres"
-msgstr "Istvan Szekeres"
+#: gnome-about/contributors.h:324
+msgid "Wanda The GNOME Fish"
+msgstr "Ванда -- рыбка Гнома"
 
-#: gnome-about/contributors.h:319
-msgid "Manish Vachharajani"
-msgstr "Manish Vachharajani"
+#: gnome-about/gnome-about.c:139
+msgid "The End!"
+msgstr "Конец!"
 
-#: gnome-about/contributors.h:320
-msgid "Neil Vachharajani"
-msgstr "Neil Vachharajani"
+#: gnome-about/gnome-about.c:428
+msgid "Could not locate the directory with header images."
+msgstr "Не удалось обнаружить каталог с изображениями для заголовка."
 
-#: gnome-about/contributors.h:328
-msgid "Wanda the GNOME Fish"
-msgstr "Ванда - рыбка Гнома"
-
-#: gnome-about/gnome-about.c:273
-msgid "Click here to visit the site : "
-msgstr "Щёлкните здесь, чтобы посетить сайт по адресу "
-
-#: gnome-about/gnome-about.c:285
-msgid "List of GNOME Contributors"
-msgstr "Список создателей среды Гном"
-
-#: gnome-about/gnome-about.c:287
-msgid "GNOME Logo Image"
-msgstr "Изображение эмблемы среды Гном"
-
-#: gnome-about/gnome-about.c:295
-msgid "Contributors' Names"
-msgstr "Имена создателей"
-
-#: gnome-about/gnome-about.c:297
-msgid "GNOME Logo"
-msgstr "Эмблема среды Гном"
-
-#: gnome-about/gnome-about.c:506
-msgid "GNOME"
-msgstr "Среда Гном версии"
-
-#: gnome-about/gnome-about.c:660
-msgid "And Many More ..."
-msgstr "и многие другие..."
-
-#: gnome-about/gnome-about.c:838
+#: gnome-about/gnome-about.c:437
 #, c-format
-msgid "About GNOME%s%s%s"
-msgstr "О среде Гном версии%s%s%s"
+msgid "Failed to open directory with header images: %s"
+msgstr "Произошёл сбой при открытии каталога с изображениями для заголовка: %s"
 
-#: gnome-about/gnome-about.c:949
-msgid "GNOME News Site"
-msgstr "Сайт новостей о среде Гном"
+#: gnome-about/gnome-about.c:470
+#, c-format
+msgid "Unable to load header image: %s"
+msgstr "Невозможно загрузить изображение для заголовка: %s"
 
-#: gnome-about/gnome-about.c:953
-msgid "http://www.gnome.org/"
-msgstr "http://www.gnome.org/"
+#: gnome-about/gnome-about.c:495
+msgid "Could not locate the GNOME logo button."
+msgstr "Не удалось обнаружить кнопку с логотипом среды Гном."
 
-#: gnome-about/gnome-about.c:954
-msgid "GNOME Main Site"
-msgstr "Главный сайт среды Гном"
+#: gnome-about/gnome-about.c:504
+#, c-format
+msgid "Unable to load '%s': %s"
+msgstr "Невозможно загрузить \"%s\": %s"
 
-#: gnome-about/gnome-about.c:959
-msgid "GNOME Developers' Site"
-msgstr "Сайт разработчиков среды Гном"
+#: gnome-about/gnome-about.c:557
+#, c-format
+msgid "Could not open the address \"%s\": %s"
+msgstr "Не удалось открыть адрес \"%s\": %s"
 
-#: gnome-about/gnome-about.c:981
-msgid "GNOME is a part of the GNU Project"
-msgstr "Среда Гном является частью Проекта ГНУ"
+#: gnome-about/gnome-about.c:809
+msgid "Could not locate the file with GNOME version information."
+msgstr "Не удалось обнаружить файл с информацией о версии среды Гном."
 
-#: libgnome-desktop/gnome-desktop-item.c:208
-#: libgnome-desktop/gnome-desktop-item.c:578
+#: gnome-about/gnome-about.c:878
+msgid "Version"
+msgstr "Версия"
+
+#: gnome-about/gnome-about.c:897
+msgid "Distributor"
+msgstr "Дистрибьютор"
+
+#: gnome-about/gnome-about.c:916
+msgid "Build Date"
+msgstr "Дата сборки"
+
+#: gnome-about/gnome-about.c:998
+msgid "About GNOME"
+msgstr "О среде Гном"
+
+#: gnome-about/gnome-about.c:1012
+msgid "News"
+msgstr "Новости"
+
+#: gnome-about/gnome-about.c:1022
+msgid "Software"
+msgstr "Программное обеспечение"
+
+#: gnome-about/gnome-about.c:1028
+msgid "Developers"
+msgstr "Разработчики"
+
+#: gnome-about/gnome-about.c:1034
+msgid "Friends of GNOME"
+msgstr "Друзья Гнома"
+
+#: gnome-about/gnome-about.c:1040
+msgid "Contact"
+msgstr "Контакт"
+
+#: gnome-about/gnome-about.c:1077
+msgid "Welcome to the GNOME Desktop"
+msgstr "Добро пожаловать в среду Гном"
+
+#: gnome-about/gnome-about.c:1094
+msgid "Brought to you by:"
+msgstr "Среду Гном создали для вас:"
+
+#: gnome-about/gnome-about.c:1142
+msgid "About the GNOME Desktop"
+msgstr "О среде Гном"
+
+#: gnome-version.xml.in.in.h:1
+msgid ""
+"GNOME also includes a complete development platform for applications "
+"programmers, allowing the creation of powerful and complex applications."
+msgstr ""
+"Среда Гном также включает в себя законченную платформу для разработчиков, "
+"позволяющую создавать мощные и сложные приложения."
+
+#: gnome-version.xml.in.in.h:2
+msgid ""
+"GNOME includes most of what you see on your computer, including the file "
+"manager, web browser, menus, and many applications."
+msgstr ""
+"Среда Гном включает в себя большинство самых нужных приложений, таких как "
+"файловый менеджер, браузер веб-страниц, панель меню и многое другое."
+
+#. NOTE TO AUTHORS: Do not put anything in the following paragraphs that
+#. will be substituted by the configure script. Otherwise you will break
+#. the translations.
+#: gnome-version.xml.in.in.h:6
+msgid ""
+"GNOME is a Free, usable, stable, accessible desktop environment for the Unix-"
+"like family of operating systems."
+msgstr ""
+"Среда Гном является свободным, стабильным, удобным для использования (в том "
+"числе и для людей с ограниченными возможностями) окружением рабочего стола "
+"для семейства Юникс-подобных операционных систем."
+
+#: gnome-version.xml.in.in.h:7
+msgid ""
+"GNOME's focus on usability and accessibility, regular release cycle, and "
+"strong corporate backing make it unique among Free Software desktops."
+msgstr ""
+"Среда Гном уделяет особое внимание удобству использования (в том числе и для "
+"людей с ограниченными возможностями), регулярности выхода новых версий и "
+"сильной корпоративной поддержкой, что выделяет её из ряда свободных "
+"окружений рабочего стола."
+
+#: gnome-version.xml.in.in.h:8
+msgid ""
+"GNOME's greatest strength is our strong community. Virtually anyone, with or "
+"without coding skills, can contribute to making GNOME better."
+msgstr ""
+"Наибольшая сила среды Гном заключается в сильном сообществе. Каждый, неважно "
+"с опытом программирования или без, может внести свой вклад в улучшение среды."
+
+#: gnome-version.xml.in.in.h:9
+msgid ""
+"Hundreds of people have contributed code to GNOME since it was started in "
+"1997; many more have contributed in other important ways, including "
+"translations, documentation, and quality assurance."
+msgstr ""
+"Сотни человек писали исходный код среды Гном с момента старта проекта в 1997 "
+"году, но гораздо больше людей внесли свой вклад в развитие среды другими "
+"важными путями, такими как перевод, документирование и контроль качества."
+
+#: libgnome-desktop/gnome-desktop-item.c:210
+#: libgnome-desktop/gnome-desktop-item.c:580
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "Произошла ошибка при чтении файла \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:276
+#: libgnome-desktop/gnome-desktop-item.c:278
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Произошла ошибка при перемотке файла \"%s\": %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:593
+#: libgnome-desktop/gnome-desktop-item.c:362
+#: libgnome-desktop/gnome-desktop-item.c:3585
+msgid "No name"
+msgstr "Без имени"
+
+#: libgnome-desktop/gnome-desktop-item.c:595
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "Файл \"%s\" не является обычным файлом или каталогом."
 
-#: libgnome-desktop/gnome-desktop-item.c:609
-#, c-format
-msgid "File '%s' has invalid MIME type: %s"
-msgstr "Файл \"%s\" имеет недопустимый тип MIME: %s"
-
-#: libgnome-desktop/gnome-desktop-item.c:760
+#: libgnome-desktop/gnome-desktop-item.c:746
 msgid "No filename to save to"
 msgstr "Не указано имя файла для сохранения"
 
-#: libgnome-desktop/gnome-desktop-item.c:1736
+#: libgnome-desktop/gnome-desktop-item.c:1700
 #, c-format
 msgid "Starting %s"
-msgstr "Запускается \"%s\""
+msgstr "Запускается программа \"%s\""
 
-#: libgnome-desktop/gnome-desktop-item.c:1956
+#: libgnome-desktop/gnome-desktop-item.c:1930
 msgid "No URL to launch"
 msgstr "Не указана ссылка (URL) для запуска"
 
-#: libgnome-desktop/gnome-desktop-item.c:1966
+#: libgnome-desktop/gnome-desktop-item.c:1940
 msgid "Not a launchable item"
 msgstr "Элемент не является запускаемым"
 
-#: libgnome-desktop/gnome-desktop-item.c:1976
+#: libgnome-desktop/gnome-desktop-item.c:1950
 msgid "No command (Exec) to launch"
 msgstr "Отсутствует команда (Exec) для запуска"
 
-#: libgnome-desktop/gnome-desktop-item.c:1989
+#: libgnome-desktop/gnome-desktop-item.c:1963
 msgid "Bad command (Exec) to launch"
 msgstr "Команда (Exec) для запуска недопустима"
 
-#: libgnome-desktop/gnome-desktop-item.c:3619
-msgid "No name"
-msgstr "Без имени"
-
-#: libgnome-desktop/gnome-desktop-item.c:3676
+#: libgnome-desktop/gnome-desktop-item.c:3642
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Кодировка для \"%s\" неизвестна"
 
-#: libgnome-desktop/gnome-desktop-item.c:3907
+#: libgnome-desktop/gnome-desktop-item.c:3873
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Произошла ошибка при записи в файл \"%s\": %s"
 
-#: libgnome-desktop/gnome-ditem-edit.c:209
-#: libgnome-desktop/gnome-ditem-edit.c:217
+#: libgnome-desktop/gnome-ditem-edit.c:206
+#: libgnome-desktop/gnome-ditem-edit.c:214
 msgid "Directory"
 msgstr "Каталог"
 
-#: libgnome-desktop/gnome-ditem-edit.c:213
+#: libgnome-desktop/gnome-ditem-edit.c:210
 msgid "Application"
 msgstr "Приложение"
 
-#: libgnome-desktop/gnome-ditem-edit.c:220
+#: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Link"
 msgstr "Ссылка"
 
-#: libgnome-desktop/gnome-ditem-edit.c:222
+#: libgnome-desktop/gnome-ditem-edit.c:219
 msgid "FSDevice"
 msgstr "FSDevice"
 
-#: libgnome-desktop/gnome-ditem-edit.c:224
+#: libgnome-desktop/gnome-ditem-edit.c:221
 msgid "MIME Type"
 msgstr "Тип MIME"
 
-#: libgnome-desktop/gnome-ditem-edit.c:226
+#: libgnome-desktop/gnome-ditem-edit.c:223
 msgid "Service"
 msgstr "Сервис"
 
-#: libgnome-desktop/gnome-ditem-edit.c:228
+#: libgnome-desktop/gnome-ditem-edit.c:225
 msgid "ServiceType"
 msgstr "Тип сервиса"
 
-#: libgnome-desktop/gnome-ditem-edit.c:314
-msgid "URL:"
-msgstr "Ссылка (URL):"
+#: libgnome-desktop/gnome-ditem-edit.c:311
+msgid "_URL:"
+msgstr "Сс_ылка (URL):"
 
-#: libgnome-desktop/gnome-ditem-edit.c:317
-#: libgnome-desktop/gnome-ditem-edit.c:387
-msgid "Command:"
-msgstr "Команда:"
+#: libgnome-desktop/gnome-ditem-edit.c:314
+#: libgnome-desktop/gnome-ditem-edit.c:381
+msgid "Comm_and:"
+msgstr "Ком_анда:"
 
 #. Name
-#: libgnome-desktop/gnome-ditem-edit.c:338
-msgid "Name:"
-msgstr "Имя:"
+#: libgnome-desktop/gnome-ditem-edit.c:335
+msgid "_Name:"
+msgstr "_Имя:"
 
 #. Generic Name
-#: libgnome-desktop/gnome-ditem-edit.c:356
-msgid "Generic name:"
-msgstr "Типовое имя:"
+#: libgnome-desktop/gnome-ditem-edit.c:352
+msgid "_Generic name:"
+msgstr "Тип_овое имя:"
 
 #. Comment
-#: libgnome-desktop/gnome-ditem-edit.c:374
-msgid "Comment:"
-msgstr "Комментарий:"
+#: libgnome-desktop/gnome-ditem-edit.c:369
+msgid "Co_mment:"
+msgstr "Ко_мментарий:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:391
+#: libgnome-desktop/gnome-ditem-edit.c:385
 msgid "Browse"
 msgstr "Просмотреть"
 
-#: libgnome-desktop/gnome-ditem-edit.c:401
-msgid "Type:"
-msgstr "Тип:"
+#: libgnome-desktop/gnome-ditem-edit.c:396
+msgid "_Type:"
+msgstr "_Тип:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:419
-msgid "Icon:"
-msgstr "Значок:"
+#: libgnome-desktop/gnome-ditem-edit.c:413
+msgid "_Icon:"
+msgstr "Зна_чок:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:429
+#: libgnome-desktop/gnome-ditem-edit.c:423
 msgid "Browse icons"
 msgstr "Просмотреть значки"
 
-#: libgnome-desktop/gnome-ditem-edit.c:444
-msgid "Run in Terminal"
-msgstr "Запускать в терминале"
+#: libgnome-desktop/gnome-ditem-edit.c:437
+msgid "Run in t_erminal"
+msgstr "Запускать в т_ерминале"
 
-#: libgnome-desktop/gnome-ditem-edit.c:658
-#: libgnome-desktop/gnome-ditem-edit.c:757
+#: libgnome-desktop/gnome-ditem-edit.c:653
+#: libgnome-desktop/gnome-ditem-edit.c:751
 msgid "Language"
 msgstr "Язык"
 
-#: libgnome-desktop/gnome-ditem-edit.c:663
-#: libgnome-desktop/gnome-ditem-edit.c:765
+#: libgnome-desktop/gnome-ditem-edit.c:658
+#: libgnome-desktop/gnome-ditem-edit.c:758
 msgid "Name"
 msgstr "Имя"
 
-#: libgnome-desktop/gnome-ditem-edit.c:668
-#: libgnome-desktop/gnome-ditem-edit.c:773
+#: libgnome-desktop/gnome-ditem-edit.c:663
+#: libgnome-desktop/gnome-ditem-edit.c:765
 msgid "Generic name"
 msgstr "Типовое Имя"
 
-#: libgnome-desktop/gnome-ditem-edit.c:673
-#: libgnome-desktop/gnome-ditem-edit.c:783
+#: libgnome-desktop/gnome-ditem-edit.c:668
+#: libgnome-desktop/gnome-ditem-edit.c:774
 msgid "Comment"
 msgstr "Комментарий"
 
-#: libgnome-desktop/gnome-ditem-edit.c:709
-msgid "Try this before using:"
-msgstr "Попробовать перед использованием:"
+#: libgnome-desktop/gnome-ditem-edit.c:703
+msgid "_Try this before using:"
+msgstr "Поп_робовать перед использованием:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:721
-msgid "Documentation:"
-msgstr "Документация:"
+#: libgnome-desktop/gnome-ditem-edit.c:714
+msgid "_Documentation:"
+msgstr "_Документация:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:733
-msgid "Name/Comment translations:"
-msgstr "Переводы названия/комментария:"
+#: libgnome-desktop/gnome-ditem-edit.c:725
+msgid "_Name/Comment translations:"
+msgstr "Переводы _имени/комментария:"
 
-#: libgnome-desktop/gnome-ditem-edit.c:786
-msgid "Add/Set"
-msgstr "Добавить/Установить"
+#: libgnome-desktop/gnome-ditem-edit.c:776
+msgid "_Add/Set"
+msgstr "Доб_авить/Установить"
 
-#: libgnome-desktop/gnome-ditem-edit.c:792
+#: libgnome-desktop/gnome-ditem-edit.c:782
 msgid "Add or Set Name/Comment Translations"
 msgstr "Добавить или установить перевод названия/комментария"
 
-#: libgnome-desktop/gnome-ditem-edit.c:794
-msgid "Remove"
-msgstr "Убрать"
+#: libgnome-desktop/gnome-ditem-edit.c:784
+msgid "Re_move"
+msgstr "У_брать"
 
-#: libgnome-desktop/gnome-ditem-edit.c:799
+#: libgnome-desktop/gnome-ditem-edit.c:789
 msgid "Remove Name/Comment Translation"
 msgstr "Убрать перевод названия/комментария"
 
-#: libgnome-desktop/gnome-ditem-edit.c:815
+#: libgnome-desktop/gnome-ditem-edit.c:805
 msgid "Basic"
 msgstr "Основные"
 
-#: libgnome-desktop/gnome-ditem-edit.c:823
+#: libgnome-desktop/gnome-ditem-edit.c:813
 msgid "Advanced"
 msgstr "Дополнительные"
 
-#: libgnome-desktop/gnome-hint.c:175
+#: libgnome-desktop/gnome-hint.c:176
 msgid "_Show Hints at Startup"
 msgstr "По_казывать советы при запуске"
 
-#~ msgid "Home"
-#~ msgstr "Дом"
+#~ msgid "Download"
+#~ msgstr "Загрузить"
 
-#~ msgid "Home Applications"
-#~ msgstr "Приложения для дома"
+#~ msgid "Users"
+#~ msgstr "Пользователи"
 
-#~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
-#~ msgstr "<big><b>Среда GNOME был создана для вас</b></big>"
+#~ msgid "Foundation"
+#~ msgstr "Организация"
 
-#~ msgid "MimeType"
-#~ msgstr "Тип Mime"
-
-#~ msgid "UTF-8"
-#~ msgstr "UTF-8"
-
-#~ msgid "1.0"
-#~ msgstr "1.0"
-
-#~ msgid "Applications"
-#~ msgstr "Приложения"
-
-#~ msgid "Applications menu"
-#~ msgstr "Пользовательские программы общего назначения"
-
-#~ msgid "Desktop Settings"
-#~ msgstr "Установки Рабочего стола"
-
-#~ msgid "... and many more"
-#~ msgstr "... и многими другими"
+#~ msgid "Sound & Video"
+#~ msgstr "Мультимедия"

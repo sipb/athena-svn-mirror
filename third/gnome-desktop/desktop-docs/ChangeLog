@@ -1,3 +1,95 @@
+==================== 2.7.92 ====================
+
+==================== 2.7.91 ====================
+
+==================== 2.7.90 ====================
+
+==================== 2.7.4 ====================
+
+2004-07-08  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* fdl/C/fdl-C.omf:
+	* fdl/eu/fdl-eu.omf:
+	* gnome-feedback/C/gnome-feedback-C.omf:
+	* gnome-feedback/eu/gnome-feedback-eu.omf:
+	* gnome-feedback/no/gnome-feedback-no.omf:
+	* gpl/C/gpl-C.omf:
+	* gpl/eu/gpl-eu.omf:
+	* lgpl/C/lgpl-C.omf:
+	* lgpl/eu/lgpl-eu.omf:
+	Fix DTD validation errors (based on patch from Mariano
+Suárez-Alvarez)
+	Bug #136144.
+
+
+==================== 2.7.3 ====================
+
+==================== 2.7.1 ====================
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0.1 ====================
+
+==================== 2.6.0 ====================
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+2004-03-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* fdl/C/fdl-C.omf,
+	  gnome-feedback/C/gnome-feedback-C.omf,
+	  gpl/C/gpl-C.omf,
+	  lgpl/C/lgpl-C.omf: fixup to validate against
+	the latest scrollkeeper DTD. Bug #136144.
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+==================== 2.5.4 ====================
+
+==================== 2.5.3 ====================
+
+2003-12-28  Eric Baudais  <drake@gnome.org>
+ 
+         * gpl/C/gpl.xml: Added the label tags for better processing.
+         * lgpl/C/lgpl.xml
+         * fdl/C/fdl.xml: Removed the formal paragraphs in section 4.
+
+==================== 2.5.2 ====================
+
+==================== 2.5.1 ====================
+
+==================== 2.4.1.1 ====================
+
+==================== 2.4.1 ====================
+
+==================== 2.4.0 ====================
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+==================== 2.3.6.1 ====================
+
+==================== 2.3.6 ====================
+
+==================== 2.3.4 ====================
+
+==================== 2.3.3.1 ====================
+
+==================== 2.3.3 ====================
+
+==================== 2.3.2 ====================
+
+2003-02-12  Alexander Kirillov  <kirillov@math.sunysb.edu>
+
+	* gnome-feedback/C/gnome-feedback.xml: put correct location of
+	bug-buddy (in GNOME 2.2, Applications->Programming), fix
+	capitalization of titles, updated titlepage
+
 2002-09-18  Jacob Berkman  <jacob@ximian.com>
 
 	* gnome-feedback/C/Makefile.am (entities): add empty var to fix

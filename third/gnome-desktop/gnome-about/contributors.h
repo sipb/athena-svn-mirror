@@ -10,17 +10,17 @@
 
 /* Please keep this in alphabetical order */
 static gchar *contributors[] = {
-	"Jerome Abela",
+	"J\xc3\xa9r\xc3\xb4me Abela",
+	"Rob Adams",
 	"Lauri Alanko",
 	"Seth Alves",
 	"Shawn T. Amundson",
 	"Erik Andersen",
 	"Marius Andreiana",
 	"Jon Anhold",
-	N_("Timur I. Bakeyev"),
-	/* if your encoding allows it, use aacute (U00E1) 
-	 * for the 'a' of 'Ban' */
-	N_("Szabolcs 'Shooby' Ban"),
+	"Paolo Bacchilega",
+	"Timur I. Bakeyev",
+	"Szabolcs 'Shooby' B\xc3\xa1n",
 	"Martin Baulig",
 	"Tom Bech",
 	"Andreas Beck",
@@ -33,7 +33,7 @@ static gchar *contributors[] = {
 	"Robert Bihlmeyer",
 	"Jonathan Blandford",
 	"Christopher Blizzard",
-	N_("Jerome Bolliet"),
+	"J\xc3\xa9r\xc3\xb4me Bolliet",
 	"Andreas Bolsch",
 	"Dave Bordoley",
 	"Dario Bressanini",
@@ -49,12 +49,9 @@ static gchar *contributors[] = {
 	"Chema Celorio",
 	"Damon Chaplin",
 	"Kevin Charter",
-	/* if your encoding allows it, use eacute (U00E9) for the first 
-	 * and the last 'e' in 'Chenede' */
-	N_("Erwann Chenede"),
-	/* CJK people please use (U5F35) (U570B) (U51A0) to replace
-	 * this name */
-	N_("Abel Cheung"),
+	"Erwann Ch\xc3\xa9ned\xc3\xa9",
+	 /* Abel Cheung: */
+	"\xe5\xbc\xb5 \xe5\x9c\x8b \xe5\x86\xa0",
 	"Kenneth Rohde Christiansen",
 	"Chad Clark",
 	"Matthias Clasen",
@@ -65,19 +62,16 @@ static gchar *contributors[] = {
 	"Alan Cox",
 	"Dennis Cranston",
 	"Mark Crichton",
-	/* if you encoding allows it, use eacute (U00E9) for the two
-	 * 'e' of 'Frederic' */
-	N_("Frederic Crozat"),
+	"Fr\xc3\xa9" "d\xc3\xa9ric Crozat",
 	"Andreas Czechanowski",
+	"Johan Dahlin",
 	"Dan Damian",
 	"Phil Dawes",
 	"Fatih Demir",
-	/* if your encoding allows it, use eacute (U00E9) for the two
-	 * 'e' of 'Frederic' */
-	N_("Frederic Devernay"),
-	"Dietmar Maurer",
+	"Fr\xc3\xa9" "d\xc3\xa9ric Devernay",
 	"Feico W. Dillema",
 	"Radek Doulik",
+	"Alex Duggan",
 	"Tom Dyas",
 	"Karl Eichwalder",
 	"John Ellis",
@@ -86,16 +80,15 @@ static gchar *contributors[] = {
 	"David Etherton",
 	"Larry Ewing",
 	"Marc Ewing",
-	/* if your encoding allows it, use odoubleacute (U0151) for the 'o'
-	 * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi' */
-	N_("Gergo Erdi"),
+	"Gerg\xc5\x91 \xc3\x89rdi",
 	"Peter Fales",
 	"Joaquim Fellmann",
 	"Jens Finke",
+	"Mark Finlay",
 	"Dave Finton",
 	"Milon Firikis",
 	"John Fleck",
-	N_("Raul Perusquia Flores"),
+	"Ra\xc3\xbal Perusquia Flores",
 	"Lawrence Foard",
 	"Glynn Foster",
 	"Ben FrantzDale",
@@ -108,16 +101,22 @@ static gchar *contributors[] = {
 	"Christopher R. Gabriel",
 	"Mark Galassi",
 	"Tony Gale",
+	"Matthew Garrett",
+	"Carlos Garnacho Parro",
 	"Jeff Garzik",
 	N_("The Mysterious GEGL"),
 	"Tim Gerla",
-	N_("Bjoern Giesler"),
+	"Bj\xc3\xb6rn Giesler",
 	"Dave Glowacki",
 	"Scott Goehring",
 	"Randy Gordon",
+	"Ted Gould",
+	"Dodji Seketeli",
+	"Christophe Fergeau",
+	"Gael Chamoulaud",
 	"Kenny Graunke",
 	"Jamin Philip Gray",
-	N_("Dov Grobgeld"),
+	"Dov Grobgeld",
 	"Bertrand Guiheneuf",
 	"Alan Aspuru Guzik",
 	"Telsa Gwynne",
@@ -130,7 +129,7 @@ static gchar *contributors[] = {
 	"Peter Hawkins",
 	"Scott Heavner",
 	"James Henstridge",
-        "Fernando Herrera"
+        "Fernando Herrera",
 	"Richard Hestilow",
 	"Iain Holmes",
 	"David Huggins-Daines",
@@ -139,9 +138,8 @@ static gchar *contributors[] = {
 	"Miguel de Icaza",
 	"Tim Janik",
 	"Stefan Jeske",
-	/* Wang is the surname. CJK people, please use (U738B) (U5251)
-	 * to replace this name. */
-	N_("Wang Jian"),
+	/* Wang Jian: */
+	"\xe7\x8e\x8b \xe5\x89\x91",
 	"Michael K. Johnson",
 	"Andy Kahn",
 	"Sami Kananoja",
@@ -150,8 +148,9 @@ static gchar *contributors[] = {
 	"Spencer Kimball",
 	"Alexander Kirillov",
 	"Peter Kirchgessner",
-	N_("Helmut Koeberle"),
+	"Helmut K\xc3\xb6" "berle",
 	"Alfredo Kojima",
+	"Martin Kretzschmar",
 	"Andrew Kuchling",
 	"Stephan Kulow",
 	"Martynas Kunigelis",
@@ -180,6 +179,7 @@ static gchar *contributors[] = {
 	"Nick Lopez",
 	"Dirk Lutjens",
 	"Josh MacDonald",
+	"Davyd Madeley",
 	"Paolo Maggi",
 	"Sam Magnuson",
 	"Ian Main",
@@ -187,13 +187,14 @@ static gchar *contributors[] = {
 	"Mandrake",
 	"Daniel Manrique",
 	"Kjartan Maraas",
-	N_("Matthew Marjanovic"),
+	"Matthew Marjanovic",
 	"Heath Martin",
 	"Oliver Maruhn",
 	"Dave Mason",
 	"James Mastros",
 	"Peter Mattis",
 	"Gordon Matzigkeit",
+	"Dietmar Maurer",
 	"Justin Maurer",
 	"Gregory McLean",
 	"Mark McLoughlin",
@@ -210,27 +211,24 @@ static gchar *contributors[] = {
 	"Rodrigo Moya",
 	"Dan Mueth",
 	"Thomas Muldowney",
-	/* If your encodings allows it, use ntilde (U00F1) for the 'n'
-	 * of 'Muniz' */
-	N_("Alexandre Muniz"),
-	/* Name in Hangeul is: Ub0a8 Uc131 Ud604 */
-	N_("Sung-Hyun Nam"),
+	"Alexandre Mu\xc3\xb1iz",
+	/* Sung-Hyun Nam: */
+	"\xeb\x82\xa8 \xec\x84\xb1 \xed\x98\x84",
 	"Deepa Natarajan",
 	"Karl Nelson",
+	"Elijah Newren",
+	"Christian Neumair",
+	"Mike Newman",
 	"Asger Alstrup Nielsen",
 	"Seth Nickell",
 	"Eric Nielson",
 	"Bastien Nocera",
-	/* If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
-	 * of 'Norbaeck' */
-	N_("Martin Norbaeck"),
+	"Martin Norb\xc3\xa4" "ck",
 	"Eskil Olsen",
 	"Jimmy Olsen",
 	"David Orme",
 	"Karl Anders Oygard",
-	/* If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
-	 * of 'Oegren' */
-	N_("Tomas Oegren"),
+	"Tomas \xc3\x96gren",
 	"Jay Painter",
 	"Cameron Parish",
 	"Conrad Parker",
@@ -238,18 +236,15 @@ static gchar *contributors[] = {
 	"Nils Pedersen",
 	"Havoc Pennington",
 	"Ettore Perazzoli",
-	/* If your encoding allows it, use oacute (U00F3) for the 'o'
-	 * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin' */
-	N_("Carlos Perello Marin"),
+	"Carlos Perell\xc3\xb3 Mar\xc3\xadn",
 	"Ian Peters",
 	"Martin Kasper Petersen",
 	"Christof Petig",
 	"Joe Pfeiffer",
 	"Ben Pierce",
 	"Chris Pinkham",
-	/* If your encoding allows it, use aacute (U00E1) for the 'a'
-	 * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano' */
-	N_("German Poo-Caamano"),
+	"Hasbullah Bin Pit",
+	"Germ\xc3\xa1n Poo-Caama\xc3\xb1o",
 	"Dick Porter",
 	"Tero Pulkkinen",
 	"The Rasterman",
@@ -268,9 +263,10 @@ static gchar *contributors[] = {
 	"Peter Ryland",
 	"Bibek Sahu",
 	"Arvind Samptur",
+	"S\xc3\xb8ren Sandmann",
 	"Pablo Saratxaga",
-	/* Name in Japanese is: U7b39 U5c71 U548c U5b8f */
-	N_("Kazuhiro Sasayama"),
+	/* Kazuhiro Sasayama: */
+	"\xe7\xac\xb9 \xe5\xb1\xb1 \xe5\x92\x8c \xe5\xae\x8f",
 	"Carsten Schaar",
 	"Christian Schaller",
 	"Wayne Schuller",
@@ -278,13 +274,11 @@ static gchar *contributors[] = {
 	"Ingo Schneider",
 	"Bernd Schroeder",
 	"John Schulien",
-	/* If your encodings allows it, use ntilde (U00F1) for the 'n'
-	 * of 'Inigo' */
-	N_("Inigo Serna"),
+	"I\xc3\xb1igo Serna",
 	"Shaleh",
 	"Joe Shaw",
 	"Alejandro Aguilar Sierra",
-	N_("Miroslav Silovic"),
+	"Miroslav Silovic",
 	"Manish Singh",
 	"Timo Sirainen",
 	"David F. Skoll",
@@ -294,7 +288,6 @@ static gchar *contributors[] = {
 	"Garrett Smith",
 	"Suzanna Smith",
 	"Andrew Sobala",
-	/* not really a person name :) translate its meaning */
 	N_("The Squeaky Rubber Gnome"),
 	"Maciej Stachowiak",
 	"Stalyn",
@@ -303,7 +296,7 @@ static gchar *contributors[] = {
 	"Ben Stern",
 	"Micah Stetson",
 	"Nathan Carl Summers",
-	N_("Istvan Szekeres"),
+	"Istvan Szekeres",
 	"HideToshi Tajima",
 	"Tristan Tarrant",
 	"Anthony Taylor",
@@ -313,11 +306,14 @@ static gchar *contributors[] = {
 	"Kimball Thurston",
 	"Chris Toshok",
 	"Christoph Toshok",
+	"Malcolm Tredinnick",
 	"Tom Tromey",
 	"Jon Trowbridge",
+	/* Sergey V. Udaltsov */
+	"\xd0\xa1\xd0\xb5\xd1\x80\xd0\xb3\xd0\xb5\xd0\xb9 \xd0\x92. \xd0\xa3\xd0\xb4\xd0\xb0\xd0\xbb\xd1\x8c\xd1\x86\xd0\xbe\xd0\xb2",
 	"Vincent Untz",
-	N_("Manish Vachharajani"),
-	N_("Neil Vachharajani"),
+	"Manish Vachharajani",
+	"Neil Vachharajani",
 	"Thomas Vander Stichele",
 	"Daniel Veillard",
 	"Vendu",
@@ -325,7 +321,7 @@ static gchar *contributors[] = {
 	"Luis Villa",
 	"Marius Vollmer",
 	"Shawn Wagner",
-	N_("Wanda the GNOME Fish"),
+	N_("Wanda The GNOME Fish"),
 	"Matthias Warkus",
 	"Jeff Waugh",
 	"Bruno Widmann",
@@ -340,9 +336,7 @@ static gchar *contributors[] = {
 	"Orest Zborowski",
 	"Sascha Ziemann",
 	"Michael Zucchi",
-	"Jason van Zyl",
-	"",
-	""
+	"Jason van Zyl"
 };
 
 

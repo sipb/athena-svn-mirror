@@ -59,20 +59,27 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
-CFLAGS = @CFLAGS@
-CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
+DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 ESD_CFLAGS = @ESD_CFLAGS@
 ESD_CONFIG = @ESD_CONFIG@
 ESD_LIBS = @ESD_LIBS@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
@@ -82,18 +89,20 @@ GNOME_ABOUT_LIBS = @GNOME_ABOUT_LIBS@
 GNOME_DATE = @GNOME_DATE@
 GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
 GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
+GNOME_DISTRIBUTOR = @GNOME_DISTRIBUTOR@
 GNOME_MICRO = @GNOME_MICRO@
 GNOME_MINOR = @GNOME_MINOR@
 GNOME_PLATFORM = @GNOME_PLATFORM@
-GNOME_VENDOR = @GNOME_VENDOR@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTK_REQUIRED = @GTK_REQUIRED@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -107,12 +116,14 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
-LDFLAGS = @LDFLAGS@
+LIB = @LIB@
 LIBGNOMECANVAS_REQUIRED = @LIBGNOMECANVAS_REQUIRED@
 LIBGNOMEUI_REQUIRED = @LIBGNOMEUI_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 LT_VERSION = @LT_VERSION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -127,19 +138,21 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
 STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
-cxxflags_set = @cxxflags_set@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
 
 SUBDIRS =  	po 				libgnome-desktop 		gnome-about 			desktop-links			pixmaps				desktop-docs			man
 
 
-EXTRA_DIST =  	gnome-version.xml.in		gnome-version.xml		gnome-desktop.spec.in		gnome-desktop.spec		COPYING-DOCS			HACKING				sgmldocs.make			xmldocs.make			intltool-extract.in		intltool-merge.in		intltool-update.in
+EXTRA_DIST =  	gnome-version.xml.in.in		gnome-version.xml		gnome-desktop.spec.in		gnome-desktop.spec		COPYING-DOCS			HACKING				xmldocs.make			intltool-extract.in		intltool-merge.in		intltool-update.in
 
 
 versiondir = $(datadir)/gnome-about
@@ -147,14 +160,14 @@ version_DATA = gnome-version.xml
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  gnome-desktop.spec gnome-version.xml
+CONFIG_CLEAN_FILES =  gnome-desktop.spec gnome-version.xml.in
 DATA =  $(version_DATA)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS acconfig.h acinclude.m4 aclocal.m4 \
 config.guess config.h.in config.sub configure configure.in \
-gnome-desktop.spec.in gnome-version.xml.in install-sh ltmain.sh missing \
-mkinstalldirs
+gnome-desktop.spec.in gnome-version.xml.in.in install-sh ltmain.sh \
+missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -171,7 +184,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
-	cd $(srcdir) && $(ACLOCAL)
+	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -207,7 +220,7 @@ distclean-hdr:
 maintainer-clean-hdr:
 gnome-desktop.spec: $(top_builddir)/config.status gnome-desktop.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-gnome-version.xml: $(top_builddir)/config.status gnome-version.xml.in
+gnome-version.xml.in: $(top_builddir)/config.status gnome-version.xml.in.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 install-versionDATA: $(version_DATA)
@@ -452,6 +465,7 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+@INTLTOOL_XML_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

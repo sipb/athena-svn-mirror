@@ -1,3 +1,121 @@
+==================== 2.7.92 ====================
+
+==================== 2.7.91 ====================
+
+==================== 2.7.90 ====================
+
+==================== 2.7.4 ====================
+
+==================== 2.7.3 ====================
+
+==================== 2.7.1 ====================
+
+==================== 2.6.1 ====================
+
+==================== 2.6.0.1 ====================
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Dist the .directory.in files instead of the
+	generated ones.
+
+==================== 2.6.0 ====================
+
+==================== 2.5.92 ====================
+
+==================== 2.5.91 ====================
+
+==================== 2.5.90 ====================
+
+==================== 2.5.5 ====================
+
+2004-02-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* Applications.directory.in: Use the gnome-applications icon
+	from Jakub. Fixes bug #82836.
+
+==================== 2.5.4 ====================
+
+2004-01-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: Don't include the generated .desktop
+	files in the tarball. Bug #131607.
+
+==================== 2.5.3 ====================
+
+==================== 2.5.2 ====================
+
+==================== 2.5.1 ====================
+
+==================== 2.4.1.1 ====================
+
+==================== 2.4.1 ====================
+
+==================== 2.4.0 ====================
+
+==================== 2.3.90 ====================
+
+==================== 2.3.7 ====================
+
+==================== 2.3.6.1 ====================
+
+==================== 2.3.6 ====================
+
+==================== 2.3.4 ====================
+
+2003-07-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: ship the .directory.in files in
+	the tarball.
+
+==================== 2.3.3.1 ====================
+
+2003-06-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* Multimedia.directory.in: Rename to Multimedia. bug #98901.
+
+2003-06-16 Mark Finlay <sisob@eircom.net>
+
+	* Other.directory: Use gnome-other.png so as not to have the 
+	same icon as the office catagory.
+
+2003-06-08 Mark Finlay <sisob@eircom.net>
+
+	* Applications.directory: this file is only used for the start-here:
+	sidebar afaik so I'm changing it to use gnome-about-logo.png
+	which is bigger and so looks better in the sidebar.
+
+2003-06-08 Mark Finlay <sisob@eircom.net>
+
+	* Games.directory.in : Use gnome-joystick.png
+	* Development.directory.in : Use gnome-devel.png
+	* Accessories.directory.in : Use gnome-util.png
+
+	Go back to using old icon names to protect backwards compatability.
+
+2003-06-07 Mark Finlay <sisob@eircom.net>
+
+	* Applications.directory:
+	* Other.directory:
+	* Makefile.am:
+	
+	Create other.directory and make Applications.directory actually
+	have info in it about applications (bug #81834)
+
+==================== 2.3.3 ====================
+
+2003-06-06 Mark Finlay <sisob@eircom.net>
+
+	* Games.directory.in : Use gnome-games.png
+	* Development.directory.in : Use gnome-programming.png
+
+2003-06-05 Mark Finlay <sisob@eircom.net>
+
+	* Accessories.directory.in : Use new gnome-accessories
+	icon in gnome-icon-theme HEAD. bug #98899
+
+==================== 2.3.2 ====================
+
 2003-01-06  Mark McLoughlin  <mark@skynet.ie>
 
 	* Makefile.am: remove Home.directory.
