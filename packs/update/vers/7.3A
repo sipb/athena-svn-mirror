@@ -43,7 +43,7 @@ DS3100)
 		echo "Adding NETDEV to rc.conf."
 		echo "NETDEV=ln0;		export NETDEV	# Network device" >> ${CONFDIR}/rc.conf
 	fi
-	
+
 	echo "Changing group id's in /etc/group"
 	sed -e '/^kmem:\*:2:/s/2/6/' -e '/^tty:\*:885:/s/885/5/' /etc/group > /etc/group.$$
 	if [ -f /etc/group.$$ ]; then
@@ -112,27 +112,19 @@ echo "/etc/inetd.conf"		>> ${CONFCHG}
 echo "/.cshrc"			>> ${CONFCHG}
 echo "/.xsession"		>> ${CONFCHG}
 
-if [ ! -f /etc/athena/attach.conf ]; then
-	echo "Moving attach.conf file to /etc/athena."
-	mv -f /etc/attach.conf /etc/athena/
-fi
-if [ ! -f /etc/athena/srvtab -a -f /etc/srvtab ]; then
-	echo "Moving srvtab files to /etc/athena."
-	mv -f /etc/srvtab /etc/athena/
-	ln -s athena/srvtab /etc/srvtab
-fi
-if [ ! -f /etc/athena/version ]; then
-	echo "Moving srvtab files to /etc/athena."
-	mv -f /etc/version /etc/athena/
-fi
-if [ ! -f /etc/athena/rc.conf ]; then
-	echo "Moving rc.conf files to /etc/athena."
-	mv -f /etc/rc.conf /etc/athena/
-fi
-if [ ! -f /etc/athena/clusterinfo -a -f /etc/clusterinfo ]; then
-	echo "Moving clusterinfo* to /etc/athena."
-	mv -f /etc/clusterinfo* /etc/athena/
-fi
+for i in srvtab; do
+	if [ ! -f /etc/athena/$i -a -f /etc/$i ]; then
+		echo "Moving $i to /etc/athena"
+		mv -f /etc/$i /etc/athena/$i
+		ln -s athena/$i /etc/
+	fi
+done
+for i in attach.conf clusterinfo clusterinfo.bsh rc.conf version; do
+	if [ ! -f /etc/athena/$i -a -f /etc/$i ]; then
+		echo "Moving $i to /etc/athena"
+		mv -f /etc/$i /etc/athena/
+	fi
+done
 
 echo "Removing old symlinks."
 old_links="/etc/athena/backup \
