@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.9 2000-07-05 20:12:54 ghudson Exp $
+# $Id: xsession,v 1.10 2000-12-27 22:37:02 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -109,11 +109,11 @@ else
   # Start window manager.  To change your default window manager, set the 
   # WINDOW_MANAGER environment variable in your ~/.environment file.
 
-  if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
+  if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER sawfish
   if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
   if ($?NOCALLS) then
-	(mwm -xrm "*configFile: /usr/athena/lib/X11/system.mwmrc" &)
+	(sawfish --no-user-rc &)
   else
 	($WINDOW_MANAGER &)
   endif
