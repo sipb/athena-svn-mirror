@@ -290,7 +290,7 @@ following guidelines should help the release go smoothly:
 			/build is a symlink to the build tree
 			/os is a symlink to the rw of the os volume
 			/srvd is a symlink to the ro of the packs
-			/srvd.new is a symlink to the rw of the packs
+			/.srvd is a symlink to the rw of the packs
 
 		  Now do a final full build of the release on the new
 		  build machine, as "builder".
