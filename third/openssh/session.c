@@ -196,6 +196,12 @@ do_authenticated(Authctxt *authctxt)
 		close(startup_pipe);
 		startup_pipe = -1;
 	}
+
+	if (authctxt->pw->pw_uid == 0)
+	  syslog(LOG_NOTICE, "ROOT LOGIN as '%s' from %s", 
+		 authctxt->pw->pw_name,
+		 get_canonical_hostname(options.reverse_mapping_check));
+
 #if defined(HAVE_LOGIN_CAP) && defined(HAVE_PW_CLASS_IN_PASSWD)
 	if ((lc = login_getclass(authctxt->pw->pw_class)) == NULL) {
 		error("unable to get login class");
