@@ -5,14 +5,12 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v $
 /**/#	$Author: probe $
-/**/#	$Id: Imakefile,v 1.6 1993-11-19 15:27:05 probe Exp $
+/**/#	$Id: Imakefile,v 1.7 1993-11-24 14:38:55 probe Exp $
 /**/#
 
 #ifdef _AIX
 MACHLIBS= -lsrc
 #endif
-
-LIBS= $(ZLIBS) $(MACHLIBS)
 
 SRCS = syslogd.c logger.c syslog.c 
 
@@ -26,5 +24,5 @@ SimpleProgram(logger,$(LOBJS),,$(ATHETCDIR))
 
 XDEFS = -I. $(COMPAT)
 
-SimpleProgram(syslogd,$(DOBJS),$(LIBS),$(ATHRETCDIR))
+SimpleProgram(syslogd,$(DOBJS) $(ZLIB),$(ZLIBS) $(MACHLIBS),$(ATHRETCDIR))
 install_man(syslogd.8,syslogd.8)

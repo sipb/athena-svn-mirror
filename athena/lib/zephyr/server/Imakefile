@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: probe $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.16 1993-11-21 04:44:00 probe Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.17 1993-11-24 14:39:07 probe Exp $
 /**/#
 
 #if defined(SYSLOG_COMPAT42)
@@ -54,7 +54,7 @@ OBJS=	access.o \
 	zstring.o
 
 error_table(zsrv_err)
-SimpleProgram(zephyrd,$(OBJS) version.o,$(ZLIBS) $(LIB_HES),$(ATHETCDIR))
+SimpleProgram(zephyrd,$(OBJS) version.o $(ZLIB),$(ZLIBS) $(LIB_HES),$(ATHETCDIR))
 install_man(zephyrd.8,zephyrd.8)
 install_file(default.subscriptions,$(ZLIBDIR))
 
