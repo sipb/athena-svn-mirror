@@ -1,0 +1,26 @@
+# This is the Imakefile for the CREF motif-based finder.
+#
+#       Lucien Van Elsen
+#       MIT Project Athena
+#
+#       Copyright (c) 1991 by the Massachusetts Institute of Technology
+#
+#       $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v $
+#       $Author: lwvanels $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.1 1991-03-21 16:16:25 lwvanels Exp $
+#
+
+SRCS		=	main.c callbacks.c MriRegAll.c
+OBJS		=	main.o callbacks.o MriRegAll.o
+
+SYS_LIBS   	=	$(MotifWCLLib) $(MotifUtilLib) \
+			$(MotifLib) $(MotifToolLib) $(XLib)
+INCLUDES	=	-I/mit/motif/include
+
+NormalProgramTarget(xbrowser,$(OBJS),,,$(SYS_LIBS))
+SaberProgramTarget(xbrowser,$(SRCS),$(OBJS),,$(SYS_LIBS))
+
+DependTarget()
+LintTarget()
+
+AllTarget(xbrowser)
