@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 1.1 1988-04-25 14:11:00 steiner Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 1.2 1988-05-25 16:52:52 steiner Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -20,6 +20,11 @@ static char rcsid_getrealm_c[] =
 #include <stdio.h>
 #include <krb.h>
 #include <sys/param.h>
+
+/* for Ultrix and friends ... */
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 64
+#endif
 
 /*
  * krb_getrealm.
