@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.5 1987-07-14 17:08:43 jtkohl Exp $";
+static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.6 1987-07-15 16:44:25 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -39,8 +39,7 @@ static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
  * void uloc_hflush(addr)
  *	struct in_addr *addr;
  *
- * void uloc_send_locations(server, host)
- *	ZServerDesc_t *server;
+ * void uloc_send_locations(host)
  *	ZHostList_t *host;
  */
 
@@ -268,6 +267,7 @@ ZHostList_t *host;
 	register int i;
 	register struct in_addr *haddr = &host->zh_addr.sin_addr;
 	char *lyst[NUM_FIELDS];
+	Code_t retval;
 
 	for (i = 0, loc = locations; i < num_locs; i++, loc++) {
 		if (loc->zlt_addr.s_addr != haddr->s_addr)
@@ -279,10 +279,18 @@ ZHostList_t *host;
 #else
 		lyst[1] = loc->zlt_time;
 #endif notdef
-		bdump_send_list_tcp(ACKED, bdump_sin.sin_port, LOGIN_CLASS,
-			      loc->zlt_user,
-			      (loc->zlt_visible == VISIBLE) ? LOGIN_USER_LOGIN : LOGIN_QUIET_LOGIN,
-			      myname, "", lyst, NUM_FIELDS);
+
+		if ((retval = bdump_send_list_tcp(ACKED, bdump_sin.sin_port,
+						  LOGIN_CLASS, loc->zlt_user,
+						  (loc->zlt_visible == VISIBLE)
+						  ? LOGIN_USER_LOGIN
+						  : LOGIN_QUIET_LOGIN,
+						  myname, "", lyst,
+						  NUM_FIELDS)) != ZERR_NONE) {
+			syslog(LOG_ERR, "uloc_send_locs: %s",
+			       error_message(retval));
+			return;
+		}
 	}
 	return;
 }
