@@ -239,10 +239,10 @@ char *argv[];
 
 
 
-#define	appdefaults-in-stafftools	0
+#define	AppdefaultsInStafftools	0
 
-#ifdef appdefaults-in-stafftools
-#ifdef mips
+#if AppdefaultsInStafftools
+#if defined(mips) || defined(_AIX)
 	if (!oldpath) {
 		newpath = (char *) malloc (100);
 		strcpy (newpath, "XFILESEARCHPATH=/mit/StaffTools/lib/X11/app-defaults/%N");
@@ -340,7 +340,19 @@ SetUpEdsc()
 #ifdef ibm032
 		strcpy (machtype, "rt");
 #else
+#ifdef _IBMR2
+		strcpy (machtype, "rsaix");
+#else
+#ifdef _AUX_SOURCE
+		strcpy (machtype, "mac");
+#else
+#ifdef sparc
+		strcpy (machtype, "sparc");
+#else
 		Need to define for this machine
+#endif
+#endif
+#endif
 #endif
 #endif
 #endif
