@@ -22,6 +22,7 @@ Mwm*interactivePlacement:	True
 Mwm*keyboardFocusPolicy:	pointer
 Mwm*limitResize:		True
 Mwm*lowerOnIconify:		False
+Mwm*multiScreen:		True
 Mwm*resizeBorderWidth:		6
 Mwm*startupKeyFocus:		False
 Mwm*transientDecoration:	border

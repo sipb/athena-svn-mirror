@@ -172,5 +172,6 @@ Mwm*icon*fontList:		fixed
 	*XLogout.clientDecoration:      border
 	*XLogout.clientFunctions:       -close
 	*Zwgc.clientDecoration:         none
+	*multiScreen:			True
 
 /* End of app-defaults file */
