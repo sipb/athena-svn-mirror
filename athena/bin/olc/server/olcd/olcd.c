@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $
+ *	$Id: olcd.c,v 1.48.1.1 1992-01-07 15:52:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.48.1.1 1992-01-07 15:52:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -298,42 +298,8 @@ main (argc, argv)
      * allocate lists
      */
 
-    if ((Knuckle_free = (KNUCKLE *) calloc(KNUC_ALLOC_SZ,sizeof(KNUCKLE)))
-	== NULL) {
-      log_error("olcd: can't allocate initial Knucles");
-      exit(ERROR);
-    }
-    /* Link up allocated knuckles into a free list */
-    for(i=0;i<KNUC_ALLOC_SZ-1;i++)
-      Knuckle_free[i].next = &Knuckle_free[i+1];
-    Knuckle_free[KNUC_ALLOC_SZ-1].next = NULL;
-
-    if ((User_free = (USER *) calloc(USER_ALLOC_SZ,sizeof(USER)))
-	== NULL) {
-      log_error("olcd: can't allocate initial User list");
-      exit(ERROR);
-    }
-    for(i=0;i<USER_ALLOC_SZ-1;i++)
-      User_free[i].next = &User_free[i+1];
-    User_free[KNUC_ALLOC_SZ-1].next = NULL;
-
-    if ((Question_free = (QUESTION *) calloc(QUES_ALLOC_SZ,sizeof(QUESTION)))
-	== NULL) {
-      log_error("olcd: can't allocate initial Knucles");
-      exit(ERROR);
-    }
-    for(i=0;i<QUES_ALLOC_SZ-1;i++)
-      Question_free[i].next = &Question_free[i+1];
-    Question_free[KNUC_ALLOC_SZ-1].next = NULL;
-
-
-    Knuckle_List = (KNUCKLE **) malloc(sizeof(KNUCKLE *));
-    if (Knuckle_List == (KNUCKLE **) NULL)
-    {
-	log_error("olcd: can't allocate Knuckle List");
-	exit(ERROR);
-    }
-    *Knuckle_List = (KNUCKLE *) NULL;
+    init_user_hash();
+    init_knuc_hash();
 
     Topic_List = (TOPIC **) malloc(sizeof(TOPIC *));
     if (Topic_List == (TOPIC **) NULL)
@@ -817,7 +783,9 @@ reap_child(sig)
 #ifdef SABER
   sig = sig;
 #endif
+#ifndef _POSIX_SOURCE
   signal(SIGCHLD, reap_child); /* When a child dies, reap it. */
+#endif
   pid = wait3(&status,WNOHANG,0);
   while(pid > 0)
     pid = wait3(&status,WNOHANG,0);
@@ -890,7 +858,7 @@ authenticate(request, addr)
 #else /* KERBEROS */
 
     result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
-			addr,&data,SRVTAB_FILE);
+			addr,&data,"");
 
     strcpy(request->requester.username,data.pname);
     strcpy(request->requester.realm,data.prealm);
@@ -926,9 +894,9 @@ get_kerberos_ticket()
       dest_tkt();
       ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
 			       "krbtgt", SERVER_REALM,
-			       96, SRVTAB_FILE);
+			       96, NULL);
       if (ret != KSUCCESS) {
-	sprintf(buf,"get_tkt: %s", krb_err_txt[ret]);
+	sprintf(buf,"get_kerberos_ticket: %s", krb_err_txt[ret]);
 	log_error(buf);
 	ticket_time = 0L;
 	return(ERROR);
