@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpd_jobs.h,v 1.1.1.4 2000-03-31 15:48:08 mwhitson Exp $
+ * $Id: lpd_jobs.h,v 1.1.1.4.2.1 2001-03-07 01:42:41 ghudson Exp $
  ***************************************************************************/
 
 
@@ -26,7 +26,7 @@ int Local_job( struct job *job, char *id );
 int Fork_subserver( struct line_list *server_info, int use_subserver,
 	struct line_list *parms );
 void Wait_for_subserver( struct line_list *servers, struct line_list *order );
-int Decode_transfer_failure( int attempt, struct job *job, char *id );
+int Decode_transfer_failure( int attempt, struct job *job );
 void Update_status( struct job *job, int status );
 int Check_print_perms( struct job *job );
 void Setup_user_reporting( struct job *job );

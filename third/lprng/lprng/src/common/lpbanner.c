@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpbanner.c,v 1.1.1.3 2000-03-31 15:47:54 mwhitson Exp $";
+"$Id: lpbanner.c,v 1.1.1.3.2.1 2001-03-07 01:41:26 ghudson Exp $";
 
 #include "lp.h"
 
@@ -137,7 +137,6 @@ int main( int argc, char *argv[], char *envp[] )
 	 * Turn off SIGPIPE
 	 */
 	(void)signal( SIGPIPE, SIG_IGN );
-	(void)signal( SIGCHLD, SIG_DFL );
 	banner();
 	return(0);
 }

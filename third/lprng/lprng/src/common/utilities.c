@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: utilities.c,v 1.2 2000-04-04 13:50:55 ghudson Exp $";
+"$Id: utilities.c,v 1.2.2.1 2001-03-07 01:42:17 ghudson Exp $";
 
 #include "lp.h"
 
@@ -55,7 +55,7 @@ char *Time_str(int shortform, time_t t)
 	/* now format the time */
 	if( Ms_time_resolution_DYN == 0 ){
 		char *s;
-		if( ( s = safestrrchr( buffer, '.' )) ){
+		if( ( s = strrchr( buffer, '.' )) ){
 			*s = 0;
 		}
 	}
@@ -64,7 +64,7 @@ char *Time_str(int shortform, time_t t)
 
 
 /*
- * Pretty_time: return "cleaned up" ctime() string...
+ * Time_str: return "cleaned up" ctime() string...
  *
  * in YY/MO/DY/hr:mn:sc
  * Thu Aug 4 12:34:17 BST 1994 -> 12:34:17
@@ -265,53 +265,19 @@ void plp_block_all_signals ( plp_block_mask *oblock )
 	sigset_t block;
 
 	(void) sigfillset (&block); /* block all signals */
-	if (sigprocmask (SIG_SETMASK, &block, oblock) < 0)
+	if (sigprocmask (SIG_BLOCK, &block, oblock) < 0)
 		logerr_die( LOG_ERR, "plp_block_all_signals: sigprocmask failed");
 #else
-	*oblock = sigblock( ~0 ); /* block all signals */
+	*omask = sigblock( ~0 ); /* block all signals */
 #endif
 }
-
 
 void plp_unblock_all_signals ( plp_block_mask *oblock )
 {
 #ifdef HAVE_SIGPROCMASK
-	sigset_t block;
-
-	(void) sigemptyset (&block); /* block all signals */
-	if (sigprocmask (SIG_SETMASK, &block, oblock) < 0)
-		logerr_die( LOG_ERR, "plp_unblock_all_signals: sigprocmask failed");
+	(void) sigprocmask (SIG_SETMASK, oblock, (sigset_t *) 0);
 #else
-	*oblock = sigblock( 0 ); /* unblock all signals */
-#endif
-}
-
-void plp_set_signal_mask ( plp_block_mask *in, plp_block_mask *out )
-{
-#ifdef HAVE_SIGPROCMASK
-	if (sigprocmask (SIG_SETMASK, in, out ) < 0)
-		logerr_die( LOG_ERR, "plp_set_signal_mask: sigprocmask failed");
-#else
-	if( out ){
-		*out = sigblock( *in ); /* block all signals */
-	} else {
-	 	(void)sigblock( *in ); /* block all signals */
-	}
-#endif
-}
-
-void plp_unblock_one_signal ( int sig, plp_block_mask *oblock )
-{
-#ifdef HAVE_SIGPROCMASK
-	sigset_t block;
-
-	(void) sigemptyset (&block); /* clear out signals */
-	(void) sigaddset (&block, sig ); /* clear out signals */
-	if (sigprocmask (SIG_UNBLOCK, &block, oblock ) < 0)
-		logerr_die( LOG_ERR, "plp_unblock_one_signal: sigprocmask failed");
-#else
-	*oblock = sigblock( 0 );
-	(void) sigsetmask (*oblock & ~ sigmask(sig) );
+	(void) sigsetmask (*omask);
 #endif
 }
 
@@ -325,7 +291,7 @@ void plp_block_one_signal( int sig, plp_block_mask *oblock )
 	if (sigprocmask (SIG_BLOCK, &block, oblock ) < 0)
 		logerr_die( LOG_ERR, "plp_block_one_signal: sigprocmask failed");
 #else
-	*oblock = sigblock( sigmask( sig ) );
+	*omask = sigblock( sigmask( sig ) );
 #endif
 }
 
@@ -340,43 +306,46 @@ void plp_sigpause( void )
 #endif
 }
 
+#ifndef HAVE_STRCASECMP
+
 /**************************************************************
  * Bombproof versions of strcasecmp() and strncasecmp();
  **************************************************************/
 
 /* case insensitive compare for OS without it */
-int safestrcasecmp (const char *s1, const char *s2)
+ int strcasecmp (const char *s1, const char *s2)
 {
 	int c1, c2, d;
-	if( (s1 == s2) ) return(0);
-	if( (s1 == 0 ) && s2 ) return( -1 );
-	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;;) {
-		c1 = *((unsigned char *)s1++);
-		c2 = *((unsigned char *)s2++);
-		if( isupper(c1) ) c1 = tolower(c1);
-		if( isupper(c2) ) c2 = tolower(c2);
+		c1 = *s1++;
+		c2 = *s2++;
+		if (isalpha (c1) && isalpha (c2)) {
+			c1 = tolower (c1);
+			c2 = tolower (c2);
+		}
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
 	}
 	return( 0 );
 }
+#endif
 
+#ifndef HAVE_STRNCASECMP
 /* case insensitive compare for OS without it */
-int safestrncasecmp (const char *s1, const char *s2, int len )
+ int strncasecmp (const char *s1, const char *s2, int len )
 {
 	int c1, c2, d;
-	if( (s1 == s2) && s1 == 0 ) return(0);
-	if( (s1 == 0 ) && s2 ) return( -1 );
-	if( s1 && (s2 == 0 ) ) return( 1 );
 	for (;len>0;--len){
-		c1 = *((unsigned char *)s1++);
-		c2 = *((unsigned char *)s2++);
-		if( isupper(c1) ) c1 = tolower(c1);
-		if( isupper(c2) ) c2 = tolower(c2);
+		c1 = *s1++;
+		c2 = *s2++;
+		if (isalpha (c1) && isalpha (c2)) {
+			c1 = tolower (c1);
+			c2 = tolower (c2);
+		}
 		if( (d = (c1 - c2 )) || c1 == 0 ) return(d);
 	}
 	return( 0 );
 }
+#endif
 
 /* perform safe comparison, even with null pointers */
 int safestrcmp( const char *s1, const char *s2 )
@@ -387,38 +356,13 @@ int safestrcmp( const char *s1, const char *s2 )
 	return( strcmp(s1, s2) );
 }
 
-
 /* perform safe comparison, even with null pointers */
-int safestrncmp( const char *s1, const char *s2, int len )
+int safestrcasecmp( const char *s1, const char *s2 )
 {
-	if( (s1 == s2) && s1 == 0 ) return(0);
+	if( (s1 == s2) ) return(0);
 	if( (s1 == 0 ) && s2 ) return( -1 );
 	if( s1 && (s2 == 0 ) ) return( 1 );
-	return( strncmp(s1, s2, len) );
-}
-
-
-/* perform safe strchr, even with null pointers */
-char *safestrchr( const char *s1, int c )
-{
-	if( s1 ) return( strchr( s1, c ) );
-	return( 0 );
-}
-
-
-/* perform safe strrchr, even with null pointers */
-char *safestrrchr( const char *s1, int c )
-{
-	if( s1 ) return( strrchr( s1, c ) );
-	return( 0 );
-}
-
-
-/* perform safe strchr, even with null pointers */
-char *safestrpbrk( const char *s1, const char *s2 )
-{
-	if( s1 && s2 ) return( strpbrk( s1, s2 ) );
-	return( 0 );
+	return( strcasecmp(s1, s2) );
 }
 
 /***************************************************************************
@@ -776,7 +720,6 @@ int Read_write_timeout(
 {
 	Alarm_timed_out = 1;
 	signal( SIGALRM, SIG_IGN );
-	errno = EINTR;
 #if defined(HAVE_SIGLONGJMP)
 	siglongjmp(Timeout_env,1);
 #else
@@ -798,10 +741,8 @@ int Read_write_timeout(
 void Set_timeout_alarm( int timeout )
 {
 	int err = errno;
-	sigset_t oblock;
 
 	signal(SIGALRM, SIG_IGN);
-	plp_unblock_one_signal( SIGALRM, &oblock );
 	alarm(0);
 	Alarm_timed_out = 0;
 	Timeout_pending = 0;
@@ -842,11 +783,10 @@ void Clear_timeout( void )
  * "daemon" owns data files used by the PLP utilities (spool directories, etc).
  *   and is set by the 'user' entry in the configuration file.
  * 
- * To_ruid( user );	-- set ruid to user, euid to root
- * To_euid( user );	-- set euid to user, ruid to root
- * To_root();	-- set euid to root, ruid to root
- * To_daemon();	-- set euid to daemon, ruid to root
- * To_user();	-- set euid to user, ruid to root
+ * To_user();	-- set euid to user
+ * To_root();	-- set euid to root
+ * To_daemon();	-- set euid to daemon
+ * To_root();	-- set euid to root
  * Full_daemon_perms() -- set both UID and EUID, one way, no return
  * 
  */
@@ -1017,46 +957,6 @@ void Clear_timeout( void )
 }
 
 
-/***************************************************************************
- * setruid_wrapper()
- * 1. you must have done the initialization
- * 2. check to see if you need to do anything
- * 3. check to make sure you can
- ***************************************************************************/
- static int setruid_wrapper( int to )
-{
-	int err = errno;
-	uid_t ruid;
-
-
-	DEBUG4(
-		"setruid_wrapper: Before RUID/EUID %d/%d, DaemonUID %d, UID_root %d",
-		OriginalRUID, OriginalEUID, DaemonUID, UID_root );
-	if( UID_root ){
-		/* be brutal: set both to root */
-		if( setuid( 0 ) ){
-			logerr_die( LOG_ERR,
-			"setruid_wrapper: setuid() failed!!");
-		}
-#if defined(HAVE_SETRUID)
-		if( setruid( to ) ){
-			logerr_die( LOG_ERR,
-			"setruid_wrapper: setruid() failed!!");
-		}
-#else
-		if( setreuid( to, 0) ){
-			logerr_die( LOG_ERR,
-			"setruid_wrapper: setreuid() failed!!");
-		}
-#endif
-	}
-	ruid = getuid();
-	DEBUG4( "setruid_wrapper: After uid/euid %d/%d", getuid(), geteuid() );
-	errno = err;
-	return( to != ruid );
-}
-
-
 /*
  * Superhero functions - change the EUID to the requested one
  *  - these are really idiot level,  as all of the tough work is done
@@ -1073,10 +973,6 @@ int To_daemon(void)
 int To_user(void)
 {
 	setup_info(); return( seteuid_wrapper( OriginalRUID )	);
-}
-int To_ruid(int uid)
-{
-	setup_info(); return( setruid_wrapper( uid )	);
 }
 int To_uid( int uid )
 {
@@ -1266,7 +1162,7 @@ void Reset_daemonuid(void)
 #  define plp_struct_statfs struct statvfs
 #  define statfs(path, buf) statvfs(path, buf)
 #  define USING "STATVFS"
-#  define BLOCKSIZE(f) (unsigned long)(f.f_frsize?f.f_frsize:f.f_bsize)
+#  define BLOCKSIZE(f) (unsigned long)f.f_frsize
 #  define BLOCKS(f)    (unsigned long)f.f_bavail
 # endif
 
@@ -1299,9 +1195,9 @@ void Reset_daemonuid(void)
  * Check_space() - check to see if there is enough space
  ***************************************************************************/
 
-double Space_avail( char *pathname )
+unsigned long Space_avail( char *pathname )
 {
-	double space = 0;
+	unsigned long space = 0;
 	plp_struct_statfs fsb;
 
 	if( plp_statfs( pathname, &fsb ) == -1 ){
@@ -1311,3 +1207,4 @@ double Space_avail( char *pathname )
 	}
 	return(space);
 }
+

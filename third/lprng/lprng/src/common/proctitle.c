@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: proctitle.c,v 1.1.1.4 2000-03-31 15:47:58 mwhitson Exp $";
+"$Id: proctitle.c,v 1.1.1.4.2.1 2001-03-07 01:42:03 ghudson Exp $";
 
 #include "lp.h"
 #include "proctitle.h"
@@ -27,7 +27,7 @@
 /*
  * From the Sendmail.8.8.8 Source Distribution
  *
- * Copyright (c) 1983, 1995-2000 Eric P. Allman
+ * Copyright (c) 1983, 1995-1997 Eric P. Allman
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
  *
@@ -98,7 +98,7 @@
 # endif
 # if defined(__FreeBSD__)
 #  undef SPT_TYPE
-#  if __FreeBSD__ >= 2
+#  if __FreeBSD__ == 2
 #   include <osreldate.h>		/* and this works */
 #   if __FreeBSD_version >= 199512	/* 2.2-current right now */
 #    include <libutil.h>
@@ -260,24 +260,18 @@
 	Argv = argv;
 
 	/*
-	**  Determine how much space we can use for setproctitle.  
-	**  Use all contiguous argv and envp pointers starting at argv[0]
- 	*/
-	for (i = 0; i < argc; i++)
-	{
-		if (i==0 || LastArgv + 1 == argv[i])
-			LastArgv = argv[i] + strlen(argv[i]);
-		else
-			continue;
-	}
-	for (i=0; envp[i] != NULL; i++)
-	{
-		if (LastArgv + 1 == envp[i])
-			LastArgv = envp[i] + strlen(envp[i]);
-		else
-			continue;
-	}
-	DEBUG1("initsetproctitle: Argv 0x%lx, LastArgv 0x%lx", Argv, LastArgv);
+	**  Find the last environment variable within sendmail's
+	**  process memory area.
+	*/
+	while (i > 0 && (envp[i - 1] < argv[0] ||
+			 envp[i - 1] > (argv[argc - 1] +
+					strlen(argv[argc - 1]) + 1 + envpsize)))
+		i--;
+
+	if (i > 0)
+		LastArgv = envp[i - 1] + strlen(envp[i - 1]);
+	else
+		LastArgv = argv[argc - 1] + strlen(argv[argc - 1]);
 #else
 	DEBUG1("initsetproctitle: using builtin");
 #endif
@@ -314,6 +308,8 @@
     (void) plp_vsnprintf(buf, sizeof(buf), fmt, ap);
     VA_END;
 
+	/* print heading for grep */
+	(void) safestrncpy(buf, fmt);
 	i = strlen(buf);
 
 #  if SPT_TYPE == SPT_PSTAT

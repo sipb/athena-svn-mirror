@@ -17,7 +17,7 @@
 # try running the tests
 #
 # The HOST is the name of the local host, should be fully-qualified,
-#   otherwise lpd.perms lookups won't work proper ly
+#   otherwise lpd.perms lookups won't work properly
 # You can use checkpc -D1 to see what the fully qualified name is.
 #
 # The USER is the name of the local user

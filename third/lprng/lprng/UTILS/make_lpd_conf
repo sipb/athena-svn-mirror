@@ -1,6 +1,10 @@
 #!/bin/sh
 date=`date`;
-AWK=gawk
+AWK=awk
+XX=` gawk --version 2>&1 >/dev/null ` ;
+if [ $? = 0 ] ; then
+  AWK=gawk
+fi;
 cat <<EOF
 # lpd.conf generated from $1 on $date
 #   The values in this file are the default values.
@@ -76,17 +80,15 @@ ${AWK} '
 			value = value + 0;
 			# print "FLAG \"" value "\"" ;
 			if( value == 0 ){
-				name= name "@ (FLAG off)";
-			} else {
-				name= name "  (FLAG on)";
+				name= name "@";
 			}
 		} else if( type == 1 ){
 			if( value == "" ){
 				value = 0;
 			}
-			name = name "=" value "  (INTEGER)";
+			name = name "=" value ;
 		} else {
-			name = name "=" value "  (STRING)";
+			name = name "=" value ;
 		}
 		print "#   default " name ;
 	} else {

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: gethostinfo.c,v 1.1.1.4 2000-03-31 15:48:03 mwhitson Exp $";
+"$Id: gethostinfo.c,v 1.1.1.4.2.1 2001-03-07 01:40:59 ghudson Exp $";
 
 /********************************************************************
  * char *get_fqdn (char *shorthost)
@@ -148,12 +148,10 @@ char *Fixup_fqdn( const char *shorthost, struct host_information *info,
 	 * To say that I am not impressed with this is a severe understatement.
 	 * Patrick Powell, Jan 29, 1997
 	 */
-	fqdn = 0;
-	if( safestrchr( host_ent->h_name, '.' ) ){
-		fqdn = host_ent->h_name;
-	} else if( (list = host_ent->h_aliases) ){
-		for( ; *list && !safestrchr(*list,'.'); ++list );
-		fqdn = *list;
+	fqdn = strchr( host_ent->h_name, '.' );
+	for( list = host_ent->h_aliases;
+		fqdn == 0 && list && *list; ++list ){
+		fqdn = strchr( *list, '.' );
 	}
 	if( fqdn == 0 ){
 		char buffer[64];
@@ -189,22 +187,20 @@ char *Fixup_fqdn( const char *shorthost, struct host_information *info,
 		}
 	}
 
-	if( fqdn == 0 ){
-		if( safestrchr( host_ent->h_name, '.' ) ){
-			fqdn = host_ent->h_name;
-		} else if( (list = host_ent->h_aliases) ){
-			for( ; *list && !safestrchr(*list,'.'); ++list );
-			fqdn = *list;
-		}
-		if( fqdn == 0 ) fqdn = host_ent->h_name;
+	fqdn = 0;
+	if( strchr( host_ent->h_name, '.' ) ){
+		fqdn = host_ent->h_name;
+	} else if( (list = host_ent->h_aliases) ){
+		for( ; fqdn == 0 && (fqdn = *list) && !strchr(fqdn,'.'); ++list );
 	}
+	if( !fqdn ) fqdn = host_ent->h_name;
 
 	info->h_addrtype = host_ent->h_addrtype;
 	info->h_length = host_ent->h_length;
 	/* put the names in the database */
 	info->fqdn = safestrdup(fqdn,__FILE__,__LINE__);
 	info->shorthost = safestrdup(fqdn,__FILE__,__LINE__);
-	if( (s = safestrchr(info->shorthost,'.')) ) *s = 0;
+	if( (s = strchr(info->shorthost,'.')) ) *s = 0;
 
 	Add_line_list(&info->host_names,host_ent->h_name,0,0,0 );
 	for( list = host_ent->h_aliases; list && (s = *list); ++list ){
@@ -485,7 +481,7 @@ void form_addr_and_mask(char *v, char *addr,char *mask,
 	}
 	memset( addr, 0, addrlen );
 	memset( mask, ~0, addrlen );
-	if( (s = safestrchr( v, '/' )) ) *s = 0;
+	if( (s = strchr( v, '/' )) ) *s = 0;
 	inet_pton(family, v, addr );
 	if( s ){
 		*s++ = '/';
@@ -583,7 +579,7 @@ int Match_ipaddr_value( struct line_list *list, struct host_information *host )
 		if( !(str = list->list[i]) ) continue;
 		if( *str == '@' ) {	/* look up host in netgroup */
 #ifdef HAVE_INNETGR
-			result = !innetgr( str+1, host->shorthost, NULL, NULL );
+			result = !innetgr( str+1, host->fqdn, NULL, NULL );
 #else /* HAVE_INNETGR */
 			DEBUGF(DDB3)("match: no innetgr() call, netgroups not permitted");
 #endif /* HAVE_INNETGR */

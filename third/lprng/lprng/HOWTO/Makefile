@@ -22,12 +22,10 @@ SHELL =		/bin/sh
 
 DOC=LPRng-HOWTO
 
-all: license.txt y2k.txt $(DOC).html $(DOC).ps purge LPRng.html
+all: license.txt $(DOC).html $(DOC).ps purge LPRng.html
 
 
 license.txt: $(SRC)/../LICENSE
-	cp $^ $@
-y2k.txt: $(SRC)/../Y2KCompliance
 	cp $^ $@
 
 $(DOC).html: $(DOC).sgml Makefile
@@ -45,10 +43,9 @@ $(DOC).ps: $(DOC).tex Makefile
 		'\nonstopmode\input{$(DOC).tex}'
 	- TEXINPUTS=:/usr/local/lib/sgml-tools latex \
 		'\nonstopmode\input{$(DOC).tex}'
-	dvips -q -t letter -o $(DOC).ps $(DOC).dvi
-LPRng.html: $(SRC)/LPRng.html.orig Makefile
-	date=`date | awk '{ print $$2,$$3,$$6;}'`; \
-	sed -e "s/^DATE/$$date/" $(SRC)/LPRng.html.orig >$@
+	dvips -q -t a4 -o $(DOC).ps $(DOC).dvi
+LPRng.html: $(SRC)/LPRng.html.orig
+	cp $^ $@
 purge:
 	rm -f *.Bex *.aux *.log *.toc
 fixman:
@@ -65,7 +62,7 @@ clean:
 .PHONY: all clean install ci install.zman update purge
 
 update:
-	updateversion *.sgml LPRng.html.orig
+	updateversion *.sgml
 
 # 
 #
@@ -88,6 +85,3 @@ cifast ci:
 	for i in  *.sgml Makefile.in Makefile; do \
 		checkin $$i; \
 	done;
-
-correct:
-	correct -d dict *.sgml

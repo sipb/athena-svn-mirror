@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: controlword.c,v 1.1.1.4 2000-03-31 15:48:03 mwhitson Exp $";
+"$Id: controlword.c,v 1.1.1.4.2.1 2001-03-07 01:40:51 ghudson Exp $";
 
 
 #include "lp.h"
@@ -20,7 +20,6 @@
 { "ABORT", OP_ABORT },
 { "ACTIVE", OP_ACTIVE },
 { "CLASS", OP_CLASS },
-{ "CLIENT", OP_CLIENT },
 { "DEBUG", OP_DEBUG },
 { "DEFAULTQ", OP_DEFAULTQ },
 { "DISABLE", OP_DISABLE },
@@ -29,6 +28,7 @@
 { "HOLD", OP_HOLD },
 { "HOLDALL", OP_HOLDALL },
 { "KILL", OP_KILL },
+{ "LOCAL", OP_LOCAL },
 { "LPD", OP_LPD },
 { "LPQ", OP_LPQ },
 { "LPRM", OP_LPRM },
@@ -46,7 +46,6 @@
 { "TOPQ", OP_TOPQ },
 { "UP", OP_UP },
 { "SERVER", OP_SERVER },
-{ "DEFAULTS", OP_DEFAULTS },
 
 {0}
 };

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lockfile.c,v 1.1.1.4 2000-03-31 15:47:52 mwhitson Exp $";
+"$Id: lockfile.c,v 1.1.1.4.2.1 2001-03-07 01:41:25 ghudson Exp $";
 
 /***************************************************************************
  * MODULE: lockfile.c
@@ -63,13 +63,13 @@
 #include "fileopen.h"
 /**** ENDINCLUDE ****/
 
-#if defined(HAVE_SYS_TTYCOM_H)
+#ifdef HAVE_SYS_TTYCOM_H
 #include <sys/ttycom.h>
 #endif
 #if defined(HAVE_SYS_TTOLD_H) && !defined(IRIX)
 #include <sys/ttold.h>
 #endif
-#if defined(HAVE_SYS_IOCTL_H)
+#ifdef HAVE_SYS_IOCTL_H
 #include <sys/ioctl.h>
 #endif
 
@@ -83,12 +83,36 @@
 
 int Do_lock( int fd, int block )
 {
-    int code = -2;
+    int code = -1;
 
 	DEBUG3("Do_lock: fd %d, block '%d'", fd, block );
 
-#if defined(HAVE_FLOCK)
-	if( code == -2 ){
+#ifdef HAVE_FCNTL
+	if( code < 0 ){
+		struct flock file_lock;
+		int err;
+		int how;
+		DEBUG3 ("Do_lock: using fcntl with SEEK_SET, block %d", block );
+
+		how = F_SETLK;
+		if( block ) how = F_SETLKW;
+
+		memset( &file_lock, 0, sizeof( file_lock ) );
+		file_lock.l_type = F_WRLCK;
+		file_lock.l_whence = SEEK_SET;
+		code = fcntl( fd, how, &file_lock);
+		err = errno;
+		if( code < 0 ){
+			code = -1;
+		} else {
+			code = 1;
+		}
+		DEBUG3 ("devlock_fcntl: status %d", code );
+		errno = err;
+	}
+#endif
+#ifdef HAVE_FLOCK
+	if( code < 0 ){
 		int err;
 		int how;
 
@@ -114,8 +138,8 @@ int Do_lock( int fd, int block )
 		errno = err;
 	}
 #endif
-#if defined(HAVE_LOCKF)
-	if( code == -2 ){
+#ifdef HAVE_LOCKF
+	if( code < 0 ){
 		int err;
 		int how;
 
@@ -138,30 +162,6 @@ int Do_lock( int fd, int block )
 		} else {
 			code = 1;
 		}
-		errno = err;
-	}
-#endif
-#if defined(HAVE_FCNTL)
-	if( code == -2 ){
-		struct flock file_lock;
-		int err;
-		int how;
-		DEBUG3 ("Do_lock: using fcntl with SEEK_SET, block %d", block );
-
-		how = F_SETLK;
-		if( block ) how = F_SETLKW;
-
-		memset( &file_lock, 0, sizeof( file_lock ) );
-		file_lock.l_type = F_WRLCK;
-		file_lock.l_whence = SEEK_SET;
-		code = fcntl( fd, how, &file_lock);
-		err = errno;
-		if( code < 0 ){
-			code = -1;
-		} else {
-			code = 1;
-		}
-		DEBUG3 ("devlock_fcntl: status %d", code );
 		errno = err;
 	}
 #endif
