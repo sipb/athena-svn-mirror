@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.6 1989-12-20 22:17:30 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.7 1989-12-20 22:21:48 vanharen Exp $";
 #endif
 
 
@@ -621,7 +621,7 @@ dispose_of_log(knuckle, answered)
 
   question = knuckle->question;
 
-  sprintf(topic,"%8s:%s",question->owner->user->username,question->topic);
+  sprintf(topic,"%s: %s",question->owner->user->username,question->title);
   (void) strcpy(newfile, question->logfile);
   *(rindex(newfile, '/') + 1) = '\0';
   (void) strcat(newfile, "#");
