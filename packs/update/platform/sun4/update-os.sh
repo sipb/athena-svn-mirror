@@ -67,3 +67,4 @@ if [ "$NEWDEVS" = true ]; then
 	cd /devices && tar xf /srvd/install/devices/devices.pseudo.tar
 	cd /dev && tar xf /srvd/install/devices/dev.pseudo.tar
 fi
+echo "Finished the first stage of the update at `date`."

@@ -76,3 +76,4 @@ if [ "$NEWUNIX" = true -o "$NEWOS" = true ] ; then
 	    --disk `devnm $UPDATE_ROOT/ | \
 			awk -F/ '{ print substr($4,4,1), substr($4,6,1) }'`
 fi
+echo "Finished the first stage of the update at `date`."

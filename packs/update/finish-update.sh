@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.11 1998-04-24 19:10:51 rbasch Exp $
+# $Id: finish-update.sh,v 1.12 1998-10-05 22:24:39 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -15,6 +15,7 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
+echo "Starting the second stage of the update at `date`."
 . /srvd/usr/athena/lib/update/update-environment
 
 # We get one argument, the new workstation version we're updating to.
@@ -56,3 +57,4 @@ if [ -d "$SERVERDIR" ]; then
 	echo "Running mkserv."
 	/srvd/usr/athena/bin/mkserv -v update < /dev/null
 fi
+echo "Finished with update at `date`."

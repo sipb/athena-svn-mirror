@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.29 1998-09-30 17:46:34 ghudson Exp $
+# $Id: do-update.sh,v 1.30 1998-10-05 22:24:38 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -31,6 +31,7 @@ undup() {
 	done
 }
 
+echo "Starting update at `date`."
 . /srvd/usr/athena/lib/update/update-environment
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
