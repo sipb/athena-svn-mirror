@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.3 1990-07-07 10:20:37 epeisach Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.4 1990-07-07 10:44:36 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.3 1990-07-07 10:20:37 epeisach Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.4 1990-07-07 10:44:36 epeisach Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -220,24 +220,24 @@ sendfile(type, file)
 		cleanup();	/* Never returns */
 	    } else if (resp == '\5') {
 		fprintf(stderr, 
-			"The group account is not known by the quota server.\n");
+			"The account number is not known by the quota server.\n");
 		cleanup();	/* Never returns */
 	    } else if (resp == '\6') {
 		fprintf(stderr, "You are not a member of the group account.\n");
 		fprintf(stderr, 
-			"See one the group's administrator to be added.\n");
+			"See one of the group's administrator to be added.\n");
 		cleanup();
 	    } else if (resp == '\7') {
 		fprintf(stderr, 
 			"You are marked for deletion on the quota server.");
 		fprintf(stderr, 
-			"\nContact an administrator if you should not be.\n");
+			"\nContact an Accounts Administrator if you should not be.\n");
 		cleanup();	/* Never returns */
 	    } else if (resp == '\10') {
 		fprintf(stderr, 
-			"The group is marked as deleted on the quota server.");
+			"The account number is marked as deleted on the quota server.");
 		fprintf(stderr, 
-			"\nContact an administrator if it should not be.\n");
+			"\nContact an Accounts Administrator if it should not be.\n");
 		cleanup();	/* Never returns */
 	    }
 #endif PQUOTA
