@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.31 1998-06-09 17:07:55 ghudson Exp $
+# $Id: cshrc,v 1.32 1998-06-17 17:41:00 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -23,7 +23,7 @@ set hosttype=sun4
 set bindir=${hosttype}bin
 
 # Set standard path of directories for man command to search:
-setenv MANPATH /usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+set athena_manpath=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 
 
 # Set up standard system/user environment configuration (including setup of
@@ -42,6 +42,7 @@ if (! $?ENV_SET) then
 	setenv EDITOR emacs			# Set default editor
 	setenv VISUAL emacs			# Set default screen editor
 	setenv NOMHNPROC			# Disable mh MIME support
+	setenv MANPATH "$athena_manpath"
 
 	setenv ATHENA_SYS `/bin/athena/machtype -S`
 	if ( $ATHENA_SYS == "" ) then
@@ -113,7 +114,7 @@ if (! $?ENV_SET) then
 	unalias extend sextend textend add
 	alias add 'echo Use add in your ~/.environment, not your ~/.path.'
 
-	# Set athena_manpath in case .path uses it (.path should just use
+	# Reset athena_manpath in case .path uses it (.path should just use
 	# $MANPATH, but using $athena_manpath has worked historically).
 	set athena_manpath=$MANPATH
 
