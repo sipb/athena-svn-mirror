@@ -2,7 +2,7 @@
  * Imakefile for turnin and related clients; Athena release
  *
  * $Author: cfields $
- * $Id: Imakefile,v 1.6 1995-07-20 22:55:31 cfields Exp $
+ * $Id: Imakefile,v 1.7 1995-09-04 23:53:42 cfields Exp $
  *
  * Copyright (c) 1990, Massachusetts Institute of Technology
  *
@@ -12,13 +12,8 @@
 FXTEST=fxtest
 #endif
 
-#ifndef SOLARIS
-#ifdef sgi
-#define ISUBDIRS ets include protocol lib clients ${FXTEST} man
+#if defined(SOLARIS) || defined(sgi)
+#define ISUBDIRS rpc3.9 ets include protocol lib clients ${FXTEST} man
 #else
 #define ISUBDIRS rpc3.9 ets include protocol lib clients server ${FXTEST} man
 #endif
-#else
-#define ISUBDIRS rpc3.9 ets include protocol lib clients ${FXTEST} man
-#endif
-
