@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.15 2002-05-10 23:30:38 amb Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.16 2002-05-14 22:08:57 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -62,6 +62,8 @@ struct notify_data {
   int total;
   int hashmarks_flag;
   int hashmarks_printed;
+  int packages;			/* Packages installed so far */
+  int npackages;		/* Total packages to install (not remove) */
   struct package **pkgtab;
 };
 
@@ -79,6 +81,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 static void *notify(const void *arg, rpmCallbackType what,
 		    unsigned long amount, unsigned long total,
 		    const void *pkgKey, void *data);
+static void print_hash(struct notify_data *ndata, int amount);
 static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
@@ -317,13 +320,12 @@ static void read_installed_versions(struct package **pkgtab)
 static void perform_updates(struct package **pkgtab, int public, int dryrun,
 			    int hashmarks)
 {
-  int r, i;
+  int r, i, npackages, nconflicts;
   struct package *pkg;
   rpmdb db;
   rpmTransactionSet rpmdep;
   rpmProblemSet probs = NULL;
   rpmDependencyConflict conflicts;
-  int nconflicts;
   rpmdbMatchIterator mi;
   Header h;
   enum act action;
@@ -341,6 +343,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
    * transaction set.  Flag erasures for the next bit of code.
    * If we're doing a dry run, say what we're going to do here.
    */
+  npackages = 0;
   for (i = 0; i < HASHSIZE; i++)
     {
       for (pkg = pkgtab[i]; pkg; pkg = pkg->next)
@@ -354,7 +357,10 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 	  if (dryrun)
 	    display_action(pkg, action);
 	  else if (action == UPDATE)
-	    schedule_update(pkg, rpmdep);
+	    {
+	      schedule_update(pkg, rpmdep);
+	      npackages++;
+	    }
 	  else if (action == ERASE)
 	    pkg->erase = 1;
 	}
@@ -398,7 +404,8 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   rpmdepOrder(rpmdep);
 
   ndata.hashmarks_flag = hashmarks;
-  ndata.hashmarks_printed = 0;
+  ndata.packages = 0;
+  ndata.npackages = npackages;
   ndata.pkgtab = pkgtab;
   r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
 			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
@@ -431,20 +438,9 @@ static void *notify(const void *arg, rpmCallbackType what,
   Header h = (Header) arg;
   const char *filename = pkgKey;
   struct notify_data *ndata = data;
-  int n;
   struct package *pkg;
 
-  /* Filter out uninst callbacks for old versions of packages we're
-   * upgrading.
-   */
-  if (what == RPMCALLBACK_UNINST_START || what == RPMCALLBACK_UNINST_PROGRESS)
-    {
-      pkg = get_package(ndata->pkgtab, headerSprintf(h, "%{NAME}", rpmTagTable,
-						     rpmHeaderFormats, NULL));
-      if (pkg && pkg->newlistrev.present)
-	return NULL;
-    }
-
+  /* Take care of the "important" callbacks. */
   switch (what)
     {
     case RPMCALLBACK_INST_OPEN_FILE:
@@ -455,42 +451,93 @@ static void *notify(const void *arg, rpmCallbackType what,
       fdClose(ndata->fd);
       return NULL;
 
+    default:
+      break;
+    }
+
+  /* Everything else does nothing unless -h was specified. */
+  if (!ndata->hashmarks_flag)
+    return NULL;
+
+  /* Filter out uninst callbacks for old versions of packages we're
+   * upgrading.
+   */
+  switch (what)
+    {
+    case RPMCALLBACK_UNINST_START:
+    case RPMCALLBACK_UNINST_PROGRESS:
+    case RPMCALLBACK_UNINST_STOP:
+      pkg = get_package(ndata->pkgtab, headerSprintf(h, "%{NAME}", rpmTagTable,
+						     rpmHeaderFormats, NULL));
+      if (pkg && pkg->newlistrev.present)
+	return NULL;
+
+    default:
+      break;
+    }
+
+  switch (what)
+    {
+    case RPMCALLBACK_TRANS_START:
+      ndata->total = total;
+      ndata->hashmarks_printed = 0;
+      printf("%-28s", "Preparing:");
+      break;
+
+    case RPMCALLBACK_TRANS_PROGRESS:
+      print_hash(ndata, amount);
+      break;
+
+    case RPMCALLBACK_TRANS_STOP:
+      print_hash(ndata, ndata->total);
+      putchar('\n');
+      break;
+
     case RPMCALLBACK_INST_START:
     case RPMCALLBACK_UNINST_START:
       ndata->total = total;
-      if (ndata->hashmarks_flag)
-	{
-	  ndata->hashmarks_printed = 0;
-	  printf("%c ", (what == RPMCALLBACK_INST_START) ? '+' : '-');
-	  printf("%-26s", headerSprintf(h, "%{NAME}", rpmTagTable,
-					rpmHeaderFormats, NULL));
-	  fflush(stdout);
-	}
-      return NULL;
+      ndata->hashmarks_printed = 0;
+      printf("%c ", (what == RPMCALLBACK_INST_START) ? '+' : '-');
+      printf("%-26s", headerSprintf(h, "%{NAME}", rpmTagTable,
+				    rpmHeaderFormats, NULL));
+      fflush(stdout);
+      break;
 
     case RPMCALLBACK_UNINST_PROGRESS:
-      /* "amount" is the number of files left to delete, and "total" is
-       * some meaningless (to us) file action.  Fix up these arguments
-       * so that "amount" increases from 1 to the file count, and fall
-       * through.
+      /* "amount" is the number of files left to delete, or was when
+       * rpmlib bothered to make this callback.
        */
-      total = ndata->total;
-      amount = total - amount;
+      print_hash(ndata, ndata->total - amount);
+      break;
+
     case RPMCALLBACK_INST_PROGRESS:
-      if (ndata->hashmarks_flag)
+      print_hash(ndata, amount);
+      if (amount == total)
 	{
-	  n = (amount == total) ? 50 : 50.0 * amount / total;
-	  for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
-	    putchar('#');
-	  if (amount == total)
-	    putchar('\n');
-	  fflush(stdout);
+	  ndata->packages++;
+	  printf(" [%3d%%]\n", ndata->packages * 100 / ndata->npackages);
 	}
-      return NULL;
+      break;
+
+    case RPMCALLBACK_UNINST_STOP:
+      print_hash(ndata, ndata->total);
+      putchar('\n');
+      break;
 
     default:
-      return NULL;
+      break;
     }
+  return NULL;
+}
+
+static void print_hash(struct notify_data *ndata, int amount)
+{
+  int n;
+
+  n = 43 * amount / ndata->total;
+  for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
+    putchar('#');
+  fflush(stdout);
 }
 
 /* Apply the public workstation rules to decide what to do with a
