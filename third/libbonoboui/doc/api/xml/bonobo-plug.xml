@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboPlug-struct">BonoboPlug</link>;
-struct      <link linkend="BonoboPlugPrivate">BonoboPlugPrivate</link>;
-struct      <link linkend="BonoboPlugClass">BonoboPlugClass</link>;
+            <link linkend="BonoboPlug-struct">BonoboPlug</link>;
+            <link linkend="BonoboPlugPrivate">BonoboPlugPrivate</link>;
+            <link linkend="BonoboPlugClass">BonoboPlugClass</link>;
 <link linkend="void">void</link>        <link linkend="bonobo-plug-construct">bonobo_plug_construct</link>           (<link linkend="BonoboPlug">BonoboPlug</link> *plug,
                                              <link linkend="guint32">guint32</link> socket_id);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-plug-new">bonobo_plug_new</link>                 (<link linkend="guint32">guint32</link> socket_id);
@@ -90,25 +90,24 @@ pipe, to ensure synchronization between the X and CORBA transports.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboPlug-struct"/>struct BonoboPlug</title>
-<indexterm><primary>BonoboPlug</primary></indexterm><programlisting>struct BonoboPlug;</programlisting>
+<title><anchor id="BonoboPlug-struct"/>BonoboPlug</title>
+<indexterm><primary>BonoboPlug</primary></indexterm><programlisting>typedef struct _BonoboPlug BonoboPlug;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboPlugPrivate"/>struct BonoboPlugPrivate</title>
-<indexterm><primary>BonoboPlugPrivate</primary></indexterm><programlisting>struct BonoboPlugPrivate;</programlisting>
+<title><anchor id="BonoboPlugPrivate"/>BonoboPlugPrivate</title>
+<indexterm><primary>BonoboPlugPrivate</primary></indexterm><programlisting>typedef struct _BonoboPlugPrivate BonoboPlugPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboPlugClass"/>struct BonoboPlugClass</title>
-<indexterm><primary>BonoboPlugClass</primary></indexterm><programlisting>struct BonoboPlugClass {
-
+<title><anchor id="BonoboPlugClass"/>BonoboPlugClass</title>
+<indexterm><primary>BonoboPlugClass</primary></indexterm><programlisting>typedef struct {
 	GtkPlugClass parent_class;
 
 	gpointer dummy[4];
-};
+} BonoboPlugClass;
 </programlisting>
 <para>
 
@@ -143,7 +142,7 @@ by <parameter>socket_id</parameter>.</para>
 <varlistentry><term><parameter>socket_id</parameter>&nbsp;:</term>
 <listitem><simpara> the XID of the socket's window.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="BonoboPlug"><type>BonoboPlug</type></link> widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new <link linkend="BonoboPlug"><type>BonoboPlug</type></link> widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -14,6 +14,8 @@
 #include "bonobo-ui-toolbar-button-item.h"
 #include "bonobo-widget.h"
 
+/* All private / non-installed header */
+
 G_BEGIN_DECLS
 
 #define BONOBO_TYPE_UI_TOOLBAR_CONTROL_ITEM            (bonobo_ui_toolbar_control_item_get_type ())
@@ -31,13 +33,19 @@ typedef enum {
 typedef struct _BonoboUIToolbarControlItemPrivate BonoboUIToolbarControlItemPrivate;
 
 typedef struct {
-	BonoboUIToolbarButtonItem parent;
+	GtkToolButton parent;
 
-	BonoboUIToolbarControlItemPrivate *priv;
+	GtkWidget    *widget;   /* The widget (of a control, or custom */
+        BonoboWidget *control;	/* The wrapped control - if a control, or NULL */
+	GtkWidget    *box;      /* Box to pack innards inside to avoid reparenting */
+	GtkWidget    *button;	/* GtkToolItem's internal button */
+
+	BonoboUIToolbarControlDisplay hdisplay;
+	BonoboUIToolbarControlDisplay vdisplay;
 } BonoboUIToolbarControlItem;
 
 typedef struct {
-	BonoboUIToolbarButtonItemClass parent_class;
+	GtkToolButtonClass parent_class;
 } BonoboUIToolbarControlItemClass;
 
 GtkType       bonobo_ui_toolbar_control_item_get_type    (void) G_GNUC_CONST;

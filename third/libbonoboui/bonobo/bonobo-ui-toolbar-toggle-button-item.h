@@ -53,6 +53,6 @@ gboolean  bonobo_ui_toolbar_toggle_button_item_get_active  (BonoboUIToolbarToggl
 
 G_END_DECLS
 
-#endif
+#endif /* BONOBO_UI_DISABLE_DEPRECATED */
 
 #endif /* _BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_H_ */

@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboWrapperPrivate">BonoboWrapperPrivate</link>;
-struct      <link linkend="BonoboWrapper">BonoboWrapper</link>;
-struct      <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
+            <link linkend="BonoboWrapperPrivate">BonoboWrapperPrivate</link>;
+            <link linkend="BonoboWrapper">BonoboWrapper</link>;
+            <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-wrapper-new">bonobo_wrapper_new</link>              (void);
 <link linkend="void">void</link>        <link linkend="bonobo-wrapper-set-covered">bonobo_wrapper_set_covered</link>      (<link linkend="BonoboWrapper">BonoboWrapper</link> *wrapper,
                                              <link linkend="gboolean">gboolean</link> covered);
@@ -47,30 +47,28 @@ struct      <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboWrapperPrivate"/>struct BonoboWrapperPrivate</title>
-<indexterm><primary>BonoboWrapperPrivate</primary></indexterm><programlisting>struct BonoboWrapperPrivate;</programlisting>
+<title><anchor id="BonoboWrapperPrivate"/>BonoboWrapperPrivate</title>
+<indexterm><primary>BonoboWrapperPrivate</primary></indexterm><programlisting>typedef struct _BonoboWrapperPrivate BonoboWrapperPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboWrapper"/>struct BonoboWrapper</title>
-<indexterm><primary>BonoboWrapper</primary></indexterm><programlisting>struct BonoboWrapper {
-
+<title><anchor id="BonoboWrapper"/>BonoboWrapper</title>
+<indexterm><primary>BonoboWrapper</primary></indexterm><programlisting>typedef struct {
 	GtkBin bin;
 
 	/* Private data. */
 	BonoboWrapperPrivate *priv;
-};
+} BonoboWrapper;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboWrapperClass"/>struct BonoboWrapperClass</title>
-<indexterm><primary>BonoboWrapperClass</primary></indexterm><programlisting>struct BonoboWrapperClass {
-
+<title><anchor id="BonoboWrapperClass"/>BonoboWrapperClass</title>
+<indexterm><primary>BonoboWrapperClass</primary></indexterm><programlisting>typedef struct {
 	GtkBinClass parent_class;
-};
+} BonoboWrapperClass;
 </programlisting>
 <para>
 
@@ -81,7 +79,7 @@ struct      <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -111,7 +109,7 @@ struct      <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
 <varlistentry><term><parameter>wrapper</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -125,7 +123,7 @@ struct      <link linkend="BonoboWrapperClass">BonoboWrapperClass</link>;
 <varlistentry><term><parameter>wrapper</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>

@@ -1,62 +1,89 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-window</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-ui.html" title="Bonobo UI"><link rel="previous" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="next" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><link rel="refentry" href="libbonoboui-faq.html" title="Common Questions"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="refentry" href="libbonoboui-bonobo-control.html" title="BonoboControl"><link rel="refentry" href="libbonoboui-bonobo-control-frame.html" title="BonoboControlFrame"><link rel="refentry" href="libbonoboui-bonobo-property-control.html" title="bonobo-property-control"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="refentry" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="refentry" href="libbonoboui-bonobo-window.html" title="bonobo-window"><link rel="refentry" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><link rel="refentry" href="libbonoboui-bonobo-ui-container.html" title="BonoboUIContainer"><link rel="refentry" href="libbonoboui-bonobo-ui-util.html" title="bonobo-ui-util"><link rel="refentry" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="refentry" href="libbonoboui-bonobo-ui-engine.html" title="BonoboUIEngine"><link rel="refentry" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><link rel="refentry" href="libbonoboui-bonobo-ui-sync.html" title="BonoboUISync"><link rel="refentry" href="libbonoboui-bonobo-ui-preferences.html" title="bonobo-ui-preferences"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="refentry" href="libbonoboui-bonobo-plug.html" title="BonoboPlug"><link rel="refentry" href="libbonoboui-bonobo-socket.html" title="BonoboSocket"><link rel="refentry" href="libbonoboui-bonobo-wrapper.html" title="bonobo-wrapper"><link rel="refentry" href="libbonoboui-bonobo-selector.html" title="BonoboSelector"><link rel="refentry" href="libbonoboui-bonobo-selector-widget.html" title="bonobo-selector-widget"><link rel="refentry" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><link rel="refentry" href="libbonoboui-bonobo-a11y.html" title="bonobo-a11y"><link rel="section" href="libbonoboui-bonobo-window.html#id2825442" title="Object Hierarchy"><link rel="section" href="libbonoboui-bonobo-window.html#id2825498" title="Implemented Interfaces"><link rel="section" href="libbonoboui-bonobo-window.html#id2825516" title="Properties"><link rel="section" href="libbonoboui-bonobo-window.html#id2825546" title="Description"><link rel="section" href="libbonoboui-bonobo-window.html#id2825556" title="Details"><link rel="section" href="libbonoboui-bonobo-window.html#id2826623" title="Properties"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-widget.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-ui.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th><td><a accesskey="n" href="libbonoboui-bonobo-ui-component.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-window"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-window</span></h2><p>bonobo-window &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="BonoboWindow"></a><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-window</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-ui.html" title="Bonobo UI"><link rel="prev" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="next" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><meta name="generator" content="GTK-Doc V1.3 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-widget.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-ui.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th><td><a accesskey="n" href="libbonoboui-bonobo-ui-component.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-window"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">bonobo-window</span></h2><p>bonobo-window &#8212; </p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="BonoboWindow"></a><pre class="synopsis">
 
 
 
-struct      <a href="libbonoboui-bonobo-window.html#BonoboWindowPrivate">BonoboWindowPrivate</a>;
-struct      <a href="libbonoboui-bonobo-window.html#BonoboWindow-struct">BonoboWindow</a>;
-struct      <a href="libbonoboui-bonobo-window.html#BonoboWindowClass">BonoboWindowClass</a>;
-GtkWidget*  <a href="libbonoboui-bonobo-window.html#bonobo-window-construct">bonobo_window_construct</a>         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+            <a href="libbonoboui-bonobo-window.html#BonoboWindowPrivate">BonoboWindowPrivate</a>;
+            <a href="libbonoboui-bonobo-window.html#BonoboWindow-struct">BonoboWindow</a>;
+            <a href="libbonoboui-bonobo-window.html#BonoboWindowClass">BonoboWindowClass</a>;
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libbonoboui-bonobo-window.html#bonobo-window-construct">bonobo_window_construct</a>         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a> *ui_container,
                                              const char *win_name,
                                              const char *title);
-GtkWidget*  <a href="libbonoboui-bonobo-window.html#bonobo-window-new">bonobo_window_new</a>               (const char *win_name,
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libbonoboui-bonobo-window.html#bonobo-window-new">bonobo_window_new</a>               (const char *win_name,
                                              const char *title);
 void        <a href="libbonoboui-bonobo-window.html#bonobo-window-set-contents">bonobo_window_set_contents</a>      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
-                                             GtkWidget *contents);
-GtkWidget*  <a href="libbonoboui-bonobo-window.html#bonobo-window-get-contents">bonobo_window_get_contents</a>      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *contents);
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libbonoboui-bonobo-window.html#bonobo-window-get-contents">bonobo_window_get_contents</a>      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
 <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* <a href="libbonoboui-bonobo-window.html#bonobo-window-get-ui-engine">bonobo_window_get_ui_engine</a> (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
 <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a>* <a href="libbonoboui-bonobo-window.html#bonobo-window-get-ui-container">bonobo_window_get_ui_container</a>
                                             (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
 void        <a href="libbonoboui-bonobo-window.html#bonobo-window-set-name">bonobo_window_set_name</a>          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              const char *win_name);
 char*       <a href="libbonoboui-bonobo-window.html#bonobo-window-get-name">bonobo_window_get_name</a>          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
-GtkAccelGroup* <a href="libbonoboui-bonobo-window.html#bonobo-window-get-accel-group">bonobo_window_get_accel_group</a>
+<a
+href="../gtk/gtk-Keyboard-Accelerators.html#GtkAccelGroup"
+>GtkAccelGroup</a>* <a href="libbonoboui-bonobo-window.html#bonobo-window-get-accel-group">bonobo_window_get_accel_group</a>
                                             (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);
 void        <a href="libbonoboui-bonobo-window.html#bonobo-window-add-popup">bonobo_window_add_popup</a>         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
-                                             GtkMenu *popup,
+                                             <a
+href="../gtk/GtkMenu.html"
+>GtkMenu</a> *popup,
                                              const char *path);
 void        <a href="libbonoboui-bonobo-window.html#bonobo-window-remove-popup">bonobo_window_remove_popup</a>      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              const char *path);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2825442"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2550164"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
-  GObject
-   +----GtkObject
-         +----GtkWidget
-               +----GtkContainer
-                     +----GtkBin
-                           +----GtkWindow
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gtk/GtkObject.html"
+>GtkObject</a>
+         +----<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>
+               +----<a
+href="../gtk/GtkContainer.html"
+>GtkContainer</a>
+                     +----<a
+href="../gtk/GtkBin.html"
+>GtkBin</a>
+                           +----<a
+href="../gtk/GtkWindow.html"
+>GtkWindow</a>
                                  +----BonoboWindow
-</pre></div><div class="refsect1" lang="en"><a name="id2825498"></a><h2>Implemented Interfaces</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2550220"></a><h2>Implemented Interfaces</h2><p>
 BonoboWindow implements
- AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2825516"></a><h2>Properties</h2><pre class="synopsis">
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2550238"></a><h2>Properties</h2><pre class="synopsis">
 
-  "<a href="libbonoboui-bonobo-window.html#BonoboWindow--win-name">win-name</a>"             gchararray            : Read / Write / Construct
-</pre></div><div class="refsect1" lang="en"><a name="id2825546"></a><h2>Description</h2><p>
+  "<a href="libbonoboui-bonobo-window.html#BonoboWindow--win-name">win-name</a>"             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct
+</pre></div><div class="refsect1" lang="en"><a name="id2550268"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2825556"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2825562"></a><h3><a name="BonoboWindowPrivate"></a>struct BonoboWindowPrivate</h3><a class="indexterm" name="id2825573"></a><pre class="programlisting">struct BonoboWindowPrivate;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2550278"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2550283"></a><h3><a name="BonoboWindowPrivate"></a>BonoboWindowPrivate</h3><a class="indexterm" name="id2550294"></a><pre class="programlisting">typedef struct _BonoboWindowPrivate BonoboWindowPrivate;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2825588"></a><h3><a name="BonoboWindow-struct"></a>struct BonoboWindow</h3><a class="indexterm" name="id2825599"></a><pre class="programlisting">struct BonoboWindow;</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550310"></a><h3><a name="BonoboWindow-struct"></a>BonoboWindow</h3><a class="indexterm" name="id2550321"></a><pre class="programlisting">typedef struct _BonoboWindow BonoboWindow;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2825614"></a><h3><a name="BonoboWindowClass"></a>struct BonoboWindowClass</h3><a class="indexterm" name="id2825625"></a><pre class="programlisting">struct BonoboWindowClass {
-
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550336"></a><h3><a name="BonoboWindowClass"></a>BonoboWindowClass</h3><a class="indexterm" name="id2550347"></a><pre class="programlisting">typedef struct {
 	GtkWindowClass    parent_class;
 
 	gpointer dummy[4];
-};
+} BonoboWindowClass;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2825641"></a><h3><a name="bonobo-window-construct"></a>bonobo_window_construct ()</h3><a class="indexterm" name="id2825653"></a><pre class="programlisting">GtkWidget*  bonobo_window_construct         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550364"></a><h3><a name="bonobo-window-construct"></a>bonobo_window_construct ()</h3><a class="indexterm" name="id2550375"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  bonobo_window_construct         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a> *ui_container,
                                              const char *win_name,
                                              const char *title);</pre><p>
@@ -67,66 +94,78 @@ TODO: Remove this when we are allowed API changes.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ui_container</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>win_name</tt></i> :</span></td><td> the window name
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> the window's title for the title bar
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a constructed window
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2825781"></a><h3><a name="bonobo-window-new"></a>bonobo_window_new ()</h3><a class="indexterm" name="id2825792"></a><pre class="programlisting">GtkWidget*  bonobo_window_new               (const char *win_name,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a constructed window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550504"></a><h3><a name="bonobo-window-new"></a>bonobo_window_new ()</h3><a class="indexterm" name="id2550515"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  bonobo_window_new               (const char *win_name,
                                              const char *title);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win_name</tt></i> :</span></td><td> the window name
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> the window's title for the title bar
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new BonoboWindow
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2825874"></a><h3><a name="bonobo-window-set-contents"></a>bonobo_window_set_contents ()</h3><a class="indexterm" name="id2825886"></a><pre class="programlisting">void        bonobo_window_set_contents      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
-                                             GtkWidget *contents);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new BonoboWindow
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550597"></a><h3><a name="bonobo-window-set-contents"></a>bonobo_window_set_contents ()</h3><a class="indexterm" name="id2550609"></a><pre class="programlisting">void        bonobo_window_set_contents      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *contents);</pre><p>
 Insert a widget into the main window contents.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>contents</tt></i> :</span></td><td> the new widget for it to contain.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2825958"></a><h3><a name="bonobo-window-get-contents"></a>bonobo_window_get_contents ()</h3><a class="indexterm" name="id2825970"></a><pre class="programlisting">GtkWidget*  bonobo_window_get_contents      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550681"></a><h3><a name="bonobo-window-get-contents"></a>bonobo_window_get_contents ()</h3><a class="indexterm" name="id2550693"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  bonobo_window_get_contents      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the contained widget
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826030"></a><h3><a name="bonobo-window-get-ui-engine"></a>bonobo_window_get_ui_engine ()</h3><a class="indexterm" name="id2826042"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_window_get_ui_engine (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the contained widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550753"></a><h3><a name="bonobo-window-get-ui-engine"></a>bonobo_window_get_ui_engine ()</h3><a class="indexterm" name="id2550765"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_window_get_ui_engine (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine"><span class="type">BonoboUIEngine</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826110"></a><h3><a name="bonobo-window-get-ui-container"></a>bonobo_window_get_ui_container ()</h3><a class="indexterm" name="id2826121"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a>* bonobo_window_get_ui_container
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine"><span class="type">BonoboUIEngine</span></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550833"></a><h3><a name="bonobo-window-get-ui-container"></a>bonobo_window_get_ui_container ()</h3><a class="indexterm" name="id2550844"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a>* bonobo_window_get_ui_container
                                             (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer"><span class="type">BonoboUIContainer</span></a>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826190"></a><h3><a name="bonobo-window-set-name"></a>bonobo_window_set_name ()</h3><a class="indexterm" name="id2826201"></a><pre class="programlisting">void        bonobo_window_set_name          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer"><span class="type">BonoboUIContainer</span></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550914"></a><h3><a name="bonobo-window-set-name"></a>bonobo_window_set_name ()</h3><a class="indexterm" name="id2550925"></a><pre class="programlisting">void        bonobo_window_set_name          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              const char *win_name);</pre><p>
 Set the name of the window - used for configuration
 serialization.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>win_name</tt></i> :</span></td><td> the window name
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826274"></a><h3><a name="bonobo-window-get-name"></a>bonobo_window_get_name ()</h3><a class="indexterm" name="id2826285"></a><pre class="programlisting">char*       bonobo_window_get_name          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550998"></a><h3><a name="bonobo-window-get-name"></a>bonobo_window_get_name ()</h3><a class="indexterm" name="id2551009"></a><pre class="programlisting">char*       bonobo_window_get_name          (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the name of the window
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826345"></a><h3><a name="bonobo-window-get-accel-group"></a>bonobo_window_get_accel_group ()</h3><a class="indexterm" name="id2826357"></a><pre class="programlisting">GtkAccelGroup* bonobo_window_get_accel_group
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the name of the window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551069"></a><h3><a name="bonobo-window-get-accel-group"></a>bonobo_window_get_accel_group ()</h3><a class="indexterm" name="id2551081"></a><pre class="programlisting"><a
+href="../gtk/gtk-Keyboard-Accelerators.html#GtkAccelGroup"
+>GtkAccelGroup</a>* bonobo_window_get_accel_group
                                             (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the bonobo window
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the associated accelerator group for this window
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826419"></a><h3><a name="bonobo-window-add-popup"></a>bonobo_window_add_popup ()</h3><a class="indexterm" name="id2826431"></a><pre class="programlisting">void        bonobo_window_add_popup         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
-                                             GtkMenu *popup,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the associated accelerator group for this window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551143"></a><h3><a name="bonobo-window-add-popup"></a>bonobo_window_add_popup ()</h3><a class="indexterm" name="id2551154"></a><pre class="programlisting">void        bonobo_window_add_popup         (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+                                             <a
+href="../gtk/GtkMenu.html"
+>GtkMenu</a> *popup,
                                              const char *path);</pre><p>
 Add a popup <i class="parameter"><tt>menu</tt></i> at <i class="parameter"><tt>path</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the window
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>popup</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2826534"></a><h3><a name="bonobo-window-remove-popup"></a>bonobo_window_remove_popup ()</h3><a class="indexterm" name="id2826546"></a><pre class="programlisting">void        bonobo_window_remove_popup      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551258"></a><h3><a name="bonobo-window-remove-popup"></a>bonobo_window_remove_popup ()</h3><a class="indexterm" name="id2551270"></a><pre class="programlisting">void        bonobo_window_remove_popup      (<a href="libbonoboui-bonobo-window.html#BonoboWindow">BonoboWindow</a> *win,
                                              const char *path);</pre><p>
 Remove the popup at <i class="parameter"><tt>path</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>win</tt></i> :</span></td><td> the window
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2826623"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2826629"></a><h3><a name="BonoboWindow--win-name"></a>The "<tt class="literal">win-name</tt>" property</h3><pre class="programlisting">  "win-name"             gchararray            : Read / Write / Construct</pre><p>Name of the window - used for configuration serialization.</p><p>Default value: NULL</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonoboui-bonobo-widget.html"><b>&lt;&lt; BonoboWidget</b></a></td><td align="right"><a accesskey="n" href="libbonoboui-bonobo-ui-component.html"><b>BonoboUIComponent &gt;&gt;</b></a></td></tr></table></body></html>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2551347"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2551353"></a><h3><a name="BonoboWindow--win-name"></a>The "<tt class="literal">win-name</tt>" property</h3><pre class="programlisting">  "win-name"             <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct</pre><p>Name of the window - used for configuration serialization.</p><p>Default value: NULL</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonoboui-bonobo-widget.html"><b>&lt;&lt; BonoboWidget</b></a></td><td align="right"><a accesskey="n" href="libbonoboui-bonobo-ui-component.html"><b>BonoboUIComponent &gt;&gt;</b></a></td></tr></table></body></html>

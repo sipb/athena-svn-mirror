@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2003-08-18 13:33+0200\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-19 15:46+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -30,30 +30,30 @@ msgstr "corba UI-kontainer"
 msgid "The User interface container"
 msgstr "Kontainer for brukergrensesnitt"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Fest verktøylinjen"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
 msgstr "Løsne verktøylinjen"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Type skygge"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Orientering"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Foretrukket bredde"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Foretrukket høyde"
@@ -79,10 +79,11 @@ msgid "Whether X events should be forwarded"
 msgstr "X-hendelser skal videresendes"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Navn"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -132,11 +133,11 @@ msgstr "Verktøylinjer"
 msgid "toolbars"
 msgstr "verktøylinjer"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Utseende"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Ikon"
 
@@ -249,31 +250,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Støtte for Bonobo-GUI"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "B_egge"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_ekst"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Skjul t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Vis t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "Sk_jul verktøylinjen"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "Tilpas_s"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Tilpass verktøylinjen"
 
@@ -289,11 +290,11 @@ msgstr "om verktøylinjen er flytende"
 msgid "Style of bevel around the toolbar"
 msgstr "Stil på kanten rundt verktøylinjen"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Innhold"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Vis hjelp for denne applikasjonen"
 
@@ -366,6 +367,7 @@ msgid "_Edit"
 msgstr "R_ediger"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Fil"
 
@@ -398,11 +400,77 @@ msgstr "Kan ikke initiere libbonoboui"
 msgid "Could not initialize Bonobo UI"
 msgstr "Kunne ikke initiere Bonobo-UI"
 
-#~ msgid "HOST"
-#~ msgstr "VERT"
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Komponentvisning for Bonobo"
 
-#~ msgid "PORT"
-#~ msgstr "PORT"
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Viser tilgjengelige Bonobo-komponenter"
 
-#~ msgid "STYLE"
-#~ msgstr "STIL"
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "Om dette programmet..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Lukk dette vinduet"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Åpne et nytt vindu"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Hjelp"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Generelt"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Lokasjon"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Detaljer"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Detaljert informasjon"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Aktiv"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Type"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Detaljer for komponent"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Bonobovisning"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Opphavsrett 2001, The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Komponentvisning for Bonobo"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Komponentvisning"

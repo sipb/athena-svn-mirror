@@ -28,7 +28,6 @@
 #include <bonobo/bonobo-ui-toolbar.h>
 #include <bonobo/bonobo-ui-toolbar-button-item.h>
 #include <bonobo/bonobo-ui-toolbar-toggle-button-item.h>
-#include <bonobo/bonobo-ui-toolbar-separator-item.h>
 #include <bonobo/bonobo-ui-toolbar-popup-item.h>
 #include <bonobo/bonobo-ui-toolbar-control-item.h>
 
@@ -76,7 +75,6 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 				   GtkWidget        *parent)
 {
 	char *type, *label, *txt;
-	char *min_width;
 	char *behavior;
 	char **behavior_array;
 	gboolean priority;
@@ -89,13 +87,23 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 		behavior_array = g_strsplit (behavior, ",", -1);
 		bonobo_ui_node_free_string (behavior);
 
-		bonobo_ui_toolbar_item_set_expandable (
-			BONOBO_UI_TOOLBAR_ITEM (widget),
-			string_array_contains (behavior_array, "expandable"));
+		if (GTK_IS_TOOL_ITEM (widget)) {
+			gtk_tool_item_set_expand
+				(GTK_TOOL_ITEM (widget),
+				 string_array_contains (behavior_array, "expandable"));
+			
+			/* The pack-end behavior is deprecated. You can use
+			   <separator type="space" behavior="expanded"/> to
+			   achieve the same result */
+		} else {
+			bonobo_ui_toolbar_item_set_expandable
+				(BONOBO_UI_TOOLBAR_ITEM (widget),
+				 string_array_contains (behavior_array, "expandable"));
 
-		bonobo_ui_toolbar_item_set_pack_end (
-			BONOBO_UI_TOOLBAR_ITEM (widget),
-			string_array_contains (behavior_array, "pack-end"));
+			bonobo_ui_toolbar_item_set_pack_end
+				(BONOBO_UI_TOOLBAR_ITEM (widget),
+				 string_array_contains (behavior_array, "pack-end"));
+		}
 
 		g_strfreev (behavior_array);
 	}
@@ -106,46 +114,54 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 	} else
 		priority = FALSE;
 
-	bonobo_ui_toolbar_item_set_want_label (
-		BONOBO_UI_TOOLBAR_ITEM (widget), priority);
+	if (GTK_IS_TOOL_ITEM (widget))
+		gtk_tool_item_set_is_important (GTK_TOOL_ITEM (widget), priority);
 
 	type  = bonobo_ui_engine_get_attr (node, cmd_node, "type");
 	label = bonobo_ui_engine_get_attr (node, cmd_node, "label");
 	
-	if (!type || !strcmp (type, "toggle")) {
+	if (GTK_IS_TOOL_BUTTON (widget)) {
+		GtkToolButton *button_item = (GtkToolButton *) widget;
 
-		if (BONOBO_IS_UI_TOOLBAR_BUTTON_ITEM (widget) &&
-		    (bonobo_ui_node_peek_attr (node, "pixtype") ||
+		if ((bonobo_ui_node_peek_attr (node, "pixtype") ||
 		     bonobo_ui_node_peek_attr (cmd_node, "pixtype"))) {
 			GtkWidget *image;
-			BonoboUIToolbarButtonItem *button_item;
 
-			button_item = (BonoboUIToolbarButtonItem *) widget;
-
-			image = bonobo_ui_toolbar_button_item_get_image (button_item);
-			if (!image) {
+			if (!(image = gtk_tool_button_get_icon_widget (button_item))) {
 				image = gtk_image_new ();
-				bonobo_ui_toolbar_button_item_set_image (button_item, image);
+				gtk_tool_button_set_icon_widget (button_item, image);
 			}
 
 			bonobo_ui_util_xml_set_image (
 				GTK_IMAGE (image), node, cmd_node,
 				GTK_ICON_SIZE_LARGE_TOOLBAR);
 			gtk_widget_show (image);
-		}
+		} else
+			gtk_tool_button_set_icon_widget (button_item, NULL);
 
-		if (label)
-			bonobo_ui_toolbar_button_item_set_label (
-				BONOBO_UI_TOOLBAR_BUTTON_ITEM (widget), label);
+		if (label) {
+			GtkLabel *label_widget;
+
+			if (!(label_widget = GTK_LABEL (gtk_tool_button_get_label_widget (button_item)))) {
+				label_widget = GTK_LABEL (gtk_label_new (""));
+				gtk_tool_button_set_label_widget (button_item, GTK_WIDGET (label_widget));
+			}
+
+			if (!label_widget->label || /* optimise, we hit here a lot */
+			    strcmp (label, label_widget->label))
+				gtk_label_set_text (label_widget, label);
+			gtk_widget_show (GTK_WIDGET (label_widget));
+		} else
+			gtk_tool_button_set_label_widget (button_item, NULL);
 	}
 
 	bonobo_ui_node_free_string (type);
 	bonobo_ui_node_free_string (label);
 
-	if (bonobo_ui_node_has_name (node, "control")) {
+	if (bonobo_ui_node_has_name (node, "control") &&
+	    BONOBO_IS_UI_TOOLBAR_CONTROL_ITEM (widget)) {
 		const char *txt;
 		BonoboUIToolbarControlDisplay hdisp, vdisp;
-		gboolean sensitive;
 		
 		txt = bonobo_ui_node_peek_attr (node, "hdisplay");
 		hdisp = decode_control_disp (txt);
@@ -155,28 +171,18 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 
 		bonobo_ui_toolbar_control_item_set_display (
 			BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget), hdisp, vdisp);
-
-		txt = bonobo_ui_node_peek_attr (node, "sensitive");
-		if (txt)
-			sensitive = atoi (txt);
-		else
-			sensitive = TRUE;
-
-		bonobo_ui_toolbar_control_item_set_sensitive (
-			BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget), sensitive);
-	}
-
-	if ((min_width = bonobo_ui_engine_get_attr (node, cmd_node, "min_width"))) {
-		bonobo_ui_toolbar_item_set_minimum_width (BONOBO_UI_TOOLBAR_ITEM (widget),
-							  atoi (min_width));
-		bonobo_ui_node_free_string (min_width);
 	}
 	
 	if ((txt = bonobo_ui_engine_get_attr (node, cmd_node, "tip"))) {
-		bonobo_ui_toolbar_item_set_tooltip (
-			BONOBO_UI_TOOLBAR_ITEM (widget),
-			bonobo_ui_toolbar_get_tooltips (
-				BONOBO_UI_TOOLBAR (parent)), txt);
+		if (GTK_IS_TOOL_ITEM (widget))
+			gtk_tool_item_set_tooltip
+				(GTK_TOOL_ITEM (widget),
+				 GTK_TOOLBAR (parent)->tooltips,
+				 txt, NULL);
+		else
+			bonobo_ui_toolbar_item_set_tooltip
+				(BONOBO_UI_TOOLBAR_ITEM (widget),
+				 (GTK_TOOLBAR (parent)->tooltips), txt);
 
 		bonobo_ui_node_free_string (txt);
 	}
@@ -188,26 +194,27 @@ impl_bonobo_ui_sync_toolbar_state (BonoboUISync     *sync,
 static gint
 exec_verb_cb (GtkWidget *item, BonoboUIEngine *engine)
 {
-	bonobo_ui_engine_emit_verb_on_w (engine, GTK_WIDGET (item));
+	bonobo_ui_engine_emit_verb_on_w (engine, item);
 
 	return FALSE;
 }
 
 static gint
-win_item_emit_ui_event (BonoboUIToolbarItem *item,
-			const char          *state,
+win_item_emit_ui_event (GtkToggleToolButton *toggle,
 			BonoboUIEngine      *engine)
 {
-	BonoboUINode     *node = bonobo_ui_engine_widget_get_node (
-		GTK_WIDGET (item));
+	BonoboUINode *node;
+	const char   *state;
+
+	node = bonobo_ui_engine_widget_get_node (GTK_WIDGET (toggle));
 
 	g_return_val_if_fail (node != NULL, FALSE);
 
+	state = gtk_toggle_tool_button_get_active (toggle) ? "1": "0";
 	bonobo_ui_engine_emit_event_on (engine, node, state);
 
 	return FALSE;
 }
-
 
 static GtkWidget *
 toolbar_build_control (BonoboUISync     *sync,
@@ -216,16 +223,18 @@ toolbar_build_control (BonoboUISync     *sync,
 		       int              *pos,
 		       GtkWidget        *parent)
 {
-	GtkWidget  *item;
-	
+	GtkWidget  *bonobo_item = NULL;
+
 	g_return_val_if_fail (sync != NULL, NULL);
 	g_return_val_if_fail (node != NULL, NULL);
 
-	if ((item = bonobo_ui_engine_node_get_widget (
+	if ((bonobo_item = bonobo_ui_engine_node_get_widget (
 		sync->engine, node))) {
-
-		g_assert (item->parent == NULL);
-
+		
+		g_assert (bonobo_item->parent == NULL);
+		if (!GTK_IS_TOOL_ITEM (bonobo_item))
+			g_warning ("Serious oddness not a toolbar item: '%s'",
+				   g_type_name_from_instance (bonobo_item));
 	} else {
 		Bonobo_Control control;
 
@@ -233,9 +242,9 @@ toolbar_build_control (BonoboUISync     *sync,
 			sync->engine, node);
 
 		if (control != CORBA_OBJECT_NIL) {
-			item = bonobo_ui_toolbar_control_item_new (control);
+			bonobo_item = bonobo_ui_toolbar_control_item_new (control);
 
-			if (!item)
+			if (!bonobo_item)
 				return NULL;
 
 			bonobo_ui_engine_stamp_custom (
@@ -244,13 +253,13 @@ toolbar_build_control (BonoboUISync     *sync,
 			return NULL;
 	}
 
-	gtk_widget_show (item);
+	gtk_toolbar_insert (GTK_TOOLBAR (parent),
+			    GTK_TOOL_ITEM (bonobo_item),
+			    (*pos)++);
 
-	bonobo_ui_toolbar_insert (BONOBO_UI_TOOLBAR (parent),
-				  BONOBO_UI_TOOLBAR_ITEM (item),
-				  (*pos)++);
+	gtk_widget_show (bonobo_item);
 
-	return item;
+	return bonobo_item;
 }
 
 static GtkWidget *
@@ -261,7 +270,7 @@ toolbar_build_widget (BonoboUISync *sync,
 		      GtkWidget    *parent)
 {
 	char         *type, *stock_id;
-	GtkWidget    *item;
+	GtkWidget    *tool_item;
 
 	g_return_val_if_fail (sync != NULL, NULL);
 	g_return_val_if_fail (node != NULL, NULL);
@@ -303,29 +312,34 @@ toolbar_build_widget (BonoboUISync *sync,
 	}
 
 	if (bonobo_ui_node_has_name (node, "separator")) {
-		item = bonobo_ui_toolbar_separator_item_new ();
-		gtk_widget_set_sensitive (item, FALSE);
+		tool_item = GTK_WIDGET (gtk_separator_tool_item_new ());
 
-	} else if (!type)
-		item = bonobo_ui_toolbar_button_item_new (NULL, NULL);
-	
+		if (type && !strcmp (type, "space")) {
+			gtk_separator_tool_item_set_draw
+				(GTK_SEPARATOR_TOOL_ITEM (tool_item), FALSE);
+		}
+	}
+
+	else if (!type)
+		tool_item = GTK_WIDGET (gtk_tool_button_new (NULL, NULL));
+
 	else if (!strcmp (type, "toggle"))
-		item = bonobo_ui_toolbar_toggle_button_item_new (NULL, NULL);
-	
+		tool_item = GTK_WIDGET (gtk_toggle_tool_button_new ());
+
 	else {
-		/* FIXME: Implement radio-toolbars */
 		g_warning ("Invalid type '%s'", type);
 		return NULL;
 	}
 
 	bonobo_ui_node_free_string (type);
 	
-	bonobo_ui_toolbar_insert (BONOBO_UI_TOOLBAR (parent),
-				  BONOBO_UI_TOOLBAR_ITEM (item),
-				  (*pos)++);
-	gtk_widget_show (item);
+	gtk_toolbar_insert (GTK_TOOLBAR (parent),
+			    GTK_TOOL_ITEM (tool_item),
+			    (*pos)++);
 
-	return item;
+	gtk_widget_show (tool_item);
+
+	return tool_item;
 }
 
 static GtkWidget *
@@ -346,17 +360,17 @@ impl_bonobo_ui_sync_toolbar_build (BonoboUISync     *sync,
 			sync, node, cmd_node, pos, parent);
 
 	if (widget) {
-		/* FIXME: What about "id"s ! ? */
 		if ((verb = bonobo_ui_engine_get_attr (node, NULL, "verb"))) {
-			g_signal_connect (GTK_OBJECT (widget), "activate",
-					    (GtkSignalFunc) exec_verb_cb,
-					    sync->engine);
+			g_signal_connect (widget, "clicked",
+					  G_CALLBACK (exec_verb_cb),
+					  sync->engine);
 			bonobo_ui_node_free_string (verb);
 		}
-		
-		g_signal_connect (GTK_OBJECT (widget), "state_altered",
-				    (GtkSignalFunc) win_item_emit_ui_event,
-				    sync->engine);
+
+		if (GTK_IS_TOGGLE_TOOL_BUTTON (widget))
+			g_signal_connect (widget, "toggled",
+					  G_CALLBACK (win_item_emit_ui_event),
+					  sync->engine);
 	}
 
 	return widget;
@@ -369,16 +383,12 @@ impl_bonobo_ui_sync_toolbar_build_placeholder (BonoboUISync     *sync,
 					       int              *pos,
 					       GtkWidget        *parent)
 {
-	GtkWidget *widget;
+	GtkToolItem *item;
 
-	widget = bonobo_ui_toolbar_separator_item_new ();
-	gtk_widget_set_sensitive (widget, FALSE);
-	
-	bonobo_ui_toolbar_insert (BONOBO_UI_TOOLBAR (parent),
-				  BONOBO_UI_TOOLBAR_ITEM (widget),
-				  (*pos)++);
+	item = gtk_separator_tool_item_new();
+	gtk_toolbar_insert (GTK_TOOLBAR (parent), item, (*pos)++);
 
-	return widget;
+	return GTK_WIDGET (item);
 }
 
 static BonoboDockItem *
@@ -411,8 +421,7 @@ impl_bonobo_ui_sync_toolbar_get_widgets (BonoboUISync *sync,
 		return NULL;
 	}
 
-	return bonobo_ui_toolbar_get_children (
-		BONOBO_UI_TOOLBAR (GTK_BIN (item)->child));
+	return bonobo_ui_internal_toolbar_get_children (bonobo_dock_item_get_child (item));
 }
 
 static void
@@ -423,12 +432,19 @@ impl_bonobo_ui_sync_toolbar_state_update (BonoboUISync *sync,
 	g_return_if_fail (widget != NULL);
 
 	if (new_state) {
-		if (BONOBO_IS_UI_TOOLBAR_ITEM (widget))
-			bonobo_ui_toolbar_item_set_state (
-				BONOBO_UI_TOOLBAR_ITEM (widget), new_state);
-		
+		if (GTK_IS_TOGGLE_TOOL_BUTTON (widget)) {
+			GtkToggleToolButton *button = (GtkToggleToolButton *) widget;
+			
+			g_signal_handlers_block_by_func
+				(widget, G_CALLBACK (win_item_emit_ui_event), sync->engine);
+
+			gtk_toggle_tool_button_set_active (button, atoi (new_state));
+			
+			g_signal_handlers_unblock_by_func
+				(widget, G_CALLBACK (win_item_emit_ui_event), sync->engine);
+		} 
 		else
-			g_warning ("TESTME: strange, setting "
+			g_warning ("Toolbar: strange, setting "
 				   "state '%s' on weird object '%s'",
 				   new_state,
 				   g_type_name_from_instance (
@@ -456,27 +472,24 @@ impl_bonobo_ui_sync_toolbar_ignore_widget (BonoboUISync *sync,
 	return BONOBO_IS_UI_TOOLBAR_POPUP_ITEM (widget);
 }
 
-static BonoboUIToolbarStyle
+static GtkToolbarStyle
 parse_look (const char *look)
 {
 	if (look) {
 		if (!strcmp (look, "both"))
-			return BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT;
-
+			return GTK_TOOLBAR_BOTH;
 		if (!strcmp (look, "icon"))
-			return BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY;
-
+			return GTK_TOOLBAR_ICONS;
 		if (!strcmp (look, "text"))
-			return BONOBO_UI_TOOLBAR_STYLE_TEXT_ONLY;
-
+			return GTK_TOOLBAR_TEXT;
 		if (!strcmp (look, "both_horiz"))
-			return BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT;
+			return GTK_TOOLBAR_BOTH_HORIZ;
 	}
 
 	return bonobo_ui_preferences_get_toolbar_style ();
 }
 
-BonoboUIToolbarStyle
+GtkToolbarStyle
 bonobo_ui_sync_toolbar_get_look (BonoboUIEngine *engine,
 				 BonoboUINode   *node)
 {
@@ -492,7 +505,7 @@ bonobo_ui_sync_toolbar_get_look (BonoboUIEngine *engine,
 		widget = bonobo_ui_engine_node_get_widget (engine, node);
 
 		if (!widget || !BONOBO_IS_UI_TOOLBAR (widget) ||
-		    bonobo_ui_toolbar_get_orientation (BONOBO_UI_TOOLBAR (widget)) ==
+		    gtk_toolbar_get_orientation (GTK_TOOLBAR (widget)) ==
 		    GTK_ORIENTATION_HORIZONTAL) {
 			txt = bonobo_ui_node_peek_attr (node, "hlook");
 			look = parse_look (txt);
@@ -621,7 +634,7 @@ create_dockitem (BonoboUISyncToolbar *sync,
 	guint offset = 0;
 	gboolean in_new_band = TRUE;
 	gboolean can_config = TRUE;
-	BonoboUIToolbar *toolbar;
+	GtkWidget *toolbar;
 
 	if ((prop = bonobo_ui_node_peek_attr (node, "behavior"))) {
 		behavior_array = g_strsplit (prop, ",", -1);
@@ -681,13 +694,9 @@ create_dockitem (BonoboUISyncToolbar *sync,
 			      placement, band_num,
 			      position, offset, in_new_band);
 
-		
-	toolbar = BONOBO_UI_TOOLBAR (bonobo_ui_toolbar_new ());
-
-	gtk_container_set_border_width (GTK_CONTAINER (toolbar), 2);
-	gtk_container_add (GTK_CONTAINER (item),
-			   GTK_WIDGET (toolbar));
-	gtk_widget_show (GTK_WIDGET (toolbar));
+	toolbar = bonobo_ui_internal_toolbar_new();
+	gtk_container_add (GTK_CONTAINER (item), toolbar);
+	gtk_widget_show (toolbar);
 
 	if ((prop = bonobo_ui_node_peek_attr (node, "config")))
 		can_config = atoi (prop);
@@ -737,7 +746,7 @@ impl_bonobo_ui_sync_toolbar_update_root (BonoboUISync *sync,
 	gboolean    tooltips;
 	gboolean    detachable;
 	BonoboDockItem *item;
-	BonoboUIToolbar *toolbar;
+	GtkToolbar  *toolbar;
 	BonoboUIToolbarStyle look;
 
 	dockname = bonobo_ui_node_peek_attr (node, "name");
@@ -757,49 +766,19 @@ impl_bonobo_ui_sync_toolbar_update_root (BonoboUISync *sync,
 		detachable = bonobo_ui_preferences_get_toolbar_detachable ();
 	bonobo_dock_item_set_locked (item, !detachable);
 
-	toolbar = BONOBO_UI_TOOLBAR (GTK_BIN (item)->child);
+	toolbar = GTK_TOOLBAR (bonobo_dock_item_get_child (item));
 
 	bonobo_ui_engine_stamp_root (sync->engine, node, GTK_WIDGET (toolbar));
 
-	if ((txt = bonobo_ui_node_peek_attr (node, "look"))) {
-		look = parse_look (txt);
-		bonobo_ui_toolbar_set_hv_styles (toolbar, look, look);
-
-	} else {
-		BonoboUIToolbarStyle vlook, hlook;
-
-		txt = bonobo_ui_node_peek_attr (node, "hlook");
-		hlook = parse_look (txt);
-
-		txt = bonobo_ui_node_peek_attr (node, "vlook");
-		vlook = parse_look (txt);
-
-		bonobo_ui_toolbar_set_hv_styles (toolbar, hlook, vlook);
-	}		
-
-#if 0
-	if ((txt = bonobo_ui_node_get_attr (node, "relief"))) {
-
-		if (!strcmp (txt, "normal"))
-			bonobo_ui_toolbar_set_relief (
-				toolbar, GTK_RELIEF_NORMAL);
-
-		else if (!strcmp (txt, "half"))
-			bonobo_ui_toolbar_set_relief (
-				toolbar, GTK_RELIEF_HALF);
-		else
-			bonobo_ui_toolbar_set_relief (
-				toolbar, GTK_RELIEF_NONE);
-		bonobo_ui_node_free_string (txt);
-	}
-#endif
+	look = bonobo_ui_sync_toolbar_get_look (sync->engine, node);
+	gtk_toolbar_set_style (GTK_TOOLBAR (toolbar), look);
 
 	if ((txt = bonobo_ui_node_peek_attr (node, "tips")))
 		tooltips = atoi (txt);
 	else
 		tooltips = TRUE;
 
-	bonobo_ui_toolbar_show_tooltips (toolbar, tooltips);
+	gtk_toolbar_set_tooltips (GTK_TOOLBAR (toolbar), tooltips);
 
        /*
 	* FIXME: It shouldn't be necessary to explicitly resize the
@@ -824,18 +803,18 @@ impl_bonobo_ui_sync_toolbar_can_handle (BonoboUISync *sync,
 		node->name_id == toolitem_id);
 }
 
-GtkWidget *
+static GtkWidget *
 impl_bonobo_ui_sync_toolbar_wrap_widget (BonoboUISync *sync,
 					 GtkWidget    *custom_widget)
 {
-	if (!BONOBO_IS_UI_TOOLBAR_ITEM (custom_widget))
+	if (!GTK_IS_TOOL_ITEM (custom_widget))
 		return bonobo_ui_toolbar_control_item_new_widget (custom_widget);
 	else
 		return custom_widget;
 }
 
 static void
-class_init (BonoboUISyncClass *sync_class)
+bonobo_ui_sync_toolbar_class_init (BonoboUISyncClass *sync_class)
 {
 	GObjectClass *object_class;
 
@@ -859,6 +838,11 @@ class_init (BonoboUISyncClass *sync_class)
 	sync_class->wrap_widget   = impl_bonobo_ui_sync_toolbar_wrap_widget;
 }
 
+static void
+bonobo_ui_sync_toolbar_init (BonoboUISyncToolbar *sync)
+{
+}
+
 GType
 bonobo_ui_sync_toolbar_get_type (void)
 {
@@ -869,12 +853,12 @@ bonobo_ui_sync_toolbar_get_type (void)
 			sizeof (BonoboUISyncToolbarClass),
 			(GBaseInitFunc) NULL,
 			(GBaseFinalizeFunc) NULL,
-			(GClassInitFunc) class_init,
+			(GClassInitFunc) bonobo_ui_sync_toolbar_class_init,
 			NULL, /* class_finalize */
 			NULL, /* class_data */
 			sizeof (BonoboUISyncToolbar),
 			0, /* n_preallocs */
-			(GInstanceInitFunc) NULL
+			(GInstanceInitFunc) bonobo_ui_sync_toolbar_init
 		};
 
 		type = g_type_register_static (PARENT_TYPE, "BonoboUISyncToolbar",

@@ -1,18 +1,21 @@
-# Copyright (C) 2001-2003 Free Software Foundation, Inc.
+# translation of libbonoboui to Russian
+# Copyright (C) 2001-2003, 2004 Free Software Foundation, Inc.
 # Valek Filippov <frob@df.ru>, 2001-2002.
-# Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003
+# Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002-2003.
+# Leonid Kanter <leon@asplinux.ru>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2003-06-18 20:07+0400\n"
-"Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2004-12-17 16:09+0200\n"
+"Last-Translator: Leonid Kanter <leon@asplinux.ru>\n"
+"Language-Team:  <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
 
 #: bonobo/bonobo-canvas-item.c:667
 msgid "corba factory"
@@ -30,30 +33,31 @@ msgstr "контейнер интерфейса пользователя арх�
 msgid "The User interface container"
 msgstr "Контейнер интерфейса пользователя"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Прицепить панель инструментов"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "Отцепить панель инструментов"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Тип тени"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Ориентация"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Предпочтительная ширина"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Предпочтительная высота"
@@ -79,10 +83,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Должны ли пересылаться события X"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Имя"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Описание"
 
@@ -132,11 +137,11 @@ msgstr "Панели"
 msgid "toolbars"
 msgstr "панели"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Вид"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Значок"
 
@@ -249,31 +254,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Поддержка пользовательского интерфейса системы Bonobo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "Вс_ё"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "_Текст"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Скрыть под_сказки"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Показать под_сказки"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Скрыть панель"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "Разно_образить"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Разнообразить панель"
 
@@ -289,11 +294,11 @@ msgstr "является ли панель плавающей"
 msgid "Style of bevel around the toolbar"
 msgstr "Стиль обрамления вокруг панели"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Содержание справки"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Вызвать справку для этого приложения"
 
@@ -366,6 +371,7 @@ msgid "_Edit"
 msgstr "_Правка"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Файл"
 
@@ -398,11 +404,77 @@ msgstr "Невозможно инициализировать код библи�
 msgid "Could not initialize Bonobo UI"
 msgstr "Не удалось инициализировать пользовательский интерфейс системы Bonobo"
 
-#~ msgid "HOST"
-#~ msgstr "УЗЕЛ"
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Обозреватель компонентов Bonobo"
 
-#~ msgid "PORT"
-#~ msgstr "ПОРТ"
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Показывает доступные компоненты Bonobo"
 
-#~ msgid "STYLE"
-#~ msgstr "СТИЛЬ"
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "О этой программе..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Закрыть текущее окно"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Открыть новое окно"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Справка"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Общие"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Адрес"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Подробно"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Подробная информация"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Активен"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Тип"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Описание компонента"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Обозреватель Bonobo"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Copyright 2001, The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Обозреватель компонентов Bonobo"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Обозреватель компонентов"

@@ -52,7 +52,7 @@ set_values (BonoboUIConfigWidget *config)
 	BonoboUINode *node;
 	gboolean hidden = FALSE;
 	gboolean tooltips = TRUE;
-	BonoboUIToolbarStyle style;
+	GtkToolbarStyle style;
 
 	g_return_if_fail (config->priv->cur_path != NULL);
 
@@ -75,19 +75,19 @@ set_values (BonoboUIConfigWidget *config)
 	style = bonobo_ui_sync_toolbar_get_look (config->engine, node);
 
 	switch (style) {
-	case BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY:
+	case GTK_TOOLBAR_ICONS:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->icon), TRUE);
 		break;
 
-	case BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT:
+	case GTK_TOOLBAR_BOTH:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->icon_and_text), TRUE);
 		break;
 
-	case BONOBO_UI_TOOLBAR_STYLE_TEXT_ONLY:
+	case GTK_TOOLBAR_TEXT:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->text), TRUE);
 		break;
 		
-	case BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT:
+	case GTK_TOOLBAR_BOTH_HORIZ: /* priority text */
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (config->priv->priority_text), TRUE);
 		break;
 		

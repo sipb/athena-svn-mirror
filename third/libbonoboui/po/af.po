@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.6-branch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
 "PO-Revision-Date: 2004-03-30 17:02+0200\n"
 "Last-Translator: Zuza Software Foundation <info@translate.org.za>\n"
 "Language-Team: Afrikaans <translate-discuss-af@lists.sourceforge.net>\n"
@@ -32,30 +32,31 @@ msgstr "corba UI-houer"
 msgid "The User interface container"
 msgstr "Die Gebruikerkoppelvlak-houer"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Dok die nutsbalk"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "Ontdok die nutsbalk"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Skadu-tipe"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Oriëntasie"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Voorkeur wydte"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Voorkeur hoogte"
@@ -81,10 +82,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Of X-gebeurtenisse aangestuur moet word"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Naam"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Beskrywing"
 
@@ -134,11 +136,11 @@ msgstr "Nutsbalke"
 msgid "toolbars"
 msgstr "nutsbalke"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Kyk"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Ikoon"
 
@@ -251,31 +253,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Bonobo GUI-ondersteuning"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "B_eide"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_eks"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Verberg w_enke"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Wys w_enke"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Verberg nutsbalk"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "Pasma_ak"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Pasmaak die nutsbalk"
 
@@ -291,11 +293,11 @@ msgstr "of die nutsbalk swewend is"
 msgid "Style of bevel around the toolbar"
 msgstr "Styl van skuinsste rondom nutsbalk"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Inhoud"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Bekyk hulp vir hierdie toepassing"
 
@@ -368,6 +370,7 @@ msgid "_Edit"
 msgstr "_Redigeer"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Lêer"
 
@@ -399,3 +402,80 @@ msgstr "Kan nie libbonoboui-kode inisieer nie"
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "Kon nie Bonobo UI inisieer nie"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr ""
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:1
+#, fuzzy
+msgid "About this program..."
+msgstr "Aangaande hierdie toepassing"
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:5
+#, fuzzy
+msgid "_Help"
+msgstr "_Verberg"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr ""
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr ""
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr ""
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr ""
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr ""
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr ""
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr ""
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr ""
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr ""
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr ""
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr ""
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr ""

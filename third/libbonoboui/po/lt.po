@@ -1,17 +1,19 @@
 # Lithuanian translation of libbonoboui
-# Copyright (C) 2003 Free Software Foundation, Inc.
-# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003.
-#
+# Copyright (C) 2003-2005 Free Software Foundation, Inc.
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003-2004.
+# Žygimantas Beručka <uid0@akl.lt>, 2003-2005.
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonoboui\n"
+"Project-Id-Version: libbonoboui HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2003-09-23 20:11+0200\n"
-"Last-Translator: Tomas Kuliavas <tokul@users.sourceforge.net>\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-31 12:34+0200\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-canvas-item.c:667
@@ -30,30 +32,30 @@ msgstr "corba vartototo sąsajos konteineris"
 msgid "The User interface container"
 msgstr "Vartotojo sąsajos konteineris"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Prisegti įrankių juostą"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
 msgstr "Atkabinti įrankių juostą"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Šešėlio tipas"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Orientacija"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Pageidautinas plotis"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Pageidautinas aukštis"
@@ -79,10 +81,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Ar X įvykiai turėtų būti persiunčiami"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Vardas"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Aprašymas"
 
@@ -96,9 +99,9 @@ msgid ""
 "to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
-"Nuliais uždaromas sąsajos masyvas, kurį turi palaikyti serveris tam, kad "
-"parodyti pasirinkimo juostoje. Pagal nutylėjimą suveikia \"IDL:Bonobo/"
-"Embenddable:1.0\", jei jokia sąsają nenurodyta"
+"Nuliais uždaromas sąsajų masyvas, kurias serveris turi palaikyti tam, kad "
+"būtų rodomas pasirinkimo juostoje. Jei jokia sąsaja nenurodyta, naudojamas "
+"standartinis „IDL:Bonobo/Embenddable:1.0“"
 
 #: bonobo/bonobo-selector.c:348
 msgid "Interface required entry"
@@ -132,11 +135,11 @@ msgstr "Įrankių juostos"
 msgid "toolbars"
 msgstr "įrankių juostos"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Vaizdas"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Ikona"
 
@@ -249,31 +252,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Bonobo grafinės sąsajos palaikymas"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "_Abu"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_ekstas"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Slėpt_i patarimus"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Rodyt_i patarimus"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Slėpti įrankių juostą"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "_Tinkinti"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Tinkinti įrankių juostą"
 
@@ -289,11 +292,11 @@ msgstr "ar įrankių juostą yra slanki"
 msgid "Style of bevel around the toolbar"
 msgstr "Įrankių juostos rėmelio stilius"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Turinys"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Peržiūrėti programos pagalbos sistemą"
 
@@ -363,9 +366,10 @@ msgstr "_Apie"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:4
 msgid "_Edit"
-msgstr "_Taisyti"
+msgstr "_Keisi"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Byla"
 
@@ -379,7 +383,7 @@ msgstr "Tai nieko nedaro; tik galimybių parodymas"
 
 #: samples/bonoboui/hello.c:145
 msgid "BonoboUI-Hello."
-msgstr "Bonobo-Sąsajos-Pasisveikinimas."
+msgstr "BonoboSąsajos-Pasisveikinimas."
 
 #: samples/bonoboui/hello.c:217
 msgid "Gnome Hello"
@@ -398,11 +402,77 @@ msgstr "Nepavyko paleisti libbonoboui funkcijų"
 msgid "Could not initialize Bonobo UI"
 msgstr "Nepavyko paleisti Bonobo sąsajos"
 
-#~ msgid "HOST"
-#~ msgstr "KOMPIUTERIS"
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Bonobo komponentų naršyklė"
 
-#~ msgid "PORT"
-#~ msgstr "PRIEVADAS"
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Rodo prieinamus Bonobo komponentus"
 
-#~ msgid "STYLE"
-#~ msgstr "STILIUS"
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "Apie šią programą..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Uždaryti šį langą"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Atidaryti naują langą"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Pagalba"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Esmė"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Vieta"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Detalės"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Detali informacija"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Aktyvuota"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Tipas"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Komponento detalės"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Bonobo naršyklė"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Autorinės teisės 2001, GNOME organizacija"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Bonobo komponentų naršyklė"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Komponentų naršyklė"

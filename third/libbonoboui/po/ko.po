@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2004-01-30 04:35+0900\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-26 16:35+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -30,30 +30,30 @@ msgstr "코바 UI 컨테이너"
 msgid "The User interface container"
 msgstr "사용자 인터페이스 컨테이너"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "도구 모음 고정"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
 msgstr "도구 모음 고정 해제"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "그림자 유형"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "방향"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "너비 선택"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "높이 선택"
@@ -79,10 +79,11 @@ msgid "Whether X events should be forwarded"
 msgstr "X 이벤트를 전달할 지 여부"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "이름"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "설명"
 
@@ -131,11 +132,11 @@ msgstr "도구 모음"
 msgid "toolbars"
 msgstr "도구 모음"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "보기"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "아이콘(_I)"
 
@@ -248,31 +249,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "보노보 GUI 지원 기능"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "둘 다(_O)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "글월(_E)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "설명 숨기기(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "설명 보이기(_I)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "도구 모음 숨기기(_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "사용자 설정(_Z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "도구 모음 사용자 설정"
 
@@ -288,11 +289,11 @@ msgstr "도구 모음을 움직일 수 있는지"
 msgid "Style of bevel around the toolbar"
 msgstr "도구 모음의 3D 효과 스타일"
 
-#: bonobo/bonobo-ui-util.c:629
-msgid "_Contents"
-msgstr "목차"
-
 #: bonobo/bonobo-ui-util.c:630
+msgid "_Contents"
+msgstr "차례(_C)"
+
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "이 프로그램에 대한 도움말을 봅니다"
 
@@ -365,6 +366,7 @@ msgid "_Edit"
 msgstr "편집(_E)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "파일(_F)"
 
@@ -397,11 +399,77 @@ msgstr "libbonoboui 코드를 초기화할 수 없습니다"
 msgid "Could not initialize Bonobo UI"
 msgstr "보노보 UI를 초기화할 수 없습니다"
 
-#~ msgid "HOST"
-#~ msgstr "호스트"
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "보노보 컴포넌트 브라우저"
 
-#~ msgid "PORT"
-#~ msgstr "포트"
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "사용할 수 있는 보노보 컴포넌트를 표시합니다"
 
-#~ msgid "STYLE"
-#~ msgstr "스타일"
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "이 프로그램 정보..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "현재 창을 닫습니다"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "새 창을 엽니다"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "도움말(_H)"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "일반"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "위치"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "상세 정보"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "상세 정보"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "활성화"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "종류"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "컴포넌트 상세 정보"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "보노보 브라우저"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Copyright 2001, The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "보노보 컴포넌트 브라우저"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "컴포넌트 브라우저"

@@ -1,3 +1,22 @@
+libbonoboui 2.8.1
+
+	* bugs fixed
+                + Merged the fixes from the toolbar-rework branch
+                  (Federico Mena Quintero)
+                + Fix warnings when toolbars are destroyed (Federico)
+                + Fix GDK interaction problem when running a control
+                  in same process as the container (Gustavo)
+                + Fix include of wrong i18n header files (Jonathan Blandford)
+                + Don't install files from examples (Gustavo)
+                + Dock item a11y fix (Kjartan Maraas)
+                + More toolbar fixes (Arvind Samptur)
+                + Toolbar theme rendering fixes (Benjamin Berg, JP Rosevear)
+        * misc.
+                + Remove redundant AC_SUBST's in configure.in  (Tomasz Kłoczko)
+                + Add Bonobo component browser tool (Rodrigo Moya)
+                + Deprecate pack-end behavior and add a space type for
+                  separators. (Marco Pesenti Gritti)
+             
 libbonoboui 2.5.3
 
 	* bugs fixed

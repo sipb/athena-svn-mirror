@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2004-01-27 16:18+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-14 17:56+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,30 +31,30 @@ msgstr "rámec corba UI"
 msgid "The User interface container"
 msgstr "Rámec uživatelského rozhraní"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Dokovat nástrojovou lištu"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
-msgstr "Odtrhnout nástrojovou lištu"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
+msgstr "Oddokovat nástrojovou lištu"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Typ stínu"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Orientace"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Preferovaná šířka"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Preferovaná výška"
@@ -80,10 +80,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Jestli mají být přeposílány události X"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Jméno"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Popis"
 
@@ -133,11 +134,11 @@ msgstr "Nástrojové lišty"
 msgid "toolbars"
 msgstr "nástrojové lišty"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Vzhled"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Ikona"
 
@@ -250,31 +251,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Podpora GUI Bonobo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "_Obojí"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_ext"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Skrýt t_ipy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Zobrazit t_ipy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Skrýt lištu nástrojů"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "_Upravit"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "_Upravit lištu nástrojů"
 
@@ -290,11 +291,11 @@ msgstr "jestli je lišta nástrojů plovoucí"
 msgid "Style of bevel around the toolbar"
 msgstr "Velikost okrajů okolo lišty nástrojů"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Obsah"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Zobrazit nápovědu pro tuto aplikaci"
 
@@ -367,6 +368,7 @@ msgid "_Edit"
 msgstr "Ú_pravy"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Soubor"
 
@@ -398,6 +400,81 @@ msgstr "Nemohu inicializovat kód libbonoboui"
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "Nemohu inicializovat Bonobo UI"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Prohlížeč komponent Bonobo"
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Zobrazí dostupné komponenty Bonobo"
+
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "O tomto programu..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Zavřít aktuální okno"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Otevřít nové okno"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Nápověda"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Obecné"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Umístění"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Podrobnosti"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Podrobné informace"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Aktivní"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Typ"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Podrobnosti o komponentě"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Prohlížeč Bonobo"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Copyright 2001 The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Prohlížeč komponent Bonobo"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Prohlížeč komponent"
 
 #~ msgid "HOST"
 #~ msgstr "POČÍTAČ"

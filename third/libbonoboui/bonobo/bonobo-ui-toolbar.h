@@ -77,7 +77,7 @@ GList                *bonobo_ui_toolbar_get_children     (BonoboUIToolbar      *
 
 G_END_DECLS
 
-#endif
+#endif /* BONOBO_UI_DISABLE_DEPRECATED */
 
 #endif /* _BONOBO_UI_TOOLBAR_H_ */
 

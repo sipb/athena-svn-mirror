@@ -17,7 +17,7 @@
  */
 #include <config.h>
 #include <string.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <bonobo/bonobo-selector.h>
 
@@ -371,7 +371,7 @@ GtkWidget *
 bonobo_selector_new (const gchar *title,
 		     const gchar **interfaces_required)
 {
-	BonoboSelector *sel =  g_object_new (bonobo_selector_get_type (), "title", title, "interfaces_required", interfaces_required, 0);
+	BonoboSelector *sel =  g_object_new (bonobo_selector_get_type (), "title", title, "interfaces_required", interfaces_required, NULL);
 
 	return GTK_WIDGET (sel);
 }

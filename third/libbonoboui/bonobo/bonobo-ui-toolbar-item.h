@@ -97,6 +97,6 @@ void                      bonobo_ui_toolbar_item_activate         (BonoboUIToolb
 
 G_END_DECLS
 
-#endif
+#endif /* BONOBO_UI_DISABLE_DEPRECATED */
 
 #endif /* __BONOBO_UI_TOOLBAR_ITEM_H__ */

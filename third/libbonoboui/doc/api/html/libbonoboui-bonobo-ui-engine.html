@@ -1,8 +1,8 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboUIEngine</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-ui.html" title="Bonobo UI"><link rel="previous" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="next" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><link rel="refentry" href="libbonoboui-faq.html" title="Common Questions"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="refentry" href="libbonoboui-bonobo-control.html" title="BonoboControl"><link rel="refentry" href="libbonoboui-bonobo-control-frame.html" title="BonoboControlFrame"><link rel="refentry" href="libbonoboui-bonobo-property-control.html" title="bonobo-property-control"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="refentry" href="libbonoboui-bonobo-widget.html" title="BonoboWidget"><link rel="refentry" href="libbonoboui-bonobo-window.html" title="bonobo-window"><link rel="refentry" href="libbonoboui-bonobo-ui-component.html" title="BonoboUIComponent"><link rel="refentry" href="libbonoboui-bonobo-ui-container.html" title="BonoboUIContainer"><link rel="refentry" href="libbonoboui-bonobo-ui-util.html" title="bonobo-ui-util"><link rel="refentry" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="refentry" href="libbonoboui-bonobo-ui-engine.html" title="BonoboUIEngine"><link rel="refentry" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><link rel="refentry" href="libbonoboui-bonobo-ui-sync.html" title="BonoboUISync"><link rel="refentry" href="libbonoboui-bonobo-ui-preferences.html" title="bonobo-ui-preferences"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"><link rel="refentry" href="libbonoboui-bonobo-plug.html" title="BonoboPlug"><link rel="refentry" href="libbonoboui-bonobo-socket.html" title="BonoboSocket"><link rel="refentry" href="libbonoboui-bonobo-wrapper.html" title="bonobo-wrapper"><link rel="refentry" href="libbonoboui-bonobo-selector.html" title="BonoboSelector"><link rel="refentry" href="libbonoboui-bonobo-selector-widget.html" title="bonobo-selector-widget"><link rel="refentry" href="libbonoboui-bonobo-file-selector-util.html" title="bonobo-file-selector-util"><link rel="refentry" href="libbonoboui-bonobo-a11y.html" title="bonobo-a11y"><link rel="section" href="libbonoboui-bonobo-ui-engine.html#id2856647" title="Object Hierarchy"><link rel="section" href="libbonoboui-bonobo-ui-engine.html#id2856666" title="Signal Prototypes"><link rel="section" href="libbonoboui-bonobo-ui-engine.html#id2856871" title="Description"><link rel="section" href="libbonoboui-bonobo-ui-engine.html#id2856972" title="Details"><link rel="section" href="libbonoboui-bonobo-ui-engine.html#id2862866" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-ui-node.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-ui.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th><td><a accesskey="n" href="libbonoboui-bonobo-ui-engine-config.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-ui-engine"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">BonoboUIEngine</span></h2><p>BonoboUIEngine &#8212; The guts of the UI handler</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="BonoboUIEngine"></a><pre class="synopsis">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboUIEngine</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="LibBonoboUI API Reference Manual"><link rel="up" href="bonobo-ui.html" title="Bonobo UI"><link rel="prev" href="libbonoboui-bonobo-ui-node.html" title="bonobo-ui-node"><link rel="next" href="libbonoboui-bonobo-ui-engine-config.html" title="bonobo-ui-engine-config"><meta name="generator" content="GTK-Doc V1.3 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="chapter" href="ch01.html" title="Object Hierarchy"><link rel="chapter" href="bonobo-controls.html" title="Controls"><link rel="chapter" href="bonobo-ui.html" title="Bonobo UI"><link rel="chapter" href="bonobo-support-utilities.html" title="Supporting Classes"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonoboui-bonobo-ui-node.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="bonobo-ui.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">LibBonoboUI API Reference Manual</th><td><a accesskey="n" href="libbonoboui-bonobo-ui-engine-config.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonoboui-bonobo-ui-engine"></a><div class="titlepage"></div><div class="refnamediv"><table width="100%"><tr><td valign="top"><h2><span class="refentrytitle">BonoboUIEngine</span></h2><p>BonoboUIEngine &#8212; The guts of the UI handler</p></td><td valign="top" align="right"></td></tr></table></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="BonoboUIEngine"></a><pre class="synopsis">
 
 
 
-struct      <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-struct">BonoboUIEngine</a>;
+            <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-struct">BonoboUIEngine</a>;
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-deregister-dead-components">bonobo_ui_engine_deregister_dead_components</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-deregister-component-by-ref">bonobo_ui_engine_deregister_component_by_ref</a>
@@ -15,7 +15,9 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-register
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *name,
                                              Bonobo_Unknown component);
-GList*      <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-component-names">bonobo_ui_engine_get_component_names</a>
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-component-names">bonobo_ui_engine_get_component_names</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 Bonobo_Unknown <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-component">bonobo_ui_engine_get_component</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
@@ -34,31 +36,47 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-freeze">
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-thaw">bonobo_ui_engine_thaw</a>           (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-update">bonobo_ui_engine_update</a>         (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 enum        <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a>;
-struct      <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEnginePrivate">BonoboUIEnginePrivate</a>;
-struct      <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngineClass">BonoboUIEngineClass</a>;
+            <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEnginePrivate">BonoboUIEnginePrivate</a>;
+            <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngineClass">BonoboUIEngineClass</a>;
 <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-construct">bonobo_ui_engine_construct</a>  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GObject *view);
-<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-new">bonobo_ui_engine_new</a>        (GObject *view);
-GObject*    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-view">bonobo_ui_engine_get_view</a>       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
+                                             <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *view);
+<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-new">bonobo_ui_engine_new</a>        (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *view);
+<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>*    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-view">bonobo_ui_engine_get_view</a>       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-add-sync">bonobo_ui_engine_add_sync</a>       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-remove-sync">bonobo_ui_engine_remove_sync</a>    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync);
-GSList*     <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-syncs">bonobo_ui_engine_get_syncs</a>      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
+<a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a>*     <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-syncs">bonobo_ui_engine_get_syncs</a>      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-update-node">bonobo_ui_engine_update_node</a>    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-queue-update">bonobo_ui_engine_queue_update</a>   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *cmd_node);
-GtkWidget*  <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-build-control">bonobo_ui_engine_build_control</a>  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-build-control">bonobo_ui_engine_build_control</a>  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-widget-get-node">bonobo_ui_engine_widget_get_node</a>
-                                            (GtkWidget *widget);
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-widget-set-node">bonobo_ui_engine_widget_set_node</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-set-prop">bonobo_ui_engine_xml_set_prop</a> (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
@@ -68,11 +86,15 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-widget-s
 CORBA_char* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-get-prop">bonobo_ui_engine_xml_get_prop</a>   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              const char *prop,
-                                             gboolean *invalid_path);
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *invalid_path);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-prune-widget-info">bonobo_ui_engine_prune_widget_info</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             gboolean save_custom);
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> save_custom);
 <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-path">bonobo_ui_engine_get_path</a>     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-dirty-tree">bonobo_ui_engine_dirty_tree</a>     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
@@ -85,9 +107,13 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-dump">bo
 CORBA_Object <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-get-object">bonobo_ui_engine_node_get_object</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
-gboolean    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-is-dirty">bonobo_ui_engine_node_is_dirty</a>  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-is-dirty">bonobo_ui_engine_node_is_dirty</a>  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
-GtkWidget*  <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-get-widget">bonobo_ui_engine_node_get_widget</a>
+<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-get-widget">bonobo_ui_engine_node_get_widget</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 const char* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-get-id">bonobo_ui_engine_node_get_id</a>    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
@@ -96,15 +122,21 @@ const char* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-get
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *from_node);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-node-set-dirty">bonobo_ui_engine_node_set_dirty</a> (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             gboolean dirty);
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> dirty);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-stamp-custom">bonobo_ui_engine_stamp_custom</a>   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-widget-set">bonobo_ui_engine_widget_set</a>     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
-                                             GtkWidget *widget);
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-stamp-root">bonobo_ui_engine_stamp_root</a>     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             GtkWidget *widget);
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-add-hint">bonobo_ui_engine_add_hint</a>       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *str);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-remove-hint">bonobo_ui_engine_remove_hint</a>    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);
@@ -114,21 +146,31 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-emit-eve
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              const char *state);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-emit-verb-on-w">bonobo_ui_engine_emit_verb_on_w</a> (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget);
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-emit-event-on-w">bonobo_ui_engine_emit_event_on_w</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              const char *state);
 char*       <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-get-attr">bonobo_ui_engine_get_attr</a>       (<a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *cmd_node,
                                              const char *attr);
 void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-widget-attach-node">bonobo_ui_engine_widget_attach_node</a>
-                                            (GtkWidget *widget,
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);
 CORBA_char* <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-get">bonobo_ui_engine_xml_get</a>        (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
-                                             gboolean node_only);
-gboolean    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-node-exists">bonobo_ui_engine_xml_node_exists</a>
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> node_only);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-node-exists">bonobo_ui_engine_xml_node_exists</a>
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path);
 <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-xml-merge-tree">bonobo_ui_engine_xml_merge_tree</a>
@@ -156,30 +198,50 @@ void        <a href="libbonoboui-bonobo-ui-engine.html#bonobo-ui-engine-ui-event
                                              const CORBA_char *state,
                                              CORBA_Environment *ev);
 
-</pre></div><div class="refsect1" lang="en"><a name="id2856647"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2580003"></a><h2>Object Hierarchy</h2><pre class="synopsis">
 
-  GObject
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
    +----BonoboUIEngine
-</pre></div><div class="refsect1" lang="en"><a name="id2856666"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+</pre></div><div class="refsect1" lang="en"><a name="id2580022"></a><h2>Signal Prototypes</h2><pre class="synopsis">
 
 "<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-add-hint">add-hint</a>"  void        user_function      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gchar *arg1,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 "<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-destroy">destroy</a>"   void        user_function      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 "<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-emit-event-on">emit-event-on</a>"
             void        user_function      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer arg1,
-                                            gchar *arg2,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 "<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-emit-verb-on">emit-verb-on</a>"
             void        user_function      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer arg1,
-                                            gpointer user_data);
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
 "<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine-remove-hint">remove-hint</a>"
             void        user_function      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer user_data);
-</pre></div><div class="refsect1" lang="en"><a name="id2856871"></a><h2>Description</h2><p>
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2580227"></a><h2>Description</h2><p>
 The Bonobo UI code as exposed through the <a href="libbonoboui-bonobo-window.html#BonoboWindow"><span class="type">BonoboWindow</span></a>,
 <a href="libbonoboui-bonobo-ui-component.html#BonoboUIComponent"><span class="type">BonoboUIComponent</span></a> and <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer"><span class="type">BonoboUIContainer</span></a> API's use the
 BonoboUIEngine. The Engine effectively maintains a
@@ -191,7 +253,7 @@ The Engine can be tweaked by getting its pointer from an
 associated BonoboWindow eg. this can be useful for setting
 the configuration path. To allow a BonoboWindow to be
 configurable you need to do:
-  </p><div class="example"><a name="id2856931"></a><p class="title"><b>Example 4. How to make your UI user configurable</b></p><pre class="programlisting">
+  </p><div class="example"><a name="id2580287"></a><p class="title"><b>Example 4. How to make your UI user configurable</b></p><pre class="programlisting">
 bonobo_ui_engine_config_set_path (
 	bonobo_window_get_ui_engine (win),
 	"/my-application-name/UIConfig/kvps");
@@ -202,7 +264,7 @@ gnome_config file.
 Key value pairs (kvps) are stored in
 this, mangled into a comma delimited string and these are
 used to clobber the XML on merges, eg.
-  </p><div class="example"><a name="id2856953"></a><p class="title"><b>Example 5. User configuration format</b></p><pre class="programlisting">
+  </p><div class="example"><a name="id2580309"></a><p class="title"><b>Example 5. User configuration format</b></p><pre class="programlisting">
 [UIConfig]
 kvps=/Toolbar:look:both
     </pre></div><p>
@@ -210,29 +272,29 @@ kvps=/Toolbar:look:both
 ensure that whenever the item with path '/Toolbar' is
 modified the 'look="both"' attribute will be stamped
 onto it, effecively forcing a certain look.
-</p></div><div class="refsect1" lang="en"><a name="id2856972"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2856978"></a><h3><a name="BonoboUIEngine-struct"></a>struct BonoboUIEngine</h3><a class="indexterm" name="id2856989"></a><pre class="programlisting">struct BonoboUIEngine;</pre><p>
+</p></div><div class="refsect1" lang="en"><a name="id2580328"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2580334"></a><h3><a name="BonoboUIEngine-struct"></a>BonoboUIEngine</h3><a class="indexterm" name="id2580345"></a><pre class="programlisting">typedef struct _BonoboUIEngine BonoboUIEngine;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2857004"></a><h3><a name="bonobo-ui-engine-deregister-dead-components"></a>bonobo_ui_engine_deregister_dead_components ()</h3><a class="indexterm" name="id2857017"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_dead_components
+</p></div><hr><div class="refsect2" lang="en"><a name="id2580361"></a><h3><a name="bonobo-ui-engine-deregister-dead-components"></a>bonobo_ui_engine_deregister_dead_components ()</h3><a class="indexterm" name="id2580373"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_dead_components
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 Detect any components that have died and deregister
 them - unmerging their UI elements.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857069"></a><h3><a name="bonobo-ui-engine-deregister-component-by-ref"></a>bonobo_ui_engine_deregister_component_by_ref ()</h3><a class="indexterm" name="id2857082"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_component_by_ref
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580425"></a><h3><a name="bonobo-ui-engine-deregister-component-by-ref"></a>bonobo_ui_engine_deregister_component_by_ref ()</h3><a class="indexterm" name="id2580438"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_component_by_ref
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              Bonobo_Unknown ref);</pre><p>
 Deregisters component with reference <i class="parameter"><tt>ref</tt></i> from <i class="parameter"><tt>engine</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ref</tt></i> :</span></td><td> the ref.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857167"></a><h3><a name="bonobo-ui-engine-deregister-component"></a>bonobo_ui_engine_deregister_component ()</h3><a class="indexterm" name="id2857180"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_component
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580524"></a><h3><a name="bonobo-ui-engine-deregister-component"></a>bonobo_ui_engine_deregister_component ()</h3><a class="indexterm" name="id2580536"></a><pre class="programlisting">void        bonobo_ui_engine_deregister_component
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *name);</pre><p>
 Deregisters component of <i class="parameter"><tt>name</tt></i> from <i class="parameter"><tt>engine</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the component name
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857265"></a><h3><a name="bonobo-ui-engine-register-component"></a>bonobo_ui_engine_register_component ()</h3><a class="indexterm" name="id2857278"></a><pre class="programlisting">void        bonobo_ui_engine_register_component
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580621"></a><h3><a name="bonobo-ui-engine-register-component"></a>bonobo_ui_engine_register_component ()</h3><a class="indexterm" name="id2580634"></a><pre class="programlisting">void        bonobo_ui_engine_register_component
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *name,
                                              Bonobo_Unknown component);</pre><p>
@@ -241,21 +303,23 @@ Registers <i class="parameter"><tt>component</tt></i> with <i class="parameter">
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> a name to associate a component with
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>component</tt></i> :</span></td><td> the component
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857390"></a><h3><a name="bonobo-ui-engine-get-component-names"></a>bonobo_ui_engine_get_component_names ()</h3><a class="indexterm" name="id2857403"></a><pre class="programlisting">GList*      bonobo_ui_engine_get_component_names
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580747"></a><h3><a name="bonobo-ui-engine-get-component-names"></a>bonobo_ui_engine_get_component_names ()</h3><a class="indexterm" name="id2580760"></a><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      bonobo_ui_engine_get_component_names
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the names of all registered components
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857465"></a><h3><a name="bonobo-ui-engine-get-component"></a>bonobo_ui_engine_get_component ()</h3><a class="indexterm" name="id2857477"></a><pre class="programlisting">Bonobo_Unknown bonobo_ui_engine_get_component
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the names of all registered components
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580822"></a><h3><a name="bonobo-ui-engine-get-component"></a>bonobo_ui_engine_get_component ()</h3><a class="indexterm" name="id2580834"></a><pre class="programlisting">Bonobo_Unknown bonobo_ui_engine_get_component
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *name);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the component to fetch
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the component with name <i class="parameter"><tt>name</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857566"></a><h3><a name="bonobo-ui-engine-config-set-path"></a>bonobo_ui_engine_config_set_path ()</h3><a class="indexterm" name="id2857578"></a><pre class="programlisting">void        bonobo_ui_engine_config_set_path
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the component with name <i class="parameter"><tt>name</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2580923"></a><h3><a name="bonobo-ui-engine-config-set-path"></a>bonobo_ui_engine_config_set_path ()</h3><a class="indexterm" name="id2580936"></a><pre class="programlisting">void        bonobo_ui_engine_config_set_path
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path);</pre><p>
 
@@ -263,27 +327,27 @@ Registers <i class="parameter"><tt>component</tt></i> with <i class="parameter">
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857647"></a><h3><a name="bonobo-ui-engine-config-get-path"></a>bonobo_ui_engine_config_get_path ()</h3><a class="indexterm" name="id2857659"></a><pre class="programlisting">const char* bonobo_ui_engine_config_get_path
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581004"></a><h3><a name="bonobo-ui-engine-config-get-path"></a>bonobo_ui_engine_config_get_path ()</h3><a class="indexterm" name="id2581016"></a><pre class="programlisting">const char* bonobo_ui_engine_config_get_path
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857718"></a><h3><a name="bonobo-ui-engine-set-ui-container"></a>bonobo_ui_engine_set_ui_container ()</h3><a class="indexterm" name="id2857730"></a><pre class="programlisting">void        bonobo_ui_engine_set_ui_container
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581075"></a><h3><a name="bonobo-ui-engine-set-ui-container"></a>bonobo_ui_engine_set_ui_container ()</h3><a class="indexterm" name="id2581087"></a><pre class="programlisting">void        bonobo_ui_engine_set_ui_container
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a> *ui_container);</pre><p>
 Associates a given UI Container with this BonoboUIEngine.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ui_container</tt></i> :</span></td><td> a UI Container bonobo object.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857804"></a><h3><a name="bonobo-ui-engine-get-ui-container"></a>bonobo_ui_engine_get_ui_container ()</h3><a class="indexterm" name="id2857816"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a>* bonobo_ui_engine_get_ui_container
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581161"></a><h3><a name="bonobo-ui-engine-get-ui-container"></a>bonobo_ui_engine_get_ui_container ()</h3><a class="indexterm" name="id2581174"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-container.html#BonoboUIContainer">BonoboUIContainer</a>* bonobo_ui_engine_get_ui_container
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 Fetches the associated UI Container</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the associated UI container.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857878"></a><h3><a name="bonobo-ui-engine-freeze"></a>bonobo_ui_engine_freeze ()</h3><a class="indexterm" name="id2857890"></a><pre class="programlisting">void        bonobo_ui_engine_freeze         (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_freeze</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the associated UI container.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581236"></a><h3><a name="bonobo-ui-engine-freeze"></a>bonobo_ui_engine_freeze ()</h3><a class="indexterm" name="id2581247"></a><pre class="programlisting">void        bonobo_ui_engine_freeze         (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_freeze</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 This increments the freeze count on the tree, while
 this count &gt; 0 no syncronization between the internal
 XML model and the widget views occurs. This means that
@@ -291,19 +355,19 @@ many simple merges can be glupped together with little
 performance impact and overhead.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2857963"></a><h3><a name="bonobo-ui-engine-thaw"></a>bonobo_ui_engine_thaw ()</h3><a class="indexterm" name="id2857975"></a><pre class="programlisting">void        bonobo_ui_engine_thaw           (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_thaw</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581321"></a><h3><a name="bonobo-ui-engine-thaw"></a>bonobo_ui_engine_thaw ()</h3><a class="indexterm" name="id2581332"></a><pre class="programlisting">void        bonobo_ui_engine_thaw           (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_thaw</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 This decrements the freeze count and if it is 0
 causes the UI widgets to be re-synched with the
 XML model, see also bonobo_ui_engine_freeze</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858040"></a><h3><a name="bonobo-ui-engine-update"></a>bonobo_ui_engine_update ()</h3><a class="indexterm" name="id2858051"></a><pre class="programlisting">void        bonobo_ui_engine_update         (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_update</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581398"></a><h3><a name="bonobo-ui-engine-update"></a>bonobo_ui_engine_update ()</h3><a class="indexterm" name="id2581409"></a><pre class="programlisting">void        bonobo_ui_engine_update         (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_ui_engine_update</tt> is deprecated and should not be used in newly-written code.</p></div><p>
 This function is called to update the entire
 UI model synchronizing any changes in it with
 the widget tree where neccessary</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858116"></a><h3><a name="BonoboUIError"></a>enum BonoboUIError</h3><a class="indexterm" name="id2858127"></a><pre class="programlisting">typedef enum {
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581474"></a><h3><a name="BonoboUIError"></a>enum BonoboUIError</h3><a class="indexterm" name="id2581485"></a><pre class="programlisting">typedef enum {
 	BONOBO_UI_ERROR_OK = 0,
 	BONOBO_UI_ERROR_BAD_PARAM,
 	BONOBO_UI_ERROR_INVALID_PATH,
@@ -311,10 +375,9 @@ the widget tree where neccessary</p><p>
 } BonoboUIError;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2858144"></a><h3><a name="BonoboUIEnginePrivate"></a>struct BonoboUIEnginePrivate</h3><a class="indexterm" name="id2858156"></a><pre class="programlisting">struct BonoboUIEnginePrivate;</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2581502"></a><h3><a name="BonoboUIEnginePrivate"></a>BonoboUIEnginePrivate</h3><a class="indexterm" name="id2581513"></a><pre class="programlisting">typedef struct _BonoboUIEnginePrivate BonoboUIEnginePrivate;</pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2858171"></a><h3><a name="BonoboUIEngineClass"></a>struct BonoboUIEngineClass</h3><a class="indexterm" name="id2858183"></a><pre class="programlisting">struct BonoboUIEngineClass {
-
+</p></div><hr><div class="refsect2" lang="en"><a name="id2581529"></a><h3><a name="BonoboUIEngineClass"></a>BonoboUIEngineClass</h3><a class="indexterm" name="id2581540"></a><pre class="programlisting">typedef struct {
 	GObjectClass parent_class;
 
 	/* Signals */
@@ -330,45 +393,52 @@ the widget tree where neccessary</p><p>
 			       const char     *state);
 
 	void (*destroy)       (BonoboUIEngine *engine);
-
-};
+} BonoboUIEngineClass;
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2858205"></a><h3><a name="bonobo-ui-engine-construct"></a>bonobo_ui_engine_construct ()</h3><a class="indexterm" name="id2858217"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_ui_engine_construct  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GObject *view);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2581563"></a><h3><a name="bonobo-ui-engine-construct"></a>bonobo_ui_engine_construct ()</h3><a class="indexterm" name="id2581575"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_ui_engine_construct  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+                                             <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *view);</pre><p>
 Construct a new bonobo_ui_engine</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> the view [ often a BonoboWindow ]
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the constructed engine.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858299"></a><h3><a name="bonobo-ui-engine-new"></a>bonobo_ui_engine_new ()</h3><a class="indexterm" name="id2858310"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_ui_engine_new        (GObject *view);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the constructed engine.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581658"></a><h3><a name="bonobo-ui-engine-new"></a>bonobo_ui_engine_new ()</h3><a class="indexterm" name="id2581669"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a>* bonobo_ui_engine_new        (<a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a> *view);</pre><p>
 Create a new <a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine"><span class="type">BonoboUIEngine</span></a> structure</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new UI Engine.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858379"></a><h3><a name="bonobo-ui-engine-get-view"></a>bonobo_ui_engine_get_view ()</h3><a class="indexterm" name="id2858391"></a><pre class="programlisting">GObject*    bonobo_ui_engine_get_view       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new UI Engine.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581738"></a><h3><a name="bonobo-ui-engine-get-view"></a>bonobo_ui_engine_get_view ()</h3><a class="indexterm" name="id2581749"></a><pre class="programlisting"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>*    bonobo_ui_engine_get_view       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 This returns the associated view, often a BonoboWindow</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the view widget.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858452"></a><h3><a name="bonobo-ui-engine-add-sync"></a>bonobo_ui_engine_add_sync ()</h3><a class="indexterm" name="id2858463"></a><pre class="programlisting">void        bonobo_ui_engine_add_sync       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the view widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581810"></a><h3><a name="bonobo-ui-engine-add-sync"></a>bonobo_ui_engine_add_sync ()</h3><a class="indexterm" name="id2581822"></a><pre class="programlisting">void        bonobo_ui_engine_add_sync       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync);</pre><p>
 Add a <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync"><span class="type">BonoboUISync</span></a> synchronizer to the engine</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the enginer
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sync</tt></i> :</span></td><td> the synchronizer
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858544"></a><h3><a name="bonobo-ui-engine-remove-sync"></a>bonobo_ui_engine_remove_sync ()</h3><a class="indexterm" name="id2858556"></a><pre class="programlisting">void        bonobo_ui_engine_remove_sync    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581903"></a><h3><a name="bonobo-ui-engine-remove-sync"></a>bonobo_ui_engine_remove_sync ()</h3><a class="indexterm" name="id2581915"></a><pre class="programlisting">void        bonobo_ui_engine_remove_sync    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync);</pre><p>
 Remove a specified <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync"><span class="type">BonoboUISync</span></a> synchronizer from the engine</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sync</tt></i> :</span></td><td> the sync
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858637"></a><h3><a name="bonobo-ui-engine-get-syncs"></a>bonobo_ui_engine_get_syncs ()</h3><a class="indexterm" name="id2858649"></a><pre class="programlisting">GSList*     bonobo_ui_engine_get_syncs      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581996"></a><h3><a name="bonobo-ui-engine-get-syncs"></a>bonobo_ui_engine_get_syncs ()</h3><a class="indexterm" name="id2582008"></a><pre class="programlisting"><a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a>*     bonobo_ui_engine_get_syncs      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 Retrieve a list of available synchronizers.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GSList of <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync"><span class="type">BonoboUISync</span></a> s
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858718"></a><h3><a name="bonobo-ui-engine-update-node"></a>bonobo_ui_engine_update_node ()</h3><a class="indexterm" name="id2858730"></a><pre class="programlisting">void        bonobo_ui_engine_update_node    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GSList of <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync"><span class="type">BonoboUISync</span></a> s
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582077"></a><h3><a name="bonobo-ui-engine-update-node"></a>bonobo_ui_engine_update_node ()</h3><a class="indexterm" name="id2582089"></a><pre class="programlisting">void        bonobo_ui_engine_update_node    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-sync.html#BonoboUISync">BonoboUISync</a> *sync,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 This function is used to write recursive synchronizers
@@ -380,8 +450,10 @@ points at undefined memory.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>sync</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node to start updating.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858830"></a><h3><a name="bonobo-ui-engine-queue-update"></a>bonobo_ui_engine_queue_update ()</h3><a class="indexterm" name="id2858843"></a><pre class="programlisting">void        bonobo_ui_engine_queue_update   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582190"></a><h3><a name="bonobo-ui-engine-queue-update"></a>bonobo_ui_engine_queue_update ()</h3><a class="indexterm" name="id2582202"></a><pre class="programlisting">void        bonobo_ui_engine_queue_update   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *cmd_node);</pre><p>
 This function is used to queue a state update on
@@ -393,7 +465,9 @@ avoid re-enterancy problems.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget to update later
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>cmd_node</tt></i> :</span></td><td> the associated command's node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2858968"></a><h3><a name="bonobo-ui-engine-build-control"></a>bonobo_ui_engine_build_control ()</h3><a class="indexterm" name="id2858979"></a><pre class="programlisting">GtkWidget*  bonobo_ui_engine_build_control  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582327"></a><h3><a name="bonobo-ui-engine-build-control"></a>bonobo_ui_engine_build_control ()</h3><a class="indexterm" name="id2582338"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  bonobo_ui_engine_build_control  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 A helper function for synchronizers, this creates a control
 if possible from the node's associated object, stamps the
@@ -401,16 +475,20 @@ node as containing a control and sets its widget.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the control node.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a Control's GtkWidget.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859065"></a><h3><a name="bonobo-ui-engine-widget-get-node"></a>bonobo_ui_engine_widget_get_node ()</h3><a class="indexterm" name="id2859077"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_widget_get_node
-                                            (GtkWidget *widget);</pre><p>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a Control's GtkWidget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582424"></a><h3><a name="bonobo-ui-engine-widget-get-node"></a>bonobo_ui_engine_widget_get_node ()</h3><a class="indexterm" name="id2582436"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_widget_get_node
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode"><span class="type">BonoboUINode</span></a> associated with this widget
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859147"></a><h3><a name="bonobo-ui-engine-widget-set-node"></a>bonobo_ui_engine_widget_set_node ()</h3><a class="indexterm" name="id2859159"></a><pre class="programlisting">void        bonobo_ui_engine_widget_set_node
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode"><span class="type">BonoboUINode</span></a> associated with this widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582506"></a><h3><a name="bonobo-ui-engine-widget-set-node"></a>bonobo_ui_engine_widget_set_node ()</h3><a class="indexterm" name="id2582518"></a><pre class="programlisting">void        bonobo_ui_engine_widget_set_node
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Used internaly to associate a widget with a node,
 some synchronisers need to be able to execute code
@@ -419,7 +497,7 @@ on widget creation.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859255"></a><h3><a name="bonobo-ui-engine-xml-set-prop"></a>bonobo_ui_engine_xml_set_prop ()</h3><a class="indexterm" name="id2859267"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_set_prop (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582615"></a><h3><a name="bonobo-ui-engine-xml-set-prop"></a>bonobo_ui_engine_xml_set_prop ()</h3><a class="indexterm" name="id2582627"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_set_prop (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              const char *property,
                                              const char *value,
@@ -432,11 +510,13 @@ representation at <i class="parameter"><tt>path</tt></i> in <i class="parameter"
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>property</tt></i> :</span></td><td> The property to set
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> The new value of the property
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>component</tt></i> :</span></td><td> the component ID associated with the nodes.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859429"></a><h3><a name="bonobo-ui-engine-xml-get-prop"></a>bonobo_ui_engine_xml_get_prop ()</h3><a class="indexterm" name="id2859441"></a><pre class="programlisting">CORBA_char* bonobo_ui_engine_xml_get_prop   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582789"></a><h3><a name="bonobo-ui-engine-xml-get-prop"></a>bonobo_ui_engine_xml_get_prop ()</h3><a class="indexterm" name="id2582801"></a><pre class="programlisting">CORBA_char* bonobo_ui_engine_xml_get_prop   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              const char *prop,
-                                             gboolean *invalid_path);</pre><p>
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *invalid_path);</pre><p>
 This function fetches the property <i class="parameter"><tt>prop</tt></i> at node
 at <i class="parameter"><tt>path</tt></i> in the internal structure.</p><p>
 
@@ -444,11 +524,13 @@ at <i class="parameter"><tt>path</tt></i> in the internal structure.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>prop</tt></i> :</span></td><td> The property
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>invalid_path</tt></i> :</span></td><td>
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a CORBA allocated string
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859579"></a><h3><a name="bonobo-ui-engine-prune-widget-info"></a>bonobo_ui_engine_prune_widget_info ()</h3><a class="indexterm" name="id2859592"></a><pre class="programlisting">void        bonobo_ui_engine_prune_widget_info
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a CORBA allocated string
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582940"></a><h3><a name="bonobo-ui-engine-prune-widget-info"></a>bonobo_ui_engine_prune_widget_info ()</h3><a class="indexterm" name="id2582953"></a><pre class="programlisting">void        bonobo_ui_engine_prune_widget_info
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             gboolean save_custom);</pre><p>
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> save_custom);</pre><p>
 This function destroys any widgets associated with
 <i class="parameter"><tt>node</tt></i> and all its children, if <i class="parameter"><tt>save_custom</tt></i>, any widget
 that is a custom widget ( such as a control ) will be
@@ -457,29 +539,29 @@ preserved. All widgets flagged ROOT are preserved always.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>save_custom</tt></i> :</span></td><td> whether to save custom widgets
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859702"></a><h3><a name="bonobo-ui-engine-get-path"></a>bonobo_ui_engine_get_path ()</h3><a class="indexterm" name="id2859714"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_get_path     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583062"></a><h3><a name="bonobo-ui-engine-get-path"></a>bonobo_ui_engine_get_path ()</h3><a class="indexterm" name="id2583074"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_get_path     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path);</pre><p>
 This routine gets a node from the internal XML tree
 pointed at by <i class="parameter"><tt>path</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the node.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859802"></a><h3><a name="bonobo-ui-engine-dirty-tree"></a>bonobo_ui_engine_dirty_tree ()</h3><a class="indexterm" name="id2859813"></a><pre class="programlisting">void        bonobo_ui_engine_dirty_tree     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the node.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583162"></a><h3><a name="bonobo-ui-engine-dirty-tree"></a>bonobo_ui_engine_dirty_tree ()</h3><a class="indexterm" name="id2583174"></a><pre class="programlisting">void        bonobo_ui_engine_dirty_tree     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Mark all the node's children as being dirty and needing
 a re-synch with their widget views.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859886"></a><h3><a name="bonobo-ui-engine-clean-tree"></a>bonobo_ui_engine_clean_tree ()</h3><a class="indexterm" name="id2859899"></a><pre class="programlisting">void        bonobo_ui_engine_clean_tree     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583247"></a><h3><a name="bonobo-ui-engine-clean-tree"></a>bonobo_ui_engine_clean_tree ()</h3><a class="indexterm" name="id2583259"></a><pre class="programlisting">void        bonobo_ui_engine_clean_tree     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 This cleans the tree, marking the node and its children
 as not needing a re-synch with their widget views.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2859972"></a><h3><a name="bonobo-ui-engine-dump"></a>bonobo_ui_engine_dump ()</h3><a class="indexterm" name="id2859984"></a><pre class="programlisting">void        bonobo_ui_engine_dump           (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583332"></a><h3><a name="bonobo-ui-engine-dump"></a>bonobo_ui_engine_dump ()</h3><a class="indexterm" name="id2583344"></a><pre class="programlisting">void        bonobo_ui_engine_dump           (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              FILE *out,
                                              const char *msg);</pre><p>
 This is a debugging function mostly for internal
@@ -491,71 +573,81 @@ helpful <i class="parameter"><tt>msg</tt></i> prepended.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>out</tt></i> :</span></td><td> the FILE stream to dump to
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td> user visible message
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860092"></a><h3><a name="bonobo-ui-engine-node-get-object"></a>bonobo_ui_engine_node_get_object ()</h3><a class="indexterm" name="id2860104"></a><pre class="programlisting">CORBA_Object bonobo_ui_engine_node_get_object
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583452"></a><h3><a name="bonobo-ui-engine-node-get-object"></a>bonobo_ui_engine_node_get_object ()</h3><a class="indexterm" name="id2583464"></a><pre class="programlisting">CORBA_Object bonobo_ui_engine_node_get_object
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the CORBA_Object associated with a <i class="parameter"><tt>node</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860193"></a><h3><a name="bonobo-ui-engine-node-is-dirty"></a>bonobo_ui_engine_node_is_dirty ()</h3><a class="indexterm" name="id2860205"></a><pre class="programlisting">gboolean    bonobo_ui_engine_node_is_dirty  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the CORBA_Object associated with a <i class="parameter"><tt>node</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583554"></a><h3><a name="bonobo-ui-engine-node-is-dirty"></a>bonobo_ui_engine_node_is_dirty ()</h3><a class="indexterm" name="id2583566"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    bonobo_ui_engine_node_is_dirty  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether the <i class="parameter"><tt>node</tt></i> is marked dirty
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860293"></a><h3><a name="bonobo-ui-engine-node-get-widget"></a>bonobo_ui_engine_node_get_widget ()</h3><a class="indexterm" name="id2860305"></a><pre class="programlisting">GtkWidget*  bonobo_ui_engine_node_get_widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether the <i class="parameter"><tt>node</tt></i> is marked dirty
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583654"></a><h3><a name="bonobo-ui-engine-node-get-widget"></a>bonobo_ui_engine_node_get_widget ()</h3><a class="indexterm" name="id2583666"></a><pre class="programlisting"><a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a>*  bonobo_ui_engine_node_get_widget
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Gets the widget associated with <i class="parameter"><tt>node</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the widget
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860393"></a><h3><a name="bonobo-ui-engine-node-get-id"></a>bonobo_ui_engine_node_get_id ()</h3><a class="indexterm" name="id2860405"></a><pre class="programlisting">const char* bonobo_ui_engine_node_get_id    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583754"></a><h3><a name="bonobo-ui-engine-node-get-id"></a>bonobo_ui_engine_node_get_id ()</h3><a class="indexterm" name="id2583767"></a><pre class="programlisting">const char* bonobo_ui_engine_node_get_id    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Each component has an associated textual id or name - see
 bonobo_ui_engine_register_component</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the component id associated with the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860491"></a><h3><a name="bonobo-ui-engine-get-cmd-node"></a>bonobo_ui_engine_get_cmd_node ()</h3><a class="indexterm" name="id2860502"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_get_cmd_node (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the component id associated with the node
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583852"></a><h3><a name="bonobo-ui-engine-get-cmd-node"></a>bonobo_ui_engine_get_cmd_node ()</h3><a class="indexterm" name="id2583864"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a>* bonobo_ui_engine_get_cmd_node (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *from_node);</pre><p>
 This function seeks the command node associated
 with <i class="parameter"><tt>from_node</tt></i> in <i class="parameter"><tt>engine</tt></i> 's internal tree.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>from_node</tt></i> :</span></td><td> the node
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the command node or NULL
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860598"></a><h3><a name="bonobo-ui-engine-node-set-dirty"></a>bonobo_ui_engine_node_set_dirty ()</h3><a class="indexterm" name="id2860611"></a><pre class="programlisting">void        bonobo_ui_engine_node_set_dirty (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the command node or NULL
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2583960"></a><h3><a name="bonobo-ui-engine-node-set-dirty"></a>bonobo_ui_engine_node_set_dirty ()</h3><a class="indexterm" name="id2583972"></a><pre class="programlisting">void        bonobo_ui_engine_node_set_dirty (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             gboolean dirty);</pre><p>
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> dirty);</pre><p>
 Set <i class="parameter"><tt>node</tt></i> s dirty bit to <i class="parameter"><tt>dirty</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>dirty</tt></i> :</span></td><td> whether the node should be dirty.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860717"></a><h3><a name="bonobo-ui-engine-stamp-custom"></a>bonobo_ui_engine_stamp_custom ()</h3><a class="indexterm" name="id2860729"></a><pre class="programlisting">void        bonobo_ui_engine_stamp_custom   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584078"></a><h3><a name="bonobo-ui-engine-stamp-custom"></a>bonobo_ui_engine_stamp_custom ()</h3><a class="indexterm" name="id2584091"></a><pre class="programlisting">void        bonobo_ui_engine_stamp_custom   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Marks a node as containing a custom widget.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860802"></a><h3><a name="bonobo-ui-engine-widget-set"></a>bonobo_ui_engine_widget_set ()</h3><a class="indexterm" name="id2860813"></a><pre class="programlisting">void        bonobo_ui_engine_widget_set     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584164"></a><h3><a name="bonobo-ui-engine-widget-set"></a>bonobo_ui_engine_widget_set ()</h3><a class="indexterm" name="id2584175"></a><pre class="programlisting">void        bonobo_ui_engine_widget_set     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
-                                             GtkWidget *widget);</pre><p>
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2860902"></a><h3><a name="bonobo-ui-engine-stamp-root"></a>bonobo_ui_engine_stamp_root ()</h3><a class="indexterm" name="id2860914"></a><pre class="programlisting">void        bonobo_ui_engine_stamp_root     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584264"></a><h3><a name="bonobo-ui-engine-stamp-root"></a>bonobo_ui_engine_stamp_root ()</h3><a class="indexterm" name="id2584275"></a><pre class="programlisting">void        bonobo_ui_engine_stamp_root     (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
-                                             GtkWidget *widget);</pre><p>
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);</pre><p>
 This stamps <i class="parameter"><tt>node</tt></i> with <i class="parameter"><tt>widget</tt></i> which is marked as
 being a ROOT node, so the engine will never destroy
 it.</p><p>
@@ -563,23 +655,23 @@ it.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the root widget
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861020"></a><h3><a name="bonobo-ui-engine-add-hint"></a>bonobo_ui_engine_add_hint ()</h3><a class="indexterm" name="id2861032"></a><pre class="programlisting">void        bonobo_ui_engine_add_hint       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584382"></a><h3><a name="bonobo-ui-engine-add-hint"></a>bonobo_ui_engine_add_hint ()</h3><a class="indexterm" name="id2584394"></a><pre class="programlisting">void        bonobo_ui_engine_add_hint       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *str);</pre><p>
 This fires the 'add_hint' signal.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> the hint string
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861104"></a><h3><a name="bonobo-ui-engine-remove-hint"></a>bonobo_ui_engine_remove_hint ()</h3><a class="indexterm" name="id2861115"></a><pre class="programlisting">void        bonobo_ui_engine_remove_hint    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584466"></a><h3><a name="bonobo-ui-engine-remove-hint"></a>bonobo_ui_engine_remove_hint ()</h3><a class="indexterm" name="id2584477"></a><pre class="programlisting">void        bonobo_ui_engine_remove_hint    (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine);</pre><p>
 This fires the 'remove_hint' signal</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861166"></a><h3><a name="bonobo-ui-engine-emit-verb-on"></a>bonobo_ui_engine_emit_verb_on ()</h3><a class="indexterm" name="id2861178"></a><pre class="programlisting">void        bonobo_ui_engine_emit_verb_on   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584528"></a><h3><a name="bonobo-ui-engine-emit-verb-on"></a>bonobo_ui_engine_emit_verb_on ()</h3><a class="indexterm" name="id2584540"></a><pre class="programlisting">void        bonobo_ui_engine_emit_verb_on   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 This fires the 'emit_verb' signal</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861251"></a><h3><a name="bonobo-ui-engine-emit-event-on"></a>bonobo_ui_engine_emit_event_on ()</h3><a class="indexterm" name="id2861263"></a><pre class="programlisting">void        bonobo_ui_engine_emit_event_on  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584612"></a><h3><a name="bonobo-ui-engine-emit-event-on"></a>bonobo_ui_engine_emit_event_on ()</h3><a class="indexterm" name="id2584625"></a><pre class="programlisting">void        bonobo_ui_engine_emit_event_on  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              const char *state);</pre><p>
 This fires the 'emit_event_on' signal</p><p>
@@ -587,16 +679,20 @@ This fires the 'emit_event_on' signal</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>state</tt></i> :</span></td><td> the new state of the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861357"></a><h3><a name="bonobo-ui-engine-emit-verb-on-w"></a>bonobo_ui_engine_emit_verb_on_w ()</h3><a class="indexterm" name="id2861369"></a><pre class="programlisting">void        bonobo_ui_engine_emit_verb_on_w (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584719"></a><h3><a name="bonobo-ui-engine-emit-verb-on-w"></a>bonobo_ui_engine_emit_verb_on_w ()</h3><a class="indexterm" name="id2584731"></a><pre class="programlisting">void        bonobo_ui_engine_emit_verb_on_w (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget);</pre><p>
 This function looks up the node from <i class="parameter"><tt>widget</tt></i> and
 emits the 'emit_verb_on' signal on that node.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861448"></a><h3><a name="bonobo-ui-engine-emit-event-on-w"></a>bonobo_ui_engine_emit_event_on_w ()</h3><a class="indexterm" name="id2861460"></a><pre class="programlisting">void        bonobo_ui_engine_emit_event_on_w
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584810"></a><h3><a name="bonobo-ui-engine-emit-event-on-w"></a>bonobo_ui_engine_emit_event_on_w ()</h3><a class="indexterm" name="id2584822"></a><pre class="programlisting">void        bonobo_ui_engine_emit_event_on_w
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
-                                             GtkWidget *widget,
+                                             <a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              const char *state);</pre><p>
 This function looks up the node from <i class="parameter"><tt>widget</tt></i> and
 emits the 'emit_event_on' signal on that node
@@ -605,7 +701,7 @@ passint <i class="parameter"><tt>state</tt></i> as the new state.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>state</tt></i> :</span></td><td> the new state
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861568"></a><h3><a name="bonobo-ui-engine-get-attr"></a>bonobo_ui_engine_get_attr ()</h3><a class="indexterm" name="id2861580"></a><pre class="programlisting">char*       bonobo_ui_engine_get_attr       (<a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2584930"></a><h3><a name="bonobo-ui-engine-get-attr"></a>bonobo_ui_engine_get_attr ()</h3><a class="indexterm" name="id2584942"></a><pre class="programlisting">char*       bonobo_ui_engine_get_attr       (<a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *cmd_node,
                                              const char *attr);</pre><p>
 This function is used to get node attributes in many
@@ -615,17 +711,21 @@ from <i class="parameter"><tt>node</tt></i>, and if this fails falls back to <i 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>cmd_node</tt></i> :</span></td><td> the command's node
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>attr</tt></i> :</span></td><td> the attribute name
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the attr or NULL if it doesn't exist.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861699"></a><h3><a name="bonobo-ui-engine-widget-attach-node"></a>bonobo_ui_engine_widget_attach_node ()</h3><a class="indexterm" name="id2861712"></a><pre class="programlisting">void        bonobo_ui_engine_widget_attach_node
-                                            (GtkWidget *widget,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the attr or NULL if it doesn't exist.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585061"></a><h3><a name="bonobo-ui-engine-widget-attach-node"></a>bonobo_ui_engine_widget_attach_node ()</h3><a class="indexterm" name="id2585074"></a><pre class="programlisting">void        bonobo_ui_engine_widget_attach_node
+                                            (<a
+href="../gtk/GtkWidget.html"
+>GtkWidget</a> *widget,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *node);</pre><p>
 Associate <i class="parameter"><tt>node</tt></i> with <i class="parameter"><tt>widget</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> the widget
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node</tt></i> :</span></td><td> the node
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861794"></a><h3><a name="bonobo-ui-engine-xml-get"></a>bonobo_ui_engine_xml_get ()</h3><a class="indexterm" name="id2861806"></a><pre class="programlisting">CORBA_char* bonobo_ui_engine_xml_get        (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585156"></a><h3><a name="bonobo-ui-engine-xml-get"></a>bonobo_ui_engine_xml_get ()</h3><a class="indexterm" name="id2585168"></a><pre class="programlisting">CORBA_char* bonobo_ui_engine_xml_get        (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
-                                             gboolean node_only);</pre><p>
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> node_only);</pre><p>
 This function fetches the node at <i class="parameter"><tt>path</tt></i> in the
 internal structure, and if <i class="parameter"><tt>node_only</tt></i> dumps the
 node to an XML string, otherwise it dumps it and
@@ -634,16 +734,18 @@ its children.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>node_only</tt></i> :</span></td><td> just the node, or children too.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the XML string - use CORBA_free to free
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2861924"></a><h3><a name="bonobo-ui-engine-xml-node-exists"></a>bonobo_ui_engine_xml_node_exists ()</h3><a class="indexterm" name="id2861937"></a><pre class="programlisting">gboolean    bonobo_ui_engine_xml_node_exists
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the XML string - use CORBA_free to free
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585287"></a><h3><a name="bonobo-ui-engine-xml-node-exists"></a>bonobo_ui_engine_xml_node_exists ()</h3><a class="indexterm" name="id2585299"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    bonobo_ui_engine_xml_node_exists
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path);</pre><p>
 </p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>engine</tt></i> :</span></td><td> the engine
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if the node at <i class="parameter"><tt>path</tt></i> exists
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862026"></a><h3><a name="bonobo-ui-engine-xml-merge-tree"></a>bonobo_ui_engine_xml_merge_tree ()</h3><a class="indexterm" name="id2862038"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_merge_tree
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if the node at <i class="parameter"><tt>path</tt></i> exists
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585388"></a><h3><a name="bonobo-ui-engine-xml-merge-tree"></a>bonobo_ui_engine_xml_merge_tree ()</h3><a class="indexterm" name="id2585400"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_merge_tree
                                             (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              <a href="libbonoboui-bonobo-ui-node.html#BonoboUINode">BonoboUINode</a> *tree,
@@ -655,8 +757,8 @@ representation as children of the node at <i class="parameter"><tt>path</tt></i>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>tree</tt></i> :</span></td><td> the nodes
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>component</tt></i> :</span></td><td> the component ID associated with these nodes.
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862185"></a><h3><a name="bonobo-ui-engine-xml-rm"></a>bonobo_ui_engine_xml_rm ()</h3><a class="indexterm" name="id2862196"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_rm       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585548"></a><h3><a name="bonobo-ui-engine-xml-rm"></a>bonobo_ui_engine_xml_rm ()</h3><a class="indexterm" name="id2585559"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_xml_rm       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              const char *by_component);</pre><p>
 Remove a chunk of the xml tree pointed at by <i class="parameter"><tt>path</tt></i>
@@ -668,8 +770,8 @@ other overridden items.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>by_component</tt></i> :</span></td><td> whether to remove elements from only a
 specific component
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862321"></a><h3><a name="bonobo-ui-engine-object-set"></a>bonobo_ui_engine_object_set ()</h3><a class="indexterm" name="id2862333"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_object_set   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag on error
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585684"></a><h3><a name="bonobo-ui-engine-object-set"></a>bonobo_ui_engine_object_set ()</h3><a class="indexterm" name="id2585697"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_object_set   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              Bonobo_Unknown object,
                                              CORBA_Environment *ev);</pre><p>
@@ -681,8 +783,8 @@ reference into a 'control' element.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td> an object reference
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> CORBA exception environment
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag if success
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862462"></a><h3><a name="bonobo-ui-engine-object-get"></a>bonobo_ui_engine_object_get ()</h3><a class="indexterm" name="id2862474"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_object_get   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag if success
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585826"></a><h3><a name="bonobo-ui-engine-object-get"></a>bonobo_ui_engine_object_get ()</h3><a class="indexterm" name="id2585838"></a><pre class="programlisting"><a href="libbonoboui-bonobo-ui-engine.html#BonoboUIError">BonoboUIError</a> bonobo_ui_engine_object_get   (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const char *path,
                                              Bonobo_Unknown *object,
                                              CORBA_Environment *ev);</pre><p>
@@ -694,8 +796,8 @@ reference pointed to by <i class="parameter"><tt>object</tt></i>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path into the tree
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td> an pointer to an object reference
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> CORBA exception environment
-</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag if success
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862620"></a><h3><a name="bonobo-ui-engine-exec-verb"></a>bonobo_ui_engine_exec_verb ()</h3><a class="indexterm" name="id2862632"></a><pre class="programlisting">void        bonobo_ui_engine_exec_verb      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> flag if success
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2585984"></a><h3><a name="bonobo-ui-engine-exec-verb"></a>bonobo_ui_engine_exec_verb ()</h3><a class="indexterm" name="id2585996"></a><pre class="programlisting">void        bonobo_ui_engine_exec_verb      (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const CORBA_char *cname,
                                              CORBA_Environment *ev);</pre><p>
 
@@ -704,7 +806,7 @@ reference pointed to by <i class="parameter"><tt>object</tt></i>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862721"></a><h3><a name="bonobo-ui-engine-ui-event"></a>bonobo_ui_engine_ui_event ()</h3><a class="indexterm" name="id2862733"></a><pre class="programlisting">void        bonobo_ui_engine_ui_event       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2586085"></a><h3><a name="bonobo-ui-engine-ui-event"></a>bonobo_ui_engine_ui_event ()</h3><a class="indexterm" name="id2586097"></a><pre class="programlisting">void        bonobo_ui_engine_ui_event       (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *engine,
                                              const CORBA_char *id,
                                              const Bonobo_UIComponent_EventType type,
                                              const CORBA_char *state,
@@ -717,36 +819,54 @@ reference pointed to by <i class="parameter"><tt>object</tt></i>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2862866"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2862872"></a><h3><a name="BonoboUIEngine-add-hint"></a>The "add-hint" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gchar *arg1,
-                                            gpointer user_data);</pre><p>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2586230"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2586236"></a><h3><a name="BonoboUIEngine-add-hint"></a>The "add-hint" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
+                                            <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bonobouiengine</tt></i> :</span></td><td>the object which received the signal.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2862967"></a><h3><a name="BonoboUIEngine-destroy"></a>The "destroy" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer user_data);</pre><p>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2586331"></a><h3><a name="BonoboUIEngine-destroy"></a>The "destroy" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bonobouiengine</tt></i> :</span></td><td>the object which received the signal.
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863040"></a><h3><a name="BonoboUIEngine-emit-event-on"></a>The "emit-event-on" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer arg1,
-                                            gchar *arg2,
-                                            gpointer user_data);</pre><p>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2586404"></a><h3><a name="BonoboUIEngine-emit-event-on"></a>The "emit-event-on" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *arg2,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bonobouiengine</tt></i> :</span></td><td>the object which received the signal.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg2</tt></i> :</span></td><td>
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863157"></a><h3><a name="BonoboUIEngine-emit-verb-on"></a>The "emit-verb-on" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer arg1,
-                                            gpointer user_data);</pre><p>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2586520"></a><h3><a name="BonoboUIEngine-emit-verb-on"></a>The "emit-verb-on" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bonobouiengine</tt></i> :</span></td><td>the object which received the signal.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
 
-</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2863252"></a><h3><a name="BonoboUIEngine-remove-hint"></a>The "remove-hint" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
-                                            gpointer user_data);</pre><p>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2586615"></a><h3><a name="BonoboUIEngine-remove-hint"></a>The "remove-hint" signal</h3><pre class="programlisting">void        user_function                  (<a href="libbonoboui-bonobo-ui-engine.html#BonoboUIEngine">BonoboUIEngine</a> *bonobouiengine,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bonobouiengine</tt></i> :</span></td><td>the object which received the signal.
 

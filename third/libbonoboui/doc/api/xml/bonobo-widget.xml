@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboWidget-struct">BonoboWidget</link>;
-struct      <link linkend="BonoboWidgetPrivate">BonoboWidgetPrivate</link>;
-struct      <link linkend="BonoboWidgetClass">BonoboWidgetClass</link>;
+            <link linkend="BonoboWidget-struct">BonoboWidget</link>;
+            <link linkend="BonoboWidgetPrivate">BonoboWidgetPrivate</link>;
+            <link linkend="BonoboWidgetClass">BonoboWidgetClass</link>;
 <link linkend="Bonobo-Unknown">Bonobo_Unknown</link> <link linkend="bonobo-widget-get-objref">bonobo_widget_get_objref</link>     (<link linkend="BonoboWidget">BonoboWidget</link> *bw);
 <link linkend="GtkWidget">GtkWidget</link>*  <link linkend="bonobo-widget-new-control">bonobo_widget_new_control</link>       (const <link linkend="char">char</link> *moniker,
                                              <link linkend="Bonobo-UIContainer">Bonobo_UIContainer</link> uic);
@@ -146,25 +146,24 @@ BonoboWidget implements
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboWidget-struct"/>struct BonoboWidget</title>
-<indexterm><primary>BonoboWidget</primary></indexterm><programlisting>struct BonoboWidget;</programlisting>
+<title><anchor id="BonoboWidget-struct"/>BonoboWidget</title>
+<indexterm><primary>BonoboWidget</primary></indexterm><programlisting>typedef struct _BonoboWidget BonoboWidget;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboWidgetPrivate"/>struct BonoboWidgetPrivate</title>
-<indexterm><primary>BonoboWidgetPrivate</primary></indexterm><programlisting>struct BonoboWidgetPrivate;</programlisting>
+<title><anchor id="BonoboWidgetPrivate"/>BonoboWidgetPrivate</title>
+<indexterm><primary>BonoboWidgetPrivate</primary></indexterm><programlisting>typedef struct _BonoboWidgetPrivate BonoboWidgetPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboWidgetClass"/>struct BonoboWidgetClass</title>
-<indexterm><primary>BonoboWidgetClass</primary></indexterm><programlisting>struct BonoboWidgetClass {
-
+<title><anchor id="BonoboWidgetClass"/>BonoboWidgetClass</title>
+<indexterm><primary>BonoboWidgetClass</primary></indexterm><programlisting>typedef struct {
 	GtkBinClass	 bin_class;
 
 	gpointer dummy[4];
-};
+} BonoboWidgetClass;
 </programlisting>
 <para>
 
@@ -178,7 +177,7 @@ BonoboWidget implements
 <varlistentry><term><parameter>bw</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -201,7 +200,7 @@ and will return it as a GtkWidget.</para>
 <listitem><simpara> Bonobo_UIContainer for the launched object or CORBA_OBJECT_NIL
 if there is no need of menu / toolbar merging.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GtkWidget"><type>GtkWidget</type></link> that is bound to the Bonobo Control. 
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A <link linkend="GtkWidget"><type>GtkWidget</type></link> that is bound to the Bonobo Control. 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -224,7 +223,7 @@ a CORBA object reference to an IDL:Bonobo/Control:1.0 (the
 <listitem><simpara> Bonobo_UIContainer for the launched object or CORBA_OBJECT_NIL
 if there is no need of menu / toolbar merging.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <parameter>control</parameter> wrapped as a <link linkend="GtkWidget"><type>GtkWidget</type></link>.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <parameter>control</parameter> wrapped as a <link linkend="GtkWidget"><type>GtkWidget</type></link>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -241,7 +240,7 @@ object that wraps the Control in the <parameter>bonobo_widget</parameter>.</para
 <varlistentry><term><parameter>bw</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The BonoboControlFrame associated with the <parameter>bonobo_widget</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> The BonoboControlFrame associated with the <parameter>bonobo_widget</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -256,7 +255,7 @@ object that wraps the Control in the <parameter>bonobo_widget</parameter>.</para
 <varlistentry><term><parameter>bw</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the CORBA object reference to the Bonobo_UIContainer
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the CORBA object reference to the Bonobo_UIContainer
 associated with the <parameter>bonobo_widget</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -305,7 +304,7 @@ if there is no need of menu / toolbar merging.
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
 <listitem><simpara> user data to be passed back to the callback.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a (temporarily) empty Widget to be filled with the
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a (temporarily) empty Widget to be filled with the
 control later
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
@@ -336,7 +335,7 @@ if there is no need of menu / toolbar merging.
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara> a CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="BonoboWidget"><type>BonoboWidget</type></link> (the <parameter>bw</parameter>)
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A <link linkend="BonoboWidget"><type>BonoboWidget</type></link> (the <parameter>bw</parameter>)
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -371,7 +370,7 @@ if there is no need of menu / toolbar merging.
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara> a CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="BonoboWidget"><type>BonoboWidget</type></link> or <literal>NULL</literal>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> A <link linkend="BonoboWidget"><type>BonoboWidget</type></link> or <literal>NULL</literal>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -454,7 +453,7 @@ that were returned by <link linkend="bonobo-widget-new-control-from-objref"><fun
 <varlistentry><term><parameter>w</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -15,7 +15,7 @@
 
 
 
-struct      <link linkend="BonoboUIEngine-struct">BonoboUIEngine</link>;
+            <link linkend="BonoboUIEngine-struct">BonoboUIEngine</link>;
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-deregister-dead-components">bonobo_ui_engine_deregister_dead_components</link>
                                             (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine);
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-deregister-component-by-ref">bonobo_ui_engine_deregister_component_by_ref</link>
@@ -47,8 +47,8 @@ const <link linkend="char">char</link>* <link linkend="bonobo-ui-engine-config-g
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-thaw">bonobo_ui_engine_thaw</link>           (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine);
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-update">bonobo_ui_engine_update</link>         (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine);
 enum        <link linkend="BonoboUIError">BonoboUIError</link>;
-struct      <link linkend="BonoboUIEnginePrivate">BonoboUIEnginePrivate</link>;
-struct      <link linkend="BonoboUIEngineClass">BonoboUIEngineClass</link>;
+            <link linkend="BonoboUIEnginePrivate">BonoboUIEnginePrivate</link>;
+            <link linkend="BonoboUIEngineClass">BonoboUIEngineClass</link>;
 <link linkend="BonoboUIEngine">BonoboUIEngine</link>* <link linkend="bonobo-ui-engine-construct">bonobo_ui_engine_construct</link>  (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
                                              <link linkend="GObject">GObject</link> *view);
 <link linkend="BonoboUIEngine">BonoboUIEngine</link>* <link linkend="bonobo-ui-engine-new">bonobo_ui_engine_new</link>        (<link linkend="GObject">GObject</link> *view);
@@ -93,7 +93,7 @@ struct      <link linkend="BonoboUIEngineClass">BonoboUIEngineClass</link>;
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-clean-tree">bonobo_ui_engine_clean_tree</link>     (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
                                              <link linkend="BonoboUINode">BonoboUINode</link> *node);
 <link linkend="void">void</link>        <link linkend="bonobo-ui-engine-dump">bonobo_ui_engine_dump</link>           (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
-                                             <link linkend="FILE-CAPS">FILE</link> *out,
+                                             <link linkend="FILE:CAPS">FILE</link> *out,
                                              const <link linkend="char">char</link> *msg);
 <link linkend="CORBA-Object">CORBA_Object</link> <link linkend="bonobo-ui-engine-node-get-object">bonobo_ui_engine_node_get_object</link>
                                             (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
@@ -260,8 +260,8 @@ onto it, effecively forcing a certain look.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboUIEngine-struct"/>struct BonoboUIEngine</title>
-<indexterm><primary>BonoboUIEngine</primary></indexterm><programlisting>struct BonoboUIEngine;</programlisting>
+<title><anchor id="BonoboUIEngine-struct"/>BonoboUIEngine</title>
+<indexterm><primary>BonoboUIEngine</primary></indexterm><programlisting>typedef struct _BonoboUIEngine BonoboUIEngine;</programlisting>
 <para>
 
 </para></refsect2>
@@ -346,7 +346,7 @@ Registers <parameter>component</parameter> with <parameter>engine</parameter> by
 <varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
 <listitem><simpara> the engine
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the names of all registered components
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the names of all registered components
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -365,7 +365,7 @@ Registers <parameter>component</parameter> with <parameter>engine</parameter> by
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
 <listitem><simpara> the name of the component to fetch
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the component with name <parameter>name</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the component with name <parameter>name</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -395,7 +395,7 @@ Registers <parameter>component</parameter> with <parameter>engine</parameter> by
 <varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
@@ -429,7 +429,7 @@ Fetches the associated UI Container</para>
 <varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
 <listitem><simpara> the engine
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the associated UI container.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the associated UI container.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -492,15 +492,14 @@ the widget tree where neccessary</para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIEnginePrivate"/>struct BonoboUIEnginePrivate</title>
-<indexterm><primary>BonoboUIEnginePrivate</primary></indexterm><programlisting>struct BonoboUIEnginePrivate;</programlisting>
+<title><anchor id="BonoboUIEnginePrivate"/>BonoboUIEnginePrivate</title>
+<indexterm><primary>BonoboUIEnginePrivate</primary></indexterm><programlisting>typedef struct _BonoboUIEnginePrivate BonoboUIEnginePrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIEngineClass"/>struct BonoboUIEngineClass</title>
-<indexterm><primary>BonoboUIEngineClass</primary></indexterm><programlisting>struct BonoboUIEngineClass {
-
+<title><anchor id="BonoboUIEngineClass"/>BonoboUIEngineClass</title>
+<indexterm><primary>BonoboUIEngineClass</primary></indexterm><programlisting>typedef struct {
 	GObjectClass parent_class;
 
 	/* Signals */
@@ -516,8 +515,7 @@ the widget tree where neccessary</para>
 			       const char     *state);
 
 	void (*destroy)       (BonoboUIEngine *engine);
-
-};
+} BonoboUIEngineClass;
 </programlisting>
 <para>
 
@@ -537,7 +535,7 @@ Construct a new bonobo_ui_engine</para>
 <varlistentry><term><parameter>view</parameter>&nbsp;:</term>
 <listitem><simpara> the view [ often a BonoboWindow ]
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the constructed engine.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the constructed engine.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -551,7 +549,7 @@ Create a new <link linkend="BonoboUIEngine"><type>BonoboUIEngine</type></link> s
 <varlistentry><term><parameter>view</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new UI Engine.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the new UI Engine.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -565,7 +563,7 @@ This returns the associated view, often a BonoboWindow</para>
 <varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
 <listitem><simpara> the engine
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the view widget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the view widget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -611,7 +609,7 @@ Retrieve a list of available synchronizers.</para>
 <varlistentry><term><parameter>engine</parameter>&nbsp;:</term>
 <listitem><simpara> the engine
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GSList of <link linkend="BonoboUISync"><type>BonoboUISync</type></link> s
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a GSList of <link linkend="BonoboUISync"><type>BonoboUISync</type></link> s
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -683,7 +681,7 @@ node as containing a control and sets its widget.</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the control node.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a Control's GtkWidget.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a Control's GtkWidget.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -698,7 +696,7 @@ node as containing a control and sets its widget.</para>
 <varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
 <listitem><simpara> the widget
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboUINode"><type>BonoboUINode</type></link> associated with this widget
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the <link linkend="BonoboUINode"><type>BonoboUINode</type></link> associated with this widget
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -752,7 +750,7 @@ representation at <parameter>path</parameter> in <parameter>engine</parameter>.<
 <varlistentry><term><parameter>component</parameter>&nbsp;:</term>
 <listitem><simpara> the component ID associated with the nodes.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> flag on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> flag on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -779,7 +777,7 @@ at <parameter>path</parameter> in the internal structure.</para>
 <varlistentry><term><parameter>invalid_path</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a CORBA allocated string
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a CORBA allocated string
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -822,7 +820,7 @@ pointed at by <parameter>path</parameter></para>
 <varlistentry><term><parameter>path</parameter>&nbsp;:</term>
 <listitem><simpara> the path into the tree
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the node.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the node.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -862,7 +860,7 @@ as not needing a re-synch with their widget views.</para>
 <refsect2>
 <title><anchor id="bonobo-ui-engine-dump"/>bonobo_ui_engine_dump ()</title>
 <indexterm><primary>bonobo_ui_engine_dump</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_ui_engine_dump           (<link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine,
-                                             <link linkend="FILE-CAPS">FILE</link> *out,
+                                             <link linkend="FILE:CAPS">FILE</link> *out,
                                              const <link linkend="char">char</link> *msg);</programlisting>
 <para>
 This is a debugging function mostly for internal
@@ -899,7 +897,7 @@ helpful <parameter>msg</parameter> prepended.</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the CORBA_Object associated with a <parameter>node</parameter>
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the CORBA_Object associated with a <parameter>node</parameter>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -917,7 +915,7 @@ helpful <parameter>msg</parameter> prepended.</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> whether the <parameter>node</parameter> is marked dirty
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> whether the <parameter>node</parameter> is marked dirty
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -936,7 +934,7 @@ Gets the widget associated with <parameter>node</parameter></para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the widget
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the widget
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -955,7 +953,7 @@ bonobo_ui_engine_register_component</para>
 <varlistentry><term><parameter>node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the component id associated with the node
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the component id associated with the node
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -974,7 +972,7 @@ with <parameter>from_node</parameter> in <parameter>engine</parameter> 's intern
 <varlistentry><term><parameter>from_node</parameter>&nbsp;:</term>
 <listitem><simpara> the node
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the command node or NULL
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the command node or NULL
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1180,7 +1178,7 @@ from <parameter>node</parameter>, and if this fails falls back to <parameter>cmd
 <varlistentry><term><parameter>attr</parameter>&nbsp;:</term>
 <listitem><simpara> the attribute name
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the attr or NULL if it doesn't exist.
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the attr or NULL if it doesn't exist.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1222,7 +1220,7 @@ its children.</para>
 <varlistentry><term><parameter>node_only</parameter>&nbsp;:</term>
 <listitem><simpara> just the node, or children too.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the XML string - use CORBA_free to free
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the XML string - use CORBA_free to free
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1241,7 +1239,7 @@ its children.</para>
 <varlistentry><term><parameter>path</parameter>&nbsp;:</term>
 <listitem><simpara> the path into the tree
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> true if the node at <parameter>path</parameter> exists
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> true if the node at <parameter>path</parameter> exists
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1269,7 +1267,7 @@ representation as children of the node at <parameter>path</parameter> in <parame
 <varlistentry><term><parameter>component</parameter>&nbsp;:</term>
 <listitem><simpara> the component ID associated with these nodes.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> flag on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> flag on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1295,7 +1293,7 @@ other overridden items.</para>
 <listitem><simpara> whether to remove elements from only a
 specific component
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> flag on error
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> flag on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1323,7 +1321,7 @@ reference into a 'control' element.</para>
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara> CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> flag if success
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> flag if success
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -1351,7 +1349,7 @@ reference pointed to by <parameter>object</parameter>.</para>
 <varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
 <listitem><simpara> CORBA exception environment
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> flag if success
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> flag if success
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

@@ -10,6 +10,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <bonobo/bonobo-ui-private.h>
 #include <bonobo/bonobo-ui-toolbar-control-item.h>
 #include <bonobo/bonobo-exception.h>
@@ -19,22 +20,7 @@
 GNOME_CLASS_BOILERPLATE (BonoboUIToolbarControlItem,
 			 bonobo_ui_toolbar_control_item,
 			 GObject,
-			 bonobo_ui_toolbar_button_item_get_type ());
-
-struct _BonoboUIToolbarControlItemPrivate {
-	GtkWidget    *widget;   /* The widget (of a control, or custom */
-        BonoboWidget *control;	/* The wrapped control - if a control, or NULL */
-	GtkWidget *button;	/* Button to display instead of control in
-				   vertical mode */
-	GtkWidget *box;		/* Container for control and button. Which of
-				   its children is visible depends on
-				   orientation */
-	
-	GdkWindow *event_window; /* Event window for tool tips */
-
-	BonoboUIToolbarControlDisplay hdisplay;
-	BonoboUIToolbarControlDisplay vdisplay;
-};
+			 GTK_TYPE_TOOL_BUTTON);
 
 static void
 set_control_property_bag_value (BonoboUIToolbarControlItem *item,
@@ -44,10 +30,10 @@ set_control_property_bag_value (BonoboUIToolbarControlItem *item,
 	BonoboControlFrame *frame;
 	Bonobo_PropertyBag bag;
 
-	if (!item->priv->control)
+	if (!item->control)
 		return;
 
-	frame = bonobo_widget_get_control_frame (item->priv->control);
+	frame = bonobo_widget_get_control_frame (item->control);
 	if (!frame)
 		return;
 
@@ -74,41 +60,35 @@ set_control_property_bag_##gtype (BonoboUIToolbarControlItem *item,	\
 	bonobo_arg_release (arg);					\
 }
 
-MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (gboolean, gboolean,     BOOLEAN)
 MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (gint,     gint,         INT)
-MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (string,   const char *, STRING)
+     /* MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (gboolean, gboolean,     BOOLEAN)
+	MAKE_SET_CONTROL_PROPERTY_BAG_VALUE (string,   const char *, STRING) */
 
-/* BonoboUIToolbarButtonItem virtual methods.  */
-static void
-impl_set_icon (BonoboUIToolbarButtonItem *button_item,
-	       gpointer                   image)
+static GtkToolbar *
+get_parent_toolbar (BonoboUIToolbarControlItem *control_item)
 {
-	BonoboUIToolbarControlItemPrivate *priv;
-	BonoboUIToolbarControlItem *control_item;
+	GtkWidget *toolbar;
 
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (button_item);
-	priv = control_item->priv;
+	toolbar = GTK_WIDGET (control_item)->parent;
+	if (!GTK_IS_TOOLBAR (toolbar)) {
+		g_warning ("Non-toolbar parent '%s'", g_type_name_from_instance (toolbar));
+		return NULL;
+	}
 
-	bonobo_ui_toolbar_button_item_set_image (
-		BONOBO_UI_TOOLBAR_BUTTON_ITEM (priv->button), image);
+	return GTK_TOOLBAR (toolbar);
 }
 
-static void
-impl_set_label (BonoboUIToolbarButtonItem *button_item,
-		const char                *label)
+static BonoboUIToolbarControlDisplay
+get_display_mode (BonoboUIToolbarControlItem *control_item)
 {
-	BonoboUIToolbarControlItemPrivate *priv;
-	BonoboUIToolbarControlItem *control_item;
-
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (button_item);
-	priv = control_item->priv;
-
-	bonobo_ui_toolbar_button_item_set_label (
-		BONOBO_UI_TOOLBAR_BUTTON_ITEM (priv->button), label);
-	set_control_property_bag_string (control_item, "label", label);
+	GtkToolbar *toolbar = get_parent_toolbar (control_item);
+	g_return_val_if_fail (toolbar != NULL, BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_CONTROL);
+	
+	if (gtk_toolbar_get_orientation (toolbar) == GTK_ORIENTATION_HORIZONTAL)
+		return control_item->hdisplay;
+	else
+		return control_item->vdisplay;
 }
-
-/* BonoboUIToolbarItem methods.  */
 
 /*
  * We are assuming that there's room in horizontal orientation, but not
@@ -116,36 +96,41 @@ impl_set_label (BonoboUIToolbarButtonItem *button_item,
  * requested geometry.
  */
 static void
-impl_set_orientation (BonoboUIToolbarItem *item,
-		      GtkOrientation orientation)
+impl_toolbar_reconfigured (GtkToolItem *item)
 {
-	BonoboUIToolbarControlItem        *control_item;
-	BonoboUIToolbarControlDisplay      display;
-	BonoboUIToolbarControlItemPrivate *priv;
+	GtkToolbar *toolbar;
+	GtkOrientation orientation;
+	BonoboUIToolbarControlDisplay display;
+	BonoboUIToolbarControlItem *control_item = (BonoboUIToolbarControlItem *) item;
 
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (item);
-	priv = control_item->priv;
+	if (GTK_WIDGET (item)->parent == NULL)
+		return;
+
+	toolbar = get_parent_toolbar (control_item);
+	g_return_if_fail (toolbar != NULL);
+
+	orientation = gtk_toolbar_get_orientation (toolbar);
 
 	if (orientation == GTK_ORIENTATION_HORIZONTAL)
-		display = priv->hdisplay;
+		display = control_item->hdisplay;
 	else
-		display = priv->vdisplay;
+		display = control_item->vdisplay;
 	
 	switch (display) {
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_CONTROL:
-		gtk_widget_hide (priv->button);
-		gtk_widget_show (priv->widget);
+		gtk_widget_hide (control_item->button);
+		gtk_widget_show (control_item->widget);
 		break;
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_BUTTON:
-		gtk_widget_hide (priv->widget);
-		gtk_widget_show (priv->button);
+		gtk_widget_hide (control_item->widget);
+		gtk_widget_show (control_item->button);
 		break;
 
 	case BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_NONE:
-		gtk_widget_hide (priv->widget);
-		gtk_widget_hide (priv->button);
+		gtk_widget_hide (control_item->widget);
+		gtk_widget_hide (control_item->button);
 		break;
 
 	default:
@@ -153,153 +138,11 @@ impl_set_orientation (BonoboUIToolbarItem *item,
 	}
 
 	set_control_property_bag_gint (control_item, "orientation", orientation);
+	set_control_property_bag_gint (control_item, "style",
+				       gtk_toolbar_get_style (toolbar));
 
-	GNOME_CALL_PARENT (BONOBO_UI_TOOLBAR_ITEM_CLASS, set_orientation,
-			   (item, orientation));
+	GNOME_CALL_PARENT (GTK_TOOL_ITEM_CLASS, toolbar_reconfigured, (item));
 }
-
-static void
-impl_set_style (BonoboUIToolbarItem     *item,
-		BonoboUIToolbarItemStyle style)
-{
-	BonoboUIToolbarControlItem *control_item;
-
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (item);
-	bonobo_ui_toolbar_item_set_style (
-		BONOBO_UI_TOOLBAR_ITEM (control_item->priv->button), style);
-	set_control_property_bag_gint (control_item, "style", style);
-}
-
-static void
-impl_set_want_label (BonoboUIToolbarItem     *item,
-		     gboolean                 want_label)
-{
-	BonoboUIToolbarControlItem *control_item;
-
-	control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (item);
-	bonobo_ui_toolbar_item_set_want_label (
-		BONOBO_UI_TOOLBAR_ITEM (control_item->priv->button),
-		want_label);
-	set_control_property_bag_gboolean (control_item, "want_label", want_label);
-}
-
-static void
-impl_set_tooltip (BonoboUIToolbarItem     *item,
-                  GtkTooltips             *tooltips,
-                  const char              *tooltip)
-{
-	if (tooltip) 
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (item), 
-				      tooltip, NULL);
-}
-
-/* GtkWidget methods. */
-static void
-impl_realize (GtkWidget *widget)
-{
-	BonoboUIToolbarControlItem *item;
-	GdkWindowAttr attributes;
-	int attributes_mask;
-	int border_width;
-	
-	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
-	
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-	
-	border_width = GTK_CONTAINER (widget)->border_width;
-	 
-	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.x = widget->allocation.x + border_width;
-	attributes.y = widget->allocation.y + border_width;
-	attributes.width = widget->allocation.width - border_width * 2;
-	attributes.height = widget->allocation.height - border_width * 2;
-	attributes.wclass = GDK_INPUT_ONLY;
-	attributes.event_mask = gtk_widget_get_events (widget);
-	attributes.event_mask |= (GDK_EXPOSURE_MASK |
-				  GDK_BUTTON_MOTION_MASK |
-				  GDK_BUTTON_PRESS_MASK |
-				  GDK_BUTTON_RELEASE_MASK |
-				  GDK_ENTER_NOTIFY_MASK |
-				  GDK_LEAVE_NOTIFY_MASK);
-
-	attributes_mask = GDK_WA_X | GDK_WA_Y;
-
-	widget->window = gtk_widget_get_parent_window (widget);
-	g_object_ref (widget->window);
-	
-	item->priv->event_window = gdk_window_new
-		(gtk_widget_get_parent_window (widget),
-		 &attributes, attributes_mask);
-
-	gdk_window_set_user_data (item->priv->event_window, widget);
-	
-	widget->style = gtk_style_attach (widget->style, widget->window);
-}
-
-static void
-impl_unrealize (GtkWidget *widget)
-{
-	BonoboUIToolbarControlItem *item;
-	
-	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
-	
-	if (item->priv->event_window) {
-		gdk_window_set_user_data (item->priv->event_window, NULL);
-		gdk_window_destroy (item->priv->event_window);
-		item->priv->event_window = NULL;
-	}
-	
-	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
-}
-
-static void
-impl_size_allocate (GtkWidget *widget,
-		    GtkAllocation *allocation)
-{
-	BonoboUIToolbarControlItem *item;
-	int border_width;
-
-	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
-	border_width = GTK_CONTAINER (widget)->border_width;
-
-	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
-
-	if (GTK_WIDGET_REALIZED (widget))
-		gdk_window_move_resize
-			(item->priv->event_window,
-			 widget->allocation.x + border_width,
-			 widget->allocation.y + border_width,
-			 widget->allocation.width - border_width * 2,
-			 widget->allocation.height - border_width * 2);
-}
-
-static void
-impl_map (GtkWidget *widget)
-{
-	BonoboUIToolbarControlItem *item;
-
-	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
-	
-	if (item->priv->event_window) 
-		gdk_window_show (item->priv->event_window);
-
-	GTK_WIDGET_CLASS (parent_class)->map (widget);
-}
-
-static void
-impl_unmap (GtkWidget *widget)
-{
-	BonoboUIToolbarControlItem *item;
-
-	item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
-	
-	if (item->priv->event_window) 
-		gdk_window_hide (item->priv->event_window);
-
-	GTK_WIDGET_CLASS (parent_class)->unmap (widget);
-}
-
-/* GObject methods.  */
 
 static void
 impl_dispose (GObject *object)
@@ -308,69 +151,127 @@ impl_dispose (GObject *object)
 
 	control_item = (BonoboUIToolbarControlItem *) object;
 	
-	if (control_item->priv->widget) {
-		gtk_widget_destroy (control_item->priv->widget);
-		control_item->priv->control = NULL;
-		control_item->priv->widget = NULL;
+	if (control_item->widget) {
+		gtk_widget_destroy (control_item->widget);
+		control_item->control = NULL;
+		control_item->widget = NULL;
 	}
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static void
-impl_finalize (GObject *object)
+menu_item_map (GtkWidget *menu_item, BonoboUIToolbarControlItem *control_item)
 {
-	BonoboUIToolbarControlItem *control_item;
+	if (GTK_BIN (menu_item)->child)
+		return;
 
-	control_item = (BonoboUIToolbarControlItem *) object;
-
-	g_free (control_item->priv);
-
-	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	g_object_ref (control_item->widget);
+	gtk_container_remove (GTK_CONTAINER (control_item->box), 
+			      control_item->widget);
+	gtk_container_add (GTK_CONTAINER (menu_item), control_item->widget);
+	g_object_unref (control_item->widget);
 }
 
-/* Gtk+ object initialization.  */
+static void
+menu_item_return_control (GtkWidget *menu_item, BonoboUIToolbarControlItem *control_item)
+{
+	if (!GTK_BIN (menu_item)->child)
+		return;
+
+	if (GTK_BIN (menu_item)->child == control_item->widget) {
+		g_object_ref (control_item->widget);
+		gtk_container_remove (GTK_CONTAINER (menu_item), 
+				      control_item->widget);
+		gtk_container_add (GTK_CONTAINER (control_item->box), control_item->widget);
+		g_object_unref (control_item->widget);
+	}
+}
+
+static gboolean
+impl_create_menu_proxy (GtkToolItem *tool_item)
+{
+	GtkWidget *menu_item;
+	BonoboUIToolbarControlItem *control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (tool_item);
+
+	if (get_display_mode (control_item) == BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_NONE)
+		return FALSE;
+
+	if (control_item->hdisplay != BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_CONTROL ||
+	    control_item->vdisplay != BONOBO_UI_TOOLBAR_CONTROL_DISPLAY_CONTROL)
+		/* Can cope with just a button */
+		return GTK_TOOL_ITEM_CLASS (parent_class)->create_menu_proxy (tool_item);
+
+	menu_item = gtk_menu_item_new ();
+
+	/* This sucks, but the best we can do */
+	g_signal_connect (menu_item, "map", G_CALLBACK (menu_item_map), tool_item);
+	g_signal_connect (menu_item, "destroy", G_CALLBACK (menu_item_return_control), tool_item);
+	gtk_tool_item_set_proxy_menu_item (tool_item,
+					   "bonobo-control-button-menu-id",
+					   menu_item);
+
+	return TRUE;
+}
+
+static void
+impl_notify (GObject    *object,
+	     GParamSpec *pspec)
+{
+	BonoboUIToolbarControlItem *control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (object);
+
+	if (control_item->control && !strcmp (pspec->name, "sensitive"))
+		bonobo_control_frame_control_set_state
+			(bonobo_widget_get_control_frame (control_item->control),
+			 GTK_WIDGET_SENSITIVE (control_item) ? Bonobo_Gtk_StateNormal : Bonobo_Gtk_StateInsensitive);
+
+	GNOME_CALL_PARENT (G_OBJECT_CLASS, notify, (object, pspec));
+}
+
+static gboolean
+impl_map_event (GtkWidget   *widget,
+		GdkEventAny *event)
+{
+	BonoboUIToolbarControlItem *control_item = BONOBO_UI_TOOLBAR_CONTROL_ITEM (widget);
+
+	if (control_item->widget && control_item->widget->parent != control_item->box)
+		menu_item_return_control (control_item->widget->parent, control_item);
+
+	return GTK_WIDGET_CLASS (parent_class)->map_event (widget, event);
+}
 
 static void
 bonobo_ui_toolbar_control_item_class_init (BonoboUIToolbarControlItemClass *klass)
 {
-        BonoboUIToolbarButtonItemClass *button_item_class;
-        BonoboUIToolbarItemClass *item_class;
-	GtkWidgetClass *widget_class;
-	GObjectClass *object_class;
+	GObjectClass *object_class = (GObjectClass *) klass;
+	GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
+	GtkToolItemClass *tool_item_class = (GtkToolItemClass *) klass;
 	
-	button_item_class = BONOBO_UI_TOOLBAR_BUTTON_ITEM_CLASS (klass);
-	item_class = BONOBO_UI_TOOLBAR_ITEM_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
-	object_class = G_OBJECT_CLASS (klass);
-
-        button_item_class->set_icon  = impl_set_icon;
-        button_item_class->set_label = impl_set_label;
-        item_class->set_tooltip      = impl_set_tooltip;
-        item_class->set_orientation  = impl_set_orientation;
-	item_class->set_style        = impl_set_style;
-	item_class->set_want_label   = impl_set_want_label;
-
-	widget_class->realize = impl_realize;
-	widget_class->unrealize = impl_unrealize;
-	widget_class->size_allocate = impl_size_allocate;
-	widget_class->map = impl_map;
-	widget_class->unmap = impl_unmap;
-
 	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
+	object_class->notify = impl_notify;
+
+	widget_class->map_event = impl_map_event;
+
+	tool_item_class->create_menu_proxy = impl_create_menu_proxy;
+	tool_item_class->toolbar_reconfigured = impl_toolbar_reconfigured;
 }
 
 static void
 bonobo_ui_toolbar_control_item_instance_init (BonoboUIToolbarControlItem *control_item)
 {
-        control_item->priv = g_new0 (BonoboUIToolbarControlItemPrivate, 1);
-}
+	gtk_tool_item_set_homogeneous (GTK_TOOL_ITEM (control_item), FALSE);
 
-static void
-proxy_activate_cb (GtkWidget *button, GtkObject *item)
-{
-	g_signal_emit_by_name (item, "activate");
+	control_item->box = gtk_vbox_new (FALSE, 0);
+
+	control_item->button = GTK_BIN (control_item)->child;
+	g_object_ref (control_item->button);
+	gtk_object_sink (GTK_OBJECT (control_item->button));
+	gtk_container_remove (GTK_CONTAINER (control_item), control_item->button);
+	gtk_container_add (GTK_CONTAINER (control_item->box), control_item->button);
+	g_object_ref (control_item->button);
+
+	gtk_container_add (GTK_CONTAINER (control_item), control_item->box);
+	gtk_widget_show (control_item->box);
 }
 
 GtkWidget *
@@ -379,8 +280,6 @@ bonobo_ui_toolbar_control_item_construct (
 	GtkWidget                  *widget,
         Bonobo_Control              control_ref)
 {
-        BonoboUIToolbarControlItemPrivate *priv = control_item->priv;
-
 	if (!widget)
 		widget = bonobo_widget_new_control_from_objref (
 			control_ref, CORBA_OBJECT_NIL);
@@ -388,21 +287,10 @@ bonobo_ui_toolbar_control_item_construct (
         if (!widget)
                 return NULL;
 
-	priv->widget   = widget;
-	priv->control  = BONOBO_IS_WIDGET (widget) ? BONOBO_WIDGET (widget) : NULL;
-	priv->button   = bonobo_ui_toolbar_button_item_new (NULL, NULL);
-        priv->box      = gtk_vbox_new (FALSE, 0);
+	control_item->widget  = widget;
+	control_item->control = BONOBO_IS_WIDGET (widget) ? BONOBO_WIDGET (widget) : NULL;
 	
-	g_signal_connect (priv->button, "activate",
-			  G_CALLBACK (proxy_activate_cb), control_item);
-	
-	gtk_container_add (GTK_CONTAINER (priv->box), widget);
-        gtk_container_add (GTK_CONTAINER (priv->box), priv->button);
-
-	gtk_widget_show (priv->widget);
-	gtk_widget_show (priv->box);
-
-        gtk_container_add (GTK_CONTAINER (control_item), priv->box);
+	gtk_container_add (GTK_CONTAINER (control_item->box), control_item->widget);
 
         return GTK_WIDGET (control_item);
 }
@@ -450,25 +338,6 @@ bonobo_ui_toolbar_control_item_set_display (BonoboUIToolbarControlItem    *item,
 {
 	g_return_if_fail (BONOBO_IS_UI_TOOLBAR_CONTROL_ITEM (item));
 
-	item->priv->hdisplay = hdisplay;
-	item->priv->vdisplay = vdisplay;
-}
-
-void
-bonobo_ui_toolbar_control_item_set_sensitive (BonoboUIToolbarControlItem *item,
-					      gboolean                    sensitive)
-{
-	gboolean changed;
-
-	g_return_if_fail (BONOBO_IS_UI_TOOLBAR_CONTROL_ITEM (item));
-
-	changed = (( GTK_WIDGET_IS_SENSITIVE (item) && !sensitive) ||
-		   (!GTK_WIDGET_IS_SENSITIVE (item) &&  sensitive));
-
-	if (!changed || !item->priv->control)
-		return;
-
-	bonobo_control_frame_control_set_state (
-		bonobo_widget_get_control_frame (item->priv->control),
-		sensitive ? Bonobo_Gtk_StateNormal : Bonobo_Gtk_StateInsensitive);
+	item->hdisplay = hdisplay;
+	item->vdisplay = vdisplay;
 }

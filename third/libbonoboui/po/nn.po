@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2003-12-26 17:22+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-21 12:57+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -35,30 +35,30 @@ msgstr "corba UI-haldar"
 msgid "The User interface container"
 msgstr "Haldar for brukargrensesnitt"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Fest verktøylinja"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
 msgstr "Løys verktøylinja"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Skuggetype"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Retning"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Ønska breidde"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Ønska høgde"
@@ -84,10 +84,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Om X hendingar skal vidaresendast"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Namn"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Skildring"
 
@@ -137,11 +138,11 @@ msgstr "Verktøylinjer"
 msgid "toolbars"
 msgstr "Verktøylinjer"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Sjå"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Ikon"
 
@@ -254,31 +255,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "Støtte for Bonobo-GUI"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "Be_gge"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "T_ekst"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "Skjul t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "Vis t_ips"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Gøym verktøylinje"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "_Skreddarsy"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Skreddarsy verktøylinja"
 
@@ -294,11 +295,11 @@ msgstr "om verktøylinja er flytande"
 msgid "Style of bevel around the toolbar"
 msgstr "Stil på kanten rundt verktøylinja"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Innhald"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "Vis hjelpeteksten til dette programmet"
 
@@ -371,6 +372,7 @@ msgid "_Edit"
 msgstr "R_edigér"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Fil"
 
@@ -403,394 +405,77 @@ msgstr "Klarar ikkje å initiere libbonoboui-kode"
 msgid "Could not initialize Bonobo UI"
 msgstr "Kunne ikkje starta Bonobo-UI"
 
-#~ msgid "HOST"
-#~ msgstr "VERT"
-
-#~ msgid "PORT"
-#~ msgstr "PORT"
-
-#~ msgid "STYLE"
-#~ msgstr "STIL"
-
-#, fuzzy
-#~ msgid "Select an object"
-#~ msgstr "Vel ein film"
-
-#, fuzzy
-#~ msgid "Can not activate object_server"
-#~ msgstr "Kommando ikkje stÃ¸tta pÃ¥ tenar"
-
-#, fuzzy
-#~ msgid "Can not activate server"
-#~ msgstr "Kommando ikkje stÃ¸tta pÃ¥ tenar"
-
-#, fuzzy
-#~ msgid "Could not launch bonobo object."
-#~ msgstr "Kunne ikkje starta %1"
-
-#, fuzzy
-#~ msgid "Could not launch Embeddable."
-#~ msgstr "Kunne ikkje lasta fil."
-
-#, fuzzy
-#~ msgid "Could not launch Control."
-#~ msgstr "Kunne ikkje starta %1"
-
-#, fuzzy
-#~ msgid "Error checking error; no exception"
-#~ msgstr "Feil under sjekking av feil; ingen unntak"
-
-#~ msgid "Object not found"
-#~ msgstr "Fann ikkje objekt"
-
-#, fuzzy
-#~ msgid "Syntax error in object description"
-#~ msgstr "Syntaksfeil i objektbeskrivelsa"
-
-#, fuzzy
-#~ msgid "The User canceled the save"
-#~ msgstr "Igen endringar for lagring."
-
-#~ msgid "Cannot activate object from factory"
-#~ msgstr "Kan ikkje aktivera objekt fra factory"
-
-#~ msgid "No permission to access stream"
-#~ msgstr "Ikkje løyve til å aksessera strøm"
-
-#, fuzzy
-#~ msgid "IO Error on stream"
-#~ msgstr "Feil pÃ¥ tenar: %1"
-
-#, fuzzy
-#~ msgid "IO Error on storage"
-#~ msgstr "Feil pÃ¥ tenar: %1"
-
-#, fuzzy
-#~ msgid "Name already exists in storage"
-#~ msgstr "Fila finst alt"
-
-#, fuzzy
-#~ msgid "Object not found in storage"
-#~ msgstr "Fann ikkje objekt"
-
-#, fuzzy
-#~ msgid "No permission to do operation on storage"
-#~ msgstr "Ikkje lÃ¸yve til Ã¥ skriva til %1"
-
-#, fuzzy
-#~ msgid "Object is not a storage"
-#~ msgstr "Fann ikkje objekt"
-
-#, fuzzy
-#~ msgid "Storage is not empty"
-#~ msgstr "OmrÃ¥deteksten er tom."
-
-#, fuzzy
-#~ msgid "malformed user interface XML description"
-#~ msgstr "Detaljert signalskildring"
-
-#, fuzzy
-#~ msgid "incorrect data type"
-#~ msgstr "Feil URL-type"
-
-#, fuzzy
-#~ msgid "stream not found"
-#~ msgstr "Fann ikkje vert"
-
-#, fuzzy
-#~ msgid "property not found"
-#~ msgstr "Mellombels ikkje funne"
-
-#, fuzzy
-#~ msgid "Moniker activation timed out"
-#~ msgstr "Sambandet vart tidsutkopla."
-
-#, fuzzy
-#~ msgid "Syntax error within moniker"
-#~ msgstr "Syntaksfeil i mÃ¸nster"
-
-#, fuzzy
-#~ msgid "No filename"
-#~ msgstr "Ingen filnamn"
-
-#, fuzzy
-#~ msgid "unknown mime type for '%s'"
-#~ msgstr "Ukjend mediatype"
-
-#, fuzzy
-#~ msgid "bonobo GnoMines object factory"
-#~ msgstr "Kan ikkje laga katalog "
-
-#, fuzzy
-#~ msgid "Load a saved game"
-#~ msgstr "Opna spel."
-
-#~ msgid "New game"
-#~ msgstr "Nytt spel"
-
-#, fuzzy
-#~ msgid "Open game"
-#~ msgstr "Opna spel."
-
-#, fuzzy
-#~ msgid "Start a new game"
-#~ msgstr "Startar nytt spel ..."
-
-#, fuzzy
-#~ msgid "_Game"
-#~ msgstr "S&pel"
-
-#, fuzzy
-#~ msgid "Could not initialize Bonobo!"
-#~ msgstr "Fann ikkje bilete %1"
-
-#, fuzzy
-#~ msgid "audio/ulaw bonobo object"
-#~ msgstr "Kunne ikkje starta %1"
-
-#, fuzzy
-#~ msgid "audio/ulaw bonobo object factory"
-#~ msgstr "Kunne ikkje starta %1"
-
-#, fuzzy
-#~ msgid "text/plain component"
-#~ msgstr "SÃ¸ker etter valt tekst i hjelpetekstane"
-
-#, fuzzy
-#~ msgid "_Clear Text"
-#~ msgstr "Skriv tekst"
-
-#, fuzzy
-#~ msgid "Clears the text in the component"
-#~ msgstr "SÃ¸ker etter valt tekst i hjelpetekstane"
-
-#, fuzzy
-#~ msgid ""
-#~ "An exception occured while trying to load data into the component with "
-#~ "PersistFile"
-#~ msgstr "Feil under opning av dette dokumentet"
-
-#, fuzzy
-#~ msgid "Could not open file %s"
-#~ msgstr "Kunne ikkje opna fila %1"
-
-#, fuzzy
-#~ msgid ""
-#~ "An exception occured while trying to load data into the component with "
-#~ "PersistStream"
-#~ msgstr "Feil under opning av dette dokumentet"
-
-#, fuzzy
-#~ msgid "Close the current window"
-#~ msgstr "Lukkar prosjektet"
-
-#, fuzzy
-#~ msgid "Configure the application"
-#~ msgstr "Avsluttar programmet"
-
-#, fuzzy
-#~ msgid "Create New _Window"
-#~ msgstr "Name=Nytt vindauge"
-
-#, fuzzy
-#~ msgid "Create a new window"
-#~ msgstr "Lag nytt ikon"
-
-#, fuzzy
-#~ msgid "Displays only one window"
-#~ msgstr "Name=Vis i rotvindauget"
-
-#, fuzzy
-#~ msgid "Exit the program"
-#~ msgstr "Avsluttar programmet"
-
-#, fuzzy
-#~ msgid "Kill the current buffer"
-#~ msgstr "Slettar mappa"
-
-#, fuzzy
-#~ msgid "Launches a new Embeddable component"
-#~ msgstr "Inkluderbar HTML-komponent"
-
-#, fuzzy
-#~ msgid "Loads a file into the current component"
-#~ msgstr "Set inn ei fil ved den gjeldande posisjonen"
-
-#~ msgid "Open a file"
-#~ msgstr "Opna ei fil"
-
-#, fuzzy
-#~ msgid "Print S_etup..."
-#~ msgstr "Utskriftsoppsett ..."
-
-#, fuzzy
-#~ msgid "Print the current file"
-#~ msgstr "Skriv ut dokumentet"
-
-#, fuzzy
-#~ msgid "Save _As..."
-#~ msgstr "Lagra &som ..."
-
-#, fuzzy
-#~ msgid "Save the current file"
-#~ msgstr "DÃ¸yp om denne profilen"
-
-#, fuzzy
-#~ msgid "Save the current file with a different name"
-#~ msgstr "Viser fileigenskapane"
-
-#, fuzzy
-#~ msgid "Setup the page settings for your current printer"
-#~ msgstr "Sett opp generelle prosjektval her."
-
-#, fuzzy
-#~ msgid "Splits the current window"
-#~ msgstr "Del ved gjeldande posisjon"
-
-#, fuzzy
-#~ msgid "Zoom ..."
-#~ msgstr "&ForstÃ¸rring ..."
-
-#, fuzzy
-#~ msgid "Zoom _in"
-#~ msgstr "ForstÃ¸rr"
-
-#, fuzzy
-#~ msgid "Zoom _out"
-#~ msgstr "Forminsk"
-
-#, fuzzy
-#~ msgid "Zoom to _default"
-#~ msgstr "Gjenopprett standardinnstillingar"
-
-#, fuzzy
-#~ msgid "Zoom to _fit"
-#~ msgstr "ForstÃ¸rr"
-
-#, fuzzy
-#~ msgid "_Buffers"
-#~ msgstr "Bufferar"
-
-#, fuzzy
-#~ msgid "_Close This Window"
-#~ msgstr "Lu&kk vindauge"
-
-#, fuzzy
-#~ msgid "_Help"
-#~ msgstr "Hjelp"
-
-#, fuzzy
-#~ msgid "_Load..."
-#~ msgstr "Hent ..."
-
-#, fuzzy
-#~ msgid "_One Window"
-#~ msgstr "Nytt vindauge"
-
-#, fuzzy
-#~ msgid "_Open..."
-#~ msgstr "Opna ..."
-
-#, fuzzy
-#~ msgid "_Preferences..."
-#~ msgstr "Innstillingar ..."
-
-#, fuzzy
-#~ msgid "_Print"
-#~ msgstr "Skriv ut"
-
-#, fuzzy
-#~ msgid "_Save"
-#~ msgstr "Lagra"
-
-#, fuzzy
-#~ msgid "_Settings"
-#~ msgstr "Innstillingar"
-
-#, fuzzy
-#~ msgid "_Split Window"
-#~ msgstr "&Dupliser vindauge"
-
-#, fuzzy
-#~ msgid "_Window"
-#~ msgstr "Vindauge"
-
-#, fuzzy
-#~ msgid "_Zoom"
-#~ msgstr "ForstÃ¸rring"
-
-#, fuzzy
-#~ msgid ""
-#~ "An exception occured while trying to save data from the component with "
-#~ "PersistFile"
-#~ msgstr "Feil ved opning av fil."
-
-#, fuzzy
-#~ msgid "Could not save file %s"
-#~ msgstr "Kunne ikkje lagra fil"
-
-#~ msgid "Open"
-#~ msgstr "Opna"
-
-#~ msgid "Load"
-#~ msgstr "Last inn"
-
-#~ msgid "Save As"
-#~ msgstr "Lagra som"
-
-#, fuzzy
-#~ msgid "Component has no editable properties"
-#~ msgstr "Comment=Avanserte vindaugseigenskapar"
-
-#, fuzzy
-#~ msgid "Could not launch Embeddable %s!"
-#~ msgstr "Kunne ikkje lasta bilete %1"
-
-#~ msgid "Could not initialize Bonobo!\n"
-#~ msgstr "Kunne ikkje starta Bonobo!\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "An exception occured while trying to load data into the component with "
-#~ "PersistStorage"
-#~ msgstr ""
-#~ "Feil ved opning av fil:\n"
-#~ " %1"
-
-#, fuzzy
-#~ msgid ""
-#~ "An exception occured while trying to save data from the component with "
-#~ "PersistStorage"
-#~ msgstr ""
-#~ "Feil ved opning av fil:\n"
-#~ " %1"
-
-#, fuzzy
-#~ msgid "Select drawing color..."
-#~ msgstr "Vel bakgrunnsfarge ..."
-
-#, fuzzy
-#~ msgid "Set the current drawing color"
-#~ msgstr "Slettar diagrammet"
-
-#, fuzzy
-#~ msgid "White"
-#~ msgstr "Plystring"
-
-#, fuzzy
-#~ msgid "Set the current drawing color to white"
-#~ msgstr "Slettar klasseattributten"
-
-#~ msgid "Red"
-#~ msgstr "Raud"
-
-#, fuzzy
-#~ msgid "Set the current drawing color to red"
-#~ msgstr "Slettar klassemetoden"
-
-#~ msgid "Green"
-#~ msgstr "GrÃ¸n"
-
-#, fuzzy
-#~ msgid "no listening to this property"
-#~ msgstr "Legg ei fil til prosjektet"
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Bonobo komponentvisar"
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Visar tilgjengelege Bonobo-komponentar"
+
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "Om dette programmet..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Lukkar dette vindauget"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Opne eit nytt vindauge"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Hjelp"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Generelt"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "IID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Plassering"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Detaljar"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Detaljert informasjon"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Aktiv"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Type"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Detaljar for komponent"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Bonobo-visar"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Opphavsrett 2001, The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Bonobo komponentvisar"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Komponentvisar"

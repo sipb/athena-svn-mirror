@@ -20,11 +20,11 @@
 #define GLOBAL_INTERFACE_KEY "/desktop/gnome/interface"
 
 static GConfEnumStringPair toolbar_styles[] = {
-        { BONOBO_UI_TOOLBAR_STYLE_TEXT_ONLY,      "text" },
-        { BONOBO_UI_TOOLBAR_STYLE_ICONS_ONLY,     "icons" },
-        { BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT, "both" },
-        { BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,  "both_horiz" },
-	{ BONOBO_UI_TOOLBAR_STYLE_PRIORITY_TEXT,  "both-horiz" },
+        { GTK_TOOLBAR_TEXT,        "text" },
+        { GTK_TOOLBAR_ICONS,       "icons" },
+        { GTK_TOOLBAR_BOTH,        "both" },
+        { GTK_TOOLBAR_BOTH_HORIZ,  "both_horiz" },
+	{ GTK_TOOLBAR_BOTH_HORIZ,  "both-horiz" },
 	{ -1, NULL }
 };
 
@@ -161,7 +161,7 @@ bonobo_ui_preferences_get_toolbar_style (void)
 	if (!client)
 		client = gconf_client_get_default ();
 
-	style = BONOBO_UI_TOOLBAR_STYLE_ICONS_AND_TEXT;
+	style = GTK_TOOLBAR_BOTH;
 
 	str = gconf_client_get_string (client,
 				       "/desktop/gnome/interface/toolbar_style",

@@ -15,9 +15,9 @@
 
 
 
-struct      <link linkend="BonoboUIContainer-struct">BonoboUIContainer</link>;
-struct      <link linkend="BonoboUIContainerPrivate">BonoboUIContainerPrivate</link>;
-struct      <link linkend="BonoboUIContainerClass">BonoboUIContainerClass</link>;
+            <link linkend="BonoboUIContainer-struct">BonoboUIContainer</link>;
+            <link linkend="BonoboUIContainerPrivate">BonoboUIContainerPrivate</link>;
+            <link linkend="BonoboUIContainerClass">BonoboUIContainerClass</link>;
 <link linkend="BonoboUIContainer">BonoboUIContainer</link>* <link linkend="bonobo-ui-container-new">bonobo_ui_container_new</link>  (void);
 <link linkend="void">void</link>        <link linkend="bonobo-ui-container-set-engine">bonobo_ui_container_set_engine</link>  (<link linkend="BonoboUIContainer">BonoboUIContainer</link> *container,
                                              <link linkend="BonoboUIEngine">BonoboUIEngine</link> *engine);
@@ -83,27 +83,26 @@ Here is how your code should interact with the BonoboUIContainer
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BonoboUIContainer-struct"/>struct BonoboUIContainer</title>
-<indexterm><primary>BonoboUIContainer</primary></indexterm><programlisting>struct BonoboUIContainer;</programlisting>
+<title><anchor id="BonoboUIContainer-struct"/>BonoboUIContainer</title>
+<indexterm><primary>BonoboUIContainer</primary></indexterm><programlisting>typedef struct _BonoboUIContainer BonoboUIContainer;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIContainerPrivate"/>struct BonoboUIContainerPrivate</title>
-<indexterm><primary>BonoboUIContainerPrivate</primary></indexterm><programlisting>struct BonoboUIContainerPrivate;</programlisting>
+<title><anchor id="BonoboUIContainerPrivate"/>BonoboUIContainerPrivate</title>
+<indexterm><primary>BonoboUIContainerPrivate</primary></indexterm><programlisting>typedef struct _BonoboUIContainerPrivate BonoboUIContainerPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="BonoboUIContainerClass"/>struct BonoboUIContainerClass</title>
-<indexterm><primary>BonoboUIContainerClass</primary></indexterm><programlisting>struct BonoboUIContainerClass {
-
+<title><anchor id="BonoboUIContainerClass"/>BonoboUIContainerClass</title>
+<indexterm><primary>BonoboUIContainerClass</primary></indexterm><programlisting>typedef struct {
 	BonoboObjectClass parent;
 
 	POA_Bonobo_UIContainer__epv epv;
 
 	gpointer dummy[2];
-};
+} BonoboUIContainerClass;
 </programlisting>
 <para>
 
@@ -116,7 +115,7 @@ Here is how your code should interact with the BonoboUIContainer
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created BonoboUIContainer
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> a newly created BonoboUIContainer
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -148,7 +147,7 @@ Get the associated <link linkend="BonoboUIEngine"><type>BonoboUIEngine</type></l
 <varlistentry><term><parameter>container</parameter>&nbsp;:</term>
 <listitem><simpara> the UI container
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the engine
+<varlistentry><term><emphasis>Returns</emphasis>&nbsp;:</term><listitem><simpara> the engine
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

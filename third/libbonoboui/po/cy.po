@@ -1,15 +1,16 @@
 # libbonoboui yn Gymraeg.
-# Copyright (C) 2003 Free Software Foundation, Inc.
+# Copyright (C) 2003-2005 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libbonoboui package.
 # Dafydd Harries <daf@parnassus.ath.cx>, 2003
+# Rhys Jones <rhys@sucs.org>, 2005
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
-"PO-Revision-Date: 2003-08-26 21:23+0100\n"
-"Last-Translator: Dafydd Harries <daf@parnassus.ath.cx>\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
+"PO-Revision-Date: 2005-01-14 16:58+0000\n"
+"Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,32 +30,32 @@ msgstr "cynhwysydd rhyngwyneb defnyddiwr corba"
 
 #: bonobo/bonobo-canvas-item.c:678
 msgid "The User interface container"
-msgstr "Yn cynhwysydd rhyngwyneb defnyddiwr"
+msgstr "Y gynhwysydd rhyngwyneb defnyddiwr"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "Docio'r bar offer"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
-msgstr "Dad-docio'r bar offer"
+#: bonobo/bonobo-dock-item-grip.c:258
+msgid "Undock the toolbar"
+msgstr "Dad-ddocio'r bar offer"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "Math cysgod"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "Gogwydd"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "Lled dewisol"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "Uchder dewisol"
@@ -80,10 +81,11 @@ msgid "Whether X events should be forwarded"
 msgstr "Dylid anfon digwyddiadau X ymlaen"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "Enw"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "Disgrifiad"
 
@@ -97,9 +99,9 @@ msgid ""
 "to be listed in the selector. Defaults to \"IDL:Bonobo/Embeddable:1.0\" if "
 "no interfaces are listed"
 msgstr ""
-"Arae terfynnedig a NULL o rhyngwynebau mae gweinydd yn gorfod eu cynnal er "
-"mwyn cael ei rhestri yn y dewiswr. Y rhagosodiad yw \"IDL:Bonobo/"
-"EMbeddable:1.0\" os nad oes unrhyw rhyngwynebau wedi eu rhestri."
+"Arae, terfynedig â NULL, o ryngwynebau mae gweinydd yn gorfod eu cynnal er "
+"mwyn cael ei restri yn y dewiswr. Y rhagosodiad yw \"IDL:Bonobo/"
+"EMbeddable:1.0\" os nad oes unrhyw ryngwynebau wedi eu rhestri."
 
 #: bonobo/bonobo-selector.c:348
 msgid "Interface required entry"
@@ -133,17 +135,17 @@ msgstr "Bariau Offer"
 msgid "toolbars"
 msgstr "bariau offer"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "Edrych"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "_Eicon"
 
 #: bonobo/bonobo-ui-config-widget.c:329
 msgid "_Text and Icon"
-msgstr "_Testun a Eicon"
+msgstr "_Testun ac Eicon"
 
 #: bonobo/bonobo-ui-config-widget.c:335
 msgid "Text only"
@@ -176,7 +178,7 @@ msgstr "Baneri datnamu Gdk i'w gosod"
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
 #: bonobo/bonobo-ui-init-gtk.c:144 bonobo/bonobo-ui-init-gtk.c:147
 msgid "FLAGS"
-msgstr "BANNERI"
+msgstr "BANERI"
 
 #: bonobo/bonobo-ui-init-gtk.c:116
 msgid "Gdk debugging flags to unset"
@@ -250,31 +252,31 @@ msgstr "GTK+"
 msgid "Bonobo GUI support"
 msgstr "cynhaliaeth Rhyngwyneb Defnyddiwr Graffigol Bonobo"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "Y _ddau"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "_Testun"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "_Cuddio awgrymiadau"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "_Dangos awgrymiadau"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "_Cuddio'r bar offer"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "_Addasu"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "Addaasu'r bar offer"
 
@@ -291,13 +293,13 @@ msgstr "a ydy'r bar offer yn arnofio"
 msgid "Style of bevel around the toolbar"
 msgstr "Arddull y befel o amgylch y bar offer"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "_Cynnwys"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
-msgstr "Dangos cymorth ar gyfer y rhaglen hwn"
+msgstr "Dangos cymorth ar gyfer y rhaglen hon"
 
 #: bonobo/bonobo-window.c:347
 msgid "Name of the window - used for configuration serialization."
@@ -350,11 +352,11 @@ msgstr "Yn barhaus"
 
 #: bonobo/bonobo-zoomable.c:370
 msgid "Whether we zoom continuously (as opposed to jumps)"
-msgstr "Ydi ni'n chwyddo'n barhaus (yn lle neidio)"
+msgstr "Ydym ni'n chwyddo'n barhaus (yn lle neidio)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:1
 msgid "About this application"
-msgstr "Ynghylch y rhaglen hwn"
+msgstr "Ynghylch y rhaglen hon"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:2
 msgid "Select"
@@ -369,6 +371,7 @@ msgid "_Edit"
 msgstr "_Golygu"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "_Ffeil"
 
@@ -400,6 +403,81 @@ msgstr "Methu cychwyn côd libbonoboui"
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "Methu cychwyn Rhyngwyneb Defnyddiwr Bonobo"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr "Porwr Cydrannau Bonobo"
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr "Dangos y cydrannau Bonobo sydd ar gael"
+
+#: tools/browser/bonobo-browser.xml.h:1
+msgid "About this program..."
+msgstr "Ynglŷn â'r rhaglen..."
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr "Cau'r ffenest bresennol"
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr "Agor ffenest newydd"
+
+#: tools/browser/bonobo-browser.xml.h:5
+msgid "_Help"
+msgstr "_Cymorth"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr "Cyffredinol"
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr "Rhif ID"
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr "Lleoliad"
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr "Manylion"
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr "Manylion Manwl"
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr "Yn Weithredol"
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr "Math"
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr "Manylion Cydran"
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr "Porwr Bonobo"
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr "Hawlfraint 2001, The GNOME Foundation"
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr "Porwr cydrannau Bonobo"
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr "Porwr Cydrannau"
 
 #~ msgid "HOST"
 #~ msgstr "GWESTEIWR"

@@ -804,7 +804,7 @@ drag_floating (BonoboDock *dock,
   item_widget = GTK_WIDGET (item);
   dock_widget = GTK_WIDGET (dock);
 
-  if (item_widget->parent != dock_widget)
+  if (!item->is_floating && item_widget->parent != dock_widget)
     {
       GtkAllocation *dock_allocation, *client_allocation;
 

@@ -1,3 +1,132 @@
+2005-02-05  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* tools/browser/Makefile.am (CLEANFILES): Add bonobo-browser.desktop.
+
+	* configure.in: Version 2.8.1.
+
+	* NEWS: Update.
+
+2005-02-02  Markus Meissner  <meissner@suse.de>
+
+	* bonobo/bonobo-selector.c (bonobo_selector_new): 
+	fix g_object_new termination.
+
+2005-01-22  Benjamin Berg  <benjamin@sipsolutions.net>
+
+	* bonobo/bonobo-dock-item-grip.c (bonobo_dock_item_grip_expose):
+	The orientation passed to gtk_paint_handle should not be the same
+	as the orientation of the widget, but turned by 90°.
+	Fixes #162761.
+
+2004-01-10  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* bonobo/bonobo-dock-item.c (bonobo_dock_item_detach):
+	Don't create a new vbox/hbox if we had already had a detached
+	toolbar and had actually hidden it.
+	(bonobo_dock_item_unmap): set the floating hidden status
+	(bonobo_dock_item_unrealize): invoke bonobo_dock_item_unfloat()
+	when we are detached and hidden
+	(bonobo_dock_item_unfloat): reset floating hidden status
+	Fixes #161137
+	(bonobo_dock_item_attach): fix a compiler warning about a GtkWidget*
+	not being used.
+
+2005-01-04  JP Rosevear  <jpr@novell.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c
+	(impl_bonobo_ui_sync_toolbar_update_root): use
+	bonobo_ui_sync_toolbar_get_look instead of parse_look so that
+	hlook and vlook are also handled
+
+2005-01-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* bonobo/bonobo-dock-item-grip.c:
+	(bonobo_dock_item_grip_get_accessible): Fix string.
+	s/Un dock/Undock/. Closes bug #132211.
+
+2004-12-11  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* samples/canvdemo/Makefile.am (EXTRA_DIST): Remove
+	CanvDemo.server, fixes #160558.
+
+	* samples/controls/Makefile.am (EXTRA_DIST): Remove
+	$(server_in_files) and $(server_DATA).  Fixes #160380.
+
+2004-12-02  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "zu" to ALL_LINGUAS.
+
+2004-11-15  Dwayne Bailey  <dwayne@translate.org.za>
+
+	* configure.in: Added "nso" to ALL_LINGUAS.
+
+Sat Nov 13 01:05:27 2004  Jonathan Blandford  <jrb@redhat.com>
+
+	* bonobo/bonobo-canvas-item.c:
+	* bonobo/bonobo-selector-widget.c:
+	* bonobo/bonobo-selector.c:
+	* bonobo/bonobo-ui-toolbar.c:
+	* bonobo/bonobo-window.c:
+	* tests/test-filesel.c: s/libgnome\/gnome-i18n.h/glib/gi18n.h/g
+
+2004-10-21  Marco Pesenti Gritti  <marco@gnome.org>
+
+	reviewed by: Michael Meeks <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-toolbar.c:
+	(impl_bonobo_ui_sync_toolbar_state), (toolbar_build_widget):
+
+	Deprecate pack-end behavior and add a space type for separators.
+
+2004-10-04  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-control.c (bonobo_control_set_transient_for): See
+	if there is already a GdkWindow wrapper registered for the x11_id,
+	reuse it if it exists, otherwise request new one.  Fixes #151378.
+
+2004-10-02  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS.
+
+2004-09-29 Matthias Clasen <mclasen@redhat.com>
+
+	Merged from the gnome-2-8 branch by Federico Mena Quintero <federico@ximian.com>:
+
+	* bonobo/bonobo-ui-toolbar-control-item.c: Remove a 
+	broken and unneeded finalizer, avoid warnings when
+	toolbars are destroyed, and make control toolitems
+	non-homogeneous.
+
+2004-09-27  Damien Carbery <damien.carbery@sun.com>
+
+	Fixes #153629
+
+	* tools/browser/bonobo-browser.c: include locale.h.
+
+2004-09-25  Matthias Clasen  <mclasen@redhat.com>
+
+	* bonobo/bonobo-ui-preferences.c (bonobo_ui_preferences_get_toolbar_style): 
+	Match the prototype.
+
+2004-09-25  Federico Mena Quintero  <federico@ximian.com>
+
+	* Merged the fixes from the toolbar-rework branch.
+
+2004-09-21  Rodrigo Moya <rodrigo@novell.com>
+
+	* tools/Makefile.am: added new tools directory.
+
+	* tools/browser/*: get the Bonobo component browser from
+	bonobo-support module.
+
+	* configure.in:
+	* Makefile.am: added new directories to the build.
+
+2004-09-14  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* configure.in: remove AC_SUBST() for CFLAGS, CPPFLAGS and LDFLAGS
+	  variables (substed by default).
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.
@@ -147,11 +276,6 @@
 
 	* Version 2.5.3.
 
-2004-02-16  Arvind Samptur <arvind.samptur@wipro.com>
-
-	* bonobo/bonobo-window.c: (bonobo_window_class_init): upd.
-	(bonobo_window_focus): bin: always was a bad idea.
-	
 2004-02-18  Michael Meeks  <michael@ximian.com>
 
 	* bonobo/bonobo-dock-item.c (check_guint_arg): 
@@ -159,6 +283,11 @@
 	(get_preferred_height, get_preferred_width): return 0
 	if we have no child; odd.
 
+2004-02-16  Arvind Samptur <arvind.samptur@wipro.com>
+
+	* bonobo/bonobo-window.c: (bonobo_window_class_init): upd.
+	(bonobo_window_focus): bin: always was a bad idea.
+	
 2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
 
         * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.

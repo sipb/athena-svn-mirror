@@ -20,7 +20,7 @@
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-types.h>
 #include <bonobo/bonobo-main.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n.h>
 #include <libgnome/gnome-macros.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>

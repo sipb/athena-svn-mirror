@@ -831,7 +831,7 @@ impl_bonobo_ui_sync_menu_get_attached (BonoboUISync *sync,
 	return get_item_widget (widget);
 }
 
-GtkWidget *
+static GtkWidget *
 impl_bonobo_ui_sync_menu_wrap_widget (BonoboUISync *sync,
 				      GtkWidget    *custom_widget)
 {

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:55+0100\n"
+"POT-Creation-Date: 2005-02-05 15:33+0000\n"
 "PO-Revision-Date: 2004-07-09 18:05+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -30,30 +30,31 @@ msgstr "कोरबा यूआई धारक"
 msgid "The User interface container"
 msgstr "यूज़र इंटरफेस धारक"
 
-#: bonobo/bonobo-dock-item-grip.c:249
+#: bonobo/bonobo-dock-item-grip.c:257
 msgid "Dock the toolbar"
 msgstr "उपकरण-पट्टी डॉक करें"
 
-#: bonobo/bonobo-dock-item-grip.c:250
-msgid "Un dock the toolbar"
+#: bonobo/bonobo-dock-item-grip.c:258
+#, fuzzy
+msgid "Undock the toolbar"
 msgstr "उपकरण-पट्टी अन डॉक करें"
 
-#: bonobo/bonobo-dock-item.c:222 bonobo/bonobo-dock-item.c:223
+#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
 #: bonobo/bonobo-ui-toolbar.c:1175
 msgid "Shadow type"
 msgstr "छाया प्रकार"
 
-#: bonobo/bonobo-dock-item.c:233 bonobo/bonobo-dock-item.c:234
+#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
 #: bonobo/bonobo-ui-toolbar.c:1119 bonobo/bonobo-ui-toolbar.c:1120
 msgid "Orientation"
 msgstr "दिशा"
 
-#: bonobo/bonobo-dock-item.c:244 bonobo/bonobo-dock-item.c:245
+#: bonobo/bonobo-dock-item.c:255 bonobo/bonobo-dock-item.c:256
 #: bonobo/bonobo-ui-toolbar.c:1138 bonobo/bonobo-ui-toolbar.c:1139
 msgid "Preferred width"
 msgstr "मान्य चौड़ाई"
 
-#: bonobo/bonobo-dock-item.c:253 bonobo/bonobo-dock-item.c:254
+#: bonobo/bonobo-dock-item.c:264 bonobo/bonobo-dock-item.c:265
 #: bonobo/bonobo-ui-toolbar.c:1147 bonobo/bonobo-ui-toolbar.c:1148
 msgid "Preferred height"
 msgstr "मान्य ऊँचाई"
@@ -79,10 +80,11 @@ msgid "Whether X events should be forwarded"
 msgstr "क्या एक्स घटनाओं को अग्रेषित किया जाना है"
 
 #: bonobo/bonobo-selector-widget.c:300 bonobo/bonobo-window.c:346
+#: tools/browser/component-details.c:114 tools/browser/component-list.c:381
 msgid "Name"
 msgstr "नाम"
 
-#: bonobo/bonobo-selector-widget.c:322
+#: bonobo/bonobo-selector-widget.c:322 tools/browser/component-details.c:115
 msgid "Description"
 msgstr "वर्णन"
 
@@ -129,11 +131,11 @@ msgstr "उपकरण-पट्टियाँ"
 msgid "toolbars"
 msgstr "उपकरण-पट्टियाँ"
 
-#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:314 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "Look"
 msgstr "देखें"
 
-#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-config-widget.c:323 bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "_Icon"
 msgstr "चिह्न (_I)"
 
@@ -246,31 +248,31 @@ msgstr "जीटीके+"
 msgid "Bonobo GUI support"
 msgstr "बोनोबो जीयूआई समर्थन"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "B_oth"
 msgstr "दोनों (_o)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:553
+#: bonobo/bonobo-ui-sync-toolbar.c:566
 msgid "T_ext"
 msgstr "पाठ (_e)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Hide t_ips"
 msgstr "युक्तियाँ छुपाएँ (_i)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:554
+#: bonobo/bonobo-ui-sync-toolbar.c:567
 msgid "Show t_ips"
 msgstr "युक्तियाँ दिखाएँ (_i)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "_Hide toolbar"
 msgstr "उपकरण-पट्टी छुपाएँ (_H)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:555
+#: bonobo/bonobo-ui-sync-toolbar.c:568
 msgid "Customi_ze"
 msgstr "अनुकूलित करें (_z)"
 
-#: bonobo/bonobo-ui-sync-toolbar.c:556
+#: bonobo/bonobo-ui-sync-toolbar.c:569
 msgid "Customize the toolbar"
 msgstr "उपकरण-पट्टी अनुकूलित करें"
 
@@ -286,11 +288,11 @@ msgstr "क्या उपकरण-पट्टी फ्लोटिंग �
 msgid "Style of bevel around the toolbar"
 msgstr "उपकरण-पट्टी के चारों ओर बेवल की शैली"
 
-#: bonobo/bonobo-ui-util.c:629
+#: bonobo/bonobo-ui-util.c:630
 msgid "_Contents"
 msgstr "विषय सूची (_C)"
 
-#: bonobo/bonobo-ui-util.c:630
+#: bonobo/bonobo-ui-util.c:631
 msgid "View help for this application"
 msgstr "इस अनुप्रयोग हेतु मदद देखें"
 
@@ -363,6 +365,7 @@ msgid "_Edit"
 msgstr "संपादन (_E)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:5
+#: tools/browser/bonobo-browser.xml.h:4
 msgid "_File"
 msgstr "फ़ाइल (_F)"
 
@@ -395,3 +398,80 @@ msgstr "libbonoboui कोड को प्रारंभ नहीं कि�
 #: samples/controls/bonobo-sample-controls.c:131
 msgid "Could not initialize Bonobo UI"
 msgstr "बोनोबो यूआई को प्रारंभ नहीं किया जा सका"
+
+#: tools/browser/bonobo-browser.desktop.in.h:1
+msgid "Bonobo Component Browser"
+msgstr ""
+
+#: tools/browser/bonobo-browser.desktop.in.h:2
+msgid "Shows available Bonobo components"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:1
+#, fuzzy
+msgid "About this program..."
+msgstr "इस अनुप्रयोग के बारे में"
+
+#: tools/browser/bonobo-browser.xml.h:2
+msgid "Close the current window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:3
+msgid "Open a new window"
+msgstr ""
+
+#: tools/browser/bonobo-browser.xml.h:5
+#, fuzzy
+msgid "_Help"
+msgstr "छुपाएँ (_H)"
+
+#. Build the general tab
+#: tools/browser/component-details.c:109
+msgid "General"
+msgstr ""
+
+#: tools/browser/component-details.c:116 tools/browser/component-list.c:401
+msgid "IID"
+msgstr ""
+
+#: tools/browser/component-details.c:117
+msgid "Location"
+msgstr ""
+
+#. Build the details tab
+#: tools/browser/component-details.c:167
+msgid "Details"
+msgstr ""
+
+#: tools/browser/component-details.c:168
+msgid "Detailed Information"
+msgstr ""
+
+#: tools/browser/component-list.c:370
+msgid "Active"
+msgstr ""
+
+#: tools/browser/component-list.c:391
+msgid "Type"
+msgstr ""
+
+#: tools/browser/window.c:169
+msgid "Component Details"
+msgstr ""
+
+#: tools/browser/window.c:214
+msgid "Bonobo Browser"
+msgstr ""
+
+#: tools/browser/window.c:215
+msgid "Copyright 2001, The GNOME Foundation"
+msgstr ""
+
+#: tools/browser/window.c:216
+msgid "Bonobo component browser"
+msgstr ""
+
+#. create the window
+#: tools/browser/window.c:246
+msgid "Component Browser"
+msgstr ""

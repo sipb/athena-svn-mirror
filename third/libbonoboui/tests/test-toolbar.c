@@ -7,7 +7,6 @@
 
 #include <bonobo/bonobo-ui-toolbar.h>
 #include <bonobo/bonobo-ui-toolbar-button-item.h>
-#include <bonobo/bonobo-ui-toolbar-separator-item.h>
 
 static GtkWidget *
 prepend_item (BonoboUIToolbar *toolbar,
@@ -79,9 +78,6 @@ main (int argc, char **argv)
 			BONOBO_UI_TOOLBAR_BUTTON_ITEM (item), "Emacs");
 	}
 
-	item = bonobo_ui_toolbar_separator_item_new ();
-	bonobo_ui_toolbar_insert (BONOBO_UI_TOOLBAR (toolbar), BONOBO_UI_TOOLBAR_ITEM (item), 1);
-	gtk_widget_show (item);
 
 	prepend_item (BONOBO_UI_TOOLBAR (toolbar), "/usr/share/pixmaps/apple-green.png", "Green apple", FALSE);
 	prepend_item (BONOBO_UI_TOOLBAR (toolbar), "/usr/share/pixmaps/apple-red.png", "Red apple (exp)", TRUE);
