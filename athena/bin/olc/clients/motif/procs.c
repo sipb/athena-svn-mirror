@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
- *      $Author: lwvanels $
+ *      $Author: raek $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.17 1991-08-12 13:33:42 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.18 1991-08-23 17:04:47 raek Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -98,7 +98,7 @@ olc_new_ques (w, tag, callback_data)
 {
   REQUEST Request;
   char file[MAXPATHLEN];
-  int status;
+  ERRCODE status;
 
   if (fill_request(&Request) != SUCCESS)
     {
@@ -110,7 +110,7 @@ olc_new_ques (w, tag, callback_data)
   WAIT_CURSOR;
   if ( XtIsRealized(w_motd_form) )
     XtUnrealizeWidget(w_motd_form);
-  MakeNewqForm();
+/*  MakeNewqForm(); */
   XtManageChild(w_newq_form);
   ask_screen = TRUE;
 
@@ -251,7 +251,7 @@ void
 olc_status()
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
   LIST list;
   Arg args[1];
   char connect[256];
@@ -299,7 +299,7 @@ olc_replay()
 
   REQUEST Request;
   char buf[BUFSIZ];
-  int status;
+  ERRCODE status;
   int fd;
   int actlen;
   Arg Args[2];
@@ -319,34 +319,19 @@ olc_replay()
     return;
   }
   status = nl_get_log(fd,&log,&loglen,User.username,User.instance,&actlen);
-  if (status < 0) {
-    if (status >= -256)
-      switch (status) {
-      case ERR_NO_SUCH_Q:
-	XmTextSetString(w_replay_scrl,
-		      "No question, and therefore, no log to display.");
-        break;
-      case ERR_SERV:
-        MuError("Error on the server");
-        break;
-      case ERR_NO_ACL:
-	XmTextSetString(w_replay_scrl,
-			"Sorry, charlie, but you're not on the acl.\n");
-        break;
-      case ERR_NOT_HERE:
-        MuError("Unknown request\n");
-        break;
-      default:
-#ifdef KERBEROS
-        sprintf(buf,"kerberos Error: %s",krb_err_txt[-status]);
-#else
-        sprintf(buf,"Unknown Error: %d",-status);
-#endif
-	MuError(buf);
-      }
-    else {
-      sprintf(buf,"Unknown error %d\n",-status);
-      MuError(buf);
+  if (status) {
+    switch (status) {
+    case ERR_NO_SUCH_Q:
+      XmTextSetString(w_replay_scrl,
+		    "No question, and therefore, no log to display.");
+      break;
+    case ERR_NO_ACL:
+      XmTextSetString(w_replay_scrl,
+		      "Sorry, charlie, but you're not on the acl.\n");
+      break;
+    default:
+    /** need to do some set_com_err_hook stuff here **/
+      com_err("olc_replay", status, "received while retrieving log to replay");
     }
     return;
   }
@@ -399,7 +384,7 @@ olc_cancel (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   WAIT_CURSOR;
   if (fill_request(&Request) != SUCCESS)
@@ -443,7 +428,7 @@ save_cbk (w, tag, callback_data)
      XmSelectionBoxCallbackStruct *callback_data;
 {
   Arg A[1];
-  int status;
+  ERRCODE status;
   int fd;
   int out_fd;
   char *filename;
@@ -478,34 +463,18 @@ save_cbk (w, tag, callback_data)
     loglen = 0;
     
     status = nl_get_log(fd,&log,&loglen,User.username,User.instance,&actlen);
-    if (status < 0) {
-      if (status >= -256)
-	switch (status) {
-	case ERR_NO_SUCH_Q:
-	  XmTextSetString(w_replay_scrl,
-			  "No question, and therefore, no log to display.");
-	  break;
-	case ERR_SERV:
-	  MuError("Error on the server");
-	  break;
-	case ERR_NO_ACL:
-	  XmTextSetString(w_replay_scrl,
-			  "Sorry, charlie, but you're not on the acl.\n");
-	  break;
-	case ERR_NOT_HERE:
-	  MuError("Unknown request\n");
-	  break;
-	default:
-#ifdef KERBEROS
-	  sprintf(buf,"kerberos Error: %s",krb_err_txt[-status]);
-#else
-	  sprintf(buf,"Unknown Error: %d",-status);
-#endif
-	  MuError(buf);
-	}
-      else {
-	sprintf(buf,"Unknown error %d\n",-status);
-	MuError(buf);
+    if (status) {
+      switch (status) {
+      case ERR_NO_SUCH_Q:
+	XmTextSetString(w_replay_scrl,
+			"No question, and therefore, no log to display.");
+	break;
+      case ERR_NO_ACL:
+	XmTextSetString(w_replay_scrl,
+			"Sorry, charlie, but you're not on the acl.\n");
+	break;
+      default:
+	com_err("olc_replay", status,"received while retrieving log to save");
       }
     }
     write(out_fd,log,loglen);
@@ -631,7 +600,7 @@ olc_help (w, tag, callback_data)
   WAIT_CURSOR;
   
   if (stat(help_filename, &statbuf)) {
-    MuError("help: unable to stat help file %s.", help_filename);
+    MuError("help: unable to stat help file.");
     STANDARD_CURSOR;
     return;
   }
@@ -738,7 +707,7 @@ olc_send_msg (w, tag, callback_data)
      XmAnyCallbackStruct *callback_data;
 {
   REQUEST Request;
-  int status;
+  ERRCODE status;
 
   WAIT_CURSOR;
 
