@@ -367,7 +367,7 @@ nautilus_volume_monitor_finalize (GObject *object)
 	monitor = NAUTILUS_VOLUME_MONITOR (object);
 
 	/* Remove timer function */
-	gtk_timeout_remove (monitor->details->mount_volume_timer_id);
+	g_source_remove (monitor->details->mount_volume_timer_id);
 		
 	/* Clean up mount info */
 	free_mount_list (monitor->details->mounts);
@@ -1316,9 +1316,9 @@ find_volumes (NautilusVolumeMonitor *monitor)
 
 	/* Add a timer function to check for status change in mounted volumes periodically */
 	monitor->details->mount_volume_timer_id = 
-		gtk_timeout_add (CHECK_STATUS_INTERVAL,
-				 (GtkFunction) mount_volumes_check_status,
-				 monitor);
+		g_timeout_add (CHECK_STATUS_INTERVAL,
+			       (GtkFunction) mount_volumes_check_status,
+			       monitor);
 }
 
 void
@@ -1558,7 +1558,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	info->detailed_message = g_strdup (detailed_msg);
 	info->mount_point = g_strdup (mount_path);
 	info->mount = mount;
-	gtk_idle_add (display_mount_error, info);	
+	g_idle_add (display_mount_error, info);	
 }
 
 
@@ -1826,7 +1826,16 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	}
 
 	/* Identify device type */
-	if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
+	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {
+                volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->device_path, "/dev/floppy")) { 
+                volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->device_path, "/dev/cdrom")) {
+                volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
 		name = volume->mount_path + strlen ("/mnt/");
 		
 		if (eel_str_has_prefix (name, "cdrom")
@@ -1836,9 +1845,6 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 		} else if (eel_str_has_prefix (name, "floppy")) {
 			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
 				volume->is_removable = TRUE;
-		} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
-			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
-			volume->is_removable = TRUE;
 		} else if (eel_str_has_prefix (name, "zip")) {
 			volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
 			volume->is_removable = TRUE;
@@ -1873,7 +1879,7 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			} else if (eel_str_has_prefix (name, "rmdisk")) {
 				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
 				volume->is_removable = TRUE;
-				if( eel_str_has_suffix (volume->device_path, ":c")) {
+				if (eel_str_has_suffix (volume->device_path, ":c")) {
 					volume->device_path = eel_str_strip_trailing_str
 								(volume->device_path, ":c");
 				}
