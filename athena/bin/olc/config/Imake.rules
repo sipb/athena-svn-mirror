@@ -1,6 +1,6 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.10 1991-08-30 10:49:08 lwvanels Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.11 1991-09-22 12:15:24 lwvanels Exp $
 
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
@@ -157,7 +157,7 @@ $(RM) program; if [ -f program ]; then $(MV) program program/**/~; fi
  */
 #ifndef NormalProgramTarget
 #define	NormalProgramTarget(program,objects,deplibs,locallibs,syslibs)	@@\
-program: objects deplibs						@@\
+program:: objects deplibs						@@\
 	RemoveTargetProgram($@)						@@\
 	$(CC) -o $@ objects locallibs $(LDFLAGS) syslibs $(EXTRA_LOAD_FLAGS) @@\
 									@@\
@@ -878,7 +878,7 @@ objs:	depends								@@\
 #define	NormalLibraryTarget(libname,objlist)				@@\
 AllTarget(concat(lib,libname).a)					@@\
 									@@\
-concat(lib,libname).a: objlist						@@\
+concat(lib,libname).a:: objlist						@@\
 	$(RM) $@							@@\
 	$(AR) $@ objlist						@@\
 	$(RANLIB) $@
