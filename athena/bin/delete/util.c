@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.8 1989-05-04 14:28:11 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.9 1989-10-23 13:08:27 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -21,12 +21,15 @@
 #include <sys/dir.h>
 #include <strings.h>
 #include <pwd.h>
+#include <errno.h>
+#include "delete_errs.h"
 #include "directories.h"
 #include "util.h"
 #include "mit-copyright.h"
+#include "errors.h"
 
-char *getenv();
-
+extern char *getenv();
+extern uid_t getuid();
 
 char *convert_to_user_name(real_name, user_name)
 char real_name[];
@@ -34,7 +37,7 @@ char user_name[];  /* RETURN */
 {
      char *ptr, *q;
      
-     strcpy(user_name, real_name);
+     (void) strcpy(user_name, real_name);
      while (ptr = strrindex(user_name, ".#")) {
 	  for (q = ptr; *(q + 2); q++)
 	       *q = *(q + 2);
@@ -93,20 +96,24 @@ char *filepath, *filename;
 {
      static char buf[MAXPATHLEN];
 
-     strcpy(buf, filepath);
+     (void) strcpy(buf, filepath);
      if ((! *filename) || (! *filepath)) {
-	  strcpy(buf, filename);
+	  (void) strcpy(buf, filename);
 	  return(buf);
      }
      if (buf[strlen(buf) - 1] == '/')
 	  buf[strlen(buf) - 1] = '\0';
      if (strlen(buf) + strlen(filename) + 2 > MAXPATHLEN) {
+	  set_error(ENAMETOOLONG);
+	  strncat(buf, "/", MAXPATHLEN - strlen(buf) - 1);
+	  strncat(buf, filename, MAXPATHLEN - strlen(buf) - 1);
+	  error(buf);
  	  *buf = '\0';
-	  return(buf);
+	  return buf;
      }
-     strcat(buf, "/");
-     strcat(buf, filename);
-     return(buf);
+     (void) strcat(buf, "/");
+     (void) strcat(buf, filename);
+     return buf;
 }
 
 
@@ -122,7 +129,7 @@ yes() {
 	  exit(1);
      }
      if (! index(buf, '\n')) do
-	  fgets(buf + 1, BUFSIZ - 1, stdin);
+	  (void) fgets(buf + 1, BUFSIZ - 1, stdin);
      while (! index(buf + 1, '\n'));
      return(*buf == 'y');
 }
@@ -164,30 +171,16 @@ char *rest; /* RETURN */
      char *part;
      static char buf[MAXPATHLEN];
 
-     strcpy(buf, filename);
+     (void) strcpy(buf, filename);
      part = index(buf, '/');
      if (! part) {
 	  *rest = '\0';
 	  return(buf);
      }
-     strcpy(rest, part + 1);
+     (void) strcpy(rest, part + 1);
      *part = '\0';
      return(buf);
 }
-
-
-
-
-char *reg_firstpart(filename, rest)
-char *filename;
-char *rest; /* RETURN */
-{
-     static char first[MAXNAMLEN];
-     
-     sprintf(first, "^%s$", firstpart(filename, rest));
-     return(first);
-}
-
 
 
 
@@ -199,7 +192,7 @@ char *buf;
      char *user;
      struct passwd *psw;
      
-     strcpy(buf, getenv("HOME"));
+     (void) strcpy(buf, getenv("HOME"));
      
      if (*buf)
 	  return(0);
@@ -208,17 +201,20 @@ char *buf;
      psw = getpwnam(user);
 
      if (psw) {
-	  strcpy(buf, psw->pw_dir);
+	  (void) strcpy(buf, psw->pw_dir);
 	  return(0);
      }
      
-     psw = getpwuid(getuid());
+     psw = getpwuid((int) getuid());
 
      if (psw) {
-	  strcpy(buf, psw->pw_dir);
+	  (void) strcpy(buf, psw->pw_dir);
 	  return(0);
-     }  
-     return(1);
+     }
+
+     set_error(NO_HOME_DIR);
+     error("get_home");
+     return error_code;
 }
 
 
