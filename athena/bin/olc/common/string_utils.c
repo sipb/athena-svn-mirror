@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *	$Id: string_utils.c,v 1.15 1990-11-15 12:20:30 lwvanels Exp $
+ *	$Id: string_utils.c,v 1.16 1991-05-06 23:10:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.15 1990-11-15 12:20:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.16 1991-05-06 23:10:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -62,7 +62,7 @@ void upcase_string(string)
 {
   char *s1 = string;
   while(*s1 != '\0') {
-    if islower(*s1) *s1 = toupper(*s1);
+    if (islower(*s1)) *s1 = toupper(*s1);
     s1++;
   }
 }
