@@ -13,19 +13,19 @@ XLIBS=-lregex
 #endif
 
 LIBS = $(BSDLIB) -lhesiod $(RPCLIB) -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto \
-	-lcom_err $(XLIBS) 
+	-lcom_err -lathdir $(XLIBS) 
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
-	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
-	rvdutil.c pathcan.c config.c $(XSRCS)
+	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c add.c stringlist.c\
+	getrealm.c rvdutil.c pathcan.c config.c $(XSRCS)
 OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
-	afs.o ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
-	rvdutil.o pathcan.o config.o $(XOBJS)
-
+	afs.o ufs.o rpc.o mount.o unmount.o zephyr.o add.o stringlist.o\
+	getrealm.o rvdutil.o pathcan.o config.o $(XOBJS)
 
 build_program(attach,$(OBJS),,$(LIBS))
 install_program(attach,-m 4755 -o root,$(ATHRBINDIR))
 
+install_man(add.1,add.1)
 install_man(attach.1,attach.1)
 install_man(detach.1,detach.1)
 install_man(fsid.1,fsid.1)
