@@ -6,6 +6,9 @@ SUN*)
 	# Remove more obsolete symlinks.
 	rm -f /SUNWcg12 /SUNWdiag /SUNWgt /SUNWits
 
+	# We've applied a patch to the operating system.
+	echo "NEWSADM=true"			>> ${CONFVARS}
+
 	# Fix HOST if it doesn't match the system's hostname.
 	realhost="`uname -n | tr [a-z] [A-Z]`"
 	rchost="`echo "$HOST" | tr [a-z] [A-Z]`"
