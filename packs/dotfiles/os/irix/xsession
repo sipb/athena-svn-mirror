@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.4 1999-08-03 04:55:10 jweiss Exp $
+# $Id: xsession,v 1.5 2000-02-04 16:21:06 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -78,6 +78,10 @@ endif
 # *******************   DEVICE SETUP   *******************
 
 if (! $?skip_sgi) then
+
+  if (! $?host) then
+    set host = `hostname`
+  endif
 
   if (-r .desktop-$host/4Dwmdesks) then
     \grep -v _Zwgc .desktop-$host/4Dwmdesks >&! .desktop-$host/4Dwmdesks.fixed
