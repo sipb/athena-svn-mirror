@@ -1,244 +1,8 @@
 #!/bin/sh
 
-PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc
+# Get standard options from command line or defaults.
+. ais-options
 
-prog=`basename $0`
-
-usage="Usage: $prog [--help] [--auto] [--disk busnum devnum] [--diskless] [--boothost host] [--dist path] [--root path] [--swap] [--skiprepart] [--hdrsize megs] [--swapsize megs] [--cachesize megs] [--hostname hostname] [--ipaddr ipaddr]"
-
-#
-# Parse arguments.
-#
-while [ -n "$1" ]; do
-    case "$1" in
-
-    --help)
-	echo $usage
-	exit 0;;
-
-    --auto)
-	AIS_AUTO=1;;
-
-    --disk)
-	AIS_BUS=$2
-	AIS_DEV=$3
-	shift 2;;
-
-    --diskless)
-	AIS_MODE=diskless;;
-
-    --dist)
-	AIS_DIST=$2
-	shift;;
-
-    --root)
-	AIS_ROOT=$2
-	shift;;
-
-    --boothost)
-	AIS_BOOTHOST=$2
-	shift;;
-
-    --swap)
-	AIS_MODE=swap;;
-
-    --skiprepart)
-	AIS_REPARTITION=0;;
-
-    --hdrsize)
-	AIS_HDRSIZE=$2
-	shift;;
-
-    --swapsize)
-	AIS_SWAPSIZE=$2
-	shift;;
-
-    --cachesize)
-	AIS_CACHESIZE=$2
-	shift;;
-
-    --hostname)
-	AIS_HOST=$2
-	shift;;
-
-    --ipaddr)
-	AIS_ADDR=$2
-	shift;;
-
-    *)
-	echo "$prog: Unknown option $1"
-	echo $usage
-	exit 1;;
-    esac
-    shift
-done
-
-#
-# Set up default values (default to internal disk, swap partition, mount
-# on /root, prompt for inputs).
-#
-AIS_CPUBOARD=${AIS_CPUBOARD:-`uname -m`}
-AIS_OSVERSION=${AIS_OSVERSION:-`uname -r`}
-
-eval `hinv | awk '\
-    /CPU: MIPS/			{ p = $3 }				\
-    /Graphics board:/		{ g = $3 }				\
-    /graphics installed/	{ g = $1 }				\
-    END			{ printf("AIS_CPU=%s; AIS_GRAPHICS=%s", p, g); }'`
-
-# MODLOADAFS is separated because AFS is still a bit broken in 6.3.
-case ${AIS_OSVERSION} in
-    6.2)
-	AIS_SYS=${AIS_SYS:-sgi_62}
-	AIS_OPSSYS=${AIS_OPSSYS:-62}
-	AIS_SYSTEM=IRIX62
-	AIS_MODLOADAFS=${AIS_MODLOADAFS:-1}
-	;;
-    6.3)
-	AIS_SYS=${AIS_SYS:-sgi_63}
-	AIS_OPSSYS=${AIS_OPSSYS:-63}
-	AIS_SYSTEM=IRIX63
-	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
-	;;
-    *)
-	echo "$0: unknown operating system version (${AIS_OSVERSION})"
-	exit 1
-	;;
-esac
-
-case ${AIS_CPUBOARD} in
-    IP22)
-	AIS_MACHINE=INDY
-	;;
-    IP32)
-	AIS_MACHINE=O2
-	;;
-    *)
-	echo "$0: unknown CPU board (${AIS_CPUBOARD})"
-	exit 1
-	;;
-esac
-
-AIS_VERSION=0.9.1
-AIS_ROOTFSTYPE=${AIS_ROOTFSTYPE:-xfs}
-AIS_AUTO=${AIS_AUTO:-0}
-AIS_BUS=${AIS_BUS:-0}
-AIS_UTIL=${AIS_UTIL:-/ais}
-AIS_DEV=${AIS_DEV:-1}
-AIS_ATHENAVERS=${AIS_ATHENAVERS:-8.1}
-AIS_DIST=${AIS_DIST:-/install}
-AIS_BASE=${AIS_BASE:-${AIS_DIST}}
-AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
-AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
-AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}}
-AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
-AIS_SRVD=${AIS_SRVD:-/srvd}
-AIS_OS=${AIS_OS:-/os}
-AIS_LOCALBITS=${AIS_LOCALBITS:-"/ram"}
-AIS_ROOT=${AIS_ROOT:-/root}
-AIS_FUTUREROOT=${AIS_FUTUREROOT:-/root}
-AIS_MODE=${AIS_MODE:-root}
-AIS_HDRSIZE=${AIS_HDRSIZE:-2}
-AIS_SWAPSIZE=${AIS_SWAPSIZE:-150}
-AIS_CACHESIZE=${AIS_CACHESIZE:-100}
-AIS_HOST=${AIS_HOST:-nobody}
-AIS_ADDR=${AIS_ADDR:-0.0.0.0}
-AIS_DOMAIN=${AIS_DOMAIN:-MIT.EDU}
-AIS_REPARTITION=${AIS_REPARTITION:-1}
-AIS_BOOTHOST=${AIS_BOOTHOST:-tae-kwon-leap}
-AIS_BOOTROOTDIR=${AIS_BOOTROOTDIR:-/var/boot}
-AIS_BOOTSUBDIR=${AIS_BOOTSUBDIR:-sgi/${AIS_OPSSYS}}
-AIS_NFSHOST=${AIS_NFSHOST:-${AIS_BOOTHOST}}
-AIS_NFSROOTDIR=${AIS_NFSROOTDIR:-/inst}
-AIS_NFSSUBDIR=${AIS_NFSSUBDIR:-${AIS_SYS}}
-AIS_LOGFILE=${AIS_LOGFILE:-/var/athena/install.log}
-
-export AIS_BOOTROOTDIR AIS_BOOTSUBDIR AIS_VERSION
-export AIS_NFSROOTDIR AIS_NFSSUBDIR AIS_OPSSYS
-export AIS_ROOTFSTYPE AIS_BOOTHOST AIS_NFSHOST AIS_CPU AIS_GRAPHICS
-export AIS_CPUBOARD AIS_OSLIB AIS_SRVD AIS_OS AIS_OSVERSION AIS_REPARTITION
-export AIS_SYS AIS_AFSDIST AIS_AUTO AIS_BUS AIS_BASE AIS_LIB AIS_EXEC
-export AIS_UTIL AIS_DEV AIS_DIST AIS_LOCALBITS AIS_ROOT AIS_FUTUREROOT AIS_MODE
-export AIS_HDRSIZE AIS_SWAPSIZE AIS_CACHESIZE AIS_HOST AIS_ADDR AIS_DOMAIN
-export AIS_MODLOADAFS AIS_ATHENAVERS AIS_SYSTEM AIS_MACHINE AIS_LOGFILE
-
-disk=/dev/dsk/dks${AIS_BUS}d${AIS_DEV}
-rdisk=/dev/rdsk/dks${AIS_BUS}d${AIS_DEV}
-basedev="scsi(${AIS_BUS})disk(${AIS_DEV})rdisk(0)"
-disk_vh=${rdisk}vh
-
-if [ ${AIS_CPUBOARD} = "IP32" ]; then
-    basedev="pci(0)${basedev}"
-fi
-
-imagename()
-{
-    board=$1
-    cpu=$2
-    graphics=$3
-
-    case ${board} in
-	IP22)
-	    bootimage="athena-sgi62-"
-	    ;;
-	IP32)
-	    bootimage="athena-sgi63-"
-	    ;;
-	*)
-	    echo "Unrecognized board type: ${board}"
-	    ;;
-    esac
-    AIS_BOARD="CPUBOARD=${board}"
-
-    case ${cpu} in
-	R4400)
-	    hdwr="44"
-	    AIS_ARCH="CPUARCH=R4000"
-	    ;;
-	R4600)
-	    hdwr="46"
-	    AIS_ARCH="CPUARCH=R4000"
-	    ;;
-	R5000)
-	    hdwr="50"
-	    AIS_ARCH="CPUARCH=R5000"
-	    ;;
-	*)
-	    echo "Unrecognized CPU type: ${cpu}"
-	    exit 1
-	    ;;
-    esac
-
-    case ${graphics} in
-	GR3-XZ)
-	    hdwr="${hdwr}xz"
-	    AIS_GFXB="GFXBOARD=EXPRESS"
-	    AIS_SUBG="SUBGR=EXPRESS"
-	    ;;
-	Indy)
-	    hdwr="${hdwr}xl"
-	    if [ ${cpu} = "R5000" ]; then
-		AIS_GFXB="GFXBOARD=NEWPORT"
-		AIS_SUBG="SUBGR=NEWTON"
-	    else
-		AIS_GFXB="GFXBOARD=NEWPORT"
-		AIS_SUBG="SUBGR=NG1"
-	    fi
-	    ;;
-	CRM)
-	    hdwr="${hdwr}cr"
-	    AIS_GFXB="GFXBOARD=CRIME"
-	    AIS_SUBG="SUBGR=CRM"
-	    ;;
-	*)
-	    echo "Unrecognized graphics subsystem: ${graphics}"
-	    exit 1
-	    ;;
-    esac
-
-    bootimage="${bootimage}${hdwr}"
-    export AIS_BOARD AIS_ARCH AIS_GFXB AIS_SUBG
-}
 localize()
 {
     mv $1 $1.symlink
@@ -320,11 +84,38 @@ case ${AIS_OSVERSION} in
 	# absence causes autoconfig to complain at boot time, though doesn't
 	# prevent the camera from working.
 	localize ${AIS_ROOT}/var/sysgen/system/fddi.sm
+	;;
 
+    6.5)
+	# iforls and iforncs don't have /etc/config options
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S71iforls ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S71iforls ${AIS_ROOT}/etc/rc2.d/s71iforls
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K26iforls ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K26iforls ${AIS_ROOT}/etc/rc0.d/k26iforls
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S72iforncs ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S72iforncs \
+		    ${AIS_ROOT}/etc/rc2.d/s72iforncs
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K27iforncs ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K27iforncs \
+		    ${AIS_ROOT}/etc/rc0.d/k27iforncs
+	fi
+	# motif_eoe.sw.eoe invokes a script mksymlinks as an exit
+	# command, which leaves the following superseded directory
+	# around.  Clean it up.
+	rm -rf ${AIS_ROOT}/usr/include/Vk.O
+	;;
+esac
+
+# On an O2, set the video refresh rate to 75 hz, if not already set.
+if [ "${AIS_CPUBOARD}" = "IP32" ]; then
+    if [ ! -f ${AIS_ROOT}/var/X11/Xvc/Crm0_TimingTable ]; then
 	# setmon -x actually modifies a file in the filesystem, hence
 	# the chroot.
 	chroot ${AIS_ROOT} /usr/gfx/setmon -x 75hz
-	;;
-esac
+    fi
+fi
 
 exit 0

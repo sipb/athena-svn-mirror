@@ -1,243 +1,8 @@
 #!/bin/sh
 
-PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc
+# Get standard options from command line or defaults.
+. ais-options
 
-prog=`basename $0`
-
-usage="Usage: $prog [--help] [--auto] [--disk busnum devnum] [--diskless] [--boothost host] [--dist path] [--root path] [--swap] [--skiprepart] [--hdrsize megs] [--swapsize megs] [--cachesize megs] [--hostname hostname] [--ipaddr ipaddr]"
-
-#
-# Parse arguments.
-#
-while [ -n "$1" ]; do
-    case "$1" in
-
-    --help)
-	echo $usage
-	exit 0;;
-
-    --auto)
-	AIS_AUTO=1;;
-
-    --disk)
-	AIS_BUS=$2
-	AIS_DEV=$3
-	shift 2;;
-
-    --diskless)
-	AIS_MODE=diskless;;
-
-    --dist)
-	AIS_DIST=$2
-	shift;;
-
-    --root)
-	AIS_ROOT=$2
-	shift;;
-
-    --boothost)
-	AIS_BOOTHOST=$2
-	shift;;
-
-    --swap)
-	AIS_MODE=swap;;
-
-    --skiprepart)
-	AIS_REPARTITION=0;;
-
-    --hdrsize)
-	AIS_HDRSIZE=$2
-	shift;;
-
-    --swapsize)
-	AIS_SWAPSIZE=$2
-	shift;;
-
-    --cachesize)
-	AIS_CACHESIZE=$2
-	shift;;
-
-    --hostname)
-	AIS_HOST=$2
-	shift;;
-
-    --ipaddr)
-	AIS_ADDR=$2
-	shift;;
-
-    *)
-	echo "$prog: Unknown option $1"
-	echo $usage
-	exit 1;;
-    esac
-    shift
-done
-
-#
-# Set up default values (default to internal disk, swap partition, mount
-# on /root, prompt for inputs).
-#
-AIS_CPUBOARD=${AIS_CPUBOARD:-`uname -m`}
-AIS_OSVERSION=${AIS_OSVERSION:-`uname -r`}
-
-eval `hinv | awk '\
-    /CPU: MIPS/			{ p = $3 }				\
-    /Graphics board:/		{ g = $3 }				\
-    /graphics installed/	{ g = $1 }				\
-    END			{ printf("AIS_CPU=%s; AIS_GRAPHICS=%s", p, g); }'`
-
-# MODLOADAFS is separated because AFS is still a bit broken in 6.3.
-case ${AIS_OSVERSION} in
-    6.2)
-	AIS_SYS=${AIS_SYS:-sgi_62}
-	AIS_OPSSYS=${AIS_OPSSYS:-62}
-	AIS_MODLOADAFS=${AIS_MODLOADAFS:-1}
-	;;
-    6.3)
-	AIS_SYS=${AIS_SYS:-sgi_63}
-	AIS_OPSSYS=${AIS_OPSSYS:-63}
-	AIS_MODLOADAFS=${AIS_MODLOADAFS:-0}
-	;;
-    *)
-	echo "$0: unknown operating system version (${AIS_OSVERSION})"
-	exit 1
-	;;
-esac
-
-case ${AIS_CPUBOARD} in
-    IP22)
-	AIS_MACHINE=INDY
-	;;
-    IP32)
-	AIS_MACHINE=O2
-	;;
-    *)
-	echo "$0: unknown CPU board (${AIS_CPUBOARD})"
-	exit 1
-	;;
-esac
-
-AIS_VERSION=0.9.1
-AIS_ROOTFSTYPE=${AIS_ROOTFSTYPE:-xfs}
-AIS_AUTO=${AIS_AUTO:-0}
-AIS_BUS=${AIS_BUS:-0}
-AIS_UTIL=${AIS_UTIL:-/ais}
-AIS_DEV=${AIS_DEV:-1}
-AIS_SYSTEM=IRIX
-AIS_ATHENAVERS=${AIS_ATHENAVERS:-8.2}
-AIS_DIST=${AIS_DIST:-/install}
-AIS_BASE=${AIS_BASE:-${AIS_DIST}}
-AIS_LIB=${AIS_LIB:-${AIS_BASE}/lib}
-AIS_EXEC=${AIS_EXEC:-${AIS_BASE}/exec}
-AIS_OSLIB=${AIS_OSLIB:-${AIS_LIB}}
-AIS_AFSDIST=${AIS_AFSDIST:-${AIS_OSLIB}/afsdist/root.client}
-AIS_SRVD=${AIS_SRVD:-/srvd}
-AIS_OS=${AIS_OS:-/os}
-AIS_LOCALBITS=${AIS_LOCALBITS:-"/ram"}
-AIS_ROOT=${AIS_ROOT:-/root}
-AIS_FUTUREROOT=${AIS_FUTUREROOT:-/root}
-AIS_MODE=${AIS_MODE:-root}
-AIS_HDRSIZE=${AIS_HDRSIZE:-2}
-AIS_SWAPSIZE=${AIS_SWAPSIZE:-150}
-AIS_CACHESIZE=${AIS_CACHESIZE:-100}
-AIS_HOST=${AIS_HOST:-nobody}
-AIS_ADDR=${AIS_ADDR:-0.0.0.0}
-AIS_DOMAIN=${AIS_DOMAIN:-mit.edu}
-AIS_REPARTITION=${AIS_REPARTITION:-1}
-AIS_BOOTHOST=${AIS_BOOTHOST:-tae-kwon-leap}
-AIS_BOOTROOTDIR=${AIS_BOOTROOTDIR:-/var/boot}
-AIS_BOOTSUBDIR=${AIS_BOOTSUBDIR:-sgi/${AIS_OPSSYS}}
-AIS_NFSHOST=${AIS_NFSHOST:-${AIS_BOOTHOST}}
-AIS_NFSROOTDIR=${AIS_NFSROOTDIR:-/inst}
-AIS_NFSSUBDIR=${AIS_NFSSUBDIR:-${AIS_SYS}}
-AIS_LOGFILE=${AIS_LOGFILE:-/var/athena/install.log}
-
-export AIS_BOOTROOTDIR AIS_BOOTSUBDIR AIS_VERSION
-export AIS_NFSROOTDIR AIS_NFSSUBDIR AIS_OPSSYS
-export AIS_ROOTFSTYPE AIS_BOOTHOST AIS_NFSHOST AIS_CPU AIS_GRAPHICS
-export AIS_CPUBOARD AIS_OSLIB AIS_SRVD AIS_OS AIS_OSVERSION AIS_REPARTITION
-export AIS_SYS AIS_AFSDIST AIS_AUTO AIS_BUS AIS_BASE AIS_LIB AIS_EXEC
-export AIS_UTIL AIS_DEV AIS_DIST AIS_LOCALBITS AIS_ROOT AIS_FUTUREROOT AIS_MODE
-export AIS_HDRSIZE AIS_SWAPSIZE AIS_CACHESIZE AIS_HOST AIS_ADDR AIS_DOMAIN
-export AIS_MODLOADAFS AIS_ATHENAVERS AIS_SYSTEM AIS_MACHINE AIS_LOGFILE
-
-disk=/dev/dsk/dks${AIS_BUS}d${AIS_DEV}
-rdisk=/dev/rdsk/dks${AIS_BUS}d${AIS_DEV}
-basedev="scsi(${AIS_BUS})disk(${AIS_DEV})rdisk(0)"
-disk_vh=${rdisk}vh
-
-if [ ${AIS_CPUBOARD} = "IP32" ]; then
-    basedev="pci(0)${basedev}"
-fi
-
-imagename()
-{
-    board=$1
-    cpu=$2
-    graphics=$3
-
-    case ${board} in
-	IP22)
-	    bootimage="athena-sgi62-"
-	    ;;
-	IP32)
-	    bootimage="athena-sgi63-"
-	    ;;
-	*)
-	    echo "Unrecognized board type: ${board}"
-	    ;;
-    esac
-    AIS_BOARD="CPUBOARD=${board}"
-
-    case ${cpu} in
-	R4400)
-	    hdwr="44"
-	    AIS_ARCH="CPUARCH=R4000"
-	    ;;
-	R4600)
-	    hdwr="46"
-	    AIS_ARCH="CPUARCH=R4000"
-	    ;;
-	R5000)
-	    hdwr="50"
-	    AIS_ARCH="CPUARCH=R5000"
-	    ;;
-	*)
-	    echo "Unrecognized CPU type: ${cpu}"
-	    exit 1
-	    ;;
-    esac
-
-    case ${graphics} in
-	GR3-XZ)
-	    hdwr="${hdwr}xz"
-	    AIS_GFXB="GFXBOARD=EXPRESS"
-	    AIS_SUBG="SUBGR=EXPRESS"
-	    ;;
-	Indy)
-	    hdwr="${hdwr}xl"
-	    if [ ${cpu} = "R5000" ]; then
-		AIS_GFXB="GFXBOARD=NEWPORT"
-		AIS_SUBG="SUBGR=NEWTON"
-	    else
-		AIS_GFXB="GFXBOARD=NEWPORT"
-		AIS_SUBG="SUBGR=NG1"
-	    fi
-	    ;;
-	CRM)
-	    hdwr="${hdwr}cr"
-	    AIS_GFXB="GFXBOARD=CRIME"
-	    AIS_SUBG="SUBGR=CRM"
-	    ;;
-	*)
-	    echo "Unrecognized graphics subsystem: ${graphics}"
-	    exit 1
-	    ;;
-    esac
-
-    bootimage="${bootimage}${hdwr}"
-    export AIS_BOARD AIS_ARCH AIS_GFXB AIS_SUBG
-}
 # Do special preparation for the kernel build.
 
 sys=var/sysgen
@@ -247,8 +12,10 @@ case ${AIS_MODE} in
     root|swap)
 	# We want the kernel to mount the target disk rather than the disk
 	# we're currently using, which is compiled in. For a swap partition
-	# boot, we specify /dev/null for the dump and swap devices, and hard
-	# link /dev/swap,dump to /dev/null as well. I don't know if this is
+	# boot, we specify /dev/null for the root, swap, and dump devices,
+	# and hard link /dev/swap,dump to /dev/null as well.  When booting
+	# from the swap partition, the root device will get set via the
+	# OSLoadPartition nvram variable.  I don't know if this is
 	# legit, but it works.
 	# Information on these paramenters is available from system(4).
 
@@ -259,7 +26,7 @@ case ${AIS_MODE} in
 	    sed -e "s-SWAPDEV: .*-SWAPDEV: ${disk}s1 0 0-g" | \
 	    sed -e "s-DUMPDEV: .*-DUMPDEV: ${disk}s1-g" > ${DCONFIG}
 	else
-	    sed -e "s-ROOTDEV: .*-ROOTDEV: ${disk}s1-g" ${DCONFIG}.plain | \
+	    sed -e "s-ROOTDEV: .*-ROOTDEV: /dev/null-g" ${DCONFIG}.plain | \
 	    sed -e "s-SWAPDEV: .*-SWAPDEV: /dev/null 0 0-g" | \
 	    sed -e "s-DUMPDEV: .*-DUMPDEV: /dev/null-g" > ${DCONFIG}
 	fi
@@ -296,7 +63,15 @@ case ${AIS_MODE} in
 	cp ${AIS_LIB}/ramdrive/ramdrive.sm ${AIS_ROOT}/${sys}/system.dl
 	cp ${AIS_LIB}/ramdrive/ramdrive.c /tmp
 	cp ${AIS_LIB}/ramdrive/ramdrive.h /tmp
-	(cd /tmp; cc -c ramdrive.c -D_K32U32 -D_KERNEL -DSTATIC=static -D_PAGESZ=4096 -D_MIPS32 -DIP22 -DR4000 -G 0 -non_shared -elf -xansi -fullwarn -32 -mips2 -Wc,-pic0)
+	case "${AIS_OSVERSION}" in
+	    6.[23])
+		ramdrive_cc_extra="-32 -mips2 -Wc,-pic0"
+		;;
+	    *)
+		ramdrive_cc_extra="-n32 -mips3"
+		;;
+	esac
+	(cd /tmp; cc -c ramdrive.c -DAIS_OPSSYS=${AIS_OPSSYS} -D_K32U32 -D_KERNEL -DSTATIC=static -D_PAGESZ=4096 -D_MIPS32 -DIP22 -DR4000 -G 0 -non_shared -elf -xansi -fullwarn ${ramdrive_cc_extra})
 	cp /tmp/ramdrive.o ${AIS_ROOT}/${sys}/boot
 	;;
 
@@ -310,9 +85,20 @@ case ${AIS_MODE} in
 	;;
 esac
 
-TOOLROOT=${AIS_ROOT}/${sys}/root; export TOOLROOT
-${AIS_ROOT}/usr/sbin/lboot -r ${AIS_ROOT} -u ${AIS_ROOT}/unix -s $configdir \
-    -w ${AIS_ROOT}/${sys}
+case ${AIS_MODE} in
+    root)
+	# chroot into the target root to build the kernel.
+	# This obviates the need to have /var/sysgen/root/usr/bin/cc, etc.
+	# in the miniroot.
+	chroot ${AIS_ROOT} /usr/sbin/lboot -u /unix
+	;;
+
+    *)
+	TOOLROOT=${AIS_ROOT}/${sys}/root; export TOOLROOT
+	${AIS_ROOT}/usr/sbin/lboot -r ${AIS_ROOT} -u ${AIS_ROOT}/unix \
+	    -s $configdir -w ${AIS_ROOT}/${sys}
+	;;
+esac
 
 case ${AIS_MODE} in
     root|swap)
