@@ -1,4 +1,4 @@
-# $Id: packages,v 1.234 2003-04-30 21:38:07 ghudson Exp $
+# $Id: packages,v 1.235 2003-05-01 00:39:18 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -160,7 +160,7 @@ third/file-roller		except linux requires gettext,intltool,glib2,gtk2,libgnome,li
 third/findutils			on solaris
 third/freetype			except linux
 third/gail			except linux requires atk,gtk2,libgnomecanvas
-third/gal			requires gnome-vfs,libglade
+third/gal			requires gnome-vfs,libglade,gdk-pixbuf
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
 third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
 third/gconf-editor		except linux requires gettext,intltool,GConf2,gtk2
