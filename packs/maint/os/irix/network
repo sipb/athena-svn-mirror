@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.2 $
+# $Revision: 1.3 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -166,6 +166,7 @@ CAP_PORT_MNT="$CSU CAP_PRIV_PORT,CAP_MOUNT_MGT+ip -c"
 CAP_MREAD_MNT="$CSU CAP_MAC_READ,CAP_MOUNT_MGT+ip -c"
 CAP_DEMON="$CSU CAP_NETWORK_MGT,CAP_PRIV_PORT+ip -c"
 CAP_INFO="$CSU CAP_SYSINFO_MGT+ip -c"
+CAP_DEVNET="$CSU CAP_DEVICE_MGT,CAP_NETWORK_MGT+ip -c"
 
 
 nfs_on () {
@@ -189,7 +190,7 @@ configure () {
 	    if /usr/etc/smtconfig $1 $2 $4 $CONF_OPT 2> /dev/null
 	    then :
 	    else
-		$CAP_NET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
+		$CAP_DEVNET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
 	    fi
 	    ;;
 	mtr*)
@@ -200,15 +201,23 @@ configure () {
 	    fi
 	    # load the firmware to the driver
 	    /usr/etc/mtrconfig $1 $topt 2> /dev/null
-	    $CAP_NET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2 > /dev/null
+	    $CAP_DEVNET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
 	    ;;
 	eg*)
 	    $ECHO "Downloading firmware for $1"
 	    /usr/etc/egconfig `cat $CONFIG/$1.options 2> /dev/null` $1
-	    $CAP_NET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2 > /dev/null
+	    $CAP_DEVNET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
 	    ;;
+        gsn*)
+	      # Initialize the GSN interface. 
+	      # Needs to be done before ifconfig of IP addr.
+	      if test -s /etc/init.d/network.gsn1; then
+                  /etc/init.d/network.gsn1 start
+	      fi
+	      $CAP_DEVNET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
+	      ;;
 	*)
-	    $CAP_NET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
+	    $CAP_DEVNET "$IFCONFIG $1 inet $2 $4 $CONF_OPT" 2> /dev/null
 	    ;;
     }
     if test $? -ne 0 ; then
@@ -219,28 +228,14 @@ configure () {
     return 0
 }
 
-configure_ipso () {
-# args:
-#	$1 - interface name
-#	$2 - iflabel options filename
-#	$3 - ifuid options filename
-
-    if [ "`sysconf IP_SECOPTS 2> /dev/null`" -eq 0 ]; then
-      return 0
-    fi
-
-    if test -f $2; then
-      if test -x /usr/etc/iflabel; then
-	$CAP_NET "/usr/etc/iflabel $1 "'`/sbin/cat '"$2"'`'
-      fi
-    fi
-    if test -f $3; then
-      if test -x /usr/etc/ifuid; then
-	/usr/etc/ifuid $1 `/sbin/cat $3`
-      fi
-    fi
-    return 0
+# print a warning message when we try to configure the same interface twice
+config_conflict()
+{
+    echo "\nWARNING:  $1 has already been configured."
+    echo "Please read the notes in /etc/config/netif.options for "
+    echo "likely reasons for this and change your configuration\n"
 }
+
 
 DLMNTOPTS='-b /ns'
 if test "`/sbin/nvram diskless 2> /dev/null`" -eq 1; then
@@ -261,7 +256,7 @@ if_off () {
 #  args: $1 = interface name
     eval _ifname='$HAVE_'$1
     if test "$_ifname" = "$1" -a "$1" != "$DLIF"; then
-	$CAP_NET "$IFCONFIG $1 down" 2> /dev/null
+	$CAP_DEVNET "$IFCONFIG $1 down" 2> /dev/null
     fi
 }
 
@@ -413,10 +408,7 @@ case "$1" in
 		sleep $MSGTIME
 	    fi
 	fi
-	if configure $if1name $if1addr $CONFIG/ifconfig-1.options primary; then
-	    configure_ipso $if1name \
-		$CONFIG/iflabel-1.options $CONFIG/ifuid-1.options
-	else
+	if ! configure $if1name $if1addr $CONFIG/ifconfig-1.options primary; then
 	    reason="Cannot access primary interface, $if1name.\n"
 	    netstate="loopback"
 	fi
@@ -429,10 +421,10 @@ case "$1" in
 	sleep $MSGTIME
 
 	if test -n "$if1name"; then
-	    $CAP_NET "$IFCONFIG $if1name inet $if1addr" 2>/dev/null
-	    $CAP_NET "$IFCONFIG $if1name down" 2>/dev/null
+	    $CAP_DEVNET "$IFCONFIG $if1name inet $if1addr" 2>/dev/null
+	    $CAP_DEVNET "$IFCONFIG $if1name down" 2>/dev/null
 	fi
-	$CAP_NET "$IFCONFIG lo0 $localhost"
+	$CAP_DEVNET "$IFCONFIG lo0 $localhost"
 	$CAP_NET "$ROUTE -q add 224.0 $localhost -interface"
 
     else
@@ -440,15 +432,33 @@ case "$1" in
 	# (no harm if they are missing). Systems with more than 2 interfaces
 	# must update /etc/config/netif.options (see comments in the file).
 	num=2
+
 	while test $num -le $if_num; do
 	    eval _ifname='$'if${num}name _ifaddr='$'if${num}addr
 	    if test -n "$_ifname"; then
 		eval _ifhave='$'HAVE_$_ifname
 		if test -n "$_ifhave"; then
+		    # before configuring, check that there is no name
+		    # conflict with a default value chosen automatically above.
+		    # we just check the first three interfaces, since these
+		    # can have their if?addr and if?name values set above.
+		    cc_num=1
+		    cc_lim=$num
+		    if test $cc_lim -gt 4 ; then
+			cc_lim=4
+		    fi
+		    while test $cc_num -lt $cc_lim; do
+			eval _ifname_cc='$'if${cc_num}name
+			eval _ifaddr_cc='$'if${cc_num}addr
+			if [ "$_ifname" = "$_ifname_cc" ] ; then
+			    config_conflict $_ifname
+			fi
+			if [ "$_ifaddr" = "$_ifaddr_cc" ] ; then
+			    config_conflict $_ifaddr
+			fi
+			cc_num=`expr $cc_num + 1`
+		    done
 		    configure $_ifname $_ifaddr $CONFIG/ifconfig-$num.options
-		    configure_ipso $_ifname \
-			$CONFIG/iflabel-${num}.options \
-			$CONFIG/ifuid-${num}.options
 		fi
 	    fi
 	    num=`expr $num + 1`
@@ -458,8 +468,6 @@ case "$1" in
 	# Initialize the HyperNET interface.
 	if $IS_ON hypernet && test -n "$HAVE_hy0"  &&
 		configure hy0 $HOSTNAME-hy $CONFIG/ifconfig-hy.options; then
-	    configure_ipso hy0 \
-		$CONFIG/iflabel-hy.options $CONFIG/ifuid-hy.options
 	    /usr/etc/hyroute hy0 -s /usr/etc/hyroute.conf
 	fi
 
@@ -484,10 +492,7 @@ case "$1" in
 	fi
 
 	# Initialize the loop-back interface
-	$CAP_NET "$IFCONFIG lo0 $localhost"
-	configure_ipso lo0 \
-		$CONFIG/iflabel-lo0.options \
-		$CONFIG/ifuid-lo0.options
+	$CAP_DEVNET "$IFCONFIG lo0 $localhost"
     fi
 
     # Send traffic for this host through lo0 for better performance
@@ -495,7 +500,7 @@ case "$1" in
 
     # make 255.255.255.255 do something by pointing out the primary interface
     if test "$if1name"; then
-	BCAST=`$CAP_NET "$IFCONFIG $if1name"	    \
+	BCAST=`$CAP_DEVNET "$IFCONFIG $if1name"	    \
 		| sed -n -e 's/.*broadcast \([0-9.]*\).*/\1/p' 2>/dev/null`
 	if test "$BCAST"; then
 	    $CAP_NET "$ROUTE -qn add 255.255.255.255 $BCAST"
@@ -651,6 +656,11 @@ case "$1" in
 	exit
     fi
 
+    # Load the GSN static HARP mapping table. Needs to be done after named is launched.
+    if test -s /etc/init.d/network.gsn2; then
+        . /etc/init.d/network.gsn2
+    fi
+
     # Fire up AFS if configured - this needs to occur after networking
     # is enabled but before nfsd's are run
     if test -x /etc/init.d/afs ; then
@@ -686,7 +696,7 @@ case "$1" in
 		# Absence of nfsd.options file means run default
 		# number of daemons, so use string compare here.
 		if test "$NNFSD" != "0"; then
-		    $CAP_DEMON "$NFS/nfsd ${NNFSD:=4}";
+		    $CAP_DEMON "$NFS/nfsd $NNFSD";
 				    $ECHO " nfsd\c"
 		fi
             fi
@@ -786,7 +796,7 @@ case "$1" in
 
 	if $IS_ON timed && test $netstate = "ok" -a -x /usr/etc/timed ; then
 	    TIMED_OPTS="`cat $CONFIG/timed.options 2> /dev/null`"
-	    $CSU CAP_TIME_MGT,CAP_PRIV_PORT,CAP_SCHED_MGT+ip -M userlow -c "/usr/etc/timed -M $TIMED_OPTS" &
+	    $CSU CAP_TIME_MGT,CAP_PRIV_PORT,CAP_NETWORK_MGT,CAP_SCHED_MGT+ip -M userlow -c "/usr/etc/timed -M $TIMED_OPTS" &
 						$ECHO " timed\c"
 	fi
 	if $IS_ON timeslave && test -x /usr/etc/timeslave ; then
@@ -907,6 +917,14 @@ case "$1" in
     # Shutdown HIPPI interface
     if test -s /etc/init.d/network.hippi; then
 	. /etc/init.d/network.hippi
+    fi
+
+    # Shutdown GSN interface
+    if test -s /etc/init.d/network.gsn2; then
+    	# Unload GSN HARP table entries
+	. /etc/init.d/network.gsn2
+	# Shutdown GSN interface
+	. /etc/init.d/network.gsn1
     fi
 
     # Shutdown ATM TCP/IP software.
