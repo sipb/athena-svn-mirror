@@ -1,14 +1,16 @@
 /*
- * $Id: main.c,v 1.33 1998-03-17 03:55:11 cfields Exp $
+ * $Id: main.c,v 1.34 1998-04-08 22:05:20 cfields Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.33 1998-03-17 03:55:11 cfields Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.34 1998-04-08 22:05:20 cfields Exp $";
 
 #include "attach.h"
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
+#include <athdir.h>
 
 int verbose = 1, debug_flag = 0, map_anyway = 1, do_nfsid = 1;
 int print_path = 0, explicit = 0, owner_check = 0, override = 0;
@@ -134,8 +136,9 @@ main(argc, argv)
     fsck_fn = strdup(FSCK_FULLNAME);
 
     /*
-     * User can explicitly specify attach, detach, or nfsid by using the
-     * -P option as the first command option.
+     * User can explicitly specify attach, detach, nfsid, fsid, zinit,
+     * add, or attachandrun by using the -P option as the first command
+     * option.
      */
     
     if (argv[1] && !strncmp(argv[1], "-P", 2)) {
@@ -149,7 +152,7 @@ main(argc, argv)
 			    argc -= 2;
 		    } else {
 			    fprintf(stderr,
-				    "Must specify attach, detach nfsid, fsid, zinit, or add!\n");
+				    "Must specify attach, detach, nfsid, fsid, zinit, add, or attachandrun!\n");
 			    exit(ERR_BADARGS);
 		    } 
 	    } 
@@ -176,8 +179,10 @@ main(argc, argv)
 #endif
     if (!strcmp(progname, ADD_CMD))
 	exit(addcmd(argc, argv));
+    if (!strcmp(progname, RUN_CMD))
+	exit(attachandruncmd(argc, argv));
 
-    fprintf(stderr, "Not invoked with attach, detach, nfsid, fsid, zinit, or add!\n");
+    fprintf(stderr, "Not invoked with attach, detach, nfsid, fsid, zinit, add, or attachandrun!\n");
     exit(ERR_BADARGS);
 }
 
@@ -947,3 +952,66 @@ zinitcmd(argc, argv)
 	return((zephyr_sub(1) == FAILURE) ? error_status : 0);
 }
 #endif /* ZEPHYR */
+
+attachandruncmd(argc, argv)
+    int argc;
+    char **argv;
+{
+    string_list *mountpoint_list = NULL;
+    char *attach_argv[4], **mountpoint, **found, *path;
+    int status;
+
+    if (argc < 4) {
+        fprintf(stderr,
+	      "Usage: attachandrun locker program argv0 [argv1...]\n");
+	return(ERR_BADARGS);
+    }
+
+    attach_argv[0] = argv[0];
+    attach_argv[1] = "-q";
+    attach_argv[2] = argv[1];
+    attach_argv[3] = NULL;
+    status = attachcmd(sizeof(attach_argv) / sizeof(char *) - 1,
+		       attach_argv, &mountpoint_list);
+
+    mountpoint = sl_grab_string_array(mountpoint_list);
+    if (mountpoint != NULL && *mountpoint != NULL) {
+        found = athdir_get_paths(*mountpoint, "bin",
+				 NULL, NULL, NULL, NULL, 0);
+	if (found != NULL) {
+	    path = malloc(strlen(*found) + 1 + strlen(argv[2]) + 1);
+	    if (path == NULL) {
+	        fprintf(stderr, "%s: Can't malloc while preparing for exec\n",
+			progname);
+		return(ERR_FATAL);
+	    }
+
+	    strcpy(path, *found);
+	    strcat(path, "/");
+	    strcat(path, argv[2]);
+
+	    if (setuid(getuid())) {
+	        fprintf(stderr, "%s: setuid call failed: %s\n", progname,
+			strerror(errno));
+		return(ERR_FATAL);
+	    }
+
+	    execv(path, argv + 3);
+
+	    fprintf(stderr, "%s: failure to exec %s: %s\n", progname,
+		    argv[2], strerror(errno));
+	    free(path);
+	    sl_free(&mountpoint_list);
+	    athdir_free_paths(found);
+	    return(ERR_FATAL);
+	} else {
+	    fprintf(stderr, "%s: couldn't find a binary directory in %s\n",
+		    progname, *mountpoint);
+	    sl_free(&mountpoint_list);
+	    return(ERR_FATAL);
+	}
+    } else {
+        /* Assume attach code must have already given an error. */
+        return(status);
+    }
+}
