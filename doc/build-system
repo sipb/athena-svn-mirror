@@ -27,8 +27,8 @@ packs/build/packages.
 After attaching the correct locker, you can build a package by doing:
 
 	set src = /mit/source		# or /mit/source-8.1, etc.
-	mkdir /var/tmp/PACKAGE-NAME
-	cd /var/tmp/PACKAGE-NAME
+	mkdir /tmp/PACKAGE-NAME
+	cd /tmp/PACKAGE-NAME
 	synctree -s $src/PATH-TO-PACKAGE -d . -a $src/.rconf
 	sh $src/packs/build/do.sh dist
 	sh $src/packs/build/do.sh prepare
@@ -74,10 +74,10 @@ To build the entire tree by hand, attach an appropriate source locker
 and do something like the following:
 
 	set src = /mit/source
-	mkdir /var/tmp/build
-	cd /var/tmp/build
+	mkdir /tmp/build
+	cd /tmp/build
 	synctree -s $src -d .
-	sh $src/packs/build/build.sh -b `pwd` -d /var/tmp/inst
+	sh $src/packs/build/build.sh -b `pwd` -d /tmp/inst
 
 "build" accepts the following options:
 
@@ -112,8 +112,8 @@ for the first time, you have to do a little work beforehand:
 
 	* Make a temporary directory to put binaries in:
 
-		mkdir /var/tmp/bin
-		set path = ($path /var/tmp/bin)
+		mkdir /tmp/bin
+		set path = ($path /tmp/bin)
 
 	* You need a functioning synctree.  The sources are in
 	  athena/etc/synctree; because they are not world-readable,
@@ -125,18 +125,18 @@ for the first time, you have to do a little work beforehand:
 		set src = /afs/dev.mit.edu/source/src-current
 		./configure
 		make
-		cp synctree /var/tmp/bin
+		cp synctree /tmp/bin
 		rehash
 
 	* You need a functioning kinit.  In the worst case, you may
 	  need to do a partial build of third/krb5.
 
-		cd /var/tmp; mkdir krb5; cd krb5
+		cd /tmp; mkdir krb5; cd krb5
 		synctree -s $src/third/krb5 -d . -a $src/.rconf
 		make -f Makefile.athena prepare
 		make -f Makefile.athena all
 
-		cp src/clients/kinit/kinit /var/tmp/bin
+		cp src/clients/kinit/kinit /tmp/bin
 		cp $src/packs/config/krb5.conf /etc
 		mkdir /etc/athena
 		cp $src/packs/config/krb.conf /etc/athena
@@ -144,11 +144,11 @@ for the first time, you have to do a little work beforehand:
 
 	* For Solaris, you need a functioning aklog.
 
-		cd /var/tmp; mkdir aklog; cd aklog
+		cd /tmp; mkdir aklog; cd aklog
 		synctree -s $src/athena/bin/aklog -d . -a $src/.rconf
 		./configure --with-afs=/usr/afsws # or wherever
 		make
-		cp aklog /var/tmp/bin
+		cp aklog /tmp/bin
 
 	* For a few packages (third/perl and some things under packs),
 	  /os must point to an image of the operating system.  A
