@@ -72,6 +72,8 @@
 #include "auth.h"
 #include "misc.h"
 
+#include <al.h>
+
 extern auth_debug_mode;
 
 static unsigned char str_data[1024] = { IAC, SB, TELOPT_AUTHENTICATION, 0,
@@ -95,6 +97,7 @@ static Block	session_key	= { 0 };
 static Schedule sched;
 static Block	challenge	= { 0 };
 #endif	/* ENCRYPTION */
+static int krb4_accepted = 0;
 
 	static int
 Data(ap, type, d, c)
@@ -291,11 +294,42 @@ kerberos4_is(ap, data, cnt)
 #endif	/* ENCRYPTION */
 		krb_kntoln(&adat, name);
 
-		if (UserNameRequested && !kuserok(&adat, UserNameRequested))
-			Data(ap, KRB_ACCEPT, (void *)0, 0);
-		else
+		krb4_accepted = 0;
+		if (UserNameRequested) {
+			int status, *warnings;
+			char *errmem;
+
+			status = al_acct_create(UserNameRequested, NULL,
+						  getpid(), 0, 0, &warnings);
+			if (status != AL_SUCCESS) {
+				if (status == AL_WARNINGS) {
+					int i;
+					for (i = 0; warnings[i]; i++) {
+						printf("Warning: %s\r\n",
+						       al_strerror(warnings[i],
+								   &errmem));
+						al_free_errmem(errmem);
+					}
+					free(warnings);
+				} else {
+					printf("%s\r\n",
+					       al_strerror(status, &errmem));
+					al_free_errmem(errmem);
+				}
+			}
+
+			if (!kuserok(&adat, UserNameRequested)) {
+				Data(ap, KRB_ACCEPT, (void *)0, 0);
+				krb4_accepted = 1;
+			} else
+				Data(ap, KRB_REJECT,
+				     (void *)"user is not authorized", -1);
+
+			al_acct_revert(UserNameRequested, getpid());
+		} else
 			Data(ap, KRB_REJECT,
-				(void *)"user is not authorized", -1);
+			     (void *)"user is not authorized", -1);
+		
 		auth_finished(ap, AUTH_USER);
 		break;
 
@@ -432,7 +466,7 @@ kerberos4_status(ap, name, level)
 	if (level < AUTH_USER)
 		return(level);
 
-	if (UserNameRequested && !kuserok(&adat, UserNameRequested)) {
+	if (krb4_accepted) {
 		strcpy(name, UserNameRequested);
 		return(AUTH_VALID);
 	} else

@@ -66,6 +66,7 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <syslog.h>
+#include <signal.h>
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -81,6 +82,11 @@ extern char *malloc();
 #include "encrypt.h"
 #include "auth.h"
 #include "misc.h"
+
+#include <al.h>
+int k5_haveauth = 0;
+void try_afscall(int (*func)(void));
+int setpag(), ktc_ForgetAllTokens();
 
 extern auth_debug_mode;
 extern int net;
@@ -673,13 +679,46 @@ kerberos5_status(ap, name, level)
 	char *name;
 	int level;
 {
+	int ok = 0;
+
 	if (level < AUTH_USER)
 		return(level);
 
-	if (UserNameRequested &&
-	    krb5_kuserok(telnet_context, ticket->enc_part2->client, 
-			 UserNameRequested))
-	{
+	if (UserNameRequested) {
+		int status, *warnings;
+		char *errmem;
+
+		if (k5_haveauth)
+		    try_afscall(setpag);
+		status = al_acct_create(UserNameRequested, NULL, getpid(),
+					  k5_haveauth, 0, &warnings);
+		if (status != AL_SUCCESS) {
+			if (status == AL_WARNINGS) {
+				int i;
+				for (i = 0; warnings[i]; i++) {
+					printf("Warning: %s\r\n",
+					       al_strerror(warnings[i],
+							   &errmem));
+					al_free_errmem(errmem);
+				}
+				free(warnings);
+			} else {
+				printf("%s\r\n", al_strerror(status, &errmem));
+				al_free_errmem(errmem);
+			}
+		}
+
+		ok = krb5_kuserok(telnet_context, ticket->enc_part2->client, 
+				  UserNameRequested);
+
+		al_acct_revert(UserNameRequested, getpid());
+		if (k5_haveauth) {
+		    try_afscall(ktc_ForgetAllTokens);
+		    dest_tkt();
+		}
+	}
+
+	if (ok) {
 		strcpy(name, UserNameRequested);
 		return(AUTH_VALID);
 	} else
@@ -830,4 +869,15 @@ cleanup:
 }
 #endif	/* FORWARD */
 
+void try_afscall(int (*func)(void))
+{
+    struct sigaction sa, osa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGSYS, &sa, &osa);
+    func();
+    sigaction(SIGSYS, &osa, NULL);
+}
 #endif /* KRB5 */
