@@ -2277,8 +2277,8 @@ void dolastlog(quiet, tty)
 }
 
 #undef	UNKNOWN
-#ifdef __hpux
-#define UNKNOWN 0
+#if defined(__hpux) || defined(sgi)
+#define UNKNOWN ""
 #else
 #define	UNKNOWN	"su"
 #endif
