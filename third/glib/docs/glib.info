@@ -1,4 +1,4 @@
-This is glib.info, produced by makeinfo version 3.12s from glib.texi.
+This is glib.info, produced by makeinfo version 4.0 from glib.texi.
 
    This file documents GLIB, A library of useful routines for C
 programming
@@ -486,26 +486,26 @@ Concept Index
 
 
 Tag Table:
-Node: Top1013
-Node: Copying2205
-Node: Overview2296
-Node: Doubly linked lists2413
-Node: Signly linked lists3621
-Node: List allocators4833
-Node: Hash tables5294
-Node: Caches6117
-Node: Trees6918
-Node: Memory7631
-Node: Timers8799
-Node: Output9251
-Node: Utilities9580
-Node: Errors9694
-Node: String Chunks9809
-Node: Strings9920
-Node: Resizable arrays10045
-Node: GScanner10167
-Node: Miscellany10308
-Node: Function Index10421
-Node: Concept Index15119
+Node: Top1011
+Node: Copying2203
+Node: Overview2294
+Node: Doubly linked lists2411
+Node: Signly linked lists3619
+Node: List allocators4831
+Node: Hash tables5292
+Node: Caches6115
+Node: Trees6916
+Node: Memory7629
+Node: Timers8797
+Node: Output9249
+Node: Utilities9578
+Node: Errors9692
+Node: String Chunks9807
+Node: Strings9918
+Node: Resizable arrays10043
+Node: GScanner10165
+Node: Miscellany10306
+Node: Function Index10419
+Node: Concept Index15117
 
 End Tag Table
