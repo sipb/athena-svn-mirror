@@ -13,12 +13,7 @@ SUN*)
 
 	# /kernel/sys/semsys has been updated by the Oracle patch.
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
-
-	# Copy in new /var/sadm, since we applied patches.  We should
-	# have a better way of dealing with this.
-	rm -rf /var/sadm
-	mkdir /var/sadm
-	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
+	echo "NEWSADM=true"			>> ${CONFVARS}
 
 	# Fix gettime entry in root crontab.
 	cronentry='45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB > /dev/null'
