@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.9 1997-12-31 19:47:53 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.10 1998-05-07 23:58:31 ghudson Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -175,7 +175,9 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     default:			/* got line */
-      /* Make sure it's a list of numbers each followed by a colon. */
+      /* Make sure it's a list of zero or more numbers each followed by
+       * a colon.
+       */
       ptr1 = buf;
       record->ngroups = 0;
       while (*ptr1)
@@ -208,7 +210,8 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     default:			/* got line */
-      /* Make sure it's a list of numbers each followed by a colon. */
+      /* Make sure it's a list of zero or more numbers each followed by
+       * a colon. */
       ptr1 = buf;
       record->npids = 0;
       while (*ptr1)
