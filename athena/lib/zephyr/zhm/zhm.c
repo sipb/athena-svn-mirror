@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.32 1988-06-23 14:39:13 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.33 1988-06-25 17:15:48 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -409,6 +409,8 @@ int set_sig_type(sig)
      return(0);
 }
 
+static char version[BUFSIZ] = "";
+
 send_stats(notice, sin)
      ZNotice_t *notice;
      struct sockaddr_in *sin;
@@ -418,7 +420,6 @@ send_stats(notice, sin)
      char *bfr;
      char *list[20];
      int len, i, nitems = 10;
-     char version[BUFSIZ];
 
      newnotice = *notice;
      
@@ -455,8 +456,9 @@ send_stats(notice, sin)
      /* Since ZFormatRaw* won't change the version number on notices,
 	we need to set the version number explicitly.  This code is taken
 	from Zinternal.c, function Z_FormatHeader */
-     (void) sprintf(version, "%s%d.%d", ZVERSIONHDR, ZVERSIONMAJOR,
-		    ZVERSIONMINOR);
+     if (!*version)
+	     (void) sprintf(version, "%s%d.%d", ZVERSIONHDR, ZVERSIONMAJOR,
+			    ZVERSIONMINOR);
      newnotice.z_version = version;
 
      if ((ret = ZFormatRawNoticeList(&newnotice, list, nitems, &bfr,
