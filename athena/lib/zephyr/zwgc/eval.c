@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/eval.c,v $
- *      $Author: jtkohl $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_eval_c[] = "$Id: eval.c,v 1.3 1989-11-15 16:34:55 jtkohl Exp $";
+static char rcsid_eval_c[] = "$Id: eval.c,v 1.4 1992-06-20 04:03:14 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -160,7 +160,7 @@ string eval_expr(expr)
 	    break;
 
 	  case VERBATIM_OPCODE:
-	    return(verbatim(first));
+	    return(verbatim(first,0));
 
 	  case GETENV_OPCODE:
 	    result = getenv(first);
