@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.1 1987-07-01 04:28:38 jtkohl Exp $";
+static char rcsid_uloc_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.2 1987-07-02 19:04:59 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -154,8 +154,6 @@ login_type visible;
 struct sockaddr_in *who;
 {
 	ZLocation_t *loc;
-	register char *cp;
-	char *base;
 
 	if ((loc = ulogin_find(notice, 1)) != NULLZLT) {
 		zdbug1("ul_add: already here");
@@ -262,7 +260,7 @@ struct sockaddr_in *who;
 #define	ADVANCE(xx)	{ cp += (strlen(cp) + 1); \
 		if (cp >= base + notice->z_message_len) { \
 			syslog(LOG_ERR, "zloc bad format %d", xx); \
-			return; \
+			return(1); \
 		} }
 
 static int
@@ -376,7 +374,7 @@ void
 uloc_hflush(addr)
 struct in_addr *addr;
 {
-	ZLocation_t *loc, *loc2;
+	ZLocation_t *loc;
 	register int i = 0, new_num = 0;
 
 	/* slightly inefficient, assume the worst, and allocate enough space */
