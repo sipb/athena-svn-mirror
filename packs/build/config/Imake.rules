@@ -36,7 +36,7 @@ all::	prog								@@\
 prog::	objs								@@\
 	$(LD) $(LDFLAGS) ldflags -o prog objs libs $(LDLIBS)		@@\
 clean::									@@\
-	rm -f prog							@@\
+	$(RM) prog							@@\
 
 #define install_program(prog,instflags,dest)				@@\
 install::								@@\
@@ -56,7 +56,7 @@ install_program(prog,,dest)
 
 #define SpecialObject(obj,depends,options)				@@\
 obj: depends								@@\
-	rm -f $@							@@\
+	$(RM) $@							@@\
 	$(CC) -c $(CFLAGS) options $*.c
 
 #define install_man(src,name)						@@\
@@ -68,11 +68,11 @@ install::								@@\
 
 #define install_man_links(name,links)					@@\
 name.so:								@@\
-	rm -f name.so							@@\
+	$(RM) name.so							@@\
 	sdir=man`expr name \: '.*\.\(.\)'`; \				@@\
 	echo ".so $${sdir}/name" > name.so				@@\
 clean::									@@\
-	rm -f name.so							@@\
+	$(RM) name.so							@@\
 install:: name.so							@@\
 	for i in links; do \						@@\
 		sdir=$(DESTDIR)/usr/man/man`expr $$i \: '.*\.\(.\)'`;\	@@\
@@ -81,7 +81,7 @@ install:: name.so							@@\
 
 #define ProfiledObjectRule()						@@\
 .c.o:									@@\
-	rm -f $@ profiled/$@						@@\
+	$(RM) $@ profiled/$@						@@\
 	$(CC) -pg -c $(CFLAGS) $*.c					@@\
 	mv $*.o profiled/$*.o						@@\
 	$(CC) -c $(CFLAGS) $*.c						@@\
@@ -108,11 +108,11 @@ lib/**/base/**/_p.a:	objs						@@\
 #define SimpleLibrary(base,objs,dir)					@@\
 build_library(base,objs)						@@\
 install::								@@\
-	rm -f $(DESTDIR)dir/lib/**/base.a				@@\
+	$(RM) $(DESTDIR)dir/lib/**/base.a				@@\
 	$(INSTALL) -m 0644 lib/**/base.a $(DESTDIR)dir			@@\
 	$(RANLIB) $(DESTDIR)dir/lib/**/base.a				@@\
 install_profiled::							@@\
-	rm -f $(DESTDIR)dir/lib/**/base/**/_p.a				@@\
+	$(RM) $(DESTDIR)dir/lib/**/base/**/_p.a				@@\
 	$(INSTALL) -m 0644 lib/**/base/**/_p.a $(DESTDIR)dir		@@\
 	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a
 
@@ -123,13 +123,13 @@ llib-l/**/base.ln:: srcs						@@\
 install::								@@\
 	$(INSTALL) llib-l/**/base.ln $(DESTDIR)/usr/lib/lint/		@@\
 clean::									@@\
-	rm -f llib-l/**/base.ln
+	$(RM) llib-l/**/base.ln
 
 #define makefile_target()						@@\
 Makefile:: $(ICONFIGFILE)						@@\
 	-@if [ -f Makefile ]; then \                                    @@\
-        	echo "  rm -f Makefile.bak; mv Makefile Makefile.bak"; \ @@\
-		rm -f Makefile.bak; mv Makefile Makefile.bak; \		@@\
+        	echo "  $(RM) Makefile.bak; mv Makefile Makefile.bak"; \ @@\
+		$(RM) Makefile.bak; mv Makefile Makefile.bak; \		@@\
         else exit 0; fi                                                 @@\
 	$(IMAKE) $(IFLAGS) -DNEWTOP=$(TOP)
 

@@ -34,10 +34,10 @@ install_man(attachtab.5,attachtab.5)
 install_man(zinit.8,zinit.8)
 
 install::
-	rm -f $(DESTDIR)$(BINDIR)/detach
-	rm -f $(DESTDIR)$(BINDIR)/fsid
-	rm -f $(DESTDIR)$(BINDIR)/nfsid
-	rm -f $(DESTDIR)/etc/athena/zinit
+	$(RM) $(DESTDIR)$(BINDIR)/detach
+	$(RM) $(DESTDIR)$(BINDIR)/fsid
+	$(RM) $(DESTDIR)$(BINDIR)/nfsid
+	$(RM) $(DESTDIR)/etc/athena/zinit
 	ln -s attach $(DESTDIR)$(BINDIR)/detach
 	ln -s attach $(DESTDIR)$(BINDIR)/fsid
 	ln -s attach $(DESTDIR)$(BINDIR)/nfsid
