@@ -74,7 +74,7 @@ default_texsizes = 300:600
 # install-bases' will try to install.  See `README' for a brief
 # description of each of these formats.
 bases = mf.base cmmf.base
-fmts = tex.fmt latex.fmt 
+fmts = tex.fmt latex.fmt slitex.fmt amstex.fmt amslatex.fmt
 # slitex.fmt etex.fmt amslatex.fmt amstex.fmt texinfo.fmt inrstex.fmt
 # picplus.fmt
 
