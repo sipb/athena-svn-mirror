@@ -1,6 +1,7 @@
 case $OS in
 solaris)
 	platform=gs5
+	platformlibs=-lresolv
 	;;
 irix)
 	platform=sg6
