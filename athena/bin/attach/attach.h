@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.20 1996-09-19 22:13:12 ghudson Exp $
+ * $Id: attach.h,v 1.21 1996-12-11 21:59:56 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -39,7 +39,6 @@
 #ifdef NeXT
 #include <nfs/nfs_mount.h>		/* Newer versions of NFS (?) */
 #endif /* NeXT */
-#include <rpcsvc/mount.h>
 #ifdef _AUX_SOURCE
 #include <nfs/mount.h>
 #endif

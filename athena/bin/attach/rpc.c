@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.13 1996-09-19 22:13:16 ghudson Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.14 1996-12-11 21:59:58 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -15,6 +15,7 @@ static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/b
 #include <rpc/rpcmount.h>
 #include <rpc/nfsmount.h>
 #endif
+#include <rpcsvc/mount.h>
 
 #if defined(SOLARIS)
 #include <limits.h>

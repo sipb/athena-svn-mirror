@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.10 1994-06-20 14:42:14 vrt Exp $
+ * $Id: unmount.c,v 1.11 1996-12-11 21:59:59 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.10 1994-06-20 14:42:14 vrt Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.11 1996-12-11 21:59:59 ghudson Exp $";
 
 #include "attach.h"
 
@@ -19,6 +19,7 @@ static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <rpc/nfsmount.h>
 #include <rpc/rpcmount.h>
 #endif
+#include <rpcsvc/mount.h>
 
 #ifdef _AIX
 #define unmount(x) umount(x)
@@ -319,24 +320,24 @@ xdr_fhandle(xdrs, fhp)
 #include <sys/stat.h>
 #include <string.h>
 
-int is_mountpoint (dirname)
-    char *dirname;
+int is_mountpoint (pathname)
+    char *pathname;
 {
     struct stat rootstat, pointstat;
     char *parent;
     int len;
 
-    parent = strdup (dirname);
+    parent = strdup (pathname);
     len = strlen (parent) - 1;
-    while (dirname[len] == '/') len--;
-    while (len > 0 && dirname[len] != '/') len--;
+    while (pathname[len] == '/') len--;
+    while (len > 0 && pathname[len] != '/') len--;
     len++;
     parent[len] = 0;
 
     if (stat (parent, &rootstat) < 0) {
       return (FALSE);
     }
-    if (stat (dirname, &pointstat) < 0) {
+    if (stat (pathname, &pointstat) < 0) {
       return (FALSE);
     }
     free (parent);
