@@ -10,18 +10,18 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v $
- *      $Author: cfields $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.10 1996-08-10 21:29:00 cfields Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.11 1996-09-20 02:13:23 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
 #include <Mu.h>
-#include <Wc/WcCreate.h>
+#include <X11/Wc/WcCreate.h>
 #include <stdio.h>
 #include "cref.h"
 #include <signal.h>
