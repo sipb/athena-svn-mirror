@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.14 1998-02-18 21:57:47 ghudson Exp $
+ * $Id: track.h,v 4.15 1998-02-25 22:25:09 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -119,9 +119,11 @@ typedef struct Tbl {
 	short shift;
 } Table;
 
+/* sortkey must be at the beginning of this structure because we compare
+ * them against each other using strcmp() in stamp.c:sort_entries(). */
 typedef struct entry {
-	int islink;
 	char sortkey[ LINELEN];
+	int islink;
 	int keylen;
 	char *fromfile;
 	char *tofile;
