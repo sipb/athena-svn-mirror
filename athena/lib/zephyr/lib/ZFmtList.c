@@ -4,17 +4,18 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v $
- *	$Author: jfc $
+ *	$Author: raeburn $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.9 1990-12-13 11:34:57 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.10 1991-03-15 11:09:27 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.9 1990-12-13 11:34:57 jfc Exp $";
-#endif lint
+static char rcsid_ZFormatNoticeList_c[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtList.c,v 1.10 1991-03-15 11:09:27 raeburn Exp $";
+#endif
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,7 +24,7 @@ static char rcsid_ZFormatNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repo
 Code_t ZFormatNoticeList(notice, list, nitems, buffer, ret_len, 
 			 cert_routine)
     ZNotice_t *notice;
-    char *list[];
+    char **list;
     int nitems;
     char **buffer;
     int *ret_len;
