@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.1.1.1 2003-02-13 00:14:48 zacheiss Exp $
+# $Id: Makefile.in,v 1.2 2003-02-14 23:16:05 zacheiss Exp $
 #
 # This is the Makefile for the AFS-Kerberos 5 Migration Kit.  See the
 # directions below for the meaning of each flag.
@@ -67,10 +67,10 @@ prefix=@prefix@
 INSTALL_BIN=$(prefix)/bin
 INSTALL_SBIN=$(prefix)/sbin
 
-PROGS=afs2k5db asetkey aklog fakeka ka-forwarder keyfile_dump
+PROGS= asetkey aklog ka-forwarder 
 CFLAGS=$(OPT) $(INCLUDE) $(DEFS)
 
-AKLOG_OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o $(LIBOBJS)
+AKLOG_OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o 
 
 all: $(PROGS)
 
@@ -90,10 +90,10 @@ k5dbsubs.o: k5dbsubs.c
 	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
 
 asetkey: asetkey.o
-	$(LD) -o $@ asetkey.o $(LIBS) $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)
+	$(LD) -o $@ asetkey.o  $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)$(LIBS)
 
-aklog: $(AKLOG_OBJS)
-	$(LD) -o aklog $(AKLOG_OBJS) $(LIBOBJS) $(KRB524LIB) $(LIBS) $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)
+aklog: $(AKLOG_OBJS)  $(LIBOBJS)
+	$(LD) -o aklog $(AKLOG_OBJS) $(LIBOBJS) $(KRB524LIB)  $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS) $(LIBS)
 
 fakeka: fakeka.o
 	$(LD) -o $@ fakeka.o $(LIBS) $(SYSLIBS) $(FAKEKA_LIBS) $(LDPATH_FLAGS)
@@ -112,4 +112,6 @@ keyfile_dump.o: keyfile_dump.c
 
 install: $(PROGS)
 	$(INSTALL) -s aklog $(DESTDIR)$(INSTALL_BIN)
-	$(INSTALL) -s afs2k5db asetkey fakeka ka-forwarder $(DESTDIR)$(INSTALL_SBIN)
+	$(INSTALL) -s  asetkey   $(DESTDIR)$(INSTALL_SBIN)
+
+

@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Id: krb_util.c,v 1.1.1.1 2003-02-13 00:14:34 zacheiss Exp $";
+"$Id: krb_util.c,v 1.2 2003-02-14 23:16:06 zacheiss Exp $";
 #endif /* lint */
 
 #include <kerberosIV/mit-copyright.h>
@@ -48,7 +48,7 @@ char *afs_realm_of_cell(context, cellconfig)
 	if(!hrealms[0]) return 0;
 	strcpy(krbrlm, hrealms[0]);
 
-	if (hrealms) krb5_xfree(hrealms);
+	if (hrealms) free(hrealms);
     
     return krbrlm;
 }

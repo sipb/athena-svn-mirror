@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(afs2k5db.c)
-AC_REVISION([$Id: configure.in,v 1.1.1.1 2003-02-13 00:14:49 zacheiss Exp $])
+AC_REVISION([$Id: configure.in,v 1.2 2003-02-14 23:16:06 zacheiss Exp $])
 dnl
 dnl Allow the user to specify the compiler and/or linker
 dnl
@@ -16,8 +16,7 @@ AC_PROG_INSTALL
 dnl
 dnl Try to find krb5 include and library files
 dnl
-AC_ARG_WITH(krb5, [  --with-krb5=PATH        Location of Kerberos 5 libraries and include files],
-[	prefix=${withval}])
+AC_ARG_WITH(krb5, [  --with-krb5=PATH        Location of Kerberos 5 libraries and include files])
 dnl
 krb5lib=${prefix}/lib
 krb5inc=${prefix}/include
@@ -106,17 +105,17 @@ LIBS=""
 AC_FIND_LIB(krb524, krb524_convert_princs, ${krb5lib} /usr/krb5/lib /usr/local/lib, ,[
 	echo "Cannot find 524 library, exiting"
 	exit 1
-], -lkrb5 -lcrypto -lcom_err $SYSLIBS)
+], -lkrb5 -lk5crypto -lcom_err $SYSLIBS)
 KRB524LIB="$LIBS"
 LIBS="$ac_push_LIBS"
 ac_push_LIBS="$LIBS"
 LIBS=""
 AC_FIND_LIB(kdb5, krb5_db_fetch_mkey, ${krb5lib} /usr/krb5/lib /usr/local/lib, ,[
 	echo "Cannot find Kerberos 5 DB library, will not be able to build DB utilities"
-], -lkrb5 -lcrypto -lcom_err $SYSLIBS)
+], -lkrb5 -lk5crypto -lcom_err $SYSLIBS)
 AC_FIND_LIB(kadm5clnt, krb5_read_realm_params, , ,[
 	echo "Cannot find Kerberos 5 admin library, will not be able to build DB utilities"
-], -lkrb5 -lcrypto -lcom_err $SYSLIBS)
+], -lkrb5 -lk5crypto -lcom_err $SYSLIBS)
 KD_LIBS="$LIBS"
 LIBS="$ac_push_LIBS"
 dnl We're assuming that krb5, crypto, and com_err are in the same place,
@@ -125,8 +124,8 @@ dnl
 AC_FIND_LIB(krb5, krb5_init_context, ${krb5lib} /usr/krb5/lib /usr/local/lib, , [
 	echo "Cannot find Kerberos 5 libraries, exiting"
 	exit 1
-], -lcrypto -lcom_err $SYSLIBS)
-AC_FIND_LIB(crypto, mit_des_cbc_encrypt, , ,[
+], -lk5crypto -lcom_err $SYSLIBS)
+AC_FIND_LIB(k5crypto, mit_des_cbc_encrypt, , ,[
 	echo "Cannot find crypto library, exiting"
 	exit 1
 ], -lcom_err $SYSLIBS)
@@ -168,6 +167,22 @@ case "$target" in
 	;;
 esac
 changequote([, ])dnl
+dnl
+dnl Check for res_search
+dnl
+save_LIBS="$LIBS"
+AC_CHECK_FUNCS(res_search)
+if test "$ac_cv_func_res_search" = no; then
+      for lib in dns nsl resolv; do
+        if test "$HAVE_RES_SEARCH" != 1; then
+          AC_CHECK_LIB(${lib}, res_search, LIBS="$LIBS -l$lib";HAVE_RES_SEARCH=1;AC_DEFINE(HAVE_RES_SEARCH))
+        fi
+      done    
+      if test "$HAVE_RES_SEARCH" = 1; then
+        AFSLIBS="$AFSLIBS -l$lib"
+      fi
+fi    
+LIBS="$save_LIBS"
 dnl
 dnl Check for Kerberos 5 include files
 dnl

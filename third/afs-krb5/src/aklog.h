@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog.h,v 1.1.1.1 2003-02-13 00:14:33 zacheiss Exp $
+ * $Id: aklog.h,v 1.2 2003-02-14 23:16:05 zacheiss Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -9,7 +9,7 @@
 #define __AKLOG_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_aklog_h = "$Id: aklog.h,v 1.1.1.1 2003-02-13 00:14:33 zacheiss Exp $";
+static char *rcsid_aklog_h = "$Id: aklog.h,v 1.2 2003-02-14 23:16:05 zacheiss Exp $";
 #endif /* lint || SABER */
 
 #include <krb5.h>
@@ -25,7 +25,7 @@ static char *rcsid_aklog_h = "$Id: aklog.h,v 1.1.1.1 2003-02-13 00:14:33 zacheis
 typedef struct {
     int (*readlink)ARGS((char *, char *, size_t));
     int (*isdir)ARGS((char *, unsigned char *));
-    char *(*getwd)ARGS((char *));
+    char *(*getcwd)ARGS((char *, size_t));
     int (*get_cred)ARGS((krb5_context, char *, char *, char *, CREDENTIALS *,
 		krb5_creds **));
     int (*get_user_realm)ARGS((krb5_context, char *));
