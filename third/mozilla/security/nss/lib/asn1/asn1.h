@@ -35,7 +35,7 @@
 #define ASN1_H
 
 #ifdef DEBUG
-static const char ASN1_CVS_ID[] = "@(#) $RCSfile: asn1.h,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:56:13 $ $Name: not supported by cvs2svn $";
+static const char ASN1_CVS_ID[] = "@(#) $RCSfile: asn1.h,v $ $Revision: 1.1.1.9 $ $Date: 2005-03-30 20:37:08 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
