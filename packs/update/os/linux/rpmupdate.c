@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.8 2000-08-15 15:23:55 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.9 2000-08-22 05:34:07 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -302,7 +302,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
   /* Walk through the database and add transactions to erase packages
    * which we've flagged for erasure.  We do erasures this way
    * (instead of remembering the offset in read_installed_versions())
-   * because the database offsets might have change since we read the
+   * because the database offsets might have changed since we read the
    * versions and because this way if a package we want to erase is
    * installed at two different versions on the system, we will remove
    * both packages.
@@ -315,7 +315,17 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
       headerGetEntry(h, RPMTAG_NAME, NULL, (void **) &pkgname, NULL);
       pkg = get_package(pkgtab, pkgname);
       if (pkg->erase)
-	rpmtransRemovePackage(rpmdep, offset);
+	{
+	  /* What we'd really like to do is display hashmarks while
+	   * we're actually removing the package.  But librpm doesn't
+	   * issue callbacks for erased RPMs, so we can't do that
+	   * currently.  Instead, tell people what packages we're
+	   * going to erase.
+	   */
+	  if (hashmarks)
+	    printf("Scheduling removal of package %s\n", rpmtrans); 
+	  rpmtransRemovePackage(rpmdep, offset);
+	}
       headerFree(h);
     }
 
