@@ -9,7 +9,7 @@
 *timer.font:		-adobe-new century schoolbook-*-*-*-*-*-350-*-*-*-*-*-*
 *timer.format:		%02m:%02s
 *timerForm*form:	timer: 0 0 100 100
-*timerWindow.defGeometry:		150x50+0-0
+*timerWindow.defGeometry:		150x50+0+0
 !*timerWindow.title:			xclock
 *timerWindow.deleteProc:		deleteParent()
 
