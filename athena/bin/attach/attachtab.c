@@ -1,7 +1,7 @@
 /*	Created by:	Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v $
- *	$Author: ghudson $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *
@@ -9,12 +9,13 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.10 1997-12-17 18:17:34 ghudson Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.11 1998-04-08 21:54:38 cfields Exp $";
 #endif
 
 #include "attach.h"
 #include <sys/file.h>
 #include <pwd.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 
@@ -58,6 +59,7 @@ void lock_attachtab()
 				fprintf(stderr, abort_msg);
 				exit(ERR_FATAL);
 			}
+			fcntl(attach_lock_fd, F_SETFD, FD_CLOEXEC);
 		}
 #ifdef POSIX
 		fl.l_type = F_WRLCK;
@@ -113,7 +115,8 @@ void get_attachtab()
 	free_attachtab();
 	if ((f = fopen(attachtab_fn, "r")) == NULL)
 		return;
-	
+	fcntl(fileno(f), F_SETFD, FD_CLOEXEC);
+
 	while (fgets(attach_buf, sizeof attach_buf, f)) {
 		if (!(at = (struct _attachtab *) malloc(sizeof(*at)))) {
 			fprintf(stderr,
@@ -175,6 +178,8 @@ put_attachtab()
 		fprintf(stderr, abort_msg);
 		exit(ERR_FATAL);
 	}
+	fcntl(fileno(f), F_SETFD, FD_CLOEXEC);
+
 	at = attachtab_first;
 	while (at) {
 		register int i;
@@ -220,6 +225,7 @@ void lint_attachtab()
 	lock_attachtab();
 	if ((f = fopen(attachtab_fn, "r")) == NULL)
 		return;
+	fcntl(fileno(f), F_SETFD, FD_CLOEXEC);
 	
 	while (fgets(attach_buf, sizeof attach_buf, f)) {
 		if (!(at = (struct _attachtab *) malloc(sizeof(*at)))) {

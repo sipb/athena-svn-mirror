@@ -1,16 +1,17 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: ghudson $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.27 1997-12-17 18:17:36 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.28 1998-04-08 21:58:33 cfields Exp $";
 
 #include "attach.h"
 
 #include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <pwd.h>
 #include <grp.h>
@@ -137,6 +138,7 @@ lock_mtab()
 			fprintf(stderr, abort_msg);
 			exit(ERR_FATAL);
 		}
+		fcntl(mtab_lock_fd, F_SETFD, FD_CLOEXEC);
 	}
 #ifdef POSIX
 	fl.l_type = F_WRLCK;
@@ -584,6 +586,7 @@ void mark_in_use(name)
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
     }
+    fcntl(fd, F_SETFD, FD_CLOEXEC);
 
     if (debug_flag)
 	    printf("%d\n", fd);
