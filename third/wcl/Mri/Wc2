@@ -1,4 +1,0 @@
-! SCCS_data:    @(#) Wc2 1.1 92/12/08 14:46:57
-!
-*XmCascadeButton.wcCallback:	WcSystem(echo Now fail to make \"forgot\")\
-				WcSystem(echo then make 2 identical dialogs)
