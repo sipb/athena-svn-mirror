@@ -35,7 +35,7 @@
 #define PKIX_H
 
 #ifdef DEBUG
-static const char PKIX_CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/include/pkix.h,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 20:47:34 $ $Name: not supported by cvs2svn $";
+static const char PKIX_CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/include/pkix.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:49:24 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*

@@ -35,7 +35,7 @@
 #define NSSPKIX_H
 
 #ifdef DEBUG
-static const char NSSPKIX_CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/include/nsspkix.h,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 20:47:32 $ $Name: not supported by cvs2svn $";
+static const char NSSPKIX_CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/include/nsspkix.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:49:22 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
