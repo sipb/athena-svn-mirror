@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.9 1999-10-19 20:25:33 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.10 1999-11-23 20:05:47 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -606,6 +606,15 @@ void locker__update_attachent(locker_context context, locker_attachent *at)
 
   if (at->attached)
     {
+      sigset_t omask, mask;
+
+      sigemptyset(&mask);
+      sigaddset(&mask, SIGHUP);
+      sigaddset(&mask, SIGINT);
+      sigaddset(&mask, SIGQUIT);
+      sigaddset(&mask, SIGTERM);
+      sigprocmask(SIG_BLOCK, &mask, &omask);
+
       rewind(at->mountpoint_file);
       fprintf(at->mountpoint_file, "1\n%s\n%s\n%s\n%s\n%s\n%c\n%d\n",
 	      at->name, at->mountpoint, at->fs->name, inet_ntoa(at->hostaddr),
@@ -616,6 +625,8 @@ void locker__update_attachent(locker_context context, locker_attachent *at)
 	fprintf(at->mountpoint_file, ":%ld", (long)at->owners[i]);
       fprintf(at->mountpoint_file, "\n");
       fflush(at->mountpoint_file);
+
+      sigprocmask(SIG_SETMASK, &omask, NULL);
     }
   else
     {
