@@ -1,5 +1,5 @@
 /* echo-area.h -- Functions used in reading information from the echo area.
-   $Id: echo-area.h,v 1.1.1.1 2002-06-05 22:18:28 zacheiss Exp $
+   $Id: echo-area.h,v 1.1.1.2 2003-02-28 17:44:04 amb Exp $
 
    This file is part of GNU Info, a program for reading online documentation
    stored in Info format.

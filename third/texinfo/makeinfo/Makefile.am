@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.1.1 2002-06-05 22:16:52 zacheiss Exp $
+# $Id: Makefile.am,v 1.1.1.2 2003-02-28 17:44:42 amb Exp $
 # Makefile.am for texinfo/makeinfo.
 # Run automake in .. to produce Makefile.in from this.
 #
@@ -17,7 +17,7 @@ INCLUDES = -I$(top_srcdir)/lib -I../intl -DLOCALEDIR=\"$(localedir)\"
 LDADD = ../lib/libtxi.a @LIBINTL@
 
 makeinfo_SOURCES = \
-  cmds.c cmds.h defun.c defun.h docbook.c docbook.h \
+  cmds.c cmds.h defun.c defun.h \
   files.c files.h footnote.c footnote.h \
   html.c html.h index.c index.h insertion.c insertion.h lang.c lang.h \
   macro.c macro.h makeinfo.c makeinfo.h multi.c node.c node.h \

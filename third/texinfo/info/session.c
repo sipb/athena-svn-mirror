@@ -1,8 +1,8 @@
 /* session.c -- user windowing interface to Info.
-   $Id: session.c,v 1.1.1.1 2002-06-05 22:16:48 zacheiss Exp $
+   $Id: session.c,v 1.1.1.2 2003-02-28 17:45:18 amb Exp $
 
-   Copyright (C) 1993, 96, 97, 98, 99, 2000, 01, 02
-   Free Software Foundation, Inc.
+   Copyright (C) 1993, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003 Free
+   Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -3936,7 +3936,7 @@ incremental_search (window, count, ignore)
       key = info_get_input_char ();
       window_get_state (window, &mystate);
 
-      if (key == DEL)
+      if (key == DEL || key == Control ('h'))
         {
           /* User wants to delete one level of search? */
           if (!isearch_states_index)
@@ -3967,9 +3967,15 @@ incremental_search (window, count, ignore)
 
       if (!Meta_p (key) || key > 32)
         {
-          func = InfoFunction(window->keymap[key].function);
+          /* If this key is not a keymap, get its associated function,
+             if any.  If it is a keymap, then it's probably ESC from an
+             arrow key, and we handle that case below.  */
+          char type = window->keymap[key].type;
+          func = type == ISFUNC
+                 ? InfoFunction(window->keymap[key].function)
+                 : NULL;  /* function member is a Keymap if ISKMAP */
 
-          if (isprint (key) || func == (VFunction *)NULL)
+          if (isprint (key) || (type == ISFUNC && func == NULL))
             {
             insert_and_search:
 

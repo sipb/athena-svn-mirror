@@ -1,7 +1,7 @@
 /* cmds.h -- declarations for cmds.c.
-   $Id: cmds.h,v 1.1.1.1 2002-06-05 22:19:23 zacheiss Exp $
+   $Id: cmds.h,v 1.1.1.2 2003-02-28 17:44:30 amb Exp $
 
-   Copyright (C) 1998, 99 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -46,5 +46,8 @@ typedef struct
 } COMMAND;
 
 extern COMMAND command_table[];
+
+/* Nonzero if we have seen an @titlepage command.  */
+extern int titlepage_cmd_present;
 
 #endif /* !CMDS_H */
