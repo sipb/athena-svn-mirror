@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_pthread.c,v 1.1.1.1 2002-01-31 21:32:04 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_pthread.c,v 1.1.1.2 2002-12-13 20:40:04 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <errno.h>
@@ -403,7 +403,8 @@ rxi_Sendmsg(socket, msg_p, flags)
 #ifdef AFS_LINUX22_ENV
     /* linux unfortunately returns ECONNREFUSED if the target port
      * is no longer in use */
-    if (ret == -1 && errno != ECONNREFUSED) {
+    /* and EAGAIN if a UDP checksum is incorrect */
+    if (ret == -1 && errno != ECONNREFUSED && errno != EAGAIN) {
 #else
     if (ret == -1) {
 #endif

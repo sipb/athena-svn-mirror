@@ -17,7 +17,11 @@
 #endif
 #include <afsconfig.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_clock.c,v 1.1.1.1 2002-01-31 21:32:04 zacheiss Exp $");
+#ifdef AFS_SUN59_ENV
+#include <sys/time_impl.h>
+#endif
+
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_clock.c,v 1.1.1.2 2002-12-13 20:39:40 zacheiss Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL

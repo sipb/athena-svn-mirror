@@ -17,6 +17,11 @@ extern int afs_Analyze(struct conn *aconn, afs_int32 acode, struct VenusFid *afi
 			register struct vrequest *areq, int op, afs_int32 locktype,
 			struct cell *cellp);
 
+/* afs_cell.c */
+extern struct cell *afs_GetRealCellByIndex(register afs_int32 cellindex,
+					   afs_int32 locktype,
+					   afs_int32 refresh);
+
 /* afs_conn.c */
 extern struct conn *afs_ConnBySA(struct srvAddr *sap, unsigned short aport,
 			  afs_int32 acell, struct unixuser *tu,
@@ -79,6 +84,7 @@ extern void afs_GCPAGs_perproc_func(AFS_PROC *pproc);
 
 /* afs_util.c */
 extern char *afs_cv2string(char *ttp, afs_uint32 aval);
+extern char *afs_strchr(char *s, int c);
 extern void print_internet_address(char *preamble, struct srvAddr *sa,
 			    char *postamble, int flag);
 extern afs_int32 afs_data_pointer_to_int32(const void *p);

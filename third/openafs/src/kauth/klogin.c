@@ -21,7 +21,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/klogin.c,v 1.1.1.1 2002-01-31 21:31:53 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/klogin.c,v 1.1.1.2 2002-12-13 20:41:53 zacheiss Exp $");
 
 #if !defined(AFS_SUN_ENV) && !defined(AFS_AIX_ENV) && !defined(AFS_HPUX_ENV) && !defined(AFS_SGI_ENV) && !defined(AFS_SUN5_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_XBSD_ENV)
 #include <sys/param.h>
@@ -461,7 +461,7 @@ int main(
 static void getloginname(register struct utmp *up)
 {
 	register char *namep;
-	char c;
+	int c;
 
 	while (up->ut_name[0] == '\0') {
 		namep = up->ut_name;
@@ -469,10 +469,10 @@ static void getloginname(register struct utmp *up)
 		while ((c = getchar()) != '\n') {
 			if (c == ' ')
 				c = '_';
-			if (c == (char)EOF)
+			if (c == EOF)
 				exit(0);
 			if (namep < up->ut_name+NMAX)
-				*namep++ = c;
+				*namep++ = (char) c;
 		}
 	}
 	strncpy(lusername, up->ut_name, NMAX);

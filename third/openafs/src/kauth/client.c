@@ -14,7 +14,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/client.c,v 1.1.1.1 2002-01-31 21:31:53 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/client.c,v 1.1.1.2 2002-12-13 20:39:15 zacheiss Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"
@@ -43,6 +43,10 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/clien
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
+#endif
+#ifdef HAVE_UNISTD_H
+#define __USE_XOPEN
+#include <unistd.h>
 #endif
 #include <afs/cellconfig.h>
 #include <afs/auth.h>

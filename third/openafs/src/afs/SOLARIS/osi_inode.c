@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_inode.c,v 1.1.1.1 2002-01-31 21:48:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_inode.c,v 1.1.1.2 2002-12-13 20:39:27 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -106,7 +106,6 @@ igetinode(vfsp, dev, inode, ipp, credp,perror)
     
     if (ip->i_mode == 0) {
 	/* Not an allocated inode */
-	AFS_ITIMES(ip);
 	rw_exit(&ip->i_contents);
 	VN_RELE(ITOV(ip));
 	return (ENOENT);

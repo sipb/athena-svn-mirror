@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_buffer.c,v 1.1.1.1 2002-01-31 21:31:34 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_buffer.c,v 1.1.1.2 2002-12-13 20:40:53 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #if !defined(UKERNEL)
@@ -93,6 +93,9 @@ char *BufferData;
 
 #ifdef	AFS_AIX_ENV
 extern struct buf *geteblk();
+#endif
+#ifdef AFS_FBSD_ENV
+#define timecounter afs_timecounter
 #endif
 /* The locks for individual buffer entries are now sometimes obtained while holding the
  * afs_bufferLock. Thus we now have a locking hierarchy: afs_bufferLock -> Buffers[].lock.

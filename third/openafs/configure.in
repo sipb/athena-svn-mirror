@@ -1,7 +1,8 @@
 AC_INIT(src/config/stds.h)
-AM_INIT_AUTOMAKE(openafs,1.2.3)
+AM_INIT_AUTOMAKE(openafs,1.2.8)
 AC_CONFIG_HEADER(src/config/afsconfig.h)
 
+AC_PROG_CC
 OPENAFS_CONFIGURE_COMMON
 
 TOP_SRCDIR="${SRCDIR_PARENT}/src"
@@ -105,6 +106,8 @@ src/rxkad/test/Makefile \
 src/rxstat/Makefile \
 src/scout/Makefile \
 src/sgistuff/Makefile \
+src/shlibafsauthent/Makefile \
+src/shlibafsrpc/Makefile \
 src/sia/Makefile \
 src/sys/Makefile \
 src/tbutc/Makefile \

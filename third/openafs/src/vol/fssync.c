@@ -38,7 +38,7 @@ static int newVLDB = 1;
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.1.1.1 2002-01-31 21:50:38 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/fssync.c,v 1.1.1.2 2002-12-13 20:42:12 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -236,9 +236,13 @@ static int getport(addr)
 
     memset(addr, 0, sizeof(*addr));
     assert((sd = socket(AF_INET, SOCK_STREAM, 0)) >= 0);
+#ifdef STRUCT_SOCKADDR_HAS_SA_LEN
+    addr->sin_len = sizeof(struct sockaddr_in);
+#endif
     addr->sin_addr.s_addr = htonl(0x7f000001);
     addr->sin_family = AF_INET; /* was localhost->h_addrtype */
     addr->sin_port = htons(2040);  /* XXXX htons not _really_ neccessary */
+
     return sd;
 }
 
@@ -317,7 +321,7 @@ static void FSYNC_com(fd)
     int fd;
 {
     byte rc = FSYNC_OK;
-    int n, i;
+    int n, i, ack = 1;
     Error error;
     struct command command;
     int leaveonline;
@@ -503,6 +507,12 @@ defect #2080 for details.
 		vp->specialStatus = VMOVED;
 		VPutVolume_r(vp);
 	    }
+#ifdef AFS_NT40_ENV
+	    send(fd, &rc, 1, 0);
+#else
+	    write(fd, &rc, 1);
+#endif
+	    ack = 0;
 	    if (V_BreakVolumeCallbacks) {
 		Log("fssync: volume %u moved to %x; breaking all call backs\n",
 		    command.volume, command.reason);
@@ -515,6 +525,12 @@ defect #2080 for details.
 	    break;
 	case FSYNC_RESTOREVOLUME:
 	    /* if the volume is being restored, break all callbacks on it*/
+#ifdef AFS_NT40_ENV
+	    send(fd, &rc, 1, 0);
+#else
+	    write(fd, &rc, 1);
+#endif
+	    ack = 0;
 	    if (V_BreakVolumeCallbacks) {
 		VOL_UNLOCK
 		VATTACH_UNLOCK
@@ -529,11 +545,13 @@ defect #2080 for details.
     }
     VOL_UNLOCK
     VATTACH_UNLOCK
+    if (ack) {
 #ifdef AFS_NT40_ENV
-    send(fd, &rc, 1, 0);
+	send(fd, &rc, 1, 0);
 #else
-    write(fd, &rc, 1);
+	write(fd, &rc, 1);
 #endif
+    }
 }
 
 static void FSYNC_Drop(fd)

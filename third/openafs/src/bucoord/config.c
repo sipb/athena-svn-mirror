@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/config.c,v 1.1.1.1 2002-01-31 21:50:04 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/config.c,v 1.1.1.2 2002-12-13 20:41:02 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -116,6 +116,9 @@ char *aname; {
     tentry->addr.sin_family = AF_INET;
     memcpy(&tentry->addr.sin_addr.s_addr, th->h_addr, sizeof(afs_int32));
     tentry->addr.sin_port = 0;
+#ifdef STRUCT_SOCKADDR_HAS_SA_LEN
+    tentry->addr.sin_len = sizeof(struct sockaddr_in);
+#endif
     tentry->portOffset = aport;
     return 0;
 }

@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_read.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_read.c,v 1.1.1.2 2002-12-13 20:40:58 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -431,7 +431,15 @@ afs_UFSReadFast(avc, auio, acred, albn, abpp, noLock)
             VOP_UNLOCK(tfile->vnode, 0, current_proc());
             AFS_GLOCK();
 #else
+#if defined(AFS_FBSD_ENV)
+            AFS_GUNLOCK();
+            VOP_LOCK(tfile->vnode, LK_EXCLUSIVE, curproc);
+            code = VOP_READ(tfile->vnode, auio, 0, &afs_osi_cred);
+            VOP_UNLOCK(tfile->vnode, 0, curproc);
+            AFS_GLOCK();
+#else
 	    code = VOP_RDWR(tfile->vnode, auio, UIO_READ, 0, &afs_osi_cred);
+#endif
 #endif
 #endif
 #endif
@@ -490,7 +498,7 @@ afs_UFSRead(avc, auio, acred, albn, abpp, noLock)
     struct vrequest treq;
 
     AFS_STATCNT(afs_UFSRead);
-    if (avc->vc_error)
+    if (avc && avc->vc_error)
 	return EIO;
 
     /* check that we have the latest status info in the vnode cache */
@@ -768,8 +776,16 @@ tagain:
             code = VOP_READ(tfile->vnode, &tuio, 0, &afs_osi_cred);
             VOP_UNLOCK(tfile->vnode, 0, current_proc());
             AFS_GLOCK();
+#else	
+#if defined(AFS_FBSD_ENV)
+            AFS_GUNLOCK();
+            VOP_LOCK(tfile->vnode, LK_EXCLUSIVE, curproc);
+            code = VOP_READ(tfile->vnode, &tuio, 0, &afs_osi_cred);
+            VOP_UNLOCK(tfile->vnode, 0, curproc);
+            AFS_GLOCK();
 #else
-	    code = VOP_RDWR(tfile->vnode, &tuio, UIO_READ, 0, &afs_osi_cred);
+    code = VOP_RDWR(tfile->vnode, &tuio, UIO_READ, 0, &afs_osi_cred);
+#endif
 #endif
 #endif
 #endif

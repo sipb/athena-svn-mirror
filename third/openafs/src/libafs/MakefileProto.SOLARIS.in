@@ -34,8 +34,7 @@ AFS_OS_OBJS = \
 	osi_file.o \
 	osi_sleep.o \
 	osi_vm.o \
-	osi_vnodeops.o \
-	xdr_int64.o
+	osi_vnodeops.o
 
 AFS_OS_NFSOBJS = \
 	osi_vfsops_nfs.o
@@ -143,9 +142,9 @@ DEST_LIBAFSNONFS = ${DEST}/root.client/usr/vice/etc/modload/${LIBAFSNONFS}
 # Without this line, gmake tries to build libafs.o
 .PHONY: libafs
 
-libafs:	$(LIBAFSNONFS)
-install_libafs:	$(INST_LIBAFSNONFS)
-dest_libafs:	$(DEST_LIBAFSNONFS)
+libafs:	$(LIBAFSNONFS) $(LIBAFS)
+install_libafs:	$(INST_LIBAFSNONFS) $(INST_LIBAFS)
+dest_libafs:	$(DEST_LIBAFSNONFS) $(DEST_LIBAFS)
 
 
 $(INST_LIBAFS): $(LIBAFS)
@@ -171,13 +170,15 @@ ${LIBAFSNONFS}:  $(AFSAOBJS) $(AFSNONFSOBJS)
 
 <sun4x_57 sun4x_58 sun4x_59>
 
-libafs: ${LIBAFSNONFS}
+libafs: ${LIBAFSNONFS} ${LIBAFS}
 
-install_libafs: ${LIBAFSNONFS}
+install_libafs: ${LIBAFSNONFS} ${LIBAFS}
 	${INSTALL} -f ${LIBAFSNONFS} ${DESTDIR}${afskerneldir}/libafs${BITS}.nonfs.o
+	${INSTALL} -f ${LIBAFS} ${DESTDIR}${afskerneldir}/libafs${BITS}.o
 
-dest_libafs: ${LIBAFSNONFS}
+dest_libafs: ${LIBAFSNONFS} ${LIBAFS}
 	${INSTALL} -f ${LIBAFSNONFS} ${DEST}/root.client/usr/vice/etc/modload/libafs${BITS}.nonfs.o
+	${INSTALL} -f ${LIBAFS} ${DEST}/root.client/usr/vice/etc/modload/libafs${BITS}.o
 
 <all>
 
@@ -197,6 +198,4 @@ osi_vfsops.o: $(AFS)/osi_vfsops.c
 osi_vm.o: $(AFS)/osi_vm.c
 	$(CRULE1)
 osi_vnodeops.o: $(AFS)/osi_vnodeops.c
-	$(CRULE1)
-xdr_int64.o: $(RX)/xdr_int64.c
 	$(CRULE1)

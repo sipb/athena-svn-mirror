@@ -7,6 +7,41 @@
  * directory or online at http://www.openafs.org/dl/license10.html
  */
 
+/* String conversion routines have the following copyright */
+
+/*
+ * Copyright (c) 2002 Kungliga Tekniska Högskolan
+ * (Royal Institute of Technology, Stockholm, Sweden).
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 
+ * 3. Neither the name of the Institute nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
 #include <afsconfig.h>
 #ifdef KERNEL
 #include "../afs/param.h"
@@ -14,7 +49,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/uuid.c,v 1.1.1.1 2002-01-31 21:32:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/uuid.c,v 1.1.1.2 2002-12-13 20:40:40 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "../afs/sysincludes.h"
@@ -140,6 +175,66 @@ uuid_time_p_t           time2; {
     if (time1->lo > time2->lo) return (1);
     return (0);
 }
+
+#if !defined(KERNEL) && !defined(UKERNEL)
+/*
+ *    Converts a string UUID to binary representation.
+ */
+
+int
+afsUUID_from_string(const char *str, afsUUID *uuid)
+{
+    unsigned int time_low, time_mid, time_hi_and_version;
+    unsigned int clock_seq_hi_and_reserved, clock_seq_low;
+    unsigned int node[6];
+    int i;
+
+    i = sscanf(str, "%08x-%04x-%04x-%02x-%02x-%02x%02x%02x%02x%02x%02x",
+               &time_low,
+               &time_mid,
+               &time_hi_and_version,
+               &clock_seq_hi_and_reserved,
+               &clock_seq_low,
+               &node[0], &node[1], &node[2], &node[3], &node[4], &node[5]);
+    if (i != 11)
+        return -1;
+    
+    uuid->time_low = time_low;
+    uuid->time_mid = time_mid;
+    uuid->time_hi_and_version = time_hi_and_version;
+    uuid->clock_seq_hi_and_reserved = clock_seq_hi_and_reserved;
+    uuid->clock_seq_low = clock_seq_low;
+
+    for (i = 0; i < 6; i++)
+        uuid->node[i] = node[i];
+
+    return 0;
+}
+
+/*
+ *    Converts a UUID from binary representation to a string representation.
+ */
+
+int
+afsUUID_to_string(const afsUUID *uuid, char *str, size_t strsz)
+{
+    snprintf(str, strsz,
+             "%08x-%04x-%04x-%02x-%02x-%02x%02x%02x%02x%02x%02x",
+             uuid->time_low,
+             uuid->time_mid,
+             uuid->time_hi_and_version,
+             (unsigned char)uuid->clock_seq_hi_and_reserved,
+             (unsigned char)uuid->clock_seq_low,
+             (unsigned char)uuid->node[0],
+             (unsigned char)uuid->node[1],
+             (unsigned char)uuid->node[2],
+             (unsigned char)uuid->node[3],
+             (unsigned char)uuid->node[4],
+             (unsigned char)uuid->node[5]);
+
+    return 0;
+}
+#endif
 
 afs_int32 afs_uuid_create (uuid)
 afsUUID *uuid; {
