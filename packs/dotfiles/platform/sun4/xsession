@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.38 1995-01-20 09:24:52 cfields Exp $
+# $Id: xsession,v 1.39 1995-01-27 03:56:51 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -183,17 +183,11 @@ if (! $?skip_x_startup) then
 	# message of the day as windowgram
 	if ($?NOCALLS) then
 		zwgc -f /usr/athena/lib/zephyr/zwgc.desc \
-				-subfile /dev/null
-		set zwgc = $status
+				-subfile /dev/null && \
+		get_message -new -zephyr
 	else
-		zwgc
-		set zwgc = $status
+		zwgc && get_message -new -zephyr
 	endif
-	if ($zwgc == 0) then
-		get_message -new -zephyr	# Get global motd
-		(mom -zephyr &)	>& /dev/null	# Get personal messages
-	endif
-	unset zwgc
 	from -t -n			# Check for mail
 	(olc who &) >& /dev/null	# Ping the OLC server
 endif
@@ -209,8 +203,10 @@ if ((! $?NOCALLS) && (-r ~/.startup.X)) then
 	  echo "Running custom startup activities listed in ~/.startup.X..."
 	endif
 	( source ~/.startup.X; \
+	  if (! $?skip_mom) mom -q -z ; \
 	  if ($?verbose_login) echo "Session initialization completed." &)
 else
+	if (! $?skip_mom) mom -q -z
 	echo "Session initialization completed."
 endif
 
