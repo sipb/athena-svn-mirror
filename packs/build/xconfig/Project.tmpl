@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.151 92/06/28 17:41:17 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.152 92/08/10 17:47:45 eswu Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -214,11 +214,7 @@ XCOMM $XConsortium: Project.tmpl,v 1.151 92/06/28 17:41:17 rws Exp $
 #if (SystemV || SystemV4) && !HasSockets
 #define ConnectionFlags -DSTREAMSCONN
 #else
-#if HasBSD44Sockets
-#define ConnectionFlags -DTCPCONN -DUNIXCONN -DBSD44SOCKETS
-#else
 #define ConnectionFlags -DTCPCONN -DUNIXCONN
-#endif
 #endif
 #endif
 #ifndef FontOSDefines
