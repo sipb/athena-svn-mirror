@@ -1,14 +1,20 @@
 #!/bin/sh
-# $Id: do.sh,v 1.40 1999-08-05 17:56:58 ghudson Exp $
+# $Id: do.sh,v 1.41 1999-09-02 14:30:08 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
+athtoolroot=
 contained=false
 n=""
 maybe=""
-usage="Usage: do [-cn] [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
-while getopts cd:ns: opt; do
+usage() {
+	echo "Usage: do [-cn] [-s srcdir] [-d destdir] [-t toolroot]" 1>&2
+	echo "	[prepare|clean|all|check|install]" 1>&2
+	exit 1
+}
+
+while getopts cd:ns:t: opt; do
 	case "$opt" in
 	c)
 		contained=true
@@ -23,9 +29,11 @@ while getopts cd:ns: opt; do
 	s)
 		source=$OPTARG
 		;;
+	t)
+		athtoolroot=$OPTARG
+		;;
 	\?)
-		echo "$usage" 1>&2
-		exit 1
+		usage
 		;;
 	esac
 done
@@ -37,17 +45,17 @@ prepare|clean|all|check|install)
 	;;
 *)
 	echo Unknown operation \"$operation\" 1>&2
-	echo "$usage" 1>&2
-	exit 1
+	usage
 	;;
 esac
 
-case $contained in
-true)
+case $contained,$athtoolroot in
+true,)
 	athtoolroot=$srvd
 	;;
-false)
-	athtoolroot=""
+true,?*)
+	echo "The -t option and -c flag are mutually exclusive." 1>&2
+	exit 1
 	;;
 esac
 
