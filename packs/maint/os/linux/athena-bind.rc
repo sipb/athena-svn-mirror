@@ -33,7 +33,7 @@ case "$1" in
 	RETVAL=$?
 
 	echo
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-bind
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-bind && sleep 2
 	;;
 
   stop)
