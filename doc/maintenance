@@ -229,6 +229,7 @@ following guidelines should help the release go smoothly:
 		- builder has remote access
 		- ssh is enabled
 		- RVDCLIENT is false and all syspacks detached
+		- AUTOUPDATE is false
 		- /build is a symlink to the build tree
 		- /os is a symlink to the rw of the os volume
 		- /srvd is a symlink to the ro of the packs
