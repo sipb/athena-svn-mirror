@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/describe.c,v 1.2 1989-08-15 03:13:09 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/describe.c,v 1.3 1989-11-17 14:17:06 tjcoppet Exp $";
 #endif
 
 
@@ -43,8 +43,10 @@ ODescribe(Request,list,file,note)
 
   Request->request_type = OLC_DESCRIBE;
 
-  fd = open_connection_to_daemon();
-  
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
   status = send_request(fd, Request);
   if(status)
     {
