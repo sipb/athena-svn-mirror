@@ -814,11 +814,12 @@ char *name, *passwd;
 	my_creds.times.endtime = now + 60 * 60 * 10;
 	my_creds.times.renew_till = 0;
 
-	krb5_get_in_tkt_with_password(kcontext, 0,
+	if (krb5_get_in_tkt_with_password(kcontext, 0,
 					  0, NULL, 0 /*preauth*/,
 					  passwd,
 					  ccache,
-					  &my_creds, 0);
+					  &my_creds, 0))
+		goto nuke_ccache;
 
 #ifdef KRB5_KRB4_COMPAT
 	if (krb_get_lrealm(realm, 1) != KSUCCESS)
