@@ -1,0 +1,30 @@
+.TH ATTACHANDRUN 1 "2 April 1998"
+.ds ]W MIT Athena
+.SH NAME
+attachandrun - attach a filesystem and run a program from it
+
+.SH SYNOPSIS
+attachandrun locker program argv0 [argv1 ...]
+
+.SH DESCRIPTION
+\fIattachandrun\fR combines the operations of attaching a locker,
+locating its binary directory, and executing a program out of that
+directory. Running a program via \fIattachandrun\fR should be
+indistinguishable from running it out of its locker by hand. A typical
+``attach and run'' script would look like:
+
+    #!/bin/sh
+.br
+    exec /tmp/attachandrun moira blanche "$0" "$@"
+
+.SH NOTE
+The programs \fIadd(1)\fP, \fIattach(1)\fP, \fIattachandrun(1)\fP,
+\fIdetach(1)\fP, \fInfsid(1)\fP, and \fIzinit(8)\fP are all really the
+same program.  Typically \fIattachandrun\fR, \fIdetach(1)\fP,
+\fInfsid(1)\fP and \fIzinit(8)\fP (but not \fIadd(1)\fP) are links to
+\fIattach\fP.  Argv[0] is used to determine which one of the programs
+is run.  This may be overridden by specifying -P \fIprogname\fP, where
+\fIprogname\fP should be one of the above five program names.
+
+.SH "SEE ALSO"
+attach(1), add(1)
