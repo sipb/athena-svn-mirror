@@ -10,13 +10,13 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.4 1987-06-13 00:19:01 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.5 1987-06-13 01:01:07 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 #include <sys/socket.h>
-#incoude <sys/time.h>
+#include <sys/time.h>
 
 Code_t ZSendPacket(packet,len)
 	ZPacket_t	packet;
