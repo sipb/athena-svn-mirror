@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.21 1991-03-25 03:18:36 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.22 1991-03-29 03:34:46 raeburn Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
@@ -84,9 +84,17 @@ Code_t ZParseNotice(buffer, len, notice)
 	u_short us;
 	ZChecksum_t sum;
     } temp;
+
 #ifdef __LINE__
     int lineno;
-#define BAD	do{lineno=__LINE__;goto badpkt;}while(0)
+    /* Note: This definition of BAD eliminates lint and compiler
+     * complains about the "while (0)", but require that the macro not
+     * be used as the "then" part of an "if" statement that also has
+     * an "else" clause.
+     */
+#define BAD	{lineno=__LINE__;goto badpkt;}
+    /* This one gets lint/compiler complaints.  */
+/*#define BAD	do{lineno=__LINE__;goto badpkt;}while(0)*/
 #else
 #define BAD	goto badpkt
 #endif
@@ -121,7 +129,7 @@ Code_t ZParseNotice(buffer, len, notice)
     numfields -= 2; /* numfields, version, and checksum */
     if (numfields < 0) {
 #ifdef __LINE__
-	lineno = __LINE__ - 2;
+	lineno = __LINE__;
       badpkt:
 	Z_debug ("ZParseNotice: bad packet from %s/%d (line %d)",
 		 inet_ntoa (notice->z_uid.zuid_addr.s_addr),
