@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+   <TITLE>test9.html: Form Test</TITLE>
+</HEAD>
+<BODY>
+
+<H1>
+This is a testpage for Forms
+</H1>
+<FORM ACTION="test9.html" METHOD="GET">
+  <P>This should be an entry with a max strlen of 20 and a size of 30
+  <BR>
+  <INPUT NAME=TestText TYPE=TEXT VALUE="GTKHTML Rulez" SIZE=30 MAXLENGTH=20>
+  </P>
+  <P>This should be a password entry with a size of 20
+  <BR>
+  <INPUT NAME=TestText2 TYPE=PASSWORD VALUE="GNOME Rulez" SIZE=20>
+  </P>
+  <P>This should be a button with the label Press Me! But it shouldn't
+     happen anything when you press it.
+  <BR>
+  <INPUT NAME=TestButton TYPE=BUTTON VALUE="Press Me!">
+  </P>
+  <P>This should be a submit button
+    <BR>
+    <INPUT TYPE=SUBMIT><BR>
+  </P>
+  <P>This should be a reset button
+    <BR>
+    <INPUT TYPE=RESET><BR>
+  </P>
+  <P>This should be 4 checkboxes
+    <BR>
+    <INPUT TYPE=CHECKBOX NAME=CHECK VALUE=1>Test1<BR>
+    <INPUT TYPE=CHECKBOX NAME=CHECK VALUE=2>Test2<BR>
+    <INPUT TYPE=CHECKBOX NAME=CHECK VALUE=3 CHECKED>Test3<BR>
+    <INPUT TYPE=CHECKBOX NAME=CHECK VALUE=4>Test4<BR>
+  </P>
+  <P>This should be 4 radio buttons
+  <BR>
+    <INPUT TYPE=RADIO NAME=RADIO VALUE=1>Test1<BR>
+    <INPUT TYPE=RADIO NAME=RADIO VALUE=2>Test2<BR>
+    <INPUT TYPE=RADIO NAME=RADIO VALUE=3 CHECKED>Test3<BR>
+    <INPUT TYPE=RADIO NAME=RADIO VALUE=4>Test4<BR>
+  </P>
+    <INPUT TYPE=HIDDEN NAME=GTK VALUE=BEST>
+ 
+  <P>This should be a clist in multiple mode
+  <BR>
+  <SELECT SIZE=4 MULTIPLE NAME=CLIST>
+    <OPTION SELECTED>England</OPTION>
+    <OPTION>Finnland</OPTION>
+    <OPTION>France</OPTION>
+    <OPTION>Iceland</OPTION>
+    <OPTION VALUE=Norge>Norway</OPTION>
+    <OPTION SELECTED>Sweden</OPTION>
+    <OPTION>Turkey</OPTION>
+    <OPTION SELECTED>US</OPTION>
+  </SELECT>
+  </P>
+  <P>This should be a combobox
+  <BR>
+  <SELECT NAME=COMBO>
+    <OPTION>Denmark</OPTION>
+    <OPTION>England</OPTION>
+    <OPTION>Finnland</OPTION>
+    <OPTION>France</OPTION>
+    <OPTION>Iceland</OPTION>
+    <OPTION VALUE=Norge>Norway</OPTION>
+    <OPTION SELECTED>Sweden</OPTION>
+    <OPTION>Turkey</OPTION>
+    <OPTION>US</OPTION>
+  </SELECT>
+  </P>
+  <P>
+  This should be an textarea
+  <BR>
+  <TEXTAREA NAME=TEXTAREA ROWS=5 COLS=40>
+This is the first line
+This should be the second line
+And the third
+And so on...
+</TEXTAREA>
+  </P>
+</FORM>
+
+</BODY>
+</HTML>
