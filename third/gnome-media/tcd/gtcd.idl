@@ -1,6 +1,0 @@
-module GNOME {
-	interface GTcd {
-		// New CD in the drive, behave appropriately.
-		void open_new_cd();
-	};
-};
