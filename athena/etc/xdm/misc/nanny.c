@@ -12,13 +12,16 @@
 #else
 #include <sys/time.h>
 #endif
+#include <utmpx.h>
+#include <pwd.h>
+#include <al.h>
+
 #include "pc.h"
 #include "cons.h"
 #include "var.h"
 #include "cvt.h"
 #include "dpy.h"
 #include "nanny.h"
-#include <AL/AL.h>
 
 #define COM_SECURE 1
 #define COM_INSECURE 2
@@ -27,9 +30,10 @@ typedef struct disp_state {
   pc_state *ps;
   pc_port *listener;
   cons_state *cs;
-  ALut Xut, Cut;
-  ALsessionStruct Xsess, Csess;
-  int cUtWritten;		/* do we have an entry in utmp for console? */
+  char *user;
+  uid_t uid;
+  gid_t gid;
+  struct utmpx info;
   int comSec, comSecNew;	/* is our com port considered secure? */
   int consolePreference;	/* should the X console be running? */
   int consoleStatus;		/* console state last we looked */
@@ -59,11 +63,18 @@ char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   void *value;
   int length;
+  struct passwd *pwd;
 
   var_getValue(vin, name, &value, &length);
-  if (!ALsetUser(&ds->Xsess, value))
+
+  pwd = getpwnam(value);
+  if (pwd != NULL)
     {
-      pc_chprot(ds->listener, ALpw_uid(&ds->Xsess), ALpw_gid(&ds->Xsess), 0600);
+      ds->user = strdup(value);
+      ds->uid = pwd->pw_uid;
+      ds->gid = pwd->pw_gid;
+
+      pc_chprot(ds->listener, ds->uid, ds->gid, 0600);
       var_setValue(ds->vars, name, value, length);
       var_setString(vout, name, N_OK);
 
@@ -88,62 +99,48 @@ char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
    quite what they were thinking. */
 #define NANNYNAME "LOGIN"
 
-void init_consUtmp(disp_state *ds)
-{
-  if (dpy_consDevice(ds->dpy))
-    {
-      ds->Cut.user = NANNYNAME;
-      ds->Cut.host = "";
-      ds->Cut.line = dpy_consDevice(ds->dpy) + 5;
-      ds->Cut.type = ALutLOGIN_PROC;
-      ALsetUtmpInfo(&ds->Csess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE,
-		    &ds->Cut);
-      ALputUtmp(&ds->Csess);
-
-      ds->cUtWritten = 1;
-    }
-}
-
-void clear_consUtmp(disp_state *ds)
-{
-  if (dpy_consDevice(ds->dpy) && ds->cUtWritten)
-    {
-      ds->Cut.user = NANNYNAME;
-      ds->Cut.type = ALutDEAD_PROC;
-      ALsetUtmpInfo(&ds->Csess, ALutUSER | ALutTYPE, &ds->Cut);
-      ALputUtmp(&ds->Csess);
-      ds->cUtWritten = 0;
-    }
-}
-
 void init_utmp(disp_state *ds)
 {
-  ds->Xut.user = NANNYNAME;
-  ds->Xut.host = DPYNAME;
-  ds->Xut.line = cons_name(ds->cs) + 5;
-  ds->Xut.type = ALutLOGIN_PROC;
-  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutHOST | ALutLINE | ALutTYPE,
-		&ds->Xut);
-  ALputUtmp(&ds->Xsess);
+  memset(&(ds->info), 0, sizeof(ds->info));
+
+  strncpy(ds->info.ut_user, NANNYNAME, sizeof(ds->info.ut_user));
+  strncpy(ds->info.ut_id, cons_name(ds->cs) + 8, sizeof(ds->info.ut_id));
+  strncpy(ds->info.ut_line, cons_name(ds->cs) + 5, sizeof(ds->info.ut_line));
+  ds->info.ut_pid = getpid();
+  ds->info.ut_type = LOGIN_PROCESS;
+  gettimeofday(&(ds->info.ut_tv), NULL);
+  ds->info.ut_syslen = strlen(DPYNAME) + 1;
+  strncpy(ds->info.ut_host, DPYNAME, sizeof(ds->info.ut_host));
+
+  setutxent();
+  getutxline(&(ds->info));
+  pututxline(&(ds->info));
+  endutxent();
+
+  /* Note that updwtmpx writes to both wtmp and wtmpx. */
+  updwtmpx(WTMPX_FILE, &(ds->info));
 }
 
 void clear_utmp(disp_state *ds)
 {
-  ds->Xut.user = NANNYNAME;
-  ds->Xut.type = ALutDEAD_PROC;
-  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
-  ALputUtmp(&ds->Xsess);
+  strncpy(ds->info.ut_user, NANNYNAME, sizeof(ds->info.ut_user));
+  ds->info.ut_type = DEAD_PROCESS;
+  gettimeofday(&(ds->info.ut_tv), NULL);
+
+  setutxent();
+  getutxline(&(ds->info));
+  pututxline(&(ds->info));
+  endutxent();
+
+  updwtmpx(WTMPX_FILE, &(ds->info));
 
 /* Hmmmm... This isn't quite right. What if the user is still logged
    in? The normal model for doing things (which Irix is using in the
    case of /bin/login) doesn't really allow for the-thing-that-cleans-
    utmp to exit. Probably just trying to be too flexible, and don't
    care about losing in this case. */
-
-  clear_consUtmp(ds);
 }
 
-/* Updating the tty information might be nice to have in AL. */
 char *do_login(char *uname, disp_state *ds)
 {
   char *tty = cons_name(ds->cs);
@@ -155,17 +152,22 @@ char *do_login(char *uname, disp_state *ds)
 #endif
 
   /* Write user login to utmp. */
-  ds->Xut.user = uname;
-  ds->Xut.type = ALutUSER_PROC;
-  ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
-  ALputUtmp(&ds->Xsess);
+  strncpy(ds->info.ut_user, uname, sizeof(ds->info.ut_user));
+  ds->info.ut_type = USER_PROCESS;
+  gettimeofday(&(ds->info.ut_tv), NULL);
+
+  setutxent();
+  getutxline(&(ds->info));
+  pututxline(&(ds->info));
+  endutxent();
+
+  updwtmpx(WTMPX_FILE, &(ds->info));
 
   /* Update owner and times on the tty. */
   gr = getgrnam("tty");
-  if (chown(tty, ALpw_uid(&ds->Xsess), gr ? gr->gr_gid : ALpw_gid(&ds->Xsess))
-      && debug > 3)
+  if (chown(tty, ds->uid, gr ? gr->gr_gid : ds->gid) && debug > 3)
     syslog(LOG_INFO, "chown of %s (%d %d) failed (%m)",
-	   tty, ALpw_uid(&ds->Xsess), gr ? gr->gr_gid : ALpw_gid(&ds->Xsess));
+	   tty, ds->uid, gr ? gr->gr_gid : ds->gid);
 
 #ifdef SYSV
   times.actime = times.modtime = time(NULL);
@@ -197,22 +199,32 @@ char *do_logout(disp_state *ds)
   var_getString(ds->vars, N_LOGGED_IN, &value);
   if (!strcmp(value, N_TRUE))
     {
-      ds->Xut.user = NANNYNAME;
-      ds->Xut.type = ALutLOGIN_PROC;
-      ALsetUtmpInfo(&ds->Xsess, ALutUSER | ALutTYPE, &ds->Xut);
-      ALputUtmp(&ds->Xsess);
+      /* Note that "logging out" requires both changing the user field on
+       * the appropriate line, and changing the type from USER_PROCESS to
+       * something else. Changing the user field is required for last(1)
+       * to correctly interpret the wtmp entry as a logout. Changing the type
+       * field is required to prevent programs which interpret utmp from
+       * showing the entry as a logged-in user.
+       */
+      strncpy(ds->info.ut_user, NANNYNAME, sizeof(ds->info.ut_user));
+      ds->info.ut_type = LOGIN_PROCESS;
+      gettimeofday(&(ds->info.ut_tv), NULL);
+
+      setutxent();
+      getutxline(&(ds->info));
+      pututxline(&(ds->info));
+      endutxent();
+
+      updwtmpx(WTMPX_FILE, &(ds->info));
     }
 
   /* socket changed by setting USER=something */
   pc_chprot(ds->listener, 0, 0, 0600);
 
-  /* Remove the user from the password file if xlogin added them. */
-  if (!var_getString(ds->vars, N_RMUSER, &value) && !strcmp(value, "1"))
-    {
-      /* AL isn't quite suitable for this yet. */
-      ALflagSet(&ds->Xsess, ALdidGetHesiodPasswd);
-      ALremovePasswdEntry(&ds->Xsess);
-    }
+  /* Let the login library do any necessary cleanup. Note that xlogin
+   * uses our pid when calling al_acct_create.
+   */
+  al_acct_revert(ds->user, getpid());
 
   ds->comSecNew = COM_SECURE;
   return "logged out";
@@ -222,7 +234,7 @@ char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value, *state;
 
-  var_getString(ds->vars, N_USER, &state);
+  var_getString(ds->vars, name, &state);
   var_getString(vin, name, &value);
 
   if (!strcasecmp(value, N_TRUE))
@@ -346,7 +358,6 @@ void update_dpy(disp_state *ds)
 {
   char *value;
 
-  clear_consUtmp(ds);
   var_getString(ds->vars, N_MODE, &value);
   if (!strcmp(value, N_NONE))
     return;
@@ -354,10 +365,8 @@ void update_dpy(disp_state *ds)
   if (dpy_startX(ds->dpy))
     {
       syslog(LOG_ERR, "couldn't start X, trying login");
-      init_consUtmp(ds);
       if (dpy_startCons(ds->dpy))
 	{
-	  clear_consUtmp(ds);
 	  syslog(LOG_ERR, "couldn't start login either");
 	  var_setString(ds->vars, N_MODE, N_NONE);
 	  return;
@@ -430,8 +439,6 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	    var_setString(vout, name, "console shutdown failed");
 	    return;
 	  }
-	else
-	  clear_consUtmp(ds);
 
       var_setString(ds->vars, name, N_NONE);
 
@@ -444,10 +451,8 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 
       if (!strcmp(value, N_CONSOLE))
 	{
-	  init_consUtmp(ds);
 	  if (dpy_startCons(ds->dpy))
 	    {
-	      clear_consUtmp(ds);
 	      var_setString(vout, name, "console startup failed");
 	      return;
 	    }
@@ -463,8 +468,8 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
    attributes. */
 var_def vars[] = {
   { N_USER,		SECURE_SET,	setUser },
-  { N_RMUSER,		SECURE_SET,	setStd },
   { N_TTY,		READ_ONLY,	setStd },
+  { N_PID,		READ_ONLY,	setStd },
   { N_LOGGED_IN,	NONE,		setLogin },
   { N_MODE,		SECURE_SET,	setNannyMode },
   { N_FMODE,		SECURE_SET,	forceNannyMode },
@@ -619,8 +624,6 @@ void children(int sig, int code, struct sigcontext *sc)
 	}
     }
 }
-
-#define ALERROR() { com_err(argv[0], code, ALcontext(&ds.Xsess)); }
 
 void dumpMessage(pc_message *message)
 {
@@ -806,7 +809,8 @@ int main(int argc, char **argv)
 	    fprintf(stderr,
 		    "%s: Permission denied opening nanny socket\n", name);
 	  else
-	    ALERROR(); /* Errrr??? */
+	    com_err(argv[0], code, NULL);
+
 	  exit(1);
 	}
     }
@@ -823,22 +827,6 @@ int main(int argc, char **argv)
 
   fprintf(stdout, "no nanny contacted; running\n");
   syslog(LOG_INFO, "nanny starting");
-
-  /* Initialize needed Athena Login library code. */
-  code = ALinit();
-  if (code) ALERROR();
-
-  code = ALinitSession(&ds.Xsess);
-  if (code) ALERROR();
-
-  code = ALinitUtmp(&ds.Xsess);
-  if (code) ALERROR();
-
-  code = ALinitSession(&ds.Csess);
-  if (code) ALERROR();
-
-  code = ALinitUtmp(&ds.Csess);
-  if (code) ALERROR();
 
   /* Initialize our port for new connections. */
   if (pc_makeport(&inport, NANNYPORT, PC_GRAB|PC_CHMOD, 0, 0, 0600))
@@ -858,10 +846,6 @@ int main(int argc, char **argv)
 
   /* Initialize display handling. */
   ds.dpy = dpy_init();
-  ds.cUtWritten = 0;
-
-  /* Grab our X entry in utmp */
-  init_utmp(&ds);
 
   /* Signal handlers. */
   sigact.sa_flags = SA_NOCLDSTOP;
@@ -870,7 +854,6 @@ int main(int argc, char **argv)
   sigaction(SIGCHLD, &sigact, NULL);
 
   /* Init once here for when we block chld later. */
-
   sigemptyset(&mask);
   sigaddset(&mask, SIGCHLD);
 
@@ -892,6 +875,13 @@ int main(int argc, char **argv)
     default:
       exit(0);
     }
+
+  /* Grab our X entry in utmp */
+  init_utmp(&ds);
+
+  /* Initialize the pid variable. */
+  sprintf(sillybuf, "%d", getpid());
+  var_setString(ds.vars, N_PID, sillybuf);
 
   /*
    * Process the command line option as though we have received it
