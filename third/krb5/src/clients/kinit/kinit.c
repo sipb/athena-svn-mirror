@@ -123,7 +123,7 @@ main(argc, argv)
     int got_krb4 = 0;
     char password[255], *client_name, prompt[255];
     int pwsize;
-    krb5_deltat lifetime;
+    krb5_deltat lifetime = 10*60*60;
 
     /* Ensure we can be driven from a pipe */
     if(!isatty(fileno(stdin)))
