@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.6  90/06/05  16:07:31  tom
+ * the total variable length must be counted (not just "instance")
+ * 
  * Revision 1.5  90/05/30  10:29:10  tom
  * SNMPMXSID should be SNMPMXID
  * 
@@ -32,7 +35,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 1.6 1990-06-05 16:07:31 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v 2.0 1992-04-22 01:55:38 tom Exp $";
 #endif
 
 #include "include.h"

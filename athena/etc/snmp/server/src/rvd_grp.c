@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:40:30  tom
+ * athena release 7.0e
+ * 
  * Revision 1.2  90/04/26  17:59:06  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 1.3 1990-05-26 13:40:30 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 2.0 1992-04-22 01:56:13 tom Exp $";
 #endif
 
 #include "include.h"
@@ -77,8 +80,10 @@ lu_rvdcl(varnode, repl, instptr, reqflg)
     if(ioctl(vdcntrl, VDIOCGETSTAT, &stats)) 
       {
 	syslog(LOG_ERR, "%s", perror("lu_rvd"));
+	close(vdcntrl);
 	return(BUILD_ERR);
       }
+  close(vdcntrl);
 
   /*
    * Build reply
