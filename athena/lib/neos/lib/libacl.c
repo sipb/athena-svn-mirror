@@ -4,7 +4,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.2 1993-02-02 06:24:12 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.3 1993-02-15 15:42:39 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.2 1993-02-02 06:24:12 probe Exp $";
+static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/libacl.c,v 1.3 1993-02-15 15:42:39 probe Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -26,6 +26,13 @@ static char rcsid_libacl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <sys/errno.h>
 #include <netdb.h>
 #include "memory.h"
+
+#ifndef TRUE
+#define TRUE (1)
+#endif
+#ifndef FALSE
+#define FALSE (0)
+#endif
 
 /* If ACL_ALREADY != 0, it is considered a failure to try to add
  * a principal to an acl that already contains it or to delete a
