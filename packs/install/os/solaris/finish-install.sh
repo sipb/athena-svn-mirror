@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-install.sh,v 1.1 2003-09-12 01:52:03 ghudson Exp $
+# $Id: finish-install.sh,v 1.1.2.1 2003-09-12 01:57:43 ghudson Exp $
 
 echo "Starting the second stage of the install at `date`."
 
