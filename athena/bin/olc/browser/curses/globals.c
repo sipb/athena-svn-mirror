@@ -53,6 +53,8 @@ extern ERRCODE	list_abbrevs();
 extern ERRCODE	insert_entry();
 extern ERRCODE	delete_entry();
 extern ERRCODE  redisplay();
+extern ERRCODE  contents_file();
+extern ERRCODE  dir_contents();
 
 /* Command table. */
 
@@ -64,6 +66,8 @@ COMMAND Command_Table[] = {
 	'h',	print_help,	"Print help information.",
 	'i',	insert_entry,	"Insert a new entry.",
 	'l',	list_abbrevs,	"List all abbreviations.",
+	'f',    contents_file,  "Display contents file.",
+        'c',    dir_contents,   "List directory contents.",
 	'n',	next_entry,	"Go to the next entry.",
 	'p',	prev_entry,	"Go to the previous entry.",
 	'q',	quit,		"Quit CREF.",
