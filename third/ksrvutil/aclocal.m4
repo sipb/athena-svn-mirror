@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.1 1998-07-16 15:29:14 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.1.2.1 1998-07-16 15:33:26 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
