@@ -1,8 +1,9 @@
 #!/bin/athena/tcsh -f
 # Global xsession file
-# Accepts one optional argument "nocalls" (i.e., use no user files)
+# Accepts one optional argument, either "nocalls" (use no user files)
+# or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.8 2000-12-27 22:37:02 ghudson Exp $
+# $Id: xsession,v 1.9 2001-03-28 01:41:18 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -22,6 +23,10 @@ switch ($#argv)
             echo "with NO user configuration files..."
             setenv NOCALLS
 	    setenv SHELL /bin/athena/tcsh
+	else if ($1 == dash)
+	    echo -n "xsession: Running standard xsession "
+	    echo "with dash-based interface..."
+	    setenv ATHENA_DASH_INTERFACE
         else
             set bad_args
         endif
@@ -42,6 +47,14 @@ endif
 
 	if ((! -r ~/.hushlogin) || ($?NOCALLS)) set verbose_login
 
+
+# Use old dash-based interface if the user has
+# ~/.athena_dash_interface and the session was not started with
+# NOCALLS.
+
+if (-r ~/.athena_dash_interface && ! $?NOCALLS) then
+	setenv ATHENA_DASH_INTERFACE
+endif
 
 # *******************   ENVIRONMENT SETUP   *******************
 
@@ -73,6 +86,13 @@ else
 	endif
 endif
 
+if ($?ATHENA_DASH_INTERFACE) then
+	set default_windowmanager=mwm
+	set terminal='xterm -geometry 80x48+0+38'
+else
+	set default_windowmanager=sawfish
+	set terminal='gnome-terminal --geometry=80x48+0+30'
+endif
 
 
 # *******************   DEVICE SETUP   *******************
@@ -85,7 +105,7 @@ if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 # Start window manager.  To change your default window manager, set the 
 # WINDOW_MANAGER environment variable in your ~/.environment file.
 
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER sawfish
+if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
 if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
 if ($?NOCALLS) then
@@ -99,38 +119,37 @@ endif
 
 # Run standard system/user startup activities
 
+if ( ! $?ATHENA_DASH_INTERFACE) then
+	# Run the GNOME capplets unless the user has chosen to skip them.
+	if (! $?skip_capplets) then
+		if ($?verbose_login) echo "Initializing settings..."
+		sound-properties-capplet --init-session-settings
+		background-properties-capplet --init-session-settings
+		mouse-properties-capplet --init-session-settings
+		keyboard-properties-capplet --init-session-settings
+		bell-properties-capplet --init-session-settings
+	endif
 
-# Run the Athena Dashboard by default.
-# To skip this, put the command "set skip_dash" in
-# your ~/.environment file.
-
-# Also run the Athena Dashboard as the logout button.
-# To skip this, put the command "set skip_xlogout" in
-# your ~/.environment file.
-
-# We run this first, before the initial xterm, to give dash a chance to
-# start up and be ready to put up the logout button later (below).
-
-if (! $?skip_dash) then
+	# Run the GNOME panel unless the user has chosen to skip it.
+	# For compatibility, if the user elected to skip both dash
+	# and xlogout in the old dash-based world, skip panel now.
+	# TODO: deal with NOCALLS; add logout confirmation
+	if (! $?skip_panel && ! ($?skip_dash && $?skip_xlogout)) then
+		if ($?verbose_login) echo "Starting panel..."
+		(panel-wrapper && kill -HUP $XSESSION &)
+	endif
+else if (! $?skip_dash) then
 	if (! $?skip_xlogout) then
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		if ($?verbose_login) echo "Creating logout button..."
-		if ($?NOCALLS) then
-			(dash -default -logout \
-			    -userdefs /usr/athena/lib/X11/app-defaults/Dash &)
-		else
-			(dash -default -logout &)
-		endif
+		(dash -default -logout &)
 	else
 		if ($?verbose_login) echo "Starting the Athena Dashboard..."
 		(dash &)
 	endif
-else
-	if (! $?skip_xlogout) then
-		if ($?verbose_login) echo "Creating logout button..."
-		(dash -logout &)
-	endif
-				
+else if (! $?skip_xlogout) then
+	if ($?verbose_login) echo "Creating logout button..."
+	(dash -logout &)
 endif
 
 # Start default initial xterm window.  To skip this, put the command
@@ -142,7 +161,7 @@ endif
 
 if (! $?skip_initial_xterm) then
 	if ($?verbose_login) echo "Creating initial xterm window..."
-	(xterm -geometry 80x48+0+30 &)
+	($terminal &)
 endif
 
 # Run default system startup activities.  To skip these, put the command
