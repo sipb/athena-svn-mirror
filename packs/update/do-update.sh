@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.9 1997-02-22 18:42:08 ghudson Exp $
+# $Id: do-update.sh,v 1.10 1997-03-14 21:41:23 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -106,8 +106,10 @@ if [ -s "$CONFCHG" ]; then
 		rm -rf $i
 		if [ -f /srvd$i ]; then
 			cp -p /srvd$i $i
-		else
+		elif [ -f /os$i ]; then
 			cp -p /os$i $i
+		elif [ -f /install$i ]; then
+			cp -p /install$i $i
 		fi
 	done
 fi
