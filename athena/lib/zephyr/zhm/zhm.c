@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.45 1990-11-06 14:03:56 raeburn Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.46 1990-12-21 17:48:42 jfc Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -188,7 +188,7 @@ char *argv[];
 	 (void) strcpy(prim_serv, serv_list[random() % j]);
      }
 #endif /* HESIOD */
-     if (*prim_serv == NULL) {
+     if (*prim_serv == '\0') {
 	 printf("No valid primary server found, exiting.\n");
 	 exit(ZERR_SERVNAK);
      }
@@ -299,7 +299,7 @@ void init_hm()
      init_queue();
 
      cur_serv_list = serv_list;
-     if (*prim_serv == NULL)
+     if (*prim_serv == '\0')
 	  (void)strcpy(prim_serv, *cur_serv_list);
   
      loopback[0] = 127;
