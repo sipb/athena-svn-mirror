@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.5 1999-11-10 03:52:02 kcr Exp $
+# $Id: Makefile,v 1.6 2000-04-25 13:51:14 rbasch Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
 ATHRETCDIR=/etc/athena
+ATHLOGINDIR=${ATHRETCDIR}/login
 ATHETCDIR=/usr/athena/etc
 CFLAGS=-g
 
@@ -20,7 +21,10 @@ install:
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
+	install -c -m 0755 Xreset ${DESTDIR}${ATHLOGINDIR}
+	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 axdm ${DESTDIR}${INITD}

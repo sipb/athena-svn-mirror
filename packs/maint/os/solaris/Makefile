@@ -1,6 +1,7 @@
-# $Id: Makefile,v 1.8 2000-03-31 15:59:57 ghudson Exp $
+# $Id: Makefile,v 1.9 2000-04-25 13:51:59 rbasch Exp $
 
 ATHRETCDIR=/etc/athena
+ATHLOGINDIR=${ATHRETCDIR}/login
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC1=/etc/rc1.d
@@ -12,11 +13,14 @@ all:
 check:
 
 install:
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC1}
 	mkdir -p ${DESTDIR}${RC2}
 	mkdir -p ${DESTDIR}${RCS}
+	install -c -m 0755 Xreset ${DESTDIR}${ATHLOGINDIR}
+	install -c -m 0755 Xstartup ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
 	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 bind ${DESTDIR}${INITD}
