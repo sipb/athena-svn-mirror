@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.10 1991-01-07 01:46:42 lwvanels Exp $
+# $Id: Imakefile,v 1.11 1991-01-20 13:01:08 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
@@ -22,12 +22,14 @@ world2:
 	make ${MFLAGS} all
 
 install::
+#ifndef TestInstall
 	$(RM) $(DESTDIR)/usr/lib/olc
 	#if defined(ultrix)
 	ln -s /var/usr/lib/olc $(DESTDIR)/usr/lib/olc
 	#else
 	ln -s /site/usr/lib/olc $(DESTDIR)/usr/lib/olc
 	#endif
+#endif
 
 tags::
 	make ${MFLAGS} olc_tags olcd_tags rpd_tags
