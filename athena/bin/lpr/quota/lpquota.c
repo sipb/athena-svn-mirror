@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.5 1990-06-26 13:51:13 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.6 1990-06-26 13:54:09 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.5 1990-06-26 13:51:13 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.6 1990-06-26 13:54:09 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -832,7 +832,7 @@ krb_ktext *auth;
 	    }
 	    any ++;
 	    for(i = 1, lent = LogEnts; i <= numtrans; i++, lent++) {
-	    switch((int) lent->func_union.func) {
+	    switch((int) lent->func) {
 	    case LO_ADD:
 		chargestr = "increased by";
 		goto rest;
@@ -853,25 +853,25 @@ krb_ktext *auth;
 	    case LO_DISALLOW:
 		chargestr = "disallowed";
 	    rest:
-		(void) strcpy(who, (char *) lent->func_union.tagged_union.offset.wname);
+		(void) strcpy(who, (char *) lent->offset.wname);
 		
-		if (lent->func_union.func == LO_DELETEUSER) {
+		if (lent->func == LO_DELETEUSER) {
 		    printf("%.24s user quota was deleted by %s\n",
 			   ctime(&(lent->time)), who);
-		} else if (lent->func_union.func == LO_ALLOW || 
-			   lent->func_union.func == LO_DISALLOW) {
+		} else if (lent->func == LO_ALLOW || 
+			   lent->func == LO_DISALLOW) {
 		    printf("%.24s printing was %s by %s\n",
-			   ctime(&(lent->time)), chargestr, who);		    
+			   ctime(&(lent->time)), chargestr, who);	    
 		} else {
 		    if(strcmp((char *) currency, "cents")) 
 			printf("%.24s quota was %s %d %s by %s\n",
 			       ctime(&(lent->time)), chargestr, 
-			       lent->func_union.tagged_union.offset.amount, 
+			       lent->offset.amount, 
 			       currency, who);
 		    else 
 			printf("%.24s quota was %s $%.2f by %s\n",
 			       ctime(&(lent->time)), chargestr, 
-			       (float) (lent->func_union.tagged_union.offset.amount)/100.0, 
+			       (float) (lent->offset.amount)/100.0, 
 			       who);
 		}
 		break;
@@ -879,21 +879,21 @@ krb_ktext *auth;
 		/* We know who it was, need to print sub time, service, where*/
 		if (qid->account == 0) {
 		    printf("%.24s %d page%c @ %d %s/page on %s\n",
-			   ctime(&(lent->func_union.tagged_union.charge.ptime)),
-			   lent->func_union.tagged_union.charge.npages,
-			   (lent->func_union.tagged_union.charge.npages == 1) ? '\0' : 's', 
-			   lent->func_union.tagged_union.charge.pcost,
+			   ctime(&(lent->charge.ptime)),
+			   lent->charge.npages,
+			   (lent->charge.npages == 1) ? '\0' : 's', 
+			   lent->charge.pcost,
 			   currency, 
-			   lent->func_union.tagged_union.charge.where);
+			   lent->charge.where);
 		} else {
-		    (void) strcpy(who, (char *) lent->func_union.tagged_union.charge.wname);
+		    (void) strcpy(who, (char *) lent->charge.wname);
 		    printf("%.24s %d page%c @ %d %s/page on %s by %s\n",
-			   ctime(&(lent->func_union.tagged_union.charge.ptime)),
-			   lent->func_union.tagged_union.charge.npages,
-			   (lent->func_union.tagged_union.charge.npages == 1) ? '\0' : 's', 
-			   lent->func_union.tagged_union.charge.pcost,
+			   ctime(&(lent->charge.ptime)),
+			   lent->charge.npages,
+			   (lent->charge.npages == 1) ? '\0' : 's', 
+			   lent->charge.pcost,
 			   currency, 
-			   lent->func_union.tagged_union.charge.where,
+			   lent->charge.where,
 			   who);
 		}
 		break;
@@ -911,8 +911,8 @@ krb_ktext *auth;
 		goto rest1;
 
 	    rest1:
-		(void) strcpy(who, (char *) lent->func_union.tagged_union.group.uname);
-		(void) strcpy(who1, (char *) lent->func_union.tagged_union.group.aname);
+		(void) strcpy(who, (char *) lent->group.uname);
+		(void) strcpy(who1, (char *) lent->group.aname);
 
 		printf("%.24s %s was %s list by %s\n",
 		       ctime(&(lent->time)),
