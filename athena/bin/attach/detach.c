@@ -15,11 +15,12 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.14 1999-03-02 19:06:47 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.15 1999-03-14 17:16:25 ghudson Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include "locker.h"
@@ -233,6 +234,7 @@ int detach_attachent(locker_context context, locker_attachent *at,
   status = locker_detach_attachent(context, at, options);
   if (status == LOCKER_SUCCESS && verbose)
     printf("%s: %s detached\n", whoami, at->name);
+  return 0;
 }
 
 void detach_all(locker_context context, int options)

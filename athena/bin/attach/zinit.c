@@ -16,9 +16,10 @@
 /* This is zinit, which is run by zwgc to get subs for lockers that
    were attached before zwgc started. */
 
-static const char rcsid[] = "$Id: zinit.c,v 1.1 1999-02-26 23:13:11 danw Exp $";
+static const char rcsid[] = "$Id: zinit.c,v 1.2 1999-03-14 17:16:36 ghudson Exp $";
 
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <locker.h>

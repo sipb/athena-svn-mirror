@@ -15,7 +15,7 @@
 
 /* This is the part of attach that is used by the "add" alias. */
 
-static const char rcsid[] = "$Id: add.c,v 1.8 1999-03-12 15:06:42 ghudson Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.9 1999-03-14 17:16:07 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -62,6 +62,7 @@ char *shell_templates[2][2] =
 extern char *whoami;
 extern locker_callback attach_callback;
 extern int main(int argc, char **argv);
+int add_main(int argc, char **argv);
 
 static int quiet = 0, give_warnings = 0, remove_from_path = 0;
 static int add_to_front = 0, bourne_shell = 0, use_athena_path = 0;
@@ -282,6 +283,8 @@ int add_callback(locker_context context, locker_attachent *at, void *arg)
 	modify_path(&manpath, *ptr);
       athdir_free_paths(found);
     }
+
+  return 0;
 }
 
 void modify_path(char **pathp, char *elt)

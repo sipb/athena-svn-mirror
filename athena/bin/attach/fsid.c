@@ -17,10 +17,11 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.1 1999-02-26 23:13:05 danw Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.2 1999-03-14 17:16:31 ghudson Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <locker.h>
@@ -174,6 +175,7 @@ int fsid_attachent(locker_context context, locker_attachent *at, void *opp)
   status = at->fs->auth(context, at, LOCKER_AUTH_DEFAULT, *(int *)opp);
   if (verbose && status == LOCKER_SUCCESS)
     printf("%s: %s %s\n", whoami, at->name, opped(*(int *)opp));
+  return 0;
 }
 
 char *opped(int op)
@@ -188,6 +190,8 @@ char *opped(int op)
       return "purged";
     case LOCKER_AUTH_PURGEUSER:
       return "user-purged";
+    default:
+      return "(unknown)";
     }
 }
 

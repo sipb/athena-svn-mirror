@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.23 1999-03-02 19:06:46 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.24 1999-03-14 17:16:19 ghudson Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -359,7 +359,7 @@ int attach_print(locker_context context, locker_attachent *at, void *data)
       if (pw)
 	p += sprintf(p, "%s", pw->pw_name);
       else
-	p += sprintf(p, "#%d", at->owners[i]);
+	p += sprintf(p, "#%lu", (unsigned long) at->owners[i]);
     }
 
   /* Build optstr. (32 characters is "long enough".) */
