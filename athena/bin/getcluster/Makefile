@@ -3,7 +3,7 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v 1.1 1987-06-14 00:25:07 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/getcluster/Makefile,v 1.2 1987-06-14 00:51:44 treese Exp $
 
 DESTDIR=
 CFLAGS=-O
@@ -19,6 +19,8 @@ install: ${PROGS}
 		install -c -m 755 -s $$i ${DESTDIR}/bin/athena/$$i; \
 	done
 	install -c -m 644 getcluster.8 ${DESTDIR}/usr/man/man8
+	install -c -m 755 save_cluster_info.sh \
+		${DESTDIR}/etc/athena/save_cluster_info
 
-clean:;
-	-rm -f getcluster getcluster.o
+clean:  ;
+	-rm -f getcluster getcluster.o *~
