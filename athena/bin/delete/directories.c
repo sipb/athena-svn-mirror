@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.8 1989-01-27 08:23:44 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.9 1989-01-27 10:15:21 jik Exp $";
 #endif
 
 /*
@@ -41,7 +41,7 @@ static char *error_buf;
 
 
 static filerec default_cwd = {
-     ".",
+     "",
      FtDirectory,
      (filerec *) NULL,
      (filerec *) NULL,
@@ -53,7 +53,7 @@ static filerec default_cwd = {
 };
 
 static filerec default_root = {
-     "",
+     "/",
      FtDirectory,
      (filerec *) NULL,
      (filerec *) NULL,
@@ -544,7 +544,7 @@ char leaf_buf[]; /* RETURN */
 			     strlen(name_ptr) + 2);
 	  strcpy(leaf_buf, name_ptr);
 	  *name_ptr = '\0';
-	  if (leaf->parent)
+	  if (leaf->parent) if (leaf->parent->parent)
 	       strcat(name_ptr, "/");
 	  strcat(name_ptr, leaf->name);
 	  strcat(name_ptr, leaf_buf);
