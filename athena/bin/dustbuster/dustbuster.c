@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.4 2002-04-25 20:38:30 rbasch Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.5 2002-05-06 14:45:52 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,10 +29,12 @@ static const char rcsid[] = "$Id: dustbuster.c,v 1.4 2002-04-25 20:38:30 rbasch 
 
 static void xbust(char **argv);
 static void ttybust(char **argv);
+static void sessionbust(char **argv);
 static void start_child(char **argv);
 static int xhandler(Display *dpy);
 static void child_handler(int signo);
 static int find_signal(const char *signame);
+static int tty_accessible(void);
 static void usage(void);
 
 static const char *progname;
@@ -73,6 +75,7 @@ int main(int argc, char **argv)
 
 	case 'S':
 	  session_leader = 1;
+	  argv++;
 	  break;
 
 	default:
@@ -90,8 +93,16 @@ int main(int argc, char **argv)
    */
   if (getenv("XSESSION") != NULL)
     xbust(argv);
-  else
+  else if (tty_accessible())
     ttybust(argv);
+  else if (getenv("ATHENA_LOGIN_SESSION") != NULL)
+    sessionbust(argv);
+  else
+    {
+      fprintf(stderr, "%s: error: can't find any way to dusbust\n",
+	      progname, strerror(errno));
+      exit(1);
+    }
   return 0;
 }
 
@@ -123,16 +134,6 @@ static void ttybust(char **argv)
 {
   int fd;
 
-  /* Make sure controlling tty can be opened to start with. */
-  fd = open("/dev/tty", O_RDWR, 0);
-  if (fd == -1)
-    {
-      fprintf(stderr, "%s: error: can't open controlling tty: %s\n",
-	      progname, strerror(errno));
-      exit(1);
-    }
-  close(fd);
-
   /* Start the child process. */
   start_child(argv);
 
@@ -148,6 +149,39 @@ static void ttybust(char **argv)
 	  exit(0);
 	}
       close(fd);
+      sleep(5);
+    }
+}
+
+static void sessionbust(char **argv)
+{
+  pid_t pid;
+
+  pid = atoi(getenv("ATHENA_LOGIN_SESSION"));
+  if (pid == 0)
+    {
+      fprintf(stderr, "%s: error: invalid ATHENA_LOGIN_SESSION value %s\n",
+	      progname, getenv("ATHENA_LOGIN_SESSION"));
+      exit(1);
+    }
+  if (kill(pid, 0) == -1)
+    {
+      fprintf(stderr, "%s: error: login session pid %lu not running\n",
+	      progname, (unsigned long) pid);
+    }
+
+  start_child(argv);
+
+  /* Wait until the child process exits (child_handler) or the
+   * login session pid is no longer running.
+   */
+  while (1)
+    {
+      if (kill(pid, 0) == -1)
+	{
+	  killpg(child_pid, sig);
+	  exit(0);
+	}
       sleep(5);
     }
 }
@@ -259,6 +293,17 @@ static int find_signal(const char *signame)
 
   fprintf(stderr, "%s: invalid signal name %s\n", progname, signame);
   exit(1);
+}
+
+static int tty_accessible(void)
+{
+  int fd;
+
+  fd = open("/dev/tty", O_RDWR, 0);
+  if (fd == -1)
+    return 0;
+  close(fd);
+  return 1;
 }
 
 static void usage(void)
