@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.5 1990-02-20 02:56:48 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.6 1990-04-25 19:06:27 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -62,7 +62,11 @@ static int bar (status) int status; {
 	    || status == SECOND);
 }
 
+#if __STDC__
 static void dump (LIST *person) {
+#else
+static void dump (person) LIST *person; {
+#endif
     printf ("<%s,%s,u=%x,uk=%x,ck=%x>\n",
 	    person->user.username, person->connected.username,
 	    person->ustatus, person->ukstatus, person->ckstatus);
@@ -72,7 +76,12 @@ static void dump (LIST *person) {
 #define sgn(n) ((n)<0?-1:((n)>0?1:0))
 /* qsort should be persuaded to pass this */
 const static sort_keys *keys;
+
+#if __STDC__
 static int compare (LIST *first, LIST *second) {
+#else
+static int compare (first, second) LIST *first, *second; {
+#endif
     const sort_keys *k;
     int order = 0;
 #if 0
@@ -180,7 +189,11 @@ OSortListByRule(list,rule)
     return OSortListByKeys (list, keys);
 }
 
+#if __STDC__
 ERRCODE OSortListByUTime (LIST *list) {
+#else
+ERRCODE OSortListByUTime (list) LIST *list; {
+#endif
     static const sort_keys utime_only[] = {
 	{ sort_key__time, 0 },
 	{ sort_key__none }
@@ -188,7 +201,11 @@ ERRCODE OSortListByUTime (LIST *list) {
     return OSortListByKeys (list, utime_only);
 }
 
+#if __STDC__
 ERRCODE OSortListByUInstance (LIST *list) {
+#else
+ERRCODE OSortListByUInstance (list) LIST *list; {
+#endif
     static const sort_keys uinstance_only[] = {
 	{ sort_key__instance, 0 },
 	{ sort_key__none }
