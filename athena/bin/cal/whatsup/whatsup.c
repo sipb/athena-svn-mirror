@@ -11,8 +11,8 @@
 /*	Revised:	8/21/87
 /*
 /*	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v $
-/*	$Author: probe $
-/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.1 1993-10-12 05:35:02 probe Exp $
+/*	$Author: miki $
+/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.2 1994-03-25 16:05:50 miki Exp $
 /*
 /*	Copyright 1987 by the Massachusetts Institute of Technology.
 /*	For copying and distribution information, see the file mit-copyright.h
@@ -56,7 +56,7 @@
 /************************************************************************/
 
 #ifndef lint
-static char rcsid_whatsup_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.1 1993-10-12 05:35:02 probe Exp $";
+static char rcsid_whatsup_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.2 1994-03-25 16:05:50 miki Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -337,7 +337,9 @@ char *argv[];
 
 	char whatsup_db[100]; 
 	int first_time = TRUE;
-
+#ifdef POSIX
+	struct sigaction act;
+#endif
        /*
         * handle the secret -db option
         */
@@ -367,7 +369,14 @@ char *argv[];
 
 	printf("Attempting to connect to calendar database %s, hang on...\n", whatsup_db);
 	(void) initscr();
+#ifdef POSIX
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) die;
+	(void) sigaction(SIGINT, &act, NULL);
+#else
 	(void) signal(SIGINT,die);
+#endif
        /*
         * Limit screen size to 24, because curses takes too long calculating
         * Refreshes otherwise.
@@ -589,7 +598,15 @@ char *str;
 int 
 die()
 {
+#ifdef POSIX
+   struct sigaction act;
+         sigemptyset(&act.sa_mask);
+         act.sa_flags = 0;
+         act.sa_handler= (void (*)()) SIG_IGN;
+         (void) sigaction(SIGINT, &act, NULL);
+#else
 	(void) signal(SIGINT,SIG_IGN);
+#endif
 	clear();
 	mvcur(0,COLS-1,LINES-1,0);
 	refresh();
