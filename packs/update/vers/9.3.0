@@ -72,4 +72,12 @@ inaugurate /etc/ssh_config MIT-openssh
 inaugurate /etc/sshd_config MIT-openssh
 inaugurate /etc/syslog.conf MIT-ws
 inaugurate /etc/system MIT-ws
-inaugurate /var/spool/cron/crontabs/root MIT-ws
+
+# The .old version of the root crontab will be saved in a different
+# directory starting in this release.  Move an existing .old file
+# there now to get it out of the way, though it will be overwritten
+# there anyway when MIT-ws is installed.
+if [ -f /var/spool/cron/crontabs/root.old ]; then
+  mkdir -p /var/athena/update.save
+  mv /var/spool/cron/crontabs/root.old /var/athena/update.save/crontab.root.old
+fi
