@@ -16,7 +16,7 @@
  *
  * SimpleLibrary(base,objs,destdir)	- Build/install a library    (simple)
  * build_library(base,objs)		- Build a library
- * install_library(base,objs)		- Install a library
+ * install_library(base,dir)		- Install a library
  *
  * SimpleLint(base,srcs)		- Build/install a lint library
  *
@@ -33,7 +33,7 @@
 #define create_dir(dir)							@@\
 install_dirs:: $(DESTDIR)dir						@@\
 $(DESTDIR)dir:								@@\
-	sh CONFDIR/mkdirhier.sh $(DESTDIR)dir
+	$(MKDIRHIER) $(DESTDIR)dir
 
 #define build_program(prog,objs,ldflags,libs)				@@\
 all::	prog								@@\
@@ -109,8 +109,8 @@ CC=AnsiCcCmd								@@\
 LD=AnsiLdCmd
 
 #define error_table(tbl)						@@\
-all:: tbl/**/.o								@@\
-depend tbl/**/.o:: tbl/**/.c tbl/**/.h					@@\
+depend:: tbl/**/.c tbl/**/.h						@@\
+tbl/**/.o: tbl/**/.c							@@\
 tbl/**/.c tbl/**/.h: tbl/**/.et						@@\
 	$(RM) tbl/**/.c tbl/**/.h					@@\
 	compile_et tbl/**/.et						@@\
@@ -118,8 +118,8 @@ clean::									@@\
 	$(RM) tbl/**/.c tbl/**/.h
 
 #define cmd_table(tbl)							@@\
-all:: tbl/**/.o								@@\
-depend tbl/**/.o:: tbl/**/.c						@@\
+depend:: tbl/**/.c							@@\
+tbl/**/.o: tbl/**/.c							@@\
 tbl/**/.c: tbl/**/.ct							@@\
 	$(RM) tbl/**/.c tbl/**/.h					@@\
 	mk_cmds tbl/**/.ct						@@\
@@ -139,7 +139,7 @@ all-shared::	lib/**/base/**/_s.a					@@\
 lib/**/base/**/_s.a:	objs						@@\
 	$(MKSHLIB) $@ objs
 
-#define install_library(base)						@@\
+#define install_library(base,dir)					@@\
 install::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base.a				@@\
 	$(INSTALL) -m 0644 lib/**/base.a $(DESTDIR)dir			@@\
@@ -155,7 +155,7 @@ inst-shared::								@@\
 
 #define SimpleLibrary(base,objs,dir)					@@\
 build_library(base,objs)						@@\
-install_library(base)
+install_library(base,dir)
 
 
 #ifdef NOLINT
@@ -216,14 +216,13 @@ Makefiles:: Makefile							@@\
 	@echo "### Making Makefiles in" `pwd`				@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
-		(cd $$d; echo "### Making Makefile in" `pwd`; \		@@\
-			make $(MFLAGS) 	\				@@\
-			TOP=../$(TOP)			\		@@\
-			-f ../Makefile			\		@@\
-			Makefile; \					@@\
-			make $(MFLAGS) \				@@\
-			Makefiles; \					@@\
-			echo "### Done with" `pwd`); \			@@\
+		echo "### Making Makefile in" `pwd`/$$d; \		@@\
+		if [ -f $$d/Makefile ]; then \				@@\
+			mv -f $$d/Makefile $$d/Makefile.bak; fi; \	@@\
+		$(IMAKE) $(IFLAGS) -DNEWTOP=../$(TOP) \			@@\
+			-f $$d/Imakefile -s $$d/Makefile; \		@@\
+		(cd $$d; make $(MFLAGS) Makefiles); \			@@\
+		echo "### Done with" `pwd`/$$d; \			@@\
 	done
 
 #define create_depend(files)						@@\
