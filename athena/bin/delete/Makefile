@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.14 1989-11-06 22:01:19 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.15 1989-11-06 23:23:55 jik Exp $
 #
 
 DESTDIR=
@@ -29,14 +29,15 @@ INCS= 		col.h delete.h directories.h expunge.h lsdel.h\
 		mit-copyright.h pattern.h undelete.h util.h\
 		shell_regexp.h errors.h stack.h
 ETS=		delete_errs.h delete_errs.c
+ETSRCS=		delete_errs.et
 
 MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
 
-ETSRCS=		et/Makefile et/com_err.3 et/compile_et.1\
-		et/com_err.texinfo et/error_table.y et/et_lex.lex.l\
-		et/texinfo.tex et/*.c et/*.h et/*.et
-ARCHIVE=	README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS)\
+ETLIBSRCS=	et/Makefile et/com_err.3 et/compile_et.1\
+		et/com_err.texinfo.Z.uu et/error_table.y et/et_lex.lex.l\
+		et/texinfo.tex.Z.uu et/*.c et/*.h et/*.et
+ARCHIVE=	README Makefile PATCHLEVEL $(SRCS) $(INCS) $(ETSRCS)\
 		$(MANS) 
 ARCHIVEDIRS= 	man1 et et/profiled
 
@@ -126,42 +127,12 @@ saber_lsdel:
 	#load $(LDFLAGS) $(CFLAGS) $(LSDELSRC) $(LIBS)
 
 tar: $(ARCHIVE)
-	@echo "Checking to see if everything's checked in...."
-	@for i in $(ARCHIVE) ;\
-	do \
-	if [ -w $$i ] ; then \
-		echo "$$i isn't checked in.  Check it in before making"; \
-		echo "an archive."; \
-		exit 1; \
-	fi ; \
-	exit 0; \
-	done
-	tar cvf - $(ARCHIVE) $(ETSRCS) | compress > delete.tar.Z
+	tar cvf - $(ARCHIVE) $(ETLIBSRCS) | compress > delete.tar.Z
 
 shar: $(ARCHIVE)
-	@echo "Checking to see if everything's checked in...."
-	@for i in $(ARCHIVE) ;\
-	do \
-	if [ -w $$i ] ; then \
-		echo "$$i isn't checked in.  Check it in before making"; \
-		echo "an archive."; \
-		exit 1; \
-	fi ; \
-	exit 0; \
-	done
-	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETSRCS)
+	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETLIBSRCS)
 
 patch: $(ARCHIVE)
-	@echo "Checking to see if everything's checked in...."
-	@for i in $(ARCHIVE) ;\
-	do \
-	if [ -w $$i ] ; then \
-		echo "$$i isn't checked in.  Check it in before making"; \
-		echo "an archive."; \
-		exit 1; \
-	fi ; \
-	exit 0; \
-	done
 	makepatch $(ARCHIVE)
 	mv patch delete.patch`cat PATCHLEVEL`
 	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
