@@ -4,9 +4,14 @@
  * appear to be defined elsewhere, at least in BSD.
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- * $Id: os.h,v 1.1 1990-04-27 12:03:28 vanharen Exp $
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
+ *	$Id: os.h,v 1.2 1990-05-25 15:58:58 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 #ifndef __olc_os_h
 #define __olc_os_h
