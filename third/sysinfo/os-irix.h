@@ -5,7 +5,7 @@
  */
 
 /*
- * $Id: os-irix.h,v 1.1.1.1 1996-10-07 20:16:55 ghudson Exp $
+ * $Id: os-irix.h,v 1.1.1.1.2.1 1997-11-04 18:42:21 ghudson Exp $
  */
 
 #ifndef __os_irix_h__
@@ -16,6 +16,10 @@
 #include <sys/param.h>
 #include <stdlib.h>
 #include <nlist.h>
+#if	OSVER > 61
+#include <sys/sema.h>		/* for <netinet/in_var.h> in netif.c */
+#include <sys/hashing.h>	/* for <netinet/in_var.h> in netif.c */
+#endif
 
 #define IS_POSIX_SOURCE		1
 #define KMEMFILE		"/dev/kmem"

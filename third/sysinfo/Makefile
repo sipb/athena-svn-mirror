@@ -3,7 +3,7 @@
 # This software may be freely distributed provided it is not sold for 
 # profit and the author is credited appropriately.
 #
-# $Id: Makefile,v 1.2 1996-10-10 21:03:55 ghudson Exp $
+# $Id: Makefile,v 1.2.2.1 1997-11-04 18:42:20 ghudson Exp $
 #
 # Sysinfo Makefile
 #
@@ -406,7 +406,7 @@ irix6 irix64:
 		MISSINGFILES="kvmlib.o" \
 		OPT="-g" \
 		OSCFLAGS="-woff 1174 -woff 1552 -woff 1204 -woff 1009" \
-		OSDEFINES="-D${OSname} -DOSMVER=${OSmver}" \
+		OSDEFINES="-D${OSname} -DOSMVER=${OSmver} -DOSVER=${OSver}" \
 		OSFILES="${IRIX-OS-Files}" \
 		OSLIBS="-lelf" \
 		PROG=${PROG} \
