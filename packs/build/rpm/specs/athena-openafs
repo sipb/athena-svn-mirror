@@ -2,6 +2,7 @@ Name: athena-openafs
 Summary: Client software for the AFS filesystem.
 Copyright: IBM Public License
 Group: System Environment/Base
+Provides: openafs = 1.2.3
 
 Conflicts: athena-afs openafs openafs-client openafs-devel openafs-kernel
 

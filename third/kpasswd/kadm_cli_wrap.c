@@ -476,6 +476,9 @@ int *ret_siz;				/* length of returned info */
 	extern char *malloc();
 	extern char *realloc();
 
+	*ret_dat = (u_char *) 0;
+	*ret_siz = 0;
+
 	act_st = (u_char *) malloc(KADM_VERSIZE); /* verstr stored first */
 	(void) strncpy((char *)act_st, KADM_VERSTR, KADM_VERSIZE);
 	act_len = KADM_VERSIZE;
@@ -519,11 +522,11 @@ int *ret_siz;				/* length of returned info */
 	memcpy((char *)act_st + act_len, (char *)authent.dat, authent.length);
 	memcpy((char *)act_st + act_len + authent.length, (char *)priv_pak, 
 	       priv_len);
-	free((char *)priv_pak);
 	if ((retdat = kadm_cli_out(act_st,
 				   act_len + authent.length + priv_len,
 				   ret_dat, ret_siz)) != KADM_SUCCESS)
 	    RET_N_FREE(retdat);
+	free((char *)priv_pak);
 	free((char *)act_st);
 #define RET_N_FREE2(r) {free((char *)*ret_dat); *ret_dat = 0; *ret_siz = 0; clear_secrets(); return(r);}
 
