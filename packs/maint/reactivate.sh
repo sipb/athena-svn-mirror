@@ -1,12 +1,25 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.36 1998-01-20 23:18:16 ghudson Exp $
+# $Id: reactivate.sh,v 1.37 1998-04-02 03:32:32 cfields Exp $
 
 trap "" 1 15
 
 PATH=/bin:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
+
+# Usage: nuke directoryname
+# Do the equivalent of rm -rf directoryname/*, except using saferm.
+nuke()
+{
+	(
+		cd $1
+		if [ $? -eq 0 ]; then
+			find * ! -type d -exec saferm {} \;
+			find * -depth -type d -exec rmdir {} \;
+		fi
+	)
+}
 
 umask 22
 . /etc/athena/rc.conf
@@ -44,26 +57,25 @@ if [ -f /var/athena/zhm.pid -a "$ZCLIENT" = true ] ; then
 	/bin/kill -HUP `/bin/cat /var/athena/zhm.pid`
 fi
 
-# kdestroy from /tmp any ticket files that may have escaped other methods
-# of destruction, before we clear /tmp.
-for i in /tmp/tkt* /tmp/krb5cc*; do
-	KRBTKFILE=$i /usr/athena/bin/kdestroy -q
-done
+# Zero any ticket files in /tmp that may have escaped other methods
+# of destruction, before we clear /tmp. We must cd there since saferm
+# will not follow symbolic links.
+(cd /tmp; saferm -z tkt* krb5cc*) > /dev/null 2>&1
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
 	case "$HOSTTYPE" in
 	sun4)
 		cp -p /tmp/ps_data /var/athena/ps_data
-		rm -rf /tmp/* > /dev/null 2>&1
+		nuke /tmp > /dev/null 2>&1
 		cp -p /var/athena/ps_data /tmp/ps_data
 		rm -f /var/athena/ps_data
 		;;
 	*)
-		rm -rf /tmp/* > /dev/null 2>&1
+		nuke /tmp > /dev/null 2>&1
 		;;
 	esac
-	rm -rf /var/athena/tmphomedir/* > /dev/null 2>&1
+	nuke /var/athena/tmphomedir > /dev/null 2>&1
 fi
 
 # Copy in latest password file
