@@ -1,0 +1,4711 @@
+# Czech message catalog for gnome-core.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# GIS <gis@academy.cas.cz>, 1999.
+# David ©auer <davids@penguin.cz>, 1999.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0.7\n"
+"POT-Creation-Date: 2000-11-15 14:17-0500\n"
+"PO-Revision-Date: 2000-10-10 19:25+02:00\n"
+"Last-Translator: David Sauer <davids@penguin.cz>\n"
+"Language-Team: czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: applets/desk-guide/deskguide_applet.c:76
+#: applets/tasklist/tasklist_properties.c:290
+msgid "Display"
+msgstr "Zobrazování"
+
+#: applets/desk-guide/deskguide_applet.c:77
+msgid "Layout"
+msgstr "Rozprostøení"
+
+#: applets/desk-guide/deskguide_applet.c:79
+msgid "Switch tasklist arrow"
+msgstr "Pøehodit ¹ipku seznamu úloh"
+
+#: applets/desk-guide/deskguide_applet.c:81
+msgid "Only show current desktop in pager"
+msgstr "Ukázat jen pou¾ívanou plochu"
+
+#: applets/desk-guide/deskguide_applet.c:83
+msgid "Raise area grid over tasks"
+msgstr "Vyzvihnout møí¾ nad úlohy"
+
+#: applets/desk-guide/deskguide_applet.c:84
+msgid "Thumb Nails"
+msgstr ""
+
+#: applets/desk-guide/deskguide_applet.c:86
+msgid "Fill window thumbnails with screen contents"
+msgstr ""
+
+#: applets/desk-guide/deskguide_applet.c:88
+msgid "Incremental update delay [ms]"
+msgstr ""
+
+#: applets/desk-guide/deskguide_applet.c:89
+msgid "Tooltips"
+msgstr "Tipy"
+
+#: applets/desk-guide/deskguide_applet.c:91
+msgid "Show Desk-Guide tooltips"
+msgstr "Ukázat tipy prùvodce plochy"
+
+#: applets/desk-guide/deskguide_applet.c:93
+msgid "Desk-Guide tooltip delay [ms]"
+msgstr "Prodlení tipù prùvodce [ms]"
+
+#: applets/desk-guide/deskguide_applet.c:95
+msgid "Show desktop name tooltips"
+msgstr "Ukázat jméno plochy v tipu"
+
+#: applets/desk-guide/deskguide_applet.c:97
+msgid "Desktop name tooltip delay [ms]"
+msgstr "Prodlení tipù plochy [ms]"
+
+#: applets/desk-guide/deskguide_applet.c:99
+msgid "Tasks"
+msgstr "Úlohy"
+
+#: applets/desk-guide/deskguide_applet.c:100
+msgid "Visibility"
+msgstr "Viditelnost"
+
+#: applets/desk-guide/deskguide_applet.c:102
+msgid "Show hidden tasks (HIDDEN)"
+msgstr "Ukázat skryté úlohy (HIDDEN)"
+
+#: applets/desk-guide/deskguide_applet.c:104
+msgid "Show shaded tasks (SHADED)"
+msgstr "Ukázat zastínìné úlohy (SHADED)"
+
+#: applets/desk-guide/deskguide_applet.c:106
+msgid "Show tasks which hide from window list (SKIP-WINLIST)"
+msgstr "Ukázat úlohy které nejsou na listu oken (SKIP-WINLIST)"
+
+#: applets/desk-guide/deskguide_applet.c:108
+msgid "Show tasks which hide from taskbar (SKIP-TASKBAR)"
+msgstr "Ukázat úlohy které nejsou na seznamu úloh (SKIP-TASKBAR)"
+
+#. CONFIG_SECTION (sect_null_1, NULL),
+#: applets/desk-guide/deskguide_applet.c:111
+msgid "Geometry"
+msgstr "Geometrie"
+
+#: applets/desk-guide/deskguide_applet.c:112
+msgid "Horizontal Layout"
+msgstr "Horizontální rozlo¾ení"
+
+#: applets/desk-guide/deskguide_applet.c:114
+msgid "Desktop Height [pixels]"
+msgstr "Vý¹ka plochy [pixely]"
+
+#: applets/desk-guide/deskguide_applet.c:116
+msgid "Override desktop height with panel size"
+msgstr "Nedbat na vý¹ku plochy a pou¾ít velikost panelu"
+
+#: applets/desk-guide/deskguide_applet.c:118
+msgid "Divide height by number of vertical areas"
+msgstr "Vydìlit vý¹ku poètem vertikáních ploch"
+
+#: applets/desk-guide/deskguide_applet.c:120
+msgid "Rows of Desktops"
+msgstr "Poèet øádkù ploch"
+
+#: applets/desk-guide/deskguide_applet.c:122
+msgid "Divide height by number of rows"
+msgstr "Vydìlit vý¹ku poètem øádkù"
+
+#: applets/desk-guide/deskguide_applet.c:123
+msgid "Vertical Layout"
+msgstr "Vetikální rozlo¾ení"
+
+#: applets/desk-guide/deskguide_applet.c:125
+msgid "Desktop Width [pixels]"
+msgstr "©íøka plochy [pixely]"
+
+#: applets/desk-guide/deskguide_applet.c:127
+msgid "Override desktop width with panel size"
+msgstr "Nedbat na ¹íøku plochy a pou¾ít velikost panelu"
+
+#: applets/desk-guide/deskguide_applet.c:129
+msgid "Divide width by number of horizontal areas"
+msgstr "Vydìlit ¹íøku poètem horizontalních ploch"
+
+#: applets/desk-guide/deskguide_applet.c:131
+msgid "Columns of Desktops"
+msgstr "Poèet slopcù ploch"
+
+#: applets/desk-guide/deskguide_applet.c:133
+msgid "Divide width by number of columns"
+msgstr "Vydìlit poètem sloupcù"
+
+#: applets/desk-guide/deskguide_applet.c:135
+msgid "Advanced"
+msgstr "Pokroèilé"
+
+#: applets/desk-guide/deskguide_applet.c:136
+msgid "Window Manager Workarounds"
+msgstr "Obcházení správcù oken"
+
+#: applets/desk-guide/deskguide_applet.c:138
+#, fuzzy
+msgid ""
+"Window manager moves decoration window instead\n"
+"(AfterStep, Enlightenment, FVWM, IceWM, Sawfish)"
+msgstr ""
+"Správce oken hýbe s okrajem okna\n"
+"(AfterStep, Enlightenment, FVWM, IceWM, Sawmill)"
+
+#: applets/desk-guide/deskguide_applet.c:141
+#, fuzzy
+msgid ""
+"Window manager changes active area on all desktops\n"
+"(FVWM, Sawfish)"
+msgstr ""
+"Aktivní oblast se mìní na v¹ech plochách\n"
+"(FVWM, Sawmill)"
+
+#: applets/desk-guide/deskguide_applet.c:144
+msgid ""
+"Window manager expects pager to modify area+desktop properties directly\n"
+"(Enlightenment, FVWM)"
+msgstr ""
+"Správce oken oèekává ¾e prùvodce mìní vlastnosti plochy a oblasti pøímo\n"
+"(Enlightenment, FVWM)"
+
+#: applets/desk-guide/deskguide_applet.c:147
+msgid "Behaviour"
+msgstr ""
+
+#: applets/desk-guide/deskguide_applet.c:149
+msgid "Popdown task view automatically"
+msgstr ""
+
+#: applets/desk-guide/deskguide_applet.c:170
+msgid "GNOME Desktop Guide (Pager)"
+msgstr "Prùvodce plochou GNOME"
+
+#: applets/desk-guide/deskguide_applet.c:186
+msgid ""
+"You are not running a GNOME Compliant\n"
+"Window Manager. GNOME support by the \n"
+"window manager is strongly recommended\n"
+"for proper Desk Guide operation."
+msgstr ""
+"Nemáte spu¹tìn správce oken podporující GNOME.\n"
+"Podpora GNOME ve správci oken je vysoce\n"
+"doporuèována jestli chcete Prùvodce plochou\n"
+"plnì vyu¾ít."
+
+#: applets/desk-guide/deskguide_applet.c:191
+msgid "Desk Guide Alert"
+msgstr "Výstraha prùvodce plochou"
+
+#: applets/desk-guide/deskguide_applet.c:232 applets/fish/fish.c:824
+#: applets/gen_util/clock.c:411 applets/gen_util/mailcheck.c:1392
+#: applets/gen_util/printer.c:464 applets/tasklist/tasklist_applet.c:790
+#: panel/drawer.c:418 panel/launcher.c:529 panel/menu.c:1350 panel/menu.c:4693
+msgid "Properties..."
+msgstr "Vlastnosti..."
+
+#: applets/desk-guide/deskguide_applet.c:238 applets/fish/fish.c:831
+#: applets/gen_util/clock.c:418 applets/gen_util/mailcheck.c:1404
+#: applets/gen_util/printer.c:471 applets/tasklist/tasklist_applet.c:796
+#: gnome-terminal/gnome-terminal.c:1692 gsm/session-properties.c:182
+#: help-browser/window.c:255 panel/drawer.c:421 panel/gnome-run.c:311
+#: panel/launcher.c:532 panel/logout.c:72 panel/logout.c:133 panel/menu.c:4702
+#: panel/status.c:366 panel/swallow.c:369
+msgid "Help"
+msgstr "Nápovìda"
+
+#: applets/desk-guide/deskguide_applet.c:245 applets/fish/fish.c:838
+#: applets/gen_util/clock.c:425 applets/gen_util/mailcheck.c:1410
+#: applets/gen_util/printer.c:477 applets/tasklist/tasklist_applet.c:803
+msgid "About..."
+msgstr "O programu..."
+
+#: applets/desk-guide/deskguide_applet.c:634
+msgid "Desk Guide Task View"
+msgstr "Prohlí¾eè ùloh prùvodce plochou"
+
+#: applets/desk-guide/deskguide_applet.c:1076
+msgid "Global"
+msgstr "Globální"
+
+#: applets/desk-guide/deskguide_applet.c:1132
+msgid "Desk Guide Settings"
+msgstr "Nastavení prùvodce plochou"
+
+#: applets/fish/fish.c:340 applets/fish/fish.c:671
+#, no-c-format
+msgid "%s the Fish"
+msgstr "Ryba jménem %s"
+
+#: applets/fish/fish.c:341
+#, c-format
+msgid "%s the GNOME Fish Says:"
+msgstr "Gnome ryba jménem %s øíká:"
+
+#: applets/fish/fish.c:426
+msgid "GNOME Fish Properties"
+msgstr "Vlastosti apletu Ryba"
+
+#: applets/fish/fish.c:436
+msgid "Your GNOME Fish's Name:"
+msgstr "Jméno va¹í ryby:"
+
+#: applets/fish/fish.c:450
+msgid "The Animation Filename:"
+msgstr "Jméno souboru s animací:"
+
+#: applets/fish/fish.c:452 applets/gen_util/mailcheck.c:941
+#: gnome-hint/gnome-hint-properties.c:163 gnome-terminal/gnome-terminal.c:1308
+#: panel/menu-properties.c:498 panel/menu-properties.c:536
+#: panel/panel-util.c:101 panel/panel-util.c:142 panel/panel-util.c:183
+#: panel/panel_config.c:1169 panel/swallow.c:202
+msgid "Browse"
+msgstr "Probírat"
+
+#: applets/fish/fish.c:465
+msgid "Frames In Animation:"
+msgstr "Poèet rámcù v animaci:"
+
+#: applets/fish/fish.c:481
+msgid "Pause per frame (s):"
+msgstr "Prodleva pøed zmìnou rámce (s):"
+
+#: applets/fish/fish.c:494
+msgid "Rotate on vertical panels"
+msgstr "Na vertikálním panelu rotovat"
+
+#: applets/fish/fish.c:503
+msgid "Fish"
+msgstr "Ryba"
+
+#: applets/fish/fish.c:572 gnome-hint/gnome-hint.c:260
+msgid "You do not have fortune installed."
+msgstr "Nemáte nainstalovanou fortune."
+
+#: applets/fish/fish.c:585
+msgid ""
+"The water needs changing!\n"
+"(Look at today's date)"
+msgstr ""
+"Mìla by se vymìnit voda!\n"
+"(Mrknìte se na dne¹ní datum)"
+
+#: applets/fish/fish.c:680
+msgid "(with minor help from George)"
+msgstr "(s malou nápomocí Jirky [George])"
+
+#: applets/fish/fish.c:684
+msgid "The GNOME Fish Applet"
+msgstr "Aplet zobrazující rybu"
+
+#: applets/fish/fish.c:687
+msgid ""
+"This applet has no use what-so-ever. It only takes up disk space and "
+"compilation time, and if loaded it also takes up precious panel space and "
+"memory. If anyone is found using this applet, he should be promptly sent for "
+"a psychiatric evaluation."
+msgstr ""
+"Tento aplet nemá ¾ádné rozumné vyu¾ití. Pouze zabírá místo na disku a èas\n"
+"pøi kompilaci a pokud je spu¹tìn, tak i místo na panelu (kterého je i tak \n"
+"nedostatek) a pamì» (té je je¹tì ménì). Pokud nìkdo tento aplet pou¾ívá, "
+"nech»\n"
+"se bez prùtahù dostaví k psychiatrickému vy¹etøení."
+
+#: applets/gen_util/clock.c:149
+msgid ""
+"%I:%M\n"
+"%p"
+msgstr "%I:%M"
+
+#: applets/gen_util/clock.c:152 panel/foobar-widget.c:434
+msgid "%I:%M %p"
+msgstr "%I:%M"
+
+#. This format string is used, to display the actual time in
+#. 24 hour format.
+#: applets/gen_util/clock.c:159 panel/foobar-widget.c:432
+#: panel/foobar-widget.c:549
+msgid "%H:%M"
+msgstr "%H:%M"
+
+#. This format string is used, to display the actual day,
+#. when showing a vertical panel.  For an explanation of
+#. this format string type 'man strftime'.
+#: applets/gen_util/clock.c:170
+msgid ""
+"%a\n"
+"%b %d"
+msgstr ""
+"%a\n"
+"%e. %b"
+
+#. This format string is used, to display the actual day,
+#. when showing a horizontal panel.
+#: applets/gen_util/clock.c:175
+msgid "%a %b %d"
+msgstr "%a, %e. %b"
+
+#: applets/gen_util/clock.c:187
+msgid "%A, %B %d"
+msgstr "%a, %e. %b"
+
+#: applets/gen_util/clock.c:334 applets/gen_util/mailcheck.c:1308
+#: applets/gen_util/printer.c:421
+msgid "Can't create applet!\n"
+msgstr "Nelze vytvoøit applet!\n"
+
+#. Do NOT translate the clock/hourformat part.  What you
+#. * should change is the 12.  If your country code should use
+#. * 12 hour format by default, leave it at 12, otherwise use 24
+#. * for 24 hour format.  Those are the only two supported
+#: applets/gen_util/clock.c:349
+msgid "clock/hourformat=12"
+msgstr ""
+
+#: applets/gen_util/clock.c:552
+msgid "Clock properties"
+msgstr "Vlastnosti hodin"
+
+#: applets/gen_util/clock.c:558
+msgid "Time Format"
+msgstr "Formát èasu"
+
+#: applets/gen_util/clock.c:570
+msgid "12 hour"
+msgstr "12 hodinový"
+
+#: applets/gen_util/clock.c:579
+msgid "24 hour"
+msgstr "24 hodinový"
+
+#: applets/gen_util/clock.c:614
+msgid "Show date in applet"
+msgstr "Datum v apletu"
+
+#: applets/gen_util/clock.c:628
+msgid "Show date in tooltip"
+msgstr "Datum v nápovìdì"
+
+#: applets/gen_util/clock.c:642
+msgid "Use GMT"
+msgstr "Pou¾ít GMT"
+
+#: applets/gen_util/clock.c:656
+msgid "Unix time"
+msgstr "Unixový èas"
+
+#: applets/gen_util/clock.c:685
+msgid "Clock"
+msgstr "Hodiny"
+
+#: applets/gen_util/clock.c:731
+msgid "Clock Applet"
+msgstr "Hodinový aplet"
+
+#: applets/gen_util/clock.c:732 applets/gen_util/printer.c:354
+msgid "(c) 1998 the Free Software Foundation"
+msgstr "(c) 1998 Free Software Foundation"
+
+#: applets/gen_util/clock.c:734
+msgid ""
+"The clock applet gives your panel a lightweight and simple display of the "
+"date and time"
+msgstr "Hodinový aplet vám dá jednoduché a lehké zobrazení èasu a data"
+
+#: applets/gen_util/mailcheck.c:201 applets/gen_util/mailcheck.c:985
+msgid "Password:"
+msgstr "Heslo:"
+
+#: applets/gen_util/mailcheck.c:260
+msgid ""
+"Remote-client-error occured. Remote-polling deactivated. Maybe you used a "
+"wrong server/username/password?"
+msgstr ""
+"Chyba vzdáleného klienta. Kontrola po¹ty deaktivována. Pou¾il(a) jste snad "
+"chybné jméno/heslo/jméno serveru?"
+
+#: applets/gen_util/mailcheck.c:456
+msgid "You have new mail."
+msgstr "Pøi¹la nová po¹ta."
+
+#: applets/gen_util/mailcheck.c:458
+msgid "You have mail."
+msgstr "Pøi¹la po¹ta."
+
+#: applets/gen_util/mailcheck.c:462
+#, c-format
+msgid "%d/%d messages"
+msgstr ""
+
+#: applets/gen_util/mailcheck.c:464
+#, c-format
+msgid "%d messages"
+msgstr ""
+
+#: applets/gen_util/mailcheck.c:468
+msgid "No mail."
+msgstr "®ádná nová po¹ta."
+
+#: applets/gen_util/mailcheck.c:886
+msgid "Mailbox resides on:"
+msgstr "Umístìní po¹tovní schránky:"
+
+#: applets/gen_util/mailcheck.c:893
+msgid "Local mailspool"
+msgstr "Lokální umístìní po¹ty"
+
+#: applets/gen_util/mailcheck.c:901
+msgid "Local maildir"
+msgstr "Lokální adresáø s po¹tou"
+
+#: applets/gen_util/mailcheck.c:909
+msgid "Remote POP3-server"
+msgstr "Vzdálený server POP3"
+
+#: applets/gen_util/mailcheck.c:917
+msgid "Remote IMAP-server"
+msgstr "Vzdálený server IMAP"
+
+#: applets/gen_util/mailcheck.c:937
+msgid "Mail spool file:"
+msgstr "Soubor s odchozí po¹tou:"
+
+#: applets/gen_util/mailcheck.c:954
+msgid "Mail server:"
+msgstr "Po¹tovní server:"
+
+#: applets/gen_util/mailcheck.c:971
+msgid "Username:"
+msgstr "Jméno u¾ivatele:"
+
+#: applets/gen_util/mailcheck.c:1016
+msgid "Execute"
+msgstr "Spustit"
+
+#: applets/gen_util/mailcheck.c:1027
+msgid "Before each update:"
+msgstr "Pøed ka¾dou aktualizací:"
+
+#: applets/gen_util/mailcheck.c:1048
+msgid "When new mail arrives:"
+msgstr "Pøi pøijetí nové zprávy:"
+
+#: applets/gen_util/mailcheck.c:1067
+msgid "When clicked:"
+msgstr "Pøi kliknutí my¹í:"
+
+#: applets/gen_util/mailcheck.c:1090
+msgid "Check for mail every"
+msgstr "Kontrola po¹ty ka¾dých"
+
+#: applets/gen_util/mailcheck.c:1103
+msgid "minutes"
+msgstr "minut"
+
+#: applets/gen_util/mailcheck.c:1116
+msgid "seconds"
+msgstr "sekund"
+
+#: applets/gen_util/mailcheck.c:1120
+msgid "Play a sound when new mail arrives"
+msgstr "Pøi pøijetí dopisu pøehrát zvuk"
+
+#: applets/gen_util/mailcheck.c:1131
+msgid "Select animation"
+msgstr "Vyberte animaci"
+
+#: applets/gen_util/mailcheck.c:1166
+msgid "Mail check properties"
+msgstr "Vlastosti kontroly e-po¹ty"
+
+#: applets/gen_util/mailcheck.c:1172
+msgid "Mail check"
+msgstr "Kontrola e-po¹ty"
+
+#: applets/gen_util/mailcheck.c:1175
+msgid "Mailbox"
+msgstr "Schránka"
+
+#: applets/gen_util/mailcheck.c:1256
+msgid "Mail check Applet"
+msgstr "Aplet pro kontrolu e-po¹ty"
+
+#: applets/gen_util/mailcheck.c:1257
+msgid "(c) 1998-2000 the Free Software Foundation"
+msgstr "(c) 1998-2000 Free Software Foundation"
+
+#: applets/gen_util/mailcheck.c:1259
+msgid "Mail check notifies you when new mail is on your mailbox"
+msgstr "Aplet vám oznámí ka¾dý pøijatý dopis e-po¹ty"
+
+#: applets/gen_util/mailcheck.c:1370
+msgid "Text only"
+msgstr "Pouze text"
+
+#: applets/gen_util/mailcheck.c:1398
+msgid "Check for mail"
+msgstr "Kontrola po¹ty"
+
+#: applets/gen_util/main.c:54
+#, c-format
+msgid "Don't know how to activate `%s'\n"
+msgstr "Nevím jak aktivovat `%s'\n"
+
+#: applets/gen_util/printer.c:120
+msgid "Can't execute printer command"
+msgstr "Nelze spustit pøíkaz tiskárny"
+
+#: applets/gen_util/printer.c:306
+msgid "Printer properties"
+msgstr "Vlastnosti tiskáren"
+
+#: applets/gen_util/printer.c:315
+msgid "Printer name:"
+msgstr "Jméno tiskárny:"
+
+#: applets/gen_util/printer.c:319
+msgid "Print command:"
+msgstr "Pøíkaz pro tisk:"
+
+#: applets/gen_util/printer.c:325
+msgid "Printer"
+msgstr "Tiskárna"
+
+#: applets/gen_util/printer.c:353
+msgid "Printer Applet"
+msgstr "Tiskový aplet"
+
+#: applets/gen_util/printer.c:356
+msgid ""
+"The printer applet lets you easily drag files to be printed via a print "
+"command"
+msgstr ""
+"Tiskový aplet vám umo¾òuje pou¹tìt soubory k vyti¹tìní pomocí tiskového "
+"pøíkazu"
+
+#: applets/tasklist/tasklist_menu.c:79
+msgid ""
+"Warning! Unsaved changes will be lost!\n"
+"Proceed?"
+msgstr ""
+"Pozor, v¹echny nezapsané zmìny budou ztraceny!\n"
+"Pokraèovat?"
+
+#: applets/tasklist/tasklist_menu.c:188
+msgid "Restore"
+msgstr "Obnovit"
+
+#: applets/tasklist/tasklist_menu.c:188
+msgid "Iconify"
+msgstr "Zikonizovat"
+
+#: applets/tasklist/tasklist_menu.c:194
+msgid "Unshade"
+msgstr "Odstínit"
+
+#: applets/tasklist/tasklist_menu.c:194
+msgid "Shade"
+msgstr "Zastínit"
+
+#: applets/tasklist/tasklist_menu.c:200
+msgid "Unstick"
+msgstr "Odlepit"
+
+#: applets/tasklist/tasklist_menu.c:200
+msgid "Stick"
+msgstr "Pøilepit"
+
+#: applets/tasklist/tasklist_menu.c:206
+msgid "To desktop"
+msgstr "Na plochu"
+
+#: applets/tasklist/tasklist_menu.c:245
+msgid "Close window"
+msgstr "Zavøít okno"
+
+#: applets/tasklist/tasklist_menu.c:252
+msgid "Kill app"
+msgstr "Zabít aplikaci"
+
+#: applets/tasklist/tasklist_properties.c:147
+msgid "Follow panel size"
+msgstr "Dodr¾ovat velikost panelu"
+
+#: applets/tasklist/tasklist_properties.c:156 panel/menu.c:3705
+msgid "Horizontal"
+msgstr "Horizontální"
+
+#: applets/tasklist/tasklist_properties.c:164
+#: applets/tasklist/tasklist_properties.c:215
+msgid "Tasklist width:"
+msgstr "©íøka seznamu úloh:"
+
+#: applets/tasklist/tasklist_properties.c:170
+msgid "Rows of tasks:"
+msgstr "Poèet øádkù úloh"
+
+#: applets/tasklist/tasklist_properties.c:182
+msgid "Default task size:"
+msgstr "Standardní velikost úlohy:"
+
+#: applets/tasklist/tasklist_properties.c:191
+msgid "Tasklist width is fixed"
+msgstr "©írka seznamu je fixní"
+
+#: applets/tasklist/tasklist_properties.c:195
+msgid "Tasklist width is dynamic"
+msgstr "©írka seznamu je dynamická"
+
+#: applets/tasklist/tasklist_properties.c:201 panel/menu.c:3706
+msgid "Vertical"
+msgstr "Vetikální"
+
+#: applets/tasklist/tasklist_properties.c:208
+msgid "Tasklist height:"
+msgstr "Vý¹ka seznamu úloh:"
+
+#: applets/tasklist/tasklist_properties.c:227
+msgid "Tasklist height is fixed"
+msgstr "Vý¹ka seznamu je fixní"
+
+#: applets/tasklist/tasklist_properties.c:231
+msgid "Tasklist height is dynamic"
+msgstr "Vý¹ka seznamu je dynamická"
+
+#: applets/tasklist/tasklist_properties.c:238 panel/menu.c:3737
+msgid "Size"
+msgstr "Velikost"
+
+#: applets/tasklist/tasklist_properties.c:251
+msgid "Which tasks to show"
+msgstr "Které úlohy zobrazovat ?"
+
+#: applets/tasklist/tasklist_properties.c:259
+msgid "Show normal applications"
+msgstr "Ukazovat normální aplikace"
+
+#: applets/tasklist/tasklist_properties.c:262
+msgid "Show iconified (minimized) applications"
+msgstr "Ukazovat ikonifikované (zmen¹ené) aplikace"
+
+#: applets/tasklist/tasklist_properties.c:266
+msgid "Show normal applications on all desktops"
+msgstr "Ukazovat normální aplikace na v¹ech plochách"
+
+#: applets/tasklist/tasklist_properties.c:269
+msgid "Show iconified (minimized) applications on all desktops"
+msgstr "Ukazovat ikonifikované (zmen¹ené) aplikace na v¹ech plochách"
+
+#. Miscellaneous frame
+#: applets/tasklist/tasklist_properties.c:272 help-browser/toc-man.c:25
+#: help-browser/toc2-man.c:27 panel/gnome-panel-properties.c:986
+#: panel/gnome-panel-properties.c:1379
+msgid "Miscellaneous"
+msgstr "Rùzné"
+
+#: applets/tasklist/tasklist_properties.c:280
+msgid "Show mini icons"
+msgstr "Ukazovat malé ikony"
+
+#: applets/tasklist/tasklist_properties.c:283
+msgid "Confirm before killing windows"
+msgstr "Zeptat se pøed ru¹ením oken"
+
+#: applets/tasklist/tasklist_properties.c:286
+msgid "Move iconified tasks to current workspace when restoring"
+msgstr ""
+
+#: applets/tasklist/tasklist_properties.c:317
+msgid "Tasklist properties"
+msgstr "Vlastnosti seznamu úloh"
+
+#: gmenu/desktop.c:84
+msgid " Folder"
+msgstr " Slo¾ka"
+
+#: gmenu/edit.c:305
+msgid "Save"
+msgstr "Ulo¾it"
+
+#: gmenu/edit.c:323 gsm/session-properties.c:173
+msgid "Revert"
+msgstr "Zpìt"
+
+#: gmenu/edit.c:365 gmenu/tree.c:401
+msgid "Favorites (user menus)"
+msgstr "Oblíbené (u¾ivatelské menu)"
+
+#: gmenu/edit.c:367 gmenu/tree.c:409
+msgid "Programs (system menus)"
+msgstr "Programy (systémové menu)"
+
+#: gmenu/edit.c:369 gmenu/tree.c:427
+msgid "Applets (system menus)"
+msgstr "Aplety (systémové menu)"
+
+#: gmenu/edit.c:372 gmenu/tree.c:418
+#, fuzzy
+msgid "Programs to be merged in (system menus)"
+msgstr "Programy (systémové menu)"
+
+#: gmenu/main.c:53 gmenu/main.c:128
+msgid "_New Submenu..."
+msgstr "_Nové podmenu..."
+
+#: gmenu/main.c:54 gmenu/main.c:98 gmenu/main.c:129
+msgid "Create a new submenu"
+msgstr "Vytvoøit nové podmenu"
+
+#: gmenu/main.c:57 gmenu/main.c:125
+msgid "New _Item..."
+msgstr "Nová _polo¾ka..."
+
+#: gmenu/main.c:58 gmenu/main.c:126
+msgid "Create a new menu item"
+msgstr "Vytvoøit novou polo¾ku"
+
+#: gmenu/main.c:61 gmenu/main.c:134
+msgid "_Delete..."
+msgstr "_Smazat..."
+
+#: gmenu/main.c:72
+msgid "_Sort Submenu"
+msgstr "Seøadit _podmenu"
+
+#: gmenu/main.c:76
+msgid "Sort Submenu _Recursive"
+msgstr "Rekurzivnì seøadit _podmenu"
+
+#: gmenu/main.c:90 gmenu/main.c:149
+msgid "_Sort"
+msgstr "Seøadi_t"
+
+#: gmenu/main.c:98
+msgid "New Submenu"
+msgstr "Nové podmenu"
+
+#: gmenu/main.c:102
+msgid "New Item"
+msgstr "Nová polo¾ka"
+
+#: gmenu/main.c:102
+msgid "Create a new item"
+msgstr "Vytvoøit novou polo¾ku"
+
+#: gmenu/main.c:106
+msgid "Delete"
+msgstr "Smazat"
+
+#: gmenu/main.c:106
+msgid "Delete selected menu item"
+msgstr "Smazat vybranou polo¾ku menu"
+
+#: gmenu/main.c:110 gmenu/main.c:140
+msgid "Move up"
+msgstr "Nahoru"
+
+#: gmenu/main.c:110 gmenu/main.c:140
+msgid "Move selected menu up"
+msgstr "Pøesunout vybrané menu nahoru"
+
+#: gmenu/main.c:113 gmenu/main.c:143
+msgid "Move down"
+msgstr "Dolù"
+
+#: gmenu/main.c:113 gmenu/main.c:143
+msgid "Move selected menu down"
+msgstr "Pøesunout vybrané menu dolù"
+
+#: gmenu/main.c:117
+msgid "Sort Submenu"
+msgstr "Seøadit podmenu"
+
+#: gmenu/main.c:117
+msgid "Sort selected submenu"
+msgstr "Seøadit vybrané podmenu"
+
+#: gmenu/main.c:153
+msgid "Sort _Recursive"
+msgstr "Seøadit _Rekurzivnì"
+
+#. loading dialog
+#: gmenu/main.c:241 gmenu/main.c:308 gmenu/tree.c:380
+msgid "GNOME menu editor"
+msgstr "Editor pro GNOME menu"
+
+#: gmenu/main.c:244
+msgid ""
+"Released under the terms of the GNU Public License.\n"
+"GNOME menu editor."
+msgstr ""
+"©íøeno pod Veøejnou licencí GNU.\n"
+"Editor menu Gnome."
+
+#: gmenu/main.c:290
+msgid "Unable to retrieve GNOME installation directory\n"
+msgstr "Nelze najít adresáø instalace GNOME\n"
+
+#: gmenu/order.c:81
+#, c-format
+msgid "Unable to create file: %s\n"
+msgstr "Nelze vytvoøit soubor: %s\n"
+
+#: gmenu/order.c:95
+#, c-format
+msgid "unable to remove .order file: %s\n"
+msgstr "nelze zru¹it soubor .order: %s\n"
+
+#: gmenu/save.c:27 gmenu/save.c:86
+msgid "The menu item must have a name"
+msgstr "Polo¾ka menu musí mít jméno"
+
+#: gmenu/save.c:33
+msgid "The menu entry must have a filename"
+msgstr "Polo¾ka menu musí mít jméno souboru"
+
+#: gmenu/save.c:40
+msgid "Save changes?"
+msgstr "Ulo¾it zmìny?"
+
+#: gmenu/save.c:54
+msgid "This change conflicts with an existing menu item"
+msgstr "Zmìna koliduje s ji¾ existující polo¾kou"
+
+#: gmenu/save.c:61
+msgid "Overwrite existing menu entry?"
+msgstr "Pøepsat existující polo¾ku menu"
+
+#: gmenu/save.c:114
+msgid ""
+"This change conflicts with an existing menu item.\n"
+"No two menu items in a submenu can have the same name."
+msgstr ""
+"Tato zmìna je ve sporu s ji¾ existující polo¾kou menu.\n"
+"®ádné 2 polo¾ky jednoho podmenu nemohou mít stejné jméno."
+
+#: gmenu/tree.c:382
+msgid "One moment, reading menus..."
+msgstr "Chvilièku, naèítají se menu..."
+
+#: gmenu/tree.c:402
+msgid "Top of user menus"
+msgstr "Nejvy¹¹í úroveò menu u¾ivatele"
+
+#: gmenu/tree.c:410
+msgid "Top of system menus"
+msgstr "Nejvy¹¹í úroveò menu systému"
+
+#: gmenu/tree.c:419
+#, fuzzy
+msgid "Top of system merge menus"
+msgstr "Nejvy¹¹í úroveò menu systému"
+
+#: gmenu/tree.c:428
+msgid "Top of applet menus"
+msgstr "Nejvy¹¹í úroveò menu apletù"
+
+#: gmenu/treedel.c:118
+msgid "You can not delete a top level submenu."
+msgstr "Nelze smazat menu nejvy¹¹í úrovnì"
+
+#: gmenu/treedel.c:130 gmenu/treedel.c:153
+msgid "Delete this menu item?"
+msgstr "Smazat tuto polo¾ku menu?"
+
+#: gmenu/treedel.c:140
+msgid "Delete empty submenu?"
+msgstr "Smazat prázdné podmenu?"
+
+#: gmenu/treedel.c:146
+msgid "Are you sure you want to delete this submenu and all its contents?"
+msgstr "Opravdu chcete smazat toto podmenu a jeho obsah ?"
+
+#: gmenu/treenew.c:35 gmenu/treenew.c:110
+msgid ""
+"You can't add an entry to that submenu.\n"
+"You do not have the proper permissions."
+msgstr ""
+"Polo¾ku nelze do podmenu pøidat.\n"
+"Nemáte dostateèná práva."
+
+#: gmenu/treenew.c:43 gmenu/treenew.c:52 gmenu/treenew.c:73 gmenu/treenew.c:82
+msgid "New Folder"
+msgstr "Nové slo¾ka"
+
+#: gmenu/treenew.c:63
+msgid "Failed to create directory"
+msgstr "Nelze vytvoøit adresáø"
+
+#: gmenu/treenew.c:118 gmenu/treenew.c:127
+msgid "untitled.desktop"
+msgstr "bezejména.desktop"
+
+#: gmenu/treenew.c:137 gmenu/treenew.c:144 panel/menu.c:684
+msgid "untitled"
+msgstr "bez titulku"
+
+#: gmenu/utils.c:29
+#, c-format
+msgid "creating user directory: %s\n"
+msgstr "vytváøí se u¾ivatelský adresáø: %s\n"
+
+#: gmenu/utils.c:32
+#, c-format
+msgid "unable to create user directory: %s\n"
+msgstr "nelze vytvoøit u¾ivatelský adresáø: %s\n"
+
+#: gnome-about/contributors.h:13
+msgid "GNOME was brought to you by"
+msgstr "GNOME vám pøinesli"
+
+#: gnome-about/contributors.h:67
+msgid "Gergõ Érdi"
+msgstr ""
+
+#: gnome-about/contributors.h:84
+msgid "The Mysterious GEGL"
+msgstr ""
+
+#. for languages that can't display ntilde, replace 'ñ' with 'n'
+#: gnome-about/contributors.h:168
+msgid "Alexandre Muñiz"
+msgstr ""
+
+#: gnome-about/contributors.h:169
+msgid "Sung-Hyun Nam"
+msgstr ""
+
+#. languages that can't display adiaeresis, replace 'ä' with 'ae'
+#: gnome-about/contributors.h:174
+msgid "Martin Norbäck"
+msgstr ""
+
+#. languages that can't display Odiaeresis, replace 'Ö' with 'Oe'
+#: gnome-about/contributors.h:180
+msgid "Tomas Ögren"
+msgstr ""
+
+#: gnome-about/contributors.h:209
+msgid "Kazuhiro Sasayama"
+msgstr ""
+
+#. for languages that can't display ntilde, replace 'ñ' with 'n'
+#: gnome-about/contributors.h:216
+msgid "Iñigo Serna"
+msgstr ""
+
+#. not really a person name :)
+#: gnome-about/contributors.h:229
+msgid "The Squeaky Rubber Gnome"
+msgstr ""
+
+#: gnome-about/contributors.h:254
+#, fuzzy
+msgid "Wanda the GNOME Fish"
+msgstr "Gnome ryba jménem %s øíká:"
+
+#: gnome-about/contributors.h:267
+msgid "... and many more"
+msgstr "... a dal¹í"
+
+#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:201
+msgid "About GNOME"
+msgstr "O GNOME"
+
+#: gnome-about/gnome-about.c:566
+msgid "GNOME News Site"
+msgstr "Stránka zpráv GNOME"
+
+#: gnome-about/gnome-about.c:570
+msgid "http://www.gnome.org/"
+msgstr ""
+
+#: gnome-about/gnome-about.c:571
+msgid "GNOME Main Site"
+msgstr "Hlavní stránka GNOME"
+
+#: gnome-about/gnome-about.c:576
+msgid "GNOME Developers' Site"
+msgstr "Stránka pro GNOME vývojáøe"
+
+#: gnome-edit/gnome-edit.c:141 gnome-edit/gnome-edit.c:148
+msgid ""
+"Error during execution of chosen editor.\n"
+"\n"
+"The editor you have chosen is probably either not available,\n"
+"or is not on your current path."
+msgstr ""
+"Chyba behem spou¹tìní vybraného editoru.\n"
+"\n"
+"Tento editor buï není nainstalován a nebo není ve va¹í\n"
+"standardní vyhledávací cestì."
+
+#: gnome-edit/gnome-edit.c:167
+msgid ""
+"Alternate editor types are not supported by gnome-edit yet.\n"
+"Please choose a standard executable editor in the gnome-edit capplet\n"
+"in the gnome control center."
+msgstr ""
+"Alternativní typy editorù nejsou je¹tì podporovány gnome-edit.\n"
+"Vyberte si prosím jeden ze standardních editorù v gnome-edit capletu\n"
+"v øídícím centru GNOME."
+
+#: gnome-hint/gnome-hint.c:34
+msgid "Start in hint browsing mode"
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:38
+msgid "Start in motd mode"
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:42
+msgid "Start in fortune mode"
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:46
+msgid "Start in session login mode (used from gsm)"
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:57
+msgid ""
+"Click on the GNOME foot icon to open the\n"
+"Main Menu.  This menu contains all\n"
+"GNOME applications, tools, and commands."
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:388
+msgid "-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
+msgstr ""
+
+#: gnome-hint/gnome-hint.c:413
+msgid ""
+"You've chosen to disable the startup hint.\n"
+"To re-enable it, choose \"Startup Hint\"\n"
+"in the GNOME Control Center"
+msgstr ""
+"Rozhodl(a) jste se zru¹it pøihla¹ovací rady.\n"
+"Pokud je chcete znovu nastavit, vyberte \"Pøihla¹ovací Rady\"\n"
+"v Øídícím centru GNOME"
+
+#: gnome-hint/gnome-hint.c:509
+msgid "No message of the day found!"
+msgstr "Nenalezena ¾ádná zpráva dne."
+
+#: gnome-hint/gnome-hint.c:564
+msgid "Message of The Day"
+msgstr "Zpráva dne"
+
+#: gnome-hint/gnome-hint.c:571
+msgid "Fortune"
+msgstr "©tìstena"
+
+#: gnome-hint/gnome-hint.c:579
+msgid "Gnome hint"
+msgstr "Gnome rada"
+
+#: gnome-hint/gnome-hint.c:604
+msgid "Display this dialog next time"
+msgstr "Ukázat tento dialog pøí¹tì"
+
+#: gnome-hint/gnome-hint-properties.c:57
+msgid ""
+"No help is available/installed for these settings. Please make sure you\n"
+"have the GNOME User's Guide installed on your system."
+msgstr ""
+"Nápovìda na tyto natavení není instalována nebo je¹tì není napsána.\n"
+"Nainstalujte si prosím u¾ivatelský manuál GNOME."
+
+#: gnome-hint/gnome-hint-properties.c:59
+msgid "Close"
+msgstr "Uzavøít"
+
+#. add the enable box
+#: gnome-hint/gnome-hint-properties.c:127
+msgid "Enable login hints"
+msgstr "Povolit pøíhla¹ovací rady"
+
+#. add the hint box
+#: gnome-hint/gnome-hint-properties.c:134
+msgid "Display normal hints"
+msgstr "Ukázat normální rady"
+
+#: gnome-hint/gnome-hint-properties.c:143
+msgid "Display fortunes instead of hints"
+msgstr "Ukazovat ¹tìsteny místo rad"
+
+#: gnome-hint/gnome-hint-properties.c:152
+msgid "Display message of the day instead of hints"
+msgstr "Ukazovat zprávu dne místo rad"
+
+#: gnome-hint/gnome-hint-properties.c:161
+msgid "Message of the day file to use: "
+msgstr "Soubor zprávy dne: "
+
+#: gnome-terminal/gnome-terminal.c:219
+msgid "Zvt terminal widget:     Michael Zucchi (zucchi@zedzone.mmc.com.au)"
+msgstr "Zvt terminálový widget:  Michael Zucchi (zucchi@zedzone.mmc.com.au)"
+
+#: gnome-terminal/gnome-terminal.c:221
+msgid "GNOME terminal:     Miguel de Icaza (miguel@kernel.org)"
+msgstr "Terminál GNOME:     Miguel de Icaza (miguel@kernel.org)"
+
+#: gnome-terminal/gnome-terminal.c:223
+msgid "    Erik Troan (ewt@redhat.com)"
+msgstr "    Erik Troan (ewt@redhat.com)"
+
+#: gnome-terminal/gnome-terminal.c:240
+msgid "GNOME Terminal"
+msgstr "Terminál GNOME"
+
+#: gnome-terminal/gnome-terminal.c:243
+msgid "The GNOME terminal emulation program."
+msgstr "terminálový emulátor podle GNOME."
+
+#: gnome-terminal/gnome-terminal.c:605 gnome-terminal/gnome-terminal.c:1165
+#: gnome-terminal/gnome-terminal.c:1175 gnome-terminal/gnome-terminal.c:2356
+msgid "Default"
+msgstr "Standardní"
+
+#: gnome-terminal/gnome-terminal.c:783
+msgid ""
+"You have switched the class of this window. Do you\n"
+" want to reconfigure this window to match the default\n"
+"configuration of the new class?"
+msgstr ""
+"Zmìnil(a) jste tøídu tohoto okna. Chcete rekonfigurovat\n"
+"okno, aby odpovídalo standardní konfiguraci nové tøídy ?"
+
+#: gnome-terminal/gnome-terminal.c:963
+msgid "Linux console"
+msgstr "Konzole linux"
+
+#: gnome-terminal/gnome-terminal.c:964
+msgid "Color Xterm"
+msgstr "Barevný XTerm"
+
+#: gnome-terminal/gnome-terminal.c:965
+msgid "rxvt"
+msgstr "rxvt"
+
+#: gnome-terminal/gnome-terminal.c:966
+msgid "Custom"
+msgstr "Vlastní"
+
+#: gnome-terminal/gnome-terminal.c:971
+msgid "White on black"
+msgstr "Bílá na èerné"
+
+#: gnome-terminal/gnome-terminal.c:972
+msgid "Black on white"
+msgstr "Èerná na bílé"
+
+#: gnome-terminal/gnome-terminal.c:973
+msgid "Green on black"
+msgstr "Zelená na èerné"
+
+#: gnome-terminal/gnome-terminal.c:974
+msgid "Black on light yellow"
+msgstr "Èerná na svìtlé ¾luté"
+
+#: gnome-terminal/gnome-terminal.c:975
+msgid "Custom colors"
+msgstr "Vlastní barvy"
+
+#: gnome-terminal/gnome-terminal.c:980
+msgid "Left"
+msgstr "Vlevo"
+
+#: gnome-terminal/gnome-terminal.c:981
+msgid "Right"
+msgstr "Vpravo"
+
+#: gnome-terminal/gnome-terminal.c:982
+msgid "Hidden"
+msgstr "Skryto"
+
+#: gnome-terminal/gnome-terminal.c:1124
+msgid "General"
+msgstr "Obecné"
+
+#. Font
+#: gnome-terminal/gnome-terminal.c:1127
+msgid "Font:"
+msgstr "Font:"
+
+#: gnome-terminal/gnome-terminal.c:1149 panel/gnome-run.c:163
+#: panel/gnome-run.c:236
+msgid "Browse..."
+msgstr "Probírat..."
+
+#. Terminal class
+#: gnome-terminal/gnome-terminal.c:1157
+msgid "Terminal Class"
+msgstr "Tøída terminálu"
+
+#. Toggle the use of bold
+#: gnome-terminal/gnome-terminal.c:1186
+msgid "Enable bold text"
+msgstr "Povolit tuèný text"
+
+#. Blinking status
+#: gnome-terminal/gnome-terminal.c:1202
+msgid "Blinking cursor"
+msgstr "Blikající kurzor"
+
+#. Show menu bar
+#: gnome-terminal/gnome-terminal.c:1211
+msgid "Hide menu bar"
+msgstr "Ukrýt menu"
+
+#. Toggle the bell
+#: gnome-terminal/gnome-terminal.c:1220
+msgid "Silence Terminal bell"
+msgstr "Umlèet pípání terminálu"
+
+#. Swap keys
+#: gnome-terminal/gnome-terminal.c:1229
+msgid "Swap DEL/Backspace"
+msgstr "Prohodit DEL/Backspace"
+
+#. --login by default
+#: gnome-terminal/gnome-terminal.c:1238
+msgid "Use --login by default"
+msgstr "Pou¾ít standardnì --login"
+
+#. Word selection class
+#: gnome-terminal/gnome-terminal.c:1247
+msgid "Select-by-word characters"
+msgstr "Znaky, které se mohou vyskytovat ve slovech"
+
+#. image frame
+#: gnome-terminal/gnome-terminal.c:1269 panel/panel_config.c:1157
+msgid "Image"
+msgstr "Obrázek"
+
+#: gnome-terminal/gnome-terminal.c:1271 panel/menu.c:3743
+msgid "Background type"
+msgstr "Typ pozadí"
+
+#: gnome-terminal/gnome-terminal.c:1281 panel/menu.c:3700
+msgid "None"
+msgstr "Nic"
+
+#: gnome-terminal/gnome-terminal.c:1289
+msgid "Background pixmap"
+msgstr "Pixelová mapa pozadí"
+
+#: gnome-terminal/gnome-terminal.c:1305
+msgid "Pixmap file:"
+msgstr "Soubor mapy pixelù:"
+
+#: gnome-terminal/gnome-terminal.c:1320
+msgid "Background pixmap scrolls"
+msgstr "Posuny obrázku pozadí (terminálu)"
+
+#: gnome-terminal/gnome-terminal.c:1333
+msgid "Transparent"
+msgstr "Transparentní"
+
+#. Shaded
+#: gnome-terminal/gnome-terminal.c:1360
+msgid "Background should be shaded"
+msgstr "Pozadí má být stínováno"
+
+#: gnome-terminal/gnome-terminal.c:1374
+msgid "Colors"
+msgstr "Barvy"
+
+#. Color palette
+#: gnome-terminal/gnome-terminal.c:1377
+msgid "Color scheme:"
+msgstr "Barevné schéma:"
+
+#. Foreground, background buttons
+#: gnome-terminal/gnome-terminal.c:1387
+msgid "Foreground color:"
+msgstr "Barva písma:"
+
+#: gnome-terminal/gnome-terminal.c:1395
+msgid "Background color:"
+msgstr "Barva pozadí:"
+
+#: gnome-terminal/gnome-terminal.c:1402
+msgid "Color palette:"
+msgstr "Paleta barev:"
+
+#. default foreground/backgorund selector
+#: gnome-terminal/gnome-terminal.c:1425
+msgid "Fore/Background Colour:"
+msgstr "Barva písma/pozadí:"
+
+#: gnome-terminal/gnome-terminal.c:1439
+msgid "Scrolling"
+msgstr "Posun"
+
+#. Scrollbar position
+#: gnome-terminal/gnome-terminal.c:1442
+msgid "Scrollbar position"
+msgstr "Umístìní posunovací li¹ty"
+
+#. Scroll back
+#: gnome-terminal/gnome-terminal.c:1453
+msgid "Scrollback lines"
+msgstr "Maximální poèet øádek pøi posunu zpìt:"
+
+#. Scroll on keystroke checkbox
+#: gnome-terminal/gnome-terminal.c:1467
+msgid "Scroll on keystroke"
+msgstr "Rolovat pøi stisku klávesy"
+
+#. Scroll on output checkbox
+#: gnome-terminal/gnome-terminal.c:1476
+msgid "Scroll on output"
+msgstr "Rolovat pøi výstupu programu"
+
+#: gnome-terminal/gnome-terminal.c:1508
+msgid "Color selector"
+msgstr "Výbìr barev"
+
+#: gnome-terminal/gnome-terminal.c:1614 gnome-terminal/gnome-terminal.c:1631
+msgid "_New terminal"
+msgstr "_Nový terminál"
+
+#: gnome-terminal/gnome-terminal.c:1614 gnome-terminal/gnome-terminal.c:1631
+msgid "Creates a new terminal window"
+msgstr "Vytváøí nové okno terminálu"
+
+#: gnome-terminal/gnome-terminal.c:1616
+msgid "_Hide menubar"
+msgstr "_Ukrýt menu"
+
+#: gnome-terminal/gnome-terminal.c:1618
+msgid "_Close terminal"
+msgstr "U_zavøít terminál"
+
+#: gnome-terminal/gnome-terminal.c:1633
+msgid "_Show menubar"
+msgstr "_Ukázat menu"
+
+#: gnome-terminal/gnome-terminal.c:1633
+msgid "Toggles whether or not the menubar is displayed."
+msgstr "Zobrazení menu vypnuto/zapnuto."
+
+#: gnome-terminal/gnome-terminal.c:1635
+msgid "_Secure keyboard"
+msgstr "_Zabezpeèená klávesnice"
+
+#: gnome-terminal/gnome-terminal.c:1636
+msgid "Toggles whether or not the keyboard is grabbed by the terminal."
+msgstr "Nastavuje zpracování událostí od klávesnice."
+
+#: gnome-terminal/gnome-terminal.c:1639 gnome-terminal/gnome-terminal.c:1668
+msgid "_Reset Terminal"
+msgstr "_Reset terminálu"
+
+#: gnome-terminal/gnome-terminal.c:1640 gnome-terminal/gnome-terminal.c:1669
+msgid "Reset and _Clear"
+msgstr "Reset a _Smazat"
+
+#: gnome-terminal/gnome-terminal.c:1650
+msgid "_Open in browser"
+msgstr "_Otevøi v prohlí¾eèi"
+
+#: gnome-terminal/gnome-terminal.c:1671
+msgid "C_olor selector..."
+msgstr "Výbìr barvy..."
+
+#: gnome-terminal/gnome-terminal.c:1677
+msgid "File"
+msgstr "Soubor"
+
+#: gnome-terminal/gnome-terminal.c:1682
+msgid "Edit"
+msgstr "Editace"
+
+#: gnome-terminal/gnome-terminal.c:1687 gsm/gsm-client-row.c:59
+#: panel/foobar-widget.c:604
+msgid "Settings"
+msgstr "Nastavení"
+
+#: gnome-terminal/gnome-terminal.c:2021
+#, c-format
+msgid "The error was: %s"
+msgstr "Chyba: %s"
+
+#: gnome-terminal/gnome-terminal.c:2022
+msgid ""
+"If you are using Linux 2.2.x with glibc 2.1.x, this\n"
+"is probably due to incorrectly setup Unix98 ptys.\n"
+"\n"
+"Please read linux/Documentation/Changes for how to\n"
+"set them up correctly."
+msgstr ""
+"Pokud pou¾íváte Linux 2.2.x s glibc 2.1.x, tato zpráva\n"
+"pravdìpodobnì znamená, ¾e nemáte správnì nastaveny \n"
+"terminálové linky dle UNIX98 [pty]\n"
+"\n"
+"Pøeètìte si prosím linux/Documentation/Changes, je tam\n"
+"popsáno, jak se nastavují."
+
+#: gnome-terminal/gnome-terminal.c:2027
+#, c-format
+msgid ""
+"There has been an error while trying to log in.\n"
+"\n"
+"%s"
+msgstr ""
+"Chyba pøi pokusu o pøihlá¹ení.\n"
+"\n"
+"%s"
+
+#: gnome-terminal/gnome-terminal.c:2559
+msgid "Terminal class name"
+msgstr "Jméno tøídy terminálu"
+
+#: gnome-terminal/gnome-terminal.c:2559
+msgid "TCLASS"
+msgstr "TCLASS"
+
+#: gnome-terminal/gnome-terminal.c:2562
+msgid "Specifies font name"
+msgstr "Specifikuje jméno fontu"
+
+#: gnome-terminal/gnome-terminal.c:2562
+msgid "FONT"
+msgstr "FONT"
+
+#: gnome-terminal/gnome-terminal.c:2565
+msgid "Do not start up shells as login shells"
+msgstr "®ádný shell nestartovat jako login shell"
+
+#: gnome-terminal/gnome-terminal.c:2568
+msgid "Start up shells as login shells"
+msgstr "Ka¾dý shell odstartovat jako login shell"
+
+#: gnome-terminal/gnome-terminal.c:2571
+msgid "Specifies the geometry for the main window"
+msgstr "Specifikuje geometrii hlavního okna"
+
+#: gnome-terminal/gnome-terminal.c:2571
+msgid "GEOMETRY"
+msgstr "GEOMETRIE"
+
+#: gnome-terminal/gnome-terminal.c:2574
+msgid "Execute this program instead of a shell"
+msgstr "Spustit tento program, nikoli shell"
+
+#: gnome-terminal/gnome-terminal.c:2574 gnome-terminal/gnome-terminal.c:2577
+msgid "COMMAND"
+msgstr "PØÍKAZ"
+
+#: gnome-terminal/gnome-terminal.c:2577
+msgid "Execute this program the same way as xterm does"
+msgstr "Spustit tento program (jako v programu 'xterm')"
+
+#: gnome-terminal/gnome-terminal.c:2580
+msgid "Foreground color"
+msgstr "Barva popøedí"
+
+#: gnome-terminal/gnome-terminal.c:2580 gnome-terminal/gnome-terminal.c:2583
+msgid "COLOR"
+msgstr "BARVA"
+
+#: gnome-terminal/gnome-terminal.c:2583
+msgid "Background color"
+msgstr "Barva pozadí"
+
+#: gnome-terminal/gnome-terminal.c:2586
+msgid "Update utmp entry"
+msgstr "Zapisovat do utmp"
+
+#: gnome-terminal/gnome-terminal.c:2586
+msgid "UTMP"
+msgstr "UTMP"
+
+#: gnome-terminal/gnome-terminal.c:2589
+msgid "Do not update utmp entry"
+msgstr "Nezapisovat do utmp"
+
+#: gnome-terminal/gnome-terminal.c:2589
+msgid "NOUTMP"
+msgstr "NEUTMP"
+
+#: gnome-terminal/gnome-terminal.c:2592
+msgid "Update wtmp entry"
+msgstr "Zapisovat do wtmp"
+
+#: gnome-terminal/gnome-terminal.c:2592
+msgid "WTMP"
+msgstr "WTMP"
+
+#: gnome-terminal/gnome-terminal.c:2595
+msgid "Do not update wtmp entry"
+msgstr "Nezapisovat do wtmp"
+
+#: gnome-terminal/gnome-terminal.c:2595
+msgid "NOWTMP"
+msgstr "NEWTMP"
+
+#: gnome-terminal/gnome-terminal.c:2598
+msgid "Update lastlog entry"
+msgstr "Aktualizovat lastlog zapis"
+
+#: gnome-terminal/gnome-terminal.c:2598
+msgid "LASTLOG"
+msgstr "LASTLOG"
+
+#: gnome-terminal/gnome-terminal.c:2601
+msgid "Do not update lastlog entry"
+msgstr "Neaktualizovat lastlog zapis"
+
+#: gnome-terminal/gnome-terminal.c:2601
+msgid "NOLASTLOG"
+msgstr "NOLASTLOG"
+
+#: gnome-terminal/gnome-terminal.c:2604
+msgid "Set the window title"
+msgstr "Nastavení titulku okna"
+
+#: gnome-terminal/gnome-terminal.c:2604
+msgid "TITLE"
+msgstr "TITULEK"
+
+#: gnome-terminal/gnome-terminal.c:2607
+msgid "Set the TERM variable"
+msgstr "Nastavit promìnnou TERM"
+
+#: gnome-terminal/gnome-terminal.c:2607
+msgid "TERMNAME"
+msgstr "TERMINÁL"
+
+#: gnome-terminal/gnome-terminal.c:2610
+msgid "Try to start a TerminalFactory"
+msgstr "Zkusit spustit TerminalFactory"
+
+#: gnome-terminal/gnome-terminal.c:2613
+msgid "Try to create the terminal with the TerminalFactory"
+msgstr "Zkusit vytvoøit terminál z existující TerminalFactory"
+
+#: gsm/gnome-login-check.c:67
+#, c-format
+msgid "Looking up internet address for %s"
+msgstr "Vyhledání internetové adresy pro %s"
+
+#: gsm/gnome-login-check.c:71
+msgid "Hide"
+msgstr "Skrýt"
+
+#: gsm/gnome-login-check.c:244
+msgid "GNOME Login"
+msgstr "Pøihlá¹ení GNOME"
+
+#: gsm/gnome-login-check.c:244
+msgid "Login"
+msgstr "Pøihlá¹ení"
+
+#: gsm/gnome-login-check.c:271
+msgid "Start with default programs"
+msgstr "Odstartovat standardní sadu programù"
+
+#: gsm/gnome-login-check.c:275
+msgid "Reset all user settings"
+msgstr "Zru¹it zmìny v¹ech u¾ivatelských nastavení"
+
+#: gsm/gnome-login-check.c:286
+#, c-format
+msgid "Really reset all GNOME user settings for %s?"
+msgstr "Skuteènì zru¹it v¹echna nastavení pro %s?"
+
+#: gsm/gnome-login-check.c:318
+#, c-format
+msgid ""
+"The directory /tmp/orbit-%s is not owned\n"
+"by the current user, %s.\n"
+"Please correct the ownership of this directory."
+msgstr ""
+"Adresáø /tmp/orbit-%s není vlastnìn\n"
+"pøihlá¹eným u¾ivatelem, %s.\n"
+"Opravte prosím vlastnictví tohoto adresáøe."
+
+#: gsm/gnome-login-check.c:325 gsm/gnome-login-check.c:350
+msgid "Try again"
+msgstr "Zkuste znovu"
+
+#: gsm/gnome-login-check.c:326 gsm/gnome-login-check.c:351
+msgid "Continue"
+msgstr "Pokraèovat"
+
+#: gsm/gnome-login-check.c:342
+#, c-format
+msgid ""
+"Could not look up internet address for %s.\n"
+"This will prevent GNOME from operating correctly.\n"
+"It may be possible to correct the problem by adding\n"
+"%s to the file /etc/hosts."
+msgstr ""
+"Nelze najít internetovou adresu pro %s.\n"
+"Gnome nemù¾e správne pokraèovat. Pokud se tomu chcete\n"
+"vyhnout, pøidejte %s do souboru /etc/hosts."
+
+#: gsm/gnome-login-check.c:368
+msgid ""
+"Your version of libICE has a bug which causes gnome-session\n"
+"to not function correctly.\n"
+"\n"
+"If you are on Solaris, you should either upgrade to Solaris patch\n"
+"#108376-16 or use the libICE.so.6 from the original Solaris 7.\n"
+"Copy the file into /usr/openwin/lib.  (Thanks go to Andy Reitz\n"
+"for information on this bug).\n"
+"\n"
+"Your GNOME session will terminate after closing this dialog."
+msgstr ""
+
+#: gsm/gsm-client-editor.c:97
+msgid "Order: "
+msgstr "Poøadí:"
+
+#: gsm/gsm-client-editor.c:107
+msgid "Style: "
+msgstr "Styl: "
+
+#: gsm/gsm-client-list.c:114
+msgid "Order"
+msgstr "Poøadí"
+
+#: gsm/gsm-client-list.c:114
+msgid "Style"
+msgstr "Styl"
+
+#: gsm/gsm-client-list.c:114
+msgid "State"
+msgstr "Stav"
+
+#: gsm/gsm-client-list.c:114
+msgid "Program"
+msgstr "Program"
+
+#: gsm/gsm-client-row.c:31
+msgid "Inactive"
+msgstr "Neaktivní"
+
+#: gsm/gsm-client-row.c:32
+msgid "Waiting to start or already finished."
+msgstr "Èekající na start nebo ji¾ ukonèený."
+
+#: gsm/gsm-client-row.c:34
+msgid "Starting"
+msgstr "Startující"
+
+#: gsm/gsm-client-row.c:35
+msgid "Started but has not yet reported state."
+msgstr "Odstartován, ale je¹tì neoznámil stav."
+
+#: gsm/gsm-client-row.c:37
+msgid "Running"
+msgstr "Bì¾ící"
+
+#: gsm/gsm-client-row.c:38
+msgid "A normal member of the session."
+msgstr "Normální program sezení."
+
+#: gsm/gsm-client-row.c:40
+msgid "Saving"
+msgstr "Ukládání"
+
+#: gsm/gsm-client-row.c:41
+msgid "Saving session details."
+msgstr "Detaily ukládání sezení"
+
+#: gsm/gsm-client-row.c:43
+msgid "Unknown"
+msgstr "Neznámý"
+
+#: gsm/gsm-client-row.c:44
+msgid "State not reported within timeout."
+msgstr "Bìhem urèité doby nebyl oznámen stav."
+
+#: gsm/gsm-client-row.c:50
+msgid "Normal"
+msgstr "Normální"
+
+#: gsm/gsm-client-row.c:51
+msgid "Unaffected by logouts but can die."
+msgstr "Nepøeru¹ené pøi odhlá¹ení, ale lze je ukonèit."
+
+#: gsm/gsm-client-row.c:53
+msgid "Respawn"
+msgstr "Stálé"
+
+#: gsm/gsm-client-row.c:54
+msgid "Never allowed to die."
+msgstr "Nikdy nekonèí."
+
+#: gsm/gsm-client-row.c:56
+msgid "Trash"
+msgstr "Zahozené"
+
+#: gsm/gsm-client-row.c:57
+msgid "Discarded on logout and can die."
+msgstr "Ukonèeny pøi odhlá¹ení a lze je ukonèit."
+
+#: gsm/gsm-client-row.c:60
+msgid "Always started on every login."
+msgstr "Odstartovat pøi pøihlá¹ení."
+
+#: gsm/gsm-protocol.c:502
+msgid "Remove Program"
+msgstr "Odstranit program"
+
+#: gsm/logout.c:199
+msgid "Really log out?"
+msgstr "Skuteènì odhlásit?"
+
+#: gsm/logout.c:221
+msgid "Save current setup"
+msgstr "Ulo¾it aktuální nastavení"
+
+#: gsm/logout.c:240
+msgid "Action"
+msgstr "Akce"
+
+#: gsm/logout.c:248
+msgid "Logout"
+msgstr "Odhlásit"
+
+#: gsm/logout.c:251
+msgid "Halt"
+msgstr "Zastavit systém"
+
+#: gsm/logout.c:254
+msgid "Reboot"
+msgstr "Restart poèítaèe"
+
+#: gsm/main.c:58
+msgid "Start chooser and pick the session"
+msgstr "Odstartovat výbìr a vybrat sezení"
+
+#: gsm/main.c:59
+msgid "Only read saved sessions from the default.session file"
+msgstr "Pouze naèíst ulo¾ená sezení ze souboru default.session"
+
+#: gsm/main.c:60
+msgid "Millisecond period spent waiting for clients to register (0=forever)"
+msgstr "Doba èekání na registraci klienta v ms (0=nav¾dy)"
+
+#: gsm/main.c:61
+msgid "Millisecond period spent waiting for clients to respond (0=forever)"
+msgstr "Doba èekání na odpovìï klienta v ms (0=nav¾dy)"
+
+#: gsm/main.c:62
+msgid "Millisecond period spent waiting for clients to die (0=forever)"
+msgstr "Doba èekání na ukonèení klienta (0=nav¾dy)"
+
+#: gsm/manager.c:381
+msgid "Wait abandoned due to conflict."
+msgstr "Vzhledem ke konfliktu bylo pøeru¹eno èekání."
+
+#: gsm/manager.c:833
+#, c-format
+msgid "No response to the %s command."
+msgstr "Na pøíkaz %s není ¾ádná odpovìï."
+
+#: gsm/manager.c:834
+msgid "The program may be slow, stopped or broken."
+msgstr "Program mohl drasticky zpomalit, zastavit se nebo obsahuje chybu."
+
+#: gsm/manager.c:835
+msgid "You may wait for it to respond or remove it."
+msgstr "Mù¾ete chvilku poèkat nebo ho zru¹it."
+
+#: gsm/manager.c:1371
+msgid "Respawn abandoned due to failures."
+msgstr "Opìtovný start aplikace byl vzhledem k chybám zru¹en."
+
+#: gsm/manager.c:1539
+msgid "A session shutdown is in progress."
+msgstr "Probíhá ukonèení sezení."
+
+#: gsm/save-session.c:45
+msgid "Kill session"
+msgstr "Ukonèit sezení"
+
+#: gsm/save-session.c:46
+msgid "Use dialog boxes"
+msgstr "U¾ívat dialogy"
+
+#: gsm/save-session.c:98
+msgid "Could not connect to the session manager"
+msgstr "Nelze kontaktovat správce sezení"
+
+#: gsm/save-session.c:113
+msgid "Could not connect to gnome-session"
+msgstr "Nelze se spojit s gnome-session"
+
+#: gsm/save-session.c:164
+msgid "Your session has been saved"
+msgstr "Va¹e sezení bylo zapsáno"
+
+#. buttons
+#: gsm/session-properties.c:170
+msgid "Try"
+msgstr "Zkusit"
+
+#: gsm/session-properties.c:176
+msgid "OK"
+msgstr "OK"
+
+#: gsm/session-properties.c:179
+msgid "Cancel"
+msgstr "Zru¹it"
+
+#: gsm/session-properties.c:272
+msgid "Session"
+msgstr "Sezení"
+
+#. app
+#: gsm/session-properties.c:326
+msgid "Session Chooser"
+msgstr "Výbìr sezení"
+
+#: gsm/session-properties.c:329
+msgid "Start Session"
+msgstr "Odstartovat sezení"
+
+#: gsm/session-properties.c:332
+msgid "Cancel Login"
+msgstr "Zru¹it pøihlá¹ení"
+
+#: gsm/session-properties.c:358
+msgid "Initialize session settings"
+msgstr "Inicializace vlastností sezení"
+
+#: gsm/session-properties.c:359
+msgid "Only display warnings."
+msgstr "Pouze zobrazit varování."
+
+#: gsm/splash.c:81
+msgid "done"
+msgstr "dokonèeno"
+
+#: gsm/splash.c:153
+msgid "Starting GNOME"
+msgstr "Startuji GNOME"
+
+#: gsm/splash.c:177
+#, c-format
+msgid "Starting GNOME... %s"
+msgstr "Startuji GNOME... %s"
+
+#: help-browser/bookmarks.c:221
+msgid "Bookmark"
+msgstr "Zálo¾ka"
+
+#: help-browser/bookmarks.c:221
+msgid "Page Title"
+msgstr "Název stránky"
+
+#: help-browser/bookmarks.c:231
+msgid "Gnome Help Bookmarks"
+msgstr "Zálo¾ky"
+
+#. Buttons
+#: help-browser/bookmarks.c:242
+msgid "Remove"
+msgstr "Odstranit"
+
+#: help-browser/gnome-help-browser.c:131
+msgid "X position of window"
+msgstr "X-ová pozice okna"
+
+#: help-browser/gnome-help-browser.c:131
+msgid "X"
+msgstr "X"
+
+#: help-browser/gnome-help-browser.c:132
+msgid "Y position of window"
+msgstr "Y-ová pozice okna"
+
+#: help-browser/gnome-help-browser.c:132 panel/panel_config.c:771
+msgid "Y"
+msgstr "Y"
+
+#: help-browser/gnome-help-browser.c:133
+msgid "Width of window"
+msgstr "©íøka okna"
+
+#: help-browser/gnome-help-browser.c:133
+msgid "WIDTH"
+msgstr "©ÍØKA"
+
+#: help-browser/gnome-help-browser.c:134
+msgid "Height of window"
+msgstr "Vý¹ka okna"
+
+#: help-browser/gnome-help-browser.c:134
+msgid "HEIGHT"
+msgstr "VÝ©KA"
+
+#: help-browser/gnome-help-browser.c:135
+msgid "Debug level"
+msgstr "Úroveò ladìní"
+
+#: help-browser/gnome-help-browser.c:371 help-browser/window.c:913
+msgid "Gnome Help Browser"
+msgstr "Hypertextový prohlí¾eè"
+
+#: help-browser/gnome-help-browser.c:372
+msgid "Copyright (c) 1998 Red Hat Software, Inc."
+msgstr "Copyright (c) 1998 Red Hat Software, Inc."
+
+#: help-browser/gnome-help-browser.c:374
+msgid ""
+"GNOME Help Browser allows easy access to various forms of documentation on "
+"your system"
+msgstr ""
+"Pomocí \"GNOME hypertextového prohlí¾eèe\" má¹ snadný pøístup k rùzné "
+"dokumentaci na svém systému"
+
+#: help-browser/gnome-help-browser.c:632
+msgid "History size"
+msgstr "Velikost historie"
+
+#: help-browser/gnome-help-browser.c:633
+msgid "History file"
+msgstr "Soubor historie"
+
+#: help-browser/gnome-help-browser.c:634
+msgid "Cache size"
+msgstr "Velikost vyrovnávací pamìti"
+
+#: help-browser/gnome-help-browser.c:635
+msgid "Cache file"
+msgstr "Vyrovnávací soubor"
+
+#: help-browser/gnome-help-browser.c:636
+msgid "Bookmark file"
+msgstr "Soubor zálo¾ek"
+
+#: help-browser/gnome-help-browser.c:642
+msgid "Man Path"
+msgstr "Cesta k systémovým manuálnùm"
+
+#: help-browser/gnome-help-browser.c:643
+msgid "Info Path"
+msgstr "Cesta k .info souborùm"
+
+#: help-browser/gnome-help-browser.c:644
+msgid "GNOME Help Path"
+msgstr "Cesta ke GNOME nápovìdì"
+
+#: help-browser/gnome-help-browser.c:719
+msgid "Gnome Help Configure"
+msgstr "Konfigurace GNOME helpu"
+
+#: help-browser/gnome-help-browser.c:722
+msgid "History and cache"
+msgstr "Historie a cache"
+
+#: help-browser/gnome-help-browser.c:723
+msgid "Paths"
+msgstr "Cesty"
+
+#: help-browser/gnome-helpwin.c:268
+msgid "<body><h2>Error: file not found</h2></body>"
+msgstr "<body><h2>CHYBA: dokument nenalezen!</h2></body>"
+
+#: help-browser/history.c:258
+msgid "URL"
+msgstr "URL"
+
+#: help-browser/history.c:258
+msgid "Last"
+msgstr "Poslední pøístup"
+
+#: help-browser/history.c:258
+msgid "Count"
+msgstr "Poèet"
+
+#: help-browser/history.c:271
+msgid "Gnome Help History"
+msgstr "Historie nápovìdy"
+
+#: help-browser/toc2.c:115
+msgid "<BODY BGCOLOR=\"#FFFFFF\"><h1>Table of Contents</h1>\n"
+msgstr "<BODY BGCOLOR=\"#FFFFFF\"><h1>Obsah</h1>\n"
+
+#. Man Pages
+#: help-browser/toc2.c:119
+msgid "<h2>Man Pages</h2>\n"
+msgstr "<h2>Systémové manuály (man pages)</h2>\n"
+
+#: help-browser/toc2.c:258 help-browser/toc2.c:322
+msgid "<body bgcolor=\"#FFFFFF\"><h1>Table of Contents</h1>\n"
+msgstr "<body bgcolor=\"#FFFFFF\"><h1>Obsah</h1>\n"
+
+#: help-browser/toc2.c:259
+msgid "<h2>Info Pages</h2>\n"
+msgstr "<h2>Systémové info stránky (info pages)</h2>\n"
+
+#: help-browser/toc2.c:323
+msgid "<h2>GNOME Help</h2>\n"
+msgstr "<h2>GNOME nápovìda</h2>\n"
+
+#: help-browser/toc2.c:467
+msgid ""
+"<HTML>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"<H2>Results of the substring search for the string "
+msgstr ""
+"<HTML>\n"
+"<BODY BGCOLOR=\"#ffffff\">\n"
+"<H2>Výsledky hledání podøetìzce "
+
+#: help-browser/toc2.c:473
+msgid ""
+"<p>\n"
+"<br>\n"
+"<H3>Manual Pages</H3>\n"
+"<p>\n"
+"<UL>\n"
+msgstr ""
+"<p>\n"
+"<br>\n"
+"<H3>Systémové manuály (man pages)</H3>\n"
+"<p>\n"
+"<UL>\n"
+
+#: help-browser/toc2.c:496
+msgid ""
+"\n"
+"<p>\n"
+"<br>\n"
+"<H3>GNU Info Pages</H3>\n"
+"<p>\n"
+"<UL>\n"
+msgstr ""
+"\n"
+"<p>\n"
+"<br>\n"
+"<H3>Stránky GNU .info nápovìdy</H3>\n"
+"<p>\n"
+"<UL>\n"
+
+#: help-browser/toc2.c:520
+msgid ""
+"\n"
+"<p>\n"
+"<br>\n"
+"<H3>GNOME Help Pages</H3>\n"
+"<p>\n"
+"<UL>\n"
+msgstr ""
+"\n"
+"<p>\n"
+"<br>\n"
+"<H3>Stránky GNOME nápovìdy</H3>\n"
+"<p>\n"
+"<UL>\n"
+
+#: help-browser/toc2.c:542
+msgid "<br><B>No matches found</B>\n"
+msgstr "<br><B>Nenalezeno</B>\n"
+
+#: help-browser/toc-man.c:19 help-browser/toc2-man.c:21
+msgid "User Commands"
+msgstr "U¾ivatelské pøíkazy"
+
+#: help-browser/toc-man.c:20 help-browser/toc2-man.c:22
+msgid "System Calls"
+msgstr "Systémová volání"
+
+#: help-browser/toc-man.c:21 help-browser/toc2-man.c:23
+msgid "Library Functions"
+msgstr "Knihovní funkce"
+
+#: help-browser/toc-man.c:22 help-browser/toc2-man.c:24
+msgid "Special Files"
+msgstr "Speciální soubory"
+
+#: help-browser/toc-man.c:23 help-browser/toc2-man.c:25
+msgid "File Formats"
+msgstr "Formáty souborù"
+
+#: help-browser/toc-man.c:24 help-browser/toc2-man.c:26
+msgid "Games"
+msgstr "Hry"
+
+#: help-browser/toc-man.c:26 help-browser/toc2-man.c:28
+msgid "Administration"
+msgstr "Administrace"
+
+#: help-browser/toc-man.c:27 help-browser/toc2-man.c:29
+msgid "man9"
+msgstr "man9"
+
+#: help-browser/toc-man.c:28 help-browser/toc2-man.c:30
+msgid "mann"
+msgstr "mann"
+
+#: help-browser/toc-man.c:29 help-browser/toc2-man.c:31
+msgid "manx"
+msgstr "manx"
+
+#. Add one new item for each type
+#. This really should iterate through the toc_config list
+#. MAN PAGES
+#: help-browser/toc.c:136
+msgid "Man Pages"
+msgstr "Manuálové stránky"
+
+#. INFO PAGES
+#: help-browser/toc.c:148
+msgid "Info Pages"
+msgstr "Info stránky"
+
+#. GNOME HELP
+#: help-browser/toc.c:160
+msgid "GNOME Help"
+msgstr "Nápovìdì GNOME"
+
+#: help-browser/visit.c:84
+msgid "<BODY>Could not load default TOC page</BODY>"
+msgstr "<BODY>Nemohu najít základní stránku s obsahem</BODY>"
+
+#: help-browser/visit.c:102
+msgid "<BODY>Unknown TOC argument</BODY>"
+msgstr "<BODY>Neznámý argument obsahu</BODY>"
+
+#: help-browser/window.c:151
+msgid "_New Window"
+msgstr "_Nové okno"
+
+#: help-browser/window.c:152
+msgid "Open new browser window"
+msgstr "Otevøi nové okno prohlí¾eèe"
+
+#: help-browser/window.c:158
+msgid "_Add Bookmark"
+msgstr "_Pøidat zálo¾ku"
+
+#: help-browser/window.c:158
+msgid "Add bookmark"
+msgstr "Pøidej zálo¾ku"
+
+#: help-browser/window.c:173
+msgid "_Back"
+msgstr "_Zpìt"
+
+#: help-browser/window.c:176
+msgid "_Forward"
+msgstr "_Vpøed"
+
+#: help-browser/window.c:181
+msgid "_Reload"
+msgstr "_Obnovit"
+
+#: help-browser/window.c:186
+msgid "_Index"
+msgstr "_Index"
+
+#: help-browser/window.c:208
+msgid "_History"
+msgstr "_Historie"
+
+#: help-browser/window.c:208 help-browser/window.c:250
+msgid "Show History Window"
+msgstr "Uka¾ okno historie"
+
+#: help-browser/window.c:213
+msgid "_Bookmarks"
+msgstr "_Zálo¾ky"
+
+#: help-browser/window.c:213 help-browser/window.c:252
+msgid "Show Bookmarks Window"
+msgstr "Uka¾ okno se zálo¾kami"
+
+#: help-browser/window.c:227
+msgid "_Window"
+msgstr "_Okno"
+
+#: help-browser/window.c:228
+msgid "_View"
+msgstr "_Pohled"
+
+#: help-browser/window.c:237
+msgid "Back"
+msgstr "Zpìt"
+
+#: help-browser/window.c:238
+msgid "Go to the previous location in the history list"
+msgstr "Jdi na pøedcházející pozici v seznamu historie"
+
+#: help-browser/window.c:240
+msgid "Forward"
+msgstr "Vpøed"
+
+#: help-browser/window.c:241
+msgid "Go to the next location in the history list"
+msgstr "Jdi na následující pozici v seznamu historie"
+
+#: help-browser/window.c:244 panel/extern.c:352
+msgid "Reload"
+msgstr "Obnovit"
+
+#: help-browser/window.c:247
+msgid "Index"
+msgstr "Index"
+
+#: help-browser/window.c:247
+msgid "Show Documentation Index"
+msgstr "Ukázat seznam dokumentace"
+
+#: help-browser/window.c:250
+msgid "History"
+msgstr "Historie"
+
+#: help-browser/window.c:252
+msgid "BMarks"
+msgstr "Zálo¾ky"
+
+#: help-browser/window.c:255
+msgid "Help on Help"
+msgstr "Pomoc s nápovìdou"
+
+#: help-browser/window.c:611
+msgid "Location: "
+msgstr "Umístìní: "
+
+#: help-browser/window.c:1081
+#, c-format
+msgid ""
+"Error loading document:\n"
+"\n"
+"%s\n"
+"\n"
+"You probably don't\n"
+"have this documentation\n"
+"installed on your system."
+msgstr ""
+"Chyba pøi naèítání dokumentu:\n"
+"\n"
+"%s\n"
+"\n"
+"Pravdìpodobnì nemáte tento\n"
+"dokument nainstalován na\n"
+"va¹em systému."
+
+#: panel/applet.c:408
+msgid "???"
+msgstr "???"
+
+#: panel/applet.c:448
+msgid "Remove from panel"
+msgstr "Odstranit"
+
+#: panel/applet.c:455
+msgid "Move"
+msgstr "Pøesunout"
+
+#: panel/applet.c:467 panel/menu.c:2866
+#, c-format
+msgid "Cannot find pixmap file %s"
+msgstr "Nelze najít obrázkový soubor %s"
+
+#: panel/applet.c:468 panel/applet.c:474 panel/menu.c:3091 panel/menu.c:3096
+#: panel/menu.c:4111 panel/menu.c:4116 panel/menu.c:4433
+msgid "Panel"
+msgstr "Panel"
+
+#: panel/applet.c:700
+msgid "Can't find an empty spot"
+msgstr "Nelze najít volné místo"
+
+#: panel/applet-widget.c:912
+msgid "Cannot activate a panel object"
+msgstr "Nelze aktivovat objekt panelu"
+
+#: panel/applet-widget.c:1014
+msgid "Cannot start CORBA"
+msgstr "Nelze nastartovat CORBA"
+
+#: panel/applet-widget.c:1176 panel/applet-widget.c:1277
+#: panel/applet-widget.c:1347 panel/applet-widget.c:1376
+#: panel/applet-widget.c:1403 panel/applet-widget.c:1439
+#: panel/applet-widget.c:1572
+msgid "CORBA Exception"
+msgstr "CORBA vyjímka"
+
+#: panel/applet-widget.c:1974
+msgid "Cannot create object"
+msgstr "Nelze vytvoøit objekt"
+
+#: panel/applet-widget.c:1979
+msgid "Object created is not AppletWidget"
+msgstr ""
+
+#: panel/button-widget.c:701
+msgid "-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"
+msgstr ""
+
+#: panel/distribution.c:26
+msgid "Debian GNU/Linux"
+msgstr "Debian GNU/Linux"
+
+#: panel/distribution.c:26
+msgid "Debian menus"
+msgstr "Menu Debianu"
+
+#: panel/distribution.c:31
+msgid "Red Hat Linux"
+msgstr "Red Hat Linux"
+
+#: panel/distribution.c:31
+msgid "Red Hat menus"
+msgstr "Menu Red Hatu"
+
+#: panel/distribution.c:36
+msgid "SuSE Linux"
+msgstr "SuSE Linux"
+
+#: panel/distribution.c:36
+msgid "SuSE menus"
+msgstr "Menu SuSE"
+
+#: panel/drawer.c:112
+msgid "Tooltip/Name"
+msgstr "Tip/Jméno"
+
+#: panel/drawer.c:116 panel/menu-properties.c:519 panel/menu-properties.c:553
+msgid "Icon"
+msgstr "Ikona"
+
+#: panel/drawer.c:120
+msgid "Applet appearance"
+msgstr "Vzhled apletu"
+
+#: panel/drawer.c:127
+msgid "Drawer handle"
+msgstr "Rukoje» zásuvky"
+
+#. we store this in w for later use!, so don't use w as temp from now
+#. on
+#: panel/drawer.c:132
+msgid "Enable hidebutton"
+msgstr "Povolit ukrývací tlaèítka"
+
+#: panel/drawer.c:141
+msgid "Enable hidebutton arrow"
+msgstr "Povolit ¹ipky na ukrývacích tlaèítkách"
+
+#: panel/drawer.c:160 panel/drawer.c:278 panel/gnome-panel-properties.c:554
+#: panel/menu.c:3824
+msgid "Drawer"
+msgstr "Zásuvka"
+
+#: panel/extern.c:336
+#, fuzzy
+msgid "Deskguide (the desktop pager)"
+msgstr "Ukázat prùvodce plochou"
+
+#: panel/extern.c:338
+#, fuzzy
+msgid "Tasklist"
+msgstr "Úlohy"
+
+#: panel/extern.c:340
+#, fuzzy
+msgid "The Battery"
+msgstr "Baterie jsou témìø vybity."
+
+#: panel/extern.c:343
+#, c-format
+msgid ""
+"%s applet appears to have died unexpectedly. Reload this applet?\n"
+"(If you choose not to reload it at this time you can always add it from the "
+"\"Applets\" submenu in the main menu)"
+msgstr ""
+
+#: panel/extern.c:565
+msgid "Couldn't add applet"
+msgstr "Nelze vytvoøit applet"
+
+#: panel/extern.c:625
+msgid "Whoops! for some reason we can't add to the panel"
+msgstr "Z nìjakého dùvodu nelze objekt pøidat na panel"
+
+#: panel/extern.c:699
+msgid "No socket was created"
+msgstr "Zástrèka nebyla vytvoøena"
+
+#: panel/foobar-widget.c:159
+msgid ""
+"Cannot execute the gmc-client program,\n"
+"perhaps gmc is not installed"
+msgstr ""
+"Nelze spustit program gmc-client,\n"
+"je mo¾né ¾e gmc není nainstalován"
+
+#: panel/foobar-widget.c:169
+msgid ""
+"Cannot execute the gnome calendar,\n"
+"perhaps it's not installed.\n"
+"It is in the gnome-pim package."
+msgstr ""
+"Nelze spustit kalendáø gnome,\n"
+"je mo¾né ¾e není nainstalován.\n"
+"Je v balíku gnome-pim."
+
+#: panel/foobar-widget.c:181
+msgid "News (www)"
+msgstr "Novinky (www)"
+
+#: panel/foobar-widget.c:181
+msgid "http://gnotices.gnome.org/gnome-news/"
+msgstr ""
+
+#: panel/foobar-widget.c:182
+msgid "FAQ (www)"
+msgstr ""
+
+#: panel/foobar-widget.c:182
+msgid "http://www.gnome.org/gnomefaq/html/"
+msgstr ""
+
+#: panel/foobar-widget.c:183
+msgid "Mailing Lists (www)"
+msgstr ""
+
+#: panel/foobar-widget.c:183
+msgid "http://mail.gnome.org/mailman/listinfo/"
+msgstr ""
+
+#: panel/foobar-widget.c:185
+msgid "Software (www)"
+msgstr "Softwér (www)"
+
+#: panel/foobar-widget.c:185
+msgid "http://www.gnome.org/applist/list-martin.phtml"
+msgstr ""
+
+#: panel/foobar-widget.c:186
+msgid "Development (www)"
+msgstr "Vývoj (www)"
+
+#: panel/foobar-widget.c:186
+msgid "http://developer.gnome.org/"
+msgstr ""
+
+#: panel/foobar-widget.c:187
+msgid "Bug Tracking System (www)"
+msgstr "Systém sledování chyb (www)"
+
+#: panel/foobar-widget.c:187
+msgid "http://bugs.gnome.org/"
+msgstr ""
+
+#: panel/foobar-widget.c:231
+msgid "By Name"
+msgstr "Jména"
+
+#: panel/foobar-widget.c:232
+msgid "By Type"
+msgstr "Typu"
+
+#: panel/foobar-widget.c:233
+msgid "By Size"
+msgstr "Velikosti"
+
+#: panel/foobar-widget.c:234
+msgid "By Time Last Accessed"
+msgstr "Èasu posledního pøístupu"
+
+#: panel/foobar-widget.c:235
+msgid "By Time Last Modified"
+msgstr "Èasu poslení modifikace"
+
+#: panel/foobar-widget.c:236
+msgid "By Time Last Changed"
+msgstr "Èasu poslení zmìny"
+
+#: panel/foobar-widget.c:245
+msgid "Arrange Icons"
+msgstr "Srovnat ikony podle"
+
+#: panel/foobar-widget.c:255
+msgid "Rescan Desktop Directory"
+msgstr "Aktualizovat adresáø plochy"
+
+#: panel/foobar-widget.c:256
+msgid "Rescan Desktop Devices"
+msgstr "Obnovit zobrazení ikon zaøízení"
+
+#: panel/foobar-widget.c:262
+msgid "Lock Screen"
+msgstr "Uzamknout obrazovku"
+
+#: panel/foobar-widget.c:272
+msgid "Log Out"
+msgstr "Odhlásit"
+
+#: panel/foobar-widget.c:280
+msgid " Desktop "
+msgstr " Plocha "
+
+#: panel/foobar-widget.c:297
+msgid "can't fine real path"
+msgstr ""
+
+#: panel/foobar-widget.c:305
+msgid "menu wasn't created"
+msgstr "menu nebylo vytvoøeno"
+
+#: panel/foobar-widget.c:347
+#, fuzzy
+msgid "%A %B %d"
+msgstr "%a, %e. %b"
+
+#: panel/foobar-widget.c:425
+msgid "Today"
+msgstr "Dnes"
+
+#: panel/foobar-widget.c:426
+msgid "This Week"
+msgstr "Tento týden"
+
+#: panel/foobar-widget.c:427
+msgid "This Month"
+msgstr "Tento mìsíc"
+
+#: panel/foobar-widget.c:433
+#, fuzzy
+msgid "%H:%M:%S"
+msgstr "%H:%M"
+
+#: panel/foobar-widget.c:435
+#, fuzzy
+msgid "%I:%M:%S %p"
+msgstr "%I:%M"
+
+#: panel/foobar-widget.c:442
+#, fuzzy
+msgid "Add appointement..."
+msgstr "Pøidat hlavní menu"
+
+#: panel/foobar-widget.c:459
+msgid "Format"
+msgstr "Formát"
+
+#: panel/foobar-widget.c:587 panel/menu.c:2888 panel/menu.c:2893
+#: panel/menu.c:4338
+msgid "Programs"
+msgstr "Programy"
+
+#: panel/foobar-widget.c:601 panel/menu.c:4310 panel/menu.c:4350
+#: panel/menu.c:4356
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#: panel/gnome-panel-properties.c:111 panel/menu-properties.c:456
+msgid "Programs: "
+msgstr "Programy: "
+
+#: panel/gnome-panel-properties.c:112 panel/menu-properties.c:460
+msgid "Favorites: "
+msgstr "Oblíbené: "
+
+#: panel/gnome-panel-properties.c:113 panel/menu-properties.c:464
+msgid "Applets: "
+msgstr "Aplety: "
+
+#: panel/gnome-panel-properties.c:114
+msgid "Distribution: "
+msgstr ""
+
+#: panel/gnome-panel-properties.c:115
+msgid "KDE: "
+msgstr "Menu KDE: "
+
+#: panel/gnome-panel-properties.c:116
+msgid "Panel: "
+msgstr "Menu Panelu: "
+
+#: panel/gnome-panel-properties.c:117
+msgid "Desktop: "
+msgstr "Menu Plochy: "
+
+#. Animation enable
+#: panel/gnome-panel-properties.c:302
+msgid "Enable animations"
+msgstr "Povolit animace"
+
+#: panel/gnome-panel-properties.c:307
+msgid "Constant speed animations"
+msgstr "Konstatní rychlost animací"
+
+#. AutoHide Animation step_size scale frame
+#: panel/gnome-panel-properties.c:313
+msgid "Animation speed"
+msgstr "Rychlost animace"
+
+#: panel/gnome-panel-properties.c:323 panel/gnome-panel-properties.c:341
+#: panel/menu.c:3693
+msgid "Auto hide"
+msgstr "Automaticky ukrývat"
+
+#. ExplicitHide Animation step_size scale frame
+#: panel/gnome-panel-properties.c:330 panel/menu.c:3692
+msgid "Explicit hide"
+msgstr "Ruènì ukrývat"
+
+#. DrawerHide Animation step_size scale frame
+#: panel/gnome-panel-properties.c:336
+msgid "Drawer sliding"
+msgstr "Ukrývání zásuvky"
+
+#. Minimize Delay scale frame
+#: panel/gnome-panel-properties.c:352
+msgid "Delay (ms)"
+msgstr "Pausa (ms)"
+
+#. Minimized size scale frame
+#: panel/gnome-panel-properties.c:358
+msgid "Size (pixels)"
+msgstr "Velikost (pixelù)"
+
+#: panel/gnome-panel-properties.c:469
+msgid "Launcher icon"
+msgstr "Ikona spou¹tìèe"
+
+#: panel/gnome-panel-properties.c:470
+msgid "Drawer icon"
+msgstr "Ikona zásuvky"
+
+#: panel/gnome-panel-properties.c:471
+msgid "Menu icon"
+msgstr "Ikona menu"
+
+#: panel/gnome-panel-properties.c:472
+msgid "Special icon"
+msgstr "Speciální ikona"
+
+#. toggle button
+#: panel/gnome-panel-properties.c:484
+msgid "Tiles enabled"
+msgstr "Zobrazit dla¾dici"
+
+#: panel/gnome-panel-properties.c:499
+msgid "Normal tile"
+msgstr "Normální dla¾dice"
+
+#: panel/gnome-panel-properties.c:512
+msgid "Clicked tile"
+msgstr "Zmáèknutá dla¾dice"
+
+#. Minimized size scale frame
+#: panel/gnome-panel-properties.c:528
+msgid "Border width (tile only)"
+msgstr "©íøka okraje (jen dla¾dice)"
+
+#. Minimized size scale frame
+#: panel/gnome-panel-properties.c:534
+msgid "Depth (displacement when pressed)"
+msgstr "Hloubka (velikost posunutí pøi stisku)"
+
+#: panel/gnome-panel-properties.c:553
+msgid "Launcher"
+msgstr "Spou¹tìè"
+
+#: panel/gnome-panel-properties.c:555 panel/gnome-panel-properties.c:1374
+#: panel/menu-properties.c:514 panel/menu.c:2397 panel/menu.c:2464
+#: panel/menu.c:2466 panel/menu.c:3772 panel/menu.c:4608
+msgid "Menu"
+msgstr "Menu"
+
+#: panel/gnome-panel-properties.c:556
+msgid "Special"
+msgstr "Speciální"
+
+#: panel/gnome-panel-properties.c:566
+msgid "Button type: "
+msgstr "Typ tlaèítka: "
+
+#. show/hide frame
+#: panel/gnome-panel-properties.c:599
+msgid "Make buttons flush with panel edge"
+msgstr "Tlaèítka jdou a¾ k okraji panelu"
+
+#. only show tiles when mouse is over the button
+#: panel/gnome-panel-properties.c:606
+msgid "Show button tiles only when cursor is over the button"
+msgstr "Ukazovat obrys tlaèítek jen pokud je kurzor nad plochou tlaèítka"
+
+#. prelight on mouseovers hack (used to be saturation, hence
+#. * the config option name)
+#: panel/gnome-panel-properties.c:613
+msgid "Prelight buttons on mouseover"
+msgstr "Pøi pohybu my¹í pøes ikonu, pøisvìtlit ikonu"
+
+#. Fast but low quality scaling (Nearest versus Hyperbolic)
+#: panel/gnome-panel-properties.c:619
+msgid "Fast but low quality scaling of button icons"
+msgstr ""
+
+#. Movement frame
+#: panel/gnome-panel-properties.c:674
+msgid "Default movement mode"
+msgstr "Standardní zpùsob pøesunu"
+
+#. Switched
+#: panel/gnome-panel-properties.c:684
+msgid "Switched movement (or use Ctrl)"
+msgstr "Pøi posunu apletu ostatní uhýbají (nebo pou¾ijte Ctrl)"
+
+#: panel/gnome-panel-properties.c:692
+msgid "Free movement (doesn't disturb other applets) (or use Alt)"
+msgstr "Pøi pøesunu apletu nejsou ostatní aplety ovlivnìny (nebo pou¾ijte Alt)"
+
+#: panel/gnome-panel-properties.c:700
+msgid "Push movement (or use Shift)"
+msgstr "'Tlaèící' pøesouvání (nebo pou¾ijte Shift)"
+
+#: panel/gnome-panel-properties.c:705
+msgid "Padding"
+msgstr "Zarovnání objektù"
+
+#: panel/gnome-panel-properties.c:773 panel/menu-properties.c:335
+msgid "Off"
+msgstr "Vypnuto"
+
+#: panel/gnome-panel-properties.c:780 panel/menu-properties.c:347
+msgid "In a submenu"
+msgstr "V podmenu"
+
+#: panel/gnome-panel-properties.c:786
+msgid "In the menu"
+msgstr "Na menu"
+
+#. Menu frame
+#: panel/gnome-panel-properties.c:805
+msgid "Menus"
+msgstr "Menu"
+
+#. large icons
+#: panel/gnome-panel-properties.c:815
+msgid "Use large icons"
+msgstr "Pou¾ít velké ikony"
+
+#. Dot Buttons
+#: panel/gnome-panel-properties.c:821
+msgid "Show [...] buttons"
+msgstr "Ukazovat tlaèítka '...'"
+
+#. Off Panel Popup menus
+#: panel/gnome-panel-properties.c:827
+msgid "Show popup menus outside of panels"
+msgstr "Menu zobrazovat mimo plochu panelu"
+
+#. Hungry Menus
+#: panel/gnome-panel-properties.c:833
+msgid "Keep menus in memory"
+msgstr "Dr¾et menu v pamìti"
+
+#. Merge system menus
+#: panel/gnome-panel-properties.c:839
+#, fuzzy
+msgid "Merge in system menus"
+msgstr "Nejvy¹¹í úroveò menu systému"
+
+#. Menu frame
+#: panel/gnome-panel-properties.c:846
+msgid "Global menu"
+msgstr "Globální menu"
+
+#: panel/gnome-panel-properties.c:964
+msgid "Press a key..."
+msgstr "Zmáèknìte klávesu..."
+
+#. Tooltips enable
+#: panel/gnome-panel-properties.c:996
+msgid "Tooltips enabled"
+msgstr "Zobrazovat tipy"
+
+#. Drawer/launcher auto close
+#: panel/gnome-panel-properties.c:1002
+msgid "Close drawer if a launcher inside it is pressed"
+msgstr "Uzavøít zásuvku, pokud je uvnitø stisknut nìkterý spou¹tìè"
+
+#. Autoraise
+#: panel/gnome-panel-properties.c:1008
+msgid "Raise panels on mouse-over"
+msgstr "Pøi pohybu my¹í pøes panel tento panel vyzdvihnout nahoru"
+
+#. Keep on bottom
+#: panel/gnome-panel-properties.c:1014
+msgid "Keep panel below windows (GNOME compliant window managers only)"
+msgstr "Dr¾et panel pod okny (pouze splòuje-li správce oken po¾adavky GNOME)"
+
+#. Confirm panel removal
+#: panel/gnome-panel-properties.c:1020
+msgid "Confirm the removal of panels with a dialog"
+msgstr "Potvrzovat ru¹ení panelù v dialogu"
+
+#. Key Bindings frame
+#: panel/gnome-panel-properties.c:1026
+msgid "Key Bindings"
+msgstr "Vázání kláves"
+
+#. enabled
+#: panel/gnome-panel-properties.c:1039
+msgid "Enable panel keybindings"
+msgstr "Povolit vázání kláves"
+
+#. menu key
+#: panel/gnome-panel-properties.c:1046
+msgid "Popup menu key"
+msgstr "Klávesa na menu"
+
+#: panel/gnome-panel-properties.c:1055 panel/gnome-panel-properties.c:1080
+#: panel/panel-util.c:621 panel/panel-util.c:678
+msgid "Disabled"
+msgstr "Nenastavené"
+
+#: panel/gnome-panel-properties.c:1066 panel/gnome-panel-properties.c:1091
+msgid "Grab key..."
+msgstr "Chytit klávesu..."
+
+#. run key...
+#: panel/gnome-panel-properties.c:1073
+msgid "Run dialog key"
+msgstr "Klávesa na spou¹tìcí dialog"
+
+#: panel/gnome-panel-properties.c:1359
+msgid "Animation"
+msgstr "Animace"
+
+#: panel/gnome-panel-properties.c:1364
+msgid "Buttons"
+msgstr "Tlaèítka"
+
+#: panel/gnome-panel-properties.c:1369
+msgid "Panel Objects"
+msgstr "Objekty panelu"
+
+#: panel/gnome-run.c:70
+#, c-format
+msgid ""
+"Failed to execute command:\n"
+"%s"
+msgstr ""
+"Nelze spustit pøíkaz:\n"
+"%s"
+
+#: panel/gnome-run.c:126
+#, c-format
+msgid ""
+"Failed to execute command:\n"
+"%s\n"
+"%s"
+msgstr ""
+"Nelze spustit pøíkaz:\n"
+"%s\n"
+"%s"
+
+#: panel/gnome-run.c:200
+msgid "Run Program"
+msgstr "Spustit program"
+
+#: panel/gnome-run.c:209
+msgid "Run"
+msgstr "Spus»"
+
+#: panel/gnome-run.c:245
+msgid "Run in terminal"
+msgstr "Spus» v terminálu"
+
+#: panel/gnome-run.c:286 panel/gnome-run.c:288 panel/menu.c:4419
+msgid "Run..."
+msgstr "Spustit..."
+
+#: panel/launcher.c:49
+msgid "This launch icon does not specify a program to run"
+msgstr "Tato ikona spou¹tìèe nemá urèen program, který se má spustit"
+
+#: panel/launcher.c:76 panel/menu.c:1805
+msgid "Can't get goad_id from desktop entry!"
+msgstr "Z polo¾ky na plo¹e nelze získat goad_id!"
+
+#: panel/launcher.c:313
+msgid "App"
+msgstr "Aplikace"
+
+#: panel/launcher.c:432
+msgid "Launcher properties"
+msgstr "Vlastnosti spou¹tìèe"
+
+#: panel/launcher.c:574
+msgid "Create launcher applet"
+msgstr "Vytvoøit aplet spou¹tìèe"
+
+#: panel/logout.c:47 panel/menu.c:4253
+msgid "Log out"
+msgstr "Odhlásit"
+
+#: panel/logout.c:49
+msgid "Log out of GNOME"
+msgstr "Odhlásit z GNOME"
+
+#: panel/logout.c:87 panel/logout.c:89 panel/menu.c:4241
+msgid "Lock screen"
+msgstr "Uzamknout obrazovku"
+
+#: panel/logout.c:122
+msgid "Blank Screen Now"
+msgstr "Zakrýt obrazovku"
+
+#: panel/logout.c:124
+msgid "Lock Screen Now"
+msgstr "Uzamknout obrazovku"
+
+#: panel/logout.c:126
+msgid "Kill Daemon"
+msgstr "Zru¹it daemon"
+
+#: panel/logout.c:128
+msgid "Restart Daemon"
+msgstr "Restartovat daemon"
+
+#: panel/logout.c:130
+msgid "Preferences"
+msgstr "Nastavení"
+
+#: panel/main.c:208
+msgid ""
+"I've detected a panel already running.\n"
+"Start another panel as well?\n"
+"(The new panel will not be restarted.)"
+msgstr ""
+"Byl detekován jiný, ji¾ bì¾ící panel.\n"
+"Odstartovat i tento nový panel?\n"
+"(Nový panel nebude restartován.)"
+
+#: panel/main.c:219
+msgid ""
+"There was a problem registering the panel with the GOAD server.\n"
+"The panel will now exit."
+msgstr ""
+"Problém s registrací tohoto panelu GOAD serverem.\n"
+"Panel bude ukonèen."
+
+#: panel/menu.c:121
+msgid "Many many others ..."
+msgstr ""
+
+#. ... from the Monty Pythons show...
+#: panel/menu.c:123
+msgid "and finally, The Knights Who Say ... NI!"
+msgstr ""
+
+#: panel/menu.c:143
+msgid "The GNOME Panel"
+msgstr "Panel Gnome"
+
+#: panel/menu.c:146
+msgid ""
+"This program is responsible for launching other applications, embedding "
+"small applets within itself, world peace, and random X crashes."
+msgstr ""
+"Tento program umo¾òuje pou¾ití apletù, odpovídá za start dal¹ích aplikací, "
+"svìtový mír a náhodné pády X window."
+
+#: panel/menu.c:157
+msgid "End world hunger"
+msgstr ""
+
+#: panel/menu.c:170
+msgid "Can't execute 'About GNOME'"
+msgstr "Nemohu spustit 'O GNOME'"
+
+#: panel/menu.c:181 panel/menu.c:862 panel/menu.c:1797
+msgid "Can't load entry"
+msgstr "Nelze naèíst polo¾ku"
+
+#: panel/menu.c:678
+msgid "Cannot create an item with an empty command"
+msgstr "Nelze vytvoøit polo¾ku bez pøíkazové linky"
+
+#: panel/menu.c:714
+#, c-format
+msgid "Could not get file from path: %s"
+msgstr "Z cesty nelze získat soubor: %s"
+
+#: panel/menu.c:718 panel/menu.c:822
+#, c-format
+msgid "Could not open .order file: %s"
+msgstr "Nelze otevøít soubor .order: %s"
+
+#: panel/menu.c:725
+#, c-format
+msgid "Could not open file '%s' for writing"
+msgstr "Nelze otevøít soubor '%s' na psaní"
+
+#: panel/menu.c:745
+msgid "Create menu item"
+msgstr "Vytvoøit novou polo¾ku menu"
+
+#: panel/menu.c:794
+#, c-format
+msgid "Could not remove the menu item %s: %s\n"
+msgstr "Nelze odstranit polo¾ku menu %s: %s\n"
+
+#: panel/menu.c:801
+#, c-format
+msgid "Could not get file name from path: %s"
+msgstr "Z cesty nelze získat jméno souboru: %s"
+
+#: panel/menu.c:841
+#, c-format
+msgid "Could not rename tmp file %s"
+msgstr "Nelze pøejmenovat doèasný soubor %s"
+
+#: panel/menu.c:859
+msgid "No 'Exec' field in entry"
+msgstr ""
+
+#: panel/menu.c:1082 panel/menu.c:1136
+msgid "Desktop entry properties"
+msgstr "Vlastosti polo¾ky na plo¹e"
+
+#: panel/menu.c:1227
+msgid "Add this launcher to panel"
+msgstr "Pøidat tento spou¹tìè na panel"
+
+#: panel/menu.c:1230
+msgid "Add this applet as a launcher to panel"
+msgstr "Pøidat tento aplet jako spou¹tìè na panel"
+
+#: panel/menu.c:1240 panel/menu.c:1305
+msgid "Add this to Favorites menu"
+msgstr "Pøidat mezi oblíbené"
+
+#: panel/menu.c:1253
+msgid "Remove this item"
+msgstr "Odstranit tuto polo¾ku"
+
+#: panel/menu.c:1271
+msgid "Put into run dialog"
+msgstr ""
+
+#: panel/menu.c:1288
+msgid "Add this as drawer to panel"
+msgstr "Pøidat jako zásuvku na panel"
+
+#: panel/menu.c:1297
+msgid "Add this as menu to panel"
+msgstr "Pøidat jako menu na panel"
+
+#: panel/menu.c:1317
+msgid "Add new item to this menu"
+msgstr "Pøidat do tohoto menu novou polo¾ku"
+
+#: panel/menu.c:1551 panel/menu.c:1627
+msgid "..."
+msgstr "..."
+
+#: panel/menu.c:1776
+msgid "You already have a status dock on the panel. You can only have one"
+msgstr "Na panelu mù¾e být jen jeden ukazatel stavu a jeden ji¾ existuje."
+
+#: panel/menu.c:2115
+msgid "Adding tearoff when tearoffs are disabled"
+msgstr "Pøidávání odtr¾eného menu kdy¾ ty sou vypnuta"
+
+#: panel/menu.c:2264
+msgid "Can't get goad_id for applet, ignoring it"
+msgstr "Od apletu nelze získat goad_id, bude ignorován"
+
+#: panel/menu.c:2466
+msgid " (empty)"
+msgstr " (nic)"
+
+#: panel/menu.c:2560 panel/menu.c:4368
+msgid "Applets"
+msgstr "Aplety"
+
+#. Don't translate the first part of this string
+#: panel/menu.c:2733 panel/session.c:1189 panel/session.c:1383
+msgid "/panel/Config/clock_format=%I:%M:%S %p"
+msgstr ""
+
+#: panel/menu.c:2742
+msgid "You can only have one menu panel at a time."
+msgstr "Je mo¾no mít jen jeden menu panel najednou."
+
+#: panel/menu.c:2779 panel/menu.c:2784 panel/menu.c:4008
+msgid "Create panel"
+msgstr "Vytvoøit panel"
+
+#: panel/menu.c:2811
+msgid "Menu panel"
+msgstr "Menu panel"
+
+#: panel/menu.c:2819 panel/menu.c:3684 panel/panel_config.c:1287
+#: panel/panel_config.c:1382
+msgid "Edge panel"
+msgstr "Hranový panel"
+
+#: panel/menu.c:2827 panel/menu.c:3685 panel/panel_config.c:1294
+#: panel/panel_config.c:1392
+msgid "Aligned panel"
+msgstr "Zarovnaný panel"
+
+#: panel/menu.c:2835 panel/menu.c:3686 panel/panel_config.c:1300
+#: panel/panel_config.c:1402
+msgid "Sliding panel"
+msgstr "Posuvný panel"
+
+#: panel/menu.c:2843 panel/menu.c:3687 panel/panel_config.c:1306
+#: panel/panel_config.c:1412
+msgid "Floating panel"
+msgstr "Plovoucí panel"
+
+#: panel/menu.c:2902 panel/menu.c:2905
+msgid "No system menus found!"
+msgstr "®ádné systémové menu nebylo nalezeno!"
+
+#: panel/menu.c:2920
+msgid "Can't create the user menu directory"
+msgstr "Nelze vytvoøit adresáø u¾ivatelského menu"
+
+#: panel/menu.c:2983 panel/menu.c:2989 panel/menu.c:4408
+msgid "KDE menus"
+msgstr "Menu KDE"
+
+#: panel/menu.c:3042
+msgid "You cannot remove your last panel."
+msgstr "Není mo¾no zru¹it vá¹ poslední panel"
+
+#: panel/menu.c:3052
+msgid ""
+"When a panel is removed, the panel and its\n"
+"applet settings are lost. Remove this panel?"
+msgstr ""
+"Kdy¾ je zru¹en panel, tak nastavení tohoto panelu a v¹ech\n"
+"jeho apletù bude zapomenuto. Zru¹it tento panel?"
+
+#: panel/menu.c:3698
+msgid "With pixmap arrow"
+msgstr "S obrázkem ¹ipky"
+
+#: panel/menu.c:3699
+msgid "Without pixmap"
+msgstr "Bez obrázku"
+
+#: panel/menu.c:3711 panel/panel_config.c:909
+msgid "Ultra Tiny (12 pixels)"
+msgstr "Docela malý (12 pixelù)"
+
+#: panel/menu.c:3712 panel/panel_config.c:917
+msgid "Tiny (24 pixels)"
+msgstr "Malinký (24 pixelù)"
+
+#: panel/menu.c:3713 panel/panel_config.c:925
+msgid "Small (36 pixels)"
+msgstr "Malý (36 pixelù)"
+
+#: panel/menu.c:3714 panel/panel_config.c:933
+msgid "Standard (48 pixels)"
+msgstr "Normální (48 pixelù)"
+
+#: panel/menu.c:3715 panel/panel_config.c:941
+msgid "Large (64 pixels)"
+msgstr "Velký (64 pixelù)"
+
+#: panel/menu.c:3716 panel/panel_config.c:949
+msgid "Huge (80 pixels)"
+msgstr "Obrovský (80 pixelù)"
+
+#: panel/menu.c:3717 panel/panel_config.c:957
+msgid "Ridiculous (128 pixels)"
+msgstr "Smì¹nì velký (128 pixelù)"
+
+#: panel/menu.c:3722 panel/panel_config.c:1111
+msgid "Standard"
+msgstr "Standardní"
+
+#. color frame
+#: panel/menu.c:3723 panel/panel_config.c:1115 panel/panel_config.c:1130
+msgid "Color"
+msgstr "Barva"
+
+#: panel/menu.c:3724 panel/panel_config.c:1119
+msgid "Pixmap"
+msgstr "Obrázek"
+
+#: panel/menu.c:3728
+msgid "Type"
+msgstr "Typ"
+
+#: panel/menu.c:3731
+msgid "Hiding policy"
+msgstr "Zpùsob ukrývání"
+
+#: panel/menu.c:3734
+msgid "Hide buttons"
+msgstr "Ukrývací tlaèítka"
+
+#: panel/menu.c:3740
+msgid "Orientation"
+msgstr "Orientace"
+
+#: panel/menu.c:3761
+msgid "Applet"
+msgstr "Aplet"
+
+#: panel/menu-properties.c:421 panel/menu-properties.c:443 panel/menu.c:3782
+msgid "Main menu"
+msgstr "Hlavní menu"
+
+#: panel/menu.c:3793
+msgid "Programs menu"
+msgstr "Programy"
+
+#: panel/menu.c:3803
+msgid "Favorites menu"
+msgstr "Oblíbené"
+
+#: panel/menu.c:3814
+msgid "Launcher..."
+msgstr "Spou¹tìè..."
+
+#: panel/menu.c:3835
+msgid "Log out button"
+msgstr "Odhla¹ovací tlaèítko"
+
+#: panel/menu.c:3846
+msgid "Lock button"
+msgstr "Tlaèítko pro uzamèení pøístupu"
+
+#: panel/menu.c:3857
+msgid "Run button"
+msgstr "Spou¹tìcí tlaèítko"
+
+#: panel/menu.c:3869
+msgid "Swallowed app..."
+msgstr "Omezená aplikace..."
+
+#: panel/menu.c:3877
+msgid "Status dock"
+msgstr "Ukazatel stavu"
+
+#: panel/menu.c:3901 panel/menu.c:3906 panel/menu.c:3984
+msgid "Add to panel"
+msgstr "Pøidat na panel"
+
+#: panel/menu.c:3921
+msgid "Cannot execute panel global properties"
+msgstr "Nelze spustit globální nastavení"
+
+#: panel/menu.c:3961
+msgid "Remove this panel..."
+msgstr "Odstranit tento panel..."
+
+#: panel/menu.c:3963 panel/menu.c:4019
+msgid "Remove this panel"
+msgstr "Odstranit tento panel"
+
+#: panel/menu.c:4036
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: panel/menu.c:4047
+msgid "All properties..."
+msgstr "V¹echny vlastnosti..."
+
+#: panel/menu.c:4063
+msgid "Global Preferences..."
+msgstr "Globální nastavení..."
+
+#: panel/menu.c:4077
+msgid "Panel Manual..."
+msgstr "Manuál panelu..."
+
+#: panel/menu.c:4088
+msgid "Cannot execute xscreensaver"
+msgstr "Nelze spustit xscreensaver"
+
+#: panel/menu.c:4140 panel/menu.c:4145 panel/menu.c:4442
+msgid "Desktop"
+msgstr "Plocha"
+
+#: panel/menu.c:4182
+msgid "About the panel..."
+msgstr "O panelu..."
+
+#: panel/menu.c:4198
+msgid "About GNOME..."
+msgstr "O GNOME..."
+
+#: panel/menu.c:4508
+msgid "Can't create menu, using main menu!"
+msgstr "Nelze vytvoøit menu, bude pou¾ito hlavní menu!"
+
+#: panel/menu-properties.c:145 panel/menu.c:4698
+msgid "Edit menus..."
+msgstr "Editace menu..."
+
+#: panel/menu-properties.c:152
+msgid "Can't open directory, using main menu!"
+msgstr "Nelze otevøít adresáø, bude pou¾ito hlavní menu!"
+
+#: panel/menu-properties.c:359
+msgid "On the main menu"
+msgstr "Na hlavním menu"
+
+#: panel/menu-properties.c:393
+msgid "Menu properties"
+msgstr "Vlastnosti menu"
+
+#: panel/menu-properties.c:400
+msgid "Menu type"
+msgstr "Typ menu"
+
+#: panel/menu-properties.c:407
+msgid "Global main menu"
+msgstr "Globální hlavní menu"
+
+#: panel/menu-properties.c:435 panel/menu-properties.c:484
+msgid "Normal menu"
+msgstr "Normální menu"
+
+#: panel/menu-properties.c:468
+msgid "Distribution menu (if found): "
+msgstr "Menu distribuce (je-li nalezeno): "
+
+#: panel/menu-properties.c:472
+msgid "KDE menu (if found): "
+msgstr "Menu KDE (je-li nalezeno): "
+
+#: panel/menu-properties.c:476
+msgid "Panel menu: "
+msgstr "Menu Panelu: "
+
+#: panel/menu-properties.c:480
+msgid "Desktop menu: "
+msgstr "Menu Plochy: "
+
+#: panel/menu-properties.c:495
+msgid "Menu path"
+msgstr "Cesta k menu"
+
+#: panel/menu-properties.c:526
+msgid "Use custom icon for panel button"
+msgstr ""
+
+#: panel/panel.c:863
+#, c-format
+msgid "Open URL: %s"
+msgstr ""
+
+#: panel/panel_config.c:433
+msgid "Hiding"
+msgstr "Ukrývání"
+
+#. Auto-hide
+#: panel/panel_config.c:441
+msgid "Enable Auto-hide"
+msgstr "Povolit automatické ukrývání"
+
+#. Hidebuttons enable
+#: panel/panel_config.c:451
+msgid "Show hide buttons"
+msgstr "Ukazovat ukrývací tlaèítka"
+
+#. Arrow enable
+#: panel/panel_config.c:461
+msgid "Show arrows on hide button"
+msgstr "Zobrazovat ¹ipky na ukrývacích tlaèítkách"
+
+# msgstr "Zobrazovat tlaèítko seznamu úloh"
+#: panel/panel_config.c:512
+msgid "Panel Position"
+msgstr "Pozice panelu"
+
+#: panel/panel_config.c:631 panel/panel_config.c:658 panel/panel_config.c:718
+#: panel/panel_config.c:816
+msgid "Size and Position"
+msgstr "Velikost a pozice"
+
+#: panel/panel_config.c:733
+msgid "Orient panel horizontally"
+msgstr "Panel orientován horizontálnì"
+
+#: panel/panel_config.c:745
+msgid "Orient panel vertically"
+msgstr "Panel orientován vertikálnì"
+
+#: panel/panel_config.c:757
+msgid "Top left corner's position: X"
+msgstr "Pozice levého horního rohu: X"
+
+#: panel/panel_config.c:828
+msgid "Offset from screen edge:"
+msgstr "Posun od hrany obrazovky:"
+
+#: panel/panel_config.c:900
+msgid "Panel size:"
+msgstr "Velikost panelu:"
+
+#: panel/panel_config.c:971
+msgid ""
+"Note: The panel will size itself to the\n"
+"largest applet in the panel, and that\n"
+"not all applets obey these sizes."
+msgstr ""
+"Poznámka: Panel automaticky mìní velikost podle\n"
+"velikosti apletù. Apletùm je to oznámeno,\n"
+"ale nemusí na to reagovat. V¹echny standardní\n"
+"ikony reagují."
+
+#: panel/panel_config.c:1103
+msgid "Background Type: "
+msgstr "Typ pozadí: "
+
+#: panel/panel_config.c:1142
+msgid "Color to use:"
+msgstr "Pou¾ít barvu:"
+
+#: panel/panel_config.c:1183
+msgid "Don't scale image to fit"
+msgstr "Nemìnit mìøítko obrázku dle panelu"
+
+#: panel/panel_config.c:1189
+msgid "Scale image (keep proportions)"
+msgstr "Zmìnit mìrítko (dodr¾ovat proporce)"
+
+#: panel/panel_config.c:1194
+msgid "Stretch image (change proportions)"
+msgstr "Roztáhnout obrázek"
+
+#: panel/panel_config.c:1209
+msgid "Rotate image for vertical panels"
+msgstr "Na vertikálním panelu obrázek rotovat"
+
+#: panel/panel_config.c:1372
+msgid "Panel properties"
+msgstr "Vlastnosti panelu"
+
+#: panel/panel_config.c:1430
+msgid "Background"
+msgstr "Pozadí"
+
+#: panel/session.c:245
+msgid ""
+"An applet is not responding to a save request.\n"
+"Remove the applet or continue waiting?"
+msgstr ""
+"Aplet neodpovídá na ¾ádost o ulo¾ení stavu.\n"
+"Ukonèit aplet a nebo dále èekat?"
+
+#: panel/session.c:256
+msgid "Remove applet"
+msgstr "Ukonèit aplet"
+
+#: panel/session.c:259
+msgid "Continue waiting"
+msgstr "Dále èekat"
+
+#: panel/session.c:268
+msgid "Timed out on sending session save to an applet"
+msgstr "Aplet vèas nezareagoval na pøíkaz k ulo¾ení stavu"
+
+#: panel/swallow.c:174
+msgid "Create swallow applet"
+msgstr "Vytvoøit omezený aplet"
+
+#: panel/swallow.c:190
+msgid "Title of application to swallow"
+msgstr "Tutulek omezené aplikace"
+
+#: panel/swallow.c:200
+msgid "Command (optional)"
+msgstr "Pøíkaz (volitelnì)"
+
+#: panel/swallow.c:211
+msgid "Width"
+msgstr "©íøka"
+
+#: panel/swallow.c:224
+msgid "Height"
+msgstr "Vý¹ka"
+
+#, fuzzy
+#~ msgid "Application"
+#~ msgstr "Akce"
+
+#, fuzzy
+#~ msgid "PanelApplet"
+#~ msgstr "Tiskový aplet"
+
+#~ msgid "Can't execute copy (cp)"
+#~ msgstr "Nelze spustit pøíkaz kopírování (cp)"
+
+#~ msgid "AnotherLevel menus"
+#~ msgstr "Menu AnotherLevel"
+
+#~ msgid "AnotherLevel menu (if found): "
+#~ msgstr "Menu AnotherLevel (je-li nalezeno): "
+
+#~ msgid "AnotherLevel: "
+#~ msgstr "Menu AnotherLevel: "
+
+#~ msgid "Debian: "
+#~ msgstr "Menu Debianu: "
+
+#~ msgid "Drawing"
+#~ msgstr "Kreslení"
+
+#~ msgid "Draw desktops double-buffered (recommended)"
+#~ msgstr "Kresli plochy dvojitì buferované (doporuèeno)"
+
+#~ msgid "Keep saturation low when cursor is not on the button"
+#~ msgstr "Ztmavit tlaèítka pokud nad nimi není kurzor"
+
+#~ msgid "Ok"
+#~ msgstr "Ok"
+
+#~ msgid "<br><br><h2>Info Pages</h2>\n"
+#~ msgstr "<br><br><h2>Stránky .info nápovìdy</h2>\n"
+
+#~ msgid ""
+#~ "Press the foot in the lower left corner\n"
+#~ "to start working with GNOME"
+#~ msgstr ""
+#~ "Stiskem tlaèítka se stopou v levém dolním rohu\n"
+#~ "(pomocí my¹i) zaènete práci v GNOME"
+
+#~ msgid "Show properties `?' button"
+#~ msgstr "Zobrazovat tlaèítko natavení `?'"
+
+#~ msgid "Applet padding"
+#~ msgstr "Zarovnání apletù"
+
+#~ msgid "Panel menu"
+#~ msgstr "Menu Panelu"
+
+#~ msgid "Move applet"
+#~ msgstr "Pøesunout aplet"
+
+#, fuzzy
+#~ msgid "Select a program to run"
+#~ msgstr "Vyberte animaci"
+
+#~ msgid ""
+#~ "Raise panels on mouse-over (non GNOME compliant window managers only)"
+#~ msgstr "Pøi pohybu my¹í pøes panel tento panel vyzdvihnout nahoru"
+
+#~ msgid "User Menus"
+#~ msgstr "U¾ivatelova menu"
+
+#~ msgid "System Menus"
+#~ msgstr "Systémová menu"
+
+#~ msgid "User menus"
+#~ msgstr "Menu u¾ivatele"
+
+#~ msgid "System menus"
+#~ msgstr "Systémová menu"
+
+#, fuzzy
+#~ msgid "Show icons"
+#~ msgstr "Ukazovat malé ikony"
+
+#~ msgid "This button sets the start order of the selected programs.\n"
+#~ msgstr "Tlaèítko upravuje poøadí startu programù.\n"
+
+#~ msgid ""
+#~ "This button sets the restart style of the selected programs:\n"
+#~ "Normal programs are unaffected by logouts but can die;\n"
+#~ "Respawn programs are never allowed to die;\n"
+#~ "Trash programs are discarded on logout and can die;\n"
+#~ "Settings programs are always started on every login."
+#~ msgstr ""
+#~ "Toto tlaèítko nastavuje zpùsob restartu vybraných programù:\n"
+#~ "Normální programy jsou odhlá¹ením neovlivnìny, ale mohou\n"
+#~ "být ukonèeny. 'Stálé' programy jsou po ukonèení opìt\n"
+#~ "odstartovány. 'Zahozené' programy jsou ukonèeny pøi odhlá¹ení \n"
+#~ "a mohou být ukonèeny i døíve. 'Nastavovací' programy jsou\n"
+#~ "odstartovány pøi ka¾dém pøihlá¹ení."
+
+#~ msgid ""
+#~ "This button produces a key to the program states below:\n"
+#~ "Inactive programs are waiting to start or have finished;\n"
+#~ "Starting programs are being given time to get running;\n"
+#~ "Running programs are normal members of the session;\n"
+#~ "Saving programs are saving their session details;\n"
+#~ "Programs which make no contact have Unknown states.\n"
+#~ msgstr ""
+#~ "Toto tlaèítko urèuje klíè ke stavùm programu ní¾e:\n"
+#~ "Neaktivní programy èekají na start nebo ukonèení;\n"
+#~ "Startující programy èekají na ukonèení inicializace;\n"
+#~ "Bì¾ící programy jsou normální programy sezení;\n"
+#~ "Ukládající programy ukládají svùj souèasný stav;\n"
+#~ "Programy, u kterým není mo¾no stav zjistit jsou v Neznámém stavu.\n"
+
+#~ msgid "This column gives the command used to start a program."
+#~ msgstr "Tento sloupec obsahuje pøíkaz pou¾itý pøi startu."
+
+#~ msgid "Ask next time"
+#~ msgstr "Zeptat se i pøí¹tì"
+
+#~ msgid ""
+#~ "Error loading document:\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Chyba pøi nahrávání dokumentu:\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Show another hint"
+#~ msgstr "Ukázat dal¹í tip"
+
+#~ msgid "Show this dialog on startup"
+#~ msgstr "Zobrazit tento dialog pøi startu"
+
+#~ msgid "Right click on the panel to get a menu"
+#~ msgstr "Pomocí pravého tlaèítka my¹i na panelu zobrazíte menu"
+
+#~ msgid ""
+#~ "To add an applet, right click on a panel\n"
+#~ "then choose 'Add to panel', then 'Applet',\n"
+#~ "then pick an applet from the list"
+#~ msgstr ""
+#~ "Pokud chcete pøidat aplet, kliknìte pravým\n"
+#~ "tlaèítkem my¹i na penelu a vyberte \n"
+#~ "'Pøidat na panel', pak 'Aplet',\n"
+#~ "a vyberte aplet ze seznamu."
+
+#~ msgid ""
+#~ "To manipulate a panel applet, right click\n"
+#~ "anywhere over the applet"
+#~ msgstr ""
+#~ "K úpravì apletu kliknìte pravým tlaèítkem\n"
+#~ "kdekoli nad apletem"
+
+#~ msgid ""
+#~ "To move a panel applet, click the middle\n"
+#~ "button of your mouse over it. You can also\n"
+#~ "right click on it and choose 'Move applet'"
+#~ msgstr ""
+#~ "Aplet pøesunete pomocí prostøedního tlaèítka\n"
+#~ "my¹i. Mù¾ete také pou¾ít pravé tlaèítko a z\n"
+#~ "menu zvolit 'Pøesunout aplet'"
+
+#~ msgid ""
+#~ "You can drag applets from the applet\n"
+#~ "adding menu onto the panel"
+#~ msgstr ""
+#~ "Pøeta¾ením apletu z menu 'Pøidat aplet'\n"
+#~ "na panel tento aplet aktivujete."
+
+#~ msgid ""
+#~ "You can drag icons from the Programs menu\n"
+#~ "onto the desktop or onto the panel to\n"
+#~ "make new icons"
+#~ msgstr ""
+#~ "Pøesunutím ikony z menu programù na desktop\n"
+#~ "nebo panel vytvoøíte novou ikonu pro start\n"
+#~ "daného programu."
+
+#~ msgid ""
+#~ "You can get some choices about an item\n"
+#~ "in the Programs menu, by right clicking\n"
+#~ "on the item in the menu"
+#~ msgstr ""
+#~ "Nabídku èínností k polo¾ce v menu získáte\n"
+#~ "kliknutím pravám tlaèítkem menu na této\n"
+#~ "polo¾ce"
+
+#~ msgid "Convert to corner panel"
+#~ msgstr "Pøekonvertovat na rohový panel"
+
+#~ msgid "Convert to edge panel"
+#~ msgstr "Pøekonvertovat na hranový panel"
+
+#~ msgid "Minimize options"
+#~ msgstr "Nastavení minimalizace"
+
+#~ msgid "Enable hidebuttons"
+#~ msgstr "Povolit ukrývací tlaèítka"
+
+#~ msgid "Enable hidebutton arrows"
+#~ msgstr "Povolit ¹ipky na ukrývacích tlaèítkách"
+
+#~ msgid "Edge"
+#~ msgstr "Hrana"
+
+#~ msgid "Top"
+#~ msgstr "Nahoøe"
+
+#~ msgid "Bottom"
+#~ msgstr "Dole"
+
+#~ msgid "Alignment"
+#~ msgstr "Zarovnání"
+
+#~ msgid "Left / Top"
+#~ msgstr "Vlevo / Nahoøe"
+
+#~ msgid "Center"
+#~ msgstr "Uprostøed"
+
+#~ msgid "Right / Bottom"
+#~ msgstr "Vpravo / Dole"
+
+#~ msgid "Offset Options"
+#~ msgstr "Nastavení posunu"
+
+#~ msgid "Offset is from left / top"
+#~ msgstr "Posun je zleva / zhora"
+
+#~ msgid "Offset is from right / bottom"
+#~ msgstr "Posun je zprava / zdola"
+
+#~ msgid "Image file"
+#~ msgstr "Soubor obrázkem"
+
+#~ msgid "Auto-hide animation speed"
+#~ msgstr "Rychlost animace pøi automatickém ukrytí"
+
+#~ msgid "Explicit-hide animation speed"
+#~ msgstr "Rychlost animace pøi ruèním ukrytí"
+
+#~ msgid "Auto-hide minimize delay (ms)"
+#~ msgstr "Prodleva pøi automatickém skrytí (ms)"
+
+#~ msgid "Auto-hide minimized size (pixels)"
+#~ msgstr "Velikost viditelné èásti pøi automatickém ukrytí (pixely)"
+
+#~ msgid "Image files"
+#~ msgstr "Soubory s obrázky"
+
+#~ msgid "Tile filename (up)"
+#~ msgstr "Ikona (nestisknuto)"
+
+#~ msgid "Tile filename (down)"
+#~ msgstr "Ikona (stisknuto)"
+
+#~ msgid "Show hints on panel startup"
+#~ msgstr "Pøi startu panelu zobrazovat tipy"
+
+#~ msgid "Global panel configuration"
+#~ msgstr "Globální konfigurace panelu"
+
+#~ msgid "General icon settings"
+#~ msgstr "Obecné vlastnosti ikon"
+
+#~ msgid "Movement"
+#~ msgstr "Pøesuny"
+
+#~ msgid "South east"
+#~ msgstr "Vpravo dole"
+
+#~ msgid "North west"
+#~ msgstr "Vlevo nahoøe"
+
+#~ msgid "South west"
+#~ msgstr "Vlevo dole"
+
+#~ msgid "North east"
+#~ msgstr "Vpravo nahoøe"
+
+#~ msgid "This panel properties..."
+#~ msgstr "Vlastnosti tohoto panelu"
+
+#~ msgid "Add new launcher"
+#~ msgstr "Pøidat nový spou¹tìè"
+
+#~ msgid "Add drawer"
+#~ msgstr "Pøidat zásuvku"
+
+#~ msgid "Add applet"
+#~ msgstr "Pøidat aplet"
+
+#~ msgid "Corner panel"
+#~ msgstr "Rohový panel"
+
+#~ msgid "Disable normal operation by saving into the Trash session"
+#~ msgstr "Ukládáním do sezení 'Trash' zakázat normální funkci"
+
+#~ msgid "_Help"
+#~ msgstr "_Nápovìda"
+
+#~ msgid "Look"
+#~ msgstr "Vzhled"
+
+#~ msgid "Display \"launch new window\" option"
+#~ msgstr "Zobrazit volbu \"Vytvoøit nové okno\""
+
+#~ msgid "Display URL label"
+#~ msgstr "Zobrazovat návì¹tí URL"
+
+#~ msgid "WebControl Properties"
+#~ msgstr "Vlastnosti programu WebControl"
+
+#~ msgid "Launch new window"
+#~ msgstr "Vytvoøit nové okno"
+
+#~ msgid "Clear"
+#~ msgstr "Smazat"
+
+#~ msgid "Url:"
+#~ msgstr "Url:"
+
+#~ msgid ""
+#~ "This applet currently sends getURL commands to netscape throught the -remote "
+#~ "interface.  Hopefully later more webrowsers will be supported."
+#~ msgstr ""
+#~ "Tento aplet pou¾ívá pøíkazy 'getURL' prohlí¾eèe netscape pøes pøepínaè "
+#~ "-remote.\n"
+#~ "Podpora dal¹ích prohlí¾eèù bude pøidána pozdìji."
+
+#~ msgid "The Web Browser Controller"
+#~ msgstr "Ovladaè webového prohlí¾eèe"
+
+#~ msgid "Refresh articles"
+#~ msgstr "Aktualizace zpráv"
+
+#~ msgid "Show article listing"
+#~ msgstr "Ukazovat seznam èlánkù"
+
+#~ msgid "Loading headlines........"
+#~ msgstr "Naèítání novinek........."
+
+#~ msgid "A ticker to display Slashdot headlines\n"
+#~ msgstr "Aplet zobrazující novinky ze slashdot.org\n"
+
+#~ msgid "(C) 1998"
+#~ msgstr "(C) 1998"
+
+#~ msgid "SlashApp"
+#~ msgstr "SlashApp"
+
+#~ msgid "Frederic Devernay <devernay@istar.fr>"
+#~ msgstr "Frederic Devernay <devernay@istar.fr>"
+
+#~ msgid "John Ellis <johne@bellatlantic.net> - Display engine"
+#~ msgstr "John Ellis <johne@bellatlantic.net> - zobrazování"
+
+#~ msgid "Craig Small <csmall@eye-net.com.au>"
+#~ msgstr "Craig Small <csmall@eye-net.com.au>"
+
+#~ msgid "Justin Maurer <justin@openprojects.net>"
+#~ msgstr "Justin Maurer <justin@openprojects.net>"
+
+#~ msgid "No articles found"
+#~ msgstr "®ádné èlánky nebyly nenalezeny"
+
+#~ msgid "Slashapp article list"
+#~ msgstr "Slashapp: Seznam èlánkù"
+
+#~ msgid "No articles"
+#~ msgstr "®ádné èlánky"
+
+#~ msgid "Scroll speed between lines (Smooth scroll):"
+#~ msgstr "Rychlost posunu mezi øádkami (jemná posun):"
+
+#~ msgid "Delay when wrapping text:"
+#~ msgstr "Prodleva pøi lámání textu:"
+
+#~ msgid "Speed"
+#~ msgstr "Rychlost"
+
+#~ msgid "Smooth type"
+#~ msgstr "Postupný tisk písmen"
+
+#~ msgid "Smooth scroll"
+#~ msgstr "Jemný posun"
+
+#~ msgid "Open new window"
+#~ msgstr "Otevøít nové okno"
+
+#~ msgid "(These settings do not take effect until a refresh)"
+#~ msgstr "(tato nastavení budou pou¾ita a¾ pøi dal¹í aktualizaci)"
+
+#~ msgid "Delay between articles (10 = 1 sec):"
+#~ msgstr "Prodleva mezi èlánky (desetiny sekundy):"
+
+#~ msgid "Show extra information (Time, Author, Comments)"
+#~ msgstr "Ukazovat dal¹í informace (Èas, autor, komentáø)"
+
+#~ msgid "Show topic images"
+#~ msgstr "Ukazovat obrázky pro témata"
+
+#~ msgid "Articles"
+#~ msgstr "Èlánky"
+
+#~ msgid "Device"
+#~ msgstr "Zaøízení"
+
+#~ msgid "Network Load Settings"
+#~ msgstr "Nastavení 'Zatí¾ení sítì'"
+
+#~ msgid "properties.c: gnome_property_box_new() failed.\n"
+#~ msgstr "properties.c: funkce gnome_property_box_new() selhala.\n"
+
+#~ msgid "Vertical spacing of bars (in kilobytes)"
+#~ msgstr "Vertikální krok sloupcù (kB)"
+
+#~ msgid "Device name (like ppp0 or eth0)"
+#~ msgstr "Jméno zaøízení (napø.: ppp0 nebo eth0)"
+
+#~ msgid "Traffic bars"
+#~ msgstr "Sloupce pøenosu"
+
+#~ msgid "Network Traffic"
+#~ msgstr "Sí»ový pøenos"
+
+#~ msgid ""
+#~ "This applet is released under the terms and conditions of the GNU Public "
+#~ "Licence.This applet shows the load on a network device. It requires the "
+#~ "/proc/net/ip_acct interface to be present and set up correctly for the "
+#~ "device."
+#~ msgstr ""
+#~ "Tento aplet je ¹íøen pod Obecnou veøejnou licencí GNU. Aplet zobrazuje tok\n"
+#~ "dat pøes sí»ové zaøízení a vy¾aduje soubor /proc/net/ip_acct obsahující \n"
+#~ "informace o daném zaøízení."
+
+#~ msgid "The GNOME Network Load Applet"
+#~ msgstr "Aplet pro zobrazení zatí¾ení sítì"
+
+#~ msgid "An error occured in the Netload Applet:"
+#~ msgstr "V apletu Netload se vyskytla chyba:"
+
+#~ msgid "Netload Error"
+#~ msgstr "Chyba v apletu netload"
+
+#~ msgid "Swap Load"
+#~ msgstr "Zatí¾ení odkládacího prostoru"
+
+#~ msgid "Memory Load"
+#~ msgstr "Vyu¾ití pamìti"
+
+#~ msgid "Used"
+#~ msgstr "Pou¾ito"
+
+#~ msgid "Free"
+#~ msgstr "Volno"
+
+#~ msgid "Buffers"
+#~ msgstr "Bufery"
+
+#~ msgid "User"
+#~ msgstr "U¾ivatel"
+
+#~ msgid "System"
+#~ msgstr "Systém"
+
+#~ msgid "Nice"
+#~ msgstr "Nice"
+
+#~ msgid "Idle"
+#~ msgstr "Neèinnost"
+
+#~ msgid "Width:"
+#~ msgstr "©íøka:"
+
+#~ msgid "Speed:"
+#~ msgstr "Rychlost:"
+
+#~ msgid "Height:"
+#~ msgstr "Vý¹ka:"
+
+#~ msgid "Load Graph"
+#~ msgstr "Graf zátì¾e"
+
+#~ msgid "CPU Load"
+#~ msgstr "Zátì¾ CPU"
+
+#~ msgid "Use ISDN"
+#~ msgstr "Pou¾ít ISDN"
+
+#~ msgid "Device:"
+#~ msgstr "Zaøízení:"
+
+#~ msgid "Verify owner of lock file"
+#~ msgstr "Ovìøit vlastníka uzamykacího souboru"
+
+#~ msgid "Modem lock file:"
+#~ msgstr "Uzamykací soubor modemu:"
+
+#~ msgid "Show connect time and throughput"
+#~ msgstr "Ukazovat rychlost a donu pøipojení"
+
+#~ msgid "Confirm connection"
+#~ msgstr "Potvrïte pøipojení"
+
+#~ msgid "Disconnect command:"
+#~ msgstr "Odpojovací pøikaz:"
+
+#~ msgid "Connect command:"
+#~ msgstr "Pøipojovací pøíkaz:"
+
+#~ msgid "Updates per second"
+#~ msgstr "Aktualizací za sekundu"
+
+#~ msgid "Modem Lights Settings"
+#~ msgstr "Nastavení 'Modemových svìtel'"
+
+#~ msgid "not connected"
+#~ msgstr "nepøipojeno"
+
+#~ msgid "Do you want to connect?"
+#~ msgstr "Chcete se pøipojit?"
+
+#~ msgid ""
+#~ "You are currently connected.\n"
+#~ "Do you want to disconnect?"
+#~ msgstr ""
+#~ "Právì jste pøipojen(a).\n"
+#~ "Chcete se odpojit ?"
+
+#~ msgid ""
+#~ "Released under the GNU general public license.\n"
+#~ "A modem status indicator and dialer.Lights in order from the top or left are "
+#~ "RX and TX"
+#~ msgstr ""
+#~ "Distribuovábo pod Obecnou veøejnou licencí GNU\n"
+#~ "Aplet ukazuje stav modemu a vytáèí pøipojení. Svìtla v poøadí shora a zleva "
+#~ "jsou RX a TX"
+
+# 'Modemová svìtla' je úmyslnì...
+#~ msgid "Modem Lights Applet"
+#~ msgstr "Aplet 'Modemová svìtla'"
+
+#~ msgid "Run gmix..."
+#~ msgstr "Spustit gmix..."
+
+#~ msgid "Main Volume and Mute"
+#~ msgstr "Hlavní hlasitost a umlèení"
+
+#~ msgid ""
+#~ "warning: this version of gmix was compiled with a different version of\n"
+#~ "soundcard.h.\n"
+#~ msgstr ""
+#~ "varování: tato verze programu gmix byla kompilována s jinou verzí souuboru\n"
+#~ "soundcard.h.\n"
+
+#~ msgid "Macros"
+#~ msgstr "Makra"
+
+#~ msgid "   Macro %.2d:"
+#~ msgstr "   Makro %.2d:"
+
+#~ msgid "Prefix %.2d:"
+#~ msgstr "Prefix %.2d:"
+
+#~ msgid "Command line background:"
+#~ msgstr "Barva pozadí pøíkazové øádky"
+
+#~ msgid "Command line foreground:"
+#~ msgstr "Barva popøedí pøíkazové øádky"
+
+#~ msgid ""
+#~ "\n"
+#~ "Sometimes the applet has to be moved on the panel\n"
+#~ "to make a change of the size visible."
+#~ msgstr ""
+#~ "\n"
+#~ "Nìkdy je aplet tøeba po panelu pøesunout,\n"
+#~ "aby se zmìny velikosti uplatnily."
+
+#~ msgid "Command line height:"
+#~ msgstr "Vý¹ka pøíkazové øádky"
+
+#~ msgid "Applet width:"
+#~ msgstr "©íøka apletu"
+
+#~ msgid "Show time"
+#~ msgstr "Ukazovat èas"
+
+#~ msgid "Mini-Commander Properties"
+#~ msgstr "Vlastnost apletu Mini-Commander"
+
+#~ msgid "saving prefs..."
+#~ msgstr "ukládání nastavení..."
+
+#~ msgid "clock off"
+#~ msgstr "hodiny vypnuty"
+
+#~ msgid "date on"
+#~ msgstr "datum zobrazen"
+
+#~ msgid "time on"
+#~ msgstr "èas zobrazen"
+
+#~ msgid "time & date on"
+#~ msgstr "datum a èas zobrazen"
+
+#~ msgid "Browser"
+#~ msgstr "Prohlí¾eè"
+
+#~ msgid "orient. changed"
+#~ msgstr "orientace zmìnìna"
+
+#~ msgid "%d. %b"
+#~ msgstr "%e. %b"
+
+#~ msgid "%H:%M - %d. %b"
+#~ msgstr "%H:%M - %e. %b"
+
+#~ msgid "child exited"
+#~ msgstr "potomek skonèil"
+
+#~ msgid "fork error"
+#~ msgstr "chyba volání fork()"
+
+#~ msgid "Command history"
+#~ msgstr "Historie pøíkazù"
+
+#~ msgid "history list empty"
+#~ msgstr "seznam historie prázdný"
+
+#~ msgid "end of history list"
+#~ msgstr "konec historie"
+
+#~ msgid "not found"
+#~ msgstr "nenalezeno"
+
+#~ msgid "completed"
+#~ msgstr "doplnìno"
+
+#~ msgid "no /bin/sh"
+#~ msgstr "neexistuje /bin/sh"
+
+#~ msgid "completing..."
+#~ msgstr "doplòování..."
+
+#~ msgid "not unique"
+#~ msgstr "není unikátní"
+
+#~ msgid ""
+#~ "This GNOME applet adds a command line to the panel. It features command "
+#~ "completion, command history, changeable macros and an optional built-in "
+#~ "clock.\n"
+#~ "\n"
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the Free "
+#~ "Software Foundation; either version 2 of the License, or (at your option) "
+#~ "any later version."
+#~ msgstr ""
+#~ "Tento aplet GNOME pøidává do panelu mo¾nost pou¾ít pøíkazovou øádku. Nabízí\n"
+#~ "doplòování pøíazù, historii, konfigurovatelné makra a volitelnì hodiny.\n"
+#~ "\n"
+#~ "Tento program je volný software; je mo¾né ho distribuovat a/nebo "
+#~ "modifikovat\n"
+#~ "pod ustanoveními Obecné veøejné licence GNU a to buï verze 2 této licence\n"
+#~ "nebo (podle va¹í volby) jakékoli verze pozdìj¹í."
+
+#~ msgid "Mini-Commander Applet"
+#~ msgstr "Aplet Mini-Commander"
+
+#~ msgid ""
+#~ "Released under the GNU general public license.\n"
+#~ "Displays time in Binary Coded Decimal\n"
+#~ "http://snoopy.net/~jon/jbc/."
+#~ msgstr ""
+#~ "Distribuováno pod Obecnou veøejnou licencí GNU.\n"
+#~ "Zobrazuje binárnì kódované desítkové èíslice\n"
+#~ "zobrazující èas. Dal¹í na http://snoopy.net/~jon/jbc/."
+
+#~ msgid "Jon's Binary Clock"
+#~ msgstr "Jonovy binární hodiny"
+
+#~ msgid "Nuke"
+#~ msgstr "Ukonèit"
+
+#~ msgid "Show / Hide"
+#~ msgstr "Ukázat / Skrýt"
+
+#~ msgid "?"
+#~ msgstr "?"
+
+#~ msgid "Gnome Pager Error"
+#~ msgstr "Chyba zobrazení ploch"
+
+#~ msgid "Number of vertical columns of tasks"
+#~ msgstr "Poèet vertikálních sloupcù úloh"
+
+#~ msgid "Number of rows of horizontal tasks"
+#~ msgstr "Poèet horizontálních øádkù úloh"
+
+#~ msgid "Maximum width of vertical task list"
+#~ msgstr "Maximální ¹íøka vertikálního seznamu úloh"
+
+#~ msgid "Tasklist always maximum size"
+#~ msgstr "Seznam úloh v¾dy maximální velikosti"
+
+#~ msgid "Show minimized tasks only"
+#~ msgstr "Pouze minimalizované úlohy"
+
+#~ msgid "Show normal tasks only"
+#~ msgstr "Pouze normální úlohy"
+
+#~ msgid "Show button icons"
+#~ msgstr "Ukazovat na tlaèítkách ikonky"
+
+#~ msgid "Show task list"
+#~ msgstr "Ukazovat seznam úloh"
+
+#~ msgid "Height of large pagers"
+#~ msgstr "Vý¹ka velkých ikon ploch"
+
+#~ msgid "Width of large pagers"
+#~ msgstr "©íøka velkých ikon ploch"
+
+#~ msgid "Height of small pagers"
+#~ msgstr "Vý¹ka malých ikon ploch"
+
+#~ msgid "Width of small pagers"
+#~ msgstr "©íøka malých ikon ploch"
+
+#~ msgid "Use small pagers"
+#~ msgstr "Pou¾ít malé ikony ploch"
+
+#~ msgid "Place pagers after tasklist"
+#~ msgstr "Zobrazit plochy za seznamem úloh"
+
+#~ msgid "Pager"
+#~ msgstr "Prùvodce plochou"
+
+#~ msgid "Gnome Pager Settings"
+#~ msgstr "Nastavení mìnièe ploch"
+
+#~ msgid "Pager for a GNOME compliant Window Manager"
+#~ msgstr "Prùvodce plochou pro správce oken odpovídající po¾adavkùm GNOME"
+
+#~ msgid "Copyright (C)1998,1999 Red Hat Software, Free Software Foundation"
+#~ msgstr "Copyright (C)1998,1999 Red Hat Software, Free Software Foundation"
+
+#~ msgid ""
+#~ "This applet switches between keyboard maps. Not more. It uses setxkbmap, or "
+#~ "xmodmap. The main site of this app moved temporarily to URL "
+#~ "http://lsc.kva.hu/gkb.Mail me your flag, please (60x40 size),I will put it "
+#~ "to CVS.So long, and thanks for all the fish.\n"
+#~ "Thanks for Balazs Nagy (Kevin)<julian7@kva.hu> for minor help."
+#~ msgstr ""
+#~ "Tento aplet pøepíná mezi klávesnicemi. Nic víc. Pou¾ívá buï setxkbmap nebo "
+#~ "xmodmap. Hlavní stránka tohoto apletu je doèasnì pøesunuta na "
+#~ "http://lsc.kva.hu/gkb/. Prosím, po¹lete mi vlajku va¹ho státu, pokud ji¾ "
+#~ "není obsa¾ena, ve velikosti 60-A×40 pixel-Bù, umístím ji do CVS.\n"
+#~ "Podìkování pro Balazse Nagyho (Kevin)<julian7@kva.hu> za malou pomoc."
+
+#~ msgid "(C) 1998-99 LSC - Linux Supporting Center"
+#~ msgstr "(C) 1998-99 LSC - Linux Supporting Center"
+
+#~ msgid "1.0.1"
+#~ msgstr "1.0.1"
+
+#~ msgid "The GNOME KeyBoard Applet"
+#~ msgstr "Aplet klávesnice pro GNOME"
+
+#~ msgid "Xmodmap"
+#~ msgstr "Xmodmap"
+
+#~ msgid "Xkb"
+#~ msgstr "Xkb"
+
+#~ msgid "Flag Two"
+#~ msgstr "Druhá vlajka"
+
+#~ msgid "GKB settings"
+#~ msgstr "Nastavení GKB"
+
+#~ msgid "s"
+#~ msgstr "sekund"
+
+#~ msgid "Show date"
+#~ msgstr "Ukazovat datum"
+
+#~ msgid "Fvwm Pager Settings"
+#~ msgstr "Nastavení zobrazení ploch Fvwm"
+
+#~ msgid "Inactive Desktop Color"
+#~ msgstr "Barva neaktivní plochy"
+
+#~ msgid "Active Desktop Color"
+#~ msgstr "Barva aktivní plochy"
+
+#~ msgid "Inactive Window Color"
+#~ msgstr "Barva neaktivního okna"
+
+#~ msgid "Active Window Color"
+#~ msgstr "Barva aktivního okna"
+
+#~ msgid "About\t"
+#~ msgstr "O programu\t"
+
+#~ msgid "Copyright (C) 1998 M. Lausch"
+#~ msgstr "Copyright (C) 1998 M. Lausch"
+
+#~ msgid "Fvwm Pager Applet"
+#~ msgstr "Zobrazení ploch pro Fvwm"
+
+#~ msgid "Scramble pieces"
+#~ msgstr "Zamíchat"
+
+#~ msgid "Can't create fifteen applet!"
+#~ msgstr "Aplet \"Patnáct\" nelze vytvoøit!"
+
+#~ msgid ""
+#~ "Sam Lloyd's all-time favorite game, now for your delight in the Gnome Panel. "
+#~ "Guaranteed to be a productivity buster."
+#~ msgstr ""
+#~ "Hra \"Patnáct\" Sama Lloyda, nyní ve va¹em panelu desktopu Gnome. \n"
+#~ "Garantuje sni¾ování produktivity práce."
+
+#~ msgid "Copyright (C) The Free Software Foundation"
+#~ msgstr "Copyright (C) Free Software Foundation"
+
+#~ msgid "1.0"
+#~ msgstr "1.0"
+
+#~ msgid "Fifteen sliding pieces"
+#~ msgstr "Patnáct posunujících se ètvereèkù"
+
+#~ msgid "You win!"
+#~ msgstr "Vyhrál(a) jste!"
+
+#~ msgid "This does nothing useful"
+#~ msgstr "Neprovádí nic u¾iteèného"
+
+#~ msgid "Esound MAnager Applet"
+#~ msgstr "Aplet pro øízení esd"
+
+#~ msgid "Copyright (C)1998 Red Hat Software"
+#~ msgstr "Copyright (C)1998 Red Hat Software"
+
+#~ msgid "Use automount friendly status test"
+#~ msgstr "Pou¾í test odpovídající programu automount"
+
+#~ msgid "Mount point:"
+#~ msgstr "Pøipojovací adresáø:"
+
+#~ msgid "Hard Disk"
+#~ msgstr "Hard Disk"
+
+#~ msgid "Zip Drive"
+#~ msgstr "Jednotka Zip"
+
+#~ msgid "Cdrom"
+#~ msgstr "Cdrom"
+
+#~ msgid "Floppy"
+#~ msgstr "Disketa"
+
+#~ msgid "Icon:"
+#~ msgstr "Ikona:"
+
+#~ msgid "Update in seconds:"
+#~ msgstr "Obnovit ka¾dých (sekund):"
+
+#~ msgid "Drive Mount Settings"
+#~ msgstr "Nastavení pøipojovaèe diskù"
+
+#~ msgid "Eject"
+#~ msgstr "Vysunout"
+
+#~ msgid ""
+#~ "Drivemount command failed.\n"
+#~ "\""
+#~ msgstr ""
+#~ "Pøíkaz na pøipojení selhal.\n"
+#~ "\""
+
+#~ msgid "\" reported:\n"
+#~ msgstr "\" oznámeno:\n"
+
+#~ msgid " not mounted"
+#~ msgstr " není pøipojen"
+
+#~ msgid " mounted"
+#~ msgstr " pøipojen"
+
+#~ msgid ""
+#~ "Released under the GNU general public license.\n"
+#~ "Mounts and Unmounts drives.."
+#~ msgstr ""
+#~ "Distribuováno pod Obecnou veøejnou licencí GNU.\n"
+#~ "Pøipojuje a odpojuje disky..."
+
+#~ msgid "Drive Mount Applet"
+#~ msgstr "Aplet pøipojování diskù"
+
+#~ msgid "Update Frequency"
+#~ msgstr "Obnovovací frekvence"
+
+#~ msgid "Applet Height"
+#~ msgstr "Vý¹ka apletu"
+
+#~ msgid "Backgroundcolor"
+#~ msgstr "Barva pozadí"
+
+#~ msgid "Textcolor"
+#~ msgstr "Barva textu"
+
+#~ msgid "Free Diskspace"
+#~ msgstr "Volný diskový prostor"
+
+#~ msgid "Used Diskspace"
+#~ msgstr "Pou¾itý diskový prostor"
+
+#~ msgid "File Systems"
+#~ msgstr "Souborové systémy"
+
+#~ msgid "A funky PPP dialer, how come no-one has thought of it before!?"
+#~ msgstr ""
+#~ "Zajímavý aplet na vytáèení PPP spojení, jak to ¾e neexistoval døive !?"
+
+#~ msgid "PPP Dialer Applet"
+#~ msgstr "Aplet vytáèení PPP"
+
+#~ msgid "Theme"
+#~ msgstr "Téma"
+
+#~ msgid "Theme file (directory):"
+#~ msgstr "Soubor téma (adresáø):"
+
+#~ msgid "Amount of mail to consider mailbox full (Kbytes):"
+#~ msgstr "Velikost po¹ty, pøi které je schránka oznaèena jako plná (KB):"
+
+#~ msgid "Blink when any mail is waiting. (Not just when mail arrives)"
+#~ msgstr ""
+#~ "Blikat, pokud èeká nìjaká nepøeètená e-po¹ta. Tedy nikoli jen pøi doruèení."
+
+#~ msgid "When clicked, run:"
+#~ msgstr "Pøi kliku my¹í pustit:"
+
+#~ msgid "Display time relative to GMT (Greenwich Mean Time):"
+#~ msgstr "Zobrazit èas relativnì ke GMT (Greenwichský èas):"
+
+#~ msgid "ClockMail Settings"
+#~ msgstr "Nastavení pro ClockMail"
+
+#~ msgid "Themes:"
+#~ msgstr "Témata:"
+
+#~ msgid "None (default)"
+#~ msgstr "®ádné (standard)"
+
+#~ msgid " (GMT %+d)"
+#~ msgstr " (GMT %+d)"
+
+#~ msgid ""
+#~ "Released under the GNU general public license.\n"
+#~ "Basic digital clock with date in a tooltip. Optional 12/24 time display. "
+#~ "Mail blinking can be for any unread mail, or only briefly when new mail "
+#~ "arrives."
+#~ msgstr ""
+#~ "Distribuováno pod Obecnou veøejnou licencí GNU.\n"
+#~ "Základní aplet digitálních hodin s datem v balónovém tipu. Volitelné "
+#~ "zobrazení\n"
+#~ "12/24 hodin. Blikání mù¾e být pro jakýkoli nepøeètený mail nebo krátce, jen\n"
+#~ "kdy¾ pøijde po¹ta."
+
+#~ msgid "(C) 1999"
+#~ msgstr "(C) 1999"
+
+#~ msgid "Clock and Mail Notify Applet"
+#~ msgstr "Aplet hodin a sledování do¹lé e-po¹ty"
+
+#~ msgid "John Ellis <johne@bellatlantic.net>"
+#~ msgstr "John Ellis <johne@bellatlantic.net>"
+
+#~ msgid "%d.%d.%d"
+#~ msgstr "%d.%d.%d"
+
+#~ msgid ""
+#~ "Gnome Panel applet for selecting strange characters that are not on my "
+#~ "keyboard. Released under GNU General Public Licence."
+#~ msgstr ""
+#~ "Aplet pro panel Gnome slou¾ící k výbìru znakù, které není mo¾no zadat z "
+#~ "klávesnice. Distribováno pod Obecnou Veøejnou licencí GNU."
+
+#~ msgid "Copyright (C) 1998"
+#~ msgstr "Copyright (C) 1998"
+
+#~ msgid "0.03"
+#~ msgstr "0.03"
+
+#~ msgid "Character Picker"
+#~ msgstr "Výbìr znaku"
+
+#~ msgid "Run gtcd..."
+#~ msgstr "Spustit gtcd..."
+
+#~ msgid "APM is disabled!  Cannot read battery charge information."
+#~ msgstr ""
+#~ "©etøení energií (APM) není povoleno. Nelze zjistit informace o bateriích."
+
+#~ msgid "ioctl failed on /dev/apm."
+#~ msgstr "Na /dev/apm selhalo volání ioctl."
+
+#~ msgid "Cannot open /dev/apm; can't get data."
+#~ msgstr "Nelze otevøít /dev/apm; nelze získat data."
+
+#~ msgid ""
+#~ "Cannot open /proc/apm!  Make sure that you built APM support into your "
+#~ "kernel.\n"
+#~ msgstr ""
+#~ "Nelze otevøít /proc/apm! Ujistìte se, ¾e je podpora APM zakompilována v "
+#~ "kernelu.\n"
+
+#~ msgid "Enable Full-Charge Notification"
+#~ msgstr "Oznámovat plné nabití"
+
+#~ msgid "Warn if the battery charge dips below:"
+#~ msgstr "Varování pøi vybití baterie pod:"
+
+#~ msgid "Enable Low Battery Warning"
+#~ msgstr "Varování pøi vybitém akumulátoru"
+
+#~ msgid "Battery Charge Messages"
+#~ msgstr "Zprávy o nabíjení akumulátoru"
+
+#~ msgid "Right to Left"
+#~ msgstr "Zprava doleva"
+
+#~ msgid "Left to Right"
+#~ msgstr "Zleva doprava"
+
+#~ msgid "Graph Direction:"
+#~ msgstr "Smìr kreslení grafu:"
+
+#~ msgid "Graph Tick Color:"
+#~ msgstr "Barva pøírùstku grafu:"
+
+#~ msgid "Graph Battery Low Color:"
+#~ msgstr "Barva témìø vybité baterie:"
+
+#~ msgid "Low Battery Color:"
+#~ msgstr "Barva pøi témìø vybitého akumulátoru:"
+
+#~ msgid "AC-Off Battery Color:"
+#~ msgstr "Barva baterie, pokud není pøipojení k 220V:"
+
+#~ msgid "AC-On Battery Color:"
+#~ msgstr "Barva baterie pøi pøipojení k 220V:"
+
+#~ msgid "Applet Mode:"
+#~ msgstr "Re¾im apletu:"
+
+#~ msgid "Low Charge Threshold:"
+#~ msgstr "Nejistota nenabití baterie"
+
+#~ msgid "Update Interval (seconds):"
+#~ msgstr "Interval obnovování (sekundy):"
+
+#~ msgid "Applet Width:"
+#~ msgstr "©íøka apletu"
+
+#~ msgid "Applet Height:"
+#~ msgstr "Vý¹ka apletu"
+
+#~ msgid "Battery Monitor Settings"
+#~ msgstr "Nastavení monitoru baterií"
+
+#~ msgid "Could not allocate space for graph values"
+#~ msgstr "Nelze alokovat místo pro hodnoty grafu"
+
+#~ msgid ""
+#~ "This applet monitors the charge of your laptop's battery.  Click on it to "
+#~ "change display modes."
+#~ msgstr ""
+#~ "Tento aplet monitoruje stav baterií va¹eho laptopu. Klik na nìj zmìní re¾im "
+#~ "zobrazování."
+
+#~ msgid " (C) 1997-1998 The Free Software Foundation"
+#~ msgstr " (C) 1997-1998 Free Software Foundation"
+
+#~ msgid "The GNOME Battery Monitor Applet"
+#~ msgstr "Applet pro sledování stavu baterií pro desktop GNOME"
+
+#~ msgid "Internal error: invalid mode in battery_set_mode"
+#~ msgstr "Interní chyba: chybný mód ve funkci 'battery_set_mode'"
+
+#~ msgid "The battery is fully charged."
+#~ msgstr "Baterie jsou plnì nabity."
+
+#~ msgid ""
+#~ "Error querying battery charge.  Make sure that your kernel was built with "
+#~ "APM support."
+#~ msgstr ""
+#~ "Chyba pøi získání informací o stavu baterií. Ujistìte se, ¾e Vá¹ kernel byl "
+#~ "sestaven s podporou APM."
+
+#~ msgid "Timezone"
+#~ msgstr "Èasová zóna"
+
+#~ msgid "Blinking elements in clock"
+#~ msgstr "Blikající elementy"
+
+#~ msgid "Display time in 12 hour format (AM/PM)"
+#~ msgstr "Zobrazovat èas ve 12-ti hodinovém formátu"
+
+#~ msgid "ASClock Settings"
+#~ msgstr "Vlastnosti hodin"
+
+#~ msgid "Clock Theme"
+#~ msgstr "Téma hodin"
+
+#~ msgid "My Title"
+#~ msgstr "Mùj titulek"
+
+#~ msgid ""
+#~ "Since you are root, would you like to set the system's default timezone?"
+#~ msgstr "Proto¾e jste u¾ivatel 'root', chete nyní nastavit èasovou zónu ?"
+
+#~ msgid "Who said NeXT is dead?"
+#~ msgstr "Kdo ¾e øekl, ¾e je NeXT mrtvý ?!"
+
+#~ msgid "(C) 1998 the Free Software Foundation"
+#~ msgstr "(C) 1998 Free Software Foundation"
+
+#~ msgid "ASClock"
+#~ msgstr "ASClock"
+
+#~ msgid "About"
+#~ msgstr "O programu"
+
+#~ msgid "An analog clock similar to that in CDE panel."
+#~ msgstr "Analogové hodiny podobné hodinám v panelu CDE."
+
+#~ msgid "(C) 1999 the Free Software Foundation"
+#~ msgstr "(C) 1999 Free Software Foundation"
+
+#~ msgid "Iñigo Serna <inigo@gaztelan.bi.ehu.es>"
+#~ msgstr "Inigo Serna <inigo@gaztelan.bi.ehu.es>"
+
+#~ msgid "Show seconds needle"
+#~ msgstr "Zobrazovat sekundovou ruèièku"
+
+#~ msgid "Second needle color"
+#~ msgstr "Barva sekundové ruèièky"
+
+#~ msgid "Minute needle color"
+#~ msgstr "Barva minutové ruèièky"
+
+#~ msgid "Hour needle color"
+#~ msgstr "Barva hodinové ruèièky"
+
+#~ msgid "Clock color"
+#~ msgstr "Barva hodin"
