@@ -7,6 +7,7 @@
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
 /etc/aliases
+/etc/capability
 /etc/compiler.defaults
 /etc/cshrc
 /etc/ftpusers
