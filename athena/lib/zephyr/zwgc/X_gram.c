@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.6 1989-11-28 16:51:29 jtkohl Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.7 1989-11-29 10:56:35 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -222,7 +222,7 @@ void x_gram_create(dpy, gram, xalign, yalign, xpos, ypos, xsize, ysize,
 
     XSaveContext(dpy, w, desc_context, (caddr_t)gram);
     XSelectInput(dpy, w, ExposureMask|ButtonReleaseMask|ButtonPressMask
-		 |EnterWindowMask|LeaveWindowMask|Button1MotionMask|
+		 |LeaveWindowMask|Button1MotionMask|
 		 Button3MotionMask
 #ifdef notdef
 		 |StructureNotifyMask

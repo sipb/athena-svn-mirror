@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xcut.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.5 1989-11-15 23:51:09 marc Exp $";
+static char rcsid_xcut_c[] = "$Id: xcut.c,v 1.6 1989-11-29 10:55:35 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -138,6 +138,7 @@ void xcut(dpy,event,desc_context)
     x_gram *gram;
     Window w = event->xany.window;
     static int current_window_in = -1;
+    static int current_valid = False;
     int changedbound;
 
     /*
@@ -151,12 +152,14 @@ void xcut(dpy,event,desc_context)
      * Dispatch on the event type:
      */
     switch(event->type) {
-     case EnterNotify:
-       current_window_in = w;
-       break;
-
      case LeaveNotify:
-       current_window_in = -1;
+	if (event->xcrossing.window == current_window_in) {
+	    current_valid = False;
+	} else {
+	    /* it left in an unusual way, so give up */
+	    current_valid = False;
+	    current_window_in = -1;
+	}
        break;
 
      case MotionNotify:
@@ -201,17 +204,22 @@ void xcut(dpy,event,desc_context)
 	   }
 	} else {
 	   current_window_in = w;
+	   current_valid = True;
 	}
 	break;
 
       case ButtonRelease:
-	if (w == current_window_in && !((event->xbutton.state)&ShiftMask)) {
+	if (w == current_window_in && current_valid
+	    && !((event->xbutton.state)&ShiftMask)) {
+	    /* valid button release (mouse never left window) */
 	   if (w == selecting_in) {
 	      selecting_in = 0;
 	      xmarkClear();
 	   }
 	   if (reverse_stack && (gram == bottom_gram))
 	      bottom_gram = gram;
+	   current_window_in = -1;
+	   current_valid = False;
 	   XDeleteContext(dpy, w, desc_context);
 	   XDestroyWindow(dpy, w);
 	   if (reverse_stack)
@@ -219,7 +227,7 @@ void xcut(dpy,event,desc_context)
 	   free(gram->text);
 	   free(gram->blocks);
 	   free(gram);
-	} else if (w == selecting_in) {
+	} else if (w == selecting_in && ((event->xbutton.state)&ShiftMask)) {
 	   if (selected_text) free(selected_text);
 	   selected_text = xmarkGetText();
 	}
