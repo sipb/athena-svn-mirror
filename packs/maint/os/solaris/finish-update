@@ -8,14 +8,22 @@ start)
 	case "$state" in
 	Install)
 		newvers=`awk '{a=$6} END {print a}' /etc/athena/version`
-		if [ ! -r /srvd/install/finish-install ]; then
+		if [ ! -r /srvd/install/finish-install-wrapper ]; then
 			echo "Cannot finish partially completed install."
 			echo "Please contact Athena Hotline at x3-1410.  Thank"
 			echo "you. -Athena Operations"
-			/bin/athena/tcsh
+			/bin/sh
 		fi
-		sh /srvd/install/finish-install "$newvers" 2>&1 \
-			| tee -a /var/athena/install.log
+
+		# We get run before bind and inetsvc (since we don't want 
+		# to run inetd), which means named isn't running.  Run it.
+		/etc/athena/named
+
+		# Make sure we see the right cells as setuid.
+		sh /etc/athena/config_afs
+
+		echo "Finishing partially completed install"
+		exec sh /srvd/install/finish-install-wrapper "$newvers"
 		;;
 	Reboot)
 		if [ ! -r /srvd/usr/athena/lib/update/finish-update-wrapper ]
