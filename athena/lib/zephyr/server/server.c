@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.32 1988-06-23 16:57:52 jtkohl Exp $";
+static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.33 1988-06-23 17:37:18 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -1332,7 +1332,6 @@ struct sockaddr_in *who;
 		if (otherservers[i].zs_dumping) {
 			server_queue(&(otherservers[i]), packlen, pack,
 				     auth, who);
-			xfree(pack);
 			continue;
 		}
 		server_forw_reliable(&otherservers[i], pack, packlen, notice);
