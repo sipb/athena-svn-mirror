@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.11 1999-08-10 16:07:42 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.12 1999-10-13 22:29:41 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -206,12 +206,12 @@ if test "$krb4" != yes; then
 	LDFLAGS="$LDFLAGS -L$krb4/lib"
 fi
 AC_CHECK_LIB(krb4, krb_rd_req,
-	     [KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
+	     [KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"],
 	     [AC_CHECK_LIB(krb, krb_rd_req,
 			   [KRB4_LIBS="-lkrb -ldes"],
 			   [AC_MSG_ERROR(Kerberos 4 libraries not found)],
 			   -ldes)],
-	     -ldes425 -lkrb5 -lcrypto -lcom_err)])
+	     -ldes425 -lkrb5 -lk5crypto -lcom_err)])
 
 AC_DEFUN(ATHENA_KRB4,
 [AC_ARG_WITH(krb4,
@@ -246,7 +246,7 @@ if test "$krb5" != yes; then
 fi
 AC_CHECK_LIB(krb5, krb5_init_context, :,
 	     [AC_MSG_ERROR(Kerberos 5 libraries not found)],
-	     -lcrypto -lcom_err)])
+	     -lk5crypto -lcom_err)])
 
 AC_DEFUN(ATHENA_KRB5,
 [AC_ARG_WITH(krb5,
@@ -254,7 +254,7 @@ AC_DEFUN(ATHENA_KRB5,
 	[krb5="$withval"], [krb5=no])
 if test "$krb5" != no; then
 	ATHENA_KRB5_CHECK
-	KRB5_LIBS="-lkrb5 -lcrypto -lcom_err"
+	KRB5_LIBS="-lkrb5 -lk5crypto -lcom_err"
 	AC_DEFINE(HAVE_KRB5)
 fi
 AC_SUBST(KRB5_LIBS)])
