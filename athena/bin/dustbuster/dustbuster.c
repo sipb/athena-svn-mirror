@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.9 2003-01-22 21:43:28 rbasch Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.10 2004-08-03 18:05:55 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -204,7 +204,7 @@ static void sessionbust(char **argv)
 static void start_child(char **argv, int keep_fd)
 {
   struct sigaction sa;
-  sigset_t set, oset;
+  sigset_t set;
   int fd;
 
   /* Set up the SIGCHLD handler. */
@@ -214,16 +214,19 @@ static void start_child(char **argv, int keep_fd)
   sigaction(SIGCHLD, &sa, NULL);
 
   /* Create the subprocess, blocking SIGCHLD and terminating signals
-   * until child_pid is assigned.
+   * until child_pid is assigned.  Explicitly unblock signals rather
+   * than simply restoring the signal mask, in case our parent process
+   * started us with signals blocked.  (bonobo-activation and liboaf
+   * have a bug where they start us with SIGCHLD blocked.)
    */
   sigemptyset(&set);
   sigaddset(&set, SIGCHLD);
   sigaddset(&set, SIGHUP);
   sigaddset(&set, SIGINT);
   sigaddset(&set, SIGTERM);
-  sigprocmask(SIG_BLOCK, &set, &oset);
+  sigprocmask(SIG_BLOCK, &set, NULL);
   child_pid = fork();
-  sigprocmask(SIG_SETMASK, &oset, NULL);
+  sigprocmask(SIG_UNBLOCK, &set, NULL);
   if (child_pid == -1)
     {
       fprintf(stderr, "%s: error: can't create subprocess: %s\n", progname,
