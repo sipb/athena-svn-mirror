@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.9 2003-05-03 15:24:20 ghudson Exp $
+# $Id: athchanges,v 1.10 2003-06-30 16:01:15 rbasch Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 umask 022
@@ -29,3 +29,6 @@ gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loaders
 
 # Create fontconfig cache.  (fc-cache dumps core if HOME is not set.)
 HOME=/ fc-cache -f 2>/dev/null
+
+# Create the gstreamer global registry.
+/usr/athena/bin/gst-register --gst-mask=0 > /dev/null 2>&1
