@@ -1,4 +1,5 @@
 #!/bin/csh -f
+# $Id: root.xsession,v 1.2 1997-12-28 17:47:56 ghudson Exp $
 
 # Source the user's .cshrc if one exists otherwise 
 # do some minimal stuff
