@@ -20,7 +20,7 @@
  * a given root directory, presumably an Athena /os hierarchy.
  */
 
-static const char rcsid[] = "$Id: os-checkfiles.c,v 1.3 2000-08-21 23:10:23 rbasch Exp $";
+static const char rcsid[] = "$Id: os-checkfiles.c,v 1.4 2001-09-11 21:26:49 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,7 +63,8 @@ void nuke(const char *path, const struct stat *statp);
 
 void nukedir(const char *path);
 
-void copyfile(const char *from, const char *to);
+void copyfile(const char *from, const char *to, const struct stat *to_statp,
+	      off_t size);
 
 void make_parent(const char *path);
 
@@ -282,12 +283,9 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
       printf("Replace regular file %s\n", path);
       if (!noop)
 	{
-	  /* Remove the existing path, if any. */
-	  nuke(path, statp);
-
 	  /* Copy the file into place. */
 	  sprintf(ospath, "%s/%s", osroot, path);
-	  copyfile(ospath, path);
+	  copyfile(ospath, path, statp, size);
 
 	  /* Make sure new copy has expected size. */
 	  if (lstat(path, &sb) != 0)
@@ -511,20 +509,44 @@ void nukedir(const char *path)
   return;
 }
 
-/* Copy a file.  The target file must not exist. */
-void copyfile(const char *from, const char *to)
+/* Copy a file.  If the target exists, it will be nuked before copying
+ * the file into place.
+ */
+void copyfile(const char *from, const char *to, const struct stat *to_statp,
+	      off_t size)
 {
   char buf[4096];
   FILE *infp, *outfp;
   int n, fd, status;
+  struct stat from_stat;
 
+  /* Open and check the input file. */
   infp = fopen(from, "r");
   if (infp == NULL)
     {
       fprintf(stderr, "%s: Cannot open %s: %s\n",
 	      progname, from, strerror(errno));
-      return;
+      exit(1);
     }
+  if (fstat(fileno(infp), &from_stat) == -1)
+    {
+      fprintf(stderr, "%s: Cannot stat %s: %s\n",
+	      progname, from, strerror(errno));
+      fclose(infp);
+      exit(1);
+    }
+  if (from_stat.st_size != size)
+    {
+      fprintf(stderr, "%s: Size mismatch for %s (%llu, %llu)\n",
+	      progname, from, (unsigned long long) size,
+	      (unsigned long long) from_stat.st_size);
+      fclose(infp);
+      exit(1);
+    }
+
+  /* Remove the existing path, if any. */
+  nuke(to, to_statp);
+
   fd = open(to, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR);
   if (fd < 0 && (errno == ENOENT || errno == ENOTDIR))
     {
