@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: jfc $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.46 1990-12-21 17:48:42 jfc Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.47 1990-12-21 17:50:03 raeburn Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -28,6 +28,10 @@ static char rcsid_hm_c[] = "$Id: zhm.c,v 1.46 1990-12-21 17:48:42 jfc Exp $";
 #ifdef HESIOD
 #include <hesiod.h>
 #endif /* HESIOD */
+
+#ifdef macII
+#define srandom srand48
+#endif
 
 #ifndef PIDFILE
 #define	PIDFILE	"/etc/athena/zhm.pid"
