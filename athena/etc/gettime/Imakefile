@@ -1,8 +1,0 @@
-#
-# $Id: Imakefile,v 1.23 1994-03-17 20:33:37 cfields Exp $
-#
-# Remember: most conditionalization should be done in the package, not here.
-
-
-SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
-

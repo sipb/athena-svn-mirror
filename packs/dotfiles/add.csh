@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.25 1995-05-16 23:30:03 cfields Exp $
+# $Id: add.csh,v 1.23 1994-12-30 04:47:23 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -257,10 +257,6 @@ foreach add_i ($add_dirs)
             if ( $?add_debug ) echo $add_man added to end of \$athena_manpath
             set athena_manpath = ${athena_manpath}:$add_man
           endif
-          if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ( $?add_debug ) echo $add_man added to end of \$MANPATH
-            setenv MANPATH ${MANPATH}:$add_man
-          endif
         endif
         breaksw
 
@@ -276,10 +272,6 @@ foreach add_i ($add_dirs)
           if ( "$athena_manpath" !~ *"$add_man"* ) then
             if ( $?add_debug ) echo $add_man added to front of \$athena_manpath
             set athena_manpath = ${add_man}:$athena_manpath
-          endif
-          if ( "$MANPATH" !~ *"$add_man"* ) then
-            if ( $?add_debug ) echo $add_man added to front of \$MANPATH
-            setenv MANPATH ${add_man}:$MANPATH
           endif
         endif
         breaksw

@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.12 1995-05-26 04:10:25 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.11 1995-02-21 05:51:28 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -129,7 +129,6 @@ static XrmOptionDescRec opTable[] = {
 {"-restart",	".restart",	XrmoptionNoArg,		(caddr_t) "true"},
 {"-debug",	".debug",	XrmoptionNoArg,		(caddr_t) "true"},
 {"-nofork",	".nofork",	XrmoptionNoArg,		(caddr_t) "true"},
-{"-nosession",	"*showCommand",	XrmoptionNoArg,		(caddr_t) "false"},
 #ifdef KERBEROS
 {"-nochecktickets",  ".checkTickets",  XrmoptionNoArg,	(caddr_t) "false"},
 #endif /* KERBEROS */
@@ -1418,75 +1417,12 @@ int lowerMenu(info, what, data)
      char *what;
      caddr_t data;
 {
-#ifndef sgi
   if (info->null != NULL)
     return 1;
 
   XLowerWindow(info->menubar->core.display,
 	       info->menubar->core.window);
   return 0;
-#else
-  /* HACK HACK HACK */
-  Window rooter, parent, *list;
-  WindowJet menuWindow;
-  int i;
-  unsigned int num;
-  XWindowAttributes win;
-  XWindowChanges config;
-
-  if (info->null != NULL)
-    return 1;
-
-  menuWindow = (WindowJet)info->menubar->core.parent;
-  if (menuWindow->window.overrideRedirect == False ||
-      !XQueryTree(root->core.display, root->core.window,
-		  &rooter, &parent, &list, &num))
-    {
-      XLowerWindow(info->menubar->core.display,
-		   info->menubar->core.window);
-      return 0;
-    }
-
-  for (i = 0; i < num; i++)
-    {
-      if (list[i] == info->menubar->core.window)
-	continue;
-
-      if (XGetWindowAttributes(root->core.display, list[i], &win))
-	{
-	  if (win.override_redirect == True &&
-	      win.map_state == IsViewable &&
-	      win.x == 0 && win.y == 0 &&
-	      win.width == root->core.width &&
-	      win.height == root->core.height)
-	    break;
-
-	  if (win.override_redirect == False &&
-	      win.map_state == IsViewable)
-	    {
-	      if (i > 0)
-		i--;
-	      break;
-	    }
-	}
-
-      if (i == num)
-	{
-	  XLowerWindow(info->menubar->core.display,
-		       info->menubar->core.window);
-	  XFree(list);
-	  return 0;
-	}
-    }
-
-  config.sibling = list[i];
-  config.stack_mode = Above;
-  XConfigureWindow(root->core.display, info->menubar->core.window,
-		   CWSibling | CWStackMode, &config);
-
-  XFree(list);
-  return 0;
-#endif
 }
 
 int logout(fromJet, what, data)

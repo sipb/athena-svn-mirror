@@ -1,14 +1,9 @@
 # Prototype global .login file
 # $Author: cfields $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.4 1995-05-26 21:27:43 cfields Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.3 1995-01-27 04:10:00 cfields Exp $
 
 # This file is sourced by default user file ~/.login
-
-# SGI xwsh runs shells as login shells. We don't want this.
-if ($?XSESSION) then
-  exit 0
-endif
 
 set initdir=/usr/athena/lib/init
 
@@ -18,9 +13,7 @@ if (! -r ~/.hushlogin) then
 endif
 /bin/stty sane			# Use sane control characters
 
-if ($hosttype == "sgi") then
-  /bin/stty intr ^C
-endif
+
 
 # *******************   ENVIRONMENT SETUP   *******************
 
