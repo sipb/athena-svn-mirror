@@ -5,6 +5,18 @@
 #include <rpcsvc/rcquota.h>
 
 bool_t
+xdr_getcquota_args(xdrs, gq_argsp)
+	XDR *xdrs;
+	struct getcquota_args *gq_argsp;
+{
+	extern bool_t xdr_path();
+
+	return (xdr_path(xdrs, &gq_argsp->gqa_pathp) &&
+	    xdr_int(xdrs, &gq_argsp->gqa_uid));
+}
+
+
+bool_t
 xdr_getcquota_rslt(xdrs, gq_rsltp)
 	XDR *xdrs;
 	struct getcquota_rslt *gq_rsltp;
