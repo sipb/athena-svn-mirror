@@ -797,7 +797,6 @@ x11_get_proto(char **_proto, char **_data)
 	if (!got_data) {
 		u_int32_t rand = 0;
 
-		log("Warning: No xauth data; using fake authentication data for X11 forwarding.");
 		strlcpy(proto, "MIT-MAGIC-COOKIE-1", sizeof proto);
 		for (i = 0; i < 16; i++) {
 			if (i % 4 == 0)
