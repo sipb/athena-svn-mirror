@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.10 1990-01-11 03:44:53 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.11 1991-02-20 17:28:33 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -11,6 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  */
 #include "mit-copyright.h"
+
+#include <sys/stat.h>
+#ifndef S_IFLNK
+#define lstat stat
+#endif
 
 char *append();
 char *convert_to_user_name();
