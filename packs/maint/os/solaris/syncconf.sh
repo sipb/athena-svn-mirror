@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.13 2003-09-12 01:42:43 ghudson Exp $
+# $Id: syncconf.sh,v 1.14 2004-04-30 05:23:16 jweiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -169,15 +169,12 @@ handle()
 			remove /etc/athena/sendmail.conf
 			;;
 		default)
-			case $ADDR,$HOST in
-			dhcp,*)
-				remove /etc/athena/sendmail.conf
-				;;
-			*,*.MIT.EDU|*,*.mit.edu)
+			case $HOST in
+			*.MIT.EDU|*.mit.edu)
 				put /etc/athena/sendmail.conf \
 					"relay ATHENA.MIT.EDU"
 				;;
-			*,*)
+			*)
 				remove /etc/athena/sendmail.conf
 				;;
 			esac
