@@ -683,47 +683,47 @@ XCOMM X Window System make variables; this need to be coordinated with rules
      EXTENSIONLIB = LoaderLibPrefix _Use(-lXext, $(DEPEXTENSIONLIB))
 #endif
 #if !SharedLibX
-          DEPXLIB = $(DEPEXTENSIONLIB) _UseCat($(USRLIBDIR),$(XLIBSRC),/libX11.a)
+          DEPXLIB =
          XLIBONLY = LoaderLibPrefix _Use(-lX11,$(XLIBSRC)/libX11.a)
              XLIB = $(EXTENSIONLIB) $(XLIBONLY)
 #endif
-      DEPXAUTHLIB = _UseCat($(USRLIBDIR),$(XAUTHSRC),/libXau.a)
+      DEPXAUTHLIB =
          XAUTHLIB = LoaderLibPrefix _Use(-lXau,$(DEPXAUTHLIB))
-      DEPXDMCPLIB = _UseCat($(USRLIBDIR),$(XDMCPLIBSRC),/libXdmcp.a)
+      DEPXDMCPLIB =
          XDMCPLIB = LoaderLibPrefix _Use(-lXdmcp,$(DEPXDMCPLIB))
 #if !SharedLibXmu
-        DEPXMULIB = _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.a)
+        DEPXMULIB =
            XMULIB = LoaderLibPrefix _Use(-lXmu,$(DEPXMULIB))
 #endif
 #if !SharedOldLibX
-       DEPOLDXLIB = _UseCat($(USRLIBDIR),$(OLDXLIBSRC),/liboldX.a)
+       DEPOLDXLIB =
           OLDXLIB = LoaderLibPrefix _Use(-loldX,$(DEPOLDXLIB))
 #endif
 #if !SharedLibXt
-      DEPXTOOLLIB = _UseCat($(USRLIBDIR),$(TOOLKITSRC),/libXt.a)
+      DEPXTOOLLIB =
          XTOOLLIB = LoaderLibPrefix _Use(-lXt,$(DEPXTOOLLIB))
 #endif
 #if !SharedLibXaw
-        DEPXAWLIB = _UseCat($(USRLIBDIR),$(AWIDGETSRC),/libXaw.a)
+        DEPXAWLIB =
            XAWLIB = LoaderLibPrefix _Use(-lXaw,$(DEPXAWLIB))
 #endif
 #if !SharedLibXinput
-        DEPXILIB = _UseCat($(USRLIBDIR),$(XILIBSRC),/libXi.a)
+        DEPXILIB = 
            XILIB = LoaderLibPrefix _Use(-lXi,$(DEPXILIB))
 #endif
 #if !SharedLibXTest
-     DEPXTESTLIB = _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.a)
+     DEPXTESTLIB = 
         XTESTLIB = LoaderLibPrefix _Use(-lXtst,$(DEPXTESTLIB))
 #endif
 #if !SharedLibPex
-       DEPPEXLIB = _UseCat($(USRLIBDIR),$(PEXLIBSRC),/libPEX5.a)
+       DEPPEXLIB = 
           PEXLIB = LoaderLibPrefix _Use(-lPEX5,$(DEPPEXLIB))
 #endif
 #if !SharedLibPhigs
-        DEPPHIGSLIB = _UseCat($(USRLIBDIR),$(PHIGSLIBSRC),/libphigs.a)
+        DEPPHIGSLIB =
            PHIGSLIB = LoaderLibPrefix _Use(-lphigs,$(DEPPHIGSLIB))
 #endif
-       DEPXBSDLIB = _UseCat($(USRLIBDIR),$(LIBSRC)/Berk,/libXbsd.a)
+       DEPXBSDLIB =
           XBSDLIB = LoaderLibPrefix _Use(-lXbsd,$(DEPXBSDLIB))
 
  LINTEXTENSIONLIB = _UseCat($(LINTLIBDIR),$(EXTENSIONSRC)/lib,/llib-lXext.ln)
