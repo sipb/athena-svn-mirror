@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-07-09 20:39:03 danw Exp $
+# $Id: Makefile.in,v 1.2 1998-12-27 22:42:31 rbasch Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -7,7 +7,7 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-lsbindir=@bindir@
+lsbindir=@lsbindir@
 mandir=@mandir@
 
 CC=@CC@
