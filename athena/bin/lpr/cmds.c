@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.2 1990-04-16 11:55:48 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.3 1990-07-04 12:12:26 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.2 1990-04-16 11:55:48 epeisach Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.3 1990-07-04 12:12:26 epeisach Exp $";
 #endif lint
 
 /*
@@ -27,7 +27,7 @@ static char sccsid[] = "@(#)cmds.c	5.2 (Berkeley) 3/30/86";
 #include <sys/time.h>
 
 /* Currently "lpc" runs only off information in /etc/printcap.
- * If you want it to query Hesiod, #define HESIOD-LPC here.
+ * If you want it to query Hesiod, #define HESIOD_LPC here.
  */
 
 /*
@@ -58,7 +58,7 @@ abort(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -75,7 +75,7 @@ abort(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		abortpr(1);
 	}
 }
@@ -164,7 +164,7 @@ clean(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -181,7 +181,7 @@ clean(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		cleanpr();
 	}
 }
@@ -320,7 +320,7 @@ enable(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -337,7 +337,7 @@ enable(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		enablepr();
 	}
 }
@@ -393,7 +393,7 @@ disable(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -410,7 +410,7 @@ disable(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		disablepr();
 	}
 }
@@ -475,7 +475,7 @@ down(argc, argv)
 		return;
 	}
 	printer = argv[1];
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 	if ((status = pgetent(line, printer)) <= 0) {
 		if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -492,7 +492,7 @@ down(argc, argv)
 		printf("unknown printer %s\n", printer);
 		return;
 	}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 	putmsg(argc - 2, argv + 2);
 }
 
@@ -602,7 +602,7 @@ restart(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -619,7 +619,7 @@ restart(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		abortpr(0);
 		startpr(0);
 	}
@@ -657,7 +657,7 @@ start(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -674,7 +674,7 @@ start(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		startpr(1);
 	}
 }
@@ -730,7 +730,7 @@ status(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -747,7 +747,7 @@ status(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		prstat();
 	}
 }
@@ -843,7 +843,7 @@ stop(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -860,7 +860,7 @@ stop(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		stoppr();
 	}
 }
@@ -918,7 +918,7 @@ topq(argc, argv)
 
 	--argc;
 	printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 	if ((status = pgetent(line, printer)) <= 0) {
 		if(pralias(alibuf, printer))
 			printer = alibuf;
@@ -935,7 +935,7 @@ topq(argc, argv)
 		printf("unknown printer %s\n", printer);
 		return;
 	}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 	bp = pbuf;
 	if ((SD = pgetstr("sd", &bp)) == NULL)
 		SD = DEFSPOOL;
@@ -1090,7 +1090,7 @@ up(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -1107,7 +1107,7 @@ up(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		startpr(2);
 	}
 }
@@ -1141,7 +1141,7 @@ lookat(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -1158,7 +1158,7 @@ lookat(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		lookatpr();
 	}
 }
@@ -1225,7 +1225,7 @@ flushq(argc, argv)
 	}
 	while (--argc) {
 		printer = *++argv;
-#ifdef HESIOD-LPC
+#ifdef HESIOD_LPC
 		if ((status = pgetent(line, printer)) <= 0) {
 			if(pralias(alibuf, printer))
 				printer = alibuf;
@@ -1242,7 +1242,7 @@ flushq(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD-LPC
+#endif HESIOD_LPC
 		flushpr();
 	}
 }
