@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.1.1.1 1999-05-04 18:06:59 danw Exp $";
+"$Id: lpd_status.c,v 1.2 1999-05-04 19:24:26 danw Exp $";
 
 
 #include "lp.h"
@@ -64,6 +64,19 @@
  * x     Sx                           SxSx    Sx                 Sx    Sx       X
  *                                                                              
  ***************************************************************************/
+
+/* 
+ * Local modification: REQ_DSHORT changed from LPRng specification to
+ * give a more traditional BSDish queue listing, without the LPRng-ish
+ * spewing of the status files for lpq to parse.  This works because
+ * LPRng's lpq defaults to sending REQ_DLONG, whereas BSD (and Athena)
+ * default to REQ_DSHORT.  And we don't think the one-line-per-queue
+ * listing is very useful anyway.
+ *
+ * Todo: add status-file parsing to server, so that information can be
+ * displayed by old clients.
+ *         -mwhitson 2/17/99 
+ */
 
 #define RANKW 7
 #define OWNERW 29
@@ -639,13 +652,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 
 	len = strlen( header );
-	if( displayformat == REQ_VERBOSE ){
-		plp_snprintf( header+len, sizeof(header) - len,
-			_("\n Printing: %s\n Aborted: %s\n Spooling: %s"),
-				Pr_disabled(&Spool_control)?"no":"yes",
-				Pr_aborted(&Spool_control)?"no":"yes",
-				Sp_disabled(&Spool_control)?"no":"yes");
-	} else if( displayformat == REQ_DLONG ){
+	{
 		flag = 0;
 		if( Pr_disabled(&Spool_control) || Sp_disabled(&Spool_control) || Pr_aborted(&Spool_control) ){
 			plp_snprintf( header+len, sizeof(header) - len, " (" );
@@ -767,16 +774,9 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	}
 
 	/* this gives a short 1 line format with minimum info */
-	if( displayformat == REQ_DSHORT ){
-		len = strlen( header );
-		plp_snprintf( header+len, sizeof(header) - len, _(" %d job%s"),
-			printable, (printable == 1)?"":"s" );
-	}
 	safestrncat( header, "\n" );
 	if( Write_fd_str( *sock, header ) < 0 ) cleanup(0);
 	header[0] = 0;
-
-	if( displayformat == REQ_DSHORT ) goto remote;
 
 	/* now check to see if there is a server and unspooler process active */
 	path = Make_pathname( Spool_dir_DYN, Printer_DYN );
@@ -863,18 +863,20 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 	/*
 	 * get the last status of the spooler
 	 */
-	s = safestrdup2( "status.", Printer_DYN,__FILE__,__LINE__ );
-	Print_status_info( sock, Spool_dir_DYN, s, " Status: ",
-		status_lines, max_size );
-	if(s) free(s); s = 0;
+	if( displayformat != REQ_DSHORT ){
+		s = safestrdup2( "status.", Printer_DYN,__FILE__,__LINE__ );
+		Print_status_info( sock, Spool_dir_DYN, s, " Status: ",
+			status_lines, max_size );
+		if(s) free(s); s = 0;
 
-	if( Status_file_DYN ){
-		if( Status_file_DYN[0] == '/' ){
-			Print_status_info( sock, "/", Status_file_DYN,
-				_(" Filter_status: "), status_lines, max_size );
-		} else {
-			Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
-				_(" Filter_status: "), status_lines, max_size );
+		if( Status_file_DYN ){
+			if( Status_file_DYN[0] == '/' ){
+				Print_status_info( sock, "/", Status_file_DYN,
+					_(" Filter_status: "), status_lines, max_size );
+			} else {
+				Print_status_info( sock, Spool_dir_DYN, Status_file_DYN,
+					_(" Filter_status: "), status_lines, max_size );
+			}
 		}
 	}
 
