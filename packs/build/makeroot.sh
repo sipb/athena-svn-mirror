@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.13 2003-02-25 22:29:15 rbasch Exp $
+# $Id: makeroot.sh,v 1.14 2003-03-19 15:22:35 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -23,18 +23,14 @@ linux)
   rpms=`awk '
     /^athena/ { next; }
     /\/(ee|gmc|gnorpm|gtop|libgtop|wmconfig|Xconfigurator)-/ { next; }
-    /\/(iptables|pciutils|shapecfg|sndconfig|gnome-pilot)-/ { next; }
-    /\/(tcpdump|pygtk|nfs-utils|kudzu-devel|xsri)-/ { next; }
+    /\/(iptables|pciutils|redhat-config-xfree86|shapecfg|sndconfig)-/ { next; }
+    /\/(gnome-pilot|tcpdump|pygtk|nfs-utils|kudzu-devel|xsri)-/ { next; }
     { print $1; }' $list`
 
   mkdir -p "$root/var/lib/rpm" "$root/etc"
   touch "$root/etc/fstab"
   rpm --root "$root" --initdb
   rpm --root "$root" -ivh $rpms
-
-  # Make links into destination area.
-  ln -s ../build/athtools/usr/athena "$root/usr/athena"
-  ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
 
   # So packages can figure out where sendmail is.  (sendmail normally
   # comes from athena-sendmail, which we don't install; this is simpler
@@ -82,13 +78,13 @@ sun4)
 
   # Copy the /os symlink.
   (cd / && tar cf - os) | (cd "$root" && tar xf -)
-
-  # Make links into destination area.
-  ln -s ../.srvd/usr/athena "$root/usr/athena"
-  ln -s ../.srvd/usr/afsws "$root/usr/afsws"
   ;;
 
 esac
+
+# Make links into destination area for /usr/athena, /usr/afsws.
+ln -s ../build/athtools/usr/athena "$root/usr/athena"
+ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
 
 # It's really convenient to have a nice shell in the build root area,
 # at least on Solaris.
