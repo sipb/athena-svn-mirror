@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.1 1989-11-12 19:28:20 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.2 1989-11-13 20:34:50 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
  * $Author: qjb $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.1 1989-11-12 19:28:20 qjb Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.2 1989-11-13 20:34:50 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -149,6 +149,7 @@ rki_setup_rpc(host)
 {
     struct hostent *hp;
     struct servent *sp;
+    int port;
 
     SBCLEAR(saddr);
     SBCLEAR(hp);
@@ -160,15 +161,15 @@ rki_setup_rpc(host)
 	return(RKINIT_HOST);
     }
 
-    if ((sp = getservbyname(SERVENT, "tcp")) == NULL) {
-	sprintf(errbuf, "%s/tcp: unknown service.", SERVENT);
-	rkinit_errmsg(errbuf);
-	return(RKINIT_SERV);
-    }
+    if (sp = getservbyname(SERVENT, "tcp"))
+	port = sp->s_port;
+    else 
+	/* Fall back on known port number */
+	port = htons(PORT);
 
     saddr.sin_family = hp->h_addrtype;
     bcopy(hp->h_addr, (char *)&saddr.sin_addr, hp->h_length);
-    saddr.sin_port = sp->s_port;
+    saddr.sin_port = port;
 
     if ((sock = socket(hp->h_addrtype, SOCK_STREAM, IPPROTO_IP)) < 0) {
 	sprintf(errbuf, "socket: %s", sys_errlist[errno]);
