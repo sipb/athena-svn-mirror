@@ -19,11 +19,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.18 1992-02-24 17:48:09 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: procs.h,v 1.19 1997-04-30 18:17:32 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
+
+#ifndef __olc_procs_h
+#define __olc_procs_h
 
 /* Declarations of common functions. */
 
@@ -112,6 +115,7 @@ ERRCODE nl_get_nm P((int fd, char **buf, int *buflen, char *username, int instan
 /* olc.c */
 int main P((int argc , char **argv ));
 ERRCODE do_olc_init P((void ));
+void set_env_var P((const char *var, const char *value));
 
 /* olc_stock.c */
 ERRCODE do_olc_stock P((char **arguments ));
@@ -162,3 +166,5 @@ int file_length P((char *file ));
 /* System: */
 
 #undef P
+
+#endif /* __olc_procs_h */
