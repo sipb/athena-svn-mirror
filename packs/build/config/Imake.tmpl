@@ -151,7 +151,7 @@ IRULESRC = $(CONFIGSRC)
 #ifdef UseInstalled
 IMAKE= imake
 IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
-XIFLAGS= -I$(ATHXLIBDIR/X11/config -DUseInstalled
+XIFLAGS= -I$(ATHXLIBDIR)/X11/config -DUseInstalled
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
@@ -163,6 +163,8 @@ XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
+
+ATHVERS = ${IRULESRC}/update.conf
 
 ATHBASEDIR=/usr/athena
 
