@@ -11,9 +11,6 @@
  *	"mit-copyright.h". 
  */
 
-#ifdef POSIX
-#include <unistd.h>
-#endif
 #include <zephyr/zephyr.h>
 #include <ss/ss.h>
 #include <com_err.h>
@@ -26,7 +23,7 @@
 #include <sys/utsname.h>
 #endif
 #ifndef lint
-static char *rcsid_zctl_c = "$Id: zctl.c,v 1.21 1993-09-24 21:24:55 probe Exp $";
+static char *rcsid_zctl_c = "$Id: zctl.c,v 1.22 1993-11-19 15:35:30 probe Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -131,7 +128,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.21 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.22 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
@@ -196,7 +193,7 @@ wgc_control(argc,argv)
 		return;
 	}
 
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = UNSAFE;
 	notice.z_port = 0;
 	notice.z_class = WG_CTL_CLASS;
@@ -239,7 +236,7 @@ hm_control(argc,argv)
 		return;
 	}
 	
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = HMCTL;
 	notice.z_port = 0;
 	notice.z_class = HM_CTL_CLASS;
@@ -692,9 +689,9 @@ load_subs(argc,argv)
 		if (*subline == '#' || !*subline)
 			continue;
 		subline[strlen(subline)-1] = '\0'; /* nuke newline */
-		comma = index(subline,',');
+		comma = strchr(subline,',');
 		if (comma)
-			comma2 = index(comma+1,',');
+			comma2 = strchr(comma+1,',');
 		else
 			comma2 = 0;
 		if (!comma || !comma2) {
