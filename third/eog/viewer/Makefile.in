@@ -1,0 +1,387 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+DATADIRNAME = @DATADIRNAME@
+EOG_CFLAGS = @EOG_CFLAGS@
+EOG_LIBS = @EOG_LIBS@
+EXTRA_WARNING_CFLAGS = @EXTRA_WARNING_CFLAGS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_CONFIG_SOURCE = @GCONF_CONFIG_SOURCE@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
+INSTALL_GCONF_CONFIG_SOURCE = @INSTALL_GCONF_CONFIG_SOURCE@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBJPEG = @LIBJPEG@
+LIBPNG = @LIBPNG@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+ORBIT_IDL = @ORBIT_IDL@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+cxxflags_set = @cxxflags_set@
+
+INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						-DDATADIR=\""$(datadir)"\"					-DICONDIR=\""$(datadir)/pixmaps/eog"\"				-I$(srcdir)							-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(EOG_CFLAGS)							$(EXTRA_WARNING_CFLAGS)
+
+
+libexec_PROGRAMS = eog-image-viewer
+
+eog_image_viewer_SOURCES =  	eog-image.c			eog-image.h			eog-image-io.c			eog-image-io.h			eog-image-view.c		eog-image-view.h		eog-control.c			eog-control.h			eog-full-screen.c		eog-full-screen.h		eog-preview.c			eog-preview.h			eog-preview-page.c		eog-preview-page.h		eog-print-setup.c		eog-print-setup.h		eog-util.h			eog-util.c			preferences.h			preferences.c			main.c
+
+#	 eog-embeddable.c	\
+#	 eog-embeddable.h	\
+#	 eog-embeddable-view.c	\
+#	 eog-embeddable-view.h	\
+
+eog_image_viewer_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
+
+eog_image_viewer_LDADD =  	-L$(top_builddir)/libeog			-leog						$(EOG_LIBS)					$(LIBPNG) $(LIBJPEG)
+
+
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = eog-image-view-ui.xml 	  eog-image-view-ctrl-ui.xml
+
+
+EXTRA_DIST = $(ui_DATA)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+PROGRAMS =  $(libexec_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+eog_image_viewer_OBJECTS =  eog-image.o eog-image-io.o eog-image-view.o \
+eog-control.o eog-full-screen.o eog-preview.o eog-preview-page.o \
+eog-print-setup.o eog-util.o preferences.o main.o
+eog_image_viewer_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(ui_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(eog_image_viewer_SOURCES)
+OBJECTS = $(eog_image_viewer_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .o .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps viewer/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libexecPROGRAMS:
+
+clean-libexecPROGRAMS:
+	-test -z "$(libexec_PROGRAMS)" || rm -f $(libexec_PROGRAMS)
+
+distclean-libexecPROGRAMS:
+
+maintainer-clean-libexecPROGRAMS:
+
+install-libexecPROGRAMS: $(libexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	@list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "  $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	     $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-libexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+eog-image-viewer: $(eog_image_viewer_OBJECTS) $(eog_image_viewer_DEPENDENCIES)
+	@rm -f eog-image-viewer
+	$(LINK) $(eog_image_viewer_LDFLAGS) $(eog_image_viewer_OBJECTS) $(eog_image_viewer_LDADD) $(LIBS)
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = viewer
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+eog-control.o: eog-control.c ../config.h eog-control.h eog-image-view.h \
+	eog-image.h ../libeog/Eog.h eog-util.h
+eog-full-screen.o: eog-full-screen.c ../config.h eog-full-screen.h \
+	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h \
+	../libeog/image-view.h ../libeog/ui-image.h
+eog-image-io.o: eog-image-io.c ../config.h eog-image-io.h eog-image.h \
+	../libeog/Eog.h eog-util.h
+eog-image-view.o: eog-image-view.c ../config.h eog-print-setup.h \
+	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h \
+	eog-full-screen.h ../libeog/image-view.h ../libeog/ui-image.h \
+	preferences.h
+eog-image.o: eog-image.c ../config.h eog-image.h ../libeog/Eog.h \
+	eog-util.h eog-control.h eog-image-view.h eog-image-io.h
+eog-preview-page.o: eog-preview-page.c ../config.h eog-preview-page.h \
+	eog-image-view.h eog-image.h ../libeog/Eog.h eog-util.h
+eog-preview.o: eog-preview.c ../config.h eog-preview.h eog-image-view.h \
+	eog-image.h ../libeog/Eog.h eog-util.h eog-preview-page.h
+eog-print-setup.o: eog-print-setup.c ../config.h eog-image-view.h \
+	eog-image.h ../libeog/Eog.h eog-util.h eog-print-setup.h \
+	eog-preview.h
+eog-util.o: eog-util.c eog-util.h ../libeog/Eog.h
+main.o: main.c ../config.h eog-control.h eog-image-view.h eog-image.h \
+	../libeog/Eog.h eog-util.h
+preferences.o: preferences.c ../config.h eog-image-view.h eog-image.h \
+	../libeog/Eog.h eog-util.h ../libeog/access.h preferences.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libexecPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-uiDATA
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libexecPROGRAMS uninstall-uiDATA
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libexecdir) $(DESTDIR)$(uidir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libexecPROGRAMS clean-compile clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libexecPROGRAMS distclean-compile \
+		distclean-tags distclean-generic clean-am
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
+		maintainer-clean-compile maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
+clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
+uninstall-libexecPROGRAMS install-libexecPROGRAMS mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+uninstall-uiDATA install-uiDATA tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,732 @@
+# Czech translation for the Eye Of Gnome.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# George Lebl <jirka@5z.com>, 2000.
+# Michal Bukovjan <michal.bukovjan@openone.cz>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eog 1.0.2\n"
+"POT-Creation-Date: 2002-11-17 10:46+0100\n"
+"PO-Revision-Date: 2002-10-14 12:47GMT\n"
+"Last-Translator: Michal Bukovjan <bukm@centrum.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: collection/GNOME_EOG_Collection.server.in.h:1
+msgid "EOG Image Collection"
+msgstr "Kolekce obrázků OPG"
+
+#: collection/GNOME_EOG_Collection.server.in.h:2
+msgid "EOG Image Collection Viewer"
+msgstr "Prohlížeč kolekce obrázků OPG"
+
+#: collection/GNOME_EOG_Collection.server.in.h:3
+msgid "EOG Image collection view factory"
+msgstr "Generátor prohlížeče kolekce obrázků OPG"
+
+#: eog.desktop.in.h:1
+msgid "Eye of Gnome Image Viewer"
+msgstr "Prohlížeč obrázků Oči pro GNOME"
+
+#: eog.desktop.in.h:2
+msgid "View many different types of images"
+msgstr "Prohlížení mnoha různých typů obrázků"
+
+#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:691
+msgid "EOG Image"
+msgstr "Obrázek pro OPG"
+
+#: libeog/GNOME_EOG.server.in.in.h:2
+msgid "EOG Image Viewer"
+msgstr "Prohlížeč obrázků OPG"
+
+#: libeog/GNOME_EOG.server.in.in.h:3
+msgid "EOG Image viewer factory"
+msgstr "Generátor prohlížeče obrázků OPG"
+
+#: libeog/GNOME_EOG.server.in.in.h:4
+msgid "Embeddable EOG Image"
+msgstr "Zapouzdřený obrázek OPG"
+
+#: libeog/image-view.c:1853
+msgid "interpolation type"
+msgstr "typ interpolace"
+
+#: libeog/image-view.c:1854
+msgid "the type of interpolation to use"
+msgstr "typ interpolace, který se má použít"
+
+#: libeog/image-view.c:1860 libeog/image-view.c:1867
+msgid "check type"
+msgstr "typ čtverce"
+
+#: libeog/image-view.c:1861
+msgid "the type of chequering to use"
+msgstr "použitý typ rozdělení na čtverce"
+
+#: libeog/image-view.c:1868
+msgid "the size of chequers to use"
+msgstr "velikost použitých čtverců"
+
+#: libeog/image-view.c:1874
+msgid "dither"
+msgstr "rozptyl"
+
+#: libeog/image-view.c:1875
+msgid "dither type"
+msgstr "typ rozptylu"
+
+#: shell/eog-preferences.c:162
+#, c-format
+msgid ""
+"Could not display help for the preferences dialog.\n"
+"%s"
+msgstr ""
+"Nelze zobrazit nápovědu pro dialog s nastaveními.\n"
+"%s"
+
+#: shell/eog-preferences.c:214
+msgid "Eye of Gnome Preferences"
+msgstr "Nastavení Očí pro GNOME"
+
+#: shell/eog-shell-ui.xml.h:1
+msgid "About this application"
+msgstr "O této aplikaci"
+
+#: shell/eog-shell-ui.xml.h:2
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: shell/eog-shell-ui.xml.h:3
+msgid "Change preferences"
+msgstr "Změnit nastavení"
+
+#: shell/eog-shell-ui.xml.h:4
+msgid "Close"
+msgstr "Zavřít"
+
+#: shell/eog-shell-ui.xml.h:5
+msgid "Close window"
+msgstr "Zavřít okno"
+
+#: shell/eog-shell-ui.xml.h:6
+msgid "Contents"
+msgstr "Obsah"
+
+#: shell/eog-shell-ui.xml.h:7
+msgid "Help On this application"
+msgstr "Nápověda pro tuto aplikaci"
+
+#: shell/eog-shell-ui.xml.h:8 shell/main.c:205
+msgid "Open"
+msgstr "Otevřít"
+
+#: shell/eog-shell-ui.xml.h:9
+msgid "Open a file"
+msgstr "Otevřít soubor"
+
+#: shell/eog-shell-ui.xml.h:10
+msgid "Open a new window"
+msgstr "Otevřít nové okno"
+
+#: shell/eog-shell-ui.xml.h:11
+msgid "Open in new window"
+msgstr "Otevřít v novém okně"
+
+#: shell/eog-shell-ui.xml.h:12
+msgid "Open in this window"
+msgstr "Otevřít v tomto okně"
+
+#: shell/eog-shell-ui.xml.h:13
+msgid "Quit the program"
+msgstr "Ukončit program"
+
+#: shell/eog-shell-ui.xml.h:14
+msgid "_About"
+msgstr "_O aplikaci"
+
+#: shell/eog-shell-ui.xml.h:15
+msgid "_Close"
+msgstr "_Zavřít"
+
+#: shell/eog-shell-ui.xml.h:16
+msgid "_Edit"
+msgstr "Ú_pravy"
+
+#: shell/eog-shell-ui.xml.h:17
+msgid "_File"
+msgstr "_Soubor"
+
+#: shell/eog-shell-ui.xml.h:18
+msgid "_Help"
+msgstr "Nápo_věda"
+
+#: shell/eog-shell-ui.xml.h:19
+msgid "_New Window"
+msgstr "_Nové okno"
+
+#: shell/eog-shell-ui.xml.h:20
+msgid "_Open..."
+msgstr "_Otevřít..."
+
+#: shell/eog-shell-ui.xml.h:21
+msgid "_Preferences..."
+msgstr "Nastav_ení..."
+
+#: shell/eog-shell-ui.xml.h:22
+msgid "_Quit"
+msgstr "U_končit"
+
+#: shell/eog-shell-ui.xml.h:23
+msgid "_View"
+msgstr "_Zobrazení"
+
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: shell/eog-window.c:239
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr "Michal Bukovjan <bukm@centrum.cz>"
+
+#: shell/eog-window.c:244 shell/eog-window.c:623 shell/main.c:449
+msgid "Eye of Gnome"
+msgstr "Oči pro GNOME"
+
+#: shell/eog-window.c:246
+msgid "Copyright (C) 2000-2002 The Free Software Foundation"
+msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
+
+#: shell/eog-window.c:247
+msgid "The GNOME image viewing and cataloging program."
+msgstr "Program pro prohlížení a katalogizaci obrázků pro GNOME"
+
+#: shell/eog-window.c:284
+#, c-format
+msgid ""
+"Could not display help for Eye of Gnome.\n"
+"%s"
+msgstr ""
+"Nelze zobrazit nápovědu pro Oči pro GNOME.\n"
+"%s"
+
+#: shell/eog-window.c:781
+msgid "Open Image"
+msgstr "Otevřít obrázek"
+
+#: shell/main.c:172
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to open\n"
+"them in a collection instead?"
+msgstr ""
+"Chystáte se otevřít %i oken\n"
+"najednou. Chcete tyto obrázky\n"
+"raději otevřít v kolekci?"
+
+#: shell/main.c:177
+msgid "Single Windows"
+msgstr "Samostatná okna"
+
+#: shell/main.c:178
+msgid "Collection"
+msgstr "Kolekce"
+
+#: shell/main.c:202
+#, c-format
+msgid ""
+"You are about to open %i windows\n"
+"simultanously. Do you want to continue?"
+msgstr ""
+"Chystáte se otevřít %i oken\n"
+"najednou. Chcete pokračovat?"
+
+#: shell/main.c:285
+#, c-format
+msgid ""
+"Could not access %s\n"
+"Eye of Gnome will not be able to display this file."
+msgstr ""
+"Nelze přistoupit k %s.\n"
+"Oči pro GNOME nebudou schopné tento soubor zobrazit."
+
+#: shell/main.c:289
+#, c-format
+msgid ""
+"The following files cannot be displayed because Eye of Gnome was not able to "
+"access them:\n"
+"%s"
+msgstr ""
+"Následující soubory nelze zobrazit, jelikož Oči pro GNOME nebyly schopné k "
+"nim přistoupit:\n"
+"%s"
+
+#: shell/main.c:461
+msgid "Could not initialize GnomeVFS!\n"
+msgstr "Nelze inicializovat GnomeVFS!\n"
+
+#: shell/main.c:464
+msgid "Could not initialize Bonobo!\n"
+msgstr "Nelze inicializovat Bonobo!\n"
+
+#: shell/util.c:48
+#, c-format
+msgid "Could not open `%s'"
+msgstr "Nelze otevřít `%s'"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:1
+msgid "1:1"
+msgstr "1:1"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:2
+msgid "Fit"
+msgstr "Přizpůsobit"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
+msgid "In"
+msgstr "Zvětšit"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:4
+msgid "Out"
+msgstr "Zmenšit"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:5
+msgid "Zoom _1:1"
+msgstr "Zobrazit _1:1"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:6
+msgid "Zoom _In"
+msgstr "Zvětš_it"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:7
+msgid "Zoom _Out"
+msgstr "Z_menšit"
+
+#: viewer/eog-image-view-ctrl-ui.xml.h:8
+msgid "Zoom to _Fit"
+msgstr "Při_způsobit velikost"
+
+#: viewer/eog-image-view-ui.xml.h:1
+msgid "Check _size"
+msgstr "Veliko_st čtverců"
+
+#: viewer/eog-image-view-ui.xml.h:2
+msgid "Check _type"
+msgstr "_Typ čtverců"
+
+#: viewer/eog-image-view-ui.xml.h:3
+msgid "Full Screen"
+msgstr "Celá obrazovka"
+
+#: viewer/eog-image-view-ui.xml.h:4 viewer/preferences.c:63
+msgid "Large"
+msgstr "Velké"
+
+#: viewer/eog-image-view-ui.xml.h:5 viewer/preferences.c:62
+msgid "Medium"
+msgstr "Střední"
+
+#: viewer/eog-image-view-ui.xml.h:6
+msgid "Nea_rest Neighbour"
+msgstr "Nejbližší _soused"
+
+#: viewer/eog-image-view-ui.xml.h:7
+msgid "Normal (_pseudocolor)"
+msgstr "Normální (_pseudobarvy)"
+
+#: viewer/eog-image-view-ui.xml.h:8
+msgid "Previews the image to be printed"
+msgstr "Náhled na obrázek, který má být vytištěn"
+
+#: viewer/eog-image-view-ui.xml.h:9
+msgid "Print Pre_view"
+msgstr "_Náhled tisku"
+
+#: viewer/eog-image-view-ui.xml.h:10
+msgid "Print S_etup"
+msgstr "Nastav_ení tisku"
+
+#: viewer/eog-image-view-ui.xml.h:11
+msgid "Print image to the printer"
+msgstr "Vytištění obrázku na tiskárnu"
+
+#: viewer/eog-image-view-ui.xml.h:12
+msgid "Setup the page settings for your current printer"
+msgstr "Nastavení stránky pro vaši aktuální tiskárnu"
+
+#: viewer/eog-image-view-ui.xml.h:13 viewer/preferences.c:61
+msgid "Small"
+msgstr "Malé"
+
+#: viewer/eog-image-view-ui.xml.h:14
+msgid "_Bilinear"
+msgstr "_Bilineární"
+
+#: viewer/eog-image-view-ui.xml.h:15
+msgid "_Black"
+msgstr "Č_erné"
+
+#: viewer/eog-image-view-ui.xml.h:16
+msgid "_Dark"
+msgstr "_Tmavé"
+
+#: viewer/eog-image-view-ui.xml.h:17
+msgid "_Dither"
+msgstr "_Rozptyl"
+
+#: viewer/eog-image-view-ui.xml.h:18
+msgid "_Gray"
+msgstr "Še_dé"
+
+#: viewer/eog-image-view-ui.xml.h:19
+msgid "_Hyperbolic"
+msgstr "_Hyperbolická"
+
+#: viewer/eog-image-view-ui.xml.h:20
+msgid "_Interpolation"
+msgstr "_Interpolace"
+
+#: viewer/eog-image-view-ui.xml.h:21
+msgid "_Light"
+msgstr "_Světlé"
+
+#: viewer/eog-image-view-ui.xml.h:22
+msgid "_Maximum (high color)"
+msgstr "_Maximální (high color)"
+
+#: viewer/eog-image-view-ui.xml.h:23
+msgid "_Midtone"
+msgstr "Střední tón_y"
+
+#: viewer/eog-image-view-ui.xml.h:24
+msgid "_None"
+msgstr "Žá_dný"
+
+#: viewer/eog-image-view-ui.xml.h:25
+msgid "_Print"
+msgstr "_Tisk"
+
+#: viewer/eog-image-view-ui.xml.h:26
+msgid "_Save As..."
+msgstr "Uložit j_ako..."
+
+#: viewer/eog-image-view-ui.xml.h:27
+msgid "_Tiles"
+msgstr "_Dlaždice"
+
+#: viewer/eog-image-view-ui.xml.h:28
+msgid "_White"
+msgstr "_Bílé"
+
+#: viewer/eog-image-view.c:300
+#, c-format
+msgid "Could not save image as '%s': %s."
+msgstr "Nelze uložit obrázek jako '%s': %s."
+
+#: viewer/eog-image-view.c:351
+msgid "Save As"
+msgstr "Uložit jako"
+
+#: viewer/eog-image-view.c:926
+msgid "Print Image"
+msgstr "Tisknout obrázek"
+
+#: viewer/eog-image-view.c:934
+msgid "Pages"
+msgstr "Stránky"
+
+#: viewer/eog-image-view.c:1021
+msgid "Print Preview"
+msgstr "Náhled tisku"
+
+#: viewer/eog-image-view.c:1027
+msgid "Printing of image failed"
+msgstr "Tisk obrázku selhal"
+
+#: viewer/eog-image-view.c:1843
+msgid "Display"
+msgstr "Zobrazit"
+
+#: viewer/eog-image-view.c:2064
+msgid "Interpolation"
+msgstr "Interpolace"
+
+#: viewer/eog-image-view.c:2067
+msgid "Dither"
+msgstr "Rozptyl"
+
+#: viewer/eog-image-view.c:2070
+msgid "Check Type"
+msgstr "Typ čtverců"
+
+#: viewer/eog-image-view.c:2073
+msgid "Check Size"
+msgstr "Velikost čtverců"
+
+#: viewer/eog-image-view.c:2076
+msgid "Image Width"
+msgstr "Šířka obrázku"
+
+#: viewer/eog-image-view.c:2079
+msgid "Image Height"
+msgstr "Výška obrázku"
+
+#: viewer/eog-image-view.c:2082
+msgid "Window Title"
+msgstr "Titulek okna"
+
+#: viewer/eog-image-view.c:2085
+msgid "Statusbar Text"
+msgstr "Text stavové lišty"
+
+#: viewer/eog-image.c:470
+msgid "Couldn't initialize GnomeVFS!\n"
+msgstr "Nelze inicializovat GnomeVFS!\n"
+
+#: viewer/eog-print-setup.c:76
+msgid "pts"
+msgstr "body"
+
+#: viewer/eog-print-setup.c:76
+msgid "points"
+msgstr "body"
+
+#: viewer/eog-print-setup.c:77
+msgid "mm"
+msgstr "mm"
+
+#: viewer/eog-print-setup.c:77
+msgid "millimeter"
+msgstr "milimetry"
+
+#: viewer/eog-print-setup.c:78
+msgid "cm"
+msgstr "cm"
+
+#: viewer/eog-print-setup.c:78
+msgid "centimeter"
+msgstr "centimetry"
+
+#: viewer/eog-print-setup.c:79
+msgid "inch"
+msgstr "palec"
+
+#: viewer/eog-print-setup.c:469
+msgid "Print Setup"
+msgstr "Nastavení tisku"
+
+#: viewer/eog-print-setup.c:476
+msgid "Print"
+msgstr "Tisk"
+
+#: viewer/eog-print-setup.c:478
+msgid "Print preview"
+msgstr "Náhled tisku"
+
+#: viewer/eog-print-setup.c:547
+msgid "Units: "
+msgstr "Jednotky: "
+
+#. First page
+#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
+msgid "Paper"
+msgstr "Papír"
+
+#: viewer/eog-print-setup.c:569
+msgid "Paper size:"
+msgstr "Velikost papíru:"
+
+#. Orientation
+#: viewer/eog-print-setup.c:586
+msgid "Orientation"
+msgstr "Orientace"
+
+#: viewer/eog-print-setup.c:593
+msgid "Portrait"
+msgstr "Na výšku"
+
+#: viewer/eog-print-setup.c:600
+msgid "Landscape"
+msgstr "Na šířku"
+
+#. Margins
+#: viewer/eog-print-setup.c:609
+msgid "Margins"
+msgstr "Okraje"
+
+#. Top margin
+#: viewer/eog-print-setup.c:617
+msgid "Top:"
+msgstr "Horní:"
+
+#. Left margin
+#: viewer/eog-print-setup.c:635
+msgid "Left:"
+msgstr "Levý:"
+
+#. Right margin
+#: viewer/eog-print-setup.c:653
+msgid "Right:"
+msgstr "Pravý:"
+
+#. Bottom margin
+#: viewer/eog-print-setup.c:671
+msgid "Bottom:"
+msgstr "Spodní:"
+
+#. Second page
+#: viewer/eog-print-setup.c:689
+msgid "Image"
+msgstr "Obrázek"
+
+#. Scale
+#: viewer/eog-print-setup.c:697
+msgid "Scale"
+msgstr "Škálování"
+
+#: viewer/eog-print-setup.c:701
+msgid "Adjust to:"
+msgstr "Upravit na:"
+
+#: viewer/eog-print-setup.c:706
+msgid "Fit to page"
+msgstr "Rozměry stránky"
+
+#: viewer/eog-print-setup.c:725
+#, no-c-format
+msgid "% of original size"
+msgstr "% původní velikosti"
+
+#. Center on page
+#: viewer/eog-print-setup.c:731
+msgid "Center"
+msgstr "Centrování"
+
+#: viewer/eog-print-setup.c:735
+msgid "Horizontally"
+msgstr "Horizontální"
+
+#: viewer/eog-print-setup.c:742
+msgid "Vertically"
+msgstr "Vertikální"
+
+#. Overlap
+#: viewer/eog-print-setup.c:751
+msgid "Overlapping"
+msgstr "Překrývání"
+
+#: viewer/eog-print-setup.c:755
+msgid "Overlap horizontally by "
+msgstr "Překrýt horizontálně o "
+
+#: viewer/eog-print-setup.c:760
+msgid "Overlap vertically by "
+msgstr "Překrýt vertikálně o "
+
+#. Third page
+#: viewer/eog-print-setup.c:797
+msgid "Printing"
+msgstr "Tisk"
+
+#. Helpers
+#: viewer/eog-print-setup.c:805
+msgid "Helpers"
+msgstr "Pomocné linie"
+
+#: viewer/eog-print-setup.c:806
+msgid "Print cutting help"
+msgstr "Tisknout pomocné linie pro ořez"
+
+#: viewer/eog-print-setup.c:812
+msgid "Print overlap help"
+msgstr "Tisknout pomocné linie pro překryv"
+
+#. Page order
+#: viewer/eog-print-setup.c:821
+msgid "Page order"
+msgstr "Pořadí stran"
+
+#. Down right
+#: viewer/eog-print-setup.c:827
+msgid "Down, then right"
+msgstr "Dolů, pak doprava"
+
+#. Right down
+#: viewer/eog-print-setup.c:844
+msgid "Right, then down"
+msgstr "Doprava, pak dolů"
+
+#: viewer/preferences.c:33
+msgid "Nearest Neighbour Interpolation"
+msgstr "Interpolace Nejbližší soused"
+
+#: viewer/preferences.c:35
+msgid "Tiles Interpolation"
+msgstr "Interpolace dlaždicová"
+
+#: viewer/preferences.c:37
+msgid "Bilinear Interpolation"
+msgstr "Bilineární interpolace"
+
+#: viewer/preferences.c:39
+msgid "Hyperbolic Interpolation"
+msgstr "Hyperbolická interpolace"
+
+#: viewer/preferences.c:44
+msgid "No dithering"
+msgstr "Bez rozptylu"
+
+#: viewer/preferences.c:45
+msgid "Normal (pseudocolor) dithering"
+msgstr "Normální rozptyl (pseudobarvy)"
+
+#: viewer/preferences.c:46
+msgid "Maximum (high color) dithering"
+msgstr "Maximální (high color) rozptyl"
+
+#: viewer/preferences.c:51
+msgid "Dark"
+msgstr "Tmavé"
+
+#: viewer/preferences.c:52
+msgid "Midtone"
+msgstr "Střední tóny"
+
+#: viewer/preferences.c:53
+msgid "Light"
+msgstr "Světlé"
+
+#: viewer/preferences.c:54
+msgid "Black"
+msgstr "Černé"
+
+#: viewer/preferences.c:55
+msgid "Gray"
+msgstr "Šedé"
+
+#: viewer/preferences.c:56
+msgid "White"
+msgstr "Bílé"
+
+#: viewer/preferences.c:175
+msgid "_Interpolation:"
+msgstr "_Interpolace:"
+
+#: viewer/preferences.c:187
+msgid "_Dither:"
+msgstr "_Rozptyl:"
+
+#: viewer/preferences.c:199
+msgid "Check _type:"
+msgstr "_Typ čtverců:"
+
+#: viewer/preferences.c:211
+msgid "Check _size:"
+msgstr "Veliko_st čtverců:"
+
+#~ msgid "Unable to open %s."
+#~ msgstr "Nelze otevřít %s."
