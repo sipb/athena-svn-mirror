@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.4 1993-07-19 15:30:04 vrt Exp $
+ *    $Id: machtype_sun4.c,v 1.5 1993-07-19 16:11:06 vrt Exp $
  *    $Locker:  $
  */
 
@@ -252,7 +252,7 @@ do_dpy(kernel, mf)
 char *kernel;
 int mf;
 {
-   puts(verbose? "cgthree" : "cgthree frame buffer");
+   puts(verbose? "cgthree frame buffer" : "cgthree");
     return;
 }
 
