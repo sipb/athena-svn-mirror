@@ -1,0 +1,16 @@
+Mon Feb 01 18:35:30 1999  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Version 2.1 for Web2c Version 7.2
+
+Thu Feb 19 18:03:12 1998  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Version 2.0 for Web2c Version 7.2
+
+Sat Aug 23 14:14:12 1997  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* Integrated e-TeX Version 1.1 into Web2c Version 7.0
+	(by Karl Berry, as of Feb  7 1997.
+
+	All e-TeX (and e-TRIP) source files as well as a Makefile fragment
+	are in a separate directory: web2c/etexdir. This will certainly make
+	it easier to switch to e-TeX Version 2.

@@ -1,0 +1,69 @@
+#!/bin/sh
+
+test -f /bin/sh5 && test -z "$RUNNING_SH5" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
+  && { RUNNING_SH5=true; export RUNNING_SH5; exec /bin/sh5 $0 ${1+"$@"}; }
+unset RUNNING_SH5
+
+test -f /bin/bsh && test -z "$RUNNING_BSH" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
+  && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
+unset RUNNING_BSH
+
+umask 022
+
+progname="`basename $0`"
+
+dosnames=false
+case "$1" in
+-d)	dosnames=true ; shift ;;
+esac
+
+to=$1
+
+if [ -z "$to" ]; then
+	echo "Usage: $progname [-d] dest files ..." >&2 ; exit
+fi
+
+shift
+for i in `find ${1+"$@"} -name \*.*[0-9]pk -print` ; do
+	dir=`echo $i | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+	file=`basename $i`
+	res=`echo $file | sed 's/.*\.//;s/pk//'`
+	if [ $dosnames = true ] ; then
+	  name=`basename $file .${res}pk`.pk
+	  DESTDIR=$to/dpi$res
+	else
+	  name=$file
+	  DESTDIR=$to/pk
+	fi
+
+	if [ -f "$DESTDIR/$name" ]; then
+	  echo "$DESTDIR/$name" ; continue
+	fi
+
+	test -d $DESTDIR || mkdir $DESTDIR || continue
+
+	rm -f $DESTDIR/$name
+	cp $i $DESTDIR/$name || continue
+
+	echo "$DESTDIR/$name"
+done
+
+for i in `find ${1+"$@"} -name \*.tfm -print` ; do
+	dir=`echo $i | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+	base=`basename $i .tfm`
+	file="$base.tfm"
+	DESTDIR="$to/tfm"
+
+	if [  -f "$DESTDIR/$file" ]; then
+	  echo "$DESTDIR/$file" ; continue
+	fi
+
+	test -d $DESTDIR || mkdir $DESTDIR || continue
+
+	rm -f $DESTDIR/$file
+	cp $i $DESTDIR/$file || continue
+
+	echo "$DESTDIR/$file"
+done

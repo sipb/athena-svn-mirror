@@ -1,0 +1,186 @@
+#!/bin/sh
+
+# Thomas Esser, 1999. public domain.
+
+test -f /bin/sh5 && test -z "$RUNNING_SH5" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xULTRIX; } 2>/dev/null \
+  && { RUNNING_SH5=true; export RUNNING_SH5; exec /bin/sh5 $0 ${1+"$@"}; }
+unset RUNNING_SH5
+
+test -f /bin/bsh && test -z "$RUNNING_BSH" \
+  && { UNAMES=`uname -s`; test "x$UNAMES" = xAIX; } 2>/dev/null \
+  && { RUNNING_BSH=true; export RUNNING_BSH; exec /bin/bsh $0 ${1+"$@"}; }
+unset RUNNING_BSH
+
+mt_max_args=10000
+
+usage="Usage: $progname [ -d ] [ -t ] [ -f ] [ -m mode ] path ...
+
+Copy tfm and pk fonts from path into the proper place in teTeX.
+   -m default MetaFont mode for pk files if autodetection fails
+   -d delete files after copying
+   -t (test) echo the destination (if any) instead of move or copy
+   -f (force) overwrite existing fonts"
+
+# Common code for all scripts.
+: ${MT_TEXMFMAIN=`kpsewhich --expand-path='$TEXMFMAIN'`}
+: ${MT_MKTEX_OPT=`kpsewhich --format='web2c files' mktex.opt`}
+test -n "$MT_MKTEX_OPT" || MT_MKTEX_OPT="$MT_TEXMFMAIN/web2c/mktex.opt"
+if test ! -f "$MT_MKTEX_OPT"; then
+  echo "$progname: Cannot find mktex.opt; check your installation." >&2
+  exit 1
+fi
+
+. "$MT_MKTEX_OPT"
+
+DIR_PERMS=1777
+FILE_PERMS=444
+from=
+MODE=
+OP=cp
+here=`pwd`
+OIFS=$IFS
+TEST=false
+FORCE=false
+
+progname="`basename $0`"
+
+getmode()
+{
+  # we use cat, because "tr ... < $1 | sed ..." gives broken pipe warinigs
+  # from bash sometimes
+  #
+  # we use tr to get rid of control characters which sometimes confuse sed
+  #
+  # newer gsftopk versions add mode=modeless, for older versions and ps2pk,
+  # we do this "by hand"
+  #
+  # we use "q" in sed to make sure to output only one mode (could become
+  # important when ps2pk adds a mode=modeless line)
+  # 
+  # we don't use grep, because GNU grep 2.3 needs a special flag to work on
+  # binary data. Argh...
+  cat $1 \
+   | tr '\000-\037' '\012' \
+   | sed \
+         -e 's@ps2pk@mode=modeless @' \
+         -e 's@gsftopk@mode=modeless @' \
+         -e '/mode=/!d' \
+         -e 's@.*mode=\([a-zA-Z0-9_]*\).*@\1@; q'
+}
+
+while true ; do
+  case "$1" in
+    -m)  DFT_MODE=$2; shift; shift;;
+    -d)  OP=mv; shift;;
+    -t)  TEST=true; shift;;
+    -f)  FORCE=true; shift;;
+    *)   break;;
+  esac
+done
+ARGS=${1+"$@"}
+
+if [ $# = 0 ]; then
+  echo "$usage"
+  exit
+fi
+
+for i in `(find $ARGS \( -name '*.*[0-9]pk' -o -name '*.pk' \) -print) 2>/dev/null`
+do
+  MODE=`getmode $i`
+  test -z "$MODE" && MODE=$DFT_MODE
+  if [ -z "$MODE" ]; then
+    echo "$progname: mode for $i not detected -- skipping." >&2
+    continue
+  fi
+  dir=`echo $i | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+  file=`basename $i`
+  res=`echo $file | sed 's/.*\.//;s/pk//'`
+  if test -z "$res"; then
+    case "$dir" in
+      /*) : ;;
+      *)  dir=$here/$dir ;;
+    esac
+    res=`echo $dir | sed 's@.*/dpi\([0-9]*\).*@\1@'`
+    base=`basename $file .pk`
+  else
+    base=`basename $file .${res}pk`
+  fi
+  IFS=$SEP
+  set x `"$MT_MKTEXNAM" $base $res $MODE`; shift
+  IFS=$OIFS
+
+  file=`basename $1`
+  DESTDIR=`echo $1 | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+
+  if $TEST; then
+      echo $DESTDIR/$file
+      continue
+  fi
+
+  if [ -f "$DESTDIR/$file" ]; then 
+    if test $FORCE != true; then
+      echo "$progname: file $DESTDIR/$file already exists -- skipping." >&2
+      continue
+    fi
+    if cmp -s "$DESTDIR/$file" $i; then
+      test $OP == cp && continue # don't waste time
+    else
+      echo "$progname: $i differs from existing $DESTDIR/$file -- skipping." >&2
+      continue
+    fi
+    rm -f "$DESTDIR/$file"
+  fi
+
+  $MT_MKTEXDIR "$DESTDIR"
+  test -d $DESTDIR || continue
+
+  $OP $i $DESTDIR/pktmp.$$ || continue
+
+  mv -f $DESTDIR/pktmp.$$ $DESTDIR/$file || continue
+  chmod $FILE_PERMS $DESTDIR/$file || continue
+  echo "$DESTDIR/$file"
+  $MT_MKTEXUPD $DESTDIR $file
+done
+
+for i in `find $ARGS -name \*.tfm -print 2>/dev/null` ; do
+  dir=`echo $i | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+  file=`basename $i`
+  base=`basename $file .tfm`
+
+  IFS=$SEP
+  set x `"$MT_MKTEXNAM" $base $res $MODE`; shift
+  IFS=$OIFS
+
+  DESTDIR=`echo $2 | sed 's/^[^\/]*$/./; s/\/[^\/]*$//'`
+  file=`basename $2`
+
+  if $TEST; then
+      echo $DESTDIR/$file
+      continue
+  fi
+
+  if [ -f "$DESTDIR/$file" ]; then
+    if test $FORCE != true; then
+      echo "$progname: file $DESTDIR/$file already exists -- skipping." >&2
+      continue
+    fi
+    if cmp -s "$DESTDIR/$file" $i; then
+      test $OP == cp && continue # don't waste time
+    else
+      echo "$progname: $i differs from existing $DESTDIR/$file -- skipping." >&2
+      continue
+    fi
+    rm -f "$DESTDIR/$file"
+  fi
+
+  $MT_MKTEXDIR "$DESTDIR"
+  test -d $DESTDIR || continue                               
+
+  $OP $i $DESTDIR/tfmtmp.$$ || continue
+
+  mv -f $DESTDIR/tfmtmp.$$ $DESTDIR/$file || continue
+  chmod $FILE_PERMS $DESTDIR/$file || continue
+  echo "$DESTDIR/$file"
+  $MT_MKTEXUPD $DESTDIR $file
+done

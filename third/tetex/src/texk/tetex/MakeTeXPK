@@ -1,0 +1,17 @@
+#! /bin/sh
+# MakeTeXPK: translate old-style positional arguments to new-style
+#            options.
+# Old-style options were NAME DPI BDPI MAG [MODE [DESTDIR [REDIRECT]]]
+#
+# Handle MODE argument.
+if test "x$5" != x; then
+  ma='--mfmode'
+  mv=$5
+fi
+# Handle DESTDIR argument.
+if test "x$6" != x; then
+  da='--destdir'
+  dv=$6
+fi
+# REDIRECT is still allowed at the end.
+mktexpk --dpi "$2" --bdpi "$3" --mag "$4" $ma $mv $da $dv "$1" "$7"

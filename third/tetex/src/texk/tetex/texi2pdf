@@ -1,0 +1,4 @@
+#!/bin/sh
+
+TEX=pdftex; export TEX
+texi2dvi ${1+"$@"}

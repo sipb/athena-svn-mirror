@@ -1,0 +1,1726 @@
+This is Info file latex.info, produced by Makeinfo version 1.68 from
+the input file latex2e.texi.
+
+INFO-DIR-SECTION TeX
+START-INFO-DIR-ENTRY
+* LaTeX2e: (latex).                  LaTeXe help 1.6.
+END-INFO-DIR-ENTRY
+
+   This file documents LaTeX2e, a document preparation system. LaTeX2e
+is a macro package for TeX.
+
+   This is edition 1.6 of the LaTeX2e documentation, and is for the
+Texinfo that is distributed as part of Version 19 of GNU Emacs. It uses
+version 2.134 or later of the texinfo.tex input file.
+
+   This is translated from LATEX.HLP v1.0a in the VMS Help Library.  The
+pre-translation version was written by George D. Greenwade of Sam
+Houston State University.
+
+   The LaTeX 2.09 version was written by Stephen Gilmore
+<stg@dcs.ed.ac.uk>.
+
+   The LaTeX2e version was adapted from this by Torsten Martinsen
+<bullestock@dk-online.dk>.
+
+   Copyright 1988,1994 Free Software Foundation, Inc.  Copyright
+1994-1996 Torsten Martinsen.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "Distribution" and "General
+Public License" may be included in a translation approved by the author
+instead of in the original English.
+
+
+File: latex.info,  Node: Using BibTeX,  Prev: \nocite,  Up: thebibliography
+
+Using BibTeX
+............
+
+   If you use the BibTeX program by Oren Patashnik (highly recommended
+if you need a bibliography of more than a couple of titles) to maintain
+your bibliography, you don't use the `thebibliography' environment.
+Instead, you include the lines
+
+             \bibliographystyle{style}
+             \bibliography{bibfile}
+
+   where `style' refers to a file `style.bst', which defines how your
+citations will look. The standard styles distributed with BibTeX are:
+
+`alpha'
+     Sorted alphabetically. Labels are formed from name of author and
+     year of publication.
+
+`plain'
+     Sorted alphabetically. Labels are numeric.
+
+`unsrt'
+     Like `plain', but entries are in order of citation.
+
+`abbrv'
+     Like `plain', but more compact labels.
+
+   In addition, numerous other BibTeX style files exist tailored to the
+demands of various publications.
+
+   The argument to `\bibliography' refers to the file `bibfile.bib',
+which should contain your database in BibTeX format. Only the entries
+referred to via `\cite' and `\nocite' will be listed in the
+bibliography.
+
+
+File: latex.info,  Node: theorem,  Next: titlepage,  Prev: thebibliography,  Up: Environments
+
+theorem
+-------
+
+      \begin{theorem}
+       theorem text
+      \end{theorem}
+
+   The `theorem' environment produces "Theorem x" in boldface followed
+by your theorem text.
+
+
+File: latex.info,  Node: titlepage,  Next: verbatim,  Prev: theorem,  Up: Environments
+
+titlepage
+---------
+
+      \begin{titlepage}
+       text
+      \end{titlepage}
+
+   The `titlepage' environment creates a title page, i.e.  a page with
+no printed page number or heading.  It also causes the following page
+to be numbered page one.  Formatting the title page is left to you.  The
+`\today' command comes in handy for title pages.
+
+   Note that you can use the `\maketitle' (*note \maketitle::.) command
+to produce a standard title page.
+
+
+File: latex.info,  Node: verbatim,  Next: verse,  Prev: titlepage,  Up: Environments
+
+verbatim
+--------
+
+      \begin{verbatim}
+       text
+      \end{verbatim}
+
+   The `verbatim' environment is a paragraph-making environment that
+gets LaTeX to print exactly what you type in.  It turns LaTeX into a
+typewriter with carriage returns and blanks having the same effect that
+they would on a typewriter.
+
+* Menu:
+
+* \verb::       The macro form of the `verbatim' environment.
+
+
+File: latex.info,  Node: \verb,  Up: verbatim
+
+\verb
+.....
+
+   `\verb char literal_text char'
+
+   `\verb*char literal_text char'
+
+   Typesets `literal_text' exactly as typed, including special
+characters and spaces, using a typewriter (`\tt') type style.  There
+may be no space between `\verb' or `\verb*' and `char' (space is shown
+here only for clarity).  The `*-form' differs only in that spaces are
+printed as a special character.
+
+
+File: latex.info,  Node: verse,  Prev: verbatim,  Up: Environments
+
+verse
+-----
+
+      \begin{verse}
+       text
+      \end{verse}
+
+   The `verse' environment is designed for poetry, though you may find
+other uses for it.
+
+   The margins are indented on the left and the right. Separate the
+lines of each stanza with `\\', and use one or more blank lines to
+separate the stanzas.
+
+
+File: latex.info,  Node: Footnotes,  Next: Layout,  Prev: Environments,  Up: Commands
+
+Footnotes
+=========
+
+   Footnotes can be produced in one of two ways.  They can be produced
+with one command, the `\footnote' command.  They can also be produced
+with two commands, the `\footnotemark' and the `\footnotetext'
+commands.  See the specific command for information on why you would
+use one over the other.
+
+* Menu:
+
+* \footnote::           Insert a footnote.
+* \footnotemark::       Insert footnote mark only.
+* \footnotetext::       Insert footnote text only.
+
+
+File: latex.info,  Node: \footnote,  Next: \footnotemark,  Prev: Footnotes,  Up: Footnotes
+
+\footnote
+---------
+
+   `\footnote[number]{text}'
+
+   The `\footnote' command places the numbered footnote `text' at the
+bottom of the current page.  The optional argument, `number', is used
+to change the default footnote number.  This command can only be used
+in outer paragraph mode; i.e., you cannot use it in sectioning commands
+like `\chapter', in figures, tables or in a `tabular' environment.
+
+
+File: latex.info,  Node: \footnotemark,  Next: \footnotetext,  Prev: \footnote,  Up: Footnotes
+
+\footnotemark
+-------------
+
+   The `\footnotemark' command puts the footnote `number' in the text.
+This command can be used in inner paragraph mode.  The text of the
+footnote is supplied by the `\footnotetext' command.
+
+   This command can be used to produce several consecutive footnote
+markers referring to the same footnote by using
+
+   `\footnotemark[\value{footnote}]'
+
+   after the first `\footnote' command.
+
+
+File: latex.info,  Node: \footnotetext,  Prev: \footnotemark,  Up: Footnotes
+
+\footnotetext
+-------------
+
+   `\footnotetext[number]{text}'
+
+   The `\footnotetext' command produces the `text' to be placed at the
+bottom of the page.  This command can come anywhere after the
+`\footnotemark' command.  The `\footnotetext' command must appear in
+outer paragraph mode.
+
+   The optional argument, `number', is used to change the default
+footnote number.
+
+
+File: latex.info,  Node: Lengths,  Next: Letters,  Prev: Layout,  Up: Commands
+
+Lengths
+=======
+
+   A `length' is a measure of distance.  Many LaTeX commands take a
+length as an argument.
+
+* Menu:
+
+* \newlength::          Define a new length.
+* \setlength::          Set the value of a length.
+* \addtolength::        Add a quantity to a length.
+* \settodepth::         Set a length to the depth of something.
+* \settoheight::        Set a length to the height of something.
+* \settowidth::         Set a length to the width of something.
+* Predefined lengths::  Lengths that are, like, predefined.
+
+
+File: latex.info,  Node: \newlength,  Next: \setlength,  Prev: Lengths,  Up: Lengths
+
+\newlength
+----------
+
+   `\newlength{\gnat}'
+
+   The `\newlength' command defines the mandatory argument, `\gnat', as
+a `length' command with a value of `0in'.  An error occurs if a `\gnat'
+command already exists.
+
+
+File: latex.info,  Node: \setlength,  Next: \addtolength,  Prev: \newlength,  Up: Lengths
+
+\setlength
+----------
+
+   `\setlength{\gnat}{length}'
+
+   The `\setlength' command is used to set the value of a `length'
+command.  The `length' argument can be expressed in any terms of length
+LaTeX understands, i.e., inches (`in'), millimetres (`mm'), points
+(`pt'), etc.
+
+
+File: latex.info,  Node: \addtolength,  Next: \settodepth,  Prev: \setlength,  Up: Lengths
+
+\addtolength
+------------
+
+   `\addtolength{\gnat}{length}'
+
+   The `\addtolength' command increments a "length command" by the
+amount specified in the `length' argument.  It can be a negative amount.
+
+
+File: latex.info,  Node: \settodepth,  Next: \settoheight,  Prev: \addtolength,  Up: Lengths
+
+\settodepth
+-----------
+
+   `\settodepth{\gnat}{text}'
+
+   The `\settodepth' command sets the value of a `length' command equal
+to the depth of the `text' argument.
+
+
+File: latex.info,  Node: \settoheight,  Next: \settowidth,  Prev: \settodepth,  Up: Lengths
+
+\settoheight
+------------
+
+   `\settoheight{\gnat}{text}'
+
+   The `\settoheight' command sets the value of a `length' command
+equal to the height of the `text' argument.
+
+
+File: latex.info,  Node: \settowidth,  Next: Predefined lengths,  Prev: \settoheight,  Up: Lengths
+
+\settowidth
+-----------
+
+   `\settowidth{\gnat}{text}'
+
+   The `\settowidth' command sets the value of a `length' command equal
+to the width of the `text' argument.
+
+
+File: latex.info,  Node: Predefined lengths,  Prev: \settowidth,  Up: Lengths
+
+Predefined lengths
+------------------
+
+   `\width'
+
+   `\height'
+
+   `\depth'
+
+   `\totalheight'
+
+   These length parameters can be used in the arguments of the
+box-making commands *Note Spaces & Boxes::. They specify the natural
+width etc. of the text in the box. `\totalheight' equals `\height' +
+`\depth'. To make a box with the text stretched to double the natural
+size, e.g., say
+
+   `\makebox[2\width]{Get a stretcher}'
+
+
+File: latex.info,  Node: Letters,  Next: Line & Page Breaking,  Prev: Lengths,  Up: Commands
+
+Letters
+=======
+
+   You can use LaTeX to typeset letters, both personal and business.
+The `letter' document class is designed to make a number of letters at
+once, although you can make just one if you so desire.
+
+   Your `.tex' source file has the same minimum commands as the other
+document classes, i.e., you must have the following commands as a
+minimum:
+
+      \documentclass{letter}
+      \begin{document}
+       ... letters ...
+      \end{document}
+
+   Each letter is a `letter' environment, whose argument is the name
+and address of the recipient.  For example, you might have:
+
+      \begin{letter}{Mr. Joe Smith\\ 2345 Princess St.
+           \\ Edinburgh, EH1 1AA}
+        ...
+      \end{letter}
+
+   The letter itself begins with the `\opening' command.  The text of
+the letter follows.  It is typed as ordinary LaTeX input.  Commands that
+make no sense in a letter, like `\chapter', do not work.  The letter
+closes with a `\closing' command.
+
+   After the `closing', you can have additional material.  The `\cc'
+command produces the usual "cc: ...".  There's also a similar `\encl'
+command for a list of enclosures. With both these commands, use `\\' to
+separate the items.
+
+   These commands are used with the `letter' class:
+
+* Menu:
+
+* \address::            Your return address.
+* \cc::                 Cc list.
+* \closing::            Saying goodbye.
+* \encl::               List of enclosed material.
+* \location::           Your organisation's address.
+* \makelabels::         Making address labels.
+* \name::               Your name, for the return address.
+* \opening::            Saying hello.
+* \ps::                 Adding a postscript.
+* \signature::          Your signature.
+* \startbreaks::        Allow page breaks.
+* \stopbreaks::         Disallow page breaks.
+* \telephone::          Your phone number.
+
+
+File: latex.info,  Node: \address,  Next: \cc,  Prev: Letters,  Up: Letters
+
+\address
+--------
+
+   `\address{Return address}'
+
+   The return address, as it should appear on the letter and the
+envelope.  Separate lines of the address should be separated by `\\'
+commands.  If you do not make an `\address' declaration, then the
+letter will be formatted for copying onto your organisation's standard
+letterhead.  (*Note Overview::, for details on your local
+implementation).  If you give an `\address' declaration, then the
+letter will be formatted as a personal letter.
+
+
+File: latex.info,  Node: \cc,  Next: \closing,  Prev: \address,  Up: Letters
+
+\cc
+---
+
+   `\cc{Kate Schechter\\Rob McKenna}'
+
+   Generate a list of other persons the letter was sent to. Each name is
+printed on a separate line.
+
+
+File: latex.info,  Node: \closing,  Next: \encl,  Prev: \cc,  Up: Letters
+
+\closing
+--------
+
+   `\closing{text}'
+
+   The letter closes with a `\closing' command, i.e.,
+      \closing{Best Regards,}
+
+
+File: latex.info,  Node: \encl,  Next: \location,  Prev: \closing,  Up: Letters
+
+\encl
+-----
+
+   `\encl{CV\\Certificates}'
+
+   Generate a list of enclosed material.
+
+
+File: latex.info,  Node: \location,  Next: \makelabels,  Prev: \encl,  Up: Letters
+
+\location
+---------
+
+   `\location{address}'
+
+   This modifies your organisation's standard address.  This only
+appears if the `firstpage' pagestyle is selected.
+
+
+File: latex.info,  Node: \makelabels,  Next: \name,  Prev: \location,  Up: Letters
+
+\makelabels
+-----------
+
+   `\makelabels{number}'
+
+   If you issue this command in the preamble, LaTeX will create a sheet
+of address labels. This sheet will be output before the letters.
+
+
+File: latex.info,  Node: \name,  Next: \opening,  Prev: \makelabels,  Up: Letters
+
+\name
+-----
+
+   `\name{June Davenport}'
+
+   Your name, used for printing on the envelope together with the return
+address.
+
+
+File: latex.info,  Node: \opening,  Next: \ps,  Prev: \name,  Up: Letters
+
+\opening
+--------
+
+   `\opening{text}'
+
+   The letter begins with the `\opening' command.  The mandatory
+argument, `text', is whatever text you wish to start your letter, i.e.,
+      \opening{Dear Joe,}
+
+
+File: latex.info,  Node: \ps,  Next: \signature,  Prev: \opening,  Up: Letters
+
+\ps
+---
+
+   `\ps'
+
+   Use this command before a postscript.
+
+
+File: latex.info,  Node: \signature,  Next: \startbreaks,  Prev: \ps,  Up: Letters
+
+\signature
+----------
+
+   `\signature{Harvey Swick}'
+
+   Your name, as it should appear at the end of the letter underneath
+the space for your signature.  Items that should go on separate lines
+should be separated by `\\' commands.
+
+
+File: latex.info,  Node: \startbreaks,  Next: \stopbreaks,  Prev: \signature,  Up: Letters
+
+\startbreaks
+------------
+
+   `\startbreaks'
+
+   Used after a `\stopbreaks' command to allow page breaks again.
+
+
+File: latex.info,  Node: \stopbreaks,  Next: \telephone,  Prev: \startbreaks,  Up: Letters
+
+\stopbreaks
+-----------
+
+   `\stopbreaks'
+
+   Inhibit page breaks until a `\startbreaks' command occurs.
+
+
+File: latex.info,  Node: \telephone,  Prev: \stopbreaks,  Up: Letters
+
+\telephone
+----------
+
+   `\telephone{number}'
+
+   This is your telephone number.  This only appears if the `firstpage'
+pagestyle is selected.
+
+
+File: latex.info,  Node: Line & Page Breaking,  Next: Making Paragraphs,  Prev: Letters,  Up: Commands
+
+Line & Page Breaking
+====================
+
+   The first thing LaTeX does when processing ordinary text is to
+translate your input file into a string of glyphs and spaces.  To
+produce a printed document, this string must be broken into lines, and
+these lines must be broken into pages.  In some environments, you do the
+line breaking yourself with the `\\' command, but LaTeX usually does it
+for you.
+
+* Menu:
+
+* \\::                  Start a new line.
+* \- (hyphenation)::    Insert explicit hyphenation.
+* \cleardoublepage::    Start a new right-hand page.
+* \clearpage::          Start a new page.
+* \enlargethispage::    Enlarge the current page a bit.
+* \fussy::              Be fussy about line breaking.
+* \hyphenation::        Tell LaTeX how to hyphenate a word.
+* \linebreak::          Break the line.
+* \newline::            Break the line prematurely.
+* \newpage::            Start a new page.
+* \nolinebreak::        Don't break the current line.
+* \nopagebreak::        Don't make a page break here.
+* \pagebreak::          Please make a page break here.
+* \sloppy::             Be sloppy about line breaking.
+
+
+File: latex.info,  Node: \\,  Next: \- (hyphenation),  Prev: Line & Page Breaking,  Up: Line & Page Breaking
+
+\\
+--
+
+   `\\[*][extra-space]'
+
+   The `\\' command tells LaTeX to start a new line.  It has an
+optional argument, `extra-space', that specifies how much extra
+vertical space is to be inserted before the next line.  This can be a
+negative amount.
+
+   The `\\*' command is the same as the ordinary `\\' command except
+that it tells LaTeX not to start a new page after the line.
+
+
+File: latex.info,  Node: \- (hyphenation),  Next: \cleardoublepage,  Prev: \\,  Up: Line & Page Breaking
+
+\-
+--
+
+   The `\-' command tells LaTeX that it may hyphenate the word at that
+point.  LaTeX is very good at hyphenating, and it will usually find all
+correct hyphenation points.  The `\-' command is used for the
+exceptional cases.
+
+   Note that when you insert `\-' commands in a word, the word will
+only be hyphenated at those points and not at any of the hyphenation
+points that LaTeX might otherwise have chosen.
+
+
+File: latex.info,  Node: \cleardoublepage,  Next: \clearpage,  Prev: \- (hyphenation),  Up: Line & Page Breaking
+
+\cleardoublepage
+----------------
+
+   The `\cleardoublepage' command ends the current page and causes all
+figures and tables that have so far appeared in the input to be printed.
+In a two-sided printing style, it also makes the next page a right-hand
+(odd-numbered) page, producing a blank page if necessary.
+
+
+File: latex.info,  Node: \clearpage,  Next: \enlargethispage,  Prev: \cleardoublepage,  Up: Line & Page Breaking
+
+\clearpage
+----------
+
+   The `\clearpage' command ends the current page and causes all
+figures and tables that have so far appeared in the input to be printed.
+
+
+File: latex.info,  Node: \enlargethispage,  Next: \fussy,  Prev: \clearpage,  Up: Line & Page Breaking
+
+\enlargethispage
+----------------
+
+   `\enlargethispage{size}'
+
+   `\enlargethispage*{size}'
+
+   Enlarge the `\textheight' for the current page by the specified
+amount; e.g. `\enlargethispage{\baselineskip}' will allow one
+additional line.
+
+   The starred form tries to squeeze the material together on the page
+as much as possible. This is normally used together with an explicit
+`\pagebreak'.
+
+
+File: latex.info,  Node: \fussy,  Next: \hyphenation,  Prev: \enlargethispage,  Up: Line & Page Breaking
+
+\fussy
+------
+
+   `\fussy'
+
+   This declaration (which is the default) makes TeX more fussy about
+line breaking. This can avoids too much space between words, but may
+produce overfull boxes.
+
+   This command cancels the effect of a previous  `\sloppy' command.
+*Note \sloppy::
+
+
+File: latex.info,  Node: \hyphenation,  Next: \linebreak,  Prev: \fussy,  Up: Line & Page Breaking
+
+\hyphenation
+------------
+
+   `\hyphenation{words}'
+
+   The `\hyphenation' command declares allowed hyphenation points,
+where `words' is a list of words, separated by spaces, in which each
+hyphenation point is indicated by a `-' character.
+
+
+File: latex.info,  Node: \linebreak,  Next: \newline,  Prev: \hyphenation,  Up: Line & Page Breaking
+
+\linebreak
+----------
+
+   `\linebreak[number]'
+
+   The `\linebreak' command tells LaTeX to break the current line at
+the point of the command.  With the optional argument, `number', you
+can convert the `\linebreak' command from a demand to a request.  The
+number must be a number from 0 to 4.  The higher the number, the more
+insistent the request is.
+
+   The `\linebreak' command causes LaTeX to stretch the line so it
+extends to the right margin.
+
+
+File: latex.info,  Node: \newline,  Next: \newpage,  Prev: \linebreak,  Up: Line & Page Breaking
+
+\newline
+--------
+
+   The `\newline' command breaks the line right where it is. It can
+only be used in paragraph mode.
+
+
+File: latex.info,  Node: \newpage,  Next: \nolinebreak,  Prev: \newline,  Up: Line & Page Breaking
+
+\newpage
+--------
+
+   The `\newpage' command ends the current page.
+
+
+File: latex.info,  Node: \nolinebreak,  Next: \nopagebreak,  Prev: \newpage,  Up: Line & Page Breaking
+
+\nolinebreak
+------------
+
+   `\nolinebreak[number]'
+
+   The `\nolinebreak' command prevents LaTeX from breaking the current
+line at the point of the command.  With the optional argument,
+`number', you can convert the `\nolinebreak' command from a demand to a
+request.  The number must be a number from 0 to 4.  The higher the
+number, the more insistent the request is.
+
+
+File: latex.info,  Node: \nopagebreak,  Next: \pagebreak,  Prev: \nolinebreak,  Up: Line & Page Breaking
+
+\nopagebreak
+------------
+
+   `\nopagebreak[number]'
+
+   The `\nopagebreak' command prevents LaTeX from breaking the current
+page at the point of the command.  With the optional argument,
+`number', you can convert the `\nopagebreak' command from a demand to a
+request.  The number must be a number from 0 to 4.  The higher the
+number, the more insistent the request is.
+
+
+File: latex.info,  Node: \pagebreak,  Next: \sloppy,  Prev: \nopagebreak,  Up: Line & Page Breaking
+
+\pagebreak
+----------
+
+   `\pagebreak[number]'
+
+   The `\pagebreak' command tells LaTeX to break the current page at
+the point of the command.  With the optional argument, `number', you
+can convert the `\pagebreak' command from a demand to a request.  The
+number must be a number from 0 to 4.  The higher the number, the more
+insistent the request is.
+
+
+File: latex.info,  Node: \sloppy,  Prev: \pagebreak,  Up: Line & Page Breaking
+
+\sloppy
+-------
+
+   `\sloppy'
+
+   This declaration makes TeX less fussy about line breaking. This can
+prevent overfull boxes, but may leave too much space between words.
+
+   Lasts until a `\fussy' command is issued. *Note \fussy::.
+
+
+File: latex.info,  Node: Making Paragraphs,  Next: Margin Notes,  Prev: Line & Page Breaking,  Up: Commands
+
+Making Paragraphs
+=================
+
+   A paragraph is ended by one or more completely blank lines -- lines
+not containing even a `%'.  A blank line should not appear where a new
+paragraph cannot be started, such as in math mode or in the argument of
+a sectioning command.
+
+* Menu:
+
+* \indent::     Indent this paragraph.
+* \noindent::   Do not indent this paragraph.
+* \par::        Another way of writing a blank line.
+
+
+File: latex.info,  Node: \indent,  Next: \noindent,  Prev: Making Paragraphs,  Up: Making Paragraphs
+
+\indent
+-------
+
+   `\indent'
+
+   This produces a horizontal space whose width equals the width of the
+paragraph indentation.  It is used to add paragraph indentation where it
+would otherwise be suppressed.
+
+
+File: latex.info,  Node: \noindent,  Next: \par,  Prev: \indent,  Up: Making Paragraphs
+
+\noindent
+---------
+
+   `\noindent'
+
+   When used at the beginning of the paragraph, it suppresses the
+paragraph indentation.  It has no effect when used in the middle of a
+paragraph.
+
+
+File: latex.info,  Node: \par,  Prev: \noindent,  Up: Making Paragraphs
+
+\par
+----
+
+   Equivalent to a blank line; often used to make command or environment
+definitions easier to read.
+
+
+File: latex.info,  Node: Margin Notes,  Next: Math Formulae,  Prev: Making Paragraphs,  Up: Commands
+
+Margin Notes
+============
+
+   The command `\marginpar[left]{right}' creates a note in the margin.
+The first line will be at the same height as the line in the text where
+the `\marginpar' occurs.
+
+   When you only specify the mandatory argument `right', the text will
+be placed
+
+   * in the right margin for one-sided layout
+
+   * in the outside margin for two-sided layout
+
+   * in the nearest margin for two-column layout.
+
+   By issuing the command `\reversemarginpar', you can force the
+marginal notes to go into the opposite (inside) margin.
+
+   When you specify both arguments, `left' is used for the left margin,
+and `right' is used for the right margin.
+
+   The first word will normally not be hyphenated; you can enable
+hyphenation by prefixing the first word with a `\hspace{0pt}' command.
+
+
+File: latex.info,  Node: Math Formulae,  Next: Modes,  Prev: Margin Notes,  Up: Commands
+
+Math Formulae
+=============
+
+   There are three environments that put LaTeX in math mode:
+
+`math'
+     For Formulae that appear right in the text.
+
+`displaymath'
+     For Formulae that appear on their own line.
+
+`equation'
+     The same as the displaymath environment except that it adds an
+     equation number in the right margin.
+
+   The `math' environment can be used in both paragraph and LR mode,
+but the `displaymath' and `equation' environments can be used only in
+paragraph mode.  The `math' and `displaymath' environments are used so
+often that they have the following short forms:
+
+         \(...\)     instead of     \begin{math}...\end{math}
+     
+         \[...\]     instead of     \begin{displaymath}...\end{displaymath}
+
+   In fact, the `math' environment is so common that it has an even
+shorter form:
+
+         $ ... $     instead of     \(...\)
+
+* Menu:
+
+* Subscripts & Superscripts::   Also known as exponent or index.
+* Math Symbols::                Various mathematical squiggles.
+* Spacing in Math Mode::        Thick, medium, thin and negative spaces.
+* Math Miscellany::             Stuff that doesn't fit anywhere else.
+
+
+File: latex.info,  Node: Subscripts & Superscripts,  Next: Math Symbols,  Prev: Math Formulae,  Up: Math Formulae
+
+Subscripts & Superscripts
+-------------------------
+
+   To get an expression exp to appear as a subscript, you just type
+`_{'exp`}'.  To get exp to appear as a superscript, you type
+`^{'exp`}'. LaTeX handles superscripted superscripts and all of that
+stuff in the natural way.  It even does the right thing when something
+has both a subscript and a superscript.
+
+
+File: latex.info,  Node: Math Symbols,  Next: Spacing in Math Mode,  Prev: Subscripts & Superscripts,  Up: Math Formulae
+
+Math Symbols
+------------
+
+   LaTeX provides almost any mathematical symbol you're likely to need.
+The commands for generating them can be used only in math mode.  For
+example, if you include `$\pi$' in your source, you will get the symbol
+"pi" in your output.
+
+
+File: latex.info,  Node: Spacing in Math Mode,  Next: Math Miscellany,  Prev: Math Symbols,  Up: Math Formulae
+
+Spacing in Math Mode
+--------------------
+
+   In a `math' environment, LaTeX ignores the spaces you type and puts
+in the spacing that it thinks is best.  LaTeX formats mathematics the
+way it's done in mathematics texts.  If you want different spacing,
+LaTeX provides the following four commands for use in math mode:
+
+  1. `\;' - a thick space
+
+  2. `\:' - a medium space
+
+  3. `\,' - a thin space
+
+  4. `\!' - a negative thin space
+
+
+File: latex.info,  Node: Math Miscellany,  Prev: Spacing in Math Mode,  Up: Math Formulae
+
+Math Miscellany
+---------------
+
+`\cdots'
+     Produces a horizontal ellipsis where the dots are raised to the
+     centre of the line.
+
+`\ddots'
+     Produces a diagonal ellipsis.
+
+`\frac{num}{den}'
+     Produces the fraction `num' divided by `den'.
+
+`\ldots'
+     Produces an ellipsis.  This command works in any mode, not just
+     math mode.
+
+`\overbrace{text}'
+     Generates a brace over text.
+
+`\overline{text}'
+     Causes the argument text to be overlined.
+
+`\sqrt[root]{arg}'
+     Produces the square root of its argument.  The optional argument,
+     `root', determines what root to produce, i.e., the cube root of
+     `x+y' would be typed as `$\sqrt[3]{x+y}$'.
+
+`\underbrace{text}'
+     Generates text with a brace underneath.
+
+`\underline{text}'
+     Causes the argument text to be underlined.  This command can also
+     be used in paragraph and LR modes.
+
+`\vdots'
+     Produces a vertical ellipsis.
+
+
+File: latex.info,  Node: Modes,  Next: Page Styles,  Prev: Math Formulae,  Up: Commands
+
+Modes
+=====
+
+   When LaTeX is processing your input text, it is always in one of
+three modes:
+
+   * Paragraph mode
+
+   * Math mode
+
+   * Left-to-right mode, called LR mode for short
+
+   LaTeX changes mode only when it goes up or down a staircase to a
+different level, though not all level changes produce mode changes.
+Mode changes occur only when entering or leaving an environment, or when
+LaTeX is processing the argument of certain text-producing commands.
+
+   "Paragraph mode" is the most common; it's the one LaTeX is in when
+processing ordinary text.  In that mode, LaTeX breaks your text into
+lines and breaks the lines into pages.  LaTeX is in "math mode" when
+it's generating a mathematical formula.  In "LR mode", as in paragraph
+mode, LaTeX considers the output that it produces to be a string of
+words with spaces between them.  However, unlike paragraph mode, LaTeX
+keeps going from left to right; it never starts a new line in LR mode.
+Even if you put a hundred words into an `\mbox', LaTeX would keep
+typesetting them from left to right inside a single box, and then
+complain because the resulting box was too wide to fit on the line.
+
+   LaTeX is in LR mode when it starts making a box with an `\mbox'
+command.  You can get it to enter a different mode inside the box - for
+example, you can make it enter math mode to put a formula in the box.
+There are also several text-producing commands and environments for
+making a box that put LaTeX in paragraph mode.  The box make by one of
+these commands or environments will be called a `parbox'.  When LaTeX
+is in paragraph mode while making a box, it is said to be in "inner
+paragraph mode".  Its normal paragraph mode, which it starts out in, is
+called "outer paragraph mode".
+
+
+File: latex.info,  Node: Page Styles,  Next: Sectioning,  Prev: Modes,  Up: Commands
+
+Page Styles
+===========
+
+   The `\documentclass' command determines the size and position of the
+page's head and foot.  The page style determines what goes in them.
+
+* Menu:
+
+* \maketitle::          Generate a title page.
+* \pagenumbering::      Set the style used for page numbers.
+* \pagestyle::		Change the headings/footings style.
+* \thispagestyle::      Change the headings/footings style for this page.
+
+
+File: latex.info,  Node: \maketitle,  Next: \pagenumbering,  Prev: Page Styles,  Up: Page Styles
+
+\maketitle
+----------
+
+   `\maketitle'
+
+   The `\maketitle' command generates a title on a separate title page
+- except in the `article' class, where the title normally goes at the
+top of the first page.  Information used to produce the title is
+obtained from the following declarations:
+
+   *Note Page Styles:: for the commands to give the information.
+
+* Menu:
+
+* \author::     Who wrote this stuff?
+* \date::       The date the document was created.
+* \thanks::     A special form of footnote.
+* \title::      How to set the document title.
+
+
+File: latex.info,  Node: \author,  Next: \date,  Prev: \maketitle,  Up: \maketitle
+
+\author
+-------
+
+   `\author{names}'
+
+   The `\author' command declares the author(s), where `names' is a
+list of authors separated by `\and' commands.  Use `\\' to separate
+lines within a single author's entry - for example, to give the
+author's institution or address.
+
+
+File: latex.info,  Node: \date,  Next: \thanks,  Prev: \author,  Up: \maketitle
+
+\date
+-----
+
+   `\date{text}'
+
+   The `\date' command declares text to be the document's date.  With
+no `\date' command, the current date is used.
+
+
+File: latex.info,  Node: \thanks,  Next: \title,  Prev: \date,  Up: \maketitle
+
+\thanks
+-------
+
+   `\thanks{text}'
+
+   The `\thanks' command produces a `\footnote' to the title.
+
+
+File: latex.info,  Node: \title,  Prev: \thanks,  Up: \maketitle
+
+\title
+------
+
+   `\title{text}'
+
+   The `\title' command declares `text' to be the title.  Use `\\' to
+tell LaTeX where to start a new line in a long title.
+
+
+File: latex.info,  Node: \pagenumbering,  Next: \pagestyle,  Prev: \maketitle,  Up: Page Styles
+
+\pagenumbering
+--------------
+
+   `\pagenumbering{num_style}'
+
+   Specifies the style of page numbers.  Possible values of `num_style'
+are:
+
+   * `arabic' - Arabic numerals
+
+   * `roman' - Lowercase Roman numerals
+
+   * `Roman' - Uppercase Roman numerals
+
+   * `alph' - Lowercase letters
+
+   * `Alph' - Uppercase letters
+
+
+File: latex.info,  Node: \pagestyle,  Next: \thispagestyle,  Prev: \pagenumbering,  Up: Page Styles
+
+\pagestyle
+----------
+
+   `\pagestyle{option}'
+
+   The `\pagestyle' command changes the style from the current page on
+throughout the remainder of your document.
+
+   The valid options are:
+
+   * `plain' - Just a plain page number.
+
+   * `empty' - Produces empty heads and feet - no page numbers.
+
+   * `headings' - Puts running headings on each page.  The document
+     style specifies what goes in the headings.
+
+   * `myheadings' - You specify what is to go in the heading with the
+     `\markboth' or the `\markright' commands.
+
+* Menu:
+
+* \markboth::           Set left and right headings.
+* \markright::          Set right heading only.
+
+
+File: latex.info,  Node: \markboth,  Next: \markright,  Prev: \pagestyle,  Up: \pagestyle
+
+\markboth
+---------
+
+     \markboth{left head}{right head}
+
+   The `\markboth' command is used in conjunction with the page style
+`myheadings' for setting both the left and the right heading.  You
+should note that a "left-hand heading" is generated by the last
+`\markboth' command before the end of the page, while a "right-hand
+heading" is generated by the first `\markboth' or `\markright' that
+comes on the page if there is one, otherwise by the last one before the
+page.
+
+
+File: latex.info,  Node: \markright,  Prev: \markboth,  Up: \pagestyle
+
+\markright
+----------
+
+     \markright{right head}
+
+   The `\markright' command is used in conjunction with the page style
+`myheadings' for setting the right heading, leaving the left heading
+unchanged.  You should note that a "left-hand heading" is generated by
+the last `\markboth' command before the end of the page, while a
+"right-hand heading" is generated by the first `\markboth' or
+`\markright' that comes on the page if there is one, otherwise by the
+last one before the page.
+
+
+File: latex.info,  Node: \thispagestyle,  Prev: \pagestyle,  Up: Page Styles
+
+\thispagestyle
+--------------
+
+   `\thispagestyle{option}'
+
+   The `\thispagestyle' command works in the same manner as the
+`\pagestyle' command except that it changes the style for the current
+page only.
+
+
+File: latex.info,  Node: Sectioning,  Next: Spaces & Boxes,  Prev: Page Styles,  Up: Commands
+
+Sectioning
+==========
+
+   Sectioning commands provide the means to structure your text into
+units.
+
+   * `\part'
+
+   * `\chapter' (report and book class only)
+
+   * `\section'
+
+   * `\subsection'
+
+   * `\subsubsection'
+
+   * `\paragraph'
+
+   * `\subparagraph'
+
+   All sectioning commands take the same general form, i.e.,
+
+   `\chapter[optional]{title}'
+
+   In addition to providing the heading in the text, the mandatory
+argument of the sectioning command can appear in two other places:
+
+  1. The table of contents
+
+  2. The running head at the top of the page
+
+   You may not want the same thing to appear in these other two places
+as appears in the text heading.  To handle this situation, the
+sectioning commands have an `optional' argument that provides the text
+for these other two purposes.
+
+   All sectioning commands have `*'-forms that print a title, but do
+not include a number and do not make an entry in the table of contents.
+
+   `\appendix'
+
+   The `\appendix' command changes the way sectional units are
+numbered.  The `\appendix' command generates no text and does not
+affect the numbering of parts.  The normal use of this command is
+something like
+
+     \chapter{The First Chapter}
+     ...
+     \appendix
+     \chapter{The First Appendix}
+
+
+File: latex.info,  Node: Spaces & Boxes,  Next: Special Characters,  Prev: Sectioning,  Up: Commands
+
+Spaces & Boxes
+==============
+
+   All the predefined length parameters *Note Predefined lengths:: can
+be used in the arguments of the box-making commands.
+
+* Menu:
+
+Horizontal space
+* \dotfill::            Stretchable horizontal dots.
+* \hfill::              Stretchable horizontal space.
+* \hrulefill::          Stretchable horizontal rule.
+* \hspace::             Fixed horizontal space.
+Vertical space
+* \addvspace::          Fixed vertical space.
+* \bigskip::            Fixed vertical space.
+* \medskip::            Fixed vertical space.
+* \smallskip::          Fixed vertical space.
+* \vfill::              Stretchable vertical space.
+* \vspace::             Fixed vertical space.
+Boxes
+* \fbox::               Framebox.
+* \framebox::           Framebox, adjustable position.
+* lrbox::               An environment like \sbox.
+* \makebox::            Box, adjustable position.
+* \mbox::               Box.
+* \newsavebox::         Declare a name for saving a box.
+* \parbox::             Box with text in paragraph mode.
+* \raisebox::           Raise or lower text.
+* \rule::               Lines and squares.
+* \savebox::            Like \makebox, but save the text for later use.
+* \sbox::               Like \mbox, but save the text for later use.
+* \usebox::             Print saved text.
+
+
+File: latex.info,  Node: \dotfill,  Next: \hfill,  Up: Spaces & Boxes
+
+\dotfill
+--------
+
+   The `\dotfill' command produces a "rubber length" that produces dots
+instead of just spaces.
+
+
+File: latex.info,  Node: \hfill,  Next: \hrulefill,  Prev: \dotfill,  Up: Spaces & Boxes
+
+\hfill
+------
+
+   The `\hfill' fill command produces a "rubber length" which can
+stretch or shrink horizontally.  It will be filled with spaces.
+
+
+File: latex.info,  Node: \hrulefill,  Next: \hspace,  Prev: \hfill,  Up: Spaces & Boxes
+
+\hrulefill
+----------
+
+   The `\hrulefill' fill command produces a "rubber length" which can
+stretch or shrink horizontally.  It will be filled with a horizontal
+rule.
+
+
+File: latex.info,  Node: \hspace,  Next: \addvspace,  Prev: \hrulefill,  Up: Spaces & Boxes
+
+\hspace
+-------
+
+   `\hspace[*]{length}'
+
+   The `\hspace' command adds horizontal space.  The length of the
+space can be expressed in any terms that LaTeX understands, i.e.,
+points, inches, etc.  You can add negative as well as positive space
+with an `\hspace' command.  Adding negative space is like backspacing.
+
+   LaTeX removes horizontal space that comes at the end of a line.  If
+you don't want LaTeX to remove this space, include the optional `*'
+argument.  Then the space is never removed.
+
+
+File: latex.info,  Node: \addvspace,  Next: \bigskip,  Prev: \hspace,  Up: Spaces & Boxes
+
+\addvspace
+----------
+
+   `\addvspace{length}'
+
+   The `\addvspace' command normally adds a vertical space of height
+length.  However, if vertical space has already been added to the same
+point in the output by a previous `\addvspace' command, then this
+command will not add more space than needed to make the natural length
+of the total vertical space equal to `length'.
+
+
+File: latex.info,  Node: \bigskip,  Next: \medskip,  Prev: \addvspace,  Up: Spaces & Boxes
+
+\bigskip
+--------
+
+   The `\bigskip' command is equivalent to `\vspace{bigskipamount}'
+where `bigskipamount' is determined by the document class.
+
+
+File: latex.info,  Node: \medskip,  Next: \smallskip,  Prev: \bigskip,  Up: Spaces & Boxes
+
+\medskip
+--------
+
+   The `\medskip' command is equivalent to `\vspace{medskipamount}'
+where `medskipamount' is determined by the document class.
+
+
+File: latex.info,  Node: \smallskip,  Next: \vfill,  Prev: \medskip,  Up: Spaces & Boxes
+
+\smallskip
+----------
+
+   `\smallskip'
+
+   The `\smallskip' command is equivalent to `\vspace{smallskipamount}'
+where `smallskipamount' is determined by the document class.
+
+
+File: latex.info,  Node: \vfill,  Next: \vspace,  Prev: \smallskip,  Up: Spaces & Boxes
+
+\vfill
+------
+
+   The `\vfill' fill command produces a rubber length which can stretch
+or shrink vertically.
+
+
+File: latex.info,  Node: \vspace,  Next: \fbox,  Prev: \vfill,  Up: Spaces & Boxes
+
+\vspace
+-------
+
+   `\vspace[*]{length}'
+
+   The `\vspace' command adds vertical space.  The length of the space
+can be expressed in any terms that LaTeX understands, i.e., points,
+inches, etc.  You can add negative as well as positive space with an
+`\vspace' command.
+
+   LaTeX removes vertical space that comes at the end of a page.  If you
+don't want LaTeX to remove this space, include the optional `*'
+argument.  Then the space is never removed.
+
+
+File: latex.info,  Node: \fbox,  Next: \framebox,  Prev: \vspace,  Up: Spaces & Boxes
+
+\fbox
+-----
+
+   `\fbox{text}'
+
+   The `\fbox' command is exactly the same as the `\mbox' command,
+except that it puts a frame around the outside of the box that it
+creates.
+
+
+File: latex.info,  Node: \framebox,  Next: lrbox,  Prev: \fbox,  Up: Spaces & Boxes
+
+\framebox
+---------
+
+   `\framebox[width][position]{text}'
+
+   The `\framebox' command is exactly the same as the `\makebox'
+command, except that it puts a frame around the outside of the box that
+it creates.
+
+   The framebox command produces a rule of thickness `\fboxrule', and
+leaves a space `\fboxsep' between the rule and the contents of the box.
+
+
+File: latex.info,  Node: lrbox,  Next: \makebox,  Prev: \framebox,  Up: Spaces & Boxes
+
+lrbox
+-----
+
+   `\begin{lrbox}{cmd} text \end{lrbox}'
+
+   This is the environment form of `\sbox'.
+
+   The text inside the environment is saved in the box `cmd', which
+must have been declared with `\newsavebox'.
+
+
+File: latex.info,  Node: \makebox,  Next: \mbox,  Prev: lrbox,  Up: Spaces & Boxes
+
+\makebox
+--------
+
+   `\makebox[width][position]{text}'
+
+   The `\makebox' command creates a box just wide enough to contain the
+`text' specified.  The width of the box is specified by the optional
+`width' argument.  The position of the text within the box is
+determined by the optional `position' argument.
+
+   * `c' -- centred (default)
+
+   * `l' -- flushleft
+
+   * `r' -- flushright
+
+   * `s' -- stretch from left to right margin. The text must contain
+     stretchable space for this to work.
+
+   *Note \makebox (picture)::.
+
+
+File: latex.info,  Node: \mbox,  Next: \newsavebox,  Prev: \makebox,  Up: Spaces & Boxes
+
+\mbox
+-----
+
+   `\mbox{text}'
+
+   The `\mbox' command creates a box just wide enough to hold the text
+created by its argument.
+
+   Use this command to prevent text from being split across lines.
+
+
+File: latex.info,  Node: \newsavebox,  Next: \parbox,  Prev: \mbox,  Up: Spaces & Boxes
+
+\newsavebox
+-----------
+
+   `\newsavebox{cmd}'
+
+   Declares `cmd', which must be a command name that is not already
+defined, to be a bin for saving boxes.
+
+
+File: latex.info,  Node: \parbox,  Next: \raisebox,  Prev: \newsavebox,  Up: Spaces & Boxes
+
+\parbox
+-------
+
+   `\parbox[position][height][inner-pos]{width}{text}'
+
+   A `parbox' is a box whose contents are created in `paragraph' mode.
+The `\parbox' has two mandatory arguments:
+
+   * `width' - specifies the width of the parbox, and
+
+   * `text' - the text that goes inside the parbox.
+
+   LaTeX will position a `parbox' so its centre lines up with the
+centre of the text line.  The optional position argument allows you to
+line up either the top or bottom line in the parbox (default is top).
+
+   If the height argument is not given, the box will have the natural
+height of the text.
+
+   The inner-pos argument controls the placement of the text inside the
+box. If it is not specified, position is used.
+
+   * `t' -- text is placed at the top of the box.
+
+   * `c' -- text is centred in the box.
+
+   * `b' -- text is placed at the bottom of the box.
+
+   * `s' -- stretch vertically. The text must contain vertically
+     stretchable space for this to work.
+
+   A `\parbox' command is used for a parbox containing a small piece of
+text, with nothing fancy inside.  In particular, you shouldn't use any
+of the paragraph-making environments inside a `\parbox' argument.  For
+larger pieces of text, including ones containing a paragraph-making
+environment, you should use a `minipage' environment *Note minipage::.
+
+
+File: latex.info,  Node: \raisebox,  Next: \rule,  Prev: \parbox,  Up: Spaces & Boxes
+
+\raisebox
+---------
+
+   `\raisebox{distance}[extend-above][extend-below]{text}'
+
+   The `\raisebox' command is used to raise or lower text.  The first
+mandatory argument specifies how high the text is to be raised (or
+lowered if it is a negative amount).  The text itself is processed in
+`LR mode'.
+
+   Sometimes it's useful to make LaTeX think something has a different
+size than it really does - or a different size than LaTeX would
+normally think it has.  The `\raisebox' command lets you tell LaTeX how
+tall it is.
+
+   The first optional argument, `extend-above', makes LaTeX think that
+the text extends above the line by the amount specified.  The second
+optional argument, `extend-below', makes LaTeX think that the text
+extends below the line by the amount specified.
+
+
+File: latex.info,  Node: \rule,  Next: \savebox,  Prev: \raisebox,  Up: Spaces & Boxes
+
+\rule
+-----
+
+   `\rule[raise-height]{width}{thickness}'
+
+   The `\rule' command is used to produce horizontal lines.  The
+arguments are defined as follows:
+
+   * `raise-height' - specifies how high to raise the rule (optional)
+
+   * `width' - specifies the length of the rule (mandatory)
+
+   * `thickness' - specifies the thickness of the rule (mandatory)
+
+
+File: latex.info,  Node: \savebox,  Next: \sbox,  Prev: \rule,  Up: Spaces & Boxes
+
+\savebox
+--------
+
+      \savebox{cmd}[width][pos]{text}
+
+   This command typeset `text' in a box just as for `\makebox'.
+However, instead of printing the resulting box, it saves it in bin
+`cmd', which must have been declared with `\newsavebox'.
+
+
+File: latex.info,  Node: \sbox,  Next: \usebox,  Prev: \savebox,  Up: Spaces & Boxes
+
+\sbox
+-----
+
+   `\sbox{text}'
+
+   This commands typeset `text' in a box just as for `\mbox'.  However,
+instead of printing the resulting box, it saves it in bin `cmd', which
+must have been declared with `\newsavebox'.
+
+
+File: latex.info,  Node: \usebox,  Prev: \sbox,  Up: Spaces & Boxes
+
+\usebox
+-------
+
+   `\usebox{cmd}'
+
+   Prints the box most recently saved in bin `cmd' by a `\savebox'
+command.
+
+
+File: latex.info,  Node: Special Characters,  Next: Splitting the Input,  Prev: Spaces & Boxes,  Up: Commands
+
+Special Characters
+==================
+
+   The following characters play a special role in LaTeX and are called
+"special printing characters", or simply "special characters".
+
+                            # $ % & ~ _ ^ \ { }
+
+   Whenever you put one of these special characters into your file, you
+are doing something special.  If you simply want the character to be
+printed just as any other letter, include a `\' in front of the
+character.  For example, `\$' will produce `$' in your output.
+
+   One exception to this rule is the `\' itself because `\\' has its
+own special meaning.  A `\' is produced by typing `$\backslash$' in
+your file.
+
+   Also, `\~' means `place a tilde accent over the following letter',
+so you will probably want to use `\verb' instead.
+
+   In addition, you can access any character of a font once you know its
+number by using the `\symbol' command. For example, the character used
+for displaying spaces in the `\verb*' command has the code decimal 32,
+so it can be typed as `\symbol{32}'.
+
+   You can also specify octal numbers with `'' or hexadecimal numbers
+with `"', so the previous example could also be written as
+`\symbol{'40}' or `\symbol{"20}'.
+
+
+File: latex.info,  Node: Splitting the Input,  Next: Starting & Ending,  Prev: Special Characters,  Up: Commands
+
+Splitting the Input
+===================
+
+   A large document requires a lot of input.  Rather than putting the
+whole input in a single large file, it's more efficient to split it into
+several smaller ones.  Regardless of how many separate files you use,
+there is one that is the root file; it is the one whose name you type
+when you run LaTeX.
+
+* Menu:
+
+* \include::            Conditionally include a file.
+* \includeonly::        Determine which files are included.
+* \input::              Unconditionally include a file.
+
+
+File: latex.info,  Node: \include,  Next: \includeonly,  Prev: Splitting the Input,  Up: Splitting the Input
+
+\include
+--------
+
+   `\include{file}'
+
+   The `\include' command is used in conjunction with the
+`\includeonly' command for selective inclusion of files.  The `file'
+argument is the first name of a file, denoting `file.tex'.  If `file'
+is one the file names in the file list of the `\includeonly' command or
+if there is no `\includeonly' command, the `\include' command is
+equivalent to
+
+     \clearpage \input{file} \clearpage
+
+   except that if the file `file.tex' does not exist, then a warning
+message rather than an error is produced.  If the file is not in the
+file list, the `\include' command is equivalent to `\clearpage'.
+
+   The `\include' command may not appear in the preamble or in a file
+read by another `\include' command.
+
+
+File: latex.info,  Node: \includeonly,  Next: \input,  Prev: \include,  Up: Splitting the Input
+
+\includeonly
+------------
+
+   `\includeonly{'file_list`}'
+
+   The `\includeonly' command controls which files will be read in by
+an `\include' command.  file_list should be a comma-separated list of
+filenames. Each filename must match exactly a filename specified in a
+`\include' command. This command can only appear in the preamble.
+
+
+File: latex.info,  Node: \input,  Prev: \includeonly,  Up: Splitting the Input
+
+\input
+------
+
+   `\input{file}'
+
+   The `\input' command causes the indicated `file' to be read and
+processed, exactly as if its contents had been inserted in the current
+file at that point.  The file name may be a complete file name with
+extension or just a first name, in which case the file `file.tex' is
+used.
+
+
+File: latex.info,  Node: Starting & Ending,  Next: Table of Contents,  Prev: Splitting the Input,  Up: Commands
+
+Starting & Ending
+=================
+
+   Your input file must contain the following commands as a minimum:
+
+      \documentclass{class}
+      \begin{document}
+        ... your text goes here ...
+      \end{document}
+
+   where the `class' selected is one of the valid classes for LaTeX.
+*Note Document Classes:: (and *note Overview::.), for details of the
+various document classes available locally.
+
+   You may include other LaTeX commands between the `\documentclass'
+and the `\begin{document}' commands (i.e., in the `preamble').
+
+
+File: latex.info,  Node: Table of Contents,  Next: Terminal Input/Output,  Prev: Starting & Ending,  Up: Commands
+
+Table of Contents
+=================
+
+   A table of contents is produced with the `\tableofcontents' command.
+You put the command right where you want the table of contents to go;
+LaTeX does the rest for you.  It produces a heading, but it does not
+automatically start a new page.  If you want a new page after the table
+of contents, include a `\newpage' command after the `\tableofcontents'
+command.
+
+   There are similar commands `\listoffigures' and `\listoftables'  for
+producing a list of figures and a list of tables, respectively.
+Everything works exactly the same as for the table of contents.
+
+   NOTE: If you want any of these items to be generated, you cannot have
+the `\nofiles' command in your document.
+
+* Menu:
+
+* \addcontentsline::    Add an entry to table of contents etc.
+* \addtocontents::      Add text directly to table of contents file etc.
+

@@ -1,0 +1,91 @@
+#========================================================================
+#
+# Xpdf Makefile
+#
+# Copyright 1996 Derek B. Noonburg
+#
+# Heavily modified for pdftex by Thomas Esser, 1998.
+#========================================================================
+
+VPATH = @srcdir@
+srcdir = @srcdir@
+
+goodir = $(srcdir)/../goo
+kpathsea_srcdir_parent = $(srcdir)/../../../..
+kpathsea_dir_parent = ../../../..
+
+CXXFLAGS = @CXXFLAGS@ @OPTIONS@ $(XCFLAGS) -I$(goodir) -I. -I$(srcdir) \
+-DPDF_PARSER_ONLY
+
+PDFTEXINC = -I$(kpathsea_dir_parent) -I$(kpathsea_srcdir_parent) -I.. -I../../..
+
+CXX = @CXX@
+
+ac_include ../../../make/library.mk
+
+.SUFFIXES:
+.SUFFIXES: .cc .o
+.cc.o:
+	$(CXX) $(CXXFLAGS) -c $<
+
+#------------------------------------------------------------------------
+
+CXX_SRC = \
+	$(srcdir)/Array.cc \
+	$(srcdir)/Catalog.cc \
+	$(srcdir)/Dict.cc \
+	$(srcdir)/Error.cc \
+	$(srcdir)/Lexer.cc \
+	$(srcdir)/Link.cc \
+	$(srcdir)/Object.cc \
+	$(srcdir)/OutputDev.cc \
+	$(srcdir)/Page.cc \
+	$(srcdir)/Params.cc \
+	$(srcdir)/Parser.cc \
+	$(srcdir)/PDFDoc.cc \
+	$(srcdir)/Stream.cc \
+	$(srcdir)/XRef.cc \
+	pdftoepdf.cc
+
+#------------------------------------------------------------------------
+
+# PDFTOEPDF_OBJS = Array.o Catalog.o Dict.o Error.o Gfx.o GfxFont.o \
+# 	GfxState.o Lexer.o Link.o Object.o OutputDev.o Page.o Params.o \
+# 	Parser.o PDFDoc.o Stream.o XRef.o pdftoepdf.o
+
+PDFTOEPDF_OBJS = Array.o Catalog.o Dict.o Error.o \
+	Lexer.o Link.o Object.o OutputDev.o Page.o \
+	Parser.o PDFDoc.o Stream.o XRef.o pdftoepdf.o
+
+pdftoepdf.a: $(PDFTOEPDF_OBJS)
+	$(AR) $(ARFLAGS) $@  $(PDFTOEPDF_OBJS)
+	@ $(RANLIB) $@ 2>/dev/null || true
+
+pdftoepdf.o:
+	$(CXX) $(CXXFLAGS) $(PDFTEXINC) -c pdftoepdf.cc
+
+pdftoepdf.cc: $(srcdir)/../../pdftoepdf.cc 
+	cp -f $< $@
+epdf.h: $(srcdir)/../../epdf.h 
+	cp -f $< $@
+
+#------------------------------------------------------------------------
+
+mostlyclean clean:
+	rm -f $(PDFTOEPDF_OBJS) pdftoepdf.a
+	rm -f Makefile.bak
+
+distclean maintainer-clean extraclean: clean
+	rm -f Makefile
+
+#------------------------------------------------------------------------
+
+depend:
+	$(CXX) $(CXXFLAGS) -MM $(CXX_SRC) >Makefile.dep
+	$(CXX) $(CXXFLAGS) $(PDFTEXINC) -MM pdftoepdf.cc >>Makefile.dep
+	cat Makefile.dep | sed 's|$(srcdir)|$$(srcdir)|' > $(srcdir)/depend.mk
+	cd ..; config.status
+
+#------------------------------------------------------------------------
+
+ac_include xpdf/depend.mk

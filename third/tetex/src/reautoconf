@@ -1,0 +1,41 @@
+#!/bin/sh
+
+echo .
+autoconf -m texk/etc/autoconf
+sed -e 's@--enable-multiplatform.*put executables in bin/PLATFORM@--disable-multiplatform     put executables in bin instead of bin/PLATFORM@' \
+    -e 's@window-capable METAFONT is mfw@window-capable METAFONT is mfw (default)@' \
+  < configure > configure_tmp$$
+cat configure_tmp$$ > configure; rm configure_tmp$$
+
+dir=libs
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf -m ../texk/etc/autoconf)
+
+dir=texk
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf -m etc/autoconf)
+
+dir=t1utils
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf)
+
+dir=dialog
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf)
+
+for i in texk/*/configure.in; do
+  (echo `dirname $i`; cd `dirname $i`; autoconf -m ../etc/autoconf)
+done
+
+#for i in texk/*/*/configure.in; do
+#  (echo `dirname $i`; cd `dirname $i`; autoconf -m ../../etc/autoconf)
+#done
+
+dir=texk/web2c/pdftexdir/xpdf-0.80
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf -m ../../../etc/autoconf)
+
+dir=texinfo
+  (test -d $dir || exit; cd $dir; echo $dir; automake -i Makefile doc/Makefile lib/Makefile makeinfo/Makefile util/Makefile; autoconf; touch aclocal.m4 ; touch Makefile.in;
+ touch stamp-h.in; touch configure)
+
+dir=libs/ncurses
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf -m ../ncurses-ac)
+
+dir=libs/libwww
+  (test -d $dir || exit; cd $dir; echo $dir; autoconf -m ../../texk/etc/autoconf)

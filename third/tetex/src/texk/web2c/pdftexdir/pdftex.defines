@@ -1,0 +1,51 @@
+{ pdeftex.defines: additions for pdfTeX. }
+
+@define function typeonebopenin();
+@define function truetypebopenin();
+@define function texpsheaderbopenin();
+@define function pdfischarused();
+@define function readimg;
+@define function imagewidth();
+@define function imageheight();
+@define function imagexres();
+@define function imageyres();
+@define function iscolorimage();
+@define function ispdfimage();
+@define function epdforigx();
+@define function epdforigy();
+@define function cfgoutput;
+@define function cfgcompresslevel;
+@define function cfgdecimaldigits;
+@define function cfgimageresolution;
+@define function cfgincludeformresources;
+@define function cfgpagewidth;
+@define function cfgpageheight;
+@define function cfghorigin;
+@define function cfgvorigin;
+@define function newvfpacket();
+@define function packetbyte;
+@define function fmlookup();
+
+@define procedure pdfsetcharused();
+@define procedure writepdf();
+@define procedure readconfig;
+@define procedure adjustcfgdimens();
+@define procedure dopdffont();
+@define procedure writettf;
+@define procedure writet1;
+@define procedure writezip();
+@define procedure writeimg();
+@define procedure addimageref();
+@define procedure deleteimageref();
+@define procedure storepacket();
+@define procedure pushpacketstate;
+@define procedure poppacketstate;
+@define procedure startpacket();
+@define procedure libpdffinish;
+@define procedure printextraxobjects;
+@define procedure printextrafonts;
+@define procedure printotherresources;
+@define procedure deleteresourcesnames;
+@define procedure appendresourcesname();
+
+{ end of pdftex.defines }

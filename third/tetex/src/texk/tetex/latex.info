@@ -1,0 +1,238 @@
+This is Info file latex.info, produced by Makeinfo version 1.68 from
+the input file latex2e.texi.
+
+INFO-DIR-SECTION TeX
+START-INFO-DIR-ENTRY
+* LaTeX2e: (latex).                  LaTeXe help 1.6.
+END-INFO-DIR-ENTRY
+
+   This file documents LaTeX2e, a document preparation system. LaTeX2e
+is a macro package for TeX.
+
+   This is edition 1.6 of the LaTeX2e documentation, and is for the
+Texinfo that is distributed as part of Version 19 of GNU Emacs. It uses
+version 2.134 or later of the texinfo.tex input file.
+
+   This is translated from LATEX.HLP v1.0a in the VMS Help Library.  The
+pre-translation version was written by George D. Greenwade of Sam
+Houston State University.
+
+   The LaTeX 2.09 version was written by Stephen Gilmore
+<stg@dcs.ed.ac.uk>.
+
+   The LaTeX2e version was adapted from this by Torsten Martinsen
+<bullestock@dk-online.dk>.
+
+   Copyright 1988,1994 Free Software Foundation, Inc.  Copyright
+1994-1996 Torsten Martinsen.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "Distribution" and "General
+Public License" may be included in a translation approved by the author
+instead of in the original English.
+
+
+Indirect:
+latex.info-1: 1679
+latex.info-2: 51151
+latex.info-3: 100762
+
+Tag Table:
+(Indirect)
+Node: Top1679
+Node: Overview2281
+Node: Commands3736
+Node: Counters5341
+Node: \addtocounter6783
+Node: \alph7081
+Node: \arabic7468
+Node: \fnsymbol7695
+Node: \newcounter8050
+Node: \refstepcounter8449
+Node: \roman8773
+Node: \stepcounter9148
+Node: \setcounter9387
+Node: \usecounter9647
+Node: \value9944
+Node: Cross References10383
+Node: \label10813
+Node: \pageref11668
+Node: \ref11955
+Node: Definitions12181
+Node: \newcommand12528
+Node: \newenvironment13620
+Node: \newtheorem14812
+Node: \newfont15707
+Node: Document Classes15989
+Node: Layout18029
+Node: \flushbottom18430
+Node: \onecolumn18724
+Node: \raggedbottom18928
+Node: \twocolumn19174
+Node: Environments19455
+Node: array20815
+Node: center21691
+Node: \centering22197
+Node: description22886
+Node: enumerate23252
+Node: eqnarray23983
+Node: equation24700
+Node: figure24989
+Node: flushleft26064
+Node: \raggedright26566
+Node: flushright27127
+Node: \raggedleft27630
+Node: itemize28190
+Node: letter28906
+Node: list29072
+Node: minipage29896
+Node: picture30779
+Node: \circle34732
+Node: \dashbox35068
+Node: \frame35424
+Node: \framebox (picture)35764
+Node: \line36216
+Node: \linethickness36552
+Node: \makebox (picture)36985
+Node: \multiput37664
+Node: \oval37970
+Node: \put38557
+Node: \shortstack38786
+Node: \vector39206
+Node: quotation39483
+Node: quote39873
+Node: tabbing40208
+Node: table43222
+Node: tabular44300
+Node: \cline47495
+Node: \hline47768
+Node: \multicolumn48040
+Node: \vline48562
+Node: thebibliography48864
+Node: \bibitem49708
+Node: \cite50405
+Node: \nocite50884
+Node: Using BibTeX51151
+Node: theorem52318
+Node: titlepage52589
+Node: verbatim53130
+Node: \verb53605
+Node: verse54043
+Node: Footnotes54426
+Node: \footnote54989
+Node: \footnotemark55484
+Node: \footnotetext55999
+Node: Lengths56451
+Node: \newlength57053
+Node: \setlength57357
+Node: \addtolength57725
+Node: \settodepth58021
+Node: \settoheight58283
+Node: \settowidth58549
+Node: Predefined lengths58817
+Node: Letters59325
+Node: \address61253
+Node: \cc61825
+Node: \closing62055
+Node: \encl62257
+Node: \location62425
+Node: \makelabels62674
+Node: \name62949
+Node: \opening63158
+Node: \ps63439
+Node: \signature63582
+Node: \startbreaks63901
+Node: \stopbreaks64108
+Node: \telephone64308
+Node: Line & Page Breaking64525
+Node: \\65754
+Node: \- (hyphenation)66244
+Node: \cleardoublepage66769
+Node: \clearpage67195
+Node: \enlargethispage67473
+Node: \fussy67975
+Node: \hyphenation68361
+Node: \linebreak68704
+Node: \newline69258
+Node: \newpage69478
+Node: \nolinebreak69649
+Node: \nopagebreak70126
+Node: \pagebreak70605
+Node: \sloppy71061
+Node: Making Paragraphs71376
+Node: \indent71909
+Node: \noindent72221
+Node: \par72497
+Node: Margin Notes72685
+Node: Math Formulae73589
+Node: Subscripts & Superscripts74829
+Node: Math Symbols75309
+Node: Spacing in Math Mode75695
+Node: Math Miscellany76243
+Node: Modes77253
+Node: Page Styles79086
+Node: \maketitle79584
+Node: \author80229
+Node: \date80587
+Node: \thanks80818
+Node: \title81000
+Node: \pagenumbering81227
+Node: \pagestyle81648
+Node: \markboth82394
+Node: \markright82963
+Node: \thispagestyle83524
+Node: Sectioning83810
+Node: Spaces & Boxes85168
+Node: \dotfill86570
+Node: \hfill86759
+Node: \hrulefill86997
+Node: \hspace87257
+Node: \addvspace87852
+Node: \bigskip88318
+Node: \medskip88559
+Node: \smallskip88800
+Node: \vfill89066
+Node: \vspace89267
+Node: \fbox89805
+Node: \framebox90068
+Node: lrbox90508
+Node: \makebox90811
+Node: \mbox91427
+Node: \newsavebox91715
+Node: \parbox91962
+Node: \raisebox93379
+Node: \rule94244
+Node: \savebox94691
+Node: \sbox95024
+Node: \usebox95331
+Node: Special Characters95515
+Node: Splitting the Input96808
+Node: \include97449
+Node: \includeonly98302
+Node: \input98737
+Node: Starting & Ending99135
+Node: Table of Contents99782
+Node: \addcontentsline100762
+Node: \addtocontents101543
+Node: Terminal Input/Output102072
+Node: \typein102341
+Node: \typeout102860
+Node: Typefaces103395
+Node: Styles103776
+Node: Sizes105530
+Node: Low-level font commands106097
+Node: Parameters107942
+Node: Concept Index108662
+Node: Command Index117943
+
+End Tag Table

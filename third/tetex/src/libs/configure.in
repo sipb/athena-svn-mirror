@@ -1,0 +1,39 @@
+AC_INIT(libpng/png.c)
+
+AC_CONFIG_AUX_DIR(../config)
+AC_SET_MAKE
+AC_PROG_CC
+AC_CANONICAL_SYSTEM
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_PROG_LN_S
+AC_FUNC_ALLOCA
+AC_PROG_RANLIB
+AM_MAINTAINER_MODE
+
+sinclude(../texk/kpathsea/withenable.ac)
+sinclude(libwww/withenable.ac)
+sinclude(libwww/libwww.ac)
+sinclude(ncurses/withenable.ac)
+sinclude(ncurses/ncurses.ac)
+sinclude(libpng/withenable.ac)
+sinclude(libpng/libpng.ac)
+sinclude(zlib/withenable.ac)
+sinclude(zlib/zlib.ac)
+
+# ac_configure_args=`echo "$ac_configure_args" | sed 's@--prefix=[[^ ]]*@@'`
+
+subconfigures=
+test "x$needs_libwww" != xno && test "$using_system_wwwlib"  != yes \
+  && subconfigures="$subconfigures libwww"
+test "x$needs_ncurses" != xno && test "$using_system_ncurses"  != yes \
+  && subconfigures="$subconfigures ncurses"
+
+outfiles=
+test "x$needs_pnglib" != xno && test "$using_system_pnglib"  != yes \
+  && outfiles="$outfiles libpng/Makefile"
+test "x$needs_zlib" != xno && test "$using_system_zlib"  != yes \
+  && outfiles="$outfiles zlib/Makefile"
+
+AC_CONFIG_SUBDIRS($subconfigures)
+AC_OUTPUT($outfiles)

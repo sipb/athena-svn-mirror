@@ -1,0 +1,140 @@
+.TH TEXI2HTML 1 "09/10/96"
+.AT 3
+.SH NAME
+texi2html \- a Texinfo to HTML converter
+.SH SYNOPSIS
+.B texi2html [options] file
+.PP
+.B texi2html -check [-verbose] files
+.SH DESCRIPTION
+.I Texi2html
+converts the given Texinfo file to a set of HTML files. It tries to handle
+most of the Texinfo commands. It creates hypertext links for cross-references,
+footnotes...
+.PP
+It also tries to add links from a reference to its corresponding entry in the
+bibliography (if any). It may also handle a glossary (see the
+.B \-glossary
+option).
+.PP
+.I Texi2html
+creates several files depending on the contents of the Texinfo file and on
+the chosen options (see FILES).
+.PP
+The HTML files created by
+.I texi2html
+are closer to TeX than to Info, that's why
+.I texi2html
+converts @iftex sections and not @ifinfo ones by default. You can reverse
+this with the \-expandinfo option.
+.SH OPTIONS
+.TP 12
+.B \-check
+Check the given file and give the list of all things that may be Texinfo commands.
+This may be used to check the output of
+.I texi2html
+to find the Texinfo commands that have been left in the HTML file.
+.TP
+.B \-expandinfo
+Expand @ifinfo sections, not @iftex ones.
+.TP
+.B \-glossary
+Use the section named 'Glossary' to build a list of terms and put links in the HTML
+document from each term toward its definition.
+.TP
+.B \-invisible \fIname\fP
+Use \fIname\fP to create invisible destination anchors for index links. This is a workaround
+for a known bug of many WWW browsers, including xmosaic.
+.TP
+.B \-I \fIdir\fP
+Look also in \fIdir\fP to find included files.
+.TP
+.B \-menu
+Show the Texinfo menus; by default they are ignored.
+.TP
+.B \-monolithic
+Output only one file, including the table of contents and footnotes.
+.TP
+.B \-number
+Number the sections.
+.TP
+.B \-split_chapter
+Split the output into several HTML files (one per main section:
+chapter, appendix...).
+.TP
+.B \-split_node
+Split the output into several HTML files (one per node).
+.TP
+.B \-usage
+Print usage instructions, listing the current available command-line options.
+.TP
+.B \-verbose
+Give a verbose output. Can be used with the
+.B \-check
+option.
+.PP
+.SH FILES
+By default
+.I texi2html
+creates the following files (foo being the name of the Texinfo file):
+.TP 16
+.B foo_toc.html
+The table of contents.
+.TP
+.B foo.html
+The document's contents.
+.TP
+.B foo_foot.html
+The footnotes (if any).
+.PP
+When used with the
+.B \-split
+option, it creates several files (one per chapter or node), named
+.B foo_n.html
+(n being the indice of the chapter or node), instead of the single
+.B foo.html
+file.
+.PP
+When used with the
+.B \-monolithic
+option, it creates only one file:
+.B foo.html
+.SH VARIABLES
+.I texi2html
+predefines the following variables: \fBhtml\fP, \fBtexi2html\fP.
+.SH ADDITIONAL COMMANDS
+.I texi2html
+implements the following non-Texinfo commands:
+.TP 16
+.B @ifhtml
+This indicates the start of an HTML section, this section will passed through
+without any modofication.
+.TP
+.B @end ifhtml
+This indcates the end of an HTML section.
+.SH VERSION
+This is \fItexi2html\fP version 1.51, 09/10/96.
+.PP
+The latest version of \fItexi2html\fP can be found in WWW, cf. URL
+http://wwwcn.cern.ch/dci/texi2html/
+.SH AUTHOR
+The main author is Lionel Cons, CERN CN/DCI/UWS, Lionel.Cons@cern.ch.
+Many other people around the net contributed to this program.
+.SH COPYRIGHT
+This program is the intellectual property of the European
+Laboratory for Particle Physics (known as CERN). No guarantee whatsoever is
+provided by CERN. No liability whatsoever is accepted for any loss or damage
+of any kind resulting from any defect or inaccuracy in this information or
+code.
+.PP
+CERN, 1211 Geneva 23, Switzerland
+.SH "SEE ALSO"
+GNU Texinfo Documentation Format,
+HyperText Markup Language (HTML),
+World Wide Web (WWW).
+.SH BUGS
+This program does not understand all Texinfo commands (yet).
+.PP
+TeX specific commands (normally enclosed in @iftex) will be
+passed unmodified.
+.ex

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+(
+  sed -e 's@../../libs/[^ ]*@@g' \
+      -e 's@\([$()]\)@\\\1@g' \
+      -e 's@^\([^ ]\)@echo; echo \\ \\ \1@' |
+  sh |
+  fmt |
+  grep -v '^$' |
+  sed 's@  \([^ ]*\):@\1:@' |
+  awk '/:/ && last {print last};
+       !/:/ {print last, "\\"};
+       {last = $0};
+       END {print last}'
+) < depend.mk > depend.mk$$
+rm -f depend.mk
+mv depend.mk$$ depend.mk

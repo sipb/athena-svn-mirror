@@ -1,0 +1,16 @@
+#!/bin/sh
+echo
+echo "*************************************"
+echo "* Using LaTeX, with pslatex package *"
+echo "*************************************"
+echo
+
+# messing around with \PSLATEXTMP is for AUCTeX which calls
+# documents via latex \nonstopmode \input{file}
+
+latex \
+    "\AtBeginDocument{\RequirePackage{pslatex}}"\
+    "\def\PSLATEXTMP{\futurelet\PSLATEXTMP\PSLATEXTMPB}"\
+    "\def\PSLATEXTMPB{\ifx\PSLATEXTMP\nonstopmode\else\input\fi}"\
+    "\PSLATEXTMP" ${1+"$@"}
+

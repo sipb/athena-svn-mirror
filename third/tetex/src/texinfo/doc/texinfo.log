@@ -1,0 +1,313 @@
+This is TeX, Version 3.14159 (Web2C 7.3) (format=tex 1999.3.30)  3 APR 1999 20:09
+**\input /tmp/txi2d.18425/texinfo.texi
+(/tmp/txi2d.18425/texinfo.texi (texinfo.tex
+Loading texinfo [version 1999-03-26.17]: Basics,
+\bindingoffset=\dimen16
+\normaloffset=\dimen17
+\pagewidth=\dimen18
+\pageheight=\dimen19
+\outerhsize=\dimen20
+\outervsize=\dimen21
+\cornerlong=\dimen22
+\cornerthick=\dimen23
+\topandbottommargin=\dimen24
+\headlinebox=\box16
+\footlinebox=\box17
+\margin=\insert252
+\EMsimple=\toks12
+\singlespaceskip=\skip18
+\groupinvalidhelp=\toks13
+\mil=\dimen25
+\exdentamount=\skip19
+\inmarginspacing=\skip20
+ fonts,
+\sffam=\fam8
+\mainmagstep=\count26
+\fontdepth=\count27
+ page headings,
+\titlepagetopglue=\skip21
+\titlepagebottomglue=\skip22
+\evenheadline=\toks14
+\oddheadline=\toks15
+\evenfootline=\toks16
+\oddfootline=\toks17
+ tables,
+\tableindent=\dimen26
+\itemindent=\dimen27
+\itemmargin=\dimen28
+\itemmax=\dimen29
+\itemno=\count28
+\multitableparskip=\skip23
+\multitableparindent=\skip24
+\multitablecolspace=\dimen30
+\multitablelinespace=\skip25
+\colcount=\count29
+
+conditionals, indexing,
+\secondaryindent=\skip26
+\partialpage=\box18
+\doublecolumnhsize=\dimen31
+ sectioning,
+\chapno=\count30
+\secno=\count31
+\subsecno=\count32
+\subsubsecno=\count33
+\appendixno=\count34
+\absseclevel=\count35
+\secbase=\count36
+\chapheadingskip=\skip27
+\secheadingskip=\skip28
+\subsecheadingskip=\skip29
+ toc,
+\tocfile=\write0
+\contentsrightmargin=\skip30
+\savepageno=\count37
+\lastnegativepageno=\count38
+\shortappendixwidth=\dimen32
+\tocindent=\dimen33
+ environments,
+\dblarrowbox=\box19
+\longdblarrowbox=\box20
+\pushcharbox=\box21
+\bullbox=\box22
+\equivbox=\box23
+\errorbox=\box24
+\lispnarrowing=\skip31
+\envskipamount=\skip32
+\circthick=\dimen34
+\cartouter=\dimen35
+\cartinner=\dimen36
+\normbskip=\skip33
+\normpskip=\skip34
+\normlskip=\skip35
+\lskip=\skip36
+\rskip=\skip37
+ defuns,
+\defbodyindent=\skip38
+\defargsindent=\skip39
+\deftypemargin=\skip40
+\deflastargmargin=\skip41
+\parencount=\count39
+ macros,
+\macscribble=\write1
+\paramno=\count40
+\macname=\toks18
+
+cross references,
+\auxfile=\write2
+\@savsk=\dimen37
+\@savsf=\count41
+\footnoteno=\count42
+ (epsf.tex
+\epsffilein=\read0
+\epsfframemargin=\dimen38
+\epsfframethickness=\dimen39
+\epsfrsize=\dimen40
+\epsftmp=\dimen41
+\epsftsize=\dimen42
+\epsfxsize=\dimen43
+\epsfysize=\dimen44
+\pspoints=\dimen45
+\epsfnoopenhelp=\toks19
+)
+\noepsfhelp=\toks20
+ localization,
+\nolanghelp=\toks21
+\defaultparindent=\dimen46
+
+and turning on texinfo input format.) (texinfo.aux)
+@cpindfile=@write3
+@fnindfile=@write4
+@vrindfile=@write5
+@tpindfile=@write6
+@kyindfile=@write7
+@pgindfile=@write8
+@opindfile=@write9
+ [1
+\openout2 = `texinfo.aux'.
+
+\openout3 = `texinfo.cp'.
+
+\openout4 = `texinfo.fn'.
+
+\openout5 = `texinfo.vr'.
+
+\openout6 = `texinfo.tp'.
+
+\openout7 = `texinfo.ky'.
+
+\openout8 = `texinfo.pg'.
+
+\openout9 = `texinfo.op'.
+
+] [2] [3] [4]
+(Texinfo Copying Conditions)
+\openout0 = `texinfo.toc'.
+
+ Chapter 1 [1] [2] [3] [4]
+Overfull \hbox (12.24599pt too wide) in paragraph at lines 901--908
+[]@textrm T[]X is a gen-eral pur-pose type-set-ting pro-gram. Tex-info pro-vide
+s a file called `@texttt texinfo.tex[]@textrm '[]
+
+@hbox(7.60416+2.35728)x433.62, glue set - 1.0
+.@hbox(0.0+0.0)x21.90005
+.@textrm T
+.@kern -1.8254
+.@hbox(7.48248+0.0)x7.45209, shifted 2.35728
+..@textrm E
+.@kern -1.36874
+.etc.
+
+[5] [6] [7] [8] [9] [10] [11] Chapter 2 [12] [13] [14] [15] [16] [17] [18]
+[19] [20] [21] [22] [23] Chapter 3 [24] [25] [26] [27] [28] [29] [30] [31]
+[32] [33] [34] [35] [36] Chapter 4 [37] [38] [39] [40] Chapter 5 [41] [42]
+[43] [44] [45] [46] [47] Chapter 6 [48] [49] [50] [51] [52] [53] Chapter 7
+[54] [55] [56] [57] Chapter 8 [58] [59] [60] [61] [62] [63] [64] [65] [66]
+[67] Chapter 9 [68] [69] [70] [71] [72] [73] [74] [75] [76] Chapter 10 [77]
+[78] [79] [80] [81] [82] [83] Chapter 11 [84] [85] [86] [87] [88] [89] [90]
+[91] [92] Chapter 12 [93] [94] [95] [96] [97] [98] Chapter 13 [99] [100]
+[101] [102] [103]
+Overfull \hbox (3.8317pt too wide) in paragraph at lines 9058--9058
+@texttt @questiondown{}[]| 
+
+@hbox(9.34993+3.85005)x82.39862
+.@texttt @
+.@texttt q
+.@texttt u
+.@texttt e
+.@texttt s
+.etc.
+
+[104] [105] [106] [107] [108] Chapter 14 [109] [110] [111] [112] [113]
+Chapter 15 [114] [115] [116]
+Overfull \hbox (11.10088pt too wide) in paragraph at lines 10290--10292
+[]@textrm Each of the other def-i-ni-tion com-mands has an `x' form: @texttt @d
+efunx[]@textrm , @texttt @defvrx[]@textrm , @texttt @deftypefunx[]@textrm ,
+
+@hbox(7.60416+2.43333)x433.62, glue set - 1.0
+.@hbox(0.0+0.0)x21.90005
+.@textrm E
+.@textrm a
+.@textrm c
+.@kern-0.30418
+.etc.
+
+[117] [118] [119] [120] [121] [122] [123] [124] [125] Chapter 16 [126]
+Overfull \hbox (4.67815pt too wide) in paragraph at lines 11220--11226
+ []@textrm The name of the node con-tain-ing the foot-notes is con-structed by 
+ap-pend-ing []
+
+@hbox(7.60416+2.12917)x433.62, glue set - 1.0
+.@glue(@leftskip) 21.68121
+.@hbox(0.0+0.0)x0.0
+.@textrm T
+.@textrm h
+.@textrm e
+.etc.
+
+[127] Chapter 17 [128] [129] [130] [131] [132] Chapter 18 [133] [134] [135]
+Chapter 19 [136] [137] [138]
+Overfull \hbox (1.39041pt too wide) in paragraph at lines 12196--12199
+ []@textrm Kill the cur-rently run-ning T[]X job started by @texttt texinfo-tex
+-region[] @textrm or @texttt texinfo-
+
+@hbox(7.60416+2.43333)x433.62, glue set - 1.0
+.@glue(@leftskip) 57.81621
+.@hbox(0.0+0.0)x0.0
+.@textrm K
+.@textrm i
+.@textrm l
+.etc.
+
+[139] [140]
+Overfull \hbox (52.04167pt too wide) in paragraph at lines 12325--12343
+[]@textrm For more in-for-ma-tion, see Sec-tion 3.2.4 [@texttt @settitle[]@text
+rm ], page 28, Sec-tion 3.2.5 [@texttt @setchapternewpage[]@textrm ],
+
+@hbox(8.2125+2.73749)x433.62, glue set - 1.0
+.@hbox(0.0+0.0)x21.90005
+.@textrm F
+.@kern-0.91252
+.@textrm o
+.@textrm r
+.etc.
+
+[141] [142] [143] Chapter 20 [144] [145] [146] [147]
+Overfull \hbox (7.8399pt too wide) in paragraph at lines 12962--12964
+ []@textrm Kill the cur-rent run-ning @texttt makeinfo[] @textrm job cre-ated b
+y @texttt makeinfo-region[] @textrm or @texttt makeinfo-
+
+@hbox(7.60416+2.43333)x433.62, glue set - 1.0
+.@glue(@leftskip) 57.81621
+.@hbox(0.0+0.0)x0.0
+.@textrm K
+.@textrm i
+.@textrm l
+.etc.
+
+[148] [149] [150] Chapter 21 [151] [152] [153]
+Overfull \hbox (49.59694pt too wide) in paragraph at lines 13334--13339
+@textrm the `@texttt dir[]@textrm '[] file from the `@texttt /usr/local/info[]@
+textrm '[] di-rec-tory. Info will list the `@texttt /home/bob/manuals/info-test
+[]@textrm '[]
+
+@hbox(7.60416+2.12917)x433.62, glue set - 1.0
+.@textrm t
+.@textrm h
+.@textrm e
+.@glue 3.65 plus 1.825 minus 1.21666
+.@textrm `
+.etc.
+
+[154] [155] Appendix @char @appendixno  [156] [157] [158] [159] [160] [161]
+[162] [163] [164] [165] [166] [167] [168] [169] [170] [171] [172]
+Appendix @char @appendixno  [173] [174] [175] [176] [177] [178]
+Appendix @char @appendixno  [179] [180] [181] Appendix @char @appendixno 
+[182] [183] Appendix @char @appendixno  [184] [185] [186] [187]
+Appendix @char @appendixno  [188] [189] [190]
+Overfull \hbox (7.35039pt too wide) in paragraph at lines 15732--15741
+[]@textrm Texinfo pro-vides six com-mands for spec-i-fy-ing head-ings and foot-
+ings. The @texttt @everyheading[]
+
+@hbox(7.60416+2.43333)x433.62, glue set - 1.0
+.@hbox(0.0+0.0)x21.90005
+.@textrm T
+.@kern-0.91252
+.@textrm e
+.@textrm x
+.etc.
+
+[191] Appendix @char @appendixno  [192] [193] [194] [195] [196] [197] [198]
+[199] Appendix @char @appendixno  [200] Appendix @char @appendixno  [201]
+[202] Appendix @char @appendixno  [203] [204]
+Overfull \hbox (19.09436pt too wide) in paragraph at lines 16739--16743
+ [] []@textrm To or-der a com-plete dis-tri-bu-tion on CD-ROM, please see @text
+tt http://tug.org/tex-live.html[]@textrm .
+
+@hbox(7.60416+2.43333)x433.62, glue set - 1.0
+.@glue(@leftskip) 21.68121
+.@hbox(0.0+0.0)x0.0
+.@glue 0.0
+.@hbox(4.86667+0.0)x0.0, glue set - 12.70244fil
+..@glue 0.0 plus 1.0fil minus 1.0fil
+..@mathon
+..@textsy ^^O
+..@mathoff
+..@glue 7.22743
+.@textrm T
+.etc.
+
+(Command and Variable Index) [205] [206] (texinfo.fns [207] [208] [209]
+[210]) (Concept Index) [211] [212] (texinfo.cps [213] [214] [215] [216]
+[217] [218] [219]) [220] (texinfo.toc) [-1] [-2] (texinfo.toc [-3] [-4]
+[-5] [-6] [-7] [-8]) [-9] [-10] ) 
+Here is how much of TeX's memory you used:
+ 1962 strings out of 13013
+ 27524 string characters out of 97179
+ 57155 words of memory out of 263001
+ 2846 multiletter control sequences out of 10000+0
+ 30088 words of font info for 104 fonts, out of 200000 for 1000
+ 19 hyphenation exceptions out of 1000
+ 15i,10n,17p,265b,343s stack positions out of 300i,100n,500p,30000b,4000s
+
+Output written on texinfo.dvi (234 pages, 863172 bytes).

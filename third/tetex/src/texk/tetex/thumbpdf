@@ -1,0 +1,546 @@
+eval '(exit $?0)' && eval 'exec perl -S $0 ${1+"$@"}' && eval 'exec perl -S $0 $argv:q'
+  if 0;
+use strict;
+#
+# thumbpdf.pl
+#
+# Copyright (C) 1999 Heiko Oberdiek.
+#
+# This program can be redistributed and/or modified under the terms
+# of the LaTeX Project Public License distributed from CTAN
+# archives in directory macros/latex/base/lppl.txt; either
+# version 1 of the License, or (at your option) any later version.
+#
+# See file "readme.txt" for a list of files that belong to this project.
+#
+# This file "thumbpdf.pl" may be renamed to "thumbpdf"
+# for installation purposes.
+#
+my $file        = "thumbpdf.pl";
+my $program     = uc($file =~ /^(\w+)/, $1);
+my $version     = "1.4";
+my $date        = "22.04.1999";
+my $author      = "Heiko Oberdiek";
+my $copyright   = "Copyright (c) 1999 by $author.";
+#
+# Reqirements: Perl5, Ghostscript
+# History:
+#   1.0, 14.02.1999: First release.
+#   1.1, 23.02.1999:
+#    * Looking for the media box to calculate the resolution
+#      for ghostscript
+#    * new option --resolution
+#   1.2, 01.03.1999:
+#    * optimization: indirect objects for length values removed.
+#    * "first line" from epstopdf
+#   1.3, 12.03.1999:
+#    * Copyright: LPPL
+#   1.4, 05.05.1999
+#    * Detecting of cygwin32 environment.
+#    * Minor corrections of output of error messages.
+#    * Sharing RGB objects.
+#
+
+### program identification
+my $title = "$program $version, $date - $copyright\n";
+
+### error strings
+my $Error = "!!! Error:"; # error prefix
+
+### string constants for ghostscript run
+# get ghostscript command name
+my $GS = "gs";
+$GS = "gswin32c" if $^O eq 'MSWin32';
+$GS = "gswin32c" if $^O =~ /cygwin/; # cygwin32_nt, ...
+
+### file names
+my $dtafile = "thumbdta.tex";
+my $optfile = "thumbopt.tex";
+my $pdffile = "thumbpdf.pdf";
+my $texfile = "thumbpdf";
+my $package = "thumbpdf.sty";
+
+### usage
+my @bool = ("false", "true");
+$::opt_device="png16m";
+$::opt_compress="9";
+$::opt_resolution="";
+my $resolution=9;
+$::opt_help=0;
+$::opt_quiet=0;
+$::opt_debug=0;
+$::opt_verbose=0;
+$::opt_makepng=1;
+$::opt_makepdf=1;
+$::opt_makedef=1;
+
+my $usage = <<"END_OF_USAGE";
+${title}Syntax:   \L$program\E [options] [pdf file]
+Function:
+  1. If a pdf file is given, make thumbnails  (ghostscript --> thumb???.png).
+  2. Make pdf file with thumb nails as images (pdftex      --> $pdffile).
+  3. Parse pdf file and generate a tex input file        ( --> $dtafile),
+     that is read by package '$package'.
+Options:
+  --help          print usage
+  --(no)makepng   perform step one   (default: $bool[$::opt_makepng])
+  --(no)makepdf   perform step two   (default: $bool[$::opt_makepdf])
+  --(no)makedef   perform step three (default: $bool[$::opt_makedef])
+  --(no)quiet     suppress messages  (default: $bool[$::opt_quiet])
+  --(no)verbose   verbose printing   (default: $bool[$::opt_verbose])
+  --(no)debug     debug informations while parsing         (default: $bool[$::opt_debug])
+  --resolution <res>       resolution for ghostscript step (default: $resolution)
+  --compress <n>           <n>   = 0..9
+                  \\pdfcompresslevel for '$pdffile'     (default: $::opt_compress)
+  --device|png [png]<dev>  <dev> = mono, gray, 16, 256, 16m
+                  ghostscript png device                   (default: $::opt_device)
+END_OF_USAGE
+
+### process options
+use Getopt::Long;
+GetOptions(
+  "help!",
+  "quiet!",
+  "debug!",
+  "verbose!",
+  "device|png=s",
+  "compress=i",
+  "resolution=f",
+  "makepng!",
+  "makepdf!",
+  "makedef!"
+) or die $usage;
+!$::opt_help or die $usage;
+@ARGV < 2 or die "$usage$Error Too many files!\n";
+
+$::opt_device = "png$::opt_device" unless $::opt_device =~ /^png/;
+$::opt_quiet = 0 if $::opt_verbose;
+
+### get pdf file name
+my $jobpdffile;
+if (@ARGV == 1)
+{
+  $jobpdffile = $ARGV[0];
+  $jobpdffile .= '.pdf' if -f "$jobpdffile.pdf";
+  -f $jobpdffile or die "$usage$Error PDF file '$jobpdffile' not found!\n";
+}
+
+print $title unless $::opt_quiet;
+
+print "* ghostscript command: '$GS'\n" if $::opt_verbose;
+print "* ghostscript png device: '$::opt_device'\n" if $::opt_verbose;
+
+###
+### make thumbnails
+###
+if ($::opt_makepng and $jobpdffile)
+{
+  print "*** make png files / run ghostscript ***\n" unless $::opt_quiet;
+  print "* pdf file: $jobpdffile\n" if $::opt_verbose;
+
+  if ($::opt_resolution)
+  {
+    $resolution = $::opt_resolution
+  }
+  else
+  {
+    # looking for MediaBox
+
+    my $max_x = 0;
+    my $max_y = 0;
+    {
+      my $MB = $jobpdffile;
+      open(MB, $MB) or die "$Error Cannot open '$MB'!\n";
+      binmode(MB);
+      my $xy_patt = '[\-\.\d]';
+      while (<MB>)
+      {
+        if (/\/MediaBox\s*\[\s*($xy_patt+)\s+($xy_patt+)\s+($xy_patt+)\s+($xy_patt+)\s*\]/)
+        {
+          my $x = $3 - $1;
+          my $y = $4 - $2;
+          $max_x = $x if $x > $max_x;
+          $max_y = $y if $y > $max_y;
+        }
+      }
+      close(MB);
+    }
+    if ($max_x <= 0 || $max_y <= 0)
+    {
+      print "!!! Warning: MediaBox not found, " .
+            "using default resolution: $resolution DPI\n";
+    }
+    else
+    {
+      print "* Max. Size of MediaBox: $max_x x $max_y\n" if $::opt_verbose;
+
+      my $rx = 106 * 72 / $max_x;
+      my $ry = 106 * 72 / $max_y;
+      $resolution = $rx;
+      $resolution = $ry if $ry < $rx;
+      print "* Resolution: $resolution DPI\n" if $::opt_verbose;
+    }
+  }
+
+  my $gs_cmd = <<"GS_CMD_END";
+$GS
+-dNOPAUSE
+-dBATCH
+-sDEVICE=$::opt_device
+-r$resolution
+-sOutputFile=thumb%03d.png
+$jobpdffile
+GS_CMD_END
+  chomp($gs_cmd);
+  $gs_cmd =~ s/\n/ /mg;
+  print "> $gs_cmd\n" if $::opt_verbose;
+  my $capture = `$gs_cmd`;
+  print $capture if $::opt_verbose;
+  if ($capture =~ /Error:\s*(.*)\n/)
+  {
+    die "$Error \"$1\" (ghostscript)!\n";
+  }
+  if ($capture =~ /Unknown device:\s*(.*)\n/)
+  {
+    die "$Error Unknown device \"$1\" (ghostscript)!\n";
+  }
+  if ($? != 0)
+  {
+    die "$Error $? (ghostscript)!\n";
+  }
+}
+
+###
+### make thumbpdf.pdf file
+###
+if ($::opt_makepdf)
+{
+  print "*** make \"$pdffile\" / run pdftex ***\n" unless $::opt_quiet;
+
+  # get max thumb number to speed up the pdftex run
+  my $MaxThumb = 0;
+  foreach (glob("thumb???.png"))
+  {
+    next unless /thumb(\d\d\d).png/;
+    $MaxThumb = $1 if $1 > $MaxThumb;
+  }
+
+  my $cmd = "pdftex \"\\nonstopmode\\pdfcompresslevel$::opt_compress" .
+    "\\def\\thumbmax{$MaxThumb}\\input $texfile\"";
+  print "> $cmd\n" if $::opt_verbose;
+  my @capture = `$cmd`;
+  if ($::opt_verbose)
+  {
+    print @capture if $::opt_verbose;
+  }
+  else
+  {
+    foreach (@capture)
+    {
+      print if /^!\s/;
+    }
+  }
+  if ($?)
+  {
+    die "$Error $? (pdftex)!\n";
+  }
+}
+
+###
+### parse thumbpdf.pdf to make thumbdta.tex
+### 
+
+if ($::opt_makedef)
+{
+  print "*** parse \"$pdffile\" ***\n" unless $::opt_quiet;
+
+### reading file and parse obj structure
+
+  my @objno = (); # obj number
+  my @objdict = (); # boolean, object is dict
+  my @objtext = (); # text of object
+  my @objstream = (); # stream of object if any
+  my $maxobj = 0;
+
+  my @getobjindex = (); # $getobj[obj number] ==> index for $obj...[index]
+
+  # open file
+  my $PDF = $pdffile;
+  open(PDF, $PDF) or die "$Error Cannot open '$PDF'!\n";
+  binmode(PDF);
+  my $lineno = 0;
+
+  # read header
+  $_ = <PDF>; $lineno++;
+  /^%PDF/ or die "$Error No PDF specification found!\n";
+  print "* pdf header: $_" if ($::opt_debug);
+
+  # read body objects
+  my $count = 0;
+  while (<PDF>)
+  {
+    $lineno++;
+
+    # stop at xref
+    last if /^xref$/;
+
+    # scan first obj line
+    /^(\d+)\s+0\s+obj\s*(<<)?$/ or
+      die "$Error 'obj' expected on line $lineno!\n";
+    $objno[$count] = $1;
+    $getobjindex[$1] = $count;
+    $objdict[$count] = ($2); # boolean (if $2 exists)
+    my $stream = 0;
+    print "* obj $objno[$count]" .
+      (($objdict[$count]) ? " (dict)" : "") . 
+      "\n" if $::opt_debug;
+
+    # get obj
+    $objtext[$count] = "";
+    while (<PDF>)
+    {
+      $lineno++;
+
+      if ($objdict[$count])
+      {
+        if (/^>>/)
+        {
+          last if /^>>\s+endobj$/; # obj without stream
+
+          # get stream
+          $_ = <PDF>; $lineno++;
+          /^stream$/ or die "$Error 'stream' expected on line $lineno!\n";
+
+          print "* stream\n" if $::opt_debug;
+          $objstream[$count] = "";
+          while (<PDF>)
+          {
+            $lineno++;
+
+            if (/(.*)endstream$/)
+            {
+              $objstream[$count] .= $1;
+              last;
+            }
+            $objstream[$count] .= $_;
+          }
+
+          $_ = <PDF>; $lineno++;
+          /^endobj$/ or die "$Error 'endobj' expected on line $lineno!\n";
+          last;
+        }
+      }
+      else # no dict
+      {
+        last if /^endobj$/;
+      }
+      $objtext[$count] .= $_;
+    }
+    $count++;
+  }
+  close(PDF);
+  $maxobj = $count;
+  print "* $maxobj objects found.\n" if $::opt_debug;
+
+### get thumbnail page numbers
+  my @thumbpageno = ();
+  my $found = 0;
+  foreach (@objtext)
+  {
+    if (/^\/ListThumbs\s+(.+)$/)
+    {
+      $_ = $1;
+      chomp;
+      @thumbpageno = split / /; # split(/ /, $_);
+      print "* ListThumbs: @thumbpageno\n" if $::opt_debug;
+      $found = 1;
+      last;
+    }
+  }
+  $found or die "$Error '/ListThumbs' not found!\n";
+  { 
+    for (my $j=0; $j<@thumbpageno; $j++)
+    {
+      $thumbpageno[$j] = $1 if $thumbpageno[$j] =~ /^{(.+)}$/;
+    }
+  }
+
+### identify thumb objects
+
+  my @thumbobj = ();    # index for @obj... with image stream
+  my @thumblength = (); # stream length values
+  my @thumbrgbobj = (); # index for @obj... with rgb stream
+  my @thumbrgblength = (); # rgb stream length values
+  my $maxthumb = 0;
+
+  $count = 0;
+  my $i;
+  for ($i=0; $i<$maxobj; $i++)
+  {
+    if ($objtext[$i] =~
+        /^\/Type\s+\/XObject\n\/Subtype\s+\/Image\n/m)
+    {
+      $thumbobj[$count] = $i;
+      $_ = $';
+      $objtext[$i] = $_;
+
+      # check width and height
+      /\/Width\s+(\d+)\n\/Height\s+(\d+)/m or
+        die "$Error width/height of thumbnail not found!\n";
+      print "* Size: $1x$2\n" if $::opt_debug;
+      print "!!! Caution: Width ($1) too large, not recommanded for Acrobat Reader 3.x!\n"
+        if $1 > 106;
+      print "!!! Caution: Height ($2) too large, not recommanded for Acrobat Reader 3.x!\n"
+        if $2 > 106;
+
+      # get stream length
+      /\/Length\s+(\d+)\s+0\s+R/m or
+        die "$Error '/Length' entry not found!\n";
+      # save obj text for later correction
+      my $objpre = $`;
+      my $objpost = $';
+      # look for length obj
+      $getobjindex[$1] or die "$Error Length obj not found!\n";
+      $objtext[$getobjindex[$1]] =~ /^(\d+)$/m or
+        die "$Error length value not found!\n";
+      $thumblength[$count] = $1;
+      print "* Length: $1\n" if $::opt_debug;
+      # insert obj length directly:
+      $objtext[$i] = $objpre . "/Length $1" . $objpost;
+
+      # check /Indexed /DeviceRGB
+      if ($objtext[$i] =~
+        /\/ColorSpace\s+\[\/Indexed\s+\/DeviceRGB\s+(\d+)\s+(\d+)\s+0\s+R\]/m)
+      {
+        # correct thumb object text
+        $objtext[$i] =
+          "$`/ColorSpace [/Indexed /DeviceRGB $1 \\the\\pdflastobj\\ 0 R]$'";
+        # get RGB obj number
+        $getobjindex[$2] or die "$Error RGB object not found!\n";
+        $_ = $getobjindex[$2];
+        $thumbrgbobj[$count] = $_;
+        $objtext[$_] =~ /\/Length\s+(\d+)\s+0\s+R\n/m or
+          die "$Error Unexpected format of rgb object\n";
+        # save obj text for later correction
+        my $objrgbpre = $`;
+        my $objrgbpost = $';
+        # get rgb stream length
+        $getobjindex[$1] or die "$Error RGB length object not found!\n";
+        $objtext[$getobjindex[$1]] =~ /^(\d+)$/m or
+          die "$Error length value not found!\n";
+        $thumbrgblength[$count] = $1;
+        print "* RGB length: $1\n" if $::opt_debug;
+        # insert RGB object length directly:
+        $objtext[$_] = $objrgbpre . "/Length $1\n" . $objrgbpost;
+      }
+
+      $count++;
+    }
+  }
+  $maxthumb = $count;
+
+  if ($maxthumb != @thumbpageno)
+  {
+    my $pagecount = @thumbpageno;
+    die "$Error $maxthumb thumbnails found, but there should be $pagecount!\n";
+  }
+  print "* $maxthumb thumbnails found.\n" if $::opt_verbose;
+
+
+###
+### write "thumbdta.tex"
+###
+
+  print "*** write \"$dtafile\" ***\n" unless $::opt_quiet;
+
+  my $TEX = $dtafile;
+  open(TEX, ">$TEX") or die "!!! Error: Cannot open '$TEX'!\n";
+  binmode(TEX);
+
+  for ($i=0; $i<$maxthumb; $i++)
+  {
+    # rgb object
+    if ($thumbrgbobj[$i])
+    {
+      $objtext[$thumbrgbobj[$i]] =~ s/\n/^^J%\n/mg;
+
+      # find the same rgb object
+      my $j;
+      for ($j=0; $j<$i; $j++)
+      {
+        next unless $thumbrgbobj[$j];
+        next unless $objtext[$thumbrgbobj[$j]] eq 
+                    $objtext[$thumbrgbobj[$i]];
+        next unless $objstream[$thumbrgbobj[$j]] eq
+                    $objstream[$thumbrgbobj[$i]];
+        last;
+      } 
+      if ($j==$i) # not found
+      {
+        my $rgbstream = convertstream($objstream[$thumbrgbobj[$i]]);
+        print TEX <<"END_TEX";
+\\pdfobj{<<^^J%
+$objtext[$thumbrgbobj[$i]]>>^^J%
+stream^^J%
+$rgbstream%
+endstream}%
+\\DefRGB{$i}%
+END_TEX
+      }
+      else # $j with same rgb obj
+      {
+        $objtext[$thumbobj[$i]] =~ 
+          s/\\the\\pdflastobj/\\UseRGB{$j}/;
+        print "* Reuses RGB object $j for $i\n" if $::opt_debug;
+      }
+    }
+
+    # thumb object
+    $objtext[$thumbobj[$i]] =~ s/\n/^^J%\n/mg;
+    my $stream = convertstream($objstream[$thumbobj[$i]]);
+    print TEX <<"END_TEX";
+\\pdfobj{<<^^J%
+$objtext[$thumbobj[$i]]>>^^J%
+stream^^J%
+$stream%
+endstream}%
+\\DefThumb{$thumbpageno[$i]}%
+END_TEX
+  }
+
+  print TEX "\\endinput%\n";
+  close(TEX);
+}
+
+sub convertstream
+{
+  my @ch = split(//, $_[0]);
+  my $str = "";
+  my $mod = 0;
+  foreach (@ch)
+  {
+    my $num = vec($_, 0, 8);
+    if    (/ /)  { $_ = '\\ '; }
+    elsif (/%/)  { $_ = '\\%'; }
+    elsif (/\\/) { $_ = '\\\\'; }
+    elsif (/\^/) { $_ = '\\+'; }
+    elsif (/{/)  { $_ = '\\{'; }
+    elsif (/}/)  { $_ = '\\}'; }
+    elsif ($num == 13) { $_ = '\\/'; }
+    elsif ($num < 32 || $num >= 127) {
+      $_ = sprintf("^^%02x", $num);
+    }
+    $str .= $_;
+    $mod++;
+    if ($mod == 16)
+    {
+      $mod = 0;
+      $str .= "%\n";
+    }
+  }
+  return $str;
+}
+
+print "*** ready. ***\n" unless $::opt_quiet;
+
+__END__
