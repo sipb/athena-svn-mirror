@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.1 1987-12-01 16:44:54 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.2 1987-12-03 17:31:15 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/01  16:44:54  don
+ * fixed bugs in readstat's traversal of entries] and statfile:
+ * cur_ent is no longer global, but is now part of get_next_match's
+ * state. also, last_match() was causing entries[]'s last element to be
+ * skipped.
+ * 
  * Revision 2.0  87/11/30  15:19:43  don
  * general rewrite; got rid of stamp data-type, with its attendant garbage,
  * cleaned up pathname-handling. readstat & writestat now sort overything
@@ -15,7 +21,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.1 1987-12-01 16:44:54 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 2.2 1987-12-03 17:31:15 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -45,7 +51,7 @@ char **path; struct stat *s;
 {
 	char  *linebuf, *linkval, type;
 	struct stat fromstat;
-	int size;
+	unsigned size;
 
 	if ( lstat( path[ ROOT], &fromstat)) {
 		sprintf(errmsg,"can't stat %s\n", path[ ROOT]);
@@ -55,9 +61,10 @@ char **path; struct stat *s;
 	if ( cur_line >= maxlines) {
 		maxlines += MAXLINES;
 		size = maxlines * sizeof statfilebufs[0];
-		statfilebufs = (Statline *) ( cur_line ?
-					       realloc( statfilebufs, size)
-					      : malloc( size));
+		statfilebufs =
+			(Statline *) ( cur_line ?
+				       realloc( (char *) statfilebufs, size)
+				      : malloc( size));
 		if ( ! statfilebufs) {
 			sprintf( errmsg, "alloc failed: %d statfile lines\n",
 				 cur_line);
@@ -111,7 +118,8 @@ sort_stat() {
 	/* NOTE: this qsort call assumes that each statfilebufs[] element
 	 * begins with a sortkey as its first field.
 	 */
-        qsort( statfilebufs, cur_line, sizeof( statfilebufs[ 0]), strcmp);
+        qsort( (char *) statfilebufs, cur_line,
+		sizeof( statfilebufs[ 0]), strcmp);
 
         for ( i = 0; i < cur_line; i++) {
                 fputs( statfilebufs[ i].line, statfile);
@@ -137,33 +145,42 @@ dec_statfile( line, name, link)
 char *line, *name, *link;
 {
 	static struct stat s;
+	char *time_format = "%*c%s %d.%d.%o.%ld";
+	char *dev_format  = "%*c%s %d.%d.%o.%d";
+	int d = 0, u = 0, g = 0, m = 0;
+
+	/* these long-int temps are necessary for pc/rt compatibility:
+	 * sscanf cannot scan into a short, though it may sometimes succeed
+	 * in doing so. the difficulty is that it can't know about the
+	 * target-integer's length, so it assumes that it's long.
+	 * since the rt will truncate a short's addr, in order to treat
+	 * it as a long, sscanf's data will often get lost.
+	 * the solution is to give scanf longs, and then to convert these
+	 * longs to shorts, explicitly.
+	 */
 
 	*link = '\0';
 
 	switch( *line) {
 	case 'f':
-		sscanf( line, "%*c%s %d.%d.%o.%ld", name,
-			&s.st_uid, &s.st_gid, &s.st_mode, &(long) s.st_mtime);
-		s.st_mode |= S_IFREG;
+		sscanf( line, time_format, name, &u, &g, &m, &s.st_mtime);
+		s.st_mode = S_IFREG;
 		break;
-	case 'l':
+	case 'l':	/* more common than dir's */
 		sscanf( line, "%*c%s %s", name, link);
 		s.st_mode = S_IFLNK;
 		break;
 	case 'd':
-		sscanf( line, "%*c%s %d.%d.%o.%ld", name,
-			&s.st_uid, &s.st_gid, &s.st_mode, &(long) s.st_mtime);
-		s.st_mode |= S_IFDIR;
+		sscanf( line, time_format, name, &u, &g, &m, &s.st_mtime);
+		s.st_mode = S_IFDIR;
 		break;
 	case 'b':
-		sscanf( line, "%*c%s %d.%d.%o.%d", name,
-			&s.st_uid, &s.st_gid, &s.st_mode, &s.st_dev);
-		s.st_mode |= S_IFBLK;
+		sscanf( line, dev_format,  name, &u, &g, &m, &d);
+		s.st_mode = S_IFBLK;
 		break;
 	case 'c':
-		sscanf( line, "%*c%s %d.%d.%o.%d", name,
-			&s.st_uid, &s.st_gid, &s.st_mode, &s.st_dev);
-		s.st_mode |= S_IFCHR;
+		sscanf( line, dev_format,  name, &u, &g, &m, &d);
+		s.st_mode = S_IFCHR;
 		break;
 	case '*':
 		sscanf( line, "%*c%s", name);
@@ -173,6 +190,10 @@ char *line, *name, *link;
 		sprintf( errmsg, "garbled statfile: bad line = %s\n", line);
 		do_panic();
 	}
+	s.st_uid   = (short) u;
+	s.st_gid   = (short) g;
+	s.st_mode |= (short) m & 07777;
+	s.st_dev   = (short) d;
 	return( &s);
 }
 
@@ -312,9 +333,4 @@ pushpath( p, name) char **p; char *name; {
 poppath( p) char **p; {
 	if ( ! p) return;
 	if ( *(int*)p[ CNT]) --*(int*)p[ CNT];
-}
-
-entrycmp( i, j) int *i, *j; {
-        return( strcmp( entries[ *i].sortkey,
-                        entries[ *j].sortkey));
 }
