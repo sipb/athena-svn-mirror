@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.3 1991-03-24 14:47:41 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.4 1991-03-24 23:27:04 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>
@@ -97,7 +97,7 @@ ParseContents(dir)
   char *delim_ptr;		/* Pointer to delimiter. */
   FILE *infile;			/* File pointer. */
   int fd;			/* File descriptor. */
-  int i, n;			/* Counter. */
+  int i;			/* Counter. */
 
   sprintf(contents_name, "%s/%s", dir, CONTENTS);
 
@@ -322,11 +322,7 @@ void upCB (w, tag, callback_data)
      caddr_t *tag;
      XmAnyCallbackStruct *callback_data;
 {
-  char temp[BUFSIZ];
-  char *ptr;
-  int item;
   Arg arg;
-  char toplabel[TITLE_SIZE];
   
   if (Deep == 0) {
       MuError("Cannot go up any further.");

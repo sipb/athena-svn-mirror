@@ -18,13 +18,13 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
- *	$Id: x_utils.c,v 1.3 1991-03-24 14:36:03 lwvanels Exp $
+ *	$Id: x_utils.c,v 1.4 1991-03-24 23:23:21 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.3 1991-03-24 14:36:03 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.4 1991-03-24 23:23:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -205,8 +205,6 @@ int
 popup_option(message)
      char *message;
 {
-  Arg arg;
-
   if (MuGetBoolean(message, "Try again", "Quit", NULL, TRUE))
     return(FAILURE);
   else
