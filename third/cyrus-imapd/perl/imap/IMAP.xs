@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.3 2003-05-21 15:55:16 rbasch Exp $ */
+/* $Id: IMAP.xs,v 1.4 2003-07-07 20:00:48 rbasch Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -207,11 +207,19 @@ static int get_password(sasl_conn_t *conn, void *context, int id,
   return SASL_OK;  
 }
 
+/* log callback */
+static int log_message(void *context, int level, char *message)
+{
+  fprintf(stderr, "%s\n", message);
+  return SASL_OK;
+}
+
 /* callbacks we support */
 static const sasl_callback_t sample_callbacks[NUM_SUPPORTED_CALLBACKS] = {
   { SASL_CB_USER, get_username, NULL }, 
   { SASL_CB_AUTHNAME, get_username, NULL }, 
   { SASL_CB_PASS, get_password, NULL },
+  { SASL_CB_LOG, log_message, NULL },
   { SASL_CB_LIST_END, NULL, NULL }
 };
 
