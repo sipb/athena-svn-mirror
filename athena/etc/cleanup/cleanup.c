@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.5 1993-04-29 16:39:14 vrt Exp $
+/* $Id: cleanup.c,v 2.6 1993-04-29 17:25:58 vrt Exp $
  *
  * Cleanup program for stray processes
  *
@@ -39,7 +39,7 @@
 #include <dirent.h>
 #endif
 
-char *version = "$Id: cleanup.c,v 2.5 1993-04-29 16:39:14 vrt Exp $";
+char *version = "$Id: cleanup.c,v 2.6 1993-04-29 17:25:58 vrt Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -381,7 +381,11 @@ struct cl_proc *get_processes()
 {
     int kmem, nproc, i;
     caddr_t procp;
+#ifndef SOLARIS
     struct proc p;
+#else
+    struct proc  *p;
+#endif
     static struct cl_proc procs[MAXPROCS];
 #ifdef _AIX
     char *kernel = "/unix";
@@ -440,7 +444,6 @@ struct cl_proc *get_processes()
     close(kmem);
     procs[i].pid = procs[i].uid = -1;
     return(procs);
-#else
 #else /* SOLARIS */
       kv = kvm_open(NULL,NULL,"/dev/swap",O_RDONLY,NULL);
       if (kvm_nlist(kv, &nl) < 0) {
@@ -449,7 +452,6 @@ struct cl_proc *get_processes()
       }
     kvm_read(kv,nl[PROC].n_value,&nproc,sizeof(nproc));
     (void) kvm_setproc(kv);
-      fprintf(stdout,"nproc is %d\n",nproc);
       i=0;
       dirp = opendir("/proc");
       for (j=0;j<2;j++)
@@ -458,9 +460,7 @@ struct cl_proc *get_processes()
               printf("got dname\n");
                       sscanf(dp->d_name,"%d",&pid);
               p = kvm_getproc(kv,pid);
-              printf("Got getproc\n");
               if ( p != NULL ) {
-                      fprintf(stdout,"pid %d uid %d\n",p->p_epid,p->p_uid);
                       if (p->p_epid == 0)
                               continue;
                       else {
