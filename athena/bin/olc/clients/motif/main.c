@@ -1,24 +1,13 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains the main routine of the user program, "olc".
+ * It contains the main routine of the user program, "xolc".
  *
- *      Win Treese
- *      Dan Morgan
- *      Bill Saphir
- *      MIT Project Athena
- *
- *      Ken Raeburn
- *      MIT Information Systems
- *
- *      Steve Dyer
- *      IBM/MIT Project Athena
- *      converted to use Hesiod in place of clustertab
- *
- *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v $
  *      $Author: lwvanels $
@@ -26,9 +15,11 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.12 1991-03-26 08:52:15 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.13 1991-04-18 21:51:51 lwvanels Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
 
 #include <pwd.h>
 #include <netdb.h>

@@ -4,13 +4,18 @@
  * This replays question logs
  *      and gets queue listings
  *      and shows new messages
+ *
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  */
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.23 1991-04-15 14:33:31 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.24 1991-04-18 21:53:34 lwvanels Exp $";
 #endif
 #endif
+
+#include <mit-copyright.h>
 
 #include <stdio.h>
 #include <sys/param.h>

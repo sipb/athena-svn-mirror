@@ -1,3 +1,20 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ *
+ *	Chris VanHaren
+ *	Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
+ *	$Id: visual.c,v 1.6 1991-04-18 21:51:57 lwvanels Exp $
+ *	$Author: lwvanels $
+ */
+
+#include <mit-copyright.h>
+
 #include <Xm/Form.h>
 #include <Xm/PushBG.h>
 #include <Xm/SeparatoG.h>

@@ -7,15 +7,18 @@
  *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.12 1991-04-10 21:57:31 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.13 1991-04-18 21:51:35 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include <signal.h>
 #include <sys/types.h>

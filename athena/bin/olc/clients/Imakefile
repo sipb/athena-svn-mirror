@@ -1,6 +1,11 @@
 #
-# $Id: Imakefile,v 1.6 1991-03-29 00:13:55 lwvanels Exp $
+# $Id: Imakefile,v 1.7 1991-04-18 21:54:29 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/Imakefile,v $
+# $Author: lwvanels $ 
+#
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
+#
 #
 
 #define IHaveSubdirs
