@@ -1,0 +1,12 @@
+Name: athena-sawfish
+Summary: The sawfish window manager, for Athena
+Copyright: GPL
+Group: User Interface/Desktops
+
+Requires: athena-rep-gtk
+
+%description
+Sawfish is an extensible window manager using an Emacs Lisp-like
+scripting language--all window decorations are configurable, the basic
+idea is to have as much user-interface policy as possible controlled
+through the Lisp language.
