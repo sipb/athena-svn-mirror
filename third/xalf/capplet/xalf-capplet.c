@@ -184,10 +184,10 @@ xalf_read (int type)
     gtk_spin_button_set_value (GTK_SPIN_BUTTON (timeout_spinbutton), DEFAULT_TIMEOUT);
     
     if (type == REAL_SETTINGS)
-        gnome_config_get_vector ("/xalf/settings/options", 
+        gnome_config_get_vector ("/xalf/settings/options=-i", 
                                  &real_argc, &real_argv);
     if (type == OLD_SETTINGS) 
-        gnome_config_get_vector ("/xalf/old_settings/options", 
+        gnome_config_get_vector ("/xalf/old_settings/options=-i", 
                                  &real_argc, &real_argv);
     
     /* Did something fail? */
@@ -197,7 +197,7 @@ xalf_read (int type)
     /* Getopt starts reading at argv[1]. We want real_argv[0] also, 
        so put in an dummy argument in the front. */
     /* One extra argument, and a trailing NULL */
-    options_argv = malloc ( (real_argc + 2) * sizeof (char*));
+    options_argv = g_malloc ( (real_argc + 2) * sizeof (char*));
     options_argv[0] = dummy;
     for (i = 0; i <= real_argc ; i++) 
         options_argv[i+1] = real_argv[i];

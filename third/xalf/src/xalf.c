@@ -63,7 +63,7 @@
 
 
 #define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
-#define PRELOAD_LIBRARY "libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
 #define USAGE "\
 Usage: %s [options] command\n\
 options:\n\
