@@ -33,9 +33,9 @@ ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
-      -e "s|^/etc/sendmail.st$|%config \0|" \
       -e "s|^/etc/aliases$|%config \0|" \
-      -e "s|^/etc/sendmail.cf$|%config \0|" |
+      -e "s|^/etc/sendmail.cf$|%config \0|" \
+      -e "\,^/etc/sendmail.st$,d" |
   sort > rpm.filelist
 echo "%dir /var/spool/mqueue" >> rpm.filelist
 
@@ -47,5 +47,6 @@ SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
 EOF
 
 chkconfig --add athena-sendmail
+cp /dev/null /etc/sendmail.st && chmod 644 /etc/sendmail.st
 /usr/sbin/sendmail -bi
 
