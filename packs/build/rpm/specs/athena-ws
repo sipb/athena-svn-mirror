@@ -110,12 +110,34 @@ options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
 EOF
   fi
 fi
+# turn on gx110 sound support for machines that lost data in the
+# switchover from conf.modules to modules.conf
+if /sbin/lspci -n|grep -q 1274:1371 ; then
+  touch /etc/modules.conf
+  if grep -q sound-slot-0 /etc/modules.conf ; then true ; else
+	cat >> /etc/modules.conf << EOF
+alias sound-slot-0 es1371
+EOF
+  fi
+fi
+# turn on gx150 sound support for machines that were originally installed
+# with a more ignorant kudzu
 if /sbin/lspci -n|grep -q 8086:2445 ; then
   touch /etc/modules.conf
   if grep -q sound-slot-0 /etc/modules.conf ; then true ; else
 	cat >> /etc/modules.conf << EOF
 alias sound-slot-0 i810_audio
 options i810_audio ftsodell=1
+EOF
+  fi
+fi
+# turn on gx150 USB support for machines that were originally installed with a
+# more ignorant kudzu
+if /sbin/lspci -n|grep -q 8086:2444 ; then
+  touch /etc/modules.conf
+  if grep -q usb-controller /etc/modules.conf ; then true ; else
+	cat >> /etc/modules.conf << EOF
+alias usb-controller usb-uhci
 EOF
   fi
 fi
