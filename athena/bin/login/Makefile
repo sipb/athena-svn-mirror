@@ -2,7 +2,7 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/Makefile,v 1.3 1989-09-14 09:39:27 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/Makefile,v 1.4 1989-09-14 09:43:01 epeisach Exp $
 #
 #
 #
@@ -18,7 +18,7 @@ clean:
 install: login 
 	install -c -s -m 4555 login ${DESTDIR}/bin/login 
 depend:
-        makedepend -s "# DO NOT REMOVE THIS LINE -- make depend uses it" \
-                ${CFLAGS} login.c
+	makedepend -s "# DO NOT REMOVE THIS LINE -- make depend uses it" \
+		${CFLAGS} login.c
 
 # DO NOT REMOVE THIS LINE -- make depend uses it
