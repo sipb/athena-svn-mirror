@@ -1,0 +1,35 @@
+GLOBAL *.CKP #* *~
+## Major subscription list for VAXen
+##
+##	MIT Project Athena
+##
+##	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/sys_rvd,v $
+##	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/sys_rvd,v 1.1 1987-03-05 18:55:17 rfrench Exp $
+
+	/vmunix::::
+	/boot::::
+	/etc:::			# These are specific to each machine.
+		rc
+		rc.common
+		rc.local
+		fstab
+		mtab
+		ttys
+		utmp
+		dumpdates
+		syslog.pid
+		motd
+		named.pid
+		hosts
+		passwd
+		passwd.local
+		passwd.dir
+		passwd.pag
+		group
+		:
+			# handle the shells below
+	/bin::::
+	/lib::::
+	/dev:::
+		tty*
+		:
