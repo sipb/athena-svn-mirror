@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.13 1995-12-05 20:28:42 miki Exp $
+/* $Id: cleanup.c,v 2.14 1996-03-24 23:30:26 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -42,7 +42,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.13 1995-12-05 20:28:42 miki Exp $";
+char *version = "$Id: cleanup.c,v 2.14 1996-03-24 23:30:26 ghudson Exp $";
 
 
 
@@ -742,7 +742,9 @@ int *users;
        strcpy(buffer1, buffer);
        p = index(buffer1, ':');
        if (p) {
-            strncpy(username, buffer1,p-buffer1);
+	    *p = 0;
+            strncpy(username, buffer1, sizeof(username) - 1);
+	    username[sizeof(username) - 1] = 0;
             pw = getpwnam(username);
             if (pw)
                uid = pw-> pw_uid;
