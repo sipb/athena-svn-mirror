@@ -16,7 +16,6 @@ Requires:         glib2 >= @GLIB_REQUIRED@
 Requires:         gnome-vfs2 >= @GNOME_VFS_REQUIRED@
 Requires:         libart_lgpl >= @ART_REQUIRED@
 Requires:         libgnome >= @GNOME_REQUIRED@
-Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
 Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
 Requires:         libxml2 >= @XML_REQUIRED@
 Prereq:           GConf2
@@ -26,7 +25,6 @@ BuildRequires:    glib2-devel >= @GLIB_REQUIRED@
 BuildRequires:    gnome-vfs2-devel >= @GNOME_VFS_REQUIRED@
 BuildRequires:    libart_lgpl-devel >= @ART_REQUIRED@
 BuildRequires:    libgnome-devel >= @GNOME_REQUIRED@
-BuildRequires:    libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
 BuildRequires:    libgnomeui-devel >= @GNOME_UI_REQUIRED@
 BuildRequires:    libxml2-devel >= @XML_REQUIRED@
 
@@ -52,8 +50,6 @@ Requires:         libart_lgpl >= @ART_REQUIRED@
 Requires:         libart_lgpl-devel >= @ART_REQUIRED@
 Requires:         libgnome >= @GNOME_REQUIRED@
 Requires:         libgnome-devel >= @GNOME_REQUIRED@
-Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
-Requires:         libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
 Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
 Requires:         libgnomeui-devel >= @GNOME_UI_REQUIRED@
 Requires:         libxml2 >= @XML_REQUIRED@

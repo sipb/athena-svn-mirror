@@ -14,13 +14,13 @@ INCLUDES = \
 
 LDADD = \
 	$(top_builddir)/eel/libeel-2.la \
+	$(EEL_LIBS) \
 	$(NULL)
 
 noinst_PROGRAMS = \
 	test-eel-background \
-	test-eel-canvas-items	\
 	test-eel-ellipsizing	\
-	test-eel-font-picker \
+	test-eel-editable-label	\
 	test-eel-gtk-style \
 	test-eel-image-chooser \
 	test-eel-image-scrolled \
@@ -33,9 +33,7 @@ noinst_PROGRAMS = \
 	$(NULL)
 
 test_eel_background_SOURCES = test-eel-background.c
-test_eel_canvas_items_SOURCES = test-eel-canvas-items.c
 test_eel_ellipsizing_SOURCES = test-eel-ellipsizing.c
-test_eel_font_picker_SOURCES = test-eel-font-picker.c test.c test.h
 test_eel_gtk_style_SOURCES = test-eel-gtk-style.c test.c
 test_eel_image_chooser_SOURCES = test-eel-image-chooser.c test.c test.h
 test_eel_image_scrolled_SOURCES = test-eel-image-scrolled.c test.c test.h

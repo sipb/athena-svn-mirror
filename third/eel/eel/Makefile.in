@@ -86,7 +86,6 @@ GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_REQUIRED = @GLIB_REQUIRED@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOME_CANVAS_REQUIRED = @GNOME_CANVAS_REQUIRED@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
@@ -134,15 +133,22 @@ INCLUDES = \
 	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
 	-DGTK_DISABLE_DEPRECATED			\
 	-DGNOME_DISABLE_DEPRECATED			\
-	-DBONOBO_DISABLE_DEPRECATED			\
-	-DEEL_COMPILATION				\
 	$(NULL)
 
+
+# FIXME: put this back once the registration_id stuff is cleared up
+#	-DBONOBO_DISABLE_DEPRECATED
 
 libeel_2_la_LDFLAGS = \
 	-version-info @EEL_VERSION_INFO@	\
 	$(EEL_LIBS)				\
 	$(RENDER_LIBS)				\
+	$(NULL)
+
+
+EGGFILES = \
+	egg-screen-exec.h       \
+	egg-screen-exec.c       \
 	$(NULL)
 
 
@@ -152,17 +158,19 @@ libeel_2_la_SOURCES = \
 	eel-art-gtk-extensions.c		\
 	eel-background.c			\
 	eel-background-box.c                    \
-	eel-canvas-rect.c			\
+	eel-canvas.c				\
+	eel-canvas-util.c			\
+	eel-canvas-rect-ellipse.c		\
 	eel-caption-table.c			\
 	eel-caption.c				\
 	eel-cell-renderer-pixbuf-list.c		\
 	eel-dateedit-extensions.c		\
 	eel-debug-drawing.c			\
 	eel-debug.c				\
+	eel-editable-label.c			\
 	eel-ellipsizing-label.c			\
 	eel-enumeration.c			\
 	eel-features.c				\
-	eel-font-picker.c			\
 	eel-gconf-extensions.c			\
 	eel-gdk-extensions.c			\
 	eel-gdk-pixbuf-extensions.c		\
@@ -179,10 +187,7 @@ libeel_2_la_SOURCES = \
 	eel-lib-self-check-functions.c		\
 	eel-pango-extensions.c			\
 	eel-password-dialog.c			\
-	eel-preferences-box.c			\
-	eel-preferences-group.c			\
-	eel-preferences-item.c			\
-	eel-preferences-pane.c			\
+	eel-preferences-glade.c			\
 	eel-preferences.c			\
 	eel-radio-button-group.c		\
 	eel-self-checks.c			\
@@ -190,12 +195,12 @@ libeel_2_la_SOURCES = \
 	eel-string-list.c			\
 	eel-string-picker.c			\
 	eel-string.c				\
-	eel-text-caption.c			\
 	eel-types.c				\
 	eel-vfs-extensions.c			\
 	eel-wrap-table.c			\
 	eel-xml-extensions.c			\
 	eel-lib-self-check-functions.h		\
+	$(EGGFILES)				\
 	$(NULL)
 
 
@@ -207,17 +212,19 @@ eel_headers = \
 	eel-art-gtk-extensions.h		\
 	eel-background.h			\
 	eel-background-box.h                    \
-	eel-canvas-rect.h			\
+	eel-canvas.h				\
+	eel-canvas-util.h			\
+	eel-canvas-rect-ellipse.h		\
 	eel-caption-table.h			\
 	eel-caption.h				\
 	eel-cell-renderer-pixbuf-list.h		\
 	eel-dateedit-extensions.h		\
 	eel-debug-drawing.h			\
 	eel-debug.h				\
+	eel-editable-label.h			\
 	eel-ellipsizing-label.h			\
 	eel-enumeration.h			\
 	eel-features.h				\
-	eel-font-picker.h			\
 	eel-gconf-extensions.h			\
 	eel-gdk-extensions.h			\
 	eel-gdk-pixbuf-extensions.h		\
@@ -234,10 +241,7 @@ eel_headers = \
 	eel-labeled-image.h			\
 	eel-pango-extensions.h			\
 	eel-password-dialog.h			\
-	eel-preferences-box.h			\
-	eel-preferences-group.h			\
-	eel-preferences-item.h			\
-	eel-preferences-pane.h			\
+	eel-preferences-glade.h			\
 	eel-preferences.h			\
 	eel-radio-button-group.h		\
 	eel-self-checks.h			\
@@ -245,7 +249,6 @@ eel_headers = \
 	eel-string-list.h			\
 	eel-string-picker.h			\
 	eel-string.h				\
-	eel-text-caption.h			\
 	eel-types.h				\
 	eel-vfs-extensions.h			\
 	eel-wrap-table.h			\
@@ -290,7 +293,7 @@ noinst_PROGRAMS = check-program
 
 check_program_SOURCES = check-program.c
 check_program_DEPENDENCIES = libeel-2.la
-check_program_LDADD = 
+check_program_LDADD = $(EEL_LIBS)
 check_program_LDFLAGS = $(check_program_DEPENDENCIES) -lm
 
 TESTS = check-eel
@@ -300,12 +303,15 @@ EXTRA_DIST = \
 	eelmarshal.list				\
 	makeenums.pl				\
 	maketypes.awk				\
+	update-from-egg.sh			\
 	$(NULL)
 
 
 built_sources = $(stamps) $(stamp_sources) $(maketypes_sources) $(marshal_sources)
 CLEANFILES = $(built_sources)
 DONT_DIST_FILES = $(built_sources)
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  eel-features.h
@@ -319,21 +325,20 @@ LIBS = @LIBS@
 libeel_2_la_LIBADD = 
 libeel_2_la_OBJECTS =  eel-accessibility.lo eel-art-extensions.lo \
 eel-art-gtk-extensions.lo eel-background.lo eel-background-box.lo \
-eel-canvas-rect.lo eel-caption-table.lo eel-caption.lo \
-eel-cell-renderer-pixbuf-list.lo eel-dateedit-extensions.lo \
-eel-debug-drawing.lo eel-debug.lo eel-ellipsizing-label.lo \
-eel-enumeration.lo eel-features.lo eel-font-picker.lo \
-eel-gconf-extensions.lo eel-gdk-extensions.lo \
+eel-canvas.lo eel-canvas-util.lo eel-canvas-rect-ellipse.lo \
+eel-caption-table.lo eel-caption.lo eel-cell-renderer-pixbuf-list.lo \
+eel-dateedit-extensions.lo eel-debug-drawing.lo eel-debug.lo \
+eel-editable-label.lo eel-ellipsizing-label.lo eel-enumeration.lo \
+eel-features.lo eel-gconf-extensions.lo eel-gdk-extensions.lo \
 eel-gdk-pixbuf-extensions.lo eel-generous-bin.lo eel-glib-extensions.lo \
 eel-gnome-extensions.lo eel-graphic-effects.lo eel-gtk-container.lo \
 eel-gtk-extensions.lo eel-i18n.lo eel-image-chooser.lo \
 eel-image-table.lo eel-labeled-image.lo eel-lib-self-check-functions.lo \
-eel-pango-extensions.lo eel-password-dialog.lo eel-preferences-box.lo \
-eel-preferences-group.lo eel-preferences-item.lo \
-eel-preferences-pane.lo eel-preferences.lo eel-radio-button-group.lo \
-eel-self-checks.lo eel-stock-dialogs.lo eel-string-list.lo \
-eel-string-picker.lo eel-string.lo eel-text-caption.lo eel-types.lo \
-eel-vfs-extensions.lo eel-wrap-table.lo eel-xml-extensions.lo
+eel-pango-extensions.lo eel-password-dialog.lo eel-preferences-glade.lo \
+eel-preferences.lo eel-radio-button-group.lo eel-self-checks.lo \
+eel-stock-dialogs.lo eel-string-list.lo eel-string-picker.lo \
+eel-string.lo eel-types.lo eel-vfs-extensions.lo eel-wrap-table.lo \
+eel-xml-extensions.lo egg-screen-exec.lo
 noinst_PROGRAMS =  check-program$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
@@ -659,6 +664,9 @@ dist-hook:
 	for file in $(DONT_DIST_FILES) ; do \
 	    rm -f $(distdir)/$$file ; \
 	done
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
