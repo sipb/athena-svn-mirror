@@ -1,6 +1,6 @@
 #| user.jl -- do user-local initialization
 
-   $Id: user.jl,v 1.4 2001-04-26 16:44:10 ghudson Exp $
+   $Id: user.jl,v 1.5 2001-07-09 13:43:05 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -69,6 +69,7 @@
   ;; configuration files don't exist.
   (if (get-command-line-option "--no-user-rc")
     (progn
+      (setq command-line-args (cons "--no-user-rc" command-line-args))
       (load-all "site-init" (lambda (f) (safe-load f nil t)))
       (safe-load "rep-defaults" t)
       (unless batch-mode
