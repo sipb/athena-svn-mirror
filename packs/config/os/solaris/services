@@ -1,4 +1,8 @@
-#ident	"@(#)services	1.16	97/05/12 SMI"	/* SVr4.0 1.8	*/
+#ident	"@(#)services	1.32	01/11/21 SMI"
+#
+#
+# Copyright (c) 1999-2001 by Sun Microsystems, Inc.
+# All rights reserved.
 #
 # Network services, Internet style
 #
@@ -15,6 +19,7 @@ chargen		19/tcp		ttytst source
 chargen		19/udp		ttytst source
 ftp-data	20/tcp
 ftp		21/tcp
+ssh		22/tcp				# Secure Shell
 telnet		23/tcp
 smtp		25/tcp		mail
 time		37/tcp		timserver
@@ -25,9 +30,20 @@ domain		53/udp
 domain		53/tcp
 bootps		67/udp		bootp bootser	# BOOTP/DHCP server
 bootpc		68/udp		bootcli		# BOOTP/DHCP client
+kerberos	88/udp		kdc		# Kerberos V5 KDC
+kerberos	88/tcp		kdc		# Kerberos V5 KDC
 hostnames	101/tcp		hostname	# usually to sri-nic
+pop2		109/tcp		pop-2		# Post Office Protocol - V2
+pop3		110/tcp				# Post Office Protocol - Version 3
 sunrpc		111/udp		rpcbind
 sunrpc		111/tcp		rpcbind
+imap		143/tcp		imap2		# Internet Mail Access Protocol v2
+ldap		389/tcp				# Lightweight Directory Access Protocol	
+ldap		389/udp				# Lightweight Directory Access Protocol
+submission	587/tcp				# Mail Message Submission
+submission	587/udp				#    see RFC 2476
+ldaps		636/tcp				# LDAP protocol over TLS/SSL (was sldap)
+ldaps		636/udp				# LDAP protocol over TLS/SSL (was sldap)
 #
 # Host specific functions
 #
@@ -45,7 +61,20 @@ uucp-path	117/tcp
 nntp            119/tcp         usenet		# Network News Transfer
 ntp		123/tcp				# Network Time Protocol
 ntp		123/udp				# Network Time Protocol
+netbios-ns	137/tcp				# NETBIOS Name Service
+netbios-ns	137/udp				# NETBIOS Name Service
+netbios-dgm	138/tcp				# NETBIOS Datagram Service
+netbios-dgm	138/udp				# NETBIOS Datagram Service
+netbios-ssn	139/tcp				# NETBIOS Session Service
+netbios-ssn	139/udp				# NETBIOS Session Service
 NeWS		144/tcp		news		# Window System
+slp		427/tcp		slp		# Service Location Protocol, V2
+slp             427/udp         slp             # Service Location Protocol, V2
+mobile-ip	434/udp		mobile-ip	# Mobile-IP
+cvc_hostd	442/tcp				# Network Console
+ike		500/udp		ike		# Internet Key Exchange
+uuidgen		697/tcp				# UUID Generator
+uuidgen		697/udp				# UUID Generator
 #
 # UNIX specific services
 #
@@ -62,18 +91,28 @@ who		513/udp		whod
 syslog		514/udp
 talk		517/udp
 route		520/udp		router routed
+ripng		521/udp
+klogin		543/tcp				# Kerberos authenticated rlogin
+kshell		544/tcp		cmd		# Kerberos authenticated remote shell
 new-rwho	550/udp		new-who		# experimental
 rmonitor	560/udp		rmonitord	# experimental
 monitor		561/udp				# experimental
 pcserver	600/tcp				# ECD Integrated PC board srvr
-kerberos	750/udp         kdc		# Kerberos key server
-kerberos	750/tcp		kdc		# Kerberos key server
+sun-dr		665/tcp				# Remote Dynamic Reconfiguration
+kerberos-adm	749/tcp				# Kerberos V5 Administration
+kerberos-adm	749/udp				# Kerberos V5 Administration
+kerberos-iv	750/udp         		# Kerberos V4 key server
+krb5_prop	754/tcp				# Kerberos V5 KDC propogation
 ufsd		1008/tcp	ufsd		# UFS-aware server
 ufsd		1008/udp	ufsd
+cvc		1495/tcp			# Network Console
 ingreslock      1524/tcp
+www-ldap-gw	1760/tcp			# HTTP to LDAP gateway
+www-ldap-gw	1760/udp			# HTTP to LDAP gateway
 listen          2766/tcp                        # System V listener port
 nfsd		2049/udp	nfs		# NFS server daemon (clts)
 nfsd		2049/tcp	nfs		# NFS server daemon (cots)
+eklogin		2105/tcp			# Kerberos encrypted rlogin
 lockd		4045/udp			# NFS lock daemon/manager
 lockd		4045/tcp
 dtspc		6112/tcp			# CDE subprocess control
@@ -88,16 +127,13 @@ snmp		161/udp
 snmp-trap	162/udp		snmptrap
 ntalk		518/udp
 timed		525/udp		timeserver
+imaps		993/tcp				# IMAP over SSL
 
 #
 # Athena additions
 #
 gopher		70/tcp				# gopher
 
-klogin		543/tcp				# Kerberos authenticated rlogin
-kshell		544/tcp				# and remote shell
-kerberos	750/udp 	kdc		# Kerberos authentication--udp
-kerberos	750/tcp 	kdc		# Kerberos authentication--tcp
 kerberos_master	751/udp 			# Kerberos auth master--udp
 kerberos_master	751/tcp 			# Kerberos auth master--tcp
 passwd_server	752/udp				# Kerberos passwd server
@@ -105,7 +141,6 @@ userreg_server	753/udp				# Kerberos userreg server
 krb_prop	754/tcp				# Kerberos slave propagation
 kpop		1109/tcp			# Pop with Kerberos
 knetd		2053/tcp			# Kerberos de-multiplexor
-eklogin		2105/tcp			# Kerberos encrypted rlogin
 
 moira_db	775/tcp				# Moira database
 moira_update	777/tcp				# Moira update protocol.
@@ -153,7 +188,6 @@ larvnet		49153/udp			# cluster monitor server
 busypoll	49154/udp			# busy polling port for ws
 athinfo		49155/tcp			# workstation info server
 
-ssh		22/tcp				# Secure shell
 nqs		607/tcp				# Generic NQS batch system
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
