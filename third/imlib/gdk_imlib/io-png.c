@@ -59,7 +59,8 @@ loader_png (FILE * f, int *w, int *h, int *t)
   *w = ww;
   *h = hh;
   /* Setup Translators */
-  if (color_type == PNG_COLOR_TYPE_PALETTE)
+  if ((color_type == PNG_COLOR_TYPE_PALETTE) ||
+      (color_type == PNG_COLOR_TYPE_GRAY))
     png_set_expand(png_ptr);
   png_set_strip_16(png_ptr);
   png_set_packing(png_ptr);
@@ -130,6 +131,7 @@ loader_png (FILE * f, int *w, int *h, int *t)
 	  for (x = 0; x < *w; x++)
 	    {
 	      r = *ptr2++;
+              ptr2++;
 	      *ptr++ = r;
 	      *ptr++ = r;
 	      *ptr++ = r;
@@ -403,8 +405,13 @@ inline_png(unsigned char *data, int data_size)
       im->shape_color.g = 0;
       im->shape_color.b = 255;
     }
+
+#if 0
+  /* Generated data... We can't cache this! */
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   return im;
 }

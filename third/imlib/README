@@ -1,9 +1,6 @@
-N.B.  this is "Imlib 1.9.8.1", which is a hybrid of 1.9.7 and other bits.
-It contains some bug fixes and modifications not present in 1.9.8.
-
 -------------------------------------------------------------------------------
                                 I   M   L   I   B
-				      1.9.5
+				      1.9.11
 -------------------------------------------------------------------------------
 
 This software is Copyright (C) 1998 By The Rasterman (Carsten Haitzler). I
@@ -20,13 +17,22 @@ just follow the instructions in the INSTALL file.
 
 If you are using imlib out of the CVS repository, then you need to
 have some extra tools installed, and the configuration process is
-lengthier.  the HACKING file has all the details for building from a
+lengthier.  The HACKING file has all the details for building from a
 CVS checkout.
 
-Imlib will run MARKEDLY better if you get certain libraries. Notably,
-libjpeg, libpng, libtiff and libgif. For more information please go look at:
+Imlib1 will run MARKEDLY better if you get certain libraries. Notably,
+libjpeg, libpng, libtiff and libgif.
 
-http://www.labs.redhat.com/imlib/
+This is the last "major" release of Imlib1.  It is depreciated.  Please port
+applications to some other image library (Imlib2, gtk-pixbuf, whatever...).
 
-This will give links to everything you need or may want for Imlib's optimal
-functionality.
+Also note that gdk-imlib WILL NOT WORK with GTK2.  It won't even compile.
+This is not a bug.  This is a feature.  If you need an image loader for GTK2,
+use gdk-pixbuf.
+
+Only major bug fixes (crashes, security issues) will be accepted.
+
+Please submit bugs against Imlib1 to http://bugzilla.gnome.org.  
+
+Mark Crichton
+crichton@gimp.org

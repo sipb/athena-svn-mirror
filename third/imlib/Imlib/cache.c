@@ -12,14 +12,17 @@ void
 dirty_pixmaps(ImlibData * id, ImlibImage * im)
 {
   struct pixmap_cache *ptr;
-
+  
   ptr = id->cache.pixmap;
   while (ptr)
     {
-      if ((ptr->im == im) && ((!ptr->file) || (!strcmp(im->filename, ptr->file))))
+      if ((ptr->im == im) &&
+	  ((!ptr->file) || ((ptr->file) && (im->filename) && 
+			    (!strcmp(im->filename, ptr->file)))))
 	ptr->dirty = 1;
       ptr = ptr->next;
     }
+  clean_caches(id);
 }
 
 void
@@ -37,6 +40,7 @@ dirty_images(ImlibData * id, ImlibImage * im)
 	}
       ptr = ptr->next;
     }
+  clean_caches(id);
 }
 
 void
@@ -47,8 +51,11 @@ find_pixmap(ImlibData * id, ImlibImage * im, int width, int height, Pixmap * pma
   ptr = id->cache.pixmap;
   while (ptr)
     {
-      if ((ptr->im == im) && (ptr->width == width) && (ptr->height == height) &&
-	  ((!ptr->file) || (!strcmp(im->filename, ptr->file))) &&
+      if ((ptr->im == im) && 
+	  (ptr->width == width) && 
+	  (ptr->height == height) &&
+	  ((!ptr->file) || ((ptr->file) && (im->filename) &&
+			    (!strcmp(im->filename, ptr->file)))) &&
 	  (!ptr->dirty))
 	{
 	  if (ptr->refnum > 0)
@@ -146,7 +153,8 @@ free_pixmappmap(ImlibData * id, Pixmap pmap)
 		{
 		  id->cache.num_pixmap--;
 		  if (ptr->pmap)
-		    id->cache.used_pixmap += ptr->width * ptr->height * id->x.depth;
+		    id->cache.used_pixmap += ptr->width * ptr->height * 
+		      id->x.depth;
 		  if (ptr->shape_mask)
 		    id->cache.used_pixmap += ptr->width * ptr->height;
 		}
@@ -271,15 +279,17 @@ clean_caches(ImlibData * id)
 {
   {
     struct image_cache *ptr = NULL;
+    struct image_cache *pptr = NULL;
     struct image_cache *last = NULL;
     int                 newlast;
 
 #ifdef IMAGE_ACCOUNTING
     int                 total, total2, num, num2;
 
-    printf("--------- Image cashe zise %i / %i with %i images referenced\n",
-	   id->cache.used_image, id->cache.size_image,
-	   id->cache.num_image);
+    fprintf(stderr,
+	    "--------- Image cache sise %i / %i with %i images referenced\n",
+	    id->cache.used_image, id->cache.size_image,
+	    id->cache.num_image);
     ptr = id->cache.image;
     total = 0;
     total2 = 0;
@@ -287,9 +297,10 @@ clean_caches(ImlibData * id)
     num2 = 0;
     while (ptr)
       {
-	printf("Image for file %80s REFNUM %3i SIZE %4ix%4i\n",
-	       ptr->file, ptr->refnum, ptr->im->rgb_width,
-	       ptr->im->rgb_height);
+	fprintf(stderr,
+		"Image for file %80s REFNUM %3i SIZE %4ix%4i\n",
+		ptr->file, ptr->refnum, ptr->im->rgb_width,
+		ptr->im->rgb_height);
 	if (ptr->refnum > 0)
 	  {
 	    total += (ptr->im->rgb_width * ptr->im->rgb_height * 3);
@@ -302,11 +313,12 @@ clean_caches(ImlibData * id)
 	  }
 	ptr = ptr->next;
       }
-    printf("Accounting Data:\n");
-    printf("*** total image's in cache %i with %i images\n",
-	   total, num);
-    printf("*** total unreffed images's in cache %i with %i images\n\n",
-	   total2, num2);
+    fprintf(stderr, "Accounting Data:\n");
+    fprintf(stderr, "*** total images in cache %i with %i images\n",
+	    total, num);
+    fprintf(stderr, 
+	    "*** total unref images in cache %i with %i images\n\n",
+	    total2, num2);
 #endif
     /* find the back of the list */
     ptr = id->cache.image;
@@ -325,7 +337,8 @@ clean_caches(ImlibData * id)
 	  {
 	    if (!ptr->im->cache)
 	      {
-		id->cache.used_image -= ptr->im->rgb_width * ptr->im->rgb_height * 3;
+		id->cache.used_image -= ptr->im->rgb_width * 
+		  ptr->im->rgb_height * 3;
 		nullify_image(id, ptr->im);
 		if (ptr->prev)
 		  ptr->prev->next = ptr->next;
@@ -376,7 +389,8 @@ clean_caches(ImlibData * id)
 	  {
 	    if (ptr->refnum <= 0)
 	      {
-		id->cache.used_image -= ptr->im->rgb_width * ptr->im->rgb_height * 3;
+		id->cache.used_image -= ptr->im->rgb_width 
+		  * ptr->im->rgb_height * 3;
 		nullify_image(id, ptr->im);
 		if (ptr->prev)
 		  ptr->prev->next = ptr->next;
@@ -406,9 +420,10 @@ clean_caches(ImlibData * id)
 #ifdef PIXMAP_ACCOUNTING
     int                 total, total2, num, num2;
 
-    printf("--------- Pixmap cashe zise %i / %i with %i pixmaps referenced\n",
-	   id->cache.used_pixmap, id->cache.size_pixmap,
-	   id->cache.num_pixmap);
+    fprintf(stderr,
+	    "--------- Pixmap cache sie %i / %i with %i pixmaps referenced\n",
+	    id->cache.used_pixmap, id->cache.size_pixmap,
+	    id->cache.num_pixmap);
     ptr = id->cache.pixmap;
     total = 0;
     total2 = 0;
@@ -416,9 +431,11 @@ clean_caches(ImlibData * id)
     num2 = 0;
     while (ptr)
       {
-	printf("Pmap for file %80s REFNUM %3i SIZE %4ix%4i PMAP %8x MASK %8x\n",
-	       ptr->file, ptr->refnum, ptr->width, ptr->height, ptr->pmap,
-	       ptr->shape_mask);
+	fprintf(stderr,
+		"Pmap for file %80s REFNUM %3i SIZE %4ix%4i"
+		" PMAP %8x MASK %8x\n",
+		ptr->file, ptr->refnum, ptr->width, ptr->height, ptr->pmap,
+		ptr->shape_mask);
 	if (ptr->refnum > 0)
 	  {
 	    total += (ptr->width * ptr->height * id->x.depth);
@@ -435,73 +452,86 @@ clean_caches(ImlibData * id)
 	  }
 	ptr = ptr->next;
       }
-    printf("Accounting Data:\n");
-    printf("*** total pixmap's in cache %i with %i pixmaps\n",
-	   total, num);
-    printf("*** total unreffed pixmap's in cache %i with %i pixmaps\n\n",
-	   total2, num2);
+    fprintf(stderr, "Accounting Data:\n");
+    fprintf(stderr, "*** total pixmaps in cache %i with %i pixmaps\n",
+	    total, num);
+    fprintf(stderr, 
+	    "*** total unref pixmaps in cache %i with %i pixmaps\n\n",
+	    total2, num2);
 #endif
-    /* find the back of the list */
     ptr = id->cache.pixmap;
+    while (ptr)
+      {
+	last = ptr->next;
+	if ((ptr->dirty) && (ptr->refnum <= 0))
+	  {
+	    if (ptr->pmap)
+	      id->cache.used_pixmap -= ptr->width * ptr->height * id->x.depth;
+	    if (ptr->shape_mask)
+	      id->cache.used_pixmap -= ptr->width * ptr->height;
+	    if (ptr->pmap)
+	      XFreePixmap(id->x.disp, ptr->pmap);
+	    if (ptr->shape_mask)
+	      XFreePixmap(id->x.disp, ptr->shape_mask);
+	    if (ptr->xim)
+	      XDestroyImage(ptr->xim);
+	    if (ptr->sxim)
+	      XDestroyImage(ptr->sxim);
+	    if (ptr->prev)
+	      ptr->prev->next = ptr->next;
+	    else
+	      id->cache.pixmap = ptr->next;
+	    if (ptr->next)
+	      ptr->next->prev = ptr->prev;
+	    free(ptr->file);         
+	    free(ptr);
+	  }
+	ptr = last;
+      }
+    /* find the back of the list */
     last = NULL;
+    ptr = id->cache.pixmap;
     while (ptr)
       {
 	last = ptr;
 	ptr = ptr->next;
       }
     ptr = last;
-    newlast = 0;
-    /* while the amount of data in the cache is greater than the set */
+    /* the amount of data in the cache is greater than the set */
     /* amount, delete the last entry (last used) from the unreferenced */
     /* cached pixmaps */
-    while (id->cache.used_pixmap > id->cache.size_pixmap)
+    while ((ptr) && (id->cache.used_pixmap > id->cache.size_pixmap))
       {
-	if (newlast)
+	if (ptr->refnum <= 0)
 	  {
-	    ptr = id->cache.pixmap;
-	    last = NULL;
-	    while (ptr)
-	      {
-		last = ptr;
-		ptr = ptr->next;
-	      }
-	    ptr = last;
-	    newlast = 0;
-	  }
-	while (ptr)
-	  {
-	    if (ptr->refnum <= 0)
-	      {
-		if (ptr->pmap)
-		  id->cache.used_pixmap -= ptr->width * ptr->height * id->x.depth;
-		if (ptr->shape_mask)
-		  id->cache.used_pixmap -= ptr->width * ptr->height;
-		if (ptr->pmap)
-		  XFreePixmap(id->x.disp, ptr->pmap);
-		if (ptr->shape_mask)
-		  XFreePixmap(id->x.disp, ptr->shape_mask);
-		if (ptr->xim)
-		  XDestroyImage(ptr->xim);
-		if (ptr->sxim)
-		  XDestroyImage(ptr->sxim);
-		if (ptr->prev)
-		  ptr->prev->next = ptr->next;
-		else
-		  id->cache.pixmap = ptr->next;
-		if (ptr->next)
-		  ptr->next->prev = ptr->prev;
-		if (ptr->file)
-		  free(ptr->file);
-		last = ptr;
-		ptr = ptr->prev;
-		free(last);
-		newlast = 1;
-	      }
+	    if (ptr->pmap)
+	      id->cache.used_pixmap -= ptr->width * ptr->height * id->x.depth;
+	    if (ptr->shape_mask)
+	      id->cache.used_pixmap -= ptr->width * ptr->height;
+	    if (ptr->pmap)
+	      XFreePixmap(id->x.disp, ptr->pmap);
+	    if (ptr->shape_mask)
+	      XFreePixmap(id->x.disp, ptr->shape_mask);
+	    if (ptr->xim)
+	      XDestroyImage(ptr->xim);
+	    if (ptr->sxim)
+	      XDestroyImage(ptr->sxim);
+	    if (ptr->prev)
+	      ptr->prev->next = ptr->next;
 	    else
-	      ptr = ptr->prev;
-	    if (id->cache.used_pixmap <= id->cache.size_pixmap)
-	      ptr = NULL;
+	      id->cache.pixmap = ptr->next;
+	    if (ptr->next)
+	      ptr->next->prev = ptr->prev;
+	    if (ptr->file)
+	      free(ptr->file);
+	    last = ptr;
+	    ptr = ptr->prev;
+	    free(last);
 	  }
+	else
+	  ptr = ptr->prev;
+	if (id->cache.used_pixmap <= id->cache.size_pixmap)
+	  ptr = NULL;
       }
   }
 }

@@ -9,7 +9,11 @@
 static char        *
 _SplitID(char *file)
 {
-  char               *p = strrchr(file, ':');
+#ifndef __EMX__
+  char *p = strrchr(file, ':');
+#else
+  char *p = strrchr(file, ';');
+#endif
 
   if (p == NULL)
     return "";
@@ -166,20 +170,7 @@ _LoadPNG(ImlibData * id, FILE * f, int *w, int *h, int *t)
 
   /* Init PNG Reader */
   transp = 0;
-/*
-  if (!strcmp("1.0.2", png_libpng_ver))
-    {
-      fprintf(stderr, "WARNING! You have libpng 1.0.2\n"
-	      "It has a known bug that corrupts images on load.\n"
-	      "please use 1.0.1. PNG support is disabled.\n");
-      data = malloc(broke_width * broke_height * 3);
-      memcpy(data, broke, broke_width * broke_height * 3);
-      *t = 0;
-      *w = broke_width;
-      *h = broke_height;
-      return data;
-    }
-*/
+
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr)
     return NULL;
@@ -200,14 +191,17 @@ _LoadPNG(ImlibData * id, FILE * f, int *w, int *h, int *t)
       return NULL;
     }
   png_init_io(png_ptr, f);
+
   /* Read Header */
   png_read_info(png_ptr, info_ptr);
-  png_get_IHDR(png_ptr, info_ptr, &ww, &hh, &bit_depth, &color_type, &interlace_type,
-	       NULL, NULL);
+  png_get_IHDR(png_ptr, info_ptr, &ww, &hh, 
+	       &bit_depth, &color_type, &interlace_type, NULL, NULL);
   *w = ww;
   *h = hh;
+
   /* Setup Translators */
-  if (color_type == PNG_COLOR_TYPE_PALETTE)
+  if ((color_type == PNG_COLOR_TYPE_PALETTE) ||
+      (color_type == PNG_COLOR_TYPE_GRAY))
     png_set_expand(png_ptr);
   png_set_strip_16(png_ptr);
   png_set_packing(png_ptr);
@@ -280,6 +274,7 @@ _LoadPNG(ImlibData * id, FILE * f, int *w, int *h, int *t)
 	  for (x = 0; x < *w; x++)
 	    {
 	      r = *ptr2++;
+              ptr2++;
 	      *ptr++ = r;
 	      *ptr++ = r;
 	      *ptr++ = r;
@@ -1940,8 +1935,14 @@ Imlib_load_image(ImlibData * id, char *file)
       /* Load Native-as-can-be EIM format (Enlightenment IMlib format) */
       if (!strcmp(file,"-"))
         p = stdin;
-      else
-        p = fopen(fil, "r");
+      else {
+#ifndef __EMX__
+	p = fopen(file, "r");
+#else
+	p = fopen(file, "rt");
+#endif
+	  }
+
       if (!p)
 	{
 	  free(im);
@@ -1966,7 +1967,8 @@ Imlib_load_image(ImlibData * id, char *file)
 	  sscanf(s, "%256s", s1);
 	  if (!strcmp("IMAGE", s1))
 	    {
-	      sscanf(s, "%256s %i %256s %i %i %i %i %i %i %i %i %i", s1, &size, s2, &w, &h, &r, &g, &b, &bl, &br, &bt, &bb);
+	      sscanf(s, "%256s %i %256s %i %i %i %i %i %i %i %i %i", s1, &size,
+		     s2, &w, &h, &r, &g, &b, &bl, &br, &bt, &bb);
 	      if (!iden[0])
 		break;
 	      else if (!strcmp(iden, s2))
@@ -1995,7 +1997,11 @@ Imlib_load_image(ImlibData * id, char *file)
       fclose(p);
       if (iden[0])
 	{
+#ifndef __EMX__
 	  strncat(fil, ":", sizeof(fil) - strlen(fil));
+#else
+	  strncat(fil, ";", sizeof(fil) - strlen(fil));
+#endif
 	  strncat(fil, iden, sizeof(fil) - strlen(fil));
 	}
     }
@@ -2111,7 +2117,12 @@ Imlib_save_image_to_ppm(ImlibData * id, ImlibImage * im, char *file)
 
   if ((!id) || (!im) || (!file))
     return 0;
+#ifndef __EMX__
   f = fopen(file, "w");
+#else
+  f = fopen(file, "wb");
+#endif
+
   if (!f)
     return 0;
 
