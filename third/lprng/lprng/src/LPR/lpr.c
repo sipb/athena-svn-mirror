@@ -43,6 +43,7 @@
  *      -t output from troff(1)
  *      -v a raster image for devices like the Benson Varian.
  *      -wwidth  specify the page width for pr.
+ *      -z send zephyr upon completion
  *      -#num number of copies of each file to be printed.
  ****************************************************************************
  * Implementation:
@@ -161,6 +162,10 @@ M - mail on completetion
   2. Person@fully qualified domainname (note: this may not be the same as
       the H or 'host' information, as the H value may be the short host
       name.
+
+  If the printer has the 'xn' flag set, the M field can also be
+  transport%identifier. Eg, "zephyr%danw@ATHENA.MIT.EDU". (Mail addresses
+  are not normally allowed to have '%' in them.)
 
 Data Files
 

@@ -125,6 +125,20 @@ _("Priority (first letter of Classname) not 'A' (lowest) to 'Z' (highest)") );
 		Bnrname = 0;
 	}
 
+	/* Figure out how to specify '-z' option */
+	if( Zephyr ){
+		if( Extended_notification ){
+			static char m[M_MAILNAME+1];
+
+			plp_snprintf( m, M_MAILNAME + 1, "zephyr%%%s",
+				     Logname );
+			Mailname = m;
+		} else if( Athena_Z_compat || KA ){
+			/* Old Athena lpr/lpd used 'Zusername' for this */
+			Zopts = Logname;
+		}
+	}
+
 	/* check the format */
 
 	DEBUG0("Check_parms: before checking format '%s'", Format );

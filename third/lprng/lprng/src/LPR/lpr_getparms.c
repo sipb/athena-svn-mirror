@@ -32,7 +32,7 @@ static char Zopts_val[SMALLBUFFER];
 static char format_stat[2];
 
 char LPR_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:" ;
+ = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:z" ;
 char LP_optstr[]    /* LP options */
  = 	"Acmprswd:D:f:H:n:o:P:q:S:t:T:y:";
 
@@ -257,6 +257,9 @@ void Get_parms(int argc, char *argv[] )
 			break;
 		case 's':
 			/* symbolic link - quietly ignored */
+			break;
+		case 'z':
+			Zephyr = 1;
 			break;
 		default:
 			usage();
