@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.8 1989-01-23 12:57:22 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.9 1989-01-26 00:08:12 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -220,7 +220,7 @@ int recursed;
 			 }
 			 else {
 			      if (! force)
-				   fprintf(stderr, "%s: %s directory\n",
+				   fprintf(stderr, "%s: %s not empty\n",
 					   whoami, filename);
 			      return(ERROR_MASK);
 			 }
@@ -330,7 +330,7 @@ int recursed;
 	  }
      }
      closedir(dirp);
-     status = status | do_move(filename, stat_buf, status | NO_DELETE_MASK);
+     status = status | do_move(filename, stat_buf, status & NO_DELETE_MASK);
      return(status);
 }
 
