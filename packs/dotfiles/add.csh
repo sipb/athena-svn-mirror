@@ -90,36 +90,38 @@ foreach add_i ($add_dirs)
   endif
 
   if ( $?add_item ) then
-     switch ($?add_env$?add_front)
 
-       case 00:
-         if ( "$PATH" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to end of $PATH
-           setenv PATH $PATH:$add_item
-         endif
-         breaksw
+    echo foo
 
-       case 01:
+    if ( ! $?add_env && ! $?add_front ) then
+      if ( "$PATH" !~ *"$add_item"* ) then
+        if ($?add_verbose) echo $add_item added to end of \$PATH
+        setenv PATH ${PATH}:$add_item
+      endif
+    endif
+
+    echo bar
+
+    if ( ! $?add_env && $?add_front ) then
          if ( "$PATH" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to front of $PATH
+           if ($?add_verbose) echo $add_item added to front of \$PATH
            setenv PATH $add_item:$PATH
          endif
-         breaksw
+    endif
 
-       case 10:
+    if ( $?add_env && ! $?add_front ) then
          if ( "$athena_path" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to end of $athena_path
+           if ($?add_verbose) echo $add_item added to end of \$athena_path
            set athena_path ($athena_path $add_item)
          endif
-         breaksw
+    endif
 
-       case 11:
+    if ( $?add_env && $?add_front) then
          if ( "$athena_path" !~ *"$add_item"* ) then
-           if ($?add_verbose) echo $add_item added to front of $athena_path
+           if ($?add_verbose) echo $add_item added to front of \$athena_path
            set athena_path ($add_item $athena_path)
          endif
-         breaksw
-     endsw
+    endif
   else
     if ( $?add_warn ) then
       echo add: warning: $add_i has no binaries
