@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.4 1997-05-04 04:57:59 ghudson Exp $
+# $Id: finish-update.sh,v 1.5 1997-05-15 03:43:01 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -30,11 +30,16 @@ DEADFILES=/var/athena/update.deadfiles
 . $CONFDIR/rc.conf
 newvers=`awk '{a=$7} END {print a}' $CONFDIR/version`
 
-# On the SGI, un-suppress network daemons.
 case "$HOSTTYPE" in
 sgi)
+	# Un-suppress network daemons.
 	echo "Un-suppressing network daemons for next reboot"
 	chkconfig -f suppress-network-daemons off
+	;;
+sun4)
+	# On Solaris we get run before inetsvc (since we don't want to run
+	# inetd), which means named isn't running.  Run it.
+	/usr/sbin/in.named
 	;;
 esac
 
