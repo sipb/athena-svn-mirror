@@ -263,9 +263,10 @@ real_list_dirs (BonoboConfigDatabase *db,
 	}
 
 	key_list = Bonobo_KeyList__alloc ();
-	key_list->_length = len = g_slist_length (gcl);
+	key_list->_length = 0;
+	len = g_slist_length (gcl);
 
-	if (!key_list->_length)
+	if (!len)
 		return key_list;
 	
 	key_list->_buffer = CORBA_sequence_CORBA_string_allocbuf (len);
@@ -304,9 +305,10 @@ real_list_keys (BonoboConfigDatabase *db,
 	}
 
 	key_list = Bonobo_KeyList__alloc ();
-	key_list->_length = len = g_slist_length (gcl);
+	key_list->_length = 0;
+	len = g_slist_length (gcl);
 
-	if (!key_list->_length)
+	if (!len)
 		return key_list;
 	
 	key_list->_buffer = CORBA_sequence_CORBA_string_allocbuf (len);
@@ -315,7 +317,7 @@ real_list_keys (BonoboConfigDatabase *db,
 	for (l = gcl; l != NULL; l = l->next) {
 		ge = (GConfEntry *)l->data;
 		key_list->_buffer [key_list->_length] = 
-			CORBA_string_dup (ge->key);
+			CORBA_string_dup (g_basename (ge->key));
 		gconf_entry_free (ge);
 		key_list->_length++;
 	}

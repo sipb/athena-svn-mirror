@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -397,12 +397,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-Bonobo_Config-common.lo Bonobo_Config-common.o : Bonobo_Config-common.c \
-	Bonobo_Config.h
-Bonobo_Config-skels.lo Bonobo_Config-skels.o : Bonobo_Config-skels.c \
-	Bonobo_Config.h
-Bonobo_Config-stubs.lo Bonobo_Config-stubs.o : Bonobo_Config-stubs.c \
-	Bonobo_Config.h
 bonobo-config-bag-property.lo bonobo-config-bag-property.o : \
 	bonobo-config-bag-property.c ../config.h \
 	bonobo-config-bag-property.h bonobo-config-bag.h \
@@ -465,6 +459,12 @@ bonobo-property-proxy.lo bonobo-property-proxy.o : \
 	bonobo-property-bag-proxy.h
 bonobo-subproperty.lo bonobo-subproperty.o : bonobo-subproperty.c \
 	bonobo-subproperty.h bonobo-property-editor.h Bonobo_Config.h
+Bonobo_Config-common.lo Bonobo_Config-common.o : Bonobo_Config-common.c \
+	Bonobo_Config.h
+Bonobo_Config-skels.lo Bonobo_Config-skels.o : Bonobo_Config-skels.c \
+	Bonobo_Config.h
+Bonobo_Config-stubs.lo Bonobo_Config-stubs.o : Bonobo_Config-stubs.c \
+	Bonobo_Config.h
 config-moniker-demo.o: config-moniker-demo.c bonobo-config-database.h \
 	Bonobo_Config.h bonobo-preferences.h bonobo-config-control.h \
 	bonobo-property-editor.h bonobo-property-frame.h \
