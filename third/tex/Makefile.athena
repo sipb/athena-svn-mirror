@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.6 1997-02-27 21:26:22 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 1998-12-04 18:55:02 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -20,12 +20,13 @@ clean:
 	cd lib && ${MAKE} clean
 
 all:
-	cd web2c && ${MAKE} programs
-	cd web2c && MFINPUTS=`pwd`/../lib/mf// ${MAKE} bases
+	cd web2c && ${MAKE} do-kpathsea
+	cd web2c/web2c && ${MAKE} programs
+	wd=`pwd`; cd web2c/web2c && MFINPUTS=$$wd/lib/mf// ${MAKE} bases
 	cd lib && ${MAKE} all
-	cd web2c && TEXINPUTS=.:`pwd`/../lib/tex// \
-		TEXFONTS=`pwd`/../lib/tex// ${MAKE} fmts
-	cd web2c && ${MAKE} manpages
+	wd=`pwd`; cd web2c/web2c && TEXINPUTS=.:$$wd/lib/tex// \
+		TEXFONTS=$$wd/lib/tex// ${MAKE} fmts
+	cd web2c/web2c && ${MAKE} manpages
 	cd xdvi && ${MAKE} all
 	cd dvips/dvips && ${MAKE} CC="$$COMPILER" all
 
