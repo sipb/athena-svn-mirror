@@ -1,0 +1,38 @@
+[Desktop Entry]
+Name=Metacity
+Name[bg]=Метасити
+Name[cs]=Metacity
+Name[da]=Metacity
+Name[de]=Metacity
+Name[el]=Metacity
+Name[es]=Metacity
+Name[fi]=Metacity
+Name[fr]=Metacity
+Name[he]=מטאסיטי
+Name[hu]=Metacity
+Name[ja]=Metacity
+Name[ko]=메타시티
+Name[lv]=Metacity
+Name[ms]=Metacity
+Name[nl]=Metacity
+Name[no]=Metacity
+Name[pl]=Metacity
+Name[pt_BR]=Metacity
+Name[ro]=Metacity
+Name[ru]=Metacity
+Name[sk]=Metacity
+Name[sl]=Metacity
+Name[sv]=Metacity
+Name[vi]=Metacity
+Name[zh_CN]=Metacity
+Name[zh_TW]=Metacity
+Exec=metacity
+# name of loadable control center module
+X-GNOME-WMSettingsModule=metacity
+# name we put on the WM spec check window
+X-GNOME-WMName=Metacity
+# back compat only 
+X-GnomeWMSettingsLibrary=metacity
+
+[Window Manager]
+SessionManaged=true
