@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.17 1991-01-23 15:17:31 lwvanels Exp $
+ *	$Id: t_status.c,v 1.18 1991-02-24 11:41:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.17 1991-01-23 15:17:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.18 1991-02-24 11:41:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -407,13 +407,13 @@ get_status_string(status,string)
 
 t_pp_stati()
 {
-  int index = 0;
+  int ind = 0;
   int i = 0;
 
-  while (Status_Table[index].status != UNKNOWN_STATUS)
+  while (Status_Table[ind].status != UNKNOWN_STATUS)
     {
-      printf("\t\t%-10s",Status_Table[index].label);
-      index++;
+      printf("\t\t%-10s",Status_Table[ind].label);
+      ind++;
       ++i;
       if(i > 2)
 	{

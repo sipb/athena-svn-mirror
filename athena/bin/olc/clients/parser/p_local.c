@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v $
- *	$Id: p_local.c,v 1.9 1990-11-14 12:25:37 lwvanels Exp $
+ *	$Id: p_local.c,v 1.10 1991-02-24 11:38:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.9 1990-11-14 12:25:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_local.c,v 1.10 1991-02-24 11:38:11 lwvanels Exp $";
 #endif
 #endif
 
@@ -119,7 +119,7 @@ do_olc_help(arguments)
 	char *arguments[];
 {
   char help_filename[NAME_SIZE]; /* Name of help file. */
-  int  index;
+  int  ind;
 
   if (arguments[1] == (char *)NULL) 
     {
@@ -132,17 +132,17 @@ do_olc_help(arguments)
       (void) strcpy(help_filename, HELP_DIR);
       (void) strcat(help_filename, "/");
 
-      if ((index = command_index(Command_Table, arguments[1])) == ERROR)
+      if ((ind = command_index(Command_Table, arguments[1])) == ERROR)
 	{
 	  printf("The command \"%s\" is not defined.  ", arguments[1]);
 	  printf("For a list of commands, type \"?\".\n");
 	  return(ERROR);
 	}
       else
-	if (index == NOT_UNIQUE)
+	if (ind == NOT_UNIQUE)
 	  return(NOT_UNIQUE);
 
-      (void) strcat(help_filename, Command_Table[index]);
+      (void) strcat(help_filename, Command_Table[ind]);
     }
 
   (void) strcat(help_filename, HELP_EXT);
