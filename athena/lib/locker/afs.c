@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.5 1999-06-04 14:06:40 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.6 1999-06-04 20:53:34 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -78,6 +78,8 @@ struct locker_ops locker__afs_ops = {
 
 static int afs_get_cred(char *name, char *inst, char *realm,
 			CREDENTIALS *cred);
+static int afs_maybe_auth_to_cell(locker_context context, char *name,
+				  char *cell, int op, int force);
 
 static int afs_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp)
@@ -321,8 +323,7 @@ static int afs_auth(locker_context context, locker_attachent *at,
 		    int mode, int op)
 {
   char *cell, *p;
-  int status, cellnum;
-  struct ktc_principal princ;
+  int status;
 
   if (op != LOCKER_AUTH_AUTHENTICATE)
     return LOCKER_SUCCESS;
@@ -336,35 +337,27 @@ static int afs_auth(locker_context context, locker_attachent *at,
   p = strchr(cell, '/');
   if (p)
     *p = '\0';
-
-  /* Check if we already have tokens for this cell. */
-  cellnum = 0;
-  while (!ktc_ListTokens(cellnum, &cellnum, &princ))
-    {
-      if (!strcmp(princ.cell, cell))
-	{
-	  if (p)
-	    *p = '/';
-	  return LOCKER_SUCCESS;
-	}
-    }
-
-  status = locker_auth_to_cell(context, at->name, cell, op);
+  status = afs_maybe_auth_to_cell(context, at->name, cell, op, 0);
   if (p)
     *p = '/';
   return status;
 }
 
-int locker_auth_to_cell(locker_context context, char *name, char *cell,
-			int op)
+int locker_auth_to_cell(locker_context context, char *name, char *cell, int op)
+{
+  return afs_maybe_auth_to_cell(context, name, cell, op, 1);
+}
+
+static int afs_maybe_auth_to_cell(locker_context context, char *name,
+				  char *cell, int op, int force)
 {
   char *crealm, urealm[REALM_SZ], *user;
   CREDENTIALS cred;
   int status;
   struct afsconf_dir *configdir;
   struct afsconf_cell cellconfig;
-  struct ktc_principal server, client;
-  struct ktc_token token;
+  struct ktc_principal server, client, xclient;
+  struct ktc_token token, xtoken;
   long vice_id;
   uid_t uid = geteuid(), ruid = getuid();
 
@@ -477,6 +470,24 @@ int locker_auth_to_cell(locker_context context, char *name, char *cell,
   strcpy(server.instance, "");
   strncpy(server.cell, cell, MAXKTCREALMLEN - 1);
   server.cell[MAXKTCREALMLEN - 1] = '\0';
+
+  if (!force)
+    {
+      /* Check for an existing token. */
+      status = ktc_GetToken(&server, &xtoken, sizeof(token), &xclient);
+      if (!status)
+	{
+	  /* Don't get tokens as another user. */
+	  if (strcmp(xclient.name, client.name) ||
+	      strcmp(xclient.instance, client.instance) ||
+	      strcmp(xclient.cell, client.cell))
+	    return LOCKER_SUCCESS;
+
+	  /* Don't get tokens that won't last longer than existing tokens. */
+	  if (token.endTime <= xtoken.endTime)
+	    return LOCKER_SUCCESS;
+	}
+    }
 
   /* Store the token. */
   status = ktc_SetToken(&server, &token, &client, 0);
