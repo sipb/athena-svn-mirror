@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.1 1989-01-23 02:16:59 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.2 1989-01-23 02:23:35 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -60,7 +60,6 @@
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 char *whoami;
-char *error_buf;
 char *lastpart(), *malloc();
 
 main(argc, argv)
@@ -74,12 +73,6 @@ char *argv[];
      
      whoami = lastpart(argv[0]);
 
-     error_buf = malloc(strlen(whoami) + MAXPATHLEN + 3);
-     if (! error_buf) {
-	  fprintf(stderr, "%s: error malloc'ing space for error buffer.\n",
-		  whoami);
-	  exit(1);
-     }
      force = interactive = recursive = noop = verbose = filesonly =
 	  directoriesonly = 0;
      while ((arg = getopt(argc, argv, "firnvFD")) != -1) {
