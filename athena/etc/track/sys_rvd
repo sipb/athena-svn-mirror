@@ -4,17 +4,20 @@ GLOBAL *.CKP #* *~
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/sys_rvd,v 1.1 1987-03-05 18:55:17 rfrench Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/sys_rvd,v 1.2 1987-08-24 01:20:23 treese Exp $
 
-	/vmunix::::
-	/boot::::
+# We'll want to track the . files on public workstations.
+#	/.profile::::
+#	/.login::::
+#	/.cshrc::::
+#	/.rhosts::::
 	/etc:::			# These are specific to each machine.
-		rc
-		rc.common
 		rc.local
+		rc.conf
 		fstab
 		mtab
 		ttys
+		nocreate
 		utmp
 		dumpdates
 		syslog.pid
@@ -23,13 +26,33 @@ GLOBAL *.CKP #* *~
 		hosts
 		passwd
 		passwd.local
-		passwd.dir
-		passwd.pag
+		named.local
 		group
+		srvtab
+		version
+		X0.hosts
+			# The following are symbolic links; no update is
+			# needed
+		diskpart
+		renice
+		termcap
 		:
-			# handle the shells below
-	/bin::::
-	/lib::::
-	/dev:::
-		tty*
+			# The following are symbolic links; no update is
+			# needed
+	/bin:::
+		ar
+		as
+		cc
+		ld
+		mail
+		make
+		nice
+		pagesize
+		pr
+		rmail
+		time
+		wall
+		write
 		:
+	/usr::::
+
