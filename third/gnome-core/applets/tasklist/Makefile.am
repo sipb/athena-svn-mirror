@@ -7,29 +7,45 @@ INCLUDES = -I. -I$(srcdir) 				\
 	-I$(top_builddir)/panel \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	$(GNOME_INCLUDEDIR)		\
-	-DVERSION=\""$(VERSION)"\" \
 	@PIXBUF_CFLAGS@
 
 bin_PROGRAMS = tasklist_applet
+#lib_LTLIBRARIES = libtasklist_applet.la
 
-tasklist_applet_SOURCES = tasklist_applet.c \
-			  tasklist_config.c \
-			  tasklist_icon.c \
-			  tasklist_menu.c \
-			  tasklist_properties.c \
-			  gstc.c \
-			  gwmh.c
+tasklist_applet_SOURCES = 	\
+	pixmaps.h		\
+	tasklist_applet.c 	\
+	tasklist_applet.h	\
+	tasklist_config.c 	\
+	tasklist_icon.c 	\
+	tasklist_menu.c 	\
+	tasklist_properties.c 	\
+	gstc.c 		\
+	gwmh.c
 
-tasklist_applet_LDADD = ../../panel/libpanel_applet.la \
-		     $(GNOME_LIBDIR) $(ORB_LIBS)         \
-		     $(GNOMEUI_LIBS) $(GNORBA_LIBS)      \
-		     $(INTLLIBS) @PIXBUF_LIBS@
 
-EXTRA_DIST = \
-	pixmaps.h \
-	tasklist_applet.h \
-	tasklist_applet.gnorba \
-	tasklist_applet.desktop \
+#libtasklist_applet_la_SOURCES =\
+#	pixmaps.h 		\
+#	tasklist_applet.h 	\
+#	tasklist_applet.c 	\
+#	tasklist_config.c 	\
+#	tasklist_icon.c 	\
+#	tasklist_menu.c 	\
+#	tasklist_properties.c 	\
+#	gstc.c 			\
+#	gwmh.c
+
+#libtasklist_applet_la_LIBADD =				\
+
+tasklist_applet_LDADD = 			\
+	../../panel/libpanel_applet.la 		\
+	$(GNOME_LIBDIR) $(ORB_LIBS)		\
+	$(GNOMEUI_LIBS) $(GNORBA_LIBS)		\
+	$(INTLLIBS) @PIXBUF_LIBS@
+
+EXTRA_DIST = 			\
+	tasklist_applet.gnorba 	\
+	tasklist_applet.desktop	\
 	unknown.xpm		\
 	gnome-tasklist.png
 

@@ -6,7 +6,20 @@ INCLUDES = 			\
 
 bin_PROGRAMS = gmenu
 
+icon_entry_hack_dir = $(top_srcdir)/panel
+
+ICON_ENTRY_HACK_SRCLIST = \
+	icon-entry-hack.c		\
+	icon-entry-hack.h
+
+$(ICON_ENTRY_HACK_SRCLIST):
+	for file in $(ICON_ENTRY_HACK_SRCLIST); do \
+		echo $$file ; \
+		ln -sf $(icon_entry_hack_dir)/$$file . ; \
+	done
+
 gmenu_SOURCES =	\
+	$(ICON_ENTRY_HACK_SRCLIST)	\
 	desktop.c		\
 	edit.c			\
 	gmenu.h			\
@@ -24,6 +37,8 @@ gmenu_LDADD = \
 	$(GNOME_LIBDIR)					\
 	$(GNOMEUI_LIBS)					\
 	$(INTLLIBS)
+
+BUILT_SOURCES = $(ICON_ENTRY_HACK_SRCLIST)
 
 EXTRA_DIST = gmenu.desktop top.xpm unknown.xpm
 

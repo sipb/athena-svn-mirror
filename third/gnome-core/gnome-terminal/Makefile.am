@@ -3,24 +3,18 @@
 # Documentation
 SUBDIRS = C de da es it no
 
-INCLUDES = 			\
-	-I$(top_srcdir)/intl	\
-	-I$(top_builddir)/intl	\
-	$(GNOME_INCLUDEDIR)	\
+INCLUDES = 						\
+	-I$(top_srcdir)/intl				\
+	-I$(top_builddir)/intl				\
+	$(GNOME_TERMINAL_CFLAGS)			\
+	-DGNOME_TERMINAL_GLADEDIR=\""$(gladedir)"\"	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 LDADD = \
-	$(GNOME_LIBDIR)					\
-	$(GNORBA_LIBS)					\
-	$(ORB_LIBS)					\
-	$(GNOMEUI_LIBS)					\
-	$(ZVT_LIBS)					\
+	$(GNOME_TERMINAL_LIBS)	\
 	$(INTLLIBS)
 
-
 bin_PROGRAMS = gnome-terminal
-
-EXTRA_DIST = gnome-terminal.desktop gnome-terminal.gnorba
 
 CORBA_GENERATED =		\
 	Terminal.h		\
@@ -49,3 +43,17 @@ gnorba_DATA = gnome-terminal.gnorba
 
 utildir = $(datadir)/gnome/apps/System
 util_DATA = gnome-terminal.desktop
+
+gladedir   = $(datadir)/gnome-terminal/glade
+glade_DATA = gnome-terminal.glade
+glade_msgs = gnome-terminal.glade.h
+
+man_MANS = gnome-terminal.1
+
+EXTRA_DIST =				\
+	$(gnorba_DATA) 			\
+	$(util_DATA)			\
+	$(glade_DATA)			\
+	$(glade_msgs)			\
+	$(man_MANS)
+

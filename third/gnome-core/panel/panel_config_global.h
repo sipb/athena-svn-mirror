@@ -19,8 +19,10 @@ struct _GlobalConfig {
 	PanelMovementType movement_type;
 	gboolean disable_animations;
 	int applet_padding;
+	int applet_border_padding;
 	gboolean autoraise;
 	gboolean keep_bottom;
+	gboolean normal_layer;
 	gboolean drawer_auto_close;
 	gboolean simple_movement;
 	gboolean tiles_enabled[LAST_TILE];
@@ -44,6 +46,8 @@ struct _GlobalConfig {
 	gboolean use_large_icons;
 	gboolean merge_menus;
 	gboolean fast_button_scaling;
+	gboolean avoid_collisions;
+	gboolean menu_check;
 };
 
 #endif /* PANEL_CONFIG_GLOBAL_H */

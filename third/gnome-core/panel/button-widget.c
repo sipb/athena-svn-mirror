@@ -10,6 +10,7 @@
 #include "panel-widget.h"
 #include "basep-widget.h"
 #include "panel-types.h"
+#include "panel-util.h"
 #include "panel_config_global.h"
 #include "rgb-stuff.h"
 
@@ -374,22 +375,23 @@ button_widget_destroy(GtkWidget *w, gpointer data)
 }
 
 static GdkPixbuf *
-loadup_file(char *file)
+loadup_file(const char *file)
 {
 	GdkPixbuf *pb = NULL;
 	
-	if(!file || !*file)
+	if (string_empty (file))
 		return NULL;
 
-	if(!g_path_is_absolute(file)) {
+	if ( ! g_path_is_absolute(file)) {
 		char *f;
 		f = gnome_pixmap_file (file);
-		if(f) {
+		if (f != NULL) {
 			pb = gdk_pixbuf_new_from_file(f);
-			g_free(f);
+			g_free (f);
 		}
-	} else
+	} else {
 		pb = gdk_pixbuf_new_from_file (file);
+	}
 	return pb;
 }
 
@@ -594,17 +596,20 @@ button_widget_draw(ButtonWidget *button, guchar *rgb, int rowstride)
 
 	if(tiles_enabled[button->tile]) {
 		GdkPixbuf *pb = NULL;
-		if(button->pressed && button->in_button) {
+		if (button->pressed &&
+		    button->in_button) {
+			/* Pressed down */
 			if(!global_config.saturate_when_over ||
 			   !button->in_button) {
 				pb = tiles.tiles_down[button->tile];
 			} else {
 				pb = tiles.tiles_down_hc[button->tile];
 			}
-		} else if (!global_config.tile_when_over ||
-			   button->in_button) {
-			if(!global_config.saturate_when_over ||
-			   !button->in_button) {
+		} else if ( ! global_config.tile_when_over ||
+			    button->in_button) {
+			/* not pressed */
+			if( ! global_config.saturate_when_over ||
+			    ! button->in_button) {
 				pb = tiles.tiles_up[button->tile];
 			} else {
 				pb = tiles.tiles_up_hc[button->tile];
@@ -627,9 +632,9 @@ button_widget_draw(ButtonWidget *button, guchar *rgb, int rowstride)
 
 			art_affine_identity (affine);
 
-			transform_pixbuf(rgb, 0, 0, size, size,
-					 rowstride, scaled_pb, affine,
-					 ART_FILTER_NEAREST, NULL);
+			transform_pixbuf (rgb, 0, 0, size, size,
+					  rowstride, scaled_pb, affine,
+					  ART_FILTER_NEAREST, NULL);
 
 			gdk_pixbuf_unref (scaled_pb);
 		}
@@ -1022,12 +1027,12 @@ make_hc_pixbuf(GdkPixbuf *pb)
 
 
 GtkWidget*
-button_widget_new(char *filename,
+button_widget_new(const char *filename,
 		  int size,
 		  int tile,
 		  gboolean arrow,
 		  PanelOrientType orient,
-		  char *text)
+		  const char *text)
 {
 	ButtonWidget *button;
 
@@ -1036,7 +1041,7 @@ button_widget_new(char *filename,
 
 	button = BUTTON_WIDGET (gtk_type_new (button_widget_get_type ()));
 	
-	button->pixbuf = loadup_file(filename);
+	button->pixbuf = loadup_file (filename);
 	if (!button->pixbuf) {
 	  button->pixbuf = loadup_file("gnome-unknown.png");
 	  /* Label this button, regardless of the user's preferences. */
@@ -1044,13 +1049,13 @@ button_widget_new(char *filename,
 	} else {
 	  button->force_label = 0;
 	}
-	button->pixbuf_hc = make_hc_pixbuf(button->pixbuf);
-	button->filename = g_strdup(filename);
+	button->pixbuf_hc = make_hc_pixbuf (button->pixbuf);
+	button->filename = g_strdup (filename);
 	button->size = size;
 	button->tile = tile;
-	button->arrow = arrow?1:0;
+	button->arrow = arrow ? 1 : 0;
 	button->orient = orient;
-	button->text = text?g_strdup(text):NULL;
+	button->text = text ? g_strdup (text) : NULL;
 
 	setup_no_alpha(button);
 	
@@ -1058,17 +1063,17 @@ button_widget_new(char *filename,
 }
 
 gboolean
-button_widget_set_pixmap(ButtonWidget *button, char *pixmap, int size)
+button_widget_set_pixmap(ButtonWidget *button, const char *pixmap, int size)
 {
 	g_return_val_if_fail(button != NULL, FALSE);
 	g_return_val_if_fail(IS_BUTTON_WIDGET(button), FALSE);
 
-	if(size < 0)
+	if (size < 0)
 		size = PANEL_WIDGET(GTK_WIDGET(button)->parent)->sz;
 	
-	if(button->pixbuf)
+	if (button->pixbuf != NULL)
 		gdk_pixbuf_unref(button->pixbuf);
-	if(button->pixbuf_hc)
+	if (button->pixbuf_hc != NULL)
 		gdk_pixbuf_unref(button->pixbuf_hc);
 
 	button->pixbuf = loadup_file(pixmap);
@@ -1084,21 +1089,21 @@ button_widget_set_pixmap(ButtonWidget *button, char *pixmap, int size)
 	g_free(button->filename);
 	button->filename = g_strdup(pixmap);
 	button->size = size;
-	if(button->cache)
+	if (button->cache != NULL)
 		gdk_pixmap_unref(button->cache);
 	button->cache = NULL;
 
 	panel_widget_draw_icon(PANEL_WIDGET(GTK_WIDGET(button)->parent),
 			       button);
 
-	if(!button->pixbuf)
+	if (button->pixbuf == NULL)
 		return FALSE;
 	
 	return TRUE;
 }
 
 void
-button_widget_set_text(ButtonWidget *button, char *text)
+button_widget_set_text(ButtonWidget *button, const char *text)
 {
 	g_return_if_fail(button != NULL);
 	g_return_if_fail(IS_BUTTON_WIDGET(button));
@@ -1106,7 +1111,7 @@ button_widget_set_text(ButtonWidget *button, char *text)
 	g_free(button->text);
 	button->text = text?g_strdup(text):NULL;
 
-	if(button->cache)
+	if (button->cache != NULL)
 		gdk_pixmap_unref(button->cache);
 	button->cache = NULL;
 	
@@ -1139,7 +1144,7 @@ button_widget_set_params(ButtonWidget *button,
 }
 
 void
-button_widget_load_tile(int tile, char *tile_up, char *tile_down,
+button_widget_load_tile(int tile, const char *tile_up, const char *tile_down,
 			int border, int depth)
 {
 	GdkPixbuf *pb;
@@ -1175,19 +1180,19 @@ button_widget_load_tile(int tile, char *tile_up, char *tile_down,
 
 void
 button_widget_set_flags(int tile,
-			gboolean _tiles_enabled,
-			gboolean _pixmaps_enabled,
-			gboolean _always_text)
+			gboolean enable_tiles,
+			gboolean enable_pixmaps,
+			gboolean text_always)
 {
-	g_return_if_fail(tile >= 0);
-	g_return_if_fail(tile < LAST_TILE);
+	g_return_if_fail (tile >= 0);
+	g_return_if_fail (tile < LAST_TILE);
 
-	if(tiles_enabled[tile] != _tiles_enabled ||
-	   pixmaps_enabled[tile] != _pixmaps_enabled ||
-	   always_text[tile] != _always_text) {
-		tiles_enabled[tile] = _tiles_enabled;
-		pixmaps_enabled[tile] = _pixmaps_enabled;
-		always_text[tile] = _always_text;
+	if(tiles_enabled[tile] != enable_tiles ||
+	   pixmaps_enabled[tile] != enable_pixmaps ||
+	   always_text[tile] != text_always) {
+		tiles_enabled[tile] = enable_tiles;
+		pixmaps_enabled[tile] = enable_pixmaps;
+		always_text[tile] = text_always;
 
 		button_widget_redo_all ();
 	}
