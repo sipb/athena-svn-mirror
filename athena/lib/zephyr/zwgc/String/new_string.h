@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/String/new_string.h,v $
- *      $Author: jtkohl $
- *	$Id: new_string.h,v 1.1 1989-11-08 14:20:47 jtkohl Exp $
+ *      $Author: probe $
+ *	$Id: new_string.h,v 1.2 1994-08-18 14:56:00 probe Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #ifndef string_TYPE
 #define string_TYPE
 
-#include <strings.h>
+#include <string.h>
 #include "new_memory.h"
 
 typedef char *string;
