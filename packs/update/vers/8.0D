@@ -21,9 +21,10 @@ EOM
 
 	# Fix address line in /etc/athena/rc.conf if necessary.
 	if [ "`ifconfig -a | grep -c "$ADDR"`" -eq 0 ]; then
-		# Resolving $HOST might be better, but I'm loathe to rely on
-		# name resolution when we've removed so many files in earlier
-		# update scripts.
+		# Resolving $HOST might be better, but we don't have name
+		# service during an update.  If someone's using an interface
+		# other than le0, this will bite them, but only if their
+		# rc.conf file is wrong in the first place.
 		ADDR="`ifconfig le0 | awk '/^	inet/ { print $2 }'`"
 		ed -s /etc/athena/rc.conf << EOM
 /^ADDR=/c
