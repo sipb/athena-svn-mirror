@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.18 1988-02-05 14:58:04 jtkohl Exp $";
+static char rcsid_bdump_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.19 1988-02-06 00:07:00 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -294,7 +294,8 @@ ZServerDesc_t *server;
 	int reserved_port = IPPORT_RESERVED - 1;
 #endif KERBEROS
 
-	zdbug((LOG_DEBUG, "bdump avail"));
+	if (zdebug)
+		(LOG_DEBUG, "bdump avail %s",inet_ntoa(who->sin_addr));
 
 	/* version number 1 is the same as no version number */
 	if (strcmp(notice->z_class_inst, "1")
@@ -1144,17 +1145,18 @@ static int
 net_write(fd, buf, len)
 int fd;
 register char *buf;
-register int len;
+int len;
 {
     int cc;
+    register int wrlen = len;
     do {
-	cc = write(fd, buf, len);
+	cc = write(fd, buf, wrlen);
 	if (cc < 0)
 	    return(cc);
 	else {
 	    buf += cc;
-	    len -= cc;
+	    wrlen -= cc;
 	}
-    } while (len > 0);
+    } while (wrlen > 0);
     return(len);
 }
