@@ -1,3 +1,5 @@
+/* $Id: locker.h,v 1.3 1999-03-22 21:05:05 danw Exp $ */
+
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
