@@ -589,7 +589,7 @@ decode_princ_key(key, name, instance)
     char   *name, *instance;
 {
     strncpy(name, key->dptr, ANAME_SZ);
-    strncpy(instance, key->dptr + ANAME_SZ, INST_SZ);
+    strncpy(instance, (char *)key->dptr + ANAME_SZ, INST_SZ);
     name[ANAME_SZ - 1] = '\0';
     instance[INST_SZ - 1] = '\0';
 }
