@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.2 1993-05-25 14:19:05 root Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.3 1993-05-25 14:27:31 root Exp $
 	.:::
 		*4c
 		ufsboot
@@ -37,6 +37,7 @@ GLOBAL : *.CKP *.local *.pid :
 		dumpdates
 		ftpusers
 		group
+		hosts
 		hostname.le0
 		inetd.conf
 		motd
