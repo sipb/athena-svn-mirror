@@ -265,8 +265,10 @@ oaf_activate (const char *requirements, char *const *selection_order,
  */
 
 CORBA_Object
-oaf_activate_from_id (const OAF_ActivationID aid, OAF_ActivationFlags flags,
-		      OAF_ActivationID * ret_aid, CORBA_Environment * ev)
+oaf_activate_from_id (const OAF_ActivationID aid, 
+                      OAF_ActivationFlags flags,
+		      OAF_ActivationID *ret_aid,
+                      CORBA_Environment *ev)
 {
 	CORBA_Object retval = CORBA_OBJECT_NIL;
 	OAF_ActivationResult *res;
@@ -275,30 +277,24 @@ oaf_activate_from_id (const OAF_ActivationID aid, OAF_ActivationFlags flags,
 	OAFActivationInfo *ai;
 
 	g_return_val_if_fail (aid, CORBA_OBJECT_NIL);
-	ac = oaf_activation_context_get ();
-	g_return_val_if_fail (ac, CORBA_OBJECT_NIL);
+
+        if (!ev) {
+		ev = &myev;
+		CORBA_exception_init (&myev);
+	}
+
+        ac = oaf_internal_activation_context_get_extended ((flags & OAF_FLAG_EXISTING_ONLY) != 0, ev);
+
+        if (ac == CORBA_OBJECT_NIL)
+                goto out;
 
 	ai = oaf_actid_parse (aid);
 
-	if (ai) {		
+ 	if (ai != NULL) {		
                 /* This is so that using an AID in an unactivated OD will work nicely */
-                OAFRegistrationCategory regcat;
-
-		memset (&regcat, 0, sizeof (regcat));
-		regcat.name = "IDL:OAF/ObjectDirectory:1.0";
-		regcat.session_name = oaf_session_name_get ();
-		regcat.username = ai->user;
-		regcat.hostname = ai->host;
-		regcat.domain = ai->domain;
-
-		oaf_service_get (&regcat);
+                oaf_object_directory_get (ai->user, ai->host, ai->domain);
 
 		oaf_actinfo_free (ai);
-	}
-
-	if (!ev) {
-		ev = &myev;
-		CORBA_exception_init (&myev);
 	}
 
 	res = OAF_ActivationContext_activate_from_id (ac, aid, flags,

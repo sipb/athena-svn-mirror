@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf CVS\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
 "PO-Revision-Date: 2000-08-24 20:00-0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <ga@li.org>\n"
@@ -12,75 +12,117 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO_8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
 msgstr ""
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
 msgstr ""
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr ""
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr ""
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr ""
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr ""
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr ""
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr ""
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Teip ar 'Exec': %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr ""
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr ""
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr ""
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr ""
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr ""
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr ""
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr ""
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr ""
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr ""
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
+msgid "Directory to read .oaf files from"
 msgstr ""
 
 #: oafd/main.c:62
@@ -113,6 +155,13 @@ msgstr ""
 
 #: oafd/od-activate.c:62
 msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
 msgstr ""
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
@@ -203,6 +252,5 @@ msgstr ""
 msgid "Display path to OAF configuration file"
 msgstr ""
 
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr ""
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "Teip ar 'Exec': %d (%s)\n"

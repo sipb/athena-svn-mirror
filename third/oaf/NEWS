@@ -1,4 +1,39 @@
 ===================================
+oaf-0.6.7
+---------
+
+New in this release:
+
+* Fix major race condition which could lead to multiple oafd's (Michael, Maciej)
+* Miscellaneous bug fixes (Darin, Jody)
+* FreeBSD fixes (Chris Toshok)
+* Build fixes (Darin, Maciej)
+* Merge lots of bug fixes from former 2.0 branch (Maciej)
+* spec file updates (Gregory)
+
+===================================
+oaf-0.6.6
+---------
+
+New in this release:
+
+* New translations (Kjartan, Fatih Demir, Abel Cheung)
+* oaf-slay rewritten (Dan, Brian Cameron)
+* Make oafd become process group leader (Havoc)
+* Improve error reporting (Havoc, Maciej)
+* Some helpful debugging output when OAF_DEBUG_OUTPUT is set (Maciej) 
+* Assorted bug fixes (Maciej, Richard Hult)
+* Minor doc updates (Maciej)
+* Better exceptions (Michael, Jacob)
+* Add missing includes (Kjartan)
+* oafd launching bug fixes (Maciej)
+* Build fixes (Michael, Darin, Maciej)
+* Fixed potential slow activation problems (Peter Williams)
+* Doc build fixes (Robey)
+* Made oaf.idl includable, even though this is evil and should not be done (Rusty)
+* Solaris build fixes (Seth Nickell, Peter Williams, Laszlo Peter)
+
+===================================
 oaf-0.6.5
 ---------
 

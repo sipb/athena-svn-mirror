@@ -25,6 +25,7 @@
 
 
 #include "oaf-util.h"
+#include <string.h>
 
 /**
  * oaf_server_info_prop_find:

@@ -1,6 +1,461 @@
+2001-10-26  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* NEWS, configure.in: Updated for 0.6.7
+	* api-docs/Makefile.am: Fix distcheck.
+
+2001-10-25  Yanko Kaneti  <yaneti@declera.com>
+
+        * configure.in (ALL_LINGUAS): Added "bg" bulgarian to the language list
+
+2001-10-13  Carlos Perelló Marín <carlos@gnome-db.org>
+
+        * configure.in (ALL_LINGUAS): Added pt
+
+2001-10-11  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* oafd/main.c: /s/oafinfo/oaf/
+
+2001-10-11  Darin Adler  <darin@bentspoon.com>
+
+	* oafd/ac-query-parse.y: Remove the definition of
+	YYSTACK_USE_ALLOCA. As Elliot says, it's not legal according to
+	the bison documentation, and we really have no need to insist on
+	the use or the non-use of alloca.
+
+	* oafd/od-utils.c: (od_utils_load_config_file): Fix a bug where
+	it would segfault if the config file was badly formed.
+
+2001-10-10  Chris Toshok  <toshok@ximian.com>
+
+	* liboaf/oaf-fork-server.c
+	(oaf_internal_server_by_forking_extended): make sure to set the
+	signal mask back to the old one in the child as well, so SIGCHLD
+	isn't blocked.  Fixes evolution hanging out startup on freebsd.
+
+2001-09-27  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* liboaf/oaf-registration.c: (rloc_file_lock): Open the lock file
+	read/write, not read-only, so getting a write lock succeeds. Moral
+	of the story: always check error codes from syscalls!
+
+	* docs/oaf.dtd: Put back this accidentally removed file.
+
+2001-09-25  Jody Goldberg <jgoldberg@home.com>
+
+	* test/oaf-slay.in : Do not kill processes that just have a server
+	  name somewhere on the command line.  eg vi server/main.c
+
+2001-09-12  Darin Adler  <darin@bentspoon.com>
+
+	* oafd/ac-corba.c: Add a missing include of config.h.
+
+2001-09-03  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* liboaf/oaf-fork-server.c:
+	* oafd/OAF_naming-service.oaf.in: Restored files that somehow got
+	removed in merge.
+
+2001-09-03  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Copy stable branch to HEAD (not a merge - just make everything
+	exactly like the stable branch).
+
+2001-09-03  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Remaining desirable changes from HEAD:
+
+	* configure.in: Add missing languages.
+
+	2001-06-25  Michael Meeks  <michael@ximian.com>
+
+	* oafd/od-corba.c (od_dump_list): don't dump properties
+	containing a '-' they are most likely going to screw the
+	terminal.
+
+	2001-03-22  Martin Baulig  <baulig@suse.de>
+
+	* liboaf/*.[ch]: constness fixes
+
+	2001-06-14  Elliot Lee  <sopwith@redhat.com>
+
+	* oafd/main.c: Wait until after we have written our IOR out to close dev_null_fd,
+	in the unlikely event that someone wants to output the IOR to pre-dev_null_fd stdout or
+	somesuch.
+
+	2001-03-23  Martin Baulig  <baulig@suse.de>
+
+	* oafd/main.c: Call xmlKeepBlanksDefault(0) for the moment.
+
+	2001-07-12  Darin Adler  <darin@bentspoon.com>
+
+	* oafd/main.c: (main): Don't close the fd if we didn't open it.
+
+	2001-05-18  Martin Baulig  <baulig@suse.de>
+
+	* oafd/main.c (main): We need to call oaf_init() before creating
+	a GMainLoop to make sure the thread system is initialized.
+
+	2001-03-22  Martin Baulig  <baulig@suse.de>
+
+	* oafd/main.c: Call LIBXML_TEST_VERSION.
+
+2001-09-03  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Merged some more useful changes from HEAD:
+
+	2001-07-30  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-plugin.c (oaf_server_activate_shlib): fire an
+	exception if the factory acts strangely, and returns NIL
+	when it should create an object - yet threw no exception.
+
+	2001-07-27  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-plugin.c (oaf_server_activate_shlib): fire an
+	exception if the library didn't contain the plugin we wanted.
+	Localise exception strings.
+
+	2001-05-08  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-plugin.c (oaf_server_activate_shlib): 
+	return some half way useful exceptions.
+
+	2001-06-25  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-fork-server.c (oaf_server_by_forking): add
+	more debug on failure case.
+
+	2001-06-20  Michael Meeks  <michael@ximian.com>
+
+	* oafd/Makefile.am: add orbit-idl dependency on idl.
+
+	2001-06-14  Elliot Lee  <sopwith@redhat.com>
+
+	* oafd/Makefile.am: OAF_*.oaf is a BUILT_SOURCE
+
+2001-09-03  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	Merged some useful changes from HEAD:
+
+	2001-07-12  Laszlo Peter  <laca@ireland.sun.com>
+
+	* oafd/qsort_ex.c: added #include <config.h> and
+	#include <alloca.h> for portability.
+
+	2001-03-22  Martin Baulig  <baulig@suse.de>
+
+	* liboaf/liboaf-private.h, liboaf/oaf-mainloop.c,
+	liboaf/oaf-util.c, oafd/ac-query-expr.c,
+	oafd/oafd-corba-extensions.c, oafd/qsort_ex.c,
+	test/oaf-test-client.c: #include <string.h> where it was missing.
+
+	2001-07-19  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-servreg.c (oaf_active_server_register): quiet
+	registration debug accidentaly left on.
+
+2001-08-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in (ALL_LINGUAS): zh_TW.Big5 -> zh_TW
+
+2001-08-27  Gregory Leblanc  <gleblanc@linuxweasel.com>
+
+	* oaf.spec.in: lots of updates, see ChangeLog inside of the file
+	for details
+
+2001-08-26  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* api-docs/Makefile.am: Fixed doc build up a little. Don't install
+	the html files, but do distribute them.
+
+	* api-docs/tmpl/query.sgml,
+	api-docs/tmpl/registration.sgml,
+	api-docs/tmpl/utilities.sgml: Updated.
+
+	* NEWS: Fix typo.
+
+2001-08-20  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* NEWS: Updated for 0.6.6 release.
+
+2001-08-20  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* test/Makefile.am, test/empty.oafinfo, test/oaf-test-client.c
+	(main): Fix problems which were making `make check' fail.
+
+2001-08-19  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" to the languages list.
+
+2001-08-10  jacob berkman  <jacob@ximian.com>
+
+	* liboaf/oaf-plugin.c (oaf_server_activate_shlib): include the
+	error message from gmodule in the oaf GeneralError's description
+
+2001-08-09  Dan Winship  <danw@ximian.com>
+
+	* configure.in: Find paths for perl and ps. Figure out if ps is
+	BSD or POSIX.
+	(AC_OUTPUT): Add test/oaf-slay.
+
+	* test/oaf-slay.in: (Moved here from oaf-slay). Use perl and ps
+	info from configure. Handle OAF_INFO_PATH and GNOME_PATH properly.
+
+	* test/Makefile.am (bin_SCRIPTS, EXTRA_SCRIPTS, EXTRA_DIST): Tweak
+	for the oaf-slay -> oaf-slay.in change.
+
+2001-08-09  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added "zh_TW.Big5" to ALL_LINGUAS.
+	
+2001-08-07  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* oafd/ac-query-parse.y: Add prototype to fix OpenBSD build
+	issues; patch from <smallm@world.std.com>
+
+2001-07-20  Havoc Pennington  <hp@redhat.com>
+
+	* oafd/main.c (main): become a process group leader
+	on startup
+
+	* oafd/od-activate.c (od_server_activate_exe): use 
+	oaf_internal_server_by_forking_extended() to set process group
+	of activated servers
+
+	* liboaf/oaf-fork-server.c
+	(oaf_internal_server_by_forking_extended): 
+	new function to allow setting process group of the child
+
+2001-07-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	* oafd/ac-corba.c: (impl_OAF_ActivationContext_remove_directory),
+	(ac_do_activation), (impl_OAF_ActivationContext_activate),
+	(impl_OAF_ActivationContext_activate_from_id):
+	* oafd/client.c: (main):
+	* oafd/od-corba.c: (impl_OAF_ObjectDirectory_activate):
+
+	Improve error reporting.
+
+2001-07-20  Richard Hult  <rhult@codefactory.se>
+
+	* liboaf/oaf-activate.c (oaf_activate_from_id): Move the code that
+	makes sure we have a CORBA_Environment over things that use ev, so
+	that we don't pass a NULL environment to things that can't handle
+	it (like CORBA_Object_non_existent).
+	(oaf_activate_from_id): Fix a leak of a CORBA_Environment that the
+	previous commit introduced.
+
+2001-07-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added "nn" to ALL_LINGUAS.
+	
+2001-07-09  Havoc Pennington  <hp@redhat.com>
+
+	* liboaf/oaf-activate.c (oaf_activate_from_id): use below
+	functions to report error properly if we can't fork oafd. Don't
+	launch oafd if EXISTING_ONLY flag is specified.
+	
+	* liboaf/oaf-mainloop.c
+	(oaf_internal_activation_context_get_extended): another
+	internal function hack
+
+	* liboaf/oaf-registration.c
+	(oaf_internal_service_get_extended): new function, 
+	to be used internally by OAF only for now
+
+2001-07-13  Richard Hult  <rhult@codefactory.se>
+
+	* liboaf/oaf-registration.c (rloc_file_check): Don't write the
+	string to unallocated memory, and use g_strdup_printf instead of 
+	sprintf. Don't access namecopy after it's freed.
+
+2001-06-14  Peter Williams  <peterw@ximian.com>
+
+	* configure.in (AC_CHECK_FUNCS): Check for unsetenv.
+
+	* oafd/main.c (main): If the platform doesn't have unsetenv,
+	use putenv ("SESSION_MANAGER=");
+
+	Patch from Laszlo Peter <Laszlo.Peter@ireland.sun.com>
+	
+2001-06-10  Maciej Stachowiak  <mjs@eazel.com>
+
+        Fixed bug 2142 (environment variable for component debugging)
+	
+	* liboaf/oaf-servreg.c (oaf_active_server_register): Print a
+	message when a component registers; this will only be actually
+	displayed when OAF_DEBUG_OUTPUT is set.
+
+2001-06-10  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 6532 (configure should reject popt versions that lack
+	POPT_ARG_INTL_DOMAIN)
+
+	* configure.in: Check for poptDupArgv instead of poptGetContext to
+	ensure a popt new enough to have POPT_ARG_INTL_DOMAIN.
+
+2001-06-10  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bug 6217 (liboaf/oaf-registration.c sloppiness)
+	
+	* liboaf/oaf-registration.c: (rloc_file_lock, rloc_file_check,
+	rloc_file_register, rloc_file_unregister): Fixed numerous minor
+	bugs which could lead to buffer overflows, etc.
+
+2001-05-22  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/oaf-mainloop.c: Documented oaf_activation_iid_get().
+
+2001-05-22  Darin Adler  <darin@eazel.com>
+
+	* acinclude.m4: Add BUILD_INCLUDED_LIBDIR variable so we
+	can build with new gettext.
+
+2001-05-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	* MAINTAINERS: Remove Michael, per his request.
+
+2001-05-09  Darin Adler  <darin@eazel.com>
+
+	* test/Makefile.am: Make Tinderbox happy by including
+	oaf-slay in EXTRA_DIST.
+
+2001-05-09  Michael Meeks  <michael@ximian.com>
+
+	* test/Makefile.am: remove oaf-slay generation.
+
+	* test/oaf-slay: Totaly re-written by
+	Brian Cameron <Brian.Cameron@Sun.COM>
+
+2001-05-08  Michael Meeks  <michael@ximian.com>
+
+	* liboaf/oaf-plugin.c (oaf_server_activate_shlib): 
+	return some half way useful exceptions.
+
+2001-04-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* liboaf/oaf-async-corba.c: Added #include <config.h>
+	
+2001-04-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/oaf-servreg.c (oaf_active_server_register): Minor style
+	fixes.
+
+2001-04-18  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/oaf-servreg.c (oaf_active_server_register): Remove
+	unnecessary attempt to get activation context; getting the object
+	directory should be perfectly sufficient for starting oafd.
+
+2001-04-18  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/liboaf-private.h:
+	* liboaf/oaf-activate.c: (oaf_activate_from_id):
+	* liboaf/oaf-async.c: (oaf_activate_from_id_async):
+	* liboaf/oaf-mainloop.c: (oaf_activation_context_get),
+	(oaf_object_directory_get):
+	* liboaf/oaf-registration.c: (oaf_registration_check),
+	(oaf_registration_iterate), (existing_check), (oaf_existing_set),
+	(oaf_activators_use):
+	* liboaf/oaf-registration.h:
+	* liboaf/oaf-servreg.c: (oaf_active_server_register),
+	(oaf_active_server_unregister):
+
+	More changes in preparation for oafd life cycle management fixes.
+	
+2001-04-18  Maciej Stachowiak  <mjs@eazel.com>
+
+	* liboaf/Makefile.am:
+	* liboaf/oaf-activate.c: (oaf_activate_from_id):
+	* liboaf/oaf-async.c: (oaf_activate_from_id_async):
+	* liboaf/oaf-mainloop.c: (oaf_activation_context_get),
+	(cmdline_check), (ac_check), (local_activator), (oaf_postinit):
+	* liboaf/oaf-registration.c: (ri_compare),
+	(oaf_registration_location_add), (oaf_registration_check),
+	(oaf_registration_iterate), (oaf_registries_lock),
+	(oaf_registries_unlock), (oaf_registration_unset),
+	(oaf_registration_set), (existing_check), (oaf_existing_set),
+	(ai_compare), (oaf_registration_activator_add),
+	(oaf_activators_use), (oaf_service_get), (rloc_file_lock),
+	(rloc_file_unlock), (rloc_file_check), (rloc_file_register),
+	(rloc_file_unregister):
+	* liboaf/oaf-registration.h:
+	* liboaf/oaf-servreg.c: (oaf_active_server_register),
+	(oaf_active_server_unregister): 
+	* liboaf/oaf-fork-server.c:
+
+	Assorted refactoring / code churn, plus attempt to fix 6218
+	(SOLARIS: Multiple oafd processes) by fixing some obvious bugs in
+	the locking logic.
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* liboaf/Makefile.am: Another try at a dependency that
+	might get the Tinderbox to build.
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* liboaf/Makefile.am: Add more dependencies. Maybe this
+	will make that Tinderbox build.
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* idl/oaf.idl: Add missing parenthesis.
+	* liboaf/Makefile.am: Tweak a tiny bit.
+
+2001-04-17  Darin Adler  <darin@eazel.com>
+
+	* oafd/Makefile.am: Must remove the stamp files too, or you
+	end up with a tarball that won't build.
+
+2001-04-17  Michael Meeks  <michael@ximian.com>
+
+	* oafd/Makefile.am (dist-hook): remove built files from distro.
+
+	* liboaf/Makefile.am: ditto.
+
+2001-04-13  Peter Williams  <peterw@ximian.com>
+
+	* oafd/main.c (main): Unset "SESSION_MANAGER" to prevent slow
+	activations if oafd persists across X sessions, Otherwise, spawned
+	programs inherit a bad SESSION_MANAGER and waste time trying to
+	connect to it.
+
+2001-03-22  Robey Pointer  <robey@eazel.com>
+
+	* api-docs/Makefile.am:
+	Let 'make install' work when gtk-doc support is off.
+
+2001-03-15  Rusty Conover  <rconover@zootweb.com>
+
+	* idl/oaf.idl: Added proper preprocessor magic to allow other apps
+	to include oaf.idl in their idl.
+
+2001-03-01  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* NEWS: updated that I am fixing the perl5.00404 mistake
+	* configure.in: updated development version to 0.6.6
+
+2001-03-01  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* oafd/od-activate.c: (od_server_activate_exe):
+
+	Add casts to guchar to all isspace calls so 
+	they'll compile on Solaris. Fix bug #7199.
+	
 2001-02-26  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
-	* configure.in: upped the version to 0.6.4
+	* NEWS: updated file from the ChangeLog
+
+2001-02-26  Robin * Slomkowski  <rslomkow@rslomkow.org>
+
+	* configure.in: upped version to 0.6.5 for development
+
+2001-02-26  Robin * Slomkowski  <rslomkow@rslomkow.org>
+
+	* configure.in: upped the version to 0.6.4 for release
 
 2001-02-26  Maciej Stachowiak  <mjs@eazel.com>
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.6\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
 "PO-Revision-Date: 2001-02-16 20:28+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -13,75 +13,118 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-kr\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "서버들을 등록할때 사용할 Object 디렉토리"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "쿼리에 일치하는 서버 없음"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "IOR을 인쇄할 파일 인식자"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr ""
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "활성화시킬 IID"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "OAF를 통한 서버의 등록을 금지한다"
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr "OAF 옵션"
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "새로운 프로세스를 생성할 수가 없습니다"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "자식이 %u (%s) 시그날을 받았습니다"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "알수없는 non-exit 오류 (상태는 %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Exec가 실패했습니다: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr ""
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "서버들을 등록할때 사용할 Object 디렉토리"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "IOR을 인쇄할 파일 인식자"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "활성화시킬 IID"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "OAF를 통한 서버의 등록을 금지한다"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "OAF 옵션"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr ""
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "서버가 열거되어있는 자식 프로세스를 발견할 수가 없습니다"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr ""
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "쿼리 실패: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "활성화 실패: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "AID를 분석할수 없음"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "내용을 분석할수 없음: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "서버를 활성화 할수 없음: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
+#, fuzzy
+msgid "Directory to read .oaf files from"
 msgstr ".oafinfo 파일을 읽어들일 디렉토리"
 
 #: oafd/main.c:62
@@ -116,6 +159,13 @@ msgstr "표현식"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "아직 별도의 프로세스에 있는 shlib object를 활성화 시킬수는 없습니다"
 
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
+
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
 msgid "Property '%s' has no value"
@@ -146,8 +196,8 @@ msgid ""
 "The OAF configuration file was not read successfully. Please, check it is "
 "valid in: %s"
 msgstr ""
-"OAF 설정 파일을 제대로 읽을수가 없습니다. 그것이 %s에 존재하는지확인해 "
-"주십시요"
+"OAF 설정 파일을 제대로 읽을수가 없습니다. 그것이 %s에 존재하는지확인해 주십시"
+"요"
 
 #: oafd/OAF_naming-service.oaf.in.h:1
 msgid "CORBA CosNaming service."
@@ -208,6 +258,5 @@ msgstr "OAF 설정파일에 있는 디렉토리를 보여주기"
 msgid "Display path to OAF configuration file"
 msgstr "OAF 설정파일에대한 경로를 보여주기"
 
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr "쿼리에 일치하는 서버 없음"
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "Exec가 실패했습니다: %d (%s)\n"

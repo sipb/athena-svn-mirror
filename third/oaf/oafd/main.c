@@ -59,7 +59,7 @@ static int server_ac = 0, ior_fd = -1, server_ns = 1;
 static struct poptOption options[] = {
 
 	{"od-source-dir", '\0', POPT_ARG_STRING, &od_source_dir, 0,
-	 N_("Directory to read .oafinfo files from"), N_("DIRECTORY")},
+	 N_("Directory to read .oaf files from"), N_("DIRECTORY")},
 	{"od-domain", '\0', POPT_ARG_STRING, &od_domain, 0,
 	 N_("Domain of ObjectDirectory"), N_("DOMAIN")},
 
@@ -101,6 +101,22 @@ main (int argc, char *argv[])
 		g_print ("Couldn't chdir() to '/' (why ?!!). Exiting.\n");
 		exit (EXIT_FAILURE);
 	}
+
+        /* Become process group leader, detach from controlling terminal,
+         * etc.
+         */
+        setsid ();
+        
+        /* This is needed because otherwise, if oafd persists across X
+         * sessions, spawned processes will inherit an invalid value of
+         * SESSION_MANAGER and be very very slow while attempting to 
+         * connect to it.
+         */
+#if HAVE_UNSETENV
+        unsetenv ("SESSION_MANAGER");
+#else
+        putenv ("SESSION_MANAGER=");
+#endif
 
 	setlocale(LC_ALL, "");
 

@@ -23,8 +23,6 @@
  */
 
 %{
-#define YYSTACK_USE_ALLOCA
-
 #include <glib.h>
 
 #include "ac-query-expr.h"
@@ -32,6 +30,7 @@
 
 void yyerror(char *s);
 int yylex ();
+int yyparse (void);
 void initFlex (const char *s);
 
 static QueryExpr *parsed_expression;

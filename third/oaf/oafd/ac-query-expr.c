@@ -27,6 +27,7 @@
    Likely bugs: Forgetting to initialize QueryExprConst.needs_free = crash
 */
 #include <stdio.h>
+#include <string.h>
 
 #include "ac-query-expr.h"
 #include "ac-query-parse.h"

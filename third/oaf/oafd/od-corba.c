@@ -28,6 +28,7 @@
 #include <stdio.h>
 
 #include "oafd.h"
+#include "oaf-i18n.h"
 #include "liboaf/liboaf.h"
 #include <time.h>
 #include <glib.h>
@@ -427,6 +428,8 @@ impl_OAF_ObjectDirectory_activate (impl_POA_OAF_ObjectDirectory * servant,
 	CORBA_Object retval;
 	OAF_ServerInfo *si;
 	ODActivationInfo ai;
+        OAF_GeneralError *errval;
+        char *error_description;
 
 	retval = CORBA_OBJECT_NIL;
 
@@ -450,8 +453,21 @@ impl_OAF_ObjectDirectory_activate (impl_POA_OAF_ObjectDirectory * servant,
 
 	si = g_hash_table_lookup (servant->by_iid, iid);
 
-	if (si) {
+	if (si != NULL) {
 		retval = od_server_activate (si, &ai, servant->self, ev);
+        } else {
+                errval = OAF_GeneralError__alloc ();
+
+                error_description = 
+                        g_strdup_printf (_("Couldn't find activation record for server `%s'. The likely cause is a missing or incorrectly installed .oaf file."), 
+                                           iid);
+		errval->description =
+			CORBA_string_dup
+			(error_description);
+                g_free (error_description); 
+
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_OAF_GeneralError, errval);
         }
 
 	return retval;

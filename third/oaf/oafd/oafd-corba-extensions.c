@@ -29,6 +29,7 @@
 #include "oaf-i18n.h"
 #include "liboaf/liboaf.h"
 #include <stdio.h>
+#include <string.h>
 
 #include "oafd-corba-extensions.h"
 

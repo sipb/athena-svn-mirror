@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
 "PO-Revision-Date: 2000-08-16 18:00+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <linux@linux.org.ua>\n"
@@ -13,75 +13,118 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-u\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "Каталог об'╓кта, що використову╓ться п╕д час ре╓страц╕╖ сервер╕в"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "Нема╓ сервера, що в╕дпов╕да╓ вашому запиту"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "Дескриптор файлу для друку IOR"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr ""
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "ФД"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "IID до активац╕╖"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "Попередити ре╜╕страц╕ю сервера з OAF"
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr "Параметри OAF"
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "Не вдалося розгалудити процес"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Нащадок отримав си╜нал %u (%s)"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Нев╕дома нефатальна помилка (стан -- %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Виконання не вдалось: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr ""
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr ""
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "Каталог об'╓кта, що використову╓ться п╕д час ре╓страц╕╖ сервер╕в"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "Дескриптор файлу для друку IOR"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "ФД"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "IID до активац╕╖"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "Попередити ре╜╕страц╕ю сервера з OAF"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "Параметри OAF"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr ""
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr ""
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "Не вдалося знайти нащадка, в якому вказано сервер"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr ""
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "Зб╕й зипиту: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "Зб╕й активац╕╖: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "Не вдалося проанал╕зувати AID"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "Не вдалося проанал╕зувати контекст: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "Не вдалося активувати сервер: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
+#, fuzzy
+msgid "Directory to read .oaf files from"
 msgstr "Каталог для зчитування файл╕в .oafinfo"
 
 #: oafd/main.c:62
@@ -115,6 +158,13 @@ msgstr "ВИРАЗ"
 #: oafd/od-activate.c:62
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Ми ще не обробля╓мо активац╕ю об'╓кт╕в shlib у в╕ддаленому процес╕"
+
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
@@ -208,6 +258,5 @@ msgstr "Показати каталоги у конф╕╜урац╕йному файл╕ OAF"
 msgid "Display path to OAF configuration file"
 msgstr "Показати шлях до конф╕╜урац╕йного файлу OAF"
 
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr "Нема╓ сервера, що в╕дпов╕да╓ вашому запиту"
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "Виконання не вдалось: %d (%s)\n"

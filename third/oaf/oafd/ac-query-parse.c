@@ -34,8 +34,6 @@
 
 #line 25 "./ac-query-parse.y"
 
-#define YYSTACK_USE_ALLOCA
-
 #include <glib.h>
 
 #include "ac-query-expr.h"
@@ -43,11 +41,12 @@
 
 void yyerror(char *s);
 int yylex ();
+int yyparse (void);
 void initFlex (const char *s);
 
 static QueryExpr *parsed_expression;
 
-#line 40 "./ac-query-parse.y"
+#line 39 "./ac-query-parse.y"
 typedef union
 {
   char *val_string;
@@ -133,11 +132,11 @@ static const short yyrhs[] = {    31,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    83,    85,    86,    88,    89,    91,    91,    91,    91,    91,
-    91,    93,    95,    96,    97,    98,    99,   100,   101,   102,
-   103,   104,   105,   106,   107,   109,   111,   112,   114,   120,
-   126,   132,   139,   156,   157,   159,   161,   162,   163,   165,
-   168
+    82,    84,    85,    87,    88,    90,    90,    90,    90,    90,
+    90,    92,    94,    95,    96,    97,    98,    99,   100,   101,
+   102,   103,   104,   105,   106,   108,   110,   111,   113,   119,
+   125,   131,   138,   155,   156,   158,   160,   161,   162,   164,
+   167
 };
 #endif
 
@@ -765,87 +764,87 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 83 "./ac-query-parse.y"
+#line 82 "./ac-query-parse.y"
 { parsed_expression = yyvsp[0].qexp; ;
     break;}
 case 4:
-#line 88 "./ac-query-parse.y"
+#line 87 "./ac-query-parse.y"
 { yyval.elist = g_slist_prepend(NULL, yyvsp[0].qexp); ;
     break;}
 case 5:
-#line 89 "./ac-query-parse.y"
+#line 88 "./ac-query-parse.y"
 { yyval.elist = g_slist_prepend(yyvsp[0].elist, yyvsp[-2].qexp); ;
     break;}
 case 12:
-#line 93 "./ac-query-parse.y"
+#line 92 "./ac-query-parse.y"
 { yyval.qexp = yyvsp[-1].qexp; ;
     break;}
 case 13:
-#line 95 "./ac-query-parse.y"
+#line 94 "./ac-query-parse.y"
 { yyval.val_enum = P_MULTIPLY; ;
     break;}
 case 14:
-#line 96 "./ac-query-parse.y"
+#line 95 "./ac-query-parse.y"
 { yyval.val_enum = P_DIVIDE; ;
     break;}
 case 15:
-#line 97 "./ac-query-parse.y"
+#line 96 "./ac-query-parse.y"
 { yyval.val_enum = P_SUBTRACT; ;
     break;}
 case 16:
-#line 98 "./ac-query-parse.y"
+#line 97 "./ac-query-parse.y"
 { yyval.val_enum = P_ADD; ;
     break;}
 case 17:
-#line 99 "./ac-query-parse.y"
+#line 98 "./ac-query-parse.y"
 { yyval.val_enum = P_EQ; ;
     break;}
 case 18:
-#line 100 "./ac-query-parse.y"
+#line 99 "./ac-query-parse.y"
 { yyval.val_enum = P_NEQ; ;
     break;}
 case 19:
-#line 101 "./ac-query-parse.y"
+#line 100 "./ac-query-parse.y"
 { yyval.val_enum = P_LEQ; ;
     break;}
 case 20:
-#line 102 "./ac-query-parse.y"
+#line 101 "./ac-query-parse.y"
 { yyval.val_enum = P_GEQ; ;
     break;}
 case 21:
-#line 103 "./ac-query-parse.y"
+#line 102 "./ac-query-parse.y"
 { yyval.val_enum = P_GT; ;
     break;}
 case 22:
-#line 104 "./ac-query-parse.y"
+#line 103 "./ac-query-parse.y"
 { yyval.val_enum = P_LT; ;
     break;}
 case 23:
-#line 105 "./ac-query-parse.y"
+#line 104 "./ac-query-parse.y"
 { yyval.val_enum = P_OR; ;
     break;}
 case 24:
-#line 106 "./ac-query-parse.y"
+#line 105 "./ac-query-parse.y"
 { yyval.val_enum = P_AND; ;
     break;}
 case 25:
-#line 107 "./ac-query-parse.y"
+#line 106 "./ac-query-parse.y"
 { yyval.val_enum = P_XOR; ;
     break;}
 case 26:
-#line 109 "./ac-query-parse.y"
+#line 108 "./ac-query-parse.y"
 { yyval.qexp = qexp_binop_new (yyvsp[-2].qexp, yyvsp[-1].val_enum, yyvsp[0].qexp); ;
     break;}
 case 27:
-#line 111 "./ac-query-parse.y"
+#line 110 "./ac-query-parse.y"
 { yyval.qexp = qexp_unop_new (P_NOT, yyvsp[0].qexp); ;
     break;}
 case 28:
-#line 112 "./ac-query-parse.y"
+#line 111 "./ac-query-parse.y"
 { yyval.qexp = qexp_unop_new (P_NEGATE, yyvsp[0].qexp); ;
     break;}
 case 29:
-#line 114 "./ac-query-parse.y"
+#line 113 "./ac-query-parse.y"
 {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRING;
@@ -854,7 +853,7 @@ case 29:
         ;
     break;}
 case 30:
-#line 120 "./ac-query-parse.y"
+#line 119 "./ac-query-parse.y"
 {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_NUMBER;
@@ -863,7 +862,7 @@ case 30:
 	;
     break;}
 case 31:
-#line 126 "./ac-query-parse.y"
+#line 125 "./ac-query-parse.y"
 {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_BOOLEAN;
@@ -872,7 +871,7 @@ case 31:
 	;
     break;}
 case 32:
-#line 132 "./ac-query-parse.y"
+#line 131 "./ac-query-parse.y"
 {
 	  QueryExprConst qctmp;
 	  qctmp.type = CONST_STRINGV;
@@ -881,7 +880,7 @@ case 32:
 	;
     break;}
 case 33:
-#line 139 "./ac-query-parse.y"
+#line 138 "./ac-query-parse.y"
 {
   char **new_stringv;
   int i, n;
@@ -900,37 +899,37 @@ case 33:
 ;
     break;}
 case 34:
-#line 156 "./ac-query-parse.y"
+#line 155 "./ac-query-parse.y"
 { yyval.elist = g_slist_prepend (NULL, yyvsp[0].val_string); ;
     break;}
 case 35:
-#line 157 "./ac-query-parse.y"
+#line 156 "./ac-query-parse.y"
 { yyval.elist = g_slist_append (yyvsp[-2].elist, yyvsp[0].val_string); ;
     break;}
 case 36:
-#line 159 "./ac-query-parse.y"
+#line 158 "./ac-query-parse.y"
 { yyval.qexp = qexp_variable_new (yyvsp[0].val_string); ;
     break;}
 case 37:
-#line 161 "./ac-query-parse.y"
+#line 160 "./ac-query-parse.y"
 { yyval.qexp = qexp_function_new (yyvsp[-3].val_string, yyvsp[-1].elist); ;
     break;}
 case 38:
-#line 162 "./ac-query-parse.y"
+#line 161 "./ac-query-parse.y"
 { yyval.qexp = qexp_function_new (yyvsp[-2].val_string, NULL); ;
     break;}
 case 39:
-#line 163 "./ac-query-parse.y"
+#line 162 "./ac-query-parse.y"
 {
 	yyval.qexp = qexp_function_new(yyvsp[-3].val_string, g_slist_prepend (yyvsp[-1].elist, qexp_id_new (yyvsp[-5].val_string))); ;
     break;}
 case 40:
-#line 165 "./ac-query-parse.y"
+#line 164 "./ac-query-parse.y"
 {
 	yyval.qexp = qexp_function_new(yyvsp[-2].val_string, g_slist_prepend (NULL, qexp_id_new (yyvsp[-4].val_string))); ;
     break;}
 case 41:
-#line 168 "./ac-query-parse.y"
+#line 167 "./ac-query-parse.y"
 { yyval.qexp = qexp_id_new (yyvsp[0].val_string); ;
     break;}
 }
@@ -1155,7 +1154,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 170 "./ac-query-parse.y"
+#line 169 "./ac-query-parse.y"
 
 
 static GString *parse_errors = NULL;

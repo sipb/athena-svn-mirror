@@ -4,85 +4,129 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: oaf 0.6.3\n"
-"POT-Creation-Date: 2001-03-01 19:16-0800\n"
-"PO-Revision-Date: 2001-02-15 22:34-02:00\n"
+"Project-Id-Version: oaf 0.6.6\n"
+"POT-Creation-Date: 2001-10-24 11:43-0700\n"
+"PO-Revision-Date: 2001-10-13 19:17-02:00\n"
 "Last-Translator: Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: liboaf/oaf-mainloop.c:191
-msgid "Object directory to use when registering servers"
-msgstr "Diretório de objetos a ser usado ao registrar servidores"
+#: liboaf/oaf-async-corba.c:186
+msgid "No server corresponding to your query"
+msgstr "Não existe servidor correspondendo à sua consulta"
 
-#: liboaf/oaf-mainloop.c:193
-msgid "File descriptor to print IOR on"
-msgstr "Descritor de arquivos onde imprimir IOR"
+#: liboaf/oaf-fork-server.c:76
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Falha ao ler do processo filho: %s\n"
 
-#: liboaf/oaf-mainloop.c:193 oafd/main.c:72
-msgid "FD"
-msgstr "FD"
-
-#: liboaf/oaf-mainloop.c:195
-msgid "IID to activate"
-msgstr "IID a ser ativado"
-
-#: liboaf/oaf-mainloop.c:197
-msgid "Prevent registering of server with OAF"
-msgstr "Evitar registro do servidor com o OAF"
-
-#: liboaf/oaf-mainloop.c:381
-msgid "OAF options"
-msgstr "Opções do OAF"
-
-#: liboaf/oaf-registration.c:309
+#: liboaf/oaf-fork-server.c:175
 msgid "Couldn't fork a new process"
 msgstr "Não foi possível criar um novo processo"
 
-#: liboaf/oaf-registration.c:330
+#: liboaf/oaf-fork-server.c:196
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Filho recebeu sinal %u (%s)"
 
-#: liboaf/oaf-registration.c:336
+#: liboaf/oaf-fork-server.c:202
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Erro desconhecido não de saída (estado é %u)"
 
-#: liboaf/oaf-registration.c:413
-#, c-format
-msgid "Exec failed: %d (%s)\n"
-msgstr "Falhou exec: %d (%s)\n"
+#: liboaf/oaf-fork-server.c:257
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Processo filho não forneceu uma mensagem de erro, ocorreu uma falha "
+"desconhecida"
 
-#: oafd/ac-corba.c:476
+#: liboaf/oaf-fork-server.c:286
+#, c-format
+msgid "OAF failed to set process group of %s: %s\n"
+msgstr "OAF falhou ao atribuir grupo de processo de %s: %s\n"
+
+#: liboaf/oaf-fork-server.c:297
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Falha ao executar %s: %d (%s)\n"
+
+#: liboaf/oaf-mainloop.c:221
+msgid "Object directory to use when registering servers"
+msgstr "Diretório de objetos a ser usado ao registrar servidores"
+
+#: liboaf/oaf-mainloop.c:223
+msgid "File descriptor to print IOR on"
+msgstr "Descritor de arquivos onde imprimir IOR"
+
+#: liboaf/oaf-mainloop.c:223 oafd/main.c:72
+msgid "FD"
+msgstr "FD"
+
+#: liboaf/oaf-mainloop.c:225
+msgid "IID to activate"
+msgstr "IID a ser ativado"
+
+#: liboaf/oaf-mainloop.c:227
+msgid "Prevent registering of server with OAF"
+msgstr "Evitar registro do servidor com o OAF"
+
+#: liboaf/oaf-mainloop.c:425
+msgid "OAF options"
+msgstr "Opções do OAF"
+
+#: liboaf/oaf-plugin.c:99
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "Falhou g_module_open de `%s' com `%s'"
+
+#: liboaf/oaf-plugin.c:116 liboaf/oaf-plugin.c:152
+#, c-format
+msgid "Can't find symbol OAF_Plugin_info in `%s'"
+msgstr "Não é possível localizar símbolo OAF_Plugin_info em `%s'"
+
+#: liboaf/oaf-plugin.c:203
+#, c-format
+msgid "Factory '%s' returned NIL for `%s'"
+msgstr "A fábrica '%s' retornou NIL para `%s'"
+
+#: liboaf/oaf-plugin.c:220
+#, c-format
+msgid "Shlib '%s' didn't contain `%s'"
+msgstr "Shlib '%s' não continha `%s'"
+
+#: oafd/ac-corba.c:480
 msgid "Couldn't find which child the server was listed in"
 msgstr "Não foi possivel descobrir em qual filho o servidor estava listado"
 
-#: oafd/ac-corba.c:645
+#: oafd/ac-corba.c:606
+msgid "Nothing matched the requirements."
+msgstr "Nada correspondeu aos requisitos."
+
+#: oafd/ac-corba.c:664
 msgid "Query failed: "
 msgstr "Falhou a consulta: "
 
-#: oafd/ac-corba.c:673
+#: oafd/ac-corba.c:692
 msgid "Activation failed: "
 msgstr "Falhou a ativação: "
 
-#: oafd/ac-corba.c:1096
+#: oafd/ac-corba.c:1118
 msgid "Could not parse AID"
 msgstr "Não foi possível analisar AID"
 
-#: oafd/ac-corba.c:1106
+#: oafd/ac-corba.c:1128
 msgid "Could not parse context: "
 msgstr "Não foi possível analisar contexto: "
 
-#: oafd/ac-corba.c:1130
+#: oafd/ac-corba.c:1152
 msgid "Could not activate server: "
 msgstr "Não foi possível ativar servidor: "
 
 #: oafd/main.c:62
-msgid "Directory to read .oafinfo files from"
-msgstr "Diretório de onde ler arquivos .oafinfo"
+msgid "Directory to read .oaf files from"
+msgstr "Diretório de onde ler arquivos .oaf"
 
 #: oafd/main.c:62
 msgid "DIRECTORY"
@@ -117,6 +161,15 @@ msgstr "EXPRESSÃO"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Nós ainda não tratamos a ativação de objetos shlib em um processo remoto"
+
+#: oafd/od-corba.c:462
+#, c-format
+msgid ""
+"Couldn't find activation record for server `%s'. The likely cause is a "
+"missing or incorrectly installed .oaf file."
+msgstr ""
+"Não foi possível encontrar registro de ativação para servidor `%s'. A causa "
+"provável é um arquivo .oaf faltando ou incorretamente instalado."
 
 #: oafd/od-load.c:121 oafd/od-load.c:151
 #, c-format
@@ -211,7 +264,3 @@ msgstr "Exibir diretórios no arquivo de configuração OAF"
 #: utils/oaf-sysconf.c:225
 msgid "Display path to OAF configuration file"
 msgstr "Exibir caminho do arquivo de configuração OAF"
-
-#: liboaf/oaf-async-corba.c:182
-msgid "No server corresponding to your query"
-msgstr "Não existe servidor correspondendo à sua consulta"

@@ -208,11 +208,19 @@ main (int argc, char *argv[])
 				g_print
 					("User exception \"%s\" resulted from query\n",
 					 id);
-				if (!strcmp
-				    (id,
-				     "IDL:OAF/ActivationContext/ParseFailed:1.0"))
-				{
+				if (strcmp (id,
+                                            "IDL:OAF/ActivationContext/ParseFailed:1.0") == 0) {
 					OAF_ActivationContext_ParseFailed
+						* exdata =
+						CORBA_exception_value (&ev);
+
+					if (exdata)
+						g_print ("Description: %s\n",
+							 exdata->description);
+				}
+				if (strcmp (id,
+                                            "IDL:OAF/GeneralError:1.0") == 0) {
+					OAF_GeneralError
 						* exdata =
 						CORBA_exception_value (&ev);
 

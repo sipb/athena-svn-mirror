@@ -23,6 +23,16 @@
  *
  */
 
+#ifndef __OAF_IDL__
+#define __OAF_IDL__
+
+#if !defined(OAF_COMPILATION) && defined(__ORBIT_IDL__)
+%{
+#pragma include_defs liboaf/oaf.h
+%}
+#pragma inhibit push
+#endif
+
 #include "oaf-factory.idl"
 
 module OAF {
@@ -186,3 +196,10 @@ module OAF {
 
         };
 };
+
+#if !defined(OAF_COMPILATION && defined(__ORBIT_IDL__)
+#pragma inhibit pop
+#endif
+
+
+#endif
