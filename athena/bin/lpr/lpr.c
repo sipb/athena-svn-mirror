@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.9 1990-08-25 16:36:41 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.10 1990-11-15 15:35:28 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.9 1990-08-25 16:36:41 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.10 1990-11-15 15:35:28 epeisach Exp $";
 #endif lint
 
 /*
@@ -104,6 +104,7 @@ char    *jobname;		/* job name on header page */
 char	*name;			/* program name */
 char	*printer;		/* printer name */
 char	*forms;			/* printer forms (for Multics) */
+char	*lpropt;		/* for lpropt env. variable */
 struct	stat statb;
 #ifdef HESIOD
 char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
@@ -135,6 +136,7 @@ char	*rindex();
 #endif
 char	*linked();
 int	cleanup();
+extern char *malloc();
 
 /*ARGSUSED*/
 main(argc, argv)
@@ -147,6 +149,7 @@ main(argc, argv)
 	extern char *itoa();
 	register char *arg, *cp;
 	char buf[BUFSIZ];
+
 #ifndef SERVER
 	int i, f, retry;
 #else SERVER
@@ -181,6 +184,40 @@ main(argc, argv)
 #else
 	openlog("lpr", 0);
 #endif
+
+	/* Process LPROPT environment variable if it exists */
+	if((lpropt = getenv("LPROPT")) != NULL) {
+	    char *lpropt1, **nargv;
+
+	    /* Copy lpropt to permanent storage */
+	    if(!(lpropt1 = malloc(strlen(lpropt)+1))) {
+		printf("%s: out of memory\n", name);
+		exit(1);
+	    }
+	    strcpy(lpropt1, lpropt);
+	    
+	    /* Count up spaces in lpropt1 - number of arguments */
+
+	    for(i=1, cp = lpropt1; *cp != NULL; cp++) if(*cp == ' ') i++;
+
+	    if(!(nargv = (char **) malloc(i + argc))) {
+		printf("%s: out of memory\n", name);
+		exit(1);
+	    }
+
+	    nargv[0] = argv[0];
+	    for(f = 1, cp = lpropt1; f <= i; f++) {
+		nargv[f] = cp;
+		while((*cp != NULL) && (*cp != ' ')) cp++;
+		if(*cp == ' ') *cp = NULL, cp++;
+	    }
+	    for(f = i+1; f<= argc+i; f++)
+		nargv[f] = argv[f-i];
+	    argv = nargv;
+	    argc += i;
+	}
+
+/*	for(i = 0; i < argc; i++) printf("%d :%s:\n", i, argv[i]); */
 
 	while (argc > 1 && argv[1][0] == '-') {
 		argc--;
@@ -907,7 +944,6 @@ mktemp(id, num, len)
 	int	num, len;
 {
 	register char *s;
-	extern char *malloc();
 
 	if ((s = malloc(len)) == NULL)
 		fatal("out of memory");
