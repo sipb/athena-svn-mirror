@@ -76,7 +76,8 @@ COMMAND Command_Table[] = {
 	't',	top,		"Go to the top level.",
 	'u',	up_level,	"Go up one level.",
 	'+',	next_page,	"Display next page of index.",
-	'-',	prev_page,	"Display previous page of index."
+	'-',	prev_page,	"Display previous page of index.",
+	'b',	prev_page,	"Display previous page of index."
 };
 
 /* State Variables. */
