@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.16 1990-11-16 07:04:50 lwvanels Exp $
+ *	$Id: olc.h,v 1.17 1990-12-05 21:52:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -57,7 +57,7 @@ struct tREQUEST;
 #include <olc/macros.h>
 #include <olc/structs.h>
 #include <olc/requests.h>
-#include <olc/common.h>
+#include <common.h>
 
 #include <olc/procs.h>
 #include <olc/status.h>
