@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.7 1992-05-26 17:48:12 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.8 1992-07-17 18:33:18 miki Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -27,7 +27,7 @@ MACHLIBS = -lm
 #ifdef _IBMR2
 MACHLIBS = -ls -lodm -lcfg
 #endif
-LIBS = -lXaw -lXmu -lXt -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(MACHLIBS)
+LIBS = -lXaw -lXmu -lXt -lXext -lX11  -lXau -lXdmcp -lhesiod -lkrb -ldes $(AFSLIBS) $(MACHLIBS)
 
 OBJS = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
 	greet.o netaddr.o reset.o resource.o protodpy.o policy.o \
