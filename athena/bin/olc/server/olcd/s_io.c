@@ -21,12 +21,9 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.3 1989-12-18 10:24:35 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.4 1990-01-03 23:40:39 raeburn Exp $";
 #endif
 
-
-#include <olc/olc.h>
-#include <olcd.h>
 
 #include <sys/types.h>             /* System type declarations. */
 #include <sys/socket.h>            /* Network socket defs. */
@@ -38,6 +35,8 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <netdb.h>
 #include <signal.h>
 
+#include <olc/olc.h>
+#include <olcd.h>
 
 /* External Variables. */
 
