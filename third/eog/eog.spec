@@ -2,7 +2,7 @@
 # Note that this is NOT a relocatable package
 #
 
-%define ver      2.2.2
+%define ver      2.8.0
 %define rel      1
 %define prefix   /usr
 %define name	 eog

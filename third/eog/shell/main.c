@@ -1,59 +1,140 @@
 #include <config.h>
 #include <string.h>
-#include <bonobo-activation/bonobo-activation.h>
+#include <stdlib.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/gnome-config.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-client.h>
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <gconf/gconf-client.h>
-#include <bonobo.h>
-#include <bonobo/bonobo-ui-main.h>
 #include <eel/eel-vfs-extensions.h>
+#include "eog-hig-dialog.h"
 #include "eog-window.h"
 #include "session.h"
+#include "eog-config-keys.h"
 
-static gboolean
-create_app (gpointer data)
+static void open_uri_list_cb (EogWindow *window, GSList *uri_list, gpointer data); 
+static GtkWidget* create_new_window (void);
+
+
+typedef struct {
+	EogWindow *window;
+	char      *iid;
+	GList     *uri_list;
+	gboolean  single_windows;
+} LoadContext;
+
+static void 
+free_string_list (GList *list)
 {
-	GtkWidget *win;
-	gchar *uri;
-
-	win = eog_window_new ();
-	uri = (gchar*) data;
-
-	gtk_widget_show (win);
-
-	if (uri) {
-		eog_window_open (EOG_WINDOW (win), uri);
-		g_free (uri);
-	}
+	GList *it;
 	
-	return FALSE;
+	for (it = list; it != NULL; it = it->next) {
+		g_free (it->data);
+	}
+
+	if (list != NULL) 
+		g_list_free (list);
+}
+
+static void
+free_load_context (LoadContext *ctx)
+{
+	if (ctx == NULL) return;
+
+	free_string_list (ctx->uri_list);
+
+	g_free (ctx);
+}
+
+static void
+new_window_cb (EogWindow *window, gpointer data)
+{
+	create_new_window ();
+}
+
+static GtkWidget*
+create_new_window (void)
+{
+	GtkWidget *window;
+
+	window = eog_window_new ();
+	g_signal_connect (G_OBJECT (window), "open_uri_list", G_CALLBACK (open_uri_list_cb), NULL);
+	g_signal_connect (G_OBJECT (window), "new_window", G_CALLBACK (new_window_cb), NULL);
+
+	gtk_widget_show (window);
+
+	return window;
 }
 
 static gboolean
-create_app_list (gpointer data)
+open_window (LoadContext *ctx)
 {
-	GtkWidget *win;
-	GList *list;
-	GList *node;
+	GtkWidget *window;
+	GError *error = NULL;
+	gboolean new_window;
+	GList *it;
+	GConfClient *client;
 
-	win = eog_window_new ();
-	list = (GList*) data;
+	g_return_val_if_fail (ctx->iid != NULL, FALSE);
 
-	gtk_widget_show (win);
+	client = gconf_client_get_default ();
 
-	if (list) {
-		eog_window_open_list (EOG_WINDOW (win), data);
-		for (node=list; node!=NULL; node=node->next) g_free ((gchar*)node->data);
-		g_list_free (list);
+	new_window = gconf_client_get_bool (client, EOG_CONF_WINDOW_OPEN_NEW_WINDOW, NULL);
+	new_window = new_window && ((ctx->window == NULL) || eog_window_has_contents (ctx->window));
+
+	g_object_unref (client);
+
+	if (ctx->single_windows) 
+	{
+		for (it = ctx->uri_list; it != NULL; it = it->next) {
+			if (new_window || (ctx->window == NULL)) {
+				window = create_new_window ();
+			}
+			else {
+				window = GTK_WIDGET (ctx->window);
+			}
+
+			if (!eog_window_open (EOG_WINDOW (window), ctx->iid, (char*) it->data, &error)) {
+				g_print ("error open %s\n", (char*)it->data);
+				/* FIXME: handle errors */
+			}
+			
+			new_window = TRUE;
+		} 
 	}
+	else 
+	{
+		if (new_window || (ctx->window == NULL)) {
+			window = create_new_window ();
+		}
+		else {
+			window = GTK_WIDGET (ctx->window);
+		}
+	
+		if (!eog_window_open_list (EOG_WINDOW (window), ctx->iid, ctx->uri_list, &error)) {
+			g_print ("error");
+			/* report error */
+		}
+	}
+		
+	free_load_context (ctx);
 
 	return FALSE;
 }
 
-static GnomeVFSURI *
+
+static gboolean
+create_empty_window (gpointer data)
+{
+	create_new_window ();
+
+	return FALSE;
+}
+
+
+static GnomeVFSURI*
 make_canonical_uri (const char *path)
 {
 	char *uri_str;
@@ -71,8 +152,9 @@ make_canonical_uri (const char *path)
 	return uri;
 }
 
+
 /**
- * sort_startup_files:
+ * sort_files:
  * @files: Input list of additional command line arguments.
  * @file_list: Return value, contains all the files.
  * @dir_list: Return value, contains all the directories given 
@@ -83,27 +165,32 @@ make_canonical_uri (const char *path)
  * regular files and one list with all directories.
  **/
 static void
-sort_startup_files (const gchar **files, GList **file_list, GList **dir_list, GList **error_list)
+sort_files (GSList *files, GList **file_list, GList **dir_list, GList **error_list)
 {
-	gint i;
+	GSList *it;
 	GnomeVFSFileInfo *info;
 	
 	info = gnome_vfs_file_info_new ();
 
-	for (i = 0; files [i]; i++) {
+	for (it = files; it != NULL; it = it->next) {
 		GnomeVFSURI *uri;
-		GnomeVFSResult result;
+		GnomeVFSResult result = GNOME_VFS_OK;
 		char *filename;
 		
-		uri = make_canonical_uri (files[i]);
+		uri = make_canonical_uri ((char*)it->data);
 
-		result = gnome_vfs_get_file_info_uri (uri, info,
-						      GNOME_VFS_FILE_INFO_DEFAULT |
-						      GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+		if (uri != NULL) {
+			result = gnome_vfs_get_file_info_uri (uri, info,
+							      GNOME_VFS_FILE_INFO_DEFAULT |
+							      GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 
-		filename = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+			filename = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+		}
+		else {
+			filename = g_strdup ((char*) it->data);
+		}
 
-		if (result != GNOME_VFS_OK)
+		if (result != GNOME_VFS_OK || uri == NULL)
 			*error_list = g_list_append (*error_list, filename);
 		else {
 			if (info->type == GNOME_VFS_FILE_TYPE_REGULAR)
@@ -114,21 +201,13 @@ sort_startup_files (const gchar **files, GList **file_list, GList **dir_list, GL
 				*error_list = g_list_append (*error_list, filename);
 		}
 
-		gnome_vfs_uri_unref (uri);
+		if (uri != NULL) {
+			gnome_vfs_uri_unref (uri);
+		}
 		gnome_vfs_file_info_clear (info);
 	}
 
 	gnome_vfs_file_info_unref (info);
-}
-
-
-static void
-open_in_single_windows (GList *list)
-{
-	for (; list; list = list->next) {
-		gtk_idle_add (create_app,
-			      (gchar*) list->data);
-	}
 }
 
 enum {
@@ -146,24 +225,28 @@ enum {
  *
  * @Return value: TRUE, if a collection should be used, else FALSE.
  * */
-#ifdef HAVE_COLLECTION
 static gint
 user_wants_collection (gint n_windows)
 {
 	GtkWidget *dlg;
-	gint ret;
+	gchar body[128];
+	int ret;
 
-	dlg = gtk_message_dialog_new (NULL,
-				      GTK_DIALOG_MODAL,
-				      GTK_MESSAGE_QUESTION,
-				      GTK_BUTTONS_CANCEL,
-				      _("You are about to open %i windows\n"
-					"simultanously. Do you want to open\n"
-					"them in a collection instead?"),
-				      n_windows);
-	
+	g_snprintf (body, 128,
+		    _("You are about to open %i windows simultaneously. Do you want to open them in a collection instead?"), 
+		    n_windows);
+
+	dlg = eog_hig_dialog_new (NULL, GTK_STOCK_DIALOG_WARNING,
+				  _("Open multiple single windows?"),
+				  body,
+				  TRUE);
+
 	gtk_dialog_add_button (GTK_DIALOG (dlg), _("Single Windows"), COLLECTION_NO);
+	gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_CANCEL, COLLECTION_CANCEL);
 	gtk_dialog_add_button (GTK_DIALOG (dlg), _("Collection"), COLLECTION_YES);
+       	gtk_dialog_set_default_response (GTK_DIALOG (dlg), COLLECTION_YES);
+
+	gtk_widget_show_all (dlg);
 
 	ret = gtk_dialog_run (GTK_DIALOG (dlg));
 
@@ -175,125 +258,163 @@ user_wants_collection (gint n_windows)
 	return ret;
 }
 
-#else
-
-static gint
-user_wants_collection (gint n_windows)
-{
-	GtkWidget *dlg;
-	gint ret;
-	
-	dlg = gtk_message_dialog_new (NULL,
-				      GTK_DIALOG_MODAL,
-				      GTK_MESSAGE_QUESTION,
-				      GTK_BUTTONS_CANCEL,
-				      _("You are about to open %i windows\n"
-					"simultanously. Do you want to continue?"),
-				      n_windows);
-	gtk_dialog_add_button (GTK_DIALOG (dlg), _("Open"), COLLECTION_NO);
-
-	ret = gtk_dialog_run (GTK_DIALOG (dlg));
-
-	if (ret != COLLECTION_NO)
-		ret = COLLECTION_CANCEL;
-
-	gtk_widget_destroy (dlg);
-
-	return ret;
-}
-#endif /* HAVE_COLLECTION */
-
-/* Concatenates the strings in a list and separates them with newlines.  If the
- * list is empty, returns the empty string.  Returns the number of list elements in n.
- */
-static char *
-concat_string_list_with_newlines (GList *strings, int *n)
-{
-	int len;
-	GList *l;
-	char *str, *p;
-
-	*n = 0;
-
-	if (!strings)
-		return g_strdup ("");
-
-	len = 0;
-
-	for (l = strings; l; l = l->next) {
-		char *s;
-
-		(*n)++;
-
-		s = l->data;
-		len += strlen (s) + 1; /* Add 1 for newline */
-	}
-
-	str = g_new (char, len);
-	p = str;
-	for (l = strings; l; l = l->next) {
-		char *s;
-
-		s = l->data;
-		p = g_stpcpy (p, s);
-		*p++ = '\n';
-	}
-
-	p--;
-	*p = '\0';
-
-	return str;
-}
-
-/* Callback used to process the response from the error dialog box */
-static void
-error_dialog_response_cb (GtkDialog *dialog, gint response_id)
-{
-	gtk_widget_destroy (GTK_WIDGET (dialog));
-
-	/* Terminate if there are no more windows open */
-	if (!eog_get_window_list ())
-		bonobo_main_quit ();
-}
-
 /* Shows an error dialog for files that do not exist */
 static void
 show_nonexistent_files (GList *error_list)
 {
-	char *msg;
-	char *str;
-	int n;
-	GtkWidget *dialog;
+	GtkWidget *dlg;
+	GList *it;
+	int n = 0;
+	int len;
+	GString *detail;
 
 	g_assert (error_list != NULL);
 
-	str = concat_string_list_with_newlines (error_list, &n);
+	len = g_list_length (error_list);
+	detail = g_string_new ("");
 
-	if (n == 1)
-		msg = _("Could not access %s\n"
-			"Eye of Gnome will not be able to display this file.");
-	else
-		msg = _("The following files cannot be displayed "
-			"because Eye of Gnome was not able to "
-			"access them:\n"
-			"%s");
+	/* build string of newline separated filepaths */
+	for (it = error_list; it != NULL; it = it->next) {
+		char *str;
 
-	dialog = gtk_message_dialog_new (
-		NULL,
-		0,
-		GTK_MESSAGE_ERROR,
-		GTK_BUTTONS_CANCEL,
-		msg,
-		str);
+		if (n > 9) {
+			/* don't display more than 10 files */
+			detail = g_string_append (detail, "\n...");
+			break;
+		}
 
-	g_free (str);
+		str = gnome_vfs_format_uri_for_display ((char*) it->data);
 
-	g_signal_connect (dialog, "response",
-			  G_CALLBACK (error_dialog_response_cb),
-			  NULL);
-	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_widget_show (dialog);
+		if (it != error_list) {
+			detail = g_string_append (detail, "\n");
+		}
+		detail = g_string_append (detail, str);
+
+		g_free (str);
+		n++;
+	}
+	
+	dlg = eog_hig_dialog_new (NULL, GTK_STOCK_DIALOG_ERROR, 
+				  ngettext ("File not found.", "Files not found.", len),
+				  detail->str, TRUE);
+	gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_OK, GTK_RESPONSE_OK);
+	
+	gtk_widget_show (dlg);
+	gtk_dialog_run (GTK_DIALOG (dlg));
+	gtk_widget_destroy (dlg);
+
+	g_string_free (detail, TRUE);
 }
+
+static GSList*
+string_array_to_list (const gchar **files)
+{
+	gint i;
+	GSList *list = NULL;
+
+	if (files == NULL) return list;
+
+	for (i = 0; files [i]; i++) {
+		list = g_slist_prepend (list, g_strdup (files[i]));
+	}
+
+	return g_slist_reverse (list);
+}
+
+static void 
+open_uri_list_cb (EogWindow *window, GSList *uri_list, gpointer data)
+{
+	GList *file_list = NULL;
+	GList *dir_list = NULL;
+	GList *error_list = NULL;
+	LoadContext *ctx;
+	gboolean quit_program = FALSE;
+
+	if (uri_list == NULL) {
+		if (window == NULL) {
+			g_idle_add (create_empty_window, NULL);
+		}
+
+		return;
+	}
+
+	sort_files (uri_list, &file_list, &dir_list, &error_list);
+
+	/* open regular files */
+	if (file_list) {
+		int result = COLLECTION_NO;
+		int n_files = 0;
+
+		n_files = g_list_length (file_list);
+		if (n_files > 3 && n_files < 10) {
+			result = user_wants_collection (g_list_length (file_list));
+		}
+		else if (n_files >= 10) {
+			result = COLLECTION_YES;
+		}
+		else {
+			result = COLLECTION_NO;
+		}
+	
+
+		if (result == COLLECTION_YES) 
+		{
+			/* Do not free the file_list, this will be done
+			   in the create_app_list function! */
+			ctx = g_new0 (LoadContext, 1);
+			ctx->window = window;
+			ctx->iid = EOG_COLLECTION_CONTROL_IID;
+			ctx->uri_list = file_list;
+			ctx->single_windows = FALSE;
+			
+			g_idle_add ((GSourceFunc)open_window, ctx);
+		} 
+		else if (result == COLLECTION_NO)
+		{
+			ctx = g_new0 (LoadContext, 1);
+			ctx->window = window;
+			ctx->iid = EOG_VIEWER_CONTROL_IID;
+			ctx->uri_list = file_list;
+			ctx->single_windows = TRUE;
+			
+			/* open multiple windows */
+			g_idle_add ((GSourceFunc)open_window, ctx);
+		}
+		else if (result == COLLECTION_CANCEL && window == NULL) {
+			/* We quit the whole program only if we open the files
+			   from the commandline. We would get the signal emitting 
+			   window otherwise.
+			*/
+			quit_program = TRUE;
+		}
+	}
+		
+	/* open every directory in an own window */
+	if (dir_list) {
+		quit_program = FALSE;
+
+		ctx = g_new0 (LoadContext, 1);
+		ctx->window = window;
+		ctx->iid = EOG_COLLECTION_CONTROL_IID;
+		ctx->uri_list = dir_list;
+		ctx->single_windows = TRUE;
+
+		g_idle_add ((GSourceFunc)open_window, ctx);
+	}
+
+	/* show error for inaccessable files */
+	if (error_list) {
+		show_nonexistent_files (error_list);
+		free_string_list (error_list);
+
+		quit_program = (eog_get_window_list () == NULL);
+	}
+
+	if (quit_program) {
+		gtk_main_quit ();
+	}
+}
+
 
 /**
  * handle_cmdline_args:
@@ -310,74 +431,16 @@ show_nonexistent_files (GList *error_list)
 static gboolean
 handle_cmdline_args (gpointer data)
 {
-	GList *file_list;
-	GList *dir_list;
-	GList *error_list;
+	GSList *startup_file_list = NULL;
 	const gchar **startup_files;
 	poptContext ctx;
 
 	ctx = data;
 	startup_files = poptGetArgs (ctx);
 
-	file_list = dir_list = error_list = NULL;
-
-	/* sort cmdline arguments into file and dir list */
-	if (startup_files)
-		sort_startup_files (startup_files, &file_list, &dir_list, &error_list);
-	else {
-		gtk_idle_add (create_app, NULL);
-		return FALSE;
-	}
-
-	/* open regular files */
-	if (file_list) {
-		if (g_list_length (file_list) > 3) {
-			gint ret = user_wants_collection (g_list_length (file_list));
-			if (ret == COLLECTION_YES) {
-				/* Do not free the file_list, this will be done
-				 in the create_app_list function! */
-				gtk_idle_add (create_app_list, 
-					      file_list);
-			} else if (ret == COLLECTION_NO) {
-				/* open multiple windows */
-				open_in_single_windows (file_list);
-				g_list_free (file_list);
-			} else { /* quit whole program */
-				GList *node;
-				poptFreeContext (ctx);
-				for (node = file_list; node; node = node->next) g_free (node->data);
-				for (node = dir_list; node; node = node->next) g_free (node->data);
-				g_list_free (file_list);
-				g_list_free (dir_list);
-				bonobo_main_quit ();
-				return FALSE;
-			}
-		} else {
-			open_in_single_windows (file_list);
-			g_list_free (file_list);
-		}
-	}
-		
-	/* open every directory in an own window */
-	if (dir_list) {
-		open_in_single_windows (dir_list);
-		g_list_free (dir_list);
-	}
-
-	if (error_list) {
-		GList *l;
-
-		show_nonexistent_files (error_list);
-
-		for (l = error_list; l; l = l->next) {
-			char *uri;
-
-			uri = l->data;
-			g_free (uri);
-		}
-
-		g_list_free (error_list);
-	}
+	startup_file_list = string_array_to_list (startup_files);
+	
+	open_uri_list_cb (NULL, startup_file_list, NULL);
 	
 	/* clean up */
 	poptFreeContext (ctx);
@@ -444,10 +507,7 @@ main (int argc, char **argv)
 	}
 
 	if(gnome_vfs_init () == FALSE)
-		g_error (_("Could not initialize GnomeVFS!\n"));
-
-	if (bonobo_ui_init ("Eye Of GNOME", VERSION, &argc, argv) == FALSE)
-		g_error (_("Could not initialize Bonobo!\n"));
+		g_error ("Could not initialize GnomeVFS!");
 
 	gnome_window_icon_set_default_from_file (EOG_ICONDIR"/gnome-eog.png");
 
@@ -456,18 +516,19 @@ main (int argc, char **argv)
 	g_signal_connect (client, "save_yourself", G_CALLBACK (client_save_yourself_cb), NULL);
 	g_signal_connect (client, "die", G_CALLBACK (client_die_cb), NULL);
 
-	if (gnome_client_get_flags (client) & GNOME_CLIENT_RESTORED)
+	if (gnome_client_get_flags (client) & GNOME_CLIENT_RESTORED) {
 		session_load (gnome_client_get_config_prefix (client));
-	else {
+	}
+	else  {
 		g_value_init (&value, G_TYPE_POINTER);
 		g_object_get_property (G_OBJECT (program), GNOME_PARAM_POPT_CONTEXT, &value);
 		ctx = g_value_get_pointer (&value);
 		g_value_unset (&value);
 
-		gtk_idle_add (handle_cmdline_args, ctx);
+		g_idle_add (handle_cmdline_args, ctx);
 	}
 
-	bonobo_main ();
+	gtk_main ();
 
 	return 0;
 }

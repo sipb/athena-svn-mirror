@@ -1,15 +1,18 @@
-if ENABLE_COLLECTION
- COLLECTION_FLAGS=-DHAVE_COLLECTION
+SUBDIRS = recent-files
+
+if ENABLE_JPEG
+jpeg_LIB = -L$(top_builddir)/jpegutils -leog-jpegutils
+jpeg_DEPS = $(top_builddir)/jpegutils/libeog-jpegutils.a
 endif
 
 INCLUDES =							\
         -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
 	-I$(top_srcdir)/libeog					\
 	-I$(top_builddir)/libeog				\
-	$(GCONF_CFLAGS)						\
-	$(EXTRA_WARNING_CFLAGS)					\
+	-I$(top_srcdir)/shell/recent-files			\
+	$(WARN_CFLAGS)						\
 	$(EOG_CFLAGS)						\
-	$(COLLECTION_FLAGS)					\
+	-DHAVE_COLLECTION					\
 	-DDATADIR=\""$(datadir)"\"				\
 	-DEOG_ICONDIR=\""$(datadir)/pixmaps"\"
 
@@ -26,16 +29,23 @@ eog_SOURCES =			\
 	util.h			\
 	util.c
 
-eog_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
+eog_DEPENDENCIES = 				\
+	$(top_builddir)/libeog/libeog.a 	\
+	$(top_builddir)/shell/recent-files/librecent.a \
+	$(jpeg_DEPS)
 
 eog_LDADD = 				\
 	-L$(top_builddir)/libeog 	\
+	-L$(top_builddir)/shell/recent-files \
 	-leog				\
+	-lrecent			\
+	$(jpeg_LIB)			\
 	$(POPT_LIBS)			\
+	$(X_LIBS)			\
 	$(EOG_LIBS)
 
 uidir = $(datadir)/gnome-2.0/ui
-UI_FILES = eog-shell-ui.xml 
+UI_FILES = eog-gtk-ui.xml 
 ui_DATA = $(UI_FILES)
 
 EXTRA_DIST = $(UI_FILES)

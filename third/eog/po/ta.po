@@ -1,1022 +1,693 @@
+# translation of ta.po to Tamil
 # Tamil translation of eog.
-# Copyright (C) 2002 EOG's maintainers
+# Copyright (C) 2002, 2003 eog's maintainers
 # This file is distributed under the same license as the eog package.
-# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2002.
+# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2002, 2003.
+# Dinesh Nadarajah <dinesh_list@sbcglobal.net>, 2004.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: EOG 1.99\n"
-"POT-Creation-Date: 2003-03-26 17:08-0600\n"
-"PO-Revision-Date: 2002-04-08 12:00:00\n"
-"Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
-"Language-Team: Tamil <tamilinix@yahoo.com>\n"
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"PO-Revision-Date: 2004-08-20 15:45+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:1
-#, fuzzy
-msgid "EOG Image Collection Viewer"
-msgstr "¸§É¡õ-¸ñ µÅ¢Âì ¸¡ðÊ"
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:2
-msgid "EOG Image collection view factory"
-msgstr ""
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:3
-#, fuzzy
-msgid "Image Collection"
-msgstr "¾¢Ãð¼ø"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 
 #: eog.desktop.in.h:1
-msgid "Eye of Gnome Image Viewer"
-msgstr "¸§É¡õ-¸ñ µÅ¢Âì ¸¡ðÊ"
+msgid "Image Viewer"
+msgstr "ஓவியக் காட்டி"
 
 #: eog.desktop.in.h:2
 msgid "View many different types of images"
-msgstr "­¨¾ì¦¸¡ñÎ ÀÄÅ¢¾Á¡É ¯ÕÅí¸¨Ç/µÅ¢Âí¸¨Ç À¡÷ì¸Ä¡õ"
+msgstr "இதைக்கொண்டு பலவிதமான உருவங்களை/ஓவியங்களை பார்க்கலாம்"
 
 #: eog.glade.h:1
-msgid "By c_olor"
-msgstr ""
+msgid "    "
+msgstr "     "
 
 #: eog.glade.h:2
-msgid "By check_pattern"
-msgstr ""
+msgid "*"
+msgstr "*"
 
 #: eog.glade.h:3
-msgid "Eye of Gnome Preferences"
-msgstr "¸§É¡õ-¸ñ Å¢ÕôÀí¸û"
+msgid "."
+msgstr "."
 
 #: eog.glade.h:4
-#, fuzzy
-msgid "Image Viewer"
-msgstr "¸§É¡õ-¸ñ µÅ¢Âì ¸¡ðÊ"
+msgid "<b>File Name Preview</b>"
+msgstr "<b>கோப்பின் பெயர் முன்தோற்றம்</b>"
 
 #: eog.glade.h:5
-msgid "Indicate Transparency"
-msgstr ""
+msgid "<b>File Path Specifications</b>"
+msgstr "<b>கோப்பின் பாதை குறிப்புகள்</b>"
 
 #: eog.glade.h:6
-msgid "Pick a color"
-msgstr ""
+msgid "<b>Image Interpolation</b>"
+msgstr "<b>ஓவியம் இடைச்சொருகல்</b>"
 
 #: eog.glade.h:7
-msgid "_Interpolate image on zoom (better quality but slower)"
-msgstr ""
+msgid "<b>Image Zoom</b>"
+msgstr "<b>ஓவியம் அலவுமாற்றல்</b>"
+
+#: eog.glade.h:8
+msgid "<b>Options</b>"
+msgstr "<b>தேர்வுகள்</b>"
+
+#: eog.glade.h:9
+msgid "<b>Sequence</b>"
+msgstr "<b>வரிசைமுறை</b>"
+
+#: eog.glade.h:10
+msgid "<b>Transparent Parts</b>"
+msgstr "<b>ஊடு தெரியும் பகுதிகள்</b>"
+
+#: eog.glade.h:12
+#, no-c-format
+msgid "Allow _zoom greater than 100% initially"
+msgstr "100% மேல் _பெறிதாக்குவதற்கு தொடக்கத்திலில் அனுமதிக்கவும்"
+
+#: eog.glade.h:13
+msgid "As _background"
+msgstr "பின்ன_ணியாக"
+
+#: eog.glade.h:14
+msgid "As check _pattern"
+msgstr "ஓர் கட்டம் வடிவமாக"
+
+#: eog.glade.h:15
+msgid "As custom c_olor"
+msgstr "தனிப்பயன் வண்ண_மாக"
+
+#: eog.glade.h:16
+msgid "Color for Transparent Areas"
+msgstr "ஊடு தெரியும் இடங்களின் வண்ணம்"
+
+#: eog.glade.h:17
+msgid "Destination Folder:"
+msgstr "அடைவு சேருமிடம்"
+
+#: eog.glade.h:18
+msgid "Eye of Gnome Preferences"
+msgstr "கனோம்-கண் விருப்பங்கள்"
+
+#: eog.glade.h:19
+msgid "Filename Format:"
+msgstr "§¸¡ôÒô¦ÀÂ÷ அமைப்பு:"
+
+#: eog.glade.h:20
+msgid "Image _View"
+msgstr "(_V)ஓவியம் காட்சி"
+
+#: eog.glade.h:21
+msgid "Rename From:"
+msgstr "இதிலிருந்து மறுபெயரிடு"
+
+#: eog.glade.h:22
+msgid "Replace spaces by underscore"
+msgstr "இடைவெளிகளை அடிக்கோடுகளாக மாற்று"
+
+#: eog.glade.h:23
+msgid "Save As"
+msgstr "எனச்சேமி..."
+
+#: eog.glade.h:24
+msgid "Saving Image"
+msgstr "ஓவியம் சேமிக்கப்படுகிறது"
+
+#: eog.glade.h:25
+msgid "Show _next image automatically after:"
+msgstr "தானாகவே அடுத்த ஓவியத்தை காட்டுவது:"
+
+#: eog.glade.h:26
+msgid "Sli_de Show"
+msgstr "பட_க்காட்சி"
+
+#: eog.glade.h:27
+msgid "Start counter at:"
+msgstr "எணிக்கையை இங்கே துவங்கு:"
+
+#: eog.glade.h:28
+msgid "To:"
+msgstr "பெருநர்:"
+
+#: eog.glade.h:29
+msgid "_Browse"
+msgstr "(_B)உலாவு"
+
+#: eog.glade.h:30
+msgid "_Interpolate image on zoom"
+msgstr "பெறிதாக்கும்போது _ஓவியத்தை இடைச்சொருகுக"
+
+#: eog.glade.h:31
+msgid "_Loop sequence"
+msgstr "_கண்ணி வரிசைமுறை"
+
+#: eog.glade.h:32
+msgid "seconds"
+msgstr "நொடிகள்"
 
 #: eog.schemas.in.h:1
-msgid "Automatically pick window size"
+msgid ""
+"A value greater than 0 determines the seconds an image stays on screen until "
+"the next one is shown automatically. Zero disables the automatic browsing."
 msgstr ""
-
-#: eog.schemas.in.h:2
-msgid "Default zoom factor for the full screen view"
-msgstr ""
+"0 க்கும் மேற்பட்ட மதிப்புகள் பிம்பம் எத்தனை அடுத்ததை காட்டுவதற்கு முன்  எவ்வளவு நேரம் "
+"திரையில் இருக்கும் என்பதை காட்டும்"
 
 #: eog.schemas.in.h:3
-msgid ""
-"Default zoom factor for the full screen view. Possible values are: 0 (use "
-"1:1 zoom factor), 1 (use the same zoom factor as the image window), 2 (fit "
-"the image to the screen)."
-msgstr ""
+#, no-c-format
+msgid "Allow zoom greater than 100% initially"
+msgstr "100% மேல் பெறிதாக்குவதற்கு தொடக்கத்திலில் அனுமதிக்கவும்"
 
 #: eog.schemas.in.h:4
-msgid ""
-"Determines how transparency should be indicated. Valid values are "
-"CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color key "
-"determines the used color value."
-msgstr ""
+msgid "Delay in seconds until showing the next image"
+msgstr "அடுத்த ஓவியம் காண்பிப்பதற்கு தாமதாம் (நொடிகளில்)"
 
 #: eog.schemas.in.h:5
-msgid "Fit standard-sized images to the screen"
+msgid ""
+"Determines how transparency should be indicated. Valid values are "
+"CHECK_PATTERN, COLOR and NONE. If COLOR is choosen, then the trans_color key "
+"determines the used color value."
 msgstr ""
+"எவ்வளவு ஒளிபுகும் தன்மை காட்டப்பட வேண்டும் என்பதை கண்டறியும். செல்லகூடிய "
+"மதிப்புகள்CHECK_PATTERN, COLOR மற்றும் NONE. COLOR தேர்வு செய்யப்பட்டால் trans_color "
+"விசை வண்ணத்தின் மதிப்பை கணக்கிடும்"
 
 #: eog.schemas.in.h:6
 msgid ""
 "If the transparency key has the value COLOR, then this key determines the "
 "color which is used for indicating transparency."
 msgstr ""
+"ஒளிபுகும் விசையிம் மதிப்பு COLOR ஆக இருந்தால், விடை ஒளிபுகும் தன்மை காட்டப்பட வேண்டிய "
+"வண்ணத்தை தேர்வு செய்யும்"
 
 #: eog.schemas.in.h:7
-#, fuzzy
-msgid "Interpolate Image"
-msgstr "­¨¼ì ¸½¢ôÒ"
+msgid ""
+"If this is set to FALSE small images will not be stretched to fit into the "
+"screen initially."
+msgstr "இதை பொய் என அமைத்தால் சிறிய பிம்பங்கள் திரையில் பொருந்தும் அளவிற்கு அமைக்கப்படும்"
 
 #: eog.schemas.in.h:8
-#, fuzzy
-msgid "Open images in a new window"
-msgstr "Ò¾¢Â º¡ÇÃò¾¢ø ¾¢Èì¸×õ"
+msgid "Interpolate Image"
+msgstr "ஓவியத்தை இடைச்சொருகுக"
 
 #: eog.schemas.in.h:9
-msgid "Put a bevel around the screen"
-msgstr ""
+msgid "Loop through the image sequence"
+msgstr "பட வரிசையில் மீண்டும் முயலவும்"
 
 #: eog.schemas.in.h:10
-msgid "Scrollbar policy for the full screen view"
-msgstr ""
+msgid "Open images in a new window"
+msgstr "கோவியங்களை புதிய சாளரத்தில் திறக்கவும்"
 
 #: eog.schemas.in.h:11
-msgid "Transparency color"
-msgstr ""
+msgid "Show/hide the window statusbar."
+msgstr "சாளரம் நிலைப்பட்டையை காட்டுக/மறைக்கவும்."
 
 #: eog.schemas.in.h:12
-msgid "Transparency indicator"
-msgstr ""
+msgid "Show/hide the window toolbar."
+msgstr "சாளரம் கருவிப்பட்டையை காட்டுக/மறைக்கவும்."
 
 #: eog.schemas.in.h:13
-msgid ""
-"Wether the image should be interpolated on zoom or not. This leads to better "
-"quality but is somewhat slower than non interpolated images."
-msgstr ""
+msgid "Transparency color"
+msgstr "ஊடு தெரிதல் வண்ணம்"
 
 #: eog.schemas.in.h:14
-msgid ""
-"Whether image windows should pick their size and zooming factor "
-"automatically based on the size of the image. If this option is not set, "
-"image windows will get whatever size the window manager assigns to them."
-msgstr ""
+msgid "Transparency indicator"
+msgstr "ஊடு தெரிதல் காட்டி"
 
 #: eog.schemas.in.h:15
 msgid ""
 "Whether opening an image should create a new window instead of replacing the "
 "image in the current window."
-msgstr ""
+msgstr "ஓவியத்தை அதே சாளரத்தில் திறப்பதா அல்லது புதிய சாளரத்தில் திறப்பதா."
 
 #: eog.schemas.in.h:16
 msgid ""
-"Whether the full screen view should display a bevel along the edges of the "
-"screen."
-msgstr ""
+"Whether or not the sequence of images should be shown in an endless loop."
+msgstr "முடிவற்ற "
 
 #: eog.schemas.in.h:17
 msgid ""
-"Whether to display scrollbars on the full screen view. Possible values are: "
-"1 (automatic; only display scrollbars if the image is larger than the "
-"window), 2 (never display scrollbars)."
+"Whether the image should be interpolated on zoom or not. This leads to "
+"better quality but is somewhat slower than non interpolated images."
 msgstr ""
+"பெரிதாக்கும் போது பிம்பத்தை இடைச்செருக வேண்டுமா வேண்டாமா. இதனால் தரமான இடைசெருகள் "
+"பிம்பத்தை விட மெதுவாக பிம்பம் கிடைக்கும்"
 
-#: eog.schemas.in.h:18
-msgid ""
-"Whether to fit standard-sized images to the screen when in full screen mode. "
-"These are images with sizes like 320x240, 640x480, 800x800, etc. This "
-"selects whether such images should be scaled to fit the screen regardless of "
-"the setting for the default zoom factor of the full screen view."
-msgstr ""
+#: libeog/eog-file-selection.c:124
+msgid "All Files"
+msgstr "அணைத்து கோப்புகளும்"
 
-#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:721
-msgid "EOG Image"
-msgstr "¸§É¡õ-¸ñ µÅ¢Âõ"
+#: libeog/eog-file-selection.c:129
+msgid "All Images"
+msgstr "அனைத்து ஓவியங்களும்"
 
-#: libeog/GNOME_EOG.server.in.in.h:2
-msgid "EOG Image Viewer"
-msgstr "¸§É¡õ-¸ñ µÅ¢Âì ¸¡ðÊ"
+#. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
+#: libeog/eog-file-selection.c:147
+#, c-format
+msgid "%s (*.%s)"
+msgstr "%s (*.%s)"
 
-#: libeog/GNOME_EOG.server.in.in.h:3
-msgid "EOG Image viewer factory"
-msgstr ""
+#. Pixel size of image: width x height in pixel
+#: libeog/eog-file-selection.c:240
+#, c-format
+msgid "%s x %s pixel"
+msgstr "%s x %s பிக்சல்"
 
-#: libeog/GNOME_EOG.server.in.in.h:4
-msgid "Embeddable EOG Image"
-msgstr "¯ð¦À¡¾¢ì¸ìÜÊÂ ¸§É¡õ-¸ñ µÅ¢Âõ"
-
-#. Second page
-#: libeog/GNOME_EOG.server.in.in.h:5 viewer/eog-print-setup.c:689
-msgid "Image"
-msgstr "¯ÕÅõ"
-
-#: libeog/image-view.c:1896
-#, fuzzy
-msgid "interpolation type"
-msgstr "­¨¼ì ¸½¢ôÒ"
-
-#: libeog/image-view.c:1897
-msgid "the type of interpolation to use"
-msgstr ""
-
-#: libeog/image-view.c:1903 libeog/image-view.c:1910
-#, fuzzy
-msgid "check type"
-msgstr "Å¨¸ ºÃ¢À¡÷"
-
-#: libeog/image-view.c:1904
-msgid "the type of chequering to use"
-msgstr ""
-
-#: libeog/image-view.c:1911
-msgid "the size of chequers to use"
-msgstr ""
-
-#: libeog/image-view.c:1917
-#, fuzzy
-msgid "dither"
-msgstr "Åñ½ô ÒûÇ¢ ¦¾Ç¢"
-
-#: libeog/image-view.c:1918
-#, fuzzy
-msgid "dither type"
-msgstr "Å¨¸ ºÃ¢À¡÷"
-
-#: libeog/eog-file-selection.c:29 libeog/eog-file-selection.c:46
-msgid "By Extension"
-msgstr ""
-
-#: libeog/eog-file-selection.c:30
-msgid "BMP"
-msgstr ""
-
-#: libeog/eog-file-selection.c:31
-msgid "GIF"
-msgstr ""
-
-#: libeog/eog-file-selection.c:32
-msgid "ICO"
-msgstr ""
-
-#: libeog/eog-file-selection.c:33 libeog/eog-file-selection.c:48
-msgid "JPEG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:34 libeog/eog-file-selection.c:51
-msgid "PNG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:35
-msgid "PNM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:36
-msgid "RAS"
-msgstr ""
-
-#: libeog/eog-file-selection.c:37
-msgid "SVG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:38
-msgid "TGA"
-msgstr ""
-
-#: libeog/eog-file-selection.c:39
-msgid "TIFF"
-msgstr ""
-
-#: libeog/eog-file-selection.c:40
-msgid "XBM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:41 libeog/eog-file-selection.c:54
-msgid "XPM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:207
-msgid "Unsupported file format."
-msgstr ""
-
-#: libeog/eog-file-selection.c:225
-msgid "Determine File Type:"
-msgstr ""
-
-#: libeog/eog-file-selection.c:268
-#, fuzzy
+#: libeog/eog-file-selection.c:396
 msgid "Load Image"
-msgstr "¯ÕÅõ"
+msgstr "ஓவியத்தை ஏற்று"
 
-#: libeog/eog-file-selection.c:274
-#, fuzzy
+#: libeog/eog-file-selection.c:404
 msgid "Save Image"
-msgstr "µÅ¢Âò¨¾ ¾¢Èì¸×õ"
+msgstr "ஓவியத்தை சேமி"
 
-#: shell/eog-shell-ui.xml.h:1
-msgid "About this application"
-msgstr "­ó¾ ÀÂýÀ¡Î ÀüÈ¢"
+#: libeog/eog-file-selection.c:412
+msgid "Open Folder"
+msgstr "அடைவு திறக்கவும்"
 
-#: shell/eog-shell-ui.xml.h:2
-msgid "Cancel"
-msgstr "¿£ìÌ"
+#: libeog/eog-image-jpeg.c:330 libeog/eog-image-jpeg.c:569
+#, c-format
+msgid "Couldn't create temporary file for saving: %s"
+msgstr "இதனை சேமிப்பதற்கு தற்காலிக கோப்பு படைக்கமுடியவில்லை: %s"
 
-#: shell/eog-shell-ui.xml.h:3
-msgid "Close window"
-msgstr "º¡ÇÃò¨¾ ãÎ"
+#: libeog/eog-image-jpeg.c:349 libeog/eog-image-jpeg.c:590
+msgid "Couldn't allocate memory for loading JPEG file"
+msgstr "JPEG கோப்பை ஏற்றுவதற்கு நினைவகத்தை ஒதுக்கீ வைக்க முடியவில்லை"
 
-#: shell/eog-shell-ui.xml.h:4
-#, fuzzy
-msgid "Help On this application"
-msgstr "­ó¾ ÀÂýÀ¡Î ÀüÈ¢"
+#: libeog/eog-image.c:814
+msgid "empty file"
+msgstr "வெற்றான கோப்பு"
 
-#: shell/eog-shell-ui.xml.h:5
-msgid "New"
+#: libeog/eog-image.c:1247 libeog/eog-image.c:1458
+msgid "File exists"
+msgstr "கோப்பு ஏற்கனவே இருக்கின்றது"
+
+#: libeog/eog-image.c:1400 libeog/eog-image.c:1526
+msgid "No image loaded."
+msgstr "ஓவியம் ஏதும் ஏற்றப்படவில்லை."
+
+#: libeog/eog-image.c:1409 libeog/eog-image.c:1535
+msgid "Temporary file creation failed."
+msgstr "தற்காலிக கோப்பு உருவாக்கம் தோல்வியில் முடிந்தது"
+
+#: libeog/eog-info-view-exif.c:26
+msgid "Camera"
+msgstr "புகைப்பட கருவி"
+
+#: libeog/eog-info-view-exif.c:27
+msgid "Image Data"
+msgstr "ஓவிய தகவல்"
+
+#: libeog/eog-info-view-exif.c:28
+msgid "Image Taking Conditions"
+msgstr "ஓவியத்தை எடுத்துக்கொள்ள விதிமுறைகள்"
+
+#: libeog/eog-info-view-exif.c:29
+msgid "Maker Note"
+msgstr "உருவாக்கியவர் குறிப்பு"
+
+#: libeog/eog-info-view-exif.c:30
+msgid "Other"
+msgstr "மற்றவை"
+
+#: libeog/eog-info-view-exif.c:212
+msgid "Tag"
+msgstr "குறி"
+
+#: libeog/eog-info-view-exif.c:220 libeog/eog-info-view-file.c:96
+msgid "Value"
+msgstr "மதிப்பு"
+
+#. only used for internal purpose
+#: libeog/eog-info-view-file.c:25 libeog/eog-uri-converter.h:45
+msgid "Filename"
+msgstr "§¸¡ôÒô¦ÀÂ÷"
+
+#: libeog/eog-info-view-file.c:26
+msgid "Width"
+msgstr "அகலம்"
+
+#: libeog/eog-info-view-file.c:27
+msgid "Height"
+msgstr "உயரம்"
+
+#: libeog/eog-info-view-file.c:28
+msgid "Filesize"
+msgstr "கோப்பு-அளவு"
+
+#: libeog/eog-info-view-file.c:88
+msgid "Attribute"
+msgstr "குணங்கள்"
+
+#: libeog/eog-info-view.c:92
+msgid "File"
+msgstr "கோப்பு"
+
+#: libeog/eog-info-view.c:101
+msgid "EXIF"
+msgstr "EXIF"
+
+#: libeog/eog-info-view.c:108
+msgid "IPTC"
+msgstr "IPTC"
+
+#: libeog/eog-save-as-dialog-helper.c:137
+msgid "Option not available."
+msgstr "தேர்வு இல்லை"
+
+#: libeog/eog-save-as-dialog-helper.c:138
+msgid ""
+"To use this function you need the libexif library. Please install libexif "
+"(http://libexif.sf.net) and recompile Eye of Gnome."
 msgstr ""
+"இந்த செயல்கூறை பயன்படுத்த libexif நூலகம் தேவை. libexif நிறுவி(http://libexif.sf."
+"net) க்னோம் கண்ணை மீண்டும் துவக்கவும்."
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
-msgid "Open"
-msgstr "¾¢È"
+#: libeog/eog-save-as-dialog-helper.c:214
+msgid "as is"
+msgstr "என"
 
-#: shell/eog-shell-ui.xml.h:7
-msgid "Open a file"
-msgstr "µ÷ §¸¡ô¨À ¾¢Èì¸×õ"
+#: libeog/eog-save-dialog-helper.c:162
+#, c-format
+msgid "Saving image %s."
+msgstr "ஓவியம் சேமிக்கப்படுகின்றது %s."
 
-#: shell/eog-shell-ui.xml.h:8
-msgid "Open a new window"
-msgstr "µ÷ Ò¾¢Â º¡ÇÃò¨¾ ¾¢Èì¸×õ"
+#: libeog/eog-save-dialog-helper.c:208
+msgid "Cancel saving ..."
+msgstr "சேமிப்பதை நிறுுத்தவும்..."
 
-#: shell/eog-shell-ui.xml.h:9
-msgid "Open in new window"
-msgstr "Ò¾¢Â º¡ÇÃò¾¢ø ¾¢Èì¸×õ"
+#: libeog/eog-uri-converter.c:1023
+msgid "Filenames are not disjunct."
+msgstr "கோப்பின் பெயர் எப்போதும் பிரிக்கப்பட்டுள்ளது"
 
-#: shell/eog-shell-ui.xml.h:10
-msgid "Open in this window"
-msgstr "­ó¾ º¡ÇÃò¾¢ø ¾¢Èì¸×õ"
+#: libeog/eog-uri-converter.h:46
+msgid "Counter"
+msgstr "மையம்"
 
-#: shell/eog-shell-ui.xml.h:11
-#, fuzzy
-msgid "Prefere_nces"
-msgstr "_Å¢ÕôÀí¸û"
+#: libeog/eog-uri-converter.h:47
+msgid "Comment"
+msgstr "கருத்து"
 
-#: shell/eog-shell-ui.xml.h:12
-msgid "Preferences for EoG components"
-msgstr ""
+#: libeog/eog-uri-converter.h:48
+msgid "Date"
+msgstr "தேதி"
 
-#: shell/eog-shell-ui.xml.h:13
-#, fuzzy
-msgid "Quit the program"
-msgstr "¿¢Ã¨Ä ãÊ ¦ÅÇ¢î¦ºø"
+#: libeog/eog-uri-converter.h:49
+msgid "Time"
+msgstr "நேரம்"
 
-#: shell/eog-shell-ui.xml.h:14
-#, fuzzy
-msgid "_About"
-msgstr "_¿¢Ã¨Äô ÀüÈ¢..."
+#: libeog/eog-uri-converter.h:50
+msgid "Day"
+msgstr "நாள்"
 
-#: shell/eog-shell-ui.xml.h:15
-msgid "_Close"
-msgstr "_ãÎ"
+#: libeog/eog-uri-converter.h:51
+msgid "Month"
+msgstr "மாதம்"
 
-#: shell/eog-shell-ui.xml.h:16
-#, fuzzy
-msgid "_Contents"
-msgstr "¯¾Å¢Â¡Ä÷¸û"
+#: libeog/eog-uri-converter.h:52
+msgid "Year"
+msgstr "வருடம்"
 
-#: shell/eog-shell-ui.xml.h:17 viewer/eog-image-view-ui.xml.h:13
-#, fuzzy
-msgid "_Edit"
-msgstr "¦ÅÇ¢î¦ºø"
+#: libeog/eog-uri-converter.h:53
+msgid "Hour"
+msgstr "மணி"
 
-#: shell/eog-shell-ui.xml.h:18
-msgid "_File"
-msgstr "_§¸¡ôÒ"
+#: libeog/eog-uri-converter.h:54
+msgid "Minute"
+msgstr "நிமிடம்"
 
-#: shell/eog-shell-ui.xml.h:19
-msgid "_Help"
-msgstr "_¯¾Å¢"
-
-#: shell/eog-shell-ui.xml.h:20
-#, fuzzy
-msgid "_New"
-msgstr "_¸¡ðÎ"
-
-#: shell/eog-shell-ui.xml.h:21
-msgid "_Open..."
-msgstr "_¾¢È..."
-
-#: shell/eog-shell-ui.xml.h:22
-#, fuzzy
-msgid "_Quit"
-msgstr "¦ÅÇ¢î¦ºø"
+#: libeog/eog-uri-converter.h:55
+msgid "Second"
+msgstr "நொடி"
 
 #. Translators should localize the following string
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:216
-msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
-msgstr ""
+#: shell/eog-window.c:321
+msgid "translator-credits"
+msgstr "மொழிபெயர்பாளர் நன்றிகள்"
 
-#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
+#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
+#: shell/main.c:498
 msgid "Eye of Gnome"
-msgstr "¸§É¡õ-¸ñ"
+msgstr "க்னோமின் கண்"
 
-#: shell/eog-window.c:223
-msgid "Copyright (C) 2000-2002 The Free Software Foundation"
-msgstr "ÀÊÔÃ¢¨Á (À) 2000-2002 ­ÄÅº ¦Áý ¦À¡Õû ÜðÎò¾¡ÀÉõ"
-
-#: shell/eog-window.c:224
-#, fuzzy
+#: shell/eog-window.c:329
 msgid "The GNOME image viewing and cataloging program."
-msgstr "µÅ¢Âí¸¨Çô À¡÷ôÀ¾üÌõ, «¨Å¨Â¸¨Ç Å¨¸ôÀÎò¾Å¾üÌÁ¡É µ÷ ¸§É¡õ ÀÂýÀ¡Î"
+msgstr "ஓவியங்களைப் பார்ப்பதற்கும், அவைகளை வகைப்படுத்தவதற்குமான ஓர் கனோம் பயன்பாடு."
 
-#: shell/eog-window.c:261
+#: shell/eog-window.c:366
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
 "%s"
 msgstr ""
-
-#: shell/main.c:160
-#, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to open\n"
-"them in a collection instead?"
-msgstr ""
-"¿£í¸û %i º¡ÇÃí¸¨Ç ´§Ã Ó¨ÈÂ¡¸ ¾¢Èì¸\n"
-"§À¡¸¢ýÈ£÷¸û. «¾üÌ À¾¢Ä¡¸ «¨Å¨Â\n"
-"µ÷ ¾¢Ãð¼Ä¢ø ¾¢Èì¸ §ÅñÎÁ¡?"
-
-#: shell/main.c:165
-msgid "Single Windows"
-msgstr "´§Ã º¡ÇÃí¸û"
-
-#: shell/main.c:166
-msgid "Collection"
-msgstr "¾¢Ãð¼ø"
-
-#: shell/main.c:190
-#, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to continue?"
-msgstr ""
-"¿£í¸û %i º¡ÇÃí¸¨Ç ´§Ã Ó¨ÈÂ¡¸ ¾¢Èì¸\n"
-"§À¡¸¢ýÈ£÷¸û. ¦¾¡¼÷óÐ ¾¢Èì¸ §ÅñÎÁ¡?"
-
-#: shell/main.c:273
-#, c-format
-msgid ""
-"Could not access %s\n"
-"Eye of Gnome will not be able to display this file."
-msgstr ""
-
-#: shell/main.c:276
-#, c-format
-msgid ""
-"The following files cannot be displayed because Eye of Gnome was not able to "
-"access them:\n"
+"கனோம் கண் உநவியைக் காண்பிக்க முடியவில்லை.\n"
 "%s"
+
+#: shell/eog-window.c:635
+#, c-format
+msgid "Overwrite file %s?"
+msgstr "மேலெழுதவா %s?"
+
+#: shell/eog-window.c:636
+msgid "File exists. Do you want to overwrite it?"
+msgstr "கோப்பு உள்ளது. மேல் எழுத விருப்பமா?"
+
+#: shell/eog-window.c:646 shell/eog-window.c:659
+msgid "Skip"
+msgstr "தவிர்"
+
+#: shell/eog-window.c:647
+msgid "Overwrite"
+msgstr "மேலெழுது"
+
+#: shell/eog-window.c:652
+#, c-format
+msgid "Error on saving %s."
+msgstr "%s சேமிப்பதில் பிழை"
+
+#: shell/eog-window.c:660 shell/eog-window.c:1044
+msgid "Retry"
+msgstr "மீட்கவும்"
+
+#: shell/eog-window.c:1033
+#, c-format
+msgid "Couldn't determine file format of %s"
+msgstr "கோப்பின் அமைப்பை கண்டு முடிக்க முடியவில்லை : %s"
+
+#: shell/eog-window.c:1034
+msgid "Please use an appropriate filename suffix or select a file format."
+msgstr "சரியாக கோப்பு பின் ஒட்டை குறிப்பிடவும் அல்லது கோப்பின் அமைப்பை தேர்வு செய்யவும்"
+
+#: shell/eog-window.c:1176
+msgid "Error on saving images."
+msgstr "பிம்பத்தை சேமிக்கும் போது பிழை"
+
+#: shell/eog-window.c:1409
+#, c-format
+msgid "Do you really want to move %i image to trash?"
+msgid_plural "Do you really want to move %i images to trash?"
+msgstr[0] "%i பிம்பங்களை குப்பைக்கு நகர்த்த வேண்டுமா?"
+msgstr[1] "பிம்பத்தை குப்பைக்கு நகர்த்த வேண்டுமா?"
+
+#: shell/eog-window.c:1447
+msgid "Couldn't access trash."
+msgstr "குப்பை தொட்டியை அணுக முடியவில்லை"
+
+#: shell/eog-window.c:1521
+#, c-format
+msgid "Error on deleting image %s"
+msgstr "பிம்பத்தை நீக்கும் போது பிழை %s"
+
+#. Images: (n_selected_images) / (n_total_images)
+#: shell/eog-window.c:2114
+#, c-format
+msgid "Images: %i/%i"
+msgstr "ஓவியங்கள்: %i/%i"
+
+#: shell/eog-window.c:2193
+msgid "_File"
+msgstr "_கோப்பு"
+
+#: shell/eog-window.c:2194
+msgid "_Edit"
+msgstr "_தொகு"
+
+#: shell/eog-window.c:2195
+msgid "_View"
+msgstr "_காட்டு"
+
+#: shell/eog-window.c:2196
+msgid "_Help"
+msgstr "_உதவி"
+
+#: shell/eog-window.c:2197
+msgid "_New"
+msgstr "_புதியது"
+
+#: shell/eog-window.c:2197
+msgid "Open a new window"
+msgstr "ஓர் புதிய சாளரத்தை திறக்கவும்"
+
+#: shell/eog-window.c:2198
+msgid "_Open..."
+msgstr "_திற..."
+
+#: shell/eog-window.c:2198
+msgid "Open a file"
+msgstr "ஓர் கோப்பை திறக்கவும்"
+
+#: shell/eog-window.c:2199
+msgid "Open _Directory..."
+msgstr "(_D)அடைவு திறக்கவும்..."
+
+#: shell/eog-window.c:2199
+msgid "Open a directory"
+msgstr "ஓர் அடைவு திறக்கவும்"
+
+#: shell/eog-window.c:2200
+msgid "_Close"
+msgstr "_மூடு"
+
+#: shell/eog-window.c:2200
+msgid "Close window"
+msgstr "சாளரத்தை மூடு"
+
+#: shell/eog-window.c:2201
+msgid "_Quit"
+msgstr "_வெளிச்செல்"
+
+#: shell/eog-window.c:2201
+msgid "Close all windows and quit"
+msgstr "எல்லா சாளரங்களையும் மூடிவிட்டு வெளியேறவும்"
+
+#: shell/eog-window.c:2202
+msgid "Prefere_nces"
+msgstr "விருப்பங்_கள்"
+
+#: shell/eog-window.c:2202
+msgid "Preferences for Eye of Gnome"
+msgstr "கனோம்-கண்ணின் விருப்பங்கள்"
+
+#: shell/eog-window.c:2203
+msgid "_Contents"
+msgstr "_உள்ளடக்கங்கள்"
+
+#: shell/eog-window.c:2203
+msgid "Help On this application"
+msgstr "இந்த செயல்பாட்டுக்கான உதவி"
+
+#: shell/eog-window.c:2204
+msgid "_About"
+msgstr "_பற்றி"
+
+#: shell/eog-window.c:2204
+msgid "About this application"
+msgstr "இந்த பயன்பாடு பற்றி"
+
+#: shell/eog-window.c:2209
+msgid "_Toolbar"
+msgstr "_¸ÕÅ¢ôÀð¨¼"
+
+#: shell/eog-window.c:2210
+msgid "_Statusbar"
+msgstr "_நிலைப்பட்டை"
+
+#: shell/eog-window.c:2215
+msgid "_Save"
+msgstr "_சேமிக்கவும்"
+
+#: shell/eog-window.c:2216
+msgid "Save _As"
+msgstr "(_A)என சேமி"
+
+#: shell/eog-window.c:2218
+msgid "_Undo"
+msgstr "_கவில்"
+
+#: shell/eog-window.c:2220
+msgid "Flip _Horizontal"
+msgstr "இடைதிசையாக _திருப்புக"
+
+#: shell/eog-window.c:2221
+msgid "Flip _Vertical"
+msgstr "உயர்வாகியாக _திருப்புக"
+
+#: shell/eog-window.c:2223
+msgid "_Rotate Clockwise"
+msgstr "(_R)நேர்திசையில் சுழற்றவும்"
+
+#: shell/eog-window.c:2224
+msgid "Rotate Counter C_lockwise"
+msgstr "(_l)எதிர்திசையில் சுழற்றவும்"
+
+#: shell/eog-window.c:2225
+msgid "Rotat_e 180°"
+msgstr "(_e)180 டிகிரிக்கு சுழற்றவும்"
+
+#: shell/eog-window.c:2227
+msgid "Delete"
+msgstr "நீக்கவும்"
+
+#: shell/eog-window.c:2229
+msgid "_Full Screen"
+msgstr "_முழுத்திரையில்"
+
+#: shell/eog-window.c:2230
+msgid "_Zoom In"
+msgstr "_பெரிதாக்கு"
+
+#: shell/eog-window.c:2231
+msgid "Zoom _Out"
+msgstr "சிறிதாக்கு"
+
+#: shell/eog-window.c:2232
+msgid "_Normal Size"
+msgstr "_இயல்பான அளவு"
+
+#: shell/eog-window.c:2233
+msgid "Best _Fit"
+msgstr "நிரப்பிக் காண்பிக்கவும்"
+
+#: shell/main.c:236
+#, c-format
+msgid ""
+"You are about to open %i windows simultaneously. Do you want to open them in "
+"a collection instead?"
 msgstr ""
+"நீங்கள் %i சாளரங்களை ஒரே முறையில் திறக்க போகின்றீர்கள். அதற்கு பதிலாக அவையைகளை "
+"ஒட்டுமொத்தமாகப்பில் திறக்க வேண்டுமா?"
 
-#: shell/main.c:447
-msgid "Could not initialize GnomeVFS!\n"
-msgstr "¸§É¡õVFS ¦¾¡¼í¸ ÓÊÂÅ¢ø¨Ä!\n"
+#: shell/main.c:240
+msgid "Open multiple single windows?"
+msgstr "பல ஒத்த-சாளரங்கள் திறக்கவும்?"
 
-#: shell/main.c:450
-msgid "Could not initialize Bonobo!\n"
-msgstr "§À¡É§À¡ ¦¾¡¼í¸ ÓÊÂÅ¢ø¨Ä!\n"
+#: shell/main.c:244
+msgid "Single Windows"
+msgstr "ஒரே சாளரங்கள்"
+
+#: shell/main.c:246
+msgid "Collection"
+msgstr "திரட்டல்"
+
+#: shell/main.c:298
+msgid "File not found."
+msgid_plural "Files not found."
+msgstr[0] "கோப்பு காணவில்லை."
+msgstr[1] "கோப்பு(கள்) காணவில்லை."
 
 #: shell/util.c:52
 #, c-format
 msgid "Could not open `%s'"
-msgstr "`%s' ¾¢Èì¸ ÓÊÂÅ¢ø¨Ä"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:1
-msgid "Best _Fit"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:2
-msgid "Fit"
-msgstr "¿¢ÃôÒ"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
-msgid "In"
-msgstr "¦ÀÃ¢Ð"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:4
-msgid "Normal"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:5
-msgid "Out"
-msgstr "º¢È¢Ð"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:6
-msgid "Zoom _Out"
-msgstr "º¢È¢¾¡ìÌ"
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:7
-msgid "_Normal Size"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:8
-#, fuzzy
-msgid "_Zoom In"
-msgstr "¦ÀÃ¢¾¡ìÌ"
-
-#: viewer/eog-image-view-ui.xml.h:1
-#, fuzzy
-msgid "Flip Horizontal"
-msgstr "¸¢¨¼ôÒÈÁ¡¸"
-
-#: viewer/eog-image-view-ui.xml.h:2
-#, fuzzy
-msgid "Flip Vertical"
-msgstr "¦ºíÌò¾Á¡¸"
-
-#: viewer/eog-image-view-ui.xml.h:3
-msgid "Full Screen"
-msgstr "ÓØ-¾¢¨ÃÂ¢Öõ ¸¡ñÀ¢"
-
-#: viewer/eog-image-view-ui.xml.h:4
-msgid "Previews the image to be printed"
-msgstr "«îº¢¼ §ÅñÊÂ µÅ¢Âò¨¾ Óý¸¡ñÀ¢"
-
-#: viewer/eog-image-view-ui.xml.h:5
-#, fuzzy
-msgid "Print Previe_w..."
-msgstr "Óý¸¡ðº¢¨Âì ¸¡ñÀ¢"
-
-#: viewer/eog-image-view-ui.xml.h:6
-#, fuzzy
-msgid "Print Set_up"
-msgstr "«îÍô¦À¡È¢ «¨ÁôÒ"
-
-#: viewer/eog-image-view-ui.xml.h:7
-msgid "Print image to the printer"
-msgstr "µÅ¢Âò¨¾ «îÍô¦À¡È¢Â¢ø «îº¢Î"
-
-#: viewer/eog-image-view-ui.xml.h:8
-msgid "Rotate 180 Degrees"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:9
-msgid "Rotate Clockwise"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:10
-msgid "Rotate Counter Clockwise"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:11
-#, fuzzy
-msgid "Save _As..."
-msgstr "§ÅÕ ¦ÀÂÃ¢ø §ºÁ¢"
-
-#: viewer/eog-image-view-ui.xml.h:12
-msgid "Setup the page settings for your current printer"
-msgstr "¾ü§À¡¨¾Â «îÍô¦À¡È¢ì¸¡É Àì¸ò¨¾ «¨Á×¦ºö"
-
-#: viewer/eog-image-view-ui.xml.h:14
-#, fuzzy
-msgid "_Print..."
-msgstr "«îº¢Î"
-
-#: viewer/eog-image-view-ui.xml.h:15 collection/eog-collection-view-ui.xml.h:2
-msgid "_View"
-msgstr "_¸¡ðÎ"
-
-#: viewer/eog-image-view.c:270
-#, c-format
-msgid "Could not save image as '%s': %s."
-msgstr "'%s' µÅ¢Âò¨¾ §ºÁ¢ì¸ ÓÊÂÅ¢ø¨Ä: %s."
-
-#: viewer/eog-image-view.c:954
-msgid "Print Image"
-msgstr "µÅ¢Âò¨¾ «îº¢Î"
-
-#: viewer/eog-image-view.c:962
-msgid "Pages"
-msgstr "Àì¸í¸û"
-
-#: viewer/eog-image-view.c:1049
-msgid "Print Preview"
-msgstr "Óý¸¡ðº¢¨Âì ¸¡ñÀ¢"
-
-#: viewer/eog-image-view.c:1055
-msgid "Printing of image failed"
-msgstr "µÅ¢Âõ «îº¢¼ø ¦¿¡ÊôÀ¨¼ó¾Ð"
-
-#: viewer/eog-image-view.c:1870
-#, fuzzy
-msgid "/_Zoom In"
-msgstr "¦ÀÃ¢¾¡ìÌ"
-
-#: viewer/eog-image-view.c:1872
-#, fuzzy
-msgid "/Zoom _Out"
-msgstr "º¢È¢¾¡ìÌ"
-
-#: viewer/eog-image-view.c:1874
-msgid "/_Normal Size"
-msgstr ""
-
-#: viewer/eog-image-view.c:1876
-#, fuzzy
-msgid "/Best _Fit"
-msgstr "º¡ÇÃò¾¢ø ¿¢ÃôÀ¢ì ¸¡ñÀ¢"
-
-#: viewer/eog-image-view.c:1879
-#, fuzzy
-msgid "/_Close"
-msgstr "_ãÎ"
-
-#: viewer/eog-image-view.c:2005
-msgid "Image Width"
-msgstr "µÅ¢Âò¾¢ý «¸Äõ"
-
-#: viewer/eog-image-view.c:2008
-msgid "Image Height"
-msgstr "µÅ¢Âò¾¢ý ¯ÂÃõ"
-
-#: viewer/eog-image-view.c:2011
-msgid "Window Title"
-msgstr "º¡ÇÃò¾¢ý ¾¨ÄôÒô ¦ÀÂ÷"
-
-#: viewer/eog-image-view.c:2014
-msgid "Statusbar Text"
-msgstr "¿¢¨Äô Àð¨¼ ¯¨Ã"
-
-#: viewer/eog-image.c:480
-msgid "Couldn't initialize GnomeVFS!\n"
-msgstr "¸§É¡õVFS ¦¾¡¼í¸ ÓÊÂÅ¢ø¨Ä!\n"
-
-#: viewer/eog-print-setup.c:76
-msgid "pts"
-msgstr "Ò."
-
-#: viewer/eog-print-setup.c:76
-msgid "points"
-msgstr "ÒûÇ¢¸û"
-
-#: viewer/eog-print-setup.c:77
-msgid "mm"
-msgstr "Á¢.Á£"
-
-#: viewer/eog-print-setup.c:77
-msgid "millimeter"
-msgstr "Á¢øÄ¢Á£¼÷"
-
-#: viewer/eog-print-setup.c:78
-msgid "cm"
-msgstr "¦º.Á£."
-
-#: viewer/eog-print-setup.c:78
-msgid "centimeter"
-msgstr "¦ºýÊÁ£¼÷"
-
-#: viewer/eog-print-setup.c:79
-msgid "inch"
-msgstr "«íÌÄõ"
-
-#: viewer/eog-print-setup.c:469
-msgid "Print Setup"
-msgstr "«îÍô¦À¡È¢ «¨ÁôÒ"
-
-#: viewer/eog-print-setup.c:476
-msgid "Print"
-msgstr "«îº¢Î"
-
-#: viewer/eog-print-setup.c:478
-msgid "Print preview"
-msgstr "Óý¸¡ñÀ¢"
-
-#: viewer/eog-print-setup.c:547
-msgid "Units: "
-msgstr "«¸í¸û: "
-
-#. First page
-#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
-msgid "Paper"
-msgstr "¾¡û"
-
-#: viewer/eog-print-setup.c:569
-msgid "Paper size:"
-msgstr "¾¡û «Ç×:"
-
-#. Orientation
-#: viewer/eog-print-setup.c:586
-msgid "Orientation"
-msgstr "¾¢¨º «¨Á×"
-
-#: viewer/eog-print-setup.c:593
-msgid "Portrait"
-msgstr "¯ÕÅ¸¡ðº¢"
-
-#: viewer/eog-print-setup.c:600
-msgid "Landscape"
-msgstr "¿¢Äì¸¡ðº¢"
-
-#. Margins
-#: viewer/eog-print-setup.c:609
-msgid "Margins"
-msgstr "µÃí¸û"
-
-#. Top margin
-#: viewer/eog-print-setup.c:617
-msgid "Top:"
-msgstr "§Áø:"
-
-#. Left margin
-#: viewer/eog-print-setup.c:635
-msgid "Left:"
-msgstr "­¼Ð:"
-
-#. Right margin
-#: viewer/eog-print-setup.c:653
-msgid "Right:"
-msgstr "ÅÄÐ:"
-
-#. Bottom margin
-#: viewer/eog-print-setup.c:671
-msgid "Bottom:"
-msgstr "¸£ú:"
-
-#. Scale
-#: viewer/eog-print-setup.c:697
-msgid "Scale"
-msgstr "«Ç×Ó¨È"
-
-#: viewer/eog-print-setup.c:701
-msgid "Adjust to:"
-msgstr "­¾ðÌ ¦À¡ÕòÐ:"
-
-#: viewer/eog-print-setup.c:706
-msgid "Fit to page"
-msgstr "¾¡ÙìÌ ¦À¡ÕòÐ"
-
-#: viewer/eog-print-setup.c:725
-#, no-c-format
-msgid "% of original size"
-msgstr "ãÄ «ÇÅ¢ý %"
-
-#. Center on page
-#: viewer/eog-print-setup.c:731
-msgid "Center"
-msgstr "¨ÁÂõ"
-
-#: viewer/eog-print-setup.c:735
-msgid "Horizontally"
-msgstr "¸¢¨¼ôÒÈÁ¡¸"
-
-#: viewer/eog-print-setup.c:742
-msgid "Vertically"
-msgstr "¦ºíÌò¾Á¡¸"
-
-#. Overlap
-#: viewer/eog-print-setup.c:751
-msgid "Overlapping"
-msgstr "¯¼ý¿¢¸ú×"
-
-#: viewer/eog-print-setup.c:755
-msgid "Overlap horizontally by "
-msgstr ""
-
-#: viewer/eog-print-setup.c:760
-msgid "Overlap vertically by "
-msgstr ""
-
-#. Third page
-#: viewer/eog-print-setup.c:797
-msgid "Printing"
-msgstr "«îº¢¼ôÀÎ¸¢ÈÐ"
-
-#. Helpers
-#: viewer/eog-print-setup.c:805
-msgid "Helpers"
-msgstr "¯¾Å¢Â¡Ä÷¸û"
-
-#: viewer/eog-print-setup.c:806
-msgid "Print cutting help"
-msgstr ""
-
-#: viewer/eog-print-setup.c:812
-msgid "Print overlap help"
-msgstr ""
-
-#. Page order
-#: viewer/eog-print-setup.c:821
-msgid "Page order"
-msgstr ""
-
-#. Down right
-#: viewer/eog-print-setup.c:827
-msgid "Down, then right"
-msgstr "¸£ú, À¢ÈÌ ÅÄÐ"
-
-#. Right down
-#: viewer/eog-print-setup.c:844
-msgid "Right, then down"
-msgstr "ÅÄÐ, À¢ÈÌ ¸£ú"
-
-#: collection/eog-collection-view-ui.xml.h:1
-msgid "Slide Show"
-msgstr ""
-
-#~ msgid "_New Window"
-#~ msgstr "_Ò¾¢Â º¡ÇÃõ"
-
-#~ msgid "Unable to open %s."
-#~ msgstr "%s ¾¢Èì¸ ÓÊÂÅ¢ø¨Ä."
-
-#~ msgid "1:1"
-#~ msgstr "1:1"
-
-#, fuzzy
-#~ msgid "Zoom _1:1"
-#~ msgstr "¦ÀÃ¢¾¡ìÌ"
-
-#~ msgid "Zoom to _Fit"
-#~ msgstr "º¡ÇÃò¾¢ø ¿¢ÃôÀ¢ì ¸¡ñÀ¢"
-
-#~ msgid "Check _size"
-#~ msgstr "«Ç× ºÃ¢À¡÷"
-
-#~ msgid "Check _type"
-#~ msgstr "Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Large"
-#~ msgstr "¦ÀÃ¢ÂÐ"
-
-#~ msgid "Medium"
-#~ msgstr "­¨¼¿¢¨Ä"
-
-#, fuzzy
-#~ msgid "Nea_rest Neighbour"
-#~ msgstr "«Õ¸¢ÖûÇ À¢ìºÖ¼ý ­¨¼ì ¸½¢ôÒ"
-
-#, fuzzy
-#~ msgid "Normal (_pseudocolor)"
-#~ msgstr "­ÂøÀ¡É (§À¡Ä¢ Åñ½õ) ¦¾Ç¢ôÒ"
-
-#~ msgid "Print Pre_view"
-#~ msgstr "Óý¸¡ðº¢¨Âì ¸¡ñÀ¢"
-
-#~ msgid "Print S_etup"
-#~ msgstr "«îÍô¦À¡È¢ «¨ÁôÒ"
-
-#~ msgid "Small"
-#~ msgstr "º¢È¢ÂÐ"
-
-#, fuzzy
-#~ msgid "_Black"
-#~ msgstr "¸ÚôÒ ¿¢Ãõ"
-
-#, fuzzy
-#~ msgid "_Dark"
-#~ msgstr "¸Õò¾Ð"
-
-#~ msgid "_Dither"
-#~ msgstr "¦¾Ç¢ôÒ (Dither)"
-
-#, fuzzy
-#~ msgid "_Gray"
-#~ msgstr "º¡õÀø ¿¢Ãõ"
-
-#~ msgid "_Interpolation"
-#~ msgstr "­¨¼ì ¸½¢ôÒ (Interpolation)"
-
-#, fuzzy
-#~ msgid "_Light"
-#~ msgstr "¦ÅÇ¢÷¨Á"
-
-#, fuzzy
-#~ msgid "_Maximum (high color)"
-#~ msgstr "¬¸ìÜÊÂ¾¡¸ («¾¢¸Á¡É Åñ½õ) ¦¾Ç¢ôÒ"
-
-#, fuzzy
-#~ msgid "_Midtone"
-#~ msgstr "­¨¼-¿¢Æø"
-
-#, fuzzy
-#~ msgid "_White"
-#~ msgstr "¦Åû¨Ç ¿¢Ãõ"
-
-#, fuzzy
-#~ msgid "/Zoom _1:1"
-#~ msgstr "¦ÀÃ¢¾¡ìÌ"
-
-#~ msgid "Dither"
-#~ msgstr "Åñ½ô ÒûÇ¢ ¦¾Ç¢"
-
-#~ msgid "Check Type"
-#~ msgstr "Å¨¸ ºÃ¢À¡÷ôÒ"
-
-#~ msgid "Check Size"
-#~ msgstr "«Ç× ºÃ¢À¡÷ôÒ"
-
-#~ msgid "Close"
-#~ msgstr "ãÎ"
-
-#~ msgid "Change preferences"
-#~ msgstr "Å¢ÕôÀí¸¨Ç Á¡üÚ"
-
-#~ msgid "Translator Credits"
-#~ msgstr "¾¢§É ¿¼Ã¡¡"
-
-#~ msgid "Error while obtaining file informations."
-#~ msgstr "§¸¡ôÀ¢ý ¾¸Åø¸¨Çô ¦ÀÚõ§À¡Ð À¢¨Æ"
-
-#~ msgid "Save As"
-#~ msgstr "§ÅÕ ¦ÀÂÃ¢ø §ºÁ¢"
-
-#~ msgid "Display"
-#~ msgstr "¸¡ðº¢"
-
-#, fuzzy
-#~ msgid "_Tiles"
-#~ msgstr "_§¸¡ôÒ"
-
-#~ msgid "Nearest Neighbour Interpolation"
-#~ msgstr "«Õ¸¢ÖûÇ À¢ìºÖ¼ý ­¨¼ì ¸½¢ôÒ"
-
-#~ msgid "Tiles Interpolation"
-#~ msgstr "µÎ¸û ­¨¼ì ¸½¢ôÒ"
-
-#~ msgid "Bilinear Interpolation"
-#~ msgstr "­Õ¾¢¨º §¿Ã¢Âø ­¨¼ì ¸½¢ôÒ"
-
-#~ msgid "No dithering"
-#~ msgstr "¦¾Ç¢ôÒ ¸¢¨¼Â¡Ð"
-
-#~ msgid "Normal (pseudocolor) dithering"
-#~ msgstr "­ÂøÀ¡É (§À¡Ä¢ Åñ½õ) ¦¾Ç¢ôÒ"
-
-#~ msgid "Maximum (high color) dithering"
-#~ msgstr "¬¸ìÜÊÂ¾¡¸ («¾¢¸Á¡É Åñ½õ) ¦¾Ç¢ôÒ"
-
-#~ msgid "Dark"
-#~ msgstr "¸Õò¾Ð"
-
-#~ msgid "Midtone"
-#~ msgstr "­¨¼-¿¢Æø"
-
-#~ msgid "Light"
-#~ msgstr "¦ÅÇ¢÷¨Á"
-
-#~ msgid "Black"
-#~ msgstr "¸ÚôÒ ¿¢Ãõ"
-
-#~ msgid "Gray"
-#~ msgstr "º¡õÀø ¿¢Ãõ"
-
-#~ msgid "White"
-#~ msgstr "¦Åû¨Ç ¿¢Ãõ"
-
-#, fuzzy
-#~ msgid "_Interpolation:"
-#~ msgstr "­¨¼ì ¸½¢ôÒ (Interpolation)"
-
-#, fuzzy
-#~ msgid "_Dither:"
-#~ msgstr "¦¾Ç¢ôÒ (Dither)"
-
-#, fuzzy
-#~ msgid "Check _type:"
-#~ msgstr "Å¨¸ ºÃ¢À¡÷"
-
-#, fuzzy
-#~ msgid "Check _size:"
-#~ msgstr "«Ç× ºÃ¢À¡÷"
-
-#~ msgid "_Settings"
-#~ msgstr "_«¨Á×¸û"
-
-#~ msgid "Check size large"
-#~ msgstr "¦ÀÃ¢Â «Ç× ºÃ¢À¡÷"
-
-#~ msgid "Check size medium"
-#~ msgstr "­¨¼¿¢¨Ä «Ç× ºÃ¢À¡÷"
-
-#~ msgid "Check size small"
-#~ msgstr "º¢È¢Â «Ç× ºÃ¢À¡÷"
-
-#~ msgid "Check type _black"
-#~ msgstr "¸ÚôÒ Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Check type _dark"
-#~ msgstr "¸Õò¾ Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Check type _gray"
-#~ msgstr "º¡õÀø Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Check type _light"
-#~ msgstr "¦ÅÇ¢÷¨ÁÂ¡É Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Check type _midtone"
-#~ msgstr "­¨¼-¿¢Æø Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Check type _white"
-#~ msgstr "¦Åû¨Ç Å¨¸ ºÃ¢À¡÷"
-
-#~ msgid "Save _As"
-#~ msgstr "§ÅÚ ¦ÀÂÃ¢ø §ºÁ¢"
-
-#~ msgid "_Bilinear Interpolation"
-#~ msgstr "­Õ¾¢¨º §¿Ã¢Âø ­¨¼ì ¸½¢ôÒ"
-
-#~ msgid "_No dithering"
-#~ msgstr "¦¾Ç¢ôÒ ¸¢¨¼Â¡Ð"
-
-#~ msgid "_Tiles Interpolation"
-#~ msgstr "µÎ¸Ù¼ý ­¨¼ì ¸½¢ôÒ"
-
-#~ msgid "Zoom to _Default"
-#~ msgstr "¦¸¡¼¡ ¿¢¨Ä «ÇÅ¢ø ¸¡ñÀ¢"
-
-#~ msgid "Interpolation:"
-#~ msgstr "­¨¼ì ¸½¢ôÒ (Interpolation):"
-
-#~ msgid "Dither:"
-#~ msgstr "¦¾Ç¢ôÒ (Dither):"
-
-#~ msgid "Check Type:"
-#~ msgstr "Å¨¸ ºÃ¢À¡÷ôÒ:"
-
-#~ msgid "Check Size:"
-#~ msgstr "«Ç× ºÃ¢À¡÷ôÒ:"
+msgstr "`%s' திறக்க முடியவில்லை"

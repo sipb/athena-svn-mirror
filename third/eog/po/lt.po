@@ -1,813 +1,1051 @@
 # Lithuanian translation of eog
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Gediminas Paulauskas <menesis@delfi.lt>, 2000-2001.
-#
+# Žygimantas Beručka <menesis@delfi.lt>, 2003-2004.
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: eog 0.6\n"
-"POT-Creation-Date: 2003-03-26 17:08-0600\n"
-"PO-Revision-Date: 2001-02-10 00:54+0200\n"
-"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Project-Id-Version: eog HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 19:48+0200\n"
+"PO-Revision-Date: 2004-07-28 12:06+0300\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: collection/GNOME_EOG_Collection.server.in.in.h:1
-#, fuzzy
-msgid "EOG Image Collection Viewer"
-msgstr "EOG paveikslėlių žiūrėklė"
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:2
-#, fuzzy
-msgid "EOG Image collection view factory"
-msgstr "EOG paveikslėlių žiūrėklės gamykla"
-
-#: collection/GNOME_EOG_Collection.server.in.in.h:3
-#, fuzzy
-msgid "Image Collection"
-msgstr "EOG paveikslėlių žiūrėklės gamykla"
-
 #: eog.desktop.in.h:1
-#, fuzzy
-msgid "Eye of Gnome Image Viewer"
-msgstr "EOG paveikslėlių žiūrėklė"
+msgid "Image Viewer"
+msgstr "Paveiksliukų žiūrėjimo programa"
 
 #: eog.desktop.in.h:2
 msgid "View many different types of images"
-msgstr ""
+msgstr "Žiūrėk daug skirtingų tipų paveikslėlių"
 
 #: eog.glade.h:1
-msgid "By c_olor"
-msgstr ""
+msgid "    "
+msgstr "    "
 
 #: eog.glade.h:2
-msgid "By check_pattern"
-msgstr ""
+msgid "*"
+msgstr "*"
 
 #: eog.glade.h:3
-#, fuzzy
-msgid "Eye of Gnome Preferences"
-msgstr "Gnome Akis"
+msgid "."
+msgstr "."
 
 #: eog.glade.h:4
-msgid "Image Viewer"
-msgstr "Paveikslėlių žiūrėklė"
+msgid "<b>File Name Preview</b>"
+msgstr "<b>Bylų pavadinimų peržiūra</b>"
 
 #: eog.glade.h:5
-#, fuzzy
-msgid "Indicate Transparency"
-msgstr "Skaidrumo tipas"
+msgid "<b>File Path Specifications</b>"
+msgstr "<b>Bylų kelio specifikacijos</b>"
 
 #: eog.glade.h:6
-msgid "Pick a color"
-msgstr ""
+msgid "<b>Image Interpolation</b>"
+msgstr "<b>Paveikslėlio interpoliacija</b>"
 
 #: eog.glade.h:7
-msgid "_Interpolate image on zoom (better quality but slower)"
-msgstr ""
+msgid "<b>Image Zoom</b>"
+msgstr "<b>Paveikslėlio pritraukimas</b>"
+
+#: eog.glade.h:8
+msgid "<b>Options</b>"
+msgstr "<b>Nustatymai</b>"
+
+#: eog.glade.h:9
+msgid "<b>Sequence</b>"
+msgstr "<b>Seka</b>"
+
+#: eog.glade.h:10
+msgid "<b>Transparent Parts</b>"
+msgstr "<b>Skaidrios dalys</b>"
+
+#: eog.glade.h:12
+#, no-c-format
+msgid "Allow _zoom greater than 100% initially"
+msgstr "Leisti pradžioje didesnį _mastelį negu 100%"
+
+#: eog.glade.h:13
+msgid "As _background"
+msgstr "Kaip _foną"
+
+#: eog.glade.h:14
+msgid "As check _pattern"
+msgstr "Kaip lan_guotą raštą"
+
+#: eog.glade.h:15
+msgid "As custom c_olor"
+msgstr "Kaip parinkta s_palvą"
+
+#: eog.glade.h:16
+msgid "Color for Transparent Areas"
+msgstr "Skaidrių vietų spalva"
+
+#: eog.glade.h:17
+msgid "Destination Folder:"
+msgstr "Paskirties aplankas:"
+
+#: eog.glade.h:18
+msgid "Eye of Gnome Preferences"
+msgstr "Eye of Gnome nustatymai"
+
+#: eog.glade.h:19
+msgid "Filename Format:"
+msgstr "Bylos vardų formatas:"
+
+#: eog.glade.h:20
+msgid "Image _View"
+msgstr "Paveikslėlio _vaizdas"
+
+#: eog.glade.h:21
+msgid "Rename From:"
+msgstr "Pervadinti iš:"
+
+#: eog.glade.h:22
+msgid "Replace spaces by underscore"
+msgstr "Pakeisti tarpus gulinčiu brūkšniu"
+
+#: eog.glade.h:23
+msgid "Save As"
+msgstr "Išsaugoti kaip"
+
+#: eog.glade.h:24
+msgid "Saving Image"
+msgstr "Paveikslėlis saugomas"
+
+#: eog.glade.h:25
+msgid "Show _next image automatically after:"
+msgstr "_Kitą paveikslėlį rodyti automatiškai po:"
+
+#: eog.glade.h:26
+msgid "Sli_de Show"
+msgstr "Skai_drių demonstravimas"
+
+#: eog.glade.h:27
+msgid "Start counter at:"
+msgstr "Paleisti skaitliuką nuo:"
+
+#: eog.glade.h:28
+msgid "To:"
+msgstr "Į:"
+
+#: eog.glade.h:29
+msgid "_Browse"
+msgstr "_Naršyti"
+
+#: eog.glade.h:30
+msgid "_Interpolate image on zoom"
+msgstr "Keičiant mastelį _interpoliuoti paveikslėlį"
+
+#: eog.glade.h:31
+msgid "_Loop sequence"
+msgstr "_Ciklinė seka"
+
+#: eog.glade.h:32
+msgid "seconds"
+msgstr "sekundes"
 
 #: eog.schemas.in.h:1
-msgid "Automatically pick window size"
+msgid ""
+"A value greater than 0 determines the seconds an image stays on screen until "
+"the next one is shown automatically. Zero disables the automatic browsing."
 msgstr ""
-
-#: eog.schemas.in.h:2
-msgid "Default zoom factor for the full screen view"
-msgstr ""
+"Vertė didesnė nei 0 nurodo kiek sekundžių paveikslėlis išlieka ekrane iki "
+"kol parodomas sekantis. Nulis išjungia automatinį naršymą."
 
 #: eog.schemas.in.h:3
-msgid ""
-"Default zoom factor for the full screen view. Possible values are: 0 (use "
-"1:1 zoom factor), 1 (use the same zoom factor as the image window), 2 (fit "
-"the image to the screen)."
-msgstr ""
+#, no-c-format
+msgid "Allow zoom greater than 100% initially"
+msgstr "Leisti pradžioje didesnį mastelį negu 100%"
 
 #: eog.schemas.in.h:4
-msgid ""
-"Determines how transparency should be indicated. Valid values are "
-"CHECK_PATTERN and COLOR. If COLOR is choosen, than the trans_color key "
-"determines the used color value."
-msgstr ""
+msgid "Delay in seconds until showing the next image"
+msgstr "Delsa iki kol parodomas sekantis paveikslėlis"
 
 #: eog.schemas.in.h:5
-#, fuzzy
-msgid "Fit standard-sized images to the screen"
-msgstr "Sutalpinti standartinio dydžio paveikslėlius į ekraną"
+msgid ""
+"Determines how transparency should be indicated. Valid values are "
+"CHECK_PATTERN, COLOR and NONE. If COLOR is choosen, then the trans_color key "
+"determines the used color value."
+msgstr ""
+"Nustato kaip skaidrumas turi būti rodomas. Galimos reikšmės yra "
+"CHECK_PATTERN, COLOR ir NONE. Jeigu pasirinkta yra COLOR, tada trans_color "
+"raktas nurodo naudojamos spalvos reikšmę."
 
 #: eog.schemas.in.h:6
 msgid ""
 "If the transparency key has the value COLOR, then this key determines the "
 "color which is used for indicating transparency."
 msgstr ""
+"Jeigu skaidrumo raktas turi vertę COLOR, tada šis raktas nurodo spalvą kuri "
+"naudojama skaidrumui nustatyti."
 
 #: eog.schemas.in.h:7
-#, fuzzy
-msgid "Interpolate Image"
-msgstr "Interpoliacija"
+msgid ""
+"If this is set to FALSE small images will not be stretched to fit into the "
+"screen initially."
+msgstr ""
+"Jeigu ši reikšmė nustatyta į FALSE maži paveikslėliai nebus ištempti tam, "
+"kad tilptų į ekraną."
 
 #: eog.schemas.in.h:8
-#, fuzzy
+msgid "Interpolate Image"
+msgstr "Interpoliuoti paveikslėlį"
+
+#: eog.schemas.in.h:9
+msgid "Loop through the image sequence"
+msgstr "Rodyti ciklišką paveikslėlių seką"
+
+#: eog.schemas.in.h:10
 msgid "Open images in a new window"
 msgstr "Atidaryti paveikslėlius naujame lange"
 
-#: eog.schemas.in.h:9
-#, fuzzy
-msgid "Put a bevel around the screen"
-msgstr "Rodyti rėmelį ekrano pakraščiuose"
-
-#: eog.schemas.in.h:10
-msgid "Scrollbar policy for the full screen view"
-msgstr ""
-
 #: eog.schemas.in.h:11
-#, fuzzy
-msgid "Transparency color"
-msgstr "Skaidrumo tipas"
+msgid "Show/hide the window statusbar."
+msgstr "Rodyti/slėpti lango būsenos juostą."
 
 #: eog.schemas.in.h:12
-#, fuzzy
-msgid "Transparency indicator"
-msgstr "Skaidrumo tipas"
+msgid "Show/hide the window toolbar."
+msgstr "Rodyti/slėpti lango įrankinę."
 
 #: eog.schemas.in.h:13
-msgid ""
-"Wether the image should be interpolated on zoom or not. This leads to better "
-"quality but is somewhat slower than non interpolated images."
-msgstr ""
+msgid "Transparency color"
+msgstr "Skaidrumo spalva"
 
 #: eog.schemas.in.h:14
-msgid ""
-"Whether image windows should pick their size and zooming factor "
-"automatically based on the size of the image. If this option is not set, "
-"image windows will get whatever size the window manager assigns to them."
-msgstr ""
+msgid "Transparency indicator"
+msgstr "Skaidrumo indikatorius"
 
 #: eog.schemas.in.h:15
 msgid ""
 "Whether opening an image should create a new window instead of replacing the "
 "image in the current window."
 msgstr ""
+"Ar paveikslėlio atidarymas turėtų sukurti naują langą, vietoje paveikslėlio "
+"pakeitimo esamame lange."
 
 #: eog.schemas.in.h:16
 msgid ""
-"Whether the full screen view should display a bevel along the edges of the "
-"screen."
-msgstr ""
+"Whether or not the sequence of images should be shown in an endless loop."
+msgstr "Ar paveikslėlių seka turi būti rodoma nesibaigiančiu ciklu."
 
 #: eog.schemas.in.h:17
 msgid ""
-"Whether to display scrollbars on the full screen view. Possible values are: "
-"1 (automatic; only display scrollbars if the image is larger than the "
-"window), 2 (never display scrollbars)."
+"Whether the image should be interpolated on zoom or not. This leads to "
+"better quality but is somewhat slower than non interpolated images."
 msgstr ""
+"Ar paveikslėlis turėtų būti interpoliuotas pritraukimo metu ar ne. Tai duoda "
+"geresnę kokybę, bet paveikslėliai yra lėčiau užkraunami negu ne "
+"interpoliuoti paveikslėliai."
 
-#: eog.schemas.in.h:18
-msgid ""
-"Whether to fit standard-sized images to the screen when in full screen mode. "
-"These are images with sizes like 320x240, 640x480, 800x800, etc. This "
-"selects whether such images should be scaled to fit the screen regardless of "
-"the setting for the default zoom factor of the full screen view."
-msgstr ""
+#: libeog/eog-file-selection.c:124
+msgid "All Files"
+msgstr "Visos bylos"
 
-#: libeog/GNOME_EOG.server.in.in.h:1 viewer/eog-image-view.c:721
-msgid "EOG Image"
-msgstr "EOG paveikslėlis"
+#: libeog/eog-file-selection.c:129
+msgid "All Images"
+msgstr "Visi paveiksliukai"
 
-#: libeog/GNOME_EOG.server.in.in.h:2
-msgid "EOG Image Viewer"
-msgstr "EOG paveikslėlių žiūrėklė"
+#. Filter name: First description then file extension, eg. "The PNG-Format (*.png)".
+#: libeog/eog-file-selection.c:147
+#, c-format
+msgid "%s (*.%s)"
+msgstr "%s (*.%s)"
 
-#: libeog/GNOME_EOG.server.in.in.h:3
-msgid "EOG Image viewer factory"
-msgstr "EOG paveikslėlių žiūrėklės gamykla"
+#. Pixel size of image: width x height in pixel
+#: libeog/eog-file-selection.c:240
+#, c-format
+msgid "%s x %s pixel"
+msgstr "%s x %s taškų"
 
-#: libeog/GNOME_EOG.server.in.in.h:4
-#, fuzzy
-msgid "Embeddable EOG Image"
-msgstr "EOG paveikslėlis"
-
-#. Second page
-#: libeog/GNOME_EOG.server.in.in.h:5 viewer/eog-print-setup.c:689
-#, fuzzy
-msgid "Image"
-msgstr "EOG paveikslėlis"
-
-#: libeog/image-view.c:1896
-#, fuzzy
-msgid "interpolation type"
-msgstr "Interpoliacijos tipas"
-
-#: libeog/image-view.c:1897
-#, fuzzy
-msgid "the type of interpolation to use"
-msgstr "_Hiperbolinė Interpoliacija"
-
-#: libeog/image-view.c:1903 libeog/image-view.c:1910
-#, fuzzy
-msgid "check type"
-msgstr "Langelių _tipas"
-
-#: libeog/image-view.c:1904
-msgid "the type of chequering to use"
-msgstr ""
-
-#: libeog/image-view.c:1911
-msgid "the size of chequers to use"
-msgstr ""
-
-#: libeog/image-view.c:1917
-msgid "dither"
-msgstr ""
-
-#: libeog/image-view.c:1918
-#, fuzzy
-msgid "dither type"
-msgstr "Langelių _tipas"
-
-#: libeog/eog-file-selection.c:29 libeog/eog-file-selection.c:46
-msgid "By Extension"
-msgstr ""
-
-#: libeog/eog-file-selection.c:30
-msgid "BMP"
-msgstr ""
-
-#: libeog/eog-file-selection.c:31
-msgid "GIF"
-msgstr ""
-
-#: libeog/eog-file-selection.c:32
-msgid "ICO"
-msgstr ""
-
-#: libeog/eog-file-selection.c:33 libeog/eog-file-selection.c:48
-msgid "JPEG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:34 libeog/eog-file-selection.c:51
-msgid "PNG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:35
-msgid "PNM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:36
-msgid "RAS"
-msgstr ""
-
-#: libeog/eog-file-selection.c:37
-msgid "SVG"
-msgstr ""
-
-#: libeog/eog-file-selection.c:38
-msgid "TGA"
-msgstr ""
-
-#: libeog/eog-file-selection.c:39
-msgid "TIFF"
-msgstr ""
-
-#: libeog/eog-file-selection.c:40
-msgid "XBM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:41 libeog/eog-file-selection.c:54
-msgid "XPM"
-msgstr ""
-
-#: libeog/eog-file-selection.c:207
-msgid "Unsupported file format."
-msgstr ""
-
-#: libeog/eog-file-selection.c:225
-msgid "Determine File Type:"
-msgstr ""
-
-#: libeog/eog-file-selection.c:268
-#, fuzzy
+#: libeog/eog-file-selection.c:396
 msgid "Load Image"
-msgstr "EOG paveikslėlis"
+msgstr "Įkelti paveiksliuką"
 
-#: libeog/eog-file-selection.c:274
-#, fuzzy
+#: libeog/eog-file-selection.c:404
 msgid "Save Image"
-msgstr "Atidaryti paveikslėlį"
+msgstr "Išsaugoti pavekslėlį"
 
-#: shell/eog-shell-ui.xml.h:1
-msgid "About this application"
+#: libeog/eog-file-selection.c:412
+msgid "Open Folder"
+msgstr "Atidaryti katalogą"
+
+#: libeog/eog-image-jpeg.c:330 libeog/eog-image-jpeg.c:569
+#, c-format
+msgid "Couldn't create temporary file for saving: %s"
+msgstr "Negaliu sukurti laikinos bylos saugojimui: %s"
+
+#: libeog/eog-image-jpeg.c:349 libeog/eog-image-jpeg.c:590
+msgid "Couldn't allocate memory for loading JPEG file"
+msgstr "Negaliu priskirti atminties JPEG bylos įkėlimui"
+
+#: libeog/eog-image.c:814
+msgid "empty file"
+msgstr "tuščia byla"
+
+#: libeog/eog-image.c:1247 libeog/eog-image.c:1458
+msgid "File exists"
+msgstr "Byla egzistuoja"
+
+#: libeog/eog-image.c:1400 libeog/eog-image.c:1526
+msgid "No image loaded."
+msgstr "Nėra užkrautų paveikslėlių."
+
+#: libeog/eog-image.c:1409 libeog/eog-image.c:1535
+msgid "Temporary file creation failed."
+msgstr "Laikinos bylos sukūrimas nepavyko."
+
+#: libeog/eog-info-view-exif.c:26
+msgid "Camera"
+msgstr "Kamera"
+
+#: libeog/eog-info-view-exif.c:27
+msgid "Image Data"
+msgstr "Paveikslėlio duomenys"
+
+#: libeog/eog-info-view-exif.c:28
+msgid "Image Taking Conditions"
+msgstr "Paveikslėlių darymo sąlygos"
+
+#: libeog/eog-info-view-exif.c:29
+msgid "Maker Note"
+msgstr "Kūrėjo pastabos"
+
+#: libeog/eog-info-view-exif.c:30
+msgid "Other"
+msgstr "Kita"
+
+#: libeog/eog-info-view-exif.c:212
+msgid "Tag"
+msgstr "Žymė"
+
+#: libeog/eog-info-view-exif.c:220 libeog/eog-info-view-file.c:96
+msgid "Value"
+msgstr "Vertė"
+
+#. only used for internal purpose
+#: libeog/eog-info-view-file.c:25 libeog/eog-uri-converter.h:45
+msgid "Filename"
+msgstr "Bylos vardas"
+
+#: libeog/eog-info-view-file.c:26
+msgid "Width"
+msgstr "Plotis"
+
+#: libeog/eog-info-view-file.c:27
+msgid "Height"
+msgstr "Aukštis"
+
+#: libeog/eog-info-view-file.c:28
+msgid "Filesize"
+msgstr "Bylos dydis"
+
+#: libeog/eog-info-view-file.c:88
+msgid "Attribute"
+msgstr "Atributas"
+
+#: libeog/eog-info-view.c:92
+msgid "File"
+msgstr "Byla"
+
+#: libeog/eog-info-view.c:101
+msgid "EXIF"
+msgstr "EXIF"
+
+#: libeog/eog-info-view.c:108
+msgid "IPTC"
+msgstr "IPTC"
+
+#: libeog/eog-save-as-dialog-helper.c:137
+msgid "Option not available."
+msgstr "Nustatymas neprieinamas."
+
+#: libeog/eog-save-as-dialog-helper.c:138
+msgid ""
+"To use this function you need the libexif library. Please install libexif "
+"(http://libexif.sf.net) and recompile Eye of Gnome."
 msgstr ""
+"Tam, kad naudotis šia funkcija Jums reikia libexif bibliotekos. Prašom "
+"įdiegti libexif (http://libexif.sf.net) ir perkompiliuoti Eye of Gnome."
 
-#: shell/eog-shell-ui.xml.h:2
-msgid "Cancel"
-msgstr ""
+#: libeog/eog-save-as-dialog-helper.c:214
+msgid "as is"
+msgstr "kaip yra"
 
-#: shell/eog-shell-ui.xml.h:3
-#, fuzzy
-msgid "Close window"
-msgstr "_Uždaryti šį langą"
+#: libeog/eog-save-dialog-helper.c:162
+#, c-format
+msgid "Saving image %s."
+msgstr "Saugomas paveikslėlis %s."
 
-#: shell/eog-shell-ui.xml.h:4
-msgid "Help On this application"
-msgstr ""
+#: libeog/eog-save-dialog-helper.c:208
+msgid "Cancel saving ..."
+msgstr "Atšaukti saugojimą..."
 
-#: shell/eog-shell-ui.xml.h:5
-msgid "New"
-msgstr ""
+#: libeog/eog-uri-converter.c:1023
+msgid "Filenames are not disjunct."
+msgstr "Bylų vardai nėra atskiri."
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
-msgid "Open"
-msgstr "Atidaryti"
+#: libeog/eog-uri-converter.h:46
+msgid "Counter"
+msgstr "Skaitliukas"
 
-#: shell/eog-shell-ui.xml.h:7
-#, fuzzy
-msgid "Open a file"
-msgstr "Atidaryti paveikslėlio bylą"
+#: libeog/eog-uri-converter.h:47
+msgid "Comment"
+msgstr "Komentaras"
 
-#: shell/eog-shell-ui.xml.h:8
-#, fuzzy
-msgid "Open a new window"
-msgstr "Atidaryti paveikslėlius naujame lange"
+#: libeog/eog-uri-converter.h:48
+msgid "Date"
+msgstr "Data"
 
-#: shell/eog-shell-ui.xml.h:9
-#, fuzzy
-msgid "Open in new window"
-msgstr "Atidaryti paveikslėlius naujame lange"
+#: libeog/eog-uri-converter.h:49
+msgid "Time"
+msgstr "Laikas"
 
-#: shell/eog-shell-ui.xml.h:10
-#, fuzzy
-msgid "Open in this window"
-msgstr "Atidaryti paveikslėlius naujame lange"
+#: libeog/eog-uri-converter.h:50
+msgid "Day"
+msgstr "Diena"
 
-#: shell/eog-shell-ui.xml.h:11
-#, fuzzy
-msgid "Prefere_nces"
-msgstr "Nuostatos"
+#: libeog/eog-uri-converter.h:51
+msgid "Month"
+msgstr "Mėnuo"
 
-#: shell/eog-shell-ui.xml.h:12
-msgid "Preferences for EoG components"
-msgstr ""
+#: libeog/eog-uri-converter.h:52
+msgid "Year"
+msgstr "Metai"
 
-#: shell/eog-shell-ui.xml.h:13
-msgid "Quit the program"
-msgstr ""
+#: libeog/eog-uri-converter.h:53
+msgid "Hour"
+msgstr "Valanda"
 
-#: shell/eog-shell-ui.xml.h:14
-msgid "_About"
-msgstr ""
+#: libeog/eog-uri-converter.h:54
+msgid "Minute"
+msgstr "Minutė"
 
-#: shell/eog-shell-ui.xml.h:15
-#, fuzzy
-msgid "_Close"
-msgstr "Uždaryti"
-
-#: shell/eog-shell-ui.xml.h:16
-msgid "_Contents"
-msgstr ""
-
-#: shell/eog-shell-ui.xml.h:17 viewer/eog-image-view-ui.xml.h:13
-msgid "_Edit"
-msgstr ""
-
-#: shell/eog-shell-ui.xml.h:18
-msgid "_File"
-msgstr ""
-
-#: shell/eog-shell-ui.xml.h:19
-msgid "_Help"
-msgstr ""
-
-#: shell/eog-shell-ui.xml.h:20
-#, fuzzy
-msgid "_New"
-msgstr "Jokio"
-
-#: shell/eog-shell-ui.xml.h:21
-#, fuzzy
-msgid "_Open..."
-msgstr "_Atidaryti paveikslėlį..."
-
-#: shell/eog-shell-ui.xml.h:22
-msgid "_Quit"
-msgstr ""
+#: libeog/eog-uri-converter.h:55
+msgid "Second"
+msgstr "Sekundė"
 
 #. Translators should localize the following string
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:216
-msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
-msgstr ""
+#: shell/eog-window.c:321
+msgid "translator-credits"
+msgstr "Žygimantas Beručka <uid0@akl.lt>"
 
-#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
+#: shell/eog-window.c:326 shell/eog-window.c:2126 shell/eog-window.c:2431
+#: shell/main.c:498
 msgid "Eye of Gnome"
-msgstr "Gnome Akis"
+msgstr "Eye of Gnome"
 
-#: shell/eog-window.c:223
-#, fuzzy
-msgid "Copyright (C) 2000-2002 The Free Software Foundation"
-msgstr "Copyright (C) 2000-2001 The Free Software Foundation"
-
-#: shell/eog-window.c:224
-#, fuzzy
+#: shell/eog-window.c:329
 msgid "The GNOME image viewing and cataloging program."
-msgstr "GNOME paveikslėlių žiūrėjimo ir katalogavimo programa"
+msgstr "GNOME paveikslėlių žiūrėjimo ir katalogavimo programa."
 
-#: shell/eog-window.c:261
+#: shell/eog-window.c:366
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
 "%s"
 msgstr ""
-
-#: shell/main.c:160
-#, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to open\n"
-"them in a collection instead?"
-msgstr ""
-
-#: shell/main.c:165
-#, fuzzy
-msgid "Single Windows"
-msgstr "Paveikslėlių langai"
-
-#: shell/main.c:166
-msgid "Collection"
-msgstr ""
-
-#: shell/main.c:190
-#, c-format
-msgid ""
-"You are about to open %i windows\n"
-"simultanously. Do you want to continue?"
-msgstr ""
-
-#: shell/main.c:273
-#, c-format
-msgid ""
-"Could not access %s\n"
-"Eye of Gnome will not be able to display this file."
-msgstr ""
-
-#: shell/main.c:276
-#, c-format
-msgid ""
-"The following files cannot be displayed because Eye of Gnome was not able to "
-"access them:\n"
+"Nepavyko parodyti Eye of Gnome pagalbos.\n"
 "%s"
+
+#: shell/eog-window.c:635
+#, c-format
+msgid "Overwrite file %s?"
+msgstr "Perrašyti bylą %s?"
+
+#: shell/eog-window.c:636
+msgid "File exists. Do you want to overwrite it?"
+msgstr "Tokia byla jau yra. Ar norite ją perrašyti?"
+
+#: shell/eog-window.c:646 shell/eog-window.c:659
+msgid "Skip"
+msgstr "Praleisti"
+
+#: shell/eog-window.c:647
+msgid "Overwrite"
+msgstr "Perrašyti"
+
+#: shell/eog-window.c:652
+#, c-format
+msgid "Error on saving %s."
+msgstr "Saugant %s įvyko klaida."
+
+#: shell/eog-window.c:660 shell/eog-window.c:1044
+msgid "Retry"
+msgstr "Bandyti iš naujo"
+
+#: shell/eog-window.c:1033
+#, c-format
+msgid "Couldn't determine file format of %s"
+msgstr "Nepavyko nustatyti %s bylos formato"
+
+#: shell/eog-window.c:1034
+msgid "Please use an appropriate filename suffix or select a file format."
 msgstr ""
+"Prašom naudoti atitinkamus bylų prievardžius arba pasirinkit bylos formatą"
 
-#: shell/main.c:447
-#, fuzzy
-msgid "Could not initialize GnomeVFS!\n"
-msgstr "Negalėjau inicializuoti Bonobo"
+#: shell/eog-window.c:1176
+msgid "Error on saving images."
+msgstr "Saugant paveikslėlius įvyko klaida."
 
-#: shell/main.c:450
+#: shell/eog-window.c:1409
+#, fuzzy, c-format
+msgid "Do you really want to move %i image to trash?"
+msgid_plural "Do you really want to move %i images to trash?"
+msgstr[0] "Ar tikrai norite perkelti %i paveikslėlius(-ų) į šiukšlinę?"
+msgstr[1] "Ar tikrai norite perkelti %i paveikslėlius(-ų) į šiukšlinę?"
+
+#: shell/eog-window.c:1447
+msgid "Couldn't access trash."
+msgstr "Nepavyko prieiti prie šiukšlinės."
+
+#: shell/eog-window.c:1521
+#, c-format
+msgid "Error on deleting image %s"
+msgstr "Trinant paveikslėlį %s įvyko klaida"
+
+#. Images: (n_selected_images) / (n_total_images)
+#: shell/eog-window.c:2114
+#, c-format
+msgid "Images: %i/%i"
+msgstr "Paveikslėliai: %i/%i"
+
+#: shell/eog-window.c:2193
+msgid "_File"
+msgstr "_Byla"
+
+#: shell/eog-window.c:2194
+msgid "_Edit"
+msgstr "_Keisti"
+
+#: shell/eog-window.c:2195
+msgid "_View"
+msgstr "_Rodyti"
+
+#: shell/eog-window.c:2196
+msgid "_Help"
+msgstr "_Pagalba"
+
+#: shell/eog-window.c:2197
+msgid "_New"
+msgstr "_Naujas"
+
+#: shell/eog-window.c:2197
+msgid "Open a new window"
+msgstr "Atidaryti naują langą"
+
+#: shell/eog-window.c:2198
+msgid "_Open..."
+msgstr "_Atidaryti..."
+
+#: shell/eog-window.c:2198
+msgid "Open a file"
+msgstr "Atidaryti bylą"
+
+#: shell/eog-window.c:2199
+msgid "Open _Directory..."
+msgstr "Atidaryti _aplanką..."
+
+#: shell/eog-window.c:2199
+msgid "Open a directory"
+msgstr "Atidaryti katalogą"
+
+#: shell/eog-window.c:2200
+msgid "_Close"
+msgstr "_Uždaryti"
+
+#: shell/eog-window.c:2200
+msgid "Close window"
+msgstr "Uždaryti langą"
+
+#: shell/eog-window.c:2201
+msgid "_Quit"
+msgstr "_Išeiti"
+
+#: shell/eog-window.c:2201
+msgid "Close all windows and quit"
+msgstr "Uždaryti visus langus ir išeiti"
+
+#: shell/eog-window.c:2202
+msgid "Prefere_nces"
+msgstr "_Nustatymai"
+
+#: shell/eog-window.c:2202
+msgid "Preferences for Eye of Gnome"
+msgstr "Eye of Gnome nustatymai"
+
+#: shell/eog-window.c:2203
+msgid "_Contents"
+msgstr "_Turinys"
+
+#: shell/eog-window.c:2203
+msgid "Help On this application"
+msgstr "Šios programos pagalba"
+
+#: shell/eog-window.c:2204
+msgid "_About"
+msgstr "_Apie"
+
+#: shell/eog-window.c:2204
+msgid "About this application"
+msgstr "Apie šią programą"
+
+#: shell/eog-window.c:2209
+msgid "_Toolbar"
+msgstr "Į_rankinė"
+
+#: shell/eog-window.c:2210
+msgid "_Statusbar"
+msgstr "_Būsenos juosta"
+
+#: shell/eog-window.c:2215
+msgid "_Save"
+msgstr "_Saugoti"
+
+#: shell/eog-window.c:2216
+msgid "Save _As"
+msgstr "Išsaugoti _kaip"
+
+#: shell/eog-window.c:2218
+msgid "_Undo"
+msgstr "_Atšaukti"
+
+#: shell/eog-window.c:2220
+msgid "Flip _Horizontal"
+msgstr "Apversti _horizontaliai"
+
+#: shell/eog-window.c:2221
+msgid "Flip _Vertical"
+msgstr "Apversti _vertikaliai"
+
+#: shell/eog-window.c:2223
+msgid "_Rotate Clockwise"
+msgstr "Pasukti pagal laik_rodžio rodyklę"
+
+#: shell/eog-window.c:2224
+msgid "Rotate Counter C_lockwise"
+msgstr "Pasukti prieš _laikrodžio rodyklę"
+
+#: shell/eog-window.c:2225
+msgid "Rotat_e 180°"
+msgstr "Pas_ukti 180°"
+
+#: shell/eog-window.c:2227
+msgid "Delete"
+msgstr "Ištrinti"
+
+#: shell/eog-window.c:2229
+msgid "_Full Screen"
+msgstr "_Visame ekrane"
+
+#: shell/eog-window.c:2230
+msgid "_Zoom In"
+msgstr "_Pritraukti"
+
+#: shell/eog-window.c:2231
+msgid "Zoom _Out"
+msgstr "_Atitraukti"
+
+#: shell/eog-window.c:2232
+msgid "_Normal Size"
+msgstr "_Normalus dydis"
+
+#: shell/eog-window.c:2233
+msgid "Best _Fit"
+msgstr "Geriausiai _tinka"
+
+#: shell/main.c:236
+#, fuzzy, c-format
+msgid ""
+"You are about to open %i windows simultaneously. Do you want to open them in "
+"a collection instead?"
+msgstr ""
+"Tu ruošiesi atidaryti %i langus vienu metu. Gal geriau nori juos atidaryti "
+"kolekcijoje?"
+
+#: shell/main.c:240
+msgid "Open multiple single windows?"
+msgstr "Atidaryti kelis pavienius langus?"
+
+#: shell/main.c:244
+msgid "Single Windows"
+msgstr "Pavieniai langai"
+
+#: shell/main.c:246
+msgid "Collection"
+msgstr "Kolekcija"
+
+#: shell/main.c:298
 #, fuzzy
-msgid "Could not initialize Bonobo!\n"
-msgstr "Negalėjau inicializuoti Bonobo"
+msgid "File not found."
+msgid_plural "Files not found."
+msgstr[0] "Byla nerasta."
+msgstr[1] "Byla nerasta."
 
 #: shell/util.c:52
 #, c-format
 msgid "Could not open `%s'"
-msgstr "Negalėjau atidaryti „%s“"
+msgstr "Nepavyko atidaryti `%s'"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:1
-msgid "Best _Fit"
-msgstr ""
+#~ msgid "EOG Image Collection Viewer"
+#~ msgstr "EOG paveikslėlių kolekcijų žiūrėjimo programa"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:2
-msgid "Fit"
-msgstr "Tilpti"
+#~ msgid "EOG Image collection view factory"
+#~ msgstr "EOG paveikslėlių kolekcijos žiūryklės gamykla"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:3 viewer/eog-print-setup.c:79
-msgid "In"
-msgstr "Artyn"
+#~ msgid "Image Collection"
+#~ msgstr "paveikslėlių kolekciją"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:4
-msgid "Normal"
-msgstr ""
+#~ msgid "Image Collection Viewer"
+#~ msgstr "Paveikslėlių žiūrėjimo programa"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:5
-msgid "Out"
-msgstr "Tolyn"
+#~ msgid "View as I_mage Collection"
+#~ msgstr "Rodyti kaip _paveikslėlių kolekciją"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:6
+#~ msgid "View as Image Collection"
+#~ msgstr "Rodyti kaip paveikslėlių kolekciją"
+
+#~ msgid "Next"
+#~ msgstr "Sekantis"
+
+#~ msgid "Next Image"
+#~ msgstr "Sekantis paveikslėlis"
+
+#~ msgid "Previous"
+#~ msgstr "Ankstesnis"
+
+#~ msgid "Previous Image"
+#~ msgstr "Ankstesnis paveikslėlis"
+
+#~ msgid "Rotate 180 _Degrees"
+#~ msgstr "Pasukti 180 _laipsnių"
+
+#~ msgid "Rotate C_lockwise"
+#~ msgstr "Pasukti paga_l laikrodžio rodyklę"
+
+#~ msgid "Rotate Counte_r Clockwise"
+#~ msgstr "Pasukti p_rieš laikrodžio rodyklę"
+
+#~ msgid "Slide Show"
+#~ msgstr "Skaidrių demonstravimas"
+
+#~ msgid "Cancel saving"
+#~ msgstr "Atšaukti saugojimą"
+
+#~ msgid "Saving finished"
+#~ msgstr "Išsaugojimas baigtas"
+
+#~ msgid "Move to Trash"
+#~ msgstr "Perkelti į šiukšlinę"
+
+#~ msgid "Collection View"
+#~ msgstr "Kolekcijos vaizdas"
+
+#~ msgid "Window Title"
+#~ msgstr "Lango antraštė"
+
+#~ msgid "Status Text"
+#~ msgstr "Būsenos juostos tekstas"
+
+#~ msgid "Progress of Image Loading"
+#~ msgstr "Paveikslėlio įkėlimo progresas"
+
+#~ msgid "Saving image"
+#~ msgstr "Išsaugomas paveikslėlis"
+
+#~ msgid "EOG Image"
+#~ msgstr "EOG paveikslėlis"
+
+#~ msgid "EOG Image Viewer"
+#~ msgstr "EOG paveikslėlių žiūrėjimo programa"
+
+#~ msgid "EOG Image viewer factory"
+#~ msgstr "EOG paveikslėlių žiūryklės gamykla"
+
+#~ msgid "Embeddable EOG Image"
+#~ msgstr "Įdiegiamas EOG paveiksliukas"
+
+#~ msgid "Image"
+#~ msgstr "Paveiksliukas"
+
+#~ msgid "Fit"
+#~ msgstr "Tilpti"
+
+#~ msgid "In"
+#~ msgstr "Artyn"
+
+#~ msgid "Normal"
+#~ msgstr "Normalus"
+
+#~ msgid "Out"
+#~ msgstr "Tolyn"
+
+#~ msgid "Full Screen"
+#~ msgstr "Visame ekrane"
+
+#~ msgid "Previews the image to be printed"
+#~ msgstr "Peržiūrėti spausdinamą paveikslėlį"
+
+#~ msgid "Print Previe_w..."
+#~ msgstr "Spausdinimo peržiū_ra..."
+
+#~ msgid "Print Set_up"
+#~ msgstr "Spausdinimo n_ustatymai"
+
+#~ msgid "Print image to the printer"
+#~ msgstr "Spausdinti paveikslėlį į spausdintuvą"
+
+#~ msgid "Rotate Left"
+#~ msgstr "Sukti kairėn"
+
+#~ msgid "Rotate Right"
+#~ msgstr "Sukti dešinėn"
+
+#~ msgid "Save _As..."
+#~ msgstr "Išsaugoti _kaip..."
+
+#~ msgid "Setup the page settings for your current printer"
+#~ msgstr "Pritaikyti puslapio nustatymus tavo dabartiniam spausdintuvui"
+
+#~ msgid "_Print..."
+#~ msgstr "_Spausdinti..."
+
+#~ msgid "Preview"
+#~ msgstr "Peržiūra"
+
+#~ msgid "%i x %i pixel  %s    %i%%"
+#~ msgstr "%i x %i taškų  %s    %i%%"
+
+#~ msgid "/Rotate C_lockwise"
+#~ msgstr "/Sukti paga_l laikrodžio rodyklę"
+
+#~ msgid "/Rotate Counte_r Clockwise"
+#~ msgstr "/Sukti p_rieš laikrodžio rodyklę"
+
+#~ msgid "/_Zoom In"
+#~ msgstr "/_Pritraukti"
+
+#~ msgid "/Zoom _Out"
+#~ msgstr "/_Atitraukti"
+
+#~ msgid "/_Normal Size"
+#~ msgstr "/_Normalus dydis"
+
+#~ msgid "/Best _Fit"
+#~ msgstr "/Geriausiai _tinkantis"
+
+#~ msgid "/_Close"
+#~ msgstr "/_Uždaryti"
+
+#~ msgid "Loading of image %s failed."
+#~ msgstr "Paveikslėlio %s įkėlimas nepavyko."
+
+#~ msgid ""
+#~ "Loading of image %s failed.\n"
+#~ "Reason: %s."
+#~ msgstr ""
+#~ "Paveikslėlio %s įkėlimas nepavyko.\n"
+#~ "Priežastis: %s."
+
+#~ msgid "Loading failed"
+#~ msgstr "Įkėlimas nepavyko"
+
+#~ msgid "Image successfully saved"
+#~ msgstr "Paveikslėlis sėkmingai išsaugotas"
+
+#~ msgid "Image saving failed"
+#~ msgstr "Paveikslėlio išsaugojimas nepavyko"
+
+#~ msgid "Image Width"
+#~ msgstr "Paveikslėlio plotis"
+
+#~ msgid "Image Height"
+#~ msgstr "Paveikslėlio aukštis"
+
+#~ msgid "Statusbar Text"
+#~ msgstr "Būsėnos juostos tekstas"
+
+#~ msgid "Desired Window Width"
+#~ msgstr "Pasirinktas lango plotis"
+
+#~ msgid "Desired Window Height"
+#~ msgstr "Pasirinktas lango aukštis"
+
+#~ msgid "Images can only be saved as local files."
+#~ msgstr "Paveikslėliai gali būti išsaugojami tik kaip vietinės bylos."
+
+#~ msgid "Unsupported image type for saving."
+#~ msgstr "Nepalaikomas paveikslėlio tipas išsaugojimui."
+
+#~ msgid "Page"
+#~ msgstr "Puslapis"
+
+#~ msgid "Millimeter"
+#~ msgstr "Milimetras"
+
+#~ msgid "Paper"
+#~ msgstr "Popierius"
+
+#~ msgid "% of original size"
+#~ msgstr "% normalaus dydžio"
+
+#~ msgid "Adjust to "
+#~ msgstr "Priderinti prie "
+
+#~ msgid "Cutting help"
+#~ msgstr "Karpymo pagalba"
+
+#~ msgid "Down, then right"
+#~ msgstr "Žemyn, tada į dešinę"
+
+#~ msgid "Fit to page"
+#~ msgstr "Tilpti į puslapį"
+
+#~ msgid "Horizontally"
+#~ msgstr "Horizontaliai"
+
+#~ msgid "Horizontally by "
+#~ msgstr "Horizontaliai pagal "
+
+#~ msgid "Margins"
+#~ msgstr "Paraštės"
+
+#~ msgid "Ordering help"
+#~ msgstr "Rūšiavimo pagalba"
+
+#~ msgid "Overlap"
+#~ msgstr "Persikloti"
+
+#~ msgid "Overlap help"
+#~ msgstr "Persiklojimo pagalba"
+
+#~ msgid "Page order"
+#~ msgstr "Puslapių tvarka"
+
+#~ msgid "Right, then down"
+#~ msgstr "Į dešinę, tada žemyn"
+
+#~ msgid "Scale"
+#~ msgstr "Mastelis"
+
+#~ msgid "Show"
+#~ msgstr "Rodyti"
+
+#~ msgid "Vertically"
+#~ msgstr "Vertikaliai"
+
+#~ msgid "Vertically by "
+#~ msgstr "Vertikaliai pagal "
+
+#~ msgid "Name"
+#~ msgstr "Vardas"
+
+#~ msgid "The name of the file or data to print"
+#~ msgstr "Norimos spausdinti bylos ar duomenų vardas"
+
+#~ msgid "Cancel"
+#~ msgstr "Atšaukti"
+
+#~ msgid "Change the visibility of the statusbar in the current window"
+#~ msgstr "Keisti esamo lango būsenos juostos matomumą"
+
+#~ msgid "Change the visibility of the toolbar in the current window"
+#~ msgstr "Keisti esamo lango įrankinės matomumą"
+
+#~ msgid "New"
+#~ msgstr "Naujas"
+
+#~ msgid "Open"
+#~ msgstr "Atidaryti"
+
+#~ msgid "Open in new window"
+#~ msgstr "Atidaryti naujame lange"
+
+#~ msgid "Open in this window"
+#~ msgstr "Atidaryti šiame lange"
+
+#~ msgid "Quit the program"
+#~ msgstr "Išeiti iš programos"
+
+#~ msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+#~ msgstr "Žygimantas Beručka <uid0@tuxfamily.org>"
+
+#~ msgid "dialog1"
+#~ msgstr "dialog1"
+
+#~ msgid "Could not find files"
+#~ msgstr "Neradau bylų"
+
+#~ msgid "By Extension"
+#~ msgstr "Pagal prievardį"
+
+#~ msgid "Unsupported image file format for saving."
+#~ msgstr "Nepalaikomas paveikslėlio bylos formatas išsaugojimui."
+
+#~ msgid "Determine File Type:"
+#~ msgstr "Nustatyti bylos tipą:"
+
+#~ msgid "Don't use zoom larger than 100%"
+#~ msgstr "Nenaudoti pritraukimo didesnio nei 100%"
+
+#~ msgid "_Interpolate image on zoom (better quality but slower)"
+#~ msgstr ""
+#~ "_Interpoliuoti paveikslėlį pritraukimo metu (geresnė kokybė, bet lėčiau)"
+
 #, fuzzy
-msgid "Zoom _Out"
-msgstr "Atitraukti"
+#~ msgid "Fit standard-sized images to the screen"
+#~ msgstr "Sutalpinti standartinio dydžio paveikslėlius į ekraną"
 
-#: viewer/eog-image-view-ctrl-ui.xml.h:7
-msgid "_Normal Size"
-msgstr ""
-
-#: viewer/eog-image-view-ctrl-ui.xml.h:8
 #, fuzzy
-msgid "_Zoom In"
-msgstr "Pritraukti"
+#~ msgid "Put a bevel around the screen"
+#~ msgstr "Rodyti rėmelį ekrano pakraščiuose"
 
-#: viewer/eog-image-view-ui.xml.h:1
-msgid "Flip Horizontal"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:2
-msgid "Flip Vertical"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:3
-msgid "Full Screen"
-msgstr "Visame ekrane"
-
-#: viewer/eog-image-view-ui.xml.h:4
-msgid "Previews the image to be printed"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:5
-msgid "Print Previe_w..."
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:6
 #, fuzzy
-msgid "Print Set_up"
-msgstr "Atidaryti paveikslėlį"
+#~ msgid "Copyright (C) 2000-2002 The Free Software Foundation"
+#~ msgstr "Copyright (C) 2000-2001 The Free Software Foundation"
 
-#: viewer/eog-image-view-ui.xml.h:7
-msgid "Print image to the printer"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:8
-msgid "Rotate 180 Degrees"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:9
-msgid "Rotate Clockwise"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:10
-msgid "Rotate Counter Clockwise"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:11
-msgid "Save _As..."
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:12
-msgid "Setup the page settings for your current printer"
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:14
-msgid "_Print..."
-msgstr ""
-
-#: viewer/eog-image-view-ui.xml.h:15 collection/eog-collection-view-ui.xml.h:2
 #, fuzzy
-msgid "_View"
-msgstr "Žiūrėklės"
+#~ msgid "Couldn't initialize GnomeVFS!\n"
+#~ msgstr "Negalėjau inicializuoti Bonobo"
 
-#: viewer/eog-image-view.c:270
-#, c-format
-msgid "Could not save image as '%s': %s."
-msgstr ""
-
-#: viewer/eog-image-view.c:954
 #, fuzzy
-msgid "Print Image"
-msgstr "Atidaryti paveikslėlį"
+#~ msgid "Eye of Gnome Image Viewer"
+#~ msgstr "EOG paveikslėlių žiūrėklė"
 
-#: viewer/eog-image-view.c:962
 #, fuzzy
-msgid "Pages"
-msgstr "Dideli"
+#~ msgid "Indicate Transparency"
+#~ msgstr "Skaidrumo tipas"
 
-#: viewer/eog-image-view.c:1049
-msgid "Print Preview"
-msgstr ""
-
-#: viewer/eog-image-view.c:1055
 #, fuzzy
-msgid "Printing of image failed"
-msgstr "Atidaryti paveikslėlio bylą"
+#~ msgid "interpolation type"
+#~ msgstr "Interpoliacijos tipas"
 
-#: viewer/eog-image-view.c:1870
 #, fuzzy
-msgid "/_Zoom In"
-msgstr "Pritraukti"
+#~ msgid "the type of interpolation to use"
+#~ msgstr "_Hiperbolinė Interpoliacija"
 
-#: viewer/eog-image-view.c:1872
 #, fuzzy
-msgid "/Zoom _Out"
-msgstr "Atitraukti"
+#~ msgid "check type"
+#~ msgstr "Langelių _tipas"
 
-#: viewer/eog-image-view.c:1874
-msgid "/_Normal Size"
-msgstr ""
-
-#: viewer/eog-image-view.c:1876
 #, fuzzy
-msgid "/Best _Fit"
-msgstr "Atitraukti"
+#~ msgid "dither type"
+#~ msgstr "Langelių _tipas"
 
-#: viewer/eog-image-view.c:1879
 #, fuzzy
-msgid "/_Close"
-msgstr "Uždaryti"
+#~ msgid "Could not initialize GnomeVFS!\n"
+#~ msgstr "Negalėjau inicializuoti Bonobo"
 
-#: viewer/eog-image-view.c:2005
 #, fuzzy
-msgid "Image Width"
-msgstr "Paveikslėlių langai"
-
-#: viewer/eog-image-view.c:2008
-msgid "Image Height"
-msgstr ""
-
-#: viewer/eog-image-view.c:2011
-msgid "Window Title"
-msgstr ""
-
-#: viewer/eog-image-view.c:2014
-msgid "Statusbar Text"
-msgstr ""
-
-#: viewer/eog-image.c:480
-#, fuzzy
-msgid "Couldn't initialize GnomeVFS!\n"
-msgstr "Negalėjau inicializuoti Bonobo"
-
-#: viewer/eog-print-setup.c:76
-msgid "pts"
-msgstr ""
-
-#: viewer/eog-print-setup.c:76
-msgid "points"
-msgstr ""
-
-#: viewer/eog-print-setup.c:77
-msgid "mm"
-msgstr ""
-
-#: viewer/eog-print-setup.c:77
-msgid "millimeter"
-msgstr ""
-
-#: viewer/eog-print-setup.c:78
-msgid "cm"
-msgstr ""
-
-#: viewer/eog-print-setup.c:78
-msgid "centimeter"
-msgstr ""
-
-#: viewer/eog-print-setup.c:79
-msgid "inch"
-msgstr ""
-
-#: viewer/eog-print-setup.c:469
-msgid "Print Setup"
-msgstr ""
-
-#: viewer/eog-print-setup.c:476
-msgid "Print"
-msgstr ""
-
-#: viewer/eog-print-setup.c:478
-msgid "Print preview"
-msgstr ""
-
-#: viewer/eog-print-setup.c:547
-msgid "Units: "
-msgstr ""
-
-#. First page
-#: viewer/eog-print-setup.c:557 viewer/eog-print-setup.c:565
-msgid "Paper"
-msgstr ""
-
-#: viewer/eog-print-setup.c:569
-msgid "Paper size:"
-msgstr ""
-
-#. Orientation
-#: viewer/eog-print-setup.c:586
-msgid "Orientation"
-msgstr ""
-
-#: viewer/eog-print-setup.c:593
-msgid "Portrait"
-msgstr ""
-
-#: viewer/eog-print-setup.c:600
-msgid "Landscape"
-msgstr ""
-
-#. Margins
-#: viewer/eog-print-setup.c:609
-msgid "Margins"
-msgstr ""
-
-#. Top margin
-#: viewer/eog-print-setup.c:617
-msgid "Top:"
-msgstr ""
-
-#. Left margin
-#: viewer/eog-print-setup.c:635
-msgid "Left:"
-msgstr ""
-
-#. Right margin
-#: viewer/eog-print-setup.c:653
-msgid "Right:"
-msgstr ""
-
-#. Bottom margin
-#: viewer/eog-print-setup.c:671
-msgid "Bottom:"
-msgstr ""
-
-#. Scale
-#: viewer/eog-print-setup.c:697
-#, fuzzy
-msgid "Scale"
-msgstr "Maži"
-
-#: viewer/eog-print-setup.c:701
-msgid "Adjust to:"
-msgstr ""
-
-#: viewer/eog-print-setup.c:706
-msgid "Fit to page"
-msgstr ""
-
-#: viewer/eog-print-setup.c:725
-#, no-c-format
-msgid "% of original size"
-msgstr ""
-
-#. Center on page
-#: viewer/eog-print-setup.c:731
-msgid "Center"
-msgstr ""
-
-#: viewer/eog-print-setup.c:735
-msgid "Horizontally"
-msgstr ""
-
-#: viewer/eog-print-setup.c:742
-msgid "Vertically"
-msgstr ""
-
-#. Overlap
-#: viewer/eog-print-setup.c:751
-msgid "Overlapping"
-msgstr ""
-
-#: viewer/eog-print-setup.c:755
-msgid "Overlap horizontally by "
-msgstr ""
-
-#: viewer/eog-print-setup.c:760
-msgid "Overlap vertically by "
-msgstr ""
-
-#. Third page
-#: viewer/eog-print-setup.c:797
-msgid "Printing"
-msgstr ""
-
-#. Helpers
-#: viewer/eog-print-setup.c:805
-msgid "Helpers"
-msgstr ""
-
-#: viewer/eog-print-setup.c:806
-msgid "Print cutting help"
-msgstr ""
-
-#: viewer/eog-print-setup.c:812
-msgid "Print overlap help"
-msgstr ""
-
-#. Page order
-#: viewer/eog-print-setup.c:821
-msgid "Page order"
-msgstr ""
-
-#. Down right
-#: viewer/eog-print-setup.c:827
-msgid "Down, then right"
-msgstr ""
-
-#. Right down
-#: viewer/eog-print-setup.c:844
-msgid "Right, then down"
-msgstr ""
-
-#: collection/eog-collection-view-ui.xml.h:1
-msgid "Slide Show"
-msgstr ""
+#~ msgid "Could not initialize Bonobo!\n"
+#~ msgstr "Negalėjau inicializuoti Bonobo"
 
 #, fuzzy
 #~ msgid "_New Window"
@@ -894,16 +1132,9 @@ msgstr ""
 #~ msgid "_Preferences..."
 #~ msgstr "Nuostatos"
 
-#~ msgid "Display"
-#~ msgstr "Rodymas"
-
 #, fuzzy
 #~ msgid "Nearest Neighbour Interpolation"
 #~ msgstr "Artimiausio kaimyno interpoliacija"
-
-#, fuzzy
-#~ msgid "Tiles Interpolation"
-#~ msgstr "Interpoliacija"
 
 #, fuzzy
 #~ msgid "Bilinear Interpolation"
@@ -916,10 +1147,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "Maximum (high color) dithering"
 #~ msgstr "_Maksimalus (high color) dithering'as"
-
-#, fuzzy
-#~ msgid "Midtone"
-#~ msgstr "Vidutiniški langeliai"
 
 #, fuzzy
 #~ msgid "Black"
@@ -1005,9 +1232,6 @@ msgstr ""
 
 #~ msgid "Close the current window"
 #~ msgstr "Uždaryti esamą langą"
-
-#~ msgid "_Open Image..."
-#~ msgstr "_Atidaryti paveikslėlį..."
 
 #~ msgid "_Close This Window"
 #~ msgstr "_Uždaryti šį langą"

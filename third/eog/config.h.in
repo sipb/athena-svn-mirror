@@ -5,6 +5,7 @@
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
 #undef HAVE_LC_MESSAGES
+#undef HAVE_SUNKEYSYM_H
 #undef HAVE_STPCPY
 #undef ENABLE_NLS
 #undef ENABLE_BONOBO
@@ -20,7 +21,9 @@
 #undef GCONFTOOL
 #undef GCONF_CONFIG_SOURCE
 #undef INSTALL_GCONF_CONFIG_SOURCE
-
+#undef HAVE_EXIF
+#undef HAVE_OLD_LIBEXIF
+#undef HAVE_LIBJPEG
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
@@ -67,6 +70,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the <X11/Sunkeysym.h> header file. */
+#undef HAVE_X11_SUNKEYSYM_H
+
 /* Name of package */
 #undef PACKAGE
 
@@ -90,3 +96,6 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
