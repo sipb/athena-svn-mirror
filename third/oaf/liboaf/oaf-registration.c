@@ -212,8 +212,8 @@ oaf_registration_set (const OAFBaseService *base_service,
 
 
 const char *oaf_ac_cmd[] =
-	{ "oafd", "--ac-activate", "--ior-output-fd=%d", NULL };
-const char *oaf_od_cmd[] = { "dustbuster", "-S", "oafd", "--ior-output-fd=%d", NULL };
+	{ "dustbuster", "-S", "oafd", "--ac-activate", "--ior-output-fd=%d", NULL };
+const char *oaf_od_cmd[] = { "oafd", "--ior-output-fd=%d", NULL };
 
 struct SysServerInstance
 {
@@ -231,9 +231,9 @@ struct SysServer
 activatable_servers[] =
 {
 	{"IDL:OAF/ActivationContext:1.0", (const char **) oaf_ac_cmd,
-         2, CORBA_OBJECT_NIL}, 
+         4, CORBA_OBJECT_NIL}, 
         {"IDL:OAF/ObjectDirectory:1.0", (const char **) oaf_od_cmd,
-         3, CORBA_OBJECT_NIL},
+         1, CORBA_OBJECT_NIL},
 	{ NULL}
 };
 
