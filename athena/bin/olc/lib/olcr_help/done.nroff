@@ -4,7 +4,8 @@
 done \- resolve a question
 .SH USAGE
 .B done [<username> <instance id>] [\-off] [\-title
-.B  <title>] [\-topic <topic>] [-instance <instance id>]
+.B  <title>] [\-topic <topic>] [\-instance <instance id>]
+.B  [\-nocheck]
 .br
 .SH DESCRIPTION
 When no arguments are given to this command, it simply marks your current
@@ -32,4 +33,7 @@ If you have "gresolve" access, you may specify alternate usernames.
 The topic may be changed at the time of resolution, by using the 
 .I \-topic <topic>
 option.
-
+.PP
+If you wish to bypass the confimation message, you may use the
+.I \-nocheck
+option.
