@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.29 1992-11-08 18:14:38 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.30 1993-02-16 00:22:42 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -35,6 +35,9 @@
 #endif
 
 #ifdef _IBMR2
+/* We don't want to be using the standard console grabbing routines */
+#define BROKEN_CONSOLE_DRIVER
+
 #if AIXV==31
 #define USE_X11R3
 #endif
@@ -49,7 +52,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.29 1992-11-08 18:14:38 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.30 1993-02-16 00:22:42 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -118,7 +121,7 @@ char *ultrixcons = "/dev/xcons";
 #define DAEMON 1
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
-#define X_STOP_WAIT	3	/* (seconds / 2) wait for graceful shutdown */
+#define X_STOP_WAIT	3	/* (seconds * 3) wait for graceful shutdown */
 #define LOGIN_START_WAIT 60	/* wait up to 1 minute for Xlogin */
 #ifndef BUFSIZ
 #define BUFSIZ		1024
@@ -160,7 +163,7 @@ char **argv;
 	message("usage: ");
 	message(argv[0]);
 	message(" configfile logintty [-noconsole] consoletty\n");
-	console_login(NULL);
+	console_login(0);
     }
     if (argc == 5) console = FALSE;
 
@@ -214,7 +217,6 @@ char **argv;
     dup2(0, 1);
     dup2(1, 2);
 
-#if !defined(_AIX)
 #ifndef BROKEN_CONSOLE_DRIVER
     /* Set the console characteristics so we don't lose later */
 #ifdef TIOCCONS
@@ -223,7 +225,6 @@ char **argv;
 #endif  /* TIOCCONS */
     setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
     ioctl (0, TIOCSPGRP, &pgrp);
-#endif
 #endif
 
     /* save our pid file */
@@ -505,29 +506,29 @@ char **argv;
 /* Start a login on the raw console */
 
 console_login(msg)
-char *msg;
+    char *msg;
 {
-#if defined(_AIX)
-
-#ifdef DEBUG
-    message("console login is not supported; exiting\n");
-#endif
-    _exit(1);
-
-#else /* supports console login */
-
-    int pgrp, i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
-    struct sgttyb mode;
+    int i, gracefull = FALSE, xfirst = TRUE, cfirst = TRUE;
     char *nl = "\r\n";
-
+#ifdef POSIX
+    struct termios ttybuf;
+#else
+    int pgrp;
+    struct sgttyb mode;
+#endif
+#ifdef _AIX
+    char line[64];
+#endif
+    
 #ifdef DEBUG
     message("starting console login\n");
     message(msg);
 #endif
 
     for (i = 0; i < X_STOP_WAIT; i++) {
-	if (login_running != NONEXISTANT && login_running != STARTUP)
-	  kill(loginpid, SIGKILL);
+	if (login_running != NONEXISTANT && login_running != STARTUP) {
+	    kill(loginpid, SIGKILL);
+	}
 	if (console_running != NONEXISTANT) {
 	    if (cfirst)
 	      kill(consolepid, SIGHUP);
@@ -543,7 +544,7 @@ char *msg;
 	    xfirst = FALSE;
 	}
 
-	/* wait 1 sec for children to exit */
+	/* wait a little for children to exit */
 	alarm(2);
 	sigpause(0);
 
@@ -554,17 +555,23 @@ char *msg;
 	    break;
 	}
     }
+#ifdef TRACE
+    if (gracefull)
+	trace("Graceful shutdown achieved\n");
+    else
+	trace("Ungraceful shutdown\n");
+#endif
 
-#ifndef BROKEN_CONSOLE_DRIVER
+#if !defined(BROKEN_CONSOLE_DRIVER)
     setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
     ioctl(0, TIOCSPGRP, &pgrp);
 #ifdef TIOCCONS
-    ioctl (0, TIOCCONS, 0);		/* Grab the console   */
-    ioctl (1, TIOCCONS, 0);		/* Grab the console   */
+    ioctl (0, TIOCCONS, 0);	/* grab console */
+    ioctl (1, TIOCCONS, 0);	/* grab console */
 #endif  /* TIOCCONS */
     i = 0;
     ioctl(0, TIOCFLUSH, &i);
-#endif
+#endif /* !BROKEN_CONSOLE_DRIVER */
 
 #ifdef vax
     /* attempt to reset the display head */
@@ -584,9 +591,15 @@ char *msg;
     }
 #endif /* vax */
 
+#ifdef POSIX
+    (void) tcgetattr(0, &ttybuf);
+    ttybuf.c_lflag |= (ICANON|ISIG|ECHO);
+    (void) tcsetattr(0, TCSADRAIN, &ttybuf);
+#else
     ioctl(0, TIOCGETP, &mode);
     mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
     ioctl(0, TIOCSETP, &mode);
+#endif
     sigsetmask(0);
     for (i = 3; i < getdtablesize(); i++)
       close(i);
@@ -595,10 +608,43 @@ char *msg;
       message(msg);
     else
       message(nl);
+    
+#ifdef _IBMR2
+    i = open("/dev/tty", O_RDWR, 0);
+    if (i >= 0) {
+	ioctl(i, TIOCNOTTY, 0);
+	close(i);
+    }
+    close(0); close(1); close(2);
+    setsid();
+    setpgrp(0,0);
+
+    open("/dev/hft", O_RDWR, 0);
+    dup2(0, 1);
+    dup2(0, 2);
+
+    /* Grab the console */
+    strcpy(line, ttyname(1));
+    swconspid = fork();
+    switch (swconspid) {
+    case 0:
+	i = open("/dev/null", O_RDWR, 0);
+	dup2(i,1);
+	dup2(i,2);
+	execl("/etc/swcons", "swcons", line, 0);
+	_exit(1);
+	/* NOTREACHED */
+    case -1:
+	break;
+    default:
+	sigpause(0);	/* wait for swcons */
+    }
+    execl("/etc/getty", "/etc/getty", line, 0);
+#else
     execl(login_prog, login_prog, 0);
+#endif
     message("dm: Unable to start console login\n");
     _exit(1);
-#endif /* supports console login */
 }
 
 
@@ -698,14 +744,14 @@ char **argv;
 	message("Unable to setup console for system messages.\n");
 	_exit(-1);
     }
-#else /* _IBMR2 */
+#endif /* _IBMR2 */
+
 #ifndef BROKEN_CONSOLE_DRIVER
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
 	setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
 	ioctl (0, TIOCSPGRP, &pgrp);
-#endif /* _IBMR2 */
 #endif /* BROKEN_CONSOLE_DRIVER */
 	console_failed = TRUE;
 	return;
