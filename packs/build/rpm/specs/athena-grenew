@@ -1,0 +1,10 @@
+Name: athena-grenew
+Summary: Renew a user's Kerberos tickets
+Copyright: MIT
+Group: User Interface/Desktops
+
+Requires: athena-krb5 athena-gtk
+
+%description
+This program presents a graphical user interface to allow users to
+renew their Kerberos tickets.
