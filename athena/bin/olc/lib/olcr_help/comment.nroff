@@ -15,13 +15,13 @@ triggering a notification to the user. These messages are visible
 to anyone when the 
 .I replay
 command is used, unless the
-.I\-private
+.I \-private
 flag was used when entering the log.
 .PP
 If no username is specified, the comment will be put in the log of the
 current conversation. You may also specify the question connected to a
 specific instance of yours to comment in by using  
-.I\-instance <instance id>.
+.I \-instance <instance id>.
 
 .SH OPTIONS
 .TP

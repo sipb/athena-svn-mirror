@@ -25,7 +25,7 @@ will show the list along with a one-line description of each question,
 when available.
 .PP
 You may list questions of a certain status by specifying
-.I\-status <status>.
+.I \-status <status>.
 .PP
 You may list all questions matching a certain username pattern by
 specifying the pattern.

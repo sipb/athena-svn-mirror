@@ -13,7 +13,7 @@ cancel \- cancel a question
 When no arguments are given to this command, it simply cancels your
 current log. If you have consulting privileges, you may specify the
 question connected to a specific instance of yours to cancel by using
-.I\-instance <instance id>.
+.I \-instance <instance id>.
 If you have "gresolve" access, you may specify alternate usernames.
 .PP
 Questions would be cancelled to avoid cluttering the logs with empty

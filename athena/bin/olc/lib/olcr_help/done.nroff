@@ -24,7 +24,7 @@ option.
 .PP
 If you have consulting privileges, you may specify the
 question connected to a specific instance of yours to resolve by using
-.I\-instance <instance id>.
+.I \-instance <instance id>.
 .PP
 If you are signed on, OLC will attempt to connect you to
 another question, unless you use the
