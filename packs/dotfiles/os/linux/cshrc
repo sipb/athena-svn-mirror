@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.1.2.2 1999-06-28 19:32:02 ghudson Exp $
+# $Id: cshrc,v 1.1.2.2.2.1 2000-02-14 19:15:29 tb Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -16,15 +16,11 @@ set athena_path=( /srvd/patch /usr/athena/bin /bin/athena  \
 		/usr/bin /bin /usr/X11R6/bin /usr/andrew/bin \
 		/usr/athena/etc /usr/sbin /sbin )
 
-# Set appropriate bin directory variable for this platform
-# (e.g., vaxbin for VAXstations, decmipsbin for pMAXen, etc.;  this will
-# be included in actual searchpath as ~/$bindir -- e.g., ~/vaxbin):
-set hosttype=linux
-
 # Set standard path of directories for man command to search:
-set athena_manpath=/usr/athena/man:/usr/man
+set athena_manpath=/usr/athena/man:/usr/man:/usr/X11R6/man
 
 # Compatibility with older versions of Athena tcsh
+set hosttype=linux
 if (! $?HOST) then
 	setenv HOST `hostname`
 endif
@@ -154,7 +150,6 @@ if (! $?ENV_SET) then
 	else
 	  setenv XUSERFILESEARCHPATH "${XUSERFILESEARCHPATH}:/usr/athena/lib/X11/app-defaults/%N"
 	endif
-
 endif
 
 # Set appropriate bin directory variable for this platform
