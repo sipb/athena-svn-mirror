@@ -94,7 +94,7 @@ getLocalAddress ()
 
 	hostent = gethostbyname (localHostname());
 	XdmcpAllocARRAY8 (&localAddress, hostent->h_length);
-	bcopy (hostent->h_addr, localAddress.data, hostent->h_length);
+	memcpy (localAddress.data, hostent->h_addr, hostent->h_length);
     }
     return &localAddress;
 }
@@ -265,7 +265,7 @@ tryagain:
 	    free ((char *) h);
 	    return NULL;
 	}
-	bcopy (hostent->h_addr, h->entry.hostAddress.data, hostent->h_length);
+	memcpy (h->entry.hostAddress.data, hostent->h_addr, hostent->h_length);
     }
     return h;
 }
@@ -344,7 +344,7 @@ ReadDisplayEntry (file)
 	    	free ((char *) d);
 	    	return NULL;
 	    }
-	    bcopy (hostent->h_addr, display->clientAddress.data, hostent->h_length);
+	    memcpy (display->clientAddress.data, hostent->h_addr, hostent->h_length);
 	    switch (hostent->h_addrtype)
 	    {
 #ifdef AF_UNIX
@@ -504,6 +504,10 @@ patternMatch (string, pattern)
 	    p = *pattern++;
 	    /* fall through */
 	default:
+	  /* from X11R5 code */
+	    if (isupper(p)) p = tolower(p);
+            if (isupper(s)) s = tolower(s);
+	    /* */
 	    if (p != s)
 		return 0;
 	}
