@@ -5,9 +5,31 @@
 case "$1" in
 start)
 	if [ `awk '{a=$5} END {print a}' /etc/athena/version` = Reboot ]; then
+		method=`awk '{a=$6} END {print a}' /etc/athena/version`
+		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
+
+		if [ ! -r /usr/athena/lib/update/finish-update ]; then
+			echo "Cannot finish partially completed update."
+			echo "Please contact Athena Hotline at x3-1410.  Thank"
+			echo "you. -Athena Operations"
+			exit 0
+		fi
+
 		echo "Finishing partially completed update"
 		sh /usr/athena/lib/update/finish-update 2>&1 \
 			| tee -a /var/athena/update.log
+
+		if [ "$method" = "Manual" ]; then
+			echo "The update to version $newvers is complete.  You"
+			echo "may now examine the system before rebooting it"
+			echo "under $newvers.  When you are finished, type"
+			echo "'exit' and the system will reboot.  The shell"
+			echo "prompt below is for a /bin/athena/tcsh process,"
+			echo "regardless of what root's shell normally is."
+			echo ""
+			/bin/athena/tcsh
+		fi
+
 		echo "Update completed, rebooting in 15 seconds."
 		sync
 		sleep 15
