@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_solaris.c,v 1.2 1999-09-28 22:16:18 danw Exp $
+ *    $Id: machtype_solaris.c,v 1.3 2001-02-28 20:39:54 ghudson Exp $
  */
 
 #define volatile 
@@ -23,54 +23,18 @@
 #include <sys/ddi.h>
 #include <sys/sunddi.h>
 #include <sys/ddi_impldefs.h>
+#include <sys/systeminfo.h>
 /* Frame buffer stuff */
 #include <sys/fbio.h>
 #include <errno.h>
 #include "machtype.h"
-
-struct nlist nl[] = {
-#define X_cpu 0
-      { "cputype" },
-#define X_maxmem 1
-      { "maxmem" },
-#define X_physmem 2
-      { "physmem" },
-#define X_topnode 3
-      { "top_devinfo" },
-      { "" }
-};
-
-static kvm_t *do_init(void);
-static void do_cleanup(kvm_t *kernel);
-static void do_cpu_prom(kvm_t *kernel, int verbose);
-
-static kvm_t *do_init(void)
-{
-    kvm_t *kernel;
-
-    kernel = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
-    if (!kernel) {
-        fprintf(stderr,"unable to examine the kernel\n");
-        exit(2);
-    }
-    if (kvm_nlist(kernel, nl) < 0) {
-        fprintf(stderr,"can't get namelist\n");
-        exit(2);
-    }
-    return kernel;
-}
-
-static void do_cleanup(kvm_t *kernel)
-{
-    kvm_close(kernel);
-}
 
 void do_machtype(void)
 {
     puts("sun4");
 }
 
-static void do_cpu_prom(kvm_t *kernel, int verbose)
+void do_cpu(int verbose)
 {
   unsigned long   ptop;
   struct dev_info top;
@@ -80,17 +44,8 @@ static void do_cpu_prom(kvm_t *kernel, int verbose)
 
   /* read device name of the top node of the OpenPROM */
 
-  if (   (! nl[X_topnode].n_value)
-      || (kvm_read(kernel, (unsigned long) nl[X_topnode].n_value,
-		            (char*) &ptop, sizeof(ptop)) != sizeof(ptop))
-      || (! ptop)
-      || (kvm_read(kernel, (unsigned long) ptop,
-		            (char*) &top, sizeof(top)) != sizeof(top))
-      || (! top.devi_name)
-      || (kvm_read(kernel, (unsigned long) top.devi_name,
-		            (char*) &buf, sizeof(buf)) != sizeof(buf))
-      || (! buf[0]) ) {
-    fprintf(stderr, "Can't get CPU information from the kernel\n");
+  if (sysinfo(SI_PLATFORM, buf, BUFSIZ) < 0) {
+    fprintf(stderr, "Can't get CPU information\n");
     exit(2);
   }
   buf[BUFSIZ-1] = '\0';
@@ -129,52 +84,6 @@ static void do_cpu_prom(kvm_t *kernel, int verbose)
   }
 
   return;
-}
-
-void do_cpu(int verbose)
-{
-    kvm_t *kernel;
-    short cpu, cpu_type;
-
-    kernel = do_init();
-    cpu_type = kvm_read(kernel,nl[X_cpu].n_value,(char*)&cpu, sizeof(cpu));
-
-        switch(cpu) {
-          case CPU_SUN4C_60:
-            puts(verbose ? "SPARCstation 1": "SPARC/1");
-            break;
-          case CPU_SUN4C_40:
-            puts(verbose ? "SPARCstation IPC" : "SPARC/IPC");
-            break;
-          case CPU_SUN4C_65:
-            puts(verbose ? "SPARCstation 1+" : "SPARC/1+");
-            break;
-          case CPU_SUN4C_20:
-            puts(verbose ? "SPARCstation SLC" : "SPARC/SLC");
-            break;
-          case CPU_SUN4C_75:
-            puts(verbose ? "SPARCstation 2" : "SPARC/2");
-            break;
-          case CPU_SUN4C_25:
-            puts(verbose ? "SPARCstation ELC" : "SPARC/ELC");
-            break;
-          case CPU_SUN4C_50:
-            puts(verbose ? "SPARCstation IPX" : "SPARC/IPX");
-            break;
-	  case CPU_SUN4M_50:	/* 114... Sparc20 */
-	  case OBP_ARCH:	/* 128 */
-	    do_cpu_prom(kernel, verbose);
-		break;
-
-         default:
-           if(verbose)
-                printf("Unknown SUN type %d\n", cpu);
-           else
-              puts("SUN???");
-         }
-
-    do_cleanup(kernel);
-    return;
 }
 
 void do_dpy(int verbose)
@@ -263,17 +172,12 @@ void do_memory(int verbose)
    kvm_t *kernel;
    int mem, nbpp;
 
-   kernel = do_init();
    nbpp = getpagesize() / 1024;
-   kvm_read(kernel, nl[X_maxmem].n_value, (char *)&mem, sizeof(mem));
-   if(verbose)
-      printf("%d user, ", mem * nbpp);
-   kvm_read(kernel, nl[X_physmem].n_value, (char *)&mem, sizeof(mem));
+   mem = sysconf(_SC_PHYS_PAGES);
    if(verbose)
       printf("%d (%d M) total\n", mem * nbpp, (mem * nbpp + 916) / 1024);
    else
       printf("%d\n", mem * nbpp + 916);
-   do_cleanup(kernel);
    return;
 }
 
