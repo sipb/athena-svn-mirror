@@ -3,11 +3,11 @@
  * printjob.c, with demon code references taken out.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v $
- * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.6 1992-11-09 00:51:18 probe Exp $
+ * 	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.6 1992-11-09 00:51:18 probe Exp $";
+static char *rcsid_netsend_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/netsend.c,v 1.7 1998-01-20 23:16:41 ghudson Exp $";
 #endif lint
 
 #define TMPDIR "/tmp"
@@ -164,7 +164,8 @@ sendfile(type, file)
 
 	if (stat(file, &stb) < 0 || (f = open(file, O_RDONLY)) < 0)
 		return(ERROR);
-	(void) sprintf(buf, "%c%d %s\n", type, stb.st_size, file);
+	(void) sprintf(buf, "%c%lu %s\n", type, (unsigned long) stb.st_size,
+		       file);
 	amt = strlen(buf);
 	for (i = 0;  ; i++) {
 		if (write(pfd, buf, amt) != amt ||
