@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.16 1991-11-05 14:01:10 lwvanels Exp $
+ *	$Id: procs.h,v 1.17 1992-02-05 02:55:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -97,9 +97,6 @@ ERRCODE OReplayLog P((REQUEST *Request , char *file ));
 ERRCODE OShowMessageIntoFile P((REQUEST *Request , char *file ));
 ERRCODE OShowMessage P((REQUEST *Request , char **buf ));
 ERRCODE OGetMessage P((REQUEST *Request , char *file , char **buf , int code ));
-
-/* misc.c */
-ERRCODE ODump P((REQUEST *Request , int type , char *file ));
 
 /* motd.c */
 ERRCODE OGetFile P((REQUEST *Request , int type , char *file ));
