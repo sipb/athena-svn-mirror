@@ -221,14 +221,17 @@ Msg msg;
 /* Save any changes to a message.  Also calls the toc routine to update the
    scanline for this msg.  Returns True if saved, false otherwise. */
 
-MsgSaveChanges(msg)
+MsgSaveChanges(msg, dobuttons)
 Msg msg;
+int dobuttons;
 {
     int i;
     if (msg->source) {
 	if (XawAsciiSave(msg->source)) {
-	    for (i=0; i < (int) msg->num_scrns; i++)
-		EnableProperButtons(msg->scrn[i]);
+	    for (i=0; i < (int) msg->num_scrns; i++) {
+		if (dobuttons)
+		    EnableProperButtons(msg->scrn[i]);
+	    }
 	    if (!msg->temporary)
 		TocMsgChanged(msg->toc, msg);
 	    return True;
@@ -669,7 +672,7 @@ Msg msg;
     int     p, c, l, inheader, sendwidth, sendbreakwidth;
     char   *ptr, *ptr2, **argv, str[100];
     static sendcount = -1;
-    (void) MsgSaveChanges(msg);
+    (void) MsgSaveChanges(msg, 0);
     from = FOpenAndCheck(MsgFileName(msg), "r");
     sendcount = (sendcount + 1) % 10;
     (void) sprintf(str, "%s%d", xmhDraftFile, sendcount);
@@ -731,10 +734,9 @@ Msg msg;
     }
     (void) myfclose(from);
     (void) myfclose(to);
-    argv = MakeArgv(3);
+    argv = MakeArgv(2);
     argv[0] = "send";
-    argv[1] = "-push";
-    argv[2] = str;
+    argv[1] = str;
     DoCommand(argv, (char *) NULL, (char *) NULL);
     XtFree((char *) argv);
 }
