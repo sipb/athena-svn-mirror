@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.83 1997-10-03 17:45:01 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.84 1997-12-10 20:11:35 cfields Exp $
  */
 
 #include <stdio.h>
@@ -34,11 +34,7 @@
 #include <sys/statfs.h>
 #endif
 #include <errno.h>
-#ifndef ultrix
 #include <syslog.h>
-#else
-#include <nsyslog.h>
-#endif
 
 #include <krb.h>
 #include <hesiod.h>
@@ -49,17 +45,6 @@
 
 #ifdef XDM
 #include "dm.h"
-#endif
-
-#ifdef _IBMR2
-#include <userpw.h>
-#include <usersec.h>
-#include <sys/id.h>
-#endif
-
-#ifdef ultrix
-#include <sys/mount.h>
-#include <sys/fs_types.h>
 #endif
 
 #include "environment.h"
@@ -126,15 +111,10 @@ pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
 char *get_tickets(), *attachhomedir(), *strsave(), *add_to_group();
-#ifndef POSIX
-char *malloc();
-#endif
 int abort_verify();
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
-#ifdef POSIX
 extern sigset_t sig_zero;
-#endif
 
 int homedir_status = HD_LOCAL;
 int added_to_passwd = FALSE;
@@ -186,7 +166,7 @@ char *display;
     char encrypt[PASSWORD_LEN+1];
     char **environment, **glist;
     char fixed_tty[16], *p;
-#if defined(_AIX) && defined(_IBMR2) || defined(sgi)
+#ifdef sgi
     char *newargv[4];
 #endif
     int i;
@@ -243,16 +223,6 @@ char *display;
 	    return("Unable to find account information (incorrect hesiod name found).");
 	if (getpwuid(pwd->pw_uid))
 	    return("This account conflicts with a locally defined account... aborting.");
-
-#ifdef MOIRA_LIES_ABOUT_YOUR_SHELL /* it doesn't anymore */
-	/* (formerly defined(_AIX) || defined(sgi)) */
-	/*
-	 * Because the default shell is /bin/csh, and we wish to provide
-	 * users with the line-editing of tcsh, we will reset their shell.
-	 */
-	if (!strcmp(pwd->pw_shell, "/bin/csh"))
-	    pwd->pw_shell = "/bin/athena/tcsh";
-#endif
     }
 
     /* The terminal name on the Rios is likely to be something like pts/0; */
@@ -280,14 +250,9 @@ char *display;
 #endif
 
     /* set real uid/gid for kerberos library */
-#ifdef _IBMR2
-    setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
-    setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
-#else
 #if !defined(SOLARIS) && !defined(sgi)
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
-#endif
 #endif
     if (msg = get_tickets(user, passwd)) {
 	if (!local_ok) {
@@ -336,19 +301,8 @@ char *display;
 	cleanup(NULL);
 	return(errbuf);
     }
-#ifdef ultrix
-    /* Make sure root login is on a secure tty */
-    if (pwd->pw_uid == ROOT) {
-	struct ttyent *te;
-	if ((te = getttynam(tty)) != NULL &&
-	    !(te->ty_status & TTY_SECURE)) {
-	    sprintf(errbuf, "ROOT LOGIN refused on %s", tty);
-	    syslog(LOG_CRIT, errbuf);
-	    cleanup(NULL);
-	    return(errbuf);
-	}
-    }
-#endif
+
+    /* Secure tty code used to be here. */
 
 #if defined(SOLARIS) || defined(sgi)
     chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
@@ -375,11 +329,7 @@ char *display;
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
-#ifdef POSIX
 	      sigsuspend(&sig_zero);
-#else
-	      sigpause(0);
-#endif
 	    printf("\n");
 	    prompt_user("A summary of your waiting email is displayed in the console window.  Continue with full login session or logout now?", abort_verify);
 	}
@@ -469,9 +419,6 @@ char *display;
       return("Out of memory while trying to initialize user environment variables.");
 
     i = 0;
-#if defined(_AIX) && defined(_IBMR2) && !defined(XDM)
-    environment[i++] = "USRENVIRON:";
-#endif
     sprintf(errbuf, "HOME=%s", pwd->pw_dir);
     environment[i++] = strsave(errbuf);
     sprintf(errbuf, "PATH=%s", defaultpath);
@@ -518,19 +465,6 @@ char *display;
     PASSENV("XAUTHORITY");
 #endif
 
-#if defined(_AIX) && defined(_IBMR2)
-#ifndef XDM
-    environment[i++] = "SYSENVIRON:";
-#endif
-    sprintf(errbuf,"LOGIN=%s",pwd->pw_name);
-    environment[i++] = strsave(errbuf);
-    sprintf(errbuf,"LOGNAME=%s",pwd->pw_name);
-    environment[i++] = strsave(errbuf);
-    sprintf(errbuf,"NAME=%s",pwd->pw_name);
-    environment[i++] = strsave(errbuf);
-    sprintf(errbuf,"TTY=%s",tty);
-    environment[i++] = strsave(errbuf);
-#endif
     environment[i++] = NULL;
 
 #ifndef sgi /* nanny handles this on SGI */
@@ -573,19 +507,6 @@ char *display;
     }
 #endif /* XDM */
 
-#if defined(_AIX) && defined(_IBMR2)
-    /* KLUDGE (working around AIX libs.a bugs):
-     * Flush any stray references to userdb/pwdb.
-     * Flush cached group list (it is inconsistent in memory). */
-    i = chksessions();
-    while (i--) enduserdb();
-    i = chkpsessions();
-    while (i--) endpwdb();
-    endgroups();
-    
-    if (setpcred(pwd->pw_name, 0)) 
-	return(lose("Unable to set user's credentials.\n"));
-#else
     i = setgid(pwd->pw_gid);
     if (i) 
 	return(lose("Unable to set your primary GID.\n"));
@@ -606,7 +527,6 @@ char *display;
     i = setuid(pwd->pw_uid);
     if (i)
       return(lose("Unable to set your user ID.\n"));
-#endif
 #endif /* not sgi */
 
     if (chdir(pwd->pw_dir))
@@ -614,15 +534,6 @@ char *display;
 
     sprintf(errbuf, "%d", option);
 
-#if defined(_AIX) && defined(_IBMR2)
-    newargv[0] = session;
-    newargv[1] = errbuf;
-    newargv[2] = script;
-    newargv[3] = NULL;
-
-    setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,
-	    environment,(char *)newargv);
-#else
 #ifdef sgi
     /* Output username and environment information and let xdm log us in. */
     fprintf(xdmstream, "%s", pwd->pw_name);
@@ -635,30 +546,9 @@ char *display;
       return(lose("failed to setup for login"));
 
     exit(0);
-
-#ifdef NOTNANNY /* what we did before nanny handled it */
-    for (i = 0; environment[i] != NULL; i++)
-      {
-	fprintf(xdmstream, "%s", environment[i]);        
-	fputc(0, xdmstream);
-      }
-
-    /* We put out two extra environment variables, to contain errbuf
-       and script, since we don't get to call the session script with
-       those arguments directly. elmer will convert them into args
-       when executing Xsession. */
-    fprintf(xdmstream, "ARG1=%d", option);
-    fputc(0, xdmstream);
-    if (script != NULL)
-      {
-	fprintf(xdmstream, "ARG2=%s", script);
-	fputc(0, xdmstream);
-      }
-#endif
 #else
     execle(session, "sh", errbuf, script, NULL, environment);
 #endif /* sgi */
-#endif /* _AIX */
 
     return(lose("Failed to start session."));
 }
@@ -784,11 +674,7 @@ struct passwd *pwd;
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
-#ifdef POSIX
 	      sigsuspend(&sig_zero);
-#else
-	      sigpause(0);
-#endif
 	}
     }
     if (pwd && added_to_passwd) {
@@ -811,47 +697,6 @@ add_to_passwd(p, exists)
 struct passwd *p;
 int exists;
 {
-#ifdef _IBMR2
-    struct userpw pw_stuff;
-    int i;
-
-    setuserdb(S_READ|S_WRITE);
-    if (exists) {
-	/* Increment reference count on temporary users */
-	if (getuserattr(p->pw_name, "athena_temp", (void *)&i, SEC_INT) == 0) {
-	    putuserattr(p->pw_name, "athena_temp", (void *)++i, SEC_INT);
-	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
-	}
-    } else {
-	/* Create temporary user */
-	putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_NEW);
-	putuserattr(p->pw_name,S_ID,(void *)(p->pw_uid),SEC_INT);
-	putuserattr(p->pw_name,S_PWD,(void *)"!",SEC_CHAR);
-	putuserattr(p->pw_name,S_PGRP,(void *)"mit",SEC_CHAR);
-	putuserattr(p->pw_name,S_HOME,(void *)(p->pw_dir),SEC_CHAR);
-	putuserattr(p->pw_name,S_SHELL,(void *)(p->pw_shell),SEC_CHAR);
-	putuserattr(p->pw_name,S_GECOS,(void *)(p->pw_gecos),SEC_CHAR);
-	putuserattr(p->pw_name,S_LOGINCHK,(void *)1,SEC_BOOL);
-	putuserattr(p->pw_name,S_SUCHK,(void *)1,SEC_BOOL);
-	putuserattr(p->pw_name,S_RLOGINCHK,(void *)1,SEC_BOOL);
-	putuserattr(p->pw_name,S_ADMIN,(void *)0,SEC_BOOL);
-	putuserattr(p->pw_name,"athena_temp",(void *)1,SEC_INT);
-	putuserattr(p->pw_name,(char *)0,((void *) 0),SEC_COMMIT);
-    }
-    enduserdb();
-
-    if (!exists) {
-	/* Set temporary user's UNIX password */
-	setpwdb(S_READ|S_WRITE);
-	strncpy(pw_stuff.upw_name,p->pw_name,PW_NAMELEN);
-	pw_stuff.upw_passwd = p->pw_passwd;
-	pw_stuff.upw_flags = 0;
-	pw_stuff.upw_lastupdate = 0;
-	putuserpw(&pw_stuff);
-	endpwdb();
-    }
-
-#else /* !RIOS */
     int i, fd;
     FILE *etc_passwd;
 #ifdef SOLARIS
@@ -905,7 +750,6 @@ int exists;
     (void) fclose(etc_passwd);
     (void) close(fd);
     (void) unlink("/etc/ptmp");
-#endif						/* RIOS */
 
     /* This tells the display manager to cleanup the password file for
      * us after we exit. For SGI, we tell nanny about it later.
@@ -922,59 +766,6 @@ int exists;
 remove_from_passwd(p)
 struct passwd *p;
 {
-#ifdef _IBMR2
-    static char *empty = "\0";
-    char *grp, *usr;
-    int i;
-    
-    setuserdb(S_READ|S_WRITE);
-
-    /* Decrement reference count on user's temporary groups */
-    if (getuserattr(p->pw_name, S_GROUPS, (void *)&grp, SEC_LIST) == 0) {
-	while (*grp) {
-	    if (getgroupattr(grp, "athena_temp", (void *)&i, SEC_INT) == 0) {
-		if (--i > 0) {
-		    putgroupattr(grp, "athena_temp", (void *)i, SEC_INT);
-		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
-		} else {
-		    putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
-		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
-		    rmufile(grp, 0, GROUP_TABLE);
-		}
-	    }
-	    while(*grp) grp++;
-	    grp++;
-	}
-    }
-
-    /* Decrement reference count on temporary users */
-    if (getuserattr(p->pw_name, "athena_temp", (void *)&i, SEC_INT) == 0) {
-	if (--i > 0) {
-	    putuserattr(p->pw_name, "athena_temp", (void *)i, SEC_INT);
-	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
-	} else {
-	    putuserattr(p->pw_name, S_GROUPS, (void *)empty, SEC_LIST);
-	    putuserattr(p->pw_name, (char *)0, (void *)0, SEC_COMMIT);
-	    rmufile(p->pw_name, 1, USER_TABLE);
-	}
-    }
-
-    /* Remove any empty temporary groups */
-    grp = nextgroup(S_LOCAL, 0);
-    while (grp) {
-	if (getgroupattr(grp, "athena_temp", (void *)&i, SEC_INT) == 0) {
-	    if ((getgroupattr(grp, S_USERS, (void *)&usr, SEC_LIST) == -1) ||
-		*usr == 0)
-	    {
-		rmufile(grp, 0, GROUP_TABLE);
-	    }
-	}
-	grp = nextgroup(0, 0);
-    }
-	    
-    enduserdb();
-    return 0;
-#else
     int fd, len, i;
     char buf[512];
     FILE *old, *new;
@@ -1008,7 +799,6 @@ struct passwd *p;
     (void) fclose(new);
     (void) rename("/etc/ptmp", "/etc/passwd");
     return(0);
-#endif
 }
 #ifdef SOLARIS
 remove_from_shadow(p)
@@ -1102,11 +892,7 @@ struct passwd *pwd;
 	break;
     }
     while (attach_state == -1) {
-#ifdef POSIX
         sigsuspend(&sig_zero);
-#else
-	sigpause(0);
-#endif
     }
 
     if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
@@ -1132,11 +918,7 @@ struct passwd *pwd;
 	    break;
 	}
 	while (attach_state == -1) {
-#ifdef POSIX
 	    sigsuspend(&sig_zero);
-#else
-	    sigpause(0);
-#endif
 	}
     }
 
@@ -1191,11 +973,7 @@ struct passwd *pwd;
 	    break;
 	}
 	while (attachhelp_state == -1)
-#ifdef POSIX
 	  sigsuspend(&sig_zero);
-#else
-	  sigpause(0);
-#endif
 
 	if (chmod(buf, TEMP_DIR_PERM))
 	  return("Could not change protections on temporary directory.");
@@ -1219,7 +997,6 @@ struct passwd *pwd;
  * if the pre-requisite authentication has not yet been performed.
  *
  * Under AIX, we use stat and check the FS_REMOTE flag.
- * Under Ultrix, we use statfs to determine the filesystem type.
  * Under BSD, we check the device [0,1=AFS; 255,0=NFS].
  *
  * NOTE: This routine must be CHANGED whenever a new architecture
@@ -1229,30 +1006,6 @@ struct passwd *pwd;
 IsRemoteDir(dir)
 char *dir;
 {
-#ifdef _AIX
-#define REMOTEDONE
-    struct stat stbuf;
-
-    if (statx(dir, &stbuf, 0, STX_NORMAL))
-	return(TRUE);
-    return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
-#endif
-
-#ifdef ultrix
-#define REMOTEDONE
-    struct fs_data sbuf;
-
-    if (statfs(dir, &sbuf) < 0)
-	return(TRUE);
-
-    switch(sbuf.fd_req.fstype) {
-    case GT_ULTRIX:
-    case GT_CDFS:
-	return(FALSE);
-    }
-    return(TRUE);
-#endif
-    
 #if (defined(vax) || defined(ibm032) || defined(sun) || defined(sgi)) && !defined(REMOTEDONE)
 #define REMOTEDONE
 #if defined(vax) || defined(ibm032)
@@ -1291,11 +1044,7 @@ int homedirOK(dir)
 char *dir;
 {
     DIR *dp;
-#ifdef POSIX
     struct dirent *temp;
-#else
-    struct direct *temp;
-#endif
     int count;
 
     if ((dp = opendir(dir)) == NULL)
@@ -1318,30 +1067,6 @@ char *s;
     return(ret);
 }
 
-
-/* replacement for library ttyslot routine which takes tty as argument
- * rather than finding controlling tty (which is often undefined in xlogin).
- */
-#ifdef ultrix
-int myttyslot(tty)
-char *tty;
-{
-    int s = 0;
-    struct ttyent *ty;
-
-    setttyent();
-    while ((ty = getttyent()) != NULL) {
-	s++;
-	if (strcmp(ty->ty_name, tty) == 0) {
-	    endttyent();
-	    return(s);
-	}
-    }
-    endttyent();
-    return(0);
-}
-#endif
-
 add_utmp(user, tty, display)
 char *user;
 char *tty;
@@ -1356,9 +1081,6 @@ char *display;
     struct utmpx *utx_tmp;
 #endif /* SYSV */
     int f;
-#ifdef ultrix
-    int slot = myttyslot(tty);
-#endif /* ultrix */
 
 #ifdef SYSV
     memset(&utx_entry, 0, sizeof(utx_entry));
@@ -1410,22 +1132,13 @@ char *display;
 
     time(&(ut_entry.ut_time));
 
-#if defined(_AIX)
-    ut_entry.ut_pid = getppid();
-    ut_entry.ut_type = USER_PROCESS;
-#endif /* _AIX */
-
     if ((f = open(UTMP, O_RDWR )) >= 0) {
-#ifdef ultrix
-	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
-#else						/* _AIX */
 	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
 	    if (ut_tmp.ut_pid == ut_entry.ut_pid) {
 		strncpy(ut_entry.ut_id, ut_tmp.ut_id, sizeof(ut_tmp.ut_id));
 		lseek(f, -(long) sizeof(ut_tmp), 1);
 		break;
 	    }
-#endif
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
@@ -1435,133 +1148,6 @@ char *display;
     }
 #endif /* SYSV */
 }
-
-#ifdef _IBMR2
-#define GRP_LEN 8
-#define S_A_TEMP "athena_temp"
-char *add_to_group(user, grplist)
-    char *user, *grplist;
-{
-    char *cp;
-    char gname[GRP_LEN+1];
-    int ngroups, i, bad;
-    gid_t gid, gids[MAX_GROUPS];
-    int admin_flag;
-    int toomany;
-    char *gmem, *gmem_new;
-
-    setuserdb(S_READ|S_WRITE);
-    
-    /* Get user's local groups */
-    ngroups = 0;
-    toomany = 0;
-    getuserattr(user, S_GROUPS, (void *)&cp, SEC_LIST);
-    while (*cp) {
-	if (ngroups < MAX_GROUPS)
-	    grouptoID(cp, &gids[ngroups++]);
-	else
-	    toomany++;
-	while (*cp) cp++;
-	cp++;
-    }
-
-    cp = grplist;
-    while(*cp) {
-	/* Get group name */
-	i = 0; bad=0;
-	while (i < GRP_LEN && *cp != ':' && isalnum(*cp))
-	    gname[i++] = *cp++;
-	if (*cp != ':') {
-	    gname[0] = 'G';
-	    bad=1;
-	    while (*cp != ':') cp++;
-	} else
-	    gname[i] = 0;
-	
-	/* Get gid (fix gname, if necessary) */
-	cp++;		/* skip : */
-	gid = 0;
-	while (isdigit(*cp)) {
-	    if (bad)
-		gname[bad++] = *cp;
-	    gid = 10*gid + *cp++ - '0';
-	}
-	if (bad) gname[bad]=0;
-
-	if (*cp) cp++;	/* skip : */
-
-	/* We now have gname/gid; validate it (security); add user */
-	if (getgroupattr(gname, S_ADMIN, (void *)&admin_flag, SEC_BOOL)) {
-	    /* Security check */
-	    if (IDtogroup(gid))
-		continue;
-
-	    /* Do we have space */
-	    if (ngroups >= MAX_GROUPS) {
-		toomany++;
-		continue;
-	    }
-
-	    /* Create group */
-	    putgroupattr(gname, (char *)0, (void *)0, SEC_NEW);
-	    putgroupattr(gname, S_ID, (void *)gid, SEC_INT);
-	    putgroupattr(gname, S_ADMIN, (void *)0, SEC_BOOL);
-	    putgroupattr(gname, S_A_TEMP, (void *)1, SEC_INT);
-
-	    /* Add user to group */
-	    gmem_new = (char *)malloc(strlen(user)+2);
-	    strcpy(gmem_new, user);
-	    gmem_new[strlen(user)+1] = 0;
-	} else {
-	    /* Security check */
-	    if (admin_flag)
-		continue;
-
-	    /* Increment reference count */
-	    if (getgroupattr(gname, S_A_TEMP, (void *)&i, SEC_INT) == 0)
-		putgroupattr(gname, S_A_TEMP, (void *)++i, SEC_INT);
-
-	    /* Check to see if we are already in this group */
-	    for (i=0; i<ngroups; i++)
-		if (gid == gids[i])
-		    break;
-	    if (i < ngroups) {
-		putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
-		continue;
-	    }
-	    if  (ngroups >= MAX_GROUPS) {
-		putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
-		toomany++;
-		continue;
-	    }
-
-	    /* Add user to group */
-	    getgroupattr(gname, S_USERS, (void *)&gmem, SEC_LIST);
-	    i = 0;
-	    while (gmem[i]) {
-		while (gmem[i]) i++;
-		i++;
-	    }
-	    gmem_new = (char *)malloc(i + strlen(user) + 2);
-	    strcpy(gmem_new, user);
-	    memcpy(gmem_new + strlen(user)+1, gmem, i+1);
-	}
-	/* Commit membership changes */
-	putgroupattr(gname, S_USERS, (void *)gmem_new, SEC_LIST);
-	putgroupattr(gname, (char *)0, (void *)0, SEC_COMMIT);
-	free(gmem_new);
-	gids[ngroups++] = gid;
-    }
-
-    enduserdb();
-
-/*  if (toomany)
-	fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n"); */
-
-    return 0;
-}
-
-#else /* _IBMR2 */
 
 #define MAXGNAMELENGTH	32
 
@@ -1724,7 +1310,6 @@ char *glist;
     (void) fclose(etc_group);
     return("Failed to update your access control groups");
 }
-#endif /* _IBMR2 */
 
 /* Fork, storing the pid in a variable var and returning the pid.  Make sure
  * that the pid is stored before any SIGCHLD can be delivered. */
