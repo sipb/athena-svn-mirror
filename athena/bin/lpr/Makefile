@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
-#	$Author: probe $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.7 1989-11-16 06:29:08 probe Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.8 1990-02-09 14:52:45 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -171,4 +171,4 @@ print:
 	@pr *.h *.c
 
 depend:
-	mkdep ${CFLAGS} ${SRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}

@@ -29,5 +29,5 @@ clean:
 	rm -f *.o librpcsvc.a
 
 depend:
-	mkdep ${CFLAGS} ${SRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 
