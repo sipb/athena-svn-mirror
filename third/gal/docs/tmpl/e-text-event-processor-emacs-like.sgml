@@ -1,0 +1,37 @@
+<!-- ##### SECTION Title ##### -->
+ETextEventProcessorEmacsLike
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TEXT_EVENT_PROCESSOR_EMACS_LIKE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT ETextEventProcessorEmacsLike ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_text_event_processor_emacs_like_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

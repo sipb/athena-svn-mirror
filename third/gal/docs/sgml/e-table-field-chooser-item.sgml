@@ -1,0 +1,125 @@
+<refentry id="ETableFieldChooserItem" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETableFieldChooserItem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETableFieldChooserItem</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TABLE-FIELD-CHOOSER-ITEM-TYPE-CAPS">E_TABLE_FIELD_CHOOSER_ITEM_TYPE</link>
+typedef     <link linkend="ETableFieldChooserItem">ETableFieldChooserItem</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----ETableFieldChooserItem
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="ETableFieldChooserItem--dnd-code">dnd_code</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
+  &quot;<link linkend="ETableFieldChooserItem--full-header">full_header</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Write
+  &quot;<link linkend="ETableFieldChooserItem--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="ETableFieldChooserItem--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TABLE-FIELD-CHOOSER-ITEM-TYPE-CAPS">E_TABLE_FIELD_CHOOSER_ITEM_TYPE</title>
+<programlisting>#define E_TABLE_FIELD_CHOOSER_ITEM_TYPE        (e_table_field_chooser_item_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableFieldChooserItem">ETableFieldChooserItem</title>
+<programlisting>typedef struct {
+	GnomeCanvasItem  parent;
+	ETableHeader    *full_header;
+
+	double           height, width;
+
+	GdkFont         *font;
+
+	/*
+	 * Ids
+	 */
+	int structure_change_id, dimension_change_id;
+
+	gchar           *dnd_code;
+
+	/*
+	 * For dragging columns
+	 */
+	guint            maybe_drag:1;
+	int              click_x, click_y;
+	int              drag_col;
+	guint            drag_data_get_id;
+        guint            drag_end_id;
+} ETableFieldChooserItem;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="ETableFieldChooserItem--dnd-code">&quot;<literal>dnd_code</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableFieldChooserItem--full-header">&quot;<literal>full_header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableFieldChooserItem--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableFieldChooserItem--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

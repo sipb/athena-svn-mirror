@@ -1,0 +1,168 @@
+<refentry id="gal-e-text-event-processor-types" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>e-text-event-processor-types</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-text-event-processor-types</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+typedef     <link linkend="ETextEventProcessorCommand">ETextEventProcessorCommand</link>;
+typedef     <link linkend="ETextEventProcessorEventButton">ETextEventProcessorEventButton</link>;
+typedef     <link linkend="ETextEventProcessorEventKey">ETextEventProcessorEventKey</link>;
+typedef     <link linkend="ETextEventProcessorEventMotion">ETextEventProcessorEventMotion</link>;
+enum        <link linkend="ETextEventProcessorCommandPosition">ETextEventProcessorCommandPosition</link>;
+enum        <link linkend="ETextEventProcessorCommandAction">ETextEventProcessorCommandAction</link>;
+union       <link linkend="ETextEventProcessorEvent">ETextEventProcessorEvent</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ETextEventProcessorCommand">ETextEventProcessorCommand</title>
+<programlisting>typedef struct {
+	ETextEventProcessorCommandPosition position;
+	ETextEventProcessorCommandAction action;
+	int value;
+	char *string;
+	guint32 time;
+} ETextEventProcessorCommand;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorEventButton">ETextEventProcessorEventButton</title>
+<programlisting>typedef struct {
+	GdkEventType type;
+	guint32 time;
+	guint state;
+	guint button;
+	gint position;
+} ETextEventProcessorEventButton;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorEventKey">ETextEventProcessorEventKey</title>
+<programlisting>typedef struct {
+	GdkEventType type;
+	guint32 time;
+	guint state;
+	guint keyval;
+	gint length;
+	gchar *string;
+} ETextEventProcessorEventKey;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorEventMotion">ETextEventProcessorEventMotion</title>
+<programlisting>typedef struct {
+	GdkEventType type;
+	guint32 time;
+	guint state;
+	gint position;
+} ETextEventProcessorEventMotion;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorCommandPosition">enum ETextEventProcessorCommandPosition</title>
+<programlisting>typedef enum {
+	E_TEP_VALUE,
+	E_TEP_SELECTION,
+
+	E_TEP_START_OF_BUFFER,
+	E_TEP_END_OF_BUFFER,
+
+	E_TEP_START_OF_LINE,
+	E_TEP_END_OF_LINE,
+
+	E_TEP_FORWARD_CHARACTER,
+	E_TEP_BACKWARD_CHARACTER,
+
+	E_TEP_FORWARD_WORD,
+	E_TEP_BACKWARD_WORD,
+
+	E_TEP_FORWARD_LINE,
+	E_TEP_BACKWARD_LINE,
+
+	E_TEP_FORWARD_PARAGRAPH,
+	E_TEP_BACKWARD_PARAGRAPH,
+
+	E_TEP_FORWARD_PAGE,
+	E_TEP_BACKWARD_PAGE,
+
+	E_TEP_SELECT_WORD,
+	E_TEP_SELECT_ALL
+
+} ETextEventProcessorCommandPosition;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorCommandAction">enum ETextEventProcessorCommandAction</title>
+<programlisting>typedef enum {
+	E_TEP_MOVE,
+	E_TEP_SELECT,
+	E_TEP_DELETE,
+	E_TEP_INSERT,
+
+	E_TEP_COPY,
+	E_TEP_PASTE,
+	E_TEP_GET_SELECTION,
+	E_TEP_SET_SELECT_BY_WORD,
+	E_TEP_ACTIVATE,
+	
+	E_TEP_GRAB,
+	E_TEP_UNGRAB,
+
+	E_TEP_NOP
+} ETextEventProcessorCommandAction;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETextEventProcessorEvent">union ETextEventProcessorEvent</title>
+<programlisting>union ETextEventProcessorEvent {
+	GdkEventType type;
+	ETextEventProcessorEventButton button;
+	ETextEventProcessorEventKey key;
+	ETextEventProcessorEventMotion motion;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

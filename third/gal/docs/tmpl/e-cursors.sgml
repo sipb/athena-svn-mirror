@@ -1,0 +1,77 @@
+<!-- ##### SECTION Title ##### -->
+e-cursors
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM ECursorType ##### -->
+<para>
+
+</para>
+
+@E_CURSOR_FAT_CROSS: 
+@E_CURSOR_THIN_CROSS: 
+@E_CURSOR_ARROW: 
+@E_CURSOR_MOVE: 
+@E_CURSOR_ZOOM_IN: 
+@E_CURSOR_ZOOM_OUT: 
+@E_CURSOR_SIZE_X: 
+@E_CURSOR_SIZE_Y: 
+@E_CURSOR_SIZE_TL: 
+@E_CURSOR_SIZE_TR: 
+@E_CURSOR_PRESS: 
+@E_CURSOR_HAND_OPEN: 
+@E_CURSOR_HAND_CLOSED: 
+@E_CURSOR_NUM_CURSORS: 
+
+<!-- ##### FUNCTION e_cursors_init ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION e_cursors_shutdown ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO e_cursor_set ##### -->
+<para>
+
+</para>
+
+@win: 
+@c: 
+
+
+<!-- ##### MACRO e_cursor_set_widget ##### -->
+<para>
+
+</para>
+
+@w: 
+@c: 
+
+
+<!-- ##### FUNCTION e_cursor_get ##### -->
+<para>
+
+</para>
+
+@type: 
+@Returns: 
+
+

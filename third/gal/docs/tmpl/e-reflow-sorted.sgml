@@ -1,0 +1,95 @@
+<!-- ##### SECTION Title ##### -->
+EReflowSorted
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT EReflowSorted ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO E_REFLOW_SORTED_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION EReflowStringFunc ##### -->
+<para>
+
+</para>
+
+@Param1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_reflow_sorted_remove_item ##### -->
+<para>
+
+</para>
+
+@sorted: 
+@id: 
+
+
+<!-- ##### FUNCTION e_reflow_sorted_replace_item ##### -->
+<para>
+
+</para>
+
+@sorted: 
+@item: 
+
+
+<!-- ##### FUNCTION e_reflow_sorted_reorder_item ##### -->
+<para>
+
+</para>
+
+@e_reflow_sorted: 
+@id: 
+
+
+<!-- ##### FUNCTION e_reflow_sorted_get_item ##### -->
+<para>
+
+</para>
+
+@e_reflow_sorted: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_reflow_sorted_jump ##### -->
+<para>
+
+</para>
+
+@sorted: 
+@compare_func: 
+@value: 
+
+
+<!-- ##### ARG EReflowSorted:compare_func ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EReflowSorted:string_func ##### -->
+<para>
+
+</para>
+

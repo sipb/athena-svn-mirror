@@ -1,0 +1,102 @@
+<!-- ##### SECTION Title ##### -->
+ETableGroupContainer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_GROUP_CONTAINER_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableGroupContainer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_group_container_new ##### -->
+<para>
+
+</para>
+
+@parent: 
+@full_header: 
+@header: 
+@model: 
+@sort_info: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_container_construct ##### -->
+<para>
+
+</para>
+
+@parent: 
+@etgc: 
+@full_header: 
+@header: 
+@model: 
+@sort_info: 
+@n: 
+
+
+<!-- ##### ARG ETableGroupContainer:drawgrid ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:drawfocus ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:cursor_mode ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:table_selection_model ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:length_threshold ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:frozen ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:height ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableGroupContainer:minimum_width ##### -->
+<para>
+
+</para>
+

@@ -1,0 +1,327 @@
+<!-- ##### SECTION Title ##### -->
+ETableGroup
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_GROUP_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableGroup ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_group_add ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+
+
+<!-- ##### FUNCTION e_table_group_add_all ##### -->
+<para>
+
+</para>
+
+@etg: 
+
+
+<!-- ##### FUNCTION e_table_group_remove ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_count ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_increment ##### -->
+<para>
+
+</para>
+
+@etg: 
+@position: 
+@amount: 
+
+
+<!-- ##### FUNCTION e_table_group_decrement ##### -->
+<para>
+
+</para>
+
+@etg: 
+@position: 
+@amount: 
+
+
+<!-- ##### FUNCTION e_table_group_row_count ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_set_focus ##### -->
+<para>
+
+</para>
+
+@etg: 
+@direction: 
+@view_col: 
+
+
+<!-- ##### FUNCTION e_table_group_set_cursor_row ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+
+
+<!-- ##### FUNCTION e_table_group_get_cursor_row ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_focus ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_focus_column ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_header ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_ecol ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_get_printable ##### -->
+<para>
+
+</para>
+
+@etg: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_compute_location ##### -->
+<para>
+
+</para>
+
+@etg: 
+@x: 
+@y: 
+@row: 
+@col: 
+
+
+<!-- ##### FUNCTION e_table_group_new ##### -->
+<para>
+
+</para>
+
+@title: 
+@table: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_construct ##### -->
+<para>
+
+</para>
+
+@parent: 
+@etg: 
+@full_header: 
+@header: 
+@model: 
+
+
+<!-- ##### FUNCTION e_table_group_cursor_change ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+
+
+<!-- ##### FUNCTION e_table_group_double_click ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+@col: 
+@event: 
+
+
+<!-- ##### FUNCTION e_table_group_right_click ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+@col: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_click ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+@col: 
+@event: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_group_key_press ##### -->
+<para>
+
+</para>
+
+@etg: 
+@row: 
+@col: 
+@event: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION ETableGroupLeafFn ##### -->
+<para>
+
+</para>
+
+@e_table_item: 
+@closure: 
+
+
+<!-- ##### FUNCTION e_table_group_apply_to_leafs ##### -->
+<para>
+
+</para>
+
+@etg: 
+@fn: 
+@closure: 
+
+
+<!-- ##### SIGNAL ETableGroup::cursor-change ##### -->
+<para>
+
+</para>
+
+@etablegroup: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ETableGroup::double-click ##### -->
+<para>
+
+</para>
+
+@etablegroup: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL ETableGroup::right-click ##### -->
+<para>
+
+</para>
+
+@etablegroup: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL ETableGroup::click ##### -->
+<para>
+
+</para>
+
+@etablegroup: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+
+<!-- ##### SIGNAL ETableGroup::key-press ##### -->
+<para>
+
+</para>
+
+@etablegroup: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+@Returns: 
+

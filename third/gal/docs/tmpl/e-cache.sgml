@@ -1,0 +1,129 @@
+<!-- ##### SECTION Title ##### -->
+e-cache
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ECache ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION ECacheDupFunc ##### -->
+<para>
+
+</para>
+
+@data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION ECacheFreeFunc ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### FUNCTION e_cache_new ##### -->
+<para>
+
+</para>
+
+@key_hash_func: 
+@key_compare_func: 
+@key_dup_func: 
+@key_free_func: 
+@object_free_func: 
+@softlimit: 
+@hardlimit: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cache_ref ##### -->
+<para>
+
+</para>
+
+@cache: 
+
+
+<!-- ##### FUNCTION e_cache_unref ##### -->
+<para>
+
+</para>
+
+@cache: 
+
+
+<!-- ##### FUNCTION e_cache_lookup ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cache_lookup_notouch ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cache_insert ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+@data: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cache_invalidate ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+
+
+<!-- ##### FUNCTION e_cache_invalidate_all ##### -->
+<para>
+
+</para>
+
+@cache: 
+
+
+<!-- ##### FUNCTION e_cache_query_object_size ##### -->
+<para>
+
+</para>
+
+@cache: 
+@key: 
+@Returns: 
+
+

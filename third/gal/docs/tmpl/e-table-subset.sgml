@@ -1,0 +1,59 @@
+<!-- ##### SECTION Title ##### -->
+ETableSubset
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_SUBSET_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSubset ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_subset_new ##### -->
+<para>
+
+</para>
+
+@etm: 
+@n_vals: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_subset_construct ##### -->
+<para>
+
+</para>
+
+@ets: 
+@source: 
+@nvals: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_subset_get_toplevel ##### -->
+<para>
+
+</para>
+
+@table_model: 
+@Returns: 
+
+

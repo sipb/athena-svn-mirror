@@ -1,0 +1,73 @@
+<!-- ##### SECTION Title ##### -->
+GalViewCollection
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GAL_VIEW_COLLECTION_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GalViewCollection ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gal_view_collection_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gal_view_collection_set_storage_directories ##### -->
+<para>
+
+</para>
+
+@collection: 
+@system_dir: 
+@local_dir: 
+
+
+<!-- ##### FUNCTION gal_view_collection_add_factory ##### -->
+<para>
+
+</para>
+
+@collection: 
+@factory: 
+
+
+<!-- ##### FUNCTION gal_view_collection_display_view ##### -->
+<para>
+
+</para>
+
+@collection: 
+@view: 
+
+
+<!-- ##### SIGNAL GalViewCollection::display-view ##### -->
+<para>
+
+</para>
+
+@galviewcollection: the object which received the signal.
+@arg1: 
+

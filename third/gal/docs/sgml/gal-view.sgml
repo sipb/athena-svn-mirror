@@ -1,0 +1,147 @@
+<refentry id="GalView" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>GalView</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GalView</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="GAL-VIEW-TYPE-CAPS">GAL_VIEW_TYPE</link>
+typedef     <link linkend="GalView">GalView</link>;
+void        <link linkend="gal-view-edit">gal_view_edit</link>                   (<link linkend="GalView">GalView</link> *view);
+void        <link linkend="gal-view-load-from-node">gal_view_load_from_node</link>         (<link linkend="GalView">GalView</link> *view,
+                                             <link linkend="xmlNode">xmlNode</link> *node);
+void        <link linkend="gal-view-save-to-node">gal_view_save_to_node</link>           (<link linkend="GalView">GalView</link> *view,
+                                             <link linkend="xmlNode">xmlNode</link> *parent);
+const char* <link linkend="gal-view-get-title">gal_view_get_title</link>              (<link linkend="GalView">GalView</link> *view);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----GalView
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GAL-VIEW-TYPE-CAPS">GAL_VIEW_TYPE</title>
+<programlisting>#define GAL_VIEW_TYPE        (gal_view_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GalView">GalView</title>
+<programlisting>typedef struct {
+	GtkObject base;
+} GalView;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gal-view-edit">gal_view_edit ()</title>
+<programlisting>void        gal_view_edit                   (<link linkend="GalView">GalView</link> *view);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
+<entry> The view to edit
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gal-view-load-from-node">gal_view_load_from_node ()</title>
+<programlisting>void        gal_view_load_from_node         (<link linkend="GalView">GalView</link> *view,
+                                             <link linkend="xmlNode">xmlNode</link> *node);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
+<entry> The view to load to
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry> The xml data to load
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gal-view-save-to-node">gal_view_save_to_node ()</title>
+<programlisting>void        gal_view_save_to_node           (<link linkend="GalView">GalView</link> *view,
+                                             <link linkend="xmlNode">xmlNode</link> *parent);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
+<entry> The view to save
+</entry></row>
+<row><entry align="right"><parameter>parent</parameter>&nbsp;:</entry>
+<entry> Save the data as a child of this node
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gal-view-get-title">gal_view_get_title ()</title>
+<programlisting>const char* gal_view_get_title              (<link linkend="GalView">GalView</link> *view);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>view</parameter>&nbsp;:</entry>
+<entry> The view to query.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The title of the view.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

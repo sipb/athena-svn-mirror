@@ -1,0 +1,649 @@
+# gal Slovak translation
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2001.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gal 0.9.99\n"
+"POT-Creation-Date: 2001-10-31 19:39-0500\n"
+"PO-Revision-Date: 2001-07-17 15:10CET\n"
+"Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
+"Language-Team: Slovak <sk-i18n@linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.3\n"
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%I:%M %p"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "Dnes %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:78
+msgid "Late Yesterday %l:%M %p"
+msgstr "Vèera veèer %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:81
+msgid "Yesterday %l:%M %p"
+msgstr "Vèera %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:104
+msgid "%b %d %l:%M %p"
+msgstr "%b %d %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:106
+msgid "%b %d %Y"
+msgstr "%b %d %Y"
+
+#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+msgid "(Ascending)"
+msgstr "(Vzostupne)"
+
+#: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
+msgid "(Descending)"
+msgstr "(Zostupne)"
+
+#: gal/e-table/e-table-config.c:288
+msgid "Not sorted"
+msgstr "Neutriedené"
+
+#: gal/e-table/e-table-config.c:329
+msgid "No grouping"
+msgstr "Bez zoskupovania"
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _Odstráni»"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "Polia k _dispozícii:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "Vzostupne"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "Vyèisti» v¹etko"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "Zostupne"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6 gal/menus/gal-define-views.glade.h:3
+msgid "Description"
+msgstr "Popis"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "Zoskupenie"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "Zoskupi» podµa"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "Presunú» _ni¾¹ie"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "Presunú» _vy¹¹ie"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "_Zobrazi» tieto polia v poradí:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show Fields"
+msgstr "Zobrazi» polia"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Show field in View"
+msgstr "Zobrazi» pole v pohµade"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort"
+msgstr "Triedenie"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Sort Items By"
+msgstr "Utriedi» podµa"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:16
+msgid "Then By"
+msgstr "Potom podµa"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Add ->"
+msgstr "_Prida» ->"
+
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Group By..."
+msgstr "_Zoskupi» podµa..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Sort..."
+msgstr "_Triedi»..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "Výber poµa"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"Ståpec do tabuµky pridáte »ahaním\n"
+"na miesto, kde ho chcete"
+
+#: gal/e-table/e-table-field-chooser-dialog.c:127
+msgid "Add a column..."
+msgstr "Prida» ståpec..."
+
+#: gal/e-table/e-table-group.glade.h:1
+msgid "<< Remove"
+msgstr "<< Odstráni»"
+
+#: gal/e-table/e-table-group.glade.h:2
+msgid "Add >>"
+msgstr "Prida» >>"
+
+#: gal/e-table/e-table-group.glade.h:3
+msgid "Available fields"
+msgstr "Polia k dispozícii"
+
+#: gal/e-table/e-table-group.glade.h:4
+msgid "Show in this order"
+msgstr "Zobrazi» v tomto poradí"
+
+#: gal/e-table/e-table-group-container.c:349
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d polo¾ka)"
+
+#: gal/e-table/e-table-group-container.c:350
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d polo¾iek)"
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d polo¾ka)"
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d polo¾iek)"
+
+#: gal/e-table/e-table-header-item.c:1294
+msgid "Configuring view: FIXME"
+msgstr "Nastavujem pohµad:"
+
+#: gal/e-table/e-table-header-item.c:1309
+msgid "Sort Ascending"
+msgstr "Utriedi» vzostupne"
+
+#: gal/e-table/e-table-header-item.c:1310
+msgid "Sort Descending"
+msgstr "Utriedi» zostupne"
+
+#: gal/e-table/e-table-header-item.c:1311
+msgid "Unsort"
+msgstr "Netriedené"
+
+#: gal/e-table/e-table-header-item.c:1313
+msgid "Group By This Field"
+msgstr "Zoskupi» podµa tohto poµa"
+
+#: gal/e-table/e-table-header-item.c:1314
+msgid "Group By Box"
+msgstr "Zoskupi» podµa boxu"
+
+#: gal/e-table/e-table-header-item.c:1316
+msgid "Remove This Column"
+msgstr "Odstráni tento ståpec"
+
+#: gal/e-table/e-table-header-item.c:1317
+msgid "Add a Column..."
+msgstr "Prida» ståpec..."
+
+#: gal/e-table/e-table-header-item.c:1319
+msgid "Alignment"
+msgstr "Zarovnanie"
+
+#: gal/e-table/e-table-header-item.c:1320
+msgid "Best Fit"
+msgstr "Nejlep¹ie"
+
+#: gal/e-table/e-table-header-item.c:1321
+msgid "Format Columns..."
+msgstr "Formát ståpcov..."
+
+#: gal/e-table/e-table-header-item.c:1323
+msgid "Customize Current View..."
+msgstr "Prispôsobi» aktuálny pohµad..."
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "Definujte pohµady pre \"%s\""
+
+#: gal/menus/gal-define-views.glade.h:4
+msgid "Re_set to Factory Defaults..."
+msgstr "P_rednastavené hodnoty..."
+
+#: gal/menus/gal-define-views.glade.h:6
+#, no-c-format
+msgid "Views for \"%s\""
+msgstr "Pohµady pre \"%s\""
+
+#: gal/menus/gal-define-views.glade.h:7
+msgid "_Copy..."
+msgstr "_Kopírova»..."
+
+#: gal/menus/gal-define-views.glade.h:8
+msgid "_Delete..."
+msgstr "_Odstráni»..."
+
+#: gal/menus/gal-define-views.glade.h:9
+msgid "_Edit..."
+msgstr "_Upravi»..."
+
+#: gal/menus/gal-define-views.glade.h:10
+msgid "_New..."
+msgstr "_Nový..."
+
+#: gal/menus/gal-view-factory-etable.c:38
+msgid "Table"
+msgstr "Tabuµka"
+
+#: gal/menus/gal-view-new-dialog.glade.h:1
+msgid "Name of new view:"
+msgstr "Meno nového pohµadu:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Type of view:"
+msgstr "Typ pohµadu:"
+
+#: gal/shortcut-bar/e-group-bar.c:632
+#, c-format
+msgid "Group %i"
+msgstr "Skupina %i"
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:430
+msgid "custom"
+msgstr "vlastný"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:472
+msgid "Custom Color:"
+msgstr "Vlastná farba:"
+
+#: gal/widgets/color-palette.c:480
+msgid "Choose Custom Color"
+msgstr "Vyberte farbu"
+
+#: gal/widgets/color-palette.c:592
+msgid "black"
+msgstr "èierna"
+
+#: gal/widgets/color-palette.c:593
+msgid "light brown"
+msgstr "svetlohnedá"
+
+#: gal/widgets/color-palette.c:594
+msgid "brown gold"
+msgstr "zlatohnedá"
+
+#: gal/widgets/color-palette.c:595
+msgid "dark green #2"
+msgstr "tmavozelená #2"
+
+#: gal/widgets/color-palette.c:596
+msgid "navy"
+msgstr "námornícka"
+
+#: gal/widgets/color-palette.c:597 gal/widgets/color-palette.c:653
+msgid "dark blue"
+msgstr "tmavomodrá"
+
+#: gal/widgets/color-palette.c:598
+msgid "purple #2"
+msgstr "purpurová #2"
+
+#: gal/widgets/color-palette.c:599
+msgid "very dark gray"
+msgstr "veµmi tmavo¹edá"
+
+#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:658
+msgid "dark red"
+msgstr "tmavoèervená"
+
+#: gal/widgets/color-palette.c:603
+msgid "red-orange"
+msgstr "oran¾ovoèervená"
+
+#: gal/widgets/color-palette.c:604
+msgid "gold"
+msgstr "zlatá"
+
+#: gal/widgets/color-palette.c:605
+msgid "dark green"
+msgstr "tmavozelená"
+
+#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:659
+msgid "dull blue"
+msgstr "tlmená modrá"
+
+#: gal/widgets/color-palette.c:607 gal/widgets/color-palette.c:660
+msgid "blue"
+msgstr "modrá"
+
+#: gal/widgets/color-palette.c:608
+msgid "dull purple"
+msgstr "tlmená fialová"
+
+#: gal/widgets/color-palette.c:609
+msgid "dark grey"
+msgstr "tmavo¹edá"
+
+#: gal/widgets/color-palette.c:612
+msgid "red"
+msgstr "èervená"
+
+#: gal/widgets/color-palette.c:613
+msgid "orange"
+msgstr "oran¾ová"
+
+#: gal/widgets/color-palette.c:614
+msgid "lime"
+msgstr "citrónová"
+
+#: gal/widgets/color-palette.c:615
+msgid "dull green"
+msgstr "tlmená zelená"
+
+#: gal/widgets/color-palette.c:616
+msgid "dull blue #2"
+msgstr "tlmená modrá #2"
+
+#: gal/widgets/color-palette.c:617
+msgid "sky blue #2"
+msgstr "modrá oblohy #2"
+
+#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:657
+msgid "purple"
+msgstr "purpurová"
+
+#: gal/widgets/color-palette.c:619
+msgid "gray"
+msgstr "¹edá"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:654
+msgid "magenta"
+msgstr "fialová"
+
+#: gal/widgets/color-palette.c:623
+msgid "bright orange"
+msgstr "svetlooran¾ová"
+
+#: gal/widgets/color-palette.c:624 gal/widgets/color-palette.c:655
+msgid "yellow"
+msgstr "¾ltá"
+
+#: gal/widgets/color-palette.c:625
+msgid "green"
+msgstr "zelená"
+
+#: gal/widgets/color-palette.c:626 gal/widgets/color-palette.c:656
+msgid "cyan"
+msgstr "modrozelená"
+
+#: gal/widgets/color-palette.c:627
+msgid "bright blue"
+msgstr "svetlomodrá"
+
+#: gal/widgets/color-palette.c:628 gal/widgets/color-palette.c:645
+msgid "red purple"
+msgstr "fialovoèervená"
+
+#: gal/widgets/color-palette.c:629
+msgid "light grey"
+msgstr "svetlo¹edá"
+
+#: gal/widgets/color-palette.c:632 gal/widgets/color-palette.c:649
+msgid "pink"
+msgstr "ru¾ová"
+
+#: gal/widgets/color-palette.c:633
+msgid "light orange"
+msgstr "svetlooran¾ová"
+
+#: gal/widgets/color-palette.c:634 gal/widgets/color-palette.c:646
+msgid "light yellow"
+msgstr "svetlo¾ltá"
+
+#: gal/widgets/color-palette.c:635
+msgid "light green"
+msgstr "svetlozelená"
+
+#: gal/widgets/color-palette.c:636
+msgid "light cyan"
+msgstr "svetlá modrozelená"
+
+#: gal/widgets/color-palette.c:637 gal/widgets/color-palette.c:647
+msgid "light blue"
+msgstr "svetlomodrá"
+
+#: gal/widgets/color-palette.c:638 gal/widgets/color-palette.c:651
+msgid "light purple"
+msgstr "svetlofialová"
+
+#: gal/widgets/color-palette.c:639
+msgid "white"
+msgstr "biela"
+
+#: gal/widgets/color-palette.c:644
+msgid "purplish blue"
+msgstr "fialovomodrá"
+
+#: gal/widgets/color-palette.c:648
+msgid "dark purple"
+msgstr "tmavofialová"
+
+#: gal/widgets/color-palette.c:650
+msgid "sky blue"
+msgstr "modrá obloha"
+
+#: gal/widgets/e-categories.c:389
+msgid "Add to global category list"
+msgstr "Prida» do globálneho zoznamu kategórií"
+
+#: gal/widgets/e-categories.c:391
+msgid "Add all to global category list"
+msgstr "Prida» v¹etko do globálneho zoznamu kategórií"
+
+#: gal/widgets/e-categories.c:393
+msgid "Remove from global category list"
+msgstr "Odstráni» z globálneho zoznamu kategórií"
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove all from global category list"
+msgstr "Odstráni» v¹etko z globálneho zoznamu kategórií"
+
+#: gal/widgets/gal-categories.glade.h:1
+msgid "Edit Master Category List..."
+msgstr "Upravi» hlavný zoznam kategórií..."
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Item(s) belong to these _categories:"
+msgstr "Polo¾ky patriace do týchto _kategórií:"
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "_Available Categories:"
+msgstr "_Mo¾né kategórie:"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "categories"
+msgstr "kategórie"
+
+#: gal/widgets/e-categories-master-list-array.c:65
+msgid "Birthday"
+msgstr "Narodeniny"
+
+#: gal/widgets/e-categories-master-list-array.c:66
+msgid "Business"
+msgstr "Obchod"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Competition"
+msgstr "Konkurencia"
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Favorites"
+msgstr "Obµúbené"
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Gifts"
+msgstr "Dary"
+
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Goals/Objectives"
+msgstr "Ciele"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Holiday"
+msgstr "Prázdniny"
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Holiday Cards"
+msgstr "Pohµadnice"
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Hot Contacts"
+msgstr "Významné kontakty"
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Ideas"
+msgstr "My¹lienky"
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "International"
+msgstr "Medzinárodné"
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Key Customer"
+msgstr "Kµúèový zákazník"
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "Miscellaneous"
+msgstr "Rôzne"
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Personal"
+msgstr "Osobné"
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Phone Calls"
+msgstr "Telefónne volania"
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Status"
+msgstr "Stav"
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Strategies"
+msgstr "Stratégie"
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Suppliers"
+msgstr "Dodávatelia"
+
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Time & Expenses"
+msgstr "Èas & Výdaje"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "VIP"
+msgstr "VIP"
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Waiting"
+msgstr "Èakanie"
+
+#: gal/widgets/e-categories-master-list-dialog.c:171
+msgid "* Click here to add a category *"
+msgstr "* Kliknutím sem pridajte kategóriu *"
+
+#: gal/widgets/e-categories-master-list-dialog.c:172
+msgid "Category"
+msgstr "Kategória"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+msgid "Add a category"
+msgstr "Prida» kategóriu"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+msgid "Add..."
+msgstr "Prida»..."
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+msgid "Edit Global Category List"
+msgstr "Upravi» globálny zoznam kategórií"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Modify a Category"
+msgstr "Upravi» kategóriu"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+msgid "Modify..."
+msgstr "Zmeni»..."
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+msgid "Remove"
+msgstr "Odstráni»"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:7
+msgid "_Category to Add:"
+msgstr "Prida» _kategóriu:"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:8
+msgid "_Category to Modify:"
+msgstr "Upravi» _kategóriu:"
+
+#~ msgid "_Fields..."
+#~ msgstr "_Polia..."

@@ -1,0 +1,108 @@
+<refentry id="ETableFieldChooser" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ETableFieldChooser</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ETableFieldChooser</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-TABLE-FIELD-CHOOSER-TYPE-CAPS">E_TABLE_FIELD_CHOOSER_TYPE</link>
+struct      <link linkend="ETableFieldChooser-struct">ETableFieldChooser</link>;
+<link linkend="GtkWidget">GtkWidget</link>*  <link linkend="e-table-field-chooser-new">e_table_field_chooser_new</link>       (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GtkWidget">GtkWidget</link>
+         +----<link linkend="GtkContainer">GtkContainer</link>
+               +----<link linkend="GtkBox">GtkBox</link>
+                     +----<link linkend="GtkVBox">GtkVBox</link>
+                           +----ETableFieldChooser
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="ETableFieldChooser--dnd-code">dnd_code</link>&quot;             <link linkend="gchar">gchar</link>*               : Read / Write
+  &quot;<link linkend="ETableFieldChooser--full-header">full_header</link>&quot;          <link linkend="GtkObject">GtkObject</link>            : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-TABLE-FIELD-CHOOSER-TYPE-CAPS">E_TABLE_FIELD_CHOOSER_TYPE</title>
+<programlisting>#define E_TABLE_FIELD_CHOOSER_TYPE			(e_table_field_chooser_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ETableFieldChooser-struct">struct ETableFieldChooser</title>
+<programlisting>struct ETableFieldChooser;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-table-field-chooser-new">e_table_field_chooser_new ()</title>
+<programlisting><link linkend="GtkWidget">GtkWidget</link>*  e_table_field_chooser_new       (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="ETableFieldChooser--dnd-code">&quot;<literal>dnd_code</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="ETableFieldChooser--full-header">&quot;<literal>full_header</literal>&quot; (<link linkend="GtkObject">GtkObject</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

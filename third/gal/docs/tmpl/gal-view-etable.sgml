@@ -1,0 +1,48 @@
+<!-- ##### SECTION Title ##### -->
+GalViewEtable
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GAL_VIEW_ETABLE_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GalViewEtable ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gal_view_etable_new ##### -->
+<para>
+
+</para>
+
+@spec: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gal_view_etable_construct ##### -->
+<para>
+
+</para>
+
+@view: 
+@spec: 
+@Returns: 
+
+
