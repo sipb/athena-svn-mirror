@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.1.2.4 2000-02-15 16:14:57 tb Exp $
+# $Id: update_ws.sh,v 1.1.2.5 2000-02-28 21:35:00 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -169,7 +169,6 @@ for filename in $rawupdates; do
         listvers=`echo "$filename" | sed -e "$strippath"`
         rpmname=`echo "$listvers" | sed -e "$stripvers"`
         instvers=`rpm -q "$rpmname" 2>/dev/null`
-        echo "$filename $listvers $rpmname $instvers"
         if [ "$listvers" != "$instvers" ]; then
                 updates="$updates $filename"
         fi
