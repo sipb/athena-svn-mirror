@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.6 1989-01-27 03:13:24 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.7 1989-01-27 07:44:51 jik Exp $";
 #endif
 
 /*
