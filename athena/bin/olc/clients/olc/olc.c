@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.30 1991-08-23 12:54:45 raek Exp $
- *	$Author: raek $
+ *	$Id: olc.c,v 1.31 1991-09-10 13:41:21 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.30 1991-08-23 12:54:45 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.31 1991-09-10 13:41:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -85,7 +85,7 @@ COMMAND OLC_Command_Table[] = {
   "topic",	do_olc_topic,		"Find question topic",
   "version",	do_olc_version,		"Print version number",
   "who",	do_olc_who,		"Find name of connected consultant",
-  (char *) NULL, (int(*)()) NULL,	""
+  (char *) NULL, (ERRCODE (*)()) NULL,	""
   };
   
 COMMAND OLCR_Command_Table[] = {
@@ -123,7 +123,7 @@ COMMAND OLCR_Command_Table[] = {
   "topic",	do_olc_topic,		"Show/Change question topic",
   "version",	do_olc_version,		"Print version number",
   "who",	do_olc_who,		"Find status for current instance",
-  (char *) NULL, (int(*)()) NULL,	""
+  (char *) NULL, (ERRCODE(*)()) NULL,	""
   };
 
 
