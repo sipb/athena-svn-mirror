@@ -1,0 +1,75 @@
+.\" $Id: install.1,v 1.1 1996-12-16 08:28:08 ghudson Exp $
+.\"
+.\" Copyright (c) 1987 Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms are permitted
+.\" provided that the above copyright notice and this paragraph are
+.\" duplicated in all such forms and that any documentation,
+.\" advertising materials, and other materials related to such
+.\" distribution and use acknowledge that the software was developed
+.\" by the University of California, Berkeley.  The name of the
+.\" University may not be used to endorse or promote products derived
+.\" from this software without specific prior written permission.
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+.\" WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\" Copyright 1996 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH INSTALL 1 "December 4, 1996"
+.UC 5
+.SH NAME
+install \- install binaries
+.SH SYNOPSIS
+.B install
+[
+.B \-c|\-d
+] [
+.B \-m
+mode ] [
+.B \-o
+owner ] [
+.B \-g
+group ] [
+.B \-s
+] file1 file2; or file1 ... fileN directory
+.SH DESCRIPTION
+The file(s) are copied (or moved if the \fB-d\fP option is specified)
+to the target file or directory.  If the destination is a directory, then
+the \fIfile\fP is moved into \fIdirectory\fP with its original file-name.
+If the target file already exists, it is replaced.
+.PP
+The \fB-c\fP option is present for compatibility only; it has no
+effect.  However, you may not specify both \fB-c\fP and \fB-d\fP at
+the same time.
+.PP
+The mode is set to 755; the \fB-m\fP option may be used to specify
+an alternate mode.
+.PP
+The \fB-o\fP and \fB-g\fP options may be used to specify an owner
+and/or group, respectively.
+.PP
+The \fB-s\fP option causes the file to be stripped.  If the file
+cannot be stripped, it will still be installed.
+.PP
+\fIInstall\fP refuses to move a file onto itself.
+.PP
+Installing ``/dev/null'' creates an empty file.
+.SH "RETURN VALUE"
+Upon successful completion a value of 0 is returned.  Otherwise, a
+value of 1 is returned.
+.SH "SEE ALSO"
+chgrp(1), chmod(1), cp(1), mv(1), strip(1), chown(8)
