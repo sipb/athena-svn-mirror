@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.7 1990-07-13 13:30:44 ilham Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.8 1990-09-06 15:35:44 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.7 1990-07-13 13:30:44 ilham Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.8 1990-09-06 15:35:44 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -34,8 +34,11 @@ static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 extern uid_t getuid();
 extern uuid_$t uuid_$nil;
 extern char *getenv();
+#if !defined(_AUX_SOURCE)
 extern char *rindex();
+#endif
 extern char *pgetstr();
+extern long atol();
 
 char *progname;
 
@@ -704,7 +707,7 @@ krb_ktext *auth;
     qstartingpoint startadmin, startuser;
     qmaxtotransfer maxadmin, maxuser;
     quota_return qret;
-    int numadmin, numuser, flag;
+    long numadmin, numuser, flag;
     int count_user, count_admin;
     Principal admin[GQUOTA_MAX_ADMIN+1], user[GQUOTA_MAX_USER+1];
     int first_run = 1;
@@ -719,8 +722,8 @@ krb_ktext *auth;
     while (1) {
 	if (qerr=QuotaQueryAccount(h,auth,acct,qid,startadmin,maxadmin,
 				   startuser,maxuser,&qret,&numadmin,
-				   admin[count_admin], &numuser, 
-				   user[count_user], &flag))
+				   admin, &numuser, 
+				   user, &flag))
 	    return quota_error(qerr);
 
 	count_admin += numadmin;
