@@ -32,6 +32,42 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <sys/types.h>
 
+#define TEXT_BUG_CRASH "Description of the crash:\n\n\n\
+Steps to reproduce the crash:\n\
+1. \n\
+2. \n\
+3. \n\n\
+Expected Results:\n\n\n\
+How often does this happen?\n\n\n\
+Additional Information:\n"
+
+#define TEXT_BUG_WRONG "Description of Problem:\n\n\n\
+Steps to reproduce the problem:\n\
+1. \n\
+2. \n\
+3. \n\n\
+Actual Results:\n\n\n\
+Expected Results:\n\n\n\
+How often does this happen?\n\n\n\
+Additional Information:\n"
+
+
+#define TEXT_BUG_I18N "Language:\n\n\
+Wrong text location:\n\
+Current text:\n\n\n\
+Expected text:\n\n\n\
+Additional Information:\n"
+
+
+#define TEXT_BUG_DOC "Language:\n\n\
+Documentation chapter/section:\n\
+Current text:\n\n\n\
+Expected text:\n\n\n\
+Additional Information:\n"
+
+#define TEXT_BUG_REQUEST "Please describe your feature request:\n\n"
+
+
 typedef enum {
 	CRASH_DIALOG,
 	CRASH_CORE,
@@ -45,7 +81,9 @@ typedef enum {
 	SUBMIT_FILE
 } SubmitType;
 
+/* The order of this enum matters for the state update functions. */
 typedef enum {
+	STATE_INTRO,
 	STATE_GDB,
 	STATE_PRODUCT,
 	STATE_COMPONENT,
@@ -56,6 +94,17 @@ typedef enum {
 	STATE_FINISHED,
 	STATE_LAST
 } BuddyState;
+
+/* The order of this enum matters for druid_draw_state
+ * and mail_write_template. */
+typedef enum {
+	BUG_CRASH,
+	BUG_DEBUG,
+	BUG_WRONG,
+	BUG_I18N,
+	BUG_DOC,
+	BUG_REQUEST
+} BugType;
 
 typedef struct {
 	/* contact page */
@@ -81,9 +130,11 @@ extern PoptData popt_data;
 typedef struct {
 	GladeXML  *xml;
 	BuddyState state;
+	BugType bug_type;
 	gboolean	product_skipped;
 	gboolean	component_skipped;
-	gboolean	mostfreq_skipped;
+	gboolean	description_filled;
+	gboolean	show_products;
 
 	/* canvas stuff */
 	GnomeCanvasItem *title_box;
@@ -94,11 +145,10 @@ typedef struct {
 	GnomeCanvasItem *side_image;
 
 	/* throbber */
+#if 0
 	GnomeCanvasItem *throbber;
 	GdkPixbuf *throbber_pb;
-	guint            throbber_id;
-
-	gboolean already_run;
+#endif
 
 	char              *bts_file;
 
@@ -107,12 +157,14 @@ typedef struct {
 	int selected_row;
 	int progress_timeout;
 
+
+	char      *distro;
+	
 	/* gdb stuff */
 	pid_t       app_pid;
 	pid_t       gdb_pid;
 	GIOChannel *ioc;
 	int         fd;
-	gboolean    explicit_dirty;
 
 	GHashTable  *bugzillas;
 	GSList *applications;
@@ -129,12 +181,12 @@ typedef struct {
 	BugzillaProduct   *product;
 	BugzillaComponent *component;
 	char              *severity;
+	char		  *version;
 
 	GList *dlsources;
 	GList *dldests;
 
 	int last_update_check;
-	gboolean download_in_progress;
 
 	GnomeVFSAsyncHandle *vfshandle;
 	gboolean need_to_download;
@@ -145,11 +197,11 @@ typedef struct {
 	const char *gnome_version;
 
 	char *gnome_platform_version;
-	char *gnome_vendor;
+	char *gnome_distributor;
+	char *gnome_date;
 
 	guint dl_timeout;
 
-	gboolean show_products;
 } DruidData;
 
 extern DruidData druid_data;
@@ -157,20 +209,44 @@ extern DruidData druid_data;
 extern const gchar *severity[];
 extern const gchar *bug_class[][2];
 
-void druid_set_sensitive (gboolean prev, gboolean next, gboolean cancel);
+/* The following functions are used when moving through pages of the
+ * druid. The "enter" func tries to go to a page. If the page does
+ * not exist in a certain mode, it returns FALSE. Try the next one.
+ * The "done" functions are called when moving forward from a state.
+ * The functions return FALSE if the user should not be allowed to
+ * leave the state (e.g. incorrectly filled form).
+ */
+typedef gboolean (*FuncPtr) (void);
+
+gboolean enter_intro (void);
+gboolean enter_gdb (void);
+gboolean enter_product (void);
+gboolean enter_component (void);
+gboolean enter_mostfreq (void);
+gboolean enter_desc (void);
+gboolean enter_email_config (void);
+gboolean enter_email (void);
+gboolean enter_finished (void);
+
+gboolean done_intro (void);
+gboolean done_gdb (void);
+gboolean done_product (void);
+gboolean done_component (void);
+gboolean done_mostfreq (void);
+gboolean done_desc (void);
+gboolean done_email_config (void);
+gboolean done_email (void);
+gboolean done_finished (void);
+
+void buddy_error (GtkWidget *parent, const char *msg, ...);
 void druid_set_state (BuddyState state);
 
-void get_trace_from_core (const gchar *core_file);
-void get_trace_from_pair (const gchar *app, const gchar *extra);
 void stop_gdb (void);
 void start_gdb (void);
 
 void stop_progress (void);
 
 void append_packages (void);
-
-void load_config (void);
-void save_config (void);
 
 #define GET_WIDGET(name) (get_widget ((name), (G_STRLOC)))
 

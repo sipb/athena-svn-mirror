@@ -1,3 +1,307 @@
+2.8.0 ("Chicote")
+
+  * Fixes:
+	- Disable build of outdated documentation translations
+	- Fix core file MIME handling
+	- Open documentation in the right section (Shaun McCance)
+
+  * Improvements:
+	- Update documentation (Shaun McCance)
+
+  * Translations:
+	- More final updates
+
+2.7.92 ("Ojos verdes)
+
+  * Translations:
+	- Some final updates
+
+2.7.91 ("budyboop")
+
+  * Translations:
+
+	- Updated Albanian translation (Laurent Dhima)
+	- Updated Swedish translation (Christian Rose)
+	- Updated az translation (MÉtin Æmirov)
+	- Added Bosnian translation (Kenan HadÅ¾iavdiÄ)
+	- Updated Malay translation (Hasbullah Bin Pit)
+	- Updated Russian translation (Leonid Kanter)
+	- Updated Simplified Chinese translation (Funda Wang)
+	- Updated Ukrainian translation (Maxim Dziumanenko)
+	- Updated Catalan translation (Jordi Mallach)
+	- Updated Finnish translation (Sami Pesonen)
+	- Updated Basque translation (Iñaki Larrañaga)
+	- Updated Korean translation (Changwoo Ryu)
+	- Updated Albanian translation (Laurent Dhima)
+	- Updated Portuguese translation (Duarte Loreto)
+	- Updated Hindi translation (Guntupalli Karunakar)
+	- Updated Brazilian Portuguese translation (Estêvão Samuel Procópio)
+	- Updated Danish translation (Ole Laursen)
+	- Updated Bulgarian translation (Rostislav Raykov)
+	- Updated German translation (Christian Neumair)
+	- Updated Serbian translation (Danilo Å egan)
+	- Updated Hungarian translation (Andras Timar)
+	- Updated Tamil Translation (Dinesh Nadarajah)
+	- Updated Japanese translation (Takeshi AIHANA)
+
+2.7.0 ("Lully")
+  * Fixes:
+
+	- Fix some strings after the freeze (#136191, #140053)
+	- Add scroll bar to description bug text box.
+
+  * Improvements:
+
+	- Code clean up by Simon Frankau:
+		* Use buddy_error for error dialogs
+		* Removed unused variables
+		* Fix memmory leaks in gdb code
+		* state machine rearranged
+
+2.6.0 ("Almodóvar did it again!")
+
+  * Fixes:
+
+	- Fix a compiler error (bug #135625)
+
+  * Translations:
+
+	- Updated Brasilian translation (Gustavo Noronha Silva)
+        - Updated Bengali translation (Khandakar Mujahidul Islam)
+        - Added Punjabi translation (Jaswinder Singh Phulewala)
+        - Updated Welsh translation (Telsa Gwynne)
+        - Added British translation (Gareth Owen)
+	
+2.5.92 ("We are the champions")
+
+  * Fixes:
+
+	- Update to application/x-core MIME type
+
+	- Disable Back button when debugging is the first page
+
+  * Improvements:
+
+	- Update translated docs (Glynn Foster)
+
+	- 
+2.5.90 ("I love it when a plan comes together")
+
+  * Fixes;
+
+	- Fix a crash when going back from the email page. Thanks to Simon
+	  Frankau for fixing this (bug #126449)
+
+	- Fix a crash when checking versions twice (bug #134167)
+
+	- Load product list after failing guessing.
+
+  * Improvements:
+
+	- Kill the confirmation dialog
+
+	- Set the FileChooser in save mode for saving bug reports
+
+2.5.3 ("No name release")
+
+  * Fixes:
+
+	- Fix Application cooment (Vincent Untz)
+
+	- Some build fixes (Jason Leach, Alexander Winston, Vincent Berger)
+
+	- Fix typos in schemas
+
+  * Improvements:
+
+	- If GNOME version is older than 6 months suggest upgrading
+
+	- Use GtkFileChooser in entries
+
+2.5.2 ("Franco Corelli")
+
+  * Fixes:
+
+	- Preserve bug description
+
+	- Don't hardcode FileChooser size
+
+	- Don't add closed products
+
+  * Improvements:
+
+	- Report Irix, Fedora and Gentoo "distributions"
+
+	- Show only Applications we can submit bugs to bugzilla (Bug #129138)
+
+	- Use a radio button to switch between Applications/Porducts view
+
+	- Add application/product name to component page (Bug #128349)
+
+	- Ported to gtk_icon_theme_*
+
+	- Add translators to about dialog
+
+	- Port configuration to GConf
+
+2.5.1 ("Mi mamá prefiere GNOME")
+
+  * Fixes:
+
+	- Load again component list
+
+  * Improvements:
+
+	- Use GtkFileChooser in the non-glade stuff (Jan Arne Petersen)
+
+2.5.0 ("He tardado 10 minutos en atarme las botas")
+
+  * Fixes:
+
+	- Fix some mem leaks (Kjartan Maraas, bug #125396)
+
+	- Disable deprecations (Sivaiah N)
+
+	- Fix crash when trying to debug a non-found program (Vincent Untz, 
+	  bug #115147)
+	
+  * Improvements:
+
+	- Don't show up to three windows at a time (Vincent Untz, bug #110817)
+
+
+2.4.0 ("Galactic")
+
+  * Translations:
+
+	Sami Pesonen (Finnish)
+	Dafydd Harries (Welsh)
+
+2.3.5 ("La Espiral")
+
+  * Translations:
+
+	Duarte Loreto (Portuguese)
+	Sanlig Badral  (Mongolian)
+	Stanislav Visnovsky  (Slovak)
+	Kjartan Maraas  (Norwegian)
+	Metin Amiroff (Azerbaijani)
+	Evandro Fernandes Giovanini (Brazilian Portuguese)
+	Priit Laes (Estonian)
+	Guntupalli Karunakar  (Hindi)
+	Sami Pesonen  (Finnish)
+	Funda Wang (Chinese)
+	Alessio Frusciante (Italian)
+        Francisco Javier F. Serrador (Spanish)
+	Andras Timar  (Hungarian)
+
+
+2.3.4 ("Pinochio")
+
+  * Fixes:
+
+	- Workaround for a bugzilla.gnome.org bug
+ 
+	- Fix a free (bug #117806)
+
+	- Fix a crash (bug #117809)
+
+	- Unify copyright strings (Christian Neumair)
+
+  * Improvements:
+
+	- Fill version entry with unspecified if version is not know 
+	after selecting a product (bug #117934)
+ 
+
+2.3.3 ("I have given up smoking")
+
+  * Fixes:
+	
+	- Strings fixes and corrections (Thanks to Luis Villa)
+
+	- Fix for #116085 (Using Gnome Distributor instead or Gnome-Distributor
+	  made fail the report). Thanks to Andrew Sobala for tracking this.
+	
+	- Fix a crash when reporting non-bugzilla bugs without Description field
+
+	- When handling gdb input, use ISO-8859-1 as orig encoding (gdb default) and 
+	  use a fallback for converting them into UTF-8 (Fixes problems with some
+	  stacks with non-translatable characters)
+
+	- Without network connection, use latest donwloaded bugzilla files is they are
+	  newer then the system installed ones.
+
+	- Correctly set "enhacement" and "critial" severities for feature requests and 
+	  crashes respectively.
+
+	- Set package version in the "crash+we know product+we don't know component" 
+	  scenario
+
+	- Use again applications-all-users:/// now that gnome-vfs bug is fixed
+
+  * Improvements:
+
+	- Add accelerators to every option
+
+	- Final HIGfy work 
+	
+	- Remove confirmation dialog before submiting a bug
+
+	- Use different text templates for any kind of bug
+
+	- Use a combo menu for version entry (filled with bugzilla valid versions for that product)
+
+
+2.3.2 ("In the neighbourhood")
+
+  * Fixes:
+	
+	- Fix crashin in products view (bug #114712), thanks to Ximian folks
+	  for this.
+
+	- Fix for #104357, thanks to Jens Askengren 
+
+	- Two typos fixed by Abel Cheung
+
+  * Improvements:
+
+	- Read X-GNOME-Bugzilla-version from .desktop files and set version
+	  for the bug report.
+	
+	- Don't add dupplicated applications (ie: If we have the same
+	  application with differents .desktop files)
+
+	- Don't allow the user to modify Bugzilla headers in the email page
+
+2.3.1 ("My brown paper bag")
+
+  * Fixes
+:
+	- Go to debug page when invoked from crash.
+
+2.3.0 ("Sex, lies and Div-Xs")
+
+  * Fixes:
+
+	- Print the progress label only when all files/sizes are calculated
+	  (Fixes #108408)
+
+	- Use "Distributor" from gnome-version.xml instead of "Vendor"
+
+
+  * Improvements:
+	
+	- Use the bug-buddy icon in the about dialog (Fixes #104445, Alex
+	  Duggan)
+
+	- By popular request, include distribution version in the bug report.
+
+	- New first page when invoked from scratch, asking the user to select
+	  the "kind" of bug he wants to report. Set priorities and keywords
+	  based on this info.
+
+
 2.2.102 ("Oh na na na"):
 
   * Fixes: 

@@ -1,6 +1,6 @@
 Name:		bug-buddy
 Summary:	Utility to ease the reporting of bugs within the GNOME Desktop Environment.
-Version:	2.2.102
+Version:	2.8.0
 Release:	1
 License:	GPL
 Group:		Applications/System

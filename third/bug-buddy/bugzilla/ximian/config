@@ -37,6 +37,7 @@
     <opsys>HP-UX 11.11</opsys>
     <opsys>HP-UX 11.22</opsys>
     <opsys>LinuxPPC 2000</opsys>
+    <opsys>Mac OS X 10.3</opsys>
     <opsys>Mandrake 7.0</opsys>
     <opsys>Mandrake 7.1</opsys>
     <opsys>Mandrake 7.2</opsys>
@@ -44,15 +45,20 @@
     <opsys>Mandrake 8.1</opsys>
     <opsys>Mandrake 8.2</opsys>
     <opsys>Mandrake 9.0</opsys>
+    <opsys>Mandrake 9.1</opsys>
     <opsys>Red Hat 6.2</opsys>
     <opsys>Red Hat 7.0</opsys>
     <opsys>Red Hat 7.1</opsys>
     <opsys>Red Hat 7.2</opsys>
     <opsys>Red Hat 7.3</opsys>
     <opsys>Red Hat 8.0</opsys>
+    <opsys>Red Hat 9.0</opsys>
+    <opsys>RHEL 2.1</opsys>
     <opsys>Solaris 7</opsys>
     <opsys>Solaris 8</opsys>
     <opsys>Solaris [Other]</opsys>
+    <opsys>SLD 1</opsys>
+    <opsys>SLES 8</opsys>
     <opsys>SuSE 6.3</opsys>
     <opsys>SuSE 6.4</opsys>
     <opsys>SuSE 7.1</opsys>
@@ -60,7 +66,12 @@
     <opsys>SuSE 7.3</opsys>
     <opsys>SuSE 8.0</opsys>
     <opsys>SuSE 8.1</opsys>
+    <opsys>Suse 8.2</opsys>
+    <opsys>SUSE 9.0</opsys>
+    <opsys>SUSE 9.1</opsys>
     <opsys>TurboLinux 6.0</opsys>
+    <opsys>Windows XP</opsys>
+    <opsys>Windows XP (Cygwin)</opsys>
     <opsys>Yellow Dog 1.2</opsys>
     <opsys>Yellow Dog 2.0</opsys>
     <opsys>Yellow Dog 2.1</opsys>

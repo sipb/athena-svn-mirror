@@ -1,25 +1,18 @@
 <?xml version="1.0" standalone="no"?>
 <omf>
   <resource>
-    <creator>
-      baudais@kkpsi.org (Eric Baudais)
-    </creator>
-    <creator>
-      telsa@linuxchix.org (Telsa Gwynne)
-    </creator>
-    <contributor>
-      kevin@kevindumpscore.com (Kevin Conder)
-    </contributor>
+    <creator>baudais@kkpsi.org (Eric Baudais)</creator>
+    <creator>telsa@linuxchix.org (Telsa Gwynne)</creator>
+    <contributor>kevin@kevindumpscore.com (Kevin Conder)</contributor>
+    <maintainer>docs@gnome.org (GNOME Documentation Project)</maintainer>
     <title>Bug Buddy Manual</title>
-    <date>March 18, 2002</date>
-    <version identifier="2.1" date="2002-05-26" description="Updated to bug buddy 2.1.6"/>
+    <date>September 11, 2004</date>
+    <version identifier="2.8" date="2004-09-11" description="Updated to bug buddy 2.8"/>
     <subject category="GNOME|Utilities"/>
-    <description>
-     User Manual for Bug Buddy"
-    </description>
+    <description>User Manual for Bug Buddy</description>
     <type>user's guide</type>
     <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
-    <identifier url="file://usr/share/gnome/help/bug-buddy/C/bug-buddy.xml"/>
+    <identifier url="bug-buddy.xml"/>
     <language code="C"/>
     <relation seriesid="69b6f5ee-6cc5-11d6-8051-fe97a46511fa"/>
     <rights type="GNU FDL" license.version="1.1" holder="Eric Baudais"/>

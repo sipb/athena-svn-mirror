@@ -1,3 +1,721 @@
+2004-09-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS: Release 2.8.0 "Chicote"
+
+2004-09-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* docs/Makefile.am: Disable build of outdated docs.
+	* src/bug-buddy.glade:
+	* src/united-states-of-bug-buddy.c: (on_druid_help_clicked),
+	(on_druid_about_clicked): Enable help button and point help to
+	the right section. Patch by Shaun McCance (Fix bug #135573)
+
+2004-09-11  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/bug-buddy-C.omf:
+	* docs/C/bug-buddy.xml:
+	- Updates for 2.8
+
+2004-09-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in:
+	* po/POTFILES.in:
+	* src/Makefile.am:
+	* src/bug-buddy-core.desktop.in.in:
+	* src/bug-buddy.desktop.in.in: Install a new desktop file to handle
+	the application/x-core MIME type correctly (it is open with --core 
+	command line option only).
+
+2004-09-11  Shaun McCance  <shaunm@gnome.org>
+
+	* docs/C/bug-buddy-C.omf:
+	* docs/de/bug-buddy-de.omf:
+	* docs/es/bug-buddy-es.omf:
+	* docs/fr/bug-buddy-fr.omf:
+	* docs/it/bug-buddy-it.omf:
+	* docs/ja/bug-buddy-ja.omf:
+	* docs/ko/bug-buddy-ko.omf:
+	* docs/sv/bug-buddy-sv.omf:
+	* docs/zh_CN/bug-buddy-zh_CN.omf:
+	* docs/zh_HK/bug-buddy-zh_HK.omf:
+	* docs/zh_TW/bug-buddy-zh_TW.omf:
+	- Various OMF fixes
+
+2004-09-08  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post release version bumping to 2.8.0
+
+2004-09-08  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products:
+	* configure.in: Release 2.7.92 (RC1) "Ojos verdes"
+
+2004-09-03  Gora Mohanty  <gmohanty@cvs.gnome.org>
+
+	* configure.in: Added "or" to ALL_LINGUAS.
+
+2004-08-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/products:
+	* configure.in: Release 2.7.91 (Beta 2) "budyboop"
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-07-21  Ray Strode  <rstrode@redhat.com>
+	* bug-buddy/src/bug-buddy.desktop.in.in: Add MimeType line 
+	to desktop file new mime sytem.
+
+2004-06-01  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Post release version bumping to 2.7.1
+
+2004-06-01  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/config:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/config:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products: Release 2.7.0 "Lully"
+
+2004-04-15  Simon Frankau  <sgf@arbitrary.name>
+
+	* src/united-states-of-bug-buddy.c: (druid_set_sensitive):
+	Removed.
+	* src/united-states-of-bug-buddy.c: (email_is_valid): Rewritten
+	* src/united-states-of-bug-buddy.c: Various minor tidy-ups.
+
+2004-04-15  Simon Frankau  <sgf@arbitrary.name>
+
+	* src/bug-buddy.c: (main):
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (load_bugzilla_xml):
+	* src/united-states-of-bug-buddy.c: (druid_draw_state),
+	(on_druid_prev_clicked), (druid_set_state),
+	(on_druid_next_clicked), (on_druid_cancel_clicked), (enter_intro),
+	(done_intro), (enter_gdb), (done_gdb), (enter_product),
+	(done_product), (enter_component), (done_component),
+	(enter_mostfreq), (done_mostfreq), (enter_desc), (done_desc),
+	(enter_email_config), (done_email_config), (enter_email),
+	(done_email), (enter_finished), (done_finished): : Druid tab state
+	machine rearranged so that the code for each state can be localised within
+	the source.
+
+
+2004-04-15  Simon Frankau  <sgf@arbitrary.name>
+
+	* src/bug-buddy.c: (init_ui):  Warning added if a pid is given without
+        application name.
+	* src/bug-buddy.h:
+	* src/gdb-buddy.c: (start_animation), (stop_animation), (stop_gdb),
+	(get_trace_from_pair): Rewritten to tidy freeing
+        of strings (memory lead fixed), with some error messages added.
+
+2004-04-15  Simon Frankau  <sgf@arbitrary.name>
+
+	* src/bug-buddy.c: (on_gdb_go_clicked), (on_gdb_stop_clicked),
+	(on_list_button_press_event), (main):
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (async_update), (end_bugzilla_download),
+	(start_bugzilla_download), (products_list_load):
+	* src/gdb-buddy.c: (start_gdb), (get_trace_from_pair):
+	* src/united-states-of-bug-buddy.c: (druid_set_state): remove
+	druid_data.explicit_dirty, druid_data.download_in_progress.
+
+2004-04-15  Simon Frankau  <sgf@arbitrary.name>
+
+	* src/bug-buddy.c: (buddy_error), (on_gdb_save_clicked), (main):
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (load_bugzillas):
+	* src/gdb-buddy.c: (get_trace_from_core), (get_trace_from_pair):
+	* src/united-states-of-bug-buddy.c: (mail_config_page_sendmail_ok),
+	(mail_config_page_gnome_ok), (desc_page_ok), (submit_ok),
+	(on_druid_next_clicked): use new buddy_error function.
+
+2004-04-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_ui): Fix two strings. Fix bug #140053
+
+2004-04-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: add scroll bar to description bug text box if
+	needed. Fix bug #137540
+
+2004-04-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* bug-buddy.schemas.in:
+	* src/united-states-of-bug-buddy.c: (druid_set_state): Fix wrong
+	strings.
+
+2004-04-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: s/Next/Forward/ . Fix bug #136191, patch from
+	Ben Sutton  
+
+2004-04-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: Bump version to 2.7.0
+
+2004-04-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* README.STABLE_BRANCH: update branch info.
+	* configure.in: Post release version bumping to 2.6.1
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-03  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Added "is" to ALL_LINGUAS.
+	
+2004-03-22  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/Makefile.am: (Fix a compiler issue, bug #135625)
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Release 2.6.0 "Almodóvar did it again!"
+
+2004-03-20  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added 'pa' for Punjabi to ALL_LINGUAS.
+
+2004-03-17  Gareth Owen
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-16  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Release 2.5.92 "We are the champions"
+
+2004-03-16  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c:
+	* src/bug-buddy.glade: set the filechooser in save mode with the new
+	property. 
+	* src/united-states-of-bug-buddy.c: remove an unused function.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Add docs to build.
+	* docs/Makefile.am: Add docs to build.
+	* docs/*: Put back localized online help for de, fr, es, it, ja, ko, sv, 
+	zh_TW, zh_CN and zh_HK from Sun's translation team - may be a little
+	outdated, but it's a good start to update them from.
+
+2004-02-25  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (druid_set_state): Disable Back
+	button when debugging is the first page. Fix #135343
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/Makefile.am:
+	* src/bug-buddy.applications:
+	* src/bug-buddy.keys.in: Update to application/x-core MIME type from the
+	new share-mime-info
+	* src/bug-buddy.mime: removed
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+                                                                                                                              
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Release 2.5.90 "I love it when a plan comes
+	together"
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (check_old_version),
+	(on_druid_next_clicked): Only check old version once (Fix #134167). If
+	failing getting application product from application name, load the product
+	list.
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade:
+	* src/united-states-of-bug-buddy.c:
+	(on_email_file_gnome_entry_browse_clicked): Set the FileChooser in
+	save mode for saving bug reports.
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (on_druid_cancel_clicked): Remove
+	confirmation dialog after the UI-review recomendation.
+
+2004-02-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (generate_email_text): Don't free version string.
+	Fix #126449. Patch from Simon Frankau
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Release 2.5.3, "No name release"
+
+2004-02-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/Makefile.am: add -export-dynamic. Fix bug #132174. Patch from
+	Vincent Berger
+
+2004-02-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* gentool/gentool.m4: Add quotes AC_PROG_GENTOOL. Patch from Alexander
+	Winston. Fix bug #133150
+
+2004-02-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: Use GtkFileChooser in GnomeFileEntries
+
+2004-01-20  Fernando Herrera  <fherrera@onirica.com> 
+
+	* src/bug-buddy.c: (init_gnome_version_stuff): read GNOME date
+	* src/bug-buddy.h:
+	* src/united-states-of-bug-buddy.c: (check_old_version),
+	(druid_set_state): if GNOME version is older than 6 months suggest
+	upgrading.
+
+2004-01-20  Fernando Herrera  <fherrera@onirica.com> 
+
+	* Makefile.am: Remove OrigTree
+	* configure.in: requiere intltool 0.29
+
+2004-01-20  Fernando Herrera  <fherrera@onirica.com> 
+
+	* bug-buddy.schemas.in: Fix some typos. Fix bug #131876.
+
+2004-01-20  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-01-06  Vincent Untz  <vincent@vuntz.net>
+
+	* src/bug-buddy.desktop.in.in: changed the comment to be less
+	GNOME-specific (proposition by Luis Villa). Fix bug #89356.
+
+2004-01-03  Fernando Herrera  <fherrera@onirica.com>
+
+	* Makefile.am: added intltool-modules/XML/Parser/Style/OrigTree.pm
+	* src/bugzilla.c: (load_bugzilla): store and free string returned by
+	gnome_config_get_string
+
+2004-01-02  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS .
+
+2003-12-26  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Release 2.5.2, "Franco Corelli"
+
+2003-12-25  Fernando Herrera  <fherrera@onirica.com>
+
+	* Makefile.am:
+	* bug-buddy.schemas.in:
+	* configure.in:
+	* po/POTFILES.in: Schema file stuff
+	* src/bug-buddy.c: (init_ui), (delete_me):
+	* src/bug-buddy.glade:
+	* src/bug-buddy.h:
+	* src/config.c: (entry_changed_notify), (config_entry_commit),
+	(init_gconf_stuff):
+	* src/united-states-of-bug-buddy.c: (on_druid_cancel_clicked): Port
+	bug-buddy configuration to gconf
+
+2003-12-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (on_druid_about_clicked): Add
+	support for translators in the about dialog.
+
+2003-12-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (main):
+	* src/united-states-of-bug-buddy.c: (on_druid_about_clicked): Use
+	gtk_icon_theme_* to load icons.
+
+2003-12-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (load_products_xml): Don't add closed products.
+	* src/united-states-of-bug-buddy.c: (on_druid_next_clicked): Refuse
+	selected application if its bugzilla info doesn't match with any
+	bugzilla xml info (a non-existant, mistyped or closed
+	product/component in .desktop file). Fix bug #123435
+
+2003-12-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade:
+	* src/united-states-of-bug-buddy.c: (on_druid_next_clicked): add
+	context to component selection page (Application or product
+	selected). Fix bug #128349. Also remove code for unknown applications
+
+2003-12-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (on_applications_products_changed), (init_ui):
+	Switch between apps and products.
+	* src/bug-buddy.glade: Remove toggle button and no product/app
+	checkbox. Use two radio buttons for switching between apps and
+	products.
+	* src/config.c: (save_config), (load_config): Don't load/store
+	applications/products view setting. Show apps by default
+	* src/libglade-buddy.h: Change app/products function
+	* src/bugzilla.c: (generate_email_text): 
+	* src/united-states-of-bug-buddy.c: (on_druid_prev_clicked),
+	(on_druid_next_clicked): Remove email generation and warning for 
+	unknown apps.
+	This closes bug #129137
+
+2003-12-13  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (load_applets), (visit_cb): Show only applications
+	and applets with known bugzilla info (Fixes #129138)
+
+2003-12-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (on_gdb_save_clicked): remove hard coded
+	GtkFileChooser size
+
+2003-12-12  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/distribution.c: (get_irix_version): Report "Irix"
+	* src/distribution.h: add support for Fedora and Gentoo
+
+2003-12-11  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.h:
+	* src/united-states-of-bug-buddy.c: (druid_set_state),
+	(on_druid_next_clicked): preserve bug description if filled
+
+2003-12-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* bugzilla/gnome/products:
+	* configure.in: 
+	* NEWS: Update for 2.5.1 release ("Mi mamÃ¡prefiere GNOME")
+
+2003-12-04  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* src/bug-buddy.c: (on_gdb_save_clicked): Use GtkFileChooser
+	instead of GtkFileSelection.
+ 
+2003-12-04  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (load_products_xml): Fix a bug introduced when
+	fixing #125396 that prevented the component list to be loaded.
+
+2003-11-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* bugzilla/gnome/products:
+	* NEWS: Update for 2.5.0 release ("He tardado 10 minutos en 
+	atarme las botas")
+
+2003-11-06  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_gnome_version_stuff):
+	* src/bugzilla.c: (load_products_xml), (get_xml_file): Fix some 
+	leaks, patch from Kjartan Maraas (fix bug #125396)
+
+2003-11-06  Fernando Herrera  <fherrera@onirica.com>
+
+	* README.STABLE_BRANCH:
+	* configure.in: gnome 2.5 branch info
+
+2003-11-06 Sivaiah N  <snallagatla@novell.com>
+
+	* configure.in: 
+	* src/Makefile.am: disable deprecations by
+        default, added a --enable-deprecations option to enable them. 
+
+2003-10-06  Vincent Untz  <vincent@vuntz.net>
+
+	* src/bug-buddy.c: (main) don't show up to three windows at a time when
+	updating the product databases. And we don't need to tell the user the
+	update was successful (it's supposed to be successful).
+	Fix bug #110817.
+
+2003-10-06  Vincent Untz  <vincent@vuntz.net>
+
+	* src/gdb-buddy.c: (get_trace_from_pair) fix crash when debugging a
+	program not in the path and search in GNOME2_PATH instead of
+	GNOME_PATH. Should fix bug #115147.
+
+2003-09-17  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+2003-09-01  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Update for 2.4.0 Release ("Galactic")
+
+2003-08-25  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* configure.in: Updte for 2.3.5 Release ("La Espiral")
+
+2003-08-14  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" in ALL_LINGUAS.
+
+2003-08-03  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products:
+	* configure.in: Update for 2.3.4 Release ("Pinochio")
+
+2003-07-23 Fernando Herrera  <fherrera@onirica.com> 
+
+	* src/bugzilla.c: (load_products_xml): Workaround for a bugzilla 
+	create-products-xml bug, that made bug-buddy crash.
+
+2003-07-21  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (generate_email_text): Fix a str free (bug #117806)
+	* src/united-states-of-bug-buddy.c: (select_version),
+	(on_druid_next_clicked): Fix a crash (bug #117809). Fill version entry
+        with unspecified if version is not know after selecting a product
+        (bug #117934)
+
+2003-07-18  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (on_druid_about_clicked): 
+	Unify copyright strings. Patch from Christian Neumair. Fixes #101725
+
+2003-07-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in
+	* NEWS:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/config:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products: Update for 2.3.3 Release ("I've given up
+	smoking")
+
+2003-07-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_ui):
+	* src/bug-buddy.glade:
+	* src/bug-buddy.h: 
+	* src/bugzilla.h: Use a combo for version entry.
+	* src/bugzilla.c: (update_version), (update_version_menu), (generate_email_text):
+	* src/united-states-of-bug-buddy.c: (select_version),
+	(select_severity), (on_druid_next_clicked): Select version and severity.
+	* src/bugzilla.c: (load_products_xml), (load_bugzilla_xml_file). If not downloading 
+	new bugzilla files, compare dates of ~/.gnome/bug-buddy.d/* and prefix/share/bug-buddy/*
+	to use the most recent. Use again applications-all-users because gnome-vfs bug was fixed.
+
+2003-07-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/gdb-buddy.c: (handle_gdb_input): convert gdb output from ISO-8859-1 
+	(the charset gdb is using) to UTF-8 using a fallback, preventing incomplete
+	traces with non-convertible chars.
+
+2003-06-28  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_ui):
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (generate_email_text):
+	* src/united-states-of-bug-buddy.c: (mail_write_template),
+	(mail_lock_text), (druid_set_state): Use differents templates for each
+	kind of bug report. Fix also a crash when reporting non-bugzilla bugs
+	without the "Description:" field
+
+2003-06-26  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bugzilla.c: (generate_email_text): s/Gnome
+	distributor/Gnome-Distributor/ as spaces in headers break halloween
+	pasrsing at submit@bugs.gnome.org. Thanks to Andrew Sobala for
+	pointing this. (Fix #116058)
+
+2003-06-15  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-10  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: Some HIG changes. Mostly accelerators, padding,
+	and text corrections.
+	* src/united-states-of-bug-buddy.c: (submit_ok): Fix a typo, remove
+	confirmation dialog before submiting a bug.
+
+2003-06-10  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade:
+	* src/united-states-of-bug-buddy.c: (submit_ok): String changes and
+	corrections from Luis Villa (bug #114822)
+
+2003-06-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* NEWS:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products: Update for 2.3.2 Release ("In the
+	Neighbourhood")
+
+2003-06-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* po/POTFILES.in:
+	* src/bug-buddy.desktop.in:
+	* src/bug-buddy.desktop.in.in: Move bug-buddy.desktop.in to
+	bug-buddy.desktop.in.in to be parsed by configure script in order to
+	get @VERSION@ replaced. Update POTFILES.in entry.
+
+2003-06-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: bump version number.
+	* src/bug-buddy.desktop.in: Add X-GNOME-Bugzilla-version (this will
+	requiere the move to .desktop.in.in)
+	* src/bugzilla.h:
+	* src/bugzilla.c: (bugzilla_application_new), (load_applets),
+	(visit_cb), (generate_email_text): read version from .desktop file.
+	Add Bugzilla-Version field to email
+	* src/united-states-of-bug-buddy.c: (on_druid_next_clicked): Merge
+	patch from ximian to stop crashing in product view (bug #114712). Also
+	write the version number in the entry.
+
+2003-06-07  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.glade: Add a privacy warning.
+	* src/bugzilla.c: (bugzilla_application_new): Don't add duplicated 
+	applications.
+	* src/bugzilla.c: (add_products):  Fix for a NULL-dereference
+        (Fixes #104357, thanks to Jens Askengren for the patch)
+	* src/bug-buddy.c: (init_ui): 
+	* src/united-states-of-bug-buddy.c: (mail_lock_text),
+	(druid_set_state): Don't allow the user to modify Bugzilla headers in
+	the email page
+
+2003-06-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* src/united-states-of-bug-buddy.c(on_druid_next_clicked): Fixed
+	  string marked for translation.
+
+2003-05-31  Paisa Seeluangsawat  <paisa@colorado.edu>
+
+        * configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2003-05-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* src/bug-buddy.glade: Fix small typo.
+
+2003-05-19  Fernando Herrera <fherrera@onirica.com>
+
+	* NEWS:
+	* configure.in:
+	* src/bug-buddy.c: (init_ui): Go to STATE_GDB when invoked from crash.
+	2.3.1 "My brown paper bag" release!
+
+2003-05-18  Fernando Hererra <fherrera@onirica.com>
+
+	* AUTHORS:
+	* NEWS:
+	* bugzilla/gnome/mostfreq:
+	* bugzilla/gnome/products:
+	* bugzilla/ximian/config:
+	* bugzilla/ximian/mostfreq:
+	* bugzilla/ximian/products:
+	* configure.in: update for 2.3.0 release ("Sex, lies and Div-Xs")
+
+2003-05-16  Telsa Gwymme  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * configure.in: Added "cy" (Welsh) to ALL_LINGUAS
+
+2003-05-16  Fernando Herrera <fherrera@onirica.com>
+
+	* src/united-states-of-bug-buddy.c: (on_druid_next_clicked):fix some
+	warnings and a typpo.
+
+2003-05-15  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_ui), (main): 
+	* src/bug-buddy.glade:
+	* src/bug-buddy.h: New first page when invoked from scratch. Ask for
+	bug type
+	* src/bugzilla.c: (generate_email_text): Add keywords based on bug
+	type, and set priority "enhancement" when it is a a feature request.
+	* src/united-states-of-bug-buddy.c: (on_druid_about_clicked),
+	(druid_set_state), (on_druid_prev_clicked),
+	(on_druid_next_clicked): Manage new intro page. Show debug page
+	always when invoked from scratch and debug type is selected. Add
+	myself to the about dialog.
+
+2003-05-06  Fernando Herrera <fherrera@onirica.com>
+
+	* src/bug-buddy.c: (init_gnome_version_stuff):
+	* src/bug-buddy.h:
+	* src/bugzilla.c: (generate_email_text): s/vendor/distributor as done
+	in gnome-desktop (to make RMS happy)
+
+2003-05-06  Fernando Herrera <fherrera@onirica.com>
+
+	* src/bugzilla.c: (async_update): Print the progress label only when
+	all files/sizes are calculated (Fixes #108408)
+	(generate_email_text): Print Distribution name after the Subject
+	field.
+
+2003-05-04  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-04-01  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/Makefile.am:
+	* src/bug-buddy.h:
+	* src/distribution.c: (get_line_from_fd), (get_line_from_file),
+	(get_redhat_version), (get_turbolinux_version),
+	(get_debian_version), (get_irix_version),
+	(get_distro_name_from_file), (get_distro_name): Add distribution
+	detection to bug-buddy.
+	* src/distribution.h:
+	* src/bugzilla.c: (generate_email_text): Add distribution info to
+	report, and Gnome Vendor as "Gnome Vendor".
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-02-17  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS
+
+2003-02-10  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian Translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-02-07  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Removed "en_GB" from ALL_LINGUAS (completely
+	  empty translation)
+
+2003-01-25  Alex Duggan  <aldug@astrolinux.com>
+
+	* src/united-states-of-bug-buddy.c: use the bug-buddy icon in the
+	about dialog.  Fixes #104445
+
 2003-02-03  Fernando Herrera <fherrera@onirica.com>
 
 	* NEWS:

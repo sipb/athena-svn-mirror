@@ -92,6 +92,7 @@ typedef struct {
 	BugzillaBTS *bts;
 	char        *name;
 	char        *description;
+	GSList      *versions;
 	GHashTable  *components;
 } BugzillaProduct;
 
@@ -117,6 +118,7 @@ typedef struct {
 	char *bugzilla;
 	char *product;
 	char *component;
+	char *version;
 	char *email;
 	GtkTreeIter iter;
 } BugzillaApplication;

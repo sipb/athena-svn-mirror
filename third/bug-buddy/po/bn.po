@@ -1,0 +1,1139 @@
+# The Bengali translation for bug-buddy.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the bug-buddy package.
+# Khandakar Mujahidul Islam <suzan229@yahoo.com>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-03-19 23:41+0600\n"
+"Last-Translator: Khandakar Muajhidul Islam <suzan@bengalinux.org>\n"
+"Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bug-buddy.c:59
+msgid "Submit bug report"
+msgstr "প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট জমা দিন"
+
+# msgstr "বাগ রিপোর্ট জমা দেয়া হোক"
+#: src/bug-buddy.c:60
+msgid "Only send report to yourself"
+msgstr "শুধুমাত্র আপনার নিজের কাছে রিপোর্ট পাঠান"
+
+#: src/bug-buddy.c:61
+msgid "Save report to file"
+msgstr "রিপোর্টটি ফাইলে সংরক্ষণ করুন"
+
+#: src/bug-buddy.c:66
+msgid "crashed application"
+msgstr "বিধ্বস্ত (ক্র্যাশ করা) অ্যাপ্লিকেশন"
+
+# msgstr "বিধ্বস্ত(Crashed) এপ্লিকেশন"
+#: src/bug-buddy.c:67
+msgid "core file"
+msgstr "কোর (Core) ফাইল"
+
+#: src/bug-buddy.c:68
+msgid "nothing"
+msgstr "কিছুইনা"
+
+# msgstr "বিদ্যমান রিপোর্টে আরও তথ্য যোগ করুন"
+#: src/bug-buddy.c:79
+msgid "Name of contact"
+msgstr "রিপোর্ট গ্রহণকারীর নাম"
+
+#: src/bug-buddy.c:79
+msgid "NAME"
+msgstr "নাম"
+
+#: src/bug-buddy.c:80
+msgid "Email address of contact"
+msgstr "রিপোর্ট গ্রহণকারীর ই-মেইলের ঠিকানা"
+
+#: src/bug-buddy.c:80
+msgid "EMAIL"
+msgstr "ই-মেইল"
+
+#: src/bug-buddy.c:81
+msgid "Package containing the program"
+msgstr "প্রোগ্রামটি যে প্যাকেজের অন্তর্গত"
+
+#: src/bug-buddy.c:81
+msgid "PACKAGE"
+msgstr "প্যাকেজ"
+
+#: src/bug-buddy.c:82
+msgid "Version of the package"
+msgstr "প্যাকেজটির সংস্করণ"
+
+#: src/bug-buddy.c:82
+msgid "VERSION"
+msgstr "সংস্করণ"
+
+#: src/bug-buddy.c:83
+msgid "File name of crashed program"
+msgstr "বিধ্বস্ত প্রোগ্রামটির নাম"
+
+# msgstr "বিধ্বস্ত(crashed) প্রোগ্রামটির নাম"
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+msgid "FILE"
+msgstr "ফাইল"
+
+#: src/bug-buddy.c:84
+msgid "PID of crashed program"
+msgstr "বিধ্বস্ত প্রোগ্রামটির পি.আই.ডি"
+
+# msgstr "বিধ্বস্ত(crashed) প্রোগ্রামটির পি.আই.ডি."
+#: src/bug-buddy.c:84
+msgid "PID"
+msgstr "পি.আই.ডি"
+
+# msgstr "পিআইডি"
+#: src/bug-buddy.c:85
+msgid "Core file from program"
+msgstr "প্রোগ্রাম বন্ধ হয়ে যাওয়ার সময় উত্‍পন্ন কোর (Core) ফাইল"
+
+#: src/bug-buddy.c:86
+msgid "Text file to include in the report"
+msgstr "যে টেক্সট ফাইলটি রিপোর্টে অন্তর্ভুক্ত করা হবে"
+
+#: src/bug-buddy.c:122
+#, c-format
+msgid "Could not find widget named %s at %s"
+msgstr "%s এ %s নামের উইজেটটি পাওয়া যাচ্ছেনা"
+
+# msgstr "%s তে %s নামের widget টি পাওয়া যাচ্ছেনা"
+#: src/bug-buddy.c:233
+msgid ""
+"gdb has not finished getting the debugging information.\n"
+"Kill the gdb process (the stack trace will be incomplete)?"
+msgstr ""
+"জিডিবি এখনো ডিবাগিং এর সম্পূর্ণ তথ্য পায়নি। \n"
+"জিডিবি কি বন্ধ করে দেয়া হবে (stack trace অসম্পূর্ণ থেকে যাবে)?"
+
+# " gdb এখনো ডিবাগিং এর সম্পূর্ণ তথ্য পায়নি।"
+# " \n gdb কি বন্ধ করে দেয়া হবে (stack trace অসম্পূর্ণ থেকে যাবে)?"
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
+msgid "gdb has already exited"
+msgstr "জিডিবি ইতিমধ্যে প্রস্থান করেছে"
+
+# msgstr "জিডিবি ইতিমধ্যে বন্ধ হয়ে গিয়েছে"
+# msgstr "gdb ইতিমধ্যে প্রস্থান করেছে"
+#: src/bug-buddy.c:273
+msgid "Save Backtrace"
+msgstr "Backtrace সংরক্ষণ করুন"
+
+#: src/bug-buddy.c:289
+msgid "Please wait while Bug Buddy saves the stack trace..."
+msgstr "দয়া করে অপেক্ষা করুন যতক্ষণ বাগ বাডি stack trace সংরক্ষণ করে..."
+
+# msgstr "অনুগ্রহ করে অপেক্ষা করুন যতক্ষণ বাগ বাডি stack trace সংরক্ষণ করে.........."
+#: src/bug-buddy.c:293
+#, c-format
+msgid ""
+"The stack trace was not saved in %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please try again, maybe with a different file name."
+msgstr ""
+"stack trace %s এ সংরক্ষিত ছিল না:\n"
+"\n"
+"%s\n"
+"\n"
+"দয়া করে আবার চেষ্টা করুন, হয়তো অন্য কোন নামের ফাইলে।"
+
+# msgstr "_প্রডাক্‌ট দেখাও"
+#: src/bug-buddy.c:379
+msgid "_Start Mailer"
+msgstr "ই-মেইল প্রোগ্রাম চালু করুন (_চ)"
+
+#: src/bug-buddy.c:383
+msgid "_Send Report"
+msgstr "রিপোর্ট প্রেরণ করুন (_র)"
+
+# msgstr "রিপোর্ট _পাঠানো হোক"
+# msgstr "রিপোর্ট _পাঠান"
+#: src/bug-buddy.c:411
+msgid "Hide Debugging Options"
+msgstr "ডিবাগিং অপশন লুকাও"
+
+# msgstr "ত্রুটিমুক্তকরণ অপশন লুকানো হোক"
+#: src/bug-buddy.c:412
+msgid "Show Debugging Options"
+msgstr "ডিবাগিং অপশন দেখাও"
+
+# msgstr "ডিবাগিং অপশন দেখানো হোক"
+# msgstr "ত্রুটিমুক্তকরণ উপায় দেখাও"
+#: src/bug-buddy.c:525
+#, fuzzy
+msgid ""
+"$GNOME_CRASHED_APPNAME is deprecated.\n"
+"Please use the --appname command line argument instead."
+msgstr ""
+"$GNOME_CRASHED_APPNAME আর ব্যবহার করা হয় না।\n"
+"অনুগ্রহ করে কমান্ড লাইনে --appname ব্যহার করুন।"
+
+#: src/bug-buddy.c:537
+#, fuzzy
+msgid ""
+"$GNOME_CRASHED_PID is deprecated.\n"
+"Please use the --pid command line argument instead."
+msgstr ""
+"$GNOME_CRASHED_PID আর ব্যবহার করা হয় না।\n"
+"অনুগ্রহ করে কমান্ড লাইনে --pid ব্যহার করুন।"
+
+#: src/bug-buddy.c:547
+msgid ""
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
+msgstr ""
+
+# msgstr ""%s (%d)\n ছবিটি পাওয়া যাচ্ছেনা
+#: src/bug-buddy.c:687
+#, c-format
+msgid ""
+"Bug Buddy could not load its user interface file (%s).\n"
+"Please make sure Bug Buddy was installed correctly."
+msgstr ""
+"বাগ বাডি তার ইউজার ইন্টারফেস ফাইল (%s) লোড করতে পারেনি।\n"
+"অনুগ্রহ করে নিশ্চিত হোন যে বাগ বাডি সঠিকভাবে ইনস্টলকৃত ছিল।"
+
+# ####"অনুগ্রহ করে নিশ্চিত করুন যে বাগ বাডি সঠিকভাবে ইনস্টলকৃত ছিল।"
+# Altered 
+#: src/bug-buddy.c:712
+msgid ""
+"Bug Buddy could not update its bug information.\n"
+"The old one will be used."
+msgstr ""
+"বাগ বাডি তার প্রোগ্রাম ত্রুটির(Bug) তথ্য নবায়ন করতে পারেনি।\n"
+"পুরনোটি ব্যবহার করা হবে।"
+
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
+msgid "Bug Report Tool"
+msgstr "প্রোগ্রাম ত্রুটি রিপোর্ট করার টুল"
+
+# msgstr "প্রোগ্রাম ত্রুটি রিপোর্ট করার সরঞ্জাম"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "একটি প্রোগ্রাম ত্রুটির বিবরণ পাঠান"
+
+# ************এটাও*************
+#: src/bug-buddy.glade.h:1
+#, fuzzy
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"গুহ্‌নোমের প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট করার টুল বাগ বাডির পক্ষ থেকে স্বাগতম।\n"
+"এটা আপনাকে ত্রুটি রিপোর্ট প্রেরণ করার কাজে সাহায্য করবে।\n"
+"আপনি কি ধরনের সমস্যা রিপোর্ট করতে চান সেটি পচ্ছন্দ করে \"পরবর্তী\" বোতামে চাপ "
+"দিন:\n"
+
+#: src/bug-buddy.glade.h:6
+msgid "*"
+msgstr "*"
+
+#: src/bug-buddy.glade.h:7
+msgid "<span size=\"xx-large\">Bug Buddy</span>"
+msgstr "<span size=\"xx-large\">বাগ বাডি</span>"
+
+#: src/bug-buddy.glade.h:8
+msgid ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
+"\n"
+"The bug information that is stored on your system is outdated. Choosing "
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
+msgstr ""
+"<span weight=\"bold\" size=\"larger\">বাগ বাডি নবায়ন</span>\n"
+"\n"
+"আপনার সিস্টেমে প্রোগ্রাম ত্রুটির (Bug) উপর যেসব তথ্য জমা আছে সেগুলো পুরনো। \"নবায়ন\" "
+"বেছে নিলে এটাকে নবায়ন করা হবে। \"নবায়ন নয়\" বেছে নিলে প্রোগ্রাম ত্রুটি (Bug) "
+"রিপোর্টের কাজে পুরনো তথ্য ব্যবহারে বাধ্য করবে।\n"
+
+#: src/bug-buddy.glade.h:12
+msgid "Advanced"
+msgstr "অত্যন্ত অগ্রসর"
+
+# msgstr "প্রাগ্রসর"
+#: src/bug-buddy.glade.h:13
+msgid "Assbarn Phenomenon"
+msgstr ""
+
+# assbarn = ?????????
+#: src/bug-buddy.glade.h:14
+msgid "Binary file:"
+msgstr "বাইনারি ফাইল:"
+
+# msgstr "যুগ্ম ফাইল:"
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
+msgid "Bug Buddy"
+msgstr "বাগ বাডি"
+
+#: src/bug-buddy.glade.h:16
+msgid ""
+"Bug Buddy can send debugging information with your bug report.\n"
+"The correct options should have been selected for you automatically."
+msgstr ""
+"বাগ বাডি আপনার প্রোগ্রাম ত্রুটি (Bug) রিপোর্টের সাথে ডিবাগিং তথ্য পাঠাতে পারে।\n"
+"সঠিক অপশনগুলো আপনার জন্য স্বয়ংক্রিয়ভাবে বাছাইকৃত হওয়া উচিত।"
+
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"বাগ বাডি এখন বাগ ট্র্যাকিং সিস্টেমে প্রেরণ করার জন্য আপনার বিধ্বস্ত প্রোগ্রামটির তথ্য "
+"জোগাড় করছে। এটি একটি স্বয়ংক্রিয় পদ্ধতি, এবং কয়েক মিনিট সময় নিতে পারে। যখন এটা "
+"হয়ে যাবে, তথ্য দেখার জন্য আপনি 'ডিবাগিং এর  বিস্তারিত দেখাও' চাপতে পারেন অথবা "
+"পরবর্তী ধাপে যাওয়ার জন্য 'পরবর্তী' চাপতে পারেন।"
+
+# ####ত্রুটিমুক্তকরণ
+#: src/bug-buddy.glade.h:19
+msgid ""
+"Bug Buddy uses email to submit the bug reports.\n"
+"Please choose how you would like Bug Buddy to send email."
+msgstr ""
+"বাগ বাডি প্রোগ্রাম ত্রুটি রিপোর্ট প্রেরণ করার কাজে ই-মেইল ব্যবহার করে।\n"
+"বাগ বাডি কিভাবে ই-মেইল পাঠাবে অনুগ্রহ করে সেটি বেছে নিন।"
+
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "সি.সি:"
+
+#: src/bug-buddy.glade.h:22
+msgid "Core file"
+msgstr "কোর(Core) ফাইল"
+
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "একটি বিধ্বস্ত বা চলন্ত অ্যাপ্লিকেশনের ডিবাগ (শুধুমাত্র অভিজ্ঞরা) (_ড)"
+
+#: src/bug-buddy.glade.h:24
+msgid "Debug"
+msgstr "ডিবাগ"
+
+# msgstr "ত্রুটিমুক্তকরণ"
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
+msgid "Description"
+msgstr "বর্ণনা"
+
+#: src/bug-buddy.glade.h:26
+msgid "Downloading files"
+msgstr "ফাইল ডাউনলোড করা হচ্ছে"
+
+# download = ডাউনলোড?????????????????
+#: src/bug-buddy.glade.h:27
+msgid "Email:"
+msgstr "ই-মেইল:"
+
+#: src/bug-buddy.glade.h:28
+msgid "Include a text file"
+msgstr "একটি টেক্সট ফাইল সংযুক্ত করা হোক"
+
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr ""
+"শুধুমাত্র একটি ফাইলে সংরক্ষণ করুন যেন আমি নিজেই প্রোগ্রাম ত্রুটির রিপোর্টটি প্রেরণ করতে "
+"পারি (_স)"
+
+# msgstr "শুধুমাত্র একটি ফাইলে সংরক্ষণ করুন যেন আমি নিজেই প্রোগ্রাম ত্রুটির (bug) রিপোর্টটি প্রেরণ করতে "
+# "পারি (_স)"
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "নাম:"
+
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "sendmail এর পাথ:"
+
+#: src/bug-buddy.glade.h:32
+msgid "Please choose a component, version, and severity level."
+msgstr "দয়া করে একটি উপাদান, সংস্করণ, এবং কঠোরতা স্তর বেছে নিন।"
+
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+"অনুগ্রহ করে প্রোগ্রাম ত্রুটি রিপোর্টে সর্বোচ্চ সংশোধনী আনুন।\n"
+"জানানো যাচ্ছে যে এটি http://bugzilla.gnome.org এ দেখানো হবে\n"
+"এটি আপনার নাম, ই-মেইল ঠিকানা এবং সম্ভবত আপনার বিধ্বস্ত অ্যাপ্লিকেশন\n"
+"হওয়া সম্বন্ধে কিছু তথ্য সংযুক্ত করবে। আপনি যে ডকুমেন্টে কাজ করেছিলেন\n"
+"সেখানে যদি প্রতিক্রিয়াশীল কোন তথ্য থাকে, তাহলে আপনি এই প্রোগ্রাম ত্রুটি\n"
+"রিপোর্ট নাও প্রেরণ করতে পারেন।"
+
+# msgstr "অনুগ্রহ করে প্রোগ্রাম ত্রুটি রিপোর্টে সর্বোচ্চ সংশোধনী আনুন।"
+#: src/bug-buddy.glade.h:39
+msgid "Please make your bug report in English, if possible."
+msgstr "যদি সম্ভব হয়, দয়া করে আপনার প্রোগ্রাম ত্রুটি রিপোর্টটি ইংরেজিতে করুন।"
+
+#: src/bug-buddy.glade.h:40
+msgid ""
+"Please select the product or application for the bug you wish to report."
+msgstr ""
+"যে প্রোডাক্ট অথবা অ্যাপ্লিকেশনের জন্য আপনি প্রোগ্রাম ত্রুটি রিপোর্ট করতে চান দয়া করে "
+"সেটি নির্বাচন করুন।"
+
+#: src/bug-buddy.glade.h:41
+msgid ""
+"Please take a minute to see if your bug is one of the most frequently "
+"reported bugs.\n"
+"If the bug is already reported, please do not report it again."
+msgstr ""
+"অনুগ্রহ করে একটু দখুন আপনার প্রোগ্রাম ত্রুটিটি ঘনঘন রিপোর্টকৃত ত্রুটিগুলোর অন্যতম কি না।\n"
+"যদি প্রোগ্রাম ত্রুটিটি ইতিমধ্যে রিপোর্টকৃত হয়ে থাকে, তাহলে দয়া করে তা আবার রিপোর্ট "
+"করবেন না।"
+
+# #### reported = বিবৃত / রিপোর্টকৃত
+#: src/bug-buddy.glade.h:43
+msgid ""
+"Please wait while Bug Buddy updates its list\n"
+"of products for the bug tracking systems."
+msgstr ""
+"বাগ বাডি তার বাগ ট্র্যাকিং সিস্টেমের প্রোডাক্ট তালিকা\n"
+"নবায়ন করছে, অনুগ্রহ করে অপেক্ষা করুন।"
+
+# ##প্রোগ্রাম ত্রুটি
+#: src/bug-buddy.glade.h:45
+msgid "Process ID:"
+msgstr "প্রসেস আইডি:"
+
+# msgstr "প্রসেস আই.ডি."
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "এখানে সংরক্ষণ করুন:"
+
+# msgstr "যেখানে সেভ করা হবে"
+# msgstr "যেখানে সংরক্ষণ করা হবে"
+#: src/bug-buddy.glade.h:47
+msgid "Save the report to..."
+msgstr "রিপোর্টটি সংরক্ষণ করুন..."
+
+# msgstr "রিপোর্টটি সেভ করা হোক..."
+# msgstr "রিপোর্টটি সংরক্ষণ করা হোক..."
+#: src/bug-buddy.glade.h:48
+msgid "Saving: "
+msgstr "সংরক্ষণ করা হচ্ছে: "
+
+#: src/bug-buddy.glade.h:49
+msgid "Sendmail Settings"
+msgstr "Sendmail এর সেটিং"
+
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "কঠোরতা:"
+
+# #"অনুগ্রহ করে আবার চেষ্টা করুন, হয়তো বা অন্য কোন নামের ফাইলে।"
+# This has been altered
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "অ্যাপ্লিকেশন প্রদর্শন করুন (_অ)"
+
+#: src/bug-buddy.glade.h:52
+msgid "Show _Debugging Details"
+msgstr "ডিবাগিং এর  বিস্তারিত দেখাও (_ড)"
+
+# msgstr "_এপ্লিকেশন প্রদর্শন করা হোক "
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "প্রডাক্ট দেখাও (_প)"
+
+# msgstr "দেখানো হোক _ডিবাগিং এর  বিস্তারিত"
+# msgstr "দেখাও _ত্রুটিমুক্তকরনের  বিস্তারিত"
+#: src/bug-buddy.glade.h:54
+msgid "Show most frequent bugs in:"
+msgstr "সবচেয়ে ঘনঘন ঘটে এমন প্রোগ্রাম ত্রুটিগুলো দেখাও:"
+
+# msgstr "সবচেয়ে ঘনঘন ঘটে এমন প্রোগ্রাম ত্রুটিগুলো প্রদর্শন করা হোক:"
+#: src/bug-buddy.glade.h:55
+msgid "Simple"
+msgstr "সাধারণ"
+
+#: src/bug-buddy.glade.h:56
+msgid "Start"
+msgstr "শুরু"
+
+#: src/bug-buddy.glade.h:57
+msgid "Stop"
+msgstr "থামুন"
+
+# msgstr "বন্ধ"
+#: src/bug-buddy.glade.h:58
+msgid "Submit another bug"
+msgstr "অন্য একটি প্রোগ্রাম ত্রুটি(Bug) প্রেরণ করুন"
+
+#: src/bug-buddy.glade.h:59
+msgid "Summary"
+msgstr "সারাংশ"
+
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "অ্যাপ্লিকেশনটি সঠিক ভাবে কাজ করছে না (_অ)"
+
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "তথ্যপত্রটি ভুল (_ত)"
+
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "অনুবাদটি ভুল (_ভ)"
+
+# msgstr "উপরে অনুল্লিখিত প্রোডাকট অথবা এপ্লিকেশন।"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "প্রাপক:"
+
+# msgstr "প্রতি"
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "সরাসরি sendmail ব্যবহার করা হোক (_স)"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "সংস্করণ:"
+
+#: src/bug-buddy.glade.h:66
+msgid "_Don't update"
+msgstr "নবায়ন নয় (_ন)"
+
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "একটি নিরুদ্দিষ্ট বৈশিষ্ট্যের আবেদন (_আ)"
+
+#: src/bug-buddy.glade.h:68
+msgid "_Update"
+msgstr "নবায়ন (_ন)"
+
+#: src/bug-buddy.glade.h:69
+msgid "component"
+msgstr "উপাদান"
+
+#: src/bug-buddy.glade.h:70
+msgid "desc"
+msgstr "বর্ণনা"
+
+# "desc" হল "description" এর সংক্ষিপ্তরূপ AFAIK
+#: src/bug-buddy.glade.h:71
+msgid "email info"
+msgstr "ই-মেইল সংক্রান্ত তথ্য"
+
+#: src/bug-buddy.glade.h:72
+msgid "finished"
+msgstr "শেষ"
+
+#: src/bug-buddy.glade.h:73
+msgid "gdb"
+msgstr "জি.ডি.বি"
+
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "পরিচয়"
+
+#: src/bug-buddy.glade.h:75
+msgid "mail config"
+msgstr "মেইল কনফিগারেশন"
+
+#: src/bug-buddy.glade.h:76
+msgid "mostfreq"
+msgstr "সবচেয়ে ঘনঘন সংঘটিত"
+
+#: src/bug-buddy.glade.h:77
+msgid "product"
+msgstr "প্রোডাক্ট"
+
+#: src/bugzilla.c:279
+#, c-format
+msgid "%d of %d"
+msgstr "%d এর %d"
+
+#: src/bugzilla.c:721
+msgid "ID"
+msgstr "আই.ডি"
+
+#: src/bugzilla.c:735 src/bugzilla.c:804
+msgid "Product"
+msgstr "প্রোডাক্ট"
+
+#: src/bugzilla.c:741 src/bugzilla.c:847
+msgid "Component"
+msgstr "উপাদান"
+
+#: src/bugzilla.c:898
+#, c-format
+msgid ""
+"Bug Buddy could not open '%s'.\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"বাগ বাডি '%s' কে পড়তে পারছে না।\n"
+"দয়া করে নিশ্চিত হোন যে বাগ বাডি সঠিকভাবে ইনস্টল করা হয়েছে।\n"
+"\n"
+"বাগ বাডি এখন বন্ধ হবে।"
+
+#: src/bugzilla.c:936
+msgid ""
+"Bug Buddy could not find any information on where to submit bugs.\n"
+"\n"
+"Please make sure Bug Buddy was installed correctly.\n"
+"\n"
+"Bug Buddy will now quit."
+msgstr ""
+"যেখানে প্রোগ্রাম ত্রুটি(Bug) প্রেরণ করা হয় বাগ বাডি তার কোন তথ্য খুঁজে পাচ্ছে না।\n"
+"\n"
+"দয়া করে নিশ্চিত হোন যে বাগ বাডি সঠিকভাবে ইনস্টল করা হয়েছে।\n"
+"\n"
+"বাগ বাডি এখন বন্ধ হবে।"
+
+#: src/bugzilla.c:1015
+#, c-format
+msgid "Couldn't load icon for %s: %s"
+msgstr "%s জন্য আইকন লোড করতে পারছে নাঃ %s"
+
+#: src/cell-renderer-uri.c:151
+msgid "URI"
+msgstr "ইউ.আর.আই"
+
+#: src/cell-renderer-uri.c:152
+msgid "URI to show when clicked."
+msgstr "ক্লিক করলে ইউ.আর.আই দেখাও।"
+
+#: src/cell-renderer-uri.c:159
+msgid "Visited"
+msgstr "দেখা হয়েছে"
+
+#: src/cell-renderer-uri.c:160
+msgid "If the URI has been visited before."
+msgstr "যদি ইউ.আর.আই আগে দেখা হয়ে থাকে।"
+
+#: src/gdb-buddy.c:84
+#, c-format
+msgid "Obtaining stack trace... (%d)"
+msgstr "অর্জনকৃত stack trace... (%d)"
+
+# #### stack trace =??????????
+#: src/gdb-buddy.c:160
+#, c-format
+msgid ""
+"Unable to process core file with gdb:\n"
+"'%s'"
+msgstr ""
+"জিডিবি'র সাহায্যে কোর ফাইলের প্রসেসে অক্ষম:\n"
+"%s"
+
+#: src/gdb-buddy.c:185
+#, c-format
+msgid ""
+"GDB was unable to determine which binary created\n"
+"'%s'"
+msgstr ""
+"জিডিবি কোন বাইনারি তৈরি হয়েছে তা বুঝতে পারেনি\n"
+"%s"
+
+# msgstr "জিডিবি সিদ্ধান্ত নিতে অসমর্থ ছিল যে কোন বাইনারি তৈরি করেছে\n" 
+# "%s"
+#: src/gdb-buddy.c:215
+msgid "Error on read... aborting"
+msgstr "পড়ার সময় ভুল... বের হয়ে যাচ্ছি"
+
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr ""
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr ""
+
+# msgstr "পড়ার সময় ভুল.....বের হয়ে যাও"
+#: src/gdb-buddy.c:294
+msgid ""
+"GDB could not be found on your system.\n"
+"Debugging information will not be obtained."
+msgstr ""
+"আপনার সিস্টেমে জি.ডি.বি পাওয়া যাচ্ছেনা।\n"
+"ডিবাগিং তথ্য অর্জিত হবে না।"
+
+# ##"ত্রুটিমুক্তকরণ তথ্য অর্জিত হবে না।"
+#: src/gdb-buddy.c:302
+msgid ""
+"Could not find the gdb-cmd file.\n"
+"Please try reinstalling Bug Buddy."
+msgstr ""
+"জিডিবি-সি.এম.ডি. ফাইল পাওয়া যায় নি।\n"
+"দয়া করে বাগ বাডি পুনরায় ইনস্টল করার চেষ্টা করুন।"
+
+#: src/gdb-buddy.c:310
+#, c-format
+msgid ""
+"There was an error running gdb:\n"
+"\n"
+"%s"
+msgstr ""
+"জিডিবি'তে একটি ত্রুটি ছিল:\n"
+"\n"
+"%s"
+
+#: src/save-buddy.c:83
+#, c-format
+msgid "Could not read symbolic link information for %s"
+msgstr "%s'র জন্য সিম্বলিক লিংক সংক্রান্ত তথ্য পড়তে পারেনি"
+
+# msgstr "%s 'র জন্য প্রতিকী সংযোগ তথ্য পড়তে পারেনি"
+#: src/save-buddy.c:125
+msgid "The file has too many symbolic links."
+msgstr "ফাইলটির খুব বেশি সিম্বলিক লিংক।"
+
+# #msgstr "ফাইলটির খুব বেশি প্রতিকী সংযোগ।"
+#: src/save-buddy.c:268
+msgid "Main loop isn't running!"
+msgstr "মূল লুপটি চালু হয়নি!"
+
+#: src/save-buddy.c:284
+#, c-format
+msgid "Error setting up sigchld handler: %s"
+msgstr "সিগ চাইল্ড হ্যান্ডলার চালু করতে সমস্যা: %s"
+
+#: src/save-buddy.c:387
+msgid "Invalid filename."
+msgstr "বাতিল ফাইলের নাম।"
+
+# msgstr "ত্রুটিযুক্ত ফাইলের নাম।"
+#: src/save-buddy.c:412
+#, c-format
+msgid ""
+"There already exists a file name '%s'.\n"
+"\n"
+"Do you wish to overwrite this file?"
+msgstr ""
+"%s নামে একটা ফাইল আগে থেকেই বর্তমান।\n"
+"\n"
+"আপনি কি এই ফাইলের উপরেই সেভ করতে চান?"
+
+# ##"আপনি কি এই ফাইলটি প্রতিস্থাপন করতে চান?"
+#: src/save-buddy.c:417
+msgid "_Overwrite"
+msgstr "_প্রতিস্থাপন"
+
+#: src/save-buddy.c:516
+msgid "Could not create a backup file."
+msgstr "অতিরিক্ত (Backup) ফাইল তৈরি করতে পারেনি।"
+
+#: src/united-states-of-bug-buddy.c:54
+msgid "Welcome to Bug Buddy"
+msgstr "বাগ বাডি-তে স্বাগতম"
+
+#: src/united-states-of-bug-buddy.c:55
+msgid "Collecting debug info"
+msgstr "ডিবাগের তথ্য সংগ্রহ করছে"
+
+#: src/united-states-of-bug-buddy.c:56
+msgid "Select a Product or Application"
+msgstr "একটি প্রোডাক্ট অথবা অ্যাপ্লিকেশন নির্বাচন করুন"
+
+# #msgstr "একটি প্রোডাকট অথবা এপ্লিকেশন নির্বাচন করুন"
+#: src/united-states-of-bug-buddy.c:57
+msgid "Select a Component"
+msgstr "একটি উপাদান বাছাই করুন"
+
+#: src/united-states-of-bug-buddy.c:58
+msgid "Frequently Reported Bugs"
+msgstr "ঘনঘন রিপোর্টকৃত প্রোগ্রাম ত্রুটি(Bug)"
+
+#: src/united-states-of-bug-buddy.c:59
+msgid "Bug Description"
+msgstr "প্রোগ্রাম ত্রুটির (Bug) বর্ণনা"
+
+#: src/united-states-of-bug-buddy.c:60
+msgid "Mail Configuration"
+msgstr "মেইল কনফিগারেশন"
+
+#: src/united-states-of-bug-buddy.c:61
+msgid "Confirmation"
+msgstr "নিশ্চয়তা"
+
+#: src/united-states-of-bug-buddy.c:62
+msgid "Finished!"
+msgstr "শেষ!"
+
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+"খন্দকার মুজাহিদুল ইসলাম <suzan229@yahoo.com>\n"
+"অংকুর প্রকল্পের পক্ষ থেকে"
+
+#: src/united-states-of-bug-buddy.c:266
+msgid "The graphical bug reporting tool for GNOME."
+msgstr "গুহ্‌নোমের জন্য গ্রাফিক্যাল ত্রুটি রিপোর্টিং টুল।"
+
+# ##tool = সরঞ্জাম / টুল
+#: src/united-states-of-bug-buddy.c:283
+msgid "The lame Bug Buddy web page"
+msgstr "অসম্পূর্ণ বাগ বাডি ওয়েব পেইজ"
+
+# msgstr "অসম্পূর্ণ বাগ বাডি ওয়েব পাতা"
+#: src/united-states-of-bug-buddy.c:428
+msgid "Please enter your name."
+msgstr "দয়া করে আপনার নাম লিখুন।"
+
+# msgstr "অনুগ্রহ করে আপনার নাম লিখুন।"
+#: src/united-states-of-bug-buddy.c:437
+msgid "Please enter a valid email address."
+msgstr "দয়া করে আপনার সঠিক ই-মেইল ঠিকানা লিখুন।"
+
+# msgstr "অনুগ্রহ করে আপনার সঠিক ই-মেইল ঠিকানা লিখুন"
+#: src/united-states-of-bug-buddy.c:446
+#, c-format
+msgid ""
+"'%s' doesn't seem to exist.\n"
+"\n"
+"Please check the path to sendmail again."
+msgstr ""
+" মনে হচ্ছেনা '%s' এর অস্তিত্ব আছে।\n"
+" \n"
+"দয়া করে মেইল পাঠানোর পাথটি আবার পরীক্ষা করুন।"
+
+# ##"অনুগ্রহ করে মেইল পাঠানোর পাথটি আবার পরীক্ষা করুন।"
+#: src/united-states-of-bug-buddy.c:470
+msgid "Please enter a valid email command."
+msgstr "দয়া করে একটি সঠিক ই-মেইল কমান্ড দিন।"
+
+# msgstr "অনুগ্রহ করে একটি সঠিক ই-মেইল কমান্ড দিন।"
+#: src/united-states-of-bug-buddy.c:546
+msgid "The specified file does not exist."
+msgstr "উল্লেখিত ফাইলের অস্তিত্ব নেই।"
+
+#: src/united-states-of-bug-buddy.c:552
+#, c-format
+msgid "File is of type: %s"
+msgstr "ফাইলের ধরণ: %s"
+
+#: src/united-states-of-bug-buddy.c:556
+#, c-format
+msgid ""
+"'%s' is a %s file.\n"
+"\n"
+"Bug Buddy can only submit plaintext (text/*) files."
+msgstr ""
+"'%s' একটি %s ফাইল।\n"
+" \n"
+"বাগ বাডি কেবলমাত্র সরল টেক্সট (টেক্সট/*) ফাইল প্রেরণ করতে পারে।"
+
+#: src/united-states-of-bug-buddy.c:569
+msgid "You must include a comprehensible subject line in your bug report."
+msgstr "আপনার ত্রুটি রিপোর্টের(Bug) মধ্যে অবশ্যই একটি বোধগম্য বিষয়ের লাইন সংযুক্ত করুন।"
+
+# msgstr "আপনার ত্রুটি রিপোর্টের মধ্যে অবশ্যই একটি বোধগম্য বিষয় সারি সংযুক্ত করুন।"
+# msgstr "আপনার ত্রুটি রিপোর্টের মধ্যে অবশ্যই একটি বোধগম্য বিষয় লাইন সংযুক্ত করুন।"
+#: src/united-states-of-bug-buddy.c:578
+msgid "You must include a comprehensible description in your bug report."
+msgstr "আপনার ত্রুটি রিপোর্টের(Bug) মধ্যে অবশ্যই একটি বোধগম্য বর্ণনা সংযুক্ত করুন।"
+
+# msgstr "_প্রেরণ করা হোক"
+#: src/united-states-of-bug-buddy.c:625
+msgid "Please wait while Bug Buddy saves your bug report..."
+msgstr ""
+"দয়া করে অপেক্ষা করুন যতক্ষণ না বাগ বাডি আপনার প্রোগ্রাম ত্রুটির রিপোর্ট সংরক্ষণ "
+"করছে..."
+
+# msgstr "দয়া করে অপেক্ষা করুন যতক্ষণ না বাগ বাডি আপনার প্রোগ্রাম ত্রুটির রিপোর্ট সেভ করছে..."
+#: src/united-states-of-bug-buddy.c:629
+#, c-format
+msgid ""
+"The bug report was not saved in %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Please try again, maybe with a different file name."
+msgstr ""
+"ত্রুটি রিপোর্ট(Bug) %s তে সংরক্ষিত হয়েছিল :\n"
+"\n"
+"%s\n"
+"\n"
+"দয়া করে আবার চেষ্টা করুন, হয়তোবা অন্য একটি ফাইলের নামে।"
+
+# "ত্রুটি রিপোর্ট(Bug) %s তে সেভ করা হয়েছিল :\n"
+# "ত্রুটি রিপোর্ট(Bug) %s তে সংরক্ষণ করা হয়েছিল :\n"
+#: src/united-states-of-bug-buddy.c:637
+#, c-format
+msgid "Your bug report was saved in %s"
+msgstr "আপনার ত্রুটি রিপোর্ট(Bug) %s তে সংরক্ষিত হয়েছিল"
+
+# msgstr "আপনার ত্রুটি রিপোর্ট(Bug) %s তে সেভ করা হয়েছিল"
+# msgstr "আপনার ত্রুটি রিপোর্ট(Bug) %s তে সংরক্ষণ করা হয়েছিল"
+#: src/united-states-of-bug-buddy.c:645
+msgid "Please wait while Bug Buddy submits your bug report..."
+msgstr ""
+"দয়া করে  অপেক্ষা করুন যতক্ষণ  বাগ বাডি আপনার প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট প্রেরণ "
+"করছে..."
+
+# #msgstr "অনুগ্রহ করে  অপেক্ষা করুন যতক্ষণ  বাগ বাডি আপনার প্রোগ্রাম ত্রুটি রিপোর্ট প্রেরণ করছে........"
+#: src/united-states-of-bug-buddy.c:649
+#, c-format
+msgid ""
+"There was an error submitting the bug report:\n"
+"\n"
+"%s"
+msgstr ""
+"প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট প্রেরণ করাতে একটি ভুল ছিল:\n"
+"\n"
+"%s"
+
+#: src/united-states-of-bug-buddy.c:656
+#, c-format
+msgid ""
+"Your bug report has been submitted to:\n"
+"\n"
+"        <%s>\n"
+"\n"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
+msgstr ""
+"আপনার প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট প্রেরণ করা হয়েছে:\n"
+"\n"
+"       <%s>\n"
+"\n"
+"ফ্রি সফ্‌টওয়্যার তৈরি করতে প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট করা একটি গুরুত্বপূর্ণ অংশ। "
+"সহায়তা করার জন্যআপনাকে ধন্যবাদ।"
+
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
+msgstr ""
+"আপনি যে কোর ফাইল অথবা অ্যাপ্লিকেশন ডিবাগ করতে চান দয়া করে সেটি নির্বাচন করুন।"
+
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
+msgstr ""
+"%s\n"
+"\n"
+"ঘোষনা করা হচ্ছে যে আপনি যে সফটওয়্যারটি চালাচ্ছেন (%s) সেটি ছয় মাসের পুরোনো।\n"
+"আপনি চাইলে %s সিস্টেমটির নতুন সংস্করণ নবায়ন করতে পারেন"
+
+#: src/united-states-of-bug-buddy.c:930
+msgid "Please choose a product for your bug report."
+msgstr "দয়া করে আপনার প্রোগ্রাম ত্রুটি(Bug) রিপোর্টের জন্য একটি প্রোডাক্ট বেছে নিন।"
+
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr "দয়া করে %s প্রোডাক্টের জন্য একটি উপাদান, সংস্করণ, এবং কঠোরতা স্তর বেছে নিন।"
+
+# msgstr "দয়া করে আপনার প্রোগ্রাম ত্রুটি(Bug) রিপোর্টের জন্য একটি প্রোডাকট পছন্দ করুন।"
+# msgstr "অনুগ্রহ করে আপনার ত্রুটি রিপোর্টের জন্য একটি প্রোডাক্‌ট পছন্দ করুন।"
+#: src/united-states-of-bug-buddy.c:943
+msgid "Please choose an application for your bug report."
+msgstr "আপনার প্রোগ্রাম ত্রুটি(Bug) রিপোর্টের জন্য দয়া করে একটি অ্যাপ্লিকেশন বেছে নিন।"
+
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
+msgid ""
+"Please choose a component, version, and severity level for application %s"
+msgstr ""
+"দয়া করে %s অ্যাপ্লিকেশনের জন্য একটি উপাদান, সংস্করণ, এবং কঠোরতা স্তর বেছে নিন।"
+
+# "অনুগ্রহ করে একটি উপাদান, সংস্করণ, এবং কঠোরতা স্তর বেছে নিন।"
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"এই অ্যাপ্লিকেশনের প্রোগ্রাম ত্রুটি (Bug) তথ্য আছে, কিন্তু বাগ বাডি এ সম্বন্ধে কিছু জানে "
+"না। দয়া করে অন্য অ্যাপ্লিকেশন বেছে নিন।"
+
+#: src/united-states-of-bug-buddy.c:1002
+msgid "You must specify a component for your bug report."
+msgstr "প্রোগ্রাম ত্রুটি (Bug) রিপোর্টের জন্য একটি উপাদান উল্লেখ করুন।"
+
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "প্রোগ্রাম ত্রুটি রিপোর্টকারীর নাম"
+
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "রিপোর্ট গ্রহণকারীর ই-মেইলের ঠিকানা"
+
+#: bug-buddy.schemas.in.h:3
+#, fuzzy
+msgid ""
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
+msgstr ""
+"গুহ্‌নোম বাগজিলায় প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট প্রেরণের জন্য ই-মেইল ঠিকানা। এই ই-"
+"মেইল ঠিকানা আপনার প্রেরণ করা প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট খুঁজে পেতে ব্যবহৃত হবে। "
+"যদি ইতিমধ্যেই আপনার একটি গুহ্‌নোম বাগজিলা অ্যাকাউন্ট থাকে, তাহলে দয়া করে সেটা "
+"আপনার ই-মেইল ঠিকানা হিসেবে ব্যবহার করুন।"
+
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "প্রোগ্রাম ত্রুটি সংক্রান্ত (Bug) রিপোর্ট যে ফাইলে সংরক্ষণ করা হবে"
+
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+"পরবর্তীতে আপনার প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট প্রেরণ করতে আপনি যেখানে ফাইলটি "
+"সংরক্ষণ করতে চান। "
+
+# save==সেভ
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "নবায়নের জন্য বাগ বাডি শেষ সময়ে পরীক্ষা করেছিল"
+
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr ""
+"আপনার নিজস্ব ফাইল সিস্টেমের যেখানে sendmail অথবা সমমানের কিছু অবস্থিত তার পাথ।"
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "sendmail এর মত মেইলার প্রোগ্রামের পাথ"
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "রিপোর্টকৃত প্রোগ্রাম ত্রুটি (Bug) ব্যবহারকারীর আসল নাম।"
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"এই হচ্ছে শেষ সময় (UNIX timestamp) যখন বাগ বাডি বাগজিলার তথ্য নবায়ন করার "
+"জন্যপরীক্ষা করেছিল।"
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"গুহ্‌নোম বাগজিলায় প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট প্রেরণ করার জন্য sendmail ব্যবহার করুন। "
+"এখন পর্যন্ত, এটাই একমাত্র সহায়ক নিয়ম।"
+
+# msgstr "প্রতি"
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "প্রোগ্রাম ত্রুটি (Bug) রিপোর্ট প্রেরণ করতে sendmail ব্যবহার করো"
+
+# ###"এপ্লিকেশনটি থেকে বাগ বাডির ডিবাগিং এর তথ্য পাওয়া শেষ না হওয়া পর্যন্ত দয়া করে অপেক্ষা করুন।"
+#~ msgid "Could not find pixmap: %s (%d)\n"
+#~ msgstr "ছবিটি পাওয়া যাচ্ছেনা: %s (%d)\n"
+
+# Update = নতুন করে পরিবর্তন করা। "আধুনিককরণ" ভাল শোনাচ্ছে না
+#~ msgid "Bug Buddy updated its bug information correctly."
+#~ msgstr "বাগ বাডি সঠিকভাবে তার প্রোগ্রাম ত্রুটির(Bug) তথ্য নবায়ণ করেছে।"
+
+#~ msgid "The product or application is not listed above."
+#~ msgstr "প্রোডাকট অথবা অ্যাপ্লিকেশনটি উপরে অনুল্লিখিত।"
+
+#~ msgid ""
+#~ "Since Bug Buddy doesn't know about the product you wish to submit a bug "
+#~ "report in, you will have to manually address the bug report."
+#~ msgstr ""
+#~ "আপনি যে প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট প্রেরণ করতে চান বাগ বাডি সে স্বমন্ধে কিছুই "
+#~ "জানেনা,আপনাকে প্রোগ্রাম ত্রুটি(Bug) রিপোর্টটি নিজ হাতে প্রেরণ করতে হবে।"
+
+#~ msgid ""
+#~ "This application has not included information about how to submit bugs.\n"
+#~ "\n"
+#~ "If you know an email address where bug reports should be sent, you will "
+#~ "be able to specify that later.\n"
+#~ "\n"
+#~ "You may be able to find one in an \"About\" box in the application, or in "
+#~ "the application's documentation."
+#~ msgstr ""
+#~ "কিভাবে প্রোগ্রাম ত্রুটি(Bug) প্রেরণ করতে হয় সে সম্বন্ধে কোন তথ্য এই অ্যাপ্লিকেশনে "
+#~ "সংযুক্ত করা হয়নি।\n"
+#~ "\n"
+#~ "আপনি যদি কোন ই-মেইল ঠিকানা জানেন যেখানে প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট পাঠানো "
+#~ "উচিত, তাহলে আপনি পরে সেটাউল্লেখ করতে পারবেন।\n"
+#~ "\n"
+#~ "আপনি অ্যাপ্লিকেশনটির \"সম্বন্ধে\" বাকসে , অথবা অ্যাপ্লিকেশনটির ডকুমেন্টেশনে কোন "
+#~ "একটি খুঁজে পেতে সমর্থ হতে পারেন।"
+
+# msgstr "আপনি অবশ্যই আপনার ত্রুটি রিপোর্টের জন্য একটি সংস্করণ উল্লেখ করুন।"
+#~ msgid ""
+#~ "Are you sure you want to cancel\n"
+#~ "this bug report?"
+#~ msgstr ""
+#~ "আপনি কি নিশ্চিত যে আপনি এই প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট \n"
+#~ "বাতিল করতে চান?"
+
+# msgstr "আপনি অবশ্যই আপনার ত্রুটি রিপোর্টের জন্য একটি উপাদান উল্লেখ করুন।"
+#~ msgid "You must specify a version for your bug report."
+#~ msgstr "প্রোগ্রাম ত্রুটি (Bug) রিপোর্টের জন্য একটি সংস্করণ উল্লেখ করুন।"
+
+#~ msgid "Add more information to existing report"
+#~ msgstr "বিদ্যমান রিপোর্টে আরও তথ্য যোগ করা হোক"
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "You are seeing this because another application has crashed."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ " আপনি এটা দেখছেন কারণ অন্য একটি অ্যাপ্লিকেশন বিধ্বস্ত হয়েছে।"
+
+# ##"\n আপনি এটা দেখছেন কারণ অন্য একটি এপ্লিকেশন বিধ্বস্ত হয়েছে।"
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "Please wait a few moments while Bug Buddy obtains debugging information "
+#~ "from the applications.  This allows Bug Buddy to provide a more useful "
+#~ "bug report."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "অ্যাপ্লিকেশনটি থেকে বাগ বাডির ডিবাগিং এর তথ্য পাওয়া শেষ না হওয়া পর্যন্ত দয়া "
+#~ "করে অপেক্ষা করুন।এর ফলে বাগ বাডির প্রেরিত প্রোগ্রাম ত্রুটি(Bug) সংক্রান্ত রিপোর্ট "
+#~ "আরো বেশি কার্যকর হবে।"
+
+# msgstr "অনুগ্রহ করে একটি উপাদান, সংস্করণ, এবং কঠোরতা স্তর পছন্দ করুন।"
+#~ msgid "Please make any final corrections to the bug report."
+#~ msgstr ""
+#~ "প্রোগ্রাম ত্রুটির (Bug) রিপোর্টকে চূড়ান্তভাবে সংশোধন করা প্রয়োজন থাকলে দয়া করে তা "
+#~ "করুন।"
+
+#~ msgid "Submit this bug report now?"
+#~ msgstr "এই ত্রুটি রিপোর্ট(Bug) কি এখন প্রেরণ করবেন?"
+
+#~ msgid "_Submit"
+#~ msgstr "_প্রেরণ করুন"
+
+#~ msgid ""
+#~ "Your bug report has been submitted to:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Thanks!"
+#~ msgstr ""
+#~ "আপনার প্রোগ্রাম ত্রুটি(Bug) রিপোর্ট প্রেরণ করা হয়েছে:\n"
+#~ "\n"
+#~ "\t<%s>\n"
+#~ "\n"

@@ -9,7 +9,7 @@ Things to do:
 
        - If bug-buddy ran from sisegv --> Debbug screen; describe bug
        - If bug-buddy was invoked alone --> (Welcome? / Kind of bug?);
-         Select application; describe bug
+         Select application; describe bug (DONE!!)
 
  * Re-organize some code
 
@@ -17,11 +17,11 @@ Things to do:
    Ximian)
 
  * Add "kind of bug" first step --> Use different templates for 
-   differents kinds
+   differents kinds. (DONE!!)
 
- * Add keywords and set severity based on kind of bug.
+ * Add keywords and set severity based on kind of bug. (DONE!!)
 
- * Get info about distribution (/etc/redhat-release and so...)
+ * Get info about distribution (/etc/redhat-release and so...) (DONE!!)
 
  * Submit bug via plugins and specifically for gnome, directly in xml via
    http post

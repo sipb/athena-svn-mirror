@@ -1,136 +1,129 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2002 Free Software Foundation, Inc.
+# translation of bug-buddy.HEAD.be.po to Belarusian
+# translation of libgnomeprintui.gnome-2-2.be.po to belarusian
+# translation of bug-buddy.gnome-2-2.be.po to belarusian
+# Copyright (C) 2002,2003 Free Software Foundation, Inc.
 # Ales Nyakhaychyk <i18n@infonet.by>, 2002.
+# Vital Khilko <dojlid@mova.org>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy 2.0\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2002-11-20 09:46+0200\n"
-"Last-Translator: Ales Nyakhaychyk <i18n@infonet.by>\n"
+"Project-Id-Version: bug-buddy.HEAD.be\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2003-07-11 09:52+0300\n"
+"Last-Translator: Vital Khilko <dojlid@mova.org>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.0\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
-msgstr "Даслаць паведамленьне аб памылцы"
+msgstr "Даслаць паведамленьне пра памылку"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
-msgstr "Даслаць справаздачу толькі сабе"
+msgstr "Даслаць справаздачу але толькі сабе"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
 msgstr "Захаваць справаздачу ў файл"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
-msgstr "зваліўшаеся дастасаваньне"
+msgstr "дастасаваньне якое абрушылася"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
-msgstr "core-файл"
+msgstr "файл адбітка памяці"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
 msgstr "нічога"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Стварыць новае паведамленьне аб памылцы"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Дадаць больш зьвестак да існуючага паведамленьня"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
 msgstr "Імя паведамляльніка"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "ІМЯ"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
-msgstr "E-mail паведамляльніа"
+msgstr "Э.скрыня паведамляльніка"
+
+#: src/bug-buddy.c:80
+msgid "EMAIL"
+msgstr "Э.скрыня"
 
 #: src/bug-buddy.c:81
-msgid "EMAIL"
-msgstr "E-MAIL"
-
-#: src/bug-buddy.c:82
 msgid "Package containing the program"
 msgstr "Пакет, які зьмяшчае праграму"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "PACKAGE"
 msgstr "ПАКЕТ"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "Version of the package"
-msgstr "Вэрсыя пакету"
+msgstr "Вэрсыя пакета"
 
-#: src/bug-buddy.c:83
+#: src/bug-buddy.c:82
 msgid "VERSION"
 msgstr "ВЭРСЫЯ"
 
-#: src/bug-buddy.c:84
+#: src/bug-buddy.c:83
 msgid "File name of crashed program"
-msgstr "Назоў зваліўшаеся праграмы"
+msgstr "Назва файла праграмы якая абрушылася"
 
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
 msgid "FILE"
 msgstr "ФАЙЛ"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID of crashed program"
-msgstr "PID зваліўшаеся праграмы"
+msgstr "PID праграмы што абрушылася"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
-msgstr "Core-файл ад праграмы"
+msgstr "Файл адбітка памяці праграмы"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
 msgstr "Тэкставы файл для ўключэньня ў паведамленьне"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
 msgstr "Немагчыма адшукаць віджэт названы %s ля %s"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
 "Адладчык gdb не завершыў атрыманьне адладачных зьвестак.\n"
-"Забіць працэс gdb (адсьледжваньне стэку будзе незавершаным)?"
+"Забіць працэс gdb (сачэньне стэка будзе незавершаным)?"
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "gdb ужо завершаны"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
-msgstr "Захаваць адсьледжваньне"
+msgstr "Захаваць сачэньне"
 
-#: src/bug-buddy.c:261
-#, fuzzy
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
-msgstr ""
-"Калі ласка, пачакайце, покуль Bug Buddy абнаўляе ўласны сьпіс\n"
-"праграм для сыстэмы адсьледжваньня."
+msgstr "Калі ласка, пачакайце, покуль Bug Buddy захоўвае сачэньне за стэкам..."
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -139,375 +132,410 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Сачэньне за стэкам не захавана ў %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Паспрабуйце нанова, магчыма пад іншай назвай файла."
 
-#: src/bug-buddy.c:298
-#, fuzzy
-msgid "Show _Applications"
-msgstr "зваліўшаеся дастасаваньне"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-#, fuzzy
-msgid "Show _Products"
-msgstr "Праграма"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
-msgstr "Запусьціць паштавік"
+msgstr "Запусьціць _паштовага кліента"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
-msgstr "Даслаць паведамленьне"
+msgstr "Да_слаць паведамленьне"
 
-#: src/bug-buddy.c:400
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
-msgstr "Зхаваць выбары адладкі"
+msgstr "Схаваць выбары адладкі"
 
-#: src/bug-buddy.c:401
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
 msgstr "Паказаць выбары адладкі"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
+#, fuzzy
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_APPNAME ужо не выкарыстоўваецца.\n"
 "Калі ласка, выкарыстоўвайце замест яго '--appname'."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
+#, fuzzy
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
 "$GNOME_CRASHED_PID ужо не выкарыстоўваецца.\n"
 "Калі ласка, выкарыстоўвайце замест яго '--pid'."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
-"Вітаем у \"Bug Buddy\", праграме для паведамленьня аб памылцы.\n"
-"Яна правядзе вас па шляху стварэньня паведамленьня аб памылцы."
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-"\n"
-"\n"
-"Вы бачыце гэта таму што іншае дастасаваньне звалілась."
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-"\n"
-"\n"
-"Калі ласка, крыху пачакайце пакуль \"Bug Buddy\" зьбярэ адладачныя зьвесткі "
-"з дастасаваньняў.  Гэта дазволіць \"Bug Buddy\" прапанаваць больш карыснае "
-"паведамленьне."
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr "Немагчыма адшукаць відарыс: %s (%d)\n"
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"\"Bug Buddy\" ня можа загрузіць спалучэньне карыстальніку з (%s).\n"
-"Калі ласка, упэўніцесь, што \"Bug Buddy\" усталяваны без памылак."
+"\"Bug Buddy\" ня можа загрузіць інтэрфэйс карыстальніка з (%s).\n"
+"Калі ласка, запэўніцеся, што \"Bug Buddy\" усталяваны без памылак."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Bug Buddy ня можа абнавіць інфармацыю аб памылцы.\n"
+"Будзе выкарыстоўвацца адно са старага."
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
-msgstr "Прылада для паведамленьня аб памылках"
+msgstr "Інструмэнт паведамленьня аб памылках"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+#, fuzzy
+msgid "Report a bug in GNOME-based applications"
 msgstr "Паведамляе аб памылцы ў GNOME"
 
 #: src/bug-buddy.glade.h:1
+#, fuzzy
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"Вітаем у \"Bug Buddy\", праграме для паведамленьня аб памылках.\n"
+"Яна правядзе вас па кроках па ўсім працэсе стварэньня паведамленьня  аб "
+"памылках.\n"
+"\n"
+"Калі ласка, выбярыце праблемную праграму па якой вы жадаеце даслаць "
+"паведамленьне і націсьніце кнопку \"Наперад\":\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
 msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
 msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Абнаўленьне Bug Buddy</span>\n"
+"\n"
+"Інфармацыя пра памылку захаваная ў вашае сыстэме састарэлая. Выбар \"Абнавіць"
+"\" мусіць абнавіць яе. Выбар \"Не абнаўляць\" мусіць выкарыстоўваць старыя "
+"даньні для выкарыстаньня ў справаздачы.'\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
-msgstr "Дадатковы"
+msgstr "Адмысловы"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Assbarn Phenomenon"
 
-#: src/bug-buddy.glade.h:9
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
-msgstr "Дваічны файл:"
+msgstr "Бінарны файл:"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
-#, fuzzy
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"Bug Buddy можа даслаць адладачныя зьвесткі разам з вашым паведамленьнем. "
-"Патрэбныя выбары павінны быць абраны самастойна. Для больш падрабязных "
-"зьвестак націсьніце кнопку \"Дапамога\", што знаходзіцца побач."
+"Bug Buddy можа даслаць адладачныя зьвесткі разам з вашым паведамленьнем.\n"
+"Патрэбныя выбары павінны быць абраны для Вас аўтаматычна"
 
-#: src/bug-buddy.glade.h:13
-#, fuzzy
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"Bug Buddy зараз зьбірае зьвесткі аб абрушэньні, каб даслаць іх у сыстэму "
+"сачэньня за памылкамі. Гэта аўтаматычны працэс, і ён займе пару хвілін. Калі "
+"ён скончыцца, вы мусіце націснуць \"Паказаць падрабязнасьці адладкі\" каб "
+"убачыць інфармацыю ці націсьніце \"Наперад\" каб перайсьці да наступнага "
+"крока."
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
 "Bug Buddy выкарыстоўвае пошту для дасылкі паведамленьняў аб памылках. \n"
-"Калі ласка, вызначце якім чынам Bug Buddy будзе слаць лісты.\n"
-"Калі вы абярэце допны паштавік GNOME, гэты ўсталяваньні будуць падзелены зь "
-"некаторымі іншымі дастасаваньнямі."
+"Калі ласка, вызначце якім чынам Bug Buddy будзе дасылаць лісты."
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr "Копія"
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Копія:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
-msgstr "Core-файл"
+msgstr "Файл адбітка памяці"
 
-#: src/bug-buddy.glade.h:17
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr "Ад_ладка працуючага ці абрынутага дастасаваньня (толькі экспэрт)"
+
+#: src/bug-buddy.glade.h:24
 msgid "Debug"
 msgstr "Адладка"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "Апісаньне"
 
-#: src/bug-buddy.glade.h:19
-#, fuzzy
+#: src/bug-buddy.glade.h:26
 msgid "Downloading files"
-msgstr "Посьпех пампаваньня"
+msgstr "Пампаваньне файлаў"
 
-#: src/bug-buddy.glade.h:20
-msgid "Email"
-msgstr "E-mail"
+#: src/bug-buddy.glade.h:27
+msgid "Email:"
+msgstr "Э.скрыня:"
 
-#: src/bug-buddy.glade.h:21
+#: src/bug-buddy.glade.h:28
 msgid "Include a text file"
 msgstr "Уключыць тэкставы файл"
 
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr "Толькі захаваць у файл, каб я даслаў паведамленьне аб памылцы ўласна."
+#: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "_Толькі захаваць у файл, каб я даслаў паведамленьне аб памылцы ўласна"
 
-#: src/bug-buddy.glade.h:23
-msgid "Name"
-msgstr "Назоў"
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "Назва:"
 
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr "Шлях да sendmail"
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "Шлях да sendmail:"
 
-#: src/bug-buddy.glade.h:25
+#: src/bug-buddy.glade.h:32
 msgid "Please choose a component, version, and severity level."
-msgstr "Калі ласка, абярыце складальнік, вэрсыю й узровень важнасьці."
+msgstr "Калі ласка, абярыце кампанэнт, вэрсыю й узровень важнасьці."
 
-#: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
 msgstr ""
-"Калі ласка, зрабіце канчатковыя выпраўленьні ў паведамленьні аб памылцы."
+"Калі ласка, зрабіце апошнія выпраўленьні ў паведамленьні.\n"
+"Яно мусіць быць адлюстравана на http://bugzilla.gnome.org\n"
+"І мусіць утрымліваць вашае імя, адрэсу э.скрыні, і, магчыма,\n"
+"пэўную інфармацыю аб тым як абрушылася дастасаваньне.\n"
+"Калі дакумэнт над якім вы працавалі мае канфэдацыйныя\n"
+"зьвесткі, не мусіце дасылаць яго з гэтым паведамленьнем\n"
+"аб памылках"
 
-#: src/bug-buddy.glade.h:27
+#: src/bug-buddy.glade.h:39
 msgid "Please make your bug report in English, if possible."
 msgstr ""
 "Калі ласка, калі гэта магчыма, зрабіце вашае паведамленьне на ангельскай "
 "мове."
 
-#: src/bug-buddy.glade.h:28
-#, fuzzy
+#: src/bug-buddy.glade.h:40
 msgid ""
 "Please select the product or application for the bug you wish to report."
-msgstr "Калі ласка абярыце праграму, аб памылцы ў якой вы жадаеце паведаміць."
+msgstr ""
+"Калі ласка выбярыце прадукт ці дастасаваньне, аб памылцы ў якім вы жадаеце "
+"паведаміць."
 
-#: src/bug-buddy.glade.h:29
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
-"Калі ласка, выдаткуйце хвілінку каб пабачыць, ці няма ўжопаведамленьня аб "
+"Калі ласка, выдаткуйце хвілінку каб пабачыць, ці няма ўжо паведамленьня аб "
 "гэтае памылцы.\n"
 "Калі гэта так, калі ласка, ня трэба дасылаць яго нанава."
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Калі ласка, пачакайце, покуль Bug Buddy абнаўляе ўласны сьпіс\n"
-"праграм для сыстэмы адсьледжваньня."
+"Калі ласка, пачакайце, покуль \"Bug Buddy\" абнаўляе ўласны сьпіс\n"
+"праграм для сыстэмы асачэньня."
 
-#: src/bug-buddy.glade.h:33
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
-msgstr "ID працэсу:"
+msgstr "ID працэса:"
 
-#: src/bug-buddy.glade.h:34
-msgid "Save in"
-msgstr "Захаваць у..."
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "Захаваць у:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Захаваць паведамленьне ў..."
 
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
-msgstr "Захоўваньне:"
+msgstr "Захаваньне: "
 
-#: src/bug-buddy.glade.h:37
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
 msgstr "Усталёўкі Sendmail"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr "Важнасьці"
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "Важнасьць:"
 
-#: src/bug-buddy.glade.h:39
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "Паказаць _дастасаваньні"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
-msgstr "Паказаць падрабязнасьці адладкі"
+msgstr "Паказаць падрабязнасьці а_дладкі"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "Паказаць _прадукты"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
 msgstr "Паказаць найбольш частыя памылкі ў:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
 msgstr "Проста"
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
 msgstr "Пачаць"
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Спыніць"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
-msgstr "Даслаць шчэ адно паведамленьне"
+msgstr "Даслаць яшчэ адно паведамленьне"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
-msgstr "Зводка"
+msgstr "Агулам"
 
-#: src/bug-buddy.glade.h:47
-#, fuzzy
-msgid "The product or application is not listed above."
-msgstr "Праграма не пералічана вышэй."
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "Дастасаваньне _функцыянуе некарэктна"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "Каму"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "Няправільная _дакумэнтацыя"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
-msgstr "Выкарыстоўваць sendmail наўпрост"
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "Няправільны _пераклад"
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
-msgstr "Вэрсыя"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "Каму:"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "Выкарыстоўваць sendmail на_ўпрост"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
+msgstr "Вэрсыя:"
+
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
-msgstr ""
+msgstr "_Не абнаўляць"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "Запыт адсутнай маг_чымасьці"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
-msgstr ""
+msgstr "_Абнавіць"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
-msgstr "складальнік"
+msgstr "кампанэнт"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "апісаньне"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
 msgstr "адрэса"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "завершана"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "уводзіны"
+
+#: src/bug-buddy.glade.h:75
 msgid "mail config"
 msgstr "наладка пошты"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
 msgstr "найбольш частыя"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
-msgstr "праграма"
+msgstr "прадукт"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d з %d"
 
-#: src/bugzilla.c:687
+#: src/bugzilla.c:721
 msgid "ID"
 msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
-msgstr "Праграма"
+msgstr "Прадукт"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "Кампанэнт"
 
-#: src/bugzilla.c:870
+#: src/bugzilla.c:898
 #, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
@@ -515,12 +543,12 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug Buddy ня можа адчыніць '%s'.\n"
-"Калі ласка, удакладніце правільнае ўсталяваньне Bug Buddy.\n"
+"Bug Buddy ня можа адкрыць '%s'.\n"
+"Калі ласка, удакладніце ці правільна ўсталяваньны Bug Buddy.\n"
 "\n"
 "Зараз Bug Buddy будзе завершаны."
 
-#: src/bugzilla.c:915
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -534,10 +562,10 @@ msgstr ""
 "\n"
 "Bug Buddy зараз завершана."
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
-msgstr ""
+msgstr "Немагчыма загрузіць значку для %s: %s"
 
 #: src/cell-renderer-uri.c:151
 msgid "URI"
@@ -545,7 +573,7 @@ msgstr "URI"
 
 #: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr "URI адлюстроўваемы пры націску."
+msgstr "URI які адлюстроўваецца пасьля націску."
 
 #: src/cell-renderer-uri.c:159
 msgid "Visited"
@@ -553,36 +581,44 @@ msgstr "Наведаныя"
 
 #: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr "Ці быў гэты URI наведан раней."
+msgstr "Ці быў гэты URI наведаны раней."
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
-msgstr "Атрыманьне стану стэку... (%d)"
+msgstr "Атрыманьне стану стэка... (%d)"
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
 "'%s'"
 msgstr ""
-"Немагчыма апрацаваць core-файл з дапамогай gdb:\n"
+"Немагчыма апрацаваць файл адбітка памяці з дапамогай gdb:\n"
 "'%s'"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"У GDB не атрымалась вызначыць, які дваічны файл быў створаны \n"
+"У GDB не атрымалась вызначыць, які бінарны файл быў створаны \n"
 "'%s'"
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
-msgstr "Памылка пры чытаньні... спыненьне"
+msgstr "Памылка падчас чытаньня... перарываньне"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr ""
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr ""
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
@@ -590,7 +626,7 @@ msgstr ""
 "У вашае сыстэме не адшуканы GDB.\n"
 "Адладачныя зьвесткі ня будуць атрыманы."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
@@ -598,35 +634,38 @@ msgstr ""
 "Немагчыма адшукаць файл gdb-cmd.\n"
 "Калі ласка, паспрабуйце пераўсталяваць Bug Buddy."
 
-#: src/gdb-buddy.c:352
-#, fuzzy, c-format
+#: src/gdb-buddy.c:310
+#, c-format
 msgid ""
 "There was an error running gdb:\n"
 "\n"
 "%s"
-msgstr "Адбылась памылка выкананьня gdb."
+msgstr ""
+"Адбылась памылка выкананьня gdb:\n"
+"\n"
+"%s"
 
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr ""
+msgstr "Немагчыма прачытаць інфармацыю сымбалічнае спасылкі з %s"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr ""
+msgstr "Файл мае зашмат сымбалічных спасылак."
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr ""
+msgstr "Пятля Bug Buddy не выконваецца!"
 
 #: src/save-buddy.c:284
 #, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr ""
+msgstr "Памылка усталёўкі апрацоўшчыка sigchld: %s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr ""
+msgstr "Недапушчальная назва файла."
 
 #: src/save-buddy.c:412
 #, c-format
@@ -635,65 +674,79 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
+"Назва файла які ўжо існуе '%s'.\n"
+"\n"
+"Вы жадаеце перазапісаць гэты файл?"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr ""
+msgstr "_Перазапісаць"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "Немагчыма стварыць файл адката."
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
 msgstr "Вітаем у Bug Buddy"
 
 #: src/united-states-of-bug-buddy.c:55
-#, fuzzy
-msgid "Select a Product or Application"
-msgstr "Абярыце праграму"
+msgid "Collecting debug info"
+msgstr "Збор адладачнай інфармацыі"
 
 #: src/united-states-of-bug-buddy.c:56
-msgid "Select a Component"
-msgstr "Абярыце кампанэнт"
+msgid "Select a Product or Application"
+msgstr "Выбярыце прадукт ці дастасаваньне"
 
 #: src/united-states-of-bug-buddy.c:57
-msgid "Frequently Reported Bugs"
-msgstr "Паста паведамляемыя памылкі"
+msgid "Select a Component"
+msgstr "Выбярыце кампанэнт"
 
 #: src/united-states-of-bug-buddy.c:58
+msgid "Frequently Reported Bugs"
+msgstr "Памылкі пра якія часта паведамляюць"
+
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "Апісаньне памылкі"
 
-#: src/united-states-of-bug-buddy.c:59
-msgid "Mail Configuration"
-msgstr "Канхвігурацыя пошты"
-
 #: src/united-states-of-bug-buddy.c:60
-msgid "Confirmation"
-msgstr "Пацьверджаньне"
+msgid "Mail Configuration"
+msgstr "Канфігурацыя пошты"
 
 #: src/united-states-of-bug-buddy.c:61
+msgid "Confirmation"
+msgstr "Падцьверджаньне"
+
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "Завершана!"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
 msgstr "Графічны сродак паведамленьняў аб памылках для GNOME."
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
 msgstr "Крывая старонка Bug Buddy"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
-msgstr "Калі ласка, увядзіе вашае ймя."
+msgstr "Калі ласка, увядзіе вашае імя."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
-msgstr "Калі ласка, увядзіце рэчаісную электронную адрэсу."
+msgstr "Калі ласка, увядзіце сапраўдную электронную адрэсу."
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
@@ -704,20 +757,20 @@ msgstr ""
 "\n"
 "Калі ласка, праверце шлях да sendmail нанава."
 
-#: src/united-states-of-bug-buddy.c:372
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
-msgstr "Калі ласка, увядзіце рэчаісны email загад."
+msgstr "Калі ласка, увядзіце сапраўдную каманду email."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
-msgstr "Зададзены файл ня йснуе."
+msgstr "Пазначаны файл ня йснуе."
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
-msgstr "Тып файлу: %s"
+msgstr "Тып файла: %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
@@ -728,30 +781,20 @@ msgstr ""
 "\n"
 "Bug Buddy можа прымаць толькі тэкставыя (text/*) файлы."
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
-msgstr "Вы павінны ўключыць асэнсаваны радок тэмы ў вашае паведамленье."
+msgstr "Вы павінны ўключыць асэнсаваны радок тэмы ў вашае паведамленьне."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
-msgstr "Вы павінны ўключыць асэнсаваны апісаньне ў вашае паведамленьне."
+msgstr "Вы павінны ўключыць асэнсаванае апісаньне ў вашае паведамленьне."
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "Даслаць гэтае паведамленьне?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr "_Даслаць"
-
-#: src/united-states-of-bug-buddy.c:560
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
 msgstr ""
-"Калі ласка, пачакайце, покуль Bug Buddy абнаўляе ўласны сьпіс\n"
-"праграм для сыстэмы адсьледжваньня."
+"Калі ласка, пачакайце, покуль Bug Buddy захоўвае паведамленьне аб памылцы..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -760,88 +803,253 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Паведамленьне аб памылцы не было захавана ў %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Калі ласка, паспрабуйце яшчэ, магчыма з іншай назвай файла."
 
-#: src/united-states-of-bug-buddy.c:576
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:637
+#, c-format
 msgid "Your bug report was saved in %s"
 msgstr "Вашае паведамленьне аб памылцы было захавана ў '%s'"
 
-#: src/united-states-of-bug-buddy.c:584
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
 msgstr ""
-"Калі ласка, пачакайце, покуль Bug Buddy абнаўляе ўласны сьпіс\n"
-"праграм для сыстэмы адсьледжваньня."
+"Калі ласка, пачакайце, покуль Bug Buddy дасылае вашае паведамленьне аб "
+"памылцы..."
 
-#: src/united-states-of-bug-buddy.c:591
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:649
+#, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
 "\n"
 "%s"
-msgstr "Адбылась памылка выкананьня gdb."
+msgstr ""
+"Адбылася памылка адпраўленьня паведамленьня аб памылцы:\n"
+"\n"
+"%s"
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"Вашае паведамленьне было даслана:\n"
+"Вашае паведамленьне даслана на:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Вялікі дзякуй!"
+"Сыстэма сачэньня за памылкамі ёсьць часткай Вольнага праграмовага "
+"забясьпячэньня. . Дзякуй за вашу дапамогу."
 
-#: src/united-states-of-bug-buddy.c:747
-msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
 msgstr ""
-"Паколькі Bug Buddy нічога не ведае аб праграме, у якой вы знайшлі памылку, і "
-"паведамленьне аб якой вы жадаеце даслаць, вам неабходна ўласна пазначыць "
-"адрэсу для накіраваньня паведамленьня."
+"Калі ласка, выбярыце файл адбітка памяці ці запусьціце дастасаваньне каб "
+"адладзіць яго."
 
-#: src/united-states-of-bug-buddy.c:771
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
+msgstr ""
+
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr "Вам патрэбна вызначыць праграму для вашага паведамленьня."
+msgstr "Калі ласка выбярыце прадукт для паведамленьня аб памылцы."
 
-#: src/united-states-of-bug-buddy.c:785
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:934
+#, fuzzy, c-format
+msgid "Please choose a component, version, and severity level for product %s"
+msgstr "Калі ласка, абярыце кампанэнт, вэрсыю й узровень важнасьці."
+
+#: src/united-states-of-bug-buddy.c:943
 msgid "Please choose an application for your bug report."
-msgstr ""
-"Калі ласка, зрабіце канчатковыя выпраўленьні ў паведамленьні аб памылцы."
+msgstr "Калі ласка, выбярыце дастасаваньне для паведамленьня аб памылцы."
 
-#: src/united-states-of-bug-buddy.c:804
+#: src/united-states-of-bug-buddy.c:947
+#, fuzzy, c-format
 msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+"Please choose a component, version, and severity level for application %s"
+msgstr "Калі ласка, абярыце кампанэнт, вэрсыю й узровень важнасьці."
+
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
 msgstr ""
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
-msgstr "Вам патрэбна вызначыць складальнік для вашага паведамленьня."
+msgstr "Вам патрэбна пазначыць кампанэнт для вашага паведамленьня."
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr "Вам патрэбна вызначыць вэрсыю для вашага паведамленьня."
+#: bug-buddy.schemas.in.h:1
+#, fuzzy
+msgid "Bug reporter name"
+msgstr "Інструмэнт паведамленьня аб памылках"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+#, fuzzy
+msgid "Email Address"
+msgstr "Э.скрыня паведамляльніка"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"Вы на самой справе жадаеце адмяніць\n"
-"гэтае паведамленьне аб памылцы?"
+
+#: bug-buddy.schemas.in.h:4
+#, fuzzy
+msgid "File to save bug reports"
+msgstr "Стварыць новае паведамленьне аб памылцы"
+
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr ""
+
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr ""
+
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+
+#: bug-buddy.schemas.in.h:12
+#, fuzzy
+msgid "Use sendmail to send bug reports"
+msgstr "Выкарыстоўваць sendmail на_ўпрост"
+
+#~ msgid "Could not find pixmap: %s (%d)\n"
+#~ msgstr "Немагчыма адшукаць відарыс: %s (%d)\n"
+
+#~ msgid "Bug Buddy updated its bug information correctly."
+#~ msgstr "Bug Buddy абнавіў інфармацыю аб памылцы карэктна."
+
+#~ msgid "The product or application is not listed above."
+#~ msgstr "Прадукт ці дастасаваньне не пералічаначы вышэй."
+
+#~ msgid ""
+#~ "Since Bug Buddy doesn't know about the product you wish to submit a bug "
+#~ "report in, you will have to manually address the bug report."
+#~ msgstr ""
+#~ "Паколькі Bug Buddy нічога не ведае аб праграме, у якой вы знайшлі "
+#~ "памылку, і паведамленьне аб якой вы жадаеце даслаць, вам неабходна ўласна "
+#~ "пазначыць адрэсу для накіраваньня паведамленьня."
+
+#~ msgid ""
+#~ "This application has not included information about how to submit bugs.\n"
+#~ "\n"
+#~ "If you know an email address where bug reports should be sent, you will "
+#~ "be able to specify that later.\n"
+#~ "\n"
+#~ "You may be able to find one in an \"About\" box in the application, or in "
+#~ "the application's documentation."
+#~ msgstr ""
+#~ "Гэтае дастасаваньне ня ўтрымлівае інфармацыі як даслаць паведамленьне аб "
+#~ "памылцы.\n"
+#~ "\n"
+#~ "Калі вы ведаеце адрэсу на якую вам трэба даслаць паведамленьне, пазначце "
+#~ "яе далей.\n"
+#~ "\n"
+#~ "Вы можаце адшукаць яе таксама ў дыялёге дастасаваньня \"Пра праграму..."
+#~ "\", ці ў дакумэнтацыі да дастасаваньня."
+
+#~ msgid "You must specify a version for your bug report."
+#~ msgstr "Вам патрэбна пазначыць вэрсыю для вашага паведамленьня."
+
+#~ msgid ""
+#~ "Are you sure you want to cancel\n"
+#~ "this bug report?"
+#~ msgstr ""
+#~ "Вы на самой справе жадаеце адмяніць\n"
+#~ "гэтае паведамленьне пра памылку?"
+
+#~ msgid "Please make any final corrections to the bug report."
+#~ msgstr ""
+#~ "Калі ласка, зрабіце канчатковыя выпраўленьні ў паведамленьні аб памылцы."
+
+#~ msgid "The application has a wrong behaviour"
+#~ msgstr "Дастасаваньне сябе няправільна паводзіць"
+
+#~ msgid "To"
+#~ msgstr "Каму"
+
+#~ msgid "Submit this bug report now?"
+#~ msgstr "Даслаць гэтае паведамленьне зараз?"
+
+#~ msgid "_Submit"
+#~ msgstr "_Даслаць"
+
+#~ msgid ""
+#~ "Your bug report has been submitted to:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Thanks!"
+#~ msgstr ""
+#~ "Вашае паведамленьне было даслана:\n"
+#~ "\n"
+#~ "        <%s>\n"
+#~ "\n"
+#~ "Вялікі дзякуй!"
+
+#~ msgid "Add more information to existing report"
+#~ msgstr "Дадаць больш зьвестак да існуючага паведамленьня"
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "You are seeing this because another application has crashed."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Вы бачыце гэта таму што іншае дастасаваньне звалілась."
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "Please wait a few moments while Bug Buddy obtains debugging information "
+#~ "from the applications.  This allows Bug Buddy to provide a more useful "
+#~ "bug report."
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Калі ласка, крыху пачакайце пакуль \"Bug Buddy\" зьбярэ адладачныя "
+#~ "зьвесткі з дастасаваньняў.  Гэта дазволіць \"Bug Buddy\" прапанаваць "
+#~ "больш карыснае паведамленьне."
 
 #~ msgid ""
 #~ "There was an error showing the proxy settings:\n"
@@ -858,9 +1066,6 @@ msgstr ""
 
 #~ msgid "Proxy Settings..."
 #~ msgstr "Усталёўкі proxy..."
-
-#~ msgid "To:"
-#~ msgstr "Каму:"
 
 #~ msgid "Updating products list:"
 #~ msgstr "Абнаўленьне сьпісу праграмаў:"

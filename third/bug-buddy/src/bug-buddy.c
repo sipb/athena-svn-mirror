@@ -40,6 +40,9 @@
 #include <libgnomecanvas/gnome-canvas-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/libgnometypebuiltins.h>
+#include <gconf/gconf-client.h>
+#include <gtk/gtkoptionmenu.h>
+
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
@@ -66,15 +69,11 @@ const gchar *crash_type[] = {
 	NULL
 };
 
-const gchar *bug_type[] = {
-	N_("Create a new bug report"),
-	N_("Add more information to existing report"),
-	NULL
-};
-
 PoptData popt_data;
 
 DruidData druid_data;
+GConfClient *conf_client;
+
 
 static const struct poptOption options[] = {
 	{ "name",        0, POPT_ARG_STRING, &popt_data.name,         0, N_("Name of contact"),                    N_("NAME") },
@@ -87,6 +86,32 @@ static const struct poptOption options[] = {
 	{ "include",     0, POPT_ARG_STRING, &popt_data.include_file, 0, N_("Text file to include in the report"), N_("FILE") },
 	{ NULL } 
 };
+
+void
+buddy_error (GtkWidget *parent, const char *msg, ...)
+{
+	GtkWidget *w;
+	GtkDialog *d;
+	gchar *s;
+	va_list args;
+
+	/* No va_list version of dialog_new, construct the string ourselves. */
+	va_start (args, msg);
+	s = g_strdup_vprintf (msg, args);
+	va_end (args);
+
+	w = gtk_message_dialog_new (GTK_WINDOW (parent),
+				    0,
+				    GTK_MESSAGE_ERROR,
+				    GTK_BUTTONS_OK,
+				    "%s",
+				    s);
+	d = GTK_DIALOG (w);
+	gtk_dialog_set_default_response (d, GTK_RESPONSE_OK);
+	gtk_dialog_run (d);
+	gtk_widget_destroy (w);
+	g_free (s);
+}
 
 GtkWidget *
 get_widget (const char *name, const char *loc)
@@ -191,7 +216,6 @@ update_crash_type (GtkWidget *w, gpointer data)
 void
 on_gdb_go_clicked (GtkWidget *w, gpointer data)
 {
-	druid_data.explicit_dirty = TRUE;
 	start_gdb ();
 }
 
@@ -221,7 +245,6 @@ on_gdb_stop_clicked (GtkWidget *button, gpointer data)
 			return;
 		}
 		stop_gdb ();
-		druid_data.explicit_dirty = TRUE;
 	}
 	gtk_widget_destroy (w);
 }
@@ -244,63 +267,54 @@ on_gdb_copy_clicked (GtkWidget *w, gpointer data)
 void
 on_gdb_save_clicked (GtkWidget *w, gpointer data)
 {
-	GtkWidget *filesel;
+	GtkWidget *filechooser;
 	int response;
 
-	filesel = gtk_file_selection_new (_("Save Backtrace"));
+	filechooser = gtk_file_chooser_dialog_new (_("Save Backtrace"),
+						   NULL,
+						   GTK_FILE_CHOOSER_ACTION_SAVE,
+						   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						   GTK_STOCK_SAVE, GTK_RESPONSE_OK,
+						   NULL);
  run_save_dialog:
-	response = gtk_dialog_run (GTK_DIALOG (filesel));
+	response = gtk_dialog_run (GTK_DIALOG (filechooser));
 	if (response == GTK_RESPONSE_OK) {
-		const char *file;
+		char *file;
 		GError *gerr = NULL;
 		char *text;
 
-		file = gtk_file_selection_get_filename (GTK_FILE_SELECTION (filesel));
+		file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (filechooser));
 		text = buddy_get_text ("gdb-text");
-		if (!bb_write_buffer_to_file (GTK_WINDOW (filesel), 
+		if (!bb_write_buffer_to_file (GTK_WINDOW (filechooser), 
 					      _("Please wait while Bug Buddy saves the stack trace..."),
 					      file, text, -1, &gerr)) {
 			if (gerr) {
-				GtkWidget *d;
-				
-				d = gtk_message_dialog_new (GTK_WINDOW (filesel),
-							    0,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("The stack trace was not saved in %s:\n\n"
-							      "%s\n\n"
-							      "Please try again, maybe with a different file name."),
-							    file, gerr->message);
-				gtk_dialog_run (GTK_DIALOG (d));
-				gtk_widget_destroy (d);
+				buddy_error (filechooser,
+					     _("The stack trace was not saved in %s:\n\n"
+					       "%s\n\n"
+					       "Please try again, maybe with a different file name."),
+					     file, gerr->message);
 				g_error_free (gerr);
 			}
+			g_free (file);
 			g_free (text);
 			goto run_save_dialog;
 		}
 
+		g_free (file);
 		g_free (text);
 	}
 	
-	gtk_widget_destroy (filesel);
+	gtk_widget_destroy (filechooser);
 }
 
 void
-on_product_toggle_clicked (GtkWidget *w, gpointer data)
+on_applications_products_changed (GtkWidget *w, gpointer data)
 {
-	char *button;
 
 	g_return_if_fail (druid_data.state == STATE_PRODUCT);
 
 	druid_data.show_products = !druid_data.show_products;
-
-	if (druid_data.show_products) {
-		button = _("Show _Applications");
-	} else {
-		button = _("Show _Products");
-	}
-
-	buddy_set_text ("product-toggle",    button);
 
 	products_list_load ();
 }
@@ -313,9 +327,6 @@ on_list_button_press_event (GtkWidget *w, GdkEventButton *button, gpointer data)
 	if (button->type != GDK_2BUTTON_PRESS)
 		return;
 
-	if (druid_data.download_in_progress)
-		return;
-	
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (w));
 	if (!gtk_tree_selection_get_selected (selection, NULL, NULL))
 		return;
@@ -435,7 +446,7 @@ init_gnome_version_stuff (void)
 	xmlDoc *doc;
 	char *xml_file;
 	xmlNode *node;
-	char *platform, *minor, *micro, *vendor;
+	char *platform, *minor, *micro, *distributor, *date;
 
 
 	druid_data.gnome_version = g_getenv ("BUG_BUDDY_GNOME_VERSION");
@@ -446,10 +457,12 @@ init_gnome_version_stuff (void)
 	if (!xml_file)
 		return;
 	doc = xmlParseFile (xml_file);
+	g_free (xml_file);
+
 	if (!doc)
 		return;
 
-	platform = minor = micro = vendor = NULL;
+	platform = minor = micro = distributor = NULL;
 	
 	for (node = xmlDocGetRootElement (doc)->children; node; node = node->next) {
 		if (!strcmp (node->name, "platform"))
@@ -458,20 +471,26 @@ init_gnome_version_stuff (void)
 			minor = xmlNodeGetContent (node);
 		else if (!strcmp (node->name, "micro"))
 			micro = xmlNodeGetContent (node);
-		else if (!strcmp (node->name, "vendor"))
-			vendor = xmlNodeGetContent (node);
+		else if (!strcmp (node->name, "distributor"))
+			distributor = xmlNodeGetContent (node);
+		else if (!strcmp (node->name, "date"))
+			date = xmlNodeGetContent (node);
 	}
 	
 	if (platform && minor && micro)
 		druid_data.gnome_platform_version = g_strdup_printf ("GNOME%s.%s.%s", platform, minor, micro);
   
-	if (vendor && *vendor)
-		druid_data.gnome_vendor = g_strdup (vendor);
+	if (distributor && *distributor)
+		druid_data.gnome_distributor = g_strdup (distributor);
 	
+	if (date && *date)
+		druid_data.gnome_date = g_strdup (date);
+
 	xmlFree (platform);
 	xmlFree (minor);
 	xmlFree (micro);
-	xmlFree (vendor);
+	xmlFree (distributor);
+	xmlFree (date);
 	
 	xmlFreeDoc (doc);
 }
@@ -485,10 +504,13 @@ init_ui (void)
 	const char **sp;
 	int i;
 	const char *nbs[] = { "druid-notebook", "gdb-notebook", NULL };
+	gboolean have_appname = FALSE;
 	
 	glade_xml_signal_autoconnect (druid_data.xml);
 
-	load_config ();
+	init_gconf_stuff ();
+
+	druid_data.show_products = FALSE;
 
 	/* gtk_widget_set_default_direction (GTK_TEXT_DIR_RTL); */
 
@@ -501,53 +523,41 @@ init_ui (void)
 		s = getenv ("GNOME_CRASHED_APPNAME");
 		if (s)
 			g_warning (_("$GNOME_CRASHED_APPNAME is deprecated.\n"
-				     "Please use the --appname command line"
+				     "Please use the --appname command line "
 				     "argument instead."));
 	}
 	buddy_set_text ("gdb-binary-entry", s);
+	if (s)
+		have_appname = TRUE;
 
 	s = popt_data.pid;
 	if (!s) {
 		s = getenv ("GNOME_CRASHED_PID");
 		if (s)
 			g_warning (_("$GNOME_CRASHED_PID is deprecated.\n"
-				     "Please use the --pid command line"
+				     "Please use the --pid command line "
 				     "argument instead."));
 	}
 	if (s) {
 		buddy_set_text ("gdb-pid-entry", s);
+		druid_data.bug_type = BUG_CRASH;
 		druid_data.crash_type = CRASH_DIALOG;
+		druid_set_state (STATE_GDB);
+		if (!have_appname)
+			g_warning (_("To debug a process, the application name is also required.\n"
+				     "Please also supply an --appname command line argument."));
 	}
 
 	/* core crash page */
 	if (popt_data.core_file) {
 		buddy_set_text ("gdb-core-entry", popt_data.core_file);
 		druid_data.crash_type = CRASH_CORE;
+		druid_data.bug_type = BUG_DEBUG;
+		druid_set_state (STATE_GDB);
 	}
-
-	{
-		char *message = g_strconcat (_("Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-					       "It will step you through the process of submitting a bug report."),
-					     druid_data.crash_type == CRASH_DIALOG
-					     ? _("\n\nYou are seeing this because another application has crashed.")
-					     : "",
-					     druid_data.crash_type != CRASH_NONE
-					     ? _("\n\nPlease wait a few moments while Bug Buddy obtains debugging information "
-						 "from the applications.  This allows Bug Buddy to provide a more useful "
-						 "bug report.")
-					     : "",
-					     NULL);
-		g_object_set (GET_WIDGET ("gdb-label"),
-			      "label", message,
-			      "selectable", TRUE,
-			      NULL);
-		g_free (message);
-	}
-
-	if (druid_data.crash_type != CRASH_NONE) 
 
 	/* package version */
-	buddy_set_text ("the-version-entry", popt_data.package_ver);
+	druid_data.version = popt_data.package_ver;
 
         /* init some ex-radio buttons */
 	m = gtk_menu_new ();
@@ -601,66 +611,29 @@ init_ui (void)
 					  NULL);
 	}
 
-	buddy_set_text ("desc-text",
-			"Description of Problem:\n\n\n"
-			"Steps to reproduce the problem:\n"
-			"1. \n"
-			"2. \n"
-			"3. \n\n"
-			"Actual Results:\n\n\n"
-			"Expected Results:\n\n\n"
-			"How often does this happen?\n\n\n"
-			"Additional Information:\n");
-
-	/* set the cursor at the beginning of the second line */
+	/* crearte lock tag for the email review page */
 	{
-		GtkTextBuffer *buffy;
-		GtkTextIter iter;
+		GtkTextBuffer *email_buffer;
+		GtkTextTag *tag;
 
-		buffy = gtk_text_view_get_buffer (GTK_TEXT_VIEW (GET_WIDGET ("desc-text")));
-		gtk_text_buffer_get_iter_at_line (buffy, &iter, 1);
-		gtk_text_buffer_place_cursor (buffy, &iter);
-	}
-}
-
-GtkWidget *
-make_image (char *widget_name, char *icon, char *s2, int stock, int i2)
-{
-	GtkWidget *w = NULL;
-
-	if (stock) {
-		GtkIconSize size = GTK_ICON_SIZE_BUTTON;
-
-		if (s2)
-			size = glade_enum_from_string (GTK_TYPE_ICON_SIZE, s2);
-
-		w = gtk_image_new_from_stock (icon, size);
-	} else {
-		GnomeFileDomain domain = GNOME_FILE_DOMAIN_APP_PIXMAP;
-		char *filename;
-		
-		if (s2)
-			domain = glade_enum_from_string (GNOME_TYPE_FILE_DOMAIN, s2);
-
-		filename = gnome_program_locate_file (NULL, domain, icon, TRUE, NULL);
-
-		if (filename)
-			w = gtk_image_new_from_file (filename);
-		else
-			g_warning (_("Could not find pixmap: %s (%d)\n"), icon, domain);
-		g_free (filename);
+		email_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW
+						(GET_WIDGET ("email-text")));
+		tag = gtk_text_buffer_create_tag (email_buffer, "lock_tag",
+						"editable", FALSE, NULL);
 	}
 
-	if (w)
-		gtk_widget_show (w);
 
-	return w;
+
+
 }
 
 gint
 delete_me (GtkWidget *w, GdkEventAny *evt, gpointer data)
 {
-	save_config ();
+	if (druid_data.last_update_check > 0) {
+                gconf_client_set_int (conf_client, "/apps/bug-buddy/last_update_check",
+				      time(NULL), NULL);
+	}
 	gtk_main_quit ();
 	return FALSE;
 }
@@ -675,7 +648,7 @@ on_druid_window_style_set (GtkWidget *widget, GtkStyle *old_style, gpointer data
 int
 main (int argc, char *argv[])
 {
-	GtkWidget *w;
+	GtkIconInfo *icon_info;
 	char *s;
 		
 	memset (&druid_data, 0, sizeof (druid_data));
@@ -695,12 +668,12 @@ main (int argc, char *argv[])
 			    GNOME_PARAM_APP_DATADIR, REAL_DATADIR,
 			    NULL);
 
-	s = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_APP_PIXMAP, 
-				       "bug-buddy.png", TRUE, NULL);
-	
-	if (s)
-		gnome_window_icon_set_default_from_file (s);
-	g_free (s);
+	icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
+						"bug-buddy", 48, 0);
+	if (icon_info) {
+		gnome_window_icon_set_default_from_file (gtk_icon_info_get_filename (icon_info));
+		gtk_icon_info_free (icon_info);
+        }
 
 	s = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_APP_DATADIR,
 				       "bug-buddy/bug-buddy.glade", TRUE, NULL);
@@ -710,23 +683,15 @@ main (int argc, char *argv[])
 		druid_data.xml = NULL;
 
 	if (!druid_data.xml) {
-		w = gtk_message_dialog_new (NULL,
-					    0,
-					    GTK_MESSAGE_ERROR,
-					    GTK_BUTTONS_OK,
-					    _("Bug Buddy could not load its user interface file (%s).\n"
-					      "Please make sure Bug Buddy was installed correctly."), 
-					    s);
-					      
-		gtk_dialog_set_default_response (GTK_DIALOG (w),
-						 GTK_RESPONSE_OK);
-		gtk_dialog_run (GTK_DIALOG (w));
-		gtk_widget_destroy (w);
+		buddy_error (NULL, 
+			     _("Bug Buddy could not load its user interface file (%s).\n"
+			       "Please make sure Bug Buddy was installed correctly."), 
+			     s);
 		return 0;
 	}
 	g_free (s);	
 
-	druid_set_state (STATE_GDB);
+	druid_set_state (STATE_INTRO);
 
 	init_gnome_version_stuff ();
 	init_ui ();
@@ -735,51 +700,35 @@ main (int argc, char *argv[])
 	if (druid_data.need_to_download) {
 		int response;
 		if (gtk_dialog_run (GTK_DIALOG (GET_WIDGET ("update-dialog"))) == GTK_RESPONSE_OK) {
+			gtk_widget_destroy (GET_WIDGET ("update-dialog"));
 			start_bugzilla_download ();
 			response = gtk_dialog_run (GTK_DIALOG (GET_WIDGET ("progress-dialog")));
 			if (response == GTK_RESPONSE_CANCEL) {
 				gnome_vfs_async_cancel (druid_data.vfshandle);
 				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
-				druid_data.download_in_progress = FALSE;
 			} else if (response == DOWNLOAD_FINISHED_ZERO_RESPONSE) {
-				w = gtk_message_dialog_new (NULL,
-							    0,
-							    GTK_MESSAGE_ERROR,
-							    GTK_BUTTONS_OK,
-							    _("Bug Buddy could not update its bug information.\n"
-							      "The old one will be used."));
-					      
-				gtk_dialog_set_default_response (GTK_DIALOG (w),
-						 		GTK_RESPONSE_OK);
-				gtk_dialog_run (GTK_DIALOG (w));
-				gtk_widget_destroy (w);
-
 				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
+				buddy_error (NULL,
+					     _("Bug Buddy could not update its bug information.\n"
+					       "The old one will be used."));
 			} else if (response == DOWNLOAD_FINISHED_OK_RESPONSE) {
-				w = gtk_message_dialog_new (NULL,
-							    0,
-							    GTK_MESSAGE_INFO,
-							    GTK_BUTTONS_OK,
-							    _("Bug Buddy updated its bug information correctly."));
-					      
-				gtk_dialog_set_default_response (GTK_DIALOG (w),
-						 		GTK_RESPONSE_OK);
-				gtk_dialog_run (GTK_DIALOG (w));
-				gtk_widget_destroy (w);
-
 				gtk_widget_destroy(GET_WIDGET ("progress-dialog"));
 			}
+		} else {
+			gtk_widget_destroy (GET_WIDGET ("update-dialog"));
 		}
-		
-		gtk_widget_destroy (GET_WIDGET ("update-dialog"));
 	}
-	
+
 	load_bugzilla_xml ();
 
 	gtk_widget_show (GET_WIDGET ("druid-window"));
 
 	load_applications ();
-	start_gdb ();
+
+	if (druid_data.bug_type == BUG_CRASH)
+		start_gdb ();
+
+	products_list_load ();
 
 	gtk_main ();
 

@@ -1,7 +1,8 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 src/bug-buddy.c
-src/bug-buddy.desktop.in
+src/bug-buddy.desktop.in.in
+src/bug-buddy-core.desktop.in.in
 src/bug-buddy.glade
 src/bugzilla.c
 src/cell-renderer-uri.c
@@ -9,3 +10,4 @@ src/config.c
 src/gdb-buddy.c
 src/save-buddy.c
 src/united-states-of-bug-buddy.c
+bug-buddy.schemas.in

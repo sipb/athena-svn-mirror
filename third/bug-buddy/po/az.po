@@ -1,136 +1,129 @@
-# -------------------------------------------------------
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# translation of bug-buddy.HEAD.az.po to Azerbaijani
+# translation of bug-buddy.HEAD.az.po to Azerbaijani Turkish
+# Copyright (C) 2000, 2004 Free Software Foundation, Inc.
 # Vasif İsmailoglu MD <azerb_linux@hotmail.com>, 2000.
+# Mətin Əmirov <metin@karegen.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: bug-buddy 2.1.0\n"
-"POT-Creation-Date: 2003-02-03 03:35+0000\n"
-"PO-Revision-Date: 2001-12-19 19:16GMT+0200\n"
-"Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
-"Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
+"Project-Id-Version: bug-buddy.HEAD.az\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-12 23:46+0200\n"
+"PO-Revision-Date: 2004-08-17 22:17+0300\n"
+"Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"net>\n"
+"X-Generator: KBabel 1.3.1\n"
 
-#: src/bug-buddy.c:56
+#: src/bug-buddy.c:59
 msgid "Submit bug report"
-msgstr "Raportu göndər"
+msgstr "Xəta raportu göndər"
 
-#: src/bug-buddy.c:57
+#: src/bug-buddy.c:60
 msgid "Only send report to yourself"
-msgstr "Raportu sadəcə olaraq  mənə göndər"
+msgstr "Raportu yalnız mənə göndər"
 
-#: src/bug-buddy.c:58
+#: src/bug-buddy.c:61
 msgid "Save report to file"
-msgstr "Raportu bir fayla qeyd et"
+msgstr "Raportu fayla qeyd et"
 
-#: src/bug-buddy.c:63
+#: src/bug-buddy.c:66
 msgid "crashed application"
-msgstr "çökən proqram"
+msgstr "iflas edən proqram"
 
-#: src/bug-buddy.c:64
+#: src/bug-buddy.c:67
 msgid "core file"
-msgstr "\"core\" faylı"
+msgstr "core faylı"
 
-#: src/bug-buddy.c:65
+#: src/bug-buddy.c:68
 msgid "nothing"
-msgstr "heç bir şey"
+msgstr "heçnə"
 
-#: src/bug-buddy.c:70
-msgid "Create a new bug report"
-msgstr "Yeni bir xəta raportunu yarat"
-
-#: src/bug-buddy.c:71
-msgid "Add more information to existing report"
-msgstr "Varolan bir xəta raportuna daha çox mə'lumat əlavə et"
-
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "Name of contact"
-msgstr "Əlaqəyə keçiləcək adam"
+msgstr "Əlaqə qurulacaq şəxs"
 
-#: src/bug-buddy.c:80
+#: src/bug-buddy.c:79
 msgid "NAME"
 msgstr "AD"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "Email address of contact"
 msgstr "Elektronik məktub ünvanı"
 
-#: src/bug-buddy.c:81
+#: src/bug-buddy.c:80
 msgid "EMAIL"
-msgstr "EMAIL"
+msgstr "EPOÇT"
 
-#: src/bug-buddy.c:82
+#: src/bug-buddy.c:81
 msgid "Package containing the program"
-msgstr "Proqramın paketi"
+msgstr "Proqramı daxil edən paket"
+
+#: src/bug-buddy.c:81
+msgid "PACKAGE"
+msgstr "PAKET"
 
 #: src/bug-buddy.c:82
-msgid "PACKAGE"
-msgstr "PACKAGE"
-
-#: src/bug-buddy.c:83
 msgid "Version of the package"
-msgstr "Paket buraxılışı"
+msgstr "Paketin buraxılışı"
+
+#: src/bug-buddy.c:82
+msgid "VERSION"
+msgstr "BURAXILIŞ"
 
 #: src/bug-buddy.c:83
-msgid "VERSION"
-msgstr "VERSION"
+msgid "File name of crashed program"
+msgstr "İflas edən proqramın fayl adı"
+
+#: src/bug-buddy.c:83 src/bug-buddy.c:85 src/bug-buddy.c:86
+msgid "FILE"
+msgstr "FAYL"
 
 #: src/bug-buddy.c:84
-msgid "File name of crashed program"
-msgstr "Çökən proqramın fayl adı"
-
-#: src/bug-buddy.c:84 src/bug-buddy.c:86 src/bug-buddy.c:87
-msgid "FILE"
-msgstr "FILE"
-
-#: src/bug-buddy.c:85
 msgid "PID of crashed program"
-msgstr "Çökən proqramın PID'i"
+msgstr "İflas edən proqramın PID'i"
 
-#: src/bug-buddy.c:85
+#: src/bug-buddy.c:84
 msgid "PID"
 msgstr "PID"
 
-#: src/bug-buddy.c:86
+#: src/bug-buddy.c:85
 msgid "Core file from program"
-msgstr "Proqramdan qalan \"core\" faylı"
+msgstr "Proqramdan qalan core faylı"
 
-#: src/bug-buddy.c:87
+#: src/bug-buddy.c:86
 msgid "Text file to include in the report"
-msgstr "Raport əlavə ediləcək mətn faylı"
+msgstr "Raporta əlavə ediləcək mətn faylı"
 
-#: src/bug-buddy.c:97
+#: src/bug-buddy.c:122
 #, c-format
 msgid "Could not find widget named %s at %s"
-msgstr ""
+msgstr "%s'da %s adlı pəncərəcini tapa bilmədim"
 
-#: src/bug-buddy.c:209
+#: src/bug-buddy.c:233
 msgid ""
 "gdb has not finished getting the debugging information.\n"
 "Kill the gdb process (the stack trace will be incomplete)?"
 msgstr ""
-"gdb xəta həllini hələ bitirmədi.\n"
-"gdbnin işni bitir ( xəta həlli bilgiləri tam olmaya bilər ) ? "
+"gdb xəta həllini daha bitirmədi.\n"
+"gdb'nin işni bitirilsin ( xəta həlli mə'lumatı tam olmaya bilər) ? "
 
-#: src/bug-buddy.c:220 src/gdb-buddy.c:125
+#: src/bug-buddy.c:244 src/gdb-buddy.c:113
 msgid "gdb has already exited"
 msgstr "gdb'nin işi onsuz da qurtarıb"
 
-#: src/bug-buddy.c:250
+#: src/bug-buddy.c:273
 msgid "Save Backtrace"
-msgstr ""
+msgstr "Geri Yolu Qeyd Et"
 
-#: src/bug-buddy.c:261
-#, fuzzy
+#: src/bug-buddy.c:289
 msgid "Please wait while Bug Buddy saves the stack trace..."
-msgstr ""
-"Lütfən Bug Buddy xəta ayıqlama üçün lazımi\n"
-"mə'mulların siyahısını alana qədər gözləyin."
+msgstr "Xahiş edirik, Bug Buddy taya mə'lumatını qeyd edənə qədər gözləyin..."
 
-#: src/bug-buddy.c:270
+#: src/bug-buddy.c:293
 #, c-format
 msgid ""
 "The stack trace was not saved in %s:\n"
@@ -139,362 +132,406 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Taya mə'lumatı %s'a qeyd edilə bilmədi.\n"
+"\n"
+"%s\n"
+"\n"
+"Xahış edirik, başqa fayl adıyla bir daha sınayın."
 
-#: src/bug-buddy.c:298
-#, fuzzy
-msgid "Show _Applications"
-msgstr "çökən proqram"
-
-#: src/bug-buddy.c:300 src/bug-buddy.glade.h:40
-#, fuzzy
-msgid "Show _Products"
-msgstr "Mə'mul"
-
-#: src/bug-buddy.c:368
+#: src/bug-buddy.c:379
 msgid "_Start Mailer"
-msgstr ""
+msgstr "Maileri _Başlat"
 
-#: src/bug-buddy.c:372
+#: src/bug-buddy.c:383
 msgid "_Send Report"
-msgstr ""
+msgstr "Raport _Göndər"
 
-#: src/bug-buddy.c:400
-#, fuzzy
+#: src/bug-buddy.c:411
 msgid "Hide Debugging Options"
-msgstr "Xəta həlli bilgiləri"
+msgstr "Xəta Həlli Seçimlərini Gizlət"
 
-#: src/bug-buddy.c:401
-#, fuzzy
+#: src/bug-buddy.c:412
 msgid "Show Debugging Options"
-msgstr "Xəta həlli bilgiləri"
+msgstr "Xəta Həlli Seçimlərini Göstər"
 
-#: src/bug-buddy.c:503
+#: src/bug-buddy.c:525
 msgid ""
 "$GNOME_CRASHED_APPNAME is deprecated.\n"
-"Please use the --appname command lineargument instead."
+"Please use the --appname command line argument instead."
 msgstr ""
-"$GNOME_CRASHED_APPNAME tam dəstəklənmir .\n"
-"Lütfən onun yerinə --appname əmrini seçin."
+"$GNOME_CRASHED_APPNAME məsləhət edilmir.\n"
+"Xahiş edirik, onun yerinə --appname əmrini seçin."
 
-#: src/bug-buddy.c:513
+#: src/bug-buddy.c:537
 msgid ""
 "$GNOME_CRASHED_PID is deprecated.\n"
-"Please use the --pid command lineargument instead."
+"Please use the --pid command line argument instead."
 msgstr ""
-"$GNOME_CRASHED_PID tam dəsktəklənmir .\n"
-"Lütfən onun yerinə --pid əmrini seçin."
+"$GNOME_CRASHED_PID məsləhət edilmir.\n"
+"Xahiş edirik, onun yerinə --pid əmrini seçin."
 
-#: src/bug-buddy.c:529
+#: src/bug-buddy.c:547
 msgid ""
-"Welcome to Bug Buddy, a bug reporting tool for GNOME.\n"
-"It will step you through the process of submitting a bug report."
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 msgstr ""
+"To debug a process, the application name is also required.\n"
+"Please also supply an --appname command line argument."
 
-#: src/bug-buddy.c:532
-msgid ""
-"\n"
-"\n"
-"You are seeing this because another application has crashed."
-msgstr ""
-
-#: src/bug-buddy.c:535
-msgid ""
-"\n"
-"\n"
-"Please wait a few moments while Bug Buddy obtains debugging information from "
-"the applications.  This allows Bug Buddy to provide a more useful bug report."
-msgstr ""
-
-#: src/bug-buddy.c:650
-#, c-format
-msgid "Could not find pixmap: %s (%d)\n"
-msgstr ""
-
-#: src/bug-buddy.c:717
+#: src/bug-buddy.c:687
 #, c-format
 msgid ""
 "Bug Buddy could not load its user interface file (%s).\n"
 "Please make sure Bug Buddy was installed correctly."
 msgstr ""
-"Bug-buddy '%s'i yükləyə bilmir.\n"
-"Lütfən bug-buddy'nin düzgün qurulub qurulmadığını yoxlayın ."
+"Bug-buddy istifadəçi ara üzü faylını (%s) yükləyə bilmədi.\n"
+"Xahiş edirik, Bug-Buddy'nin düzgün qurulub qurulmadığını yoxlayın."
 
-#: src/bug-buddy.c:749
+#: src/bug-buddy.c:712
 msgid ""
 "Bug Buddy could not update its bug information.\n"
 "The old one will be used."
 msgstr ""
+"Bug Buddy xəta mə'lumatını yeniləyə bilmədi.\n"
+"Köhnəsi işlədiləcəkdir."
 
-#: src/bug-buddy.c:763
-msgid "Bug Buddy updated its bug information correctly."
-msgstr ""
-
-#: src/bug-buddy.desktop.in.h:1
+#: src/bug-buddy.desktop.in.in.h:1 src/bug-buddy-core.desktop.in.in.h:1
 msgid "Bug Report Tool"
 msgstr "Xəta Bildirmə Vasitəsi"
 
-#: src/bug-buddy.desktop.in.h:2
-msgid "Report a bug in GNOME"
-msgstr "GNOME xətasını bildir"
+#: src/bug-buddy.desktop.in.in.h:2 src/bug-buddy-core.desktop.in.in.h:2
+msgid "Report a bug in GNOME-based applications"
+msgstr "GNOME əsaslı proqramlardakı xətaları bildirin"
 
 #: src/bug-buddy.glade.h:1
+msgid ""
+"\n"
+"Welcome to Bug Buddy, a bug reporting tool for GNOME. It will step you "
+"through the process of submitting a bug report.\n"
+"\n"
+"Please, select the kind of problem you want to report and press the \"Forward"
+"\" button:\n"
+msgstr ""
+"\n"
+"GNOME-un xəta bildiriş vasitəsi, Bug Buddy-yə xoş gəldiniz. O, xəta raportu "
+"göndərmə gedişatı sırasında sizə yardım edəcəkdir.\n"
+"\n"
+"Xahiş edirik, raport etmək istədiyiniz xəta növünü seçib \"İrəli\" düyməsinə "
+"basın:\n"
+
+#: src/bug-buddy.glade.h:6
 msgid "*"
-msgstr ""
+msgstr "*"
 
-#: src/bug-buddy.glade.h:2
+#: src/bug-buddy.glade.h:7
 msgid "<span size=\"xx-large\">Bug Buddy</span>"
-msgstr ""
+msgstr "<span size=\"xx-large\">Bug Buddy</span>"
 
-#: src/bug-buddy.glade.h:3
+#: src/bug-buddy.glade.h:8
 msgid ""
 "<span weight=\"bold\" size=\"larger\">Bug Buddy update</span>\n"
 "\n"
 "The bug information that is stored on your system is outdated. Choosing "
-"'Update' will update it. Choosing 'Don't update' will force the bug "
-"reporting to use old data.'\n"
+"\"Update\" will update it. Choosing \"Don't update\" will force the bug "
+"reporting to use old data.\n"
 msgstr ""
+"<span weight=\"bold\" size=\"larger\">Bug Buddy Yenilənməsi</span>\n"
+"\n"
+"Sisteminizdəki hazırkı xəta mə'lumatı çox köhnədir. 'Yenilə' seçimini "
+"seçərək onu yeniləyə bilərsiniz. 'Yeniləmə' seçimi isə onu köhnə "
+"mə'lumatları işlədməyə məcbur edəcəkdir.\n"
 
-#: src/bug-buddy.glade.h:7
+#: src/bug-buddy.glade.h:12
 msgid "Advanced"
-msgstr ""
+msgstr "Ətraflı"
 
-#: src/bug-buddy.glade.h:8
+#: src/bug-buddy.glade.h:13
 msgid "Assbarn Phenomenon"
 msgstr "Assbarn Fenomeni"
 
-#: src/bug-buddy.glade.h:9
-#, fuzzy
+#: src/bug-buddy.glade.h:14
 msgid "Binary file:"
-msgstr "Binar fayl"
+msgstr "İkili fayl:"
 
-#: src/bug-buddy.glade.h:10 src/united-states-of-bug-buddy.c:102
+#: src/bug-buddy.glade.h:15 src/united-states-of-bug-buddy.c:262
 msgid "Bug Buddy"
 msgstr "Bug Buddy"
 
-#: src/bug-buddy.glade.h:11
-#, fuzzy
+#: src/bug-buddy.glade.h:16
 msgid ""
 "Bug Buddy can send debugging information with your bug report.\n"
 "The correct options should have been selected for you automatically."
 msgstr ""
-"Bug Buddy xəta raportınızı yollaya bilər.\n"
-"Düzgün seçənək sizin üçün qurulmuş və eçilmiş olmalıdır.\n"
-"Ətraflı mə'lumat üçün, lütfən Yardım düyməsinə basın."
+"Bug Buddy sizin xəta raportunuzu yollaya bilər.\n"
+"Düzgün seçim sizin üçün seçilmiş olmalıdır."
 
-#: src/bug-buddy.glade.h:13
+#: src/bug-buddy.glade.h:18
+msgid ""
+"Bug Buddy is now collecting information on your crash to submit to a bug "
+"tracking system. This is an automated process, and may take a few minutes. "
+"When it is done, you can press 'Show Debugging Details' to see the "
+"information or press 'Forward' to move to the next step in the process."
+msgstr ""
+"Bug Buddy indi xəta izləmə sisteminə göndəriləcək iflas haqqında mə'lumat "
+"toplayır. Bu avtomatikləşdirilmiş gedişatdır və bir neçə dəqiqə sürə bilər. "
+"Bu gedişat bitəndə 'Xəta Həlli Təfərruatlarını Göstər' düyməsinə basaraq "
+"mə'lumatları görə bilər, ya da 'İrəli' düyməsinə basaraq gedişatdakı növbəti "
+"mərhələyə keçə bilərsiniz."
+
+#: src/bug-buddy.glade.h:19
 msgid ""
 "Bug Buddy uses email to submit the bug reports.\n"
 "Please choose how you would like Bug Buddy to send email."
 msgstr ""
+"Bug Buddy xəta raportlarını göndərmək üçün e-poçtu işlədir.\n"
+"Xahiş edirik, Bug Buddy-nin necə e-poçt göndərəcəyini seçin."
 
-#: src/bug-buddy.glade.h:15
-msgid "Cc"
-msgstr "Cc"
+#: src/bug-buddy.glade.h:21
+msgid "Cc:"
+msgstr "Cc:"
 
-#: src/bug-buddy.glade.h:16
+#: src/bug-buddy.glade.h:22
 msgid "Core file"
 msgstr "Core faylı"
 
-#: src/bug-buddy.glade.h:17
-msgid "Debug"
-msgstr "Ayıqla"
+#: src/bug-buddy.glade.h:23
+msgid "D_ebug a crashed or running application (experts only)"
+msgstr ""
+"İflas etmiş ya da fəaliyyətdə olan proqramın xəta həllini _et (yalnız "
+"mütəxəssislər)"
 
-#: src/bug-buddy.glade.h:18 src/bugzilla.c:713 src/bugzilla.c:788
-#: src/bugzilla.c:819
+#: src/bug-buddy.glade.h:24
+msgid "Debug"
+msgstr "Xəta Həlli"
+
+#: src/bug-buddy.glade.h:25 src/bugzilla.c:747 src/bugzilla.c:822
+#: src/bugzilla.c:853
 msgid "Description"
 msgstr "İzahat"
 
-#: src/bug-buddy.glade.h:19
-msgid "Downloading files"
-msgstr ""
-
-#: src/bug-buddy.glade.h:20
-msgid "Email"
-msgstr "ePoçt"
-
-#: src/bug-buddy.glade.h:21
-msgid "Include a text file"
-msgstr "Bir mətn faylını əlavə et"
-
-#: src/bug-buddy.glade.h:22
-msgid "Just save to a file so I can submit a bug report manually"
-msgstr ""
-
-#: src/bug-buddy.glade.h:23
-msgid "Name"
-msgstr "Ad"
-
-#: src/bug-buddy.glade.h:24
-msgid "Path of sendmail"
-msgstr ""
-
-#: src/bug-buddy.glade.h:25
-msgid "Please choose a component, version, and severity level."
-msgstr "Lütfən komponenti, buraxılış və əhəmiyyət dərəcəsini  seçin."
-
 #: src/bug-buddy.glade.h:26
-msgid "Please make any final corrections to the bug report."
-msgstr ""
+msgid "Downloading files"
+msgstr "Fayllar endirilir"
 
 #: src/bug-buddy.glade.h:27
-msgid "Please make your bug report in English, if possible."
-msgstr "Lütfən xəta raportu üçün İngilis dilindən istifadə edin."
+msgid "Email:"
+msgstr "ePoçt:"
 
 #: src/bug-buddy.glade.h:28
-#, fuzzy
-msgid ""
-"Please select the product or application for the bug you wish to report."
-msgstr "Lütfən yollamaq istədiyiniz xətanın mə'mulunu seçin."
+msgid "Include a text file"
+msgstr "Bir mətn faylı əlavə et"
 
 #: src/bug-buddy.glade.h:29
+msgid "Just s_ave to a file so I can submit a bug report manually"
+msgstr "Xəta raportunu əllə göndərəbilməm üçün onu fayla _qeyd et"
+
+#: src/bug-buddy.glade.h:30
+msgid "Name:"
+msgstr "Ad:"
+
+#: src/bug-buddy.glade.h:31
+msgid "Path of sendmail:"
+msgstr "Sendmail cığırı:"
+
+#: src/bug-buddy.glade.h:32
+msgid "Please choose a component, version, and severity level."
+msgstr "Xahiş edirik komponenti, buraxılış və əhəmiyyət dərəcəsini  seçin."
+
+#: src/bug-buddy.glade.h:33
+msgid ""
+"Please make any final corrections to the bug report.\n"
+"Notice that it will be shown at http://bugzilla.gnome.org\n"
+"It will include your name, e-mail address, and maybe\n"
+"some information about how the application crashed. If the\n"
+"document you were working on contained sensitive information,\n"
+"you may not want to submit this bug report"
+msgstr ""
+"Xahiş edirik, xəta raportuna son əlavələri ya da düzəlişləri edin.\n"
+"Diqqətinizə yetirək ki bu http://bugzilla.gnome.org ünvanında\n"
+"görünəcək. Xəta raportu sizin adınızı, e-poçt ünvanınızı və\n"
+"proqramın necə iflas etdiyi haqqında Mə'lumatı daxil edəcək.\n"
+"Əgər üstündə işlədiyiniz sənəddə vacib ya da gizli mə'lumat varsa,\n"
+"sizə xəta raportu göndərməməyi məsləhət edirik"
+
+#: src/bug-buddy.glade.h:39
+msgid "Please make your bug report in English, if possible."
+msgstr "Xahiş edirik xəta raportu üçün İngilis dilindən istifadə edin."
+
+#: src/bug-buddy.glade.h:40
+msgid ""
+"Please select the product or application for the bug you wish to report."
+msgstr "Xahiş edirik yollamaq istədiyiniz xətanın mə'mulunu seçin."
+
+#: src/bug-buddy.glade.h:41
 msgid ""
 "Please take a minute to see if your bug is one of the most frequently "
 "reported bugs.\n"
 "If the bug is already reported, please do not report it again."
 msgstr ""
+"Xahiş edirik bir dəqiqənizi sizin xətanızın ən çox raport edilən xətalardan "
+"biri olub olmadığını\n"
+"görmək üçün ayırın. Əgər xəta öncədən raport edilibsə xahiş edirik onu "
+"yenidən raport etməyin."
 
-#: src/bug-buddy.glade.h:31
+#: src/bug-buddy.glade.h:43
 msgid ""
 "Please wait while Bug Buddy updates its list\n"
 "of products for the bug tracking systems."
 msgstr ""
-"Lütfən Bug Buddy xəta ayıqlama üçün lazımi\n"
+"Xahiş edirik Bug Buddy xəta ayıqlama üçün lazımi\n"
 "mə'mulların siyahısını alana qədər gözləyin."
 
-#: src/bug-buddy.glade.h:33
-#, fuzzy
+#: src/bug-buddy.glade.h:45
 msgid "Process ID:"
-msgstr "Əməliyyat ID'si"
+msgstr "Əməliyyat ID'si:"
 
-#: src/bug-buddy.glade.h:34
-#, fuzzy
-msgid "Save in"
-msgstr "Qeyd Edilir:"
+#: src/bug-buddy.glade.h:46
+msgid "Save in:"
+msgstr "Qeyd yeri:"
 
-#: src/bug-buddy.glade.h:35
+#: src/bug-buddy.glade.h:47
 msgid "Save the report to..."
 msgstr "Raportu fərqli qeyd et ..."
 
-#: src/bug-buddy.glade.h:36
-#, fuzzy
+#: src/bug-buddy.glade.h:48
 msgid "Saving: "
 msgstr "Qeyd Edilir:"
 
-#: src/bug-buddy.glade.h:37
-#, fuzzy
+#: src/bug-buddy.glade.h:49
 msgid "Sendmail Settings"
-msgstr "Sendmail"
+msgstr "Sendmail Qurğuları"
 
-#: src/bug-buddy.glade.h:38
-msgid "Severity"
-msgstr "Əhəmiyyət"
+#: src/bug-buddy.glade.h:50
+msgid "Severity:"
+msgstr "Əhəmiyyət:"
 
-#: src/bug-buddy.glade.h:39
-#, fuzzy
+#: src/bug-buddy.glade.h:51
+msgid "Show _Applications"
+msgstr "_Proqramları Göstər"
+
+#: src/bug-buddy.glade.h:52
 msgid "Show _Debugging Details"
-msgstr "Xəta həlli bilgiləri"
+msgstr "Xəta həlli təfərruatlarını göstər"
 
-#: src/bug-buddy.glade.h:41
+#: src/bug-buddy.glade.h:53
+msgid "Show _Products"
+msgstr "_Mə'mulları Göstər"
+
+#: src/bug-buddy.glade.h:54
 msgid "Show most frequent bugs in:"
-msgstr ""
+msgstr "Ən çox təkrarlanan xətaları burada göstər:"
 
-#: src/bug-buddy.glade.h:42
+#: src/bug-buddy.glade.h:55
 msgid "Simple"
-msgstr ""
+msgstr "Sadə"
 
-#: src/bug-buddy.glade.h:43
+#: src/bug-buddy.glade.h:56
 msgid "Start"
-msgstr ""
+msgstr "Başla"
 
-#: src/bug-buddy.glade.h:44
+#: src/bug-buddy.glade.h:57
 msgid "Stop"
 msgstr "Dayan"
 
-#: src/bug-buddy.glade.h:45
+#: src/bug-buddy.glade.h:58
 msgid "Submit another bug"
 msgstr "Başqa xəta yolla"
 
-#: src/bug-buddy.glade.h:46
+#: src/bug-buddy.glade.h:59
 msgid "Summary"
 msgstr "İcmal"
 
-#: src/bug-buddy.glade.h:47
-msgid "The product or application is not listed above."
-msgstr ""
+#: src/bug-buddy.glade.h:60
+msgid "The _application does not function correctly"
+msgstr "Proqram düzgün _işləmir"
 
-#: src/bug-buddy.glade.h:48
-msgid "To"
-msgstr "Yollanacaq"
+#: src/bug-buddy.glade.h:61
+msgid "The _documentation is wrong"
+msgstr "_Sənədləşdirmə səhvdir"
 
-#: src/bug-buddy.glade.h:49
-msgid "Use sendmail directly"
-msgstr ""
+#: src/bug-buddy.glade.h:62
+msgid "The _translation is wrong"
+msgstr "_Tərcümə səhvdir"
 
-#: src/bug-buddy.glade.h:50
-msgid "Version"
+#: src/bug-buddy.glade.h:63
+msgid "To:"
+msgstr "Hədəf :"
+
+#: src/bug-buddy.glade.h:64
+msgid "Use _sendmail directly"
+msgstr "Sendmail-i birbaşa işlət"
+
+#: src/bug-buddy.glade.h:65
+msgid "Version:"
 msgstr "Buraxılış"
 
-#: src/bug-buddy.glade.h:51
+#: src/bug-buddy.glade.h:66
 msgid "_Don't update"
-msgstr ""
+msgstr "_Güncəlləmə"
 
-#: src/bug-buddy.glade.h:52
+#: src/bug-buddy.glade.h:67
+msgid "_Request a missing feature"
+msgstr "Əksik olan xüsusiyyəti _bildir"
+
+#: src/bug-buddy.glade.h:68
 msgid "_Update"
-msgstr ""
+msgstr "_Güncəllə"
 
-#: src/bug-buddy.glade.h:53
+#: src/bug-buddy.glade.h:69
 msgid "component"
 msgstr "komponent"
 
-#: src/bug-buddy.glade.h:54
+#: src/bug-buddy.glade.h:70
 msgid "desc"
 msgstr "desc"
 
-#: src/bug-buddy.glade.h:55
+#: src/bug-buddy.glade.h:71
 msgid "email info"
 msgstr "ePoçt infosu"
 
-#: src/bug-buddy.glade.h:56
+#: src/bug-buddy.glade.h:72
 msgid "finished"
 msgstr "qurtardı"
 
-#: src/bug-buddy.glade.h:57
+#: src/bug-buddy.glade.h:73
 msgid "gdb"
 msgstr "gdb"
 
-#: src/bug-buddy.glade.h:58
-#, fuzzy
+#: src/bug-buddy.glade.h:74
+msgid "intro"
+msgstr "giriş"
+
+#: src/bug-buddy.glade.h:75
 msgid "mail config"
-msgstr "ePoçt infosu"
+msgstr "ePoçt qurğusu"
 
-#: src/bug-buddy.glade.h:59
+#: src/bug-buddy.glade.h:76
 msgid "mostfreq"
-msgstr ""
+msgstr "mostfreq"
 
-#: src/bug-buddy.glade.h:60
+#: src/bug-buddy.glade.h:77
 msgid "product"
 msgstr "mə'mul"
 
-#: src/bugzilla.c:257
+#: src/bugzilla.c:279
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d -dən %d -i"
 
-#: src/bugzilla.c:687
-#, fuzzy
+#: src/bugzilla.c:721
 msgid "ID"
-msgstr "PID"
+msgstr "ID"
 
-#: src/bugzilla.c:701 src/bugzilla.c:770
+#: src/bugzilla.c:735 src/bugzilla.c:804
 msgid "Product"
 msgstr "Mə'mul"
 
-#: src/bugzilla.c:707 src/bugzilla.c:813
+#: src/bugzilla.c:741 src/bugzilla.c:847
 msgid "Component"
 msgstr "Komponent"
 
-#: src/bugzilla.c:870
-#, fuzzy, c-format
+#: src/bugzilla.c:898
+#, c-format
 msgid ""
 "Bug Buddy could not open '%s'.\n"
 "Please make sure Bug Buddy was installed correctly.\n"
@@ -502,10 +539,11 @@ msgid ""
 "Bug Buddy will now quit."
 msgstr ""
 "Bug-buddy '%s' i aça bilmədi.\n"
-"Lütfən bug-buddy'nin düzgün qurulub qurulmadığını yoxlayın ."
+"Xahiş edirik bug-buddy'nin düzgün qurulub qurulmadığını yoxlayın.\n"
+"\n"
+"Bug Buddy indi sonlanacaq."
 
-#: src/bugzilla.c:915
-#, fuzzy
+#: src/bugzilla.c:936
 msgid ""
 "Bug Buddy could not find any information on where to submit bugs.\n"
 "\n"
@@ -513,36 +551,40 @@ msgid ""
 "\n"
 "Bug Buddy will now quit."
 msgstr ""
-"Bug-buddy '%s'i yükləyə bilmir.\n"
-"Lütfən bug-buddy'nin düzgün qurulub qurulmadığını yoxlayın ."
+"Bug Buddy xətaları hara raport edəcəyi haqqında heç bir Mə'lumat tapa "
+"bilmədi.\n"
+"\n"
+"Xahiş edirik, Bug Buddy-nin düzgün quraşdırıldığından emin olun.\n"
+"\n"
+"Bug Buddy indi qapanacaq."
 
-#: src/bugzilla.c:994
+#: src/bugzilla.c:1015
 #, c-format
 msgid "Couldn't load icon for %s: %s"
-msgstr ""
+msgstr "%s üçün timsal yükləyə bilmədim:  %s"
 
 #: src/cell-renderer-uri.c:151
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 #: src/cell-renderer-uri.c:152
 msgid "URI to show when clicked."
-msgstr ""
+msgstr "Düyməyə tıqlanınca göstəriləcək URI"
 
 #: src/cell-renderer-uri.c:159
 msgid "Visited"
-msgstr ""
+msgstr "Ziyarət edilmiş"
 
 #: src/cell-renderer-uri.c:160
 msgid "If the URI has been visited before."
-msgstr ""
+msgstr "Bu URI öncədən ziyarət edilib."
 
-#: src/gdb-buddy.c:82
+#: src/gdb-buddy.c:84
 #, c-format
 msgid "Obtaining stack trace... (%d)"
 msgstr "çökmə izini alıram ... (%d)"
 
-#: src/gdb-buddy.c:175
+#: src/gdb-buddy.c:160
 #, c-format
 msgid ""
 "Unable to process core file with gdb:\n"
@@ -551,20 +593,28 @@ msgstr ""
 "gdb ile istiadə ediləcək core faylını daraya bilmirəm :\n"
 "'%s'"
 
-#: src/gdb-buddy.c:206
+#: src/gdb-buddy.c:185
 #, c-format
 msgid ""
 "GDB was unable to determine which binary created\n"
 "'%s'"
 msgstr ""
-"'%s''i hansı binar proqramı yaratdığını GDM başa\n"
-"düşmədi."
+"'%s' faylını hansı icra edilə bilən \n"
+"proqramın yaratdığını GDM tapa bilmədi."
 
-#: src/gdb-buddy.c:238
+#: src/gdb-buddy.c:215
 msgid "Error on read... aborting"
-msgstr "Oxunurkən xəta oldu ... dayandırıram"
+msgstr "Oxunurkən xəta oldu... ləğv edirəm"
 
-#: src/gdb-buddy.c:290
+#: src/gdb-buddy.c:263
+msgid "Both a binary file and PID are required to debug."
+msgstr "Xəta ayırılması üçün həm icraçı fayl həm də PID verilməlidir."
+
+#: src/gdb-buddy.c:284
+msgid "The binary file could not be found. Try using an absolute path."
+msgstr "İcraçı fayl tapıla bilmədi. Dəqiq cığır işlətməyi  sınayın."
+
+#: src/gdb-buddy.c:294
 msgid ""
 "GDB could not be found on your system.\n"
 "Debugging information will not be obtained."
@@ -572,43 +622,46 @@ msgstr ""
 "Sisteminizdə GDB tapılmadı.\n"
 "Xəta ayıqlama mə'lumatı alına bilməz."
 
-#: src/gdb-buddy.c:333
+#: src/gdb-buddy.c:302
 msgid ""
 "Could not find the gdb-cmd file.\n"
 "Please try reinstalling Bug Buddy."
 msgstr ""
 "gdb-cmd faylı tapıla bilinmədi.\n"
-"Lütfən bug-buddy'yi yenidən qur."
+"Xahiş edirik bug-buddy'yi yenidən qur."
 
-#: src/gdb-buddy.c:352
-#, fuzzy, c-format
+#: src/gdb-buddy.c:310
+#, c-format
 msgid ""
 "There was an error running gdb:\n"
 "\n"
 "%s"
-msgstr "GDB icra xətası oldu."
+msgstr ""
+"GDB icra xətası oldu:\n"
+"\n"
+"%s"
 
 #: src/save-buddy.c:83
 #, c-format
 msgid "Could not read symbolic link information for %s"
-msgstr ""
+msgstr "%s üçün simvolik körpü Mə'lumatını oxuya bilmədim"
 
 #: src/save-buddy.c:125
 msgid "The file has too many symbolic links."
-msgstr ""
+msgstr "Fayl həddindən çox simvolik körpüyə malikdir."
 
 #: src/save-buddy.c:268
 msgid "Main loop isn't running!"
-msgstr ""
+msgstr "Əsas döngü icra edilmir!"
 
 #: src/save-buddy.c:284
 #, c-format
 msgid "Error setting up sigchld handler: %s"
-msgstr ""
+msgstr "sigchld dəstəkləyicisini qurarkən bir xəta meydana gəldi: %s"
 
 #: src/save-buddy.c:387
 msgid "Invalid filename."
-msgstr ""
+msgstr "Hökmsüz fayl adı"
 
 #: src/save-buddy.c:412
 #, c-format
@@ -617,90 +670,105 @@ msgid ""
 "\n"
 "Do you wish to overwrite this file?"
 msgstr ""
+"'%s' adında bir fayl onsuzda mövcuddur.\n"
+"\n"
+"Bu faylın üstündən qeyd etmək istəyirsinizmi?"
 
 #: src/save-buddy.c:417
 msgid "_Overwrite"
-msgstr ""
+msgstr "_Üstünə yaz"
 
 #: src/save-buddy.c:516
 msgid "Could not create a backup file."
-msgstr ""
+msgstr "Faylin ehtiyat nüsxəsi yarada bilmədim."
 
 #: src/united-states-of-bug-buddy.c:54
 msgid "Welcome to Bug Buddy"
 msgstr "\"Bug Buddy\"yə Xoş Gəldiniz"
 
 #: src/united-states-of-bug-buddy.c:55
-#, fuzzy
-msgid "Select a Product or Application"
-msgstr "Gedişi seçin"
+msgid "Collecting debug info"
+msgstr "Xəta Mə'lumatı toplanır"
 
 #: src/united-states-of-bug-buddy.c:56
-#, fuzzy
-msgid "Select a Component"
-msgstr "komponent"
+msgid "Select a Product or Application"
+msgstr "Proqram ya da Proqram tə'minatını seçin"
 
 #: src/united-states-of-bug-buddy.c:57
-msgid "Frequently Reported Bugs"
-msgstr ""
+msgid "Select a Component"
+msgstr "Tərkib hissəsini seçin"
 
 #: src/united-states-of-bug-buddy.c:58
+msgid "Frequently Reported Bugs"
+msgstr "Tez tez raport edilən xətalar"
+
+#: src/united-states-of-bug-buddy.c:59
 msgid "Bug Description"
 msgstr "Xəta İzahatı"
 
-#: src/united-states-of-bug-buddy.c:59
-#, fuzzy
-msgid "Mail Configuration"
-msgstr "Sistem Qurğuları"
-
 #: src/united-states-of-bug-buddy.c:60
-#, fuzzy
-msgid "Confirmation"
-msgstr "Sistem Qurğuları"
+msgid "Mail Configuration"
+msgstr "ePoçt Quraşdırılması"
 
 #: src/united-states-of-bug-buddy.c:61
+msgid "Confirmation"
+msgstr "Təsdiqləmə"
+
+#: src/united-states-of-bug-buddy.c:62
 msgid "Finished!"
 msgstr "Qurtardı!"
 
-#: src/united-states-of-bug-buddy.c:105
+#. Translators should localize the following string
+#. * which will give them credit in the About box.
+#. * E.g. "Fulano de Tal <fulano@detal.com>"
+#.
+#: src/united-states-of-bug-buddy.c:252
+msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
+msgstr ""
+"Vasif İsmailoğlu <linuxaz@azerimail.net>\n"
+"Mətin Əmirov <metin@karegen.com>"
+
+#: src/united-states-of-bug-buddy.c:266
 msgid "The graphical bug reporting tool for GNOME."
 msgstr "Gnome xəta raportlama proqramı"
 
-#: src/united-states-of-bug-buddy.c:118
+#: src/united-states-of-bug-buddy.c:283
 msgid "The lame Bug Buddy web page"
 msgstr "Lame bug-buddy veb səhifəsi"
 
-#: src/united-states-of-bug-buddy.c:308
+#: src/united-states-of-bug-buddy.c:428
 msgid "Please enter your name."
-msgstr "Lütfən adınızi girin."
+msgstr "Xahiş edirik adınızı girin."
 
-#: src/united-states-of-bug-buddy.c:324
+#: src/united-states-of-bug-buddy.c:437
 msgid "Please enter a valid email address."
-msgstr "Lütfən hökmlü bir məktublaşma ünvanı verin."
+msgstr "Xahiş edirik hökmlü bir məktublaşma ünvanı verin."
 
-#: src/united-states-of-bug-buddy.c:340
+#: src/united-states-of-bug-buddy.c:446
 #, c-format
 msgid ""
 "'%s' doesn't seem to exist.\n"
 "\n"
 "Please check the path to sendmail again."
 msgstr ""
+"'%s' yerində yoxdur.\n"
+"\n"
+"Xahiş edirik sendmail-ə gedən ciğırı birdaha yoxlayın."
 
-#: src/united-states-of-bug-buddy.c:372
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:470
 msgid "Please enter a valid email command."
-msgstr "Lütfən hökmlü bir məktublaşma ünvanı verin."
+msgstr "Xahiş edirik hökmlü bir E-poçt əmri verin."
 
-#: src/united-states-of-bug-buddy.c:436
+#: src/united-states-of-bug-buddy.c:546
 msgid "The specified file does not exist."
 msgstr "Göstərilən fayl yoxdur."
 
-#: src/united-states-of-bug-buddy.c:446
+#: src/united-states-of-bug-buddy.c:552
 #, c-format
 msgid "File is of type: %s"
 msgstr "Fayl növü : %s"
 
-#: src/united-states-of-bug-buddy.c:453
+#: src/united-states-of-bug-buddy.c:556
 #, c-format
 msgid ""
 "'%s' is a %s file.\n"
@@ -711,28 +779,20 @@ msgstr ""
 "\n"
 "Bug Buddy təkcə düz mətn fayllarını (text/*) qəbul edir."
 
-#: src/united-states-of-bug-buddy.c:473
+#: src/united-states-of-bug-buddy.c:569
 msgid "You must include a comprehensible subject line in your bug report."
 msgstr "Xəta raportunda bir mövzu olmalıdır."
 
-#: src/united-states-of-bug-buddy.c:489
+#: src/united-states-of-bug-buddy.c:578
 msgid "You must include a comprehensible description in your bug report."
 msgstr "Xəta raportunda bir qısa izahat olmalıdır."
 
-#: src/united-states-of-bug-buddy.c:520
-msgid "Submit this bug report now?"
-msgstr "Raportu indi göndərim?"
-
-#: src/united-states-of-bug-buddy.c:523
-msgid "_Submit"
-msgstr ""
-
-#: src/united-states-of-bug-buddy.c:560
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:625
 msgid "Please wait while Bug Buddy saves your bug report..."
-msgstr "Lütfən sisteminiz haqqında mə'lumatlar toplanırkən gözləyin."
+msgstr ""
+"Xahiş edirik Bug Buddy xəta ayıqlama raportunuzu qeyd edərkən gözləyin..."
 
-#: src/united-states-of-bug-buddy.c:567
+#: src/united-states-of-bug-buddy.c:629
 #, c-format
 msgid ""
 "The bug report was not saved in %s:\n"
@@ -741,242 +801,162 @@ msgid ""
 "\n"
 "Please try again, maybe with a different file name."
 msgstr ""
+"Xəta raportu buraya qeyd edilə bilmədi: %s\n"
+"\n"
+"%s\n"
+"\n"
+"Xahiş edirik başqa bir fayl adı altında bir daha sınayın."
 
-#: src/united-states-of-bug-buddy.c:576
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:637
+#, c-format
 msgid "Your bug report was saved in %s"
-msgstr "Xəta raportu `%s''də qeyd edildi"
+msgstr "Xəta raportunuz `%s' də qeyd edildi"
 
-#: src/united-states-of-bug-buddy.c:584
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:645
 msgid "Please wait while Bug Buddy submits your bug report..."
-msgstr "Lütfən sisteminiz haqqında mə'lumatlar toplanırkən gözləyin."
+msgstr ""
+"Xahiş edirik Bug Buddy xəta ayıqlama raportunuzu göndərirkən gözləyin..."
 
-#: src/united-states-of-bug-buddy.c:591
-#, fuzzy, c-format
+#: src/united-states-of-bug-buddy.c:649
+#, c-format
 msgid ""
 "There was an error submitting the bug report:\n"
 "\n"
 "%s"
-msgstr "GDB icra xətası oldu."
+msgstr ""
+"Xəta ayıqlama raportunuz göndərilirkən xəta oldu:\n"
+"\n"
+"%s"
 
-#: src/united-states-of-bug-buddy.c:599
+#: src/united-states-of-bug-buddy.c:656
 #, c-format
 msgid ""
 "Your bug report has been submitted to:\n"
 "\n"
 "        <%s>\n"
 "\n"
-"Thanks!"
+"Bug reporting is an important part of making Free Software. Thank you for "
+"helping."
 msgstr ""
-"Xəta raportu göndərilmişdir:\n"
+"Xəta raportunuz bu ünvana göndərildi:\n"
 "\n"
 "        <%s>\n"
-"Sağ Olun!"
+"\n"
+"Xəta raportu yollama, Sərbəst Yazılımın çox əhəmiyyətli hissəsidir. "
+"Yardımınız üçün təşəkkür edirik."
 
-#: src/united-states-of-bug-buddy.c:747
-msgid ""
-"Since Bug Buddy doesn't know about the product you wish to submit a bug "
-"report in, you will have to manually address the bug report."
+#: src/united-states-of-bug-buddy.c:850
+msgid "Please, select the core file or running application to debug."
 msgstr ""
+"Xahiş edirik, xəta həlli üçün core faylını ya da fəaliyyətdə olan proqramı "
+"seçin."
 
-#: src/united-states-of-bug-buddy.c:771
-#, fuzzy
+#: src/united-states-of-bug-buddy.c:860
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"Notice that the software you are running (%s) is older than six months.\n"
+"You may want to consider upgrading to a newer version of %s system"
+msgstr ""
+"%s\n"
+"\n"
+"Qeyd edək ki işlətdiyiniz proqram (%s) altı aydan daha köhnədir.\n"
+"%s sisteminin daha yeni buraxılışına yeniləməyi arzu edə bilərsiniz"
+
+#: src/united-states-of-bug-buddy.c:930
 msgid "Please choose a product for your bug report."
-msgstr "Xəta raportunda mə'mul haqqında mə'lumat olmalıdır."
+msgstr "Xahiş edirik xəta ayıqlama raportunuz üçün məhsulu seçin."
 
-#: src/united-states-of-bug-buddy.c:785
-#, fuzzy
-msgid "Please choose an application for your bug report."
-msgstr "Xəta raportunda mə'mul haqqında mə'lumat olmalıdır."
-
-#: src/united-states-of-bug-buddy.c:804
-msgid ""
-"This application has not included information about how to submit bugs.\n"
-"\n"
-"If you know an email address where bug reports should be sent, you will be "
-"able to specify that later.\n"
-"\n"
-"You may be able to find one in an \"About\" box in the application, or in "
-"the application's documentation."
+#: src/united-states-of-bug-buddy.c:934
+#, c-format
+msgid "Please choose a component, version, and severity level for product %s"
 msgstr ""
+"Xahiş edirik %s mə'mulunun komponenti, buraxılış və əhəmiyyət dərəcəsini "
+"seçin."
 
-#: src/united-states-of-bug-buddy.c:845
+#: src/united-states-of-bug-buddy.c:943
+msgid "Please choose an application for your bug report."
+msgstr "Xahiş edirik xəta ayıqlama raportunuz üçün proqramı seçin."
+
+#: src/united-states-of-bug-buddy.c:947
+#, c-format
+msgid ""
+"Please choose a component, version, and severity level for application %s"
+msgstr ""
+"Xahiş edirik %s tə'minatının komponenti, buraxılış və əhəmiyyət dərəcəsini  "
+"seçin."
+
+#: src/united-states-of-bug-buddy.c:961
+msgid ""
+"This Application has bug information, but Bug Buddy doesn't know about it. "
+"Please choose another application."
+msgstr ""
+"Bu Tə'minat xəta mə'lumatına malikdir, amma Bug Buddy bunu öyrənə bilmir. "
+"Xahiş edirik başqa tə'minatı seçin."
+
+#: src/united-states-of-bug-buddy.c:1002
 msgid "You must specify a component for your bug report."
 msgstr "Xəta raportunda komponent haqqında mə'lumat olmalıdır."
 
-#: src/united-states-of-bug-buddy.c:859
-msgid "You must specify a version for your bug report."
-msgstr "Xəta raportunda buraxılış mə'lumatı olmalıdır."
+#: bug-buddy.schemas.in.h:1
+msgid "Bug reporter name"
+msgstr "Xəta bildirənin adı"
 
-#: src/united-states-of-bug-buddy.c:911
+#: bug-buddy.schemas.in.h:2
+msgid "Email Address"
+msgstr "Elektronik Ünvanı"
+
+#: bug-buddy.schemas.in.h:3
 msgid ""
-"Are you sure you want to cancel\n"
-"this bug report?"
+"Email Address for submiting bug reports to GNOME Bugzilla. This address will "
+"be used for correspondence regarding the bug you are submitting. If you "
+"already have a GNOME Bugzilla account, please use it as your Email Address."
 msgstr ""
-"Həqiqətən də bu xəta raportunu \n"
-"ləğv etmək istəyirsiniz?"
+"GNOME Bugzilla-ya xəta raportları yollamaq üçün E-poçt Ünvanı. Əgər hazırda "
+"GNOME bugzilla hesabınız varsa, xahiş edirik onu E-poçt Ünvanı yerinə yazın."
 
-#~ msgid "To:"
-#~ msgstr "Yollanacaq:"
+#: bug-buddy.schemas.in.h:4
+msgid "File to save bug reports"
+msgstr "Xəta raportlarının qeyd ediləcəyi fayl"
 
-#, fuzzy
-#~ msgid "Updating products list:"
-#~ msgstr "Mə'mul Siyahısı Güncəllənir"
+#: bug-buddy.schemas.in.h:5
+msgid ""
+"File where you want to save your bug report in order to submit it later."
+msgstr "Daha sonra göndərmək üçün xəta raportlarının qeyd ediləcəyi fayl"
 
-#~ msgid "Bug tracking system"
-#~ msgstr "Xəta təqib sistemi"
+#: bug-buddy.schemas.in.h:6
+msgid "Last time Bug Buddy checked for updates"
+msgstr "Bug Buddy-nin yeniləmələri ən son yoxladığı vaxt"
 
-#, fuzzy
-#~ msgid "Select a mailer"
-#~ msgstr "Gedişi seçin"
+#: bug-buddy.schemas.in.h:7
+msgid "Path in your local filesystem where sendmail or equivalent is located."
+msgstr "Sendmail ya da bənzərinin sisteminizdəki cığırı."
 
-#, fuzzy
-#~ msgid "sendmail"
-#~ msgstr "Sendmail"
+#: bug-buddy.schemas.in.h:8
+msgid "Path to sendmail like mailer program"
+msgstr "Poçt proqramı olaraq sendmail cığırı"
 
-#~ msgid "All"
-#~ msgstr "Hamısı"
+#: bug-buddy.schemas.in.h:9
+msgid "Real name of user reporting the bug."
+msgstr "Xətanı bildirən istifadəçinin həqiqi adı"
 
-#~ msgid ""
-#~ "Unable to open file '%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Fayl açıla bilmir: '%s'\n"
-#~ "%s"
+#: bug-buddy.schemas.in.h:10
+msgid ""
+"This is the last time (UNIX timestamp) when Bug Buddy checked for updates of "
+"Bugzilla information."
+msgstr ""
+"Bu Bug Buddy-nin Bugzilla mə'lumatlarını və yeniləmələri yoxladığı ən son "
+"tarixdir. (UNIX vaxtı ilə)."
 
-#~ msgid "about to run '%s'"
-#~ msgstr "`%s''yi işə salıram"
+#: bug-buddy.schemas.in.h:11
+msgid ""
+"Use sendmail for submitting bug reports to GNOME Bugzilla. Right now, this "
+"is the only supported method."
+msgstr ""
+"GNOME bugzilla-ya xəta raportlarını yollamaq üçün sendmail proqramını işlət. "
+"Hazırda bu dəstəklənən tək üsuldur."
 
-#~ msgid ""
-#~ "Unable to start mail program '%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Poçt proqramı başlada bilmirəm: '%s'\n"
-#~ "%s"
-
-#~ msgid "%P %%"
-#~ msgstr "%P %%"
-
-#~ msgid "About"
-#~ msgstr "Haqqında"
-
-#~ msgid "Go"
-#~ msgstr "Get"
-
-#, fuzzy
-#~ msgid "Automatically continue to the next step when debugging is complete"
-#~ msgstr "Ayıqlama qurtarınca avtomatik olaraq irəli get"
-
-#~ msgid "Automatically go to next page when complete"
-#~ msgstr "Qurtarınca avtomatik olaraq irəli get"
-
-#~ msgid "Content"
-#~ msgstr "İçindəkilər"
-
-#~ msgid ""
-#~ "Description of Problem:\n"
-#~ "\n"
-#~ "\n"
-#~ "Steps to reproduce the problem:\n"
-#~ "1. \n"
-#~ "2. \n"
-#~ "3. \n"
-#~ "\n"
-#~ "Actual Results:\n"
-#~ "\n"
-#~ "\n"
-#~ "Expected Results:\n"
-#~ "\n"
-#~ "\n"
-#~ "How often does this happen? \n"
-#~ "\n"
-#~ "\n"
-#~ "Additional Information:"
-#~ msgstr ""
-#~ "Problemin izahı:\n"
-#~ "\n"
-#~ "\n"
-#~ "Problem addımları:\n"
-#~ "1. \n"
-#~ "2. \n"
-#~ "3. \n"
-#~ "\n"
-#~ "Həqiqi Nəticələr:\n"
-#~ "\n"
-#~ "\n"
-#~ "Gözlənən Nəticələr:\n"
-#~ "\n"
-#~ "\n"
-#~ "Bu problem nə qədər sıxlıqda baş verdi? \n"
-#~ "\n"
-#~ "\n"
-#~ "Əlavə məlumat:"
-
-#~ msgid "Package"
-#~ msgstr "Paket"
-
-#~ msgid "Send copy to yourself"
-#~ msgstr "Özümdə bir nüsxəsi qalsın"
-
-#~ msgid "Skip this step in the future"
-#~ msgstr "Bu addımı gələcəkdə atla"
-
-#~ msgid ""
-#~ "This program will walk you through the steps for \n"
-#~ "submitting a bug report for projects such as GNOME.\n"
-#~ "\n"
-#~ "These bug reports are submitted via email, so\n"
-#~ "please specify your email address so you can be\n"
-#~ "contacted if further information is required, or\n"
-#~ "when a fixed version is available."
-#~ msgstr ""
-#~ "Bu proqram GNOME kimi lahiyələrdəki xətaları \n"
-#~ "öyrənərək mərkəzə bildirməyinizə imkan verər.\n"
-#~ "\n"
-#~ "Bu raportlar ePoçt ilə yollanır,\n"
-#~ "ona görə də ePoçt ünvanınızı düzgün girməyə diqqət edin.\n"
-#~ "Əlavə mə'lumat lazım olsa və ya xətanın sabitləndiyi \n"
-#~ "haqqında mə'lumat verilmək istənildiyi vaxt işlədiləcəkdir."
-
-#~ msgid "Version installed"
-#~ msgstr "Qurulu Buraxılış"
-
-#~ msgid "intro"
-#~ msgstr "giriş"
-
-#~ msgid "system"
-#~ msgstr "sistem"
-
-#~ msgid "Submitting the Report"
-#~ msgstr "Raport Göndərilir"
-
-#~ msgid ""
-#~ "'%s' doesn't seem to exist.\n"
-#~ "\n"
-#~ "You won't be able to actually submit a bug report, but you will\n"
-#~ "be able to save it to a file.\n"
-#~ "\n"
-#~ "Specify a new location for sendmail?"
-#~ msgstr ""
-#~ "'%s' dəyəsən yoxdur axı .\n"
-#~ "\n"
-#~ "Buna görə də xəta raportunu \n"
-#~ "göndərə bilməyəcəksən , amma xəta raportunu bir fayla qeyd edə "
-#~ "bilərsən .\n"
-#~ "\n"
-#~ "Sendmail üçün yeni yeri göstərmək istəyirsən?"
-
-#~ msgid ""
-#~ "Bug Buddy has determined that some of its information about\n"
-#~ "the various bug tracking systems may need to be updated.\n"
-#~ "\n"
-#~ "Should Bug Buddy try to update these files now?"
-#~ msgstr ""
-#~ "Bug Buddy müxtəlif xəta ayıqlama proqramlarının güncəlləməyə\n"
-#~ "ehtiyacı olduğunu təsbit etdi.\n"
-#~ "\n"
-#~ "Bug Buddy bü güncəlləmələri indi aparsın?"
-
-#~ msgid "download"
-#~ msgstr "endir"
+#: bug-buddy.schemas.in.h:12
+msgid "Use sendmail to send bug reports"
+msgstr "Xəta raportlarını yollamaq üçün sendmail-i işlət"

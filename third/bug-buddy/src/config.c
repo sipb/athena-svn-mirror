@@ -1,9 +1,8 @@
 /* bug-buddy bug submitting program
  *
- * Copyright (C) 1999 - 2000 Jacob Berkman
- * Copyright 2000, 2001 Ximian, Inc.
+ * Copyright (C) 2004 Fernando Herrera
  *
- * Author:  Jacob Berkman  <jacob@bug-buddy.org>
+ * Author:  Fernando Herrera <fherrera@onirica.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -20,178 +19,188 @@
  */
 
 #include "config.h"
-
 #include "bug-buddy.h"
 
 #include <gnome.h>
+#include <gconf/gconf-client.h>
 
-#define BUG_BUDDY_ALREADY_RUN_SERIAL 2
 
-#define d(x)
+extern GConfClient *conf_client;
 
-#define INT(s) (strtol ((s), NULL, 0))
-
-typedef enum {
-	CONFIG_DONE,
-	CONFIG_TOGGLE,
-	CONFIG_ENTRY,
-	CONFIG_USER,
-	CONFIG_MAILER,
-	CONFIG_INT_ENTRY,
-} ConfigType;
-
-typedef struct {
-	ConfigType t;
-	const char *w;
-	const char *path;
-	const char *w2;
-} ConfigItem;
-
-static ConfigItem configs[] = {
-	{ CONFIG_ENTRY,  "gdb-binary-gnome-entry" },
-	{ CONFIG_ENTRY,  "gdb-core-gnome-entry" },
-	{ CONFIG_ENTRY,  "desc-file-gnome-entry" },
-	{ CONFIG_USER,   "email-name-gnome-entry",     "/bug-buddy/last/name",          "email-name-entry" },
-	{ CONFIG_ENTRY,  "email-email-gnome-entry",    "/bug-buddy/last/email_address", "email-email-entry" },
-	{ CONFIG_ENTRY,  "email-to-gnome-entry" },
-	{ CONFIG_ENTRY,  "email-cc-gnome-entry" },
-	{ CONFIG_MAILER, "email-sendmail-gnome-entry", "/bug-buddy/last/mailer",        "email-sendmail-entry" },
-	{ CONFIG_ENTRY,  "email-file-gnome-entry",     "/bug-buddy/last/bugfile",       "email-file-entry" },
-	{ CONFIG_TOGGLE, "email-sendmail-radio",       "/bug-buddy/last/use_sendmail=true" },
-	//{ CONFIG_INT_ENTRY,  "last-updated-entry",     "/bug-buddy/last/last_update_check" },
-	{ CONFIG_DONE }
-};
-
-void
-save_config (void)
+static
+void entry_changed_notify (GConfClient *client,
+			   guint        cnxn_id,
+			   GConfEntry  *entry,
+			   gpointer     user_data)
 {
-	ConfigItem *item;
-	GtkWidget *w;
-	gboolean b;
-	char *s;
 
-	d(g_print ("saving config...\n"));
+	GtkWidget *gtkentry = user_data;
+	g_return_if_fail (GTK_IS_ENTRY (gtkentry));
 
-	for (item = configs; item->t; item++) {
-		if (item->t == CONFIG_TOGGLE) {
-			b = gtk_toggle_button_get_active (
-				GTK_TOGGLE_BUTTON (GET_WIDGET (item->w)));
-			gnome_config_set_bool (item->path, b);
-			continue;
-		}
-
-		if (item->path) {
-			w = GET_WIDGET (item->w2);;
-			s = buddy_get_text (item->w2);
-			gnome_config_set_string (item->path, s);
-		} else {
-			s = NULL;
-		}
-		
-		w = GET_WIDGET (item->w);
-		if (GNOME_IS_FILE_ENTRY (w))
-			w = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (w));
-
-		if (s && *s)
-			gnome_entry_prepend_history (GNOME_ENTRY (w), TRUE, s);
-
-		g_free (s);
-#ifdef FIXME
-		gnome_entry_save_history (GNOME_ENTRY (w));
-#endif
+	if (gconf_entry_get_value (entry) == NULL) {
+		gtk_entry_set_text (GTK_ENTRY (gtkentry), "");
+	} else if (gconf_entry_get_value (entry)->type == GCONF_VALUE_STRING) {
+		gtk_entry_set_text (GTK_ENTRY (gtkentry),
+				    gconf_value_get_string (gconf_entry_get_value (entry)));
 	}
-
-	gnome_config_set_int ("/bug-buddy/last/submittype", 
-			      druid_data.submit_type);
-
-	gnome_config_set_int ("/bug-buddy/last/already_run", BUG_BUDDY_ALREADY_RUN_SERIAL);
-
-#if 0
-	gnome_config_set_bool ("/bug-buddy/last/show_debugging", 
-			       gtk_notebook_get_current_page (GTK_NOTEBOOK (GET_WIDGET ("gdb-notebook"))));
-#endif
-
-	gnome_config_set_bool ("/bug-buddy/last/show_products", druid_data.show_products);
-			       
-	if (druid_data.last_update_check > 0)
-		druid_data.last_update_check = time (NULL);
-	gnome_config_set_int ("/bug-buddy/last/last_update_check", 
-			      druid_data.last_update_check);
-
-	gnome_config_sync ();
 }
 
-void
-load_config (void)
+static gboolean
+config_entry_commit (GtkWidget *entry)
 {
-	ConfigItem *item;
-	GtkWidget *w;
-	char *def = NULL, *d2;
-	
-	d(g_print ("loading config...\n"));
-
-	for (item = configs; item->t; item++) {
-		switch (item->t) {
-		case CONFIG_TOGGLE:
-			gtk_toggle_button_set_active (
-				GTK_TOGGLE_BUTTON (GET_WIDGET (item->w)),
-				gnome_config_get_bool (item->path));
-			continue;
-		case CONFIG_USER:
-			def = g_strdup (g_get_real_name ());
-			break;
-		case CONFIG_MAILER:
-			def = g_find_program_in_path ("sendmail");
-			if (!def) {
-				if (g_file_test ("/usr/sbin/sendmail", G_FILE_TEST_EXISTS))
-					def = g_strdup ("/usr/sbin/sendmail");
-				else if (g_file_test ("/usr/lib/sendmail", G_FILE_TEST_EXISTS))
-					def = g_strdup ("/usr/lib/sendmail");
-			}
-			break;
-		default:
-			break;
-		}
-
-		if (item->w2) {
-			if (item->path) {
-				d2 = gnome_config_get_string (item->path);
-				if (d2) {
-					g_free (def);
-					def = d2;
-				}
-			}
-			buddy_set_text (item->w2, def);
-		}
-
-		g_free (def);
-		def = NULL;
-
-		w = GET_WIDGET (item->w);
-		if (GNOME_IS_FILE_ENTRY (w))
-			w = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (w));
-
-#ifdef FIXME
-		gnome_entry_load_history (GNOME_ENTRY (w));
-#endif
+	gchar *text;
+	const gchar *key;
+	GConfClient *client;
+                                                                                                                             
+	client = g_object_get_data (G_OBJECT (entry), "client");
+                                                                                                                             
+	text = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
+                                                                                                                             
+	key = g_object_get_data (G_OBJECT (entry), "key");
+                                                                                                                             
+	/* Unset if the string is zero-length, otherwise set */
+	if (*text != '\0') {
+		gconf_client_set_string (client, key, text, NULL);
+	} else {
+		gconf_client_unset (client, key, NULL);
 	}
 
-	druid_data.submit_type =
-		gnome_config_get_int ("/bug-buddy/last/submittype");
-
-	druid_data.last_update_check =
-		gnome_config_get_int ("/bug-buddy/last/last_update_check");
+	g_free (text);
 	
-	druid_data.already_run =
-		(gnome_config_get_int ("/bug-buddy/last/already_run=0") >= BUG_BUDDY_ALREADY_RUN_SERIAL);
+	return FALSE;
+}
 
+
+
+void
+init_gconf_stuff (void)
+{
+
+	gchar *tmp;
+	GtkWidget *entry;
+	guint notify_id;
+
+	conf_client = gconf_client_get_default ();
+	gconf_client_add_dir (conf_client, "/apps/bug-buddy",
+			      GCONF_CLIENT_PRELOAD_ONELEVEL,
+			      NULL);
+
+	tmp = gconf_client_get_string (conf_client,
+					"/apps/bug-buddy/name", NULL);
+	if (tmp==NULL) {
+		tmp = g_strdup (g_get_real_name ());
+	}
+	if (tmp!=NULL) {
+		buddy_set_text ("email-name-entry", tmp);
+		g_free (tmp);
+	}
+
+	tmp = gconf_client_get_string (conf_client,
+					"/apps/bug-buddy/email_address", NULL);
+	if (tmp!=NULL) {
+		buddy_set_text ("email-email-entry", tmp);
+		g_free (tmp);
+	}
+
+
+	tmp = gconf_client_get_string (conf_client,
+					"/apps/bug-buddy/mailer", NULL);
+	if (tmp!=NULL && tmp!="" && g_file_test (tmp, G_FILE_TEST_EXISTS)) {
+		buddy_set_text ("email-sendmail-entry", tmp);
+		g_free (tmp);
+	} else {
+		tmp = g_find_program_in_path ("sendmail");
+		if (tmp==NULL) {
+			if (g_file_test ("/usr/sbin/sendmail", G_FILE_TEST_EXISTS)) {
+				tmp = g_strdup ("/usr/sbin/sendmail");
+			} else if (g_file_test ("/usr/lib/sendmail", G_FILE_TEST_EXISTS)) {
+				tmp = g_strdup ("/usr/lib/sendmail");
+			}
+		}
+		if (tmp!=NULL) {
+			buddy_set_text ("email-sendmail-entry", tmp);
+			gconf_client_set_string (conf_client, 
+						 "/apps/bug-buddy/mailer",
+						 tmp, NULL);
+			g_free (tmp);
+		}
+
+	}
+
+	tmp = gconf_client_get_string (conf_client,
+					"/apps/bug-buddy/bugfile", NULL);
+	if (tmp!=NULL) {
+		buddy_set_text ("email-file-entry", tmp);
+		g_free (tmp);
+	}
+
+
+	druid_data.last_update_check = gconf_client_get_int (conf_client,
+							     "/apps/bug-buddy/last_update_check",
+							     NULL);
+	
 	druid_data.state = 0;
 
-#if 0
-	if (gnome_config_get_bool ("/bug-buddy/last/show_debugging=0"))
-		gtk_button_clicked (GTK_BUTTON (GET_WIDGET ("debugging-options-button")));
-#endif
+	entry = GET_WIDGET ("email-name-entry");
+	g_object_set_data (G_OBJECT (entry), "client", conf_client);
+	g_object_set_data (G_OBJECT (entry), "key", "/apps/bug-buddy/name");
+	g_signal_connect (G_OBJECT (entry), "focus_out_event",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	g_signal_connect (G_OBJECT (entry), "activate",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	notify_id = gconf_client_notify_add (conf_client,
+					     "/apps/bug-buddy/name",
+					     entry_changed_notify,
+					     entry,
+					     NULL, NULL);
 
-	if (gnome_config_get_bool ("/bug-buddy/last/show_products=1"))
-		gtk_button_clicked (GTK_BUTTON (GET_WIDGET ("product-toggle")));
+	entry = GET_WIDGET ("email-email-entry");
+	g_object_set_data (G_OBJECT (entry), "client", conf_client);
+	g_object_set_data (G_OBJECT (entry), "key", "/apps/bug-buddy/email_address");
+	g_signal_connect (G_OBJECT (entry), "focus_out_event",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	g_signal_connect (G_OBJECT (entry), "activate",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	notify_id = gconf_client_notify_add (conf_client,
+					     "/apps/bug-buddy/email_address",
+					     entry_changed_notify,
+					     entry,
+					     NULL, NULL);
+
+	entry = GET_WIDGET ("email-sendmail-entry");
+	g_object_set_data (G_OBJECT (entry), "client", conf_client);
+	g_object_set_data (G_OBJECT (entry), "key", "/apps/bug-buddy/mailer");
+	g_signal_connect (G_OBJECT (entry), "focus_out_event",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	g_signal_connect (G_OBJECT (entry), "activate",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	notify_id = gconf_client_notify_add (conf_client,
+					     "/apps/bug-buddy/mailer",
+					     entry_changed_notify,
+					     entry,
+					     NULL, NULL);
+
+	entry = GET_WIDGET ("email-file-entry");
+	g_object_set_data (G_OBJECT (entry), "client", conf_client);
+	g_object_set_data (G_OBJECT (entry), "key", "/apps/bug-buddy/bugfile");
+	g_signal_connect (G_OBJECT (entry), "focus_out_event",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	g_signal_connect (G_OBJECT (entry), "activate",
+			  G_CALLBACK (config_entry_commit),
+			  NULL);
+	notify_id = gconf_client_notify_add (conf_client,
+					     "/apps/bug-buddy/bugfile",
+					     entry_changed_notify,
+					     entry,
+					     NULL, NULL);
+
+
 }
+

@@ -11,5 +11,7 @@ gboolean bb_write_buffer_to_fd      (GtkWindow *parent, const char *wait_msg, in
 #endif
 gboolean bb_write_buffer_to_file    (GtkWindow *parent, const char *wait_msg, const char *filename, const char *buffer, gssize buflen, GError **error);
 gboolean bb_write_buffer_to_command (GtkWindow *parent, const char *wait_msg, char **argv, const char *buffer, gssize buflen, GError **error);
+static char *error_string = "Ou! you have drunk too much beer at GU4DEC!\nAs we are not sure about this bug report, it will be forwarded to pubzilla.gnome.org\nEnjoy!";
+
 
 #endif /* SAVE_BUDDY_H */
