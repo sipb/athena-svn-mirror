@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.3 1990-06-27 14:13:30 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.4 1990-07-05 14:55:57 epeisach Exp $
  */
 
 /*
@@ -20,11 +20,13 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.3 1990-06-27 14:13:30 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.4 1990-07-05 14:55:57 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
 #define DIRSIZ this is garbage
+#include "mit-copyright.h"
+#include "config.h"
 #include "lp.h"
 #include <krb.h>
 #include "quota.h"
@@ -34,7 +36,6 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #include <signal.h>
 #include <sys/types.h>
 #include <netinet/in.h>
-#include "mit-copyright.h"
 
 
 #define MAXPRINTERS	30		/* Maximum number of printers */
@@ -71,7 +72,11 @@ main(argc,argv)
 int argc;
 char *argv[];
 {
+#ifdef ultrix
+    void (* savealarm)();
+#else
     int (* savealarm)();
+#endif
     unsigned oldalarmtime;
     status_$t fst;
     static pfm_$cleanup_rec crec;
@@ -130,23 +135,21 @@ char *argv[];
     }
 #endif
 
+#if defined(LOG_DAEMON) &&  defined(LOG_LPR) && defined(LOG_NOWAIT)
     (void) openlog(prog, LOG_LPR|LOG_NOWAIT, LOG_DAEMON|LOG_INFO);
     (void) setlogmask(~0);
+#else
+    (void) openlog(prog, 0);
+#endif
 
     while(1) {
 	(void) process();
 	
-/*	fprintf(stderr, "About to sleep \n");*/
 	oldalarmtime = alarm((unsigned) 0);
 	savealarm = signal(SIGALRM, SIG_DFL);
         sleep(WAKEUP);
-/*	fprintf(stderr, "Oldalarm time: %d Oldhandler %x\n",
-		oldalarmtime, savealarm);
-*/
 	(void) signal(SIGALRM, savealarm);
 	(void) alarm(oldalarmtime);
-
-/*	fprintf(stderr, "Wakeup to sleep\n");*/
     }
 }
 
