@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2002-10-24 16:49:26 zacheiss Exp $
+# $Id: Makefile,v 1.6 2002-11-16 00:13:51 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -14,6 +14,9 @@ install:
 	install -c -m 555 lp.sh ${DESTDIR}${ATHBINDIR}/lp
 	rm -f ${DESTDIR}${USRBINDIR}/lp
 	ln -s ../athena/bin/lp ${DESTDIR}${USRBINDIR}/lp
+	install -c -m 555 whatis.sh ${DESTDIR}${ATHBINDIR}/whatis
+	rm -f ${DESTDIR}${ATHBINDIR}/apropos
+	ln -s whatis ${DESTDIR}${ATHBINDIR}/apropos
 
 clean:
 
