@@ -1,4 +1,4 @@
-# $Id: packages,v 1.244 2003-05-18 17:31:47 zacheiss Exp $
+# $Id: packages,v 1.245 2003-07-02 19:47:04 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -259,6 +259,7 @@ third/popt			except linux requires gettext,libiconv
 third/rcs			on solaris
 third/read-edid			on linux
 third/readline			except linux
+third/redhat-fonts		on solaris
 third/rep-gtk			except linux requires librep,glib2,gtk2,libgnome,libgnomeui,libgnomecanvas,libglade2
 third/rs
 third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center,Xft
