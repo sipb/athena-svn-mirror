@@ -122,7 +122,7 @@ fmts: $(fmts)
 # 4) a ``preload'' file, (I use preload.ori),
 # 5) and a ``basefont'' file.  (I use basefont).
 # How automatic, huh?  I can hardly wait for LaTeX 3.
-amslatex.fmt: initex
+amslatex.fmt: initex tex.pool
 	$(initex) lplain \\dump
 	mv lplain.fmt amslatex.fmt
 	mv lplain.log amslatex.log
@@ -130,38 +130,38 @@ amslatex.fmt: initex
 # As of AMSTeX 2.1, the initialization file is named `amstex.ini'.
 # Because it explicitly reads plain.tex, we cannot use &./tex; that
 # produces a `Too late for \patterns' error.
-amstex.fmt: initex
+amstex.fmt: initex tex.pool
 	$(initex) amstex.ini
 
-etex.fmt: tex.fmt
+etex.fmt: tex.fmt tex.pool
 	touch eplain.aux # Makes cross-reference warnings work right.
 	$(initex) \&./tex eplain \\dump
 	mv eplain.fmt etex.fmt
 	mv eplain.log etex.log
 
-inrstex.fmt: initex
+inrstex.fmt: initex tex.pool
 	$(initex) inrstex \\dump
 
-latex.fmt: initex
+latex.fmt: initex tex.pool
 	$(initex) lplain \\dump
 	mv lplain.fmt latex.fmt
 	mv lplain.log latex.log
 
-picplus.fmt: tex.fmt
+picplus.fmt: tex.fmt tex.pool
 	$(initex) \&./tex picplus \\dump
 
-slitex.fmt: initex
+slitex.fmt: initex tex.pool
 	$(initex) splain \\dump
 	mv splain.fmt slitex.fmt
 	mv splain.log slitex.log
 
-tex.fmt: initex
+tex.fmt: initex tex.pool
 	$(initex) plain \\dump
 	mv plain.fmt tex.fmt
 	mv plain.log tex.log
 
 # Texinfo changes the escape character from `\' to `@'.
-texinfo.fmt: tex.fmt
+texinfo.fmt: tex.fmt tex.pool
 	$(initex) \&./tex texinfo @dump
 
 
