@@ -1,3 +1,31 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains procedures for dealing with motd's.
+ *
+ *      Win Treese
+ *      Dan Morgan
+ *      Bill Saphir
+ *      MIT Project Athena
+ *
+ *      Ken Raeburn
+ *      MIT Information Systems
+ *
+ *      Tom Coppeto
+ *	Chris VanHaren
+ *	Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v $
+ *      $Author: lwvanels $
+ */
+
+
+#ifndef lint
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_resolve.c,v 1.2 1991-03-06 15:39:35 lwvanels Exp $";
+#endif
+
 #include "xolc.h"
 #include "data.h"
 
@@ -6,7 +34,7 @@ x_done(Request)
      REQUEST *Request;
 {
   int status;
-  char title[LINE_LENGTH];
+  char title[TITLE_SIZE];
   char error[BUF_SIZE];
   int off = 0;
   int instance;
@@ -22,13 +50,12 @@ x_done(Request)
     {
     case SEND_INFO:
       if (! MuGetString("Please enter a title for this conversation:\n",
-			title, LINE_LENGTH, NULL, Mu_Popup_Center))
+			title, TITLE_SIZE, NULL))
 	return(NO_ACTION);
       break;
 
     case OK:
-      if (! MuGetBoolean(DONE_MESSAGE, "Yes", "No", NULL, FALSE,
-			 Mu_Popup_Center))
+      if (! MuGetBoolean(DONE_MESSAGE, "Yes", "No", NULL, FALSE))
 	return(NO_ACTION);
       break;
 
@@ -66,7 +93,7 @@ x_done(Request)
       break;
 
     case OK:
-      MuHelpSync("The consultant has been notified that you are finished with your question.\n\nThank you for using OLC!");
+      MuHelp("The consultant has been notified that you are finished with your question.\n\nThank you for using OLC!");
      if(OLC)
        {
 	 exit(0);
@@ -128,7 +155,7 @@ x_cancel(Request)
      REQUEST *Request;
 {
   int status;
-  char title[LINE_LENGTH];
+  char title[TITLE_SIZE];
   char error[BUF_SIZE];
   int instance;
 
@@ -139,16 +166,14 @@ x_cancel(Request)
 
   if (OLC)
     {
-      if (! MuGetBoolean(CANCEL_MESSAGE, "Yes", "No", NULL, FALSE,
-			 Mu_Popup_Center))
+      if (! MuGetBoolean(CANCEL_MESSAGE, "Yes", "No", NULL, FALSE))
 	return(NO_ACTION);
       else
 	status = OCancel(Request,"Cancelled Question");
     }
   else
       if (! MuGetBoolean("Are you sure you want to cancel this question?",
-			 "Yes", "No", NULL, FALSE,
-			 Mu_Popup_Center))
+			 "Yes", "No", NULL, FALSE))
 	return(NO_ACTION);
       else
 	status = OCancel(Request,"Cancelled Question");
@@ -158,7 +183,7 @@ x_cancel(Request)
     case SUCCESS:
       if (OLC)
 	{
-	  MuHelpSync("Your question has been cancelled.\n\nThank you for using OLC!");
+	  MuHelp("Your question has been cancelled.\n\nThank you for using OLC!");
 	  exit(0);
 	}
 	  
@@ -169,7 +194,7 @@ x_cancel(Request)
       break;
 
     case OK:
-      MuHelpSync("Your question has been cancelled.\n\nThank you for using OLC!");
+      MuHelp("Your question has been cancelled.\n\nThank you for using OLC!");
       if(OLC)
          exit(0);
 
