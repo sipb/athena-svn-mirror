@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.12 1991-03-28 14:01:39 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.13 1991-04-10 10:35:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.12 1991-03-28 14:01:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.13 1991-04-10 10:35:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -22,6 +22,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/dir.h>
 #include <sys/file.h>
 #include <sys/wait.h>
+#include <strings.h>
 #include <stdio.h>
 #if !defined(_AIX) && !defined(SYSV) && !defined(WEXITSTATUS)
 /* BSD, need to define macro to get at exit status */
