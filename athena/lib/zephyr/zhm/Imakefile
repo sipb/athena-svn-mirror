@@ -1,0 +1,11 @@
+/*#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v $ */
+/*#	$Author: jtkohl $ */
+/*#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v 1.1 1988-09-09 16:39:30 jtkohl Exp $ */
+/*# */
+SRCS= zhm.c zhm_server.c zhm_client.c queue.c
+LIBS= ${COMERR_LIB} ${ZEPHYR_LIB} ${KRB_LIB} ${HES_LIB}
+OBJS= zhm.o zhm_server.o zhm_client.o queue.o
+
+normal_obj_rule()
+
+program(zhm,${OBJS},,${LIBS},${ETCATHDIR})
