@@ -15,8 +15,11 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuHelp.c,v $
- * $Author: djf $
+ * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:14:29  djf
+ * Initial revision
+ * 
  *
  * help.c
  * This file contains the function MuHelp
@@ -82,12 +85,13 @@ void MuHelp(string)
 
          else if (!XtIsManaged(helpbox[i]))
                   break;
-
-         if (i == 24) {
-               MuError(" You can not have more than 25 help boxes at once. \n Please click on 'OK' in one of the help boxes."); 
-               return;
-	     }
 	}
+
+    if (i == 25) {
+      MuError(" You can not have more than 25 help boxes at once. \n Please click on 'OK' in one of the help boxes."); 
+      return;
+    }
+
     XtSetArg(args[0], XmNmessageString,
 	     XmStringLtoRCreate(string,XmSTRING_DEFAULT_CHARSET)); 
     XtSetValues(helpbox[i], args, 1);
