@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.3 1990-07-10 20:05:08 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.4 1990-11-14 17:37:50 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v $ */
 /* $Author: epeisach $ */
 
@@ -96,6 +96,24 @@ User_db *ent;
     return(close_database());
 }
 
+logger_user_iterate(func, arg)
+int (*func)();
+char *arg;
+{
+    datum key, contents;
+    User_db *u_db;
+    int code;
+
+    if(open_database(O_RDONLY)) return -1;
+    for (key = dbm_firstkey (db); key.dptr != NULL; key = dbm_next(db, key)) {
+	contents = dbm_fetch (db, key);
+	u_db = (User_db *) contents.dptr;
+	if ((code = (*func)(arg, u_db)) != 0)
+            return code;
+    }
+    return(close_database());
+}
+
 static int close_database()
 {
     if(dbopen) (void) dbm_close(db);
@@ -122,3 +140,4 @@ int flags;
     dbopen = 1;
     return(0);
 }
+
