@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.20 2002-04-09 16:33:41 ghudson Exp $
+# $Id: config_afs.sh,v 1.21 2003-06-19 20:06:42 zacheiss Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -61,25 +61,23 @@ cat ${SUIDDB} | awk '
 				printf("echo %s\n", cells[i]); } } }' | sh
 
 
-if [ sgi != "$HOSTTYPE" ]; then
-    echo "Updating cell alias information"
-    rm -f ${VICEDIR}/Ctmp
-    cp /afs/athena.mit.edu/service/CellAlias ${VICEDIR}/Ctmp &&
-	    [ -s ${VICEDIR}/Ctmp ] &&
-	    mv -f ${VICEDIR}/Ctmp ${ALIAS}.public &&
-	    cat ${ALIAS}.public ${ALIAS}.local >${VICEDIR}/Ctmp 2>/dev/null
-    [ -s ${VICEDIR}/Ctmp ] && {
-	    cmp -s ${VICEDIR}/Ctmp ${ALIAS} || {
-		    rm -f ${ALIAS}.last &&
-		    mv -f ${VICEDIR}/Ctmp ${ALIAS} &&
-		    chmod 644 ${ALIAS} &&
-		    sync &&
-		    awk '
-			    /^#/ {next} \
-			    NF == 2 {print "fs newalias",$2,$1}' ${ALIAS} \
-			| sh
-	    }
-    }
-fi
+echo "Updating cell alias information"
+rm -f ${VICEDIR}/Ctmp
+cp /afs/athena.mit.edu/service/CellAlias ${VICEDIR}/Ctmp &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	mv -f ${VICEDIR}/Ctmp ${ALIAS}.public &&
+	cat ${ALIAS}.public ${ALIAS}.local >${VICEDIR}/Ctmp 2>/dev/null
+[ -s ${VICEDIR}/Ctmp ] && {
+	cmp -s ${VICEDIR}/Ctmp ${ALIAS} || {
+		rm -f ${ALIAS}.last &&
+		mv -f ${VICEDIR}/Ctmp ${ALIAS} &&
+		chmod 644 ${ALIAS} &&
+		sync &&
+		awk '
+			/^#/ {next} \
+			NF == 2 {print "fs newalias",$2,$1}' ${ALIAS} | sh
+	}
+}
 
+rm -f ${VICEDIR}/Ctmp
 exit 0
