@@ -1,7 +1,0 @@
-[Desktop Entry]
-_Name=Color Browser
-_Comment=Browse available X11 colors.
-Exec=gcolorsel
-Icon=gnome-color-browser.png
-Terminal=0
-Type=Application
