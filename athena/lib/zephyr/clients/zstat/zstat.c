@@ -22,7 +22,7 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.14 1993-10-16 21:51:40 probe Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.15 1993-11-19 15:33:41 probe Exp $";
 #endif
 		     
 extern long atol();
@@ -167,7 +167,7 @@ hm_stat(host,server)
 	struct sigaction sa;
 #endif
 	
-	_BZERO((char *)&sin,sizeof(struct sockaddr_in));
+	(void) memset((char *)&sin, 0, sizeof(struct sockaddr_in));
 
 	sin.sin_port = hm_port;
 
@@ -182,11 +182,11 @@ hm_stat(host,server)
 		fprintf(stderr,"Unknown host: %s\n",host);
 		exit(-1);
 	}
-	_BCOPY(hp->h_addr, (char *) &sin.sin_addr, hp->h_length);
+	(void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
 
 	printf("Hostmanager stats: %s\n",hp->h_name);
 	
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = STAT;
 	notice.z_port = 0;
 	notice.z_class = HM_STAT_CLASS;
@@ -272,7 +272,7 @@ srv_stat(host)
 	struct sigaction sa;
 #endif
 		
-	_BZERO((char *) &sin,sizeof(struct sockaddr_in));
+	(void) memset((char *) &sin, 0, sizeof(struct sockaddr_in));
 
 	sin.sin_port = srv_port;
 
@@ -287,11 +287,11 @@ srv_stat(host)
 		fprintf(stderr,"Unknown host: %s\n",host);
 		exit(-1);
 	}
-	_BCOPY(hp->h_addr, (char *) &sin.sin_addr, hp->h_length);
+	(void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
 
 	printf("Server stats: %s\n",hp->h_name);
 	
-	(void) _BZERO((char *)&notice, sizeof(notice));
+	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = UNSAFE;
 	notice.z_port = 0;
 	notice.z_class = ZEPHYR_ADMIN_CLASS;
