@@ -24,7 +24,7 @@ if [ -s "$DEADFILES" ]; then
   done
 fi
 
-yes="y\ny\ny\ny\ny\ny\ny\ny"
+yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
 
 if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" ]; then
   pkglog=$UPDATE_ROOT/var/athena/update.pkglog
