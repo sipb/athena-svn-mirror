@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.3 1990-06-26 13:09:07 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.4 1990-07-05 14:50:40 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.3 1990-06-26 13:09:07 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.4 1990-07-05 14:50:40 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -45,17 +45,20 @@ quota_currency currency;
     char uname[ANAME_SZ], uinstance[INST_SZ], urealm[REALM_SZ]; 
     /* Information request for */
     char rname[ANAME_SZ], rinstance[INST_SZ], rrealm[REALM_SZ];
+    /* Group Information request for user */
+    char gname[ANAME_SZ], ginstance[INST_SZ], grealm[REALM_SZ];
     int authuser = 0;	/* If user is in the access list for special */
     String_num name, instance, realm;
+    String_num name1=0, instance1=0, realm1=0;
     User_db *userlook;
     User_str userin;
     log_header jhead;
     log_entity *ent;
     LogEnt *lent;
     int i, more, is_group = 0, read_group_record = 0;
-    int retval;
+    int retval, limited_group = 0;
     AUTH_DAT ad;
-    char name1[MAX_K_NAME_SZ];
+    char name_1[MAX_K_NAME_SZ];
     extern char qcurrency[];             /* The quota currency */
     quota_rec quotarec;
     gquota_rec gquotarec;
@@ -77,9 +80,9 @@ quota_currency currency;
     if(check_krb_auth(h, auth, &ad))
 	return QBADTKTS;
     
-    make_kname(ad.pname, ad.pinst, ad.prealm, name1);
+    make_kname(ad.pname, ad.pinst, ad.prealm, name_1);
 
-    if(is_suser(name1)) authuser = 1;
+    if(is_suser(name_1)) authuser = 1;
     
     if (!authuser && is_group) {
 	retval = quota_db_get_principal(ad.pname, ad.pinst,
@@ -126,13 +129,14 @@ quota_currency currency;
 	}
 	sprintf(grp_str,":%d", qid->account);
 
-#ifdef SDEBUG
-	syslog(LOG_DEBUG, "grp_str is %s", grp_str);
-#endif SDEBUG
-
 	(void) strncpy(rname, grp_str, ANAME_SZ);
 	(void) strncpy(rinstance, grp_str, INST_SZ);
 	(void) strncpy(rrealm, grp_str, REALM_SZ);
+     
+	if (qid->username[0] != '\0') {
+	    parse_username(qid->username, gname, ginstance, grealm);
+	    limited_group = 1;
+	}
     }
     else {
 	/* Find out who the info is about!!! */
@@ -161,14 +165,31 @@ quota_currency currency;
     /* To do this, we must convert the requested info into Stringnums. If 
        any do not exist, then there is no info. This makes our life easy!
        */
-    if(
-       (((name = logger_string_to_num(rname)) == 0) && rname[0] != '\0') ||
-       (((instance = logger_string_to_num(rinstance)) == 0) && rinstance[0] != '\0')||
-       (((realm = logger_string_to_num(rrealm)) == 0) && rrealm[0] != '\0'))
-	    {
-		/* There are no entries. We have already nulled out the info */
-		return 0;
-	    }
+    if((((name = logger_string_to_num(rname)) == 0) && 
+	rname[0] != '\0') ||
+       (((instance = logger_string_to_num(rinstance)) == 0) && 
+	rinstance[0] != '\0')||
+       (((realm = logger_string_to_num(rrealm)) == 0) && 
+	rrealm[0] != '\0'))
+	{
+	    /* There are no entries. We have already nulled out the info */
+	    return 0;
+	}
+    
+    if (limited_group) {
+	    if((((name1 = logger_string_to_num(gname)) == 0) && 
+		gname[0] != '\0') ||
+	       (((instance1 = logger_string_to_num(ginstance)) == 0) && 
+		ginstance[0] != '\0')||
+	       (((realm1 = logger_string_to_num(grealm)) == 0) && 
+		grealm[0] != '\0'))
+		{
+		    /* There are no entries since we dont have the
+		     * user in the string db.
+		     */
+		    return 0;
+		}
+	}
 
     if(start == 0) {
 	userin.name = name;
@@ -212,6 +233,13 @@ quota_currency currency;
 			    (ent->user.realm != realm))) {
 	    return QNOAUTH;
 	}
+	if (limited_group) {
+	    if ((ent->func != LO_CHARGE) ||
+		(ent->trans.charge.name != name1) || 
+		(ent->trans.charge.inst != instance1) || 
+		(ent->trans.charge.realm != realm1))
+		continue;
+	}
 	
 	/* Ok boys, package it up !!! */
 	lent->time = ent->time;
@@ -227,8 +255,15 @@ quota_currency currency;
 	strcpy(lent->service, logger_num_to_string(ent->service));
 	lent->next = ent->next;
 	lent->prev = ent->prev;
-	
-	lent->func_union.func = ent->func;
+
+	/* Protect extra structures */
+	lent->offset.wname[0]='\0';
+	lent->charge.wname[0]='\0';
+	lent->charge.where[0]='\0';
+	lent->group.uname[0]='\0';
+	lent->group.aname[0]='\0';
+
+	lent->func = ent->func;
 	switch (ent->func) {
 	case LO_ADD:
 	case LO_SUBTRACT:
@@ -237,22 +272,22 @@ quota_currency currency;
 	case LO_DISALLOW:
 	case LO_ALLOW:
 	case LO_ADJUST:
-		lent->func_union.tagged_union.offset.amount = ent->trans.offset.amt;
+		lent->offset.amount = ent->trans.offset.amt;
 		make_kname(logger_num_to_string(ent->trans.offset.name),
 			   logger_num_to_string(ent->trans.offset.inst),
 			   logger_num_to_string(ent->trans.offset.realm),
-			   lent->func_union.tagged_union.offset.wname);
+			   lent->offset.wname);
 		break;
         case LO_CHARGE:
-		lent->func_union.tagged_union.charge.ptime = ent->trans.charge.subtime;
-		lent->func_union.tagged_union.charge.npages =  ent->trans.charge.npages;
-		lent->func_union.tagged_union.charge.pcost = ent->trans.charge.med_cost;
-		strcpy(lent->func_union.tagged_union.charge.where,
+		lent->charge.ptime = ent->trans.charge.subtime;
+		lent->charge.npages =  ent->trans.charge.npages;
+		lent->charge.pcost = ent->trans.charge.med_cost;
+		strcpy(lent->charge.where,
 		       logger_num_to_string(ent->trans.charge.where));
 		make_kname(logger_num_to_string(ent->trans.charge.name),
 			   logger_num_to_string(ent->trans.charge.inst),
 			   logger_num_to_string(ent->trans.charge.realm),
-			   lent->func_union.tagged_union.charge.wname);
+			   lent->charge.wname);
 		break;
 	case LO_ADD_ADMIN:
 	case LO_DELETE_ADMIN:
@@ -261,11 +296,11 @@ quota_currency currency;
 		make_kname(logger_num_to_string(ent->trans.group.uname),
 			   logger_num_to_string(ent->trans.group.uinst),
 			   logger_num_to_string(ent->trans.group.urealm),
-			   lent->func_union.tagged_union.group.uname);
+			   lent->group.uname);
 		make_kname(logger_num_to_string(ent->trans.group.aname),
 			   logger_num_to_string(ent->trans.group.ainst),
 			   logger_num_to_string(ent->trans.group.arealm),
-			   lent->func_union.tagged_union.group.aname);
+			   lent->group.aname);
 		break;
 	}
 
