@@ -1,5 +1,5 @@
 /* 
- * $Id: linked_list.c,v 1.3 1991-07-16 06:25:27 probe Exp $
+ * $Id: linked_list.c,v 1.4 1996-05-15 05:25:53 ghudson Exp $
  * 
  * This file contains general linked list routines.
  * 
@@ -8,10 +8,12 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_list_c = "$Id: linked_list.c,v 1.3 1991-07-16 06:25:27 probe Exp $";
+static char *rcsid_list_c = "$Id: linked_list.c,v 1.4 1996-05-15 05:25:53 ghudson Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "linked_list.h"
 
 #ifndef NULL
@@ -25,8 +27,6 @@ static char *rcsid_list_c = "$Id: linked_list.c,v 1.3 1991-07-16 06:25:27 probe 
 #ifndef FALSE
 #define FALSE 0
 #endif
-
-char *calloc();
 
 #ifdef __STDC__
 void ll_init(linked_list *list)
@@ -51,7 +51,7 @@ void ll_init(list)
     }
 
     /* This sets everything to zero, which is what we want. */
-    bzero((char *)list, sizeof(linked_list));
+    memset(list, 0, sizeof(linked_list));
 }
 
 #ifdef __STDC__
