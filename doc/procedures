@@ -74,10 +74,7 @@ has signed onto it.
 
 When you check in your change, be sure to include a clear log message.
 Explain why you are making the change you are making if it's not
-obvious.  If you are checking in a significant user-visible change
-(fixing a bug doesn't count), update the doc/news file.  If you are
-checking in a significant internal change, update the
-doc/news-internal file.
+obvious.
 
 Reviewing changes
 -----------------
