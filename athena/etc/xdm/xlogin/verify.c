@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.52 1994-05-04 22:42:27 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.53 1994-05-04 23:09:14 cfields Exp $
  */
 
 #include <stdio.h>
@@ -1028,6 +1028,11 @@ struct passwd *pwd;
 	if (mkdir(buf, TEMP_DIR_PERM))
 	  return("Error while creating temporary directory.");
 
+#ifdef SOLARIS
+	if(chown(buf, pwd->pw_uid, -1))
+	  return("Could not change owner of temporary directory.");
+#endif
+
 	attachhelp_state = -1;
 	switch (attachhelp_pid = fork()) {
 	case -1:
@@ -1035,6 +1040,9 @@ struct passwd *pwd;
 	    return (NULL);
 	case 0:
 	    /* redirect to /dev/null to make cp quiet */
+#ifdef SOLARIS
+	    setuid(pwd->pw_uid); /* probably ok if it fails, but won't */
+#endif
 	    close(1);
 	    close(2);
 	    open("/dev/null", O_RDWR, 0);
@@ -1054,10 +1062,8 @@ struct passwd *pwd;
 
 	if (chmod(buf, TEMP_DIR_PERM))
 	  return("Could not change protections on temporary directory.");
-#ifdef SOLARIS
-	if(chown(buf, pwd->pw_uid, -1))
-	  return("Could not change owner of temporary directory.");
-#else
+
+#ifndef SOLARIS
 	setreuid(ROOT, ROOT);
 #endif
     } else
