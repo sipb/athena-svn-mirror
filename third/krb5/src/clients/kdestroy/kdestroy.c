@@ -45,7 +45,7 @@ main(argc, argv)
     int c;
     krb5_ccache cache = NULL;
     char *cache_name = NULL;
-    int code;
+    int code, v4code;
     int errflg=0;
     int quiet = 0;	
     int v4 = 1;
@@ -119,8 +119,10 @@ main(argc, argv)
     }
 #ifdef KRB5_KRB4_COMPAT
     if (v4) {
-	code = dest_tkt();
-	if (code != KSUCCESS && code != RET_TKFIL) {
+	v4code = dest_tkt();
+	if (v4code == KSUCCESS && code != 0)
+	    fprintf(stderr, "Kerberos 4 ticket file destroyed.\n");
+	if (v4code != KSUCCESS && v4code != RET_TKFIL) {
 	    if (quiet)
 		fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
 	    else
