@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.9 2001-03-26 20:09:34 ghudson Exp $
+# $Id: syncconf.sh,v 1.10 2001-04-13 20:07:52 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -118,6 +118,7 @@ handle()
 			remove "/etc/dhcp.$NETDEV"
 			set -- `/etc/athena/netparams "$ADDR"`
 			netmask=$1
+			net=$2
 			gateway=$4
 
 			# Get the first component of the hostname for the hosts
@@ -128,8 +129,8 @@ handle()
 			put    "/etc/hostname.$NETDEV.new" "$HOST"
 			put    /etc/defaultrouter.new "$gateway"
 			append /etc/inet/hosts.new "$ADDR  $HOST $first"
-			put    /etc/inet/netmasks.new "# Netmask for this host"
-			append /etc/inet/netmasks.new "$ADDR	$netmask"
+			put    /etc/inet/netmasks.new "# Netmask for this net"
+			append /etc/inet/netmasks.new "$net	$netmask"
 		fi
 
 		update /etc/nodename
