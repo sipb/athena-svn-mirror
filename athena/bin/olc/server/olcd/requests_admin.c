@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.7 1990-02-07 00:23:45 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.8 1990-02-27 14:44:43 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -57,7 +57,8 @@ olc_load_user(fd,request,auth)
   else
     user = requester->user;
 
-  if(!is_allowed(requester->user,ADMIN_ACL))
+  if (!is_allowed(requester->user,ADMIN_ACL)
+      && !isme (request))
     return(send_response(fd,PERMISSION_DENIED));
 
   load_user(user);
