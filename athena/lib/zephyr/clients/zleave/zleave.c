@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.17 1991-12-05 15:29:42 lwvanels Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.18 1992-08-20 18:53:08 lwvanels Exp $";
 #endif /* lint */
 
 /*
@@ -312,7 +312,7 @@ char *msg;
 
       if (use_zephyr) {
 	    real_message = (char *) malloc(strlen(msg) +
-					   strlen(reminder_message) + 2);
+					   strlen(reminder_message) + 3);
 	    if (real_message == NULL) {
 		fprintf (stderr, "zleave: out of memory\n");
 		exit (1);
