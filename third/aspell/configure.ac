@@ -70,12 +70,6 @@ AC_PROG_LIBTOOL
 #                                                                 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-if test "$GXX" = "yes"
-then
-  case "$host" in
-    *-sun-solaris* ) extra_ldflags="-Wl,-mimpure-text";;
-  esac
-fi
 AC_SUBST(extra_ldflags)
 
 if test "$enable_win32_relocatable" = "yes"

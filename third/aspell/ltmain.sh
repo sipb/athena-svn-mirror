@@ -1644,6 +1644,10 @@ EOF
     done
 
     if test "$linkmode" = lib; then
+      if test -z "$rpath"; then
+	# Don't use postdeps when building a convenience library.
+	postdeps=
+      fi
       libs="$predeps $libs $compiler_lib_search_path $postdeps"
 
       # Compute libraries that are listed more than once in $predeps

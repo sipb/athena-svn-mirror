@@ -392,6 +392,25 @@ bonobo_activation_server_by_forking (
                         setsid ();
                 }
                 
+                /* Athena mod: run the process under dustbuster. */
+                {
+                        char **dustcmd;
+                        int argc;
+
+                        for (argc = 0; cmd[argc]; argc++);
+                        /* Allocate a new argument array, allowing for the
+                         * additional argument (dustbuster) and the terminator.
+                         * (We will not bother to free() this array, since we
+                         * just exit if the exec fails).
+                         */
+                        dustcmd = malloc ((argc + 2) * sizeof (char *));
+                        dustcmd[0] = "dustbuster";
+                        /* Copy the argument array and terminating null. */
+                        memcpy (&dustcmd[1], &cmd[0],
+                                (argc + 1) * sizeof (char *));
+                        cmd = (const char **) dustcmd;
+                }
+                        
 		execvp (cmd[0], (char **) cmd);
 		if (iopipes[1] != 1) {
 			dup2 (iopipes[1], 1);
