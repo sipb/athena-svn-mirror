@@ -1,10 +1,13 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: fields.c,v 1.1.1.1 1997-09-03 21:08:08 ghudson Exp $";
+    "$Id: fields.c,v 1.2 1997-10-18 16:39:29 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1997/09/03 21:08:08  ghudson
+ * Import of ispell 3.1.20
+ *
  * Revision 1.7  1994/01/06  05:26:37  geoff
  * Get rid of all references to System V string routines, for portability
  * (sigh).
@@ -62,7 +65,6 @@ extern void	free ();
 extern char *	malloc ();
 extern char *	realloc ();
 extern char *	strchr ();
-extern int	strlen ();
 
 /*
  * Read one line of the given file into a buffer, break it up into
