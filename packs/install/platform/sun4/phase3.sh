@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.1 1996-05-10 19:24:20 ghudson Exp $
+# $Id: phase3.sh,v 1.2 1996-05-29 05:21:05 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -65,10 +65,10 @@ echo "Finishing etc"
 cp /dev/null etc/mnttab
 cp /dev/null etc/dumpdates
 #cp /dev/null ups_data
-cp -p /srvd/etc/ftpusers etc/
-cp -p /srvd/etc/inetd.conf etc/inet/
-cp -p /srvd/etc/services etc/inet/
-cp -p /srvd/etc/athena/inetd.conf etc/athena/
+cp -p /srvd/etc/ftpusers etc/ftpusers
+cp -p /srvd/etc/inet/inetd.conf etc/inet/inetd.conf
+cp -p /srvd/etc/inet/services etc/inet/services
+cp -p /srvd/etc/athena/inetd.conf etc/athena/inetd.conf
 cp -p /srvd/etc/minor_perm etc/minor_perm
 cp -p /srvd/etc/system etc/system
 cp -p /srvd/etc/shells etc/shells
