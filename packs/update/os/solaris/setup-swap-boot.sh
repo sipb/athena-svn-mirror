@@ -37,8 +37,6 @@ echo "Untarring miniroot..."
 (cd "$swapmount" && zcat /install/miniroot/miniroot.tar | tar xf -) || die
 
 echo "Miniroot customization: hostname and address, gateway, netmasks.."
-cp -p /etc/name_to_major "$swapmount/etc" || die
-cp -p /etc/driver_* "$swapmount/etc" || die
 cp -p /etc/device.tab "$swapmount/etc" || die
 cp -p /etc/devlink.tab "$swapmount/etc" || die
 cp -p /etc/dgroup.tab "$swapmount/etc" || die
