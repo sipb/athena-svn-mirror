@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.36 1991-06-19 18:34:50 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.37 1991-07-08 09:07:11 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.36 1991-06-19 18:34:50 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.37 1991-07-08 09:07:11 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -37,6 +37,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #undef _BSD
 #endif
 
+#include <sys/types.h>
 #include <sys/param.h>
 #if !defined(VFS) || defined(_I386) || defined(ultrix)
 #include <sys/quota.h>
@@ -60,11 +61,10 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <strings.h>
 #include <krb.h>	
 #include <netdb.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <grp.h>
-#ifdef SYSV
-#include <sys/termio.h>
+#ifdef POSIX
+#include <termios.h>
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -94,7 +94,7 @@ typedef int sigtype;
 #endif
 
 #ifdef VFS
-#define QUOTAWARN	"/usr/ucb/quota"	/* warn user about quotas */
+#define QUOTAWARN	"quota"	/* warn user about quotas */
 #endif VFS
 
 #ifndef KRB_REALM
@@ -233,8 +233,8 @@ main(argc, argv)
     long salt;
     int ldisc = 0, zero = 0, found = 0, i, j;
     char **envnew;
-#ifdef SYSV
-    struct termio tio;
+#ifdef POSIX
+    struct termios tio;
 #endif
 #ifdef _I386
     struct stat 	pwdbuf;
@@ -330,9 +330,9 @@ main(argc, argv)
     if (rflag || kflag || Kflag)
 	doremoteterm(term, &ttyb);
 
-#ifdef SYSV
+#ifdef POSIX
     /* Now setup pty as AIX shells expect */
-    (void)ioctl(0, TCGETA, &tio);
+    (void)tcgetattr(0, &tio);
     
     tio.c_iflag |= (BRKINT|IGNPAR|ISTRIP|IXON|IXANY|ICRNL);
     tio.c_oflag |= (OPOST|TAB3|ONLCR);
@@ -346,7 +346,7 @@ main(argc, argv)
     tio.c_cc[VEOF] = CEOF;
     tio.c_cc[VEOL] = CNUL;
 
-    (void)ioctl(0, TCSETA, &tio);
+    (void)tcsetattr(0, TCSANOW, &tio);
 #else
     ttyb.sg_erase = CERASE;
     ttyb.sg_kill = CKILL;
@@ -739,7 +739,7 @@ leavethis:
 #endif
 
     time(&utmp.ut_time);
-#ifndef SYSV
+#if !defined(_AIX)
     t = ttyslot();
     if (t > 0 && (f = open("/etc/utmp", O_WRONLY)) >= 0) {
 	lseek(f, (long)(t*sizeof(utmp)), 0);
@@ -748,7 +748,7 @@ leavethis:
 	close(f);
     }
 #else
-    strncpy(utmp.ut_id, "", 6);
+    strncpy(utmp.ut_id, tty, 6);
     utmp.ut_pid = getppid();
     utmp.ut_type = USER_PROCESS;
     if ((f = open("/etc/utmp", O_RDWR )) >= 0) {
@@ -825,8 +825,7 @@ leavethis:
 	strncpy(term, stypeof(tty), sizeof(term));
     setenv("TERM", term, 0);
     setenv("USER", pwd->pw_name, 1);
-    setenv("PATH", ":/usr/athena:/bin/athena:/usr/new:/usr/new/mh/bin:\
-/usr/local:/usr/ucb:/bin:/usr/bin", 0);
+    setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 0);
 
     if ((namep = rindex(pwd->pw_shell, '/')) == NULL)
 	namep = pwd->pw_shell;
@@ -864,7 +863,7 @@ leavethis:
 		   (st.st_mtime > st.st_atime) ? "new " : "");
     }
 #ifdef VFS
-    if (! access( QUOTAWARN, X_OK)) system(QUOTAWARN);
+    (void) system(QUOTAWARN);
 #endif VFS
     signal(SIGALRM, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
@@ -1157,7 +1156,7 @@ done:
 }
 /* END TRASH */
 
-#if !defined(ultrix) && !defined(SYSV)
+#if !defined(ultrix)
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
@@ -1165,6 +1164,9 @@ done:
  * This procedure assumes the memory for the first level of environ
  * was allocated using malloc.
  */
+
+/* XXX -- We should use putenv() on POSIX systems */
+
 setenv(var, value, clobber)
 	char *var, *value;
 {
