@@ -1,0 +1,12 @@
+#!/bin/sh -
+# Version-specific update script for 7.7Q
+
+case ${MACH} in
+DS*)
+        ;;
+RSAIX)
+        ;;
+SUN*)
+        echo "NEWUNIX=true"             >> ${CONFVARS}
+        ;;
+esac
