@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.10 1987-07-17 10:16:31 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.11 1987-07-22 17:48:50 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -355,8 +355,13 @@ ZSentType sent;
 	ZNotice_t acknotice;
 	ZPacket_t ackpack;
 	int packlen;
+	int notme = 0;
 	Code_t retval;
 
+	if (bdumping)	{		/* don't ack while dumping */
+		zdbug((LOG_DEBUG,"bdumping, no ack"));
+		return;
+	}
 	zdbug((LOG_DEBUG,"clt_ack type %d for %d to %s/%d",
 	       (int) sent,
 	       ntohs(notice->z_port),
@@ -366,7 +371,7 @@ ZSentType sent;
 	if (!server_which_server(who) &&
 	    (hostm_find_server(&who->sin_addr) != me_server)) {
 		zdbug((LOG_DEBUG,"not me"));
-		return;
+		notme = 1;
 	}
 	acknotice = *notice;
 
@@ -408,6 +413,8 @@ ZSentType sent;
 		syslog(LOG_WARNING, "clt_ack xmit: %s", error_message(retval));
 		return;
 	}
+	if (notme)
+		hostm_deathgram(who, me_server);
 	return;
 }
 
