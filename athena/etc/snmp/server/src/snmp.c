@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.1 1990-04-26 17:59:47 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.2 1990-05-26 13:40:34 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  17:59:47  tom
+ * Initial revision
+ * 
  * Revision 1.2  89/12/08  15:29:37  snmpdev
  * added chris tengi's patch for default port numbers (useful when you don't
  * have root, and the person who does is a fascist) -- kolb
@@ -28,7 +31,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.1 1990-04-26 17:59:47 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmp.c,v 1.2 1990-05-26 13:40:34 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -54,8 +57,8 @@ snmpin(from, size, pkt)
 	char *pkt;
 {
 	short sesslen;
-	char decmsg[MAXBUFSIZE];
-	char replymsg[MAXBUFSIZE];
+	char decmsg[sizeof (pdu_type)];
+	char replymsg[sizeof (pdu_type)];
 	short snmptype;
 	short retype;
   	char *thesession;
@@ -82,14 +85,14 @@ snmpin(from, size, pkt)
 		return;
 	}
 	bzero(thesession, (SNMPMXSID + 1));
-	bzero(decmsg, MAXBUFSIZE);
-	bzero(replymsg, MAXBUFSIZE);
+	bzero(decmsg, sizeof (pdu_type));
+	bzero(replymsg, sizeof (pdu_type));
 
 	/*
 	 *  Pass input buffer to ASN.1 parser for parsing.  See what
 	 *  type of message this is.
 	 */
-	snmptype = snmpdecipher(thesession,&sesslen,decmsg,pkt,size,MAXBUFSIZE);
+	snmptype = snmpdecipher(thesession,&sesslen,decmsg,pkt,(short)size,MAXBUFSIZE);
 	if (snmptype <= 0) {
 		syslog(LOG_ERR, "snmpin: error in snmpdecipher, code %d",
 							snmptype);
@@ -129,8 +132,13 @@ snmpin(from, size, pkt)
 	newpacket++;
 	pktproccode = proc_snmp_msg(decmsg, replymsg, snmptype);
 	if (pktproccode < 0) {
+#ifdef MIT
+		syslog(LOG_INFO, "snmpin: error in proc_snmp_msg, code %d",
+							pktproccode);
+#else  MIT
 		syslog(LOG_ERR, "snmpin: error in proc_snmp_msg, code %d",
 							pktproccode);
+#endif MIT
 		s_stat.procerr++;
 	}
 	respmsg = (getrsp *)replymsg;
@@ -183,7 +191,7 @@ snmpin(from, size, pkt)
 	 *  per the SNMP RFC.  If this fails (it shouldn't), we just give
 	 *  up.
 	 */
-	pktsendcode = snmpservsend(snmp_socket,retype,sin_from,(char *)initrespmsg,thesession,strlen(thesession));
+	pktsendcode = snmpservsend(snmp_socket,retype,sin_from,(char *)initrespmsg,thesession,(short)strlen(thesession));
 	s_stat.outhist[retype]++;
 	s_stat.outpkts++;
 	if (pktsendcode < 0) {
