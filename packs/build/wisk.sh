@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.56 $
+# $Revision: 1.57 $
 
 umask 2
 
@@ -298,6 +298,7 @@ endif
 	(xmkmf . >>& $outfile) &&\
 	(make clean >>& $outfile) &&\
 	(make >>& $outfile) &&\
+	(./pinstall -c pinstall $BUILD/bin/install) &&\
 	(make install DESTDIR=$SRVD >>& $outfile))
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
