@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.11 1989-08-10 03:11:22 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.12 1989-08-22 13:48:05 tjcoppet Exp $";
 #endif 
 
 
@@ -110,25 +110,26 @@ COMMAND OLC_Command_Table[] = {
 COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,"List available commands",
   "help",	do_olc_help,	 "Describe the various commands",
-  "quit",	do_quit,	 "Temporarily exit OLC",
-  "send",	do_olc_send,	 "Send a message",                     
-  "done",	do_olc_done,	 "Resolve question",               
+  "ask",        do_olc_ask,      "Ask a question",
   "cancel",     do_olc_cancel,   "Cancel your question",
-  "replay",	do_olc_replay,   "Replay the conversation",        
-  "show",       do_olc_show,	 "Show any new messages",
-  "list",       do_olc_list,     "List the world",
   "comment",    do_olc_comment,  "Make a comment",
+  "done",	do_olc_done,	 "Resolve question",               
   "describe",   do_olc_describe, "Show/Change summary info",
-  "mail",       do_olc_mail,     "Mail a message",
-  "topic",      do_olc_topic,    "Show/Change question topic",
-  "instance",   do_olc_instance, "Show/Change default instance",
-  "on",         do_olc_on,       "Sign on",
-  "off",        do_olc_off,      "Sign off",
-  "grab",       do_olc_grab,     "Grab a user",
   "forward",    do_olc_forward,  "Forward a question",
+  "grab",       do_olc_grab,     "Grab a user",
+  "instance",   do_olc_instance, "Show/Change default instance",
+  "list",       do_olc_list,     "List the world",
+  "mail",       do_olc_mail,     "Mail a message",
   "motd",       do_olc_motd,     "See motd",
-  "stock",      do_olc_stock,    "Browse thru stock answers",
+  "off",        do_olc_off,      "Sign off",
+  "on",         do_olc_on,       "Sign on",
+  "quit",	do_quit,	 "Temporarily exit OLC",
+  "replay",	do_olc_replay,   "Replay the conversation",        
+  "send",	do_olc_send,	 "Send a message",                     
+  "show",       do_olc_show,	 "Show any new messages",
   "status",     do_olc_status,   "Find your status",
+  "stock",      do_olc_stock,    "Browse thru stock answers",
+  "topic",      do_olc_topic,    "Show/Change question topic",
   "who",        do_olc_who,      "Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
   };
@@ -338,7 +339,8 @@ olc_init()
       if(subsystem)
 	{
 	  printf("Welcome to OLC, ");
-	  printf("Project Athena's On-Line Consulting system.\n");
+	  printf("Project Athena's On-Line Consulting system. (v %s)\n",
+		 VERSION_STRING);
 	  printf("Copyright (c) 1989 by ");
 	  printf("the Massachusetts Institute of Technology.\n\n");
 	  first = 1;
@@ -353,7 +355,8 @@ olc_init()
     case SUCCESS:
       read_int_from_fd(fd, &n);
       printf("Welcome back to OLC. ");
-      printf("Project Athena's On-Line Consulting system.\n");
+      printf("Project Athena's On-Line Consulting system. (v %s)\n",
+	     VERSION_STRING);
       printf("Copyright (c) 1989 by ");
       printf("the Massachusetts Institute of Technology.\n\n");
       t_set_default_instance(&Request);
