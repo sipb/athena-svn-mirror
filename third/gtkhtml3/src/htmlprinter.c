@@ -707,7 +707,8 @@ alloc_font (HTMLPainter *painter, gchar *face, gdouble size, gboolean points, Gt
 
 	font = gnome_font_find_closest_from_weight_slant (face ? face : (style & GTK_HTML_FONT_STYLE_FIXED ? "Monospace" : "Sans"),
 							  weight, italic, get_font_size (printer, points, size));
-	if (font == NULL) {
+
+	if (font == NULL && face == NULL) {
 		GList *family_list;
 
 		family_list = gnome_font_family_list ();

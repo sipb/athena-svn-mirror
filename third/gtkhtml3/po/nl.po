@@ -9,21 +9,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml cvs\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
-"PO-Revision-Date: 2003-06-21 19:03+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-07-23 20:42+0200\n"
+"PO-Revision-Date: 2003-07-24 00:22+0200\n"
 "Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: capplet/gnome-bindings-prop.c:157
 msgid "<None>"
 msgstr "<Geen>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:541
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
@@ -64,7 +64,7 @@ msgstr "Composer eigenschappen gepland"
 
 #: capplet/gtkhtml-capplet.glade.h:10
 msgid "Configure spell checking"
-msgstr "Configureer spellingscontrole"
+msgstr "Spellingscontrole configureren"
 
 #: capplet/gtkhtml-capplet.glade.h:11
 msgid "Enable spell checking"
@@ -76,7 +76,7 @@ msgstr "Vaste breedte"
 
 #: capplet/gtkhtml-capplet.glade.h:13
 msgid "Fonts"
-msgstr "Lettertypes"
+msgstr "Lettertypen"
 
 #: capplet/gtkhtml-capplet.glade.h:14
 msgid "For printing"
@@ -98,7 +98,7 @@ msgstr "Sneltoetsen"
 #: capplet/gtkhtml-capplet.glade.h:18
 #: components/html-editor/gtkhtml-editor-properties.glade.h:47
 msgid "Miscellaneous"
-msgstr "Overig"
+msgstr "Allerlei"
 
 #: capplet/gtkhtml-capplet.glade.h:19
 msgid "New shortcut:"
@@ -201,7 +201,7 @@ msgstr "A_dres"
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:8
 #: components/html-editor/toolbar.c:53
 msgid "Alphabetical List"
-msgstr "Alphabetische Lijst"
+msgstr "Alphabetische lijst"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:9
 msgid "Background Color"
@@ -223,7 +223,7 @@ msgstr "Gecentreerde paragrafen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:13
 msgid "Check spelling of the document"
-msgstr "Controleer spelling van het document"
+msgstr "Spelling van het document controleren"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
 msgid "Copy"
@@ -243,7 +243,7 @@ msgstr "H_uilend"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
 msgid "Cu_t"
-msgstr "_Knippen"
+msgstr "K_nippen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:19
 msgid "Cut"
@@ -276,7 +276,7 @@ msgstr "Zoeken Reguliere E_xpressie..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:26
 msgid "Find _Again"
-msgstr "Opnieuw _Zoeken"
+msgstr "Opnieuw _zoeken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:27
 msgid "Find again"
@@ -284,7 +284,7 @@ msgstr "Opnieuw zoeken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:28
 msgid "Find and Replace"
-msgstr "Zoeken en Vervangen"
+msgstr "Zoeken en vervangen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
 msgid "For_mat"
@@ -523,7 +523,7 @@ msgstr "Rood"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:85
 msgid "Redo"
-msgstr "Herhalen"
+msgstr "Opnieuw"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:86
 msgid "Redo previously undone change"
@@ -557,7 +557,7 @@ msgstr "Regel"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:92
 msgid "Select _All"
-msgstr "_Alles Selecteren"
+msgstr "_Alles selecteren"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:93
 msgid "Select the entire contents of the document"
@@ -618,7 +618,7 @@ msgstr "Typemachine"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:105
 msgid "Undo"
-msgstr "Herstellen"
+msgstr "Ongedaan maken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:106
 msgid "Undo previous changes"
@@ -626,7 +626,7 @@ msgstr "Vorige verandering herstellen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:107
 msgid "Undo the last action"
-msgstr "Maak laatste bewerking ongedaan"
+msgstr "Laatste bewerking ongedaan maken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:108
 msgid "Yellow"
@@ -662,7 +662,7 @@ msgstr "Inspringafstand _verkleinen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
 msgid "_Edit"
-msgstr "B_ewerken"
+msgstr "Be_werken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:117
 msgid "_Find..."
@@ -698,7 +698,7 @@ msgstr "_Onverschillig"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
 msgid "_Insert"
-msgstr "_Toevoegen"
+msgstr "_Invoegen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:126
 msgid "_Italic"
@@ -742,7 +742,7 @@ msgstr "_Preformat"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:136
 msgid "_Redo"
-msgstr "_Herhalen"
+msgstr "O_pnieuw"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:137
 msgid "_Replace..."
@@ -758,7 +758,7 @@ msgstr "_Romeins genummerde lijst"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:140
 msgid "_Rule..."
-msgstr "_Regel.."
+msgstr "_Regel..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:141
 msgid "_Smile"
@@ -770,7 +770,7 @@ msgstr "_Smiley"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:143
 msgid "_Spell Check Document..."
-msgstr "_Spellingscontrole op Document..."
+msgstr "_Spellingscontrole op document..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:144
 msgid "_Strikeout"
@@ -798,7 +798,7 @@ msgstr "_Onderstrepen"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:150
 msgid "_Undo"
-msgstr "_Herstellen"
+msgstr "_Ongedaan maken"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
 msgid "_Wink"
@@ -829,7 +829,7 @@ msgstr "Blauwe inkt"
 msgid "Rectangles"
 msgstr "Rechthoeken"
 
-#: components/html-editor/body.c:275 src/gtkhtml.c:2555
+#: components/html-editor/body.c:275 src/gtkhtml.c:2558
 msgid "Document Title"
 msgstr "Documenttitel"
 
@@ -862,7 +862,6 @@ msgid "Background"
 msgstr "Achtergrond"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Pa's wijze lynx bezag vroom het fikse aquaduct."
@@ -1042,7 +1041,7 @@ msgstr "Link eigenschappen"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:45
 msgid "Location"
-msgstr "Locatie"
+msgstr "Lokatie"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Middle"
@@ -1067,7 +1066,7 @@ msgstr "Percentage %"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:56
 msgid "Pixels"
-msgstr "Pixels"
+msgstr "Beeldpunten"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:57
 msgid "Pixmap:"
@@ -1140,7 +1139,7 @@ msgstr "Dikte:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:78
 msgid "Top"
-msgstr "Top"
+msgstr "Boven"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:79
 #: components/html-editor/text.c:237 components/html-editor/toolbar.c:526
@@ -1157,11 +1156,11 @@ msgstr "Breedte:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:82
 msgid "Wrap"
-msgstr "Doorloop"
+msgstr "Terugloop"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:83
 msgid "Wrapping:"
-msgstr "Doorlopend:"
+msgstr "Terugloop:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:84
 msgid "xxxxxxxxx"
@@ -1220,7 +1219,21 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place your "
 "comment here]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr ""
+"Dit is voorbeeldtekst, gemaakt om u te kunnen laten zien hoe tekst rondom "
+"een afbeelding zou worden gezet als u een afbeelding in uw bericht zou "
+"plaatsen."
+
+# Gekozen?
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "Geen afbeelding geselecteerd"
+
+#: components/html-editor/image.c:701
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
@@ -1569,71 +1582,71 @@ msgid "Sample"
 msgstr "Voorbeeld"
 
 # Bewerkbaar? Kan bewerkt/aangepast worden?
-#: src/gtkhtml.c:2548
+#: src/gtkhtml.c:2551
 msgid "Editable"
-msgstr "Kan bewerken"
+msgstr "Bewerkbaar"
 
-#: src/gtkhtml.c:2549
+#: src/gtkhtml.c:2552
 msgid "Whether the html can be edited"
 msgstr "Of de html bewerkt kan worden"
 
-#: src/gtkhtml.c:2556
+#: src/gtkhtml.c:2559
 msgid "The title of the current document"
 msgstr "De titel van het huidige document"
 
-#: src/gtkhtml.c:2562
+#: src/gtkhtml.c:2565
 msgid "Document Base"
 msgstr "Documentbasis"
 
-#: src/gtkhtml.c:2563
+#: src/gtkhtml.c:2566
 msgid "The base URL for relative references"
 msgstr "De basis-URL voor relatieve verwijzingen"
 
-#: src/gtkhtml.c:2569
+#: src/gtkhtml.c:2572
 msgid "Target Base"
 msgstr "Doelbasis"
 
-#: src/gtkhtml.c:2570
+#: src/gtkhtml.c:2573
 msgid "The base URL of the targe frame"
 msgstr "De basis-URL van het doelframe"
 
-#: src/gtkhtml.c:2579
+#: src/gtkhtml.c:2582
 msgid "Fixed Width Font"
 msgstr "Lettertype met vaste breedte"
 
-#: src/gtkhtml.c:2580
+#: src/gtkhtml.c:2583
 msgid "The Monospace font to use for typewriter text"
 msgstr "Het lettertype (monospace) voor typemachine-tekst"
 
-#: src/gtkhtml.c:2586
+#: src/gtkhtml.c:2589
 msgid "New Link Color"
 msgstr "Kleur nieuwe link"
 
-#: src/gtkhtml.c:2587
+#: src/gtkhtml.c:2590
 msgid "The color of new link elements"
 msgstr "De kleur van nieuwe links"
 
-#: src/gtkhtml.c:2592
+#: src/gtkhtml.c:2595
 msgid "Visited Link Color"
 msgstr "Kleur bezochte link"
 
-#: src/gtkhtml.c:2593
+#: src/gtkhtml.c:2596
 msgid "The color of visited link elements"
 msgstr "De kleur van bezochte links"
 
-#: src/gtkhtml.c:2598
+#: src/gtkhtml.c:2601
 msgid "Active Link Color"
 msgstr "Kleur actieve link"
 
-#: src/gtkhtml.c:2599
+#: src/gtkhtml.c:2602
 msgid "The color of active link elements"
 msgstr "De kleur van een actieve link"
 
-#: src/gtkhtml.c:2604
+#: src/gtkhtml.c:2607
 msgid "Spelling Error Color"
 msgstr "Kleur van spelfout"
 
-#: src/gtkhtml.c:2605
+#: src/gtkhtml.c:2608
 msgid "The color of the spelling error markers"
 msgstr "De kleur van de markering voor spelfouten"
 

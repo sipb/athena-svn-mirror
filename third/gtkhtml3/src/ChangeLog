@@ -1,3 +1,27 @@
+2003-07-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (get_tags): fix color check to save color attribute
+	for blue text
+
+2003-07-15  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (alloc_font): fallback to 1st available font only
+	when default fonts aren't available
+
+2003-07-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (html_object_cursor_backward): allow offset == 0 if
+	prev object doesn't accept cursor
+	(move_object_downtree_cursor): skip cursor non-accepting objects
+
+	* gtkhtml.c (key_press_event): reset blinking cursor if key was
+	used
+
+2003-07-07  Yuedong Du  <yuedong.du@sun.com>
+
+        * gtkhtml.c (add_bindings): remove keybinding for Control+Tab/
+        Shift+Control+Tab, fix bug #45825
+
 2003-06-27  Radek Doulik  <rodo@ximian.com>
 
 	* gtkhtml.c (gtk_html_editor_event): initialize retval to NULL

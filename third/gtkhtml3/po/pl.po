@@ -9,8 +9,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2003-06-30 10:38-0500\n"
-"PO-Revision-Date: 2002-06-07 23:00+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-07-24 21:32+0200\n"
+"PO-Revision-Date: 2003-05-09 00:59+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +23,7 @@ msgid "<None>"
 msgstr "<Brak>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:541
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
@@ -30,7 +31,7 @@ msgstr "Nie można wczytać pliku glade."
 
 #: capplet/gtkhtml-capplet.glade.h:1
 msgid "\n"
-msgstr ""
+msgstr "\n"
 
 #: capplet/gtkhtml-capplet.glade.h:3
 #: components/html-editor/gtkhtml-editor-properties.glade.h:1
@@ -237,7 +238,7 @@ msgstr "Kopiuje zaznaczenie"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
 msgid "Cr_ying"
-msgstr ""
+msgstr "Pł_acząca"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
 msgid "Cu_t"
@@ -324,9 +325,8 @@ msgid "Image"
 msgstr "Obraz"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
-#, fuzzy
 msgid "Insert Crying smiley into document..."
-msgstr "Wstawia do dokumentu mrugającą buźkę..."
+msgstr "Wstawia do dokumentu płaczącą buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
 msgid "Insert Frown smiley into document..."
@@ -345,18 +345,16 @@ msgid "Insert HTML template into document..."
 msgstr "Wstawia do dokumentu szablon HTML-a..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
-#, fuzzy
 msgid "Insert Indifferent smiley into document..."
-msgstr "Wstawia do dokumentu mrugającą buźkę..."
+msgstr "Wstawia do dokumentu obojętną buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
 msgid "Insert Laughing smiley into document..."
 msgstr "Wstawia do dokumentu śmiejącą się buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
-#, fuzzy
 msgid "Insert Lick smiley into document..."
-msgstr "Wstawia do dokumentu mrugającą buźkę..."
+msgstr "Wstawia do dokumentu oblizującą się buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
 msgid "Insert Oh no! smiley into document..."
@@ -371,9 +369,8 @@ msgid "Insert Surprised smiley into document..."
 msgstr "Wstawia do dokumentu zaskoczoną buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
-#, fuzzy
 msgid "Insert Undecided smiley into document..."
-msgstr "Wstawia do dokumentu uśmiechniętą buźkę..."
+msgstr "Wstawia do dokumentu niezdecydowaną buźkę..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
 msgid "Insert Wink smiley into document..."
@@ -401,9 +398,8 @@ msgid "Left justifies the paragraphs"
 msgstr "Wyrównuje akapity do lewej"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
-#, fuzzy
 msgid "Li_ck"
-msgstr "Odnośnik"
+msgstr "O_blizująca"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:57
 #: components/html-editor/body.c:327 components/html-editor/menubar.c:107
@@ -497,7 +493,7 @@ msgstr "Wklej"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
 msgid "Paste _Quotation"
-msgstr ""
+msgstr "Wk_lej cytat"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
 msgid "Paste from clipboard"
@@ -508,9 +504,8 @@ msgid "Paste the clipboard"
 msgstr "Wkleja zawartość schowka"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
-#, fuzzy
 msgid "Paste the clipboard as a quotation"
-msgstr "Wkleja zawartość schowka"
+msgstr "Wkleja zawartość schowka jako cytat"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:82
 #: components/html-editor/toolbar.c:49
@@ -697,9 +692,8 @@ msgid "_Increase Indent"
 msgstr "Z_większ wcięcie"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
-#, fuzzy
 msgid "_Indifferent"
-msgstr "Wsuń"
+msgstr "_Obojętna"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
 msgid "_Insert"
@@ -794,9 +788,8 @@ msgid "_Text..."
 msgstr "T_ekst..."
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
-#, fuzzy
 msgid "_Undecided"
-msgstr "Po_dkreślenie"
+msgstr "Nie_zdecydowana"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:149
 msgid "_Underline"
@@ -808,12 +801,11 @@ msgstr "_Cofnij"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
 msgid "_Wink"
-msgstr "_Mrugającą"
+msgstr "_Mrugająca"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
-#, fuzzy
 msgid "_Wrap Lines"
-msgstr "Zawijanie:"
+msgstr "Zaw_ijaj wiersze:"
 
 #: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:153
 msgid "etc..."
@@ -826,18 +818,17 @@ msgstr "Brak"
 
 #: components/html-editor/body.c:74
 msgid "Perforated Paper"
-msgstr ""
+msgstr "Papier perforowany"
 
 #: components/html-editor/body.c:82
-#, fuzzy
 msgid "Blue Ink"
-msgstr "Błękitny 3D"
+msgstr "Błękitny atrament"
 
 #: components/html-editor/body.c:90
 msgid "Rectangles"
-msgstr ""
+msgstr "Prostokąty"
 
-#: components/html-editor/body.c:275 src/gtkhtml.c:2555
+#: components/html-editor/body.c:275 src/gtkhtml.c:2558
 msgid "Document Title"
 msgstr "Tytuł dokumentu"
 
@@ -870,23 +861,21 @@ msgid "Background"
 msgstr "Tło"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
-#, fuzzy
 msgid "The quick brown fox jumps over the lazy dog."
-msgstr ""
-"Chrząszcz brzmi w trzcinie w Szczebrzeszynie, a Szczebrzeszyn z tego słynie."
+msgstr "Pchnąć w tę łódź jeża lub ośm skrzyń fig."
 
 #: components/html-editor/cell.c:178
-#, fuzzy
 msgid "Other"
-msgstr "Inny..."
+msgstr "Inne"
 
 #: components/html-editor/cell.c:679
 msgid ""
 "The editted cell was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Modyfikowana komórka została usunięta z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/editor-control-factory.c:187
 #: components/html-editor/menubar.c:317 components/html-editor/menubar.c:335
@@ -907,9 +896,8 @@ msgid "Page"
 msgstr "Strona"
 
 #: components/html-editor/gnome-gtkhtml-editor.c:68
-#, fuzzy
 msgid "GtkHTML Editor Control"
-msgstr "Komponent edytora HTML-a dla GNOME"
+msgstr "Kontrolka edytora GtkHTML"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:2
 msgid "************"
@@ -1230,11 +1218,25 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Umieść "
 "tutaj swój komentarz]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr ""
+"To jest przykładowy tekst, mający na celu pokazać jak tekst będzie opływał "
+"obraz, który zostanie wstawiony do wiadomości."
+
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "Nie wybrano obrazu"
+
+#: components/html-editor/image.c:701
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Zmodyfikowany obraz został usunięty z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/link.c:121
 msgid "Link text"
@@ -1245,6 +1247,8 @@ msgid ""
 "The editted link was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Zmodyfikowany odnośnik został usunięty z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/menubar.c:88 components/html-editor/menubar.c:104
 #: components/html-editor/menubar.c:122 components/html-editor/menubar.c:139
@@ -1256,17 +1260,15 @@ msgstr "Wstaw"
 #: components/html-editor/menubar.c:252
 #, c-format
 msgid "Error loading file '%s': %s"
-msgstr ""
+msgstr "Błąd przy wczytywaniu pliku \"%s\": %s"
 
 #: components/html-editor/menubar.c:279
-#, fuzzy
 msgid "Insert: HTML File"
-msgstr "Wybór wstawianego pliku w HTML-u"
+msgstr "Wstaw: plik HTML"
 
 #: components/html-editor/menubar.c:279
-#, fuzzy
 msgid "Insert: Text File"
-msgstr "Wybór wstawianego pliku tekstowego"
+msgstr "Wstaw: plik tekstowy"
 
 #: components/html-editor/paragraph.c:130
 msgid "Pre"
@@ -1325,60 +1327,53 @@ msgid ""
 "The editted paragraph was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Redagowany paragraf został usunięty z dokumentu.\n"
+"Nie można wprowadzić zmian."
 
 #: components/html-editor/popup.c:456
 msgid "Paste Quotation"
-msgstr ""
+msgstr "Wklej cytat"
 
 #: components/html-editor/popup.c:459
-#, fuzzy
 msgid "Insert link"
-msgstr "Wstaw"
+msgstr "Wstaw odnośnik"
 
 #: components/html-editor/popup.c:467
 msgid "Remove link"
 msgstr "Usuń odnośnik"
 
 #: components/html-editor/popup.c:475
-#, fuzzy
 msgid "Text Style..."
-msgstr "Plik _tekstowy..."
+msgstr "Styl tekstu..."
 
 #: components/html-editor/popup.c:477 components/html-editor/popup.c:483
 #: components/html-editor/popup.c:493
-#, fuzzy
 msgid "Paragraph Style..."
-msgstr "Akapit..."
+msgstr "Styl akapitu..."
 
 #: components/html-editor/popup.c:481
-#, fuzzy
 msgid "Link Style..."
-msgstr "Odnośnik..."
+msgstr "Styl odnośnika..."
 
 #: components/html-editor/popup.c:487
-#, fuzzy
 msgid "Rule Style..."
-msgstr "Linia..."
+msgstr "Styl zasady..."
 
 #: components/html-editor/popup.c:491
-#, fuzzy
 msgid "Image Style..."
-msgstr "Obraz..."
+msgstr "Styl Obrazu..."
 
 #: components/html-editor/popup.c:502
-#, fuzzy
 msgid "Cell Style..."
-msgstr "Komórka..."
+msgstr "Styl komórki..."
 
 #: components/html-editor/popup.c:505
-#, fuzzy
 msgid "Table Style..."
-msgstr "Tabela..."
+msgstr "Styl tabeli..."
 
 #: components/html-editor/popup.c:511
-#, fuzzy
 msgid "Page Style..."
-msgstr "Strona..."
+msgstr "Styl strony..."
 
 #: components/html-editor/popup.c:516
 msgid "Table insert"
@@ -1409,9 +1404,9 @@ msgid "Cell contents"
 msgstr "Zawartość komórki"
 
 #: components/html-editor/popup.c:548
-#, fuzzy, c-format
+#, c-format
 msgid "%s Dictionary"
-msgstr "Dodaj \"%s\" do słownika"
+msgstr "Słownik %s"
 
 #: components/html-editor/replace.c:75
 msgid "Replace confirmation"
@@ -1426,24 +1421,20 @@ msgid "Next"
 msgstr "Następne"
 
 #: components/html-editor/replace.c:161
-#, fuzzy
 msgid "Search _backward"
-msgstr "Wyszukiwanie wstecz"
+msgstr "Wyszukiwanie _wstecz"
 
 #: components/html-editor/replace.c:162 components/html-editor/search.c:80
-#, fuzzy
 msgid "Case _sensitive"
-msgstr "Rozróżnianie małych i wielkich liter"
+msgstr "_Rozróżnianie wielkości liter"
 
 #: components/html-editor/replace.c:172
-#, fuzzy
 msgid "Replace:"
-msgstr "Zmień"
+msgstr "Zmień:"
 
 #: components/html-editor/replace.c:175
-#, fuzzy
 msgid "With:"
-msgstr "Szerokość:"
+msgstr "Na:"
 
 #: components/html-editor/rule.c:98
 msgid "Blue 3D"
@@ -1458,11 +1449,12 @@ msgid ""
 "The editted rule was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Zmodyfikowana zasada została usunięta z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/search.c:79
-#, fuzzy
 msgid "_Backward"
-msgstr "Wstecz"
+msgstr "_Wstecz"
 
 #: components/html-editor/search.c:126
 msgid "Find Regular Expression"
@@ -1473,9 +1465,8 @@ msgid "Spell checker"
 msgstr "Sprawdzanie pisowni"
 
 #: components/html-editor/spell.c:361
-#, fuzzy
 msgid "Current _Languages"
-msgstr "_Języki sprawdzania pisowni"
+msgstr "Aktualne ję_zyki"
 
 #: components/html-editor/table.c:200
 msgid "Flat gray"
@@ -1490,6 +1481,8 @@ msgid ""
 "The editted table was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Zmodyfikowana tabela została usunięta z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/template.c:84
 msgid "Note"
@@ -1497,7 +1490,7 @@ msgstr "Notatka"
 
 #: components/html-editor/template.c:94 components/html-editor/template.c:113
 msgid "Place your text here"
-msgstr ""
+msgstr "Wstaw tutaj swój tekst"
 
 #: components/html-editor/template.c:97
 msgid "Image frame"
@@ -1512,9 +1505,8 @@ msgid "Save file as..."
 msgstr "Zapisz plik jako..."
 
 #: components/html-editor/test-html-editor-control.c:541
-#, fuzzy
 msgid "GtkHTML Editor Test Container"
-msgstr "Komponent edytora HTML-a dla GNOME"
+msgstr "Kontener testowy edytora GtkHTML"
 
 #. color selection
 #: components/html-editor/text.c:292
@@ -1526,6 +1518,8 @@ msgid ""
 "The editted text was removed from the document.\n"
 "Cannot apply your changes."
 msgstr ""
+"Zmodyfikowany tekst został usunięty z dokumentu.\n"
+"Nie można zastosować zmian."
 
 #: components/html-editor/toolbar.c:52
 msgid "Roman List"
@@ -1579,77 +1573,73 @@ msgstr "Zwiększa wcięcie akapitów"
 msgid "Sample"
 msgstr "Próbka"
 
-#: src/gtkhtml.c:2548
-#, fuzzy
+#: src/gtkhtml.c:2551
 msgid "Editable"
-msgstr "Aktywny"
+msgstr "Modyfikowalny"
 
-#: src/gtkhtml.c:2549
+#: src/gtkhtml.c:2552
 msgid "Whether the html can be edited"
-msgstr ""
+msgstr "Określa, czy html może być edytowany"
 
-#: src/gtkhtml.c:2556
-#, fuzzy
+#: src/gtkhtml.c:2559
 msgid "The title of the current document"
-msgstr "Sprawdza pisownię dokumentu"
+msgstr "Tytuł bieżącego dokumentu"
 
-#: src/gtkhtml.c:2562
-#, fuzzy
+#: src/gtkhtml.c:2565
 msgid "Document Base"
-msgstr "Tytuł dokumentu"
+msgstr "Baza dokumentu"
 
-#: src/gtkhtml.c:2563
+#: src/gtkhtml.c:2566
 msgid "The base URL for relative references"
-msgstr ""
+msgstr "Bazowy adres URL dla odnosników relatywnych"
 
-#: src/gtkhtml.c:2569
+#: src/gtkhtml.c:2572
 msgid "Target Base"
-msgstr ""
+msgstr "Baza celu"
 
-#: src/gtkhtml.c:2570
+#: src/gtkhtml.c:2573
 msgid "The base URL of the targe frame"
-msgstr ""
+msgstr "Bazowy adres URL docelowej ramki"
 
-#: src/gtkhtml.c:2579
-#, fuzzy
+#: src/gtkhtml.c:2582
 msgid "Fixed Width Font"
-msgstr "Stała szerokość"
+msgstr "Zmienna szerokość czcionki"
 
-#: src/gtkhtml.c:2580
+#: src/gtkhtml.c:2583
 msgid "The Monospace font to use for typewriter text"
-msgstr ""
+msgstr "Czcionka jednorodna używana dla tekstu maszynowego"
 
-#: src/gtkhtml.c:2586
+#: src/gtkhtml.c:2589
 msgid "New Link Color"
-msgstr ""
+msgstr "Kolor nowego odnośnika"
 
-#: src/gtkhtml.c:2587
+#: src/gtkhtml.c:2590
 msgid "The color of new link elements"
-msgstr ""
+msgstr "Kolor elemntów nowego odnośnika"
 
-#: src/gtkhtml.c:2592
+#: src/gtkhtml.c:2595
 msgid "Visited Link Color"
-msgstr ""
+msgstr "Kolor odwiedzonych odnośników"
 
-#: src/gtkhtml.c:2593
+#: src/gtkhtml.c:2596
 msgid "The color of visited link elements"
-msgstr ""
+msgstr "Kolor elementów odwiedzonego odnośnika"
 
-#: src/gtkhtml.c:2598
+#: src/gtkhtml.c:2601
 msgid "Active Link Color"
-msgstr ""
+msgstr "Kolor aktywnego odnośnika"
 
-#: src/gtkhtml.c:2599
+#: src/gtkhtml.c:2602
 msgid "The color of active link elements"
-msgstr ""
+msgstr "Kolor elementów aktywnego odnośnika"
 
-#: src/gtkhtml.c:2604
+#: src/gtkhtml.c:2607
 msgid "Spelling Error Color"
-msgstr ""
+msgstr "Kolor błędów pisowni"
 
-#: src/gtkhtml.c:2605
+#: src/gtkhtml.c:2608
 msgid "The color of the spelling error markers"
-msgstr ""
+msgstr "Kolor znaczników błędów pisowni"
 
 #: src/html-component.c:219
 msgid "Html"
@@ -1661,31 +1651,31 @@ msgstr "Test HTML-a"
 
 #: src/html-component.c:226
 msgid "Test1"
-msgstr "Test 1"
+msgstr "Test1"
 
 #: src/html-component.c:233
 msgid "Test2"
-msgstr "Test 2"
+msgstr "Test2"
 
 #: src/html-component.c:239
 msgid "Test3"
-msgstr "Test 3"
+msgstr "Test3"
 
 #: src/html-component.c:245
 msgid "Test4"
-msgstr "Test 4"
+msgstr "Test4"
 
 #: src/html-component.c:251
 msgid "Test5"
-msgstr "Test 5"
+msgstr "Test5"
 
 #: src/html-component.c:257
 msgid "Test6"
-msgstr "Test 6"
+msgstr "Test6"
 
 #: src/html-component.c:263
 msgid "Test7"
-msgstr "Test 7"
+msgstr "Test7"
 
 #: src/html-component.c:612
 msgid "_Refresh"
@@ -1725,14 +1715,11 @@ msgid "Print preview"
 msgstr "Podgląd wydruku"
 
 #: src/testgtkhtml.c:973
-#, fuzzy
 msgid "GtkHTML Test Application"
-msgstr "Test GtkHTML-a"
+msgstr "Aplikacja testowa GtkHTML"
 
 #~ msgid "The quick brown fox jumped over the lazy dog."
-#~ msgstr ""
-#~ "Chrząszcz brzmi w trzcinie w Szczebrzeszynie, a Szczebrzeszyn z tego "
-#~ "słynie."
+#~ msgstr "Pchnąć w tę łódź jeża lub ośm skrzyń fig."
 
 #~ msgid "with"
 #~ msgstr "na"
@@ -1759,7 +1746,7 @@ msgstr "Test GtkHTML-a"
 #~ msgstr "Właściw_ości..."
 
 #~ msgid "Smiley _7"
-#~ msgstr "Buźkę _7"
+#~ msgstr "Buźka _7"
 
 #~ msgid "Test"
 #~ msgstr "Test"

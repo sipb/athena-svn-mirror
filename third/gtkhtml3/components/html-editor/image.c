@@ -253,12 +253,22 @@ get_sample_html (GtkHTMLEditImageProperties *d, gboolean insert)
 	if (insert) {
 		html   = g_strconcat (body, image, NULL);
 	} else {
-		html   = g_strconcat (body,
-				      _("The quick brown fox jumps over the lazy dog."),
+		if (strcasecmp(location, "") != 0) {
+			html = g_strconcat (body,
+				      _("This is sample text, designed to show "
+					"you how text would flow around this "
+					"image if you insert the image into "
+					"your message."),
 				      " ",
 				      image,
-				      _("The quick brown fox jumps over the lazy dog."),
+				      _("This is sample text, designed to show "
+					"you how text would flow around this "
+					"image if you insert the image into "
+					"your message."),
 				      NULL);
+		} else {
+			html = g_strconcat (body, _("No image selected"), NULL);
+		}
 	}
 
 	g_free (location);
