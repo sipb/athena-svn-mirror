@@ -217,7 +217,6 @@ char	remotehost[MAXHOSTNAMELEN];
 char	rhost_addra[16];
 char	*rhost_sane;
 int	al_local_acct;
-int	encrypted_passwords;
 
 /* Defines for authlevel */
 #define AUTHLEVEL_NONE		0
@@ -302,7 +301,8 @@ main(argc, argv, envp)
 			break;
 
 		case 'E':
-			encrypted_passwords = 1;
+			if (!authlevel)
+				authlevel = AUTHLEVEL_AUTHENTICATE;
 			break;
 
 		case 'l':
@@ -687,8 +687,7 @@ user(name)
 	 * else to avoid leaking information.
 	 */
 	if (authlevel && !auth_type) {
-		reply(530,
-		      "Must perform authentication before identifying USER.");
+		reply(530, "Unauthenticated login refused.");
 		return;
 	}
 
