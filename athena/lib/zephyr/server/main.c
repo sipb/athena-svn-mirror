@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.56 1993-11-19 16:01:00 probe Exp $";
+    "$Id: main.c,v 1.57 1994-03-15 12:41:00 probe Exp $";
 #endif
 #endif
 
@@ -340,6 +340,10 @@ main(argc, argv)
 		} else 
 			nfound = select(nfildes, &readable, (fd_set *) NULL,
 					(fd_set *) NULL, tvp);
+
+		/* Initialize t_local for other uses */
+		(void) gettimeofday(&t_local, (struct timezone *)0);
+		
 		/* don't flame about EINTR, since a SIGUSR1 or SIGUSR2
 		   can generate it by interrupting the select */
 		if (nfound < 0) {
