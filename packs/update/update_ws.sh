@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.21 1997-04-17 19:03:45 ghudson Exp $
+# $Id: update_ws.sh,v 1.22 1997-04-30 04:42:30 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -174,14 +174,6 @@ EOF
 		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
 		cp /dev/null /usr/tmp/update.check
 	fi
-
-	case "$1" in
-	reactivate|rc|"")
-		;;
-	*)
-		sleep 20
-		;;
-	esac
 
 	exit 1
 fi
