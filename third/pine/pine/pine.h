@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: pine.h,v 1.3 2003-02-12 08:39:08 ghudson Exp $
+  $Id: pine.h,v 1.4 2003-05-01 01:32:14 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -63,7 +63,7 @@
 #ifndef _PINE_INCLUDED
 #define _PINE_INCLUDED
 
-#define PINE_VERSION		"4.53L"
+#define PINE_VERSION		"4.55L"
 #define	PHONE_HOME_VERSION	"-count"
 #define	PHONE_HOME_HOST		"docserver.cac.washington.edu"
 
@@ -159,6 +159,8 @@
 #define	GFW_HANDLES		0x01
 #define	GFW_ONCOMMA		0x02
 
+#define	PML_IS_MOVE_MBOX	0x01
+
 /* next_sorted_folder options */
 #define	NSF_TRUST_FLAGS	0x01	/* input flag, don't need to ping           */
 #define	NSF_SKIP_CHID	0x02	/* input flag, skip MN_CHID messages        */
@@ -192,15 +194,44 @@
 
 typedef enum {ReadOnly, ReadWrite, MaybeRorW, NoAccess, NoExists} AccessType;
 
+#ifndef DF_REMOTE_ABOOK_VALIDITY
 #define DF_REMOTE_ABOOK_VALIDITY "5"
+#endif
+#ifndef DF_GOTO_DEFAULT_RULE
 #define DF_GOTO_DEFAULT_RULE	"inbox-or-folder-in-recent-collection"
+#endif
+#ifndef DF_INCOMING_STARTUP
 #define DF_INCOMING_STARTUP	"first-unseen"
+#endif
+#ifndef DF_PRUNING_RULE
 #define DF_PRUNING_RULE		"ask-ask"
+#endif
+#ifndef DF_REOPEN_RULE
+#define DF_REOPEN_RULE		"ask-no-n"
+#endif
+#ifndef DF_THREAD_DISP_STYLE
 #define DF_THREAD_DISP_STYLE	"struct"
+#endif
+#ifndef DF_THREAD_INDEX_STYLE
 #define DF_THREAD_INDEX_STYLE	"exp"
+#endif
+#ifndef DF_THREAD_MORE_CHAR
 #define DF_THREAD_MORE_CHAR	">"
+#endif
+#ifndef DF_THREAD_EXP_CHAR
 #define DF_THREAD_EXP_CHAR	"."
+#endif
+#ifndef DF_THREAD_LASTREPLY_CHAR
 #define DF_THREAD_LASTREPLY_CHAR "|"
+#endif
+#ifndef DF_MAILDROPCHECK
+#define DF_MAILDROPCHECK 	"60"
+#endif
+
+#define SIGDASHES	"-- "
+#define START_SIG_BLOCK	2
+#define IN_SIG_BLOCK	1
+#define OUT_SIG_BLOCK	0
 
 
 /*
@@ -544,6 +575,7 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_GOTO_DEFAULT_RULE
 		, V_INCOMING_STARTUP
 		, V_PRUNING_RULE
+		, V_REOPEN_RULE
 		, V_THREAD_DISP_STYLE
 		, V_THREAD_INDEX_STYLE
 		, V_THREAD_MORE_CHAR
@@ -576,6 +608,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_MARGIN
 		, V_STATUS_MSG_DELAY
 		, V_MAILCHECK
+		, V_MAILDROPCHECK
+		, V_NNTPRANGE
 		, V_NEWSRC_PATH
 		, V_NEWS_ACTIVE_PATH
 		, V_NEWS_SPOOL_DIR
@@ -668,6 +702,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 		, V_QUOTE2_BACK_COLOR
 		, V_QUOTE3_FORE_COLOR
 		, V_QUOTE3_BACK_COLOR
+		, V_SIGNATURE_FORE_COLOR
+		, V_SIGNATURE_BACK_COLOR
 		, V_PROMPT_FORE_COLOR
 		, V_PROMPT_BACK_COLOR
 		, V_IND_PLUS_FORE_COLOR
@@ -841,6 +877,10 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_MARGIN		     vars[V_MARGIN].global_val.p
 #define VAR_MAILCHECK		     vars[V_MAILCHECK].current_val.p
 #define GLO_MAILCHECK		     vars[V_MAILCHECK].global_val.p
+#define VAR_MAILDROPCHECK	     vars[V_MAILDROPCHECK].current_val.p
+#define GLO_MAILDROPCHECK	     vars[V_MAILDROPCHECK].global_val.p
+#define VAR_NNTPRANGE     	     vars[V_NNTPRANGE].current_val.p
+#define GLO_NNTPRANGE     	     vars[V_NNTPRANGE].global_val.p
 #define VAR_NEWSRC_PATH		     vars[V_NEWSRC_PATH].current_val.p
 #define GLO_NEWSRC_PATH		     vars[V_NEWSRC_PATH].global_val.p
 #define VAR_NEWS_ACTIVE_PATH	     vars[V_NEWS_ACTIVE_PATH].current_val.p
@@ -907,6 +947,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define GLO_INCOMING_STARTUP	     vars[V_INCOMING_STARTUP].global_val.p
 #define VAR_PRUNING_RULE	     vars[V_PRUNING_RULE].current_val.p
 #define GLO_PRUNING_RULE	     vars[V_PRUNING_RULE].global_val.p
+#define VAR_REOPEN_RULE		     vars[V_REOPEN_RULE].current_val.p
+#define GLO_REOPEN_RULE		     vars[V_REOPEN_RULE].global_val.p
 #define VAR_THREAD_DISP_STYLE	     vars[V_THREAD_DISP_STYLE].current_val.p
 #define GLO_THREAD_DISP_STYLE	     vars[V_THREAD_DISP_STYLE].global_val.p
 #define VAR_THREAD_INDEX_STYLE	     vars[V_THREAD_INDEX_STYLE].current_val.p
@@ -976,6 +1018,8 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define VAR_QUOTE2_BACK_COLOR	     vars[V_QUOTE2_BACK_COLOR].current_val.p
 #define VAR_QUOTE3_FORE_COLOR	     vars[V_QUOTE3_FORE_COLOR].current_val.p
 #define VAR_QUOTE3_BACK_COLOR	     vars[V_QUOTE3_BACK_COLOR].current_val.p
+#define VAR_SIGNATURE_FORE_COLOR     vars[V_SIGNATURE_FORE_COLOR].current_val.p
+#define VAR_SIGNATURE_BACK_COLOR     vars[V_SIGNATURE_BACK_COLOR].current_val.p
 #define VAR_PROMPT_FORE_COLOR	     vars[V_PROMPT_FORE_COLOR].current_val.p
 #define VAR_PROMPT_BACK_COLOR	     vars[V_PROMPT_BACK_COLOR].current_val.p
 #define VAR_VIEW_HDR_COLORS	     vars[V_VIEW_HDR_COLORS].current_val.l
@@ -1055,6 +1099,7 @@ typedef enum {
 	F_AUTO_REPLY_TO,
 	F_VERBOSE_POST,
 	F_FCC_ON_BOUNCE,
+	F_SEND_WO_CONFIRM,
 	F_USE_SENDER_NOT_X,
 	F_BLANK_KEYMENU,
 	F_CUSTOM_PRINT,
@@ -1070,6 +1115,8 @@ typedef enum {
 	F_ALWAYS_LAST_FLDR_DFLT,
 	F_TAB_TO_NEW,
 	F_MARK_FOR_CC,
+	F_WARN_ABOUT_NO_SUBJECT,
+	F_WARN_ABOUT_NO_TO_OR_CC,
 	F_QUELL_DEAD_LETTER,
 	F_QUELL_BEEPS,
 	F_QUELL_LOCK_FAILURE_MSGS,
@@ -1080,6 +1127,8 @@ typedef enum {
 	F_EXPANDED_DISTLISTS,
 	F_AGG_SEQ_COPY,
 	F_DISABLE_ALARM,
+	F_DISABLE_SETLOCALE_COLLATE,
+	F_ENABLE_SETLOCALE_CTYPE,
 	F_FROM_DELIM_IN_PRINT,
 	F_BACKGROUND_POST,
 	F_ALLOW_GOTO,
@@ -1091,6 +1140,8 @@ typedef enum {
 	F_ENABLE_SIGDASHES,
 	F_ENABLE_STRIP_SIGDASHES,
 	F_QUELL_PARTIAL_FETCH,
+	F_QUELL_PERSONAL_NAME_PROMPT,
+	F_QUELL_USER_ID_PROMPT,
 	F_VIEW_SEL_ATTACH,
 	F_VIEW_SEL_URL,
 	F_VIEW_SEL_URL_HOST,
@@ -1123,6 +1174,7 @@ typedef enum {
 	F_SHOW_TEXTPLAIN_INT,
 	F_ROLE_CONFIRM_DEFAULT,
 	F_TAB_NO_CONFIRM,
+	F_RET_INBOX_NO_CONFIRM,
 	F_CHECK_MAIL_ONQUIT,
 	F_NO_FCC_ATTACH,
 	F_DO_MAILCAP_PARAM_SUBST,
@@ -1336,6 +1388,12 @@ typedef enum {
 #define AB_COMMENT_STR			"Comment   : "
 
 /*
+ * Icon text types, to tell which icon to use
+ */
+#define IT_NEWMAIL 0
+#define IT_MCLOSED 1
+
+/*
  * Incoming startup rules.  if these grow, widen pine
  * struct's inc_startup_rule and reset_startup_rule().
  */
@@ -1357,6 +1415,19 @@ typedef enum {
 #define	PRUNE_YES_AND_NO  		3
 #define	PRUNE_NO_AND_ASK  		4
 #define	PRUNE_NO_AND_NO  		5
+
+/*
+ * Folder reopen rules. If these grow, widen reopen_rule.
+ */
+#define	REOPEN_YES_YES			0
+#define	REOPEN_YES_ASK_Y		1
+#define	REOPEN_YES_ASK_N		2
+#define	REOPEN_YES_NO			3
+#define	REOPEN_ASK_ASK_Y		4
+#define	REOPEN_ASK_ASK_N		5
+#define	REOPEN_ASK_NO_Y			6
+#define	REOPEN_ASK_NO_N			7
+#define	REOPEN_NO_NO			8
 
 /*
  * Goto default rules.
@@ -1576,9 +1647,6 @@ typedef enum {
 #define	SVAR_USER_INPUT(ps, n, e) strtoval((ps)->VAR_USERINPUTTIMEO,	  \
 					 &(n), 0, 1000, 0, (e),		  \
 					"user-input-timeout")
-#define	SVAR_DEBUGMEM(ps, n, e) strtoval((ps)->VAR_DEBUGMEM,		  \
-					 &(n), 10000, 10000000, 0, (e),	  \
-					"Debug-mem")
 #define	SVAR_TCP_OPEN(ps, n, e)	strtoval((ps)->VAR_TCPOPENTIMEO, 	  \
 					 &(n), 5, 30000, 5, (e),	  \
 					"Tcp-open-timeout")
@@ -1597,6 +1665,16 @@ typedef enum {
 #define	SVAR_SSH_OPEN(ps, n, e)	strtoval((ps)->VAR_SSHOPENTIMEO, 	  \
 					 &(n), 5, 30000, 0, (e),	  \
 					"Ssh-open-timeout")
+
+#define	SVAR_DEBUGMEM(ps, n, e) strtolval((ps)->VAR_DEBUGMEM,		  \
+					  &(n), 10000L, 10000000L, 0L, (e), \
+					  "Debug-mem")
+#define	SVAR_NNTPRANGE(ps, n, e) strtolval((ps)->VAR_NNTPRANGE,		  \
+					  &(n), 0L, 30000L, 0L, (e),	  \
+					  "Nntp-range")
+#define	SVAR_MAILDCHK(ps, n, e)	strtolval((ps)->VAR_MAILDROPCHECK,	  \
+					  &(n), 60L, 30000L, 0L, (e),	  \
+					  "Maildrop-check-minimum")
 
 
 /*======================================================================
@@ -1892,7 +1970,9 @@ typedef struct context {
  */
 typedef	struct _mm_list_s {
     MAILSTREAM	*stream;
-    void       (*filter) PROTO((MAILSTREAM *, char *, int, long, void *));
+    unsigned     options;
+    void       (*filter) PROTO((MAILSTREAM *, char *, int, long, void *,
+				unsigned));
     void	*data;
 } MM_LIST_S;
 
@@ -1923,6 +2003,8 @@ typedef struct folder {
     unsigned	    selected:1;			/* selected by user	      */
     unsigned	    subscribed:1;		/* selected by user	      */
     unsigned long   varhash;			/* hash of var for incoming   */
+    unsigned long   uidvalidity;		/* only for #move folder      */
+    unsigned long   uidnext;			/* only for #move folder      */
     char	   *nickname;			/* folder's short name        */
     char	    name[1];			/* folder's name              */
 } FOLDER_S;
@@ -1947,6 +2029,7 @@ typedef enum {iNothing, iStatus, iFStatus, iIStatus,
 	      iMailbox, iAddress, iInit, iCursorPos,
 	      iDay2Digit, iMon2Digit, iYear2Digit,
 	      iSTime, iKSize,
+	      iRoleNick,
 	      iScore, iDayOfWeekAbb, iDayOfWeek,
 	      iDay, iDayOrdinal, iMonAbb, iMonLong, iMon, iYear} IndexColType;
 typedef enum {AllAuto, Fixed, Percent, WeCalculate, Special} WidthType;
@@ -1999,11 +2082,9 @@ struct variable {
     unsigned  is_global:1;
     unsigned  is_list:1;	/* flag indicating variable is a list       */
     unsigned  is_fixed:1;	/* sys mgr has fixed this variable          */
-    /*
-     * Most variables won't have any of the following 5 bits set.
-     */
     unsigned  is_onlymain:1;	/* read and written from main_user_val	    */
     unsigned  is_outermost:1;	/* read and written from outermost pinerc   */
+    unsigned  del_list_quotes:1;/* list var only, remove double quotes      */
     char     *descrip;		/* description                              */
     union {
 	char *p;		/* pointer to single string value           */
@@ -2594,6 +2675,14 @@ typedef struct arbhdr_s {
 } ARBHDR_S;
 
 /*
+ * A list of intervals of integers.
+ */
+typedef struct intvl_s {
+    int             imin, imax;
+    struct intvl_s *next;
+} INTVL_S;
+
+/*
  * A Pattern group gives characteristics of an envelope to match against. Any of
  * the characteristics (to, from, ...) which is non-null must match for the
  * whole thing to be considered a match. That is, it is an AND of all the
@@ -2616,8 +2705,10 @@ typedef struct patgrp_s {
     PATTERN_S *folder;		/* folder if type FLDR_SPECIFIC		*/
     int        abookfrom;	/* see AFRM_* below			*/
     PATTERN_S *abooks;
-    int        do_score, score_min, score_max;
-    int        do_age, age_min, age_max;  /* ages in days, inclusive	*/
+    int        do_score;
+    INTVL_S   *score;
+    int        do_age;
+    INTVL_S   *age;		/* ages are in days			*/
     int        age_uses_sentdate; /* on or off				*/
     int        bogus;		/* patgrp contains unknown stuff	*/
     int        stat_new,	/* msg status is New (Unseen)		*/
@@ -3071,6 +3162,7 @@ struct pine {
     unsigned	 fld_sort_rule:3;
     unsigned	 inc_startup_rule:3;
     unsigned	 pruning_rule:3;
+    unsigned	 reopen_rule:4;
     unsigned	 goto_default_rule:3;
     unsigned	 thread_disp_style:3;
     unsigned	 thread_index_style:3;
@@ -3126,10 +3218,10 @@ struct pine {
     unsigned     blank_user_domain:1;
 #ifdef	_WINDOWS
     unsigned	 update_registry:1;
+    unsigned     install_flag:1;
 #endif
 #endif
 
-#ifdef DEBUG
     unsigned 	 debug_malloc:6;
     unsigned 	 debug_timestamp:1;
     unsigned 	 debug_flush:1;
@@ -3137,8 +3229,7 @@ struct pine {
     unsigned 	 debug_imap:3;
     unsigned 	 debug_nfiles:5;
     int          dlevel;		/* hack to pass arg to debugjournal */
-#endif
-    int		 debugmem;
+    long	 debugmem;
 
     unsigned     convert_sigs:1;
     unsigned     dump_supported_options:1;
@@ -3644,6 +3735,11 @@ typedef	struct _parmlist {
 #define	URL_IMAP_ISERVERONLY	0x0020
 
 
+#define pine_mail_append(stream,mailbox,message) \
+   pine_mail_append_full(stream,mailbox,NULL,NULL,message)
+#define pine_mail_copy(stream,sequence,mailbox) \
+   pine_mail_copy_full(stream,sequence,mailbox,0)
+
 
 /*
  * Constants and structs to aid RFC 2369 support
@@ -3837,6 +3933,8 @@ char	   *context_edit_screen PROTO((struct pine *, char *, char *,
 				       char *, char *, char *));
 SELECTED_S *new_selected PROTO((void));
 void	    free_selected PROTO((SELECTED_S **));
+int	    add_new_folder PROTO((CONTEXT_S *, EditWhich, int, char *, size_t,
+				  MAILSTREAM *, char *));
 
 /*-- help.c --*/
 int	    helper PROTO((HelpType, char *, int));
@@ -3865,6 +3963,10 @@ long	    imap_proxycopy PROTO((MAILSTREAM *, char *, char *, long));
 void	   *pine_block_notify PROTO((int, void *));
 void        set_read_predicted PROTO((int));
 int	    url_local_certdetails PROTO((char *));
+int         check_for_move_mbox PROTO((char *, char *, size_t, char **));
+long        pine_mail_status PROTO((MAILSTREAM *, char *, long));
+long        pine_mail_status_full PROTO((MAILSTREAM *, char *, long,
+					 unsigned long *, unsigned long *));
 
 /*-- init.c --*/
 void	    init_error PROTO((struct pine *, int, int, int, char *));
@@ -3893,7 +3995,7 @@ int	    init_mail_dir PROTO((struct pine *));
 void	    init_init_vars PROTO((struct pine *));
 void	    init_save_defaults PROTO(());
 int	    expire_sent_mail PROTO((void));
-char	  **parse_list PROTO((char *, int, char **));
+char	  **parse_list PROTO((char *, int, int, char **));
 char      **copy_list_array PROTO((char **));
 void        free_list_array PROTO((char ***));
 int         equal_list_arrays PROTO((char **, char **));
@@ -3913,6 +4015,7 @@ NAMEVAL_S  *fld_sort_rules PROTO((int));
 NAMEVAL_S  *incoming_startup_rules PROTO((int));
 NAMEVAL_S  *startup_rules PROTO((int));
 NAMEVAL_S  *pruning_rules PROTO((int));
+NAMEVAL_S  *reopen_rules PROTO((int));
 NAMEVAL_S  *goto_rules PROTO((int));
 NAMEVAL_S  *thread_disp_styles PROTO((int));
 NAMEVAL_S  *thread_index_styles PROTO((int));
@@ -4002,6 +4105,7 @@ int         get_export_filename PROTO((struct pine *, char *, char *, size_t,
 				       char *, char *, ESCKEY_S *,
 				       int *, int, int));
 char	   *build_sequence PROTO((MAILSTREAM *, MSGNO_S *, long *));
+int         trivial_patgrp PROTO((PATGRP_S *));
 #ifdef	_WINDOWS
 int	    header_mode_callback PROTO((int, long));
 int	    any_selected_callback PROTO((int, long));
@@ -4200,6 +4304,7 @@ long	    scroll_getpos PROTO((void));
 long	    scroll_getscrollto PROTO((void));
 char	   *pcpine_general_help PROTO((char *));
 char	   *pcpine_help PROTO((HelpType));
+int         init_install_get_vars PROTO((void));
 #endif
 #ifdef	MOUSE
 unsigned long mouse_in_main PROTO((int, int, int));
@@ -4274,6 +4379,12 @@ int	    set_lflag PROTO((MAILSTREAM *, MSGNO_S *, long, int, int));
 void	    warn_other_cmds PROTO(());
 MAILSTREAM *pine_mail_open PROTO((MAILSTREAM *, char *, long));
 long        pine_mail_create PROTO((MAILSTREAM *, char *));
+long        pine_mail_delete PROTO((MAILSTREAM *, char *));
+long        pine_mail_append_full PROTO((MAILSTREAM *, char *, char *, char *,
+					 STRING *));
+long        pine_mail_append_multiple PROTO((MAILSTREAM *, char *, append_t,
+					     void *));
+long        pine_mail_copy_full PROTO((MAILSTREAM *, char *, char *, long));
 void	    pine_mail_close PROTO((MAILSTREAM *));
 unsigned long pine_gets_bytes PROTO((int));
 int	    is_imap_stream PROTO((MAILSTREAM *));
@@ -4293,7 +4404,7 @@ BODY	   *reply_body PROTO((MAILSTREAM *, ENVELOPE *, BODY *, long,
 			      char *, void *, char *, int, ACTION_S *, int,
 			      REDRAFT_POS_S **));
 char	   *reply_subject PROTO((char *, char *));
-void	    reply_delimiter PROTO((ENVELOPE *, gf_io_t));
+void	    reply_delimiter PROTO((ENVELOPE *, ACTION_S *, gf_io_t));
 char	   *reply_in_reply_to PROTO((ENVELOPE *));
 char	   *reply_quote_str PROTO((ENVELOPE *));
 char       *reply_quote_initials PROTO((char *));
@@ -4485,6 +4596,7 @@ char	   *strsquish PROTO((char *, char *, int));
 char	   *long2string PROTO((long));
 char	   *int2string PROTO((int));
 char	   *strtoval PROTO((char *, int *, int, int, int, char *, char *));
+char	   *strtolval PROTO((char *, long *, long, long, long, char *, char *));
 void	    get_pair PROTO((char *, char **, char **, int, int));
 char	   *put_pair PROTO((char *, char *));
 char       *quote_if_needed PROTO((char *));
@@ -4548,8 +4660,8 @@ PATTERN_S  *string_to_pattern PROTO((char *));
 PAT_S      *copy_pat PROTO((PAT_S *));
 ACTION_S   *copy_action PROTO((ACTION_S *));
 ACTION_S   *combine_inherited_role PROTO((ACTION_S *));
-int         parse_score_interval PROTO((char *, int *, int *));
-char       *stringform_of_score_interval PROTO((int, int));
+char       *stringform_of_intvl PROTO((INTVL_S *));
+INTVL_S    *parse_intvl PROTO((char *));
 void        convert_statebits_to_vals PROTO((long, int *, int *, int *, int *));
 int         scores_are_used PROTO((int));
 int         patgrp_depends_on_state PROTO((PATGRP_S *));
@@ -4621,7 +4733,7 @@ int	    config_screen PROTO((struct ttyo **));
 void	    init_screen PROTO((void));
 void	    end_screen PROTO((char *, int));
 void	    outchar PROTO((int));
-void	    icon_text PROTO((char *));
+void	    icon_text PROTO((char *, int));
 void	    clear_cursor_pos PROTO((void));
 int	    InsertChar PROTO((int));
 int	    DeleteChar PROTO((int));

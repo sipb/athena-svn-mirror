@@ -1,4 +1,4 @@
-# $Id: pine.hlp,v 1.4 2003-02-12 08:39:08 ghudson Exp $
+# $Id: pine.hlp,v 1.5 2003-05-01 01:32:14 ghudson Exp $
 #
 #           T H E   P I N E    M E S S A G E   S Y S T E M
 #
@@ -176,12 +176,78 @@ version with GUI amenities for 32-bit flavors of Microsoft Windows (95,
 
 <H2>New in Pine <!--#echo var="PINE_VERSION"--></H2>
 
-Version <!--#echo var="PINE_VERSION"--> is a bug-fix release
-which addresses bugs found in previous releases.
+Version <!--#echo var="PINE_VERSION"--> 
+addresses bugs found in previous releases and also introduces some
+new functionality.
 <P>
-No additional functionality has been added.
+Additions include:
+<P>
+<UL>
+  <LI> Experimental <A HREF="h_maildrop">Mail Drop</A> setup is now possible using the &quot;#move&quot; <A HREF="h_folder_name_namespaces">Namespace</A>
+  <LI> <A HREF="h_config_send_wo_confirm">&quot;Send-Without-Confirm&quot;</A>
+  <LI> <A HREF="h_config_inbox_no_confirm">&quot;Return-To-Inbox-Without-Confirm&quot;</A>
+  <LI> <A HREF="h_config_signature_color">&quot;Signature Color&quot;</A> when viewing a message
+  <LI> Mail access using POP3 should be faster with modern POP3 servers, since Pine now uses the TOP and LIST commands if available. Append &quot;/loser&quot; to the server name to get the old, more paranoid/reliable behavior.
+  <LI> <A HREF="h_config_nntprange">NNTP-Range</A> may speed news access if newsgroups are large
+  <LI> In PC-Pine, the tree icon turns yellow when there is an unexpected closing of a mail folder
+  <LI> <A HREF="h_config_reopen_rule">&quot;Folder-Reopen-Rule&quot;</A>
+  <LI> Rule Pattern <A HREF="h_config_role_age">Age intervals</A> and <A HREF="h_config_role_scorei">Score intervals</A> may be lists of intervals now. Careful, Pines prior to version 4.55 will notice only the first interval in the list.
+  <LI> Translation of various Unicode punctuation characters and the Euro symbol found in HTML mail to their US-ASCII equivalents
+  <LI> New ROLENICK <A HREF="h_index_tokens">token</A>
+  <LI> <A HREF="h_config_warn_if_subj_blank">&quot;Warn-if-blank-Subject&quot;</A>
+  <LI> <A HREF="h_config_warn_if_no_to_or_cc">&quot;Warn-if-blank-To-and-Cc-and-Newsgroups&quot;</A>
+  <LI> Added PC-Pine features <A HREF="h_config_quell_user_id_prompt">&quot;Quell-User-Id-Prompt&quot;</A> and <A HREF="h_config_quell_personal_name_prompt">&quot;Quell-Personal-Name-Prompt&quot;</A>
+  <LI> Turned off setlocale call for category LC_CTYPE and now provide a hidden feature <A HREF="h_config_enable_ctype">&quot;enable-setlocale-ctype&quot;</A> to turn it back on and a hidden feature <A HREF="h_config_disable_collate">&quot;disable-setlocale-collate&quot;</A> to turn off the setlocale call for category LC_COLLATE. It is understood that you probably don't know what this means, in which case you should leave these features alone. Turning off the CTYPE setlocale solves a technical problem in some cases.
+  <LI> Added PC-Pine command line arguments &quot;-install&quot; and &quot;-registry clearsilent&quot; for use with the new PC-Pine installer.
+</UL>
 <P>
 Bugs that have been addressed in this release include:
+
+<P>
+<UL>
+  <LI> Messages may be unexpectedly marked Deleted or expunged if the following conditions hold:
+  <UL>
+    <LI> The folder is accessed using IMAP
+    <LI> The feature <A HREF="h_config_expunge_manually">&quot;Expunge-Only-Manually&quot;</A> is set
+    <LI> Some messages in the folder have been Filtered during this session
+    <LI> The folder contains messages which haven't been displayed in the index or viewed in this session
+  </UL>
+  If these conditions hold, then any messages which were previously marked Deleted will be expunged from the folder, and a seemingly random set of the messages which haven't been displayed this session will be marked Deleted.
+  <LI> Do not attempt extra authentications after already authenticated to SMTP server
+  <LI> Pine appears to hang when viewing mailto urls with initial-keystroke-list set to start in index
+  <LI> Crash in mailutil and incorrect hierarchy handling in mailutil
+  <LI> Crash when viewing last message of a folder when the message is Expunged and titlebar-color-style is not default
+  <LI> In PC-Pine, correcting a spell-checked word can sometimes cause a crash
+  <LI> Crash when expunging while quitting with a particular combination of filters and messages in the folder
+  <LI> Mailboxes connected to via POP3 could display message data for the wrong message in the event of an expunge
+  <LI> Change Win2K/XP Kerberos support to not try to get the Kerberos realm name (needed to work in a pure MS Kerberos environment)
+  <LI> If inbox-path is set to or defaults to &quot;inbox&quot;, then FCCs to inbox will fail after an incorrect attempt to create inbox in the primary collection.
+  <LI> Remote pine config might double in size when running both pine4.4x and pine4.5x
+  <LI> Sort and thread subject matching now complies completely with the specification
+  <LI> When replying or forwarding something with a charset that is different from ours, label with our character-set if <A HREF="h_config_disable_cset_conv">charset conversion</A> is enabled.
+  <LI> Stored passwords work incorrectly if you use two accounts on the same server
+  <LI> Can only rename an incoming folder once per session
+  <LI> WhereIs command sometimes displays negative line number by mistake
+  <LI> Invisible current line after going from viewing a threaded message to Main menu and then Index
+  <LI> When Zooming an index where some messages in the selected set are in collapsed threads, it wasn't possible to see the selected messages, and the current message may even have been hidden. Auto-expand collapsed threads which contain selected messages at the time of the Zoom.
+  <LI> TAB command stopped one thread too soon if in threaded index and the new message was inside a thread.
+  <LI> Failed open of a folder from a newsgroup caused the equivalent of an uneXclude when the newsgroup was reopened.
+  <LI> Rare crash when replying
+  <LI> With some defective IMAP servers a filter which required a match in the To pattern would not match. The IMAP server defect is that the server does not implement a HEADER search for the empty string to be equivalent to a test for the header existing.
+  <LI> When forwarding HTML messages with attachments, they are marked as being HTML Text even though they are being sent out as Plain text.
+  <LI> Forwarding an attachment can incorrectly use a role even if there are patterns that aren't matched.
+  <LI> Whereis fails when searching from a threaded index when in <A HREF="h_config_thread_index_style">separate-index-screen</A> mode.
+  <LI> The message &quot;Keeping x messages and removing y&quot; was counting filtered (and so invisible) messages in the Keeping number.
+  <LI> Avoid deeply nested IMAP search commands because some servers object. This should make large numbers of items in Rule header patterns work correctly.
+  <LI> Restore the old justify behavior from 4.44.
+  <LI> Selecting using WhereIs ^X command did not respect auto-zoom-after-select
+</UL>
+<P>
+Version 4.53 was a bug-fix release.
+<P>
+No additional functionality was added.
+<P>
+Bugs addressed in the 4.53 release included:
 
 <P>
 <UL>
@@ -196,7 +262,7 @@ Version 4.52 was also a bug-fix release.
 Additions included:
 <P>
 <UL>
-  <LI> Experimental method to reopen a newsgroup or POP folder to check for new messages with &lt; command followed by &gt; command. See the help text for <A HREF="h_config_mailcheck">&quot;Mail-Check-Interval&quot;</A> for a short explanation.
+  <LI> Experimental method to reopen a newsgroup or POP folder to check for new messages with &lt; command followed by &gt; command. See the help text for <A HREF="h_config_reopen_rule">&quot;Folder-Reopen-Rule&quot;</A> for a short explanation.
 </UL>
 <P>
 Bugs addressed in the 4.52 release included:
@@ -379,7 +445,7 @@ Some topics of current interest include:
 <UL>
 <P><LI> Information on <A HREF="h_info_on_locking">Folder Locking</A>
 <P><LI> Information on <A HREF="h_info_on_mbox">Missing mail and the mbox driver</A>
-<P><LI> Information on <A HREF="h_composer_cntxt_path">Folder Namespaces</A>
+<P><LI> Information on <A HREF="h_folder_name_namespaces">Folder Namespaces</A>
 <P>
 </UL>
 
@@ -542,7 +608,7 @@ the
 modifier in the mailbox name.
 
 <P>
-<CENTER><SAMP>{foo.bar.com/novalidate-cert}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/novalidate-cert}INBOX</SAMP></CENTER>
 <P>
 
 The fully-qualified host name of the server should be used
@@ -551,7 +617,7 @@ so that it matches the host name in the server certificate.
 Here is an example of a host specification which directs Pine to use
 the SSL port (993) and an encrypted data stream.
 <P>
-<CENTER><SAMP>{foo.bar.com/ssl}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/ssl}INBOX</SAMP></CENTER>
 <P>
 &lt;End of TLS usage help&gt;
 </BODY>
@@ -643,8 +709,8 @@ located on a remote host:
  <LI>It's also possible, depending on your local system configuration, to
  arrange remote access to your NEWSRC as well.  The advantage, as with
  the postponed message folder, is that both Unix Pine and PC-Pine can
- refer to the same information. See the Main Menu's help text section on
- "<A HREF="main_menu_tx#read_news">Reading News</A>"
+ refer to the same information. See
+ <A HREF="h_reading_news">Reading News</A>
  for more information.
 </OL>
 
@@ -950,45 +1016,6 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 <P>
 &lt;End of Pine Legal Notices&gt;
-</BODY>
-</HTML>
-===== h_news_bugs =====
-<HTML>
-<HEAD>
-<TITLE>Bug fixes in <!--#echo var="PINE_VERSION"--></TITLE>
-</HEAD>
-<BODY>
-
-<H1>Bug Fixes in <!--#echo var="PINE_VERSION"--></H1>
-
-The bugs found, reported and fixed in this version of Pine include:
-<P>
-<UL>
-<LI> fixed Fcc: vs. ^T vs. file existence confusion
-<LI> fixed hang when mail-check-interval set to zero
-<LI> Tab completion made more consistent
-<LI> fixed to allow attaching file names containing commas
-<LI> Selected in Folder List preserved in all cases
-<LI> improved accuracy of NextNew processing
-<LI> adjacent folder becomes selected when Folder List entry deleted
-<LI> leading newlines suppressed with empty reply-leadin
-<LI> Role processing now applies to Forward command
-<LI> Role processing now applies to mailto: handling
-<LI> folder list's disappearing INBOX
-<LI> text paging preserved when screen resized
-<LI> PC-Pine failure to cache large (&gt; 16k) fetches
-<LI> potential loss of postponed message when INBOX open failed
-<LI> potential loss of .interrupted-mail when telnet session lost
-<LI> crash when From address deleted from postponed message
-<LI> LOGIN referral failure
-<LI> safer method used to spin bar in wait indicator
-<LI> improved listmode performance in newsgroup selection
-<LI> zoomed Message Index now printable
-<LI> bug causing incorrect Message Index after sort
-</UL>
-
-<P>
-&lt;End of Fixed Bug List&gt;
 </BODY>
 </HTML>
 ===== h_info_on_mbox =====
@@ -1693,13 +1720,14 @@ help on commands in either the message text or header area, type
 <p>To move around, use the arrow keys or Ctrl-N (Next line) and Ctrl-P 
 (Previous line); to correct typing errors, use &lt;Backspace&gt; or &lt;Delete&gt;. </p>
 
-<p>The following information from Pine's online help should prove useful:</p>
+<p>The following information from Pine's online help may prove useful:</p>
 
 <ul>
   <li><a href="h_composer_to">Message Header Commands</a></li>
   <li><a href="h_compose_richhdr">Rich Header Command</a></li>
   <li><a href="h_composer">Composer Commands</a></li>
   <li><a href="h_edit_nav_cmds">Composer Editing Commands</a></li>
+  <li><a href="h_config_change_your_from">Changing your From Address</a></li>
   <li><a href="h_compose_send">Send Command</a></li>
   <li><a href="h_compose_spell">Spell Check Command</a></li>
 </ul>
@@ -1755,7 +1783,6 @@ unless you choose to save them to other folders you create yourself.</li>
 <ul>
   <li><a href="h_folder_open">Explanation of Folder Selection</a></li>
   <li><a href="h_folder_maint">Help for Folder List</a></li>
-  <li><a href="h_common_folders">Folder List Commands</a></li>
   <li><a href="h_valid_folder_names">Explanation of Valid Folder Names</a></li>
   <li><a href="h_folder_fcc">Folder Select for Fcc ("sent-mail") 
 Explained</a></li>
@@ -2252,6 +2279,12 @@ the string, excluding the double quotes.
 Configuration equivalent:  <EM>initial-keystroke-list</EM>
 <P>
 
+<DT> -install
+
+<DD> For <EM>PC-Pine</EM> only, this option prompts the user for
+some basic information to help with getting properly set up.
+<P>
+
 <DT> -k
 
 <DD> Function-Key Mode:  When invoked in this way, <EM>Pine</EM> expects
@@ -2298,8 +2331,7 @@ Pinerc may be either a local file or a remote configuration folder.
 
 <DT> -passfile <EM>passfile</EM>
 
-<DD> <EM>PC-Pine</EM> only.
-This tells <EM>PC-Pine</EM> what file should be used as the password file.
+<DD> This tells <EM>Pine</EM> what file should be used as the password file.
 This should be a fully-qualified filename.
 <P>
 
@@ -2325,6 +2357,7 @@ Possible values for <EM>cmd</EM> are set, clear, and dump.
 <EM>Set</EM> will always reset <EM>Pine</EM>'s registry 
 entries according to its current settings.
 <EM>Clear</EM> will clear the registry values.
+<EM>Clearsilent</EM> will clear the registry values without any dialogs.
 <EM>Dump</EM> will display the values of current registry settings.
 Note that the dump command is currently disabled.
 Without the -registry option, <EM>PC-Pine</EM> will write values into
@@ -2411,6 +2444,12 @@ the &quot;<A HREF="h_composer_cntxt_server">Server:</A>&quot; field's
 help text for a more complete explanation of access method, and the
 &quot;<A HREF="h_composer_cntxt_path">Path:</A>&quot; field's help
 text for a more complete explanation of &quot;namespace&quot;.
+<P>
+Instead of specifying a news-collection, you may simply set the
+<A HREF="h_config_nntp_server">NNTP Server</A>
+option, which will cause Pine to create a default news-collection for you.
+Another NNTP option which may be of interest is
+<A HREF="h_config_nntprange">NNTP-Range</A>.
 
 <DT>REMOTE IMAP</DT>
 <DD>Using the Internet Message Access Protocol (IMAP) to
@@ -2460,20 +2499,25 @@ server is not running an IMAP daemon, then you must use NNTP.  (If you are not
 sure, ask your service provider, university, or company for help.)  In
 this case, your Unix .newsrc file can be transferred to your PC.  A good
 place to put it would be in the same directory as your PINERC file, under
-the name &#92;NEWSRC, but you can 
+the name NEWSRC, but you can 
 <A HREF="h_config_newsrc_path">specify a different location</A>
 via Pine's Setup/Config screen.
 
 <P>
-A future version of PC-Pine will be able to access and update a .newsrc
-file stored on a Unix host, so that it will be possible to alternate
-between PC-Pine and Unix-based newsreaders.
+Other configuration features related to news are
+<A HREF="h_config_8bit_nntp">Enable-8bit-Nntp-Posting</A>.
+<A HREF="h_config_compose_news_wo_conf">Compose-Sets-Newsgroup-Without-Confirm</A>,
+<A HREF="h_config_news_uses_recent">News-Approximates-New-Status</A>,
+<A HREF="h_config_news_cross_deletes">News-Deletes-Across-Groups</A>,
+<A HREF="h_config_news_catchup">News-Offers-Catchup-On-Close</A>,
+<A HREF="h_config_post_wo_validation">News-Post-Without-Validation</A>,
+<A HREF="h_config_read_in_newsrc_order">News-Read-in-Newsrc-Order</A>, and
+<A HREF="h_config_quell_post_prompt">Quell-Extra-Post-Prompt</A>.
 
 <P>
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
-
 ===== h_reading_news ======
 <HTML>
 <HEAD>
@@ -2482,7 +2526,7 @@ between PC-Pine and Unix-based newsreaders.
 <BODY>
 <H1>READING NEWS</H1>
 
-Pine uses the almost same commands for manipulating news folders as for
+Pine uses almost the same commands for manipulating news folders as for
 mail folders.  This means, for example, that when you are done with a
 message, you would use &quot;D&quot; to mark it as Deleted (or Dismissed,
 if you prefer.)  This &quot;mail-like&quot; behavior differs from that of
@@ -2496,7 +2540,7 @@ If you answer a message in a news folder, the index view will show the
 &quot;A&quot; flag as usual; but the industry standard file Pine uses to
 keep track of what news as been read has no way of storing this flag, so
 it will not be preserved across sessions.  The Deleted flag is the only
-one that is preserved when you leave and the return to a newsgroup.  As an
+one that is preserved when you leave and then return to a newsgroup.  As an
 additional note on replies, when you Reply to a newsgroup message and say
 you want to reply to all recipients, Pine will ask if you want to post the
 message to all the newsgroups listed in the original message. <P>
@@ -2520,6 +2564,10 @@ Select command.  You would enter the following four keystrokes:
 dismiss) command to all of them. Note that the <A
 HREF="h_config_enable_agg_ops">&quot;enable-aggregate-command-set&quot;</A>
 feature must be enabled before you can use the Select command.
+
+<P>
+There are also additional details on 
+<A HREF="h_configuring_news">configuring news</a>.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -2720,6 +2768,7 @@ feature must be enabled before you can use the Select command.
 <li><a href="h_config_reply_intro">OPTION: Reply-Leadin</a>
 <li><a href="h_config_reverse_color">OPTION: Reverse Color</a>
 <li><a href="h_config_incol">OPTION: Index Line Color</a>
+<li><a href="h_config_signature_color">OPTION: Signature Color</a>
 <li><a href="h_config_smtp_server">OPTION: SMTP-Server</a>
 <li><a href="h_config_saved_msg_name_rule">OPTION: Saved-Msg-Name-Rule</a>
 <li><a href="h_config_scroll_margin">OPTION: Scroll-margin</a>
@@ -4174,14 +4223,33 @@ the names of the carbon copy addresses of the message.
 
 The WhereIs
 (<!--chtml if pinemode="function_key"-->F8<!--chtml else-->W<!--chtml endif-->)
-command lets you search the MESSAGE INDEX for a word.  It scans
-through whatever you see, usually the name of the author and the subject
-line.  WhereIs has special features to let you &quot;find&quot; the beginning of the
-index (Ctrl-Y -- first message) or the end of the index (Ctrl-V -- last
-message).  WhereIs can also be used as a quick way to select messages; see
-below for more information on this.  Note that WhereIs does not see the 
-&quot;X&quot; in column one of Index entries for &quot;selected&quot; messages
-so it can't be used to search for selected messages (use &quot;Zoom&quot;).
+command lets you search the MESSAGE INDEX for a word.
+It scans through whatever you see, usually the name of the author
+and the Subject line.
+WhereIs has special subcommands to let you find the beginning of the
+index (Ctrl-Y -- first message)
+or the end of the index (Ctrl-V -- last message).
+<P>
+Note that WhereIs only searches through the visible text on the screen.
+For example, if only part of the Subject of a message is shown because it
+is long, then only the visible portion of the Subject is searched.
+Also note that WhereIs does not &quot;see&quot; the 
+&quot;X&quot; in column one of Index entries for selected messages
+so it can't be used to search for
+selected messages (use &quot;Zoom&quot; instead).
+<P>
+If the feature
+<A HREF="h_config_enable_agg_ops">&quot;enable-aggregate-command-set&quot;</A>
+is turned on,
+WhereIs can also be used as a quick way to select messages which match the
+string being searched for.
+Instead of typing carriage return to search for the next match, type
+Ctrl-X to select all matches.
+Once again, this only selects matches which are (or would be if the right
+index line was on the screen) visible.
+Truncated From lines or Subjects will cause matches to be missed.
+Although WhereIs is sometimes convenient for quick matching, the Select
+command is usually more powerful and usually faster.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -4199,7 +4267,7 @@ The WhereIs
 (<!--chtml if pinemode="function_key"-->F8<!--chtml else-->W<!--chtml endif-->)
 command does a &quot;find in current message&quot; operation.  You
 type in text and Pine will try to find it in the message you are
-reading.  You can also use WhereIs to jump to the beginning (Ctrl-Y)
+reading.  WhereIs also has subcommands to jump to the beginning (Ctrl-Y)
 or end (Ctrl-V) of the message.
 That is, to rapidly move to the end of a message, hit the 
 <!--chtml if pinemode="function_key"-->F8<!--chtml else-->W<!--chtml endif-->
@@ -4464,7 +4532,7 @@ be useful if a message disappeared before you had a chance to read it.
 The Role command is similar to the Compose command except that it starts
 off by letting you select a <A HREF="h_rules_roles">role</A>
 to be used for the composition.
-You may set up alternate roles by using the Setup command.
+You may set up alternate roles by using Setup/Rules/Roles.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -4990,9 +5058,37 @@ all message headers available for editing and those that are most
 common.
 
 <P>
-You would use this toggle to expose, for example, the &quot;Bcc:&quot; or
-&quot;Fcc:&quot; header which aren't usually necessary to set (and thus
-not displayed by default), but are sometimes helpful.
+Use this toggle to expose headers which are not normally visible by
+default.
+This set usually includes the
+&quot;Bcc:&quot;,
+&quot;Fcc:&quot;,
+&quot;Lcc:&quot;,
+and &quot;Newsgroups&quot;
+headers.
+If you are posting to a newsgroup the set of defaults is a little different.
+Obviously, in that case, the Newsgroups header is of interest so is not
+hidden.
+For news posting the hidden set includes the
+&quot;To:&quot;,
+&quot;Cc:&quot;,
+&quot;Bcc:&quot;,
+&quot;Fcc:&quot;,
+and &quot;Lcc:&quot;
+headers.
+You won't normally want to edit these, which is why they are hidden,
+but it is sometimes useful to be able to set them manually.
+
+<P>
+The default sets of headers listed above can be altered.
+Any header which you have added to the
+<A HREF="h_config_custom_hdrs">Customized-Headers</A>
+option, but not to the
+<A HREF="h_config_comp_hdrs">Default-Composer-Headers</A>
+option will appear when you use the Rich Headers command to
+make the Rich Headers visible.
+(Headers listed in the Default-Composer-Headers list will be visible
+even without toggling the Rich Headers command.)
 
 <P>
 &lt;End of help on this topic&gt;
@@ -5018,6 +5114,10 @@ your intention, and, at the same time, redisplayed the message text
 with the recipients at the top of the screen to give you the opportunity
 to review and verify that the message is addressed to the people
 you intended.
+<P>
+If the feature
+<A HREF="h_config_send_wo_confirm">&quot;Send-Without-Confirm&quot;</A> is set,
+then this confirmation prompt and any options it allows are skipped.
 
 <P>
 This confirmation prompt may also offer, depending
@@ -5235,6 +5335,8 @@ These
 versions, when started, installed a PC-Pine icon in the notification 
 tray of Window's Taskbar.  The primary use of this icon was to indicate
 new mail arrival by turning red (while the Taskbar icon remained green).
+Additionally, the icon now changes to yellow to signify that a mail folder
+has been closed unexpectedly.
 
 <P>
 Rather than add another icon to the Taskbar, this version of PC-Pine will 
@@ -5303,7 +5405,7 @@ then you want free output.
    <DT>No Delimiter or With Delimiter</DT>
    <DD>This option controls whether or not a Unix mailbox style delimiter
 will come before the text of the message.
-This is the delmiter used in the common Unix mailbox format.
+This is the delimiter used in the common Unix mailbox format.
 It's the single line which begins with the five characters
 &quot;From&quot; followed by a &lt;SPACE&gt; character.
 You'll usually only want to include this if the Unix command requires
@@ -5323,6 +5425,442 @@ You can try this option with a command like &quot;less&quot;, with Free
 Output enabled.
    </DD>
 </DL>
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_incoming_add_folder_name =========
+<HTML>
+<HEAD>
+<TITLE>ENTER FOLDER NAME</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Folder Name</H1>
+
+<P> 
+This is the name of the folder on the previously specified server.
+By default the folder name is interpreted as defining a section of your personal
+folder area.  This area and how you specify it are defined by the
+server, if one is specified.
+
+<P>
+To define a folder outside the default area, prefix
+the path with the namespace to use when interpreting the
+given path.  If a namespace is specified, the folder name begins with the
+sharp (#) character followed by the name of the namespace
+and then the namespace's path-element-delimiter.  Aside from the
+name's format, namespaces can also imply access rights, content
+policy, audience, location, and, occasionally, access methods.
+
+<P>
+Each server exports its own set (possibly of size one) of 
+namespaces.
+For a more detailed explanation read about
+<A HREF="h_folder_name_namespaces">Namespaces</A>.
+
+<P>
+To specify the default for INBOX on the server you can usually just enter
+&quot;INBOX&quot;, and the server will understand the special meaning of
+that word.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_incoming_add_folder_host =========
+<HTML>
+<HEAD>
+<TITLE>ENTER INCOMING FOLDER SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Incoming Folder Server</H1>
+
+You are being asked for the name of the server for use with this incoming
+folder.
+If the folder is on the machine where Pine is running, then just enter
+RETURN without typing a server name.
+
+<P>
+If the folder is on an IMAP server then type the server's name followed
+by RETURN.
+You may use the ^X command if the server is the same as the server that
+the INBOX is on.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the IMAP server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+or you may need to specify a different protocol if the server is not an
+IMAP server. For example:
+
+<P>
+<CENTER><SAMP>foo.example.com/pop3</SAMP></CENTER>
+<P>
+
+for a POP server or
+
+<P>
+<CENTER><SAMP>foo.example.com/nntp</SAMP></CENTER>
+<P>
+
+for an NNTP news server.
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+There is a special command (^W) if you want to set up a folder which gets its
+mail from a
+<A HREF="h_maildrop">Mail Drop</A>.
+If you type that command, you will be prompted for the information for
+both the Mail Drop folder and the destination folder.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_incoming_add_inbox =========
+<HTML>
+<HEAD>
+<TITLE>ENTER INBOX SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter INBOX Server</H1>
+
+You are being asked for the name of the server for use with
+the INBOX folder.
+Type the server's name followed by RETURN.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+or you may need to specify a different protocol if the server is not an
+IMAP server. For example:
+
+<P>
+<CENTER><SAMP>foo.example.com/pop3</SAMP></CENTER>
+<P>
+
+for a POP server.
+<P>
+
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+If the INBOX folder is on the machine where Pine is running, then just enter
+RETURN without typing a server name.
+
+<P>
+There is a special command (^W) if you want to set up a folder which gets its
+mail from a
+<A HREF="h_maildrop">Mail Drop</A>.
+If you type that command, you will be prompted for the information for
+both the Mail Drop folder and the destination folder, which will be used
+as your INBOX folder.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_incoming_add_maildrop_destn =========
+<HTML>
+<HEAD>
+<TITLE>ENTER DESTINATION SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Destination Server</H1>
+
+You are being asked for the name of the server where the destination
+folder is for use with this Mail Drop incoming folder.
+That is, you are using a Mail Drop for this incoming folder and
+you've already entered
+the server and folder name for the Mail Drop.
+Now you need to enter the server for the destination folder
+where the mail should be copied to.
+Mail will come from the Mail Drop and be copied to the destination folder.
+
+<P>
+Type the server's name followed by RETURN.
+If the folder is local to this computer, just type RETURN without entering
+a server name.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_inbox_add_maildrop_destn =========
+<HTML>
+<HEAD>
+<TITLE>ENTER DESTINATION SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Destination Server</H1>
+
+You are being asked for the name of the server where the destination
+folder is for use with your Mail Drop INBOX.
+That is, you are using a Mail Drop for your INBOX and you've already entered
+the server and folder name for the Mail Drop.
+Now you need to enter the server for the destination folder
+where the mail should be copied to.
+Mail will come from the Mail Drop and be copied to the destination folder.
+
+<P>
+Type the server's name followed by RETURN.
+If the folder is local to this computer, just type RETURN without entering
+a server name.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_inbox_add_maildrop =========
+<HTML>
+<HEAD>
+<TITLE>ENTER MAILDROP SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Mail Drop Server</H1>
+
+You are being asked for the name of the Mail Drop server for use with
+your INBOX.
+
+<P>
+Type the server's name followed by RETURN.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+or you may need to specify a different protocol if the server is not an
+IMAP server. For example:
+
+<P>
+<CENTER><SAMP>foo.example.com/pop3</SAMP></CENTER>
+<P>
+
+for a POP server or
+
+<P>
+<CENTER><SAMP>foo.example.com/nntp</SAMP></CENTER>
+<P>
+
+for an NNTP news server.
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_incoming_add_maildrop =========
+<HTML>
+<HEAD>
+<TITLE>ENTER MAILDROP SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>Enter Mail Drop Server</H1>
+
+You are being asked for the name of the Mail Drop server for use with
+this incoming folder.
+
+<P>
+Type the server's name followed by RETURN.
+You may use the ^X command if the server is the same as the server that
+the INBOX is on.
+
+<P>
+You may have to add optional extra information to the server name.
+For example, if the server is using a non-standard port number you
+would specify that by appending a colon (:) followed by the port number
+to the server name
+
+<P>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
+<P>
+
+or you may need to specify a different protocol if the server is not an
+IMAP server. For example:
+
+<P>
+<CENTER><SAMP>foo.example.com/pop3</SAMP></CENTER>
+<P>
+
+for a POP server or
+
+<P>
+<CENTER><SAMP>foo.example.com/nntp</SAMP></CENTER>
+<P>
+
+for an NNTP news server.
+For an explanation of all of the possibilities, see
+<A HREF="h_folder_server_syntax">Server Name Syntax</A>
+for folders.
+
+<P>
+If the Mail Drop folder is on the machine where Pine is running, then just enter
+RETURN without typing a server name.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+========== h_maildrop =========
+<HTML>
+<HEAD>
+<TITLE>WHAT IS A MAIL DROP?</TITLE>
+</HEAD>
+<BODY>
+<H1>What is a Mail Drop?</H1>
+
+In some situaions it may make sense to have your mail delivered to one
+folder (the Mail Drop) and then when you want to read mail that has been
+delivered to the Mail Drop folder Pine will move it to another
+destination folder.
+Often the Mail Drop will be a remote folder and messages will be moved from
+there to a local destination folder.
+
+<P>
+One example where this might make sense is if the Mail Drop folder is accessible
+only with the POP protocol.
+You could designate your POP inbox as the Mail Drop folder and have Pine move
+mail from there to a local (on the same machine Pine is running on)
+destination folder, where you'll read it.
+
+<P>
+A Mail Drop may only be used as your Inbox or as an
+<A HREF="h_config_enable_incoming">&quot;Incoming folder&quot;</A>.
+
+<P>
+There is no attempt to synchronize the contents of the destination folder
+with the contents of the Mail Drop folder.
+All that happens is that all of the messages in the Mail Drop folder are
+copied to the destination folder and then they are deleted and expunged (if possible)
+from the Mail Drop folder.
+The next time a check for new mail is made, any messages in the Mail 
+Drop folder are once again copied to the destination folder and deleted
+and expunged from the Mail Drop folder.
+(If the Mail Drop folder is a news group, then the messages can't be
+expunged from the newsgroup. Instead, only Recent messages are copied from
+the newsgroup to the destination folder.)
+
+<P>
+Configuration of a Mail Drop is a little different from configuration of
+a folder which does not use a Mail Drop because you have to specify two
+folder names instead of one.
+The two folders may be any types of folders that Pine can normally use.
+They don't have to be a remote folder and a local folder, that is
+simply the most common usage.
+When you use a Mail Drop folder Pine will periodically re-open the Mail
+Drop to check for new mail.
+The new mail checks will happen at the frequency set with the
+<A HREF="h_config_mailcheck">Mail-Check-Interval</A> option,
+but with a minimum time
+(<A HREF="h_config_maildropcheck">MailDrop-Check-Minimum</A>)
+between checks.
+Because of this minimum you may notice that new mail does not
+appear promptly when you expect it.
+The reason for this is to protect the server from over-zealous opening and
+closing of the Mail Drop folder.
+If the user initiates the check by typing ^L or the Next command when at
+the end of the folder index, then the check will happen, regardless of how
+long it has been since the previous check.
+<P>
+If there is new mail, that mail will be copied to the destination folder
+and then will be deleted from the Mail Drop.
+Note that using a Mail Drop with a local destination folder does not make
+sense if you read mail from more than one machine, because the mail is
+downloaded to the destination folder (which is accessible from only one
+machine) and deleted from the Mail Drop.
+
+<P>
+The actual syntax used by Pine for a folder that uses a Mail Drop is:
+
+<P>
+<CENTER><SAMP>#move&lt;DELIM&gt;&lt;MailDropFolder&gt;&lt;DELIM&gt;&lt;DestinationFolder&gt;</SAMP></CENTER>
+<P>
+The brackets are not literal.
+<P>
+<CENTER><SAMP>&lt;DELIM&gt;</SAMP></CENTER>
+<P>
+is a single character which does not appear in the MailDropFolder name.
+If the name doesn't contain spaces then it can be a space character.
+The two folder names are full technical
+<A HREF="h_valid_folder_names">folder names</A>
+as used by Pine.
+Here are a couple examples to give you an idea what is being talked about:
+
+<P>
+<CENTER><SAMP>#move&nbsp;{popserver.example.com/pop3}inbox&nbsp;localfolder</SAMP></CENTER>
+<P>
+<CENTER><SAMP>#move+{nntpserver.example.com/nntp}inbox+local&nbsp;folder</SAMP></CENTER>
+<P>
+
+A #move folder may only be used as an
+<A HREF="h_config_enable_incoming">&quot;Incoming folder&quot;</A> or
+an Inbox.
+When you are in the FOLDER LIST of Incoming Message Folders (after turning
+on the
+<A HREF="h_config_enable_incoming">&quot;Enable-Incoming-Folders&quot;</A>
+option)
+the Add command has a subcommand &quot;Use Mail Drop&quot;
+which may be helpful for defining the folder in your Pine configuration.
+The same is true when you edit the
+<A HREF="h_config_inbox_path">Inbox-Path</A>
+option in Setup/Config.
+Each of these configuration methods will also create the DestinationFolder
+if it doesn't already exist.
+If you are having problems, make sure the DestinationFolder exists.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -5961,9 +6499,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are some samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 <CENTER><SAMP>mail/local-folder</SAMP></CENTER>
 <P>
@@ -5997,9 +6535,16 @@ than or equal to zero.
 The special value &quot;INF&quot; may be used for
 the max value. It represents infinity.
 <P>
+Actually, this option may be defined as a list of intervals instead
+of just a single interval.
+The list is separated by commas.
+It can look like
+<P>
+<CENTER><SAMP>(min_age1,max_age1),(min_age2,max_age2),...</SAMP></CENTER>
+<P>
 When there is an Age Interval defined, it is a match if the age, in days, of
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals.
+The intervals include both endpoints.
 <P>
 Even though this option is called Age, it isn't actually
 the <EM>age</EM> of the message.
@@ -6032,9 +6577,14 @@ where &quot;min_score&quot; and &quot;max_score&quot; are integers between
 The special values &quot;-INF&quot; and &quot;INF&quot; may be used for
 the min and max values to represent negative and positive infinity.
 <P>
+Actually, a list of intervals may be used if you wish.
+A list would look like
+<P>
+<CENTER><SAMP>(min_score1,max_score1),(min_score2,max_score2),...</SAMP></CENTER>
+<P>
 When there is a Score Interval defined, it is a match if the score for
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals in the list.
+The intervals include the endpoints.
 The score for a message is calculated by looking at every Score rule defined and
 adding up the Score Values for the ones which match the message.
 When deciding whether or not a Pattern matches a message for purposes of
@@ -7407,13 +7957,23 @@ folders by their simple (unqualified) name, or pick from a FOLDER LIST
 display.  However, understanding the complete syntax for folder names,
 both local and remote, is handy when using the Goto command and when
 you are adding new folder collections via the Setups/collectionList screen.
+<P>
+A Pine folder name looks like
 
 <P>
+<CENTER><SAMP>[{&lt;remote-specification&gt;}][#&lt;namespace&gt;]&lt;namespace-specific-part&gt;</SAMP></CENTER>
+<P>
+
+The square brackets ([]) mean that the part is optional.
+
+<P>
+If there is no remote-specification, then the folder name is interpreted
+locally on the computer running Pine.
 Local folder names depend on the operating system used by the computer 
 running Pine, as well as the configuration of that system.  For example,
 &quot;C:&#92;PINE&#92;FOLDERS&#92;OCT-94&quot; might exist on a PC, and
-&quot;~/mail/september-1994&quot; might be a reasonable folder name on Unix.
-<!--chtml endif-->
+&quot;~/mail/september-1994&quot; might be a reasonable folder name on a
+system running Unix.
 
 <P>
 Pine users have the option of using folders which are stored on some other
@@ -7424,33 +7984,36 @@ remote host must be running the appropriate server software (imapd or
 nntpd) and you must correctly specify the name of the folder to Pine,
 including the domain name of the remote machine. For example,
 <P>
-<CENTER><SAMP>&#123;monet.art.nowhere.edu}INBOX</SAMP></CENTER>
+<CENTER><SAMP>&#123;monet.art.example.com}INBOX</SAMP></CENTER>
 <P>
 could be a remote folder specification, and so could
 <P>
-<CENTER><SAMP>&#123;unixhost.art.nowhere.edu}~/mail/september-1994</SAMP></CENTER>
+<CENTER><SAMP>&#123;unixhost.art.example.com}~/mail/september-1994</SAMP></CENTER>
 and
 <P>
-<CENTER><SAMP>&#123;winhost.art.nowhere.edu}&#92;mymail&#92;SEP-94</SAMP></CENTER>
+<CENTER><SAMP>&#123;winhost.art.example.com}&#92;mymail&#92;SEP-94</SAMP></CENTER>
 <P>
 Note that in the case of remote folders, the directory/file path in the specification is 
 determined by the operating system of the remote computer, <B>not</B> by
 the operating system of the computer on which you are running Pine.
 <P>
 As you can tell, the name of the computer is in &#123;} brackets
-followed immediately by the name of the folder.  If, as in these
+followed immediately by the name of the folder.  (In each of these cases the
+optional namespace is missing.)  If, as in these
 examples, there is no remote access protocol specified, then IMAP is
 assumed.  Check
 <A HREF="h_folder_server_syntax">here</A>
 for a more detailed look at what options can be placed between the brackets.
+If there are no brackets at all, then the folder name is interpreted locally
+on the computer on which you are running Pine.
 
 <P>
 To the right of the brackets when a server name is present, or at the
 start of the foldername if no server is present, the sharp sign,
 &quot;#&quot;, holds special meaning.  It indicates a folder name
 outside the area reserved for your personal folders.  In fact, it's
-used indicate that both the name of the folder, and a special phrase
-telling Pine how to interpret the name follows.
+used to indicate both the name of the folder, and a special phrase
+telling Pine how to interpret the name that follows.
 
 <P>
 So, for example, Pine can be used to access a newsgroup that might be 
@@ -7466,20 +8029,136 @@ interpret the remainder of the name as a newsgroup.
 Similarly, to access a newsgroup on your IMAP server, you might
 use something like:
 <P>
-<CENTER><SAMP>&#123;wharhol.art.nowhere.edu}#news.comp.mail.misc</SAMP></CENTER>
+<CENTER><SAMP>&#123;wharhol.art.example.com}#news.comp.mail.misc</SAMP></CENTER>
 
 <P>
 There are a number of such special phrases (or &quot;namespaces&quot;)
-available.  For a more detailed explanation see the Setup/collectionList
-Add or Change command's <A HREF="h_composer_cntxt_path">Path:</A> help text.
+available.  For a more detailed explanation read about
+<A HREF="h_folder_name_namespaces">Namespaces</A>.
 
 <P>
 Note that &quot;INBOX&quot; has special meaning in both local and remote folder
 names.  The name INBOX refers to your &quot;principal incoming
 message folder&quot; and will be mapped to the actual file name used for your
 INBOX on any given host.  Therefore, a name like
-&quot;&#123;xxx.art.nowhere.edu}INBOX&quot; refers to whatever file is used to
+&quot;&#123;xxx.art.example.com}INBOX&quot; refers to whatever file is used to
 store incoming mail for you on that particular host.
+
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+======= h_folder_name_namespaces =======
+<HTML>
+<HEAD>
+<TITLE>FOLDER NAME NAMESPACES EXPLAINED</TITLE>
+</HEAD>
+<BODY>
+<H1>Folder Name Namespaces Explained</H1>
+
+A Pine folder name looks like
+
+<P>
+<CENTER><SAMP>[{&lt;remote-specification&gt;}][#&lt;namespace&gt;][&lt;namespace-specific-part&gt;]</SAMP></CENTER>
+<P>
+
+The local part of a folder name has an optional &quot;Namespace&quot; which
+tells Pine how to interpret the rest of the name.
+
+<P> 
+By default the folder name is interpreted as defining a section of your personal
+folder area.  This area and how you specify it are defined by the
+server, if one is specified, or, typically, the home
+directory, if no server is defined.
+
+<P>
+If a namespace is specified, it begins with the
+sharp, &quot;#&quot;, character followed by the name of the namespace
+and then the namespace's path-element-delimiter.  Aside from the
+path's format, namespaces can also imply access rights, content
+policy, audience, location, and, occasionally, access methods.
+
+<P>
+Each server exports its own set (possibly of size one) of 
+namespaces.  Hence, it's likely communication with your server's
+administrator will be required for specific configurations.  Some of
+the more common namespaces, however, include:
+
+<DL>
+<DT>#news.</DT>
+<DD>This specifies a set of folders in the newsgroup namespace.  Newsgroup
+names are hierarchically defined with each level delimited by a period.
+<P>
+<CENTER><SAMP>#news.comp.mail.pine</SAMP></CENTER>
+<P>
+</DD>
+<DT>#public/</DT>
+<DD>This specifies a folder area that the server may export to the general
+public.
+</DD>
+<DT>#shared/</DT>
+<DD>This specifies a folder area that the folder may export to groups
+of users.
+</DD>
+<DT>#ftp/</DT>
+<DD>This specifies a folder area that is the same as that it may have 
+exported via the &quot;File Transfer Protocol&quot;.
+</DD>
+<DT>#mh/</DT>
+<DD>This specifies the personal folder area associated with folders
+and directories that were created using the MH message handling system.
+</DD>
+<DT>#move/</DT>
+<DD>This namespace is interpreted locally by Pine. It has an unusual interpretation and format.
+<P>
+<CENTER><SAMP>#move&lt;DELIM&gt;&lt;MailDropFolder&gt;&lt;DELIM&gt;&lt;DestinationFolder&gt;</SAMP></CENTER>
+<P>
+The #move namespace is followed by two folder names separated by a delimiter
+character.
+The delimiter character may be any character which does not appear in
+the MailDropFolder name.
+The meaning of #move is that mail will be copied from the MailDropFolder to
+the DestinationFolder and then deleted (if possible) from the MailDropFolder.
+Periodic checks at frequency
+<A HREF="h_config_mailcheck">Mail-Check-Interval</A>, but with a minimum
+time between checks set by
+<A HREF="h_config_maildropcheck">MailDrop-Check-Minimum</A>,
+are made for new mail arriving in the MailDropFolder.
+An example which copies mail from a POP inbox to a local folder follows
+<P>
+<CENTER><SAMP>#move+{popserver.example.com/pop3/ssl}inbox+local folder</SAMP></CENTER>
+<P>
+To you it appears that mail is being delivered to the local folder when it
+is copied from the MailDropFolder, and you read mail from the local folder.
+<P>
+Note that if the DestinationFolder does not exist then the messages are not
+copied from the MailDropFolder.
+A #move folder may only be used as an
+<A HREF="h_config_enable_incoming">&quot;Incoming folder&quot;</A> or
+an Inbox.
+When you are in the FOLDER LIST of Incoming Message Folders (after turning
+on the
+<A HREF="h_config_enable_incoming">&quot;Enable-Incoming-Folders&quot;</A>
+option)
+the Add command has a subcommand &quot;Use Mail Drop&quot;
+which may be helpful for defining the folder in your Pine configuration.
+The same is true when you edit the
+<A HREF="h_config_inbox_path">Inbox-Path</A>
+option in Setup/Config.
+Each of these configuration methods will also create the DestinationFolder
+if it doesn't already exist.
+If you are having problems, make sure the DestinationFolder exists.
+</DD>
+</DL>
+<P>
+
+In addition, the server may support access to other user's folders,
+provided you have suitable permissions.  Common methods use a prefix
+of either &quot;~<VAR>user</VAR>/&quot;, or &quot;/<VAR>user</VAR>/&quot; to
+indicate the root of the other user's folder area.
+
+<P>
+No, nothing's simple.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -8208,9 +8887,9 @@ from a list.
 <P>
 Address field entries in distribution lists may take any one of three
 forms: a nickname existing in any of the defined address books, a normal
-address of the form &quot;jsmith@art.nowhere.edu&quot;, or a complete
+address of the form &quot;jsmith@art.example.com&quot;, or a complete
 fullname/address combination, e.g. &quot;John Smith
-&lt;jsmith@art.nowhere.edu&gt;&quot;.
+&lt;jsmith@art.example.com&gt;&quot;.
 <P>
 Distribution lists in Pine address books can only be used by the person or
 people who have access to that address book.  They are not usually used to
@@ -12243,9 +12922,17 @@ where &quot;min_age&quot; and &quot;max_age&quot; are non-negative integers.
 The special value &quot;INF&quot; may be used for the max value.
 It represents infinity.
 <P>
+In rare cases it may be useful to use the more general form of the value,
+which is a comma-separated list of intervals.
+It would look something like:
+<P>
+<CENTER><SAMP>(min_age1,max_age1),(min_age2,max_age2),...</SAMP></CENTER>
+<P>
 When there is an Age Interval defined, it is a match if the age, in days, of
 the message is contained in the interval.
 The interval includes both endpoints.
+If the option is set to a list of intervals then it is a match if the
+age of the message is contained in any of the intervals.
 <P>
 Even though this option is called Age, it isn't actually
 the <EM>age</EM> of the message.
@@ -12309,9 +12996,15 @@ The special values &quot;-INF&quot; and &quot;INF&quot; may be used for
 the min and max values.
 These represent negative and positive infinity.
 <P>
+Actually, the value may be a list of intervals rather than just a
+single interval if that is useful.
+The elements of the list are separated by commas like:
+<P>
+<CENTER><SAMP>(min_score1,max_score1),(min_score2,max_score2),...</SAMP></CENTER>
+<P>
 When there is a Score Interval defined, it is a match if the score for
-the message is contained in the interval.
-The interval includes both endpoints.
+the message is contained in any of the intervals.
+The intervals include both endpoints.
 The score for a message is calculated by looking at every scoring rule
 defined and adding up the Score Values for the rules which match the message.
 Scoring rules are created using the
@@ -12364,9 +13057,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder List&quot; field is to use
 the &quot;T&quot; command which is available when the &quot;Folder List&quot; line is
@@ -12472,9 +13165,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder List&quot; field is to use
 the T command which is available when the &quot;Folder List&quot; line is
@@ -12537,9 +13230,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder List&quot; field is to use
 the T command which is available when the &quot;Folder List&quot; line is
@@ -12594,9 +13287,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder List&quot; field is to use
 the T command which is available when the &quot;Folder List&quot; line is
@@ -12658,9 +13351,9 @@ folder is one of your incoming folders, it may be the nickname you've given
 the folder.
 Here are a couple samples of specific folder names:
 <P>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/art-class</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/art-class</SAMP></CENTER>
 <P>
-<CENTER><SAMP>{news.myisp.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
+<CENTER><SAMP>{news.example.com/nntp}#news.comp.mail.pine</SAMP></CENTER>
 <P>
 The easiest way to fill in the &quot;Folder List&quot; field is to use
 the T command which is available when the &quot;Folder List&quot; line is
@@ -13928,14 +14621,14 @@ For example, &quot;23rd&quot; or &quot;9th&quot;.
 <DD>
 This token represents the day of the week on which the message was sent,
 according to the &quot;Date&quot; header field.
-For example, &quot;Sun&quot; or &quot;Wed&quot;.
+For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
 </DD>
 
-<DT>DAYOFWEEKLONG</DT>
+<DT>DAYOFWEEKABBREV</DT>
 <DD>
 This token represents the day of the week on which the message was sent,
 according to the &quot;Date&quot; header field.
-For example, &quot;Sunday&quot; or &quot;Wednesday&quot;.
+For example, &quot;Sun&quot; or &quot;Wed&quot;.
 </DD>
 
 <DT>MONTHABBREV</DT>
@@ -14271,6 +14964,13 @@ This time is for a 12 hour clock.
 It has the format HH:MMpm.
 For example, &quot;5:28pm&quot; or &quot;11:13am&quot;.
 </DD>
+
+<DT>ROLENICK</DT>
+<DD>
+This token represents the nickname of the
+role currently being used.  If no role is being used,
+then no text will be printed for this token.
+</DD>
 </DL>
 
 <P>
@@ -14446,10 +15146,10 @@ A server name is the hostname of the server.
 It's a good idea to use the host's fully-qualified network name.
 
 <P>
-<CENTER><SAMP>foo.bar.com</SAMP></CENTER>
+<CENTER><SAMP>foo.example.com</SAMP></CENTER>
 <P>
 
-However, IP addresses are allowed if delimited
+However, IP addresses are allowed if surrounded
 with square-brackets.
 
 <P>
@@ -14462,7 +15162,7 @@ to the server name.
 By default, the IMAP port number, 143, is used.
 
 <P>
-<CENTER><SAMP>foo.bar.com:port</SAMP></CENTER>
+<CENTER><SAMP>foo.example.com:port</SAMP></CENTER>
 <P>
 
 Besides server name and optional port number, various other optional
@@ -14506,6 +15206,7 @@ Pine must be linked with an SSL library for this option to be operational.
 <DD>Do not validate certificates (for TLS or SSL connections) from the server.
 This is needed if the server uses self-signed certificates or if Pine
 cannot validate the certificate for some other known reason.
+<P>
 </DD>
 
 <DT>Anonymous</DT>
@@ -14545,6 +15246,7 @@ the connection if the first (generally most &quot;secure&quot;) method fails.
 in a verbose mode.  Basically, it causes Pine to log the communication with
 the server in Pine's debug file.
 Normally, the pine -d command-line flag would be used instead.
+<P>
 </DD>
 
 <DT>NoRsh</DT>
@@ -14554,13 +15256,14 @@ Including &quot;NoRsh&quot; will cause connections to this server to skip
 the &quot;rsh&quot; attempt.
 This might be useful to avoid long timeouts caused by rsh firewalls, for
 example.
+<P>
 </DD>
 
 <DT>Service</DT>
 <DD>This parameter requires an associated value.  The default value is
 &quot;IMAP&quot; which indicates communication with the server based
-on the IMAP4.1 protocol (defined in RFC 2060 -- see 
-<A HREF="http://www.imap.org/docs/rfc2060.html">http://www.imap.org/docs/rfc2060.html</A>).</DD>
+on the IMAP4rev1 protocol (defined in RFC 3501 -- see 
+<A HREF="http://www.imap.org/docs/rfc3501.html">http://www.imap.org/docs/rfc3501.html</A>).</DD>
 
 Other service values include:
  <DL>
@@ -14572,8 +15275,13 @@ of newsgroups on a remote news server.  So
 <P>
 <CENTER><SAMP>/service=NNTP</SAMP></CENTER>
 <P>
+or just
+<P>
+<CENTER><SAMP>/NNTP</SAMP></CENTER>
+<P>
 
 is the way to specify NNTP access.
+<P>
  </DD>
 
  <DT>POP3</DT>
@@ -14583,6 +15291,10 @@ Post Office Protocol 3 protocol.
 <P>
 <CENTER><SAMP>/service=POP3</SAMP></CENTER>
 <P>
+or just
+<P>
+<CENTER><SAMP>/POP3</SAMP></CENTER>
+<P>
 
 Note that there are several important issues
 to consider when selecting this option:
@@ -14590,10 +15302,9 @@ to consider when selecting this option:
  <LI> POP3 provides access to only your INBOX.  In other words,
 secondary folders such as your &quot;saved-messages&quot; are inaccessible.
  <LI> Pine's implementation of POP3 does not follow the traditional POP
-model and will leave your mail on the server.
- <LI> Pine's implementation of POP3 is not fully supported and,
-as such, has known limitations and inefficiencies.
- <LI> See the discussion about new-mail checking in <A HREF="h_config_mailcheck">&quot;Mail-Check-Interval&quot;</A>.
+model and will leave your mail on the server. Refer to the
+<A HREF="h_maildrop">Mail Drop</A> functionality for a possible way around this problem.
+ <LI> See the discussion about new-mail checking in <A HREF="h_config_reopen_rule">&quot;Folder-Reopen-Rule&quot;</A>.
 </OL>
 </DD>
 </DL>
@@ -14604,7 +15315,7 @@ Note that it is possible to include more than one parameter in a server
 specification by concatenating the parameters. For example:
 
 <P>
-<CENTER><SAMP>foo.bar.com:port/user=katie/novalidate-cert/debug</SAMP></CENTER>
+<CENTER><SAMP>foo.example.com:port/user=katie/novalidate-cert/debug</SAMP></CENTER>
 <P>
 
 <P>
@@ -14943,17 +15654,17 @@ be combined with the other fields if you'd like.
 
 A valid email address on the Internet has a username, an &quot;@&quot; sign, 
 and then a domain, with no spaces.  
-For example, jsmith@art.nowhere.edu might be the email address
+For example, jsmith@art.example.com might be the email address
 of a person  
 with the username &quot;jsmith&quot; who has an account in the domain
-&quot;art.nowhere.edu&quot;.  The number of dot-separated segments on the 
+&quot;art.example.com&quot;.  The number of dot-separated segments on the 
 right of the &quot;@&quot; sign can vary - a shorter example would be 
 isabelle@elsewhere.edu (the shortest possible form: here, only the 
 organization's domain is specified after the &quot;@&quot; sign); a longer 
 example would be 
- jsingh@shakti.edutech.nowhere.edu
+ jsingh@shakti.edutech.example.com
 (here, the name of the host &quot;shakti&quot; in the domain 
-edutech.nowhere.edu is also specified).  
+edutech.example.com is also specified).  
 <P>  
 If you do not know the exact email address of someone you want to write 
 to, ask them what it is using other means of communication than email; or 
@@ -15083,6 +15794,10 @@ on messages you send.
  If unset, Unix Pine will obtain your full name from
  the system password file. PC-Pine, on the other hand, requires that this be set.
 <!--chtml endif-->
+<P>
+If you want to change the value of what gets included in the From header
+in messages you send (other than just the Personal Name)
+look <A HREF="h_config_change_your_from">here</A> for a description.
 <P><UL>
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
@@ -15099,19 +15814,38 @@ on messages you send.
 
 This variable allows you to define a list of one or more folders that
 Pine will offer to prune for you in the same way it automatically offers
-to prune your "sent-mail" folder each month.<p>
+to prune your "sent-mail" folder each month.
+Each folder in this list must be a folder in your default folder collection
+(the first folder collection if you have more than one), and it is just
+the relative name of the folder in the collection, not the fully-qualified name.
+It is similar to sent-mail.
+Instead of something like
+<P>
+<CENTER><SAMP>pruned-folders={servername}mail/folder</SAMP></CENTER>
+<P>
+the correct value to use would be
+<P>
+<CENTER><SAMP>folder</SAMP></CENTER>
+<P>
+There is an assumption here that your first collection is the folders in
+<P>
+<CENTER><SAMP>{servername}mail</SAMP></CENTER>
+<P>
 
-That is, once a month for each folder listed, Pine will offer to move
+Once a month, for each folder listed, Pine will offer to move
 the contents of the folder to a new folder of the same name but with
 the previous month's date appended.  Pine will then look for any such
 date-appended folder names created for a previous month, and offer each
-one it finds for deletion.<p>
+one it finds for deletion.
+<P>
 
 If you decline the first offer, no mail is moved and no new folder is
-created.<p>
+created.
+<P>
 
-Folders listed are assumed to exist, and the archive folders will be created,
-in the first collection defined by the "folder-collections" variable.<p>
+The new folders will be created
+in your default folder collection.
+<P>
 
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -15433,8 +16167,12 @@ entries from the Standard list above or to include the command
 This value is used as part of the "From" address on messages you send.
 It is also the default login name for remote IMAP server access.  Set this
 to the username part you want to appear on outgoing email.
+<P>
+If you want to change the value of what gets included in the From header
+in messages you send (other than just the User ID)
+look <A HREF="h_config_change_your_from">here</A> for a description.
 
-<UL>   
+<P><UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
 &lt;End of help on this topic&gt;
@@ -15460,6 +16198,10 @@ composed to a local user.
 <!--chtml endif-->
 If you set this, see also the <A HREF="h_config_quell_local_lookup">
 &quot;quell-user-lookup-in-passwd-file&quot;</A> feature.
+<P>
+If you want to change the value of what gets included in the From header
+in messages you send (other than just the User Domain)
+look <A HREF="h_config_change_your_from">here</A> for a description.
 <P><UL>
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
@@ -15554,8 +16296,8 @@ When you
 define an NNTP server here, Pine implicitly defines a news collection for
 you, assuming that server as the news server and assuming that you will
 use the NNTP protocol and a local newsrc configuration file for reading
-news.  For more about reading news with Pine, see the 
-<A HREF="h_news">release notes</A>.
+news.  For more about reading news with Pine, see
+<A HREF="h_reading_news">how to use Pine to read news</A>.
 <P><UL>
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
@@ -15581,13 +16323,70 @@ has been pre-configured by your system administrator.
 You may be able to specify an alternate INBOX which is either a local folder 
 or a folder on an IMAP server.
 <P>
-A typical remote inbox-path entry would be: &#123;monet.art.nowhere.edu}INBOX
-where &quot;monet.art.nowhere.edu&quot; is replaced by the name of your IMAP
+A typical remote inbox-path entry would be: &#123;monet.art.example.com}INBOX
+where &quot;monet.art.example.com&quot; is replaced by the name of your IMAP
 mail server.
 <P>
 See the section on <A HREF="h_valid_folder_names">Valid Folder Names</A> for
 details on the syntax of folder definitions.
 <P><UL>
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_change_your_from =====
+<HTML>
+<HEAD>
+<TITLE>How to Change your From Address</TITLE>
+</HEAD>
+<BODY>
+<H1>How to Change your From Address</H1>
+
+If the From address that Pine includes in mail that you send is not correct,
+you may want to configure a different default value for the From address.
+You may follow these directions to change the default:
+
+<P>
+<UL>
+  <LI> Go to the Main Pine Menu
+  <LI> From there type the Setup Command
+  <LI> From there type the Config Command
+</UL>
+
+<P>
+You've probably already seen this SETUP CONFIGURATION screen.
+If not, there are many options you may want to set here.
+To set the value of the From header you may use the
+<A href="h_config_custom_hdrs">Customized-Headers</A> option.
+Find it by scrolling down a few pages or use the WhereIs command to
+search for &quot;customized&quot;.
+You may want to read the help text associated with the option.
+<P>
+To add a custom From header, type the Add command and enter the
+full header line, including the leading &quot;From:&nbsp;&quot;.
+For example:
+<P>
+<CENTER><SAMP>From: Full Name &lt;user@example.com&gt;</SAMP></CENTER>
+<P>
+Now exit the Setup command and try sending mail to yourself to see
+what the From line looks like.
+When you are in the composer you can edit the custom From line by typing
+Ctrl-R while your cursor is in the headers of the message and then moving
+to the From line and editing.
+If you want to leave the default value the same but add the possibility
+of being able to edit the header when you compose, add just the header
+name without a value.
+For example:
+<P>
+<CENTER><SAMP>From:</SAMP></CENTER>
+<P>
+If you change your From address you may also find it useful to add the
+changed From address to the
+<a href="h_config_alt_addresses">Alt-Addresses</a>
+configuration option.
+<P>
+<UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
 &lt;End of help on this topic&gt;
@@ -15619,7 +16418,7 @@ and PC-Pine, or between various desktop email systems, you may want to set this 
 IMAP server (remember that in order to later access this remote folder through Pine, it
 must be in a folder collection. See <A HREF="h_what_are_collections">Folder Collections Explained</a>
 for more information). An example:<p>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/sent-mail</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/sent-mail</SAMP></CENTER>
 <P>
 To suppress saving of outgoing mail, set: default-fcc=&quot;&quot;
 <P>
@@ -15658,7 +16457,7 @@ and PC-Pine, or between various desktop email systems, you may want to set this 
 IMAP server (remember that in order to later access this remote folder through Pine, it
 must be in a folder collection. See <A HREF="h_what_are_collections">Folder Collections Explained</a>
 for more information). An example:<p>
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/saved-messages</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/saved-messages</SAMP></CENTER>
 <P>
 See the section on <A HREF="h_valid_folder_names">Valid Folder Names</A> for
 details on the syntax of folder definitions.
@@ -15693,7 +16492,7 @@ in all Pine copies you use.
 collection. See <A HREF="h_what_are_collections">Folder Collections Extensions Explained</a>
 for more information). An
 example:<p> 
-<CENTER><SAMP>{monet.art.nowhere.edu}mail/postponed-msgs</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}mail/postponed-msgs</SAMP></CENTER>
 <P>
 See the section on <A HREF="h_valid_folder_names">Valid Folder Names</A> for
 details on the syntax of folder definitions.
@@ -15826,7 +16625,7 @@ or (much easier) the nickname that you gave the folder when you made it
 an incoming folder.
 <p>
 For example:<p>
-<CENTER><SAMP>{monet.art.nowhere.edu}inbox {monet.art.nowhere.edu}mail/inbox-archive</SAMP></CENTER>
+<CENTER><SAMP>{monet.art.example.com}inbox {monet.art.example.com}mail/inbox-archive</SAMP></CENTER>
 <p>or, using nicknames:<p>
 <CENTER><SAMP>inbox inbox-archive</SAMP></CENTER>
 <P>
@@ -16139,14 +16938,36 @@ otherwise they become part
 of the rich header set which you only see when you press the rich header
 <!--chtml if pinemode="function_key"-->(F5)
 <!--chtml else-->(Ctrl-R)<!--chtml endif--> command.
-Here's an example which shows how you might set your Reply-To address.
+Here's an example which shows how you might set your From address
 <P>
-<CENTER><SAMP>Reply-To: Full Name &lt;user@domain&gt;</SAMP></CENTER>
+<CENTER><SAMP>From: Full Name &lt;user@example.com&gt;</SAMP></CENTER>
 <P>
-or just
+and another showing how you might set a Reply-To address
 <P>
-<CENTER><SAMP>Reply-To: user@domain</SAMP></CENTER>
+<CENTER><SAMP>Reply-To: user@example.com</SAMP></CENTER>
 <P>
+You may also set non-standard header values here.
+For example, you could add
+<P>
+<CENTER><SAMP>Organization: My Organization Name</SAMP></CENTER>
+<P>
+or even
+<P>
+<CENTER><SAMP>X-Favorite-Colors: Purple and Gold</SAMP></CENTER>
+<P>
+If you include a value after the colon then that header will be included
+in your outgoing messages unless you delete it before sending.
+If a header in the Customized-Headers list has only a tag but no value, then
+it will not be included in outgoing messages unless you edit a value
+in manually.
+For example, if
+<P>
+<CENTER><SAMP>Reply-To:</SAMP></CENTER>
+<P>
+is in the list, then the Reply-To header will be available for editing
+but won't be included unless a value is added while in the composer.
+<P>
+It's actually a little more complicated than that.
 The values of headers that you set with the Customized-Headers option are
 defaults.
 If the message you are about to compose already has a value for a header,
@@ -16157,6 +16978,12 @@ In that case, if the Customized-Headers list contains a Subject line, the
 custom subject will <EM>NOT</EM> be used.
 The subject derived from the subject of the message you are Replying
 to will be used instead.
+<P>
+It is also possible to make header setting even more complicated and more
+automatic by using
+<A HREF="h_rules_roles">Roles</A>,
+but if all you want to do is set a default value for a header, you don't
+need to think about Roles.
 <P>
 If you change your From address you may also find it useful to add the
 changed From address to the
@@ -16926,6 +17753,9 @@ is basically a cheap way of sending something other than Text/Plain.
 <P>   
 NOTE: Only the body text, which is visible in the Composer, is piped
 through this filter.  Attachments are not sent to the filter.
+<P>   
+Sending filters are not used if the feature
+<A HREF="h_config_send_wo_confirm">&quot;Send-Without-Confirm&quot;</A> is set.
 
 <P>
 <UL>   
@@ -16943,7 +17773,15 @@ through this filter.  Attachments are not sent to the filter.
 <H1>OPTION: Alt-Addresses</H1>
 
 This option provides a place for you to list alternate email addresses
-you may have.  If set, the option affects the behavior of the Reply
+you may have.
+Each address in the list should be the actual email address part of an
+address, without the full name field or the angle brackets.
+For example:
+<P>
+<CENTER><SAMP>user@example.com</SAMP></CENTER>
+<P>
+
+If set, the option affects the behavior of the Reply
 command and the &quot;+&quot; symbol in the MESSAGE INDEX, which denotes that
 a message has been addressed specifically to you.
 
@@ -18393,6 +19231,8 @@ If this is set to a positive number, it causes the cursor to move to the
 status line whenever a status message is printed and pause there for this
 many seconds.  It will probably only be useful if the 
 <A HREF="h_config_show_cursor">&quot;show-cursor&quot;</A> feature is also turned on.
+This option can only be used to <EM>increase</EM> the status message delay,
+not to decrease it.
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -18408,33 +19248,137 @@ many seconds.  It will probably only be useful if the
 <BODY>
 <H1>OPTION: Mail-Check-Interval</H1>
 
-This options specifies, in seconds, how often Pine will check for new
+This option specifies, in seconds, how often Pine will check for new
 mail.  If set to zero, new-mail checking is disabled.  There is a minimum
 value, normally 15 seconds.
+The default value is normally 150 seconds.
+This applies to the INBOX and to the currently open folder if that is
+different from the INBOX.
 <P>
-There are some situations where new-mail checking does not work.
-For example, if a mail folder is opened using the POP protocol or a newsgroup
-is being read using the NNTP protocol, then new-mail checking is disabled.
+There are some situations where automatic new-mail checking does not work.
+See the discussion about new-mail checking in <A HREF="h_config_reopen_rule">&quot;Folder-Reopen-Rule&quot;</A>.
 <P>
-It may be possible to check for new mail in these cases by reopening the
-folder.
-There is an experimental method for doing this.
-You reopen by going back to the folder list screen from the message
-index screen with the &quot;&lt;&quot; command,
-and then going back into the message index screen with
-the &quot;&gt;&quot; command.
-If Pine knows that reopening the folder would be a way to discover
-new mail, it offers to do the reopen.
-If you don't agree to reopen (you answer No) then you are just back in
-the message index with no change.
-However, if you agree to reopen the folder by answering Yes,
-the folder is closed and then reopened.
-In this case, the current state of the open folder is lost.
-The New status, Important and Answered flags,
-selected state, Zoom state, collapsed or expanded state of threads,
-current message number,
-and any other temporary state is all lost when the reopen happens.
-For POP folders (but not NNTP newsgroups) the Deleted flags are also lost.
+If the mailbox being checked uses a <A HREF="h_maildrop">Mail Drop</A> then
+there is a minimum time
+(<A HREF="h_config_maildropcheck">MailDrop-Check-Minimum</A>)
+between new mail checks.
+Because of this minimum you may notice that new mail does not
+appear promptly when you expect it.
+The reason for this is to protect the server from over-zealous opening and
+closing of the Mail Drop folder, since that is a costly operation.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_maildropcheck =====
+<HTML>
+<HEADER>
+<TITLE>OPTION: MailDrop-Check-Minimum</TITLE>
+</HEADER>
+<BODY>
+<H1>OPTION: MailDrop-Check-Minimum</H1>
+
+New mail checking for a
+<A HREF="h_maildrop">Mail Drop</A> is a little different from new
+mail checking for a regular folder.
+One of the differences is that the connection to the Mail Drop is not
+kept open and so the cost of checking
+(delay for you and additional load for the server) may be significant.
+Because of this additional cost we set a minimum time that
+must pass between checks.
+This minimum only applies to the automatic checking done by Pine.
+If you force a check by typing ^L or by typing the Next command when you are
+at the end of a folder index, then the check is done right away.
+<P>
+This option specifies, in seconds, the <EM>minimum</EM> time between Mail Drop
+new mail checks.
+You may want to set this minimum high in order to avoid experiencing some
+of the delays associated with the checks.
+Note that the time between checks is still controlled by the regular
+<A HREF="h_config_mailcheck">Mail-Check-Interval</A> option.
+When Pine is about to do an automatic check for new mail (because
+the Mail-Check-Interval has expired) then if the time since the last
+new mail check
+of any open Mail Drops has been greater than the MailDrop-Check-Minimum,
+the Mail Drop is checked for new mail as well.
+Therefore, it is only useful to set this option to a value that is higher
+than the Mail-Check-Interval.
+<P>
+If this option is set to zero, automatic Mail Drop new mail
+checking is disabled.
+There is a minimum value, normally 60 seconds.
+The default value is normally 60 seconds as well.
+This applies to the INBOX and to the currently open folder if that is
+different from the INBOX.
+
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_nntprange =====
+<HTML>
+<HEADER>
+<TITLE>OPTION: NNTP-Range</TITLE>
+</HEADER>
+<BODY>
+<H1>OPTION: NNTP-Range</H1>
+
+This option applies only to newsgroups accessed using the NNTP protocol.
+It does not, for example,
+apply to newsgroups accessed using an IMAP-to-NNTP proxy.
+
+<P>
+When you open a connection to a News server using the NNTP protocol, you
+normally have access to all of the articles in each newsgroup.
+If a server keeps a large backlog of messages it may speed performance
+some to restrict attention to only the newer messages in a group.
+This option allows you to set how many article numbers should be checked
+when opening a newsgroup.
+You can think of &quot;nntp-range&quot; as specifying the maximum number
+of messages you ever want to see.
+For example, if you only ever wanted to look at the last 500 messages in each
+newsgroup you could set this option to 500.
+In actuality, it isn't quite that.
+Instead, for performance reasons, it specifies the range of article
+numbers to be checked, beginning
+with the highest numbered article and going backwards from there.
+If there are messages that have been canceled or deleted
+their article numbers are still counted as part of the range.
+<P>
+So, more precisely, setting the &quot;nntp-range&quot; will cause article
+numbers
+<P><CENTER>last_article_number - nntp-range + 1 through last_article_number</CENTER>
+<P>
+to be considered when reading a newsgroup.
+The number of messages that show up in your index will be less than or equal
+to the value of &quot;nntp-range&quot;.
+
+<P>
+The purpose of this option is simply to speed up access when reading news.
+The speedup comes because Pine can ignore all but the last nntp-range article
+numbers, and can avoid downloading any information about the ignored articles.
+There is a cost you pay for this speedup.
+That cost is that there is no way for you to see those ignored articles.
+The articles that come before the range you specify are invisible to you and
+to Pine, as if they did not exist at all.
+There is no way to see those messages using, for example, an unexclude command
+or something similar.
+The only way to see those articles is to set this option high enough (or
+set it to zero) and then to reopen the newsgroup.
+
+<P>
+If this option is set to 0 (which is also the default),
+then the range is unlimited.
+This option applies globally to all NNTP servers and to all newsgroups
+on those servers.
+There is no way to set different values for different newsgroups or servers.
+
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -18955,6 +19899,143 @@ There will be no deleting of old folders, either.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_reopen_rule =====
+<HTML>
+<HEAD>
+<TITLE>OPTION: Folder-Reopen-Rule</TITLE>
+</HEAD>
+<BODY>
+<H1>OPTION: Folder-Reopen-Rule</H1>
+
+Pine normally checks for new mail in the currently open folder
+and in the INBOX every few <A HREF="h_config_mailcheck">minutes</A>.
+
+<P>
+There are some situations where automatic new-mail checking does not work.
+For example, if a mail folder is opened using the POP protocol or a newsgroup
+is being read using the NNTP protocol, then new-mail checking is disabled.
+
+<P>
+It may be possible to check for new mail in these cases by reopening the
+folder.
+Pine does not do this for you automatically, but you may do the commands
+manually to cause this to happen.
+You reopen by going back to the folder list screen from the message
+index screen with the &quot;&lt;&quot; command,
+and then going back into the message index screen with
+the &quot;&gt;&quot; command.
+(Actually, any method you would normally use to open a folder will work the
+same as the &quot;&lt;&quot; followed by &quot;&gt;&quot; method.
+For example, the GoTo Folder command will work, or you may use L to go to the
+Folder List screen and Carriage Return to reopen the folder.)
+
+<P>
+There are some cases where Pine knows that reopening the folder should
+be useful as a way to discover new mail.
+At the time of this writing, connections made using the POP protocol,
+news reading using the NNTP protocol, local news reading, and local
+ReadOnly folders which are in the traditional UNIX or the MMDF format all
+fall into this category.
+There are other cases where it <EM>may</EM> be a way to discover new mail, but Pine
+has no way of knowing, so it might also just be an exercise in futility.
+All remote, ReadOnly folders other than those listed just above fall into this
+category.
+The setting of this option together with the type of folder
+controls how Pine will react to the apparent attempt to reopen a folder.
+
+<P>
+If you don't reopen, then you will just be back in
+the message index with no change.
+You left the index and came back, but the folder remained &quot;open&quot;
+the whole time.
+However, if you do reopen the folder, the folder is closed and then reopened.
+In this case, the current state of the open folder is lost.
+The New status, Important and Answered flags,
+selected state, Zoom state, collapsed or expanded state of threads,
+current message number,
+and any other temporary state is all lost when the reopen happens.
+For POP folders (but not NNTP newsgroups) the Deleted flags are also lost.
+
+<P>
+In the possibilities listed below, the text says &quot;POP/NNTP&quot; in
+several places.
+That really implies the case where Pine knows it is a good way to discover
+new mail, which is more than just POP and NNTP, but POP and NNTP are
+the cases of most interest.
+This option probably has more possible values than it deserves. They are:
+
+<DL>
+<DT>Always reopen</DT>
+<DD>Pine will not ask whether you want to reopen but will just do the reopen
+whenever you type a command that implies a reopen, regardless of the
+access method.
+In other words, it is assumed you would always answer Yes if asked
+about reopening.
+</DD>
+
+<DT>Yes for POP/NNTP, Ask about other remote [Yes]</DT>
+<DD>Pine will assume a Yes answer if the access method is POP or NNTP, but
+will ask you whether to reopen other remote folders,
+with a default answer of Yes.
+</DD>
+
+<DT>Yes for POP/NNTP, Ask about other remote [No]</DT>
+<DD>Pine will assume a Yes answer if the access method is POP or NNTP, but
+will ask you whether to reopen other remote folders,
+with a default answer of No.
+</DD>
+
+<DT>Yes for POP/NNTP, No for other remote</DT>
+<DD>Pine will assume a Yes answer if the access method is POP or NNTP, and
+will assume a No answer for all other remote folders.
+</DD>
+
+<DT>Always ask [Yes]</DT>
+<DD>Pine will not differentiate based on access method.
+It will always ask for all remote folders, with a default answer of Yes.
+</DD>
+
+<DT>Always ask [No]</DT>
+<DD>Pine will not differentiate based on access method.
+It will always ask for all remote folders, with a default answer of No.
+</DD>
+
+<DT>Ask about POP/NNTP [Yes], No for other remote</DT>
+<DD>Pine will ask if the access method is POP or NNTP, with a default answer
+of Yes.
+It will never attempt to reopen other remote folders.
+</DD>
+
+<DT>Ask about POP/NNTP [No], No for other remote</DT>
+<DD>This is the default.
+Pine will ask if the access method is POP or NNTP, with a default answer
+of No.
+It will never attempt to reopen other remote folders.
+</DD>
+
+<DT>Never reopen</DT>
+<DD>Pine will never attempt to reopen already open folders.
+</DD>
+</DL>
+
+<P>
+Remember, wherever it says POP or NNTP above it really means POP or NNTP or
+any of the other situations where it is likely that reopening is a good way
+to discover new mail.
+
+<P>
+There is an alternative that may be of useful in some situations.
+Instead of manually checking for new mail you can set up a
+<A HREF="h_maildrop">Mail Drop</A>
+and automatically check for new mail.
+
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_inc_startup =====
 <HTML>
 <HEAD>
@@ -19048,7 +20129,14 @@ PC-Pine users do not need to enter anything here, unless:<UL>
 in the Windows operating system for handling URLs; or
 <LI> they are (planning on) using the same configuration file with 
 Unix Pine.
-</UL><HR><P>
+</UL>
+<P>
+Note that if using a viewer that has a space in its path, you should
+use the DOS name for that directory or file. Example:
+<PRE>
+url-viewer=C:&#92;Progra~1&#92;mozilla&#92;mozilla.exe
+</PRE>
+<HR><P>
 <!--chtml endif-->
 This option affects Pine's handling of URLs that are found in 
 messages you read.  Normally, only URLs Pine can handle directly
@@ -19610,7 +20698,7 @@ them into complete addresses by adding your local domain.<P>
 
 A complete (fully qualified) address is one containing a username followed
 by an &quot;@&quot; (&quot;at&quot;) symbol, followed by a domain name (e.g.
-&quot;jsmith@nowhere.edu&quot;).  An unqualified name is one <B>without</B> 
+&quot;jsmith@example.com&quot;).  An unqualified name is one <B>without</B> 
 the &quot;@&quot; symbol and domain name (e.g. &quot;jsmith&quot;). 
 
 (See also <A HREF="h_address_format">Explanation of Address formats</A>.)
@@ -19625,9 +20713,9 @@ you enter an unqualified name, Pine will normally attempt to turn it into
 a fully qualified address, first by checking to see if you have entered a
 matching nickname in your addressbook, or failing that, by simply adding
 your own domain to the name entered.  So if your address is
-&quot;jsmith@nowhere.edu&quot; and you enter &quot;fred&quot;, then (assuming 
+&quot;jsmith@example.com&quot; and you enter &quot;fred&quot;, then (assuming 
 &quot;fred&quot; is not a nickname in your addressbook), Pine will turn 
-that into &quot;fred@nowhere.edu&quot;.<P>
+that into &quot;fred@example.com&quot;.<P>
 
 There are situations where it is not desirable for Pine to interpret such
 unqualified names as valid (local) addresses.  For example, if &quot;fred&quot;
@@ -19636,7 +20724,7 @@ there actually was a &quot;fred&quot; in your local domain, the message might
 be mis-delivered without your realizing it.  In order to reduce the likelihood
 of such accidents, setting this feature will cause Pine to treat such
 addresses as errors, and require that you explicitly enter the full local
-address (e.g. &quot;fred@nowhere.edu&quot;) or correct the name so that it 
+address (e.g. &quot;fred@example.com&quot;) or correct the name so that it 
 matches an address book nickname.<P>
 
 Consider this a safety feature against mis-directed mail.
@@ -20040,6 +21128,9 @@ time it takes a message to arrive at its destination.
 <P>
 Please Note:
 <OL>
+ <LI>This feature will have no effect if the feature
+       <A HREF="h_config_send_wo_confirm">&quot;Send-Without-Confirm&quot;</A>
+       is set.
  <LI>This feature isn't supported on all systems.  All DOS and Windows,
        as well as several Unix ports, do not recognize this feature.
  <LI>Error handling is significantly different when this feature is
@@ -20072,6 +21163,10 @@ feature enables a subcommand in the composer's &quot;Send?&quot; confirmation
 prompt.  The subcommand allows you to tell Pine to request the type of
 Delivery Status Notification (DSN) which you would like.  Most users will
 be happy with the default, and need not enable this feature.
+<P>
+If the feature
+<A HREF="h_config_send_wo_confirm">&quot;Send-Without-Confirm&quot;</A> is set,
+then this feature has no effect and the type of DSN is not selectable.
 
 <P>
 Turning on this feature and then turning on the DSNOpts from the send
@@ -21124,6 +22219,17 @@ If this feature is set, you
 will <B>not</B> be prompted to confirm your intent to make only a copy
 of a message with no recipients.
 <P>
+This feature is closely related to
+<A HREF="h_config_warn_if_no_to_or_cc">Warn-if-blank-To-and-Cc-and-Newsgroups</A>.
+The difference between this feature and that feature is that this feature
+considers a Bcc to be a recipient while that feature will ask for confirmation
+even if there is a Bcc when there is no To, Cc, or Newsgroup.
+The default values also differ. This feature defaults to asking the question
+and you have to turn it off.
+The Warn-if-blank-To-and-Cc-and-Newsgroups feature defaults to not asking
+unless you turn it on.
+<P>
+
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL><P>
@@ -21251,6 +22357,48 @@ SLIP or PPP) can cause delays.  Set this feature to eliminate such delays.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_send_wo_confirm =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: send-without-confirm</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: send-without-confirm</H1>
+
+By default, when you send or post a message you will be asked to confirm
+with a question that looks something like:
+
+<P>
+<CENTER><SAMP>Send message?</SAMP></CENTER>
+<P>
+
+If this feature is set, you
+will <B>not</B> be prompted to confirm your intent to send
+and your message will be sent.
+<P>
+If this feature is set it disables some possibilities and renders some
+other features meaningless.
+You will not be able to use
+<A HREF="h_config_sending_filter">Sending Filters</A>,
+Verbose sending mode,
+<A HREF="h_config_compose_bg_post">Background Sending</A>,
+or
+<A HREF="h_config_compose_dsn">Delivery Status Notifications</A>.
+These options are normally available as suboptions in the Send prompt, but
+with no Send prompt the options are gone.
+
+<P>
+A somewhat related feature is
+<A HREF="h_config_quell_post_prompt">&quot;Quell-Extra-Post-Prompt&quot;</A>
+which may be used to eliminate the extra confirmation
+question when posting to a newsgroup.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_quell_post_prompt =====
 <HTML>
 <HEAD>
@@ -21289,6 +22437,26 @@ If this feature is set, Pine will check for new mail after you give the
 Quit command.
 If new mail has arrived since the previous check, you will be notified
 and given the choice of quitting or not quitting.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_inbox_no_confirm =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: return-to-inbox-without-confirm</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: return-to-inbox-without-confirm</H1>
+
+Normally, when you use the TAB <A HREF="h_common_nextnew">NextNew</A>
+command and there are no more folders or newsgroups to visit, you are asked
+if you want to return to the INBOX.
+If this feature is set you will not be asked.
+It will be assumed that you do want to return to the INBOX.
 <P>
 <UL>   
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
@@ -21576,6 +22744,8 @@ inverse-video cursor (used to highlight the current item in a list) will be
 replaced by an &quot;arrow&quot; cursor and other
 screen update optimizations for
 low-speed links (e.g. 2400 bps dialup connections) will be activated.
+One of the optimizations is that colored index lines (set up with Indexcolor
+Rules) will not be colored.
 
 <P>
 &lt;End of help on this topic&gt;
@@ -21842,7 +23012,7 @@ the possible host/folder path specification flags as follows:
 The <SAMP>/tls</SAMP> host flag, for example,
 
 <P>
-<CENTER><SAMP>{foo.bar.com/tls}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/tls}INBOX</SAMP></CENTER>
 <P>
 will over-ride this feature for the specified host by bypassing the
 SSL connection attempt.
@@ -21854,7 +23024,7 @@ service on port 143 does not offer TLS support.
 The <SAMP>/ssl</SAMP> host flag, for example,
 
 <P>
-<CENTER><SAMP>{foo.bar.com/ssl}INBOX</SAMP></CENTER>
+<CENTER><SAMP>{foo.example.com/ssl}INBOX</SAMP></CENTER>
 <P>
 will insist on an SSL connection for the specified host,
 and will fail if the SSL service on port 993 is not available.
@@ -22159,6 +23329,32 @@ Color1, Color2, Color1, Color2, ...
 If you define only the Quote1 Color, then the entire quote would be that
 color regardless of the quoting levels.
 By default, the Quote Colors are not defined, so will be the same as
+the Normal Color.
+<P>
+<A HREF="h_color_setup">Descriptions of the available commands</A>
+<P>
+Look <A HREF="h_edit_nav_cmds">here</A>
+to see the available Editing and Navigation commands.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_signature_color =====
+<HTML>
+<HEAD>
+<TITLE>OPTION: Signature Color</TITLE>
+</HEAD>
+<BODY>
+<H1>OPTION: Signature Color</H1>
+
+Sets the color Pine uses for coloring the signature in the MESSAGE TEXT
+screen. According to USENET conventions, the signature is defined as the
+paragraph following the &quot;sigdashes&quot;, that is, the special line
+consisting of the three characters
+&quot;--&nbsp;&quot; (i.e., dash, dash, and space). Pine allows for one
+empty line right after the sigdashes to be considered as part of the
+signature.
+By default, the Signature Color is not defined, so will be the same as
 the Normal Color.
 <P>
 <A HREF="h_color_setup">Descriptions of the available commands</A>
@@ -22760,6 +23956,60 @@ reduce the chance of falsified addresses and misdirected mail.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_enable_ctype =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: enable-setlocale-ctype</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: enable-setlocale-ctype</H1>
+
+This is a hard to understand feature that should only be used in rare cases.
+Normally, the C function call
+<P>
+<CENTER><SAMP>setlocale(LC_CTYPE, &quot;&quot;)</SAMP></CENTER>
+<P>
+is not used by Pine because it causes problems in some cases.
+If you want to try turning it on, and it is available in your operating system,
+setting this feature will turn it on.
+This part of the locale has to do with identifying space characters and
+alphanumeric characters in your locale.
+A related feature is
+<A HREF="h_config_disable_collate">disable-setlocale-collate</A>.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_disable_collate =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: disable-setlocale-collate</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: disable-setlocale-collate</H1>
+
+This is a hard to understand feature that should only be used in rare cases.
+Normally, the C function call
+<P>
+<CENTER><SAMP>setlocale(LC_COLLATE, &quot;&quot;)</SAMP></CENTER>
+<P>
+is used by Pine.
+If you want to try turning it off,
+setting this feature will turn it off.
+This part of the locale has to do with the sort order
+of characters in your locale.
+A related feature is
+<A HREF="h_config_enable_ctype">enable-setlocale-ctype</A>.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_disable_busy =====
 <HTML>
 <HEAD>
@@ -23081,6 +24331,46 @@ fetching is used. Turning on this feature will turn off partial fetching.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_quell_personal_name_prompt =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: quell-personal-name-prompt</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: quell-personal-name-prompt</H1>
+
+PC-Pine only.  This feature quells the prompting for a 
+<A HREF="h_config_pers_name">personal name</A>.  This
+prompt normally happens before composing a message, and only happens when
+there is no personal name already set.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_quell_user_id_prompt =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: quell-user-id-prompt</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: quell-user-id-prompt</H1>
+
+PC-Pine only.  This feature quells the prompting for a 
+<A HREF="h_config_user_id">user-id</A>
+if the information can be obtained from the login name used
+to open the INBOX.  Normally, this prompt happens before composing
+a message, and only happens when there is no user-id already set
+in the configuration.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_save_aggregates =====
 <HTML>
 <HEAD>
@@ -23272,6 +24562,62 @@ Setting this feature causes Pine to skip the messages flagged as important,
 and select unread messages exclusively.  Tab behavior when there are no
 new messages left to select remains unchanged.
 <P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_warn_if_subj_blank =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: warn-if-blank-subject</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: warn-if-blank-subject</H1>
+
+This feature affects Pine's behavior when you send a message being
+composed.
+If this option is set, Pine will check to see if the message about to be sent
+has a subject or not.
+If not, you will be asked if you want to send the message anyway.
+<P>
+
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_warn_if_no_to_or_cc =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: warn-if-blank-to-and-cc-and-newsgroups</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: warn-if-blank-to-and-cc-and-newsgroups</H1>
+
+This feature affects Pine's behavior when you send a message being
+composed.
+If this option is set, Pine will check to see if the message about to be sent
+has either a To address, a Cc address, or a Newsgroup.
+If none of these is set,
+you will be asked if you want to send the message anyway.
+<P>
+
+This feature is closely related to
+<A HREF="h_config_auto_fcc_only">Fcc-Only-Without-Confirm</A>.
+Pine will normally ask if you want to copy a message only to the Fcc.
+This feature also applies to cases where there is a Bcc but still no To, Cc,
+or Newsgroup.
+If the Fcc-Only-Without-Confirm feature is set and you are sending a
+message with only an Fcc, then you won't be asked about sending with
+a blank To and Cc and Newsgroups header even if this feature is set.
+Similarly, if you have already been asked if you want to send to the Fcc
+only and you have answered Yes, then you won't be asked again about sending with
+blank To, Cc, and Newsgroups headers even if this feature is set.
+<P>
+
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
@@ -24079,9 +25425,6 @@ to go to the previous/next collections in the list.  Press ^C to cancel goto.
 ========== h_oe_foldsearch ==========
 Type the text you want to search for in foldernames and press RETURN.  If you
 press RETURN without entering anything, any text in [] will be searched for.
-========== h_oe_foldadd ==========
-Type the name of the folder you want to add and press RETURN.  Press ^C to
-cancel adding a new folder.
 ========== h_oe_foldrename ==========
 Change the old name of the folder to the new name using the arrow and
 delete keys and press RETURN.  Press ^C to cancel rename.
@@ -24133,12 +25476,6 @@ entry will be saved in your Pine configuration file.
 ========== h_bounce =========
 Enter the address or nickname of the intended recipient.  Pine will resend
 the message, which will retain the original author's From: address.
-========== h_incoming_add_folder_host =========
-Enter RETURN if the folder is on the machine where Pine is running;
-otherwise enter the host name of the mail server, or ^X if same as INBOX.
-========== h_incoming_add_folder_name =========
-Enter the name of the desired folder. Pine will attempt to create this
-folder on the previously specified mail server.
 ========== h_incoming_add_folder_nickname =========
 Enter an (optional) nickname that will be used in lieu of the actual
 host and folder names in the FOLDER LIST display.
@@ -24290,6 +25627,12 @@ Answering Yes will remove this printer completely from your printer list.
 ========== h_config_print_name_cmd ==========
 You may edit the Nickname of this printer, the Command to be executed when
 printing, or change the Options associated with this printer.
+========== h_send_check_subj ==========
+Yes, send message without a Subject.
+No, return to composer.
+========== h_send_check_to_cc ==========
+Yes, send message without a To address, or a Cc address, or a Newsgroup.
+No, return to composer.
 ========== h_send_fcc_only ==========
 Yes, copy message to Fcc only and send to NO recipients.
 No, return to composer.
