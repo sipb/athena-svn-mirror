@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.14 1990-02-06 10:18:33 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.15 1990-02-23 20:00:31 vanharen Exp $";
 #endif
 
 
@@ -243,12 +243,12 @@ write_message_to_user(k, message, flags)
       sprintf(msgbuf,"To: %s %s@%s [%d]\n",k->title,k->user->username,
 	      k->user->realm,k->instance);
       strcat(msgbuf,message);
-      result = write_message(k->user->username, k->user->machine,
-			     "OLC-Service", DaemonHost, msgbuf);
     }
   else
-    result = write_message(k->user->username, k->user->machine,
-			     "OLC-Daemon", DaemonHost, message);
+    strcpy(msgbuf,message);
+
+  result = write_message(k->user->username, k->user->machine,
+			 "OLC-Service", DaemonHost, msgbuf);
   
   switch(result)
     {
