@@ -2,12 +2,8 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.14 1992-11-09 00:43:30 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.15 1992-11-09 01:10:44 probe Exp $
  */
-
-#ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.14 1992-11-09 00:43:30 probe Exp $";
-#endif lint
 
 /*
  * Copyright (c) 1983 Regents of the University of California.
@@ -19,11 +15,10 @@ static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/b
 char copyright[] =
 "@(#) Copyright (c) 1983 Regents of the University of California.\n\
  All rights reserved.\n";
-#endif not lint
 
-#ifndef lint
 static char sccsid[] = "@(#)lpd.c	5.4 (Berkeley) 5/6/86";
-#endif not lint
+static char *rcsid_lpd_c = "$Id: lpd.c,v 1.15 1992-11-09 01:10:44 probe Exp $";
+#endif
 
 /*
  * lpd -- line printer daemon.

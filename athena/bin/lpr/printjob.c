@@ -2,12 +2,8 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.20 1992-11-09 00:54:30 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.21 1992-11-09 01:10:29 probe Exp $
  */
-
-#ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.20 1992-11-09 00:54:30 probe Exp $";
-#endif lint
 
 /*
  * Copyright (c) 1983 Regents of the University of California.
@@ -17,7 +13,8 @@ static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/ath
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-#endif not lint
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.21 1992-11-09 01:10:29 probe Exp $";
+#endif
 
 /*
  * printjob -- print jobs in the queue.
