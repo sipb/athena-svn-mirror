@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.61 2002-08-05 14:55:45 ghudson Exp $
+# $Id: update_ws.sh,v 1.62 2003-04-22 16:29:47 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -236,7 +236,7 @@ failupdate() {
 # that people aren't updating across two full releases, which
 # generally doesn't work.
 case "$version" in
-9.0.*|9.1.*)
+9.1.*|9.2.*)
   ;;
 *)
   echo "You must update by only one full release at a time."
