@@ -37,7 +37,7 @@ fi
 
 case $mailer in
 evolution)
-  exec evolution --no-splash "${@-evolution:/MIT mail/INBOX}"
+  exec evolution --no-splash
   ;;
 xmh)
   exec xmh
