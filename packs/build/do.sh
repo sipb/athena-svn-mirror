@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.74 2002-03-28 05:09:02 ghudson Exp $
+# $Id: do.sh,v 1.75 2003-01-24 00:53:19 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -186,7 +186,7 @@ if [ -r Makefile.athena ]; then
     XCONFIGDIR=$source/packs/build/xconfig
   fi
   $MAKE $n -f Makefile.athena "$operation"
-elif [ -f configure.in -o -f configure.ac ]; then
+elif [ -f configure.in -o -f configure.ac -o -f configure ]; then
   if [ -f configure.athena ]; then
     configure=configure.athena
   else
