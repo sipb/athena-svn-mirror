@@ -1,4 +1,4 @@
-# $Id: athena,v 1.14 1999-12-07 21:47:24 danw Exp $
+# $Id: athena,v 1.15 2000-01-11 19:08:34 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -51,21 +51,24 @@ env > /var/athena/env.boot
 # Clean up the password file.
 if [ -f /etc/passwd.local ]; then
 	echo "Recovering passwd file... \c"
-	cp /etc/passwd.local /etc/passwd
+	syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd
+	chmod 644 /etc/passwd
 	echo "done."
 fi
 
 # Clean up the shadow file.
 if [ -f /etc/shadow.local ]; then
 	echo "Recovering shadow file... \c"
-	cp /etc/shadow.local /etc/shadow
+	syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadow
+	chmod 600 /etc/shadow
 	echo "done."
 fi
 
 # Clean up the group file.
 if [ -f /etc/group.local ]; then
 	echo "Recovering group file... \c"
-	cp /etc/group.local /etc/group
+	syncupdate -c /etc/group.new /etc/group.local /etc/group
+	chmod 644 /etc/group
 	echo "done."
 fi
 
@@ -135,25 +138,23 @@ if [ "$PUBLIC" = true ]; then
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	rm -f /etc/ssh_*
 	if [ -r /srvd/etc/passwd ]; then
-		cp -p /srvd/etc/passwd /etc/passwd.local
-		chmod 644 /etc/passwd.local
-		chown root /etc/passwd.local
+		syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
+			/etc/passwd.local
 	fi
 	if [ -r /srvd/etc/shadow ]; then
-		cp -p /srvd/etc/shadow /etc/shadow.local
-		chmod 600 /etc/shadow.local
-		chown root /etc/shadow.local
+		syncupdate -c /etc/shadow.local.new /srvd/etc/shadow \
+			/etc/shadow.local
 	fi
-	cp -p /etc/passwd.local /etc/passwd
-	cp -p /etc/shadow.local /etc/shadow
+	syncupdate -c /etc/group.local.new /srvd/etc/group /etc/group.local
+	syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd
+	syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadown
+	syncupdate -c /etc/group.new /etc/group.local /etc/group
+	chmod 644 /etc/passwd /etc/group
 	chmod 600 /etc/shadow
-	cp -p /srvd/etc/group /etc/group.local
-	cp -p /etc/group.local /etc/group
 	cp -p /srvd/etc/athena/athinfo.access /etc/athena/athinfo.access
 
 	cp -p /srvd/etc/netspy /etc/netspy
 	cp /dev/null /etc/X0.hosts
-	cp -p /etc/inet/hosts /etc/inet/hosts.save
 	if [ -f /srvd/.rvdinfo ]; then
 		# Do not track or update config files if the workstation and
 		# srvd are different versions.
@@ -164,8 +165,6 @@ if [ "$PUBLIC" = true ]; then
 			track -F /os -T / -W /srvd/usr/athena/lib \
 				-s stats/os_rvd slists/os_rvd
 			track
-			cp -p /etc/inet/hosts.save /etc/inet/hosts
-			rm -f /etc/inet/hosts.save
 			if [ -f /srvd/etc/athena/rc.conf ]; then
 				sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
 				  -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
@@ -180,19 +179,18 @@ if [ "$PUBLIC" = true ]; then
 			configs=`cat /srvd/usr/athena/lib/update/configfiles`
 			for i in $configs; do
 				if [ -f /srvd$i ]; then
-					cp -p /srvd$i $i
+					src=/srvd$i
 				else
-					cp -p /os$i $i
+					src=/os$i
 				fi
+				syncupdate -c $i.new $src $i
 			done
 			platform=`uname -m`
-			cp -p "/srvd/etc/driver_aliases.$platform"  \
-			  /etc/driver_aliases
-			cp -p "/srvd/etc/driver_classes.$platform" \
-			  /etc/driver_classes
-			cp -p "/srvd/etc/minor_perm.$platform" /etc/minor_perm
-			cp -p "/srvd/etc/name_to_major.$platform" \
-			  /etc/name_to_major
+			for i in driver_aliases driver_classes minor_perm \
+				 name_to_major; do
+				syncupdate -c /etc/$i.new \
+					"/srvd/etc/$i.$platform" /etc/$i
+			done
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
 		fi

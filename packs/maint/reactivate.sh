@@ -1,11 +1,11 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.43 1999-10-01 13:43:41 rbasch Exp $
+# $Id: reactivate.sh,v 1.44 2000-01-11 19:08:31 ghudson Exp $
 
 trap "" 1 15
 
-PATH=/bin:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb; export PATH
+PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
 
 # Usage: nuke directoryname
@@ -84,39 +84,25 @@ fi
 # Copy in latest password file
 if [ "$PUBLIC" = true ]; then
 	if [ -r /srvd/etc/passwd ]; then
-		cp -p /srvd/etc/passwd /etc/passwd.local
-		chmod 644 /etc/passwd.local
-		chown root /etc/passwd.local
+		syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
+			/etc/passwd.local
 	fi
 	if [ -r /srvd/etc/shadow ]; then
-		cp -p /srvd/etc/shadow /etc/shadow.local
-		chmod 600 /etc/shadow.local
-		chown root /etc/shadow.local
+		syncupdate -c /etc/shadow.local.new /srvd/etc/shadow \
+			/etc/shadow.local
 	fi
 	rm -rf /etc/athena/access >/dev/null 2>&1
 fi
 
 # Restore password and group files
 if [ -s /etc/passwd.local ] ; then
-	cmp -s /etc/passwd.local /etc/passwd || {
-		cp -p /etc/passwd.local /etc/ptmp &&
-		/bin/mv -f /etc/ptmp /etc/passwd &&
-		sync
-	}
+	syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd
 fi
 if [ -s /etc/shadow.local ] ; then
-	cmp -s /etc/shadow.local /etc/shadow || {
-		cp -p /etc/shadow.local /etc/stmp &&
-		/bin/mv -f /etc/stmp /etc/shadow &&
-		sync
-	}
+	syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadow
 fi
 if [ -s /etc/group.local ] ; then
-	cmp -s /etc/group.local /etc/group || {
-		cp -p /etc/group.local /etc/gtmp &&
-		/bin/mv -f /etc/gtmp /etc/group &&
-		sync
-	}
+	syncupdate -c /etc/group.new /etc/group.local /etc/group
 fi
 
 if [ "$full" = true ]; then
@@ -167,10 +153,11 @@ if [ "$full" = true ]; then
 			cf=`cat /srvd/usr/athena/lib/update/configfiles`
 			for i in $cf; do
 				if [ -f /srvd$i ]; then
-					cp -p /srvd$i $i
+					src=/srvd$i
 				else
-					cp -p /os$i $i
+					src=/os$i
 				fi
+				syncupdate -c $i.new $src $i
 			done
 			ps -e | awk '$4=="inetd" {print $1}' | xargs kill -HUP
 		fi

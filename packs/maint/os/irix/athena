@@ -1,4 +1,4 @@
-# $Id: athena,v 1.16 1999-10-18 17:16:58 danw Exp $
+# $Id: athena,v 1.17 2000-01-11 19:08:32 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -37,24 +37,24 @@ env > /var/athena/env.boot
 # Clean up the password file.
 if [ -f /etc/passwd.local ]; then
 	$ECHO "Recovering passwd file... \c"
-	rm -rf /etc/ptmp
-	cp -p /etc/passwd.local /etc/ptmp && mv -f /etc/ptmp /etc/passwd
+	syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd
+	chmod 644 /etc/passwd
 	$ECHO "done."
 fi
 
 # Clean up the shadow file
 if [ -f /etc/shadow.local ]; then
 	$ECHO "Recovering shadow file... \c"
-	rm -rf /etc/stmp
-	cp -p /etc/shadow.local /etc/stmp && mv -f /etc/stmp /etc/shadow
+	syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadow
+	chmod 600 /etc/shadow
 	$ECHO "done."
 fi
 
 # Clean up the group file.
 if [ -f /etc/group.local ]; then
 	$ECHO "Recovering group file... \c"
-	rm -rf /etc/gtmp
-	cp -p /etc/group.local /etc/gtmp && mv -f /etc/gtmp /etc/group
+	syncupdate -c /etc/group.new /etc/group.local /etc/group
+	chmod 644 /etc/group
 	$ECHO "done."
 fi
 
@@ -126,20 +126,19 @@ if [ "$PUBLIC" = true ]; then
 	rm -f /etc/ssh_*
 	rm -rf /etc/ptmp /etc/stmp /etc/gtmp
 	if [ -r /srvd/etc/passwd ]; then
-		cp -p /srvd/etc/passwd /etc/passwd.local
-		chmod 644 /etc/passwd.local
-		chown root /etc/passwd.local
+		syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \
+			/etc/passwd.local
 	fi
 	if [ -r /srvd/etc/shadow ]; then
-		cp -p /srvd/etc/shadow /etc/shadow.local
-		chmod 600 /etc/shadow.local
-		chown root /etc/shadow.local
+		syncupdate -c /etc/shadow.local.new /srvd/etc/shadow \
+			/etc/shadow.local
 	fi
-	cp -p /etc/passwd.local /etc/ptmp && mv -f /etc/ptmp /etc/passwd
-	cp -p /etc/shadow.local /etc/stmp && mv -f /etc/stmp /etc/shadow
+	syncupdate -c /etc/group.local.new /srvd/etc/group /etc/group.local
+	syncupdate -c /etc/passwd.new /etc/passwd.local /etc/passwd
+	syncupdate -c /etc/shadow.new /etc/shadow.local /etc/shadown
+	syncupdate -c /etc/group.new /etc/group.local /etc/group
+	chmod 644 /etc/passwd /etc/group
 	chmod 600 /etc/shadow
-	cp -p /srvd/etc/group /etc/group.local
-	cp -p /etc/group.local /etc/gtmp && mv -f /etc/gtmp /etc/group
 	cp -p /srvd/etc/athena/athinfo.access /etc/athena/athinfo.access
 
 	touch /etc/X0.hosts
@@ -169,10 +168,11 @@ if [ "$PUBLIC" = true ]; then
 			configs=`cat /srvd/usr/athena/lib/update/configfiles`
 			for i in $configs; do
 				if [ -f /srvd$i ]; then
-					cp -p /srvd$i $i
+					src=/srvd$i
 				else
-					cp -p /os$i $i
+					src=/os$i
 				fi
+				syncupdate -c $i.new $src $i
 			done
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
