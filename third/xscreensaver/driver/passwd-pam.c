@@ -1,7 +1,7 @@
 /* passwd-pam.c --- verifying typed passwords with PAM
  * (Pluggable Authentication Modules.)
  * written by Bill Nottingham <notting@redhat.com> (and jwz) for
- * xscreensaver, Copyright (c) 1993-1998 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1993-1998, 2000 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -10,6 +10,26 @@
  * documentation.  No representations are made about the suitability of this
  * software for any purpose.  It is provided "as is" without express or 
  * implied warranty.
+ *
+ * Some PAM resources:
+ *
+ *    PAM home page:
+ *    http://www.us.kernel.org/pub/linux/libs/pam/
+ *
+ *    PAM FAQ:
+ *    http://www.us.kernel.org/pub/linux/libs/pam/FAQ
+ *
+ *    PAM Application Developers' Guide:
+ *    http://www.us.kernel.org/pub/linux/libs/pam/Linux-PAM-html/pam_appl.html
+ *
+ *    PAM Mailing list archives:
+ *    http://www.linuxhq.com/lnxlists/linux-pam/
+ *
+ *    Compatibility notes, especially between Linux and Solaris:
+ *    http://www.contrib.andrew.cmu.edu/u/shadow/pam.html
+ *
+ *    The Open Group's PAM API documentation:
+ *    http://www.opengroup.org/onlinepubs/8329799/pam_start.htm
  */
 
 #ifdef HAVE_CONFIG_H
@@ -58,9 +78,23 @@ struct pam_closure {
    /* We handle delays ourself.*/
    /* Don't set this to 0 (Linux bug workaround.) */
 # define PAM_NO_DELAY(pamh) pam_fail_delay ((pamh), 1)
-# else  /* !HAVE_PAM_FAIL_DELAY */
+#else  /* !HAVE_PAM_FAIL_DELAY */
 # define PAM_NO_DELAY(pamh) /* */
-# endif /* !HAVE_PAM_FAIL_DELAY */
+#endif /* !HAVE_PAM_FAIL_DELAY */
+
+
+/* On SunOS 5.6, and on Linux with PAM 0.64, pam_strerror() takes two args.
+   On some other Linux systems with some other version of PAM (e.g.,
+   whichever Debian release comes with a 2.2.5 kernel) it takes one arg.
+   I can't tell which is more "recent" or "correct" behavior, so configure
+   figures out which is in use for us.  Shoot me!
+ */
+#ifdef PAM_STRERROR_TWO_ARGS
+# define PAM_STRERROR(pamh, status) pam_strerror((pamh), (status))
+#else  /* !PAM_STRERROR_TWO_ARGS */
+# define PAM_STRERROR(pamh, status) pam_strerror((status))
+#endif /* !PAM_STRERROR_TWO_ARGS */
+
 
 /* PAM sucks in that there is no way to tell whether a particular service
    is configured at all.  That is, there is no way to tell the difference
@@ -108,6 +142,16 @@ struct pam_closure {
  */
 
 
+/* On SunOS 5.6, the `pam_conv.appdata_ptr' slot seems to be ignored, and
+   the `closure' argument to pc.conv always comes in as random garbage.
+   So we get around this by using a global variable instead.  Shoot me!
+
+   (I've been told this is bug 4092227, and is fixed in Solaris 7.)
+   (I've also been told that it's fixed in Solaris 2.6 by patch 106257-05.)
+ */
+static void *suns_pam_implementation_blows = 0;
+
+
 /* This can be called at any time, and says whether the typed password
    belongs to either the logged in user (real uid, not effective); or
    to root.
@@ -134,6 +178,10 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   pc.conv = &pam_conversation;
   pc.appdata_ptr = (void *) &c;
 
+  /* On SunOS 5.6, the `appdata_ptr' slot seems to be ignored, and the
+     `closure' argument to pc.conv always comes in as random garbage. */
+  suns_pam_implementation_blows = (void *) &c;
+
 
   /* Initialize PAM.
    */
@@ -141,7 +189,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   if (verbose_p)
     fprintf (stderr, "%s: pam_start (\"%s\", \"%s\", ...) ==> %d (%s)\n",
              blurb(), service, c.user,
-             status, pam_strerror (pamh, status));
+             status, PAM_STRERROR (pamh, status));
   if (status != PAM_SUCCESS) goto DONE;
 
   /* #### We should set PAM_TTY to the display we're using, but we
@@ -154,7 +202,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
     status = pam_set_item (pamh, PAM_TTY, strdup(tty));
     if (verbose_p)
       fprintf (stderr, "%s:   pam_set_item (p, PAM_TTY, \"%s\") ==> %d (%s)\n",
-               blurb(), tty, status, pam_strerror(pamh, status));
+               blurb(), tty, status, PAM_STRERROR(pamh, status));
   }
 
   /* Try to authenticate as the current user.
@@ -163,9 +211,19 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   status = pam_authenticate (pamh, 0);
   if (verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
-             blurb(), status, pam_strerror(pamh, status));
+             blurb(), status, PAM_STRERROR(pamh, status));
   if (status == PAM_SUCCESS)  /* Win! */
-    goto DONE;
+    {
+      /* Each time we successfully authenticate, refresh credentials,
+         for Kerberos/AFS/DCE/etc.  If this fails, just ignore that
+         failure and blunder along; it shouldn't matter.
+       */
+      int status2 = pam_setcred (pamh, PAM_REFRESH_CRED);
+      if (verbose_p)
+        fprintf (stderr, "%s:   pam_setcred (...) ==> %d (%s)\n",
+                 blurb(), status2, PAM_STRERROR(pamh, status2));
+      goto DONE;
+    }
 
   /* If that didn't work, set the user to root, and try to authenticate again.
    */
@@ -173,14 +231,14 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   status = pam_set_item (pamh, PAM_USER, strdup(c.user));
   if (verbose_p)
     fprintf (stderr, "%s:   pam_set_item(p, PAM_USER, \"%s\") ==> %d (%s)\n",
-             blurb(), c.user, status, pam_strerror(pamh, status));
+             blurb(), c.user, status, PAM_STRERROR(pamh, status));
   if (status != PAM_SUCCESS) goto DONE;
 
   PAM_NO_DELAY(pamh);
   status = pam_authenticate (pamh, 0);
   if (verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
-             blurb(), status, pam_strerror(pamh, status));
+             blurb(), status, PAM_STRERROR(pamh, status));
 
  DONE:
   if (user) free (user);
@@ -198,22 +256,60 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
 
 
 Bool 
-pam_lock_init (saver_preferences *p)
+pam_priv_init (int argc, char **argv, Bool verbose_p)
 {
   /* We have nothing to do at init-time.
      However, we might as well do some error checking.
      If "/etc/pam.d" exists and is a directory, but "/etc/pam.d/xlock"
      does not exist, warn that PAM probably isn't going to work.
+
+     This is a priv-init instead of a non-priv init in case the directory
+     is unreadable or something (don't know if that actually happens.)
    */
-  const char  dir[] = "/etc/pam.d";
-  const char file[] = "/etc/pam.d/" PAM_SERVICE_NAME;
+  const char   dir[] = "/etc/pam.d";
+  const char  file[] = "/etc/pam.d/" PAM_SERVICE_NAME;
+  const char file2[] = "/etc/pam.conf";
   struct stat st;
+
   if (stat (dir, &st) == 0 && st.st_mode & S_IFDIR)
-    if (stat (file, &st) != 0)
+    {
+      if (stat (file, &st) != 0)
+        fprintf (stderr,
+                 "%s: warning: %s does not exist.\n"
+                 "%s: password authentication via PAM is unlikely to work.\n",
+                 blurb(), file, blurb());
+    }
+  else if (stat (file2, &st) == 0)
+    {
+      FILE *f = fopen (file2, "r");
+      if (f)
+        {
+          Bool ok = False;
+          char buf[255];
+          while (fgets (buf, sizeof(buf), f))
+            if (strstr (buf, PAM_SERVICE_NAME))
+              {
+                ok = True;
+                break;
+              }
+          fclose (f);
+          if (!ok)
+            {
+              fprintf (stderr,
+                  "%s: warning: %s does not list the `%s' service.\n"
+                  "%s: password authentication via PAM is unlikely to work.\n",
+                       blurb(), file2, PAM_SERVICE_NAME, blurb());
+            }
+        }
+      /* else warn about file2 existing but being unreadable? */
+    }
+  else
+    {
       fprintf (stderr,
-               "%s: warning: %s does not exist.\n"
+               "%s: warning: neither %s nor %s exist.\n"
                "%s: password authentication via PAM is unlikely to work.\n",
-               blurb(), file, blurb());
+               blurb(), file2, file, blurb());
+    }
 
   /* Return true anyway, just in case. */
   return True;
@@ -243,6 +339,10 @@ pam_conversation (int nmsgs,
   int replies = 0;
   struct pam_response *reply = 0;
   struct pam_closure *c = (struct pam_closure *) closure;
+
+  /* On SunOS 5.6, the `closure' argument always comes in as random garbage. */
+  c = (struct pam_closure *) suns_pam_implementation_blows;
+
 
   reply = (struct pam_response *) calloc (nmsgs, sizeof (*reply));
   if (!reply) return PAM_CONV_ERR;

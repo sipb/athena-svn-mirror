@@ -11,11 +11,12 @@
 .if n .sp 1
 .if t .sp .5
 ..
-.TH XScreenSaver 1 "15-Mar-99 (3.08)" "X Version 11"
+.TH XScreenSaver 1 "13-Feb-2001 (3.29)" "X Version 11"
 .SH NAME
 xss-command - control a running xss process
 .SH SYNOPSIS
 .B xss-command
+[\-display \fIhost:display.screen\fP] \
 [\-help] \
 [\-demo] \
 [\-prefs] \
@@ -28,8 +29,11 @@ xss-command - control a running xss process
 [\-exit] \
 [\-restart] \
 [\-lock] \
+[\-throttle] \
+[\-unthrottle] \
 [\-version] \
-[\-time]
+[\-time] \
+[\-watch]
 .SH DESCRIPTION
 The \fIxss\-command\fP program controls a running \fIxss\fP
 process by sending it client-messages.
@@ -133,6 +137,21 @@ running as you.  See
 .BR xss (1)
 for details.
 .TP 8
+.B \-throttle
+Temporarily switch to ``blank screen'' mode, and don't run any display modes
+at all, until the screensaver is next de-activated.  This is useful if you're
+using a machine remotely, and you find that some display modes are using too
+much CPU.  
+
+(If you want to do this \fIpermanently\fP, that is, you want the screen saver
+to only blank the screen and not run demos at all, then set the \fIprograms\fP
+resource to an empty list:  See
+.BR xscreensaver (1)
+for details.)
+.TP 8
+.B \-unthrottle
+Turn `-throttle' mode off and resume normal behavior.
+.TP 8
 .B \-version
 Prints the version of xss that is currently running on the display:
 that is, the actual version number of the running xss background 
@@ -160,6 +179,53 @@ launching it again.
 The important point is, you need to make sure that the xss 
 process is running as you.  If it's not, it won't be reading the 
 right \fI.xscreensaver\fP file.
+.TP 8
+.B \-watch
+Prints a line each time the screensaver changes state: when the screen
+blanks, locks, unblanks, or when the running hack is changed.  This option
+never returns; it is intended for use by shell scripts that want to react to
+the screensaver in some way.  An example of its output would be:
+.EX
+BLANK Fri Nov  5 01:57:22 1999
+RUN 34
+RUN 79
+RUN 16
+LOCK Fri Nov  5 01:57:22 1999
+RUN 76
+RUN 12
+UNBLANK Fri Nov  5 02:05:59 1999
+.EE
+The above shows the screensaver activating, running three different
+hacks, then locking (perhaps because the lock-timeout went off) then
+unblanking (because the user became active, and typed the correct
+password.)  The hack numbers are their index in the `programs'
+list (starting with 1, not 0, as for the \fI\-select\fP command.)
+
+For example, suppose you want to run a program that turns down the volume
+on your machine when the screen blanks, and turns it back up when the screen
+un-blanks.  You could do that by running a Perl program like the following
+in the background.  The following program tracks the output of 
+the \fI\-watch\fP command and reacts accordingly:
+.EX
+#!/usr/bin/perl
+
+my $blanked = 0;
+open (IN, "xss-command -watch |");
+while (<IN>) {
+    if (m/^(BLANK|LOCK)/) {
+        if (!$blanked) {
+            system "sound-off";
+            $blanked = 1;
+        }
+    } elsif (m/^UNBLANK/) {
+        system "sound-on";
+        $blanked = 0;
+    }
+}
+.EE
+Note that LOCK might come either with or without a preceeding BLANK
+(depending on whether the lock-timeout is non-zero), so the above program
+keeps track of both of them.
 .SH DIAGNOSTICS
 If an error occurs while communicating with the \fIxss\fP daemon, or
 if the daemon reports an error, a diagnostic message will be printed to
@@ -186,7 +252,7 @@ and related tools can always be found at http://www.jwz.org/xscreensaver/
 .BR xss (1)
 .BR xss\-demo (1)
 .SH COPYRIGHT
-Copyright \(co 1992, 1993, 1997, 1998, 1999
+Copyright \(co 1992, 1993, 1997, 1998, 1999, 2000, 2001
 by Jamie Zawinski.  Permission to use, copy, modify, distribute, and sell
 this software and its documentation for any purpose is hereby granted without
 fee, provided that the above copyright notice appear in all copies and that

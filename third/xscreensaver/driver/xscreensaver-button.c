@@ -46,8 +46,8 @@ typedef struct _AppData
   char *check_command;
   char *activate_command;
   char *prefs_command;
-  int xroger_width;
-  int xroger_height;
+  int logo_width;
+  int logo_height;
   Boolean redirect;
   char *log_file;
 } AppData;
@@ -58,6 +58,8 @@ typedef struct _AppData
 #define XtNprefsCommand "prefsCommand"
 #define XtNxrogerWidth "xrogerWidth"
 #define XtNxrogerHeight "xrogerHeight"
+#define XtNlogoWidth "logoWidth"
+#define XtNlogoHeight "logoHeight"
 #define XtNredirect "redirect"
 #define XtNlogFile "logFile"
 #define XtCCommand "Command"
@@ -103,11 +105,30 @@ static XtResource resources[] =
     BINDIR "xss-command -prefs"
   },
   {
+    XtNlogoWidth,
+    XtCWidth,
+    XtRInt,
+    sizeof(int),
+    XtOffsetOf(AppData, logo_width),
+    XtRImmediate,
+    (XtPointer)48
+  },
+  {
+    XtNlogoHeight,
+    XtCHeight,
+    XtRInt,
+    sizeof(int),
+    XtOffsetOf(AppData, logo_height),
+    XtRImmediate,
+    (XtPointer)48
+  },
+  /* Accept xrogerWidth and xrogerHeight for backwards-compatibility. */
+  {
     XtNxrogerWidth,
     XtCWidth,
     XtRInt,
     sizeof(int),
-    XtOffsetOf(AppData, xroger_width),
+    XtOffsetOf(AppData, logo_width),
     XtRImmediate,
     (XtPointer)48
   },
@@ -116,7 +137,7 @@ static XtResource resources[] =
     XtCHeight,
     XtRInt,
     sizeof(int),
-    XtOffsetOf(AppData, xroger_height),
+    XtOffsetOf(AppData, logo_height),
     XtRImmediate,
     (XtPointer)48
   },
@@ -146,10 +167,10 @@ static XrmOptionDescRec options[] =
   { "-check",      "*checkCommand",    XrmoptionSepArg, NULL	},
   { "-activate",   "*activateCommand", XrmoptionSepArg, NULL	},
   { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL	},
-  { "-logoWidth",  "*xrogerWidth",     XrmoptionSepArg, NULL	},
-  { "-logoHeight", "*xrogerHeight",    XrmoptionSepArg, NULL	},
-  { "-logo-width", "*xrogerWidth",     XrmoptionSepArg, NULL	},
-  { "-logo-height","*xrogerHeight",    XrmoptionSepArg, NULL	},
+  { "-logoWidth",  "*logoWidth",       XrmoptionSepArg, NULL	},
+  { "-logoHeight", "*logoHeight",      XrmoptionSepArg, NULL	},
+  { "-logo-width", "*logoWidth",       XrmoptionSepArg, NULL	},
+  { "-logo-height","*logoHeight",      XrmoptionSepArg, NULL	},
   { "-redirect",   "*redirect",        XrmoptionNoArg,  "true"	},
   { "-noredirect", "*redirect",        XrmoptionNoArg,  "false"	},
   { "-logFile",    "*logFile",         XrmoptionSepArg, NULL	},
@@ -244,33 +265,13 @@ int main(int argc, char **argv)
 
 static Pixmap get_pixmap(Widget toplevel)
 {
-  GC draw_gc, erase_gc;
-  Pixmap pixmap;
+  Colormap cmap;
   Display *dpy = XtDisplay(toplevel);
-  XGCValues values;
-  XtGCMask mask = GCForeground | GCBackground;
 
-  pixmap = XCreatePixmap(dpy,
-			 RootWindowOfScreen(XtScreen(toplevel)),
-			 app_data.xroger_width, app_data.xroger_height, 1);
+  cmap = DefaultColormapOfScreen(XtScreen(toplevel));
+  return xscreensaver_logo(dpy, RootWindowOfScreen(XtScreen(toplevel)),
+			   cmap, 1, NULL, NULL, 0);
   
-  values.foreground = 1;
-  values.background = 0;
-  draw_gc = XCreateGC(dpy, pixmap, mask, &values);
-  
-  values.foreground = 0;
-  values.background = 1;
-  erase_gc = XCreateGC(dpy, pixmap, mask, &values);
-
-  XFillRectangle(dpy, pixmap, erase_gc, 0, 0,
-		 app_data.xroger_width, app_data.xroger_height);
-  skull(dpy, pixmap, draw_gc, erase_gc, 0, 0,
-	app_data.xroger_width, app_data.xroger_height);
-  
-  XFreeGC(dpy, draw_gc);
-  XFreeGC(dpy, erase_gc);
-  
-  return pixmap;
 }
 
 void stop_ss()

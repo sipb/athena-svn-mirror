@@ -196,7 +196,7 @@ get_encrypted_passwd(const char *user)
  */
 
 void
-pwent_lock_privileged_init (int argc, char **argv)
+pwent_priv_init (int argc, char **argv)
 {
   char *u;
 

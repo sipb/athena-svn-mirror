@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1993-1998 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1993-2001 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -84,6 +84,12 @@ struct saver_info {
   Bool screen_blanked_p;	/* Whether the saver is currently active. */
   Window mouse_grab_window;	/* Window holding our mouse grab */
   Window keyboard_grab_window;	/* Window holding our keyboard grab */
+  Bool fading_possible_p;	/* Whether fading to/from black is possible. */
+  Bool throttled_p;             /* Whether we should temporarily just blank
+                                   the screen, not run hacks. */
+  time_t blank_time;		/* The time at which the screen was blanked
+                                   (if currently blanked) or unblanked (if
+                                   not blanked.) */
 
 
   /* =======================================================================
@@ -113,6 +119,12 @@ struct saver_info {
   int unlock_failures;		/* Counts failed login attempts while the
 				   screen is locked. */
 
+  char *unlock_typeahead;	/* If the screen is locked, and the user types
+                                   a character, we assume that it is the first
+                                   character of the password.  It's stored here
+                                   for the password dialog to use to populate
+                                   itself. */
+
 
   /* =======================================================================
      demoing
@@ -136,7 +148,13 @@ struct saver_info {
   XtIntervalId check_pointer_timer_id;	/* `prefs.pointer_timeout' */
 
   time_t last_activity_time;		   /* Used only when no server exts. */
+  time_t last_wall_clock_time;             /* Used to detect laptop suspend. */
   saver_screen_info *last_activity_screen;
+
+  Bool emergency_lock_p;        /* Set when the wall clock has jumped
+                                   (presumably due to laptop suspend) and we
+                                   need to lock down right away instead of
+                                   waiting for the lock timer to go off. */
 
 
   /* =======================================================================
@@ -184,8 +202,10 @@ struct saver_screen_info {
                                    value here overrides prefs->install_cmap_p.)
                                  */
   Visual *current_visual;	/* The visual of the window. */
-  Visual *default_visual;	/* visual to use when none other specified */
   int current_depth;		/* How deep the visual (and the window) are. */
+
+  Visual *default_visual;	/* visual to use when none other specified */
+  Visual *best_gl_visual;	/* visual to use for GL hacks */
 
   Window real_vroot;		/* The original virtual-root window. */
   Window real_vroot_value;	/* What was in the __SWM_VROOT property. */
@@ -193,6 +213,13 @@ struct saver_screen_info {
   Cursor cursor;		/* A blank cursor that goes with the
 				   real root window. */
   unsigned long black_pixel;	/* Black, allocated from `cmap'. */
+
+  int blank_vp_x, blank_vp_y;   /* Where the virtual-scrolling viewport was
+                                   when the screen went blank.  We need to
+                                   prevent the X server from letting the mouse
+                                   bump the edges to scroll while the screen
+                                   is locked, so we reset to this when it has
+                                   moved, and the lock dialog is up... */
 
 # ifdef HAVE_MIT_SAVER_EXTENSION
   Window server_mit_saver_window;
@@ -271,10 +298,14 @@ extern void initialize_screensaver_window (saver_info *si);
 extern void raise_window (saver_info *si,
 			    Bool inhibit_fade, Bool between_hacks_p,
 			    Bool dont_clear);
-extern void blank_screen (saver_info *si);
+extern Bool blank_screen (saver_info *si);
 extern void unblank_screen (saver_info *si);
-extern Bool grab_keyboard_and_mouse (saver_info *si, Window, Cursor);
-extern void ungrab_keyboard_and_mouse (saver_info *si);
+
+extern void get_screen_viewport (saver_screen_info *ssi,
+                                 int *x_ret, int *y_ret,
+                                 int *w_ret, int *h_ret,
+                                 Bool verbose_p);
+
 
 /* =======================================================================
    locking
@@ -282,17 +313,14 @@ extern void ungrab_keyboard_and_mouse (saver_info *si);
 
 #ifndef NO_LOCKING
 extern Bool unlock_p (saver_info *si);
-extern void pwent_lock_privileged_init (int argc, char **argv);
+extern Bool lock_priv_init (int argc, char **argv, Bool verbose_p);
 extern Bool lock_init (saver_preferences *p);
 extern Bool passwd_valid_p (const char *typed_passwd, Bool verbose_p);
-
-extern void make_passwd_window (saver_info *si);
-extern void draw_passwd_window (saver_info *si);
-extern void update_passwd_window (saver_info *si, const char *printed_passwd,
-				  float ratio);
-extern void destroy_passwd_window (saver_info *si);
-
 #endif /* NO_LOCKING */
+
+extern void set_locked_p (saver_info *si, Bool locked_p);
+extern int move_mouse_grab (saver_info *si, Window to, Cursor cursor);
+
 
 /* =======================================================================
    runtime privileges
@@ -315,7 +343,6 @@ extern int string_width (XFontStruct *font, char *s);
 
 extern void make_splash_dialog (saver_info *si);
 extern void handle_splash_event (saver_info *si, XEvent *e);
-extern void skull (Display *, Window, GC, GC, int, int, int, int);
 
 
 /* =======================================================================
@@ -349,6 +376,7 @@ extern void suspend_screenhack (saver_info *si, Bool suspend_p);
 extern Bool screenhack_running_p (saver_info *si);
 extern void emergency_kill_subproc (saver_info *si);
 extern Bool select_visual (saver_screen_info *ssi, const char *visual_name);
+extern void store_saver_status (saver_info *si);
 extern const char *signal_name (int signal);
 
 /* =======================================================================
@@ -360,6 +388,7 @@ extern FILE *real_stdout;
 extern void initialize_stderr (saver_info *si);
 extern void reset_stderr (saver_screen_info *ssi);
 extern void clear_stderr (saver_screen_info *ssi);
+extern void shutdown_stderr (saver_info *si);
 
 
 /* =======================================================================
@@ -376,10 +405,12 @@ extern int BadWindow_ehandler (Display *dpy, XErrorEvent *error);
 extern Bool window_exists_p (Display *dpy, Window window);
 extern char *timestring (void);
 extern Bool display_is_on_console_p (saver_info *si);
+extern Visual *get_best_gl_visual (saver_screen_info *ssi);
 
 extern Atom XA_VROOT, XA_XSETROOT_ID;
 extern Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
 extern Atom XA_SCREENSAVER_TIME;
+extern Atom XA_SCREENSAVER_STATUS, XA_LOCK, XA_BLANK;
 extern Atom XA_DEMO, XA_PREFS;
 
 #endif /* __XSCREENSAVER_H__ */

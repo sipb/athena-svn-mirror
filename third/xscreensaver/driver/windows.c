@@ -1,5 +1,5 @@
 /* windows.c --- turning the screen black; dealing with visuals, virtual roots.
- * xscreensaver, Copyright (c) 1991-1998 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1991-2001 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -41,16 +41,9 @@
 # include <X11/extensions/scrnsaver.h>
 #endif /* HAVE_MIT_SAVER_EXTENSION */
 
-
-#ifdef HAVE_XHPDISABLERESET
-# include <X11/XHPlib.h>
-
- /* Calls to XHPDisableReset and XHPEnableReset must be balanced,
-    or BadAccess errors occur.  (Ok for this to be global, since it
-    affects the whole machine, not just the current screen.) */
-  Bool hp_locked_p = False;
-
-#endif /* HAVE_XHPDISABLERESET */
+#ifdef HAVE_XF86VMODE
+# include <X11/extensions/xf86vmode.h>
+#endif /* HAVE_XF86VMODE */
 
 
 /* This file doesn't need the Xt headers, so stub these types out... */
@@ -66,25 +59,16 @@
 #include "fade.h"
 
 
-#ifdef HAVE_VT_LOCKSWITCH
-# include <fcntl.h>
-# include <sys/ioctl.h>
-# include <sys/vt.h>
-  static void lock_vt (saver_info *si, Bool lock_p);
-#endif /* HAVE_VT_LOCKSWITCH */
-
-
 extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 
 Atom XA_VROOT, XA_XSETROOT_ID;
 Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
+Atom XA_SCREENSAVER_STATUS;
 Atom XA_SCREENSAVER_TIME;
 
 
 extern saver_info *global_si_kludge;	/* I hate C so much... */
 
-
-static void store_activate_time (saver_info *si, Bool use_last_p);
 
 #define ALL_POINTER_EVENTS \
 	(ButtonPressMask | ButtonReleaseMask | EnterWindowMask | \
@@ -92,6 +76,25 @@ static void store_activate_time (saver_info *si, Bool use_last_p);
 	 Button1MotionMask | Button2MotionMask | Button3MotionMask | \
 	 Button4MotionMask | Button5MotionMask | ButtonMotionMask)
 
+
+static const char *
+grab_string(int status)
+{
+  switch (status)
+    {
+    case GrabSuccess:     return "GrabSuccess";
+    case AlreadyGrabbed:  return "AlreadyGrabbed";
+    case GrabInvalidTime: return "GrabInvalidTime";
+    case GrabNotViewable: return "GrabNotViewable";
+    case GrabFrozen:      return "GrabFrozen";
+    default:
+      {
+	static char foo[255];
+	sprintf(foo, "unknown status: %d", status);
+	return foo;
+      }
+    }
+}
 
 static int
 grab_kbd(saver_info *si, Window w)
@@ -107,34 +110,8 @@ grab_kbd(saver_info *si, Window w)
 
   if (p->verbose_p)
     fprintf(stderr, "%s: grabbing keyboard on 0x%x... %s.\n",
-	    blurb(), (unsigned long) w,
-	    (status == GrabSuccess ? "GrabSuccess" :
-	     status == AlreadyGrabbed ? "AlreadyGrabbed" :
-	     status == GrabInvalidTime ? "GrabInvalidTime" :
-	     status == GrabNotViewable ? "GrabNotViewable" :
-	     status == GrabFrozen ? "GrabFrozen" :
-	     "???"));
-
+	    blurb(), (unsigned long) w, grab_string(status));
   return status;
-}
-
-static const char *
-grab_string(int status)
-{
-  switch (status)
-    {
-    case GrabSuccess:     return "GrabSuccess";     break;
-    case AlreadyGrabbed:  return "AlreadyGrabbed";  break;
-    case GrabInvalidTime: return "GrabInvalidTime"; break;
-    case GrabNotViewable: return "GrabNotViewable"; break;
-    case GrabFrozen:      return "GrabFrozen";      break;
-    default:
-      {
-	static char foo[255];
-	sprintf(foo, "unknown status: %d", status);
-	return foo;
-      }
-    }
 }
 
 
@@ -143,7 +120,7 @@ grab_mouse (saver_info *si, Window w, Cursor cursor)
 {
   saver_preferences *p = &si->prefs;
   int status = XGrabPointer (si->dpy, w, True, ALL_POINTER_EVENTS,
-			     GrabModeAsync, GrabModeAsync, None,
+			     GrabModeAsync, GrabModeAsync, w,
 			     cursor, CurrentTime);
   if (status == GrabSuccess)
     si->mouse_grab_window = w;
@@ -179,41 +156,96 @@ ungrab_mouse(saver_info *si)
 }
 
 
-Bool
+static Bool
 grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
 {
   Status mstatus, kstatus;
-  XSync (si->dpy, False);
+  int i;
+  int retries = 4;
 
-  kstatus = grab_kbd (si, window);
-  if (kstatus != GrabSuccess)
-    {	/* try again in a second */
-      sleep (1);
+  for (i = 0; i < retries; i++)
+    {
+      XSync (si->dpy, False);
       kstatus = grab_kbd (si, window);
-      if (kstatus != GrabSuccess)
-	fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
-		 blurb(), grab_string(kstatus));
+      if (kstatus == GrabSuccess)
+        break;
+
+      /* else, wait a second and try to grab again. */
+      sleep (1);
     }
 
-  mstatus = grab_mouse (si, window, cursor);
-  if (mstatus != GrabSuccess)
-    {	/* try again in a second */
-      sleep (1);
+  if (kstatus != GrabSuccess)
+    fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
+             blurb(), grab_string(kstatus));
+
+  for (i = 0; i < retries; i++)
+    {
+      XSync (si->dpy, False);
       mstatus = grab_mouse (si, window, cursor);
-      if (mstatus != GrabSuccess)
-	fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
-		 blurb(), grab_string(mstatus));
+      if (mstatus == GrabSuccess)
+        break;
+
+      /* else, wait a second and try to grab again. */
+      sleep (1);
     }
+
+  if (mstatus != GrabSuccess)
+    fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
+             blurb(), grab_string(mstatus));
 
   return (kstatus == GrabSuccess ||
 	  mstatus == GrabSuccess);
 }
 
-void
+static void
 ungrab_keyboard_and_mouse (saver_info *si)
 {
   ungrab_mouse (si);
   ungrab_kbd (si);
+}
+
+
+int
+move_mouse_grab (saver_info *si, Window to, Cursor cursor)
+{
+  Window old = si->mouse_grab_window;
+
+  if (old == 0)
+    return grab_mouse (si, to, cursor);
+  else
+    {
+      saver_preferences *p = &si->prefs;
+      int status;
+
+      XSync (si->dpy, False);
+      XGrabServer (si->dpy);			/* ############ DANGER! */
+      XSync (si->dpy, False);
+
+      if (p->verbose_p)
+        fprintf(stderr, "%s: grabbing server...\n", blurb());
+
+      ungrab_mouse (si);
+      status = grab_mouse (si, to, cursor);
+
+      if (status != GrabSuccess)   /* Augh! */
+        {
+          sleep (1);               /* Note dramatic evil of sleeping
+                                      with server grabbed. */
+          XSync (si->dpy, False);
+          status = grab_mouse (si, to, cursor);
+        }
+
+      if (status != GrabSuccess)   /* Augh!  Try to get the old one back... */
+        grab_mouse (si, to, cursor);
+
+      XUngrabServer (si->dpy);
+      XSync (si->dpy, False);			/* ###### (danger over) */
+
+      if (p->verbose_p)
+        fprintf(stderr, "%s: ungrabbing server.\n", blurb());
+
+      return status;
+    }
 }
 
 
@@ -631,11 +663,10 @@ saver_exit (saver_info *si, int status, const char *dump_core_reason)
   
   vrs = restore_real_vroot_1 (si);
   emergency_kill_subproc (si);
+  shutdown_stderr (si);
 
-  if (vrs && (p->verbose_p || status != 0))
-    fprintf (real_stderr, "%s: vroot restored, exiting.\n", blurb());
-  else if (p->verbose_p)
-    fprintf (real_stderr, "%s: no vroot to restore; exiting.\n", blurb());
+  if (p->verbose_p && vrs)
+    fprintf (real_stderr, "%s: old vroot restored.\n", blurb());
 
   fflush(real_stdout);
 
@@ -709,7 +740,7 @@ store_saver_id (saver_screen_info *ssi)
   struct passwd *p = getpwuid (getuid ());
   const char *name, *host;
   char *id;
-  
+
   /* First store the name and class on the window.
    */
   class_hints.res_name = progname;
@@ -764,6 +795,169 @@ store_saver_id (saver_screen_info *ssi)
 }
 
 
+void
+store_saver_status (saver_info *si)
+{
+  CARD32 *status;
+  int size = si->nscreens + 2;
+  int i;
+
+  status = (CARD32 *) calloc (size, sizeof(CARD32));
+
+  status[0] = (CARD32) (si->screen_blanked_p
+                        ? (si->locked_p ? XA_LOCK : XA_BLANK)
+                        : 0);
+  status[1] = (CARD32) si->blank_time;
+
+  for (i = 0; i < si->nscreens; i++)
+    {
+      saver_screen_info *ssi = &si->screens[i];
+      status [2 + i] = ssi->current_hack + 1;
+    }
+
+  XChangeProperty (si->dpy,
+                   RootWindow (si->dpy, 0),  /* always screen #0 */
+                   XA_SCREENSAVER_STATUS,
+                   XA_INTEGER, 32, PropModeReplace,
+                   (unsigned char *) status, size);
+}
+
+
+
+/* Returns the area of the screen which the xscreensaver window should cover.
+   Normally this is the whole screen, but if the X server's root window is
+   actually larger than the monitor's displayable area, then we want to
+   operate in the currently-visible portion of the desktop instead.
+ */
+void
+get_screen_viewport (saver_screen_info *ssi,
+                     int *x_ret, int *y_ret,
+                     int *w_ret, int *h_ret,
+                     Bool verbose_p)
+{
+  int w = WidthOfScreen (ssi->screen);
+  int h = HeightOfScreen (ssi->screen);
+
+#ifdef HAVE_XF86VMODE
+  saver_info *si = ssi->global;
+  int screen_no = screen_number (ssi->screen);
+  int op, event, error;
+  int dot;
+  XF86VidModeModeLine ml;
+  int x, y;
+
+  /* Check for Xinerama first, because the VidModeExtension is broken
+     when Xinerama is present.  Wheee!
+   */
+
+  if (!XQueryExtension (si->dpy, "XINERAMA", &op, &event, &error) &&
+      XF86VidModeQueryExtension (si->dpy, &event, &error) &&
+      XF86VidModeGetModeLine (si->dpy, screen_no, &dot, &ml) &&
+      XF86VidModeGetViewPort (si->dpy, screen_no, &x, &y))
+    {
+      char msg[512];
+      *x_ret = x;
+      *y_ret = y;
+      *w_ret = ml.hdisplay;
+      *h_ret = ml.vdisplay;
+
+      if (*x_ret == 0 && *y_ret == 0 && *w_ret == w && *h_ret == h)
+        /* There is no viewport -- the screen does not scroll. */
+        return;
+
+
+      /* Apparently some versions of XFree86 return nonsense here!
+         I've had reports of 1024x768 viewports at -1936862040, -1953705044.
+         So, sanity-check the values and give up if they are out of range.
+       */
+      if (*x_ret <  0 || *x_ret >= w ||
+          *y_ret <  0 || *y_ret >= h ||
+          *w_ret <= 0 || *w_ret >  w ||
+          *h_ret <= 0 || *h_ret >  h)
+        {
+          static int warned_once = 0;
+          if (!warned_once)
+            {
+              fprintf (stderr, "\n"
+                  "%s: X SERVER BUG: %dx%d viewport at %d,%d is impossible.\n"
+                  "%s: The XVidMode server extension is returning nonsense.\n"
+                  "%s: Please report this bug to your X server vendor.\n\n",
+                       blurb(), *w_ret, *h_ret, *x_ret, *y_ret,
+                       blurb(), blurb());
+              warned_once = 1;
+            }
+          *x_ret = 0;
+          *y_ret = 0;
+          *w_ret = w;
+          *h_ret = h;
+          return;
+        }
+          
+
+      sprintf (msg, "%s: vp is %dx%d+%d+%d",
+               blurb(), *w_ret, *h_ret, *x_ret, *y_ret);
+
+
+      /* Apparently, though the server stores the X position in increments of
+         1 pixel, it will only make changes to the *display* in some other
+         increment.  With XF86_SVGA on a Thinkpad, the display only updates
+         in multiples of 8 pixels when in 8-bit mode, and in multiples of 4
+         pixels in 16-bit mode.  I don't know what it does in 24- and 32-bit
+         mode, because I don't have enough video memory to find out.
+
+         I consider it a bug that XF86VidModeGetViewPort() is telling me the
+         server's *target* scroll position rather than the server's *actual*
+         scroll position.  David Dawes agrees, and says they may fix this in
+         XFree86 4.0, but it's notrivial.
+
+         He also confirms that this behavior is server-dependent, so the
+         actual scroll position cannot be reliably determined by the client.
+         So... that means the only solution is to provide a ``sandbox''
+         around the blackout window -- we make the window be up to N pixels
+         larger than the viewport on both the left and right sides.  That
+         means some part of the outer edges of each hack might not be
+         visible, but screw it.
+
+         I'm going to guess that 16 pixels is enough, and that the Y dimension
+         doesn't have this problem.
+
+         The drawback of doing this, of course, is that some of the screenhacks
+         will still look pretty stupid -- for example, "slidescreen" will cut
+         off the left and right edges of the grid, etc.
+      */
+# define FUDGE 16
+      if (x > 0 && x < w - ml.hdisplay)  /* not at left edge or right edge */
+        {
+          /* Round X position down to next lower multiple of FUDGE.
+             Increase width by 2*FUDGE in case some server rounds up.
+           */
+          *x_ret = ((x - 1) / FUDGE) * FUDGE;
+          *w_ret += (FUDGE * 2);
+        }
+# undef FUDGE
+
+      if (*x_ret != x ||
+          *y_ret != y ||
+          *w_ret != ml.hdisplay ||
+          *h_ret != ml.vdisplay)
+        sprintf (msg + strlen(msg), "; fudged to %dx%d+%d+%d",
+                 *w_ret, *h_ret, *x_ret, *y_ret);
+
+      if (verbose_p)
+        fprintf (stderr, "%s.\n", msg);
+
+      return;
+    }
+
+#endif /* HAVE_XF86VMODE */
+
+  *x_ret = 0;
+  *y_ret = 0;
+  *w_ret = w;
+  *h_ret = h;
+}
+
+
 static void
 initialize_screensaver_window_1 (saver_screen_info *ssi)
 {
@@ -779,9 +973,11 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
   XColor black;
   XSetWindowAttributes attrs;
   unsigned long attrmask;
-  int width = WidthOfScreen (ssi->screen);
-  int height = HeightOfScreen (ssi->screen);
+  int x, y, width, height;
   static Bool printed_visual_info = False;  /* only print the message once. */
+
+  get_screen_viewport (ssi, &x, &y, &width, &height,
+                       (p->verbose_p && !si->screen_blanked_p));
 
   black.red = black.green = black.blue = 0;
 
@@ -913,8 +1109,8 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
     {
       XWindowChanges changes;
       unsigned int changesmask = CWX|CWY|CWWidth|CWHeight|CWBorderWidth;
-      changes.x = 0;
-      changes.y = 0;
+      changes.x = x;
+      changes.y = y;
       changes.width = width;
       changes.height = height;
       changes.border_width = 0;
@@ -927,18 +1123,18 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
   else
     {
       ssi->screensaver_window =
-	XCreateWindow (si->dpy, RootWindowOfScreen (ssi->screen), 0, 0,
-		       width, height, 0, ssi->current_depth, InputOutput,
+	XCreateWindow (si->dpy, RootWindowOfScreen (ssi->screen),
+                       x, y, width, height,
+                       0, ssi->current_depth, InputOutput,
 		       ssi->current_visual, attrmask, &attrs);
+
       reset_stderr (ssi);
-      store_activate_time(si, True);
       if (p->verbose_p)
 	fprintf (stderr, "%s: saver window is 0x%lx.\n",
 		 blurb(), (unsigned long) ssi->screensaver_window);
     }
 
-
-  store_saver_id (ssi);
+  store_saver_id (ssi);       /* store window name and IDs */
 
   if (!ssi->cursor)
     {
@@ -980,10 +1176,15 @@ raise_window (saver_info *si,
   if (si->demoing_p)
     inhibit_fade = True;
 
-  initialize_screensaver_window (si);
+  if (si->emergency_lock_p)
+    inhibit_fade = True;
+
+  if (!dont_clear)
+    initialize_screensaver_window (si);
+
   reset_watchdog_timer (si, True);
 
-  if (p->fade_p && p->fading_possible_p && !inhibit_fade)
+  if (p->fade_p && si->fading_possible_p && !inhibit_fade)
     {
       Window *current_windows = (Window *)
 	calloc(sizeof(Window), si->nscreens);
@@ -1070,21 +1271,33 @@ raise_window (saver_info *si,
     }
 }
 
-void
+Bool
 blank_screen (saver_info *si)
 {
   int i;
+  Bool ok;
 
   /* Note: we do our grabs on the root window, not on the screensaver window.
      If we grabbed on the saver window, then the demo mode and lock dialog
      boxes wouldn't get any events.
    */
-  grab_keyboard_and_mouse (si,
-			   /*si->screens[0].screensaver_window,*/
-			   RootWindowOfScreen(si->screens[0].screen),
-			   (si->demoing_p
-			    ? 0
-			    : si->screens[0].cursor));
+  ok = grab_keyboard_and_mouse (si,
+                                /*si->screens[0].screensaver_window,*/
+                                RootWindowOfScreen(si->screens[0].screen),
+                                (si->demoing_p
+                                 ? 0
+                                 : si->screens[0].cursor));
+
+
+  if (si->using_mit_saver_extension || si->using_sgi_saver_extension)
+    /* If we're using a server extension, then failure to get a grab is
+       not a big deal -- even without the grab, we will still be able
+       to un-blank when there is user activity, since the server will
+       tell us. */
+    ok = True;
+
+  if (!ok)
+    return False;
 
   for (i = 0; i < si->nscreens; i++)
     {
@@ -1094,36 +1307,39 @@ blank_screen (saver_info *si)
       store_vroot_property (si->dpy,
 			    ssi->screensaver_window,
 			    ssi->screensaver_window);
+
+#ifdef HAVE_XF86VMODE
+      {
+        int ev, er;
+        if (!XF86VidModeQueryExtension (si->dpy, &ev, &er) ||
+            !XF86VidModeGetViewPort (si->dpy, i,
+                                     &ssi->blank_vp_x,
+                                     &ssi->blank_vp_y))
+          ssi->blank_vp_x = ssi->blank_vp_y = -1;
+      }
+#endif /* HAVE_XF86VMODE */
     }
-  store_activate_time (si, si->screen_blanked_p);
+
   raise_window (si, False, False, False);
 
-#ifdef HAVE_XHPDISABLERESET
-  if (si->locked_p && !hp_locked_p)
-    {
-      XHPDisableReset (si->dpy);	/* turn off C-Sh-Reset */
-      hp_locked_p = True;
-    }
-#endif
-
-#ifdef HAVE_VT_LOCKSWITCH
-  if (si->locked_p)
-      lock_vt (si, True);		/* turn off C-Alt-Fn */
-#endif
-
   si->screen_blanked_p = True;
+  si->blank_time = time ((time_t) 0);
+  si->last_wall_clock_time = 0;
+
+  store_saver_status (si);  /* store blank time */
+
+  return True;
 }
+
 
 void
 unblank_screen (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
-  Bool unfade_p = (p->fading_possible_p && p->unfade_p);
+  Bool unfade_p = (si->fading_possible_p && p->unfade_p);
   int i;
 
   monitor_power_on (si);
-
-  store_activate_time (si, True);
   reset_watchdog_timer (si, False);
 
   if (si->demoing_p)
@@ -1217,22 +1433,9 @@ unblank_screen (saver_info *si)
       kill_xsetroot_data (si->dpy, ssi->screensaver_window, p->verbose_p);
     }
 
-  store_activate_time(si, False);  /* store unblank time */
-
+  store_saver_status (si);  /* store unblank time */
   ungrab_keyboard_and_mouse (si);
   restore_real_vroot (si);
-
-#ifdef HAVE_XHPDISABLERESET
-  if (hp_locked_p)
-    {
-      XHPEnableReset (si->dpy);	/* turn C-Sh-Reset back on */
-      hp_locked_p = False;
-    }
-#endif
-
-#ifdef HAVE_VT_LOCKSWITCH
-  lock_vt (si, False);		/* turn C-Alt-Fn back on */
-#endif
 
   /* Unmap the windows a second time, dammit -- just to avoid a race
      with the screen-grabbing hacks.  (I'm not sure if this is really
@@ -1242,26 +1445,10 @@ unblank_screen (saver_info *si)
     XUnmapWindow (si->dpy, si->screens[i].screensaver_window);
 
   si->screen_blanked_p = False;
-}
+  si->blank_time = time ((time_t) 0);
+  si->last_wall_clock_time = 0;
 
-
-static void
-store_activate_time (saver_info *si, Bool use_last_p)
-{
-  static time_t last_time = 0;
-  time_t now = ((use_last_p && last_time) ? last_time : time ((time_t) 0));
-  CARD32 now32 = (CARD32) now;
-  int i;
-  last_time = now;
-
-  for (i = 0; i < si->nscreens; i++)
-    {
-      saver_screen_info *ssi = &si->screens[i];
-      if (!ssi->screensaver_window) continue;
-      XChangeProperty (si->dpy, ssi->screensaver_window, XA_SCREENSAVER_TIME,
-		       XA_INTEGER, 32, PropModeReplace,
-		       (unsigned char *) &now32, 1);
-    }
+  store_saver_status (si);  /* store unblank time */
 }
 
 
@@ -1272,22 +1459,37 @@ select_visual (saver_screen_info *ssi, const char *visual_name)
   saver_preferences *p = &si->prefs;
   Bool install_cmap_p = p->install_cmap_p;
   Bool was_installed_p = (ssi->cmap != DefaultColormapOfScreen(ssi->screen));
-  Visual *new_v;
+  Visual *new_v = 0;
   Bool got_it;
 
   if (visual_name && *visual_name)
     {
-      if (!strcmp(visual_name, "default-i"))
+      if (!strcmp(visual_name, "default-i") ||
+          !strcmp(visual_name, "Default-i") ||
+          !strcmp(visual_name, "Default-I")
+          )
 	{
 	  visual_name = "default";
 	  install_cmap_p = True;
 	}
-      else if (!strcmp(visual_name, "default-n"))
+      else if (!strcmp(visual_name, "default-n") ||
+               !strcmp(visual_name, "Default-n") ||
+               !strcmp(visual_name, "Default-N"))
 	{
 	  visual_name = "default";
 	  install_cmap_p = False;
 	}
-      new_v = get_visual (ssi->screen, visual_name, True, False);
+      else if (!strcmp(visual_name, "gl") ||
+               !strcmp(visual_name, "Gl") ||
+               !strcmp(visual_name, "GL"))
+        {
+          new_v = ssi->best_gl_visual;
+          if (!new_v && p->verbose_p)
+            fprintf (stderr, "%s: no GL visuals.\n", progname);
+        }
+
+      if (!new_v)
+        new_v = get_visual (ssi->screen, visual_name, True, False);
     }
   else
     {
@@ -1337,8 +1539,6 @@ select_visual (saver_screen_info *ssi, const char *visual_name)
       raise_window (si, True, True, False);
       store_vroot_property (si->dpy,
 			    ssi->screensaver_window, ssi->screensaver_window);
-      store_activate_time (si, True);
-
 
 
       /* Transfer the grabs from the old window to the new.
@@ -1393,56 +1593,3 @@ select_visual (saver_screen_info *ssi, const char *visual_name)
 
   return got_it;
 }
-
-
-/* VT locking */
-
-#ifdef HAVE_VT_LOCKSWITCH
-static void
-lock_vt (saver_info *si, Bool lock_p)
-{
-  saver_preferences *p = &si->prefs;
-  static Bool locked_p = False;
-  const char *dev_console = "/dev/console";
-  int fd;
-
-  if (lock_p == locked_p)
-    return;
-
-  if (lock_p && !p->lock_vt_p)
-    return;
-
-  fd = open (dev_console, O_RDWR);
-  if (fd < 0)
-    {
-      char buf [255];
-      sprintf (buf, "%s: couldn't %s VTs: %s", blurb(),
-	       (lock_p ? "lock" : "unlock"),
-	       dev_console);
-#if 0 /* #### doesn't work yet, so don't bother complaining */
-      perror (buf);
-#endif
-      return;
-    }
-
-  if (ioctl (fd, (lock_p ? VT_LOCKSWITCH : VT_UNLOCKSWITCH)) == 0)
-    {
-      locked_p = lock_p;
-
-      if (p->verbose_p)
-	fprintf (stderr, "%s: %s VTs\n", blurb(),
-		 (lock_p ? "locked" : "unlocked"));
-    }
-  else
-    {
-      char buf [255];
-      sprintf (buf, "%s: couldn't %s VTs: ioctl", blurb(),
-	       (lock_p ? "lock" : "unlock"));
-#if 0 /* #### doesn't work yet, so don't bother complaining */
-      perror (buf);
-#endif
-    }
-
-  close (fd);
-}
-#endif /* HAVE_VT_LOCKSWITCH */

@@ -17,18 +17,37 @@
 # include "config.h"
 #endif
 
-#ifndef NO_LOCKING   /* whole file */
-
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 #include <X11/Intrinsic.h>
 #include <signal.h>
+#include <X11/Xos.h>		/* for time() */
 #include "xscreensaver.h"
 #include "resources.h"
+
+#ifndef NO_LOCKING              /* (mostly) whole file */
 
 #ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif /* HAVE_SYSLOG */
+
+#ifdef HAVE_XHPDISABLERESET
+# include <X11/XHPlib.h>
+  static void hp_lock_reset (saver_info *si, Bool lock_p);
+#endif /* HAVE_XHPDISABLERESET */
+
+#ifdef HAVE_VT_LOCKSWITCH
+# include <fcntl.h>
+# include <sys/ioctl.h>
+# include <sys/vt.h>
+  static void linux_lock_vt_switch (saver_info *si, Bool lock_p);
+#endif /* HAVE_VT_LOCKSWITCH */
+
+#ifdef HAVE_XF86VMODE
+# include <X11/extensions/xf86vmode.h>
+  static void xfree_lock_mode_switch (saver_info *si, Bool lock_p);
+#endif /* HAVE_XF86VMODE */
+
 
 #ifdef _VROOT_H_
 ERROR!  You must not include vroot.h in this file.
@@ -77,6 +96,7 @@ struct passwd_dialog_data {
   char *passwd_label;
   char *idle_label;
   char *logout_label;
+  char *date_label;
   char *user_string;
   char *passwd_string;
   char *idle_string;
@@ -86,6 +106,7 @@ struct passwd_dialog_data {
   XFontStruct *body_font;
   XFontStruct *label_font;
   XFontStruct *passwd_font;
+  XFontStruct *date_font;
 
   Colormap cmap;
 
@@ -93,8 +114,8 @@ struct passwd_dialog_data {
   Pixel background;
   Pixel passwd_foreground;
   Pixel passwd_background;
-  Pixel logo_foreground;
-  Pixel logo_background;
+  Pixel thermo_foreground;
+  Pixel thermo_background;
   Pixel shadow_top;
   Pixel shadow_bottom;
 
@@ -113,11 +134,21 @@ struct passwd_dialog_data {
   Dimension logout_label_x, logout_label_y;
   Dimension logout_label_width, logout_label_height;
 
+  Pixmap logo_pixmap;
+  int logo_npixels;
+  unsigned long *logo_pixels;
+
   Pixmap save_under;
 };
 
+static void draw_passwd_window (saver_info *si);
+static void update_passwd_window (saver_info *si, const char *printed_passwd,
+				  float ratio);
+static void destroy_passwd_window (saver_info *si);
+static void undo_vp_motion (saver_info *si);
 
-void
+
+static void
 make_passwd_window (saver_info *si)
 {
   struct passwd *p = getpwuid (getuid ());
@@ -185,6 +216,7 @@ make_passwd_window (saver_info *si)
                                          "Dialog.Label.Label");
   pw->logout_command = get_string_resource("logoutCommand",
                                            "LogoutCommand");
+  pw->date_label = get_string_resource ("dateFormat", "DateFormat");
 
   if (!pw->heading_label)
     pw->heading_label = strdup("ERROR: REESOURCES NOT INSTALLED CORRECTLY");
@@ -195,6 +227,7 @@ make_passwd_window (saver_info *si)
   if (!pw->idle_label) pw->idle_label = strdup("ERROR");
   if (!pw->logout_label)
     pw->logout_label = strdup("ERROR: REESOURCES NOT INSTALLED CORRECTLY");
+  if (!pw->date_label) pw->date_label = strdup("ERROR");
 
   /* Put the version number in the label. */
   {
@@ -204,7 +237,7 @@ make_passwd_window (saver_info *si)
     pw->heading_label = s;
   }
 
-  pw->user_string = (p->pw_name ? p->pw_name : "???");
+  pw->user_string = (p && p->pw_name ? p->pw_name : "???");
   pw->passwd_string = strdup("");
 
   /* Figure out the correct idle time. */
@@ -232,6 +265,11 @@ make_passwd_window (saver_info *si)
   if (!pw->passwd_font) pw->passwd_font = XLoadQueryFont (si->dpy, "fixed");
   if (f) free (f);
 
+  f = get_string_resource("passwd.dateFont", "Dialog.Font");
+  pw->date_font = XLoadQueryFont (si->dpy, (f ? f : "fixed"));
+  if (!pw->date_font) pw->date_font = XLoadQueryFont (si->dpy, "fixed");
+  if (f) free (f);
+
   pw->foreground = get_pixel_resource ("passwd.foreground",
 				       "Dialog.Foreground",
 				       si->dpy, pw->cmap);
@@ -252,12 +290,12 @@ make_passwd_window (saver_info *si)
   pw->passwd_background = get_pixel_resource ("passwd.text.background",
 					      "Dialog.Text.Background",
 					      si->dpy, pw->cmap);
-  pw->logo_foreground = get_pixel_resource ("passwd.logo.foreground",
-					    "Dialog.Logo.Foreground",
-					    si->dpy, pw->cmap);
-  pw->logo_background = get_pixel_resource ("passwd.logo.background",
-					    "Dialog.Logo.Background",
-					    si->dpy, pw->cmap);
+  pw->thermo_foreground = get_pixel_resource ("passwd.thermometer.foreground",
+					      "Dialog.Thermometer.Foreground",
+					      si->dpy, pw->cmap);
+  pw->thermo_background = get_pixel_resource ("passwd.thermometer.background",
+					      "Dialog.Thermometer.Background",
+					      si->dpy, pw->cmap);
   pw->shadow_top = get_pixel_resource ("passwd.topShadowColor",
 				       "Dialog.Foreground",
 				       si->dpy, pw->cmap);
@@ -393,13 +431,13 @@ make_passwd_window (saver_info *si)
   attrmask |= CWEventMask; attrs.event_mask = ExposureMask|KeyPressMask;
 
   {
-    Dimension w = WidthOfScreen(screen);
-    Dimension h = HeightOfScreen(screen);
+    int x, y, w, h;
+    get_screen_viewport (si->default_screen, &x, &y, &w, &h, False);
     if (si->prefs.debug_p) w /= 2;
-    pw->x = ((w + pw->width) / 2) - pw->width;
-    pw->y = ((h + pw->height) / 2) - pw->height;
-    if (pw->x < 0) pw->x = 0;
-    if (pw->y < 0) pw->y = 0;
+    pw->x = x + ((w + pw->width) / 2) - pw->width;
+    pw->y = y + ((h + pw->height) / 2) - pw->height;
+    if (pw->x < x) pw->x = x;
+    if (pw->y < y) pw->y = y;
   }
 
   pw->border_width = get_integer_resource ("passwd.borderWidth",
@@ -415,6 +453,10 @@ make_passwd_window (saver_info *si)
   XSetWindowBackground (si->dpy, si->passwd_dialog, pw->background);
   XSetWindowColormap (si->dpy, si->passwd_dialog, pw->cmap);
 
+  pw->logo_pixmap = xscreensaver_logo (si->dpy, si->passwd_dialog, pw->cmap,
+                                       pw->background, 
+                                       &pw->logo_pixels, &pw->logo_npixels,
+                                       True);
 
   /* Before mapping the window, save the bits that are underneath the
      rectangle the window will occlude.  When we lower the window, we
@@ -443,6 +485,9 @@ make_passwd_window (saver_info *si)
   XMapRaised (si->dpy, si->passwd_dialog);
   XSync (si->dpy, False);
 
+  move_mouse_grab (si, si->passwd_dialog, si->screens[0].cursor);
+  undo_vp_motion (si);
+
   si->pw_data = pw;
 
   draw_passwd_window (si);
@@ -450,7 +495,7 @@ make_passwd_window (saver_info *si)
 }
 
 
-void
+static void
 draw_passwd_window (saver_info *si)
 {
   passwd_dialog_data *pw = si->pw_data;
@@ -465,7 +510,9 @@ draw_passwd_window (saver_info *si)
 	    pw->body_font->ascent + pw->body_font->descent +
 	    (3 * MAX ((pw->label_font->ascent + pw->label_font->descent),
 		      (pw->passwd_font->ascent + pw->passwd_font->descent +
-		       (pw->shadow_width * 4)))));
+		       (pw->shadow_width * 4)))) +
+            pw->date_font->ascent + pw->date_font->descent
+            );
   if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
     height += pw->label_font->ascent + pw->label_font->descent;
   spacing = ((pw->height - (2 * pw->shadow_width) -
@@ -613,23 +660,58 @@ draw_passwd_window (saver_info *si)
 			 pw->shadow_width,
 			 pw->shadow_bottom, pw->shadow_top);
 
-  /* the logo
+  /* The date, below the text fields
    */
-  XSetForeground (si->dpy, gc1, pw->logo_foreground);
-  XSetForeground (si->dpy, gc2, pw->logo_background);
+  {
+    char buf[100];
+    time_t now = time ((time_t *) 0);
+    struct tm *tm = localtime (&now);
+    memset (buf, 0, sizeof(buf));
+    strftime (buf, sizeof(buf)-1, pw->date_label, tm);
 
+    XSetFont (si->dpy, gc1, pw->date_font->fid);
+    y1 += pw->shadow_width;
+    y1 += (spacing + tb_height);
+    y1 += spacing/2;
+    sw = string_width (pw->date_font, buf);
+    x2 = x1 + x2 - sw;
+    XDrawString (si->dpy, si->passwd_dialog, gc1, x2, y1, buf, strlen(buf));
+  }
+
+
+  /* The logo
+   */
   x1 = pw->shadow_width * 3;
   y1 = pw->shadow_width * 3;
   x2 = pw->logo_width - (pw->shadow_width * 6);
   y2 = pw->logo_height - (pw->shadow_width * 6);
 
-  XFillRectangle (si->dpy, si->passwd_dialog, gc2, x1, y1, x2, y2);
-  skull (si->dpy, si->passwd_dialog, gc1, gc2,
-	 x1 + pw->shadow_width, y1 + pw->shadow_width,
-	 x2 - (pw->shadow_width * 2), y2 - (pw->shadow_width * 2));
+  if (pw->logo_pixmap)
+    {
+      Window root;
+      int x, y;
+      unsigned int w, h, bw, d;
+      XGetGeometry (si->dpy, pw->logo_pixmap, &root, &x, &y, &w, &h, &bw, &d);
+      XSetForeground (si->dpy, gc1, pw->foreground);
+      XSetBackground (si->dpy, gc1, pw->background);
+      if (d == 1)
+        XCopyPlane (si->dpy, pw->logo_pixmap, si->passwd_dialog, gc1,
+                    0, 0, w, h,
+                    x1 + ((x2 - (int)w) / 2),
+                    y1 + ((y2 - (int)h) / 2),
+                    1);
+      else
+        XCopyArea (si->dpy, pw->logo_pixmap, si->passwd_dialog, gc1,
+                   0, 0, w, h,
+                   x1 + ((x2 - (int)w) / 2),
+                   y1 + ((y2 - (int)h) / 2));
+    }
 
   /* The thermometer
    */
+  XSetForeground (si->dpy, gc1, pw->thermo_foreground);
+  XSetForeground (si->dpy, gc2, pw->thermo_background);
+
   pw->thermo_field_x = pw->logo_width + pw->shadow_width;
   pw->thermo_field_y = pw->shadow_width * 3;
   pw->thermo_field_height = pw->height - (pw->shadow_width * 6);
@@ -679,13 +761,14 @@ draw_passwd_window (saver_info *si)
 }
 
 
-void
+static void
 update_passwd_window (saver_info *si, const char *printed_passwd, float ratio)
 {
   passwd_dialog_data *pw = si->pw_data;
   XGCValues gcv;
   GC gc1, gc2;
   int x, y;
+  XRectangle rects[1];
 
   pw->ratio = ratio;
   gcv.foreground = pw->passwd_foreground;
@@ -703,22 +786,34 @@ update_passwd_window (saver_info *si, const char *printed_passwd, float ratio)
 
   /* the "password" text field
    */
+  rects[0].x =  pw->passwd_field_x;
+  rects[0].y =  pw->passwd_field_y;
+  rects[0].width = pw->passwd_field_width;
+  rects[0].height = pw->passwd_field_height;
+
   XFillRectangle (si->dpy, si->passwd_dialog, gc2,
-		  pw->passwd_field_x, pw->passwd_field_y,
-		  pw->passwd_field_width, pw->passwd_field_height);
+                  rects[0].x, rects[0].y, rects[0].width, rects[0].height);
+
+  XSetClipRectangles (si->dpy, gc1, 0, 0, rects, 1, Unsorted);
+
   XDrawString (si->dpy, si->passwd_dialog, gc1,
-	       pw->passwd_field_x + pw->shadow_width,
-	       pw->passwd_field_y + (pw->passwd_font->ascent +
-				     pw->passwd_font->descent),
-	       pw->passwd_string, strlen(pw->passwd_string));
+               rects[0].x + pw->shadow_width,
+               rects[0].y + (pw->passwd_font->ascent +
+                             pw->passwd_font->descent),
+               pw->passwd_string, strlen(pw->passwd_string));
+
+  XSetClipMask (si->dpy, gc1, None);
 
   /* The I-beam
    */
   if (pw->i_beam != 0)
     {
-      x = (pw->passwd_field_x + pw->shadow_width +
+      x = (rects[0].x + pw->shadow_width +
 	   string_width (pw->passwd_font, pw->passwd_string));
-      y = pw->passwd_field_y + pw->shadow_width;
+      y = rects[0].y + pw->shadow_width;
+
+      if (x > rects[0].x + rects[0].width - 1)
+        x = rects[0].x + rects[0].width - 1;
       XDrawLine (si->dpy, si->passwd_dialog, gc1, 
 		 x, y, x, y + pw->passwd_font->ascent);
     }
@@ -736,7 +831,7 @@ update_passwd_window (saver_info *si, const char *printed_passwd, float ratio)
 		      pw->thermo_field_y + 1,
 		      pw->thermo_width-2,
 		      y);
-      XSetForeground (si->dpy, gc1, pw->logo_foreground);
+      XSetForeground (si->dpy, gc1, pw->thermo_foreground);
       XFillRectangle (si->dpy, si->passwd_dialog, gc1,
 		      pw->thermo_field_x + 1,
 		      pw->thermo_field_y + 1 + y,
@@ -750,7 +845,7 @@ update_passwd_window (saver_info *si, const char *printed_passwd, float ratio)
 }
 
 
-void
+static void
 destroy_passwd_window (saver_info *si)
 {
   passwd_dialog_data *pw = si->pw_data;
@@ -761,6 +856,9 @@ destroy_passwd_window (saver_info *si)
 
   if (pw->timer)
     XtRemoveTimeOut (pw->timer);
+
+  move_mouse_grab (si, RootWindowOfScreen(si->screens[0].screen),
+                   si->screens[0].cursor);
 
   if (si->passwd_dialog)
     {
@@ -807,14 +905,21 @@ destroy_passwd_window (saver_info *si)
     XFreeColors (si->dpy, pw->cmap, &pw->passwd_foreground, 1, 0L);
   if (pw->passwd_background != black && pw->passwd_background != white)
     XFreeColors (si->dpy, pw->cmap, &pw->passwd_background, 1, 0L);
-  if (pw->logo_foreground != black && pw->logo_foreground != white)
-    XFreeColors (si->dpy, pw->cmap, &pw->logo_foreground, 1, 0L);
-  if (pw->logo_background != black && pw->logo_background != white)
-    XFreeColors (si->dpy, pw->cmap, &pw->logo_background, 1, 0L);
+  if (pw->thermo_foreground != black && pw->thermo_foreground != white)
+    XFreeColors (si->dpy, pw->cmap, &pw->thermo_foreground, 1, 0L);
+  if (pw->thermo_background != black && pw->thermo_background != white)
+    XFreeColors (si->dpy, pw->cmap, &pw->thermo_background, 1, 0L);
   if (pw->shadow_top != black && pw->shadow_top != white)
     XFreeColors (si->dpy, pw->cmap, &pw->shadow_top, 1, 0L);
   if (pw->shadow_bottom != black && pw->shadow_bottom != white)
     XFreeColors (si->dpy, pw->cmap, &pw->shadow_bottom, 1, 0L);
+
+  if (pw->logo_pixmap)
+    XFreePixmap (si->dpy, pw->logo_pixmap);
+  if (pw->logo_npixels && pw->logo_pixels)
+    XFreeColors (si->dpy, pw->cmap, pw->logo_pixels, pw->logo_npixels, 0L);
+  if (pw->logo_pixels)
+    free (pw->logo_pixels);
 
   XFreeColormap(si->dpy, pw->cmap);
 
@@ -823,6 +928,200 @@ destroy_passwd_window (saver_info *si)
 
   si->pw_data = 0;
 }
+
+
+#ifdef HAVE_XHPDISABLERESET
+/* This function enables and disables the C-Sh-Reset hot-key, which
+   normally resets the X server (logging out the logged-in user.)
+   We don't want random people to be able to do that while the
+   screen is locked.
+ */
+static void
+hp_lock_reset (saver_info *si, Bool lock_p)
+{
+  static Bool hp_locked_p = False;
+
+  /* Calls to XHPDisableReset and XHPEnableReset must be balanced,
+     or BadAccess errors occur.  (It's ok for this to be global,
+     since it affects the whole machine, not just the current screen.)
+  */
+  if (hp_locked_p == lock_p)
+    return;
+
+  if (lock_p)
+    XHPDisableReset (si->dpy);
+  else
+    XHPEnableReset (si->dpy);
+  hp_locked_p = lock_p;
+}
+#endif /* HAVE_XHPDISABLERESET */
+
+
+
+/* This function enables and disables the C-Sh-F1 ... F12 hot-keys,
+   which, on Linux systems, switches to another virtual console.
+   We'd like the whole screen/keyboard to be locked, not just one
+   virtual console, so this function disables that while the X
+   screen is locked.
+
+   Unfortunately, this doesn't work -- this ioctl only works when
+   called by root, and we have disavowed our privileges long ago.
+ */
+#ifdef HAVE_VT_LOCKSWITCH
+static void
+linux_lock_vt_switch (saver_info *si, Bool lock_p)
+{
+  saver_preferences *p = &si->prefs;
+  static Bool vt_locked_p = False;
+  const char *dev_console = "/dev/console";
+  int fd;
+
+  if (lock_p == vt_locked_p)
+    return;
+
+  if (lock_p && !p->lock_vt_p)
+    return;
+
+  fd = open (dev_console, O_RDWR);
+  if (fd < 0)
+    {
+      char buf [255];
+      sprintf (buf, "%s: couldn't %s VTs: %s", blurb(),
+	       (lock_p ? "lock" : "unlock"),
+	       dev_console);
+#if 1 /* #### doesn't work yet, so don't bother complaining */
+      perror (buf);
+#endif
+      return;
+    }
+
+  if (ioctl (fd, (lock_p ? VT_LOCKSWITCH : VT_UNLOCKSWITCH)) == 0)
+    {
+      vt_locked_p = lock_p;
+
+      if (p->verbose_p)
+	fprintf (stderr, "%s: %s VTs\n", blurb(),
+		 (lock_p ? "locked" : "unlocked"));
+    }
+  else
+    {
+      char buf [255];
+      sprintf (buf, "%s: couldn't %s VTs: ioctl", blurb(),
+	       (lock_p ? "lock" : "unlock"));
+#if 0 /* #### doesn't work yet, so don't bother complaining */
+      perror (buf);
+#endif
+    }
+
+  close (fd);
+}
+#endif /* HAVE_VT_LOCKSWITCH */
+
+
+/* This function enables and disables the C-Alt-Plus and C-Alt-Minus
+   hot-keys, which normally change the resolution of the X server.
+   We don't want people to be able to switch the server resolution
+   while the screen is locked, because if they switch to a higher
+   resolution, it could cause part of the underlying desktop to become
+   exposed.
+ */
+#ifdef HAVE_XF86VMODE
+
+static int ignore_all_errors_ehandler (Display *dpy, XErrorEvent *error);
+static Bool vp_got_error = False;
+
+static void
+xfree_lock_mode_switch (saver_info *si, Bool lock_p)
+{
+  static Bool mode_locked_p = False;
+  saver_preferences *p = &si->prefs;
+  int screen = 0;  /* always screen 0 */
+  int event, error;
+  Bool status;
+  XErrorHandler old_handler;
+
+  if (mode_locked_p == lock_p)
+    return;
+  if (!XF86VidModeQueryExtension (si->dpy, &event, &error))
+    return;
+
+  XSync (si->dpy, False);
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+  status = XF86VidModeLockModeSwitch (si->dpy, screen, lock_p);
+  XSync (si->dpy, False);
+  XSetErrorHandler (old_handler);
+  if (vp_got_error) status = False;
+
+  if (status)
+    mode_locked_p = lock_p;
+
+  if (!status && (p->verbose_p || !lock_p))
+    /* Only print this when verbose, or when we locked but can't unlock.
+       I tried printing this message whenever it comes up, but
+       mode-locking always fails if DontZoom is set in XF86Config. */
+    fprintf (stderr, "%s: unable to %s mode switching!\n",
+             blurb(), (lock_p ? "lock" : "unlock"));
+  else if (p->verbose_p)
+    fprintf (stderr, "%s: %s mode switching.\n",
+             blurb(), (lock_p ? "locked" : "unlocked"));
+}
+
+static int
+ignore_all_errors_ehandler (Display *dpy, XErrorEvent *error)
+{
+  vp_got_error = True;
+  return 0;
+}
+
+#endif /* HAVE_XF86VMODE */
+
+
+/* If the viewport has been scrolled since the screen was blanked,
+   then scroll it back to where it belongs.  This function only exists
+   to patch over a very brief race condition.
+ */
+static void
+undo_vp_motion (saver_info *si)
+{
+#ifdef HAVE_XF86VMODE
+  saver_preferences *p = &si->prefs;
+  int screen = 0;  /* always screen 0 */
+  saver_screen_info *ssi = &si->screens[screen];
+  int event, error, x, y;
+  Bool status;
+
+  if (ssi->blank_vp_x == -1 && ssi->blank_vp_y == -1)
+    return;
+  if (!XF86VidModeQueryExtension (si->dpy, &event, &error))
+    return;
+  if (!XF86VidModeGetViewPort (si->dpy, 0, &x, &y))
+    return;
+  if (ssi->blank_vp_x == x && ssi->blank_vp_y == y)
+    return;
+    
+  /* We're going to move the viewport.  The mouse has just been grabbed on
+     (and constrained to, thus warped to) the password window, so it is no
+     longer near the edge of the screen.  However, wait a bit anyway, just
+     to make sure the server drains its last motion event, so that the
+     screen doesn't continue to scroll after we've reset the viewport.
+   */
+  XSync (si->dpy, False);
+  usleep (250000);  /* 1/4 second */
+  XSync (si->dpy, False);
+
+  status = XF86VidModeSetViewPort (si->dpy, screen,
+                                   ssi->blank_vp_x, ssi->blank_vp_y);
+
+  if (!status)
+    fprintf (stderr, "%s: unable to move vp from (%d,%d) back to (%d,%d)!\n",
+             blurb(), x, y, ssi->blank_vp_x, ssi->blank_vp_y);
+  else if (p->verbose_p)
+    fprintf (stderr, "%s: vp moved to (%d,%d); moved it back to (%d,%d).\n",
+             blurb(), x, y, ssi->blank_vp_x, ssi->blank_vp_y);
+
+#endif /* HAVE_XF86VMODE */
+}
+
 
 
 /* Interactions
@@ -857,6 +1156,8 @@ passwd_animate_timer (XtPointer closure, XtIntervalId *id)
 }
 
 
+static XComposeStatus *compose_status;
+
 static void
 handle_passwd_key (saver_info *si, XKeyEvent *event)
 {
@@ -867,7 +1168,7 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
   char s[2];
   char *stars = 0;
   int i;
-  int size = XLookupString (event, s, 1, 0, 0);
+  int size = XLookupString (event, s, 1, 0, compose_status);
 
   if (size != 1) return;
 
@@ -1095,6 +1396,30 @@ passwd_event_loop (saver_info *si)
 }
 
 
+static void
+handle_typeahead (saver_info *si)
+{
+  passwd_dialog_data *pw = si->pw_data;
+  int i;
+  if (!si->unlock_typeahead)
+    return;
+
+  i = strlen (si->unlock_typeahead);
+  if (i >= sizeof(pw->typed_passwd) - 1)
+    i = sizeof(pw->typed_passwd) - 1;
+
+  memcpy (pw->typed_passwd, si->unlock_typeahead, i);
+  pw->typed_passwd [i] = 0;
+
+  memset (si->unlock_typeahead, '*', strlen(si->unlock_typeahead));
+  si->unlock_typeahead[i] = 0;
+  update_passwd_window (si, si->unlock_typeahead, pw->ratio);
+
+  free (si->unlock_typeahead);
+  si->unlock_typeahead = 0;
+}
+
+
 Bool
 unlock_p (saver_info *si)
 {
@@ -1103,6 +1428,8 @@ unlock_p (saver_info *si)
   Screen *screen = si->default_screen->screen;
   Colormap cmap = DefaultColormapOfScreen (screen);
   Bool status;
+
+  raise_window (si, True, True, True);
 
   if (p->verbose_p)
     fprintf (stderr, "%s: prompting for password.\n", blurb());
@@ -1114,10 +1441,16 @@ unlock_p (saver_info *si)
   pw = si->pw_data;
   if (pw->cmap) XInstallColormap (si->dpy, pw->cmap);
 
+  compose_status = calloc (1, sizeof (*compose_status));
+
+  handle_typeahead (si);
   passwd_event_loop (si);
 
   status = (si->pw_data->state == pw_ok);
   destroy_passwd_window (si);
+
+  free (compose_status);
+  compose_status = 0;
 
   cmap = si->default_screen->cmap;
   if (cmap) XInstallColormap (si->dpy, cmap);
@@ -1125,4 +1458,32 @@ unlock_p (saver_info *si)
   return status;
 }
 
-#endif /* !NO_LOCKING -- whole file */
+
+void
+set_locked_p (saver_info *si, Bool locked_p)
+{
+  si->locked_p = locked_p;
+
+#ifdef HAVE_XHPDISABLERESET
+  hp_lock_reset (si, locked_p);                 /* turn off/on C-Sh-Reset */
+#endif
+#ifdef HAVE_VT_LOCKSWITCH
+  linux_lock_vt_switch (si, locked_p);          /* turn off/on C-Alt-F1 */
+#endif
+#ifdef HAVE_XF86VMODE
+  xfree_lock_mode_switch (si, locked_p);        /* turn off/on C-Alt-Plus */
+#endif
+
+  store_saver_status (si);			/* store locked-p */
+}
+
+
+#else  /*  NO_LOCKING -- whole file */
+
+void
+set_locked_p (saver_info *si, Bool locked_p)
+{
+  if (locked_p) abort();
+}
+
+#endif /* !NO_LOCKING */

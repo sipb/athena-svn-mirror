@@ -14,8 +14,6 @@
 # include "config.h"
 #endif
 
-#ifndef NO_SETUID /* whole file */
-
 #include <X11/Xlib.h>		/* not used for much... */
 
 /* This file doesn't need the Xt headers, so stub these types out... */
@@ -34,7 +32,6 @@
 
 #include <pwd.h>		/* for getpwnam() and struct passwd */
 #include <grp.h>		/* for getgrgid() and struct group */
-
 
 static const char *
 uid_gid_string (uid_t uid, gid_t gid)
@@ -82,11 +79,8 @@ set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
 {
   int uid_errno = 0;
   int gid_errno = 0;
-  struct passwd *p;
-  struct group *g;
-
-  p = getpwuid (uid);
-  g = getgrgid (gid);
+  struct passwd *p = getpwuid (uid);
+  struct group  *g = getgrgid (gid);
 
   if (message_ret)
     *message_ret = 0;
@@ -96,7 +90,8 @@ set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
      -1, then that would be Really Bad.  Rumor further has it that such
      systems really ought to be using -2 for "nobody", since that works.
      So, if we get a uid (or gid, for good measure) of -1, switch to -2
-     instead.
+     instead.  Note that this must be done after we've looked up the
+     user/group names with getpwuid(-1) and/or getgrgid(-1).
    */
   if (gid == (gid_t) -1) gid = (gid_t) -2;
   if (uid == (uid_t) -1) uid = (uid_t) -2;
@@ -113,7 +108,8 @@ set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
     {
       static char buf [1024];
       sprintf (buf, "changed uid/gid to %s/%s (%ld/%ld).",
-	       (p ? p->pw_name : "???"), (g ? g->gr_name : "???"),
+	       (p && p->pw_name ? p->pw_name : "???"),
+               (g && g->gr_name ? g->gr_name : "???"),
 	       (long) uid, (long) gid);
       if (message_ret)
 	*message_ret = buf;
@@ -126,7 +122,7 @@ set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
 	{
 	  sprintf (buf, "%s: couldn't set gid to %s (%ld)",
 		   blurb(),
-		   (g ? g->gr_name : "???"),
+		   (g && g->gr_name ? g->gr_name : "???"),
 		   (long) gid);
 	  if (gid_errno == -1)
 	    fprintf(stderr, "%s: unknown error\n", buf);
@@ -138,7 +134,7 @@ set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
 	{
 	  sprintf (buf, "%s: couldn't set uid to %s (%ld)",
 		   blurb(),
-		   (p ? p->pw_name : "???"),
+		   (p && p->pw_name ? p->pw_name : "???"),
 		   (long) uid);
 	  if (uid_errno == -1)
 	    fprintf(stderr, "%s: unknown error\n", buf);
@@ -276,10 +272,3 @@ hack_uid (saver_info *si)
       }
   }
 }
-
-#else  /* !NO_SETUID */
-
-void hack_uid (saver_info *si) { }
-void describe_uids (saver_info *si, FILE *out) { }
-
-#endif /* NO_SETUID */

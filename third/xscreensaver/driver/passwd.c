@@ -35,8 +35,10 @@ extern char *blurb(void);
 struct auth_methods {
   const char *name;
   Bool (*init) (saver_preferences *p);
+  Bool (*priv_init) (int argc, char **argv, Bool verbose_p);
   Bool (*valid_p) (const char *typed_passwd, Bool verbose_p);
   Bool initted_p;
+  Bool priv_initted_p;
 };
 
 
@@ -47,10 +49,11 @@ extern Bool kerberos_lock_init (saver_preferences *p);
 extern Bool kerberos_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif
 #ifdef HAVE_PAM
-extern Bool pam_lock_init (saver_preferences *p);
+extern Bool pam_priv_init (int argc, char **argv, Bool verbose_p);
 extern Bool pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif
 extern Bool pwent_lock_init (saver_preferences *p);
+extern Bool pwent_priv_init (int argc, char **argv, Bool verbose_p);
 extern Bool pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 
 
@@ -60,15 +63,42 @@ extern Bool pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
    (It's all in the same file since the APIs are randomly nearly-identical.)
  */
 struct auth_methods methods[] = {
-  { "explicit", explicit_lock_init,	explicit_passwd_valid_p, False },
+  { "explicit",		explicit_lock_init, 0, explicit_passwd_valid_p,
+			False },
 # ifdef HAVE_KERBEROS
-  { "Kerberos",	kerberos_lock_init,	kerberos_passwd_valid_p, False },
+  { "Kerberos",         kerberos_lock_init, 0, kerberos_passwd_valid_p,
+                        False, False },
 # endif
 # ifdef HAVE_PAM
-  { "PAM",	pam_lock_init,		pam_passwd_valid_p,	 False },
+  { "PAM",              0, pam_priv_init, pam_passwd_valid_p, 
+                        False, False },
 # endif
-  { "normal",	pwent_lock_init,	pwent_passwd_valid_p,	 False }
+  { "normal",           pwent_lock_init, pwent_priv_init, pwent_passwd_valid_p,
+                        False, False }
 };
+
+
+Bool
+lock_priv_init (int argc, char **argv, Bool verbose_p)
+{
+  int i;
+  Bool any_ok = False;
+  for (i = 0; i < countof(methods); i++)
+    {
+      if (!methods[i].priv_init)
+        methods[i].priv_initted_p = True;
+      else
+        methods[i].priv_initted_p = methods[i].priv_init (argc, argv,
+                                                          verbose_p);
+
+      if (methods[i].priv_initted_p)
+        any_ok = True;
+      else if (verbose_p)
+        fprintf (stderr, "%s: initialization of %s passwords failed.\n",
+                 blurb(), methods[i].name);
+    }
+  return any_ok;
+}
 
 
 Bool
@@ -78,24 +108,20 @@ lock_init (saver_preferences *p)
   Bool any_ok = False;
   for (i = 0; i < countof(methods); i++)
     {
-      methods[i].initted_p = methods[i].init (p);
+      if (!methods[i].priv_initted_p)	/* Bail if lock_priv_init failed. */
+        continue;
+
+      if (!methods[i].init)
+        methods[i].initted_p = True;
+      else
+        methods[i].initted_p = methods[i].init (p);
+
       if (methods[i].initted_p)
         any_ok = True;
       else if (p->verbose_p)
         fprintf (stderr, "%s: initialization of %s passwords failed.\n",
                  blurb(), methods[i].name);
     }
-
-  if (!any_ok)
-    {
-      fprintf (stderr, "%s: couldn't get any password.\n", blurb());
-
-      if (p->start_locked_p)
-	exit(1);
-      else
-	fprintf (stderr, "%s: locking will be disabled.\n", blurb());
-    }
-
   return any_ok;
 }
 
@@ -114,7 +140,7 @@ passwd_valid_p (const char *typed_passwd, Bool verbose_p)
              an earlier authentication method fails and a later one succeeds,
              something screwy is probably going on.)
            */
-          if (verbose_p)
+          if (verbose_p && i > 0)
             {
               for (j = 0; j < i; j++)
                 if (methods[j].initted_p)
