@@ -74,7 +74,7 @@ short	RA;		/* Restricted host access */
 #endif /* LACL */
 
 char	line[BUFSIZ];
-char	pbuf[BUFSIZ/2];	/* buffer for printcap strings */
+char	pbuf[BUFSIZ * 16];	/* buffer for printcap strings */
 char	*bp = pbuf;	/* pointer into pbuf for pgetent() */
 char	*name;		/* program name */
 char	*printer;	/* printer name */
