@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.13 1997-10-18 01:07:03 ghudson Exp $
+ * $Id: afs.c,v 1.14 1997-11-18 00:48:32 ghudson Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.13 1997-10-18 01:07:03 ghudson Exp $";
+static char *rcsid = "$Id: afs.c,v 1.14 1997-11-18 00:48:32 ghudson Exp $";
 
 #include "attach.h"
 
@@ -63,7 +63,7 @@ afs_attach(at, mopt, errorout)
 	
 	if (debug_flag)
 		printf("lstating %s...\n", at->hostdir);
-	seteuid(owner_uid);
+	seteuid(real_uid);
 	if (stat(at->hostdir, &statbuf)) {
 		if (errno == ENOENT)
 			fprintf(stderr, "%s: %s does not exist\n",
