@@ -4,7 +4,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.11 1996-09-20 04:29:53 ghudson Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.12 1996-09-23 01:54:16 ghudson Exp $";
 #endif /* lint */
 
 /*
@@ -84,8 +84,8 @@ char *canon;
     char *dot, *atsign, *end;
     int len;
 
-    dot = index(principal, INST_SEP);
-    atsign = index(principal, REALM_SEP);
+    dot = strchr(principal, INST_SEP);
+    atsign = strchr(principal, REALM_SEP);
 
     /* Maybe we're done already */
     if(dot != NULL && atsign != NULL) {
@@ -480,12 +480,8 @@ char *principal;
     if(acl_exact_match(acl, canon)) return(1);
 
     /* Try the wildcards */
-    realm = index(canon, REALM_SEP);
-#ifndef SOLARIS
-    *index(canon, INST_SEP) = '\0';	/* Chuck the instance */
-#else
+    realm = strchr(canon, REALM_SEP);
     *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
-#endif /* SOLARIS */
 
     sprintf(buf, "%s.*%s", canon, realm);
     if(acl_exact_match(acl, buf)) return(1);
