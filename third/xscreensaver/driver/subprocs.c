@@ -65,6 +65,8 @@ extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 #define XtPointer    void*
 #define Widget       void*
 
+#define NONEXISTENT_SCREENHACK 0x78    /* Hopefully nothing else uses this. */
+
 #include "xscreensaver.h"
 #include "yarandom.h"
 #include "visual.h"    /* for id_to_visual() */
@@ -125,6 +127,13 @@ exec_simple_command (const char *command)
 
   {
     char buf [512];
+
+    /* If the user has a .xscreensaver with screenhacks that are gone, we
+     * don't want to blab about it.
+     */
+    if (errno == ENOENT)
+      exit(NONEXISTENT_SCREENHACK); /* Note this only exits a child fork. */
+
     sprintf (buf, "%s: could not execute \"%s\"", blurb(), av[0]);
     perror (buf);
 
@@ -651,20 +660,32 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
       /* Treat exit code as a signed 8-bit quantity. */
       if (exit_status & 0x80) exit_status |= ~0xFF;
 
+      if (exit_status == NONEXISTENT_SCREENHACK)
+	{
+	  sleep(1); /* Don't eat the cpu if none of the screenhacks exist. */
+	  spawn_screenhack(si, False); /* Try another one right away. */
+	}
+
       /* One might assume that exiting with non-0 means something went wrong.
 	 But that loser xswarm exits with the code that it was killed with, so
 	 it *always* exits abnormally.  Treat abnormal exits as "normal" (don't
 	 mention them) if we've just killed the subprocess.  But mention them
 	 if they happen on their own.
        */
-      if (exit_status != 0 &&
+      if (exit_status != 0 && exit_status != NONEXISTENT_SCREENHACK &&
 	  (!job || (p->verbose_p || job->status != job_killed)))
 	fprintf (stderr,
 		 "%s: child pid %lu (%s) exited abnormally (code %d).\n",
 		 blurb(), (unsigned long) kid, name, exit_status);
       else if (p->verbose_p)
-	fprintf (stderr, "%s: child pid %lu (%s) exited normally.\n",
-		 blurb(), (unsigned long) kid, name);
+        {
+	  if (exit_status == NONEXISTENT_SCREENHACK)
+	    fprintf (stderr, "%s: child pid %lu (%s) was a nonexistent hack.\n",
+		     blurb(), (unsigned long) kid, name);
+	  else
+	    fprintf (stderr, "%s: child pid %lu (%s) exited normally.\n",
+		     blurb(), (unsigned long) kid, name);
+	}
 
       if (job)
 	job->status = job_dead;
