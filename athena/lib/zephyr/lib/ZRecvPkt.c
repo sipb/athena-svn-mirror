@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.1 1987-06-10 12:35:29 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.2 1987-06-12 16:59:18 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -45,15 +45,7 @@ Code_t ZReceivePacket(buffer,buffer_len,ret_len)
 	
 	bcopy(__Q_Head->packet,buffer,*ret_len);
 
-	__Q_Length--;
-
-	old_head = __Q_Head;
-	if (__Q_Length)
-		__Q_Head = __Q_Head->next;
-	else
-		__Q_Head = __Q_Tail = NULL;
-	
-	free (old_head);
+	Z_RemQueue(__Q_Head);
 
 	return (retval);
 }

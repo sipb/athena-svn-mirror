@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.1 1987-06-10 12:35:38 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendNot.c,v 1.2 1987-06-12 16:59:23 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -29,7 +29,7 @@ Code_t ZSendNotice(notice)
 
 	len = BUFSIZ;
 
-	if ((retval = ZFormatNotice(notice,buffer,sizeof buffer,&len)) < 0) {
+	if ((retval = ZFormatNotice(notice,buffer,BUFSIZ,&len)) < 0) {
 		free(buffer);
 		return (retval);
 	}

@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.1 1987-06-10 12:35:43 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.2 1987-06-12 16:59:27 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -37,8 +37,6 @@ Code_t ZSendPacket(packet,len)
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(__HM_port);
 	bcopy(__HM_addr,&sin.sin_addr,__HM_length);
-
-	printf("Internal: Sending to port %d\n",__HM_port);
 
 	if (sendto(ZGetFD(),packet,len,0,&sin,sizeof(sin)) < 0)
 		return (ZERR_UNIX);
