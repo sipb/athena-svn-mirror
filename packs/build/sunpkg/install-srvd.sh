@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.3 2004-04-12 02:45:38 rbasch Exp $
+# $Id: install-srvd.sh,v 1.4 2004-04-23 13:49:19 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -189,7 +189,7 @@ if [ -n "$oldver" -a "$init_dest" = true ]; then
     "$newver" "$oldver" || exit 1
 fi
 
-# Create the .order-version and .rvdinfo files.
+# Create the .order-version, stats, and .rvdinfo files.
 if [ -z "$maybe" ]; then
   tmporder=/tmp/order$$
   rm -rf $tmporder
@@ -203,6 +203,13 @@ if [ -z "$maybe" ]; then
   done
   cp $tmporder "$pkgdest/.order-version"
   rm -f $tmporder
+
+  # Generate a new stats file.
+  echo "Generating the stats file ..."
+  rm -f "$pkgdest/.stats"
+  pkgs=`awk '{ print $1; }' "$pkgdest/.order-version"`
+  perl $source/packs/build/sunpkg/gen-stats.pl -d "$pkgdest" $pkgs \
+    > "$pkgdest/.stats" || exit 1
 
   # Create .rvdinfo.
   rm -f "$srvd/.rvdinfo"
