@@ -24,7 +24,7 @@ OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
 
 build_program(attach,$(OBJS),,$(LIBS))
 install_program(attach,-m 4755 -o root -s,$(ATHRBINDIR))
-install_program(attach.unstripped,-m 4755 -o root,$(ATHRBINDIR))
+install_program(attach,-m 4755 -o root,$(ATHRBINDIR)/attach.unstripped)
 
 install_man(add.1,add.1)
 install_man(attach.1,attach.1)
