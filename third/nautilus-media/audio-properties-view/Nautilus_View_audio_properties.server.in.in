@@ -6,7 +6,6 @@
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>
-		<item value="IDL:Nautilus/View:1.0"/>
 	</oaf_attribute>
 	<oaf_attribute name="name" type="string" 
                        _value="Nautilus Audio Properties view"/>
@@ -14,11 +13,19 @@
                        _value="Audio Properties content view component"/>
 	<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
 		<item value="audio/x-mp3"/>
+		<item value="audio/mp3"/>
+		<item value="audio/mpeg"/>
+		<item value="audio/x-id3"/>
+		<item value="application/x-id3"/>
 		<item value="audio/wav"/>
+		<item value="audio/-xwav"/>
 		<item value="application/x-ogg"/>
+		<item value="application/ogg"/>
+		<item value="audio/x-mod"/>
+		<item value="audio/x-s3m"/>
+		<item value="audio/x-xm"/>
+		<item value="audio/x-it"/>
 	</oaf_attribute>
-	<oaf_attribute name="nautilus:view_as_name" type="string" 
-                       _value="Audio"/>
 	<oaf_attribute name="nautilus:property_page_name" type="string" 
                        _value="Audio"/>
 </oaf_server>

@@ -3,14 +3,11 @@
 # and change the G_LOG_DOMAIN.
 
 INCLUDES =						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
+	$(DEPRECATE)					\
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"		\
 	-DDATADIR=\"$(datadir)\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(NAUTILUS_CFLAGS)
 
 libexec_PROGRAMS = nautilus-test-view

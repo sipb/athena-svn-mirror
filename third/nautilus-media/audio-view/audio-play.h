@@ -31,6 +31,7 @@
 #ifndef AUDIO_PLAY_H
 #define AUDIO_PLAY_H
 
+//#define DEBUG
 #ifdef DEBUG
 #define NM_DEBUG( ...) g_print (  __VA_ARGS__ )
 #else

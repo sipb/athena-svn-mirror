@@ -34,7 +34,7 @@ static void
 quit (GtkWidget *widget, GdkEvent *event, AudioView *av)
 {
 	g_print ("DEBUG: gnome-test: quit: audio_view %p\n", av);
-	g_print ("DEBUG: running audio_view_dispose\n", av);
+	g_print ("DEBUG: running audio_view_dispose\n");
 	audio_view_dispose (av);
 	g_print ("DEBUG: finalized view\n");
 	gtk_main_quit ();

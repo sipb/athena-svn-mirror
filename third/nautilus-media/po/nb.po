@@ -1,0 +1,372 @@
+# Norwegian messages for nautilus-media.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# This file is distributed under the same license as the nautilus-media
+# package.
+# Christian Schaller <Uraeus@gnome.org>, 2002.
+# Kjartan Maraas <kmaraas@gnome.org, 2002-2004.
+#
+# $Id: nb.po,v 1.1.1.1 2004-10-06 18:40:54 ghudson Exp $
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-media\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-02-15 17:46+0100\n"
+"Last-Translator: Christian Schaller <uraeus@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"øLanguage-Team: Norwegian <no@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
+#: audio-view/Nautilus_View_audio.server.in.in.h:1
+msgid "Audio"
+msgstr "Lyd"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:2
+msgid "Audio Properties content view component"
+msgstr "Inneholdsviser komponent för lydegenskaper"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:3
+msgid "Nautilus Audio Properties view"
+msgstr "Nautilus lyd egenskaper viser"
+
+#: audio-properties-view/audio-properties-view.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: audio-properties-view/audio-properties-view.glade.h:2
+msgid "<span weight=\"bold\">Album:</span>"
+msgstr "<span weight=\"bold\">Album:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:3
+msgid "<span weight=\"bold\">Artist:</span>"
+msgstr "<span weight=\"bold\">Artist:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:4
+msgid "<span weight=\"bold\">Bit rate:</span>"
+msgstr "<span weight=\"bold\">Bithastighet:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:5
+msgid "<span weight=\"bold\">Comments:</span>"
+msgstr "<span weight=\"bold\">Kommentarer:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:6
+msgid "<span weight=\"bold\">Format:</span>"
+msgstr "<span weight=\"bold\">Format:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:7
+msgid "<span weight=\"bold\">Length:</span>"
+msgstr "<span weight=\"bold\">Lengde:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:8
+msgid "<span weight=\"bold\">Title:</span>"
+msgstr "<span weight=\"bold\">Titel:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:9
+msgid "<span weight=\"bold\">Track:</span>"
+msgstr "<span weight=\"bold\">Spor:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:10
+msgid "<span weight=\"bold\">_Artist:</span>"
+msgstr "<span weight=\"bold\">_Artist:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:11
+msgid "Audio Properties"
+msgstr "Lydegenskaper"
+
+#: audio-properties-view/nautilus-audio-properties-view.c:284
+msgid "loading..."
+msgstr "laster in..."
+
+#: audio-properties-view/nautilus-audio-properties-view.c:297
+msgid "URI currently displayed"
+msgstr "URI som vises for nå"
+
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
+msgid "None"
+msgstr "Ingen"
+
+#: audio-properties-view/audio-properties-view.c:170
+msgid "mono"
+msgstr "mono"
+
+#: audio-properties-view/audio-properties-view.c:171
+msgid "stereo"
+msgstr "stereo"
+
+#: audio-properties-view/audio-properties-view.c:172
+msgid "unknown"
+msgstr "ukjent"
+
+#: audio-properties-view/audio-properties-view.c:173
+#, c-format
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d kanal"
+msgstr[1] "%d kanaler"
+
+#: audio-properties-view/audio-properties-view.c:185
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minutt"
+msgstr[1] "%d minutter"
+
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%02d.%03d sekund"
+msgstr[1] "%02d.%03d sekunder"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:2
+msgid "Audio Viewer"
+msgstr "Lydviser"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:3
+msgid "Audio view component"
+msgstr "Lydvisningskomponent"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:4
+msgid "Audio view component's factory"
+msgstr "Fabrikk for lydvisningskomponent"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:5
+msgid "Audio view factory"
+msgstr "Fabrikk for lydvisning"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:6
+msgid "Nautilus Audio view"
+msgstr "Lydviser for Nautilus"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:7
+msgid "View as Audio"
+msgstr "Vis som lyd"
+
+#: audio-view/audio-view.c:286
+msgid "Ogg/Vorbis"
+msgstr "Ogg/Vorbis"
+
+#: audio-view/audio-view.c:289
+msgid "FLAC"
+msgstr "FLAC"
+
+#: audio-view/audio-view.c:295
+msgid "MPEG"
+msgstr "MPEG"
+
+#: audio-view/audio-view.c:297
+msgid "WAVE"
+msgstr "WAVE"
+
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
+msgid "Amiga mod"
+msgstr "Amiga mod"
+
+#: audio-view/audio-view.c:309
+msgid "Apple AIFF"
+msgstr "Apple AIFF"
+
+#: audio-view/audio-view.c:311
+msgid "MIDI"
+msgstr "MIDI"
+
+#: audio-view/audio-view.c:313
+msgid "ulaw audio"
+msgstr "ulaw-lyd"
+
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
+msgid "Artist: "
+msgstr "Artist: "
+
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
+msgid "Title: "
+msgstr "Tittel: "
+
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "Velg noe først!"
+
+#: audio-view/audio-view.c:465
+msgid "<span size=\"larger\">Unknown</span>"
+msgstr "<span size=\"larger\">Ukjent</span>"
+
+#: audio-view/audio-view.c:508
+msgid "ERROR: no information yet"
+msgstr "FEIL: ingen informasjon ennå"
+
+#. FIXME: handleme
+#: audio-view/audio-view.c:550
+#, c-format
+msgid "ERROR: %s"
+msgstr "FEIL: %s"
+
+#. status update
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
+#, c-format
+msgid "Playing %s"
+msgstr "Spiller %s"
+
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
+msgid "Stopped."
+msgstr "Stoppet."
+
+#: audio-view/audio-view.c:997
+#, c-format
+msgid "Sorry, but there was an error reading %s."
+msgstr "En feil oppstod desverre ved lesing av %s."
+
+#: audio-view/audio-view.c:1082
+msgid "File"
+msgstr "Fil"
+
+#: audio-view/audio-view.c:1094
+msgid "Type"
+msgstr "Type"
+
+#: audio-view/audio-view.c:1106
+msgid "Length"
+msgstr "Lengde"
+
+#: audio-view/audio-view.c:1118
+msgid "Bitrate"
+msgstr "Bithastighet"
+
+#. The metadata column
+#: audio-view/audio-view.c:1128
+msgid "Metadata"
+msgstr "Metadata"
+
+#. get a status area
+#: audio-view/audio-view.c:1263
+msgid "Not playing"
+msgstr "Spiller ikke"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Utdrag"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Dette er et sammenslått prøvemenyobjekt"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "Dette er en sammenslått prøveverktøylinjeknapp"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:4
+#: test-view/nautilus-test-view-ui.xml.h:4
+msgid "_File"
+msgstr "_Arkiv"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Utdrag"
+
+#: test-view/Nautilus_View_test.server.in.in.h:1
+msgid "Nautilus Test view"
+msgstr "Testvisning för Nautilus"
+
+#: test-view/Nautilus_View_test.server.in.in.h:2
+msgid "Nautilus Test view factory"
+msgstr "Fabrikk for Nautilus-testvisning"
+
+#: test-view/Nautilus_View_test.server.in.in.h:3
+#: test-view/nautilus-test-view-ui.xml.h:1
+msgid "Test"
+msgstr "Test"
+
+#: test-view/Nautilus_View_test.server.in.in.h:4
+msgid "Test Viewer"
+msgstr "Testviser"
+
+#: test-view/Nautilus_View_test.server.in.in.h:5
+msgid "Test view component"
+msgstr "Testvisningskomponent"
+
+#: test-view/Nautilus_View_test.server.in.in.h:6
+msgid "Test view component's factory"
+msgstr "Fabrikk for testvisningskomponent"
+
+#: test-view/Nautilus_View_test.server.in.in.h:7
+msgid "View as Test"
+msgstr "Vise som test"
+
+#: test-view/nautilus-test-view-ui.xml.h:2
+msgid "This is a test merged menu item"
+msgstr "Dette er et sammenslått testmenyalternativ"
+
+#: test-view/nautilus-test-view-ui.xml.h:3
+msgid "This is a test merged toolbar button"
+msgstr "Dette er en sammenslått testverktøylinjeknapp"
+
+#: test-view/nautilus-test-view-ui.xml.h:5
+msgid "_Test"
+msgstr "_Test"
+
+#: test-view/nautilus-test-view.c:80
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a test Nautilus content view component."
+msgstr ""
+"%s\n"
+"\n"
+"Dette er en testinneholdsviser för Nautilus."
+
+#: test-view/nautilus-test-view.c:146
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You selected the Test menu item."
+msgstr ""
+"%s\n"
+"\n"
+"Du valgte testmenyobjektet."
+
+#: test-view/nautilus-test-view.c:150
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You clicked the Test toolbar button."
+msgstr ""
+"%s\n"
+"\n"
+"Du klicket på testverktøyslinjeknappen."
+
+#: test-view/nautilus-test-view.c:206
+msgid "(none)"
+msgstr "(ingen)"
+
+#~ msgid "Can't read folder"
+#~ msgstr "Kan ikke lese mappen"

@@ -1,20 +1,24 @@
+# translation of mk.po to Macedonian
+# translation of mk.po to
+# translation of nautilus-media.HEAD.mk.po to Macedonian
 # translation of nautilus-media.HEAD.po to Macedonian
 # translation of nautilus-media.HEAD.po to
 # This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# Ivan Stojmirov <stojmir@linux.net.mk>, 2002
+# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER.
+# Ivan Stojmirov <stojmir@linux.net.mk>, 2002,2003.
+# Arangel Angov <ufo@linux.net.mk>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-media.HEAD\n"
-"POT-Creation-Date: 2003-02-04 13:03+0100\n"
-"PO-Revision-Date: 2002-12-15 22:50+0100\n"
-"Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
-"Language-Team: Macedonian <mk@li.org>\n"
+"Project-Id-Version: nautilus-media.HEAD.mk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-09-05 17:01+0200\n"
+"Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
+"Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
 #: audio-view/Nautilus_View_audio.server.in.in.h:1
@@ -81,44 +85,64 @@ msgstr "се вчитува..."
 msgid "URI currently displayed"
 msgstr "URI е моментално прикажан"
 
-#: audio-properties-view/audio-properties-view.c:222
-#: audio-properties-view/audio-properties-view.c:227
-#: audio-properties-view/audio-properties-view.c:232
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
 msgid "None"
-msgstr ""
+msgstr "Ништо"
 
-#: audio-properties-view/audio-properties-view.c:238
+#: audio-properties-view/audio-properties-view.c:170
 msgid "mono"
-msgstr ""
+msgstr "моно"
 
-#: audio-properties-view/audio-properties-view.c:239
+#: audio-properties-view/audio-properties-view.c:171
 msgid "stereo"
-msgstr ""
+msgstr "стерео"
 
-#: audio-properties-view/audio-properties-view.c:240
+#: audio-properties-view/audio-properties-view.c:172
 msgid "unknown"
-msgstr ""
+msgstr "непознато"
 
-#: audio-properties-view/audio-properties-view.c:241
+#: audio-properties-view/audio-properties-view.c:173
+#, fuzzy, c-format
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d канал"
+msgstr[1] "%d канал"
+
+#: audio-properties-view/audio-properties-view.c:185
+#, fuzzy, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d минута"
+msgstr[1] "%d минута"
+
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, fuzzy, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%d минути %02d.%03d секунди"
+msgstr[1] "%d минути %02d.%03d секунди"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
 #, c-format
-msgid "%d channels"
-msgstr ""
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
 
-#: audio-properties-view/audio-properties-view.c:256
-#, c-format
-msgid "%d minutes %02d.%03d seconds"
-msgstr ""
-
-#: audio-properties-view/audio-properties-view.c:319
-#: audio-properties-view/audio-properties-view.c:320
-#: audio-properties-view/audio-properties-view.c:321
-#: audio-properties-view/audio-properties-view.c:323
-#: audio-properties-view/audio-properties-view.c:324
-#: audio-properties-view/audio-properties-view.c:325
-#: audio-view/audio-view.c:276 audio-view/audio-view.c:838
-#: audio-view/audio-view.c:842 audio-view/audio-view.c:843
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
 msgid "Unknown"
-msgstr ""
+msgstr "Непознато"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:2
 msgid "Audio Viewer"
@@ -144,112 +168,106 @@ msgstr "Nautilus Аудио преглед"
 msgid "View as Audio"
 msgstr "Преглед како Аудио"
 
-#: audio-view/audio-view.c:253
+#: audio-view/audio-view.c:286
 msgid "Ogg/Vorbis"
-msgstr ""
+msgstr "Ogg/Vorbis"
 
-#: audio-view/audio-view.c:255
+#: audio-view/audio-view.c:289
 msgid "FLAC"
-msgstr ""
+msgstr "FLAC"
 
-#: audio-view/audio-view.c:257
+#: audio-view/audio-view.c:295
 msgid "MPEG"
-msgstr ""
+msgstr "MPEG"
 
-#: audio-view/audio-view.c:259
+#: audio-view/audio-view.c:297
 msgid "WAVE"
-msgstr ""
+msgstr "WAVE"
 
-#: audio-view/audio-view.c:263 audio-view/audio-view.c:265
-#: audio-view/audio-view.c:267 audio-view/audio-view.c:269
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
 msgid "Amiga mod"
-msgstr ""
+msgstr "Amiga mod"
 
-#: audio-view/audio-view.c:271
+#: audio-view/audio-view.c:309
 msgid "Apple AIFF"
-msgstr ""
+msgstr "Apple AIFF"
 
-#: audio-view/audio-view.c:273
+#: audio-view/audio-view.c:311
 msgid "MIDI"
-msgstr ""
+msgstr "MIDI"
 
-#: audio-view/audio-view.c:275
-#, fuzzy
+#: audio-view/audio-view.c:313
 msgid "ulaw audio"
-msgstr "Преглед како Аудио"
+msgstr "ulaw audio"
 
-#. now construct a string out of it
-#: audio-view/audio-view.c:323
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
 msgid "Artist: "
-msgstr ""
+msgstr "Изведувач: "
 
-#: audio-view/audio-view.c:324
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
 msgid "Title: "
-msgstr ""
+msgstr "Наслов: "
 
-#: audio-view/audio-view.c:394
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "Првин направи селекција !"
+
+#: audio-view/audio-view.c:465
 msgid "<span size=\"larger\">Unknown</span>"
-msgstr ""
+msgstr "<span size=\"larger\">Непознато</span>"
 
-#: audio-view/audio-view.c:436
+#: audio-view/audio-view.c:508
 msgid "ERROR: no information yet"
-msgstr ""
+msgstr "ГРЕШКА: сеуште нема информација"
 
 #. FIXME: handleme
-#: audio-view/audio-view.c:478
+#: audio-view/audio-view.c:550
 #, c-format
 msgid "ERROR: %s"
-msgstr ""
+msgstr "ГРЕШКА: %s"
 
 #. status update
-#: audio-view/audio-view.c:486 audio-view/audio-view.c:508
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
 #, c-format
 msgid "Playing %s"
-msgstr ""
+msgstr "Пуштено е %s"
 
-#: audio-view/audio-view.c:625
-msgid "Make a selection first !"
-msgstr ""
-
-#: audio-view/audio-view.c:653 audio-view/audio-view.c:721
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
 msgid "Stopped."
-msgstr ""
+msgstr "Стопирано."
 
-#: audio-view/audio-view.c:906
+#: audio-view/audio-view.c:997
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Извини, но се појави грешка при читањето на %s."
 
-#: audio-view/audio-view.c:907
-#, fuzzy
-msgid "Can't read folder"
-msgstr "Неможам да ја прочитам Папката"
-
-#: audio-view/audio-view.c:976
+#: audio-view/audio-view.c:1082
 msgid "File"
 msgstr "Датотека"
 
-#: audio-view/audio-view.c:988
+#: audio-view/audio-view.c:1094
 msgid "Type"
 msgstr "Вид"
 
-#: audio-view/audio-view.c:1000
+#: audio-view/audio-view.c:1106
 msgid "Length"
 msgstr "Должина"
 
-#: audio-view/audio-view.c:1012
+#: audio-view/audio-view.c:1118
 msgid "Bitrate"
 msgstr "Битови"
 
 #. The metadata column
-#: audio-view/audio-view.c:1022
+#: audio-view/audio-view.c:1128
 msgid "Metadata"
 msgstr "Мета податоци"
 
 #. get a status area
-#: audio-view/audio-view.c:1157
+#: audio-view/audio-view.c:1263
 msgid "Not playing"
-msgstr ""
+msgstr "Не е пуштено"
 
 #: audio-view/nautilus-audio-view-ui.xml.h:1
 msgid "Sample"
@@ -349,9 +367,3 @@ msgstr ""
 #: test-view/nautilus-test-view.c:206
 msgid "(none)"
 msgstr "(ниедно)"
-
-#~ msgid "You selected the Sample menu item."
-#~ msgstr "Го избра Примерок предметот со мени"
-
-#~ msgid "You clicked the Sample toolbar button."
-#~ msgstr "Го кликна примерокот со копчето од линијата со алатки."

@@ -1,0 +1,370 @@
+# translation of ta.po to Tamil
+# Tamil translation of Tamil Nautilus Media 2.4.
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2003.
+# Jayaradha N <jaya@pune.redhat.com>, 2004.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ta\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-09-03 18:57+0530\n"
+"Last-Translator: Jayaradha N <jaya@pune.redhat.com>\n"
+"Language-Team: Tamil <zhakanini@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"17:19-0500\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
+#: audio-view/Nautilus_View_audio.server.in.in.h:1
+msgid "Audio"
+msgstr "செவிப்புலம்"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:2
+msgid "Audio Properties content view component"
+msgstr "பொருள்களை பார்க்க ஒலி பண்புகள்"
+
+#: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:3
+msgid "Nautilus Audio Properties view"
+msgstr "நாடுலஸ் ஒலி பண்பு காட்சி"
+
+#: audio-properties-view/audio-properties-view.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: audio-properties-view/audio-properties-view.glade.h:2
+msgid "<span weight=\"bold\">Album:</span>"
+msgstr "<span weight=\"bold\">ஆல்பம்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:3
+msgid "<span weight=\"bold\">Artist:</span>"
+msgstr "<span weight=\"bold\">கலைஞர்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:4
+msgid "<span weight=\"bold\">Bit rate:</span>"
+msgstr "<span weight=\"bold\">பிட் விகிதம்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:5
+msgid "<span weight=\"bold\">Comments:</span>"
+msgstr "<span weight=\"bold\">குறிப்புகள்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:6
+msgid "<span weight=\"bold\">Format:</span>"
+msgstr "<span weight=\"bold\">வடிவமைப்பு:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:7
+msgid "<span weight=\"bold\">Length:</span>"
+msgstr "<span weight=\"bold\">நீளம்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:8
+msgid "<span weight=\"bold\">Title:</span>"
+msgstr "<span weight=\"bold\">தலைப்பு:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:9
+msgid "<span weight=\"bold\">Track:</span>"
+msgstr "<span weight=\"bold\">தடம்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:10
+msgid "<span weight=\"bold\">_Artist:</span>"
+msgstr "<span weight=\"bold\">(_A)கலைஞர்:</span>"
+
+#: audio-properties-view/audio-properties-view.glade.h:11
+msgid "Audio Properties"
+msgstr "ஒலி பண்புகள்"
+
+#: audio-properties-view/nautilus-audio-properties-view.c:284
+msgid "loading..."
+msgstr "ஏற்றுகிறது"
+
+#: audio-properties-view/nautilus-audio-properties-view.c:297
+msgid "URI currently displayed"
+msgstr "URI தற்போது காட்டப்பட்டது"
+
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
+msgid "None"
+msgstr "வெற்று"
+
+#: audio-properties-view/audio-properties-view.c:170
+msgid "mono"
+msgstr "மோனோ"
+
+#: audio-properties-view/audio-properties-view.c:171
+msgid "stereo"
+msgstr "ஸ்டீரியோ"
+
+#: audio-properties-view/audio-properties-view.c:172
+msgid "unknown"
+msgstr "தெரியாதது"
+
+#: audio-properties-view/audio-properties-view.c:173
+#, c-format
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d அலைவரிசை"
+msgstr[1] "%d அலைவரிசை"
+
+#: audio-properties-view/audio-properties-view.c:185
+#, c-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d நிமிடம்"
+msgstr[1] "%d நிமிடம்"
+
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%02d.%03d நொடிகள்"
+msgstr[1] "%02d.%03d நொடிகள்"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
+msgid "Unknown"
+msgstr "தெரியாதது"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:2
+msgid "Audio Viewer"
+msgstr "ஒலி காட்சி"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:3
+msgid "Audio view component"
+msgstr "ஒலி காட்சி பொருள்"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:4
+msgid "Audio view component's factory"
+msgstr "ஒலி காட்சி பொருள் தொழிற்சாலை"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:5
+msgid "Audio view factory"
+msgstr "ஒலி காட்சி தொழிற்சாலை"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:6
+msgid "Nautilus Audio view"
+msgstr "நாடுலஸ் ஒலி காட்சி"
+
+#: audio-view/Nautilus_View_audio.server.in.in.h:7
+msgid "View as Audio"
+msgstr "ஒலி கோப்பாக பார்"
+
+#: audio-view/audio-view.c:286
+msgid "Ogg/Vorbis"
+msgstr "Ogg/Vorbis"
+
+#: audio-view/audio-view.c:289
+msgid "FLAC"
+msgstr "FLAC"
+
+#: audio-view/audio-view.c:295
+msgid "MPEG"
+msgstr "MPEG"
+
+#: audio-view/audio-view.c:297
+msgid "WAVE"
+msgstr "WAVE"
+
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
+msgid "Amiga mod"
+msgstr "Amiga mod"
+
+#: audio-view/audio-view.c:309
+msgid "Apple AIFF"
+msgstr "Apple AIFF"
+
+#: audio-view/audio-view.c:311
+msgid "MIDI"
+msgstr "MIDI"
+
+#: audio-view/audio-view.c:313
+msgid "ulaw audio"
+msgstr "ulaw audio"
+
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
+msgid "Artist: "
+msgstr "கலைஞர்: "
+
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
+msgid "Title: "
+msgstr "தலைப்பு:"
+
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "முதலில் தேர்வு செய்!"
+
+#: audio-view/audio-view.c:465
+msgid "<span size=\"larger\">Unknown</span>"
+msgstr "<span size=\"larger\">தெரியாத</span>"
+
+#: audio-view/audio-view.c:508
+msgid "ERROR: no information yet"
+msgstr "ERROR: தகவல் எதுவும் இதுவரை இல்லை"
+
+#. FIXME: handleme
+#: audio-view/audio-view.c:550
+#, c-format
+msgid "ERROR: %s"
+msgstr "ERROR: %s"
+
+#. status update
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
+#, c-format
+msgid "Playing %s"
+msgstr "இயங்குகிறது %s"
+
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
+msgid "Stopped."
+msgstr "நிறுத்தப்பட்டது"
+
+#: audio-view/audio-view.c:997
+#, c-format
+msgid "Sorry, but there was an error reading %s."
+msgstr "மன்னிக்கவும் படிக்கும் போது பிழை %s."
+
+#: audio-view/audio-view.c:1082
+msgid "File"
+msgstr "கோப்பு"
+
+#: audio-view/audio-view.c:1094
+msgid "Type"
+msgstr "þனம்"
+
+#: audio-view/audio-view.c:1106
+msgid "Length"
+msgstr "நீளம்"
+
+#: audio-view/audio-view.c:1118
+msgid "Bitrate"
+msgstr "பிட்விகிதம்"
+
+#. The metadata column
+#: audio-view/audio-view.c:1128
+msgid "Metadata"
+msgstr "மெட்டாதகவல்"
+
+#. get a status area
+#: audio-view/audio-view.c:1263
+msgid "Not playing"
+msgstr "இயங்கவில்லை"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:1
+msgid "Sample"
+msgstr "மாதிரி"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "இது சேர்க்கப்பட்ட மெனு உருப்படி"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "இது சேர்க்கப்பட்ட கருவிப்பட்டி பட்டன் மாதிரி"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:4
+#: test-view/nautilus-test-view-ui.xml.h:4
+msgid "_File"
+msgstr "_கோப்பு"
+
+#: audio-view/nautilus-audio-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "(_S)மாதிரி"
+
+#: test-view/Nautilus_View_test.server.in.in.h:1
+msgid "Nautilus Test view"
+msgstr "நாடுலஸ் சோதனை காட்சி"
+
+#: test-view/Nautilus_View_test.server.in.in.h:2
+msgid "Nautilus Test view factory"
+msgstr "நாடுலஸ் சோதனை காட்சி தொழிற்சாலை"
+
+#: test-view/Nautilus_View_test.server.in.in.h:3
+#: test-view/nautilus-test-view-ui.xml.h:1
+msgid "Test"
+msgstr "சோதனை"
+
+#: test-view/Nautilus_View_test.server.in.in.h:4
+msgid "Test Viewer"
+msgstr "சோதனை காட்சி"
+
+#: test-view/Nautilus_View_test.server.in.in.h:5
+msgid "Test view component"
+msgstr "சோதனை காட்சி பொருள்"
+
+#: test-view/Nautilus_View_test.server.in.in.h:6
+msgid "Test view component's factory"
+msgstr "சோதனை காட்சி பொருள் தொழிற்சாலை"
+
+#: test-view/Nautilus_View_test.server.in.in.h:7
+msgid "View as Test"
+msgstr "சோதனையாக பார்"
+
+#: test-view/nautilus-test-view-ui.xml.h:2
+msgid "This is a test merged menu item"
+msgstr "இது சேர்த்த சோதனை மெனு உருப்படி"
+
+#: test-view/nautilus-test-view-ui.xml.h:3
+msgid "This is a test merged toolbar button"
+msgstr "இது சேர்த்த சோதனை கருவிப்பட்டி மெனு உருப்படி"
+
+#: test-view/nautilus-test-view-ui.xml.h:5
+msgid "_Test"
+msgstr "(_T)சோதனை"
+
+#: test-view/nautilus-test-view.c:80
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a test Nautilus content view component."
+msgstr ""
+"%s\n"
+"\n"
+"இது நாடுலஸ் சோதனை பொருள் காட்சி."
+
+#: test-view/nautilus-test-view.c:146
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You selected the Test menu item."
+msgstr ""
+"%s\n"
+"\n"
+"சோதனை மெனுவை நீங்கள் தேர்வு செய்துள்ளீர்."
+
+#: test-view/nautilus-test-view.c:150
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You clicked the Test toolbar button."
+msgstr ""
+"%s\n"
+"\n"
+"கருவிப்பட்டி பட்டி சோதனையை நீங்கள் செய்துள்ளீர்."
+
+#: test-view/nautilus-test-view.c:206
+msgid "(none)"
+msgstr "(எதுவுமில்லை)"

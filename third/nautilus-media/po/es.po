@@ -1,32 +1,38 @@
+# translation of es.po to Spanish
+# translation of nautilus-media.HEAD.po to Spanish
 # Nautilus-media Spanish Translation.
 # Copyright © 2002 The GNOME Software Foundation
 # This file is distributed under the same license as the Nautilus-media package.
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2002.
+# Francisco Javier F. Serrador <serrador@arrakis.es>, 2003.
+# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus-media\n"
-"POT-Creation-Date: 2003-02-04 13:03+0100\n"
-"PO-Revision-Date: 2003-01-02 11:10-0300\n"
-"Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
+"Project-Id-Version: es\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 08:37+0200\n"
+"PO-Revision-Date: 2004-03-09 00:51+0100\n"
+"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:1
 #: audio-view/Nautilus_View_audio.server.in.in.h:1
 msgid "Audio"
-msgstr "Audio"
+msgstr "Sonido"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:2
 msgid "Audio Properties content view component"
-msgstr "Componente de vista de contenido de propiedades de audio"
+msgstr "Componente de vista de contenido de propiedades de sonido"
 
 #: audio-properties-view/Nautilus_View_audio_properties.server.in.in.h:3
 msgid "Nautilus Audio Properties view"
-msgstr "Vista de propiedades de audio de Nautilus"
+msgstr "Vista de propiedades de sonido de Nautilus"
 
 #: audio-properties-view/audio-properties-view.glade.h:1
 msgid "*"
@@ -70,7 +76,7 @@ msgstr "<span weight=\"bold\">_Artista:</span>"
 
 #: audio-properties-view/audio-properties-view.glade.h:11
 msgid "Audio Properties"
-msgstr "Propiedades de audio"
+msgstr "Propiedades de sonido"
 
 #: audio-properties-view/nautilus-audio-properties-view.c:284
 msgid "loading..."
@@ -80,171 +86,187 @@ msgstr "cargando..."
 msgid "URI currently displayed"
 msgstr "URI mostrada actualmente"
 
-#: audio-properties-view/audio-properties-view.c:222
-#: audio-properties-view/audio-properties-view.c:227
-#: audio-properties-view/audio-properties-view.c:232
+#: audio-properties-view/audio-properties-view.c:152
+#: audio-properties-view/audio-properties-view.c:156
+#: audio-properties-view/audio-properties-view.c:160
+#: audio-properties-view/audio-properties-view.c:161
 msgid "None"
 msgstr "ninguno"
 
-#: audio-properties-view/audio-properties-view.c:238
+#: audio-properties-view/audio-properties-view.c:170
 msgid "mono"
 msgstr "mono"
 
-#: audio-properties-view/audio-properties-view.c:239
+#: audio-properties-view/audio-properties-view.c:171
 msgid "stereo"
-msgstr "estereo"
+msgstr "estéreo"
 
-#: audio-properties-view/audio-properties-view.c:240
+#: audio-properties-view/audio-properties-view.c:172
 msgid "unknown"
 msgstr "desconocido"
 
-#: audio-properties-view/audio-properties-view.c:241
+#: audio-properties-view/audio-properties-view.c:173
 #, c-format
-msgid "%d channels"
-msgstr "%d canales"
+msgid "%d channel"
+msgid_plural "%d channels"
+msgstr[0] "%d canal"
+msgstr[1] "%d canales"
 
-#: audio-properties-view/audio-properties-view.c:256
+#: audio-properties-view/audio-properties-view.c:185
 #, c-format
-msgid "%d minutes %02d.%03d seconds"
-msgstr "%d minutos %02d.%03d segundos"
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minuto"
+msgstr[1] "%d minutos"
 
-#: audio-properties-view/audio-properties-view.c:319
-#: audio-properties-view/audio-properties-view.c:320
-#: audio-properties-view/audio-properties-view.c:321
-#: audio-properties-view/audio-properties-view.c:323
-#: audio-properties-view/audio-properties-view.c:324
-#: audio-properties-view/audio-properties-view.c:325
-#: audio-view/audio-view.c:276 audio-view/audio-view.c:838
-#: audio-view/audio-view.c:842 audio-view/audio-view.c:843
+#. Translators: plural form depends on the decimal part
+#: audio-properties-view/audio-properties-view.c:187
+#, c-format
+msgid "%02d.%03d seconds"
+msgid_plural "%02d.%03d seconds"
+msgstr[0] "%02d,%03d segundo"
+msgstr[1] "%02d.%03d segundos"
+
+#. Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed
+#: audio-properties-view/audio-properties-view.c:189
+#, c-format
+msgid "%1$s %2$s"
+msgstr "%1$s %2$s"
+
+#: audio-properties-view/audio-properties-view.c:259
+#: audio-properties-view/audio-properties-view.c:260
+#: audio-properties-view/audio-properties-view.c:261
+#: audio-properties-view/audio-properties-view.c:263
+#: audio-properties-view/audio-properties-view.c:264
+#: audio-properties-view/audio-properties-view.c:265
+#: audio-view/audio-view.c:314 audio-view/audio-view.c:384
+#: audio-view/audio-view.c:928 audio-view/audio-view.c:932
+#: audio-view/audio-view.c:933
 msgid "Unknown"
 msgstr "Desconocido"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:2
 msgid "Audio Viewer"
-msgstr "Visor de audio"
+msgstr "Visor de sonido"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:3
 msgid "Audio view component"
-msgstr "Componente de vista de audio"
+msgstr "Componente de vista de sonido"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:4
 msgid "Audio view component's factory"
-msgstr "Origen del componente visor de audio"
+msgstr "Fábrica del componente visor de sonido"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:5
 msgid "Audio view factory"
-msgstr "Origen del visor de audio"
+msgstr "Fábrica del visor de sonido"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:6
 msgid "Nautilus Audio view"
-msgstr "Vista de audio de Nautilus"
+msgstr "Vista de sonido de Nautilus"
 
 #: audio-view/Nautilus_View_audio.server.in.in.h:7
 msgid "View as Audio"
-msgstr "Ver como audio"
+msgstr "Ver como sonido"
 
-#: audio-view/audio-view.c:253
+#: audio-view/audio-view.c:286
 msgid "Ogg/Vorbis"
 msgstr "Ogg/Vorbis"
 
-#: audio-view/audio-view.c:255
+#: audio-view/audio-view.c:289
 msgid "FLAC"
 msgstr "FLAC"
 
-#: audio-view/audio-view.c:257
+#: audio-view/audio-view.c:295
 msgid "MPEG"
 msgstr "MPEG"
 
-#: audio-view/audio-view.c:259
+#: audio-view/audio-view.c:297
 msgid "WAVE"
 msgstr "WAVE"
 
-#: audio-view/audio-view.c:263 audio-view/audio-view.c:265
-#: audio-view/audio-view.c:267 audio-view/audio-view.c:269
+#: audio-view/audio-view.c:301 audio-view/audio-view.c:303
+#: audio-view/audio-view.c:305 audio-view/audio-view.c:307
 msgid "Amiga mod"
 msgstr "Mod de Amiga"
 
-#: audio-view/audio-view.c:271
+#: audio-view/audio-view.c:309
 msgid "Apple AIFF"
-msgstr "Apple AIFF"
+msgstr "AIFF de Apple"
 
-#: audio-view/audio-view.c:273
+#: audio-view/audio-view.c:311
 msgid "MIDI"
 msgstr "MIDI"
 
-#: audio-view/audio-view.c:275
+#: audio-view/audio-view.c:313
 msgid "ulaw audio"
-msgstr "audio ulaw"
+msgstr "sonido ulaw"
 
-#. now construct a string out of it
-#: audio-view/audio-view.c:323
+#: audio-view/audio-view.c:387 audio-view/audio-view.c:390
 msgid "Artist: "
 msgstr "Artista: "
 
-#: audio-view/audio-view.c:324
+#: audio-view/audio-view.c:388 audio-view/audio-view.c:391
 msgid "Title: "
 msgstr "Título: "
 
-#: audio-view/audio-view.c:394
+#: audio-view/audio-view.c:444 audio-view/audio-view.c:660
+#: audio-view/audio-view.c:693
+msgid "Make a selection first !"
+msgstr "¡Haga una selección primero!"
+
+#: audio-view/audio-view.c:465
 msgid "<span size=\"larger\">Unknown</span>"
 msgstr "<span weight=\"bold\">Desconocido</span>"
 
-#: audio-view/audio-view.c:436
+#: audio-view/audio-view.c:508
 msgid "ERROR: no information yet"
 msgstr "ERROR: no hay información aún"
 
 #. FIXME: handleme
-#: audio-view/audio-view.c:478
+#: audio-view/audio-view.c:550
 #, c-format
 msgid "ERROR: %s"
 msgstr "ERROR: %s"
 
 #. status update
-#: audio-view/audio-view.c:486 audio-view/audio-view.c:508
+#: audio-view/audio-view.c:558 audio-view/audio-view.c:580
 #, c-format
 msgid "Playing %s"
 msgstr "Reproduciendo %s"
 
-#: audio-view/audio-view.c:625
-msgid "Make a selection first !"
-msgstr "¡Haga una selección primero!"
-
-#: audio-view/audio-view.c:653 audio-view/audio-view.c:721
+#: audio-view/audio-view.c:721 audio-view/audio-view.c:789
 msgid "Stopped."
 msgstr "Detenido."
 
-#: audio-view/audio-view.c:906
+#: audio-view/audio-view.c:997
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Lo siento, pero ha ocurrido un error al leer %s."
 
-#: audio-view/audio-view.c:907
-msgid "Can't read folder"
-msgstr "No se puede leer la carpeta"
-
-#: audio-view/audio-view.c:976
+#: audio-view/audio-view.c:1082
 msgid "File"
 msgstr "Archivo"
 
-#: audio-view/audio-view.c:988
+#: audio-view/audio-view.c:1094
 msgid "Type"
 msgstr "Tipo"
 
-#: audio-view/audio-view.c:1000
+#: audio-view/audio-view.c:1106
 msgid "Length"
-msgstr "Tamaño"
+msgstr "Longitud"
 
-#: audio-view/audio-view.c:1012
+#: audio-view/audio-view.c:1118
 msgid "Bitrate"
-msgstr "Bits por segundo"
+msgstr "Tasa de bits"
 
 #. The metadata column
-#: audio-view/audio-view.c:1022
+#: audio-view/audio-view.c:1128
 msgid "Metadata"
 msgstr "Metadatos"
 
 #. get a status area
-#: audio-view/audio-view.c:1157
+#: audio-view/audio-view.c:1263
 msgid "Not playing"
 msgstr "Sin reproducir"
 
@@ -275,7 +297,7 @@ msgstr "Vista de prueba de Nautilus"
 
 #: test-view/Nautilus_View_test.server.in.in.h:2
 msgid "Nautilus Test view factory"
-msgstr "Origen de la vista de prueba de Nautilus"
+msgstr "Fábrica de la vista de prueba de Nautilus"
 
 #: test-view/Nautilus_View_test.server.in.in.h:3
 #: test-view/nautilus-test-view-ui.xml.h:1
@@ -292,7 +314,7 @@ msgstr "Componente del visor de prueba"
 
 #: test-view/Nautilus_View_test.server.in.in.h:6
 msgid "Test view component's factory"
-msgstr "Origen del componente del visor de prueba"
+msgstr "Fábrica del componente del visor de prueba"
 
 #: test-view/Nautilus_View_test.server.in.in.h:7
 msgid "View as Test"
@@ -346,6 +368,9 @@ msgstr ""
 #: test-view/nautilus-test-view.c:206
 msgid "(none)"
 msgstr "(ninguno)"
+
+#~ msgid "Can't read folder"
+#~ msgstr "No se puede leer la carpeta"
 
 #~ msgid "Ogg file"
 #~ msgstr "Archivo Ogg"

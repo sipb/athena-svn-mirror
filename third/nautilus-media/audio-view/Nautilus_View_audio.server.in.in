@@ -29,14 +29,20 @@
 		<item value="x-directory/*"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:required_directory_content_mime_types" type="stringv">
-		<item value="audio/x-mpeg"/>
+		<item value="audio/mpeg"/>
 		<item value="audio/x-mp3"/>
+		<item value="audio/mp3"/>
+		<item value="audio/x-id3"/>
+		<item value="application/x-id3"/>
 		<item value="audio/x-wav"/>
 		<item value="audio/x-mod"/>
 		<item value="audio/x-s3m"/>
 		<item value="audio/x-xm"/>
 		<item value="audio/x-it"/>
+		<item value="audio/x-flac"/>
+		<item value="application/x-flac"/>
 		<item value="application/x-ogg"/>
+		<item value="application/ogg"/>
 	</oaf_attribute>
 	<oaf_attribute name="nautilus:view_as_name" type="string" _value="Audio"/>
 	<oaf_attribute name="nautilus:view_as_label" type="string" _value="View as Audio"/>

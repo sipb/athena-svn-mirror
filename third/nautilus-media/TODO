@@ -14,3 +14,8 @@ the format entry kinda blows :/
 * property page component should be separate process, not a shared lib,
   so that the object can be kept around and gst doesn't need to be
   loaded each time
+
+* gst-thumbnail:
+  - make it completely callback-based so the timeout callback works on the
+    complete running time
+  - make it do a real seek

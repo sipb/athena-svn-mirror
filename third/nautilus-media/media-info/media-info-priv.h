@@ -25,14 +25,27 @@
 #include <gst/gst.h>
 
 /* debug */
+GST_DEBUG_CATEGORY_EXTERN (gst_media_info_debug);
+#define GST_CAT_DEFAULT gst_media_info_debug
+
+//#define DEBUG
 #ifdef DEBUG
 static gboolean _gmi_debug = TRUE;
 #else
 static gboolean _gmi_debug = FALSE;
 #endif
 
+#ifdef G_HAVE_ISO_VARARGS
+
+#define GMI_DEBUG(...) \
+  { if (_gmi_debug) { g_print ( __VA_ARGS__ ); }}
+
+#elif defined(G_HAVE_GNUC_VARARGS)
+
 #define GMI_DEBUG(format, args...) \
   { if (_gmi_debug) { g_print ( format , ## args ); }}
+
+#endif
 
 
 /* state machine enum; FIXME: can we move this to priv.c ? */
@@ -50,24 +63,25 @@ typedef enum
 /* private structure */
 struct GstMediaInfoPriv
 {
-  GstElement *pipeline;
-
   GstElement *typefind;
 
   GstCaps *type;
-  GstPad *decoder_pad;                  /* pad for querying decoded caps */
-  GstPad *source_pad;                   /* pad for querying encoded caps */
 
   GstCaps *format;
-  GstCaps *metadata;
+  GstTagList *metadata;
   gint metadata_iters;
-  GstCaps *streaminfo;
+  GstTagList *streaminfo;
 
-  GstElement *decoder;                  /* will be != NULL during collection */
-  gchar *source_element;                /* type of element used as source */
+  GstElement *pipeline;                 /* will be != NULL during collection */
+  gchar *pipeline_desc;                 /* will be != NULL during collection */
+  GstElement *fakesink;			/* so we can get caps from the
+                                           decoder sink pad */
+  gchar *source_name;                   /* type of element used as source */
   GstElement *source;
-
-  GHashTable *decoders;                 /* a table of decoder GstElements */
+  GstPad *source_pad;                   /* pad for querying encoded caps */
+  GstElement *decoder;
+  GstPad *decoder_pad;                  /* pad for querying decoded caps */
+  GstElement *decontainer;		/* element to typefind in containers */
 
   GstMediaInfoState state;              /* current state of state machine */
   gchar *location;                      /* location set on the info object */
@@ -77,6 +91,8 @@ struct GstMediaInfoPriv
 
   GstMediaInfoStream *stream;           /* total stream properties */
   char *cache;                          /* location of cache */
+
+  GError *error;			/* error for creation problems */
 };
 
 /* declarations */
@@ -87,24 +103,27 @@ void		gmi_stream_free			(GstMediaInfoStream *stream);
 GstMediaInfoTrack *
 		gmi_track_new			(void);
 
-void		gmi_reset			(GstMediaInfo *info);
+void		gmip_reset			(GstMediaInfoPriv *priv);
+gboolean	gmip_init			(GstMediaInfoPriv *priv, GError **error);
+
+void		gmi_clear_decoder		(GstMediaInfo *info);
+
 gboolean	gmi_seek_to_track		(GstMediaInfo *info,
 		                                 long track);
 
-GstElement *	gmi_get_decoder			(GstMediaInfo *info,
+gboolean	gmi_set_mime			(GstMediaInfo *info,
 		                                 const char *mime);
-void		gmi_set_decoder			(GstMediaInfo *info,
-		                                 GstElement *decoder);
-void		gmi_clear_decoder		(GstMediaInfo *info);
 
 void		deep_notify_callback            (GObject *object,
 		                                 GstObject *origin,
 						 GParamSpec *pspec,
 						 GstMediaInfoPriv *priv);
+void		found_tag_callback		(GObject *pipeline, GstElement *source, GstTagList *tags, GstMediaInfoPriv *priv);
+void		error_callback			(GObject *element, GstElement *source, GError *error, gchar *debug, GstMediaInfoPriv *priv);
 
-gboolean	gmip_find_type_pre		(GstMediaInfoPriv *priv);
+gboolean	gmip_find_type_pre		(GstMediaInfoPriv *priv, GError **error);
 gboolean	gmip_find_type_post		(GstMediaInfoPriv *priv);
-gboolean	gmip_find_type			(GstMediaInfoPriv *priv);
+gboolean	gmip_find_type			(GstMediaInfoPriv *priv, GError **error);
 gboolean	gmip_find_stream_pre		(GstMediaInfoPriv *priv);
 gboolean	gmip_find_stream_post		(GstMediaInfoPriv *priv);
 gboolean	gmip_find_stream			(GstMediaInfoPriv *priv);

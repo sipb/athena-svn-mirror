@@ -69,6 +69,8 @@ typedef enum
 static gint
 apv_get_format_int (GstMediaInfoTrack *track, const char *property_name)
 {
+#if 0
+FIXME for tag
 	GstProps *props;
 	GList *p;
 	if (track->format == NULL) return -1;
@@ -81,92 +83,17 @@ apv_get_format_int (GstMediaInfoTrack *track, const char *property_name)
 		GstPropsEntry *entry = (GstPropsEntry *) p->data;
 		const gchar *name;
 		gint int_val;
-		GstPropsType type;
 
 		name = gst_props_entry_get_name (entry);
-		type = gst_props_entry_get_type (entry);
-		if ((strcmp (name, property_name) == 0) &&
-		    type == GST_PROPS_INT_TYPE)
+		if ((strcmp (name, property_name) == 0))
 		{
 			gst_props_entry_get_int (entry, &int_val);
 			return int_val;
 		}
 		p = g_list_next (p);
       }
-}
-
-static gchar *
-apv_get_metadata_property (GstMediaInfoTrack *track,
-		           GstMediaInfoProperty property,
-			   const gchar *join_string)
-{
-        gchar *result = NULL;
-        GList *properties = NULL;
-
-        GList *p;
-
-        if (track == NULL) return NULL;
-        if (track->metadata == NULL) return NULL;
-        if (track->metadata->properties == NULL) return NULL;
-
-        p = track->metadata->properties->properties;
-
-        /* construct GLists of GstPropsEntries matching request */
-        while (p)
-        {
-                GstPropsEntry *entry = (GstPropsEntry *) p->data;
-                const gchar *name;
-                const gchar *val;
-                GstPropsType type;
-		gchar *property_name;
-
-		switch (property)
-		{
-			case GMI_PROPERTY_ARTIST:
-				property_name = g_strdup_printf ("artist");
-				break;
-			case GMI_PROPERTY_TITLE:
-				property_name = g_strdup_printf ("title");
-				break;
-			case GMI_PROPERTY_ALBUM:
-				property_name = g_strdup_printf ("album");
-				break;
-			default:
-				g_warning ("Don't know requested property\n");
-				break;
-		}
-
-
-                name = gst_props_entry_get_name (entry);
-                type = gst_props_entry_get_type (entry);
-                if (g_ascii_strncasecmp (name, property_name,
-					 strlen (property_name)) == 0 &&
-                    type == GST_PROPS_STRING_TYPE)
-		{
-			/* get entry's value */
-			gchar *value;
-			gst_props_entry_get_string (entry, (const gchar **) &value);
-                        properties = g_list_append (properties, value);
-		}
-                p = g_list_next (p);
-        }
-
-	/* construct the string */
-	p = properties;
-	while (p)
-	{
-		gchar *old;
-		if (result == NULL)
-			result = g_strdup_printf ("%s", p->data);
-		else
-		{
-			old = result;
-			result = g_strjoin (join_string, old, p->data, NULL);
-			g_free (old);
-		}
-		p = g_list_next (p);
-	}
-	return result;
+#endif
+return 0;
 }
 
 /* public functions */
@@ -186,8 +113,12 @@ audio_properties_view_load_location (AudioPropertiesView *view,
 	GstMediaInfoTrack *track = NULL;
 	gchar *string = NULL;
 	gchar *c_string = NULL;
-	gint channels;
+	gchar *min_string = NULL;
+	gchar *sec_string = NULL;
+	gint channels, rate, width;
 	gint min, sec, msec;
+	GError *error = NULL;
+	GstStructure *struc;
 
 	g_assert (location != NULL);
 
@@ -197,7 +128,7 @@ audio_properties_view_load_location (AudioPropertiesView *view,
 	view->location = g_strdup (location);
 
 	stream = gst_media_info_read (view->media_info, location,
-				      GST_MEDIA_INFO_ALL);
+				      GST_MEDIA_INFO_ALL, &error);
 
 	if (stream == NULL) return;
 
@@ -217,32 +148,31 @@ audio_properties_view_load_location (AudioPropertiesView *view,
 	/* FIXME: we should actually parse metadata into a struct with
 	 * sensible arguments, so that we can get comments as everything
 	 * that is not otherwise displayed */
-	string = apv_get_metadata_property (track, GMI_PROPERTY_ARTIST,
-			                    " & ");
-	if (string == NULL) string = g_strdup (_("None"));
+	if (!gst_tag_list_get_string (track->metadata, "artist", &string))
+		string = g_strdup (_("None"));
 	gtk_label_set_text (GTK_LABEL (view->artist), string);
 	g_free (string);
-	string = apv_get_metadata_property (track, GMI_PROPERTY_TITLE,
-			                    " & ");
-	if (string == NULL) string = g_strdup (_("None"));
+	if (!gst_tag_list_get_string (track->metadata, "title", &string))
+		string = g_strdup (_("None"));
 	gtk_label_set_text (GTK_LABEL (view->title), string);
 	g_free (string);
-	string = apv_get_metadata_property (track, GMI_PROPERTY_ALBUM,
-			                    " & ");
+	if (!gst_tag_list_get_string (track->metadata, "album", &string))
+		string = g_strdup (_("None"));
 	if (string == NULL) string = g_strdup (_("None"));
 	gtk_label_set_text (GTK_LABEL (view->album), string);
 	g_free (string);
 
 	/* streaminfo */
-	channels = apv_get_format_int (track, "channels");
+	struc = gst_caps_get_structure (track->format, 0);
+	if (!gst_structure_get_int (struc, "channels", &channels)) channels = 0;
+	if (!gst_structure_get_int (struc, "rate", &rate)) rate = -1;
+	if (!gst_structure_get_int (struc, "width", &width)) width = -1;
 	if (channels == 1) c_string = g_strdup (_("mono"));
 	else if (channels == 2) c_string = g_strdup (_("stereo"));
 	else if (channels == 0) c_string = g_strdup (_("unknown"));
-	else c_string = g_strdup_printf (_("%d channels"), channels);
-	string = g_strdup_printf ("%d Hz/%s/%d bit",
-			          apv_get_format_int (track, "rate"),
-				  c_string,
-				  apv_get_format_int (track, "width"));
+	else c_string = g_strdup_printf (ngettext ("%d channel", "%d channels", channels),
+					 channels);
+	string = g_strdup_printf ("%d Hz/%s/%d bit", rate, c_string, width);
 	g_free (c_string);
 	gtk_label_set_text (GTK_LABEL (view->format), string);
 	g_free (string);
@@ -252,13 +182,22 @@ audio_properties_view_load_location (AudioPropertiesView *view,
 	min = sec / 60;
 	sec %= 60;
 
-	gtk_label_set_text (GTK_LABEL (view->length),
-			    g_strdup_printf (_("%d minutes %02d.%03d seconds"),
-				             min, sec, msec));
+	min_string = g_strdup_printf(ngettext("%d minute", "%d minutes", min), min);
+	/* Translators: plural form depends on the decimal part */
+	sec_string = g_strdup_printf(ngettext("%02d.%03d seconds", "%02d.%03d seconds", msec), sec, msec);
+	/* Translators: this is composed of '%d minute' and '%02d.%03d seconds'; change order if needed */
+	c_string = g_strdup_printf (_("%1$s %2$s"), min_string, sec_string);
+
+	g_free(min_string);
+	g_free(sec_string);
+
+	gtk_label_set_text (GTK_LABEL (view->length), c_string);
 	/* FIXME: start heated argument about k = 10^3 or 2^10 */
 	gtk_label_set_text (GTK_LABEL (view->bitrate),
 			    g_strdup_printf ("%.3f kbps",
 				             (double) stream->bitrate / 1024));
+
+	g_free (c_string);
 }
 
 GtkWidget *
@@ -272,6 +211,7 @@ audio_properties_view_new ()
 {
 	AudioPropertiesView *view;
 	GladeXML *xml;
+	GError *error = NULL;
 
 	view = g_new0 (AudioPropertiesView, 1);
 
@@ -283,7 +223,7 @@ audio_properties_view_new ()
 			     "/nautilus/glade/audio-properties-view.glade",
 			     "content", NULL);
 
-	g_return_if_fail (xml != NULL);
+	g_return_val_if_fail (xml != NULL, NULL);
 
 	/* FIXME: check results */
 	view->vbox = glade_xml_get_widget (xml, "content");
@@ -327,7 +267,17 @@ audio_properties_view_new ()
 	//gtk_widget_show (view->vbox);
 
 	/* initialize GStreamer and media info reader */
+        gst_media_info_init ();
 	gst_init (NULL, NULL);
-	view->media_info = gst_media_info_new (NULL);
+	view->media_info = gst_media_info_new (&error);
+	//FIXME: handle possible error
+	if (!gst_media_info_set_source (view->media_info, "gnomevfssrc", &error))
+	{
+		g_print ("Could not set gnomevfssrc as a source\n");
+		g_print ("Reason: %s\n", error->message);
+		g_error_free (error);
+		return NULL;
+	}
+
 	return view;
 }
