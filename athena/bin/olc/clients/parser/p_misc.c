@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v $
- *	$Id: p_misc.c,v 1.6 1990-11-14 12:32:48 lwvanels Exp $
+ *	$Id: p_misc.c,v 1.7 1991-09-10 11:30:16 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.6 1990-11-14 12:32:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.7 1991-09-10 11:30:16 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
+ERRCODE
 do_olc_load_user(arguments)
      char **arguments;
 {
@@ -60,6 +61,7 @@ do_olc_load_user(arguments)
   return(t_load_user(&Request));
 }
 
+ERRCODE
 do_olc_dump(arguments)
      char **arguments;
 {
@@ -127,6 +129,7 @@ do_olc_dump(arguments)
   return(status);
 }
 
+ERRCODE
 do_olc_dbinfo(arguments)
      char **arguments;
 {
