@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.11 1996-11-21 20:28:37 ghudson Exp $
+# $Id: build.sh,v 1.12 1997-01-29 23:40:02 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -33,13 +33,17 @@ case "`uname -a`" in
 	IRIX*)		platform=sgi ;;
 esac
 
-# Send all output friom this point on to the build log file.
+# All output should go to the build log file.
 mkdir -p $build/LOGS 2>/dev/null
-exec >> $build/LOGS/washlog.`date '+%y.%m.%d.%H'` 2>&1
+logfile="$build/LOGS/washlog.`date '+%y.%m.%d.%H'`"
 
-echo ========
-echo starting `date`
-echo on a $platform
+# Just in case the build script itself has any error output, send any
+# error output to a special log file.
+date >> $build/LOGS/wash-script-errors
+exec >> $build/LOGS/wash-script-errors 2>&1
+
+echo "========" >> "$logfile"
+echo "Starting `date` on a $platform" >> "$logfile"
 
 # Read in the list of packages, filtering for platform type.
 packages=`( echo "$platform"; cat "$source/packs/build/packages" ) | awk '
@@ -78,11 +82,12 @@ for package in $packages; do
 
 	# Build the package.
 	cd $build/$package || exit 1
-	echo "**********************"
+	echo "**********************" >> "$logfile"
 	for op in prepare clean all check install; do
-		echo "***** ${package}: $op"
-		sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op" ||
-			{ echo "We bombed in $package"; exit 1; }
+		echo "***** ${package}: $op" >> "$logfile"
+		( sh $source/packs/build/do.sh -s "$source" -d "$srvd" "$op" ||
+			{ echo "We bombed in $package"; exit 1; } ) \
+			>> "$logfile" 2>&1
 	done
 
 	if [ "$package" = "$end" ]; then
@@ -90,4 +95,4 @@ for package in $packages; do
 	fi
 done
 
-echo "Ending `date`"
+echo "Ending `date`" >> "$logfile"
