@@ -1,20 +1,24 @@
 #!/usr/athena/bin/perl
 
-# This perl script mails the CVS commit log to the address given by the first
-# argument, with the subject given by the second argument.  It follows the
-# commit log with context diffs of the modified files and the initial contents
-# of the added files.
+# Usage:
+#	logfilter subject commit-address diff-adddress
+
+# Mails the CVS commit log to commit-address.  Also mails the commit log to
+# diff-address, followed by context diffs of the modified files and the
+# initial contents of added files.
 
 # This script is not specific to any particular repository, but it is
 # specific to the Athena environment in that it assumes the existence
 # of /usr/athena/bin/perl and of mhmail.
 
-open(MAIL, "|mhmail -s $ARGV[1] $ARGV[0]");
+open(COMMITMAIL, "|mhmail -s '$ARGV[0]' $ARGV[1]");
+open(DIFFMAIL, "|mhmail -s '$ARGV[0]' $ARGV[2]");
 
 # Display the commit log as proffered by CVS.  Remember the repository
 # directory, the branch, and the added and modified files.
 while (<STDIN>) {
-	print MAIL;
+	print COMMITMAIL;
+	print DIFFMAIL;
 	if (/^Update of (.*)$/) {
 		$repdir = $1;
 	}
@@ -23,23 +27,28 @@ while (<STDIN>) {
 	}
 	if (/^Added Files:$/) {
 		$line = <STDIN>;
-		print MAIL $line;
+		print COMMITMAIL $line;
+		print DIFFMAIL $line;
 		$line =~ s/^\s+//;
 		@added = split(/\s/, $line);
 	}
 	if (/^Modified Files:$/) {
 		$line = <STDIN>;
-		print MAIL $line;
+		print COMMITMAIL $line;
+		print DIFFMAIL $line;
 		$line =~ s/^\s+//;
 		@modified = split(/\s+/, $line);
 	}
 	if (/^Log Message:$/) {
 		# Flush the rest of the text to avoid confusion.
 		while (<STDIN>) {
-			print MAIL;
+			print COMMITMAIL;
+			print DIFFMAIL;
 		}
 	}
 }
+
+close COMMITMAIL;
 
 foreach $i (@modified) {
 	$rcsfile = "$repdir/$i,v";
@@ -63,10 +72,6 @@ foreach $i (@modified) {
 		}
 	} else {
 		$prefix = "1.";
-	}
-
-	# Skip to the per-revision information.
-	while (<RCSFILE> !~ /^comment/) {
 	}
 
 	# Scan for revisions starting with the prefix.
@@ -99,23 +104,23 @@ foreach $i (@modified) {
 	$prev = ($maxrev == 1) ? $base : $prefix . ($maxrev - 1);
 
 	# Add the diff to the mail message.
-	print MAIL "\n";
-	print MAIL "==================================================\n";
-	print MAIL "Differences for $i (revision $prev -> $current)\n";
-	print MAIL "==================================================\n";
+	print DIFFMAIL "\n";
+	print DIFFMAIL "==================================================\n";
+	print DIFFMAIL "Differences for $i (revision $prev -> $current)\n";
+	print DIFFMAIL "==================================================\n";
 	open(DIFF, "rcsdiff -c -kk -r$prev -r$current $rcsfile 2>/dev/null|");
-	print MAIL while (<DIFF>);
+	print DIFFMAIL while (<DIFF>);
 	close DIFF;
 }
 
 foreach $i (@added) {
-	print MAIL "\n";
-	print MAIL "==================================================\n";
-	print MAIL "Initial contents of new file $i\n";
-	print MAIL "==================================================\n";
+	print DIFFMAIL "\n";
+	print DIFFMAIL "==================================================\n";
+	print DIFFMAIL "Initial contents of new file $i\n";
+	print DIFFMAIL "==================================================\n";
 	open(DIFF, "<$i") || die "Can't open added file $i";
-	print MAIL while (<DIFF>);
+	print DIFFMAIL while (<DIFF>);
 	close DIFF;
 }
 
-close MAIL;
+close DIFFMAIL;
