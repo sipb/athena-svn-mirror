@@ -53,6 +53,7 @@ build_program(testlogoutUser, testlogoutUser.o,, ${LIBS})
 
 SimpleProgram(${NANNY},${NANNYOBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/${NANNY})
 SimpleProgram(${ELMER},${ELMEROBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/login/${ELMER})
-/* install_man(${NANNY}.man,${NANNY}.1) */
+install_man(${NANNY}.8,${NANNY}.8)
+install_man(${ELMER}.8,${ELMER}.8)
 
 create_depend(${CFILES})
