@@ -10,6 +10,7 @@
 #include "cons.h"
 #include "var.h"
 #include "cvt.h"
+#include "nanny.h"
 #include <AL/AL.h>
 
 #define SOCK_SECURE 1
@@ -53,8 +54,6 @@ char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
   var_setValue(ds->vars, name, value, length);
   var_setString(vout, name, "OK");
 }
-
-#define NANNYPORT "/tmp/nanny"
 
 /* Want to be "Nanny," but SGI has a fine enhancement to "last"
    which would cause us to show up if we did this. I don't know
@@ -123,7 +122,7 @@ char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	var_setString(vout, name, "A user is currently logged in.");
       else
 	{
-	  if (!var_getString(ds->vars, "USER", &value))
+	  if (!var_getString(ds->vars, N_USER, &value))
 	    {
 	      var_setString(vout, name, do_login(value, ds));
 	      var_setString(ds->vars, name, "TRUE");
@@ -141,7 +140,7 @@ char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	  {
 	    var_setString(vout, name, do_logout(ds));
 	    var_setString(ds->vars, name, "FALSE");
-	    var_setValue(ds->vars, "USER", NULL, 0);
+	    var_setValue(ds->vars, N_USER, NULL, 0);
 	  }
       }
     else
@@ -224,19 +223,19 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
    causes something to happen immediately, or other special
    attributes. */
 var_def vars[] = {
-  { "USER",		SECURE_SET,	setStd },
-  { "REMOVE_USER",	SECURE_SET,	setStd },
-  { "TTY",		READ_ONLY,	setStd },
-  { "LOGGED_IN",	NONE,		setLogin },
-  { "NANNY_MODE",	SECURE_SET,	setNannyMode },
-  { "XCONSOLE",		NONE,		setConsPref },
-  { "CONSOLE_MODE",	NONE,		setConsMode },
-  { "DEBUG",		NONE,		setDebug },
+  { N_USER,		SECURE_SET,	setStd },
+  { N_RMUSER,		SECURE_SET,	setStd },
+  { N_TTY,		READ_ONLY,	setStd },
+  { N_LOGGED_IN,	NONE,		setLogin },
+  { N_MODE,		SECURE_SET,	setNannyMode },
+  { N_CONSPREF,		NONE,		setConsPref },
+  { N_CONSMODE,		NONE,		setConsMode },
+  { N_DEBUG,		NONE,		setDebug },
 
   /* These aren't actually special, but they are in standard use,
      so we list them for documentation. */
-  { "ELMER_ARGS[",	NONE,		setStd },
-  { "ENV[",		NONE,		setStd },
+  { N_XSESSARGS,	NONE,		setStd },
+  { N_ENV,		NONE,		setStd },
   { NULL,		NONE,		setStd }
 };
 
@@ -466,16 +465,16 @@ int main(int argc, char **argv)
   var_init(&ds.vars);
 
   sprintf(sillybuf, "%d", debug);
-  var_setString(ds.vars, "DEBUG", sillybuf);
+  var_setString(ds.vars, N_DEBUG, sillybuf);
 
   ds.consolePreference = CONS_DOWN;
-  var_setString(ds.vars, "XCONSOLE", "OFF");
+  var_setString(ds.vars, N_CONSPREF, "OFF");
 
   ds.socketSec = SOCK_SECURE;
 
-  var_setString(ds.vars, "NANNY_MODE", "RUN"); /* vs. sleep */
-  var_setString(ds.vars, "CONSOLE_MODE", "OFF");
-  var_setString(ds.vars, "LOGGED_IN", "FALSE");
+  var_setString(ds.vars, N_MODE, "RUN"); /* vs. sleep */
+  var_setString(ds.vars, N_CONSMODE, "OFF");
+  var_setString(ds.vars, N_LOGGED_IN, "FALSE");
 
   /* Start syslogging. */
   openlog(name, LOG_PID, LOG_USER);
@@ -534,7 +533,7 @@ int main(int argc, char **argv)
 	    fprintf(stderr,
 		    "%s: Permission denied opening nanny socket\n", name);
 	  else
-	    ALERROR();
+	    ALERROR(); /* Errrr??? */
 	  exit(1);
 	}
     }
@@ -575,7 +574,7 @@ int main(int argc, char **argv)
   ds.cs = cons_init();
   cons_getpty(ds.cs);
 
-  var_setString(ds.vars, "TTY", cons_name(ds.cs));
+  var_setString(ds.vars, N_TTY, cons_name(ds.cs));
 
 #ifdef DOLINK
   unlink(athconsole);
