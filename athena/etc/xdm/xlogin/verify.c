@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.47 1993-06-29 14:24:18 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.48 1994-04-26 11:13:42 root Exp $
  */
 
 #include <stdio.h>
@@ -212,7 +212,7 @@ char *display;
 
  	pwd = hes_getpwnam(user);
  	if ((pwd == NULL) || pwd->pw_dir[0] == 0) {
-	    bzero(passwd, strlen(passwd));
+	    memset(passwd, 0, strlen(passwd));
 	    cleanup(NULL);
 	    if (hes_error() == HES_ER_NOTFOUND) {
 		sprintf(errbuf, "Unknown user name entered (no hesiod information for \"%s\")", user);
@@ -254,8 +254,8 @@ char *display;
     setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
 #else
 #ifdef SOLARIS
-    setreuid(pwd->pw_uid, -1);
-    setregid(pwd->pw_gid, -1);
+    setuid(pwd->pw_uid);
+    setgid(pwd->pw_gid);
 #else
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
@@ -286,7 +286,7 @@ char *display;
     strcpy(encrypt,crypt(passwd, saltc));	
 
     /* don't need the password anymore */
-    bzero(passwd, strlen(passwd));
+    memset(passwd, 0, strlen(passwd));
 
     if (!local_passwd)
       pwd->pw_passwd = encrypt;
@@ -597,7 +597,11 @@ char *password;
 	fprintf(stderr, "Warning: cannot get address for host %s\n", hostname);
 	return(NULL);
     }
+#ifdef POSIX
+    memmove ((char *) &addr, (char *)hp->h_addr, sizeof (addr));
+#else
     bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
+#endif
 
     error = krb_mk_req(&ticket, rcmd, phost, realm, 0);
     if (error == KDC_PR_UNKNOWN) return(NULL);
@@ -608,13 +612,13 @@ char *password;
     }
     error = krb_rd_req(&ticket, rcmd, phost, addr, &authdata, "");
     if (error != KSUCCESS) {
-	bzero(&ticket, sizeof(ticket));
+	memset(&ticket, 0, sizeof(ticket));
 	sprintf(errbuf, "Unable to authenticate you, kerberos failure %d: %s",
 		error, krb_err_txt[error]);
 	return(errbuf);
     }
-    bzero(&ticket, sizeof(ticket));
-    bzero(&authdata, sizeof(authdata));
+    memset(&ticket, 0, sizeof(ticket));
+    memset(&authdata, 0, sizeof(authdata));
     return(NULL);
 }
 
@@ -997,10 +1001,10 @@ struct passwd *pwd;
 	    } else unlink(buf);
 	} else if (errno != ENOENT)
 	  return("Error while retrieving status of temporary homedir.");
-
+#ifndef SOLARIS
 	if (setreuid(ROOT, pwd->pw_uid) != 0)
 	  return("Error while setting user ID to make temporary home directory.");
-
+#endif
 	if (mkdir(buf, TEMP_DIR_PERM))
 	  return("Error while creating temporary directory.");
 
@@ -1026,7 +1030,12 @@ struct passwd *pwd;
 
 	if (chmod(buf, TEMP_DIR_PERM))
 	  return("Could not change protections on temporary directory.");
+#ifdef SOLARIS
+	if(chown(buf, pwd->pw_uid, -1))
+	  return("Could not change owner of temporary directory.");
+#else
 	setreuid(ROOT, ROOT);
+#endif
     } else
       homedir_status = HD_ATTACHED;
     return(NULL);
@@ -1184,9 +1193,9 @@ char *display;
 #if !defined(_AIX) && !defined(SOLARIS)
     int slot = myttyslot(tty);
 #endif
-    bzero(&ut_entry, sizeof(ut_entry));
+    memset(&ut_entry, 0, sizeof(ut_entry));
 #ifdef SOLARIS
-    bzero(&utx_entry, sizeof(utx_entry));
+    memset(&utx_entry, 0, sizeof(utx_entry));
 #endif
     strncpy(ut_entry.ut_line, tty, 8);
     strncpy(ut_entry.ut_name, user, 8);
