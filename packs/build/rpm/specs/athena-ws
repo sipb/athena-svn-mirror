@@ -18,7 +18,7 @@ MESSAGE
 exit 1
 fi
 
-cc -g -I/usr/include/rpm rpmupdate.c -o rpmupdate -lrpm
+cc -g -I/usr/include/rpm rpmupdate.c -o rpmupdate -lrpm -lpopt
 
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
