@@ -1,4 +1,4 @@
-# $Id: athena,v 1.2 1999-02-09 19:55:48 ghudson Exp $
+# $Id: athena,v 1.3 1999-02-09 20:26:54 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -168,7 +168,7 @@ if [ "$PUBLIC" = true ]; then
 			cp -p /etc/inet/hosts.save /etc/inet/hosts
 			rm -f /etc/inet/hosts.save
 			if [ -f /srvd/etc/athena/rc.conf ]; then
-	       			sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
+				sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
 				  -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
 				  -e "s#^NETDEV=[^;]*#NETDEV=$NETDEV#" \
 				  -e "s#^NETMEDIA=[^;]*#NETMEDIA=$NETMEDIA#" \
@@ -188,9 +188,9 @@ if [ "$PUBLIC" = true ]; then
 			done
 			platform=`uname -m`
 			cp -p "/srvd/etc/driver_aliases.$platform"  \
- 			  /etc/driver_aliases
+			  /etc/driver_aliases
 			cp -p "/srvd/etc/driver_classes.$platform" \
-	 		  /etc/driver_classes
+			  /etc/driver_classes
 			cp -p "/srvd/etc/minor_perm.$platform" /etc/minor_perm
 			cp -p "/srvd/etc/name_to_major.$platform" \
 			  /etc/name_to_major
@@ -317,9 +317,9 @@ else
 fi
 
 if [ "$NOREMOTE" = true ]; then
-        touch /etc/noremote
+	touch /etc/noremote
 else
-        rm -f /etc/noremote
+	rm -f /etc/noremote
 fi
 
 echo "done."
