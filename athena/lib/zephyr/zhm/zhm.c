@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v $
- *      $Author: opus $
+ *      $Author: rfrench $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.18 1987-07-29 14:53:00 opus Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.19 1987-07-31 16:14:44 rfrench Exp $";
 #endif SABER
 #endif lint
 
@@ -56,7 +56,7 @@ extern char *index();
 
 void init_hm(), detach(), handle_timeout(), resend_notices(), die_gracefully();
 void set_sig_type();
-char *upcase(), *convert();
+char *upcase();
 
 main(argc, argv)
 char *argv[];
@@ -256,26 +256,6 @@ char *upcase(s)
       return(r);
 }
 
-/* This must first change the \0 at the end of addr to a '.' */
-char *convert(addr)
-     caddr_t addr;
-{
-      static char result[4];
-      char *c, *r;
-      int i;
-
-      *index(addr, '\0') = '.';
-      c = addr;
-      for (i=0; i<4; i++) {
-	    if ((r = index(c, '.')) > 0) {
-		  *r = '\0';
-		  result[i] = (char)atoi(c);
-		  c = r+1;
-	    }
-      }
-      return(result);
-}
-
 /* Argument is whether we are actually booting, or just attaching
    after a server switch */
 send_boot_notice(op)
@@ -435,16 +415,22 @@ hm_control(notice)
       Code_t ret;
       struct hostent *hp;
       char suggested_server[64];
+      long addr;
 
       DPR("Control message!\n");
       if (!strcmp(notice->z_opcode, SERVER_SHUTDOWN)) {
-	    if ((hp = gethostbyaddr(convert(notice->z_message),
-				    4,
-				    AF_INET)) != NULL) {
-		  strcpy(suggested_server, hp->h_name);
-		  new_server(suggested_server);
-	    } else
-	      new_server(NULL);
+	      if (notice->z_message_len) {
+		      addr = inet_addr(notice->z_message);
+		      if ((hp = gethostbyaddr(&addr,
+					      4,
+					      AF_INET)) != NULL) {
+			      strcpy(suggested_server, hp->h_name);
+			      new_server(suggested_server);
+		      } else
+			      new_server(NULL);
+	      }
+	      else
+		      new_server(NULL);
       } else if (!strcmp(notice->z_opcode, SERVER_PING)) {
 	    if (no_server)
 	      (void)alarm(0);
