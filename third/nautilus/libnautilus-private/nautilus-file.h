@@ -83,8 +83,8 @@ typedef char * (*NautilusTruncateCallback)    (const char    *string,
 					       int	      width,
 					       void	     *context);
 
-/* GtkObject requirements. */
-GtkType                 nautilus_file_get_type                          (void);
+/* GObject requirements. */
+GType                   nautilus_file_get_type                          (void);
 
 /* Getting at a single file. */
 NautilusFile *          nautilus_file_get                               (const char                     *uri);
@@ -159,7 +159,8 @@ void                    nautilus_file_set_keywords                      (Nautilu
 									 GList                          *keywords);
 GList *                 nautilus_file_get_emblem_names                  (NautilusFile                   *file);
 char *                  nautilus_file_get_top_left_text                 (NautilusFile                   *file);
-char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file);
+char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file,
+									 gboolean                       *got_top_left_text);
 gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
 									 GList                         **mime_list);
 

@@ -290,6 +290,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gtkhwrapbox.lo gtkhwrapbox.o : gtkhwrapbox.c ../../../config.h \
+	gtkhwrapbox.h gtkwrapbox.h
+gtkwrapbox.lo gtkwrapbox.o : gtkwrapbox.c ../../../config.h gtkwrapbox.h
 
 info-am:
 info: info-am

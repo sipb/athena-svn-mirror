@@ -356,6 +356,51 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+libmain.lo libmain.o : libmain.c ../../config.h \
+	nautilus-tree-view-iids.h nautilus-tree-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h
+nautilus-tree-change-queue.lo nautilus-tree-change-queue.o : \
+	nautilus-tree-change-queue.c ../../config.h \
+	nautilus-tree-change-queue.h nautilus-tree-node.h \
+	../../libnautilus-private/nautilus-directory.h \
+	../../libnautilus-private/nautilus-file.h
+nautilus-tree-expansion-state.lo nautilus-tree-expansion-state.o : \
+	nautilus-tree-expansion-state.c ../../config.h \
+	nautilus-tree-expansion-state.h \
+	../../libnautilus-private/nautilus-global-preferences.h
+nautilus-tree-model.lo nautilus-tree-model.o : nautilus-tree-model.c \
+	../../config.h nautilus-tree-model.h \
+	../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-directory.h \
+	../../libnautilus-private/nautilus-file-attributes.h \
+	../../libnautilus-private/nautilus-icon-factory.h
+nautilus-tree-node.lo nautilus-tree-node.o : nautilus-tree-node.c \
+	../../config.h nautilus-tree-node.h \
+	../../libnautilus-private/nautilus-directory.h \
+	../../libnautilus-private/nautilus-file.h \
+	nautilus-tree-node-private.h
+nautilus-tree-view-dnd.lo nautilus-tree-view-dnd.o : \
+	nautilus-tree-view-dnd.c ../../config.h \
+	../../libnautilus-private/nautilus-file-operations.h \
+	../../libnautilus-private/nautilus-file.h \
+	nautilus-tree-view-dnd.h nautilus-tree-view-private.h \
+	nautilus-tree-view.h ../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	nautilus-tree-change-queue.h nautilus-tree-node.h \
+	../../libnautilus-private/nautilus-directory.h \
+	nautilus-tree-expansion-state.h nautilus-tree-model.h
+nautilus-tree-view.lo nautilus-tree-view.o : nautilus-tree-view.c \
+	../../config.h nautilus-tree-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	nautilus-tree-model.h ../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-file-attributes.h \
+	../../libnautilus-private/nautilus-file-operations.h \
+	../../libnautilus-private/nautilus-global-preferences.h \
+	../../libnautilus-private/nautilus-program-choosing.h \
+	../../libnautilus-private/nautilus-view-identifier.h \
+	../../libnautilus-private/nautilus-tree-view-drag-dest.h
 
 info-am:
 info: info-am

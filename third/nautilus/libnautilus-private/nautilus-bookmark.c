@@ -58,6 +58,8 @@ struct NautilusBookmarkDetails
 	char *uri;
 	char *icon;
 	NautilusFile *file;
+	
+	char *scroll_file;
 };
 
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
@@ -82,6 +84,7 @@ nautilus_bookmark_finalize (GObject *object)
 	g_free (bookmark->details->name);
 	g_free (bookmark->details->uri);
 	g_free (bookmark->details->icon);
+	g_free (bookmark->details->scroll_file);
 	g_free (bookmark->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -216,8 +219,9 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	}
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
-		(icon, NULL, NULL, 
-		 icon_size, NULL, TRUE, NULL);
+		(icon, NULL,
+		 icon_size, NULL, NULL,
+		 TRUE, NULL);
 	
 	g_free (icon);
 	
@@ -304,7 +308,7 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 	}
 
 	if (nautilus_icon_factory_is_icon_ready_for_file (bookmark->details->file)) {
-		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file);
+		new_icon = nautilus_icon_factory_get_icon_for_file (bookmark->details->file, FALSE);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
 			g_free (bookmark->details->icon);
 			bookmark->details->icon = new_icon;
@@ -542,4 +546,18 @@ nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
 	g_free (path_name);
 
 	return !exists;
+}
+
+void
+nautilus_bookmark_set_scroll_pos (NautilusBookmark      *bookmark,
+				  const char            *uri)
+{
+	g_free (bookmark->details->scroll_file);
+	bookmark->details->scroll_file = g_strdup (uri);
+}
+
+char *
+nautilus_bookmark_get_scroll_pos (NautilusBookmark      *bookmark)
+{
+	return g_strdup (bookmark->details->scroll_file);
 }

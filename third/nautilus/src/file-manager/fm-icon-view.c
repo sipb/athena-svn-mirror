@@ -69,6 +69,7 @@
 #include <libnautilus-private/nautilus-sound.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus/nautilus-scroll-positionable.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdio.h>
@@ -128,6 +129,8 @@ struct FMIconViewDetails
 	const SortCriterion *sort;
 	gboolean sort_reversed;
 
+	NautilusScrollPositionable *positionable;
+	
 	BonoboUIComponent *ui;
 	
 	NautilusAudioPlayerData *audio_player_data;
@@ -226,7 +229,7 @@ fm_icon_view_finalize (GObject *object)
 	}
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
-                gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
+                g_source_remove (icon_view->details->react_to_icon_change_idle_id);
         }
 
 	/* kill any sound preview process that is ongoing */
@@ -448,6 +451,16 @@ handle_radio_item (FMIconView *view,
 }
 
 static void
+list_covers (NautilusIconData *data, gpointer callback_data)
+{
+	GSList **file_list;
+
+	file_list = callback_data;
+
+	*file_list = g_slist_prepend (*file_list, data);
+}
+
+static void
 unref_cover (NautilusIconData *data, gpointer callback_data)
 {
 	nautilus_file_unref (NAUTILUS_FILE (data));
@@ -457,6 +470,7 @@ static void
 fm_icon_view_clear (FMDirectoryView *view)
 {
 	NautilusIconContainer *icon_container;
+	GSList *file_list;
 	
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
@@ -465,8 +479,11 @@ fm_icon_view_clear (FMDirectoryView *view)
 		return;
 
 	/* Clear away the existing icons. */
-	nautilus_icon_container_for_each (icon_container, unref_cover, NULL);
+	file_list = NULL;
+	nautilus_icon_container_for_each (icon_container, list_covers, &file_list);
 	nautilus_icon_container_clear (icon_container);
+	g_slist_foreach (file_list, (GFunc)unref_cover, NULL);
+	g_slist_free (file_list);
 }
 
 
@@ -1704,17 +1721,17 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 	}
 #endif
 	if (icon_view->details->audio_preview_timeout != 0) {
-		gtk_timeout_remove (icon_view->details->audio_preview_timeout);
+		g_source_remove (icon_view->details->audio_preview_timeout);
 		icon_view->details->audio_preview_timeout = 0;
 	}
 			
 	if (start_flag) {
 		icon_view->details->audio_preview_file = file;
 #if USE_OLD_AUDIO_PREVIEW			
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
+		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
 #else
 		/* FIXME: Need to kill the existing timeout if there is one? */
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
+		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
 #endif
 	}
 }
@@ -1925,8 +1942,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 */
 	if (icon_view->details->react_to_icon_change_idle_id == 0) {
                 icon_view->details->react_to_icon_change_idle_id
-                        = gtk_idle_add (fm_icon_view_react_to_icon_change_idle_callback,
-                                        icon_view);
+                        = g_idle_add (fm_icon_view_react_to_icon_change_idle_callback,
+				      icon_view);
 	}
 
 	/* Store the new position of the icon in the metadata. */
@@ -2309,7 +2326,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	if (action == GDK_ACTION_ASK) {
 		action = nautilus_drag_drop_action_ask 
-			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+			(GTK_WIDGET (container),
+			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 	
 	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
@@ -2421,6 +2439,38 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	
 }
 
+static char *
+icon_view_get_first_visible_file_callback (NautilusScrollPositionable *positionable,
+					   FMIconView *icon_view)
+{
+	NautilusFile *file;
+
+	file = NAUTILUS_FILE (nautilus_icon_container_get_first_visible_icon (get_icon_container (icon_view)));
+
+	if (file) {
+		return nautilus_file_get_uri (file);
+	}
+	
+	return NULL;
+}
+
+static void
+icon_view_scroll_to_file_callback (NautilusScrollPositionable *positionable,
+				   const char *uri,
+				   FMIconView *icon_view)
+{
+	NautilusFile *file;
+
+	if (uri != NULL) {
+		file = nautilus_file_get (uri);
+		if (file != NULL) {
+			nautilus_icon_container_scroll_to_icon (get_icon_container (icon_view),
+								NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+			nautilus_file_unref (file);
+		}
+	}
+}
+
 static void
 fm_icon_view_class_init (FMIconViewClass *klass)
 {
@@ -2477,6 +2527,7 @@ static void
 fm_icon_view_instance_init (FMIconView *icon_view)
 {
 	static gboolean setup_sound_preview = FALSE;
+	NautilusView *nautilus_view;
 
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
@@ -2486,6 +2537,11 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 
 	create_icon_container (icon_view);
 
+	icon_view->details->positionable = nautilus_scroll_positionable_new ();
+	nautilus_view = fm_directory_view_get_nautilus_view (FM_DIRECTORY_VIEW (icon_view));
+	bonobo_object_add_interface (BONOBO_OBJECT (nautilus_view),
+				     BONOBO_OBJECT (icon_view->details->positionable));
+	
 	if (!setup_sound_preview) {
 		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 					       &preview_sound_auto_value);
@@ -2515,5 +2571,8 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 
 	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
 				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
-
+	g_signal_connect_object (icon_view->details->positionable, "get_first_visible_file",
+				 G_CALLBACK (icon_view_get_first_visible_file_callback), icon_view, 0);
+	g_signal_connect_object (icon_view->details->positionable, "scroll_to_file",
+				 G_CALLBACK (icon_view_scroll_to_file_callback), icon_view, 0);
 }

@@ -355,6 +355,21 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+libmain.lo libmain.o : libmain.c ../../config.h \
+	nautilus-emblem-view-iids.h nautilus-emblem-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h
+nautilus-emblem-view.lo nautilus-emblem-view.o : nautilus-emblem-view.c \
+	../../config.h nautilus-emblem-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus-private/nautilus-icon-factory.h \
+	../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-icon-dnd.h \
+	../../libnautilus-private/nautilus-icon-container.h \
+	../../libnautilus-private/nautilus-dnd.h \
+	../../libnautilus-private/nautilus-emblem-utils.h \
+	../../libnautilus-private/nautilus-file-utilities.h
 
 info-am:
 info: info-am

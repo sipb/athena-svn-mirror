@@ -1410,7 +1410,7 @@ fm_directory_view_finalize (GObject *object)
 	nautilus_file_unref (view->details->directory_as_file);
 
 	if (view->details->display_selection_idle_id != 0) {
-		gtk_idle_remove (view->details->display_selection_idle_id);
+		g_source_remove (view->details->display_selection_idle_id);
 	}
 
 	remove_update_menus_timeout_callback (view);
@@ -2046,7 +2046,7 @@ still_should_show_file (FMDirectoryView *view, NautilusFile *file)
 static gboolean
 ready_to_load (NautilusFile *file)
 {
-	return nautilus_icon_factory_is_basic_icon_ready_for_file (file);
+	return nautilus_icon_factory_is_icon_ready_for_file (file);
 }
 
 /* Go through all the new added and changed files.
@@ -2246,7 +2246,7 @@ static void
 remove_update_menus_timeout_callback (FMDirectoryView *view) 
 {
 	if (view->details->update_menus_timeout_id != 0) {
-		gtk_timeout_remove (view->details->update_menus_timeout_id);
+		g_source_remove (view->details->update_menus_timeout_id);
 		view->details->update_menus_timeout_id = 0;
 	}
 }
@@ -2334,7 +2334,7 @@ schedule_idle_display_of_pending_files (FMDirectoryView *view)
 	unschedule_timeout_display_of_pending_files (view);
 
 	view->details->display_pending_idle_id =
-		gtk_idle_add_priority (G_PRIORITY_LOW, display_pending_idle_callback, view);
+		g_idle_add_full (G_PRIORITY_LOW, display_pending_idle_callback, view, NULL);
 }
 
 static void
@@ -2351,8 +2351,8 @@ schedule_timeout_display_of_pending_files (FMDirectoryView *view)
 	}
 
 	view->details->display_pending_timeout_id =
-		gtk_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
-				 display_pending_timeout_callback, view);
+		g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
+			       display_pending_timeout_callback, view);
 }
 
 static void
@@ -2361,7 +2361,7 @@ unschedule_idle_display_of_pending_files (FMDirectoryView *view)
 	/* Get rid of idle if it's active. */
 	if (view->details->display_pending_idle_id != 0) {
 		g_assert (view->details->display_pending_timeout_id == 0);
-		gtk_idle_remove (view->details->display_pending_idle_id);
+		g_source_remove (view->details->display_pending_idle_id);
 		view->details->display_pending_idle_id = 0;
 	}
 }
@@ -2372,7 +2372,7 @@ unschedule_timeout_display_of_pending_files (FMDirectoryView *view)
 	/* Get rid of timeout if it's active. */
 	if (view->details->display_pending_timeout_id != 0) {
 		g_assert (view->details->display_pending_idle_id == 0);
-		gtk_timeout_remove (view->details->display_pending_timeout_id);
+		g_source_remove (view->details->display_pending_timeout_id);
 		view->details->display_pending_timeout_id = 0;
 	}
 }
@@ -3727,6 +3727,30 @@ add_bonobo_menu_ui_and_verbs (FMDirectoryView *view, GList *files,
 
 }
 
+static gboolean
+no_locale_at_end (const char *str)
+{
+	int len;
+
+	len = strlen (str);
+	if (len > 3 &&
+	    str[len-3] == '-' &&
+	    g_ascii_isalpha (str[len-2]) &&
+	    g_ascii_isalpha (str[len-1])) {
+		return FALSE;
+	}
+	if (len > 6 &&
+	    str[len-6] == '-' &&
+	    g_ascii_isalpha (str[len-5]) &&
+	    g_ascii_isalpha (str[len-4]) &&
+	    str[len-3] == '_' &&
+	    g_ascii_isalpha (str[len-2]) &&
+	    g_ascii_isalpha (str[len-1])) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
 static GList *
 get_bonobo_menu_verb_names (Bonobo_ServerInfo *info)
 {
@@ -3742,7 +3766,8 @@ get_bonobo_menu_verb_names (Bonobo_ServerInfo *info)
 		/* look for properties that start with "nautilusverb:".  The
 		 * part following the colon is the verb name
 		 */
-		if (strstr (info->props._buffer[i].name, "nautilusverb:")) {
+		if (strstr (info->props._buffer[i].name, "nautilusverb:") &&
+		    no_locale_at_end (info->props._buffer[i].name)) {
 			l = g_list_prepend (l,
 			      g_strdup (&info->props._buffer[i].name[offset]));	
 		}
@@ -4868,7 +4893,7 @@ schedule_update_menus (FMDirectoryView *view)
 	if (view->details->menus_merged
 	    && view->details->update_menus_timeout_id == 0) {
 		view->details->update_menus_timeout_id
-			= gtk_timeout_add (300, update_menus_timeout_callback, view);
+			= g_timeout_add (300, update_menus_timeout_callback, view);
 	}
 }
 
@@ -4892,8 +4917,8 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0) {
 		view->details->display_selection_idle_id
-			= gtk_idle_add (display_selection_info_idle_callback,
-					view);
+			= g_idle_add (display_selection_info_idle_callback,
+				      view);
 	}
 
 	if (view->details->batching_selection_level != 0) {

@@ -2,7 +2,7 @@
 Type=Link
 Name=Server Settings
 Name[ar]=إعدادات الخادم
-Name[be]=Наладка паслужніку
+Name[be]=Наладка паслужніка
 Name[bg]=Настройки на Сървър
 Name[ca]=Configuració del servidor
 Name[cs]=Nastavení serverů
@@ -44,7 +44,7 @@ Name[zh_TW]=伺服器設定
 Comment=Configure network services (web server, DNS server, etc.)
 Comment[ar]=إعداد خدمات الشبكة  (خادم ويب، DNS خادم، الخ...)
 Comment[az]=Şəbəkə xidmətlərini sazla (veb verici, DNS verici vs.)
-Comment[be]=Канфігураваньне сеткавых паслугаў (web-паслужніку, DNS-паслужніку, г.д.)
+Comment[be]=Канфігураваньне сеткавых паслугаў (web-паслужнік, DNS-паслужнік, г.д.)
 Comment[bg]=Конфигуриране на мрежови обслужвания (web сървър, DNS сървър, и др.)
 Comment[ca]=Configura els serveis de xarxa )servidor web, servidor DNS, etc).
 Comment[cs]=Nastavit síťové služby (WWW server, DNS server atd.)

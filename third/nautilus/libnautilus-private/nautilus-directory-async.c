@@ -970,7 +970,7 @@ nautilus_directory_schedule_dequeue_pending (NautilusDirectory *directory)
 {
 	if (directory->details->dequeue_pending_idle_id == 0) {
 		directory->details->dequeue_pending_idle_id
-			= gtk_idle_add (dequeue_pending_idle_callback, directory);
+			= g_idle_add (dequeue_pending_idle_callback, directory);
 	}
 }
 
@@ -1005,7 +1005,7 @@ file_list_cancel (NautilusDirectory *directory)
 	directory_load_cancel (directory);
 	
 	if (directory->details->dequeue_pending_idle_id != 0) {
-		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		g_source_remove (directory->details->dequeue_pending_idle_id);
 		directory->details->dequeue_pending_idle_id = 0;
 	}
 
@@ -1049,7 +1049,7 @@ directory_load_done (NautilusDirectory *directory,
 
 	/* Call the idle function right away. */
 	if (directory->details->dequeue_pending_idle_id != 0) {
-		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		g_source_remove (directory->details->dequeue_pending_idle_id);
 	}
 	dequeue_pending_idle_callback (directory);
 }
@@ -2806,6 +2806,7 @@ file_info_start (NautilusDirectory *directory,
 		return;
 	}
 	directory->details->get_info_file = file;
+	file->details->get_info_failed = FALSE;
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;

@@ -326,6 +326,21 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+egg-recent-item.lo egg-recent-item.o : egg-recent-item.c \
+	egg-recent-item.h egg-recent-vfs-utils.h
+egg-recent-model.lo egg-recent-model.o : egg-recent-model.c \
+	../../config.h egg-recent-model.h egg-recent-item.h \
+	egg-recent-vfs-utils.h
+egg-recent-vfs-utils.lo egg-recent-vfs-utils.o : egg-recent-vfs-utils.c \
+	../../config.h egg-recent-vfs-utils.h
+egg-screen-exec.lo egg-screen-exec.o : egg-screen-exec.c ../../config.h \
+	egg-screen-exec.h
+egg-screen-help.lo egg-screen-help.o : egg-screen-help.c ../../config.h \
+	egg-screen-help.h egg-screen-exec.h
+egg-screen-url.lo egg-screen-url.o : egg-screen-url.c ../../config.h \
+	egg-screen-url.h egg-screen-exec.h
+eggtreemultidnd.lo eggtreemultidnd.o : eggtreemultidnd.c \
+	eggtreemultidnd.h
 
 info-am:
 info: info-am

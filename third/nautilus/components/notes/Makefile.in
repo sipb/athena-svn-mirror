@@ -347,6 +347,15 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+nautilus-notes.lo nautilus-notes.o : nautilus-notes.c ../../config.h \
+	../../libnautilus-private/nautilus-file-attributes.h \
+	../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-global-preferences.h \
+	../../libnautilus-private/nautilus-metadata.h \
+	../../libnautilus/nautilus-clipboard.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view-standard-main.h
 
 info-am:
 info: info-am

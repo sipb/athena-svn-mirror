@@ -45,8 +45,10 @@
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
+#include <libnautilus/nautilus-scroll-positionable.h>
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -61,6 +63,8 @@ struct FMListViewDetails {
 	GtkCellRendererText   *date_modified_cell;
 
 	NautilusZoomLevel zoom_level;
+
+	NautilusScrollPositionable *positionable;
 
 	NautilusTreeViewDragDest *drag_dest;
 };
@@ -862,6 +866,19 @@ click_policy_changed_callback (gpointer callback_data)
 }
 
 static void
+icons_changed_callback (GObject *icon_factory,
+			gpointer callback_data)
+{
+	FMListView *view;
+
+	view = FM_LIST_VIEW (callback_data);
+
+	gtk_tree_model_foreach (GTK_TREE_MODEL (view->details->model),
+				list_view_changed_foreach, NULL);
+}
+
+
+static void
 default_sort_order_changed_callback (gpointer callback_data)
 {
 	FMListView *list_view;
@@ -936,6 +953,63 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 #endif
 }
 
+static char *
+list_view_get_first_visible_file_callback (NautilusScrollPositionable *positionable,
+					   FMListView *list_view)
+{
+	NautilusFile *file;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+
+	if (gtk_tree_view_get_path_at_pos (list_view->details->tree_view,
+					   0, 0,
+					   &path, NULL, NULL, NULL)) {
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (list_view->details->model),
+					 &iter, path);
+
+		gtk_tree_path_free (path);
+	
+		gtk_tree_model_get (GTK_TREE_MODEL (list_view->details->model),
+				    &iter,
+				    FM_LIST_MODEL_FILE_COLUMN, &file,
+				    -1);
+		if (file) {
+			return nautilus_file_get_uri (file);
+		}
+	}
+	
+	return NULL;
+}
+
+static void
+list_view_scroll_to_file_callback (NautilusScrollPositionable *positionable,
+				   const char *uri,
+				   FMListView *list_view)
+{
+	NautilusFile *file;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+
+	if (uri != NULL) {
+		file = nautilus_file_get (uri);
+
+		if (!fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+			nautilus_file_unref (file);
+			return;
+		}
+		
+		path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+
+		gtk_tree_view_scroll_to_cell (list_view->details->tree_view,
+					      path, NULL,
+					      TRUE, 0.0, 0.0);
+
+		gtk_tree_path_free (path);
+		nautilus_file_unref (file);
+	}
+}
+
+
 static void
 fm_list_view_class_init (FMListViewClass *class)
 {
@@ -979,9 +1053,17 @@ fm_list_view_class_init (FMListViewClass *class)
 static void
 fm_list_view_instance_init (FMListView *list_view)
 {
+	NautilusView *nautilus_view;
+	
 	list_view->details = g_new0 (FMListViewDetails, 1);
 
 	create_and_set_up_tree_view (list_view);
+
+	list_view->details->positionable = nautilus_scroll_positionable_new ();
+	nautilus_view = fm_directory_view_get_nautilus_view (FM_DIRECTORY_VIEW (list_view));
+	bonobo_object_add_interface (BONOBO_OBJECT (nautilus_view),
+				     BONOBO_OBJECT (list_view->details->positionable));
+
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						  click_policy_changed_callback,
@@ -999,4 +1081,14 @@ fm_list_view_instance_init (FMListView *list_view)
 	click_policy_changed_callback (list_view);
 	
 	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
+	
+	g_signal_connect_object 
+		(nautilus_icon_factory_get (),
+		 "icons_changed",
+		 G_CALLBACK (icons_changed_callback),
+		 list_view, 0);
+	g_signal_connect_object (list_view->details->positionable, "get_first_visible_file",
+				 G_CALLBACK (list_view_get_first_visible_file_callback), list_view, 0);
+	g_signal_connect_object (list_view->details->positionable, "scroll_to_file",
+				 G_CALLBACK (list_view_scroll_to_file_callback), list_view, 0);
 }

@@ -569,7 +569,7 @@
       <applyto>/apps/nautilus/list_view/default_zoom_level</applyto>
       <owner>nautilus</owner>
       <type>string</type>
-      <default>small</default>
+      <default>smaller</default>
       <locale name="C">
          <short>Default zoom level used by the list view</short>
          <long>
@@ -662,6 +662,20 @@
          <long>
            If set to true, newly opened windows will have the side
 	   bar visible.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/side_pane_view</key>
+      <applyto>/apps/nautilus/preferences/side_pane_view</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+         <short>Side pane view</short>
+         <long>
+	   The side pane view to show in newly opened windows.
          </long>
       </locale>
     </schema>

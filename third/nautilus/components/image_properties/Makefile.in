@@ -354,6 +354,19 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+libmain.lo libmain.o : libmain.c ../../config.h \
+	nautilus-image-properties-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h
+main.o: main.c ../../config.h nautilus-image-properties-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view-standard-main.h
+nautilus-image-properties-view.lo nautilus-image-properties-view.o : \
+	nautilus-image-properties-view.c ../../config.h \
+	nautilus-image-properties-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h
 
 info-am:
 info: info-am

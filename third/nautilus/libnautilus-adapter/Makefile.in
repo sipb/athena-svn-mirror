@@ -333,6 +333,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+nautilus-adapter-factory-common.lo nautilus-adapter-factory-common.o : \
+	nautilus-adapter-factory-common.c nautilus-adapter-factory.h \
+	../libnautilus/nautilus-view-component.h
+nautilus-adapter-factory-skels.lo nautilus-adapter-factory-skels.o : \
+	nautilus-adapter-factory-skels.c nautilus-adapter-factory.h \
+	../libnautilus/nautilus-view-component.h
+nautilus-adapter-factory-stubs.lo nautilus-adapter-factory-stubs.o : \
+	nautilus-adapter-factory-stubs.c nautilus-adapter-factory.h \
+	../libnautilus/nautilus-view-component.h
 
 info-am:
 info: info-am

@@ -31,6 +31,7 @@
 #include <string.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-vfs-extensions.h>
+#include <gconf/gconf-client.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/nautilus-view.h>
@@ -39,10 +40,14 @@
 #define VIEW_IID    "OAFIID:Nautilus_Text_View" 
 #define FACTORY_IID "OAFIID:Nautilus_Text_View_Factory"
 
+#define NAUTILUS_TEXT_VIEW_PATH_COPY "/commands/Copy Text"
+
 typedef struct {
 	NautilusView base;
 
+        GtkTextView *view;
         GtkTextBuffer *buffer;
+        BonoboUIComponent *ui;
 
         EelReadFileHandle *read_handle;
 } NautilusTextView;
@@ -179,15 +184,74 @@ load_location (NautilusView *view, const char *location_uri)
 }
 
 static void
+copy_callback (BonoboUIComponent *component,
+               gpointer callback_data,
+               const char *verb)
+{
+        NautilusTextView *text_view;
+        GdkDisplay *display;
+        
+        text_view = (NautilusTextView*)callback_data;
+
+        display = gtk_widget_get_display (GTK_WIDGET (text_view->view));
+        
+        gtk_text_buffer_copy_clipboard 
+                (text_view->buffer, 
+                 gtk_clipboard_get_for_display (display, GDK_NONE));
+}
+
+static void
+bonobo_control_activate_callback (BonoboObject *control,
+                                  gboolean state,
+                                  gpointer callback_data)
+{
+        NautilusTextView *text_view;
+        BonoboUIVerb verbs[] = {
+                BONOBO_UI_VERB ("Copy Text", copy_callback),
+                BONOBO_UI_VERB_END
+        };
+        
+        text_view = (NautilusTextView *)callback_data;
+        
+        if (state) {
+                text_view->ui = nautilus_view_set_up_ui
+                        (NAUTILUS_VIEW (text_view),
+                         DATADIR,
+                         "nautilus-text-view-ui.xml",
+                         "nautilus-text-view");
+                bonobo_ui_component_add_verb_list_with_data (text_view->ui,
+                                                             verbs,
+                                                             text_view);
+        }
+}
+
+static void
 nautilus_text_view_instance_init (NautilusTextView *view)
 {
         GtkWidget *text_view;
         GtkWidget *scrolled_window;
+        PangoFontDescription *monospace_font_desc;
+        GConfClient *conf_client;
+        char *monospace_font;
         
         text_view = gtk_text_view_new ();
+        view->view = GTK_TEXT_VIEW (text_view);
+        
         gtk_text_view_set_editable (GTK_TEXT_VIEW (text_view), FALSE);
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text_view), GTK_WRAP_WORD);
+        gtk_text_view_set_left_margin (GTK_TEXT_VIEW (text_view), 3);
+        gtk_text_view_set_right_margin (GTK_TEXT_VIEW (text_view), 3);
 
+        /* Pick up the monospace font from desktop preferences */
+        conf_client = gconf_client_get_default ();
+        monospace_font = gconf_client_get_string (conf_client, "/desktop/gnome/interface/monospace_font_name", NULL);
+        if (monospace_font) {
+                monospace_font_desc = pango_font_description_from_string (monospace_font);
+                gtk_widget_modify_font (text_view, monospace_font_desc);
+                pango_font_description_free (monospace_font_desc);
+        }
+        g_object_unref (conf_client);      
+        
         scrolled_window = gtk_scrolled_window_new (NULL, NULL);
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
                                         GTK_POLICY_AUTOMATIC,
@@ -201,6 +265,11 @@ nautilus_text_view_instance_init (NautilusTextView *view)
         view->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
 
         nautilus_view_construct (NAUTILUS_VIEW (view), scrolled_window);
+
+        g_signal_connect_object (
+                nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view)),
+                "activate", G_CALLBACK (bonobo_control_activate_callback),
+                view, 0);           
 }
 
 static void

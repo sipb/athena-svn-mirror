@@ -108,7 +108,8 @@ typedef struct {
 	char *       (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   GList **emblem_icons,
-						   char **embedded_text);
+						   char **embedded_text,
+						   gboolean *embedded_text_needs_loading);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,
@@ -119,6 +120,12 @@ typedef struct {
 	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
+	void         (* start_monitor_top_left)   (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   gconstpointer client);
+	void         (* stop_monitor_top_left)    (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   gconstpointer client);
 
 	/* Queries on icons for subclass/client.
 	 * These must be implemented => These are signals !
@@ -184,6 +191,9 @@ void              nautilus_icon_container_request_update_all            (Nautilu
 void              nautilus_icon_container_reveal                        (NautilusIconContainer  *container,
 									 NautilusIconData       *data);
 gboolean          nautilus_icon_container_is_empty                      (NautilusIconContainer  *container);
+NautilusIconData *nautilus_icon_container_get_first_visible_icon        (NautilusIconContainer  *container);
+void              nautilus_icon_container_scroll_to_icon                (NautilusIconContainer  *container,
+									 NautilusIconData       *data);
 
 /* control the layout */
 gboolean          nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);

@@ -426,6 +426,21 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+main.o: main.c ../../config.h nautilus-hardware-view.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view-standard-main.h \
+	../../libnautilus-private/nautilus-global-preferences.h
+nautilus-hardware-view.o: nautilus-hardware-view.c ../../config.h \
+	nautilus-hardware-view.h ../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus-private/nautilus-directory-background.h \
+	../../libnautilus-private/nautilus-file.h \
+	../../libnautilus-private/nautilus-icon-container.h \
+	../../libnautilus-private/nautilus-icon-factory.h \
+	../../libnautilus-private/nautilus-file-utilities.h \
+	../../libnautilus-private/nautilus-metadata.h \
+	../../libnautilus/libnautilus.h
 
 info-am:
 info: info-recursive

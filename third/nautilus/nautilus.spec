@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             nautilus
 Summary:          Nautilus is a network user environment
-Version:          2.2.0.2
+Version:          2.2.2
 Release:          1
 License:          GPL
 Group:            User Interface/Desktop
@@ -12,7 +12,7 @@ BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
 Requires:         esound >= @ESOUND_REQUIRED@
 Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.2.0
+Requires:         eel2 >= 2.2.2
 Requires:         glib2 >= @GLIB_REQUIRED@
 Requires:         gnome-vfs2 >= 2.1.5
 Requires:         gtk2 >= @GTK_REQUIRED@
@@ -26,7 +26,7 @@ Requires:         librsvg2 >= 2.0.1
 Requires:         libxml2 >= 2.4.7
 BuildRequires:    esound-devel >= @ESOUND_REQUIRED@
 BuildRequires:    bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-BuildRequires:    eel2-devel >= 2.2.0
+BuildRequires:    eel2-devel >= 2.2.2
 BuildRequires:    glib2-devel >= @GLIB_REQUIRED@
 BuildRequires:    gnome-vfs2-devel >= 2.1.5
 BuildRequires:    gtk2-devel >= @GTK_REQUIRED@
@@ -56,8 +56,8 @@ Requires:         esound >= @ESOUND_REQUIRED@
 Requires:         esound-devel >= @ESOUND_REQUIRED@
 Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
 Requires:         bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.2.0
-Requires:         eel2-devel >= 2.2.0
+Requires:         eel2 >= 2.2.2
+Requires:         eel2-devel >= 2.2.2
 Requires:         glib2 >= @GLIB_REQUIRED@
 Requires:         glib2-devel >= @GLIB_REQUIRED@
 Requires:         gnome-vfs2 >= 2.1.5

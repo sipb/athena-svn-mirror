@@ -547,8 +547,8 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 	if (handle->cancel) {
 		activation_cancel (handle);
 	} else {
-		handle->idle_id = gtk_idle_add (activation_idle_callback,
-						handle);
+		handle->idle_id = g_idle_add (activation_idle_callback,
+					      handle);
 	}
 }
 
@@ -610,7 +610,7 @@ nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 		/* no way to cancel the underlying bonobo-activation call, so we just set a flag */
 		handle->cancel = TRUE;
 	} else {
-		gtk_idle_remove (handle->idle_id);
+		g_source_remove (handle->idle_id);
 		activation_cancel (handle);
 	}
 }
@@ -619,12 +619,14 @@ Bonobo_RegistrationResult
 nautilus_bonobo_activation_register_for_display (const char    *iid,
 						 Bonobo_Unknown ref)
 {
-	char *real_iid;
+	const char *display_name;
+	GSList *reg_env ;
 	Bonobo_RegistrationResult result;
-
-	real_iid = eel_bonobo_make_registration_id (iid);
-	result = bonobo_activation_active_server_register (real_iid, ref);
-	g_free (real_iid);
-
+	
+	display_name = gdk_display_get_name (gdk_display_get_default());
+	reg_env = bonobo_activation_registration_env_set (NULL,
+							  "DISPLAY", display_name);
+	result = bonobo_activation_register_active_server (iid, ref, reg_env);
+	bonobo_activation_registration_env_free (reg_env);
 	return result;
 }

@@ -111,6 +111,10 @@
 #define DEFAULT_LIGHT_INFO_COLOR 0xAAAAFD
 #define DEFAULT_DARK_INFO_COLOR  0x33337F
 
+#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH       20
+#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT      20
+
+
 enum {
 	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
 	/* After this time the current typeselect buffer will be
@@ -131,31 +135,38 @@ typedef struct {
 
 static GType         nautilus_icon_container_accessible_get_type (void);
 
-static void          activate_selected_items               (NautilusIconContainer      *container);
-static void          nautilus_icon_container_theme_changed (gpointer                    user_data);
-static void          compute_stretch                       (StretchState               *start,
-							    StretchState               *current);
-static NautilusIcon *get_first_selected_icon               (NautilusIconContainer      *container);
-static NautilusIcon *get_nth_selected_icon                 (NautilusIconContainer      *container,
-							    int                         index);
-static gboolean      has_multiple_selection                (NautilusIconContainer      *container);
-static void          icon_destroy                          (NautilusIconContainer      *container,
-							    NautilusIcon               *icon);
-static void          end_renaming_mode                     (NautilusIconContainer      *container,
-							    gboolean                    commit);
-static NautilusIcon *get_icon_being_renamed                (NautilusIconContainer      *container);
-static void          finish_adding_new_icons               (NautilusIconContainer      *container);
-static void          update_label_color                    (EelBackground              *background,
-							    NautilusIconContainer      *icon_container);
-static void          icon_get_bounding_box                 (NautilusIcon               *icon,
-							    int                        *x1_return,
-							    int                        *y1_return,
-							    int                        *x2_return,
-							    int                        *y2_return);
-static gboolean      is_renaming                           (NautilusIconContainer      *container);
-static gboolean      is_renaming_pending                   (NautilusIconContainer      *container);
-static void          process_pending_icon_to_rename        (NautilusIconContainer      *container);
-static void          setup_label_gcs                       (NautilusIconContainer      *container);
+static void          activate_selected_items                        (NautilusIconContainer *container);
+static void          nautilus_icon_container_theme_changed          (gpointer               user_data);
+static void          compute_stretch                                (StretchState          *start,
+								     StretchState          *current);
+static NautilusIcon *get_first_selected_icon                        (NautilusIconContainer *container);
+static NautilusIcon *get_nth_selected_icon                          (NautilusIconContainer *container,
+								     int                    index);
+static gboolean      has_multiple_selection                         (NautilusIconContainer *container);
+static void          icon_destroy                                   (NautilusIconContainer *container,
+								     NautilusIcon          *icon);
+static void          end_renaming_mode                              (NautilusIconContainer *container,
+								     gboolean               commit);
+static NautilusIcon *get_icon_being_renamed                         (NautilusIconContainer *container);
+static void          finish_adding_new_icons                        (NautilusIconContainer *container);
+static void          update_label_color                             (EelBackground         *background,
+								     NautilusIconContainer *icon_container);
+static void          icon_get_bounding_box                          (NautilusIcon          *icon,
+								     int                   *x1_return,
+								     int                   *y1_return,
+								     int                   *x2_return,
+								     int                   *y2_return);
+static gboolean      is_renaming                                    (NautilusIconContainer *container);
+static gboolean      is_renaming_pending                            (NautilusIconContainer *container);
+static void          process_pending_icon_to_rename                 (NautilusIconContainer *container);
+static void          setup_label_gcs                                (NautilusIconContainer *container);
+static void          nautilus_icon_container_stop_monitor_top_left  (NautilusIconContainer *container,
+								     NautilusIconData      *data,
+								     gconstpointer          client);
+static void          nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
+								     NautilusIconData      *data,
+								     gconstpointer          client);
+
 
 static int click_policy_auto_value;
 
@@ -374,8 +385,8 @@ icon_toggle_selected (NautilusIconContainer *container,
 
 	icon->is_selected = !icon->is_selected;
 	eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
-			       "highlighted_for_selection", (gboolean) icon->is_selected,
-			       NULL);
+			     "highlighted_for_selection", (gboolean) icon->is_selected,
+			     NULL);
 
 	/* If the icon is deselected, then get rid of the stretch handles.
 	 * No harm in doing the same if the item is newly selected.
@@ -611,7 +622,7 @@ unschedule_keyboard_icon_reveal (NautilusIconContainer *container)
 	details = container->details;
 
 	if (details->keyboard_icon_reveal_timer_id != 0) {
-		gtk_timeout_remove (details->keyboard_icon_reveal_timer_id);
+		g_source_remove (details->keyboard_icon_reveal_timer_id);
 	}
 }
 
@@ -627,9 +638,9 @@ schedule_keyboard_icon_reveal (NautilusIconContainer *container,
 
 	details->keyboard_icon_to_reveal = icon;
 	details->keyboard_icon_reveal_timer_id
-		= gtk_timeout_add (KEYBOARD_ICON_REVEAL_TIMEOUT,
-				   keyboard_icon_reveal_timeout_callback,
-				   container);
+		= g_timeout_add (KEYBOARD_ICON_REVEAL_TIMEOUT,
+				 keyboard_icon_reveal_timeout_callback,
+				 container);
 }
 
 static void
@@ -1309,7 +1320,7 @@ static void
 unschedule_redo_layout (NautilusIconContainer *container)
 {
         if (container->details->idle_id != 0) {
-		gtk_idle_remove (container->details->idle_id);
+		g_source_remove (container->details->idle_id);
 		container->details->idle_id = 0;
 	}
 }
@@ -1319,7 +1330,7 @@ schedule_redo_layout (NautilusIconContainer *container)
 {
 	if (container->details->idle_id == 0
 	    && container->details->has_been_allocated) {
-		container->details->idle_id = gtk_idle_add
+		container->details->idle_id = g_idle_add
 			(redo_layout_callback, container);
 	}
 }
@@ -1716,7 +1727,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	band_info->active = TRUE;
 
 	if (band_info->timer_id == 0) {
-		band_info->timer_id = gtk_timeout_add
+		band_info->timer_id = g_timeout_add
 			(RUBBERBAND_TIMEOUT_INTERVAL,
 			 rubberband_timeout_callback,
 			 container);
@@ -1737,7 +1748,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info = &container->details->rubberband_info;
 
 	g_assert (band_info->timer_id != 0);
-	gtk_timeout_remove (band_info->timer_id);
+	g_source_remove (band_info->timer_id);
 	band_info->timer_id = 0;
 
 	band_info->active = FALSE;
@@ -2395,17 +2406,17 @@ destroy (GtkObject *object)
         nautilus_icon_container_clear (container);
 
 	if (container->details->rubberband_info.timer_id != 0) {
-		gtk_timeout_remove (container->details->rubberband_info.timer_id);
+		g_source_remove (container->details->rubberband_info.timer_id);
 		container->details->rubberband_info.timer_id = 0;
 	}
 
         if (container->details->idle_id != 0) {
-		gtk_idle_remove (container->details->idle_id);
+		g_source_remove (container->details->idle_id);
 		container->details->idle_id = 0;
 	}
 
 	if (container->details->stretch_idle_id != 0) {
-		gtk_idle_remove (container->details->stretch_idle_id);
+		g_source_remove (container->details->stretch_idle_id);
 		container->details->stretch_idle_id = 0;
 	}
        
@@ -2577,7 +2588,7 @@ button_press_event (GtkWidget *widget,
 	last_click_time = current_time;
 
 	/* Ignore double click if we are in single click mode */
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {
 		return TRUE;
 	}
 
@@ -2662,15 +2673,21 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 		
 	details = container->details;
 
-	if (!button_event_modifies_selection (event) && !details->drag_icon->is_selected) {
-		selection_changed = select_one_unselect_others 
-			(container, details->drag_icon);
-		
-		if (selection_changed) {
+	if (details->icon_selected_on_button_down) {
+		if (button_event_modifies_selection (event)) {
+			icon_toggle_selected (container, details->drag_icon);
 			g_signal_emit (container,
-					 signals[SELECTION_CHANGED], 0);
+				       signals[SELECTION_CHANGED], 0);
+		} else {
+			selection_changed = select_one_unselect_others 
+				(container, details->drag_icon);
+			
+			if (selection_changed) {
+				g_signal_emit (container,
+					       signals[SELECTION_CHANGED], 0);
+			}
 		}
-	}
+	} 
 	
 	if (details->drag_icon != NULL) {		
 		/* If single-click mode, activate the selected icons, unless modifying
@@ -2697,7 +2714,7 @@ static void
 remove_context_menu_timeout (NautilusIconContainer *container)
 {
 	if (container->details->context_menu_timeout_id != 0) {
-		gtk_timeout_remove (container->details->context_menu_timeout_id);
+		g_source_remove (container->details->context_menu_timeout_id);
 		container->details->context_menu_timeout_id = 0;
 	}
 }
@@ -2804,7 +2821,7 @@ continue_stretching (NautilusIconContainer *container,
 	container->details->world_y = world_y;
 
 	if (container->details->stretch_idle_id == 0) {		
-		container->details->stretch_idle_id = gtk_idle_add ((GtkFunction) update_stretch_at_idle, container);
+		container->details->stretch_idle_id = g_idle_add ((GtkFunction) update_stretch_at_idle, container);
 	}
 }
 
@@ -3655,6 +3672,24 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 	details = container->details;
 
+	if (event->button == DRAG_BUTTON &&
+	    event->type == GDK_BUTTON_PRESS) {
+		/* The next double click has to be on this icon */
+		details->double_click_icon[1] = details->double_click_icon[0];
+		details->double_click_icon[0] = icon;
+	}
+	if (event->type == GDK_2BUTTON_PRESS &&
+	    event->button == DRAG_BUTTON) {
+		if (icon == details->double_click_icon[1]) {
+			/* Double clicking does not trigger a D&D action. */
+			details->drag_button = 0;
+			details->drag_icon = NULL;
+			
+			activate_selected_items (container);
+		}
+		return TRUE;
+	}
+	
 	if (event->button == DRAG_BUTTON
 	    || event->button == DRAG_MENU_BUTTON) {
 		details->drag_button = event->button;
@@ -3674,33 +3709,30 @@ handle_icon_button_press (NautilusIconContainer *container,
 			}
 		}
 	}
-	else if (event->button == CONTEXTUAL_MENU_BUTTON) {
+
+	/* Modify the selection as appropriate. Selection is modified
+	 * the same way for contextual menu as it would be without. 
+	 */
+	details->icon_selected_on_button_down = icon->is_selected;
+	if (!details->icon_selected_on_button_down) {
+		if (button_event_modifies_selection (event)) {
+			icon_toggle_selected (container, icon);
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
+		} else {
+			unselect_all (container);
+			icon_set_selected (container, icon, TRUE);
+			g_signal_emit (container,
+				       signals[SELECTION_CHANGED], 0);
+		}
+	}
+
+	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		g_signal_emit (container,
 			       signals[CONTEXT_CLICK_SELECTION], 0,
 			       event);
 	}
 
-	/* Modify the selection as appropriate. Selection is modified
-	 * the same way for contextual menu as it would be without. 
-	 */
-	if (button_event_modifies_selection (event)) {
-		icon_toggle_selected (container, icon);
-		g_signal_emit (container,
-			       signals[SELECTION_CHANGED], 0);
-	} else if (!icon->is_selected) {
-		unselect_all (container);
-		icon_set_selected (container, icon, TRUE);
-		g_signal_emit (container,
-			       signals[SELECTION_CHANGED], 0);
-	}
-
-	if (event->type == GDK_2BUTTON_PRESS && event->button == DRAG_BUTTON) {
-		/* Double clicking does not trigger a D&D action. */
-		details->drag_button = 0;
-		details->drag_icon = NULL;
-
-		activate_selected_items (container);
-	}
 
 	return TRUE;
 }
@@ -3746,6 +3778,7 @@ void
 nautilus_icon_container_clear (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
+	NautilusIcon *icon;
 	GList *p;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -3765,6 +3798,12 @@ nautilus_icon_container_clear (NautilusIconContainer *container)
 	details->drop_target = NULL;
 
 	for (p = details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->is_monitored) {
+			nautilus_icon_container_stop_monitor_top_left (container,
+								       icon->data,
+								       icon);
+		}
 		icon_free (p->data);
 	}
 	g_list_free (details->icons);
@@ -3782,6 +3821,76 @@ gboolean
 nautilus_icon_container_is_empty (NautilusIconContainer *container)
 {
 	return container->details->icons == NULL;
+}
+
+NautilusIconData *
+nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container)
+{
+	GList *l;
+	NautilusIcon *icon;
+	GtkAdjustment *vadj;
+	double x, y;
+	double x1, y1, x2, y2;
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+
+	eel_canvas_c2w (EEL_CANVAS (container),
+			0, vadj->value,
+			&x, &y);
+
+	l = container->details->icons;
+	while (l != NULL) {
+		icon = l->data;
+
+		if (icon_is_positioned (icon)) {
+			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
+						    &x1, &y1, &x2, &y2);
+			if (y2 > y) {
+				return icon->data;
+			}
+		}
+		
+		l = l->next;
+	}
+	return NULL;
+}
+
+void
+nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
+					NautilusIconData       *data)
+{
+	GList *l;
+	NautilusIcon *icon;
+	GtkAdjustment *vadj;
+	int x, y;
+	double x1, y1, x2, y2;
+	EelCanvasItem *item;
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+
+	l = container->details->icons;
+	while (l != NULL) {
+		icon = l->data;
+
+		if (icon->data == data &&
+		    icon_is_positioned (icon)) {
+			item = EEL_CANVAS_ITEM (icon->item);
+			eel_canvas_item_get_bounds (item,
+						    &x1, &y1, &x2, &y2);
+			eel_canvas_item_i2w (item->parent,
+					     &x1,
+					     &y1);
+			eel_canvas_w2c (item->canvas,
+					x1, y1,
+					&x, &y);
+
+			y = MAX (0, y);
+			
+			eel_gtk_adjustment_set_value (vadj, y);
+		}
+		
+		l = l->next;
+	}
 }
 
 /* Call a function for all the icons. */
@@ -3858,6 +3967,11 @@ icon_destroy (NautilusIconContainer *container,
 		set_pending_icon_to_reveal (container, NULL);
 	}
 
+	if (icon->is_monitored) {
+		nautilus_icon_container_stop_monitor_top_left (container,
+							       icon->data,
+							       icon);
+	}
 	icon_free (icon);
 
 	if (was_selected) {
@@ -3904,14 +4018,15 @@ static char *
 nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
 					 NautilusIconData      *data,
 					 GList                **emblem_icons,
-					 char                 **embedded_text)
+					 char                 **embedded_text,
+					 gboolean              *embedded_text_needs_loading)
 {
 	NautilusIconContainerClass *klass;
 
 	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
 	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
 
-	return klass->get_icon_images (container, data, emblem_icons, embedded_text);
+	return klass->get_icon_images (container, data, emblem_icons, embedded_text, embedded_text_needs_loading);
 }
 
 
@@ -3929,6 +4044,33 @@ nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
 	klass->get_icon_text (container, data, editable_text, additional_text);
 }
 
+static void
+nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
+						NautilusIconData *data,
+						gconstpointer client)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->start_monitor_top_left != NULL);
+
+	klass->start_monitor_top_left (container, data, client);
+}
+
+static void
+nautilus_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
+					       NautilusIconData *data,
+					       gconstpointer client)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->stop_monitor_top_left != NULL);
+
+	klass->stop_monitor_top_left (container, data, client);
+}
+
+
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
@@ -3944,6 +4086,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_icon_names, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	char *embedded_text;
+	GdkRectangle embedded_text_rect;
+	gboolean embedded_text_needs_loading;
 	
 	if (icon == NULL) {
 		return;
@@ -3957,7 +4101,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	icon_name = nautilus_icon_container_get_icon_images (
 		container, icon->data, 
 		&emblem_icon_names,
-		&embedded_text);
+		&embedded_text, &embedded_text_needs_loading);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * EEL_CANVAS (container)->pixels_per_unit;
@@ -3972,13 +4116,20 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon_name,
 		(icon == details->drop_target) ? "accept" : NULL,
-		 embedded_text,
 		 icon_size,
 		 &attach_points,
+		 &embedded_text_rect,
 		 TRUE, NULL);
 	
 	g_free (icon_name);
 
+	if (embedded_text_rect.width > MINIMUM_EMBEDDED_TEXT_RECT_WIDTH &&
+	    embedded_text_rect.height > MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT &&
+	    embedded_text_needs_loading) {
+		icon->is_monitored = TRUE;
+		nautilus_icon_container_start_monitor_top_left (container, icon->data, icon);
+	}
+	
 	/* in the rare case an image is too small, scale it up */
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
@@ -4004,8 +4155,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
 			 NULL,
-			 NULL,
 			 MIN (icon_size, MAXIMUM_EMBLEM_SIZE),
+			 NULL,
 			 NULL,
 			 FALSE, NULL);
 		if (emblem_pixbuf != NULL) {
@@ -4042,6 +4193,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
+	nautilus_icon_canvas_item_set_embedded_text_rect (icon->item, &embedded_text_rect);
+	nautilus_icon_canvas_item_set_embedded_text (icon->item, embedded_text);
 
 	/* Let the pixbufs go. */
 	g_object_unref (pixbuf);
@@ -4978,16 +5131,42 @@ process_pending_icon_to_rename (NautilusIconContainer *container)
 	}
 }
 
-gboolean
+static gboolean
 is_renaming_pending (NautilusIconContainer *container)
 {
 	return get_pending_icon_to_rename (container) != NULL;
 }
 
-gboolean
+static gboolean
 is_renaming (NautilusIconContainer *container)
 {
 	return container->details->renaming;
+}
+
+static int 
+rename_filename_selection_end (const char *filename)
+{
+	const char *end, *end2;
+
+	end = strrchr (filename, '.');
+
+	if (end && end != filename) {
+		if (strcmp (end, ".gz") == 0 ||
+		    strcmp (end, ".bz2") == 0 ||
+		    strcmp (end, ".sit") == 0 ||
+		    strcmp (end, ".Z") == 0) {
+			end2 = end - 1;
+			while (end2 > filename &&
+			       *end2 != '.') {
+				end2--;
+			}
+			if (end2 != filename) {
+				end = end2;
+			}
+		}
+		return g_utf8_pointer_to_offset (filename, end);
+	}
+	return g_utf8_strlen (filename, -1);
 }
 
 /**
@@ -5002,6 +5181,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	ArtDRect icon_rect;
+	PangoContext *context;
+	PangoFontDescription *desc;
 	const char *editable_text;
 	int x, y, width;
 
@@ -5052,6 +5233,20 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				details->rename_widget, 0, 0);
 	} 
 
+	/* Set the right font */
+	if (details->font) {
+		desc = pango_font_description_from_string (details->font);
+	} else {
+		context = gtk_widget_get_pango_context (GTK_WIDGET (container));
+		desc = pango_font_description_copy (pango_context_get_font_description (context));
+		pango_font_description_set_size (desc,
+						 pango_font_description_get_size (desc) +
+						 container->details->font_size_table [container->details->zoom_level]);
+	}
+	eel_editable_label_set_font_description (EEL_EDITABLE_LABEL (details->rename_widget),
+						 desc);
+	pango_font_description_free (desc);
+	
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
@@ -5066,9 +5261,13 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 			 x - width/2, y);
 	gtk_widget_set_size_request (details->rename_widget,
 				     width, -1);
-	gtk_widget_show (details->rename_widget);
 	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),
 				     editable_text);
+	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
+					  rename_filename_selection_end (editable_text),
+					  0);
+	gtk_widget_show (details->rename_widget);
+	
 	gtk_widget_grab_focus (details->rename_widget);
 	
 	g_signal_emit (container,
@@ -5910,7 +6109,9 @@ nautilus_icon_container_accessible_initialize (AtkObject *accessible,
 	NautilusIconContainer *container;
 	NautilusIconContainerAccessiblePrivate *priv;
 
-	ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize) {
+		ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+	}
 
 	priv = g_new0 (NautilusIconContainerAccessiblePrivate, 1);
 	g_object_set_qdata (G_OBJECT (accessible), 
@@ -5994,7 +6195,7 @@ nautilus_icon_container_accessible_get_type (void)
 
 		type = eel_accessibility_create_derived_type 
 			("NautilusIconContainerAccessible",
-			 GNOME_TYPE_CANVAS,
+			 EEL_TYPE_CANVAS,
 			 nautilus_icon_container_accessible_class_init);
 		
                 g_type_add_interface_static (type, ATK_TYPE_ACTION,

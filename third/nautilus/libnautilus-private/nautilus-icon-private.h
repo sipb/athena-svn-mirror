@@ -53,6 +53,10 @@ typedef struct {
 
 	/* Whether this item was selected before rubberbanding. */
 	eel_boolean_bit was_selected_before_rubberband : 1;
+
+	/* Whether a monitor was set on this icon. */
+	eel_boolean_bit is_monitored : 1;
+
 } NautilusIcon;
 
 
@@ -156,6 +160,9 @@ struct NautilusIconContainerDetails {
 	gboolean drag_started;
 	StretchState stretch_start;
 	int context_menu_timeout_id;
+
+	gboolean icon_selected_on_button_down;
+	NautilusIcon *double_click_icon[2]; /* Both clicks in a double click need to be on the same icon */
 
 	/* Renaming Details */
 	gboolean renaming;
