@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: net-event.sh,v 1.3 2003-06-10 15:14:00 ghudson Exp $
+# $Id: net-event.sh,v 1.3.2.1 2003-07-03 15:45:19 ghudson Exp $
 #
 # net-event:	the network event script.  This script is called from a
 #		number of various system scripts.  The first argument is
@@ -69,8 +69,12 @@ get_ipaddr() {
 old_ipaddr() {
   dev="$1"
 
-  line=`grep "$dev=" $networkfile`
-  echo "$line" | sed -e s/"$dev"=//
+  if [ -f $networkfile ]; then
+    line=`grep "$dev=" $networkfile`
+    echo "$line" | sed -e s/"$dev"=//
+  else
+    echo ""
+  fi
   return 0
 }
 
@@ -92,7 +96,7 @@ update_network() {
 
   # if this is an 'up', then add the device (to the end)
   if [ up = "$status" ]; then
-    echo "$dev=`ip_addr $dev`" >> $networkfile
+    echo "$dev=`get_ipaddr $dev`" >> $networkfile
   fi
 }
 
@@ -170,18 +174,18 @@ case "$1" in
     set_hostname "$dev"
     echo NETDEV="$dev" >> $statusfile
     echo OLDIPADDR="`old_ipaddr $dev`" >> $statusfile
-    echo IPADDR="`ip_addr $dev`" >> $statusfile
+    echo IPADDR="`get_ipaddr $dev`" >> $statusfile
     if [ ! -f $networkfile ]; then
       echo "FIRST_NET_UP=true" >> $statusfile
     fi
     update_network up $dev
-    echo "NETDEVCOUNT=`wc -l $networkfile`" >> $statusfile
+    echo "NETDEVCOUNT=`wc -l $networkfile | awk '{print $1}'`" >> $statusfile
     ;;
 
   net-down)
     echo NETDEV="$2" >> $statusfile
     update_network down $dev
-    echo "NETDEVCOUNT=`wc -l $networkfile`" >> $statusfile
+    echo "NETDEVCOUNT=`wc -l $networkfile | awk '{print $1}'`" >> $statusfile
     ;;
 
   *)
