@@ -1,7 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.4 1996-10-07 08:37:07 ghudson Exp $
-
-export ATHENA_SYS HOSTTYPE PATH CONFIG_SITE
+# $Id: build.sh,v 1.5 1996-10-12 22:02:53 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -10,58 +8,33 @@ usage="build [-s srcdir] [-b builddir] [-d destdir] [package [endpackage]]"
 
 while getopts s:b:d: opt; do
 	case "$opt" in
-		s)
-			source="$OPTARG"
-			;;
-		b)
-			build="$OPTARG"
-			;;
-		d)
-			srvd="$OPTARG"
-			;;
-		\?)
-			echo "$usage"
+	s)
+		source="$OPTARG"
+		;;
+	b)
+		build="$OPTARG"
+		;;
+	d)
+		srvd="$OPTARG"
+		;;
+	\?)
+		echo "$usage"
+		exit 1
+		;;
 	esac
 done
 shift `expr $OPTIND - 1`
 
-configdir="$source/packs/build/config"
-xconfigdir="$source/packs/build/xconfig"
-
-umask 022
-
 # Determine the platform type.
+export ATHENA_SYS HOSTTYPE
 case "`uname -a`" in
-	SunOS*5.4*sparc)
-		HOSTTYPE=sun4
-		ATHENA_SYS=sun4m_54
-		;;
-	IRIX*5.3*mips)
-		HOSTTYPE=sgi
-		ATHENA_SYS=sgi_53
-		;;
+	SunOS*sparc)	platform=sun4 ;;
+	IRIX*5.3*)	platform=sgi ;;
 esac
-
-# Set up the build environment.
-CONFIG_SITE=$source/packs/build/config.site
-case "$HOSTTYPE" in
-	sun4)
-		LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-		PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb
-		PATH=${PATH}:/usr/openwin/bin
-		;;
-	sgi)
-		PATH=/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
-		;;
-esac
-
-# Extract compiler value from $CONFIG_SITE, for use when building straight
-# Makefiles.
-compiler=`. $CONFIG_SITE; echo $CC`
 
 # Send all output friom this point on to the build log file.
-mkdir -p $build/LOGS
-exec >>$build/LOGS/washlog.`date '+%y.%m.%d.%H'` 2>&1
+mkdir -p $build/LOGS 2>/dev/null
+exec >> $build/LOGS/washlog.`date '+%y.%m.%d.%H'` 2>&1
 
 echo ========
 echo starting `date`
@@ -123,45 +96,22 @@ for package in $packages; do
 	fi
 
 	# Build the package.
-	echo "**********************"
-	echo "***** In $package"
-
-	cd $build/$package || exit 1
-	if [ -r "$build/$package/.build" ]; then
-		. "$build/$package/.build"
-	elif [ -x "$build/$package/configure" ]; then
-		echo In ${package}: rm -f config.cache && rm -f config.cache &&
-		echo In ${package}: configure && ./configure &&
-		echo In ${package}: make clean && make clean &&
-		echo In ${package}: make all && make all &&
-		echo In ${package}: make install DESTDIR=$srvd &&
-		make install DESTDIR=$srvd
-	elif [ -r "$build/$package/Imakefile" ]; then
-		echo In ${package}: imake -I$configdir -DUseInstalled -DTOPDIR=$source &&
-		imake -I"$configdir" -DUseInstalled -DTOPDIR="$source" &&
-		echo In ${package}: make Makefiles && make Makefiles &&
-		echo In ${package}: make clean && make clean &&
-		echo In ${package}: make depend && make depend &&
-		echo In ${package}: make all && make all &&
-		echo In ${package}: make install DESTDIR=$srvd &&
-		make install DESTDIR=$srvd &&
-		echo In ${package}: make install.man DESTDIR=$srvd &&
-		make install.man DESTDIR=$srvd
-	elif [ -r "$build/$package/Makefile" ]; then
-		CC="$compiler" export CC
-		echo In ${package}: make clean && make clean &&
-		echo In ${package}: make all && make all &&
-		echo In ${package}: make install DESTDIR=$srvd &&
-		make install DESTDIR=$srvd
-	else
-		echo "Can't figure out how to build $package"
-		exit 1
-	fi
+	cd $build/$package &&
+	echo "**********************" &&
+	echo "***** ${package}: configure" &&
+	sh $source/packs/build/do.sh -s "$source" -d "$srvd" configure &&
+	echo "***** ${package}: clean" &&
+	sh $source/packs/build/do.sh -s "$source" -d "$srvd" clean &&
+	echo "***** ${package}: all" &&
+	sh $source/packs/build/do.sh -s "$source" -d "$srvd" all &&
+	echo "***** ${package}: check" &&
+	sh $source/packs/build/do.sh -s "$source" -d "$srvd" check &&
+	echo "***** ${package}: install" &&
+	sh $source/packs/build/do.sh -s "$source" -d "$srvd" install
 	if [ "$?" -ne 0 ]; then
 		echo "We bombed in $package"
 		exit 1
 	fi
-	unset CC
 done
 
 echo "Ending `date`"
