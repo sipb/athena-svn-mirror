@@ -8,7 +8,10 @@ LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lodm -lcfg -ls
 LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lnsyslog
 #else
 #ifdef SOLARIS
-LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod -lbsd
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a \
+       $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
+LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod 
 #else
 LIBS	=	$(AFSLIBS) -lkrb -ldes -lhesiod
 #endif
