@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.16 1991-08-11 22:17:03 probe Exp $
+ * $Id: finger.c,v 1.17 1992-04-16 18:37:14 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.16 1991-08-11 22:17:03 probe Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.17 1992-04-16 18:37:14 lwvanels Exp $";
 #endif lint
 
 /*
@@ -96,6 +96,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define MAXTTYS 256
 #define MAXSEARCH 750
 
+#define NOIDLE -1		/* Magic number for unavailable idle time */
 #define CAPITALIZE	0137&	/* capitalize character macro */
 #define ASTERISK	'*'	/* ignore this in real name */
 #define COMMA		','	/* separator in pw_gecos field */
@@ -1178,8 +1179,13 @@ findidle(pers)
 		(void) strcpy(buffer + TTYLEN, pers->tty);
 		buffer[TTYLEN + LMAX] = 0;
 		if (stat(buffer, &ttystatus) < 0) {
+			pers->idletime = NOIDLE;
+			pers->writable = 0;
+			return;
+/*
 			fprintf(stderr, "finger: Can't stat %s\n", buffer);
 			exit(4);
+*/
 		}
 		(void) time(&t);
 		if (t < ttystatus.st_atime)
@@ -1201,6 +1207,11 @@ stimeprint(dt)
 	long *dt;
 {
 	register struct tm *delta;
+
+	if (*dt == NOIDLE) {
+		printf("   -");
+		return;
+	}
 
 	delta = gmtime(dt);
 	if (delta->tm_yday == 0)
@@ -1228,6 +1239,11 @@ ltimeprint(before, dt, after)
 	char *before, *after;
 {
 	register struct tm *delta;
+
+	if (*dt == NOIDLE) {
+		printf("%sUnavailable%s", before, after);
+		return (0);
+	}
 
 	delta = gmtime(dt);
 	if (delta->tm_yday == 0 && delta->tm_hour == 0 && delta->tm_min == 0 &&
