@@ -1,0 +1,570 @@
+# nautilus-cd-burner Finnish translation
+# Copyright (C) 2003  The Free Software Foundation
+# This file is distributed under the same license as the PACKAGE package.
+# Pauli Virtanen <pauli.virtanen@hut.fi>, 2003
+#
+# Suomennos: http://gnome-fi.org/
+#
+# [disk] image = [levy]vedos
+# CD-writer = kirjoittava CD-asema
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-cd-burner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"PO-Revision-Date: 2004-08-19 02:30+0300\n"
+"Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+
+#: bacon-cd-selection.c:187
+msgid "Unnamed CDROM"
+msgstr "Nimetön CD-ROM"
+
+#: burn-extension.c:64
+msgid "Unable to launch the cd burner application"
+msgstr "CD-kirjoitinsovelluksen käynnistäminen ei onnistu"
+
+#: burn-extension.c:66
+msgid "Can't launch cd burner"
+msgstr "CD-kirjoittimen käynnistys ei onnistu"
+
+#: burn-extension.c:146 burn-extension.c:173
+msgid "_Write to Disc..."
+msgstr "_Kirjoita CD:lle..."
+
+#: burn-extension.c:147
+msgid "Write disc image to a CD or DVD disc"
+msgstr "Kirjoita levyvedostiedosto CD- tai DVD-levylle"
+
+#: burn-extension.c:174 burn-extension.c:203
+msgid "Write contents to a CD or DVD disc"
+msgstr "Kirjoita sisältö CD- tai DVD-levylle"
+
+#: burn-extension.c:202 cdburn.glade.h:15
+msgid "Write to Disc"
+msgstr "Kirjoita levylle"
+
+#: cd-drive.c:744
+#, c-format
+msgid "Unnamed SCSI Drive (%s)"
+msgstr "Nimetön SCSI-asema (%s)"
+
+#: cd-drive.c:1304
+msgid "File image"
+msgstr "Vedostiedosto"
+
+#. This fits the "open64" and "open"-like messages
+#: cd-recorder.c:313
+msgid "The recorder could not be accessed"
+msgstr "Kirjoittavan aseman käyttö ei onnistunut"
+
+#: cd-recorder.c:316
+msgid "Not enough space available on the disc"
+msgstr "Levyllä ei ole tarpeeksi vapaata tilaa"
+
+#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+msgid "The files selected did not fit on the CD"
+msgstr "Valitut tiedostot eivät mahtuneet CD:lle"
+
+#: cd-recorder.c:330
+msgid "Unhandled error, aborting"
+msgstr "Käsittelemätön virhe, keskeytyy"
+
+#: cd-recorder.c:367
+msgid "The CD has already been recorded"
+msgstr "CD on jo tallennettu"
+
+#: cd-recorder.c:377
+msgid ""
+"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr ""
+"Kaikkien äänitiedostojen täytyy olla stereona, 16-bittisenä digitaaliäänenä "
+"ja näytteistystaajuuden täytyy olla 44100 Hz "
+
+#: cd-recorder.c:384
+msgid ""
+"The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr ""
+"Järjestelmä on liian hidas, ja ei pysty kirjoittamaan CD:itä tällä "
+"nopeudella. Kokeile hitaampaa nopeutta."
+
+#: cd-recorder.c:503
+msgid "You can only burn 99 tracks on one disc"
+msgstr "Yhdelle levylle mahtuu vain 99 raitaa"
+
+#: cdburn.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: cdburn.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: cdburn.glade.h:3
+msgid "<b>After Writing</b>"
+msgstr "<b>Kirjoittamisen jälkeen</b>"
+
+#: cdburn.glade.h:4
+msgid "<b>Information</b>"
+msgstr "<b>Tietoja</b>"
+
+#: cdburn.glade.h:5
+msgid "<b>Write Options</b>"
+msgstr "<b>Kirjoitusasetukset</b>"
+
+#: cdburn.glade.h:6
+msgid "<big><b>Writing files to disc progress</b></big>"
+msgstr "<big><b>Tiedostojen levylle kirjoittaminen meneillään</b></big>"
+
+#: cdburn.glade.h:7
+msgid "<i>Initializing...</i>"
+msgstr "<i>Käynnistyy...</i>"
+
+#: cdburn.glade.h:8
+msgid "Data size:"
+msgstr "Tietojen koko:"
+
+#: cdburn.glade.h:9
+msgid "Disc _name:"
+msgstr "Levyn _nimi:"
+
+#: cdburn.glade.h:10
+msgid "E_ject disc"
+msgstr "_Poista levy asemasta"
+
+#: cdburn.glade.h:11
+msgid "Label to identify disc"
+msgstr "Levyn tunnusnimike"
+
+#: cdburn.glade.h:12
+msgid "Select the speed to use for the write"
+msgstr "Valitse kirjoitusnopeus"
+
+#: cdburn.glade.h:13
+msgid ""
+"Selected files are to be written to a CD or DVD disc. This operation may "
+"take a long time, depending on data size and write speed."
+msgstr ""
+"Valitut tiedostot kirjoitetaan CD- tai DVD-levylle. Tämä voi kestää "
+"kauankin, tietojen määrästä ja kirjoitusnopeudesta riippuen."
+
+#: cdburn.glade.h:14
+msgid "Write _speed:"
+msgstr "Kirjoitus_nopeus:"
+
+#: cdburn.glade.h:16
+msgid "Writing Files to Disc Progress"
+msgstr "Tiedostojen levylle tallentumisen edistyminen"
+
+#: cdburn.glade.h:17
+msgid "_Dummy write"
+msgstr "_Testikirjoitus"
+
+#: cdburn.glade.h:18
+msgid "_Reuse these files for another disc"
+msgstr "_Säästä nämä tiedostot seuraavaa levyä varten"
+
+#: cdburn.glade.h:19
+msgid "_Write"
+msgstr "_Kirjoita"
+
+#: cdburn.glade.h:20
+msgid "_Write disc to:"
+msgstr "_Kirjoita levy tiedostoon:"
+
+#: make-iso.c:251
+msgid ""
+"Some files don't have a suitable name for a Windows-compatible CD.\n"
+"Do you want to continue with Windows compatibility disabled?"
+msgstr ""
+"Joidenkin tiedostojen nimet eivät ole sopivia Windows-yhteensopivalle CD:"
+"lle.\n"
+"Haluatko jatkaa ilman Windows-yhteensopivuutta?"
+
+#: make-iso.c:252
+msgid "Windows compatibility"
+msgstr "Windows-yhteensopivuus"
+
+#: make-iso.c:576
+msgid "No files selected to write to CD."
+msgstr "Tiedostoja ei ole valittu CD:lle kirjoitettavaksi."
+
+#: make-iso.c:578 nautilus-cd-burner.c:1134
+msgid "No files selected"
+msgstr "Et valinnut tiedostoja"
+
+#: make-iso.c:659
+#, c-format
+msgid "Not enough space to store CD image (%ld Megabyte needed)"
+msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
+msgstr[0] ""
+"Ei tarpeeksi tilaa CD-levyvedoksen tallentamiseksi (tarvitaan %ld Mt)"
+msgstr[1] ""
+"Ei tarpeeksi tilaa CD-levyvedoksen tallentamiseksi (tarvitaan %ld Mt)"
+
+#: make-iso.c:664
+msgid "Not enough space"
+msgstr "Tilaa ei ole tarpeeksi"
+
+#: make-iso.c:700
+msgid "Creating CD image"
+msgstr "Luodaan CD-levyvedos"
+
+#: nautilus-cd-burner.c:137
+msgid " (invalid Unicode)"
+msgstr " (virheellistä Unicodea)"
+
+#: nautilus-cd-burner.c:283
+msgid "Preparing to write CD"
+msgstr "Valmistellaan CD:lle kirjoittamista"
+
+#: nautilus-cd-burner.c:285
+msgid "Preparing to write DVD"
+msgstr "Valmistellaan DVD:lle kirjoittamista"
+
+#: nautilus-cd-burner.c:290
+msgid "Writing CD"
+msgstr "Kirjoitetaan CD:tä"
+
+#: nautilus-cd-burner.c:292
+msgid "Writing DVD"
+msgstr "Kirjoitetaan DVD:tä"
+
+#: nautilus-cd-burner.c:297
+msgid "Fixating CD"
+msgstr "Viimeistellään CD:tä"
+
+#: nautilus-cd-burner.c:299
+msgid "Fixating DVD"
+msgstr "Viimeistellään DVD:tä"
+
+#: nautilus-cd-burner.c:304
+msgid "Erasing CD"
+msgstr "Tyhjennetään CD:tä"
+
+#: nautilus-cd-burner.c:306
+msgid "Erasing DVD"
+msgstr "Tyhjennetään DVD:tä"
+
+#: nautilus-cd-burner.c:332
+msgid "Please make sure another application is not using the disc."
+msgstr "Varmista ettei mikään muu sovellus käytä levyä."
+
+#: nautilus-cd-burner.c:333
+msgid "Disc is busy"
+msgstr "Levy on käytössä"
+
+#: nautilus-cd-burner.c:335
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr "Laita tyhjä tai uudelleenkirjoitettava taltio asemaan."
+
+#: nautilus-cd-burner.c:336
+msgid "Insert rewritable or blank media"
+msgstr "Laita tyhjä tai uudelleenkirjoitettava taltio asemaan"
+
+#: nautilus-cd-burner.c:338
+msgid "Please insert a blank media in the drive tray."
+msgstr "Laita tyhjä taltio asemaan."
+
+#: nautilus-cd-burner.c:339
+msgid "Insert blank media"
+msgstr "Laita tyhjä taltio asemaan"
+
+#: nautilus-cd-burner.c:341
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr ""
+"Vaihda asemassa oleva taltio uudelleenkirjoitettavaan tai tyhjään taltioon."
+
+#: nautilus-cd-burner.c:342
+msgid "Reload rewritable or blank media"
+msgstr "Laita uudelleenkirjoitettava tai tyhjä taltio uudelleen asemaan"
+
+#: nautilus-cd-burner.c:344
+msgid "Please replace the in-drive media by a blank media."
+msgstr "Vaihda asemassa oleva taltio tyhjällä taltiolla"
+
+#: nautilus-cd-burner.c:345
+msgid "Reload blank media"
+msgstr "Laita tyhjä taltio uudelleen asemaan"
+
+#: nautilus-cd-burner.c:373
+msgid "Disc writing error details"
+msgstr "Levyn kirjoitusvirheen lisätiedot"
+
+#: nautilus-cd-burner.c:379
+msgid "Detailed error output from cdrecord:"
+msgstr "Yksityiskohtainen cdrecordin virhetuloste:"
+
+#: nautilus-cd-burner.c:420
+#, c-format
+msgid ""
+"There was an error writing to the CD:\n"
+"%s"
+msgstr ""
+"CD:lle kirjoittamisessa tapahtui virhe:\n"
+"%s"
+
+#: nautilus-cd-burner.c:421
+msgid "There was an error writing to the CD"
+msgstr "CD:lle kirjoittamisessa tapahtui virhe"
+
+#: nautilus-cd-burner.c:422
+msgid "Error writing to CD"
+msgstr "Virhe CD:lle kirjoittamisessa"
+
+#: nautilus-cd-burner.c:428
+msgid "_Details"
+msgstr "_Lisätiedot"
+
+#: nautilus-cd-burner.c:501
+#, c-format
+msgid ""
+"A file named \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Tiedosto nimeltään \"%s\" on jo olemassa.\n"
+"Haluatko korvata sen?"
+
+#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+msgid "_Overwrite"
+msgstr "_Korvaa"
+
+#: nautilus-cd-burner.c:530
+msgid "Choose a filename for the cdrom image"
+msgstr "Valitse CD-ROM-vedostiedoston tiedostonimi"
+
+#: nautilus-cd-burner.c:585
+#, c-format
+msgid "You do not have permissions to overwrite that file (%s)."
+msgstr "Tiedoston korvaamiseen ei ole oikeuksia (%s)."
+
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+msgid "File image creation failed"
+msgstr "Tiedostovedoksen luonti epäonnistui"
+
+#: nautilus-cd-burner.c:598
+#, c-format
+msgid "You do not have permissions to create that file (%s)."
+msgstr "Tiedoston luomiseen ei ole oikeuksia (%s)."
+
+#: nautilus-cd-burner.c:661
+#, c-format
+msgid "Completed writing %s"
+msgstr "Kirjoitus valmis: %s"
+
+#: nautilus-cd-burner.c:719
+msgid "Complete"
+msgstr "Valmis"
+
+#: nautilus-cd-burner.c:782
+msgid "Maximum Possible"
+msgstr "Suurin mahdollinen"
+
+#: nautilus-cd-burner.c:859
+#, c-format
+msgid "%d MB"
+msgstr "%d Mt"
+
+#.
+#. translators: see strftime man page for meaning of %b, %d and %Y
+#. the maximum length for this field is 32 bytes
+#.
+#: nautilus-cd-burner.c:887
+msgid "Personal Data, %b %d, %Y"
+msgstr "Omia tietoja, %e. %Bta %Y"
+
+#: nautilus-cd-burner.c:920
+msgid "Cancel write"
+msgstr "Peru kirjoittaminen"
+
+#: nautilus-cd-burner.c:921
+msgid ""
+"Are you sure you want to cancel the disc write operation?\n"
+"Some optical media drives may require that you restart the machine to get it "
+"working again."
+msgstr ""
+"Haluatko varmasti perua levyn kirjoittamisen?\n"
+"Eräät optiset levyasemat saattavat toimia tämän jälkeen vasta, kun tietokone "
+"on käynnistetty uudelleen."
+
+#: nautilus-cd-burner.c:925
+msgid "Continue"
+msgstr "Jatka"
+
+#: nautilus-cd-burner.c:977
+#, c-format
+msgid "There was a problem displaying the help contents: %s."
+msgstr "Ohjeiden sisällön näyttämisessä oli ongelma: %s."
+
+#: nautilus-cd-burner.c:978
+msgid "Cannot display help"
+msgstr "Ohjetta ei voi näyttää"
+
+#: nautilus-cd-burner.c:1093
+msgid "Too many parameters"
+msgstr "Liian monta parametria"
+
+#: nautilus-cd-burner.c:1094
+msgid "Too many parameters were passed to the application."
+msgstr "Sovellukselle annettiin liian monta parametria"
+
+#: nautilus-cd-burner.c:1116
+#, c-format
+msgid "The file '%s' is not a valid CD image."
+msgstr "Tiedosto \"%s\" ei ole kelvollinen CD-levyvedos."
+
+#: nautilus-cd-burner.c:1119
+msgid "Not a valid CD image"
+msgstr "Epäkelpo CD-levyvedos"
+
+#: nautilus-cd-burner.c:1135
+msgid ""
+"You need to copy the files you want to write to disc to the CD/DVD Creator "
+"window. Would you like to open it now?"
+msgstr ""
+"Levylle kirjoitettavat tiedostot tulee kopioida CD/DVD-luontityökalun "
+"ikkunaan. Haluatko avata sen nyt?"
+
+#: nautilus-cd-burner.c:1137
+msgid "Open CD/DVD Creator"
+msgstr "Avaa CD/DVD-luontityökalu"
+
+#: ncb.schemas.in.h:1
+msgid "Default burn speed"
+msgstr "Oletusarvoinen kirjoitusnopeus"
+
+#: ncb.schemas.in.h:2
+msgid "Default speed at which the media will be written."
+msgstr "Oletusarvoinen nopeus, jolla taltiolle kirjoitetaan."
+
+#: ncb.schemas.in.h:3
+msgid "Directory for the temporary ISO images"
+msgstr "Kansio väliaikaisille ISO-vedostiedostoille"
+
+#: ncb.schemas.in.h:4
+msgid ""
+"Directory used for the temporary ISO images, leave blank to use the default "
+"system temporary directory."
+msgstr ""
+"Kansio, johon väliaikaiset ISO-vedostiedostot tallentuvat. Jos ei annettu, "
+"käytetään järjestelmän väliaikaiskansiota."
+
+#: ncb.schemas.in.h:5
+msgid "Enable Burnproof option"
+msgstr "Käytä Burnproff-ominaisuutta"
+
+#: ncb.schemas.in.h:6
+msgid "Enable debug"
+msgstr "Etsi vikoja"
+
+#: ncb.schemas.in.h:7
+msgid "Enable overburn"
+msgstr "Salli lopun yli kirjoitus"
+
+#: ncb.schemas.in.h:8
+msgid "Whether to allow the data to exceed the size of the physical medium."
+msgstr "Voiko datan koko ylittää tallennusvälineen koon"
+
+#: ncb.schemas.in.h:9
+msgid "Whether to enable the debugging for CD Recording."
+msgstr "Etsitäänkö CD-kirjoittamisesta vikoja"
+
+#: ncb.schemas.in.h:10
+msgid "Whether to use the Burnproof option available on some recorders."
+msgstr "Käytetäänkö eräiden levyasemien Burnproof-ominaisuutta."
+
+#~ msgid "Are you sure you want to cancel?"
+#~ msgstr "Haluatko varmasti perua?"
+
+#~ msgid "Too many parameters to nautilus-cd-burner"
+#~ msgstr "nautilus-cd-burnerille annettu liian monta parameria"
+
+#~ msgid "<b>Writing to CD. Please wait.</b>"
+#~ msgstr "<b>Kirjoitetaan CD:tä. Odota hetki.</b>"
+
+#~ msgid "Erase CD"
+#~ msgstr "Tyhjennä CD"
+
+#~ msgid "Erase entire contents of CD before writing"
+#~ msgstr "Tyhjennä koko CD:n sisältö ennen kirjoittamista"
+
+#~ msgid "Keep the selected files so that you can use them for another CD"
+#~ msgstr "Säilytä valitut tiedostot, jotta ne voi kopioida toisellekin CD:lle"
+
+#~ msgid "Select a CD writer or image file"
+#~ msgstr "Valitse kirjoittava CD-asema tai vedostiedosto"
+
+#~ msgid "When the write is done, eject the CD tray"
+#~ msgstr "Kun kirjoitus on valmis, avaa CD-asema"
+
+#, fuzzy
+#~ msgid "You have selected 185 megabytes of files to be written to the CD."
+#~ msgstr "Valitsit 185 megatavua tiedostoja CD:lle kirjoitettavaksi."
+
+#, fuzzy
+#~ msgid "_Eject CD when done"
+#~ msgstr "Avaa CD-asema, kun valmis"
+
+#, fuzzy
+#~ msgid "_Target to write to:"
+#~ msgstr "Kirjoituskohde:"
+
+#~ msgid "Please reload the CD in the CD writer."
+#~ msgstr "Lataa CD uudelleen kirjoittavaan CD-asemaan."
+
+#~ msgid "Reload CD"
+#~ msgstr "Lataa CD uudelleen"
+
+#~ msgid "Please insert a blank CD in the CD writer."
+#~ msgstr "Laita tyhjä CD kirjoittavaan CD-asemaan."
+
+#~ msgid "Insert blank CD"
+#~ msgstr "Laita tyhjä CD asemaan"
+
+#~ msgid "Please insert a blank CD-RW in the CD writer."
+#~ msgstr "Laita tyhjä CD-RW-levy kirjoittavaan CD-asemaan."
+
+#~ msgid "Insert blank CD-RW"
+#~ msgstr "Laita tyhjä CD-RW-levy asemaan"
+
+#~ msgid "You have selected %d megabyte of files to be written to the CD."
+#~ msgstr "Valitsit %d megatavua tiedostoja CD:lle kirjoitettavaksi."
+
+#~ msgid ""
+#~ "You do not seem to have any CD recorder in your machine. Please verify "
+#~ "your setup."
+#~ msgstr ""
+#~ "Tietokoneessasi ei vaikuta olevan CD-kirjoitinta. Tarkista "
+#~ "laitteistokokoonpanosi."
+
+#~ msgid "No CD recorder available"
+#~ msgstr "CD-kirjoitinta ei ole saatavilla"
+
+#~ msgid "Dummy write (debug build)"
+#~ msgstr "Valekirjoitus (vianetsintäkäännös)"
+
+#~ msgid "Create a CD that you can use with ordinary stereo equipment"
+#~ msgstr "Luo CD, jota voi soittaa tavallisilla stereoilla"
+
+#~ msgid "Create a music CD"
+#~ msgstr "Luo musiikki-CD"
+
+#~ msgid "Factory for the nautilus-cd-burner context menu"
+#~ msgstr "Tehdas, joka tuottaa nautilus-cd-burner-kontekstivalikkoja"
+
+#~ msgid "Nautilus context menu entries for CD burning"
+#~ msgstr "Nautiluksen kontekstivalikkokohdat CD:iden kirjoittamista varten"
+
+#~ msgid "nautilus-cd-burner context menu"
+#~ msgstr "nautilus-cd-burner-kontekstivalikko"
+
+#~ msgid "nautilus-cd-burner context menu factory"
+#~ msgstr "nautilus-cd-burner-kontekstivalikkojen tehdas"
+
+#~ msgid "CD burning context menu items"
+#~ msgstr "CD:iden kirjoittamisen kontekstivalikkokohdat"

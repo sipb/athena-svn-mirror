@@ -1,0 +1,9 @@
+gnome-vfs module:
+-----------------
+better protocol performance by buffering writes
+file monitoring
+
+burning ui:
+-----------
+Get better icons for the spinning CD
+Eject CD if it is empty

@@ -1,0 +1,10 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+bacon-cd-selection.c
+burn-extension.c
+cd-drive.c
+cd-recorder.c
+cdburn.glade
+make-iso.c
+nautilus-cd-burner.c
+ncb.schemas.in

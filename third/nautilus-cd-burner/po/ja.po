@@ -1,0 +1,475 @@
+# nautilus-cd-burner ja.po.
+# Copyright (C) 2003,2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as
+# the nautilus-cd-burner package.
+# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-cd-burner HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"PO-Revision-Date: 2004-08-05 12:33+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: bacon-cd-selection.c:187
+msgid "Unnamed CDROM"
+msgstr "名前なしの CD-ROM"
+
+#: burn-extension.c:64
+msgid "Unable to launch the cd burner application"
+msgstr "CD 書き込みアプリケーションを起動できません"
+
+#: burn-extension.c:66
+msgid "Can't launch cd burner"
+msgstr "CD 書き込みアプリを起動できません"
+
+#: burn-extension.c:146 burn-extension.c:173
+msgid "_Write to Disc..."
+msgstr "ディスクへ書き込む(_W)..."
+
+#: burn-extension.c:147
+msgid "Write disc image to a CD or DVD disc"
+msgstr "ディスク・イメージを CD または DVD ディスクへ書き込む"
+
+#: burn-extension.c:174 burn-extension.c:203
+msgid "Write contents to a CD or DVD disc"
+msgstr "この内容を CD または DVD ディスクへ書き込みます"
+
+#: burn-extension.c:202 cdburn.glade.h:15
+msgid "Write to Disc"
+msgstr "ディスクへ書き込む"
+
+#: cd-drive.c:744
+#, c-format
+msgid "Unnamed SCSI Drive (%s)"
+msgstr "名前なしの SCSI ドライブ (%s)"
+
+#: cd-drive.c:1304
+msgid "File image"
+msgstr "ファイル・イメージ"
+
+#. This fits the "open64" and "open"-like messages
+#: cd-recorder.c:313
+msgid "The recorder could not be accessed"
+msgstr "レコーダにアクセスできません"
+
+#: cd-recorder.c:316
+msgid "Not enough space available on the disc"
+msgstr "ディスクに充分な空きスペースがありません"
+
+#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+msgid "The files selected did not fit on the CD"
+msgstr "選択されたファイルは CD に適合しませんでした。"
+
+#: cd-recorder.c:330
+msgid "Unhandled error, aborting"
+msgstr "ハンドルできないエラーのため、終了します"
+
+#: cd-recorder.c:367
+msgid "The CD has already been recorded"
+msgstr "CD は既に記録済みです"
+
+#: cd-recorder.c:377
+msgid ""
+"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr ""
+"音声ファイルはすべてステレオで、44100Hz でサンプリングされた 16-bit デジタ"
+"ル・オーディオでなければなりません"
+
+#: cd-recorder.c:384
+msgid ""
+"The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr ""
+"そのスピードで CD に書き込むと、お使いのシステムが遅くなります。もっと低い速"
+"度にしてみて下さい。"
+
+#: cd-recorder.c:503
+msgid "You can only burn 99 tracks on one disc"
+msgstr "１ディスク当たり最大 99 トラックまで書き込めます"
+
+#: cdburn.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: cdburn.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: cdburn.glade.h:3
+msgid "<b>After Writing</b>"
+msgstr "<b>書き込み後の処理</b>"
+
+#: cdburn.glade.h:4
+msgid "<b>Information</b>"
+msgstr "<b>情報</b>"
+
+#: cdburn.glade.h:5
+msgid "<b>Write Options</b>"
+msgstr "<b>書き込みのオプション</b>"
+
+#: cdburn.glade.h:6
+msgid "<big><b>Writing files to disc progress</b></big>"
+msgstr "<big><b>ディスクに書き込む進行状況</b></big>"
+
+#: cdburn.glade.h:7
+msgid "<i>Initializing...</i>"
+msgstr "<i>初期化中...</i>"
+
+#: cdburn.glade.h:8
+msgid "Data size:"
+msgstr "データのサイズ:"
+
+#: cdburn.glade.h:9
+msgid "Disc _name:"
+msgstr "ディスクの名前(_N):"
+
+#: cdburn.glade.h:10
+msgid "E_ject disc"
+msgstr "ディスクを取り出す(_J)"
+
+#: cdburn.glade.h:11
+msgid "Label to identify disc"
+msgstr "ディスクを識別するためのラベルです"
+
+#: cdburn.glade.h:12
+msgid "Select the speed to use for the write"
+msgstr "書き込む速度を選択して下さい"
+
+#: cdburn.glade.h:13
+msgid ""
+"Selected files are to be written to a CD or DVD disc. This operation may "
+"take a long time, depending on data size and write speed."
+msgstr ""
+"選択したファイルを CD または DVD ディスクへ書き込みます。この処理の時間は、"
+"データのサイズや書き込み速度に応じて長くなるかもしれません。"
+
+#: cdburn.glade.h:14
+msgid "Write _speed:"
+msgstr "書き込み速度(_S):"
+
+#: cdburn.glade.h:16
+msgid "Writing Files to Disc Progress"
+msgstr "ファイルをディスクへ書き込む進行状況"
+
+#: cdburn.glade.h:17
+msgid "_Dummy write"
+msgstr "ダミーで書き込む(_D)"
+
+#: cdburn.glade.h:18
+msgid "_Reuse these files for another disc"
+msgstr "別のディスクへ書き込むためにファイルを再利用する(_R)"
+
+#: cdburn.glade.h:19
+msgid "_Write"
+msgstr "書き込む(_W)"
+
+#: cdburn.glade.h:20
+msgid "_Write disc to:"
+msgstr "書き込み先(_W):"
+
+#: make-iso.c:251
+msgid ""
+"Some files don't have a suitable name for a Windows-compatible CD.\n"
+"Do you want to continue with Windows compatibility disabled?"
+msgstr ""
+"いくつかのファイルは Windows 互換 CD として適切な名前がありません。\n"
+"Windows 互換を無効にして続行しますか？"
+
+#: make-iso.c:252
+msgid "Windows compatibility"
+msgstr "Windows 互換"
+
+#: make-iso.c:576
+msgid "No files selected to write to CD."
+msgstr "CD に書き込むファイルが選択されていません。"
+
+#: make-iso.c:578 nautilus-cd-burner.c:1134
+msgid "No files selected"
+msgstr "ファイルが選択されていません。"
+
+#: make-iso.c:659
+#, c-format
+msgid "Not enough space to store CD image (%ld Megabyte needed)"
+msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
+msgstr[0] ""
+"CD イメージを保存するのに充分なスペースがありません (%ld Mバイト必要)"
+msgstr[1] ""
+"CD イメージを保存するのに充分なスペースがありません (%ld Mバイト必要)"
+
+#: make-iso.c:664
+msgid "Not enough space"
+msgstr "空きスペースが足りません。"
+
+#: make-iso.c:700
+msgid "Creating CD image"
+msgstr "CD イメージを作成"
+
+#: nautilus-cd-burner.c:137
+msgid " (invalid Unicode)"
+msgstr " (Unicode が不正です)"
+
+#: nautilus-cd-burner.c:283
+msgid "Preparing to write CD"
+msgstr "CD へ書き込む準備をしています"
+
+#: nautilus-cd-burner.c:285
+msgid "Preparing to write DVD"
+msgstr "DVD へ書き込む準備をしています"
+
+#: nautilus-cd-burner.c:290
+msgid "Writing CD"
+msgstr "CD へ書き込み中です"
+
+#: nautilus-cd-burner.c:292
+msgid "Writing DVD"
+msgstr "DVD へ書き込み中です"
+
+#: nautilus-cd-burner.c:297
+msgid "Fixating CD"
+msgstr "CD の固定中です"
+
+#: nautilus-cd-burner.c:299
+msgid "Fixating DVD"
+msgstr "DVD の固定中です"
+
+#: nautilus-cd-burner.c:304
+msgid "Erasing CD"
+msgstr "CD の消去中です"
+
+#: nautilus-cd-burner.c:306
+msgid "Erasing DVD"
+msgstr "DVD の消去中です"
+
+#: nautilus-cd-burner.c:332
+msgid "Please make sure another application is not using the disc."
+msgstr "他のアプリケーションがディスクを使用していないか確認して下さい。"
+
+#: nautilus-cd-burner.c:333
+msgid "Disc is busy"
+msgstr "ディスクが使用中です"
+
+#: nautilus-cd-burner.c:335
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr "再書き込み可能または空のメディアをドライブのトレイに入れて下さい。"
+
+#: nautilus-cd-burner.c:336
+msgid "Insert rewritable or blank media"
+msgstr "再書き込み可能または空のメディアの挿入"
+
+#: nautilus-cd-burner.c:338
+msgid "Please insert a blank media in the drive tray."
+msgstr "ドライブのトレイに空のメディアを入れて下さい。"
+
+#: nautilus-cd-burner.c:339
+msgid "Insert blank media"
+msgstr "空のメディアの挿入"
+
+#: nautilus-cd-burner.c:341
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr ""
+"ドライブに入っているメディアを再書き込み可能または空のメディアと交換して下さ"
+"い。"
+
+#: nautilus-cd-burner.c:342
+msgid "Reload rewritable or blank media"
+msgstr "再書き込み可能または空のメディアの再読み込み"
+
+#: nautilus-cd-burner.c:344
+msgid "Please replace the in-drive media by a blank media."
+msgstr "ドライブに入っているメディアを空のメディアと交換して下さい。"
+
+#: nautilus-cd-burner.c:345
+msgid "Reload blank media"
+msgstr "空のメディアの再読み込み"
+
+#: nautilus-cd-burner.c:373
+msgid "Disc writing error details"
+msgstr "ディスク書き込み時のエラーの詳細"
+
+#: nautilus-cd-burner.c:379
+msgid "Detailed error output from cdrecord:"
+msgstr "cdrecord からのエラー出力の詳細:"
+
+#: nautilus-cd-burner.c:420
+#, c-format
+msgid ""
+"There was an error writing to the CD:\n"
+"%s"
+msgstr ""
+"CD に書き込む時にエラーが発生しました:\n"
+"%s"
+
+#: nautilus-cd-burner.c:421
+msgid "There was an error writing to the CD"
+msgstr "CD に書き込む時にエラーが発生しました"
+
+#: nautilus-cd-burner.c:422
+msgid "Error writing to CD"
+msgstr "CD 書き込み時のエラー"
+
+#: nautilus-cd-burner.c:428
+msgid "_Details"
+msgstr "詳細(_D)"
+
+#: nautilus-cd-burner.c:501
+#, c-format
+msgid ""
+"A file named \"%s\" already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"\"%s\" というファイルは既に存在しています。\n"
+"上書きしてもよろしいですか？"
+
+#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+msgid "_Overwrite"
+msgstr "上書きする(_O)"
+
+#: nautilus-cd-burner.c:530
+msgid "Choose a filename for the cdrom image"
+msgstr "CD-ROM イメージのファイル名を選択して下さい"
+
+#: nautilus-cd-burner.c:585
+#, c-format
+msgid "You do not have permissions to overwrite that file (%s)."
+msgstr "そのファイル (%s) を上書きするために必要な権限がありません。"
+
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+msgid "File image creation failed"
+msgstr "CD-ROM イメージの生成に失敗しました"
+
+#: nautilus-cd-burner.c:598
+#, c-format
+msgid "You do not have permissions to create that file (%s)."
+msgstr "そのファイル (%s) を生成するために必要な権限がありません。"
+
+#: nautilus-cd-burner.c:661
+#, c-format
+msgid "Completed writing %s"
+msgstr "%s の書き込みが完了しました"
+
+#: nautilus-cd-burner.c:719
+msgid "Complete"
+msgstr "完了"
+
+#: nautilus-cd-burner.c:782
+msgid "Maximum Possible"
+msgstr "最大"
+
+#: nautilus-cd-burner.c:859
+#, c-format
+msgid "%d MB"
+msgstr "%d Mバイト"
+
+#.
+#. translators: see strftime man page for meaning of %b, %d and %Y
+#. the maximum length for this field is 32 bytes
+#.
+#: nautilus-cd-burner.c:887
+msgid "Personal Data, %b %d, %Y"
+msgstr "個人データ, %Y年%B%e日"
+
+#: nautilus-cd-burner.c:920
+msgid "Cancel write"
+msgstr "キャンセルする"
+
+#: nautilus-cd-burner.c:921
+msgid ""
+"Are you sure you want to cancel the disc write operation?\n"
+"Some optical media drives may require that you restart the machine to get it "
+"working again."
+msgstr ""
+"本当にディスク書き込み処理をキャンセルしますか？\n"
+"再度動作させるにはマシンの再起動が必要な光学メディア・ドライブもあります。"
+
+#: nautilus-cd-burner.c:925
+msgid "Continue"
+msgstr "続行する"
+
+#: nautilus-cd-burner.c:977
+#, c-format
+msgid "There was a problem displaying the help contents: %s."
+msgstr "ヘルプの内容を表示する際に問題が発生しました: %s"
+
+#: nautilus-cd-burner.c:978
+msgid "Cannot display help"
+msgstr "ヘルプを表示できません"
+
+#: nautilus-cd-burner.c:1093
+msgid "Too many parameters"
+msgstr "パラメータが多過ぎます"
+
+#: nautilus-cd-burner.c:1094
+msgid "Too many parameters were passed to the application."
+msgstr "アプリケーションに引き渡した引数が多すぎます"
+
+#: nautilus-cd-burner.c:1116
+#, c-format
+msgid "The file '%s' is not a valid CD image."
+msgstr "ファイル '%s' は有効な CD イメージではありません。"
+
+#: nautilus-cd-burner.c:1119
+msgid "Not a valid CD image"
+msgstr "有効な CD イメージではありません"
+
+#: nautilus-cd-burner.c:1135
+msgid ""
+"You need to copy the files you want to write to disc to the CD/DVD Creator "
+"window. Would you like to open it now?"
+msgstr ""
+"ディスクへ書き込むファイルを \"CD/DVD クリエイタ・ウィンドウ\" にコピーする必"
+"要があります。今すぐ、このウィンドウを開きますか？"
+
+#: nautilus-cd-burner.c:1137
+msgid "Open CD/DVD Creator"
+msgstr "CD/DVD クリエイタを開く"
+
+#: ncb.schemas.in.h:1
+msgid "Default burn speed"
+msgstr "デフォルトの書き込み速度"
+
+#: ncb.schemas.in.h:2
+msgid "Default speed at which the media will be written."
+msgstr "メディアへ書き込むデフォルトの速度です。"
+
+#: ncb.schemas.in.h:3
+msgid "Directory for the temporary ISO images"
+msgstr "一時的な ISO イメージを格納するフォルダ"
+
+#: ncb.schemas.in.h:4
+msgid ""
+"Directory used for the temporary ISO images, leave blank to use the default "
+"system temporary directory."
+msgstr ""
+"一時的な ISO イメージで使用するフォルダです。システムでデフォルトの作業フォル"
+"ダを使用する場合は、空のままにして下さい。"
+
+#: ncb.schemas.in.h:5
+msgid "Enable Burnproof option"
+msgstr "BurnProof オプションの可否"
+
+#: ncb.schemas.in.h:6
+msgid "Enable debug"
+msgstr "デバッグの可否"
+
+#: ncb.schemas.in.h:7
+msgid "Enable overburn"
+msgstr "オーバーバーンの可否"
+
+#: ncb.schemas.in.h:8
+msgid "Whether to allow the data to exceed the size of the physical medium."
+msgstr "メディアの物理的なサイズを超えたデータを許可するかどうかです。"
+
+#: ncb.schemas.in.h:9
+msgid "Whether to enable the debugging for CD Recording."
+msgstr "CD 書き込みのデバッグ情報を有効にするかどうかです。"
+
+#: ncb.schemas.in.h:10
+msgid "Whether to use the Burnproof option available on some recorders."
+msgstr "いくつかのレコーダで利用できる BurnProof 機能を利用するかどうかです。"
