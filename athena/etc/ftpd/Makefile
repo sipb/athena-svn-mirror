@@ -39,7 +39,7 @@ cleandir: clean
 	rm -f tags .depend
 
 depend: ${SRCS}
-	mkdep ${CFLAGS} ${SRCS}
+	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
 
 install: 
 	if test ! -s ${DESTDIR}/etc/shells ; then cp etc.shells /etc/shells; fi
