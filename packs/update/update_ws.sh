@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.27 1997-08-01 22:03:04 jweiss Exp $
+# $Id: update_ws.sh,v 1.28 1997-09-02 22:30:25 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -19,7 +19,7 @@
 #
 # Check that an update is needed, and make sure the conditions necessary
 # for a successful update are met. Then prepare the machine for update,
-# and run do_update.
+# and run do-update.
 
 trap "" 1 15
 
