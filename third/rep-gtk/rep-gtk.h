@@ -1,7 +1,7 @@
 /* Copyright (C) 1997, 1998, 1999 Marius Vollmer
  * Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
  *
- * $Id: rep-gtk.h,v 1.1.1.2 2003-01-05 00:30:07 ghudson Exp $
+ * $Id: rep-gtk.h,v 1.2 2004-12-28 17:30:00 ghudson Exp $
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,10 +291,10 @@ void gtk_menu_popup_interp (GtkMenu *menu,
 
 GtkWidget*
 gtk_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
-						gchar            *label);
+						const gchar      *label);
 GtkWidget*
 gtk_radio_menu_item_new_with_mnemonic_from_widget (GtkRadioMenuItem *group,
-						   gchar            *label);
+						   const gchar      *label);
 GtkWidget* gtk_radio_menu_item_new_from_widget (GtkRadioMenuItem *group);
 GtkWidget* gtk_pixmap_new_interp (char *file, GtkWidget *intended_parent);
 
