@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.12 2004-07-16 21:35:40 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.13 2004-08-23 12:04:04 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -40,9 +40,6 @@ SunOS)
   java_plugin_dir=/usr/j2se/jre/plugin/sparc/ns610
   ;;
 Linux)
-  # Set LD_ASSUME_KERNEL to avoid a java crash upon exit.
-  LD_ASSUME_KERNEL=2.4.1
-  export LD_ASSUME_KERNEL
   java_plugin_dir=/usr/java/j2re1.4.2_04/plugin/i386/ns610-gcc32
   ;;
 esac
