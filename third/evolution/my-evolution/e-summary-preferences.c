@@ -69,18 +69,15 @@ make_initial_mail_list (ESummaryPrefs *prefs)
 {
 	char *evolution_dir;
 	GList *folders = NULL;
-	int i;
+	ESummaryPrefsFolder *folder;
 	
 	evolution_dir = gnome_util_prepend_user_home ("evolution");
-	for (i = 0; i < 2; i++) {
-		ESummaryPrefsFolder *folder;
-
-		folder = g_new (ESummaryPrefsFolder, 1);
-		folder->evolution_uri = g_strconcat ("evolution:", default_folders[i], NULL);
-		folder->physical_uri = g_strconcat ("file://", evolution_dir, default_folders[i], NULL);
-		
-		folders = g_list_append (folders, folder);
-	}
+	folder = g_new (ESummaryPrefsFolder, 1);
+	folder->evolution_uri = g_strdup ("evolution:/MIT mail/INBOX");
+	folder->physical_uri = g_strdup_printf ("imap://%s;auth=KERBEROS_V4"
+						"@_hesiod/INBOX",
+						g_get_user_name ());
+	folders = g_list_append (folders, folder);
 
 	g_free (evolution_dir);
 	prefs->display_folders = folders;
