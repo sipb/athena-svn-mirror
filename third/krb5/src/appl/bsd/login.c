@@ -537,7 +537,7 @@ int k5_get_password (user_pwstring, pwsize)
 }
 
 #define KRB5_DEFAULT_LIFE 60*60*10 /* 10 hours */
-int krb5_options = 0;
+int krb5_options = KDC_OPT_PROXIABLE | KDC_OPT_FORWARDABLE;
 krb5_deltat krb5_ticket_lifetime = KRB5_DEFAULT_LIFE;
 
 int try_krb5 (me_p, pass)
