@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.14 1992-01-10 20:02:48 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.15 1992-01-13 18:59:08 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -92,7 +92,8 @@ ERRCODE t_dump P((REQUEST *Request , int type , char *file ));
 
 /* t_motd.c */
 ERRCODE t_get_file P((REQUEST *Request , int type , char *file , int display_opts ));
-ERRCODE t_change_file P((REQUEST *Request , int type , char *file , char *editor , int incflag ));
+ERRCODE t_change_file P((REQUEST *Request , int type , char *file ,
+			 char *editor , int incflag, int clearflag ));
 
 /* t_queue.c */
 ERRCODE t_queue P((REQUEST *Request , char *queue ));
