@@ -728,7 +728,8 @@ getterminaltype(name)
 	time_t timeout = time(0) + 60;
 	
 	if (my_state_is_dont(TELOPT_ENCRYPT) ||
-	    my_state_is_wont(TELOPT_ENCRYPT))
+	    my_state_is_wont(TELOPT_ENCRYPT) ||
+	    his_state_is_wont(TELOPT_AUTHENTICATION))
 	    encrypt_failure();
 
 	while (!EncryptStartInput()) {
