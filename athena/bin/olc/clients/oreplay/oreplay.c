@@ -7,11 +7,11 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.9 1990-12-12 14:47:21 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.10 1990-12-31 21:18:22 lwvanels Exp $";
 #endif
 #endif
 
-#include "oreplay.h"
+#include "oclient.h"
 
 int i_list;
 
@@ -24,7 +24,6 @@ int i_list;
 char *f_gets P((FILE *input_file , char *a ));
 void usage P((void ));
 void punt P((int fd , char *filename ));
-void expand_hostname P((char *hostname , char *instance , char *realm ));
 
 #undef P
 
@@ -52,6 +51,8 @@ main(argc,argv)
   char templ[80];
   int temp_fd;
   int gimme_raw;
+  int nuke;
+  int i_show;
 #ifdef KERBEROS
   KTEXT_ST my_auth;
   int auth_result;
@@ -62,14 +63,19 @@ main(argc,argv)
   i_list = 0;
   gimme_raw = 0;
   output_fd = 1;
+  nuke = 0;
   hp = NULL;
+  i_show = 0;
 
-  buf = index(argv[0],'/');
+  buf = rindex(argv[0],'/');
   if (buf != NULL) argv[0] = buf+1;
   if (!strcmp(argv[0],"olist"))
     i_list = 1;
 
-  while ((c = getopt(argc, argv, "f:s:rl")) != EOF)
+  if (!strcmp(argv[0],"oshow"))
+    i_show = 1;
+
+  while ((c = getopt(argc, argv, "f:s:rnl")) != EOF)
     switch(c) {
     case 'f':
       strcpy(filename,optarg);
@@ -91,6 +97,9 @@ main(argc,argv)
     case 'r':
       gimme_raw = 1;
       break;
+    case 'n':
+      nuke = 1;
+      break;
     case '?':
     default:
       usage();
@@ -98,6 +107,11 @@ main(argc,argv)
     }
   
   if (gimme_raw && !i_list) {
+    usage();
+    exit(1);
+  }
+
+  if ((nuke && !i_show) || (i_show && i_list)) {
     usage();
     exit(1);
   }
@@ -110,7 +124,7 @@ main(argc,argv)
     strcpy(username,"qlist");
   }
   else {
-    /* replay */
+    /* replay/show */
     if (((argc - optind) > 2) || (argc == optind)) {
       usage();
       exit(1);
@@ -178,8 +192,16 @@ main(argc,argv)
     punt(output_fd,filename);
   }
   
-  version = htonl((int) VERSION);
+  version = htonl((u_long) VERSION);
   write(sock,&version,sizeof(version));
+
+  if (i_show)
+    version = htonl((u_long) (nuke ? SHOW_KILL_REQ : SHOW_NO_KILL_REQ));
+  else
+    version = htonl((u_long) LIST_REQ);
+
+  write(sock,&version,sizeof(version));
+
   write(sock,username,9);
   instance = htonl(instance);
   write(sock,&instance,sizeof(instance));
@@ -194,14 +216,21 @@ main(argc,argv)
   if (len < 0) {
     if (len >= -256)
       switch (len) {
-      case -11:
+      case ERR_NO_SUCH_Q:
 	fprintf(stderr,"No such question\n");
 	break;
-      case -12:
+      case ERR_SERV:
 	fprintf(stderr,"Error on the server\n");
 	break;
-      case -13:
+      case ERR_NO_ACL:
 	fprintf(stderr,"Sorry, charlie, but you're not on the acl.\n");
+	break;
+      case ERR_OTHER_SHOW:
+        fprintf(stderr,"You can't delete someone else's new messages..\n");
+        fprintf(stderr,"Use the -n option if you really want to be nosy.\n");
+	break;
+      case ERR_NOT_HERE:
+	fprintf(stderr,"Uknown request\n");
 	break;
       default:
 	fprintf(stderr,"%s\n",krb_err_txt[-len]);
@@ -323,42 +352,4 @@ punt(fd,filename)
   close(fd);
   unlink(filename);
   exit(1);
-}
-
-void
-expand_hostname(hostname, instance, realm)
-     char *hostname;
-     char *instance;
-     char *realm;
-{
-  char *p;
-  int i;
-
-  realm[0] = '\0';
-  p = index(hostname, '.');
-  
-  if(p == NULL)
-    {
-      (void) strcpy(instance, hostname);
-
-#ifdef KERBEROS
-      krb_get_lrealm(realm,1);
-#endif /* KERBEROS */
-
-    }
-  else
-    {
-      i = p-hostname;
-      (void) strncpy(instance,hostname,i);
-      instance[i] = '\0';
-      p = krb_realmofhost(hostname);
-      strcpy(realm,p);
-    }
-
-  for(i=0; instance[i] != '\0'; i++)
-    if(isupper(instance[i]))
-      instance[i] = tolower(instance[i]);
-
-  
-  return;
 }
