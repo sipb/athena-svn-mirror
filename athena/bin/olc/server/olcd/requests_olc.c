@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.49 1992-02-04 20:22:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.48 1991-11-05 13:47:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.49 1992-02-04 20:22:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -1806,7 +1806,7 @@ olc_list(fd, request)
 
   write_int_to_fd(fd,n);
   
-  for(i=0;i<=n;i++)
+  for(i=0;i<n;i++)
     {
       status =  send_list(fd,request,&list[i]);
       if(status == ERROR)
