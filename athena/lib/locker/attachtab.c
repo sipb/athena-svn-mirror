@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.6.2.1 1999-08-21 14:50:22 ghudson Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.6.2.2 1999-09-15 20:56:25 ghudson Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -939,6 +939,8 @@ static int lock_attachtab(locker_context context,
   /* Protect from ^Z while holding the attachtab lock. */
   sigemptyset(&mask);
   sigaddset(&mask, SIGTSTP);
+  sigaddset(&mask, SIGTTOU);
+  sigaddset(&mask, SIGTTIN);
   sigprocmask(SIG_BLOCK, &mask, &lock->omask);
 
   fl.l_type = F_WRLCK;
