@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.5 2003-04-02 15:40:10 ghudson Exp $
+## $Id: sys_rvd.big,v 1.6 2003-04-05 23:51:38 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -64,9 +64,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 	/usr/athena:::
 		-> include
 		-> lib/*.a
-		-> lib/gcc-lib
 		-> lib/locale
-		-> lib/sparcv9
 		-> man
 		-> share/gnome/help
 		-> share/gtk-doc
