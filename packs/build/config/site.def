@@ -96,7 +96,7 @@ clean::									@@\
 #define CDebugFlags -O2
 #define CcFlags LintFlags -I/usr/openwin/include
 #define LdPath -L/usr/openwin/lib -L$(ATHLIBDIR)
-#define LdLibs /usr/athena/lib/libresolv.a -lsocket -lnsl -lelf -ldl
+#define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
 #define CcCmd /usr/gcc/bin/gcc -traditional
 #define LdCmd /usr/gcc/bin/gcc
 #define AnsiCcCmd /usr/gcc/bin/gcc
