@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.14 1999-09-02 14:47:15 ghudson Exp $
+# $Id: Makefile.in,v 1.15 2000-01-11 19:09:22 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.14  1999/09/02 14:47:15  ghudson
+# Do a better job of making install directories.
+#
 # Revision 1.13  1999/03/21 21:03:25  ghudson
 # Revert unstripped hack; this is handled in
 # packs/build/finish/os/solaris now.
@@ -405,7 +408,7 @@ SRCS = $(SSHD_OBJS:.o=.c) $(SSH_OBJS:.o=.c) $(KEYGEN_OBJS:.o=.c) \
 EXTRA_SRCS = memmove.c strerror.c remove.c random.c putenv.c crypt.c osfc2.c \
 	socketpair.c auth-kerberos.c
 MAN1PAGES = ssh-keygen ssh-agent ssh-add scp $(EDD_MANPAGES)
-MAN1GENERATED = ssh make-ssh-known-hosts
+MAN1GENERATED = ssh
 MAN1SOURCES = ssh.1.in ssh-keygen.1 ssh-agent.1 ssh-add.1 scp.1 \
 	make-ssh-known-hosts.1.in
 MAN8GENERATED = sshd
@@ -445,7 +448,7 @@ X_PROGRAMS = @X_PROGRAMS@
 #ifdef F_SECURE_COMMERCIAL
 #
 #endif F_SECURE_COMMERCIAL
-SCRIPT_PROGRAMS = make-ssh-known-hosts
+SCRIPT_PROGRAMS = 
 SBIN_PROGRAMS = sshd
 PROGRAMS = ssh $(SBIN_PROGRAMS) $(NORMAL_PROGRAMS) $(SCRIPT_PROGRAMS) \
 $(X_PROGRAMS) $(OTHER_PROGRAMS)
