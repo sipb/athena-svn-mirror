@@ -24,7 +24,9 @@ SUBDIRS=wm-desktops
 
 sysdir = $(datadir)/control-center/Desktop
 sys_in_files = wm-properties.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+
+# Disable capplet listing, since Athena doesn't use gnome-wm by default.
+# sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 
 Setdir = $(datadir)/gnome/apps/Settings/Desktop
 
