@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *	$Id: list.c,v 1.9 1992-02-11 18:15:30 lwvanels Exp $
+ *	$Id: list.c,v 1.10 1992-02-14 20:53:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.9 1992-02-11 18:15:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.10 1992-02-14 20:53:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -86,7 +86,8 @@ OListQueue(Request,list,queues,topics,users,stati)
 
   if(status == SUCCESS)
     {
-      read_int_from_fd(fd, &n);
+      if (read_int_from_fd(fd, &n) != SUCCESS)
+	return(ERROR);
 
 #ifdef TEST
       printf("reading %d list elements\n",n);
@@ -100,6 +101,10 @@ OListQueue(Request,list,queues,topics,users,stati)
       else 
         {    
           *list = (LIST *) malloc((unsigned) (sizeof(LIST) * (n+1)));
+	  if (*list == (LIST *) NULL) {
+	    fprintf(stderr,"Unable to allocate memory to list queue\n");
+	    return(ERROR);
+	  }
           status = OReadList(fd, list,n);
         }
     }
@@ -136,6 +141,8 @@ OReadList(fd,list, size)
 	return(status);
       ++l;
     }
+  if (!l)
+    return(ERROR);
   l->ustatus = END_OF_LIST;
   return(status);
 }
