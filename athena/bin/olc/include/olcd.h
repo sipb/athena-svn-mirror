@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: vanharen $
- *      $Id: olcd.h,v 1.14 1990-02-05 00:19:26 vanharen Exp $
+ *      $Id: olcd.h,v 1.15 1990-02-06 03:41:15 vanharen Exp $
  */
 
 #ifndef __olcd_h
@@ -213,6 +213,8 @@ extern ERRCODE olc_create_instance(int fd, REQUEST *request, int auth);   /* cre
 extern ERRCODE olc_default_instance(int fd, REQUEST *request, int auth);
 extern ERRCODE olc_motd(int fd, REQUEST *request, int auth);              /* retrieve the olc motd */
 extern ERRCODE olc_dump(int fd, REQUEST *request, int auth);              /* debugging info */
+extern ERRCODE olc_dump_req_stats(int fd, REQUEST *request, int auth);    /* "profiling" info */
+extern ERRCODE olc_dump_ques_stats(int fd, REQUEST *request, int auth);   /* stats about questions */
 extern ERRCODE olc_cancel(int fd, REQUEST *request, int auth);
 extern ERRCODE olc_verify_topic(int fd, REQUEST *request, int auth);
 extern ERRCODE olc_verify_instance(int fd, REQUEST *request, int auth);
@@ -265,6 +267,8 @@ extern olc_create_instance();	/* create a new instance */
 extern olc_default_instance();
 extern olc_motd();		/* retrieve the olc motd */
 extern olc_dump();		/* debugging info */
+extern olc_dump_req_stats();	/* "profiling" info */
+extern olc_dump_ques_stats();	/* stats about questions */
 extern olc_cancel();
 extern olc_verify_topic();
 extern olc_verify_instance();
@@ -360,6 +364,8 @@ extern int	authenticate (REQUEST *, unsigned long);
 extern int	find_knuckle (PERSON *, KNUCKLE **);
 extern int	get_user (PERSON *, USER **);
 extern void	dump_data (const char *);
+extern void	dump_request_stats (const char *);
+extern void	dump_question_stats (const char *);
 extern int	save_user_info (USER *);
 extern int	match_knuckle (char *, int, KNUCKLE **);
 extern int	match_maker (KNUCKLE *);
