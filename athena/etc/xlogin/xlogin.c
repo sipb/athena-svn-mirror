@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.7 2000-04-25 13:47:35 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.8 2000-04-27 14:18:14 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -2080,8 +2080,6 @@ int exec_script(const char *file, char **env)
        */
       if (errno == ENOEXEC || errno == EACCES)
 	execle(shell, shell, file, (char *) NULL, env);
-      fprintf(stderr, "xlogin: Cannot execute %s: %s\n", file,
-	      strerror(errno));
       _exit(-1);
     case -1:
       /* The fork() failed. */
