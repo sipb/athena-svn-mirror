@@ -7,7 +7,7 @@
 .SH SYNOPSIS
 .B track
 [
-.B \- dfinmrpqvwxDFT
+.B \- FSTcdfimnpqsuvwx
 ]
 subscriptionlist
 .SH DESCRIPTION
@@ -37,17 +37,23 @@ is invoked without
 .I subscriber
 machine), then the
 .I subscriptionlist
-is used to decide what files are to be considered for possible updating, and
-what machine is to be used as the source of updated files.
+is used to decide what files are to be considered for possible updating.
+The librarian machine is specified as an NFS mount-point with the -F option.
+The default librarian is /srvd.
 .PP
-The options are:
+The most commonly-used options are:
 .TP
-.B \-n
-Do nothing, just produce a list of files that need updating (disabled by \-w)
+.B \-F
+Specify the source ( librarian) root-directory or mount-point.
+The default value is /srvd.
 .TP
-.B \-p
-Parse only and produce a verbose description of the fields in the
-.I subscriptionlist
+.B \-T
+specify the destination root directory, or mount-point. The default is /.
+.TP
+.B \-c
+Compare checksums of regular files, when updating.
+This slows the update,
+but the checksums serve to detect file-system corruption.
 .TP
 .B \-d<dirname>
 change the local working directory (i.e. the directory on the local machine) to
@@ -57,36 +63,27 @@ A working directory is the place where
 will look for
 .I statfiles
 and
-.I subscriptionlists,
-as well as the place where track will attempt to create scratch files.
+.I subscriptionlists.
 .B Track
 must have permission to write in its local working directory.
-The default is /usr/track.
-.TP
-.B \-r<dirname>
-change the remote working directory (i.e. the directory on the librarian
-machine) to
-.I dirname.
-The remote working directory will be the same as the
-local working directory unless the
-.B \-r
-flag is used.
-.TP
-.B \-u
-Unconditionally copy files (i.e. older files will overwrite newer files)
+The default is /mnt/etc/athena/lib, where /mnt is the librarian mount-point.
 .TP
 .B \-f
 Force the update.  Don't be gentle about what is destroyed.  Normally
-track is very cautious about files being destroyed by an update.
+.B track
+is very cautious about files being destroyed by an update.
 .TP
-.B \-m[recipient]
-Mail stdout and stderr to the recipient. The default recipient is root.
+.B \-n
+Do nothing, just produce a list of files that need updating (disabled by \-w),
+and the anticipated consequences of doing the update.
 .TP
-.B \-q
-Be quiet, i.e. don't complain about non-fatal errors.  The most common non-fatal
-error occurs when the
-.I librarian
-and/or network are unreachable.
+.B \-s <statfile>
+.B \-s -
+use the named file as the statfile, or use stdout if "-s -" is used.
+.TP
+.B \-v
+Produces a very verbose description of what is happening during the update:
+which files get updated, and why. This output goes to stderr.
 .TP
 .B \-w
 write out a
@@ -96,25 +93,42 @@ This is flag is always used by the
 machine and never used by the
 .I subscriber
 machine(s).
-.TP
-.B \-D
-create directories if necessary, similar to the d key argument to
-.B cpio.
-.TP
-.B \-F
-specify the source root directory
-.TP
-.B \-T
-specify the destination root directory
+.PP
+The less commonly-used options:
 .TP
 .B \-i
-include devices and special files in update. 
+Include devices and special files in update. 
+.TP
+.B \-m[recipient]
+( Currently broken) Mail stdout and stderr to the recipient.
+The default recipient is root.
+.TP
+.B \-p
+Parse only and produce a verbose description of the fields in the
+.I subscriptionlist. The output goes to stderr.
+This can be useful when
+.B track
+complains about syntax errors
+in the subscription-list.
+.TP
+.B \-q
+Be quiet, i.e. don't complain about non-fatal errors.
+The most common non-fatal error occurs when the
+.I librarian
+and/or network are unreachable.
+.TP
+.B \-u
+Unconditionally copy files (i.e. older files can overwrite newer files)
 .TP
 .B \-x
-display debugging information
+display debugging information ( minimal).
 .TP
-.B \-v
-produces a very verbose description of what is happening during the update.
+.B \-S <max_path_depth>
+Specify deeper path stacks; this is an internal implementation parameter.
+.B Track
+is supposed to tell you when to use -S, and how to use it.
+Since the default depth accomodates pathnames with ~50 components,
+this option is seldom used.
 .SH EXAMPLES
 .in 8
 .ti -8
@@ -136,14 +150,6 @@ and output a
 for the
 .I subscriptionlist
 named "hourly".
-The
-.I statfile's
-name is a combination of the machine name and the
-.I subscriptionlist
-name.  Thus, if the machine on which this command is executed is named "blob"
-the
-.I statfile
-will be named "hourly.blob".
 .sp 1
 .ti -8
 track \-w \-q hourly 
@@ -151,33 +157,12 @@ track \-w \-q hourly
 Same as above, but non-fatal errors will be ignored.
 .sp 1
 .ti -8
-track \-w \-q \-m hourly
-.ti -4
-Same as above, except that error message will be mailed
-to root rather than sent to stderr. These are the arguments most often given when
-.B track
-is executed by
-.B cron(8)
-on the
-.I librarian
-machine.
-.sp 1
-.ti -8
-track \-w \-q \-mfoo!bar
-.ti -4
-Same as above, except that error messages will
-be mailed to "foo!bar" rather than "root"
-.sp 1
-.ti -8
-track daily
+attach paris:root
+track daily -F/paris/root
 .ti -4
 Act as a
 .I subscriber
-machine and get the updates from whatever
-.I librarian
-machine is specified in the
-.I subscriptionlist
-named "daily".
+machine and get the updates from root directory on the machine named "paris".
 .sp 1
 .ti -8
 track \-n daily
@@ -204,17 +189,6 @@ except update files from the
 even if the versions on this machine are newer than the versions
 on the
 .I librarian.
- Without the
-.B \-u
-flag,
-.B track
-will not copy an older file on top of a newer one.
-.sp 1
-.ti -8
-track \-u \-m daily
-.ti -4
-Same as the above, except mail error messages to "root" rather
-than sending them to stderr.
 .sp 1
 .ti -8
 track \-u \-m \-q daily
