@@ -12,5 +12,6 @@
 #
 # comment lines begin with '#'
 afs-protections.sh
+import.sh
 logfilter.pl
 timestamps.pl
