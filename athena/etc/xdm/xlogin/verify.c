@@ -1,19 +1,34 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.40 1993-02-25 14:52:22 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.41 1993-04-27 14:47:23 miki Exp $
  */
 
 #include <stdio.h>
 #include <pwd.h>
+#ifdef SOLARIS
+#include <shadow.h>
+#include <unistd.h>
+#include <limits.h>
+#include <utmpx.h>
+#include <sys/fcntl.h>
+#include <sys/signal.h>
+#include <sys/sysmacros.h>
+#endif
 #include <grp.h>
 #include <strings.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
+#ifdef SOLARIS
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <utmp.h>
 #include <netdb.h>
+#ifndef SOLARIS
 #include <ttyent.h>
+#endif
 #include <errno.h>
 #include <syslog.h>
 
@@ -41,6 +56,11 @@
 #endif
 #ifdef sparc
 #define HOSTTYPE "sun4"
+#endif
+
+
+#ifdef SOLARIS
+#define NGROUPS 16
 #endif
 
 #define SETPAG
@@ -79,11 +99,18 @@
 #endif
 #define MOTD "/etc/motd"
 #define UTMP "/etc/utmp"
+#ifdef SOLARIS
+#define UTMPX "/etc/utmpx"
+#define WTMPX "/usr/adm/wtmpx"
+#endif
 #define WTMP "/usr/adm/wtmp"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
-
+#ifdef SOLARIS
+char *defaultpath = "/usr/athena/bin:/bin/athena:/usr/openwin/bin:/usr/bin:/usr/sbin:/usr/ucb:/usr/andrew/bin:.";
+char *libpath = "/usr/openwin/lib";
+#else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
-
+#endif
 #define file_exists(f) (access((f), F_OK) == 0)
 
 
@@ -99,8 +126,18 @@ extern int errno, quota_pid;
 
 int homedir_status = HD_LOCAL;
 int added_to_passwd = FALSE;
-
-
+struct passwd *
+ get_pwnam(usr)
+ char *usr;
+ {
+   struct passwd *pwd;
+   struct spwd *sp;
+   pwd = getpwnam (usr);
+   sp = getspnam(usr);
+   if ((sp != NULL) && (pwd != NULL))
+     pwd->pw_passwd = sp->sp_pwdp;
+   return(pwd);
+ }
 #ifdef XDM
 char *dologin(user, passwd, option, script, tty, session, display, verify)
 struct verify_info *verify;
@@ -129,12 +166,12 @@ char *display;
     char *newargv[4];
 #endif
     int i;
-
     /* state variables: */
     int local_passwd = FALSE;	/* user is in local passwd file */
     int local_ok = FALSE;	/* verified from local password file */
     int nocreate = FALSE;	/* not allowed to modify passwd file */
     int nologin = FALSE;	/* logins disabled */
+
 
     /* 4.2 vs 4.3 style syslog */
 #ifdef ultrix
@@ -142,6 +179,7 @@ char *display;
 #else
     openlog("login", LOG_ODELAY, LOG_AUTH);
 #endif
+
     nocreate = file_exists(NOCREATE);
     nologin = file_exists(NOLOGIN);
 
@@ -152,7 +190,7 @@ char *display;
       }
 
     /* check local password file */
-    if ((pwd = getpwnam(user)) != NULL) {
+    if ((pwd = get_pwnam(user)) != NULL) {
 	local_passwd = TRUE;
 	if (strcmp(crypt(passwd, pwd->pw_passwd), pwd->pw_passwd)) {
 	    if (pwd->pw_uid == ROOT)
@@ -208,10 +246,14 @@ char *display;
     setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
     setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
 #else
+#ifdef SOLARIS
+    setreuid(pwd->pw_uid, -1);
+    setregid(pwd->pw_gid, -1);
+#else
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
 #endif
-
+#endif
     if (msg = get_tickets(user, passwd)) {
 	if (!local_ok) {
 	    cleanup(NULL);
@@ -259,7 +301,7 @@ char *display;
 	cleanup(NULL);
 	return(errbuf);
     }
-
+#ifndef SOLARIS 
     /* Make sure root login is on a secure tty */
     if (pwd->pw_uid == ROOT) {
 	struct ttyent *te;
@@ -271,6 +313,11 @@ char *display;
 	    return(errbuf);
 	}
     }
+#endif
+
+#ifdef SOLARIS
+    chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
+#endif
 
     /* if mail-check login selected, do that now. */
     if (option == 4) {
@@ -310,7 +357,6 @@ char *display;
 	cleanup(pwd);
 	return("An unexpected error occured while entering you in the local password file.");
     }
-
     switch(quota_pid = fork()) {
     case -1:
 	fprintf(stderr, "Unable to fork to check your filesystem quota.\n");
@@ -375,9 +421,13 @@ char *display;
     sprintf(errbuf, "DISPLAY=%s", display);
     environment[i++] = strsave(errbuf);
 #ifdef HOSTTYPE
-    sprintf(errbuf, "hosttype=%s", HOSTTYPE);
-    environment[i++] = strsave(errbuf);
+     sprintf(errbuf, "hosttype=%s", HOSTTYPE);
+     environment[i++] = strsave(errbuf);
 #endif
+#ifdef SOLARIS
+    sprintf(errbuf, "LD_LIBRARY_PATH=%s", libpath);
+#endif
+    environment[i++] = strsave(errbuf);
     if (homedir_status == HD_TEMP) {
 	environment[i++] = "TMPHOME=1";
     }
@@ -446,13 +496,14 @@ char *display;
     while (i--) endpwdb();
     endgroups();
     
-    if (setpcred(pwd->pw_name, 0))
+    if (setpcred(pwd->pw_name, 0)) 
 	return(lose("Unable to set user's credentials.\n"));
 #else
     i = setgid(pwd->pw_gid);
-    if (i)
+    if (i) 
 	return(lose("Unable to set your primary GID.\n"));
 
+        
     if (initgroups(user, pwd->pw_gid) < 0)
 	prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
@@ -585,15 +636,19 @@ struct passwd *pwd;
 	      sigpause(0);
 	}
     }
-    if (pwd && added_to_passwd)
+    if (pwd && added_to_passwd) {
+#ifdef SOLARIS
+      remove_from_shadow(pwd);    
+#endif
       remove_from_passwd(pwd);
-
+    }
     /* Set real uid to zero.  If this is impossible, exit.  The
        current implementation of lose() will not print a message
        so xlogin will just exit silently.  This call "can't fail",
        so this is not a serious problem. */
     if (setuid(0) == -1)
       lose ("Unable to reset real uid to root");
+
 }
 
 
@@ -644,7 +699,10 @@ int exists;
 #else /* !RIOS */
     int i, fd;
     FILE *etc_passwd;
-
+#ifdef SOLARIS
+    FILE *etc_shadow;
+    long lastchg = DAY_NOW;
+#endif
     if (exists)
 	return 0;
     
@@ -660,13 +718,24 @@ int exists;
 	else
 	    (void) unlink("/etc/ptmp");
     }
-
+#ifdef SOLARIS
+    etc_shadow = fopen("etc/shadow", "a");
+    fprintf(stderr, "etc_shadow = %d\n", etc_shadow);
+#endif
     etc_passwd = fopen("/etc/passwd", "a");
     if (etc_passwd == NULL) {
 	(void) close(fd);
 	(void) unlink("/etc/ptmp");
 	return(-1);
     }
+#ifdef SOLARIS
+    fprintf(etc_shadow,"%s:%s:%d::::::\n",
+     	    p->pw_name,
+	    p->pw_passwd,
+            lastchg);
+    strcpy (p->pw_passwd, "x");
+    (void) fclose(etc_shadow);
+#endif
     fprintf(etc_passwd, "%s:%s:%d:%d:%s:%s:%s\n",
 	    p->pw_name,
 	    p->pw_passwd,
@@ -782,7 +851,46 @@ struct passwd *p;
     return(0);
 #endif
 }
+#ifdef SOLARIS
+remove_from_shadow(p)
+struct passwd *p;
+{
+    int fd, len, i;
+    char buf[512];
+    FILE *old, *new;
+    for (i = 0; i < 10; i++)
+      if ((fd = open("/etc/ptmp", O_WRONLY | O_CREAT | O_EXCL, 0644)) == -1 &&
+	  errno == EEXIST)
+	sleep(1);
+      else
+	break;
+    if (fd == -1) {
+	if (i < 10) {
+          fprintf(stderr, "errno = %d\n", errno);
+	  return(errno);
+	}
+    }
+    old = fopen("/etc/shadow", "a");
+    if (old == NULL) {
+	(void) close(fd);
+	(void) unlink("/etc/ptmp"); 
+        fprintf(stderr, "could not open shadow\n");
+	return(-1);
+    }
+    new = fdopen(fd, "w");
+    len = strlen(p->pw_name);
 
+    while (fgets(buf, sizeof(buf) - 1, old)) {
+	if (strncmp(p->pw_name, buf, len - 1) || buf[len] != ':')
+	  fputs(buf, new);
+    }
+
+    (void) fclose(old);
+    (void) fclose(new);
+    (void) rename("/etc/ptmp", "/etc/shadow");    
+    return(0);
+}
+#endif 
 
 abort_verify()
 {
@@ -1033,7 +1141,7 @@ char *s;
 /* replacement for library ttyslot routine which takes tty as argument
  * rather than finding controlling tty (which is often undefined in xlogin).
  */
-
+#ifndef SOLARIS
 int myttyslot(tty)
 char *tty;
 {
@@ -1051,6 +1159,7 @@ char *tty;
     endttyent();
     return(0);
 }
+#endif
 #endif /* _AIX */
 
 
@@ -1059,30 +1168,51 @@ char *user;
 char *tty;
 char *display;
 {
+    struct utmp ut_tmp;
     struct utmp ut_entry;
+#ifdef SOLARIS
+    struct utmpx utx_entry;
+    struct utmpx utx_tmp;
+#endif
     int f;
-#ifndef _AIX
+#if !defined(_AIX) && !defined(SOLARIS)
     int slot = myttyslot(tty);
 #endif
-
     bzero(&ut_entry, sizeof(ut_entry));
+#ifdef SOLARIS
+    bzero(&utx_entry, sizeof(utx_entry));
+#endif
     strncpy(ut_entry.ut_line, tty, 8);
     strncpy(ut_entry.ut_name, user, 8);
+#ifdef SOLARIS
+    strncpy(utx_entry.ut_line, tty, 8);
+    strncpy(utx_entry.ut_name, user, 8);
+#endif
     /* leave space for \0 */
+#ifdef SOLARIS
+    strncpy(utx_entry.ut_host, display, 15);
+    utx_entry.ut_host[15] = 0;
+#else
     strncpy(ut_entry.ut_host, display, 15);
     ut_entry.ut_host[15] = 0;
+#endif
     time(&(ut_entry.ut_time));
-#ifdef _AIX
-    strncpy(ut_entry.ut_id, tty, sizeof(ut_entry.ut_id));
+#ifdef SOLARIS
+    gettimeofday(&utx_entry.ut_tv);
+#endif
+#if defined(_AIX) || defined(SOLARIS)
     ut_entry.ut_pid = getppid();
     ut_entry.ut_type = USER_PROCESS;
+#ifdef SOLARIS
+    utx_entry.ut_pid = getppid();
+    utx_entry.ut_type = USER_PROCESS;
+#endif
 #endif						/* _AIX */
 
     if ((f = open(UTMP, O_RDWR )) >= 0) {
-#ifndef _AIX
+#if !defined(_AIX) && !defined(SOLARIS)
 	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
 #else						/* _AIX */
-	struct utmp ut_tmp;
 	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
 	    if (ut_tmp.ut_pid == ut_entry.ut_pid) {
 		strncpy(ut_entry.ut_id, ut_tmp.ut_id, sizeof(ut_tmp.ut_id));
@@ -1093,11 +1223,28 @@ char *display;
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
-
+#ifdef SOLARIS
+    if ((f = open(UTMPX, O_RDWR )) >= 0) {
+	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
+	    if (ut_tmp.ut_pid == utx_entry.ut_pid) {
+		strncpy(utx_entry.ut_id, ut_tmp.ut_id, sizeof(ut_tmp.ut_id));
+		lseek(f, -(long) sizeof(ut_tmp), 1);
+		break;
+	    }
+	write(f, (char *) &utx_entry, sizeof(utx_entry));
+	close(f);
+    }
+#endif
     if ( (f = open( WTMP, O_WRONLY|O_APPEND)) >= 0) {
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
+#ifdef SOLARIS
+    if ( (f = open( WTMPX, O_WRONLY|O_APPEND)) >= 0) {
+	write(f, (char *) &utx_entry, sizeof(utx_entry));
+	close(f);
+    }
+#endif
 }
 
 #ifdef _IBMR2
@@ -1371,3 +1518,4 @@ char *glist;
     return("Failed to update your access control groups");
 }
 #endif /* _IBMR2 */
+
