@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.29 1991-01-03 15:52:18 lwvanels Exp $
+ *	$Id: notify.c,v 1.30 1991-03-27 14:26:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.29 1991-01-03 15:52:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.30 1991-03-27 14:26:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,6 +36,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>           /* File handling defs. */
 #include <sys/stat.h>           /* File status defs. */
 #include <sys/wait.h>           /* */
+#include <netinet/in.h>
 #include <pwd.h>                /* Directory defs. */
 #include <signal.h>             /* System signal definitions. */
 #include <sgtty.h>              /* Terminal param. definitions. */
@@ -64,10 +65,11 @@ static long zpunt_time;
 #endif
 
 static int notice_timeout P((int a ));
+#ifdef ZEPHYR
 static ERRCODE zwrite_message P((char *username , char *message ));
 static ERRCODE zsend_message P((char *c_class , char *instance , char *opcode , char *username , char *message ));
 static ERRCODE zsend P((ZNotice_t *notice ));
-
+#endif /* Zephyr */
 #undef P
 
 
