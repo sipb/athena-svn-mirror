@@ -2,7 +2,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h"
 /**/#
-/**/#	$Id: Imakefile,v 1.15 1994-10-31 05:56:03 ghudson Exp $
+/**/#	$Id: Imakefile,v 1.16 1995-05-28 20:26:27 cfields Exp $
 
 #define Project
 #ifndef ProjectRules
@@ -11,7 +11,7 @@
 #endif
 
 UTILS = $(D_IMAKE) $(D_ET) $(D_SS)
-#define ISUBDIRS $(UTILS) h libdes lib libdyn clients server zhm zwgc
+#define ISUBDIRS $(UTILS) h libdes lib libdyn clients zhm zwgc
 
 create_dir($(ZLIBDIR))
 
