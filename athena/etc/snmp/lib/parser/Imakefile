@@ -1,0 +1,22 @@
+#
+# Makefile for the asn parser in the NYSERNet snmp distribution
+#
+PARSEOBJS=	snmpparse.o prsepdus.o prselen.o prselst.o prseprim.o msgparse.o
+
+all:: $(PARSEOBJS)
+	cp $(PARSEOBJS) ../obj
+
+clean::
+	$(RM) $(PARSEOBJS)
+
+snmpparse.o: snmpparse.c
+
+protmsgs.o: protmsgs.c
+
+prselen.o: prselen.c
+
+prselst.o: prselst.c
+
+prseint.o: prseint.c
+
+prsestr.o: prsestr.c

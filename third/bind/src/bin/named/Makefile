@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.2 1998-05-12 18:03:51 ghudson Exp $
+# $Id: Makefile,v 1.4 1998-05-17 03:40:18 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -64,16 +64,15 @@ OBJS=	db_dump.${O} db_load.${O} db_lookup.${O} db_save.${O} db_update.${O} \
 	ns_resp.${O} ns_stats.${O} ns_ncache.${O} ns_xfr.${O} ns_glue.${O} \
 	ns_udp.${O} ns_config.${O} ns_update.${O}
 
+.SUFFIXES:
+.SUFFIXES: .c .o
+
 all: ${PROG} pathnames
 
 ${PROG}: pathnames.h ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
 	${CC} ${CDEBUG} ${LDFLAGS} -o ${PROG} ${OBJS} tmp_version.${O} \
 		${LIBBIND} ${SYSLIBS}
 
-ns_parser.c ns_parser.h: ns_parser.y
-	${YACC} ns_parser.y
-	mv y.tab.c ns_parser.c
-	mv y.tab.h ns_parser.h
 
 tmp_version.${O}: tmp_version.c
 
@@ -112,7 +111,8 @@ ${DESTDIR}${DESTSBIN}:
 	mkdir -p ${DESTDIR}${DESTSBIN}
 
 install: ${DESTDIR}${DESTSBIN} ${PROG}
-	${INSTALL} ${STRIP} -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}
+	${INSTALL} -s -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}
+	${INSTALL} -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}.unstripped
 
 links: FRC
 	@ln -s SRC/*.[chy] SRC/test .; rm -f ns_parser.[ch]

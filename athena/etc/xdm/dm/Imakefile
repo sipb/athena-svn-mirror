@@ -1,0 +1,7 @@
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/Imakefile,v 1.4 1997-12-13 01:16:43 cfields Exp $
+
+LIBS = -lX11 -lal -lhesiod
+
+SimpleProgram(dm,dm.o,$(LIBS),/etc/athena)
+install_man(dm.8,dm.8)
+

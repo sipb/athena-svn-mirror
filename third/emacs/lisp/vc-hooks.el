@@ -789,6 +789,12 @@ For CVS, the full name of CVS/Entries is returned."
 	      ;; case-sensitively
 	      (setq case-fold-search nil)
 	      (cond
+	       ;; entry for a "locally added" file (not yet committed)
+	       ((re-search-forward
+		 (concat "^/" (regexp-quote basename) "/0/") nil t)
+		(vc-file-setprop file 'vc-checkout-time 0)
+		(vc-file-setprop file 'vc-workfile-version "0")
+		(throw 'found (cons (concat dirname "CVS/Entries") 'CVS)))
 	       ((re-search-forward
 		 (concat "^/" (regexp-quote basename) 
 			 "/\\([^/]*\\)/[^ /]* \\([A-Z][a-z][a-z]\\) *\\([0-9]*\\) \\([0-9]*\\):\\([0-9]*\\):\\([0-9]*\\) \\([0-9]*\\)")
@@ -883,7 +889,7 @@ control system name."
     ;; cannot modify a file that someone else has locked.
     (and vc-type 
 	 (equal file (buffer-file-name))
-	 (vc-locking-user file)
+	 (stringp (vc-locking-user file))
 	 (not (string= (user-login-name) (vc-locking-user file)))
 	 (setq buffer-read-only t))
     ;; If the user is root, and the file is not owner-writable,

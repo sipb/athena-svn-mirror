@@ -111,6 +111,19 @@ sub getcwd
 	{
 	    $dir = undef;
 	}
+	elsif ($pst[0] == $cst[0])
+	{
+	    do
+	    {
+		unless (defined ($dir = readdir(PARENT)))
+	        {
+		    warn "readdir($dotdots): $!";
+		    closedir(PARENT);
+		    return '';
+		}
+	    }
+	    while ($dir eq '.' || $dir eq '..' || $_INO != $pst[1]);
+	}
 	else
 	{
 	    do
@@ -277,6 +290,19 @@ sub abs_path
 	if ($pst[0] == $cst[0] && $pst[1] == $cst[1])
 	{
 	    $dir = '';
+	}
+	elsif ($pst[0] == $cst[0])
+	{
+	    do
+	    {
+		unless (defined ($dir = readdir(PARENT)))
+	        {
+		    carp "readdir($dotdots): $!";
+		    closedir(PARENT);
+		    return '';
+		}
+	    }
+	    while ($dir eq '.' || $dir eq '..' || $_INO != $pst[1]);
 	}
 	else
 	{

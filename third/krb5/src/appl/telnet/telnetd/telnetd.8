@@ -39,11 +39,11 @@ protocol server
 .SH SYNOPSIS
 .B /usr/libexec/telnetd
 [\fB\-a\fP \fIauthmode\fP] [\fB\-B\fP] [\fB\-D\fP] [\fIdebugmode\fP]
-[\fB\-edebug\fP] [\fB\-h\fP] [\fB\-I\fP\fIinitid\fP] [\fB\-l\fP]
+[\fB\-e\fP] [\fB\-h\fP] [\fB\-I\fP\fIinitid\fP] [\fB\-l\fP]
 [\fB\-k\fP] [\fB\-n\fP] [\fB\-r\fP\fIlowpty-highpty\fP] [\fB\-s\fP]
 [\fB\-S\fP \fItos\fP] [\fB\-U\fP] [\fB\-X\fP \fIauthtype\fP]
 [\fB\-debug\fP [\fIport\fP]]
-.Sh DESCRIPTION
+.SH DESCRIPTION
 The
 .B telnetd
 command is a server which supports the
@@ -121,6 +121,14 @@ This disables the authentication code.  All user verification will
 happen through the
 .IR login (1)
 program.
+.TP
+.B cred
+Allow automatic login for connections that supply forwarded
+credentials. Otherwise, do user verification through
+.IR login (1)
+as with
+.B \-a
+.BR off .
 .RE
 .TP
 .B \-B
@@ -162,6 +170,9 @@ Displays the data stream received by
 .B ptydata
 Displays data written to the pty.
 .TP
+.B encrypt
+Enables encryption debugging code.
+.TP
 .B exercise
 Has not been implemented yet.
 .RE
@@ -174,12 +185,10 @@ Enables debugging on each socket created by
 in
 .IR socket (2)).
 .TP
-.B \-edebug
-If
+.B \-e
+This option causes
 .B telnetd
-has been compiled with support for data encryption, then the
-.B edebug
-option may be used to enable encryption debugging code.
+to refuse unencrypted connections.
 .TP
 .B \-h
 Disables the printing of host-specific information before login has been
@@ -285,6 +294,11 @@ to refuse connections from addresses that cannot be mapped back into a
 symbolic name via the
 .IR gethostbyaddr (3)
 routine.
+.TP
+.B \-x
+This option causes
+.B telnetd
+to refuse unencrypted connections.
 .TP
 \fB\-X\fP \fIauthtype\fP
 This option is only valid if

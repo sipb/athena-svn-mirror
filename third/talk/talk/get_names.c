@@ -45,11 +45,15 @@ static char rcsid[] = "$NetBSD: get_names.c,v 1.4 1994/12/09 02:14:16 jtc Exp $"
 #include <protocols/talkd.h>
 #include <pwd.h>
 #include <string.h>
+#include <stdlib.h>
 #include "talk.h"
+
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 256
+#endif
 
 char	*getlogin();
 char	*ttyname();
-char	*rindex();
 extern	CTL_MSG msg;
 
 /*
@@ -74,20 +78,22 @@ get_names(argc, argv)
 		printf("Standard input must be a tty, not a pipe or a file\n");
 		exit(-1);
 	}
-	if ((my_name = getlogin()) == NULL) {
-		struct passwd *pw;
+	if ((my_name = getenv("USER")) == NULL) {
+		if ((my_name = getlogin()) == NULL) {
+			struct passwd *pw;
 
-		if ((pw = getpwuid(getuid())) == NULL) {
-			printf("You don't exist. Go away.\n");
-			exit(-1);
+			if ((pw = getpwuid(getuid())) == NULL) {
+				printf("You don't exist. Go away.\n");
+				exit(-1);
+			}
+			my_name = pw->pw_name;
 		}
-		my_name = pw->pw_name;
 	}
 	gethostname(hostname, sizeof (hostname));
 	my_machine_name = hostname;
 	/* check for, and strip out, the machine name of the target */
 	names = strdup(argv[1]);
-	for (cp = names; *cp && !index("@:!.", *cp); cp++)
+	for (cp = names; *cp && !strchr("@:!.", *cp); cp++)
 		;
 	if (*cp == '\0') {
 		/* this is a local to local talk */
@@ -114,8 +120,8 @@ get_names(argc, argv)
 	 * Initialize the message template.
 	 */
 	msg.vers = TALK_VERSION;
-	msg.addr.sa_family = htons(AF_INET);
-	msg.ctl_addr.sa_family = htons(AF_INET);
+	msg.addr.family = htons(AF_INET);
+	msg.ctl_addr.family = htons(AF_INET);
 	msg.id_num = htonl(0);
 	strncpy(msg.l_name, my_name, NAME_SIZE);
 	msg.l_name[NAME_SIZE - 1] = '\0';

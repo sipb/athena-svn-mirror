@@ -30,6 +30,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#endif
 
 extern int optind;
 extern char *optarg;
@@ -51,7 +54,10 @@ void do_ccache KRB5_PROTOTYPE((char *));
 void do_keytab KRB5_PROTOTYPE((char *));
 void printtime KRB5_PROTOTYPE((time_t));
 void fillit KRB5_PROTOTYPE((FILE *, int, int));
-	
+#ifdef KRB5_KRB4_COMPAT
+void do_v4_ccache KRB5_PROTOTYPE((void));
+#endif
+
 #define DEFAULT 0
 #define CCACHE 1
 #define KEYTAB 2
@@ -274,10 +280,15 @@ void do_ccache(name)
  
     flags = 0;				/* turns off OPENCLOSE mode */
     if ((code = krb5_cc_set_flags(kcontext, cache, flags))) {
-	if (code == ENOENT) {
-	    if (!status_only)
+	if (code == KRB5_FCC_NOFILE) {
+	    if (!status_only) {
 		com_err(progname, code, "(ticket cache %s)",
 			krb5_cc_get_name(kcontext, cache));
+#ifdef KRB5_KRB4_COMPAT
+		if (name == NULL)
+		    do_v4_ccache();
+#endif
+	    }
 	} else {
 	    if (!status_only)
 		com_err(progname, code,
@@ -338,6 +349,10 @@ void do_ccache(name)
 		com_err(progname, code, "while closing ccache");
 	    exit(1);
 	}
+#ifdef KRB5_KRB4_COMPAT
+	if (name == NULL && !status_only)
+	    do_v4_ccache();
+#endif
 	exit(exit_status);
     } else {
 	if (!status_only)
@@ -522,3 +537,88 @@ fillit(f, num, c)
 	fputc(c, f);
 }
 
+#ifdef KRB5_KRB4_COMPAT
+void
+do_v4_ccache()
+{
+    char    pname[ANAME_SZ];
+    char    pinst[INST_SZ];
+    char    prealm[REALM_SZ];
+    char    buf1[20], buf2[20];
+    char    *file = tkt_string();
+    int     k_errno;
+    CREDENTIALS c;
+    int     header = 1;
+
+    printf("\n\nKerberos 4 ticket file: %s\n", file);
+
+    /* 
+     * Since krb_get_tf_realm will return a ticket_file error, 
+     * we will call tf_init and tf_close first to filter out
+     * things like no ticket file.  Otherwise, the error that 
+     * the user would see would be 
+     * klist: can't find realm of ticket file: No ticket file (tf_util)
+     * instead of
+     * klist: No ticket file (tf_util)
+     */
+
+    /* Open ticket file */
+    if (k_errno = tf_init(file, R_TKT_FIL)) {
+	fprintf(stderr, "%s: %s\n", progname, krb_get_err_text (k_errno));
+	exit(1);
+    }
+    /* Close ticket file */
+    (void) tf_close();
+
+    /* 
+     * We must find the realm of the ticket file here before calling
+     * tf_init because since the realm of the ticket file is not
+     * really stored in the principal section of the file, the
+     * routine we use must itself call tf_init and tf_close.
+     */
+    if ((k_errno = krb_get_tf_realm(file, prealm)) != KSUCCESS) {
+	fprintf(stderr, "%s: can't find realm of ticket file: %s\n",
+		progname, krb_get_err_text (k_errno));
+	exit(1);
+    }
+
+    /* Open ticket file */
+    if (k_errno = tf_init(file, R_TKT_FIL)) {
+	fprintf(stderr, "%s: %s\n", progname, krb_get_err_text (k_errno));
+	exit(1);
+    }
+    /* Get principal name and instance */
+    if ((k_errno = tf_get_pname(pname)) ||
+	(k_errno = tf_get_pinst(pinst))) {
+	fprintf(stderr, "%s: %s\n", progname, krb_get_err_text (k_errno));
+	exit(1);
+    }
+
+    /* 
+     * You may think that this is the obvious place to get the
+     * realm of the ticket file, but it can't be done here as the
+     * routine to do this must open the ticket file.  This is why 
+     * it was done before tf_init.
+     */
+       
+    printf("Principal: %s%s%s%s%s\n\n", pname,
+	   (pinst[0] ? "." : ""), pinst,
+	   (prealm[0] ? "@" : ""), prealm);
+    while ((k_errno = tf_get_cred(&c)) == KSUCCESS) {
+	if (header) {
+	    printf("%-18s  %-18s  %s\n",
+		   "  Issued", "  Expires", "  Principal");
+	    header = 0;
+	}
+	printtime(c.issue_date);
+	fputs("  ", stdout);
+	printtime(c.issue_date + ((unsigned char) c.lifetime) * 5 * 60);
+	printf("  %s%s%s%s%s\n",
+	       c.service, (c.instance[0] ? "." : ""), c.instance,
+	       (c.realm[0] ? "@" : ""), c.realm);
+    }
+    if (header && k_errno == EOF) {
+	printf("No tickets in file.\n");
+    }
+}
+#endif /* KRB4_KRB5_COMPAT */

@@ -15,8 +15,48 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.1.1.3 1998-05-13 19:11:11 danw Exp $
+ * $Id: auth-passwd.c,v 1.11 1998-05-14 19:23:39 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  1998/05/13 20:18:46  danw
+ * merge in changes from 1.2.23
+ *
+ * Revision 1.9  1998/04/09 22:51:45  ghudson
+ * Support local accounts as determined by libal.
+ *
+ * Revision 1.8  1998/03/08 17:52:01  danw
+ * From nathanw: use same krb5 options (proxy+forward) as other programs.
+ * Use krb_set_tkt_string before get_pw_in_tkt in case the krb4 lib has
+ * already cached another ticket location (while trying to do ticket forwarding,
+ * for example)
+ *
+ * Revision 1.7  1998/01/24 01:47:21  danw
+ * merge in changes for 1.2.22
+ *
+ * Revision 1.6  1998/01/09 22:57:55  danw
+ * fix krb4 ticket lifetime bug
+ *
+ * Revision 1.5  1997/11/19 20:52:24  danw
+ * small security fix (originally from Matt Power)
+ *
+ * Revision 1.4  1997/11/19 20:44:43  danw
+ * do chown later
+ *
+ * Revision 1.3  1997/11/15 00:04:13  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
+ * Revision 1.2  1997/11/12 21:16:09  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
+ * Revision 1.1.1.1  1997/10/17 22:26:01  danw
+ * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:19  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1998/05/13 19:11:11  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.15  1998/05/11 21:27:47  kivinen
  * 	Set correct_passwd to contain 255...255 so even if some
  * 	function doesn't set it, it cannot contain empty password.
@@ -127,6 +167,8 @@ the password is valid for the user.
 #include "ssh.h"
 #include "servconf.h"
 #include "xmalloc.h"
+
+extern int al_local_acct;
 
 #ifdef SECURE_RPC
 /*
@@ -274,6 +316,8 @@ static int securid_initialized = 0;
 #include <krb5.h>
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
+extern  int havecred;
+void	krb_cleanup(void);
 #else
 #include <krb.h>
 #endif /* KRB5 */
@@ -331,6 +375,7 @@ int verify_krb_v5_tgt (krb5_context c, krb5_ccache ccache,
   /* since krb5_sname_to_principal has done the work for us, just
      extract the name directly */
   strncpy(phost, krb5_princ_component(c, princ, 1)->data, BUFSIZ);
+  phost[BUFSIZ - 1] = '\0';
   
   /* Do we have host/<host> keys? */
   /* (use default keytab, kvno IGNORE_VNO to get the first match,
@@ -475,14 +520,14 @@ int auth_password(const char *server_user, const char *password)
 
 #ifdef KERBEROS
   krb5_error_code problem;
-  int krb5_options = KDC_OPT_RENEWABLE | KDC_OPT_FORWARDABLE;
+  int krb5_options = KDC_OPT_PROXIABLE | KDC_OPT_FORWARDABLE;
   krb5_deltat rlife = 0;
   krb5_principal server = 0;
   krb5_creds my_creds;
   krb5_timestamp now;
   krb5_ccache ccache;
-  char ccname[80];
-  int results;
+  char ccname[80], krbtkfile[80], krbtkenv[80];
+  int results, status;
 #endif  /* KERBEROS */
   extern ServerOptions options;
   extern char *crypt(const char *key, const char *salt);
@@ -506,7 +551,7 @@ int auth_password(const char *server_user, const char *password)
   saved_pw_passwd = xstrdup(pw->pw_passwd);
   
 #if defined(KERBEROS)
-  if (options.kerberos_authentication)
+  if (options.kerberos_authentication && !al_local_acct)
     {
 #if defined(KRB5)
       sprintf(ccname, "FILE:/tmp/krb5cc_l%d", getpid());
@@ -560,7 +605,7 @@ int auth_password(const char *server_user, const char *password)
       krb5_free_principal(ssh_context, server);
       server = 0;
       if (problem)
-	goto errout;
+	goto trykrb4;
       else
 	{
 	  /* Verify tgt just obtained */
@@ -580,18 +625,23 @@ int auth_password(const char *server_user, const char *password)
             /* get_name pulls out just the name not the
                type */
 	      strcpy(ccname + 5, krb5_cc_get_name(ssh_context, ccache));
-	      (void) chown(ccname + 5, pw->pw_uid, pw->pw_gid);
 	      
-	      /* If tgt was passed unlink file */
+	      /* If tgt was passed, destroy it */
 	      if (ticket)
 		{
 		  if (strcmp(ticket,"none"))
-		    /* ticket -> FILE:path */
-		    unlink(ticket + 5);
+		    {
+		      krb5_ccache fwd_ccache;
+
+		      if (!krb5_cc_resolve(ssh_context, ticket, &fwd_ccache))
+			krb5_cc_destroy(ssh_context, fwd_ccache);
+		      dest_tkt();
+		    }
 		  else
                     ticket = NULL;
 		}
 	      
+	    trykrb4:
 	      ticket = xmalloc(strlen(ccname) + 1);
 	      (void) sprintf(ticket, "%s", ccname);
 	      
@@ -599,6 +649,28 @@ int auth_password(const char *server_user, const char *password)
 	      xfree(saved_pw_name);
 	      xfree(saved_pw_passwd);
 	      
+	      /* Now get v4 tickets */
+	      sprintf(krbtkfile, "/tmp/tkt_p%d", getpid());
+	      krb_set_tkt_string(krbtkfile);
+
+	      status =
+		krb_get_pw_in_tkt(pw->pw_name, "",
+				  krb5_princ_realm(ssh_context, client)->data,
+				  "krbtgt",
+				  krb5_princ_realm(ssh_context, client)->data,
+				  12*10,  /* 10 hours in 5-minute increments */
+				  password);
+	      if (status)
+		goto errout;
+
+	      /* Put the name of the ticket file in the environment
+		 for parts of the login that need it between here 
+		 and the environment variable setting code in do_child(). */
+	      sprintf(krbtkenv, "KRBTKFILE=%s", krbtkfile);
+	      putenv(xstrdup(krbtkenv));
+
+	      havecred = 1;
+	      atexit(krb_cleanup);
 	      return 1;
 	    }
 	  if (problem == KRB5_KT_NOTFOUND)
@@ -610,6 +682,7 @@ int auth_password(const char *server_user, const char *password)
 	}
     errout:
       krb5_cc_destroy (ssh_context, ccache);
+      dest_tkt();
     errout2:
       if (problem)
 	{

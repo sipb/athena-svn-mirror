@@ -6,30 +6,30 @@
 
 # where TeX is `rooted'.  Sometimes /usr/local/lib/tex.
 # TEXDIR = /usr/lib/tex
-TEXDIR = /usr/lib/tex
+TEXDIR = /usr/athena/lib/tex
 
 # another place pk, tfm, and vf files might be found.
 # LOCALDIR = /LocalLibrary/Fonts/TeXFonts
-LOCALDIR = /LocalLibrary/Fonts/TeXFonts
+# LOCALDIR = /LocalLibrary/Fonts/TeXFonts
 
 # the default path to search for TFM files 
 # (this usually is identical to TeX's defaultfontpath, which omits `.')
 # (private fonts are given an explicit directory, which overrides the path)
 #   overridden by the environment variable TEXFONTS
 # TFMPATH = $(LOCALDIR)/tfm:$(TEXDIR)/fonts/tfm
-TFMPATH = .:$(LOCALDIR)/tfm:$(TEXDIR)/fonts/tfm
+TFMPATH = .:$(TEXDIR)/fonts/tfm
 
 # the default path to search for PK files (usually omits `.')
 # Don't forget to add the directory that
 # MakeTeXPK puts the files!  (In this case, /LocalLibrary/Fonts...)
 #   overridden by the environment variable TEXPKS or TEXPACKED or PKFONTS
 # PKPATH = $(LOCALDIR)/pk:$(TEXDIR)/fonts/pk
-PKPATH = .:$(LOCALDIR)/pk:$(TEXDIR)/fonts/pk
+PKPATH = .:$(TEXDIR)/fonts/pk
 
 # the default path to search for VF files (usually omits `.')
 #   overridden by the environment variable VFFONTS
 # VFPATH = $(LOCALDIR)/vf:$(TEXDIR)/fonts/vf
-VFPATH = .:$(LOCALDIR)/vf:$(TEXDIR)/fonts/vf
+VFPATH = .:$(TEXDIR)/fonts/vf
 
 # additional directories in which to search for subdirectories to find
 # both tfm and pk files
@@ -58,15 +58,15 @@ HEADERPATH = .:$(HEADERDIR)
 
 # where epsf.tex and rotate.tex go (usually the TeX macros directory)
 # TEXMACRODIR = $(TEXDIR)/inputs
-TEXMACRODIR = $(TEXDIR)/inputs
+TEXMACRODIR = $(TEXDIR)/macros
 
 # the default path to search for epsf and psfiles
 # (usually the same as TeX's defaultinputpath)
 # FIGPATH = .:..:$(TEXDIR)/inputs
-FIGPATH = .:..:$(TEXDIR)/inputs
+FIGPATH = .:..:$(TEXDIR)/macros
 
 # the place man pages are located.
-MANDIR = /usr/man/man1
+MANDIR = /usr/athena/man/man1
 
 # change -DDEFRES=300 or whatever is required
 #    if the default resolution is not 300 dpi,
@@ -85,16 +85,16 @@ MANDIR = /usr/man/man1
 #   If your compiler doesn't like void*, then add
 #      -DVOID=char
 #
-DEFS= -DTPIC -DDEBUG -DDEFRES=400 -DCREATIONDATE
+DEFS= -DTPIC -DDEBUG -DDEFRES=600 -DCREATIONDATE -DHAVE_GETCWD
 
 # either use
 # OPT = -O -funsigned-char
 # or
-OPT = -g -Wall -funsigned-char
+OPT = -O
 
 # libraries to include (-lm -lc on most systems)
 #FLIBS= -lNeXT_s -lsys_s
-FLIBS= -lNeXT_s -lsys_s
+FLIBS= -lm
 
 # If you are compiling dvips for suid or other privileges, you will
 # definitely want to define the following symbol; else don't.
@@ -117,7 +117,7 @@ INSTALL = install
 
 # where the installed binary goes
 # BINDIR = /usr/bin
-BINDIR = /usr/bin
+BINDIR = /usr/athena/bin
 
 PATHS = -DTFMPATH=\"$(TFMPATH)\" \
 	-DPKPATH=\"$(PKPATH)\" \
@@ -189,35 +189,35 @@ install : afm2tfm dvips MakeTeXPK \
 	crop.pro config.ps psfonts.map epsf.tex epsf.sty rotate.tex \
 	rotate.sty colordvi.tex colordvi.sty blackdvi.tex blackdvi.sty \
 	dvips.tex dvipsmac.tex dvips.1 afm2tfm.1
-	- mkdir $(BINDIR)
-	- mkdir $(CONFIGDIR)
-	- mkdir $(HEADERDIR)
-	- mkdir $(MANDIR)
-	- mkdir $(TEXMACRODIR)
-	$(INSTALL) -c -m 755 afm2tfm $(BINDIR)/afm2tfm
-	$(INSTALL) -c -m 755 dvips $(BINDIR)/dvips
-	$(INSTALL) -c -m 755 MakeTeXPK $(BINDIR)/MakeTeXPK
-	$(INSTALL) -c -m 644 tex.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 texc.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 texps.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 special.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 finclude.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 color.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 crop.pro $(HEADERDIR)
-	$(INSTALL) -c -m 644 config.ps $(CONFIGDIR)/$(CONFIGFILE)
-	$(INSTALL) -c -m 644 psfonts.map $(CONFIGDIR)
-	$(INSTALL) -c -m 644 epsf.tex $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 epsf.sty $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 rotate.tex $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 rotate.sty $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 colordvi.sty $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 colordvi.tex $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 blackdvi.sty $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 blackdvi.tex $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 dvips.tex $(TEXMACRODIR)
-	$(INSTALL) -c -m 644 dvipsmac.tex $(TEXMACRODIR)
-	- $(INSTALL) -c -m 644 dvips.1 $(MANDIR)
-	- $(INSTALL) -c -m 644 afm2tfm.1 $(MANDIR)
+	- mkdir ${DESTDIR}$(BINDIR)
+	- mkdir ${DESTDIR}$(CONFIGDIR)
+	- mkdir ${DESTDIR}$(HEADERDIR)
+	- mkdir ${DESTDIR}$(MANDIR)
+	- mkdir ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 755 afm2tfm ${DESTDIR}$(BINDIR)/afm2tfm
+	$(INSTALL) -c -m 755 dvips ${DESTDIR}$(BINDIR)/dvips
+	$(INSTALL) -c -m 755 MakeTeXPK ${DESTDIR}$(BINDIR)/MakeTeXPK
+	$(INSTALL) -c -m 644 tex.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 texc.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 texps.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 special.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 finclude.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 color.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 crop.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 config.ps ${DESTDIR}$(CONFIGDIR)/$(CONFIGFILE)
+	$(INSTALL) -c -m 644 psfonts.map ${DESTDIR}$(CONFIGDIR)
+	$(INSTALL) -c -m 644 epsf.tex ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 epsf.sty ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 rotate.tex ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 rotate.sty ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 colordvi.sty ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 colordvi.tex ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 blackdvi.sty ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 blackdvi.tex ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 dvips.tex ${DESTDIR}$(TEXMACRODIR)
+	$(INSTALL) -c -m 644 dvipsmac.tex ${DESTDIR}$(TEXMACRODIR)
+	- $(INSTALL) -c -m 644 dvips.1 ${DESTDIR}$(MANDIR)
+	- $(INSTALL) -c -m 644 afm2tfm.1 ${DESTDIR}$(MANDIR)
 
 veryclean :
 	rm -f *.o dvips squeeze afm2tfm texc.lpro *.pro *~ *.log *.dvi

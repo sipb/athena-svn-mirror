@@ -19,14 +19,6 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #ifndef KPATHSEA_C_STD_H
 #define KPATHSEA_C_STD_H
 
-/* X uses these symbols to say whether we have <stddef.h>, <string.h>,
-   etc.  We never use them ourselves.  */
-#ifdef STDC_HEADERS
-#define SYSV
-#else
-#define X_NOT_STDC_ENV
-#endif
-
 /* Header files that essentially all of our sources need, and
    that all implementations have.  We include these first, to help with
    NULL being defined multiple times.  */

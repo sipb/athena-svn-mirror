@@ -137,7 +137,7 @@ OBJECTS = $(libgmp_a_OBJECTS) $(libmp_a_OBJECTS)
 default: all
 
 .SUFFIXES:
-.SUFFIXES: .c .o .texi .texinfo .info .dvi .ps
+.SUFFIXES: .c .o
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 

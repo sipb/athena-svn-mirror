@@ -1,6 +1,6 @@
 /* inc.c - incorporate messages from a maildrop into a folder */
 #ifndef	lint
-static char ident[] = "@(#)$Id: inc.c,v 1.1.1.1 1996-10-07 07:14:12 ghudson Exp $";
+static char ident[] = "@(#)$Id: inc.c,v 1.2 1998-04-28 18:23:52 ghudson Exp $";
 #endif	/* lint */
 
 #ifdef	MAILGROUP
@@ -199,7 +199,7 @@ char   *argv[];
 #ifdef	POP
 	   *pass = NULL,
 #endif	/* POP */
-           *newmail,
+           *newmail = NULL,
             buf[100],
           **ap,
           **argp,
@@ -395,14 +395,11 @@ char   *argv[];
     if (from || !host || rpop <= 0)
 	(void) setuid (getuid ());
 #endif /* POP */
-    if (from) {
+    if (from)
 	newmail = from;
-#ifdef	POP
-	host = NULL;
-#endif	/* POP */
-	if (stat (newmail, &s1) == NOTOK || s1.st_size == 0)
-	    adios (NULLCP, "no mail to incorporate");
-    }
+    else if (((cp = getenv ("MAILDROP")) && *cp)
+	     || ((cp = m_find ("maildrop")) && *cp))
+	newmail = m_mailpath (cp);
 #ifdef	POP
     else if (host) {
 	if (user == NULL)
@@ -424,22 +421,22 @@ char   *argv[];
     }
 #endif	/* POP */
     else {
-	if (((newmail = getenv ("MAILDROP")) && *newmail)
-		|| ((newmail = m_find ("maildrop")) && *newmail))
-	    newmail = m_mailpath (newmail);
-	else {
 #ifdef	MF
-	    if (uucp && umincproc && *umincproc)
-		get_uucp_mail ();
+	if (uucp && umincproc && *umincproc)
+	    get_uucp_mail ();
 #endif	/* MF */
-	    newmail = concat (MAILDIR, "/", MAILFIL, NULLCP);
-	}
+	newmail = concat (MAILDIR, "/", MAILFIL, NULLCP);
+    }
+
+    if (newmail) {
+#ifdef POP
+	host = NULL;
+#endif
 	if (stat (newmail, &s1) == NOTOK || s1.st_size == 0)
 	    adios (NULLCP, "no mail to incorporate");
     }
-
 #ifdef	POP
-    if (host && file)
+    else if (host && file)
 	goto go_to_it;
 #endif	/* POP */
     if (!m_find ("path"))

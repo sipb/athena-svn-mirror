@@ -1,0 +1,65 @@
+PS-Resources-1.0
+%%%% This UPR file is a slightly modified version of afmfiles.upr
+%%%% which is used in the build tree, while building TROFF and DITROFF
+%%%% fonts.  It shouldn't ever get installed onto the packs.
+%%%% (The reason for keeping separate files is that we may want a
+%%%% different path prefix for the AFM files installed on the packs.)
+%%%% For more information on UPR files, see comments in afmfiles.upr
+%%%% and TranScript documentation.
+%%%%     --bert 23mar1996
+FontAFM
+.
+FontAFM
+AvantGarde-Book=AvGarBk.afm
+AvantGarde-BookOblique=AvGarBkO.afm
+AvantGarde-Demi=AvGarDe.afm
+AvantGarde-DemiOblique=AvGarDeO.afm
+Bookman-Demi=BookDe.afm
+Bookman-DemiItalic=BookDeI.afm
+Bookman-Light=BookLi.afm
+Bookman-LightItalic=BookLiI.afm
+Courier=Cour.afm
+Courier-Bold=CourBo.afm
+Courier-BoldOblique=CourBoO.afm
+Courier-Oblique=CourO.afm
+DIThacks=DIThacks.afm
+Garamond-Bold=Gara.afm
+Garamond-BoldItalic=GaraBoI.afm
+Garamond-Light=GaraLi.afm
+Garamond-LightItalic=GaraLiI.afm
+Helvetica=Helv.afm
+Helvetica-Bold=HelvBo.afm
+Helvetica-BoldOblique=HelvBoO.afm
+Helvetica-Narrow=HelvNa.afm
+Helvetica-Narrow-Bold=HelvNaBo.afm
+Helvetica-Narrow-BoldOblique=HelvNaBoO.afm
+Helvetica-Narrow-Oblique=HelvNaO.afm
+Helvetica-Oblique=HelvO.afm
+LubalinGraph-Book=LubGrBk.afm
+LubalinGraph-BookOblique=LubGrBkO.afm
+LubalinGraph-Demi=LubGrDe.afm
+LubalinGraph-DemiOblique=LubGrDeO.afm
+NewCenturySchlbk-Bold=NewCenBo.afm
+NewCenturySchlbk-BoldItalic=NewCenBoI.afm
+NewCenturySchlbk-Italic=NewCenI.afm
+NewCenturySchlbk-Roman=NewCenRo.afm
+Optima=Opti.afm
+Optima-Bold=OptiBo.afm
+Optima-BoldOblique=OptiBoO.afm
+Optima-Oblique=OptiO.afm
+Palatino-Bold=PalBo.afm
+Palatino-BoldItalic=PalBoI.afm
+Palatino-Italic=PalI.afm
+Palatino-Roman=PalRo.afm
+Souvenir-Demi=SouvDe.afm
+Souvenir-DemiItalic=SouvDeI.afm
+Souvenir-Light=SouvLi.afm
+Souvenir-LightItalic=SouvLiI.afm
+Symbol=Symbol.afm
+Times-Bold=TimesBo.afm
+Times-BoldItalic=TimesBoI.afm
+Times-Italic=TimesI.afm
+Times-Roman=TimesRo.afm
+ZapfChancery-MediumItalic=ZapChaMeI.afm
+ZapfDingbats=ZapDing.afm
+.

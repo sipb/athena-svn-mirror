@@ -59,3 +59,8 @@
 #define	MODE_COMMAND_LINE(m)	((m)==-1)
 
 #define	CONTROL(x)	((x)&0x1f)		/* CTRL(x) is not portable */
+
+#define STARTUP_MESSAGE_SAFE \
+"...including options requested by -safe: \"-axf\"\r\n"
+#define STARTUP_MESSAGE_DEFAULT \
+"...trying Athena's default telnet options: \"-axf\"\r\n"

@@ -3,7 +3,7 @@ CFLAGS = $(CCOPTS) $(DEFS)
 ##DOSBUILDTOP = ..\..\..
 ##DOSLIBNAME=..\krb5.lib
 
-MAC_SUBDIRS = file
+MAC_SUBDIRS = file srvtab
 
 .c.o:
 	$(CC) $(CFLAGS) -c $(srcdir)/$*.c

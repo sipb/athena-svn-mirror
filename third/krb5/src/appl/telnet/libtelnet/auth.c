@@ -74,6 +74,8 @@
 #include "misc-proto.h"
 #include "auth-proto.h"
 
+#include <al.h>
+
 #define	typemask(x)		(1<<((x)-1))
 
 
@@ -81,6 +83,7 @@
 int auth_debug_mode = 0;
 int auth_has_failed = 0;
 int auth_enable_encrypt = 0;
+int al_local_acct;
 static 	char	*Name = "Noname";
 static	int	Server = 0;
 static	Authenticator	*authenticated = 0;
@@ -497,6 +500,8 @@ auth_name(data, cnt)
 	int cnt;
 {
 	unsigned char savename[256];
+	int status;
+	char *filetext, *errmem;
 
 	if (cnt < 1) {
 		if (auth_debug_mode)
@@ -513,7 +518,19 @@ auth_name(data, cnt)
 	savename[cnt] = '\0';	/* Null terminate */
 	if (auth_debug_mode)
 		printf(">>>%s: Got NAME [%s]\r\n", Name, savename);
-	auth_encrypt_user(savename);
+
+	status = al_login_allowed(savename, 1, &al_local_acct, &filetext);
+	if (status != AL_SUCCESS) {
+		printf("%s\r\n", al_strerror(status, &errmem));
+		al_free_errmem(errmem);
+		if (filetext) {
+			printf("%s", filetext);
+			free(filetext);
+		}
+		/* if we don't call auth_encrypt_user, the auth will
+		   (eventually) fail */
+	} else
+		auth_encrypt_user(savename);
 }
 
 	int
@@ -557,7 +574,7 @@ auth_intr(sig)
 	auth_finished(0, AUTH_REJECT);
 }
 
-	int
+	void
 auth_wait(name)
 	char *name;
 {
@@ -565,7 +582,7 @@ auth_wait(name)
 		printf(">>>%s: in auth_wait.\r\n", Name);
 
 	if (Server && !authenticating)
-		return(0);
+		return;
 
 	(void) signal(SIGALRM, auth_intr);
 	alarm(30);
@@ -574,10 +591,12 @@ auth_wait(name)
 			break;
 	alarm(0);
 	(void) signal(SIGALRM, SIG_DFL);
+}
 
-	/*
-	 * Now check to see if the user is valid or not
-	 */
+	int
+auth_check(name)
+	char *name;
+{
 	if (!authenticated || authenticated == &NoAuth)
 		return(AUTH_REJECT);
 

@@ -4,7 +4,7 @@
 # for profit or used for commercial gain and the author is credited 
 # appropriately.
 #
-# $Id: Makefile,v 1.1.1.2 1998-02-12 21:31:51 ghudson Exp $
+# $Id: Makefile,v 1.4 1998-02-12 21:35:38 ghudson Exp $
 #
 # Sysinfo Makefile
 #
@@ -23,7 +23,7 @@ PROG 		= sysinfo
 # The ${PREFIX} variable determines the top level directory that
 # things are installed under.
 #
-PREFIX		= /usr/local
+PREFIX		= /usr/athena
 
 #
 # The shell that commands from this Makefile will run from.
@@ -62,7 +62,7 @@ ManDir5		= ${ManDir}/man${ManSect5}
 # Directory containing sysinfo.cf configuration files
 #
 #CONFDIR		= /usr/local/lib/${PROG}
-CONFDIR		= ${PREFIX}/conf/${PROG}
+CONFDIR		= ${PREFIX}/lib/${PROG}
 
 #
 # Installation options
@@ -94,11 +94,6 @@ INSTALLPROG	= sh ./install.sh
 # 	END OF NORMAL SITE CONFIGURATION
 #
 ###########################################################################
-
-#
-# The make program to use
-#
-MAKE		= make
 
 #
 # The name of the kvm library to use.
@@ -194,7 +189,7 @@ MKPARAMS	= PREFIX=$(PREFIX)
 default:
 	@$(SetOS); \
 	$(MAKE) $(MFLAGS) \
-		CONFDIR=${CONFDIR} BIN=${BIN} CC=${CC} KVMDIR=${KVMDIR}\
+		CONFDIR=${CONFDIR} BIN=${BIN} KVMDIR=${KVMDIR}\
 		$(OSmakeDefs) $${ostype}
 
 all: ${PROG}
@@ -214,8 +209,9 @@ install: default
 		echo "cd ${BIN} && rm -f ${PROG} && ln -s $(KVMDIR)/${PROG} ${PROG}"; \
 		(cd ${BIN} && rm -f ${PROG} && ln -s $(KVMDIR)/${PROG} ${PROG}); \
 	else \
-		echo $(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${BIN}/${PROG}; \
-		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${BIN}/${PROG}; \
+		echo $(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}${BIN}/${PROG}; \
+		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} \
+			${DESTDIR}${BIN}/${PROG}; \
 	fi
 
 metasysinfo: metasysinfo.sh
@@ -236,19 +232,20 @@ installmeta: default metasysinfo
 
 install.man: sysinfo.man sysinfo.cf.man
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.man \
-		${ManDir1}/${PROG}.${ManSect1}
+		${DESTDIR}${ManDir1}/${PROG}.${ManSect1}
 	$(INSTALLPROG) -c -m 444 -o bin -g bin sysinfo.cf.man \
-		${ManDir5}/${PROG}.cf.${ManSect5}
+		${DESTDIR}${ManDir5}/${PROG}.cf.${ManSect5}
 
-$(CONFDIR):
-	mkdir $(CONFDIR)
-	chmod 755 $(CONFDIR)
+${DESTDIR}$(CONFDIR):
+	mkdir ${DESTDIR}$(CONFDIR)
+	chmod 755 ${DESTDIR}$(CONFDIR)
 
-install.cf: $(CONFDIR)
+install.cf: ${DESTDIR}$(CONFDIR)
 	@for file in config/*.cf ; do \
 		cf=`echo $$file | sed -e 's;.*/;;'`; \
-		echo $(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file $(CONFDIR)/$$cf; \
-		$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file $(CONFDIR)/$$cf; \
+		echo $(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file ${DESTDIR}$(CONFDIR)/$$cf; \
+		$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$file \
+			${DESTDIR}$(CONFDIR)/$$cf; \
 	done
 
 install.compat:

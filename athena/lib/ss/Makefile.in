@@ -1,0 +1,85 @@
+# $Id: Makefile.in,v 1.1 1997-12-19 03:05:54 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
+includedir=@includedir@
+
+CC=@CC@
+YACC=@YACC@
+LEX=@LEX@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+YFLAGS=-d
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS}
+
+LIBOBJS=data.o error.o execute_cmd.o help.o invocation.o list_rqs.o \
+	listen.o pager.o parse.o prompt.o request_tbl.o requests.o \
+	ss_err.o std_rqs.o
+BINOBJS=cmd_tbl.o ct.o mk_cmds.o options.o utils.o
+
+all: libss.a
+
+libss.a: ${LIBOBJS}
+	ar cru $@ ${LIBOBJS}
+	${RANLIB} $@
+
+mk_cmds: ${BINOBJS}
+	${CC} ${LDFLAGS} -o mk_cmds ${BINOBJS} ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+cmd_tbl.o: y.tab.h
+
+ct.o: y.tab.c y.tab.h
+	${CC} -c ${ALL_CFLAGS} -o ct.o y.tab.c
+
+y.tab.c y.tab.h: ct.y
+	${YACC} ${YFLAGS} ct.y
+
+std_rqs.c: std_rqs.ct mk_cmds
+	./mk_cmds ${srcdir}/std_rqs.ct
+
+${LIBOBJS} ${BINOBJS}: ss-symlink-stamp
+
+ss-symlink-stamp:
+	rm -f ss
+	ln -s . ss
+	@touch ss-symlink-stamp
+
+ss_err.h ss_err.c: ss_err.et
+	compile_et ${srcdir}/ss_err.et
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}/ss
+	${INSTALL_PROGRAM} -m 555 mk_cmds ${DESTDIR}${bindir}
+	${INSTALL} -m 444 libss.a ${DESTDIR}${libdir}
+	${INSTALL} -m 444 ss.h ${DESTDIR}${includedir}/ss
+	${INSTALL} -m 444 ss_err.h ${DESTDIR}${includedir}/ss
+	${INSTALL} -m 444 ss_internal.h ${DESTDIR}${includedir}/ss
+	${INSTALL} -m 444 copyright.h ${DESTDIR}${includedir}/ss
+	${INSTALL} -m 444 mit-sipb-copyright.h ${DESTDIR}${includedir}/ss
+
+clean:
+	rm -f ${LIBOBJS} ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
+	rm -f y.tab.c y.tab.h
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
+
+${LIBOBJS} ${BINOBJS}: ss_internal.h ss.h ss_err.h

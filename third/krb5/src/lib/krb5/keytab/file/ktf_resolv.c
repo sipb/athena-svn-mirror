@@ -35,6 +35,13 @@ krb5_ktfile_resolve(context, name, id)
   krb5_keytab *id;
 {
     krb5_ktfile_data *data;
+    FILE *fp;
+
+    /* Make sure we can open the keytab file for reading. */
+    fp = fopen(name, "r");
+    if (!fp)
+	return(errno);
+    fclose(fp);
 
     if ((*id = (krb5_keytab) malloc(sizeof(**id))) == NULL)
 	return(ENOMEM);

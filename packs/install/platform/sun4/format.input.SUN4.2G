@@ -1,0 +1,67 @@
+# Disk geometry: <SUN4.2G cyl 3880 alt 2 hd 16 sec 135>
+#
+# Part      Tag    Flag     Cylinders        Size            Blocks
+#   0       root    wm       0 -   91       97.03MB    (92/0/0)    198720
+#   1       swap    wu     335 -  820      512.58MB    (486/0/0)  1049760
+#   2     backup    wu       0 - 3879        4.00GB    (3880/0/0) 8380800
+#   3 unassigned    wm     821 -  915      100.20MB    (95/0/0)    205200
+#   4 unassigned    wm       0               0         (0/0/0)          0
+#   5        usr    wm      92 -  334      256.29MB    (243/0/0)   524880
+#   6        var    wm     916 - 3879        3.05GB    (2964/0/0) 6402240
+#   7 unassigned    wm       0               0         (0/0/0)          0
+
+partition
+
+0
+root
+wm
+0
+92c
+
+1
+swap
+wu
+335
+486c
+
+2
+backup
+wu
+0
+3880c
+
+3
+unassigned
+wm
+821
+95c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+usr
+wm
+92
+243c
+
+6
+var
+wm
+916
+2964c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

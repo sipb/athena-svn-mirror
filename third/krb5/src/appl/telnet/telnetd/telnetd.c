@@ -159,7 +159,7 @@ char valid_opts[] = {
 	'D', ':',
 #endif
 #ifdef	ENCRYPTION
-	'e', ':',
+	'e',
 #endif
 #if	defined(CRAY) && defined(NEWINIT)
 	'I', ':',
@@ -228,6 +228,8 @@ main(argc, argv)
 				auth_level = AUTH_USER;
 			} else if (strcasecmp(optarg, "valid") == 0) {
 				auth_level = AUTH_VALID;
+			} else if (strcasecmp(optarg, "cred") == 0) {
+				auth_level = AUTH_CRED;
 			} else if (strcasecmp(optarg, "off") == 0) {
 				/*
 				 * This hack turns off authentication
@@ -270,6 +272,9 @@ main(argc, argv)
 				diagnostic |= TD_PTYDATA;
 			} else if (!strcmp(optarg, "options")) {
 				diagnostic |= TD_OPTIONS;
+			} else if (!strcmp(optarg, "encrypt")) {
+				extern int encrypt_debug_mode;
+				encrypt_debug_mode = 1;
 			} else {
 				usage();
 				/* NOT REACHED */
@@ -279,13 +284,7 @@ main(argc, argv)
 
 #ifdef	ENCRYPTION
 		case 'e':
-			if (strcmp(optarg, "debug") == 0) {
-				extern int encrypt_debug_mode;
-				encrypt_debug_mode = 1;
-				break;
-			}
-			usage();
-			/* NOTREACHED */
+			must_encrypt = 1;
 			break;
 #endif	/* ENCRYPTION */
 
@@ -632,8 +631,12 @@ usage()
 
 static void encrypt_failure()
 {
-    char *error_message =
-	"Encryption was not successfully negotiated.  Goodbye.\r\n\r\n";
+    char *error_message;
+
+    if (auth_must_encrypt())
+	error_message = "Encryption was not successfully negotiated.  Goodbye.\r\n\r\n";
+    else
+	error_message = "Unencrypted connection refused. Goodbye.\r\n\r\n";
 
     writenet(error_message, strlen(error_message));
     netflush();
@@ -666,7 +669,7 @@ getterminaltype(name)
     while (his_will_wont_is_changing(TELOPT_AUTHENTICATION))
 	ttloop();
     if (his_state_is_will(TELOPT_AUTHENTICATION)) {
-	retval = auth_wait(name);
+	auth_wait(name);
     }
 #endif
 
@@ -699,7 +702,7 @@ getterminaltype(name)
     if (his_state_is_will(TELOPT_ENCRYPT)) {
 	encrypt_wait();
     }
-    if (auth_must_encrypt()) {
+    if (must_encrypt || auth_must_encrypt()) {
 	time_t timeout = time(0) + 60;
 	
 	if (my_state_is_dont(TELOPT_ENCRYPT) ||
@@ -779,12 +782,14 @@ getterminaltype(name)
 	 * we have to just go with what we (might) have already gotten.
 	 */
 	if (his_state_is_will(TELOPT_TTYPE) && !terminaltypeok(terminaltype)) {
-	    (void) strncpy(first, terminaltype, sizeof(first));
+	    (void) strncpy(first, terminaltype, sizeof(first) - 1);
+	    first[sizeof(first) - 1] = '\0';
 	    for(;;) {
 		/*
 		 * Save the unknown name, and request the next name.
 		 */
-		(void) strncpy(last, terminaltype, sizeof(last));
+		(void) strncpy(last, terminaltype, sizeof(last) - 1);
+		last[sizeof(last) - 1] = '\0';
 		_gettermname();
 		if (terminaltypeok(terminaltype))
 		    break;
@@ -801,15 +806,22 @@ getterminaltype(name)
 		     * RFC1091 compliant telnets will cycle back to
 		     * the start of the list.
 		     */
-		     _gettermname();
-		    if (strncmp(first, terminaltype, sizeof(first)) != 0)
-			(void) strncpy(terminaltype, first, sizeof(first));
+		    _gettermname();
+		    if (strncmp(first, terminaltype, sizeof(first)) != 0) {
+			(void) strncpy(terminaltype, first,
+				       sizeof(terminaltype) - 1);
+			terminaltype[sizeof(terminaltype) - 1] = '\0';
+		    }
 		    break;
 		}
 	    }
 	}
     }
-    return(retval);
+#ifdef AUTHENTICATION
+    return(auth_check(name));
+#else
+    return(-1);
+#endif
 }  /* end of getterminaltype */
 
     void
@@ -867,6 +879,12 @@ extern void telnet P((int, int));
 extern void telnet P((int, int, char *));
 #endif
 
+void encr_intr(sig)
+	int sig;
+{
+  return;
+}
+
 /*
  * Get a pty, scan input lines.
  */
@@ -877,6 +895,7 @@ void doit(who)
 	struct hostent *hp;
 	int level;
 	int ptynum;
+	int on = 1;
 	char user_name[256];
 long retval;
 	/*
@@ -949,12 +968,32 @@ pty_init();
 	 */
 	*user_name = 0;
 	level = getterminaltype(user_name);
-	setenv("TERM", terminaltype ? terminaltype : "network", 1);
+	setenv("TERM", *terminaltype ? terminaltype : "network", 1);
+
+	/* Give slow clients one last chance before we fork */
+	if (his_state_is_will(TELOPT_ENCRYPT) && !decrypt_input) {
+		struct sigaction sa, osa;
+		sa.sa_handler = encr_intr;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGALRM, &sa, &osa);
+		alarm(2);
+		ttloop();
+		alarm(0);
+		sigaction(SIGALRM, &osa, &sa);
+	}
 
 	/*
 	 * Start up the login process on the slave side of the terminal
 	 */
+#ifndef	STREAMSPTY
+	/*
+	 * Turn on packet mode
+	 */
+	(void) ioctl(pty, TIOCPKT, (char *)&on);
+#endif
 #ifndef	convex
+
 	startslave(host, level, user_name);
 
 #if	defined(_SC_CRAY_SECURE_SYS)
@@ -1109,13 +1148,6 @@ telnet(f, p, host)
 
 	if (my_state_is_wont(TELOPT_ECHO))
 		send_will(TELOPT_ECHO, 1);
-
-#ifndef	STREAMSPTY
-	/*
-	 * Turn on packet mode
-	 */
-	(void) ioctl(p, TIOCPKT, (char *)&on);
-#endif
 
 #if	defined(LINEMODE) && defined(KLUDGELINEMODE)
 	/*

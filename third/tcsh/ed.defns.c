@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.defns.c,v 1.1.1.1 1996-10-02 06:09:25 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.defns.c,v 1.2 1996-10-03 04:35:38 ghudson Exp $ */
 /*
  * ed.defns.c: Editor function definitions and initialization
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.defns.c,v 1.1.1.1 1996-10-02 06:09:25 ghudson Exp $")
+RCSID("$Id: ed.defns.c,v 1.2 1996-10-03 04:35:38 ghudson Exp $")
 
 #include "ed.h"
 
@@ -295,16 +295,16 @@ KEYCMD  CcEmacsMap[] = {
     F_CHARSWITCH,		/* ^T */
     F_KILLALL,			/* ^U */
     F_QUOTE,			/* ^V */
-    F_KILLREGION,		/* ^W */
+    F_DELWORDPREV,		/* ^W */
     F_XKEY,			/* ^X */
     F_YANK_KILL,		/* ^Y */
-    F_TTY_TSUSP,		/* ^Z */
+    F_COMPLETE,			/* ^Z */
     F_METANEXT,			/* ^[ */
     F_TTY_QUIT,			/* ^\ */
     F_TTY_DSUSP,		/* ^] */
     F_UNASSIGNED,		/* ^^ */
     F_UNASSIGNED,		/* ^_ */
-    F_INSERT,			/* SPACE */
+    F_MAGIC_SPACE,		/* SPACE */
     F_INSERT,			/* ! */
     F_INSERT,			/* " */
     F_INSERT,			/* # */

@@ -279,7 +279,7 @@ Features and packages:
   --x-libraries=DIR       X library files are in DIR
 EOF
     if test -n "$ac_help"; then
-      echo "--enable and --with options known (Default: + yes, - no, s system-specific):$ac_help"
+      echo "--enable and --with options recognized:$ac_help"
     fi
     exit 0 ;;
 
@@ -7429,6 +7429,12 @@ case "$host" in
     ;;
 esac
 
+# Set lbindir and lsbindir if not already set by Athena config.site
+test -z "$lbindir" && lbindir='${bindir}'
+test -z "$lsbindir" && lsbindir='${sbindir}'
+
+
+
 trap '' 1 2 15
 cat > confcache <<\EOF
 # This file is a shell script that caches the results of configure
@@ -7618,6 +7624,8 @@ s%@CLKTEST@%$CLKTEST%g
 s%@MAKE_ADJTIMED@%$MAKE_ADJTIMED%g
 s%@MAKE_TICKADJ@%$MAKE_TICKADJ%g
 s%@MAKE_NTPTIME@%$MAKE_NTPTIME%g
+s%@lbindir@%$lbindir%g
+s%@lsbindir@%$lsbindir%g
 
 CEOF
 EOF

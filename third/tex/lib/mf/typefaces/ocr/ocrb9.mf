@@ -1,5 +1,6 @@
 % This is OCRB9_mf   (OCRB small at 9pt)
 %
+mode_setup;
 
 font_identifier:="OCRB9";
 font_size  9pt#;

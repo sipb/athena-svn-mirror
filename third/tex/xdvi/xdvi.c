@@ -307,9 +307,9 @@ static	char	XtRBool3[]	= "Bool3";	/* resource for Bool3 */
 
 static	XtResource	application_resources[] = {
 {"shrinkFactor", "ShrinkFactor", XtRInt, sizeof(int),
-  offset(shrinkfactor), XtRString, "3"},
+  offset(shrinkfactor), XtRString, "6"},
 {"densityPercent", "DensityPercent", XtRInt, sizeof(int),
-  offset(_density), XtRString, "40"},
+  offset(_density), XtRString, "20"},
 #ifdef	GREY
 {"gamma", "Gamma", XtRFloat, sizeof(float),
   offset(_gamma), XtRString, "1"},

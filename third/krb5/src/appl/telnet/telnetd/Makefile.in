@@ -20,11 +20,12 @@
 #	@(#)Makefile.generic	5.5 (Berkeley) 3/1/91
 #
 
-LOCAL_LIBRARIES=-lpty
+EXTRALIBS=@EXTRALIBS@
+LOCAL_LIBRARIES=-lpty -L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 DEPLOCAL_LIBRARIES=$(TOPLIBD)/../util/pty/libpty.a
 AUTH_DEF=-DAUTHENTICATION -DENCRYPTION -DKRB5 -DFORWARD -UNO_LOGIN_F -DLOGIN_CAP_F -DLOGIN_PROGRAM=KRB5_PATH_LOGIN
 OTHERDEFS=-DKLUDGELINEMODE -DDIAGNOSTICS -DENV_HACK -DOLD_ENVIRON
-LOCALINCLUDES=-I.. -I$(srcdir)/..
+LOCALINCLUDES=-I.. -I$(srcdir)/.. -I$(ATHTOOLROOT)/usr/athena/include
 CFLAGS = $(CCOPTS) $(AUTH_DEF) $(OTHERDEFS) $(DEFS) $(LOCALINCLUDES)
 ARPA_TELNET= $(srcdir)/../arpa/telnet.h
 
@@ -54,7 +55,8 @@ OBJS=	telnetd.o \
 all:: telnetd
 
 telnetd: $(OBJS) $(DEPLIBS) ../libtelnet/libtelnet.a
-	$(LD) -o $@ $(LDFLAGS) $(LDARGS) $(OBJS) ../libtelnet/libtelnet.a $(LIBS)
+	$(LD) -o $@ $(LDFLAGS) $(LDARGS) $(OBJS) ../libtelnet/libtelnet.a \
+		../../../krb524/libkrb524.a $(LIBS) $(AL_LIBS)
 
 clean::
 	$(RM) telnetd
@@ -62,7 +64,7 @@ clean::
 install::
 	for f in telnetd; do \
 	  $(INSTALL_PROGRAM) $$f \
-		$(DESTDIR)$(SERVER_BINDIR)/`echo $$f|sed '$(transform)'`; \
+		$(DESTDIR)/etc/athena/telnetd; \
 	  $(INSTALL_DATA) $(srcdir)/$$f.8 \
 		${DESTDIR}$(SERVER_MANDIR)/`echo $$f|sed '$(transform)'`.8; \
 	done

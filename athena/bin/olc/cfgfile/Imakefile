@@ -1,0 +1,26 @@
+# Imakefile for `clients/lib'.
+#
+# $Id: Imakefile,v 1.1 1997-04-30 17:32:20 ghudson Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/cfgfile/Imakefile,v $
+#
+# For copying and distribution information,
+# please see the file <mit-copyright.h>.
+#
+#
+
+/* #define Profiling */
+
+SRCS=	configure.c
+
+OBJS=	configure.o
+
+
+LibraryTarget(cfgfile,$(OBJS))
+
+#ifdef Profiling
+ProfiledLibraryObjectRule()
+ProfiledLibraryTarget(cfgfile,$(OBJS))
+#endif
+
+LintTarget()
+DependTarget()

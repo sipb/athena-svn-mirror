@@ -55,6 +55,8 @@
 
 #ifdef	KRB4
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/telnet.h>
 #include <stdio.h>
 #include <des.h>        /* BSD wont include this in krb.h, so we do it here */
@@ -71,6 +73,8 @@
 #include "encrypt.h"
 #include "auth.h"
 #include "misc.h"
+
+#include <al.h>
 
 extern auth_debug_mode;
 
@@ -95,6 +99,8 @@ static Block	session_key	= { 0 };
 static Schedule sched;
 static Block	challenge	= { 0 };
 #endif	/* ENCRYPTION */
+static int krb4_accepted = 0;
+extern int al_local_acct;
 
 	static int
 Data(ap, type, d, c)
@@ -136,13 +142,16 @@ kerberos4_init(ap, server)
 	Authenticator *ap;
 	int server;
 {
-	FILE *fp;
+	char instance[INST_SZ + 1] = "*", realm[REALM_SZ + 1], key[8];
 
 	if (server) {
 		str_data[3] = TELQUAL_REPLY;
-		if ((fp = fopen(KEYFILE, "r")) == NULL)
+		if (krb_get_lrealm(realm, 1) != KSUCCESS)
 			return(0);
-		fclose(fp);
+		if (read_service_key(KRB_SERVICE_NAME, instance, realm,
+				     0, NULL, key) != KSUCCESS)
+			return(0);
+		memset(key, 0, sizeof(key));
 	} else {
 		str_data[3] = TELQUAL_IS;
 	}
@@ -258,6 +267,9 @@ kerberos4_is(ap, data, cnt)
 	char realm[REALM_SZ];
 	char instance[INST_SZ];
 	int r;
+	unsigned long from_addr = 0;
+	struct sockaddr_in sin;
+	int sin_len = sizeof(sin);
 
 	if (cnt-- < 1)
 		return;
@@ -278,8 +290,11 @@ kerberos4_is(ap, data, cnt)
 			printf("\r\n");
 		}
 		instance[0] = '*'; instance[1] = 0;
+		if (getpeername(0, (struct sockaddr *) &sin, &sin_len) == 0
+		    && sin.sin_family == AF_INET)
+			from_addr = sin.sin_addr.s_addr;
 		if (r = krb_rd_req(&auth, KRB_SERVICE_NAME,
-				   instance, 0, &adat, "")) {
+				   instance, from_addr, &adat, "")) {
 			if (auth_debug_mode)
 				printf("Kerberos failed him as %s\r\n", name);
 			Data(ap, KRB_REJECT, (void *)krb_err_txt[r], -1);
@@ -291,11 +306,44 @@ kerberos4_is(ap, data, cnt)
 #endif	/* ENCRYPTION */
 		krb_kntoln(&adat, name);
 
-		if (UserNameRequested && !kuserok(&adat, UserNameRequested))
-			Data(ap, KRB_ACCEPT, (void *)0, 0);
-		else
+		krb4_accepted = 0;
+		if (UserNameRequested) {
+			int status, *warnings;
+			char *errmem;
+
+			if (!al_local_acct) {
+				status = al_acct_create(UserNameRequested,
+							NULL, getpid(), 0, 0,
+							&warnings);
+				if (status == AL_WARNINGS) {
+					int i;
+					for (i = 0; warnings[i]; i++) {
+						printf("Warning: %s\r\n",
+						       al_strerror(warnings[i],
+								   &errmem));
+						al_free_errmem(errmem);
+					}
+					free(warnings);
+				} else if (status != AL_SUCCESS) {
+					printf("%s\r\n",
+					       al_strerror(status, &errmem));
+					al_free_errmem(errmem);
+				}
+			}
+
+			if (!kuserok(&adat, UserNameRequested)) {
+				Data(ap, KRB_ACCEPT, (void *)0, 0);
+				krb4_accepted = 1;
+			} else
+				Data(ap, KRB_REJECT,
+				     (void *)"user is not authorized", -1);
+
+			if (!al_local_acct)
+				al_acct_revert(UserNameRequested, getpid());
+		} else
 			Data(ap, KRB_REJECT,
-				(void *)"user is not authorized", -1);
+			     (void *)"user is not authorized", -1);
+		
 		auth_finished(ap, AUTH_USER);
 		break;
 
@@ -432,7 +480,7 @@ kerberos4_status(ap, name, level)
 	if (level < AUTH_USER)
 		return(level);
 
-	if (UserNameRequested && !kuserok(&adat, UserNameRequested)) {
+	if (krb4_accepted) {
 		strcpy(name, UserNameRequested);
 		return(AUTH_VALID);
 	} else

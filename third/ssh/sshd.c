@@ -18,8 +18,52 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.1.1.3 1998-05-13 19:11:09 danw Exp $
+ * $Id: sshd.c,v 1.13 1998-05-13 20:18:55 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  1998/04/25 23:15:56  ghudson
+ * Take advantage of relaxed al_acct_create() contract.
+ *
+ * Revision 1.11  1998/04/09 22:51:48  ghudson
+ * Support local accounts as determined by libal.
+ *
+ * Revision 1.10  1998/03/12 20:37:12  danw
+ * recheck pw->pw_dir after al_acct_create in case we got a temp homedir
+ *
+ * Revision 1.9  1998/03/01 16:12:59  danw
+ * Use xmalloc, not malloc. (pointed out by mhpower)
+ *
+ * Revision 1.8  1998/02/28 17:58:31  danw
+ * Don't use packet_disconnect for `you are not allowed to log in here'
+ *
+ * Revision 1.7  1998/02/02 23:20:15  danw
+ * use our DEFAULT_PATH, not the OS's unless the builder overrides it on
+ * the command line.
+ *
+ * Revision 1.6  1998/01/24 01:47:26  danw
+ * merge in changes for 1.2.22
+ *
+ * Revision 1.5  1998/01/01 18:18:21  danw
+ * Don't set KRB5CCNAME if the user didn't get tickets
+ *
+ * Revision 1.4  1997/11/19 20:44:45  danw
+ * do chown later
+ *
+ * Revision 1.3  1997/11/15 00:04:20  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
+ * Revision 1.2  1997/11/12 21:16:18  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
+ * Revision 1.1.1.1  1997/10/17 22:26:00  danw
+ * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:18  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1998/05/13 19:11:09  danw
+ * Import of ssh 1.2.23
+ *
  * Revision 1.51  1998/05/11 18:51:07  kivinen
  * 	Fixed AIX authstate code.
  *
@@ -462,15 +506,7 @@ extern char *setlimits();
 #endif
 
 #ifndef DEFAULT_PATH
-#ifdef _PATH_USERPATH
-#define DEFAULT_PATH		_PATH_USERPATH
-#else
-#ifdef _PATH_DEFPATH
-#define	DEFAULT_PATH		_PATH_DEFPATH
-#else
-#define DEFAULT_PATH	"/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
-#endif
-#endif
+#define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
 #endif /* DEFAULT_PATH */
 
 #ifndef O_NOCTTY
@@ -483,9 +519,19 @@ extern char *setlimits();
 /* Global the contexts */
 krb5_context ssh_context = 0;
 krb5_auth_context auth_context = 0;
+int havecred = 0;
 #endif /* KRB5 */
 char *ticket = "none\0";
 #endif /* KERBEROS */
+
+#include <al.h>
+extern int setpag(), ktc_ForgetAllTokens();
+extern char *tkt_string();
+void try_afscall(int (*func)(void));
+void al_cleanup(void);
+int *al_warnings = NULL;
+char *al_user;
+int al_local_acct;
 
 /* Server configuration options. */
 ServerOptions options;
@@ -1874,7 +1920,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   int authenticated = 0;
   int authentication_type = 0;
   char *password;
-  struct passwd *pw, pwcopy;
+  struct passwd *pw, *pw2, pwcopy;
   char *client_user;
   unsigned int client_host_key_bits;
   MP_INT client_host_key_e, client_host_key_n;
@@ -1894,6 +1940,8 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   hostname = get_canonical_hostname();
   ipaddr = get_remote_ipaddr();
 #endif /* HAVE_LOGIN_CAP_H */
+  int status, i;
+  char *filetext, *errmem;
 
   if (strlen(user) > 255)
     do_authentication_fail_loop();
@@ -1935,7 +1983,43 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 			 
   /* Verify that the user is a valid user.  We disallow usernames starting
      with any characters that are commonly used to start NIS entries. */
+  status = al_login_allowed(user, 1, &al_local_acct, &filetext);
+  if (status != AL_SUCCESS)
+    {
+      /* We don't want to use `packet_disconnect', because it will syslog
+	 at LOG_ERR. Ssh doesn't provide a primitive way to give an
+	 informative message and disconnect without any bad feelings... */
+
+      char *buf, *err;
+
+      err = al_strerror(status, &errmem);
+      if (filetext && *filetext)
+	{
+	  buf = xmalloc(40 + strlen(err) + strlen(filetext));
+	  sprintf(buf, "You are not allowed to log in here: %s\n%s",
+		  err, filetext);
+	}
+      else
+	{
+	  buf = xmalloc(40 + strlen(err));
+	  sprintf(buf, "You are not allowed to log in here: %s\n", err);
+	}
+      packet_start(SSH_MSG_DISCONNECT);
+      packet_put_string(buf, strlen(buf));
+      packet_send();
+      packet_write_wait();
+
+      fatal_severity(SYSLOG_SEVERITY_INFO, "Login denied: %s", err);
+      /* not reached */
+    }
+  if (!al_local_acct)
+    {
+      al_acct_create(user, NULL, getpid(), 0, 0, NULL);
+      al_user = xstrdup(user);
+      atexit(al_cleanup);
+    }
   pw = getpwnam(user);
+
   if (!pw || user[0] == '-' || user[0] == '+' || user[0] == '@' ||
       !login_permitted(user, pw))
     do_authentication_fail_loop();
@@ -2407,11 +2491,15 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 #ifdef KERBEROS
       /* If you forwarded a ticket you get one shot for proper
          authentication. */
-      /* If tgt was passed unlink file */
+      /* If tgt was passed, destroy it */
       if (ticket){
           if (strcmp(ticket,"none"))
- 	    /* ticket -> FILE:path */
- 	    unlink(ticket + 5);
+	    {
+	      krb5_ccache ccache;
+	      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+		krb5_cc_destroy(ssh_context, ccache);
+	      dest_tkt();
+	    }
           else
             ticket = NULL;
       }
@@ -2489,6 +2577,21 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
     log_severity(SYSLOG_SEVERITY_NOTICE, "ROOT LOGIN as '%.100s' from %.100s",
 		 pw->pw_name, get_canonical_hostname());
   
+  if (havecred)
+    try_afscall(setpag);
+  if (!al_local_acct)
+    {
+      status = al_acct_create(pw->pw_name, NULL, getpid(), havecred, 1,
+			      &al_warnings);
+      if (status != AL_SUCCESS && status != AL_WARNINGS)
+	packet_disconnect("%s\n", al_strerror(status, &errmem));
+    }
+
+  /* al_acct_create may have given us a temp homedir */
+  pw2 = getpwnam(pw->pw_name);
+  free(pw->pw_dir);
+  pw->pw_dir = xstrdup(pw2->pw_dir);
+
   /* The user has been authenticated and accepted. */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();
@@ -3450,6 +3553,21 @@ void do_child(const char *command, struct passwd *pw, const char *term,
     }
 #endif /* __bsdi__  && _BSDI_VERSION >= 199510  */
 
+  /* Print any leftover libal warnings */
+  if (al_warnings)
+    {
+      int i;
+      char *errmem;
+
+      for (i = 0; al_warnings[i]; i++)
+	{
+	  fprintf(stderr, "Warning: %s\n",
+		  al_strerror(al_warnings[i], &errmem));
+	  al_free_errmem(errmem);
+	}
+      free(al_warnings);
+    }
+
   /* Check /etc/nologin. */
   f = fopen("/etc/nologin", "r");
   if (f)
@@ -3664,6 +3782,15 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 	      close(i);
 	    }
 	  
+#ifdef KERBEROS
+	  /* Chown ticket files to user */
+	  if (ticket && strcmp(ticket, "none"))
+	    {
+	      chown(ticket + 5, user_uid, user_gid);
+	      chown(tkt_string(), user_uid, user_gid);
+	    }
+#endif
+
 	  /* At this point, this process should no longer be holding any
 	     confidential information, as changing uid below will permit the
 	     user to attach with a debugger on some machines. */
@@ -3825,8 +3952,11 @@ void do_child(const char *command, struct passwd *pw, const char *term,
 #ifdef KERBEROS
   /* Set KRBTKFILE to point to our ticket */
 #ifdef KRB5
-  if (ticket)
-    child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+  if (ticket && strcmp(ticket, "none"))
+    {
+      child_set_env(&env, &envsize, "KRB5CCNAME", ticket);
+      child_set_env(&env, &envsize, "KRBTKFILE", tkt_string());
+    }
 #endif /* KRB5 */
 #endif /* KERBEROS */
 
@@ -4159,3 +4289,36 @@ char *username;
   return(0);
 }
 #endif /* CRAY */
+
+void try_afscall(int (*func)(void))
+{
+#ifdef SIGSYS
+  struct sigaction sa, osa;
+
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = SIG_IGN;
+  sigaction(SIGSYS, &sa, &osa);
+#endif
+  func();
+#ifdef SIGSYS
+  sigaction(SIGSYS, &osa, NULL);
+#endif
+}
+
+void al_cleanup(void)
+{
+  al_acct_revert(al_user, getpid());
+}
+
+void krb_cleanup(void)
+{
+  if (ticket && strcmp(ticket, "none"))
+    {
+      krb5_ccache ccache;
+      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+	  krb5_cc_destroy(ssh_context, ccache);
+      dest_tkt();
+      try_afscall(ktc_ForgetAllTokens);
+    }
+}

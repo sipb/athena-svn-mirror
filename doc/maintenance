@@ -1,0 +1,476 @@
+This file contains notes about the care and feeding of the Athena
+source repository.  It is intended primarily for the administrators of
+the source tree, not for developers (except perhaps for the first
+section, "mailing lists").  See the file "procedures" in this
+directory for information about procedures relevant to developers.
+
+The areas covered in this file are:
+
+	Mailing lists
+	Permissions
+	The wash process
+	Imake templates
+	Release notes
+	Release cycles
+	Patch releases
+	Rel-eng machines
+	Cluster information
+
+Mailing lists
+-------------
+
+Here are descriptions of the mailing lists related to the source tree:
+
+	* source-developers
+
+		For discussion of the policy and day-to-day
+		maintenance of the repository.  This is a public list,
+		and there is a public discuss archive on menelaus.
+
+	* source-reviewers
+
+		For review of changes to be checked into the
+		repository.  To be a member of this mailing list, you
+		must have read access to the non-public parts of the
+		source tree, but you do not need to be a staff member.
+		There is a non-public discuss archive on menelaus.
+
+	* source-commits
+
+		This mailing lists receives commit logs for all
+		commits to the repository.  This is a public mailing
+		list.  There is a public discuss archive on menelaus.
+
+	* source-diffs
+
+		This mailing list receives commit logs with diffs for
+		all commits to the repository.  To be on this mailing
+		list, you must have read access to the non-public
+		parts of the source tree.  There is no discuss archive
+		for this list.
+
+	* source-wash
+
+		This mailing list receives mail when the wash process
+		blows out.  This is a public mailing list.  There is
+		no discuss archive for this list.
+
+	* rel-eng
+
+		The release engineering mailing list.  Mail goes here
+		about patch releases and other release details.  There
+		is a public archive on menelaus.
+
+	* release-team
+
+		The mailing list for the release team, which sets
+		policy for releases.  There is a public archive on
+		menelaus (currently, it has the name "release-77").
+
+Permissions
+-----------
+
+Following are descriptions of the various groups found on the acls of
+the source tree:
+
+	* read:source
+	  read:staff
+
+		These two groups have identical permissions in the
+		repository, but read:source contains artificial
+		constructs (the builder user and service principals)
+		while read:staff contains people.  In the future,
+		highly restricted source could have access for
+		read:source and not read:staff.
+
+		Both of these groups have read access to non-public
+		areas of the source tree.
+
+	* write:staff
+
+		Contains developers with commit access to the source
+		tree.  This group has write access to the repository,
+		but not to the checked-out copy of the mainline
+		(/mit/source).
+
+	* write:update
+
+		Contains the service principal responsible for
+		updating /mit/source.  This group has write access to
+		/mit/source but not to the repository.
+
+	* adm:source
+
+		This group has administrative access to the repository
+		and to /mit/source.
+
+system:anyuser has read access to public areas of the source tree and
+list access to the rest.  system:authuser occasionally has read access
+to areas that system:anyuser does not (synctree is the only current
+example).
+
+The script CVSROOT/afs-protections.sh in the repository makes sure the
+permissions are correct in the repository or in a working directory.
+Run it from the top level of the repository or of /mit/source, giving
+it the argument "repository" or "wd".
+
+The wash process
+----------------
+
+The wash process is a nightly rebuild of the source repository from
+scratch, intended to alert the source tree maintainers when someone
+checks in a change which causes the source tree to stop building.  The
+general architecture of the wash process is:
+
+	* Each night at midnight, a machine (currently small-gods)
+	  performs a cvs update of the checked-out tree in
+	  /afs/dev.mit.edu/source/src-current.  If the cvs update
+	  fails, the update script sends mail to source-wash@mit.edu.
+	  This machine is on read:source and write:update.
+
+	* Each night at 4:30am, a machine of each architecture
+	  (currently whirlpool and snuggle) recreates empty /build and
+	  /localsrvd filesystems and performs a build of the tree with
+	  /srvd pointed at /localsrvd.  If the build fails, the update
+	  script sends mail to source-wash@mit.edu with the last few
+	  lines of the wash log, and saves the wash log in /var/wash
+	  on the local disk.
+
+Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
+They are installed in /usr/local on the wash machines, along with a
+copy of krbtgp from the net-tools locker in /usr/local/bin.  Logs of
+the start and end times of the wash processes on each machine live in
+/afs/dev.mit.edu/service/wash/status/`hostname`.
+
+Imake templates
+---------------
+
+We don't like imake, but we maintain two sets of imake templates:
+
+	* packs/build/config
+
+		These templates are the legacy Athena build system.
+		They are specific to software in the athena hierarchy,
+		and one glorious day in the future they will no longer
+		be necessary.
+
+		For these templates, you should define TOPDIR to the
+		top-level source directory.
+
+	* packs/build/xconfig
+
+		These templates are used for building software which
+		uses X-style Imakefiles.  They may need periodic
+		updating as new versions of X are released.  These
+		templates are full of a lot of hacks, mostly because
+		the imake model isn't really adequate for dealing with
+		third-party software and local site customizations.
+
+		For these templates, you should define TOPDIR to "."
+		and SRCDIR to the top-level source directory.
+
+Release notes
+-------------
+
+There are two kinds of release notes, the system release notes and the
+user release notes.  The system release notes are more comprehensive
+and assume a higher level of technical knowledge, and are used in the
+construction of the user release notes.  It is the job of the release
+engineer to produce a set of system release notes for every release,
+with early versions towards the beginning of the release cycle.  The
+best way to make sure this happens is to maintain the system release
+notes throughout the entire development cycle.
+
+Thus, it is the job of the release engineer to watch the checkins to
+the source tree and enter a note about all user-visible changes in the
+system release notes, which live in /afs/dev.mit.edu/project/relnotes.
+Highly visible changes should appear near the beginning of the file,
+and less visible changes should appear towards the end.  Changes to
+particular subsystems should be grouped together when possible.
+
+Release cycles
+--------------
+
+Release cycles have five phases: crash and burn, alpha, beta, early,
+and the public release.  The release team has a set of criteria for
+entering and exiting each phase, which won't be covered here.  The
+following guidelines should help the release go smoothly:
+
+	* Crash and burn
+
+	  This phase is for rel-eng internal testing.  The crash and
+	  burn machines should be identified and used to test the
+	  install and update.  System packs may be generated at will
+	  by taking snapshots from the wash machine.  The system packs
+	  volume does not need any replication.
+
+	  System release notes should be prepared during this phase.
+
+	  Before the transition from crash and burn to alpha, the
+	  release engineer should do a sanity check on the new packs
+	  by comparing a file listing of the new packs to a file
+	  listing of the previous release's packs.  The release
+	  engineer should also check the list of configuration files
+	  for each platform (in packs/update/platform/*/configfiles)
+	  and make sure that any configuration files which have
+	  changed are listed as changed in the version script.
+	  Finally, the release should be checked to make sure it won't
+	  overflow partitions on any client machines; currently, SGIs
+	  are not a problem (because they have one big partition) and
+	  the most restrictive sizes on Solaris clients are 27713K and
+	  51903K of useable space for the root and /usr partitions.
+
+	* Alpha
+
+	  The alpha phase is for internal testing by the release team.
+	  System packs may still be regenerated at will by taking
+	  snapshots, but the system packs volume (and os volume)
+	  should be read-only so it can be updated by a vos release.
+	  Changes to the packs do not need to be propagated in patch
+	  releases; testers are expected to be able to ensure
+	  consistency by forcing repeat updates or reinstalling their
+	  machines.
+
+	  A draft of the system release notes should be ready by the
+	  beginning of this phase.  User release notes should be
+	  prepared during this phase.
+
+	  Before the transition from alpha to beta, doc/third-party
+	  should be checked to see if miscellaneous third-party files
+	  (the ones not under the "third" hierarchy) should be
+	  updated.
+
+	  At the end of the alpha phase, a release branch should
+	  be created with a name of the form athena-8_1, and tagged
+	  with athena-8_1-beta.  A checked-out tree should be made in
+	  /afs/dev.mit.edu/source for the release branch, with a name
+	  of the form src-8.1.  A final snapshot of the system packs
+	  should be constructed from the release branch, and the build
+	  tree copied into /afs/dev.mit.edu/project/release.  Build
+	  machines for the new release should be set up.
+
+	* Beta
+
+	  The beta phase involves outside testers.  System packs and
+	  os volumes should be replicated on multiple servers, and
+	  permissions should be set to avoid accidental changes
+	  (traditionally this means giving write access to
+	  system:packs, a normally empty group).  Changes to the packs
+	  must be propagated by patch releases.
+
+	  User release notes should be essentially finished by the end
+	  of this phase.  System release notes may continue to be
+	  updated as bug fixes occur.
+
+	* Early
+
+	  The early release involves more outside testers and some
+	  cluster machines.  The release should be considered ready
+	  for public consumption.
+
+	  The release branch should be tagged with a name of the form
+	  athena-8_1-early.
+
+	* Release
+
+	  The release branch should be tagged with a name of the form
+	  athena-8_1-release.
+
+One thing that needs to happen externally during a release cycle, if
+there is an OS upgrade involved, is the addition of compatibility
+symlinks under the arch directories of various lockers.  All of the
+lockers listed in packs/glue/specs definitely need to be hit, and the
+popular software lockers need to be hit as well.  Here is a reasonable
+list of popular lockers to get in addition to the glue ones:
+
+	consult
+	games
+	gnu
+	graphics
+	outland
+	sipb
+	tcl
+	watchmaker
+	windowmanagers
+	/afs/sipb/project/tcsh
+
+In addition, the third-party software lockers need to be updated; the
+third-party software group keeps their own list.
+
+Patch releases
+--------------
+
+Once a release has hit beta test, all changes to the release must be
+propagated through patch releases.  The steps to performing a patch
+release are:
+
+	* Check in the changes on the mainline (if they apply) and on
+	  the release branch and update the relevant sections of the
+	  source tree in /afs/dev.mit.edu/source.
+
+	* If the update needs to do anything other than track against
+	  the system packs, you must prepare a version script which
+	  deals with any transition issues, specifies whether to track
+	  the OS volume, specifies whether to deal with a kernel
+	  update, and specifies which if any configuration files need
+	  to be updated.  See the update script
+	  (packs/update/do-update.sh) for details.  See
+	  packs/build/update/platform/*/configfiles for a list of
+	  configuration files for a given platform.  The version
+	  script should be checked in on the mainline and on the
+	  release branch.
+
+	* Make sure to add symlinks in the build tree for any files
+	  you have added.  Note that you probably added a build script
+	  if the update needs to do anything other than track against
+	  the system packs.
+
+	* In the build tree, bump the version number in
+	  packs/build/version (the symlink should be broken for this
+	  file to avoid having to change it in the source tree).
+
+	* If you are going to need to update binaries that users run
+	  from the packs, go into the packs and move (don't copy) them
+	  into a .deleted directory at the root of the packs.  This is
+	  especially important for binaries like emacs and dash which
+	  people run for long periods of time, to avoid making the
+	  running processes dump core when the packs are released.
+
+	* Update the read-write volume of the packs to reflect the
+	  changes you've made.  You can use the build.sh script to
+	  build and install specific packages, or you can use the
+	  do.sh script to build the package and then install specific
+	  files (cutting and pasting from the output of "make -n
+	  install DESTDIR=/srvd" is the safest way); updating the
+	  fewest number of files is preferrable.  Remember to install
+	  the version script.
+
+	* Use the build.sh script to build and install
+	  packs/build/finish.  This will fix ownerships and update the
+	  track lists and the like.
+
+	* It's a good idea to test the update from the read-write
+	  packs by symlinking the read-write packs to /srvd on a test
+	  machine and taking the update.  Note that when the machine
+	  comes back up with the new version, it will probably
+	  re-attach the read-write packs, so you may have to re-make
+	  the symlink if you want to test stuff that's on the packs.
+
+	* At some non-offensive time, release the packs in the dev
+	  cell.
+
+	* Send mail to rel-eng saying that the patch release went out,
+	  and what was in it.  (You can find many example pieces of
+	  mail in the discuss archive.)  Include instructions
+	  explaining how to propagate the release to the athena cell.
+
+Rel-eng machines
+----------------
+
+There are six roles for rel-eng machines for each platform:
+
+	* A wash machine, for nightly rebuilds of the source tree
+	  during the development cycle.
+
+	* A crash and burn machine, for testing the release.
+
+	* A current release build machine, for doing incremental
+	  updates to the last public release.
+
+	* A new release build machine, for doing incremental updates
+	  to the new release during the beta and early phases.
+
+	* A current release developer machine, for other developers to
+	  build and test software on under the current release.
+
+	* A new release developer machine, for other developers to
+	  build and test software on under the next release.
+
+Six machines for each platform is a lot, especially when two of them
+are only needed during a release cycle.  The following modifications
+can collapse the number of required machines to three:
+
+	* During the beta and early phases of a release cycle, the
+	  wash can be shut down and the wash machines used as new
+	  release build engines.
+
+	* The new release build machine can be used as a new release
+	  developer machine during the beta and early phases.  Having
+	  a separate machine is preferrable since it is useful to have
+	  a new release developer machine during the entire
+	  development cycle, not just during the last two phases of
+	  the release cycle.  Sometimes the crash and burn machine may
+	  be useful for developers, although it cannot be treated as a
+	  reliable resource.
+
+	* The current release build machine can be used as a current
+	  release developer machine.
+
+Here is a list of the rel-eng machines for each platform, with repeat
+machine names listed in parentheses:
+
+				Sun		Indy		O2
+
+Wash				whirlpool	kenmore		maytag
+Current release build		downy		snuggle		bounce
+Crash and burn			sourcery	pyramids	reaper-man
+New release build		(whirlpool)	(kenmore)	(maytag)
+Current release developer	(downy)		(snuggle)	(bounce)
+New release developer		(whirlpool)	(kenmore)	(maytag)
+
+For reference, here are some names that fit various laundry and
+construction naming schemes:
+
+	* Washing machines: kenmore, whirlpool, ge, maytag
+	* Laundry detergents: fab, calgon, era, cheer, woolite,
+		tide, ultra-tide
+	* Bleaches: clorox, ajax
+	* Fabric softeners: downy, final-touch, snuggle, bounce
+	* Heavy machinery: steam-shovel, pile-driver, dump-truck,
+		wrecking-ball, crane
+	* Construction kits: lego, capsela, technics, k-nex, playdoh,
+		construx
+	* Construction materials: rebar, two-by-four, plywood,
+		sheetrock
+	* Heavy machinery companies: caterpillar, daewoo, john-deere,
+		sumitomo
+	* Buildings: empire-state, prudential, chrysler
+
+Clusters
+--------
+
+The getcluster(8) man explains how clients interpret cluster
+information.  This section documents the clusters related to the
+release cycle, and how they should be managed.
+
+There are five clusters for each platform, each of the form
+PHASE-PLATFORM, where PHASE is a phase of the release cycle (crash,
+alpha, beta, early, public) and PLATFORM is the machtype name of the
+platform.  There are two filsys entries for each platform and release
+pointing to the athena cell and dev cell system packs for the release;
+they have the form athena-PLATFORMsys-XY and dev-PLATFORMsys-XY, where
+X and Y are the major and minor numbers of the release.  For the SGI,
+we currently also have athena-sgi-inst-XY and dev-sgi-inst-XY.
+
+At the crash and burn, alpha, and beta phases of the release cycle,
+the appropriate cluster (PHASE-PLATFORM) should be updated to include
+data records of the form:
+
+	Label: syslib		Data: dev-PLATFORMsys-XY X.Y t
+(SGI)	Label: instlib		Data: dev-sgi-inst-XY X.Y t
+
+This change will cause console messages to appear on the appropriate
+machines informing their maintainers of a new testing release which
+they can take manually.
+
+At the early and public phases of the release cycle, the 't' should be
+removed from the new syslib records in the crash, alpha, and beta
+clusters, and the appropriate cluster (early-PLATFORM or
+public-PLATFORM) should be updated to include data records:
+
+	Label: syslib		Data: athena-PLATFORMsys-XY X.Y
+(SGI)	Label: instlib		Data: athena-sgi-inst-XY X.Y
+
+This change will cause AUTOUPDATE machines in the appropriate cluster
+(as well as the crash, alpha, and beta clusters) to take the new
+release; console messages will appear on non-AUTOUPDATE machines.

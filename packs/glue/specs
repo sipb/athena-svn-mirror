@@ -1,0 +1,23 @@
+addusr		moira
+blanche		moira
+bos		afsuser
+chfn		moira
+chpobox		moira
+chsh		moira
+dcmmaint	moira
+help		help
+klog		afsuser
+listmaint	moira
+mailmaint	moira
+moira		moira
+mrcheck		moira
+namespace	moira
+olc_answers	olc-stock	olc_browser
+olh		help
+olh_ascii	help
+olh_motif	help
+pts		afsuser
+usermaint	moira
+userreg		moira
+vos		afsuser
+xinfo		xmit

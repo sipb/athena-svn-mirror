@@ -69,7 +69,6 @@ static char rcsid[] = "$NetBSD: look.c,v 1.7 1995/08/31 22:41:02 jtc Exp $";
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <err.h>
 
 #include "pathnames.h"
 
@@ -90,12 +89,12 @@ static char rcsid[] = "$NetBSD: look.c,v 1.7 1995/08/31 22:41:02 jtc Exp $";
 
 int dflag, fflag;
 
-char	*binary_search __P((char *, char *, char *));
-int	 compare __P((char *, char *, char *));
-char	*linear_search __P((char *, char *, char *));
-int	 look __P((char *, char *, char *));
-void	 print_from __P((char *, char *, char *));
-void	 usage __P((void));
+char	*binary_search(char *, char *, char *);
+int	 compare(char *, char *, char *);
+char	*linear_search(char *, char *, char *);
+int	 look(char *, char *, char *);
+void	 print_from(char *, char *, char *);
+void	 usage(void);
 
 int
 main(argc, argv)
@@ -142,13 +141,16 @@ main(argc, argv)
 	if (termchar != '\0' && (p = strchr(string, termchar)) != NULL)
 		*++p = '\0';
 
-	if ((fd = open(file, O_RDONLY, 0)) < 0 || fstat(fd, &sb))
-		err(2, "%s", file);
-	if (sb.st_size > SIZE_T_MAX)
-		err(2, "%s: %s", file, strerror(EFBIG));
+	if ((fd = open(file, O_RDONLY, 0)) < 0 || fstat(fd, &sb)) {
+		fprintf(stderr, "look: %s: %s\n", file, strerror(errno));
+		exit(2);
+	}
 	if ((front = mmap(NULL,
-	    (size_t)sb.st_size, PROT_READ, 0, fd, (off_t)0)) == NULL)
-		err(2, "%s", file);
+	    (size_t)sb.st_size, PROT_READ, MAP_PRIVATE, fd,
+	    (off_t)0)) == NULL || front == (void *) -1) {
+		fprintf(stderr, "look: %s: %s\n", file, strerror(errno));
+		exit(2);
+	}
 	back = front + sb.st_size;
 	exit(look(string, front, back));
 }
@@ -285,10 +287,14 @@ print_from(string, front, back)
 {
 	for (; front < back && compare(string, front, back) == EQUAL; ++front) {
 		for (; front < back && *front != '\n'; ++front)
-			if (putchar(*front) == EOF)
-				err(2, "stdout");
-		if (putchar('\n') == EOF)
-			err(2, "stdout");
+			if (putchar(*front) == EOF) {
+				perror("look: stdout");
+				exit(2);
+			}
+		if (putchar('\n') == EOF) {
+			perror("look: stdout");
+			exit(2);
+		}
 	}
 }
 

@@ -3138,20 +3138,20 @@ $$\halign to\displaywidth\bgroup\@eqnsel\hskip\@centering
  
 \def\@icentercr[#1]{\vskip #1\ignorespaces}
  
-\def\center{\trivlist \centering\item[]}
+\def\center{\trivlist \centering\item[]\leavevmode}
 \def\centering{\let\\=\@centercr\rightskip\@flushglue\leftskip\@flushglue
 \parindent\z@\parfillskip\z@}
 \let\endcenter=\endtrivlist
  
 \newskip\@rightskip \@rightskip \z@
  
-\def\flushleft{\trivlist \raggedright\item[]}
+\def\flushleft{\trivlist \raggedright\item[]\leavevmode}
 \def\raggedright{\let\\=\@centercr\@rightskip\@flushglue \rightskip\@rightskip
   \leftskip\z@
   \parindent\z@}
 \let\endflushleft=\endtrivlist
  
-\def\flushright{\trivlist \raggedleft\item[]}
+\def\flushright{\trivlist \raggedleft\item[]\leavevmode}
 \def\raggedleft{\let\\=\@centercr\rightskip\z@\leftskip\@flushglue
   \parindent\z@\parfillskip\z@}
 \let\endflushright=\endtrivlist

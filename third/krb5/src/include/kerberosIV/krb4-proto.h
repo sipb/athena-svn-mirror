@@ -35,6 +35,8 @@
 #endif
 #endif /* P_TYPE_ */
 
+struct sockaddr_in;
+
 /* add_ticket.c */
 int add_ticket P_TYPE_((KTEXT , int , char *, int , char *, char *, char *, int , KTEXT ));
 

@@ -4,6 +4,8 @@
 #include "web2c.h"
 #include "y.tab.h"
 
+#undef yywrap
+
 /* For some reason flex wants to do a system call, so we must lose the
    definition of the Pascal read that is in `pascal.h'.  */
 #undef read
@@ -176,3 +178,8 @@ HHB1		("hh"{WW}"."{WW}"b1")
 .		{ /* Any bizarre token will do.  */
 		  return last_tok = two_dots_tok; }
 %%
+
+int yywrap()
+{
+	return 1;
+}

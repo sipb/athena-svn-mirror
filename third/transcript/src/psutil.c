@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psutil.c,v 1.1.1.1 1996-10-07 20:25:52 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psutil.c,v 1.2 1996-10-14 05:04:43 ghudson Exp $";
 #endif
 /* psutil.c
  *
@@ -15,7 +15,7 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  * common utility subroutines
  *
  * RCSLOG:
- * $Log: not supported by cvs2svn $
+ * $/Log: psutil.c,v/$
  * Revision 3.10  1993/05/25  21:42:27  snichols
  * cleanup for Solaris
  *
@@ -105,8 +105,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  *
  */
 
+#include "config-defs.h"
 #include <stdio.h>
-#ifdef SYSV
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #else
 #include <sys/file.h>

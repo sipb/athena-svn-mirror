@@ -66,7 +66,7 @@ extern int	auth_level;
 extern int auth_negotiated; /* Have we finished all authentication negotiation we plan to finish?*/
 extern slcfun	slctab[NSLC + 1];	/* slc mapping table */
 
-extern char	*terminaltype;
+extern char	terminaltype[41];
 
 /*
  * I/O data buffers, pointers, and counters.
@@ -87,6 +87,10 @@ extern char *unptyip;  /* pointer to remaining characters in buffer */
 
 extern int	pty, net;
 extern int	SYNCHing;		/* we are in TELNET SYNCH mode */
+
+#ifdef ENCRYPTION
+extern int	must_encrypt;
+#endif
 
 #ifndef	P
 # ifdef	__STDC__

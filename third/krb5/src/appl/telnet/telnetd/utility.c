@@ -35,6 +35,7 @@
 
 #define PRINTOPTIONS
 #include "telnetd.h"
+#include <sys/utsname.h>
 
 /*
  * utility functions performing io related tasks
@@ -59,11 +60,10 @@ ttloop()
     if (nfrontp-nbackp) {
 	netflush();
     }
-read_again:
     ncc = read(net, netibuf, sizeof netibuf);
     if (ncc < 0) {
 	if (errno == EINTR)
-	    goto read_again;
+	    return; /* interrupt from alarm() */
 	syslog(LOG_INFO, "ttloop:  read: %m");
 	exit(1);
     } else if (ncc == 0) {
@@ -448,6 +448,9 @@ putf(cp, where)
 	char *slash;
 	time_t t;
 	char db[100];
+	struct utsname utsinfo;
+
+	uname(&utsinfo);
 
 	putlocation = where;
 
@@ -479,6 +482,22 @@ putf(cp, where)
 			(void)time(&t);
 			(void)strftime(db, sizeof(db), fmtstr, localtime(&t));
 			putstr(db);
+			break;
+
+		case 's':
+			putstr(utsinfo.sysname);
+			break;
+
+		case 'm':
+			putstr(utsinfo.machine);
+			break;
+
+		case 'r':
+			putstr(utsinfo.release);
+			break;
+
+		case 'v':
+			putstr(utsinfo.version);
 			break;
 
 		case '%':

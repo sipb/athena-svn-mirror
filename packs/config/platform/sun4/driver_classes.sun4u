@@ -1,0 +1,23 @@
+#ident   "@(#)driver_classes 1.19     97/11/05 SMI"
+#
+# Copyright (c) 1992-1994, by Sun Microsystems, Inc.
+# All rights reserved.
+#
+
+esp	scsi
+isp	scsi
+fas	scsi
+vme	vme
+sbus	sbus
+sbi	sbus
+xbox	sbus
+pci	pci
+pci_pci	pci
+ebus	ebus
+glm	scsi
+stp4020	pcmcia
+pcic	pcmcia
+ts102	pcmcia
+simba	pci
+uata	dada
+uata	atapi

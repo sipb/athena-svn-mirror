@@ -1,5 +1,6 @@
 % This is OCRB10_mf   (the normal OCRB-B)
 %
+mode_setup;
 
 font_identifier:="OCRB";
 font_size 10pt#;

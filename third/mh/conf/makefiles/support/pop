@@ -2,7 +2,7 @@
 #	Instructions to Make, for POP support processes
 #
 #	@(MHWARNING)
-# @(#)$Id: pop,v 1.1.1.1 1996-10-07 07:12:47 ghudson Exp $
+# @(#)$Id: pop,v 1.4 1998-03-11 20:29:28 ghudson Exp $
 ##############################################################################
 
 # The following entries were inserted during MH configuration
@@ -15,7 +15,10 @@ LDOPTLIB=	@(LDOPTLIB)
 @BEGIN: MPOP
 LDCURSES=	@(LDCURSES)
 @END: MPOP
-PGMPROT	=	0711
+@BEGIN: KPOP
+KRBLIB	=	-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
+@END: KPOP
+PGMPROT	=	0755
 REMOVE	=	@(MHREMOVE)
 CHOWN	=	@(MHCHOWNPATH)
 POPUID	=	pop
@@ -106,7 +109,7 @@ $(ETCDIR)/popd:	xpopd
 		-$(REMOVE) $@ zpopd
 		-rm -f $@
 		$(CP) xpopd $@
-		-chmod 700 $@
+		-chmod 755 $@
 		-@ls -l $@
 		-@echo ""
 
@@ -123,7 +126,7 @@ xpopd:		popd.o popser.o syslog.o \
 @BEGIN: MPOP
 			../../uip/scansbr.o \
 @END: MPOP
-			$(LDLIBS2) $(LDCURSES)
+			$(LDLIBS2) $(LDCURSES) $(KRBLIB)
 
 l-popd:;	$(LINT) $(LFLAGS) popd.c popser.c \
 			../../uip/dropsbr.c \

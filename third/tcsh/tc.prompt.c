@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.prompt.c,v 1.2 1996-10-03 04:43:54 ghudson Exp $ */
 /*
  * tc.prompt.c: Prompt printing stuff
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.prompt.c,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $")
+RCSID("$Id: tc.prompt.c,v 1.2 1996-10-03 04:43:54 ghudson Exp $")
 
 #include "ed.h"
 
@@ -239,6 +239,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 		break;
 
 	    case '~':		/* show ~ whenever possible - a la dirs */
+	    case 'd':
 		{
 		    static Char *olddir = 0, *olduser = 0, *oldpath = 0;
 		    extern int tlength;	/* cache cleared */
@@ -395,7 +396,7 @@ tprintf(what, buf, fmt, siz, str, tim, info)
 			}
 		}
 		break;
-	    case 'd':
+	    case 'k':
 		for (cz = day_list[t->tm_wday]; *cz;) {
 		    *p++ = attributes | *cz++;
 		    if (p >= ep) break;

@@ -1,0 +1,154 @@
+################################################################################
+#                                                                              #
+#           Indigo Magic Desktop toolchest RESOURCE DESCRIPTION FILE
+#
+#                                                                              #
+################################################################################
+
+
+#
+# menu pane descriptions
+#
+
+# Top Level Menu Description
+Menu ToolChest
+{	
+    Desktop	f.menu Desktop
+     no-label           f.separator
+    "Selected"	f.menu Selected
+     no-label           f.separator
+    "Internet"	f.menu Internet
+     no-label           f.separator
+    "Find"	f.menu Find
+     no-label           f.separator
+    "System"	f.menu System
+}
+
+# The ".le" suffix indicates that the Launch Effect is desired.
+
+Menu Desktop
+{
+    "Access Files" 	f.menu AccessStuff
+    "Shared Resources" f.menu SharedStuff
+    "Customize"		f.menu Customize
+    "Extra Desks"	f.dmb.le "/usr/sbin/ov run"
+    "Control Audio"	f.checkexec.sh.le "/usr/sbin/apanel"
+    "Empty Dumpster"	f.checkexpr.sh "test \! -f $HOME/.desktop-`hostname`/nodesktop -a -x /usr/lib/desktop/telldesktop" "/usr/lib/desktop/telldesktop 'empty dumpster'"
+    "Eject Media" f.checkexec.sh.le "/usr/sysadm/bin/runcatalog /usr/sysadm/catalogdf/SaRemovableMediaCatalog.cdf"
+     no-label           f.separator
+    "Start ScreenSaver"	f.checkexec.sh "/usr/bin/X11/xset s activate"
+    "Open Unix Shell"	f.checkexec.sh.le "/usr/bin/X11/xterm" 
+     no-label           f.separator
+    "Log Out"           f.checkexec.sh "/usr/bin/X11/endsession"
+}
+
+Menu Internet
+{
+    "Open Web Browser"	f.checkexec.sh.le "/usr/sbin/launchWebJumper"
+    "Browse OutBox Page"	f.checkexec.sh.le "/usr/lib/desktop/openhomepg"
+     no-label           f.separator
+    "Icon View of a Web Site" 	f.checkexec.sh.le "/usr/sbin/fm -p http://"
+    "Icon View of an FTP Site" f.checkexec.sh.le "/usr/sbin/fm -p ftp://"
+     no-label           f.separator
+    "Create a WebJumper"	f.checkexec.sh.le "/usr/sbin/webjumper"
+}
+
+Menu Find dynamic
+{
+    "Search For Files"	f.checkexec.sh.le "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/Files"
+    "File QuickFind"	f.checkexec.sh.le "/usr/lib/desktop/telldesktop fetch"
+    "Host QuickFind"	f.checkexec.sh.le "/usr/lib/desktop/telldesktop fetchHost"
+    "Demos"	f.checkexec.sh.le "/usr/sbin/launchDemos"
+     no-label           f.separator
+    "Icon Catalog"	f.checkexec.sh.le "/usr/sbin/iconcatalog"
+}
+
+Menu Help
+{
+    "Info Search"	f.checkexec.sh.le "/usr/sbin/infosearch -search"
+    "How Do I..." 	f.checkexec.sh.le "/usr/sbin/infosearch -hwdi"
+    no-label            f.separator
+    "Online Books" 	f.checkexec.sh.le "/usr/lib/desktop/launchbookviewer"
+    "Man Pages"		f.checkexec.sh.le "/usr/sbin/infosearch -man"
+    "Release Notes" 	f.checkexec.sh.le "/usr/sbin/infosearch -relnotes"
+    no-label            f.separator
+    "Legal Notice"      f.checkexec.sh "/usr/bin/X11/xconfirm -c -header \"Legal Notice\" -b Dismiss -file /usr/share/misc/legal_notice  >/dev/null"
+}
+
+
+Menu Customize
+{
+    "Windows" 		f.dmb.le "/usr/sbin/windows run"
+    "Desktop" 		f.dmb.le "/usr/sbin/desktop run"
+    "Icon Views" 	f.dmb.le "/usr/sbin/fmprefs run"
+    "Sounds" 		f.dmb.le "/usr/sbin/dtSounds run"
+    "Utilities" 	f.dmb.le "/usr/sbin/dtUtilities run"
+    "System Alerts"	f.checkexec.sh.le /usr/sbin/syserrpanel
+     no-label           f.separator
+    "Background"	f.dmb.le "/usr/sbin/background run"
+    "Color Schemes"	f.checkexec.sh.le /usr/sbin/schemebr
+    "Screen Saver"	f.dmb.le "/usr/sbin/screensaver run"
+     no-label           f.separator
+    "Mouse"		f.dmb.le "/usr/sbin/mouse run"
+    "Keyboard"		f.dmb.le "/usr/sbin/keyboard run"
+    "Language"		f.dmb.le "/usr/sbin/ipanel run"
+}
+
+Menu System
+{
+    "System Manager" f.checkexec.sh.le "/usr/sysadm/bin/sysmgr"
+#    "Shared Resources" f.menu SharedStuff
+    "Filesystem Manager"   f.checkexec.sh.le "/usr/sysadm/bin/runcatalog /usr/sysadm/catalogdf/SaFilesystemCatalog.cdf"
+    "Printer Manager"   f.checkexec.sh.le "/usr/sbin/printers"
+    "Software Manager"  f.checkexec.sh.le "/usr/sbin/SoftwareManager"
+    "License Manager"  f.checkexec.sh.le "/usr/etc/LicenseManager"
+    no-label           f.separator
+    "Confidence Tests" 	f.checkexec.sh.le "/usr/sbin/confidence"
+    "Utilities" 	f.menu Utilities
+     no-label           f.separator
+    "Restart System"    f.checkexec.sh.le "/usr/sysadm/bin/runtask /usr/sysadm/taskdf/SaDtRebootTask.tdf"
+    "Shut Down System"   f.checkexec.sh.le "/usr/sysadm/bin/runtask /usr/sysadm/taskdf/SaDtShutdownTask.tdf"
+
+}
+
+
+Menu Utilities
+{
+    "Enable Remote Display"	f.checkexec.sh "/usr/lib/desktop/togglexhost +"
+    "Disable Remote Display"	f.checkexec.sh "/usr/lib/desktop/togglexhost -"
+     no-label           f.separator
+    "Start New Console"		f.checkexec.sh.le "/usr/sbin/startconsole"
+    "Restart Window Manager"	f.checkexec.sh.le "/usr/bin/X11/tellwm restart"
+}
+
+
+Menu Selected dynamic
+{
+}
+
+Menu SharedStuff
+{
+    "On This Workstation" f.checkexec.sh.le "/usr/sysadm/bin/sharemgr"
+    "On a Remote Workstation" f.checkexec.sh.le "/usr/sysadm/bin/sharefinder"
+}
+
+Menu AccessStuff
+{
+    "In my Home Directory"	f.checkexec.sh.le "/usr/lib/desktop/startdesktop"
+    "In Automounted Directory" f.checkexec.sh.le "/usr/sbin/fm -p /hosts/"
+     no-label           f.separator
+    "As Another User"   f.checkexec.sh.le "/usr/sbin/accessworkstation -h `uname -n`"
+    "By Remote Login" f.checkexec.sh.le "/usr/sbin/accessworkstation -l guest -f /usr/people/guest"
+}
+
+#include the system chests and any user's private chests
+sinclude /usr/lib/X11/app-chests
+sinclude ~/.auxchestrc
+
+#make sure the help menu is at the end of the toolchest, after all
+#user additions
+Menu ToolChest
+{	
+     no-label           f.separator
+    "Help"	f.menu Help
+}

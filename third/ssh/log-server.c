@@ -15,8 +15,17 @@ output to the system log.
 */
 
 /*
- * $Id: log-server.c,v 1.1.1.2 1998-01-24 01:25:21 danw Exp $
+ * $Id: log-server.c,v 1.3 1998-01-24 01:47:25 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1997/11/12 21:16:16  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
+ * Revision 1.1.1.1  1997/10/17 22:26:02  danw
+ * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:21  danw
+ * Import of ssh 1.2.22
+ *
  * Revision 1.5  1998/01/02 06:18:49  kivinen
  * 	Fixed kerberos ticket name handling.
  *
@@ -61,6 +70,10 @@ output to the system log.
 static int log_debug = 0;
 static int log_quiet = 0;
 static int log_on_stderr = 0;
+
+#ifdef KERBEROS
+extern krb5_context ssh_context;
+#endif
 
 /* Initialize the log.
      av0	program name (should be argv[0])
@@ -276,12 +289,16 @@ static void do_fatal_cleanups()
 #ifdef KERBEROS
       /* If you forwarded a ticket you get one shot for proper
 	 authentication. */
-      /* If tgt was passed unlink file */
+      /* If tgt was passed, destroy it */
       if (ticket)
 	{
 	  if (strcmp(ticket,"none"))
-	    /* ticket -> FILE:path */
-	    unlink(ticket + 5);
+	    {
+	      krb5_ccache ccache;
+	      if (!krb5_cc_resolve(ssh_context, ticket, &ccache))
+		krb5_cc_destroy(ssh_context, ccache);
+	      dest_tkt();
+	    }
 	  else
 	    ticket = NULL;
 	}

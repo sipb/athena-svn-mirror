@@ -1,0 +1,62 @@
+# $Id: Makefile.in,v 1.1 1997-12-19 02:25:16 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+YACC=@YACC@
+LEX=@LEX@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+
+LIBOBJS=com_err.o error_message.o et_name.o init_et.o
+BINOBJS=compile_et.o error_table.o
+
+all: libcom_err.a compile_et
+
+libcom_err.a: ${LIBOBJS}
+	ar cru $@ ${LIBOBJS}
+	${RANLIB} $@
+
+compile_et: ${BINOBJS}
+	${CC} ${LDFLAGS} -o compile_et ${BINOBJS} ${LIBS}
+
+error_table.o: et_lex.lex.c
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
+	${INSTALL_PROGRAM} -m 555 compile_et ${DESTDIR}${bindir}
+	${INSTALL} -m 444 libcom_err.a ${DESTDIR}${libdir}
+	${INSTALL} -m 444 com_err.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 mit-sipb-copyright.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/compile_et.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/com_err.3 ${DESTDIR}${mandir}/man3
+
+clean:
+	rm -f ${LIBOBJS} ${BINOBJS} compile_et libcom_err.a et_lex.lex.c
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

@@ -2495,7 +2495,7 @@ if eval "test \"`echo '$''{'krb5_cv_sys_rcdir'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
-for t_dir in /usr/tmp /var/usr/tmp /var/tmp /tmp ; do
+for t_dir in /var/tmp /usr/tmp /var/usr/tmp /tmp ; do
 	test -d $t_dir || continue
 	krb5_cv_sys_rcdir=$t_dir
 	break

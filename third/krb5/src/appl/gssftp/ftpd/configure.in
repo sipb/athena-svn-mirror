@@ -44,6 +44,26 @@ if test $krb5_cv_shadow_pwd = yes; then
 AC_DEFINE(HAVE_SHADOW)
 fi
 dnl
+EXTRALIBS=
+AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
+	      [EXTRALIBS=-lresolv]))
+AC_SUBST(EXTRALIBS)
+dnl
+AC_ARG_WITH([afs],
+[  --without-afs        don't have afs libraries to build against (default)
+  --with-afs=AFSDIR    use preinstalled AFS library tree],
+,with_afs=no)dnl
+if test $with_afs != no; then
+	AC_DEFINE(SETPAG)
+	EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
+	AC_CHECK_FUNC(sigvec, :,
+		      [AC_CHECK_LIB(ucb, sigvec,
+				    [EXTRALIBS="$EXTRALIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"],
+				    :, -L/usr/ucblib)])
+	AC_CHECK_FUNC(insque, :,
+		      [AC_CHECK_LIB(compat, insque,
+				    [EXTRALIBS="$EXTRALIBS -lcompat"])])
+fi
 dnl
 USE_ANAME
 KRB5_LIBRARIES

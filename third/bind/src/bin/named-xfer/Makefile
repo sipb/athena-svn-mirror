@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.2 1998-05-12 18:04:20 ghudson Exp $
+# $Id: Makefile,v 1.3 1998-05-12 18:35:06 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -71,7 +71,8 @@ ${DESTDIR}${DESTEXEC}:
 	mkdir -p ${DESTDIR}${DESTEXEC}
 
 install: ${DESTDIR}${DESTEXEC} ${PROG}
-	${INSTALL} ${STRIP} -c -m 755 ${PROG} ${DESTDIR}${DESTEXEC}/${PROG}
+	${INSTALL} -s -c -m 755 ${PROG} ${DESTDIR}${DESTEXEC}/${PROG}
+	${INSTALL} -c -m 755 ${PROG} ${DESTDIR}${DESTEXEC}/${PROG}.unstripped
 
 links: FRC
 	@set -e; ln -s SRC/*.[ch] .

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.1.1.1 1996-10-02 06:09:23 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.h,v 1.4 1997-12-13 18:41:33 ghudson Exp $ */
 /*
  * sh.h: Catch it all globals and includes file!
  */
@@ -16,8 +16,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *      This product includes software developed by the University of
+ *      California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -47,11 +47,11 @@
  */
 #if defined(_POSIX_SOURCE) && !defined(POSIX)
 # define POSIX
-#endif 
+#endif
 
 #if defined(POSIXJOBS) && !defined(BSDJOBS)
 # define BSDJOBS
-#endif 
+#endif
 
 #if defined(POSIXSIGS) && !defined(BSDSIGS)
 # define BSDSIGS
@@ -63,15 +63,15 @@ typedef short Char;
 #else
 typedef char Char;
 # define SAVE(a) (strsave(a))
-#endif 
+#endif
 
 #ifdef PURIFY
 /* Re-define those, cause purify might use them */
-# define xprintf 	printf
-# define xsprintf	sprintf
-# define xvprintf	vprintf
+# define xprintf        printf
+# define xsprintf       sprintf
+# define xvprintf       vprintf
 /* exit normally, allowing purify to trace leaks */
-# define _exit		exit
+# define _exit          exit
 #endif /* PURIFY */
 
 /*
@@ -85,7 +85,7 @@ typedef char Char;
 #  define sigret_t void
 # else
 typedef void sigret_t;
-# endif 
+# endif
 #else
 typedef int sigret_t;
 #endif /* SIGVOID */
@@ -94,20 +94,20 @@ typedef int sigret_t;
 /*
  * Fundamental definitions which may vary from system to system.
  *
- *	BUFSIZE		The i/o buffering size; also limits word size
- *	MAILINTVL	How often to mailcheck; more often is more expensive
+ *      BUFSIZE         The i/o buffering size; also limits word size
+ *      MAILINTVL       How often to mailcheck; more often is more expensive
  */
 #ifdef BUFSIZE
-# if	   BUFSIZE < 1024
+# if       BUFSIZE < 1024
 #  undef   BUFSIZE
-#  define  BUFSIZE	1024	/* buffer size should be no less than this */
+#  define  BUFSIZE      1024    /* buffer size should be no less than this */
 # endif
 #else
-# define   BUFSIZE	1024
+# define   BUFSIZE      1024
 #endif /* BUFSIZE */
 
-#define FORKSLEEP	10	/* delay loop on non-interactive fork failure */
-#define	MAILINTVL	600	/* 10 minutes */
+#define FORKSLEEP       10      /* delay loop on non-interactive fork failure */
+#define MAILINTVL       600     /* 10 minutes */
 
 #ifndef INBUFSIZE
 # define INBUFSIZE    2*BUFSIZE /* Num input characters on the command line */
@@ -117,10 +117,10 @@ typedef int sigret_t;
 /*
  * What our builtin echo looks like
  */
-#define NONE_ECHO	0
-#define BSD_ECHO	1
-#define SYSV_ECHO	2
-#define BOTH_ECHO	(BSD_ECHO|SYSV_ECHO)
+#define NONE_ECHO       0
+#define BSD_ECHO        1
+#define SYSV_ECHO       2
+#define BOTH_ECHO       (BSD_ECHO|SYSV_ECHO)
 
 #ifndef ECHO_STYLE
 # if SYSVREL > 0
@@ -135,15 +135,15 @@ typedef int sigret_t;
  * 0, 1, and 2 so that it is easy to set up these standards for invoked
  * commands.
  */
-#define	FSHTTY	15		/* /dev/tty when manip pgrps */
-#define	FSHIN	16		/* Preferred desc for shell input */
-#define	FSHOUT	17		/* ... shell output */
-#define	FSHDIAG	18		/* ... shell diagnostics */
-#define	FOLDSTD	19		/* ... old std input */
+#define FSHTTY  15              /* /dev/tty when manip pgrps */
+#define FSHIN   16              /* Preferred desc for shell input */
+#define FSHOUT  17              /* ... shell output */
+#define FSHDIAG 18              /* ... shell diagnostics */
+#define FOLDSTD 19              /* ... old std input */
 
 #ifdef PROF
-#define	xexit(n)	done(n)
-#endif 
+#define xexit(n)        done(n)
+#endif
 
 #ifdef cray
 # define word word_t           /* sys/types.h defines word.. bad move! */
@@ -153,9 +153,9 @@ typedef int sigret_t;
 
 #ifdef cray
 # undef word
-#endif 
+#endif
 
-/* 
+/*
  * Path separator in environment variables
  */
 #ifndef PATHSEP
@@ -168,7 +168,7 @@ typedef int sigret_t;
 
 /*
  * This macro compares the st_dev field of struct stat. On aix on ibmESA
- * st_dev is a structure, so comparison does not work. 
+ * st_dev is a structure, so comparison does not work.
  */
 #ifndef DEV_DEV_COMPARE
 # define DEV_DEV_COMPARE(x,y)   ((x) == (y))
@@ -183,7 +183,7 @@ typedef int sigret_t;
 
 #ifdef NLS
 # include <locale.h>
-#endif 
+#endif
 
 #if !defined(_MINIX) && !defined(_VMS_POSIX)
 #include <sys/param.h>
@@ -192,11 +192,7 @@ typedef int sigret_t;
 
 #if defined(BSDTIMES) || defined(BSDLIMIT)
 # include <sys/time.h>
-# if SYSVREL>3 && !defined(sgi)
-#  include "/usr/ucbinclude/sys/resource.h"
-# else
-#  include <sys/resource.h>
-# endif /* SYSVREL>3 */
+# include <sys/resource.h>
 #endif /* BSDTIMES */
 
 #ifndef POSIX
@@ -208,15 +204,15 @@ typedef int sigret_t;
 #else /* POSIX */
 # include <termios.h>
 # if SYSVREL > 3
-#  undef TIOCGLTC	/* we don't need those, since POSIX has them */
+#  undef TIOCGLTC       /* we don't need those, since POSIX has them */
 #  undef TIOCSLTC
 #  undef CSWTCH
-#  define CSWTCH _POSIX_VDISABLE	/* So job control works */
+#  define CSWTCH _POSIX_VDISABLE        /* So job control works */
 # endif /* SYSVREL > 3 */
 #endif /* POSIX */
 #ifdef DGUX
 #  undef CSWTCH
-#  define CSWTCH _POSIX_VDISABLE	/* So job control works */
+#  define CSWTCH _POSIX_VDISABLE        /* So job control works */
 #endif /* DGUX */
 
 #ifdef sonyrisc
@@ -273,7 +269,7 @@ extern int setpgrp();
 # if !defined(COHERENT) && !defined(_VMS_POSIX)
 #  include <sys/ioctl.h>
 # endif
-#endif 
+#endif
 
 #if !defined(FIOCLEX) && defined(SUNOS4)
 # include <sys/filio.h>
@@ -281,11 +277,11 @@ extern int setpgrp();
 
 #if !defined(_MINIX) && !defined(COHERENT)
 # include <sys/file.h>
-#endif	/* !_MINIX && !COHERENT */
+#endif  /* !_MINIX && !COHERENT */
 
 #if !defined(O_RDONLY) || !defined(O_NDELAY)
 # include <fcntl.h>
-#endif 
+#endif
 
 #include <errno.h>
 
@@ -294,12 +290,12 @@ extern int setpgrp();
 #if __STDC__
 # include <stdarg.h>
 #else
-#ifdef	_MINIX
+#ifdef  _MINIX
 # include "mi.varargs.h"
 #else
 # include <varargs.h>
-#endif	/* _MINIX */
-#endif 
+#endif  /* _MINIX */
+#endif
 
 #ifdef DIRENT
 # include <dirent.h>
@@ -312,7 +308,7 @@ extern int setpgrp();
 # define dirent direct
 #endif /* DIRENT */
 #if defined(hpux) || defined(sgi) || defined(OREO) || defined(COHERENT)
-# include <stdio.h>	/* So the fgetpwent() prototypes work */
+# include <stdio.h>     /* So the fgetpwent() prototypes work */
 #endif /* hpux || sgi || OREO || COHERENT */
 #include <pwd.h>
 #ifdef PW_SHADOW
@@ -338,7 +334,7 @@ extern int setpgrp();
 #endif /* sgi && SYSVREL > 3 */
 
 /*
- * ANSIisms... These must be *after* the system include and 
+ * ANSIisms... These must be *after* the system include and
  * *before* our includes, so that BSDreno has time to define __P
  */
 #ifndef __P
@@ -348,10 +344,10 @@ extern int setpgrp();
 #  define __P(a) ()
 #  define const
 #  ifndef apollo
-#   define volatile	/* Apollo 'c' extensions need this */
+#   define volatile     /* Apollo 'c' extensions need this */
 #  endif /* apollo */
-# endif 
-#endif 
+# endif
+#endif
 
 
 typedef int bool;
@@ -370,33 +366,33 @@ typedef union {
     double  am_double, *am_double_p;
 }      *memalign_t;
 
-# define malloc		lint_malloc
-# define free		lint_free
-# define realloc	lint_realloc
-# define calloc		lint_calloc
-#endif 
+# define malloc         lint_malloc
+# define free           lint_free
+# define realloc        lint_realloc
+# define calloc         lint_calloc
+#endif
 
 #ifdef MDEBUG
-extern memalign_t	DebugMalloc	__P((unsigned, char *, int));
-extern memalign_t	DebugRealloc	__P((ptr_t, unsigned, char *, int));
-extern memalign_t	DebugCalloc	__P((unsigned, unsigned, char *, int));
-extern void		DebugFree	__P((ptr_t, char *, int));
-# define xmalloc(i)  	DebugMalloc(i, __FILE__, __LINE__)
+extern memalign_t       DebugMalloc     __P((unsigned, char *, int));
+extern memalign_t       DebugRealloc    __P((ptr_t, unsigned, char *, int));
+extern memalign_t       DebugCalloc     __P((unsigned, unsigned, char *, int));
+extern void             DebugFree       __P((ptr_t, char *, int));
+# define xmalloc(i)     DebugMalloc(i, __FILE__, __LINE__)
 # define xrealloc(p, i)((p) ? DebugRealloc(p, i, __FILE__, __LINE__) : \
-			      DebugMalloc(i, __FILE__, __LINE__))
-# define xcalloc(n, s)	DebugCalloc(n, s, __FILE__, __LINE__)
-# define xfree(p)    	if (p) DebugFree(p, __FILE__, __LINE__)
+                              DebugMalloc(i, __FILE__, __LINE__))
+# define xcalloc(n, s)  DebugCalloc(n, s, __FILE__, __LINE__)
+# define xfree(p)       if (p) DebugFree(p, __FILE__, __LINE__)
 #else
 # ifdef SYSMALLOC
-#  define xmalloc(i)		smalloc(i)
-#  define xrealloc(p, i)	srealloc(p, i)
-#  define xcalloc(n, s)		scalloc(n, s)
-#  define xfree(p)		sfree(p)
+#  define xmalloc(i)            smalloc(i)
+#  define xrealloc(p, i)        srealloc(p, i)
+#  define xcalloc(n, s)         scalloc(n, s)
+#  define xfree(p)              sfree(p)
 # else
-#  define xmalloc(i)  		malloc(i)
-#  define xrealloc(p, i)	realloc(p, i)
-#  define xcalloc(n, s)		calloc(n, s)
-#  define xfree(p)    		free(p)
+#  define xmalloc(i)            malloc(i)
+#  define xrealloc(p, i)        realloc(p, i)
+#  define xcalloc(n, s)         calloc(n, s)
+#  define xfree(p)              free(p)
 # endif /* SYSMALLOC */
 #endif /* MDEBUG */
 #include "sh.char.h"
@@ -422,108 +418,108 @@ extern void		DebugFree	__P((ptr_t, char *, int));
 #endif /* MAXNAMLEN */
 
 #ifndef MAXHOSTNAMELEN
-# define MAXHOSTNAMELEN	255
+# define MAXHOSTNAMELEN 255
 #endif /* MAXHOSTNAMELEN */
 
 
 
-#define	eq(a, b)	(Strcmp(a, b) == 0)
+#define eq(a, b)        (Strcmp(a, b) == 0)
 
 /* globone() flags */
-#define G_ERROR		0	/* default action: error if multiple words */
-#define G_IGNORE	1	/* ignore the rest of the words		   */
-#define G_APPEND	2	/* make a sentence by cat'ing the words    */
+#define G_ERROR         0       /* default action: error if multiple words */
+#define G_IGNORE        1       /* ignore the rest of the words            */
+#define G_APPEND        2       /* make a sentence by cat'ing the words    */
 
 /*
  * Global flags
  */
-EXTERN bool    chkstop;		/* Warned of stopped jobs... allow exit */
+EXTERN bool    chkstop;         /* Warned of stopped jobs... allow exit */
 
 #if (defined(FIOCLEX) && defined(FIONCLEX)) || defined(F_SETFD)
 # define CLOSE_ON_EXEC
 #else
-EXTERN bool    didcch;		/* Have closed unused fd's for child */
+EXTERN bool    didcch;          /* Have closed unused fd's for child */
 #endif /* (FIOCLEX && FIONCLEX) || F_SETFD */
 
-EXTERN bool    didfds;		/* Have setup i/o fd's for child */
-EXTERN bool    doneinp;		/* EOF indicator after reset from readc */
-EXTERN bool    exiterr;		/* Exit if error or non-zero exit status */
-EXTERN bool    child;		/* Child shell ... errors cause exit */
-EXTERN bool    haderr;		/* Reset was because of an error */
-EXTERN bool    intty;		/* Input is a tty */
-EXTERN bool    intact;		/* We are interactive... therefore prompt */
-EXTERN bool    justpr;		/* Just print because of :p hist mod */
-EXTERN bool    loginsh;		/* We are a loginsh -> .login/.logout */
-EXTERN bool    neednote;	/* Need to pnotify() */
-EXTERN bool    noexec;		/* Don't execute, just syntax check */
-EXTERN bool    pjobs;		/* want to print jobs if interrupted */
-EXTERN bool    setintr;		/* Set interrupts on/off -> Wait intr... */
-EXTERN bool    timflg;		/* Time the next waited for command */
-EXTERN bool    havhash;		/* path hashing is available */
-EXTERN bool    editing;		/* doing filename expansion and line editing */
-EXTERN bool    bslash_quote;	/* PWP: tcsh-style quoting?  (in sh.c) */
-EXTERN bool    isoutatty;	/* is SHOUT a tty */
-EXTERN bool    isdiagatty;	/* is SHDIAG a tty */
-EXTERN bool    is1atty;		/* is file descriptor 1 a tty (didfds mode) */
-EXTERN bool    is2atty;		/* is file descriptor 2 a tty (didfds mode) */
+EXTERN bool    didfds;          /* Have setup i/o fd's for child */
+EXTERN bool    doneinp;         /* EOF indicator after reset from readc */
+EXTERN bool    exiterr;         /* Exit if error or non-zero exit status */
+EXTERN bool    child;           /* Child shell ... errors cause exit */
+EXTERN bool    haderr;          /* Reset was because of an error */
+EXTERN bool    intty;           /* Input is a tty */
+EXTERN bool    intact;          /* We are interactive... therefore prompt */
+EXTERN bool    justpr;          /* Just print because of :p hist mod */
+EXTERN bool    loginsh;         /* We are a loginsh -> .login/.logout */
+EXTERN bool    neednote;        /* Need to pnotify() */
+EXTERN bool    noexec;          /* Don't execute, just syntax check */
+EXTERN bool    pjobs;           /* want to print jobs if interrupted */
+EXTERN bool    setintr;         /* Set interrupts on/off -> Wait intr... */
+EXTERN bool    timflg;          /* Time the next waited for command */
+EXTERN bool    havhash;         /* path hashing is available */
+EXTERN bool    editing;         /* doing filename expansion and line editing */
+EXTERN bool    bslash_quote;    /* PWP: tcsh-style quoting?  (in sh.c) */
+EXTERN bool    isoutatty;       /* is SHOUT a tty */
+EXTERN bool    isdiagatty;      /* is SHDIAG a tty */
+EXTERN bool    is1atty;         /* is file descriptor 1 a tty (didfds mode) */
+EXTERN bool    is2atty;         /* is file descriptor 2 a tty (didfds mode) */
 
 /*
  * Global i/o info
  */
-EXTERN Char   *arginp;		/* Argument input for sh -c and internal `xx` */
-EXTERN int     onelflg;		/* 2 -> need line for -t, 1 -> exit on read */
-extern Char   *ffile;		/* Name of shell file for $0 */
+EXTERN Char   *arginp;          /* Argument input for sh -c and internal `xx` */
+EXTERN int     onelflg;         /* 2 -> need line for -t, 1 -> exit on read */
+extern Char   *ffile;           /* Name of shell file for $0 */
 
-extern char *seterr;		/* Error message from scanner/parser */
-extern int errno;		/* Error from C library routines */
-EXTERN Char   *shtemp;		/* Temp name for << shell files in /tmp */
+extern char *seterr;            /* Error message from scanner/parser */
+extern int errno;               /* Error from C library routines */
+EXTERN Char   *shtemp;          /* Temp name for << shell files in /tmp */
 
 #ifdef BSDTIMES
-EXTERN struct timeval time0;	/* Time at which the shell started */
+EXTERN struct timeval time0;    /* Time at which the shell started */
 EXTERN struct rusage ru0;
 #else
 # ifdef _SEQUENT_
-EXTERN timeval_t time0;		/* time at which shell started */
+EXTERN timeval_t time0;         /* time at which shell started */
 EXTERN struct process_stats ru0;
 # else /* _SEQUENT_ */
 #  ifndef POSIX
-EXTERN time_t  time0;		/* time at which shell started */
-#  else	/* POSIX */
-EXTERN clock_t time0;		/* time at which shell started */
+EXTERN time_t  time0;           /* time at which shell started */
+#  else /* POSIX */
+EXTERN clock_t time0;           /* time at which shell started */
 EXTERN clock_t clk_tck;
 #  endif /* POSIX */
-EXTERN struct tms shtimes;	/* shell and child times for process timing */
+EXTERN struct tms shtimes;      /* shell and child times for process timing */
 # endif /* _SEQUENT_ */
 #endif /* BSDTIMES */
 
 #ifndef HZ
-# define HZ	100		/* for division into seconds */
+# define HZ     100             /* for division into seconds */
 #endif
 
 /*
  * Miscellany
  */
-EXTERN Char   *doldol;		/* Character pid for $$ */
-EXTERN int     backpid;		/* pid of the last background job */
+EXTERN Char   *doldol;          /* Character pid for $$ */
+EXTERN int     backpid;         /* pid of the last background job */
 
 /*
  * Ideally these should be uid_t, gid_t, pid_t. I cannot do that right now
- * cause pid's could be unsigned and that would break our -1 flag, and 
+ * cause pid's could be unsigned and that would break our -1 flag, and
  * uid_t and gid_t are not defined in all the systems so I would have to
  * make special cases for them. In the future...
  */
-EXTERN int     uid, euid, 	/* Invokers real and effective */
-	       gid, egid;	/* User and group ids */
-EXTERN int     opgrp,		/* Initial pgrp and tty pgrp */
-               shpgrp,		/* Pgrp of shell */
-               tpgrp;		/* Terminal process group */
-				/* If tpgrp is -1, leave tty alone! */
+EXTERN int     uid, euid,       /* Invokers real and effective */
+               gid, egid;       /* User and group ids */
+EXTERN int     opgrp,           /* Initial pgrp and tty pgrp */
+               shpgrp,          /* Pgrp of shell */
+               tpgrp;           /* Terminal process group */
+                                /* If tpgrp is -1, leave tty alone! */
 
 EXTERN Char    PromptBuf[INBUFSIZE*2]; /* buffer for the actual printed prompt.
-				       * this must be large enough to contain
-				       * the input line and the prompt, in
-				       * case a correction occured...
-				       */
+                                       * this must be large enough to contain
+                                       * the input line and the prompt, in
+                                       * case a correction occured...
+                                       */
 
 /*
  * To be able to redirect i/o for builtins easily, the shell moves the i/o
@@ -533,10 +529,10 @@ EXTERN Char    PromptBuf[INBUFSIZE*2]; /* buffer for the actual printed prompt.
  * The desired initial values for these descriptors are defined in
  * sh.local.h.
  */
-EXTERN int   SHIN;		/* Current shell input (script) */
-EXTERN int   SHOUT;		/* Shell output */
-EXTERN int   SHDIAG;		/* Diagnostic output... shell errs go here */
-EXTERN int   OLDSTD;		/* Old standard input (def for cmds) */
+EXTERN int   SHIN;              /* Current shell input (script) */
+EXTERN int   SHOUT;             /* Shell output */
+EXTERN int   SHDIAG;            /* Diagnostic output... shell errs go here */
+EXTERN int   OLDSTD;            /* Old standard input (def for cmds) */
 
 /*
  * Error control
@@ -565,14 +561,14 @@ typedef struct { jmp_buf j; } jmp_buf_t;
 # define getexit(a) ((a) = reslab)
 # define resexit(a) (reslab = (a))
 
-#endif	/* NO_STRUCT_ASSIGNMENT */
+#endif  /* NO_STRUCT_ASSIGNMENT */
 
 extern jmp_buf_t reslab;
 
-EXTERN Char   *gointr;		/* Label for an onintr transfer */
+EXTERN Char   *gointr;          /* Label for an onintr transfer */
 
-EXTERN sigret_t (*parintr) ();	/* Parents interrupt catch */
-EXTERN sigret_t (*parterm) ();	/* Parents terminate catch */
+EXTERN sigret_t (*parintr) ();  /* Parents interrupt catch */
+EXTERN sigret_t (*parterm) ();  /* Parents terminate catch */
 
 /*
  * Lexical definitions.
@@ -581,29 +577,29 @@ EXTERN sigret_t (*parterm) ();	/* Parents terminate catch */
  * The eighth/sixteenth bit of characters is used to prevent recognition,
  * and eventually stripped.
  */
-#define		META		0200
-#define		ASCII		0177
+#define         META            0200
+#define         ASCII           0177
 #ifdef SHORT_STRINGS
-# define	QUOTE 	((Char)	0100000)/* 16nth char bit used for 'ing */
-# define	TRIM		0077777	/* Mask to strip quote bit */
-# define	UNDER		0040000	/* Underline flag */
-# define	BOLD		0020000	/* Bold flag */
-# define	STANDOUT	0010000	/* Standout flag */
-# define	LITERAL		0004000	/* Literal character flag */
-# define	ATTRIBUTES	0074000	/* The bits used for attributes */
-# define	CHAR		0000377	/* Mask to mask out the character */
+# define        QUOTE   ((Char) 0100000)/* 16nth char bit used for 'ing */
+# define        TRIM            0077777 /* Mask to strip quote bit */
+# define        UNDER           0040000 /* Underline flag */
+# define        BOLD            0020000 /* Bold flag */
+# define        STANDOUT        0010000 /* Standout flag */
+# define        LITERAL         0004000 /* Literal character flag */
+# define        ATTRIBUTES      0074000 /* The bits used for attributes */
+# define        CHAR            0000377 /* Mask to mask out the character */
 #else
-# define	QUOTE 	((Char)	0200)	/* Eighth char bit used for 'ing */
-# define	TRIM		0177	/* Mask to strip quote bit */
-# define	UNDER		0000000	/* No extra bits to do both */
-# define	BOLD		0000000	/* Bold flag */
-# define	STANDOUT	META	/* Standout flag */
-# define	LITERAL		0000000	/* Literal character flag */
-# define	ATTRIBUTES	0200	/* The bits used for attributes */
-# define	CHAR		0000177	/* Mask to mask out the character */
-#endif 
+# define        QUOTE   ((Char) 0200)   /* Eighth char bit used for 'ing */
+# define        TRIM            0177    /* Mask to strip quote bit */
+# define        UNDER           0000000 /* No extra bits to do both */
+# define        BOLD            0000000 /* Bold flag */
+# define        STANDOUT        META    /* Standout flag */
+# define        LITERAL         0000000 /* Literal character flag */
+# define        ATTRIBUTES      0200    /* The bits used for attributes */
+# define        CHAR            0000177 /* Mask to mask out the character */
+#endif
 
-EXTERN int     AsciiOnly;	/* If set only 7 bits expected in characters */
+EXTERN int     AsciiOnly;       /* If set only 7 bits expected in characters */
 
 /*
  * Each level of input has a buffered input structure.
@@ -613,11 +609,11 @@ EXTERN int     AsciiOnly;	/* If set only 7 bits expected in characters */
  * in the buffer.
  */
 EXTERN struct Bin {
-    off_t   Bfseekp;		/* Seek pointer */
-    off_t   Bfbobp;		/* Seekp of beginning of buffers */
-    off_t   Bfeobp;		/* Seekp of end of buffers */
-    int     Bfblocks;		/* Number of buffer blocks */
-    Char  **Bfbuf;		/* The array of buffer blocks */
+    off_t   Bfseekp;            /* Seek pointer */
+    off_t   Bfbobp;             /* Seekp of beginning of buffers */
+    off_t   Bfeobp;             /* Seekp of end of buffers */
+    int     Bfblocks;           /* Number of buffer blocks */
+    Char  **Bfbuf;              /* The array of buffer blocks */
 }       B;
 
 /*
@@ -625,24 +621,24 @@ EXTERN struct Bin {
  */
 struct Ain {
     int type;
-#define I_SEEK -1		/* Invalid seek */
-#define A_SEEK	0		/* Alias seek */
-#define F_SEEK	1		/* File seek */
-#define E_SEEK	2		/* Eval seek */
+#define I_SEEK -1               /* Invalid seek */
+#define A_SEEK  0               /* Alias seek */
+#define F_SEEK  1               /* File seek */
+#define E_SEEK  2               /* Eval seek */
     off_t f_seek;
     Char **a_seek;
 } ;
 
-extern int aret;		/* Type of last char returned */
+extern int aret;                /* Type of last char returned */
 #define SEEKEQ(a, b) ((a)->type == (b)->type && \
-		      (a)->f_seek == (b)->f_seek && \
-		      (a)->a_seek == (b)->a_seek)
+                      (a)->f_seek == (b)->f_seek && \
+                      (a)->a_seek == (b)->a_seek)
 
-#define	fseekp	B.Bfseekp
-#define	fbobp	B.Bfbobp
-#define	feobp	B.Bfeobp
-#define	fblocks	B.Bfblocks
-#define	fbuf	B.Bfbuf
+#define fseekp  B.Bfseekp
+#define fbobp   B.Bfbobp
+#define feobp   B.Bfeobp
+#define fblocks B.Bfblocks
+#define fbuf    B.Bfbuf
 
 /*
  * The shell finds commands in loops by reseeking the input
@@ -651,7 +647,7 @@ extern int aret;		/* Type of last char returned */
  */
 EXTERN struct Ain lineloc;
 
-EXTERN bool    cantell;		/* Is current source tellable ? */
+EXTERN bool    cantell;         /* Is current source tellable ? */
 
 /*
  * Input lines are parsed into doubly linked circular
@@ -672,9 +668,9 @@ struct wordent {
  * telling them which of these substitutions are appropriate for the
  * next character to be returned.
  */
-#define	DODOL	1
-#define	DOEXCL	2
-#define	DOALL	DODOL|DOEXCL
+#define DODOL   1
+#define DOEXCL  2
+#define DOALL   DODOL|DOEXCL
 
 /*
  * Labuf implements a general buffer for lookahead during lexical operations.
@@ -693,81 +689,81 @@ EXTERN Char   *lap;
  * as needed during the semantics/exeuction pass (sh.sem.c).
  */
 struct command {
-    short   t_dtyp;		/* Type of node 		 */
-#define	NODE_COMMAND	1	/* t_dcom <t_dlef >t_drit	 */
-#define	NODE_PAREN	2	/* ( t_dspr ) <t_dlef >t_drit	 */
-#define	NODE_PIPE	3	/* t_dlef | t_drit		 */
-#define	NODE_LIST	4	/* t_dlef ; t_drit		 */
-#define	NODE_OR		5	/* t_dlef || t_drit		 */
-#define	NODE_AND	6	/* t_dlef && t_drit		 */
-    short   t_dflg;		/* Flags, e.g. F_AMPERSAND|... 	 */
-/* save these when re-doing 	 */
+    short   t_dtyp;             /* Type of node                  */
+#define NODE_COMMAND    1       /* t_dcom <t_dlef >t_drit        */
+#define NODE_PAREN      2       /* ( t_dspr ) <t_dlef >t_drit    */
+#define NODE_PIPE       3       /* t_dlef | t_drit               */
+#define NODE_LIST       4       /* t_dlef ; t_drit               */
+#define NODE_OR         5       /* t_dlef || t_drit              */
+#define NODE_AND        6       /* t_dlef && t_drit              */
+    short   t_dflg;             /* Flags, e.g. F_AMPERSAND|...   */
+/* save these when re-doing      */
 #ifndef apollo
-#define	F_SAVE	(F_NICE|F_TIME|F_NOHUP)	
+#define F_SAVE  (F_NICE|F_TIME|F_NOHUP)
 #else
-#define	F_SAVE	(F_NICE|F_TIME|F_NOHUP|F_VER)
-#endif 
-#define	F_AMPERSAND	(1<<0)	/* executes in background	 */
-#define	F_APPEND	(1<<1)	/* output is redirected >>	 */
-#define	F_PIPEIN	(1<<2)	/* input is a pipe		 */
-#define	F_PIPEOUT	(1<<3)	/* output is a pipe		 */
-#define	F_NOFORK	(1<<4)	/* don't fork, last ()ized cmd	 */
-#define	F_NOINTERRUPT	(1<<5)	/* should be immune from intr's */
+#define F_SAVE  (F_NICE|F_TIME|F_NOHUP|F_VER)
+#endif
+#define F_AMPERSAND     (1<<0)  /* executes in background        */
+#define F_APPEND        (1<<1)  /* output is redirected >>       */
+#define F_PIPEIN        (1<<2)  /* input is a pipe               */
+#define F_PIPEOUT       (1<<3)  /* output is a pipe              */
+#define F_NOFORK        (1<<4)  /* don't fork, last ()ized cmd   */
+#define F_NOINTERRUPT   (1<<5)  /* should be immune from intr's */
 /* spare */
-#define	F_STDERR	(1<<7)	/* redirect unit 2 with unit 1	 */
-#define	F_OVERWRITE	(1<<8)	/* output was !			 */
-#define	F_READ		(1<<9)	/* input redirection is <<	 */
-#define	F_REPEAT	(1<<10)	/* reexec aft if, repeat,...	 */
-#define	F_NICE		(1<<11)	/* t_nice is meaningful 	 */
-#define	F_NOHUP		(1<<12)	/* nohup this command 		 */
-#define	F_TIME		(1<<13)	/* time this command 		 */
-#define F_BACKQ		(1<<14)	/* command is in ``		 */
+#define F_STDERR        (1<<7)  /* redirect unit 2 with unit 1   */
+#define F_OVERWRITE     (1<<8)  /* output was !                  */
+#define F_READ          (1<<9)  /* input redirection is <<       */
+#define F_REPEAT        (1<<10) /* reexec aft if, repeat,...     */
+#define F_NICE          (1<<11) /* t_nice is meaningful          */
+#define F_NOHUP         (1<<12) /* nohup this command            */
+#define F_TIME          (1<<13) /* time this command             */
+#define F_BACKQ         (1<<14) /* command is in ``              */
 #ifdef apollo
-#define F_VER		(1<<15)	/* execute command under SYSTYPE */
-#endif 
+#define F_VER           (1<<15) /* execute command under SYSTYPE */
+#endif
     union {
-	Char   *T_dlef;		/* Input redirect word 		 */
-	struct command *T_dcar;	/* Left part of list/pipe 	 */
+        Char   *T_dlef;         /* Input redirect word           */
+        struct command *T_dcar; /* Left part of list/pipe        */
     }       L;
     union {
-	Char   *T_drit;		/* Output redirect word 	 */
-	struct command *T_dcdr;	/* Right part of list/pipe 	 */
+        Char   *T_drit;         /* Output redirect word          */
+        struct command *T_dcdr; /* Right part of list/pipe       */
     }       R;
-#define	t_dlef	L.T_dlef
-#define	t_dcar	L.T_dcar
-#define	t_drit	R.T_drit
-#define	t_dcdr	R.T_dcdr
-    Char  **t_dcom;		/* Command/argument vector 	 */
-    struct command *t_dspr;	/* Pointer to ()'d subtree 	 */
+#define t_dlef  L.T_dlef
+#define t_dcar  L.T_dcar
+#define t_drit  R.T_drit
+#define t_dcdr  R.T_dcdr
+    Char  **t_dcom;             /* Command/argument vector       */
+    struct command *t_dspr;     /* Pointer to ()'d subtree       */
     short   t_nice;
 #ifdef F_VER
     short   t_systype;
-#endif 
+#endif
 };
 
 
 /*
  * The keywords for the parser
  */
-#define	TC_BREAK	0
-#define	TC_BRKSW	1
-#define	TC_CASE		2
-#define	TC_DEFAULT 	3
-#define	TC_ELSE		4
-#define	TC_END		5
-#define	TC_ENDIF	6
-#define	TC_ENDSW	7
-#define	TC_EXIT		8
-#define	TC_FOREACH	9
-#define	TC_GOTO		10
-#define	TC_IF		11
-#define	TC_LABEL	12
-#define	TC_LET		13
-#define	TC_SET		14
-#define	TC_SWITCH	15
-#define	TC_TEST		16
-#define	TC_THEN		17
-#define	TC_WHILE	18
+#define TC_BREAK        0
+#define TC_BRKSW        1
+#define TC_CASE         2
+#define TC_DEFAULT      3
+#define TC_ELSE         4
+#define TC_END          5
+#define TC_ENDIF        6
+#define TC_ENDSW        7
+#define TC_EXIT         8
+#define TC_FOREACH      9
+#define TC_GOTO         10
+#define TC_IF           11
+#define TC_LABEL        12
+#define TC_LET          13
+#define TC_SET          14
+#define TC_SWITCH       15
+#define TC_TEST         16
+#define TC_THEN         17
+#define TC_WHILE        18
 
 /*
  * These are declared here because they want to be
@@ -798,11 +794,11 @@ extern int nsrchn;
  * input.  For foreach (fe), the word list is attached here.
  */
 EXTERN struct whyle {
-    struct Ain   w_start;	/* Point to restart loop */
-    struct Ain   w_end;		/* End of loop (0 if unknown) */
-    Char  **w_fe, **w_fe0;	/* Current/initial wordlist for fe */
-    Char   *w_fename;		/* Name for fe */
-    struct whyle *w_next;	/* Next (more outer) loop */
+    struct Ain   w_start;       /* Point to restart loop */
+    struct Ain   w_end;         /* End of loop (0 if unknown) */
+    Char  **w_fe, **w_fe0;      /* Current/initial wordlist for fe */
+    Char   *w_fename;           /* Name for fe */
+    struct whyle *w_next;       /* Next (more outer) loop */
 }      *whyles;
 
 /*
@@ -811,33 +807,33 @@ EXTERN struct whyle {
  * Aliases and variables are stored in AVL balanced binary trees.
  */
 EXTERN struct varent {
-    Char  **vec;		/* Array of words which is the value */
-    Char   *v_name;		/* Name of variable/alias */
-    struct varent *v_link[3];	/* The links, see below */
-    int     v_bal;		/* Balance factor */
+    Char  **vec;                /* Array of words which is the value */
+    Char   *v_name;             /* Name of variable/alias */
+    struct varent *v_link[3];   /* The links, see below */
+    int     v_bal;              /* Balance factor */
 }       shvhed, aliases;
 
-#define v_left		v_link[0]
-#define v_right		v_link[1]
-#define v_parent	v_link[2]
+#define v_left          v_link[0]
+#define v_right         v_link[1]
+#define v_parent        v_link[2]
 
-#define adrof(v)	adrof1(v, &shvhed)
-#define value(v)	value1(v, &shvhed)
+#define adrof(v)        adrof1(v, &shvhed)
+#define value(v)        value1(v, &shvhed)
 
 /*
  * The following are for interfacing redo substitution in
  * aliases to the lexical routines.
  */
-EXTERN struct wordent *alhistp;	/* Argument list (first) */
-EXTERN struct wordent *alhistt;	/* Node after last in arg list */
-EXTERN Char  **alvec, *alvecp;	/* The (remnants of) alias vector */
+EXTERN struct wordent *alhistp; /* Argument list (first) */
+EXTERN struct wordent *alhistt; /* Node after last in arg list */
+EXTERN Char  **alvec, *alvecp;  /* The (remnants of) alias vector */
 
 /*
  * Filename/command name expansion variables
  */
-EXTERN int   gflag;		/* After tglob -> is globbing needed? */
+EXTERN int   gflag;             /* After tglob -> is globbing needed? */
 
-#define MAXVARLEN 30		/* Maximum number of char in a variable name */
+#define MAXVARLEN 30            /* Maximum number of char in a variable name */
 
 #ifndef MAXPATHLEN
 # define MAXPATHLEN 2048
@@ -862,16 +858,16 @@ extern struct limits {
 /*
  * Variables for filename expansion
  */
-extern Char **gargv;		/* Pointer to the (stack) arglist */
-extern long gargc;		/* Number args in gargv */
+extern Char **gargv;            /* Pointer to the (stack) arglist */
+extern long gargc;              /* Number args in gargv */
 
 /*
  * Variables for command expansion.
  */
-extern Char **pargv;		/* Pointer to the argv list space */
-EXTERN Char   *pargs;		/* Pointer to start current word */
-EXTERN long    pnleft;		/* Number of chars left in pargs */
-EXTERN Char   *pargcp;		/* Current index into pargs */
+extern Char **pargv;            /* Pointer to the argv list space */
+EXTERN Char   *pargs;           /* Pointer to start current word */
+EXTERN long    pnleft;          /* Number of chars left in pargs */
+EXTERN Char   *pargcp;          /* Current index into pargs */
 
 /*
  * History list
@@ -893,67 +889,59 @@ EXTERN struct Hist {
     struct Hist *Hnext;
 }       Histlist;
 
-EXTERN struct wordent paraml;	/* Current lexical word list */
-EXTERN int     eventno;		/* Next events number */
-EXTERN int     lastev;		/* Last event reference (default) */
+EXTERN struct wordent paraml;   /* Current lexical word list */
+EXTERN int     eventno;         /* Next events number */
+EXTERN int     lastev;          /* Last event reference (default) */
 
-EXTERN Char    HIST;		/* history invocation character */
-EXTERN Char    HISTSUB;		/* auto-substitute character */
-
-/*
- * To print system call errors...
- */
-#ifndef linux
-extern char *sys_errlist[];
-extern int errno, sys_nerr;
-#endif /* !linux */
+EXTERN Char    HIST;            /* history invocation character */
+EXTERN Char    HISTSUB;         /* auto-substitute character */
 
 /*
  * strings.h:
  */
 #ifndef SHORT_STRINGS
-#define Strchr(a, b)  		strchr(a, b)
-#define Strrchr(a, b)  	strrchr(a, b)
-#define Strcat(a, b)  		strcat(a, b)
-#define Strncat(a, b, c) 	strncat(a, b, c)
-#define Strcpy(a, b)  		strcpy(a, b)
-#define Strncpy(a, b, c) 	strncpy(a, b, c)
-#define Strlen(a)		strlen(a)
-#define Strcmp(a, b)		strcmp(a, b)
-#define Strncmp(a, b, c)	strncmp(a, b, c)
+#define Strchr(a, b)            strchr(a, b)
+#define Strrchr(a, b)   strrchr(a, b)
+#define Strcat(a, b)            strcat(a, b)
+#define Strncat(a, b, c)        strncat(a, b, c)
+#define Strcpy(a, b)            strcpy(a, b)
+#define Strncpy(a, b, c)        strncpy(a, b, c)
+#define Strlen(a)               strlen(a)
+#define Strcmp(a, b)            strcmp(a, b)
+#define Strncmp(a, b, c)        strncmp(a, b, c)
 
-#define Strspl(a, b)		strspl(a, b)
-#define Strsave(a)		strsave(a)
-#define Strend(a)		strend(a)
-#define Strstr(a, b)		strstr(a, b)
+#define Strspl(a, b)            strspl(a, b)
+#define Strsave(a)              strsave(a)
+#define Strend(a)               strend(a)
+#define Strstr(a, b)            strstr(a, b)
 
-#define str2short(a) 		(a)
-#define blk2short(a) 		saveblk(a)
-#define short2blk(a) 		saveblk(a)
-#define short2str(a) 		strip(a)
+#define str2short(a)            (a)
+#define blk2short(a)            saveblk(a)
+#define short2blk(a)            saveblk(a)
+#define short2str(a)            strip(a)
 #else
-#define Strchr(a, b)   	s_strchr(a, b)
-#define Strrchr(a, b) 		s_strrchr(a, b)
-#define Strcat(a, b)  		s_strcat(a, b)
-#define Strncat(a, b, c) 	s_strncat(a, b, c)
-#define Strcpy(a, b)  		s_strcpy(a, b)
-#define Strncpy(a, b, c)	s_strncpy(a, b, c)
-#define Strlen(a)		s_strlen(a)
-#define Strcmp(a, b)		s_strcmp(a, b)
-#define Strncmp(a, b, c)	s_strncmp(a, b, c)
+#define Strchr(a, b)    s_strchr(a, b)
+#define Strrchr(a, b)           s_strrchr(a, b)
+#define Strcat(a, b)            s_strcat(a, b)
+#define Strncat(a, b, c)        s_strncat(a, b, c)
+#define Strcpy(a, b)            s_strcpy(a, b)
+#define Strncpy(a, b, c)        s_strncpy(a, b, c)
+#define Strlen(a)               s_strlen(a)
+#define Strcmp(a, b)            s_strcmp(a, b)
+#define Strncmp(a, b, c)        s_strncmp(a, b, c)
 
-#define Strspl(a, b)		s_strspl(a, b)
-#define Strsave(a)		s_strsave(a)
-#define Strend(a)		s_strend(a)
-#define Strstr(a, b)		s_strstr(a, b)
-#endif 
+#define Strspl(a, b)            s_strspl(a, b)
+#define Strsave(a)              s_strsave(a)
+#define Strend(a)               s_strend(a)
+#define Strstr(a, b)            s_strstr(a, b)
+#endif
 
 /*
  * setname is a macro to save space (see sh.err.c)
  */
 EXTERN char   *bname;
 
-#define	setname(a)	(bname = (a))
+#define setname(a)      (bname = (a))
 
 #ifdef VFORK
 EXTERN Char   *Vsav;
@@ -966,26 +954,27 @@ EXTERN Char  **evalvec;
 EXTERN Char   *evalp;
 
 extern struct mesg {
-    char   *iname;		/* name from /usr/include */
-    char   *pname;		/* print name */
+    char   *iname;              /* name from /usr/include */
+    char   *pname;              /* print name */
 }       mesg[];
+extern int mesg_size; /* number of entries in mesg, may be fewer than NSIG */
 
 /* word_chars is set by default to WORD_CHARS but can be overridden by
    the worchars variable--if unset, reverts to WORD_CHARS */
 
 EXTERN Char   *word_chars;
 
-#define WORD_CHARS "*?_-.[]~="	/* default chars besides alnums in words */
+#define WORD_CHARS "*?_-.[]~="  /* default chars besides alnums in words */
 
 EXTERN Char   *STR_SHELLPATH;
 
 #ifdef _PATH_BSHELL
 EXTERN Char   *STR_BSHELL;
-#endif 
+#endif
 EXTERN Char   *STR_WORD_CHARS;
 EXTERN Char  **STR_environ;
 
-extern int     dont_free;	/* Tell free that we are in danger if we free */
+extern int     dont_free;       /* Tell free that we are in danger if we free */
 
 #include "tc.h"
 #include "sh.decls.h"

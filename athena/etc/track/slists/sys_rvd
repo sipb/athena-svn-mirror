@@ -1,0 +1,80 @@
+GLOBAL : *.CKP :
+## Major subscription list for workstations
+##
+##	MIT Project Athena
+##
+##	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/slists/sys_rvd,v $
+##	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/slists/sys_rvd,v 1.1 1993-10-12 04:48:42 probe Exp $
+
+# We'll want to track the . files on public workstations.
+#	/.profile::::
+#	/.login::::
+#	/.cshrc::::
+#	/.rhosts::::
+	/etc:::			# These are specific to each machine.
+		athena
+		rc.local
+		rc.conf
+		fstab
+		mtab
+		ttys
+		nocreate
+		utmp
+		dumpdates
+		syslog.pid
+		motd
+		named.pid
+		hosts
+		passwd
+		passwd.local
+		named.local
+		group
+		group.local
+		srvtab
+		version
+		X0.hosts
+			# The following are symbolic links; no update is
+			# needed
+		diskpart
+		printcap
+		renice
+		termcap
+		:
+			# The following are symbolic links; no update is
+			# needed
+	/etc/athena:::
+			# The following are not needed on workstations.
+		backup
+		backuperr
+		cppart
+		dumptape
+		flush_olc_userlogs
+		initquotas
+		makeproject
+		makeuser
+		o_kill
+		o_renice
+		olcd
+		passwdtomakeuser
+		savephys
+		savervd
+		stop_mailer
+		vddb
+		zaprvd
+		:
+	/bin:::
+		ar
+		as
+		cc
+		ld
+		mail
+		make
+		nice
+		pagesize
+		pr
+		rmail
+		time
+		wall
+		write
+		:
+	/usr:::: \

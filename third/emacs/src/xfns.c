@@ -3131,7 +3131,12 @@ This function is an internal primitive--use `make-frame' instead.")
       font = x_new_font (f, XSTRING (font)->data);
     /* Try out a font which we hope has bold and italic variations.  */
     if (!STRINGP (font))
-      font = x_new_font (f, "-misc-fixed-medium-r-normal-*-*-140-*-*-c-*-iso8859-1");
+      {
+	if (WidthOfScreen (FRAME_X_SCREEN (f)) > 1080)
+	  font = x_new_font (f, "-misc-fixed-medium-r-normal-*-13-*-*-*-c-*-iso8859-1");
+	else
+	  font = x_new_font (f, "-misc-fixed-medium-r-semicondensed-*-13-*-*-*-c-*-iso8859-1");
+      }
     if (! STRINGP (font))
       font = x_new_font (f, "-*-*-medium-r-normal-*-*-140-*-*-c-*-iso8859-1");
     if (! STRINGP (font))

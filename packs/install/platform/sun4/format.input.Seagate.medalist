@@ -1,0 +1,67 @@
+# Disk geometry: <Seagate Medalist 34342A cyl 8892 alt 2 hd 15 sec 63>
+#
+#Part      Tag    Flag     Cylinders        Size            Blocks
+#  0       root    wm       0 -  216      100.13MB    (217/0/0)   205065
+#  1       swap    wu     772 - 1881      512.18MB    (1110/0/0) 1048950
+#  2     backup    wu       0 - 8891        4.01GB    (8892/0/0) 8402940
+#  3 unassigned    wm    1882 - 2098      100.13MB    (217/0/0)   205065
+#  4 unassigned    wm       0               0         (0/0/0)          0
+#  5        usr    wm     217 -  771      256.09MB    (555/0/0)   524475
+#  6        var    wm    2099 - 8890        3.06GB    (6792/0/0) 6418440
+#  7 unassigned    wm       0               0         (0/0/0)          0
+0
+partition
+
+0
+root
+wm
+0
+100mb
+
+1
+swap
+wu
+772
+512mb
+
+2
+backup
+wu
+0
+8892c
+
+3
+unassigned
+wm
+1882
+100mb
+
+4
+unassigned
+wm
+0
+0c
+
+5
+usr
+wm
+217
+256mb
+
+6
+var
+wm
+2099
+3134mb
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

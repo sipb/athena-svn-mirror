@@ -1,0 +1,65 @@
+.\" $Id: al_acct_revert.3,v 1.2 1998-01-26 06:35:52 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH AL_ACCT_REVERT 3 "18 September 1997"
+.SH NAME
+al_acct_revert, al_acct_cleanup \- Revert a user's account setup
+.SH SYNOPSIS
+.nf
+.B #include <al.h>
+.PP
+.B int al_acct_revert(const char *\fIusername\fP, pid_t \fIsessionpid\fP)
+.B int al_acct_cleanup(const char *\fIusername\fP)
+.PP
+.B cc file.c -lal -lhesiod
+.fi
+.SH DESCRIPTION
+These functions remove entries from a user's list of active login
+sessions as recorded in the sessions database (see sessions(5)) and
+revert the changes made by account setup if the user no longer has any
+active login sessions.
+.PP
+The
+.I al_acct_revert
+function removes
+.I sessionpid
+from the list of active login sessions.  (If
+.I sessionpid
+is not in the list, then no action is taken.)  The
+.I al_acct_cleanup
+function tests for the existence of each process in the list of active
+login sessions and removes those which no longer exist.  If either
+function empties the process list, it undoes any changes made to the
+local passwd and group databases during account creation, removes the
+user's temporary home directory if one was created, and detaches the
+user's home directory if it was attached.
+.SH RETURN VALUES
+Either function may return the following values:
+.TP 15
+.I AL_SUCCESS
+The function successfully completed.
+.TP 15
+.I AL_EPERM
+The function did not have expected access to local system databases.
+.TP 15
+.I AL_ENOMEM
+Memory was exhausted.
+.SH SEE ALSO
+al_acct_create(3), al_strerror(3), sessions(5)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1997 by the Massachusetts Institute of Technology.

@@ -1029,7 +1029,7 @@ test "$program_transform_name" = "" && program_transform_name="s,x,x,"
 
 
 
-subdirs="file"
+subdirs="file srvtab any"
 
 # Extract the first word of "ar", so it can be a program name with args.
 set dummy ar; ac_word=$2
@@ -1463,7 +1463,7 @@ if test "$no_recursion" != yes; then
     esac
   done
 
-  for ac_config_dir in file; do
+  for ac_config_dir in file srvtab any; do
 
     # Do not complain, so a configure script can configure whichever
     # parts of a large source tree are present.

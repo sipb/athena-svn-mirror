@@ -1,0 +1,15 @@
+#!/bin/sh
+
+PATH=/etc:/usr/ucb:/bin:/usr/bin:.:/etc/athena:/bin/athena:/usr/athena
+export PATH
+SHELL=/bin/echo
+export SHELL
+
+attach -q -n -h techinfo
+
+/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /mit/techinfo/techinfo.prelogin
+
+detach -q techinfo
+
+exit 0
+

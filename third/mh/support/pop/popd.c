@@ -1,6 +1,6 @@
 /* popd.c - the POP server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: popd.c,v 1.1.1.1 1996-10-07 07:14:07 ghudson Exp $";
+static char ident[] = "@(#)$Id: popd.c,v 1.2 1997-12-14 00:32:59 ghudson Exp $";
 #endif	/* lint */
 
 /* Author:	Marshall T. Rose	<MRose@UDel>	(MTR)
@@ -57,12 +57,6 @@ static AUTH_DAT kdata;
 
 /*  */
 
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-extern char *sys_siglist[];
-#endif
 
 
 int  debug = 0;
@@ -470,10 +464,7 @@ int	code;
 
     (void) sprintf (buffer, fmt, a, b, c, d, e, f, g, h, i, j);
     if (what)
-	if (eindex > 0 && eindex < sys_nerr)
-	    syslog (code, "%s %s: %s", buffer, what, sys_errlist[eindex]);
-	else
-	    syslog (code, "%s %s: Error %d", buffer, what, eindex);
+      syslog (code, "%s %s: %s", buffer, what, strerror (eindex));      
     else
 	syslog (code, "%s", buffer);
 

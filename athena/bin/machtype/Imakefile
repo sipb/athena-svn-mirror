@@ -1,0 +1,27 @@
+/*
+ * $Id: Imakefile,v 1.18 1998-04-18 16:58:43 danw Exp $
+ */
+
+#ifdef SOLARIS
+LIBS=-lkvm -ladm
+#endif
+
+#ifdef sgi
+LIBS=-lmld
+#endif
+
+NAME=${HOSTTYPE}
+OSNAME=`uname -s`
+OSVERS=`uname -r`
+
+machtype_$(NAME).o:	${ATHVERS} machtype_$(NAME).c
+	$(RM) $@
+	. $(ATHVERS); \
+	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$major\" -DATHMINV=\"$$minor\" \
+	-DATHSYS=\"${ATHENA_SYS}\" -DATHSYSCOMPAT=\"${ATHENA_SYS_COMPAT}\" \
+	-DOSNAME=\"${OSNAME}\" -DOSVERS=\"${OSVERS}\" $*.c
+
+build_program(machtype, machtype_${NAME}.o,,${LIBS})
+install_program(machtype,-m 4755 -o root,${ATHRBINDIR})
+
+install_man(machtype.1,machtype.1)
