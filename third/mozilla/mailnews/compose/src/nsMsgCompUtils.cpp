@@ -821,7 +821,7 @@ mime_generate_attachment_headers (const char *type,
   nsresult rv;
   nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
 
-  nsCString buf("");
+  nsCString buf;
 
   NS_ASSERTION (encoding, "null encoding");
 

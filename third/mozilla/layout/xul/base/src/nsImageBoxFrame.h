@@ -46,7 +46,7 @@
 
 class nsImageBoxFrame;
 
-class nsImageBoxListener : imgIDecoderObserver
+class nsImageBoxListener : public imgIDecoderObserver
 {
 public:
   nsImageBoxListener();
@@ -92,6 +92,7 @@ public:
 
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
 
+  virtual nsIAtom* GetType() const;
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
@@ -115,6 +116,8 @@ public:
    * image using the new load flags.
    */
   void UpdateLoadFlags();
+
+  void StopCurrentLoad();
 
   NS_IMETHOD  Paint(nsIPresContext*      aPresContext,
                     nsIRenderingContext& aRenderingContext,
@@ -146,18 +149,12 @@ protected:
    */
   void GetImageSource();
 
-  /**
-   * Get the load group for the current document, that should be used for
-   * network requests.
-   */
-  already_AddRefed<nsILoadGroup> GetLoadGroup();
-
   virtual void GetImageSize();
 
 private:
 
   nsCOMPtr<imgIRequest> mImageRequest;
-  nsCOMPtr<imgIDecoderObserver> mListener;
+  nsRefPtr<nsImageBoxListener> mListener;
 
   nsCOMPtr<nsIURI> mURI; ///< The URI of the image.
 

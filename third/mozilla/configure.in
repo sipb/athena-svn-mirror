@@ -577,6 +577,8 @@ MOZ_XPCOM_OBSOLETE_LIBS='-L$(DIST)/lib -lxpcom_compat'
 
 USE_DEPENDENT_LIBS=1
 
+USE_GSSAPI=1
+
 _PLATFORM_DEFAULT_TOOLKIT=gtk
 MOZ_WIDGET_TOOLKIT_LDFLAGS='-lwidget_$(MOZ_WIDGET_TOOLKIT)'
 MOZ_GFX_TOOLKIT_LDFLAGS='-lgfx_$(MOZ_WIDGET_TOOLKIT) $(MOZ_XLIBRGB_LDFLAGS)'
@@ -1196,6 +1198,9 @@ case "$target" in
     MOZ_ENABLE_COREXFONTS=
     MOZ_ENABLE_POSTSCRIPT=
     MOZ_USER_DIR="Mozilla"
+
+    dnl Do not perform checks for GSSAPI.  We're going to use SSPI instead.
+    USE_GSSAPI=
 
     dnl Hardcode to win95 for now - cls
     TARGET_NSPR_MDCPUCFG='\"md/_win95.cfg\"'
@@ -2526,8 +2531,10 @@ dnl This check is apparently only needed for Linux.
 case "$target" in
 	*-linux*)
 	    dnl ===================================================================
-	    curdir=`pwd`
-	    rm -f conftest* /tmp/conftest*
+	    _curdir=`pwd`
+	    export _curdir
+	    rm -rf conftest* _conftest
+	    mkdir _conftest
 	    cat >> conftest.C <<\EOF
 #include <stdio.h>
 #include <link.h>
@@ -2539,9 +2546,9 @@ void __dump_link_map(void) {
 }
 int main() {
   dlopen("./conftest1.so",RTLD_LAZY);
-  dlopen("./../tmp/conftest1.so",RTLD_LAZY);
-  dlopen("/tmp/conftest1.so",RTLD_LAZY);
-  dlopen("/tmp/../tmp/conftest1.so",RTLD_LAZY);
+  dlopen("./../_conftest/conftest1.so",RTLD_LAZY);
+  dlopen("CURDIR/_conftest/conftest1.so",RTLD_LAZY);
+  dlopen("CURDIR/_conftest/../_conftest/conftest1.so",RTLD_LAZY);
   __dump_link_map();
 }
 #else
@@ -2550,16 +2557,17 @@ int main() { printf("./conftest1.so\n"); }
 #endif
 EOF
 
+	    $PERL -p -i -e "s/CURDIR/\$ENV{_curdir}/g;" conftest.C
+
 	    cat >> conftest1.C <<\EOF
 #include <stdio.h>
 void foo(void) {printf("foo in dll called\n");}
 EOF
-
 	    ${CXX-g++} -fPIC -c -g conftest1.C
 	    ${CXX-g++} -shared -Wl,-h -Wl,conftest1.so -o conftest1.so conftest1.o
 	    ${CXX-g++} -g conftest.C -o conftest -ldl
-	    cp -f conftest1.so conftest /tmp
-	    cd /tmp
+	    cp -f conftest1.so conftest _conftest
+	    cd _conftest
 	    if test `./conftest | grep conftest1.so | wc -l` -gt 1
 	    then
 		echo
@@ -2569,8 +2577,8 @@ EOF
 		echo "*** will be excessive memory usage at runtime."
 		echo
 	    fi
-	    cd ${curdir}
-	    rm -f conftest* /tmp/conftest*
+	    cd ${_curdir}
+	    rm -rf conftest* _conftest
 	    dnl ===================================================================
 	    ;;
 esac
@@ -3763,9 +3771,12 @@ dnl ========================================================
 dnl Check for GSSAPI libraries and headers needed for
 dnl integrated windows authentication support (disable
 dnl negotiateauth extension if GSSAPI is not available).
+dnl
+dnl If we are not using GSSAPI to implement this extension,
+dnl then we can obviously skip these checks.
 dnl ========================================================
 
-if test `echo "$MOZ_EXTENSIONS" | grep -c negotiateauth` -ne 0; then
+if test -n "$USE_GSSAPI" && test `echo "$MOZ_EXTENSIONS" | grep -c negotiateauth` -ne 0; then
     dnl
     dnl Check for alternative location for GSSAPI libraries.
     dnl
@@ -3821,16 +3832,9 @@ if test `echo "$MOZ_EXTENSIONS" | grep -c negotiateauth` -ne 0; then
     dnl
     if test -z "$GSSAPI_LIBS" ; then
         dnl
-        dnl Some operating systems (like AIX) don't ship the k5crypto
-        dnl and com_err libraries with their Kerberos implementation,
-        dnl so check for their existance before including them in
-        dnl GSSAPI_LIBS.
+        dnl We only need to link to libgssapi_krb5.so
         dnl
-        _GSS_LIBS="-L$GSSAPI_DIR/lib -lgssapi_krb5 -lkrb5"
-        AC_CHECK_LIB(k5crypto, main, 
-            [AC_CHECK_LIB(com_err, main,
-                [_GSS_LIBS="$_GSS_LIBS -lk5crypto -lcom_err"],)]
-            ,)
+        _GSS_LIBS="-L$GSSAPI_DIR/lib -lgssapi_krb5"
         LIBS="$LIBS $_GSS_LIBS"
         AC_CHECK_FUNC(gss_init_sec_context, 
             [GSSAPI_LIBS="$_GSS_LIBS"],)
@@ -4549,6 +4553,14 @@ MOZ_ARG_WITH_STRING(insure-exclude-dirs,
 [  --with-insure-exclude-dirs=DIRS
                           Dirs to not instrument with insure ],
     MOZ_INSURE_EXCLUDE_DIRS="config $withval" )
+
+dnl ========================================================
+dnl = Support for Quantify (Windows)
+dnl ========================================================
+MOZ_ARG_ENABLE_BOOL(quantify,
+[  --enable-quantify      Enable Quantify support (Windows only) ],
+    MOZ_QUANTIFY=1,
+    MOZ_QUANTIFY= )
 
 dnl ========================================================
 dnl = Support for demangling undefined symbols
@@ -5406,6 +5418,7 @@ AC_SUBST(MOZ_USE_NATIVE_UCONV)
 AC_SUBST(MOZ_INSURE)
 AC_SUBST(MOZ_INSURE_DIRS)
 AC_SUBST(MOZ_INSURE_EXCLUDE_DIRS)
+AC_SUBST(MOZ_QUANTIFY)
 AC_SUBST(MOZ_INSURIFYING)
 AC_SUBST(MOZ_LDAP_XPCOM)
 AC_SUBST(MOZ_LDAP_XPCOM_EXPERIMENTAL)
@@ -5469,6 +5482,7 @@ AC_SUBST(MOZ_APP_VERSION)
 
 dnl win32 options
 AC_SUBST(MOZ_PROFILE)
+AC_SUBST(MOZ_DEBUG_SYMBOLS)
 AC_SUBST(MOZ_COVERAGE)
 AC_SUBST(MOZ_MAPINFO)
 AC_SUBST(MOZ_BROWSE_INFO)

@@ -60,6 +60,8 @@
 #include "nsScannerString.h"
 #include "nsIInputStream.h"
 
+class nsParser;
+
 class nsReadEndCondition {
 public:
   const PRUnichar *mChars;
@@ -131,7 +133,7 @@ class nsScanner {
        */
       nsresult Peek(PRUnichar& ch, PRUint32 aOffset=0);
 
-      nsresult Peek(nsAString& aStr, PRInt32 aNumChars);
+      nsresult Peek(nsAString& aStr, PRInt32 aNumChars, PRInt32 aOffset = 0);
 
       /**
        *  Skip over chars as long as they're in aSkipSet
@@ -300,7 +302,8 @@ class nsScanner {
        *  @param   
        *  @return  
        */
-      nsresult Append(const char* aBuffer, PRUint32 aLen);
+      nsresult Append(const char* aBuffer, PRUint32 aLen,
+                      nsIRequest *aRequest);
 
       /**
        *  Call this to copy bytes out of the scanner that have not yet been consumed
@@ -352,6 +355,16 @@ class nsScanner {
       PRBool    IsIncremental(void) {return mIncremental;}
       void      SetIncremental(PRBool anIncrValue) {mIncremental=anIncrValue;}
 
+      PRBool FirstNonWhitespacePosition()
+      {
+        return mFirstNonWhitespacePosition;
+      }
+
+      void SetParser(nsParser *aParser)
+      {
+        mParser = aParser;
+      }
+
   protected:
 
 
@@ -365,9 +378,13 @@ class nsScanner {
        */
       nsresult FillBuffer(void);
 
-      void AppendToBuffer(nsScannerString::Buffer*);
-      void AppendToBuffer(const nsAString& aStr) { AppendToBuffer(nsScannerString::AllocBufferFromString(aStr)); }
-      void AppendASCIItoBuffer(const char* aData, PRUint32 aLen);
+      void AppendToBuffer(nsScannerString::Buffer *, nsIRequest *aRequest);
+      void AppendToBuffer(const nsAString& aStr)
+      {
+        AppendToBuffer(nsScannerString::AllocBufferFromString(aStr), nsnull);
+      }
+      void AppendASCIItoBuffer(const char* aData, PRUint32 aLen,
+                               nsIRequest *aRequest);
 
       nsCOMPtr<nsIInputStream>     mInputStream;
       nsScannerString*             mSlidingBuffer;
@@ -379,9 +396,11 @@ class nsScanner {
                                        // from the scanner buffer
       PRUint32        mTotalRead;
       PRPackedBool    mIncremental;
+      PRInt32         mFirstNonWhitespacePosition;
       PRInt32         mCharsetSource;
       nsCString       mCharset;
       nsIUnicodeDecoder *mUnicodeDecoder;
+      nsParser        *mParser;
 };
 
 #endif

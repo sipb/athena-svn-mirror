@@ -77,6 +77,7 @@ static GtkShadowType gMenuBarShadowType;
 static GtkShadowType gToolbarShadowType;
 
 static style_prop_t style_prop_func;
+static gboolean have_menu_shadow_type;
 
 gint
 moz_gtk_enable_style_props(style_prop_t styleGetProp)
@@ -297,11 +298,10 @@ ConvertGtkState(GtkWidgetState* state)
 {
     if (state->disabled)
         return GTK_STATE_INSENSITIVE;
-    else if (state->active)
-        return GTK_STATE_ACTIVE;
     else if (state->inHover)
-        return GTK_STATE_PRELIGHT;
-    return GTK_STATE_NORMAL;
+        return (state->active ? GTK_STATE_ACTIVE : GTK_STATE_PRELIGHT);
+    else
+        return GTK_STATE_NORMAL;
 }
 
 static gint
@@ -336,9 +336,13 @@ moz_gtk_button_paint(GdkDrawable* drawable, GdkRectangle* rect,
 {
     GtkShadowType shadow_type;
     GtkStyle* style = widget->style;
-    gint default_spacing = 7; /* xxx fix me */
     GtkStateType button_state = ConvertGtkState(state);
     gint x = rect->x, y=rect->y, width=rect->width, height=rect->height;
+
+    gboolean interior_focus;
+    gint focus_width, focus_pad;
+
+    moz_gtk_button_get_focus(&interior_focus, &focus_width, &focus_pad);
 
     if (WINDOW_IS_MAPPED(drawable)) {
         gdk_window_set_back_pixmap(drawable, NULL, TRUE);
@@ -348,6 +352,8 @@ moz_gtk_button_paint(GdkDrawable* drawable, GdkRectangle* rect,
 
     gtk_widget_set_state(widget, button_state);
 
+    /*
+     * XXX fix this code when we have default state working.
     if (state->isDefault) {
         TSOffsetStyleGCs(style, x, y);
         gtk_paint_box(style, drawable, GTK_STATE_NORMAL, GTK_SHADOW_IN,
@@ -364,12 +370,13 @@ moz_gtk_button_paint(GdkDrawable* drawable, GdkRectangle* rect,
         x += (1 + default_spacing) / 2;
         y += (1 + default_spacing) / 2;
     }
-       
-    if (state->focused) {
-        x += 1;
-        y += 1;
-        width -= 2;
-        height -= 2;
+    */
+
+    if (!interior_focus && state->focused) {
+        x += focus_width + focus_pad;
+        y += focus_width + focus_pad;
+        width -= 2 * (focus_width + focus_pad);
+        height -= 2 * (focus_width + focus_pad);
     }
 
     shadow_type = button_state == GTK_STATE_ACTIVE ? GTK_SHADOW_IN : GTK_SHADOW_OUT;
@@ -385,11 +392,18 @@ moz_gtk_button_paint(GdkDrawable* drawable, GdkRectangle* rect,
     }
 
     if (state->focused) {
-        x -= 1;
-        y -= 1;
-        width += 2;
-        height += 2;
-    
+        if (interior_focus) {
+            x += widget->style->xthickness + focus_pad;
+            y += widget->style->ythickness + focus_pad;
+            width -= 2 * (widget->style->xthickness + focus_pad);
+            height -= 2 * (widget->style->ythickness + focus_pad);
+        } else {
+            x -= focus_width + focus_pad;
+            y -= focus_width + focus_pad;
+            width += 2 * (focus_width + focus_pad);
+            height += 2 * (focus_width + focus_pad);
+        }
+
         TSOffsetStyleGCs(style, x, y);
         gtk_paint_focus(style, drawable, button_state, cliprect,
                         widget, "button", x, y, width, height);
@@ -401,6 +415,10 @@ moz_gtk_button_paint(GdkDrawable* drawable, GdkRectangle* rect,
 gint
 moz_gtk_init()
 {
+    have_menu_shadow_type =
+        (gtk_major_version > 2 ||
+         (gtk_major_version == 2 && gtk_minor_version >= 1));
+
     return MOZ_GTK_SUCCESS;
 }
 
@@ -409,33 +427,68 @@ moz_gtk_checkbox_get_metrics(gint* indicator_size, gint* indicator_spacing)
 {
     ensure_checkbox_widget();
 
-    if (indicator_size) {
-        gtk_widget_style_get (gCheckboxWidget, "indicator_size",
-                              indicator_size, NULL);
-    }
-
-    if (indicator_spacing) {
-        gtk_widget_style_get (gCheckboxWidget, "indicator_spacing",
-                              indicator_spacing, NULL);
-    }
+    gtk_widget_style_get (gCheckboxWidget,
+                          "indicator_size", indicator_size,
+                          "indicator_spacing", indicator_spacing,
+                          NULL);
 
     return MOZ_GTK_SUCCESS;
 }
 
 gint
-moz_gtk_radiobutton_get_metrics(gint* indicator_size, gint* indicator_spacing)
+moz_gtk_radio_get_metrics(gint* indicator_size, gint* indicator_spacing)
 {
     ensure_radiobutton_widget();
 
-    if (indicator_size) {
-        gtk_widget_style_get (gRadiobuttonWidget, "indicator_size",
-                              indicator_size, NULL);
-    }
+    gtk_widget_style_get (gRadiobuttonWidget,
+                          "indicator_size", indicator_size,
+                          "indicator_spacing", indicator_spacing,
+                          NULL);
 
-    if (indicator_spacing) {
-        gtk_widget_style_get (gRadiobuttonWidget, "indicator_spacing",
-                              indicator_spacing, NULL);
-    }
+    return MOZ_GTK_SUCCESS;
+}
+
+gint
+moz_gtk_checkbox_get_focus(gboolean* interior_focus,
+                           gint* focus_width, gint* focus_pad)
+{
+    ensure_checkbox_widget();
+
+    gtk_widget_style_get (gCheckboxWidget,
+                          "interior-focus", interior_focus,
+                          "focus-line-width", focus_width,
+                          "focus-padding", focus_pad,
+                          NULL);
+
+    return MOZ_GTK_SUCCESS;
+}
+
+gint
+moz_gtk_radio_get_focus(gboolean* interior_focus,
+                        gint* focus_width, gint* focus_pad)
+{
+    ensure_radiobutton_widget();
+
+    gtk_widget_style_get (gRadiobuttonWidget,
+                          "interior-focus", interior_focus,
+                          "focus-line-width", focus_width,
+                          "focus-padding", focus_pad,
+                          NULL);
+
+    return MOZ_GTK_SUCCESS;
+}
+
+gint
+moz_gtk_button_get_focus(gboolean* interior_focus,
+                         gint* focus_width, gint* focus_pad)
+{
+    ensure_button_widget();
+
+    gtk_widget_style_get (gButtonWidget,
+                          "interior-focus", interior_focus,
+                          "focus-line-width", focus_width,
+                          "focus-padding", focus_pad,
+                          NULL);
 
     return MOZ_GTK_SUCCESS;
 }
@@ -447,35 +500,35 @@ moz_gtk_toggle_paint(GdkDrawable* drawable, GdkRectangle* rect,
 {
     GtkStateType state_type = ConvertGtkState(state);
     GtkShadowType shadow_type = (selected)?GTK_SHADOW_IN:GTK_SHADOW_OUT;
-    gint indicator_size;
+    gint indicator_size, indicator_spacing;
     gint x, y, width, height;
-    GtkStyle* style;
+    GtkWidget *w;
+    GtkStyle *style;
 
     if (isradio) {
-        moz_gtk_radiobutton_get_metrics(&indicator_size, NULL);
-        style = gRadiobuttonWidget->style;  
+        moz_gtk_radio_get_metrics(&indicator_size, &indicator_spacing);
+        w = gRadiobuttonWidget;
     } else {
-        moz_gtk_checkbox_get_metrics(&indicator_size, NULL);
-        style = gCheckboxWidget->style;
+        moz_gtk_checkbox_get_metrics(&indicator_size, &indicator_spacing);
+        w = gCheckboxWidget;
     }
 
-    /* centered within the rect */
-    x = rect->x + (rect->width - indicator_size) / 2;
+    /* offset by indicator_spacing, and centered vertically within the rect */
+    x = rect->x + indicator_spacing;
     y = rect->y + (rect->height - indicator_size) / 2;
     width = indicator_size;
     height = indicator_size;
   
+    style = w->style;
     TSOffsetStyleGCs(style, x, y);
 
     /* Some themes check the widget state themselves. */
-    if (isradio) {
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gRadiobuttonWidget),
-                                     selected);
-    }
-    else {
-        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gCheckboxWidget),
-                                     selected);
-    }
+    if (state->focused)
+        GTK_WIDGET_SET_FLAGS(w, GTK_HAS_FOCUS);
+    else
+        GTK_WIDGET_UNSET_FLAGS(w, GTK_HAS_FOCUS);
+
+    GTK_TOGGLE_BUTTON(w)->active = selected;
       
     if (isradio) {
         gtk_paint_option(style, drawable, state_type, shadow_type, cliprect,
@@ -780,33 +833,78 @@ moz_gtk_container_paint(GdkDrawable* drawable, GdkRectangle* rect,
 {
     GtkStateType state_type = ConvertGtkState(state);
     GtkStyle* style;
+    gboolean interior_focus;
+    gint focus_width, focus_pad;
 
     if (isradio) {
         ensure_radiobutton_widget();
         style = gRadiobuttonWidget->style;  
+        moz_gtk_radio_get_focus(&interior_focus, &focus_width, &focus_pad);
     } else {
         ensure_checkbox_widget();
         style = gCheckboxWidget->style;
+        moz_gtk_checkbox_get_focus(&interior_focus, &focus_width, &focus_pad);
+    }
+
+    TSOffsetStyleGCs(style, rect->x, rect->y);
+
+    /* The detail argument for the gtk_paint_* calls below are "checkbutton"
+       even for radio buttons, to match what gtk does. */
+
+    /* this is for drawing a prelight box */
+    if (state_type == GTK_STATE_PRELIGHT || state_type == GTK_STATE_ACTIVE) {
+        gtk_paint_flat_box(style, drawable, GTK_STATE_PRELIGHT, GTK_SHADOW_ETCHED_OUT,
+                           cliprect, gCheckboxWidget,
+                           "checkbutton",
+                           rect->x, rect->y, rect->width, rect->height);
     }
 
     if (state_type != GTK_STATE_NORMAL && state_type != GTK_STATE_PRELIGHT)
         state_type = GTK_STATE_NORMAL;
-  
-    TSOffsetStyleGCs(style, rect->x, rect->y);
 
-    /* this is for drawing a prelight box */
-    if (state_type != GTK_STATE_NORMAL) {
-        gtk_paint_flat_box(style, drawable, state_type, GTK_SHADOW_ETCHED_OUT,
-                           cliprect, gCheckboxWidget,
-                           isradio ? "radiobutton" : "checkbutton",
-                           rect->x, rect->y, rect->width, rect->height);
-    }
-
-    if (state->focused) {
+    if (state->focused && !interior_focus) {
         gtk_paint_focus(style, drawable, state_type, cliprect, gCheckboxWidget,
-                        isradio ? "radiobutton" : "checkbutton",
+                        "checkbutton",
                         rect->x, rect->y, rect->width, rect->height);
     }
+
+    return MOZ_GTK_SUCCESS;
+}
+
+static gint
+moz_gtk_toggle_label_paint(GdkDrawable* drawable, GdkRectangle* rect,
+                           GdkRectangle* cliprect, GtkWidgetState* state, 
+                           gboolean isradio)
+{
+    GtkStateType state_type;
+    GtkStyle *style;
+    GtkWidget *widget;
+    gboolean interior_focus;
+
+    if (!state->focused)
+        return MOZ_GTK_SUCCESS;
+
+    if (isradio) {
+        ensure_radiobutton_widget();
+        widget = gRadiobuttonWidget;
+    } else {
+        ensure_checkbox_widget();
+        widget = gCheckboxWidget;
+    }
+
+    gtk_widget_style_get(widget, "interior-focus", &interior_focus, NULL);
+    if (!interior_focus)
+        return MOZ_GTK_SUCCESS;
+
+    state_type = ConvertGtkState(state);
+
+    style = widget->style;
+    TSOffsetStyleGCs(style, rect->x, rect->y);
+
+    /* Always "checkbutton" to match gtkcheckbutton.c */
+    gtk_paint_focus(style, drawable, state_type, cliprect, widget,
+                    "checkbutton",
+                    rect->x, rect->y, rect->width, rect->height);
 
     return MOZ_GTK_SUCCESS;
 }
@@ -1049,8 +1147,13 @@ moz_gtk_menu_item_paint(GdkDrawable* drawable, GdkRectangle* rect,
 
         style = gMenuItemWidget->style;
         TSOffsetStyleGCs(style, rect->x, rect->y);
-        gtk_widget_style_get(gMenuItemWidget, "selected_shadow_type",
-                             &shadow_type, NULL);
+        if (have_menu_shadow_type) {
+            gtk_widget_style_get(gMenuItemWidget, "selected_shadow_type",
+                                 &shadow_type, NULL);
+        } else {
+            shadow_type = GTK_SHADOW_OUT;
+        }
+
         gtk_paint_box(style, drawable, GTK_STATE_PRELIGHT, shadow_type,
                       cliprect, gMenuItemWidget, "menuitem", rect->x, rect->y,
                       rect->width, rect->height);
@@ -1084,9 +1187,26 @@ moz_gtk_get_widget_border(GtkThemeWidgetType widget, gint* xthickness,
 
     switch (widget) {
     case MOZ_GTK_BUTTON:
-        ensure_button_widget();
-        w = gButtonWidget;
-        break;
+        {
+            /* Constant in gtkbutton.c */
+            static const gint child_spacing = 1;
+            gboolean interior_focus;
+            gint focus_width, focus_pad;
+
+            ensure_button_widget();
+
+            moz_gtk_button_get_focus(&interior_focus,
+                                     &focus_width, &focus_pad);
+
+            *xthickness = *ythickness =
+                GTK_CONTAINER(gButtonWidget)->border_width + child_spacing
+                + focus_width + focus_pad;
+
+            *xthickness += gButtonWidget->style->xthickness;
+            *ythickness += gButtonWidget->style->ythickness;
+            return MOZ_GTK_SUCCESS;
+        }
+
     case MOZ_GTK_TOOLBAR:
         ensure_toolbar_widget();
         w = gToolbarWidget;
@@ -1111,15 +1231,57 @@ moz_gtk_get_widget_border(GtkThemeWidgetType widget, gint* xthickness,
         ensure_frame_widget();
         w = gFrameWidget;
         break;
+    case MOZ_GTK_CHECKBUTTON_LABEL:
+    case MOZ_GTK_RADIOBUTTON_LABEL:
+        {
+            gboolean interior_focus;
+            gint focus_width, focus_pad;
+
+            /* If the focus is interior, then the label has a border of
+               (focus_width + focus_pad). */
+            if (widget == MOZ_GTK_CHECKBUTTON_LABEL)
+                moz_gtk_checkbox_get_focus(&interior_focus,
+                                           &focus_width, &focus_pad);
+            else
+                moz_gtk_radio_get_focus(&interior_focus,
+                                        &focus_width, &focus_pad);
+
+            if (interior_focus)
+                *xthickness = *ythickness = (focus_width + focus_pad);
+            else
+                *xthickness = *ythickness = 0;
+
+            return MOZ_GTK_SUCCESS;
+        }
+
     case MOZ_GTK_CHECKBUTTON_CONTAINER:
     case MOZ_GTK_RADIOBUTTON_CONTAINER:
-        /* This is a hardcoded value. */
-        if (xthickness)
-            *xthickness = 1;
-        if (ythickness)
-            *ythickness = 1;
-        return MOZ_GTK_SUCCESS;
-        break;
+        {
+            gboolean interior_focus;
+            gint focus_width, focus_pad;
+
+            /* If the focus is _not_ interior, then the container has a border
+               of (focus_width + focus_pad). */
+            if (widget == MOZ_GTK_CHECKBUTTON_CONTAINER) {
+                moz_gtk_checkbox_get_focus(&interior_focus,
+                                           &focus_width, &focus_pad);
+                w = gCheckboxWidget;
+            } else {
+                moz_gtk_radio_get_focus(&interior_focus,
+                                        &focus_width, &focus_pad);
+                w = gRadiobuttonWidget;
+            }
+
+            *xthickness = *ythickness = GTK_CONTAINER(w)->border_width;
+
+            if (!interior_focus) {
+                *xthickness += (focus_width + focus_pad);
+                *ythickness += (focus_width + focus_pad);
+            }
+
+            return MOZ_GTK_SUCCESS;
+        }
+
     case MOZ_GTK_MENUBAR:
         ensure_menu_bar_widget();
         w = gMenuBarWidget;
@@ -1146,20 +1308,15 @@ moz_gtk_get_widget_border(GtkThemeWidgetType widget, gint* xthickness,
     /* These widgets have no borders.*/
     case MOZ_GTK_TOOLTIP:
     case MOZ_GTK_WINDOW:
-        if (xthickness)
-            *xthickness = 0;
-        if (ythickness)
-            *ythickness = 0;
+        *xthickness = *ythickness = 0;
         return MOZ_GTK_SUCCESS;
     default:
         g_warning("Unsupported widget type: %d", widget);
         return MOZ_GTK_UNKNOWN_WIDGET;
     }
 
-    if (xthickness)
-        *xthickness = XTHICKNESS(w->style);
-    if (ythickness)
-        *ythickness = YTHICKNESS(w->style);
+    *xthickness = XTHICKNESS(w->style);
+    *ythickness = YTHICKNESS(w->style);
 
     return MOZ_GTK_SUCCESS;
 }
@@ -1175,48 +1332,29 @@ moz_gtk_get_dropdown_arrow_size(gint* width, gint* height)
      * 11 pixels.
      */
 
-    if (width) {
-        *width = 2 * (1 + XTHICKNESS(gDropdownButtonWidget->style));
-        *width += 11 + GTK_MISC(gArrowWidget)->xpad * 2;
-    }
-    if (height) {
-        *height = 2 * (1 + YTHICKNESS(gDropdownButtonWidget->style));
-        *height += 11 + GTK_MISC(gArrowWidget)->ypad * 2;
-    }
+    *width = 2 * (1 + XTHICKNESS(gDropdownButtonWidget->style));
+    *width += 11 + GTK_MISC(gArrowWidget)->xpad * 2;
+
+    *height = 2 * (1 + YTHICKNESS(gDropdownButtonWidget->style));
+    *height += 11 + GTK_MISC(gArrowWidget)->ypad * 2;
 
     return MOZ_GTK_SUCCESS;
 }
 
 gint
-moz_gtk_get_scrollbar_metrics(gint* slider_width, gint* trough_border,
-                              gint* stepper_size, gint* stepper_spacing,
-                              gint* min_slider_size)
+moz_gtk_get_scrollbar_metrics(MozGtkScrollbarMetrics *metrics)
 {
     ensure_scrollbar_widget();
 
-    if (slider_width) {
-        gtk_widget_style_get (gHorizScrollbarWidget, "slider_width",
-                              slider_width, NULL);
-    }
+    gtk_widget_style_get (gHorizScrollbarWidget,
+                          "slider_width", &metrics->slider_width,
+                          "trough_border", &metrics->trough_border,
+                          "stepper_size", &metrics->stepper_size,
+                          "stepper_spacing", &metrics->stepper_spacing,
+                          NULL);
 
-    if (trough_border) {
-        gtk_widget_style_get (gHorizScrollbarWidget, "trough_border",
-                              trough_border, NULL);
-    }
-
-    if (stepper_size) {
-        gtk_widget_style_get (gHorizScrollbarWidget, "stepper_size",
-                              stepper_size, NULL);
-    }
-
-    if (stepper_spacing) {
-        gtk_widget_style_get (gHorizScrollbarWidget, "stepper_spacing",
-                              stepper_spacing, NULL);
-    }
-
-    if (min_slider_size) {
-        *min_slider_size = GTK_RANGE(gHorizScrollbarWidget)->min_slider_size;
-    }
+    metrics->min_slider_size =
+        GTK_RANGE(gHorizScrollbarWidget)->min_slider_size;
 
     return MOZ_GTK_SUCCESS;
 }
@@ -1265,6 +1403,11 @@ moz_gtk_widget_paint(GtkThemeWidgetType widget, GdkDrawable* drawable,
     case MOZ_GTK_RADIOBUTTON_CONTAINER:
         return moz_gtk_container_paint(drawable, rect, cliprect, state,
                                        (widget == MOZ_GTK_RADIOBUTTON_CONTAINER));
+        break;
+    case MOZ_GTK_CHECKBUTTON_LABEL:
+    case MOZ_GTK_RADIOBUTTON_LABEL:
+        return moz_gtk_toggle_label_paint(drawable, rect, cliprect, state,
+                                          (widget == MOZ_GTK_RADIOBUTTON_LABEL));
         break;
     case MOZ_GTK_TOOLBAR:
         return moz_gtk_toolbar_paint(drawable, rect, cliprect);

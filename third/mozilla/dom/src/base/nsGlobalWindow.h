@@ -149,6 +149,7 @@ public:
   virtual void SetScriptsEnabled(PRBool aEnabled, PRBool aFireTimeouts);
 
   // nsIScriptObjectPrincipal
+  NS_IMETHOD GetPrincipalObsolete(nsIPrincipalObsolete **prin);
   NS_IMETHOD GetPrincipal(nsIPrincipal **prin);
 
   // nsIDOMWindow
@@ -201,6 +202,11 @@ public:
   NS_IMETHOD SetFrameElementInternal(nsIDOMElement* aFrameElement);
   NS_IMETHOD SetOpenerScriptURL(nsIURI* aURI);
 
+  virtual NS_HIDDEN_(PopupControlState) PushPopupControlState(PopupControlState state) const;
+  virtual NS_HIDDEN_(void) PopPopupControlState(PopupControlState state) const;
+  virtual NS_HIDDEN_(PopupControlState) GetPopupControlState() const;
+  virtual NS_HIDDEN_(PRBool) IsHandlingResizeEvent() const;
+
   // nsIDOMViewCSS
   NS_DECL_NSIDOMVIEWCSS
 
@@ -249,8 +255,9 @@ protected:
   nsresult GetScrollInfo(nsIScrollableView** aScrollableView, float* aP2T,
                          float* aT2P);
   nsresult SecurityCheckURL(const char *aURL);
-  PRUint32 CheckForAbusePoint();
-  PRBool   CheckOpenAllow(PRUint32 aAbuseLevel, const nsAString &aName);
+  PopupControlState CheckForAbusePoint();
+  PRUint32 CheckOpenAllow(PopupControlState aAbuseLevel,
+                          const nsAString &aName);
   void     FireAbuseEvents(PRBool aBlocked, PRBool aWindow,
                            const nsAString &aPopupURL,
                            const nsAString &aPopupWindowFeatures);
@@ -277,7 +284,13 @@ protected:
   nsresult GetScrollXY(PRInt32* aScrollX, PRInt32* aScrollY);
   nsresult GetScrollMaxXY(PRInt32* aScrollMaxX, PRInt32* aScrollMaxY);
 
-protected:
+  PRBool IsFrame()
+  {
+    return GetParentInternal() != nsnull;
+  }
+
+  PRBool DispatchCustomEvent(const char *aEventName);
+
   // When adding new member variables, be careful not to create cycles
   // through JavaScript.  If there is any chance that a member variable
   // could own objects that are implemented in JavaScript, then those
@@ -301,6 +314,7 @@ protected:
   nsRefPtr<BarPropImpl>         mPersonalbar;
   nsRefPtr<BarPropImpl>         mStatusbar;
   nsRefPtr<BarPropImpl>         mScrollbars;
+  nsCOMPtr<nsIWeakReference>    mWindowAccess;
   nsTimeoutImpl*                mTimeouts;
   nsTimeoutImpl**               mTimeoutInsertionPoint;
   nsTimeoutImpl*                mRunningTimeout;
@@ -313,7 +327,7 @@ protected:
   PRPackedBool                  mIsClosed;
   PRPackedBool                  mOpenerWasCleared;
   PRPackedBool                  mIsPopupSpam;
-  PRTime                        mLastMouseButtonAction;
+  PRPackedBool                  mIsHandlingResizeEvent;
   nsString                      mStatus;
   nsString                      mDefaultStatus;
 
@@ -374,7 +388,7 @@ struct nsTimeoutImpl
   {
 #ifdef DEBUG_jst
     {
-      extern gTimeoutCnt;
+      extern PRInt32 gTimeoutCnt;
 
       ++gTimeoutCnt;
     }
@@ -389,7 +403,7 @@ struct nsTimeoutImpl
   {
 #ifdef DEBUG_jst
     {
-      extern gTimeoutCnt;
+      extern PRInt32 gTimeoutCnt;
 
       --gTimeoutCnt;
     }
@@ -445,6 +459,10 @@ struct nsTimeoutImpl
   // Pointer to the next timeout in the linked list of scheduled
   // timeouts
   nsTimeoutImpl *mNext;
+
+  // The popup state at timeout creation time if not created from
+  // another timeout
+  PopupControlState mPopupState;
 
 private:
   // reference count for shared usage

@@ -31,6 +31,7 @@
 #include "nsHttp.h"
 #include "nsIHttpAuthenticator.h"
 #include "nsIAuthPrompt.h"
+#include "nsIAuthPromptProvider.h"
 #include "nsIStringBundle.h"
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
@@ -660,8 +661,11 @@ nsHttpChannel::ProcessResponse()
     gHttpHandler->OnExamineResponse(this);
   
     // handle unused username and password in url (see bug 232567)
-    if (httpStatus != 401 && httpStatus != 407)
+    if (httpStatus != 401 && httpStatus != 407) {
         CheckForSuperfluousAuth();
+        if (mCanceled)
+            return CallOnStartRequest();
+    }
 
     // handle different server response categories
     switch (httpStatus) {
@@ -1756,6 +1760,26 @@ nsHttpChannel::SetupReplacementChannel(nsIURI       *newURI,
     if (encodedChannel)
         encodedChannel->SetApplyConversion(mApplyConversion);
 
+    // transfer any properties
+    if (mProperties) {
+        nsCOMPtr<nsIProperties> oldProps = do_QueryInterface(mProperties);
+        nsCOMPtr<nsIProperties> newProps = do_QueryInterface(newChannel);
+        if (newProps) {
+            PRUint32 count;
+            char **keys;
+            if (NS_SUCCEEDED(oldProps->GetKeys(&count, &keys))) {
+                nsCOMPtr<nsISupports> val;
+                for (PRUint32 i=0; i<count; ++i) {
+                    oldProps->Get(keys[i],
+                                  NS_GET_IID(nsISupports),
+                                  getter_AddRefs(val));
+                    newProps->Set(keys[i], val);
+                }
+                NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(count, keys);
+            }
+        }
+    }
+
     return NS_OK;
 }
 
@@ -1980,8 +2004,26 @@ nsHttpChannel::ProcessAuthentication(PRUint32 httpStatus)
     const char *challenges;
     PRBool proxyAuth = (httpStatus == 407);
 
-    if (proxyAuth)
+    if (proxyAuth) {
+        // only allow a proxy challenge if we have a proxy server configured.
+        // otherwise, we could inadvertantly expose the user's proxy
+        // credentials to an origin server.  We could attempt to proceed as
+        // if we had received a 401 from the server, but why risk flirting
+        // with trouble?  IE similarly rejects 407s when a proxy server is
+        // not configured, so there's no reason not to do the same.
+        if (!mConnectionInfo->UsingHttpProxy()) {
+            LOG(("rejecting 407 when proxy server not configured!\n"));
+            return NS_ERROR_UNEXPECTED;
+        }
+        if (mConnectionInfo->UsingSSL() && !mTransaction->SSLConnectFailed()) {
+            // we need to verify that this challenge came from the proxy
+            // server itself, and not some server on the other side of the
+            // SSL tunnel.
+            LOG(("rejecting 407 from origin server!\n"));
+            return NS_ERROR_UNEXPECTED;
+        }
         challenges = mResponseHead->PeekHeader(nsHttp::Proxy_Authenticate);
+    }
     else
         challenges = mResponseHead->PeekHeader(nsHttp::WWW_Authenticate);
     NS_ENSURE_TRUE(challenges, NS_ERROR_UNEXPECTED);
@@ -2007,10 +2049,14 @@ nsHttpChannel::GetCredentials(const char *challenges,
                               PRBool proxyAuth,
                               nsAFlatCString &creds)
 {
-    nsCAutoString challenge, scheme;
     nsCOMPtr<nsIHttpAuthenticator> auth;
+    nsCAutoString challenge;
+
+    nsCString authType; // force heap allocation to enable string sharing since
+                        // we'll be assigning this value into mAuthType.
 
     nsresult rv = NS_ERROR_NOT_AVAILABLE;
+    PRBool gotCreds = PR_FALSE;
     
     // figure out which challenge we can handle and which authenticator to use.
     for (const char *eol = challenges - 1; eol; ) {
@@ -2022,8 +2068,17 @@ nsHttpChannel::GetCredentials(const char *challenges,
         else
             challenge.Assign(p);
 
-        rv = ParseChallenge(challenge.get(), scheme, getter_AddRefs(auth));
+        rv = GetAuthenticator(challenge.get(), authType, getter_AddRefs(auth));
         if (NS_SUCCEEDED(rv)) {
+            //
+            // if we've already selected an auth type from a previous challenge
+            // received while processing this channel, then skip others until
+            // we find a challenge corresponding to the previously tried auth
+            // type.
+            //
+            if (!mAuthType.IsEmpty() && authType != mAuthType)
+                continue;
+
             //
             // we allow the routines to run all the way through before we
             // decide if they are valid.
@@ -2038,11 +2093,25 @@ nsHttpChannel::GetCredentials(const char *challenges,
             // if a particular auth method only knows 1 thing, like a
             // non-identity based authentication method)
             //
-            rv = GetCredentialsForChallenge(challenge.get(), scheme.get(),
+            rv = GetCredentialsForChallenge(challenge.get(), authType.get(),
                                             proxyAuth, auth, creds);
-            if (NS_SUCCEEDED(rv))
+            if (NS_SUCCEEDED(rv)) {
+                gotCreds = PR_TRUE;
+                mAuthType = authType;
                 break;
+            }
+
+            // reset the auth type and continuation state
+            mAuthType.Truncate();
+            NS_IF_RELEASE(mAuthContinuationState);
         }
+    }
+    if (!gotCreds && !mAuthType.IsEmpty()) {
+        // looks like we never found the auth type we were looking for.
+        // reset the auth type and continuation state, and try again.
+        mAuthType.Truncate();
+        NS_IF_RELEASE(mAuthContinuationState);
+        rv = GetCredentials(challenges, proxyAuth, creds);
     }
     return rv;
 }
@@ -2085,12 +2154,9 @@ nsHttpChannel::GetCredentialsForChallenge(const char *challenge,
     nsCAutoString path, scheme;
     PRBool identFromURI = PR_FALSE;
 
-    // it is possible for the origin server to fake a proxy challenge.  if
-    // that happens we need to be sure to use the origin server as the auth
-    // domain.  otherwise, we could inadvertantly expose the user's proxy
-    // credentials to an origin server.
+    if (proxyAuth) {
+        NS_ASSERTION (mConnectionInfo->UsingHttpProxy(), "proxyAuth is true, but no HTTP proxy is configured!");
 
-    if (proxyAuth && mConnectionInfo->UsingHttpProxy()) {
         host = mConnectionInfo->ProxyHost();
         port = mConnectionInfo->ProxyPort();
         ident = &mProxyIdent;
@@ -2141,6 +2207,8 @@ nsHttpChannel::GetCredentialsForChallenge(const char *challenge,
                                  &identityInvalid);
     sessionStateGrip.swap(sessionState);
     if (NS_FAILED(rv)) return rv;
+
+    LOG(("  identity invalid = %d\n", identityInvalid));
 
     if (identityInvalid) {
         if (entry) {
@@ -2221,11 +2289,11 @@ nsHttpChannel::GetCredentialsForChallenge(const char *challenge,
 }
 
 nsresult
-nsHttpChannel::ParseChallenge(const char *challenge,
-                              nsCString &authType,
-                              nsIHttpAuthenticator **auth)
+nsHttpChannel::GetAuthenticator(const char *challenge,
+                                nsCString &authType,
+                                nsIHttpAuthenticator **auth)
 {
-    LOG(("nsHttpChannel::ParseChallenge [this=%x]\n", this));
+    LOG(("nsHttpChannel::GetAuthenticator [this=%x]\n", this));
 
     const char *p;
   
@@ -2313,8 +2381,19 @@ nsHttpChannel::PromptForIdentity(const char *scheme,
 
     // XXX i18n: IDN not supported.
 
+    nsCOMPtr<nsIAuthPromptProvider> authPromptProvider;
     nsCOMPtr<nsIAuthPrompt> authPrompt;
-    GetCallback(NS_GET_IID(nsIAuthPrompt), getter_AddRefs(authPrompt));
+
+    GetCallback(NS_GET_IID(nsIAuthPromptProvider), getter_AddRefs(authPromptProvider));
+    if (authPromptProvider) {
+        PRUint32 promptReason = (proxyAuth ?
+                                 nsIAuthPromptProvider::PROMPT_PROXY :
+                                 nsIAuthPromptProvider::PROMPT_NORMAL);
+        (void) authPromptProvider->GetAuthPrompt(promptReason, getter_AddRefs(authPrompt));
+    }
+    else
+        GetCallback(NS_GET_IID(nsIAuthPrompt), getter_AddRefs(authPrompt));
+
     if (!authPrompt)
         return NS_ERROR_NO_INTERFACE;
 
@@ -2471,6 +2550,7 @@ nsHttpChannel::ConfirmAuth(const nsString &bundleKey, PRBool doYesNoPrompt)
     if (doYesNoPrompt) {
         PRInt32 choice;
         rv = prompt->ConfirmEx(nsnull, msg,
+                               nsIPrompt::BUTTON_POS_1_DEFAULT +
                                nsIPrompt::BUTTON_TITLE_YES * nsIPrompt::BUTTON_POS_0 +
                                nsIPrompt::BUTTON_TITLE_NO  * nsIPrompt::BUTTON_POS_1,
                                nsnull, nsnull, nsnull, nsnull, nsnull, &choice);
@@ -2515,7 +2595,6 @@ nsHttpChannel::SetAuthorizationHeader(nsHttpAuthCache *authCache,
                                       const char *path,
                                       nsHttpAuthIdentity &ident)
 {
-    nsCOMPtr<nsIHttpAuthenticator> auth;
     nsHttpAuthEntry *entry = nsnull;
     nsresult rv;
 
@@ -2551,8 +2630,9 @@ nsHttpChannel::SetAuthorizationHeader(nsHttpAuthCache *authCache,
         // credentials.  if the identity is from the URI, then we cannot use
         // the stored credentials.
         if ((!creds[0] || identFromURI) && challenge[0]) {
+            nsCOMPtr<nsIHttpAuthenticator> auth;
             nsCAutoString unused;
-            rv = ParseChallenge(challenge, unused, getter_AddRefs(auth));
+            rv = GetAuthenticator(challenge, unused, getter_AddRefs(auth));
             if (NS_SUCCEEDED(rv)) {
                 PRBool proxyAuth = (header == nsHttp::Proxy_Authorization);
                 rv = GenCredsAndSetEntry(auth, proxyAuth, scheme, host, port, path,
@@ -2560,6 +2640,9 @@ nsHttpChannel::SetAuthorizationHeader(nsHttpAuthCache *authCache,
                                          entry->mMetaData, getter_Copies(temp));
                 if (NS_SUCCEEDED(rv))
                     creds = temp.get();
+                // make sure the continuation state is null since we do not
+                // support mixing preemptive and 'multirequest' authentication.
+                NS_IF_RELEASE(mAuthContinuationState);
             }
         }
         if (creds[0]) {
@@ -2638,6 +2721,15 @@ NS_INTERFACE_MAP_BEGIN(nsHttpChannel)
     NS_INTERFACE_MAP_ENTRY(nsIEncodedChannel)
     NS_INTERFACE_MAP_ENTRY(nsIHttpChannelInternal)
     NS_INTERFACE_MAP_ENTRY(nsITransportEventSink)
+    if (aIID.Equals(NS_GET_IID(nsIProperties))) {
+        if (!mProperties) {
+            mProperties =
+                do_CreateInstance(NS_PROPERTIES_CONTRACTID, (nsIChannel *) this);
+            NS_ENSURE_STATE(mProperties);
+        }
+        return mProperties->QueryInterface(aIID, aInstancePtr);
+    }
+    else
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIChannel)
 NS_INTERFACE_MAP_END
 
@@ -3453,6 +3545,8 @@ nsHttpChannel::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
         // is guaranteed to own a reference to the connection.
         mSecurityInfo = mTransaction->SecurityInfo();
 
+        NS_ASSERTION(mResponseHead == nsnull, "leaking mResponseHead");
+
         // all of the response headers have been acquired, so we can take ownership
         // of them from the transaction.
         mResponseHead = mTransaction->TakeResponseHead();
@@ -3460,6 +3554,8 @@ nsHttpChannel::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
         // which case we just need to call OnStartRequest/OnStopRequest.
         if (mResponseHead)
             return ProcessResponse();
+
+        NS_WARNING("No response head in OnStartRequest");
     }
 
     // avoid crashing if mListener happens to be null...
@@ -3510,17 +3606,29 @@ nsHttpChannel::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult st
         if (mCacheEntry)
             isPartial = !mTransaction->ResponseIsComplete();
 
-        // grab reference to connection in case we need to retry an 
-        // authentication request over it.
-        nsRefPtr<nsAHttpConnection> conn = mTransaction->Connection();
+        // determine if we should call DoAuthRetry
+        PRBool authRetry = mAuthRetryPending && NS_SUCCEEDED(status);
+
+        //
+        // grab reference to connection in case we need to retry an
+        // authentication request over it.  this applies to connection based
+        // authentication schemes only.  for request based schemes, conn is not
+        // needed, so it may be null.
+        // 
+        // this code relies on the code in nsHttpTransaction::Close, which
+        // tests for NS_HTTP_STICKY_CONNECTION to determine whether or not to
+        // keep the connection around after the transaction is finished.
+        //
+        nsRefPtr<nsAHttpConnection> conn;
+        if (authRetry && (mCaps & NS_HTTP_STICKY_CONNECTION))
+            conn = mTransaction->Connection();
 
         // at this point, we're done with the transaction
         NS_RELEASE(mTransaction);
-        mTransaction = nsnull;
         mTransactionPump = 0;
 
         // handle auth retry...
-        if (mAuthRetryPending && NS_SUCCEEDED(status)) {
+        if (authRetry) {
             mAuthRetryPending = PR_FALSE;
             status = DoAuthRetry(conn);
             if (NS_SUCCEEDED(status))
@@ -3585,6 +3693,8 @@ nsHttpChannel::OnDataAvailable(nsIRequest *request, nsISupports *ctxt,
     // don't send out OnDataAvailable notifications if we've been canceled.
     if (mCanceled)
         return mStatus;
+
+    NS_ASSERTION(mResponseHead, "No response head in ODA!!");
 
     NS_ASSERTION(!(mCachedContentIsPartial && (request == mTransactionPump)),
             "transaction pump not suspended");
@@ -3866,6 +3976,10 @@ nsHttpChannel::DoAuthRetry(nsAHttpConnection *conn)
     gHttpHandler->OnModifyRequest(this);
 
     mIsPending = PR_TRUE;
+
+    // get rid of the old response headers
+    delete mResponseHead;
+    mResponseHead = nsnull;
 
     // set sticky connection flag and disable pipelining.
     mCaps |=  NS_HTTP_STICKY_CONNECTION;

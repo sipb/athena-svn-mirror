@@ -50,6 +50,11 @@
 #include "nsReadableUtils.h"
 #include "nsGfxCIID.h"
 
+// For NS_CopyNativeToUnicode
+#include "nsNativeCharsetUtils.h"
+#include "nsIWindowWatcher.h"
+#include "nsIDOMWindow.h"
+
 // File Picker
 #include "nsILocalFile.h"
 #include "nsIFile.h"
@@ -197,12 +202,8 @@ static PRUnichar * GetDefaultPrinterNameFromGlobalPrinters()
   PRUnichar * printerName;
   LPTSTR lpPrtName;
   GlobalPrinters::GetInstance()->GetDefaultPrinterName(lpPrtName);
-  nsString str;
-#ifdef UNICODE
-  str.AppendWithConversion((PRUnichar *)lpPrtName);
-#else 
-  str.AssignWithConversion((char*)lpPrtName);
-#endif
+  nsAutoString str;
+  NS_CopyNativeToUnicode(nsDependentCString((char *)lpPrtName), str);
   printerName = ToNewUnicode(str);
   free(lpPrtName);
   return printerName;
@@ -288,7 +289,14 @@ GetFileNameForPrintSettings(nsIPrintSettings* aPS)
   rv = bundle->GetStringFromName(NS_LITERAL_STRING("PrintToFile").get(), getter_Copies(title));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = filePicker->Init(nsnull, title.get(), nsIFilePicker::modeSave);
+  nsCOMPtr<nsIWindowWatcher> wwatch =
+    do_GetService(NS_WINDOWWATCHER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIDOMWindow> window;
+  wwatch->GetActiveWindow(getter_AddRefs(window));
+
+  rv = filePicker->Init(window, title, nsIFilePicker::modeSave);
   NS_ENSURE_SUCCESS(rv, rv);
  
   rv = filePicker->AppendFilters(nsIFilePicker::filterAll);
@@ -309,7 +317,7 @@ GetFileNameForPrintSettings(nsIPrintSettings* aPS)
         }
       }
       if (!leafName.IsEmpty()) {
-        rv = filePicker->SetDefaultString(leafName.get());
+        rv = filePicker->SetDefaultString(leafName);
       }
       NS_ENSURE_SUCCESS(rv, rv);
     }
@@ -877,9 +885,10 @@ nsPrinterEnumeratorWin::EnumeratePrinters(PRUint32* aCount, PRUnichar*** aResult
   NS_ENSURE_ARG(aCount);
   NS_ENSURE_ARG_POINTER(aResult);
 
-  if (NS_FAILED(GlobalPrinters::GetInstance()->EnumeratePrinterList())) {
+  nsresult rv = GlobalPrinters::GetInstance()->EnumeratePrinterList();
+  if (NS_FAILED(rv)) {
     PR_PL(("***** nsDeviceContextSpecWin::EnumeratePrinters - Couldn't enumerate printers!\n"));
-    return NS_ERROR_FAILURE;
+    return rv;
   }
 
   if (aCount) 
@@ -1030,7 +1039,7 @@ GlobalPrinters::FreeGlobalPrinters()
 nsresult 
 GlobalPrinters::EnumerateNativePrinters()
 {
-  nsresult rv = NS_ERROR_FAILURE;
+  nsresult rv = NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE;
 
   PR_PL(("-----------------------\n"));
   PR_PL(("EnumerateNativePrinters\n"));

@@ -47,7 +47,7 @@ public:
 
   // override nsIExternalProtocolService methods
   NS_IMETHOD ExternalProtocolHandlerExists(const char * aProtocolScheme, PRBool * aHandlerExists);
-  NS_IMETHOD LoadUrl(nsIURI * aURL);
+  nsresult   LoadUriInternal(nsIURI * aURL);
 
   // GetFileTokenForPath must be implemented by each platform. 
   // platformAppPath --> a platform specific path to an application that we got out of the 
@@ -80,7 +80,7 @@ private:
   static nsresult CreateInputStream(const nsAString& aFilename,
                                     nsIFileInputStream ** aFileInputStream,
                                     nsILineInputStream ** aLineInputStream,
-                                    nsAString& aBuffer,
+                                    nsACString& aBuffer,
                                     PRBool * aNetscapeFormat,
                                     PRBool * aMore);
 

@@ -24,6 +24,7 @@
  *   Steve Clark <buster@netscape.com>
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
  *   L. David Baron <dbaron@dbaron.org>
+ *   IBM Corporation
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -2286,6 +2287,28 @@ nsBlockFrame::DeleteLine(nsBlockReflowState& aState,
 }
 
 /**
+ * Takes two rectangles whose origins must be the same, and computes
+ * the difference between their union and their intersection as two
+ * rectangles. (This difference is a superset of the difference
+ * between the two rectangles.)
+ */
+static void GetRectDifferenceStrips(const nsRect& aR1, const nsRect& aR2,
+                                    nsRect* aHStrip, nsRect* aVStrip) {
+  NS_ASSERTION(aR1.TopLeft() == aR2.TopLeft(),
+               "expected rects at the same position");
+  nsRect unionRect(aR1.x, aR1.y, PR_MAX(aR1.width, aR2.width),
+                   PR_MAX(aR1.height, aR2.height));
+  nscoord VStripStart = PR_MIN(aR1.width, aR2.width);
+  nscoord HStripStart = PR_MIN(aR1.height, aR2.height);
+  *aVStrip = unionRect;
+  aVStrip->x += VStripStart;
+  aVStrip->width -= VStripStart;
+  *aHStrip = unionRect;
+  aHStrip->y += HStripStart;
+  aHStrip->height -= HStripStart;
+}
+
+/**
  * Reflow a line. The line will either contain a single block frame
  * or contain 1 or more inline frames. aKeepReflowGoing indicates
  * whether or not the caller should continue to reflow more lines.
@@ -2305,18 +2328,24 @@ nsBlockFrame::ReflowLine(nsBlockReflowState& aState,
   aLine->ClearDirty();
 
   // Now that we know what kind of line we have, reflow it
-  nsRect oldCombinedArea(aLine->GetCombinedArea());
-
   if (aLine->IsBlock()) {
+    nsRect oldBounds = aLine->mFirstChild->GetRect();
+    nsRect oldCombinedArea(aLine->GetCombinedArea());
     rv = ReflowBlockFrame(aState, aLine, aKeepReflowGoing);
+    nsRect newBounds = aLine->mFirstChild->GetRect();
 
     // We expect blocks to damage any area inside their bounds that is
     // dirty; however, if the frame changes size or position then we
-    // need to do some repainting
+    // need to do some repainting.
+    // XXX roc --- the above statement is ambiguous about whether 'bounds'
+    // means the frame's bounds or overflowArea, and in fact this is a source
+    // of much confusion and bugs. Thus the following hack considers *both*
+    // overflowArea and bounds. This should be considered a temporary hack
+    // until we decide how it's really supposed to work.
     if (aDamageDirtyArea) {
       nsRect lineCombinedArea(aLine->GetCombinedArea());
-      if ((oldCombinedArea.x != lineCombinedArea.x) ||
-          (oldCombinedArea.y != lineCombinedArea.y)) {
+      if (oldCombinedArea.TopLeft() != lineCombinedArea.TopLeft() ||
+          oldBounds.TopLeft() != newBounds.TopLeft()) {
         // The block has moved, and so to be safe we need to repaint
         // XXX We need to improve on this...
         nsRect  dirtyRect;
@@ -2327,48 +2356,34 @@ nsBlockFrame::ReflowLine(nsBlockReflowState& aState,
 #endif
         Invalidate(dirtyRect);
       } else {
-        if (oldCombinedArea.width != lineCombinedArea.width) {
-          nsRect  dirtyRect;
+        nsRect combinedAreaHStrip, combinedAreaVStrip;
+        nsRect boundsHStrip, boundsVStrip;
+        GetRectDifferenceStrips(oldBounds, newBounds,
+                                &boundsHStrip, &boundsVStrip);
+        GetRectDifferenceStrips(oldCombinedArea, lineCombinedArea,
+                                &combinedAreaHStrip, &combinedAreaVStrip);
 
-          // Just damage the vertical strip that was either added or went
-          // away
-          dirtyRect.x = PR_MIN(oldCombinedArea.XMost(),
-                               lineCombinedArea.XMost());
-          dirtyRect.y = lineCombinedArea.y;
-          dirtyRect.width = PR_MAX(oldCombinedArea.XMost(),
-                                   lineCombinedArea.XMost()) -
-                            dirtyRect.x;
-          dirtyRect.height = PR_MAX(oldCombinedArea.height,
-                                    lineCombinedArea.height);
 #ifdef NOISY_BLOCK_INVALIDATE
-          printf("%p invalidate 7 (%d, %d, %d, %d)\n",
-                 this, dirtyRect.x, dirtyRect.y, dirtyRect.width, dirtyRect.height);
+        printf("%p invalidate boundsVStrip (%d, %d, %d, %d)\n",
+               this, boundsVStrip.x, boundsVStrip.y, boundsVStrip.width, boundsVStrip.height);
+        printf("%p invalidate boundsHStrip (%d, %d, %d, %d)\n",
+               this, boundsHStrip.x, boundsHStrip.y, boundsHStrip.width, boundsHStrip.height);
+        printf("%p invalidate combinedAreaVStrip (%d, %d, %d, %d)\n",
+               this, combinedAreaVStrip.x, combinedAreaVStrip.y, combinedAreaVStrip.width, combinedAreaVStrip.height);
+        printf("%p invalidate combinedAreaHStrip (%d, %d, %d, %d)\n",
+               this, combinedAreaHStrip.x, combinedAreaHStrip.y, combinedAreaHStrip.width, combinedAreaHStrip.height);
 #endif
-          Invalidate(dirtyRect);
-        }
-        if (oldCombinedArea.height != lineCombinedArea.height) {
-          nsRect  dirtyRect;
-          
-          // Just damage the horizontal strip that was either added or went
-          // away
-          dirtyRect.x = lineCombinedArea.x;
-          dirtyRect.y = PR_MIN(oldCombinedArea.YMost(),
-                               lineCombinedArea.YMost());
-          dirtyRect.width = PR_MAX(oldCombinedArea.width,
-                                   lineCombinedArea.width);
-          dirtyRect.height = PR_MAX(oldCombinedArea.YMost(),
-                                    lineCombinedArea.YMost()) -
-                             dirtyRect.y;
-#ifdef NOISY_BLOCK_INVALIDATE
-          printf("%p invalidate 8 (%d, %d, %d, %d)\n",
-                 this, dirtyRect.x, dirtyRect.y, dirtyRect.width, dirtyRect.height);
-#endif
-          Invalidate(dirtyRect);
-        }
+        // The first thing Invalidate does is check if the rect is empty, so
+        // don't bother doing that here.
+        Invalidate(boundsVStrip);
+        Invalidate(boundsHStrip);
+        Invalidate(combinedAreaVStrip);
+        Invalidate(combinedAreaHStrip);
       }
     }
   }
   else {
+    nsRect oldCombinedArea(aLine->GetCombinedArea());
     aLine->SetLineWrapped(PR_FALSE);
 
     // If we're supposed to update the maximum width, then we'll need to reflow
@@ -4033,7 +4048,9 @@ nsBlockFrame::PlaceLine(nsBlockReflowState& aState,
 
   // See if the line fit. If it doesn't we need to push it. Our first
   // line will always fit.
-  if ((mLines.front() != aLine) && (newY > aState.mBottomEdge)) {
+  if (mLines.front() != aLine &&
+      newY > aState.mBottomEdge &&
+      aState.mBottomEdge != NS_UNCONSTRAINEDSIZE) {
     // Push this line and all of it's children and anything else that
     // follows to our next-in-flow
     NS_ASSERTION((aState.mCurrentLine == aLine), "oops");
@@ -6386,12 +6403,14 @@ nsBlockFrame::ReflowBullet(nsBlockReflowState& aState,
   // from the rest of the frames in the line
   nscoord x = 
 #ifdef IBMBIDI
-    // For direction RTL: set x to the right margin for now.
-    // This value will be used to indent the bullet from the right most
-    // egde of the previous frame in nsLineLayout::HorizontalAlignFrames.
-             (NS_STYLE_DIRECTION_RTL == GetStyleVisibility()->mDirection)
-             ? reflowState.mComputedMargin.right :
-#endif // IBMBIDI
+           (rs.availableWidth != NS_UNCONSTRAINEDSIZE &&
+            NS_STYLE_DIRECTION_RTL == GetStyleVisibility()->mDirection)
+             // According to the CSS2 spec, section 12.6.1, outside marker box
+             // is distanced from the associated principal box's border edge.
+             // |rs.availableWidth| reflects exactly a border edge: it includes
+             // border, padding, and content area, without margins.
+             ? rs.availableWidth + reflowState.mComputedMargin.left :
+#endif
              - reflowState.mComputedMargin.right - aMetrics.width;
 
   // Approximate the bullets position; vertical alignment will provide

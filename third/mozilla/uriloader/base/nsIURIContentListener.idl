@@ -60,8 +60,8 @@ interface nsIURIContentListener : nsISupports
   *
   * @param aURI   URI that is being opened.
   *
-  * @return       <code>true</code> if the load can continue;
-  *               <code>false</code> if the open should be aborted.
+  * @return       <code>false</code> if the load can continue;
+  *               <code>true</code> if the open should be aborted.
   */
   boolean onStartURIOpen(in nsIURI aURI);
 
@@ -138,7 +138,7 @@ interface nsIURIContentListener : nsISupports
   * by the docshell as the implementation is generic to all doc
   * shells. The isPreferred decision is a decision made by a top level
   * application content listener that sits at the top of the docshell
-  * hiearchy.
+  * hierarchy.
   */
   boolean canHandleContent(in string aContentType, 
                            in boolean aIsContentPreferred, 

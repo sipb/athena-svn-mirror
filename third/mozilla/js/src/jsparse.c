@@ -547,6 +547,9 @@ HasFinalReturn(JSParseNode *pn)
       case TOK_RETURN:
         return ENDS_IN_RETURN;
 
+      case TOK_COLON:
+        return HasFinalReturn(pn->pn_expr);
+
 #if JS_HAS_EXCEPTIONS
       case TOK_THROW:
         return ENDS_IN_RETURN;
@@ -1210,6 +1213,8 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
     JSStmtInfo stmtInfo, *stmt, *stmt2;
     JSAtom *label;
 
+    CHECK_RECURSION();
+
     ts->flags |= TSF_REGEXP;
     tt = js_GetToken(cx, ts);
     ts->flags &= ~TSF_REGEXP;
@@ -1506,9 +1511,13 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
             }
 
             if (pn1->pn_type == TOK_VAR) {
-                /* Tell js_EmitTree(TOK_VAR) to generate a final POP. */
-                pn1->pn_extra = JS_TRUE;
+                /* Tell js_EmitTree(TOK_VAR) that pn1 is part of a for/in. */
+                pn1->pn_extra |= PNX_FORINVAR;
+
+                /* Generate a final POP only if the var has an initializer. */
                 pn2 = pn1->pn_head;
+                if (pn2->pn_expr)
+                    pn1->pn_extra |= PNX_POPVAR;
             } else {
                 pn2 = pn1;
             }
@@ -1828,7 +1837,7 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
             return NULL;
 
         /* Tell js_EmitTree to generate a final POP. */
-        pn->pn_extra = JS_TRUE;
+        pn->pn_extra |= PNX_POPVAR;
         break;
 
       case TOK_RETURN:
@@ -1994,7 +2003,7 @@ Variables(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
     if (!pn)
         return NULL;
     pn->pn_op = CURRENT_TOKEN(ts).t_op;
-    pn->pn_extra = JS_FALSE;            /* assume no JSOP_POP needed */
+    pn->pn_extra = 0;                   /* assume no JSOP_POP needed */
     PN_INIT_LIST(pn);
 
     /*
@@ -2081,8 +2090,12 @@ Variables(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
                         : JSPROP_ENUMERATE | JSPROP_PERMANENT;
         PN_APPEND(pn, pn2);
 
-        if (!OBJ_LOOKUP_PROPERTY(cx, obj, (jsid)atom, &pobj, &prop))
-            return NULL;
+        if (!fun) {
+            prop = NULL; /* don't lookup global variables at compile time */
+        } else {
+            if (!OBJ_LOOKUP_PROPERTY(cx, obj, (jsid)atom, &pobj, &prop))
+                return NULL;
+        }
         if (prop && pobj == obj && OBJ_IS_NATIVE(pobj)) {
             sprop = (JSScopeProperty *)prop;
             if (sprop->getter == js_GetArgument) {
@@ -2834,7 +2847,7 @@ PrimaryExpr(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
         if (!pn)
             return NULL;
         pn->pn_type = TOK_RB;
-        pn->pn_extra = JS_FALSE;
+        pn->pn_extra = 0;
 
 #if JS_HAS_SHARP_VARS
         if (defsharp) {
@@ -2853,7 +2866,7 @@ PrimaryExpr(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
                 tt = js_PeekToken(cx, ts);
                 ts->flags &= ~TSF_REGEXP;
                 if (tt == TOK_RB) {
-                    pn->pn_extra = JS_TRUE;
+                    pn->pn_extra |= PNX_ENDCOMMA;
                     break;
                 }
 

@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:24:58 $ $Name: not supported by cvs2svn $"
+CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.8 $ $Date: 2005-01-05 16:30:40 $ $Name: not supported by cvs2svn $"
 
 #
 #  Override TARGETS variable so that only shared libraries
@@ -42,8 +42,10 @@ LIBRARY        =
 IMPORT_LIBRARY =
 PROGRAM        =
 
-ifeq (,$(filter-out OS2 WIN%,$(OS_TARGET)))
+ifeq (,$(filter-out WIN%,$(OS_TARGET)))
     SHARED_LIBRARY = $(OBJDIR)/$(DLL_PREFIX)$(LIBRARY_NAME)$(LIBRARY_VERSION).$(DLL_SUFFIX)
+    RES = $(OBJDIR)/$(LIBRARY_NAME).res
+    RESNAME = $(LIBRARY_NAME).rc
 endif
 
 ifdef BUILD_IDG
@@ -56,3 +58,10 @@ endif
 ifeq ($(OS_TARGET),Darwin)
 DSO_LDOPTS = -bundle
 endif
+
+ifeq ($(OS_TARGET),SunOS)
+# The -R '$ORIGIN' linker option instructs this library to search for its
+# dependencies in the same directory where it resides.
+MKSHLIB += -R '$$ORIGIN'
+endif
+

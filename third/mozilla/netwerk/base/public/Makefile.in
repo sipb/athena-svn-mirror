@@ -41,6 +41,7 @@ SDK_XPIDLSRCS   = \
 		nsIURL.idl \
 		nsIFileURL.idl \
 		nsIUploadChannel.idl \
+		nsIUnicharStreamListener.idl \
 		$(NULL)
 
 XPIDLSRCS	= \
@@ -90,6 +91,8 @@ XPIDLSRCS	= \
 		nsIMultiPartChannel.idl \
 		nsIExternalProtocolHandler.idl \
 		nsIAuthModule.idl \
+		nsIContentSniffer.idl \
+		nsIAuthPromptProvider.idl \
 		$(NULL)
 
 EXPORTS		= \

@@ -81,6 +81,7 @@
 #include "nsIWebBrowserFind.h"
 #include "nsIHttpChannel.h"
 #include "nsDocShellTransferableHooks.h"
+#include "nsIAuthPromptProvider.h"
 
 
 #define MAKE_LOAD_TYPE(type, flags) ((type) | ((flags) << 16))
@@ -177,6 +178,7 @@ class nsDocShell : public nsIDocShell,
                    public nsIWebProgressListener,
                    public nsIEditorDocShell,
                    public nsIWebPageDescriptor,
+                   public nsIAuthPromptProvider,
                    public nsSupportsWeakReference
 {
 friend class nsDSURIContentListener;
@@ -203,6 +205,7 @@ public:
     NS_DECL_NSICONTENTVIEWERCONTAINER
     NS_DECL_NSIEDITORDOCSHELL
     NS_DECL_NSIWEBPAGEDESCRIPTOR
+    NS_DECL_NSIAUTHPROMPTPROVIDER
 
     nsresult SetLoadCookie(nsISupports * aCookie);
     nsresult GetLoadCookie(nsISupports ** aResult);
@@ -226,9 +229,10 @@ protected:
     NS_IMETHOD SetupNewViewer(nsIContentViewer * aNewViewer);
 
     NS_IMETHOD GetEldestPresContext(nsIPresContext** aPresContext);
-    NS_IMETHOD GetCurrentDocumentOwner(nsISupports ** aOwner);
+    void GetCurrentDocumentOwner(nsISupports ** aOwner);
     virtual nsresult DoURILoad(nsIURI * aURI,
                                nsIURI * aReferrer,
+                               PRBool aSendReferrer,
                                nsISupports * aOwner,
                                const char * aTypeHint,
                                nsIInputStream * aPostData,
@@ -308,7 +312,7 @@ protected:
                                  nsIChannel * aChannel,
                                  nsresult aResult);
 
-    nsresult CheckLoadingPermissions(nsISupports *aOwner);
+    nsresult CheckLoadingPermissions();
 
 protected:
     nsString                   mName;
@@ -371,12 +375,6 @@ protected:
     PRPackedBool               mURIResultedInDocument;
 
     PRPackedBool               mIsBeingDestroyed;
-
-    // used to keep track of whether user click links should be handle by us
-    // or immediately kicked out to an external application. mscott: eventually
-    // i'm going to try to fold this up into the uriloader where it belongs but i haven't
-    // figured out how to do that yet.
-    PRPackedBool               mUseExternalProtocolHandler;
 
     // Disallow popping up new windows with target=
     PRPackedBool               mDisallowPopupWindows;

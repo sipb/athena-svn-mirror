@@ -92,6 +92,7 @@
 
 #include "nsIScriptSecurityManager.h"
 #include "nsIPrincipal.h"
+#include "nsIPrincipalObsolete.h"
 #include "nsIPrivateDOMImplementation.h"
 
 #include "nsIDOMWindowInternal.h"
@@ -876,6 +877,19 @@ nsDocument::GetPrincipal()
 }
 
 // nsIScriptObjectPrincipal version of GetPrincipal()
+NS_IMETHODIMP
+nsDocument::GetPrincipalObsolete(nsIPrincipalObsolete **aPrincipal)
+{
+  nsIPrincipal *principal = GetPrincipal();
+  if (principal) {
+    CallQueryInterface(principal, aPrincipal);
+    return NS_OK;
+  }
+
+  *aPrincipal = nsnull;
+  return NS_ERROR_FAILURE;
+}
+
 NS_IMETHODIMP
 nsDocument::GetPrincipal(nsIPrincipal **aPrincipal)
 {
@@ -2624,7 +2638,14 @@ nsDocument::GetAnonymousNodes(nsIDOMElement* aElement,
 NS_IMETHODIMP
 nsDocument::CreateRange(nsIDOMRange** aReturn)
 {
-  return NS_NewRange(aReturn);
+  nsresult rv = NS_NewRange(aReturn);
+
+  if (NS_SUCCEEDED(rv)) {
+    (*aReturn)->SetStart(this, 0);
+    (*aReturn)->SetEnd(this, 0);
+  }
+
+  return rv;
 }
 
 NS_IMETHODIMP
