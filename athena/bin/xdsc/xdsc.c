@@ -3,26 +3,26 @@
 #include	<X11/StringDefs.h>
 #include	<X11/CoreP.h>
 
-#include        <Xaw/MenuButton.h>
-#include        <Xaw/SimpleMenu.h>
-#include        <Xaw/Sme.h>
-#include        <Xaw/SmeBSB.h>
-#include        <Xaw/Cardinals.h>
+#include        <X11/Xaw/MenuButton.h>
+#include        <X11/Xaw/SimpleMenu.h>
+#include        <X11/Xaw/Sme.h>
+#include        <X11/Xaw/SmeBSB.h>
+#include        <X11/Xaw/Cardinals.h>
 
-#include	<Xaw/List.h>
-#include        <Xaw/SimpleMenP.h>
-#include        <Xaw/Paned.h>
-#include	<Xaw/Command.h>
-#include	<Xaw/Box.h>
-#include	<Xaw/AsciiText.h>
-#include	<Xaw/TextP.h>
-#include	<Xaw/TextSinkP.h>
-#include	<Xaw/Dialog.h>
-#include	<Xaw/Form.h>
-#include	<Xaw/Label.h>
+#include	<X11/Xaw/List.h>
+#include	<X11/Xaw/SimpleMenP.h>
+#include	<X11/Xaw/Paned.h>
+#include	<X11/Xaw/Command.h>
+#include	<X11/Xaw/Box.h>
+#include	<X11/Xaw/AsciiText.h>
+#include	<X11/Xaw/TextP.h>
+#include	<X11/Xaw/TextSinkP.h>
+#include	<X11/Xaw/Dialog.h>
+#include	<X11/Xaw/Form.h>
+#include	<X11/Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.9 1991-02-15 13:31:18 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.10 1991-03-12 16:36:27 sao Exp $";
 
 /*
 ** Globals
@@ -40,6 +40,8 @@ char		axis[10];
 void		TopSelect(), BotSelect();
 void		Update(), Stub();
 void		PrintEvent();
+int		simplemode = 0;
+int		edscversion;
 
 /*
 ** External functions
@@ -56,21 +58,20 @@ extern void	TriggerAdd(), TriggerNum(), TriggerDelete();
 extern void	TriggerWrite(), TriggerPopdown(), TriggerSend();
 extern void	TriggerFocusMove();
 extern void	DispatchClick();
+extern void	FetchIfNecessary();
+extern int	HighlightedTransaction();
 
 /*
 ** Private functions
 */
 
-/*
-static void	TopCallback(), BotCallback();
-*/
 static void	MenuCallback();
 static void	KeyCallback();
 static void	QuitCB(), HelpCB();
 static void	BuildUserInterface();
 static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
-static void	DisplayHighlightedTransaction();
+static void	CheckEdscVersion();
 
 /*
 ** Private globals
@@ -84,10 +85,10 @@ static char	*meetinglist;
 static Widget	topboxW, botboxW;
 static Widget	label1W;
 static int	prevfirst = 0;
-static Boolean	changedMeetingList = False;
 static XawTextPosition	startOfCurrentMeeting = -1;
 Display         *dpy;
 Window          root_window;
+static XawTextPosition	oldarrow = -1;
 
 /*
 ** Data for top row of buttons
@@ -160,12 +161,20 @@ int argc;
 char *argv[];
 {
 	int	pid;
-	char	*oldpath, *newpath;
+	char	*oldpath, *newpath, *myname;
 	Arg	args[1];
 	int	width;
 
 	if (argc > 1 && !strcmp(argv[1], "-debug"))
 		debug = True;
+
+	myname = (myname = rindex(argv[0], '/')) ? myname + 1 : argv[0];
+
+	if (!strcmp (myname, "lucy"))
+		simplemode = True;
+	else
+		simplemode = False;
+
 
 	if (debug)
 		fprintf (stderr, "Debugging is on\n");
@@ -189,6 +198,7 @@ char *argv[];
 	inputfile = fdopen (filedesparent[0], "r");
 	outputfile = fdopen (filedeschild[1], "w");
 
+	CheckEdscVersion();
 	ParseMeetingsFile();
 
 	oldpath = getenv("XFILESEARCHPATH");
@@ -216,7 +226,12 @@ char *argv[];
 
 #endif
 
-	topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
+
+	if (simplemode) {
+		topW = XtInitialize("topwidget", "Lucy", NULL, 0, &argc, argv);
+	}
+	else
+		topW = XtInitialize("topwidget", "Xdsc", NULL, 0, &argc, argv);
 
 	myfree (newpath);
 
@@ -239,6 +254,14 @@ char *argv[];
 	root_window = XtWindow(topW);
 
 	(void) MoveToMeeting(INITIALIZE);
+/*
+** If running in simplemode, switch to reading transactions and put up
+** the list of unread ones.
+*/
+	if (simplemode) {
+		TopSelect (NULL, 4, NULL);
+		BotSelect (NULL, 0, NULL);
+	}
 	CheckButtonSensitivity(BUTTONS_UPDATE);
 	XtMainLoop();
 }
@@ -248,33 +271,6 @@ SetUpEdsc()
 	int	retval;
 	char	commandtorun[50];
 	char	machtype[20];
-
-#ifdef 0
-
-/*
-** Figure out what type of machine I'm running on
-	sprintf (commandtorun, "/bin/athena/machtype > %s", filebase);
-	if (system (commandtorun) == 127) {
-		fprintf (stderr, "Cannot execute %s to determine machine type\n", commandtorun);
-		exit (-1);
-	}
-*/
-
-	if (! (tempfile = fopen(filebase, "r"))) {
-		fprintf (stderr, "Cannot open file %s\n", filebase);
-		exit (-1);
-	}
-
-	fgets (machtype, 20, tempfile);
-	fclose (tempfile);
-	unlink (filebase);
-
-/*
-** Remove trailing newline
-*/
-	machtype[strlen(machtype)-1] = '\0';
-
-#endif
 
 #if defined (mips) && defined (ultrix)
 	strcpy (machtype, "decmips");
@@ -316,6 +312,7 @@ BuildUserInterface()
 	unsigned int	n;
 
 	static XtActionsRec actions[] = {
+		{"FetchIfNecessary",	FetchIfNecessary},
 		{"MenuCallback",	MenuCallback},
 		{"KeyCallback",		KeyCallback},
 		{"Update",		Update},
@@ -380,7 +377,7 @@ BuildUserInterface()
 			n);
 
 	n = 0;
-	botboxW = XtCreateManagedWidget(
+	botboxW = XtCreateWidget(
 			"botbox",
 			boxWidgetClass,
 			paneW,
@@ -388,6 +385,10 @@ BuildUserInterface()
 			n);
 
 	AddChildren (botboxW, 1);
+
+	if (!simplemode) {
+		XtManageChild (botboxW);
+	}
 
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
@@ -408,8 +409,8 @@ BuildUserInterface()
 }
 
 /*
-** TopCallback is called for key hits on menu entries.
-** TopCallback gets two parameters:  First, the number of the menubutton
+** MenuCallback is called for key hits on menu entries.
+** It gets two parameters:  First, the number of the menubutton
 ** secondly, the index of the entry in the menu.  It
 ** packs the two parameters into an int and manually calls TopSelect().
 */
@@ -481,30 +482,6 @@ ABORT:
 	XtSetKeyboardFocus(topW, paneW);
 }
 
-#ifdef 0
-static void
-TopCallback(w, event, params, num_params)
-Widget  w;
-XEvent  *event;
-String  *params;
-int     *num_params;
-{
-	int	buttonnum, entrynum;
-
-	buttonnum = atoi(params[0]);
-	entrynum = atoi(params[1]);
-
-/*
-** If a menu item was selected, popdown the menu and relinquish keyboard focus.
-*/
-	if (entrynum != -1)  {
-		TopSelect (NULL, buttonnum + (entrynum << 4));
-	}
-	XtPopdown(w);
-	XtSetKeyboardFocus(topW, paneW);
-}
-#endif
-
 /*
 ** TopSelect is called either automatically through the select callback
 ** on a button, or manually through TopCallback when triggered by a
@@ -558,9 +535,6 @@ XtPointer	call_data;
 		XtSetValues(toptextW, args, n);
 		TakeDownTempMessage();
 		MoveToMeeting(INITIALIZE);
-/* trial
-		(void) HighlightNewItem((Widget) toptextW, NEXTNEWS, True);
-*/
 		break;
 
 /*
@@ -570,11 +544,9 @@ XtPointer	call_data;
 		switch (entrynum) {
 		case 0:
 			AddMeeting();
-			changedMeetingList = True;
 			break;
 		case 1:
 			DeleteMeeting();
-			changedMeetingList = True;
 			break;
 		}
 		break;
@@ -592,7 +564,7 @@ XtPointer	call_data;
 			PutUpTransactionList(	TransactionNum(CURRENT), 
 						TransactionNum(LAST));
 			topscreen = LISTTRNS;
-			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			UpdateHighlightedTransaction(TransactionNum(CURRENT),True);
 			break;
 		case 1:
 /*
@@ -618,18 +590,18 @@ XtPointer	call_data;
 			PutUpTransactionList(
 				TransactionNum(HIGHESTSEEN), TransactionNum(LAST));
 			prevfirst = TransactionNum(HIGHESTSEEN);
-			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			UpdateHighlightedTransaction(TransactionNum(CURRENT),True);
 			break;
 		case 1:
 			PutUpTransactionList(
 				TransactionNum(FIRST), TransactionNum(LAST));
 			prevfirst = TransactionNum(FIRST);
-			UpdateHighlightedTransaction(TransactionNum(CURRENT));
+			UpdateHighlightedTransaction(TransactionNum(CURRENT),True);
 			break;
 		case 2:
 			PutUpTransactionList(	prevfirst <= 10 ? 1 : prevfirst - 10, 
 						TransactionNum(LAST));
-			UpdateHighlightedTransaction(prevfirst - 1);
+			UpdateHighlightedTransaction(prevfirst - 1,True);
 	
 			prevfirst -= 10;
 			if (prevfirst <=0) prevfirst = 1;
@@ -645,31 +617,6 @@ XtPointer	call_data;
 		break;
 	}
 }
-
-#ifdef 0
-static void
-BotCallback(w, event, params, num_params)
-Widget  w;
-XEvent  *event;
-String  *params;
-int     *num_params;
-{
-	int	buttonnum, entrynum;
-
-	buttonnum = atoi(params[0]);
-	entrynum = atoi(params[1]);
-
-/*
-** If a menu item was selected, popdown the menu and relinquish keyboard focus.
-*/
-	if (entrynum != -1)  {
-		BotSelect (NULL, buttonnum + (entrynum << 4));
-	}
-	XtPopdown(w);
-	XtSetKeyboardFocus(topW, paneW);
-}
-#endif
-
 
 static void
 BotSelect(w, client_data, call_data)
@@ -744,6 +691,19 @@ XtPointer	call_data;
 
 }
 
+RestoreTopTextWidget()
+{
+	Arg		args[1];
+	unsigned int	n;
+
+	CheckButtonSensitivity(BUTTONS_ON);
+
+	n = 0;
+	XtSetArg(args[n], XtNstring, meetinglist);		n++;
+	XtSetValues (toptextW, args, n);
+	PutUpArrow(toptextW, startOfCurrentMeeting, True);
+}
+
 
 
 static void
@@ -809,10 +769,11 @@ Boolean	flag;		/* update current meeting? */
 		;
 
 /*
-** Special case for initializing:  If we're already on a line with
-** unread transactions, stay there.
+** Special case for initializing:  change mode to NEXTNEWS unless  we're 
+** already on a line with unread transactions.  Do nothing in simplemode, 
+** because we always want to stay on the first line.
 */
-	if (mode == INITIALIZE)  {
+	if (mode == INITIALIZE && simplemode != True)  {
 		if ( tempstring[start + 2] != 'c')
 			mode = NEXTNEWS;
 	}
@@ -869,7 +830,7 @@ Boolean	flag;		/* update current meeting? */
 */
 	}
 
-	PutUpArrow(textW, start);
+	PutUpArrow(textW, start, True);
 
 	if (flag) {
 		length = (end - start);
@@ -1018,6 +979,12 @@ TextWidget	textW;
 		return (-1);
 	}
 
+/*
+** Make certain we don't try to erase the (now nonexistant) plus sign.
+*/
+	if (textW == toptextW)
+		oldarrow = -1;
+
 	message = (char*) malloc (cursize);
 
 	while (!HELL_FROZEN_OVER) {
@@ -1055,6 +1022,25 @@ TextWidget	textW;
 	return(0);
 }
 
+static void
+CheckEdscVersion()
+{
+	char	*version;
+
+	version = RunCommand ("(gpv)\n", NULL, NULL, True);
+
+	if ((int) version == -1) {
+		fprintf (stderr, "Cannot communicate with edsc.\n");
+		exit (-1);
+	}
+
+	edscversion = atoi(version + 1);
+
+	if (edscversion < 24) {
+		fprintf (stderr, "Caution...using edsc version %1.1f.  ",(float) edscversion/10.0);
+		fprintf (stderr, "Should be using at least 2.4.\n");
+	}
+}
 
 ParseMeetingsFile()
 {
@@ -1142,40 +1128,10 @@ Update()
 		(void) MoveToMeeting(UPDATE);
 	}
 	else if (topscreen == LISTTRNS) {
-		DisplayHighlightedTransaction();
+		GoToTransaction(HighlightedTransaction(), True);
 	}
 }
 
-/*
-** Pull the transaction number out of the highlighted line, and 
-** display it.
-*/
-
-static void
-DisplayHighlightedTransaction()
-{
-	Arg		args[5];
-	unsigned int	n, num;
-	XawTextPosition	start, inspoint;
-	char		*tempstring;
-
-	n = 0;
-	XtSetArg(args[n], XtNstring, &tempstring);		n++;
-	XtGetValues (toptextW, args, n);
-
-	inspoint = XawTextGetInsertionPoint(toptextW);
-
-	if (tempstring[inspoint] == '\0')
-		return;
-
-	for (start = inspoint; start && tempstring[start-1] != '\n'; start--)
-		;
-	PutUpArrow(toptextW, start);
-
-	num = atoi (strchr (tempstring + start, '[') + 1);
-
-	GoToTransaction(num, True);
-}
 
 void
 Stub()
@@ -1221,7 +1177,7 @@ DoTheRightThing()
 /*
 **  Yes, go to the next meeting and read its next transaction.
 */
-		if (MoveToMeeting(NEXTNEWS) == 0) {
+		if ((simplemode != True) && (MoveToMeeting(NEXTNEWS) == 0)) {
 			BotSelect(NULL, 0, NULL);
 		}
 	}
@@ -1288,196 +1244,6 @@ int		direction;
 	return (0);
 }
 
-/*
-** Get the list of transaction headers from start to finish and
-** put them into the upper text widget.
-*/
-
-PutUpTransactionList(start, finish)
-int	start;
-int	finish;
-{
-	char		command[LONGNAMELEN + 25];
-	char		filename[70];
-	char		*returndata;
-	static char	oldmeeting[LONGNAMELEN];
-	static int	oldstart=0, oldfinish=0;
-	Arg		args[1];
-
-	XtSetArg(args[0], XtNsensitive, True);
-	XtSetValues ((toplevelbuttons[0][5]).button, args, 1);
-
-/*
-** Can we optimize by keeping some of the old data?
-*/
-	if (	*oldmeeting &&
-		!strcmp (oldmeeting, CurrentMtg(0)) && 
-		finish == oldfinish && 
-		start <= oldstart) {
-
-		if (oldstart == start) {
-			sprintf (filename, "%s-list", filebase);
-			FileIntoWidget(filename, toptextW);
-			return;
-		}
-
-		sprintf (	command, 
-				"mv %s-list %s-old", 
-				filebase, filebase);
-		if (system (command) != 0) {
-			sprintf (	command, 
-					"Cannot write to '%s-old'\n",
-					filebase);
-			PutUpWarning("WARNING", command, False);
-		}
-
-		sprintf (	command, 
-				"Reading headers for transactions %d to %d%s...", 
-				start, oldstart-1,
-				(oldstart-start>100) ? " (This may take a while)":"");
-
-		PutUpTempMessage(command);
-
-		sprintf (filename, "%s-list", filebase);
-		sprintf (command, "(ls %s %d %d 0 %s)\n", filename, 
-			start, oldstart-1, CurrentMtg(0));
-		returndata = RunCommand (command, NULL, NULL, True);
-		if ((int) returndata <= 0) {
-			TakeDownTempMessage();
-			return (-1);
-		}
-
-		sprintf (	command, 
-				"cat %s-old >> %s", 
-				filebase, filename);
-		if (system (command) != 0) {
-			sprintf (	command, 
-					"Cannot write to '%s'\n",
-					filename);
-			PutUpWarning("WARNING", command, False);
-		}
-
-		FileIntoWidget(filename, toptextW);
-
-		myfree (returndata);
-		sprintf (filename, "%s-old", filebase);
-		unlink (filename);
-	}
-
-/*
-** Get an entirely new list
-*/
-	else {
-
-		sprintf (	command, 
-			"Reading headers for transactions %d to %d%s...", 
-			start, finish,
-			(finish-start>100)?" (This may take a while)":"");
-
-		PutUpTempMessage(command);
-		sprintf (filename, "%s-list", filebase);
-		unlink (filename);
-
-		sprintf (filename, "%s-list", filebase);
-		sprintf (command, "(ls %s %d %d 0 %s)\n", filename, 
-			start, finish, CurrentMtg(0));
-		returndata = RunCommand (command, (Widget) toptextW, filename, True);
-		if ((int) returndata <= 0) {
-			TakeDownTempMessage();
-			return (-1);
-		}
-
-		myfree (returndata);
-	}
-
-	TakeDownTempMessage();
-	strcpy (oldmeeting, CurrentMtg(0));
-	oldstart = start;
-	oldfinish = finish;
-}
-
-RestoreTopTextWidget()
-{
-	Arg		args[1];
-	unsigned int	n;
-
-	CheckButtonSensitivity(BUTTONS_ON);
-/*
-** If the meeting list's changed since we saved state, reread it in
-** and highlight the next meeting with news.
-*/
-	if (changedMeetingList) {
-		TopSelect (NULL, (XtPointer)2, NULL);
-		changedMeetingList = False;
-	}
-/*
-** Otherwise, restore the old meeting list.
-*/
-
-	else {
-		n = 0;
-		XtSetArg(args[n], XtNstring, meetinglist);		n++;
-		XtSetValues (toptextW, args, n);
-		PutUpArrow(toptextW, startOfCurrentMeeting);
-	}
-}
-
-/*
-** This should only be called if topscreen == LISTTRNS.   It moves
-** the highlight of the upper text widget to the line for the
-** specified transaction.
-*/
-
-UpdateHighlightedTransaction(num)
-int num;
-{
-	static	int	lastend;
-	Arg		args[5];
-	unsigned int	n;
-	char		*tempstring, *foo = NULL, *bar = NULL;
-	char		buf[50];
-
-	n = 0;
-	XtSetArg(args[n], XtNstring, &tempstring);		n++;
-	XtGetValues (toptextW, args, n);
-
-/*
-** Okay, the following is REAL STUPID code.  I'm looking for a specific
-** transaction number, so I sprintf the specified transaction number
-** into a string and search for it in each line of the text widget's string.
-**
-** Should really use a better way to find the line than sequential search!
-*/
-
-	sprintf (buf, " [%04d]", num);
-	foo = tempstring;
-
-/*
-** Specialization for common case of moving one forwards...
-*/
-	if (	lastend && 
-		lastend < strlen (tempstring) &&
-		 (!strncmp (tempstring + lastend + 1, buf, strlen(buf))))
-			foo = tempstring + lastend + 1;
-
-	else {
-		while (*foo) {
-			if (!strncmp (foo, buf, strlen(buf)))
-				break;
-			for ( ; *foo && *foo != '\n'; foo++)
-				;
-			if (*foo) foo++;
-		}
-	}
-
-	if (*foo) {
-		for (bar = foo; *bar && *bar != '\n'; bar++)
-			;
-		PutUpArrow(toptextW, foo - tempstring);
-	}
-	if (bar)
-		lastend = bar - tempstring;
-}
 
 static char		oldline[80];
 
@@ -1514,22 +1280,31 @@ char	*string;
 	XFlush(XtDisplay(label1W));
 }
 
-PutUpArrow(textW, start)
+/*
+** PutUpArrow assumes that "start" is the first character position of a line
+** in a text widget.  It puts a marker "+" on this line, and if moveinsert
+** is True, moves the insert point there.
+*/
+
+PutUpArrow(textW, start, moveinsert)
 TextWidget	textW;
 XawTextPosition	start;
+Boolean		moveinsert;
 {
 	XawTextBlock		textblock;
-	static XawTextPosition	oldstart = -1;
 	static int		oldtopscreen = -1;
 	int			offset;
+	XawTextPosition		oldinspoint;
 
 	offset = (topscreen == MAIN) ? 7 : 0;
+
+	oldinspoint = XawTextGetInsertionPoint(textW);
 
 /*
 ** Don't try to erase an arrow on another top screen
 */
 	if (topscreen != oldtopscreen)
-		oldstart = -1;
+		oldarrow = -1;
 
 	oldtopscreen = topscreen;
 
@@ -1537,10 +1312,10 @@ XawTextPosition	start;
 	textblock.length = 1;
 	textblock.format = FMT8BIT;
 
-	if (oldstart != -1) {
+	if (oldarrow != -1) {
 		textblock.ptr = " ";
-		XawTextReplace (	textW, oldstart + offset, 
-					oldstart + offset + 1, &textblock);
+		XawTextReplace (	textW, oldarrow + offset, 
+					oldarrow + offset + 1, &textblock);
 	}
 
 	textblock.ptr = "+";
@@ -1548,14 +1323,17 @@ XawTextPosition	start;
 	XawTextReplace (	textW, start + offset, 
 				start + offset + 1, &textblock);
 
-	XawTextSetInsertionPoint (textW, start);
+	if (moveinsert)
+		XawTextSetInsertionPoint (textW, start);
+	else
+		XawTextSetInsertionPoint (textW, oldinspoint);
 
 	if (topscreen == MAIN)
 		startOfCurrentMeeting = start;
 
 	XFlush(XtDisplay(textW));
 
-	oldstart = start;
+	oldarrow = start;
 }
 
 /*
@@ -1582,9 +1360,6 @@ RemoveLetterC()
 	textblock.ptr = " ";
 
 	inspoint = startOfCurrentMeeting;
-/*
-	inspoint = XawTextGetInsertionPoint(toptextW);
-*/
 
 	if (inspoint > strlen (meetinglist))
 		return;
@@ -1780,10 +1555,6 @@ Cardinal *num_params;   /* unused */
 {
 	static Time	lasttime = 0;
 
-/*
-	XtSetKeyboardFocus(paneW, w);
-*/
-
 	if (	lasttime == 0 ||
 		(XtLastTimestampProcessed(XtDisplay(w)) - lasttime) >
 			(Time) XtGetMultiClickTime(XtDisplay(w))) {
@@ -1794,3 +1565,4 @@ Cardinal *num_params;   /* unused */
 	}
 	lasttime = XtLastTimestampProcessed(XtDisplay(w));
 }
+
