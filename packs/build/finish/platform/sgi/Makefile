@@ -1,17 +1,14 @@
-# $Id: Makefile,v 1.5 1997-09-24 07:15:07 ghudson Exp $
+# $Id: Makefile,v 1.6 1998-06-08 14:16:58 ghudson Exp $
 
 SHELL=/bin/sh
 ATHMANDIR=/usr/athena/man
 WHATIS=${ATHMANDIR}/whatis
-USRETC=/usr/etc
 
 all:
 
 check:
 
 install:
-	-mkdir -p ${DESTDIR}${USRETC}
-	install -c -m 555 snmpd ${DESTDIR}${USRETC}
 	cd ${DESTDIR}${ATHMANDIR} && for manfile in man*/*; do \
 		n=`echo "$$manfile" | sed -e 's/man\(.\).*/\1/'`; \
 		catfile=cat$$n/`basename $$manfile`; \
