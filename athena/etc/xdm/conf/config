@@ -1,15 +1,48 @@
 # Display Manager Configuration File
 
 #prog	command line
-#X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xplx -su -bs -v :0 -fp /etc/athena/login/fonts/ -fn 9x15 -co /etc/athena/login/rgb -I -display /dev/plx0 -microcode /usr/plx/microcode
-#X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xws -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+
+#ifdef vax
+#if defined(QV) || defined(SM)
+X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#else
+#if defined(QD) || defined(SG)
+X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#else
+X	/etc/Xplx -su -bs -v :0 -fp /etc/athena/login/fonts/ -fn 9x15 -co /etc/athena/login/rgb -I -display /dev/plx0 -microcode /usr/plx/microcode
+#endif /* QD/SG */
+#endif /* QV/SM */
+#endif /* vax */
+#ifdef ibm032
+X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#endif
+#ifdef mips
+X	/etc/Xws GRAY -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 #X	/etc/Xtm2d -v :0 -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
-#X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#endif
+#ifdef sun
+X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
+#endif
+#ifdef RSAIX
+X       /usr/bin/X11/X -v -n :0 -c 0 -a 2
+#endif
+
+#ifdef ultrix
+console	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
+#else
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
-#ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
+#endif
+
+#ifdef ultrix
+#if (DPI==100)
+login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/andrew/X11fonts.100,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
+#else
+login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
+#endif
+#else
+#ifdef RSAIX
+login   /etc/athena/xlogin -fp /etc/athena/login/fonts/,/usr/lib/X11/fonts,/usr/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/75dpi/,/usr/lpp/info/X11fonts/,/usr/andrew/X11fonts/ -config /etc/athena/login -display :0 -tty
+#else
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/
-#ULT75login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
-#ULT100login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/andrew/X11fonts.100,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
+#endif
+#endif
