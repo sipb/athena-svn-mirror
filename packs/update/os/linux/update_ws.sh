@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.12.2.1 2000-07-17 18:12:05 ghudson Exp $
+# $Id: update_ws.sh,v 1.12.2.2 2000-08-01 19:08:03 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -21,7 +21,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do-update.
 
-PATH=/bin/athena:/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
+PATH=/usr/athena/bin:/bin/athena:/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
 
 errorout() {
 	echo "$@" >&2
@@ -189,13 +189,6 @@ if [ -n "$auto" ]; then
 	fi
 fi
 
-if [ reactivate = "$auto" ]; then
-	# Tell dm to shut down everything and sleep forever during the update.
-	if [ -f /var/athena/dm.pid ]; then
-		kill -FPE `cat /var/athena/dm.pid`
-	fi
-fi
-
 # Translate public status into command-line flag and old list filename.
 # rpmupdate does not use the information from the old list for public
 # updates.
@@ -227,11 +220,19 @@ if [ true = "$dryrun" ]; then
 	exit 0
 fi
 
+if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
+	# Tell dm to shut down everything and sleep forever during the update.
+	kill -FPE `cat /var/athena/dm.pid`
+fi
+
 # Define how to clean up if the update fails.
 failupdate() {
 	logger -t $HOST -p user.notice "Update ($oldvers -> $newvers) failed"
 	echo "Athena Workstation ($hosttype) Version $oldvers `date`" >> \
 		/etc/athena/version
+	if [ reactivate = "$auto" -a -f /var/athena/dm.pid ]; then
+		kill `cat /var/athena/dm.pid`
+	fi
 	errorout "*** The update has failed ***"
 }
 
