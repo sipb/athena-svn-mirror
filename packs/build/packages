@@ -1,4 +1,4 @@
-# $Id: packages,v 1.57 1999-01-30 04:04:12 ghudson Exp $
+# $Id: packages,v 1.58 1999-02-09 20:02:44 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -40,7 +40,7 @@ third/patch			solaris
 third/jot
 third/lam
 third/rs
-third/mh
+third/nmh
 third/x3270
 third/xmh
 third/talk			solaris,irix
