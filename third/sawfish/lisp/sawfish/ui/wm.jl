@@ -1,6 +1,6 @@
 #| nokogiri-wm.jl -- WM communication
 
-   $Id: wm.jl,v 1.1.1.1 2000-11-12 06:26:58 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.2 2001-01-13 14:57:40 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -68,7 +68,7 @@
     (wm-eval `(nokogiri-apply-changes ',changes)))
 
   (define (wm-locale-dir)
-    (wm-eval '(and (featurep 'gettext) (bindtextdomain "sawfish")) t))
+    (wm-eval 'sawfish-locale-directory t))
 
   (define (wm-grab-x-property prop-name)
     (wm-eval `(nokogiri-grab-match-window-property ',prop-name) t))

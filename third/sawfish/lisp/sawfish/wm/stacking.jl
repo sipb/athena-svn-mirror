@@ -1,5 +1,5 @@
 ;; stacking.jl -- window stacking
-;; $Id: stacking.jl,v 1.1.1.1 2000-11-12 06:27:52 ghudson Exp $
+;; $Id: stacking.jl,v 1.1.1.2 2001-01-13 14:58:03 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -99,12 +99,14 @@
     (if (window-transient-p w)
 	;; ensure there are no normal windows above W
 	(lambda (above below)
+	  (declare (unused below))
 	  (let loop ((rest above))
 	    (cond ((null rest) t)
 		  ((not (window-transient-p (car rest))) nil)
 		  (t (loop (cdr rest))))))
       ;; ensure no transients below W
       (lambda (above below)
+	(declare (unused above))
 	(let loop ((rest below))
 	  (cond ((null rest) t)
 		((window-transient-p (car rest)) nil)
@@ -196,7 +198,7 @@ the empty list."
     "Raise the window to its highest allowed position in the stacking order."
     ;; work downwards from top
     (let ((constraint (make-constraint w))
-	  (stack (cons '() (delq w (mapped-stacking-order)))))
+	  (stack (cons '() (delq w (stacking-order)))))
       (let loop ()
 	(cond ((constraint (car stack) (cdr stack))
 	       (if (car stack)
@@ -212,7 +214,7 @@ the empty list."
   (define (lower-window w)
     "Lower the window to its lowest allowed position in the stacking order."
     (let ((constraint (make-constraint w))
-	  (stack (cons (nreverse (delq w (mapped-stacking-order))) '())))
+	  (stack (cons (nreverse (delq w (stacking-order))) '())))
       ;; work upwards from bottom
       (let loop ()
 	(cond ((constraint (car stack) (cdr stack))
@@ -232,7 +234,7 @@ the empty list."
 BELOW as possible."
     (let ((constraint (make-constraint above))
 	  (stack (break-window-list
-		  (delq above (mapped-stacking-order)) below)))
+		  (delq above (stacking-order)) below)))
       (rplacd stack (cons below (cdr stack)))
       (let loop ()
 	(cond ((constraint (car stack) (cdr stack))
@@ -252,7 +254,7 @@ BELOW as possible."
 ABOVE as possible."
     (let ((constraint (make-constraint below))
 	  (stack (break-window-list
-		  (delq below (mapped-stacking-order)) above)))
+		  (delq below (stacking-order)) above)))
       (rplaca stack (cons above (car stack)))
       (let loop ()
 	(cond ((constraint (car stack) (cdr stack))
@@ -272,7 +274,7 @@ except, possibly, for the position of window W, restore the consistent
 state including window W. This is achieved by raising or lowering
 window W as appropriate."
     (let ((constraint (make-constraint w))
-	  (stack (break-window-list (mapped-stacking-order) w)))
+	  (stack (break-window-list (stacking-order) w)))
       (unless (constraint (car stack) (cdr stack))
 	(if (< (length (car stack)) (length (cdr stack)))
 	    (raise-window w)
@@ -307,7 +309,7 @@ order they are stacked within the layer (top to bottom)."
 				 w current-workspace)))
 		     (lambda (x)
 		       (window-appears-in-workspace-p x space)))
-		   (mapped-stacking-order)))
+		   (stacking-order)))
 	   (old-posn (- (length order) (length (memq w order))))
 	   (stack (cons '() (delq w order))))
       (let loop ()

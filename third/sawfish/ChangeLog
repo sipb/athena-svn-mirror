@@ -1,3 +1,78 @@
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.35
+
+2000-12-20  John Harper  <jsh@eazel.com>
+
+	* po/sawfish-xgettext (helper): corrected off-by-one error when
+	grabbing real name from defgroup forms
+
+	* po/it.po: update from Michele Campeotto <micampe@f2s.com>
+
+2000-12-18  John Harper  <jsh@eazel.com>
+
+	* po/zh_TW.Big5.po: new file, ``po file for the zh_TW locale in
+	big5 encoding'', from Chun-Chung Chen <cjj@u.washington.edu>
+
+	* po/ja.po: update from SATO Satoru <ssato@redhat.com>
+
+2000-12-14  John Harper  <jsh@eazel.com>
+
+	* configure.in, config.h.in: added check for endianness. Define
+	WORDS_BIGENDIAN if appropriate. Fixes #4244
+
+2000-12-12  John Harper  <jsh@eazel.com>
+
+	* HACKING, BUGS, man/faq.texi: changed mailing list address to
+	sawfish@lists.eazel.com
+
+2000-12-10  John Harper  <jsh@eazel.com>
+
+	* po/pl.po: update from Daniel Koc <kocio@bigfoot.com>
+
+2000-12-06  John Harper  <jsh@eazel.com>
+
+	* po/sk.po: added Slovak translation from Stanislav Visnovsky
+	<visnovsky@nenya.ms.mff.cuni.cz>
+
+2000-12-04  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.34
+
+	* themes/absolute-e/README.it, themes/brushed-metal/README.it,
+	themes/gradient/README.it, themes/gtk/README.it,
+	themes/microGUI/README.it, themes/mono/README.it,
+	themes/simple/README.it, themes/smaker/README.it: new files,
+	from Michele Campeotto <micampe@interpuntonet.it>
+
+	* po/it.po: update from Michele Campeotto
+	<micampe@interpuntonet.it>
+
+2000-11-16  John Harper  <jsh@eazel.com>
+
+	* po/fr.po: update from Christian Marillat
+	<marillat.christian@wanadoo.fr>
+
+	* build-info, Makefile.in: added a cpp macro SAWFISH_LOCALEDIR
+
+	* configure.in: ${localedir} is now ${datadir}/locale (e.g.
+	`/usr/share/locale' instead of `/usr/share/sawfish/0.n/locale)
+
+2000-11-16  Richard Hult  <rhult@codefactory.se>
+
+	* po/sv.po: Updated Swedish translation.
+
+2000-11-15  John Harper  <jsh@eazel.com>
+
+	* po/sawfish-xgettext (helper): ensure that `:type*' keys get
+	scanned for `_' calls
+
+2000-11-13  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.33.1
+
+	* po/sawfish-xgettext: fixed memq error
+
 2000-11-08  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.33

@@ -11,7 +11,7 @@ exec rep "$0" "$@"
 
 #| nokogiri-main.jl -- entry point
 
-   $Id: main.jl.in,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: main.jl.in,v 1.1.1.2 2001-01-13 14:57:52 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -42,8 +42,6 @@ exec rep "$0" "$@"
 	  sawfish.ui.shell
 	  sawfish.ui.group
 	  sawfish.ui.user-level)
-
-  (setq backtrace-on-error '(void-value missing-arg bad-arg invalid-function))
 
   (define socket-id nil)
 

@@ -9,7 +9,7 @@ exec rep "$0" "$@"
 
 #| sawfish-about.jl.in -- helper process for sawfish about dialog
 
-   $Id: sawfish-about.jl.in,v 1.1.1.1 2000-11-12 06:27:57 ghudson Exp $
+   $Id: sawfish-about.jl.in,v 1.1.1.2 2001-01-13 14:57:57 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -40,7 +40,7 @@ exec rep "$0" "$@"
 	  sawfish.gtk.stock)
 
   (unless (get-command-line-option "--disable-nls")
-    (bindtextdomain "sawfish" (expand-file-name "../locale" "__lispdir__"))
+    (bindtextdomain "sawfish" "__localedir__")
     (textdomain "sawfish"))
 
   (define title "Sawfish")

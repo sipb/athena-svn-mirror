@@ -1,5 +1,5 @@
 /* keys.h -- Event structures
-   $Id: keys.h,v 1.1.1.1 2000-11-12 06:26:15 ghudson Exp $
+   $Id: keys.h,v 1.1.1.2 2001-01-13 14:58:37 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -55,6 +55,10 @@ enum {
     EV_MOD_HYPER  = 0x01000000,
     EV_MOD_SUPER  = 0x02000000,
 
+    /* this is a customizable modifier; it allows the user to move
+       all predefined wm key bindings to a different modifier */
+    EV_MOD_WM     = 0x04000000,
+
     /* Matches any of the modifiers */
     EV_MOD_ANY    = 0x00400000,
 
@@ -63,10 +67,39 @@ enum {
 
     EV_TYPE_MASK  = 0x000f0000,
     EV_MOD_MASK   = 0x0ff0ffff,
+    EV_VIRT_MOD_MASK = 0x0ff00000,
 };
 
-#define EV_MOD_BUTTON_MASK \
-    (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask)
+
+/* Support for buttons 6 and 7.
+
+   <X11/X.h> doesn't define these, even though XFree supports them.. */
+
+#ifndef Button6
+# define Button6 6
+#endif
+#ifndef Button6Mask
+# define Button6Mask (1<<13)
+#endif
+
+#ifndef Button7
+# define Button7 7
+#endif
+#ifndef Button7Mask
+# define Button7Mask (1<<14)
+#endif
+
+#if !defined (Button6)
+# define EV_MOD_BUTTON_MASK (Button1Mask | Button2Mask | Button3Mask \
+			     | Button4Mask | Button5Mask)
+#elif !defined (Button7)
+# define EV_MOD_BUTTON_MASK (Button1Mask | Button2Mask | Button3Mask \
+			     | Button4Mask | Button5Mask | Button6Mask)
+#else
+# define EV_MOD_BUTTON_MASK (Button1Mask | Button2Mask | Button3Mask \
+			     | Button4Mask | Button5Mask | Button6Mask \
+			     | Button7Mask)
+#endif
 
 
 /* In key maps, a `key' is (COMMAND . EVENT) */

@@ -1,5 +1,5 @@
 ;; raise-commands.jl -- some commands for raising windows
-;; $Id: raise-commands.jl,v 1.1.1.1 2000-11-12 06:27:51 ghudson Exp $
+;; $Id: raise-commands.jl,v 1.1.1.2 2001-01-13 14:58:51 ghudson Exp $
 
 ;; Copyright (C) 1999-2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -28,59 +28,38 @@
 	  sawfish.wm.util.stacking
 	  sawfish.wm.state.transient
 	  sawfish.wm.commands.groups
-	  sawfish.wm.commands)
+	  sawfish.wm.commands
+	  sawfish.wm.focus)
+
+  (define (replay-pointer w)
+    ;; click-to-focus mode sets this to t when it calls a command
+    ;; from within a button press event
+    (unless (and (fluid focus-within-click-event)
+		 (not (or focus-click-through
+			  (window-get w 'focus-click-through)
+			  (not (window-really-wants-input-p w)))))
+      (allow-events 'replay-pointer)
+      (unless (clicked-frame-part)
+	(forget-button-press))))
 
   (define (and-pass-through-click w)
     "Raise the window that received the current event, then replay any pointer
 events that invoked the command."
     (when (windowp w)
-      (raise-window* w))
-    (allow-events 'replay-pointer)
-    (unless (clicked-frame-part)
-      (forget-button-press)))
+      (maybe-raise-window w))
+    (replay-pointer w))
 
   (define (and-pass-through-click-if-focused w)
     "Raise the window that received the current event (if it's focused), then
 replay any pointer events that invoked the command."
     (when (and (windowp w) (eq w (input-focus)))
-      (raise-window* w))
-    (allow-events 'replay-pointer)
-    (unless (clicked-frame-part)
-      (forget-button-press)))
+      (maybe-raise-window w))
+    (replay-pointer w))
 
   (define (or-pass-through-click w)
     (if (and (windowp w) (not (window-on-top-p w)))
-	(raise-window* w)
-      (allow-events 'replay-pointer)
-      (unless (clicked-frame-part)
-	(forget-button-press))))
-
-  (define (window-and-pass-through-click w)
-    "Raise the window that received the current event, then replay any pointer
-events that invoked the command."
-    (when (windowp w)
-      (raise-window w))
-    (allow-events 'replay-pointer)
-    (unless (clicked-frame-part)
-      (forget-button-press)))
-
-  (define (group-and-pass-through-click w)
-    "Raise the group of windows that received the current event, then replay
-any pointer events that invoked the command."
-    (when (windowp w)
-      (raise-group w))
-    (allow-events 'replay-pointer)
-    (unless (clicked-frame-part)
-      (forget-button-press)))
-
-  (define (transients-and-pass-through-click w)
-    "Raise the window that received the current event and any transients it
-has, then replay any pointer events that invoked the command."
-    (when (windowp w)
-      (raise-window-and-transients w))
-    (allow-events 'replay-pointer)
-    (unless (clicked-frame-part)
-      (forget-button-press)))
+	(maybe-raise-window w)
+      (replay-pointer w)))
 
   ;;###autoload
   (define-command 'raise-and-pass-through-click
@@ -89,6 +68,31 @@ has, then replay any pointer events that invoked the command."
     and-pass-through-click-if-focused #:spec "%w")
   (define-command 'raise-or-pass-through-click
     or-pass-through-click #:spec "%w")
+
+;;; these should probably be considered obsolete
+
+  (define (window-and-pass-through-click w)
+    "Raise the window that received the current event, then replay any pointer
+events that invoked the command."
+    (when (windowp w)
+      (raise-window w))
+    (replay-pointer w))
+
+  (define (group-and-pass-through-click w)
+    "Raise the group of windows that received the current event, then replay
+any pointer events that invoked the command."
+    (when (windowp w)
+      (raise-group w))
+    (replay-pointer w))
+
+  (define (transients-and-pass-through-click w)
+    "Raise the window that received the current event and any transients it
+has, then replay any pointer events that invoked the command."
+    (when (windowp w)
+      (raise-window-and-transients w))
+    (replay-pointer w))
+
+  ;;###autoload
   (define-command 'raise-window-and-pass-through-click
     window-and-pass-through-click #:spec "%w" #:user-level 'expert)
   (define-command 'raise-group-and-pass-through-click

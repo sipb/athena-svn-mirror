@@ -1,5 +1,5 @@
 ;; keymaps.jl -- the default keymaps
-;; $Id: keymaps.jl,v 1.1.1.1 2000-11-12 06:27:55 ghudson Exp $
+;; $Id: keymaps.jl,v 1.1.1.2 2001-01-13 14:58:19 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -147,6 +147,18 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
     :group misc
     :type (number 0))
 
+  (defcustom wm-modifier-value (wm-modifier)
+    "Modifier key(s) used for default window manager shortcuts."
+    :group bindings
+    :type modifier-list
+    :user-level novice
+    :after-set (lambda ()
+		 (ungrab-keymap global-keymap)
+		 (ungrab-keymap window-keymap)
+		 (set-wm-modifier wm-modifier-value)
+		 (grab-keymap window-keymap)
+		 (grab-keymap global-keymap)))
+
 
 ;;; Arrange for window-keymap to be set in each window
 
@@ -155,6 +167,19 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
       (window-put w 'keymap window-keymap)))
   
   (add-hook 'add-window-hook keymap-add-window)
+
+
+;; custom support for modifiers
+
+  (define-custom-serializer 'modifier-list
+			    (lambda (value)
+			      (require 'sawfish.wm.util.decode-events)
+			      (decode-modifier value)))
+
+  (define-custom-deserializer 'modifier-list
+			      (lambda (value)
+				(require 'sawfish.wm.util.decode-events)
+				(encode-modifier value)))
 
 
 ;;; some bindings
@@ -172,19 +197,16 @@ of a window. (Only mouse-bindings are evaluated in this map.)"
       "Button1-Move" 'resize-window-interactively)
     
     (bind-keys window-keymap
-      "C-M-Up" 'raise-window
-      "C-M-Down" 'lower-window
-      "C-M-Left" 'send-to-previous-workspace
-      "C-M-Right" 'send-to-next-workspace
-      "C-M-q" 'quote-event
-      "M-Button3-Click1" 'raise-lower-window
-      "M-Button2-Click1" 'popup-window-menu
-      "M-Button1-Move" 'move-window-interactively)
+      "W-Up" 'raise-window
+      "W-Down" 'lower-window
+      "W-Button3-Click1" 'raise-lower-window
+      "W-Button2-Click1" 'popup-window-menu
+      "W-Button1-Move" 'move-window-interactively)
     
     (bind-keys global-keymap
-      "C-Left" 'previous-workspace
-      "C-Right" 'next-workspace
-      "M-Tab" 'cycle-windows)
+      "W-Left" 'previous-workspace
+      "W-Right" 'next-workspace
+      "W-Tab" 'cycle-windows)
     
     (bind-keys root-window-keymap
       "Button2-Click1" 'popup-root-menu)

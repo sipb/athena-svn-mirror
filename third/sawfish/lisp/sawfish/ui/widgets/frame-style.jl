@@ -1,6 +1,6 @@
 #| nokogiri-widgets/frame-style.jl -- theme chooser widget
 
-   $Id: frame-style.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: frame-style.jl,v 1.1.1.2 2001-01-13 14:58:02 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -43,16 +43,15 @@
       (gtk-box-set-spacing hbox box-spacing)
       (gtk-box-set-spacing vbox box-spacing)
       (gtk-container-add readme-scroller readme-text)
-      (gtk-container-add hbox combo)
-      (gtk-container-add hbox doc-label)
-      (gtk-container-add vbox readme-scroller)
-      (gtk-container-add vbox hbox)
+      (gtk-box-pack-start hbox doc-label)
+      (gtk-box-pack-start hbox combo t t)
+      (gtk-box-pack-start vbox readme-scroller t t)
+      (gtk-box-pack-start vbox hbox nil nil)
       (gtk-label-set-justify doc-label 'left)
       ;;(gtk-text-set-word-wrap readme-text 1)
       (gtk-editable-set-editable readme-text nil)
       (gtk-entry-set-editable (gtk-combo-entry combo) nil)
       (gtk-scrolled-window-set-policy readme-scroller 'automatic 'automatic)
-      (gtk-widget-set-usize readme-scroller -2 150)
 
       (gtk-combo-set-popdown-strings combo (mapcar symbol-name options))
       (when value

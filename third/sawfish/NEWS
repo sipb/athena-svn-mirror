@@ -5,6 +5,173 @@ This lists the user-visible changes made to Sawfish, and which releases
 they occurred between. For more detailed information see the
 `ChangeLog' files in the Sawfish source tree.
 
+0.35
+====
+
+   * Translation updates: ja (SATO Satoru), it (Michele Campeotto),
+     zh_TW.Big5 (Chun-Chung Chen), pl (Daniel Koc), sk (Stanislav
+     Visnovsky)
+
+   * Items in `choice' widgets may now contain descriptive names,
+     syntax is `(SYMBOL "DESCRIPTION")'
+
+   * Changed `focus-windows-when-mapped' option to only apply to
+     non-transient windows (this option is now enabled by default)
+
+   * New placement modes `top-left' and `off-center'.  `top-left' is
+     now the default mode for non-transients
+
+   * Enabled the module supporting the newly standardized GNOME/KDE
+     window manager hints. Also made random changes to support KDE2 a
+     lot better
+
+   * Added WM_PROTOCOLS `_SAWFISH_WM_RAISE_WINDOW' and
+     `_SAWFISH_WM_LOWER_WINDOW'. Used by `maybe-raise-window' and
+     `maybe-lower-window' functions.
+
+     These are similar to `WM_TAKE_FOCUS', in that if the window
+     supports the protocol, it's up to it whether or not it raises (or
+     lowers) the window in question. These functions should only be used
+     where the user hasn't explicitly requested the restacking
+
+     An example usage is an application that doesn't want its window to
+     be raised due to a button-press event that initiates a drag
+     operation
+
+   * New option `menus-include-shortcuts', disabled by default (Unai
+     Uribarri)
+
+   * Don't interpret windows with `WM_TRANSIENT_FOR' set to the root
+     window as children of all windows in the group (it causes too many
+     annoying effects), instead just decorate these windows as
+     transients
+
+   * Handle `group' and `transient' iconification modes better, don't
+     use a recursive method, instead use one pass to identify the
+     windows to change, then another to make the changes. In
+     `transients' mode, only change the state of shared transients if
+     they will have no visible parents afterwards
+
+   * In the (old) GNOME hints code, support a `_WIN_HINTS' client
+     message (with a similar format to the `_WIN_STATE' message)
+
+   * New module `sawfish.wm.commands.viewport-extras', some commands
+     for viewport for viewport navigation (Dams Nadé)
+
+   * Check for `never-iconify' and `never-maximize' window properties
+     when appropriate
+
+   * Support sixth and seventh mouse buttons (Steve Haslam)
+
+   * Bug fixes:
+
+        - Fixed problems with reverting changes to list-based options
+
+        - Don't allow the empty list as a valid modifier list
+
+        - Fixed bug where restarting the wm with
+          `focus-windows-when-mapped' set would cause any shaded
+          windows to be deleted
+
+        - Ignore iconified windows in the grow-pack code
+
+        - Added `font-ascent' and `font-descent' functions to the gaol
+
+        - Catch errors when loading site-init and rep-defaults files
+
+        - Don't use `""' to denote a null doc string (which has bad
+          side effects when internationalized)
+
+        - Don't need to run `sawfish-client -' to get a repl anymore,
+          just `sawfish-client'
+
+        - Fixed bugs in `composite-images' function
+
+        - Fixed ordering of states output by `gtk-style' program
+          (michaelj@maine.rr.com)
+
+        - Fixed grabbing mono window icons in gdk-pixbuf mode
+
+        - Reject button event descriptions that don't specify at least
+          one mouse button
+
+        - Accept `()' as a valid image modifier color component
+
+        - Now grabs translatable strings from `defgroup' forms correctly
+
+
+0.34
+====
+
+   * Added a virtual modifier key, the `W-' modifier. This modifier is
+     used for all standard window-manager key bindings, it may be set
+     to any of the standard X modifiers using the configuration tool
+
+   * Optionally show window-icons when cycling through windows (Unai
+     Uribarri Rodríguez, me)
+
+   * Event handlers for low-level X windows now get passed the window
+     as their second argument (Unai Uribarri Rodríguez)
+
+   * Translation updates: fr (Christian Marillat), sv (Richard Hult),
+     pt_BR (Flávio Bruno Leitner), it (Michele Campeotto)
+
+   * Error handler module (`sawfish.wm.ext.error-handler'). When loaded
+     it records the most recent errors, and the time at which they
+     occurred. Use the `display-errors' command to display all recorded
+     errors.
+
+   * Added an option to not save window-history data for transient
+     windows. Also added a `window-history-clear' command to forget
+     history for all windows.
+
+   * Rearranged window operations menu to hopefully be clearer
+
+   * Attempt to catch and handle errors while loading custom options
+
+   * Labels in menu items can now be functions, they should return the
+     label text when called (with any menu arguments)
+
+   * Moved installed message catalogues to $datadir/locale
+
+   * `defcustom' forms may now a `:widget-flags' keyword, a constant
+     list of symbols passed to the configuration tool. Current flags
+     include: `expand-vertically' and `expand-horizontally'
+
+   * Added a `sawfish.wm.util.ping' module, it implements the
+     `_NET_WM_PING' protocol of the new window manager spec.
+
+   * `destroy-notify-hook' is no longer called asynchronously
+
+   * Bug fixes:
+
+        - Fixed various bugs when dragging/resizing windows
+
+        - Reverted the changes to make the click-to-focus click-through
+          setting apply to window decorations
+
+        - Fixed bug when handling 32-bit data in client messages and X
+          properties
+
+        - Fixed window-focus problems when switching viewports
+
+        - Many bug-fixes to handling of maximized window state.
+          Maximized state should now be preserved across wm and session
+          restarts. It's also saved in the window-history attributes
+
+        - Support the function hints of the MWM window manager
+          properties
+
+        - Updated the `sawfish.wm.state.wm-spec' module to match the
+          current (almost final) draft of the new GNOME/KDE window
+          manager spec
+
+        - Fixed sporadic stacking bugs when unmapped windows exist
+
+        - Fixed miscellaneous click-to-focus and focus-click-through
+          related bugs
+
+
 0.33
 ====
 

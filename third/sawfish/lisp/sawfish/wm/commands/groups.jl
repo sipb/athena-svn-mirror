@@ -1,5 +1,5 @@
 ;; groups.jl -- commands for manipulating window groups
-;; $Id: groups.jl,v 1.1.1.1 2000-11-12 06:27:53 ghudson Exp $
+;; $Id: groups.jl,v 1.1.1.2 2001-01-13 14:58:41 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -60,10 +60,20 @@
 
   ;; iconification
 
-  (define (iconify-group w) (map-window-group iconify-window w))
-  (define (uniconify-group w) (map-window-group uniconify-window w))
-  (define (iconify-transient-group w) (map-transient-group iconify-window w))
-  (define (uniconify-transient-group w) (map-transient-group uniconify-window w))
+  (define (call-with-iconify-mode mode fun w)
+    (let ((iconify-group-mode mode)
+	  (uniconify-group-mode mode))
+      (fun w)))
+
+  (define (iconify-group w)
+    (call-with-iconify-mode 'group iconify-window w))
+  (define (uniconify-group w)
+    (call-with-iconify-mode 'group uniconify-window w))
+
+  (define (iconify-transient-group w)
+    (call-with-iconify-mode 'transients iconify-window w))
+  (define (uniconify-transient-group w)
+    (call-with-iconify-mode 'transients uniconify-window w))
 
   (define-command 'iconify-group iconify-group #:spec "%W")
   (define-command 'uniconify-group uniconify-group #:spec "%W")

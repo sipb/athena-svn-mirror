@@ -1,6 +1,6 @@
 #| nokogiri-widgets/list.jl -- list widget
 
-   $Id: list.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: list.jl,v 1.1.1.2 2001-01-13 14:58:45 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -76,8 +76,9 @@
 			  (with-clist-frozen clist
 			    (if (not selection)
 				(progn
-				  (setq value (nconc value (list new)))
+				  (setq value (append value (list new)))
 				  (gtk-clist-append clist (print-value new)))
+			      (setq value (copy-sequence value))
 			      (setq value (insert-after new value selection))
 			      (gtk-clist-insert
 			       clist (1+ selection) (print-value new))
@@ -92,6 +93,7 @@
 	  (let ((orig-sel selection))
 	    (if (zerop selection)
 		(setq value (cdr value))
+	      (setq value (copy-sequence value))
 	      (rplacd (nthcdr (1- selection) value)
 		      (nthcdr (1+ selection) value)))
 	    (with-clist-frozen clist
@@ -103,6 +105,7 @@
 
       (define (edit-item)
 	(when selection
+	  (setq value (copy-sequence value))
 	  (let* ((orig-sel selection)
 		 (cell (nthcdr orig-sel value))
 		 (callback (lambda (new)
@@ -136,6 +139,10 @@
       (gtk-signal-connect clist "button_press_event"
 			  (lambda (w ev)
 			    (when (eq (gdk-event-type ev) '2button-press)
+			      (edit-item))))
+      (gtk-signal-connect clist "key_press_event"
+			  (lambda (w ev)
+			    (when (string= (gdk-event-string ev) "\r")
 			      (edit-item))))
 
       (gtk-clist-set-shadow-type clist 'none)

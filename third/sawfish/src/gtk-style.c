@@ -1,5 +1,5 @@
 /* gtk-style.c -- print the default GTK rc style (if possible) as s-exprs
-   $Id: gtk-style.c,v 1.1.1.1 2000-11-12 06:25:57 ghudson Exp $
+   $Id: gtk-style.c,v 1.1.1.2 2001-01-13 14:58:48 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -23,7 +23,7 @@
 #include "gtk/gtk.h"
 
 char *states[] = {
-    "normal", "prelight", "active", "insensitive", "selected"
+    "normal", "active", "prelight", "selected", "insensitive"
 };
 
 void

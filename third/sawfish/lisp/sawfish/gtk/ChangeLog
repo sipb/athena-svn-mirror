@@ -1,3 +1,52 @@
+2001-01-05  John Harper  <jsh@eazel.com>
+
+	* version 0.35
+
+2000-12-30  John Harper  <jsh@eazel.com>
+
+	* widget.jl (make-choice-item): options for the `choice' widget
+	can now be formatted as `(SYMBOL "REAL-NAME")' as well a
+	`SYMBOL'. The REAL-NAME string will be displayed when given
+
+2000-12-22  John Harper  <jsh@eazel.com>
+
+	* widgets/list.jl: never destructively modify the list, fixes
+	some weird bugs. E.g. it allows invalid event descriptions to
+	be caught and reverted (fixing #5323)
+
+2000-12-04  John Harper  <jsh@eazel.com>
+
+	* version 0.34
+
+2000-11-28  John Harper  <jsh@eazel.com>
+
+	* widget.jl (make-symbol-item): connect to the changed signal
+	_after_ calling set-popdown-strings, since that can raise the
+	signal (which we don't want yet)
+
+2000-11-27  John Harper  <jsh@eazel.com>
+
+	* widget.jl (make-choice-item): `value' defaults to first item
+	in the menu (as in GTK+)
+
+	* widgets/font.jl (make-font-item): expand text entry when
+	packing it
+
+2000-11-17  John Harper  <jsh@eazel.com>
+
+	* widget.jl (make-choice-item): call _ function when printing
+	option names
+
+2000-11-16  John Harper  <jsh@eazel.com>
+
+	* widgets/alist.jl: use prin1 style printing (i.e. no double
+	quotes in strings, etc)
+
+2000-11-14  John Harper  <jsh@eazel.com>
+
+	* widgets/list.jl (make-list-item): connect to
+	`key_press_event' of the clist, on `RET' edit the current item
+
 2000-10-11  John Harper  <john@dcs.warwick.ac.uk>
 
 	* widget.jl (string->symbol): use intern not read-from-string

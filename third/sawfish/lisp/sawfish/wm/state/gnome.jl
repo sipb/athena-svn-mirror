@@ -1,5 +1,5 @@
 ;; gnome.jl -- minimal GNOME compliance
-;; $Id: gnome.jl,v 1.1.1.1 2000-11-12 06:28:23 ghudson Exp $
+;; $Id: gnome.jl,v 1.1.1.2 2001-01-13 14:58:42 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -179,20 +179,38 @@
 	    states)
       (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
 
-  (define (gnome-honour-client-state w)
+  ;; XXX Ugly hacks to make the GNOME desktop function sanely
+  (define (gnome-window-class-hacks w)
     (let ((class (get-x-text-property w 'WM_CLASS)))
       (when (and class (>= (length class) 2))
 	(cond ((and (string= (aref class 1) "Panel")
 		    (string= (aref class 0) "panel"))
 	       ;; XXX I don't think the GNOME hints specify these things...
-	       (window-put w 'focus-click-through t))
+	       (window-put w 'focus-click-through t)
+	       (window-put w 'no-history t)
+	       (window-put w 'never-iconify t)
+	       (window-put w 'never-maximize t)
+	       ;; XXX the panel is broken, in that it doesn't check
+	       ;; XXX that the wm gave it the position that it wanted.
+	       ;; XXX (The wm is under no obligation; the panel should
+	       ;; XXX move itself to the required position after
+	       ;; XXX initially mapping the window, or perhaps it
+	       ;; XXX should use the USPosition hints?). The following
+	       ;; XXX line prevents panel windows being placed at all
+	       (window-put w 'placed t))
 	      ((string= (aref class 1) "gmc-desktop-icon")
 	       (window-put w 'focus-click-through t)
-	       (window-put w 'never-focus t))
+	       (window-put w 'never-focus t)
+	       (window-put w 'never-iconify t)
+	       (window-put w 'never-maximize t)
+	       ;; XXX same reason as above
+	       (window-put w 'placed t))
 	      ((and (string= (aref class 1) "Nautilus")
 		    (string= (aref class 0) "desktop_window"))
-	       ;; XXX ...or these
-	       (mark-window-as-desktop w)))))
+	       (mark-window-as-desktop w))))))
+
+  (define (gnome-honour-client-state w)
+    (gnome-window-class-hacks w)
     (let ((state (get-x-property w '_WIN_STATE))
 	  (hints (get-x-property w '_WIN_HINTS))
 	  (layer (get-x-property w '_WIN_LAYER))
@@ -260,6 +278,18 @@
 		       (and tem (zerop (logand values WIN_STATE_MAXIMIZED_HORIZ))))
 		   (maximize-window-horizontally-toggle w))))
 	   t)
+	  ((and (eq type '_WIN_HINTS) (windowp w))
+	   (let ((mask (aref data 0))
+		 (bits (aref data 1)))
+	     (unless (zerop (logand mask WIN_HINTS_SKIP_FOCUS))
+	       (window-put w 'cycle-skip
+			   (not (zerop (logand bits WIN_HINTS_SKIP_FOCUS)))))
+	     (unless (zerop (logand mask WIN_HINTS_SKIP_WINLIST))
+	       (window-put w 'window-list-skip
+			   (not (zerop (logand bits WIN_HINTS_SKIP_WINLIST)))))
+	     (unless (zerop (logand mask WIN_HINTS_DO_NOT_COVER))
+	       (window-put w 'avoid
+			   (not (zerop (logand bits WIN_HINTS_DO_NOT_COVER)))))))
 	  ((and (eq type '_WIN_LAYER) (windowp w))
 	   (set-window-depth w (- (aref data 0) WIN_LAYER_NORMAL))
 	   t)))

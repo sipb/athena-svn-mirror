@@ -1,5 +1,5 @@
 /* main.c -- Entry point for sawmill
-   $Id: main.c,v 1.1.1.1 2000-11-12 06:26:56 ghudson Exp $
+   $Id: main.c,v 1.1.1.2 2001-01-13 14:57:41 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -53,6 +53,7 @@ DEFSYM(sawfish_directory, "sawfish-directory");
 DEFSYM(sawfish_lisp_lib_directory, "sawfish-lisp-lib-directory");
 DEFSYM(sawfish_site_lisp_directory, "sawfish-site-lisp-directory");
 DEFSYM(sawfish_exec_directory, "sawfish-exec-directory");
+DEFSYM(sawfish_locale_directory, "sawfish-locale-directory");
 DEFSYM(sawfish_version, "sawfish-version"); /*
 ::doc:sawfish-directory::
 The directory in which all of sawfish's installed data files live.
@@ -65,6 +66,9 @@ The name of the directory in which site-specific Lisp files are stored.
 ::end::
 ::doc:sawfish-exec-directory::
 The name of the directory containing sawfish's architecture specific files.
+::end::
+::doc:sawfish-locale-directory::
+The name of the directory containing sawfish's message catalog files.
 ::end::
 ::doc:sawfish-version::
 A string defining the version number of the current sawfish release.
@@ -166,6 +170,9 @@ sawfish_symbols (void)
 	Fset (Qsawfish_exec_directory, rep_string_dup(getenv("SAWFISHEXECDIR")));
     else
 	Fset (Qsawfish_exec_directory, rep_string_dup(SAWFISH_EXECDIR));
+
+    rep_INTERN_SPECIAL(sawfish_locale_directory);
+    Fset (Qsawfish_locale_directory, rep_string_dup(SAWFISH_LOCALEDIR));
 
     if(getenv("SAWFISHDOCFILE") != 0)
 	Fset (Qdocumentation_file, rep_string_dup(getenv("SAWFISHDOCFILE")));

@@ -1,6 +1,6 @@
 #| nokogiri-widgets/workspace-geometry.jl
 
-   $Id: workspace-geometry.jl,v 1.1.1.1 2000-11-12 06:27:04 ghudson Exp $
+   $Id: workspace-geometry.jl,v 1.1.1.2 2001-01-13 14:57:36 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,9 +37,15 @@
   (defconst canvas-width 100)
   (defconst canvas-height 100)
 
+  (define (locate-file filename dirs)
+    (let loop ((rest dirs))
+      (cond ((null rest) nil)
+	    ((file-exists-p (expand-file-name filename (car rest)))
+	     (expand-file-name filename (car rest)))
+	    (t (loop (cdr rest))))))
+
   (define monitor-pixbuf-file
-    ;; XXX `(car load-path)' is a total kludge
-    (canonical-file-name (expand-file-name "../monitor.png" (car load-path))))
+    (local-file-name (locate-file "../monitor.png" load-path)))
 
   (define monitor-pixbuf (gdk-pixbuf-new-from-file monitor-pixbuf-file))
 

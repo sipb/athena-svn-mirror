@@ -1,5 +1,5 @@
 ;; viewport.jl -- virtual desktops
-;; $Id: viewport.jl,v 1.1.1.1 2000-11-12 06:27:31 ghudson Exp $
+;; $Id: viewport.jl,v 1.1.1.2 2001-01-13 14:57:55 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -136,19 +136,21 @@
 	  (>= (cdr pos) (screen-height)))))
 
   (define (move-window-to-current-viewport window)
-    (when (window-outside-viewport-p window)
+    (when (and (window-outside-viewport-p window)
+	       (not (window-get window 'sticky-viewport)))
       (let ((pos (window-position window)))
 	(move-window-to window (mod (car pos) (screen-width))
 			(mod (cdr pos) (screen-height))))))
 
   (define (set-window-viewport window col row)
-    (let ((pos (window-position window)))
-      (setq col (max 0 (min (1- (car viewport-dimensions)) col)))
-      (setq row (max 0 (min (1- (cdr viewport-dimensions)) row)))
-      (setq col (+ (* col (screen-width)) (mod (car pos) (screen-width))))
-      (setq row (+ (* row (screen-height)) (mod (cdr pos) (screen-height))))
-      (move-window-to
-       window (- col viewport-x-offset) (- row viewport-y-offset))))
+    (unless (window-get window 'sticky-viewport)
+      (let ((pos (window-position window)))
+	(setq col (max 0 (min (1- (car viewport-dimensions)) col)))
+	(setq row (max 0 (min (1- (cdr viewport-dimensions)) row)))
+	(setq col (+ (* col (screen-width)) (mod (car pos) (screen-width))))
+	(setq row (+ (* row (screen-height)) (mod (cdr pos) (screen-height))))
+	(move-window-to
+	 window (- col viewport-x-offset) (- row viewport-y-offset)))))
 
   (define (move-window-viewport window col row)
     (let ((pos (window-position window)))

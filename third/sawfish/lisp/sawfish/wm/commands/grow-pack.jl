@@ -1,5 +1,5 @@
 ;; grow-pack.jl -- window resize and movement
-;; $Id: grow-pack.jl,v 1.1.1.1 2000-11-12 06:27:48 ghudson Exp $
+;; $Id: grow-pack.jl,v 1.1.1.2 2001-01-13 14:58:44 ghudson Exp $
 ;; Id: grow-pack.jl,v 1.9 2000/08/04 16:42:43 grossjoh Exp 
 
 ;; Copyright (C) 2000 Kai Grossjohann <Kai.Grossjohann@CS.Uni-Dortmund.DE>
@@ -44,6 +44,7 @@
 	  sawfish.wm.misc
 	  sawfish.wm.util.rects
 	  sawfish.wm.state.maximize
+	  sawfish.wm.state.iconify
 	  sawfish.wm.custom
 	  sawfish.wm.commands
 	  sawfish.wm.workspace
@@ -177,7 +178,9 @@ already in the window, then does like `maybe'.
 		(xbottom (+ xtop (cdr xdim))))
 	   ;; If window does not overlap W but does overlap the
 	   ;; larger W, then we need to avoid this window.
-	   (and (window-appears-in-workspace-p x current-workspace)
+	   (and (window-mapped-p x)
+		(not (window-iconified-p x))
+		(window-appears-in-workspace-p x current-workspace)
 		(<= (rect-2d-overlap* (list xleft xtop xright xbottom)
 				      (list wleft wtop wright wbottom)) 0)
 		(> (rect-2d-overlap* (list xleft xtop xright xbottom)

@@ -1,5 +1,5 @@
 /* images.c -- Image handling
-   $Id: images.c,v 1.1.1.1 2000-11-12 06:27:19 ghudson Exp $
+   $Id: images.c,v 1.1.1.2 2001-01-13 14:58:54 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -299,8 +299,37 @@ make-image-from-x-drawable ID [MASK-ID]
        }
    }
 #elif defined HAVE_GDK_PIXBUF
-   im = gdk_pixbuf_xlib_get_from_drawable (0, d, image_cmap, image_visual,
-					   0, 0, 0, 0, w, h);
+   if (dp == 1)
+   {
+       /* gdk_pixbuf_xlib_get_from_drawable () doesn't seem to work
+          with single-bitplane drawables. Doing it by hand.. */
+       XImage *xim = XGetImage (dpy, d, 0, 0, w, h, 1, ZPixmap);
+       im = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, w, h);
+       if (xim != 0)
+       {
+	   int rowstride = gdk_pixbuf_get_rowstride (im);
+	   u_char *pixels = gdk_pixbuf_get_pixels (im);
+	   int x, y;
+	   for (y = 0; y < h; y++)
+	   {
+	       for (x = 0; x < w; x++)
+	       {
+		   int idx = y * rowstride + x * 3;
+		   u_char chan = (XGetPixel (xim, x, y) != 0) ? 0 : 255;
+		   pixels[idx+0] = chan;
+		   pixels[idx+1] = chan;
+		   pixels[idx+2] = chan;
+	       }
+	   }
+	   XDestroyImage (xim);
+       }
+   }
+   else
+   {
+       im = gdk_pixbuf_xlib_get_from_drawable (0, d, image_cmap, image_visual,
+					       0, 0, 0, 0, w, h);
+   }
+
    if (mask != 0)
    {
        /* this code inspired by the GNOME tasklist_applet */
@@ -664,7 +693,7 @@ TYPE may be one of nil, red, green, blue. returned modifier is
     ImlibColorModifier modifier;
     void (*fun)(ImlibData *, ImlibImage *, ImlibColorModifier *);
     rep_DECLARE1(img, IMAGEP);
-    rep_DECLARE2(type, rep_SYMBOLP);
+    rep_DECLARE(2, type, type == Qnil || rep_SYMBOLP (type));
     fun = (type == Qred ? Imlib_get_image_red_modifier
 	   : type == Qgreen ? Imlib_get_image_green_modifier
 	   : type == Qblue ? Imlib_get_image_blue_modifier
@@ -692,7 +721,7 @@ CONTRAST). These are integers ranging from 0 to 255.
     ImlibColorModifier modifier;
     void (*fun)(ImlibData *, ImlibImage *, ImlibColorModifier *);
     rep_DECLARE1(img, IMAGEP);
-    rep_DECLARE2(type, rep_SYMBOLP);
+    rep_DECLARE(2, type, type == Qnil || rep_SYMBOLP (type));
     if (!rep_CONSP(mod) || !rep_CONSP(rep_CDR(mod))
 	|| !rep_CONSP(rep_CDR(rep_CDR(mod))))
     {
@@ -1061,8 +1090,8 @@ at position (X, Y), or (0, 0) if no position is given.
     w2 = image_width (VIMAGE (img2));
     h2 = image_height (VIMAGE (img2));
 
-    copy_w = MAX (w2, w1 - rep_INT (x));
-    copy_h = MAX (h2, h1 - rep_INT (y));
+    copy_w = MIN (w2, w1 - rep_INT (x));
+    copy_h = MIN (h2, h1 - rep_INT (y));
     
 #if defined HAVE_IMLIB
     {
@@ -1084,7 +1113,7 @@ at position (X, Y), or (0, 0) if no position is given.
 		    img1_pixel = img1_rgb + (((rep_INT (y) + row) * w1)
 					     + (rep_INT (x) + col)) * 3;
 		    /* constant size, so should be inlined */
-		    memcpy (img2_pixel, img1_pixel, 3);
+		    memcpy (img1_pixel, img2_pixel, 3);
 		}
 	    }
 	}
@@ -1092,7 +1121,7 @@ at position (X, Y), or (0, 0) if no position is given.
 #elif defined HAVE_GDK_PIXBUF
     gdk_pixbuf_composite (VIMAGE (img2)->image, VIMAGE (img1)->image,
 			  rep_INT (x), rep_INT (y),
-			  copy_w, copy_h, 0.0, 0.0, 1.0, 1.0,
+			  copy_w, copy_h, rep_INT (x), rep_INT (y), 1.0, 1.0,
 			  interp_type, 255);
 #endif
 
@@ -1569,7 +1598,7 @@ image-map XFORM IMAGE
 Transform the values of all pixels in IMAGE according to XFORM.
 
 XFORM is a function taking a single argument, the four element list
-representing the current pixel value (as in `pixel-ref'). If XFORM
+representing the current pixel value (as in `image-ref'). If XFORM
 returns a non-nil value it should be the new pixel value (another four
 element list).
 ::end:: */

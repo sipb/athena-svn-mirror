@@ -48,7 +48,7 @@ Frequently Asked Questions
 
      If, after reading this, you still think that sawfish isn't working,
      please send mail describing the problem to the sawfish mailing list
-     <sawmill@aarg.net>
+     <sawfish@lists.eazel.com>
 
   4. How do I add customizations?
 
@@ -196,12 +196,8 @@ Frequently Asked Questions
 
  18. Is there a sawfish mailing list?
 
-     Yes, thanks to Erik Arneson <erik@starseed.com> who manages it.
-
-     To subscribe, send a message to <majordomo@aarg.net> with
-     `subscribe sawmill' in the body.
-
-     The list is archived at <http://inanna.starseed.com/sawmill>.
+     Yes. See <http://lists.eazel.com/mailman/listinfo/> for
+     subscription instructions and archived messages.
 
  19. Is there a sawfish IRC channel?
 

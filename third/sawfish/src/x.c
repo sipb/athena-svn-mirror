@@ -1,5 +1,5 @@
 /* x.c -- raw X manipulation
-   $Id: x.c,v 1.1.1.1 2000-11-12 06:27:03 ghudson Exp $
+   $Id: x.c,v 1.1.1.2 2001-01-13 14:58:08 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -565,20 +565,22 @@ x_window_event_handler (XEvent *ev)
     if (win != Qnil && VX_DRAWABLE (win)->event_handler != Qnil)
     {
 	repv type = Qnil, args = Qnil;
-	if (win != Qnil)
+	switch (ev->type)
 	{
-	    switch (ev->type)
-	    {
-	    case Expose:
+	case Expose:
+	    /* Since we don't provide a method of detecting which
+	       part of the window to redraw, ignore all but the last
+	       expose event. (Another option is to set the clip
+	       rectangle?) */
+	    if (ev->xexpose.count == 0)
 		type = Qexpose;
-		break;
+	    break;
 
-		/* XXX other event types..? */
-	    }
+	    /* XXX other event types..? */
 	}
 	if (type != Qnil)
 	{
-	    args = Fcons (type, args);
+	    args = Fcons (type, Fcons (win, args));
 	    rep_funcall (VX_DRAWABLE (win)->event_handler, args, rep_FALSE);
 	}
     }

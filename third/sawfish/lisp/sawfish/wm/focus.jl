@@ -1,5 +1,5 @@
 ;; focus.jl -- implement standard focus behaviour
-;; $Id: focus.jl,v 1.1.1.1 2000-11-12 06:28:38 ghudson Exp $
+;; $Id: focus.jl,v 1.1.1.2 2001-01-13 14:58:55 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,7 +26,8 @@
 	    focus-mode
 	    set-focus-mode
 	    focus-push-map
-	    focus-pop-map)
+	    focus-pop-map
+	    focus-within-click-event)
 
     (open rep
 	  rep.system
@@ -59,6 +60,10 @@
   (defvar focus-dont-push nil
     "When t, focusing a window doesn't change it's position in the stack of
 most-recently focused windows.")
+
+  (define focus-within-click-event (make-fluid nil)
+    "When non-nil, the current command is being called from within a
+click-to-focus button press event.")
 
 
 ;;; general utilities
@@ -150,32 +155,26 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
 	(set-input-focus w))
       (focus-pop-map w)
       ;; do we need to do anything with the event?
-      (if (and event (or (window-get w 'focus-click-through)
-			 focus-click-through
-			 (not (window-really-wants-input-p w))))
-	  ;; allow-events called with replay-pointer ignores any passive
-	  ;; grabs on the window, thus if the wm has a binding in the
-	  ;; window's keymap, it would be ignored. So search manually..
-	  (let ((command (lookup-event-binding event)))
-	    (cond (command
-		   (call-command command))
-		  ((not (progn
-			  (require 'sawfish.wm.util.decode-events)
-			  (should-grab-button-event-p
-			   event (window-get w 'keymap))))
-		   ;; pass the event through to the client window unless we
-		   ;; need to keep the grab for the events that would follow
-		   (allow-events 'replay-pointer)
-		   (forget-button-press))))
-	;; ungrab the pointer so that the non-click-through thing
-	;; works for window decorations as well as the client
-	;; (does this break anything?)
-	(when (window-really-wants-input-p w)
-	  (ungrab-pointer)
-	  (forget-button-press)))
-      ;; set-input-focus may not actually change the focus
-      (unless (eq (input-focus) w)
-	(focus-push-map w click-to-focus-map))))
+      (when event
+	;; allow-events called with replay-pointer ignores any passive
+	;; grabs on the window, thus if the wm has a binding in the
+	;; window's keymap, it would be ignored. So search manually..
+	(let ((command (lookup-event-binding event)))
+	  (if command
+	      (let-fluids ((focus-within-click-event t))
+		(call-command command))
+	    (require 'sawfish.wm.util.decode-events)
+	    (when (and (or focus-click-through
+			   (window-get w 'focus-click-through)
+			   (not (window-really-wants-input-p w)))
+		       (not (should-grab-button-event-p
+			     event (window-get w 'keymap))))
+	      ;; pass the event through to the client window unless we
+	      ;; need to keep the grab for the events that would follow
+	      (allow-events 'replay-pointer)
+	      (forget-button-press)))))
+    (unless (eq (input-focus) w)
+      (focus-push-map w click-to-focus-map))))
 
   (defvar click-to-focus-map
     (bind-keys (make-keymap)
@@ -191,12 +190,14 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
 	((focus-in)
 	 (focus-pop-map w))
 	((focus-out add-window)
-	 (unless (eq w (input-focus))
+	 (unless (or (not (window-really-wants-input-p w))
+		     (eq w (input-focus)))
 	   (focus-push-map w click-to-focus-map)))
 	((before-mode-change)
 	 (focus-pop-map w))
 	((after-mode-change)
-	 (unless (eq w (input-focus))
+	 (unless (or (not (window-really-wants-input-p w))
+		     (eq w (input-focus)))
 	   (focus-push-map w click-to-focus-map))))))
 
 
@@ -228,6 +229,16 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
   (add-hook 'focus-out-hook focus-out-fun t)
   (add-hook 'map-notify-hook focus-add-window)
 
+  (call-after-state-changed
+   '(never-focus)
+   (lambda (w)
+     (if (window-get w 'never-focus)
+	 (focus-pop-map w)
+       (focus-add-window w))))
+
+  (add-hook 'after-initialization-hook
+	    (lambda () (map-windows focus-add-window)))
+
   (sm-add-saved-properties 'never-focus 'focus-mode)
 
 
@@ -243,6 +254,7 @@ EVENT-NAME)', where EVENT-NAME may be one of the following symbols:
 		     ;; check that the correct keymaps are in place
 		     (unless (or (eq (input-focus) w)
 				 (not (window-mapped-p w))
+				 (not (window-really-wants-input-p w))
 				 (eq (window-get w 'keymap)
 				     click-to-focus-map))
 		       (format standard-error

@@ -1,6 +1,6 @@
 #| sawfish.wm bootstrap
 
-   $Id: wm.jl,v 1.1.1.1 2000-11-12 06:28:25 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.2 2001-01-13 14:57:44 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -45,8 +45,7 @@
 
     (when (and lang (not disable-nls) (not (string= lang "C")))
       (require 'rep.i18n.gettext)
-      (bindtextdomain
-       "sawfish" (expand-file-name "../locale" sawfish-lisp-lib-directory))
+      (bindtextdomain "sawfish" sawfish-locale-directory)
       (textdomain "sawfish"))))
 
 ;; add ~/.sawfish/lisp to load-path for user-code (canonicalize it

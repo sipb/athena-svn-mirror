@@ -1,6 +1,6 @@
 #| nokogiri-widgets/command.jl
 
-   $Id: command.jl,v 1.1.1.1 2000-11-12 06:28:11 ghudson Exp $
+   $Id: command.jl,v 1.1.1.2 2001-01-13 14:57:56 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -153,7 +153,7 @@
 		   (if params-widget
 		       (cons (command-name (nth selection commands))
 			     (widget-ref params-widget))
-		     (nth selection commands))))
+		     (command-name (nth selection commands)))))
 	  ((validp) (lambda (x)
 		      ;; XXX check params
 		      (memq (command-name (car x)) commands)))))))

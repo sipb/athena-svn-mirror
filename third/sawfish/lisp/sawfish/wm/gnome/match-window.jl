@@ -1,5 +1,5 @@
 ;; gnome-match.jl -- match-window settings for when GNOME's available
-;; $Id: match-window.jl,v 1.1.1.1 2000-11-12 06:27:35 ghudson Exp $
+;; $Id: match-window.jl,v 1.1.1.2 2001-01-13 14:58:04 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -35,6 +35,7 @@
 
   (define-match-window-setter 'skip-tasklist
     (lambda (window property value)
+      (declare (unused property))
       (apply-command (if value
 			 'gnome-set-skip-tasklist
 		       'gnome-clear-skip-tasklist) (list window)))))

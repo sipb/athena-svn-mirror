@@ -1,5 +1,5 @@
 ;; customize.jl -- configuration user interface
-;; $Id: customize.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: customize.jl,v 1.1.1.2 2001-01-13 14:58:12 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -63,10 +63,10 @@
   (define (customize-read-user-file)
     (unless customize-user-file-read
       (let ((filename
-	     (if (file-exists-p custom-user-file)
-		 custom-user-file
-	       (or (locate-file (concat custom-default-file ".jl") load-path)
-		   (error "Can't find custom-default-file")))))
+	     (cond ((file-exists-p custom-user-file) custom-user-file)
+		   ((file-exists-p custom-default-file) custom-default-file)
+		   (t (error "Can't find custom-default-file: %s"
+			     custom-default-file)))))
 	(setq customize-user-forms nil)
 	(when (file-exists-p filename)
 	  (let ((file (open-file filename 'read)))

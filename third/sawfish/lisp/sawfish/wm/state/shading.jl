@@ -1,5 +1,5 @@
 ;; shading.jl -- window ``shading''
-;; $Id: shading.jl,v 1.1.1.1 2000-11-12 06:27:48 ghudson Exp $
+;; $Id: shading.jl,v 1.1.1.2 2001-01-13 14:59:00 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -95,10 +95,18 @@ state."
 
   (define (shading-add-window w)
     (when (window-get w 'shaded)
-      (window-put w 'shaded nil)
-      (shade-window w)))
+      (window-put w 'hide-client t)))
 
   (add-hook 'add-window-hook shading-add-window t)
+
+  (define (shading-after-swap-in w space)
+    (unless (eq (window-get w 'shaded)
+		(window-get w 'hide-client))
+      (window-put w 'hide-client (window-get w 'shaded))
+      (reframe-window w)))
+
+  (add-hook 'after-workspace-swap-in-hook shading-after-swap-in)
+
   (sm-add-saved-properties 'shaded)
   (add-swapped-properties 'shaded)
 

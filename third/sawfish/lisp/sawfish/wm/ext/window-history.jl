@@ -1,5 +1,5 @@
 ;; window-history.jl -- store state across window instances
-;; $Id: window-history.jl,v 1.1.1.1 2000-11-12 06:27:36 ghudson Exp $
+;; $Id: window-history.jl,v 1.1.1.2 2001-01-13 14:58:07 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -54,6 +54,7 @@
 	  sawfish.wm.workspace
 	  rep.data.tables
 	  sawfish.wm.menus
+	  sawfish.wm.state.maximize
 	  sawfish.wm.ext.match-window)
 
   (define-structure-alias window-history sawfish.wm.ext.window-history)
@@ -70,7 +71,7 @@
   (define window-history-dirty nil)
 
   ;; list of states in window-state-change-hook that should be tracked
-  (defvar window-history-states '(sticky ignored never-focus type
+  (defvar window-history-states '(sticky ignored never-focus type maximized
 				  frame-style cycle-skip window-list-skip))
   
   ;; property matched on
@@ -103,6 +104,12 @@
     :group placement
     :type boolean
     :require sawfish.wm.ext.window-history)
+
+  (defcustom window-history-ignore-transients t
+    "Don't automatically remember details of transient windows."
+    :group placement
+    :type boolean
+    :user-level expert)
 
 
 ;;; matching windows
@@ -153,7 +160,8 @@
 ;;; recording attributes
 
   (define (window-history-snapshotter w state)
-    (unless (window-get w 'no-history)
+    (unless (or (window-get w 'no-history)
+		(and window-history-ignore-transients (window-transient-p w)))
       (let* ((alist (window-history-ref w))
 	     (value (if (get state 'window-history-snapshotter)
 			((get state 'window-history-snapshotter) w)
@@ -169,6 +177,16 @@
 
   (put 'position 'window-history-snapshotter window-absolute-position)
   (put 'dimensions 'window-history-snapshotter window-dimensions)
+
+  (put 'maximized 'window-history-snapshotter
+       (lambda (w)
+	 (if (window-maximized-horizontally-p w)
+	     (if (window-maximized-vertically-p w)
+		 'both
+	       'horizontal)
+	   (if (window-maximized-vertically-p w)
+	       'vertical
+	     nil))))
 
   (define (window-history-position-snapshotter w)
     (when (and window-history-auto-save-position
@@ -190,12 +208,15 @@
 ;;; manual state recording
 
   (defun window-history-save-position (w)
+    "Remember the current position of the focused window."
     (window-history-snapshotter w 'position))
 
   (defun window-history-save-dimensions (w)
+    "Remember the current dimensions of the focused window."
     (window-history-snapshotter w 'dimensions))
 
   (defun window-history-save-attributes (w)
+    "Remember the current attributes of the focused window."
     (mapc (lambda (state)
 	    (window-history-snapshotter w state))
 	  window-history-states))
@@ -249,9 +270,19 @@
     (mapc (lambda (sym)
 	    (let ((tem (cdr (assq sym alist))))
 	      (when tem
-		(window-put w sym tem))))
+		(let ((setter (get sym 'window-history-setter)))
+		  (if setter
+		      (setter w tem)
+		    (window-put w sym tem))))))
 	  window-history-states)
     (call-window-hook 'sm-restore-window-hook w (list alist)))
+
+  (put 'maximized 'window-history-setter
+       (lambda (w value)
+	 (when (memq value '(both vertical))
+	   (window-put w 'queued-vertical-maximize t))
+	 (when (memq value '(both horizontal))
+	   (window-put w 'queued-horizontal-maximize t))))
 
 
 ;;; saving and loading state
@@ -291,6 +322,13 @@
 			    window-history-state)
 		(setq window-history-dirty nil))
 	    (close-file file))))))
+
+  (define (window-history-clear)
+    "Forget all saved window history."
+    (setq window-history-state (make-table equal-hash equal))
+    (setq window-history-dirty t))
+
+  (define-command 'window-history-clear window-history-clear)
 
   (define (print-alist stream alist)
     (if (null alist)

@@ -1,6 +1,6 @@
 #| nokogiri-widget.jl -- high-level widget encapsulation
 
-   $Id: widget.jl,v 1.1.1.1 2000-11-12 06:27:43 ghudson Exp $
+   $Id: widget.jl,v 1.1.1.2 2001-01-13 14:58:49 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -188,18 +188,18 @@
   (define (make-choice-item changed-callback . options)
     (let ((omenu (gtk-option-menu-new))
 	  (menu (gtk-menu-new))
-	  value)
+	  (value (or (caar options) (car options))))
       (let loop ((rest options)
 		 (last nil))
 	(when rest
 	  (let ((button (gtk-radio-menu-item-new-with-label-from-widget
-			 last (symbol-name (car rest)))))
+			 last (_ (or (cadar rest) (symbol-name (car rest)))))))
 	    (gtk-menu-append menu button)
 	    (gtk-widget-show button)
 	    (gtk-signal-connect button "toggled"
 				(lambda (w)
 				  (when (gtk-check-menu-item-active w)
-				    (setq value (car rest))
+				    (setq value (or (caar rest) (car rest)))
 				    (call-callback changed-callback))))
 	    (loop (cdr rest) button))))
       (gtk-option-menu-set-menu omenu menu)
@@ -208,7 +208,7 @@
 	(case op
 	  ((set) (lambda (x)
 		   (setq value x)
-		   (let ((idx (list-index options x)))
+		   (let ((idx (option-index options x)))
 		     (gtk-option-menu-set-history omenu idx)
 		     (do ((i 0 (1+ i))
 			  (rest (gtk-container-children menu) (cdr rest)))
@@ -217,23 +217,24 @@
 	  ((clear) nop)
 	  ((ref) (lambda () value))
 	  ((gtk-widget) omenu)
-	  ((validp) (lambda (x) (memq x options)))))))
+	  ((validp) (lambda (x) (option-index options x)))))))
 
   (define-widget-type 'choice make-choice-item)
 
   (define (make-symbol-item changed-callback #!rest options)
     (let ((widget (gtk-combo-new)))
+      (when options
+	(gtk-combo-set-popdown-strings
+	 widget (cons "" (mapcar symbol-name options))))
       (when changed-callback
 	(gtk-signal-connect
 	 (gtk-combo-entry widget)
 	 "changed" (make-signal-callback changed-callback)))
-      (when options
-	(gtk-combo-set-popdown-strings
-	 widget (cons "" (mapcar symbol-name options))))
       (gtk-widget-show widget)
       (lambda (op)
 	(case op
 	  ((set) (lambda (x)
+		   ;; Can't i18n'ize these strings..
 		   (gtk-entry-set-text (gtk-combo-entry widget)
 				       (if x (symbol-name x) ""))))
 	  ((clear) (lambda ()
@@ -438,6 +439,7 @@
   (define (make-labelled-item changed-callback label item)
     (let ((box (gtk-hbox-new nil box-spacing)))
       (setq item (make-widget item changed-callback))
+      ;; XXX i18n the label string?
       (gtk-box-pack-start box (gtk-label-new label))
       (gtk-container-add box (widget-gtk-widget item))
       (gtk-widget-show-all box)
@@ -460,7 +462,7 @@
 	 (set-widget-enabled item (gtk-toggle-button-active check))
 	 (call-callback changed-callback)))
       (gtk-toggle-button-set-state check nil)
-      (gtk-widget-set-sensitive (widget-gtk-widget item) nil)
+      (disable-widget item)
       (gtk-widget-show-all box)
       (lambda (op)
 	(case op
@@ -500,7 +502,7 @@
 ;;; widget used for unknown widget types
 
   (define (make-unknown-item changed-callback)
-    (let ((label (gtk-label-new (format nil "** unknown widget **  ")))
+    (let ((label (gtk-label-new (format nil (_ "** unknown widget **  "))))
 	  value)
       (gtk-widget-show label)
       (lambda (op)
@@ -518,8 +520,8 @@
 
   (define string->symbol intern)
 
-  (define (list-index lst x)
+  (define (option-index lst x)
     (let loop ((i 0) (rest lst))
       (cond ((null rest) nil)
-	    ((eq (car rest) x) i)
+	    ((eq (or (caar rest) (car rest)) x) i)
 	    (t (loop (1+ i) (cdr rest)))))))
