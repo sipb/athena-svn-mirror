@@ -1,20 +1,22 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = providers tests
+SUBDIRS = . providers tests
 
-libcamelincludedir = $(includedir)/camel
+libcamelincludedir = $(privincludedir)/camel
 
-sbin_PROGRAMS =	camel-lock-helper camel-index-control
+camellibexecdir = $(privlibexecdir)/camel
+camellibexec_PROGRAMS =	camel-lock-helper camel-index-control
 
-lib_LTLIBRARIES = libcamel.la
+privlib_LTLIBRARIES = libcamel.la
 noinst_LTLIBRARIES = libcamel-static.la
 
 INCLUDES = -I.. -I$(srcdir)/.. 			 	\
 	-I$(top_srcdir)/intl			 	\
 	-I$(top_srcdir)/e-util			 	\
-	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	\
+	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"	\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
 	-DG_LOG_DOMAIN=\"camel\"			\
+	-DG_DISABLE_DEPRECATED				\
 	$(CAMEL_CFLAGS)
 
 libcamel_la_SOURCES = 				\
@@ -47,15 +49,16 @@ libcamel_la_SOURCES = 				\
 	camel-http-stream.c			\
 	camel-index.c				\
 	camel-internet-address.c		\
+	camel-io.c				\
 	camel-lock.c				\
 	camel-lock-client.c			\
 	camel-medium.c				\
 	camel-mime-filter-bestenc.c		\
 	camel-mime-filter-basic.c		\
 	camel-mime-filter-charset.c		\
-	camel-mime-filter-chomp.c		\
 	camel-mime-filter-canon.c		\
 	camel-mime-filter-crlf.c		\
+	camel-mime-filter-enriched.c		\
 	camel-mime-filter-from.c		\
 	camel-mime-filter-html.c		\
 	camel-mime-filter-tohtml.c		\
@@ -110,13 +113,12 @@ libcamel_la_SOURCES = 				\
 	camel-transport.c			\
 	camel-uid-cache.c			\
 	camel-url.c				\
+	camel-url-scanner.c			\
 	camel-utf8.c				\
 	camel-vee-folder.c			\
 	camel-vee-store.c			\
 	camel-vtrash-folder.c			\
 	camel.c					\
-	gstring-util.c				\
-	hash-table-utils.c			\
 	string-utils.c
 
 libcamelinclude_HEADERS =			\
@@ -149,15 +151,17 @@ libcamelinclude_HEADERS =			\
 	camel-http-stream.h			\
 	camel-index.h				\
 	camel-internet-address.h		\
+	camel-io.h				\
+	camel-i18n.h				\
 	camel-lock.h				\
 	camel-lock-client.h			\
 	camel-medium.h				\
 	camel-mime-filter-bestenc.h		\
 	camel-mime-filter-basic.h		\
 	camel-mime-filter-charset.h		\
-	camel-mime-filter-chomp.h		\
 	camel-mime-filter-canon.h		\
 	camel-mime-filter-crlf.h		\
+	camel-mime-filter-enriched.h		\
 	camel-mime-filter-from.h		\
 	camel-mime-filter-html.h		\
 	camel-mime-filter-tohtml.h		\
@@ -211,16 +215,15 @@ libcamelinclude_HEADERS =			\
 	camel-types.h				\
 	camel-uid-cache.h			\
 	camel-url.h				\
+	camel-url-scanner.h			\
 	camel-utf8.h				\
 	camel-vee-folder.h			\
 	camel-vee-store.h			\
 	camel-vtrash-folder.h			\
 	camel.h					\
-	gstring-util.h				\
-	hash-table-utils.h			\
 	string-utils.h
 
-libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
+libcamel_la_LDFLAGS = -version-info 0:0:0
 
 libcamel_la_LIBADD =				\
 	$(top_builddir)/e-util/libeutil.la 	\
@@ -232,25 +235,27 @@ libcamel_static_la_LDFLAGS = --all-static
 
 camel_lock_helper_SOURCES = 			\
 	camel-lock-helper.c 			\
-	camel-lock-helper.h			\
-	camel-lock.c				\
-	camel-lock.h
+	camel-lock-helper.h
 
-camel_lock_helper_LDADD = $(INTLLIBS)
+# NOTE: This needs to be cleaned up, it shouldn't link with all this crap,
+# because it might be setuid.
+camel_lock_helper_LDADD =			\
+	camel-lock.o				\
+	$(libcamel_la_LIBADD)
 
 camel_index_control_SOURCES =			\
 	camel-index-control.c
 
 camel_index_control_LDADD =			\
 	$(libcamel_la_LIBADD)			\
-	libcamel.la				\
-	$(EVOLUTION_MAIL_LIBS)
+	libcamel.la
+#	$(EVOLUTION_MAIL_LIBS)
 
 install-exec-hook:
 	@if test -n "$(CAMEL_LOCK_HELPER_USER)"; then \
 	    if test `whoami` = root ; then \
-	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(sbindir)/camel-lock-helper ; \
-		chmod u+s $(DESTDIR)$(sbindir)/camel-lock-helper ; \
+	 	chown $(CAMEL_LOCK_HELPER_USER) $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
+		chmod u+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
@@ -264,14 +269,14 @@ install-exec-hook:
 	fi
 	@if test -n "$(CAMEL_LOCK_HELPER_GROUP)"; then \
 	    if test `whoami` = root ; then \
-	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(sbindir)/camel-lock-helper ; \
-		    chmod g+s $(DESTDIR)$(sbindir)/camel-lock-helper ; \
+	    	chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
+		    chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper ; \
 	    else \
 	    	echo '*** WARNING ***' ; \
 		    echo "Camel will not be able to open mbox files until you perform the following steps:" ; \
 		    echo "    1. Become root" ; \
-		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(sbindir)/camel-lock-helper" ; \
-		    echo "    3. chmod g+s $(DESTDIR)$(sbindir)/camel-lock-helper" ; \
+		    echo "    2. chgrp $(CAMEL_LOCK_HELPER_GROUP) $(DESTDIR)$(camellibexecdir)/camel-lock-helper" ; \
+		    echo "    3. chmod g+s $(DESTDIR)$(camellibexecdir)/camel-lock-helper" ; \
 		    echo '*** WARNING ***' ; \
 	    fi \
 	else \
@@ -285,4 +290,5 @@ noinst_HEADERS =				\
 	camel-html-parser.h
 
 EXTRA_DIST =					\
+	ChangeLog.pre-1-4			\
 	README
