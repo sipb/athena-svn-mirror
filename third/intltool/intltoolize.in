@@ -40,7 +40,8 @@ prefix=@prefix@
 datadir=@datadir@
 pkgdatadir=@pkgdatadir@
 
-intltool_m4="${datadir}/aclocal/intltool.m4"
+aclocaldir=${datadir}/aclocal
+intltool_m4="${aclocaldir}/intltool.m4"
 
 dry_run=no
 help="Try '$progname --help' for more information."
@@ -141,7 +142,7 @@ else
 fi
 
 
-files='intltool-extract.in intltool-merge.in intltool-update.in'
+files='intltool-extract.in intltool-merge.in intltool-update.in po/Makefile.in.in'
 
 auxdir=.
 auxdirline=`egrep '^AC_CONFIG_AUX_DIR' $configure 2>/dev/null`
@@ -179,9 +180,9 @@ else
 fi
 
 if test -z "$automake"; then
-  if egrep '^AC_PROG_INTLTOOL' $configure >/dev/null 2>&1; then :
+  if egrep '^(AC|IT)_PROG_INTLTOOL' $configure >/dev/null 2>&1; then :
   else
-    echo "Remember to add 'AC_PROG_INTLTOOL' to $configure."
+    echo "Remember to add 'IT_PROG_INTLTOOL' to $configure."
   fi
 
   if grep 'generated automatically by aclocal' aclocal.m4 >/dev/null 2>&1; then
@@ -190,15 +191,15 @@ if test -z "$automake"; then
     updatemsg="add the contents of '$intltool_m4' to 'aclocal.m4'"
   fi
 
-  if egrep '^AC_DEFUN\(AC_PROG_INTLTOOL' aclocal.m4 >/dev/null 2>&1; then
+  if egrep '^AC_DEFUN\(IT_PROG_INTLTOOL' aclocal.m4 >/dev/null 2>&1; then
     # Check the version number on intltool.m4 and the one used in aclocal.m4.
-    instserial=`grep '^# serial ' $intltool_m4 | grep 'AC_PROG_INTLTOOL' | sed -e 's/^# serial \([0-9][0-9]*\).*$/\1/; q'`
+    instserial=`grep '^# serial ' $intltool_m4 | grep 'IT_PROG_INTLTOOL' | sed -e 's/^# serial \([0-9][0-9]*\).*$/\1/; q'`
 
     if test -z "$instserial"; then
       echo "$progname: warning: no serial number on '$intltool_m4'" 1>&2
     else
       # If the local macro has no serial number, we assume it's ancient.
-      localserial=`grep '^# serial ' aclocal.m4 | grep 'AC_PROG_INTLTOOL' | sed -e 's/^# serial \([0-9][0-9]*\).*$/\1/; q'`
+      localserial=`grep '^# serial ' aclocal.m4 | grep 'IT_PROG_INTLTOOL' | sed -e 's/^# serial \([0-9][0-9]*\).*$/\1/; q'`
 
       test -z "$localserial" && localserial=0
 
@@ -235,10 +236,10 @@ for file in $files; do
   fi
 
   $rm $file
-  if test -n "$ln_s" && $ln_s $pkgdatadir/$file $file; then :
-  elif $cp $pkgdatadir/$file $file; then :
+  if test -n "$ln_s" && $ln_s $pkgdatadir/`basename $file` $file; then :
+  elif $cp $pkgdatadir/`basename $file` $file; then :
   else
-    echo "$progname: cannot copy '$pkgdatadir/$file' to '$file'" 1>&2
+    echo "$progname: cannot copy '$pkgdatadir/`basename $file`' to '$file'" 1>&2
     status=1
   fi
 done
@@ -246,6 +247,24 @@ done
 exit $status
 # make sure this subshell exits with the exit value if it failed
 ) || exit $?
+
+
+# If the AC_CONFIG_MACRO_DIR() macro is used, copy intltool.m4 from our
+# prefix to that directory.  This makes sure that the M4 macro used
+# matches the intltool scripts we install.
+# If AC_CONFIG_MACRO_DIR is not used, things will behave as before (aclocal
+# will be used to pull in the macro.
+m4dir=`cat "$configure" | grep '^AC_CONFIG_MACRO_DIR' | sed -n -e 's/AC_CONFIG_MACRO_DIR(\([^()]*\))/\1/p' | sed -e 's/^\[\(.*\)\]$/\1/' | sed -e 1q`
+if test -n "$m4dir"; then
+  rm -f $m4dir/intltool.m4
+  if test -n "$ln_s" && $ln_s $intltool_m4 $m4dir/intltool.m4; then :
+  elif $cp $intltool_m4 $m4dir/intltool.m4; then :
+  else
+    echo "$progname: cannot copy '$intltool_m4' to '$m4dir/intltool.m4'" 1>&2
+    exit 1
+  fi
+fi
+
 
 # FIXME: This probably does not work w/ builddir != srcdir because it
 # gets at source files relative to the current directory.

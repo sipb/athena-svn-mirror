@@ -40,9 +40,8 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/intltool-merge.in.in $(srcdir)/intltool-prepare.in \
 	$(srcdir)/intltool-unicodify.in \
 	$(srcdir)/intltool-update.in.in $(srcdir)/intltool.spec.in \
-	$(srcdir)/intltoolize.in $(srcdir)/xml-i18n-toolize.in \
-	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO install-sh missing
+	$(srcdir)/intltoolize.in $(top_srcdir)/configure AUTHORS \
+	COPYING ChangeLog INSTALL NEWS TODO install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -52,7 +51,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(mkdir_p)
 CONFIG_CLEAN_FILES = intltool-extract.in intltool-merge.in \
 	intltool-prepare intltool-unicodify intltool-update.in \
-	intltool.spec intltoolize xml-i18n-toolize
+	intltool.spec intltoolize
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(aclocaldir)" "$(DESTDIR)$(pkgdatadir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
@@ -99,6 +98,10 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INTLTOOL_ICONV = @INTLTOOL_ICONV@
+INTLTOOL_MSGFMT = @INTLTOOL_MSGFMT@
+INTLTOOL_MSGMERGE = @INTLTOOL_MSGMERGE@
+INTLTOOL_XGETTEXT = @INTLTOOL_XGETTEXT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
@@ -138,12 +141,11 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = tests doc doc-i18n-tool
+SUBDIRS = tests doc
 NULL = 
-aclocal_macros = intltool.m4 xml-i18n-tools.m4
+aclocal_macros = intltool.m4
 CLEANFILES = \
 	intltoolize				\
-	xml-i18n-toolize			\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
@@ -151,26 +153,15 @@ CLEANFILES = \
 	intltool-merge				\
 	intltool-prepare			\
 	intltool-update				\
-	*.gz					\
 	$(NULL)
 
 
-# These are required by intltoolize and xml-i18n-toolize.
+# These are required by intltoolize and
 pkgdata_DATA = \
+	Makefile.in.in				\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
-	intltool-po-Makefile.in.in-patch-1	\
-	intltool-po-Makefile.in.in-patch-2	\
-	intltool-po-Makefile.in.in-patch-3	\
-	intltool-po-Makefile.in.in-patch-4	\
-	intltool-po-Makefile.in.in-patch-5	\
-	intltool-po-Makefile.in.in-patch-6	\
-	intltool-po-Makefile.in.in-patch-7	\
-	intltool-po-Makefile.in.in-patch-8	\
-	xml-i18n-po-Makefile.in.in-patch-1	\
-	xml-i18n-po-Makefile.in.in-patch-2	\
-	xml-i18n-po-Makefile.in.in-patch-5	\
 	$(NULL)
 
 
@@ -180,7 +171,6 @@ aclocal_DATA = $(aclocal_macros)
 # The intltool distributor and installed versions of scripts
 bin_SCRIPTS = \
 	intltoolize				\
-	xml-i18n-toolize			\
 	intltool-update				\
 	intltool-merge				\
 	intltool-extract			\
@@ -190,12 +180,12 @@ bin_SCRIPTS = \
 EXTRA_DIST = \
 	$(aclocal_macros)			\
 	intltoolize.in				\
-	xml-i18n-toolize.in			\
 	intltool-extract.in.in			\
 	intltool-merge.in.in			\
 	intltool-update.in.in			\
 	intltool-prepare.in			\
 	intltool.spec.in			\
+	intltool.spec				\
 	$(pkgdata_DATA)				\
 	$(NULL)
 
@@ -248,8 +238,6 @@ intltool-update.in: $(top_builddir)/config.status $(srcdir)/intltool-update.in.i
 intltool.spec: $(top_builddir)/config.status $(srcdir)/intltool.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 intltoolize: $(top_builddir)/config.status $(srcdir)/intltoolize.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-xml-i18n-toolize: $(top_builddir)/config.status $(srcdir)/xml-i18n-toolize.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -469,9 +457,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) \
-	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
-	  dist-hook
 	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
 	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
 	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
@@ -671,11 +656,14 @@ uninstall-info: uninstall-info-recursive
 	uninstall-binSCRIPTS uninstall-info-am uninstall-pkgdataDATA
 
 
-dist-hook:
-	cp intltool.spec $(distdir)
-
 %: %.in Makefile
-	sed -e "s:@INTLTOOL_PERL@:$(PERL):;" < $< > $@
+	sed -e "s#@INTLTOOL_PERL@#$(PERL)#g" \
+	    -e "s#@INTLTOOL_ICONV@#$(INTLTOOL_ICONV)#g" \
+	    -e "s#@INTLTOOL_MSGFMT@#$(INTLTOOL_MSGFMT)#g" \
+	    -e "s#@INTLTOOL_MSGMERGE@#$(INTLTOOL_MSGMERGE)#g" \
+	    -e "s#@INTLTOOL_XGETTEXT@#$(INTLTOOL_XGETTEXT)#g" \
+	    -e "s#@INTLTOOL_EXTRACT@#$(bindir)/intltool-extract#g" \
+	    < $< > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

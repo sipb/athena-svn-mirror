@@ -1,6 +1,6 @@
 # Note this is NOT a relocatable thing :)
 %define name		intltool
-%define ver		0.31.2
+%define ver		0.33
 %define RELEASE		1
 %define rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 

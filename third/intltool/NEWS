@@ -1,3 +1,74 @@
+Version 0.33
+
+* Fix support for srcdir != builddir during make dist/distcheck
+  -- bug #159846 (Rodney Dawes)
+* Ignore empty strings in XML files that are marked for translation
+  -- bug #163689 (Miloslav Trmac)
+* Add support for AC_CONFIG_MACRO_DIR to intltoolize
+  -- bug #160943 (James Henstridge)
+* Re-implement "echo -n" in perl for portability
+  -- bug #162027 (Rodney Dawes)
+* Fix local mode
+  -- bug #163981 (Jeremy Katz)
+* Fix nested XML tags translation when only attributes are marked for 
+  translation in a tag
+  -- bug #159511 (Danilo Segan)
+* Use # as sed separator and prefix gettext variable names with INTLTOOL
+  -- bug #156454 (Rodney Dawes)
+* Update serial and serial comparison check for IT_PROG_INTLTOOL to 2
+  (Rodney Dawes)
+* Support CDATA sections in XML files
+  -- bug #157718 (Danilo Segan, Rodney Dawes)
+
+Version 0.32.1
+
+* Deprecate --pass-through option, default to UTF-8 for anything
+  except RFC822 files
+  -- bug #145017 (Danilo Segan)
+* Add support for .icon files
+  -- bug #157412 (Takao Fujiwara, Rodney Dawes)
+
+Version 0.32
+
+* Check to avoid whining about {arch} and $PACKAGE-$VERSION dist directories
+  when looking for files missing from POTFILES.in
+  -- bug #157278 (Rodney Dawes)
+* Deprecate AC_PROG_INTLTOOL for IT_PROG_INTLTOOL
+  -- bug #151508 (Rodney Dawes)
+* Add new INTLTOOL_XML_NOMERGE_RULE for translating XML files without
+  merging the translations back into the output XML file
+  -- bug #155842 (Rodney Dawes)
+* Fix new Makefile.in.in stuff to work with automake 1.4
+  -- bug #157298 (Rodney Dawes)
+* Update I18N-HOWTO for the changes to use our own Makefile.in.in
+  -- bug #79598 (Rodney Dawes)
+* Allow use of either AM_GNU_GETTEXT or AM_GLIB_GNU_GETTEXT and use our
+  own Makefile.in.in instead of trying to patch one
+  -- bug #144715 (Rodney Dawes)
+* Handle all supported gettext escape sequences in PO files
+  -- bug #48489 (Danilo Segan)
+* Fix Scheme string extraction, add support for translators' comments
+  -- bug #137029 (Danilo Segan)
+* Fix translations of attributes of XML elements
+  -- bug #155843 (Danilo Segan)
+* Support for translators' comments in Glade files
+  -- bug #155294 (Danilo Segan)
+* Fix paths and quoting for intltool script variables in intltool.m4
+  -- bug #154717 (James Henstridge, Rodney Dawes)
+* Fix merging of xml:space="preserve" tags
+  -- bug #151017 (Danilo Segan).
+* Look for Q_() keyword as well
+  -- bug #154063 (Danilo Segan).
+
+Version 0.31.3
+
+* Use absolute paths and allow env var overrides for gettext scripts
+  -- bug #152020 (Rodney Dawes)
+* Allow shell-backticks (and other shell features) in variable names
+  -- bug #152448 (Danilo Segan)
+* Fix typographical error in intltool.m4
+  -- bug #153630 (Rodney Dawes)
+
 Version 0.31.2
 
 * Handle package name extraction better

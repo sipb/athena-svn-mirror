@@ -5,7 +5,9 @@ If you have problems understanding this README file, then please report
 these in bugzilla.gnome.org, intltool module. Also, patches are very 
 welcome.
 
-Discussion about intltool takes place on intltool@freedesktop.org - you will find subscribtion information, as well as other intltool related information on http://intltool.freedesktop.org 
+Discussion about intltool takes place on intltool mailing list at
+freedesktop.org - you can find subscribtion information and archives at:
+http://lists.freedesktop.org/mailman/listinfo/intltool
 
 The intltool collection can be used to do these things:
 

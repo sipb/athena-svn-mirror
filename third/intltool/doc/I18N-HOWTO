@@ -80,8 +80,8 @@ int main (void) {
 5. After that we do the big i18n trick :-), also in the toplevel
    directory.
 
-   gettextize --force --copy    # created po/ dir with some files
    intltoolize 		        # bring in the perl helper scripts
+   				# and our Makefile.in.in for the po directory
 
 6. Run autoheader which will create config.h.in
 
@@ -93,10 +93,12 @@ int main (void) {
     Putting them after the checks for library functions is a good idea.
 
     AC_PROG_INTLTOOL(0.26)
-    AM_GNU_GETTEXT([external])
+
+    AM_GNU_GETTEXT([external])		# Only one of these two macro calls
+    AM_GLIB_GNU_GETTEXT			# is needed to set up your project
+
     ALL_LINGUAS="da nl"                 # Internationalization, means there is 
 					# a .po file for danish and dutch.
-    AM_GLIB_GNU_GETTEXT
 
     AC_OUTPUT(
 	Makefile
@@ -115,9 +117,12 @@ int main (void) {
     AM_GNU_GETTEXT will check for additional required functions and
     programs and will finally create po/POTFILES during configure.
 
-    Instead of using AM_GLIB_GNU_GETTEXT you can do the following:
+    Instead of AM_GNU_GETTEXT you can use AM_GLIB_GNU_GETTEXT, which
+    will do a few less things than AM_GNU_GETTEXT, but does more than
+    enough for what intltool needs to work.
 
-    [sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile] 
+    You do NOT need to use both AM_GNU_GETTEXT and AM_GLIB_GNU_GETTEXT
+    together though. Only one of them will suffice.
 
     The text domain is identified by PACKAGE.  We will need to add a few
     functions later on to helloworld.c that will use this #define'd variable.
@@ -164,7 +169,7 @@ int main (void) {
             /* Original Helloworld code here */
     }
 
-    If you use GNOME og GTK+ the setlocale sentence shouldn't be needed
+    If you use GNOME or GTK+ the setlocale sentence shouldn't be needed
 
     We also substitute all strings we want to be translated with 
     _("original string") to make sure that gettext is run on the strings.
