@@ -1,0 +1,6 @@
+all::
+	$(RM) *_err.h
+	ln -s ../ets/?*_err.h ./
+
+clean::
+	$(RM) *_err.h fx_prot.h *~
