@@ -260,21 +260,6 @@ print_exit_status (int status)
 }
 #endif
 
-#ifdef HAVE_STRSIGNAL
-#define oaf_strsignal strsignal
-#else
-static char *
-oaf_strsignal (int sig)
-{
-	if (sig < NSIG)
-		return _sys_siglist[sig];
-	else
-		return "Unknown signal";
-
-}
-#endif
-
-
 static 
 void oaf_setenv (const char *name, const char *value) 
 {
@@ -292,7 +277,8 @@ void oaf_setenv (const char *name, const char *value)
 CORBA_Object
 oaf_server_by_forking (const char **cmd, 
                        int fd_arg, 
-                       const char *display, 
+                       const char *display,
+		       const char *od_iorstr,
                        CORBA_Environment * ev)
 {
 	gint iopipes[2];
@@ -343,8 +329,8 @@ oaf_server_by_forking (const char **cmd,
 				g_snprintf (cbuf, sizeof (cbuf),
 					    _("Child received signal %u (%s)"),
 					    WTERMSIG (status),
-					    oaf_strsignal (WTERMSIG
-							   (status)));
+					    g_strsignal (WTERMSIG
+                                                         (status)));
 			else
 				g_snprintf (cbuf, sizeof (cbuf),
 					    _("Unknown non-exit error (status is %u)"),
@@ -404,9 +390,10 @@ oaf_server_by_forking (const char **cmd,
 	} else if ((childpid = fork ())) {
 		_exit (0);	/* de-zombifier process, just exit */
 	} else {
-                if (display != NULL) {
-                        oaf_setenv ("DISPLAY", display);
-                }
+                if (display)
+		  oaf_setenv ("DISPLAY", display);
+		if (od_iorstr)
+		  oaf_setenv ("OAF_OD_IOR", od_iorstr);
                 
 
 		close (iopipes[0]);
@@ -734,7 +721,7 @@ rloc_file_check (const OAFRegistrationLocation * regloc,
 	if (fh)
 		goto useme;
 
-      useme:
+	useme:
 	if (fh) {
 		char iorbuf[8192];
 
