@@ -3,13 +3,14 @@
 # This is normally exected by /etc/rc and each time a workstation is
 # activated.
 #
-# $Id: save_cluster_info.sh,v 1.11 1996-06-17 17:20:43 ghudson Exp $
+# $Id: save_cluster_info.sh,v 1.11.1.1 1996-06-28 04:44:24 cfields Exp $
 #
 # Use old data from last session if getcluster fails.
 
 PATH=/bin:/usr/ucb:/usr/bsd; export PATH
 
 . /etc/athena/rc.conf
+HOSTNAME=`uname -n`
 VERSION=`awk '{vers = $5}; END {print vers}' /etc/athena/version`
 
 if [ "${VERSION}" = "Update" ]; then
@@ -18,13 +19,13 @@ if [ "${VERSION}" = "Update" ]; then
 	exit 1
 fi
 
-/bin/athena/getcluster -b ${HOST} ${VERSION} > /tmp/clusterinfo.bsh
+/bin/athena/getcluster -b ${HOSTNAME} ${VERSION} > /tmp/clusterinfo.bsh
 if [ $? -eq 0 -a -s /tmp/clusterinfo.bsh ]
 then
 	cp /tmp/clusterinfo.bsh /etc/athena/clusterinfo.bsh
 	chmod 644 /etc/athena/clusterinfo.bsh 2>/dev/null
 fi
-/bin/athena/getcluster ${HOST} ${VERSION} > /tmp/clusterinfo
+/bin/athena/getcluster ${HOSTNAME} ${VERSION} > /tmp/clusterinfo
 if [ $? -eq 0 -a -s /tmp/clusterinfo ]
 then
 	cp /tmp/clusterinfo /etc/athena/clusterinfo
