@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.44 1992-08-17 19:57:06 lwvanels Exp $
+ *	$Id: bdump.c,v 1.45 1992-08-26 04:36:01 lwvanels Exp $
  *	$Author: lwvanels $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -16,7 +16,7 @@
  
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.44 1992-08-17 19:57:06 lwvanels Exp $";
+static char rcsid_bdump_c[] = "$Id: bdump.c,v 1.45 1992-08-26 04:36:01 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
  
@@ -218,7 +218,11 @@ bdump_offer(who)
  */
  
 void
+#ifdef __STDC__
 bdump_send(void)
+#else
+bdump_send()
+#endif
 {
 	struct sockaddr_in from;
 	ZServerDesc_t *server;

@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_common_c[] =
-    "$Id: common.c,v 1.9 1991-12-04 13:26:00 lwvanels Exp $";
+    "$Id: common.c,v 1.10 1992-08-26 04:36:09 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -32,7 +32,12 @@ static char rcsid_common_c[] =
 /* copy the string into newly allocated area */
 
 char *
+#ifdef __STDC__
 strsave (Zconst char *sp)
+#else
+strsave (sp)
+     Zconst char *sp;
+#endif
 {
     register char *ret;
 
@@ -47,7 +52,12 @@ strsave (Zconst char *sp)
 /* generic string hash function */
 
 unsigned long
+#ifdef __STDC__
 hash (Zconst char *string)
+#else
+hash (string)
+     Zconst char *string;
+#endif
 {
 	register unsigned long hval = 0;
 	register char cp;

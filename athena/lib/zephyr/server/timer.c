@@ -12,7 +12,7 @@
 #ifndef SABER
 #ifndef lint
 static char rcsid[] =
-    "$Id: timer.c,v 1.11 1991-12-04 13:25:38 lwvanels Exp $";
+    "$Id: timer.c,v 1.12 1992-08-26 04:34:55 lwvanels Exp $";
 #endif /* lint */
 #endif /* SABER */
 
@@ -90,7 +90,11 @@ static void timer_botch P((void*)), insert_timer P((timer)),
 
 timer timer_set_rel (time_rel, proc, arg)
      long time_rel;
+#ifdef __STDC__
      void (*proc)(void*);
+#else
+     void (*proc)();
+#endif
      void *arg;
 {
 	timer new_t;

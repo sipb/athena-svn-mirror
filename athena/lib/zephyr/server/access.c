@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static char rcsid_access_c[] =
-    "$Id: access.c,v 1.14 1992-08-14 12:15:31 lwvanels Exp $";
+    "$Id: access.c,v 1.15 1992-08-26 04:36:25 lwvanels Exp $";
 #endif
 
 /*
@@ -179,9 +179,13 @@ check_acl_type(acl, accesstype, typeflag)
  * the acl_types field will be left at zero, since there will be no
  * acl files for the (non-)restricted class.
  */
-
 static void
+#ifdef __STDC__
 access_setup (int first)
+#else
+access_setup(first)
+     int first;
+#endif
 {
 	char buf[MAXPATHLEN];
 	char class_name[512];		/* assume class names <= 511 bytes */
@@ -240,13 +244,21 @@ access_setup (int first)
 }
 
 void
+#ifdef __STDC__
 access_init (void)
+#else
+access_init()
+#endif
 {
     access_setup (1);
 }
 
 void
+#ifdef __STDC__
 access_reinit (void)
+#else
+access_reinit()
+#endif
 {
     acl_cache_reset ();
     access_setup (0);
