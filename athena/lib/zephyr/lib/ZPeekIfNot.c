@@ -6,14 +6,14 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v $
  *	$Author: jtkohl $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.8 1988-06-23 10:32:11 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.9 1988-06-29 16:40:43 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.8 1988-06-23 10:32:11 jtkohl Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.9 1988-06-29 16:40:43 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -34,14 +34,13 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
     if ((retval = Z_WaitForComplete()) != ZERR_NONE)
 	return (retval);
     
-    qptr = Z_GetFirstComplete();
-    
     for (;;) {
+	qptr = Z_GetFirstComplete();
 	while (qptr) {
 	    if ((retval = ZParseNotice(qptr->packet, qptr->packet_len, 
 				       &tmpnotice)) != ZERR_NONE)
 		return (retval);
-	    if ((predicate)(&tmpnotice, args)) {
+	    if ((*predicate)(&tmpnotice, args)) {
 		if (!(buffer = malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
 		bcopy(qptr->packet, buffer, qptr->packet_len);

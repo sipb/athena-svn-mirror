@@ -6,14 +6,14 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
  *	$Author: jtkohl $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.7 1988-06-17 17:13:53 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.8 1988-06-29 16:41:02 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.7 1988-06-17 17:13:53 jtkohl Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.8 1988-06-29 16:41:02 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -34,7 +34,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     newnotice = *notice;
     newnotice.z_auth = 1;
     newnotice.z_authent_len = 0;
-    newnotice.z_ascii_authent = (char *)"";
+    newnotice.z_ascii_authent = "";
 	
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
 				    &hdrlen, &ptr)) != ZERR_NONE)

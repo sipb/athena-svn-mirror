@@ -6,14 +6,14 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v $
  *	$Author: jtkohl $
  *
- *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
+ *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.8 1988-06-23 10:30:16 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.9 1988-06-29 16:40:56 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.8 1988-06-23 10:30:16 jtkohl Exp $";
+static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.9 1988-06-29 16:40:56 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -41,7 +41,7 @@ Code_t ZIfNotice(notice, from, predicate, args)
 	    if ((retval = ZParseNotice(qptr->packet, qptr->packet_len, 
 				       &tmpnotice)) != ZERR_NONE)
 		return (retval);
-	    if ((predicate)(&tmpnotice, args)) {
+	    if ((*predicate)(&tmpnotice, args)) {
 		if (!(buffer = malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
 		bcopy(qptr->packet, buffer, qptr->packet_len);
@@ -52,7 +52,8 @@ Code_t ZIfNotice(notice, from, predicate, args)
 		    free(buffer);
 		    return (retval);
 		}
-		return (Z_RemQueue(qptr));
+		Z_RemQueue(qptr);
+		return (ZERR_NONE);
 	    }
 	    qptr = Z_GetNextComplete(qptr);
 	}
