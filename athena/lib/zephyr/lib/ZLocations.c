@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: jfc $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.29 1990-12-12 02:09:35 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.30 1990-12-20 03:04:39 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.29 1990-12-12 02:09:35 jfc Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.30 1990-12-20 03:04:39 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -136,14 +136,14 @@ Z_SendLocation(class, opcode, auth, format)
     if ((retval = ZSendList(&notice, bptr, 3, auth)) != ZERR_NONE)
 	return (retval);
 
-    tv.tv_sec = HM_TIMEOUT;
+    tv.tv_sec = SRV_TIMEOUT;
     tv.tv_usec = 0;
     FD_ZERO (&fdmask);
     zfd = ZGetFD();
-    FD_SET (zfd, &fdmask);
     gettimeofday (&t0, 0);
-    t0.tv_sec += HM_TIMEOUT;
+    t0.tv_sec += SRV_TIMEOUT;
     while (1) {
+	FD_SET (zfd, &fdmask);
 	i = select (zfd + 1, &fdmask, (fd_set *) 0, (fd_set *) 0, &tv);
 	if (i > 0) {
 	    retval = ZCheckIfNotice (&retnotice, (struct sockaddr_in*) 0,
