@@ -11,7 +11,6 @@ telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a cred
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
 klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
 eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k -e
-rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
 busypoll dgram	udp	wait	unswitched	nobody	/etc/athena/busyd	busyd
 athinfo	stream	tcp	nowait	unswitched	root	/etc/athena/athinfod	athinfod

@@ -10,7 +10,6 @@ login	stream	tcp	nowait	switched	root	/usr/sbin/in.rlogind	in.rlogind
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
 klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
 eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k -e
-rkinit	stream	tcp	nowait	switched	root	/usr/athena/etc/rkinitd rkinitd
 finger	stream	tcp	nowait	unswitched	daemon	/usr/sbin/in.fingerd	fingerd
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
 busypoll dgram	udp	wait	unswitched	nobody	/etc/athena/busyd	busyd
