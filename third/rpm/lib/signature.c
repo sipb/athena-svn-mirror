@@ -27,6 +27,7 @@
 /*@access FD_t@*/		/* XXX compared with NULL */
 
 typedef int (*md5func)(const char * fn, /*@out@*/ byte * digest);
+extern char **environ;
 
 int rpmLookupSignatureType(int action)
 {
