@@ -15,8 +15,13 @@ lprm \- remove jobs from the line printer spooling queue
 ] [
 .B \-
 ] [
-job # ...
+.B -k
 ] [
+.B -u
+] [
+job # ...
+]
+ [
 user ...
 ]
 .SH DESCRIPTION
@@ -81,7 +86,7 @@ option may be used to specify a printer. If no
 .B \-P
 is specified, the printer name contained in the environment variable
 .B PRINTER
- is used.  If 
+is used.  If 
 .B PRINTER  
 is not set, the default printer for the
 cluster whose name is contained in the environment variable 
@@ -91,8 +96,14 @@ used (see
 .IR getcluster (8)).
 If
 .B LPR
-  is not set, the default printer for the local cluster is used.
-
+is not set, the default printer for the local cluster is used.
+.PP
+The
+.B \-k 
+and
+.B \-u
+options may be used to eithe enable/disable the sending of Kerberos
+authentication to the server. These flags should never need to be used.
 .SH FILES
 .nf
 .ta \w'/usr/spool/*/lock   'u
@@ -104,6 +115,7 @@ If
 .SH "SEE ALSO"
 lpr(1),
 lpq(1),
+kerberos(1),
 lpd(8)
 .SH DIAGNOSTICS
 ``Permission denied" if the user tries to remove files other than his
