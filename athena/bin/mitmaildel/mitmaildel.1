@@ -1,0 +1,93 @@
+.\" 
+.\" $Id: mitmaildel.1,v 1.1 2004-01-21 23:15:10 rbasch Exp $
+.\"
+.TH MITMAILDEL 1 
+.SH NAME
+mitmaildel, mitmailundel \- delete or undelete messages in an IMAP folder
+.SH SYNOPSIS
+.B mitmaildel | mitmailundel
+[
+.B \--by-uid
+] [
+.B \--debug
+] [
+.B \--expunge
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+] [
+.B \--silent
+]
+.I message-ID
+[ ... ]
+.SH DESCRIPTION
+The 
+.I mitmaildel
+program 
+marks the specified messages for deletion from a folder on an IMAP
+server.  If the
+.B \--expunge
+option is given, all deleted messages are permanently removed from the
+mailbox; otherwise, messages marked for deletion remain in the mailbox.
+
+The
+.I mitmailundel
+command unmarks the specified messages for deletion.
+.SH OPTIONS
+.I mitmaildel
+and
+.I mitmailundel
+understand the following options:
+.TP
+.B \--by-uid
+specify that the given message ID arguments are unique identifiers, not
+sequence numbers.
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--epxunge
+expunge the maibox after marking (or unmarking) the specified messages,
+permanently removing all deleted messages.  This option should be used
+with caution, as the message sequence numbers change upon an expunge;
+when performing multiple invocations of \fImitmaildel\fR, it is best to
+expunge the mailbox only once, with \fImitmailexp(1)\fR, after marking
+messages as desired.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+.B \--mailbox \fIname\fR
+mark messages in the IMAP folder \fIname\fR.  If this option is
+not specified, messages in the INBOX folder are marked.
+.TP
+.B \--silent
+do not display an acknowledgement.  If this option is not specified,
+an acknowledgement for each specified message that is marked is
+displayed on standard output.
+.SH ARGUMENTS
+.I mitmaildel
+and
+.I mitmailundel
+require one or more message ID arguments to be given.  The ID is
+either the message's sequence number, or, if the
+.I \--by-uid
+option is given, its unique identifier.
+.I mitmailscan(1)
+can be used to obtain the message ID.
+
+The message ID argument can be \fB*\fR, to indicate the last message
+in the mailbox.  An argument of the form
+.IB ID1 : ID2
+can be used to specify a range of IDs.
+.SH "SEE ALSO"
+mitmailscan(1), mitmailexp(1), mitmailshow(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)
