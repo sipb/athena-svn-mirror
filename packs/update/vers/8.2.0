@@ -667,6 +667,7 @@ echo "/etc/syslog.conf"				>> "$CONFCHG"
 echo "/var/spool/cron/crontabs/root"		>> "$CONFCHG"
 
 echo "/usr/sipb"				>> "$DEADFILES"
+echo "/etc/athena/named.boot"			>> "$DEADFILES"
 # Cleanup after various cracking incidents
 
 # Skull virus of 19971027:
