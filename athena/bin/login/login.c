@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.62 1993-06-30 13:12:51 cfields Exp $
+ * $Id: login.c,v 1.63 1993-07-22 12:56:49 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.62 1993-06-30 13:12:51 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.63 1993-07-22 12:56:49 probe Exp $";
 #endif
 
 /*
@@ -1046,24 +1046,21 @@ leavethis:
     setenv("HOME", pwd->pw_dir, 1);
     setenv("SHELL", pwd->pw_shell, 1);
 #ifdef SOLARIS
-    tp = getenv("TERM");
-    if (!tp){
-        if (term1[0] == '\0')
-               setenv("TERM", "vt100", 1);
-        else   setenv("TERM", term1, 1); 
-    }
-#endif
-#ifndef SOLARIS
+    if (term1[0] == '\0')
+	setenv("TERM", "vt100", 0);
+    else
+	setenv("TERM", term1, 0); 
+#else
     if (term[0] == '\0')
 	strncpy(term, stypeof(tty), sizeof(term));
-     setenv("TERM", term, 1);
+     setenv("TERM", term, 0);
 #endif
     setenv("USER", pwd->pw_name, 1);
 #ifndef SOLARIS
     setenv("PATH", "/usr/athena/bin:/bin/athena:/usr/ucb:/bin:/usr/bin", 1);
 #else
     setenv("PATH", "/usr/athena/bin:/bin/athena::/bin:/usr/ucb:/usr/sbin:/usr/openwin/bin:/usr/ccs/bin", 1);
-    setenv("LD_LIBRARY_PATH", "/usr/openwin/lib");
+    setenv("LD_LIBRARY_PATH", "/usr/openwin/lib", 1);
 #endif
 #if defined(ultrix) && defined(mips)
     setenv("hosttype", "decmips", 1);
@@ -1490,7 +1487,7 @@ setenv(var, value, clobber)
 	strcat(environ[index], value);
 	environ[++index] = NULL;
 }
-#endif ultrix
+#endif
 
 /*
  * This routine handles cleanup stuff, notification service, and the like.
