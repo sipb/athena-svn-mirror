@@ -133,13 +133,6 @@ typedef u_int32_t	recno_t;
 	((char *)&(b))[1] = ((char *)&(a))[0];				\
 }
 
-/* open functions for each database type, used in dbopen() */
-
-DB	*__bt_open __P((const char *, int, int, const BTREEINFO *, int));
-DB	*__hash_open __P((const char *, int, int, const HASHINFO *, int));
-DB	*__rec_open __P((const char *, int, int, const RECNOINFO *, int));
-void	 __dbpanic __P((DB *dbp));
-
 /*
  * There is no portable way to figure out the maximum value of a file
  * offset, so we put it here.
@@ -288,5 +281,12 @@ void	 __dbpanic __P((DB *dbp));
 #define __rec_vmap		db__rec_vmap
 #define __rec_vpipe		db__rec_vpipe
 #define __split_page		db__split_page
+
+/* open functions for each database type, used in dbopen() */
+
+DB	*__bt_open __P((const char *, int, int, const BTREEINFO *, int));
+DB	*__hash_open __P((const char *, int, int, const HASHINFO *, int));
+DB	*__rec_open __P((const char *, int, int, const RECNOINFO *, int));
+void	 __dbpanic __P((DB *dbp));
 
 #endif /* _DB_INT_H_ */
