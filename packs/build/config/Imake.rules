@@ -216,13 +216,14 @@ Makefiles:: Makefile							@@\
 	@echo "### Making Makefiles in" `pwd`				@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
-		echo "### Making Makefile in" `pwd`/$$d; \		@@\
-		if [ -f $$d/Makefile ]; then \				@@\
-			mv -f $$d/Makefile $$d/Makefile.bak; fi; \	@@\
-		$(IMAKE) $(IFLAGS) -DNEWTOP=../$(TOP) \			@@\
-			-f $$d/Imakefile -s $$d/Makefile; \		@@\
-		(cd $$d; make $(MFLAGS) Makefiles); \			@@\
-		echo "### Done with" `pwd`/$$d; \			@@\
+		( cd $$d; \						@@\
+		  echo "### Making Makefile in" `pwd`; \		@@\
+		  if [ -f Makefile ]; then \				@@\
+			$(RM) Makefile.bak; \				@@\
+		 	mv Makefile Makefile.bak; fi; \			@@\
+		  make -f ../Makefile TOP=../$(TOP) Makefile; \		@@\
+		  make $(MFLAGS) Makefiles; \				@@\
+		  echo "### Done with" `pwd` ) ; \			@@\
 	done
 
 #define create_depend(files)						@@\
