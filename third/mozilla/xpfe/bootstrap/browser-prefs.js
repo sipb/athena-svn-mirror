@@ -115,7 +115,7 @@ pref("browser.translation.service", "chrome://navigator-region/locale/region.pro
 pref("browser.translation.serviceDomain", "chrome://navigator-region/locale/region.properties");
   
 // Smart Browsing prefs
-pref("browser.related.enabled", true);
+pref("browser.related.enabled", false);
 pref("browser.related.autoload", 1);  // 0 = Always, 1 = After first use, 2 = Never
 pref("browser.related.provider", "http://www-rl.netscape.com/wtgn?");
 pref("browser.related.disabledForDomains", "");
@@ -133,16 +133,16 @@ pref("offline.send.unsent_messages",            0);
 pref("offline.download.download_messages",  0);
 pref("offline.prompt_synch_on_exit",            true);
 
-pref("signon.rememberSignons",              true);
+pref("signon.rememberSignons",              false);
 pref("signon.expireMasterPassword",         false);
 
-pref("wallet.captureForms",                 true);
+pref("wallet.captureForms",                 false);
 pref("wallet.notified",                     false);
 pref("wallet.Server",                       "chrome://navigator/locale/navigator.properties");
 pref("wallet.Samples",                      "chrome://navigator/locale/navigator.properties");
 pref("wallet.version",                      "1");
 pref("wallet.enabled",                      true);
-pref("wallet.crypto",                       false);
+pref("wallet.crypto",                       true);
 pref("wallet.crypto.autocompleteoverride",  false); // Ignore 'autocomplete=off' - available only when wallet.crypto is enabled. 
 pref("wallet.namePanel.hide",               false);
 pref("wallet.addressPanel.hide",            false);
@@ -181,7 +181,7 @@ pref("alerts.totalOpenTime", 4000);
 pref("alerts.height", 50);
 
 // update notifications prefs
-pref("update_notifications.enabled", true);
+pref("update_notifications.enabled", false);
 pref("update_notifications.provider.0.frequency", 7); // number of days
 pref("update_notifications.provider.0.datasource", "chrome://communicator-region/locale/region.properties");
 
