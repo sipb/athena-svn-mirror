@@ -1,4 +1,4 @@
-# $Id: packages,v 1.49 1998-12-02 15:18:10 ghudson Exp $
+# $Id: packages,v 1.50 1998-12-03 19:40:40 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -63,7 +63,6 @@ athena/lib/larv
 athena/etc/track
 athena/etc/newsyslog
 athena/etc/cleanup
-athena/etc/inetd
 athena/etc/listsuidcells
 athena/etc/gettime
 athena/etc/xdm
@@ -78,12 +77,10 @@ athena/bin/voldump
 athena/bin/session
 athena/bin/olc
 athena/bin/finger
-athena/bin/ansi
 athena/bin/sendbug
 athena/bin/just
 athena/bin/rep
 athena/bin/cxref
-athena/bin/tarmail
 athena/bin/access
 athena/bin/dent
 athena/bin/attach
@@ -91,7 +88,6 @@ athena/bin/dash
 athena/bin/xmore
 athena/bin/xdsc
 athena/bin/rkinit
-athena/bin/xversion
 athena/bin/discuss
 athena/bin/from
 athena/bin/delete
@@ -104,7 +100,6 @@ athena/bin/write
 athena/bin/athdir
 athena/bin/lpr
 athena/bin/quota
-athena/bin/xquota		solaris
 athena/bin/saferm
 athena/bin/passwd
 third/perl			solaris
