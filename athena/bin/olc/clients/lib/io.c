@@ -21,7 +21,8 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.6 1990-01-18 04:59:04 raeburn Exp $";
+static char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.7 1990-01-19 05:14:02 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>        
@@ -215,6 +216,7 @@ open_connection_to_daemon(request, fd)
   
   if (sptr == (struct sockaddr_in *) NULL)
     {
+      char *port_env;
       hp = gethostbyname(DaemonHost);
       if (hp == (struct hostent *)NULL) 
 	{
@@ -231,9 +233,12 @@ open_connection_to_daemon(request, fd)
   
       bzero(&sin, sizeof (sin));
       bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
-	
+
       sin.sin_family = AF_INET;
       sin.sin_port = service->s_port;
+      port_env = getenv ("OLCD_PORT");
+      if (port_env)
+	  sin.sin_port = htons (atoi (port_env));
       sptr = &sin;
     }
 
