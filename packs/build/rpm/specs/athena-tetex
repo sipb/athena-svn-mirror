@@ -4,6 +4,11 @@ License: Donald Knuth and others
 Group: Applications/Publishing
 Provides: tetex = 2.0.2
 
+# There are some perl-tk scripts in here which we don't care about.
+# This is the easiest hack to solve the problem, though it means the
+# athena-tetex package won't have any dependencies.
+AutoReq: 0
+
 %description
 The teTeX package of TeX typesetting system and support utilities, for
 Athena.

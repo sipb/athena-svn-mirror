@@ -2,9 +2,13 @@ Name: athena-perl
 Summary: The Perl programming language, as configured for Athena
 License: GPL
 Group: Development/Languages
-Provides: perl <= 1:5.8.0
-Provides: perl(Mac::BuildTools)
-Provides: perl(Mac::InternetConfig)
+Provides: perl = 1:5.8.0
+
+# Auto-requirement checking on the perl package generates some odd
+# perl dependencies like perl(v5.6.) which we don't want to have.
+# This is the simplest answer, though it means the athena-perl package
+# won't have any dependencies.
+AutoReq: 0
 
 %description
 The Perl programming language, as configured for Athena
