@@ -27,3 +27,13 @@ mhshow-show-application: %l/usr/athena/libexec/show-application '%s' '%F' '%a'
 mhstore-store-application/x-framemaker: %m%P.doc
 mhstore-store-application/x-ez: %m%P.ez
 mhstore-store-application/x-dvi: %m%P.dvi
+mhshow-show-application/excel: %l%e/usr/athena/libexec/show-excel '%f'
+mhshow-show-application/x-excel: %l%e/usr/athena/libexec/show-excel '%f'
+mhshow-show-application/msexcel: %l%e/usr/athena/libexec/show-excel '%f'
+mhshow-show-application/x-msexcel: %l%e/usr/athena/libexec/show-excel '%f'
+mhshow-show-application/vnd.ms-excel: %l%e/usr/athena/libexec/show-excel '%f'
+mhstore-store-application/excel: %m%P.xls
+mhstore-store-application/x-excel: %m%P.xls
+mhstore-store-application/msexcel: %m%P.xls
+mhstore-store-application/x-msexcel: %m%P.xls
+mhstore-store-application/vnd.ms-excel: %m%P.xls
