@@ -14,8 +14,8 @@
 
 #define DAEMON 1
 
-char *conspid = "/etc/athena/console.pid";
-char *conslog = "/usr/tmp/console.log";
+char *conspid = "/var/athena/console.pid";
+char *conslog = "/var/athena/console.log";
 
 cons_state *cons_init(void)
 {

@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.58 1997-02-19 17:41:04 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.59 1997-04-01 01:11:17 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -227,7 +227,7 @@ XtActionsRec actions[] = {
 
 
 #ifndef CONSOLEPID
-#define CONSOLEPID "/etc/athena/console.pid"
+#define CONSOLEPID "/var/athena/console.pid"
 #endif
 #ifndef UTMPF
 #define UTMPF "/etc/utmp"
