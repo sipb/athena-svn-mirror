@@ -1,0 +1,15 @@
+/*
+ * $Id: Imakefile,v 1.1 1991-05-27 16:24:50 epeisach Exp $
+ */
+
+#if defined(_IBMR2)
+#define DONE
+SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
+#endif
+
+#ifndef DONE
+build_program(machtype, machtype.o,,)
+install_program(machtype,-m 2755 -g kmem,$(ATHRBINDIR))
+#endif
+
+install_man(machtype.1,machtype.1)
