@@ -1,0 +1,17 @@
+0.51-0: January 3, 2003
+
+  Updated to SCOWL 5 which:
+
+    Added variants that were not really spelling variants (such as
+    forwards)
+
+    Removed some spelling variants and other strange words from the
+    word list (for example meaneing).
+
+    Removed rarly used inflections of a word.
+
+    Removed the DEC Word List due to the questionable licence and
+    because removing it will not seriously decrese the quality of SCOWL
+    (there are a few less proper names).
+
+    Among others.
