@@ -11,18 +11,9 @@
 static const CORBA_unsigned_long ORBit_zero_int = 0;
 
 #ifndef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
-void
-_ORBIT_skel_small_Bonobo_Sample_Echo_echo(POA_Bonobo_Sample_Echo * _o_servant,
-					  gpointer _o_retval,
-					  gpointer * _o_args,
-					  CORBA_Context _o_ctx,
-					  CORBA_Environment * _o_ev,
-					  void (*_impl_echo)
-					  (PortableServer_Servant _servant,
-					   const CORBA_char * message,
-					   CORBA_Environment * ev))
-{
-   _impl_echo(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
+void _ORBIT_skel_small_Bonobo_Sample_Echo_echo(POA_Bonobo_Sample_Echo             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_echo)(PortableServer_Servant _servant, const CORBA_char * message, CORBA_Environment *ev)) {
+_impl_echo (_o_servant, *(const CORBA_char * *)_o_args[0], _o_ev);
 }
 
 #endif
@@ -49,23 +40,24 @@ _ORBIT_skel_small_Bonobo_Sample_Echo_echo(POA_Bonobo_Sample_Echo * _o_servant,
 #ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
 static
 #endif
-const struct CORBA_TypeCode_struct TC_Bonobo_Sample_Echo_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "Echo",
-   "IDL:Bonobo/Sample/Echo:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_Bonobo_Sample_Echo_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"Echo",
+"IDL:Bonobo/Sample/Echo:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 
@@ -75,30 +67,30 @@ CORBA_unsigned_long Bonobo_Sample_Echo__classid = 0;
 
 /* Interface type data */
 
-static ORBit_IArg Bonobo_Sample_Echo_echo__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "message"}
+static ORBit_IArg Bonobo_Sample_Echo_echo__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "message" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
 static
 #endif
-ORBit_IMethod Bonobo_Sample_Echo__imethods[] = {
-   {
-    {1, 1, Bonobo_Sample_Echo_echo__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_void, "echo", 4,
-    0}
+ORBit_IMethod Bonobo_Sample_Echo__imethods [] = {
+	{
+		{ 1, 1, Bonobo_Sample_Echo_echo__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "echo", 4,
+		0
+}
+};static CORBA_string Bonobo_Sample_Echo__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string Bonobo_Sample_Echo__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
 static
 #endif
 ORBit_IInterface Bonobo_Sample_Echo__iinterface = {
-   TC_Bonobo_Sample_Echo, {1, 1, Bonobo_Sample_Echo__imethods, FALSE},
-   {2, 2, Bonobo_Sample_Echo__base_itypes, FALSE}
+TC_Bonobo_Sample_Echo,{1, 1, Bonobo_Sample_Echo__imethods, FALSE},
+{2, 2, Bonobo_Sample_Echo__base_itypes, FALSE}
 };
+

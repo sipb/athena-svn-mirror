@@ -2,14 +2,14 @@
 # Copyright (C) 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.4 2004-09-22 23:55:24 ghudson Exp $
+# $Id: sv.po,v 1.1.1.5 2005-03-10 21:58:14 ghudson Exp $
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"POT-Creation-Date: 2005-02-05 14:40+0000\n"
 "PO-Revision-Date: 2004-01-17 13:42+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -93,7 +93,7 @@ msgstr ""
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: activation-server/object-directory-corba.c:1149
+#: activation-server/object-directory-corba.c:1152
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Kapplöpning vid aktivering av servern \"%s\""

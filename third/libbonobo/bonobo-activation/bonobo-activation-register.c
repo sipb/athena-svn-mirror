@@ -300,11 +300,21 @@ bonobo_activation_register_active_server_ext (const char               *iid,
                          existing, bonobo_activation_client_get (), &ev);
 
                 if (ev._major == CORBA_SYSTEM_EXCEPTION &&
-                    !strcmp (ev._id, ex_CORBA_BAD_OPERATION)) /* fall-back */
+                    !strcmp (ev._id, ex_CORBA_BAD_OPERATION))
+                {
+                            /* fall-back */
+                        CORBA_exception_free (&ev);
                         retval = Bonobo_ObjectDirectory_register_new
                                 (od, iid, reg_env ? &environment : &global_reg_env,
                                  obj, flags, description ? description : "",
                                  existing, &ev);
+                }
+
+                if (ev._major != CORBA_NO_EXCEPTION) {
+                        retval = Bonobo_ACTIVATION_REG_ERROR;
+                        g_warning ("Strange exception (%s) from active server registration",
+                                   ev._id);
+                }
 
 		if (reg_env)
 			CORBA_free (environment._buffer);

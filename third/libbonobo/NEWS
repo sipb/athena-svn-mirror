@@ -1,3 +1,18 @@
+libbonobo 2.8.1
+
+	* bug fixes
+                + Fix registering server right after installing its
+                  server info file (Mark McLoughlin)
+                + Server search optimization (Padraig O'Briain)
+                + Fix autoheader warnings (Thomas Vander Stichele)
+                + Fix crash when BonoboApplication returning GValue
+                  with NULL string (Gustavo)
+                + Fix linking on Darwin (Hans Petter Jansson)
+                + Fix problem with locale env variables (Mark, Ryan Lortie)
+        * misc.
+                + Documentation for bonobo:environment property (Gustavo)
+                + README updated (Michael)
+
 libbonobo 2.6.0
 
 	+ featurelets
