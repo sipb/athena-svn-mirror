@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.24 1988-10-12 10:24:00 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.25 1989-07-19 20:24:16 raeburn Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.24 1988-10-12 10:24:00 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.25 1989-07-19 20:24:16 raeburn Exp $";
 #endif	/* lint */
 
 /*
@@ -401,8 +401,13 @@ main(argc, argv)
 		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
 					    what his administration is doing */
 		switch (krbval) {
-			case INTK_OK:
+		case INTK_OK:
 			alarm(0);	/* Authentic, so don't time out. */
+			if (verify_krb_tgt(realm) < 0) {
+			    /* Oops.  He tried to fool us.  Tsk, tsk. */
+			    invalid = TRUE;
+			    goto leavethis;
+			}
 			invalid = FALSE;
 			krbflag = TRUE;
 			if (!found) {
@@ -499,7 +504,7 @@ main(argc, argv)
 				krb_err_txt[krbval]);
 			goto leavethis;
 		    /* These should be printed but are not fatal */
-		  case INTK_W_NOTALL:
+		case INTK_W_NOTALL:
 		    invalid = FALSE;
 		    krbflag = TRUE;
 		    fprintf(stderr, "Kerberos error: %s\n",
@@ -1056,7 +1061,7 @@ setenv(var, value, clobber)
  */
 dofork()
 {
-    int child,retval,i;
+    int child;
 
     if(!(child=fork()))
 	    return; /* Child process */
@@ -1205,10 +1210,11 @@ attach_homedir()
 detach_homedir()
 {
 	union wait status;
-	char *level;
-	int pid,i;
+	int pid;
 
 #ifdef notdef
+	int i;
+	char *level;
 	for (i=0;i<3;i++) {
 #endif
 		if (!(pid = fork())) {
@@ -1597,4 +1603,85 @@ init_wgfile()
 	mktemp(wgfile);
 
 	setenv("WGFILE",wgfile,1);
+}
+
+/*
+ * Verify the Kerberos ticket-granting ticket just retrieved for the
+ * user.  If the Kerberos server doesn't respond, assume the user is
+ * trying to fake us out (since we DID just get a TGT from what is
+ * supposedly our KDC).  If the rcmd.<host> service is unknown (i.e.,
+ * the local /etc/srvtab doesn't have it), let her in.
+ *
+ * Returns 1 for confirmation, -1 for failure, 0 for uncertainty.
+ */
+int verify_krb_tgt (realm)
+    char *realm;
+{
+    char hostname[MAXHOSTNAMELEN], phost[BUFSIZ];
+    struct hostent *hp;
+    KTEXT_ST ticket;
+    AUTH_DAT authdata;
+    unsigned long addr;
+    static /*const*/ char rcmd[] = "rcmd";
+    char key[8];
+    int krbval, retval, have_keys;
+
+    if (gethostname(hostname, sizeof(hostname)) == -1) {
+	perror ("cannot retrieve local hostname");
+	return -1;
+    }
+    strncpy (phost, get_phost (hostname), sizeof (phost));
+    phost[sizeof(phost)-1] = 0;
+    hp = gethostbyname (hostname);
+    if (!hp) {
+	perror ("cannot retrieve local host address");
+	return -1;
+    }
+    bcopy ((char *)hp->h_addr, (char *) &addr, sizeof (addr));
+    /* Do we have rcmd.<host> keys? */
+    have_keys = read_service_key (rcmd, phost, realm, 0, "/etc/srvtab", key)
+	? 0 : 1;
+    krbval = krb_mk_req (&ticket, rcmd, phost, realm, 0);
+    if (krbval == KDC_PR_UNKNOWN) {
+	/*
+	 * Our rcmd.<host> principal isn't known -- just assume valid
+	 * for now?  This is one case that the user _could_ fake out.
+	 */
+	if (have_keys)
+	    return -1;
+	else
+	    return 0;
+    }
+    else if (krbval != KSUCCESS) {
+	printf ("Unable to verify Kerberos TGT: %s\n", krb_err_txt[krbval]);
+	syslog (LOG_NOTICE|LOG_AUTH, "Kerberos TGT bad: %s",
+		krb_err_txt[krbval]);
+	return -1;
+    }
+    /* got ticket, try to use it */
+    krbval = krb_rd_req (&ticket, rcmd, phost, addr, &authdata, "");
+    if (krbval != KSUCCESS) {
+	if (krbval == RD_AP_UNDEC && !have_keys)
+	    retval = 0;
+	else {
+	    retval = -1;
+	    printf ("Unable to verify `rcmd' ticket: %s\n",
+		    krb_err_txt[krbval]);
+	}
+	syslog (LOG_NOTICE|LOG_AUTH, "can't verify rcmd ticket: %s;%s\n",
+		krb_err_txt[krbval],
+		retval
+		? "srvtab found, assuming failure"
+		: "no srvtab found, assuming success");
+	goto EGRESS;
+    }
+    /*
+     * The rcmd.<host> ticket has been received _and_ verified.
+     */
+    retval = 1;
+    /* do cleanup and return */
+EGRESS:
+    bzero (&ticket, sizeof (ticket));
+    bzero (&authdata, sizeof (authdata));
+    return retval;
 }
