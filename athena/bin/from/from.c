@@ -1,5 +1,5 @@
 /* 
- * $Id: from.c,v 1.7 1991-07-26 10:58:00 lwvanels Exp $
+ * $Id: from.c,v 1.8 1991-08-08 15:15:54 lwvanels Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
  * $Author: lwvanels $
  *
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.7 1991-07-26 10:58:00 lwvanels Exp $";
+static char *rcsid = "$Id: from.c,v 1.8 1991-08-08 15:15:54 lwvanels Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -258,6 +258,8 @@ getmail_pop(user, host, printhdr)
 	  windowsize.ws_col = 80;  /* default assume 80 */
 	/* for the console window timestamp */
 	linelength = windowsize.ws_col - 6;
+	if (linelength < 32)
+	  linelength = 32;
 	
 	for (i = 1; i <= nmsgs; i++) {
 		if (verbose && !skip_message)
@@ -518,8 +520,8 @@ print_report(headers, num_headers, winlength)
      char **headers;
      int num_headers, winlength;
 {
-  int j, len, from_found = 0, subject_found = 0;
-  char *p, *from_field, *subject_field, *buf, *buf1;
+  int j, len;
+  char *p, *from_field = 0, *subject_field = 0, *buf, *buf1;
   
   for(j = 0; j < num_headers; j++) {
     p = index(headers[j], ':');
@@ -531,18 +533,15 @@ print_report(headers, num_headers, winlength)
       while (p[0] == ' ')
 	p++;
       from_field = p;
-      if (subject_found)
+      if (subject_field)
 	break;
-      from_found = 1;
-      continue;
     }
-    if (strncmp("Subject", headers[j], 6) == 0) {
+    else if (strncmp("Subject", headers[j], 7) == 0) {
       p++;
       while (p[0] == ' ') 
 	p++;
       subject_field = p;
-      subject_found = 1;
-      if (from_found)
+      if (from_field)
 	break;
     }
   }
@@ -555,7 +554,10 @@ print_report(headers, num_headers, winlength)
     }    
   buf[0] = '\0';
   buf[winlength] = '\0';
-  strncpy(buf, from_field, winlength);
+  if (from_field)
+    strncpy(buf, from_field, winlength);
+  else
+    strncpy(buf, "<<unknown sender>>", winlength);
   len = strlen(buf);
   if  (len < 30)
     len = 30;
@@ -568,7 +570,7 @@ print_report(headers, num_headers, winlength)
     }    
   buf1[0] = '\0';
 
-  if (subject_found)
+  if (subject_field)
     strncpy(buf1, subject_field, winlength - len - 1);
   
   printf("%-30s %s\n", buf, buf1);
