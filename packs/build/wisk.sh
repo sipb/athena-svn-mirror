@@ -50,6 +50,7 @@ set outfile="/usr/tmp/washlog.`date '+%y.%m.%d.%H'`"
 set SRVD="/srvd"
 set X="X11R4"
 set MOTIF="motif"
+set found=0
 echo starting `date` > $outfile
 echo on a $machine >> $outfile
 
@@ -73,6 +74,15 @@ foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/
 # at the moment, lib/resolv gets built twice...
 
 endif
+
+if ($found == "0" && $1 != "") then
+  if ($1 == $package) then
+    set found=1
+  else
+    continue
+  endif
+endif
+
 switch ($package)
 	case setup
 	(echo in setup >>& $outfile)
