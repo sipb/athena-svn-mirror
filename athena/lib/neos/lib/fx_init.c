@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.4 1997-11-14 22:23:22 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.5 1998-07-25 21:02:17 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.4 1997-11-14 22:23:22 ghudson Exp $";
+static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.5 1998-07-25 21:02:17 ghudson Exp $";
 #endif /* lint */
 
 #include <netdb.h>
@@ -100,9 +100,9 @@ _fx_get_auth(fxp, authent)
   res = krb_info_1(&dummy, fxp->cl);
   if (!res) return(_fx_rpc_errno(fxp->cl));
 
-  if (res->errno) {
+  if (res->local_errno) {
     xdr_free(xdr_krb_info_res, (char *) res);
-    return(res->errno);
+    return(res->local_errno);
   }
 
   /*

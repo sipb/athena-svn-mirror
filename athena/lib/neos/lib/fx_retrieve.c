@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve.c,v 1.2 1996-09-20 04:36:14 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve.c,v 1.3 1998-07-25 21:02:18 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_retrieve_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve.c,v 1.2 1996-09-20 04:36:14 ghudson Exp $";
+static char rcsid_fx_retrieve_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_retrieve.c,v 1.3 1998-07-25 21:02:18 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -78,7 +78,7 @@ fx_retrieve(fxp, p, fp)
       code = _fx_rpc_errno(f->cl);
       goto FX_RETRIEVE_CLEANUP;
     }
-    if (code = res->errno)
+    if (code = res->local_errno)
       goto FX_RETRIEVE_CLEANUP;
 
     if (fwrite(brst(res).data, 1, brst(res).size, fp) < brst(res).size) {

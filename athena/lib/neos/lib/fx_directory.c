@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.1 1993-10-12 03:03:14 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_directory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.1 1993-10-12 03:03:14 probe Exp $";
+static char rcsid_fx_directory_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_directory.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"
@@ -33,6 +33,6 @@ fx_directory(fxp, ret)
 
   *ret = list_courses_1(&dummy, fxp->cl);
   if (!*ret) return(_fx_rpc_errno(fxp->cl));
-  code = (*ret)->errno;
+  code = (*ret)->local_errno;
   return(code);
 }

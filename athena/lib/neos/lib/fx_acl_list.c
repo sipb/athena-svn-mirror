@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_acl_list.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_acl_list.c,v 1.1 1993-10-12 03:03:37 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_acl_list.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_acl_list_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_acl_list.c,v 1.1 1993-10-12 03:03:37 probe Exp $";
+static char rcsid_fx_acl_list_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_acl_list.c,v 1.2 1998-07-25 21:02:16 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"
@@ -40,5 +40,5 @@ fx_acl_list(fxp, aclname, ret)
     _fx_shorten(fxp, node->s);
 #endif
 
-  return((*ret)->errno);
+  return((*ret)->local_errno);
 }

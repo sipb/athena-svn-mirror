@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.2 1996-09-20 04:36:13 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.3 1998-07-25 21:02:18 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_open_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.2 1996-09-20 04:36:13 ghudson Exp $";
+static char rcsid_fx_open_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_open.c,v 1.3 1998-07-25 21:02:18 ghudson Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -82,12 +82,12 @@ fx_open(s, codep)
   if (code) goto FX_OPEN_CLEANUP;
 
   /* if this host is not the sync host, need to start over */
-  if (res->errno == ERR_NOT_SYNC) {
+  if (res->local_errno == ERR_NOT_SYNC) {
     clnt_destroy(ret->cl);
     (void) strcpy(ret->host, res->init_res_u.sync);
     code = fx_init(ret, &res);
   }
-  if (res->errno) code = res->errno;
+  if (res->local_errno) code = res->local_errno;
 
  FX_OPEN_CLEANUP:
   if (res) xdr_free(xdr_init_res, (char *) res);

@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: danw $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.4 1998-02-17 19:48:53 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.5 1998-07-25 21:02:12 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.4 1998-02-17 19:48:53 danw Exp $";
+static char rcsid_multi_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/multi.c,v 1.5 1998-07-25 21:02:12 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -522,7 +522,7 @@ multi_update_server(num)
       if (!init_r) {
 	exit(1);
       }
-      if (init_r->errno == ERR_COURSE_NOT_FOUND) {
+      if (init_r->local_errno == ERR_COURSE_NOT_FOUND) {
 	ptr = coursename;
 	res = create_course_1(&ptr, servers[num].cl);
 	if (!res || *res) {
@@ -533,7 +533,7 @@ multi_update_server(num)
 	  exit(1);
 	}
 	init_r = init_1(&init, servers[num].cl);
-	if (!init_r || init_r->errno) {
+	if (!init_r || init_r->local_errno) {
 	  DebugMulti(("ERROR initializing %s on %s: %s\n",
 		      ptr, servers[num].name, init_r ?
 		      error_message(*res) : "RPC error"));
@@ -644,7 +644,7 @@ multi_set_course()
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
       res = init_1(&params, servers[i].cl);
-      if (!res || res->errno)
+      if (!res || res->local_errno)
 	multi_conn_dropped(i);
     }
   }
@@ -663,7 +663,7 @@ multi_commit()
   for (i=0; i<nservers; i++) {
     if (servers[i].cl) {
       res = server_commit_1(&db_vers, servers[i].cl);
-      if (!res || res->errno) /* XXX */
+      if (!res || res->local_errno) /* XXX */
 	multi_conn_dropped(i);
     }
   }

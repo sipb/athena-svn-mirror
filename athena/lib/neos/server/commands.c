@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: danw $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.6 1998-02-17 19:48:51 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.7 1998-07-25 21:02:11 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.6 1998-02-17 19:48:51 danw Exp $";
+static char rcsid_commands_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/commands.c,v 1.7 1998-07-25 21:02:11 ghudson Exp $";
 #endif /* lint */
 
 #include <com_err.h>
@@ -47,7 +47,7 @@ init_res *init_1_svc(params, rqstp)
   stats.n_init++;
   
   SETUP_CURCONN;
-  CHECK_SENDRECV(res.errno, res);
+  CHECK_SENDRECV(res.local_errno, res);
   
   /*
    * NULL course means that we're just authenticating, not
@@ -58,13 +58,13 @@ init_res *init_1_svc(params, rqstp)
      * Check the arguments for validity.
      */
     if (strlen(params->course) > COURSE_NAME_LEN) {
-      res.errno = ERR_COURSE_NAME_LEN;
-      Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+      res.local_errno = ERR_COURSE_NAME_LEN;
+      Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
       return &res;
     }
     if (!valid_course_name(params->course)) {
-      res.errno = ERR_COURSE_NAME_INVAL;
-      Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+      res.local_errno = ERR_COURSE_NAME_INVAL;
+      Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
       return &res;
     }
 
@@ -83,8 +83,8 @@ init_res *init_1_svc(params, rqstp)
       Debug(("Opening index file %s\n", indexpath));
       curconn->index = db_open(indexpath);
       if (!curconn->index) {
-	res.errno = ERR_COURSE_NOT_FOUND;
-	Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+	res.local_errno = ERR_COURSE_NOT_FOUND;
+	Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
 	return &res;
       }
 
@@ -104,8 +104,8 @@ init_res *init_1_svc(params, rqstp)
   if (krb_rd_req(&params->auth, KRB_SERVICE, my_hostname,
 		 svc_getcaller(rqstp->rq_xprt)->sin_addr.s_addr,
 		 &curconn->auth, "") != RD_AP_OK) {
-    res.errno = ERR_WONT_BE_AUTHED;
-    Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_WONT_BE_AUTHED;
+    Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
     curconn->authed = 0;
   }
   else {
@@ -114,7 +114,7 @@ init_res *init_1_svc(params, rqstp)
 	    curconn->auth.pinst, curconn->auth.prealm);
     curconn->authed = 1;
     Debug(("Authenticated user %s\n", curconn->authname));
-    res.errno = 0;
+    res.local_errno = 0;
   }
 #else
   /*
@@ -123,23 +123,23 @@ init_res *init_1_svc(params, rqstp)
    */
   curconn->authed = 1;
   strcpy(curconn->authname, params->auth);
-  res.errno = 0;
+  res.local_errno = 0;
 #endif /* KERBEROS */
 
 #ifdef MULTI
   if (sync_site != server_me) {
     if (sync_site != -1) {
-      res.errno = ERR_NOT_SYNC;
-      Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+      res.local_errno = ERR_NOT_SYNC;
+      Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
       res.init_res_u.sync = servers[sync_site].name;
     }
     else {
-      res.errno = ERR_NO_QUORUM;
-      Debug(("ERROR init_1: %s\n", error_message(res.errno)));
+      res.local_errno = ERR_NO_QUORUM;
+      Debug(("ERROR init_1: %s\n", error_message(res.local_errno)));
     }
   }
   if (curconn->server_num) {/* XXX */
-    res.errno = 0;
+    res.local_errno = 0;
     curconn->authed = 1;
   }
 #endif /* MULTI */
@@ -167,29 +167,29 @@ stringlist_res *list_acl_1_svc(aclname, rqstp)
   stats.n_list_acl++;
   
   SETUP_CURCONN;
-  CHECK_SENDRECV(res.errno, res);
-  CHECK_DB(res.errno, res);
+  CHECK_SENDRECV(res.local_errno, res);
+  CHECK_DB(res.local_errno, res);
   
-  CHECK_INIT(res.errno, res);
+  CHECK_INIT(res.local_errno, res);
 
   if (!valid_filename(*aclname)) {
-    res.errno = ERR_INVALID_FILENAME;
-    Debug(("ERROR list_acl_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_INVALID_FILENAME;
+    Debug(("ERROR list_acl_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
   
   if (strlen(*aclname) + strlen(curconn->coursepath) + 5 >
       MAXPATHLEN) {
-    res.errno = ERR_ACL_NAME_LEN;
-    Debug(("ERROR list_acl_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_ACL_NAME_LEN;
+    Debug(("ERROR list_acl_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
 
   sprintf(aclfile, "%sACL-%s", curconn->coursepath, *aclname);
   
   if (!(fp = fopen(aclfile, "r"))) {
-    res.errno = ERR_ACL_NOT_FOUND;
-    Debug(("ERROR list_acl_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_ACL_NOT_FOUND;
+    Debug(("ERROR list_acl_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
 
@@ -212,7 +212,7 @@ stringlist_res *list_acl_1_svc(aclname, rqstp)
   }
   *next = 0;
   fclose(fp);
-  res.errno = 0;
+  res.local_errno = 0;
   return &res;
 }
 
@@ -539,14 +539,14 @@ stringlist_res *list_courses_1_svc(dummy, rqstp)
   stats.n_list_courses++;
   
   SETUP_CURCONN;
-  CHECK_SENDRECV(res.errno, res);
-  CHECK_DB(res.errno, res);
+  CHECK_SENDRECV(res.local_errno, res);
+  CHECK_DB(res.local_errno, res);
   
   sprintf(indexpath, "%s/%s", root_dir, COURSE_INDEX);
   
   if (!(fp = fopen(indexpath, "r"))) {
-    res.errno = ERR_INTERNAL_FAILURE;
-    Debug(("ERROR list_courses_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_INTERNAL_FAILURE;
+    Debug(("ERROR list_courses_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
 
@@ -565,7 +565,7 @@ stringlist_res *list_courses_1_svc(dummy, rqstp)
   }
   *next = 0;
   fclose(fp);
-  res.errno = 0;
+  res.local_errno = 0;
   return &res;
 }
 
@@ -589,10 +589,10 @@ Paperlist_res *list_1_svc(paper, rqstp)
   stats.n_list++;
   
   SETUP_CURCONN;
-  CHECK_INIT(res.errno, res);
-  CHECK_DB(res.errno, res);
-  CHECK_AUTH(res.errno, res);
-  CHECK_SENDRECV(res.errno, res);
+  CHECK_INIT(res.local_errno, res);
+  CHECK_DB(res.local_errno, res);
+  CHECK_AUTH(res.local_errno, res);
+  CHECK_SENDRECV(res.local_errno, res);
   is_grader = check_access(ACL_GRADER);
 
   /*
@@ -661,7 +661,7 @@ Paperlist_res *list_1_svc(paper, rqstp)
     next = &(*next)->next;
   }
   *next = 0;
-  res.errno = 0;
+  res.local_errno = 0;
   return &res;
 }
 
@@ -994,13 +994,13 @@ retrieve_res *retrieve_burst_1_svc(params, rqstp)
   
   SETUP_CURCONN;
   
-  CHECK_INIT(res.errno, res);
-  CHECK_AUTH(res.errno, res);
-  CHECK_DB(res.errno, res);
+  CHECK_INIT(res.local_errno, res);
+  CHECK_AUTH(res.local_errno, res);
+  CHECK_DB(res.local_errno, res);
 
   if (curconn->sendrecv != IS_RECEIVING) {
-    res.errno = ERR_NOT_RECEIVING;
-    Debug(("ERROR retrieve_burst_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_NOT_RECEIVING;
+    Debug(("ERROR retrieve_burst_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
 
@@ -1010,8 +1010,8 @@ retrieve_res *retrieve_burst_1_svc(params, rqstp)
     fclose(curconn->sendrecvfp);
     curconn->sendrecvfp = NULL;
     curconn->sendrecv = 0;
-    res.errno = ERR_INTERNAL_FAILURE;
-    Debug(("ERROR retrieve_burst_1: %s\n", error_message(res.errno)));
+    res.local_errno = ERR_INTERNAL_FAILURE;
+    Debug(("ERROR retrieve_burst_1: %s\n", error_message(res.local_errno)));
     return &res;
   }
 
@@ -1040,7 +1040,7 @@ retrieve_res *retrieve_burst_1_svc(params, rqstp)
     }
   }
   
-  res.errno = 0;
+  res.local_errno = 0;
   return &res;
 }
 
@@ -1229,15 +1229,15 @@ krb_info_res *krb_info_1_svc(dummy, rqstp)
   
 #ifdef KERBEROS
   krb_get_lrealm(realm, 1); /* XXX Return value */
-  res.errno = 0;
+  res.local_errno = 0;
   res.krb_info_res_u.info.service = KRB_SERVICE;
   res.krb_info_res_u.info.instance = my_hostname;
   res.krb_info_res_u.info.realm = realm;
 
   return &res;
 #else
-  res.errno = ERR_NO_KERBEROS;
-  Debug(("ERROR krb_info_1: %s\n", error_message(res.errno)));
+  res.local_errno = ERR_NO_KERBEROS;
+  Debug(("ERROR krb_info_1: %s\n", error_message(res.local_errno)));
   return &res;
 #endif /* KERBEROS */
 }
