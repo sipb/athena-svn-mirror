@@ -9,6 +9,10 @@
 #include <fcntl.h>		/* open */
 #include <errno.h>
 
+#if !defined(SOLARIS) && !defined(sgi)
+#define lchown chown
+#endif
+
 char *progname;
 
 typedef struct _filename {
@@ -182,11 +186,7 @@ void process(absolute, relative, fangs)
 	  if (bu || bg)
 	    {
 	      if (fangs)
-#ifdef SYSV
 		lchown(curent->d_name, newuid, newgid);
-#else
-		chown(curent->d_name, newuid, newgid);
-#endif
 	      else
 		fprintf(stdout, "%s/%s: (%d.%d) -> (%d.%d)\n",
 			absolute, curent->d_name, info.st_uid,
