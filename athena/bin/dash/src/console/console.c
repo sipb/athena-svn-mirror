@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.1 1991-09-03 11:11:19 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/console.c,v 1.2 1993-07-01 17:10:46 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -24,19 +24,24 @@ static char rcsid[] =
 #include <sys/stat.h>
 #include <errno.h>
 #include <signal.h>
-#include "Jets.h"
-#include "Window.h"
-#include "Button.h"
-#include "Label.h"
-#include "Form.h"
-#include "ScrollBar.h"
-#include "TextDisplay.h"
-#include "Icon.h"
+#include <X11/Xj/Jets.h>
+#include <X11/Xj/Window.h>
+#include <X11/Xj/Button.h>
+#include <X11/Xj/Label.h>
+#include <X11/Xj/Form.h>
+#include <X11/Xj/ScrollBar.h>
+#include <X11/Xj/TextDisplay.h>
+#include <X11/Xj/Arrow.h>
 #include <X11/Xresource.h>
 
 #ifndef CONSOLEDEFAULTS
 #define CONSOLEDEFAULTS "/etc/athena/login/Console"
 #endif
+
+#define XENV "XENVIRONMENT"
+#define CONSOLEFILE "/usr/tmp/console.log"
+
+extern int DEBUG;
 
 static XrmOptionDescRec opTable[] = {
 {"+rv",         "*reverseVideo", XrmoptionNoArg,        (caddr_t) "off"},
@@ -64,15 +69,30 @@ static XrmOptionDescRec opTable[] = {
 {"-map",        "*window.mapped", XrmoptionNoArg, 	(caddr_t) "True"},
 {"+map",        "*window.mapped", XrmoptionNoArg, 	(caddr_t) "False"},
 {"-input",	".input",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-inputfd",	".inputfd",	XrmoptionSepArg,	(caddr_t) NULL},
 {"-iconic",	"*window.iconic", XrmoptionNoArg,	(caddr_t) "True"},
 {"+iconic",	"*window.iconic", XrmoptionNoArg,	(caddr_t) "False"},
 {"-notimestamp",".timestamp",	XrmoptionNoArg,		(caddr_t) "False"},
+{"-timestamp",	".timestamp",	XrmoptionNoArg,		(caddr_t) "True"},
+{"-hidelabel",	"*hideLabel.label", XrmoptionSepArg,	(caddr_t) NULL},
+{"-title",	"*title.label",	XrmoptionSepArg,	(caddr_t) NULL},
+{"-hideproc",	"*hideButton.activateProc", XrmoptionSepArg, (caddr_t) NULL},
+{"-cc",		"*textDisplay.charClass", XrmoptionSepArg, (caddr_t) NULL},
+{"-titlebar",	"*window.title",XrmoptionSepArg,	(caddr_t) NULL},
+{"-autoscroll",	".autoscroll",	XrmoptionNoArg,		(caddr_t) "True"},
+{"-noautoscroll",".autoscroll",	XrmoptionNoArg,		(caddr_t) "False"},
+{"-file",	".file",	XrmoptionSepArg,	(caddr_t) ""},
+{"-debug",	".debug",	XrmoptionNoArg,		(caddr_t) "true"},
 };
 
-typedef struct _MyResources {
+typedef struct _MyResources
+{
   int frequency, autoUnmap;
   char *input;
-  Boolean timestamp;
+  int inputfd;
+  Boolean timestamp, autoscroll;
+  char *file;
+  Boolean debug;
 } MyResources;
 
 typedef struct _MyResources *MyResourcesPtr;
@@ -89,20 +109,27 @@ static XjResource appResources[] =
       offset(autoUnmap), XjRInt, (caddr_t)0 },
   { "input", "Input", XjRString, sizeof(char *),
       offset(input), XjRString, (caddr_t)"" },
+  { "inputfd", "Inputfd", XjRInt, sizeof(int),
+      offset(inputfd), XjRInt, (caddr_t)0 },
   { "timestamp", "Timestamp", XjRBoolean, sizeof(Boolean),
       offset(timestamp), XjRBoolean, (caddr_t) True },
+  { "autoscroll", "Autoscroll", XjRBoolean, sizeof(Boolean),
+      offset(autoscroll), XjRBoolean, (caddr_t) True },
+  { "file", "File", XjRString, sizeof(char *),
+      offset(file), XjRString, (caddr_t)CONSOLEFILE },
+  { "debug", "Debug", XjRBoolean, sizeof(Boolean),
+      offset(debug), XjRBoolean, (caddr_t) False },
 };
 
 #undef offset
 
-#define CONSOLEFILE "/usr/tmp/console.log"
+#define INPUTSIZE 1024
+char inputbuf[INPUTSIZE];
 
-#define BUFSIZE 16384 /* must be at least twice 1024 */
+#define BUFSIZE 16384 /* must be at least two times as big as INPUTSIZE */
 char *text;
 int length;
 
-#define INPUTSIZE 1024
-char inputbuf[INPUTSIZE];
 
 #define HUP 0
 #define FPE 1
@@ -110,56 +137,16 @@ char inputbuf[INPUTSIZE];
 #define USR2 3
 #define NUMSIGS 4
 int sigflags[NUMSIGS];
-
-#if defined(ultrix) || defined(_AIX) || defined(sun)  || defined(_AUX_SOURCE)
-/*
- *  setenv() doesn't exist on some systems...  it's putenv instead.
- *  So, we write our own setenv routine, and use it instead.
- *
- *  Arguments:  (same as setenv in BSD Unix)
- *      char *name;     name of environment variable to set or change.
- *      char *value;    value to set or change environment variable to.
- *      int overwrite;  if non-zero, force variable to value.
- *                      if zero, and variable does not exist, add variable
- *                              to environment.
- *                      else, do nothing.
- *
- *  Returns:   (same as setenv in bsd Unix)
- *      -1              if unsuccessful (unable to malloc enough space for
- *                              an expanded environment).
- *      0               otherwise.
- *
- */
-static int setenv(name, value, overwrite)
-     char *name, *value;
-     int overwrite;
-{
-  char *string;
-
-  if ((overwrite) ||
-      ( (char *) getenv(name) == NULL))
-    {
-      string = (char *) malloc((strlen(name) + strlen(value) + 2)
-                               * sizeof(char));
-					/* add 1 for the null and 1 for "=" */
-      if (string == NULL)
-        return(-1);
-      strcpy(string, name);
-      strcat(string, "=");
-      strcat(string, value);
-      if (! putenv(string) )
-        return(-1);
-    }
-  return(0);
-}
-#endif
-
-
-void resetunmaptimer();
 int val = 0;
-Jet root, tj, sj, w, icon, iconWindow;
+Jet root;
+WindowJet iconWindow;
+LabelJet icon;
+WindowJet win;
+ScrollBarJet sj;
+TextDisplayJet tj;
 int inverted = False, blinking = False, timerid;
 int unmaptimerid;
+
 
 static int loadFile(filename, info, max)
      char *filename, *info;
@@ -169,17 +156,18 @@ static int loadFile(filename, info, max)
     struct stat buf;
     int num;
     char errtext[100];
+    char *errfmt = "error %d %s `%s'";
 
     if (-1 == (fd = open(filename, O_RDONLY, 0)))
       {
-	sprintf(errtext, "error %d opening %s", errno, filename);
+	sprintf(errtext, errfmt, errno, "opening", filename);
 	XjWarning(errtext);
 	return 0;
       }
 
     if (-1 == fstat(fd, &buf)) /* could only return EIO */
       {
-	sprintf(errtext, "error %d in fstat for %s", errno, filename);
+	sprintf(errtext, errfmt, errno, "in fstat for", filename);
 	XjWarning(errtext);
 	close(fd);
 	return 0;
@@ -189,7 +177,7 @@ static int loadFile(filename, info, max)
 
     if (-1 == (num = read(fd, info, MIN(size, max - 1))))
       {
-	sprintf(errtext, "error %d reading %s", errno, filename);
+	sprintf(errtext, errfmt, errno, "reading", filename);
 	XjWarning(errtext);
 	close(fd);
 	return 0;
@@ -200,23 +188,25 @@ static int loadFile(filename, info, max)
     return num;
 }
 
+
 static void saveFile(filename, info, length)
      char *filename, *info;
      int length;
 {
   int fd;
   char errtext[100];
+  char *errfmt = "error %d %s `%s'";
 
   if (-1 == (fd = open(filename, O_TRUNC | O_CREAT | O_WRONLY, 0644)))
     {
-      sprintf(errtext, "error %d opening %s", errno, filename);
+      sprintf(errtext, errfmt, errno, "opening", filename);
       XjWarning(errtext);
       return;
     }
 
   if (length != write(fd, info, length))
     {
-      sprintf(errtext, "error %d writing %s", errno, filename);
+      sprintf(errtext, errfmt, errno, "writing", filename);
       XjWarning(errtext);
       close(fd); /* I doubt it. */
       return;
@@ -225,82 +215,17 @@ static void saveFile(filename, info, length)
   close(fd);
 }
 
-int newvalue(fromJet, nothing, data)
-     Jet fromJet;
-     int nothing;
-     caddr_t data;
-{
-  resetunmaptimer();
-  SetLine(tj, val = GetScrollBarValue(fromJet));
-  return 0;
-}
-
-int textresize(fromJet, nothing, data)
-     Jet fromJet;
-     int nothing;
-     caddr_t data;
-{
-  int cl, vl;
-
-  resetunmaptimer();
-  cl = CountLines(tj);
-  vl = VisibleLines(tj);
-
-  if ((val != 0) && (val > cl - vl))
-    {
-      val = MAX(0, cl - vl);
-      SetLine(tj, val);
-    }
-
-  SetScrollBar(sj, 0, MAX(0, cl - 1), vl, val);
-  return 0;
-}
-
-int delete(fromJet, what, data)
-     Jet fromJet;
-     char *what;
-     caddr_t data;
-{
-  XjDestroyJet(fromJet);
-  XCloseDisplay(root->core.display);
-  exit(0);
-  return 0;				/* For linting... */
-}
 
 int hide(fromJet, what, data)
      Jet fromJet;
      char *what;
      caddr_t data;
+     /*ARGSUSED*/
 {
-  UnmapWindow(w);
+  UnmapWindow(win);
   return 0;
 }
 
-char buffer[512];
-
-void blinkoff()
-{
-  if (blinking)
-    {
-      if (inverted)
-	{
-	  inverted = !inverted;
-	  SetIcon(icon, inverted);
-	}
-
-      (void)XjRemoveWakeup(timerid);
-      blinking = False;
-    }
-}
-
-int mapnotify(fromJet, what, data)
-     Jet fromJet;
-     char *what;
-     caddr_t data;
-{
-  blinkoff();
-  return 0;
-}
 
 void resetunmaptimer()
 {
@@ -312,6 +237,126 @@ void resetunmaptimer()
     }
 }
 
+
+int scroll(fromJet, increment, data)
+     Jet fromJet;
+     int increment;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  int cl, vl;
+
+  resetunmaptimer();
+  cl = CountLines(tj);
+  vl = VisibleLines(tj);
+  val = GetScrollBarValue(sj);
+  if ((increment > 0  &&  val < cl - vl)
+      ||  (increment < 0   &&  val > 0))
+    {
+      val += increment;
+      SetScrollBar(sj, 0, MAX(0, cl - 1), vl, val);
+      SetLine(tj, val);
+    }
+  return 0;
+}
+
+
+int newvalue(fromJet, nothing, data)
+     Jet fromJet;
+     int nothing;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  resetunmaptimer();
+  SetLine(tj, val = GetScrollBarValue((ScrollBarJet) fromJet));
+  return 0;
+}
+
+
+int textscroll(fromJet, nothing, data)
+     Jet fromJet;
+     int nothing;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  int cl, vl;
+
+  resetunmaptimer();
+  cl = CountLines(tj);
+  vl = VisibleLines(tj);
+  val = TopLine(tj);
+  SetScrollBar(sj, 0, MAX(0, cl - 1), vl, val);
+  return 0;
+}
+
+
+int textresize(fromJet, nothing, data)
+     Jet fromJet;
+     int nothing;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  int cl, vl;
+
+  resetunmaptimer();
+  cl = CountLines(tj);
+  vl = VisibleLines(tj);
+
+  if ((val != 0) && (val > cl - vl))
+    {
+      if (parms.autoscroll)
+	{
+	  val = MAX(0, cl - vl);
+
+	  SetLine(tj, val);
+	}
+    }
+
+  SetScrollBar(sj, 0, MAX(0, cl - 1), vl, val);
+  return 0;
+}
+
+
+int delete(fromJet, what, data)
+     Jet fromJet;
+     char *what;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  XjDestroyJet(fromJet);
+  XCloseDisplay(root->core.display);
+  XjExit(0);
+  return 0;				/* For linting... */
+}
+
+
+void blinkoff()
+{
+  if (blinking)
+    {
+      if (inverted)
+	{
+	  inverted = !inverted;
+	  setIcon(icon, Center, inverted);
+	}
+
+      (void)XjRemoveWakeup(timerid);
+      blinking = False;
+    }
+}
+
+
+int mapnotify(fromJet, what, data)
+     Jet fromJet;
+     char *what;
+     caddr_t data;
+     /*ARGSUSED*/
+{
+  blinkoff();
+  return 0;
+}
+
+
 void OurMapWindow(who)
      WindowJet who;
 {
@@ -320,13 +365,17 @@ void OurMapWindow(who)
   MapWindow(who, True);
 }
 
-void blink(info)
-     int info;
+
+int blink(info, id)
+     int info, id;
+     /*ARGSUSED*/
 {
   inverted = !inverted;
-  SetIcon(icon, inverted);
+  setIcon(icon, Center, inverted);
   timerid = XjAddWakeup(blink, 0, MAX(100, parms.frequency));
+  return 0;
 }
+
 
 int appendToBuffer(what, howmuch)
      char *what;
@@ -334,37 +383,43 @@ int appendToBuffer(what, howmuch)
 {
   int moved = 0;
 
-  if (howmuch == 0)
+  if (howmuch == 0)		/* if nothing to copy, return */
     return 0;
 
-  if (BUFSIZE - length < howmuch)
+  /*
+   * If there's not enough room to copy in whatever was asked for, then
+   * chop off the beginning of the text, using bcopy...
+   */
+  if (BUFSIZE - length <= howmuch)
     {
       char *c;
 
       c = text + MIN(INPUTSIZE, length);
       while ((c < text + length) && *c != '\0' && *c != '\n')
 	c++;
-      if (*c != '\n') /* if this is a looooong line, screw it. */
+      if (*c != '\n')		/* if this is a looooong line, screw it. */
 	c = text + MIN(INPUTSIZE, length);
       else
 	c++;
 
-      length -= (c - text);
       moved = c - text;
-      /* depends on intelligent bcopy */
-      bcopy(c, text, length);
+      length -= moved;
+
+      bcopy(c, text, length);	/* depends on intelligent bcopy */
     }
 
   bcopy(what, text + length, howmuch);
   length += howmuch;
-  text[length] = '\0';
-
+  text[length] = '\0';		/* Null terminate the string... */
+				/* WARNING:  This can overflow!  Why? */
   return moved;
 }
 
-input(fd, pfd)
+
+int input(fd, pfd)
      int fd;
      int *pfd;
+     /*ARGSUSED*/
 {
   int redo = 0;
   int cl, vl, l;
@@ -377,7 +432,7 @@ input(fd, pfd)
 
   if (l < 1)
     {
-      XjReadCallback((XjCallbackProc)NULL, *pfd, pfd);
+      XjReadCallback((XjCallbackProc)NULL, *pfd, (caddr_t) pfd);
       return 0;
       /* close(0); */
     }
@@ -389,10 +444,12 @@ input(fd, pfd)
 	  if (eol && parms.timestamp)
 	    {
 	      struct timeval now;
+	      time_t timet;
 	      char *timestr;
 
 	      gettimeofday(&now, NULL);
-	      timestr = (char *) ctime(&now.tv_sec);
+	      timet = (time_t) now.tv_sec;
+	      timestr = (char *) ctime(&timet);
 	      redo += appendToBuffer(&timestr[11], 5);
 	      redo += appendToBuffer(" ", 1);
 	    }
@@ -429,45 +486,54 @@ input(fd, pfd)
 	  redo += appendToBuffer(&inputbuf[i], j - i);
 	  i = j;
 	}
-
       if (!redo)
-	AddText(tj);
+	AddText(tj);		/* ??? */
       else
 	MoveText(tj, text, redo);
 
       cl = CountLines(tj);
       vl = VisibleLines(tj);
 
-      val = MAX(0, cl - vl);
+      if (parms.autoscroll)
+	{
+	  val = MAX(0, cl - vl);
 
-      SetScrollBar(sj, 0, MAX(0, cl - 1), vl, val);
-      SetLine(tj, val);
-
-      if (!WindowMapped((WindowJet)w))
+	  SetScrollBar(sj, 0, MAX(cl - 1, 0), vl, val);
+	  SetLine(tj, val);
+	}
+      
+      if (!WindowMapped((WindowJet)win))
 	{
 	  if (!WindowMapped(iconWindow))
-	    OurMapWindow((WindowJet)w); /* we're hidden, not iconified */
+	    OurMapWindow((WindowJet)win); /* we're hidden, not iconified */
 	  else
 	    {
 	      if (!blinking)
 		{
 		  blinking = True;
-		  blink(0);
+		  blink(0, 0);
 		}
 	    }
 	}
       else
 	{
 	  resetunmaptimer();
-	  if (WindowVisibility(w) != VisibilityUnobscured)
-	    XRaiseWindow(w->core.display, w->core.window); /* ICCCM ok */
+	  if (WindowVisibility(win) != VisibilityUnobscured)
+	    XRaiseWindow(win->core.display, win->core.window); /* ICCCM ok */
 	}
     }
+  return 0;
 }
 
+#if defined(_IBMR2) && defined(_AIX)
+void sighandler(sig)		/* broken header files under aix... */
+     int sig;
+#else
 void sighandler(sig, code, scp)
      int sig, code;
      struct sigcontext *scp;
+     /*ARGSUSED*/
+#endif
 {
   switch(sig)
     {
@@ -487,19 +553,24 @@ void sighandler(sig, code, scp)
   return;
 }
 
+
 XjCallbackRec callbacks[] =
 {
   { "newvalue", newvalue },
   { "textresize", textresize },
+  { "textscroll", textscroll },
   { "delete", delete },
   { "hide", hide },
-  { "mapnotify", mapnotify }
+  { "mapnotify", mapnotify },
+  { "scroll", scroll },
 };
 
-static void checkSignals()
+
+static int checkSignals()
 {
   int sigs;
   int cl, vl;
+  int ret_code=0;
 
   do
     {
@@ -511,11 +582,11 @@ static void checkSignals()
 	  sigflags[FPE] = 0;
 	  text[0] = '\0';
 	  length = 0;
-	  saveFile(CONSOLEFILE, text, length);
+	  saveFile(parms.file, text, length);
 
 	  blinkoff();
-	  if (WindowMapped(w))
-	    UnmapWindow(w);
+	  if (WindowMapped(win))
+	    UnmapWindow(win);
 
 	  SetText(tj, text);
 
@@ -533,16 +604,16 @@ static void checkSignals()
 	{
 	  sigs++;
 	  sigflags[USR1] = 0;
-	  if (!WindowMapped((WindowJet)w))
+	  if (!WindowMapped((WindowJet)win))
 	    {
-	      OurMapWindow((WindowJet)w);
-	      XFlush(w->core.display);
+	      OurMapWindow((WindowJet)win);
+	      XFlush(win->core.display);
 	    }
 	  else
-	    if (WindowVisibility(w) != VisibilityUnobscured)
+	    if (WindowVisibility(win) != VisibilityUnobscured)
 	      {
-		XRaiseWindow(w->core.display, w->core.window); /* ICCCM ok */
-		XFlush(w->core.display);
+		XRaiseWindow(win->core.display, win->core.window); /* ICCCM ok */
+		XFlush(win->core.display);
 	      }
 	}
 
@@ -550,10 +621,10 @@ static void checkSignals()
 	{
 	  sigs++;
 	  sigflags[USR2] = 0;
-	  if (WindowMapped(w))
+	  if (WindowMapped(win))
 	    {
-	      UnmapWindow(w);
-	      XFlush(w->core.display);
+	      UnmapWindow(win);
+	      XFlush(win->core.display);
 	    }
 	}
 
@@ -561,111 +632,168 @@ static void checkSignals()
 	{
 	  sigs++;
 	  sigflags[HUP] = 0;
-	  saveFile(CONSOLEFILE, text, length);
+	  saveFile(parms.file, text, length);
 	  XCloseDisplay(root->core.display);
-	  exit(0);
+	  XjExit(0);
 	}
+      ret_code += sigs;
     }
   while(sigs);
+  return ret_code;
 }
+
 
 fatal(display)
      Display *display;
+     /*ARGSUSED*/
 {
-  exit(1);
+  XjExit(1);
 }
 
+
 main(argc, argv)
-int argc;
-char **argv;
+     int argc;
+     char **argv;
 {
-  Display *display;
-  Jet w0, b0, l0, w1, w2, f, l1;
+  Jet w, b, f;
   int cl, vl, i;
   int zero = 0;
   int auxinput = -1;
+  int size=0;
+  struct stat buf;
 
   for (i = 0; i < NUMSIGS; i++)
     sigflags[i] = 0;
 
-  (void)signal(SIGHUP, sighandler);
-  (void)signal(SIGFPE, sighandler);
-  (void)signal(SIGUSR1, sighandler);
-  (void)signal(SIGUSR2, sighandler);
+  (void) signal(SIGHUP, sighandler);
+  (void) signal(SIGFPE, sighandler);
+  (void) signal(SIGUSR1, sighandler);
+  (void) signal(SIGUSR2, sighandler);
 
-  setenv("XENVIRONMENT", CONSOLEDEFAULTS, 0);
+#if defined(ultrix) || defined(_AIX) || defined(sun)  || defined(_AUX_SOURCE)
+/*
+ *  setenv() doesn't exist on some systems...  it's putenv instead.
+ */
+  if ((char *) getenv(XENV) == NULL)
+    {
+      char foo[1024];
+
+      sprintf(foo, "%s=%s", XENV, CONSOLEDEFAULTS);
+      putenv(foo);
+    }
+#else
+  setenv(XENV, CONSOLEDEFAULTS, 0);
+#endif
 
   root = XjCreateRoot(&argc, argv, "Console", NULL,
 		      opTable, XjNumber(opTable));
 
-  (void)XSetIOErrorHandler(fatal);
+  (void) XSetIOErrorHandler(fatal);
 
   XjLoadFromResources(NULL,
 		      NULL,
-		      programName,
 		      programClass,
+		      programName,
 		      appResources,
 		      XjNumber(appResources),
-		      &parms);
+		      (caddr_t) &parms);
 
-  display = root->core.display;
+  DEBUG = parms.debug;
 
   XjRegisterCallbacks(callbacks, XjNumber(callbacks));
 
-  iconWindow = XjVaCreateJet("iconWindow", windowJetClass, root, NULL, NULL);
-  icon = XjVaCreateJet("icon", iconJetClass, iconWindow, NULL, NULL);
+  iconWindow = (WindowJet) XjVaCreateJet("iconWindow",
+					 windowJetClass, root, NULL, NULL);
+  icon = (LabelJet) XjVaCreateJet("icon",
+				  labelJetClass, iconWindow, NULL, NULL);
   XjRealizeJet(root);
 
-  w = XjVaCreateJet("window", windowJetClass, root,
-		    XjNiconWindow, iconWindow,
-		    NULL, NULL);
-  f = XjVaCreateJet("form", formJetClass, w, NULL, NULL);
+  win = (WindowJet) XjVaCreateJet("window", windowJetClass, root,
+				  XjNiconWindow, iconWindow,
+				  NULL, NULL);
+  f = XjVaCreateJet("form", formJetClass, win, NULL, NULL);
 
   /*
    * Button
    */
-  w0 = XjVaCreateJet("hide", windowJetClass, f, NULL, NULL);
-  b0 = XjVaCreateJet("hideButton", buttonJetClass, w0, NULL, NULL);
-  l0 = XjVaCreateJet("hideLabel", labelJetClass, b0, NULL, NULL);
+  w = XjVaCreateJet("hide", windowJetClass, f, NULL, NULL);
+  b = XjVaCreateJet("hideButton", buttonJetClass, w, NULL, NULL);
+  (void) XjVaCreateJet("hideLabel", labelJetClass, b, NULL, NULL);
+
+  /*
+   * Arrow buttons
+   */
+  w = XjVaCreateJet("scrollup", windowJetClass, f, NULL, NULL);
+  b = XjVaCreateJet("scrollupButton", buttonJetClass, w, NULL, NULL);
+  (void) XjVaCreateJet("scrollupArrow", arrowJetClass, b, NULL, NULL);
+
+  w = XjVaCreateJet("scrolldown", windowJetClass, f, NULL, NULL);
+  b = XjVaCreateJet("scrolldownButton", buttonJetClass, w, NULL, NULL);
+  (void) XjVaCreateJet("scrolldownArrow", arrowJetClass, b, NULL, NULL);
 
   /*
    * Label
    */
-  l1 = XjVaCreateJet("title", labelJetClass, f, NULL, NULL);
+  (void) XjVaCreateJet("title", labelJetClass, f, NULL, NULL);
 
-  w1 = XjVaCreateJet("scrollBarWindow", windowJetClass, f, NULL, NULL);
-  sj = XjVaCreateJet("scrollBar", scrollBarJetClass, w1, NULL, NULL);
-  w2 = XjVaCreateJet("textDisplayWindow", windowJetClass, f, NULL, NULL);
-  tj = XjVaCreateJet("textDisplay", textDisplayJetClass, w2, NULL, NULL);
+  /*
+   * Scrollbar
+   */
+  w = XjVaCreateJet("scrollBarWindow", windowJetClass, f, NULL, NULL);
+  sj = (ScrollBarJet) XjVaCreateJet("scrollBar",
+				    scrollBarJetClass, w, NULL, NULL);
 
-  XjRealizeJet(w);
+  /*
+   * TextDisplay
+   */
+  w = XjVaCreateJet("textDisplayWindow", windowJetClass, f, NULL, NULL);
+  tj = (TextDisplayJet) XjVaCreateJet("textDisplay",
+				      textDisplayJetClass, w, NULL, NULL);
 
-  text = XjMalloc(BUFSIZE);
+
+  XjRealizeJet((Jet) XjParent(f));
+
+
+  if (! stat(parms.file, &buf))	/* If there was an error stat'ing the */
+    size = (int)buf.st_size;	/* file, we will find out soon enough */
+				/* when we call loadFile below.  No need */
+				/* to display an error msg here. */
+
+  size = (size > BUFSIZE) ? size : BUFSIZE;
+  text = XjMalloc(size);
   text[0] = '\0';
   length = 0;
-  length = loadFile(CONSOLEFILE, text, BUFSIZE);
+  length = loadFile(parms.file, text, size);
 
-  if (parms.input && *parms.input) {
+  if (parms.input && *parms.input)
+    {
       auxinput = open(parms.input, O_RDONLY, 0);
-      if (auxinput == -1) {
+      if (auxinput == -1)
+	{
 #define CANT_OPEN "console: can't open input\n"
 	  appendToBuffer(CANT_OPEN, sizeof(CANT_OPEN)-1);
-      }
-  }
+	}
+    }
   SetText(tj, text);
 
   cl = CountLines(tj);
   vl = VisibleLines(tj);
 
-  val = MAX(0, cl - vl);
+  if (parms.autoscroll)
+    {
+      val = MAX(0, cl - vl);
 
-  SetScrollBar(sj, 0, MAX(cl - 1, 0), vl, val);
-  SetLine(tj, val);
-
+      SetScrollBar(sj, 0, MAX(cl - 1, 0), vl, val);
+      SetLine(tj, val);
+    }
       
-  XjReadCallback((XjCallbackProc)input, zero, &zero);
+  XjReadCallback((XjCallbackProc)input, zero, (caddr_t) &zero);
   if (auxinput != -1)
-      XjReadCallback((XjCallbackProc)input, auxinput, &auxinput);
+    XjReadCallback((XjCallbackProc)input, auxinput, (caddr_t) &auxinput);
+
+  if (parms.inputfd != 0)
+    XjReadCallback((XjCallbackProc)input, parms.inputfd,
+		   (caddr_t) &parms.inputfd);
 
   XjSetSignalChecker(checkSignals);
 
