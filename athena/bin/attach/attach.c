@@ -15,7 +15,7 @@
 
 /* This is attach, which is used to attach lockers to workstations. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.33 2001-12-18 16:33:21 zacheiss Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.34 2002-10-17 05:19:50 ghudson Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -52,6 +52,7 @@ static struct agetopt_option attach_options[] = {
   { "nomap", 'n', 0 },
   { "nosetuid", 'N', 0 },
   { "nosuid", 'N', 0 },
+  { "master", 'M', 0 },
   { "mountoptions", 'o', 1 },
   { "override", 'O', 0 },
   { "printpath", 'p', 0 },
@@ -127,6 +128,10 @@ int attach_main(int argc, char **argv)
 
 	    case 'm':
 	      mountpoint = optarg;
+	      break;
+
+	    case 'M':
+	      options |= LOCKER_ATTACH_OPT_MASTER;
 	      break;
 
 	    case 'n':

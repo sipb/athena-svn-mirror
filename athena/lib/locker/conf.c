@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements reading attach.conf. */
 
-static const char rcsid[] = "$Id: conf.c,v 1.7 2000-04-24 02:13:29 mwhitson Exp $";
+static const char rcsid[] = "$Id: conf.c,v 1.8 2002-10-17 05:20:06 ghudson Exp $";
 
 #include <ctype.h>
 #include <errno.h>
@@ -67,6 +67,7 @@ static struct opt_def {
   /* String options */
   { "afs-mount-dir", parse_string, offsetof(struct locker_context, afs_mount_dir) },
   { "attachtab", parse_string, offsetof(struct locker_context, attachtab) },
+  { "local-dir", parse_string, offsetof(struct locker_context, local_dir) },
   { "nfs-mount-dir", parse_string, offsetof(struct locker_context, nfs_mount_dir) },
 
   /* Trusted user list */
@@ -126,6 +127,7 @@ int locker_init(locker_context *contextp, uid_t user,
   context->nfs_root_hack = context->exp_desc = context->exp_mountpoint = 1;
   context->afs_mount_dir = strdup(LOCKER_AFS_MOUNT_DIR);
   context->attachtab = strdup(LOCKER_PATH_ATTACHTAB);
+  context->local_dir = strdup(LOCKER_PATH_LOCAL);
   if (!context->afs_mount_dir || !context->attachtab)
     {
       locker__error(context, "Out of memory reading attach.conf.\n");
@@ -260,6 +262,7 @@ void locker_end(locker_context context)
   free(context->afs_mount_dir);
   free(context->attachtab);
   free(context->nfs_mount_dir);
+  free(context->local_dir);
   free(context->fstype);
   free_regexp_list(context->setuid, 0);
   free_regexp_list(context->allow, 0);

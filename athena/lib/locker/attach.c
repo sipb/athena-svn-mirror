@@ -15,11 +15,13 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.10 2001-08-16 14:27:52 ghudson Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.11 2002-10-17 05:20:05 ghudson Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <sys/param.h>
 
 #include <hesiod.h>
 
@@ -28,6 +30,7 @@ static const char rcsid[] = "$Id: attach.c,v 1.10 2001-08-16 14:27:52 ghudson Ex
 
 static int attach_attachent(locker_context context, locker_attachent *at,
 			    int authmode, int options, char *mountoptions);
+static int try_local_copy(locker_context context, locker_attachent *at);
 static int check_mountoptions(locker_context context, locker_attachent *at,
 			      int authmode, int options, char **mountoptions);
 static int add_owner(locker_context context, locker_attachent *at,
@@ -222,8 +225,11 @@ static int attach_attachent(locker_context context, locker_attachent *at,
 	  return status;
 	}
 
-      /* Attach the locker. */
-      status = at->fs->attach(context, at, mountoptions);
+      /* Attach the locker.  Look for a local copy first. */
+      if (!(options & LOCKER_ATTACH_OPT_MASTER) && try_local_copy(context, at))
+	status = LOCKER_SUCCESS;
+      else
+	status = at->fs->attach(context, at, mountoptions);
       free(mountoptions);
       if (status == LOCKER_EALREADY)
 	{
@@ -263,6 +269,40 @@ static int attach_attachent(locker_context context, locker_attachent *at,
     at->fs->zsubs(context, at);
 
   return status;
+}
+
+/* Look for a symlink at {context->local_dir}/{at->name}.  If it
+ * exists, it should point to a local copy of the locker which has
+ * been created with athlsync(8) via /etc/athena/local-lockers.  Copy
+ * this symlink instead of actually attaching the locker.
+ */
+static int try_local_copy(locker_context context, locker_attachent *at)
+{
+  char *path, linkbuf[MAXPATHLEN + 1];
+  int len;
+
+  /* Read the symlink, if it exists. */
+  path = malloc(strlen(context->local_dir) + 1 + strlen(at->name) + 1);
+  if (path == NULL)
+    return 0;
+  sprintf(path, "%s/%s", context->local_dir, at->name);
+  len = readlink(path, linkbuf, sizeof(linkbuf) - 1);
+  free(path);
+  if (len == -1)
+      return 0;
+  linkbuf[len] = '\0';
+
+  path = strdup(linkbuf);
+  if (path == NULL)
+    return 0;
+  if (symlink(path, at->mountpoint) == -1)
+    {
+      free(path);
+      return 0;
+    }
+  free(at->hostdir);
+  at->hostdir = path;
+  return 1;
 }
 
 /* This is a helper function used by check_mountoptions to determine
