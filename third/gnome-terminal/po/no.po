@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal 2.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-02-20 23:28+0100\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-01 22:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -357,9 +357,8 @@ msgid "Goes before initial title"
 msgstr "Plasseres foran opprinnelig tittel"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Avslutt terminalen"
+msgstr "Hold terminalen åpen"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -614,9 +613,8 @@ msgid "_Transparent background"
 msgstr "_Gjennomsiktig bakgrunn"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Oppdater utmp/wtmp-oppføringer når kommandoen startes"
+msgstr "_Oppdater påloggingsoppføringer når kommandoen startes"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -1500,13 +1498,15 @@ msgstr ""
 msgid "Whether to use the system font"
 msgstr "Om systemskriften skal brukes"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-15]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1825,7 +1825,7 @@ msgstr ""
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Snarveitasten «%s» er allerede bundet til handlingen «%s»"
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -2130,48 +2130,43 @@ msgstr "Vis meny_linje"
 msgid "_Full Screen"
 msgstr "_Full skjerm"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "_Normal størrelse"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Bytt _profil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Sett tittel..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Sett _tegnkoding"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Nullstill"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Nu_llstill og tøm"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "_Forrige fane"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "_Neste fane"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Innhold"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Om"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2179,7 +2174,7 @@ msgstr ""
 "Det oppsto en feil under lasting av konfigurasjon for bruk av snarveier. (%"
 "s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2188,54 +2183,55 @@ msgstr ""
 "Det oppsto en feil under abonnering på endringsmeldinger for terminalvindu. "
 "(%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Fil"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "R_ediger"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Vis"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminal"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "_Faner"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
+"Dette vinduet har en åpen fane. Hvis du lukker vinduet vil denne lukkes."
 msgstr[1] ""
+"Dette vinduet har %d åpne faner. Hvis du lukker vinduet vil alle faner "
+"lukkes."
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Lukk fane"
+msgstr "Lukk alle faner?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Lukk fane"
+msgstr "Lukk alle faner"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr "Kjartan Maraas <kmaraas@gnome.org>"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "GNOME-terminal"
 
@@ -2666,14 +2662,3 @@ msgstr ""
 #: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Feil under henting av terminaltjener fra aktiveringstjeneren\n"
-
-#~ msgid "There was an error creating the child process for this terminal: %s"
-#~ msgstr ""
-#~ "Det oppsto en feil under oppretting av underprosess for denne terminalen: "
-#~ "%s"
-
-#~ msgid "Could not set working directory to \"%s\": %s\n"
-#~ msgstr "Kunne ikke sette arbeidskatalog til «%s»: %s\n"
-
-#~ msgid "Could not execute command %s: %s\n"
-#~ msgstr "Kunne ikke kjøre kommando %s: %s\n"

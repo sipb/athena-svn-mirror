@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-06-08 13:24+0200\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-28 15:08+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -613,9 +613,8 @@ msgid "_Transparent background"
 msgstr "_Průsvitné pozadí"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "Při spuštění příkazu _aktualizovat záznamy utmp/wtmp"
+msgstr "Při spuštění příkazu _aktualizovat záznamy o přihlášení"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -788,13 +787,12 @@ msgstr ""
 "(argv[0] bude mít před sebou pomlčku.)"
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
 msgstr ""
-"Je-li true, bude utmp/wtmp aktualizován, když je spuštěn příkaz uvnitř "
-"terminálu."
+"Je-li true, budou systémové záznamy o přihlášení utmp a wtmp aktualizovány, "
+"když je spuštěn příkaz uvnitř terminálu."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1526,9 +1524,9 @@ msgid "Whether to silence terminal bell"
 msgstr "Jestli umlčet zvonek terminálu"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "Jestli aktualizovat utmp/wtmp při spouštění příkazu terminálu"
+msgstr ""
+"Jestli aktualizovat přihlašovací záznamy při spouštění příkazu terminálu"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1538,13 +1536,15 @@ msgstr "Jestli používat barvy z tématu widgetu terminálu"
 msgid "Whether to use the system font"
 msgstr "Jestli používat systémové písmo"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,ISO-8859-2,current]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -2161,48 +2161,43 @@ msgstr "Zobrazovat lištu s _menu"
 msgid "_Full Screen"
 msgstr "_Celá obrazovka"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "_Normální velikost"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Změnit _profil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Nastavit titulek..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Nastavit _kódování znaků"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Inicializovat"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Inicializovat a _vymazat"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "_Předchozí karta"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "_Následující karta"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Obsah"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "O _aplikaci"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2210,7 +2205,7 @@ msgstr ""
 "Při načítání konfigurační hodnoty pro používání mnemoniky došlo k chybě. (%"
 "s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2219,31 +2214,31 @@ msgstr ""
 "Při přihlašování se ke sledování změn v konfiguraci okna terminálu došlo k "
 "chybě. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Soubor"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Upravit"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Zobrazit"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terminál"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "_Karty"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
@@ -2253,21 +2248,21 @@ msgstr[0] "Toto okno má otevřenou jednu kartu. Zavření okna ji zavře."
 msgstr[1] "Toto okno má otevřené %d karty. Zavření okna je zavře."
 msgstr[2] "Toto okno má otevřených %d karet. Zavření okna je zavře."
 
-#: src/terminal-window.c:2288
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
 msgstr "Zavřít všechny karty?"
 
-#: src/terminal-window.c:2300
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
 msgstr "Zavřít všechny karty"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr ""
 "Stanislav Brabec <utx@penguin.cz>\n"
 "Miloslav Trmač <mitr@volny.cz>"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "GNOME Terminál"
 
@@ -2693,6 +2688,24 @@ msgstr ""
 #: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Od aktivačního serveru se nepodařilo získat terminálový server.\n"
+
+#~ msgid "Farsi"
+#~ msgstr "Farsi"
+
+#~ msgid "Tamil"
+#~ msgstr "Tamilské"
+
+#~ msgid ""
+#~ "<!-- Translators: please note this is has to be a list of valid encodings "
+#~ "(which are to be taken from the list in src/encoding.c) It has to include "
+#~ "UTF-8 and the word 'current', which is not to be translated. This is "
+#~ "provided for costumization of the default encoding menu; see bug 144810 "
+#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
+#~ "current]"
+#~ msgstr "[UTF-8,ISO-8859-2,current]"
+
+#~ msgid "_Normal Size"
+#~ msgstr "_Normální velikost"
 
 #~ msgid "There was an error creating the child process for this terminal: %s"
 #~ msgstr "Při vytváření procesu pro tento terminál došlo k chybě: %s"

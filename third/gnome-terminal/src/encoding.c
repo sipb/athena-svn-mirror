@@ -119,7 +119,7 @@ static TerminalEncoding encodings[] = {
   { TERMINAL_ENCODING_GBK, FALSE,
     "GBK", N_("Chinese Simplified") },
   { TERMINAL_ENCODING_GEOSTD8, FALSE,
-    "GEORGIAN-ACADEMY", N_("Georgian") }, /* FIXME GEOSTD8 ? */
+    "GEORGIAN-PS", N_("Georgian") },
   { TERMINAL_ENCODING_HZ, FALSE,
     "HZ", N_("Chinese Simplified") },
 

@@ -1,6 +1,62 @@
+2004-12-07  Mariano Suárez-Alvarez  <mariano@gnome.org>
+
+	* configure.in: Bump version, since we skipped 2.8.1
+	* NEWS: update
+
+2004-12-07  Mariano Suárez-Alvarez  <mariano@gnome.org>
+
+	* src/Makefile.am: remove a deprecation flag.
+
+2004-10-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* NEWS: Update
+	* autogen.sh: Use automake 1.4 to get it to distcheck
+	* configure.in: Bump.
+
+2004-09-10  Akagic Amila  <bono@linux.org.ba>
+
+	* configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-30  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* po/no.po:
+	  Fix po file because it has been broken for more than two days.
+	  Spank me if I am out of line.
+
+2004-08-30  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* src/encoding.c: fixed georgian encoding
+
+2004-08-17  Christian Rose  <menthos@menthos.com>
+
+	* src/gnome-terminal.schemas.in: Fixed typos and linewrappings in
+	the encodings comment.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-08-06 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_set_active): also update the encoding menu,
+	so that a11y stuff picks it up correctly. Fixes 147485.
+
+2004-06-29 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* src/terminal-window.c(terminal_window_init): GTK_STOCK_ZOOM_100 now has a HIGgy 
+	label, so there is no need to override it.
+
 2004-06-29 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
 
 	* configure.in: Version 2.7.3
+
+2004-06-29 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* autogen.sh: require automake-1.8 to build.
+	* Makefile.am: add intltool-{merge,update,extract} and the .desktop file 
+	to DISTCLEANFILES. Tweak the distuninstallcheck_listfiles so that automake does
+	not see the /var/scrollkeeper cruft scrollkeeper leaves behind.
+	* configure.in: remoce the call to AC_ARG_PROGRAM, which is redundant.
 
 2004-06-28 Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
 

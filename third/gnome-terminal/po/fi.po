@@ -10,11 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-terminal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-02-28 19:29+0200\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-19 01:49+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
-"Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
-"sourceforge.net>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -360,9 +359,8 @@ msgid "Goes before initial title"
 msgstr "Edeltää alkuperäistä otsikkoa"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Sulje pääte"
+msgstr "Säilytä pääte avoinna"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -616,9 +614,8 @@ msgid "_Transparent background"
 msgstr "_Läpinäkyvä tausta"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Päivitä utmp/wtmp-tiedot kun komento käynnistetään"
+msgstr "_Päivitä kirjautumistallenne kun komento käynnistetään"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -790,11 +787,12 @@ msgstr ""
 "väliviiva alussa.)"
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
-msgstr "Jos tosi, utmp/wtmp päivittyy kun päätteen komento käynnistetään."
+msgstr ""
+"Jos tosi, järjestelmän kirjautumistallenne päivittyy kun päätteen komento "
+"käynnistetään."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1288,8 +1286,7 @@ msgid ""
 "subdirectories relative to /apps/gnome-terminal/profiles."
 msgstr ""
 "Luettelo Gnomen päätteen tuntemista profiileista. Luettelo sisältää "
-"merkkijonot, jotka nimeävät hakemiston /apps/gnome-terminal/profiles "
-"alihakemistot."
+"merkkijonot, jotka nimeävät kansion /apps/gnome-terminal/profiles alikansiot."
 
 #: src/gnome-terminal.schemas.in.h:96
 msgid ""
@@ -1481,11 +1478,11 @@ msgid ""
 "Whether to ask for confirmation when closing a terminal window which has "
 "more than one open tab."
 msgstr ""
+"Varmistetaanko pääteikkunan sulkeminen, kun useita välilehtiä on avoinna."
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "Päivittyykö utmp/wtmp kun päätekomento käynnistetään"
+msgstr "Varmistetaanko päätteen sulkeminen"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
@@ -1530,9 +1527,8 @@ msgid "Whether to silence terminal bell"
 msgstr "Vaiennetaanko päätteen äänimerkki"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "Päivittyykö utmp/wtmp kun päätekomento käynnistetään"
+msgstr "Päivittyykö kirjautumistallenne kun päätekomento käynnistetään"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1542,13 +1538,15 @@ msgstr "Ovatko päätesäätimen teeman värit käytössä"
 msgid "Whether to use the system font"
 msgstr "Onko järjestelmän kirjasin käytössä"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-15]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1864,7 +1862,7 @@ msgstr "Virhe välittäessä pikanäppäimen muutosta asetustietokantaan: %s\n"
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Pikanäppäin \"%s\" on jo kytketty toimintoon \"%s\""
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -1947,7 +1945,7 @@ msgstr "Virhe asettaessa avainta %s takaisin oletukseksi: %s\n"
 #, c-format
 msgid ""
 "There was an error while removing the configuration directory %s. (%s)\n"
-msgstr "Asetushakemiston %s poistamisessa tapahtui virhe. (%s)\n"
+msgstr "Asetuskansion %s poistamisessa tapahtui virhe. (%s)\n"
 
 #: src/terminal-profile.c:2443
 #, c-format
@@ -2162,48 +2160,43 @@ msgstr "Näytä valikko_palkki"
 msgid "_Full Screen"
 msgstr "_Koko ruutu"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "_Tavallinen koko"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Vaihda pro_fiilia"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "_Aseta otsikko..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Aseta _merkistö"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Alusta"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Alusta ja t_yhjennä"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "_Edellinen välilehti"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "_Seuraava välilehti"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Sisältö"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Tietoja..."
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2211,7 +2204,7 @@ msgstr ""
 "Tapahtui virhe ladatessa asetusta, joka määrää, käytetäänkö pikavalintoja. (%"
 "s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2220,50 +2213,51 @@ msgstr ""
 "Tapahtui virhe listautuessa huomautettavaksi pääteikkunan asetusten "
 "muutoksista. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Tiedosto"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Näytä"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Pääte"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "_Välilehdet"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Ohje"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
+"Tässä ikkunassa on yksi välilehti avoinna. Ikkunan sulkeminen sulkee myös "
+"sen."
 msgstr[1] ""
+"Tässä ikkunassa on %d välilehteä avoinna. Ikkunan sulkeminen sulkee myös ne."
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Sulje välilehti"
+msgstr "Haluatko sulkea kaikki välilehdet?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Sulje välilehti"
+msgstr "Sulje kaikki välilehdet"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr ""
 "Pauli Virtanen, 2000-2004\n"
@@ -2272,7 +2266,7 @@ msgstr ""
 "\n"
 "http://gnome-fi.org/"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "Gnomen pääte"
 
@@ -2409,15 +2403,15 @@ msgstr "OTSIKKO"
 
 #: src/terminal.c:331
 msgid "Set the terminal's working directory"
-msgstr "Aseta päätteen työhakemisto"
+msgstr "Aseta päätteen työkansio"
 
 #: src/terminal.c:332 src/terminal.c:341
 msgid "DIRNAME"
-msgstr "TYÖHAKEMISTO"
+msgstr "TYÖKANSIO"
 
 #: src/terminal.c:340
 msgid "Set the default terminal's working directory. Used internally"
-msgstr "Aseta oletuspäätteen työhakemisto. Sisäisessä käytössä"
+msgstr "Aseta oletuspäätteen työkansio. Sisäisessä käytössä"
 
 #: src/terminal.c:349
 msgid "Set the terminal's zoom factor (1.0 = normal size)"
@@ -2509,7 +2503,7 @@ msgstr "Kaksi \"%s\"-valitsinta annettu samaa välilehteä kohden\n"
 #: src/terminal.c:1025
 #, c-format
 msgid "Option \"%s\" requires an argument giving the directory\n"
-msgstr "Valitsin \"%s\" vaatii parametrin, joka määrittelee hakemiston\n"
+msgstr "Valitsin \"%s\" vaatii parametrin, joka määrittelee kansion\n"
 
 #: src/terminal.c:1045
 msgid ""
@@ -2517,7 +2511,7 @@ msgid ""
 "directory\n"
 msgstr ""
 "Valitsin --default-working-directory vaatii parametrin, joka määrittelee "
-"hakemiston\n"
+"kansion\n"
 
 #: src/terminal.c:1051
 msgid "Two --default-working-directories given\n"
@@ -2705,15 +2699,27 @@ msgstr ""
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Päätepalvelimen haku aktivointipalvelimelta epäonnistui.\n"
 
+#~ msgid ""
+#~ "<!-- Translators: Please note that this has to be a list of valid "
+#~ "encodings (which are to be taken from the list in src/encoding.c). It has "
+#~ "to include UTF-8 and the word 'current', which is not to be translated. "
+#~ "This is provided for customization of the default encoding menu; see bug "
+#~ "144810 for an use case. In most cases, this should be left alone. -->[UTF-"
+#~ "8,current]"
+#~ msgstr "[UTF-8,current,ISO-8859-15]"
+
 #~ msgid "There was an error creating the child process for this terminal: %s"
 #~ msgstr "Virhe luodessa lapsiprosessia tätä päätettä varten: %s"
 
 # , c-format
 #~ msgid "Could not set working directory to \"%s\": %s\n"
-#~ msgstr "Ei voinut asettaa työhakemistoksi \"%s\": %s\n"
+#~ msgstr "Ei voinut asettaa työkansioksi \"%s\": %s\n"
 
 #~ msgid "Could not execute command %s: %s\n"
 #~ msgstr "Ei voinut suorittaa komentoa %s: %s\n"
+
+#~ msgid "_Normal Size"
+#~ msgstr "_Tavallinen koko"
 
 #~ msgid "Accelerator to close a tab."
 #~ msgstr "Välilehden sulkeva pikanäppäin."

@@ -1,20 +1,23 @@
+# translation of gnome-terminal.HEAD.cy.po to Cymraeg
 # gnome-terminal yn Gymraeg.
 # This file is distributed under the same license as the gnome-terminal
 # package.
 # Dafydd Harries <daf@muse.19inch.net>, 2003 2004.
+# Dafydd Tomos <l10n@da.fydd.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-terminal\n"
+"Project-Id-Version: gnome-terminal.HEAD.cy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-29 19:42-0300\n"
-"PO-Revision-Date: 2004-03-16 02:16+0000\n"
-"Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
-"Language-Team: Welsh <gnome-cy@pengwyn.linux.org.uk>\n"
+"POT-Creation-Date: 2004-12-07 18:37-0300\n"
+"PO-Revision-Date: 2004-08-06 12:40+0100\n"
+"Last-Translator: Dafydd Tomos <l10n@da.fydd.org>\n"
+"Language-Team: Cymraeg <gnome-cy@www.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n == 2) ? 1 : 0;\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: gnome-terminal.desktop.in.in.h:1
 msgid "Command line"
@@ -358,9 +361,8 @@ msgid "Goes before initial title"
 msgstr "Daw cyn y teitl gwreiddiol"
 
 #: src/gnome-terminal.glade2.h:40
-#, fuzzy
 msgid "Hold the terminal open"
-msgstr "Gadael y terfynell"
+msgstr "Cadw'r terfynell ar agor"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Initial _title:"
@@ -615,9 +617,8 @@ msgid "_Transparent background"
 msgstr "Cefndir _tryloyw"
 
 #: src/gnome-terminal.glade2.h:104
-#, fuzzy
 msgid "_Update login records when command is launched"
-msgstr "_Diweddaru cofnodion utmp/wtmp pan gweithredir y gorchymyn"
+msgstr "_Diweddaru cofnodion mewngofnodi pan gweithredir y gorchymyn"
 
 #: src/gnome-terminal.glade2.h:105
 msgid "_Use the system terminal font"
@@ -791,13 +792,12 @@ msgstr ""
 "cragen mewngofnodi. (Fe fydd gan argv[0] ?? o'i flaen.)"
 
 #: src/gnome-terminal.schemas.in.h:28
-#, fuzzy
 msgid ""
 "If true, the system login records utmp and wtmp will be updated when the "
 "command inside the terminal is launched."
 msgstr ""
-"Os yn wir, diweddarir utmp/wtmp wrth i'r gorchymyn gael ei lansio o fewn y "
-"terfynell."
+"Os yn wir, diweddarir cofnodion mewngofnodi'r system utmp a wtmp wrth i'r "
+"gorchymyn gael ei lansio o fewn y terfynell."
 
 #: src/gnome-terminal.schemas.in.h:29
 msgid ""
@@ -1505,11 +1505,12 @@ msgid ""
 "Whether to ask for confirmation when closing a terminal window which has "
 "more than one open tab."
 msgstr ""
+"A ddylid gofyn am gadarnhad pan yn cau ffenest terfynell sydd a mwy na un "
+"tab agored."
 
 #: src/gnome-terminal.schemas.in.h:124
-#, fuzzy
 msgid "Whether to ask for confirmation when closing terminal windows"
-msgstr "A ddylid diweddaru utmp/wtmp wrth lansio gorchymyn terfynell"
+msgstr "A ddylid gofyn am gadarnhad wrth gau ffenestri terfynell"
 
 #: src/gnome-terminal.schemas.in.h:125
 msgid "Whether to blink the cursor"
@@ -1554,9 +1555,9 @@ msgid "Whether to silence terminal bell"
 msgstr "A ddylid tawelu cloch y terfynell"
 
 #: src/gnome-terminal.schemas.in.h:134
-#, fuzzy
 msgid "Whether to update login records when launching terminal command"
-msgstr "A ddylid diweddaru utmp/wtmp wrth lansio gorchymyn terfynell"
+msgstr ""
+"A ddylid diweddaru cofnodion mewngofnodi wrth lansio gorchymyn terfynell"
 
 #: src/gnome-terminal.schemas.in.h:135
 msgid "Whether to use the colors from the theme for the terminal widget"
@@ -1566,13 +1567,15 @@ msgstr "A ddylid defnyddio'r lliwiau o'r thema ar gyfer y teclyn terfynell"
 msgid "Whether to use the system font"
 msgstr "A ddylid defnyddio ffont y system"
 
-#. Translators: please note this is has to be a list of valid encodings (which are to
-#. be taken from the list in src/encoding.c) It has to include UTF-8 and the word 'current', which
-#. is not to be translated. This is provided for costumization of the default encoding menu; see
-#. bug 144810 for an use case. In most cases, this should be left alone.
-#: src/gnome-terminal.schemas.in.h:141
+#. Translators: Please note that this has to be a list of
+#. valid encodings (which are to be taken from the list in src/encoding.c).
+#. It has to include UTF-8 and the word 'current', which is not to be
+#. translated. This is provided for customization of the default encoding
+#. menu; see bug 144810 for an use case. In most cases, this should be
+#. left alone.
+#: src/gnome-terminal.schemas.in.h:143
 msgid "[UTF-8,current]"
-msgstr ""
+msgstr "[UTF-8,current,ISO-8859-14]"
 
 #: src/profile-editor.c:47
 msgid "Black on light yellow"
@@ -1888,7 +1891,7 @@ msgstr "Gwall wrth ledu newidiad cyflymydd i'r cronfa cyfluniad: %s\n"
 #: src/terminal-accels.c:986
 #, c-format
 msgid "The shortcut key \"%s\" is already bound to the \"%s\" action"
-msgstr ""
+msgstr "Mae'r bysell cyrchu \"%s\" wedi ei rwymo i'r weithred \"%s\" yn barod"
 
 #: src/terminal-accels.c:1018
 #, c-format
@@ -2195,48 +2198,43 @@ msgstr "Danfos y _Bar Dewislen"
 msgid "_Full Screen"
 msgstr "_Llenwi'r Sgrîn"
 
-#. the default label for GTK_STOCK_ZOOM_100 does not follow the HIG...
-#: src/terminal-window.c:929
-msgid "_Normal Size"
-msgstr "Maint _Arferol"
-
-#: src/terminal-window.c:951
+#: src/terminal-window.c:949
 msgid "Change _Profile"
 msgstr "Newid _Proffeil"
 
-#: src/terminal-window.c:954
+#: src/terminal-window.c:952
 msgid "_Set Title..."
 msgstr "Gosod y _Teitl..."
 
-#: src/terminal-window.c:961
+#: src/terminal-window.c:959
 msgid "Set _Character Encoding"
 msgstr "Gosod yr Amgodiad _Nodau"
 
-#: src/terminal-window.c:971
+#: src/terminal-window.c:969
 msgid "_Reset"
 msgstr "_Ailosod"
 
-#: src/terminal-window.c:974
+#: src/terminal-window.c:972
 msgid "Reset and C_lear"
 msgstr "Ailosod a _Chlirio"
 
-#: src/terminal-window.c:988
+#: src/terminal-window.c:986
 msgid "_Previous Tab"
 msgstr "I'r Tab _Blaenorol"
 
-#: src/terminal-window.c:992
+#: src/terminal-window.c:990
 msgid "_Next Tab"
 msgstr "I'r Tab _Nesaf"
 
-#: src/terminal-window.c:1011
+#: src/terminal-window.c:1009
 msgid "_Contents"
 msgstr "_Cynnwys"
 
-#: src/terminal-window.c:1021
+#: src/terminal-window.c:1019
 msgid "_About"
 msgstr "_Ynghylch"
 
-#: src/terminal-window.c:1185
+#: src/terminal-window.c:1183
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
@@ -2244,7 +2242,7 @@ msgstr ""
 "Roedd gwall wrth lwytho'r gwerth cyfluniad ynghylch a ddylid defnyddio "
 "coflythrennau. (%s)\n"
 
-#: src/terminal-window.c:1204
+#: src/terminal-window.c:1202
 #, c-format
 msgid ""
 "There was an error subscribing to notification of terminal window "
@@ -2253,54 +2251,55 @@ msgstr ""
 "Roedd gwall wrth danysgrifio at hysbysiadau ynghylch newidiadau i gyfluniad "
 "ffenest y terfynell. (%s)\n"
 
-#: src/terminal-window.c:2092
+#: src/terminal-window.c:2091
 msgid "_File"
 msgstr "_Ffeil"
 
-#: src/terminal-window.c:2094 src/terminal.c:2827
+#: src/terminal-window.c:2093 src/terminal.c:2827
 msgid "_Edit"
 msgstr "_Golygu"
 
-#: src/terminal-window.c:2096
+#: src/terminal-window.c:2095
 msgid "_View"
 msgstr "_Golwg"
 
-#: src/terminal-window.c:2098
+#: src/terminal-window.c:2097
 msgid "_Terminal"
 msgstr "_Terfynell"
 
-#: src/terminal-window.c:2100
+#: src/terminal-window.c:2099
 msgid "Ta_bs"
 msgstr "Ta_biau"
 
-#: src/terminal-window.c:2102
+#: src/terminal-window.c:2101
 msgid "_Help"
 msgstr "_Cymorth"
 
-#: src/terminal-window.c:2283
+#: src/terminal-window.c:2282
 #, c-format
 msgid "This window has one tab open. Closing the window will close it."
 msgid_plural ""
 "This window has %d tabs open. Closing the window will also close all its "
 "tabs."
 msgstr[0] ""
+"Mae gan y ffenest hon un tab ar agor. Mi fydd cau y ffenest yn cau hwnnw."
 msgstr[1] ""
+"Mae gan y ffenest hon %d tab ar agor. Mi fydd cau y ffenest yn cau y tabiau "
+"i gyd."
 
-#: src/terminal-window.c:2288
-#, fuzzy
+#: src/terminal-window.c:2287
 msgid "Close all tabs?"
-msgstr "Cau'r Tab"
+msgstr "Cau pob tab?"
 
-#: src/terminal-window.c:2300
-#, fuzzy
+#: src/terminal-window.c:2299
 msgid "Close All Tabs"
-msgstr "Cau'r Tab"
+msgstr "Cau Pob Tab"
 
-#: src/terminal-window.c:2692
+#: src/terminal-window.c:2691
 msgid "translator_credits"
 msgstr "Owain Green, Dafydd Harries <daf@muse.19inch.net>"
 
-#: src/terminal-window.c:2704
+#: src/terminal-window.c:2703
 msgid "GNOME Terminal"
 msgstr "Terfynell GNOME"
 
@@ -2738,6 +2737,18 @@ msgstr ""
 #: src/terminal.c:3732
 msgid "Failed to retrieve terminal server from activation server\n"
 msgstr "Methu canfod y gweinydd terfynell drwy'r gweinydd gweithredu\n"
+
+#~ msgid ""
+#~ "<!-- Translators: please note this is has to be a list of valid encodings "
+#~ "(which are to be taken from the list in src/encoding.c) It has to include "
+#~ "UTF-8 and the word 'current', which is not to be translated. This is "
+#~ "provided for costumization of the default encoding menu; see bug 144810 "
+#~ "for an use case. In most cases, this should be left alone. -->[UTF-8,"
+#~ "current]"
+#~ msgstr "[UTF-8,current,ISO-8859-14]"
+
+#~ msgid "_Normal Size"
+#~ msgstr "Maint _Arferol"
 
 #~ msgid "There was an error creating the child process for this terminal: %s"
 #~ msgstr "Roedd gwall wrth greu'r proses plentyn ar gyfer y terfynell hwn: %s"
