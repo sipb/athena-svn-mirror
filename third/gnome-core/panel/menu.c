@@ -4083,9 +4083,9 @@ make_panel_submenu (GtkWidget *menu, gboolean fake_submenus, gboolean is_basep)
 void
 panel_lock (GtkWidget *widget, gpointer data)
 {
-	char *argv[3] = {"xscreensaver-command", "-lock", NULL};
+	char *argv[3] = {"xss-command", "-lock", NULL};
 	if(gnome_execute_async(NULL, 2, argv) < 0)
-		panel_error_dialog(_("Cannot execute xscreensaver"));
+		panel_error_dialog(_("Cannot execute xss"));
 }
 
 static GtkWidget *create_panel_submenu (GtkWidget *m, gboolean fake_sub,
@@ -4232,7 +4232,7 @@ create_desktop_menu (GtkWidget *menu, gboolean fake_submenus, gboolean tearoff)
 				    NULL);
 	}
 
-	char_tmp = gnome_is_program_in_path ("xscreensaver");
+	char_tmp = gnome_is_program_in_path ("xss");
 	if (char_tmp) {	
 		menuitem = gtk_menu_item_new ();
 		gtk_widget_lock_accelerators (menuitem);

@@ -257,7 +257,7 @@ append_desktop_menu (GtkWidget *menu_bar)
 
 	add_menu_separator (menu);
 	
-	char_tmp = gnome_is_program_in_path ("xscreensaver");
+	char_tmp = gnome_is_program_in_path ("xss");
 	if (char_tmp) {	
 		item = pixmap_menu_item_new (_("Lock Screen"), 
 					       "gnome-lockscreen.png");
