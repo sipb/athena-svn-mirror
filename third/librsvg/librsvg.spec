@@ -2,24 +2,23 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             librsvg2
 Summary:          An SVG library based on libart.
-Version:          2.2.1
-Release:          1
+Version:          2.2.3
+Release:          2
 License:          LGPL
 Group:            System Environment/Libraries
 Source:           librsvg-%{version}.tar.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
-Requires:         gtk2 >= 1.3.7
 Requires:         glib2 >= 2.0.0
 Requires:         libart_lgpl >= 2.3.10
 Requires:         libxml2 >= 2.4.7
 Requires:         pango >= 1.0.0
-BuildRequires:    gtk2-devel >= 1.3.7
+Requires:	  libgsf >= 1.6.0
 BuildRequires:    glib2-devel >= 2.0.0
 BuildRequires:    libart_lgpl-devel >= 2.3.10
 BuildRequires:    libxml2-devel >= 2.4.7
 BuildRequires:    pango-devel >= 1.0.0
-
+BuildRequires:	  libgsf >= 1.6.0
 
 %description
 An SVG library based on libart.
@@ -30,8 +29,6 @@ Summary:          Libraries and include files for developing with librsvg.
 Group:            Development/Libraries
 Requires:         %{name} = %{version}
 Requires:         pkgconfig >= 0.8
-Requires:         gtk2 >= 1.3.7
-Requires:         gtk2-devel >= 1.3.7
 Requires:         glib2 >= 2.0.0
 Requires:         glib2-devel >= 2.0.0
 Requires:         libart_lgpl >= 2.3.10
@@ -46,11 +43,14 @@ Requires:         pango-devel >= 1.0.0
 This package provides the necessary development libraries and include
 files to allow you to develop with librsvg.
 
-%package -n rsvg-gtk
+%package -n librsvg2-gtk
 Summary:        Gtk+ 2.0 theme engine for SVG based themes
 Group:          System Environment/Libraries
+Requires:         gtk2 >= 1.3.7
+BuildRequires:         gtk2-devel >= 1.3.7
 
-%description -n rsvg-gtk
+
+%description -n librsvg2-gtk
 This package installs a GTK+ 2.0 theme engine that uses SVG images. It is based
 on the gdkpixbuf engine.
 
@@ -58,7 +58,7 @@ on the gdkpixbuf engine.
 %setup -q -n librsvg-%{version}
 
 %build
-%configure
+%configure --enable-svgz
 make
 
 %install
@@ -67,8 +67,10 @@ rm -rf $RPM_BUILD_ROOT
 %makeinstall
 # Clean out files that should not be part of the rpm.
 # This is the recommended way of dealing with it for RH8
-rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.0.0/engines/*.la
-rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.0.0/engines//*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.2.0/engines/*.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.2.0/engines/*.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.2.0/loaders/*.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/gtk-2.0/2.2.0/loaders/*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 
@@ -76,31 +78,44 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post -n librsvg2-gtk
+/sbin/ldconfig
+mkdir -p %{_sysconfdir}/gtk-2.0
+gdk-pixbuf-query-loaders > %{_sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
 
-%postun -p /sbin/ldconfig
+%postun -n librsvg2-gtk
+/sbin/ldconfig
+gdk-pixbuf-query-loaders > %{_sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
 
 %files
-
 %defattr(-, root, root)
-%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
+%doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README TODO
 %{_libdir}/*.so.*
 %{_bindir}/rsvg
 %{_sysconfdir}/gtk-2.0/gdk-pixbuf.loaders
+%{_mandir}/*/*
 
 %files devel
 %defattr(-, root, root)
 %{_libdir}/*.so
-%{_includedir}/librsvg-2/librsvg
+%{_includedir}/librsvg-2/librsvg/*.h
 %{_libdir}/pkgconfig/librsvg-2.0.pc
+%{_datadir}/doc/librsvg/html/*
 
-%files -n rsvg-gtk
+%files -n librsvg2-gtk
 %defattr(-, root, root)
-%{_libdir}/gtk-2.0/2.0.0/engines/*.so
+%{_libdir}/gtk-2.0/2.2.0/engines/*.so
+%{_libdir}/gtk-2.0/2.2.0/loaders/*.so
 # %{_datadir}/themes/bubble/gtk-2.0/*
 # %{_datadir}/themes/bubble/README
 
 %changelog
+* Sun Feb 02 2003 Christian Schaller <Uraeus@linuxrising.org>
+- Update to handle latest changes
+- Add some fixes from the RH spec file
+- renamed rsvg-gtk package to librsvg-gtk
+- Improve depency listing somewhat
+
 * Thu Oct 22 2002 Christian Schaller <Uraeus@linuxrising.org>
 - Disabled building of example theme (as done in gtk-engines)
 

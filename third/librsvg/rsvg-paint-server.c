@@ -31,6 +31,8 @@
 #include <glib/gstrfuncs.h>
 #include <libart_lgpl/art_affine.h>
 #include <string.h>
+#include <math.h>
+
 #include "rsvg-css.h"
 
 typedef struct _RsvgPaintServerSolid RsvgPaintServerSolid;
@@ -146,7 +148,9 @@ rsvg_paint_server_lin_grad_render (RsvgPaintServer *self, ArtRender *ar,
 	ArtGradientLinear *agl;
 	double x1, y1, x2, y2;
 	double dx, dy, scale;
-	
+	double affine[6];
+	int i;
+
 	agl = z->agl;
 	if (agl == NULL)
 		{
@@ -159,19 +163,37 @@ rsvg_paint_server_lin_grad_render (RsvgPaintServer *self, ArtRender *ar,
 			agl->stops = rsvg_paint_art_stops_from_rsvg (rlg->stops);
 			z->agl = agl;
 		}
+
+	if (rlg->obj_bbox) {
+		affine[0] = ar->x1 - ar->x0;
+		affine[1] = 0.;		
+		affine[2] = 0.;
+		affine[3] = ar->y1 - ar->y0;
+		affine[4] = ar->x0;
+		affine[5] = ar->y0;
+
+		art_affine_multiply (affine, affine, rlg->affine);
+	} else {
+		for (i = 0; i < 6; i++)
+			affine[i] = rlg->affine[i];
+	}
 	
 	/* compute [xy][12] in pixel space */
-	/* todo: this code implicitly implements gradientUnits = userSpace */
-	x1 = rlg->x1 * rlg->affine[0] + rlg->y1 * rlg->affine[2] + rlg->affine[4];
-	y1 = rlg->x1 * rlg->affine[1] + rlg->y1 * rlg->affine[3] + rlg->affine[5];
-	x2 = rlg->x2 * rlg->affine[0] + rlg->y2 * rlg->affine[2] + rlg->affine[4];
-	y2 = rlg->x2 * rlg->affine[1] + rlg->y2 * rlg->affine[3] + rlg->affine[5];
+	x1 = rlg->x1 * affine[0] + rlg->y1 * affine[2] + affine[4];
+	y1 = rlg->x1 * affine[1] + rlg->y1 * affine[3] + affine[5];
+	x2 = rlg->x2 * affine[0] + rlg->y2 * affine[2] + affine[4];
+	y2 = rlg->x2 * affine[1] + rlg->y2 * affine[3] + affine[5];
 	
 	/* solve a, b, c so ax1 + by1 + c = 0 and ax2 + by2 + c = 1, maximum
 	   gradient is in x1,y1 to x2,y2 dir */
 	dx = x2 - x1;
 	dy = y2 - y1;
-	scale = 1.0 / (dx * dx + dy * dy);
+
+	/* workaround for an evil devide by 0 bug - not sure if this is sufficient */
+	if (fabs(dx + dy) <= 0.0000001)
+		scale = 0.;
+	else
+		scale = 1.0 / (dx * dx + dy * dy);
 	agl->a = dx * scale;
 	agl->b = dy * scale;
 	agl->c = -(x1 * agl->a + y1 * agl->b);
@@ -213,8 +235,23 @@ rsvg_paint_server_rad_grad_render (RsvgPaintServer *self, ArtRender *ar,
 	RsvgPaintServerRadGrad *z = (RsvgPaintServerRadGrad *)self;
 	RsvgRadialGradient *rrg = z->gradient;
 	ArtGradientRadial *agr;
-	double aff1[6], aff2[6];
-	
+	double aff1[6], aff2[6], affine[6];
+	int i;
+
+	if (rrg->obj_bbox) {
+		affine[0] = ar->x1 - ar->x0;
+		affine[1] = 0.;		
+		affine[2] = 0.;
+		affine[3] = ar->y1 - ar->y0;
+		affine[4] = ar->x0;
+		affine[5] = ar->y0;
+
+		art_affine_multiply (affine, affine, rrg->affine);
+	} else {
+		for (i = 0; i < 6; i++)
+			affine[i] = rrg->affine[i];
+	}
+
 	agr = z->agr;
 	if (agr == NULL)
 		{
@@ -228,14 +265,13 @@ rsvg_paint_server_rad_grad_render (RsvgPaintServer *self, ArtRender *ar,
 			z->agr = agr;
 		}
 	
-	/* todo: this code implicitly implements gradientUnits = userSpace */
 	art_affine_scale (aff1, rrg->r, rrg->r);
 	art_affine_translate (aff2, rrg->cx, rrg->cy);
 	art_affine_multiply (aff1, aff1, aff2);
-	art_affine_multiply (aff1, aff1, rrg->affine);
+	art_affine_multiply (aff1, aff1, affine);
 	art_affine_invert (agr->affine, aff1);
 	
-	/* TODO: libart doesn't support spreads on radial gradients */
+	/* todo: libart doesn't support spreads on radial gradients */
 
 	agr->fx = (rrg->fx - rrg->cx) / rrg->r;
 	agr->fy = (rrg->fy - rrg->cy) / rrg->r;
@@ -363,6 +399,7 @@ rsvg_clone_radial_gradient (const RsvgRadialGradient *grad, gboolean * shallow_c
 	clone->super.type = RSVG_DEF_RADGRAD;
 	clone->super.free = rsvg_radial_gradient_free;
 	
+	clone->obj_bbox = grad->obj_bbox;
 	for (i = 0; i < 6; i++)
 		clone->affine[i] = grad->affine[i];
 
@@ -373,13 +410,11 @@ rsvg_clone_radial_gradient (const RsvgRadialGradient *grad, gboolean * shallow_c
 	
 		for (i = 0; i < grad->stops->n_stop; i++)
 			clone->stops->stop[i] = grad->stops->stop[i];
-	} else {
-		clone->stops = NULL;
 	}
 
 	clone->spread = grad->spread;
 
-	/* EVIL EVIL - sodipodi can base LinearGradients on
+	/* EVIL EVIL - SVG can base LinearGradients on
 	   RadialGradients, and vice-versa. it is legal, though:
 	   http://www.w3.org/TR/SVG11/pservers.html#LinearGradients
 	*/
@@ -408,6 +443,7 @@ rsvg_clone_linear_gradient (const RsvgLinearGradient *grad, gboolean * shallow_c
 	clone->super.type = RSVG_DEF_LINGRAD;
 	clone->super.free = rsvg_linear_gradient_free;
 	
+	clone->obj_bbox = grad->obj_bbox;
 	for (i = 0; i < 6; i++)
 		clone->affine[i] = grad->affine[i];
 
@@ -418,13 +454,11 @@ rsvg_clone_linear_gradient (const RsvgLinearGradient *grad, gboolean * shallow_c
 		
 		for (i = 0; i < grad->stops->n_stop; i++)
 			clone->stops->stop[i] = grad->stops->stop[i];
-	} else {
-		clone->stops = NULL;
 	}
 
 	clone->spread = grad->spread;
 
-	/* EVIL EVIL - sodipodi can base LinearGradients on
+	/* EVIL EVIL - SVG can base LinearGradients on
 	   RadialGradients, and vice-versa. it is legal, though:
 	   http://www.w3.org/TR/SVG11/pservers.html#LinearGradients
 	*/

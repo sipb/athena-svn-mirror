@@ -22,6 +22,7 @@
 
    Author: Raph Levien <raph@artofcode.com>
 */
+#include <string.h>
 
 #include "rsvg.h"
 #include "rsvg-css.h"
@@ -354,6 +355,8 @@ rsvg_parse_style (RsvgHandle *ctx, RsvgState *state, const char *str)
 /*
  * Extremely poor man's CSS parser. Not robust. Not compliant.
  * Should work well enough for our needs ;-)
+ * See also: http://www.w3.org/TR/REC-CSS2/syndata.html
+ * I should use that sometime in order to make a complaint parser
  */
 void
 rsvg_parse_cssbuffer (RsvgHandle *ctx, const char * buff, size_t buflen)
@@ -362,9 +365,10 @@ rsvg_parse_cssbuffer (RsvgHandle *ctx, const char * buff, size_t buflen)
 	
 	while (loc < buflen)
 		{
-			GString * style_name = g_string_new (NULL);
+			GString * style_name  = g_string_new (NULL);
 			GString * style_props = g_string_new (NULL);
-			
+			const char * existing    = NULL;
+
 			/* advance to the style's name */
 			while (loc < buflen && g_ascii_isspace (buff[loc]))
 				loc++;
@@ -379,13 +383,13 @@ rsvg_parse_cssbuffer (RsvgHandle *ctx, const char * buff, size_t buflen)
 			while (loc < buflen && g_ascii_isspace (buff[loc]))
 				loc++;
 			
-			while (buff[loc] != '}')
+			while (loc < buflen && buff[loc] != '}')
 				{
 					/* suck in and append our property */
 					while (loc < buflen && buff[loc] != ';' && buff[loc] != '}' )
 						g_string_append_c (style_props, buff[loc++]);
 
-					if (buff[loc] == '}')
+					if (loc == buflen || buff[loc] == '}')
 						break;
 					else
 						{
@@ -393,19 +397,24 @@ rsvg_parse_cssbuffer (RsvgHandle *ctx, const char * buff, size_t buflen)
 							
 							/* advance to the next property */
 							loc++;
-							while (g_ascii_isspace (buff[loc]) && loc < buflen)
+							while (loc < buflen && g_ascii_isspace (buff[loc]))
 								loc++;
 						}
 				}
 
 			/* push name/style pair into HT */
+			existing = (const char *)g_hash_table_lookup (ctx->css_props, style_name->str);
+			if (existing != NULL)
+				g_string_append_len (style_props, existing, strlen (existing));
+
+			/* will destroy the existing key and value for us */
 			g_hash_table_insert (ctx->css_props, style_name->str, style_props->str);
-			
+
 			g_string_free (style_name, FALSE);
 			g_string_free (style_props, FALSE);
 			
 			loc++;
-			while (g_ascii_isspace (buff[loc]) && loc < buflen)
+			while (loc < buflen && g_ascii_isspace (buff[loc]))
 				loc++;
 		}
 }

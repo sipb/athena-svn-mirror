@@ -1,3 +1,120 @@
+2003-02-03  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gdk-pixbuf-loader/io-svg.c (*): Updates for GTK 2.2.1
+	
+2003-02-02  Dom Lachowicz <cinamod@hotmail.com>
+
+	* tests/butterfly.svg
+	* tests/chem1.svg: New tests, from the mozilla project
+	
+2003-02-02  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-shapes.c (rect): Handle missing RX when RY is specified (http://www.w3.org/TR/SVG11/shapes.html#RectElement)
+
+	* configure.in: Bump version number, libgsf update from aldug
+
+	* librsvg.spec.in: Fixes by Christian Schaller
+	
+=== librsvg 2.2.2 ===
+
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in: Make GTK+ and the theme engine optional, by Rodney Dawes (dobey)
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-paint-server.c: Fix evil devide by 0 bug that killed us on
+	some Krystal SVGs
+	* rsvg.c: update documentation - 95% complete (missing RsvgSizeFunc)
+	* rsvg-gz.c: Ditto
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c (end_element): Fix regression
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* docs/*: GtkDoc work. Please someone with better gtk-doc skills than
+	me make this work 100% properly!
+	
+2003-02-01  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c (end_element): Fix regression caused by in_defs bogosity
+	(start_linear_gradient): Proper handling of unspecified params
+	(start_radial_gradient): Ditto
+	
+2003-01-31  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c, rsvg-shapes.c, rsvg-private.h: Some hacks to get around some
+	nasty invalid KDE SVGs Uraeus presented me with. No longer crash.
+	
+2003-01-31  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c (parse_cssbuffer): Fix some overflows and such. All of
+	the W3 testcases now load, albeit many do so incorrectly.
+	/me hears a giant sucking sound made by CSS2
+	
+2003-01-31  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-file-util.c: Support SVGZ through the OLD API as well
+	
+2003-01-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* gdk-pixbuf-loader/io-svg.c: Conditionally support SVGZ files
+	* TODO: Remove SVGZ in pixbuf loader TODO-item
+	* tests/104201.svg, tests/folder_home-2.2.svg, tests/stock_home.svg,
+	tests/stock_paste.svg, tests/undo-128-d-sodipodi.svg.gz: New testcases
+	
+2003-01-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* configure.in, Makefile.am, librsvg-2.0.pc.in: Work by FJF and myself
+	to conditionally build and install the libgsf-based GZip handle.
+	Bump version number. Perhaps should branch as well.
+	* rsvg-file-util.c: Export the new hidden _ex API calls
+	* rsvg.h: Ditto
+	
+2003-01-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-file-util.c (*): Made '_ex' versions of all "convenience" 
+	functions that take a RsvgHandle as an argument. This will allow the 
+	caller to pass in a handle with DPI specified, or a handle capable of 
+	handling gzipped files. Made all existing convenience functions call
+	their _ex cousins. TODO: make the _ex functions part of the public API.
+	
+2003-01-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-paint-server.c (radial, linear): Handle objBbox coordinate space properly. Thanks Lauris for the tip!
+	
+2003-01-30  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg.c (rsvg_start_svg): s/TRUE/FALSE to fix scaling vbox issue
+	
+2003-01-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-paint-server.[ch]: Handle objectBoundingBox units for linear gradients, radialGradients. Radial are untested and do not work properly.
+	* rsvg.c: Query the gradientUnits param, in order to pass to ^^^
+	* TODO: Update info so that the objectBoundingBox gets handled properly in case of percentage values.
+	* tests/obj_bbox.svg: Test for the above
+
+2003-01-29  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-gz.c: Fix build
+	* rsvg-file-util.c: Remove GNOME VFS code.
+	
+2003-01-28  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-gz.[ch]: New handle type, capable of reading SVGZ files.
+	Not built currently, but will soon be conditionally compiled in.
+	* *: Groundwork needed for the above (method virtualization)
+	
+2003-01-27  Dom Lachowicz <cinamod@hotmail.com>
+
+	* rsvg-styles.c (parse_cssbuffer): Allow multiple declarations to be 
+	additive ( H1 { font-weight: bold } H1 { font-family: Times } now 
+	evaluate properly to H1 { font-weight: bold ; font-family: Times })
+	
+=== librsvg 2.2.1 ===
+	
 2003-01-27  Dom Lachowicz <cinamod@hotmail.com>
 
 	* rsvg.c (): Patheticly handle conical gradients (not part of SVG spec,

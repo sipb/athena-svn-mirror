@@ -1,0 +1,83 @@
+<HTML><HEAD><TITLE>Core API</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK REL="HOME" TITLE="RSVG Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Using RSVG" HREF="r22.html"><LINK REL="PREVIOUS" TITLE="Using RSVG" HREF="r22.html"><LINK REL="NEXT" TITLE="Handling Gzipped SVGs (SVGZ)" HREF="r320.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="r22.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="r22.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">RSVG Reference Manual</TH><TD><A ACCESSKEY="n" HREF="r320.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="RSVG-CORE-API"></A>Core API</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN29"></A><H2>Name</H2>Core API&nbsp;--&nbsp;</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN32"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;
+
+GQuark      <A HREF="rsvg-core-api.html#RSVG-ERROR-QUARK">rsvg_error_quark</A>                (void);
+void        (<A HREF="rsvg-core-api.html#RSVGSIZEFUNC">*RsvgSizeFunc</A>)                 (gint *width,
+                                             gint *height,
+                                             gpointer user_data);
+void        <A HREF="rsvg-core-api.html#RSVG-SET-DEFAULT-DPI">rsvg_set_default_dpi</A>            (double dpi);
+RsvgHandle* <A HREF="rsvg-core-api.html#RSVG-HANDLE-NEW">rsvg_handle_new</A>                 (void);
+void        <A HREF="rsvg-core-api.html#RSVG-HANDLE-SET-DPI">rsvg_handle_set_dpi</A>             (RsvgHandle *handle,
+                                             double dpi);
+void        <A HREF="rsvg-core-api.html#RSVG-HANDLE-SET-SIZE-CALLBACK">rsvg_handle_set_size_callback</A>   (RsvgHandle *handle,
+                                             <A HREF="rsvg-core-api.html#RSVGSIZEFUNC">RsvgSizeFunc</A> size_func,
+                                             gpointer user_data,
+                                             GDestroyNotify user_data_destroy);
+gboolean    <A HREF="rsvg-core-api.html#RSVG-HANDLE-WRITE">rsvg_handle_write</A>               (RsvgHandle *handle,
+                                             const guchar *buf,
+                                             gsize count,
+                                             GError **error);
+gboolean    <A HREF="rsvg-core-api.html#RSVG-HANDLE-CLOSE">rsvg_handle_close</A>               (RsvgHandle *handle,
+                                             GError **error);
+GdkPixbuf*  <A HREF="rsvg-core-api.html#RSVG-HANDLE-GET-PIXBUF">rsvg_handle_get_pixbuf</A>          (RsvgHandle *handle);
+void        <A HREF="rsvg-core-api.html#RSVG-HANDLE-FREE">rsvg_handle_free</A>                (RsvgHandle *handle);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN68"></A><H2>Description</H2><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN73"></A><H3><A NAME="RSVG-ERROR-QUARK"></A>rsvg_error_quark ()</H3><PRE CLASS="PROGRAMLISTING">GQuark      rsvg_error_quark                (void);</PRE><P>The error domain for RSVG</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN81"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The error domain</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN86"></A><H3><A NAME="RSVGSIZEFUNC"></A>RsvgSizeFunc ()</H3><PRE CLASS="PROGRAMLISTING">void        (*RsvgSizeFunc)                 (gint *width,
+                                             gint *height,
+                                             gpointer user_data);</PRE><P></P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN96"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>width</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the ouput width the SVG should be</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN101"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>height</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the output height the SVG should be</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN106"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> user data</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN111"></A><H3><A NAME="RSVG-SET-DEFAULT-DPI"></A>rsvg_set_default_dpi ()</H3><PRE CLASS="PROGRAMLISTING">void        rsvg_set_default_dpi            (double dpi);</PRE><P>Sets the DPI for the all future outgoing pixbufs. Common values are
+72, 90, and 300 DPI. Passing a number &lt;= 0 to dpi will 
+reset the DPI to whatever the default value happens to be.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN120"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>dpi</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Dots Per Inch (aka Pixels Per Inch)</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN125"></A><H3><A NAME="RSVG-HANDLE-NEW"></A>rsvg_handle_new ()</H3><PRE CLASS="PROGRAMLISTING">RsvgHandle* rsvg_handle_new                 (void);</PRE><P>Returns a new rsvg handle.  Must be freed with <TT CLASS="PARAMETER"><I>rsvg_handle_free</I></TT>.  This
+handle can be used for dynamically loading an image.  You need to feed it
+data using <TT CLASS="PARAMETER"><I>rsvg_handle_write</I></TT>, then call <TT CLASS="PARAMETER"><I>rsvg_handle_close</I></TT> when done.  No
+more than one image can be loaded with one handle.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN136"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A new RsvgHandle</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN142"></A><H3><A NAME="RSVG-HANDLE-SET-DPI"></A>rsvg_handle_set_dpi ()</H3><PRE CLASS="PROGRAMLISTING">void        rsvg_handle_set_dpi             (RsvgHandle *handle,
+                                             double dpi);</PRE><P>Sets the DPI for the outgoing pixbuf. Common values are
+72, 90, and 300 DPI. Passing a number &lt;= 0 to dpi will 
+reset the DPI to whatever the default value happens to be.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN152"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An RsvgHandle</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN158"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>dpi</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Dots Per Inch (aka Pixels Per Inch)</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN163"></A><H3><A NAME="RSVG-HANDLE-SET-SIZE-CALLBACK"></A>rsvg_handle_set_size_callback ()</H3><PRE CLASS="PROGRAMLISTING">void        rsvg_handle_set_size_callback   (RsvgHandle *handle,
+                                             <A HREF="rsvg-core-api.html#RSVGSIZEFUNC">RsvgSizeFunc</A> size_func,
+                                             gpointer user_data,
+                                             GDestroyNotify user_data_destroy);</PRE><P>Sets the sizing function for the <TT CLASS="PARAMETER"><I>handle</I></TT>.  This function is called right
+after the size of the image has been loaded.  The size of the image is passed
+in to the function, which may then modify these values to set the real size
+of the generated pixbuf.  If the image has no associated size, then the size
+arguments are set to -1.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN175"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An RsvgHandle</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN181"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>size_func</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A sizing function, or <TT CLASS="LITERAL">NULL</TT></P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN187"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> User data to pass to <TT CLASS="PARAMETER"><I>size_func</I></TT>, or <TT CLASS="LITERAL">NULL</TT></P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN194"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data_destroy</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Destroy function for <TT CLASS="PARAMETER"><I>user_data</I></TT>, or <TT CLASS="LITERAL">NULL</TT></P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN201"></A><H3><A NAME="RSVG-HANDLE-WRITE"></A>rsvg_handle_write ()</H3><PRE CLASS="PROGRAMLISTING">gboolean    rsvg_handle_write               (RsvgHandle *handle,
+                                             const guchar *buf,
+                                             gsize count,
+                                             GError **error);</PRE><P>Loads the next <TT CLASS="PARAMETER"><I>count</I></TT> bytes of the image.  This will return TRUE if the data
+was loaded successful, and FALSE if an error occurred.  In the latter case,
+the loader will be closed, and will not accept further writes. If FALSE is
+returned, <TT CLASS="PARAMETER"><I>error</I></TT> will be set to an error from the RSVG_ERROR domain.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN218"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An RsvgHandle</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN224"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>buf</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Pointer to svg data</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN229"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>count</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> length of the <TT CLASS="PARAMETER"><I>buf</I></TT> buffer in bytes</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN235"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>error</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> return location for errors</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN240"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> TRUE if the write was successful, or FALSE if there was an
+error.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN247"></A><H3><A NAME="RSVG-HANDLE-CLOSE"></A>rsvg_handle_close ()</H3><PRE CLASS="PROGRAMLISTING">gboolean    rsvg_handle_close               (RsvgHandle *handle,
+                                             GError **error);</PRE><P>Closes <TT CLASS="PARAMETER"><I>handle</I></TT>, to indicate that loading the image is complete.  This will
+return TRUE if the loader closed successfully.  Note that <TT CLASS="PARAMETER"><I>handle</I></TT> isn't
+freed until <TT CLASS="PARAMETER"><I>rsvg_handle_free</I></TT> is called.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN261"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A RsvgHandle</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN267"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>error</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A GError</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN273"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> TRUE if the loader closed successfully, or FALSE if there was
+an error.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN280"></A><H3><A NAME="RSVG-HANDLE-GET-PIXBUF"></A>rsvg_handle_get_pixbuf ()</H3><PRE CLASS="PROGRAMLISTING">GdkPixbuf*  rsvg_handle_get_pixbuf          (RsvgHandle *handle);</PRE><P>Returns the pixbuf loaded by handle.  The pixbuf returned will be reffed, so
+the caller of this function must assume that ref.  If insufficient data has
+been read to create the pixbuf, or an error occurred in loading, then <TT CLASS="LITERAL">NULL</TT>
+will be returned.  Note that the pixbuf may not be complete until
+<TT CLASS="PARAMETER"><I>rsvg_handle_close</I></TT> has been called.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN292"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An RsvgHandle</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN298"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> the pixbuf loaded by handle, or <TT CLASS="LITERAL">NULL</TT>.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN305"></A><H3><A NAME="RSVG-HANDLE-FREE"></A>rsvg_handle_free ()</H3><PRE CLASS="PROGRAMLISTING">void        rsvg_handle_free                (RsvgHandle *handle);</PRE><P>Frees handle.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN314"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>handle</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An RsvgHandle</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="r22.html"><B>&lt;&lt;&lt;&nbsp;Using RSVG</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="r320.html"><B>Handling Gzipped SVGs (SVGZ)&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
