@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.2 1996-11-20 15:45:17 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 1997-01-30 22:29:34 ghudson Exp $
 
 SHELL=/bin/sh
 
 prepare:
-	imake "-I$$XCONFIGDIR" -DUseInstalled "-DSRCDIR=$$SOURCE"
+	imake "-I$$XCONFIGDIR" -DUseInstalled "-DCONFIGDIR=$$XCONFIGDIR"
 	${MAKE} Makefiles
 
 clean:
