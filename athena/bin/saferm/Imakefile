@@ -1,0 +1,8 @@
+#
+# $Id: Imakefile,v 1.1 1998-04-02 03:27:53 cfields Exp $
+#
+# Remember: most conditionalization should be done in the package, not here.
+
+
+SimpleProgram(saferm,saferm.o,,$(ATHRBINDIR)/)
+install_man(saferm.8,saferm.8)
