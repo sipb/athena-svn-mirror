@@ -79,6 +79,7 @@ switch ($package)
 	mkdir $SRVD/usr/athena/include
 	mkdir $SRVD/usr/athena/lib
 	mkdir $SRVD/usr/athena/bin
+	mkdir $SRVD/bin/athena
 	cd /build/support/imake
 		((make -f Makefile.ini clean >>& $outfile) && \
 			(make -f Makefile.ini >>& $outfile ) && \
@@ -169,7 +170,7 @@ switch ($package)
 	(echo In $package : make install >>& $outfile ) && \
 	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
 	if ($status == 1 ) then
-		echo "We bombed at $package"  >>& $outfile
+		echo "We bombed in $package"  >>& $outfile
 		exit -1
 	endif
 	breaksw
@@ -182,7 +183,7 @@ switch ($package)
 	(echo In $package : make install >>& $outfile ) && \
 	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
 	if ($status == 1 ) then
-		echo "We bombed at $package"  >>& $outfile
+		echo "We bombed in $package"  >>& $outfile
 		exit -1
 	endif
 	breaksw
@@ -267,7 +268,7 @@ switch ($package)
 		(cd /build/$package ;make  SUBDIRS="include lib" >>& $outfile) && \
 		(cd /build/$package ; make install SUBDIRS="include lib" DESTDIR=$SRVD >>& $outfile) )
 		if ($status == 1) then
-			echo "We bombed at $package" >>& $outfile
+			echo "We bombed in $package" >>& $outfile
 			exit -1
 		endif
 		breaksw
@@ -282,7 +283,7 @@ switch ($package)
 		(cd /build/$package ;make all >>& $outfile) && \
 		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile) )
 		if ($status == 1) then
-			echo "We bombed at $package" >>& $outfile
+			echo "We bombed in $package" >>& $outfile
 			exit -1
 		endif
 		breaksw
@@ -329,7 +330,7 @@ switch ($package)
 		(cd /build/$package ; make all >>& $outfile ) && \
 		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
 		if ($status == 1) then
-			echo "We bombed at $package">>& $outfile
+			echo "We bombed in $package">>& $outfile
 			exit -1
 		endif
 		breaksw		
@@ -339,7 +340,7 @@ switch ($package)
                 (cd /build/$package ;make world >>& $outfile) && \
                 (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
                 if ($status == 1) then
-                        echo "We bombed at $package" >>& $outfile
+                        echo "We bombed in $package" >>& $outfile
                         exit -1
                 endif
                 breaksw
@@ -351,7 +352,7 @@ switch ($package)
 		(cd /build/$package ; make world >>& $outfile) && \
                 (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
                 if ($status == 1) then
-                        echo "We bombed at $package" >>& $outfile
+                        echo "We bombed in $package" >>& $outfile
                         exit -1
                 endif
 		breaksw
@@ -362,7 +363,7 @@ switch ($package)
 		(cd /build/$package ; make clean >>& $outfile) && \
                 (cd /build/$package ;make world >>& $outfile))
                 if ($status == 1) then
-                        echo "We bombed at $package" >>& $outfile
+                        echo "We bombed in $package" >>& $outfile
                         exit -1
                 endif
 		breaksw
@@ -373,7 +374,7 @@ switch ($package)
 		(cd /build/$package/etc ; make all >>& $outfile) &&\
 		(cd /build/$package/etc ; make install DESTDIR=$SRVD >>& $outfile))
 		if ($status == 1) then
-			echo "We bombed at $package" >>& $outfile
+			echo "We bombed in $package" >>& $outfile
 			exit -1
 		endif
 		breaksw
@@ -386,7 +387,7 @@ switch ($package)
 		(cd /build/$package; make all >>& $outfile) &&\
 		(cd /build/$package; make install SUBDIRS="lib gdb" DESTDIR=$SRVD))
 		if ($status == 1) then
-			echo "We bombed at $package" >>& $outfile
+			echo "We bombed in $package" >>& $outfile
 			exit -1
 		endif
 		breaksw
@@ -400,7 +401,7 @@ switch ($package)
 		(cd /build/$package;make all >>& $outfile ) && \
 		(cd /build/$package;make install DESTDIR=$SRVD >>& $outfile ))
 		if ($status == 1 ) then
-			echo "We bombed at $package"  >>& $outfile
+			echo "We bombed in $package"  >>& $outfile
 			exit -1
 		endif
 	endif
@@ -423,7 +424,7 @@ switch ($package)
  (echo In $package : make install >>& $outfile ) && \
  ((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))  
    if ($status == 1 ) then
-	echo "We bombed at $package"  >>& $outfile
+	echo "We bombed in $package"  >>& $outfile
 	exit -1
    endif
  rehash
@@ -441,7 +442,7 @@ switch ($package)
  (echo In $package : make install >>& $outfile ) && \
  ((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
    if ($status == 1 ) then
-        echo "We bombed at $package"  >>& $outfile
+        echo "We bombed in $package"  >>& $outfile
         exit -1
    endif
  rehash
