@@ -24,14 +24,14 @@
  * functions.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
- *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.6 1991-09-10 15:13:49 lwvanels Exp $
+ *	$Author: miki $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.7 1994-04-08 13:27:44 miki Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.6 1991-09-10 15:13:49 lwvanels Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.7 1994-04-08 13:27:44 miki Exp $";
 #endif
 #endif
 
@@ -62,8 +62,18 @@ void init_signals P((void));
 void
 init_signals()
 {
+#ifdef POSIX
+  struct sigaction act;
+  sigemptyset(&act.sa_mask);
+  act.sa_flags = 0;
+   act.sa_handler= (void (*)()) handle_interrupt_event;
+   sigaction(SIGINT, &act, NULL);
+   act.sa_handler= (void (*)()) handle_resize_event;
+   sigaction(SIGWINCH, &act, NULL);
+#else
   signal(SIGINT, handle_interrupt_event);
   signal(SIGWINCH, handle_resize_event);
+#endif
 }
 
 #ifdef VOID_SIGRET
@@ -78,7 +88,15 @@ handle_resize_event(sig)
     int lines;
     int cols;
 
+#ifdef POSIX
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    act.sa_handler= (void (*)()) SIG_IGN;
+    sigaction(SIGWINCH, &act, NULL);
+#else
     signal(SIGWINCH, SIG_IGN);
+#endif
 
     /*  Find out the new size.  */
 
@@ -120,8 +138,12 @@ handle_resize_event(sig)
     addstr((CREF) ? CREF_PROMPT : STOCK_PROMPT);
     clrtoeol();
     refresh();
-
+#ifdef POSIX
+    act.sa_handler= (void (*)()) handle_resize_event;
+    sigaction(SIGWINCH, &act, NULL);
+#else
     signal(SIGWINCH, handle_resize_event);
+#endif
 #ifdef VOID_SIGRET
     return;
 #else
@@ -139,7 +161,15 @@ static int
 handle_interrupt_event(sig)
      int sig;
 {
+#ifdef POSIX
+    struct sigaction act;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    act.sa_handler= (void (*)()) SIG_IGN;
+    sigaction(SIGINT, &act, NULL);  
+#else
     signal(SIGINT, SIG_IGN);
+#endif
 
     quit();
 }
