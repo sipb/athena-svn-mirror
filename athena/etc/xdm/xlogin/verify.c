@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.25 1992-05-18 17:03:59 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.26 1992-05-18 17:04:58 epeisach Exp $
  */
 
 #include <stdio.h>
@@ -938,8 +938,6 @@ char *dir;
 #if defined(sun)
 #define NFS_MAJOR 130
 #endif
-    int f;
-    char c;
     struct stat stbuf;
   
     if (stat(dir, &stbuf))
