@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.4 1990-04-16 11:45:57 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.5 1990-06-26 13:39:00 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.4 1990-04-16 11:45:57 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.5 1990-06-26 13:39:00 epeisach Exp $";
 #endif lint
 
 /*
@@ -144,7 +144,11 @@ main(argc, argv)
 	}
 #endif
 
+#ifdef LOG_LPR
 	openlog("lpd", LOG_PID, LOG_LPR);
+#else
+	openlog("lpd", LOG_PID);
+#endif
 	if (lflag) syslog(LOG_INFO, "daemon started");
 	(void) umask(0);
 	lfd = open(MASTERLOCK, O_WRONLY|O_CREAT, 0644);
