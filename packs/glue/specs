@@ -20,9 +20,7 @@ olh_ascii	help
 olh_motif	help
 pts		afsuser
 sis		sis
-techinfo	techinfo
 usermaint	moira
 userreg		moira
 vos		afsuser
 xinfo		xmit
-xtechinfo	techinfo
