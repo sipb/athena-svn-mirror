@@ -26,8 +26,8 @@
 "*mitSaverExtension:	False",
 "*xidleExtension:	True",
 "*procInterrupts:	True",
-"*demoCommand: xscreensaver-demo",
-"*prefsCommand: xscreensaver-demo -prefs",
+"*demoCommand: xss-demo",
+"*prefsCommand: xss-demo -prefs",
 "*helpURL: http://www.jwz.org/xscreensaver/man.html",
 "*loadURL: netscape -remote 'openURL(%s)' || netscape '%s'",
 "*manualCommand: xterm +sb -fg black -bg gray75 -T '%s manual' \

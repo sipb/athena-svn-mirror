@@ -33,19 +33,19 @@
 void 
 start_xscreensaver (void) 
 {
-	gnome_execute_shell (".", "xscreensaver -no-splash &");
+	gnome_execute_shell (".", "xss -no-splash &");
 }
 
 void 
 stop_xscreensaver (void) 
 {
-	gnome_execute_shell (".", "xscreensaver-command -exit");
+	gnome_execute_shell (".", "xss-command -exit");
 }
 
 void 
 restart_xscreensaver (void)
 {
-	gnome_execute_shell (".", "xscreensaver-command -restart &");
+	gnome_execute_shell (".", "xss-command -restart &");
 }
 
 void 
