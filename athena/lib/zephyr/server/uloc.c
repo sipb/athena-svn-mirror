@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.41 1992-01-17 07:59:24 lwvanels Exp $";
+  "$Id: uloc.c,v 1.42 1992-08-10 13:24:14 lwvanels Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -714,7 +714,6 @@ ulogin_setup(notice, locs, exposure, who)
 	  free_zstring(locs->zlt_machine);
 	  return(1);
 	}
-	locs->zlt_time = strsave(locs->zlt_time);
 	if (!locs->zlt_time) {
 	  free_zstring(locs->zlt_user);
 	  free_zstring(locs->zlt_machine);
@@ -827,9 +826,10 @@ ulogin_find(notice, strict)
 		else
 			rhi = i - 1;
 		if (rhi - rlo < 0) {
-#if 1
+#if 0
 			zdbug((LOG_DEBUG,"ul_find not found"));
 #endif
+			free_zstring(inst);
 			return(NULLZLT);
 		}
 		i = (rhi + rlo) >> 1; /* split the diff */
