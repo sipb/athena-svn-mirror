@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1999-04-08 05:05:15 tb Exp $
+# $Id: Makefile,v 1.3 1999-04-08 05:06:30 tb Exp $
 
 # Font source directories
 vpath = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
@@ -63,5 +63,5 @@ install: all
 fonts.alias: $(aliases)
 	cat $(aliases) | sort | uniq > fonts.alias
 
-%.bcf: %.pdf
+%.pdf: %.bcf
 	$(BCFTOPDF) $< > $@
