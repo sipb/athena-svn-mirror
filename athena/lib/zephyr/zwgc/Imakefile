@@ -3,7 +3,7 @@
 /**/#	For copying and distribution information, see the file
 /**/#	"mit-copyright.h". 
 /**/#
-/**/#	$Id: Imakefile,v 1.18 1994-11-12 18:13:11 ghudson Exp $
+/**/#	$Id: Imakefile,v 1.19 1994-12-22 05:04:34 ghudson Exp $
 
 #ifdef _AIX
 TERMCAP = -lcurses
@@ -19,7 +19,7 @@ LIBS2 = -lgen
 #endif
 
 #ifdef __NetBSD__
-OSLIBS=-lcompat
+OSDEFS=-DPOSIX_REGEXP
 #endif
 
 LIBS = $(ZLIB) $(LIB_X) $(TERMCAP) $(LIBS2) $(OSLIBS)
@@ -56,7 +56,7 @@ GENERATED= $(GENSRCS) \
 XDEFS =	-I./Memory -I./String -I./Dictionary -DREVSTACK \
 	-DDEFDESC=\"$(ZLIBDIR)/zwgc.desc\" \
 	-DAPPDEFDATABASE=\"$(ZLIBDIR)/zwgc_resources\" \
-	-DZWGCPATH=\"$(ATHBINDIR)/zwgc\"
+	-DZWGCPATH=\"$(ATHBINDIR)/zwgc\" $(OSDEFS)
 
 SUBDIRS = Memory String Dictionary
 
