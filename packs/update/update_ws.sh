@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.55.4.4 2002-07-18 18:04:02 ghudson Exp $
+# $Id: update_ws.sh,v 1.55.4.5 2002-07-21 20:26:25 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -270,7 +270,7 @@ sun4)
 
   # Check free space if this is a full update to 9.1.
   case $version in
-  8.*|9.0)
+  8.*|9.0.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
     usrspace=`df -k /usr | awk '{ x = $4; } END { print x; }'`
     if [ "$reqrootspace" -gt "$rootspace" \
