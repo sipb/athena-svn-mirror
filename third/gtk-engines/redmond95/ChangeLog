@@ -1,3 +1,12 @@
+2002-09-12  Havoc Pennington  <hp@redhat.com>
+
+	* Theme/Makefile.am (theme_DATA): remove ICON.png
+
+Fri Sep  6 20:31:29 2002  Owen Taylor  <otaylor@redhat.com>
+
+	* redmond_style.c: Fix some uses of detail without
+	checking for detail == NULL.
+
 2002-01-28  Anders Carlsson  <andersca@gnu.org>
 
 	* Theme/gtk-2.0/gtkrc: Set child displacement on GtkButtons.

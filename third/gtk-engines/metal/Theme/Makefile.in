@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -82,7 +82,7 @@ VERSION = @VERSION@
 dummy = 
 SUBDIRS = gtk-2.0
 themedir = $(datadir)/themes/Metal
-theme_DATA = ICON.png README.html  
+theme_DATA = README.html  
 
 EXTRA_DIST = $(theme_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

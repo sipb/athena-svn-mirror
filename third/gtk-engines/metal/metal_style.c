@@ -33,9 +33,6 @@ static void draw_box               (GtkStyle       *style,
 				    gint            y,
 				    gint            width,
 				    gint            height);
-static int  fuzzy_match            (int             i,
-				    int             j,
-				    int             fudge);
 static gboolean sanitize_size      (GdkWindow      *window,
 				    gint           *width,
 				    gint           *height);
@@ -136,11 +133,9 @@ static void metal_tab              (GtkStyle       *style,
 				    gint            y,
 				    gint            width,
 				    gint            height);
-static void get_tab_status         (GtkNotebook    *notebook,
-				    int             x,
-				    int             y,
-				    int            *position,
-				    int            *selected);
+static gboolean is_first_tab       (GtkNotebook    *notebook,
+				    gint             x,
+				    gint             y);
 static void metal_button           (GtkStyle       *style,
 				    GdkWindow      *window,
 				    GtkStateType    state_type,
@@ -153,7 +148,7 @@ static void metal_button           (GtkStyle       *style,
 				    gint            width,
 				    gint            height);
 
-GtkStyleClass *parent_class;
+static GtkStyleClass *parent_class;
 
 static gboolean 
 sanitize_size (GdkWindow      *window,
@@ -1936,6 +1931,26 @@ metal_notebook (GtkStyle * style,
 }
 /**************************************************************************/
 static void
+adjust_notebook_tab_size (GtkPositionType tab_pos,
+			  gint           *width,
+			  gint           *height)
+{
+  /* The default overlap is two pixels, but we only want a one pixel overlap
+   */
+  switch (tab_pos)
+    {
+    case GTK_POS_TOP:
+    case GTK_POS_BOTTOM:
+      *width -= 1;
+      break;
+    case GTK_POS_LEFT:
+    case GTK_POS_RIGHT:
+      *height -= 1;
+      break;
+    }
+}
+
+static void
 metal_tab (GtkStyle * style,
 	   GdkWindow * window,
 	   GtkStateType state_type,
@@ -1950,30 +1965,31 @@ metal_tab (GtkStyle * style,
 {
   MetalStyle *metal_style = METAL_STYLE (style);
   GtkNotebook *notebook;
-  GdkGC *lightgc, *midgc, *darkgc, *whitegc, *bggc;
+  GdkGC *lightgc, *midgc, *darkgc, *brightgc, *bggc;
   GdkPoint points[5];
-  int orientation, position, selected;
+  int orientation;
+  gboolean is_first, selected;
 
   notebook = GTK_NOTEBOOK (widget);
   orientation = notebook->tab_pos;
-  get_tab_status (notebook, x, y, &position, &selected);
 
-  /* Get colors */
-  if (state_type == GTK_STATE_PRELIGHT)
+  is_first = is_first_tab (notebook, x, y);
+  selected = state_type == GTK_STATE_NORMAL;
+
+  lightgc = metal_style->light_gray_gc;
+  midgc = metal_style->mid_gray_gc;
+  brightgc = style->white_gc;
+  bggc = metal_style->light_gray_gc;
+
+  if (selected)
     {
-      lightgc = style->bg_gc[GTK_STATE_PRELIGHT];
-      midgc = style->bg_gc[GTK_STATE_SELECTED];
-      darkgc = style->fg_gc[GTK_STATE_PRELIGHT];
-      whitegc = style->white_gc;
-      bggc = style->bg_gc[GTK_STATE_NORMAL];
+      brightgc = style->white_gc;
+      darkgc = metal_style->mid_gray_gc;
     }
   else
     {
-      lightgc = metal_style->light_gray_gc;
-      midgc = metal_style->mid_gray_gc;
-      darkgc = metal_style->mid_gray_gc;
-      whitegc = style->white_gc;
-      bggc = metal_style->light_gray_gc;
+      brightgc = metal_style->light_gray_gc;
+      darkgc = metal_style->dark_gray_gc;
     }
 
   /* Set Clip Region */
@@ -1982,9 +1998,11 @@ metal_tab (GtkStyle * style,
       gdk_gc_set_clip_rectangle (lightgc, area);
       gdk_gc_set_clip_rectangle (midgc, area);
       gdk_gc_set_clip_rectangle (darkgc, area);
-      gdk_gc_set_clip_rectangle (whitegc, area);
+      gdk_gc_set_clip_rectangle (brightgc, area);
       gdk_gc_set_clip_rectangle (bggc, area);
     }
+
+  adjust_notebook_tab_size (orientation, &width, &height);
 
   /* Fill area */
   gdk_draw_rectangle (window, bggc, TRUE, x + 0, y + 0, width, height);
@@ -2009,7 +2027,7 @@ metal_tab (GtkStyle * style,
 	gdk_draw_polygon (window, midgc, TRUE, points, 5);
 
       /* Draw border */
-      if (position == 0)
+      if (is_first)
 	gdk_draw_line (window, darkgc, x + 0, y + 6, x + 0, y + height + 1);
       else if (selected)
 	gdk_draw_line (window, darkgc, x + 0, y + 6, x + 0, y + height - 1);
@@ -2018,12 +2036,12 @@ metal_tab (GtkStyle * style,
       gdk_draw_line (window, darkgc, x + width - 1, y + 1, x + width - 1, y
 		     + height - 1);
 
-      if (position == 0)
-	gdk_draw_line (window, whitegc, x + 1, y + 6, x + 1, y + height + 1);
+      if (is_first)
+	gdk_draw_line (window, brightgc, x + 1, y + 6, x + 1, y + height + 1);
       else
-	gdk_draw_line (window, whitegc, x + 1, y + 6, x + 1, y + height - 1);
-      gdk_draw_line (window, whitegc, x + 1, y + 6, x + 6, y + 1);
-      gdk_draw_line (window, whitegc, x + 6, y + 1, x + width - 2, y + 1);
+	gdk_draw_line (window, brightgc, x + 1, y + 6, x + 1, y + height - 1);
+      gdk_draw_line (window, brightgc, x + 1, y + 6, x + 6, y + 1);
+      gdk_draw_line (window, brightgc, x + 6, y + 1, x + width - 2, y + 1);
       break;
     case GTK_POS_LEFT:
       /* Draw background */
@@ -2045,18 +2063,18 @@ metal_tab (GtkStyle * style,
       /* Draw border */
       gdk_draw_line (window, darkgc, x + 0, y + 6, x + 0, y + height - 1);
       gdk_draw_line (window, darkgc, x + 0, y + 6, x + 6, y + 0);
-      if (position == 0)
+      if (is_first)
 	gdk_draw_line (window, darkgc, x + 6, y + 0, x + width + 1, y + 0);
       else
 	gdk_draw_line (window, darkgc, x + 6, y + 0, x + width - 1, y + 0);
       gdk_draw_line (window, darkgc, x + 0, y + height - 1, x + width - 1, y
 		     + height - 1);
 
-      gdk_draw_line (window, whitegc, x + 1, y + 6, x + 6, y + 1);
-      if (position == 0)
-	gdk_draw_line (window, whitegc, x + 6, y + 1, x + width + 1, y + 1);
+      gdk_draw_line (window, brightgc, x + 1, y + 6, x + 6, y + 1);
+      if (is_first)
+	gdk_draw_line (window, brightgc, x + 6, y + 1, x + width + 1, y + 1);
       else
-	gdk_draw_line (window, whitegc, x + 6, y + 1, x + width - 1, y + 1);
+	gdk_draw_line (window, brightgc, x + 6, y + 1, x + width - 1, y + 1);
       break;
     case GTK_POS_RIGHT:
       /* Draw background */
@@ -2080,19 +2098,19 @@ metal_tab (GtkStyle * style,
 		     + height - 1);
       gdk_draw_line (window, darkgc, x + width - 1, y + 6, x + width - 7, y
 		     + 0);
-      if (position == 0)
+      if (is_first)
 	gdk_draw_line (window, darkgc, x - 2, y + 0, x + width - 7, y + 0);
       else
 	gdk_draw_line (window, darkgc, x - 1, y + 0, x + width - 7, y + 0);
       gdk_draw_line (window, darkgc, x - 1, y + height - 1, x + width - 1, y
 		     + height - 1);
 
-      gdk_draw_line (window, whitegc, x + width - 2, y + 6, x + width - 7, y
+      gdk_draw_line (window, brightgc, x + width - 2, y + 6, x + width - 7, y
 		     + 1);
-      if (position == 0)
-	gdk_draw_line (window, whitegc, x + width - 7, y + 1, x - 2, y + 1);
+      if (is_first)
+	gdk_draw_line (window, brightgc, x + width - 7, y + 1, x - 2, y + 1);
       else
-	gdk_draw_line (window, whitegc, x + width - 7, y + 1, x - 1, y + 1);
+	gdk_draw_line (window, brightgc, x + width - 7, y + 1, x - 1, y + 1);
       break;
     case GTK_POS_BOTTOM:
       /* Draw background */
@@ -2112,7 +2130,7 @@ metal_tab (GtkStyle * style,
 	gdk_draw_polygon (window, midgc, TRUE, points, 5);
 
       /* Draw border */
-      if (position == 0)
+      if (is_first)
 	gdk_draw_line (window, darkgc, x + 0, y + height - 6, x + 0, y - 2);
       else if (selected)
 	gdk_draw_line (window, darkgc, x + 0, y + height - 6, x + 0, y - 1);
@@ -2122,11 +2140,11 @@ metal_tab (GtkStyle * style,
       gdk_draw_line (window, darkgc, x + width - 1, y + height - 1, x +
 		     width - 1, y - 1);
 
-      if (position == 0)
-	gdk_draw_line (window, whitegc, x + 1, y + height - 6, x + 1, y - 2);
+      if (is_first)
+	gdk_draw_line (window, brightgc, x + 1, y + height - 6, x + 1, y - 2);
       else
-	gdk_draw_line (window, whitegc, x + 1, y + height - 6, x + 1, y - 1);
-      gdk_draw_line (window, whitegc, x + 1, y + height - 6, x + 5, y +
+	gdk_draw_line (window, brightgc, x + 1, y + height - 6, x + 1, y - 1);
+      gdk_draw_line (window, brightgc, x + 1, y + height - 6, x + 5, y +
 		     height - 2);
       break;
     }
@@ -2137,50 +2155,30 @@ metal_tab (GtkStyle * style,
       gdk_gc_set_clip_rectangle (lightgc, NULL);
       gdk_gc_set_clip_rectangle (midgc, NULL);
       gdk_gc_set_clip_rectangle (darkgc, NULL);
-      gdk_gc_set_clip_rectangle (whitegc, NULL);
+      gdk_gc_set_clip_rectangle (brightgc, NULL);
       gdk_gc_set_clip_rectangle (bggc, NULL);
     }
 }
 /**************************************************************************/
-static void
-get_tab_status (GtkNotebook *notebook,
-		int          x,
-		int          y, 
-		int         *position, 
-		int         *selected)
+static gboolean
+is_first_tab (GtkNotebook *notebook,
+	      int          x,
+	      int          y)
 {
-  GtkWidget *label;
-  int pos = 0;
-  int border;
-  int n_pages = g_list_length (notebook->children);
+  GtkWidget *widget = GTK_WIDGET (notebook);
+  int border_width = GTK_CONTAINER (notebook)->border_width;
 
-  border = GTK_CONTAINER (notebook)->border_width;
-
-  /* Find tab in notebook based on (x,y) position
-     Matches within 5 pixels, what a hack */
-  for (pos = 0; pos < n_pages; pos++)
+  switch (notebook->tab_pos)
     {
-      label = gtk_notebook_get_tab_label (notebook,
-					  gtk_notebook_get_nth_page (notebook, pos));
-
-      if (fuzzy_match (x, label->allocation.x, 5) &&
-	  fuzzy_match (y, label->allocation.y, 5))
-	break;
+    case GTK_POS_TOP:
+    case GTK_POS_BOTTOM:
+      return x == widget->allocation.x + border_width;
+    case GTK_POS_LEFT:
+    case GTK_POS_RIGHT:
+      return y == widget->allocation.y + border_width;
     }
 
-  if (pos == n_pages)
-    pos = 0;
-
-  *position = pos;
-  *selected = (pos == gtk_notebook_get_current_page (notebook));
-}
-static int
-fuzzy_match (int i, int j, int fudge)
-{
-  if (i > j)
-    return (i - j <= fudge);
-  else
-    return (j - i <= fudge);
+  return FALSE;
 }
 /**************************************************************************/
 static void
@@ -2568,6 +2566,8 @@ draw_shadow_gap (GtkStyle * style,
 	  x, y, width, height);
 #endif
 
+  gap_width -= 1;
+
   gtk_paint_shadow (style, window, state_type, shadow_type, area, widget, detail,
 		    x, y, width, height);
 
@@ -2632,6 +2632,10 @@ draw_box_gap (GtkStyle       *style,
   gtk_paint_box (style, window, state_type, shadow_type, area, widget, detail,
 		 x, y, width, height);
 
+  /* The default overlap is two pixels, but we only want a one pixel overlap
+   */
+  gap_width -= 1;
+
   switch (gap_side)
     {
     case GTK_POS_TOP:
@@ -2678,8 +2682,6 @@ draw_extension (GtkStyle * style,
 		gint height,
 		GtkPositionType gap_side)
 {
-  GdkRectangle rect;
-
   g_return_if_fail (style != NULL);
   g_return_if_fail (window != NULL);
 
@@ -2690,37 +2692,76 @@ draw_extension (GtkStyle * style,
 
   gtk_paint_box (style, window, state_type, shadow_type, area, widget, detail,
 		 x, y, width, height);
-
-  switch (gap_side)
-    {
-    case GTK_POS_TOP:
-      rect.x = x + style->xthickness;
-      rect.y = y;
-      rect.width = width - style->xthickness * 2;
-      rect.height = style->ythickness;
-      break;
-    case GTK_POS_BOTTOM:
-      rect.x = x + style->xthickness;
-      rect.y = y + height - style->ythickness;
-      rect.width = width - style->xthickness * 2;
-      rect.height = style->ythickness;
-      break;
-    case GTK_POS_LEFT:
-      rect.x = x;
-      rect.y = y + style->ythickness;
-      rect.width = style->xthickness;
-      rect.height = height - style->ythickness * 2;
-    case GTK_POS_RIGHT:
-      rect.x = x + width - style->xthickness;
-      rect.y = y + style->ythickness;
-      rect.width = style->xthickness;
-      rect.height = height - style->ythickness * 2;
-    }
-
-  gtk_style_apply_default_pixmap (style, window, state_type, area,
-				  rect.x, rect.y, rect.width, rect.height);
 }
 /**************************************************************************/
+static void
+draw_notebook_focus (GtkWidget *widget,
+		     GdkWindow *window,
+		     GdkGC     *gc,
+		     gint       x,
+		     gint       y,
+		     gint       width,
+		     gint       height)
+{
+  GtkPositionType tab_position = GTK_POS_TOP;
+  GdkPoint points[6];
+  gint tab_hborder = 2;
+  gint tab_vborder = 2;
+
+  if (widget && GTK_IS_NOTEBOOK (widget))
+    {
+      GtkNotebook *notebook = GTK_NOTEBOOK (widget);
+      
+      tab_hborder = notebook->tab_hborder;
+      tab_vborder = notebook->tab_vborder;
+      tab_position = gtk_notebook_get_tab_pos (notebook);
+    }
+
+  adjust_notebook_tab_size (tab_position, &width, &height);
+
+  x -= tab_hborder;
+  y -= tab_vborder;
+  width += 2 * tab_hborder;
+  height += 2 * tab_vborder;
+
+  switch (tab_position)
+    {
+    default:
+    case GTK_POS_TOP:
+      points[0].x = x + 4;          points[0].y = y;
+      points[1].x = x + width - 1;  points[1].y = y;
+      points[2].x = x + width - 1;  points[2].y = y + height;
+      points[3].x = x;              points[3].y = y + height;
+      points[4].x = x;              points[4].y = y + 4;
+      break;
+    case GTK_POS_LEFT:
+      points[0].x = x + 4;          points[0].y = y - 1;
+      points[1].x = x + width - 1;  points[1].y = y - 1;
+      points[2].x = x + width - 1;  points[2].y = y + height;
+      points[3].x = x;              points[3].y = y + height;
+      points[4].x = x;              points[4].y = y + 3;
+      break;
+    case GTK_POS_RIGHT:
+      points[0].x = x;              points[0].y = y - 1;
+      points[1].x = x + width - 5;  points[1].y = y - 1;
+      points[2].x = x + width - 1;  points[2].y = y + 3;
+      points[3].x = x + width - 1;  points[3].y = y + height;
+      points[4].x = x;              points[4].y = y + height;
+      break;
+    case GTK_POS_BOTTOM:
+      points[0].x = x;              points[0].y = y;
+      points[1].x = x + width - 1;  points[1].y = y;
+      points[2].x = x + width - 1;  points[2].y = y + height - 1;
+      points[3].x = x + 4;          points[3].y = y + height - 1;
+      points[4].x = x;              points[4].y = y + height - 5;
+      break;
+    }
+
+  points[5] = points[0];
+  
+  gdk_draw_polygon (window, gc, FALSE, points, 6);
+}
+
 static void
 draw_focus (GtkStyle * style,
 	    GdkWindow * window,
@@ -2758,7 +2799,10 @@ draw_focus (GtkStyle * style,
   if (area)
     gdk_gc_set_clip_rectangle (focusgc, area);
 
-  gdk_draw_rectangle (window, focusgc, FALSE, x, y, width - 1, height - 1);
+  if (DETAIL ("tab"))
+    draw_notebook_focus (widget, window, focusgc, x, y, width, height);
+  else
+    gdk_draw_rectangle (window, focusgc, FALSE, x, y, width - 1, height - 1);
 
   if (area)
     gdk_gc_set_clip_rectangle (focusgc, NULL);
