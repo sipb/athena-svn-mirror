@@ -1,0 +1,154 @@
+<!-- ##### SECTION Title ##### -->
+BonoboPrintClient
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_PRINT_CLIENT_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PRINT_CLIENT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_PRINT_CLIENT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_PRINT_CLIENT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_PRINT_CLIENT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboPrintClient ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboPrintClientClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboPrintData ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_print_client_new ##### -->
+<para>
+
+</para>
+
+@corba_print: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_client_get ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_client_render ##### -->
+<para>
+
+</para>
+
+@client: 
+@pd: 
+
+
+<!-- ##### FUNCTION bonobo_print_data_new ##### -->
+<para>
+
+</para>
+
+@width: 
+@height: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_data_new_full ##### -->
+<para>
+
+</para>
+
+@width: 
+@height: 
+@width_first_page: 
+@width_per_page: 
+@height_first_page: 
+@height_per_page: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_data_free ##### -->
+<para>
+
+</para>
+
+@pd: 
+
+
+<!-- ##### FUNCTION bonobo_print_data_get_meta ##### -->
+<para>
+
+</para>
+
+@pd: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_data_render ##### -->
+<para>
+
+</para>
+
+@pc: 
+@x: 
+@y: 
+@pd: 
+@meta_x: 
+@meta_y: 
+
+

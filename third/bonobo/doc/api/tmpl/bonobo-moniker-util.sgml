@@ -1,0 +1,122 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-moniker-util
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION bonobo_get_object ##### -->
+<para>
+
+</para>
+
+@name: 
+@interface_name: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_new_from_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_get_name ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_resolve_default ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@interface_name: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_resolve_client_default ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@interface_name: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_new_from_name_full ##### -->
+<para>
+
+</para>
+
+@parent: 
+@name: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_get_parent_name ##### -->
+<para>
+
+</para>
+
+@moniker: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_qi_return ##### -->
+<para>
+
+</para>
+
+@object: 
+@requested_interface: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_util_seek_std_separator ##### -->
+<para>
+
+</para>
+
+@str: 
+@min_idx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_moniker_client_new_from_name_async ##### -->
+<para>
+
+</para>
+
+@name: 
+@ev: 
+@cb: 
+@user_data: 
+
+

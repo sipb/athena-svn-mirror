@@ -1,0 +1,120 @@
+<!-- ##### SECTION Title ##### -->
+BonoboUIContainer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_UI_CONTAINER_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_UI_CONTAINER ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_UI_CONTAINER_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_CONTAINER ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_CONTAINER_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboUIContainer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboUIContainerClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_ui_container_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_container_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_container_construct ##### -->
+<para>
+
+</para>
+
+@container: 
+@corba_container: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_container_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_container_set_win ##### -->
+<para>
+
+</para>
+
+@container: 
+@win: 
+
+
+<!-- ##### FUNCTION bonobo_ui_container_get_win ##### -->
+<para>
+
+</para>
+
+@container: 
+@Returns: 
+
+

@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-property
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+   #BonoboPropertyBag, #BonoboPropertyControl
+</para>
+
+<!-- ##### FUNCTION bonobo_property_servant_new ##### -->
+<para>
+
+</para>
+
+@adapter: 
+@pb: 
+@property_name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_property_servant_destroy ##### -->
+<para>
+
+</para>
+
+@servant: 
+
+
+<!-- ##### TYPEDEF BonoboProperty ##### -->
+<para>
+
+</para>
+
+

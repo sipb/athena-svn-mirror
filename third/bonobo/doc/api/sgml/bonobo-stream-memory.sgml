@@ -1,0 +1,302 @@
+<refentry id="bonobo-bonobo-stream-memory" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>BonoboStreamMem</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboStreamMem</refname><refpurpose>
+In-memory implementaiton of Bonobo::Stream interface.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboStreamMem-struct">BonoboStreamMem</link>;
+struct      <link linkend="BonoboStorageMem">BonoboStorageMem</link>;
+#define     <link linkend="BONOBO-STREAM-MEM-TYPE-CAPS">BONOBO_STREAM_MEM_TYPE</link>
+#define     <link linkend="BONOBO-STREAM-MEM-CAPS">BONOBO_STREAM_MEM</link>               (o)
+#define     <link linkend="BONOBO-STREAM-MEM-CLASS-CAPS">BONOBO_STREAM_MEM_CLASS</link>         (k)
+#define     <link linkend="BONOBO-IS-STREAM-MEM-CAPS">BONOBO_IS_STREAM_MEM</link>            (o)
+#define     <link linkend="BONOBO-IS-STREAM-MEM-CLASS-CAPS">BONOBO_IS_STREAM_MEM_CLASS</link>      (k)
+typedef     <link linkend="BonoboStreamMemClass">BonoboStreamMemClass</link>;
+<link linkend="BonoboStreamMem">BonoboStreamMem</link>* <link linkend="bonobo-stream-mem-construct">bonobo_stream_mem_construct</link>
+                                            (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem,
+                                             <link linkend="Bonobo-Stream">Bonobo_Stream</link> corba_stream,
+                                             const char *buffer,
+                                             <link linkend="size-t">size_t</link> size,
+                                             <link linkend="gboolean">gboolean</link> read_only,
+                                             <link linkend="gboolean">gboolean</link> resizable);
+<link linkend="BonoboStream">BonoboStream</link>* <link linkend="bonobo-stream-mem-create">bonobo_stream_mem_create</link>      (const char *buffer,
+                                             <link linkend="size-t">size_t</link> size,
+                                             <link linkend="gboolean">gboolean</link> read_only,
+                                             <link linkend="gboolean">gboolean</link> resizable);
+const char* <link linkend="bonobo-stream-mem-get-buffer">bonobo_stream_mem_get_buffer</link>    (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem);
+<link linkend="size-t">size_t</link>      <link linkend="bonobo-stream-mem-get-size">bonobo_stream_mem_get_size</link>      (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+   The BonoboStreamMem is an implementation of the
+   IDL:Bonobo/Stream:1.0 interface.  This implementation allows an
+   in-memory buffer to be exposed as a IDL:Bonobo/Stream:1.0 to
+   clients.  
+</para>
+
+<para>
+   Here is a sample way of exposing a C string as an
+   IDL:Bonobo/Stream:1.0:
+
+   <example>
+     <title>Sample BonoboStreamMem usage</title>
+
+     <programlisting>
+BonoboStream *make_bonbo_stream_on_string (char *string)
+{
+    return bonobo_stream_mem_create (string, strlen (string), TRUE, FALSE);
+}
+     </programlisting>
+   </example>
+
+   This example will make the string argument be exposed as a CORBA
+   stream.  </para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboStreamMem-struct">struct BonoboStreamMem</title>
+<programlisting>struct BonoboStreamMem;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboStorageMem">struct BonoboStorageMem</title>
+<programlisting>struct BonoboStorageMem;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-STREAM-MEM-TYPE-CAPS">BONOBO_STREAM_MEM_TYPE</title>
+<programlisting>#define BONOBO_STREAM_MEM_TYPE        (bonobo_stream_mem_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-STREAM-MEM-CAPS">BONOBO_STREAM_MEM()</title>
+<programlisting>#define BONOBO_STREAM_MEM(o)          (GTK_CHECK_CAST ((o), BONOBO_STREAM_MEM_TYPE, BonoboStreamMem))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-STREAM-MEM-CLASS-CAPS">BONOBO_STREAM_MEM_CLASS()</title>
+<programlisting>#define BONOBO_STREAM_MEM_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_STREAM_MEM_TYPE, BonoboStreamMemClass))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-STREAM-MEM-CAPS">BONOBO_IS_STREAM_MEM()</title>
+<programlisting>#define BONOBO_IS_STREAM_MEM(o)       (GTK_CHECK_TYPE ((o), BONOBO_STREAM_MEM_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-STREAM-MEM-CLASS-CAPS">BONOBO_IS_STREAM_MEM_CLASS()</title>
+<programlisting>#define BONOBO_IS_STREAM_MEM_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_STREAM_MEM_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboStreamMemClass">BonoboStreamMemClass</title>
+<programlisting>typedef struct {
+	BonoboStreamClass parent_class;
+	char           *(*get_buffer) (BonoboStreamMem *stream_mem);
+	size_t          (*get_size)   (BonoboStreamMem *stream_mem);
+} BonoboStreamMemClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-stream-mem-construct">bonobo_stream_mem_construct ()</title>
+<programlisting><link linkend="BonoboStreamMem">BonoboStreamMem</link>* bonobo_stream_mem_construct
+                                            (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem,
+                                             <link linkend="Bonobo-Stream">Bonobo_Stream</link> corba_stream,
+                                             const char *buffer,
+                                             <link linkend="size-t">size_t</link> size,
+                                             <link linkend="gboolean">gboolean</link> read_only,
+                                             <link linkend="gboolean">gboolean</link> resizable);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stream_mem</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>corba_stream</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>read_only</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>resizable</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-stream-mem-create">bonobo_stream_mem_create ()</title>
+<programlisting><link linkend="BonoboStream">BonoboStream</link>* bonobo_stream_mem_create      (const char *buffer,
+                                             <link linkend="size-t">size_t</link> size,
+                                             <link linkend="gboolean">gboolean</link> read_only,
+                                             <link linkend="gboolean">gboolean</link> resizable);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>read_only</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>resizable</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-stream-mem-get-buffer">bonobo_stream_mem_get_buffer ()</title>
+<programlisting>const char* bonobo_stream_mem_get_buffer    (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stream_mem</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-stream-mem-get-size">bonobo_stream_mem_get_size ()</title>
+<programlisting><link linkend="size-t">size_t</link>      bonobo_stream_mem_get_size      (<link linkend="BonoboStreamMem">BonoboStreamMem</link> *stream_mem);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stream_mem</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+  <variablelist>
+    <varlistentry>
+      <term><link linkend="BonoboStream">BonoboStream</link></term>
+      <listitem><para>An abstract class to implement
+      IDL:Bonobo/Streams.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>IDL:Bonobo/Stream:1.0</term>
+      <listitem><para>The CORBA interface implemented .</para></listitem>
+    </varlistentry>
+   </variablelist>
+</para>
+</refsect1>
+
+</refentry>

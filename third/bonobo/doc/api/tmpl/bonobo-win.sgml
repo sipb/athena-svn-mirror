@@ -1,0 +1,321 @@
+<!-- ##### SECTION Title ##### -->
+BonoboWin
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_TYPE_WINDOW ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_WINDOW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_WINDOW ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_WINDOW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_WINDOW_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboWindow ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboWindowClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_window_construct ##### -->
+<para>
+
+</para>
+
+@win: 
+@win_name: 
+@title: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_new ##### -->
+<para>
+
+</para>
+
+@win_name: 
+@title: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_set_contents ##### -->
+<para>
+
+</para>
+
+@win: 
+@contents: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_contents ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_freeze ##### -->
+<para>
+
+</para>
+
+@win: 
+
+
+<!-- ##### FUNCTION bonobo_window_thaw ##### -->
+<para>
+
+</para>
+
+@win: 
+
+
+<!-- ##### FUNCTION bonobo_window_set_name ##### -->
+<para>
+
+</para>
+
+@win: 
+@win_name: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_name ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_xml_merge ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@xml: 
+@component: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_xml_merge_tree ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@tree: 
+@component: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_xml_get ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@node_only: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_xml_node_exists ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_xml_rm ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@by_component: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_object_set ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@object: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_object_get ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+@object: 
+@ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_get_accel_group ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_set_ui_container ##### -->
+<para>
+
+</para>
+
+@win: 
+@container: 
+
+
+<!-- ##### FUNCTION bonobo_window_dump ##### -->
+<para>
+
+</para>
+
+@win: 
+@msg: 
+
+
+<!-- ##### FUNCTION bonobo_window_register_component ##### -->
+<para>
+
+</para>
+
+@win: 
+@name: 
+@component: 
+
+
+<!-- ##### FUNCTION bonobo_window_deregister_component ##### -->
+<para>
+
+</para>
+
+@win: 
+@name: 
+
+
+<!-- ##### FUNCTION bonobo_window_component_get ##### -->
+<para>
+
+</para>
+
+@win: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_window_add_popup ##### -->
+<para>
+
+</para>
+
+@win: 
+@popup: 
+@path: 
+
+
+<!-- ##### FUNCTION bonobo_window_remove_popup ##### -->
+<para>
+
+</para>
+
+@win: 
+@path: 
+
+
+<!-- ##### FUNCTION bonobo_window_deregister_component_by_ref ##### -->
+<para>
+
+</para>
+
+@win: 
+@component: 
+
+
+<!-- ##### FUNCTION bonobo_window_deregister_dead_components ##### -->
+<para>
+
+</para>
+
+@win: 
+
+
+<!-- ##### FUNCTION bonobo_window_deregister_get_component_names ##### -->
+<para>
+
+</para>
+
+@win: 
+@Returns: 
+
+

@@ -1,0 +1,340 @@
+<refentry id="bonobo-bonobo-generic-factory" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>BonoboGenericFactory</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboGenericFactory</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-GENERIC-FACTORY-TYPE-CAPS">BONOBO_GENERIC_FACTORY_TYPE</link>
+#define     <link linkend="BONOBO-GENERIC-FACTORY-CAPS">BONOBO_GENERIC_FACTORY</link>          (o)
+#define     <link linkend="BONOBO-GENERIC-FACTORY-CLASS-CAPS">BONOBO_GENERIC_FACTORY_CLASS</link>    (k)
+#define     <link linkend="BONOBO-IS-GENERIC-FACTORY-CAPS">BONOBO_IS_GENERIC_FACTORY</link>       (o)
+#define     <link linkend="BONOBO-IS-GENERIC-FACTORY-CLASS-CAPS">BONOBO_IS_GENERIC_FACTORY_CLASS</link> (k)
+struct      <link linkend="BonoboGenericFactory-struct">BonoboGenericFactory</link>;
+<link linkend="BonoboObject">BonoboObject</link>* (<link linkend="BonoboGenericFactoryFn">*BonoboGenericFactoryFn</link>)     (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *Factory,
+                                             void *closure);
+<link linkend="BonoboObject">BonoboObject</link>* (<link linkend="GnomeFactoryCallback">*GnomeFactoryCallback</link>)       (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *factory,
+                                             const char *component_id,
+                                             <link linkend="gpointer">gpointer</link> closure);
+typedef     <link linkend="BonoboGenericFactoryClass">BonoboGenericFactoryClass</link>;
+<link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* <link linkend="bonobo-generic-factory-new">bonobo_generic_factory_new</link>
+                                            (const char *component_id,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             void *data);
+<link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* <link linkend="bonobo-generic-factory-new-multi">bonobo_generic_factory_new_multi</link>
+                                            (const char *component_id,
+                                             <link linkend="GnomeFactoryCallback">GnomeFactoryCallback</link> factory_cb,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* <link linkend="bonobo-generic-factory-construct">bonobo_generic_factory_construct</link>
+                                            (const char *component_id,
+                                             <link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *c_factory,
+                                             <link linkend="CORBA-Object">CORBA_Object</link> corba_factory,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             <link linkend="GnomeFactoryCallback">GnomeFactoryCallback</link> factory_cb,
+                                             void *data);
+void        <link linkend="bonobo-generic-factory-set">bonobo_generic_factory_set</link>      (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *c_factory,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             void *data);
+<link linkend="POA-GNOME-ObjectFactory--epv">POA_GNOME_ObjectFactory__epv</link>* <link linkend="bonobo-generic-factory-get-epv">bonobo_generic_factory_get_epv</link>
+                                            (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-GENERIC-FACTORY-TYPE-CAPS">BONOBO_GENERIC_FACTORY_TYPE</title>
+<programlisting>#define BONOBO_GENERIC_FACTORY_TYPE        (bonobo_generic_factory_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-GENERIC-FACTORY-CAPS">BONOBO_GENERIC_FACTORY()</title>
+<programlisting>#define BONOBO_GENERIC_FACTORY(o)          (GTK_CHECK_CAST ((o), BONOBO_GENERIC_FACTORY_TYPE, BonoboGenericFactory))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-GENERIC-FACTORY-CLASS-CAPS">BONOBO_GENERIC_FACTORY_CLASS()</title>
+<programlisting>#define BONOBO_GENERIC_FACTORY_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_GENERIC_FACTORY_TYPE, BonoboGenericFactoryClass))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-GENERIC-FACTORY-CAPS">BONOBO_IS_GENERIC_FACTORY()</title>
+<programlisting>#define BONOBO_IS_GENERIC_FACTORY(o)       (GTK_CHECK_TYPE ((o), BONOBO_GENERIC_FACTORY_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-GENERIC-FACTORY-CLASS-CAPS">BONOBO_IS_GENERIC_FACTORY_CLASS()</title>
+<programlisting>#define BONOBO_IS_GENERIC_FACTORY_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_GENERIC_FACTORY_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboGenericFactory-struct">struct BonoboGenericFactory</title>
+<programlisting>struct BonoboGenericFactory;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboGenericFactoryFn">BonoboGenericFactoryFn ()</title>
+<programlisting><link linkend="BonoboObject">BonoboObject</link>* (*BonoboGenericFactoryFn)     (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *Factory,
+                                             void *closure);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GnomeFactoryCallback">GnomeFactoryCallback ()</title>
+<programlisting><link linkend="BonoboObject">BonoboObject</link>* (*GnomeFactoryCallback)       (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *factory,
+                                             const char *component_id,
+                                             <link linkend="gpointer">gpointer</link> closure);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>component_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboGenericFactoryClass">BonoboGenericFactoryClass</title>
+<programlisting>typedef struct {
+	BonoboObjectClass parent_class;
+
+	/*
+	 * Virtual methods
+	 */
+	BonoboObject * (*new_generic)(BonoboGenericFactory *c_factory, const char *component_id);
+} BonoboGenericFactoryClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-generic-factory-new">bonobo_generic_factory_new ()</title>
+<programlisting><link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* bonobo_generic_factory_new
+                                            (const char *component_id,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-generic-factory-new-multi">bonobo_generic_factory_new_multi ()</title>
+<programlisting><link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* bonobo_generic_factory_new_multi
+                                            (const char *component_id,
+                                             <link linkend="GnomeFactoryCallback">GnomeFactoryCallback</link> factory_cb,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>factory_cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-generic-factory-construct">bonobo_generic_factory_construct ()</title>
+<programlisting><link linkend="BonoboGenericFactory">BonoboGenericFactory</link>* bonobo_generic_factory_construct
+                                            (const char *component_id,
+                                             <link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *c_factory,
+                                             <link linkend="CORBA-Object">CORBA_Object</link> corba_factory,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             <link linkend="GnomeFactoryCallback">GnomeFactoryCallback</link> factory_cb,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>c_factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>corba_factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>factory_cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-generic-factory-set">bonobo_generic_factory_set ()</title>
+<programlisting>void        bonobo_generic_factory_set      (<link linkend="BonoboGenericFactory">BonoboGenericFactory</link> *c_factory,
+                                             <link linkend="BonoboGenericFactoryFn">BonoboGenericFactoryFn</link> factory,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>c_factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>factory</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-generic-factory-get-epv">bonobo_generic_factory_get_epv ()</title>
+<programlisting><link linkend="POA-GNOME-ObjectFactory--epv">POA_GNOME_ObjectFactory__epv</link>* bonobo_generic_factory_get_epv
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,61 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-stream-client
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION bonobo_stream_client_write ##### -->
+<para>
+
+</para>
+
+@stream: 
+@buffer: 
+@size: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_stream_client_write_string ##### -->
+<para>
+
+</para>
+
+@stream: 
+@str: 
+@terminate: 
+@ev: 
+
+
+<!-- ##### FUNCTION bonobo_stream_client_printf ##### -->
+<para>
+
+</para>
+
+@stream: 
+@terminate: 
+@ev: 
+@fmt: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION bonobo_stream_client_read_string ##### -->
+<para>
+
+</para>
+
+@stream: 
+@str: 
+@ev: 
+@Returns: 
+
+

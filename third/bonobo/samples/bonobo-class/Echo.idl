@@ -1,0 +1,14 @@
+/*
+ *  Sample file that demostrates how to create new
+ * Bonobo interfaces.
+ */
+
+#include <Bonobo.idl>
+
+module Demo {
+  
+	interface Echo : Bonobo::Unknown {
+		void echo (in string message);
+	};
+
+};

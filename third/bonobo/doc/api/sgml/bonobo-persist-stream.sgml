@@ -1,0 +1,383 @@
+<refentry id="bonobo-bonobo-persist-stream" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>BonoboPersistStream</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPersistStream</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-PERSIST-STREAM-TYPE-CAPS">BONOBO_PERSIST_STREAM_TYPE</link>
+#define     <link linkend="BONOBO-PERSIST-STREAM-CAPS">BONOBO_PERSIST_STREAM</link>           (o)
+#define     <link linkend="BONOBO-PERSIST-STREAM-CLASS-CAPS">BONOBO_PERSIST_STREAM_CLASS</link>     (k)
+#define     <link linkend="BONOBO-IS-PERSIST-STREAM-CAPS">BONOBO_IS_PERSIST_STREAM</link>        (o)
+#define     <link linkend="BONOBO-IS-PERSIST-STREAM-CLASS-CAPS">BONOBO_IS_PERSIST_STREAM_CLASS</link>  (k)
+struct      <link linkend="BonoboPersistStream-struct">BonoboPersistStream</link>;
+void        (<link linkend="BonoboPersistStreamIOFn">*BonoboPersistStreamIOFn</link>)      (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             const <link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="Bonobo-Persist-ContentType">Bonobo_Persist_ContentType</link> type,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="CORBA-long">CORBA_long</link>  (<link linkend="BonoboPersistStreamMaxFn">*BonoboPersistStreamMaxFn</link>)     (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</link>* (<link linkend="BonoboPersistStreamTypesFn">*BonoboPersistStreamTypesFn</link>)
+                                            (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+typedef     <link linkend="BonoboPersistStreamClass">BonoboPersistStreamClass</link>;
+void        <link linkend="bonobo-persist-stream-set-dirty">bonobo_persist_stream_set_dirty</link> (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             <link linkend="gboolean">gboolean</link> dirty);
+<link linkend="BonoboPersistStream">BonoboPersistStream</link>* <link linkend="bonobo-persist-stream-new">bonobo_persist_stream_new</link>
+                                            (<link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> save_fn,
+                                             <link linkend="BonoboPersistStreamMaxFn">BonoboPersistStreamMaxFn</link> max_fn,
+                                             <link linkend="BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</link> types_fn,
+                                             void *closure);
+<link linkend="BonoboPersistStream">BonoboPersistStream</link>* <link linkend="bonobo-persist-stream-construct">bonobo_persist_stream_construct</link>
+                                            (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             <link linkend="Bonobo-PersistStream">Bonobo_PersistStream</link> corba_ps,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> save_fn,
+                                             <link linkend="BonoboPersistStreamMaxFn">BonoboPersistStreamMaxFn</link> max_fn,
+                                             <link linkend="BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</link> types_fn,
+                                             void *closure);
+<link linkend="POA-Bonobo-PersistStream--epv">POA_Bonobo_PersistStream__epv</link>* <link linkend="bonobo-persist-stream-get-epv">bonobo_persist_stream_get_epv</link>
+                                            (void);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-PERSIST-STREAM-TYPE-CAPS">BONOBO_PERSIST_STREAM_TYPE</title>
+<programlisting>#define BONOBO_PERSIST_STREAM_TYPE        (bonobo_persist_stream_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PERSIST-STREAM-CAPS">BONOBO_PERSIST_STREAM()</title>
+<programlisting>#define BONOBO_PERSIST_STREAM(o)          (GTK_CHECK_CAST ((o), BONOBO_PERSIST_STREAM_TYPE, BonoboPersistStream))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PERSIST-STREAM-CLASS-CAPS">BONOBO_PERSIST_STREAM_CLASS()</title>
+<programlisting>#define BONOBO_PERSIST_STREAM_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_PERSIST_STREAM_TYPE, BonoboPersistStreamClass))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-PERSIST-STREAM-CAPS">BONOBO_IS_PERSIST_STREAM()</title>
+<programlisting>#define BONOBO_IS_PERSIST_STREAM(o)       (GTK_CHECK_TYPE ((o), BONOBO_PERSIST_STREAM_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-PERSIST-STREAM-CLASS-CAPS">BONOBO_IS_PERSIST_STREAM_CLASS()</title>
+<programlisting>#define BONOBO_IS_PERSIST_STREAM_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_PERSIST_STREAM_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistStream-struct">struct BonoboPersistStream</title>
+<programlisting>struct BonoboPersistStream;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn ()</title>
+<programlisting>void        (*BonoboPersistStreamIOFn)      (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             const <link linkend="Bonobo-Stream">Bonobo_Stream</link> stream,
+                                             <link linkend="Bonobo-Persist-ContentType">Bonobo_Persist_ContentType</link> type,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>stream</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistStreamMaxFn">BonoboPersistStreamMaxFn ()</title>
+<programlisting><link linkend="CORBA-long">CORBA_long</link>  (*BonoboPersistStreamMaxFn)     (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn ()</title>
+<programlisting><link linkend="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</link>* (*BonoboPersistStreamTypesFn)
+                                            (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             void *closure,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistStreamClass">BonoboPersistStreamClass</title>
+<programlisting>typedef struct {
+	BonoboPersistClass parent_class;
+
+	/*
+	 * methods
+	 */
+	void       (*load)         (BonoboPersistStream        *ps,
+				    Bonobo_Stream              stream,
+				    Bonobo_Persist_ContentType type,
+				    CORBA_Environment          *ev);
+	void       (*save)         (BonoboPersistStream        *ps,
+				    Bonobo_Stream              stream,
+				    Bonobo_Persist_ContentType type,
+				    CORBA_Environment          *ev);
+	CORBA_long (*get_size_max) (BonoboPersistStream *ps,
+				    CORBA_Environment   *ev);
+	Bonobo_Persist_ContentTypeList * (*get_content_types) (BonoboPersistStream *ps,
+							       CORBA_Environment   *ev);
+
+} BonoboPersistStreamClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-stream-set-dirty">bonobo_persist_stream_set_dirty ()</title>
+<programlisting>void        bonobo_persist_stream_set_dirty (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             <link linkend="gboolean">gboolean</link> dirty);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>dirty</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-stream-new">bonobo_persist_stream_new ()</title>
+<programlisting><link linkend="BonoboPersistStream">BonoboPersistStream</link>* bonobo_persist_stream_new
+                                            (<link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> save_fn,
+                                             <link linkend="BonoboPersistStreamMaxFn">BonoboPersistStreamMaxFn</link> max_fn,
+                                             <link linkend="BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</link> types_fn,
+                                             void *closure);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>load_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>save_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>max_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>types_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-stream-construct">bonobo_persist_stream_construct ()</title>
+<programlisting><link linkend="BonoboPersistStream">BonoboPersistStream</link>* bonobo_persist_stream_construct
+                                            (<link linkend="BonoboPersistStream">BonoboPersistStream</link> *ps,
+                                             <link linkend="Bonobo-PersistStream">Bonobo_PersistStream</link> corba_ps,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</link> save_fn,
+                                             <link linkend="BonoboPersistStreamMaxFn">BonoboPersistStreamMaxFn</link> max_fn,
+                                             <link linkend="BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</link> types_fn,
+                                             void *closure);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>corba_ps</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>load_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>save_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>max_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>types_fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-stream-get-epv">bonobo_persist_stream_get_epv ()</title>
+<programlisting><link linkend="POA-Bonobo-PersistStream--epv">POA_Bonobo_PersistStream__epv</link>* bonobo_persist_stream_get_epv
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

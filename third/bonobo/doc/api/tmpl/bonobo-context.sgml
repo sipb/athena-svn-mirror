@@ -1,0 +1,55 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-context
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF BonoboActivationContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_context_init ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_context_shutdown ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_context_add ##### -->
+<para>
+
+</para>
+
+@context_name: 
+@context: 
+
+
+<!-- ##### FUNCTION bonobo_context_get ##### -->
+<para>
+
+</para>
+
+@context_name: 
+@opt_ev: 
+@Returns: 
+
+

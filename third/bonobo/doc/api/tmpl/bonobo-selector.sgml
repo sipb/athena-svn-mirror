@@ -1,0 +1,112 @@
+<!-- ##### SECTION Title ##### -->
+BonoboSelector
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GNOME_IS_BONOBO_SELECTOR ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_SELECTOR ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_SELECTOR_CLASS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF BonoboSelector ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboSelectorClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_selector_new ##### -->
+<para>
+
+</para>
+
+@title: 
+@interfaces_required: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_selector_get_selected_id ##### -->
+<para>
+
+</para>
+
+@sel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_selector_get_selected_name ##### -->
+<para>
+
+</para>
+
+@sel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_selector_get_selected_description ##### -->
+<para>
+
+</para>
+
+@sel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_selector_select_id ##### -->
+<para>
+
+</para>
+
+@title: 
+@interfaces_required: 
+@Returns: 
+
+
+<!-- ##### SIGNAL BonoboSelector::ok ##### -->
+<para>
+
+</para>
+
+@bonoboselector: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboSelector::cancel ##### -->
+<para>
+
+</para>
+
+@bonoboselector: the object which received the signal.
+

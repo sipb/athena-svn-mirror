@@ -1,0 +1,1341 @@
+<refentry id="bonobo-bonobo-ui-component" revision="29 Dec 2000">
+<refmeta>
+<refentrytitle>BonoboUIComponent</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>BONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboUIComponent</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-UI-COMPONENT-TYPE-CAPS">BONOBO_UI_COMPONENT_TYPE</link>
+#define     <link linkend="BONOBO-UI-COMPONENT-CAPS">BONOBO_UI_COMPONENT</link>             (o)
+#define     <link linkend="BONOBO-UI-COMPONENT-CLASS-CAPS">BONOBO_UI_COMPONENT_CLASS</link>       (k)
+#define     <link linkend="BONOBO-IS-UI-COMPONENT-CAPS">BONOBO_IS_UI_COMPONENT</link>          (o)
+#define     <link linkend="BONOBO-IS-UI-COMPONENT-CLASS-CAPS">BONOBO_IS_UI_COMPONENT_CLASS</link>    (k)
+struct      <link linkend="BonoboUIComponent-struct">BonoboUIComponent</link>;
+void        (<link linkend="BonoboUIListenerFn">*BonoboUIListenerFn</link>)           (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="Bonobo-UIComponent-EventType">Bonobo_UIComponent_EventType</link> type,
+                                             const char *state,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        (<link linkend="BonoboUIVerbFn">*BonoboUIVerbFn</link>)               (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             const char *cname);
+typedef     <link linkend="BonoboUIComponentClass">BonoboUIComponentClass</link>;
+<link linkend="BonoboUIComponent">BonoboUIComponent</link>* <link linkend="bonobo-ui-component-construct">bonobo_ui_component_construct</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="Bonobo-UIComponent">Bonobo_UIComponent</link> corba_ui,
+                                             const char *name);
+<link linkend="BonoboUIComponent">BonoboUIComponent</link>* <link linkend="bonobo-ui-component-new">bonobo_ui_component_new</link>  (const char *name);
+<link linkend="BonoboUIComponent">BonoboUIComponent</link>* <link linkend="bonobo-ui-component-new-default">bonobo_ui_component_new_default</link>
+                                            (void);
+void        <link linkend="bonobo-ui-component-set-name">bonobo_ui_component_set_name</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *name);
+const char* <link linkend="bonobo-ui-component-get-name">bonobo_ui_component_get_name</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);
+void        <link linkend="bonobo-ui-component-set-container">bonobo_ui_component_set_container</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="Bonobo-UIContainer">Bonobo_UIContainer</link> container);
+void        <link linkend="bonobo-ui-component-unset-container">bonobo_ui_component_unset_container</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);
+<link linkend="Bonobo-UIContainer">Bonobo_UIContainer</link> <link linkend="bonobo-ui-component-get-container">bonobo_ui_component_get_container</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);
+void        <link linkend="bonobo-ui-component-add-verb">bonobo_ui_component_add_verb</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="bonobo-ui-component-add-verb-full">bonobo_ui_component_add_verb_full</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);
+void        <link linkend="bonobo-ui-component-remove-verb">bonobo_ui_component_remove_verb</link> (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname);
+void        <link linkend="bonobo-ui-component-remove-verb-by-func">bonobo_ui_component_remove_verb_by_func</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn);
+void        <link linkend="bonobo-ui-component-remove-verb-by-data">bonobo_ui_component_remove_verb_by_data</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="bonobo-ui-component-add-listener">bonobo_ui_component_add_listener</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *id,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="bonobo-ui-component-add-listener-full">bonobo_ui_component_add_listener_full</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *id,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);
+void        <link linkend="bonobo-ui-component-remove-listener">bonobo_ui_component_remove_listener</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname);
+void        <link linkend="bonobo-ui-component-remove-listener-by-func">bonobo_ui_component_remove_listener_by_func</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn);
+void        <link linkend="bonobo-ui-component-remove-listener-by-data">bonobo_ui_component_remove_listener_by_data</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+void        <link linkend="bonobo-ui-component-set">bonobo_ui_component_set</link>         (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+void        <link linkend="bonobo-ui-component-set-translate">bonobo_ui_component_set_translate</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+void        <link linkend="bonobo-ui-component-set-tree">bonobo_ui_component_set_tree</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *node,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+void        <link linkend="bonobo-ui-component-rm">bonobo_ui_component_rm</link>          (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="gboolean">gboolean</link>    <link linkend="bonobo-ui-component-path-exists">bonobo_ui_component_path_exists</link> (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="CORBA-char">CORBA_char</link>* <link linkend="bonobo-ui-component-get">bonobo_ui_component_get</link>         (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="gboolean">gboolean</link> recurse,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="BonoboUINode">BonoboUINode</link>* <link linkend="bonobo-ui-component-get-tree">bonobo_ui_component_get_tree</link>  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="gboolean">gboolean</link> recurse,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+void        <link linkend="bonobo-ui-component-object-set">bonobo_ui_component_object_set</link>  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="Bonobo-Unknown">Bonobo_Unknown</link> control,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+<link linkend="Bonobo-Unknown">Bonobo_Unknown</link> <link linkend="bonobo-ui-component-object-get">bonobo_ui_component_object_get</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+void        <link linkend="bonobo-ui-component-freeze">bonobo_ui_component_freeze</link>      (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+void        <link linkend="bonobo-ui-component-thaw">bonobo_ui_component_thaw</link>        (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+void        <link linkend="bonobo-ui-component-set-prop">bonobo_ui_component_set_prop</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             const char *value,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+<link linkend="gchar">gchar</link>*      <link linkend="bonobo-ui-component-get-prop">bonobo_ui_component_get_prop</link>    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+void        <link linkend="bonobo-ui-component-set-status">bonobo_ui_component_set_status</link>  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *text,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);
+<link linkend="POA-Bonobo-UIComponent--epv">POA_Bonobo_UIComponent__epv</link>* <link linkend="bonobo-ui-component-get-epv">bonobo_ui_component_get_epv</link>
+                                            (void);
+<link linkend="Bonobo-UIComponent">Bonobo_UIComponent</link> <link linkend="bonobo-ui-component-corba-object-create">bonobo_ui_component_corba_object_create</link>
+                                            (<link linkend="BonoboObject">BonoboObject</link> *object);
+typedef     <link linkend="BonoboUIVerb">BonoboUIVerb</link>;
+#define     <link linkend="BONOBO-UI-VERB-CAPS">BONOBO_UI_VERB</link>                  (name,cb)
+#define     <link linkend="BONOBO-UI-VERB-DATA-CAPS">BONOBO_UI_VERB_DATA</link>             (name,cb,data)
+#define     <link linkend="BONOBO-UI-UNSAFE-VERB-CAPS">BONOBO_UI_UNSAFE_VERB</link>           (name,cb)
+#define     <link linkend="BONOBO-UI-UNSAFE-VERB-DATA-CAPS">BONOBO_UI_UNSAFE_VERB_DATA</link>      (name,cb,data)
+#define     <link linkend="BONOBO-UI-VERB-END-CAPS">BONOBO_UI_VERB_END</link>
+void        <link linkend="bonobo-ui-component-add-verb-list">bonobo_ui_component_add_verb_list</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerb">BonoboUIVerb</link> *list);
+void        <link linkend="bonobo-ui-component-add-verb-list-with-data">bonobo_ui_component_add_verb_list_with_data</link>
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerb">BonoboUIVerb</link> *list,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-UI-COMPONENT-TYPE-CAPS">BONOBO_UI_COMPONENT_TYPE</title>
+<programlisting>#define BONOBO_UI_COMPONENT_TYPE        (bonobo_ui_component_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-COMPONENT-CAPS">BONOBO_UI_COMPONENT()</title>
+<programlisting>#define BONOBO_UI_COMPONENT(o)          (GTK_CHECK_CAST ((o), BONOBO_UI_COMPONENT_TYPE, BonoboUIComponent))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-COMPONENT-CLASS-CAPS">BONOBO_UI_COMPONENT_CLASS()</title>
+<programlisting>#define BONOBO_UI_COMPONENT_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), BONOBO_UI_COMPONENT_TYPE, BonoboUIComponentClass))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-UI-COMPONENT-CAPS">BONOBO_IS_UI_COMPONENT()</title>
+<programlisting>#define BONOBO_IS_UI_COMPONENT(o)       (GTK_CHECK_TYPE ((o), BONOBO_UI_COMPONENT_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-IS-UI-COMPONENT-CLASS-CAPS">BONOBO_IS_UI_COMPONENT_CLASS()</title>
+<programlisting>#define BONOBO_IS_UI_COMPONENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_UI_COMPONENT_TYPE))
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIComponent-struct">struct BonoboUIComponent</title>
+<programlisting>struct BonoboUIComponent;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIListenerFn">BonoboUIListenerFn ()</title>
+<programlisting>void        (*BonoboUIListenerFn)           (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="Bonobo-UIComponent-EventType">Bonobo_UIComponent_EventType</link> type,
+                                             const char *state,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>state</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIVerbFn">BonoboUIVerbFn ()</title>
+<programlisting>void        (*BonoboUIVerbFn)               (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             const char *cname);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cname</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIComponentClass">BonoboUIComponentClass</title>
+<programlisting>typedef struct {
+	BonoboObjectClass parent_class;
+
+	/*
+	 * Signals
+	 */
+	void (*exec_verb) (BonoboUIComponent *comp,
+			   const char        *cname);
+
+	void (*ui_event)  (BonoboUIComponent *comp,
+			   const char        *path,
+			   Bonobo_UIComponent_EventType type,
+			   const char        *state);
+	/*
+	 * Virtual XML Methods
+	 */
+	void (*freeze)    (BonoboUIComponent *component,
+			   CORBA_Environment *opt_ev);
+
+	void (*thaw)      (BonoboUIComponent *component,
+			   CORBA_Environment *opt_ev);
+
+	void (*xml_set)   (BonoboUIComponent *component,
+			   const char        *path,
+			   const char        *xml,
+			   CORBA_Environment *ev);
+
+	CORBA_char *(*xml_get) (BonoboUIComponent *component,
+				const char        *path,
+				gboolean           recurse,
+				CORBA_Environment *ev);
+
+	void (*xml_rm)    (BonoboUIComponent *component,
+			   const char        *path,
+			   CORBA_Environment *ev);
+
+	void (*set_prop)  (BonoboUIComponent *component,
+			   const char        *path,
+			   const char        *prop,
+			   const char        *value,
+			   CORBA_Environment *opt_ev);
+	
+	gchar *(*get_prop) (BonoboUIComponent *component,
+			    const char        *path,
+			    const char        *prop,
+			    CORBA_Environment *opt_ev);
+
+	gboolean (*exists) (BonoboUIComponent *component,
+			    const char        *path,
+			    CORBA_Environment *ev);
+	
+
+	gpointer            dummy;
+} BonoboUIComponentClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-construct">bonobo_ui_component_construct ()</title>
+<programlisting><link linkend="BonoboUIComponent">BonoboUIComponent</link>* bonobo_ui_component_construct
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="Bonobo-UIComponent">Bonobo_UIComponent</link> corba_ui,
+                                             const char *name);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>corba_ui</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-new">bonobo_ui_component_new ()</title>
+<programlisting><link linkend="BonoboUIComponent">BonoboUIComponent</link>* bonobo_ui_component_new  (const char *name);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-new-default">bonobo_ui_component_new_default ()</title>
+<programlisting><link linkend="BonoboUIComponent">BonoboUIComponent</link>* bonobo_ui_component_new_default
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-name">bonobo_ui_component_set_name ()</title>
+<programlisting>void        bonobo_ui_component_set_name    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *name);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get-name">bonobo_ui_component_get_name ()</title>
+<programlisting>const char* bonobo_ui_component_get_name    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-container">bonobo_ui_component_set_container ()</title>
+<programlisting>void        bonobo_ui_component_set_container
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="Bonobo-UIContainer">Bonobo_UIContainer</link> container);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>container</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-unset-container">bonobo_ui_component_unset_container ()</title>
+<programlisting>void        bonobo_ui_component_unset_container
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get-container">bonobo_ui_component_get_container ()</title>
+<programlisting><link linkend="Bonobo-UIContainer">Bonobo_UIContainer</link> bonobo_ui_component_get_container
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-verb">bonobo_ui_component_add_verb ()</title>
+<programlisting>void        bonobo_ui_component_add_verb    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cname</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-verb-full">bonobo_ui_component_add_verb_full ()</title>
+<programlisting>void        bonobo_ui_component_add_verb_full
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cname</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>destroy_fn</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-verb">bonobo_ui_component_remove_verb ()</title>
+<programlisting>void        bonobo_ui_component_remove_verb (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cname</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-verb-by-func">bonobo_ui_component_remove_verb_by_func ()</title>
+<programlisting>void        bonobo_ui_component_remove_verb_by_func
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerbFn">BonoboUIVerbFn</link> fn);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-verb-by-data">bonobo_ui_component_remove_verb_by_data ()</title>
+<programlisting>void        bonobo_ui_component_remove_verb_by_data
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-listener">bonobo_ui_component_add_listener ()</title>
+<programlisting>void        bonobo_ui_component_add_listener
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *id,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-listener-full">bonobo_ui_component_add_listener_full ()</title>
+<programlisting>void        bonobo_ui_component_add_listener_full
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *id,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn,
+                                             <link linkend="gpointer">gpointer</link> user_data,
+                                             <link linkend="GDestroyNotify">GDestroyNotify</link> destroy_fn);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>destroy_fn</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-listener">bonobo_ui_component_remove_listener ()</title>
+<programlisting>void        bonobo_ui_component_remove_listener
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *cname);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cname</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-listener-by-func">bonobo_ui_component_remove_listener_by_func ()</title>
+<programlisting>void        bonobo_ui_component_remove_listener_by_func
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIListenerFn">BonoboUIListenerFn</link> fn);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>fn</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-remove-listener-by-data">bonobo_ui_component_remove_listener_by_data ()</title>
+<programlisting>void        bonobo_ui_component_remove_listener_by_data
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set">bonobo_ui_component_set ()</title>
+<programlisting>void        bonobo_ui_component_set         (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>xml</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-translate">bonobo_ui_component_set_translate ()</title>
+<programlisting>void        bonobo_ui_component_set_translate
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *xml,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>xml</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-tree">bonobo_ui_component_set_tree ()</title>
+<programlisting>void        bonobo_ui_component_set_tree    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="BonoboUINode">BonoboUINode</link> *node,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>node</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-rm">bonobo_ui_component_rm ()</title>
+<programlisting>void        bonobo_ui_component_rm          (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-path-exists">bonobo_ui_component_path_exists ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    bonobo_ui_component_path_exists (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get">bonobo_ui_component_get ()</title>
+<programlisting><link linkend="CORBA-char">CORBA_char</link>* bonobo_ui_component_get         (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="gboolean">gboolean</link> recurse,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>recurse</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get-tree">bonobo_ui_component_get_tree ()</title>
+<programlisting><link linkend="BonoboUINode">BonoboUINode</link>* bonobo_ui_component_get_tree  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="gboolean">gboolean</link> recurse,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>recurse</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-object-set">bonobo_ui_component_object_set ()</title>
+<programlisting>void        bonobo_ui_component_object_set  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="Bonobo-Unknown">Bonobo_Unknown</link> control,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>control</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-object-get">bonobo_ui_component_object_get ()</title>
+<programlisting><link linkend="Bonobo-Unknown">Bonobo_Unknown</link> bonobo_ui_component_object_get
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-freeze">bonobo_ui_component_freeze ()</title>
+<programlisting>void        bonobo_ui_component_freeze      (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-thaw">bonobo_ui_component_thaw ()</title>
+<programlisting>void        bonobo_ui_component_thaw        (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-prop">bonobo_ui_component_set_prop ()</title>
+<programlisting>void        bonobo_ui_component_set_prop    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             const char *value,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>prop</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get-prop">bonobo_ui_component_get_prop ()</title>
+<programlisting><link linkend="gchar">gchar</link>*      bonobo_ui_component_get_prop    (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *path,
+                                             const char *prop,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>prop</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-set-status">bonobo_ui_component_set_status ()</title>
+<programlisting>void        bonobo_ui_component_set_status  (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             const char *text,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *opt_ev);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>opt_ev</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-get-epv">bonobo_ui_component_get_epv ()</title>
+<programlisting><link linkend="POA-Bonobo-UIComponent--epv">POA_Bonobo_UIComponent__epv</link>* bonobo_ui_component_get_epv
+                                            (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-corba-object-create">bonobo_ui_component_corba_object_create ()</title>
+<programlisting><link linkend="Bonobo-UIComponent">Bonobo_UIComponent</link> bonobo_ui_component_corba_object_create
+                                            (<link linkend="BonoboObject">BonoboObject</link> *object);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>object</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BonoboUIVerb">BonoboUIVerb</title>
+<programlisting>typedef struct {
+	char          *cname;
+	BonoboUIVerbFn cb;
+	gpointer       user_data;
+	gpointer       dummy;
+} BonoboUIVerb;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-VERB-CAPS">BONOBO_UI_VERB()</title>
+<programlisting>#define BONOBO_UI_VERB(name,cb)                  { (name), (cb), NULL   }
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-VERB-DATA-CAPS">BONOBO_UI_VERB_DATA()</title>
+<programlisting>#define BONOBO_UI_VERB_DATA(name,cb,data)        { (name), (cb), (data) }
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-UNSAFE-VERB-CAPS">BONOBO_UI_UNSAFE_VERB()</title>
+<programlisting>#define BONOBO_UI_UNSAFE_VERB(name,cb)           { (name), ((BonoboUIVerbFn)(cb)), NULL   }
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-UNSAFE-VERB-DATA-CAPS">BONOBO_UI_UNSAFE_VERB_DATA()</title>
+<programlisting>#define BONOBO_UI_UNSAFE_VERB_DATA(name,cb,data) { (name), ((BonoboUIVerbFn)(cb)), (data) }
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-UI-VERB-END-CAPS">BONOBO_UI_VERB_END</title>
+<programlisting>#define BONOBO_UI_VERB_END                       { NULL, NULL, NULL }
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-verb-list">bonobo_ui_component_add_verb_list ()</title>
+<programlisting>void        bonobo_ui_component_add_verb_list
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerb">BonoboUIVerb</link> *list);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bonobo-ui-component-add-verb-list-with-data">bonobo_ui_component_add_verb_list_with_data ()</title>
+<programlisting>void        bonobo_ui_component_add_verb_list_with_data
+                                            (<link linkend="BonoboUIComponent">BonoboUIComponent</link> *component,
+                                             <link linkend="BonoboUIVerb">BonoboUIVerb</link> *list,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>component</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

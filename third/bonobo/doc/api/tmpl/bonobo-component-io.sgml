@@ -1,0 +1,67 @@
+<!-- ##### SECTION Title ##### -->
+bonobo-component-io
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION bonobo_embeddable_load ##### -->
+<para>
+
+</para>
+
+@storage: 
+@interface: 
+@client_site: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_embeddable_save ##### -->
+<para>
+
+</para>
+
+@bonobo_object: 
+@storage: 
+@same_as_loaded: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_embeddable_load_from_stream ##### -->
+<para>
+
+</para>
+
+@stream: 
+@interface: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_embeddable_save_to_stream ##### -->
+<para>
+
+</para>
+
+@bonobo_object: 
+@stream: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_get_class_id_from_file ##### -->
+<para>
+
+</para>
+
+@filename: 
+@Returns: 
+
+

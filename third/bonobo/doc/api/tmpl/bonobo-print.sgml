@@ -1,0 +1,114 @@
+<!-- ##### SECTION Title ##### -->
+BonoboPrint
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_PRINT_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PRINT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_PRINT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### MACRO BONOBO_IS_PRINT ##### -->
+<para>
+
+</para>
+
+@o: 
+
+
+<!-- ##### MACRO BONOBO_IS_PRINT_CLASS ##### -->
+<para>
+
+</para>
+
+@k: 
+
+
+<!-- ##### TYPEDEF BonoboPrint ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboPrintClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_print_get_epv ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_corba_object_create ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_construct ##### -->
+<para>
+
+</para>
+
+@p: 
+@corba_p: 
+@render: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_print_new ##### -->
+<para>
+
+</para>
+
+@render: 
+@user_data: 
+@Returns: 
+
+

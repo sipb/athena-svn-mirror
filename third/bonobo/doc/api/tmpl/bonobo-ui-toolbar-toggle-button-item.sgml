@@ -1,0 +1,112 @@
+<!-- ##### SECTION Title ##### -->
+BonoboUIToolbarToggleButtonItem
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO BONOBO_TYPE_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_TOGGLE_BUTTON_ITEM ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+
+<!-- ##### MACRO BONOBO_IS_UI_TOOLBAR_TOGGLE_BUTTON_ITEM_CLASS ##### -->
+<para>
+
+</para>
+
+@klass: 
+
+
+<!-- ##### TYPEDEF BonoboUIToolbarToggleButtonItem ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF BonoboUIToolbarToggleButtonItemClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION bonobo_ui_toolbar_toggle_button_item_construct ##### -->
+<para>
+
+</para>
+
+@toggle_button_item: 
+@icon: 
+@label: 
+
+
+<!-- ##### FUNCTION bonobo_ui_toolbar_toggle_button_item_new ##### -->
+<para>
+
+</para>
+
+@icon: 
+@label: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_ui_toolbar_toggle_button_item_set_active ##### -->
+<para>
+
+</para>
+
+@item: 
+@active: 
+
+
+<!-- ##### FUNCTION bonobo_ui_toolbar_toggle_button_item_get_active ##### -->
+<para>
+
+</para>
+
+@item: 
+@Returns: 
+
+
+<!-- ##### SIGNAL BonoboUIToolbarToggleButtonItem::toggled ##### -->
+<para>
+
+</para>
+
+@bonobouitoolbartogglebuttonitem: the object which received the signal.
+
