@@ -1,4 +1,4 @@
-# $Id: packages,v 1.251 2003-10-11 17:50:23 rbasch Exp $
+# $Id: packages,v 1.252 2003-10-23 03:36:00 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -110,6 +110,7 @@ athena/etc/listsuidcells	requires openafs
 athena/etc/messaged		requires gms
 athena/etc/mkcred
 athena/etc/newsyslog		except linux
+athena/etc/offlinehome		on linux
 athena/etc/rkinitd		requires krb5,athena/lib/rkinit
 athena/etc/rpmupdate		on linux
 athena/etc/synctree
