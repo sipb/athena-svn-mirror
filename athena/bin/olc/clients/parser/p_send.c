@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v $
- *	$Id: p_send.c,v 1.13 1991-01-03 15:40:30 lwvanels Exp $
+ *	$Id: p_send.c,v 1.14 1991-01-15 17:46:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.13 1991-01-03 15:40:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.14 1991-01-15 17:46:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -45,8 +45,8 @@ do_olc_send(arguments)
   char editor[NAME_SIZE];
   int temp = FALSE;
 
-  strcpy(file, "");
-  strcpy(editor, "");
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -207,11 +207,11 @@ do_olc_mail(arguments)
   char smargs[NAME_SIZE][NAME_SIZE];
   char *smargsP[NAME_SIZE];
   int status;
-  int temp = FALSE;
   int checkhub = 0;
+  int noedit = 0;
   int i = 0;
 
-  strcpy(file, "");
+  file[0] = '\0';
   strcpy(editor, NO_EDITOR);
 
   if(fill_request(&Request) != SUCCESS)
@@ -248,6 +248,13 @@ do_olc_mail(arguments)
       if (string_equiv(*arguments, "-checkhub", max(strlen(*arguments),2)))
 	{
 	  checkhub = TRUE;
+	  arguments++;
+	  continue;
+	}
+
+      if (string_equiv(*arguments, "-noedit", max(strlen(*arguments),2)))
+	{
+	  noedit = TRUE;
 	  arguments++;
 	  continue;
 	}
@@ -311,20 +318,12 @@ do_olc_mail(arguments)
 	  printf("Usage is: \tmail  [<username> <instance id>] ");
 	  printf("[-editor <editor>]\n\t\t[-file <file name>] ");
 	  printf("[-smopt <[\\-]sendmail options>] [-checkhub]\n");
-	  printf("\t\t[-instance <instance id>]\n");
+	  printf("\t\t[-noedit] [-instance <instance id>]\n");
 	  return(ERROR);
 	}
     }
   
-  if(string_eq(file, ""))
-    {
-      make_temp_name(file);
-      temp = TRUE;
-    }
-
-  status = t_mail(&Request, file, editor, smargsP, checkhub);
-  if(temp)
-    (void) unlink(file);
+  status = t_mail(&Request, file, editor, smargsP, checkhub,noedit);
   
   return(status);
 }
