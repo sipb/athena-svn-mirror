@@ -9,6 +9,7 @@ OSLIBS = -lbsd
 
 #ifdef sgi
 MACHDEP = -DINITTAB
+OSLIBS = -lsys
 #endif
 
 #ifdef ultrix
