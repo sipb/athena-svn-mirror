@@ -2,7 +2,7 @@
 /*
  * inc.c -- incorporate messages from a maildrop into a folder
  *
- * $Id: inc.c,v 1.2 1999-02-13 00:39:51 danw Exp $
+ * $Id: inc.c,v 1.3 1999-02-13 15:42:53 danw Exp $
  */
 
 #ifdef MAILGROUP
@@ -376,7 +376,7 @@ main (int argc, char **argv)
     /*
      * Where are we getting the new mail?
      */
-    if (from || getenv(MAILDROP))
+    if (from || getenv("MAILDROP"))
 	inc_type = INC_FILE;
 #ifdef POP
     else if (host)
