@@ -1,3 +1,33 @@
+2003-02-02  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+2003-01-23  He Qiangqiang  <carton@linux.net.cn>
+
+	* zh_CN.po: Fixed some translation.
+
+2003-01-23  He Qiangqiang  <carton@linux.net.cn>
+
+        * zh_CN.po: Updated Simplified Chinese translation by
+        Funda Wang <fundawang@en2china.com>.
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* ro.po: added ( thanks to Mişu Moldovan )
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* mn.po: Added Mongolian translation by
+	Sanlig Badral <badral@chinggis.com>.
+
+2003-01-22  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation.
+
+2003-01-21  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* et.po: Updated Estonian translation.
+
 2003-01-15  Kang Jeong-Hee <Keizi@mail.co.kr>
 
 	* ko.po: Updated Korean translation.
