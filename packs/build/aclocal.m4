@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.17 2002-03-02 16:40:45 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.18 2005-03-11 19:59:41 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -165,7 +165,7 @@ if test "$afs" != yes; then
 	LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
 fi
 AC_CHECK_LIB(sys, pioctl, :, [AC_MSG_ERROR(AFS libraries not found)],
-	     -lrx -llwp -lsys)
+	     -lrx -llwp -lsys -lafsutil)
 AFS_DIR=$afs
 AC_SUBST(AFS_DIR)])
 
