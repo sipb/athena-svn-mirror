@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.2 1989-12-13 15:01:03 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.3 1990-04-16 11:47:34 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.2 1989-12-13 15:01:03 probe Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.3 1990-04-16 11:47:34 epeisach Exp $";
 #endif lint
 
 /*
@@ -42,6 +42,37 @@ static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
 #define	FILTERERR	3
 #define	ACCESS		4
 
+#ifdef ZEPHYR
+#include <zephyr/zephyr.h>
+
+#define ZCLASS "MESSAGE"
+#define ZINSTANCE "PERSONAL"
+#define ZSENDER "Printer Daemon"
+#define ZDEFAULTFORMAT "$message"
+
+ZNotice_t notice;
+char zrecipient[40+REALM_SZ];
+char *zmessage[6];
+char zmessagetext[BUFSIZ];
+int zerrno;
+int zflag = 0;
+
+static char *zerrtext[]={"Document printing has been deferred",
+                         "This is impossible",
+                         "Attempting to reprint document",
+                         "Generic error",
+                         "Document has finished printing successfully",
+                         "Fatal error",
+                         "No local account, document not printed",
+                         "Error in document output filter",
+                         "Error accessing symlinked file"};
+
+static char *zerrtoken[]={"DEFER","IMPOSSIBLE","REPRINT","ERROR","OK",
+                          "FATALERR","NOACCT","FILTERERR","ACCESS"};
+
+#endif ZEPHYR
+
+
 char	title[80];		/* ``pr'' title */
 FILE	*cfp = NULL;		/* control file */
 int	pfd;			/* printer file descriptor */
@@ -57,7 +88,11 @@ dev_t	fdev;			/* device of file pointed to by symlink */
 ino_t	fino;			/* inode of file pointed to by symlink */
 
 char	fromhost[32];		/* user's host machine */
+#ifdef KERBEROS
+char    logname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
+#else
 char	logname[32];		/* user's login name */
+#endif KERBEROS
 char	jobname[100];		/* job or file name */
 
 char	class[32];		/* classification field */
@@ -66,6 +101,7 @@ char	length[10] = "-l";	/* page length in lines */
 char	pxwidth[10] = "-x";	/* page width in pixels */
 char	pxlength[10] = "-y";	/* page length in pixels */
 char	indent[10] = "-i0";	/* indentation size in characters */
+char	cost[10] = "-m";		/* Cost/page option */
 char	tmpfile[] = "errsXXXXXX"; /* file name for filter output */
 int 	lflag;			/* Log info flag */
 
@@ -149,15 +185,16 @@ again:
 	 if (lflag)syslog(LOG_INFO,"Got something to print..");
 	 for (qp = queue; nitems--; free((char *) q)) {
 		 q = *qp++;
-		 if (stat(q->q_name, &stb) < 0)
+		 if (stat(q->q_name, &stb) < 0) {
 			 continue;
+		     }
 	 restart:
 		 (void) lseek(lfd, pidoff, 0);
 		 (void) sprintf(line, "%s\n", q->q_name);
 		 i = strlen(line);
 		 if (write(lfd, line, i) != i)
 			 syslog(LOG_ERR, "%s: %s: %m", printer, LO);
-		 if (!remote)
+		 if (!remote) 
 			 i = printit(q->q_name);
 		 else
 			 i = sendit(q->q_name);
@@ -314,6 +351,9 @@ printit(file)
 	 *                    (after we print it. (Pass 2 only)).
 	 *		M -- "mail" to user when done printing
 	 *
+	 *      Additions:  (Ilham)
+	 *              Z -- send zephyr message to user
+	 *              A -- Account number for quota management
 	 *      getline reads a line and expands tabs to blanks
 	 */
 
@@ -332,7 +372,11 @@ printit(file)
 			if (RS) {			/* restricted */
 				if (getpwnam(logname) == (struct passwd *)0) {
 					bombed = NOACCT;
+#ifdef ZEPHYR
+					sendzephyr(line+1, bombed);
+#else
 					sendmail(line+1, bombed);
+#endif ZEPHYR
 					goto pass2;
 				}
 			}
@@ -409,7 +453,11 @@ printit(file)
 			case FILTERERR:
 			case ACCESS:
 				bombed = i;
+#ifdef ZEPHYR
+				sendzephyr(logname, bombed);
+#else
 				sendmail(logname, bombed);
+#endif ZEPHYR
 			}
 			title[0] = '\0';
 			continue;
@@ -438,6 +486,14 @@ pass2:
 
 		case 'U':
 			(void) UNLINK(line+1);
+			continue;
+#ifdef ZEPHYR
+		case 'Z':
+			if (bombed < NOACCT)	/* already sent if >= NOACCT */
+				sendzephyr(line+1, bombed);
+			continue;
+#endif ZEPHYR
+
 		}
 	/*
 	 * clean-up in case another control file exists
@@ -585,6 +641,11 @@ print(format, file)
 		av[2] = pxlength;
 		n = 3;
 		break;
+	case 'E':	/* This is supposed to suppress tail pages */
+		        /* It appears to have been used on multics for */
+		        /* Multiple copies - we ignore */
+		(void) close(fi);
+		return(ERROR);
 	default:
 		(void) close(fi);
 		syslog(LOG_ERR, "%s: illegal format character '%c'",
@@ -600,6 +661,7 @@ print(format, file)
 	av[n++] = "-h";
 	av[n++] = fromhost;
 	av[n++] = AF;
+	av[n++] = cost;
 	av[n] = 0;
 	fo = pfd;
 	if (ofilter > 0) {		/* stop output filter */
@@ -722,7 +784,11 @@ sendit(file)
 				cfp = NULL;
 				return(REPRINT);
 			case ACCESS:
+#ifdef ZEPHYR
 				sendmail(logname, ACCESS);
+#else
+				sendzephyr(logname, ACCESS);
+#endif ZEPHYR
 			case ERROR:
 				err = ERROR;
 			}
@@ -1038,6 +1104,39 @@ sendmail(user, bombed)
 	wait(&s);
 }
 
+#ifdef ZEPHYR
+sendzephyr(user, bombed)
+char *user;
+int bombed;
+{
+	notice.z_kind=UNACKED;
+	notice.z_port=0;
+	notice.z_class=ZCLASS;
+	notice.z_class_inst=ZINSTANCE;
+	notice.z_opcode="";
+	notice.z_sender=ZSENDER;
+	strcpy(zrecipient,logname);
+	notice.z_recipient=zrecipient;
+	notice.z_default_format=ZDEFAULTFORMAT;
+	notice.z_num_other_fields=0;
+
+	sprintf(zmessagetext,"Printer status for %s:\n\nJob name: %s\n%s",
+		printer,(*jobname ? jobname : "*Unknown*"),zerrtext[bombed+4]);
+
+	zmessage[0]="Printer Daemon";
+	zmessage[1]=zmessagetext;
+	zmessage[2]=printer;
+	zmessage[3]=line+1;
+	zmessage[4]=zerrtext[bombed+4];
+	zmessage[5]=zerrtoken[bombed+4];
+
+	if (zerrno=ZSendList(&notice,zmessage,6,ZNOAUTH))
+		syslog(LOG_ERR,"Error sending zephyr notification: zerrno=%d", 
+		       zerrno);
+}
+#endif ZEPHYR
+
+	
 /*
  * dofork - fork with retries on failure
  */
@@ -1140,6 +1239,9 @@ init()
 	if ((PL = pgetnum("pl")) < 0)
 		PL = DEFLENGTH;
 	sprintf(&length[2], "%d", PL);
+	if ((CP = pgetnum("pc")) < 0)
+	        CP = DEFPC;
+	sprintf(&cost[2], "%d", CP);
 	if ((PX = pgetnum("px")) < 0)
 		PX = 0;
 	sprintf(&pxwidth[2], "%d", PX);
