@@ -1,4 +1,4 @@
-keycode 19 = Meta_L
+keycode 26 = Meta_L
 clear mod4
 add mod1 = Meta_L
 add mod1 = Multi_key
