@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.46 1999-03-06 16:48:12 ghudson Exp $
+ *	$Id: t_utils.c,v 1.47 1999-05-14 12:10:48 kcr Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.46 1999-03-06 16:48:12 ghudson Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.47 1999-05-14 12:10:48 kcr Exp $";
 #endif
 #endif
 
@@ -39,13 +39,11 @@ static char rcsid[] ="$Id: t_utils.c,v 1.46 1999-03-06 16:48:12 ghudson Exp $";
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_TERMIO
-#include <termio.h>
-struct termio mode;
-#else
-#include <sgtty.h>
-struct sgttyb mode;
-#endif
+#include <signal.h>
+#include <termios.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #ifdef HAVE_LRAND48
 #define RANDOM()       lrand48()
@@ -226,58 +224,125 @@ verify_terminal()
   return(SUCCESS);
 }
 
+static struct termios saved_tty;
+static struct termios my_tty;
+static struct sigaction my_act;
+
+void
+sighandler(int sig)
+{
+  struct sigaction act;
+  sigset_t set, oset;
+  static int state = 0;
+
+  switch(sig)
+    {
+    case SIGTSTP:
+    case SIGTTIN:
+    case SIGTTOU:
+      /* We got a signal that we'll eventually return from with SIGCONT. */
+      state = 1;
+    case SIGINT:
+      tcsetattr(0, TCSANOW, &saved_tty); /* Reset terminal state. */
+
+      /* Disable the signal handler on all the the signals we might
+	 have caught. */
+      act.sa_flags = 0;
+      act.sa_handler = SIG_DFL;
+      sigemptyset(&act.sa_mask);
+      sigaction(SIGTSTP, &act, NULL);
+      sigaction(SIGTTOU, &act, NULL);
+      sigaction(SIGTTIN, &act, NULL);
+      sigaction(SIGINT, &act, NULL);
+
+      kill(getpid(), sig); /* Please, sir, may I have another? */
+
+      /* Now we return from the signal handler, which unblocks the signal,
+	 so we should immediately get the one we just sent. */
+
+      break;
+    case SIGCONT:
+      if (state)
+	{
+	  /* Set the handlers back. */
+	  sigaction(SIGTSTP, &my_act, NULL);
+	  sigaction(SIGTTIN, &my_act, NULL);
+	  sigaction(SIGTTOU, &my_act, NULL);
+	  sigaction(SIGINT, &my_act, NULL);
+	  
+	  /* The user may have altered the terminal state. */
+	  tcgetattr(0, &saved_tty);
+	  state=0;
+	}
+      tcsetattr(0, TCSANOW, &my_tty); /* set back to our altered state */
+      break;
+    }
+}
 
 char
 get_key_input(text)
      char *text;
 {
-  char c;
+  int c;
+  struct sigaction tstp_act;
+  struct sigaction ttin_act;
+  struct sigaction ttou_act;
+  struct sigaction intr_act;
+  struct sigaction cont_act;
 
-  printf("%s",text);
-  fflush(stdout);
-  raw_mode();
-#ifdef HAVE_TERMIO
-  ioctl(0, TCFLSH, 2);
-#else
-  ioctl(0, TIOCFLUSH, 0);
-#endif
-  c = getchar();
-  cooked_mode();
- 
+  /* XXX This function deals with terminal setup and signal frobbing
+     itself instead of farming it out to utility functions because in
+     the absence of a program-wide signal infrastructure they would of
+     necessity have some really odd side-effects involving signals.
+     If any further attention to signals (particularly SIGINT) is paid
+     in the command-line olc client, I beg that this function be split
+     up and rewritten. -kcr */
+
+  tcgetattr(0, &saved_tty); /* save the terminal state */
+
+  /* Frob the state before setting up the signal handler, because the
+     handler sometimes uses it. */
+  my_tty = saved_tty;
+  my_tty.c_lflag &= ~(ICANON|ECHO);
+  my_tty.c_cc[VMIN] = 1;
+  my_tty.c_cc[VTIME] = 0;
+
+  /* Set up the sigaction structure for sighandler. */
+  my_act.sa_flags = 0;
+  my_act.sa_handler = sighandler;
+  sigemptyset(&my_act.sa_mask);
+
+  /* Set signal handlers. */
+  sigaction(SIGTSTP, &my_act, &tstp_act);
+  sigaction(SIGTTIN, &my_act, &ttin_act);
+  sigaction(SIGTTOU, &my_act, &ttou_act);
+  sigaction(SIGINT, &my_act, &intr_act);
+  sigaction(SIGCONT, &my_act, &cont_act);
+
+  tcsetattr(0, TCSANOW, &my_tty); /* Setup the terminal. */
+
+  do
+    {
+      printf("%s", text);
+      fflush(stdout); /* Print the prompt. */
+      tcflush(0, TCIFLUSH); /* Flush the input. */
+      c = getchar(); /* Get just one character. */
+    }
+  while (c == EOF && errno == EINTR); /* Reprint and rewait after a signal. */
+
+  my_tty = saved_tty; /* To avoid race conditions. */
+
+  /* Reset the signal handlers. */
+  sigaction(SIGTSTP, &tstp_act, NULL);
+  sigaction(SIGTTIN, &ttin_act, NULL);
+  sigaction(SIGTTOU, &ttou_act, NULL);
+  sigaction(SIGINT, &intr_act, NULL);
+  sigaction(SIGCONT, &cont_act, NULL);
+
+  tcsetattr(0, TCSANOW, &saved_tty); /* Reset the terminal. */
+
   return(c);
 }
-
-
-#ifdef HAVE_TERMIO
-raw_mode()
-{
-  ioctl(0, TCGETA, &mode);
-  mode.c_lflag = mode.c_lflag & (~ECHO | ~ICANON | ~ISIG);
-  ioctl(0, TCSETA, &mode);
-}
-
-cooked_mode()
-{
-  ioctl(0, TCGETA, &mode);
-  mode.c_lflag = mode.c_lflag & (ICANON | ISIG | ECHO);
-  ioctl(0, TCSETA, &mode);
-}
-#else /* don't HAVE_TERMIO */
-raw_mode()
-{
-  ioctl(0, TIOCGETP, &mode);
-  mode.sg_flags = mode.sg_flags & ~ECHO | RAW;
-  ioctl(0, TIOCSETP, &mode);
-}
-
-cooked_mode()
-{
-  ioctl(0, TIOCGETP, &mode);
-  mode.sg_flags = mode.sg_flags & ~RAW | ECHO;
-  ioctl(0, TIOCSETP, &mode);
-}
-#endif /* don't HAVE_TERMIO */
-
 
 ERRCODE
 handle_response(response, req)
@@ -489,8 +554,7 @@ If the error persists, seek help.\n", client_service_name());
  *		buf:		Buffer to hold command line.
  * Returns:	Nothing.
  * Notes:
- *	First, we print the prompt, then read a string using gets().
- *	If a ^D is typed, we exit.
+ *		Farms out just about everything to GNU libreadline.
  */
 
 ERRCODE
@@ -502,21 +566,24 @@ get_prompted_input(prompt, buf, buflen, add_to_hist)
 {
   char *line, *p;
   static int done_gl_init = 0;
-	
-  if (! done_gl_init) {
-    /* should really get the terminal line width.. */
-    gl_init(80);
-    done_gl_init = 1;
-  } else {
-    gl_char_init();
-  }
-  line = getline(prompt,add_to_hist);
-  gl_char_cleanup();
 
-  p = strchr(line,'\n');
-  if (p != NULL)
-    *p = '\0';
-  strncpy(buf,line,buflen);
+  line = readline(prompt);
+
+  if(line)
+    {
+      strncpy(buf, line, buflen);
+
+      if (add_to_hist)
+	add_history(line);
+      else
+	free(line);
+    }
+  else
+    {
+      buf[0] = '\0';
+      putchar('\n');
+    }
+  
   return(SUCCESS);
 }
 

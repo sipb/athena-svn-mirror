@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_messages.c,v 1.18 1999-03-06 16:48:10 ghudson Exp $
+ *	$Id: t_messages.c,v 1.19 1999-05-14 12:10:48 kcr Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_messages.c,v 1.18 1999-03-06 16:48:10 ghudson Exp $";
+static char rcsid[] ="$Id: t_messages.c,v 1.19 1999-05-14 12:10:48 kcr Exp $";
 #endif
 #endif
 
@@ -113,8 +113,8 @@ t_replay(Request, queues, topics, users, stati, file, display)
 	  (void) t_replay(Request, "", "", "", 0, file, display);
 	  if (--n)
 	    {
-	      printf("========  Hit 'q' to quit, any other key ");
-	      c = get_key_input("to continue.  ========");
+	      c = get_key_input("========  Hit 'q' to quit, any other key to "
+				"continue.  ========");
 	      printf("\n");
 	      if ((c == 'q') || (c == 'Q'))
 		{
