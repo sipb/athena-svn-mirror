@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.3 1987-07-29 15:15:00 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.4 1987-07-30 19:44:57 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.3 1987-07-29 15:15:00 rfrench Exp $";
+static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.4 1987-07-30 19:44:57 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -38,7 +38,7 @@ int ZCheckAuthentication(notice,buffer,from)
 	if (__Zephyr_server) {
 		if (ZReadAscii(notice->z_ascii_authent,
 			       strlen(notice->z_ascii_authent)+1,
-			       (char *)authent.dat,
+			       (unsigned char *)authent.dat,
 			       notice->z_authent_len) == ZERR_BADFIELD) {
 			return (0);
 		}

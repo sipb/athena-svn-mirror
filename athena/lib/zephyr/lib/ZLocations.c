@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.13 1987-07-30 10:24:32 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.14 1987-07-30 19:49:00 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.13 1987-07-30 10:24:32 jtkohl Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.14 1987-07-30 19:49:00 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -97,7 +97,7 @@ Z_SendLocation(class,opcode,auth)
 	bptr[1] = ctime(&ourtime);
 	bptr[1][strlen(bptr[1])-1] = '\0';
 
-	strcpy(mytty,ttyname(0));
+	(void) strcpy(mytty,ttyname(0));
 	bptr[2] = rindex(mytty,'/');
 	if (bptr[2])
 		bptr[2]++;
