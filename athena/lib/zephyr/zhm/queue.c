@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v $
- *      $Author: opus $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.9 1988-02-25 19:27:40 opus Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.10 1988-06-17 17:09:38 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -140,7 +140,7 @@ struct sockaddr_in *sin;
 	       DPR2 ("\tz_opcode: %s\n", srch->q_data->z_notice.z_opcode);
 	       DPR2 ("\tz_sender: %s\n", srch->q_data->z_notice.z_sender);
 	       DPR2 ("\tz_recip: %s\n", srch->q_data->z_notice.z_recipient);
-	       if ((ret = ZSendRawNotice(&srch->q_data->z_notice))
+	       if ((ret = send_outgoing(&srch->q_data->z_notice))
 		   != ZERR_NONE) {
 		    Zperr (ret);
 		    com_err("queue", ret, "sending raw notice");
@@ -249,7 +249,7 @@ struct sockaddr_in *sin;
 			  srch->q_data->z_notice.z_sender);
 		    DPR2 ("\tz_recip: %s\n",
 			  srch->q_data->z_notice.z_recipient);
-		    if ((ret = ZSendRawNotice(&srch->q_data->z_notice)) 
+		    if ((ret = send_outgoing(&srch->q_data->z_notice)) 
 			!= ZERR_NONE) {
 			 Zperr(ret);
 			 com_err("queue", ret, "sending raw notice");

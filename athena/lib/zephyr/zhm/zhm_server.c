@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.5 1988-06-02 16:50:20 jtkohl Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.6 1988-06-17 17:08:52 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -205,7 +205,7 @@ ZNotice_t *notice;
 	       Zperr(ret);
 	       com_err("hm", ret, "setting destination");
 	  }
-	  if ((ret = ZSendRawNotice(notice)) != ZERR_NONE) {
+	  if ((ret = send_outgoing(notice)) != ZERR_NONE) {
 	       Zperr(ret);
 	       com_err("hm", ret, "sending ACK");
 	  }
@@ -245,7 +245,7 @@ ZNotice_t *notice;
 			 Zperr(ret);
 			 com_err("hm", ret, "setting destination");
 		    }
-		    if ((ret = ZSendRawNotice(notice)) != ZERR_NONE) {
+		    if ((ret = send_outgoing(notice)) != ZERR_NONE) {
 			 Zperr(ret);
 			 com_err("hm", ret, "sending ACK");
 		    }
