@@ -2,6 +2,10 @@
 
 case "$HOSTTYPE" in
 sun4)
+  echo "SUNWdtbas"					>> "$LINKPACKAGES"
+  echo "106934-03"					>> "$PATCHES"
+  echo "108219-01"					>> "$PATCHES"
+  echo "108374-01"					>> "$PATCHES"
   ;;
 
 sgi)
