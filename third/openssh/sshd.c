@@ -184,11 +184,30 @@ int session_id2_len = 0;
 /* record remote hostname or ip */
 u_int utmp_len = MAXHOSTNAMELEN;
 
+/* Whether the server should accept connections. */
+static int switched = 0;
+static int enabled = 1;
+
 /* Prototypes for various functions defined later in this file. */
 void destroy_sensitive_data(void);
 
 static void do_ssh1_kex(void);
 static void do_ssh2_kex(void);
+
+static void
+sigusr1_handler(int sig)
+{
+  enabled = 1;
+  signal(SIGUSR1, sigusr1_handler);
+}
+
+static void
+sigusr2_handler(int sig)
+{
+  if (switched)
+    enabled = 0;
+  signal(SIGUSR2, sigusr2_handler);
+}
 
 /*
  * Close all listening sockets
@@ -634,6 +653,13 @@ main(int ac, char **av)
 			}
 			options.host_key_files[options.num_host_key_files++] = optarg;
 			break;
+		case 's':
+		  switched = 1;
+		  break;
+		case 'S':
+		  switched = 1;
+		  enabled = 0;
+		  break;
 		case 'V':
 			client_version_string = optarg;
 			/* only makes sense with inetd_flag, i.e. no listen() */
@@ -906,6 +932,11 @@ main(int ac, char **av)
 		signal(SIGTERM, sigterm_handler);
 		signal(SIGQUIT, sigterm_handler);
 
+		/* Switch on and off on SIGUSR1 and SIGUSR2 (conditional on 
+		   switched). */
+		signal(SIGUSR1, sigusr1_handler);
+		signal(SIGUSR2, sigusr2_handler);
+
 		/* Arrange SIGCHLD to be caught. */
 		signal(SIGCHLD, main_sigchld_handler);
 
@@ -1141,7 +1172,7 @@ main(int ac, char **av)
 		request_init(&req, RQ_DAEMON, __progname, RQ_FILE, sock_in, 0);
 		fromhost(&req);
 
-		if (!hosts_access(&req)) {
+		if (!hosts_access(&req) || !enabled) {
 			refuse(&req);
 			close(sock_in);
 			close(sock_out);
