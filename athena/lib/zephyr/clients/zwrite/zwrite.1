@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v $
 .\"	$Author: ghudson $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v 1.19 1997-09-14 21:52:01 ghudson Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.1,v 1.20 1998-03-21 21:08:56 ghudson Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -40,6 +40,8 @@ signature ] [
 class ] [
 .BI -i
 instance ] [
+.BI -r
+realm ] [
 .BI -f
 arg ] [
 .BI user \ ...
@@ -163,6 +165,10 @@ the members subscribe to messages of class "MESSAGE", the specified instance,
 and recipient "*".
 .br
 This argument may not be used in conjunction with the -f option.
+.TP
+.B \-r \fIrealm\fR
+Allows a user to specify a different realm for the message, if the
+server supports interrealm Zephyr.
 .TP
 .B \-F \fIformat\fR
 Allows a user to specify a different default format for the message.
