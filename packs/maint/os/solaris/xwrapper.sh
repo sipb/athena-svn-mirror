@@ -34,10 +34,12 @@ m,24)
 	m64config -res 1152x900x76 -depth 24 < /dev/null > /dev/null 2>&1
 	;;
 m,8)
-	# Reset the card to defaults.  We may get a better resolution
-	# this way then if we left the card configured to depth 24 and
-	# used X options.
+	# Reset the card to defaults (in case there's a new monitor).
+	# Then try to configure the card to 1152x900x76 at depth 8.
+	# This appears to be necessary to get an 8 bit visual on 
+	# Suns that have updated to Solaris 8.
 	m64config -defaults
+	m64config -res 1152x900x76 -depth 8 < /dev/null > /dev/null 2>&1
 	;;
 esac
 
