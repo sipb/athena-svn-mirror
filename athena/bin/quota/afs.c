@@ -1,123 +1,86 @@
-/*
- * AFS quota routines
+/* Copyright 1999 by the Massachusetts Institute of Technology.
  *
- * $Id: afs.c,v 1.14 1998-01-08 06:02:32 ghudson Exp $
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#include <stdio.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <netinet/in.h>
+/* This contains the AFS quota-checking routines. */
 
+static const char rcsid[] = "$Id: afs.c,v 1.15 1999-03-29 19:14:14 danw Exp $";
+
+#include <sys/types.h>
 #include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <errno.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include <afs/param.h>
 #include <afs/vice.h>
 #include <afs/venus.h>
 #include <afs/afsint.h>
 
-#ifdef SOLARIS
-#include <sys/ioccom.h>
-#endif
-#ifdef _IBMR2
-#include <sys/id.h>
-#endif
+#include "quota.h"
 
-extern int uflag,gflag,fsind;
-extern char *fslist[];
-extern int heading_printed;
-
-#define user_and_groups (!uflag && !gflag)
-
-void *
-getafsquota(path, explicit)
-    char *path;
-    int explicit;
+int get_afs_quota(struct quota_fs *fs, uid_t uid, int verbose)
 {
-    static struct VolumeStatus vs;
-    struct ViceIoctl ibuf;
-    int code;
-    uid_t euid = geteuid();
+  static struct VolumeStatus vs;
+  struct ViceIoctl ibuf;
+  int code;
+  uid_t euid = geteuid();
 
-    seteuid(getuid());
-
-    ibuf.out_size=sizeof(struct VolumeStatus);
-    ibuf.in_size=0;
-    ibuf.out=(caddr_t) &vs;
-    code = pioctl(path, VIOCGETVOLSTAT, &ibuf, 1);
-    if (code) {
-	if (explicit || ((errno != EACCES) && (errno != EPERM))) {
-	    fprintf(stderr, "Error getting AFS quota: ");
-	    perror(path);
+  ibuf.out_size = sizeof(struct VolumeStatus);
+  ibuf.in_size = 0;
+  ibuf.out = (caddr_t)&vs;
+  seteuid(getuid());
+  code = pioctl(fs->device, VIOCGETVOLSTAT, &ibuf, 1);
+  seteuid(euid);
+  if (code)
+    {
+      if (verbose || ((errno != EACCES) && (errno != EPERM)))
+	{
+	  fprintf(stderr, "Error getting AFS quota: ");
+	  perror(fs->device);
 	}
+      return -1;
     }
+  else
+    {
+      fs->have_quota = fs->have_blocks = 1;
+      fs->have_files = 0;
+      memset(&fs->dqb, 0, sizeof(fs->dqb));
 
-    seteuid(euid);
+      /* Need to multiply by 2 to get 512 byte blocks instead of 1k */
+      fs->dqb.dqb_curblocks = vs.BlocksInUse * 2;
+      fs->dqb.dqb_bsoftlimit = fs->dqb.dqb_bhardlimit = vs.MaxQuota * 2;
 
-    return(code ? (void *)0 : (void *)&vs);
-}
-
-void
-prafsquota(path,foo,heading_id,heading_name)
-    char *path;
-    void *foo;
-    int heading_id;
-    char *heading_name;
-{
-    struct VolumeStatus *vs;
-    char *cp;
-
-    vs = (struct VolumeStatus *) foo;
-    cp = path;
-    if (!user_and_groups) {
-	if (!heading_printed) simpleheading(heading_id,heading_name);
-	if (strlen(path) > 15){
-	    printf("%s\n",cp);
-	    cp = "";
-	}
-	printf("%-14s %5d%7d%7d%12s\n",
-	       cp,
-	       vs->BlocksInUse,
-	       vs->MaxQuota,
-	       vs->MaxQuota,
-	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)
-		? "Expired" : ""));
-    } else {
-	if (!heading_printed) heading(heading_id,heading_name);
-	if (strlen(cp) > 15){
-	    printf("%s\n", cp);
-	    cp =  "";
-	}
-	printf("%-15s %-17s %6d %6d %6d%-2s\n",
-	       cp, "volume",
-	       vs->BlocksInUse,
-	       vs->MaxQuota,
-	       vs->MaxQuota,
-	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10)
-		? "<<" : ""));
+      if (vs.MaxQuota && (vs.BlocksInUse >= vs.MaxQuota * 9 / 10))
+	fs->warn_blocks = 1;
+      return 0;
     }
 }
 
-void
-afswarn(path,foo,name)
-    char *path;
-    void *foo;
-    char *name;
+void print_afs_warning(struct quota_fs *fs)
 {
-    struct VolumeStatus *vs;
-    char buf[1024];
-    int i;
-    uid_t uid=getuid();
-
-    vs = (struct VolumeStatus *) foo;
-
-    if (vs->MaxQuota && (vs->BlocksInUse > vs->MaxQuota)) {
-	sprintf(buf,"Over disk quota on %s, remove %dK.\n",
-		path, (vs->BlocksInUse - vs->MaxQuota));
-	putwarning(buf);
+  if (fs->dqb.dqb_curblocks > fs->dqb.dqb_bhardlimit)
+    {
+      printf("Over disk quota on %s, remove %dK.\n", fs->mount,
+	     (fs->dqb.dqb_curblocks - fs->dqb.dqb_bhardlimit) / 2);
     }
-    else if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10)) {
-	sprintf(buf,"%d%% of the disk quota on %s has been used.\n",
-		(int)((vs->BlocksInUse*100.0/vs->MaxQuota)+0.5), path);
-	putwarning(buf);
+  else if (fs->dqb.dqb_curblocks > (fs->dqb.dqb_bhardlimit * 9 / 10))
+    {
+      printf("%d%% of the disk quota on %s has been used.\n",
+	     (int)((fs->dqb.dqb_curblocks * 100.0 /
+		    fs->dqb.dqb_bhardlimit) + 0.5),
+	     fs->mount);
     }
 }
