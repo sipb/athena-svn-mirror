@@ -1,6 +1,6 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.13 1998-01-20 23:09:06 ghudson Exp $
+# $Id: config_afs.sh,v 1.14 1998-02-11 23:35:09 jweiss Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
@@ -13,29 +13,32 @@ SUIDDB=${VICEDIR}/SuidCells
 
 echo "Updating cell location information"
 rm -f ${VICEDIR}/Ctmp
-cp /afs/athena.mit.edu/service/CellServDB ${VICEDIR}/Ctmp && \
-	[ -s ${VICEDIR}/Ctmp ] && \
-	mv -f ${VICEDIR}/Ctmp ${CELLDB}.public && \
-	cat ${CELLDB}.public ${CELLDB}.local >${VICEDIR}/Ctmp 2>/dev/null
-rm -f ${CELLDB}.last
-ln ${CELLDB} ${CELLDB}.last
-mv -f ${VICEDIR}/Ctmp ${CELLDB}
-chmod 644 ${CELLDB}
-
-cmp -s ${CELLDB}.last ${CELLDB} || \
-awk ' \
-	  /^>/ {printf("\nfs newcell %s", substr($1,2,length($1)-1))}; \
-	  /^[0-9]/ {printf(" %s",$1)}; \
-	  END {printf("\n")}' ${CELLDB} | sh
+cp /afs/athena.mit.edu/service/CellServDB ${VICEDIR}/Ctmp &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	mv -f ${VICEDIR}/Ctmp ${CELLDB}.public &&
+	cat ${CELLDB}.public ${CELLDB}.local >${VICEDIR}/Ctmp 2>/dev/null &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	rm -f ${CELLDB}.last &&
+	ln ${CELLDB} ${CELLDB}.last &&
+	mv -f ${VICEDIR}/Ctmp ${CELLDB} &&
+	chmod 644 ${CELLDB} && {
+		cmp -s ${CELLDB}.last ${CELLDB} ||
+		awk '
+			/^>/ {printf("\nfs newcell %s",
+				substr($1,2,length($1)-1))};
+			/^[0-9]/ {printf(" %s",$1)};
+			END {printf("\n")}' ${CELLDB} | sh
+	}
 
 echo "Updating setuid cell information"
 rm -f ${VICEDIR}/Ctmp
-cp /afs/athena.mit.edu/service/SuidCells ${VICEDIR}/Ctmp && \
-	[ -s ${VICEDIR}/Ctmp ] && \
-	mv -f ${VICEDIR}/Ctmp ${SUIDDB}.public && \
-	cat ${SUIDDB}.public ${SUIDDB}.local >${VICEDIR}/Ctmp 2>/dev/null
-mv -f ${VICEDIR}/Ctmp ${SUIDDB}
-chmod 644 ${SUIDDB}
+cp /afs/athena.mit.edu/service/SuidCells ${VICEDIR}/Ctmp &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	mv -f ${VICEDIR}/Ctmp ${SUIDDB}.public &&
+	cat ${SUIDDB}.public ${SUIDDB}.local >${VICEDIR}/Ctmp 2>/dev/null &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	mv -f ${VICEDIR}/Ctmp ${SUIDDB} &&
+	chmod 644 ${SUIDDB}
 
 echo "Only allowing setuid/setgid programs from the following cells:"
 
@@ -51,4 +54,5 @@ cat ${SUIDDB} | awk '
 				printf("fs setcell %s -suid\n", cells[i]);
 				printf("echo %s\n", cells[i]); } } }' | sh
 
+rm -f ${VICEDIR}/Ctmp
 exit 0
