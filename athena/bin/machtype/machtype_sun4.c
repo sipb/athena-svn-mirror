@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.23 1998-09-12 00:17:34 ghudson Exp $
+ *    $Id: machtype_sun4.c,v 1.24 1998-09-30 21:07:12 ghudson Exp $
  *    $Locker:  $
  */
 
@@ -27,8 +27,7 @@
 /* Frame buffer stuff */
 #include <sys/fbio.h>
 #include <errno.h>
-
-int verbose =0;
+#include "machtype.h"
 
 struct nlist nl[] = {
 #define X_cpu 0
@@ -42,190 +41,33 @@ struct nlist nl[] = {
       { "" }
 };
 
-main(argc, argv)
-int   argc;
-char  **argv;
+kvm_t *do_init(void)
 {
-kvm_t *kv;
-    int i;
-    int cpuflg = 0, dpyflg = 0, raflg = 0, memflg = 0;
-    int doathenaV = 0;
-    int dosyspV = 0;
-    int dolocalV = 0;
-    int dobosN = 0;
-    int dobosV = 0;
-    int dosysnam = 0;
-    int dosyscompatnam = 0;
-    FILE *f;
+    kvm_t *kernel;
 
-    for (i = 1; i < argc; i++) {
-      if (argv[i][0] != '-')
-        usage(argv[0]);
-
-      switch (argv[i][1]) {
-      case 'c':
-          cpuflg++;
-          break;
-      case 'd':
-          dpyflg++;
-          break;
-      case 'r':
-          raflg++;
-          break;
-      case 'M':
-          memflg++;
-        break;
-        case 'A':
-          doathenaV = 1;
-          break;
-        case 'L':
-          dolocalV = 1;
-          break;
-        case 'P':
-          dosyspV = 1;
-          break;
-      case 'N':
-          dobosN = 1;
-          break;
-      case 'E':
-          dobosV = 1;
-          break;
-      case 'S':
-          dosysnam = 1;
-	  break;
-      case 'C':
-	  dosyscompatnam = 1;
-	  break;
-      case 'v':
-          verbose++;
-          break;
-      default:
-          usage(argv[0]);
-      }
-    }
-
-    if ((argc == 1) || ((argc == 2) && verbose)) {
-      puts("sun4");
-      exit(0);
-    }
-
-     /* Print out version of Athena machtype compiled against */
-    if (doathenaV) {
-      if (verbose)
-      printf("Machtype version: %s.%s\n",ATHMAJV,ATHMINV);
-      else
-      printf("%s.%s\n",ATHMAJV,ATHMINV);
-    }
-
-   /* Print out version of attached packs */
-    if (dosyspV) {
-      char buf[256],rvd_version[256], *p;
-      if ((f = fopen("/srvd/.rvdinfo","r")) == NULL) {
-      printf("Syspack information unavailable\n");
-      } else {
-      fgets(buf,256,f);
-      fclose(f);
-     /* If it is verbose, give the whole line, else just the vers # */
-      if (verbose) {
-        printf(buf);
-      } else {
-        p = strchr(buf,' '); /* skip "Athena" */
-        p = strchr(p+1,' '); /* skip "RVD" */
-        p = strchr(p+1,' '); /* Skip "RSAIX" */
-        p = strchr(p+1,' '); /* skip "version" */
-        strncpy(rvd_version,p+1,256);
-        p = strchr(rvd_version,' ');
-        *p = '\0';
-        printf("%s\n",rvd_version);
-      }
-      }
-    }
-
-    /* Print out local version from /etc/athena/version */
-    if (dolocalV) {
-      char buf[256],loc_version[256], *p;
-      if ((f = fopen("/etc/athena/version","r")) == NULL) {
-      printf("Local version information unavailable\n");
-      } else {
-      fseek(f,-100,2);
-      while (fgets(buf,256,f) != NULL)
-        ;
-      fclose(f);
-
-      if (verbose) {
-        printf(buf);
-      } else {
-        p = strchr(buf,' '); /* skip "Athena" */
-        p = strchr(p+1,' '); /* skip "Workstation/Server" */
-        p = strchr(p+1,' '); /* Skip "RSAIX" */
-        p = strchr(p+1,' '); /* skip "version" */
-        strncpy(loc_version,p+1,256);
-        p = strchr(loc_version,' ');
-        *p = '\0';
-        printf("%s\n",loc_version);
-      }
-      }
-    }
-
-    /* Print out vendor OS name */
-    if (dobosN) {
-      if (verbose) {
-     printf(OSNAME " " OSVERS "\n");
-      } else {
-        printf(OSNAME "\n");
-      }
-    }
-
-    /* Print out vendor OS version */
-    if (dobosV) {
-        printf(OSVERS "\n");
-    }
-
-    /* Print out Athena System name */
-    if (dosysnam) {
-      printf("%s\n", ATHSYS);
-    }
-
-    /* Print out compatible Athena System names */
-    if (dosyscompatnam) {
-      printf("%s\n", ATHSYSCOMPAT);
-    }
-
-    if (cpuflg || dpyflg || raflg || memflg)
-      {
-        int memfd;
-      kv = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
-      if (!kv) {
-        fprintf(stderr,"%s: unable to examine the kernel\n", argv[0]);
+    kernel = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
+    if (!kernel) {
+        fprintf(stderr,"unable to examine the kernel\n");
         exit(2);
-      }
-      if (kvm_nlist(kv, &nl) < 0) {
-        fprintf(stderr,"%s: can't get namelist\n", argv[0]);
+    }
+    if (kvm_nlist(kernel, &nl) < 0) {
+        fprintf(stderr,"can't get namelist\n");
         exit(2);
-      }
-     if (cpuflg)
-        do_cpu(kv, memfd);
-      if (dpyflg)
-        do_dpy(memfd);
-      if (raflg)
-        do_disk(memfd);
-      if (memflg)
-        do_memory(kv, memfd);
-      }
-      if (cpuflg || dpyflg || raflg || memflg)
-	kvm_close(kv);
-    exit(0);
+    }
+    return kernel;
 }
 
-usage(name)
-char *name;
+void do_cleanup(kvm_t *kernel)
 {
-    fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
-    fprintf(stderr, "             [-A] [-L] [-P] [-S]\n");
-    exit(1);
+    kvm_close(kernel);
 }
 
-void do_cpu_prom(kvm_t *kernel)
+void do_machtype(void)
+{
+    puts("sun4");
+}
+
+void do_cpu_prom(kvm_t *kernel, int verbose)
 {
   unsigned long   ptop;
   struct dev_info top;
@@ -285,15 +127,14 @@ void do_cpu_prom(kvm_t *kernel)
   return;
 }
 
-do_cpu(kernel, mf)
-kvm_t *kernel;
-int mf;
+void do_cpu(int verbose)
 {
-     short cpu;
-short cpu_type;
+    kvm_t *kernel;
+    short cpu, cpu_type;
 
+    kernel = do_init();
     cpu_type = kvm_read(kernel,nl[X_cpu].n_value,&cpu, sizeof(cpu));
-{
+
         switch(cpu) {
           case CPU_SUN4C_60:
             puts(verbose ? "SPARCstation 1": "SPARC/1");
@@ -318,7 +159,7 @@ short cpu_type;
             break;
 	  case CPU_SUN4M_50:	/* 114... Sparc20 */
 	  case OBP_ARCH:	/* 128 */
-	    do_cpu_prom(kernel);
+	    do_cpu_prom(kernel, verbose);
 		break;
 
          default:
@@ -327,12 +168,12 @@ short cpu_type;
            else
               puts("SUN???");
          }
-       }
+
+    do_cleanup(kernel);
     return;
 }
 
-do_dpy(mf)
-int mf;
+void do_dpy(int verbose)
 {
   int count;
   char buf[1024], *p;
@@ -354,8 +195,7 @@ int mf;
   printf("%s%s\n", p + 1, verbose ? " frame buffer" : "");
 }
 
-do_disk(mf)
-int mf;
+void do_disk(int verbose)
 {
   DIR *dp;
   struct dirent *de;
@@ -414,12 +254,12 @@ int mf;
 
 #define MEG (1024*1024)
 
-do_memory (kernel, mf)
-kvm_t *kernel;
-int mf;
+void do_memory(int verbose)
 {
+   kvm_t *kernel;
    int pos, mem, nbpp;
 
+   kernel = do_init();
    nbpp = getpagesize() / 1024;
    kvm_read(kernel, nl[X_maxmem].n_value, &mem, sizeof(mem));
    if(verbose)
@@ -429,6 +269,7 @@ int mf;
       printf("%d (%d M) total\n", mem * nbpp, (mem * nbpp + 916) / 1024);
    else
       printf("%d\n", mem * nbpp + 916);
+   do_cleanup(kernel);
    return;
 }
 

@@ -2,34 +2,30 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.11 1998-09-12 00:17:33 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.12 1998-09-30 21:07:11 ghudson Exp $
  *	$Locker:  $
  */
 
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
-#if defined(_AIX) && defined(_BSD)
-#undef _BSD
-#endif
 #include <nlist.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/file.h>
-
 #include <sys/sysinfo.h>
 #include <sys/ioctl.h>
+#include "machtype.h"
 
-#include <ctype.h>
 #ifdef sgi
 #include <sys/cpu.h>
 #include <invent.h>
-void do_INV_SCSI(inventory_t *);
-void do_INV_SCSICONTROL(inventory_t *);
-void do_INV_DISK(inventory_t *);
+void do_INV_SCSI(inventory_t *, int);
+void do_INV_SCSICONTROL(inventory_t *, int);
+void do_INV_DISK(inventory_t *, int);
 void do_INV_PROCESSOR(inventory_t *,int);
-void do_INV_GRAPHICS(inventory_t *);
-void do_INV_CAM(inventory_t *);
+void do_INV_GRAPHICS(inventory_t *, int);
+void do_INV_CAM(inventory_t *, int);
 #endif
 
 
@@ -38,8 +34,6 @@ void do_INV_CAM(inventory_t *);
 
 #define KERNEL "/unix"
 #define MEMORY "/dev/kmem"
-
-int verbose = 0;
 
 struct nlist nl[] = {
 #define X_cpu 0
@@ -53,214 +47,13 @@ struct nlist nl[] = {
 	{ "" },
 };
 
-main(argc, argv)
-int	argc;
-char	**argv;
+
+void do_machtype(void)
 {
-    int i;
-    int cpuflg = 0, dpyflg = 0, raflg = 0, memflg = 0;
-    int doathenaV = 0;
-    int dosyspV = 0;
-    int dolocalV = 0;
-    int dobosN = 0;
-    int dobosV = 0;
-    int dosysnam = 0;
-    int dosyscompatnam = 0;
-    FILE *f;
-    int memfd=0;
-
-    for (i = 1; i < argc; i++) {
-	if (argv[i][0] != '-')
-	  usage(argv[0]);
-
-	switch (argv[i][1]) {
-	case 'c':
-	    cpuflg++;
-	    break;
-	case 'd':
-	    dpyflg++;
-	    break;
-	case 'r':
-	    raflg++;
-	    break;
-	case 'M':
-	    memflg++;
-	    break;
-        case 'A':
-	    doathenaV = 1;
-	    break;
-        case 'L':
-	    dolocalV = 1;
-	    break;
-        case 'P':
-	    dosyspV = 1;
-	    break;
-	case 'N':
-	    dobosN = 1;
-	    break;
-	case 'E':
-	    dobosV = 1;
-	    break;
-	case 'S':
-	    dosysnam = 1;
-	    break;
-	case 'C':
-	    dosyscompatnam = 1;
-	    break;
-	case 'v':
-	    verbose++;
-	    break;
-	default:
-	    usage(argv[0]);
-	}
-    }
-
-
-    if ((argc == 1) || ((argc == 2) && verbose)) {
-#if defined(vax)
-      puts("vax");
-#else
-#if defined(ibm032)
-      puts("rt");
-#else
-#if defined(ultrix) && defined(mips)
-      puts("decmips");
-#else
-#if defined(i386) && defined(_AIX)
-      puts("ps2");
-#else /* ! ps2 */
-#if defined(sgi)
-	puts("sgi");
-#else
-#if defined(sun) && defined(sparc)
-      puts("sun4");
-#else /* ! sun sparc */
-#if defined(sun) 
-      puts("sun3");
-#else
-      puts("???");
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-#endif
-      exit(0);
-    }
-
-	/* Print out version of Athena machtype compiled against */
-    if (doathenaV) {
-      if (verbose)
-	printf("Machtype version: %s.%s\n",ATHMAJV,ATHMINV);
-      else
-	printf("%s.%s\n",ATHMAJV,ATHMINV);
-    }
-
-    /* Print out version of attached packs */
-    if (dosyspV) {
-      char buf[256],rvd_version[256], *p;
-      if ((f = fopen("/srvd/.rvdinfo","r")) == NULL) {
-	printf("Syspack information unavailable\n");
-      } else {
-	fgets(buf,256,f);
-	fclose(f);
-	
-	/* If it is verbose, give the whole line, else just the vers # */
-	if (verbose) {
-	  printf(buf);
-	} else {
-	  p = index(buf,' '); /* skip "Athena" */
-	  p = index(p+1,' '); /* skip "RVD" */
-	  p = index(p+1,' '); /* Skip "RSAIX" */
-	  p = index(p+1,' '); /* skip "version" */
-	  strncpy(rvd_version,p+1,256);
-	  p = index(rvd_version,' ');
-	  *p = '\0';
-	  printf("%s\n",rvd_version);
-	}
-      }
-    }
-	
-    /* Print out local version from /etc/athena/version */
-    if (dolocalV) {
-      char buf[256],loc_version[256], *p;
-      if ((f = fopen("/etc/athena/version","r")) == NULL) {
-	printf("Local version information unavailable\n");
-      } else {
-	fseek(f,-100,2);
-	while (fgets(buf,256,f) != NULL)
-	  ;
-	fclose(f);
-	
-	if (verbose) {
-	  printf(buf);
-	} else {
-	  p = index(buf,' '); /* skip "Athena" */
-	  p = index(p+1,' '); /* skip "Workstation/Server" */
-	  p = index(p+1,' '); /* Skip "RSAIX" */
-	  p = index(p+1,' '); /* skip "version" */
-	  strncpy(loc_version,p+1,256);
-	  p = index(loc_version,' ');
-	  *p = '\0';
-	  printf("%s\n",loc_version);
-	}
-      }
-    }
-
-    /* Print out vendor OS name */
-    if (dobosN) {
-      if (verbose) {
-	printf(OSNAME " " OSVERS "\n");
-      } else {
-	printf(OSNAME "\n");
-      }
-    }
-
-    /* Print out vendor OS version */
-    if (dobosV) {
-	printf(OSVERS "\n");
-    }
-    if (dosysnam)
-        printf("%s\n", ATHSYS);
-    if (dosyscompatnam)
-        printf("%s\n", ATHSYSCOMPAT);
-    if (cpuflg)
-	do_cpu();
-    if (dpyflg)
-	do_dpy();
-    if (raflg)
-	do_disk();
-
-    if (memflg)
-      {
-
-	if (nlist(KERNEL, nl) < 0) {
-	  fprintf(stderr,"%s: can't get namelist\n", argv[0]);
-	  exit(2);
-	}
-        if ((memfd = open (MEMORY, O_RDONLY)) == -1) {
-          perror ("machtype: can't open memory");
-          exit(2);
-	}
-	if (memflg)
-	  do_memory(memfd);
-      }
-    exit(0);
+    puts("sgi");
 }
 
-
-
-usage(name)
-char *name;
-{
-    fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
-    fprintf(stderr, "             [-A] [-L] [-P] [-S]\n");
-    exit(1);
-}
-
-
-do_cpu()
+void do_cpu(int verbose)
 {
 inventory_t *inv;
 int done=0;
@@ -341,30 +134,12 @@ if (i->inv_type == INV_CPUBOARD )  {
 }
 
 
-#ifdef vax
-int ka420model()
-{
-    unsigned long cacr;
-    int kUmf;
-    if (nl[X_nexus].n_type == 0)
-	return -1;
-    kUmf = open("/dev/kUmem", O_RDONLY);
-    if (kUmf == -1)
-	return -1;
-    lseek(kUmf, nl[X_nexus].n_value + (int)&((struct nb_regs *)0)->nb_cacr, L_SET);
-    if(read(kUmf, &cacr, sizeof(cacr)) != sizeof(cacr))
-	return -1;
-    close (kUmf);
-    return (cacr >> 6) & 3;
-}
-#endif /* vax */
-
-do_dpy()
+void do_dpy(int verbose)
 {
 int status;
 inventory_t *inv;
 int done=0;
-#ifdef sgi
+
     if (verbose) {
 	switch(fork()) {
 		case -1:
@@ -385,7 +160,7 @@ int done=0;
 	inv = getinvent();
         while ((inv != NULL) && !done) {
 		if ( inv->inv_class == INV_VIDEO) {
-			do_INV_CAM(inv);
+			do_INV_CAM(inv, verbose);
 		}
                 inv = getinvent();
         }
@@ -394,20 +169,14 @@ int done=0;
 	inv = getinvent();
         while ((inv != NULL) && !done) {
 		if ( inv->inv_class == INV_GRAPHICS) {
-			do_INV_GRAPHICS(inv);
+			do_INV_GRAPHICS(inv, verbose);
 		}
                 inv = getinvent();
         }
      } /* verbose */
-
-#else
-    fprintf (stderr,
-	     "Don't know how to determine display type for this machine.\n");
-    return;
-#endif
 }
 
-void do_INV_GRAPHICS(inventory_t *i)
+void do_INV_GRAPHICS(inventory_t *i, int verbose)
 {
   switch(i->inv_type)
     {
@@ -443,7 +212,7 @@ void do_INV_GRAPHICS(inventory_t *i)
     }
 }
 
-void do_INV_CAM(inventory_t *i)
+void do_INV_CAM(inventory_t *i, int verbose)
 {
 	if (i->inv_type == INV_VIDEO_VINO ) {
 		if (i->inv_state == INV_VINO_INDY_CAM ) {
@@ -454,7 +223,7 @@ void do_INV_CAM(inventory_t *i)
 
 
 
-do_disk()
+void do_disk(int verbose)
 {
 inventory_t *inv;
 int t;
@@ -464,13 +233,13 @@ int done=0;
         t = 0;
         while ((inv != NULL) && !done) {
 		if (inv->inv_class == INV_DISK) 
-		  do_INV_DISK(inv);
+		  do_INV_DISK(inv, verbose);
 		else if (inv->inv_class == INV_SCSI)
-		  do_INV_SCSI(inv);
+		  do_INV_SCSI(inv, verbose);
 		inv = getinvent();
         }
 }
-void do_INV_SCSI(inventory_t *i)
+void do_INV_SCSI(inventory_t *i, int verbose)
 {
 if (i->inv_type == INV_CDROM) {
         fprintf(stdout,"CDROM: unit %i, on SCSI controller %i\n",i->inv_unit,i->inv_controller);
@@ -479,7 +248,7 @@ if (i->inv_type == INV_CDROM) {
 }
 }
 
-void do_INV_DISK(inventory_t *i)
+void do_INV_DISK(inventory_t *i, int verbose)
 {
   switch (i->inv_type)
     {
@@ -498,7 +267,7 @@ void do_INV_DISK(inventory_t *i)
 #ifdef INV_PCI_SCSICONTROL
     case INV_PCI_SCSICONTROL:
 #endif
-      do_INV_SCSICONTROL(i);
+      do_INV_SCSICONTROL(i, verbose);
       break;
 
     default:
@@ -508,7 +277,7 @@ void do_INV_DISK(inventory_t *i)
     }
 }
 
-void do_INV_SCSICONTROL(inventory_t *i)
+void do_INV_SCSICONTROL(inventory_t *i, int verbose)
 {
   /* Only display SCSI controller info when verbose */
   if (!verbose)
@@ -576,10 +345,18 @@ void do_INV_SCSICONTROL(inventory_t *i)
 
 #define MEG (1024*1024)
 
-do_memory (mf)
-int mf;
+void do_memory(int verbose)
 {
-  int pos, mem, nbpp;
+  int mf, pos, mem, nbpp;
+
+  if (nlist(KERNEL, nl) < 0) {
+      fprintf(stderr,"can't get namelist\n");
+      exit(2);
+  }
+  if ((mf = open(MEMORY, O_RDONLY)) == -1) {
+      perror("can't open memory");
+      exit(2);
+  }
   nbpp = getpagesize() / 1024;
   pos = nl[X_maxmem].n_value;
   if(pos == 0) {

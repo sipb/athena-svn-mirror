@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.19 1998-09-10 16:39:08 rbasch Exp $
+ * $Id: Imakefile,v 1.20 1998-09-30 21:07:10 ghudson Exp $
  */
 
 #ifdef SOLARIS
@@ -10,18 +10,22 @@ LIBS=-lkvm -ladm
 LIBS=-lmld
 #endif
 
+#if defined(SOLARIS) || defined(sgi)
+INSTALLFLAGS = -m 2755 -o root -g sys
+#endif
+
 NAME=${HOSTTYPE}
 OSNAME=`uname -s`
 OSVERS=`uname -r`
 
-machtype_$(NAME).o:	${ATHVERS} machtype_$(NAME).c
+machtype.o:	${ATHVERS} machtype.c
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$major\" -DATHMINV=\"$$minor\" \
 	-DATHSYS=\"${ATHENA_SYS}\" -DATHSYSCOMPAT=\"${ATHENA_SYS_COMPAT}\" \
 	-DOSNAME=\"${OSNAME}\" -DOSVERS=\"${OSVERS}\" $*.c
 
-build_program(machtype, machtype_${NAME}.o,,${LIBS})
-install_program(machtype,-m 2755 -o root -g sys,${ATHRBINDIR})
+build_program(machtype, machtype.o machtype_${NAME}.o,,${LIBS})
+install_program(machtype,${INSTALLFLAGS},${ATHRBINDIR})
 
 install_man(machtype.1,machtype.1)
