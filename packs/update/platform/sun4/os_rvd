@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.13 1997-07-29 18:19:56 ghudson Exp $
+## $Id: os_rvd,v 1.14 1998-03-18 20:18:29 miki Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -83,8 +83,7 @@ GLOBAL : *.CKP *.local *.pid :
 	/etc/rc2.d:::
 		K20*
 		K60*
-		*gsconfig
-		*gtconfig
+		*agaconfig
 		*leoconfig
 		*perf
 		*asppp
@@ -94,6 +93,8 @@ GLOBAL : *.CKP *.local *.pid :
 		S88sendmail
 		*bdconfig
 		*audit
+		*dtlogin
+		*power
 		*rtvc-config
 		:
 	/etc/rc3.d:::
@@ -113,12 +114,13 @@ GLOBAL : *.CKP *.local *.pid :
 		-> 4lib
 		-> aset
 		bin
-		-> ccs
+		ccs
 		-> demo
 		dt
 		-> games
 		-> include
 		kernel
+		-> java*
 		lib
 		-> net
 		-> oasys
@@ -135,7 +137,35 @@ GLOBAL : *.CKP *.local *.pid :
 		-> vmsys
 		-> xpg4
 		:
+	/usr/ccs:::
+		-> lib
+		bin
+		:
+	/usr/ccs/bin:::
+		-> a*
+		-> c*
+		-> d*
+		-> e*
+		-> g*
+		-> h*
+		-> l*
+		-> make
+		-> mcs
+		-> n*
+		-> p*
+		-> r*
+		-> s*
+		-> t*
+		-> u*
+		-> v*
+		-> w*
+		-> y*
+		:
 	/usr/dt:::
+		-> app-defaults
+		-> appconfig
+		-> config
+		-> dthelp
 		-> include
 		lib
 		-> man
@@ -145,6 +175,7 @@ GLOBAL : *.CKP *.local *.pid :
 	/usr/dt/lib:::
 		-> bindings
 		-> *_d*
+		-> lib*Dt*
 		:		
 	/usr/sbin:::
 		-> accept
@@ -284,6 +315,7 @@ GLOBAL : *.CKP *.local *.pid :
 		:		
 	/usr/bin:::
 		-> acctcom
+		-> adb
 		-> addbib
 		-> admintool
 		-> aliasadm
@@ -390,14 +422,18 @@ GLOBAL : *.CKP *.local *.pid :
 		-> nis*
 		-> nfsstat
 		-> nroff
+		-> nt*
 		-> *pack
 		-> page
 		-> paste
 		-> patch
+		-> patchadd
 		-> pax
 		-> pic
 		-> pg
-		-> pkg*
+		-> pkgm*
+		-> pkgp*
+		-> pkgt*
 		-> prex
 		-> rcp
 		-> rdate
@@ -483,9 +519,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> netsvc
 		-> nfs
 		-> nis
+		-> nss*nis*
 		-> pics
+		-> power
 		-> refer
 		-> security
+		-> snmp
 		-> spell
 		-> t3*
 		-> t4*
@@ -515,12 +554,14 @@ GLOBAL : *.CKP *.local *.pid :
 		-> c*
 		-> h*
 		-> lib*.a
+		-> libxil*
 		-> *.ln
 		-> locale
 		-> m*
 		-> open*
 		-> pshrc
 		-> xdm*
+		-> xil
 		-> xman.help
 		:
 	/usr/openwin/lib/X11::::
@@ -547,6 +588,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> *cg4*
 		-> *cg8*
 		-> *PEX*
+		-> *PFUag*
 		-> *gt*
 		-> *leo*
 		:
@@ -555,6 +597,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> a*
 		-> b*
 		-> calc*
+		-> clock
 		-> cm*
 		-> co*
 		-> cp*
