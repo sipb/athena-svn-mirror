@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/Imakefile,v 1.1 1993-05-25 15:52:52 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/Imakefile,v 1.2 1994-03-14 15:12:38 cfields Exp $ */
 
 #define ISUBDIRS ./include lib
 DEFINES = -Iinclude
@@ -7,9 +7,11 @@ all:: gdsstest
 
 
 gdsstest: gdss_test
-	./gdss_test
 
 gdss_test:: lib
+
+test::
+	./gdss_test
 
 build_program(gdss_test,gdss_test.o,,lib/libgdss.a -lkrb -ldes -lhesiod)
 
