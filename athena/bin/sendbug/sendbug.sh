@@ -1,8 +1,8 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.10 1992-04-17 06:45:00 lwvanels Exp $
+# $Id: sendbug.sh,v 1.11 1993-10-05 11:27:23 mar Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
-bugs_address=bugs@Athena.MIT.EDU
+bugs_address=bugs@MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
 if [ ! -r /etc/athena/version -a -r /etc/version ]; then
