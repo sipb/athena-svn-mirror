@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.14 1997-07-26 18:57:31 ghudson Exp $
+# $Id: phase3.sh,v 1.15 1997-09-22 21:19:52 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -161,7 +161,6 @@ cp /dev/null /root/var/adm/sulog
 cp /dev/null /root/var/spool/mqueue/syslog
 rm -f /root/var/spool/cron/crontabs/uucp
 echo "Installing bootblocks on root "
-cp -p "/os/platform/$platform/ufsboot" /root
 installboot "/os/usr/platform/$platform/lib/fs/ufs/bootblk" "$rrootdrive"
 cd /root
 
