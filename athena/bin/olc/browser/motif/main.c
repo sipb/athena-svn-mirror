@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.2 1991-03-23 13:44:29 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.3 1991-03-24 14:48:03 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
@@ -90,6 +90,8 @@ void main(argc, argv)
 
   /* Let our invoker know we're ready... */
   kill(0,SIGUSR1);
-
+#ifdef LOG
+  log_startup("xstock");
+#endif
   XtMainLoop();
 }

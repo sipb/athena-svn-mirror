@@ -7,8 +7,10 @@
 #
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v $
 #       $Author: lwvanels $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.1 1991-03-21 16:16:25 lwvanels Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.2 1991-03-24 14:47:29 lwvanels Exp $
 #
+
+/* #define Logging */
 
 SRCS		=	main.c callbacks.c MriRegAll.c
 OBJS		=	main.o callbacks.o MriRegAll.o
@@ -16,6 +18,10 @@ OBJS		=	main.o callbacks.o MriRegAll.o
 SYS_LIBS   	=	$(MotifWCLLib) $(MotifUtilLib) \
 			$(MotifLib) $(MotifToolLib) $(XLib)
 INCLUDES	=	-I/mit/motif/include
+
+#ifdef Logging
+DEFINES = -DLOG
+#endif
 
 NormalProgramTarget(xbrowser,$(OBJS),,,$(SYS_LIBS))
 SaberProgramTarget(xbrowser,$(SRCS),$(OBJS),,$(SYS_LIBS))
