@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:37 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-05-07 21:52:38 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -81,9 +81,6 @@ links: FRC
 
 tags: FRC
 	ctags ${CSRCS} *.h
-
-commands.c: commands.l
-	${LEX} -t $< > $@ || rm $@
 
 FRC:
 
