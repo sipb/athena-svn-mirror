@@ -26,6 +26,3 @@
 /etc/syslog.conf
 /etc/system
 /var/spool/cron/crontabs/root
-/etc/minor_perm
-/etc/driver_aliases
-/etc/devlink.tab
