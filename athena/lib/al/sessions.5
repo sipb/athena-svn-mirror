@@ -1,6 +1,6 @@
-.\" $Id: sessions.5,v 1.1 1997-10-21 01:54:23 ghudson Exp $
+.\" $Id: sessions.5,v 1.2 1999-04-13 21:25:35 ghudson Exp $
 .\"
-.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\" Copyright 1997, 1999 by the Massachusetts Institute of Technology.
 .\"
 .\" Permission to use, copy, modify, and distribute this
 .\" software and its documentation for any purpose and without
@@ -14,13 +14,14 @@
 .\" this software for any purpose.  It is provided "as is"
 .\" without express or implied warranty.
 .\"
-.TH SESSIONS 5 "18 September 1997"
+.TH SESSIONS 5 "13 April 1999"
 .SH NAME
-/var/athena/sessions \- Directory containing Athena login session
-records
+sessions \- Directory containing Athena login session records
+.SH SYNOPSIS
+.B /var/athena/sessions
 .SH DESCRIPTION
 The directory
-.I /var/athena/sessions
+.B /var/athena/sessions
 contains session records giving information about each user's active
 login sessions and recording the changes made during account setup.
 Each file in the directory is a username, and contains the following
@@ -61,4 +62,4 @@ al_acct_create(3), al_acct_revert(3)
 .SH AUTHOR
 Greg Hudson, MIT Information Systems
 .br
-Copyright 1997 by the Massachusetts Institute of Technology.
+Copyright 1997, 1999 by the Massachusetts Institute of Technology.
