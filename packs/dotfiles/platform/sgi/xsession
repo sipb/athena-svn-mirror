@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.1 1995-02-17 20:36:46 cfields Exp $
+# $Id: xsession,v 1.2 1995-02-20 03:41:56 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -92,31 +92,45 @@ else
 	endif
 endif
 
-
-
 # *******************   DEVICE SETUP   *******************
 
+if (! $?skip_sgi) then
 
-# Load user X resources.
+  $initdir/Xsession.dt
 
-if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
+  if ((! $?NOCALLS) && (-r .lang)) then
+    setenv LANG `cat .lang`
+  endif
+
+  if ($?NOCALLS) then
+    setenv XUSERFILESEARCHPATH "`/usr/bin/X11/appdefpath`"
+  else
+    setenv XUSERFILESEARCHPATH "$HOME/.dotdesktop-indy/%N:$HOME/%N:`/usr/bin/X11/appdefpath`"
+  fi
+
+else
+
+  # Load user X resources.
+
+  if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 
-# Start window manager.  To change your default window manager, set the 
-# WINDOW_MANAGER environment variable in your ~/.environment file.
+  # Start window manager.  To change your default window manager, set the 
+  # WINDOW_MANAGER environment variable in your ~/.environment file.
 
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
-if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
+  if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER mwm
+  if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
 
-if ($?NOCALLS) then
+  if ($?NOCALLS) then
 	(mwm -xrm "*configFile: /usr/athena/lib/X11/system.mwmrc" &)
 	sleep $sleep_time
 	sleep $sleep_time
-else
+  else
 	($WINDOW_MANAGER &)
 	sleep $sleep_time
 	# mwm takes twice as long to start
 	if ("$WINDOW_MANAGER" =~ mwm) sleep $sleep_time	
+  endif
 endif
 
 
@@ -198,6 +212,12 @@ endif
 # hangs.  Thus, the user will not be left with active windows and no
 # method of easily logging out.
 
+# If we are doing an SGI login (skip_sgi is not set), we source
+# ~/.startup.sgi instead of .startup.X. This is to help the user
+# not shoot himself in the foot, due to the session management
+# that may be going on in 4Dwm. See documentation somewhere for
+# details.
+
 # We also run the notification system, lert. Ideally, we wish the user
 # to receive the alert in the form of a zephyrgram, and since they may
 # run zwgc from their .startup.X, we wait until that has finished.
@@ -205,11 +225,17 @@ endif
 # it is not at all intended for frivolous messages), put the commend
 # "set skip_lert" in your ~/.environment file.
 
-if ((! $?NOCALLS) && (-r ~/.startup.X)) then
+if ($?skip_sgi) then
+  set athena_startup=.startup.X
+else
+  set athena_startup=.startup.sgi
+endif
+
+if ((! $?NOCALLS) && (-r ~/${athena_startup})) then
 	if ($?verbose_login) then
-	  echo "Running custom startup activities listed in ~/.startup.X..."
+	  echo "Running custom startup activities listed in ~/${athena_startup}..."
 	endif
-	( source ~/.startup.X; \
+	( source ~/${athena_startup}; \
 	  if (! $?skip_lert) lert -q -z ; \
 	  if ($?verbose_login) echo "Session initialization completed." &)
 else
@@ -233,3 +259,9 @@ endif
 
 # The session gate will source .logout when it gets a SIGHUP, if
 # invoked with the -logout flag.
+
+# Tell 4Dwm that the session is ending
+# There was once a -t here, but there doesn't seem to be a point.
+/usr/bin/X11/tellwm end_session >/dev/null 2>&1
+
+exit 0

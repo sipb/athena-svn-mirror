@@ -84,27 +84,27 @@ then
 fi
 
 #check for .Xsession
-if [ -r $xsession -a "$0" != $xsession ]; then
+#if [ -r $xsession -a "$0" != $xsession ]; then
 # if the user hasn't been warned, yet, warn them that the .xsession
 # could keep them from loading the desktop.
-	if [ ! -f $xsessioncheck ]
-	then
-		xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
-		(echo "1" > $xsessioncheck)
-	fi
-
-	if [ -x $xsession ]; then
-		exec $xsession
-	else
-		exec /bin/sh $xsession
-	fi
-fi
+#	if [ ! -f $xsessioncheck ]
+#	then
+#		xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
+#		(echo "1" > $xsessioncheck)
+#	fi
+#
+#	if [ -x $xsession ]; then
+#		exec $xsession
+#	else
+#		exec /bin/sh $xsession
+#	fi
+#fi
 
 # Set the users language
 if [ -r $lang -a -f $lang ] ; then LANG=`cat $lang`; export LANG; fi
 
 if [ -r $resources ]; then
-        xrdb -load -quiet $resources
+  if [ "${NOCALLS-ok}" = "ok" ] ; then xrdb -load -quiet $resources ; fi
 
         if [ -r $sgiresources ]; then
                 xrdb -merge -quiet $sgiresources
@@ -156,7 +156,7 @@ screens=`/usr/bin/X11/xlistscrns`
 #	done
 
 # Gives anyone on any host access to this display
-/usr/bin/X11/xhost +
+# /usr/bin/X11/xhost +
 
 # Determine the correct visuals and colormaps for icon based
 # applications.  This must be run before any icon based apps,
@@ -280,4 +280,4 @@ if [ -f $sgisession -a ! -f $sgisessioncheck ]; then
 	(echo "1" > $sgisessioncheck)
 fi
 
-exec /usr/bin/X11/reaper
+# exec /usr/bin/X11/reaper
