@@ -847,7 +847,7 @@ config(signo)
 			sep->se_ctrladdr_size = n +
 			    sizeof(sep->se_ctrladdr_un) -
 			    sizeof(sep->se_ctrladdr_un.sun_path);
-			if (!ISMUX(sep))
+			if (!ISMUX(sep) && (!sep->se_switched || access_on))
 				setup(sep);
 			break;
 		case AF_INET:
@@ -904,7 +904,8 @@ config(signo)
 					}
 					sep->se_rpcprog = rp->r_number;
 				}
-				if (sep->se_fd == -1 && !ISMUX(sep))
+				if (sep->se_fd == -1 && !ISMUX(sep) &&
+				    (!sep->se_switched || access_on))
 					setup(sep);
 				if (sep->se_fd != -1)
 					register_rpc(sep);
@@ -970,7 +971,6 @@ access_switch(signo)
 	int on;
 
 	on = signo == SIGUSR1;
-	syslog(LOG_NOTICE, "access_on = %d -> %d", access_on, on);
 	if (on == access_on)
 		return;
 
@@ -986,7 +986,6 @@ access_switch(signo)
 		else
 			close_sep(sep);
 	}
-	syslog(LOG_NOTICE, "Done with access_switch");
 	sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
@@ -998,7 +997,8 @@ retry(signo)
 
 	timingout = 0;
 	for (sep = servtab; sep; sep = sep->se_next) {
-		if (sep->se_fd == -1 && !ISMUX(sep)) {
+		if (sep->se_fd == -1 && !ISMUX(sep) &&
+		    (!sep->se_switched || access_on)) {
 			switch (sep->se_family) {
 			case AF_UNIX:
 			case AF_INET:
