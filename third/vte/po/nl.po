@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2002-12-09 23:49+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -67,64 +67,64 @@ msgstr "Er is een fout opgetreden bij lezen van kind: %s."
 msgid "Error (%s) converting data for child, dropping."
 msgstr "Fout (%s) bij converteren gegevens voor kind, laat het vallen."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr "Lettertypenset \"%s\" wordt gebruikt, welke deze tekensets mist: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "Laden Xft lettertype patroon \"%s\" mislukt, val terug op standaard "
 "lettertype."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "Laden standaard Xft lettertype mislukt."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr ""
 "Het laden van lettertypenset \"%s\" is mislukt, terugvallen op standaard "
 "lettertype."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr ""
 "Het laden van het standaard lettertype is mislukt, het gedrag ervan is "
 "abnormaal."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Er is een fout opgetreden bij lezen PTY grootte, standaardwaarden worden "
 "gebruikt: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Er is een fout opgetreden bij instellen PTY-grootte: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr ""
 "Er is een fout opgetreden bij toewijzing tekenen, Xft wordt uitgeschakeld."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr ""
 "Er is een fout opgetreden bij toewijzing context, Pango wordt uitgeschakeld."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr ""
 "Er is een fout opgetreden bij toewijzing lay-out, Pango wordt uitgeschakeld."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open() niet geslaagd in instellen woordtekens"
 

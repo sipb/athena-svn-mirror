@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte 0.10.7\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2002-12-21 16:26+0100\n"
 "Last-Translator: Enric Balletbó Serra <enric.balletbo@campus.uab.es>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -69,63 +69,63 @@ msgstr ""
 "S'ha produït un error (%s) en convertir dades per al fill; s'ometrà la "
 "conversió."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr ""
 "S'està utilitzant la font \"%s\", que no té els següents jocs de caràcters: %"
 "s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "No s'ha pogut carregar el patró de font Xft \"%s\"; es carregarà la font per "
 "defecte."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "No s'ha pogut carregar la font Xft per defecte."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr ""
 "No s'ha pogut carregar la font \"%s\"; es carregarà la font per defecte."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr ""
 "No s'ha pogut carregar la font per defecte; fallada o comportament anormal."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "S'ha produït un error en llegir la mida de PTY; s'usarà el valor per "
 "defecte: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "S'ha produït un error en establir la mida de PTY: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr "S'ha produït un error en assignar el dibuix, s'està inhabilitant Xft."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr ""
 "S'ha produït un error en assignar el context, s'està inhabilitant Pango."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr ""
 "S'ha produït un error en assignar el format, s'està inhabilitant Pango."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "g_iconv_open() no ha pogut establir els caràcters de paraula"
 

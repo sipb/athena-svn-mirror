@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: vte\n"
-"POT-Creation-Date: 2003-01-27 23:28-0500\n"
+"POT-Creation-Date: 2003-02-03 09:28-0500\n"
 "PO-Revision-Date: 2003-01-10 12:27+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -70,66 +70,66 @@ msgid "Error (%s) converting data for child, dropping."
 msgstr ""
 "Произошла ошибка (%s) при преобразовании данных от потомка, отбрасывается."
 
-#: src/vte.c:9809
+#: src/vte.c:9814
 #, c-format
 msgid "Using fontset \"%s\", which is missing these character sets: %s."
 msgstr ""
 "Используется семейство шрифтов \"%s\", в котором отсутствует необходимый "
 "набор символов: %s."
 
-#: src/vte.c:10447
+#: src/vte.c:10452
 #, c-format
 msgid "Failed to load Xft font pattern \"%s\", falling back to default font."
 msgstr ""
 "Произошёл сбой при загрузке шрифта через систему Xft, идёт откат на исходный "
 "шрифт."
 
-#: src/vte.c:10459
+#: src/vte.c:10464
 msgid "Failed to load default Xft font."
 msgstr "Произошёл сбой при загрузке исходного шрифта через систему Xft."
 
-#: src/vte.c:10552
+#: src/vte.c:10557
 #, c-format
 msgid "Failed to load font set \"%s\", falling back to default font."
 msgstr ""
 "Произошёл сбой при загрузке семейства шрифтов, идёт откат на исходный шрифт."
 
-#: src/vte.c:10564
+#: src/vte.c:10569
 msgid "Failed to load default font, crashing or behaving abnormally."
 msgstr ""
 "Произошёл сбой при загрузке исходного шрифта, дальнейшее поведение "
 "ненормально."
 
-#: src/vte.c:10826
+#: src/vte.c:10831
 #, c-format
 msgid "Error reading PTY size, using defaults: %s."
 msgstr ""
 "Произошла ошибка при чтении размера PTY, используются исходные значения: %s."
 
-#: src/vte.c:10862
+#: src/vte.c:10867
 #, c-format
 msgid "Error setting PTY size: %s."
 msgstr "Произошла ошибка при установке размера PTY: %s."
 
-#: src/vte.c:13749
+#: src/vte.c:13759
 msgid "Error allocating draw, disabling Xft."
 msgstr ""
 "Произошла ошибка при распределении структуры рисования, запрещается система "
 "Xft."
 
-#: src/vte.c:13757
+#: src/vte.c:13767
 msgid "Error allocating context, disabling Pango."
 msgstr ""
 "Произошла ошибка при распределении структуры контекста, запрещается система "
 "Pango."
 
-#: src/vte.c:13763
+#: src/vte.c:13773
 msgid "Error allocating layout, disabling Pango."
 msgstr ""
 "Произошла ошибка при распределении структуры расположения, запрещается "
 "система Pango."
 
 #. Aaargh.  We're screwed.
-#: src/vte.c:15409
+#: src/vte.c:15419
 msgid "g_iconv_open() failed setting word characters"
 msgstr "Произошёл сбой в функции g_iconv_open() при установке символа в слове"
