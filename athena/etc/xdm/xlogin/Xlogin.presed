@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.4 1990-11-16 15:45:06 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.5 1990-11-18 18:25:59 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -53,7 +53,7 @@ xlogin*bottom:			ChainTop
 !		General Resources.
 ! ------------------------------------------------------------
 
-xlogin.Geometry: 		580x305+205+75
+xlogin.Geometry: 		580x325+205+75
 *bitmapFilePath:		/etc/athena/login
 *BorderWidth:			0
 *Background:			white
@@ -108,7 +108,7 @@ xlogin.Geometry: 		580x305+205+75
 !  'til it looks ok...
 *version.wcClass:		labelWidgetClass
 ! there's a space after the version label to make the picture look right
-*version.label:			7.1 
+*version.label:			7.2 
 *version.horizDistance:		56
 *version.vertDistance:		99
 *version.internalWidth:		0
@@ -157,7 +157,7 @@ xlogin.Geometry: 		580x305+205+75
 *userName.wcClass:		labelWidgetClass
 *userName.fromVert:		*welcome
 *userName.width:		110
-*userName.vertDistance:		60
+*userName.vertDistance:		62
 *userName.horizDistance:	100
 *userName.font:			-adobe-new century schoolbook-bold-r-*-180-*
 *userName.label: 		Username:
@@ -218,7 +218,7 @@ xlogin.Geometry: 		580x305+205+75
 *password.wcClass:		labelWidgetClass
 *password.fromVert:		*userName
 *password.width:		110
-*password.vertDistance:		5
+*password.vertDistance:		10
 *password.horizDistance:	100
 *password.font:			-adobe-new century schoolbook-bold-r-*-180-*
 *password*label: 		Password:
@@ -279,7 +279,7 @@ xlogin.Geometry: 		580x305+205+75
 
 *loptions.wcClass:		menuButtonWidgetClass
 *loptions.vertDistance:		40
-*loptions.horizDistance:	100
+*loptions.horizDistance:	105
 *loptions.label:		Login Options
 *loptions.fromVert:		*password
 *loptions.leftBitmap:		menu16
@@ -355,7 +355,7 @@ xlogin.Geometry: 		580x305+205+75
 *omenu.wcManaged:		False
 *omenu.wcChildren:		omenuEntry1, omenuEntry2, omenuEntry3, \
 				omenuEntry4, omenuEntry5, omenuEntry6, \
-				menuLine, \
+				omenuEntry6a, menuLine, \
 				omenuEntry7, omenuEntry8, omenuEntry9, \
 				omenuEntry10, omenuEntry11
 
@@ -366,6 +366,7 @@ xlogin.Geometry: 		580x305+205+75
 *omenuEntry4.wcClass:		smeBSBObjectClass
 *omenuEntry5.wcClass:		smeBSBObjectClass
 *omenuEntry6.wcClass:		smeBSBObjectClass
+*omenuEntry6a.wcClass:		smeBSBObjectClass
 *omenuEntry7.wcClass:		smeBSBObjectClass
 *omenuEntry8.wcClass:		smeBSBObjectClass
 *omenuEntry9.wcClass:		smeBSBObjectClass
@@ -376,33 +377,35 @@ xlogin.Geometry: 		580x305+205+75
 *omenuEntry1.justify:		center
 !*omenuEntry1.sensitive:		False
 *omenuEntry2.label:		Athena On-Line Help (olh)
-*omenuEntry2.callback:		runCB(/usr/athena/lib/login/olh)
+*omenuEntry2.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/athena/olh -tty)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
-*omenuEntry3.callback:		runCB(/usr/athena/lib/login/xcluster)
+*omenuEntry3.callback:		runCB(/etc/athena/login/xcluster)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
-*omenuEntry4.callback:		runCB(/usr/athena/lib/login/techinfo)
+*omenuEntry4.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/athena/techinfo)
 *omenuEntry5.label:		Library Access
-*omenuEntry5.callback:		runCB(/usr/athena/lib/login/library)
-*omenuEntry6.label:		Display Workstation Configuration
-*omenuEntry6.callback:		runCB(/usr/athena/lib/login/machine)
+*omenuEntry5.callback:		runCB(/etc/athena/login/library)
+*omenuEntry6.label:		MIT Campus Map (xinfo)
+*omenuEntry6.callback:		runCB(/usr/athena/xinfo -inactive 180 -display :0.0)
+*omenuEntry6a.label:		Display Workstation Configuration
+*omenuEntry6a.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 60 /etc/athena/login/machine)
 *omenuEntry7.label:		Other
 *omenuEntry7.justify:		center
 !*omenuEntry7.sensitive:		False
 *omenuEntry8.label:		Login to MITVMA
-*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
+*omenuEntry8.callback:		runCB(/etc/athena/login/mitvma)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
-*omenuEntry9.callback:		runCB(/usr/athena/lib/login/moira)
+*omenuEntry9.callback:		runCB(/etc/athena/login/moira)
 *omenuEntry10.label:		Electronic Ombudsman (Lucy)
-*omenuEntry10.callback:		runCB(/usr/athena/lib/login/lucy)
+*omenuEntry10.callback:		runCB(/etc/athena/login/lucy)
 *omenuEntry11.label:		Shutdown Window System
 *omenuEntry11.callback:		WcExitCB(3)
 
 *register.wcClass:		commandWidgetClass
 *register.vertDistance:		10
-*register.horizDistance:	175
+*register.horizDistance:	180
 *register.label:		Register for an Account
 *register.fromVert:		*loptions
-*register.callback:		runCB(/usr/athena/lib/login/register)
+*register.callback:		runCB(/afs/athena/astaff/project/xdm/src/conf/register)
 
 
 ! ------------------------------------------------------------
