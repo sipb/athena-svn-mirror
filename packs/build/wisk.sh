@@ -1,5 +1,7 @@
 #!/bin/athena/tcsh
 
+# $Revision: 1.25 $
+
 umask 2
 
 set machine=`machtype`
