@@ -1,3 +1,0 @@
-PKG=MIT-oaf
-NAME=GNOME object activation framework, for Athena
-DESC=OAF is an object activation framework for GNOME. It uses ORBit.

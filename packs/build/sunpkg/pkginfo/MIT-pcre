@@ -1,3 +1,0 @@
-PKG=MIT-pcre
-NAME=Perl-compatible regular expression library on Athena
-DESC=A Perl-compatible regular expression library, including wrapper functions based on the POSIX API.

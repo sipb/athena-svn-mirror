@@ -1,6 +1,0 @@
-# $Id: Makefile.athena,v 1.1 2004-06-19 00:40:24 ghudson Exp $
-
-dist prepare clean all check:
-
-install:
-	$(MAKE) install prefix=$$SRVD/usr/athena
