@@ -14,5 +14,6 @@
 /etc/sendmail.cf
 /etc/services
 /etc/shells
+/etc/sshd_config
 /etc/syslog.conf
 /var/spool/cron/crontabs/root

@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.6 1998-01-05 21:39:10 brlewis Exp $
+## $Id: sys_rvd,v 1.7 1998-01-14 17:29:56 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -17,6 +17,7 @@ GLOBAL : *.CKP *.local *.pid :
 		shadow
 		shadow.fallback
 		srvtab
+		sshd_config
 		syslog.conf
 		shells
 		:

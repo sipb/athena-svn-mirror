@@ -15,6 +15,7 @@
 /etc/mail/sendmail.cf
 /etc/ntp.conf
 /etc/shells
+/etc/sshd_config
 /var/spool/cron/crontabs/root
 /etc/syslog.conf
 /etc/system
