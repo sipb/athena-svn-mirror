@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.1 1987-11-01 17:48:34 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.2 1988-01-07 12:35:22 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.1 1987-11-01 17:48:34 rfrench Exp $";
+static char rcsid_ZVariables_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZVariables.c,v 1.2 1988-01-07 12:35:22 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -57,10 +57,8 @@ Code_t ZSetVariable(var,value)
 	strcpy(varfilebackup,varfile);
 	strcat(varfilebackup,".backup");
 	
-	if (!(fpout = fopen(varfilebackup,"w"))) {
-		fclose(fpin);
+	if (!(fpout = fopen(varfilebackup,"w")))
 		return (errno);
-	}
 	if (fpin = fopen(varfile,"r")) {
 		while (fgets(varbfr,sizeof varbfr,fpin) > 0) {
 			if (varbfr[strlen(varbfr)-1] < ' ')
