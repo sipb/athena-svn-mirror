@@ -91,7 +91,7 @@ read_byte (const char *start)
 	return (nibble1 << 4) + nibble2;
 }
 
-static inline const guint32
+static inline guint32
 read_four_bytes (const char *pos)
 {
 	return ((read_byte (pos) << 24) |
@@ -398,9 +398,13 @@ bonobo_ui_util_xml_set_image (GtkImage     *image,
 
 		if ((name == NULL) || !g_file_test (name, G_FILE_TEST_EXISTS))
 			g_warning ("Could not find GNOME pixmap file %s", text);
-		else
-			pixbuf = gdk_pixbuf_new_from_file (name, NULL);
-
+		else {
+ 			int w, h;
+ 			if (gtk_icon_size_lookup (icon_size, &w, &h))
+ 				pixbuf = gdk_pixbuf_new_from_file_at_size (name, w, h, NULL);
+ 			else
+ 				pixbuf = gdk_pixbuf_new_from_file (name, NULL);
+ 		}
 		g_free (name);
 
 	} else if (!strcmp (type, "pixbuf"))
@@ -425,6 +429,8 @@ bonobo_ui_util_xml_set_image (GtkImage     *image,
  * 
  * This function extracts a pixbuf from the node and returns a GtkWidget
  * containing a display of the pixbuf.
+ *
+ * Unused internally.
  *
  * Return value: the widget.
  **/
@@ -624,6 +630,7 @@ bonobo_ui_util_build_help_menu (BonoboUIComponent *listener,
 	bonobo_ui_node_set_attr (node, "tip", _("View help for this application"));
 	bonobo_ui_node_set_attr (node, "pixtype", "stock");
 	bonobo_ui_node_set_attr (node, "pixname", "gtk-help");
+	bonobo_ui_node_set_attr (node, "accel", "F1");
 
 	cl = g_new0 (HelpDisplayClosure, 1);
 	cl->app_name = g_strdup (app_name);
@@ -717,7 +724,11 @@ bonobo_ui_util_translate_ui (BonoboUINode *node)
 			a->id = g_quark_from_static_string (str + 1);
 
 			old = a->value;
-			a->value = xmlStrdup (_(a->value));
+#ifdef ENABLE_NLS
+			a->value = xmlStrdup (gettext(a->value));
+#else
+			a->value = xmlStrdup (a->value);
+#endif
 			xmlFree (old);
 		}
 	}
@@ -949,6 +960,8 @@ bonobo_ui_util_set_ui (BonoboUIComponent *component,
 			component, fname, app_datadir, app_name);
 
 		ui = bonobo_ui_node_to_string (node, TRUE);
+		if (!ui)
+			return;
 
 		bonobo_ui_node_free (node);
 		
