@@ -30,10 +30,6 @@ krb5_init(void *context)
 	krb5_error_code problem;
 	static int cleanup_registered = 0;
 	int fd;
-#ifndef HEIMDAL
-	krb5_principal rcache_server = 0;
-	krb5_rcache rcache;
-#endif	
 
 	if (authctxt->krb5_ctx == NULL) {
 		problem = krb5_init_context(&authctxt->krb5_ctx);
@@ -48,13 +44,6 @@ krb5_init(void *context)
 		if (problem)
 		    return problem;
 
-		krb5_parse_name(authctxt->krb5_ctx, "sshd", &rcache_server);
-		krb5_get_server_rcache(authctxt->krb5_ctx,
-		    krb5_princ_component(authctxt->krb5_ctx, 
-		    rcache_server, 0), &rcache);
-		krb5_auth_con_setrcache(authctxt->krb5_ctx,
-		    authctxt->krb5_auth_ctx, 
-		    rcache);
 	
 		fd = packet_get_connection_in();
 #ifdef HEIMDAL
