@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.h,v 1.3 1989-03-27 12:07:23 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.h,v 1.4 1989-10-23 13:33:51 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -15,4 +15,4 @@
 #define ERROR_MASK 1
 #define NO_DELETE_MASK 2
 
-char **get_the_files();
+int get_the_files();
