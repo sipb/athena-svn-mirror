@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
- * $Author: jis $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.9 1992-06-26 17:57:57 jis Exp $
+ * $Author: cfields $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.10 1995-07-20 22:39:29 cfields Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -221,7 +221,7 @@ unsigned char *Signature;
       break;
     }
   } while (0);
-  shutdown(s);
+  shutdown(s, 0);
   close(s);
   if (status != GDSS_SUCCESS) return (status);
   (void) bcopy((char *)ipacket, (char *)Signature, iplen);
