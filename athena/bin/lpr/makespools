@@ -19,8 +19,11 @@ if ($4 != "") set group = $4
 echo "# $0  $destdir  $prot  $owner  $group"
 
 set f=/etc/printcap
-set a=(`egrep sd= $f|egrep -v '^#'|sed 's/^[ 	]*:sd=//'|sed 's/:\\//'`)
-foreach j (${a})
+set dirs=(`sed -n -e '/^#/d' -e '/:sd=/s/^.*:sd=\([^:]*\).*$/\1/p' $f`)
+set logs=(`sed -n -e '/^#/d' -e '/:lf=/s/^.*:lf=\([^:]*\).*$/\1/p' $f`)
+set acct=(`sed -n -e '/^#/d' -e '/:af=/s/^.*:af=\([^:]*\).*$/\1/p' $f`)
+
+foreach j (${dirs})
 	set i = "${destdir}/${j}"
 	set sdd = ${i:h}
 	if (! -d $sdd) then
@@ -38,5 +41,27 @@ foreach j (${a})
 		chgrp $group $i
 		chmod $prot $i
 		echo "# `ls -lgd $i`"
+		endif
+	if (! -f $i/.options) then
+		echo "# Creating $i/.options"
+		cat > $i/.options << EOF
+BANNERFIRST=1
+BANNERLAST=0
+REVERSE=""
+EOF
+		chown $owner $i/.options
+		chgrp $group $i/.options
+		chmod $prot $i/.options
+		endif
+	end
+
+foreach j (${logs} ${acct})
+	set i = "${destdir}/${j}"
+	if (! -f $i) then
+		echo "# Creating $i"
+		cp /dev/null $i
+		chown $owner $i
+		chgrp $group $i
+		chmod $prot $i
 		endif
 	end
