@@ -939,6 +939,7 @@ install-data-local:
 	rm -f $(DESTDIR)$(athenadir)/menus
 	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
 		$(DESTDIR)$(athenadir)/menus
+	rm -f $(DESTDIR)$(athenadir)/menus.tar
 	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION).tar \
 		$(DESTDIR)$(athenadir)/menus.tar
 
