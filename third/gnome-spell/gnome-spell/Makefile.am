@@ -12,7 +12,6 @@ INCLUDES =                                              \
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
 	-DGLADE_DATADIR=\"$(gladedir)\"			\
 	-DPLUGIN_DIR=\""$(PLUGIN_DIR)"\"		\
-	-DGTK_DISABLE_DEPRECATED=1			\
 	-DASPELL_DICT=\""$(ASPELL_DICT)"\"		\
 	$(GNOME_SPELL_CFLAGS)				\
 	$(END)
