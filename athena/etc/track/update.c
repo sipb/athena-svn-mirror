@@ -1,12 +1,15 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.1 1987-02-12 21:16:00 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.2 1987-09-02 17:44:20 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  87/02/12  21:16:00  rfrench
+ * Initial revision
+ * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.1 1987-02-12 21:16:00 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 1.2 1987-09-02 17:44:20 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -160,7 +163,7 @@ char *from,*to;
 			do_gripe();
 			close(fdf);
 			close(fdt);
-			return (1);
+			exit(1);
 		}
 	}
 	close(fdf);
