@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.5 1997-05-15 03:43:01 ghudson Exp $
+# $Id: finish-update.sh,v 1.6 1997-05-26 00:20:44 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,6 +42,9 @@ sun4)
 	/usr/sbin/in.named
 	;;
 esac
+
+# Make sure we see the right cells as setuid.
+sh /etc/athena/config_afs
 
 # Do auxiliary device installs.
 if [ -s "$AUXDEVS" ]; then
