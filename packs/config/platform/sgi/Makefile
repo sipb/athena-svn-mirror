@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 1997-10-18 04:55:49 ghudson Exp $
+# $Id: Makefile,v 1.12 1998-04-30 13:29:32 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -30,6 +30,7 @@ install:
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 fonts.alias ${DESTDIR}${FONTS}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 newsyslog.conf ${DESTDIR}${ATHRETCDIR}
@@ -37,6 +38,7 @@ install:
 	install -c -m 0644 ppagesd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 rc.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 routed ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 syslog.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 verbose ${DESTDIR}${SGICONFIG}
