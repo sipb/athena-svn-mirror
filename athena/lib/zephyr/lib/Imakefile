@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Imakefile,v 1.2 1989-03-23 11:53:03 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Imakefile,v 1.3 1989-05-25 15:23:54 jtkohl Exp $
 /**/#
 #define no_curdir_lint
 
@@ -175,6 +175,8 @@ OLIST=	\
 
 #ifdef KERBEROS
 KRB_OTHERSRCS= krb_err.et
+
+depend:: krb_err.h
 #endif /*KERBEROS*/
 
 OTHERSRCS= zephyr_err.et ${KRB_OTHERSRCS}
