@@ -26,6 +26,7 @@ set acct=(`sed -n -e '/^#/d' -e '/:af=/s/^.*:af=\([^:]*\).*$/\1/p' $f`)
 foreach j (${dirs})
 	set i = "${destdir}/${j}"
 	set sdd = ${i:h}
+	set psn = ${i:t}
 	if (! -d $sdd) then
 		echo "# Creating enclosing directory $sdd"
 		mkdir $sdd
@@ -45,9 +46,24 @@ foreach j (${dirs})
 	if (! -f $i/.options) then
 		echo "# Creating $i/.options"
 		cat > $i/.options << EOF
+#
+# Prototype .options file
+#
+# File should be in spooler directory for printer as ./.options
+# This file passes environment variables to the Transcript program
+# that does envget(s) on these items.
+#
 BANNERFIRST=1
 BANNERLAST=0
 REVERSE=""
+DUPLEXING=0
+INTERFACE=0
+PRINTER=$psn
+export BANNERFIRST BANNERLAST REVERSE DUPLEXING PRINTER NETNAME INTERFACE VERBOSELOG
+EOF
+		echo "# Creating $i/.spooler"
+		cat > $i/.spooler << EOF
+${psn}2 -F /usr/athena/lib/lpdfilters/duplex2
 EOF
 		chown $owner $i/.options
 		chgrp $group $i/.options
