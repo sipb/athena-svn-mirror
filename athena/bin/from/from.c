@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.11 1991-08-16 15:01:34 lwvanels Exp $
+ * $Id: from.c,v 1.12 1992-01-06 16:08:45 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: lwvanels $
+ * $Author: probe $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.11 1991-08-16 15:01:34 lwvanels Exp $";
+static char *rcsid = "$Id: from.c,v 1.12 1992-01-06 16:08:45 probe Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -260,14 +260,17 @@ getmail_pop(user, host, printhdr)
 		return -1;
 	}
 	if (nmsgs == 0) {
+		(void) pop_command("QUIT");
 		return(0);
 	}
 	if (verbose || totals)
 		printf("You have %d %s (%d bytes) on %s%c\n",
 		       nmsgs, nmsgs > 1 ? "messages" : "message",
 		       nbytes, host, verbose ? ':' : '.');
-	if (totals)
+	if (totals) {
+		(void) pop_command("QUIT");
 		return nmsgs;
+	}
 	if (printhdr)
 		puts("POP mail:");
 
@@ -491,6 +494,7 @@ getmail_unix(user)
 	if (freopen(user, "r", stdin) == NULL) {
 	    if(!popmail)
 		  fprintf(stderr, "Can't open /usr/spool/mail/%s.\n", user);
+	    unixmail = 0;
 	    return -1;
 	}
 
