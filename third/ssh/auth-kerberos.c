@@ -9,10 +9,16 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.5.2.3 1998-07-28 03:16:51 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.5.2.4 1998-08-03 02:35:35 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5.2.3  1998/07/28 03:16:51  ghudson
+ * Pull up change from rev 1.8 to Athena 8.2 branch.
+ *
  * Revision 1.5.2.2  1998/07/15 22:49:55  ghudson
  * Pull up change from rev 1.7 to Athena 8.2 branch.
+ *
+ * Revision 1.9  1998/08/01 18:38:49  danw
+ * from amu: malloc enough space to store the full ticket file name
  *
  * Revision 1.8  1998/07/28 03:15:50  ghudson
  * Dan didn't actually just leave out a right paren; he put in a
@@ -274,7 +280,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_cc_store_cred(ssh_context, ccache, *creds))
     goto errout;
   
-  ticket = xmalloc(strlen(ccname + 5) + 1);
+  ticket = xmalloc(strlen(ccname) + 1);
   (void) sprintf(ticket, "%s", ccname);
   
   /* Now try to get krb4 tickets */
