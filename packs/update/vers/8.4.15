@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case $HOSTTYPE in
+sun4)
+  ;;
+
+sgi)
+  # Install the package in patch 4068 we want local.
+  echo "i patchSG0004068.eoe_sw.base"		>> "$LOCALPACKAGES.patches"
+
+  # Install the other patch 4068 packages in symlink mode, making sure
+  # that we do not reinstall the local package.
+  echo "k patchSG0004068.eoe_sw.base"		>> "$LINKPACKAGES.patches"
+  echo "i patchSG0004068.dev_sw.abi"		>> "$LINKPACKAGES.patches"
+  echo "i patchSG0004068.eoe_sw64.lib"		>> "$LINKPACKAGES.patches"
+
+  # We have updated the OS.
+  echo "OSCHANGES=true"				>> "$CONFVARS"
+  ;;
+
+esac
