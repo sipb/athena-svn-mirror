@@ -1,4 +1,10 @@
 /* Hey, Emacs: this looks like -*- C -*- but isn't */
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#include "mit-copyright.h"
 %c
 [
 uuid(48c2314d4009.02.12.48.00.63.00.00.00),

@@ -1,11 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.1 1990-04-16 16:31:44 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.2 1990-04-25 11:52:29 epeisach Exp $
+ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.1 1990-04-16 16:31:44 epeisach Exp $";
+static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.2 1990-04-25 11:52:29 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -17,6 +22,8 @@ static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
 #endif
+#include "mit-copyright.h"
+
 extern char qcurrency[];
 
 /* These routines handle the notification to users that they are

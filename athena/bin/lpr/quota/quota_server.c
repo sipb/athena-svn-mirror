@@ -1,13 +1,19 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.1 1990-04-16 16:31:57 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.2 1990-04-25 11:52:33 epeisach Exp $
+ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.1 1990-04-16 16:31:57 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.2 1990-04-25 11:52:33 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
+#include "mit-copyright.h"
 #include "quota.h"
 #include <krb.h>
 #include "quota_limits.h"

@@ -4,23 +4,23 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * Copyright 1990, Massachusetts Institute of Technology
- * All Rights Reserved.
- *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.1 1990-04-16 16:32:20 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.2 1990-04-25 11:52:42 epeisach Exp $
+ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  */
 
 /* TODO:
  *
- *
- * The communications routine still needs to be written.
  *
  * The process() routine needs to be written (it should take into account
  * log files turning over and a one-cycle unavailability of a file).
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.1 1990-04-16 16:32:20 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.2 1990-04-25 11:52:42 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -34,6 +34,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #include <signal.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include "mit-copyright.h"
 
 
 #define MAXPRINTERS	30		/* Maximum number of printers */

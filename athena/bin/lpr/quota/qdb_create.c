@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#include "mit-copyright.h"
 #include "quota_db.h"
 
 #ifdef DEBUG

@@ -1,7 +1,13 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.1 1990-04-16 16:35:27 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.2 1990-04-25 11:52:51 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
 /* $Author: epeisach $ */
 
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#include "mit-copyright.h"
 #include "quota.h"
 #include "logger.h"
 #include <stdio.h>

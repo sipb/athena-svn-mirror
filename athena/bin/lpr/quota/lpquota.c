@@ -1,3 +1,17 @@
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.2 1990-04-25 11:47:39 epeisach Exp $ */
+/* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
+/* $Author: epeisach $ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#if (!defined(lint) && !defined(SABER))
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.2 1990-04-25 11:47:39 epeisach Exp $";
+#endif (!defined(lint) && !defined(SABER))
+
+#include "mit-copyright.h"
 #include "quota.h"
 #include <krb.h>
 #include "quota_limits.h"

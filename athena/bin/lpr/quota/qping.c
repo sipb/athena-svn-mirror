@@ -1,13 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.1 1990-04-16 16:29:46 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.2 1990-04-25 11:48:21 epeisach Exp $
  */
 
-#if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.1 1990-04-16 16:29:46 epeisach Exp $";
-#endif (!defined(lint) && !defined(SABER))
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
 
+
+#include "mit-copyright.h"
 #include "quota.h"
 #include <sys/param.h>
 #include <sys/file.h>
@@ -16,6 +19,10 @@ static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/time.h>
+
+#if (!defined(lint) && !defined(SABER))
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qping.c,v 1.2 1990-04-25 11:48:21 epeisach Exp $";
+#endif (!defined(lint) && !defined(SABER))
 
 char *progname;
 

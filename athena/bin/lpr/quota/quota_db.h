@@ -1,6 +1,14 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v 1.1 1990-04-16 16:30:12 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v 1.2 1990-04-25 11:48:29 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v $ */
 /* $Author: epeisach $ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#include "mit-copyright.h"
+
 
 /*
  * Some useful defenitions for the Quota Server code

@@ -1,11 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.1 1990-04-16 16:30:51 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.2 1990-04-25 11:48:44 epeisach Exp $
+ */
+
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.1 1990-04-16 16:30:51 epeisach Exp $";
+static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_logger.c,v 1.2 1990-04-25 11:48:44 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -15,6 +20,7 @@ static char quota_logger_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_ncs.h"
 #include "quota_err.h"
 #include "quota_db.h"
+#include "mit-copyright.h"
 
 char *set_service();
 

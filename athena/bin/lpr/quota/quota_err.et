@@ -1,3 +1,11 @@
+#
+# Copyright (c) 1990 by the Massachusetts Institute of Technology.
+#  For copying and distribution information, see the file "mit-copyright.h."
+#
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_err.et,v 1.2 1990-04-25 11:48:39 epeisach Exp $ 
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_err.et,v $ 
+# $Author: epeisach $ 
+
 # Only add to the end of this file or you must recompile all binaries as
 # sequence number will change
 

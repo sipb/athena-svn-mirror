@@ -1,12 +1,19 @@
 
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.1 1990-04-16 16:28:43 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.2 1990-04-25 11:48:00 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v $ */
 /* $Author: epeisach $ */
 
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+
 #ifndef lint
-static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.1 1990-04-16 16:28:43 epeisach Exp $";
+static char periodic_rcs_id[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/periodic.c,v 1.2 1990-04-25 11:48:00 epeisach Exp $";
 #endif lint
 
+#include "mit-copyright.h"
 #include <stdio.h>
 #include "quota.h"
 #include "logger.h"

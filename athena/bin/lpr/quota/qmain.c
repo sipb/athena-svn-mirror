@@ -1,13 +1,20 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.1 1990-04-16 16:29:05 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.2 1990-04-25 11:48:15 epeisach Exp $
  */
 
+/*
+ * Copyright (c) 1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.1 1990-04-16 16:29:05 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.2 1990-04-25 11:48:15 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
+#include "mit-copyright.h"
 #include "quota.h"
 #include <sys/param.h>
 #include <sys/file.h>

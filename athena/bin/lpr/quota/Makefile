@@ -1,22 +1,13 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.2 1990-04-16 16:40:27 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.3 1990-04-25 11:45:50 epeisach Exp $
 #
 #
-# Copyright (c) 1983 Regents of the University of California.
-# All rights reserved.  The Berkeley software License Agreement
-# specifies the terms and conditions for redistribution.
+#     Copyright 1990 Massachusetts Institute of Technology.
 #
-#	@(#)Makefile	5.3 (Berkeley) 5/7/86
-#
-# makefile for line printer spooling system
-#
-# Ownerships {see note at the top of lpd.c}
-# ROOT		a user that can access any and all files
-# DAEMON	someone special
-# SPGRP		the group id of the spooling programs
-#
+#     For copying and distribution information, see the file
+#     "mit-copyright.h".
 DESTDIR=
 
 CFLAGS=-O -DHESIOD -DKERBEROS -DZEPHYR -DNDBM -I./ncs/include/idl -I. -I..
