@@ -10,7 +10,7 @@ int main(int argc, char **argv, char **env)
   args[1] = "arg2";
   args[2] = NULL;
 
-  ret = nanny_setupUser("root", 0, env, args);
+  ret = nanny_setupUser(argv[1] ? argv[1] : "root", 0, env, args);
   if (ret)
     {
       fprintf(stderr, "setupUser failed.\n");
