@@ -1,8 +1,8 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v $
-#	$Author: treese $
+#	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.2 1986-11-23 00:07:42 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/Makefile,v 1.3 1989-09-16 12:40:06 epeisach Exp $
 #
 
 
@@ -25,3 +25,10 @@ install: all
 
 clean:
 	rm -f just *.o core a.out *.bak *~
+
+depend:
+	makedepend ${CFLAGS} just.c
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+just.o: just.c /usr/include/stdio.h
