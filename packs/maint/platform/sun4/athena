@@ -97,7 +97,7 @@ if [ "${RVDCLIENT}" = "true" ]; then
 	if [ -f /var/athena/clusterinfo.bsh ]; then
 		. /var/athena/clusterinfo.bsh
 		echo "Attaching system libraries:"		>/dev/console
-		/bin/athena/attach -h -n -o hard $SYSLIB	>/dev/console
+		/bin/athena/attach -h -n -o hard -O $SYSLIB	>/dev/console
 		echo "done."					>/dev/console
 	else
 		echo "no information available..."		>/dev/console
