@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.9 1995-07-21 00:24:28 cfields Exp $
+ * $Id: track.h,v 4.10 1995-11-28 23:12:19 cfields Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -21,6 +21,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <strings.h>
+#include <limits.h>
 
 /* Default working directory - under to- or from- root */
 #define DEF_WORKDIR	"/usr/athena/lib"
@@ -63,7 +64,7 @@
 
 #define BUFLEN 1024
 #define BLOCKSIZE 1024
-#define LINELEN 256
+#define LINELEN PATH_MAX
 #define MAXLINES 300
 #define WORDLEN 20
 #define WORDMAX 128
