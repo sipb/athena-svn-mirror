@@ -1,4 +1,4 @@
-# $Id: athena,v 1.19 2001-05-18 03:16:13 zacheiss Exp $
+# $Id: athena,v 1.20 2001-06-05 19:08:48 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -317,6 +317,10 @@ else
 	rm -f /etc/nologin
 	$ECHO "Logins now possible."
 fi
+
+$ECHO "Updating panel menus... \c"
+local-menus
+$ECHO "done."
 
 $ECHO "Ending Athena startup tasks"
 	;;

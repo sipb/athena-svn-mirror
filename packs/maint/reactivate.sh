@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.58 2001-06-01 19:52:49 rbasch Exp $
+# $Id: reactivate.sh,v 1.59 2001-06-05 19:08:47 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -130,6 +130,8 @@ if [ "$full" = true ]; then
 			done
 		fi
 	done
+
+	local-menus
 fi
 
 # There are no current logins or sessions, so proceed.  We disable

@@ -168,6 +168,9 @@ EOF
 		fi
 	fi && success ZIP250
 	echo
+
+	echo -n Updating panel menus:
+	local-menus && success local-menus || failure local-menus
 	;;
   stop)
 	;;
