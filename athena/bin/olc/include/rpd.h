@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.3 1990-11-27 11:54:18 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.4 1990-11-27 14:09:55 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <strings.h>
+#include <ctype.h>
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -44,10 +45,16 @@ struct 	entry {
 #ifdef KERBEROS
 #define K_SERVICE	"olc"
 
+/* Kerberos Library */
 int krb_rd_req P((KTEXT authent, char *service, char *instance,
 		  u_long from_addr, AUTH_DAT *ad, char *fn));
 
+#define MONITOR_ACL "/usr/lib/olc/acls/monitor.acl"
+/* Acl Library */
+int acl_check P((char *acl, char *principal));
+
 #endif /* KERBEROS */
+
 
 
 /* system */
@@ -67,6 +74,7 @@ void *malloc P((unsigned size));
 int free P((void *ptr));
 int shutdown P((int s, int how));
 char *inet_ntoa P((struct in_addr in));
+int psignal P((unsigned sig, char *s));
 
 /* rpd.c */
 int clean_up P((int signal));
