@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.10 1996-11-20 15:46:51 ghudson Exp $
+# $Id: build.sh,v 1.11 1996-11-21 20:28:37 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -29,8 +29,8 @@ end="${2-$1}"
 
 # Determine the platform type.
 case "`uname -a`" in
-	SunOS*sparc*)	platform=sun4 ;;
-	IRIX*5.3*)	platform=sgi ;;
+	SunOS*sun4*)	platform=sun4 ;;
+	IRIX*)		platform=sgi ;;
 esac
 
 # Send all output friom this point on to the build log file.
