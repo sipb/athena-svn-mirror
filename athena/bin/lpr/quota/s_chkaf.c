@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.11 1991-03-01 12:02:46 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.12 1992-04-19 21:29:09 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.11 1991-03-01 12:02:46 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.12 1992-04-19 21:29:09 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -39,7 +39,6 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lp
 #include <netinet/in.h>
 #include <com_err.h>
 #include "quota_err.h"
-
 
 #define MAXPRINTERS	30		/* Maximum number of printers */
 #define WAKEUP		180		/* Interval for checking acct. file */
@@ -351,6 +350,9 @@ process() {
     int st_pages;
     char st_user[BUFSIZ];
 
+#if defined(DEBUG) && defined(NOFORK)
+    fprintf(stderr, "Starting process\n");
+#endif
     /* Assume all servers are back up now */
     for (i=0; i<MAXPRINTERS; i++) {
 	down_servers[i] = (char *)NULL;
@@ -364,8 +366,15 @@ process() {
 	if (!p_stat[i].af[0])
 	    continue;
 
+#if defined(DEBUG) && defined(NOFORK)
+	fprintf(stderr, "Checking %s\n", p_stat[i].af);
+#endif
+
 	/* Get a file pointer for the acct. file */
 	if ((p_stat[i].fp = fopen(p_stat[i].af, "r")) == NULL) {
+#if defined(DEBUG) && defined(NOFORK)
+	fprintf(stderr, "Unable to open %s\n", p_stat[i].af);
+#endif
 	    syslog(LOG_WARNING, "Unable to open accounting file %s", p_stat[i].af);
 	    continue;
 	}
@@ -383,10 +392,16 @@ process() {
 		    sdown = 1;
 		    break;
 		}
+#if defined(DEBUG) && defined(NOFORK)
+	fprintf(stderr, "About to read line from %s\n", p_stat[i].af);
+#endif
 
 	    /* Read any new data out of the file and send it... */
 	    status = 0;
 	    while (sdown==0 && fgets(line, BUFSIZ, p_stat[i].fp)) {
+#if defined(DEBUG) && defined(NOFORK)
+		    fprintf(stderr, "Read line:%s", line);
+#endif
 		j = strlen(line);
 		if (line[j-1] != '\n') {
 		    if (j >= BUFSIZ-1) {
@@ -464,7 +479,9 @@ process() {
 	}
     }
 
-/*    fprintf(stderr, "Returning from process\n");*/
+#if defined(DEBUG) && defined(NOFORK)
+    fprintf(stderr, "Returning from process\n");
+#endif
     return(0);
 }
 
