@@ -33,6 +33,8 @@
 
 #include <glade/glade-xml.h>
 #include <libgnome/gnome-help.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-entry.h>
 
 #include "gedit2.h"
 #include "gedit-mdi.h"
@@ -52,15 +54,6 @@ struct _GeditDialogOpenUri {
 static void open_button_pressed (GeditDialogOpenUri * dialog);
 static void help_button_pressed (GeditDialogOpenUri * dialog);
 static GeditDialogOpenUri *dialog_open_uri_get_dialog (void);
-static void dialog_open_uri_list_activate (GtkWidget *uri_list, 
-		GeditDialogOpenUri *dlg);
-
-static void
-dialog_open_uri_list_activate (GtkWidget *uri_list, GeditDialogOpenUri *dlg)
-{
-	g_return_if_fail (dlg != NULL);
-	gtk_dialog_response (GTK_DIALOG (dlg->dialog), GTK_RESPONSE_OK);
-}
 
 static GeditDialogOpenUri *
 dialog_open_uri_get_dialog (void)
@@ -87,7 +80,7 @@ dialog_open_uri_get_dialog (void)
 
 	dialog = g_new0 (GeditDialogOpenUri, 1);
 
-	dialog->dialog = gtk_dialog_new_with_buttons (_("Open from URI"),
+	dialog->dialog = gtk_dialog_new_with_buttons (_("Open Location"),
 						      window,
 						      GTK_DIALOG_MODAL,
 						      GTK_STOCK_CANCEL,
@@ -111,10 +104,6 @@ dialog_open_uri_get_dialog (void)
 		return NULL;
 	}
 
-	g_signal_connect (G_OBJECT (dialog->uri_list), "activate", 
-			G_CALLBACK (dialog_open_uri_list_activate), dialog);
-
-	
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog->dialog)->vbox),
 			    content, FALSE, FALSE, 0);
 
@@ -178,6 +167,10 @@ open_button_pressed (GeditDialogOpenUri * dialog)
 
 	file_name =
 	    gtk_editable_get_chars (GTK_EDITABLE (dialog->uri), 0, -1);
+
+	gnome_entry_prepend_history (GNOME_ENTRY (dialog->uri_list), 
+				     TRUE,
+				     file_name);
 
 	gtk_widget_hide (dialog->dialog);
 

@@ -151,7 +151,7 @@ void taglist_window_show ()
 
 	gtk_tooltips_set_tip (gtk_tooltips_new (),
 			GTK_COMBO (tag_list_window->tag_groups_combo)->entry,
-			_("Select the group of tab you want to use"),
+			_("Select the group of tags you want to use"),
 			NULL);
 	
 	gtk_editable_set_editable (GTK_EDITABLE (
@@ -180,7 +180,8 @@ void taglist_window_show ()
 							ATK_RELATION_CONTROLLER_FOR);
 	gedit_utils_set_atk_relation (tag_list_window->tags_list, tag_list_window->tag_groups_combo, 
 							ATK_RELATION_CONTROLLED_BY);
-	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tag_list_window->tags_list), TRUE);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (tag_list_window->tags_list), FALSE);
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (tag_list_window->tags_list), FALSE);
 
 	gtk_tooltips_set_tip (gtk_tooltips_new (),
 			tag_list_window->tags_list,

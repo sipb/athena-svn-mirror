@@ -28,6 +28,10 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <libgnomeui/libgnomeui.h>
 #include <glib/gunicode.h>
 #include <libgnome/gnome-i18n.h>
@@ -45,7 +49,11 @@
 #include "gedit2.h"
 #include "bonobo-mdi.h"
 #include "gedit-document.h"
+#include "gedit-prefs-manager.h"
+#include "gedit-encodings.h"
 #include "gedit-debug.h"
+
+#define STDIN_DELAY_MICROSECONDS 100000
 
 /* =================================================== */
 /* Flash */
@@ -367,7 +375,7 @@ g_utf8_strcasestr(const gchar *haystack, const gchar *needle)
 	/* Not so efficient */
 	while (*p)
 	{
-		if ((memcmp (caseless_haystack, caseless_needle, needle_len) == 0))
+		if ((strncmp (caseless_haystack, caseless_needle, needle_len) == 0))
 		{
 			ret = p;
 			goto finally_1;
@@ -402,7 +410,7 @@ g_utf8_caselessnmatch (const char *s1, const char *s2, gssize n1, gssize n2)
 	gint len_s1;
 	gint len_s2;
 	gboolean ret = FALSE;
-	
+
 	g_return_val_if_fail (s1 != NULL, FALSE);
 	g_return_val_if_fail (s2 != NULL, FALSE);
 	g_return_val_if_fail (n1 > 0, FALSE);
@@ -419,10 +427,10 @@ g_utf8_caselessnmatch (const char *s1, const char *s2, gssize n1, gssize n2)
 	len_s1 = strlen (normalized_s1);
 	len_s2 = strlen (normalized_s2);
 
-	if (len_s1 != len_s2)
+	if (len_s1 < len_s2)
 		goto finally_2;
 
-	ret = (memcmp (normalized_s1, normalized_s2, len_s1) == 0);
+	ret = (strncmp (normalized_s1, normalized_s2, len_s2) == 0);
 	
 finally_2:
 	g_free (normalized_s1);
@@ -528,7 +536,7 @@ lines_match (const GtkTextIter *start,
       /* If it's not the first line, we have to match from the
        * start of the line.
        */
-      if (g_utf8_caselessnmatch (line_text, *lines, strlen (line_text), strlen (*lines)) == 0)
+      if (g_utf8_caselessnmatch (line_text, *lines, strlen (line_text), strlen (*lines)))
         found = line_text;
       else
         found = NULL;
@@ -574,7 +582,6 @@ lines_match (const GtkTextIter *start,
    */
   return lines_match (&next, lines, visible_only, slice, NULL, match_end);
 }
-
 /* strsplit () that retains the delimiter as part of the string. */
 static gchar **
 strbreakup (const char *string,
@@ -1534,4 +1541,165 @@ gedit_utils_create_empty_file (const gchar *uri)
 		return FALSE;
 	
 	return (close (fd) == 0);
+}
+
+
+
+
+#define GEDIT_STDIN_BUFSIZE 1024
+
+gchar *
+gedit_utils_get_stdin (void)
+{
+	GString * file_contents;
+	gchar *tmp_buf = NULL;
+	guint buffer_length;
+	GnomeVFSResult	res;
+	fd_set rfds;
+	struct timeval tv;
+	
+	FD_ZERO (&rfds);
+	FD_SET (0, &rfds);
+
+	/* wait for 1/4 of a second */
+	tv.tv_sec = 0;
+	tv.tv_usec = STDIN_DELAY_MICROSECONDS;
+
+	if (select (1, &rfds, NULL, NULL, &tv) != 1)
+		return NULL;
+
+	tmp_buf = g_new0 (gchar, GEDIT_STDIN_BUFSIZE + 1);
+	g_return_val_if_fail (tmp_buf != NULL, FALSE);
+
+	file_contents = g_string_new (NULL);
+	
+	while (feof (stdin) == 0)
+	{
+		buffer_length = fread (tmp_buf, 1, GEDIT_STDIN_BUFSIZE, stdin);
+		tmp_buf [buffer_length] = '\0';
+		g_string_append (file_contents, tmp_buf);
+
+		if (ferror (stdin) != 0)
+		{
+			res = gnome_vfs_result_from_errno (); 
+		
+			g_free (tmp_buf);
+			g_string_free (file_contents, TRUE);
+			return NULL;
+		}
+	}
+
+	fclose (stdin);
+
+	return g_string_free (file_contents, FALSE);
+}
+
+
+
+static gchar *
+gedit_utils_convert_to_utf8_from_charset (const gchar *content,
+					  gsize len,
+					  const gchar *charset)
+{
+	gchar *utf8_content = NULL;
+	GError *conv_error = NULL;
+	gchar* converted_contents = NULL;
+	gsize bytes_written;
+
+	g_return_val_if_fail (content != NULL, NULL);
+
+	gedit_debug (DEBUG_UTILS, "Trying to convert from %s to UTF-8", charset);
+			
+	converted_contents = g_convert (content, len, "UTF-8",
+					charset, NULL, &bytes_written,
+					&conv_error); 
+						
+	if ((conv_error != NULL) || 
+	    !g_utf8_validate (converted_contents, bytes_written, NULL))		
+	{
+		gedit_debug (DEBUG_UTILS, "Couldn't convert from %s to UTF-8.",
+			     charset);
+				
+		if (converted_contents != NULL)
+			g_free (converted_contents);
+
+		if (conv_error != NULL)
+		{
+			g_error_free (conv_error);
+			conv_error = NULL;
+		}
+
+		utf8_content = NULL;
+	} else {
+		gedit_debug (DEBUG_UTILS,
+			"Converted from %s to UTF-8.",
+			charset);
+		utf8_content = converted_contents;
+	}
+
+	return utf8_content;
+}
+
+gchar *
+gedit_utils_convert_to_utf8 (const gchar *content, gsize len,
+			     gchar **encoding_used)
+{
+	GSList *encodings = NULL;
+	GSList *start;
+	const gchar *locale_charset;
+
+	g_return_val_if_fail (!g_utf8_validate (content, len, NULL), 
+			g_strndup (content, len < 0 ? strlen (content) : len));
+
+	encodings = gedit_prefs_manager_get_encodings ();
+
+	if (g_get_charset (&locale_charset) == FALSE) 
+	{
+		const GeditEncoding *locale_encoding;
+
+		/* not using a UTF-8 locale, so try converting
+		 * from that first */
+		if (locale_charset != NULL)
+		{
+			locale_encoding = gedit_encoding_get_from_charset (locale_charset);
+			encodings = g_slist_prepend (encodings,
+						(gpointer)locale_encoding);
+		}
+	}
+
+	start = encodings;
+
+	while (encodings != NULL) 
+	{
+		GeditEncoding *enc;
+		const gchar *charset;
+		gchar *utf8_content;
+
+		enc = (GeditEncoding *)encodings->data;
+
+		charset = gedit_encoding_get_charset (enc);
+
+		gedit_debug (DEBUG_UTILS, "Trying to convert %ld bytes of data into UTF-8.", len);
+		fflush (stdout);
+		utf8_content = gedit_utils_convert_to_utf8_from_charset
+							(content, len, charset);
+
+		if (utf8_content != NULL) {
+			if (encoding_used != NULL)
+			{
+				if (*encoding_used != NULL)
+					g_free (*encoding_used);
+				
+				*encoding_used = g_strdup (charset);
+			}
+
+			return utf8_content;
+		}
+
+		encodings = encodings->next;
+	}
+
+	g_slist_free (start);
+	
+	return NULL;
 }

@@ -18,6 +18,77 @@ _ORBIT_skel_small_GNOME_Gedit_Document_setLinePosition
 }
 
 void
+_ORBIT_skel_small_GNOME_Gedit_Document_insert(POA_GNOME_Gedit_Document *
+					      _o_servant, gpointer _o_retval,
+					      gpointer * _o_args,
+					      CORBA_Context _o_ctx,
+					      CORBA_Environment * _o_ev,
+					      void (*_impl_insert)
+					      (PortableServer_Servant
+					       _servant,
+					       const CORBA_long offset,
+					       const CORBA_char * str,
+					       const CORBA_long length,
+					       CORBA_Environment * ev))
+{
+   _impl_insert(_o_servant, *(const CORBA_long *) _o_args[0],
+		*(const CORBA_char * *) _o_args[1],
+		*(const CORBA_long *) _o_args[2], _o_ev);
+}
+
+void
+_ORBIT_skel_small_GNOME_Gedit_Document_delete(POA_GNOME_Gedit_Document *
+					      _o_servant, gpointer _o_retval,
+					      gpointer * _o_args,
+					      CORBA_Context _o_ctx,
+					      CORBA_Environment * _o_ev,
+					      void (*_impl_delete)
+					      (PortableServer_Servant
+					       _servant,
+					       const CORBA_long offset,
+					       const CORBA_long length,
+					       CORBA_Environment * ev))
+{
+   _impl_delete(_o_servant, *(const CORBA_long *) _o_args[0],
+		*(const CORBA_long *) _o_args[1], _o_ev);
+}
+
+void
+_ORBIT_skel_small_GNOME_Gedit_Document_getChars(POA_GNOME_Gedit_Document *
+						_o_servant,
+						gpointer _o_retval,
+						gpointer * _o_args,
+						CORBA_Context _o_ctx,
+						CORBA_Environment * _o_ev,
+						CORBA_string(*_impl_getChars)
+						(PortableServer_Servant
+						 _servant,
+						 const CORBA_long offset,
+						 const CORBA_long length,
+						 CORBA_Environment * ev))
+{
+   *(CORBA_string *) _o_retval =
+      _impl_getChars(_o_servant, *(const CORBA_long *) _o_args[0],
+		     *(const CORBA_long *) _o_args[1], _o_ev);
+}
+
+void
+_ORBIT_skel_small_GNOME_Gedit_Document_getCharCount(POA_GNOME_Gedit_Document *
+						    _o_servant,
+						    gpointer _o_retval,
+						    gpointer * _o_args,
+						    CORBA_Context _o_ctx,
+						    CORBA_Environment * _o_ev,
+						    CORBA_long
+						    (*_impl_getCharCount)
+						    (PortableServer_Servant
+						     _servant,
+						     CORBA_Environment * ev))
+{
+   *(CORBA_long *) _o_retval = _impl_getCharCount(_o_servant, _o_ev);
+}
+
+void
 _ORBIT_skel_small_GNOME_Gedit_Window_openURIList(POA_GNOME_Gedit_Window *
 						 _o_servant,
 						 gpointer _o_retval,
@@ -119,6 +190,94 @@ get_skel_small_GNOME_Gedit_Document(POA_GNOME_Gedit_Document * servant,
 				    gpointer * impl)
 {
    switch (opname[0]) {
+     case 'd':
+	if (strcmp((opname + 1), "elete"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Gedit_Document_epv->delete;
+	*m_data =
+	   (gpointer) & GNOME_Gedit_Document__iinterface.methods._buffer[2];
+	return (ORBitSmallSkeleton)
+	   _ORBIT_skel_small_GNOME_Gedit_Document_delete;
+	break;
+     case 'g':
+	switch (opname[1]) {
+	  case 'e':
+	     switch (opname[2]) {
+	       case 't':
+		  switch (opname[3]) {
+		    case 'C':
+		       switch (opname[4]) {
+			 case 'h':
+			    switch (opname[5]) {
+			      case 'a':
+				 switch (opname[6]) {
+				   case 'r':
+				      switch (opname[7]) {
+					case 'C':
+					   if (strcmp((opname + 8), "ount"))
+					      break;
+					   *impl =
+					      (gpointer) servant->vepv->
+					      GNOME_Gedit_Document_epv->
+					      getCharCount;
+					   *m_data =
+					      (gpointer) &
+					      GNOME_Gedit_Document__iinterface.
+					      methods._buffer[4];
+					   return (ORBitSmallSkeleton)
+					      _ORBIT_skel_small_GNOME_Gedit_Document_getCharCount;
+					   break;
+					case 's':
+					   if (strcmp((opname + 8), ""))
+					      break;
+					   *impl =
+					      (gpointer) servant->vepv->
+					      GNOME_Gedit_Document_epv->
+					      getChars;
+					   *m_data =
+					      (gpointer) &
+					      GNOME_Gedit_Document__iinterface.
+					      methods._buffer[3];
+					   return (ORBitSmallSkeleton)
+					      _ORBIT_skel_small_GNOME_Gedit_Document_getChars;
+					   break;
+					default:
+					   break;
+				      }
+				      break;
+				   default:
+				      break;
+				 }
+				 break;
+			      default:
+				 break;
+			    }
+			    break;
+			 default:
+			    break;
+		       }
+		       break;
+		    default:
+		       break;
+		  }
+		  break;
+	       default:
+		  break;
+	     }
+	     break;
+	  default:
+	     break;
+	}
+	break;
+     case 'i':
+	if (strcmp((opname + 1), "nsert"))
+	   break;
+	*impl = (gpointer) servant->vepv->GNOME_Gedit_Document_epv->insert;
+	*m_data =
+	   (gpointer) & GNOME_Gedit_Document__iinterface.methods._buffer[1];
+	return (ORBitSmallSkeleton)
+	   _ORBIT_skel_small_GNOME_Gedit_Document_insert;
+	break;
      case 'q':
 	if (strcmp((opname + 1), "ueryInterface"))
 	   break;

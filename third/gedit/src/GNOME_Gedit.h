@@ -192,6 +192,41 @@ extern "C"
 #define TC_GNOME_Gedit_Document ((CORBA_TypeCode)&TC_GNOME_Gedit_Document_struct)
 #endif
 #endif
+#undef ex_GNOME_Gedit_Document_DocumentReadOnly
+#define ex_GNOME_Gedit_Document_DocumentReadOnly "IDL:GNOME/Gedit/Document/DocumentReadOnly:1.0"
+#if !defined(_GNOME_Gedit_Document_DocumentReadOnly_defined)
+#define _GNOME_Gedit_Document_DocumentReadOnly_defined 1
+   typedef struct GNOME_Gedit_Document_DocumentReadOnly_type
+      GNOME_Gedit_Document_DocumentReadOnly;
+   struct GNOME_Gedit_Document_DocumentReadOnly_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_0)
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_0 'G'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_1 'N'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_2 'O'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_3 'M'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_4 'E'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_5 '_'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_6 'G'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_7 'e'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_8 'd'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_9 'i'
+#define TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_10 't'
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Gedit
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_GNOME_Gedit_Document_DocumentReadOnly_struct;
+#define TC_GNOME_Gedit_Document_DocumentReadOnly ((CORBA_TypeCode)&TC_GNOME_Gedit_Document_DocumentReadOnly_struct)
+#endif
+#define GNOME_Gedit_Document_DocumentReadOnly__alloc() ((GNOME_Gedit_Document_DocumentReadOnly *)ORBit_small_alloc (TC_GNOME_Gedit_Document_DocumentReadOnly))
+#define GNOME_Gedit_Document_DocumentReadOnly__freekids(m,d) ORBit_small_freekids (TC_GNOME_Gedit_Document_DocumentReadOnly,(m),(d))
+#endif
 #if !defined(ORBIT_DECL_GNOME_Gedit_Window) && !defined(_GNOME_Gedit_Window_defined)
 #define ORBIT_DECL_GNOME_Gedit_Window 1
 #define _GNOME_Gedit_Window_defined 1
@@ -255,6 +290,18 @@ extern "C"
       void *_private;
       void (*setLinePosition) (PortableServer_Servant _servant,
 			       const CORBA_long line, CORBA_Environment * ev);
+      void (*insert) (PortableServer_Servant _servant,
+		      const CORBA_long offset, const CORBA_char * str,
+		      const CORBA_long length, CORBA_Environment * ev);
+      void (*delete) (PortableServer_Servant _servant,
+		      const CORBA_long offset, const CORBA_long length,
+		      CORBA_Environment * ev);
+       CORBA_string(*getChars) (PortableServer_Servant _servant,
+				const CORBA_long offset,
+				const CORBA_long length,
+				CORBA_Environment * ev);
+       CORBA_long(*getCharCount) (PortableServer_Servant _servant,
+				  CORBA_Environment * ev);
    }
    POA_GNOME_Gedit_Document__epv;
    typedef struct
@@ -351,6 +398,60 @@ extern "C"
        void (*_impl_setLinePosition) (PortableServer_Servant _servant,
 				      const CORBA_long line,
 				      CORBA_Environment * ev));
+   void _ORBIT_skel_small_GNOME_Gedit_Document_insert(POA_GNOME_Gedit_Document
+						      * _ORBIT_servant,
+						      gpointer _ORBIT_retval,
+						      gpointer * _ORBIT_args,
+						      CORBA_Context ctx,
+						      CORBA_Environment * ev,
+						      void (*_impl_insert)
+						      (PortableServer_Servant
+						       _servant,
+						       const CORBA_long
+						       offset,
+						       const CORBA_char * str,
+						       const CORBA_long
+						       length,
+						       CORBA_Environment *
+						       ev));
+   void _ORBIT_skel_small_GNOME_Gedit_Document_delete(POA_GNOME_Gedit_Document
+						      * _ORBIT_servant,
+						      gpointer _ORBIT_retval,
+						      gpointer * _ORBIT_args,
+						      CORBA_Context ctx,
+						      CORBA_Environment * ev,
+						      void (*_impl_delete)
+						      (PortableServer_Servant
+						       _servant,
+						       const CORBA_long
+						       offset,
+						       const CORBA_long
+						       length,
+						       CORBA_Environment *
+						       ev));
+   void
+      _ORBIT_skel_small_GNOME_Gedit_Document_getChars(POA_GNOME_Gedit_Document
+						      * _ORBIT_servant,
+						      gpointer _ORBIT_retval,
+						      gpointer * _ORBIT_args,
+						      CORBA_Context ctx,
+						      CORBA_Environment * ev,
+						      CORBA_string
+						      (*_impl_getChars)
+						      (PortableServer_Servant
+						       _servant,
+						       const CORBA_long
+						       offset,
+						       const CORBA_long
+						       length,
+						       CORBA_Environment *
+						       ev));
+   void
+      _ORBIT_skel_small_GNOME_Gedit_Document_getCharCount
+      (POA_GNOME_Gedit_Document * _ORBIT_servant, gpointer _ORBIT_retval,
+       gpointer * _ORBIT_args, CORBA_Context ctx, CORBA_Environment * ev,
+       CORBA_long(*_impl_getCharCount) (PortableServer_Servant _servant,
+					CORBA_Environment * ev));
    void
       _ORBIT_skel_small_GNOME_Gedit_Window_openURIList(POA_GNOME_Gedit_Window
 						       * _ORBIT_servant,
@@ -426,6 +527,21 @@ extern "C"
    void GNOME_Gedit_Document_setLinePosition(GNOME_Gedit_Document _obj,
 					     const CORBA_long line,
 					     CORBA_Environment * ev);
+   void GNOME_Gedit_Document_insert(GNOME_Gedit_Document _obj,
+				    const CORBA_long offset,
+				    const CORBA_char * str,
+				    const CORBA_long length,
+				    CORBA_Environment * ev);
+   void GNOME_Gedit_Document_delete(GNOME_Gedit_Document _obj,
+				    const CORBA_long offset,
+				    const CORBA_long length,
+				    CORBA_Environment * ev);
+   CORBA_string GNOME_Gedit_Document_getChars(GNOME_Gedit_Document _obj,
+					      const CORBA_long offset,
+					      const CORBA_long length,
+					      CORBA_Environment * ev);
+   CORBA_long GNOME_Gedit_Document_getCharCount(GNOME_Gedit_Document _obj,
+						CORBA_Environment * ev);
 #define GNOME_Gedit_Window_ref Bonobo_Unknown_ref
 #define GNOME_Gedit_Window_unref Bonobo_Unknown_unref
 #define GNOME_Gedit_Window_queryInterface Bonobo_Unknown_queryInterface
@@ -460,7 +576,7 @@ extern "C"
    extern
 #endif
    ORBit_IInterface GNOME_Gedit_Document__iinterface;
-#define GNOME_Gedit_Document_IMETHODS_LEN 1
+#define GNOME_Gedit_Document_IMETHODS_LEN 5
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_Gedit
    static
 #else

@@ -27,6 +27,10 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 
 #include <gconf/gconf-client.h>
@@ -41,7 +45,7 @@
 #include "gedit-view.h"
 #include "gedit-mdi.h"
 #include "gedit2.h"
-
+#include "gedit-encodings.h"
 
 #define GPM_PREFS_DIR			GEDIT_BASE_KEY "/preferences"
 
@@ -74,9 +78,16 @@
 
 #define GPM_TABS_DIR			GPM_PREFS_DIR "/editor/tabs"
 #define GPM_TABS_SIZE			GPM_TABS_DIR "/tabs_size"
+#define GPM_INSERT_SPACES		GPM_TABS_DIR "/insert_spaces"
+
+#define GPM_AUTO_INDENT_DIR		GPM_PREFS_DIR "/editor/auto_indent"
+#define GPM_AUTO_INDENT			GPM_AUTO_INDENT_DIR "/auto_indent"
 
 #define GPM_LINE_NUMBERS_DIR		GPM_PREFS_DIR "/editor/line_numbers"
 #define GPM_DISPLAY_LINE_NUMBERS 	GPM_LINE_NUMBERS_DIR "/display_line_numbers"
+
+#define GPM_LOAD_DIR			GPM_PREFS_DIR "/editor/load"
+#define GPM_ENCODINGS			GPM_LOAD_DIR "/encodings"
 
 /* UI */
 #define GPM_TOOLBAR_DIR			GPM_PREFS_DIR "/ui/toolbar"
@@ -110,7 +121,7 @@
 /* Fallback default values. Keep in sync with gedit.schemas */
 
 #define GPM_DEFAULT_USE_DEFAULT_FONT 	0 /* FALSE */
-#define GPM_DEFAULT_EDITOR_FONT 	(const gchar*) "Courier Medium 12"
+#define GPM_DEFAULT_EDITOR_FONT 	(const gchar*) "Monospace 12"
 
 #define GPM_DEFAULT_USE_DEFAULT_COLORS 	1 /* TRUE */
 #define GPM_DEFAULT_BACKGROUND_COLOR	(const gchar*) "#ffffffffffff"
@@ -131,9 +142,14 @@
 #define GPM_DEFAULT_WRAP_MODE		"GTK_WRAP_WORD"
 
 #define GPM_DEFAULT_TABS_SIZE		8
+#define GPM_DEFAULT_INSERT_SPACES	0 /* FALSE */
+
+#define GPM_DEFAULT_AUTO_INDENT		0 /* FALSE */
 
 #define GPM_DEFAULT_DISPLAY_LINE_NUMBERS 0 /* FALSE */
 
+#define GPM_DEFAULT_ENCODINGS		{"ISO-8859-15", NULL}
+       	
 #define GPM_DEFAULT_TOOLBAR_VISIBLE	1 /* TRUE */
 #define GPM_DEFAULT_TOOLBAR_BUTTONS_STYLE "GEDIT_TOOLBAR_SYSTEM"
 #define GPM_DEFAULT_TOOLBAR_SHOW_TOOLTIPS 1 /* TRUE */
@@ -146,9 +162,9 @@
 #define GPM_DEFAULT_PRINT_WRAP_MODE	"GTK_WRAP_CHAR"
 #define GPM_DEFAULT_PRINT_LINE_NUMBERS	0 /* No numbers */
 
-#define GPM_DEFAULT_PRINT_FONT_BODY 	(const gchar*) "Courier 9"
-#define GPM_DEFAULT_PRINT_FONT_HEADER	(const gchar*) "Helvetica 11"
-#define GPM_DEFAULT_PRINT_FONT_NUMBERS	(const gchar*) "Helvetica 8"
+#define GPM_DEFAULT_PRINT_FONT_BODY 	(const gchar*) "Monospace Regular 9"
+#define GPM_DEFAULT_PRINT_FONT_HEADER	(const gchar*) "Sans Regular 11"
+#define GPM_DEFAULT_PRINT_FONT_NUMBERS	(const gchar*) "Sans Regular 8"
 
 #define GPM_DEFAULT_MAX_RECENTS		5
 
@@ -882,6 +898,16 @@ DEFINE_INT_PREF (tabs_size,
 		 GPM_TABS_SIZE, 
 		 GPM_DEFAULT_TABS_SIZE);
 
+/* Insert spaces */
+DEFINE_BOOL_PREF (insert_spaces, 
+		  GPM_INSERT_SPACES, 
+		  GPM_DEFAULT_INSERT_SPACES)
+
+/* Auto indent */
+DEFINE_BOOL_PREF (auto_indent, 
+		  GPM_AUTO_INDENT, 
+		  GPM_DEFAULT_AUTO_INDENT)
+
 /* Display line numbers */
 DEFINE_BOOL_PREF (display_line_numbers, 
 		  GPM_DISPLAY_LINE_NUMBERS, 
@@ -911,8 +937,13 @@ gedit_prefs_manager_get_toolbar_buttons_style (void)
 	{
 		if (strcmp (str, "GEDIT_TOOLBAR_ICONS_AND_TEXT") == 0)
 			res = GEDIT_TOOLBAR_ICONS_AND_TEXT;
-		else
-			res = GEDIT_TOOLBAR_SYSTEM;
+		else 
+		{
+			if (strcmp (str, "GEDIT_TOOLBAR_ICONS_BOTH_HORIZ") == 0)
+				res = GEDIT_TOOLBAR_ICONS_BOTH_HORIZ;
+			else
+				res = GEDIT_TOOLBAR_SYSTEM;
+		}
 	}
 
 	g_free (str);
@@ -938,6 +969,9 @@ gedit_prefs_manager_set_toolbar_buttons_style (GeditToolbarSetting tbs)
 			str = "GEDIT_TOOLBAR_ICONS_AND_TEXT";
 			break;
 
+	        case GEDIT_TOOLBAR_ICONS_BOTH_HORIZ:
+			str = "GEDIT_TOOLBAR_ICONS_BOTH_HORIZ";
+			break;
 		default: /* GEDIT_TOOLBAR_SYSTEM */
 			str = "GEDIT_TOOLBAR_SYSTEM";
 	}
@@ -1049,15 +1083,33 @@ DEFINE_STRING_PREF (print_font_body,
 		    GPM_PRINT_FONT_BODY,
 		    GPM_DEFAULT_PRINT_FONT_BODY);
 
+const gchar *
+gedit_prefs_manager_get_default_print_font_body (void)
+{
+	return GPM_DEFAULT_PRINT_FONT_BODY;
+}
+
 /* Font used to print headers */
 DEFINE_STRING_PREF (print_font_header,
 		    GPM_PRINT_FONT_HEADER,
 		    GPM_DEFAULT_PRINT_FONT_HEADER);
 
+const gchar *
+gedit_prefs_manager_get_default_print_font_header (void)
+{
+	return GPM_DEFAULT_PRINT_FONT_HEADER;
+}
+
 /* Font used to print line numbers */
 DEFINE_STRING_PREF (print_font_numbers,
 		    GPM_PRINT_FONT_NUMBERS,
 		    GPM_DEFAULT_PRINT_FONT_NUMBERS);
+
+const gchar *
+gedit_prefs_manager_get_default_print_font_numbers (void)
+{
+	return GPM_DEFAULT_PRINT_FONT_NUMBERS;
+}
 
 
 /* Max number of files in "Recent Files" menu. 
@@ -1117,13 +1169,18 @@ gedit_prefs_manager_editor_font_changed (GConfClient *client,
 
 	while (children != NULL)
 	{
+		gint ts;
+		
 		GList *views = bonobo_mdi_child_get_views (BONOBO_MDI_CHILD (children->data));
 
+		ts = gedit_prefs_manager_get_tabs_size ();
 		while (views != NULL)
 		{
 			GeditView *v =	GEDIT_VIEW (views->data);
 			
 			gedit_view_set_font (v, def, font);
+			gedit_view_set_tab_size (v, ts);
+
 			views = views->next;
 		}
 		
@@ -1488,6 +1545,122 @@ gedit_prefs_manager_window_width_can_set (void)
 	return TRUE;
 }
 
+void
+gedit_prefs_manager_save_window_size_and_state (BonoboWindow *window)
+{
+	const BonoboMDIWindowInfo *window_info;
+
+	gedit_debug (DEBUG_PREFS, "");
+	
+	g_return_if_fail (window != NULL);
+	g_return_if_fail (BONOBO_IS_WINDOW (window));
+
+	window_info = bonobo_mdi_get_window_info (window);
+	g_return_if_fail (window_info != NULL);
+	
+	if (gedit_prefs_manager_window_height_can_set ())
+		gedit_prefs_manager_set_window_height (window_info->height);
+
+	if (gedit_prefs_manager_window_width_can_set ())
+		gedit_prefs_manager_set_window_width (window_info->width);
+
+	if (gedit_prefs_manager_window_state_can_set ())
+		gedit_prefs_manager_set_window_state (window_info->state);
+}
+
+
+/* Encodings */
+GSList *
+gedit_prefs_manager_get_encodings (void)
+{
+	GSList *strings;
+	GSList *res = NULL;
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_val_if_fail (gedit_prefs_manager != NULL, NULL);
+	g_return_val_if_fail (gedit_prefs_manager->gconf_client != NULL, NULL);
+
+	strings = gconf_client_get_list (gedit_prefs_manager->gconf_client,
+				GPM_ENCODINGS,
+				GCONF_VALUE_STRING, 
+				NULL);
+
+	if (strings != NULL)
+	{	
+		GSList *tmp;
+		const GeditEncoding *enc;
+
+		tmp = strings;
+		
+		while (tmp)
+		{
+		      const char *charset = tmp->data;
+
+		      if (strcmp (charset, "current") == 0)
+			      g_get_charset (&charset);
+      
+		      g_return_val_if_fail (charset != NULL, NULL);
+		      enc = gedit_encoding_get_from_charset (charset);
+		      
+		      if (enc != NULL)
+				res = g_slist_prepend (res, (gpointer)enc);
+
+		      tmp = g_slist_next (tmp);
+		}
+
+		g_slist_foreach (strings, (GFunc) g_free, NULL);
+		g_slist_free (strings);    
+
+	 	res = g_slist_reverse (res);
+	}
+
+	return res;
+}
+
+void
+gedit_prefs_manager_set_encodings (const GSList *encs)
+{	
+	GSList *list = NULL;
+	
+	g_return_if_fail (gedit_prefs_manager != NULL);
+	g_return_if_fail (gedit_prefs_manager->gconf_client != NULL);
+	g_return_if_fail (gedit_prefs_manager_encodings_can_set ());
+
+	while (encs != NULL)
+	{
+		const GeditEncoding *enc;
+		const gchar *charset;
+		
+		enc = (const GeditEncoding *)encs->data;
+
+		charset = gedit_encoding_get_charset (enc);
+		g_return_if_fail (charset != NULL);
+
+		list = g_slist_prepend (list, (gpointer)charset);
+
+		encs = g_slist_next (encs);
+	}
+
+	list = g_slist_reverse (list);
+		
+	gconf_client_set_list (gedit_prefs_manager->gconf_client,
+			GPM_ENCODINGS,
+			GCONF_VALUE_STRING,
+		       	list,
+			NULL);	
+	
+	g_slist_free (list);
+}
+
+gboolean
+gedit_prefs_manager_encodings_can_set (void)
+{
+	gedit_debug (DEBUG_PREFS, "");
+	
+	return gedit_prefs_manager_key_is_writable (GPM_ENCODINGS);
+
+}
+
 
 /* The following functions are taken from gconf-client.c 
  * and partially modified. 
@@ -1544,8 +1717,7 @@ gconf_value_type_to_string(GConfValueType type)
       return "*invalid*";
       break;
     default:
-      g_assert_not_reached();
-      return NULL; /* for warnings */
+      g_return_val_if_fail (FALSE, NULL);
       break;
     }
 }
@@ -1574,7 +1746,7 @@ handle_error (GConfClient* client, GError* error, GError** err)
 }
 
 static gboolean
-check_type(const gchar* key, GConfValue* val, GConfValueType t, GError** err)
+check_type (const gchar* key, GConfValue* val, GConfValueType t, GError** err)
 {
   if (val->type != t)
     {
@@ -1604,7 +1776,7 @@ gconf_client_get_bool_with_default (GConfClient* client, const gchar* key,
   GError* error = NULL;
   GConfValue* val;
 
-  g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
+  g_return_val_if_fail (err == NULL || *err == NULL, def);
 
   val = gconf_client_get (client, key, &error);
 
@@ -1612,7 +1784,7 @@ gconf_client_get_bool_with_default (GConfClient* client, const gchar* key,
     {
       gboolean retval = def;
 
-      g_assert (error == NULL);
+      g_return_val_if_fail (error == NULL, retval);
       
       if (check_type (key, val, GCONF_VALUE_BOOL, &error))
         retval = gconf_value_get_bool (val);
@@ -1638,13 +1810,13 @@ gconf_client_get_string_with_default (GConfClient* client, const gchar* key,
   GError* error = NULL;
   gchar* val;
 
-  g_return_val_if_fail (err == NULL || *err == NULL, NULL);
+  g_return_val_if_fail (err == NULL || *err == NULL, def ? g_strdup (def) : NULL);
 
   val = gconf_client_get_string (client, key, &error);
 
   if (val != NULL)
     {
-      g_assert(error == NULL);
+      g_return_val_if_fail (error == NULL, def ? g_strdup (def) : NULL);
       
       return val;
     }
@@ -1663,7 +1835,7 @@ gconf_client_get_int_with_default (GConfClient* client, const gchar* key,
   GError* error = NULL;
   GConfValue* val;
 
-  g_return_val_if_fail (err == NULL || *err == NULL, 0);
+  g_return_val_if_fail (err == NULL || *err == NULL, def);
 
   val = gconf_client_get (client, key, &error);
 
@@ -1671,7 +1843,7 @@ gconf_client_get_int_with_default (GConfClient* client, const gchar* key,
     {
       gint retval = def;
 
-      g_assert(error == NULL);
+      g_return_val_if_fail (error == NULL, def);
       
       if (check_type (key, val, GCONF_VALUE_INT, &error))
         retval = gconf_value_get_int(val);

@@ -20,6 +20,9 @@ extern void gedit_marshal_BOOLEAN__OBJECT (GClosure     *closure,
 /* VOID:BOOLEAN (gedit-marshal.list:3) */
 #define gedit_marshal_VOID__BOOLEAN	g_cclosure_marshal_VOID__BOOLEAN
 
+/* VOID:OBJECT (gedit-marshal.list:4) */
+#define gedit_marshal_VOID__OBJECT	g_cclosure_marshal_VOID__OBJECT
+
 G_END_DECLS
 
 #endif /* __gedit_marshal_MARSHAL_H__ */

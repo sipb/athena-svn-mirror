@@ -20,7 +20,7 @@
       <applyto>/apps/gedit-2/preferences/editor/font/editor_font</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Courier Medium 12</default>
+      <default>Monospace 12</default>
       <locale name="C">
 	<short>Editor Font</short>
 	<long>A custom font that will be used for the editing area.
@@ -225,6 +225,30 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/gedit-2/preferences/editor/tabs/insert_spaces</key>
+      <applyto>/apps/gedit-2/preferences/editor/tabs/insert_spaces</applyto>
+      <owner>gedit</owner>
+      <type>bool</type>
+      <default>FALSE</default>
+      <locale name="C">
+	<short>Insert spaces</short>
+	<long>Whether gedit should insert spaces instead of tabs.</long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/gedit-2/preferences/editor/auto_indent/auto_indent</key>
+      <applyto>/apps/gedit-2/preferences/editor/auto_indent/auto_indent</applyto>
+      <owner>gedit</owner>
+      <type>bool</type>
+      <default>FALSE</default>
+      <locale name="C">
+	<short>Auto indent</short>
+	<long>Whether gedit should enable auto indentation.</long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/gedit-2/preferences/editor/line_numbers/display_line_numbers</key>
       <applyto>/apps/gedit-2/preferences/editor/line_numbers/display_line_numbers</applyto>
       <owner>gedit</owner>
@@ -259,8 +283,9 @@
 	<short>Toolbar Buttons Style</short>
 	<long>Style for the toolbar buttons.  Possible values are
 	"GEDIT_TOOLBAR_SYSTEM" to use the system's default style,
-	"GEDIT_TOOLBAR_ICONS" to display icons only, and
-	"GEDIT_TOOLBAR_ICONS_AND_TEXT" to display both icons and text.
+	"GEDIT_TOOLBAR_ICONS" to display icons only, 
+	"GEDIT_TOOLBAR_ICONS_AND_TEXT" to display both icons and text, and
+	"GEDIT_TOOLBAR_ICONS_BOTH_HORIZ" to display prioritized text beside icons.
 	Note that the values are case-sensitive, so make sure they
 	appear exactly as mentioned here.</long>
       </locale>
@@ -356,7 +381,7 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_body</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Courier 9</default>
+      <default>Monospace Regular 9</default>
       <locale name="C">
 	<short>Body Font for Printing</short>
 	<long>Specifies the font to use for a document's body when
@@ -369,7 +394,7 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_header</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Helvetica 11</default>
+      <default>Sans Regular 11</default>
       <locale name="C">
 	<short>Header Font for Printing</short>
 	<long>Specifies the font to use for page headers when printing
@@ -383,7 +408,7 @@
       <applyto>/apps/gedit-2/preferences/print/fonts/print_font_numbers</applyto>
       <owner>gedit</owner>
       <type>string</type>
-      <default>Helvetica 8</default>
+      <default>Sans Regular 8</default>
       <locale name="C">
 	<short>Line Number Font for Printing</short>
 	<long>Specifies the font to use for line numbers when
@@ -404,5 +429,20 @@
 	that will be displayed in the "Recent Files" submenu.</long>
       </locale>
     </schema>
+
+    <schema>
+      <key>/schemas/apps/gedit-2/preferences/editor/load/encodings</key>
+      <applyto>/apps/gedit-2/preferences/editor/load/encodings</applyto>
+      <owner>gedit</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[ISO-8859-15]</default>
+      <locale name="C">
+	<short>Encodings</short>
+	<long>List of encodings used by gedit for reading files not encoded
+	in UTF-8 or in the current locale encoding.</long>
+      </locale>
+    </schema>
+
   </schemalist>
 </gconfschemafile>

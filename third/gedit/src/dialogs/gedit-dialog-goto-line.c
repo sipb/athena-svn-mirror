@@ -27,6 +27,10 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <glade/glade-xml.h>
 #include <libgnome/libgnome.h>
 
@@ -136,7 +140,7 @@ dialog_goto_line_get_dialog (void)
 
 	dialog = g_new0 (GeditDialogGotoLine, 1);
 
-	dialog->dialog = gtk_dialog_new_with_buttons (_("Goto line..."),
+	dialog->dialog = gtk_dialog_new_with_buttons (_("Go to Line"),
 						      window,
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_STOCK_CLOSE,
@@ -146,7 +150,7 @@ dialog_goto_line_get_dialog (void)
 	g_return_val_if_fail (dialog->dialog != NULL, NULL);
 
 	/* Add Goto Line button */
-	button = gedit_button_new_with_stock_image (_("_Goto line"), GTK_STOCK_JUMP_TO);
+	button = gedit_button_new_with_stock_image (_("_Go to Line"), GTK_STOCK_JUMP_TO);
 	g_return_val_if_fail (button != NULL, NULL);
 
 	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
@@ -162,7 +166,8 @@ dialog_goto_line_get_dialog (void)
 
 	if (!dialog->entry) {
 		g_warning (
-			_("Could not find the required widgets inside goto-line.glade2.\n"));
+			_("Could not find the required widgets inside %s."),
+			"goto-line.glade2");
 		g_object_unref (gui);
 		return NULL;
 	}
@@ -174,13 +179,13 @@ dialog_goto_line_get_dialog (void)
 					 GTK_RESPONSE_OK);
 
 	g_signal_connect (G_OBJECT (dialog->entry), "insert_text",
-			  G_CALLBACK (entry_insert_text), dialog);
+			  G_CALLBACK (entry_insert_text), NULL);
 
-	g_signal_connect(G_OBJECT (dialog->dialog), "destroy",
-			 G_CALLBACK (dialog_destroyed), &dialog);
+	g_signal_connect (G_OBJECT (dialog->dialog), "destroy",
+			  G_CALLBACK (dialog_destroyed), &dialog);
 
-	g_signal_connect(G_OBJECT (dialog->dialog), "response",
-			 G_CALLBACK (dialog_response_handler), dialog);
+	g_signal_connect (G_OBJECT (dialog->dialog), "response",
+			  G_CALLBACK (dialog_response_handler), dialog);
 
 	g_object_unref (gui);
 

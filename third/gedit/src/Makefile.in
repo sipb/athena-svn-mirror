@@ -64,6 +64,8 @@ BONOBO_ACTIVATION_IDL = @BONOBO_ACTIVATION_IDL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -98,9 +100,11 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
 LIBBONOBO_IDL = @LIBBONOBO_IDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -116,7 +120,11 @@ PKG_CONFIG = @PKG_CONFIG@
 PLUGIN_LIBTOOL_FLAGS = @PLUGIN_LIBTOOL_FLAGS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+PSPELL_LIBS = @PSPELL_LIBS@
 RANLIB = @RANLIB@
+SPELL_PLUGIN_DIR = @SPELL_PLUGIN_DIR@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
@@ -124,18 +132,18 @@ VERSION = @VERSION@
 l = @l@
 pixmapsdir = @pixmapsdir@
 
-SUBDIRS = dialogs
+SUBDIRS = dialogs recent-files
 
 bin_PROGRAMS = gedit
 
 uidir = $(datadir)/gedit-2/ui/
 
-INCLUDES =  	-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/dialogs						$(GEDIT_CFLAGS)							-DDATADIR=\""$(datadir)"\"					-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\"			-DGEDIT_LOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DGEDIT_UI_DIR=\""$(datadir)/gedit-2/ui/"\"			-DGEDIT_PLUGINDIR=\""$(libdir)/gedit-2/plugins"\"		-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"		-DG_DISABLE_DEPRECATED						-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED					-DGNOME_DISABLE_DEPRECATED
+INCLUDES =  	-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/dialogs						-I$(top_srcdir)/recent-files					$(GEDIT_CFLAGS)							-DDATADIR=\""$(datadir)"\"					-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\"			-DGEDIT_LOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DGEDIT_UI_DIR=\""$(datadir)/gedit-2/ui/"\"			-DGEDIT_PLUGINDIR=\""$(libdir)/gedit-2/plugins"\"		-DGEDIT_GLADEDIR=\""$(datadir)/gedit-2/glade/"\"		-DG_DISABLE_DEPRECATED						-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED					-DGNOME_DISABLE_DEPRECATED
 
 
 gedit_LDFLAGS = -export-dynamic
 
-gedit_LDADD =  	dialogs/libdialogs.a			$(GEDIT_LIBS)			
+gedit_LDADD =  	dialogs/libdialogs.a			recent-files/librecent.a		$(GEDIT_LIBS)			
 
 
 IDL_FILE = GNOME_Gedit.idl
@@ -143,10 +151,10 @@ IDL_FILE = GNOME_Gedit.idl
 IDL_SOURCES =  	GNOME_Gedit-stubs.c				GNOME_Gedit-common.c				GNOME_Gedit-skels.c				GNOME_Gedit.h		
 
 
-BUILT_SOURCES =  	gedit-marshal.c				gedit-marshal.h				gnome-recent-marshal.c			gnome-recent-marshal.h
+BUILT_SOURCES =  	gedit-marshal.c				gedit-marshal.h	
 
 
-gedit_SOURCES =  	$(IDL_SOURCES)				gedit2.c				gedit2.h				gedit-mdi.c				gedit-mdi.h				gedit-mdi-child.c			gedit-mdi-child.h			gedit-document.c 			gedit-document.h 			gedit-view.c 				gedit-view.h 				gedit-menus.h				gedit-menus.c				gedit-debug.c 				gedit-debug.h 				gedit-utils.c 				gedit-utils.h 				gedit-commands.h			gedit-commands.c			gedit-file.h				gedit-file.c				gedit-undo-manager.h			gedit-undo-manager.c			gedit-print.h				gedit-print.c				gedit-session.c				gedit-session.h				bonobo-mdi.c				bonobo-mdi.h				bonobo-mdi-child.c			bonobo-mdi-child.h			bonobo-mdi-session.c			bonobo-mdi-session.h			gedit-file-selector-util.h 		gedit-file-selector-util.c 		gedit-plugins-engine.h			gedit-plugins-engine.c			gedit-plugin.h				gedit-plugin.c				gedit-prefs-manager.c			gedit-prefs-manager.h			gnome-recent-model.c			gnome-recent-model.h			gnome-recent-view.c			gnome-recent-view.h			gnome-recent-view-bonobo.c		gnome-recent-view-bonobo.h		gnome-recent-util.c			gnome-recent-util.h			gedit-recent.c				gedit-recent.h				gedit-application-server.c		gedit-application-server.h		gedit-document-server.c			gedit-document-server.h			gedit-window-server.c			gedit-window-server.h			$(BUILT_SOURCES)
+gedit_SOURCES =  	$(IDL_SOURCES)				gedit2.c				gedit2.h				gedit-mdi.c				gedit-mdi.h				gedit-mdi-child.c			gedit-mdi-child.h			gedit-document.c 			gedit-document.h 			gedit-view.c 				gedit-view.h 				gedit-menus.h				gedit-menus.c				gedit-debug.c 				gedit-debug.h 				gedit-utils.c 				gedit-utils.h 				gedit-commands.h			gedit-commands.c			gedit-file.h				gedit-file.c				gedit-undo-manager.h			gedit-undo-manager.c			gedit-print.h				gedit-print.c				gedit-session.c				gedit-session.h				bonobo-mdi.c				bonobo-mdi.h				bonobo-mdi-child.c			bonobo-mdi-child.h			bonobo-mdi-session.c			bonobo-mdi-session.h			gedit-file-selector-util.h 		gedit-file-selector-util.c 		gedit-plugins-engine.h			gedit-plugins-engine.c			gedit-plugin.h				gedit-plugin.c				gedit-prefs-manager.c			gedit-prefs-manager.h			gedit-recent.c				gedit-recent.h				gedit-application-server.c		gedit-application-server.h		gedit-document-server.c			gedit-document-server.h			gedit-window-server.c			gedit-window-server.h			gedit-encodings.c			gedit-encodings.h			gedit-output-window.c			gedit-output-window.h			$(BUILT_SOURCES)
 
 
 ui_DATA = gedit-ui.xml
@@ -154,7 +162,7 @@ ui_DATA = gedit-ui.xml
 idl_DATA = $(IDL_FILE)
 idldir = $(datadir)/idl
 
-EXTRA_DIST =  	$(ui_DATA)				gedit-marshal.list			gnome-recent-marshal.list		$(IDL_FILE)
+EXTRA_DIST =  	$(ui_DATA)				gedit-marshal.list			$(IDL_FILE)
 
 
 CLEANFILES = $(BUILT_SOURCES) $(IDL_SOURCES)
@@ -166,8 +174,6 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 gedit_OBJECTS =  GNOME_Gedit-stubs.$(OBJEXT) \
 GNOME_Gedit-common.$(OBJEXT) GNOME_Gedit-skels.$(OBJEXT) \
@@ -178,14 +184,11 @@ gedit-file.$(OBJEXT) gedit-undo-manager.$(OBJEXT) gedit-print.$(OBJEXT) \
 gedit-session.$(OBJEXT) bonobo-mdi.$(OBJEXT) bonobo-mdi-child.$(OBJEXT) \
 bonobo-mdi-session.$(OBJEXT) gedit-file-selector-util.$(OBJEXT) \
 gedit-plugins-engine.$(OBJEXT) gedit-plugin.$(OBJEXT) \
-gedit-prefs-manager.$(OBJEXT) gnome-recent-model.$(OBJEXT) \
-gnome-recent-view.$(OBJEXT) gnome-recent-view-bonobo.$(OBJEXT) \
-gnome-recent-util.$(OBJEXT) gedit-recent.$(OBJEXT) \
+gedit-prefs-manager.$(OBJEXT) gedit-recent.$(OBJEXT) \
 gedit-application-server.$(OBJEXT) gedit-document-server.$(OBJEXT) \
-gedit-window-server.$(OBJEXT) gedit-marshal.$(OBJEXT) \
-gnome-recent-marshal.$(OBJEXT)
-gedit_DEPENDENCIES =  dialogs/libdialogs.a
-CFLAGS = @CFLAGS@
+gedit-window-server.$(OBJEXT) gedit-encodings.$(OBJEXT) \
+gedit-output-window.$(OBJEXT) gedit-marshal.$(OBJEXT)
+gedit_DEPENDENCIES =  dialogs/libdialogs.a recent-files/librecent.a
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -438,111 +441,126 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-bonobo-mdi-child.o: bonobo-mdi-child.c bonobo-mdi-child.h
+bonobo-mdi-child.o: bonobo-mdi-child.c ../config.h bonobo-mdi-child.h
 bonobo-mdi-session.o: bonobo-mdi-session.c ../config.h \
 	bonobo-mdi-session.h bonobo-mdi.h bonobo-mdi-child.h
 bonobo-mdi.o: bonobo-mdi.c ../config.h bonobo-mdi.h bonobo-mdi-child.h \
 	gedit-marshal.h gedit-debug.h
-gedit-application-server.o: gedit-application-server.c \
+gedit-application-server.o: gedit-application-server.c ../config.h \
 	gedit-application-server.h GNOME_Gedit.h \
 	gedit-document-server.h gedit-document.h gedit-window-server.h \
 	gedit-file.h gedit-mdi-child.h bonobo-mdi.h bonobo-mdi-child.h \
-	gnome-recent-view.h gnome-recent-model.h gedit-mdi.h \
-	gedit-recent.h gedit2.h gedit-view.h
+	recent-files/egg-recent-view.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h gedit-mdi.h gedit-recent.h \
+	gedit2.h gedit-view.h
 gedit-commands.o: gedit-commands.c ../config.h gedit-commands.h gedit2.h \
 	gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
-	gedit-view.h gedit-mdi-child.h gedit-debug.h gedit-file.h \
-	gedit-print.h dialogs/gedit-dialogs.h \
-	dialogs/gedit-preferences-dialog.h
-gedit-debug.o: gedit-debug.c gedit-debug.h
-gedit-document-server.o: gedit-document-server.c gedit-document-server.h \
-	gedit-document.h GNOME_Gedit.h gedit-file.h gedit-mdi-child.h \
-	bonobo-mdi.h bonobo-mdi-child.h gnome-recent-view.h \
-	gnome-recent-model.h gedit-mdi.h gedit-recent.h gedit2.h \
-	gedit-view.h
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	gedit-mdi-child.h gedit-debug.h gedit-file.h gedit-print.h \
+	dialogs/gedit-dialogs.h dialogs/gedit-preferences-dialog.h \
+	gedit-encodings.h
+gedit-debug.o: gedit-debug.c ../config.h gedit-debug.h
+gedit-document-server.o: gedit-document-server.c ../config.h \
+	gedit-document-server.h gedit-document.h GNOME_Gedit.h \
+	gedit-file.h gedit-mdi-child.h bonobo-mdi.h bonobo-mdi-child.h \
+	recent-files/egg-recent-view.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h gedit-mdi.h gedit-recent.h \
+	gedit2.h gedit-view.h
 gedit-document.o: gedit-document.c ../config.h gedit-prefs-manager.h \
 	gedit-document.h gedit-debug.h gedit-utils.h \
 	gedit-undo-manager.h gedit-marshal.h
+gedit-encodings.o: gedit-encodings.c ../config.h gedit-encodings.h
 gedit-file-selector-util.o: gedit-file-selector-util.c ../config.h \
 	gedit-file-selector-util.h gedit-utils.h
 gedit-file.o: gedit-file.c ../config.h gedit2.h gedit-mdi.h bonobo-mdi.h \
-	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
-	gnome-recent-view.h gedit-document.h gedit-view.h gedit-file.h \
-	gedit-mdi-child.h gedit-debug.h gedit-utils.h \
+	bonobo-mdi-child.h gedit-recent.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	gedit-file.h gedit-mdi-child.h gedit-debug.h gedit-utils.h \
 	gedit-file-selector-util.h gedit-plugins-engine.h \
 	gedit-plugin.h gedit-prefs-manager.h
 gedit-marshal.o: gedit-marshal.c gedit-marshal.h
-gedit-mdi-child.o: gedit-mdi-child.c gedit-mdi-child.h bonobo-mdi.h \
-	bonobo-mdi-child.h gedit-document.h gedit-debug.h gedit-view.h \
-	gedit-marshal.h
+gedit-mdi-child.o: gedit-mdi-child.c ../config.h gedit-mdi-child.h \
+	bonobo-mdi.h bonobo-mdi-child.h gedit-document.h gedit-debug.h \
+	gedit-view.h gedit-marshal.h gedit-file.h \
+	recent-files/egg-recent-view.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h gedit2.h gedit-mdi.h \
+	gedit-recent.h gedit-print.h recent-files/egg-recent-util.h
 gedit-mdi.o: gedit-mdi.c ../config.h gedit-mdi.h bonobo-mdi.h \
-	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
-	gnome-recent-view.h gedit-mdi-child.h gedit-document.h gedit2.h \
-	gedit-view.h gedit-menus.h gedit-debug.h gedit-prefs-manager.h \
-	gedit-file.h gedit-utils.h gedit-plugins-engine.h \
-	gedit-plugin.h gnome-recent-view-bonobo.h
+	bonobo-mdi-child.h gedit-recent.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-mdi-child.h \
+	gedit-document.h gedit2.h gedit-view.h gedit-menus.h \
+	gedit-debug.h gedit-prefs-manager.h gedit-file.h gedit-utils.h \
+	gedit-plugins-engine.h gedit-plugin.h gedit-output-window.h \
+	recent-files/egg-recent-view-bonobo.h \
+	recent-files/egg-recent-view-gtk.h
 gedit-menus.o: gedit-menus.c ../config.h gedit-menus.h gedit-commands.h \
 	gedit2.h gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h \
-	gedit-recent.h gnome-recent-model.h gnome-recent-view.h \
+	gedit-recent.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h recent-files/egg-recent-view.h \
 	gedit-document.h gedit-view.h
-gedit-plugin.o: gedit-plugin.c gedit-plugin.h gedit2.h gedit-mdi.h \
-	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
-	gedit-view.h dialogs/gedit-dialogs.h
+gedit-output-window.o: gedit-output-window.c ../config.h \
+	gedit-output-window.h gedit-debug.h
+gedit-plugin.o: gedit-plugin.c ../config.h gedit-plugin.h gedit2.h \
+	gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	dialogs/gedit-dialogs.h
 gedit-plugins-engine.o: gedit-plugins-engine.c ../config.h \
 	gedit-plugins-engine.h gedit-plugin.h gedit2.h gedit-mdi.h \
 	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
-	gedit-view.h gedit-debug.h
-gedit-prefs-manager.o: gedit-prefs-manager.c gedit-prefs-manager.h \
-	gedit-debug.h gedit-view.h gedit-document.h gedit-mdi.h \
-	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit2.h
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	gedit-debug.h
+gedit-prefs-manager.o: gedit-prefs-manager.c ../config.h \
+	gedit-prefs-manager.h gedit-debug.h gedit-view.h \
+	gedit-document.h gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h \
+	gedit-recent.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h recent-files/egg-recent-view.h \
+	gedit2.h gedit-encodings.h
 gedit-print.o: gedit-print.c ../config.h gedit2.h gedit-mdi.h \
 	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
-	gedit-view.h gedit-print.h gedit-mdi-child.h gedit-debug.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	gedit-print.h gedit-mdi-child.h gedit-debug.h \
 	gedit-prefs-manager.h
 gedit-recent.o: gedit-recent.c ../config.h gedit-recent.h \
-	gnome-recent-model.h gedit-prefs-manager.h
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	gedit-prefs-manager.h
 gedit-session.o: gedit-session.c ../config.h bonobo-mdi-session.h \
 	bonobo-mdi.h bonobo-mdi-child.h gedit2.h gedit-mdi.h \
-	gedit-recent.h gnome-recent-model.h gnome-recent-view.h \
+	gedit-recent.h recent-files/egg-recent-model.h \
+	recent-files/egg-recent-item.h recent-files/egg-recent-view.h \
 	gedit-document.h gedit-view.h gedit-mdi-child.h gedit-session.h \
 	gedit-file.h gedit-debug.h gedit-plugins-engine.h \
 	gedit-plugin.h gedit-prefs-manager.h
-gedit-undo-manager.o: gedit-undo-manager.c gedit-undo-manager.h \
-	gedit-document.h gedit-debug.h gedit-prefs-manager.h \
-	gedit-marshal.h
-gedit-utils.o: gedit-utils.c gedit-utils.h gedit2.h gedit-mdi.h \
-	bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
-	gnome-recent-model.h gnome-recent-view.h gedit-document.h \
-	gedit-view.h gedit-debug.h
+gedit-undo-manager.o: gedit-undo-manager.c ../config.h \
+	gedit-undo-manager.h gedit-document.h gedit-debug.h \
+	gedit-prefs-manager.h gedit-marshal.h
+gedit-utils.o: gedit-utils.c ../config.h gedit-utils.h gedit2.h \
+	gedit-mdi.h bonobo-mdi.h bonobo-mdi-child.h gedit-recent.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
+	gedit-prefs-manager.h gedit-encodings.h gedit-debug.h
 gedit-view.o: gedit-view.c ../config.h gedit-view.h gedit-document.h \
-	gedit-debug.h gedit-menus.h gedit-prefs-manager.h
-gedit-window-server.o: gedit-window-server.c gedit-window-server.h \
-	GNOME_Gedit.h gedit-document-server.h gedit-document.h \
-	gedit-file.h gedit-mdi-child.h bonobo-mdi.h bonobo-mdi-child.h \
-	gnome-recent-view.h gnome-recent-model.h gedit-mdi.h \
-	gedit-recent.h gedit2.h gedit-view.h
+	gedit-debug.h gedit-menus.h gedit-prefs-manager.h \
+	gedit-marshal.h
+gedit-window-server.o: gedit-window-server.c ../config.h \
+	gedit-window-server.h GNOME_Gedit.h gedit-document-server.h \
+	gedit-document.h gedit-file.h gedit-mdi-child.h bonobo-mdi.h \
+	bonobo-mdi-child.h recent-files/egg-recent-view.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	gedit-mdi.h gedit-recent.h gedit2.h gedit-view.h
 gedit2.o: gedit2.c ../config.h gedit2.h gedit-mdi.h bonobo-mdi.h \
-	bonobo-mdi-child.h gedit-recent.h gnome-recent-model.h \
-	gnome-recent-view.h gedit-document.h gedit-view.h \
+	bonobo-mdi-child.h gedit-recent.h \
+	recent-files/egg-recent-model.h recent-files/egg-recent-item.h \
+	recent-files/egg-recent-view.h gedit-document.h gedit-view.h \
 	gedit-prefs-manager.h gedit-debug.h gedit-file.h \
 	gedit-mdi-child.h gedit-utils.h gedit-session.h \
 	gedit-plugins-engine.h gedit-plugin.h \
 	gedit-application-server.h GNOME_Gedit.h
-gnome-recent-marshal.o: gnome-recent-marshal.c gnome-recent-marshal.h
-gnome-recent-model.o: gnome-recent-model.c ../config.h \
-	gnome-recent-model.h gnome-recent-view.h
-gnome-recent-util.o: gnome-recent-util.c gnome-recent-util.h
-gnome-recent-view-bonobo.o: gnome-recent-view-bonobo.c ../config.h \
-	gnome-recent-model.h gnome-recent-view.h \
-	gnome-recent-view-bonobo.h gnome-recent-util.h \
-	gnome-recent-marshal.h
-gnome-recent-view.o: gnome-recent-view.c gnome-recent-view.h \
-	gnome-recent-model.h
 GNOME_Gedit-common.o: GNOME_Gedit-common.c GNOME_Gedit.h
 GNOME_Gedit-skels.o: GNOME_Gedit-skels.c GNOME_Gedit.h
 GNOME_Gedit-stubs.o: GNOME_Gedit-stubs.c GNOME_Gedit.h
@@ -639,13 +657,6 @@ gedit-marshal.h: gedit-marshal.list $(GLIB_GENMARSHAL)
 gedit-marshal.c: gedit-marshal.list $(GLIB_GENMARSHAL)
 	echo "#include \"gedit-marshal.h\"" > $@ && \
 	$(GLIB_GENMARSHAL) $< --body --prefix=gedit_marshal >> $@
-
-gnome-recent-marshal.h: gnome-recent-marshal.list $(GLIB_GENMARSHAL)
-	$(GLIB_GENMARSHAL) $< --header --prefix=gnome_recent > $@
-
-gnome-recent-marshal.c: gnome-recent-marshal.list $(GLIB_GENMARSHAL)
-	echo "#include \"gnome-recent-marshal.h\"" > $@ && \
-	$(GLIB_GENMARSHAL) $< --body --prefix=gnome_recent >> $@
 
 $(IDL_SOURCES): $(IDL_FILE)
 	$(ORBIT_IDL) -I $(LIBBONOBO_IDL) -I $(BONOBO_ACTIVATION_IDL) $(IDL_FILE)

@@ -33,6 +33,120 @@ GNOME_Gedit_Document_setLinePosition(GNOME_Gedit_Document _obj,
    }
 }
 void
+GNOME_Gedit_Document_insert(GNOME_Gedit_Document _obj,
+			    const CORBA_long offset, const CORBA_char * str,
+			    const CORBA_long length, CORBA_Environment * ev)
+{
+   POA_GNOME_Gedit_Document__epv *_ORBIT_epv;
+
+   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
+       ORBIT_STUB_IsBypass(_obj, GNOME_Gedit_Document__classid) &&
+       (_ORBIT_epv =
+	(POA_GNOME_Gedit_Document__epv *) ORBIT_STUB_GetEpv(_obj,
+							    GNOME_Gedit_Document__classid))->
+       insert) {
+      ORBIT_STUB_PreCall(_obj);
+      _ORBIT_epv->insert(ORBIT_STUB_GetServant(_obj), offset, str, length,
+			 ev);
+      ORBIT_STUB_PostCall(_obj);
+   } else {			/* remote marshal */
+      gpointer _args[3];
+
+      _args[0] = (gpointer) & offset;
+      _args[1] = (gpointer) & str;
+      _args[2] = (gpointer) & length;
+      ORBit_small_invoke_stub_n(_obj,
+				&GNOME_Gedit_Document__iinterface.methods, 1,
+				NULL, _args, NULL, ev);
+
+   }
+}
+void
+GNOME_Gedit_Document_delete(GNOME_Gedit_Document _obj,
+			    const CORBA_long offset, const CORBA_long length,
+			    CORBA_Environment * ev)
+{
+   POA_GNOME_Gedit_Document__epv *_ORBIT_epv;
+
+   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
+       ORBIT_STUB_IsBypass(_obj, GNOME_Gedit_Document__classid) &&
+       (_ORBIT_epv =
+	(POA_GNOME_Gedit_Document__epv *) ORBIT_STUB_GetEpv(_obj,
+							    GNOME_Gedit_Document__classid))->
+       delete) {
+      ORBIT_STUB_PreCall(_obj);
+      _ORBIT_epv->delete(ORBIT_STUB_GetServant(_obj), offset, length, ev);
+      ORBIT_STUB_PostCall(_obj);
+   } else {			/* remote marshal */
+      gpointer _args[2];
+
+      _args[0] = (gpointer) & offset;
+      _args[1] = (gpointer) & length;
+      ORBit_small_invoke_stub_n(_obj,
+				&GNOME_Gedit_Document__iinterface.methods, 2,
+				NULL, _args, NULL, ev);
+
+   }
+}
+CORBA_string
+GNOME_Gedit_Document_getChars(GNOME_Gedit_Document _obj,
+			      const CORBA_long offset,
+			      const CORBA_long length, CORBA_Environment * ev)
+{
+   CORBA_string _ORBIT_retval;
+   POA_GNOME_Gedit_Document__epv *_ORBIT_epv;
+
+   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
+       ORBIT_STUB_IsBypass(_obj, GNOME_Gedit_Document__classid) &&
+       (_ORBIT_epv =
+	(POA_GNOME_Gedit_Document__epv *) ORBIT_STUB_GetEpv(_obj,
+							    GNOME_Gedit_Document__classid))->
+       getChars) {
+      ORBIT_STUB_PreCall(_obj);
+      _ORBIT_retval =
+	 _ORBIT_epv->getChars(ORBIT_STUB_GetServant(_obj), offset, length,
+			      ev);
+      ORBIT_STUB_PostCall(_obj);
+   } else {			/* remote marshal */
+      gpointer _args[2];
+
+      _args[0] = (gpointer) & offset;
+      _args[1] = (gpointer) & length;
+      ORBit_small_invoke_stub_n(_obj,
+				&GNOME_Gedit_Document__iinterface.methods, 3,
+				&_ORBIT_retval, _args, NULL, ev);
+
+   }
+   return _ORBIT_retval;
+}
+
+CORBA_long
+GNOME_Gedit_Document_getCharCount(GNOME_Gedit_Document _obj,
+				  CORBA_Environment * ev)
+{
+   CORBA_long _ORBIT_retval;
+   POA_GNOME_Gedit_Document__epv *_ORBIT_epv;
+
+   if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
+       ORBIT_STUB_IsBypass(_obj, GNOME_Gedit_Document__classid) &&
+       (_ORBIT_epv =
+	(POA_GNOME_Gedit_Document__epv *) ORBIT_STUB_GetEpv(_obj,
+							    GNOME_Gedit_Document__classid))->
+       getCharCount) {
+      ORBIT_STUB_PreCall(_obj);
+      _ORBIT_retval =
+	 _ORBIT_epv->getCharCount(ORBIT_STUB_GetServant(_obj), ev);
+      ORBIT_STUB_PostCall(_obj);
+   } else {			/* remote marshal */
+      ORBit_small_invoke_stub_n(_obj,
+				&GNOME_Gedit_Document__iinterface.methods, 4,
+				&_ORBIT_retval, NULL, NULL, ev);
+
+   }
+   return _ORBIT_retval;
+}
+
+void
 GNOME_Gedit_Window_openURIList(GNOME_Gedit_Window _obj,
 			       const GNOME_Gedit_URIList * locations,
 			       CORBA_Environment * ev)

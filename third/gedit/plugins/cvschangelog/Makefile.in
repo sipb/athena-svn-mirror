@@ -66,6 +66,8 @@ BONOBO_ACTIVATION_IDL = @BONOBO_ACTIVATION_IDL@
 CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -100,9 +102,11 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
 LIBBONOBO_IDL = @LIBBONOBO_IDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -118,7 +122,11 @@ PKG_CONFIG = @PKG_CONFIG@
 PLUGIN_LIBTOOL_FLAGS = @PLUGIN_LIBTOOL_FLAGS@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+PSPELL_LIBS = @PSPELL_LIBS@
 RANLIB = @RANLIB@
+SPELL_PLUGIN_DIR = @SPELL_PLUGIN_DIR@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
@@ -135,6 +143,12 @@ plugin_LTLIBRARIES = libcvschangelog.la
 
 libcvschangelog_la_SOURCES = cvschangelog.c
 libcvschangelog_la_LDFLAGS = $(PLUGIN_LIBTOOL_FLAGS)
+
+plugin_in_files = cvschangelog.gedit-plugin.desktop.in
+
+plugin_DATA = $(plugin_in_files:.gedit-plugin.desktop.in=.gedit-plugin)
+
+EXTRA_DIST = $(plugin_DATA) 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -142,16 +156,15 @@ LTLIBRARIES =  $(plugin_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
-CPPFLAGS = @CPPFLAGS@
-LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libcvschangelog_la_LIBADD = 
 libcvschangelog_la_OBJECTS =  cvschangelog.lo
-CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(plugin_DATA)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -245,6 +258,25 @@ maintainer-clean-libtool:
 libcvschangelog.la: $(libcvschangelog_la_OBJECTS) $(libcvschangelog_la_DEPENDENCIES)
 	$(LINK) -rpath $(plugindir) $(libcvschangelog_la_LDFLAGS) $(libcvschangelog_la_OBJECTS) $(libcvschangelog_la_LIBADD) $(LIBS)
 
+install-pluginDATA: $(plugin_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(plugindir)
+	@list='$(plugin_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(plugindir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(plugindir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(plugindir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(plugindir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pluginDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(plugin_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(plugindir)/$$p; \
+	done
+
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -289,6 +321,17 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+cvschangelog.lo cvschangelog.o : cvschangelog.c ../../config.h \
+	../../src/gedit-plugin.h ../../src/gedit2.h \
+	../../src/gedit-mdi.h ../../src/bonobo-mdi.h \
+	../../src/bonobo-mdi-child.h ../../src/gedit-recent.h \
+	../../src/recent-files/egg-recent-model.h \
+	../../src/recent-files/egg-recent-item.h \
+	../../src/recent-files/egg-recent-view.h \
+	../../src/gedit-document.h ../../src/gedit-view.h \
+	../../src/gedit-file.h ../../src/gedit-mdi-child.h \
+	../../src/gedit-debug.h ../../src/gedit-menus.h \
+	../../src/gedit-utils.h
 
 info-am:
 info: info-am
@@ -301,20 +344,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-pluginLTLIBRARIES
+install-data-am: install-pluginLTLIBRARIES install-pluginDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-pluginLTLIBRARIES
+uninstall-am: uninstall-pluginLTLIBRARIES uninstall-pluginDATA
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(plugindir)
+	$(mkinstalldirs)  $(DESTDIR)$(plugindir) $(DESTDIR)$(plugindir)
 
 
 mostlyclean-generic:
@@ -358,14 +401,17 @@ clean-pluginLTLIBRARIES maintainer-clean-pluginLTLIBRARIES \
 uninstall-pluginLTLIBRARIES install-pluginLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+clean-libtool maintainer-clean-libtool uninstall-pluginDATA \
+install-pluginDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
+
+%.gedit-plugin: %.gedit-plugin.desktop.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

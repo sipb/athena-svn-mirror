@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1998, 1999 Alex Roberts, Evan Lawrence
  * Copyright (C) 2000, 2001 Chema Celorio, Paolo Maggi 
+ * Copyright (C) 2002, 2003 Paolo Maggi 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@
  */
  
 /*
- * Modified by the gedit Team, 1998-2001. See the AUTHORS file for a 
+ * Modified by the gedit Team, 1998-2003. See the AUTHORS file for a 
  * list of people on the gedit Team.  
  * See the ChangeLog files for a list of changes. 
  */
@@ -47,16 +48,6 @@
 #include "dialogs/gedit-dialogs.h"
 #include "dialogs/gedit-preferences-dialog.h"
 
-#define TO_BE_IMPLEMENTED	{ GtkWidget *message_dlg; \
-				  message_dlg = gtk_message_dialog_new (	\
-			                          GTK_WINDOW (bonobo_mdi_get_active_window (BONOBO_MDI (gedit_mdi))),	\
-			                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,	\
-			                          GTK_MESSAGE_INFO,	\
-			                          GTK_BUTTONS_OK,	\
-                                   		  _("Not yet implemented."));	\
-				  gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK); \
-	                          gtk_dialog_run (GTK_DIALOG (message_dlg));	\
-  	                          gtk_widget_destroy (message_dlg); }
 
 void 
 gedit_cmd_file_new (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
@@ -89,7 +80,7 @@ gedit_cmd_file_save (BonoboUIComponent *uic, gpointer user_data, const gchar* ve
 	if (active_child == NULL)
 		return;
 	
-	gedit_file_save (active_child);
+	gedit_file_save (active_child, TRUE);
 }
 
 void 
@@ -222,7 +213,9 @@ gedit_cmd_edit_undo (BonoboUIComponent *uic, gpointer user_data, const gchar* ve
 
 	gedit_document_undo (active_document);
 
-	/* TODO: Move the cursor */
+	gedit_view_scroll_to_cursor (active_view);
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -239,7 +232,9 @@ gedit_cmd_edit_redo (BonoboUIComponent *uic, gpointer user_data, const gchar* ve
 
 	gedit_document_redo (active_document);
 
-	/* TODO: Move the cursor */
+	gedit_view_scroll_to_cursor (active_view);
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -251,6 +246,8 @@ gedit_cmd_edit_cut (BonoboUIComponent *uic, gpointer user_data, const gchar* ver
 	g_return_if_fail (active_view);
 	
 	gedit_view_cut_clipboard (active_view); 
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -261,7 +258,9 @@ gedit_cmd_edit_copy (BonoboUIComponent *uic, gpointer user_data, const gchar* ve
 	active_view = GEDIT_VIEW (bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi)));
 	g_return_if_fail (active_view);
 	
-	gedit_view_copy_clipboard (active_view); 
+	gedit_view_copy_clipboard (active_view);
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -273,6 +272,8 @@ gedit_cmd_edit_paste (BonoboUIComponent *uic, gpointer user_data, const gchar* v
 	g_return_if_fail (active_view);
 	
 	gedit_view_paste_clipboard (active_view); 
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -283,18 +284,26 @@ gedit_cmd_edit_clear (BonoboUIComponent *uic, gpointer user_data, const gchar* v
 	active_view = GEDIT_VIEW (bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi)));
 	g_return_if_fail (active_view);
 	
-	gedit_view_delete_selection (active_view); 
+	gedit_view_delete_selection (active_view);
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void
 gedit_cmd_edit_select_all (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 {
+	GeditDocument* active_doc;
 	GeditView* active_view;
 
 	active_view = GEDIT_VIEW (bonobo_mdi_get_active_view (BONOBO_MDI (gedit_mdi)));
 	g_return_if_fail (active_view);
-	
-	gedit_view_select_all (active_view); 
+
+	active_doc = gedit_get_active_document ();
+	g_return_if_fail (active_doc);
+
+	gedit_document_set_selection (active_doc, 0, -1); 
+
+	gtk_widget_grab_focus (GTK_WIDGET (active_view));
 }
 
 void 
@@ -327,16 +336,31 @@ gedit_cmd_search_find_again (BonoboUIComponent *uic, gpointer user_data, const g
 	last_searched_text = gedit_document_get_last_searched_text (doc);
 	if (last_searched_text != NULL)
 	{
-		if (!gedit_document_find_again (doc))
+		gpointer data;
+		gboolean was_wrap_around;
+		gboolean found;
+
+		data = g_object_get_qdata (G_OBJECT (doc), gedit_was_wrap_around_quark ());
+		if (data == NULL)
+			was_wrap_around = TRUE;
+		else
+			was_wrap_around = GPOINTER_TO_BOOLEAN (data);
+
+		found = gedit_document_find_again (doc, TRUE);
+
+		if (!found && was_wrap_around)
+			found = gedit_document_find_again (doc, FALSE);
+
+		if (!found)
 		{	
 			GtkWidget *message_dlg;
 
 			message_dlg = gtk_message_dialog_new (
-				GTK_WINDOW (bonobo_mdi_get_active_window (BONOBO_MDI (gedit_mdi))),
+				GTK_WINDOW (gedit_get_active_window ()),
 				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 				GTK_MESSAGE_INFO,
 				GTK_BUTTONS_OK,
-				_("The string \"%s\" has not been found."), last_searched_text);
+				_("The text \"%s\" was not found."), last_searched_text);
 
 			gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK);
 
@@ -348,12 +372,10 @@ gedit_cmd_search_find_again (BonoboUIComponent *uic, gpointer user_data, const g
 		else
 			gedit_view_scroll_to_cursor (active_view);
 
+		g_free (last_searched_text);
 	}
 	else
-	{
-		g_free (last_searched_text);
 		gedit_dialog_find ();
-	}
 }
 
 
@@ -397,6 +419,19 @@ gedit_cmd_settings_preferences (BonoboUIComponent *uic, gpointer user_data, cons
 	gtk_widget_show (dlg);
 }
 
+void
+gedit_cmd_documents_move_to_new_window (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
+{
+	GeditView *view;
+
+	gedit_debug (DEBUG_COMMANDS, "");
+
+	view = gedit_get_active_view ();
+	g_return_if_fail (view != NULL);
+
+	bonobo_mdi_move_view_to_new_window (BONOBO_MDI (gedit_mdi), GTK_WIDGET (view));
+}
+
 void 
 gedit_cmd_help_contents (BonoboUIComponent *uic, gpointer user_data, const gchar* verbname)
 {
@@ -421,9 +456,9 @@ gedit_cmd_help_about (BonoboUIComponent *uic, gpointer user_data, const gchar* v
 	GdkPixbuf* pixbuf = NULL;
 	
 	gchar *authors[] = {
-		"Paolo Maggi <maggi@athena.polito.it>",
-		"Chema Celorio <chema@ximian.com>", 
+		"Paolo Maggi <paolo.maggi@polito.it>",
 		"James Willcox <jwillcox@cs.indiana.edu>",
+		"Chema Celorio <chema@ximian.com>", 
 		"Federico Mena Quintero <federico@ximian.com>",
 		NULL
 	};
@@ -451,8 +486,8 @@ gedit_cmd_help_about (BonoboUIComponent *uic, gpointer user_data, const gchar* v
 		GdkPixbuf* temp_pixbuf = NULL;
 
 		temp_pixbuf = gdk_pixbuf_scale_simple (pixbuf, 
-					 gdk_pixbuf_get_width (pixbuf) / 2,
-					 gdk_pixbuf_get_height (pixbuf) / 2,
+					 gdk_pixbuf_get_width (pixbuf),
+					 gdk_pixbuf_get_height (pixbuf),
 					 GDK_INTERP_HYPER);
 		g_object_unref (pixbuf);
 
@@ -460,12 +495,14 @@ gedit_cmd_help_about (BonoboUIComponent *uic, gpointer user_data, const gchar* v
 	}
 
 	about = gnome_about_new (_("gedit"), VERSION,
-				_("(C) 1998-2000 Evan Lawrence and Alex Robert\n"
-				  "(C) 2000-2002 Chema Celorio and Paolo Maggi"),
+				"Copyright \xc2\xa9 1998-2000 Evan Lawrence, Alex Robert\n"
+				"Copyright \xc2\xa9 2000-2002 Chema Celorio, Paolo Maggi\n"
+				"Copyright \xc2\xa9 2003 Paolo Maggi",
 				_("gedit is a small and lightweight text editor for Gnome"),
 				(const char **)authors,
 				(const char **)documenters,
-				strcmp (translator_credits, "translator_credits") != 0 ? (const char *)translator_credits : NULL,
+				strcmp (translator_credits, "translator_credits") != 0 ? 
+					(const char *)translator_credits : NULL,
 				pixbuf);
 
 	gtk_window_set_transient_for (GTK_WINDOW (about),

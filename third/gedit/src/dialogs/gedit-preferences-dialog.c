@@ -45,25 +45,37 @@
 #include "gedit2.h"
 #include "gedit-plugin-manager.h"
 
+#include "gedit-encodings-dialog.h"
+
 #include "gnome-print-font-picker.h"
 
 /* To be syncronized with gedit-preferences.glade2 */
 #define LOGO			3
 #define	FONT_COLORS_SETTINGS 	2
 #define SAVE_SETTINGS		4
-#define TABS_SETTINGS		0
-#define UNDO_SETTINGS		1
+#define TABS_SETTINGS		1
+#define UNDO_SETTINGS		0
 #define WRAP_MODE_SETTINGS	5
 #define PRINT_SETTINGS		6
 #define LINE_NUMBERS_SETTINGS	7
 #define PRINT_FONTS_SETTINGS	8
 #define PLUGIN_MANAGER_SETTINGS 9
+#define LOAD_SETTINGS		10
+#define AUTO_INDENT_SETTINGS	11
+
 
 enum
 {
 	CATEGORY_COLUMN = 0,
 	PAGE_NUM_COLUMN,
 	NUM_COLUMNS
+};
+
+enum
+{
+	COLUMN_ENCODING_NAME = 0,
+	COLUMN_ENCODING_POINTER,
+	ENCODING_NUM_COLS
 };
 
 struct _GeditPreferencesDialogPrivate
@@ -73,6 +85,8 @@ struct _GeditPreferencesDialogPrivate
 	GtkWidget* notebook;
 
 	GtkTreeModel *categories_tree_model;
+
+	GtkTooltips	*tooltips;
 
 	/* Font & Colors page */
 	GtkWidget	*default_font_checkbutton;
@@ -92,11 +106,14 @@ struct _GeditPreferencesDialogPrivate
 
 	/* Tabs page */
 	GtkWidget	*tabs_width_spinbutton;
+	GtkWidget	*insert_spaces_checkbutton;
+
+	/* Auto indent */
+	GtkWidget	*auto_indent_checkbutton;
 
 	/* Wrap mode page */
-	GtkWidget	*wrap_never_radiobutton;
-	GtkWidget	*wrap_word_radiobutton;
-	GtkWidget	*wrap_char_radiobutton;
+	GtkWidget	*wrap_text_checkbutton;
+	GtkWidget	*split_checkbutton;
 
 	/* Save page */
 	GtkWidget	*backup_copy_checkbutton;
@@ -126,6 +143,13 @@ struct _GeditPreferencesDialogPrivate
 
 	/* Plugin/Manager */
 	GtkWidget	*plugin_manager;
+
+	/* Open page */
+	GtkWidget	*encodings_treeview;
+	GtkWidget	*add_enc_button;
+	GtkWidget	*remove_enc_button;
+	GtkWidget	*up_enc_button;
+	GtkWidget	*down_enc_button;
 	
 };
 
@@ -192,12 +216,14 @@ static void gedit_preferences_dialog_editor_color_picker_color_set (GnomeColorPi
 								    guint b, 
 								    guint a,  
 								    GeditPreferencesDialog *dlg);
-static void gedit_preferences_dialog_wrap_mode_radiobutton_toggled (GtkToggleButton *button,
+static void gedit_preferences_dialog_wrap_mode_checkbutton_toggled (GtkToggleButton *button,
 								    GeditPreferencesDialog *dlg);
 static void gedit_preferences_dialog_display_line_numbers_checkbutton_toggled (GtkToggleButton *button,
 									       GeditPreferencesDialog *dlg);
 static gboolean gedit_preferences_dialog_setup_plugin_manager_page (GeditPreferencesDialog *dlg, 
 								    GladeXML *gui);
+static gboolean gedit_preferences_dialog_setup_load_page (GeditPreferencesDialog *dlg, GladeXML *gui);
+static gboolean gedit_preferences_dialog_setup_auto_indent_page (GeditPreferencesDialog *dlg, GladeXML *gui);
 
 static gint last_selected_page_num = FONT_COLORS_SETTINGS;
 static GtkDialogClass* parent_class = NULL;
@@ -207,9 +233,11 @@ static CategoriesTreeItem editor_behavior [] =
 	{N_("Font & Colors"), NULL, FONT_COLORS_SETTINGS},
 
 	{N_("Tabs"), NULL, TABS_SETTINGS},
-	{N_("Wrap mode"), NULL, WRAP_MODE_SETTINGS},
-	{N_("Line numbers"), NULL , LINE_NUMBERS_SETTINGS},
+	{N_("Wrap Mode"), NULL, WRAP_MODE_SETTINGS},
+	{N_("Auto Indent"), NULL, AUTO_INDENT_SETTINGS},
+	{N_("Line Numbers"), NULL , LINE_NUMBERS_SETTINGS},
 	
+	{N_("Open"), NULL, LOAD_SETTINGS },
  	{N_("Save"), NULL, SAVE_SETTINGS },
 	{N_("Undo"), NULL, UNDO_SETTINGS},
 
@@ -299,11 +327,16 @@ gedit_preferences_dialog_init (GeditPreferencesDialog *dlg)
 
 	gedit_preferences_dialog_add_buttons (dlg);	
 	
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_hbox_new (FALSE, 18);
 	
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 10);
 	
-	r = gtk_vbox_new (FALSE, 0);
+	dlg->priv->tooltips = gtk_tooltips_new ();
+
+	g_object_ref (G_OBJECT (dlg->priv->tooltips ));
+	gtk_object_sink (GTK_OBJECT (dlg->priv->tooltips ));
+
+	r = gtk_vbox_new (FALSE, 6);
 	
 	label = gtk_label_new_with_mnemonic (_("Cat_egories:"));
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -311,7 +344,7 @@ gedit_preferences_dialog_init (GeditPreferencesDialog *dlg)
 
 	ct = gedit_preferences_dialog_create_categories_tree (dlg);
 		
-	gtk_box_pack_start (GTK_BOX (r), label, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (r), label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (r), ct, TRUE, TRUE, 0);
 
 	l = gedit_preferences_dialog_create_notebook (dlg);
@@ -346,6 +379,7 @@ gedit_preferences_dialog_finalize (GObject *object)
 	g_return_if_fail (GEDIT_IS_PREFERENCES_DIALOG (dlg));
 	g_return_if_fail (dlg->priv != NULL);
 
+	g_object_unref (G_OBJECT (dlg->priv->tooltips));
 	g_object_unref (G_OBJECT (dlg->priv->categories_tree_model));
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -623,6 +657,8 @@ gedit_preferences_dialog_create_notebook (GeditPreferencesDialog *dlg)
 	gedit_preferences_dialog_setup_line_numbers_page (dlg, gui);
 	gedit_preferences_dialog_setup_print_fonts_page (dlg, gui);
 	gedit_preferences_dialog_setup_plugin_manager_page (dlg, gui);
+	gedit_preferences_dialog_setup_load_page (dlg, gui);
+	gedit_preferences_dialog_setup_auto_indent_page (dlg, gui);
 
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (dlg->priv->notebook), LOGO);
 	
@@ -796,17 +832,17 @@ gedit_preferences_dialog_setup_font_and_colors_page (GeditPreferencesDialog *dlg
 
 	g_return_val_if_fail (font_label, FALSE);
 
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->fontpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->fontpicker, 
 			_("Push this button to select the font to be used by the editor"), NULL);
 
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->text_colorpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->text_colorpicker, 
 			_("Push this button to configure text color"), NULL);
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->background_colorpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->background_colorpicker, 
 			_("Push this button to configure background color"), NULL);
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->sel_text_colorpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->sel_text_colorpicker, 
 			_("Push this button to configure the color in which the selected "
 			  "text should appear"), NULL);
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->selection_colorpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->selection_colorpicker, 
 			_("Push this button to configure the color in which the selected "
 			  "text should be marked"), NULL);
 
@@ -1024,11 +1060,24 @@ static void
 gedit_preferences_dialog_tabs_width_spinbutton_value_changed (GtkSpinButton *spin_button,
 		GeditPreferencesDialog *dlg)
 {
+	gedit_debug (DEBUG_PREFS, "");
+
 	g_return_if_fail (spin_button == GTK_SPIN_BUTTON (dlg->priv->tabs_width_spinbutton));
 
 	gedit_prefs_manager_set_tabs_size (gtk_spin_button_get_value_as_int (spin_button));
 }
-			
+	
+static void
+gedit_preferences_dialog_insert_spaces_checkbutton_toggled (GtkToggleButton *button,
+							 GeditPreferencesDialog *dlg)
+{
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (button == GTK_TOGGLE_BUTTON (dlg->priv->insert_spaces_checkbutton));
+
+	gedit_prefs_manager_set_insert_spaces (gtk_toggle_button_get_active (button));
+}
+
 static gboolean 
 gedit_preferences_dialog_setup_tabs_page (GeditPreferencesDialog *dlg, GladeXML *gui)
 {
@@ -1038,22 +1087,70 @@ gedit_preferences_dialog_setup_tabs_page (GeditPreferencesDialog *dlg, GladeXML 
 	
 	dlg->priv->tabs_width_spinbutton = glade_xml_get_widget (gui, "tabs_width_spinbutton");
 	tabs_width_hbox = glade_xml_get_widget (gui, "tabs_width_hbox");
+	dlg->priv->insert_spaces_checkbutton = glade_xml_get_widget (gui, "insert_spaces_checkbutton");
 		
 	g_return_val_if_fail (dlg->priv->undo_levels_spinbutton, FALSE);
 	g_return_val_if_fail (tabs_width_hbox, FALSE);
-
+	g_return_val_if_fail (dlg->priv->insert_spaces_checkbutton, FALSE);
+	
 	/* Set initial state */
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (dlg->priv->tabs_width_spinbutton),
-					   (guint) gedit_prefs_manager_get_tabs_size ());
+				   (guint) gedit_prefs_manager_get_tabs_size ());
+
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dlg->priv->insert_spaces_checkbutton), 
+				      gedit_prefs_manager_get_insert_spaces ());
 
 	/* Set widget sensitivity */
 	gtk_widget_set_sensitive (tabs_width_hbox, 
 				  gedit_prefs_manager_tabs_size_can_set ());
-
+	gtk_widget_set_sensitive (dlg->priv->insert_spaces_checkbutton,
+				  gedit_prefs_manager_insert_spaces_can_set ());
+	
 	/* Connect signal */
 	g_signal_connect (G_OBJECT (dlg->priv->tabs_width_spinbutton), "value_changed",
 			  G_CALLBACK (gedit_preferences_dialog_tabs_width_spinbutton_value_changed),
 			  dlg);
+
+	g_signal_connect (G_OBJECT (dlg->priv->insert_spaces_checkbutton), "toggled", 
+			  G_CALLBACK (gedit_preferences_dialog_insert_spaces_checkbutton_toggled), 
+			  dlg);
+
+	return TRUE;
+}
+
+static void
+gedit_preferences_dialog_auto_indent_checkbutton_toggled (GtkToggleButton *button,
+							 GeditPreferencesDialog *dlg)
+{
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (button == GTK_TOGGLE_BUTTON (dlg->priv->auto_indent_checkbutton));
+
+	gedit_prefs_manager_set_auto_indent (gtk_toggle_button_get_active (button));
+}
+
+static gboolean
+gedit_preferences_dialog_setup_auto_indent_page (GeditPreferencesDialog *dlg, GladeXML *gui)
+{
+	gedit_debug (DEBUG_PREFS, "");
+	
+	dlg->priv->auto_indent_checkbutton = glade_xml_get_widget (gui, "auto_indent_checkbutton");
+		
+	g_return_val_if_fail (dlg->priv->auto_indent_checkbutton, FALSE);
+	
+	/* Set initial state */
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dlg->priv->auto_indent_checkbutton), 
+				      gedit_prefs_manager_get_auto_indent ());
+
+	/* Set widget sensitivity */
+	gtk_widget_set_sensitive (dlg->priv->auto_indent_checkbutton,
+				  gedit_prefs_manager_auto_indent_can_set ());
+	
+	/* Connect signal */
+	g_signal_connect (G_OBJECT (dlg->priv->auto_indent_checkbutton), "toggled", 
+			  G_CALLBACK (gedit_preferences_dialog_auto_indent_checkbutton_toggled), 
+			  dlg);
+
 	return TRUE;
 }
 
@@ -1081,35 +1178,44 @@ gedit_preferences_dialog_setup_logo_page (GeditPreferencesDialog *dlg, GladeXML 
 	return TRUE;
 }
 
+static gboolean split_button_state = TRUE;
+
 static void
-gedit_preferences_dialog_wrap_mode_radiobutton_toggled (GtkToggleButton *button,
+gedit_preferences_dialog_wrap_mode_checkbutton_toggled (GtkToggleButton *button,
 		GeditPreferencesDialog *dlg)
 {
-	if (button == GTK_TOGGLE_BUTTON (dlg->priv->wrap_never_radiobutton))
+	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dlg->priv->wrap_text_checkbutton)))
 	{
-		if (gtk_toggle_button_get_active (button))
-		{
-			gedit_prefs_manager_set_wrap_mode (GTK_WRAP_NONE);
-			return;
-		}
-	}
+		gedit_prefs_manager_set_wrap_mode (GTK_WRAP_NONE);
+		
+		gtk_widget_set_sensitive (dlg->priv->split_checkbutton, 
+					  FALSE);
+		gtk_toggle_button_set_inconsistent (
+			GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), TRUE);
 
-	if (button == GTK_TOGGLE_BUTTON (dlg->priv->wrap_char_radiobutton))
-	{
-		if (gtk_toggle_button_get_active (button))
-		{
-			gedit_prefs_manager_set_wrap_mode (GTK_WRAP_CHAR);
-			return;
-		}
 	}
-
-	if (button == GTK_TOGGLE_BUTTON (dlg->priv->wrap_word_radiobutton))
+	else
 	{
-		if (gtk_toggle_button_get_active (button))
+		gtk_widget_set_sensitive (dlg->priv->split_checkbutton, 
+					  TRUE);
+
+		gtk_toggle_button_set_inconsistent (
+			GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), FALSE);
+
+
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton)))
 		{
+			split_button_state = TRUE;
+			
 			gedit_prefs_manager_set_wrap_mode (GTK_WRAP_WORD);
-			return;
 		}
+		else
+		{
+			split_button_state = FALSE;
+			
+			gedit_prefs_manager_set_wrap_mode (GTK_WRAP_CHAR);
+		}
+			
 	}
 }
 
@@ -1117,50 +1223,60 @@ static gboolean
 gedit_preferences_dialog_setup_wrap_mode_page (GeditPreferencesDialog *dlg, GladeXML *gui)
 {
 	GtkWidget *wrap_mode_frame;
+	GtkWrapMode wrap_mode;
 	
 	gedit_debug (DEBUG_PREFS, "");
 
-	dlg->priv->wrap_never_radiobutton = glade_xml_get_widget (gui, "wrap_never_radiobutton");
-	dlg->priv->wrap_word_radiobutton = glade_xml_get_widget (gui, "wrap_word_radiobutton");
-	dlg->priv->wrap_char_radiobutton = glade_xml_get_widget (gui, "wrap_char_radiobutton");
+	dlg->priv->wrap_text_checkbutton = glade_xml_get_widget (gui, "wrap_text_checkbutton");
+	dlg->priv->split_checkbutton = glade_xml_get_widget (gui, "split_checkbutton");
 	wrap_mode_frame = glade_xml_get_widget (gui, "wrap_mode_frame");
 	
-	g_return_val_if_fail (dlg->priv->wrap_never_radiobutton, FALSE);
-	g_return_val_if_fail (dlg->priv->wrap_word_radiobutton, FALSE);
-	g_return_val_if_fail (dlg->priv->wrap_char_radiobutton, FALSE);
+	g_return_val_if_fail (dlg->priv->wrap_text_checkbutton, FALSE);
+	g_return_val_if_fail (dlg->priv->split_checkbutton, FALSE);
 	g_return_val_if_fail (wrap_mode_frame, FALSE);
 	
+	wrap_mode = gedit_prefs_manager_get_wrap_mode ();
 	/* Set initial state */
-	switch (gedit_prefs_manager_get_wrap_mode ())
+	switch (wrap_mode )
 	{
 		case GTK_WRAP_WORD:
 			gtk_toggle_button_set_active (
-				GTK_TOGGLE_BUTTON (dlg->priv->wrap_word_radiobutton), TRUE);
+				GTK_TOGGLE_BUTTON (dlg->priv->wrap_text_checkbutton), TRUE);
+			gtk_toggle_button_set_active (
+				GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), TRUE);
 			break;
 		case GTK_WRAP_CHAR:
 			gtk_toggle_button_set_active (
-				GTK_TOGGLE_BUTTON (dlg->priv->wrap_char_radiobutton), TRUE);
+				GTK_TOGGLE_BUTTON (dlg->priv->wrap_text_checkbutton), TRUE);
+			gtk_toggle_button_set_active (
+				GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), FALSE);
 			break;
 		default:
 			gtk_toggle_button_set_active (
-				GTK_TOGGLE_BUTTON (dlg->priv->wrap_never_radiobutton), TRUE);
+				GTK_TOGGLE_BUTTON (dlg->priv->wrap_text_checkbutton), FALSE);
+			gtk_toggle_button_set_active (
+				GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), split_button_state);
+			gtk_toggle_button_set_inconsistent (
+				GTK_TOGGLE_BUTTON (dlg->priv->split_checkbutton), TRUE);
+
 	}
 
 	/* Set widget sensitivity */
 	gtk_widget_set_sensitive (wrap_mode_frame, 
 				  gedit_prefs_manager_wrap_mode_can_set ());
 
-	/* Connect signals */
-	g_signal_connect (G_OBJECT (dlg->priv->wrap_never_radiobutton), "toggled", 
-			G_CALLBACK (gedit_preferences_dialog_wrap_mode_radiobutton_toggled), 
-			dlg);
-	g_signal_connect (G_OBJECT (dlg->priv->wrap_word_radiobutton), "toggled", 
-			G_CALLBACK (gedit_preferences_dialog_wrap_mode_radiobutton_toggled), 
-			dlg);
-	g_signal_connect (G_OBJECT (dlg->priv->wrap_char_radiobutton), "toggled", 
-			G_CALLBACK (gedit_preferences_dialog_wrap_mode_radiobutton_toggled), 
-			dlg);
+	gtk_widget_set_sensitive (dlg->priv->split_checkbutton, 
+				  gedit_prefs_manager_wrap_mode_can_set () && 
+				  (wrap_mode != GTK_WRAP_NONE));
 
+
+	/* Connect signals */
+	g_signal_connect (G_OBJECT (dlg->priv->wrap_text_checkbutton), "toggled", 
+			G_CALLBACK (gedit_preferences_dialog_wrap_mode_checkbutton_toggled), 
+			dlg);
+	g_signal_connect (G_OBJECT (dlg->priv->split_checkbutton), "toggled", 
+			G_CALLBACK (gedit_preferences_dialog_wrap_mode_checkbutton_toggled), 
+			dlg);
 	
 	return TRUE;
 }
@@ -1495,7 +1611,7 @@ gedit_preferences_dialog_wrap_lines_checkbutton_toggled (GtkToggleButton *button
 	g_return_if_fail (button == GTK_TOGGLE_BUTTON (dlg->priv->wrap_lines_checkbutton));
 	
 	gedit_prefs_manager_set_print_wrap_mode (
-			gtk_toggle_button_get_active (button) ? GTK_WRAP_CHAR : GTK_WRAP_NONE);
+			gtk_toggle_button_get_active (button) ? GTK_WRAP_WORD : GTK_WRAP_NONE);
 }
 
 static void
@@ -1584,32 +1700,34 @@ gedit_preferences_dialog_print_font_restore_default_button_clicked (
 	g_return_if_fail (dlg->priv->headers_fontpicker != NULL);
 	g_return_if_fail (dlg->priv->numbers_fontpicker != NULL);
 
-	/* FIXME: define constants, or take them from schemas - Paolo */
 	if (gedit_prefs_manager_print_font_body_can_set ())
 	{
 		gnome_print_font_picker_set_font_name (
 				GNOME_PRINT_FONT_PICKER (dlg->priv->body_fontpicker),
-				_("Courier 9"));
+				gedit_prefs_manager_get_default_print_font_body ());
 
-		gedit_prefs_manager_set_print_font_body (_("Courier 9"));
+		gedit_prefs_manager_set_print_font_body (
+				gedit_prefs_manager_get_default_print_font_body ());
 	}
 	
 	if (gedit_prefs_manager_print_font_header_can_set ())
 	{
 		gnome_print_font_picker_set_font_name (
 				GNOME_PRINT_FONT_PICKER (dlg->priv->headers_fontpicker),
-				_("Helvetica 11"));
+				gedit_prefs_manager_get_default_print_font_header ());
 		
-		gedit_prefs_manager_set_print_font_header (_("Helvetica 11"));
+		gedit_prefs_manager_set_print_font_header (
+				gedit_prefs_manager_get_default_print_font_header ());
 	}
 		
 	if (gedit_prefs_manager_print_font_numbers_can_set ())
 	{
 		gnome_print_font_picker_set_font_name (
 				GNOME_PRINT_FONT_PICKER (dlg->priv->numbers_fontpicker),
-				_("Helvetica 8"));
+				gedit_prefs_manager_get_default_print_font_numbers ());
 		
-		gedit_prefs_manager_set_print_font_numbers (_("Helvetica 8"));
+		gedit_prefs_manager_set_print_font_numbers (
+				gedit_prefs_manager_get_default_print_font_numbers ());
 	}
 }
 
@@ -1729,11 +1847,11 @@ gedit_preferences_dialog_setup_print_fonts_page (GeditPreferencesDialog *dlg, Gl
 	gtk_label_set_mnemonic_widget (GTK_LABEL (numbers_font_label), 
 				       dlg->priv->numbers_fontpicker);
 
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->body_fontpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->body_fontpicker, 
 		_("Push this button to select the font to be used to print the body"), NULL);
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->headers_fontpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->headers_fontpicker, 
 		_("Push this button to select the font to be used to print the headers"), NULL);
-	gtk_tooltips_set_tip (gtk_tooltips_new(), dlg->priv->numbers_fontpicker, 
+	gtk_tooltips_set_tip (dlg->priv->tooltips, dlg->priv->numbers_fontpicker, 
 		_("Push this button to select the font to be used to print line numbers"), NULL);
 
 	gedit_utils_set_atk_relation (dlg->priv->body_fontpicker, body_font_label, 
@@ -1859,3 +1977,418 @@ gedit_preferences_dialog_setup_plugin_manager_page (GeditPreferencesDialog *dlg,
 	
 	return TRUE;
 }
+
+static gboolean
+add_enc_to_list (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	GSList **list;
+
+	GValue value = {0, };
+	const GeditEncoding *enc;
+
+	gedit_debug (DEBUG_PREFS, "");
+
+	list = (GSList **)data;
+
+	gtk_tree_model_get_value (model, iter, COLUMN_ENCODING_POINTER, &value);
+
+	enc = (const GeditEncoding *) g_value_get_pointer (&value);
+	g_return_val_if_fail (enc != NULL, TRUE);
+	
+
+#if 0
+	{
+		gchar *name;
+		name = gedit_encoding_to_string (enc);
+		
+		g_print ("Add %s to list\n", name);
+		
+		g_free (name);
+	}
+#endif
+
+	*list = g_slist_prepend (*list, (gpointer) enc);
+
+	g_value_unset (&value);
+
+	return FALSE;
+};
+
+static void 
+update_encodings_list (GeditPreferencesDialog *dlg)
+{
+	GtkTreeModel *model;
+	GSList *enc_list = NULL;
+	
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+	g_return_if_fail (gedit_prefs_manager_encodings_can_set ());
+	
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_if_fail (model != NULL);
+
+	gtk_tree_model_foreach (model, add_enc_to_list, &enc_list);
+
+	enc_list = g_slist_reverse (enc_list);
+
+	gedit_prefs_manager_set_encodings (enc_list);
+
+	g_slist_free (enc_list);
+}
+
+static GtkTreeModel*
+create_encodings_treeview_model (void)
+{
+	GtkListStore *store;
+	GtkTreeIter iter;
+	GSList *list;
+	
+	gedit_debug (DEBUG_PREFS, "");
+
+	/* create list store */
+	store = gtk_list_store_new (ENCODING_NUM_COLS, G_TYPE_STRING, G_TYPE_POINTER);
+
+	/* add data to the list store */
+	list = gedit_prefs_manager_get_encodings ();
+	
+	while (list != NULL)
+	{
+		const GeditEncoding* enc;
+		gchar *name;
+
+		enc = (const GeditEncoding*) list->data;
+		name = gedit_encoding_to_string (enc);
+		
+		gtk_list_store_append (store, &iter);
+		gtk_list_store_set (store, &iter,
+				    COLUMN_ENCODING_NAME, name,
+				    COLUMN_ENCODING_POINTER, enc,
+				    -1);
+
+		g_free (name);
+		
+		list = g_slist_next (list);
+	}
+
+	g_slist_free (list);
+	
+	return GTK_TREE_MODEL (store);
+}
+
+static void
+gedit_preferences_dialog_add_enc_button_clicked (GtkButton *button, GeditPreferencesDialog *dlg)
+{
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+	
+	gedit_encodings_dialog_run (dlg);
+}
+
+static void
+gedit_preferences_dialog_remove_enc_button_clicked (GtkButton *button, GeditPreferencesDialog *dlg)
+{
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+
+	GtkTreeModel *model;
+
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_if_fail (selection != NULL);
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		return;
+	
+	path = gtk_tree_model_get_path (model, &iter);
+
+	gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+
+	update_encodings_list (dlg);
+
+	gtk_tree_selection_select_path (selection, path);
+
+	/* If the last item is removed, select the prev item */
+	if (!gtk_tree_selection_get_selected (selection, NULL, NULL))
+	{
+		if (gtk_tree_path_prev (path))
+			gtk_tree_selection_select_path (selection, path);
+	}
+			
+	gtk_tree_path_free (path);
+}
+
+
+static void
+gedit_preferences_dialog_encodings_treeview_selection_changed (GtkTreeSelection *selection, GeditPreferencesDialog *dlg)
+{
+	gboolean selected;
+	GtkTreeModel *model;
+	gint n_rows;
+	GtkTreeIter iter;
+	gboolean disable_up = TRUE;
+	gboolean disable_down = TRUE;
+	gboolean res;
+	
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+	g_return_if_fail (selection != NULL);
+
+	selected = gtk_tree_selection_get_selected (selection, NULL, NULL) &&
+		gedit_prefs_manager_encodings_can_set ();
+	
+	gtk_widget_set_sensitive (dlg->priv->remove_enc_button, selected);
+
+	if (!selected)
+	{
+		gtk_widget_set_sensitive (dlg->priv->up_enc_button, FALSE);
+		gtk_widget_set_sensitive (dlg->priv->down_enc_button, FALSE);
+
+		return;
+	}
+
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_if_fail (model != NULL);
+
+	n_rows = gtk_tree_model_iter_n_children (model, NULL);
+
+	if (n_rows > 0)
+	{
+		res = gtk_tree_model_get_iter_first (model, &iter);
+		g_return_if_fail (res);
+		disable_up = gtk_tree_selection_iter_is_selected (selection, &iter);
+	
+		res = gtk_tree_model_iter_nth_child (model, &iter, NULL, n_rows - 1);
+		g_return_if_fail (res);
+		disable_down = gtk_tree_selection_iter_is_selected (selection, &iter);
+	}
+	
+	gtk_widget_set_sensitive (dlg->priv->up_enc_button, !disable_up);
+	gtk_widget_set_sensitive (dlg->priv->down_enc_button, !disable_down);
+}
+
+static void
+gedit_preferences_dialog_up_enc_button_clicked (GtkButton *button, GeditPreferencesDialog *dlg)
+{
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeIter prev_iter;
+	GtkTreePath *path;
+	gboolean res;
+
+	GtkTreeModel *model;
+
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_if_fail (selection != NULL);
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		return;
+
+	path = gtk_tree_model_get_path (model, &iter);
+
+	res = gtk_tree_path_prev (path);
+	g_return_if_fail (res);
+
+	gtk_tree_model_get_iter (model, &prev_iter, path);
+	gtk_tree_path_free (path);
+	
+	gtk_list_store_swap (GTK_LIST_STORE (model), &iter, &prev_iter);
+
+	gedit_preferences_dialog_encodings_treeview_selection_changed (selection, dlg);
+
+	update_encodings_list (dlg);	
+}
+
+static void
+gedit_preferences_dialog_down_enc_button_clicked (GtkButton *button, GeditPreferencesDialog *dlg)
+{
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	GtkTreeIter next_iter;
+	gboolean res;
+
+	GtkTreeModel *model;
+
+	gedit_debug (DEBUG_PREFS, "");
+
+	g_return_if_fail (dlg != NULL);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_if_fail (selection != NULL);
+
+	if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+		return;
+
+	next_iter = iter;
+	
+	res = gtk_tree_model_iter_next (model, &next_iter);
+	g_return_if_fail (res);
+
+	gtk_list_store_swap (GTK_LIST_STORE (model), &next_iter, &iter);
+
+	gedit_preferences_dialog_encodings_treeview_selection_changed (selection, dlg);
+
+	update_encodings_list (dlg);
+}
+
+
+static gboolean 
+gedit_preferences_dialog_setup_load_page (GeditPreferencesDialog *dlg, GladeXML *gui)
+{
+	GtkTreeModel *model;
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *cell;
+	GtkTreeSelection *selection;
+
+	gedit_debug (DEBUG_PREFS, "");
+
+	dlg->priv->encodings_treeview = glade_xml_get_widget (gui, "encodings_treeview");
+	dlg->priv->add_enc_button = glade_xml_get_widget (gui, "add_enc_button");
+	dlg->priv->remove_enc_button = glade_xml_get_widget (gui, "remove_enc_button") ;
+	dlg->priv->up_enc_button = glade_xml_get_widget (gui, "up_enc_button");
+	dlg->priv->down_enc_button = glade_xml_get_widget (gui, "down_enc_button");
+
+	g_return_val_if_fail (dlg->priv->encodings_treeview != NULL, FALSE);
+	g_return_val_if_fail (dlg->priv->add_enc_button != NULL, FALSE);
+	g_return_val_if_fail (dlg->priv->remove_enc_button != NULL, FALSE);
+	g_return_val_if_fail (dlg->priv->up_enc_button != NULL, FALSE);
+	g_return_val_if_fail (dlg->priv->down_enc_button != NULL, FALSE);
+
+	gtk_widget_set_sensitive (dlg->priv->add_enc_button, gedit_prefs_manager_encodings_can_set ());
+	gtk_widget_set_sensitive (dlg->priv->remove_enc_button, FALSE);
+	gtk_widget_set_sensitive (dlg->priv->up_enc_button, FALSE);
+	gtk_widget_set_sensitive (dlg->priv->down_enc_button, FALSE);
+	
+
+	g_signal_connect (G_OBJECT (dlg->priv->add_enc_button), "clicked", 
+			  G_CALLBACK (gedit_preferences_dialog_add_enc_button_clicked), 
+			  dlg);
+
+	g_signal_connect (G_OBJECT (dlg->priv->remove_enc_button), "clicked", 
+			  G_CALLBACK (gedit_preferences_dialog_remove_enc_button_clicked), 
+			  dlg);
+
+	g_signal_connect (G_OBJECT (dlg->priv->up_enc_button), "clicked", 
+			  G_CALLBACK (gedit_preferences_dialog_up_enc_button_clicked), 
+			  dlg);
+
+	g_signal_connect (G_OBJECT (dlg->priv->down_enc_button), "clicked", 
+			  G_CALLBACK (gedit_preferences_dialog_down_enc_button_clicked), 
+			  dlg);
+
+	model = create_encodings_treeview_model ();
+	g_return_val_if_fail (model != NULL, FALSE);
+
+	gtk_tree_view_set_model (GTK_TREE_VIEW (dlg->priv->encodings_treeview), model);
+
+	/* Add the encoding column */
+	cell = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Encodings"), cell, 
+			"text", COLUMN_ENCODING_NAME, NULL);
+	
+	gtk_tree_view_append_column (GTK_TREE_VIEW (dlg->priv->encodings_treeview), column);
+
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (dlg->priv->encodings_treeview),
+			COLUMN_ENCODING_NAME);
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_val_if_fail (selection != NULL, FALSE);
+
+	if (gedit_prefs_manager_encodings_can_set ())
+		g_signal_connect (G_OBJECT (selection), "changed", 
+				  G_CALLBACK (gedit_preferences_dialog_encodings_treeview_selection_changed), 
+			  	  dlg);
+
+	return TRUE;
+}
+
+static gboolean
+gedit_preferences_dialog_add_encoding (GeditPreferencesDialog *dlg, const GeditEncoding* enc)
+{
+	GtkTreeModel *model;
+
+	gboolean found = FALSE;
+	GtkTreeIter iter;
+	gchar *name;
+	GValue value = {0, };
+
+	gedit_debug (DEBUG_PREFS, "");
+	
+	model = gtk_tree_view_get_model (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+
+	if (gtk_tree_model_get_iter_first (model, &iter))
+	{
+		gtk_tree_model_get_value (model, &iter,
+			    COLUMN_ENCODING_POINTER, &value);
+
+		if (enc == g_value_get_pointer (&value))
+			found = TRUE;
+			
+		g_value_unset (&value);
+
+		while (gtk_tree_model_iter_next (model, &iter) && !found)
+		{
+			gtk_tree_model_get_value (model, &iter,
+				    COLUMN_ENCODING_POINTER, &value);
+
+			if (enc == g_value_get_pointer (&value))
+				found = TRUE;
+			
+			g_value_unset (&value);
+		}
+	}
+
+	if (found)
+		return FALSE;
+
+	name = gedit_encoding_to_string (enc);
+		
+	gtk_list_store_append (GTK_LIST_STORE (model), &iter);
+
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter,
+				    COLUMN_ENCODING_NAME, name,
+				    COLUMN_ENCODING_POINTER, enc,
+				    -1);
+	g_free (name);
+
+	return TRUE;
+}
+
+gboolean
+gedit_preferences_dialog_add_encodings (GeditPreferencesDialog *dlg, const GSList* encs)
+{
+	GtkTreeSelection *selection;
+
+	gboolean changed = FALSE;
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (dlg->priv->encodings_treeview));
+	g_return_val_if_fail (selection != NULL, FALSE);
+
+	gtk_tree_selection_unselect_all (selection);
+
+	while (encs != NULL)
+	{
+		const GeditEncoding* enc = (const GeditEncoding *)encs->data;
+		
+		changed |= gedit_preferences_dialog_add_encoding (dlg, enc);
+
+		encs = g_slist_next (encs);
+	}
+	
+	if (changed)
+		update_encodings_list (dlg);
+
+	return changed;
+}
+
+

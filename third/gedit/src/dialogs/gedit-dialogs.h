@@ -34,14 +34,16 @@
 
 #include <gtk/gtkwindow.h>
 
+GQuark gedit_was_wrap_around_quark (void);
+
 void gedit_dialog_goto_line (void);
 void gedit_dialog_find 	    (void);
 void gedit_dialog_replace   (void);
 
 void gedit_dialog_open_uri  (void);
 
-gchar *gedit_plugin_program_location_dialog (gchar *program_name, 
-					     gchar *plugin_name, 
+gchar *gedit_plugin_program_location_dialog (const gchar *program_name, 
+					     const gchar *plugin_name, 
 					     GtkWindow *parent);
 
 #endif /* __GEDIT_DIALOGS_H__ */

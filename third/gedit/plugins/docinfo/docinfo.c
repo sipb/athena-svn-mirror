@@ -43,10 +43,10 @@
 #include <gedit-menus.h>
 #include <gedit-utils.h>
 
-#define MENU_ITEM_LABEL		N_("_Word Count")
-#define MENU_ITEM_PATH		"/menu/Search/SearchOps_3/"
+#define MENU_ITEM_LABEL		N_("_Document Statistics")
+#define MENU_ITEM_PATH		"/menu/Tools/ToolsOps_2/"
 #define MENU_ITEM_NAME		"PluginWordCount"	
-#define MENU_ITEM_TIP		N_("Get info on current document")
+#define MENU_ITEM_TIP		N_("Get statistic info on current document")
 
 typedef struct _DocInfoDialog DocInfoDialog;
 
@@ -118,15 +118,12 @@ get_dialog ()
 
 	if (dialog != NULL)
 	{
-		gdk_window_show (dialog->dialog->window);
-		gdk_window_raise (dialog->dialog->window);
-		gtk_widget_grab_focus (dialog->dialog);
-
 		gtk_window_set_transient_for (GTK_WINDOW (dialog->dialog),
 				window);
-	
-		if (!GTK_WIDGET_VISIBLE (dialog->dialog))
-			gtk_widget_show (dialog->dialog);
+
+		gtk_window_present (GTK_WINDOW (dialog->dialog));
+		
+		gtk_widget_grab_focus (dialog->dialog);
 
 		return dialog;
 	}
@@ -136,13 +133,13 @@ get_dialog ()
 
 	if (!gui) {
 		g_warning
-		    ("Could not find docinfo.glade2, reinstall gedit.\n");
+		    ("Could not find %s, reinstall gedit.\n", "docinfo.glade2");
 		return NULL;
 	}
 
 	dialog = g_new0 (DocInfoDialog, 1);
 
-	dialog->dialog = gtk_dialog_new_with_buttons (_("Word count"),
+	dialog->dialog = gtk_dialog_new_with_buttons (_("Document Statistics"),
 						      window,
 						      GTK_DIALOG_DESTROY_WITH_PARENT,
 						      GTK_STOCK_CLOSE,
@@ -235,7 +232,7 @@ word_count_real (void)
 		return;
 	}
 
-	text = gedit_document_get_buffer (doc);
+	text = gedit_document_get_chars (doc, 0, -1);
 	g_return_if_fail (g_utf8_validate (text, -1, NULL));
 
 	lines = gedit_document_get_line_count (doc);
@@ -362,13 +359,6 @@ init (GeditPlugin *pd)
 	/* initialize */
 	gedit_debug (DEBUG_PLUGINS, "");
      
-	pd->name = _("Word count");
-	pd->desc = _("The word count plugin analyzes the current document and determines the number "
-		     "of words, lines, characters and non-space characters in it "
-		     "and display the result.");
-	pd->author = "Paolo Maggi <maggi@athena.polito.it>";
-	pd->copyright = _("Copyright (C) 2002 - Paolo Maggi");
-	
 	pd->private_data = NULL;
 		
 	return PLUGIN_OK;

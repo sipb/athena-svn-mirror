@@ -38,7 +38,7 @@
 #include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-file-entry.h>
 #include <gconf/gconf-client.h>
-#include <eel/eel-vfs-extensions.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <unistd.h> /* getpid and unlink */
 #include <stdlib.h> /* rand   */
@@ -53,6 +53,9 @@
 #include <gedit-utils.h>
 #include <gedit-debug.h>
 #include <gedit-file.h>
+#include <gedit-mdi.h>
+#include <gedit-output-window.h>
+
 
 #define DIFF_BASE_KEY 		"/apps/gedit-2/plugins/diff"
 #define DIFF_LOCATION_KEY	"/diff-program-location"
@@ -60,12 +63,13 @@
 #define IGNORE_BLANKS		"/ignore-blanks"
 
 #define MENU_ITEM_LABEL		N_("Co_mpare Files...")
-#define MENU_ITEM_PATH		"/menu/File/FileOps_2/"
+#define MENU_ITEM_PATH		"/menu/Tools/ToolsOps_3/"
 #define MENU_ITEM_NAME		"Diff"	
 #define MENU_ITEM_TIP		N_("Makes a diff file from two documents or files")
 
-#define PLUGIN_NAME 		_("Compare files")
 #define DIFF_PROGRAM_NAME	"diff"
+
+static const gchar *plugin_name;
 
 typedef struct _DiffDialog DiffDialog;
 
@@ -101,7 +105,6 @@ G_MODULE_EXPORT GeditPluginState activate (GeditPlugin *pd);
 G_MODULE_EXPORT GeditPluginState deactivate (GeditPlugin *pd);
 G_MODULE_EXPORT GeditPluginState init (GeditPlugin *pd);
 G_MODULE_EXPORT GeditPluginState configure (GeditPlugin *p, GtkWidget *parent);
-G_MODULE_EXPORT GeditPluginState save_settings (GeditPlugin *pd);
 
 static void dialog_destroyed (GtkObject *obj,  void **dialog_pointer);
 static void diff_file_selected (GtkWidget *widget, gpointer data);
@@ -265,7 +268,7 @@ get_diff_dialog (GtkWindow* parent)
 	dialog = g_new0 (DiffDialog, 1);
 
 	/* Create the dialog */
-	dialog->dialog = gtk_dialog_new_with_buttons (_("Compare two files..."),
+	dialog->dialog = gtk_dialog_new_with_buttons (_("Compare Files"),
 						      parent,
 						      GTK_DIALOG_DESTROY_WITH_PARENT |
 						      GTK_DIALOG_MODAL,
@@ -454,13 +457,147 @@ diff_real (void)
 	gtk_widget_destroy (dialog->dialog);
 }
 
+static void
+display_results (gchar *buffer, gchar *command_line, gboolean uf)
+{
+	gchar *p;
+	gunichar c;
+	GeditOutputWindow *ow;
+	gchar *line;
+	gchar *markup;
+
+	GSList *lines = NULL;
+	GSList *tmp;
+	
+	gedit_debug (DEBUG_PLUGINS, "Building list...");
+
+	if (strlen (buffer) <= 0)
+		return;
+
+	p = buffer;
+	c = g_utf8_get_char (p);
+
+	lines = g_slist_prepend (lines, p);
+	
+	while (c != '\0') {
+		if (c == '\n') {
+			gchar *old_p;
+			
+			old_p = p;
+
+			p = g_utf8_next_char (p);
+
+			*old_p = '\0';
+
+			lines = g_slist_prepend (lines, p);
+
+		} else
+			p = g_utf8_next_char (p);
+
+		c = g_utf8_get_char (p);
+	}
+
+	lines = g_slist_reverse (lines);
+
+	gedit_debug (DEBUG_PLUGINS, "Adding lines to the output window");
+
+	ow = GEDIT_OUTPUT_WINDOW (
+			gedit_mdi_get_output_window_from_window (gedit_get_active_window ()));
+	g_return_if_fail (ow != NULL);
+
+	gedit_output_window_clear (ow);
+
+	gtk_widget_show (GTK_WIDGET (ow));
+
+	line = g_markup_escape_text (command_line, -1);
+	markup = g_strdup_printf ("<i>%s</i>: <b>%s</b>", _("Executed command"), line);
+	gedit_output_window_append_line (ow, markup, FALSE);
+	gedit_output_window_append_line (ow, "", FALSE);
+	
+	g_free (line);
+	g_free (markup);
+	
+	tmp = lines;
+	
+	while (tmp != NULL)
+	{
+		line = g_markup_escape_text (tmp->data, -1);
+
+		if (!uf)
+		{
+			if (g_utf8_get_char (tmp->data) == '<')
+			{
+				markup = g_strdup_printf ("<span foreground=\"dark blue\">%s</span>", line);
+			}
+			else if (g_utf8_get_char (tmp->data) == '>')
+			{
+				markup = g_strdup_printf ("<span foreground=\"dark green\">%s</span>", line);
+			}
+			else if (g_unichar_isdigit (g_utf8_get_char (tmp->data)))
+			{
+				markup = g_strdup_printf (
+						"<span foreground=\"purple\" "
+						"weight=\"bold\">%s</span>", line);
+			}
+			else
+			{
+				markup = g_strdup (line);
+			}
+		}
+		else
+		{
+			if ((strcmp (tmp->data, "+++ ") == 0) ||
+			    (strcmp (tmp->data, "--- ") == 0) ||
+			    (strcmp (tmp->data, "Index: ") == 0) ||
+			    (strcmp (tmp->data, "diff ") == 0))
+			{
+				markup = g_strdup_printf (
+						"<span foreground=\"dark green\" "
+						"weight=\"bold\">%s</span>", line);
+			}
+			else if (g_utf8_get_char (tmp->data) == '@')
+			{
+				markup = g_strdup_printf (
+						"<span foreground=\"purple\" "
+						"weight=\"bold\">%s</span>", line);
+			}
+			else if (g_utf8_get_char (tmp->data) == '-')
+			{
+				markup = g_strdup_printf ("<span foreground=\"dark blue\">%s</span>", line);
+			}
+			else if (g_utf8_get_char (tmp->data) == '+')
+			{
+				markup = g_strdup_printf ("<span foreground=\"dark green\">%s</span>", line);
+			}
+			else
+			{
+				markup = g_strdup (line);
+			}
+		}
+
+		
+		gedit_debug (DEBUG_PLUGINS, markup);
+		
+		gedit_output_window_append_line (ow, markup, FALSE);
+		g_free (line);
+		g_free (markup);
+
+		tmp = g_slist_next (tmp);
+	}
+
+	g_slist_free (lines);
+}
+	
+
 static gboolean
 diff_execute (DiffDialog *dialog)
 {
 	gint state_1;
 	gint state_2;
-	gchar * file_name_1;
-	gchar * file_name_2;
+	gchar *file_name_1;
+	gchar *file_name_2;
+	gchar *qfn1;
+	gchar *qfn2;
 	
 	GeditDocument *document;
 	
@@ -484,6 +621,20 @@ diff_execute (DiffDialog *dialog)
 
 	file_name_1 = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (dialog->file_entry_1), FALSE);
 	file_name_2 = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (dialog->file_entry_2), FALSE);
+
+	if (file_name_1 != NULL)
+		gnome_entry_prepend_history (GNOME_ENTRY (
+						gnome_file_entry_gnome_entry (
+							GNOME_FILE_ENTRY (dialog->file_entry_1))), 
+					     TRUE, 
+					     file_name_1);
+	
+	if (file_name_2 != NULL)
+		gnome_entry_prepend_history (GNOME_ENTRY (
+						gnome_file_entry_gnome_entry (
+							GNOME_FILE_ENTRY (dialog->file_entry_2))), 
+					     TRUE, 
+					     file_name_2);
 
 	/* We need to:
 	   - if !state_1 & !state_2. Verify that the doc numbers are
@@ -535,8 +686,7 @@ diff_execute (DiffDialog *dialog)
 		gchar *uri;
 		gchar *sn;
 		
-		if (file_name_1 != NULL)
-			g_free (file_name_1);
+		g_free (file_name_1);
 
 		document = (GeditDocument *)g_list_nth_data (dialog->open_docs, 
 				dialog->document_selected_1);
@@ -553,7 +703,7 @@ diff_execute (DiffDialog *dialog)
 		gedit_debug (DEBUG_PLUGINS, "file_name_1: %s", file_name_1);
 		g_free (sn);
 		
-		uri = eel_make_uri_canonical (file_name_1);
+		uri = gnome_vfs_get_uri_from_local_path (file_name_1);
 		g_return_val_if_fail (uri != NULL, FALSE);
 		
 		if (!gedit_document_save_a_copy_as (document, uri, NULL))
@@ -570,8 +720,7 @@ diff_execute (DiffDialog *dialog)
 		gchar *sn;
 		gchar *uri;
 
-		if (file_name_2 != NULL)
-			g_free (file_name_2);
+		g_free (file_name_2);
 		
 		document = (GeditDocument *)g_list_nth_data (dialog->open_docs, 
 				dialog->document_selected_2);
@@ -589,7 +738,7 @@ diff_execute (DiffDialog *dialog)
 		gedit_debug (DEBUG_PLUGINS, "file_name_2: %s", file_name_2);
 		g_free (sn);
 		
-		uri = eel_make_uri_canonical (file_name_2);
+		uri = gnome_vfs_get_uri_from_local_path (file_name_2);
 		g_return_val_if_fail (uri != NULL, FALSE);
 
 		if (!gedit_document_save_a_copy_as (document, uri, NULL))
@@ -611,12 +760,18 @@ diff_execute (DiffDialog *dialog)
 		goto finally;
 	}
 
-	command_line = g_strdup_printf ("%s %s %s \"%s\" \"%s\"",
+	qfn1 = g_shell_quote (file_name_1);
+	qfn2 = g_shell_quote (file_name_2);
+	
+	command_line = g_strdup_printf ("%s %s %s %s %s",
 					diff_program_location, 
 					uf ? "-u" : "", 
 					ib ? "-i" : "", 
-					file_name_1, 
-					file_name_2);
+					qfn1, 
+					qfn2);
+	
+	g_free (qfn1);
+	g_free (qfn2);
 	
 	gedit_debug (DEBUG_PLUGINS, "Command line: %s", command_line);
 
@@ -716,18 +871,7 @@ diff_execute (DiffDialog *dialog)
 			output_size = bytes_written;
 		}
 
-		gedit_file_new ();
-		
-		document = gedit_get_active_document ();
-		g_return_val_if_fail (document != NULL, FALSE);
-
-		gedit_document_begin_not_undoable_action (document);
-		
-		/* Insert text in the buffer */
-		gedit_document_insert_text (document, 0, output, output_size);
-		gedit_document_set_cursor (document, 0);
-		
-		gedit_document_end_not_undoable_action (document);
+		display_results (output, command_line, uf);
 	}
 		
 	g_free (output);
@@ -736,24 +880,35 @@ diff_execute (DiffDialog *dialog)
 	
 finally:
 	
-	if (!state_1)
+	if (!state_1 && (file_name_1 != NULL))
 		unlink (file_name_1);
-	if (!state_2)
+	
+	if (!state_2 && (file_name_2 != NULL))
 		unlink (file_name_2);
 
-	if (file_name_1 != NULL)
-		g_free (file_name_1);
+	g_free (file_name_1);
+	g_free (file_name_2);
 
-	if (file_name_2 != NULL)
-		g_free (file_name_2);
-
-	if (command_line != NULL)
-		g_free (command_line);
+	g_free (command_line);
 
 	if (ret)
 	{
 		ignore_blanks = ib;
 		use_unified_format = uf;
+
+		g_return_val_if_fail (diff_gconf_client != NULL, TRUE);
+
+		gconf_client_set_bool (
+			diff_gconf_client,
+			DIFF_BASE_KEY UNIFIED_FORMAT_KEY,
+			use_unified_format,
+	      		NULL);
+
+		gconf_client_set_bool (
+			diff_gconf_client,
+			DIFF_BASE_KEY IGNORE_BLANKS,
+			ignore_blanks,
+	      		NULL);
 	}
 	
 	return ret;
@@ -799,9 +954,11 @@ configure_real (GtkWindow *parent)
 	gchar *temp;
 	
 	gedit_debug (DEBUG_PLUGINS, "");
+
+	g_return_val_if_fail (diff_gconf_client != NULL, FALSE);
 	
 	temp = gedit_plugin_locate_program (DIFF_PROGRAM_NAME,
-					    PLUGIN_NAME, 
+					    plugin_name, 
 					    parent);
 
 	if (temp != NULL)
@@ -810,6 +967,12 @@ configure_real (GtkWindow *parent)
 			g_free (diff_program_location);
 		
 		diff_program_location = temp;
+
+		gconf_client_set_string (
+				diff_gconf_client,
+				DIFF_BASE_KEY DIFF_LOCATION_KEY,
+				diff_program_location,
+		      		NULL);
 	}
 	
 	return (diff_program_location != NULL);
@@ -845,41 +1008,14 @@ destroy (GeditPlugin *plugin)
 {
 	gedit_debug (DEBUG_PLUGINS, "");
 
-	plugin->deactivate (plugin);
-
-	g_object_unref (G_OBJECT (diff_gconf_client));
-
-	return PLUGIN_OK;
-}
-
-G_MODULE_EXPORT GeditPluginState
-save_settings (GeditPlugin *pd)
-{
-	gedit_debug (DEBUG_PLUGINS, "");
-
-	g_return_val_if_fail (diff_gconf_client != NULL, PLUGIN_ERROR);
-
-	if (diff_program_location != NULL)
-		gconf_client_set_string (
-				diff_gconf_client,
-				DIFF_BASE_KEY DIFF_LOCATION_KEY,
-				diff_program_location,
-		      		NULL);
-
-	gconf_client_set_bool (
-			diff_gconf_client,
-			DIFF_BASE_KEY UNIFIED_FORMAT_KEY,
-			use_unified_format,
-	      		NULL);
-
-	gconf_client_set_bool (
-			diff_gconf_client,
-			DIFF_BASE_KEY IGNORE_BLANKS,
-			ignore_blanks,
-	      		NULL);
-
 	gconf_client_suggest_sync (diff_gconf_client, NULL);
 
+	g_object_unref (G_OBJECT (diff_gconf_client));
+	diff_gconf_client = NULL;
+	
+	g_free (diff_program_location);
+	diff_program_location = NULL;
+	
 	return PLUGIN_OK;
 }
 
@@ -921,14 +1057,9 @@ init (GeditPlugin *pd)
 	/* initialize */
 	gedit_debug (DEBUG_PLUGINS, "");
      
-	pd->name = PLUGIN_NAME;
-	pd->desc = _("Makes a diff file from two documents or files on disk.\n\n"
-		     "For more info on \"diff\" program, type \"man diff\" in a shell prompt.\n");
-	pd->author = "Chema Celorio <chema@celorio.com> and Paolo Maggi <maggi@athena.polito.it>";
-	pd->copyright = _("Copyright (C) 2000 - 2001 Chema Celorio \n"
-			  "Copyright (C) 2002 Paolo Maggi");
-	
 	pd->private_data = NULL;
+
+	plugin_name = pd->name;
 
 	diff_gconf_client = gconf_client_get_default ();
 	g_return_val_if_fail (diff_gconf_client != NULL, PLUGIN_ERROR);

@@ -195,6 +195,42 @@ const struct CORBA_TypeCode_struct TC_GNOME_Gedit_URIList_struct = {
    0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_0 == 'G') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_1 == 'N') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_2 == 'O') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_3 == 'M') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_4 == 'E') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_5 == '_') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_6 == 'G') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_7 == 'e') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_8 == 'd') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_9 == 'i') \
+&& (TC_IMPL_TC_GNOME_Gedit_Document_DocumentReadOnly_10 == 't') \
+) && !defined(TC_DEF_TC_GNOME_Gedit_Document_DocumentReadOnly)
+#define TC_DEF_TC_GNOME_Gedit_Document_DocumentReadOnly 1
+#ifdef ORBIT_IDL_C_IMODULE_GNOME_Gedit
+static
+#endif
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Gedit_Document_DocumentReadOnly_struct = {
+   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+   CORBA_tk_except,
+   0,
+   0,
+   1,
+   0,
+   0,
+   NULL,
+   CORBA_OBJECT_NIL,
+   "DocumentReadOnly",
+   "IDL:GNOME/Gedit/Document/DocumentReadOnly:1.0",
+   NULL,
+   NULL,
+   -1,
+   0,
+   0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Gedit_Document_0 == 'G') \
 && (TC_IMPL_TC_GNOME_Gedit_Document_1 == 'N') \
 && (TC_IMPL_TC_GNOME_Gedit_Document_2 == 'O') \
@@ -318,6 +354,31 @@ CORBA_unsigned_long GNOME_Gedit_Application__classid = 0;
 static ORBit_IArg GNOME_Gedit_Document_setLinePosition__arginfo[] = {
    {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "line"}
 };
+static ORBit_IArg GNOME_Gedit_Document_insert__arginfo[] = {
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "offset"},
+   {TC_CORBA_string, ORBit_I_ARG_IN, "str"},
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "length"}
+};
+
+/* Exceptions */
+static CORBA_TypeCode GNOME_Gedit_Document_insert__exceptinfo[] = {
+   TC_GNOME_Gedit_Document_DocumentReadOnly,
+   NULL
+};
+static ORBit_IArg GNOME_Gedit_Document_delete__arginfo[] = {
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "offset"},
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "length"}
+};
+
+/* Exceptions */
+static CORBA_TypeCode GNOME_Gedit_Document_delete__exceptinfo[] = {
+   TC_GNOME_Gedit_Document_DocumentReadOnly,
+   NULL
+};
+static ORBit_IArg GNOME_Gedit_Document_getChars__arginfo[] = {
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "offset"},
+   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "length"}
+};
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_Gedit
 static
@@ -329,6 +390,30 @@ ORBit_IMethod GNOME_Gedit_Document__imethods[] = {
     {0, 0, NULL, FALSE},
     TC_void, "setLinePosition", 15,
     0 | ORBit_I_METHOD_1_WAY}
+   , {
+      {3, 3, GNOME_Gedit_Document_insert__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Gedit_Document_insert__exceptinfo, FALSE},
+      TC_void, "insert", 6,
+      0}
+   , {
+      {2, 2, GNOME_Gedit_Document_delete__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {1, 1, GNOME_Gedit_Document_delete__exceptinfo, FALSE},
+      TC_void, "delete", 6,
+      0}
+   , {
+      {2, 2, GNOME_Gedit_Document_getChars__arginfo, FALSE},
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      TC_CORBA_string, "getChars", 8,
+      0}
+   , {
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      {0, 0, NULL, FALSE},
+      TC_CORBA_long, "getCharCount", 12,
+      0 | ORBit_I_COMMON_FIXED_SIZE}
 };
 static CORBA_string GNOME_Gedit_Document__base_itypes[] = {
    "IDL:Bonobo/Unknown:1.0",
@@ -339,7 +424,7 @@ static CORBA_string GNOME_Gedit_Document__base_itypes[] = {
 static
 #endif
 ORBit_IInterface GNOME_Gedit_Document__iinterface = {
-   TC_GNOME_Gedit_Document, {1, 1, GNOME_Gedit_Document__imethods, FALSE},
+   TC_GNOME_Gedit_Document, {5, 5, GNOME_Gedit_Document__imethods, FALSE},
    {2, 2, GNOME_Gedit_Document__base_itypes, FALSE}
 };
 

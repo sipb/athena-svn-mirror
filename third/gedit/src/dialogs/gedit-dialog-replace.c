@@ -3,7 +3,7 @@
  * gedit-dialog-replace.c
  * This file is part of gedit
  *
- * Copyright (C) 2001 Paolo Maggi 
+ * Copyright (C) 2001-2002 Paolo Maggi 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
  */
 
 /*
- * Modified by the gedit Team, 1998-2001. See the AUTHORS file for a 
+ * Modified by the gedit Team, 1998-2002. See the AUTHORS file for a 
  * list of people on the gedit Team.  
  * See the ChangeLog files for a list of changes. 
  */
@@ -35,6 +35,7 @@
 
 #include <glade/glade-xml.h>
 #include <libgnome/libgnome.h>
+#include <libgnomeui/gnome-entry.h>
 
 #include "gedit2.h"
 #include "gedit-mdi.h"
@@ -58,19 +59,22 @@ struct _GeditDialogReplace {
 
 	GtkWidget *search_entry;
 	GtkWidget *replace_entry;
-	GtkWidget *replace_hbox;
-	GtkWidget *case_sensitive;
-	GtkWidget *beginning;
-	GtkWidget *cursor;
+	GtkWidget *search_entry_list;
+	GtkWidget *replace_entry_list;
+	GtkWidget *match_case_checkbutton;
+	GtkWidget *entire_word_checkbutton;
+	GtkWidget *wrap_around_checkbutton;
 };
 
 struct _GeditDialogFind {
 	GtkWidget *dialog;
 
 	GtkWidget *search_entry;
+	GtkWidget *search_entry_list;
 	GtkWidget *case_sensitive;
-	GtkWidget *beginning;
-	GtkWidget *cursor;
+	GtkWidget *match_case_checkbutton;
+	GtkWidget *entire_word_checkbutton;
+	GtkWidget *wrap_around_checkbutton;
 };
 
 static void dialog_destroyed (GtkObject *obj,  void **dialog_pointer);
@@ -83,8 +87,23 @@ static void replace_dlg_find_button_pressed (GeditDialogReplace * dialog);
 static void replace_dlg_replace_button_pressed (GeditDialogReplace * dialog);
 static void replace_dlg_replace_all_button_pressed (GeditDialogReplace * dialog);
 
+static void insert_text_handler (GtkEditable *editable, const gchar *text, gint length, gint *position);
+
 static GeditDialogReplace *dialog_replace_get_dialog 	(void);
 static GeditDialogFind    *dialog_find_get_dialog 	(void);
+
+static GQuark was_wrap_around_id = 0;
+static GQuark was_entire_word_id = 0;
+static GQuark was_case_sensitive_id = 0;
+
+GQuark 
+gedit_was_wrap_around_quark (void)
+{
+	if (!was_wrap_around_id)
+		was_wrap_around_id = g_quark_from_static_string ("GeditWasWrapAround");
+
+	return was_wrap_around_id;
+}
 
 static void
 dialog_destroyed (GtkObject *obj,  void **dialog_pointer)
@@ -96,6 +115,28 @@ dialog_destroyed (GtkObject *obj,  void **dialog_pointer)
 		g_free (*dialog_pointer);
 		*dialog_pointer = NULL;
 	}	
+}
+
+static void 
+text_not_found_dialog (const gchar *text, GtkWindow *parent)
+{
+	GtkWidget *message_dlg;
+
+	g_return_if_fail (text != NULL);
+	
+	message_dlg = gtk_message_dialog_new (
+			parent,
+			GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_INFO,
+			GTK_BUTTONS_OK,
+			_("The text \"%s\" was not found."), text);
+		
+	gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK);
+
+	gtk_window_set_resizable (GTK_WINDOW (message_dlg), FALSE);
+	
+	gtk_dialog_run (GTK_DIALOG (message_dlg));
+  	gtk_widget_destroy (message_dlg);
 }
 
 static void
@@ -135,6 +176,32 @@ dialog_find_response_handler (GtkDialog *dlg, gint res_id,  GeditDialogFind *fin
 	}
 }
 
+static void 
+replace_search_entry_changed (GtkEditable *editable, GeditDialogReplace *dialog)
+{
+	const gchar *search_string;
+	
+	search_string = gtk_entry_get_text (GTK_ENTRY (dialog->search_entry));		
+	g_return_if_fail (search_string != NULL);
+
+	if (strlen (search_string) <= 0)
+	{
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_REPLACE, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_REPLACE_ALL, FALSE);
+	}
+	else
+	{
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_REPLACE_ALL, TRUE);
+	}
+}
+
 static GeditDialogReplace *
 dialog_replace_get_dialog (void)
 {
@@ -143,6 +210,7 @@ dialog_replace_get_dialog (void)
 	GtkWindow *window;
 	GtkWidget *content;
 	GtkWidget *button;
+	GtkWidget *replace_with_label;
 	
 	gedit_debug (DEBUG_SEARCH, "");
 	
@@ -200,43 +268,74 @@ dialog_replace_get_dialog (void)
 	content = glade_xml_get_widget (gui, "replace_dialog_content");
 	dialog->search_entry       = glade_xml_get_widget (gui, "search_for_text_entry");
 	dialog->replace_entry      = glade_xml_get_widget (gui, "replace_with_text_entry");
-	dialog->replace_hbox       = glade_xml_get_widget (gui, "hbox_replace_with");
-	dialog->case_sensitive     = glade_xml_get_widget (gui, "case_sensitive");
-	dialog->beginning          = glade_xml_get_widget (gui, "beginning_radio_button");
-	dialog->cursor		   = glade_xml_get_widget (gui, "cursor_radio_button");
+	dialog->search_entry_list  = glade_xml_get_widget (gui, "search_for_text_entry_list");
+	dialog->replace_entry_list = glade_xml_get_widget (gui, "replace_with_text_entry_list");
+	replace_with_label         = glade_xml_get_widget (gui, "replace_with_label");
+	dialog->match_case_checkbutton = glade_xml_get_widget (gui, "match_case_checkbutton");
+	dialog->wrap_around_checkbutton =  glade_xml_get_widget (gui, "wrap_around_checkbutton");
+	dialog->entire_word_checkbutton = glade_xml_get_widget (gui, "entire_word_checkbutton");
 
-	if (!content			||
-	    !dialog->search_entry 	||
-	    !dialog->replace_entry  	|| 
-	    !dialog->replace_hbox 	||
-	    !dialog->case_sensitive 	||
-	    !dialog->cursor	 	||
-	    !dialog->beginning 	) 
+	if (!content				||
+	    !dialog->search_entry 		||
+	    !dialog->replace_entry  		||
+	    !dialog->search_entry_list		||
+	    !dialog->replace_entry_list		||  
+	    !replace_with_label 		||
+	    !dialog->match_case_checkbutton 	||
+	    !dialog->entire_word_checkbutton 	||
+	    !dialog->wrap_around_checkbutton)
 	{
 		g_print
 		    ("Could not find the required widgets inside replace.glade2.\n");
 		return NULL;
 	}
 
-	gtk_widget_show (dialog->replace_hbox);
-
+	gtk_widget_show (replace_with_label);
+	gtk_widget_show (dialog->replace_entry);
+	gtk_widget_show (dialog->replace_entry_list);
+	
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog->dialog)->vbox),
 			    content, FALSE, FALSE, 0);
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog->dialog),
 					 GEDIT_RESPONSE_FIND);
 
-	g_signal_connect(G_OBJECT (dialog->dialog), "destroy",
-			 G_CALLBACK (dialog_destroyed), &dialog);
+	g_signal_connect (G_OBJECT (dialog->search_entry_list), "changed",
+			  G_CALLBACK (replace_search_entry_changed), dialog);
+	
+	g_signal_connect (G_OBJECT (dialog->search_entry), "insert_text",
+			  G_CALLBACK (insert_text_handler), NULL);
 
-	g_signal_connect(G_OBJECT (dialog->dialog), "response",
-			 G_CALLBACK (dialog_replace_response_handler), dialog);
+	g_signal_connect (G_OBJECT (dialog->replace_entry), "insert_text",
+			  G_CALLBACK (insert_text_handler), NULL);
+
+	g_signal_connect (G_OBJECT (dialog->dialog), "destroy",
+			  G_CALLBACK (dialog_destroyed), &dialog);
+
+	g_signal_connect (G_OBJECT (dialog->dialog), "response",
+			  G_CALLBACK (dialog_replace_response_handler), dialog);
 
 	g_object_unref (G_OBJECT (gui));
 
 	gtk_window_set_resizable (GTK_WINDOW (dialog->dialog), FALSE);
 	
 	return dialog;
+}
+
+static void 
+find_search_entry_changed (GtkEditable *editable, GeditDialogReplace *dialog)
+{
+	const gchar *search_string;
+	
+	search_string = gtk_entry_get_text (GTK_ENTRY (dialog->search_entry));		
+	g_return_if_fail (search_string != NULL);
+
+	if (strlen (search_string) <= 0)
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, FALSE);
+	else
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, TRUE);
 }
 
 static GeditDialogFind *
@@ -246,7 +345,9 @@ dialog_find_get_dialog (void)
 	GladeXML *gui;
 	GtkWindow *window;
 	GtkWidget *content;
-	GtkWidget *replace_hbox;
+	GtkWidget *replace_with_label;
+	GtkWidget *replace_entry;
+	GtkWidget *table;
 	
 	gedit_debug (DEBUG_SEARCH, "");
 
@@ -286,32 +387,48 @@ dialog_find_get_dialog (void)
 	content = glade_xml_get_widget (gui, "replace_dialog_content");
 
 	dialog->search_entry       = glade_xml_get_widget (gui, "search_for_text_entry");
-	
-	replace_hbox       	   = glade_xml_get_widget (gui, "hbox_replace_with");
-	
-	dialog->case_sensitive     = glade_xml_get_widget (gui, "case_sensitive");
-	dialog->beginning          = glade_xml_get_widget (gui, "beginning_radio_button");
-	dialog->cursor		   = glade_xml_get_widget (gui, "cursor_radio_button");
+	dialog->search_entry_list  = glade_xml_get_widget (gui, "search_for_text_entry_list");	
+	replace_entry      	   = glade_xml_get_widget (gui, "replace_with_text_entry_list");
 
-	if (!content			||
-	    !dialog->search_entry 	||
-	    !replace_hbox 		||
-	    !dialog->case_sensitive 	||
-            !dialog->cursor	 	||
-	    !dialog->beginning 	) 
+	replace_with_label         = glade_xml_get_widget (gui, "replace_with_label");
+	
+	dialog->match_case_checkbutton = glade_xml_get_widget (gui, "match_case_checkbutton");
+	dialog->wrap_around_checkbutton =  glade_xml_get_widget (gui, "wrap_around_checkbutton");
+	dialog->entire_word_checkbutton = glade_xml_get_widget (gui, "entire_word_checkbutton");
+
+	table                      = glade_xml_get_widget (gui, "table");
+
+	if (!content				||
+	    !dialog->search_entry 		||
+	    !dialog->search_entry_list 		||
+	    !replace_entry			||
+	    !replace_with_label 		||
+	    !dialog->match_case_checkbutton 	||
+	    !dialog->entire_word_checkbutton 	||
+	    !dialog->wrap_around_checkbutton	||
+	    !table) 
 	{
 		g_print
 		    ("Could not find the required widgets inside replace.glade2.\n");
 		return NULL;
 	}
 	
-	gtk_widget_hide (replace_hbox);
+	gtk_widget_hide (replace_with_label);
+	gtk_widget_hide (replace_entry);
+
+	gtk_table_set_row_spacings (GTK_TABLE (table), 0);
 
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog->dialog)->vbox),
 			    content, FALSE, FALSE, 0);
 
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog->dialog),
 					 GEDIT_RESPONSE_FIND);
+
+	g_signal_connect (G_OBJECT (dialog->search_entry_list), "changed",
+			  G_CALLBACK (find_search_entry_changed), dialog);
+
+	g_signal_connect (G_OBJECT (dialog->search_entry), "insert_text",
+			  G_CALLBACK (insert_text_handler), NULL);
 
 	g_signal_connect(G_OBJECT (dialog->dialog), "destroy",
 			 G_CALLBACK (dialog_destroyed), &dialog);
@@ -326,6 +443,89 @@ dialog_find_get_dialog (void)
 	return dialog;
 }
 
+static gchar* 
+escape_search_text (const gchar* text)
+{
+	GString *str;
+	gint length;
+	const gchar *p;
+ 	const gchar *end;
+
+  	g_return_val_if_fail (text != NULL, NULL);
+
+	gedit_debug (DEBUG_SEARCH, "Text: %s", text);
+
+    	length = strlen (text);
+
+	str = g_string_new ("");
+
+  	p = text;
+  	end = text + length;
+
+  	while (p != end)
+    	{
+      		const gchar *next;
+      		next = g_utf8_next_char (p);
+
+		switch (*p)
+        	{
+       			case '\n':
+          			g_string_append (str, "\\n");
+          			break;
+			case '\r':
+          			g_string_append (str, "\\r");
+          			break;
+			case '\t':
+          			g_string_append (str, "\\t");
+          			break;
+        		default:
+          			g_string_append_len (str, p, next - p);
+          			break;
+        	}
+
+      		p = next;
+    	}
+
+	return g_string_free (str, FALSE);
+}
+
+static void
+insert_text_handler (GtkEditable *editable, const gchar *text, gint length, gint *position)
+{
+	static gboolean insert_text = FALSE;
+	gchar *escaped_text;
+	gint new_len;
+
+	gedit_debug (DEBUG_SEARCH, "Text: %s", text);
+
+	/* To avoid recursive behavior */
+	if (insert_text)
+		return;
+
+	escaped_text = escape_search_text (text);
+
+	gedit_debug (DEBUG_SEARCH, "Escaped Text: %s", escaped_text);
+
+	new_len = strlen (escaped_text);
+
+	if (new_len == length)
+	{
+		g_free (escaped_text);
+		return;
+	}
+
+	insert_text = TRUE;
+
+	g_signal_stop_emission_by_name (editable, "insert_text");
+	
+	gtk_editable_insert_text (editable, escaped_text, new_len, position);
+
+	insert_text = FALSE;
+
+	g_free (escaped_text);
+}
+
+
 void
 gedit_dialog_find (void)
 {
@@ -333,7 +533,13 @@ gedit_dialog_find (void)
 	GeditMDIChild *active_child;
 	GeditDocument *doc;
 	gchar* last_searched_text;
-
+	gint selection_start, selection_end;
+	gboolean selection_exists;
+	gboolean was_wrap_around;
+	gboolean was_entire_word;
+	gboolean was_case_sensitive;
+	gpointer data;
+	
 	gedit_debug (DEBUG_SEARCH, "");
 
 	dialog = dialog_find_get_dialog ();
@@ -347,22 +553,74 @@ gedit_dialog_find (void)
 				      (bonobo_mdi_get_active_window
 				       (BONOBO_MDI (gedit_mdi))));
 
+	if (GTK_WIDGET_VISIBLE (dialog->dialog))
+		return;
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, FALSE);
+
 	active_child = GEDIT_MDI_CHILD (bonobo_mdi_get_active_child (BONOBO_MDI (gedit_mdi)));
 	g_return_if_fail (active_child != NULL);
 
 	doc = active_child->document;
 	g_return_if_fail (doc != NULL);
 
-	last_searched_text = gedit_document_get_last_searched_text (doc);
-	if (last_searched_text != NULL)
+	selection_exists = gedit_document_get_selection (doc, &selection_start, &selection_end);
+	if (selection_exists && (selection_end - selection_start < 80)) 
 	{
-		gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), last_searched_text);
-		g_free (last_searched_text);	
+		gchar *selection_text;
+		
+		selection_text = gedit_document_get_chars (doc, selection_start, selection_end);
+		
+		gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), selection_text);
+		
+		g_free (selection_text);
+	} 
+	else 
+	{
+		last_searched_text = gedit_document_get_last_searched_text (doc);
+		if (last_searched_text != NULL)
+		{
+			gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), last_searched_text);
+			g_free (last_searched_text);	
+		}
 	}
 
-	gtk_widget_grab_focus (dialog->search_entry);
+	if (!was_wrap_around_id)
+		was_wrap_around_id = gedit_was_wrap_around_quark ();
+
+	if (!was_entire_word_id)
+		was_entire_word_id = g_quark_from_static_string ("GeditWasEntireWord");
+
+	if (!was_case_sensitive_id)
+		was_case_sensitive_id = g_quark_from_static_string ("GeditWasCaseSensitive");
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_wrap_around_id);
+	if (data == NULL)
+		was_wrap_around = TRUE;
+	else
+		was_wrap_around = GPOINTER_TO_BOOLEAN (data);
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_entire_word_id);
+	if (data == NULL)
+		was_entire_word = FALSE;
+	else
+		was_entire_word = GPOINTER_TO_BOOLEAN (data);
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_case_sensitive_id);
+	if (data == NULL)
+		was_case_sensitive = FALSE;
+	else
+		was_case_sensitive = GPOINTER_TO_BOOLEAN (data);
 	
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->beginning), TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton), 
+				      was_case_sensitive);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton),
+				      was_entire_word);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->wrap_around_checkbutton),
+				      was_wrap_around);
+
+	gtk_widget_grab_focus (dialog->search_entry);
 	
 	if (!GTK_WIDGET_VISIBLE (dialog->dialog))
 		gtk_widget_show (dialog->dialog);
@@ -376,6 +634,12 @@ gedit_dialog_replace (void)
 	GeditDocument *doc;
 	gchar* last_searched_text;
 	gchar* last_replace_text;
+	gint selection_start, selection_end;
+	gboolean selection_exists;
+	gboolean was_wrap_around;
+	gboolean was_entire_word;
+	gboolean was_case_sensitive;
+	gpointer data;
 
 	gedit_debug (DEBUG_SEARCH, "");
 
@@ -390,32 +654,84 @@ gedit_dialog_replace (void)
 				      (bonobo_mdi_get_active_window
 				       (BONOBO_MDI (gedit_mdi))));
 
+	if (GTK_WIDGET_VISIBLE (dialog->dialog))
+		return;
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_FIND, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_REPLACE, FALSE);
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+			GEDIT_RESPONSE_REPLACE_ALL, FALSE);
+
 	active_child = GEDIT_MDI_CHILD (bonobo_mdi_get_active_child (BONOBO_MDI (gedit_mdi)));
 	g_return_if_fail (active_child != NULL);
 
 	doc = active_child->document;
 	g_return_if_fail (doc != NULL);
 
-	last_searched_text = gedit_document_get_last_searched_text (doc);
-	if (last_searched_text != NULL)
+	selection_exists = gedit_document_get_selection (doc, &selection_start, &selection_end);
+	if (selection_exists && (selection_end - selection_start < 80)) 
 	{
-		gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), last_searched_text);
-		g_free (last_searched_text);	
+		gchar *selection_text;
+		
+		selection_text = gedit_document_get_chars (doc, selection_start, selection_end);
+		
+		gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), selection_text);
+		
+		g_free (selection_text);
+	} 
+	else 
+	{
+		last_searched_text = gedit_document_get_last_searched_text (doc);
+		if (last_searched_text != NULL)
+		{
+			gtk_entry_set_text (GTK_ENTRY (dialog->search_entry), last_searched_text);
+			g_free (last_searched_text);	
+		}
 	}
-
+	
 	last_replace_text = gedit_document_get_last_replace_text (doc);
 	if (last_replace_text != NULL)
 	{
 		gtk_entry_set_text (GTK_ENTRY (dialog->replace_entry), last_replace_text);
 		g_free (last_replace_text);	
 	}
+	if (!was_wrap_around_id)
+		was_wrap_around_id = gedit_was_wrap_around_quark ();
+
+	if (!was_entire_word_id)
+		was_entire_word_id = g_quark_from_static_string ("GeditWasEntireWord");
+
+	if (!was_case_sensitive_id)
+		was_case_sensitive_id = g_quark_from_static_string ("GeditWasCaseSensitive");
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_wrap_around_id);
+	if (data == NULL)
+		was_wrap_around = TRUE;
+	else
+		was_wrap_around = GPOINTER_TO_BOOLEAN (data);
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_entire_word_id);
+	if (data == NULL)
+		was_entire_word = FALSE;
+	else
+		was_entire_word = GPOINTER_TO_BOOLEAN (data);
+
+	data = g_object_get_qdata (G_OBJECT (doc), was_case_sensitive_id);
+	if (data == NULL)
+		was_case_sensitive = FALSE;
+	else
+		was_case_sensitive = GPOINTER_TO_BOOLEAN (data);
+	
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton), 
+				      was_case_sensitive);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton),
+				      was_entire_word);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->wrap_around_checkbutton),
+				      was_wrap_around);
 
 	gtk_widget_grab_focus (dialog->search_entry);
-
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
-			GEDIT_RESPONSE_REPLACE, FALSE);
-	
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->beginning), TRUE);
 	
 	if (!GTK_WIDGET_VISIBLE (dialog->dialog))
 		gtk_widget_show (dialog->dialog);
@@ -428,9 +744,11 @@ find_dlg_find_button_pressed (GeditDialogFind *dialog)
 	GeditView* active_view;
 	GeditDocument *doc;
 	const gchar* search_string = NULL;
-	gboolean from_cursor;
 	gboolean case_sensitive;
-	
+	gboolean entire_word;
+	gboolean wrap_around;
+	gboolean found;
+
 	gedit_debug (DEBUG_SEARCH, "");
 
 	if (bonobo_mdi_get_active_child (BONOBO_MDI (gedit_mdi)) == NULL)
@@ -450,43 +768,28 @@ find_dlg_find_button_pressed (GeditDialogFind *dialog)
 
 	if (strlen (search_string) <= 0)
 		return;
-	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->beginning)))
-		from_cursor = FALSE;
-	else
-		from_cursor = TRUE;
 
-	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->case_sensitive)))
-		case_sensitive = TRUE;
-	else
-		case_sensitive = FALSE;
-			
-	if (!gedit_document_find (doc, search_string, from_cursor, case_sensitive))
-	{	
-		GtkWidget *message_dlg;
-
-		message_dlg = gtk_message_dialog_new (
-				GTK_WINDOW (dialog->dialog),
-				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_INFO,
-				GTK_BUTTONS_OK,
-				_("The text \"%s\" was not found."), search_string);
+	gnome_entry_prepend_history (GNOME_ENTRY (dialog->search_entry_list), TRUE, search_string);
 		
-		gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK);
+	case_sensitive = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton));
 
-		gtk_window_set_resizable (GTK_WINDOW (message_dlg), FALSE);
+	entire_word = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton));
 	
-		gtk_dialog_run (GTK_DIALOG (message_dlg));
-  		gtk_widget_destroy (message_dlg);
+	wrap_around = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->wrap_around_checkbutton));
 
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->beginning), TRUE);		
-	}
-	else
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->cursor), TRUE);		
+	g_object_set_qdata (G_OBJECT (doc), was_wrap_around_id, GBOOLEAN_TO_POINTER (wrap_around ));
+	g_object_set_qdata (G_OBJECT (doc), was_entire_word_id, GBOOLEAN_TO_POINTER (entire_word));
+	g_object_set_qdata (G_OBJECT (doc), was_case_sensitive_id, GBOOLEAN_TO_POINTER (case_sensitive));
+
+	found = gedit_document_find (doc, search_string, TRUE, case_sensitive, entire_word);
+
+	if (!found && wrap_around)
+		found = gedit_document_find (doc, search_string, FALSE, case_sensitive, entire_word);
+
+	if (found)
 		gedit_view_scroll_to_cursor (active_view);
-	}
+	else
+		text_not_found_dialog (search_string, (GTK_WINDOW (dialog->dialog)));
 }
 
 
@@ -499,9 +802,11 @@ replace_dlg_find_button_pressed (GeditDialogReplace *dialog)
 	GeditView* active_view;
 	GeditDocument *doc;
 	const gchar* search_string = NULL;
-	gboolean from_cursor;
 	gboolean case_sensitive;
-	
+	gboolean entire_word;
+	gboolean wrap_around;
+	gboolean found;
+
 	gedit_debug (DEBUG_SEARCH, "");
 
 	if (bonobo_mdi_get_active_child (BONOBO_MDI (gedit_mdi)) == NULL)
@@ -522,48 +827,30 @@ replace_dlg_find_button_pressed (GeditDialogReplace *dialog)
 	if (strlen (search_string) <= 0)
 		return;
 	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->beginning)))
-		from_cursor = FALSE;
-	else
-		from_cursor = TRUE;
-
-	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->case_sensitive)))
-		case_sensitive = TRUE;
-	else
-		case_sensitive = FALSE;
-			
-	if (!gedit_document_find (doc, search_string, from_cursor, case_sensitive))
-	{	
-		GtkWidget *message_dlg;
-
-		message_dlg = gtk_message_dialog_new (
-				GTK_WINDOW (dialog->dialog),
-				GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_INFO,
-				GTK_BUTTONS_OK,
-				_("The text \"%s\" was not found."), search_string);
+	gnome_entry_prepend_history (GNOME_ENTRY (dialog->search_entry_list), TRUE, search_string);
 		
-		gtk_dialog_set_default_response (GTK_DIALOG (message_dlg), GTK_RESPONSE_OK);
+	case_sensitive = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton));
 
-		gtk_window_set_resizable (GTK_WINDOW (message_dlg), FALSE);
+	entire_word = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton));
 
-		gtk_dialog_run (GTK_DIALOG (message_dlg));
-  		gtk_widget_destroy (message_dlg);
+	wrap_around = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->wrap_around_checkbutton));
 
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->beginning), TRUE);	
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
-							GEDIT_RESPONSE_REPLACE, FALSE);
-	
-	}
-	else
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->cursor), TRUE);
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
-							GEDIT_RESPONSE_REPLACE, TRUE);
-		
+	g_object_set_qdata (G_OBJECT (doc), was_wrap_around_id, GBOOLEAN_TO_POINTER (wrap_around));
+	g_object_set_qdata (G_OBJECT (doc), was_entire_word_id, GBOOLEAN_TO_POINTER (entire_word));
+	g_object_set_qdata (G_OBJECT (doc), was_case_sensitive_id, GBOOLEAN_TO_POINTER (case_sensitive));
+
+	found = gedit_document_find (doc, search_string, TRUE, case_sensitive, entire_word);
+
+	if (!found && wrap_around)
+		found = gedit_document_find (doc, search_string, FALSE, case_sensitive, entire_word);
+
+	if (found)
 		gedit_view_scroll_to_cursor (active_view);
-	}
+	else
+		text_not_found_dialog (search_string, (GTK_WINDOW (dialog->dialog)));
+
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+							GEDIT_RESPONSE_REPLACE, found);
 }
 
 static void
@@ -577,6 +864,10 @@ replace_dlg_replace_button_pressed (GeditDialogReplace *dialog)
 	gchar* selected_text = NULL;
 	gchar *converted_search_string = NULL;
 	gboolean case_sensitive;
+	gboolean entire_word;
+	gint start, end;
+	gboolean wrap_around;
+	gboolean found;
 
 	gedit_debug (DEBUG_SEARCH, "");
 
@@ -607,15 +898,24 @@ replace_dlg_replace_button_pressed (GeditDialogReplace *dialog)
 	if (strlen (search_string) <= 0)
 		return;
 	
-	selected_text = gedit_document_get_selected_text (doc, NULL, NULL);
+	gnome_entry_prepend_history (GNOME_ENTRY (dialog->search_entry_list), TRUE, search_string);
 
+	if (strlen (replace_string) > 0)
+		gnome_entry_prepend_history (GNOME_ENTRY (dialog->replace_entry_list), 
+					     TRUE, 
+					     replace_string);
+
+	if (gedit_document_get_selection (doc, &start, &end))
+		selected_text = gedit_document_get_chars (doc, start, end);
+	
 	gedit_debug (DEBUG_SEARCH, "Sel text: %s", selected_text ? selected_text : "NULL");
 	gedit_debug (DEBUG_SEARCH, "Search string: %s", search_string ? search_string : "NULL");
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->case_sensitive)))
-		case_sensitive = TRUE;
-	else
-		case_sensitive = FALSE;
+	case_sensitive = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton));
+
+	entire_word = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton));
+
+	wrap_around = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->wrap_around_checkbutton));
 
 	converted_search_string = gedit_utils_convert_search_text (search_string);
 
@@ -650,21 +950,16 @@ replace_dlg_replace_button_pressed (GeditDialogReplace *dialog)
 	gedit_debug (DEBUG_SEARCH, "Replaced");
 
 	/* go ahead and find the next one */
-	if (!gedit_document_find (doc, search_string, TRUE, case_sensitive))
-	{	
-	
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->beginning), TRUE);	
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
-							GEDIT_RESPONSE_REPLACE, FALSE);	
-	}
-	else
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->cursor), TRUE);
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
-							GEDIT_RESPONSE_REPLACE, TRUE);
-		
+	found = gedit_document_find (doc, search_string, TRUE, case_sensitive, entire_word);
+
+	if (!found && wrap_around)
+		found = gedit_document_find (doc, search_string, FALSE, case_sensitive, entire_word);
+
+	if (found)
 		gedit_view_scroll_to_cursor (active_view);
-	}
+	
+	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog->dialog), 
+							GEDIT_RESPONSE_REPLACE, found);	
 
 	gedit_debug (DEBUG_SEARCH, "END");
 }
@@ -679,6 +974,7 @@ replace_dlg_replace_all_button_pressed (GeditDialogReplace *dialog)
 	const gchar* search_string = NULL;
 	const gchar* replace_string = NULL;
 	gboolean case_sensitive;
+	gboolean entire_word;
 	gint replaced_items;
 	GtkWidget *message_dlg;
 	
@@ -705,12 +1001,19 @@ replace_dlg_replace_all_button_pressed (GeditDialogReplace *dialog)
 	if (strlen (search_string) <= 0)
 		return;
 	
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->case_sensitive)))
-		case_sensitive = TRUE;
-	else
-		case_sensitive = FALSE;
-	
-	replaced_items = gedit_document_replace_all (doc, search_string, replace_string, case_sensitive);
+	gnome_entry_prepend_history (GNOME_ENTRY (dialog->search_entry_list), TRUE, search_string);
+
+	if (strlen (replace_string) > 0)
+		gnome_entry_prepend_history (GNOME_ENTRY (dialog->replace_entry_list), 
+					     TRUE, 
+					     replace_string);
+
+	case_sensitive = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->match_case_checkbutton));
+
+	entire_word = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->entire_word_checkbutton));
+
+	replaced_items = gedit_document_replace_all (doc, search_string, replace_string, 
+						     case_sensitive, entire_word);
 		
 	if (replaced_items <= 0)
 	{

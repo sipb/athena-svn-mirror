@@ -38,7 +38,10 @@
  * See the ChangeLog files for a list of changes. 
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <libgnome/gnome-macros.h>
 
 /* Must be before all other gnome includes!! */
@@ -86,7 +89,7 @@ struct _GnomePrintFontPickerPrivate {
 };
 
 
-#define DEF_FONT_NAME N_("sans 12")
+#define DEF_FONT_NAME N_("Sans Regular 12")
 #define DEF_PREVIEW_TEXT N_("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz")
 #define DEF_TITLE N_("Pick a Font")
 
@@ -760,7 +763,8 @@ gboolean   gnome_print_font_picker_set_font_name    (GnomePrintFontPicker *gfp,
 	    if (gfp->_priv->font != NULL)
 		    g_object_unref (gfp->_priv->font);
 
-	    gfp->_priv->font = gnome_font_find_closest_from_full_name (fontname);
+	    
+	    gfp->_priv->font = gnome_font_find_closest_from_full_name (fontname);	
     }
 
     if (gfp->_priv->mode == GNOME_PRINT_FONT_PICKER_MODE_FONT_INFO)

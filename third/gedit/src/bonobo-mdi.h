@@ -122,6 +122,8 @@ void 	      bonobo_mdi_construct 		(BonoboMDI *mdi,
 						 gint default_window_width,
 						 gint default_window_height);
 
+void 	      bonobo_mdi_destroy 		(BonoboMDI *mdi);
+
 /* setting the ui template*/
 void          bonobo_mdi_set_ui_template	(BonoboMDI *mdi, 
 						 const gchar *xml, 
@@ -202,6 +204,12 @@ BonoboUIComponent 	*bonobo_mdi_get_ui_component_from_window (BonoboWindow *win);
 char *bonobo_mdi_generate_window_role (void);
 
 const BonoboMDIWindowInfo *bonobo_mdi_get_window_info		(BonoboWindow *win);
+
+void  bonobo_mdi_set_bottom_pane_for_window (BonoboWindow *win, GtkWidget *pane);
+GtkWidget *bonobo_mdi_get_bottom_pane_for_window (BonoboWindow *win);
+
+gboolean	bonobo_mdi_move_view_to_new_window (BonoboMDI *mdi, GtkWidget *view);
+gint		bonobo_mdi_n_children_for_window (BonoboWindow *win);
 
 #endif /* _BONOBO_MDI_H_ */
 
