@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *	$Id: olc_tty.h,v 1.15 1992-01-13 18:59:08 lwvanels Exp $
+ *	$Id: olc_tty.h,v 1.16 1992-02-05 02:56:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -86,9 +86,6 @@ ERRCODE t_replay P((REQUEST *Request , char *queues , char *topics , char *users
 ERRCODE t_show_message P((REQUEST *Request , char *file , int display , int connected , int noflush ));
 ERRCODE t_check_messages P((REQUEST *Request ));
 ERRCODE t_check_connected_messages P((REQUEST *Request ));
-
-/* t_misc.c */
-ERRCODE t_dump P((REQUEST *Request , int type , char *file ));
 
 /* t_motd.c */
 ERRCODE t_get_file P((REQUEST *Request , int type , char *file , int display_opts ));

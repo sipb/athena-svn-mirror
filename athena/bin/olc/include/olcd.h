@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.40 1992-02-04 19:55:23 lwvanels Exp $
+ *	$Id: olcd.h,v 1.41 1992-02-05 02:55:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -188,8 +188,6 @@ int get_kerberos_ticket P((void ));
 /* requests_admin.c */
 ERRCODE olc_load_user P((int fd , REQUEST *request ));
 ERRCODE olc_dump P((int fd , REQUEST *request ));
-ERRCODE olc_dump_req_stats P((int fd , REQUEST *request ));
-ERRCODE olc_dump_ques_stats P((int fd , REQUEST *request ));
 ERRCODE olc_change_motd P((int fd , REQUEST *request ));
 ERRCODE olc_change_hours P((int fd , REQUEST *request ));
 ERRCODE olc_change_acl P((int fd , REQUEST *request ));
@@ -229,8 +227,6 @@ ERRCODE olc_grab P((int fd , REQUEST *request ));
 ERRCODE olc_get_hours P((int fd , REQUEST *request ));
 
 /* statistics.c */
-void dump_request_stats P((char *file ));
-void dump_question_stats P((char *file ));
 void write_ask_stats P((char *username, char *topic, char *machine, char
 			*ask_by ));
 void write_res_stats P((QUESTION *q));
