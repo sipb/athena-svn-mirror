@@ -80,5 +80,5 @@ typedef struct _ScrollByLineRec {
     ScrollByLinePart  scroll_by_line;
 } ScrollByLineRec;
 
-#endif _XtScrollByLinePrivate_h
+#endif /* _XtScrollByLinePrivate_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

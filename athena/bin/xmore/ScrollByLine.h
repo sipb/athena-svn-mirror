@@ -56,5 +56,5 @@ extern Widget XtScrollByLineWidget(); /* the ScrollByLine Widget. */
 extern void XtResetScrollByLine();
 /* Widget w; */
 
-#endif _XtScrollByLine_h
+#endif /* _XtScrollByLine_h */
 /* DON'T ADD STUFF AFTER THIS #endif */

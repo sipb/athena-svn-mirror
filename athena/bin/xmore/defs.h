@@ -7,7 +7,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/defs.h,v $
  *      $Author: probe $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/defs.h,v 1.1 1990-07-17 11:12:31 probe Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/defs.h,v 1.2 1990-07-17 13:35:34 probe Exp $
  *	
  *  	Copyright 1987, 1988 by the Massachusetts Institute of Technology.
  *
@@ -34,7 +34,7 @@
 #define NORMALFONT "8x13"
 #define ITALICFONT "8x13bold"
 #define BOLDFONT   "8x13bold"
-#endif ATHENA
+#endif /* ATHENA */
 
 #define MAIN_CURSOR "left_ptr"	/* The default topcursor. */
 #define HELP_CURSOR "left_ptr"	/* The default Help cursor. */

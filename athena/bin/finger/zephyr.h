@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/zephyr.h,v $
- *	$Author: ambar $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/zephyr.h,v 1.2 1987-08-27 16:56:51 ambar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/zephyr.h,v 1.3 1990-07-17 13:37:43 probe Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -212,4 +212,4 @@ extern int ZMakeAuthentication();
 
 #define LOCATE_LOCATE		"LOCATE"	/* Opcode: Locate user */
 
-#endif !__ZEPHYR_H__
+#endif /* !__ZEPHYR_H__ */
