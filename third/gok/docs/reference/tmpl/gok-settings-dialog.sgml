@@ -1,0 +1,114 @@
+<!-- ##### SECTION Title ##### -->
+gok-settings-dialog
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_settingsdialog_open ##### -->
+<para>
+
+</para>
+
+@bShow: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_settingsdialog_close ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_settingsdialog_show ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_settingsdialog_hide ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION on_button_try ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_button_revert ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_button_ok ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_button_cancel ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_button_help ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gok_settingsdialog_refresh ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_settingsdialog_backup_settings ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_settingsdialog_get_window ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

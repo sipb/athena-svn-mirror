@@ -1,0 +1,254 @@
+<!-- ##### SECTION Title ##### -->
+gok-gconf-keys
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GOK_GCONF_ROOT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_LAYOUT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEY_SPACING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEY_WIDTH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEY_HEIGHT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEYBOARD_X ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEYBOARD_Y ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACCESS_METHOD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_WORD_COMPLETE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_NUMBER_PREDICTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_USE_GTKPLUS_THEME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_KEYBOARD_DIRECTORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACCESS_METHOD_DIRECTORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_DICTIONARY_DIRECTORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_RESOURCE_DIRECTORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACCESS_METHOD_SETTINGS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTIONS_WORKAROUND ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_DISPLAYNAME ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_NUMBER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_RATE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_PERMANENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_KEY_AVERAGING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_TYPE_SWITCH ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_TYPE_MOUSEBUTTON ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_TYPE_MOUSEPOINTER ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_TYPE_DWELL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE_UNDEFINED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE_PRESS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE_RELEASE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE_CLICK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GOK_GCONF_ACTION_STATE_DOUBLECLICK ##### -->
+<para>
+
+</para>
+
+
+

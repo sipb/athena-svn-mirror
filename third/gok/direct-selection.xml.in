@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+
+<GOK:accessmethodroot xmlns:GOK="http://www.gnome.org/GOK">
+
+<!-- User interface for the access method -->
+
+<GOK:accessmethod name="directselection" _displayname="Direct Selection">
+<_GOK:description xml:space="preserve">Move the mouse pointer to highlight a key.  Press a switch to select.</_GOK:description>
+
+<GOK:operation>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Operation">
+	<GOK:control type="hbox" size="1" spacing="0" border="0">
+		<GOK:control type="vbox" size="3" border="5" spacing="10">
+
+			<GOK:control type="hbox" size="2" spacing="5" border="0">
+				<GOK:control type="label" _string="Highlight:" />
+				<GOK:control name="keyenter+keyleave" type="combobox" _string="Highlight:" fillwith="actions" qualifier="mousepointer" />
+			</GOK:control>
+
+			<GOK:control type="hbox" size="2" spacing="5" border="0">
+				<GOK:control type="label" string="Select:" />
+				<GOK:control name="outputselected" type="combobox" _string="Select:" fillwith="actions" qualifier="switch+mousebutton" />
+			</GOK:control>
+
+		</GOK:control>
+	</GOK:control>	
+</GOK:control>	
+</GOK:operation>
+
+<GOK:feedback>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Feedback">
+	<GOK:control type="hbox" size="1" spacing="0" border="0">
+		<GOK:control type="vbox" size="3" border="5" spacing="10">
+
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control type="label" string="Movement:" />
+				<GOK:control name="feedbackmovement" _string="Feedback Movement:" type="combobox" fillwith="feedbacks" />
+			</GOK:control>
+	
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control type="label" string="Selection:" />
+				<GOK:control name="feedbackselection" _string="Feedback Selection:" type="combobox" fillwith="feedbacks" />
+			</GOK:control>
+
+		</GOK:control>
+	</GOK:control>
+</GOK:control>
+</GOK:feedback>
+
+<!-- <GOK:options>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Options">
+	<GOK:control type="hbox" size="2" border="5" spacing="20">
+		<GOK:control name="autorepeat" type="checkbutton" _string="Auto Repeat On" associated="repeatrate+repeatratelabel+repeatratesuffix" associatedstate="1"/>
+		<GOK:control type="hbox" size="3" border="0" spacing="5">
+			<GOK:control name="repeatratelabel" type="label" _string="Auto Repeat Rate:" />
+			<GOK:control name="repeatrate" type="spinbutton" _string="Auto Repeat Rate:" value="1" min="0" max="100" stepincrement="1" pageincrement="10" pagesize="10" />
+			<GOK:control name="repeatratesuffix" type="label" _string="(100s of a second)" />
+		</GOK:control>
+	</GOK:control>
+</GOK:control>
+</GOK:options> -->
+
+<!-- Rates for this access method. -->
+	<GOK:rate name="outputselected" stringvalue="mousebutton1" />
+	<GOK:rate name="keyenter" stringvalue="mousepointer" />
+	<GOK:rate name="keyleave" stringvalue="mousepointer" />
+	<GOK:rate name="feedbackmovement" stringvalue="" />
+	<GOK:rate name="feedbackselection" stringvalue="key_flashing" />
+	<GOK:rate name="autorepeat" value="0" />
+	<GOK:rate name="repeatrate" value="30" />
+
+<!-- Initialization for this access method. -->
+	<GOK:initialization>
+		<GOK:effect call="ChunkerReset" />
+		<GOK:effect call="ChunkerChunkNone" />
+	</GOK:initialization>
+
+<!-- Highlight keys as the mouse pointer moves. Wait for a mouse click to select a key. -->
+	<GOK:state name="0">
+
+		<GOK:handler name="keyenter" state="enter">
+			<GOK:effect call="SetSelectedKey" />
+			<GOK:effect call="ChunkerKeyHighlight" />
+			<GOK:effect call="Feedback" name="feedbackmovement" />
+		</GOK:handler>
+
+		<GOK:handler name="keyleave" state="leave">
+			<GOK:effect call="ChunkerKeyUnHighlight" />
+			<GOK:effect call="SetSelectedKey" />
+		</GOK:handler>
+
+		<GOK:handler name="outputselected" state="press">
+			<GOK:effect call="OutputSelectedKey" />
+			<GOK:effect call="Feedback" name="feedbackselection" />
+		</GOK:handler>
+
+	</GOK:state>
+	
+	
+<!-- For repeat state choose a handler for turning repeat off. -->
+	<GOK:state name="repeat">
+		<GOK:handler name="outputselected" state="press">
+			<GOK:effect call="StateReset" />
+			<GOK:effect call="UnhighlightAll" />
+		</GOK:handler>
+	</GOK:state>
+
+</GOK:accessmethod>
+</GOK:accessmethodroot>

@@ -1,0 +1,121 @@
+<!-- ##### SECTION Title ##### -->
+gok-page-feedbacks
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_page_feedbacks_initialize ##### -->
+<para>
+
+</para>
+
+@xml: 
+@Returns: 
+<!-- # Unused Parameters # -->
+@pWindowSettings: 
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_refresh ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_apply ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_revert ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_backup ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_update_controls ##### -->
+<para>
+
+</para>
+
+@pFeedback: 
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_button_clicked_change_name ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_button_clicked_new ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_fill_combo_feedback_names ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_button_clicked_delete ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_check_keyflashing_clicked ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_spin_keyflashing_changed ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_check_sound_clicked ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_feedbacks_entry_soundname_changed ##### -->
+<para>
+
+</para>
+
+
+

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="quit" commandprediction="no" wordcompletion="no">
+	<GOK:key left="0" right="2" top="0" bottom="1" type="branchBack">
+		<!-- Translators: short label for go back. -->
+		<_GOK:label>back</_GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="5" top="0" bottom="1" type="normal">
+		<GOK:output type="internal">quit</GOK:output>
+		<!-- Translators: short phrase to confirm that user wants to quit. -->
+		<_GOK:label>Really Quit!</_GOK:label>
+		<GOK:image source="gtk-quit" type="stock"  />
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

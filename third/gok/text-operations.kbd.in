@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="text-operations" commandprediction="no" wordcompletion="no" expand="sometimes">
+	<GOK:key left="0" right="1" top="0" bottom="1" type="branchBack">
+		<!-- Translators: short label for go back. -->
+		<GOK:label>back</GOK:label>
+	</GOK:key>
+	<GOK:key left="1" right="2" top="0" bottom="1" type="navigate" detail="char-">
+		<!-- Translators: short label for move one letter to the left. -->
+		<GOK:label>c -</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="0" bottom="1" type="navigate" detail="char+">
+		<!-- Translators: short label for move one letter to the right. -->
+		<GOK:label>c +</GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="0" bottom="1" modifiertype="toggle" type="select-toggle">
+		<GOK:label>Select</GOK:label>
+	</GOK:key>
+	<GOK:key left="6" right="8" top="0" bottom="1" type="repeat-next">
+		<GOK:label>Repeat Next</GOK:label>
+	</GOK:key>
+	<GOK:key left="0" right="2" top="1" bottom="2" type="navigate" detail="word-">
+		<!-- Translators: short label for move one word to the left. -->
+		<GOK:label>word -</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="1" bottom="2" type="navigate" detail="word+">
+		<!-- Translators: short label for move one word to the right. -->
+		<GOK:label>word +</GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="1" bottom="2" type="select" detail="word">
+		<GOK:label>word</GOK:label>
+	</GOK:key>
+	<GOK:key left="6" right="8" top="1" bottom="2" type="edit" detail="cut">
+		<GOK:label>cut</GOK:label>
+	</GOK:key>
+	<GOK:key left="7" right="8" top="2" bottom="3" type="edit" detail="copy">
+		<GOK:label>copy</GOK:label>
+	</GOK:key>
+	<GOK:key left="0" right="2" top="2" bottom="3" type="navigate" detail="line-">
+		<!-- Translators: short label for move one line up. -->
+		<GOK:label>line -</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="2" bottom="3" type="navigate" detail="line+">
+		<!-- Translators: short label for move one line down. -->
+		<GOK:label>line +</GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="2" bottom="3" type="select" detail="sent">
+		<!-- Translators: short label for sentence. -->
+		<GOK:label>sent.</GOK:label>
+	</GOK:key>
+	<GOK:key left="6" right="7" top="2" bottom="4" type="edit" detail="paste">
+		<GOK:label>paste</GOK:label>
+	</GOK:key>
+	<GOK:key left="7" right="8" top="3" bottom="4" type="branch" target="Keyboard">
+		<!-- Translators: abbreviation for insert. -->
+		<GOK:label>ins</GOK:label>
+	</GOK:key>
+	<GOK:key left="0" right="2" top="3" bottom="4" type="navigate" detail="sent-">
+		<!-- Translators: short label for move one sentence back. -->
+		<GOK:label>sent. -</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="3" bottom="4" type="navigate" detail="sent+">
+		<!-- Translators: short label for move one sentence forward. -->
+		<GOK:label>sent. +</GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="3" bottom="4" type="select" detail="all">
+		<!-- Translators: short label for all text. -->
+		<GOK:label>all</GOK:label>
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

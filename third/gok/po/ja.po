@@ -1,0 +1,2040 @@
+# gok ja.po.
+# Copyright (C) 2003-2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gok package.
+# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gok HEAD\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2004-09-01 10:30+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+msgid "(100s of a second)"
+msgstr "(1/100秒単位)"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr "自動リピート ON"
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr "自動リピートのレート:"
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "自動スキャン"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr "自動スタート (自動的に開始します)"
+
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+msgid "Bottom/Top"
+msgstr "下→上"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr "連続的なサイクル ON"
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr "停止するまでのサイクル数:"
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "フィードバック"
+
+#: automatic-scanning.xml.in.h:10
+msgid "Feedback Movement"
+msgstr "フィードバックの通知"
+
+#: automatic-scanning.xml.in.h:11
+msgid "Feedback Selection"
+msgstr "フィードバックの選択"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr "初期の遅延:"
+
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+msgid "Left/Right"
+msgstr "左→右"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr "オペレーション"
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+msgid "Options"
+msgstr "オプション"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr ""
+"スキャンを開始する場合はスイッチを押下して下さい。選択する場合は別のスイッチ"
+"または同じスイッチを再度押下して下さい。"
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr "スイッチを押下すると開始します"
+
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+msgid "Right/Left"
+msgstr "右→左"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+msgid "Scan Delay:"
+msgstr "スキャンの遅延:"
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr "スキャンの速さ:"
+
+#: automatic-scanning.xml.in.h:21
+msgid "Select"
+msgstr "選択"
+
+#: automatic-scanning.xml.in.h:22
+msgid "Start Scanning"
+msgstr "スキャンの開始"
+
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+msgid "Top/Bottom"
+msgstr "上→下"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr "行/列をラップする"
+
+#: automatic-scanning.xml.in.h:25
+msgid "feedbackmovement"
+msgstr "feedbackmovement"
+
+#: automatic-scanning.xml.in.h:26
+msgid "feedbackselection"
+msgstr "feedbackselection"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "直接選択"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+msgid "Feedback Movement:"
+msgstr "フィードバックの通知:"
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+msgid "Feedback Selection:"
+msgstr "フィードバックの選択:"
+
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+msgid "Highlight:"
+msgstr "強調表示:"
+
+#: direct-selection.xml.in.h:9
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr ""
+"マウスのポインタを移動するとキーが強調表示します。キーを選択する場合はスイッ"
+"チを押下して下さい。"
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+msgid "Select:"
+msgstr "選択:"
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "マウスで選択"
+
+#: dwell-selection.xml.in.h:8
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr ""
+"マウスのポインタを移動するとキーが強調表示されます。キーを選択する場合はポイ"
+"ンタをキーの上にしばらく置いて下さい。"
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr "通知:"
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+msgid "Selection:"
+msgstr "選択:"
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr "情報"
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr "ヘルプ"
+
+#: gok-controls.kbd.in.h:3
+msgid "Preferences"
+msgstr "設定"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr "GOK の終了"
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+msgid "Window"
+msgstr "ウィンドウ"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "戻る"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr "処理する前に入力デバイスの評価イベントへ適用する乗数"
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr "単語の補完辞書に指定した全てのパスをセミコロン (;) で区切って追加する"
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "設定を制限するか"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr "デフォルトのキーボードを使用する際のキーボードの種類"
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr "X サーバからの情報に基づいた GOK キーボードを動的に生成するか"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr "GOK ユーザがそれぞれ単語補完辞書の個人用コピーを所有するか"
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr "GOK ウィンドウをスクリーン全体の幅にまで広げるか"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "コアポインタを GOK のキーボード・ポインタに従わせるか"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "このアクションはキーの平均化を利用するか"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "このフィードバックをフラッシュするか"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "このフィードバックはサウンドを再生するか"
+
+#: gok-with-references.schemas.in.h:12
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "このフィードバックは GOK キーのラベルを読み上げるか"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr ""
+"GOK メイン・ウィンドウのアンカーの場所 (ドックしている場合) もしくは空文字列"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr ""
+"アクセス可能なオブジェクトを検索する GUI ツリーのそれぞれのノードの子はいくつ"
+"あるか"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr ""
+"アクセス可能なオブジェクトを検索するために、GUI ツリーを何レベル下がるか"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "このアクションは永続か"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "このフィードバックは永続か"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "単語の補完は有効か"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+"次のうちのいずれか: xkb, default, alpha, alpha-freq, cutom (custom を選択した"
+"場合、custom_compose_keyboard を定義すること)"
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "利用するアクセス・メソッド"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "アクセス・メソッドのファイルを読み込むフォルダです。"
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "辞書ファイルを読み込むフォルダです。"
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "GOK リソース・ファイルを読み込みフォルダです。"
+
+#: gok-with-references.schemas.in.h:24
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr "ユーザ指定またはカスタム・キーボード・ファイルを読み込むフォルダです。"
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+"カスタマイズした GOK 組み込みキーボードを定義するファイルを格納した絶対パス"
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "キーの高さ"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "キーの幅"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "キーボードを表示する X 座標"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "キーボードを表示する Y 座標"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "このフィードバックが実行するサウンドの名前"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "利用する xinput デバイスの名前"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "このアクションをユーザに表示する時の名前"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "このフィードバックをユーザに表示する時の名前"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "適用できる場合の数"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "単語補完時の予想数"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "フィードバックがフラッシュされる回数"
+
+#: gok-with-references.schemas.in.h:37
+msgid "The primary or system directory to load keyboard files from."
+msgstr "キーボード・ファイルを読み込む優先またはシステム・フォルダです。"
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "このアクションの割合"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "キー間のスペース"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "このアクションが有効になる状態"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "このアクションの型"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr "GOK 単語補完の候補を検索する際に追加の単語リストを使用するかどうか"
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "オンスクリーン・キーボード"
+
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "GNOME 用のオンスクリーン・キーボードです"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3 状態"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>外観</b>"
+
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>挙動</b>"
+
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>ブランチ</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>コマンドの予想</b>"
+
+#: gok.glade2.h:7
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>キーボードの構成</b>"
+
+#: gok.glade2.h:8
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>キーボードのカスタマイズ</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>アクションの定義</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>フィードバックの定義</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>有効になるまでの間隔</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>説明</b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr "<b>水平方向のドッキングと取り外し</b>"
+
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>イベントのソース</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>フォント</b>"
+
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>キーのフラッシュ</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>キーのサイズと間隔の調整</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>キー</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>キーボード</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>修飾キー</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>出力</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>位置</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>プレビュー</b>"
+
+#: gok.glade2.h:24
+msgid "<b>Sensitivity</b>"
+msgstr "<b>感度</b>"
+
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>サウンド</b>"
+
+#: gok.glade2.h:26
+msgid "<b>Speech</b>"
+msgstr "<b>読み上げ</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>スイッチの番号/ボタンの番号</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>テーマ</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>タイマと遅延</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>種類</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr "<b>評価の種類</b>"
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>単語の補完</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>注意:</b> この設定の変更は、次回 GOK を起動するまで適用されませ"
+"ん。</i></small>"
+
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr "処理する前に入力デバイスの評価イベントへ適用する乗数です。"
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "アクセス・メソッド"
+
+#: gok.glade2.h:36
+msgid "AccessMethodName"
+msgstr "AccessMethodName"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "アクション名のリスト:"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "アクションの種類:"
+
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "ActionTypeNotebook"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "アクション"
+
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "ポインタをキーの上に置いたら有効にする(_E)"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "ポインタがキーに入ったら有効にする(_E)"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "ポインタがキーから動いたら有効にする(_M)"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "マウス・ボタンが押下されたら有効にする(_P)"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "マウス・ボタンが解放されたら有効にする(_R)"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "追加"
+
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "新しいキーの追加"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr "GOK のキーボードを検索するための追加フォルダ"
+
+#: gok.glade2.h:49
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "GOK キーボード・ファイルを検索するための追加フォルダです"
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr "文字の頻度で英数字キーボードをアレンジする"
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr "英数字キーボードをアルファベット順に並べる"
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "外観"
+
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "下段:"
+
+#: gok.glade2.h:54
+msgid "Browse"
+msgstr "参照"
+
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "コア・ポインタ(_O)"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "コマンドの予想"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "遅延"
+
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr ""
+"トリガーとなるイベントが発生してから有効になるまでの遅延間隔を 1/100 秒単位で"
+"指定します。"
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "削除"
+
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "キーの削除"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr "ドックする"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+msgid "Dock Bottom"
+msgstr "下へドックする"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr "上へドックする"
+
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "重複"
+
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "キーのフラッシュを有効にする(_K)"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "サウンドを有効にする(_S)"
+
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "単語の補完を有効にする(_W)"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "コマンドの予想を有効にする(_M)"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr "一杯に広げる"
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "フォントのグループ:"
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "GOK キーボード・エディタ"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "GOK の設定"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK:"
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "それぞのキーの高さです"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "キーとキーの間隔です"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "それぞれのキーの幅です"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "キーの幅(_W):"
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "キーの高さ(_E)"
+
+#: gok.glade2.h:80
+msgid "Keyboards"
+msgstr "キーボード"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "Keycode:"
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr "Keysym:"
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "ラベル:"
+
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "左:"
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr "X サーバが報告する物理的なキーボードと同じにする"
+
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "後で修飾キー"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "先に修飾キー"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "修飾キー:"
+
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "下へ移動"
+
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "上へ移動"
+
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "名前:"
+
+#: gok.glade2.h:92
+msgid "New"
+msgstr "新規"
+
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "次のキー"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "標準"
+
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "フラッシュの回数(_F):"
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "予想する数(_P):"
+
+#: gok.glade2.h:97
+msgid "Number of command predictions:"
+msgstr "コマンド予想の数:"
+
+#: gok.glade2.h:98
+msgid "Number of word predictions:"
+msgstr "単語予想の数:"
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "その他の入力デバイス(_I):"
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "予想"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "押下"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "前のキー"
+
+#: gok.glade2.h:103
+msgid "Read keyboard from file:"
+msgstr "ファイルからキーボードを読み込む:"
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "解放"
+
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "右:"
+
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "スイッチ(_W)"
+
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "このフォント・グループのみ表示"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "サウンド(_U):"
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr "キーのラベル名を読み上げる(_L)"
+
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "スタイル:"
+
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "1 ボタンに切り替え(_1)"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "2 ボタンに切り替え(_2)"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "3 ボタンに切り替え(_3)"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "4 ボタンに切り替え(_4)"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "5 ボタンに切り替え(_5)"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "ターゲット:"
+
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "後へ"
+
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "前へ"
+
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "トグル"
+
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "上段:"
+
+#: gok.glade2.h:121
+msgid "Use _extra word list file(s)"
+msgstr "追加の単語リスト・ファイルを使用する(_E)"
+
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "キーを平均化する(_K)"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr "評価の反応度"
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "単語の補完"
+
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "_1/100 秒単位"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "追加(_A)"
+
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "参照(_B)..."
+
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "削除(_D)"
+
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "ジョイスティック(_J)"
+
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "メソッド(_M):"
+
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "名前(_N):"
+
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "新規(_N)"
+
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "予想する数(_N):"
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "名前の変更(_R)"
+
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "単一の軸(_S):"
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "間隔(_S):"
+
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "デスクトップ・テーマの設定を使用する(_U)"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr "評価(_V)"
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr "X-Y 軸の評価 [0 軸と 1 軸]"
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "アクセス・メソッド名"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "設定を取り消します"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "ヘルプを表示します"
+
+#: gok.glade2.h:143
+msgid "high"
+msgstr "高い"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr "低い"
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "ピクセル"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "元の設定に戻します"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "これらの設定をテストします"
+
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "これらの設定を適用します"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr "'コア・ポインタ' モードで GOK を利用しています。"
+
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr ""
+"申し訳ありません、アクセス・メソッド・ウィザードはまだ実装されていません。"
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "GOK アクセス・メソッド・ウィザード"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "申し訳ありません、サウンド・ファイルの参照まだ実装されていません。"
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "GOK サウンド・ファイルの参照"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "申し訳ありません、拡張設定はまだ実装されていません。"
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "GOK 逆スキャン拡張"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"現在のファイルは変更されています。\n"
+"変更を破棄しますか？"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "キーボードのファイル名が正しくありません"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "新規"
+
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "編集するキーボードのファイルの選択"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr ".kbd ファイル"
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "ラベル"
+
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "ファイルに保存できません: %s\n"
+
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+msgid "Save keyboard file as"
+msgstr "キーボード・ファイルの保存"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"キーボード・ファイル名が正しくありません:\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(新規)"
+
+#: gok/gok-key.c:115
+msgid "Mute"
+msgstr "Mute"
+
+#: gok/gok-key.c:118
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr ""
+"マウス\n"
+"キー"
+
+#: gok/gok-key.c:121
+msgid ""
+"Left\n"
+"Tab"
+msgstr ""
+"左の\n"
+"タブ"
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr "／"
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr "※"
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr "−"
+
+#: gok/gok-key.c:241
+msgid "Addition"
+msgstr "＋"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr "前へ"
+
+#: gok/gok-key.c:247
+msgid "Next"
+msgstr "次へ"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr "Home"
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr "End"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr "↑"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+msgid "Down"
+msgstr "↓"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+msgid "Left"
+msgstr "←"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+msgid "Right"
+msgstr "→"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr "先頭"
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr "10進"
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr "Meta"
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr ""
+"マルチ\n"
+"キー"
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+"英数\n"
+"切替え"
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+"半角\n"
+"モード"
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr "無変換"
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr ""
+"モード\n"
+"切替え"
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr "XKB 拡張を初期化できませんでした！ (エラー・コード %x)"
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr "キーボードの説明を利用できません！"
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr "お使いの X サーバからキーボード・ジオメトリを読み込めません。"
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "戻る"
+
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+msgid "Repeat Next"
+msgstr "次を繰り返す"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr "編集"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr ""
+"テン\n"
+"キー"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr "隠す"
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr "シフト"
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr "レベル２"
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr "レベル３"
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr ""
+"バック\n"
+"スペース"
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+msgid "Tab"
+msgstr "Tab"
+
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+msgid "space"
+msgstr "SPACE"
+
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+msgid "Enter"
+msgstr "Enter"
+
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "メニュー"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr "レベル０|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr "レベル１|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr "レベル２|"
+
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr "レベル３|"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr "レベル０|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr "レベル１|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+msgid "Table"
+msgstr "表"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr "ツールバー"
+
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "アプリケーション"
+
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "メニュー"
+
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr ""
+"相花 毅 <aihana@gnome.gr.jp>\n"
+"KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>\n"
+"日本GNOMEユーザー会 <http://www.gnome.gr.jp>"
+
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "GNOME デスクトップ用の動的な仮想キーボードです。"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr "全てのクレジット"
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr "画像を読み込む際にエラーが発生しました"
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr "垂直スクロールバー"
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr "水平スクロールバー"
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "GOK アクション名"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "アクション名を変更して下さい:"
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"アクション名を空にすることはできません。\n"
+"新しいアクション名を入力して下さい。"
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"申し訳ありません。このアクション名は既に利用されています。\n"
+"新しいアクション名を入力して下さい。"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "新しいアクション %d"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "このアクション (%s) を削除しますか？"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "GOK アクションの削除"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "GOK フィードバック名"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "フィードバック名を変更して下さい:"
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"フィードバック名を空にすることはできません。\n"
+"新規フィードバック名を入力してください。"
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"申し訳ありません。このフィードバック名は既に利用されています。\n"
+"新しいフィードバック名を入力して下さい。"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "新しいフィードバック %d"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "このフィードバック (%s) を削除しますか？"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "GOK フィードバックの削除"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "サウンド・ファイルの選択"
+
+#: gok/gok-page-keyboard.c:180
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr "追加する GOK キーボード定義ファイルを検索するフォルダの選択"
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr "起動するキーボードを定義する XML ファイルの選択"
+
+#: gok/gok-page-keysizespace.c:83
+msgid "Button"
+msgstr "ボタン"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr "'コア・ポインタ' モードを使用するために GOK を設定しているようです。"
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "ウィンドウの一覧"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr "辞書ファイル '%s' の内容を読み込めませんでした\n"
+
+#: gok/main.c:164
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+"指定されたアクセス・メソッドを使用します。NAME は文字列で、<gok:"
+"accessmethod> タグの \"name\" プロパティに割り当てられたアクセス・メソッド・"
+"ファイル (.xam) に記述されます。これは .xam ファイルの名前と同じである必要は"
+"ありません (--list-accessmethods オプションを参照して下さい)。"
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "NAME"
+
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "GOK キーボード・エディタを起動する"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr "特別な、しかしおそらく不安定な GOK の機能"
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+"--geotmetry が指定されなくても、GOK はこれまでの起動時の位置を記憶して、最後"
+"に終了した際の位置で起動します。--geometry が指定されると、GOK は与えられた "
+"X11 の位置指定に従ったスクリーン上の四角いエリア内に表示されます。--geometry "
+"が指定されると、GOK は終了時の位置を記憶しません。この挙動は、--"
+"remembergeometry フラグを指定することで --geometry が指定されていても終了時の"
+"位置を記憶するよう強制することで変更できます。"
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "GEOMETRY"
+
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "指定された入力デバイスを使用する"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "DEVICENAME"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "指定したキーボードで GOK を起動する"
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "KEYBOARDNAME"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr "オプションとして利用可能な他の引数に対するアクセス方法の一覧を表示する"
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr "オプションとして利用可能な他の引数に対するアクションの一覧を表示する"
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "ログイン認証で GOK を利用する"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+"--geometry を引数に指定して利用できません。--geometry を指定して起動された場"
+"合でも、GOK は終了時にその位置情報を記憶します。詳細は、--geometry フラグにつ"
+"いての議論を参照してください。"
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr ""
+"GOK を起動して操作をスキャンするためにこのアクションをフックする (--list-"
+"actions 参照)"
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr ""
+"GOK を起動してオペレーションを選択するためにこのアクションをフックする (--"
+"list-actions 参照)"
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "GOK の起動時に設定ダイアログボックスを開く"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr "GOK: サポートしていない位置の指定です\n"
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr "GOK: 現在、GOK は x 座標と y 座標、高さと幅の全てを要求します\n"
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "XKB 拡張が必要です。"
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "アクションを初期化できません。"
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "フィードバックを初期化できません。"
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "メイン GOK ウィンドウを生成できません！"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "設定ダイアログウィンドウを生成できません！"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr "'コア・ポインタ' モードで GOK を利用しています。"
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "表示するキーボードがありません！"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr "ポップアップ・メニュー"
+
+#: gok/main.c:1805
+msgid "Can't create a compose keyboard!"
+msgstr "キーボードを組み立てることができません！"
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "キーボードを読み込めません！"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr "GConf からのメソッド・ディレクトリ・キーにアクセスできませんでした！"
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr "おそらく不明なアクセス・メソッドです！"
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "申し訳ありません。以下の理由で GOK を実行できません:\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "GOK 致命的エラー"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+"GOK は 設定の保存に GConf 2 を利用しており、GConf に特定の設定が必要です。現"
+"時点では、GOK はこの設定を検索することができません。もし、今回の操作がインス"
+"トール後の初めての起動である場合、以下のコマンド: 'gconftool-2 --shutdowon' "
+"で gconfd を再起動するか、ログアウトして再ログインする必要があります。"
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+"現在、GOK は x 座標と y 座標、幅と高さを全て指定する必要があります。申し訳あ"
+"りませんが、指定された位置情報は利用できません。"
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr "gok: サポートしていない位置の指定です。"
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr ""
+"お使いのデスクトップで貼り付け機能を有効にできないため、GOK が正しく動作して"
+"いないようです。"
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr ""
+"GOK の実行に必要なキーボードの張り付け機能を有効にしました\n"
+"(全ワークスペースに GOK が表示されます)。\n"
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr "XKB ディスプレイ拡張がないので GOK を起動できません。\n"
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+"これは、GOK を操作する際に使用するデバイスで、\n"
+"システム・ポインタ (または 'マウス・ポインタ') を制御していることを意味しま"
+"す。\n"
+"アプリケーションまたは GOK を使用する際に、\n"
+"そのアプリケーションが使用するポインタと衝突するかもしれません。\n"
+"\n"
+"この入力デバイスではなく \"拡張 (Extended)\" 入力デバイスに設定することを強く"
+"おすすめします。\n"
+"詳細な情報については GOK のヘルプをご覧下さい。"
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+"\"支援技術のサポート\" が無効です。\n"
+"\n"
+"\"支援技術のサポート\" を有効にせずに GOK を起動することも可能です。ただし、"
+"アプリケーションのいくつかの機能は利用できないかも知れません。\n"
+"\n"
+"\"支援技術のサポート\" を有効にし、その変更を含めた新しいセッションにログイン"
+"するには、[有効にしてログアウト] をクリックしてログアウトして下さい。\n"
+"\n"
+"このまま GOK を使うには、[続行する] をクリックして下さい。\n"
+"\n"
+"GOK を終了するには、 [閉じる] をクリックして下さい。\n"
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "有効にしてログアウト"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "続行する"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "逆方向へスキャン"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr ""
+"スイッチを押したままにするとスキャンします。他のスイッチを押して選択します。"
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr "スキャン:"
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr "スキャンする方向:"
+
+#: singlekey-automatic-scanning.xml.in.h:20
+msgid "Single Key Automatic Scanning"
+msgstr "シングル・キー自動スキャン"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+msgid "Start Scanning:"
+msgstr "スキャンの開始:"
+
+#: singlekey-automatic-scanning.xml.in.h:22
+msgid "Start scanning:"
+msgstr "スキャンの開始:"
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr "ラップする"
+
+#: singlekey-inverse-scanning.xml.in.h:19
+msgid "Single Key Inverse Scanning"
+msgstr "シングル・キー逆方向スキャン"
+
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr "5 スイッチ検出"
+
+#: directed.xml.in.h:3
+msgid "Down:"
+msgstr "下へ:"
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr "上へ:"
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr "表示する"
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr "ヘルプ・ブラウザ"
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr "端末"
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr "テキスト・エディタ"
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr "ウェブ・ブラウザ"
+
+#: main.kbd.in.h:1
+msgid "Activate"
+msgstr "他のウィンドウ"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr "キーボード"
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr "ランチャ"
+
+#: main.kbd.in.h:8
+msgid "Mouse"
+msgstr "マウス"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr "UI の取得"
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr "ボタン１"
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr "ボタン２"
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr "ボタン３"
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr "ダブルクリック"
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr "→"
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr "ラッチ"
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr "↑"
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+msgid "NE"
+msgstr "右上"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr "左上"
+
+#: mouse.kbd.in.h:14
+msgid "Pointer"
+msgstr "ポインタ"
+
+#: mouse.kbd.in.h:15
+msgid "Repeat"
+msgstr "繰り返し"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr "↓"
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr "右下"
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr "左上"
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr "←"
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr "埋める"
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr "浮かせる"
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr "狭く"
+
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "次のキーを繰り返す"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr "短く"
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr "長く"
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr "広く"
+
+#: numberpad.kbd.in.h:1
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: numberpad.kbd.in.h:2
+msgid "Del"
+msgstr "Del"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr "Ins"
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr "Num"
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr "PgDn"
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr "PgUp"
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr "Shift"
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr "本当に終了します！"
+
+#~ msgid "Tab&lt;-"
+#~ msgstr "Tab&lt;-"

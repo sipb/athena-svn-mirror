@@ -1,0 +1,2084 @@
+# gok korean translation.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gok 0.9.7\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2004-08-28 14:11+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Form: nplurals=1; plural=0;\n"
+
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+msgid "(100s of a second)"
+msgstr "(백분의 일초)"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr "자동 반복"
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr "자동 반복 속도:"
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "자동 찾기"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr "자동 시작"
+
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+msgid "Bottom/Top"
+msgstr "아래/위"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr "계속 처음부터 반복"
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr "멈추지 않고 처음부터 반복:"
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "알림 반응"
+
+#: automatic-scanning.xml.in.h:10
+msgid "Feedback Movement"
+msgstr "알림 반응 움직임"
+
+#: automatic-scanning.xml.in.h:11
+msgid "Feedback Selection"
+msgstr "알림 반응 선택"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr "최초 지연 시간:"
+
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+msgid "Left/Right"
+msgstr "왼쪽/오른쪽"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr "동작"
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+msgid "Options"
+msgstr "옵션"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr ""
+"찾기를 시작하려면 스위치를 누르십시오.  다른 스위치를 누르거나 선택하려면 같"
+"은 스위치를 다시 누르십시오."
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr "시작하려면 스위치를 누르십시오"
+
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+msgid "Right/Left"
+msgstr "오른쪽/왼쪽"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+msgid "Scan Delay:"
+msgstr "찾기 지연 시간:"
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr "찾기 속도:"
+
+#: automatic-scanning.xml.in.h:21
+msgid "Select"
+msgstr "선택"
+
+#: automatic-scanning.xml.in.h:22
+msgid "Start Scanning"
+msgstr "찾기 시작"
+
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+msgid "Top/Bottom"
+msgstr "위/아래"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr "열/행의 끝까지 가면 처음부터"
+
+#: automatic-scanning.xml.in.h:25
+msgid "feedbackmovement"
+msgstr "알림 반응 움직임"
+
+#: automatic-scanning.xml.in.h:26
+msgid "feedbackselection"
+msgstr "알림 반응 선택"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "직접 선택"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+msgid "Feedback Movement:"
+msgstr "알림 반응 움직임:"
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+msgid "Feedback Selection:"
+msgstr "알림 반응 선택:"
+
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+msgid "Highlight:"
+msgstr "강조:"
+
+#: direct-selection.xml.in.h:9
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr ""
+"마우스 포인터를 움직여 키를 반전시키십시오.  선택하려면 스위치를 누르십시오."
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+msgid "Select:"
+msgstr "선택:"
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "머무르기 선택"
+
+#: dwell-selection.xml.in.h:8
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr ""
+"마우스 포인터를 움직여 키를 반전시키십시오.  선택하려면 그 키에 머물러 있으십"
+"시오."
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr "움직임:"
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+msgid "Selection:"
+msgstr "선택:"
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr "정보"
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr "도움말"
+
+#: gok-controls.kbd.in.h:3
+msgid "Preferences"
+msgstr "기본 설정"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr "GOK 끝내기"
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+msgid "Window"
+msgstr "창"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "뒤로"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr "처리하기 전에 입력 장치 밸류에이터에 적용할 멀티플라이어"
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr "단어 완성 사전이 들어 있는 경로의 목록, 세미콜론으로 구분합니다"
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "기본 설정을 제한합니다"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr "기본 조합 키보드에 사용할 키보드 종류를 결정합니다"
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr ""
+"X 서버에서 받은 정보에 따라 동적으로 GOK의 조합 키 정보를 만드시겠습니까?"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr "각 GOK 사용자가 단어 예측 사전을 별도로 갖고 있습니까?"
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr "GOK 창을 전체 화면 너비에 맞게 늘리시겠습니까?"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "코어 포인터를 GOK 키보드 포인터를 따릅니까?"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "이 행동이 키 평균화를 합니다"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "깜빡임으로 알림 반응을 합니다"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "소리냅으로 알림 반응을 합니다"
+
+# FIXME: 무슨 소리야?
+#: gok-with-references.schemas.in.h:12
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "이 피드백이 GOK 키의 레이블을 말 하는지 여부"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr "GOK 메인 창 연결 위치 (도크의 경우), 도크가 아니면 빈 문자열"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr "접근할 오브젝트를 찾는 GUI 트리에서 각 노드의 자식 노드 개수"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr "접근할 오브젝트를 찾는 GUI 트리에서 트리의 깊이"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "이 동작을 계속 사용할 지 여부"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "이 알림 반응을 계속 사용할 지 여부"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "단어 완성을 켭니다"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+"다음 중의 하나입니다: xkb, default, alpha, alpha-freq, custom. custom일 경우 "
+"custom_compose_keyboard를 정의해야 합니다."
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "쓸 접근 방식"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "접근 방식 파일을 읽어 올 디렉토리."
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "사전 파일을 읽어 올 디렉토리."
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "gok 리소스 파일을 읽어 올 디렉토리."
+
+#: gok-with-references.schemas.in.h:24
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr "사용자 설정 키보드 파일을 읽어 올 디렉토리."
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr "사용자 설정 GOK 조합 키보드를 정의하는 파일의 완전한 경로 이름"
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "키 높이"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "키 너비"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "키보드 가로 시작점"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "키보드 세로 시작점"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "이 알림 반응에 쓸 소리 파일의 이름"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "사용할 xinput 장치 이름"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "이 동작의 이름"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "이 알림 반응의 이름"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "그 개수 (사용하는 경우)"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "단어 완성에서 예상 단어 개수"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "알림 반응으로 깜빡일 횟수"
+
+#: gok-with-references.schemas.in.h:37
+msgid "The primary or system directory to load keyboard files from."
+msgstr "키보드 파일을 읽어 올 프라이머리 혹은 시스템 디렉토리."
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "이 동작의 실행 간격"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "키 사이의 간격"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "행동이 활성화 된 상태"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "행동의 형식"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr "GOK 단어 완성 후보를 찾을 때 추가 단어 목록을 사용할 지 여부"
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "화면 키보드"
+
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "그놈 화면 키보드"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3 상태"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>모양</b>"
+
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>동작</b>"
+
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>갈래</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>명령 완성</b>"
+
+#: gok.glade2.h:7
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>조합 키보드</b>"
+
+#: gok.glade2.h:8
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>사용자 설정 키보드</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>행동 정의하기</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>알림 반응 정하기</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>행동 하기 전에 지연 시간</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>설명</b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr "<b>도크 및 수평 방향 확장</b>"
+
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>이벤트 입력</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>글꼴</b>"
+
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>키 깜빡이기</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>키 크기와 간격 조정</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>키</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>키보드</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>조합 키</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>출력</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>위치</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>미리 보기</b>"
+
+#: gok.glade2.h:24
+msgid "<b>Sensitivity</b>"
+msgstr "<b>감도</b>"
+
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>소리</b>"
+
+#: gok.glade2.h:26
+msgid "<b>Speech</b>"
+msgstr "<b>음성</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>스위치 혹은 단추 번호</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>테마</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>타이머 및 지연 시간</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>종류</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr "<b>축 종류</b>"
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>단어 완성</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>주의:</b> 이 설정을 바꾸면 GOK를 다음에 실행할 때 효과가 있습니"
+"다.</i></small>"
+
+# FIXME: 뭔소리여?
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr "적용하기 전에 확장 입력 장치 벨류에이터에 적용할 멀티플라이어."
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "접근 방식"
+
+#: gok.glade2.h:36
+msgid "AccessMethodName"
+msgstr "접근 방식 이름"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "행동 이름 목록"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "행동 종류:"
+
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "행동 종류 노트북"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "행동"
+
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "남아 있을 때 활성(_E)"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "들어갈 때 활성(_E)"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "움직일 때 활성(_M)"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "누를 때 활성(_P)"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "뗄 때 활성(_R)"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "더하기"
+
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "키 더하기"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr "GOK 키보드를 찾을 추가 디렉토리"
+
+#: gok.glade2.h:49
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "GOK 키보드 파일을 찾을 추가 디렉토리"
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr "많이 사용되는 순서로 정리한 알파벳/숫자 키보드"
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr "알파벳 순서로 정렬한 알파벳/숫자 키보드"
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "모양"
+
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "아래:"
+
+#: gok.glade2.h:54
+msgid "Browse"
+msgstr "찾아보기"
+
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "코어 포인터(_O)"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "명령 완성"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "지연"
+
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr ""
+"이벤트가 일어난 다음에, 거기에 대한 동작이 일어날 때까지의 지연 시간. 백분의 "
+"일초 단위."
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "지우기"
+
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "키 지우기"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr "도크"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+msgid "Dock Bottom"
+msgstr "도크 아래"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr "도크 위"
+
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "겹침"
+
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "키 깜빡임 쓰기(_K)"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "사운드 사용(_S)"
+
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "단어 완성 쓰기(_W)"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "명령 완성 쓰기(_M)"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr "너비 채우기"
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "글꼴 묶음:"
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "GOK 키보드 편집기"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "GOK 기본 설정"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK:"
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "키 높이"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "키 간격"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "키 너비"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "키 너비(_W):"
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "키 높이(_E):"
+
+#: gok.glade2.h:80
+msgid "Keyboards"
+msgstr "키보드"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "키 코드:"
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr "키 심볼:"
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "레이블:"
+
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "왼쪽:"
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr "X 서버에서 알려준 키보드와 맞추기"
+
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "조합 키 뒤"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "조합 키 앞"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "조합 키:"
+
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "아래로 가기"
+
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "위로 가기"
+
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "이름:"
+
+#: gok.glade2.h:92
+msgid "New"
+msgstr "새로 만들기"
+
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "다음 키"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "보통"
+
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "깜빡이는 횟수(_F):"
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "후보 개수(_P):"
+
+#: gok.glade2.h:97
+msgid "Number of command predictions:"
+msgstr "명령어 후보 개수:"
+
+#: gok.glade2.h:98
+msgid "Number of word predictions:"
+msgstr "단어 후보 개수:"
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "다른 입력 장치(_I):"
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "자동 완성"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "누르기"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "이전 키"
+
+#: gok.glade2.h:103
+msgid "Read keyboard from file:"
+msgstr "다음 파일에서 키보드 읽기:"
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "떼기"
+
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "오른쪽:"
+
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "스위치(_W)"
+
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "이 글꼴 그룹만 표시"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "소리(_U):"
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr "키 레이블 말하기(_L)"
+
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "스타일:"
+
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "스위치 _1"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "스위치 _2"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "스위치 _3"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "스위치 _4"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "스위치 _5"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "대상:"
+
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "뒤로"
+
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "앞으로"
+
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "토글"
+
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "위:"
+
+#: gok.glade2.h:121
+msgid "Use _extra word list file(s)"
+msgstr "추가 단어 목록 파일 사용(_E)"
+
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "키 평균화하기(_K)"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr "벨류에이터 감도"
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "단어 완성"
+
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "백분의 일초(_1)"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "더하기(_A)"
+
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "찾아보기(_B)..."
+
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "지우기(_D)"
+
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "조이스틱(_J)"
+
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "방법(_M):"
+
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "이름(_N):"
+
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "새로 만들기(_N)"
+
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "후보 개수(_N):"
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "이름 바꾸기(_R)"
+
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "단일 축(_S):"
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "간격(_S):"
+
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "바탕환경 테마 기본설정 쓰기(_U)"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr "축(_V)"
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr "가로-세로 축(_X)"
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "접근 방식 이름"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "취소"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "도움말 보여주기"
+
+#: gok.glade2.h:143
+msgid "high"
+msgstr "높음"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr "낮음"
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "픽셀"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "원래 설정으로 되돌리기"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "이 설정 써 보기"
+
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "이 설정 쓰기"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr "GOK를 'core pointer' 모드로 사용하고 있습니다."
+
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr "접근 방식 도우미가 구현되지 않았습니다."
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "GOK 접근 방식 도우미"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "소리 파일 찾기가 구현되지 않았습니다."
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "GOK 소리 파일 찾기"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "고급 설정이 구현되지 않았습니다."
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "GOK 반대로 찾기 고급"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"현재 파일이 바뀌었습니다.\n"
+"바뀐 점을 저장하지 않겠습니까?"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "잘못된 키보드 파일 이름"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "새로 만들기"
+
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "편집할 키보드 파일을 선택하십시오"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr ".kbd 파일"
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "레이블"
+
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "파일을 저장할 수 없습니다: %s\n"
+
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+msgid "Save keyboard file as"
+msgstr "키보드를 저장할 파일"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"올바른 키보드 파일 이름이 아닙니다:\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(새 파일)"
+
+#: gok/gok-key.c:115
+msgid "Mute"
+msgstr "조용히"
+
+#: gok/gok-key.c:118
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr ""
+"마우스\n"
+"키"
+
+#: gok/gok-key.c:121
+msgid ""
+"Left\n"
+"Tab"
+msgstr ""
+"왼쪽\n"
+"탭"
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr "나누기"
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr "곱하기"
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr "빼기"
+
+#: gok/gok-key.c:241
+msgid "Addition"
+msgstr "더하기"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr "이전"
+
+#: gok/gok-key.c:247
+msgid "Next"
+msgstr "다음"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr "Home"
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr "End"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr "위"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+msgid "Down"
+msgstr "아래"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+msgid "Left"
+msgstr "왼쪽"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+msgid "Right"
+msgstr "오른쪽"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr "시작"
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr "10진수"
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr "메타"
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr ""
+"멀티\n"
+"키"
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+"Eisu\n"
+"토글"
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+"Henkan\n"
+"모드"
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr "Muhenkan"
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr ""
+"모드\n"
+"전환"
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr "Xkb 확장 기능을 초기화할 수 없습니다! (오류 코드 %x)"
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr "키보드 설명을 사용할 수 없습니다!"
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr "X 서버에서 키보드 크기와 위치를 읽어들일 수 없습니다."
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "뒤로"
+
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+msgid "Repeat Next"
+msgstr "다음 반복"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr "편집"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr ""
+"숫자\n"
+"키"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr "숨기기"
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr "shift"
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr "level 2"
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr "level 3"
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr ""
+"Back\n"
+"Space"
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+msgid "Tab"
+msgstr "Tab"
+
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+msgid "space"
+msgstr "스페이스"
+
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+msgid "Enter"
+msgstr "Enter"
+
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "메뉴"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+
+# FIXME - 이걸로 될까?
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr "level 2|ᄀᄁᄂᄃᄄᄅᄆᄇᄈᄉᄊᄋᄌᄍᄎᄏᄐᄑᄒᅟᅡᅢᅣᅤᅥᅦᅧᅨᅩᅪᅫᅬᅭᅮᅯᅰᅱᅲᅳᅴᅵ"
+
+# FIXME - 이걸로 될까?
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr "level 3|ᆨᆩᆪᆫᆬᆭᆮᆯᆰᆱᆲᆳᆴᆵᆶᆷᆸᆹᆺᆻᆼᆽᆾᆿᇀᇁᇂ"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+msgid "Table"
+msgstr "테이블"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr "도구 모음"
+
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "프로그램"
+
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "메뉴"
+
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr ""
+"류창우 <cwryu@debian.org>\n"
+"차영호 <ganadist@mizi.com>"
+
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "그놈 바탕환경용 동적 가상 키보드"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr "만든 사람들 자세히"
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr "설명을 읽는 데 오류가 발생했습니다"
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr "세로 스크롤막대"
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr "가로 스크롤막대"
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "GOK 행동 이름"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "행동 이름 바꾸기:"
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"행동 이름이 있어야 합니다.\n"
+"새로운 행동의 이름을 넣으십시오."
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"그러한 행동의 이름이 있습니다.\n"
+"새로운 행동의 이름을 넣으십시오"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "새 행동 %d"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "이 행동(%s)를 지우겠습니까?"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "GOK 행동 지우기"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "GOK 알림 반응 이름"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "알림 반응 이름 바꾸기:"
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"알림 반응 이름이 있어야 합니다.\n"
+"새로운 알림 반응 이름을 넣으십시오."
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"그러한 알림 반응 이름이 있습니다.\n"
+"새로운 알림 반응 이름을 넣으십시오"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "새 알림 반응 %d"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "이 알림 반응(%s)을 지우겠습니까?"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "GOK 알림 반응 지우기"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "소리 파일 선택"
+
+#: gok/gok-page-keyboard.c:180
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr "GOK 키보드 파일을 추가로 찾을 디렉토리를 입력하십시오."
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr "시작 조합 키보드를 정의하는 XML 파일을 선택하십시오"
+
+#: gok/gok-page-keysizespace.c:83
+msgid "Button"
+msgstr "단추"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr "'core pointer' 모드를 사용하도록 설정되어 있습니다."
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "창 목록"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr "'%s' 디렉토리 파일의 내용을 읽을 수 없습니다\n"
+
+#: gok/main.c:164
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+"지정한 접근 방식을 씁니다. \"이름\"은 문자열이고 여러가지 접근 방식 파일(."
+"xam)의 <gok:accessmethod>태그의 \"이름\" 등록 정보에 지정되어 있습니다. xam "
+"파일이름과 같을 필요는 없다는 데 주의 하십시오. (--list-accessmethods 참고)"
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "<이름>"
+
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "GOK 키보드 편집기를 시작합니다"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr "특수하지만 불안정한 기능을 씁니다"
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+"--geometry를 사용하지 않으면, 마지막에 끝났을 때의 위치를 기억하고 그 위치에"
+"서 시작합니다. --geometry를 사용하면 주어진 X11 위치 지정 방법에 따라 사각형 "
+"구역에 gok의 위치를 잡습니다.  --geometry를 사용하면 끝날 때 X11 위치 정보를 "
+"기억하지 않습니다. --remembergeometry 플래그를 주면 --geometry로 시작했을 경"
+"우에도 끝날 때 그 위치를 기억합니다."
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "<크기및위치>"
+
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "지정한 입력 장치를 씁니다"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "장치이름"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "지정한 키보드로 GOK를 시작합니다."
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "키보드이름"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr "접근 방법의 목록, 다른 인수의 옵션으로 사용합니다."
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr "동작 목록, 다른 인수의 옵션으로 사용합니다."
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "GOK가 로그인할 때 쓰입니다"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+"--geometry와 함께 쓰일 수 있습니다. --geometry로 시작했다가 끝마칠 때 GOK의 "
+"위치를 강제로 저장합니다. --geometry 옵션의 정보를 참고하십시오."
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr "GOK를 시작하고 이 동작을 스캔 동작과 연결합니다. (--list-actions 참고)"
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr "GOK를 시작하고 이 동작을 선택 동작과 연결합니다. (--list-actions 참고)"
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "GOK를 시작할 때 설정 대화상자를 엽니다"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr "gok: 지원하지 않는 위치 지정\n"
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr ""
+"gok: 현재 GOK에서는 가로, 세로 시작점, 너비 및 높이가 주어져야 합니다\n"
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "XKB확장기능이 필요합니다."
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "행동을 초기화 할 수 없습니다."
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "알림 반응을 초기화 할 수 없습니다."
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "GOK 기본 창을 만들 수 없습니다!"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "설정 대화 상자를 만들 수 없습니다!"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr "'core pointer' 모드에서 GOK를 사용하고 있습니다."
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "보여줄 키보드 파일이 없습니다!"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr "팝업 메뉴"
+
+#: gok/main.c:1805
+msgid "Can't create a compose keyboard!"
+msgstr "조합 키보드를 만들 수 없습니다!"
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "키보드 파일을 읽을 수 없습니다!"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr "GConf에서 방식 디렉토리 키에 접근할 수 없습니다!"
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr "알 수 없는 접근 방식!"
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "GOK가 다음 이유로 실행할 수 없습니다:\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "GOK 치명적 오류"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+"GOK는 설정을 저장할 때 GConf 2를 씁니다. 그리고 실행할 때 GConf에 담긴 설정"
+"을 필요로 합니다. 현재 GOK에서 그러한 설정을 가져올 수 없습니다. 지금 gok를 "
+"설치한 후 처음 실행하는 것이라면, gconfd를 재시작하여야 합니다. gconfd를 재시"
+"작 하려면 다음 명령을 내리거나 로그아웃한 후 로그인 하십시오: 'gconftool-2 --"
+"shutdown'."
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+"현재 GOK에서는 가로 시작, 세로 시작 점, 너비 및 높이가 주어져야합니다. 여러분"
+"이 지정한 위치는 쓰일 수 없습니다."
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr "gok: 지원하지 않는 위치 지정"
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr ""
+"GOK가 올바르게 동작하지 않을 수도 있습니다. 데스크탑의 '고정 키' 기능을 사용"
+"할 수 없기 때문입니다."
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr "고정 키를 사용하도록 합니다.  GOK에서 필요합니다.\n"
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr "GOK를 실행할 수 없습니다. XKB 디스플레이 확장 기능이 없습니다.\n"
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+"GOK에서 사용하고 있는 장치가 시스템 포인터도 (혹은 마우스 포인터) \n"
+"컨트롤하고 있습니다. 이 포인터를 사용하는 프로그램과의 충돌때문에\n"
+"GOK나 다른 프로그램을 사용하는 데 문제가 있을 수 있습니다.\n"
+"\n"
+"입력 장치를 '확장' 입력 장치로 설정하시길 바랍니다; 자세한 정보는\n"
+"GOK 도움말을 참고하십시오."
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+"보조 기술 지원을 쓰고 있지 않습니다.\n"
+"\n"
+"보조 지원 기술없이 GOK를 시작할 수는 있습니다만, 프로그램의 몇몇 기능을 쓸 "
+"수 없을 것입니다.\n"
+"\n"
+"보조 기술 지원을 쓰려면 로그아웃 한 후 새 세션에서 시작하려면 아래의 \"로그아"
+"웃하고 다음부터 쓰기\"를 누르십시오.\n"
+"\n"
+"GOK를 계속 쓰려면 \"계속\"을 누르십시오.\n"
+"\n"
+"GOK를 끝내려면 \"닫기\"를 누르면 됩니다.\n"
+"\n"
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "로그아웃하고 다음부터 쓰기"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "계속"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "반대로 찾기"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr ""
+"찾으려면 스위치를 누르고 계십시오.  선택하려면 다른 스위치를 누르십시오."
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr "찾기:"
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr "찾기 방향:"
+
+#: singlekey-automatic-scanning.xml.in.h:20
+msgid "Single Key Automatic Scanning"
+msgstr "단일 키 자동 찾기"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+msgid "Start Scanning:"
+msgstr "찾기 시작:"
+
+#: singlekey-automatic-scanning.xml.in.h:22
+msgid "Start scanning:"
+msgstr "찾기 시작:"
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr "끝까지 가면 처음부터"
+
+#: singlekey-inverse-scanning.xml.in.h:19
+msgid "Single Key Inverse Scanning"
+msgstr "단일 키 반대 찾기"
+
+# FIXME: 뭔소리여?
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr "5 스위치 조정"
+
+#: directed.xml.in.h:3
+msgid "Down:"
+msgstr "아래:"
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr "위:"
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr "표시"
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr "도움말 보기 프로그램"
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr "터미널"
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr "텍스트 편집기"
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr "웹 브라우저"
+
+#: main.kbd.in.h:1
+msgid "Activate"
+msgstr "활성화"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr "조립"
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr "실행"
+
+#: main.kbd.in.h:8
+msgid "Mouse"
+msgstr "마우스"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr "UI 잡기"
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr "단추 1"
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr "단추 2"
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr "단추 3"
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr "두번 클릭"
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr "동"
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr "유지"
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr "북"
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+msgid "NE"
+msgstr "북동"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr "북서"
+
+#: mouse.kbd.in.h:14
+msgid "Pointer"
+msgstr "포인터"
+
+#: mouse.kbd.in.h:15
+msgid "Repeat"
+msgstr "반복"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr "남"
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr "남동"
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr "남서"
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr "서"
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr "채우기"
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr "띄우기"
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr "좁게"
+
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "다음 키 반복"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr "짧게"
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr "높게"
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr "넓게"
+
+#: numberpad.kbd.in.h:1
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: numberpad.kbd.in.h:2
+msgid "Del"
+msgstr "Del"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr "Ins"
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr "Num"
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr "PgDn"
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr "PgUp"
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr "Shift"
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr "정말로 끝냅니다!"
+
+#~ msgid "Key 1"
+#~ msgstr "키 1"
+
+#~ msgid "Key 2"
+#~ msgstr "키 2"
+
+#~ msgid "Key 3"
+#~ msgstr "키 3"
+
+#~ msgid "Key 4"
+#~ msgstr "키 4"
+
+#~ msgid "example key 1"
+#~ msgstr "예제 키 1"
+
+#~ msgid "example key 2"
+#~ msgstr "예제 키 2"
+
+#~ msgid "example key 3"
+#~ msgstr "예제 키 3"
+
+#~ msgid "example key 4"
+#~ msgstr "예제 키 4"
+
+#~ msgid "\"Alt\""
+#~ msgstr "\"Alt\""
+
+#~ msgid "\"Shift AltGr Level-3\""
+#~ msgstr "\"Shift AltGr Level-3\""
+
+#~ msgid "Extra word list file"
+#~ msgstr "추가 단어 목록 파일"
+
+#~ msgid "Path(s) to file(s) containing additional word list to search."
+#~ msgstr "찾을 추가 단어 목록이 들어 있는 파일의 경로."
+
+#~ msgid "Text Manipulation"
+#~ msgstr "텍스트 조작"
+
+#~ msgid ""
+#~ "Copyright (C) 2001-2003 Sun Microsystems, Copyright (C) 2001-2003 "
+#~ "University of Toronto"
+#~ msgstr ""
+#~ "Copyright (C) 2001-2003 Sun Microsystems, Copyright (C) 2001-2003 "
+#~ "University of Toronto"
+
+#~ msgid "Select extra word list file"
+#~ msgstr "추가 단어 목록 파일 선택"
+
+#~ msgid "_Try"
+#~ msgstr "시도(_T)"
+
+#~ msgid "label84"
+#~ msgstr "label84"
+
+#~ msgid "label85"
+#~ msgstr "label85"
+
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "그림 파일을 찾을 수 없습니다: %s"

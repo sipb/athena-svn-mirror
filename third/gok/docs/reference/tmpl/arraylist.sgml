@@ -1,0 +1,132 @@
+<!-- ##### SECTION Title ##### -->
+arraylist
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO Boolean ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO Object ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION arraylist_free ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION arraylist_create ##### -->
+<para>
+
+</para>
+
+@equals: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_add ##### -->
+<para>
+
+</para>
+
+@list: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_remove ##### -->
+<para>
+
+</para>
+
+@list: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_contains ##### -->
+<para>
+
+</para>
+
+@list: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_index_of ##### -->
+<para>
+
+</para>
+
+@list: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_is_empty ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_size ##### -->
+<para>
+
+</para>
+
+@list: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_get ##### -->
+<para>
+
+</para>
+
+@list: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION arraylist_clear ##### -->
+<para>
+
+</para>
+
+@list: 
+
+
+<!-- ##### FUNCTION arraylist_sort ##### -->
+<para>
+
+</para>
+
+@list: 
+@compare: 
+
+

@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+
+<GOK:accessmethodroot xmlns:GOK="http://www.gnome.org/GOK">
+
+<!-- User interface for the access method -->
+
+<GOK:accessmethod name="keyinversescanning" _displayname="Single Key Inverse Scanning">
+<_GOK:description xml:space="preserve">Press and hold a switch to scan.  Press another switch to select.</_GOK:description>
+
+<GOK:operation>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Operation">
+	<GOK:control type="hbox" size="1" spacing="0" border="0">
+		<GOK:control type="vbox" size="3" border="5" spacing="10">
+
+			<GOK:control type="hbox" size="2" spacing="5" border="0">
+				<GOK:control type="label" _string="Scan:" />
+				<GOK:control name="movehighlighter" _string="Scan:" type="combobox" fillwith="actions" qualifier="switch+mousebutton" />
+			</GOK:control>
+				
+			<GOK:control type="hbox" size="2" spacing="5" border="0">
+				<GOK:control type="label" _string="Select:" />
+				<GOK:control name="select" _string="Select:" type="combobox" fillwith="actions" qualifier="switch+mousebutton" />
+			</GOK:control>
+
+		</GOK:control>
+	</GOK:control>	
+</GOK:control>	
+</GOK:operation>
+
+<GOK:feedback>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Feedback">
+	<GOK:control type="hbox" size="1" spacing="0" border="0">
+		<GOK:control type="vbox" size="3" border="5" spacing="10">
+
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control type="label" _string="Movement:" />
+				<GOK:control name="feedbackmovement" _string="Feedback Movement:" type="combobox" fillwith="feedbacks" />
+			</GOK:control>
+	
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control type="label" _string="Selection:" />
+				<GOK:control name="feedbackselection" _string="Feedback Selection:" type="combobox" fillwith="feedbacks" />
+			</GOK:control>
+
+		</GOK:control>
+	</GOK:control>
+</GOK:control>
+</GOK:feedback>
+
+<GOK:options>
+<GOK:control type="frame" size="3" spacing="0" border="0" _string="Options">
+
+	<GOK:control type="vbox" size="2" border="0" spacing="5">
+
+		<GOK:control type="hbox" size="3" border="0" spacing="5">
+			<GOK:control type="label" _string="Scan Delay:" />
+			<GOK:control name="scanspeed" type="spinbutton" _string="Scan Speed:" value="100" min="10" max="500" stepincrement="1" pageincrement="10" pagesize="10" />
+			<GOK:control type="label" _string="(100s of a second)" />
+		</GOK:control>
+
+		<GOK:control type="hbox" size="2" border="5" spacing="20">
+			<GOK:control name="wrap" type="checkbutton" _string="Wrap Rows/Columns" />
+		</GOK:control>
+	
+		<GOK:control type="hbox" size="3" border="5" spacing="20">
+			<GOK:control type="label" _string="Scanning Direction:" />
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control name="topbottom" type="radiobutton" _string="Top/Bottom" value="0" groupstart="yes"/>
+				<GOK:control name="topbottom" type="radiobutton" _string="Bottom/Top" value="1" />
+			</GOK:control>
+			<GOK:control type="hbox" size="2" border="0" spacing="5">
+				<GOK:control name="leftright" type="radiobutton" _string="Left/Right" value="0" groupstart="yes"/>
+				<GOK:control name="leftright" type="radiobutton" _string="Right/Left" value="1" />
+			</GOK:control>
+		</GOK:control>
+
+		<GOK:control type="hbox" size="3" border="5" spacing="10">
+			<GOK:control type="label" _string="Cycles Before Stopping:" />
+			<GOK:control name="cycles" type="spinbutton" _string="Cycles Before Stopping:" value="3" min="1" max="10" stepincrement="1" pageincrement="3" pagesize="3" />
+		</GOK:control>
+	
+	</GOK:control>
+</GOK:control>
+</GOK:options>
+
+<!-- Rates for this access method. -->
+	<GOK:rate name="movehighlighter" stringvalue="switch1" />
+	<GOK:rate name="select" stringvalue="switch3" />
+	<GOK:rate name="feedbackmovement" stringvalue="" />
+	<GOK:rate name="feedbackselection" stringvalue="key_flashing" />
+	<GOK:rate name="autorepeat" value="0" />
+	<GOK:rate name="repeatrate" value="30" />
+	<GOK:rate name="scanspeed" value="100" />
+	<GOK:rate name="wrap" value="1" />
+	<GOK:rate name="topbottom" value="0" />
+	<GOK:rate name="leftright" value="0" />
+	<GOK:rate name="cycles" value="3" />
+
+<!-- Initialization for the access method. -->
+	<GOK:initialization>
+		<GOK:effect call="ChunkerReset" />
+		<GOK:effect call="ChunkerChunkKeys" param1="topbottom" param2="leftright" />
+	</GOK:initialization>
+
+<!-- Scan the chunks (rows or columns) -->
+	<GOK:state name="1">
+
+		<GOK:stateinit>
+			<GOK:effect call="CounterSet" param1="1" param2="cycles" />
+		</GOK:stateinit>
+		
+		<GOK:handler name="movehighlighter" state="press">
+			<GOK:effect call="Feedback" name="feedbackmovement" />
+			<GOK:effect call="Timer1Set" name="scanspeed" />
+			<GOK:effect call="ChunkerIfNextChunk">
+				<GOK:compare type="equal" value="1">
+					<GOK:true>
+						<GOK:effect call="ChunkerNextChunk" />
+					</GOK:true>
+					<GOK:false>
+						<GOK:effect call="GetRate" name="wrap" >
+							<GOK:compare type="equal" value="1">
+								<GOK:true>
+									<GOK:effect call="ChunkerWrapFirstChunk" />
+								</GOK:true>
+							</GOK:compare>
+						</GOK:effect>
+					</GOK:false>
+				</GOK:compare>
+			</GOK:effect>
+		</GOK:handler>
+
+		<GOK:handler name="movehighlighter" state="release">
+			<GOK:effect call="Timer1Stop" />
+		</GOK:handler>
+
+		<GOK:handler name="select">
+			<GOK:effect call="Timer1Stop" />
+			<GOK:effect call="SelectChunk" >
+				<GOK:compare type="equal" value="1">
+					<GOK:true>
+						<GOK:effect call="Feedback" name="feedbackselection" />
+						<GOK:effect call="OutputSelectedKey" />
+						<GOK:effect call="HighlightFirstChunk" />
+						<GOK:effect call="StateJump" param1="1" />
+					</GOK:true>
+<!--					<GOK:false>
+						<GOK:effect call="HighlightFirstKey" />
+						<GOK:effect call="StateJump" param1="2" />
+					</GOK:false> -->
+				</GOK:compare>
+			</GOK:effect>
+		</GOK:handler>
+
+		<GOK:handler name="timer1">
+		<!-- same as 'movehighlighter' -->
+			<GOK:effect call="Feedback" name="feedbackmovement" />
+			<GOK:effect call="Timer1Set" name="scanspeed" />
+			<GOK:effect call="ChunkerIfNextChunk">
+				<GOK:compare type="equal" value="1">
+					<GOK:true>
+						<GOK:effect call="ChunkerNextChunk" />
+					</GOK:true>
+					<GOK:false>
+						<GOK:effect call="GetRate" name="wrap">
+							<GOK:compare type="equal" value="1">
+								<GOK:true>
+									<GOK:effect call="ChunkerWrapFirstChunk" />
+								</GOK:true>
+							</GOK:compare>
+						</GOK:effect>
+					</GOK:false>
+				</GOK:compare>
+			</GOK:effect>
+		</GOK:handler>
+
+	</GOK:state>
+
+
+<!-- For repeat state choose a handler for turning repeat off. -->
+	<GOK:state name="repeat">
+		<GOK:handler name="select">
+			<GOK:effect call="StateReset" name="repeat:state-reset" />
+			<GOK:effect call="UnhighlightAll" name="repeat:unhighlight-all" />
+			<GOK:effect call="Timer1Stop" />
+			<GOK:effect call="HighlightFirstChunk" />
+			<GOK:effect call="StateJump" param1="1" />
+		</GOK:handler>
+		<GOK:handler name="movehighlighter" state="press">
+			<GOK:effect call="StateReset" name="repeat:state-reset" />
+			<GOK:effect call="UnhighlightAll" name="repeat:unhighlight-all" />
+			<GOK:effect call="Timer1Stop" />
+			<GOK:effect call="HighlightFirstChunk" />
+			<GOK:effect call="StateJump" param1="1" />
+		</GOK:handler>
+	</GOK:state>
+
+
+</GOK:accessmethod>
+</GOK:accessmethodroot>

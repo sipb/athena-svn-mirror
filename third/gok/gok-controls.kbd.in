@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="gok-controls" commandprediction="no" wordcompletion="no">
+	<GOK:key left="0" right="2" top="0" bottom="1" type="branchBack">
+		<_GOK:label>back</_GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="0" bottom="1" type="about">
+		<_GOK:label>About</_GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="0" bottom="1" type="help">
+		<_GOK:label>Help</_GOK:label>
+	</GOK:key>
+	<GOK:key left="0" right="2" top="1" bottom="2" type="branchModal" target="move-resize">
+		<_GOK:label>Window</_GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="4" top="1" bottom="2" type="branch" target="quit">
+		<_GOK:label>Quit GOK</_GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="1" bottom="2" type="settings">
+		<_GOK:label>Preferences</_GOK:label>
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

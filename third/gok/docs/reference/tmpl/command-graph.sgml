@@ -1,0 +1,153 @@
+<!-- ##### SECTION Title ##### -->
+command-graph
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO MAX_NUM_PREDICTIONS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION command_graph_free ##### -->
+<para>
+
+</para>
+
+@graph: 
+
+
+<!-- ##### FUNCTION command_graph_create ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_add_vertex ##### -->
+<para>
+
+</para>
+
+@graph: 
+@vertex: 
+
+
+<!-- ##### FUNCTION command_graph_get_last_n_added_vertices ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_remove_vertex ##### -->
+<para>
+
+</para>
+
+@graph: 
+@vertex: 
+
+
+<!-- ##### FUNCTION command_graph_get_vertex ##### -->
+<para>
+
+</para>
+
+@graph: 
+@vertex: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_size ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_total_commands ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_get_vertices ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_get_last_added_vertex ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_graph_sort_by_stat ##### -->
+<para>
+
+</para>
+
+@graph: 
+
+
+<!-- ##### FUNCTION command_graph_sort_by_keyboard ##### -->
+<para>
+
+</para>
+
+@graph: 
+
+
+<!-- ##### FUNCTION command_graph_dump_to_text ##### -->
+<para>
+
+</para>
+
+@graph: 
+@stream: 
+
+
+<!-- ##### FUNCTION command_graph_dump_to_binary ##### -->
+<para>
+
+</para>
+
+@graph: 
+
+
+<!-- ##### FUNCTION command_graph_reconstruct_from_binary ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

@@ -1,0 +1,45 @@
+<!-- ##### SECTION Title ##### -->
+gok-keyslotter
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_keyslotter_on ##### -->
+<para>
+
+</para>
+
+@bOnOff: 
+@keytype: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_keyslotter_change_number_predictions ##### -->
+<para>
+
+</para>
+
+@Number: 
+@keytype: 
+
+
+<!-- ##### FUNCTION gok_keyslotter_add_prediction_keys ##### -->
+<para>
+
+</para>
+
+@pKeyboard: 
+@keytype: 
+@Returns: 
+
+

@@ -1,0 +1,53 @@
+<!-- ##### SECTION Title ##### -->
+gok-output
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_output_delete_all ##### -->
+<para>
+
+</para>
+
+@pOutput: 
+
+
+<!-- ##### FUNCTION gok_output_new ##### -->
+<para>
+
+</para>
+
+@Type: 
+@Name: 
+@Flag: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_output_new_from_xml ##### -->
+<para>
+
+</para>
+
+@pNode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_output_send_to_system ##### -->
+<para>
+
+</para>
+
+@pOutput: 
+@bNoWordCompletion: 
+
+
