@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2001-05-06 15:53:27 ghudson Exp $
+# $Id: Makefile.in,v 1.2 2001-05-10 23:37:26 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -9,6 +9,7 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+pixmapdir=${datadir}/pixmaps
 
 all:
 
@@ -16,7 +17,10 @@ check:
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
-	${INSTALL_PROGRAM} revert-to-dash.sh ${DESTDIR}${bindir}/revert-to-dash
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${pixmapdir}
+	${INSTALL_PROGRAM} ${srcdir}/revert-to-dash.sh \
+		${DESTDIR}${bindir}/revert-to-dash
+	${INSTALL} ${srcdir}/dash.png ${DESTDIR}${pixmapdir}
 
 clean:
 
