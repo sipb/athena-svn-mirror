@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.3 1997-09-20 06:50:42 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.4 1997-11-14 22:27:03 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.3 1997-09-20 06:50:42 ghudson Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.4 1997-11-14 22:27:03 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -27,6 +27,13 @@ static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/file.h>
+#include <signal.h>
+
+/* Some rpcgen's, including NetBSD's, have timeout support.  If you
+ * generate a server stub file with no main function, it leaves in
+ * the code to set and unset _rpcsvcdirty, but declares the variable
+ * extern.  So we have to define it ourselves. */
+int _rpcsvcdirty;
 
 struct _Connection Connection[NOFILE], *curconn;
 int curconn_num;
