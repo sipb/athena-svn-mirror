@@ -981,7 +981,7 @@ install:
 	echo "RmF $(DESTDIR)$(BINDIR)/kermit-sshsub" >&3;\
 	echo "RmF $(DESTDIR)$(BINDIR)/kermit" >&3;\
 	if test -f ckermit.ini; then\
-		echo "#!$(DESTDIR)$(BINDIR)/kermit" >\
+		echo "#!$(BINDIR)/kermit" >\
 			$(DESTDIR)$(BINDIR)/_tmp.ini;\
 		cat ckermit.ini >> $(DESTDIR)$(BINDIR)/_tmp.ini;\
 		mv $(DESTDIR)$(BINDIR)/_tmp.ini\
