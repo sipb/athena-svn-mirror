@@ -639,18 +639,18 @@ fatal(s)
 	dologout(0);
 }
 
-reply(n, s, p0, p1, p2, p3, p4)
+reply(n, s, p0, p1, p2, p3, p4, p5)
 	int n;
 	char *s;
 {
 
 	printf("%d ", n);
-	printf(s, p0, p1, p2, p3, p4);
+	printf(s, p0, p1, p2, p3, p4, p5);
 	printf("\r\n");
 	(void) fflush(stdout);
 	if (debug) {
 		syslog(LOG_DEBUG, "<--- %d ", n);
-		syslog(LOG_DEBUG, s, p0, p1, p2, p3, p4);
+		syslog(LOG_DEBUG, s, p0, p1, p2, p3, p4, p5);
 	}
 }
 
@@ -821,33 +821,19 @@ dologout(status)
 	_exit(status);
 }
 
-/*
- * Check user requesting login priviledges.
- * Disallow anyone who does not have a standard
- * shell returned by getusershell() (/etc/shells).
- * Disallow anyone mentioned in the file FTPUSERS
- * to allow people such as uucp to be avoided.
- */
-checkuser(name)
-	register char *name;
-{
-	register char *cp;
-	FILE *fd;
-	struct passwd *p;
-	char *shell;
-	int found = 0;
-	char line[BUFSIZ], *index(), *getusershell();
 
-	if ((p = getpwnam(name)) == NULL)
-		return (0);
-	if ((shell = p->pw_shell) == NULL || *shell == 0)
-		shell = "/bin/sh";
-	while ((cp = getusershell()) != NULL)
-		if (strcmp(cp, shell) == 0)
-			break;
-	endusershell();
-	if (cp == NULL)
-		return (0);
+/*
+ * Check to see if the specified name is in
+ * the file FTPUSERS.  Return 1 if it is not (or
+ * if FTPUSERS cannot be opened), or 0 if it is.
+ */
+checkftpusers(name)
+	char *name;
+{
+	FILE *fd;
+	char line[BUFSIZ], *cp;
+	int found = 0;
+	
 	if ((fd = fopen(FTPUSERS, "r")) == NULL)
 		return (1);
 	while (fgets(line, sizeof (line), fd) != NULL) {
@@ -860,6 +846,36 @@ checkuser(name)
 	}
 	(void) fclose(fd);
 	return (!found);
+}
+
+
+/*
+ * Check user requesting login priviledges.
+ * Disallow anyone who does not have a standard
+ * shell returned by getusershell() (/etc/shells).
+ * Then, call checkftpusers() to disallow anyone
+ * mentioned in the file FTPUSERS,
+ * to allow people such as uucp to be avoided.
+ */
+checkuser(name)
+	register char *name;
+{
+	register char *cp;
+	struct passwd *p;
+	char *shell;
+	char *getusershell();
+
+	if ((p = getpwnam(name)) == NULL)
+		return (0);
+	if ((shell = p->pw_shell) == NULL || *shell == 0)
+		shell = "/bin/sh";
+	while ((cp = getusershell()) != NULL)
+		if (strcmp(cp, shell) == 0)
+			break;
+	endusershell();
+	if (cp == NULL)
+		return (0);
+	return (checkftpusers(name));
 }
 
 myoob()
