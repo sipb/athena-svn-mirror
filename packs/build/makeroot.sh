@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.6 2002-03-06 20:56:58 ghudson Exp $
+# $Id: makeroot.sh,v 1.7 2002-03-13 20:11:04 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -32,8 +32,8 @@ linux)
   rpm --root "$root" -ivh $rpms
 
   # Make links into destination area.
-  ln -s ../usr/src/athena/athtools/usr/athena "$root/usr/athena"
-  ln -s ../usr/src/athena/athtools/usr/afsws "$root/usr/afsws"
+  ln -s ../build/athtools/usr/athena "$root/usr/athena"
+  ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
   ;;
 
 sun4)
