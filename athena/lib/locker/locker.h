@@ -1,4 +1,4 @@
-/* $Id: locker.h,v 1.4 1999-03-29 17:33:22 danw Exp $ */
+/* $Id: locker.h,v 1.4.10.1 2002-12-09 22:14:32 ghudson Exp $ */
 
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
@@ -120,6 +120,7 @@ struct locker_ops {
 #define LOCKER_ATTACH_OPT_ALLOW_SETUID		(1 << 2)
 #define LOCKER_ATTACH_OPT_ZEPHYR		(1 << 3)
 #define LOCKER_ATTACH_OPT_REAUTH		(1 << 4)
+#define LOCKER_ATTACH_OPT_MASTER		(1 << 5)
 
 #define LOCKER_ATTACH_DEFAULT_OPTIONS ( LOCKER_ATTACH_OPT_REAUTH | LOCKER_ATTACH_OPT_ZEPHYR )
 
