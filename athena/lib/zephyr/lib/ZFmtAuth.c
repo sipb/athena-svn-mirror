@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.10 1989-03-23 09:31:08 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.11 1989-03-24 14:17:52 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.10 1989-03-23 09:31:08 jtkohl Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.11 1989-03-24 14:17:52 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -44,8 +44,9 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
 #ifdef NOENCRYPTION
     newnotice.z_checksum = 0;
 #else
-    newnotice.z_checksum = (ZChecksum_t)quad_cksum(buffer, NULL, ptr - buffer,
-						   0, session);
+    newnotice.z_checksum = (ZChecksum_t)des_quad_cksum(buffer, NULL,
+						       ptr - buffer, 0,
+						       session);
 #endif
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
 				    &hdrlen, (char **) 0)) != ZERR_NONE)
