@@ -338,6 +338,8 @@ unsigned int lines_per_page = (unsigned int) -1;
  * Send mail notification to user after print job has been completed.
  */
 int mail = 0;
+char *mail_name;
+
 
 /*
  * -M, --media
@@ -785,7 +787,7 @@ static struct option long_options[] =
   {"no-page-prefeed",		no_argument,		0, 'K'},
   {"lineprinter",		no_argument,		0, 'l'},
   {"lines-per-page",		required_argument,	0, 'L'},
-  {"mail",			no_argument,		0, 'm'},
+  {"mail",			optional_argument,	0, 'm'},
   {"media",			required_argument,	0, 'M'},
   {"copies",			required_argument,	0, 'n'},
   {"newline",			required_argument,	0, 'N'},
@@ -1637,7 +1639,11 @@ open_output_file ()
       /* Format spooler options. */
       spooler_options[0] = '\0';
       if (mail)
-	strcat (spooler_options, "-m ");
+	{
+	  strcat (spooler_options, "-m ");
+	  strcat (spooler_options, mail_name);
+	  strcat (spooler_options, " ");
+	}
       if (no_job_header)
 	{
 	  strcat (spooler_options, no_job_header_switch);
@@ -1797,7 +1803,7 @@ handle_options (int argc, char *argv[])
       const char *cp;
 
       c = getopt_long (argc, argv,
-		       "#:12a:A:b:BcC::d:D:e::E::f:F:gGhH::i:I:jJ:kKlL:mM:n:N:o:Op:P:qrRs:S:t:T:u::U:vVW:X:zZ",
+		       "#:12a:A:b:BcC::d:D:e::E::f:F:gGhH::i:I:jJ:kKlL:m::M:n:N:o:Op:P:qrRs:S:t:T:u::U:vVW:X:zZ",
 		       long_options, &option_index);
 
       if (c == -1)
@@ -1985,6 +1991,10 @@ handle_options (int argc, char *argv[])
 
 	case 'm':		/* send mail upon completion */
 	  mail = 1;
+	  if(optarg)
+	    mail_name = (optarg);
+	  else
+	    mail_name = (*passwd).pw_name;
 	  break;
 
 	case 'M':		/* select output media */
