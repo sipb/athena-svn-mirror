@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2003-01-03 20:42+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -293,15 +293,15 @@ msgstr "XPM"
 msgid "Unsupported file format."
 msgstr "Nieobsługiwany format pliku."
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr "Określenie typu pliku:"
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 msgid "Load Image"
 msgstr "Odczyt obrazu"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 msgid "Save Image"
 msgstr "Zapis obrazu"
 
@@ -325,7 +325,7 @@ msgstr "Wyświetla pomoc na temat aplikacji"
 msgid "New"
 msgstr "Nowy"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Otwórz"
 
@@ -397,23 +397,23 @@ msgstr "Za_kończ"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr "GNOME PL Team <translators@gnome.pl>"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Oko Gnoma"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Program dla GNOME do przeglądania oraz katalogowanie obrazów"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -422,7 +422,7 @@ msgstr ""
 "Nie można wyświetlić pomocy na temat programu Oko Gnoma.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -432,15 +432,15 @@ msgstr ""
 "Operacja spowoduje jednoczesne otwarcie %i okien.\n"
 "Czy chcesz zamiast tego otworzyć obrazy w kolekcji?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Pojedyncze okna"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Kolekcja"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -449,7 +449,7 @@ msgstr ""
 "Operacja spowoduje jednoczesne otwarcie %i okien.\n"
 "Czy chcesz kontynuować?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -458,7 +458,7 @@ msgstr ""
 "Brak dostępu do pliku %s\n"
 "Nie można wyświetlić tego pliku."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -468,11 +468,11 @@ msgstr ""
 "Z powodu braku dostępu nie można wyświetlić następujących plików:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Nie można zainicjować GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Nie można zainicjować Bonobo!\n"
 
@@ -595,39 +595,39 @@ msgstr "Podgląd wydruku"
 msgid "Printing of image failed"
 msgstr "Wydruk obrazu nie powiódł się"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 msgid "/_Zoom In"
 msgstr "/Po_większ"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/Po_mniejsz"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr "/_Zwykły rozmiar"
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 msgid "/Best _Fit"
 msgstr "/D_opasowanie powiększenia"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/Za_mknij"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Szerokość obrazu"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Wysokość obrazu"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Tytuł okna"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Napis na pasku stanu"
 

@@ -4,7 +4,7 @@ AC_INIT(shell/main.c)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(eog, 2.2.0)
+AM_INIT_AUTOMAKE(eog, 2.2.2)
 
 AM_MAINTAINER_MODE
 
@@ -18,6 +18,7 @@ LIBBONOBOUI_REQUIRED=2.0.3
 BONOBO_ACTIVATION_REQUIRED=1.0.3
 LIBRSVG_REQUIRED=2.0.1
 LIBGLADE_REQUIRED=2.0.1
+EEL_REQUIRED=2.2.0
 
 dnl ===============================================================================
 
@@ -35,7 +36,7 @@ GETTEXT_PACKAGE=eog
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fi fr ga gl he hu it ja ko lt lv mk mn ms nl nn no pl pt pt_BR ro ru sl sk sq sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es et fa fi fr ga gl he hu id it ja kn ko lt lv mk ml mn ms nl nn no pl pt pt_BR ro ru sl sk sq sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 AC_PROG_INTLTOOL
 
@@ -47,15 +48,6 @@ AC_SUBST(LDFLAGS)
 
 # glib-genmarshal
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
-
-ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
-AC_SUBST(ORBIT_IDL)
-
-BONOBO_IDLDIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
-AC_SUBST(BONOBO_IDLDIR)
-
-BONOBO_ACT_IDLDIR="`$PKG_CONFIG --variable=idldir bonobo-activation-2.0`"
-AC_SUBST(BONOBO_ACT_IDLDIR)
 
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
 dnl Specify the gconf configuration source,
@@ -144,10 +136,20 @@ dnl  AM_CONDITIONAL(ENABLE_GNOCAM, test x"$gnocam" = "xyes")
 gnocam=no
 AM_CONDITIONAL(ENABLE_GNOCAM, false)
 
-EOG_MODULES="gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libbonoboui-2.0 >= $LIBBONOBOUI_REQUIRED bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED"
+EOG_MODULES="gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED libgnomeui-2.0 >= $LIBGNOMEUI_REQUIRED libbonoboui-2.0 >= $LIBBONOBOUI_REQUIRED bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED librsvg-2.0 >= $LIBRSVG_REQUIRED libglade-2.0 >= $LIBGLADE_REQUIRED eel-2.0 >= $EEL_REQUIRED"
 PKG_CHECK_MODULES(EOG, $EOG_MODULES)
 AC_SUBST(EOG_CFLAGS)
 AC_SUBST(EOG_LIBS)
+
+ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
+AC_SUBST(ORBIT_IDL)
+
+BONOBO_IDLDIR="`$PKG_CONFIG --variable=idldir libbonobo-2.0`"
+AC_SUBST(BONOBO_IDLDIR)
+
+BONOBO_ACT_IDLDIR="`$PKG_CONFIG --variable=idldir bonobo-activation-2.0`"
+AC_SUBST(BONOBO_ACT_IDLDIR)
+
 
 dnl
 dnl ******************************

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -118,12 +118,30 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-@ENABLE_COLLECTION_TRUE@collection_DIRS = collection
+@ENABLE_COLLECTION_TRUE@collection_DIRS = @ENABLE_COLLECTION_TRUE@collection
 
 SUBDIRS = art idl libeog viewer $(collection_DIRS) shell po help omf-install
 DIST_SUBDIRS = $(SUBDIRS) collection
 
-EXTRA_DIST =  	DEPENDS				HACKING				MAINTAINERS			TODO				$(schemas_in_files)		$(Graphics_in_files)		eog.spec			eog.gladep			eog.glade			eog-glade.h			eog.spec.in			gnome-eog.png			intltool-extract.in		intltool-update.in		intltool-merge.in		xmldocs.make
+ACLOCAL_AMFLAGS = -I /usr/share/aclocal/gnome2-macros
+
+EXTRA_DIST = \
+	DEPENDS			\
+	HACKING			\
+	MAINTAINERS		\
+	TODO			\
+	$(schemas_in_files)	\
+	$(Graphics_in_files)	\
+	eog.spec		\
+	eog.gladep		\
+	eog.glade		\
+	eog-glade.h		\
+	eog.spec.in		\
+	gnome-eog.png		\
+	intltool-extract.in	\
+	intltool-update.in	\
+	intltool-merge.in	\
+	xmldocs.make
 
 
 Graphicsdir = $(datadir)/applications
@@ -153,7 +171,7 @@ mkinstalldirs
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -165,7 +183,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
-	cd $(srcdir) && $(ACLOCAL)
+	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
@@ -356,7 +374,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LI
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

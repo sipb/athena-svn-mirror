@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -118,12 +118,40 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DG_LOG_DOMAIN=\"Eog\"						-DDATADIR=\""$(datadir)"\"					-DICONDIR=\""$(datadir)/pixmaps/eog"\"				-I$(srcdir)							-I$(top_srcdir)							-I$(top_builddir)						-I$(top_srcdir)/libeog						-I$(top_builddir)/libeog					$(EOG_CFLAGS)							$(EXTRA_WARNING_CFLAGS)
+INCLUDES = \
+        -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"	\
+	-DG_LOG_DOMAIN=\"Eog\"					\
+	-DDATADIR=\""$(datadir)"\"				\
+	-DICONDIR=\""$(datadir)/pixmaps/eog"\"			\
+	-I$(srcdir)						\
+	-I$(top_srcdir)						\
+	-I$(top_builddir)					\
+	-I$(top_srcdir)/libeog					\
+	-I$(top_builddir)/libeog				\
+	$(EOG_CFLAGS)						\
+	$(EXTRA_WARNING_CFLAGS)
 
 
 libexec_PROGRAMS = eog-image-viewer
 
-eog_image_viewer_SOURCES =  	eog-image.c			eog-image.h			eog-image-io.c			eog-image-io.h			eog-image-view.c		eog-image-view.h		eog-control.c			eog-control.h			eog-full-screen.c		eog-full-screen.h		eog-preview.c			eog-preview.h			eog-preview-page.c		eog-preview-page.h		eog-util.h			eog-util.c			main.c
+eog_image_viewer_SOURCES = \
+	eog-image.c		\
+	eog-image.h		\
+	eog-image-io.c		\
+	eog-image-io.h		\
+	eog-image-view.c	\
+	eog-image-view.h	\
+	eog-control.c		\
+	eog-control.h		\
+	eog-full-screen.c	\
+	eog-full-screen.h	\
+	eog-preview.c		\
+	eog-preview.h		\
+	eog-preview-page.c	\
+	eog-preview-page.h	\
+	eog-util.h		\
+	eog-util.c		\
+	main.c
 
 #	 eog-print-setup.c	\
 #	 eog-print-setup.h	\
@@ -134,11 +162,16 @@ eog_image_viewer_SOURCES =  	eog-image.c			eog-image.h			eog-image-io.c			eog-im
 
 eog_image_viewer_DEPENDENCIES = $(top_builddir)/libeog/libeog.a
 
-eog_image_viewer_LDADD =  	-L$(top_builddir)/libeog			-leog						$(EOG_LIBS)					$(LIBPNG) $(LIBJPEG)
+eog_image_viewer_LDADD = \
+	-L$(top_builddir)/libeog		\
+	-leog					\
+	$(EOG_LIBS)				\
+	$(LIBPNG) $(LIBJPEG)
 
 
 uidir = $(datadir)/gnome-2.0/ui
-ui_DATA = eog-image-view-ui.xml 	  eog-image-view-ctrl-ui.xml
+ui_DATA = eog-image-view-ui.xml \
+	  eog-image-view-ctrl-ui.xml
 
 
 EXTRA_DIST = $(ui_DATA)
@@ -164,7 +197,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(eog_image_viewer_SOURCES)
 OBJECTS = $(eog_image_viewer_OBJECTS)
@@ -265,7 +298,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 

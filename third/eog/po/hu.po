@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2002-12-15 23:27+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -285,15 +285,15 @@ msgstr "XPM"
 msgid "Unsupported file format."
 msgstr "Nem támogatott fájlformátum"
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr "Fájltípus meghatározása:"
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 msgid "Load Image"
 msgstr "Kép betöltése"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 msgid "Save Image"
 msgstr "Kép mentése"
 
@@ -317,7 +317,7 @@ msgstr "Az alkalmazás súgója"
 msgid "New"
 msgstr "Új"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Megnyitás"
 
@@ -389,25 +389,25 @@ msgstr "_Kilépés"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr ""
 "Érdi Gergő <cactus@cactus.rulez.org>\n"
 "Tímár András <timar@gnome.hu>"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Eye of Gnome"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright © 2000-2002 The Free Software Foundation"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "A GNOME képnézegető és katalogizáló programja"
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -416,7 +416,7 @@ msgstr ""
 "Nem jeleníthető meg az Eye of Gnome súgója.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -427,15 +427,15 @@ msgstr ""
 "készülsz. Nem akarod inkább \n"
 "gyűjteményként megnyitni ezeket?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Külön ablakokban"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Gyűjteményként"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -444,7 +444,7 @@ msgstr ""
 "%i ablak egyidejű megnyitására\n"
 "készülsz. Folytatod?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -453,7 +453,7 @@ msgstr ""
 "Nem elérhető: %s\n"
 "Az Eye of Gnome nem tudja megjeleníteni ezt a fájlt."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -464,11 +464,11 @@ msgstr ""
 "hozzájuk:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Gnome-VFS inicializáció sikertelen!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Bonobo inicializáció sikertelen!\n"
 
@@ -587,39 +587,39 @@ msgstr "Nyomtatási előnézet"
 msgid "Printing of image failed"
 msgstr "A kép nyomtatása nem sikerült"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 msgid "/_Zoom In"
 msgstr "/_Nagyítás"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/_Kicsinyítés"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr "/_Normál méret"
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 msgid "/Best _Fit"
 msgstr "/Legjobb _illeszkedés"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/_Bezárás"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Kép szélessége"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Kép magassága"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Ablak címe"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Állapotsor szövege"
 

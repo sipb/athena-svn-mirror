@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eog VERSION\n"
-"POT-Creation-Date: 2003-01-28 08:24+0000\n"
+"POT-Creation-Date: 2003-03-26 17:08-0600\n"
 "PO-Revision-Date: 2003-01-10 23:24+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
@@ -281,15 +281,15 @@ msgstr "XPM"
 msgid "Unsupported file format."
 msgstr "Dạng thức ảnh lạ."
 
-#: libeog/eog-file-selection.c:227
+#: libeog/eog-file-selection.c:225
 msgid "Determine File Type:"
 msgstr "Xác định loại tập tin:"
 
-#: libeog/eog-file-selection.c:270
+#: libeog/eog-file-selection.c:268
 msgid "Load Image"
 msgstr "Nạp ảnh"
 
-#: libeog/eog-file-selection.c:276
+#: libeog/eog-file-selection.c:274
 msgid "Save Image"
 msgstr "Lưu ảnh"
 
@@ -313,7 +313,7 @@ msgstr "Trợ giúp về ứng dụng này"
 msgid "New"
 msgstr "Mới"
 
-#: shell/eog-shell-ui.xml.h:6 shell/main.c:210
+#: shell/eog-shell-ui.xml.h:6 shell/main.c:193
 msgid "Open"
 msgstr "Mở"
 
@@ -385,23 +385,23 @@ msgstr "T_hoát"
 #. * which will give them credit in the About box.
 #. * E.g. "Fulano de Tal <fulano@detal.com>"
 #.
-#: shell/eog-window.c:215
+#: shell/eog-window.c:216
 msgid "translator_credits-PLEASE_ADD_YOURSELF_HERE"
 msgstr "Nguyễn Thái Ngọc Duy"
 
-#: shell/eog-window.c:220 shell/eog-window.c:598 shell/main.c:452
+#: shell/eog-window.c:221 shell/eog-window.c:599 shell/main.c:435
 msgid "Eye of Gnome"
 msgstr "Mắt Gnome"
 
-#: shell/eog-window.c:222
+#: shell/eog-window.c:223
 msgid "Copyright (C) 2000-2002 The Free Software Foundation"
 msgstr "Copyright (C) 2000-2002 The Free Software Foundation"
 
-#: shell/eog-window.c:223
+#: shell/eog-window.c:224
 msgid "The GNOME image viewing and cataloging program."
 msgstr "Chương trình xem và phân loại ảnh của Gnome."
 
-#: shell/eog-window.c:260
+#: shell/eog-window.c:261
 #, c-format
 msgid ""
 "Could not display help for Eye of Gnome.\n"
@@ -410,7 +410,7 @@ msgstr ""
 "Không thể hiển thị trợ giúp cho Mắt Gnome.\n"
 "%s"
 
-#: shell/main.c:177
+#: shell/main.c:160
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -421,15 +421,15 @@ msgstr ""
 "Bạn có muốn mở chúng trong một tập\n"
 "hợp không?"
 
-#: shell/main.c:182
+#: shell/main.c:165
 msgid "Single Windows"
 msgstr "Cửa sổ đơn"
 
-#: shell/main.c:183
+#: shell/main.c:166
 msgid "Collection"
 msgstr "Tập hợp"
 
-#: shell/main.c:207
+#: shell/main.c:190
 #, c-format
 msgid ""
 "You are about to open %i windows\n"
@@ -438,7 +438,7 @@ msgstr ""
 "Bạn định mở %i cửa sổ đồng\n"
 "thời. Bạn có muốn tiếp tục?"
 
-#: shell/main.c:290
+#: shell/main.c:273
 #, c-format
 msgid ""
 "Could not access %s\n"
@@ -447,7 +447,7 @@ msgstr ""
 "Không thể truy cập %s\n"
 "Mắt Gnome sẽ không thể hiển thị tập tin này."
 
-#: shell/main.c:293
+#: shell/main.c:276
 #, c-format
 msgid ""
 "The following files cannot be displayed because Eye of Gnome was not able to "
@@ -457,11 +457,11 @@ msgstr ""
 "Không thể hiển thị những tập tin sau vì Mắt Gnome không thể truy cập chúng:\n"
 "%s"
 
-#: shell/main.c:464
+#: shell/main.c:447
 msgid "Could not initialize GnomeVFS!\n"
 msgstr "Không thể khởi động GnomeVFS!\n"
 
-#: shell/main.c:467
+#: shell/main.c:450
 msgid "Could not initialize Bonobo!\n"
 msgstr "Không thể khởi động Bonobo!\n"
 
@@ -579,39 +579,39 @@ msgstr "Xem thử bản in"
 msgid "Printing of image failed"
 msgstr "In ảnh thất bại"
 
-#: viewer/eog-image-view.c:1873
+#: viewer/eog-image-view.c:1870
 msgid "/_Zoom In"
 msgstr "/Phóng _to"
 
-#: viewer/eog-image-view.c:1875
+#: viewer/eog-image-view.c:1872
 msgid "/Zoom _Out"
 msgstr "/Thu _nhỏ"
 
-#: viewer/eog-image-view.c:1877
+#: viewer/eog-image-view.c:1874
 msgid "/_Normal Size"
 msgstr "/_Cỡ bình thường"
 
-#: viewer/eog-image-view.c:1879
+#: viewer/eog-image-view.c:1876
 msgid "/Best _Fit"
 msgstr "/Vừa khít _nhất"
 
-#: viewer/eog-image-view.c:1882
+#: viewer/eog-image-view.c:1879
 msgid "/_Close"
 msgstr "/Đón_g"
 
-#: viewer/eog-image-view.c:2008
+#: viewer/eog-image-view.c:2005
 msgid "Image Width"
 msgstr "Chiều rộng ảnh"
 
-#: viewer/eog-image-view.c:2011
+#: viewer/eog-image-view.c:2008
 msgid "Image Height"
 msgstr "Chiều cao ảnh"
 
-#: viewer/eog-image-view.c:2014
+#: viewer/eog-image-view.c:2011
 msgid "Window Title"
 msgstr "Tựa đề cửa sổ"
 
-#: viewer/eog-image-view.c:2017
+#: viewer/eog-image-view.c:2014
 msgid "Statusbar Text"
 msgstr "Text thanh trạng thái"
 
