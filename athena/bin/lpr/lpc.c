@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.6 1991-02-09 13:15:37 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.7 1995-07-11 19:25:54 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.6 1991-02-09 13:15:37 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.7 1995-07-11 19:25:54 miki Exp $";
 #endif lint
 
 /*
@@ -45,6 +45,9 @@ static char sccsid[] = "@(#)lpc.c	5.2 (Berkeley) 11/17/85";
 
 
 #include "lpc.h"
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h"  
+#endif
 
 int	fromatty;
 
@@ -52,7 +55,7 @@ char	cmdline[200];
 int	margc;
 char	*margv[20];
 int	top;
-int	intr();
+void	intr();
 struct	cmd *getcmd();
 extern struct cmd cmdtab[];
 
@@ -108,6 +111,7 @@ main(argc, argv)
 	}
 }
 
+void
 intr()
 {
 	if (!fromatty)
