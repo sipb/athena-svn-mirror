@@ -132,12 +132,7 @@
 #ifndef LintFlags
 #define LintFlags $(DEFINES) -I/usr/athena/include
 #endif
-#ifndef ShlibExt
-#define ShlibExt _s
-#endif
-#ifndef ShlibDir
-#define ShlibDir
-#endif
+
 
 SHELL=/bin/sh
 MAKESHELL=/bin/sh
@@ -195,8 +190,6 @@ CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I/usr/athena/include
 LDFLAGS=LdFlags $(LDDEFS) -L/usr/athena/lib
 
 LDLIBS=LdLibs
-SHLIB_EXT=ShlibExt
-SHLIB_DIR=ShlibDir
 
 #include "Imake.rules"
 

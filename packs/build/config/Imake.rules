@@ -97,13 +97,6 @@ clean::									@@\
 	$(RM) -r profiled						@@\
 all-prof inst-prof::
 
-#define SharedObjectRule()						@@\
-all:: shared all-shared							@@\
-install:: inst-shared							@@\
-shared:									@@\
-	-mkdir $@							@@\
-all-prof inst-prof::
-
 #define AnsiCC()							@@\
 CC=AnsiCcCmd								@@\
 LD=AnsiLdCmd
@@ -134,10 +127,7 @@ lib/**/base.a::	objs							@@\
 all-prof::	lib/**/base/**/_p.a					@@\
 lib/**/base/**/_p.a:	objs						@@\
 	cd profiled; ar cru ../lib/**/base/**/_p.a objs			@@\
-	$(RANLIB) lib/**/base/**/_p.a					@@\
-all-shared::	lib/**/base/**/_s.a					@@\
-lib/**/base/**/_s.a:	objs						@@\
-	$(MKSHLIB) $@ objs
+	$(RANLIB) lib/**/base/**/_p.a
 
 #define install_library(base,dir)					@@\
 install::								@@\
@@ -147,11 +137,7 @@ install::								@@\
 inst-prof::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base/**/_p.a				@@\
 	$(INSTALL) -m 0644 lib/**/base/**/_p.a $(DESTDIR)dir		@@\
-	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a			@@\
-inst-shared::								@@\
-	$(RM) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a		@@\
-	$(INSTALL) -m 0644 lib/**/base/**/_s.a $(DESTDIR)dir/$(SHLIB_DIR)lib/**/base/**/$(SHLIB_EXT).a @@\
-	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a
+	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a
 
 #define SimpleLibrary(base,objs,dir)					@@\
 build_library(base,objs)						@@\
@@ -216,12 +202,23 @@ Makefiles:: Makefile							@@\
 	@echo "### Making Makefiles in" `pwd`				@@\
 	@-for d in subdirs; \						@@\
 	do \								@@\
+		case "$$d" in \						@@\
+                ./?*/?*/?*/?*)	newtop=../../../.. ;; \			@@\
+                ./?*/?*/?*)	newtop=../../.. ;; \			@@\
+                ./?*/?*)	newtop=../.. ;; \			@@\
+                ./?*)		newtop=.. ;; \				@@\
+                */?*/?*/?*)	newtop=../../../.. ;; \			@@\
+                */?*/?*)	newtop=../../.. ;; \			@@\
+                */?*)		newtop=../.. ;; \			@@\
+                *)		newtop=.. ;; \				@@\
+                esac; \							@@\
 		( cd $$d; \						@@\
-		  echo "### Making Makefile in" `pwd`; \		@@\
+		  echo "### Making Makefile in" $(CURDIR)/$$d; \	@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
-		  make -f ../Makefile TOP=../$(TOP) Makefile; \		@@\
+		  make -f $${newtop}/Makefile TOP=${newtop}/$(TOP) \	@@\
+			CURDIR=$(CURDIR)/$$d Makefile; \		@@\
 		  make $(MFLAGS) Makefiles; \				@@\
 		  echo "### Done with" `pwd` ) ; \			@@\
 	done
