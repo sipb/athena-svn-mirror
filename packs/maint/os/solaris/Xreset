@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Xreset,v 1.1 2000-04-25 13:51:59 rbasch Exp $
+# $Id: Xreset,v 1.2 2001-05-18 21:18:43 zacheiss Exp $
 
 # Xreset
 #
@@ -11,5 +11,9 @@ cd /dev
 # Reclaim the audio devices.
 chown root audio audioctl
 chmod  600 audio audioctl
+
+# Turn off power saving.  We should be able to do this by starting
+# Xsun with the -dpms flag, but that's broken. 
+/usr/openwin/bin/xset -display :0.0 -dpms
 
 exit 0
