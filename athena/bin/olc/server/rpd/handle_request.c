@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.17 1991-09-22 11:36:28 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.18 1993-05-06 10:24:36 vanharen Exp $";
 #endif
 #endif
 
@@ -44,6 +44,7 @@ handle_request(fd, from)
   u_long output_len;
   char *buf;
   int result;
+  char *from_addr;
 
   int ltr;
   KTEXT_ST their_auth;
@@ -57,19 +58,22 @@ handle_request(fd, from)
     instance_buffer[0] = '*';
 #endif /* KERBEROS */
 
+  from_addr = inet_ntoa(from.sin_addr);
+
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
     if (len == -1)
-      syslog(LOG_ERR,"reading version: %m");
+      syslog(LOG_ERR, "(%s) reading version: %m", from_addr);
     else
-      syslog(LOG_WARNING,"Not enough bytes for version (%d received)",len);
+      syslog(LOG_WARNING, "(%s) Not enough bytes for version (%d rcvd)",
+	     from_addr, len);
     punt_connection(fd,from);
     return;
   }
 
   version = ntohl(version);
   if (version > VERSION) {
-    syslog(LOG_WARNING,"Version skew from %s curr = %d, recvd = %d\n",
-	    inet_ntoa(from.sin_addr),VERSION,version);
+    syslog(LOG_WARNING, "(%s) Version skew - curr:%d, rcvd:%d\n",
+	    from_addr, VERSION, version);
     punt_connection(fd,from);
     return;
   }
@@ -77,9 +81,10 @@ handle_request(fd, from)
   if (version >= 1) {
     if ((len = sread(fd,&request,sizeof(request))) != sizeof(request)) {
       if (len == -1)
-	syslog(LOG_ERR,"reading request: %m");
+	syslog(LOG_ERR, "(%s) reading request: %m", from_addr);
       else
-	syslog(LOG_WARNING,"Not enough bytes for request (%d received)",len);
+	syslog(LOG_WARNING, "(%s) Not enough bytes for request (%d rcvd)",
+	       from_addr, len);
       punt_connection(fd,from);
       return;
     }
@@ -90,18 +95,20 @@ handle_request(fd, from)
 
   if ((len = sread(fd,username,9)) != 9) {
     if (len == -1)
-      syslog(LOG_ERR,"reading username: %m");
+      syslog(LOG_ERR, "(%s) reading username: %m", from_addr);
     else
-      syslog(LOG_WARNING,"Wanted nine bytes of username, only got %d\n",len);
+      syslog(LOG_WARNING, "(%s) Wanted 9 bytes of username, rcvd %d\n",
+	     from_addr, len);
     punt_connection(fd,from);
     return;
   }
 
   if ((len = sread(fd,&instance,sizeof(instance))) != sizeof(instance)) {
     if (len == -1)
-      syslog(LOG_ERR,"reading instance: %m");
+      syslog(LOG_ERR, "(%s) reading instance: %m", from_addr);
     else
-      syslog(LOG_WARNING,"Not enough bytes for instance (%d)\n",len);
+      syslog(LOG_WARNING, "(%s) Not enough bytes for instance (rcvd %d)\n",
+	     from_addr, len);
     punt_connection(fd,from);
     return;
   }
@@ -112,19 +119,22 @@ handle_request(fd, from)
     /* both of these take a target username */
     if ((len = sread(fd,tusername,9)) != 9) {
       if (len == -1)
-	syslog(LOG_ERR,"reading tusername: %m");
+	syslog(LOG_ERR, "(%s) reading tusername: %m",
+	       from_addr);
       else
-	syslog(LOG_WARNING,"Wanted nine bytes of tusername, only got %d\n",
-	       len);
+	syslog(LOG_WARNING, "(%s) Wanted nine bytes of tusername, rcvd %d\n",
+	       from_addr, len);
       punt_connection(fd,from);
       return;
     }
 
     if ((len = sread(fd,&tinstance,sizeof(tinstance))) != sizeof(tinstance)) {
       if (len == -1)
-	syslog(LOG_ERR,"reading tinstance: %m");
+	syslog(LOG_ERR, "(%s) reading tinstance: %m",
+	       from_addr);
       else
-	syslog(LOG_WARNING,"Not enough bytes for tinstance (%d)\n",len);
+	syslog(LOG_WARNING, "(%s) Not enough bytes for tinstance (rcvd %d)\n",
+	       from_addr, len);
       punt_connection(fd,from);
       return;
     }
@@ -136,9 +146,11 @@ handle_request(fd, from)
   if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
       sizeof(their_auth.length)) {
     if (len == -1)
-      syslog(LOG_ERR,"reading kticket length: %m");
+      syslog(LOG_ERR, "(%s) reading kticket length: %m",
+	     from_addr);
     else
-      syslog(LOG_WARNING,"Not enought bytes for ticket (%d)\n",len);
+      syslog(LOG_WARNING, "(%s) Not enough bytes for ticket (rcvd %d)\n",
+	     from_addr, len);
     punt_connection(fd,from);
     return;
   }
@@ -151,9 +163,10 @@ handle_request(fd, from)
 	     sizeof(their_auth.dat));
     if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
       if (len == -1)
-	syslog(LOG_ERR,"reading kticket: %m");
+	syslog(LOG_ERR, "(%s) reading kticket: %m", from_addr);
       else
-	syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
+	syslog(LOG_WARNING, "(%s) Error reading kerberos ticket (rcvd %d)\n",
+	       from_addr, len);
       punt_connection(fd,from);
       return;
     }
@@ -164,8 +177,9 @@ handle_request(fd, from)
 		    (unsigned long) from.sin_addr.s_addr,&their_info,SRVTAB);
   if (auth != RD_AP_OK) {
     /* Twit! */
-    syslog(LOG_WARNING,"Kerberos error: %s\n from %s",krb_err_txt[auth],
-	   inet_ntoa(from.sin_addr));
+    syslog(LOG_WARNING, "(%s) Kerberos error: %s\n",
+	   from_addr,
+	   krb_err_txt[auth]);
     output_len = htonl(-auth);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
@@ -177,21 +191,23 @@ handle_request(fd, from)
   if ((strcmp(their_info.pname,username) != 0) &&
       !acl_check(MONITOR_ACL,principal_buffer)) {
     /* Twit! */
-    syslog(LOG_WARNING,"Request from %s@%s who is not on the acl\n",
-	    principal_buffer, inet_ntoa(from.sin_addr));
+    syslog(LOG_WARNING, "(%s) Request from %s who is not on the acl\n",
+	   from_addr
+	   principal_buffer);
     output_len = htonl(ERR_NO_ACL);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
     return;
   }
 
-  syslog(LOG_DEBUG,"%s replays %s [%d]",principal_buffer, username,
-	 instance);
+  syslog(LOG_DEBUG, "(%s) %s replays %s [%d]", from_addr,
+	 principal_buffer, username, instance);
 
   if (((request == SHOW_KILL_REQ) && strcmp(their_info.pname,username)) ||
       ((request == REPLAY_KILL_REQ) && strcmp(their_info.pname,tusername))) {
-    syslog(LOG_WARNING, "Request to delete %s's new messages from %s@%s\n",
-	   username,principal_buffer, inet_ntoa(from.sin_addr));
+    syslog(LOG_WARNING, "(%s) Request to delete %s's new messages from %s\n",
+	   from_addr,
+	   username, principal_buffer);
     output_len = htonl(ERR_OTHER_SHOW);
     write(fd,&output_len,sizeof(long));
     punt_connection(fd,from);
@@ -245,6 +261,8 @@ punt_connection(fd, from)
      struct sockaddr_in from;
 {
   close(fd);
-  syslog(LOG_INFO,"Punted connection from %s\n",inet_ntoa(from.sin_addr));
+/*
+  syslog(LOG_INFO, "Punted connection from %s\n", inet_ntoa(from.sin_addr));
+*/
   return;
 }
