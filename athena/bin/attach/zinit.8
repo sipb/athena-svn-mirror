@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v $
 .\"	$Author: jfc $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v 1.1 1990-04-21 17:52:47 jfc Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v 1.2 1990-04-21 18:05:35 jfc Exp $
 .\"
 .\"
 .TH ZINIT 8 "July 18, 1989" "MIT Project Athena"
@@ -9,6 +9,7 @@
 zinit \- zephyr login initialization program
 .SH SYNOPSIS
 .B zinit
+[-a] [-d] [-m] [-q] [-v]
 .SH DESCRIPTION
 .I Zinit
 is normally executed automatically \fIzwgc(1)\fR.  It reads through
@@ -22,6 +23,18 @@ fileservers.
 "{servername}:filesystem" or "{servername}:pathname" for remote
 filesystem found in attachtab, where {servername} is the name of the
 machine providing the file service.  
+By default, only messages about
+filesystems attached by the user running attach or root are subscribed to.
+The
+.B \-a
+option selects all remote filesystems, while
+.B \-m
+selects only those attached by the user.
+.BR \-q ,
+.BR \-d ,
+and
+.B  \-v
+have the same meaning as in \fIattach(1)\fR.
 
 .SH NOTE
 The programs \fIattach(1)\fR, \fIdetach(1)\fR, \fInfsid(1)\fR, and
@@ -38,8 +51,10 @@ attach(1), detach(1). zwrite(1), zephyr(1), zwgc(1)
 Project Athena Technical Plan Section E.4.1, `Zephyr Notification
 Service'
 .SH FILES
-/usr/tmp/attachtab
-.br
+.nf
+/etc/attach.conf
+/etc/attachtab
+.fi
 .SH AUTHOR
 .PP
 Theodore Ts'o (MIT-Project Athena)
