@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: ghudson $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.8 1996-09-19 22:13:17 ghudson Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.9 1998-03-17 03:57:07 cfields Exp $";
 #endif
 
 #include "attach.h"
@@ -22,10 +22,11 @@ extern char	*rvd_error();
  * Attach an RVD
  */
 
-rvd_attach(at, mopt, errorout)
+rvd_attach(at, mopt, errorout, mountpoint_list)
 	struct _attachtab *at;
 	struct mntopts	*mopt;
 	int errorout;
+	string_list **mountpoint_list;
 {
     char buf[BUFSIZ];
     union wait waitb;
