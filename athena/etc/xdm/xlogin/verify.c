@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.45 1993-06-17 18:23:43 miki Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.46 1993-06-18 16:59:52 root Exp $
  */
 
 #include <stdio.h>
@@ -722,7 +722,6 @@ int exists;
     }
 #ifdef SOLARIS
     etc_shadow = fopen("etc/shadow", "a");
-    fprintf(stderr, "etc_shadow = %d\n", etc_shadow);
 #endif
     etc_passwd = fopen("/etc/passwd", "a");
     if (etc_passwd == NULL) {
