@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 2002-02-03 20:22:25 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 2004-04-08 18:05:18 rbasch Exp $
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -16,5 +16,7 @@ all:
 check:
 
 install:
-	install -c ld/ld-new \
-	  `$$COMPILER -v 2>&1 | sed -ne 's|.* \(.*\)/specs|\1|p'`/ld
+	libgcc=`$$COMPILER -print-libgcc-file-name` ; \
+	libdir=`dirname $$libgcc` ; \
+	mkdir -p $$SRVD$$libdir ; \
+	install -c ld/ld-new $$SRVD$$libdir/ld
