@@ -4,7 +4,7 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.6.2.1 1997-06-09 06:34:59 ghudson Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.6.2.2 1997-06-28 19:15:13 ghudson Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH
@@ -78,12 +78,12 @@ args="-p $prog -n $user -h $host ${account+-a ${account}} ${mediacost+-m ${media
 comm="$PSCOMM -P $pname $args $afile"
 
 case $prog in
-	psif) exec $comm ;;
-	psof) exec $PSBANNER $pname ; exit 0 ;;
-	psnf) psdit | $comm ;;
-	pstf) pscat | $comm ;;
-	psgf) psplot | $comm ;;
-	psvf|pscf|psdf|psrf) echo "$prog: filter not available." 1>&2  ;
+	??if) exec $comm ;;
+	??of) exec $PSBANNER $pname ; exit 0 ;;
+	??nf) psdit | $comm ;;
+	??tf) pscat | $comm ;;
+	??gf) psplot | $comm ;;
+	??vf|??cf|??df|??rf) echo "$prog: filter not available." 1>&2  ;
 			psbad $prog $pname $user $host | $comm ;;
 esac
 
