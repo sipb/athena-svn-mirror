@@ -1,4 +1,4 @@
-# $Id: packages,v 1.270 2004-04-09 16:55:11 zacheiss Exp $
+# $Id: packages,v 1.271 2004-04-12 19:59:57 amb Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -202,6 +202,7 @@ third/gtk			requires glib,gettext
 third/gtk2			requires glib2,pango,atk,tiff,libpng,jpeg
 third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
 third/gtkhtml3			requires gettext,libgnomeui,libgnomeprint,libgnomeprintui,libglade2,gal2,libbonoboui,ORBit2,bonobo-activation,libsoup
+third/ifplugd			on linux requires libdaemon
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
@@ -216,6 +217,7 @@ third/lam
 third/libart_lgpl		except linux
 third/libbonobo			requires gettext,ORBit2,glib2,bonobo-activation
 third/libbonoboui		requires gettext,libgnomecanvas,libbonobo,libgnome,bonobo-activation,libxml2,GConf2,gtk2,libglade2,glib2
+third/libdaemon			on linux
 third/libgail-gnome		except linux requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,at-spi
 third/libghttp			except linux
 third/libglade			requires gtk,gnome-libs,libxml
