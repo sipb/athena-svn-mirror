@@ -1,0 +1,11 @@
+Name: athena-mitmailmove
+Summary: Move or copy messages between IMAP folders
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailmove program copies messages from one folder to another on an
+IMAP server, and then marks the original messages for deletion.  The
+mitmailcopy command performs only the copy operation.
