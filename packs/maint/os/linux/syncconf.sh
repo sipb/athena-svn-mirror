@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.4 2000-07-21 07:22:26 jweiss Exp $
+# $Id: syncconf.sh,v 1.5 2000-07-30 18:00:54 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -86,6 +86,11 @@ handle()
     update /etc/hosts
     update /etc/sysconfig/network
     update /etc/sysconfig/network-scripts/ifcfg-$NETDEV
+
+    # We run before networking is set up, but after the hostname is set.
+    # We're pretty sure we run before anything actually uses the
+    # hostname.  Reset the hostname in case it changed.
+    hostname "$HOST"
 
     ;;
 
