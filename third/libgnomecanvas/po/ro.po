@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomecanvas 2.1.90\n"
-"POT-Creation-Date: 2003-01-23 16:16+0100\n"
+"POT-Creation-Date: 2003-05-18 10:31+0200\n"
 "PO-Revision-Date: 2003-01-18 20:19+0200\n"
 "Last-Translator: Mişu Moldovan <dumol@go.ro>\n"
 "Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
@@ -13,21 +13,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
+#: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
 msgid "X"
 msgstr "X"
 
-#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
+#: libgnomecanvas/gnome-canvas.c:1408 libgnomecanvas/gnome-canvas.c:1409
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
 msgid "Y"
 msgstr "Y"
 
-#: libgnomecanvas/gnome-canvas.c:2052
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
 msgstr "Antialiat"
 
-#: libgnomecanvas/gnome-canvas.c:2053
+#: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
 msgstr "Modul antialiere al canavalelor"
 

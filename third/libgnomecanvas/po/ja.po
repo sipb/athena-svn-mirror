@@ -1,35 +1,36 @@
 # libgnomecanvas ja.po.
-# Copyright (C) 1998-2002 Free Software Foundation, Inc.
+# Copyright (C) 1998-2003 Free Software Foundation, Inc.
 # Yukihiro Nakai <Nakai@abricot.co.jp>, 1998,2001.
 # Eiichiro ITANI <emu@ceres.dti.ne.jp>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 1999-2002.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomecanvas 1.112.0\n"
-"POT-Creation-Date: 2003-01-23 16:16+0100\n"
-"PO-Revision-Date: 2002-02-19 19:32+0900\n"
-"Last-Translator: Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>\n"
+"Project-Id-Version: libgnomecanvas 2.2.0.2\n"
+"POT-Creation-Date: 2003-05-18 10:31+0200\n"
+"PO-Revision-Date: 2003-03-02 03:07+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
+#: libgnomecanvas/gnome-canvas.c:1401 libgnomecanvas/gnome-canvas.c:1402
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
 msgid "X"
 msgstr "X"
 
-#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
+#: libgnomecanvas/gnome-canvas.c:1408 libgnomecanvas/gnome-canvas.c:1409
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
 msgid "Y"
 msgstr "Y"
 
-#: libgnomecanvas/gnome-canvas.c:2052
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "Antialiased"
 msgstr "アンチエイリアス"
 
-#: libgnomecanvas/gnome-canvas.c:2053
+#: libgnomecanvas/gnome-canvas.c:2054
 msgid "The antialiasing mode of the canvas."
 msgstr "キャンバスのアンチエイリアスのモード"
 
@@ -68,44 +69,44 @@ msgstr "フォントの PangoFontDescription 構造体による記述"
 
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "フォントファミリー"
+msgstr "フォントの名称"
 
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "フォントファミリーの名称 (例) Sans, Helvetica, Times, Monospace"
+msgstr "フォント名 (例) Sans, Helvetica, Times, Monospace"
 
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "フォント スタイル"
+msgstr "フォントのスタイル"
 
 #: libgnomecanvas/gnome-canvas-text.c:286
 #: libgnomecanvas/gnome-canvas-text.c:287
 msgid "Font variant"
-msgstr "フォント バリアント"
+msgstr "フォントの別名"
 
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "フォント ウェイト"
+msgstr "フォントの太さ"
 
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "フォント ストレッチ"
+msgstr "フォントの広がり"
 
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "フォント サイズ"
+msgstr "フォントの大きさ"
 
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "フォント ポイント"
+msgstr "フォントのポイント"
 
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr "フォントのポイント単位での大きさ"
+msgstr "フォントの大きさ (ポイント単位)"
 
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
@@ -114,7 +115,7 @@ msgstr "ライズ"
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
-msgstr "ベースラインより上方向のテキストのオフセット (負なら下方向)"
+msgstr "基線 (ベースライン) より上方向のテキストのオフセット (負なら下方向)"
 
 #: libgnomecanvas/gnome-canvas-text.c:351
 msgid "Strikethrough"
@@ -176,15 +177,15 @@ msgstr "描画されているテキストの高さ"
 
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "フォントファミリー設定"
+msgstr "フォント名の設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr "このタグがフォント ファミリーに影響するかどうか"
+msgstr "このタグがフォント名にに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "フォント スタイル設定"
+msgstr "フォント・スタイルの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
@@ -192,31 +193,31 @@ msgstr "このタグがフォントのスタイルに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:480
 msgid "Font variant set"
-msgstr "フォント バリアント設定"
+msgstr "フォントの別名の設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:481
 msgid "Whether this tag affects the font variant"
-msgstr "このタグがフォント バリアントに影響するかどうか"
+msgstr "このタグがフォントの別名に影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "フォント ウェイト設定"
+msgstr "フォントの太さの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "このタグがフォントのウェイトに影響するかどうか"
+msgstr "このタグがフォントの太さに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "フォント ストレッチ設定"
+msgstr "フォントの広がりの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "このタグがフォントのストレッチに影響するかどうか"
+msgstr "このタグがフォントの広がり方に影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr "フォント サイズ設定"
+msgstr "フォント・サイズの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
@@ -224,7 +225,7 @@ msgstr "このタグがフォントの大きさに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:496
 msgid "Rise set"
-msgstr "ライズ 設定"
+msgstr "ライズの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:497
 msgid "Whether this tag affects the rise"
@@ -232,7 +233,7 @@ msgstr "このタグがライズに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:500
 msgid "Strikethrough set"
-msgstr "打ち消し 設定"
+msgstr "打ち消しの設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:501
 msgid "Whether this tag affects strikethrough"
@@ -240,7 +241,7 @@ msgstr "このタグが打ち消し線に影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr "下線 設定"
+msgstr "下線の設定"
 
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
@@ -255,153 +256,151 @@ msgid "Whether this tag affects font scaling"
 msgstr "このタグがフォントのスケーリングに影響するかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
-#, fuzzy
 msgid "Text to display"
 msgstr "描画するテキスト"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
-msgstr ""
+msgstr "位置 X"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:226
 msgid "Y position"
-msgstr ""
+msgstr "位置 Y"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:233
 msgid "Width"
-msgstr ""
+msgstr "幅"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:234
 msgid "Width for text box"
-msgstr ""
+msgstr "テキスト・ボックスの幅"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:241
 msgid "Height"
-msgstr ""
+msgstr "高さ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
-#, fuzzy
 msgid "Height for text box"
-msgstr "描画されているテキストの高さ"
+msgstr "テクスト・ボックスの高さ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
-msgstr ""
+msgstr "編集可"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:250
 msgid "Is this rich text item editable?"
-msgstr ""
+msgstr "このリッチ・テキスト形式のアイテムが編集可能かどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:257
 msgid "Visible"
-msgstr ""
+msgstr "表示"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:258
 msgid "Is this rich text item visible?"
-msgstr ""
+msgstr "このリッチ・テキスト形式のアイテムが表示可能かどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:265
 msgid "Cursor Visible"
-msgstr ""
+msgstr "カーソル表示"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:266
 msgid "Is the cursor visible in this this rich text item?"
-msgstr ""
+msgstr "このリッチ・テキスト形式のアイテムでカーソルを表示するかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:273
 msgid "Cursor Blink"
-msgstr ""
+msgstr "カーソル点滅"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:274
 msgid "Does the cursor blink in this this rich text item?"
-msgstr ""
+msgstr "このリッチ・テキスト形式のアイテム上でカーソルを点滅させるかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
-#, fuzzy
 msgid "Grow Height"
-msgstr "フォント ウェイト"
+msgstr "フォントの高さ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
 msgstr ""
+"テキストがキャンバスに合わない場合にテキスト・ボックスの高さを調整するかどう"
+"か"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:289
 msgid "Wrap Mode"
-msgstr ""
+msgstr "行ラップ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:290
 msgid "Wrap mode for multiline text"
-msgstr ""
+msgstr "複数行にまたがるテキストを行ラップするかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:298
 msgid "Justification"
-msgstr ""
+msgstr "行端揃え"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:299
 msgid "Justification mode"
-msgstr ""
+msgstr "行端を揃えるかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:307
 msgid "Direction"
-msgstr ""
+msgstr "方向"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
-#, fuzzy
 msgid "Text direction"
-msgstr "フォントの記述"
+msgstr "テキストの向き"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"
-msgstr ""
+msgstr "アンカー"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:317
 msgid "Anchor point for text"
-msgstr ""
+msgstr "テキストに (リンクの) アンカーを挿入するかどうか"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:325
 msgid "Pixels Above Lines"
-msgstr ""
+msgstr "線とテキストの上方向の間隔"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:326
 msgid "Number of pixels to put above lines"
-msgstr ""
+msgstr "線とテキストの上方向の間隔 (ピクセル単位)"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:334
 msgid "Pixels Below Lines"
-msgstr ""
+msgstr "線とテキストの下方向の間隔"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:335
 msgid "Number of pixels to put below lines"
-msgstr ""
+msgstr "線とテキストの下方向の間隔"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:343
 msgid "Pixels Inside Wrap"
-msgstr ""
+msgstr "ラップするまでの長さ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:344
 msgid "Number of pixels to put inside the wrap"
-msgstr ""
+msgstr "ラップする際の一行の長さ (ピクセル単位)"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:352
 msgid "Left Margin"
-msgstr ""
+msgstr "左マージン"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:353
 msgid "Number of pixels in the left margin"
-msgstr ""
+msgstr "左側のマージン (ピクセル単位)"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:361
 msgid "Right Margin"
-msgstr ""
+msgstr "右マージン"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:362
 msgid "Number of pixels in the right margin"
-msgstr ""
+msgstr "右側のマージン (ピクセル単位)"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:370
 msgid "Indentation"
-msgstr ""
+msgstr "字下げ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:371
 msgid "Number of pixels for indentation"
-msgstr ""
+msgstr "字下げするの間隔 (ピクセル単位)"

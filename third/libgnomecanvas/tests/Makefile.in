@@ -59,6 +59,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CANVAS_GLADE_CFLAGS = @CANVAS_GLADE_CFLAGS@
@@ -68,10 +69,16 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -104,6 +111,7 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -111,21 +119,17 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 cxxflags_set = @cxxflags_set@
+gnomelocaledir = @gnomelocaledir@
 
-check_PROGRAMS = \
-	test-libglade-canvas
+check_PROGRAMS =  	test-libglade-canvas
 
 
 TESTS = $(check_PROGRAMS)
 
-TESTS_ENVIRONMENT = \
-	LIBGLADE_MODULE_PATH="$(top_builddir)/glade/.libs:$LIBGLADE_MODULE_PATH"
+TESTS_ENVIRONMENT =  	LIBGLADE_MODULE_PATH="$(top_builddir)/glade/.libs:$LIBGLADE_MODULE_PATH"
 
 
-INCLUDES = \
-	-I$(top_srcdir)		\
-	$(CANVAS_GLADE_CFLAGS)	\
-	-DGLADEFILE=\""$(srcdir)/test-libglade-canvas.glade"\"
+INCLUDES =  	-I$(top_srcdir)			$(CANVAS_GLADE_CFLAGS)		-DGLADEFILE=\""$(srcdir)/test-libglade-canvas.glade"\"
 
 
 LDADD = $(CANVAS_GLADE_LIBS)

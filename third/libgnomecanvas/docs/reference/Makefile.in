@@ -66,6 +66,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 AWK = @AWK@
 CANVAS_GLADE_CFLAGS = @CANVAS_GLADE_CFLAGS@
@@ -75,10 +76,16 @@ CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
@@ -112,6 +119,7 @@ POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -119,6 +127,7 @@ VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 cxxflags_set = @cxxflags_set@
+gnomelocaledir = @gnomelocaledir@
 
 DOC_MODULE = libgnomecanvas
 
@@ -128,7 +137,7 @@ DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR = ../../libgnomecanvas
+DOC_SOURCE_DIR = $(top_srcdir)/libgnomecanvas
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS = 
@@ -144,7 +153,8 @@ HFILE_GLOB = $(top_srcdir)/libgnomecanvas/*.h
 CFILE_GLOB = $(top_srcdir)/libgnomecanvas/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES = gnome-canvas-shape-private.h
+IGNORE_HFILES = gnome-canvas-shape-private.h gnome-canvas-i18n.h   gnome-canvas-marshal.h
+
 
 # Images to copy into HTML directory.
 HTML_IMAGES = 
@@ -157,8 +167,9 @@ extra_files =
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS = 
-GTKDOC_LIBS = 
+GTKDOC_CFLAGS = -I$(top_srcdir) $(LIBGNOMECANVAS_CFLAGS)
+GTKDOC_LIBS = $(top_builddir)/libgnomecanvas/libgnomecanvas-2.la   $(LIBGNOMECANVAS_LIBS)
+
 
 GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC)
 GTKDOC_LD = $(LIBTOOL) --mode=link $(CC)
@@ -174,24 +185,13 @@ DOC_OVERRIDES =
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 
-EXTRA_DIST = \
-	$(content_files)		\
-	$(extra_files)			\
-	$(HTML_IMAGES)			\
-	$(DOC_MAIN_SGML_FILE)		\
-	$(DOC_MODULE).types		\
-	$(DOC_MODULE)-sections.txt	\
-	$(DOC_OVERRIDES)
+EXTRA_DIST =  	$(content_files)			$(extra_files)				$(HTML_IMAGES)				$(DOC_MAIN_SGML_FILE)			$(DOC_MODULE).types			$(DOC_MODULE)-sections.txt		$(DOC_OVERRIDES)
 
 
-DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
-	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
+DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
 
-SCANOBJ_FILES = \
-	$(DOC_MODULE).args 	\
-	$(DOC_MODULE).hierarchy \
-	$(DOC_MODULE).signals
+SCANOBJ_FILES =  	$(DOC_MODULE).args 		$(DOC_MODULE).hierarchy 	$(DOC_MODULE).signals
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -302,7 +302,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 @ENABLE_GTK_DOC_TRUE@scan-build.stamp: $(HFILE_GLOB)
 @ENABLE_GTK_DOC_TRUE@	@echo '*** Scanning header files ***'
 @ENABLE_GTK_DOC_TRUE@	if grep -l '^..*$$' $(srcdir)/$(DOC_MODULE).types > /dev/null ; then \
-@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scanobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
+@ENABLE_GTK_DOC_TRUE@	    CC="$(GTKDOC_CC)" LD="$(GTKDOC_LD)" CFLAGS="$(GTKDOC_CFLAGS)" LDFLAGS="$(GTKDOC_LIBS)" gtkdoc-scangobj --module=$(DOC_MODULE) --output-dir=$(srcdir) ; \
 @ENABLE_GTK_DOC_TRUE@	else \
 @ENABLE_GTK_DOC_TRUE@	    cd $(srcdir) ; \
 @ENABLE_GTK_DOC_TRUE@	    for i in $(SCANOBJ_FILES) ; do \

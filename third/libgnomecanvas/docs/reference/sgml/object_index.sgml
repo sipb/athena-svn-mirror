@@ -4,4 +4,51 @@
 <colspec colwidth="1*">
 <colspec colwidth="1*">
 <tbody>
+<row>
+<entry><link linkend="AtkImplementorIface">AtkImplementorIface</link></entry>
+<entry><link linkend="GInterface">GInterface</link></entry>
+<entry><link linkend="GObject">GObject</link></entry>
+</row>
+<row>
+<entry><link linkend="GdkDragContext">GdkDragContext</link></entry>
+<entry><link linkend="GdkDrawable">GdkDrawable</link></entry>
+<entry><link linkend="GdkPixbuf">GdkPixbuf</link></entry>
+</row>
+<row>
+<entry><link linkend="GdkScreen">GdkScreen</link></entry>
+<entry><link linkend="GnomeCanvas">GnomeCanvas</link></entry>
+<entry><link linkend="GnomeCanvasBpath">GnomeCanvasBpath</link></entry>
+</row>
+<row>
+<entry><link linkend="GnomeCanvasClipgroup">GnomeCanvasClipgroup</link></entry>
+<entry><link linkend="GnomeCanvasEllipse">GnomeCanvasEllipse</link></entry>
+<entry><link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link></entry>
+</row>
+<row>
+<entry><link linkend="GnomeCanvasItem">GnomeCanvasItem</link></entry>
+<entry><link linkend="GnomeCanvasLine">GnomeCanvasLine</link></entry>
+<entry><link linkend="GnomeCanvasPixbuf">GnomeCanvasPixbuf</link></entry>
+</row>
+<row>
+<entry><link linkend="GnomeCanvasPolygon">GnomeCanvasPolygon</link></entry>
+<entry><link linkend="GnomeCanvasRE">GnomeCanvasRE</link></entry>
+<entry><link linkend="GnomeCanvasRect">GnomeCanvasRect</link></entry>
+</row>
+<row>
+<entry><link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link></entry>
+<entry><link linkend="GnomeCanvasShape">GnomeCanvasShape</link></entry>
+<entry><link linkend="GnomeCanvasText">GnomeCanvasText</link></entry>
+</row>
+<row>
+<entry><link linkend="GnomeCanvasWidget">GnomeCanvasWidget</link></entry>
+<entry><link linkend="GtkAdjustment">GtkAdjustment</link></entry>
+<entry><link linkend="GtkContainer">GtkContainer</link></entry>
+</row>
+<row>
+<entry><link linkend="GtkLayout">GtkLayout</link></entry>
+<entry><link linkend="GtkObject">GtkObject</link></entry>
+<entry><link linkend="GtkStyle">GtkStyle</link></entry>
+</row>
+<row>
+<entry><link linkend="GtkWidget">GtkWidget</link></entry>
 </tbody></tgroup></informaltable>

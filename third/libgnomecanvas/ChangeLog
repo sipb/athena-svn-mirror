@@ -1,3 +1,94 @@
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* docs/reference/*.*: New docs from Josh Green.
+	* libgnomecanvas/gnome-canvas-util.h: Fix for docs.
+	
+2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Fix setup of localedir.
+
+2003-05-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	reviewed by: Tim Janik <timj@gtk.org>
+
+	* libgnomecanvas/gnome-canvas-line.c: (gnome_canvas_line_update):
+	* libgnomecanvas/gnome-canvas-pixbuf.c:
+	(gnome_canvas_pixbuf_render):
+	* libgnomecanvas/gnome-canvas-shape.c: (gnome_canvas_shape_update):
+	Merge fixes from HEAD.
+
+2003-04-26  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added "cs" to ALL_LINGUAS.
+
+
+Mon Mar 31 07:21:33 2003  Tim Janik  <timj@gtk.org>
+
+        * libgnomecanvas/gnome-canvas-pixbuf.c:
+        (gnome_canvas_pixbuf_update): change update logic to fix redrawing bugs.
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" to ALL_LINGUAS
+
+2003-03-19  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-03-06  Sebastian Rittau  <srittau@jroger.in-berlin.de>
+
+	* libgnomecanvas/gnome-canvas.c (gnome_canvas_w2c_d): Corrected
+	docstring so that "returns" is not the first word on a line.
+	* docs/reference/libgnomecanvas-sections.txt: Inserted *Class
+	definitions into standard sections. Moved *Priv definitions into
+	private sections.
+	* docs/reference/libgnomecanvas-docs.sgml: Fixed file include:
+	sgml/gnome-canvas-rect-ellipse.sgml -> sgml/gnome-canvas-ellipse.sgml
+
+2003-02-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	* configure.in: Bump to 2.2.0.2.
+
+2003-02-27  Mike Kestner <mkestner@ximian.com>
+
+	* libgnomecanvas/gnome-canvas.c (emit_event): use gdk_event_copy
+	  and gdk_event_free to dup the event.
+
+2003-02-27  Hans Petter Jansson  <hpj@ximian.com>
+
+	* libgnomecanvas/gnome-canvas.c (gnome_canvas_map): Reinstate the
+	idle update handler if necessary.
+	(gnome_canvas_request_update_real): No longer assert that we have
+	an idle handler when we need an update. Only add the idle handler
+	if we're mapped.
+
+2003-02-24  Jody Goldberg <jody@gnome.org>
+
+	* libgnomecanvas/gnome-canvas.c (gnome_canvas_request_redraw_uta) :
+	  Alex's analysis that need_redraw can be true with idle_id == 0.  If
+	  so we need to queue an idle handler or we'll never actually draw
+	  anything.  I just hope this does not set up a cycle.
+
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
+
 2003-01-23  Alexander Larsson  <alexl@redhat.com>
 
 	* libgnomecanvas/Makefile.am (libgnomecanvas_2_la_LDFLAGS):

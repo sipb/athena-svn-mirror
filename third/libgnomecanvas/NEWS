@@ -1,3 +1,29 @@
+=============
+Version 2.2.1 (18.05.2003)
+=============
+
+Library:
+	* Fix crashes in the AA canvas. (Andreas Holzmann)
+	* Make affine transformations work for pixbuf items
+	  (Jim Evins)
+	* Fix rotation of outline widths for rect, ellipse and
+	  polygon items. (Jim Evins)
+	* Fix redrawing bugs (Tim Janik)
+
+Build:
+
+	* Fix localedir setup and random fixes to make it
+	  distcheck (Kjartan)
+	
+Docs:
+	* Completely revamped documentation (Josh Green)
+	* Some fixes from Sebasian Rittau.
+	
+Translations:
+	* cs (Miroslav Trmac), ga (Paul Duffy), ml (Guntupalli Karunkar)
+	sr (mdfk@root.co.yu), sr@lat (mdfk@root.co.yu), yi (Raphael Finkel),
+
+
 August 14, 2001:
 ===============
 
@@ -8,8 +34,4 @@ August 14, 2001:
   Outstanding issues:
 
   - GnomeCanvasRichText: this may need some love.
-
-
-
-
 

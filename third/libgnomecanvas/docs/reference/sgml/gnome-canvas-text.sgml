@@ -1,4 +1,4 @@
-<refentry id="libgnomecanvas-GnomeCanvasText">
+<refentry id="GnomeCanvasText">
 <refmeta>
 <refentrytitle>GnomeCanvasText</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -6,7 +6,7 @@
 </refmeta>
 
 <refnamediv>
-<refname>GnomeCanvasText</refname><refpurpose></refpurpose>
+<refname>GnomeCanvasText</refname><refpurpose>Text canvas item</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -16,91 +16,354 @@
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
 
 
-struct      <link linkend="GnomeCanvasText">GnomeCanvasText</link>;
-struct      <link linkend="GnomeCanvasTextPrivate">GnomeCanvasTextPrivate</link>;
+struct      <link linkend="GnomeCanvasText-struct">GnomeCanvasText</link>;
 
 </synopsis>
 </refsynopsisdiv>
 
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkObject">GtkObject</link>
+         +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+               +----GnomeCanvasText
+</synopsis>
+
+</refsect1>
 
 
 
+<refsect1>
+<title>Properties</title>
+<synopsis>
+
+  &quot;<link linkend="GnomeCanvasText--anchor">anchor</link>&quot;               <link linkend="GtkAnchorType">GtkAnchorType</link>        : Read / Write
+  &quot;<link linkend="GnomeCanvasText--attributes">attributes</link>&quot;           <link linkend="PangoAttrList">PangoAttrList</link>        : Read / Write
+  &quot;<link linkend="GnomeCanvasText--clip">clip</link>&quot;                 <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--clip-height">clip-height</link>&quot;          <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--clip-width">clip-width</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--family">family</link>&quot;               <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasText--family-set">family-set</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--fill-color">fill-color</link>&quot;           <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasText--fill-color-gdk">fill-color-gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--fill-color-rgba">fill-color-rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
+  &quot;<link linkend="GnomeCanvasText--fill-stipple">fill-stipple</link>&quot;         <link linkend="GdkDrawable">GdkDrawable</link>          : Read / Write
+  &quot;<link linkend="GnomeCanvasText--font">font</link>&quot;                 <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasText--font-desc">font-desc</link>&quot;            <link linkend="PangoFontDescription">PangoFontDescription</link> : Read / Write
+  &quot;<link linkend="GnomeCanvasText--justification">justification</link>&quot;        <link linkend="GtkJustification">GtkJustification</link>     : Read / Write
+  &quot;<link linkend="GnomeCanvasText--markup">markup</link>&quot;               <link linkend="gchararray">gchararray</link>           : Write
+  &quot;<link linkend="GnomeCanvasText--rise">rise</link>&quot;                 <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasText--rise-set">rise-set</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--scale">scale</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--scale-set">scale-set</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--size">size</link>&quot;                 <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasText--size-points">size-points</link>&quot;          <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--size-set">size-set</link>&quot;             <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--stretch">stretch</link>&quot;              <link linkend="PangoStretch">PangoStretch</link>         : Read / Write
+  &quot;<link linkend="GnomeCanvasText--stretch-set">stretch-set</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--strikethrough">strikethrough</link>&quot;        <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--strikethrough-set">strikethrough-set</link>&quot;    <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--style">style</link>&quot;                <link linkend="PangoStyle">PangoStyle</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasText--style-set">style-set</link>&quot;            <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--text">text</link>&quot;                 <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="GnomeCanvasText--text-height">text-height</link>&quot;          <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--text-width">text-width</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--underline">underline</link>&quot;            <link linkend="PangoUnderline">PangoUnderline</link>       : Read / Write
+  &quot;<link linkend="GnomeCanvasText--underline-set">underline-set</link>&quot;        <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--variant">variant</link>&quot;              <link linkend="PangoVariant">PangoVariant</link>         : Read / Write
+  &quot;<link linkend="GnomeCanvasText--variant-set">variant-set</link>&quot;          <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--weight">weight</link>&quot;               <link linkend="gint">gint</link>                 : Read / Write
+  &quot;<link linkend="GnomeCanvasText--weight-set">weight-set</link>&quot;           <link linkend="gboolean">gboolean</link>             : Read / Write
+  &quot;<link linkend="GnomeCanvasText--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--x-offset">x-offset</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="GnomeCanvasText--y-offset">y-offset</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
+</synopsis>
+</refsect1>
 
 
 
 <refsect1>
 <title>Description</title>
 <para>
-
+A canvas item for displaying text. See <link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link> for a more advanced
+text display and editing canvas item.
 </para>
 </refsect1>
 
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeCanvasText">struct GnomeCanvasText</title>
-<programlisting>struct GnomeCanvasText {
-
-	GnomeCanvasItem item;
-
-	PangoFontDescription *font_desc; /* Font description for text */
-	PangoAttrList *attr_list;        /* Attribute list of the text (caching) */
-	PangoUnderline underline;
-	gboolean       strikethrough;
-	int            rise;
-	double         scale;
-	
-	char *text;			/* Text to display */
-	GdkBitmap *stipple;		/* Stipple for text */
-	GdkGC *gc;			/* GC for drawing text */
-        PangoLayout *layout;            /* The PangoLayout containing the text */
-
-	gulong pixel;			/* Fill color */
-
-	double x, y;			/* Position at anchor */
-
-	double clip_width;		/* Width of optional clip rectangle */
-	double clip_height;		/* Height of optional clip rectangle */
-
-	double xofs, yofs;		/* Text offset distance from anchor position */
-
-	double affine[6];               /* The item -&gt; canvas affine */ /*AA*/
-
-	GtkAnchorType anchor;		/* Anchor side for text */
-	GtkJustification justification;	/* Justification for text */
-
-	int cx, cy;			/* Top-left canvas coordinates for text */
-	int clip_cx, clip_cy;		/* Top-left canvas coordinates for clip rectangle */
-	int clip_cwidth, clip_cheight;	/* Size of clip rectangle in pixels */
-	int max_width;			/* Maximum width of text lines */
-	int height;			/* Rendered text height in pixels */
-
-        guint32 rgba;			/* RGBA color for text */ /*AA*/
-
-	guint clip : 1;			/* Use clip rectangle? */
-
-	guint underline_set : 1;        /* Apply specified underline style? */
-	guint strike_set    : 1;        /* Apply specified strikethrough style? */
-	guint rise_set      : 1;        /* Apply specified ascension/descension? */
-
-	guint scale_set     : 1;        /* Apply specified font scaling ratio? */
-
-	GnomeCanvasTextPrivate *priv;	
-};
-</programlisting>
+<title><anchor id="GnomeCanvasText-struct">struct GnomeCanvasText</title>
+<programlisting>struct GnomeCanvasText;</programlisting>
 <para>
-
-</para></refsect2>
-<refsect2>
-<title><anchor id="GnomeCanvasTextPrivate">struct GnomeCanvasTextPrivate</title>
-<programlisting>struct GnomeCanvasTextPrivate;</programlisting>
-<para>
-
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
 </para></refsect2>
 
+</refsect1>
+<refsect1>
+<title>Properties</title>
+<variablelist>
+<varlistentry><term><anchor id="GnomeCanvasText--anchor">&quot;<literal>anchor</literal>&quot; (<link linkend="GtkAnchorType">GtkAnchorType</link> : Read / Write)</term>
+<listitem>
+<para>
+Anchor position for the text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--attributes">&quot;<literal>attributes</literal>&quot; (<link linkend="PangoAttrList">PangoAttrList</link> : Read / Write)</term>
+<listitem>
+<para>
+Pointer to a Pango attribute list (PangoAttrList).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--clip">&quot;<literal>clip</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Use clipping rectangle?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--clip-height">&quot;<literal>clip-height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Height of clip rectangle.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--clip-width">&quot;<literal>clip-width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Width of clip rectangle.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--family">&quot;<literal>family</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+Name of the font family, e.g. Sans, Helvetica, Times, Monospace.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--family-set">&quot;<literal>family-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified font family?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--fill-color">&quot;<literal>fill-color</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+X color specification for text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--fill-color-gdk">&quot;<literal>fill-color-gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
+<listitem>
+<para>
+Pointer to an allocated GdkColor.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--fill-color-rgba">&quot;<literal>fill-color-rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
+<listitem>
+<para>
+RGBA value used for AA color (in the format 0xRRGGBBAA).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--fill-stipple">&quot;<literal>fill-stipple</literal>&quot; (<link linkend="GdkDrawable">GdkDrawable</link> : Read / Write)</term>
+<listitem>
+<para>
+Stipple pattern for filling the text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--font">&quot;<literal>font</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+Font description as a string.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--font-desc">&quot;<literal>font-desc</literal>&quot; (<link linkend="PangoFontDescription">PangoFontDescription</link> : Read / Write)</term>
+<listitem>
+<para>
+Font description as a PangoFontDescription struct.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--justification">&quot;<literal>justification</literal>&quot; (<link linkend="GtkJustification">GtkJustification</link> : Read / Write)</term>
+<listitem>
+<para>
+Justification for multiline text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--markup">&quot;<literal>markup</literal>&quot; (<link linkend="gchararray">gchararray</link> : Write)</term>
+<listitem>
+<para>
+Pango marked up text to render.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--rise">&quot;<literal>rise</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+Offset of text above the baseline (below the baseline if rise is negative).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--rise-set">&quot;<literal>rise-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply the specified "rise"?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--scale">&quot;<literal>scale</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Size of font, relative to default size.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--scale-set">&quot;<literal>scale-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified font scaling ratio?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--size">&quot;<literal>size</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+Size (in pixels) of font.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--size-points">&quot;<literal>size-points</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Size (in points) of font.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--size-set">&quot;<literal>size-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified font size?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--stretch">&quot;<literal>stretch</literal>&quot; (<link linkend="PangoStretch">PangoStretch</link> : Read / Write)</term>
+<listitem>
+<para>
+Pango stretch of font to use (PangoStretch).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--stretch-set">&quot;<literal>stretch-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified pango stretch?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--strikethrough">&quot;<literal>strikethrough</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Whether to strike through the text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--strikethrough-set">&quot;<literal>strikethrough-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified strikethrough option?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--style">&quot;<literal>style</literal>&quot; (<link linkend="PangoStyle">PangoStyle</link> : Read / Write)</term>
+<listitem>
+<para>
+Pango style of font to use (PangoStyle).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--style-set">&quot;<literal>style-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified pango style?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--text">&quot;<literal>text</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+The string of the text label.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--text-height">&quot;<literal>text-height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Used to query the rendered height of the text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--text-width">&quot;<literal>text-width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Used to query the width of the rendered text.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--underline">&quot;<literal>underline</literal>&quot; (<link linkend="PangoUnderline">PangoUnderline</link> : Read / Write)</term>
+<listitem>
+<para>
+Pango underline style for text (PangoUnderline).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--underline-set">&quot;<literal>underline-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified pango underline style?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--variant">&quot;<literal>variant</literal>&quot; (<link linkend="PangoVariant">PangoVariant</link> : Read / Write)</term>
+<listitem>
+<para>
+Pango variant of font to use (PangoVariant).
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--variant-set">&quot;<literal>variant-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified pango variant?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--weight">&quot;<literal>weight</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+Pango weight of font to use.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--weight-set">&quot;<literal>weight-set</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
+<listitem>
+<para>
+Apply specified pango weight?
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--x">&quot;<literal>x</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+X coordinate of anchor point.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--x-offset">&quot;<literal>x-offset</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Horizontal offset distance from anchor position.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--y">&quot;<literal>y</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Y coordinate of anchor point.
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="GnomeCanvasText--y-offset">&quot;<literal>y-offset</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+Vertical offset distance from anchor position.
+</para>
+</listitem></varlistentry>
+
+</variablelist>
 </refsect1>
 
 
 
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="GnomeCanvasRichText">GnomeCanvasRichText</link>
+</para>
+</refsect1>
 
 </refentry>

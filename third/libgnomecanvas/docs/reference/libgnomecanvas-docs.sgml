@@ -1,7 +1,7 @@
 <!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
 <!ENTITY libgnomecanvas-GnomeCanvasBpath SYSTEM "sgml/gnome-canvas-bpath.sgml">
 <!ENTITY libgnomecanvas-GnomeCanvasClipgroup SYSTEM "sgml/gnome-canvas-clipgroup.sgml">
-<!ENTITY libgnomecanvas-GnomeCanvasEllipse SYSTEM "sgml/gnome-canvas-rect-ellipse.sgml">
+<!ENTITY libgnomecanvas-GnomeCanvasEllipse SYSTEM "sgml/gnome-canvas-ellipse.sgml">
 <!ENTITY libgnomecanvas-GnomeCanvasGroup SYSTEM "sgml/gnome-canvas-group.sgml">
 <!ENTITY libgnomecanvas-GnomeCanvasItem SYSTEM "sgml/gnome-canvas-item.sgml">
 <!ENTITY libgnomecanvas-GnomeCanvasLine SYSTEM "sgml/gnome-canvas-line.sgml">
@@ -16,12 +16,17 @@
 <!ENTITY libgnomecanvas-GnomeCanvas SYSTEM "sgml/gnome-canvas.sgml">
 <!ENTITY libgnomecanvas-GnomeCanvasPathDef SYSTEM "sgml/gnome-canvas-path-def.sgml">
 <!ENTITY libgnomecanvas-gnome-canvas-util SYSTEM "sgml/gnome-canvas-util.sgml">
+<!ENTITY index-Object-Tree SYSTEM "sgml/tree_index.sgml">
 ]>
 <book id="index">
   <bookinfo>
     <title>GNOME Canvas Library Reference Manual</title>
   </bookinfo>
 
+  <chapter>
+    <title>Object Hierarchy</title>
+    &index-Object-Tree;
+  </chapter>
   <chapter>
     <title>GNOME Canvas Library (libgnomecanvas)</title>
     &libgnomecanvas-GnomeCanvas;

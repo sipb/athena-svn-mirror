@@ -1,0 +1,53 @@
+<HTML><HEAD><TITLE>GnomeCanvasPixbuf</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK REL="HOME" TITLE="GNOME Canvas Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="GNOME Canvas Library (libgnomecanvas)" HREF="c35.html"><LINK REL="PREVIOUS" TITLE="GnomeCanvasLine" HREF="gnomecanvasline.html"><LINK REL="NEXT" TITLE="GnomeCanvasPolygon" HREF="gnomecanvaspolygon.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.1 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="gnomecanvasline.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="c35.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME Canvas Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="gnomecanvaspolygon.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="GNOMECANVASPIXBUF"></A>GnomeCanvasPixbuf</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN2174"></A><H2>Name</H2>GnomeCanvasPixbuf&nbsp;--&nbsp;Pixbuf image canvas item</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN2177"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+struct      <A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF-STRUCT">GnomeCanvasPixbuf</A>;&#13;</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN2181"></A><H2>Object Hierarchy</H2><PRE CLASS="SYNOPSIS">&#13;  GObject
+   +----GtkObject
+         +----<A HREF="gnomecanvasitem.html">GnomeCanvasItem</A>
+               +----GnomeCanvasPixbuf</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN2187"></A><H2>Properties</H2><PRE CLASS="SYNOPSIS">&#13;  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--ANCHOR">anchor</A>&quot;               GtkAnchorType        : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT">height</A>&quot;               gdouble              : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS">height-in-pixels</A>&quot;     gboolean             : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--HEIGHT-SET">height-set</A>&quot;           gboolean             : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--PIXBUF">pixbuf</A>&quot;               GdkPixbuf            : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH">width</A>&quot;                gdouble              : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-IN-PIXELS">width-in-pixels</A>&quot;      gboolean             : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--WIDTH-SET">width-set</A>&quot;            gboolean             : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X">x</A>&quot;                    gdouble              : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--X-IN-PIXELS">x-in-pixels</A>&quot;          gboolean             : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y">y</A>&quot;                    gdouble              : Read / Write
+  &quot;<A HREF="gnomecanvaspixbuf.html#GNOMECANVASPIXBUF--Y-IN-PIXELS">y-in-pixels</A>&quot;          gboolean             : Read / Write</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN2214"></A><H2>Description</H2><P>A canvas item for drawing pixbuf images.</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN2217"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN2219"></A><H3><A NAME="GNOMECANVASPIXBUF-STRUCT"></A>struct GnomeCanvasPixbuf</H3><PRE CLASS="PROGRAMLISTING">struct GnomeCanvasPixbuf;</PRE><P>This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.</P></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN2224"></A><H2>Properties</H2><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2227"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--ANCHOR"></A>&quot;<TT CLASS="LITERAL">anchor</TT>&quot; (GtkAnchorType : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Anchor (handle) position within the pixbuf, defaults to GTK_ANCHOR_NW (top left
+hand corner). The anchor is the point of reference for positioning the image.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2234"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--HEIGHT"></A>&quot;<TT CLASS="LITERAL">height</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Pixbuf height.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2241"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--HEIGHT-IN-PIXELS"></A>&quot;<TT CLASS="LITERAL">height-in-pixels</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> if "height" parameter is in pixel units, <TT CLASS="LITERAL">FALSE</TT> for canvas world units.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2250"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--HEIGHT-SET"></A>&quot;<TT CLASS="LITERAL">height-set</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> if the "height" argument is set and should be used as the
+pixbuf height, <TT CLASS="LITERAL">FALSE</TT> to use the actual height of the image.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2259"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--PIXBUF"></A>&quot;<TT CLASS="LITERAL">pixbuf</TT>&quot; (GdkPixbuf : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>The pixbuf image to draw.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2266"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--WIDTH"></A>&quot;<TT CLASS="LITERAL">width</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Pixbuf width.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2273"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--WIDTH-IN-PIXELS"></A>&quot;<TT CLASS="LITERAL">width-in-pixels</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> if "width" parameter is in pixel units, <TT CLASS="LITERAL">FALSE</TT> for canvas world units.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2282"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--WIDTH-SET"></A>&quot;<TT CLASS="LITERAL">width-set</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> if the "width" parameter is set and should be used as the
+pixbuf width, <TT CLASS="LITERAL">FALSE</TT> to use the actual width of the image.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2291"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--X"></A>&quot;<TT CLASS="LITERAL">x</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>The x coordinate of the position to place the pixbuf at.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2298"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--X-IN-PIXELS"></A>&quot;<TT CLASS="LITERAL">x-in-pixels</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> to interpret the "x" parameter in pixel units, <TT CLASS="LITERAL">FALSE</TT> for canvas world
+units.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2307"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--Y"></A>&quot;<TT CLASS="LITERAL">y</TT>&quot; (gdouble : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>The y coordinate of the position to place the pixbuf at.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN2314"><SPAN STYLE="white-space: nowrap"><A NAME="GNOMECANVASPIXBUF--Y-IN-PIXELS"></A>&quot;<TT CLASS="LITERAL">y-in-pixels</TT>&quot; (gboolean : Read / Write)</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P><TT CLASS="LITERAL">TRUE</TT> to interpret the "y" parameter in pixel units, <TT CLASS="LITERAL">FALSE</TT> for canvas world
+units.</P></TD></TR></TBODY></TABLE></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="gnomecanvasline.html"><B>&lt;&lt;&lt;&nbsp;GnomeCanvasLine</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="gnomecanvaspolygon.html"><B>GnomeCanvasPolygon&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>

@@ -2,27 +2,42 @@
 GnomeCanvasRE
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Base class for rectangle and ellipse items
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-
+This forms a base class for rectangle and ellipse canvas items.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-
+#GnomeCanvasEllipse, #GnomeCanvasRect
 </para>
 
 <!-- ##### STRUCT GnomeCanvasRE ##### -->
 <para>
-
+This structure should not be accessed directly. Use the object's properties
+for querying or changing its parameters.
 </para>
 
-@item: 
-@x1: 
-@y1: 
-@x2: 
-@y2: 
-@path_dirty: 
+
+<!-- ##### ARG GnomeCanvasRE:x1 ##### -->
+<para>
+Leftmost coordinate of rectangle or ellipse.
+</para>
+
+<!-- ##### ARG GnomeCanvasRE:x2 ##### -->
+<para>
+Rightmost coordinate of rectangle or ellipse.
+</para>
+
+<!-- ##### ARG GnomeCanvasRE:y1 ##### -->
+<para>
+Topmost coordinate of rectangle or ellipse.
+</para>
+
+<!-- ##### ARG GnomeCanvasRE:y2 ##### -->
+<para>
+Bottommost coordinate of rectangle or ellipse.
+</para>
 

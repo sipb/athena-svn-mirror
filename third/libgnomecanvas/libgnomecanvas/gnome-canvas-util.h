@@ -41,16 +41,17 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GnomeCanvasPoints GnomeCanvasPoints;
 
 /* This structure defines an array of points.  X coordinates are stored in the even-numbered
  * indices, and Y coordinates are stored in the odd-numbered indices.  num_points indicates the
  * number of points, so the array is 2*num_points elements big.
  */
-typedef struct {
+struct _GnomeCanvasPoints {
 	double *coords;
 	int num_points;
 	int ref_count;
-} GnomeCanvasPoints;
+};
 
 
 /* Allocate a new GnomeCanvasPoints structure with enough space for the specified number of points */
