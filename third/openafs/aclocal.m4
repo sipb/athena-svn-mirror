@@ -532,7 +532,7 @@ KDUMP=kdump
 case $AFS_SYSNAME in
 	sgi_6?)
 		KDUMP=kdump.IP20;;
-	sun4x_5[789] | hp_ux11*)
+	sun4x_5[[789]] | hp_ux11*)
 		KDUMP=kdump32
 		KDUMP64=kdump64;;
 	*linux*)
@@ -789,7 +789,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.6 2004-02-13 18:58:32 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.7 2004-02-13 20:53:52 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian
