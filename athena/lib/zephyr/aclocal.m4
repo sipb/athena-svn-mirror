@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.3 1997-09-29 08:47:48 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.4 1997-10-03 17:38:15 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -101,7 +101,7 @@ if test "$rx" != no; then
 		CPPFLAGS="$CPPFLAGS -I$rx/include"
 		LDFLAGS="$LDFLAGS -L$rx/lib"
 	fi
-	AC_CHECK_LIB(regcomp, rx, RX_LIBS=-lrx,
+	AC_CHECK_LIB(rx, regcomp, RX_LIBS=-lrx,
 		     [AC_MSG_ERROR(rx library not found)])
 else
 	AC_CHECK_FUNC(regcomp, :,
@@ -190,9 +190,9 @@ AC_CHECK_LIB(krb, krb_rd_req, [KRB4_LIBS="-lkrb -ldes"],
 		CPPFLAGS="$ocppflags -I/usr/include/kerberosIV"
 	fi
 	AC_CHECK_LIB(krb4, krb_rd_req,
-		     [KRB4_LIBS="-lkrb4 -lkrb5 -ldes425 -lcrypto -lcom_err"],
+		     [KRB4_LIBS="-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
 		     [AC_MSG_ERROR(Kerberos 4 libraries not found)],
-		     -ldes425 -lcom_err)], -ldes)])
+		     -ldes425 -lkrb5 -lcrypto -lcom_err)], -ldes)])
 
 AC_DEFUN(ATHENA_KRB4,
 [AC_ARG_WITH(krb4,
