@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_port_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/port.c,v 1.2 1989-11-02 01:57:02 marc Exp $";
+static char rcsid_port_c[] = "$Id: port.c,v 1.3 1989-11-15 14:21:40 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -488,9 +488,13 @@ void create_file_append_port(name, filename)
      string filename;
 {
     FILE *out;
+    int oumask;
 
     errno = 0;
+
+    oumask = umask(077);		/* allow read/write for us only */
     out = fopen(filename, "a");
+    (void) umask(oumask);
     if (errno) {
 	var_set_variable("error", perror_to_string(errno));
 	return;
