@@ -16,10 +16,10 @@ distclean:: clean
 RSH=	-DKRB_RLOGIN=\"$(PROGDIR)/rlogin\"
 
 # Kerberos 5 hackery.
-KRB5LIBS= -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
+KRB5LIBS= -L$(ATHTOOLROOT)/usr/athena/lib -lkrb5 -lcrypto -lcom_err
 
 # AFS hackery.
-AFSDIR=/usr/afsws
+AFSDIR=$(ATHTOOLROOT)/usr/afsws
 AFSLIBS=-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -lsys -llwp \
 	$(AFSBSDLIB)
 

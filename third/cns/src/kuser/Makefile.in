@@ -8,7 +8,7 @@ DEFINES=-DDEBUG
 LIBS= $(KRB_LIB) $(DES_LIB) $(SYS_LIBS)
 DEPLIBS= $(KRB_LIBDEP) $(DES_LIBDEP)
 
-KRB5LIBS=-L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
+KRB5LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lkrb5 -lcrypto -lcom_err
 
 all:: kinit kdestroy klist ksu ksrvtgt
 

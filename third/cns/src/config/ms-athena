@@ -1,8 +1,8 @@
 LOGINPATH="/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:."
 
-SITE_CDEFS=-DHESIOD -DDO_REVERSE_RESOLVE -I/usr/athena/include
+SITE_CDEFS=-DHESIOD -DDO_REVERSE_RESOLVE -I$(ATHTOOLROOT)/usr/athena/include
 
-HESIOD_LIB=-L/usr/athena/lib -lhesiod
+HESIOD_LIB=-L$(ATHTOOLROOT)/usr/athena/lib -lhesiod
 
 BASEDIR=/usr
 USRDIR= $(BASEDIR)/athena

@@ -128,7 +128,7 @@ MAKE_COMMANDS= mk_cmds
 ### /*
 ###  * Loader argument to get the com_err library
 ###  */
-COM_ERR = /usr/athena/lib/libcom_err.a
+COM_ERR = $(ATHTOOLROOT)/usr/athena/lib/libcom_err.a
 ### /*
 ###  * Dependency name for COM_ERR, if any
 ###  */
@@ -136,7 +136,7 @@ COM_ERR_DEP = $(COM_ERR)
 ### /*
 ###  * Loader argument to get the ss library
 ###  */
-SS_LIB = /usr/athena/lib/libss.a
+SS_LIB = $(ATHTOOLROOT)/usr/athena/lib/libss.a
 ### /*
 ###  * Dependency name for SS_LIB, if any
 ###  */
