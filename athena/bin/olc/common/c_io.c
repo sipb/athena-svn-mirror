@@ -13,18 +13,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.7 1990-07-16 08:25:38 lwvanels Exp $
+ *	$Id: c_io.c,v 1.8 1990-11-15 08:56:51 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.7 1990-07-16 08:25:38 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.8 1990-11-15 08:56:51 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -44,10 +47,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 extern char DaemonHost[];			
 extern int errno;
-
-static struct hostent *hp = (struct hostent *) NULL;      /* daemon host */
-static struct servent *service = (struct servent *) NULL; /* service entry */
-static jmp_buf env;
 
 struct hostent *gethostbyname(); /* Get host entry of a host. */
 
@@ -158,7 +157,7 @@ write_int_to_fd(fd, response)
 {
 #ifdef	TEST
   printf("write_int_to_fd(%d, %d)\n", fd, response);
-#endif	TEST
+#endif	/* TEST */
   
   response = htonl((u_long) response);
   if (swrite(fd, (char *) &response, sizeof(int)) != sizeof(int))
@@ -220,7 +219,7 @@ read_text_into_file(fd, filename)
   
 #ifdef	TEST
   printf("read_text_into_file(%d, %s)\n", fd, filename);
-#endif	TEST
+#endif	/* TEST */
 	
   if (read_int_from_fd(fd, &nbytes) != SUCCESS) 
     {
@@ -249,7 +248,7 @@ read_text_into_file(fd, filename)
 	      perror(error);
 #ifdef	TEST
 	      fprintf(stderr, "n=%d\n", n);
-#endif	TEST
+#endif	/* TEST */
 	      (void) unlink(filename);
 	      (void) close(filedes);
 	      return(ERROR);
@@ -300,7 +299,7 @@ write_file_to_fd(fd, filename)
 
 #ifdef	TEST
   printf("write_file_to_fd: fd %d, fn %s\n", fd, filename);
-#endif	TEST
+#endif	/* TEST */
 
   if (stat(filename, &statbuf) != 0) 
     {
@@ -314,7 +313,7 @@ write_file_to_fd(fd, filename)
 
 #ifdef	TEST
   printf("nbytes=%d\n", nbytes);
-#endif	TEST
+#endif	/* TEST */
 
   if (nbytes <= 0) 
     {
@@ -360,9 +359,9 @@ write_file_to_fd(fd, filename)
 
 #ifdef	TEST
 	  fprintf(stderr, "n_read = %d, n_wrote = %d\n", n_read, n_wrote);
-#else   TEST
+#else   /* TEST */
 	  n_wrote = n_wrote;
-#endif	TEST
+#endif	/* TEST */
 		
 	  (void) close(filedes);
 	  return(ERROR);
@@ -394,7 +393,7 @@ write_text_to_fd(fd, buf)
 
 #ifdef	TEST
   printf("write_text_to_fd(%d, 0x%x)\n", fd, buf);
-#endif	TEST
+#endif	/* TEST */
 	
   nchars = strlen(buf);
   if (write_int_to_fd(fd, nchars) != SUCCESS) 
@@ -458,7 +457,7 @@ read_text_from_fd(fd)
 #ifdef	TEST
 #undef	BUFSIZ
 #define	BUFSIZ 64
-#endif	TEST
+#endif	/* TEST */
 
 
 
@@ -483,7 +482,7 @@ write_chars_to_fd(fd, buf, nchars)
 
 #ifdef	TEST
   printf("write_chars_to_fd(%d, 0x%x, %d)\n", fd, buf, nchars);
-#endif	TEST
+#endif	/* TEST */
 
   while (nchars > BUFSIZ) 
     {
@@ -528,7 +527,7 @@ read_chars_from_fd(fd, buf, nchars)
 
 #ifdef	TEST
   printf("read_chars_from_fd(%d, 0x%x, %d)\n", fd, buf, nchars);
-#endif	TEST
+#endif	/* TEST */
   
   while (nchars) 
     {
@@ -540,7 +539,7 @@ read_chars_from_fd(fd, buf, nchars)
 
 #ifdef	TEST
 	  fprintf(stderr, "sread=%d\n", n);
-#endif	TEST
+#endif	/* TEST */
 	  return(ERROR);
 	}
       
@@ -636,7 +635,7 @@ int swrite(fd, buf, nbytes)
 
 #ifdef	TEST
       perror("swrite: select");
-#endif	TEST
+#endif	/* TEST */
       return(-1);
     }
   
@@ -647,7 +646,7 @@ int swrite(fd, buf, nbytes)
     {
       fprintf(stderr, "%d wrote of %d\n", n_wrote, nbytes);
     }
-#endif	TEST
+#endif	/* TEST */
   
   return(n_wrote);
 }
