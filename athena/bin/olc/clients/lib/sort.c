@@ -18,12 +18,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: sort.c,v 1.16 1999-06-28 22:51:51 ghudson Exp $
+ *	$Id: sort.c,v 1.17 1999-07-08 16:44:05 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: sort.c,v 1.16 1999-06-28 22:51:51 ghudson Exp $";
+static char rcsid[] ="$Id: sort.c,v 1.17 1999-07-08 16:44:05 ghudson Exp $";
 #endif
 #endif
 
@@ -36,7 +36,7 @@ static char rcsid[] ="$Id: sort.c,v 1.16 1999-06-28 22:51:51 ghudson Exp $";
 static int foo (ERRCODE status);
 static int bar (ERRCODE status);
 static int kstatusp (ERRCODE status);
-static int compare_lists (void *first_list, void *second_list);
+static int compare_lists (const void *first_list, const void *second_list);
 
 static int
 foo (status)
@@ -106,7 +106,8 @@ static sort_keys *keys;
 
 static int
 compare_lists (first_list, second_list)
-     void *first_list, *second_list;
+     const void *first_list;
+     const void *second_list;
 {
   sort_keys *k;
   int order = 0;
