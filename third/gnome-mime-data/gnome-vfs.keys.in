@@ -29,7 +29,7 @@ application/mime-type-test
 application/msword
 	_description=Microsoft Word document
 	default_action_type=application
-	default_application_id=staroffice
+	default_application_id=openoffice
 	short_list_application_ids_for_novice_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
 	short_list_application_ids_for_intermediate_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
 	short_list_application_ids_for_advanced_user_level=abiword,openoffice,staroffice,applix,frame,mswordview
