@@ -1,21 +1,19 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.9 1991-03-07 17:40:14 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 2.0 1991-05-31 13:52:09 mar Exp $
  *
- * Cleanup script for dialup.
+ * Cleanup program for stray processes
  *
- * Author: John Carr <jfc@athena.mit.edu>
+ * by Mark Rosenstein <mar@mit.edu>, based on a program by 
+ * John Carr <jfc@athena.mit.edu>
  *
- * 1. Create /etc/nologin.  If it exists or can't be created, fail.
+ * 1. Create /etc/nologin, then snapshot (1) who is in the password file,
+ *    (2) who is logged in, and (3) what process are running, then 
+ *    re-enable logins.
  *
- * 2. Find logged in users.  This should be the union of those users in
- *     /usr/adm/utmp and a file to be named later containing the list of
- *     background process owners (latter feature not implemented *
+ * 2. Kill process owned by users who are not logged in, or are
+ *    not in the password file (depending on command line options)
  *
- * 3. Kill processes owned by users who are not logged in.
- *
- * 4. Re-create /etc/passwd from user list and hesiod (since $HOME is
- *     inherited, this should not break anything).
- *
- *  5. Remove /etc/nologin
+ * 3. If the options indicate it, rebuild the password file from 
+ *    logged in user list and hesiod.
  */
 
 #include <stdio.h>
@@ -28,27 +26,18 @@
 #include <strings.h>
 #include <utmp.h>
 #include <pwd.h>
+#include <hesiod.h>
 #ifdef _BSD
 #undef _BSD
 #endif
 #include <nlist.h>
-#include <hesiod.h>
 
-#ifndef __STDC__
-#define const
-extern void make_passwd();
-extern void make_group();
-#else
-extern void make_passwd(int,uid_t *, char (*)[16]);
-extern void make_group(int, uid_t *);
-#endif
+char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 2.0 1991-05-31 13:52:09 mar Exp $";
 
 #if defined(AIX) && (AIXV<30)
 extern char     *sys_errlist[];
 extern int      sys_nerr;
 #endif
-
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.9 1991-03-07 17:40:14 epeisach Exp $";
 
 #ifdef ultrix
 extern char *sys_errlist[];
@@ -72,323 +61,434 @@ struct nlist nl[] =
 };
 
 #define MAXUSERS 1024
+#define MAXPROCS 1024
 #define ROOTUID 0
 #define DAEMONUID 1
 
+#define MDEBUG 0
 #define LOGGED_IN 1
 #define PASSWD 2
 
-/* static const char *nologin_msg = "Try again in a few seconds...\n"; */
-static const char *nologin_msg = "This machine is down for cleanup; try again in a few seconds.\n";
-static const char *nologin_fn  = "/etc/nologin";
+struct cl_proc {
+    int pid;
+    int uid;
+};
 
-#ifdef __STDC__
-int main(int argc,char *argv[])
-#else
+static char *nologin_msg =
+  "This machine is down for cleanup; try again in a few seconds.\n";
+static char *nologin_fn  = "/etc/nologin";
+
+
 int main(argc,argv)
 int argc;
 char *argv[];
-#endif
 {
-  int fd, r, i, nuid;
-  int status = 0;
-  int mode = LOGGED_IN;
-  struct utmp u;
-  struct passwd *pwd;
-  uid_t uids[MAXUSERS];
-  char plist[MAXUSERS][16];
-  FILE *lockf;
+    int fd, mode = LOGGED_IN, i, j, found, fail = 0;
+    int *users, *pword, *get_password_entries(), *get_logged_in();
+    struct cl_proc *procs, *get_processes();
 
-  if (argc == 1)
-    mode = LOGGED_IN;
-  else if (argc == 2 && !strcmp(argv[1], "-loggedin"))
-    mode = LOGGED_IN;
-  else if (argc == 2 && !strcmp(argv[1], "-passwd"))
-    mode = PASSWD;
-  else {
-      fprintf(stderr, "usage: %s [-loggedin | -passwd]\n", argv[0]);
-      exit(1);
-  }
-
-  /* First create /etc/nologin */
-  fd = open(nologin_fn ,O_RDWR | O_EXCL | O_CREAT, 0664);
-  if(fd < 0) {
-    if (errno == EEXIST) {
-	if (getuid())
-	  fprintf(stderr, "cleanup: %s exists.  Failing.\n", nologin_fn);
-	else
-	  fprintf(stderr, "cleanup: %s already exists, not performing cleanup.\n",
-		  nologin_fn);
-	exit(2);
-    } else {
-	fprintf(stderr, "cleanup: Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
-	exit(3);
+    if (argc == 1)
+      mode = LOGGED_IN;
+    else if (argc == 2 && !strcmp(argv[1], "-loggedin"))
+      mode = LOGGED_IN;
+    else if (argc == 2 && !strcmp(argv[1], "-passwd"))
+      mode = PASSWD;
+    else if (argc == 2 && !strcmp(argv[1], "-debug"))
+      mode = MDEBUG;
+    else {
+	fprintf(stderr, "usage: %s [-loggedin | -passwd | -debug]\n", argv[0]);
+	exit(1);
     }
-  }
-  (void)write(fd, nologin_msg, strlen(nologin_msg));
-  (void)close(fd);
 
-  /* Lock /etc/passwd */
-  i = 10;
-  while (!access("/etc/ptmp", 0) && --i)
-    sleep(1);
-  if ((lockf = fopen("/etc/ptmp", "w")) != NULL)
-    fprintf(lockf, "%d\n", getpid());
-  fclose(lockf);
-  /* Also lock /etc/group */
-  i = 10;
-  while (!access("/etc/gtmp", 0) && --i)
-    sleep(1);
-  if ((lockf = fopen("/etc/gtmp", "w")) != NULL)
-    fprintf(lockf, "%d\n", getpid());
-  fclose(lockf);
-
-  if (mode == LOGGED_IN) {
-      /* Get the list of current users */
-      fd = open("/etc/utmp", O_RDONLY);
-      if(fd < 0)
-	{
-	    fprintf(stderr, "cleanup: Couldn't open /etc/utmp, %s.\n",
-		    sys_errlist[errno]);
-	    status = 4;
-	    goto done;
-	}
-      
-      uids[0] = ROOTUID;	/* Always count root... */
-      uids[1] = DAEMONUID;  /* ...and daemon. */
-      for(i=2;(r = read(fd, &u, sizeof (u))) > 0 && i < MAXUSERS;i++)
-	{
-	    register struct passwd *p;
-	    char buf[9];
-	    if(u.ut_name[0] == '\0')
-	      {
-		  i--;
-		  continue;
-	      }
-	    bcopy(u.ut_name, buf, 8);
-	    buf[8] = '\0';
-	    p = getpwnam(buf);
-	    if(p == 0)
-	      {
-		  fprintf(stderr, "cleanup: Warning, could not get uid for user \"%s\".\n", buf);
-		  i--;
-	      } else {
-		  int j;
-		  for(j = 0;j < i;j++)
-		    if(p->pw_uid == uids[j])
-		      break;
-		  if(i != j) {
-		      i--;
-		      continue;	/* duplicate */
-		  }
-		  (void) strncpy(plist[i], p->pw_passwd, sizeof(plist[i]));
-		  uids[i] = p->pw_uid;
-	      }
-	}
-      nuid = i;
-  } else /* mode == PASSWD */ {
-      /* Get the list of users in /etc/passwd */
-      setpwent();
-      nuid = 0;
-      while ((pwd = getpwent()) != NULL)
-	uids[nuid++] = pwd->pw_uid;
-      if (nuid > MAXUSERS) {
-	  fprintf(stderr, "cleanup: Too many users in /etc/passwd for cleanup\n");
-	  status = 2;
-	  goto done;
-      }
-  }
-
-#ifdef DEBUG
-  i = nuid;
-  while(--i>=0)
-      printf("uids[%d] = %d\n", i, uids[i]);
-#endif
-
-  /* Now: kill any processes owned by a user not in uids[].
-   * First pass: send HUP
-   * (sleep ...)
-   * Second pass: send KILL
-   */
-  if (status = kill_uids(nuid, uids, 1, SIGHUP))
-    goto done;
-  sleep(5);
-  if (status = kill_uids(nuid, uids, 0, SIGKILL))
-    goto done;
-
-  if (mode == LOGGED_IN) {
-      make_passwd(nuid, uids, plist);
-      make_group(nuid, uids);
-  }
-  
- done:
-  if(unlink(nologin_fn) < 0)
-    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/nologin.\n");
-  if(unlink("/etc/ptmp") < 0)
-    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/ptmp.\n");
-  if(unlink("/etc/gtmp") < 0)
-    fprintf(stderr, "cleanup: Warning: unable to unlink /etc/gtmp.\n");
-
-  return (status);
-}
-
-
-#define NPROCS 16
-
-#ifdef __STDC__
-int kill_uids(int nuid,uid_t *uids,int debug,int sig)
-#else
-int kill_uids(nuid, uids, debug, sig)
-int nuid;
-uid_t *uids;
-int debug;
-int sig;
-#endif
-{
-#ifdef _AIX
-  char *kernel = "/unix";
-#else
-  char *kernel = "/vmunix";
-#endif
-  struct proc p[NPROCS];
-  int i,j,k,nproc,procp;
-  int kmem;
-  int self = getpid();
-  static int n_done = 0;
-
-#ifdef DEBUG
-  printf("nuid = %d\n", nuid);
-#endif
-  if(n_done == 0 && nlist(kernel, nl) != 0)
-    {
-      fprintf(stderr, "Cleanup: can't get kernel name list.\n");
-      return(5);
-    }
-  n_done = 1;
-  if((kmem = open("/dev/kmem", O_RDONLY)) < 0)
-    {
-      fprintf(stderr, "Cleanup: can't open kmem (%s).\n", sys_errlist[errno]);
-      return(6);
-    }
-  lseek(kmem, nl[NPROC].n_value, L_SET);
-  read(kmem, &nproc, sizeof(nproc));
-
-  lseek(kmem, nl[PROC].n_value, L_SET);
-  read(kmem, &procp, sizeof(procp));
-  lseek(kmem, procp, L_SET);
-  for(i=0; i<nproc; i+=NPROCS)
-    {
-      read(kmem, p, sizeof(p));
-      for(j=i; j < (i+NPROCS); j++)
-	{
-	  if(j >= nproc)
-	    goto done;
-	  for(k=0;k<nuid;k++)
-	    if(p[j-i].p_uid == uids[k])
-	      goto out;
-	  if(p[j-i].p_pid == ROOTUID || p[j-i].p_pid == DAEMONUID ||
-	     p[j-i].p_pid == self)
-	    goto out;
-#ifdef DEBUG
-	  if(debug)
-	    printf("killing proc %d, uid %d\n", p[j-i].p_pid, p[j-i].p_uid);
-#endif
-	  kill(p[j-i].p_pid, sig);
-	out:
-	  continue;
-	}
-#ifdef DEBUG
-      putchar('.');
-#endif
-    }
- done:
-#ifdef DEBUG
-  putchar('\n');
-#endif
-  (void) close(kmem);
-  return 0;
-}
-
-
-#ifdef __STDC__
-void make_passwd(int nuid, uid_t *uids, char (*plist)[16])
-#else
-void make_passwd(nuid, uids, plist)
-int nuid;
-uid_t *uids;
-char (*plist)[16];
-#endif
-{
-  int fd;
-  int proto,r,i;
-  char buf[BUFSIZ],**ret;
-
-  if(access("/etc/passwd.local", R_OK) < 0) return;
-  fd = open("/etc/passwd.new",O_WRONLY | O_CREAT | O_TRUNC, 0644);
-  if(fd == -1)
-    {
-      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.new\", %s.\n",
-	      sys_errlist[errno]);
-      return;
-    }
-  if((proto = open("/etc/passwd.local", O_RDONLY)) == -1)
-    {
-      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.local\", %s.\n",
-	      sys_errlist[errno]);
-      close(fd);
-      return;
-    }
-  while((r = read(proto,buf,BUFSIZ)) > 0)
-    if(write(fd,buf,r) != r)
-      {
-	fprintf(stderr, "cleanup: Error copying /etc/passwd.local...aborting.\n");
-	(void) close(fd);
-	(void) close(proto);
-	(void) unlink("/etc/passwd.new");
-	return;
-      }
-  if(r < 0)
-    {
-      fprintf(stderr,"cleanup: Couldn't open \"/etc/passwd.local\", %s.\n",
-	      sys_errlist[errno]);
-      close(fd);
-      close(proto);
-      return;
-    }
-  for(i=0;i<nuid;i++)
-    {
-      char uname[8];
-      char *c1ptr, *c2ptr;
-      if(uids[i] == 0 || uids[i] == 1)
-	continue;
-      sprintf(uname,"%d",uids[i]);
-      ret = hes_resolve(uname,"uid");
-      if(ret == NULL || *ret == NULL)
-	{
-	  fprintf(stderr, "cleanup: Couldn't get hesinfo for uid %d, error %d.\n",
-		  uids[i],hes_error());
-	} else if((c1ptr = index(*ret, ':')) == 0 || 
-		  (c2ptr = index(++c1ptr, ':')) == 0) {
-	  fprintf(stderr, "cleanup: Corrupt password entry for uid %d: \"%s\".\n",
-		  uids[i], *ret);
+    /* First disable logins */
+    fd = open(nologin_fn ,O_RDWR | O_EXCL | O_CREAT, 0644);
+    if (fd < 0) {
+	if (errno == EEXIST) {
+	    fprintf(stderr, "%s: %s already exists, not performing cleanup.\n",
+		    argv[0], nologin_fn);
+	    exit(2);
 	} else {
-	  *c1ptr = '\0';
-	  if(write(fd, *ret,strlen(*ret)) < 0 ||
-	     write(fd, plist[i], strlen(plist[i])) < 0 ||
-	     write(fd, c2ptr, strlen(c2ptr)) < 0)
-	    fprintf(stderr,"cleanup: Error writing \"/etc/passwd.new\": %s.\n",
+	    fprintf(stderr, "%s: Can't create %s, %s.\n", argv[0], nologin_fn,
 		    sys_errlist[errno]);
-#ifdef DEBUG
-	  else
-	    printf(">>>%s %s %s\n", *ret, plist[i], c2ptr);
-#endif
-	  write(fd,"\n",1);
+	    exit(3);
 	}
     }
-  if(unlink("/etc/passwd") == -1)
-    perror("unlink");
-  if(rename("/etc/passwd.new", "/etc/passwd") == -1)
-    perror("rename");
+    (void)write(fd, nologin_msg, strlen(nologin_msg));
+    (void)close(fd);
+
+    /* wait a moment so that any login in progress when we disabled
+     * logins is likely to complete
+     */
+    sleep(2);
+
+    /* snapshot info */
+
+    lock_file("/etc/ptmp");
+    lock_file("/etc/gtmp");
+    pword = get_password_entries();
+    users = get_logged_in();
+    /* rewrite password file if necessary */
+    if (users && mode == LOGGED_IN) {
+	fail = rewrite_passwd(users);
+    }
+    unlock_file("/etc/ptmp");
+    unlock_file("/etc/gtmp");
+    procs = get_processes();
+    if (fail || pword == NULL || users == NULL || procs == NULL) {
+	unlink(nologin_fn);
+	exit(1);
+    }
+
+    if (unlink(nologin_fn) < 0)
+      fprintf(stderr, "%s: Warning: unable to unlink %s.\n",
+	      argv[0], nologin_fn);
+
+    /* First round of kill signals: HUP */
+    found = 0;
+    for (i = 0; procs[i].pid != -1; i++) {
+	switch (mode) {
+	case LOGGED_IN:
+	    for (j = 0; users[j] != -1; j++)
+	      if (users[j] == procs[i].uid)
+		break;
+	    if (users[j] == -1) {
+#ifdef DEBUG
+		printf("kill(%d, SIGHUP)\n", procs[i].pid);
+#endif
+		if (kill(procs[i].pid, SIGHUP) == 0)
+		  found = 1;
+	    }
+	    break;
+	case PASSWD:
+	    for (j = 0; pword[j] != -1; j++)
+	      if (pword[j] == procs[i].uid)
+		break;
+	    if (pword[j] == -1) {
+#ifdef DEBUG
+		printf("kill(%d, SIGHUP)\n", procs[i].pid);
+#endif
+		if (kill(procs[i].pid, SIGHUP) == 0)
+		  found = 1;
+	    }
+	    break;
+	default:
+	    ;
+	}
+    }
+
+    /* only do second round if found any */
+    if (found) {
+	sleep(5);
+#ifdef DEBUG
+	printf("Starting second pass\n");
+#endif
+
+	for (i = 0; procs[i].pid != -1; i++) {
+	    switch (mode) {
+	    case LOGGED_IN:
+		for (j = 0; users[j] != -1; j++)
+		  if (users[j] == procs[i].uid)
+		    break;
+		if (users[j] == -1) {
+#ifdef DEBUG
+		    printf("kill(%d, SIGKILL)\n", procs[i].pid);
+#endif
+		    if (kill(procs[i].pid, SIGKILL) == 0)
+		      found = 1;
+		}
+		break;
+	    case PASSWD:
+		for (j = 0; pword[j] != -1; j++)
+		  if (pword[j] == procs[i].uid)
+		    break;
+		if (pword[j] == -1) {
+#ifdef DEBUG
+		    printf("kill(%d, SIGKILL)\n", procs[i].pid);
+#endif
+		    if (kill(procs[i].pid, SIGKILL) == 0)
+		      found = 1;
+		}
+		break;
+	    default:
+		;
+	    }
+	}
+    }
+    return(0);
+}
+
+
+/* Get list of uids of logged in users */
+
+int *get_logged_in()
+{
+    int fd, i, j;
+    char login[9];
+    struct utmp u;
+    struct passwd *p;
+    static int uids[MAXUSERS];
+
+    fd = open("/etc/utmp", O_RDONLY);
+    if (fd < 0) {
+	fprintf(stderr, "cleanup: can't open /etc/utmp, %s\n",
+		sys_errlist[errno]);
+	return(NULL);
+    }
+
+    /* Always include root & daemon */
+    uids[0] = ROOTUID;
+    uids[1] = DAEMONUID;
+#ifdef DEBUG
+    printf("Logged in: 0, 1");
+#endif
+
+    for (i = 2; read(fd, &u, sizeof(u)) > 0 && i < MAXUSERS;) {
+	if (u.ut_name[0] == 0)
+	  continue;
+	strncpy(login, u.ut_name, 8);
+	p = getpwnam(login);
+	if (p == 0)
+	  fprintf(stderr, "cleanup: Warning, could not get uid for user %s\n",
+		  login);
+	else {
+	    /* first check for duplicates */
+	    for (j = 0; j < i; j++)
+	      if (p->pw_uid == uids[j])
+		break;
+	    if (i == j) {
+		uids[i++] = p->pw_uid;
+#ifdef DEBUG
+		printf(", %d", p->pw_uid);
+#endif
+	    }
+	}
+    }
+    uids[i] = -1;
+    close(fd);
+#ifdef DEBUG
+    printf("\n");
+#endif
+
+    return(uids);
+}
+
+
+/* Get list of uids in /etc/passwd */
+
+int *get_password_entries()
+{
+    int i = 0;
+    static int uids[MAXUSERS];
+    struct passwd *p;
+
+    setpwent();
+#ifdef DEBUG
+    printf("In passwd:");
+#endif
+
+    while ((p = getpwent()) != NULL && i < MAXUSERS) {
+	uids[i++] = p->pw_uid;
+#ifdef DEBUG
+	printf(", %d", p->pw_uid);
+#endif
+    }
+    if (i >= MAXUSERS) {
+	fprintf(stderr, "cleanup: Too many users in /etc/passwd\n");
+	return(NULL);
+    }
+
+    endpwent();
+    uids[i] = -1;
+#ifdef DEBUG
+    printf("\n");
+#endif
+
+    return(uids);
+}
+
+
+/* snapshot running processes */
+
+struct cl_proc *get_processes()
+{
+    int kmem, nproc, i;
+    caddr_t procp;
+    struct proc p;
+    static struct cl_proc procs[MAXPROCS];
+#ifdef _AIX
+    char *kernel = "/unix";
+#else
+    char *kernel = "/vmunix";
+#endif
+    char *memory = "/dev/kmem";
+
+    if (nlist(kernel, nl) != 0) {
+	fprintf(stderr, "cleanup: can't get kernel namelist\n");
+	return(NULL);
+    }
+    kmem = open(memory, O_RDONLY);
+    if (kmem < 0) {
+	fprintf(stderr, "cleanup: can't open %s: %s\n", memory,
+		sys_errlist[errno]);
+	return(NULL);
+    }
+
+    lseek(kmem, nl[NPROC].n_value, L_SET);
+    read(kmem, &nproc, sizeof(nproc));
+
+    lseek(kmem, nl[PROC].n_value, L_SET);
+    read(kmem, &procp, sizeof(procp));
+    lseek(kmem, procp, L_SET);
+
+    for (i = 0; i < nproc; i++) {
+	read(kmem, &p, sizeof(p));
+	if (p.p_pid == 0) continue;
+	procs[i].pid = p.p_pid;
+	procs[i].uid = p.p_uid;
+    }
+
+    close(kmem);
+    procs[i].pid = procs[i].uid = -1;
+    return(procs);
+}
+
+
+/* lock protocol for /etc/passwd & /etc/group using /etc/ptmp & /etc/gtmp */
+
+lock_file(fn)
+char *fn;
+{
+    int i, fd;
+
+    for (i = 0; i < 10; i++)
+      if ((fd = open(fn, O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
+	  errno == EEXIST)
+	sleep(1);
+      else
+	break;
+    if (fd == -1) {
+	if (i < 10)
+	  fprintf(stderr, "cleanup: unable to lock passwd file: %s\n",
+		  sys_errlist[errno]);
+	else
+	  (void) unlink(fn);
+    }
+    close(fd);
+}
+
+
+unlock_file(fn)
+char *fn;
+{
+    (void) unlink(fn);
+}
+
+
+/* Update the passwd and group files.  The passed set of uids specifies
+ * who should be in the passwd file.
+ */
+
+rewrite_passwd(users)
+int *users;
+{
+    FILE *in, *out;
+    char buffer[512], *p;
+    int in_passwd[MAXUSERS], user = 0, i, uid;
+
+    in = fopen("/etc/passwd.local", "r");
+    if (in == NULL)
+      fprintf(stderr, "cleanup: unable to open /etc/passwd.local: %s\n",
+	      sys_errlist[errno]);
+    out = fopen("/etc/passwd.new", "w");
+    if (out == NULL) {
+	fprintf(stderr, "cleanup: unable to open /etc/passwd.new: %s\n",
+		sys_errlist[errno]);
+	fclose(in);
+	return(-1);
+    }
+    if (chmod("/etc/passwd.new", 0644)) {
+	fprintf(stderr, "cleanup: unable to change mode of /etc/passwd.new: %s\n",
+		sys_errlist[errno]);
+	fclose(in);
+	fclose(out);
+	return(-1);
+    }
+
+    /* copy /etc/passwd.local, keeping track of who is in it */
+    while (in && fgets(buffer, sizeof(buffer), in)) {
+	fputs(buffer, out);
+	p = index(buffer, ':');
+	if (p) {
+	    p = index(p + 1, ':');
+	    if (p) {
+		p++;
+		in_passwd[user++] = atoi(p);
+	    }
+	}
+    }
+
+    fclose(in);
+    in = fopen("/etc/passwd", "r");
+    if (in == NULL)
+      fprintf(stderr, "cleanup: unable to open /etc/passwd: %s\n",
+	      sys_errlist[errno]);
+
+    /* now process /etc/passwd, avoiding duplicates */
+    while (in && fgets(buffer, sizeof(buffer), in)) {
+	uid = -1;
+	p = index(buffer, ':');
+	if (p) {
+	    p = index(p + 1, ':');
+	    if (p) {
+		p++;
+		uid = atoi(p);
+	    }
+	}
+	/* if we can't find the uid in the entry, give up */
+	if (uid == -1) {
+#ifdef DEBUG
+	    printf("Skipping malformed passwd entry: %s\n", buffer);
+#endif
+	    continue;
+	}
+
+	for (i = 0; i < user; i++)
+	  if (in_passwd[i] == uid)
+	    break;
+	/* if already in passwd file, skip */
+	if (i < user && in_passwd[i] == uid) {
+#ifdef DEBUG
+	    printf("Skipping entry %d already in passwd file: %s", uid, buffer);
+#endif
+	    continue;
+	}
+
+	for (i = 0; users[i] >= 0; i++)
+	  if (users[i] == uid)
+	    break;
+	/* if not supposed to be in passwd file, skip */
+	if (users[i] < 0 || users[i] != uid) {
+#ifdef DEBUG
+	    printf("Skipping entry shouldn't be in passwd file: %s", buffer);
+#endif
+	    continue;
+	}
+
+	fputs(buffer, out);
+	in_passwd[user++] = uid;
+    }
+    fclose(in);
+    fclose(out);
+
+    if (unlink("/etc/passwd"))
+      fprintf(stderr, "cleanup: unable to remove /etc/passwd: %s\n",
+	      sys_errlist[errno]);
+    if (rename("/etc/passwd.new", "/etc/passwd"))
+      fprintf(stderr, "cleanup: failed to rename /etc/passwd.new to /etc/passwd: %s\n",
+	      sys_errlist[errno]);
+    in_passwd[user] = -1;
+    make_group(in_passwd);
+    return(0);
 }
 
 
@@ -396,36 +496,42 @@ char (*plist)[16];
  * in the passwd file.
  */
 
-#ifdef __STDC__
-void make_group(int nuid, uid_t *uids)
-#else
-void make_group(nuid, uids)
-int nuid;
-uid_t *uids;
-#endif
+make_group(uids)
+int *uids;
 {
-    int r, i, n, match;
-    char buf[10240], *p, *p1, **ret;
+    int i, n, match, nuid;
+    char buf[10240], *p, *p1;
     char llist[MAXUSERS][9];
     struct passwd *pw;
     FILE *new, *old;
 
-    /* build list of users in the passwd file */
-    for (i = 0; i < nuid; i++) {
-	sprintf(buf, "%d", uids[i]);
-	ret = hes_resolve(buf, "uid");
-	if (ret == NULL || *ret == NULL) {
-	    pw = getpwuid(uids[i]);
-	    if (pw != NULL)
-	      strcpy(llist[i], pw->pw_name);
-	} else if ((p = index(*ret, ':')) == NULL) {
-	    fprintf(stderr, "cleanup: Corrupt password entry for uid %d: \"%s\".\n",
-		    uids[i], *ret);
-	} else {
-	    *p = 0;
-	    strcpy(llist[i], *ret);
-	}
+#ifdef DEBUG
+    printf("UIDs for /etc/group:");
+#endif
+    for (nuid = 0; uids[nuid] >= 0; nuid++) {
+#ifdef DEBUG
+	printf(", %d", uids[nuid]);
+#endif
     }
+#ifdef DEBUG
+    printf("\n");
+#endif
+
+    /* build list of users in the passwd file */
+#ifdef DEBUG
+    printf("logins for /etc/group:");
+#endif
+    for (i = 0; i < nuid; i++) {
+	pw = getpwuid(uids[i]);
+	if (pw != NULL)
+	  strcpy(llist[i], pw->pw_name);
+#ifdef DEBUG
+	printf(", %s", llist[i]);
+#endif
+    }
+#ifdef DEBUG
+    printf("\n");
+#endif
 
     if ((new = fopen("/etc/group.new", "w")) == NULL) {
 	fprintf(stderr,"cleanup: Couldn't open \"/etc/group.new\", %s.\n",
