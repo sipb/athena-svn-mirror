@@ -56,6 +56,7 @@ RCSID("$OpenBSD: session.c,v 1.108 2001/10/11 13:45:21 markus Exp $");
 #include "serverloop.h"
 #include "canohost.h"
 #include "session.h"
+#include "misc.h"
 
 #ifdef GSSAPI
 #include "ssh-gss.h"
@@ -107,6 +108,7 @@ RCSID("$OpenBSD: session.c,v 1.108 2001/10/11 13:45:21 markus Exp $");
 extern int setpag(), ktc_ForgetAllTokens();
 void try_afscall(int (*func)(void));
 void krb_cleanup(void);
+static void pwfree(struct passwd *);
 int *session_warnings = NULL;
 extern int is_local_acct;
 
@@ -742,10 +744,22 @@ do_exec(Session *s, const char *command)
 
 	if (!is_local_acct)
 	  {
+	    struct passwd *pw;
+
 	    status = al_acct_create(s->authctxt->user, NULL, getpid(),
 				    havecred, 1, &session_warnings);
 	    if (status != AL_SUCCESS && status != AL_WARNINGS)
 	      packet_disconnect("%s\n", al_strerror(status, &errmem));
+	    /*
+	     * Look up the passwd entry again, as al_acct_create()
+	     * may have modified it.
+	     */
+	    pw = getpwnam(s->authctxt->user);
+	    if (pw == NULL)
+	      packet_disconnect("Cannot get password entry\n");
+	    pwfree(s->authctxt->pw);
+	    s->authctxt->pw = pwcopy(pw);
+	    s->pw = s->authctxt->pw;
 	  }
 
 	if (forced_command) {
@@ -2228,3 +2242,19 @@ void krb_cleanup(void)
   	try_afscall(ktc_ForgetAllTokens);
 }
 
+/*
+ * Free the memory allocated by pwcopy().
+ */
+static void
+pwfree(struct passwd *pw)
+{
+	xfree(pw->pw_name);
+	xfree(pw->pw_passwd);
+	xfree(pw->pw_gecos);
+#ifdef HAVE_PW_CLASS_IN_PASSWD
+	xfree(pw->pw_class);
+#endif
+	xfree(pw->pw_dir);
+	xfree(pw->pw_shell);
+	xfree(pw);
+}
