@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.15 2001-04-26 16:45:18 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.16 2001-05-06 15:52:52 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -845,7 +845,7 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
   Arg args[2];
   char *script;
   int mode = 1;
-  Pixmap bm1, bm2, bm3, bm4, bm5;
+  Pixmap bm1, bm2, bm3, bm4, bm5, bm7;
   XawTextBlock tb;
   XEvent e;
 
@@ -862,17 +862,21 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
   XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry4"), args, 1);
   XtSetArg(args[0], XtNleftBitmap, &bm5);
   XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry5"), args, 1);
+  XtSetArg(args[0], XtNleftBitmap, &bm7);
+  XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry7"), args, 1);
 
-  /* Determine which option was selected by seeing which 4 of the 5 match. */
-  if (bm1 == bm2 && bm1 == bm3 && bm1 == bm4)
+  /* Determine which option was selected by seeing which 5 of the 6 match. */
+  if (bm1 == bm2 && bm1 == bm3 && bm1 == bm4 && bm1 == bm5)
+    mode = 7;
+  if (bm1 == bm2 && bm1 == bm3 && bm1 == bm4 && bm1 == bm7)
     mode = 5;
-  if (bm1 == bm2 && bm1 == bm3 && bm1 == bm5)
+  if (bm1 == bm2 && bm1 == bm3 && bm1 == bm5 && bm1 == bm7)
     mode = 4;
-  if (bm1 == bm2 && bm1 == bm4 && bm1 == bm5)
+  if (bm1 == bm2 && bm1 == bm4 && bm1 == bm5 && bm1 == bm7)
     mode = 3;
-  if (bm1 == bm3 && bm1 == bm4 && bm1 == bm5)
+  if (bm1 == bm3 && bm1 == bm4 && bm1 == bm5 && bm1 == bm7)
     mode = 2;
-  if (bm2 == bm3 && bm2 == bm4 && bm2 == bm5)
+  if (bm2 == bm3 && bm2 == bm4 && bm2 == bm5 && bm2 == bm7)
     mode = 1;
 
   XtSetArg(args[0], XtNstring, &script);

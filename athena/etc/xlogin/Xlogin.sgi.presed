@@ -1,4 +1,4 @@
-! $Id: Xlogin.sgi.presed,v 1.4 2001-01-19 05:40:23 ghudson Exp $
+! $Id: Xlogin.sgi.presed,v 1.5 2001-05-06 15:52:52 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -216,6 +216,7 @@ xlogin.Geometry: 		580x325
 	<Key>F4:	callbackACT(*lmenuEntry4) \n\
 	~Shift <Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>F7:	callbackACT(*lmenuEntry7) \n\
 	<Key>Return:	WcSetValueACT(this.displayCaret: FALSE) \
 			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*pword_input.borderColor: black) \
@@ -300,6 +301,7 @@ xlogin.Geometry: 		580x325
 	<Key>F4:	callbackACT(*lmenuEntry4) \n\
 	~Shift <Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>F7:	callbackACT(*lmenuEntry7) \n\
 	<Key>Return:	WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
@@ -361,7 +363,8 @@ xlogin.Geometry: 		580x325
 *lmenu.right:			ChainRight
 *lmenu.wcManaged:		False
 *lmenu.wcChildren:		lmenuEntry1, lmenuEntry2, lmenuEntry3, \
-				lmenuEntry4, lmenuEntry5, lmenuEntry6
+				lmenuEntry4, lmenuEntry5, lmenuEntry6, \
+				lmenuEntry7
 
 *lmenuEntry1.wcClassName:	SmeBSB
 *lmenuEntry2.wcClassName:	SmeBSB
@@ -369,6 +372,7 @@ xlogin.Geometry: 		580x325
 *lmenuEntry4.wcClassName:	SmeBSB
 *lmenuEntry5.wcClassName:	SmeBSB
 *lmenuEntry6.wcClassName:	SmeBSB
+*lmenuEntry7.wcClassName:	SmeBSB
 
 *lmenuEntry1.leftBitmap:	check
 *lmenuEntry2.leftBitmap:	white
@@ -382,6 +386,7 @@ xlogin.Geometry: 		580x325
 *lmenuEntry4.rightBitmap:	F4
 *lmenuEntry5.rightBitmap:	F5
 *lmenuEntry6.rightBitmap:	F6
+*lmenuEntry7.rightBitmap:	F7
 
 *lmenuEntry1.label:		Your usual login session
 *lmenuEntry2.label:		Ignore your customizations
@@ -389,36 +394,42 @@ xlogin.Geometry: 		580x325
 *lmenuEntry4.label:		Check your email
 *lmenuEntry5.label:		Specify special login
 *lmenuEntry6.label:		Start Over
+*lmenuEntry7.label:		Login using dash interface
 
 *lmenuEntry1.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: )
 *lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Ignore customizations selected)
 *lmenuEntry3.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Terminal-style login session selected)
 *lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Mail-check login session selected)
 *lmenuEntry5.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: check), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Special login session selected), \
 			WcPopupGrabCB(*getSessionShell), \
 			setfocusCB(*getsession*value)
@@ -426,6 +437,13 @@ xlogin.Geometry: 		580x325
 			WcSetValueCB(*name_input.borderColor: black), \
 			WcPopdownCB(*getSessionShell), \
 			resetCB()
+*lmenuEntry7.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry7.leftBitmap: check), \
+			WcSetValueCB(*selection.label: Dash-based interface selected)
 
 *omenu*rightMargin:		77
 *omenu.wcClassName:		SimpleMenu
@@ -556,6 +574,7 @@ xlogin.Geometry: 		580x325
 	<Key>F4:	callbackACT(*lmenuEntry4) \n\
 	~Shift <Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
+	<Key>F7:	callbackACT(*lmenuEntry7) \n\
 	<Key>Return:	WcPopdownACT(*getSessionShell) \
 			setCorrectFocus(*name_input) \
 			idleReset() \n\

@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.1 1999-11-10 03:50:36 kcr Exp $
+# $Id: Xsession,v 1.2 2001-05-06 15:53:04 ghudson Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -15,12 +15,17 @@ if [ -f .noignore ]; then
 fi
 
 case $defsession in
-1|4)
+1|4|7)
 	if [ -f .xsession ]; then
 		session=".xsession"
 	else
 		session="$initlib/xsession"
 	fi
+	case $defsession in
+	7)
+		session="$session dash"
+		;;
+	esac
 	;;
 2)
 	session="$initlib/xsession -nocalls"
