@@ -72,6 +72,7 @@ install:: attach
 	rm -f ${DESTDIR}/usr/man/man8/zinit.8
 	install -c -m 0444 attach.1 ${DESTDIR}/usr/man/man1
 	install -c -m 0444 detach.1 ${DESTDIR}/usr/man/man1
+	install -c -m 0444 fsid.1 ${DESTDIR}/usr/man/man1
 	install -c -m 0444 nfsid.1 ${DESTDIR}/usr/man/man1
 	install -c -m 0444 attach.conf.5 ${DESTDIR}/usr/man/man5
 	install -c -m 0444 attachtab.5 ${DESTDIR}/usr/man/man5
