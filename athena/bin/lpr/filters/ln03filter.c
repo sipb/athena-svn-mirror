@@ -1,3 +1,4 @@
+#include <sgtty.h>
 #include <sys/file.h>
 #include <stdio.h>
 
@@ -12,6 +13,7 @@ char *argv[];
     unsigned char buf[2048];
 
     parse_args(argc, argv, &login, &host, &accfile);
+    setup_output_modes();
     n = fread(buf, 1, 2048, stdin);
     if (is_graphics_file(buf, n)) 
 	{
@@ -30,6 +32,19 @@ char *argv[];
     fflush(stdout);
 /*    do_accounting(accfile, login, host, eop); */ /* Lossage: see below */
     exit(0);
+}
+
+/*
+ * fix output file descriptor so that it has the right modes. 
+ * in particular, if it is in raw mode, flow control won't work
+ */
+
+setup_output_modes()
+{
+  struct sgttyb tty_buf;
+  ioctl(fileno(stdout), TIOCGETP, &tty_buf);
+  tty_buf.sg_flags &= ~RAW;
+  ioctl(fileno(stdout), TIOCSETP, &tty_buf);
 }
 
 
