@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.6 1989-02-01 03:42:15 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.7 1989-03-08 10:00:35 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -498,3 +498,26 @@ int *num_found;
      return(found);
 }
      
+
+
+/*
+ * returns true if the filename has no regular expression wildcards in
+ * it.  That means no non-quoted dots or asterisks.  Assumes a
+ * null-terminated string, and a valid regular expression.
+ */
+int no_wildcards(name)
+char *name;
+{
+     do {
+	  switch (*name) {
+	  case '\\':
+	       name++;
+	       break;
+	  case '.':
+	       return(0);
+	  case '*':
+	       return(0);
+	  }
+     } while (*++name);
+     return(1);
+}
