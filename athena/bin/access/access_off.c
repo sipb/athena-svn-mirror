@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.8 1998-04-16 22:15:51 ghudson Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.9 1998-04-25 23:31:52 danw Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 {
   FILE *pidfile, *rcfile;
   int pid, status, on, running;
-  char *progname, buf[1024];
+  char *progname, buf[1024], *envp[1] = { NULL };
 
   progname = strrchr(argv[0], '/');
   progname = (progname) ? progname + 1 : argv[0];
@@ -96,9 +96,10 @@ int main(int argc, char **argv)
 	  else if (pid == 0)
 	    {
 	      /* Make ruid and saved uid equal to effective uid before exec,
-	       * or sshd might notice and get confused. */
+	       * or sshd might notice and get confused. Clear the environment
+	       * to prevent evil ldd tricks. */
 	      setuid(geteuid());
-	      execl("/etc/athena/sshd", "sshd", (char *) NULL);
+	      execle("/etc/athena/sshd", "sshd", (char *) NULL, envp);
 	      perror("Error running sshd");
 	    }
 	}
