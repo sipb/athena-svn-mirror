@@ -1,0 +1,42 @@
+SUBDIRS = access help
+
+INCLUDES =  -I$(srcdir)  -DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"  \
+		 $(GNOME_APPLETS_CFLAGS) $(GNOME_VFS_APPLETS_CFLAGS) \
+		 -DGTIK_APPLET_NAME=\"gtik2_applet\" \
+		 -I access/
+
+libexec_PROGRAMS = gtik2_applet2
+
+gtik2_applet2_SOURCES = gtik.c 
+
+ACCESS_LT_LIB = $(top_builddir)/gtik/access/libgnomedrawareaaccess.la
+
+gtik2_applet2_LDADD = 	$(GNOME_APPLETS_LIBS) \
+			$(GNOME_VFS_APPLETS_LIBS) \
+			$(ACCESS_LT_LIB) \
+			$(GAILUTIL_LIBS)
+			
+serverdir       = $(libdir)/bonobo/servers
+server_in_files = GNOME_GtikApplet.server.in
+server_DATA     = $(server_in_files:.server.in=.server)
+
+$(server_in_files): $(server_in_files:.server.in=.server.in.in)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = GNOME_GtikApplet.xml
+
+@INTLTOOL_SERVER_RULE@
+
+schemadir 	= @GCONF_SCHEMA_FILE_DIR@
+schema_DATA	= gtik.schemas
+
+EXTRA_DIST = \
+	README AUTHORS ChangeLog \
+	GNOME_GtikApplet.server.in.in \
+	$(ui_DATA)		\
+	$(schema_DATA)
+	
+install-data-local:
+		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA) ;
+

@@ -1,0 +1,13 @@
+[Keymap Entry]
+Countries=1
+Name=Azerbaidjani Turkic Sun keymap
+Codepage=iso-8859-1
+Type=type5
+Arch=Sun
+Command=gkb_xmmap az
+
+[Country 0]
+Flag=az.png
+Label=az
+Language=Azerbaidjani Turkic
+Country=Azerbaidjan
