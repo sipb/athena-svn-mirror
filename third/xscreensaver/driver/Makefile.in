@@ -17,6 +17,7 @@ man1dir		= $(mandir)/man1
 mansuffix	= 1
 
 CC		= @CC@
+CPPFLAGS	= @CPPFLAGS@
 CFLAGS		= @CFLAGS@
 LDFLAGS		= @LDFLAGS@
 DEFS		= @DEFS@
@@ -129,6 +130,11 @@ DEMO_SRCS	= $(DEMO_SRCS_1) remote.c \
 DEMO_OBJS	= $(DEMO_OBJS_1) remote.o \
 		  $(TOOLKIT_OBJS) $(DEMO_UTIL_OBJS)
 
+BUTTON_SRCS	= xscreensaver-button.c $(UTILS_SRC)/xroger.c \
+		  $(UTILS_SRC)/spline.c
+BUTTON_OBJS	= xscreensaver-button.o $(UTILS_BIN)/xroger.o \
+		  $(UTILS_BIN)/spline.o
+
 SAVER_LIBS	= $(LIBS) $(X_LIBS) @SAVER_LIBS@ \
 		  $(X_PRE_LIBS) -lXt -lX11 -lXext $(X_EXTRA_LIBS) \
 		  $(PASSWD_LIBS)
@@ -139,11 +145,15 @@ CMD_LIBS	= $(LIBS) $(X_LIBS) \
 DEMO_LIBS	= $(LIBS) $(X_LIBS) $(TOOLKIT_LIBS) \
 		  $(X_PRE_LIBS) -lXt -lX11 -lXext $(X_EXTRA_LIBS)
 
-EXES		= xscreensaver xscreensaver-command xscreensaver-demo
+BUTTON_LIBS	= $(LIBS) $(X_LIBS) \
+		  $(X_PRE_LIBS) -lXaw -lXt -lX11 -lXext $(X_EXTRA_LIBS)
+
+EXES		= xscreensaver xscreensaver-command xscreensaver-demo \
+		  xscreensaver-button
 
 HDRS		= XScreenSaver_ad.h xscreensaver.h prefs.h remote.h
 MEN		= xscreensaver.man xscreensaver-demo.man \
-		  xscreensaver-command.man
+		  xscreensaver-command.man xscreensaver-button.man
 EXTRAS		= README Makefile.in XScreenSaver.ad.in xscreensaver.pam \
 		  .gdbinit
 VMSFILES	= compile_axp.com compile_decc.com link_axp.com link_decc.com \
@@ -153,7 +163,7 @@ VMSFILES	= compile_axp.com compile_decc.com link_axp.com link_decc.com \
 TARFILES	= $(EXTRAS) $(VMSFILES) $(SAVER_SRCS_1) \
 		  $(MOTIF_SRCS) $(ATHENA_SRCS) $(PWENT_SRCS) $(KERBEROS_SRCS) \
 		  $(PAM_SRCS) $(LOCK_SRCS_1) $(DEMO_SRCS_1) $(CMD_SRCS) \
-		  $(HDRS) $(TEST_SRCS) $(MEN)
+		  $(BUTTON_SRCS) $(HDRS) $(TEST_SRCS) $(MEN)
 
 
 all: $(EXES)
@@ -172,12 +182,14 @@ install-program: $(EXES)
 	if [ @NEED_SETUID@ = yes ]; then				\
 	   inst="$(INSTALL_SETUID)" ;					\
 	fi ;								\
-	echo $$inst xscreensaver $(DESTDIR)$(bindir)/xscreensaver ;	\
-	$$inst xscreensaver $(DESTDIR)$(bindir)/xscreensaver
+	echo $$inst xscreensaver $(DESTDIR)$(bindir)/xss ;		\
+	$$inst xscreensaver $(DESTDIR)$(bindir)/xss
 	$(INSTALL_PROGRAM) xscreensaver-command \
-	   $(DESTDIR)$(bindir)/xscreensaver-command
+	   $(DESTDIR)$(bindir)/xss-command
 	$(INSTALL_PROGRAM) xscreensaver-demo \
-	   $(DESTDIR)$(bindir)/xscreensaver-demo
+	   $(DESTDIR)$(bindir)/xss-demo
+	$(INSTALL_PROGRAM) xscreensaver-button \
+	   $(DESTDIR)$(bindir)/xss-button
 
 install-ad: XScreenSaver.ad
 	$(INSTALL_DIRS) $(DESTDIR)$(AD_DIR)
@@ -185,9 +197,9 @@ install-ad: XScreenSaver.ad
 
 install-man: $(MEN)
 	@men="$(MEN)" ;							\
-	$(INSTALL_DIRS) $(DESTDIR)$(man1dir)
+	$(INSTALL_DIRS) $(DESTDIR)$(man1dir) ;				\
 	for man in $$men; do						\
-	  instname=`echo $$man | sed 's/\.man$$/\.$(mansuffix)/'` ;	\
+	  instname=`echo $$man | sed -e 's/xscreensaver/xss/' -e 's/\.man$$/\.$(mansuffix)/'` ;	\
 	  echo $(INSTALL_DATA) \
 	    $(srcdir)/$$man $(DESTDIR)$(man1dir)/$$instname;	\
 	  $(INSTALL_DATA) $(srcdir)/$$man $(DESTDIR)$(man1dir)/$$instname ; \
@@ -350,12 +362,16 @@ $(SAVER_UTIL_OBJS):
 
 # How we build object files in this directory.
 .c.o:
-	$(CC) -c $(INCLUDES) $(DEFS)  $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(DEFS) $(CPPFLAGS) $(CFLAGS) $(X_CFLAGS) $<
 
 # subprocs is the only one that takes an extra -D option.
 subprocs.o: subprocs.c
-	$(CC) -c $(INCLUDES) $(DEFS2) $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c $(INCLUDES) $(DEFS2) $(CPPFLAGS) $(CFLAGS) $(X_CFLAGS) $<
 
+# Actually, that's not quite true.  --dzm
+xscreensaver-button.o: xscreensaver-button.c
+	$(CC) -c $(INCLUDES) $(DEFS) '-DBINDIR="$(bindir)/"' \
+		$(CPPFLAGS) $(CFLAGS) $(X_CFLAGS) $<
 
 # How we build the default app-defaults file into the program.
 #
@@ -373,6 +389,8 @@ xscreensaver-command: $(CMD_OBJS)
 xscreensaver-demo: $(DEMO_OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(DEMO_OBJS) $(DEMO_LIBS)
 
+xscreensaver-button: $(BUTTON_OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(BUTTON_OBJS) $(BUTTON_LIBS)
 
 
 TEST_PASSWD_OBJS = test-passwd.o $(LOCK_OBJS_1) $(PASSWD_OBJS) \
