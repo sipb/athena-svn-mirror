@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.42 1994-05-05 00:22:35 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.43 1994-07-28 03:15:49 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -29,6 +29,7 @@
 #include <X11/Xmu/Drawing.h>
 #include <X11/Xmu/Converters.h>
 #include "owl.h"
+#include "environment.h"
 
 #ifdef SYSV
 #define random	lrand48
@@ -445,12 +446,12 @@ main(argc, argv)
     start_reactivate(NULL, NULL);
   else
     activation_state = ACTIVATED;
- 
+
   setenv("PATH", defaultpath, 1);
-#ifdef SOLARIS
-   sprintf(buf,"hosttype=%s","sun4");
-   putenv(buf);
+#ifdef HOSTTYPE
+  setenv("hosttype", HOSTTYPE, 1); /* environment.h */
 #endif
+
   /* create shells to blank out all other screens, if any... */
   num_screens = 1;		/* cover ourselves by setting number of */
 				/* screens to one, and */
@@ -1062,6 +1063,26 @@ Cardinal *n;
     XFlush(dpy);
     XtCloseDisplay(dpy);
 
+    /*
+     * Set up the pre-login environment.
+     *
+     *   By default, all of xlogin's environment is passed to the
+     *   pre-login applications. Some of xlogin's environment is
+     *   not appropriately passed on; if such a new element is
+     *   introduced into xlogin, it should be unsetenved here.
+     *
+     *   Note that the environment for user logins is set
+     *   up in verify.c: it is NOT RELATED to this environment
+     *   setup. If you add a new environment variable here,
+     *   consider whether or not it also needs to be added there.
+     *   Note that variables that need to be unsetenved here do not
+     *   need similar treatment in the user login area, since there
+     *   no variables are passed by default.
+     *
+     *   Note also that below are not the only environment variables
+     *   mucked with. Others are done earlier for other functions
+     *   of xlogin.
+     */
     unsetenv("XAPPLRESDIR");
     unsetenv("XENVIRONMENT");
 
