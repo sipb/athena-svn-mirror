@@ -26,3 +26,10 @@ EXTRA_DIST =					\
 	intltool-merge.in			\
 	intltool-update.in			\
 	$(keys_in_files) $(mime_DATA) $(sysconf_DATA) $(applications_DATA)
+
+CLEANFILES = $(keys_files)
+
+DISTCLEANFILES = \
+  intltool-extract \
+  intltool-merge \
+  intltool-update

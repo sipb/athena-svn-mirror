@@ -1,17 +1,20 @@
-AC_INIT(check-mime.pl)
-AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-mime-data, 2.4.1)
+AC_INIT([gnome-mime-data], [2.4.2],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-mime-data])
+AC_CONFIG_SRCDIR(check-mime.pl)
 
+AM_INIT_AUTOMAKE
+AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
+AC_SUBST(ACLOCAL_AMFLAGS, "\${ACLOCAL_FLAGS}")
 
 AC_PROG_INTLTOOL
 
-ALL_LINGUAS="am ar az be bg bn ca cs cy da de el eo es et eu fa fi fr ga gl he hi hu id is it ja ko li lt lv mk ml mn ms ne nl nn no pl pt pt_BR ro ru sk sl sq sr sr@Latn sv tr uk vi wa yi zh_CN zh_TW"
+ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko li lt lv mk ml mn ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta th tk tr uk vi wa yi zh_CN zh_TW"
 GETTEXT_PACKAGE=gnome-mime-data
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 gnome-mime-data.spec
 man/Makefile
@@ -19,3 +22,5 @@ man/gnome-vfs-mime.5
 po/Makefile.in
 gnome-mime-data-2.0.pc
 ])
+
+AC_OUTPUT

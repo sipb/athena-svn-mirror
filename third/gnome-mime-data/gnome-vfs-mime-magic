@@ -104,6 +104,7 @@
 0	belong		0x00000200				image/x-icb
 0	belong		0x53445058				image/x-dpx
 0	string		d8:announce				application/x-bittorrent
+8	string		matroska				application/x-matroska
 
 # Desktop file support - slightly wrong, since comments can be before
 # the [Desktop Entry] line in the current spec - probably should fix
@@ -122,8 +123,8 @@
 # xpm rule needs to go before text/x-c
 0	string		/*\ XPM\ */				image/x-xpixmap
 
-0:64	string		\<!DOCTYPE\ xbel			application/xbel
-0:192	string		\<xbel					application/xbel
+0:64	string		\<!DOCTYPE\ xbel			application/x-xbel
+0:192	string		\<xbel					application/x-xbel
 0:64	string		\<!DOCTYPE\ NETSCAPE-Bookmark-file-1\>	application/x-mozilla-bookmarks
 0:64	string		\<!DOCTYPE\ NETSCAPE-Bookmark-file-1\>	application/x-netscape-bookmarks
 0:64	string		\<ephy_bookmarks			application/x-epiphany-bookmarks
@@ -147,6 +148,7 @@
 0:64	string		\<abiword				application/x-abiword
 0:64	string		\<\!DOCTYPE\ abiword			application/x-abiword
 0:64	string		gmr:Workbook				application/x-gnumeric
+0:64	string		\<project				application/x-mrproject
 # text/xml content detection needs to be after all the xml-derived formats
 0:64	string		\<?xml					text/xml
 0	string		{\\rtf					application/rtf
@@ -161,6 +163,7 @@
 1:16	string		/bin/csh				text/x-csh
 1:16	string		/bin/ksh				text/x-ksh
 1:16	string		/bin/perl				text/x-perl
+1:16	string		/bin/python				text/x-python
 0	string		BEGIN:VCARD				text/x-vcard
 0	string		BEGIN:VCALENDAR				text/calendar
 8	string		CDR\ vrsn				application/vnd.corel-draw

@@ -1,22 +1,22 @@
 # gnome-mime-types ko.po
 # Young-Ho Cha <ganadist@dacome.co.kr>, 2000.
-# Changwoo Ryu <cwryu@debian.org>, 2002-2003
+# Changwoo Ryu <cwryu@debian.org>, 2002-2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-mime-data\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-22 19:09+0000\n"
-"PO-Revision-Date: 2003-08-10 20:43+0900\n"
+"POT-Creation-Date: 2004-10-25 20:51+0200\n"
+"PO-Revision-Date: 2004-02-08 19:55+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
-"Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gnome-vfs.keys.in.h:1
 msgid "2D chemical structure"
-msgstr ""
+msgstr "2D 화학 구조"
 
 #: gnome-vfs.keys.in.h:2
 msgid "3D Studio image"
@@ -131,9 +131,8 @@ msgid "Binary program"
 msgstr "바이너리 프로그램"
 
 #: gnome-vfs.keys.in.h:30
-#, fuzzy
 msgid "BitTorrent seed file"
-msgstr "bzip2 압축 파일"
+msgstr "BitTorrent 시드 파일"
 
 #: gnome-vfs.keys.in.h:31
 msgid "Blender file"
@@ -145,7 +144,7 @@ msgstr "블럭 장치"
 
 #: gnome-vfs.keys.in.h:33
 msgid "Bzip2 compressed file"
-msgstr "bzip2 압축 파일"
+msgstr "BZIP2 압축 파일"
 
 #: gnome-vfs.keys.in.h:34
 msgid "C shell script"
@@ -161,7 +160,7 @@ msgstr "C 소스 코드 헤더"
 
 #: gnome-vfs.keys.in.h:37
 msgid "C++ source code"
-msgstr "C++ 소스코드"
+msgstr "C++ 소스 코드"
 
 #: gnome-vfs.keys.in.h:38
 msgid "CGI program"
@@ -181,7 +180,7 @@ msgstr "CPIO 아카이브"
 
 #: gnome-vfs.keys.in.h:42
 msgid "CPIO archive (Gzip-compressed)"
-msgstr "CPIO 아카이브 (gzip압축)"
+msgstr "CPIO 아카이브 (GZIP 압축)"
 
 #: gnome-vfs.keys.in.h:43
 msgid "Calendar file"
@@ -197,7 +196,7 @@ msgstr "문자 장치"
 
 #: gnome-vfs.keys.in.h:46
 msgid "Cinelerra editing sheet"
-msgstr ""
+msgstr "Cinelerra 에디팅 시트"
 
 #: gnome-vfs.keys.in.h:47
 msgid "Comma-separated text document"
@@ -225,7 +224,7 @@ msgstr "코렐 드로우 드로잉"
 
 #: gnome-vfs.keys.in.h:53
 msgid "Crystalline structure model"
-msgstr ""
+msgstr "Crystalline 구조 모델"
 
 #: gnome-vfs.keys.in.h:54
 msgid "DCL script"
@@ -244,9 +243,8 @@ msgid "DSSSL document"
 msgstr "DSSSL 문서"
 
 #: gnome-vfs.keys.in.h:58
-#, fuzzy
 msgid "DV video"
-msgstr "AVI 비디오"
+msgstr "DV 비디오"
 
 #: gnome-vfs.keys.in.h:59
 msgid "DXF vector graphic"
@@ -279,9 +277,8 @@ msgid "Directory information file"
 msgstr "디렉토리 정보 파일"
 
 #: gnome-vfs.keys.in.h:66
-#, fuzzy
 msgid "DjVu image"
-msgstr "3D Studio 이미지"
+msgstr "DjVu 이미지"
 
 #: gnome-vfs.keys.in.h:67
 msgid "Document type definition"
@@ -353,15 +350,15 @@ msgstr "드림캐스트 롬"
 
 #: gnome-vfs.keys.in.h:84
 msgid "Emacs Lisp source code"
-msgstr "Emacs Lisp 소스코드"
+msgstr "Emacs Lisp 소스 코드"
 
 #: gnome-vfs.keys.in.h:85
 msgid "Email headers"
-msgstr "이메일 헤더"
+msgstr "전자메일 헤더"
 
 #: gnome-vfs.keys.in.h:86
 msgid "Email message/mailbox"
-msgstr "이메일 메세지/편지함"
+msgstr "전자메일 메세지/편지함"
 
 #: gnome-vfs.keys.in.h:87
 msgid "Encrypted message"
@@ -470,7 +467,7 @@ msgstr "Gnumeric 스프레드시트"
 
 #: gnome-vfs.keys.in.h:113
 msgid "Gtar archive"
-msgstr "Gtar 아카이브"
+msgstr "GTAR 아카이브"
 
 #: gnome-vfs.keys.in.h:114
 msgid "Gtktalog Catalogue"
@@ -478,7 +475,7 @@ msgstr "Gtktalog 카탈로그"
 
 #: gnome-vfs.keys.in.h:115
 msgid "Gzip-compressed file"
-msgstr "gzip 압축 파일"
+msgstr "GZIP 압축 파일"
 
 #: gnome-vfs.keys.in.h:116
 msgid "HDF document"
@@ -562,12 +559,11 @@ msgstr "자바 코드 아카이브"
 
 #: gnome-vfs.keys.in.h:136
 msgid "Java source code"
-msgstr "자바 소스코드"
+msgstr "자바 소스 코드"
 
 #: gnome-vfs.keys.in.h:137
-#, fuzzy
 msgid "JavaScript source code"
-msgstr "자바 소스코드"
+msgstr "자바스크립트 소스 코드"
 
 #: gnome-vfs.keys.in.h:138
 msgid "KDE application details"
@@ -650,14 +646,12 @@ msgid "MPEG video"
 msgstr "MPEG 비디오"
 
 #: gnome-vfs.keys.in.h:158
-#, fuzzy
 msgid "MPEG-4 audio"
-msgstr "MP3 오디오"
+msgstr "MPEG-4 오디오"
 
 #: gnome-vfs.keys.in.h:159
-#, fuzzy
 msgid "MS ASF audio"
-msgstr "MS ASF 비디오"
+msgstr "MS ASF 오디오"
 
 #: gnome-vfs.keys.in.h:160
 msgid "MS ASF video"
@@ -732,734 +726,741 @@ msgid "MathML document"
 msgstr "MathML 문서"
 
 #: gnome-vfs.keys.in.h:178
+msgid "Matroska video"
+msgstr "Matroska 비디오"
+
+#: gnome-vfs.keys.in.h:179
 msgid "Memory dump"
 msgstr "메모리 덤프"
 
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:180
 msgid "Message"
 msgstr "메세지"
 
-#: gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:181
 msgid "Message digest"
 msgstr "메세지 묶음"
 
-#: gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:182
 msgid "Message in several formats"
 msgstr "몇몇형식의 메세지"
 
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:183
 msgid "Microsoft Excel spreadsheet"
 msgstr "마이크로소프트 엑셀 스프레드시트"
 
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:184
 msgid "Microsoft PowerPoint document"
 msgstr "마이크로소프트 파워포인트 문서"
 
-#: gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:185
 msgid "Microsoft WMV playlist"
 msgstr "마이크로소프트 WMV 연주목록"
 
-#: gnome-vfs.keys.in.h:185
+#: gnome-vfs.keys.in.h:186
 msgid "Microsoft WMV video"
 msgstr "마이크로소프트 WMV 비디오"
 
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:187
 msgid "Microsoft Word document"
 msgstr "마이크로소프트 워드 문서"
 
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:188
 msgid "Microsoft video"
 msgstr "마이크로소프트 비디오"
 
-#: gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:189
 msgid "Monkey audio"
 msgstr "Monkey 오디오"
 
-#: gnome-vfs.keys.in.h:189
+#: gnome-vfs.keys.in.h:190
 msgid "Mozilla bookmarks file"
 msgstr "모질라 책갈피 파일"
 
-#: gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:191
 msgid "Multi-part message"
 msgstr "멀티파트 메세지"
 
-#: gnome-vfs.keys.in.h:191
+#: gnome-vfs.keys.in.h:192
 msgid "NES ROM"
 msgstr "NES 롬"
 
-#: gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:193
 msgid "Named pipe"
 msgstr "명명된 파이프"
 
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:194
 msgid "Nautilus link"
 msgstr "노틸러스 링크"
 
-#: gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:195
 msgid "Netscape bookmarks file"
 msgstr "넷스케이프 책갈피 파일"
 
-#: gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:196
 msgid "Nintendo64 ROM"
 msgstr "닌텐도64 롬"
 
-#: gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:197
 msgid "Nullsoft video"
 msgstr "널소프트 비디오"
 
-#: gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:198
 msgid "ODA document"
 msgstr "ODA 문서"
 
-#: gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:199
 msgid "Object code"
 msgstr "개체 코드"
 
-#: gnome-vfs.keys.in.h:199
-#, fuzzy
-msgid "Objective C source code"
-msgstr "C 소스 코드"
-
 #: gnome-vfs.keys.in.h:200
+msgid "Objective C source code"
+msgstr "Objective C 소스 코드"
+
+#: gnome-vfs.keys.in.h:201
 msgid "Ogg audio"
 msgstr "Ogg 오디오"
 
-#: gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:202
 msgid "OpenOffice.org Impress presentation"
 msgstr "OpenOffice.org Impress 프리젠테이션"
 
-#: gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:203
 msgid "OpenOffice.org Impress presentation template"
 msgstr "OpenOffice.org Impress 프리젠테이션 템플릿"
 
-#: gnome-vfs.keys.in.h:203
+#: gnome-vfs.keys.in.h:204
 msgid "OpenOffice.org Math document"
 msgstr "OpenOffice.org Math 문서"
 
-#: gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:205
 msgid "OpenOffice.org Writer document"
 msgstr "OpenOffice.org Writer 문서"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:206
 msgid "OpenOffice.org Writer global document"
 msgstr "OpenOffice.org Writer 글로벌 문서"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:207
 msgid "OpenOffice.org Writer template"
 msgstr "OpenOffice.org Writer 템플릿"
 
-#: gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:208
 msgid "OpenOffice.org drawing"
 msgstr "OpenOffice.org 드로잉"
 
-#: gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:209
 msgid "OpenOffice.org drawing template"
 msgstr "OpenOffice.org 드로잉 템플릿"
 
-#: gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:210
 msgid "OpenOffice.org spreadsheet"
 msgstr "OpenOffice.org 스프레드시트"
 
-#: gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:211
 msgid "OpenOffice.org spreadsheet template"
 msgstr "OpenOffice.org 스프레드시트"
 
-#: gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:212
 msgid "OpenType font"
 msgstr "트루타입 글꼴"
 
-#: gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:213
 msgid "PBM image"
 msgstr "PBM 이미지"
 
-#: gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:214
 msgid "PC Paintbrush image"
 msgstr "PC Painbrush 이미지"
 
-#: gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:215
 msgid "PCF font"
 msgstr "PCF 글꼴"
 
-#: gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:216
 msgid "PDF document"
 msgstr "PDF 문서"
 
-#: gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:217
 msgid "PEF program"
 msgstr "PEF 프로그램"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:218
 msgid "PGM image"
 msgstr "PGM 이미지"
 
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:219
 msgid "PGN chess game"
 msgstr "PGN 체스게임"
 
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:220
 msgid "PGP keys"
 msgstr "PGP 키"
 
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:221
 msgid "PGP message"
 msgstr "PGP 메세지"
 
-#: gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:222
 msgid "PGP signature"
 msgstr "PGP 서명"
 
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:223
 msgid "PGP-encrypted file"
 msgstr "PGP 암호화된 데이터"
 
-#: gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:224
 msgid "PHP script"
 msgstr "PHP 스크립트"
 
-#: gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:225
 msgid "PICT image"
 msgstr "PICT 이미지"
 
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:226
 msgid "PNG image"
 msgstr "PNG 이미지"
 
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:227
 msgid "PNM image"
 msgstr "PNM 이미지"
 
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:228
 msgid "PPM image"
 msgstr "PPM 이미지"
 
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:229
 msgid "Packages"
 msgstr "꾸러미"
 
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:230
 msgid "Palm OS database"
 msgstr "팜OS 데이터베이스"
 
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:231
 msgid "Palm Pixmap image"
 msgstr "팜 픽스맵 이미지"
 
-#: gnome-vfs.keys.in.h:231
-msgid "Partial email message"
-msgstr "부분적인 이메일 메세지"
-
 #: gnome-vfs.keys.in.h:232
+msgid "Partial email message"
+msgstr "부분적인 전자메일 메세지"
+
+#: gnome-vfs.keys.in.h:233
 msgid "Pascal source code"
 msgstr "파스칼 소스 코드"
 
-#: gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:234
 msgid "Perl script"
 msgstr "펄 스크립트"
 
-#: gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:235
 msgid "Photo CD image"
 msgstr "Photo CD 이미지"
 
-#: gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:236
 msgid "Photoshop document"
 msgstr "포토샵 문서"
 
-#: gnome-vfs.keys.in.h:236
-msgid "Plain text document"
-msgstr "보통 text 문서"
-
 #: gnome-vfs.keys.in.h:237
+msgid "Plain text document"
+msgstr "일반 텍스트 문서"
+
+#: gnome-vfs.keys.in.h:238
 msgid "Playlist"
 msgstr "연주목록"
 
-#: gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:239
 msgid "PostScript Type 1 font"
 msgstr "포스트스크립트 Type 1 글꼴"
 
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:240
 msgid "PostScript document"
 msgstr "포스트스크립트 문서"
 
-#: gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:241
 msgid "Profiler results"
 msgstr "프로파일러 결과"
 
-#: gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:242
 msgid "Project Plan"
 msgstr "프로젝트 계획"
 
-#: gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:243
 msgid "Python byte code"
 msgstr "파이썬 바이트코드"
 
-#: gnome-vfs.keys.in.h:243
-msgid "Python source code"
-msgstr "파이썬 소스코드"
-
 #: gnome-vfs.keys.in.h:244
+msgid "Python source code"
+msgstr "파이썬 소스 코드"
+
+#: gnome-vfs.keys.in.h:245
 msgid "QuickTime movie"
 msgstr "퀵타임 무비"
 
-#: gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:246
 msgid "Quicken document"
 msgstr "Quicken 문서"
 
-#: gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:247
 msgid "Quicken for Windows document"
 msgstr "윈도우즈용 Quicken 문서"
 
-#: gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:248
 msgid "RAR archive"
 msgstr "RAR 아카이브"
 
-#: gnome-vfs.keys.in.h:248
+#: gnome-vfs.keys.in.h:249
 msgid "README document"
 msgstr "README 문서"
 
-#: gnome-vfs.keys.in.h:249
+#: gnome-vfs.keys.in.h:250
 msgid "RGB image"
 msgstr "RGB 이미지"
 
-#: gnome-vfs.keys.in.h:250
+#: gnome-vfs.keys.in.h:251
 msgid "RIFF audio"
 msgstr "RIFF 오디오"
 
-#: gnome-vfs.keys.in.h:251
+#: gnome-vfs.keys.in.h:252
 msgid "RPM package"
 msgstr "RPM 꾸러미"
 
-#: gnome-vfs.keys.in.h:252
+#: gnome-vfs.keys.in.h:253
 msgid "Raw Gray Sample"
 msgstr "처리 안 한 그레이 샘플"
 
-#: gnome-vfs.keys.in.h:253
+#: gnome-vfs.keys.in.h:254
 msgid "RealAudio document"
 msgstr "리얼오디오 문서"
 
-#: gnome-vfs.keys.in.h:254
+#: gnome-vfs.keys.in.h:255
 msgid "RealAudio/Video document"
 msgstr "리얼오디오/비디오 문서"
 
-#: gnome-vfs.keys.in.h:255
+#: gnome-vfs.keys.in.h:256
 msgid "RealVideo video"
 msgstr "리얼비디오 비디오"
 
-#: gnome-vfs.keys.in.h:256
+#: gnome-vfs.keys.in.h:257
 msgid "Reference to remote file"
 msgstr "원격 파일 참조"
 
-#: gnome-vfs.keys.in.h:257
+#: gnome-vfs.keys.in.h:258
 msgid "Rejected patch file"
 msgstr "거부된 패치 파일"
 
-#: gnome-vfs.keys.in.h:258
+#: gnome-vfs.keys.in.h:259
 msgid "Rich text document"
 msgstr "Rich text 문서"
 
-#: gnome-vfs.keys.in.h:259
+#: gnome-vfs.keys.in.h:260
 msgid "S/MIME file"
 msgstr "S/MIME 파일"
 
-#: gnome-vfs.keys.in.h:260
+#: gnome-vfs.keys.in.h:261
 msgid "S/MIME signature"
 msgstr "S/MIME 서명"
 
-#: gnome-vfs.keys.in.h:261
+#: gnome-vfs.keys.in.h:262
 msgid "SGI video"
 msgstr "SGI 비디오"
 
-#: gnome-vfs.keys.in.h:262
+#: gnome-vfs.keys.in.h:263
 msgid "SGML document"
 msgstr "SGML 문서"
 
-#: gnome-vfs.keys.in.h:263
+#: gnome-vfs.keys.in.h:264
 msgid "SHOUTcast playlist"
 msgstr "SHOUTcast 연주목록"
 
-#: gnome-vfs.keys.in.h:264
+#: gnome-vfs.keys.in.h:265
 msgid "SMIL script"
 msgstr "SMIL 스크립트"
 
-#: gnome-vfs.keys.in.h:265
+#: gnome-vfs.keys.in.h:266
 msgid "SQL code"
 msgstr "SQL 코드"
 
-#: gnome-vfs.keys.in.h:266
+#: gnome-vfs.keys.in.h:267
 msgid "SUN Rasterfile"
 msgstr "SUN 래스터 이미지"
 
-#: gnome-vfs.keys.in.h:267
+#: gnome-vfs.keys.in.h:268
 msgid "SV4 CPIO archive"
 msgstr "SV4 CPIO 아카이브"
 
-#: gnome-vfs.keys.in.h:268
+#: gnome-vfs.keys.in.h:269
 msgid "SV4 CPIP archive (with CRC)"
 msgstr "(CRC를 가지는) SV4 CPIP 아카이브"
 
-#: gnome-vfs.keys.in.h:269
+#: gnome-vfs.keys.in.h:270
 msgid "SVG art"
 msgstr "SVG art"
 
-#: gnome-vfs.keys.in.h:270
+#: gnome-vfs.keys.in.h:271
 msgid "Samba share"
 msgstr "삼바 공유"
 
-#: gnome-vfs.keys.in.h:271
-msgid "Scheme source code"
-msgstr "Scheme 소스코드"
-
 #: gnome-vfs.keys.in.h:272
+msgid "Scheme source code"
+msgstr "Scheme 소스 코드"
+
+#: gnome-vfs.keys.in.h:273
 msgid "Scream Tracker 3 audio"
 msgstr "Scream Tracker 3 오디오"
 
-#: gnome-vfs.keys.in.h:273
+#: gnome-vfs.keys.in.h:274
 msgid "Scream Tracker audio"
 msgstr "Scream Tracker 오디오"
 
-#: gnome-vfs.keys.in.h:274
+#: gnome-vfs.keys.in.h:275
 msgid "Scream Tracker instrument"
 msgstr "Scream Tracker 악기"
 
-#: gnome-vfs.keys.in.h:275
+#: gnome-vfs.keys.in.h:276
 msgid "Search results"
 msgstr "찾기 결과"
 
-#: gnome-vfs.keys.in.h:276
+#: gnome-vfs.keys.in.h:277
 msgid "Security"
 msgstr "보안"
 
-#: gnome-vfs.keys.in.h:277
+#: gnome-vfs.keys.in.h:278
 msgid "Setext document"
 msgstr "Setext 문서"
 
-#: gnome-vfs.keys.in.h:278
+#: gnome-vfs.keys.in.h:279
 msgid "Shared Printer"
 msgstr "공유 프린터"
 
-#: gnome-vfs.keys.in.h:279
+#: gnome-vfs.keys.in.h:280
 msgid "Shared library"
 msgstr "공유 라이브러리"
 
-#: gnome-vfs.keys.in.h:280
+#: gnome-vfs.keys.in.h:281
 msgid "Shell archive"
 msgstr "쉘 아카이브"
 
-#: gnome-vfs.keys.in.h:281
+#: gnome-vfs.keys.in.h:282
 msgid "Shell script"
 msgstr "쉘 스크립트"
 
-#: gnome-vfs.keys.in.h:282
+#: gnome-vfs.keys.in.h:283
 msgid "Signed message"
 msgstr "서명된 메세지"
 
-#: gnome-vfs.keys.in.h:283
+#: gnome-vfs.keys.in.h:284
 msgid "Silicon Graphics image"
 msgstr "Silicon Graphics 이미지"
 
-#: gnome-vfs.keys.in.h:284
+#: gnome-vfs.keys.in.h:285
 msgid "Socket"
 msgstr "소켓"
 
-#: gnome-vfs.keys.in.h:285
+#: gnome-vfs.keys.in.h:286
 msgid "Software Development"
 msgstr "소프트웨어 개발"
 
-#: gnome-vfs.keys.in.h:286
+#: gnome-vfs.keys.in.h:287
 msgid "Software Development/ROM Images"
 msgstr "소프트웨어 개발/롬 이미지"
 
-#: gnome-vfs.keys.in.h:287
+#: gnome-vfs.keys.in.h:288
 msgid "Software Development/Source Code"
 msgstr "소프트웨어 개발/소스 코드"
 
-#: gnome-vfs.keys.in.h:288
+#: gnome-vfs.keys.in.h:289
 msgid "Software author credits"
 msgstr "소프트웨어 저작자 크레디트"
 
-#: gnome-vfs.keys.in.h:289
+#: gnome-vfs.keys.in.h:290
 msgid "Software installation instructions"
 msgstr "소프트웨어 설치 방법"
 
-#: gnome-vfs.keys.in.h:290
+#: gnome-vfs.keys.in.h:291
 msgid "Software license terms"
 msgstr "소프트웨어 라이센스 조항"
 
-#: gnome-vfs.keys.in.h:291
+#: gnome-vfs.keys.in.h:292
 msgid "Source code patch"
 msgstr "소스 코드 패치"
 
-#: gnome-vfs.keys.in.h:292
+#: gnome-vfs.keys.in.h:293
 msgid "Speech document"
 msgstr "Speech 문서"
 
-#: gnome-vfs.keys.in.h:293
+#: gnome-vfs.keys.in.h:294
 msgid "Speedo font"
 msgstr "Speedo 글꼴"
 
-#: gnome-vfs.keys.in.h:294
+#: gnome-vfs.keys.in.h:295
 msgid "Spreadsheet Interchange document"
 msgstr "Spreadsheet 교환 문서"
 
-#: gnome-vfs.keys.in.h:295
+#: gnome-vfs.keys.in.h:296
 msgid "Stampede package"
 msgstr "Stampede 꾸러미"
 
-#: gnome-vfs.keys.in.h:296
+#: gnome-vfs.keys.in.h:297
 msgid "StarCalc spreadsheet"
 msgstr "StarCalc 스프레드시트"
 
-#: gnome-vfs.keys.in.h:297
+#: gnome-vfs.keys.in.h:298
 msgid "StarChart chart"
 msgstr "StarCalc 표"
 
-#: gnome-vfs.keys.in.h:298
+#: gnome-vfs.keys.in.h:299
 msgid "StarDraw drawing"
 msgstr "StarCalc 드로잉"
 
-#: gnome-vfs.keys.in.h:299
+#: gnome-vfs.keys.in.h:300
 msgid "StarImpress presentation"
 msgstr "StarImpress 프리젠테이션"
 
-#: gnome-vfs.keys.in.h:300
+#: gnome-vfs.keys.in.h:301
 msgid "StarMail file"
 msgstr "StarMail 파일"
 
-#: gnome-vfs.keys.in.h:301
+#: gnome-vfs.keys.in.h:302
 msgid "StarMath document"
 msgstr "StarMath 문서"
 
-#: gnome-vfs.keys.in.h:302
+#: gnome-vfs.keys.in.h:303
 msgid "StarOffice extended metafile image"
 msgstr "StarOffice 확장 메타파일 이미지"
 
-#: gnome-vfs.keys.in.h:303
+#: gnome-vfs.keys.in.h:304
 msgid "StarWriter document"
 msgstr "StarWriter 문서"
 
-#: gnome-vfs.keys.in.h:304
+#: gnome-vfs.keys.in.h:305
 msgid "Style sheet"
 msgstr "스타일시트"
 
-#: gnome-vfs.keys.in.h:305
+#: gnome-vfs.keys.in.h:306
 msgid "Sun mu-law audio"
 msgstr "Sun mu-law 오디오"
 
-#: gnome-vfs.keys.in.h:306
+#: gnome-vfs.keys.in.h:307
 msgid "SunOS News font"
 msgstr "SunOS News 글꼴"
 
-#: gnome-vfs.keys.in.h:307
+#: gnome-vfs.keys.in.h:308
 msgid "Symbolic link"
 msgstr "심볼릭 링크"
 
-#: gnome-vfs.keys.in.h:308
+#: gnome-vfs.keys.in.h:309
 msgid "System"
 msgstr "시스템"
 
-#: gnome-vfs.keys.in.h:309
+#: gnome-vfs.keys.in.h:310
 msgid "TIFF image"
 msgstr "TIFF 이미지"
 
-#: gnome-vfs.keys.in.h:310
+#: gnome-vfs.keys.in.h:311
 msgid "Tab-separated text document"
 msgstr "탭으로 분리된 텍스트문서"
 
-#: gnome-vfs.keys.in.h:311
-msgid "Tar archive"
-msgstr "Tar 아카이브"
-
 #: gnome-vfs.keys.in.h:312
-msgid "Tar archive (Bzip2-compressed)"
-msgstr "(bzip2로 압축된) Tar 아카이브"
+msgid "Tar archive"
+msgstr "TAR 아카이브"
 
 #: gnome-vfs.keys.in.h:313
-msgid "Tar archive (Gzip-compressed)"
-msgstr "(gzip으로 압축된) Tar 아카이브"
+msgid "Tar archive (Bzip2-compressed)"
+msgstr "(BZIP2로 압축된) TAR 아카이브"
 
 #: gnome-vfs.keys.in.h:314
+msgid "Tar archive (Gzip-compressed)"
+msgstr "(GZIP으로 압축된) TAR 아카이브"
+
+#: gnome-vfs.keys.in.h:315
 msgid "TarGA image"
 msgstr "TarGA 이미지"
 
-#: gnome-vfs.keys.in.h:315
+#: gnome-vfs.keys.in.h:316
 msgid "Tcl script"
 msgstr "Tcl 스크립트"
 
-#: gnome-vfs.keys.in.h:316
+#: gnome-vfs.keys.in.h:317
 msgid "TeX document"
 msgstr "TeX 문서"
 
-#: gnome-vfs.keys.in.h:317
+#: gnome-vfs.keys.in.h:318
 msgid "TeX dvi document"
 msgstr "TeX dvi 문서"
 
-#: gnome-vfs.keys.in.h:318
+#: gnome-vfs.keys.in.h:319
 msgid "TeX font"
 msgstr "TeX 글꼴"
 
-#: gnome-vfs.keys.in.h:319
+#: gnome-vfs.keys.in.h:320
 msgid "TeX font metrics"
 msgstr "Tex 글꼴 메트릭스"
 
-#: gnome-vfs.keys.in.h:320
+#: gnome-vfs.keys.in.h:321
 msgid "TeXInfo document"
 msgstr "TeXInfo 문서"
 
-#: gnome-vfs.keys.in.h:321
+#: gnome-vfs.keys.in.h:322
 msgid "Theme"
 msgstr "테마"
 
-#: gnome-vfs.keys.in.h:322
+#: gnome-vfs.keys.in.h:323
 msgid "ToutDoux document"
 msgstr "ToutDoux 문서"
 
-#: gnome-vfs.keys.in.h:323
+#: gnome-vfs.keys.in.h:324
 msgid "Troff document"
 msgstr "Troff 문서"
 
-#: gnome-vfs.keys.in.h:324
-msgid "Troff me input document"
-msgstr "Troff me input 문서"
-
 #: gnome-vfs.keys.in.h:325
-msgid "Troff mm input document"
-msgstr "Troff mm input  문서"
+msgid "Troff me input document"
+msgstr "Troff me 입력 문서"
 
 #: gnome-vfs.keys.in.h:326
-msgid "Troff ms input document"
-msgstr "troff ms input 문서"
+msgid "Troff mm input document"
+msgstr "Troff mm 입력  문서"
 
 #: gnome-vfs.keys.in.h:327
+msgid "Troff ms input document"
+msgstr "troff ms 입력 문서"
+
+#: gnome-vfs.keys.in.h:328
 msgid "TrueType font"
 msgstr "트루타입 글꼴"
 
-#: gnome-vfs.keys.in.h:328
+#: gnome-vfs.keys.in.h:329
 msgid "Truevision Targa image"
 msgstr "Truevision Targa 이미지"
 
-#: gnome-vfs.keys.in.h:329
+#: gnome-vfs.keys.in.h:330
 msgid "USENET news message"
 msgstr "유즈넷 새소식 메세지"
 
-#: gnome-vfs.keys.in.h:330
+#: gnome-vfs.keys.in.h:331
 msgid "Unidata netCDF document"
 msgstr "Unidata netCDF 문서"
 
-#: gnome-vfs.keys.in.h:331
+#: gnome-vfs.keys.in.h:332
 msgid "Unknown type"
 msgstr "알 수 없는 형식"
 
-#: gnome-vfs.keys.in.h:332
+#: gnome-vfs.keys.in.h:333
 msgid "User Interface"
 msgstr "사용자 인터페이스"
 
-#: gnome-vfs.keys.in.h:333
+#: gnome-vfs.keys.in.h:334
 msgid "User Interface/Fonts"
 msgstr "사용자 인터페이스/글꼴"
 
-#: gnome-vfs.keys.in.h:334
+#: gnome-vfs.keys.in.h:335
 msgid "Ustar archive"
 msgstr "Ustar 아카이브"
 
-#: gnome-vfs.keys.in.h:335
+#: gnome-vfs.keys.in.h:336
 msgid "V font"
 msgstr "V 글꼴"
 
-#: gnome-vfs.keys.in.h:336
+#: gnome-vfs.keys.in.h:337
 msgid "VOC audio"
 msgstr "VOC 오디오"
 
-#: gnome-vfs.keys.in.h:337
+#: gnome-vfs.keys.in.h:338
 msgid "VRML document"
 msgstr "VRML 문서"
 
-#: gnome-vfs.keys.in.h:338
+#: gnome-vfs.keys.in.h:339
+msgid "Verilog source code"
+msgstr "Verilog 소스 코드"
+
+#: gnome-vfs.keys.in.h:340
 msgid "Video"
 msgstr "비디오"
 
-#: gnome-vfs.keys.in.h:339
+#: gnome-vfs.keys.in.h:341
 msgid "Vivo video"
 msgstr "Vivo 비디오"
 
-#: gnome-vfs.keys.in.h:340
+#: gnome-vfs.keys.in.h:342
 msgid "WAIS source code"
-msgstr "WAIS 소스코드"
+msgstr "WAIS 소스 코드"
 
-#: gnome-vfs.keys.in.h:341
+#: gnome-vfs.keys.in.h:343
 msgid "Wave audio"
 msgstr "Wave 오디오"
 
-#: gnome-vfs.keys.in.h:342
+#: gnome-vfs.keys.in.h:344
 msgid "Wavelet video"
 msgstr "Wavelet 비디오"
 
-#: gnome-vfs.keys.in.h:343
+#: gnome-vfs.keys.in.h:345
 msgid "Web folder"
 msgstr "웹 폴더"
 
-#: gnome-vfs.keys.in.h:344
+#: gnome-vfs.keys.in.h:346
 msgid "Windows bitmap image"
 msgstr "윈도우즈 비트맵 이미지"
 
-#: gnome-vfs.keys.in.h:345
+#: gnome-vfs.keys.in.h:347
 msgid "Windows icon image"
 msgstr "윈도우즈 아이콘 이미지"
 
-#: gnome-vfs.keys.in.h:346
+#: gnome-vfs.keys.in.h:348
 msgid "Windows metafile graphics"
 msgstr "윈도우즈 메타파일 그래픽"
 
-#: gnome-vfs.keys.in.h:347
+#: gnome-vfs.keys.in.h:349
 msgid "WordPerfect document"
 msgstr "워드퍼펙트 문서"
 
-#: gnome-vfs.keys.in.h:348
+#: gnome-vfs.keys.in.h:350
 msgid "X bitmap image"
 msgstr "X 비트맵 이미지"
 
-#: gnome-vfs.keys.in.h:349
+#: gnome-vfs.keys.in.h:351
 msgid "X window image"
 msgstr "X 윈도우 이미지"
 
-#: gnome-vfs.keys.in.h:350
+#: gnome-vfs.keys.in.h:352
 msgid "XBEL bookmarks file"
 msgstr "XBEL 책갈피 파일"
 
-#: gnome-vfs.keys.in.h:351
+#: gnome-vfs.keys.in.h:353
 msgid "XML document"
 msgstr "XML 문서"
 
-#: gnome-vfs.keys.in.h:352
+#: gnome-vfs.keys.in.h:354
 msgid "XPM image"
 msgstr "XPM 이미지"
 
-#: gnome-vfs.keys.in.h:353
+#: gnome-vfs.keys.in.h:355
 msgid "Xbase database"
 msgstr "Xbase 데이터베이스"
 
-#: gnome-vfs.keys.in.h:354
+#: gnome-vfs.keys.in.h:356
 msgid "Yacc grammar source code"
 msgstr "Yacc 문법 소스 코드"
 
-#: gnome-vfs.keys.in.h:355
+#: gnome-vfs.keys.in.h:357
 msgid "Z shell script"
 msgstr "Z 쉘 스크립트"
 
-#: gnome-vfs.keys.in.h:356
-msgid "Zip archive"
-msgstr "Zip 아카이브"
-
-#: gnome-vfs.keys.in.h:357
-msgid "Zoo archive"
-msgstr "Zoo 아카이브"
-
 #: gnome-vfs.keys.in.h:358
+msgid "Zip archive"
+msgstr "ZIP 아카이브"
+
+#: gnome-vfs.keys.in.h:359
+msgid "Zoo archive"
+msgstr "ZOO 아카이브"
+
+#: gnome-vfs.keys.in.h:360
 msgid "gettext translation"
 msgstr "gettext 번역문"
 
-#: gnome-vfs.keys.in.h:359
+#: gnome-vfs.keys.in.h:361
 msgid "iPod software"
 msgstr "iPod 소프트웨어"
 
-#: gnome-vfs.keys.in.h:360
+#: gnome-vfs.keys.in.h:362
 msgid "xfig vector graphic"
 msgstr "xfig 벡터 그래픽"

@@ -1,14 +1,15 @@
 # Ukrainian translation of gnome-vfs.
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Yuri Syrota <rasta@renome.rovno.ua>, 1999.
+# Maxim Dziumanenko <mvd@mylinux.com.ua>, 2004
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-22 19:09+0000\n"
-"PO-Revision-Date: 2003-01-23 09:19--500\n"
-"Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
+"POT-Creation-Date: 2004-10-25 20:51+0200\n"
+"PO-Revision-Date: 2004-02-09 10:39+0200\n"
+"Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,7 +17,7 @@ msgstr ""
 
 #: gnome-vfs.keys.in.h:1
 msgid "2D chemical structure"
-msgstr ""
+msgstr "двовимірна хімічна формула"
 
 #: gnome-vfs.keys.in.h:2
 msgid "3D Studio image"
@@ -35,9 +36,8 @@ msgid "ANIM animation"
 msgstr "анімація у форматі ANIM"
 
 #: gnome-vfs.keys.in.h:6
-#, fuzzy
 msgid "ARJ archive"
-msgstr "архів у форматі RAR"
+msgstr "архів у форматі ARJ"
 
 #: gnome-vfs.keys.in.h:7
 msgid "AVI video"
@@ -48,14 +48,12 @@ msgid "AbiWord document"
 msgstr "документ у форматі AbiWord"
 
 #: gnome-vfs.keys.in.h:9
-#, fuzzy
 msgid "Active Server page"
-msgstr "Active Server Page"
+msgstr "сценарій формату \"активна сторінка серверу (*.asp)\""
 
 #: gnome-vfs.keys.in.h:10
-#, fuzzy
 msgid "Address card"
-msgstr "адреска картка"
+msgstr "візитна картка"
 
 #: gnome-vfs.keys.in.h:11
 msgid "Adobe FrameMaker font"
@@ -63,16 +61,15 @@ msgstr "шрифт у форматі Adobe FrameMaker"
 
 #: gnome-vfs.keys.in.h:12
 msgid "Adobe font metrics"
-msgstr "метрики шрифта у форматі Adobe"
+msgstr "метрики шрифту у форматі Adobe"
 
 #: gnome-vfs.keys.in.h:13
 msgid "Andrew Toolkit inset"
 msgstr "вкладка у форматі Andrew Toolkit"
 
 #: gnome-vfs.keys.in.h:14
-#, fuzzy
 msgid "Application launcher"
-msgstr "запускач програм"
+msgstr "програма запуску додатків"
 
 #: gnome-vfs.keys.in.h:15
 msgid "ApplixWare Graphics image"
@@ -83,30 +80,26 @@ msgid "Applixware Words document"
 msgstr "документ у форматі Applixware Words"
 
 #: gnome-vfs.keys.in.h:17
-#, fuzzy
 msgid "Applixware presentation"
-msgstr "таблиця у форматі Applixware"
+msgstr "презентація у форматі Applixware"
 
 #: gnome-vfs.keys.in.h:18
 msgid "Applixware spreadsheet"
 msgstr "таблиця у форматі Applixware"
 
 #: gnome-vfs.keys.in.h:19
-#, fuzzy
 msgid "Ar archive"
 msgstr "архів у форматі ar"
 
 #: gnome-vfs.keys.in.h:20
-#, fuzzy
 msgid "Assembly source code"
-msgstr "вихідний код на мові Scheme"
+msgstr "вихідний код на мові асемблер"
 
 #: gnome-vfs.keys.in.h:21
 msgid "Audio"
 msgstr "Звук"
 
 #: gnome-vfs.keys.in.h:22
-#, fuzzy
 msgid "Authors list"
 msgstr "список авторів"
 
@@ -123,48 +116,40 @@ msgid "BDF font"
 msgstr "шрифт у форматі BDF"
 
 #: gnome-vfs.keys.in.h:26
-#, fuzzy
 msgid "Backup file"
 msgstr "резервний файл"
 
 #: gnome-vfs.keys.in.h:27
-#, fuzzy
 msgid "Basic audio"
-msgstr "основний звук"
+msgstr "звичайний аудіо-запис"
 
 #: gnome-vfs.keys.in.h:28
-#, fuzzy
 msgid "Bibliography record"
 msgstr "бібліографічний запис"
 
 #: gnome-vfs.keys.in.h:29
-#, fuzzy
 msgid "Binary program"
-msgstr "двійкова програма"
+msgstr "виконувана програма"
 
 #: gnome-vfs.keys.in.h:30
-#, fuzzy
 msgid "BitTorrent seed file"
-msgstr "файл стиснутий у форматі gzip"
+msgstr "файл розсіювання програми BitTorrent"
 
 #: gnome-vfs.keys.in.h:31
-#, fuzzy
 msgid "Blender file"
-msgstr "календарний файл"
+msgstr "файл формату Blender"
 
 #: gnome-vfs.keys.in.h:32
-#, fuzzy
 msgid "Block device"
-msgstr "блоковий пристрій"
+msgstr "блочний пристрій"
 
 #: gnome-vfs.keys.in.h:33
-#, fuzzy
 msgid "Bzip2 compressed file"
-msgstr "файл стиснений у форматі bzip"
+msgstr "файл стиснений у форматі bzip2"
 
 #: gnome-vfs.keys.in.h:34
 msgid "C shell script"
-msgstr "скрипт C Shell"
+msgstr "сценарій на мові C Shell"
 
 #: gnome-vfs.keys.in.h:35
 msgid "C source code"
@@ -180,7 +165,7 @@ msgstr "вихідний код на мові Сі++"
 
 #: gnome-vfs.keys.in.h:38
 msgid "CGI program"
-msgstr "програма CGI"
+msgstr "програма типу CGI"
 
 #: gnome-vfs.keys.in.h:39
 msgid "CGM image"
@@ -195,66 +180,56 @@ msgid "CPIO archive"
 msgstr "архів у форматі CPIO"
 
 #: gnome-vfs.keys.in.h:42
-#, fuzzy
 msgid "CPIO archive (Gzip-compressed)"
 msgstr "стиснутий (gzip) архів у форматі CPIO"
 
 #: gnome-vfs.keys.in.h:43
-#, fuzzy
 msgid "Calendar file"
-msgstr "календарний файл"
+msgstr "файл календаря"
 
 #: gnome-vfs.keys.in.h:44
-#, fuzzy
 msgid "Calendar or event document"
 msgstr "документ календаря чи події"
 
 #: gnome-vfs.keys.in.h:45
-#, fuzzy
 msgid "Character device"
 msgstr "символьний пристрій"
 
 #: gnome-vfs.keys.in.h:46
 msgid "Cinelerra editing sheet"
-msgstr ""
+msgstr "лист редагування програми Cinelerra"
 
 #: gnome-vfs.keys.in.h:47
-#, fuzzy
 msgid "Comma-separated text document"
-msgstr "розділений комами текстовий документ"
+msgstr "текстовий документ з полями, розділеними комами"
 
 #: gnome-vfs.keys.in.h:48
-#, fuzzy
 msgid "Commodore 64 audio"
 msgstr "звук у форматі Commodore 64"
 
 #: gnome-vfs.keys.in.h:49
-#, fuzzy
 msgid "Compound document"
 msgstr "складений документ"
 
 #: gnome-vfs.keys.in.h:50
-#, fuzzy
 msgid "Compress-compressed file"
 msgstr "файл стиснений у форматі compress"
 
 #: gnome-vfs.keys.in.h:51
-#, fuzzy
 msgid "Compressed GIMP document"
 msgstr "стиснений документ у форматі GIMP"
 
 #: gnome-vfs.keys.in.h:52
-#, fuzzy
 msgid "Corel Draw drawing"
-msgstr "рисунок у форматі StarDraw"
+msgstr "рисунок у форматі Corel Draw"
 
 #: gnome-vfs.keys.in.h:53
 msgid "Crystalline structure model"
-msgstr ""
+msgstr "структурна модель програми Crystalline"
 
 #: gnome-vfs.keys.in.h:54
 msgid "DCL script"
-msgstr "скрипт DCL"
+msgstr "сценарій типу DCL"
 
 #: gnome-vfs.keys.in.h:55
 msgid "DOS font"
@@ -269,9 +244,8 @@ msgid "DSSSL document"
 msgstr "документ у форматі DSSSL"
 
 #: gnome-vfs.keys.in.h:58
-#, fuzzy
 msgid "DV video"
-msgstr "відео у форматі AVI"
+msgstr "відео у форматі DV"
 
 #: gnome-vfs.keys.in.h:59
 msgid "DXF vector graphic"
@@ -283,7 +257,7 @@ msgstr "пакет у форматі Debian"
 
 #: gnome-vfs.keys.in.h:61
 msgid "Device Independant Bitmap"
-msgstr "Зображення у форматі DIB"
+msgstr "зображення у форматі DIB"
 
 #: gnome-vfs.keys.in.h:62
 msgid "Dia diagram"
@@ -294,24 +268,20 @@ msgid "Digital Imaging and Communications in Medicine image"
 msgstr "зображення у форматі Digital Imaging and Communications in Medicine"
 
 #: gnome-vfs.keys.in.h:64
-#, fuzzy
 msgid "Digital Moving Picture Exchange image"
 msgstr "зображення у форматі Digital Moving Picture Exchange"
 
 #: gnome-vfs.keys.in.h:65
-#, fuzzy
 msgid "Directory information file"
-msgstr "інформаційний файл каталогу"
+msgstr "файл інформації про каталог"
 
 #: gnome-vfs.keys.in.h:66
-#, fuzzy
 msgid "DjVu image"
-msgstr "зображення у форматі 3D Studio"
+msgstr "зображення у форматі DjVu"
 
 #: gnome-vfs.keys.in.h:67
-#, fuzzy
 msgid "Document type definition"
-msgstr "визначення типу документу"
+msgstr "файл визначення типу документу (DTD)"
 
 #: gnome-vfs.keys.in.h:68
 msgid "Documents"
@@ -319,7 +289,7 @@ msgstr "Документи"
 
 #: gnome-vfs.keys.in.h:69
 msgid "Documents/Diagram"
-msgstr "Документи/Діаграма"
+msgstr "Документи/Діаграми"
 
 #: gnome-vfs.keys.in.h:70
 msgid "Documents/Extended Markup Language (XML)"
@@ -347,7 +317,7 @@ msgstr "Документи/Опубліковані матеріали"
 
 #: gnome-vfs.keys.in.h:76
 msgid "Documents/Spreadsheet"
-msgstr "Документи/Електронна таблиця"
+msgstr "Документи/Електронні таблиці"
 
 #: gnome-vfs.keys.in.h:77
 msgid "Documents/TeX"
@@ -374,7 +344,6 @@ msgid "Dolby Digital audio"
 msgstr "звук у форматі Dolby Digital"
 
 #: gnome-vfs.keys.in.h:83
-#, fuzzy
 msgid "Dreamcast ROM"
 msgstr "ПЗП у форматі Dreamcast"
 
@@ -383,17 +352,14 @@ msgid "Emacs Lisp source code"
 msgstr "вихідний код на мові Emacs Lisp"
 
 #: gnome-vfs.keys.in.h:85
-#, fuzzy
 msgid "Email headers"
-msgstr "заголовки електронної пошти"
+msgstr "заголовки ел.листа"
 
 #: gnome-vfs.keys.in.h:86
-#, fuzzy
 msgid "Email message/mailbox"
-msgstr "поштове повідомлення чи поштова скринька"
+msgstr "ел.лист/поштова скринька"
 
 #: gnome-vfs.keys.in.h:87
-#, fuzzy
 msgid "Encrypted message"
 msgstr "зашифроване повідомлення"
 
@@ -402,13 +368,12 @@ msgid "Enlightenment theme"
 msgstr "тема для віконного менеджера Enlightenment"
 
 #: gnome-vfs.keys.in.h:89
-#, fuzzy
 msgid "Enriched text document"
 msgstr "розширений текстовий документ"
 
 #: gnome-vfs.keys.in.h:90
 msgid "Epiphany bookmarks file"
-msgstr ""
+msgstr "файл закладок броузера Epiphany"
 
 #: gnome-vfs.keys.in.h:91
 msgid "FLAC audio"
@@ -435,7 +400,6 @@ msgid "Flexible Image Transport System"
 msgstr "зображення у форматі Flexible Image Transport System"
 
 #: gnome-vfs.keys.in.h:97
-#, fuzzy
 msgid "Folder"
 msgstr "тека"
 
@@ -449,7 +413,7 @@ msgstr "документ у форматі обміну FrameMaker"
 
 #: gnome-vfs.keys.in.h:100
 msgid "G3 fax image"
-msgstr "факсове зображення у форматі G3"
+msgstr "факсимільне зображення у форматі G3"
 
 #: gnome-vfs.keys.in.h:101
 msgid "GIF image"
@@ -465,7 +429,7 @@ msgstr "посилання у форматі GMC"
 
 #: gnome-vfs.keys.in.h:104
 msgid "GNOME desktop theme"
-msgstr ""
+msgstr "тема стільниці середовища GNOME"
 
 #: gnome-vfs.keys.in.h:105
 msgid "GNU Oleo Spreadsheet"
@@ -473,19 +437,17 @@ msgstr "таблиця у форматі GNU Oleo"
 
 #: gnome-vfs.keys.in.h:106
 msgid "GNU mail message"
-msgstr "поштове повідомлення у форматі GNU"
+msgstr "поштове повідомлення у форматі GNU mail"
 
 #: gnome-vfs.keys.in.h:107
 msgid "GTK configuration"
 msgstr "файл налаштування GTK"
 
 #: gnome-vfs.keys.in.h:108
-#, fuzzy
 msgid "Game Boy ROM"
 msgstr "ПЗП у форматі Game Boy"
 
 #: gnome-vfs.keys.in.h:109
-#, fuzzy
 msgid "Genesis ROM"
 msgstr "ПЗП у форматі Genesis"
 
@@ -494,7 +456,6 @@ msgid "Glade project"
 msgstr "проект у форматі Glade"
 
 #: gnome-vfs.keys.in.h:111
-#, fuzzy
 msgid "GnuCash workbook"
 msgstr "книга у форматі GnuCash"
 
@@ -503,16 +464,14 @@ msgid "Gnumeric spreadsheet"
 msgstr "таблиця у форматі Gnumeric"
 
 #: gnome-vfs.keys.in.h:113
-#, fuzzy
 msgid "Gtar archive"
-msgstr "архів у форматі tar"
+msgstr "архів у форматі gtar"
 
 #: gnome-vfs.keys.in.h:114
 msgid "Gtktalog Catalogue"
 msgstr "каталог у форматі Gtktalog"
 
 #: gnome-vfs.keys.in.h:115
-#, fuzzy
 msgid "Gzip-compressed file"
 msgstr "файл стиснутий у форматі gzip"
 
@@ -529,7 +488,6 @@ msgid "Haskell source code"
 msgstr "вихідний код на мові Haskell"
 
 #: gnome-vfs.keys.in.h:119
-#, fuzzy
 msgid "Help page"
 msgstr "сторінка довідки"
 
@@ -575,11 +533,11 @@ msgstr "Інформація/Календар"
 
 #: gnome-vfs.keys.in.h:130
 msgid "Information/Financial"
-msgstr "Інформація/Фінансова"
+msgstr "Інформація/Фінанси"
 
 #: gnome-vfs.keys.in.h:131
 msgid "Installed GNOME desktop theme"
-msgstr ""
+msgstr "встановлена тема стільниці середовища GNOME"
 
 #: gnome-vfs.keys.in.h:132
 msgid "JBuilder Project"
@@ -594,18 +552,16 @@ msgid "Java byte code"
 msgstr "байт-код у форматі Java"
 
 #: gnome-vfs.keys.in.h:135
-#, fuzzy
 msgid "Java code archive"
-msgstr "архів у форматі ar"
+msgstr "архів у форматі Java"
 
 #: gnome-vfs.keys.in.h:136
 msgid "Java source code"
 msgstr "вихідний код на мові Java"
 
 #: gnome-vfs.keys.in.h:137
-#, fuzzy
 msgid "JavaScript source code"
-msgstr "вихідний код на мові Java"
+msgstr "вихідний код на мові JavaScript"
 
 #: gnome-vfs.keys.in.h:138
 msgid "KDE application details"
@@ -629,7 +585,7 @@ msgstr "документ у форматі KWord"
 
 #: gnome-vfs.keys.in.h:143
 msgid "Korn shell script"
-msgstr "скрипт на Korn Shell"
+msgstr "сценарій на мові Korn Shell"
 
 #: gnome-vfs.keys.in.h:144
 msgid "LHA archive"
@@ -657,14 +613,13 @@ msgstr "консольний шрифт у форматі Linux PSF"
 
 #: gnome-vfs.keys.in.h:150
 msgid "Literate haskell source code"
-msgstr "літерований вихідний код на мові Haskell"
+msgstr "письменний вихідний код на мові Haskell"
 
 #: gnome-vfs.keys.in.h:151
 msgid "Lotus 1-2-3 spreadsheet"
 msgstr "таблиця у форматі Lotus 1-2-3"
 
 #: gnome-vfs.keys.in.h:152
-#, fuzzy
 msgid "LyX document"
 msgstr "документ у форматі LyX"
 
@@ -689,14 +644,12 @@ msgid "MPEG video"
 msgstr "відео у форматі MPEG"
 
 #: gnome-vfs.keys.in.h:158
-#, fuzzy
 msgid "MPEG-4 audio"
-msgstr "звук у форматі MPEG"
+msgstr "звук у форматі MPEG-4"
 
 #: gnome-vfs.keys.in.h:159
-#, fuzzy
 msgid "MS ASF audio"
-msgstr "відео у форматі MS ASF"
+msgstr "звук у форматі MS ASF"
 
 #: gnome-vfs.keys.in.h:160
 msgid "MS ASF video"
@@ -708,7 +661,7 @@ msgstr "відео у форматі MS"
 
 #: gnome-vfs.keys.in.h:162
 msgid "MSX ROM"
-msgstr ""
+msgstr "ПЗП у форматі MSX"
 
 #: gnome-vfs.keys.in.h:163
 msgid "MacBinary file"
@@ -731,46 +684,38 @@ msgid "Macromedia Flash file"
 msgstr "файл у форматі Macromedia Flash"
 
 #: gnome-vfs.keys.in.h:168
-#, fuzzy
 msgid "MagicPoint presentation"
-msgstr "презентація у форматі KPresenter"
+msgstr "презентація у форматі MagicPoint"
 
 #: gnome-vfs.keys.in.h:169
 msgid "Magick image format"
 msgstr "зображення у форматі Magick image"
 
 #: gnome-vfs.keys.in.h:170
-#, fuzzy
 msgid "Mail delivery report"
-msgstr "звіт відвантаження пошти"
+msgstr "звіт про доставку пошти"
 
 #: gnome-vfs.keys.in.h:171
-#, fuzzy
 msgid "Mail disposition report"
-msgstr "звіт про розташування пошти"
+msgstr "звіт про переміщення пошти"
 
 #: gnome-vfs.keys.in.h:172
-#, fuzzy
 msgid "Mail system report"
 msgstr "звіт поштової системи"
 
 #: gnome-vfs.keys.in.h:173
-#, fuzzy
 msgid "Makefile"
 msgstr "файл у форматі make"
 
 #: gnome-vfs.keys.in.h:174
-#, fuzzy
 msgid "Manual page"
-msgstr "сторінка посібника"
+msgstr "сторінка посібника (man)"
 
 #: gnome-vfs.keys.in.h:175
-#, fuzzy
 msgid "Manual page (compressed)"
-msgstr "сторінка посібника (стиснута)"
+msgstr "стиснута сторінка посібника (man)"
 
 #: gnome-vfs.keys.in.h:176
-#, fuzzy
 msgid "Master System or Game Gear ROM"
 msgstr "ПЗП у форматі SMS чи Game Gear"
 
@@ -779,815 +724,741 @@ msgid "MathML document"
 msgstr "документ у форматі MathML"
 
 #: gnome-vfs.keys.in.h:178
-#, fuzzy
+msgid "Matroska video"
+msgstr "відео у форматі Matroska"
+
+#: gnome-vfs.keys.in.h:179
 msgid "Memory dump"
 msgstr "відбиток пам'яті"
 
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:180
 msgid "Message"
 msgstr "Повідомлення"
 
-#: gnome-vfs.keys.in.h:180
-#, fuzzy
+#: gnome-vfs.keys.in.h:181
 msgid "Message digest"
 msgstr "збірка повідомлень"
 
-#: gnome-vfs.keys.in.h:181
-#, fuzzy
+#: gnome-vfs.keys.in.h:182
 msgid "Message in several formats"
 msgstr "повідомлення в декількох форматах"
 
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:183
 msgid "Microsoft Excel spreadsheet"
 msgstr "таблиця у форматі Microsoft Excel"
 
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:184
 msgid "Microsoft PowerPoint document"
 msgstr "документ у форматі Microsoft PowerPoint"
 
-#: gnome-vfs.keys.in.h:184
-#, fuzzy
-msgid "Microsoft WMV playlist"
-msgstr "відео у форматі Microsoft WMV"
-
 #: gnome-vfs.keys.in.h:185
+msgid "Microsoft WMV playlist"
+msgstr "список записів у форматі Microsoft WMV"
+
+#: gnome-vfs.keys.in.h:186
 msgid "Microsoft WMV video"
 msgstr "відео у форматі Microsoft WMV"
 
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:187
 msgid "Microsoft Word document"
 msgstr "документ у форматі Microsoft Word"
 
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:188
 msgid "Microsoft video"
 msgstr "відео у форматі Microsoft"
 
-#: gnome-vfs.keys.in.h:188
-#, fuzzy
-msgid "Monkey audio"
-msgstr "звук у форматі ogg"
-
 #: gnome-vfs.keys.in.h:189
-msgid "Mozilla bookmarks file"
-msgstr ""
+msgid "Monkey audio"
+msgstr "звук у форматі Monkey"
 
 #: gnome-vfs.keys.in.h:190
-#, fuzzy
-msgid "Multi-part message"
-msgstr "багаточастинне повідомлення"
+msgid "Mozilla bookmarks file"
+msgstr "файл закладок браузера Mozilla"
 
 #: gnome-vfs.keys.in.h:191
-msgid "NES ROM"
-msgstr ""
+msgid "Multi-part message"
+msgstr "повідомлення з декількох частин"
 
 #: gnome-vfs.keys.in.h:192
-#, fuzzy
+msgid "NES ROM"
+msgstr "ПЗП у форматі NES"
+
+#: gnome-vfs.keys.in.h:193
 msgid "Named pipe"
 msgstr "найменований канал"
 
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:194
 msgid "Nautilus link"
 msgstr "посилання у форматі Nautilus"
 
-#: gnome-vfs.keys.in.h:194
-msgid "Netscape bookmarks file"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:195
-#, fuzzy
+msgid "Netscape bookmarks file"
+msgstr "файл закладок браузера Netscape"
+
+#: gnome-vfs.keys.in.h:196
 msgid "Nintendo64 ROM"
 msgstr "ПЗП у форматі Nintendo64"
 
-#: gnome-vfs.keys.in.h:196
-#, fuzzy
-msgid "Nullsoft video"
-msgstr "відео у форматі Microsoft"
-
 #: gnome-vfs.keys.in.h:197
+msgid "Nullsoft video"
+msgstr "відео у форматі Nullsoft"
+
+#: gnome-vfs.keys.in.h:198
 msgid "ODA document"
 msgstr "документ у форматі ODA"
 
-#: gnome-vfs.keys.in.h:198
-#, fuzzy
+#: gnome-vfs.keys.in.h:199
 msgid "Object code"
 msgstr "об'єктний код"
 
-#: gnome-vfs.keys.in.h:199
-#, fuzzy
-msgid "Objective C source code"
-msgstr "вихідний код на мові Сі"
-
 #: gnome-vfs.keys.in.h:200
-#, fuzzy
+msgid "Objective C source code"
+msgstr "вихідний код на мові Objective C"
+
+#: gnome-vfs.keys.in.h:201
 msgid "Ogg audio"
 msgstr "звук у форматі ogg"
 
-#: gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:202
 msgid "OpenOffice.org Impress presentation"
 msgstr "презентація у форматі OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:203
 msgid "OpenOffice.org Impress presentation template"
 msgstr "шаблон презентації у форматі OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:203
+#: gnome-vfs.keys.in.h:204
 msgid "OpenOffice.org Math document"
 msgstr "документ у форматі OpenOffice.org Math"
 
-#: gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:205
 msgid "OpenOffice.org Writer document"
 msgstr "документ у форматі OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:206
 msgid "OpenOffice.org Writer global document"
 msgstr "глобальний документ у форматі OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:207
 msgid "OpenOffice.org Writer template"
 msgstr "шаблон у форматі OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:208
 msgid "OpenOffice.org drawing"
 msgstr "рисунок у форматі OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:209
 msgid "OpenOffice.org drawing template"
 msgstr "шаблон рисунка у форматі OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:210
 msgid "OpenOffice.org spreadsheet"
 msgstr "електронна таблиця у форматі OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:211
 msgid "OpenOffice.org spreadsheet template"
 msgstr "шаблон електронної таблиці у форматі OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:212
 msgid "OpenType font"
 msgstr "шрифт у форматі OpenType"
 
-#: gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:213
 msgid "PBM image"
 msgstr "зображення у форматі PBM"
 
-#: gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:214
 msgid "PC Paintbrush image"
 msgstr "зображення у форматі PC Paintbrush"
 
-#: gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:215
 msgid "PCF font"
 msgstr "шрифт у форматі PCF"
 
-#: gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:216
 msgid "PDF document"
 msgstr "документ у форматі PDF"
 
-#: gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:217
 msgid "PEF program"
 msgstr "програма у форматі PEF"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:218
 msgid "PGM image"
 msgstr "зображення у форматі PGM"
 
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:219
 msgid "PGN chess game"
 msgstr "шахова гра у форматі PGN"
 
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:220
 msgid "PGP keys"
 msgstr "ключі у форматі PGP"
 
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:221
 msgid "PGP message"
 msgstr "повідомлення у форматі PGP"
 
-#: gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:222
 msgid "PGP signature"
 msgstr "підпис у форматі PGP"
 
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:223
 msgid "PGP-encrypted file"
 msgstr "файл закодований у форматі PGP"
 
-#: gnome-vfs.keys.in.h:223
-msgid "PHP script"
-msgstr "скрипт на PHP"
-
 #: gnome-vfs.keys.in.h:224
+msgid "PHP script"
+msgstr "сценарій на мові PHP"
+
+#: gnome-vfs.keys.in.h:225
 msgid "PICT image"
 msgstr "зображення у форматі PICT"
 
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:226
 msgid "PNG image"
 msgstr "зображення у форматі PNG"
 
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:227
 msgid "PNM image"
 msgstr "зображення у форматі PNM"
 
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:228
 msgid "PPM image"
 msgstr "зображення у форматі PPM"
 
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:229
 msgid "Packages"
 msgstr "Пакети"
 
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:230
 msgid "Palm OS database"
 msgstr "база даних у форматі Palm OS"
 
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:231
 msgid "Palm Pixmap image"
 msgstr "зображення у форматі Palm Pixmap"
 
-#: gnome-vfs.keys.in.h:231
-#, fuzzy
-msgid "Partial email message"
-msgstr "часткове поштове повідомлення"
-
 #: gnome-vfs.keys.in.h:232
-#, fuzzy
-msgid "Pascal source code"
-msgstr "вихідний код на мові Java"
+msgid "Partial email message"
+msgstr "часткове повідомлення ел.пошти"
 
 #: gnome-vfs.keys.in.h:233
-msgid "Perl script"
-msgstr "скрипт на Perl"
+msgid "Pascal source code"
+msgstr "вихідний код на мові Pascal"
 
 #: gnome-vfs.keys.in.h:234
+msgid "Perl script"
+msgstr "сценарій на мові Perl"
+
+#: gnome-vfs.keys.in.h:235
 msgid "Photo CD image"
 msgstr "зображення у форматі Photo CD"
 
-#: gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:236
 msgid "Photoshop document"
 msgstr "документ у форматі Photoshop"
 
-#: gnome-vfs.keys.in.h:236
-#, fuzzy
+#: gnome-vfs.keys.in.h:237
 msgid "Plain text document"
 msgstr "простий текстовий документ"
 
-#: gnome-vfs.keys.in.h:237
-msgid "Playlist"
-msgstr "Список записів"
-
 #: gnome-vfs.keys.in.h:238
+msgid "Playlist"
+msgstr "список записів"
+
+#: gnome-vfs.keys.in.h:239
 msgid "PostScript Type 1 font"
 msgstr "шрифт у форматі PostScript Type 1"
 
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:240
 msgid "PostScript document"
 msgstr "документ у форматі PostScript"
 
-#: gnome-vfs.keys.in.h:240
-#, fuzzy
+#: gnome-vfs.keys.in.h:241
 msgid "Profiler results"
 msgstr "результати профілювання"
 
-#: gnome-vfs.keys.in.h:241
-msgid "Project Plan"
-msgstr "План проекту"
-
 #: gnome-vfs.keys.in.h:242
-#, fuzzy
+msgid "Project Plan"
+msgstr "документ формату Project Plan"
+
+#: gnome-vfs.keys.in.h:243
 msgid "Python byte code"
 msgstr "байт-код у форматі Python"
 
-#: gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:244
 msgid "Python source code"
 msgstr "вихідний код на мові Python"
 
-#: gnome-vfs.keys.in.h:244
+#: gnome-vfs.keys.in.h:245
 msgid "QuickTime movie"
 msgstr "фільм у форматі QuickTime"
 
-#: gnome-vfs.keys.in.h:245
+#: gnome-vfs.keys.in.h:246
 msgid "Quicken document"
 msgstr "документ у форматі Quicken"
 
-#: gnome-vfs.keys.in.h:246
+#: gnome-vfs.keys.in.h:247
 msgid "Quicken for Windows document"
 msgstr "документ у форматі Quicken для Windows"
 
-#: gnome-vfs.keys.in.h:247
+#: gnome-vfs.keys.in.h:248
 msgid "RAR archive"
 msgstr "архів у форматі RAR"
 
-#: gnome-vfs.keys.in.h:248
+#: gnome-vfs.keys.in.h:249
 msgid "README document"
 msgstr "документ README"
 
-#: gnome-vfs.keys.in.h:249
+#: gnome-vfs.keys.in.h:250
 msgid "RGB image"
 msgstr "зображення у форматі RGB"
 
-#: gnome-vfs.keys.in.h:250
+#: gnome-vfs.keys.in.h:251
 msgid "RIFF audio"
 msgstr "звук у форматі RIFF"
 
-#: gnome-vfs.keys.in.h:251
+#: gnome-vfs.keys.in.h:252
 msgid "RPM package"
 msgstr "пакет у форматі RPM"
 
-#: gnome-vfs.keys.in.h:252
+#: gnome-vfs.keys.in.h:253
 msgid "Raw Gray Sample"
 msgstr "зображення у форматі Raw Gray Sample"
 
-#: gnome-vfs.keys.in.h:253
+#: gnome-vfs.keys.in.h:254
 msgid "RealAudio document"
 msgstr "документ у форматі RealAudio"
 
-#: gnome-vfs.keys.in.h:254
+#: gnome-vfs.keys.in.h:255
 msgid "RealAudio/Video document"
 msgstr "документ у форматі RealAudio/Video"
 
-#: gnome-vfs.keys.in.h:255
+#: gnome-vfs.keys.in.h:256
 msgid "RealVideo video"
 msgstr "відео у форматі RealVideo"
 
-#: gnome-vfs.keys.in.h:256
-#, fuzzy
+#: gnome-vfs.keys.in.h:257
 msgid "Reference to remote file"
 msgstr "посилання на віддалений файл"
 
-#: gnome-vfs.keys.in.h:257
-#, fuzzy
+#: gnome-vfs.keys.in.h:258
 msgid "Rejected patch file"
 msgstr "відкинутий файл латки"
 
-#: gnome-vfs.keys.in.h:258
-#, fuzzy
-msgid "Rich text document"
-msgstr "документ у форматі rich text"
-
 #: gnome-vfs.keys.in.h:259
+msgid "Rich text document"
+msgstr "тестовий документ з формуванням (rich text)"
+
+#: gnome-vfs.keys.in.h:260
 msgid "S/MIME file"
 msgstr "файл у форматі S/MIME"
 
-#: gnome-vfs.keys.in.h:260
+#: gnome-vfs.keys.in.h:261
 msgid "S/MIME signature"
 msgstr "підпис у форматі S/MIME"
 
-#: gnome-vfs.keys.in.h:261
+#: gnome-vfs.keys.in.h:262
 msgid "SGI video"
 msgstr "відео у форматі SGI"
 
-#: gnome-vfs.keys.in.h:262
+#: gnome-vfs.keys.in.h:263
 msgid "SGML document"
 msgstr "документ у форматі SGML"
 
-#: gnome-vfs.keys.in.h:263
-#, fuzzy
+#: gnome-vfs.keys.in.h:264
 msgid "SHOUTcast playlist"
 msgstr "список записів у форматі SHOUTcast"
 
-#: gnome-vfs.keys.in.h:264
-msgid "SMIL script"
-msgstr "скрипт на SMIL"
-
 #: gnome-vfs.keys.in.h:265
-msgid "SQL code"
-msgstr "код на SQL"
+msgid "SMIL script"
+msgstr "сценарій на мові SMIL"
 
 #: gnome-vfs.keys.in.h:266
+msgid "SQL code"
+msgstr "код на мові SQL"
+
+#: gnome-vfs.keys.in.h:267
 msgid "SUN Rasterfile"
 msgstr "растрове зображення у форматі SUN"
 
-#: gnome-vfs.keys.in.h:267
+#: gnome-vfs.keys.in.h:268
 msgid "SV4 CPIO archive"
 msgstr "архів у форматі SV4 CPIO"
 
-#: gnome-vfs.keys.in.h:268
+#: gnome-vfs.keys.in.h:269
 msgid "SV4 CPIP archive (with CRC)"
 msgstr "архів у форматі SV4 CPIP (з CRC)"
 
-#: gnome-vfs.keys.in.h:269
-msgid "SVG art"
-msgstr "мистецтво у форматі SVG"
-
 #: gnome-vfs.keys.in.h:270
-msgid "Samba share"
-msgstr ""
+msgid "SVG art"
+msgstr "зображення у форматі SVG"
 
 #: gnome-vfs.keys.in.h:271
+msgid "Samba share"
+msgstr "спільний ресурс сервера Samba"
+
+#: gnome-vfs.keys.in.h:272
 msgid "Scheme source code"
 msgstr "вихідний код на мові Scheme"
 
-#: gnome-vfs.keys.in.h:272
+#: gnome-vfs.keys.in.h:273
 msgid "Scream Tracker 3 audio"
 msgstr "звук у форматі Scream Tracker 3"
 
-#: gnome-vfs.keys.in.h:273
+#: gnome-vfs.keys.in.h:274
 msgid "Scream Tracker audio"
 msgstr "звук у форматі Scream Tracker"
 
-#: gnome-vfs.keys.in.h:274
+#: gnome-vfs.keys.in.h:275
 msgid "Scream Tracker instrument"
 msgstr "інструмент у форматі Scream Tracker"
 
-#: gnome-vfs.keys.in.h:275
-#, fuzzy
+#: gnome-vfs.keys.in.h:276
 msgid "Search results"
 msgstr "результати пошуку"
 
-#: gnome-vfs.keys.in.h:276
+#: gnome-vfs.keys.in.h:277
 msgid "Security"
 msgstr "Безпека"
 
-#: gnome-vfs.keys.in.h:277
+#: gnome-vfs.keys.in.h:278
 msgid "Setext document"
 msgstr "документ у форматі Setext"
 
-#: gnome-vfs.keys.in.h:278
-msgid "Shared Printer"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:279
-#, fuzzy
+msgid "Shared Printer"
+msgstr "спільний принтер"
+
+#: gnome-vfs.keys.in.h:280
 msgid "Shared library"
 msgstr "спільна бібліотека"
 
-#: gnome-vfs.keys.in.h:280
-#, fuzzy
+#: gnome-vfs.keys.in.h:281
 msgid "Shell archive"
 msgstr "архів оболонки"
 
-#: gnome-vfs.keys.in.h:281
-#, fuzzy
-msgid "Shell script"
-msgstr "скрипт оболонки"
-
 #: gnome-vfs.keys.in.h:282
-#, fuzzy
+msgid "Shell script"
+msgstr "сценарій оболонки"
+
+#: gnome-vfs.keys.in.h:283
 msgid "Signed message"
 msgstr "підписане повідомлення"
 
-#: gnome-vfs.keys.in.h:283
-#, fuzzy
+#: gnome-vfs.keys.in.h:284
 msgid "Silicon Graphics image"
 msgstr "зображення у форматі Silicon Graphics"
 
-#: gnome-vfs.keys.in.h:284
-#, fuzzy
+#: gnome-vfs.keys.in.h:285
 msgid "Socket"
 msgstr "сокет"
 
-#: gnome-vfs.keys.in.h:285
-msgid "Software Development"
-msgstr "Розробка програмного забезпечення"
-
 #: gnome-vfs.keys.in.h:286
-msgid "Software Development/ROM Images"
-msgstr "Розробка програмного забезпечення/Образи ПЗП"
+msgid "Software Development"
+msgstr "Розробка ПЗ"
 
 #: gnome-vfs.keys.in.h:287
-msgid "Software Development/Source Code"
-msgstr "Розробка програмного забезпечення/Вихідний код"
+msgid "Software Development/ROM Images"
+msgstr "Розробка ПЗ/Образи ПЗП"
 
 #: gnome-vfs.keys.in.h:288
-#, fuzzy
-msgid "Software author credits"
-msgstr "довідка про авторів програмного забезпечення"
+msgid "Software Development/Source Code"
+msgstr "Розробка ПЗ/Вихідний код"
 
 #: gnome-vfs.keys.in.h:289
-#, fuzzy
-msgid "Software installation instructions"
-msgstr "інструкції з встановлення програмного запезпечення"
+msgid "Software author credits"
+msgstr "довідка про авторів програми"
 
 #: gnome-vfs.keys.in.h:290
-#, fuzzy
-msgid "Software license terms"
-msgstr "ліцензійні умови програмного забезпечення"
+msgid "Software installation instructions"
+msgstr "інструкції з встановлення програми"
 
 #: gnome-vfs.keys.in.h:291
-#, fuzzy
+msgid "Software license terms"
+msgstr "ліцензійні умови програми"
+
+#: gnome-vfs.keys.in.h:292
 msgid "Source code patch"
 msgstr "латка вихідного коду"
 
-#: gnome-vfs.keys.in.h:292
+#: gnome-vfs.keys.in.h:293
 msgid "Speech document"
 msgstr "документ у форматі Speech"
 
-#: gnome-vfs.keys.in.h:293
+#: gnome-vfs.keys.in.h:294
 msgid "Speedo font"
 msgstr "шрифт у форматі Speedo"
 
-#: gnome-vfs.keys.in.h:294
+#: gnome-vfs.keys.in.h:295
 msgid "Spreadsheet Interchange document"
 msgstr "документ у форматі Spreadsheet Interchange"
 
-#: gnome-vfs.keys.in.h:295
+#: gnome-vfs.keys.in.h:296
 msgid "Stampede package"
 msgstr "пакет у форматі Stampede"
 
-#: gnome-vfs.keys.in.h:296
+#: gnome-vfs.keys.in.h:297
 msgid "StarCalc spreadsheet"
 msgstr "електронна таблиця у форматі StarCalc"
 
-#: gnome-vfs.keys.in.h:297
+#: gnome-vfs.keys.in.h:298
 msgid "StarChart chart"
 msgstr "графік у форматі StarChart"
 
-#: gnome-vfs.keys.in.h:298
+#: gnome-vfs.keys.in.h:299
 msgid "StarDraw drawing"
 msgstr "рисунок у форматі StarDraw"
 
-#: gnome-vfs.keys.in.h:299
+#: gnome-vfs.keys.in.h:300
 msgid "StarImpress presentation"
 msgstr "презентація у форматі StarImpress"
 
-#: gnome-vfs.keys.in.h:300
+#: gnome-vfs.keys.in.h:301
 msgid "StarMail file"
 msgstr "файл у форматі StarMail"
 
-#: gnome-vfs.keys.in.h:301
+#: gnome-vfs.keys.in.h:302
 msgid "StarMath document"
 msgstr "документ у форматі StarMath"
 
-#: gnome-vfs.keys.in.h:302
+#: gnome-vfs.keys.in.h:303
 msgid "StarOffice extended metafile image"
 msgstr "розширений метафайл зображення у форматі StarOffice"
 
-#: gnome-vfs.keys.in.h:303
+#: gnome-vfs.keys.in.h:304
 msgid "StarWriter document"
 msgstr "документ у форматі StarWriter"
 
-#: gnome-vfs.keys.in.h:304
-#, fuzzy
-msgid "Style sheet"
-msgstr "таблиця стилю"
-
 #: gnome-vfs.keys.in.h:305
+msgid "Style sheet"
+msgstr "таблиця стилів"
+
+#: gnome-vfs.keys.in.h:306
 msgid "Sun mu-law audio"
 msgstr "звук у форматі Sun mu-law"
 
-#: gnome-vfs.keys.in.h:306
-msgid "SunOS News font"
-msgstr "шрифт  у форматіSunOS News"
-
 #: gnome-vfs.keys.in.h:307
-#, fuzzy
+msgid "SunOS News font"
+msgstr "шрифт  у форматі SunOS News"
+
+#: gnome-vfs.keys.in.h:308
 msgid "Symbolic link"
 msgstr "символьне посилання"
 
-#: gnome-vfs.keys.in.h:308
+#: gnome-vfs.keys.in.h:309
 msgid "System"
 msgstr "Система"
 
-#: gnome-vfs.keys.in.h:309
-msgid "TIFF image"
-msgstr "зображення  у форматіTIFF"
-
 #: gnome-vfs.keys.in.h:310
-#, fuzzy
-msgid "Tab-separated text document"
-msgstr "текстовий документ розділений табуляціями"
+msgid "TIFF image"
+msgstr "зображення  у форматі TIFF"
 
 #: gnome-vfs.keys.in.h:311
-#, fuzzy
-msgid "Tar archive"
-msgstr "архів у форматі ar"
+msgid "Tab-separated text document"
+msgstr "текстовий документ з полями, розділеними табуляціями"
 
 #: gnome-vfs.keys.in.h:312
-#, fuzzy
-msgid "Tar archive (Bzip2-compressed)"
-msgstr "архів у форматі tar (стиснутий у форматі bzip2)"
+msgid "Tar archive"
+msgstr "архів у форматі tar"
 
 #: gnome-vfs.keys.in.h:313
-#, fuzzy
-msgid "Tar archive (Gzip-compressed)"
-msgstr "архів у форматі tar (стиснутий у форматі gzip)"
+msgid "Tar archive (Bzip2-compressed)"
+msgstr "архів у форматі tar (стиснутий у програмою bzip2)"
 
 #: gnome-vfs.keys.in.h:314
+msgid "Tar archive (Gzip-compressed)"
+msgstr "архів у форматі tar (стиснутий у програмою gzip)"
+
+#: gnome-vfs.keys.in.h:315
 msgid "TarGA image"
 msgstr "зображення у форматі TarGA"
 
-#: gnome-vfs.keys.in.h:315
-msgid "Tcl script"
-msgstr "скрипт на Tcl"
-
 #: gnome-vfs.keys.in.h:316
+msgid "Tcl script"
+msgstr "сценарій на мові Tcl"
+
+#: gnome-vfs.keys.in.h:317
 msgid "TeX document"
 msgstr "документ у форматі TeX"
 
-#: gnome-vfs.keys.in.h:317
+#: gnome-vfs.keys.in.h:318
 msgid "TeX dvi document"
 msgstr "документ у форматі dvi TeX"
 
-#: gnome-vfs.keys.in.h:318
+#: gnome-vfs.keys.in.h:319
 msgid "TeX font"
 msgstr "шрифт у форматі TeX"
 
-#: gnome-vfs.keys.in.h:319
-msgid "TeX font metrics"
-msgstr "метрики шрифта у форматі TeX"
-
 #: gnome-vfs.keys.in.h:320
+msgid "TeX font metrics"
+msgstr "метрики шрифту у форматі TeX"
+
+#: gnome-vfs.keys.in.h:321
 msgid "TeXInfo document"
 msgstr "документ у форматі TeXInfo"
 
-#: gnome-vfs.keys.in.h:321
-#, fuzzy
+#: gnome-vfs.keys.in.h:322
 msgid "Theme"
 msgstr "тема"
 
-#: gnome-vfs.keys.in.h:322
+#: gnome-vfs.keys.in.h:323
 msgid "ToutDoux document"
 msgstr "документ у форматі ToutDoux"
 
-#: gnome-vfs.keys.in.h:323
-#, fuzzy
+#: gnome-vfs.keys.in.h:324
 msgid "Troff document"
 msgstr "документ у форматі troff"
 
-#: gnome-vfs.keys.in.h:324
-#, fuzzy
+#: gnome-vfs.keys.in.h:325
 msgid "Troff me input document"
 msgstr "вхідний документ у форматі troff me"
 
-#: gnome-vfs.keys.in.h:325
-#, fuzzy
+#: gnome-vfs.keys.in.h:326
 msgid "Troff mm input document"
 msgstr "вхідний документ у форматі troff mm"
 
-#: gnome-vfs.keys.in.h:326
-#, fuzzy
+#: gnome-vfs.keys.in.h:327
 msgid "Troff ms input document"
 msgstr "вхідний документ у форматі troff ms"
 
-#: gnome-vfs.keys.in.h:327
+#: gnome-vfs.keys.in.h:328
 msgid "TrueType font"
 msgstr "шрифт у форматі TrueType"
 
-#: gnome-vfs.keys.in.h:328
+#: gnome-vfs.keys.in.h:329
 msgid "Truevision Targa image"
 msgstr "зображення Truevision Targa"
 
-#: gnome-vfs.keys.in.h:329
+#: gnome-vfs.keys.in.h:330
 msgid "USENET news message"
 msgstr "повідомлення новин у форматі USENET"
 
-#: gnome-vfs.keys.in.h:330
+#: gnome-vfs.keys.in.h:331
 msgid "Unidata netCDF document"
 msgstr "документ у форматі Unidata netCDF"
 
-#: gnome-vfs.keys.in.h:331
-#, fuzzy
+#: gnome-vfs.keys.in.h:332
 msgid "Unknown type"
 msgstr "невідомий тип"
 
-#: gnome-vfs.keys.in.h:332
+#: gnome-vfs.keys.in.h:333
 msgid "User Interface"
 msgstr "Інтерфейс користувача"
 
-#: gnome-vfs.keys.in.h:333
+#: gnome-vfs.keys.in.h:334
 msgid "User Interface/Fonts"
 msgstr "Інтерфейс користувача/Шрифти"
 
-#: gnome-vfs.keys.in.h:334
-#, fuzzy
+#: gnome-vfs.keys.in.h:335
 msgid "Ustar archive"
 msgstr "архів у форматі ustar"
 
-#: gnome-vfs.keys.in.h:335
+#: gnome-vfs.keys.in.h:336
 msgid "V font"
 msgstr "шрифт у форматі V"
 
-#: gnome-vfs.keys.in.h:336
+#: gnome-vfs.keys.in.h:337
 msgid "VOC audio"
 msgstr "звук у форматі VOC"
 
-#: gnome-vfs.keys.in.h:337
+#: gnome-vfs.keys.in.h:338
 msgid "VRML document"
 msgstr "документ у форматі VRML"
 
-#: gnome-vfs.keys.in.h:338
+#: gnome-vfs.keys.in.h:339
+msgid "Verilog source code"
+msgstr "вихідний код на мові Verilog"
+
+#: gnome-vfs.keys.in.h:340
 msgid "Video"
 msgstr "Відео"
 
-#: gnome-vfs.keys.in.h:339
+#: gnome-vfs.keys.in.h:341
 msgid "Vivo video"
 msgstr "відео у форматі Vivo"
 
-#: gnome-vfs.keys.in.h:340
+#: gnome-vfs.keys.in.h:342
 msgid "WAIS source code"
 msgstr "вихідний код на WAIS"
 
-#: gnome-vfs.keys.in.h:341
-#, fuzzy
+#: gnome-vfs.keys.in.h:343
 msgid "Wave audio"
 msgstr "звук у форматі wave"
 
-#: gnome-vfs.keys.in.h:342
+#: gnome-vfs.keys.in.h:344
 msgid "Wavelet video"
 msgstr "відео у форматі Wavelet"
 
-#: gnome-vfs.keys.in.h:343
-#, fuzzy
+#: gnome-vfs.keys.in.h:345
 msgid "Web folder"
 msgstr "веб-тека"
 
-#: gnome-vfs.keys.in.h:344
+#: gnome-vfs.keys.in.h:346
 msgid "Windows bitmap image"
 msgstr "растрове зображення у форматі Windows"
 
-#: gnome-vfs.keys.in.h:345
+#: gnome-vfs.keys.in.h:347
 msgid "Windows icon image"
 msgstr "зображення піктограми у форматі Windows"
 
-#: gnome-vfs.keys.in.h:346
+#: gnome-vfs.keys.in.h:348
 msgid "Windows metafile graphics"
 msgstr "графіка у форматі Windows metafile"
 
-#: gnome-vfs.keys.in.h:347
+#: gnome-vfs.keys.in.h:349
 msgid "WordPerfect document"
 msgstr "документ у форматі WordPerfect"
 
-#: gnome-vfs.keys.in.h:348
+#: gnome-vfs.keys.in.h:350
 msgid "X bitmap image"
 msgstr "растрове зображення у форматі X Window"
 
-#: gnome-vfs.keys.in.h:349
+#: gnome-vfs.keys.in.h:351
 msgid "X window image"
 msgstr "зображення у форматі X Window"
 
-#: gnome-vfs.keys.in.h:350
+#: gnome-vfs.keys.in.h:352
 msgid "XBEL bookmarks file"
-msgstr ""
+msgstr "файл закладок у форматі XBEL"
 
-#: gnome-vfs.keys.in.h:351
+#: gnome-vfs.keys.in.h:353
 msgid "XML document"
 msgstr "документ у форматі XML"
 
-#: gnome-vfs.keys.in.h:352
+#: gnome-vfs.keys.in.h:354
 msgid "XPM image"
 msgstr "зображення у форматі XPM"
 
-#: gnome-vfs.keys.in.h:353
+#: gnome-vfs.keys.in.h:355
 msgid "Xbase database"
 msgstr "база даних у форматі Xbase"
 
-#: gnome-vfs.keys.in.h:354
-#, fuzzy
-msgid "Yacc grammar source code"
-msgstr "вихідний код на мові Java"
-
-#: gnome-vfs.keys.in.h:355
-msgid "Z shell script"
-msgstr "скрипт на Z Shell"
-
 #: gnome-vfs.keys.in.h:356
-#, fuzzy
+msgid "Yacc grammar source code"
+msgstr "вихідний текст для аналізатора Yacc"
+
+#: gnome-vfs.keys.in.h:357
+msgid "Z shell script"
+msgstr "сценарій на мові Z Shell"
+
+#: gnome-vfs.keys.in.h:358
 msgid "Zip archive"
 msgstr "архів у форматі zip"
 
-#: gnome-vfs.keys.in.h:357
-#, fuzzy
+#: gnome-vfs.keys.in.h:359
 msgid "Zoo archive"
 msgstr "архів у форматі zoo"
 
-#: gnome-vfs.keys.in.h:358
-msgid "gettext translation"
-msgstr ""
-
-#: gnome-vfs.keys.in.h:359
-msgid "iPod software"
-msgstr ""
-
 #: gnome-vfs.keys.in.h:360
+msgid "gettext translation"
+msgstr "переклад у форматі gettext"
+
+#: gnome-vfs.keys.in.h:361
+msgid "iPod software"
+msgstr "програмне забезпечення iPod"
+
+#: gnome-vfs.keys.in.h:362
 msgid "xfig vector graphic"
 msgstr "векторна графіка у форматі xfig"
-
-#, fuzzy
-#~ msgid "GNOME theme package"
-#~ msgstr "пакет у форматі Stampede"
-
-#~ msgid "MSX rom"
-#~ msgstr "ПЗП у форматі MSX"
-
-#~ msgid "NES rom"
-#~ msgstr "ПЗП у форматі NES"
-
-#, fuzzy
-#~ msgid "Software Development/ROM image"
-#~ msgstr "Розробка програмного забезпечення/Образи ПЗП"
-
-#, fuzzy
-#~ msgid "Software Development/Source"
-#~ msgstr "Розробка програмного забезпечення/Вихідний код"
-
-#, fuzzy
-#~ msgid "Yacc source file"
-#~ msgstr "вихідний код на мові Java"
-
-#~ msgid "arj archive"
-#~ msgstr "архів у форматі arj"
-
-#, fuzzy
-#~ msgid "audio"
-#~ msgstr "Звук"
-
-#~ msgid "gtar archive"
-#~ msgstr "архів у форматі gtar"
