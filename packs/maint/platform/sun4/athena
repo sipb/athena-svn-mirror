@@ -112,7 +112,7 @@ echo "Done"
 #fi
 
 echo "Removing old attach mount points... \c"			>/dev/console
-/bin/athena/detach -O -n -h -a
+/bin/athena/detach -L -O -n -h -a
 echo "done."							>/dev/console
 
 echo ""								>/dev/console
