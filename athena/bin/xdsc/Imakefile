@@ -1,0 +1,18 @@
+/**/#
+/**/# Makefile for xdiscuss
+/**/#
+
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.1 1991-06-28 13:01:28 sao Exp $";
+
+INSTDIR=$(ATHBINDIR)
+DEFINES= -I.
+LIBS=-lXaw  -lXt -lXmu -lXext -lX11 
+
+OBJS=	xdsc.o reply.o headers.o cache.o
+SRCS=	xdsc.c reply.c headers.c cache.c
+
+SimpleProgram(xdsc,$(OBJS),$(LIBS),$(ATHBINDIR))
+install_man(xdsc.1,xdsc.1)
+
+SpecialObject(xdsc.o,xdsc.c Makefile,-DEDSC_PATH=\"$(ATHLIBDIR)/edsc\")
+
