@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-10-14 05:54:31 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-01-20 23:09:43 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -8,7 +8,8 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-bindir=@bindir@
+sbindir=@sbindir@
+lsbindir=@lsbindir@
 
 CC=@CC@
 DEFS=@DEFS@
@@ -30,8 +31,8 @@ listsuidcells: listsuidcells.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
-	${INSTALL_PROGRAM} listsuidcells ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
+	${INSTALL_PROGRAM} listsuidcells ${DESTDIR}${lsbindir}
 
 clean:
 	rm -f listsuidcells.o listsuidcells
