@@ -4,16 +4,6 @@ if [ -f $CONFVARS ]; then
 	. $CONFVARS
 fi
 
-if [ -s "$OLDBINS" ]; then
-	echo "Making copies of OS binaries we need"
-	mkdir -p /tmp/bin
-	bins="`cat $OLDBINS`"
-	for i in $bins; do
-		cp -p $i /tmp/bin/`basename $i`
-	done
-	PATH=/tmp/bin:$PATH; export PATH
-fi
-
 if [ -s "$DEADFILES" ]; then
 	echo "Removing outdated files"
 	dead="`cat $DEADFILES`"
@@ -30,8 +20,8 @@ if [ "$TRACKOS" = true ]; then
 		-s stats/os_rvd slists/os_rvd
 
 	# Bring this architecture's /platform directory local.
-	rm -rf "/platform/$platform"
-	cp -rp "/os/platform/$platform" "/platform/$platform"
+	rm -rf "/platform/$SUNPLATFORM"
+	cp -rp "/os/platform/$SUNPLATFORM" "/platform/$SUNPLATFORM"
 fi
 
 track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
@@ -61,7 +51,17 @@ fi
 if [ "$NEWBOOT" = true ]; then
 	echo "Copying new bootstraps"
 
-	/usr/sbin/installboot \
-		"/usr/platform/$platform/lib/fs/ufs/bootblk" \
-		/dev/rdsk/c0t3d0s0
+	# installboot is a /bin/sh script, but /bin/sh might not work now
+	# that we've tracked the OS.  So explicitly run it with sh, which
+	# we could have copied into /tmp/bin.  If installboot ever becomes
+	# a binary, we'll have to use a different workaround.
+	sh /usr/sbin/installboot \
+		"/usr/platform/$SUNPLATFORM/lib/fs/ufs/bootblk" \
+		"/dev/rdsk/$ROOTDISK"
+fi
+
+if [ "$NEWDEVS" = true ]; then
+	echo "Copying new pseudo-devices"
+	cd /devices && tar xf /srvd/install/devices/devices.pseudo.tar
+	cd /dev && tar xf /srvd/install/devices/dev.pseudo.tar
 fi
