@@ -1,0 +1,3 @@
+PKG=MIT-evolution-data-server
+NAME=Evolution application suite for Athena (data server component)
+DESC=Evolution is a GNOME application suite including a mail reader, calendaring tool, task list, address book, and other tools.

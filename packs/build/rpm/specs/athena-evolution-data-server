@@ -1,0 +1,8 @@
+Name: athena-evolution-data-server
+Summary: Evolution application suite for Athena (data server component)
+License: GPL
+Group: Applications/Communications
+
+%description
+Evolution is a GNOME application suite including a mail reader,
+calendaring tool, task list, address book, and other tools.
