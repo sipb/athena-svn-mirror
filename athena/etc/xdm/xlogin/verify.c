@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.86 1997-12-17 02:36:20 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.87 1997-12-20 21:41:48 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,9 +61,17 @@
 
 #define MOTD "/etc/motd"
 #ifndef SYSV
-#define UTMP "/etc/utmp"
-#define WTMP "/usr/adm/wtmp"
+#if defined(UTMP_FILE)
+#define UTMP UTMP_FILE
+#define WTMP WTMP_FILE
+#elif defined(_PATH_UTMP)
+#define UTMP _PATH_UTMP
+#define WTMP _PATH_WTMP
+#else
+#define UTMP "/var/adm/utmp"
+#define WTMP "/var/adm/wtmp"
 #endif
+#endif /* SYSV */
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
