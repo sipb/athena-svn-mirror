@@ -7,7 +7,7 @@ AC_ARG_WITH([afs],
 ,with_afs=no)dnl
 if test $with_afs != no; then
 	AC_DEFINE(SETPAG)
-	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
+	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil"
 fi
 AC_PROG_INSTALL
 dnl dbm libs for use of an_to_ln
