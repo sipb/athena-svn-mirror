@@ -1,0 +1,9 @@
+# $Id: .build,v 1.1 1996-09-20 02:10:53 ghudson Exp $
+
+echo In ${package}: imake -ITOPDIR=. -I./config &&
+imake -DTOPDIR=. -I./config &&
+echo In ${package}: make Makefiles && make Makefiles &&
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make world && make world &&
+echo In ${package}: make install && make install DESTDIR=$srvd &&
+echo In ${package}: make install.man && make install.man DESTDIR=$srvd
