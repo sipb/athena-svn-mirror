@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.27 1998-05-31 15:30:19 ghudson Exp $
+# $Id: do-update.sh,v 1.28 1998-06-20 19:43:48 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -190,8 +190,8 @@ sgi)
 	if [ -f /var/athena/snmpd.pid ]; then
 		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
 	fi
-	if [ -f /etc/named.pid ]; then
-		kill `cat /etc/named.pid` > /dev/null 2>&1
+	if [ -f /var/athena/named.pid ]; then
+		kill `cat /var/athena/named.pid` > /dev/null 2>&1
 	fi
 	;;
 esac
