@@ -14,12 +14,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  *
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.4 1990-01-16 05:27:28 raeburn Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.5 1990-01-17 03:24:51 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -234,7 +234,7 @@ parse_command_line(command_line, arguments)
   char *current;		/* Current place in the command line.*/
   int argcount;		        /* Running counter of arguments. */
   char *get_next_word();	/* Get the next word in a line. */
-  char buf[BUFSIZE];
+  char buf[BUF_SIZE];
   char *bufP;
   int quote = 0;
   int first = 1;
