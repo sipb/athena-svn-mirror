@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType auxiliary PostScript module implementation (body).          */
 /*                                                                         */
-/*  Copyright 2000 by                                                      */
+/*  Copyright 2000-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,9 +16,10 @@
 /***************************************************************************/
 
 
-#include <psaux/psauxmod.h>
-#include <psaux/psobjs.h>
-#include <psaux/t1decode.h>
+#include <ft2build.h>
+#include "psauxmod.h"
+#include "psobjs.h"
+#include "t1decode.h"
 
 
   FT_CALLBACK_TABLE_DEF

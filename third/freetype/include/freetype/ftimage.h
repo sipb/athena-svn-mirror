@@ -5,7 +5,7 @@
 /*    FreeType glyph image formats and default raster interface            */
 /*    (specification).                                                     */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -28,12 +28,18 @@
 #define __FTIMAGE_H__
 
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H    <freetype/config/ftbuild.h>
-#endif
-#include   FT_BUILD_H
+#include <ft2build.h>
+
 
 FT_BEGIN_HEADER
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    basic_types                                                        */
+  /*                                                                       */
+  /*************************************************************************/
 
 
   /*************************************************************************/
@@ -69,6 +75,33 @@ FT_BEGIN_HEADER
     FT_Pos  y;
 
   } FT_Vector;
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Struct>                                                              */
+  /*    FT_BBox                                                            */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    A structure used to hold an outline's bounding box, i.e., the      */
+  /*    coordinates of its extrema in the horizontal and vertical          */
+  /*    directions.                                                        */
+  /*                                                                       */
+  /* <Fields>                                                              */
+  /*    xMin :: The horizontal minimum (left-most).                        */
+  /*                                                                       */
+  /*    yMin :: The vertical minimum (bottom-most).                        */
+  /*                                                                       */
+  /*    xMax :: The horizontal maximum (right-most).                       */
+  /*                                                                       */
+  /*    yMax :: The vertical maximum (top-most).                           */
+  /*                                                                       */
+  typedef struct  FT_BBox_
+  {
+    FT_Pos  xMin, yMin;
+    FT_Pos  xMax, yMax;
+
+  } FT_BBox;
 
 
   /*************************************************************************/
@@ -230,6 +263,14 @@ FT_BEGIN_HEADER
 
   /*************************************************************************/
   /*                                                                       */
+  /* <Section>                                                             */
+  /*    outline_processing                                                 */
+  /*                                                                       */
+  /*************************************************************************/
+
+
+  /*************************************************************************/
+  /*                                                                       */
   /* <Struct>                                                              */
   /*    FT_Outline                                                         */
   /*                                                                       */
@@ -246,9 +287,9 @@ FT_BEGIN_HEADER
   /*                  elements, giving the outline's point coordinates.    */
   /*                                                                       */
   /*    tags       :: A pointer to an array of `n_points' chars, giving    */
-  /*                  giving each outline point's type.  If bit 0 is       */
-  /*                  unset, the point is 'off' the curve, i.e. a Bezier   */
-  /*                  control point, while it is `on' when set.            */
+  /*                  each outline point's type.  If bit 0 is unset, the   */
+  /*                  point is `off' the curve, i.e. a Bezier control      */
+  /*                  point, while it is `on' when set.                    */
   /*                                                                       */
   /*                  Bit 1 is meaningful for `off' points only.  If set,  */
   /*                  it indicates a third-order Bezier arc control point; */
@@ -348,6 +389,7 @@ FT_BEGIN_HEADER
 
   } FT_Outline_Flags;
 
+  /* */
 
 #define FT_CURVE_TAG( flag )  ( flag & 3 )
 
@@ -382,8 +424,9 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    Error code.  0 means success.                                      */
   /*                                                                       */
-  typedef int  (*FT_Outline_MoveTo_Func)( FT_Vector*  to,
-                                          void*       user );
+  typedef int
+  (*FT_Outline_MoveTo_Func)( FT_Vector*  to,
+                             void*       user );
 
 
   /*************************************************************************/
@@ -406,8 +449,9 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    Error code.  0 means success.                                      */
   /*                                                                       */
-  typedef int  (*FT_Outline_LineTo_Func)( FT_Vector*  to,
-                                          void*       user );
+  typedef int
+  (*FT_Outline_LineTo_Func)( FT_Vector*  to,
+                             void*       user );
 
 
   /*************************************************************************/
@@ -434,9 +478,10 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    Error code.  0 means success.                                      */
   /*                                                                       */
-  typedef int  (*FT_Outline_ConicTo_Func)( FT_Vector*  control,
-                                           FT_Vector*  to,
-                                           void*       user );
+  typedef int
+  (*FT_Outline_ConicTo_Func)( FT_Vector*  control,
+                              FT_Vector*  to,
+                              void*       user );
 
 
   /*************************************************************************/
@@ -463,10 +508,11 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    Error code.  0 means success.                                      */
   /*                                                                       */
-  typedef int  (*FT_Outline_CubicTo_Func)( FT_Vector*  control1,
-                                           FT_Vector*  control2,
-                                           FT_Vector*  to,
-                                           void*       user );
+  typedef int
+  (*FT_Outline_CubicTo_Func)( FT_Vector*  control1,
+                              FT_Vector*  control2,
+                              FT_Vector*  to,
+                              void*       user );
 
 
   /*************************************************************************/
@@ -520,17 +566,27 @@ FT_BEGIN_HEADER
 
   /*************************************************************************/
   /*                                                                       */
+  /* <Section>                                                             */
+  /*    basic_types                                                        */
+  /*                                                                       */
+  /*************************************************************************/
+
+
+  /*************************************************************************/
+  /*                                                                       */
   /* <Macro>                                                               */
   /*    FT_IMAGE_TAG                                                       */
   /*                                                                       */
   /* <Description>                                                         */
   /*    This macro converts four letter tags into an unsigned long.        */
   /*                                                                       */
-#define FT_IMAGE_TAG( _x1, _x2, _x3, _x4 ) \
-          ( ( (unsigned long)_x1 << 24 ) | \
-            ( (unsigned long)_x2 << 16 ) | \
-            ( (unsigned long)_x3 << 8  ) | \
-              (unsigned long)_x4         )
+#ifndef FT_IMAGE_TAG
+#define FT_IMAGE_TAG( value, _x1, _x2, _x3, _x4 )  \
+          value = ( ( (unsigned long)_x1 << 24 ) | \
+                    ( (unsigned long)_x2 << 16 ) | \
+                    ( (unsigned long)_x3 << 8  ) | \
+                      (unsigned long)_x4         )
+#endif /* FT_IMAGE_TAG */
 
 
   /*************************************************************************/
@@ -565,11 +621,12 @@ FT_BEGIN_HEADER
   /*                                                                       */
   typedef enum  FT_Glyph_Format_
   {
-    ft_glyph_format_none      = 0,
-    ft_glyph_format_composite = FT_IMAGE_TAG( 'c', 'o', 'm', 'p' ),
-    ft_glyph_format_bitmap    = FT_IMAGE_TAG( 'b', 'i', 't', 's' ),
-    ft_glyph_format_outline   = FT_IMAGE_TAG( 'o', 'u', 't', 'l' ),
-    ft_glyph_format_plotter   = FT_IMAGE_TAG( 'p', 'l', 'o', 't' )
+    FT_IMAGE_TAG( ft_glyph_format_none, 0, 0, 0, 0 ),
+
+    FT_IMAGE_TAG( ft_glyph_format_composite, 'c', 'o', 'm', 'p' ),
+    FT_IMAGE_TAG( ft_glyph_format_bitmap,    'b', 'i', 't', 's' ),
+    FT_IMAGE_TAG( ft_glyph_format_outline,   'o', 'u', 't', 'l' ),
+    FT_IMAGE_TAG( ft_glyph_format_plotter,   'p', 'l', 'o', 't' )
 
   } FT_Glyph_Format;
 
@@ -593,6 +650,23 @@ FT_BEGIN_HEADER
   /* Note that in FreeType 2, all rasters are now encapsulated within      */
   /* specific modules called `renderers'.  See `freetype/ftrender.h' for   */
   /* more details on renderers.                                            */
+  /*                                                                       */
+  /*************************************************************************/
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    Raster                                                             */
+  /*                                                                       */
+  /* <Title>                                                               */
+  /*    Scanline converter                                                 */
+  /*                                                                       */
+  /* <Abstract>                                                            */
+  /*    How vectorial outlines are converted into bitmaps and pixmaps.     */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This section contains technical definitions.                       */
   /*                                                                       */
   /*************************************************************************/
 
@@ -637,9 +711,9 @@ FT_BEGIN_HEADER
   /*                                                                       */
   typedef struct  FT_Span_
   {
-    short          x;
-    unsigned short len;
-    unsigned char  coverage;
+    short           x;
+    unsigned short  len;
+    unsigned char   coverage;
 
   } FT_Span;
 
@@ -680,10 +754,11 @@ FT_BEGIN_HEADER
   /*    Otherwise, the callback is only called once per scan-line, and     */
   /*    only for those scanlines that do have `gray' pixels on them.       */
   /*                                                                       */
-  typedef void  (*FT_Raster_Span_Func)( int       y,
-                                        int       count,
-                                        FT_Span*  spans,
-                                        void*     user );
+  typedef void
+  (*FT_Raster_Span_Func)( int       y,
+                          int       count,
+                          FT_Span*  spans,
+                          void*     user );
 
 
   /*************************************************************************/
@@ -707,9 +782,10 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*   1 if the pixel is `set', 0 otherwise.                               */
   /*                                                                       */
-  typedef int  (*FT_Raster_BitTest_Func)( int    y,
-                                          int    x,
-                                          void*  user );
+  typedef int
+  (*FT_Raster_BitTest_Func)( int    y,
+                             int    x,
+                             void*  user );
 
 
   /*************************************************************************/
@@ -732,9 +808,10 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    1 if the pixel is `set', 0 otherwise.                              */
   /*                                                                       */
-  typedef void  (*FT_Raster_BitSet_Func)( int    y,
-                                          int    x,
-                                          void*  user );
+  typedef void
+  (*FT_Raster_BitSet_Func)( int    y,
+                            int    x,
+                            void*  user );
 
 
   /*************************************************************************/
@@ -749,23 +826,40 @@ FT_BEGIN_HEADER
   /* <Fields>                                                              */
   /*    ft_raster_flag_default :: This value is 0.                         */
   /*                                                                       */
-  /*    ft_raster_flag_aa      :: Requests the rendering of an             */
-  /*                              anti-aliased glyph bitmap.  If unset, a  */
-  /*                              monchrome bitmap will be rendered.       */
+  /*    ft_raster_flag_aa      :: This flag is set to indicate that an     */
+  /*                              anti-aliased glyph image should be       */
+  /*                              generated.  Otherwise, it will be        */
+  /*                              monochrome (1-bit)                       */
   /*                                                                       */
-  /*    ft_raster_flag_direct  :: Requests direct rendering over the       */
-  /*                              target bitmap.  Direct rendering uses    */
-  /*                              user-provided callbacks in order to      */
-  /*                              perform direct drawing or composition    */
-  /*                              over an existing bitmap.  If this bit is */
-  /*                              unset, the content of the target bitmap  */
-  /*                              *must be zeroed*!                        */
+  /*    ft_raster_flag_direct  :: This flag is set to indicate direct      */
+  /*                              rendering.  In this mode, client         */
+  /*                              applications must provide their own span */
+  /*                              callback.  This lets them directly       */
+  /*                              draw or compose over an existing bitmap. */
+  /*                              If this bit is not set, the target       */
+  /*                              pixmap's buffer _must_ be zeroed before  */
+  /*                              rendering.                               */
+  /*                                                                       */
+  /*                              Note that for now, direct rendering is   */
+  /*                              only possible with anti-aliased glyphs.  */
+  /*                                                                       */
+  /*    ft_raster_flag_clip    :: This flag is only used in direct         */
+  /*                              rendering mode.  If set, the output will */
+  /*                              be clipped to a box specified in the     */
+  /*                              "clip_box" field of the FT_Raster_Params */
+  /*                              structure.                               */
+  /*                                                                       */
+  /*                              Note that by default, the glyph bitmap   */
+  /*                              is clipped to the target pixmap, except  */
+  /*                              in direct rendering mode where all spans */
+  /*                              are generated if no clipping box is set. */
   /*                                                                       */
   typedef  enum
   {
     ft_raster_flag_default = 0,
     ft_raster_flag_aa      = 1,
-    ft_raster_flag_direct  = 2
+    ft_raster_flag_direct  = 2,
+    ft_raster_flag_clip    = 4
 
   } FT_Raster_Flag;
 
@@ -798,6 +892,11 @@ FT_BEGIN_HEADER
   /*    user        :: User-supplied data that is passed to each drawing   */
   /*                   callback.                                           */
   /*                                                                       */
+  /*    clip_box    :: An optional clipping box.  It is only used in       */
+  /*                   direct rendering mode.  Note that coordinates here  */
+  /*                   should be expressed in _integer_ pixels (and not in */
+  /*                   26.6 fixed-point units).                            */
+  /*                                                                       */
   /* <Note>                                                                */
   /*    An anti-aliased glyph bitmap is drawn if the ft_raster_flag_aa bit */
   /*    flag is set in the `flags' field, otherwise a monochrome bitmap    */
@@ -825,6 +924,7 @@ FT_BEGIN_HEADER
     FT_Raster_BitTest_Func  bit_test;
     FT_Raster_BitSet_Func   bit_set;
     void*                   user;
+    FT_BBox                 clip_box;
 
   } FT_Raster_Params;
 
@@ -853,8 +953,9 @@ FT_BEGIN_HEADER
   /*    FreeType memory allocator.  However, this field can be completely  */
   /*    ignored by a given raster implementation.                          */
   /*                                                                       */
-  typedef int  (*FT_Raster_New_Func)( void*       memory,
-                                      FT_Raster*  raster );
+  typedef int
+  (*FT_Raster_New_Func)( void*       memory,
+                         FT_Raster*  raster );
 
 
   /*************************************************************************/
@@ -868,7 +969,8 @@ FT_BEGIN_HEADER
   /* <Input>                                                               */
   /*    raster :: A handle to the raster object.                           */
   /*                                                                       */
-  typedef void  (*FT_Raster_Done_Func)( FT_Raster  raster );
+  typedef void
+  (*FT_Raster_Done_Func)( FT_Raster  raster );
 
 
   /*************************************************************************/
@@ -898,9 +1000,10 @@ FT_BEGIN_HEADER
   /*    passed to the raster constructor).  However, this is not           */
   /*    recommended for efficiency purposes.                               */
   /*                                                                       */
-  typedef void  (*FT_Raster_Reset_Func)( FT_Raster       raster,
-                                         unsigned char*  pool_base,
-                                         unsigned long   pool_size );
+  typedef void
+  (*FT_Raster_Reset_Func)( FT_Raster       raster,
+                           unsigned char*  pool_base,
+                           unsigned long   pool_size );
 
 
   /*************************************************************************/
@@ -921,9 +1024,10 @@ FT_BEGIN_HEADER
   /*                                                                       */
   /*    args   :: A pointer to the new mode/property to use.               */
   /*                                                                       */
-  typedef int  (*FT_Raster_Set_Mode_Func)( FT_Raster      raster,
-                                           unsigned long  mode,
-                                           void*          args );
+  typedef int
+  (*FT_Raster_Set_Mode_Func)( FT_Raster      raster,
+                              unsigned long  mode,
+                              void*          args );
 
 
   /*************************************************************************/
@@ -960,8 +1064,9 @@ FT_BEGIN_HEADER
   /*         examples of distinct implementations which support direct     */
   /*         composition).                                                 */
   /*                                                                       */
-  typedef int  (*FT_Raster_Render_Func)( FT_Raster          raster,
-                                         FT_Raster_Params*  params );
+  typedef int
+  (*FT_Raster_Render_Func)( FT_Raster          raster,
+                            FT_Raster_Params*  params );
 
 
   /*************************************************************************/
@@ -995,8 +1100,10 @@ FT_BEGIN_HEADER
   } FT_Raster_Funcs;
 
 
-FT_END_HEADER
+  /* */
 
+
+FT_END_HEADER
 
 #endif /* __FTIMAGE_H__ */
 

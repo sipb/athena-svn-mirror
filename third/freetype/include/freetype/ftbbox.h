@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType exact bbox computation (specification).                     */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -27,16 +27,24 @@
   /*************************************************************************/
 
 
-#ifndef FTBBOX_H
-#define FTBBOX_H
+#ifndef __FTBBOX_H__
+#define __FTBBOX_H__
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H    <freetype/config/ftbuild.h>
-#endif
-#include   FT_BUILD_H
-#include   FT_FREETYPE_H
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 FT_BEGIN_HEADER
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    outline_processing                                                 */
+  /*                                                                       */
+  /*************************************************************************/
+
 
   /*************************************************************************/
   /*                                                                       */
@@ -59,15 +67,17 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_Outline_Get_BBox( FT_Outline*  outline,
-                                              FT_BBox     *abbox );
+  FT_EXPORT( FT_Error )
+  FT_Outline_Get_BBox( FT_Outline*  outline,
+                       FT_BBox     *abbox );
 
 
   /* */
 
+
 FT_END_HEADER
 
-#endif /* FTBBOX_H */
+#endif /* __FTBBOX_H__ */
 
 
 /* END */

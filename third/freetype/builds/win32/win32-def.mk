@@ -15,7 +15,7 @@
 
 DELETE   := del
 HOSTSEP  := $(strip \ )
-BUILD    := $(TOP)$(SEP)config$(SEP)win32
+BUILD    := $(TOP)$(SEP)builds$(SEP)win32
 PLATFORM := win32
 
 # by default, we use "\" as a separator on Win32
@@ -36,7 +36,7 @@ endif
 #   make -f %TOP%/Makefile
 #
 ifndef OBJ_DIR
-  OBJ_DIR := $(TOP)$(SEP)obj
+  OBJ_DIR := $(TOP)$(SEP)objs
 endif
 
 

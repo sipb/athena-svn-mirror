@@ -5,7 +5,7 @@
 /*    A routine used to compute vector angles with limited accuracy        */
 /*    and very high speed (body).                                          */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -20,15 +20,8 @@
 /***************************************************************************/
 
 
-#ifdef FT_FLAT_COMPILE
-
+#include <ft2build.h>
 #include "ahangles.h"
-
-#else
-
-#include <autohint/ahangles.h>
-
-#endif
 
 
   /* the following table has been automatically generated with */
@@ -71,8 +64,8 @@
   };
 
 
-  FT_LOCAL_DEF
-  AH_Angle  ah_angle( FT_Vector*  v )
+  FT_LOCAL_DEF AH_Angle
+  ah_angle( FT_Vector*  v )
   {
     FT_Pos    dx, dy;
     AH_Angle  angle;

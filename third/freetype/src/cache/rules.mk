@@ -23,24 +23,26 @@ CACHE_H_DIR_ := $(CACHE_H_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-Cache_COMPILE := $(FT_COMPILE)
+Cache_COMPILE := $(FT_COMPILE) $I$(CACHE_DIR)
 
 
 # Cache driver sources (i.e., C files)
 #
 Cache_DRV_SRC := $(CACHE_DIR_)ftlru.c    \
                  $(CACHE_DIR_)ftcmanag.c \
+                 $(CACHE_DIR_)ftccache.c \
                  $(CACHE_DIR_)ftcglyph.c \
-                 $(CACHE_DIR_)ftcchunk.c \
                  $(CACHE_DIR_)ftcsbits.c \
-                 $(CACHE_DIR_)ftcimage.c
+                 $(CACHE_DIR_)ftcimage.c \
+                 $(CACHE_DIR_)ftccmap.c
 
 # Cache driver headers
 #
 Cache_DRV_H := $(CACHE_H_DIR_)ftlru.h    \
                $(CACHE_H_DIR_)ftcmanag.h \
                $(CACHE_H_DIR_)ftcglyph.h \
-               $(CACHE_H_DIR_)ftcimage.h
+               $(CACHE_H_DIR_)ftcimage.h \
+               $(CACHE_DIR_)ftcerror.h
 
 
 # Cache driver object(s)

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Auto-hinting module (declaration).                                   */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -19,25 +19,24 @@
 /***************************************************************************/
 
 
-#ifndef AHMODULE_H
-#define AHMODULE_H
-
-#include <freetype/ftmodule.h>
+#ifndef __AHMODULE_H__
+#define __AHMODULE_H__
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_MODULE_H
+
+
+FT_BEGIN_HEADER
+
 
   FT_CALLBACK_TABLE
   const FT_Module_Class  autohint_module_class;
 
-#ifdef __cplusplus
-  }
-#endif
 
+FT_END_HEADER
 
-#endif /* AHMODULE_H */
+#endif /* __AHMODULE_H__ */
 
 
 /* END */

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType simple types definitions (specification only).              */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -19,16 +19,64 @@
 #ifndef __FTTYPES_H__
 #define __FTTYPES_H__
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H    <freetype/config/ftbuild.h>
-#endif
 
-#include   FT_BUILD_H
-#include   FT_SYSTEM_H
-#include   FT_IMAGE_H
-#include   <stddef.h>
+#include <ft2build.h>
+#include FT_SYSTEM_H
+#include FT_IMAGE_H
+
+#include <stddef.h>
+
 
 FT_BEGIN_HEADER
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    basic_types                                                        */
+  /*                                                                       */
+  /* <Title>                                                               */
+  /*    Basic Types                                                        */
+  /*                                                                       */
+  /* <Abstract>                                                            */
+  /*    The basic data types defined by the library.                       */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This section contains the basic data types defined by FreeType 2,  */
+  /*    ranging from simple scalar types to font specific ones.            */
+  /*                                                                       */
+  /* <Order>                                                               */
+  /*    FT_Byte                                                            */
+  /*    FT_Char                                                            */
+  /*    FT_Int                                                             */
+  /*    FT_UInt                                                            */
+  /*    FT_Short                                                           */
+  /*    FT_UShort                                                          */
+  /*    FT_Long                                                            */
+  /*    FT_ULong                                                           */
+  /*    FT_Bool                                                            */
+  /*    FT_Offset                                                          */
+  /*    FT_PtrDist                                                         */
+  /*    FT_Error                                                           */
+  /*    FT_Fixed                                                           */
+  /*    FT_Pointer                                                         */
+  /*    FT_Pos                                                             */
+  /*    FT_Vector                                                          */
+  /*    FT_BBox                                                            */
+  /*    FT_Matrix                                                          */
+  /*                                                                       */
+  /*    FT_Generic                                                         */
+  /*    FT_Generic_Finalizer                                               */
+  /*                                                                       */
+  /*    FT_Bitmap                                                          */
+  /*    FT_Pixel_Mode                                                      */
+  /*    FT_Palette_Mode                                                    */
+  /*    FT_Glyph_Format                                                    */
+  /*    FT_IMAGE_TAG                                                       */
+  /*    FT_Glyph_Format                                                    */
+  /*                                                                       */
+  /*************************************************************************/
+
 
   /*************************************************************************/
   /*                                                                       */
@@ -224,6 +272,32 @@ FT_BEGIN_HEADER
 
   /*************************************************************************/
   /*                                                                       */
+  /* <Type>                                                                */
+  /*    FT_Offset                                                          */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This is equivalent to the ANSI C `size_t' type, i.e. the largest   */
+  /*    _unsigned_ integer type used to express a file size or position,   */
+  /*    or a memory block size.                                            */
+  /*                                                                       */
+  typedef size_t  FT_Offset;
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Type>                                                                */
+  /*    FT_PtrDist                                                         */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This is equivalent to the ANSI C `ptrdiff_t' type, i.e. the        */
+  /*    largest _signed_ integer type used to express the distance         */
+  /*    between two pointers.                                              */
+  /*                                                                       */
+  typedef size_t  FT_PtrDist;
+
+
+  /*************************************************************************/
+  /*                                                                       */
   /* <Struct>                                                              */
   /*    FT_UnitVector                                                      */
   /*                                                                       */
@@ -277,29 +351,55 @@ FT_BEGIN_HEADER
 
   /*************************************************************************/
   /*                                                                       */
-  /* <Struct>                                                              */
-  /*    FT_BBox                                                            */
+  /* <FuncType>                                                            */
+  /*    FT_Generic_Finalizer                                               */
   /*                                                                       */
   /* <Description>                                                         */
-  /*    A structure used to hold an outline's bounding box, i.e., the      */
-  /*    coordinates of its extrema in the horizontal and vertical          */
-  /*    directions.                                                        */
+  /*    Describes a function used to destroy the `client' data of any      */
+  /*    FreeType object.  See the description of the FT_Generic type for   */
+  /*    details of usage.                                                  */
+  /*                                                                       */
+  /* <Input>                                                               */
+  /*    The address of the FreeType object which is under finalization.    */
+  /*    Its client data is accessed through its `generic' field.           */
+  /*                                                                       */
+  typedef void  (*FT_Generic_Finalizer)(void*  object);
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Struct>                                                              */
+  /*    FT_Generic                                                         */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    Client applications often need to associate their own data to a    */
+  /*    variety of FreeType core objects.  For example, a text layout API  */
+  /*    might want to associate a glyph cache to a given size object.      */
+  /*                                                                       */
+  /*    Most FreeType object contains a `generic' field, of type           */
+  /*    FT_Generic, which usage is left to client applications and font    */
+  /*    servers.                                                           */
+  /*                                                                       */
+  /*    It can be used to store a pointer to client-specific data, as well */
+  /*    as the address of a `finalizer' function, which will be called by  */
+  /*    FreeType when the object is destroyed (for example, the previous   */
+  /*    client example would put the address of the glyph cache destructor */
+  /*    in the `finalizer' field).                                         */
   /*                                                                       */
   /* <Fields>                                                              */
-  /*    xMin :: The horizontal minimum (left-most).                        */
+  /*    data      :: A typeless pointer to any client-specified data. This */
+  /*                 field is completely ignored by the FreeType library.  */
   /*                                                                       */
-  /*    yMin :: The vertical minimum (bottom-most).                        */
+  /*    finalizer :: A pointer to a `generic finalizer' function, which    */
+  /*                 will be called when the object is destroyed.  If this */
+  /*                 field is set to NULL, no code will be called.         */
   /*                                                                       */
-  /*    xMax :: The horizontal maximum (right-most).                       */
-  /*                                                                       */
-  /*    yMax :: The vertical maximum (top-most).                           */
-  /*                                                                       */
-  typedef struct  FT_BBox_
+  typedef struct  FT_Generic_
   {
-    FT_Pos  xMin, yMin;
-    FT_Pos  xMax, yMax;
+    void*                 data;
+    FT_Generic_Finalizer  finalizer;
 
-  } FT_BBox;
+  } FT_Generic;
 
 
   /*************************************************************************/
@@ -324,6 +424,14 @@ FT_BEGIN_HEADER
   /*                    L I S T   M A N A G E M E N T                      */
   /*                                                                       */
   /*************************************************************************/
+  /*************************************************************************/
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    list_processing                                                    */
+  /*                                                                       */
   /*************************************************************************/
 
 
@@ -396,9 +504,18 @@ FT_BEGIN_HEADER
 
   } FT_ListRec;
 
+
   /* */
 
 #define FT_IS_EMPTY( list )  ( (list).head == 0 )
+
+  /* return base error code (without module-specific prefix) */
+#define FT_ERROR_BASE( x )    ( (x) & 0xFF )
+
+  /* return module error code */
+#define FT_ERROR_MODULE( x )  ( (x) & 0xFF00U )
+
+#define FT_BOOL( x )  ( (FT_Bool)( x ) )
 
 FT_END_HEADER
 

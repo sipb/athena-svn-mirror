@@ -70,17 +70,39 @@ CONFIG_RULES  = $(BUILD)$(SEP)$(CONFIG_FILE)
 #
 BACKSLASH := $(strip \ )
 
-# Now, include all detection rule files found in the `builds/<system>'
-# directories.  Note that the calling order of the various `detect.mk' files
-# isn't predictable.
+# Find all auto-detectable platforms.
 #
-include $(wildcard $(BUILD_CONFIG_)*/detect.mk)
+PLATFORMS_ := $(notdir $(subst /detect.mk,,$(wildcard $(BUILD_CONFIG_)*/detect.mk)))
+.PHONY: $(PLATFORMS_) ansi
+
+# Filter out platform specified as setup target.
+#
+PLATFORM := $(firstword $(filter $(MAKECMDGOALS),$(PLATFORMS_)))
+
+# If no setup target platform was specified, enable auto-detection/
+# default platform.
+#
+ifeq ($(PLATFORM),)
+  PLATFORM := ansi
+endif
+
+# If the user has explicitly asked for `ansi' on the command line,
+# disable auto-detection.
+#
+ifeq ($(findstring ansi,$(MAKECMDGOALS)),)
+  # Now, include all detection rule files found in the `builds/<system>'
+  # directories.  Note that the calling order of the various `detect.mk'
+  # files isn't predictable.
+  #
+  include $(wildcard $(BUILD_CONFIG_)*/detect.mk)
+endif
 
 # In case no detection rule file was successful, use the default.
 #
 ifndef CONFIG_FILE
   CONFIG_FILE := ansi.mk
   setup: std_setup
+  .PHONY: setup
 endif
 
 # The following targets are equivalent, with the exception that they use
@@ -109,22 +131,25 @@ std_setup:
 	@echo ""
 	@$(COPY) $(CONFIG_RULES) $(CONFIG_MK)
 
+
+# Special case for Dos, Windows, OS/2, where echo "" doesn't work correctly!
+#
 dos_setup:
-	@echo ÿ
+	@type builds\newline
 	@echo $(PROJECT_TITLE) build system -- automatic system detection
-	@echo ÿ
+	@type builds\newline
 	@echo The following settings are used:
-	@echo ÿ
-	@echo ÿÿplatformÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ$(PLATFORM)
-	@echo ÿÿcompilerÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ$(CC)
-	@echo ÿÿconfiguration directoryÿÿÿÿÿÿ$(BUILD)
-	@echo ÿÿconfiguration rulesÿÿÿÿÿÿÿÿÿÿ$(CONFIG_RULES)
-	@echo ÿ
+	@type builds\newline
+	@echo   platformÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ$(PLATFORM)
+	@echo   compilerÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ$(CC)
+	@echo   configuration directoryÿÿÿÿÿÿ$(BUILD)
+	@echo   configuration rulesÿÿÿÿÿÿÿÿÿÿ$(CONFIG_RULES)
+	@type builds\newline
 	@echo If this does not correspond to your system or settings please remove the file
 	@echo '$(CONFIG_MK)' from this directory then read the INSTALL file for help.
-	@echo ÿ
+	@type builds\newline
 	@echo Otherwise, simply type 'make' again to build the library.
-	@echo ÿ
+	@type builds\newline
 	@$(COPY) $(subst /,\,$(CONFIG_RULES) $(CONFIG_MK)) > nul
 
 # EOF

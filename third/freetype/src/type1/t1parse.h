@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Type 1 parser (specification).                                       */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,15 +16,16 @@
 /***************************************************************************/
 
 
-#ifndef T1PARSE_H
-#define T1PARSE_H
+#ifndef __T1PARSE_H__
+#define __T1PARSE_H__
 
-#include <freetype/internal/t1types.h>
-#include <freetype/internal/ftstream.h>
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_TYPE1_TYPES_H
+#include FT_INTERNAL_STREAM_H
+
+
+FT_BEGIN_HEADER
 
 
   /*************************************************************************/
@@ -111,26 +112,23 @@
           (p)->root.funcs.load_field_table( &(p)->root, f, o, m, pf )
 
 
-  FT_LOCAL
-  FT_Error  T1_New_Parser( T1_ParserRec*     parser,
-                           FT_Stream         stream,
-                           FT_Memory         memory,
-                           PSAux_Interface*  psaux );
+  FT_LOCAL FT_Error
+  T1_New_Parser( T1_ParserRec*     parser,
+                 FT_Stream         stream,
+                 FT_Memory         memory,
+                 PSAux_Interface*  psaux );
 
-  FT_LOCAL
-  FT_Error  T1_Get_Private_Dict( T1_ParserRec*     parser,
-                                 PSAux_Interface*  psaux );
+  FT_LOCAL FT_Error
+  T1_Get_Private_Dict( T1_ParserRec*     parser,
+                       PSAux_Interface*  psaux );
 
-  FT_LOCAL
-  void  T1_Finalize_Parser( T1_ParserRec*  parser );
-
-
-#ifdef __cplusplus
-  }
-#endif
+  FT_LOCAL void
+  T1_Finalize_Parser( T1_ParserRec*  parser );
 
 
-#endif /* T1PARSE_H */
+FT_END_HEADER
+
+#endif /* __T1PARSE_H__ */
 
 
 /* END */

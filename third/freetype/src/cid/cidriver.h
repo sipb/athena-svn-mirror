@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    High-level CID driver interface (specification).                     */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,25 +16,24 @@
 /***************************************************************************/
 
 
-#ifndef CIDRIVER_H
-#define CIDRIVER_H
+#ifndef __CIDRIVER_H__
+#define __CIDRIVER_H__
 
-#include <freetype/internal/ftdriver.h>
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_DRIVER_H
+
+
+FT_BEGIN_HEADER
 
 
   FT_CALLBACK_TABLE
   const  FT_Driver_Class  t1cid_driver_class;
 
-#ifdef __cplusplus
-  }
-#endif
 
+FT_END_HEADER
 
-#endif /* CIDRIVER_H */
+#endif /* __CIDRIVER_H__ */
 
 
 /* END */

@@ -21,7 +21,7 @@ PSNAMES_DIR_ := $(PSNAMES_DIR)$(SEP)
 
 # compilation flags for the driver
 #
-PSNAMES_COMPILE := $(FT_COMPILE)
+PSNAMES_COMPILE := $(FT_COMPILE) $I$(PSNAMES_DIR)
 
 
 # PSNames driver sources (i.e., C files)
@@ -32,7 +32,8 @@ PSNAMES_DRV_SRC := $(PSNAMES_DIR_)psmodule.c
 # PSNames driver headers
 #
 PSNAMES_DRV_H := $(PSNAMES_DRV_SRC:%.c=%.h) \
-                 $(PSNAMES_DIR_)pstables.h
+                 $(PSNAMES_DIR_)pstables.h  \
+                 $(PSNAMES_DIR_)psnamerr.h
 
 
 # PSNames driver object(s)

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    ANSI-specific FreeType low-level system interface (body).            */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -25,11 +25,12 @@
   /*************************************************************************/
 
 
-#include <freetype/config/ftconfig.h>
-#include <freetype/internal/ftdebug.h>
-#include <freetype/ftsystem.h>
-#include <freetype/fterrors.h>
-#include <freetype/fttypes.h>
+#include <ft2build.h>
+#include FT_CONFIG_CONFIG_H
+#include FT_INTERNAL_DEBUG_H
+#include FT_SYSTEM_H
+#include FT_ERRORS_H
+#include FT_TYPES_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,9 +68,9 @@
   /* <Return>                                                              */
   /*    The address of newly allocated block.                              */
   /*                                                                       */
-  static
-  void*  ft_alloc( FT_Memory  memory,
-                   long       size )
+  FT_CALLBACK_DEF( void* )
+  ft_alloc( FT_Memory  memory,
+            long       size )
   {
     FT_UNUSED( memory );
 
@@ -97,11 +98,11 @@
   /* <Return>                                                              */
   /*    The address of the reallocated memory block.                       */
   /*                                                                       */
-  static
-  void*  ft_realloc( FT_Memory  memory,
-                     long       cur_size,
-                     long       new_size,
-                     void*      block )
+  FT_CALLBACK_DEF( void* )
+  ft_realloc( FT_Memory  memory,
+              long       cur_size,
+              long       new_size,
+              void*      block )
   {
     FT_UNUSED( memory );
     FT_UNUSED( cur_size );
@@ -123,9 +124,9 @@
   /*                                                                       */
   /*    block   :: The address of block in memory to be freed.             */
   /*                                                                       */
-  static
-  void  ft_free( FT_Memory  memory,
-                 void*      block )
+  FT_CALLBACK_DEF( void )
+  ft_free( FT_Memory  memory,
+           void*      block )
   {
     FT_UNUSED( memory );
 
@@ -165,8 +166,8 @@
   /* <Input>                                                               */
   /*    stream :: A pointer to the stream object.                          */
   /*                                                                       */
-  static
-  void  ft_close_stream( FT_Stream  stream )
+  FT_CALLBACK_DEF( void )
+  ft_close_stream( FT_Stream  stream )
   {
     fclose( STREAM_FILE( stream ) );
 
@@ -196,11 +197,11 @@
   /* <Return>                                                              */
   /*    The number of bytes actually read.                                 */
   /*                                                                       */
-  static
-  unsigned long  ft_io_stream( FT_Stream       stream,
-                               unsigned long   offset,
-                               unsigned char*  buffer,
-                               unsigned long   count )
+  FT_CALLBACK_DEF( unsigned long )
+  ft_io_stream( FT_Stream       stream,
+                unsigned long   offset,
+                unsigned char*  buffer,
+                unsigned long   count )
   {
     FILE*  file;
 
@@ -215,8 +216,9 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_New_Stream( const char*  filepathname,
-                                            FT_Stream    astream )
+  FT_EXPORT_DEF( FT_Error )
+  FT_New_Stream( const char*  filepathname,
+                 FT_Stream    astream )
   {
     FILE*  file;
 
@@ -252,9 +254,22 @@
   }
 
 
+
+#ifdef FT_DEBUG_MEMORY
+
+  extern FT_Int
+  ft_mem_debug_init( FT_Memory  memory );
+  
+  extern void
+  ft_mem_debug_done( FT_Memory  memory );
+  
+#endif  
+      
+      
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( FT_Memory )  FT_New_Memory( void )
+  FT_EXPORT_DEF( FT_Memory )
+  FT_New_Memory( void )
   {
     FT_Memory  memory;
 
@@ -266,6 +281,9 @@
       memory->alloc   = ft_alloc;
       memory->realloc = ft_realloc;
       memory->free    = ft_free;
+#ifdef FT_DEBUG_MEMORY
+      ft_mem_debug_init( memory );
+#endif    
     }
 
     return memory;
@@ -274,9 +292,13 @@
 
   /* documentation is in ftobjs.h */
 
-  FT_EXPORT_DEF( void )  FT_Done_Memory( FT_Memory  memory )
+  FT_EXPORT_DEF( void )
+  FT_Done_Memory( FT_Memory  memory )
   {
-    free( memory );
+#ifdef FT_DEBUG_MEMORY
+    ft_mem_debug_done( memory );
+#endif  
+    memory->free( memory, memory );
   }
 
 

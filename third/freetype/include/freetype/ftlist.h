@@ -1,10 +1,10 @@
 /***************************************************************************/
 /*                                                                         */
-/*  ftlist.c                                                               */
+/*  ftlist.h                                                               */
 /*                                                                         */
 /*    Generic list support for FreeType (specification).                   */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -27,13 +27,46 @@
 #ifndef __FTLIST_H__
 #define __FTLIST_H__
 
-#ifndef    FT_BUILD_H
-#  define  FT_BUILD_H    <freetype/config/ftbuild.h>
-#endif
-#include   FT_BUILD_H
-#include   FT_FREETYPE_H
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 FT_BEGIN_HEADER
+
+
+  /*************************************************************************/
+  /*                                                                       */
+  /* <Section>                                                             */
+  /*    list_processing                                                    */
+  /*                                                                       */
+  /* <Title>                                                               */
+  /*    List Processing                                                    */
+  /*                                                                       */
+  /* <Abstract>                                                            */
+  /*    Simple management of lists.                                        */
+  /*                                                                       */
+  /* <Description>                                                         */
+  /*    This section contains various definitions related to list          */
+  /*    processing using doubly-linked nodes.                              */
+  /*                                                                       */
+  /* <Order>                                                               */
+  /*    FT_List                                                            */
+  /*    FT_ListNode                                                        */
+  /*    FT_ListRec                                                         */
+  /*    FT_ListNodeRec                                                     */
+  /*                                                                       */
+  /*    FT_List_Add                                                        */
+  /*    FT_List_Insert                                                     */
+  /*    FT_List_Find                                                       */
+  /*    FT_List_Remove                                                     */
+  /*    FT_List_Up                                                         */
+  /*    FT_List_Iterate                                                    */
+  /*    FT_List_Iterator                                                   */
+  /*    FT_List_Finalize                                                   */
+  /*    FT_List_Destructor                                                 */
+  /*                                                                       */
+  /*************************************************************************/
 
 
   /*************************************************************************/
@@ -51,8 +84,9 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    List node.  NULL if it wasn't found.                               */
   /*                                                                       */
-  FT_EXPORT( FT_ListNode )  FT_List_Find( FT_List  list,
-                                          void*    data );
+  FT_EXPORT( FT_ListNode )
+  FT_List_Find( FT_List  list,
+                void*    data );
 
 
   /*************************************************************************/
@@ -67,8 +101,9 @@ FT_BEGIN_HEADER
   /*    list :: A pointer to the parent list.                              */
   /*    node :: The node to append.                                        */
   /*                                                                       */
-  FT_EXPORT( void )  FT_List_Add( FT_List      list,
-                                  FT_ListNode  node );
+  FT_EXPORT( void )
+  FT_List_Add( FT_List      list,
+               FT_ListNode  node );
 
 
   /*************************************************************************/
@@ -83,8 +118,9 @@ FT_BEGIN_HEADER
   /*    list :: A pointer to parent list.                                  */
   /*    node :: The node to insert.                                        */
   /*                                                                       */
-  FT_EXPORT( void )  FT_List_Insert( FT_List      list,
-                                     FT_ListNode  node );
+  FT_EXPORT( void )
+  FT_List_Insert( FT_List      list,
+                  FT_ListNode  node );
 
 
   /*************************************************************************/
@@ -102,8 +138,9 @@ FT_BEGIN_HEADER
   /* <InOut>                                                               */
   /*    list :: A pointer to the parent list.                              */
   /*                                                                       */
-  FT_EXPORT( void )  FT_List_Remove( FT_List      list,
-                                     FT_ListNode  node );
+  FT_EXPORT( void )
+  FT_List_Remove( FT_List      list,
+                  FT_ListNode  node );
 
 
   /*************************************************************************/
@@ -119,8 +156,9 @@ FT_BEGIN_HEADER
   /*    list :: A pointer to the parent list.                              */
   /*    node :: The node to move.                                          */
   /*                                                                       */
-  FT_EXPORT( void )  FT_List_Up( FT_List      list,
-                                 FT_ListNode  node );
+  FT_EXPORT( void )
+  FT_List_Up( FT_List      list,
+              FT_ListNode  node );
 
 
   /*************************************************************************/
@@ -138,8 +176,9 @@ FT_BEGIN_HEADER
   /*    user :: A typeless pointer passed to FT_List_Iterate().            */
   /*            Can be used to point to the iteration's state.             */
   /*                                                                       */
-  typedef FT_Error  (*FT_List_Iterator)( FT_ListNode  node,
-                                         void*        user );
+  typedef FT_Error
+  (*FT_List_Iterator)( FT_ListNode  node,
+                       void*        user );
 
 
   /*************************************************************************/
@@ -162,9 +201,10 @@ FT_BEGIN_HEADER
   /* <Return>                                                              */
   /*    The result (a FreeType error code) of the last iterator call.      */
   /*                                                                       */
-  FT_EXPORT( FT_Error )  FT_List_Iterate( FT_List           list,
-                                          FT_List_Iterator  iterator,
-                                          void*             user );
+  FT_EXPORT( FT_Error )
+  FT_List_Iterate( FT_List           list,
+                   FT_List_Iterator  iterator,
+                   void*             user );
 
 
   /*************************************************************************/
@@ -185,9 +225,10 @@ FT_BEGIN_HEADER
   /*    user   :: A typeless pointer passed to FT_List_Iterate().  It can  */
   /*              be used to point to the iteration's state.               */
   /*                                                                       */
-  typedef void  (*FT_List_Destructor)( FT_Memory  memory,
-                                       void*      data,
-                                       void*      user );
+  typedef void
+  (*FT_List_Destructor)( FT_Memory  memory,
+                         void*      data,
+                         void*      user );
 
 
   /*************************************************************************/
@@ -209,14 +250,19 @@ FT_BEGIN_HEADER
   /*    user    :: A user-supplied field which is passed as the last       */
   /*               argument to the destructor.                             */
   /*                                                                       */
-  FT_EXPORT( void )  FT_List_Finalize( FT_List             list,
-                                       FT_List_Destructor  destroy,
-                                       FT_Memory           memory,
-                                       void*               user );
+  FT_EXPORT( void )
+  FT_List_Finalize( FT_List             list,
+                    FT_List_Destructor  destroy,
+                    FT_Memory           memory,
+                    void*               user );
+
+
+  /* */
 
 
 FT_END_HEADER
 
 #endif /* __FTLIST_H__ */
+
 
 /* END */

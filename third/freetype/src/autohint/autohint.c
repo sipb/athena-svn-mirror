@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Automatic Hinting wrapper (body only).                               */
 /*                                                                         */
-/*  Copyright 2000 Catharon Productions Inc.                               */
+/*  Copyright 2000-2001 Catharon Productions Inc.                          */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -21,23 +21,12 @@
 
 #define FT_MAKE_OPTION_SINGLE_OBJECT
 
-#ifdef FT_FLAT_COMPILE
-
+#include <ft2build.h>
 #include "ahangles.c"
 #include "ahglyph.c"
 #include "ahglobal.c"
 #include "ahhint.c"
 #include "ahmodule.c"
-
-#else
-
-#include <autohint/ahangles.c>
-#include <autohint/ahglyph.c>
-#include <autohint/ahglobal.c>
-#include <autohint/ahhint.c>
-#include <autohint/ahmodule.c>
-
-#endif
 
 
 /* END */

@@ -61,7 +61,7 @@ T := -o
 #   ANSI compliance.
 #
 ifndef CFLAGS
-  CFLAGS := -c -y -d -v -Od -w-par -w-ccc -w-rch -w-pro -w-aus
+  CFLAGS := -q -c -y -d -v -Od -w-par -w-ccc -w-rch -w-pro -w-aus
 endif
 
 # ANSIFLAGS: Put there the flags used to make your compiler ANSI-compliant.
@@ -72,8 +72,7 @@ ANSIFLAGS := -A
 # Library linking
 #
 ifndef CLEAN_LIBRARY
-  CLEAN_LIBRARY = $(DELETE) $(subst $(SEP),$(HOSTSEP),$(PROJECT_LIBRARY)) \
-                  $(NO_OUTPUT)
+  CLEAN_LIBRARY = $(DELETE) $(subst $(SEP),$(HOSTSEP),$(PROJECT_LIBRARY))
 endif
 TARGET_OBJECTS = $(subst $(SEP),\\,$(OBJECTS_LIST))
 LINK_LIBRARY   = tlib /u $(subst $(SEP),\\,$@) $(TARGET_OBJECTS:%=+%)

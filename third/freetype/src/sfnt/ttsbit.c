@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueType and OpenType embedded bitmap support (body).                */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,21 +16,13 @@
 /***************************************************************************/
 
 
-#include <freetype/internal/ftdebug.h>
-#include <freetype/internal/tterrors.h>
-#include <freetype/internal/ftstream.h>
-#include <freetype/tttags.h>
-
-
-#ifdef FT_FLAT_COMPILE
-
+#include <ft2build.h>
+#include FT_INTERNAL_DEBUG_H
+#include FT_INTERNAL_STREAM_H
+#include FT_TRUETYPE_TAGS_H
 #include "ttsbit.h"
 
-#else
-
-#include <sfnt/ttsbit.h>
-
-#endif
+#include "sferrors.h"
 
 
   /*************************************************************************/
@@ -71,20 +63,20 @@
   /*               convention).  A positive y offset indicates a downwards */
   /*               direction!                                              */
   /*                                                                       */
-  static
-  void  blit_sbit( FT_Bitmap*  target,
-                   FT_Byte*    source,
-                   FT_Int      line_bits,
-                   FT_Bool     byte_padded,
-                   FT_Int      x_offset,
-                   FT_Int      y_offset )
+  static void
+  blit_sbit( FT_Bitmap*  target,
+             FT_Byte*    source,
+             FT_Int      line_bits,
+             FT_Bool     byte_padded,
+             FT_Int      x_offset,
+             FT_Int      y_offset )
   {
     FT_Byte*   line_buff;
     FT_Int     line_incr;
     FT_Int     height;
 
     FT_UShort  acc;
-    FT_Byte    loaded;
+    FT_UInt    loaded;
 
 
     /* first of all, compute starting write position */
@@ -112,10 +104,10 @@
 
     for ( height = target->rows; height > 0; height-- )
     {
-      FT_Byte*  cur   = line_buff;    /* current write cursor          */
-      FT_Int    count = line_bits;    /* # of bits to extract per line */
-      FT_Byte   shift = x_offset & 7; /* current write shift           */
-      FT_Byte   space = 8 - shift;
+      FT_Byte*  cur   = line_buff;        /* current write cursor          */
+      FT_Int    count = line_bits;        /* # of bits to extract per line */
+      FT_Byte   shift = (FT_Byte)( x_offset & 7 ); /* current write shift  */
+      FT_Byte   space = (FT_Byte)( 8 - shift );
 
 
       /* first of all, read individual source bytes */
@@ -131,7 +123,7 @@
             /* ensure that there are at least 8 bits in the accumulator */
             if ( loaded < 8 )
             {
-              acc    |= (FT_UShort)*source++ << ( 8 - loaded );
+              acc    |= (FT_UShort)((FT_UShort)*source++ << ( 8 - loaded ));
               loaded += 8;
             }
 
@@ -139,8 +131,8 @@
             val = (FT_Byte)( acc >> 8 );
             if ( shift )
             {
-              cur[0] |= val >> shift;
-              cur[1] |= val << space;
+              cur[0] |= (FT_Byte)( val >> shift );
+              cur[1] |= (FT_Byte)( val << space );
             }
             else
               cur[0] |= val;
@@ -164,18 +156,18 @@
 
 
         /* ensure that there are at least `count' bits in the accumulator */
-        if ( loaded < count )
+        if ( (FT_Int)loaded < count )
         {
-          acc    |= (FT_UShort)*source++ << ( 8 - loaded );
+          acc    |= (FT_UShort)((FT_UShort)*source++ << ( 8 - loaded ));
           loaded += 8;
         }
 
         /* now write remaining bits */
-        val     = ( (FT_Byte)( acc >> 8 ) ) & ~( 0xFF >> count );
-        cur[0] |= val >> shift;
+        val     = (FT_Byte)( ( (FT_Byte)( acc >> 8 ) ) & ~( 0xFF >> count ) );
+        cur[0] |= (FT_Byte)( val >> shift );
 
         if ( count > space )
-          cur[1] |= val << space;
+          cur[1] |= (FT_Byte)( val << space );
 
         acc   <<= count;
         loaded -= count;
@@ -183,7 +175,10 @@
 
       /* now, skip to next line */
       if ( byte_padded )
-        acc = loaded = 0;   /* clear accumulator on byte-padded lines */
+      {
+        acc    = 0;
+        loaded = 0;   /* clear accumulator on byte-padded lines */
+      }
 
       line_buff += line_incr;
     }
@@ -226,9 +221,9 @@
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  static
-  FT_Error  Load_SBit_Const_Metrics( TT_SBit_Range*  range,
-                                     FT_Stream       stream )
+  static FT_Error
+  Load_SBit_Const_Metrics( TT_SBit_Range*  range,
+                           FT_Stream       stream )
   {
     FT_Error  error;
 
@@ -258,10 +253,10 @@
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  static
-  FT_Error  Load_SBit_Range_Codes( TT_SBit_Range*  range,
-                                   FT_Stream       stream,
-                                   FT_Bool         load_offsets )
+  static FT_Error
+  Load_SBit_Range_Codes( TT_SBit_Range*  range,
+                         FT_Stream       stream,
+                         FT_Bool         load_offsets )
   {
     FT_Error   error;
     FT_ULong   count, n, size;
@@ -321,9 +316,9 @@
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  static
-  FT_Error  Load_SBit_Range( TT_SBit_Range*  range,
-                             FT_Stream       stream )
+  static FT_Error
+  Load_SBit_Range( TT_SBit_Range*  range,
+                   FT_Stream       stream )
   {
     FT_Error   error;
     FT_Memory  memory = stream->memory;
@@ -336,7 +331,7 @@
       {
         FT_ULong  num_glyphs, n;
         FT_Int    size_elem;
-        FT_Bool   large = ( range->index_format == 1 );
+        FT_Bool   large = FT_BOOL( range->index_format == 1 );
 
 
         num_glyphs        = range->last_glyph - range->first_glyph + 1L;
@@ -372,7 +367,7 @@
       break;
 
     default:
-      error = TT_Err_Invalid_File_Format;
+      error = SFNT_Err_Invalid_File_Format;
     }
 
   Exit:
@@ -396,9 +391,9 @@
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  FT_LOCAL_DEF
-  FT_Error  TT_Load_SBit_Strikes( TT_Face    face,
-                                  FT_Stream  stream )
+  FT_LOCAL_DEF FT_Error
+  TT_Load_SBit_Strikes( TT_Face    face,
+                        FT_Stream  stream )
   {
     FT_Error   error  = 0;
     FT_Memory  memory = stream->memory;
@@ -478,7 +473,7 @@
          num_strikes >= 0x10000L    )
     {
       FT_ERROR(( "TT_Load_SBit_Strikes: invalid table version!\n" ));
-      error = TT_Err_Invalid_File_Format;
+      error = SFNT_Err_Invalid_File_Format;
 
       goto Exit;
     }
@@ -593,8 +588,8 @@
   /* <Input>                                                               */
   /*    face :: The target face object.                                    */
   /*                                                                       */
-  FT_LOCAL_DEF
-  void  TT_Free_SBit_Strikes( TT_Face  face )
+  FT_LOCAL_DEF void
+  TT_Free_SBit_Strikes( TT_Face  face )
   {
     FT_Memory        memory       = face->root.memory;
     TT_SBit_Strike*  strike       = face->sbit_strikes;
@@ -627,19 +622,19 @@
     face->num_sbit_strikes = 0;
   }
 
-  
-  FT_LOCAL_DEF
-  FT_Error  TT_Set_SBit_Strike( TT_Face    face,
-                                FT_Int     x_ppem,
-                                FT_Int     y_ppem,
-                                FT_ULong  *astrike_index )
+
+  FT_LOCAL_DEF FT_Error
+  TT_Set_SBit_Strike( TT_Face    face,
+                      FT_Int     x_ppem,
+                      FT_Int     y_ppem,
+                      FT_ULong  *astrike_index )
   {
     FT_Int  i;
 
 
     if ( x_ppem < 0 || x_ppem > 255 ||
          y_ppem < 1 || y_ppem > 255 )
-      return TT_Err_Invalid_PPem;
+      return SFNT_Err_Invalid_PPem;
 
     for ( i = 0; i < face->num_sbit_strikes; i++ )
     {
@@ -648,11 +643,11 @@
              ( face->sbit_strikes[i].x_ppem == x_ppem ) ) )
       {
         *astrike_index = i;
-        return TT_Err_Ok;
+        return SFNT_Err_Ok;
       }
     }
 
-    return TT_Err_Invalid_PPem;
+    return SFNT_Err_Invalid_PPem;
   }
 
 
@@ -678,11 +673,11 @@
   /* <Return>                                                              */
   /*    FreeType error code.  0 means the glyph index was found.           */
   /*                                                                       */
-  static
-  FT_Error  Find_SBit_Range( FT_UInt          glyph_index,
-                             TT_SBit_Strike*  strike,
-                             TT_SBit_Range**  arange,
-                             FT_ULong*        aglyph_offset )
+  static FT_Error
+  Find_SBit_Range( FT_UInt          glyph_index,
+                   TT_SBit_Strike*  strike,
+                   TT_SBit_Range**  arange,
+                   FT_ULong*        aglyph_offset )
   {
     TT_SBit_Range  *range, *range_limit;
 
@@ -704,7 +699,7 @@
       if ( glyph_index >= (FT_UInt)range->first_glyph &&
            glyph_index <= (FT_UInt)range->last_glyph  )
       {
-        FT_UShort  delta = glyph_index - range->first_glyph;
+        FT_UShort  delta = (FT_UShort)( glyph_index - range->first_glyph );
 
 
         switch ( range->index_format )
@@ -755,7 +750,7 @@
     *arange        = 0;
     *aglyph_offset = 0;
 
-    return TT_Err_Invalid_Argument;
+    return SFNT_Err_Invalid_Argument;
   }
 
 
@@ -784,21 +779,22 @@
   /*                                                                       */
   /* <Return>                                                              */
   /*    FreeType error code.  0 means success.  Returns                    */
-  /*    TT_Err_Invalid_Argument if no sbit exists for the requested glyph. */
+  /*    SFNT_Err_Invalid_Argument if no sbit exists for the requested      */
+  /*    glyph.                                                             */
   /*                                                                       */
-  static
-  FT_Error  Find_SBit_Image( TT_Face           face,
-                             FT_UInt           glyph_index,
-                             FT_ULong          strike_index,
-                             TT_SBit_Range*   *arange,
-                             TT_SBit_Strike*  *astrike,
-                             FT_ULong         *aglyph_offset )
+  static FT_Error
+  Find_SBit_Image( TT_Face           face,
+                   FT_UInt           glyph_index,
+                   FT_ULong          strike_index,
+                   TT_SBit_Range*   *arange,
+                   TT_SBit_Strike*  *astrike,
+                   FT_ULong         *aglyph_offset )
   {
     FT_Error         error;
     TT_SBit_Strike*  strike;
 
 
-    if ( !face->sbit_strikes                              || 
+    if ( !face->sbit_strikes                              ||
          ( face->num_sbit_strikes <= (FT_Int)strike_index ) )
       goto Fail;
 
@@ -811,7 +807,7 @@
 
     *astrike = strike;
 
-    return TT_Err_Ok;
+    return SFNT_Err_Ok;
 
   Fail:
     /* no embedded bitmap for this glyph in face */
@@ -819,7 +815,7 @@
     *astrike       = 0;
     *aglyph_offset = 0;
 
-    return TT_Err_Invalid_Argument;
+    return SFNT_Err_Invalid_Argument;
   }
 
 
@@ -850,12 +846,12 @@
   /*    positioned just after the metrics header in the `EBDT' table on    */
   /*    function exit.                                                     */
   /*                                                                       */
-  static
-  FT_Error  Load_SBit_Metrics( FT_Stream         stream,
-                               TT_SBit_Range*    range,
-                               TT_SBit_Metrics*  metrics )
+  static FT_Error
+  Load_SBit_Metrics( FT_Stream         stream,
+                     TT_SBit_Range*    range,
+                     TT_SBit_Metrics*  metrics )
   {
-    FT_Error  error = TT_Err_Ok;
+    FT_Error  error = SFNT_Err_Ok;
 
 
     switch ( range->image_format )
@@ -914,7 +910,7 @@
       if ( range->index_format == 2 || range->index_format == 5 )
         *metrics = range->metrics;
       else
-        return TT_Err_Invalid_File_Format;
+        return SFNT_Err_Invalid_File_Format;
    }
 
   Exit:
@@ -936,9 +932,9 @@
   /*                                                                       */
   /*    metrics :: The corresponding metrics structure.                    */
   /*                                                                       */
-  static
-  void  Crop_Bitmap( FT_Bitmap*        map,
-                     TT_SBit_Metrics*  metrics )
+  static void
+  Crop_Bitmap( FT_Bitmap*        map,
+               TT_SBit_Metrics*  metrics )
   {
     /***********************************************************************/
     /*                                                                     */
@@ -1000,9 +996,9 @@
         MEM_Move( line, line + count * line_len,
                   ( rows - count ) * line_len );
 
-        metrics->height       -= count;
-        metrics->horiBearingY -= count;
-        metrics->vertBearingY -= count;
+        metrics->height       = (FT_Byte)( metrics->height - count );
+        metrics->horiBearingY = (FT_Char)( metrics->horiBearingY - count );
+        metrics->vertBearingY = (FT_Char)( metrics->vertBearingY - count );
 
         map->rows -= count;
         rows      -= count;
@@ -1033,7 +1029,7 @@
     Found_Bottom:
       if ( count > 0 )
       {
-        metrics->height -= count;
+        metrics->height  = (FT_Byte)( metrics->height - count );
         rows            -= count;
         map->rows       -= count;
       }
@@ -1066,15 +1062,15 @@
         FT_Byte*  cur = line;
 
 
-        old = cur[0] << 1;
+        old = (FT_Byte)(cur[0] << 1);
         for ( n = 8; n < width; n += 8 )
         {
           FT_Byte  val;
 
 
           val    = cur[1];
-          cur[0] = old | ( val >> 7 );
-          old    = val << 1;
+          cur[0] = (FT_Byte)( old | ( val >> 7 ) );
+          old    = (FT_Byte)( val << 1 );
           cur++;
         }
         cur[0] = old;
@@ -1103,7 +1099,7 @@
 
       line  = (FT_Byte*)map->buffer + ( right >> 3 );
       limit = line + rows * line_len;
-      mask  = 0x80 >> ( right & 7 );
+      mask  = (FT_Byte)( 0x80 >> ( right & 7 ) );
 
       for ( ; line < limit; line += line_len )
         if ( line[0] & mask )
@@ -1127,14 +1123,14 @@
   }
 
 
-  static
-  FT_Error Load_SBit_Single( FT_Bitmap*        map,
-                             FT_Int            x_offset,
-                             FT_Int            y_offset,
-                             FT_Int            pix_bits,
-                             FT_UShort         image_format,
-                             TT_SBit_Metrics*  metrics,
-                             FT_Stream         stream )
+  static FT_Error
+  Load_SBit_Single( FT_Bitmap*        map,
+                    FT_Int            x_offset,
+                    FT_Int            y_offset,
+                    FT_Int            pix_bits,
+                    FT_UShort         image_format,
+                    TT_SBit_Metrics*  metrics,
+                    FT_Stream         stream )
   {
     FT_Error  error;
 
@@ -1143,7 +1139,7 @@
     if ( x_offset < 0 || x_offset + metrics->width  > map->width ||
          y_offset < 0 || y_offset + metrics->height > map->rows  )
     {
-      error = TT_Err_Invalid_Argument;
+      error = SFNT_Err_Invalid_Argument;
 
       goto Exit;
     }
@@ -1186,7 +1182,7 @@
         break;
 
       default:  /* invalid format */
-        return TT_Err_Invalid_File_Format;
+        return SFNT_Err_Invalid_File_Format;
       }
 
       /* Now read data and draw glyph into target pixmap       */
@@ -1207,16 +1203,16 @@
   }
 
 
-  static
-  FT_Error Load_SBit_Image( TT_SBit_Strike*   strike,
-                            TT_SBit_Range*    range,
-                            FT_ULong          ebdt_pos,
-                            FT_ULong          glyph_offset,
-                            FT_Bitmap*        map,
-                            FT_Int            x_offset,
-                            FT_Int            y_offset,
-                            FT_Stream         stream,
-                            TT_SBit_Metrics*  metrics )
+  static FT_Error
+  Load_SBit_Image( TT_SBit_Strike*   strike,
+                   TT_SBit_Range*    range,
+                   FT_ULong          ebdt_pos,
+                   FT_ULong          glyph_offset,
+                   FT_Bitmap*        map,
+                   FT_Int            x_offset,
+                   FT_Int            y_offset,
+                   FT_Stream         stream,
+                   TT_SBit_Metrics*  metrics )
   {
     FT_Memory  memory = stream->memory;
     FT_Error   error;
@@ -1265,7 +1261,7 @@
         break;
 
       default:
-        return TT_Err_Invalid_File_Format;
+        return SFNT_Err_Invalid_File_Format;
       }
 
       size = map->rows * map->pitch;
@@ -1296,7 +1292,7 @@
       break;
 
     default: /* invalid image format */
-      return TT_Err_Invalid_File_Format;
+      return SFNT_Err_Invalid_File_Format;
     }
 
     /* All right, we have a compound format.  First of all, read */
@@ -1399,14 +1395,14 @@
   /*  <Note>                                                               */
   /*    The `map.buffer' field is always freed before the glyph is loaded. */
   /*                                                                       */
-  FT_LOCAL_DEF
-  FT_Error  TT_Load_SBit_Image( TT_Face           face,
-                                FT_ULong          strike_index,
-                                FT_UInt           glyph_index,
-                                FT_UInt           load_flags,
-                                FT_Stream         stream,
-                                FT_Bitmap        *map,
-                                TT_SBit_Metrics  *metrics )
+  FT_LOCAL_DEF FT_Error
+  TT_Load_SBit_Image( TT_Face           face,
+                      FT_ULong          strike_index,
+                      FT_UInt           glyph_index,
+                      FT_UInt           load_flags,
+                      FT_Stream         stream,
+                      FT_Bitmap        *map,
+                      TT_SBit_Metrics  *metrics )
   {
     FT_Error         error;
     FT_Memory        memory = stream->memory;
@@ -1451,17 +1447,15 @@
     {
       /* in case of a horizontal strike only */
       FT_Int  advance;
-      FT_Int  top;
 
 
       advance = strike->hori.ascender - strike->hori.descender;
-      top     = advance / 10;
 
       /* some heuristic values */
 
-      metrics->vertBearingX = -metrics->width / 2;
-      metrics->vertBearingY =  advance / 10;
-      metrics->vertAdvance  =  advance * 12 / 10;
+      metrics->vertBearingX = (FT_Char)(-metrics->width / 2 );
+      metrics->vertBearingY = (FT_Char)( advance / 10 );
+      metrics->vertAdvance  = (FT_Char)( advance * 12 / 10 );
     }
 
     /* Crop the bitmap now, unless specified otherwise */

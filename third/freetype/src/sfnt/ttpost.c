@@ -5,7 +5,7 @@
 /*    Postcript name table processing for TrueType and OpenType fonts      */
 /*    (body).                                                              */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -25,23 +25,13 @@
   /*************************************************************************/
 
 
-#include <freetype/internal/ftstream.h>
-#include <freetype/internal/tterrors.h>
-#include <freetype/tttags.h>
-
-
-#ifdef FT_FLAT_COMPILE
-
+#include <ft2build.h>
+#include FT_INTERNAL_STREAM_H
+#include FT_TRUETYPE_TAGS_H
 #include "ttpost.h"
 #include "ttload.h"
 
-#else
-
-#include <sfnt/ttpost.h>
-#include <sfnt/ttload.h>
-
-#endif
-
+#include "sferrors.h"
 
   /*************************************************************************/
   /*                                                                       */
@@ -71,7 +61,7 @@
    /* table of Mac names.  Thus, it is possible to build a version of */
    /* FreeType without the Type 1 driver & PSNames module.            */
 
-#define  MAC_NAME( x )  TT_Post_Default_Names[x]
+#define MAC_NAME( x )  TT_Post_Default_Names[x]
 
   /* the 258 default Mac PS glyph names */
 
@@ -161,9 +151,9 @@
 #endif /* FT_CONFIG_OPTION_POSTSCRIPT_NAMES */
 
 
-  static
-  FT_Error  Load_Format_20( TT_Face    face,
-                            FT_Stream  stream )
+  static FT_Error
+  Load_Format_20( TT_Face    face,
+                  FT_Stream  stream )
   {
     FT_Memory  memory = stream->memory;
     FT_Error   error;
@@ -186,7 +176,7 @@
 
     if ( num_glyphs > face->root.num_glyphs )
     {
-      error = TT_Err_Invalid_File_Format;
+      error = SFNT_Err_Invalid_File_Format;
       goto Exit;
     }
 
@@ -222,7 +212,7 @@
         {
           index -= 257;
           if ( index > num_names )
-            num_names = index;
+            num_names = (FT_UShort)index;
         }
       }
     }
@@ -254,12 +244,12 @@
       TT_Post_20*  table = &face->postscript_names.names.format_20;
 
 
-      table->num_glyphs    = num_glyphs;
-      table->num_names     = num_names;
+      table->num_glyphs    = (FT_UShort)num_glyphs;
+      table->num_names     = (FT_UShort)num_names;
       table->glyph_indices = glyph_indices;
       table->glyph_names   = name_strings;
     }
-    return TT_Err_Ok;
+    return SFNT_Err_Ok;
 
 
   Fail1:
@@ -280,9 +270,9 @@
   }
 
 
-  static
-  FT_Error  Load_Format_25( TT_Face    face,
-                            FT_Stream  stream )
+  static FT_Error
+  Load_Format_25( TT_Face    face,
+                  FT_Stream  stream )
   {
     FT_Memory  memory = stream->memory;
     FT_Error   error;
@@ -298,7 +288,7 @@
     /* check the number of glyphs */
     if ( num_glyphs > face->root.num_glyphs || num_glyphs > 258 )
     {
-      error = TT_Err_Invalid_File_Format;
+      error = SFNT_Err_Invalid_File_Format;
       goto Exit;
     }
 
@@ -318,7 +308,7 @@
 
         if ( index < 0 || index > num_glyphs )
         {
-          error = TT_Err_Invalid_File_Format;
+          error = SFNT_Err_Invalid_File_Format;
           goto Fail;
         }
       }
@@ -329,11 +319,11 @@
       TT_Post_25*  table = &face->postscript_names.names.format_25;
 
 
-      table->num_glyphs = num_glyphs;
+      table->num_glyphs = (FT_UShort)num_glyphs;
       table->offsets    = offset_table;
     }
 
-    return TT_Err_Ok;
+    return SFNT_Err_Ok;
 
   Fail:
     FREE( offset_table );
@@ -343,8 +333,8 @@
   }
 
 
-  static
-  FT_Error  Load_Post_Names( TT_Face  face )
+  static FT_Error
+  Load_Post_Names( TT_Face  face )
   {
     FT_Stream  stream;
     FT_Error   error;
@@ -377,7 +367,7 @@
       break;
 
     default:
-      error = TT_Err_Invalid_File_Format;
+      error = SFNT_Err_Invalid_File_Format;
     }
 
     face->postscript_names.loaded = 1;
@@ -387,8 +377,8 @@
   }
 
 
-  FT_LOCAL_DEF
-  void  TT_Free_Post_Names( TT_Face  face )
+  FT_LOCAL_DEF void
+  TT_Free_Post_Names( TT_Face  face )
   {
     FT_Memory       memory = face->root.memory;
     TT_Post_Names*  names  = &face->postscript_names;
@@ -451,10 +441,10 @@
   /* <Output>                                                              */
   /*    FreeType error code.  0 means success.                             */
   /*                                                                       */
-  FT_LOCAL_DEF
-  FT_Error  TT_Get_PS_Name( TT_Face      face,
-                            FT_UInt      index,
-                            FT_String**  PSname )
+  FT_LOCAL_DEF FT_Error
+  TT_Get_PS_Name( TT_Face      face,
+                  FT_UInt      index,
+                  FT_String**  PSname )
   {
     FT_Error            error;
     TT_Post_Names*      names;
@@ -465,15 +455,15 @@
 
 
     if ( !face )
-      return TT_Err_Invalid_Face_Handle;
+      return SFNT_Err_Invalid_Face_Handle;
 
     if ( index >= (FT_UInt)face->root.num_glyphs )
-      return TT_Err_Invalid_Glyph_Index;
+      return SFNT_Err_Invalid_Glyph_Index;
 
 #ifdef FT_CONFIG_OPTION_POSTSCRIPT_NAMES
     psnames = (PSNames_Interface*)face->psnames;
     if ( !psnames )
-      return TT_Err_Unimplemented_Feature;
+      return SFNT_Err_Unimplemented_Feature;
 #endif
 
     names = &face->postscript_names;
@@ -537,7 +527,7 @@
       break;                                /* nothing to do */
     }
 
-    return TT_Err_Ok;
+    return SFNT_Err_Ok;
   }
 
 

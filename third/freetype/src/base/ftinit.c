@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType initialization layer (body).                                */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -37,10 +37,11 @@
   /*************************************************************************/
 
 
-#include <freetype/config/ftconfig.h>
-#include <freetype/internal/ftobjs.h>
-#include <freetype/internal/ftdebug.h>
-#include <freetype/ftmodule.h>
+#include <ft2build.h>
+#include FT_CONFIG_CONFIG_H
+#include FT_INTERNAL_OBJECTS_H
+#include FT_INTERNAL_DEBUG_H
+#include FT_MODULE_H
 
 
   /*************************************************************************/
@@ -59,22 +60,25 @@
 #define FT_USE_MODULE( x )  extern const FT_Module_Class*  x;
 #endif
 
-#include <freetype/config/ftmodule.h>
+
+#include FT_CONFIG_MODULES_H
+
 
 #undef  FT_USE_MODULE
 #define FT_USE_MODULE( x )  (const FT_Module_Class*)&x,
 
-static
-const FT_Module_Class*  const ft_default_modules[] =
+  static
+  const FT_Module_Class*  const ft_default_modules[] =
   {
-#include <freetype/config/ftmodule.h>
+#include FT_CONFIG_MODULES_H
     0
   };
 
 
   /* documentation is in ftmodule.h */
 
-  FT_EXPORT_DEF( void )  FT_Add_Default_Modules( FT_Library  library )
+  FT_EXPORT_DEF( void )
+  FT_Add_Default_Modules( FT_Library  library )
   {
     FT_Error                       error;
     const FT_Module_Class* const*  cur;
@@ -99,7 +103,8 @@ const FT_Module_Class*  const ft_default_modules[] =
 
   /* documentation is in freetype.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_Init_FreeType( FT_Library  *alibrary )
+  FT_EXPORT_DEF( FT_Error )
+  FT_Init_FreeType( FT_Library  *alibrary )
   {
     FT_Error   error;
     FT_Memory  memory;
@@ -128,7 +133,8 @@ const FT_Module_Class*  const ft_default_modules[] =
 
   /* documentation is in freetype.h */
 
-  FT_EXPORT_DEF( FT_Error )  FT_Done_FreeType( FT_Library  library )
+  FT_EXPORT_DEF( FT_Error )
+  FT_Done_FreeType( FT_Library  library )
   {
     if ( library )
     {

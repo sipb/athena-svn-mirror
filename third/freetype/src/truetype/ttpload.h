@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    TrueType glyph data/program tables loader (specification).           */
 /*                                                                         */
-/*  Copyright 1996-2000 by                                                 */
+/*  Copyright 1996-2001 by                                                 */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -16,36 +16,33 @@
 /***************************************************************************/
 
 
-#ifndef TTPLOAD_H
-#define TTPLOAD_H
-
-#include <freetype/internal/tttypes.h>
+#ifndef __TTPLOAD_H__
+#define __TTPLOAD_H__
 
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#include <ft2build.h>
+#include FT_INTERNAL_TRUETYPE_TYPES_H
 
 
-  FT_LOCAL
-  FT_Error  TT_Load_Locations( TT_Face    face,
-                               FT_Stream  stream );
-
-  FT_LOCAL
-  FT_Error  TT_Load_CVT( TT_Face    face,
-                         FT_Stream  stream );
-
-  FT_LOCAL
-  FT_Error  TT_Load_Programs( TT_Face    face,
-                              FT_Stream  stream );
+FT_BEGIN_HEADER
 
 
-#ifdef __cplusplus
-  }
-#endif
+  FT_LOCAL FT_Error
+  TT_Load_Locations( TT_Face    face,
+                     FT_Stream  stream );
+
+  FT_LOCAL FT_Error
+  TT_Load_CVT( TT_Face    face,
+               FT_Stream  stream );
+
+  FT_LOCAL FT_Error
+  TT_Load_Programs( TT_Face    face,
+                    FT_Stream  stream );
 
 
-#endif /* TTPLOAD_H */
+FT_END_HEADER
+
+#endif /* __TTPLOAD_H__ */
 
 
 /* END */
