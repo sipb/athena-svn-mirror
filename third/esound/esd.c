@@ -6,12 +6,20 @@
 #include <sys/un.h>
 #include <errno.h>
 #include <signal.h>
+#include <time.h>
 
 #ifndef HAVE_NANOSLEEP
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
+
+#include <netdb.h>
+
+/* Older resolvers don't have gethostbyname2() */
+#ifndef HAVE_GETHOSTBYNAME2
+#define gethostbyname2(host, family) gethostbyname((host))
+#endif /* HAVE_GETHOSTBYNAME2 */
 
 /*******************************************************************/
 /* esd.c - prototypes */
@@ -20,7 +28,7 @@ void set_audio_buffer( void *buf, esd_format_t format, int magl, int magr,
 void clean_exit( int signum );
 void reset_signal( int signum );
 void reset_daemon( int signum );
-int open_listen_socket( int port );
+int open_listen_socket( const char *hostname, int port );
 
 /*******************************************************************/
 /* globals */
@@ -51,6 +59,8 @@ int esd_terminate = 0;          /* terminate after the last client exits */
 int esd_public = 0;             /* allow connects from hosts other than localhost */
 int esd_spawnpid = 0;           /* The PID of the process that spawned us (for use by esdlib only) */
 int esd_spawnfd = 0;           /* The PID of the process that spawned us (for use by esdlib only) */
+
+static char *programname = NULL;
 
 /*******************************************************************/
 /* just to create the startup tones for the fun of it */
@@ -220,7 +230,9 @@ struct stat dir_stats;
 #endif
 
   if (mkdir(ESD_UNIX_SOCKET_DIR, ESD_UNIX_SOCKET_DIR_MODE) == 0) {
-    chmod(ESD_UNIX_SOCKET_DIR, ESD_UNIX_SOCKET_DIR_MODE);
+    if (chmod(ESD_UNIX_SOCKET_DIR, ESD_UNIX_SOCKET_DIR_MODE) != 0) {
+      return -1;
+    }
     return 0;
   }
   /* If mkdir failed with EEXIST, test if it is a directory with
@@ -245,7 +257,7 @@ struct stat dir_stats;
        * required, just a mode that isn't more permissive than the
        * one requested.
        */
-      if ( ~ESD_UNIX_SOCKET_DIR_MODE & dir_stats.st_mode)
+      if ( ~ESD_UNIX_SOCKET_DIR_MODE & (dir_stats.st_mode & ~S_IFMT))
 	updateMode = 1;
 #if defined(S_ISVTX)
       if ((dir_stats.st_mode & S_IWOTH) && !(dir_stats.st_mode & S_ISVTX))
@@ -303,7 +315,7 @@ struct stat dir_stats;
 
 /*******************************************************************/
 /* returns the listening socket descriptor */
-int open_listen_socket( int port )
+int open_listen_socket(const char *hostname, int port )
 {
     /*********************/
     /* socket test setup */
@@ -311,6 +323,8 @@ int open_listen_socket( int port )
     struct sockaddr_un socket_unix;
     int socket_listen = -1;
     struct linger lin;
+
+	struct hostent *resolved;
 
 
     /* create the socket, and set for non-blocking */
@@ -376,10 +390,21 @@ int open_listen_socket( int port )
       memset(&socket_addr, 0, sizeof(struct sockaddr_in));
       socket_addr.sin_family = AF_INET;
       socket_addr.sin_port = htons( port );
-      if (esd_public)
-	socket_addr.sin_addr.s_addr = htonl( INADDR_ANY );
-      else
-	socket_addr.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
+
+	/* if hostname is set, bind to its first address */
+	if (hostname)
+	{
+		if (!(resolved=gethostbyname2(hostname, AF_INET)))
+		{
+			herror(programname);
+			return -1;
+		}
+		memcpy(&(socket_addr.sin_addr), resolved->h_addr_list[0], resolved->h_length);
+	} else if (esd_public)
+		socket_addr.sin_addr.s_addr = htonl( INADDR_ANY );
+	else
+		socket_addr.sin_addr.s_addr = htonl( INADDR_LOOPBACK );
+
       if ( bind( socket_listen,
 		(struct sockaddr *) &socket_addr,
 		sizeof(struct sockaddr_in) ) < 0 )
@@ -459,6 +484,7 @@ int esd_server_resume(void)
 	    /* turn ourselves back on */
 	    esd_on_standby = 0;
 	    esd_on_autostandby = 0;
+	    esd_forced_standby = 0;
 	}
     }
 
@@ -478,6 +504,8 @@ int main ( int argc, char *argv[] )
 
     void *output_buffer = NULL;
 
+    char *hostname=NULL;
+
     /* begin test scaffolding parameters */
     /* int format = AFMT_U8; AFMT_S16_LE; */
     /* int stereo = 0; */     /* 0=mono, 1=stereo */
@@ -489,6 +517,8 @@ int main ( int argc, char *argv[] )
 
     int default_format = ESD_BITS16 | ESD_STEREO;
     /* end test scaffolding parameters */
+
+    programname = *argv;
 
     /* parse the command line args */
     for ( arg = 1 ; arg < argc ; arg++ ) {
@@ -514,6 +544,14 @@ int main ( int argc, char *argv[] )
 		fprintf( stderr, "- accepting connections on port %d\n",
 			 esd_port );
 	    }
+
+	} else if ( !strcmp( argv[ arg ], "-bind" ) ) {
+	    if ( ++arg != argc )
+		{
+			hostname = argv[ arg ];
+		}
+		fprintf( stderr, "- accepting connections on port %d\n",
+			 esd_port );
 	} else if ( !strcmp( argv[ arg ], "-b" ) ) {
 	    fprintf( stderr, "- server format: 8 bit samples\n" );
 	    default_format &= ~ESD_MASK_BITS; default_format |= ESD_BITS8;
@@ -559,6 +597,9 @@ int main ( int argc, char *argv[] )
 	    esd_use_tcpip = 1;
 	} else if ( !strcmp( argv[ arg ], "-public" ) ) {
 	    esd_public = 1;
+	} else if ( !strcmp( argv[ arg ], "-promiscuous" ) ) {
+	    esd_is_owned = 1;
+	    esd_is_locked = 0;
 	} else if ( !strcmp( argv[ arg ], "-terminate" ) ) {
 	    esd_terminate = 1;
 	} else if ( !strcmp( argv[ arg ], "-spawnpid" ) ) {
@@ -573,24 +614,28 @@ int main ( int argc, char *argv[] )
 		fprintf(stderr, "Esound version " VERSION "\n");
 		exit (0);
 	} else if ( !strcmp( argv[ arg ], "-h" ) || !strcmp( argv[ arg ], "--help" ) ) {
+	    fprintf( stderr, "Esound version " VERSION "\n\n");
 	    fprintf( stderr, "Usage: esd [options]\n\n" );
-	    fprintf( stderr, "  -d DEVICE   force esd to use sound device DEVICE\n" );
-	    fprintf( stderr, "  -b          run server in 8 bit sound mode\n" );
-	    fprintf( stderr, "  -r RATE     run server at sample rate of RATE\n" );
-	    fprintf( stderr, "  -as SECS    free audio device after SECS of inactivity\n" );
-	    fprintf( stderr, "  -unix       use unix domain sockets instead of tcp/ip\n" );
-	    fprintf( stderr, "  -tcp        use tcp/ip sockets instead of unix domain\n" );
-	    fprintf( stderr, "  -public     make tcp/ip access public (other than localhost)\n" );
-	    fprintf( stderr, "  -terminate  terminate esd daemone after last client exits\n" );
-	    fprintf( stderr, "  -nobeeps    disable startup beeps\n" );
-	    fprintf( stderr, "  -trust      start esd even if use of %s can be insecure\n",
+            fprintf( stderr, "  -v --version  print version information\n" );
+	    fprintf( stderr, "  -d DEVICE     force esd to use sound device DEVICE\n" );
+	    fprintf( stderr, "  -b            run server in 8 bit sound mode\n" );
+	    fprintf( stderr, "  -r RATE       run server at sample rate of RATE\n" );
+	    fprintf( stderr, "  -as SECS      free audio device after SECS of inactivity\n" );
+	    fprintf( stderr, "  -unix         use unix domain sockets instead of tcp/ip\n" );
+	    fprintf( stderr, "  -tcp          use tcp/ip sockets instead of unix domain\n" );
+	    fprintf( stderr, "  -public       make tcp/ip access public (other than localhost)\n" );
+	    fprintf( stderr, "  -promiscuous  start unlocked and owned (disable authenticaton) NOT RECOMMENDED\n" );
+	    fprintf( stderr, "  -terminate    terminate esd daemone after last client exits\n" );
+	    fprintf( stderr, "  -nobeeps      disable startup beeps\n" );
+	    fprintf( stderr, "  -trust        start esd even if use of %s can be insecure\n",
 		     ESD_UNIX_SOCKET_DIR );
 #ifdef ESDBG
-	    fprintf( stderr, "  -vt         enable trace diagnostic info\n" );
-	    fprintf( stderr, "  -vc         enable comms diagnostic info\n" );
-	    fprintf( stderr, "  -vm         enable mixer diagnostic info\n" );
+	    fprintf( stderr, "  -vt           enable trace diagnostic info\n" );
+	    fprintf( stderr, "  -vc           enable comms diagnostic info\n" );
+	    fprintf( stderr, "  -vm           enable mixer diagnostic info\n" );
 #endif
-	    fprintf( stderr, "  -port PORT  listen for connections at PORT (only for tcp/ip)\n" );
+	    fprintf( stderr, "  -port PORT   listen for connections at PORT (only for tcp/ip)\n" );
+	    fprintf( stderr, "  -bind ADDRESS binds to ADDRESS (only for tcp/ip)\n" );
 	    fprintf( stderr, "\nPossible devices are:  %s\n", esd_audio_devices() );
 	    exit( 0 );
 	} else {
@@ -599,7 +644,7 @@ int main ( int argc, char *argv[] )
     }
 
     /* open the listening socket */
-    listen_socket = open_listen_socket( esd_port );
+  listen_socket = open_listen_socket(hostname, esd_port );
   if ( listen_socket < 0 ) {
     fprintf( stderr, "fatal error opening socket\n" );
     if (!esd_use_tcpip)
@@ -636,6 +681,10 @@ int main ( int argc, char *argv[] )
 	write (esd_spawnfd, &c, 1);
     }
 
+    if (!esd_use_tcpip) {
+	unlink(ESD_UNIX_SOCKET_NAME);
+	rmdir(ESD_UNIX_SOCKET_DIR);
+      }
     exit (2);
   } else if ( itmp < 0 ) {
     fprintf(stderr, "Audio device open for 44.1Khz, stereo, 16bit failed\n"
@@ -653,7 +702,7 @@ int main ( int argc, char *argv[] )
     esd_audio_rate = 48000;
     ESD_AUDIO_STUFF;
     if ( esd_audio_open() < 0 ) {
-      fprintf(stderr, "Audio device open for 44.1Khz, stereo, 8bit failed\n"
+      fprintf(stderr, "Audio device open for 48Khz, stereo,16bit failed\n"
 	      "Trying 22.05Khz, 8bit stereo.\n");
       /* cant do defaults ... try 22.05 kkz 8bit stereo */
       esd_audio_format = ESD_BITS8 | ESD_STEREO;
@@ -756,6 +805,9 @@ int main ( int argc, char *argv[] )
 	    }
 	}
     }
+
+    /* put some stuff in sound driver before pausing */
+    esd_audio_write( NULL, 0);
 
     /* pause the sound output */
     esd_audio_pause();

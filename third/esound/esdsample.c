@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 	if ( sock <= 0 ) 
 	    return 1;
 	format = bits | channels | mode | func;
-	printf( "opening socket, format = 0x%08x at %d Hz\n", 
+	fprintf( stderr, "opening socket, format = 0x%08x at %d Hz\n", 
 		format, rate );
 	
 	stat( name, &source_stats );
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 
 	printf( "sample <%d> uploaded: %s\n", sample_id, filename );
     } else if (cache_mode == 2) {
-	strcpy(filename, name);
+	strncpy( filename, name, ESD_NAME_MAX );
     }
 
     reget_sample_id = esd_sample_getid( sock, filename );

@@ -23,6 +23,8 @@ static int esd_audio_fd = -1;
 /* ALSA before OSS as ALSA is OSS compatible */
 #if defined(DRIVER_ALSA) || defined(DRIVER_NEWALSA) 
 #  include "audio_alsa.c"
+#elif defined(DRIVER_ALSA_09)
+#include "audio_alsa09.c"
 #elif defined(DRIVER_OSS)
 #  include "audio_oss.c"
 #elif defined(DRIVER_AIX)
@@ -58,6 +60,7 @@ const char * esd_audio_devices()
 void esd_audio_close()
 {
     close( esd_audio_fd );
+    esd_audio_fd = -1;
     return;
 }
 #endif
