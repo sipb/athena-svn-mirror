@@ -2,7 +2,7 @@ Name: athena-control-center
 Summary: GNOME Control Center, for Athena
 License: GPL/LGPL
 Group: User Interface/Desktops
-Provides: control-center = 2.2.0
+Provides: control-center = 2.2.0.1
 
 Requires: athena-gtk2 athena-GConf2 athena-libgnomeui athena-libglade2
 Requires: athena-libbonobo athena-libbonoboui athena-bonobo-activation

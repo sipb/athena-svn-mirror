@@ -2,7 +2,7 @@ Name: athena-libgnomeprintui
 Summary: GUI support for libgnomeprint, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnomeprintui = 2.2.1
+Provides: libgnomeprintui = 2.2.1.1
 
 Requires: athena-libgnomeprint athena-libgnomecanvas athena-libglade2
 

@@ -2,7 +2,7 @@ Name: athena-gnome-panel
 Summary: GNOME panel, for Athena
 License: GPL
 Group: User Interface/Desktops
-Provides: gnome-panel = 2.2.0
+Provides: gnome-panel = 2.2.0.1
 
 Requires: athena-glib2 athena-GConf2 athena-gnome-desktop athena-gtk2
 Requires: athena-libglade2 athena-libgnome athena-libgnomeui athena-ORBit2

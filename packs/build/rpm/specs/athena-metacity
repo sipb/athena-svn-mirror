@@ -2,6 +2,7 @@ Name: athena-metacity
 Summary: Metacity window manager, for athena
 License: GPL
 Group: User Interface/Desktops
+Provides: metacity = 2.4.34
 
 Requires: athena-gtk2 athena-GConf2 athena-startup-notification
 

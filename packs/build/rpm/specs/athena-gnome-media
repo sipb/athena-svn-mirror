@@ -2,7 +2,7 @@ Name: athena-gnome-media
 Summary: GNOME media programs, for Athena
 License: GPL
 Group: Applications/Multimedia
-Provides: gnome-media = 2.2.0
+Provides: gnome-media = 2.2.1.1
 
 Requires: athena-glib2 athena-libgnomeui athena-esound athena-scrollkeeper
 Requires: athena-gail athea-gstreamer

@@ -2,6 +2,7 @@ Name: athena-vte
 Summary: A terminal emulator widget, for Athena
 License: LGPL
 Group: User Interface/X
+Provides: vte = 0.10.17
 
 Requires: athena-glib2 athena-pango athena-libzvt athena-Xft
 

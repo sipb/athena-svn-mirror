@@ -2,7 +2,7 @@ Name: athena-pango
 Summary: System for layout and rendering of internationalized text, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: pango = 1.2.0
+Provides: pango = 1.2.1
 Requires: athena-freetype athena-glib2
 
 %description
