@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.4 1990-07-07 10:22:27 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.5 1990-11-07 14:18:56 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.4 1990-07-07 10:22:27 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.5 1990-11-07 14:18:56 epeisach Exp $";
 #endif lint
 
 /*
@@ -106,6 +106,10 @@ recvjob()
 	RQ = pgetstr("rq", &bp);
 	QS = pgetstr("qs", &bp);
 #endif PQUOTA	    
+#ifdef LACL
+	AC = pgetstr("ac", &bp);
+	PA = pgetflag("pa");
+#endif /* LACL */
 	    
 	(void) close(2);			/* set up log file */
 	if (open(LF, O_WRONLY|O_APPEND, 0664) < 0) {
@@ -178,8 +182,14 @@ readjob()
 {
 	register int size, nfiles;
 	register char *cp;
+#if defined(PQUOTA) || defined(LACL)
+	char *cret;
+#endif
 #ifdef PQUOTA
-	char *cret, *check_quota();
+	char *check_quota();
+#endif
+#ifdef LACL
+	char *check_lacl();
 #endif
 
 	if (lflag) syslog(LOG_INFO, "In readjob");
@@ -238,6 +248,28 @@ readjob()
 				continue;
 			}
 
+#ifdef KERBEROS
+			if (kerberos_cf && (!kerberize_cf(tfname, tempfile))) {
+				rcleanup();
+				continue;
+			}
+#endif KERBEROS
+
+#ifdef LACL
+			if(AC && (cret = check_lacl(tfname)) != 0) {
+			    /* We return !=0 for error. Old clients
+			       stupidly don't print any error in this sit.
+			       We do a cleanup cause we can't expect 
+			       client to do so. */
+			    (void) write(1, cret, 1);
+#ifdef DEBUG
+			    syslog(LOG_DEBUG, "Got %s", cret);
+#endif DEBUG
+			    rcleanup();
+			    continue;
+			}
+#endif /*LACL*/
+
 #ifdef PQUOTA
 			if(kerberos_cf && (RQ != NULL) && 
 			   (cret = check_quota(tfname)) != 0) {
@@ -257,12 +289,6 @@ readjob()
 			/* Send acknowldege, cause we didn't before */
 			ack();
 
-#ifdef KERBEROS
-			if (kerberos_cf && (!kerberize_cf(tfname, tempfile))) {
-				rcleanup();
-				continue;
-			}
-#endif KERBEROS
 			if (link(tfname, cfname) < 0)
 				frecverr("%s: %m", tfname);
 			(void) UNLINK(tfname);
@@ -657,3 +683,82 @@ char file[];
     }
 
 #endif
+
+#ifdef LACL
+char *check_lacl(file)
+char *file;
+    {
+	FILE *cfp;
+	char person[BUFSIZ];
+#ifdef KERBEROS
+	extern char local_realm[];
+#endif
+	person[0] = '\0';
+
+	if(!AC) {
+	    syslog("lpd: ACL file not set");
+	    return NULL;
+	}
+	if(access(AC, R_OK)) {
+	    syslog(LOG_ERR, "lpd: Could not find ACL file %s", AC);
+	    return NULL;
+	}
+	if ((cfp = fopen(file, "r")) == NULL)
+		return 0;
+
+	/* Read the control file for the person sending the job */
+	while (getline(cfp)) {
+		if (line[0] == 'P' && line[1]) {
+		    strcpy(person, line + 1);
+		    break;
+		}
+	}
+	fclose(cfp);
+
+	if(!person[0]) {
+#ifdef DEBUG
+	    syslog(LOG_DEBUG, "Person not found :%s", line);
+#endif
+	    goto notfound;
+	}
+#ifdef DEBUG
+	else 
+	    syslog(LOG_DEBUG, "Found person :%s:%s", line, person);
+#endif
+
+#ifdef KERBEROS
+	/* Now to tack the realm on */
+	if(kerberos_cf && !index(person, '@')) {
+	    strcat(person,"@");
+	    strcat(person, local_realm);
+	}
+
+#endif /* KERBEROS */
+
+#ifdef DEBUG
+	syslog(LOG_DEBUG, "Checking on :%s: ", person);
+#endif
+
+	/* Now see if the person is in AC */
+
+	if ((cfp = fopen(AC, "r")) == NULL)
+		return 0;
+	   
+	while(getline(cfp)) {
+	    if(!strcasecmp(person, line)) {
+		fclose(cfp);
+		goto found;
+	    }
+	}
+	fclose(cfp);
+
+    notfound:
+	if(PA) return "\4"; /* NOALLOWEDTOPRINT */
+	else return NULL;
+
+    found:
+	if(PA) return NULL;
+	else return "\4"; /* NOALLOWEDTOPRINT */
+    }
+
+#endif /* LACL */
