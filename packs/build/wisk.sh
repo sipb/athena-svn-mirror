@@ -266,17 +266,21 @@ endif # installonly
 	case third/unsupported/perl-4.036
 	(echo In $package >>& $outfile)
 	set PERLFILES = "  ./x2p/s2p.SH ./x2p/find2perl.SH ./x2p/Makefile.SH ./x2p/cflags.SH ./Makefile.SH ./config_h.SH ./c2ph.SH ./h2ph.SH ./makedepend.SH ./cflags.SH ./makedir.SH"
-	( cd /build/$package ; cp config.sh.$machine config.sh)
-	( cd /build/$package  ; cp cppstdin.sh.$machine cppstdin )
+	( cd /build/$package ; cp config.sh.$machine config.sh) 
+	( cd /build/$package  ; cp cppstdin.$machine cppstdin ) 
 	 cd /build/$package ; \
 		  foreach p ($PERLFILES)
 		   sh $p >>& $outfile
 		  end 
-	( cd /build/$package ;  make clean >>& $outfile)
-	( cd /build/$package ;  make depend >>& $outfile)
-	( cd /build/$package ;  make >>& $outfile)
-	( cd /build/$package ;  make test >>& $outfile)
-	( cd /build/$package ;  make install DESTDIR=$SRVD >>& $outfile)
+	(( cd /build/$package ;  make clean >>& $outfile) && \
+	( cd /build/$package ;  make depend >>& $outfile) && \
+	( cd /build/$package ;  make >>& $outfile) && \
+	( cd /build/$package ;  make test >>& $outfile) &&\
+	( cd /build/$package ;  make install DESTDIR=$SRVD >>& $outfile) &&\
+	( cd /build/$package ; rm -rf include ) && \
+	( cd  /build/$package/include ) && \
+	( cd /usr/include;  /usr/athena/bin/h2ph * */* ) && \
+	( cd  /build/$package/include ; cp -rp * $SRVD/usr/athena/lib/perl/ ))
 	breaksw
 
 	case third/unsupported/sysinfo
