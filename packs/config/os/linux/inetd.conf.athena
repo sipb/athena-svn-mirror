@@ -14,7 +14,6 @@ eklogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k -e
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
 busypoll dgram	udp	wait	unswitched	nobody	/etc/athena/busyd	busyd
 athinfo	stream	tcp	nowait	unswitched	root	/etc/athena/athinfod	athinfod
-gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
 time	stream	tcp	nowait	unswitched	root	internal	internal
 time	dgram	udp	nowait	unswitched	root	internal	internal
 daytime	stream	tcp	nowait	unswitched	root	internal	internal

@@ -14,7 +14,6 @@ finger	stream	tcp	nowait	unswitched	daemon	/usr/sbin/in.fingerd	fingerd
 write	stream	tcp	nowait	unswitched	root	/usr/athena/etc/writed	writed
 busypoll dgram	udp	wait	unswitched	nobody	/etc/athena/busyd	busyd
 athinfo	stream	tcp	nowait	unswitched	root	/etc/athena/athinfod	athinfod
-gshell	stream	tcp	nowait	unswitched	root	/afs/net/system/gsh/bin/gshd gshd
 ntalk	dgram	udp	wait	unswitched	root	/usr/athena/etc/talkd	ntalkd
 #
 # Remote access services that should normally be disabled.
