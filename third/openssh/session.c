@@ -33,7 +33,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: session.c,v 1.102 2001/09/16 14:46:54 markus Exp $");
+RCSID("$OpenBSD: session.c,v 1.108 2001/10/11 13:45:21 markus Exp $");
 
 #include "ssh.h"
 #include "ssh1.h"
@@ -144,6 +144,9 @@ void	do_exec_pty(Session *, const char *);
 void	do_exec_no_pty(Session *, const char *);
 void	do_exec(Session *, const char *);
 void	do_login(Session *, const char *);
+#ifdef LOGIN_NEEDS_UTMPX
+static void	do_pre_login(Session *s);
+#endif
 void	do_child(Session *, const char *);
 void	do_motd(void);
 int	check_quietlogin(Session *, const char *);
@@ -171,7 +174,6 @@ const char *original_command = NULL;
 Session	sessions[MAX_SESSIONS];
 
 #ifdef WITH_AIXAUTHENTICATE
-/* AIX's lastlogin message, set in auth1.c */
 char *aixloginmsg;
 #endif /* WITH_AIXAUTHENTICATE */
 
@@ -203,6 +205,14 @@ do_authenticated(Authctxt *authctxt)
 	}
 #endif
 #endif
+#ifdef WITH_AIXAUTHENTICATE
+	/* We don't have a pty yet, so just label the line as "ssh" */
+	if (loginsuccess(authctxt->user,
+	    get_canonical_hostname(options.reverse_mapping_check),
+	    "ssh", &aixloginmsg) < 0)
+		aixloginmsg = NULL;
+#endif /* WITH_AIXAUTHENTICATE */
+
 	/* setup the channel layer */
 	if (!no_port_forwarding_flag && options.allow_tcp_forwarding)
 		channel_permit_all_opens();
@@ -463,6 +473,9 @@ do_exec_no_pty(Session *s, const char *command)
 #if defined(USE_PAM)
 	do_pam_session(s->pw->pw_name, NULL);
 	do_pam_setcred(1);
+	if (is_pam_password_change_required())
+		packet_disconnect("Password change required but no "
+		    "TTY available");
 #endif /* USE_PAM */
 
 	/* Fork the child. */
@@ -591,17 +604,13 @@ do_exec_pty(Session *s, const char *command)
 		/* Make the pseudo tty our controlling tty. */
 		pty_make_controlling_tty(&ttyfd, s->tty);
 
-		/* Redirect stdin from the pseudo tty. */
-		if (dup2(ttyfd, fileno(stdin)) < 0)
-			error("dup2 stdin failed: %.100s", strerror(errno));
-
-		/* Redirect stdout to the pseudo tty. */
-		if (dup2(ttyfd, fileno(stdout)) < 0)
-			error("dup2 stdin failed: %.100s", strerror(errno));
-
-		/* Redirect stderr to the pseudo tty. */
-		if (dup2(ttyfd, fileno(stderr)) < 0)
-			error("dup2 stdin failed: %.100s", strerror(errno));
+		/* Redirect stdin/stdout/stderr from the pseudo tty. */
+		if (dup2(ttyfd, 0) < 0)
+			error("dup2 stdin: %s", strerror(errno));
+		if (dup2(ttyfd, 1) < 0)
+			error("dup2 stdout: %s", strerror(errno));
+		if (dup2(ttyfd, 2) < 0)
+			error("dup2 stderr: %s", strerror(errno));
 
 		/* Close the extra descriptor for the pseudo tty. */
 		close(ttyfd);
@@ -1372,18 +1381,21 @@ do_child(Session *s, const char *command)
 		child_set_env(&env, &envsize, "TZ", getenv("TZ"));
 
 	/* Set custom environment options from RSA authentication. */
-	while (custom_environment) {
-		struct envstring *ce = custom_environment;
-		char *s = ce->s;
-		int i;
-		for (i = 0; s[i] != '=' && s[i]; i++);
-		if (s[i] == '=') {
-			s[i] = 0;
-			child_set_env(&env, &envsize, s, s + i + 1);
+	if (!options.use_login) {
+		while (custom_environment) {
+			struct envstring *ce = custom_environment;
+			char *s = ce->s;
+			int i;
+			for (i = 0; s[i] != '=' && s[i]; i++)
+				;
+			if (s[i] == '=') {
+				s[i] = 0;
+				child_set_env(&env, &envsize, s, s + i + 1);
+			}
+			custom_environment = ce->next;
+			xfree(ce->s);
+			xfree(ce);
 		}
-		custom_environment = ce->next;
-		xfree(ce->s);
-		xfree(ce);
 	}
 
 	snprintf(buf, sizeof buf, "%.50s %d %d",
@@ -1499,16 +1511,6 @@ do_child(Session *s, const char *command)
 	for (i = 3; i < 64; i++)
 		close(i);
 
-	/* Change current directory to the user\'s home directory. */
-	if (chdir(pw->pw_dir) < 0) {
-		fprintf(stderr, "Could not chdir to home directory %s: %s\n",
-			pw->pw_dir, strerror(errno));
-#ifdef HAVE_LOGIN_CAP
-		if (login_getcapbool(lc, "requirehome", 0))
-			exit(1);
-#endif
-	}
-
 	/*
 	 * Must take new environment into use so that .ssh/rc, /etc/sshrc and
 	 * xauth are run in the proper environment.
@@ -1526,6 +1528,16 @@ do_child(Session *s, const char *command)
 		krb_afslog(0, 0);
 	}
 #endif /* AFS */
+
+	/* Change current directory to the user\'s home directory. */
+	if (chdir(pw->pw_dir) < 0) {
+		fprintf(stderr, "Could not chdir to home directory %s: %s\n",
+		    pw->pw_dir, strerror(errno));
+#ifdef HAVE_LOGIN_CAP
+		if (login_getcapbool(lc, "requirehome", 0))
+			exit(1);
+#endif
+	}
 
 	/*
 	 * Run $HOME/.ssh/rc, /etc/sshrc, or xauth (whichever is found first
@@ -1829,25 +1841,33 @@ session_pty_req(Session *s)
 static int
 session_subsystem_req(Session *s)
 {
+	struct stat st;
 	u_int len;
 	int success = 0;
-	char *subsys = packet_get_string(&len);
+	char *cmd, *subsys = packet_get_string(&len);
 	int i;
 
 	packet_done();
 	log("subsystem request for %s", subsys);
 
 	for (i = 0; i < options.num_subsystems; i++) {
-		if(strcmp(subsys, options.subsystem_name[i]) == 0) {
-			debug("subsystem: exec() %s", options.subsystem_command[i]);
+		if (strcmp(subsys, options.subsystem_name[i]) == 0) {
+			cmd = options.subsystem_command[i];
+			if (stat(cmd, &st) < 0) {
+				error("subsystem: cannot stat %s: %s", cmd,
+				    strerror(errno));
+				break;
+			}
+			debug("subsystem: exec() %s", cmd);
 			s->is_subsystem = 1;
-			do_exec(s, options.subsystem_command[i]);
+			do_exec(s, cmd);
 			success = 1;
 		}
 	}
 
 	if (!success)
-		log("subsystem request for %s failed, subsystem not found", subsys);
+		log("subsystem request for %s failed, subsystem not found",
+		    subsys);
 
 	xfree(subsys);
 	return success;
@@ -2014,6 +2034,9 @@ session_pty_cleanup(void *session)
 	 */
 	if (close(s->ptymaster) < 0)
 		error("close(s->ptymaster): %s", strerror(errno));
+
+	/* unlink pty from session */
+	s->ttyfd = -1;
 }
 
 static void
@@ -2098,22 +2121,6 @@ session_close_by_pid(pid_t pid, int status)
 	session_close(s);
 }
 
-int
-session_have_children(void)
-{
-	int i;
-
-	for(i = 0; i < MAX_SESSIONS; i++) {
-		Session *s = &sessions[i];
-		if (s->used && s->pid != -1) {
-			debug("session_have_children: id %d pid %d", i, s->pid);
-			return 1;
-		}
-	}
-	debug("session_have_children: no more children");
-	return 0;
-}
-
 /*
  * this is called when a channel dies before
  * the session 'child' itself dies
@@ -2123,22 +2130,36 @@ session_close_by_channel(int id, void *arg)
 {
 	Session *s = session_by_channel(id);
 	if (s == NULL) {
-		debug("session_close_by_channel: no session for channel %d", id);
+		debug("session_close_by_channel: no session for id %d", id);
 		return;
 	}
-	/* disconnect channel */
+	debug("session_close_by_channel: channel %d child %d", id, s->pid);
+	if (s->pid != 0) {
+		debug("session_close_by_channel: channel %d: has child", id);
+		/*
+		 * delay detach of session, but release pty, since
+		 * the fd's to the child are already closed
+		 */
+		if (s->ttyfd != -1) {
+			fatal_remove_cleanup(session_pty_cleanup, (void *)s);
+			session_pty_cleanup(s);
+		}
+		return;
+	}
+	/* detach by removing callback */
 	channel_cancel_cleanup(s->chanid);
 	s->chanid = -1;
+	session_close(s);
+}
 
-	debug("session_close_by_channel: channel %d kill %d", id, s->pid);
-	if (s->pid == 0) {
-		/* close session immediately */
-		session_close(s);
-	} else {
-		/* notify child, delay session cleanup */
-		if (kill(s->pid, (s->ttyfd == -1) ? SIGTERM : SIGHUP) < 0)
-			error("session_close_by_channel: kill %d: %s",
-			    s->pid, strerror(errno));
+void
+session_destroy_all(void)
+{
+	int i;
+	for(i = 0; i < MAX_SESSIONS; i++) {
+		Session *s = &sessions[i];
+		if (s->used) 
+			session_close(s);
 	}
 }
 

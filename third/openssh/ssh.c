@@ -39,7 +39,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: ssh.c,v 1.144 2001/09/24 03:38:58 stevesk Exp $");
+RCSID("$OpenBSD: ssh.c,v 1.149 2001/10/24 08:51:35 markus Exp $");
 
 #include <openssl/evp.h>
 #include <openssl/err.h>
@@ -130,14 +130,6 @@ char *host;
 
 /* socket address the host resolves to */
 struct sockaddr_storage hostaddr;
-
-/*
- * Flag to indicate that we have received a window change signal which has
- * not yet been processed.  This will cause a message indicating the new
- * window size to be sent to the server a little later.  This is volatile
- * because this is updated in a signal handler.
- */
-volatile int received_window_change_signal = 0;
 
 /* Private host keys. */
 struct {
@@ -568,6 +560,7 @@ again:
 
 	SSLeay_add_all_algorithms();
 	ERR_load_crypto_strings();
+	channel_set_af(IPv4or6);
 
 	/* Initialize the command to execute on remote host. */
 	buffer_init(&command);
@@ -630,10 +623,10 @@ again:
 	} else  {
 		snprintf(buf, sizeof buf, "%.100s/%.100s", pw->pw_dir,
 		    _PATH_SSH_USER_CONFFILE);
-
-		/* Read systemwide configuration file. */
-		(void)read_config_file(_PATH_HOST_CONFIG_FILE, host, &options);
 		(void)read_config_file(buf, host, &options);
+
+		/* Read systemwide configuration file after use config. */
+		(void)read_config_file(_PATH_HOST_CONFIG_FILE, host, &options);
 	}
 
 	/* Fill configuration defaults. */
@@ -684,7 +677,7 @@ again:
 
 	/* Open a connection to the remote host. */
 
-	cerr = ssh_connect(host, &hostaddr, options.port,
+	cerr = ssh_connect(host, &hostaddr, options.port, IPv4or6,
 	    options.connection_attempts,
 	    original_effective_uid != 0 || !options.use_privileged_port,
 	    pw, options.proxy_command);
@@ -762,6 +755,8 @@ again:
 	    tilde_expand_filename(options.system_hostfile2, original_real_uid);
 	options.user_hostfile2 =
 	    tilde_expand_filename(options.user_hostfile2, original_real_uid);
+
+	signal(SIGPIPE, SIG_IGN); /* ignore SIGPIPE early */
 
 	/* Log into the remote system.  This never returns if the login fails. */
 	ssh_login(sensitive_data.keys, sensitive_data.nkeys,

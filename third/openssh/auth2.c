@@ -23,7 +23,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: auth2.c,v 1.70 2001/09/20 13:46:48 markus Exp $");
+RCSID("$OpenBSD: auth2.c,v 1.72 2001/11/07 22:41:51 markus Exp $");
 
 #include <openssl/evp.h>
 
@@ -50,7 +50,6 @@ RCSID("$OpenBSD: auth2.c,v 1.70 2001/09/20 13:46:48 markus Exp $");
 #include "misc.h"
 #include "hostfile.h"
 #include "canohost.h"
-#include "tildexpand.h"
 #include "match.h"
 
 #include <al.h>
@@ -127,7 +126,7 @@ do_authentication2()
 
 	x_authctxt = authctxt;		/*XXX*/
 
-	/* challenge-reponse is implemented via keyboard interactive */
+	/* challenge-response is implemented via keyboard interactive */
 	if (options.challenge_response_authentication)
 		options.kbd_interactive_authentication = 1;
 	if (options.pam_authentication_via_kbd_int)
@@ -338,8 +337,14 @@ userauth_finish(Authctxt *authctxt, int authenticated, char *method)
 		/* now we can break out */
 		authctxt->success = 1;
 	} else {
-		if (authctxt->failures++ > AUTH_FAIL_MAX)
+		if (authctxt->failures++ > AUTH_FAIL_MAX) {
+#ifdef WITH_AIXAUTHENTICATE
+			loginfailed(authctxt->user,
+			    get_canonical_hostname(options.reverse_mapping_check),
+			    "ssh");
+#endif /* WITH_AIXAUTHENTICATE */
 			packet_disconnect(AUTH_FAIL_MSG, authctxt->user);
+		}
 		methods = authmethods_get();
 		packet_start(SSH2_MSG_USERAUTH_FAILURE);
 		packet_put_cstring(methods);

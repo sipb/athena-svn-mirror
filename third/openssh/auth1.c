@@ -147,8 +147,6 @@ do_authloop(Authctxt *authctxt)
 						snprintf(info, sizeof(info),
 						    " tktuser %.100s",
 						    client_user);
-						xfree(client_user);
-						client_user = NULL;
 					}
 #endif /* KRB4 */
 				} else {
@@ -162,8 +160,6 @@ do_authloop(Authctxt *authctxt)
 						snprintf(info, sizeof(info),
 						    " tktuser %.100s",
 						    client_user);
-						xfree(client_user);
-						client_user = NULL;
 					}
 #endif /* KRB5 */
 				}
@@ -513,14 +509,6 @@ do_authentication()
 	packet_start(SSH_SMSG_SUCCESS);
 	packet_send();
 	packet_write_wait();
-
-#ifdef WITH_AIXAUTHENTICATE
-	/* We don't have a pty yet, so just label the line as "ssh" */
-	if (loginsuccess(authctxt->user,
-	    get_canonical_hostname(options.reverse_mapping_check),
-	    "ssh", &aixloginmsg) < 0)
-		aixloginmsg = NULL;
-#endif /* WITH_AIXAUTHENTICATE */
 
 	/* Perform session preparation. */
 	do_authenticated(authctxt);

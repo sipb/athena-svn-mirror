@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.3 2001-11-22 15:55:03 zacheiss Exp $
+# $Id: Makefile.in,v 1.4 2002-02-13 05:39:37 zacheiss Exp $
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -86,8 +86,9 @@ $(SSHDOBJS): config.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 LIBCOMPAT=openbsd-compat/libopenbsd-compat.a
-$(LIBCOMPAT): config.h
-	(cd openbsd-compat; $(MAKE))
+$(LIBCOMPAT): always
+	(cd openbsd-compat && $(MAKE))
+always:
 
 libssh.a: $(LIBSSH_OBJS)
 	$(AR) rv $@ $(LIBSSH_OBJS)
@@ -142,22 +143,24 @@ $(CONFIGFILES): $(CONFIGFILES_IN)
 
 clean:
 	rm -f *.o *.a $(TARGETS) logintest config.cache config.log 
-	rm -f *.out core
-	(cd openbsd-compat; $(MAKE) clean)
+	rm -f *.out core 
+	(cd openbsd-compat && $(MAKE) clean)
 
 distclean:
 	rm -f *.o *.a $(TARGETS) logintest config.cache config.log 
 	rm -f *.out core
 	rm -f Makefile config.h config.status ssh_prng_cmds *~
-	(cd openbsd-compat; $(MAKE) distclean)
-	(cd scard; $(MAKE) distclean)
+	rm -rf autom4te.cache
+	(cd openbsd-compat && $(MAKE) distclean)
+	(cd scard && $(MAKE) distclean)
 
 veryclean:
 	rm -f configure config.h.in *.0
 	rm -f *.o *.a $(TARGETS) logintest config.cache config.log 
 	rm -f *.out core
 	rm -f Makefile config.h config.status ssh_prng_cmds *~
-	(cd openbsd-compat; $(MAKE) distclean)
+	(cd openbsd-compat && $(MAKE) distclean)
+	(cd scard && $(MAKE) distclean)
 
 mrproper: distclean
 
@@ -171,13 +174,13 @@ catman-do:
 
 distprep: catman-do
 	autoreconf
-	(cd scard ; $(MAKE) -f Makefile.in distprep)
+	(cd scard && $(MAKE) -f Makefile.in distprep)
 
 install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files host-key
 install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
 
 scard-install:
-	(cd scard; $(MAKE) DESTDIR=$(DESTDIR) install)
+	(cd scard && $(MAKE) DESTDIR=$(DESTDIR) install)
 
 install-files: scard-install
 	$(srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
