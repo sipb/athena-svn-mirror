@@ -3,11 +3,12 @@
 #       Lucien Van Elsen
 #       MIT Project Athena
 #
-#       Copyright (c) 1991 by the Massachusetts Institute of Technology
+# Copyright (C) 1991 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
 #
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v $
 #       $Author: lwvanels $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.4 1991-04-08 21:26:29 lwvanels Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/Imakefile,v 1.5 1991-04-18 22:45:01 lwvanels Exp $
 #
 
 SRCS		=	main.c callbacks.c MriRegAll.c

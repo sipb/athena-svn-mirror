@@ -4,17 +4,21 @@
  * X-based interface.
  *
  *      Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.5 1991-04-08 21:27:08 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.6 1991-04-18 22:44:35 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include <Mrm/MrmAppl.h>
 #include <Xm/Mu.h>

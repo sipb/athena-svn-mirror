@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ */
+
+#include <mit-copyright.h>
+
 /* Structure describing a CREF entry. */
 
 #define  TITLE_SIZE	128		/* Size of a section title. */

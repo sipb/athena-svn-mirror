@@ -3,17 +3,21 @@
  * It contains the main routine.
  *
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v $
  *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.6 1991-04-08 21:27:25 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/main.c,v 1.7 1991-04-18 22:44:55 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include <Mrm/MrmAppl.h>	/* Motif Toolkit */
 #include <Xm/Mu.h>
