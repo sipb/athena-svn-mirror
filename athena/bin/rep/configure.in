@@ -3,6 +3,8 @@ AC_INIT(rep.c)
 
 AC_PROG_CC
 AC_PROG_INSTALL
+
+AC_CHECK_LIB(curses, initscr,, AC_CHECK_LIB(ncurses, initscr))
 AC_CHECK_LIB(termcap, tgetent)
 
 AC_OUTPUT(Makefile)

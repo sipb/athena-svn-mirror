@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-01-11 19:11:03 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1997-12-20 18:53:14 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -21,7 +21,7 @@ ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
 all: rep
 
 rep: rep.o
-	${CC} ${LDFLAGS} -o rep rep.o -lcurses ${LIBS}
+	${CC} ${LDFLAGS} -o rep rep.o ${LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
