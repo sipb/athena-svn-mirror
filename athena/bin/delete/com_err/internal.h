@@ -11,8 +11,6 @@ extern int errno;
 extern char const * const sys_errlist[];
 extern const int sys_nerr;
 
-#ifdef __STDC__
-int perror (const char *);
-#else
+#if !defined(__STDC__) || defined(__HIGHC__)
 int perror ();
 #endif
