@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zmailnotify.c,v 1.22 1994-10-31 14:39:52 ghudson Exp $
+ *	$Id: zmailnotify.c,v 1.23 1994-11-12 04:57:33 cfields Exp $
  *
  *	Copyright (c) 1987,1993 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 static char rcsid_zmailnotify_c[] =
-    "$Id: zmailnotify.c,v 1.22 1994-10-31 14:39:52 ghudson Exp $";
+    "$Id: zmailnotify.c,v 1.23 1994-11-12 04:57:33 cfields Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -97,6 +97,8 @@ main(argc, argv)
 	if (!dir)
 	    dir = pwd->pw_dir;
     }
+    if (argc > 1)
+	user = argv[1];
 
     (void) sprintf(lockfile,"%s/.maillock",dir);
 	
@@ -391,6 +393,7 @@ char *host;
     KTEXT ticket = (KTEXT)NULL;
     int rem;
     long authopts;
+    char *host_save;
 #endif
     char *get_errmsg();
     char *svc_name;
@@ -449,10 +452,17 @@ char *host;
 #else
     authopts = 0L;
 #endif
-    rem = krb_sendauth(authopts, s, ticket, "pop", hp->h_name, (char *)0,
+    host_save = malloc(strlen(hp->h_name) + 1);
+    if (!host_save) {
+	sprintf(Errmsg, "Out of memory.");
+	return(NOTOK);
+    }
+    strcpy(host_save, hp->h_name);
+    rem = krb_sendauth(authopts, s, ticket, "pop", host_save, (char *)0,
 		       0, (MSG_DAT *) 0, (CREDENTIALS *) 0,
 		       (bit_64 *) 0, (struct sockaddr_in *)0,
 		       (struct sockaddr_in *)0,"ZMAIL0.0");
+    free(host_save);
     free(ticket);
     if (rem != KSUCCESS) {
 	(void) sprintf(Errmsg, "kerberos error: %s",krb_err_txt[rem]);
