@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.21 2001-08-14 16:36:58 ghudson Exp $
+# $Id: update_ws.sh,v 1.22 2001-08-16 14:48:16 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -123,9 +123,10 @@ if [ -n "$pversarg" ]; then
   # Find the specified patch version in the control file.
   exec 3< "$SYSCONTROL" || errorout "Can't read `pwd`/$SYSCONTROL."
   unset newlist
-  while read version filename throw_away_the_rest <&3; do
+  while read version filename upgrfilename throw_away_the_rest <&3; do
     if [ "x$version" = "x$pversarg" ]; then
       newlist=$filename
+      upgrlist=$upgrfilename
       break
     fi
   done
@@ -140,6 +141,7 @@ else
   set -- `tail -1 "$SYSCONTROL"`
   newvers=$1
   newlist=$2
+  upgrlist=$3
 fi
 
 # Define a function to output a message pointing out a new testing release.
@@ -190,13 +192,14 @@ if [ -n "$auto" ]; then
   fi
 fi
 
-# Translate public status into command-line flag and old list filename.
-# rpmupdate does not use the information from the old list for public
-# updates.
 if [ true = "$PUBLIC" ]; then
-  publicflag=-p
+  # Tell rpmupdate we're a public workstation.
+  flags=-p
+elif [ -n "$upgrlist" ]; then
+  # Tell rpmupdate about the upgrade-only list.
+  flags="-u $upgrlist"
 else
-  publicflag=
+  flags=
 fi
 
 oldlist=/var/athena/release-rpms
@@ -221,7 +224,7 @@ fi
 # If we're doing a dry run, here's where we get off the train.
 if [ true = "$dryrun" ]; then
   echo "Package changes for update from $oldvers to $newvers:"
-  rpmupdate -n $publicflag "$oldlist" "$newlist" | sort
+  rpmupdate -n $flags "$oldlist" "$newlist" | sort
   exit 0
 fi
 
@@ -258,7 +261,7 @@ failupdate() {
     rpm -Fv "$staging"
   fi
 
-  rpmupdate -h $publicflag "$oldlist" "$newlist" || failupdate
+  rpmupdate -h $flags "$oldlist" "$newlist" || failupdate
   cp "$newlist" "$oldlist" || failupdate
   kudzu -q
   echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
