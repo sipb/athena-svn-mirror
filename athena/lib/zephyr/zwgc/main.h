@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
  *      $Author: ghudson $
- *	$Id: main.h,v 1.7 1998-05-24 04:48:04 ghudson Exp $
+ *	$Id: main.h,v 1.8 1998-09-03 01:45:12 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -18,6 +18,12 @@
 
 #ifndef main_MODULE
 #define main_MODULE
+
+#ifdef HAVE_ARES
+#include <ares.h>
+
+extern ares_channel achannel;
+#endif
 
 extern char *progname;
 extern char *subscriptions_filename_override;

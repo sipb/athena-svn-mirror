@@ -15,7 +15,7 @@
 #include <sysdep.h>
 
 #if (!defined(lint) && !defined(SABER))
-static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.7 1998-05-24 04:48:04 ghudson Exp $";
+static const char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.8 1998-09-03 01:45:15 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -77,7 +77,7 @@ static string get_zwgc_port_number_filename()
 static void handle_zephyr_input(notice_handler)
      void (*notice_handler)();
 {
-    ZNotice_t notice;
+    ZNotice_t *notice;
     struct sockaddr_in from;
     int complete_packets_ready;
 
@@ -89,11 +89,12 @@ static void handle_zephyr_input(notice_handler)
 	if (complete_packets_ready==0)
 	  return;
 
-	TRAP( ZReceiveNotice(&notice, &from), "while getting zephyr notice" );
+	notice = malloc(sizeof(ZNotice_t));
+
+	TRAP( ZReceiveNotice(notice, &from), "while getting zephyr notice" );
 	if (!error_code) {
-	    notice.z_auth = ZCheckAuthentication(&notice, &from);
-	    notice_handler(&notice);
-	    ZFreeNotice(&notice);
+	    notice->z_auth = ZCheckAuthentication(notice, &from);
+	    notice_handler(notice);
 	}
     }
 }
