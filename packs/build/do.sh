@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.58 2000-10-24 06:42:51 ghudson Exp $
+# $Id: do.sh,v 1.59 2000-12-12 19:22:58 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -165,7 +165,9 @@ fi
 if [ -n "$athtoolroot" ]; then
 	ext=${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}
 	LD_LIBRARY_PATH=$athtoolroot/usr/athena/lib$ext
-	export LD_LIBRARY_PATH
+	REPLISPDIR=$athtoolroot/usr/athena/share/rep/lisp
+	REPEXECDIR=$athtoolroot/usr/athena/libexec/rep
+	export LD_LIBRARY_PATH REPLISPDIR REPEXECDIR
 fi
 
 # Determine the Athena version
