@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.5 1995-07-12 05:21:18 cfields Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.6 1995-11-30 19:40:40 miki Exp $
  *	$Locker:  $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -22,7 +22,7 @@
 
 #ifndef	lint
 static char const rcs_id[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.5 1995-07-12 05:21:18 cfields Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.6 1995-11-30 19:40:40 miki Exp $";
 #endif
 
 #ifdef POSIX
@@ -134,7 +134,7 @@ int ss_listen (sci_idx)
 	    code = SS_ET_EOF;
 	    goto egress;
 	}
-	cp = index(input, '\n');
+	cp = strchr(input, '\n');
 	if (cp) {
 	    *cp = '\0';
 	    if (cp == input)
@@ -153,10 +153,10 @@ int ss_listen (sci_idx)
 	    register char *c = input;
 	    while (*c == ' ' || *c == '\t')
 		c++;
-	    cp = index (c, ' ');
+	    cp = strchr (c, ' ');
 	    if (cp)
 		*cp = '\0';
-	    cp = index (c, '\t');
+	    cp = strchr (c, '\t');
 	    if (cp)
 		*cp = '\0';
 	    ss_error (sci_idx, 0,
