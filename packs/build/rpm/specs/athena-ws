@@ -34,12 +34,14 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
 %post
+cp XTerm /usr/X11R6/lib/X11/app-defaults/XTerm
+
 cp /etc/syslog.conf.athena /etc/syslog.conf
 chkconfig --add athena-ws
 
 # Add warnings on disabled consoles pointing people at tty7.
 for i in 1 2 3 4 5 6; do
-  if grep ^$i: /etc/inittab; then true; else
+  if grep -q ^$i: /etc/inittab; then true; else
     echo "$i:2345:once:echo \"Type CTRL-ALT-F7 to log in.\" > /dev/tty$i" >> /etc/inittab
   fi
 done
