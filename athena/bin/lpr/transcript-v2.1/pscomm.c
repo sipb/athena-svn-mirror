@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: pscomm.c,v 1.24 1999-02-21 07:59:36 jweiss Exp $";
+_NOTICE RCSID[]="$Id: pscomm.c,v 1.25 1999-05-21 05:06:49 jweiss Exp $";
 #endif
 /* pscomm.c
  *
@@ -243,9 +243,7 @@ private union wait status;	/* Return value from wait() */
 #endif
 
 private char abortbuf[] = "\003";	/* ^C abort */
-#ifndef HP /* ^T sometimes kills HP printers */
 private char statusbuf[] = "\024";	/* ^T status */
-#endif
 private char eofbuf[] = "\004";		/* ^D end of file */
 
 /* global file descriptors (avoid stdio buffering!) */
@@ -901,9 +899,7 @@ printit:;
 
 	while ((cnt = read(fdinput, mybuf, sizeof mybuf)) > 0) {
 	    if (getstatus) {       /* Get printer status sometimes */
-#ifndef HP /* ^T sometimes kills HP printers */
 		VOIDC write(fdsend, statusbuf, 1);
-#endif
 		getstatus = FALSE;
 		progress++;
 	    }
@@ -1602,9 +1598,7 @@ private VOID GotAlarmSig() {
 	    break;
 	case waiting:
 	    if( jobaborted ) dieanyway();   /* If already aborted, just croak */
-#ifndef HP /* ^T sometimes kills HP printers */
 	    VOIDC write(fdsend, statusbuf, 1);
-#endif
 	    if( kill(cpid,0) < 0 ) childdone = TRUE;  /* Missed exit somehow */
 	    VOIDC alarm(WAITALARM); /* reset the alarm and return */
 	    break;
