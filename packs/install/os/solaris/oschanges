@@ -1,0 +1,27 @@
+#!/sbin/sh
+# Copy some files and remove some files after the os pkgs were installed
+
+# copied from AFS
+rm /root/usr/ucblib/libucb.so.1
+rm /root/usr/ucblib/libucb.so
+cp /os/usr/ucblib/libucb.so.1 /root/usr/ucblib
+ln -s /root/usr/ucblib/libucb.so.1 /root/usr/ucblib/libucb.so
+
+
+
+# removed
+rm /root/etc/rc2.d/S89bdconfig
+rm /root/etc/rc2.d/S85power
+rm /root/etc/rc2.d/S99audit
+
+
+rm /root/usr/openwin/lib/X11/fonts/75dpi/*
+rm /root/usr/openwin/lib/X11/fonts/misc/*
+cp -p -r /os/usr/openwin/lib/X11/fonts/75dpi/* /root/usr/openwin/lib/X11/fonts/75dpi/
+cp -p -r /os/usr/openwin/lib/X11/fonts/misc/* /root/usr/openwin/lib/X11/fonts/misc/
+rm /root/usr/openwin/server/lib/libtypesclr.so*
+rm /root/usr/openwin/server/lib/libfont.so*
+cp -p /os/usr/openwin/server/lib/libfont.so.1 /root/usr/openwin/server/lib/
+cp -p /os/usr/openwin/server/lib/libtypesclr.so.0 /root/usr/openwin/server/lib/
+ln -s /usr/openwin/server/libfont.so.1 /root/usr/openwin/server/lib/libfont.so
+ln -s /usr/openwin/server/libtypesclr.so.0 /root/usr/openwin/server/lib/libtypesclr.so
