@@ -1,6 +1,6 @@
 #!/bin/athena/tcsh
 
-# $Revision: 1.28 $
+# $Revision: 1.29 $
 
 umask 2
 
@@ -62,7 +62,8 @@ set end="config/dotfiles config/config"
 # athena/bin/inittty is not listed now. Hopefully we have a better
 # solution now.
  
-set outfile="/usr/tmp/washlog.`date '+%y.%m.%d.%H'`"
+mkdir /build/LOGS
+set outfile="/build/LOGS/washlog.`date '+%y.%m.%d.%H'`"
 set SRVD="/srvd"
 set X="X11R4"
 set MOTIF="motif"
@@ -752,4 +753,3 @@ endif # installonly
 endsw
 end
 echo ending `date` >>& $outfile
-cp -p $outfile "/build/washlog.`date '+%y.%m.%d.%H'`"
