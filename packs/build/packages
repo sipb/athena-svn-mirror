@@ -1,4 +1,4 @@
-# $Id: packages,v 1.230 2003-04-17 15:36:31 rbasch Exp $
+# $Id: packages,v 1.231 2003-04-22 15:39:03 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -62,7 +62,7 @@ athena/bin/dent
 athena/bin/discuss		requires krb5,zephyr,ss,et
 athena/bin/dustbuster
 athena/bin/finger		requires hesiod,zephyr
-athena/bin/from			requires cyrus-imap-client,perl
+athena/bin/from			requires cyrus-imapd,perl
 athena/bin/gathlogout		requires gtk2
 athena/bin/gathrun
 athena/bin/get_message		requires gms,hesiod
