@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.18 2001-02-23 03:54:24 ghudson Exp $
+# $Id: update_ws.sh,v 1.19 2001-03-09 21:17:59 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -243,6 +243,18 @@ failupdate() {
 	echo "Beginning update from $oldvers to $newvers at `date`."
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
+
+	# If there is a staging version of rpmupdate for the current
+	# release, freshen to it, since it might be necessary to get
+	# to a future release.  Even if it's not needed, it won't
+	# hurt to have it.
+	oldfull=`echo "$oldvers" | sed -e 's/\.[^\.*]*$//'`
+	staging=control/rpmupdate-$oldfull.staging
+	if [ -r "$staging" ]; then
+		echo -n "Freshening rpmupdate: "
+		rpm -Fv "$staging"
+	fi
+
 	rpmupdate -h $publicflag "$oldlist" "$newlist" || failupdate
 	cp "$newlist" "$oldlist" || failupdate
 	kudzu -q
