@@ -406,7 +406,7 @@ char *athena_authenticate(user, passwd)
 {
   int local_ok = 0;
   struct passwd *pwd;
-  char tkt_file[128];
+  char tkt_file[128], *var;
   long salt;
   char saltc[2], c;
   char encrypt[PASSWORD_LEN+1];
@@ -449,7 +449,14 @@ char *athena_authenticate(user, passwd)
     local_ok = 1;
 
   sprintf(tkt_file, "/tmp/tkt_%s.%d", pwd->pw_name, getpid());
-  setenv("KRBTKFILE", tkt_file, 1);
+  var = malloc(strlen(tkt_file) + strlen("KRBTKFILE=") + 1);
+  if (var == NULL)
+    {
+      reply(553, "Local resource failure: malloc");
+      dologout(1);
+    }
+  sprintf(var, "KRBTKFILE=%s", tkt_file);
+  putenv(var);
   /* we set the ticket file here because a previous dest_tkt() might
      have cached the wrong ticket file. */
   krb_set_tkt_string(tkt_file);
