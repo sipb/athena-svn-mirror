@@ -97,6 +97,9 @@ Distribution sites for software under third
 	perl		prep.ai.mit.edu:pub/gnu
 	rcs		prep.ai.mit.edu:pub/gnu
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
+	ssh		ftp.cs.hut.fi:pub/ssh
+			plus krb4/afs patches from 
+			http://www-personal.umich.edu/~dugsong/ssh-afs-kerberos.html
 	sysinfo		usc.edu:pub/sysinfo
 	talk		From NetBSD (ftp.netbsd.org)
 			usr.bin/talk goes in the talk subdirectory
