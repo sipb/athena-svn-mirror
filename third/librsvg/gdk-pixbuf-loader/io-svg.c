@@ -25,27 +25,40 @@
 #include <stdlib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixbuf-io.h>
-
-#if HAVE_SVGZ
 #include <rsvg-gz.h>
-#endif
+#include "rsvg-private.h"
 
 typedef struct {
         RsvgHandle                 *handle;
         GdkPixbuf                  *pixbuf;
+
         GdkPixbufModuleUpdatedFunc  updated_func;
         GdkPixbufModulePreparedFunc prepared_func;
-        gpointer                    user_data;
-
-#if HAVE_SVGZ
         GdkPixbufModuleSizeFunc     size_func;
-        gboolean                    first_write;
-#endif
 
+        gboolean                    first_write;
+
+        gpointer                    user_data;
 } SvgContext;
 
 G_MODULE_EXPORT void fill_vtable (GdkPixbufModule *module);
 G_MODULE_EXPORT void fill_info (GdkPixbufFormat *info);
+
+enum {
+        ERROR_WRITING = 1,
+        ERROR_DISPLAYING_IMAGE
+} RsvgLoaderErrorReasons;
+
+static void
+rsvg_propegate_error (GError ** err,
+                      const char * reason,
+                      gint code)
+{
+        if (err) {
+                *err = NULL;
+                g_set_error (err, rsvg_error_quark (), code, reason);
+        }
+}
 
 static gpointer
 gdk_pixbuf__svg_image_begin_load (GdkPixbufModuleSizeFunc size_func,
@@ -59,15 +72,8 @@ gdk_pixbuf__svg_image_begin_load (GdkPixbufModuleSizeFunc size_func,
         if (error)
                 *error = NULL;
 
-#if HAVE_SVGZ
-        /* lazy create the handle on the first write */
-        context->handle        = NULL;
         context->first_write   = TRUE;
         context->size_func     = size_func;
-#else
-        context->handle        = rsvg_handle_new ();
-        rsvg_handle_set_size_callback (context->handle, size_func, user_data, NULL);
-#endif
 
         context->prepared_func = prepared_func;
         context->updated_func  = updated_func;
@@ -82,12 +88,10 @@ gdk_pixbuf__svg_image_load_increment (gpointer data,
 				      GError **error)
 {
         SvgContext *context = (SvgContext *)data;
-        gboolean result;
 
         if (error)
                 *error = NULL;
 
-#if HAVE_SVGZ
         if (context->first_write == TRUE) {
                 context->first_write = FALSE;
 
@@ -97,24 +101,30 @@ gdk_pixbuf__svg_image_load_increment (gpointer data,
                 else
                         context->handle = rsvg_handle_new ();
 
+                if (!context->handle)
+                        return FALSE;
+
                 rsvg_handle_set_size_callback (context->handle, context->size_func, context->user_data, NULL);
         }
-#endif
 
-        result = rsvg_handle_write (context->handle, buf, size, error);  
+        if (!rsvg_handle_write (context->handle, buf, size, error)) {
+                rsvg_propegate_error (error, _("Error writing"), ERROR_WRITING);
+                return FALSE;
+        }
 
         context->pixbuf = rsvg_handle_get_pixbuf (context->handle);
   
         if (context->pixbuf != NULL && context->prepared_func != NULL)
                 (* context->prepared_func) (context->pixbuf, NULL, context->user_data);        
   
-        return result;
+        return TRUE;
 }
 
 static gboolean
 gdk_pixbuf__svg_image_stop_load (gpointer data, GError **error)
 {
         SvgContext *context = (SvgContext *)data;  
+        gboolean result = TRUE;
 
         if (error)
                 *error = NULL;
@@ -134,9 +144,14 @@ gdk_pixbuf__svg_image_stop_load (gpointer data, GError **error)
                                            gdk_pixbuf_get_width (context->pixbuf), 
                                            gdk_pixbuf_get_height (context->pixbuf), 
                                            context->user_data);
+        else if (!context->pixbuf) {
+                rsvg_propegate_error (error, _("Error displaying image"), ERROR_DISPLAYING_IMAGE);
+                result = FALSE;
+        }
 
         rsvg_handle_free (context->handle);
-        g_object_unref (context->pixbuf);
+        if (context->pixbuf)
+                g_object_unref (context->pixbuf);
         g_free (context);
 
         return TRUE;
@@ -157,9 +172,6 @@ fill_info (GdkPixbufFormat *info)
                 { "<?xml", NULL, 50 },
                 { "<svg", NULL, 100 },
                 { "<!DOCTYPE svg", NULL, 100 },
-#if HAVE_SVGZ
-                { "\x1f\x8b", NULL, 50 }, /* todo: recognizes any gzipped file, not much we can do */
-#endif
                 { NULL, NULL, 0 }
         };
         static gchar *mime_types[] = { 
@@ -169,15 +181,13 @@ fill_info (GdkPixbufFormat *info)
         };
         static gchar *extensions[] = { 
                 "svg", 
-#if HAVE_SVGZ
                 "svgz",
-#endif
                 NULL 
         };
         
         info->name        = "svg";
         info->signature   = signature;
-        info->description = "Scalable Vector Graphics";
+        info->description = _("Scalable Vector Graphics");
         info->mime_types  = mime_types;
         info->extensions  = extensions;
         info->flags       = 0;

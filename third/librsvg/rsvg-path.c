@@ -115,6 +115,14 @@ rsvg_path_arc (RSVGParsePathCtx *ctx,
   double th0, th1, th_arc;
   int i, n_segs;
 
+  /* Check that neither radius is zero, since its isn't either
+     geometrically or mathematically meaningful and will
+     cause divide by zero and subsequent NaNs.  We should
+     really do some ranged check ie -0.001 < x < 000.1 rather
+     can just a straight check again zero.
+  */
+  if ((rx == 0.0) || (ry == 0.0)) return;
+
   sin_th = sin (x_axis_rotation * (M_PI / 180.0));
   cos_th = cos (x_axis_rotation * (M_PI / 180.0));
   a00 = cos_th / rx;
@@ -298,8 +306,8 @@ rsvg_parse_path_do_cmd (RSVGParsePathCtx *ctx, gboolean final)
 	  y2 = (y3 + 2 * ctx->params[1]) * (1.0 / 3.0);
 	  rsvg_bpath_def_curveto (ctx->bpath,
 				  x1, y1, x2, y2, x3, y3);
-	  ctx->rpx = x2;
-	  ctx->rpy = y2;
+	  ctx->rpx = ctx->params[0];
+	  ctx->rpy = ctx->params[1];
 	  ctx->cpx = x3;
 	  ctx->cpy = y3;
 	  ctx->param = 0;
@@ -342,8 +350,8 @@ rsvg_parse_path_do_cmd (RSVGParsePathCtx *ctx, gboolean final)
 	      y2 = (y3 + 2 * ctx->params[1]) * (1.0 / 3.0);
 	      rsvg_bpath_def_curveto (ctx->bpath,
 				      x1, y1, x2, y2, x3, y3);
-	      ctx->rpx = x2;
-	      ctx->rpy = y2;
+              ctx->rpx = ctx->params[0];
+              ctx->rpy = ctx->params[1];
 	      ctx->cpx = x3;
 	      ctx->cpy = y3;
 	    }
@@ -516,6 +524,9 @@ rsvg_parse_path_data (RSVGParsePathCtx *ctx, const char *data)
 	  if (ctx->param)
 	    rsvg_parse_path_do_cmd (ctx, TRUE);
 	  rsvg_bpath_def_closepath (ctx->bpath);
+
+	  ctx->cpx = ctx->rpx = ctx->bpath->bpath[ctx->bpath->n_bpath - 1].x3;
+	  ctx->cpy = ctx->rpy = ctx->bpath->bpath[ctx->bpath->n_bpath - 1].y3;
 	}
       else if (c >= 'A' && c <= 'Z' && c != 'E')
 	{

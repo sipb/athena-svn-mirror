@@ -39,7 +39,11 @@ GQuark rsvg_error_quark (void) G_GNUC_CONST;
 typedef struct RsvgHandle RsvgHandle;
 
 /**
- * RsvgSizeFunc
+ * RsvgSizeFunc ():
+ * @width: Pointer to where to set/store the width
+ * @height: Pointer to where to set/store the height
+ * @user_data: User data pointer
+ *
  * Function to let a user of the library specify the SVG's dimensions
  * @width: the ouput width the SVG should be
  * @height: the output height the SVG should be
@@ -50,10 +54,15 @@ typedef void (* RsvgSizeFunc) (gint     *width,
 							   gpointer  user_data);
 
 
+#ifndef RSVG_DISABLE_DEPRECATED
 void        rsvg_set_default_dpi          (double dpi);
+void        rsvg_handle_set_dpi           (RsvgHandle * handle, double dpi);
+#endif
+
+void        rsvg_set_default_dpi_x_y          (double dpi_x, double dpi_y);
+void        rsvg_handle_set_dpi_x_y           (RsvgHandle * handle, double dpi_x, double dpi_y);
 
 RsvgHandle *rsvg_handle_new               (void);
-void        rsvg_handle_set_dpi           (RsvgHandle * handle, double dpi);
 void        rsvg_handle_set_size_callback (RsvgHandle      *handle,
 										   RsvgSizeFunc     size_func,
 										   gpointer         user_data,
@@ -67,7 +76,7 @@ gboolean    rsvg_handle_close             (RsvgHandle      *handle,
 GdkPixbuf  *rsvg_handle_get_pixbuf        (RsvgHandle      *handle);
 void        rsvg_handle_free              (RsvgHandle      *handle);
 
-/* convenience API */
+/* Convenience API */
 
 GdkPixbuf  *rsvg_pixbuf_from_file                  (const gchar  *file_name,
 													GError      **error);
@@ -90,7 +99,12 @@ GdkPixbuf  *rsvg_pixbuf_from_file_at_zoom_with_max (const gchar  *file_name,
 													gint          max_height,
 													GError      **error);
 
-/* "New" convenience API (2.2.2+) */
+/* Accessibility API */
+
+G_CONST_RETURN char *rsvg_handle_get_title         (RsvgHandle *handle);
+G_CONST_RETURN char *rsvg_handle_get_desc          (RsvgHandle *handle);
+
+/* Extended Convenience API */
 
 GdkPixbuf  * rsvg_pixbuf_from_file_at_size_ex (RsvgHandle * handle,
 											   const gchar  *file_name,

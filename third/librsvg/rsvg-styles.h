@@ -32,7 +32,7 @@
 #include <libxml/SAX.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libart_lgpl/art_vpath_dash.h>
-#include <pango/pangoft2.h>
+#include <pango/pango.h>
 
 G_BEGIN_DECLS
 
@@ -45,60 +45,150 @@ enum {
 	TEXT_STRIKE    = 0x04
 };
 
-typedef struct {
+typedef enum {
+	TEXT_ANCHOR_START,
+	TEXT_ANCHOR_MIDDLE,
+	TEXT_ANCHOR_END
+} TextAnchor;
+
+enum {
+	FILL_RULE_EVENODD = 0,
+	FILL_RULE_NONZERO = 1
+};
+
+typedef enum {
+	UNICODE_BIDI_NORMAL = 0,
+	UNICODE_BIDI_EMBED = 1,
+	UNICODE_BIDI_OVERRIDE = 2	
+} UnicodeBidi;
+
+struct _RsvgState {
 	double affine[6];
+	double personal_affine[6];
 	
 	gint opacity; /* 0..255 */
 	
 	RsvgPaintServer *fill;
+	gboolean has_fill_server;
 	gint fill_opacity; /* 0..255 */
-	
+	gboolean has_fill_opacity;
+	gint fill_rule;	
+	gboolean has_fill_rule;
+	gint clip_rule;	
+	gboolean has_clip_rule;
+
+	RsvgFilter *filter;
+	void *mask;
+	void *clip_path_ref;
+	gboolean backgroundnew;
+	gint adobe_blend;
+
 	RsvgPaintServer *stroke;
+	gboolean has_stroke_server;
 	gint stroke_opacity; /* 0..255 */
+	gboolean has_stroke_opacity;
 	double stroke_width;
+	gboolean has_stroke_width;
 	double miter_limit;
+	gboolean has_miter_limit;
 	
 	ArtPathStrokeCapType cap;
+	gboolean has_cap;
 	ArtPathStrokeJoinType join;
+	gboolean has_join;
 	
 	double         font_size;
-	char        *  font_family;
+	gboolean has_font_size;
+	char         * font_family;
+	gboolean has_font_family;
+	char         * lang;
+	gboolean has_lang;
 	PangoStyle     font_style;
+	gboolean has_font_style;
 	PangoVariant   font_variant;
+	gboolean has_font_variant;
 	PangoWeight    font_weight;
+	gboolean has_font_weight;
 	PangoStretch   font_stretch;
+	gboolean has_font_stretch;
 	TextDecoration font_decor;
-	
+	gboolean has_font_decor;
+	PangoDirection text_dir;
+	gboolean has_text_dir;
+	UnicodeBidi unicode_bidi;
+	gboolean has_unicode_bidi;
+	TextAnchor     text_anchor;
+	gboolean has_text_anchor;	
+
 	guint text_offset;
 	
 	guint32 stop_color; /* rgb */
+	gboolean has_stop_color;
 	gint stop_opacity;  /* 0..255 */
+	gboolean has_stop_opacity;
 	
 	gboolean visible;
+	gboolean has_visible;
+
+	gboolean has_cond;
+	gboolean cond_true;
 
 	ArtVpathDash dash;
-	
+	gboolean has_dash;
+
+	guint32 current_color;
+	gboolean has_current_color;
+
+	RsvgDefVal * startMarker;
+	RsvgDefVal * middleMarker;
+	RsvgDefVal * endMarker;	
+	gboolean has_startMarker;
+	gboolean has_middleMarker;
+	gboolean has_endMarker;	
+
 	GdkPixbuf *save_pixbuf;
-} RsvgState;
+	ArtIRect underbbox;
+
+	ArtSVP * clippath;
+	gboolean clip_path_loaded;
+};
 
 void rsvg_state_init (RsvgState *state);
 void rsvg_state_clone (RsvgState *dst, const RsvgState *src);
+void rsvg_state_inherit (RsvgState *dst, const RsvgState *src);
+void rsvg_state_reinherit (RsvgState *dst, const RsvgState *src);
+void rsvg_state_dominate (RsvgState *dst, const RsvgState *src);
 void rsvg_state_finalize (RsvgState *state);
 
-gboolean rsvg_is_style_arg(const char *str);
+void rsvg_parse_style_pairs (RsvgHandle *ctx, RsvgState *state, 
+							 RsvgPropertyBag *atts);
 void rsvg_parse_style_pair (RsvgHandle *ctx, RsvgState *state, 
 							const char *key, const char *val);
 void rsvg_parse_style (RsvgHandle *ctx, RsvgState *state, const char *str);
 void rsvg_parse_cssbuffer (RsvgHandle *ctx, const char * buff, size_t buflen);
-void rsvg_parse_style_attrs (RsvgHandle *ctx, const char * tag,
+
+void rsvg_parse_style_attrs (RsvgHandle *ctx, RsvgState *state, const char * tag,
 							 const char * klazz, const char * id,
-							 const xmlChar **atts);
+							 RsvgPropertyBag *atts);
 
 gdouble rsvg_viewport_percentage (gdouble width, gdouble height);
+gdouble rsvg_dpi_percentage (RsvgHandle * ctx);
 
-void rsvg_pop_opacity_group (RsvgHandle *ctx, int opacity);
-void rsvg_push_opacity_group (RsvgHandle *ctx);
+void rsvg_pop_discrete_layer(RsvgHandle *ctx);
+void rsvg_push_discrete_layer (RsvgHandle *ctx);
+gboolean rsvg_needs_discrete_layer(RsvgState *state);
 gboolean rsvg_parse_transform (double dst[6], const char *src);
+
+RsvgState * rsvg_state_parent (RsvgHandle *ctx);
+RsvgState * rsvg_state_current (RsvgHandle *ctx);
+double rsvg_state_current_font_size (RsvgHandle *ctx);
+
+void rsvg_state_clip_path_assure(RsvgHandle * ctx);
+
+void rsvg_state_pop(RsvgHandle * ctx);
+void rsvg_state_push(RsvgHandle * ctx);
+
+void rsvg_state_reinherit_top(RsvgHandle * ctx, RsvgState * state, int dominate);
 
 G_END_DECLS
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns="http://www.devhelp.net/book" title="RSVG Reference Manual" link="index.html" author="" name="rsvg">
+<chapters>
+<sub name="RSVG Overview" link="rsvg.html"/>
+<sub name="" link="ix01.html"/>
+</chapters>
+<functions>
+<function name="rsvg_error_quark ()" link="rsvg-Core-API.html#rsvg-error-quark"/>
+<function name="RsvgSizeFunc ()" link="rsvg-Core-API.html#RsvgSizeFunc"/>
+<function name="rsvg_set_default_dpi ()" link="rsvg-Core-API.html#rsvg-set-default-dpi"/>
+<function name="rsvg_handle_new ()" link="rsvg-Core-API.html#rsvg-handle-new"/>
+<function name="rsvg_handle_set_dpi ()" link="rsvg-Core-API.html#rsvg-handle-set-dpi"/>
+<function name="rsvg_handle_set_size_callback ()" link="rsvg-Core-API.html#rsvg-handle-set-size-callback"/>
+<function name="rsvg_handle_write ()" link="rsvg-Core-API.html#rsvg-handle-write"/>
+<function name="rsvg_handle_close ()" link="rsvg-Core-API.html#rsvg-handle-close"/>
+<function name="rsvg_handle_get_pixbuf ()" link="rsvg-Core-API.html#rsvg-handle-get-pixbuf"/>
+<function name="rsvg_handle_get_title ()" link="rsvg-Core-API.html#rsvg-handle-get-title"/>
+<function name="rsvg_handle_get_desc ()" link="rsvg-Core-API.html#rsvg-handle-get-desc"/>
+<function name="rsvg_handle_free ()" link="rsvg-Core-API.html#rsvg-handle-free"/>
+<function name="rsvg_handle_new_gz ()" link="rsvg-Creating-a-SVGZ-reader.html#rsvg-handle-new-gz"/>
+<function name="rsvg_pixbuf_from_file ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file"/>
+<function name="rsvg_pixbuf_from_file_at_zoom ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom"/>
+<function name="rsvg_pixbuf_from_file_at_size ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-size"/>
+<function name="rsvg_pixbuf_from_file_at_max_size ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-max-size"/>
+<function name="rsvg_pixbuf_from_file_at_zoom_with_max ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-with-max"/>
+<function name="rsvg_pixbuf_from_file_ex ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-ex"/>
+<function name="rsvg_pixbuf_from_file_at_zoom_ex ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-ex"/>
+<function name="rsvg_pixbuf_from_file_at_size_ex ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-size-ex"/>
+<function name="rsvg_pixbuf_from_file_at_max_size_ex ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-max-size-ex"/>
+<function name="rsvg_pixbuf_from_file_at_zoom_with_max_ex ()" link="rsvg-Convenience-Functions.html#rsvg-pixbuf-from-file-at-zoom-with-max-ex"/>
+</functions>
+</book>
