@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.6 1989-11-15 22:46:33 marc Exp $";
+static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.7 1989-12-08 13:07:47 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -164,14 +164,15 @@ int xselProcessSelection(dpy,w,event)
 #endif
 
    if ((ownership_start == CurrentTime) ||
-       (selreq->time < ownership_start) ||
-       ((ownership_end != CurrentTime) &&
-	(ownership_end > ownership_start) &&
-	(selreq->time > ownership_end)))
-     xselNotify(dpy,selreq,None);
-
-   xselSetProperties(dpy,selreq->requestor,selreq->property,selreq->target,
-		     selreq);
+       ((selreq->time != CurrentTime) &&
+	(selreq->time < ownership_start) ||
+	((ownership_end != CurrentTime) &&
+	 (ownership_end > ownership_start) &&
+	 (selreq->time > ownership_end))))
+       xselNotify(dpy,selreq,None);
+   else
+       xselSetProperties(dpy,selreq->requestor,selreq->property,selreq->target,
+			 selreq);
 
    return(1);
 }
