@@ -27,33 +27,26 @@ packs/build/packages.
 After attaching the correct locker, you can build a package by doing:
 
 	set src = /mit/source		# or /mit/source-8.1, etc.
-	mkdir /tmp/PACKAGE-NAME
-	cd /tmp/PACKAGE-NAME
-	synctree -s $src/PATH-TO-PACKAGE -d . -a $src/.rconf
+	cp -r /mit/souce/PACKAGE /tmp/PACKAGE
+	cd /tmp/PACKAGE
 	sh $src/packs/build/do.sh dist
 	sh $src/packs/build/do.sh prepare
 	sh $src/packs/build/do.sh all
 
-If you are building the from the current sources (that is, $src is
-/mit/source), the package may have dependencies on changes which have
-been made since the last release.  In this case, use the "-c" flag to
-do.sh to make the build use a recent build for tools and libraries.
-The last three commands are then:
+If you are building the current sources (or sources from a release
+other than the one running on the Athena machine you're doing the
+build from), they might depend on aspects of the Athena release which
+aren't true of the machine you're using.  If this is true, then you
+may have to construct a build root and build large parts of the
+release.  See the next section on "Build the tree" if that is true.
 
-	sh $src/packs/build/do.sh -c dist
-	sh $src/packs/build/do.sh -c prepare
-	sh $src/packs/build/do.sh -c all
-
-"do" accepts the following options (-c and -t are mutually exclusive):
+"do" accepts the following options:
 
 	-s SRCDIR	Specifies the source hierarchy, if not default
-	-d DESTDIR	Specifies the install hierarchy, if not
-			/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
-	-t TOOLDIR	Specifies the tool hierarchy
-	-c		Sets the tool hierarchy to the install
-			hierarchy
+	-d DESTDIR	Specifies the install hierarchy, if not /.srvd
 	-n		Show what build steps would be done, but don't
 			do them
+	-p		Don't change the path (used by rhlinux SRPMs)
 
 The default location for SRCDIR is the source locker you attached
 (/mit/source, /mit/source-8.1, etc.).  "do" supports the following
@@ -70,27 +63,53 @@ build operations:
 Building the tree
 -----------------
 
-To build the entire tree by hand, attach an appropriate source locker
-and do something like the following:
+To build the entire tree, you must create a build root area on a
+machine to run a chrooted build inside.  This is slow and somewhat
+disruptive of the machine (if you set up AFS to be accessible from the
+root area), so it helps to have a machine set aside for the purpose.
 
-	set src = /mit/source
-	mkdir /tmp/build
-	cd /tmp/build
-	synctree -s $src -d .
-	sh $src/packs/build/build.sh -b `pwd` -d /tmp/inst
+To create a build root area, run
 
-"build" accepts the following options:
+	sh /mit/source/packs/build/makeroot.sh PATH [RELEASE]
+
+where PATH is the place you want the build root to be in and the
+optional RELEASE argument specifies which release you want the build
+to be for (if none is given, the script assumes you want to be
+building /mit/source).
+
+To make AFS accessible in the build root, you must turn AFSADJUST off
+in /etc/athena/rc.conf, modify /usr/vice/etc/cacheinfo to mount AFS in
+PATH/afs, reboot, and then remove /afs and make it a symlink to
+PATH/afs.
+
+If you do not want to make AFS accessible in the build root, you will
+have to make a copy of the source tree in the build root; for Solaris,
+you will also have to make a copy of the sunsoft locker.  There may be
+other dependencies on AFS as well.
+
+After you have set up a build root, run:
+
+	chroot PATH /bin/sh /mit/source/packs/build/build.sh
+
+By default, the builds will be done in PATH/build and the installs
+done into PATH/.srvd.  "build" takes the following options:
 
 	-s SRCDIR	Specifies the source hierarchy, if not default
 	-b BUILDDIR	Specifies the build hierarchy, if not /build
 	-d DESTDIR	Specifies the install hierarchy, if not /.srvd
-	-t TARGET	Build a single target and its dependencies
 	-k		Keep going if a package fails to build
 	-n		Only display a list of packages to be built
-	-l		Log build output to a file.
+	-l		Log build output to a file in BUILDDIR/logs
 
-As with "do", the default location for SRCDIR is the source locker you
-attached.
+On Linux, we use a different build script which builds RPMs instead of
+doing a traditional build.  To use it, run:
+
+	chroot PATH /bin/sh /mit/source/packs/build/rpm/build-all
+
+By default, the builds will be done in /build/BUILD and the resulting
+RPMs will wind up in /build/SRPMS and /build/RPMS.  "build-all" takes
+the same options as "build" except that there is no -b option; the -d
+option specifies the path for both the build and destination area.
 
 Building the whole tree has the following requirements right now:
 
@@ -103,60 +122,7 @@ Building the whole tree has the following requirements right now:
 	  tree.
 
 	* On Solaris, you need system:authuser access to the Athena
-	  cell in order to build third/gcc (since it is bootstrapped
-	  with the sunsoft compiler).
-
-Therefore, if you have a machine newly installed with the vendor
-operating system and AFS, and you want to build the Athena source tree
-for the first time, you have to do a little work beforehand:
-
-	* Make a temporary directory to put binaries in:
-
-		mkdir /tmp/bin
-		set path = ($path /tmp/bin)
-
-	* You need a functioning synctree.  The sources are in
-	  athena/etc/synctree; because they are not world-readable,
-	  you may need to copy the sources somewhere temporary from
-	  another workstation in order to get them onto the machine
-	  you're building on.  Once you have a copy of the sources,
-	  building them is relatively easy:
-
-		set src = /afs/dev.mit.edu/source/src-current
-		./configure
-		make
-		cp synctree /tmp/bin
-		rehash
-
-	* You need a functioning kinit.  In the worst case, you may
-	  need to do a partial build of third/krb5.
-
-		cd /tmp; mkdir krb5; cd krb5
-		synctree -s $src/third/krb5 -d . -a $src/.rconf
-		make -f Makefile.athena prepare
-		make -f Makefile.athena all
-
-		cp src/clients/kinit/kinit /tmp/bin
-		cp $src/packs/config/krb5.conf /etc
-		mkdir /etc/athena
-		cp $src/packs/config/krb.conf /etc/athena
-		cp $src/packs/config/krb.realms /etc/athena
-
-	* For Solaris, you need a functioning aklog.
-
-		cd /tmp; mkdir aklog; cd aklog
-		synctree -s $src/athena/bin/aklog -d . -a $src/.rconf
-		./configure --with-afs=/usr/afsws # or wherever
-		make
-		cp aklog /tmp/bin
-
-	* For a few packages (third/perl and some things under packs),
-	  /os must point to an image of the operating system.  A
-	  symlink from /os to / will usually service if a pristine
-	  operating system image is unavailable.
-
-With these tools, you should be able to set up the build environment
-as documented above.
+	  cell in order to use the compiler from the sunsoft locker.
 
 Generic build system guidelines
 -------------------------------
