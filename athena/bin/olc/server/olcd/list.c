@@ -3,14 +3,29 @@
 
 #define NBLOCKS 100
 
-int list_knuckle(KNUCKLE *knuckle, LIST *data)
+int
+#ifdef __STDC__
+list_knuckle(KNUCKLE *knuckle, LIST *data)
+#else
+list_knuckle(knuckle,data)
+     KNUCKLE *knuckle;
+     LIST *data;
+#endif /* STDC */
 {
     get_list_info(knuckle,data); /* doesn't return a value */
     return 0;
 }
 
 
-int list_user_knuckles(KNUCKLE *knuckle, LIST **data, int *size)
+int
+#ifdef __STDC__
+list_user_knuckles(KNUCKLE *knuckle, LIST **data, int *size)
+#else
+list_user_knuckles(knuckle,data,size)
+     KNUCKLE *knuckle;
+     LIST **data;
+     int *size;
+#endif /* STDC */
 {
   USER *user;
   KNUCKLE **k_ptr;
@@ -49,7 +64,12 @@ int list_user_knuckles(KNUCKLE *knuckle, LIST **data, int *size)
   return(SUCCESS);
 }
 
+#ifdef __STDC__
 list_redundant(KNUCKLE *knuckle)
+#else
+list_redundant(knuckle)
+     KNUCKLE *knuckle;
+#endif /* STDC */
 {
 
 printf("listing for %s %d\n",knuckle->user->username, knuckle->instance);
@@ -64,7 +84,20 @@ printf("true\n");
 
 
 
-int list_queue(int queue, LIST **data, int queues, int *topics, int stati, char *name, int *size)
+int
+#ifdef __STDC__
+list_queue(int queue, LIST **data, int queues, int *topics, int stati,
+	   char *name, int *size)
+#else
+list_queue(queue,data,queues,topics,stati,name,size)
+     int queue;
+     LIST **data;
+     int queues;
+     int *topics;
+     int stati;
+     char *name;
+     int *size;
+#endif /* STDC */
 {
   KNUCKLE **k_ptr;
   LIST *d;
