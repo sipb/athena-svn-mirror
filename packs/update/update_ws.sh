@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.36 1998-05-07 17:59:23 ghudson Exp $
+# $Id: update_ws.sh,v 1.37 1998-06-02 17:45:39 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -224,23 +224,23 @@ if [ "$method" = Auto -a "$packsnewer" = patch ]; then
 	fi
 fi
 
-# The 8.1 -> 8.2 update consumes about 3.2MB on the /usr partition and
-# about 2.9MB on the root partition.  Since the smallest-sized Solaris
-# partitions only have 7.3MB free on /usr and 8MB free on the root
+# The 8.1 -> 8.2 update consumes about 1.7MB on the /usr partition and
+# about 3.9MB on the root partition.  Since the smallest-sized Solaris
+# partitions only have 5.7MB free on /usr and 8.1MB free on the root
 # filesystem under 8.1, it's important to make sure that neither
 # filesystem fills up.  Some day the version scripts should take care
 # of setting the numbers for this check, but that requires adding
 # multiple phases to the version scripts.
 case "$HOSTTYPE,$version" in
 sun4,8.[01].*|sun4,7.*)
-	if [ "`df -k /usr | awk '/\/usr$/ { print $4; }'`" -lt 4096 ]; then
-		echo "/usr partition low on space (less than 4MB); not"
+	if [ "`df -k /usr | awk '/\/usr$/ { print $4; }'`" -lt 3072 ]; then
+		echo "/usr partition low on space (less than 3MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off /usr partition."
 		exit 1
 	fi
-	if [ "`df -k / | awk '/\/$/ { print $4; }'`" -lt 4096 ]; then
-		echo "Root partition low on space (less than 3MB); not"
+	if [ "`df -k / | awk '/\/$/ { print $4; }'`" -lt 5120 ]; then
+		echo "Root partition low on space (less than 5MB); not"
 		echo "performing update.  Please reinstall or clean local"
 		echo "files off root partition."
 		exit 1
