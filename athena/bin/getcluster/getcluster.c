@@ -8,6 +8,7 @@ extern int optind;
 static void usage(void);
 static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 		     int bourneshell);
+static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
 static int vercmp(const char *v1, const char *v2);
 
@@ -72,7 +73,7 @@ int main(int argc, char **argv)
     }
   shellenv(hp, argv[1], autoupdate, bourneshell);
 
-  return(0);
+  return(ferror(stdout) ? 1 : 0);
 }
 
 static void usage()
@@ -104,7 +105,7 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 {
   int *seen, count, i, j;
   char var[80], val[80], vers[80], flags[80], compvar[80], compval[80];
-  char compvers[80], defaultval[80];
+  char compvers[80], defaultval[80], new_production[80], new_testing[80];
 
   count = 0;
   while (hp[count])
@@ -113,6 +114,9 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
   seen = (int *) calloc(count, sizeof(int));
   if (seen == NULL)
     exit(1);
+
+  strcpy(new_production, "0.0");
+  strcpy(new_testing, "0.0");
 
   /* The outer loop is for the purpose of "considering each variable."  We skip
    * entries for variables which had a previous entry. */
@@ -145,11 +149,22 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 	      strcpy(defaultval, compval);
 	    }
 	  else if (((autoupdate && !strchr(flags, 't')) ||
-		    (vercmp(compvers, ws_version) == 0)) &&
-		   vercmp(compvers, vers) >= 0)
+		    (vercmp(compvers, ws_version) == 0)))
 	    {
-	      strcpy(val, compval);
-	      strcpy(vers, compvers);
+	      if (vercmp(compvers, vers) >= 0)
+		{
+		  strcpy(val, compval);
+		  strcpy(vers, compvers);
+		}
+	    }
+	  else
+	    {
+	      /* Discard this entry, but record most recent testing and
+	       * production releases. */
+	      if (strchr(flags, 't') && vercmp(compvers, new_testing) > 0)
+		strcpy(new_testing, compvers);
+	      if (!strchr(flags, 't') && vercmp(compvers, new_production) > 0)
+		strcpy(new_production, compvers);
 	    }
 	}
       if (*vers != '0' || *defaultval)
@@ -157,14 +172,23 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 	  if (*vers == '0')
 	    strcpy(val, defaultval);
 	  upper(var);
-	  if (bourneshell)
-	    printf("%s=%s ; export %s\n", var, val, var);
-	  else
-	    printf("setenv %s %s\n", var, val);
+	  output_var(var, val, bourneshell);
 	}
     }
 
-    free(seen);
+  if (vercmp(new_testing, ws_version) > 0)
+    output_var("NEW_TESTING_RELEASE", new_testing, bourneshell);
+  if (vercmp(new_production, ws_version) > 0)
+    output_var("NEW_PRODUCTION_RELEASE", new_production, bourneshell);
+  free(seen);
+}
+
+static void output_var(const char *var, const char *val, int bourneshell)
+{
+  if (bourneshell)
+    printf("%s=%s ; export %s\n", var, val, var);
+  else
+    printf("setenv %s %s\n", var, val);
 }
 
 static void upper(char *v)
