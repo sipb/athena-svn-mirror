@@ -1337,7 +1337,7 @@ fi
 
 PACKAGE=$PACKAGE
 
-VERSION=0.16.1
+VERSION=1.0.0
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:1343: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -9510,9 +9510,9 @@ else
   ENABLE_GTK_DOC_FALSE=
 fi
 
-GTKHTML_CURRENT=19
+GTKHTML_CURRENT=20
 
-GTKHTML_REVISION=1
+GTKHTML_REVISION=0
 
 GTKHTML_AGE=0
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gtkhtml cvs\n"
-"POT-Creation-Date: 2001-11-14 16:55-0600\n"
+"POT-Creation-Date: 2001-11-21 13:41-0600\n"
 "PO-Revision-Date: 2000-09-26 23:07+0200\n"
 "Last-Translator: Dennis Smit <mek@antenna.nl>\n"
 "Language-Team: DUTCH <nl@li.org>\n"

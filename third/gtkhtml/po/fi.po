@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
-"POT-Creation-Date: 2001-11-14 16:55-0600\n"
+"POT-Creation-Date: 2001-11-21 13:41-0600\n"
 "PO-Revision-Date: 2001-10-06 21:08+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"

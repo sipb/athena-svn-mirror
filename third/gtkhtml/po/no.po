@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml 0.8\n"
-"POT-Creation-Date: 2001-11-14 16:55-0600\n"
+"POT-Creation-Date: 2001-11-21 13:41-0600\n"
 "PO-Revision-Date: 2001-11-10 18:18+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -754,11 +754,11 @@ msgstr "Side"
 
 #: components/html-editor/editor-control-factory.c:843
 msgid "Could not initialize GNORBA"
-msgstr "Kunne ikke initialisere GNORBA"
+msgstr "Kunne ikke initiere GNORBA"
 
 #: components/html-editor/editor-control-factory.c:856
 msgid "Could not initialize Bonobo"
-msgstr "Kunne ikke initialisere Bonobo"
+msgstr "Kunne ikke initiere Bonobo"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:1
 msgid "************"
@@ -874,7 +874,7 @@ msgstr "Piksler"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:30
 msgid "Pixmap:"
-msgstr "Pixmap:"
+msgstr "Bilde:"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:31
 msgid "Points"
@@ -1269,19 +1269,19 @@ msgstr "Uthever teksten"
 
 #: components/html-editor/toolbar.c:526
 msgid "Unindent"
-msgstr "Fjern indentering"
+msgstr "Fjern innrykk"
 
 #: components/html-editor/toolbar.c:526
 msgid "Indents the paragraphs less"
-msgstr "Indenterer avsnittene mindre"
+msgstr "Mindre innrykk for avsnitt"
 
 #: components/html-editor/toolbar.c:528
 msgid "Indent"
-msgstr "Indenter"
+msgstr "Innrykk"
 
 #: components/html-editor/toolbar.c:528
 msgid "Indents the paragraphs more"
-msgstr "Indenterer avsnittene mer"
+msgstr "Større innrykk for avsnittene"
 
 #: components/html-editor/utils.c:106
 msgid "Sample"
