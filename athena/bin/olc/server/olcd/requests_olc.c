@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.8 1990-01-17 05:45:36 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.9 1990-01-30 03:32:28 vanharen Exp $";
 #endif
 
 
@@ -149,12 +149,12 @@ olc_on(fd, request, auth)
   log_status(msgbuf);
 #endif LOG
 
-  olc_broadcast_message("nol",msgbuf, "");
+  olc_broadcast_message("nol", fmt("%s\n", msgbuf), "on");
 
   if(is_connected(target))
     {
       send_response(fd,ALREADY_CONNECTED);
-      sprintf(msgbuf,"%s (%d)",target->connected->user->username,
+      sprintf(msgbuf,"%s [%d]",target->connected->user->username,
 	      target->connected->instance);
       write_text_to_fd(fd,msgbuf);
       return(SUCCESS);
@@ -233,7 +233,7 @@ olc_create_instance(fd,request,auth)
     return(send_response(fd,ERROR));
 
 #ifdef LOG
-  sprintf(buf,"%s (%d) extended to %d", target->user->username,
+  sprintf(buf,"%s [%d] extended to %d", target->user->username,
 	  target->instance, knuckle->instance);
   log_status(buf);
 #endif LOG
@@ -439,24 +439,37 @@ olc_who(fd,request,auth)
   if(is_logout(requester) && is_active(requester))
     {
       if(requester->new_messages != (char *) NULL)
-	strcpy(message, "A consultant has sent you a response in OLC.\nTo see it, type 'show' at the OLC prompt.\n");
+	sprintf(message, "%s %s has sent you a response in OLC.\nTo see it, type 'show' at the OLC prompt.\n",
+		requester->title, requester->user->username);
       else
 	strcpy(message, "Your question is still pending in OLC.\nCheck your mail for any responses.\n");
       
-      write_message_to_user(requester,message,NULL_FLAG);
+      if (write_message_to_user(requester,message,NULL_FLAG) == SUCCESS)
+	{
+	  sprintf(message,"%s has logged back in.", requester->user->username);
+	  log_daemon(requester,message);
 
-      sprintf(message,"%s has logged back in.\n", requester->user->username);
- 
 #ifdef LOG
-      log_status(message);
+	  log_status(message);
 #endif LOG
 
-      log_daemon(requester,message);
-      if(requester->connected != (KNUCKLE *) NULL)
-	write_message_to_user(requester->connected,message,NULL_FLAG);
-      else
-	olc_broadcast_message("resurrection",message, 
-			      requester->question->topic);
+	  strcat(message, "\n");
+	  if (requester->connected != (KNUCKLE *) NULL)
+	    {
+	      if ((write_message_to_user(requester->connected,
+					 message,NULL_FLAG)
+		   != SUCCESS)
+		  && (owns_question(requester)))
+		{
+		  disconnect_knuckles(requester, requester->connected);
+		  olc_broadcast_message("resurrection",message, 
+					requester->question->topic);
+		}
+	    }
+	  else
+	    olc_broadcast_message("resurrection",message, 
+				  requester->question->topic);
+	}
     }
 
   return(SUCCESS);
@@ -533,13 +546,12 @@ olc_done(fd, request, auth)
       if(!is_connected(target))
 	{
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) is done with question",
+	  sprintf(msgbuf,"%s [%d] is done with question",
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
 #endif LOG
 	  strcpy(target->question->title, "No consultant present.");
-	  sprintf(msgbuf, "User is done with question.");
-	  log_daemon(target,msgbuf);
+	  log_daemon(target, "User is done with question.");
 	  terminate_log_answered(target);
 	  free((char *) target->question);
 	  target->question = (QUESTION *) NULL;
@@ -550,21 +562,32 @@ olc_done(fd, request, auth)
       else
 	{
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) signals done",
+	  sprintf(msgbuf,"%s [%d] signals done",
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
 #endif LOG
 	  set_status(target,DONE);
-	  sprintf(msgbuf,"%s %s is done with question.\n", cap(target->title),
+	  sprintf(msgbuf,"%s %s is done with question.", cap(target->title),
 		  target->user->username);
 	  log_daemon(target,msgbuf);
-	  write_message_to_user(target->connected,msgbuf, /*???*/0);
+	  if (write_message_to_user(target->connected, fmt("%s\n", msgbuf),
+				NULL_FLAG)
+	      != SUCCESS)
+	    {
+	      disconnect_knuckles(target, target->connected);
+	      strcpy(target->question->title, "No consultant present.");
+	      log_daemon(target, "User is done with question.");
+	      terminate_log_answered(target);
+	      free((char *) target->question);
+	      target->question = (QUESTION *) NULL;
+	      deactivate(target);
+	    }
           needs_backup = TRUE;
 	  return(send_response(fd, OK));
 	}
     }
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) dones %s (%d)'s question",
+	  sprintf(msgbuf,"%s [%d] dones %s [%d]'s question",
 		  requester->user->username,requester->instance,
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
@@ -586,11 +609,15 @@ olc_done(fd, request, auth)
 		 requester->user->machine);
   log_daemon(target,msgbuf);
 
-  (void) sprintf(msgbuf,"%s %s has resolved your \"%s\" question.\n",
-		 cap(requester->title), requester->user->username, 
-		 target->question->topic);
+  if ( ! ((target->status == DONE) || (target->status == CANCEL)))
+    {
+      (void) sprintf(msgbuf,"%s %s has resolved your question about \"%s\".\n",
+		     cap(requester->title), requester->user->username, 
+		     target->question->topic);
+      
+      (void) write_message_to_user(target, msgbuf, NULL_FLAG);
+    }
   
-  write_message_to_user(target, msgbuf ,0);
   terminate_log_answered(target);
   
   if (is_option(request->options, OFF_OPT))
@@ -680,7 +707,7 @@ olc_cancel(fd, request, auth)
       if(!is_connected(target))
 	{
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) is cancelled question",
+	  sprintf(msgbuf,"%s [%d] has cancelled question",
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
 #endif LOG
@@ -697,7 +724,7 @@ olc_cancel(fd, request, auth)
       else
 	{
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) signals cancel",
+	  sprintf(msgbuf,"%s [%d] signals cancel",
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
 #endif LOG
@@ -705,9 +732,20 @@ olc_cancel(fd, request, auth)
 		  target->user->username);
 	  set_status(target,CANCEL);
 	  log_daemon(target,msgbuf);
-	  sprintf(msgbuf,"%s %s has cancelled her OLC question.\n",
+	  sprintf(msgbuf,"Question cancelled by %s %s.\n",
 		  cap(target->title),target->user->username);
-	  write_message_to_user(target->connected,msgbuf, /*???*/0);
+	  if (write_message_to_user(target->connected,msgbuf, NULL_FLAG)
+	      != SUCCESS)
+	    {
+	      disconnect_knuckles(target, target->connected);
+	      strcpy(target->question->title, 
+		     "Cancelled question/No consultant present.");
+	      log_daemon(target,"User cancelled question.");
+	      terminate_log_answered(target);
+	      free((char *) target->question);
+	      target->question = (QUESTION *) NULL;
+	      deactivate(target);
+	    }
           needs_backup = TRUE;
 	  return(send_response(fd, SUCCESS));
 	}
@@ -718,7 +756,7 @@ olc_cancel(fd, request, auth)
 
   (void) strcpy(target->question->title, "Cancelled question");
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) cancels %s (%d)'s question",
+	  sprintf(msgbuf,"%s [%d] cancels %s [%d]'s question",
 		  requester->user->username,requester->instance,
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
@@ -729,11 +767,16 @@ olc_cancel(fd, request, auth)
 		 requester->user->machine);
   log_daemon(target,msgbuf);
 
-  (void) sprintf(msgbuf,"%s %s has cancelled your \"%s\" question.\n",
-		 cap(requester->title), requester->user->username,
-		 target->question->topic);
+  if ( ! ((target->status == DONE) || (target->status == CANCEL)))
+    {
+      (void) sprintf(msgbuf,
+		     "%s %s has cancelled your question about \"%s\".\n",
+		     cap(requester->title), requester->user->username,
+		     target->question->topic);
   
-  write_message_to_user(target, msgbuf ,0);
+      (void) write_message_to_user(target, msgbuf, NULL_FLAG);
+    }
+
   sprintf(target->question->topic, "hno");
   terminate_log_answered(target);
   
@@ -815,7 +858,7 @@ olc_ask(fd, request, auth)
     target = requester;
 
 #ifdef LOG
-  (void) sprintf(msgbuf,"Attempted Question from  %s (%d)",		 
+  (void) sprintf(msgbuf,"Attempted question from  %s [%d]",
 		 target->user->username,target->instance);
   log_status(msgbuf);
 #endif LOG
@@ -876,12 +919,6 @@ olc_ask(fd, request, auth)
   
   strncpy(topic,text,TOPIC_SIZE);
 
-#ifdef LOG
-  (void) sprintf(msgbuf,"Attempt3 Question from  %s (%d)",		 
-		 target->user->username,target->instance);
-  log_status(msgbuf);
-#endif LOG
-
   question = read_text_from_fd(fd);
   if(question == (char *) NULL)
     return(send_response(fd,ERROR));
@@ -898,13 +935,19 @@ olc_ask(fd, request, auth)
       break;
     default:      /* NOT_CONNECTED */
       send_response(fd, NOT_CONNECTED);
-      sprintf(msgbuf,"New \"%s\" question from %s %s (%d).",
+      sprintf(msgbuf,"New \"%s\" question from %s %s [%d].",
 	      topic, target->title, 
 	      target->user->username,
 	      target->instance);
       olc_broadcast_message("new_question",msgbuf, topic);
       break;
     }
+
+#ifdef LOG
+  (void) sprintf(msgbuf,"Successful question from  %s [%d]",
+		 target->user->username,target->instance);
+  log_status(msgbuf);
+#endif LOG
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -994,8 +1037,9 @@ olc_forward(fd, request,auth)
       log_daemon(target, msgbuf);
       log_status(msgbuf);
       
-      write_message_to_user(target, 
-			    "You will receive a reply by mail.\n", 0);
+      (void) write_message_to_user(target,
+				   "You will receive a reply by mail.\n",
+				   NULL_FLAG);
       (void) sprintf(target->question->title, "%s: %s (unanswered)",
 		     target->user->username, target->question->topic);
       strcpy(target->question->logfile,"oga");
@@ -1009,20 +1053,22 @@ olc_forward(fd, request,auth)
     }
   else
     {
-      (void) sprintf(msgbuf, "Question forwarded by %s",
+      (void) sprintf(msgbuf, "Question forwarded by %s.",
 		     requester->user->username);
       log_daemon(target,msgbuf);
       set_status(target,PENDING);
       
-      strcpy(msgbuf, 
-	     "Your question is being forwarded to another consultant...\n");
-      write_message_to_user(target,msgbuf, 0);
+      (void) write_message_to_user(target,
+	      "Your question is being forwarded to another consultant...\n",
+	       NULL_FLAG);
       status = match_maker(target);
       if(status != CONNECTED)
 	{
-	  strcpy(msgbuf,"There is no consultant available right now.\n");
-	  write_message_to_user(target,msgbuf, 0);
-	  sprintf(msgbuf,"%s %s (%d)'s \"%s\" question forwarded (not connected).",
+	  (void) write_message_to_user(target,
+		       "There is no consultant available right now.\n",
+		       NULL_FLAG);
+	  sprintf(msgbuf,
+		  "%s %s [%d]'s \"%s\" question forwarded (not connected).",
 		  target->title, 
 		  target->user->username,
 		  target->instance,
@@ -1032,7 +1078,7 @@ olc_forward(fd, request,auth)
     }
 
 #ifdef LOG
-	  sprintf(msgbuf,"%s (%d) forwards %s (%d)",
+	  sprintf(msgbuf,"%s [%d] forwards %s [%d]",
 		  requester->user->username,requester->instance,
 		  target->user->username,target->instance);
 	  log_status(msgbuf);
@@ -1140,7 +1186,7 @@ olc_off(fd, request, auth)
   if(is_connected(target))
     {
       send_response(fd, CONNECTED);
-      sprintf(msgbuf, "%s %s ((%d)",
+      sprintf(msgbuf, "%s %s [%d]",
 	      target->connected->title,
 	      target->connected->user->username,
 	      target->connected->instance);
@@ -1157,7 +1203,7 @@ olc_off(fd, request, auth)
 
   sprintf(msgbuf,"%s %s (%s) signed off.", cap(target->title),
 	  target->user->realname, target->user->username);
-  olc_broadcast_message("nol",msgbuf,"");
+  olc_broadcast_message("nol",msgbuf,"off");
 
 #ifdef LOG
   log_status(msgbuf);
@@ -1267,11 +1313,18 @@ olc_send(fd, request, auth)
 	    requester->title, requester->user->username);
 
   if(target != requester)
-    write_message_to_user(target,mesg, 0);
+    if (write_message_to_user(target,mesg, NULL_FLAG) != SUCCESS)
+      if (owns_question(requester))
+	{
+	  disconnect_knuckles(requester, requester->connected);
+/***********  Something else should go here....  Like match_maker on this
+newly disconnected knuckle (sounds gruesome, doesn't it?).
+***********/
+	}
 
 
 #ifdef LOG
-  sprintf(mesg,"%s (%d) sends message to %s (%d)",
+  sprintf(mesg,"%s [%d] sends message to %s [%d]",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -1279,9 +1332,9 @@ olc_send(fd, request, auth)
 
   if(owns_question(target) && is_me(target,requester) && !is_connected(target))
     {
-      sprintf(mesg,"%s %s (%d) has sent a message.\n",target->title,
+      sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
 	      target->user->username, target->instance);
-      olc_broadcast_message("lonely_hearts",mesg, target->question->title);
+      olc_broadcast_message("lonely_hearts",mesg, target->question->topic);
     }
 
   if ( (!owns_question(target) && is_connected(target) &&
@@ -1368,7 +1421,7 @@ olc_comment(fd, request, auth)
     return(send_response(fd, ERROR));
   
 #ifdef LOG
-  sprintf(mesg,"%s (%d) comments in %s (%d)'s log",
+  sprintf(mesg,"%s [%d] comments in %s [%d]'s log",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -1460,7 +1513,7 @@ olc_describe(fd, request, auth)
 	{
 	  strncpy(target->question->comment,mesg,COMMENT_SIZE);
           target->question->comment[COMMENT_SIZE] = '\0';
-	  log_description(target,requester, target->question->comment);
+	  log_long_description(target,requester, target->question->comment);
 	}
       else
 	target->question->comment[0] = '\0';
@@ -1542,7 +1595,7 @@ olc_replay(fd, request, auth)
     set_status(target->question->owner, SERVICED);
 
 #ifdef LOG
-  sprintf(mesg,"%s (%d) replays %s (%d)'s log",
+  sprintf(mesg,"%s [%d] replays %s [%d]'s log",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -1638,7 +1691,7 @@ olc_show(fd, request, auth)
     }
   
 #ifdef LOG
-  sprintf(mesg,"%s (%d) showing new messages of %s (%d)",
+  sprintf(mesg,"%s [%d] showing new messages of %s [%d]",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -1836,7 +1889,7 @@ olc_topic(fd, request,auth)
   if(!(has_question(target)))
     return(send_response(fd, NO_QUESTION));
 #ifdef LOG
-  sprintf(mesg,"%s (%d) topics %s (%d)",
+  sprintf(mesg,"%s [%d] topics %s [%d]",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -1878,7 +1931,7 @@ olc_chtopic(fd, request,auth)
 	return(send_response(fd,status));
     }
   else
-    target = requester;
+    target = requester->connected;
 
   sprintf(msg_buf,"%d %d %d %d\n",is_connected_to(requester,target),
 	  is_allowed(requester->user,CONSULT_ACL),
@@ -1896,7 +1949,7 @@ olc_chtopic(fd, request,auth)
     return(send_response(fd, NO_QUESTION));
 
 #ifdef LOG
-  sprintf(msg_buf,"%s (%d) chanmges topic of  %s (%d)'s question",
+  sprintf(msg_buf,"%s [%d] changes topic of  %s [%d]'s question",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(msg_buf);
@@ -1908,14 +1961,20 @@ olc_chtopic(fd, request,auth)
   if((code = verify_topic(text)) != FAILURE)
     {
       send_response(fd,SUCCESS);
+      if((owns_question(target)) && !(is_me(target,requester)))
+	{
+	  (void) sprintf(msg_buf,
+		"%s %s has changed your question from topic '%s' to '%s'.\n",
+		requester->title, requester->user->username,
+		target->question->topic, text);
+	  (void) write_message_to_user(target,msg_buf, NULL_FLAG);
+	}
+      (void) sprintf(msg_buf, "Topic changed from '%s' to '%s' by %s %s.", 
+		     target->question->topic, text,
+		     requester->title, requester->user->username);
+
       (void) strncpy(target->question->topic, text, TOPIC_SIZE);
       target->question->topic_code = code;
-      (void) sprintf(msg_buf, "Topic changed to '%s' by %s %s.\n", 
-		     text,
-		     requester->title,
-		     requester->user->username);
-      if((owns_question(target)) && !(is_me(target,requester)))
-	write_message_to_user(target,msg_buf,0);
       log_daemon(target,msg_buf);
       return(SUCCESS);
     }
@@ -1997,7 +2056,7 @@ olc_list_topics(fd, request,auth)
     return(send_response(fd,PERMISSION_DENIED));
 
 #ifdef LOG
-  sprintf(mesg,"%s (%d) lists topics",
+  sprintf(mesg,"%s [%d] lists topics",
 	  requester->user->username, requester->instance);
   log_status(mesg);
 #endif LOG
@@ -2034,7 +2093,7 @@ olc_motd(fd, request, auth)
     return(send_response(fd,PERMISSION_DENIED));
 
 #ifdef LOG
-  sprintf(mesg,"%s (%d) gets motd",
+  sprintf(mesg,"%s [%d] gets motd",
 	  requester->user->username, requester->instance);
   log_status(mesg);
 #endif LOG
@@ -2123,7 +2182,7 @@ olc_mail(fd, request,auth)
     if(is_option(request->options,VERIFY))
       {
 #ifdef LOG
-  sprintf(mesg,"%s (%d) mails message to %s (%d)",
+  sprintf(mesg,"%s [%d] mails message to %s [%d]",
 	  requester->user->username, requester->instance,
 	  target->user->username,target->instance);
   log_status(mesg);
@@ -2167,7 +2226,7 @@ olc_startup(fd, request, auth)
   status = find_knuckle(&(request->requester), &requester);
 
 #ifdef LOG
-  sprintf(msgbuf,"hello from %s (%d), status: %d\n", 
+  sprintf(msgbuf,"hello from %s [%d], status: %d\n", 
 	 request->requester.username, request->requester.instance, status);
   log_status(msgbuf);
 #endif LOG
@@ -2327,12 +2386,12 @@ olc_grab(fd, request,auth)
   write_int_to_fd(fd,requester->instance);
   needs_backup = TRUE;
 
-  (void) sprintf(msgbuf, "Question grabbed by %s %s@%s (%d).",
+  (void) sprintf(msgbuf, "Question grabbed by %s %s@%s [%d].",
 		 requester->title,requester->user->username,
 		 requester->user->machine, requester->instance);
   log_daemon(target,msgbuf);
 #ifdef LOG
-  (void) sprintf(msgbuf, "%s (%d) grabbing user %s (%d)",
+  (void) sprintf(msgbuf, "%s [%d] grabbing user %s [%d]",
 		 requester->user->username,requester->instance,
 		 target->user->username, target->instance);
   log_status(msgbuf);
