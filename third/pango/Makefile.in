@@ -118,7 +118,7 @@ XFT_CFLAGS = @XFT_CFLAGS@
 XFT_LIBS = @XFT_LIBS@
 ms_librarian = @ms_librarian@
 
-SUBDIRS = pango modules examples docs tools tests
+SUBDIRS = pango modules docs tools tests
 
 EXTRA_DIST = \
 	pango.spec.in	\
