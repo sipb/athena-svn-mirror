@@ -17,7 +17,7 @@
  * according to a command line from stdin.
  */
 
-static const char rcsid[] = "$Id: cviewd.c,v 1.1 1998-09-01 20:54:57 ghudson Exp $";
+static const char rcsid[] = "$Id: cviewd.c,v 1.2 1998-10-13 17:13:41 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -270,9 +270,9 @@ static void display_cgroups(void)
       cgroup = &cgfile.cgroups[i];
       printf("%d\t%s\n", i + 1, cgroup->name);
 
-      /* Line 2: cluster names -- XXX need phone numbers */
+      /* Line 2: cluster names */
       for (j = 0; j < cgroup->nclusters; j++)
-	printf("%s ", cgroup->clusters[j]);
+	printf("%s %s ", cgroup->clusters[j].name, cgroup->clusters[j].phone);
       printf("XXXXX\n");
 
       /* Line 3: X and Y coordinates */
