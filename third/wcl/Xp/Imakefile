@@ -41,6 +41,6 @@ HEADERS = Table.h TableP.h Xp.h XpAthena.h XpAthenaP.h COPY.h
 #include "../WcLib.tmpl"
 
 #if HaveAthenaWidgetSet
-InstallManPage(Xp,$(MANDIR))
+InstallManPage(Xp,$(LIBMANDIR))
 #endif
-InstallManPage(XpTable,$(MANDIR))
+InstallManPage(XpTable,$(LIBMANDIR))
