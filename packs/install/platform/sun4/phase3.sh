@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.10.2.4 1997-10-13 16:02:24 ghudson Exp $
+# $Id: phase3.sh,v 1.10.2.5 1997-10-17 16:06:55 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -145,7 +145,9 @@ echo installed on `date` > /root/etc/athena/version
 sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
 
 echo "Updating vfstab"
-cp -p /srvd/etc/vfstab.std etc/vfstab
+rm -f etc/vfstab
+sed "s/@DISK@/$drive/" /srvd/etc/vfstab.std > etc/vfstab
+chmod 644 etc/vfstab
 cp /dev/null etc/named.local
 
 
