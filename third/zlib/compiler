@@ -1,8 +1,0 @@
-case $OS in
-irix)
-  cc=cc
-  ;;
-*)
-  cc=$CC
-  ;;
-esac
