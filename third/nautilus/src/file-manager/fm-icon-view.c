@@ -507,6 +507,10 @@ should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 
 	icon_view = FM_ICON_VIEW (view);
 
+	if (!fm_directory_view_should_show_file (view, file)) {
+		return FALSE;
+	}
+	
 	/* Get the screen for this icon from the metadata. */
 	screen_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_SCREEN, "0");
@@ -1093,8 +1097,6 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	file = fm_directory_view_get_directory_as_file (view);
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
-	icon_view->details->loading = TRUE;
-
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 
@@ -1163,8 +1165,6 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	FMIconView *icon_view;
 
 	icon_view = FM_ICON_VIEW (view);
-
-	icon_view->details->loading = FALSE;
 }
 
 static void
@@ -2597,6 +2597,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *container_uri;
 	char *mime_type;
 	const char *last_slash, *link_name;
+	char *link_file_name;
 	int n_uris, n_links;
 	gboolean all_local;
 	GArray *points;
@@ -2738,12 +2739,16 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			link_name = last_slash == NULL ? NULL : last_slash + 1;
 			
 			if (!eel_str_is_empty (link_name)) {
+				link_file_name = g_strconcat (link_name, ".desktop", NULL);
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_uri, link_name,
+				nautilus_link_local_create (container_uri,
+							    link_file_name,
+							    link_name,
 							    NULL, uri,
 							    (n_links > 0) ? NULL: &point, 
 							    screen_num,
 							    NAUTILUS_LINK_GENERIC);
+				g_free (link_file_name);
 			}
 			
 			n_links++;

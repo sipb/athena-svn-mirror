@@ -325,6 +325,13 @@ icon_set_position (NautilusIcon *icon,
 		}		
 	}
 
+	if (icon->x == ICON_UNPOSITIONED_VALUE) {
+		icon->x = 0;
+	}
+	if (icon->y == ICON_UNPOSITIONED_VALUE) {
+		icon->y = 0;
+	}
+	
 	eel_canvas_item_move (EEL_CANVAS_ITEM (icon->item),
 				x - icon->x,
 				y - icon->y);
@@ -2013,7 +2020,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
-	uint fill_color, outline_color;
+	guint fill_color, outline_color;
 	GdkColor *fill_color_gdk;
 	guchar fill_color_alpha;
 	GList *p;

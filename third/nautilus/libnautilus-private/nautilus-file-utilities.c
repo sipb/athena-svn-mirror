@@ -236,6 +236,30 @@ update_desktop_dir (void)
 }
 
 gboolean
+nautilus_is_home_directory_file_escaped (char *escaped_dirname,
+					 char *escaped_file)
+{
+	static char *escaped_home_dir_dirname = NULL;
+	static char *escaped_home_dir_filename = NULL;
+	char *uri;
+	GnomeVFSURI *vfs_uri;
+	
+	if (escaped_home_dir_dirname == NULL) {
+		uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+		vfs_uri = gnome_vfs_uri_new (uri);
+		g_free (uri);
+
+		escaped_home_dir_filename = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+		escaped_home_dir_dirname = gnome_vfs_uri_extract_dirname (vfs_uri);
+
+		gnome_vfs_uri_unref (vfs_uri);
+	}
+
+	return (strcmp (escaped_dirname, escaped_home_dir_dirname) == 0 &&
+		strcmp (escaped_file, escaped_home_dir_filename) == 0);
+}
+					 
+gboolean
 nautilus_is_desktop_directory_file_escaped (char *escaped_dirname,
 					    char *escaped_file)
 {
@@ -383,48 +407,46 @@ nautilus_get_vfs_method_display_name (char *method)
 	return NULL;
 }
 
-gboolean
-nautilus_have_broken_filenames (void)
-{
-	static gboolean initialized = FALSE;
-	static gboolean broken;
-  
-	if (initialized) {
-		return broken;
-	}
-
-	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
-  
-	initialized = TRUE;
-  
-	return broken;
-}
-
 char *
 nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
 {
-	gboolean broken_filenames;
+	gboolean utf8_filenames;
+	const char *filename_charset;
 	char *utf8_name, *name, *tmp;
 	gboolean validated;
 	const char *method;
+
 	
 	validated = FALSE;
 	name = gnome_vfs_uri_extract_short_name (uri);
 	if (name == NULL) {
 		name = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
 	} else if (g_ascii_strcasecmp (uri->method_string, "file") == 0) {
-		broken_filenames = nautilus_have_broken_filenames ();
-		if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
-			utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+		utf8_filenames = eel_get_filename_charset (&filename_charset);
+		if (utf8_filenames) {
+			/* If not valid utf8, and filenames are utf8, test if converting
+			   from the locale works */
+			if (!g_utf8_validate (name, -1, NULL)) {
+				utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+				if (utf8_name != NULL) {
+					g_free (name);
+					name = utf8_name;
+					/* Guaranteed to be correct utf8 here */
+					validated = TRUE;
+				}
+			} else {
+				/* name was valid, no need to re-validate */
+				validated = TRUE;
+			}
+		} else {
+			/* Try to convert from filename charset to utf8 */
+			utf8_name = g_convert (name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
 			if (utf8_name != NULL) {
 				g_free (name);
 				name = utf8_name;
 				/* Guaranteed to be correct utf8 here */
 				validated = TRUE;
 			}
-		} else if (!broken_filenames) {
-			/* name was valid, no need to re-validate */
-			validated = TRUE;
 		}
 	} else if (!gnome_vfs_uri_has_parent (uri)) {
 		/* Special-case the display name for roots that are not local files */

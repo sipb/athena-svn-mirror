@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             nautilus
 Summary:          Nautilus is a network user environment
-Version:          2.8.0
+Version:          2.8.2
 Release:          1
 License:          GPL
 Group:            User Interface/Desktop
@@ -11,7 +11,7 @@ BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
 Requires:         esound >= 0.2.27
 Requires:         bonobo-activation >= 2.1.0
-Requires:         eel2 >= 2.8.0
+Requires:         eel2 >= 2.8.2
 Requires:         glib2 >= 2.3.0
 Requires:         gnome-vfs2 >= 2.5.1
 Requires:         gtk2 >= 2.3.0
@@ -25,7 +25,7 @@ Requires:         librsvg2 >= 2.0.1
 Requires:         libxml2 >= 2.4.7
 BuildRequires:    esound-devel >= 0.2.27
 BuildRequires:    bonobo-activation-devel >= 2.1.0
-BuildRequires:    eel2-devel >= 2.8.0
+BuildRequires:    eel2-devel >= 2.8.2
 BuildRequires:    glib2-devel >= 2.3.0
 BuildRequires:    gnome-vfs2-devel >= 2.5.1
 BuildRequires:    gtk2-devel >= 2.3.0
@@ -55,8 +55,8 @@ Requires:         esound >= 0.2.27
 Requires:         esound-devel >= 0.2.27
 Requires:         bonobo-activation >= 2.1.0
 Requires:         bonobo-activation-devel >= 2.1.0
-Requires:         eel2 >= 2.8.0
-Requires:         eel2-devel >= 2.8.0
+Requires:         eel2 >= 2.8.2
+Requires:         eel2-devel >= 2.8.2
 Requires:         glib2 >= 2.3.0
 Requires:         glib2-devel >= 2.3.0
 Requires:         gnome-vfs2 >= 2.5.1

@@ -1,3 +1,392 @@
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for release.
+
+	* configure.in:
+	Require eel 2.8.2
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_uri_shortname_for_display):
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-file.c: (nautilus_file_rename),
+	(nautilus_file_get_display_name_nocopy):
+	* src/nautilus-location-entry.c: (try_to_expand_path):
+	Use eel_get_filename_charset to handle the new filename
+	charset env vars.
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	* src/nautilus-window-manage-views.c:
+	Fix warning due to NULL default string.
+
+2004-10-26  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	Add saved geometry pref
+	
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_save_geometry), (real_window_close),
+	(nautilus_navigation_window_class_init):
+	Save geometry on window close
+	
+	* src/nautilus-window-manage-views.c:
+	(another_navigation_window_already_showing),
+	(load_directory_metadata_callback):
+	load geometry on open
+
+2004-10-26  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-model.[ch]:
+	Handle volumes for root nodes
+	
+	* src/file-manager/fm-tree-view.c:
+	Add eject on volume toplevel roots.
+	
+	* src/nautilus-application.c:
+	Don't close nav windows when unmounting, just go to home.
+
+	Patch from Colin Leroy <colin@colino.net>
+
+2004-10-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus/nautilus-scroll-positionable.h:
+	Add missing G_END_DECLS.
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_get_image), (draw_frame),
+	(draw_or_measure_label_text), (measure_label_text),
+	(draw_label_text), (draw_mask), (nautilus_icon_canvas_item_draw):
+	Make the nautilus_icon_canvas_item_get_image return an image containing
+	icon + text. The image "start" changed to being from the item position to
+	from the item boundary.
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	Calculate icon offset from the boundary instead of icon position.
+
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (rename_file):
+	Add ugly hack to make renames work on newly created files
+	in the list view. Don't look, you might go blind.
+
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (icon_set_position):
+	Fix moving of unpositioned icons, the canvas items start at
+	<0, 0>, not <-1,-1>
+
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-spatial-window.c:
+	(location_menu_item_activated_callback),
+	(location_button_clicked_callback):
+	Select parent item when going up via parent menu.
+	
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	(auto_scroll_timeout_callback), (drag_leave_callback),
+	(drag_highlight_expose), (dnd_highlight_queue_redraw),
+	(start_dnd_highlight), (stop_dnd_highlight),
+	(drag_motion_callback):
+	Display frame when we're accepting a DnD drop.
+
+2004-10-18  Dave Camp  <dave@novell.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(selection_changed_callback):
+	* src/nautilus-application.c:
+	(nautilus_application_present_spatial_window),
+	(nautilus_application_present_spatial_window_with_selection):
+	* src/nautilus-application.h:
+	* src/nautilus-window-manage-views.c: (open_location),
+	(load_directory_metadata_callback):
+	* src/nautilus-window.c: (nautilus_window_go_to_with_selection):
+	* src/nautilus-window.h:  Show the directory as a selection in
+	spatial mode when Alt+Up is selected.  
+
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-18  Marco Pesenti Gritti  <marco@gnome.org>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-window-toolbars.c:
+	(nautilus_navigation_window_initialize_toolbars):
+
+	Work around pack-ends no more working in libbonoboui
+	by putting an expanded event box before the
+	throbber
+
+2004-10-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-program-choosing.c (nautilus_launch_show_file):
+	Slightly better error when there is no handler for a file type.
+	Not ideal, needs fixing when we're not string frozen anymore.
+
+2004-10-14  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c: (load_directory),
+	(finish_loading):
+	We need to set "loading" as soon as we get the load_directory
+	call, otherwise we don't correctly handle the selection being
+	set.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading),
+	(fm_icon_view_end_loading):
+	No need for this to touch loading.
+
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-navigation-window.c:
+	(file_menu_new_window_callback), (real_merge_menus):
+	Add Open New Window menu item in browser
+	Patch from Michael Henson <mike@axl.net>
+	
+2004-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(read_dot_hidden_file):
+	Only read .hidden files if they are regular files.
+	
+	* src/file-manager/fm-tree-view.c:
+	Delay activation when keyboard navigating the tree.
+
+	Patches from Danny Milosavljevic <danny.milo@gmx.net>
+
+2004-10-12  Anders Carlsson  <andersca@gnome.org>
+
+	* src/nautilus-file-management-properties.glade:
+	Set the dialog's "visible" property to FALSE, we show it 
+	ourselves.
+	
+2004-10-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	Make nautilus_link_desktop_file_local_create take both
+	display name and file name.
+	* libnautilus-private/nautilus-link.[ch]:
+	Make nautilus_link_local_create take both
+	display name and file name.
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Create desktop file ending in ".desktop".
+
+2004-10-12  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (activate_check_mime_types):
+	On mime mismatch, don't use the default app for "open".
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump
+
+=== nautilus 2.8.1 ===
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Update for 2.8.1
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	* libnautilus-private/nautilus-file.[ch]:
+	* libnautilus-private/nautilus-icon-factory.c:
+	Use home icon for homedir.
+	Patch from Anders Carlsson  <andersca@gnome.org>
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file):
+	Set up clipboard when renaming.	
+
+2004-10-11  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.[ch]:
+	Make nautilus_directory_get_file_list virtual
+	* libnautilus-private/nautilus-desktop-directory.c:
+	* libnautilus-private/nautilus-merged-directory.c:
+	Override virtual to return all files. Fixes bug #149096.
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_view_init_show_hidden_files):
+	Don't set up hidden files prefs if ignoring them	
+
+	* src/file-manager/fm-icon-view.c (should_show_file_on_screen):
+	Check if file should be visible.
+	
+2004-10-11  Anders Carlsson  <andersca@gnome.org>
+
+	* libnautilus-private/nautilus-metadata.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_application_for_file),
+	(nautilus_mime_get_open_with_applications_for_file),
+	(nautilus_mime_get_applications_for_file),
+	(gnome_vfs_mime_application_has_id):
+	* libnautilus-private/nautilus-view-query.c:
+	(nautilus_view_query_get_default_component_for_file_internal),
+	(nautilus_view_query_get_components_for_file),
+	(make_bonobo_activation_query_with_known_mime_type),
+	(make_bonobo_activation_query_with_uri_scheme_only),
+	(server_matches_content_requirements),
+	(nautilus_do_component_query),
+	(nautilus_view_query_get_popup_components_for_file),
+	(nautilus_view_query_get_property_components_for_file):
+	Remove a couple of unused keys from nautilus-metadata.h
+	
+2004-10-08  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (extension_action_slow_mime_types_ready_callback):
+	Correct strcmp typo. (#142530)
+	Patch from Simon Hart
+	
+2004-10-08  Anders Carlsson  <andersca@gnome.org>
+
+	* src/file-manager/fm-directory-view.c:
+	(convert_file_list_to_string), (get_clipboard_callback),
+	(clear_clipboard_callback), (convert_file_list_to_uri_list),
+	(copy_or_cut_files), (fm_directory_view_class_init):
+	Add support for pasting the clipboard contents as a string.
+
+2004-10-06  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c:
+	(process_new_files):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_sort_files), (fm_list_view_class_init):
+	* src/file-manager/fm-list-model.[ch]:
+	(fm_list_model_sort_files):
+	Implement sort_files for list view and sort old changed files.
+
+2004-10-06  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c: (split_off_first_n),
+	(display_pending_files), (display_pending_idle_callback):
+	Process unlimited files at once instead of 300 each time.
+
+2004-10-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c (draw_or_measure_label_text):
+	Readjust padding from last change.
+
+2004-10-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (start_rubberbanding):
+	Use guint, not uint (#150359)
+	Patch from Gustavo Carneiro.
+
+2004-10-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c (directory_load_one):
+	Don't crash if info->name == NULL. (Not valid, but happened with
+	smb backend.)
+
+2004-10-05  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-list-view.c (fm_list_view_set_selection):
+	Notify about selection change only once per call.
+
+2004-10-04  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Don't need to detect libjpeg anymore.
+
+2004-10-04  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in (EXIF_LIBS): 
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_compare_for_sort):
+	Make sort-by-emblem not crash.
+
+2004-10-04  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	Allow keynav on desktop by adding accel entries (#135399).	
+
+2004-10-01  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_notify_selection_changed):
+	Only sniff ahead attributes needed for activation
+	when selecting a single file.
+
+2004-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-model.c (fm_list_model_sort):
+	Fix reordering on resort (#144803)
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-dnd.c (nautilus_drag_default_drop_action_for_icons):
+	Allow move to non-same-fs. (#120052)
+
+2004-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	Correct centering of text when icon is selected (#154088)
+	Patch from Vincent Noel <vincent.noel@gmail.com>
+
+2004-10-01  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-connect-server-dialog.c (connect_to_server):
+	Escape created uris.
+	Patch from Michael Henson <mike@axl.net>
+	
+2004-09-25  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (paste_clipboard_data):
+	Clear clipboard after cut. Fixes #134420.
+	Patch from Glenn Pierce.
+
+2004-09-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_volume_free_space): Plug a possible
+	leak if vfs_uri is NULL. Closes bug #152985.
+
+2004-09-20  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory.c (nautilus_directory_schedule_position_set):
+	Don't reference screen when removing.
+
+2004-09-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/file-manager/fm-directory-view.c: (get_activation_action),
+	(real_update_menus_volumes), (fm_directory_view_activate_files):
+	Plug a couple of leaks. Closes bug #152769.
+
+2004-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* cut-n-paste-code/libegg/egg-recent-model.c:
+	(egg_recent_model_monitor):
+	Update to latest egg-recent.
+
+2004-09-13  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Post release version bump.
+
+=== nautilus 2.8.0 ===
+
 2004-09-13  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:
