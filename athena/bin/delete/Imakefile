@@ -5,7 +5,7 @@
 /**/#
 /**/#     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
 /**/#     $Author: jik $
-/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.5 1991-02-18 16:42:35 jik Exp $
+/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.6 1991-02-22 07:36:28 jik Exp $
 /**/#
 
 DESTDIR=
@@ -161,10 +161,10 @@ saber_lsdel:
 /**/	#load $(LDFLAGS) $(CFLAGS) $(LSDELSRC) $(LIBS)
 
 tar: $(ARCHIVE)
-	tar cvf - $(ARCHIVE) $(ETLIBSRCS) | compress > delete.tar.Z
+	tar cvf - $(ARCHIVE) | compress > delete.tar.Z
 
 shar: $(ARCHIVE)
-	makekit -oMANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETLIBSRCS)
+	makekit -oMANIFEST $(ARCHIVEDIRS) $(ARCHIVE)
 
 patch: $(ARCHIVE)
 	makepatch $(ARCHIVE)

@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.27 1991-02-22 07:26:16 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.28 1991-02-22 07:35:51 jik Exp $
 #
 
 DESTDIR=
@@ -166,10 +166,10 @@ saber_lsdel:
 	#load $(LDFLAGS) $(CFLAGS) $(LSDELSRC) $(LIBS)
 
 tar: $(ARCHIVE)
-	tar cvf - $(ARCHIVE) $(ETLIBSRCS) | compress > delete.tar.Z
+	tar cvf - $(ARCHIVE) | compress > delete.tar.Z
 
 shar: $(ARCHIVE)
-	makekit -oMANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETLIBSRCS)
+	makekit -oMANIFEST $(ARCHIVEDIRS) $(ARCHIVE)
 
 patch: $(ARCHIVE)
 	makepatch $(ARCHIVE)
