@@ -1,0 +1,12 @@
+case $OS in
+solaris)
+	platform=gs5
+	;;
+irix)
+	platform=sg6
+	;;
+linux)
+	platform=slx
+	platformlibs=-lresolv
+	;;
+esac
