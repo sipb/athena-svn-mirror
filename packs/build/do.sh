@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.7 1996-11-21 00:32:30 ghudson Exp $
+# $Id: do.sh,v 1.8 1996-11-21 20:28:01 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -27,16 +27,23 @@ operation=${1-all}
 umask 022
 export ATHENA_SYS HOSTTYPE CONFIG_SITE PATH
 CONFIG_SITE=$source/packs/build/config.site
+
+# Determine proper ATHENA_SYS value.
 case "`uname -a`" in
-SunOS*5.4*sun4*)
-	ATHENA_SYS=sun4m_54
+SunOS*5.5*sun4*)	ATHENA_SYS=sun4x_55	;;
+SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
+IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
+esac
+
+# Determine platform type and appropriate path.
+case "`uname -a`" in
+SunOS*sun4*)
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
 	PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb
 	PATH=${PATH}:/usr/openwin/bin
 	;;
-IRIX*5.3*)
-	ATHENA_SYS=sgi_53
+IRIX*)
 	HOSTTYPE=sgi
 	PATH=/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
 	;;
