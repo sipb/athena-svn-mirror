@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.7 1997-11-20 17:40:13 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.8 1997-11-20 22:20:41 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -93,6 +93,9 @@ int al_acct_create(const char *username, const char *cryptpw,
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i;
   struct al_record record;
   struct passwd *pwd;
+
+  if (!al__username_valid(username))
+    return AL_ENOUSER;
 
   /* Don't mess with the root account. */
   pwd = al__getpwnam(username);
@@ -227,16 +230,13 @@ int al_acct_revert(const char *username, pid_t sessionpid)
 {
   int retval, i, j;
   struct al_record record;
-  struct passwd *pwd;
 
-  /* Don't mess with the root account. */
-  pwd = al__getpwnam(username);
-  if (pwd && pwd->pw_uid == 0)
-    {
-      al__free_passwd(pwd);
-      return AL_SUCCESS;
-    }
-  al__free_passwd(pwd);
+  if (!al__username_valid(username))
+    return AL_EPERM;
+
+  /* Don't create a session record if there isn't one. */
+  if (!al__record_exists(username))
+    return AL_SUCCESS;
 
   retval = al__get_session_record(username, &record);
   if (AL_SUCCESS != retval)
@@ -277,6 +277,13 @@ int al_acct_cleanup(const char *username)
 {
   int retval, i, j;
   struct al_record record;
+
+  if (!al__username_valid(username))
+    return AL_EPERM;
+
+  /* Don't create a session record if there isn't one. */
+  if (!al__record_exists(username))
+    return AL_SUCCESS;
 
   retval = al__get_session_record(username, &record);
   if (AL_SUCCESS != retval)
