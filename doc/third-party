@@ -92,15 +92,20 @@ Distribution sites for software under third
 -------------------------------------------
 
 	afsbin		See below.
+	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
 	bind		ftp.isc.org:isc/bind/src
+	control-center	ftp.gnome.org:pub/GNOME/unstable/sources/control-center
 	db		http://www.sleepycat.com/download.html
 	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
+	esound		ftp.gnome.org:pub/GNOME/stable/sources/esound
 	gcc		ftp.gnu.org:pub/gnu/gcc
+	gdk-pixbuf	ftp.gnome.org:pub/GNOME/unstable/sources/gdk-pixbuf
 	gettext		ftp.gnu.org:pub/gnu/gettext
 	glib		ftp.gtk.org:pub/gtk
 	gtk		ftp.gtk.org:pub/gtk
 	gmake		ftp.gnu.org:pub/gnu/make
 	gmp		ftp.gnu.org:pub/gnu/gmp
+	gnome-core	ftp.gnome.org:pub/GNOME/stable/sources/gnome-core
 	gnome-libs	ftp.gnome.org:pub/GNOME/stable/sources/gnome-libs
 	imlib		(Formerly www.rasterman.com; imlib 1 is dead now)
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
@@ -115,6 +120,7 @@ Distribution sites for software under third
 	libglade	ftp.gnome.org:pub/GNOME/stable/sources/libglade
 	libpng		http://www.libpng.org/pub/png/libpng.html
 	libungif	prtr-13.ucsc.edu:pub/libungif
+	libxml		ftp.gnome.org:pub/GNOME/stable/sources/libxml
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
