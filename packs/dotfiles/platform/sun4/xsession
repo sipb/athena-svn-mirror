@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.41 1995-07-03 06:43:41 cfields Exp $
+# $Id: xsession,v 1.42 1996-05-28 00:31:36 cfields Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -76,6 +76,21 @@ endif
 
 # *******************   DEVICE SETUP   *******************
 
+# Make sure applications can properly find their appdefs, etc.
+
+if ($hosttype == "sun4") then
+  if ($?NOCALLS || (! $?XUSERFILESEARCHPATH)) then
+    setenv XUSERFILESEARCHPATH "/usr/athena/lib/X11/app-defaults/%N"
+  else
+    setenv XUSERFILESEARCHPATH "${XUSERFILESEARCHPATH}:/usr/athena/lib/X11/app-defaults/%N"
+  endif
+
+  if ($?NOCALLS || (! $?XFILESEARCHPATH)) then
+    setenv XFILESEARCHPATH "/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+  else
+    setenv XFILESEARCHPATH "${XFILESEARCHPATH}:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+  endif
+endif
 
 # Load user X resources.
 
