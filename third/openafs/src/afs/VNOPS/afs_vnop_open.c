@@ -17,7 +17,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_open.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_open.c,v 1.2 2002-07-20 19:33:32 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -44,8 +44,9 @@ afs_open(avcp, aflags, acred)
 {
     register afs_int32 code;
     struct vrequest treq;
-    register struct vcache *tvc;
+    struct vcache *tvc;
     int writing;
+    struct afs_fakestat_state fakestate;
     
     AFS_STATCNT(afs_open);
     if (code = afs_InitReq(&treq, acred)) return code;
@@ -57,6 +58,9 @@ afs_open(avcp, aflags, acred)
 #endif
     afs_Trace2(afs_iclSetp, CM_TRACE_OPEN, ICL_TYPE_POINTER, tvc,
 	       ICL_TYPE_INT32, aflags);
+    afs_InitFakeStat(&fakestate);
+    code = afs_EvalFakeStat(&tvc, &fakestate, &treq);
+    if (code) goto done;
     code = afs_VerifyVCache(tvc, &treq);
     if (code) goto done;
     if (aflags & (FWRITE | FTRUNC)) writing = 1;
@@ -143,6 +147,7 @@ afs_open(avcp, aflags, acred)
 #endif
     ReleaseReadLock(&tvc->lock);
 done:
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 4); /* avoid AIX -O bug */
 
     afs_Trace2(afs_iclSetp, CM_TRACE_OPEN, ICL_TYPE_POINTER, tvc,

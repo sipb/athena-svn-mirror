@@ -23,7 +23,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.2 2002-06-28 05:20:37 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.3 2002-07-20 19:33:09 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -168,6 +168,7 @@ static int afs_linux_readdir(struct file *fp,
     int len;
     int origOffset;
     cred_t *credp = crref();
+    struct afs_fakestat_state fakestat;
 
     AFS_GLOCK();
     AFS_STATCNT(afs_readdir);
@@ -179,10 +180,19 @@ static int afs_linux_readdir(struct file *fp,
 	return -code;
     }
 
+    afs_InitFakeStat(&fakestat);
+    code = afs_EvalFakeStat(&avc, &fakestat, &treq);
+    if (code) {
+	afs_PutFakeStat(&fakestat);
+	AFS_GUNLOCK();
+	return -code;
+    }
+
     /* update the cache entry */
 tagain:
     code = afs_VerifyVCache(avc, &treq);
     if (code) {
+	afs_PutFakeStat(&fakestat);
 	AFS_GUNLOCK();
 	return -code;
     }
@@ -190,6 +200,7 @@ tagain:
     /* get a reference to the entire directory */
     tdc = afs_GetDCache(avc, 0, &treq, &origOffset, &len, 1);
     if (!tdc) {
+	afs_PutFakeStat(&fakestat);
 	AFS_GUNLOCK();
 	return -ENOENT;
     }
@@ -283,6 +294,7 @@ tagain:
 
     afs_PutDCache(tdc);
     ReleaseReadLock(&avc->lock);
+    afs_PutFakeStat(&fakestat);
     AFS_GUNLOCK();
     return 0;
 }

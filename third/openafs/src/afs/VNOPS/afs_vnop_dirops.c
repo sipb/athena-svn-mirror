@@ -20,7 +20,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_dirops.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_dirops.c,v 1.2 2002-07-20 19:33:24 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -62,6 +62,7 @@ afs_mkdir(OSI_VC_ARG(adp), aname, attrs, avcp, acred)
     struct AFSCallBack CallBack;
     struct AFSVolSync tsync;
     afs_int32 now;
+    struct afs_fakestat_state fakestate;
     XSTATS_DECLS
     OSI_VC_CONVERT(adp)
 
@@ -70,11 +71,14 @@ afs_mkdir(OSI_VC_ARG(adp), aname, attrs, avcp, acred)
 	       ICL_TYPE_STRING, aname);
 
     if (code = afs_InitReq(&treq, acred)) return code;
+    afs_InitFakeStat(&fakestate);
 
     if (!afs_ENameOK(aname)) {
 	code = EINVAL;
 	goto done;
     }
+    code = afs_EvalFakeStat(&adp, &fakestate, &treq);
+    if (code) goto done;
     code = afs_VerifyVCache(adp, &treq);
     if (code) goto done;
 
@@ -154,6 +158,7 @@ done:
 #ifdef	AFS_OSF_ENV
     AFS_RELE(ndp->ni_dvp);
 #endif	/* AFS_OSF_ENV */
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 26);
     return code;
 }
@@ -185,6 +190,7 @@ afs_rmdir(adp, aname, acred)
     afs_int32 offset, len;
     struct AFSFetchStatus OutDirStatus;
     struct AFSVolSync tsync;
+    struct afs_fakestat_state fakestate;
     XSTATS_DECLS
     OSI_VC_CONVERT(adp)
 
@@ -194,6 +200,12 @@ afs_rmdir(adp, aname, acred)
 	       ICL_TYPE_STRING, aname);
 
     if (code = afs_InitReq(&treq, acred)) return code;
+    afs_InitFakeStat(&fakestate);
+
+    code = afs_EvalFakeStat(&adp, &fakestate, &treq);
+    if (code)
+      goto done;
+
     code = afs_VerifyVCache(adp, &treq);
     if (code) goto done;
 
@@ -296,6 +308,7 @@ done:
     afs_PutVCache(adp, 0);
     afs_PutVCache(ndp->ni_vp, 0);
 #endif	/* AFS_OSF_ENV */
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 27); 
     return code;
 }
