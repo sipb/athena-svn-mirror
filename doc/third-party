@@ -11,6 +11,13 @@ Third-party stuff not under third
 		This file contains the named.root file available at
 		rs.internic.edu:/domain/named.root.
 
+	* packs/config/Dash.fallback
+
+		A fallback copy of
+		/afs/athena.mit.edu/system/dash/Dash.menus for when
+		the master copy is inaccessible.  This should be
+		updated at release time.
+
 Distribution sites for software under third
 -------------------------------------------
 
@@ -21,7 +28,7 @@ This is a partial list at the moment.
 	cns		Previously we've talked to people we know at
 			Cygnus; the official channels involve signing
 			some ITAR-related paperwork.
-	emacs
+	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
 	jove
 	krb5		athena-dist.mit.edu:pub/kerberos
