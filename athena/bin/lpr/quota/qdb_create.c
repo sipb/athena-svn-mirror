@@ -4,10 +4,13 @@
  */
 
 #include "mit-copyright.h"
+#include "config.h"
 #include "quota_db.h"
+#include "gquota_db.h"
 
 #ifdef DEBUG
 int quota_debug = 0;
+int gquota_debug = 0;
 #endif
 char *progname;
 
@@ -17,13 +20,18 @@ char **argv;
     {
 	int ret;
 
-	if(argc != 2) {
-	    printf("%s db_name\n",argv[0]);
+	if(argc != 3) {
+	    printf("%s db_name group_db_name\n",argv[0]);
 	    exit(1);
 	}
 
 	if(ret=quota_db_create(argv[1])) {
 	    perror("Error in creating db");
+	    exit(1);
+	}
+
+	if(ret=gquota_db_create(argv[2])) {
+	    perror("Error in creating group db");
 	    exit(1);
 	}
 
