@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.5 1991-01-23 13:37:13 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.6 1991-02-09 16:45:23 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
 /* $Author: epeisach $ */
 
@@ -26,6 +26,7 @@ static char str_dbname[MAXPATHLEN] = "";
 static int dbflags = 0;
 static int dbopen = 0;
 static int dbfd = 0;
+static int syncdb = 1;	/* sync after db writes */
 
 char *malloc(), *realloc();
 off_t lseek();
@@ -63,6 +64,11 @@ char *name;
 	return -1;
     }
     
+    if(syncdb && fsync(dbfd)) {
+	(void) close_database();
+	return -1;
+    }
+
     return (close_database());
 }
     
@@ -123,7 +129,7 @@ Pointer n;
 	    {
 		(void) close_database();
 		UNPROTECT();
-		syslog(LOG_ERR, "get line read %d", n);
+		syslog(LOG_ERR, "get line read %d %d %d %d", n, jpos(n), errno,dbfd);
 		return (log_entity *) NULL;
 	    }
     UNPROTECT();
@@ -135,6 +141,8 @@ logger_journal_write_line(n, ent)
 Pointer n;
 log_entity *ent;
 {
+    int ret;
+
     if(n < 1) {
 	errno = EIO;
 	return -1;
@@ -155,12 +163,16 @@ log_entity *ent;
 		syslog(LOG_ERR, "writing line %d", n);
 		return -1;
 	    }
-    if(close_database()) {
-	UNPROTECT();
-	return -1;
-    }
+    if(syncdb && fsync(dbfd))
+	    {
+		(void) close_database();
+		UNPROTECT();
+		syslog(LOG_ERR, "syncing line %d", n);
+		return -1;
+	    }
+    ret=close_database();
     UNPROTECT();
-    return 0;
+    return ret;
 }
 
 int logger_journal_get_header(head)
@@ -203,6 +215,12 @@ log_header *head;
 		UNPROTECT();
 		return -1;
 	    }
+    if(syncdb && fsync(dbfd)) {
+	(void) close_database();
+	UNPROTECT();
+	syslog(LOG_ERR, "sync after writing header failed");
+	return -1;
+    }
     ret=close_database();
     UNPROTECT();
     return(ret);
@@ -338,7 +356,10 @@ Pointer qpos;
     return 0;
 }
 
-   
-
-    
-    
+int logger_journal_set_sync(new)
+int new;
+    {
+	int old = syncdb;
+	syncdb = new;
+	return old;
+    }
