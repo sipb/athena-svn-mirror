@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.26 1996-09-20 02:26:23 ghudson Exp $
+ *	$Id: olc.h,v 1.27 1997-04-30 18:16:47 ghudson Exp $
  *	$Author: ghudson $
  */
 
@@ -35,9 +35,6 @@
 #include <stdlib.h>
 #endif
 #include <string.h>
-#if defined(_AUX_SOURCE) || defined(SOLARIS)
-#include <string.h>
-#endif
 
 #include <olc/lang.h>
 
@@ -60,7 +57,9 @@ struct tREQUEST;
 #include <olc/procs.h>
 #include <olc/status.h>
 
-#define VERSION_STRING "3.1"
+#include <olc/incarnate.h>
+
+#define VERSION_STRING "3.2"
 
 /* 
  * service definitions 
@@ -69,27 +68,15 @@ struct tREQUEST;
 #define OLC_SERV_NAME  "sloc"                 /* nameservice key */
 #define OLC_SERVICE    "olc"                  /* olc service name */
 #define OLC_PROTOCOL   "tcp"                  /* protocol */
-#ifdef ATHENA
-#define OLC_SERVER     "MATISSE.MIT.EDU"      /* in case life fails */
-#else
-/* Define to be whatever's appropriate for your site.. */
-#define OLC_SERVER	"FOO.BAR.EDU"
-#endif
 
-#define OLC_PROMPT	"olc> "		      /* Default OLC prompt */
-#define OLCR_PROMPT	"olcr> "	      /* Default OLCR prompt */
+#define OLC_FALLBACK_PROMPT  "ol??> "       /* prompt if no config file */
+#define OLC_FALLBACK_TITLE   "consultant"   /* consultant title if no config */
 
-#define DEFAULT_CONSULTANT_TITLE "consultant"
+/* Default path for the incarnation configuration files. */
+#define OLC_CONFIG_PATH "/usr/athena/lib/olc:/mit/olta/config:/mit/library/config"
+#define OLC_CONFIG_EXT  ".cfg"
 
-#define OLC_HELP_DIR	"/usr/athena/lib/olc/olc_help"
-#define OLC_HELP_EXT	".help"
-#define OLC_HELP_FILE	"olc"
-
-#define OLCR_HELP_DIR	"/usr/athena/lib/olc/olcr_help"
-#define OLCR_HELP_EXT	".help"
-#define OLCR_HELP_FILE	"olcr"
-
-#define OLC_SERVICE_NAME	"OLC"
+#define OLC_DEFAULT_HELP_EXT	".help"
 
 #ifdef KERBEROS
 #define K_SERVICE      "olc"                  /* Kerberos service name */
@@ -110,7 +97,7 @@ extern char DaemonHost[];
 
 #define CLIENT_TIME_OUT 300     
 #ifdef ATHENA
-#define DEFAULT_MAILHUB "athena.mit.edu"
+#define DEFAULT_MAILHUB "mit.edu"
 #else
 /* Define to be whatever's appropriate to your site.. */
 #define DEFAULT_MAILHUB "foo.bar.edu"
