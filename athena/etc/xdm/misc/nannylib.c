@@ -352,3 +352,37 @@ int nanny_setXConsolePref(int on)
 
   return 1;
 }
+
+int nanny_restartX()
+{
+  varlist *vsend = NULL, *vget = NULL;
+  char *value;
+
+  if (var_init(&vsend))
+    return 1;
+
+  C(var_setString(vsend, N_RESTARTX, N_TRUE));
+
+  C(nanny_exchangeVars(vsend, &vget));
+  var_destroy(vsend);  vsend = NULL;
+
+  C(var_getString(vget, N_RESTARTX, &value));
+
+  if (strcmp(value, N_OK))
+    {
+      var_destroy(vget);
+      return 1;
+    }
+
+  var_destroy(vget);
+
+  return 0;
+
+ cleanup:
+  if (vsend)
+    var_destroy(vsend);
+  if (vget)
+    var_destroy(vget);
+
+  return 1;
+}

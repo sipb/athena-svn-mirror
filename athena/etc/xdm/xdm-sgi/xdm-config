@@ -1,4 +1,4 @@
-DisplayManager.servers:			/var/X11/xdm/Xservers
+DisplayManager.servers:			/etc/athena/login/xdm/Xservers
 DisplayManager.errorLogFile:		/var/X11/xdm/xdm-errors
 DisplayManager.pidFile:			/var/X11/xdm/xdm-pid
 DisplayManager.keyFile:			/var/X11/xdm/xdm-keys

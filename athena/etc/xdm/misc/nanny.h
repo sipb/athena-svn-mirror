@@ -14,6 +14,7 @@
 #define N_MODE		"MODE"
 #define N_FMODE		"FMODE"
 #define N_RETRY		"RETRY"
+#define N_RESTARTX	"RESTARTX"
 
 #define N_BADVALUE	"BADVALUE"
 #define N_OK		"OK"

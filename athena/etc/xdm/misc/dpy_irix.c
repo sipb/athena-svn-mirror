@@ -81,17 +81,13 @@ dpy_state *dpy_init(void)
   return dpy;
 }
 
-int dpy_startX(dpy_state *dpy)
+/* Wake up xdm, starting it if necessary. */
+static int poke_xdm()
 {
   int ret;
 
-  if (dpy == NULL || dpy->mode != DPY_NONE)
-    return 1;
-
-  if (run(CHKCONFIG WS "on", 0))
-    return 1;
-
-  if (ret = run(KILLALL "-HUP " XDM, 0))
+  ret = run(KILLALL "-HUP " XDM, 0);
+  if (ret != 0)
     {
       if (debug > 3)
 	syslog(LOG_ERR, "killall -hup " XDM " returned %d", ret);
@@ -107,15 +103,44 @@ int dpy_startX(dpy_state *dpy)
        * sessions without getting into race conditions.
        */
 
-      if (ret = run(XDMCMD, 1))
+      ret = run(XDMCMD, 1);
+      if (ret != 0)
 	{
 	  if (debug > 3)
 	    syslog(LOG_ERR, XDM " returned %d", ret);
 	  return 1;
 	}
     }
+  return 0;
+}
+
+int dpy_startX(dpy_state *dpy)
+{
+  if (dpy == NULL || dpy->mode != DPY_NONE)
+    return 1;
+
+  if (run(CHKCONFIG WS "on", 0))
+    return 1;
+
+  if (poke_xdm() != 0)
+    return 1;
 
   dpy->mode = DPY_X;
+  return 0;
+}
+
+int dpy_restartX(dpy_state *dpy)
+{
+  if (dpy == NULL || dpy->mode != DPY_X)
+    return 1;
+
+  /* Kill the X server, wait a bit, then ensure xdm is alive. */
+  run(KILLALL "Xsgi", 0);
+  sleep(2);
+
+  if (poke_xdm() != 0)
+    return 1;
+
   return 0;
 }
 

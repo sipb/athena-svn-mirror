@@ -12,6 +12,7 @@ typedef struct _dpy_state dpy_state;
 dpy_state *	dpy_init(void);
 int		dpy_startX(dpy_state *);
 int		dpy_stopX(dpy_state *);
+int		dpy_restartX(dpy_state *);
 int		dpy_startCons(dpy_state *);
 int		dpy_stopCons(dpy_state *);
 int		dpy_status(dpy_state *);

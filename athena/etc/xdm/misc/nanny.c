@@ -50,7 +50,7 @@ int cinfo_in, cinfo_out;
 char *name;
 int debug = 0;
 
-typedef char *(*varHandler)(disp_state *, char *, varlist *, varlist *);
+typedef void (*varHandler)(disp_state *, char *, varlist *, varlist *);
 
 typedef struct {
   char *name;
@@ -66,7 +66,7 @@ void init_cinfo(disp_state *ds);
 void process_child(disp_state *ds);
 void relinquish_console(disp_state *ds);
 
-char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   void *value;
   int length;
@@ -91,7 +91,7 @@ char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
     var_setString(vout, name, "unknown user");
 }
 
-char *setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setStd(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   void *value;
   int length;
@@ -272,7 +272,7 @@ char *do_logout(disp_state *ds)
   return "logged out";
 }
 
-char *setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setLogin(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value, *state;
 
@@ -359,7 +359,7 @@ char *stopConsole(disp_state *ds)
     }
 }
 
-char *setConsPref(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setConsPref(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value;
 
@@ -382,7 +382,7 @@ char *setConsPref(disp_state *ds, char *name, varlist *vin, varlist *vout)
       var_setString(vout, name, N_BADVALUE);
 }
 
-char *setDebug(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setDebug(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value;
 
@@ -439,7 +439,7 @@ void update_dpy(disp_state *ds)
   var_setString(ds->vars, N_MODE, N_X);
 }
 
-char *forceNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void forceNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   void *value;
   int length;
@@ -449,7 +449,7 @@ char *forceNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
   var_setString(vout, name, N_OK);
 }
 
-char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
+void setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
   char *value;
   char *current;
@@ -528,6 +528,43 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
     }
 }
 
+void restartX(disp_state *ds, char *name, varlist *vin, varlist *vout)
+{
+  char *value;
+
+  var_getString(vin, name, &value);
+  if (strcmp(value, N_TRUE) != 0)
+    {
+      var_setString(vout, name, N_BADVALUE);
+      return;
+    }
+
+  var_getString(ds->vars, N_MODE, &value);
+  if (strcmp(value, N_X) != 0)
+    {
+      var_setString(vout, name, "not in X mode");
+      return;
+    }
+
+  var_getString(ds->vars, N_LOGGED_IN, &value);
+  if (strcmp(value, N_TRUE) == 0)
+    {
+      var_setString(vout, name, "can't restart X while logged in");
+      return;
+    }
+
+  /* Stop the X console program, and restart the X server. */
+  stopConsole(ds);
+  if (dpy_restartX(ds->dpy))
+    {
+      var_setString(vout, name, "X restart failed");
+      return;
+    }
+
+  var_setString(vout, name, N_OK);
+  return;
+}
+
 /* List of magic variables - variables where changing the value
    causes something to happen immediately, or other special
    attributes. */
@@ -541,6 +578,7 @@ var_def vars[] = {
   { N_CONSPREF,		NONE,		setConsPref },
   { N_DEBUG,		NONE,		setDebug },
   { N_RETRY,		READ_ONLY,	setStd },
+  { N_RESTARTX,		SECURE_SET,	restartX },
   /* These aren't actually special, but they are in standard use,
      so we list them for documentation. */
   { N_XSESSARGS,	NONE,		setStd },
