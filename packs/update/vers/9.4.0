@@ -1,0 +1,51 @@
+#!/bin/sh
+
+echo "MINIROOT=true"					>> $CONFVARS
+echo "NEWOS=true"					>> $CONFVARS
+echo "NEWDEVS=true"					>> $CONFVARS
+echo "OSCHANGES=true"					>> $CONFVARS
+
+cat $LIBDIR/solaris-9.3-oldpkgs				>> $OLDPKGS
+cat $LIBDIR/solaris-9.3-oldpatches			>> $OLDPTCHS
+
+# Create the list of files to be preserved around the removal
+# of OS packages.
+cat $LIBDIR/solaris-9.4-ospreserve			> $OSPRESERVE
+
+# Create the lists of packages and patches to install.
+cat $LIBDIR/solaris-9.4-pkgs				> $PACKAGES
+
+# Make sure the OS update does not touch the following files.
+echo "/etc/passwd"					>> $OSCONFCHG
+echo "/etc/shadow"					>> $OSCONFCHG
+echo "/etc/group"					>> $OSCONFCHG
+echo "/etc/system"					>> $OSCONFCHG
+echo "/etc/inet/hosts"					>> $OSCONFCHG
+echo "/etc/inet/services"				>> $OSCONFCHG
+echo "/etc/nsswitch.conf"				>> $OSCONFCHG
+echo "/etc/default/cron"				>> $OSCONFCHG
+echo "/etc/default/init"				>> $OSCONFCHG
+echo "/etc/default/su"					>> $OSCONFCHG
+echo "/etc/default/syslogd"				>> $OSCONFCHG
+
+# Prevent the old finish-update from running.
+echo "/etc/rc2.d/S70finish-update"			>> $DEADFILES
+
+# Disable logging for the cache partition.
+echo "Editing /etc/vfstab to disable logging for the AFS cache partition."
+rm -f /etc/vfstab.update-new
+sed -e '/\/usr\/vice[\/ 	]/s/-$/nologging/' \
+  /etc/vfstab > /etc/vfstab.update-new &&
+  rm -f /etc/vfstab.pre-9.4 &&
+  ln /etc/vfstab /etc/vfstab.pre-9.4 &&
+  mv /etc/vfstab.update-new /etc/vfstab
+
+# Require a password for system maintenance mode; Solaris 10 sulogin
+# fails with PASSREQ=NO.
+echo "Editing /etc/default/sulogin to require a password for single-user mode."
+rm -f /etc/default/sulogin.update-new
+sed -e 's/\(PASSREQ=\)NO/\1YES/' /etc/default/sulogin \
+  > /etc/default/sulogin.update-new &&
+  rm -f /etc/default/sulogin.pre-9.4 &&
+  ln /etc/default/sulogin /etc/default/sulogin.pre-9.4 &&
+  mv /etc/default/sulogin.update-new /etc/default/sulogin
