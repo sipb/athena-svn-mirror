@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 1998-09-13 19:24:44 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 1999-01-29 03:04:25 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -9,6 +9,7 @@ clean:
 
 all:
 	case $$ATHENA_SYS in \
+		*_linux*) target=linux ;; \
 		sun4x_5*) target=sunos5 ;; \
 		sgi_6*) target=irix6 ;; \
 	esac; \
