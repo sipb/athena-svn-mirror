@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.7 1993-06-14 15:39:35 vrt Exp $
+/* $Id: cleanup.c,v 2.8 1993-06-22 09:24:59 root Exp $
  *
  * Cleanup program for stray processes
  *
@@ -39,7 +39,7 @@
 #include <dirent.h>
 #endif
 
-char *version = "$Id: cleanup.c,v 2.7 1993-06-14 15:39:35 vrt Exp $";
+char *version = "$Id: cleanup.c,v 2.8 1993-06-22 09:24:59 root Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -445,7 +445,7 @@ struct cl_proc *get_processes()
     procs[i].pid = procs[i].uid = -1;
     return(procs);
 #else /* SOLARIS */
-      kv = kvm_open(NULL,NULL,"/dev/swap",O_RDONLY,NULL);
+      kv = kvm_open(NULL,NULL,NULL,O_RDONLY,NULL);
       if (kvm_nlist(kv, &nl) < 0) {
         fprintf(stderr,"%s: can't get namelist\n", "Cleanup");
         exit(2);
@@ -608,7 +608,14 @@ int *users;
 rewrite_passwd(users)
 int *users;
 {
+#ifdef SOLARIS
+    FILE *in, *in1, *out, *out1;
+    char username[10];
+    struct passwd *pw;
+    char buffer1[512];
+#else
     FILE *in, *out;
+#endif
     char buffer[512], *p;
     int in_passwd[MAXUSERS], user = 0, i, uid;
 
@@ -616,7 +623,9 @@ int *users;
     if (in == NULL) {
         fprintf(stderr, "cleanup: unable to open /etc/passwd.local: %s\n",
 	        sys_errlist[errno]);
+#ifndef SOLARIS 
         return(0);				/* non fatal error */
+#endif
     }
 
     out = fopen("/etc/passwd.new", "w");
@@ -633,6 +642,24 @@ int *users;
 	fclose(out);
 	return(-1);
     }
+#ifdef SOLARIS
+    out1 = fopen("/etc/shadow.new", "w");
+    if (out1 == NULL) {
+	fprintf(stderr, "cleanup: unable to open /etc/shadow.new: %s\n",
+		sys_errlist[errno]);
+	fclose(in);
+        fclose(out);
+	return(-1);
+    }
+    if (chmod("/etc/shadow.new", 0600)) {
+	fprintf(stderr, "cleanup: unable to change mode of /etc/shadow.new: %s\n",
+		sys_errlist[errno]);
+	fclose(in);
+	fclose(out);
+        fclose(out1);
+	return(-1);
+    }
+#endif
 
     /* copy /etc/passwd.local, keeping track of who is in it */
     while (in && fgets(buffer, sizeof(buffer), in)) {
@@ -653,6 +680,12 @@ int *users;
 	fprintf(stderr, "cleanup: unable to open /etc/passwd: %s\n",
 		sys_errlist[errno]);
 
+#ifdef SOLARIS
+    in1 = fopen("/etc/shadow", "r");
+    if (in1 == NULL)
+	fprintf(stderr, "cleanup: unable to open /etc/shadow: %s\n",
+		sys_errlist[errno]);
+#endif
     /* now process /etc/passwd, avoiding duplicates */
     while (in && fgets(buffer, sizeof(buffer), in)) {
 	uid = -1;
@@ -706,6 +739,32 @@ int *users;
     if (rename("/etc/passwd.new", "/etc/passwd"))
 	fprintf(stderr, "cleanup: failed to rename /etc/passwd.new to /etc/passwd: %s\n",
 		sys_errlist[errno]);
+#ifdef SOLARIS
+    /* now process /etc/shadow, avoiding duplicates */
+    while (in1 && fgets(buffer, sizeof(buffer), in1)) {
+       uid = -1;
+       strcpy(buffer1, buffer);
+       p = index(buffer1, ':');
+       if (p) {
+            strcpy(p, "\0");
+            strcpy(username, buffer1);
+            pw = getpwnam(username);
+            if (pw)
+               uid = pw-> pw_uid;
+	  }
+       if (uid !=-1)
+	       fputs(buffer, out1);
+    }
+    fclose(in1);
+    fclose(out1);
+    if (unlink("/etc/shadow"))
+	fprintf(stderr, "cleanup: unable to remove /etc/shadow: %s\n",
+		sys_errlist[errno]);
+    if (rename("/etc/shadow.new", "/etc/shadow"))
+	fprintf(stderr, "cleanup: failed to rename /etc/shadow.new to /etc/shadow: %s\n",
+		sys_errlist[errno]);
+#endif
+
 
     in_passwd[user] = -1;
     make_group(in_passwd);
