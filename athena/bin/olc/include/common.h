@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.6 1990-12-12 15:25:04 lwvanels Exp $
+ *	$Id: common.h,v 1.7 1991-02-24 11:44:46 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -16,6 +16,9 @@
 #define __olc_common_h
 
 #include <olc/lang.h>
+#ifdef m68k
+#include <time.h>
+#endif
 
 typedef struct tSTATUS
 {
@@ -46,7 +49,9 @@ int swrite P((int fd , char *buf , int nbytes ));
 /* perror.c */
 char *format_time P((char *time_buf , struct tm *time_info ));
 void time_now P((char *time_buf ));
+#ifndef m68k
 void perror P((char *msg ));
+#endif
 
 /* status.c */
 int OGetStatusString P((int status , char *string ));
