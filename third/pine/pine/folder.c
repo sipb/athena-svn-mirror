@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: folder.c,v 1.4 2003-05-01 01:32:13 ghudson Exp $";
+static char rcsid[] = "$Id: folder.c,v 1.5 2004-03-01 21:39:07 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -484,6 +484,7 @@ INST_KEY_MENU(folder_km, folder_keys);
 #define	KM_ZOOM_KEY	21
 #define	KM_SELECT_KEY	22
 #define	KM_SELCUR_KEY	23
+#define	KM_RECENT_KEY	28
 #define	KM_SHUFFLE_KEY	30
 
 
@@ -2206,6 +2207,7 @@ folder_processor(cmd, msgmap, sparms)
     SCROLL_S *sparms;
 {
     int	      rv = 0;
+    char      tmp_output[MAILTMPLEN];
 
     switch(cmd){
       case MC_FINISH :
@@ -2591,6 +2593,129 @@ folder_processor(cmd, msgmap, sparms)
 	}
 	rv = 1;
 	break;
+
+	/*------------New Msg command --------------*/
+      case MC_CHK_RECENT:
+	/*
+	 * Derived from code provided by
+	 * Rostislav Neplokh neplokh@andrew.cmu.edu and
+	 * Robert Siemborski (rjs3@andrew).
+	 */
+        if(sparms->text.handles
+           && folder_total(FOLDERS(sparms->text.handles->h.f.context))){
+	    FOLDER_S *folder;
+
+            folder = folder_entry(sparms->text.handles->h.f.index,
+				  FOLDERS(sparms->text.handles->h.f.context));
+	    
+	    if(!folder)
+	      strncpy(tmp_output, "Invalid Folder Name", sizeof(tmp_output)-1);
+	    else if(folder->isdir)
+	      sprintf(tmp_output, "\"%.100s\" is a directory", folder->name);
+	    else{
+		MAILSTREAM   *strm = NIL;
+		char          mailbox_name[MAXPATH+1];
+		unsigned long tot, rec;
+		int           gotit = 0, we_cancel;
+
+		we_cancel = busy_alarm(1, NULL, NULL, 0);
+		context_apply(mailbox_name,
+			      sparms->text.handles->h.f.context,
+			      folder->name, MAXPATH+1);
+
+		/* do we already have it selected? */
+		if((strm = same_stream_and_mailbox(mailbox_name,
+						   ps_global->mail_stream))
+		   ||
+		   (strm = same_stream_and_mailbox(mailbox_name,
+						   ps_global->inbox_stream))){
+		    MSGNO_S *msgmap;
+		    long     excluded;
+
+		    /*
+		     * Unfortunately, we have to worry about excluded
+		     * messages now. The user doesn't want to have
+		     * excluded messages count in the totals, especially
+		     * recent excluded messages.
+		     */
+
+		    msgmap = (strm == ps_global->mail_stream)
+				? ps_global->msgmap
+				: ps_global->inbox_msgmap;
+
+		    if((excluded = any_lflagged(msgmap, MN_EXLD))){
+
+			tot = strm->nmsgs - excluded;
+			if(tot)
+			  rec = count_flagged(strm, F_RECENT);
+			else
+			  rec = 0;
+		    }
+		    else{
+			tot = strm->nmsgs;
+			rec = strm->recent;
+		    }
+
+		    gotit++;
+		}
+		/*
+		 * No, but how about another stream to same server which
+		 * could be used for a STATUS command?
+		 */
+		else if(((strm = same_stream(mailbox_name,
+					     ps_global->mail_stream))
+			 && modern_imap_stream(strm))
+			||
+		        ((strm = same_stream(mailbox_name,
+					     ps_global->inbox_stream))
+			 && modern_imap_stream(strm))){
+
+		    extern MAILSTATUS mm_status_result;
+
+		    mm_status_result.flags = 0L;
+		    pine_mail_status(strm, mailbox_name,
+				     SA_MESSAGES | SA_RECENT);
+		    if(mm_status_result.flags & SA_MESSAGES
+		       && mm_status_result.flags & SA_RECENT){
+			tot = mm_status_result.messages;
+			rec = mm_status_result.recent;
+			gotit++;
+		    }
+		}
+
+		/*
+		 * Let's just Select it. Maybe later we can cache the
+		 * open stream somehow.
+		 */
+		if(!gotit){
+		    strm = pine_mail_open(NULL, mailbox_name, OP_READONLY);
+		    if(strm){
+			tot = strm->nmsgs;
+			rec = strm->recent;
+			gotit++;
+			pine_mail_close(strm);
+		    }
+		    else
+		      sprintf(tmp_output,
+			      "%.100s: Trouble checking for recent mail",
+			      folder->name);
+		}
+
+		if(we_cancel)
+		  cancel_busy_alarm(-1);
+
+		if(gotit)
+		  sprintf(tmp_output,
+			  "%lu total message%.2s, %lu of them recent",
+			  tot, plural(tot), rec);
+	    }
+        }else
+	  strncpy(tmp_output, "No folder to check! Can't get recent info",
+		  sizeof(tmp_output)-1);
+
+	q_status_message(SM_ORDER, 0, 3, tmp_output);
+        break;
+
   
             /*--------------- Invalid Command --------------*/
       default: 
@@ -2802,6 +2927,18 @@ folder_lister_km_manager(sparms, handle_hidden)
       setbitn(KM_SHUFFLE_KEY, sparms->keys.bitmap);
     else
       clrbitn(KM_SHUFFLE_KEY, sparms->keys.bitmap);
+
+    if(F_ON(F_TAB_CHK_RECENT, ps_global)){
+	menu_clear_binding(sparms->keys.menu, TAB);
+	menu_init_binding(sparms->keys.menu, TAB, MC_CHK_RECENT, "Tab",
+			  "NewMsgs", KM_RECENT_KEY);
+	setbitn(KM_RECENT_KEY, sparms->keys.bitmap);
+    }
+    else{
+	menu_clear_binding(sparms->keys.menu, TAB);
+	menu_add_binding(sparms->keys.menu, TAB, MC_NEXT_HANDLE);
+	clrbitn(KM_RECENT_KEY, sparms->keys.bitmap);
+    }
 
     /* May have to "undo" what scrolltool "did" */
     if(F_ON(F_ARROW_NAV, ps_global)){
@@ -4644,48 +4781,61 @@ group_subscription(folder, len, cntxt)
 	  q_status_message(SM_ORDER, 0, 3, "Subscribe cancelled");
     }
     else{
+	MAILSTREAM *sub_stream;
+	int sclose = 0, errors = 0;
+
 	if(folders){		/*------ Actually do the subscription -----*/
 	    STRLIST_S *flp;
-	    int	       n = 0, errors = 0;
+	    int	       n = 0;
 
 	    /* subscribe one at a time */
 	    folder[0] = '\0';
-	    for(flp = folders; flp; flp = flp->next){
-		(void) context_apply(tmp_20k_buf, &subscribe_cntxt,
-				     (char *) flp->name, SIZEOF_20KBUF);
-		if(mail_subscribe(NULL, tmp_20k_buf) == 0L){
-		    /*
-		     * This message may not make it to the screen,
-		     * because a c-client message about the failure
-		     * will be there.  Probably best not to string
-		     * together a whole bunch of errors if there is
-		     * something wrong.
-		     */
-		    q_status_message1(errors ?SM_INFO : SM_ORDER,
-				      errors ? 0 : 3, 3,
-				      "Error subscribing to \"%.200s\"",
-				      (char *) flp->name);
-		    errors++;
-		}
-		else{
-		    n++;
-		    if(!folder[0]){
-			strncpy(folder, (char *) flp->name, len-1);
-			folder[len-1] = '\0';
+	    /*
+	     * Open stream before subscribing so c-client knows what newsrc
+	     * to use, along with other side-effects.
+	     */
+	    if(sub_stream = mail_cmd_stream(&subscribe_cntxt, &sclose)){
+		for(flp = folders; flp; flp = flp->next){
+		    (void) context_apply(tmp_20k_buf, &subscribe_cntxt,
+					 (char *) flp->name, SIZEOF_20KBUF);
+		    if(mail_subscribe(sub_stream, tmp_20k_buf) == 0L){
+			/*
+			 * This message may not make it to the screen,
+			 * because a c-client message about the failure
+			 * will be there.  Probably best not to string
+			 * together a whole bunch of errors if there is
+			 * something wrong.
+			 */
+			q_status_message1(errors ?SM_INFO : SM_ORDER,
+					  errors ? 0 : 3, 3,
+					  "Error subscribing to \"%.200s\"",
+					  (char *) flp->name);
+			errors++;
 		    }
-
-		    /*---- Update the screen display data structures -----*/
-		    if(ALL_FOUND(cntxt)){
-			if(cntxt->use & CNTXT_PSEUDO){
-			    folder_delete(0, FOLDERS(cntxt));
-			    cntxt->use &= ~CNTXT_PSEUDO;
+		    else{
+			n++;
+			if(!folder[0]){
+			    strncpy(folder, (char *) flp->name, len-1);
+			    folder[len-1] = '\0';
 			}
 
-			folder_insert(-1, new_folder((char *) flp->name, 0),
-				      FOLDERS(cntxt));
+			/*---- Update the screen display data structures -----*/
+			if(ALL_FOUND(cntxt)){
+			    if(cntxt->use & CNTXT_PSEUDO){
+				folder_delete(0, FOLDERS(cntxt));
+				cntxt->use &= ~CNTXT_PSEUDO;
+			    }
+
+			    folder_insert(-1, new_folder((char *) flp->name, 0),
+					  FOLDERS(cntxt));
+			}
 		    }
 		}
+		if(sclose)
+		  pine_mail_close(sub_stream);
 	    }
+	    else
+	      errors++;
 
 	    if(n == 0)
 	      q_status_message(SM_ORDER | SM_DING, 3, 5,
@@ -4701,24 +4851,34 @@ group_subscription(folder, len, cntxt)
 	    free_strlist(&folders);
 	}
 	else{
-	    (void) context_apply(tmp_20k_buf, &subscribe_cntxt, folder,
-				 SIZEOF_20KBUF);
-	    if(mail_subscribe(NULL, tmp_20k_buf) == 0L){
+	    if(sub_stream = mail_cmd_stream(&subscribe_cntxt, &sclose)){
+		(void) context_apply(tmp_20k_buf, &subscribe_cntxt, folder,
+				     SIZEOF_20KBUF);
+		if(mail_subscribe(sub_stream, tmp_20k_buf) == 0L){
+		    q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				      "Error subscribing to \"%.200s\"", folder);
+		    errors++;
+		}
+		else if(ALL_FOUND(cntxt)){
+		    /*---- Update the screen display data structures -----*/
+		    if(cntxt->use & CNTXT_PSEUDO){
+			folder_delete(0, FOLDERS(cntxt));
+			cntxt->use &= ~CNTXT_PSEUDO;
+		    }
+
+		    folder_insert(-1, new_folder(folder, 0), FOLDERS(cntxt));
+		}
+		if(sclose)
+		  pine_mail_close(sub_stream);
+	    }
+	    else{
 		q_status_message1(SM_ORDER | SM_DING, 3, 3,
 				  "Error subscribing to \"%.200s\"", folder);
-	    }
-	    else if(ALL_FOUND(cntxt)){
-		/*---- Update the screen display data structures -----*/
-		if(cntxt->use & CNTXT_PSEUDO){
-		    folder_delete(0, FOLDERS(cntxt));
-		    cntxt->use &= ~CNTXT_PSEUDO;
-		}
-
-		folder_insert(-1, new_folder(folder, 0), FOLDERS(cntxt));
+		errors++;
 	    }
 	}
 
-	if(folder[0])
+	if(!errors && folder[0])
 	  q_status_message1(SM_ORDER, 0, 3, "Subscribed to \"%.200s\"", folder);
     }
 
@@ -5021,11 +5181,11 @@ delete_folder(context, index, next_folder, len, possible_streamp)
 {
     char       *folder, ques_buf[MAX_SCREEN_COLS+1],
 	       *fnamep, fname[MAILTMPLEN];
-    MAILSTREAM *del_stream;
+    MAILSTREAM *del_stream, *sub_stream;
     FOLDER_S   *fp;
     EditWhich   ew;
     PINERC_S   *prc = NULL;
-    int         ret, close_opened = 0, blast_folder = 1, readonly;
+    int         ret, unsub_opened = 0, close_opened = 0, blast_folder = 1, readonly;
 
     if(NEWS_TEST(context)){
 	static char fmt[] = "Really unsubscribe from \"%.*s\"";
@@ -5047,12 +5207,18 @@ delete_folder(context, index, next_folder, len, possible_streamp)
         dprint(2, (debugfile, "deleting folder \"%s\" in context \"%s\"\n",
 	       folder, context->context));
 
-	(void) context_apply(tmp_20k_buf, context, folder, SIZEOF_20KBUF);
-	if(!mail_unsubscribe(NULL, tmp_20k_buf)){
-            q_status_message1(SM_ORDER | SM_DING, 3, 3,
-			      "Error unsubscribing from \"%.200s\"", folder);
-            return(0);
-        }
+	if(sub_stream = mail_cmd_stream(context, &unsub_opened)){
+	    (void) context_apply(tmp_20k_buf, context, folder, SIZEOF_20KBUF);
+	    if(!mail_unsubscribe(sub_stream, tmp_20k_buf)){
+		q_status_message1(SM_ORDER | SM_DING, 3, 3,
+				  "Error unsubscribing from \"%.200s\"", folder);
+		if(unsub_opened)
+		  pine_mail_close(sub_stream);
+		return(0);
+	    }
+	    if(unsub_opened)
+	      pine_mail_close(sub_stream);
+	}
 
 	/*
 	 * Fix  up the displayed list
@@ -7722,19 +7888,23 @@ next_folder(streamp, next, current, cntxt, find_recent, did_cancel)
 		stream = ps_global->inbox_stream;
 	  }
 
-	  /* If interestingness is indeterminate or we're
+	  /*
+	   * If interestingness is indeterminate or we're
 	   * told to explicitly, look harder...
 	   */
-	  /* We could make this more efficient in the cases where we're opening
-	   * a new stream or using streamp by having folder_exists cache the stream.
-	   * The change would require a folder_exists() that caches streams, but
-	   * most of the time folder_exists just uses the inbox stream or ps->mail_stream.
+
+	  /*
+	   * We could make this more efficient in the cases where we're
+	   * opening a new stream or using streamp by having folder_exists
+	   * cache the stream. The change would require a folder_exists()
+	   * that caches streams, but most of the time folder_exists just
+	   * uses the inbox stream or ps->mail_stream.
 	   *
-	   * Another thing to consider is that maybe there should be an option to try
-	   * to LIST a folder before doing a STATUS (or SELECT).  This isn't done by
-	   * default for the case where a folder is SELECTable but not LISTable, but
-	   * on some servers doing an RLIST first tells the server that we support
-	   * mailbox referrals.
+	   * Another thing to consider is that maybe there should be an
+	   * option to try to LIST a folder before doing a STATUS (or SELECT).
+	   * This isn't done by default for the case where a folder is
+	   * SELECTable but not LISTable, but on some servers doing an
+	   * RLIST first tells the server that we support mailbox referrals.
 	   */
 	  if(F_OFF(F_ENABLE_FAST_RECENT, ps_global)
 	     || !((rv = folder_exists(cntxt,f->name))

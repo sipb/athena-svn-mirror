@@ -10,10 +10,10 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	15 June 1988
- * Last Edited:	24 March 2003
+ * Last Edited:	10 July 2003
  * 
  * The IMAP toolkit provided in this Distribution is
- * Copyright 2003 University of Washington.
+ * Copyright 1988-2003 University of Washington.
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this Distribution.
  *
@@ -39,7 +39,7 @@
 DRIVER imapdriver = {
   "imap",			/* driver name */
 				/* driver flags */
-  DR_MAIL|DR_NEWS|DR_NAMESPACE|DR_CRLF|DR_RECYCLE,
+  DR_MAIL|DR_NEWS|DR_NAMESPACE|DR_CRLF|DR_RECYCLE|DR_HALFOPEN,
   (DRIVER *) NIL,		/* next driver */
   imap_valid,			/* mailbox is valid for us */
   imap_parameters,		/* manipulate parameters */
@@ -317,16 +317,11 @@ void imap_list_work (MAILSTREAM *stream,char *cmd,char *ref,char *pat,
     aref.type = ASTRING; aref.text = (void *) (ref ? ref : "");
     apat.type = LISTMAILBOX; apat.text = (void *) pat;
 				/* referrals armed? */
-    if (LOCAL->cap.mbx_ref && mail_parameters (stream,GET_IMAPREFERRAL,NIL) &&
-      ((cmd[0] == 'L') || (cmd[0] == 'l')) && !cmd[4]) {
+    if (LOCAL->cap.mbx_ref && mail_parameters (stream,GET_IMAPREFERRAL,NIL)) {
 				/* yes, convert LIST -> RLIST */
-      if (((cmd[1] == 'I') || (cmd[1] == 'i')) &&
-	  ((cmd[2] == 'S') || (cmd[1] == 's')) &&
-	  ((cmd[3] == 'T') || (cmd[3] == 't'))) cmd = "RLIST";
+      if (!compare_cstring (cmd,"LIST")) cmd = "RLIST";
 				/* and convert LSUB -> RLSUB */
-      else if (((cmd[1] == 'S') || (cmd[1] == 's')) &&
-	       ((cmd[2] == 'U') || (cmd[1] == 'u')) &&
-	       ((cmd[3] == 'B') || (cmd[3] == 'b'))) cmd = "RLSUB";
+      else if (!compare_cstring (cmd,"LSUB")) cmd = "RLSUB";
     }
     imap_send (stream,cmd,args);
   }
@@ -1136,7 +1131,7 @@ long imap_overview (MAILSTREAM *stream,overview_t ofn)
 	    else sprintf (t,",%lu",i);
 	    start = last = i;	/* begin a new range */
 	    if ((len - ((t += strlen (t)) - s)) < 20)
-	      fs_resize ((void **) s,len += MAILTMPLEN);
+	      fs_resize ((void **) &s,len += MAILTMPLEN);
 	  }
 	}
 	else {			/* first time, start new buffer */
@@ -1774,7 +1769,7 @@ unsigned long *imap_sort (MAILSTREAM *stream,char *charset,SEARCHPGM *spg,
 	      else sprintf (t,",%lu",i);
 	      start = last = i;	/* begin a new range */
 	      if ((j = ((t += strlen (t)) - s)) > (MAILTMPLEN - 20)) {
-		fs_resize ((void **) s,len += MAILTMPLEN);
+		fs_resize ((void **) &s,len += MAILTMPLEN);
 		t = s + j;	/* relocate current pointer */
 	      }
 	    }
@@ -2450,7 +2445,8 @@ IMAPPARSEDREPLY *imap_send (MAILSTREAM *stream,char *cmd,IMAPARG *args[])
       *s++ = ')';		/* close list */
       break;
     case SEARCHPROGRAM:		/* search program */
-      if (reply = imap_send_spgm (stream,tag,&s,arg->text,CMDBASE+MAXCOMMAND))
+      if (reply = imap_send_spgm (stream,tag,CMDBASE,&s,arg->text,
+				  CMDBASE+MAXCOMMAND))
 	return reply;
       break;
     case SORTPROGRAM:		/* search program */
@@ -2701,6 +2697,7 @@ IMAPPARSEDREPLY *imap_send_literal (MAILSTREAM *stream,char *tag,char **s,
 /* IMAP send search program
  * Accepts: MAIL stream
  *	    reply tag
+ *	    base pointer if trimming needed
  *	    pointer to current position pointer of output bigbuf
  *	    search program to output
  *	    pointer to limit guideline
@@ -2708,20 +2705,26 @@ IMAPPARSEDREPLY *imap_send_literal (MAILSTREAM *stream,char *tag,char **s,
  */
 
 
-IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char **s,
-				 SEARCHPGM *pgm,char *limit)
+IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char *base,
+				 char **s,SEARCHPGM *pgm,char *limit)
 {
   IMAPPARSEDREPLY *reply;
   SEARCHHEADER *hdr;
   SEARCHOR *pgo;
   SEARCHPGMLIST *pgl;
-  char *t = "ALL";
-  while (*t) *(*s)++ = *t++;	/* default initial text */
+  char *t;
+				/* trim if called recursively */
+  if (base) *s = imap_send_spgm_trim (base,*s,NIL);
+  base = *s;			/* this is the new base */
+				/* default searchpgm */
+  for (t = "ALL"; *t; *(*s)++ = *t++);
   if (!pgm) return NIL;		/* done if NIL searchpgm */
   if ((pgm->msgno &&		/* message sequences */
-       (reply = imap_send_sset (stream,tag,s,pgm->msgno,NIL,limit))) ||
+       (pgm->msgno->next ||	/* trim away first:last */
+	(pgm->msgno->first != 1) || (pgm->msgno->last != stream->nmsgs)) &&
+       (reply = imap_send_sset (stream,tag,base,s,pgm->msgno," ",limit))) ||
       (pgm->uid &&
-       (reply = imap_send_sset (stream,tag,s,pgm->uid," UID",limit))))
+       (reply = imap_send_sset (stream,tag,base,s,pgm->uid," UID ",limit))))
     return reply;
 				/* message sizes */
   if (pgm->larger) {
@@ -2732,6 +2735,7 @@ IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char **s,
     sprintf (*s," SMALLER %lu",pgm->smaller);
     *s += strlen (*s);
   }
+
 				/* message flags */
   if (pgm->answered) for (t = " ANSWERED"; *t; *(*s)++ = *t++);
   if (pgm->unanswered) for (t =" UNANSWERED"; *t; *(*s)++ = *t++);
@@ -2746,12 +2750,12 @@ IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char **s,
   if (pgm->seen) for (t =" SEEN"; *t; *(*s)++ = *t++);
   if (pgm->unseen) for (t =" UNSEEN"; *t; *(*s)++ = *t++);
   if ((pgm->keyword &&		/* keywords */
-       (reply = imap_send_slist (stream,tag,s,"KEYWORD",pgm->keyword,limit)))||
+       (reply = imap_send_slist (stream,tag,base,s," KEYWORD ",pgm->keyword,
+				 limit))) ||
       (pgm->unkeyword &&
-       (reply = imap_send_slist (stream,tag,s,"UNKEYWORD",pgm->unkeyword,
-				 limit))))
+       (reply = imap_send_slist (stream,tag,base,s," UNKEYWORD ",
+				 pgm->unkeyword,limit))))
     return reply;
-
 				/* sent date ranges */
   if (pgm->sentbefore) imap_send_sdate (s,"SENTBEFORE",pgm->sentbefore);
   if (pgm->senton) imap_send_sdate (s,"SENTON",pgm->senton);
@@ -2761,76 +2765,105 @@ IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char **s,
   if (pgm->on) imap_send_sdate (s,"ON",pgm->on);
   if (pgm->since) imap_send_sdate (s,"SINCE",pgm->since);
 				/* search texts */
-  if ((pgm->bcc && (reply = imap_send_slist (stream,tag,s,"BCC",pgm->bcc,
-					     limit))) ||
-      (pgm->cc && (reply = imap_send_slist (stream,tag,s,"CC",pgm->cc,
+  if ((pgm->bcc && (reply = imap_send_slist (stream,tag,base,s," BCC ",
+					     pgm->bcc,limit))) ||
+      (pgm->cc && (reply = imap_send_slist (stream,tag,base,s," CC ",pgm->cc,
 					    limit))) ||
-      (pgm->from && (reply = imap_send_slist (stream,tag,s,"FROM",pgm->from,
-					      limit)))||
-      (pgm->to && (reply = imap_send_slist (stream,tag,s,"TO",pgm->to,limit))))
+      (pgm->from && (reply = imap_send_slist (stream,tag,base,s," FROM ",
+					      pgm->from,limit))) ||
+      (pgm->to && (reply = imap_send_slist (stream,tag,base,s," TO ",pgm->to,
+					    limit))))
     return reply;
-  if ((pgm->subject && (reply = imap_send_slist (stream,tag,s,"SUBJECT",
+  if ((pgm->subject && (reply = imap_send_slist (stream,tag,base,s," SUBJECT ",
 						 pgm->subject,limit))) ||
-      (pgm->body && (reply = imap_send_slist (stream,tag,s,"BODY",pgm->body,
-					      limit)))||
-      (pgm->text && (reply = imap_send_slist (stream,tag,s,"TEXT",pgm->text,
-					      limit))))
+      (pgm->body && (reply = imap_send_slist (stream,tag,base,s," BODY ",
+					      pgm->body,limit))) ||
+      (pgm->text && (reply = imap_send_slist (stream,tag,base,s," TEXT ",
+					      pgm->text,limit))))
     return reply;
 
   /* Note that these criteria are not supported by IMAP and have to be
      emulated */
   if ((pgm->return_path &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Return-Path",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Return-Path ",
 				 pgm->return_path,limit))) ||
       (pgm->sender &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Sender",pgm->sender,
-				 limit))) ||
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Sender ",
+				 pgm->sender,limit))) ||
       (pgm->reply_to &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Reply-To",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Reply-To ",
 				 pgm->reply_to,limit))) ||
       (pgm->in_reply_to &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER In-Reply-To",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER In-Reply-To ",
 				 pgm->in_reply_to,limit))) ||
       (pgm->message_id &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Message-ID",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Message-ID ",
 				 pgm->message_id,limit))) ||
       (pgm->newsgroups &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Newsgroups",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Newsgroups ",
 				 pgm->newsgroups,limit))) ||
       (pgm->followup_to &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER Followup-To",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER Followup-To ",
 				 pgm->followup_to,limit))) ||
       (pgm->references &&
-       (reply = imap_send_slist (stream,tag,s,"HEADER References",
+       (reply = imap_send_slist (stream,tag,base,s," HEADER References ",
 				 pgm->references,limit)))) return reply;
+
 				/* all other headers */
   if (hdr = pgm->header) do {
-    for (t = " HEADER "; *t; *(*s)++ = *t++);
+    *s = imap_send_spgm_trim (base,*s," HEADER ");
     if (reply = imap_send_astring (stream,tag,s,&hdr->line,NIL,limit))
       return reply;
     *(*s)++ = ' ';
     if (reply = imap_send_astring (stream,tag,s,&hdr->text,NIL,limit))
       return reply;
-  }
-  while (hdr = hdr->next);
+  } while (hdr = hdr->next);
   for (pgo = pgm->or; pgo; pgo = pgo->next) {
-    for (t = " OR ("; *t; *(*s)++ = *t++);
-    if (reply = imap_send_spgm (stream,tag,s,pgo->first,limit)) return reply;
+    *s = imap_send_spgm_trim (base,*s," OR (");
+    if (reply = imap_send_spgm (stream,tag,base,s,pgo->first,limit))
+      return reply;
     for (t = ") ("; *t; *(*s)++ = *t++);
-    if (reply = imap_send_spgm (stream,tag,s,pgo->second,limit)) return reply;
+    if (reply = imap_send_spgm (stream,tag,base,s,pgo->second,limit))
+      return reply;
     *(*s)++ = ')';
   }
   for (pgl = pgm->not; pgl; pgl = pgl->next) {
-    for (t = " NOT ("; *t; *(*s)++ = *t++);
-    if (reply = imap_send_spgm (stream,tag,s,pgl->pgm,limit)) return reply;
+    *s = imap_send_spgm_trim (base,*s," NOT (");
+    if (reply = imap_send_spgm (stream,tag,base,s,pgl->pgm,limit))
+      return reply;
     *(*s)++ = ')';
   }
+				/* trim if needed */
+  *s = imap_send_spgm_trim (base,*s,NIL);
   return NIL;			/* search program written OK */
+}
+
+
+/* Write new text and trim extraneous "ALL" from searchpgm
+ * Accepts: pointer to start of searchpgm or NIL
+ *	    current end pointer
+ *	    new text to write or NIL
+ * Returns: new end pointer, trimmed if needed
+ */
+
+char *imap_send_spgm_trim (char *base,char *s,char *text)
+{
+  char *t;
+				/* write new text */
+  if (text) for (t = text; *t; *s++ = *t++);
+				/* need to trim? */
+  if (base && (s > (t = (base + 4))) && (*base == 'A') && (base[1] == 'L') &&
+      (base[2] == 'L') && (base[3] == ' ')) {
+    memmove (base,t,s - t);	/* yes, blat down remaining text */
+    s -= 4;			/* and reduce current pointer */
+  }
+  return s;			/* return new end pointer */
 }
 
 /* IMAP send search set
  * Accepts: MAIL stream
  *	    current command tag
+ *	    base pointer if trimming needed
  *	    pointer to current position pointer of output bigbuf
  *	    search set to output
  *	    message prefix
@@ -2838,18 +2871,19 @@ IMAPPARSEDREPLY *imap_send_spgm (MAILSTREAM *stream,char *tag,char **s,
  * Returns: NIL if success, error reply if error
  */
 
-IMAPPARSEDREPLY *imap_send_sset (MAILSTREAM *stream,char *tag,char **s,
-				 SEARCHSET *set,char *prefix,char *limit)
+IMAPPARSEDREPLY *imap_send_sset (MAILSTREAM *stream,char *tag,char *base,
+				 char **s,SEARCHSET *set,char *prefix,
+				 char *limit)
 {
   IMAPPARSEDREPLY *reply;
   STRING st;
   char c,*t;
   char *start = *s;
-				/* write prefix */
-  if (prefix) while (*prefix) *(*s)++ = *prefix++;
+				/* trim and write prefix */
+  *s = imap_send_spgm_trim (base,*s,prefix);
 				/* run down search list */
-  for (c = ' '; set && (*s < limit); set = set->next, c = ',') {
-    *(*s)++ = c;		/* write delimiter and first value */
+  for (c = NIL; set && (*s < limit); set = set->next, c = ',') {
+    if (c) *(*s)++ = c;		/* write delimiter and first value */
     if (set->first != 0xffffffff) {
       sprintf (*s,"%lu",set->first);
       *s += strlen (*s);
@@ -2874,7 +2908,8 @@ IMAPPARSEDREPLY *imap_send_sset (MAILSTREAM *stream,char *tag,char **s,
     INIT (&st,mail_string,(void *) "FOO",3);
     if (reply = imap_send_literal (stream,tag,s,&st)) return reply;
     *(*s)++ = ')';		/* close glue */
-    if (reply = imap_send_sset (stream,tag,s,set,prefix,limit)) return reply;
+    if (reply = imap_send_sset (stream,tag,NIL,s,set,prefix,limit))
+      return reply;
     *(*s)++ = ')';		/* close second OR argument */
   }
   return NIL;
@@ -2883,6 +2918,7 @@ IMAPPARSEDREPLY *imap_send_sset (MAILSTREAM *stream,char *tag,char **s,
 /* IMAP send search list
  * Accepts: MAIL stream
  *	    reply tag
+ *	    base pointer if trimming needed
  *	    pointer to current position pointer of output bigbuf
  *	    name of search list
  *	    search list to output
@@ -2890,15 +2926,14 @@ IMAPPARSEDREPLY *imap_send_sset (MAILSTREAM *stream,char *tag,char **s,
  * Returns: NIL if success, error reply if error
  */
 
-IMAPPARSEDREPLY *imap_send_slist (MAILSTREAM *stream,char *tag,char **s,
-				  char *name,STRINGLIST *list,char *limit)
+IMAPPARSEDREPLY *imap_send_slist (MAILSTREAM *stream,char *tag,char *base,
+				  char **s,char *name,STRINGLIST *list,
+				  char *limit)
 {
-  char *t;
   IMAPPARSEDREPLY *reply;
   do {
-    *(*s)++ = ' ';		/* output name of search list */
-    for (t = name; *t; *(*s)++ = *t++);
-    *(*s)++ = ' ';
+    *s = imap_send_spgm_trim (base,*s,name);
+    base = NIL;			/* no longer need trimming */
     reply = imap_send_astring (stream,tag,s,&list->text,NIL,limit);
   }
   while (!reply && (list = list->next));
@@ -3854,7 +3889,6 @@ void imap_parse_header (MAILSTREAM *stream,ENVELOPE **env,SIZEDTEXT *hdr,
   if (*env) {			/* need to merge this header into envelope? */
     if (!(*env)->newsgroups) {	/* need Newsgroups? */
       (*env)->newsgroups = nenv->newsgroups;
-      (*env)->ngbogus = nenv->ngbogus;
       nenv->newsgroups = NIL;
     }
     if (!(*env)->followup_to) {	/* need Followup-To? */
@@ -3866,6 +3900,7 @@ void imap_parse_header (MAILSTREAM *stream,ENVELOPE **env,SIZEDTEXT *hdr,
       nenv->references = NIL;
     }
     mail_free_envelope (&nenv);
+    (*env)->imapenvonly = NIL;	/* have complete envelope now */
   }
 				/* otherwise set it to this envelope */
   else (*env = nenv)->incomplete = stl ? T : NIL;
@@ -3904,13 +3939,14 @@ void imap_parse_envelope (MAILSTREAM *stream,ENVELOPE **env,char **txtptr,
     if (oenv) {			/* need to merge old envelope? */
       (*env)->newsgroups = oenv->newsgroups;
       oenv->newsgroups = NIL;
-      (*env)->ngbogus = oenv->ngbogus;
       (*env)->followup_to = oenv->followup_to;
       oenv->followup_to = NIL;
       (*env)->references = oenv->references;
       oenv->references = NIL;
       mail_free_envelope(&oenv);/* free old envelope */
     }
+				/* have IMAP envelope components only */
+    else (*env)->imapenvonly = T;
     if (**txtptr != ')') {
       sprintf (LOCAL->tmp,"Junk at end of envelope: %.80s",*txtptr);
       mm_log (LOCAL->tmp,WARN);
@@ -4743,6 +4779,7 @@ void imap_parse_capabilities (MAILSTREAM *stream,char *t)
     else if (!compare_cstring (t,"ID")) LOCAL->cap.id = T;
     else if (!compare_cstring (t,"CHILDREN")) LOCAL->cap.children = T;
     else if (!compare_cstring (t,"MULTIAPPEND")) LOCAL->cap.multiappend = T;
+    else if (!compare_cstring (t,"UNSELECT")) LOCAL->cap.unselect = T;
     else if (!compare_cstring (t,"SCAN")) LOCAL->cap.scan = T;
     else if (((t[0] == 'S') || (t[0] == 's')) &&
 	     ((t[1] == 'O') || (t[1] == 'o')) &&

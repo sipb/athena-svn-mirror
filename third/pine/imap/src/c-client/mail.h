@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	22 November 1989
- * Last Edited:	2 April 2003
+ * Last Edited:	19 August 2003
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 1988-2003 University of Washington.
@@ -112,6 +112,10 @@
 #define SET_DEBUGSENSITIVE (long) 148
 #define GET_TCPDEBUG (long) 149
 #define SET_TCPDEBUG (long) 150
+#define GET_FREESTREAMSPAREP (long) 151
+#define SET_FREESTREAMSPAREP (long) 152
+#define GET_FREEBODYSPAREP (long) 153
+#define SET_FREEBODYSPAREP (long) 154
 
 	/* 2xx: environment */
 #define GET_USERNAME (long) 201
@@ -136,6 +140,8 @@
 #define SET_MAILSUBDIR 220
 #define GET_DISABLE822TZTEXT 221
 #define SET_DISABLE822TZTEXT 222
+#define GET_LIMITEDADVERTISE (long) 223
+#define SET_LIMITEDADVERTISE (long) 224
 	/* 3xx: TCP/IP */
 #define GET_OPENTIMEOUT (long) 300
 #define SET_OPENTIMEOUT (long) 301
@@ -165,6 +171,8 @@
 #define SET_SSLCERTIFICATEQUERY (long) 325
 #define GET_SSLFAILURE (long) 326
 #define SET_SSLFAILURE (long) 327
+#define GET_NEWSRCCANONHOST (long) 328
+#define SET_NEWSRCCANONHOST (long) 329
 
 	/* 4xx: network drivers */
 #define GET_MAXLOGINTRIALS (long) 400
@@ -305,6 +313,8 @@
 #define DR_NONEWMAIL (long) 0x4000
 				/* driver does not announce new mail when RO */
 #define DR_NONEWMAILRONLY (long) 0x8000
+				/* driver can be halfopen */
+#define DR_HALFOPEN (long) 0x10000
 
 
 /* Cache management function codes */
@@ -583,8 +593,8 @@ ADDRESS {
 /* Message envelope */
 
 typedef struct mail_envelope {
-  unsigned int ngbogus : 1;	/* newsgroups may be bogus */
   unsigned int incomplete : 1;	/* envelope may be incomplete */
+  unsigned int imapenvonly : 1;	/* envelope only has IMAP envelope */
   char *remail;			/* remail header if any */
   ADDRESS *return_path;		/* error return address */
   char *date;			/* message composition date string */
@@ -673,6 +683,7 @@ BODY {
     unsigned long bytes;	/* size of text in octets */
   } size;
   char *md5;			/* MD5 checksum */
+  void *sparep;			/* spare pointer reserved for main program */
 };
 
 
@@ -1011,6 +1022,7 @@ typedef struct mail_stream {
     } search;
   } private;
 			/* reserved for use by main program */
+  void *sparep;			/* spare pointer */
   unsigned int spare : 1;	/* first spare bit */
   unsigned int spare2 : 1;	/* second spare bit */
   unsigned int spare3 : 1;	/* third spare bit */
@@ -1154,10 +1166,14 @@ typedef struct send_stream {
 	unsigned int over : 1;	/* supports OVER */
 	unsigned int hdr : 1;	/* supports HDR */
 	unsigned int pat : 1;	/* supports PAT */
+				/* supports STARTTLS */
+	unsigned int starttls : 1;
 				/* server has MULTIDOMAIN */
 	unsigned int multidomain : 1;
 				/* supports AUTHINFO USER */
 	unsigned int authuser : 1;
+				/* supported authenticators */
+	unsigned int sasl : MAXAUTHENTICATORS;
       } ext;
     } nntp;
   } protocol;
@@ -1204,8 +1220,10 @@ typedef char *(*newsrcquery_t) (MAILSTREAM *stream,char *mulname,char *name);
 typedef char *(*userprompt_t) (void);
 typedef long (*append_t) (MAILSTREAM *stream,void *data,char **flags,
 			  char **date,STRING **message);
-typedef void (*freeenvelopesparep_t) (void **sparep);
 typedef void (*freeeltsparep_t) (void **sparep);
+typedef void (*freeenvelopesparep_t) (void **sparep);
+typedef void (*freebodysparep_t) (void **sparep);
+typedef void (*freestreamsparep_t) (void **sparep);
 typedef void *(*sslstart_t) (void *stream,char *host,unsigned long flags);
 typedef long (*sslcertificatequery_t) (char *reason,char *host,char *cert);
 typedef void (*sslfailure_t) (char *host,char *reason,unsigned long flags);
@@ -1551,7 +1569,8 @@ long mail_search_text (MAILSTREAM *stream,unsigned long msgno,char *section,
 long mail_search_body (MAILSTREAM *stream,unsigned long msgno,BODY *body,
 		       char *prefix,unsigned long section,long flags);
 long mail_search_string (SIZEDTEXT *s,char *charset,STRINGLIST **st);
-long mail_search_keyword (MAILSTREAM *stream,MESSAGECACHE *elt,STRINGLIST *st);
+long mail_search_keyword (MAILSTREAM *stream,MESSAGECACHE *elt,STRINGLIST *st,
+			  long flag);
 long mail_search_addr (ADDRESS *adr,STRINGLIST *st);
 char *mail_search_gets (readfn_t f,void *stream,unsigned long size,
 			GETS_DATA *md);

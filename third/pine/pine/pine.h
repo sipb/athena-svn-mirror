@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: pine.h,v 1.4 2003-05-01 01:32:14 ghudson Exp $
+  $Id: pine.h,v 1.5 2004-03-01 21:39:08 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -63,7 +63,7 @@
 #ifndef _PINE_INCLUDED
 #define _PINE_INCLUDED
 
-#define PINE_VERSION		"4.55L"
+#define PINE_VERSION		"4.58L"
 #define	PHONE_HOME_VERSION	"-count"
 #define	PHONE_HOME_HOST		"docserver.cac.washington.edu"
 
@@ -443,6 +443,7 @@ typedef enum {ListMode, SingleMode} TakeAddrScreenMode;
 				dmap = ((y >> 1) == dmap) ? y : 0;	\
 				dots += (dmap == 0x7 ? 1 : 0);		\
 			     }
+
 
 /*
  * Useful macro to test if current folder is a bboard type (meaning
@@ -916,6 +917,7 @@ typedef	enum {    V_PERSONAL_NAME = 0
 #define VAR_SAVE_BY_SENDER           vars[V_SAVE_BY_SENDER].current_val.p
 #define GLO_SAVE_BY_SENDER           vars[V_SAVE_BY_SENDER].global_val.p
 #define VAR_NNTP_SERVER              vars[V_NNTP_SERVER].current_val.l
+#define FIX_NNTP_SERVER              vars[V_NNTP_SERVER].fixed_val.l
 #ifdef	ENABLE_LDAP
 #define VAR_LDAP_SERVERS             vars[V_LDAP_SERVERS].current_val.l
 #endif
@@ -1096,6 +1098,7 @@ typedef enum {
 	F_PASS_CONTROL_CHARS,
 	F_SINGLE_FOLDER_LIST,
 	F_VERTICAL_FOLDER_LIST,
+	F_TAB_CHK_RECENT,
 	F_AUTO_REPLY_TO,
 	F_VERBOSE_POST,
 	F_FCC_ON_BOUNCE,
@@ -1159,6 +1162,8 @@ typedef enum {
 	F_ENABLE_TAKE_EXPORT,
 	F_QUELL_ATTACH_EXTRA_PROMPT,
 	F_FIX_BROKEN_LIST,
+	F_ENABLE_MULNEWSRCS,
+	F_PREDICT_NNTP_SERVER,
 	F_NEWS_CROSS_DELETE,
 	F_NEWS_CATCHUP,
 	F_QUELL_INTERNAL_MSG,
@@ -2066,8 +2071,21 @@ typedef struct col_description {
 typedef struct conversion_table {
     char          *from_charset;
     char          *to_charset;
+    int            quality;
     unsigned char *table;
 } CONV_TABLE;
+
+
+/* Conversion table quality of tranlation */
+#define	CV_NO_TRANSLATE_POSSIBLE	1	/* We don't know how to      */
+						/* translate this pair       */
+#define	CV_NO_TRANSLATE_NEEDED		2	/* Not necessary, no-op      */
+#define	CV_LOSES_SPECIAL_CHARS		3	/* Letters will translate    */
+						/* ok but some special chars */
+						/* may be lost               */
+#define	CV_LOSES_SOME_LETTERS		4	/* Some special chars and    */
+						/* some letters may be lost  */
+
 
 
 typedef long MsgNo;
@@ -2411,6 +2429,7 @@ struct key_menu {
 #define	MC_NO		796
 #define	MC_NOT		797
 #define	MC_COLLAPSE	798
+#define	MC_CHK_RECENT	799
 
 
 /*
@@ -2766,6 +2785,7 @@ typedef struct action_s {
     ADDRESS	*replyto;	/* value to set for Reply-To		*/
     char       **cstm;		/* custom headers			*/
     char       **smtp;		/* custom SMTP server for this role	*/
+    char       **nntp;		/* custom NNTP server for this role	*/
     char	*fcc;		/* value to set for Fcc			*/
     char	*litsig;	/* value to set Literal Signature	*/
     char	*sig;		/* value to set for Sig File		*/
@@ -3958,6 +3978,7 @@ void	    imap_flush_passwd_cache PROTO(());
 long	    pine_tcptimeout PROTO((long, long));
 long	    pine_sslcertquery PROTO((char *, char *, char *));
 void	    pine_sslfailure PROTO((char *, char *, unsigned long));
+char       *pine_newsrcquery PROTO((MAILSTREAM *, char *, char *));
 char	   *imap_referral PROTO((MAILSTREAM *, char *, long));
 long	    imap_proxycopy PROTO((MAILSTREAM *, char *, char *, long));
 void	   *pine_block_notify PROTO((int, void *));
@@ -4203,6 +4224,8 @@ char	   *dfilter PROTO((char *, STORE_S *, gf_io_t, FILTLIST_S *));
 char	   *df_static_trigger PROTO((BODY *, char *));
 char	   *detach_raw PROTO((MAILSTREAM *, long, char *, gf_io_t, int));
 void        date_str PROTO((char *, IndexColType, int, char *));
+char       *pine_mail_fetch_text PROTO((MAILSTREAM *, unsigned long,
+					char *, unsigned long *, long));
 
 /*--- mailview.c ---*/
 void	    mail_view_screen PROTO((struct pine *));
@@ -4406,6 +4429,7 @@ BODY	   *reply_body PROTO((MAILSTREAM *, ENVELOPE *, BODY *, long,
 char	   *reply_subject PROTO((char *, char *));
 void	    reply_delimiter PROTO((ENVELOPE *, ACTION_S *, gf_io_t));
 char	   *reply_in_reply_to PROTO((ENVELOPE *));
+char	   *reply_build_refs PROTO((ENVELOPE *));
 char	   *reply_quote_str PROTO((ENVELOPE *));
 char       *reply_quote_initials PROTO((char *));
 ADDRESS    *reply_cp_addr PROTO((struct pine *, long, char *, char *,
@@ -4578,7 +4602,7 @@ char	   *strrindex PROTO((char *, int));
 void	    sstrcpy PROTO((char **, char *));
 void	    sstrncpy PROTO((char **, char *, int));
 char	   *istrncpy PROTO((char *, char *, int));
-unsigned char *conversion_table PROTO((char *, char *));
+CONV_TABLE *conversion_table PROTO((char *, char *));
 char	   *month_abbrev PROTO((int));
 char	   *month_name PROTO((int));
 char	   *week_abbrev PROTO((int));

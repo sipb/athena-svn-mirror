@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: strings.c,v 1.2 2003-09-22 03:01:13 ghudson Exp $";
+static char rcsid[] = "$Id: strings.c,v 1.3 2004-03-01 21:39:10 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -3138,16 +3138,17 @@ rfc1522_decode(d, len, s, charset)
 	if(rv && F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
 	   && ps_global->VAR_CHAR_SET
 	   && strucmp(ps_global->VAR_CHAR_SET, cs)){
-	    unsigned char *tab;
+	    CONV_TABLE *ct;
 
 	    /*
 	     * If we know how to do the translation from cs
 	     * to VAR_CHAR_SET, do it in place.
 	     */
-	    if((tab = conversion_table(cs, ps_global->VAR_CHAR_SET)) != NULL){
+	    ct = conversion_table(cs, ps_global->VAR_CHAR_SET);
+	    if(ct && ct->table){
 		p = rv;
 		while(len-- > 0 && *p){
-		    *p = tab[*p];
+		    *p = ct->table[*p];
 		    p++;
 		}
 	    }
@@ -3440,19 +3441,23 @@ rfc1522_binary (src, srcl)
 /*
  * Returns a 256 character table to do the translation if feasible, else NULL.
  */
-unsigned char *
+CONV_TABLE *
 conversion_table(from_cs, to_cs)
     char *from_cs,
          *to_cs;
 {
-    int             translate_it = 0, i, j;
-    unsigned char  *p = NULL;
-    unsigned short *fromtab, *totab;
-    CONV_TABLE     *ct = NULL;
-    CHARSET        *from, *to;
+    int               quality = CV_NO_TRANSLATE_POSSIBLE, i, j;
+    unsigned char    *p = NULL;
+    unsigned short   *fromtab, *totab;
+    CONV_TABLE       *ct = NULL;
+    CHARSET          *from, *to;
+    static CONV_TABLE null_tab;
 
-    if(!(from_cs && *from_cs && to_cs && *to_cs) || !strucmp(from_cs, to_cs))
-      return(NULL);
+    if(!(from_cs && *from_cs && to_cs && *to_cs) || !strucmp(from_cs, to_cs)){
+	memset(&null_tab, 0, sizeof(null_tab));
+	null_tab.quality = CV_NO_TRANSLATE_NEEDED;
+	return(&null_tab);
+    }
 
     /*
      * First check to see if we are already set up for this pair of charsets.
@@ -3461,7 +3466,7 @@ conversion_table(from_cs, to_cs)
        && ct->from_charset && ct->to_charset
        && !strucmp(ct->from_charset, from_cs)
        && !strucmp(ct->to_charset, to_cs))
-      return(ct->table);
+      return(ct);
 
     /*
      * No such luck. Check to see if a translation is feasible.
@@ -3470,25 +3475,12 @@ conversion_table(from_cs, to_cs)
     to   = utf8_charset(to_cs);
 
     if(from && to){
-	if(from->type == to->type && from->tab == to->tab)
-	  translate_it = 0;		/* no translation is necessary */
+	if((from->type == to->type && from->tab == to->tab)
+	   || (from->type == CT_ASCII))
+	  quality = CV_NO_TRANSLATE_NEEDED;
 	else if(from->type == CT_1BYTE && to->type == CT_1BYTE)
-	  translate_it = (from->script & to->script) ? 2 : 1;
-    
-	/*
-	 * We're not exactly sure what to do with translate_it right now, but
-	 * it means:
-	 *
-	 *   translate_it == 0   no can do
-	 *                   1   can do but may lose some letters
-	 *                       and special characters
-	 *                   2   can do for all letters, may lose some
-	 *                       special characters
-	 *
-	 * Maybe we should use this to warn the user appropriately, but we
-	 * have to worry about cascading warnings. For now, we're just
-	 * translating the 1 and 2 cases.
-	 */
+	  quality = (from->script & to->script) ? CV_LOSES_SOME_LETTERS
+						     : CV_LOSES_SPECIAL_CHARS;
     }
     
 
@@ -3513,9 +3505,11 @@ conversion_table(from_cs, to_cs)
 
     ct->from_charset = cpystr(from_cs);
     ct->to_charset   = cpystr(to_cs);
+    ct->quality = quality;
 
-    if(!translate_it)
-      return(ct->table);	/* which is still NULL */
+    if(quality == CV_NO_TRANSLATE_POSSIBLE
+       || quality == CV_NO_TRANSLATE_NEEDED)
+      return(ct);
     
     fromtab = (unsigned short *) from->tab;
     totab   = (unsigned short *) to->tab;
@@ -3556,7 +3550,8 @@ conversion_table(from_cs, to_cs)
 	}
     }
 
-    return(ct->table);
+
+    return(ct);
 }
 
 
@@ -4132,7 +4127,7 @@ rfc2231_get_param(parms, name, charset, lang)
 			q_status_message1(SM_ORDER | SM_DING, 0, 3,
 			"Invalid attachment parameter segment number: %.25s",
 					 name);
-		      return(NULL);		/* Too many segments! */
+			return(NULL);		/* Too many segments! */
 		    }
 
 		    while(parms = parms->next)
@@ -4152,7 +4147,7 @@ rfc2231_get_param(parms, name, charset, lang)
 		      q_status_message1(SM_ORDER | SM_DING, 0, 3,
 			     "Missing attachment parameter sequence: %.25s",
 					 name);
-		    return(NULL);		/* hole! */
+		      return(NULL);		/* hole! */
 		  }
 
 		buf = (char *) fs_get((len + 1) * sizeof(char));
@@ -5146,6 +5141,8 @@ parse_pat(str)
 		  free_list_array(&pat->action->cstm);
 		if(pat->action->smtp)
 		  free_list_array(&pat->action->smtp);
+		if(pat->action->nntp)
+		  free_list_array(&pat->action->nntp);
 		if(pat->action->inherit_nick)
 		  fs_give((void **)&pat->action->inherit_nick);
 	    }
@@ -5506,6 +5503,20 @@ parse_action_slash(str, action)
 		commas++;
 
 	    action->smtp = parse_list(p, commas+1, 1, NULL);
+	    fs_give((void **)&p);
+	}
+    }
+    else if(!strncmp(str, "/NNTP=", 6)){
+	if((p = remove_pat_escapes(str+6)) != NULL){
+	    int   commas = 0;
+	    char *q;
+
+	    /* count elements in list */
+	    for(q = p; q && *q; q++)
+	      if(*q == ',')
+		commas++;
+
+	    action->nntp = parse_list(p, commas+1, 1, NULL);
 	    fs_give((void **)&p);
 	}
     }
@@ -6850,6 +6861,7 @@ data_for_patline(pat)
 		  *from_act = NULL, *replyto_act = NULL, *fcc_act = NULL,
 		  *sig_act = NULL, *nick = NULL, *templ_act = NULL,
 		  *litsig_act = NULL, *cstm_act = NULL, *smtp_act = NULL,
+                  *nntp_act = NULL,
 		  *repl_val = NULL, *forw_val = NULL, *comp_val = NULL,
 		  *incol_act = NULL, *inherit_nick = NULL, *score_act = NULL,
 		  *sort_act = NULL, *iform_act = NULL, *start_act = NULL,
@@ -7180,6 +7192,35 @@ data_for_patline(pat)
 		}
 	    }
 
+	    if(action->nntp){
+		size_t sz;
+		char **l, *q;
+
+		/* concatenate into string with commas first */
+		sz = 0;
+		for(l = action->nntp; l[0] && l[0][0]; l++)
+		  sz += strlen(l[0]) + 1;
+
+		if(sz){
+		    char *p;
+		    int   first_one = 1;
+
+		    q = (char *)fs_get(sz);
+		    memset(q, 0, sz);
+		    p = q;
+		    for(l = action->nntp; l[0] && l[0][0]; l++){
+			if(!first_one)
+			  sstrcpy(&p, ",");
+
+		        first_one = 0;
+			sstrcpy(&p, l[0]);
+		    }
+
+		    nntp_act = add_pat_escapes(q);
+		    fs_give((void **)&q);
+		}
+	    }
+
 	    if((f = role_repl_types(action->repl_type)) != NULL)
 	      repl_val = f->shortname;
 
@@ -7317,6 +7358,7 @@ data_for_patline(pat)
 			strlen(litsig_act ? litsig_act : "") +
 			strlen(cstm_act ? cstm_act : "") +
 			strlen(smtp_act ? smtp_act : "") +
+			strlen(nntp_act ? nntp_act : "") +
 			strlen(sig_act ? sig_act : "") +
 			strlen(incol_act ? incol_act : "") +
 			strlen(sort_act ? sort_act : "") +
@@ -7603,6 +7645,12 @@ data_for_patline(pat)
 	fs_give((void **)&smtp_act);
     }
 
+    if(nntp_act){
+	sstrcpy(&q, "/NNTP=");
+	sstrcpy(&q, nntp_act);
+	fs_give((void **)&nntp_act);
+    }
+
     if(repl_val){
 	sstrcpy(&q, "/RTYPE=");
 	sstrcpy(&q, repl_val);
@@ -7784,16 +7832,15 @@ match_pattern(patgrp, stream, searchset, section, get_score, no_srvr_search)
      * This is a match if the folder type matches above (that gets
      * us here), and there are no patterns to match against.
      *
-     * If there are patterns and no searchset, then there should be 
-     * no match. In any case, we don't want to call c-client with the
-     * null searchset.
+     * It is not totally clear what should be done in the case of an empty
+     * search set.  If there is search criteria, and someone does something
+     * that is not specific to any messages (composing from scratch,
+     * forwarding an attachment), then we can't be sure what a user would
+     * expect.  The original way was to just use the role, which we'll
+     * preserve here.
      */
-    if(!searchset){
-	if(trivial_patgrp(patgrp))
-	  return(1);
-	else
-	  return(0);
-    }
+    if(!searchset)
+      return(1);
 
     /*
      * change by sderr : match_pattern_folder will sometimes
@@ -9017,6 +9064,8 @@ free_action(action)
 	  free_list_array(&(*action)->cstm);
 	if((*action)->smtp)
 	  free_list_array(&(*action)->smtp);
+	if((*action)->nntp)
+	  free_list_array(&(*action)->nntp);
 	if((*action)->nick)
 	  fs_give((void **)&(*action)->nick);
 	if((*action)->inherit_nick)
@@ -9289,6 +9338,8 @@ copy_action(action)
 	  newaction->cstm = copy_list_array(action->cstm);
 	if(action->smtp)
 	  newaction->smtp = copy_list_array(action->smtp);
+	if(action->nntp)
+	  newaction->nntp = copy_list_array(action->nntp);
 	if(action->fcc)
 	  newaction->fcc = cpystr(action->fcc);
 	if(action->litsig)
@@ -9402,6 +9453,11 @@ combine_inherited_role(role)
 	  newrole->smtp = copy_list_array(role->smtp);
 	else if(inherit_role && inherit_role->smtp)
 	  newrole->smtp = copy_list_array(inherit_role->smtp);
+
+	if(role->nntp)
+	  newrole->nntp = copy_list_array(role->nntp);
+	else if(inherit_role && inherit_role->nntp)
+	  newrole->nntp = copy_list_array(inherit_role->nntp);
 
 	if(role->nick)
 	  newrole->nick = cpystr(role->nick);

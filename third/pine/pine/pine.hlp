@@ -1,4 +1,4 @@
-# $Id: pine.hlp,v 1.5 2003-05-01 01:32:14 ghudson Exp $
+# $Id: pine.hlp,v 1.6 2004-03-01 21:39:08 ghudson Exp $
 #
 #           T H E   P I N E    M E S S A G E   S Y S T E M
 #
@@ -177,10 +177,91 @@ version with GUI amenities for 32-bit flavors of Microsoft Windows (95,
 <H2>New in Pine <!--#echo var="PINE_VERSION"--></H2>
 
 Version <!--#echo var="PINE_VERSION"--> 
-addresses bugs found in previous releases and also introduces some
+is a maintenance release.
+
+<P>
+Bugs that have been addressed in this release include:
+<P>
+
+<UL>
+  <LI> Fixed crash when processing subjects containing &quot;[Fwd: ...]&quot;
+</UL>
+
+<P>
+Version 4.57 was never publically released, so the changes mentioned below
+are relevant as well.
+Version 4.57 addressed bugs found in previous releases.
+
+<P>
+Additions included:
+<P>
+
+<UL>
+  <LI> Work around a problem with the Netscape Collabra NNTP server implementation of the OVER command
+  <LI> Try to correct for mail clients that wrongly use RFC 2047 instead of RFC 2231 to encode their attachment filename parameters, which confuses attachment saving and viewing of filenames of non-ASCII character sets.
+</UL>
+
+<P>
+Bugs that were addressed in this release included:
+<P>
+
+<UL>
+  <LI> Fixed potential security problems caused by maliciously-formed RFC 2231 attachment parameters
+  <LI> Index lines displayed incorrectly for messages with empty subject lines in threads
+  <LI> Command-line argument -create_lu was broken in versions 4.55 and 4.56
+  <LI> Delivery Status Notifications were broken when attempting to do SMTP over TLS
+  <LI> Pine hangs when adding an Extra Header in rules with BdyText line at top of screen
+  <LI> Possible crash if quell-content-id feature is on and a message with more than one attachment is rejected by the SMTP server
+  <LI> When an attached filetype was set by matching the extension, the MIME charset wasn't being set
+  <LI> <a href="h_config_predict_nntp_server">predict-nntp-server</a> didn't preserve flagged options for nntp-server such as /ssl or /user
+  <LI> PC-Pine disconnected mailbox icon stays yellow even after reconnecting
+  <LI> PC-Pine with the Microsoft SSL bug was crashing when doing bounce, save, and full headers, which can now be prevented by setting the <A HREF="h_config_quell_ssl_largeblocks">quell-ssl-largeblocks</A> feature
+</UL>
+
+<P>
+Version 4.56
+addressed bugs found in previous releases with only a few new features.
+
+<P>
+Additions included:
+<P>
+
+<UL>
+  <LI> <A HREF="h_config_enable_mulnewsrcs">enable-multiple-newsrcs</A> makes Pine use a different newsrc file for each NNTP server
+  <LI> <A HREF="h_config_predict_nntp_server">predict-nntp-server</A> makes Pine use current NNTP server for posting
+  <LI> Now possible to set the outgoing NNTP server based on the Role being used
+  <LI> Option (<A HREF="h_config_tab_checks_recent">tab-checks-recent</A>) to have TAB display number of recent messages in a highlighted folder
+  <LI> For aggregate Saves there is now a default Save folder, which is derived from the first message being saved
+  <LI> If Unix Pine alternate compose editor returns nonzero, ask the user if they want to use the resulting file anyway
+  <LI> Environment variable <A HREF="h_news_config">default</A> values supported
+  <LI> Missing arguments to -f or -F are prompted for
+  <LI> Some speedup to subscribe to news when the whole list of groups is not needed
+</UL>
+
+<P>
+Bugs that were addressed in this release included:
+<P>
+
+<UL>
+  <LI> Mbox functionality was broken
+  <LI> Take to a Filter or other Rule crashed in 4.55
+  <LI> Crash when Sorting on an IMAP server which does not have SORT extension and some other related mystery crashes
+  <LI> Features which were changed in Setup/Config and then backed out by answering &quot;No&quot; would sometimes stay changed until quitting Pine
+  <LI> After UnCut in composer headers leave the cursor positioned at the end of the uncut text instead of at the beginning or end of the line
+  <LI> When Unix Pine forwarded address book entries as a Vcard attachment it added extra carriage returns which caused problems
+  <LI> Full header prevented the ability to view the ATTACHMENT INDEX screen
+  <LI> In MIME Digests, Newsgroups, References, and other headers were ignored when viewing or replying to messages inside the digest
+  <LI> PC-Pine installer could possibly present incorrect information for the mail server login name
+  <LI> Roles with search criteria weren't being used when composing a new message
+  <LI> For attachments of type application/octet-stream, place precedence of a mailcap entry over the file's extension
+</UL>
+
+<P>
+Version 4.55
+addressed bugs found in previous releases and also introduced some
 new functionality.
 <P>
-Additions include:
+Additions included:
 <P>
 <UL>
   <LI> Experimental <A HREF="h_maildrop">Mail Drop</A> setup is now possible using the &quot;#move&quot; <A HREF="h_folder_name_namespaces">Namespace</A>
@@ -201,7 +282,7 @@ Additions include:
   <LI> Added PC-Pine command line arguments &quot;-install&quot; and &quot;-registry clearsilent&quot; for use with the new PC-Pine installer.
 </UL>
 <P>
-Bugs that have been addressed in this release include:
+Bugs that were addressed in this release included:
 
 <P>
 <UL>
@@ -243,6 +324,7 @@ Bugs that have been addressed in this release include:
   <LI> Selecting using WhereIs ^X command did not respect auto-zoom-after-select
 </UL>
 <P>
+
 Version 4.53 was a bug-fix release.
 <P>
 No additional functionality was added.
@@ -410,6 +492,7 @@ Bugs addressed in the 4.50 release included:
   <LI> PC-Pine select and copy crash
   <LI> Fix quoting for PC-Pine command line arguments
 </UL>
+
 <P>
 Additional details on changes in this (and previous) versions of Pine
 may be found at the following URL:
@@ -443,6 +526,7 @@ URL:
 <P>
 Some topics of current interest include:
 <UL>
+<P><LI> <A HREF="h_maildrop">Mail Drops</A>
 <P><LI> Information on <A HREF="h_info_on_locking">Folder Locking</A>
 <P><LI> Information on <A HREF="h_info_on_mbox">Missing mail and the mbox driver</A>
 <P><LI> Information on <A HREF="h_folder_name_namespaces">Folder Namespaces</A>
@@ -734,6 +818,103 @@ located on a remote host:
 <BODY>
 <H1>Pine Configuration</H1>
 
+<H2>Using Environment Variables</H2>
+
+The values of Pine configuration options may include environment variables
+which are replaced by the value of the variable at the time Pine is run
+(and also at the time the config option is changed).
+The syntax to use environment variables is a subset of the common Unix
+shell dollar-syntax.
+For example, if
+
+<P><CENTER><SAMP>$VAR</SAMP></CENTER><P>
+
+appears in the value of a Pine configuration option it is looked up in the
+environent (using getenv(&quot;VAR&quot;)) and its
+looked-up value replaces the <SAMP>$VAR</SAMP> part of the option value.
+That sounds more complicated than it actually is.
+An example may make it clearer.
+Unfortunately, the way in which environment variables are set is OS-dependent 
+and command shell-dependent.
+In some Unix command shells you may use
+
+<P><CENTER><SAMP>PERSNAME="Fred Flintstone"</SAMP></CENTER><P>
+   <CENTER><SAMP>export PERSNAME</SAMP></CENTER><P>
+
+Now, if you use Pine's Setup/Config screen to set
+
+<P><CENTER><SAMP>personal-name=$PERSNAME</SAMP></CENTER><P>
+
+the <SAMP>$PERSNAME</SAMP> would be replaced by <SAMP>Fred Flintstone</SAMP>
+so that this would be equivalent to
+
+<P><CENTER><SAMP>personal-name=Fred Flintstone</SAMP></CENTER><P>
+
+Note, environment variable substitution happens after configuration
+options which are lists are split into the separate elements of the list,
+so a single environment variable can't contain a list of values.
+
+<P>
+The environment variable doesn't have to be the only thing
+after the equal sign.
+However, if the name of the variable is not at the end of the line or
+followed by a space (so that you can tell where the variable name ends),
+it must be enclosed in curly braces like
+
+<P><CENTER><SAMP>${VAR}</SAMP></CENTER><P>
+
+It is always ok to use the braces even if you don't need to.
+<P>
+It is also possible to set a default value for an environment variable.
+This default value will be used if the environment variable is not
+set (that is, if getenv(&quot;VAR&quot;) returns NULL).
+The syntax used to set a default value is
+
+<P><CENTER><SAMP>${VAR:-default value}</SAMP></CENTER><P>
+
+If the config file contains
+
+<P><CENTER><SAMP>personal-name=${VAR:-Fred Flintstone}</SAMP></CENTER><P>
+
+then when Pine is run <SAMP>VAR</SAMP> will be looked up in the environment.
+If <SAMP>VAR</SAMP> is found then <SAMP>personal-name</SAMP> will have
+the value that <SAMP>VAR</SAMP> was set to, otherwise,
+<SAMP>personal-name</SAMP> will be set to <SAMP>Fred Flintstone</SAMP>,
+the default value.
+
+<P>
+An example where an environment variable might be useful is the
+variable <SAMP>inbox-path</SAMP> in the global configuration file.
+Suppose most users used the server
+
+<P><CENTER><SAMP>imapserver.example.com</SAMP></CENTER><P>
+
+but that there were some exceptions who used
+
+<P><CENTER><SAMP>altimapserver.example.com</SAMP></CENTER><P>
+
+In this case, the system manager might include the following line in
+the systemwide default Pine configuration file
+
+<P><CENTER><SAMP>inbox-path=${IMAPSERVER:-imapserver.example.com}</SAMP></CENTER><P>
+
+For the exceptional users adding
+
+<P><CENTER><SAMP>IMAPSERVER=altimapserver.example.com</SAMP></CENTER><P>
+
+to their environment should work.
+<P>
+Another example might be the case where a user has to use a different
+SMTP server from work and from home.
+The setup might be something as simple as
+
+<P><CENTER><SAMP>smtp-server=$SMTP</SAMP></CENTER><P>
+
+or perhaps a default value could be given.
+Note that, as mentioned above, the variable <SAMP>SMTP</SAMP> cannot contain
+a list of SMTP servers.
+<P>
+
 <H2>Configuration precedence</H2>
 
 There are several levels of Pine configuration.  Configuration values at
@@ -779,6 +960,7 @@ the Setup/Config command.
 The other exception to the <EM>replace</EM> semantics happens when you
 use <A HREF="h_config_inheritance">configuration inheritance</A>
 for option lists.
+<P>
 
 <H2>File name defaults</H2>
 
@@ -859,6 +1041,7 @@ Unix Pine and PC-Pine:
  a[1-9]*        temporary (while Pine is running) addressbook files
 
 </PRE>
+<P>
 
 <H2>Mailcap files</H2>
 
@@ -870,6 +1053,7 @@ distribution.  It includes comments which explain the syntax you need to
 use for mailcap.  With the mailcap file, any program (mail readers,
 newsreaders, WWW clients) can use the same configuration for handling
 MIME-encoded data.
+<P>
 
 <H2>MIME-Types files</H2>
 
@@ -877,6 +1061,7 @@ Pine uses mime-types files (.mime.types or MIMETYPE) to determine
 what Content-Type to use for labeling an attached file, based on
 the file extension.  That is, this file provides a mapping between
 filename extensions and MIME content-types.
+<P>
 
 <H2>Environment variables</H2>
 
@@ -912,6 +1097,7 @@ Unix Pine uses the following environment variables:
 <DD>A <B>colon</B> delimited list of path names to mailcap files.</DD>
 </DL>
 <!--chtml if pinemode="os_windows"-->
+<P>
 <H2>Common PC-Pine Configuration Problems</H2>
 
 <H3>Configuration settings aren't being saved</H3>
@@ -1166,6 +1352,8 @@ after consulting the program's internal, context-sensitive help screens, here
 are additional information resources that you may find helpful:
 <P>
 <UL>
+  <LI> Pine's top-level <A HREF="main_menu_tx">MAIN MENU HELP</A>.<P>
+
   <LI> Pine's internal <A HREF="h_news">Release Notes</A>.  They contain a 
 listing of changes in Pine <!--#echo var="PINE_VERSION"-->
   since the last version, which may be useful for you to be aware of, 
@@ -1883,9 +2071,11 @@ possibilities is available.
 <H2><A NAME="pine_conf">Pine Configuration</A></H2>
 
 Unless it has been administratively disabled, the Setup command on the
-MAIN MENU has a &quot;Config&quot; subcommand which will allow you to modify
-Pine's behavior by setting or unsetting various features, defining folder
-collections, etc.  These settings are stored in your personal
+MAIN MENU has several subcommands which allow you to modify Pine's behavior.
+In particular, the &quot;Config&quot; subcommand has many features you may
+set or unset and many other configuration variables which may be set to change
+the way Pine works.
+These settings are stored in your personal
 &quot;pinerc&quot; configuration file (or, optionally, they may be stored
 <A HREF="h_config_remote_config">remotely</A>),
 but on shared systems these settings
@@ -2197,6 +2387,10 @@ reset all of the variables in the remote pinerc folder.
 <EM>nickname</EM>, <EM>fullname</EM>, <EM>nickname-with-lists-last</EM>,
 or <EM>fullname-with-lists-last</EM>.
 Only useful when creating global or shared address books.
+The settings of the features
+<A HREF="h_config_disable_collate">disable-setlocale-collate</A> and
+<A HREF="h_config_enable_ctype">enable-setlocale-ctype</A> have no
+effect when using the create_lu command.
 <P>
 
 <DT> -d <EM>debug-level</EM>
@@ -2648,6 +2842,7 @@ There are also additional details on
 <li><a href="h_config_enable_full_hdr_and_text">FEATURE: enable-full-header-and-text</a>
 <li><a href="h_config_enable_incoming">FEATURE: enable-incoming-folders</a>
 <li><a href="h_config_lame_list_mode">FEATURE: enable-lame-list-mode</a>
+<li><a href="h_config_enable_mulnewsrcs">FEATURE: enable-multiple-newsrcs</a>
 <li><a href="h_config_enable_view_addresses">FEATURE: enable-msg-view-addresses</a>
 <li><a href="h_config_enable_view_url">FEATURE: enable-msg-view-urls</a>
 <li><a href="h_config_enable_view_web_host">FEATURE: enable-msg-view-web-hostnames</a>
@@ -2668,6 +2863,7 @@ There are also additional details on
 <li><a href="h_config_add_ldap">FEATURE: ldap-result-to-addrbook-add</a>
 <li><a href="h_config_news_cross_deletes">FEATURE: news-deletes-across-groups</a>
 <li><a href="h_config_read_in_newsrc_order">FEATURE: news-read-in-newsrc-order</a>
+<li><a href="h_config_predict_nntp_server">FEATURE: predict-nntp-server</a>
 <li><a href="h_config_quell_attach_extra_prompt">FEATURE: quell-attachment-extra-prompt</a>
 <li><a href="h_config_quell_dead_letter">FEATURE: quell-dead-letter-on-cancel</a>
 <li><a href="h_config_quell_empty_dirs">FEATURE: quell-empty-directories</a>
@@ -2900,7 +3096,7 @@ The command line might look something like:
 <CENTER><SAMP>pine -p {my.imap.server}remote_pinerc</SAMP></CENTER>
 <P>
 If there are special characters in the command shell you use, you may need to
-quote the last argument (to protect the braces from the shell).
+quote the last argument (to protect the curly braces from the shell).
 The command might look like:
 <P>
 <CENTER><SAMP>pine -p &quot;{my.imap.server}remote_pinerc&quot;</SAMP></CENTER>
@@ -4819,24 +5015,26 @@ and Export
 (<!--chtml if pinemode="function_key"-->F12<!--chtml else-->E<!--chtml endif-->)
 are the two alternatives Pine gives you to keep a copy of the message
 you are reading. If you want to keep the message within Pine's email
-world, use &quot;save&quot;; if you want to use the message in another
-program, use &quot;export&quot;.
+world, use &quot;Save&quot;; if you want to use the message in another
+program, use &quot;Export&quot;.
 <P>
 
-When you save a message, it is put into an existing folder or into a new
+When you Save a message, it is put into an existing folder or into a new
 folder in one of your existing folder collections.  The message stays in
 email format and can be read by Pine again.  Pine may use a special format
 for its mail folders -- never edit a Pine folder by hand or with any
-program other than Pine.  The exact behavior of the save command can be
+program other than Pine.  The exact behavior of the Save command can be
 configured with the
 <A HREF="h_config_quote_all_froms">&quot;save-will-quote-leading-froms&quot;</A>,
 <A HREF="h_config_save_wont_delete">&quot;save-will-not-delete&quot;</A>,
 and 
 <A HREF="h_config_save_advances">&quot;save-will-advance&quot;</A>
 feature list settings.
+The name of the folder offered as a default is controlled by the option
+<A HREF="h_config_saved_msg_name_rule">&quot;saved-msg-name-rule&quot;</A>.
 <P>
 
-When you use export, the message is placed in a plain text file in your
+When you use Export, the message is placed in a plain text file in your
 home directory 
 <!--chtml if pinemode="running"-->
 (which, in the present configuration of your system, is
@@ -11266,7 +11464,7 @@ to see the available Editing and Navigation commands.
 If this entry is the first one in the To: line of an outgoing message,
 this field will be used for the Fcc (File Carbon Copy) instead of whatever
 you would normally get (which depends on which
-<A HREF="h_config_saved_msg_name_rule">"saved-msg-name-rule"</A>
+<A HREF="h_config_saved_msg_name_rule">&quot;saved-msg-name-rule&quot;</A>
 you've chosen). 
 <P>
 If this field consists of two double quotes (&quot;&quot;) that tells Pine
@@ -13824,6 +14022,60 @@ You may be able to simplify things by making the regular
 <A HREF="h_config_smtp_server">&quot;smtp-server&quot;</A>
 variable in the Setup/Config screen a list instead of using roles
 to set the SMTP server.
+
+<P>
+Look <A HREF="h_edit_nav_cmds">here</A>
+to see the available Editing and Navigation commands.
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+======= h_config_role_usenntp =======
+<HTML>
+<HEAD>
+<TITLE>Use NNTP Server Explained</TITLE>
+</HEAD>
+<BODY>
+<H1>Use NNTP Server Explained</H1>
+
+This describes part of the action to be taken if the Pattern for this
+role is a match.
+If this field has a value, then it will be used as the NNTP server
+to post to newsgroups when this role is being used (unless the NNTP server
+variable
+is set in the system-wide fixed configuration file).
+It has the same semantics as the
+<A HREF="h_config_nntp_server">&quot;nntp-server&quot;</A>
+variable in the Setup/Config screen.
+<P>
+This role setting can facilitate posting to the right nntp server for someone
+who reads news from various news sources.  The feature
+<A HREF="h_config_predict_nntp_server">&quot;predict-nntp-server&quot;</A>
+allows for setting the correct nntp-server without having to individually
+set a role for that nntp-server, but for greater flexibility, setting
+nntp servers for roles may be more desirable for some people.
+<P>
+If you are using this to post from home when you are at home and from
+work when you are at work you need to be careful about postponing messages.
+When you postpone a composition which was using a role with this variable
+set, the NNTP server list will be saved
+with the postponed composition.
+It cannot be changed later.
+Because of this, you may want to make this a list of NNTP servers
+with the preferred server at the front of the list and alternate servers
+later in the list.
+In your &quot;Home&quot; role you would put the home NNTP server first and
+the work NNTP server last.
+In your &quot;Work&quot; role you would put the work NNTP server first and
+the home NNTP server last.
+Then if you start a composition as &quot;Work&quot;, postpone
+it, and then later resume it from home the work NNTP server will fail but
+the home NNTP server later in the list will succeed.
+<P>
+You may be able to simplify things by making the regular
+<A HREF="h_config_nntp_server">&quot;nntp-server&quot;</A>
+variable in the Setup/Config screen a list instead of using roles
+to set the NNTP server.
 
 <P>
 Look <A HREF="h_edit_nav_cmds">here</A>
@@ -16444,8 +16696,9 @@ This option determines the default folder name for save-message operations
 <P>
 If this is not a path name, it will be in the default collection for saves.
 Any valid folder specification, local or IMAP, is allowed.  This default
-folder only applies when the <A HREF="h_config_saved_msg_name_rule">&quot;
-saved-msg-name-rule&quot;</A> doesn't override it.  
+folder only applies when the
+<A HREF="h_config_saved_msg_name_rule">&quot;saved-msg-name-rule&quot;</A>
+doesn't override it.  
 <!--chtml if pinemode="os_windows"-->
 PC-Pine default is &quot;SAVEMAIL&quot; (normally stored as SAVEMAIL.MTX).
 <!--chtml else-->
@@ -17068,11 +17321,13 @@ a message.
 The default option is &quot;default-folder&quot;, which is the folder
 called &quot;saved-messages&quot; in Unix Pine and
 &quot;savemail&quot; in PC-Pine.  To change the default folder, modify
-the variable called &quot;default-saved-msg-folder&quot;.
+the Pine option called
+<A HREF="h_config_def_save_folder">&quot;Default-Saved-Msg-Folder&quot;</A>.
 
 <P>
 Choosing any of the &quot;by-&quot; options cause Pine to attempt to
-get the chosen option's value for the message being saved.
+get the chosen option's value for the message being saved (or for the
+first message being saved if using an aggregrate save).
 For example, if &quot;by-from&quot; is chosen, Pine attempts to get the
 value of who the message came from (i.e. the from address).
 Pine then attempts to save the message to a folder matching that value.
@@ -20773,6 +21028,24 @@ for incomplete addresses you enter.<P>
 <UL>
 <LI><A HREF="h_finding_help">Finding more information and requesting help</A>
 </UL>
+<P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_tab_checks_recent ======
+<HTML>
+<HEAD>
+<TITLE>FEATURE: tab-checks-recent</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: tab-checks-recent</H1>
+
+In a FOLDER LIST screen, the TAB key usually just changes which
+folder is highlighted.
+If this feature is set, then the TAB key will cause the number of
+recent messages and the total number of messages in the highlighted folder
+to be displayed instead.
+
 <P>
 &lt;End of help on this topic&gt;
 </BODY>
@@ -25207,6 +25480,57 @@ when this feature is enabled.
 &lt;End of help on this topic&gt;
 </BODY>
 </HTML>
+====== h_config_enable_mulnewsrcs =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: enable-multiple-newsrcs</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: enable-multiple-newsrcs</H1>
+
+This feature makes it so Pine can use multiple newsrcs based on
+the news server being connected to, which allows for separate lists
+of subscribed-to newsgroups. When this feature is not set, there is only
+one list of newsgroups.
+<P>
+Under this feature, the name of a newsrc is based on the news server.
+For example, if your <a href="h_config_newsrc_path">newsrc-path</a>
+is set to &quot;.newsrc&quot;, and the news server you are connecting to is
+news.example.com, then the newsrc to be used is .newsrc-news.example.com.
+Setting this feature for the first time will allow for the option of using
+your old newsrc the next time you read news.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
+====== h_config_predict_nntp_server =====
+<HTML>
+<HEAD>
+<TITLE>FEATURE: predict-nntp-server</TITLE>
+</HEAD>
+<BODY>
+<H1>FEATURE: predict-nntp-server</H1>
+
+This feature allows Pine to assume that the open NNTP server at the
+time of composition is the NNTP server to which the message should be
+posted.  This is especially recommended when there are multiple News
+collections.  If this feature is not set, Pine will try to post to the first server in
+the <a href="h_config_nntp_server">nntp-server</a> variable.  Setting
+this feature also negates the need to add News collection servers to
+the nntp-server variable.
+<P>
+This feature can be especially handy when used in conjunction with
+<a href="h_config_enable_mulnewsrcs">enable-multiple-newsrcs</a>.
+<P>
+<UL>   
+<LI><A HREF="h_finding_help">Finding more information and requesting help</A>
+</UL><P>
+&lt;End of help on this topic&gt;
+</BODY>
+</HTML>
 ====== h_config_textplain_int =====
 <HTML>
 <HEAD>
@@ -25458,6 +25782,9 @@ space.  Please delete any sent-mail that you do not need.
 ========== h_select_sort ==========
 Select the order for sorting the index by typing the capitalized letter.
 Arrival is by arrival in your mailbox; Date is by time/day message was sent.
+========== h_no_F_arg ============
+Enter name of file to be opened.
+
 ========== h_sticky_personal_name ==========
 Type in your name as you want it to appear on outgoing email.  This entry
 will be saved into your Pine configuration file.
