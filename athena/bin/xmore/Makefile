@@ -5,8 +5,8 @@
 #      By:		Chris D. Peterson
 #     
 #      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v $
-#      $Author: epeisach $
-#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.5 1989-09-16 13:27:53 epeisach Exp $
+#      $Author: probe $
+#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.6 1989-10-15 04:38:25 probe Exp $
 #      
 #         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #     
@@ -34,7 +34,7 @@ MANSECT=1
 
 CFLAGS= -g -DATHENA -DHELPFILE=\"${LIBDIR}/xmore.help\" ${INCFLAGS}
 INCFLAGS=
-LIBES= -lXaw -lXt -lX
+LIBES= -lXaw -lXt -lXmu -lX11
 OBJS= globals.o help.o main.o pages.o ${XTKOBJS}
 XTKOBJS= ScrollByLine.o
 XTKFILES= ScrollByLine.c
