@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.5 1990-11-18 15:05:29 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.6 1990-11-26 10:06:49 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -31,14 +31,21 @@
 #include <nlist.h>
 #include <hesiod.h>
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.5 1990-11-18 15:05:29 mar Exp $";
+#ifndef __STDC__
+#define const
+extern void make_passwd();
+extern void make_group();
+#else
+extern void make_passwd(int,uid_t *, char (*)[16]);
+extern void make_group(int, uid_t *);
+#endif
+
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.6 1990-11-26 10:06:49 mar Exp $";
 
 #ifdef ultrix
 extern char *sys_errlist[];
 #endif
 
-extern void make_passwd(int,uid_t *, char (*)[16]);
-extern void make_group(int, uid_t *);
 struct nlist nl[] =
 {
 #define PROC 0
@@ -59,8 +66,13 @@ struct nlist nl[] =
 static const char *nologin_msg = "This machine is down for cleanup; try again in a few seconds.\n";
 static const char *nologin_fn  = "/etc/nologin";
 
+#ifdef __STDC__
 int main(int argc,char *argv[])
-
+#else
+int main(argc,argv)
+int argc;
+char *argv[];
+#endif
 {
   int fd, r, i, nuid;
   int status = 0;
@@ -93,7 +105,7 @@ int main(int argc,char *argv[])
 		  nologin_fn);
 	exit(2);
     } else {
-	fprintf("Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
+	fprintf(stderr, "Can't create %s, %s.\n", nologin_fn, sys_errlist[errno]);
 	exit(3);
     }
   }
@@ -206,7 +218,15 @@ int main(int argc,char *argv[])
 
 #define NPROCS 16
 
+#ifdef __STDC__
 int kill_uids(int nuid,uid_t *uids,int debug,int sig)
+#else
+int kill_uids(nuid, uids, debug, sig)
+int nuid;
+uid_t *uids;
+int debug;
+int sig;
+#endif
 {
   char *kernel = "/vmunix";
   struct proc p[NPROCS];
@@ -270,7 +290,14 @@ int kill_uids(int nuid,uid_t *uids,int debug,int sig)
 }
 
 
+#ifdef __STDC__
 void make_passwd(int nuid, uid_t *uids, char (*plist)[16])
+#else
+void make_passwd(nuid, uids, plist)
+int nuid;
+uid_t *uids;
+char (*plist)[];
+#endif
 {
   int fd = open("/etc/passwd.new",O_WRONLY | O_CREAT | O_TRUNC, 0644);
   int proto,r,i;
@@ -346,9 +373,13 @@ void make_passwd(int nuid, uid_t *uids, char (*plist)[16])
  * in the passwd file.
  */
 
+#ifdef __STDC__
+void make_group(int nuid, uid_t *uids)
+#else
 void make_group(nuid, uids)
 int nuid;
 uid_t *uids;
+#endif
 {
     int r, i, n, match;
     char buf[1024], *p, *p1, **ret;
