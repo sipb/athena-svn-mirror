@@ -71,7 +71,7 @@ int net(progname, num, names)
       return(-1);
     }
 
-  if (connect(s, (char *)&sin, sizeof (sin)) < 0) 
+  if (connect(s, (struct sockaddr *)&sin, sizeof (sin)) < 0) 
     {
       perror("connect");
       close(s);
