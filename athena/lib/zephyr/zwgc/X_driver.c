@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.10 1990-10-19 08:17:38 raeburn Exp $";
+static char rcsid_X_driver_c[] = "$Id: X_driver.c,v 1.11 1990-10-20 06:47:11 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -274,7 +274,7 @@ int open_display_and_load_resources(pargc, argv)
     /*
      * Get resources from the just opened display:
      */
-    if (dpy->zdefaults != NULL)
+    if (dpy->xdefaults != NULL)
 	temp_db2 = XrmGetStringDatabase(dpy->xdefaults);
     else
 	temp_db2 = NULL;
