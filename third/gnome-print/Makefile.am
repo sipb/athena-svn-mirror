@@ -1,6 +1,14 @@
-bin_PROGRAMS = gnome-font-install
+#bin_PROGRAMS = gnome-font-install
 
-SUBDIRS = intl po libgnomeprint afms profiles fonts tests
+INSTALLER_DIR = installer
+
+if LIBGPA
+LIBGPA_DIR = libgpa data
+else
+LIBGPA_DIR = 
+endif
+
+SUBDIRS = intl po $(LIBGPA_DIR) libgnomeprint afms profiles fonts tests  $(INSTALLER_DIR)
 
 INCLUDES = 			\
 	$(GTK_CFLAGS)		\
@@ -10,7 +18,7 @@ INCLUDES = 			\
 	@PRINT_INCLUDEDIR@	\
 	-DPROFILEDIR=\""$(profilesdir)"\"
 
-CPPFLAGS = \
+CPPFLAGS = @CPPFLAGS@  \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-DBINDIR=\""$(bindir)"\"	\
 	-DDATADIR=\""$(datadir)"\"
@@ -52,12 +60,13 @@ printConf.sh: printConf.sh.in Makefile
 	      < $(srcdir)/printConf.sh.in > printConf.tmp \
 	  && mv printConf.tmp printConf.sh
 
-gnome_font_install_SOURCES = gnome-font-install.c
-gnome_font_install_LDADD =	\
-	$(GNOME_LIBDIR)		\
-	$(GNOME_LIBS)		\
-	$(GNOME_XML_LIB)	\
-	$(INTLLIBS)
+#gnome_font_install_SOURCES = gnome-font-install.c
+#gnome_font_install_LDADD =	\
+#	$(GNOME_LIBDIR)		\
+#	$(GNOME_LIBS)		\
+#	$(GNOME_XML_LIB)	\
+#	$(INTLLIBS)
 
-install-data-local: gnome-font-install
-	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(DESTDIR)$(datadir) $(srcdir)
+#install-data-local: gnome-font-install
+#	$(PERL) $(srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(srcdir)
+#
