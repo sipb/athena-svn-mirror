@@ -130,17 +130,17 @@ INCLUDES = -I. -I$(top_srcdir)
 
 noinst_HEADERS = findme.h poptint.h system.h
 
-noinst_PROGRAMS = test1 test2 test3
-test1_SOURCES = test1.c
-test1_LDFLAGS = -all-static
-test1_LDADD = $(lib_LTLIBRARIES)
-test2_SOURCES = test2.c
-test2_LDFLAGS = -all-static
-test2_LDADD = $(lib_LTLIBRARIES)
-test3_SOURCES = test3.c
-test3_LDFLAGS = -all-static
-test3_LDADD = $(lib_LTLIBRARIES)
 
+#noinst_PROGRAMS = test1 test2 test3
+#test1_SOURCES = test1.c
+#test1_LDFLAGS = -all-static
+#test1_LDADD = $(lib_LTLIBRARIES)
+#test2_SOURCES = test2.c
+#test2_LDFLAGS = -all-static
+#test2_LDADD = $(lib_LTLIBRARIES)
+#test3_SOURCES = test3.c
+#test3_LDFLAGS = -all-static
+#test3_LDADD = $(lib_LTLIBRARIES)
 noinst_SCRIPTS = testit.sh
 
 TESTS_ENVIRONMENT = \
@@ -168,18 +168,6 @@ libpopt_la_LIBADD =
 am_libpopt_la_OBJECTS = popt.lo findme.lo poptparse.lo poptconfig.lo \
 	popthelp.lo
 libpopt_la_OBJECTS = $(am_libpopt_la_OBJECTS)
-noinst_PROGRAMS = test1$(EXEEXT) test2$(EXEEXT) test3$(EXEEXT)
-PROGRAMS = $(noinst_PROGRAMS)
-
-am_test1_OBJECTS = test1.$(OBJEXT)
-test1_OBJECTS = $(am_test1_OBJECTS)
-test1_DEPENDENCIES = libpopt.la
-am_test2_OBJECTS = test2.$(OBJEXT)
-test2_OBJECTS = $(am_test2_OBJECTS)
-test2_DEPENDENCIES = libpopt.la
-am_test3_OBJECTS = test3.$(OBJEXT)
-test3_OBJECTS = $(am_test3_OBJECTS)
-test3_DEPENDENCIES = libpopt.la
 SCRIPTS = $(noinst_SCRIPTS)
 
 
@@ -192,8 +180,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/findme.Plo ./$(DEPDIR)/popt.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/poptconfig.Plo ./$(DEPDIR)/popthelp.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/poptparse.Plo ./$(DEPDIR)/test1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/test2.Po ./$(DEPDIR)/test3.Po
+@AMDEP_TRUE@	./$(DEPDIR)/poptparse.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -202,8 +189,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(libpopt_la_SOURCES) $(test1_SOURCES) $(test2_SOURCES) \
-	$(test3_SOURCES)
+DIST_SOURCES = $(libpopt_la_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
@@ -219,7 +205,7 @@ DIST_COMMON = README $(include_HEADERS) $(noinst_HEADERS) ABOUT-NLS \
 	config.guess config.h.in config.sub configure configure.in \
 	depcomp install-sh ltmain.sh missing mkinstalldirs
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libpopt_la_SOURCES) $(test1_SOURCES) $(test2_SOURCES) $(test3_SOURCES)
+SOURCES = $(libpopt_la_SOURCES)
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -294,22 +280,6 @@ clean-libLTLIBRARIES:
 libpopt.la: $(libpopt_la_OBJECTS) $(libpopt_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(libpopt_la_LDFLAGS) $(libpopt_la_OBJECTS) $(libpopt_la_LIBADD) $(LIBS)
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
-	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
-	  echo " rm -f $$p $$f"; \
-	  rm -f $$p $$f ; \
-	done
-test1$(EXEEXT): $(test1_OBJECTS) $(test1_DEPENDENCIES) 
-	@rm -f test1$(EXEEXT)
-	$(LINK) $(test1_LDFLAGS) $(test1_OBJECTS) $(test1_LDADD) $(LIBS)
-test2$(EXEEXT): $(test2_OBJECTS) $(test2_DEPENDENCIES) 
-	@rm -f test2$(EXEEXT)
-	$(LINK) $(test2_LDFLAGS) $(test2_OBJECTS) $(test2_LDADD) $(LIBS)
-test3$(EXEEXT): $(test3_OBJECTS) $(test3_DEPENDENCIES) 
-	@rm -f test3$(EXEEXT)
-	$(LINK) $(test3_LDFLAGS) $(test3_OBJECTS) $(test3_LDADD) $(LIBS)
-
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
 
@@ -321,9 +291,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poptconfig.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/popthelp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poptparse.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test1.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test2.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test3.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -674,8 +641,7 @@ distcleancheck: distclean
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(MANS) \
-		$(HEADERS) config.h
+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(HEADERS) config.h
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(man3dir) $(DESTDIR)$(includedir)
@@ -707,7 +673,7 @@ maintainer-clean-generic:
 clean: clean-recursive
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS mostlyclean-am
+	mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -752,18 +718,18 @@ uninstall-man: uninstall-man3
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-TESTS check-am \
 	clean clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstPROGRAMS clean-recursive dist dist-all dist-gzip \
-	distcheck distclean distclean-compile distclean-depend \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-recursive distclean-tags distcleancheck distdir dvi \
-	dvi-am dvi-recursive info info-am info-recursive install \
-	install-am install-data install-data-am install-data-recursive \
-	install-exec install-exec-am install-exec-recursive \
-	install-includeHEADERS install-info install-info-am \
-	install-info-recursive install-libLTLIBRARIES install-man \
-	install-man3 install-recursive install-strip installcheck \
-	installcheck-am installdirs installdirs-am \
-	installdirs-recursive maintainer-clean maintainer-clean-generic \
+	clean-recursive dist dist-all dist-gzip distcheck distclean \
+	distclean-compile distclean-depend distclean-generic \
+	distclean-hdr distclean-libtool distclean-recursive \
+	distclean-tags distcleancheck distdir dvi dvi-am dvi-recursive \
+	info info-am info-recursive install install-am install-data \
+	install-data-am install-data-recursive install-exec \
+	install-exec-am install-exec-recursive install-includeHEADERS \
+	install-info install-info-am install-info-recursive \
+	install-libLTLIBRARIES install-man install-man3 \
+	install-recursive install-strip installcheck installcheck-am \
+	installdirs installdirs-am installdirs-recursive \
+	maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
 	tags tags-recursive uninstall uninstall-am \
