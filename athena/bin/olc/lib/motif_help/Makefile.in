@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-03-06 16:48:38 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1999-03-22 16:44:00 ghudson Exp $
 #
 # Copyright (C) 1999 by the Massachusetts Institute of Technology.
 # For copying and distribution information, see the file "mit-copyright.h".
@@ -22,5 +22,5 @@ all clean distclean depend.in:
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${MOTIF_HELP_DIR}
-	foreach i in $(MOTIF_HELP_FILES); do \
+	for i in $(MOTIF_HELP_FILES); do \
 	    ${INSTALL} -m 444 ${srcdir}/$$i ${DESTDIR}${MOTIF_HELP_DIR}; done
