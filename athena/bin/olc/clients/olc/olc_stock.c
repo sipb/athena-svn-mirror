@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.20 1992-02-14 19:27:26 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.21 1992-02-14 21:23:15 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.20 1992-02-14 19:27:26 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.21 1992-02-14 21:23:15 lwvanels Exp $";
 #endif
 #endif
 
@@ -184,13 +184,15 @@ do_olc_stock(arguments)
     case NOT_CONNECTED:
       if(string_eq(Request.target.username, Request.requester.username))
 	{
-	  printf("You are not connected to a consultant but the next one\n");
+	  printf("You are not connected to a %s but the next one\n",
+		 DEFAULT_CONSULTANT_TITLE);
 	  printf("to answer your question will receive your message.\n");
 	}
       else
 	{
-	  printf("%s [%d] is not connected to a consultant but the next one\n",
-		 Request.target.username,Request.target.instance);
+	  printf("%s [%d] is not connected to a %s but the next one\n",
+		 Request.target.username,Request.target.instance,
+		 DEFAULT_CONSULTANT_TITLE); 
 	  printf("to answer %s's question will receive your message.\n",
 		 Request.target.username);
 	}
