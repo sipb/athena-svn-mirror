@@ -1,5 +1,4 @@
-*loggingOn:	True
-*logfile:	/afs/athena.mit.edu/user/s/sao/scores/lucy.log
+*loggingOn:	False
 *BitmapFilePath:  /usr/athena/lib/X11/bitmaps:/usr/lib/X11/bitmaps:/usr/include/X11/bitmaps
 
 *font:					fixed
