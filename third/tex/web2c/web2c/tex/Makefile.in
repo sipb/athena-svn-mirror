@@ -122,8 +122,16 @@ fmts: $(fmts)
 # 4) a ``preload'' file, (I use preload.ori),
 # 5) and a ``basefont'' file.  (I use basefont).
 # How automatic, huh?  I can hardly wait for LaTeX 3.
+
+# Gross manual build procedures require gross hacks.
 amslatex.fmt: initex tex.pool
+	rm -f lfonts.tex fontdef.tex preload.tex xxxlfont.sty
+	cp ../../../lib/tex/macros/amslatex/fontsel/lfonts.new lfonts.tex
+	cp ../../../lib/tex/macros/amslatex/inputs/fontdef.ams fontdef.tex
+	cp ../../../lib/tex/macros/amslatex/fontsel/preload.ori preload.tex
+	cp ../../../lib/tex/macros/amslatex/fontsel/basefont.tex xxxlfont.sty
 	$(initex) lplain \\dump
+	rm -f lfonts.tex fontdef.tex preload.tex xxxlfont.sty
 	mv lplain.fmt amslatex.fmt
 	mv lplain.log amslatex.log
 
