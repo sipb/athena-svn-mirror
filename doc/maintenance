@@ -377,7 +377,7 @@ release are:
 	  changes you've made.  You can use the build.sh script to
 	  build and install specific packages, or you can use the
 	  do.sh script to build the package and then install specific
-	  files (cutting and pasting from the output of "make -n
+	  files (cutting and pasting from the output of "gmake -n
 	  install DESTDIR=/srvd" is the safest way); updating the
 	  fewest number of files is preferrable.  Remember to install
 	  the version script.
