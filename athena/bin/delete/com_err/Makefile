@@ -4,9 +4,11 @@
 # Copyright 1987, 1989 MIT Student Information Processing Board
 # For copyright info, see mit-sipb-copyright.h.
 #
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.2 1989-11-07 18:56:09 jik Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/Makefile,v 1.3 1990-06-07 21:48:26 jik Exp $
 #	$Locker:  $
 #
+
+RANLIB= ranlib
 
 CFLAGS=	-O
 LINTFLAGS= -uhvpb
@@ -88,9 +90,9 @@ install: all
 	install -c -m 444 mit-sipb-copyright.h \
 				${DESTDIR}${INCDIR}/mit-sipb-copyright.h
 	install -c libcom_err.a ${DESTDIR}${LIBDIR}/libcom_err.a
-	ranlib ${DESTDIR}${LIBDIR}/libcom_err.a
+	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err.a
 	install -c libcom_err_p.a ${DESTDIR}${LIBDIR}/libcom_err_p.a
-	ranlib ${DESTDIR}${LIBDIR}/libcom_err_p.a
+	${RANLIB} ${DESTDIR}${LIBDIR}/libcom_err_p.a
 	install -c com_err.texinfo ${DESTDIR}${DOCDIR}/com_err.texinfo
 	install -c com_err.3 ${DESTDIR}/usr/man/man3/com_err.3
 	install -c compile_et.1 ${DESTDIR}/usr/man/man1/compile_et.1
@@ -102,11 +104,11 @@ TAGS:	et_name.c error_message.c compile_et.c error_table.c \
 
 libcom_err.a:	$(LIBOBJS)
 	ar cruv libcom_err.a $(LIBOBJS)
-	ranlib libcom_err.a
+	${RANLIB} libcom_err.a
 
 libcom_err_p.a:	$(LIBOBJS)
 	(cd profiled; ar uv ../libcom_err_p.a $(LIBOBJS); \
-		ranlib ../libcom_err_p.a)
+		${RANLIB} ../libcom_err_p.a)
 
 libcom_err.o:	$(LIBOBJS)
 	ld -r -s -o libcom_err.o $(LIBOBJS)
