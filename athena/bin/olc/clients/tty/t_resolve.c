@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.15 1992-02-14 21:22:01 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.16 1992-05-01 12:18:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.15 1992-02-14 21:22:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.16 1992-05-01 12:18:28 lwvanels Exp $";
 #endif
 #endif
 
@@ -86,7 +86,7 @@ t_done(Request,title,check)
 		if(*buf != 'y')
 		  return(SUCCESS);
 	      }
-	    printf("Using this command means that the %s has satisfactorly answered\n",DEFAULT_CONSULTANT_TITLE);
+	    printf("Using this command means that the %s has satisfactorily answered\n",DEFAULT_CONSULTANT_TITLE);
 	    printf("your question.  If this is not the case, you can exit using the 'quit' command,\n");
 	    printf("and %s will save your question until a %s can answer it.  If you\n",
                     OLC_SERVICE_NAME,DEFAULT_CONSULTANT_TITLE);
