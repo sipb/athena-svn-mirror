@@ -14,8 +14,8 @@ LIB_SUBDIRS=.
 INSTALLFILE = cp
 
 LINTFLAGS=-uhvb 
-LINTFILES= error_message.c et_name.c init_et.c com_err.c
-LIBOBJS= error_message.o et_name.o init_et.o com_err.o
+LINTFILES= error_message.c et_name.c init_et.c com_err.c add_to_error_table.c
+LIBOBJS= error_message.o et_name.o init_et.o com_err.o add_to_error_table.o
 # for et_lex.lex.c include in error_table.y
 LOCALINCLUDE=-I. -I$(srcdir)
 
