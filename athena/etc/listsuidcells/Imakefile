@@ -5,9 +5,8 @@ OSLIBS=-lcompat
 OSLIBS=-lsocket -lnsl -lbsd
 #endif
 
-CFLAGS=-I${AFSDIR}/include
-LDDEFS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs
-LDLIBS=-lsys -lrx -llwp ${OSLIBS}
+DEFINES=-I${AFSDIR}/include
+LIBS=-L${AFSDIR}/lib -L${AFSDIR}/lib/afs -lsys -lrx -llwp ${OSLIBS}
 
-SimpleProgram(listsuidcells, listsuidcells.o,,/etc/athena/)
+SimpleProgram(listsuidcells, listsuidcells.o,${LIBS},/etc/athena/)
 
