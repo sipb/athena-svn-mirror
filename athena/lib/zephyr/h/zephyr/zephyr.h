@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.8 1987-06-24 04:52:18 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.9 1987-06-24 09:33:09 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -126,6 +126,8 @@ extern int errno;
 #define CLIENT_SUBSCRIBE	"SUBSCRIBE"
 #define CLIENT_UNSUBSCRIBE	"UNSUBSCRIBE"
 #define CLIENT_CANCELSUB	"CLEARSUB"
+
+#define	HM_CLASS		"HM_CTL"
 #define ZEPHYR_CTL_HM		"HM"
 #define HM_BOOT			"BOOT"
 #define ZEPHYR_CTL_SERVER	"SERVER"
