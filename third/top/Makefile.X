@@ -101,9 +101,11 @@ veryclean: clean
 install: top top.1 install-top install-$(MANSTY)
 
 install-top:
+	mkdir -p ${DESTDIR}$(BINDIR)
 	$(INSTALL) -o $(OWNER) -m $(MODE) -g $(GROUP) top ${DESTDIR}$(BINDIR)
 
 install-man:
+	mkdir -p ${DESTDIR}$(MANDIR)
 	$(INSTALL) top.1 ${DESTDIR}$(MANDIR)/top.$(MANEXT)
 
 install-catman:
