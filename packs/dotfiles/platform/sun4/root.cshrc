@@ -1,25 +1,16 @@
-#
-# aliases
-#
-alias	cd	'set old=$cwd; chdir \!*'
-alias	back	'set back=$old; set old=$cwd; cd $back; unset back; dirs'
-alias	j	jobs -l
-#
-# set variables
-#
-setenv TZ US/Eastern
-set history=40
-set cdpath=(/)
-set path=(/srvd/patch /usr/athena/bin /etc/athena /usr/sbin /sbin /bin/athena /usr/bin /usr/ccs/bin /usr/athena/etc /usr/ucb /usr/openwin/bin /etc)
+# $Id: root.cshrc,v 1.6 1997-12-28 17:49:17 ghudson Exp $
+
+set path=( /srvd/patch /usr/athena/bin /etc/athena /usr/sbin /sbin \
+	   /bin/athena /usr/bin /usr/ccs/bin /usr/athena/etc /usr/ucb \
+	   /usr/openwin/bin /etc)
 if ($?prompt) then
 	set prompt="`uname -n`# "
 endif
-#
+
 # source user's .cshrc if WHO variable is set
-#
 if ($?WHO) then
 	if ( -r ~$WHO/.cshrc ) then
 		source ~$WHO/.cshrc
 	endif
 endif
-umask 2
+umask 022
