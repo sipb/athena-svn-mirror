@@ -2,7 +2,7 @@
 gnome-vfs-utils
 
 <!-- ##### SECTION Short_Description ##### -->
-
+various utilities functions to manipulate uris
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -94,6 +94,44 @@ gnome-vfs-utils
 </para>
 
 @path: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_from_input ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_from_input_with_dirs ##### -->
+<para>
+
+</para>
+
+@uri: 
+@dirs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_from_shell_arg ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_full_from_relative ##### -->
+<para>
+
+</para>
+
+@base_uri: 
+@relative_uri: 
 @Returns: 
 
 

@@ -1,12 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-ssl">
+<refentry id="gnome-vfs-20-gnome-vfs-ssl">
 <refmeta>
-<refentrytitle>gnome-vfs-ssl</refentrytitle>
+<refentrytitle>SSL support functions</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>gnome-vfs-ssl</refname><refpurpose></refpurpose>
+<refname>SSL support functions</refname><refpurpose>Functions to send and receive encrypted data over a socket.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -17,22 +17,32 @@
 
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-ssl-enabled">gnome_vfs_ssl_enabled</link>           (void);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-ssl-create">gnome_vfs_ssl_create</link>         (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
-                                             const char *host,
-                                             unsigned int port);
+                                             const <link linkend="char">char</link> *host,
+                                             unsigned <link linkend="int">int</link> port,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-ssl-create-from-fd">gnome_vfs_ssl_create_from_fd</link> (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
-                                             <link linkend="gint">gint</link> fd);
+                                             <link linkend="gint">gint</link> fd,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-ssl-read">gnome_vfs_ssl_read</link>           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-ssl-write">gnome_vfs_ssl_write</link>          (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);
-void        <link linkend="gnome-vfs-ssl-destroy">gnome_vfs_ssl_destroy</link>           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl);
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-ssl-destroy">gnome_vfs_ssl_destroy</link>           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* <link linkend="gnome-vfs-ssl-to-socket">gnome_vfs_ssl_to_socket</link>     (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-ssl-set-timeout">gnome_vfs_ssl_set_timeout</link>    (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+                                             <link linkend="GTimeVal">GTimeVal</link> *timeout,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -51,7 +61,7 @@ void        <link linkend="gnome-vfs-ssl-destroy">gnome_vfs_ssl_destroy</link>  
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-enabled"/>gnome_vfs_ssl_enabled ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_ssl_enabled           (void);</programlisting>
+<indexterm><primary>gnome_vfs_ssl_enabled</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_ssl_enabled           (void);</programlisting>
 <para>
 Checks whether GnomeVFS was compiled with SSL support.</para>
 <para>
@@ -63,9 +73,10 @@ otherwise <literal>FALSE</literal>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-create"/>gnome_vfs_ssl_create ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_create         (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
-                                             const char *host,
-                                             unsigned int port);</programlisting>
+<indexterm><primary>gnome_vfs_ssl_create</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_create         (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
+                                             const <link linkend="char">char</link> *host,
+                                             unsigned <link linkend="int">int</link> port,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Creates an SSL socket connection at <parameter>handle_return</parameter> to <parameter>host</parameter> using
 port <parameter>port</parameter>.</para>
@@ -77,18 +88,22 @@ port <parameter>port</parameter>.</para>
 contain an allocated GnomeVFSSSL object on return.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>host</parameter>&nbsp;:</term>
-<listitem><simpara> string indicating the host to establish an SSL connection with
+<listitem><simpara> string indicating the host to establish an SSL connection with.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>port</parameter>&nbsp;:</term>
-<listitem><simpara> the port number to connect to
+<listitem><simpara> the port number to connect to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> handle allowing cancellation of the operation.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-create-from-fd"/>gnome_vfs_ssl_create_from_fd ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_create_from_fd (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
-                                             <link linkend="gint">gint</link> fd);</programlisting>
+<indexterm><primary>gnome_vfs_ssl_create_from_fd</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_create_from_fd (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> **handle_return,
+                                             <link linkend="gint">gint</link> fd,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Try to establish an SSL connection over the file descriptor <parameter>fd</parameter>.</para>
 <para>
@@ -99,17 +114,21 @@ Try to establish an SSL connection over the file descriptor <parameter>fd</param
 contain an allocated GnomeVFSSSL object on return.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>fd</parameter>&nbsp;:</term>
-<listitem><simpara> file descriptior to try and establish an SSL connection over
+<listitem><simpara> file descriptior to try and establish an SSL connection over.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> handle allowing cancellation of the operation.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-read"/>gnome_vfs_ssl_read ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_read           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+<indexterm><primary>gnome_vfs_ssl_read</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_read           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);</programlisting>
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Read <parameter>bytes</parameter> bytes of data from the SSL socket <parameter>ssl</parameter> into <parameter>buffer</parameter>.</para>
 <para>
@@ -119,24 +138,28 @@ Read <parameter>bytes</parameter> bytes of data from the SSL socket <parameter>s
 <listitem><simpara> SSL socket to read data from
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
-<listitem><simpara> allocated buffer of at least <parameter>bytes</parameter> bytes to be read into
+<listitem><simpara> allocated buffer of at least <parameter>bytes</parameter> bytes to be read into.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes</parameter>&nbsp;:</term>
-<listitem><simpara> number of bytes to read from <parameter>ssl</parameter> into <parameter>buffer</parameter>
+<listitem><simpara> number of bytes to read from <parameter>ssl</parameter> into <parameter>buffer</parameter>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_read</parameter>&nbsp;:</term>
 <listitem><simpara> pointer to a GnomeVFSFileSize, will contain
 the number of bytes actually read from the socket on return.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> handle allowing cancellation of the operation.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-write"/>gnome_vfs_ssl_write ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_write          (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+<indexterm><primary>gnome_vfs_ssl_write</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_write          (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);</programlisting>
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Write <parameter>bytes</parameter> bytes of data from <parameter>buffer</parameter> to <parameter>ssl</parameter>.</para>
 <para>
@@ -153,14 +176,18 @@ Write <parameter>bytes</parameter> bytes of data from <parameter>buffer</paramet
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_written</parameter>&nbsp;:</term>
 <listitem><simpara> pointer to a GnomeVFSFileSize, will contain
-the number of bytes actually written to the socket on return.
+the number of bytes actually written to the socket on return
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> handle allowing cancellation of the operation
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-destroy"/>gnome_vfs_ssl_destroy ()</title>
-<programlisting>void        gnome_vfs_ssl_destroy           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl);</programlisting>
+<indexterm><primary>gnome_vfs_ssl_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_ssl_destroy           (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Free resources used by <parameter>ssl</parameter> and close the connection.</para>
 <para>
@@ -169,10 +196,13 @@ Free resources used by <parameter>ssl</parameter> and close the connection.</par
 <varlistentry><term><parameter>ssl</parameter>&nbsp;:</term>
 <listitem><simpara> SSL socket to be closed and destroyed
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> handle allowing cancellation of the operation
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-ssl-to-socket"/>gnome_vfs_ssl_to_socket ()</title>
-<programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_ssl_to_socket     (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl);</programlisting>
+<indexterm><primary>gnome_vfs_ssl_to_socket</primary></indexterm><programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_ssl_to_socket     (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl);</programlisting>
 <para>
 Wrapper an SSL socket inside a standard GnomeVFSSocket.</para>
 <para>
@@ -184,6 +214,36 @@ Wrapper an SSL socket inside a standard GnomeVFSSocket.</para>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated GnomeVFSSocket corresponding to <parameter>ssl</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-ssl-set-timeout"/>gnome_vfs_ssl_set_timeout ()</title>
+<indexterm role="2.8"><primary>gnome_vfs_ssl_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_ssl_set_timeout    (<link linkend="GnomeVFSSSL">GnomeVFSSSL</link> *ssl,
+                                             <link linkend="GTimeVal">GTimeVal</link> *timeout,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<para>
+Set a timeout of <parameter>timeout</parameter>. If <parameter>timeout</parameter> is NULL following operations
+will block indefinitely).
+</para>
+<para>
+Note if you set <parameter>timeout</parameter> to 0 (means tv_sec and tv_usec are both 0)
+every following operation will return immediately. (This can be used
+for polling.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ssl</parameter>&nbsp;:</term>
+<listitem><simpara> SSL socket to set the timeout of
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>timeout</parameter>&nbsp;:</term>
+<listitem><simpara> the timeout
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> optional cancellation object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.8
+</para></refsect2>
 
 </refsect1>
 

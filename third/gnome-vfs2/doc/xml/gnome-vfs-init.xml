@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-init">
+<refentry id="gnome-vfs-20-gnome-vfs-init">
 <refmeta>
-<refentrytitle>
-Initialization/Shutdown</refentrytitle>
+<refentrytitle>Initialization/Shutdown</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Initialization/Shutdown</refname><refpurpose></refpurpose>
+<refname>Initialization/Shutdown</refname><refpurpose></refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -19,15 +17,17 @@ Initialization/Shutdown</refname><refpurpose></refpurpose>
 
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-init">gnome_vfs_init</link>                  (void);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-initialized">gnome_vfs_initialized</link>           (void);
-void        <link linkend="gnome-vfs-shutdown">gnome_vfs_shutdown</link>              (void);
-void        <link linkend="gnome-vfs-loadinit">gnome_vfs_loadinit</link>              (<link linkend="gpointer">gpointer</link> app,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-shutdown">gnome_vfs_shutdown</link>              (void);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-loadinit">gnome_vfs_loadinit</link>              (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);
-void        <link linkend="gnome-vfs-preinit">gnome_vfs_preinit</link>               (<link linkend="gpointer">gpointer</link> app,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-preinit">gnome_vfs_preinit</link>               (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);
-void        <link linkend="gnome-vfs-postinit">gnome_vfs_postinit</link>              (<link linkend="gpointer">gpointer</link> app,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-postinit">gnome_vfs_postinit</link>              (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -48,7 +48,7 @@ when calling gnome_init.
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-init"/>gnome_vfs_init ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_init                  (void);</programlisting>
+<indexterm><primary>gnome_vfs_init</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_init                  (void);</programlisting>
 <para>
 If GnomeVFS is not already initialized, initialize it. This must be
 called prior to performing any other GnomeVFS operations, and may
@@ -62,7 +62,7 @@ already initialized)
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-initialized"/>gnome_vfs_initialized ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_initialized           (void);</programlisting>
+<indexterm><primary>gnome_vfs_initialized</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_initialized           (void);</programlisting>
 <para>
 Detects if GnomeVFS has already been initialized (GnomeVFS must be
 initialized prior to using any methods or operations).</para>
@@ -74,7 +74,7 @@ initialized prior to using any methods or operations).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-shutdown"/>gnome_vfs_shutdown ()</title>
-<programlisting>void        gnome_vfs_shutdown              (void);</programlisting>
+<indexterm><primary>gnome_vfs_shutdown</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_shutdown              (void);</programlisting>
 <para>
 Cease all active GnomeVFS operations and unload the MIME
 database from memory.</para>
@@ -83,7 +83,7 @@ database from memory.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-loadinit"/>gnome_vfs_loadinit ()</title>
-<programlisting>void        gnome_vfs_loadinit              (<link linkend="gpointer">gpointer</link> app,
+<indexterm><primary>gnome_vfs_loadinit</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_loadinit              (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
 <para>
 
@@ -99,7 +99,7 @@ database from memory.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-preinit"/>gnome_vfs_preinit ()</title>
-<programlisting>void        gnome_vfs_preinit               (<link linkend="gpointer">gpointer</link> app,
+<indexterm><primary>gnome_vfs_preinit</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_preinit               (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
 <para>
 
@@ -115,7 +115,7 @@ database from memory.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-postinit"/>gnome_vfs_postinit ()</title>
-<programlisting>void        gnome_vfs_postinit              (<link linkend="gpointer">gpointer</link> app,
+<indexterm><primary>gnome_vfs_postinit</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_postinit              (<link linkend="gpointer">gpointer</link> app,
                                              <link linkend="gpointer">gpointer</link> modinfo);</programlisting>
 <para>
 

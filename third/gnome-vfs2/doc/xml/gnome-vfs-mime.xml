@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-mime">
+<refentry id="gnome-vfs-20-gnome-vfs-mime">
 <refmeta>
-<refentrytitle>
-MIME typing</refentrytitle>
+<refentrytitle>MIME typing</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-MIME typing</refname><refpurpose></refpurpose>
+<refname>MIME typing</refname><refpurpose>functions to get a mime-type for a file using its name or its content</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -17,25 +15,27 @@ MIME typing</refname><refpurpose></refpurpose>
 
 
 
-void        <link linkend="gnome-vfs-mime-shutdown">gnome_vfs_mime_shutdown</link>         (void);
-const char* <link linkend="gnome-vfs-mime-type-from-name">gnome_vfs_mime_type_from_name</link>   (const char *filename);
-const char* <link linkend="gnome-vfs-mime-type-from-name-or-default">gnome_vfs_mime_type_from_name_or_default</link>
-                                            (const char *filename,
-                                             const char *defaultv);
-const char* <link linkend="gnome-vfs-get-mime-type-common">gnome_vfs_get_mime_type_common</link>  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
-const char* <link linkend="gnome-vfs-get-mime-type-from-uri">gnome_vfs_get_mime_type_from_uri</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-mime-shutdown">gnome_vfs_mime_shutdown</link>         (void);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-mime-type-from-name">gnome_vfs_mime_type_from_name</link>   (const <link linkend="char">char</link> *filename);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-mime-type-from-name-or-default">gnome_vfs_mime_type_from_name_or_default</link>
+                                            (const <link linkend="char">char</link> *filename,
+                                             const <link linkend="char">char</link> *defaultv);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-get-mime-type-common">gnome_vfs_get_mime_type_common</link>  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-get-mime-type-from-uri">gnome_vfs_get_mime_type_from_uri</link>
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
-const char* <link linkend="gnome-vfs-get-mime-type-from-file-data">gnome_vfs_get_mime_type_from_file_data</link>
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-get-mime-type-from-file-data">gnome_vfs_get_mime_type_from_file_data</link>
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
-const char* <link linkend="gnome-vfs-get-file-mime-type">gnome_vfs_get_file_mime_type</link>    (const char *path,
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-get-file-mime-type">gnome_vfs_get_file_mime_type</link>    (const <link linkend="char">char</link> *path,
                                              const struct <link linkend="stat">stat</link> *optional_stat_info,
                                              <link linkend="gboolean">gboolean</link> suffix_only);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-mime-type-is-supertype">gnome_vfs_mime_type_is_supertype</link>
-                                            (const char *mime_type);
-char*       <link linkend="gnome-vfs-get-supertype-from-mime-type">gnome_vfs_get_supertype_from_mime_type</link>
-                                            (const char *mime_type);
+                                            (const <link linkend="char">char</link> *mime_type);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-get-supertype-from-mime-type">gnome_vfs_get_supertype_from_mime_type</link>
+                                            (const <link linkend="char">char</link> *mime_type);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -54,7 +54,7 @@ char*       <link linkend="gnome-vfs-get-supertype-from-mime-type">gnome_vfs_get
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-shutdown"/>gnome_vfs_mime_shutdown ()</title>
-<programlisting>void        gnome_vfs_mime_shutdown         (void);</programlisting>
+<indexterm><primary>gnome_vfs_mime_shutdown</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_mime_shutdown         (void);</programlisting>
 <para>
 Unload the MIME database from memory.</para>
 <para>
@@ -62,7 +62,7 @@ Unload the MIME database from memory.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-type-from-name"/>gnome_vfs_mime_type_from_name ()</title>
-<programlisting>const char* gnome_vfs_mime_type_from_name   (const char *filename);</programlisting>
+<indexterm><primary>gnome_vfs_mime_type_from_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_mime_type_from_name   (const <link linkend="char">char</link> *filename);</programlisting>
 <para>
 Determined the mime type for <parameter>filename</parameter>.</para>
 <para>
@@ -76,9 +76,9 @@ Determined the mime type for <parameter>filename</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-type-from-name-or-default"/>gnome_vfs_mime_type_from_name_or_default ()</title>
-<programlisting>const char* gnome_vfs_mime_type_from_name_or_default
-                                            (const char *filename,
-                                             const char *defaultv);</programlisting>
+<indexterm><primary>gnome_vfs_mime_type_from_name_or_default</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_mime_type_from_name_or_default
+                                            (const <link linkend="char">char</link> *filename,
+                                             const <link linkend="char">char</link> *defaultv);</programlisting>
 <para>
 This routine tries to determine the mime-type of the filename
 only by looking at the filename from the GNOME database of mime-types.</para>
@@ -97,7 +97,7 @@ determined, it will return <parameter>defaultv</parameter>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-mime-type-common"/>gnome_vfs_get_mime_type_common ()</title>
-<programlisting>const char* gnome_vfs_get_mime_type_common  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_get_mime_type_common</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_get_mime_type_common  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Tries to guess the mime type of the file represented by <parameter>uir</parameter>.
 Favors using the file data to the <parameter>uri</parameter> extension.
@@ -119,7 +119,7 @@ get file info on the text uri.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-mime-type-from-uri"/>gnome_vfs_get_mime_type_from_uri ()</title>
-<programlisting>const char* gnome_vfs_get_mime_type_from_uri
+<indexterm><primary>gnome_vfs_get_mime_type_from_uri</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_get_mime_type_from_uri
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Tries to guess the mime type of the file <parameter>uri</parameter> by
@@ -136,7 +136,7 @@ files.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-mime-type-from-file-data"/>gnome_vfs_get_mime_type_from_file_data ()</title>
-<programlisting>const char* gnome_vfs_get_mime_type_from_file_data
+<indexterm><primary>gnome_vfs_get_mime_type_from_file_data</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_get_mime_type_from_file_data
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Tries to guess the mime type of the file <parameter>uri</parameter> by
@@ -152,14 +152,18 @@ checking the file data using the magic patterns. Does not handle text files prop
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-file-mime-type"/>gnome_vfs_get_file_mime_type ()</title>
-<programlisting>const char* gnome_vfs_get_file_mime_type    (const char *path,
+<indexterm><primary>gnome_vfs_get_file_mime_type</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_get_file_mime_type    (const <link linkend="char">char</link> *path,
                                              const struct <link linkend="stat">stat</link> *optional_stat_info,
                                              <link linkend="gboolean">gboolean</link> suffix_only);</programlisting>
 <para>
 Tries to guess the mime type of the file represented by <parameter>path</parameter>.
 If <parameter>suffix_only</parameter> is false, uses the mime-magic based lookup first.
 Handles passing <parameter>path</parameter> of a non-existent file by falling back
-on returning a type based on the extension.</para>
+on returning a type based on the extension.
+</para>
+<para>
+If you need a faster, less accurate version, use
+<parameter>gnome_vfs_get_file_mime_type_fast</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
@@ -177,8 +181,8 @@ on returning a type based on the extension.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-type-is-supertype"/>gnome_vfs_mime_type_is_supertype ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_type_is_supertype
-                                            (const char *mime_type);</programlisting>
+<indexterm><primary>gnome_vfs_mime_type_is_supertype</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_mime_type_is_supertype
+                                            (const <link linkend="char">char</link> *mime_type);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -192,8 +196,8 @@ on returning a type based on the extension.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-supertype-from-mime-type"/>gnome_vfs_get_supertype_from_mime_type ()</title>
-<programlisting>char*       gnome_vfs_get_supertype_from_mime_type
-                                            (const char *mime_type);</programlisting>
+<indexterm><primary>gnome_vfs_get_supertype_from_mime_type</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_get_supertype_from_mime_type
+                                            (const <link linkend="char">char</link> *mime_type);</programlisting>
 <para>
 
 </para><variablelist role="params">

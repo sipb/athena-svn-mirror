@@ -36,11 +36,41 @@ G_BEGIN_DECLS
  */
 
 /*
+ * hook name: "full-authentication"
+ * In arg: GnomeVFSModuleCallbackFullAuthenticationIn *
+ * Out arg: GnomeVFSModuleCallbackFullAuthenticationOut *
+ * 
+ * Called when access to a URI requires a username/password etc.
+ */
+#define GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION "full-authentication"
+
+/*
+ * hook name: "pre-authentication"
+ * In arg: GnomeVFSModuleCallbackFillAuthenticationIn *
+ * Out arg: GnomeVFSModuleCallbackFillAuthenticationOut *
+ * 
+ * Called to get cached or stored user/password etc data to fill
+ * a request. Should not cause prompting to the user 
+ */
+#define GNOME_VFS_MODULE_CALLBACK_FILL_AUTHENTICATION "fill-authentication"
+
+/*
+ * hook name: "post-authentication"
+ * In arg: GnomeVFSModuleCallbackSaveAuthenticationIn *
+ * Out arg: GnomeVFSModuleCallbackSaveAuthenticationOut *
+ * 
+ * Called after a successfull authentication, to allow the client to e.g.
+ * store the password for future use.
+ */
+#define GNOME_VFS_MODULE_CALLBACK_SAVE_AUTHENTICATION "save-authentication"
+
+/*
  * hook name: "simple-authentication"
  * In arg: GnomeVFSModuleCallbackAuthenticationIn *
  * Out arg: GnomeVFSModuleCallbacAuthenticationOut *
  * 
  * Called when access to a URI requires a username/password
+ * Deprecated in favour of full-authentication
  */
 #define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
 
@@ -52,6 +82,114 @@ G_BEGIN_DECLS
  * Called when access to an HTTP proxy requires a username/password
  */
 #define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
+
+/*
+ * hook name: "ask-question"
+ * In arg: GnomeVFSModuleCallbackQuestionIn *
+ * Out arg: GnomeVFSModuleCallbackQuestionOut *
+ * 
+ * Called when access to a URI requires the user to make a choise
+ */
+#define GNOME_VFS_MODULE_CALLBACK_QUESTION "ask-question"
+
+typedef struct {
+	char *uri;		/* Full URI of operation */
+	char *protocol;         /* The protocol of the request */
+	char *server;           /* The server of the request */
+	char *object;           /* object on the server, smb share, http realm, etc */
+	int port;               /* network port of the request (0 means unset) */
+	char *authtype;         /* authentication type (protocol specific) */
+	char *username;
+	char *domain;           /* e.g for smb nt domains */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackFillAuthenticationIn;
+
+typedef struct {
+	gboolean valid;         /* set to TRUE if the rest of the data is valid */
+	char *username;		/* will be freed by g_free */
+	char *domain;		/* will be freed by g_free */
+	char *password;		/* will be freed by g_free */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackFillAuthenticationOut;
+
+typedef enum {
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_PREVIOUS_ATTEMPT_FAILED = 1<<0,
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_NEED_PASSWORD = 1<<1,
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_NEED_USERNAME = 1<<2,
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_NEED_DOMAIN = 1<<3,
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_SAVING_SUPPORTED = 1<<4,
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_ANON_SUPPORTED = 1<<5
+} GnomeVFSModuleCallbackFullAuthenticationFlags;
+
+typedef struct {
+	GnomeVFSModuleCallbackFullAuthenticationFlags flags;          /* GnomeVFSModuleCallbackFullAuthenticationFlags mask */
+	char *uri;		/* Full URI of operation */
+	char *protocol;         /* The protocol of the request */
+	char *server;           /* The server of the request */
+	char *object;           /* object on the server, smb share, http realm, etc */
+	int port;               /* network port of the request (0 means unset) */
+	char *authtype;         /* authentication type (protocol specific) */
+	char *username;
+	char *domain;           /* e.g for smb nt domains */
+
+	/* for pre-filling the dialog */
+	char *default_user;     
+	char *default_domain;
+	
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackFullAuthenticationIn;
+
+typedef enum {
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_OUT_ANON_SELECTED = 1<<0
+} GnomeVFSModuleCallbackFullAuthenticationOutFlags;
+
+typedef struct {
+	gboolean abort_auth;    /* set to TRUE if the user cancelled */
+	char *username;		/* will be freed by g_free */
+	char *domain;		/* will be freed by g_free */
+	char *password;		/* will be freed by g_free */
+
+	gboolean save_password;
+	char *keyring;
+
+	gsize out_flags; /* really a GnomeVFSModuleCallbackFullAuthenticationOutFlags*/
+	
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved2;
+} GnomeVFSModuleCallbackFullAuthenticationOut;
+
+
+typedef struct {
+	char *keyring;          /* keyring to save on */
+	
+	char *uri;		/* Full URI of operation */
+	char *protocol;         /* The protocol of the request */
+	char *server;           /* The server of the request */
+	char *object;           /* object on the server, smb share, http realm, etc */
+	int port;               /* network port of the request (0 means unset) */
+	char *authtype;         /* authentication type (protocol specific) */
+	char *username;
+	char *domain;           /* e.g for smb nt domains */
+	char *password;
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackSaveAuthenticationIn;
+
+typedef struct {
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackSaveAuthenticationOut;
 
 typedef struct {
 	char *uri;		/* Full URI of operation */
@@ -176,6 +314,32 @@ typedef struct {
 	void *reserved1;
 	void *reserved2;
 } GnomeVFSModuleCallbackStatusMessageOut;
+
+typedef struct {
+	char *primary_message;	  /* A short message explaining the question to 
+				   * the user or NULL if there is no message
+				   */
+	char *secondary_message;  /* The long version of the message, containing
+				   * more details. Or Null if there is no message
+				   */
+	char **choices;		  /* NULL terminated list of choices the user have to choose from.
+				   * The first item in the list should be affermative, and
+				   * will be put on the right in a GUI dialog.
+				   */
+	
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackQuestionIn;
+
+typedef struct {
+	int answer; /* The index of the choice in the choices list sent in 
+		       to the callback */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackQuestionOut;
 
 G_END_DECLS
 

@@ -35,6 +35,20 @@
 /* FIXME: This mutex is probably not needed and might be causing performance issues */
 static GStaticMutex file_info_ref_lock = G_STATIC_MUTEX_INIT;
 
+/* Register GnomeVFSFileInfo in the type system */
+GType 
+gnome_vfs_file_info_get_type (void) {
+	static GType fi_type = 0;
+
+	if (fi_type == 0) {
+		fi_type = g_boxed_type_register_static ( "GnomeVFSFileInfo",
+				(GBoxedCopyFunc) gnome_vfs_file_info_dup,
+				(GBoxedFreeFunc) gnome_vfs_file_info_unref);
+	}
+
+	return fi_type;
+}
+
 
 /**
  * gnome_vfs_file_info_new
@@ -212,12 +226,41 @@ gnome_vfs_file_info_dup (const GnomeVFSFileInfo *orig)
 }
 
 
+static gboolean
+mime_matches (char *a, char *b)
+{
+	if (a == NULL && b == NULL) {
+		return TRUE;
+	} else if ((a != NULL && b == NULL) ||
+		   (a == NULL && b != NULL)) {
+		return FALSE;
+	} else {
+		g_assert (a != NULL && b != NULL);
+		return g_ascii_strcasecmp (a, b) == 0;
+	}
+}
+
+static gboolean
+symlink_name_matches (char *a, char *b)
+{
+	if (a == NULL && b == NULL) {
+		return TRUE;
+	} else if ((a != NULL && b == NULL) ||
+		   (a == NULL && b != NULL)) {
+		return FALSE;
+	} else {
+		g_assert (a != NULL && b != NULL);
+		return strcmp (a, b) == 0;
+	}
+}
+
 /**
  * gnome_vfs_file_info_matches
  * @a: first GnomeVFSFileInfo struct to compare
  * @b: second GnomeVFSFileInfo struct to compare
  *
- * Compare the two file info structs, return TRUE if they match.
+ * Compare the two file info structs, return TRUE if they match exactly
+ * the same file data.
  *
  * Returns: TRUE if the two GnomeVFSFileInfos match, otherwise return FALSE.
  **/
@@ -230,22 +273,34 @@ gnome_vfs_file_info_matches (const GnomeVFSFileInfo *a,
 	g_return_val_if_fail (a->name != NULL, FALSE);
 	g_return_val_if_fail (b->name != NULL, FALSE);
 
+	/* This block of code assumes that the GnomeVfsFileInfo 
+	   was correctly allocated with g_new0 which means that each pair
+	   of fields are either invalid and equal to NULL or are valid 
+	   If both GnomeVfsFileInfos have only invalid fields, the 
+	   function returns TRUE. That is, it says the infos match which is,
+	   in a sense, true :)
+	*/
+
 	if (a->type != b->type
 	    || a->size != b->size
 	    || a->block_count != b->block_count
 	    || a->atime != b->atime
 	    || a->mtime != b->mtime
 	    || a->ctime != b->ctime
-	    || strcmp (a->name, b->name) != 0) {
+	    || a->flags != b->flags
+	    || a->permissions != b->permissions
+	    || a->device != b->device
+	    || a->inode != b->inode
+	    || a->link_count != b->link_count
+	    || a->uid != b->uid
+	    || a->gid != b->gid
+	    || strcmp (a->name, b->name) != 0
+	    || !mime_matches (a->mime_type, b->mime_type)
+	    || !symlink_name_matches (a->symlink_name, b->symlink_name)) {
 		return FALSE;
+	} else {
+		return TRUE;
 	}
-
-	if (a->mime_type == NULL || b->mime_type == NULL) {
-		return a->mime_type == b->mime_type;
-	}
-
-	g_assert (a->mime_type != NULL && b->mime_type != NULL);
-	return g_ascii_strcasecmp (a->mime_type, b->mime_type) == 0;
 }
 
 /**

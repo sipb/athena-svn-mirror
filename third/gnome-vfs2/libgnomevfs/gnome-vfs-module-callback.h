@@ -30,6 +30,7 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
 
 typedef void (* GnomeVFSModuleCallback) (gconstpointer in,
 					 gsize         in_size,
@@ -67,6 +68,8 @@ void gnome_vfs_async_module_callback_push        (const char                  *c
 						  gpointer                     callback_data,
 						  GDestroyNotify               destroy_notify);
 void gnome_vfs_async_module_callback_pop         (const char                  *callback_name);
+
+G_END_DECLS
 
 #endif
 

@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-xfer">
+<refentry id="gnome-vfs-20-gnome-vfs-xfer">
 <refmeta>
 <refentrytitle>File Transfers</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -22,7 +22,7 @@ enum        <link linkend="GnomeVFSXferOverwriteAction">GnomeVFSXferOverwriteAct
 enum        <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link>;
 enum        <link linkend="GnomeVFSXferErrorAction">GnomeVFSXferErrorAction</link>;
 enum        <link linkend="GnomeVFSXferPhase">GnomeVFSXferPhase</link>;
-typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</link>;
+struct      <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</link>;
 <link linkend="gint">gint</link>        (<link linkend="GnomeVFSXferProgressCallback">*GnomeVFSXferProgressCallback</link>) (<link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</link> *info,
                                              <link linkend="gpointer">gpointer</link> data);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-xfer-uri-list">gnome_vfs_xfer_uri_list</link>      (const <link linkend="GList">GList</link> *source_uri_list,
@@ -53,6 +53,8 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -64,7 +66,7 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSXferOptions"/>enum GnomeVFSXferOptions</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferOptions</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_XFER_DEFAULT = 0,
 	GNOME_VFS_XFER_UNUSED_1 = 1 &lt;&lt; 0,
 	GNOME_VFS_XFER_FOLLOW_LINKS = 1 &lt;&lt; 1,
@@ -77,7 +79,7 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 	GNOME_VFS_XFER_REMOVESOURCE = 1 &lt;&lt; 8,
 	GNOME_VFS_XFER_USE_UNIQUE_NAMES = 1 &lt;&lt; 9,
 	GNOME_VFS_XFER_LINK_ITEMS = 1 &lt;&lt; 10,
-	GNOME_VFS_XFER_FOLLOW_LINKS_RECURSIVE = 1 &lt;&lt; 11,
+	GNOME_VFS_XFER_FOLLOW_LINKS_RECURSIVE = 1 &lt;&lt; 11
 } GnomeVFSXferOptions;
 </programlisting>
 <para>
@@ -85,7 +87,7 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferProgressStatus"/>enum GnomeVFSXferProgressStatus</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferProgressStatus</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_XFER_PROGRESS_STATUS_OK = 0,
 	GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR = 1,
 	GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE = 2,
@@ -99,7 +101,7 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferOverwriteMode"/>enum GnomeVFSXferOverwriteMode</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferOverwriteMode</primary></indexterm><programlisting>typedef enum {
 	/* Interrupt transferring with an error (GNOME_VFS_ERROR_FILEEXISTS).  */
 	GNOME_VFS_XFER_OVERWRITE_MODE_ABORT = 0,
 	/* Invoke the progress callback with a
@@ -116,12 +118,12 @@ typedef     <link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</l
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferOverwriteAction"/>enum GnomeVFSXferOverwriteAction</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferOverwriteAction</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_XFER_OVERWRITE_ACTION_ABORT = 0,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE = 1,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL = 2,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP = 3,
-	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL = 4,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL = 4
 } GnomeVFSXferOverwriteAction;
 </programlisting>
 <para>
@@ -160,13 +162,13 @@ files without prompting the callback.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferErrorMode"/>enum GnomeVFSXferErrorMode</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferErrorMode</primary></indexterm><programlisting>typedef enum {
 	/* Interrupt transferring with an error (code returned is code of the
            operation that has caused the error).  */
 	GNOME_VFS_XFER_ERROR_MODE_ABORT = 0,
 	/* Invoke the progress callback with a
 	   `GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR' status code. */
-	GNOME_VFS_XFER_ERROR_MODE_QUERY = 1,
+	GNOME_VFS_XFER_ERROR_MODE_QUERY = 1
 } GnomeVFSXferErrorMode;
 </programlisting>
 <para>
@@ -174,7 +176,7 @@ files without prompting the callback.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferErrorAction"/>enum GnomeVFSXferErrorAction</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferErrorAction</primary></indexterm><programlisting>typedef enum {
 	/* Interrupt operation and return `GNOME_VFS_ERROR_INTERRUPTED'.  */
 	GNOME_VFS_XFER_ERROR_ACTION_ABORT = 0,
 	/* Try the same operation again.  */
@@ -188,7 +190,7 @@ files without prompting the callback.
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferPhase"/>enum GnomeVFSXferPhase</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSXferPhase</primary></indexterm><programlisting>typedef enum {
 	/* Initial phase */
 	GNOME_VFS_XFER_PHASE_INITIAL,
 	/* Checking if destination can handle move/copy */
@@ -230,8 +232,9 @@ files without prompting the callback.
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSXferProgressInfo"/>GnomeVFSXferProgressInfo</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSXferProgressInfo"/>struct GnomeVFSXferProgressInfo</title>
+<indexterm><primary>GnomeVFSXferProgressInfo</primary></indexterm><programlisting>struct GnomeVFSXferProgressInfo {
+
 	/* Progress status (see above for a description).  */
 	GnomeVFSXferProgressStatus status;
 
@@ -284,14 +287,14 @@ files without prompting the callback.
 	void *reserved1;
 	void *reserved2;
 
-} GnomeVFSXferProgressInfo;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSXferProgressCallback"/>GnomeVFSXferProgressCallback ()</title>
-<programlisting><link linkend="gint">gint</link>        (*GnomeVFSXferProgressCallback) (<link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</link> *info,
+<indexterm><primary>GnomeVFSXferProgressCallback</primary></indexterm><programlisting><link linkend="gint">gint</link>        (*GnomeVFSXferProgressCallback) (<link linkend="GnomeVFSXferProgressInfo">GnomeVFSXferProgressInfo</link> *info,
                                              <link linkend="gpointer">gpointer</link> data);</programlisting>
 <para>
 
@@ -309,7 +312,7 @@ files without prompting the callback.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-xfer-uri-list"/>gnome_vfs_xfer_uri_list ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_uri_list      (const <link linkend="GList">GList</link> *source_uri_list,
+<indexterm><primary>gnome_vfs_xfer_uri_list</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_uri_list      (const <link linkend="GList">GList</link> *source_uri_list,
                                              const <link linkend="GList">GList</link> *target_uri_list,
                                              <link linkend="GnomeVFSXferOptions">GnomeVFSXferOptions</link> xfer_options,
                                              <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link> error_mode,
@@ -356,7 +359,7 @@ other values.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-xfer-uri"/>gnome_vfs_xfer_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_uri           (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *source_uri,
+<indexterm><primary>gnome_vfs_xfer_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_uri           (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *source_uri,
                                              const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *target_uri,
                                              <link linkend="GnomeVFSXferOptions">GnomeVFSXferOptions</link> xfer_options,
                                              <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link> error_mode,
@@ -433,7 +436,7 @@ communicate with your copy process.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-xfer-delete-list"/>gnome_vfs_xfer_delete_list ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_delete_list   (const <link linkend="GList">GList</link> *source_uri_list,
+<indexterm><primary>gnome_vfs_xfer_delete_list</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_xfer_delete_list   (const <link linkend="GList">GList</link> *source_uri_list,
                                              <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link> error_mode,
                                              <link linkend="GnomeVFSXferOptions">GnomeVFSXferOptions</link> xfer_options,
                                              <link linkend="GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</link> progress_callback,

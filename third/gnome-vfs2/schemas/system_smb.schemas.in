@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<gconfschemafile>
+  <schemalist>
+    <schema>
+      <key>/schemas/system/smb/workgroup</key>
+      <applyto>/system/smb/workgroup</applyto>
+      <owner>gnome-vfs</owner>
+      <type>string</type>
+      <locale name="C">
+        <short>SMB workgroup</short>
+        <long>The window workgroup the user is part of</long>
+      </locale>
+    </schema>
+  </schemalist>
+</gconfschemafile>

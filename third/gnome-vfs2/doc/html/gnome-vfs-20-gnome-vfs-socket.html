@@ -1,0 +1,193 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-socket</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="networking.html" title="Networking"><link rel="previous" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="next" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-socket.html#id2641052" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-socket.html#id2641062" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-ssl.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="networking.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-socket-buffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-socket"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-vfs-socket</span></h2><p>gnome-vfs-socket &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (<a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketReadFunc">*GnomeVFSSocketReadFunc</a>)    (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read,
+                                             GnomeVFSCancellation *cancellation);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (<a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketWriteFunc">*GnomeVFSSocketWriteFunc</a>)   (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written,
+                                             GnomeVFSCancellation *cancellation);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        (<a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketCloseFunc">*GnomeVFSSocketCloseFunc</a>)      (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             GnomeVFSCancellation *cancellation);
+struct      <a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketImpl">GnomeVFSSocketImpl</a>;
+GnomeVFSSocket* <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-new">gnome_vfs_socket_new</a>        (<a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketImpl">GnomeVFSSocketImpl</a> *impl,
+                                             <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a> *connection);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-write">gnome_vfs_socket_write</a>       (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             int bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written,
+                                             GnomeVFSCancellation *cancellation);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-close">gnome_vfs_socket_close</a>       (GnomeVFSSocket *socket,
+                                             GnomeVFSCancellation *cancellation);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-read">gnome_vfs_socket_read</a>        (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read,
+                                             GnomeVFSCancellation *cancellation);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-free">gnome_vfs_socket_free</a>           (GnomeVFSSocket *socket);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-socket.html#gnome-vfs-socket-set-timeout">gnome_vfs_socket_set_timeout</a> (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout,
+                                             GnomeVFSCancellation *cancellation);
+</pre></div><div class="refsect1" lang="en"><a name="id2641052"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2641062"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2641067"></a><h3><a name="GnomeVFSSocketReadFunc"></a>GnomeVFSSocketReadFunc ()</h3><a class="indexterm" name="id2641078"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (*GnomeVFSSocketReadFunc)    (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>connection</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_read</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641221"></a><h3><a name="GnomeVFSSocketWriteFunc"></a>GnomeVFSSocketWriteFunc ()</h3><a class="indexterm" name="id2641232"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> (*GnomeVFSSocketWriteFunc)   (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>connection</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_written</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641376"></a><h3><a name="GnomeVFSSocketCloseFunc"></a>GnomeVFSSocketCloseFunc ()</h3><a class="indexterm" name="id2641387"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        (*GnomeVFSSocketCloseFunc)      (<a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> connection,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>connection</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641455"></a><h3><a name="GnomeVFSSocketImpl"></a>struct GnomeVFSSocketImpl</h3><a class="indexterm" name="id2641466"></a><pre class="programlisting">struct GnomeVFSSocketImpl {
+
+  GnomeVFSSocketReadFunc read;
+  GnomeVFSSocketWriteFunc write;
+  GnomeVFSSocketCloseFunc close;
+  GnomeVFSSocketSetTimeoutFunc set_timeout;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2641484"></a><h3><a name="gnome-vfs-socket-new"></a>gnome_vfs_socket_new ()</h3><a class="indexterm" name="id2641495"></a><pre class="programlisting">GnomeVFSSocket* gnome_vfs_socket_new        (<a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketImpl">GnomeVFSSocketImpl</a> *impl,
+                                             <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a> *connection);</pre><p>
+Creates a new GnomeVFS Socket using the specific implementation
+<i class="parameter"><tt>impl</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>impl</tt></i> :</span></td><td> an implementation of a socket, e.g. GnomeVFSSSL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>connection</tt></i> :</span></td><td> pointer to a connection object used by <i class="parameter"><tt>impl</tt></i> to track
+state (the exact nature of <i class="parameter"><tt>connection</tt></i> varies from implementation to
+implementation)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly created socket
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641599"></a><h3><a name="gnome-vfs-socket-write"></a>gnome_vfs_socket_write ()</h3><a class="indexterm" name="id2641610"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_write       (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             int bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Write <i class="parameter"><tt>bytes</tt></i> bytes of data from <i class="parameter"><tt>buffer</tt></i> to <i class="parameter"><tt>socket</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>socket</tt></i> :</span></td><td> socket to write data to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> data to write to the socket
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td> number of bytes from <i class="parameter"><tt>buffer</tt></i> to write to <i class="parameter"><tt>socket</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_written</tt></i> :</span></td><td> pointer to a GnomeVFSFileSize, will contain
+the number of bytes actually written to the socket on return.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td> optional cancellation object
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641792"></a><h3><a name="gnome-vfs-socket-close"></a>gnome_vfs_socket_close ()</h3><a class="indexterm" name="id2641803"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_close       (GnomeVFSSocket *socket,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Close <i class="parameter"><tt>socket</tt></i>, freeing any resources it may be using.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>socket</tt></i> :</span></td><td> the socket to be closed
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td> optional cancellation object
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2641894"></a><h3><a name="gnome-vfs-socket-read"></a>gnome_vfs_socket_read ()</h3><a class="indexterm" name="id2641905"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_read        (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Read <i class="parameter"><tt>bytes</tt></i> bytes of data from the <i class="parameter"><tt>socket</tt></i> into <i class="parameter"><tt>buffer</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>socket</tt></i> :</span></td><td> socket to read data from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> allocated buffer of at least <i class="parameter"><tt>bytes</tt></i> bytes to be read into
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td> number of bytes to read from <i class="parameter"><tt>socket</tt></i> into <i class="parameter"><tt>buffer</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_read</tt></i> :</span></td><td> pointer to a GnomeVFSFileSize, will contain
+the number of bytes actually read from the socket on return.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td> optional cancellation object
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2642093"></a><h3><a name="gnome-vfs-socket-free"></a>gnome_vfs_socket_free ()</h3><a class="indexterm" name="id2642104"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        gnome_vfs_socket_free           (GnomeVFSSocket *socket);</pre><p>
+Frees the memory allocated for <i class="parameter"><tt>socket</tt></i>, but does
+not call any <a href="gnome-vfs-20-gnome-vfs-socket.html#GnomeVFSSocketImpl"><span class="type">GnomeVFSSocketImpl</span></a> function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>socket</tt></i> :</span></td><td> The <span class="type">GnomeVFSSocket</span> you want to free. 
+</td></tr></tbody></table></div><p>Since  2.8
+</p></div><hr><div class="refsect2" lang="en"><a name="id2642183"></a><h3><a name="gnome-vfs-socket-set-timeout"></a>gnome_vfs_socket_set_timeout ()</h3><a class="indexterm" name="id2642194"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_set_timeout (GnomeVFSSocket *socket,
+                                             <a
+href="../glib/glib-Date-and-Time-Functions.html#GTimeVal"
+>GTimeVal</a> *timeout,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Set a timeout of <i class="parameter"><tt>timeout</tt></i>. If <i class="parameter"><tt>timeout</tt></i> is NULL following operations
+will block indefinitely).
+</p><p>
+Note if you set <i class="parameter"><tt>timeout</tt></i> to 0 (means tv_sec and tv_usec are both 0)
+every following operation will return immediately. (This can be used
+for polling.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>socket</tt></i> :</span></td><td> socket to set the timeout of
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>timeout</tt></i> :</span></td><td> the timeout
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>cancellation</tt></i> :</span></td><td> optional cancellation object
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+
+</td></tr></tbody></table></div><p>Since  2.8
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-20-gnome-vfs-ssl.html"><b>&lt;&lt; SSL support functions</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-socket-buffer.html"><b>gnome-vfs-socket-buffer &gt;&gt;</b></a></td></tr></table></body></html>

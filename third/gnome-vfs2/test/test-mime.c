@@ -122,14 +122,6 @@ main (int argc, char **argv)
 	}
 
 
-	if (table_path != NULL) {
-		gnome_vfs_mime_test_get_magic_table (table_path);
-	}
-
-	if (dump_table) {
-		gnome_vfs_mime_dump_magic_table ();
-	}
-
 	if (speed_test) {
 		timer = g_timer_new ();
 		g_timer_start (timer);
@@ -153,9 +145,9 @@ main (int argc, char **argv)
 			} else {
 				curdir = g_get_current_dir ();
 				path = g_strconcat (curdir, "/", uri_string, NULL);
+				g_free (uri_string);
 				g_free (curdir);
 			}
-			g_free (uri_string);
 			uri_string = gnome_vfs_get_uri_from_local_path (path);
 			g_free (path);
 			uri = gnome_vfs_uri_new (uri_string);

@@ -1,12 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-standard-callbacks">
+<refentry id="gnome-vfs-20-gnome-vfs-standard-callbacks">
 <refmeta>
 <refentrytitle>gnome-vfs-standard-callbacks</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>gnome-vfs-standard-callbacks</refname><refpurpose></refpurpose>
+<refname>gnome-vfs-standard-callbacks</refname><refpurpose>standard callbacks for use by gnome-vfs module writers</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -17,18 +17,20 @@
 
 #define     <link linkend="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</link>
 #define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</link>
-typedef     <link linkend="GnomeVFSModuleCallbackAuthenticationOut">GnomeVFSModuleCallbackAuthenticationOut</link>;
+struct      <link linkend="GnomeVFSModuleCallbackAuthenticationOut">GnomeVFSModuleCallbackAuthenticationOut</link>;
 #define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</link>
-typedef     <link linkend="GnomeVFSModuleCallbackAdditionalHeadersIn">GnomeVFSModuleCallbackAdditionalHeadersIn</link>;
-typedef     <link linkend="GnomeVFSModuleCallbackAdditionalHeadersOut">GnomeVFSModuleCallbackAdditionalHeadersOut</link>;
+struct      <link linkend="GnomeVFSModuleCallbackAdditionalHeadersIn">GnomeVFSModuleCallbackAdditionalHeadersIn</link>;
+struct      <link linkend="GnomeVFSModuleCallbackAdditionalHeadersOut">GnomeVFSModuleCallbackAdditionalHeadersOut</link>;
 #define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</link>
-typedef     <link linkend="GnomeVFSModuleCallbackReceivedHeadersIn">GnomeVFSModuleCallbackReceivedHeadersIn</link>;
-typedef     <link linkend="GnomeVFSModuleCallbackReceivedHeadersOut">GnomeVFSModuleCallbackReceivedHeadersOut</link>;
+struct      <link linkend="GnomeVFSModuleCallbackReceivedHeadersIn">GnomeVFSModuleCallbackReceivedHeadersIn</link>;
+struct      <link linkend="GnomeVFSModuleCallbackReceivedHeadersOut">GnomeVFSModuleCallbackReceivedHeadersOut</link>;
 #define     <link linkend="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS">GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</link>
-typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageIn">GnomeVFSModuleCallbackStatusMessageIn</link>;
-typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModuleCallbackStatusMessageOut</link>;
+struct      <link linkend="GnomeVFSModuleCallbackStatusMessageIn">GnomeVFSModuleCallbackStatusMessageIn</link>;
+struct      <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModuleCallbackStatusMessageOut</link>;
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -47,21 +49,22 @@ typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModul
 <title>Details</title>
 <refsect2>
 <title><anchor id="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"/>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</title>
-<programlisting>#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
+<indexterm><primary>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</primary></indexterm><programlisting>#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</title>
-<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
+<indexterm><primary>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</primary></indexterm><programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackAuthenticationOut"/>GnomeVFSModuleCallbackAuthenticationOut</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackAuthenticationOut"/>struct GnomeVFSModuleCallbackAuthenticationOut</title>
+<indexterm><primary>GnomeVFSModuleCallbackAuthenticationOut</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackAuthenticationOut {
+
 	char *username;		/* will be freed by g_free,
 				 * NULL indicates no auth should be provided;
 				 * if the request requires authn, the operation
@@ -74,88 +77,93 @@ typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModul
 	void *reserved1;
 	void *reserved2;
 
-} GnomeVFSModuleCallbackAuthenticationOut;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</title>
-<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS "http:send-additional-headers"
+<indexterm><primary>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</primary></indexterm><programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS "http:send-additional-headers"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersIn"/>GnomeVFSModuleCallbackAdditionalHeadersIn</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersIn"/>struct GnomeVFSModuleCallbackAdditionalHeadersIn</title>
+<indexterm><primary>GnomeVFSModuleCallbackAdditionalHeadersIn</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackAdditionalHeadersIn {
+
 	GnomeVFSURI *uri;		/* URI of operation */
 
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackAdditionalHeadersIn;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersOut"/>GnomeVFSModuleCallbackAdditionalHeadersOut</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersOut"/>struct GnomeVFSModuleCallbackAdditionalHeadersOut</title>
+<indexterm><primary>GnomeVFSModuleCallbackAdditionalHeadersOut</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackAdditionalHeadersOut {
+
 	GList *headers;			/* list of headers, will be freeed */
 
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackAdditionalHeadersOut;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</title>
-<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS "http:received-headers"
+<indexterm><primary>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</primary></indexterm><programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS "http:received-headers"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersIn"/>GnomeVFSModuleCallbackReceivedHeadersIn</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersIn"/>struct GnomeVFSModuleCallbackReceivedHeadersIn</title>
+<indexterm><primary>GnomeVFSModuleCallbackReceivedHeadersIn</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackReceivedHeadersIn {
+
 	GnomeVFSURI *uri;		/* URI of operation */
 	GList *headers;			/* list of headers */
 
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackReceivedHeadersIn;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersOut"/>GnomeVFSModuleCallbackReceivedHeadersOut</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersOut"/>struct GnomeVFSModuleCallbackReceivedHeadersOut</title>
+<indexterm><primary>GnomeVFSModuleCallbackReceivedHeadersOut</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackReceivedHeadersOut {
+
 	int dummy;
 
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackReceivedHeadersOut;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"/>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</title>
-<programlisting>#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"
+<indexterm><primary>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</primary></indexterm><programlisting>#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackStatusMessageIn"/>GnomeVFSModuleCallbackStatusMessageIn</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackStatusMessageIn"/>struct GnomeVFSModuleCallbackStatusMessageIn</title>
+<indexterm><primary>GnomeVFSModuleCallbackStatusMessageIn</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackStatusMessageIn {
+
 	char *uri;		/* Full URI of operation */
 	char *message;		/* A message indicating the current state or
 				 * NULL if there is no message */
@@ -166,20 +174,21 @@ typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModul
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackStatusMessageIn;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSModuleCallbackStatusMessageOut"/>GnomeVFSModuleCallbackStatusMessageOut</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSModuleCallbackStatusMessageOut"/>struct GnomeVFSModuleCallbackStatusMessageOut</title>
+<indexterm><primary>GnomeVFSModuleCallbackStatusMessageOut</primary></indexterm><programlisting>struct GnomeVFSModuleCallbackStatusMessageOut {
+
 	int dummy; /* empty structs not allowed */
 
 	/* Reserved "padding" to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSModuleCallbackStatusMessageOut;
+};
 </programlisting>
 <para>
 

@@ -92,7 +92,7 @@ main (int argc, char **argv)
 	}
 	g_print (".\n");
 
-	result = gnome_vfs_ssl_create (&ssl, host, port);
+	result = gnome_vfs_ssl_create (&ssl, host, port, NULL);
 
 	show_result (result, "ssl_create", host, port);
 
@@ -121,17 +121,20 @@ main (int argc, char **argv)
 	switch (abstraction) {
 		case SSL:
 			result = gnome_vfs_ssl_write (ssl, HTTP_REQUEST, 
-					strlen(HTTP_REQUEST), &bytes_read);
+						      strlen(HTTP_REQUEST), &bytes_read,
+						      NULL);
 			break;
 		case SOCKET:
 			result = gnome_vfs_socket_write (socket, HTTP_REQUEST, 
-					strlen(HTTP_REQUEST), &bytes_read);
+							 strlen(HTTP_REQUEST), &bytes_read,
+							 NULL);
 			break;
 		case SOCKETBUFFER:
 			result = gnome_vfs_socket_buffer_write (socketbuffer,
-					HTTP_REQUEST, strlen(HTTP_REQUEST),
-					&bytes_read);
-			gnome_vfs_socket_buffer_flush (socketbuffer);
+								HTTP_REQUEST, strlen(HTTP_REQUEST),
+								&bytes_read,
+								NULL);
+			gnome_vfs_socket_buffer_flush (socketbuffer, NULL);
 			break;
 	}
 
@@ -141,16 +144,19 @@ main (int argc, char **argv)
 		switch (abstraction) {
 			case SSL:
 				result = gnome_vfs_ssl_read (ssl, buffer, 
-						sizeof buffer - 1, &bytes_read);
+							     sizeof buffer - 1, &bytes_read,
+							     NULL);
 				break;
 			case SOCKET:
 				result = gnome_vfs_socket_read (socket, buffer, 
-						sizeof buffer - 1, &bytes_read);
+								sizeof buffer - 1, &bytes_read,
+								NULL);
 				break;
 			case SOCKETBUFFER:
 				result = gnome_vfs_socket_buffer_read (
 						socketbuffer, buffer, 
-						sizeof buffer - 1, &bytes_read);
+						sizeof buffer - 1, &bytes_read,
+						NULL);
 				break;
 		}
 		show_result (result, "read", host, port);
@@ -162,13 +168,13 @@ main (int argc, char **argv)
 
 	switch (abstraction) {
 		case SSL:
-			gnome_vfs_ssl_destroy (ssl);
+			gnome_vfs_ssl_destroy (ssl, NULL);
 			break;
 		case SOCKET:
-			gnome_vfs_socket_close (socket);
+			gnome_vfs_socket_close (socket, NULL);
 			break;
 		case SOCKETBUFFER:
-			gnome_vfs_socket_buffer_destroy (socketbuffer, TRUE);
+			gnome_vfs_socket_buffer_destroy (socketbuffer, TRUE, NULL);
 			break;
 	}
 

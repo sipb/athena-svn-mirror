@@ -124,7 +124,7 @@ main (int argc, char **argv)
   const char *input_uri_string = argv[1];
   const char *output_uri_string = argv[2];
   GnomeVFSFileSize bytes_read, bytes_written;
-  gpointer buffer;
+  guint buffer[BYTES_TO_PROCESS];
   GnomeVFSResult result;
 
   /* remember to initialize GnomeVFS! */
@@ -141,7 +141,7 @@ main (int argc, char **argv)
   /* we use create instead of open, because open will not create the file if it does
      not already exist. The last argument is the permissions to use if the file is created,
      the second to last tells GnomeVFS that its ok if the file already exists, and just open it */
-  result = gnome_vfs_create (&write_handle, output_uri_string, GNOME_VFS_OPEN_WRITE, FALSE, 0x777);
+  result = gnome_vfs_create (&write_handle, output_uri_string, GNOME_VFS_OPEN_WRITE, FALSE, 0777);
   if (result != GNOME_VFS_OK) return print_error (result, output_uri_string);
 
   /* read data from the input uri */

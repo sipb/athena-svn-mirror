@@ -28,18 +28,43 @@
 #include <config.h>
 #include "gnome-vfs-private-utils.h"
 
+#include "gnome-vfs-utils.h"
 #include "gnome-vfs-cancellation.h"
 #include "gnome-vfs-ops.h"
 #include "gnome-vfs-uri.h"
 #include <errno.h>
 #include <glib/gmessages.h>
 #include <glib/gstrfuncs.h>
+#include <gconf/gconf-client.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#include <fcntl.h>
+
+#define GCONF_URL_HANDLER_PATH      	 "/desktop/gnome/url-handlers/"
+#define GCONF_DEFAULT_TERMINAL_EXEC_PATH "/desktop/gnome/applications/terminal/exec"
+#define GCONF_DEFAULT_TERMINAL_ARG_PATH  "/desktop/gnome/applications/terminal/exec_arg"
+
+/* Check whether the node is IPv6 enabled.*/
+gboolean
+_gnome_vfs_have_ipv6 (void)
+{
+#ifdef ENABLE_IPV6
+	int s;
+
+	s = socket (AF_INET6, SOCK_STREAM, 0);
+	if (s != -1) {
+		close (s);
+		return TRUE;
+	}
+
+#endif
+	return FALSE;
+}
 
 static int
 find_next_slash (const char *path, int current_offset)
@@ -83,7 +108,7 @@ collapse_slash_runs (char *path, int from_offset)
 	}
 
 	if (from_offset < i) {
-		strcpy (path + from_offset, path + i);
+		memmove (path + from_offset, path + i, strlen (path + i) + 1);
 		i = from_offset + 1;
 	}
 }
@@ -125,7 +150,8 @@ _gnome_vfs_canonicalize_pathname (gchar *path)
 
 			/* Handle `./'. */
 			if (path[i + 1] == GNOME_VFS_URI_PATH_CHR) {
-				strcpy (path + i, path + i + 2);
+				memmove (path + i, path + i + 2, 
+					 strlen (path + i + 2) + 1);
 				if (i == 0) {
 					/* don't leave leading '/' for paths that started
 					 * as relative (.//foo)
@@ -162,7 +188,8 @@ _gnome_vfs_canonicalize_pathname (gchar *path)
 						i++;
 					}
 
-					strcpy (path + marker, path + i + 2);
+					memmove (path + marker, path + i + 2,
+						 strlen (path + i + 2) + 1);
 					i = marker;
 				} else {
 					i = 2;
@@ -264,7 +291,7 @@ gnome_vfs_forkexec (const gchar *file_name,
  * 
  * Return value: 
  **/
-GnomeVFSProcessResult
+GnomeVFSProcessRunResult
 gnome_vfs_process_run_cancellable (const gchar *file_name,
 				   const gchar * const argv[],
 				   GnomeVFSProcessOptions options,
@@ -540,3 +567,356 @@ _gnome_vfs_istr_has_suffix (const char *haystack, const char *needle)
 	} while (hc == nc);
 	return FALSE;
 }
+
+/**
+ * _gnome_vfs_use_handler_for_scheme:
+ * @scheme: the URI scheme
+ *
+ * Checks GConf to see if there is a URL handler
+ * defined for this scheme and if it is enabled.
+ *
+ * Return value: TRUE if handler is defined and enabled,
+ * FALSE otherwise.
+ *
+ * Since: 2.4
+ */
+gboolean
+_gnome_vfs_use_handler_for_scheme (const char *scheme)
+{
+	GConfClient *client;
+	gboolean ret;
+	char *path;
+	
+	g_return_val_if_fail (scheme != NULL, FALSE);
+	
+	if (!gconf_is_initialized ()) {
+		if (!gconf_init (0, NULL, NULL)) {
+			return FALSE;
+		}
+	}
+	
+	client = gconf_client_get_default ();
+	path = g_strconcat (GCONF_URL_HANDLER_PATH, scheme, "/enabled", NULL);
+	ret = gconf_client_get_bool (client, path, NULL);
+	
+	g_free (path);
+	g_object_unref (G_OBJECT (client));
+	
+	return ret;
+}
+
+/**
+ * _gnome_vfs_url_show_using_handler_with_env:
+ * @url: the url to show
+ * @envp: environment for the handler
+ * 
+ * Same as gnome_url_show_using_handler except that the handler
+ * will be launched with the given environment.
+ *
+ * Return value: GNOME_VFS_OK on success.
+ * GNOME_VFS_ERROR_BAD_PAREMETER if the URL is invalid.
+ * GNOME_VFS_ERROR_NOT_SUPPORTED if no handler is defined.
+ * GNOME_VFS_ERROR_PARSE if the handler command can not be parsed.
+ * GNOME_VFS_ERROR_LAUNCH if the handler command can not be launched.
+ * GNOME_VFS_ERROR_INTERNAL for internal/GConf errors.
+ *
+ * Since: 2.4
+ */
+GnomeVFSResult
+_gnome_vfs_url_show_using_handler_with_env (const char  *url,
+			                    char       **envp)
+{
+	GConfClient *client;
+	char *path;
+	char *scheme;
+	char *template;
+	char **argv;
+	int argc;
+	int i;
+	gboolean ret;
+	
+	g_return_val_if_fail (url != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	
+	scheme = gnome_vfs_get_uri_scheme (url);
+	
+	g_return_val_if_fail (scheme != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	
+	if (!gconf_is_initialized ()) {
+		if (!gconf_init (0, NULL, NULL)) {
+			g_free (scheme);
+			return GNOME_VFS_ERROR_INTERNAL;
+		}
+	}
+
+	client = gconf_client_get_default ();
+	path = g_strconcat (GCONF_URL_HANDLER_PATH, scheme, "/command", NULL);
+	template = gconf_client_get_string (client, path, NULL);
+	g_free (path);
+
+	if (template == NULL) {
+		g_free (template);
+		g_free (scheme);
+		g_object_unref (G_OBJECT (client));
+		return GNOME_VFS_ERROR_NO_HANDLER;
+	}
+	
+	if (!g_shell_parse_argv (template,
+				 &argc,
+				 &argv,
+				 NULL)) {
+		g_free (template);
+		g_free (scheme);
+		g_object_unref (G_OBJECT (client));
+		return GNOME_VFS_ERROR_PARSE;
+	}
+
+	g_free (template);
+
+	path = g_strconcat (GCONF_URL_HANDLER_PATH, scheme, "/needs_terminal", NULL);
+	if (gconf_client_get_bool (client, path, NULL)) {
+		if (!_gnome_vfs_prepend_terminal_to_vector (&argc, &argv)) {
+			g_free (path);
+			g_free (scheme);
+			g_strfreev (argv);
+			return GNOME_VFS_ERROR_INTERNAL;
+		}
+	}
+	g_free (path);
+	g_free (scheme);
+	
+	g_object_unref (G_OBJECT (client));
+
+	for (i = 0; i < argc; i++) {
+		char *arg;
+
+		if (strcmp (argv[i], "%s") != 0)
+			continue;
+
+		arg = argv[i];
+		argv[i] = g_strdup (url);
+		g_free (arg);
+	}
+
+	ret = g_spawn_async (NULL /* working directory */,
+			     argv,
+			     envp,
+			     G_SPAWN_SEARCH_PATH /* flags */,
+			     NULL /* child_setup */,
+			     NULL /* data */,
+			     NULL /* child_pid */,
+			     NULL);
+	g_strfreev (argv);
+
+	if (!ret) {
+		return GNOME_VFS_ERROR_LAUNCH;
+	}
+
+	return GNOME_VFS_OK;
+}
+
+/* This is a copy from libgnome, internalized here to avoid
+   strange dependency loops */
+
+/**
+ * _gnome_vfs_prepend_terminal_to_vector:
+ * @argc: a pointer to the vector size
+ * @argv: a pointer to the vector
+ *
+ * Prepends a terminal (either the one configured as default in GnomeVFS
+ * or one of the common xterm emulators) to the passed in vector, modifying
+ * it in the process. The vector should be allocated with #g_malloc, as 
+ * this will #g_free the original vector. Also all elements must
+ * have been allocated separately. That is the standard glib/GNOME way of
+ * doing vectors. If the integer that @argc points to is negative, the
+ * size will first be computed. Also note that passing in pointers to a vector
+ * that is empty, will just create a new vector for you.
+ *
+ * Return value: TRUE if successful, FALSE otherwise.
+ *
+ * Since: 2.4
+ */
+gboolean
+_gnome_vfs_prepend_terminal_to_vector (int    *argc,
+				       char ***argv)
+{
+        char **real_argv;
+        int real_argc;
+        int i, j;
+	char **term_argv = NULL;
+	int term_argc = 0;
+	GConfClient *client;
+
+	char *terminal = NULL;
+	char **the_argv;
+
+        g_return_val_if_fail (argc != NULL, FALSE);
+        g_return_val_if_fail (argv != NULL, FALSE);
+
+	/* sanity */
+        if(*argv == NULL) {
+                *argc = 0;
+	}
+	
+	the_argv = *argv;
+
+	/* compute size if not given */
+	if (*argc < 0) {
+		for (i = 0; the_argv[i] != NULL; i++)
+			;
+		*argc = i;
+	}
+
+	if (!gconf_is_initialized ()) {
+		if (!gconf_init (0, NULL, NULL)) {
+			return FALSE;
+		}
+	}
+
+	client = gconf_client_get_default ();
+	terminal = gconf_client_get_string (client, GCONF_DEFAULT_TERMINAL_EXEC_PATH, NULL);
+	
+	if (terminal) {
+		gchar *exec_flag;
+		exec_flag = gconf_client_get_string (client, GCONF_DEFAULT_TERMINAL_ARG_PATH, NULL);
+
+		if (exec_flag == NULL) {
+			term_argc = 1;
+			term_argv = g_new0 (char *, 2);
+			term_argv[0] = terminal;
+			term_argv[1] = NULL;
+		} else {
+			term_argc = 2;
+			term_argv = g_new0 (char *, 3);
+			term_argv[0] = terminal;
+			term_argv[1] = exec_flag;
+			term_argv[2] = NULL;
+		}
+	}
+
+	g_object_unref (G_OBJECT (client));
+
+	if (term_argv == NULL) {
+		char *check;
+
+		term_argc = 2;
+		term_argv = g_new0 (char *, 3);
+
+		check = g_find_program_in_path ("gnome-terminal");
+		if (check != NULL) {
+			term_argv[0] = check;
+			/* Note that gnome-terminal takes -x and
+			 * as -e in gnome-terminal is broken we use that. */
+			term_argv[1] = g_strdup ("-x");
+		} else {
+			if (check == NULL)
+				check = g_find_program_in_path ("nxterm");
+			if (check == NULL)
+				check = g_find_program_in_path ("color-xterm");
+			if (check == NULL)
+				check = g_find_program_in_path ("rxvt");
+			if (check == NULL)
+				check = g_find_program_in_path ("xterm");
+			if (check == NULL)
+				check = g_find_program_in_path ("dtterm");
+			if (check == NULL) {
+				check = g_strdup ("xterm");
+				g_warning ("couldn't find a terminal, falling back to xterm");
+			}
+			term_argv[0] = check;
+			term_argv[1] = g_strdup ("-e");
+		}
+	}
+
+        real_argc = term_argc + *argc;
+        real_argv = g_new (char *, real_argc + 1);
+
+        for (i = 0; i < term_argc; i++)
+                real_argv[i] = term_argv[i];
+
+        for (j = 0; j < *argc; j++, i++)
+                real_argv[i] = (char *)the_argv[j];
+
+	real_argv[i] = NULL;
+
+	g_free (*argv);
+	*argv = real_argv;
+	*argc = real_argc;
+
+	/* we use g_free here as we sucked all the inner strings
+	 * out from it into real_argv */
+	g_free (term_argv);
+
+	return TRUE;
+}		  
+
+/**
+ * _gnome_vfs_set_fd_flags:
+ * @fd: a valid file descriptor
+ * @flags: file status flags to set
+ *
+ * Set the file status flags part of the descriptor’s flags to the
+ * value specified by @flags.
+ *
+ * Return value: TRUE if successful, FALSE otherwise.
+ *
+ * Since: 2.7
+ */
+
+gboolean
+_gnome_vfs_set_fd_flags (int fd, int flags)
+{
+	int val;
+
+	val = fcntl (fd, F_GETFL, 0);
+	if (val < 0) {
+		g_warning ("fcntl() F_GETFL failed: %s", strerror (errno));
+		return FALSE;
+	}
+
+	val |= flags;
+	
+	val = fcntl (fd, F_SETFL, val);
+	if (val < 0) {
+		g_warning ("fcntl() F_SETFL failed: %s", strerror (errno));
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/**
+ * _gnome_vfs_clear_fd_flags:
+ * @fd: a valid file descriptor
+ * @flags: file status flags to clear
+ *
+ * Clear the flags sepcified by @flags of the file status flags part of the 
+ * descriptor’s flags. 
+ *
+ * Return value: TRUE if successful, FALSE otherwise.
+ *
+ * Since: 2.7
+ */
+
+gboolean
+_gnome_vfs_clear_fd_flags (int fd, int flags)
+{
+	int val;
+
+	val = fcntl (fd, F_GETFL, 0);
+	if (val < 0) {
+		g_warning ("fcntl() F_GETFL failed: %s", strerror (errno));
+		return FALSE;
+	}
+
+	val &= ~flags;
+	
+	val = fcntl (fd, F_SETFL, val);
+	if (val < 0) {
+		g_warning ("fcntl() F_SETFL failed: %s", strerror (errno));
+		return FALSE;
+	}
+	
+	return TRUE;
+
+}
+

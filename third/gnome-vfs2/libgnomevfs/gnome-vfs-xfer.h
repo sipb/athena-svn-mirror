@@ -45,7 +45,7 @@ typedef enum {
 	GNOME_VFS_XFER_REMOVESOURCE = 1 << 8,
 	GNOME_VFS_XFER_USE_UNIQUE_NAMES = 1 << 9,
 	GNOME_VFS_XFER_LINK_ITEMS = 1 << 10,
-	GNOME_VFS_XFER_FOLLOW_LINKS_RECURSIVE = 1 << 11,
+	GNOME_VFS_XFER_FOLLOW_LINKS_RECURSIVE = 1 << 11
 } GnomeVFSXferOptions;
 
 /* Progress status, to be reported to the caller of the transfer operation.  */
@@ -89,7 +89,7 @@ typedef enum {
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE = 1,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL = 2,
 	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP = 3,
-	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL = 4,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL = 4
 } GnomeVFSXferOverwriteAction;
 
 typedef enum {
@@ -98,7 +98,7 @@ typedef enum {
 	GNOME_VFS_XFER_ERROR_MODE_ABORT = 0,
 	/* Invoke the progress callback with a
 	   `GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR' status code. */
-	GNOME_VFS_XFER_ERROR_MODE_QUERY = 1,
+	GNOME_VFS_XFER_ERROR_MODE_QUERY = 1
 } GnomeVFSXferErrorMode;
 
 /* This defines the possible actions to be performed after an error has

@@ -28,6 +28,7 @@
 #include "gnome-vfs-mime.h"
 
 #include "gnome-vfs-configuration.h"
+#include "gnome-vfs-client.h"
 #include "gnome-vfs-i18n.h"
 #include "gnome-vfs-method.h"
 #include "gnome-vfs-process.h"
@@ -36,9 +37,11 @@
 #include "gnome-vfs-async-job-map.h"
 #include "gnome-vfs-thread-pool.h"
 #include "gnome-vfs-job-queue.h"
+#include "gnome-vfs-volume-monitor-private.h"
 
 #include <errno.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <bonobo/bonobo-main.h>
 #include <glib/gmessages.h>
 #include <glib/gfileutils.h>
 #include <libgnomevfs/gnome-vfs-job-slave.h>
@@ -113,6 +116,7 @@ gnome_vfs_init (void)
 
 	if (!vfs_already_initialized) {
 #ifdef ENABLE_NLS
+		bindtextdomain (GETTEXT_PACKAGE, GNOMEVFS_LOCALEDIR);
 		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif   
 		gnome_vfs_pthread_init ();
@@ -120,6 +124,8 @@ gnome_vfs_init (void)
 		if (bonobo_activation_orb_get() == NULL) {
 			bonobo_activation_init (0, bogus_argv);
 		}
+		bonobo_init (NULL, bogus_argv);
+
 
 		_gnome_vfs_ssl_init ();
 
@@ -175,6 +181,9 @@ gnome_vfs_shutdown (void)
 {
 	_gnome_vfs_thread_backend_shutdown ();
 	gnome_vfs_mime_shutdown ();
+	_gnome_vfs_volume_monitor_shutdown ();
+	_gnome_vfs_client_shutdown ();
+	bonobo_debug_shutdown ();
 }
 
 void

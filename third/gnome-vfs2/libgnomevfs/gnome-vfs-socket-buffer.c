@@ -89,8 +89,9 @@ gnome_vfs_socket_buffer_new (GnomeVFSSocket *socket)
 
 /**
  * gnome_vfs_socket_buffer_destroy:
- * @socket_buffer: buffered socket to destray
- * @close_socket: if %TRUE the socket being buffered will be closed too
+ * @socket_buffer: buffered socket to destroy.
+ * @close_socket: if %TRUE the socket being buffered will be closed too.
+ * @cancellation: handle allowing cancellation of the operation.
  *
  * Free the socket buffer.
  *
@@ -98,12 +99,13 @@ gnome_vfs_socket_buffer_new (GnomeVFSSocket *socket)
  **/
 GnomeVFSResult   
 gnome_vfs_socket_buffer_destroy  (GnomeVFSSocketBuffer *socket_buffer, 
-				  gboolean close_socket)
+				  gboolean close_socket,
+				  GnomeVFSCancellation *cancellation)
 {
-	gnome_vfs_socket_buffer_flush (socket_buffer);
+	gnome_vfs_socket_buffer_flush (socket_buffer, cancellation);
 
         if (close_socket) {
-		gnome_vfs_socket_close (socket_buffer->socket);
+		gnome_vfs_socket_close (socket_buffer->socket, cancellation);
 	}
 	g_free (socket_buffer);
 	return GNOME_VFS_OK;
@@ -113,43 +115,54 @@ gnome_vfs_socket_buffer_destroy  (GnomeVFSSocketBuffer *socket_buffer,
 
 
 static gboolean
-refill_input_buffer (GnomeVFSSocketBuffer *socket_buffer)
+refill_input_buffer (GnomeVFSSocketBuffer *socket_buffer,
+		     GnomeVFSCancellation *cancellation)
 {
 	Buffer *input_buffer;
 	GnomeVFSResult result;
 	GnomeVFSFileSize bytes_read;
-	
+	char *data_pos;
+
 	input_buffer = &socket_buffer->input_buffer;
 
-	if (input_buffer->last_error != GNOME_VFS_OK
-	    || input_buffer->byte_count > 0) {
+	if (input_buffer->last_error != GNOME_VFS_OK) {
 		return FALSE;
 	}
+
+	data_pos = &(input_buffer->data[input_buffer->offset]);
+
+	/* If there is data left in the buffer move it to the front */
+	if (input_buffer->offset > 0) {
+		memmove (input_buffer->data, data_pos, input_buffer->byte_count);
+		data_pos = input_buffer->data;
+	}
+	
+	result = gnome_vfs_socket_read (socket_buffer->socket,
+					data_pos,
+					BUFFER_SIZE - input_buffer->byte_count,
+					&bytes_read,
+					cancellation);
 
 	input_buffer->offset = 0;
-
-	result = gnome_vfs_socket_read (socket_buffer->socket,
-					&input_buffer->data, 
-					BUFFER_SIZE,
-					&bytes_read);
 	
-	if (bytes_read == 0) {
-		input_buffer->last_error = GNOME_VFS_ERROR_EOF;
+	if (result != GNOME_VFS_OK) {
+		input_buffer->last_error = result;
 		return FALSE;
 	}
 
-	input_buffer->byte_count = bytes_read;
+	input_buffer->byte_count += bytes_read;
 
 	return TRUE;
 }
 
 /**
  * gnome_vfs_socket_buffer_read:
- * @socket_buffer: buffered socket to read data from
- * @buffer: allocated buffer of at least @bytes bytes to be read into
- * @bytes: number of bytes to read from @socket into @socket_buffer
+ * @socket_buffer: buffered socket to read data from.
+ * @buffer: allocated buffer of at least @bytes bytes to be read into.
+ * @bytes: number of bytes to read from @socket into @socket_buffer.
  * @bytes_read: pointer to a GnomeVFSFileSize, will contain
  * the number of bytes actually read from the socket on return.
+ * @cancellation: handle allowing cancellation of the operation.
  *
  * Read @bytes bytes of data from the @socket into @socket_buffer.
  *
@@ -159,7 +172,8 @@ GnomeVFSResult
 gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 			      gpointer buffer,
 			      GnomeVFSFileSize bytes,
-			      GnomeVFSFileSize *bytes_read)
+			      GnomeVFSFileSize *bytes_read,
+			      GnomeVFSCancellation *cancellation)
 {
 	Buffer *input_buffer;
 	GnomeVFSResult result;
@@ -172,7 +186,9 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 	   "If nbyte is 0, read() will return 0 and have no other results."
 	*/
 	if (bytes == 0) {
-		*bytes_read = 0;
+		if (bytes_read != NULL);
+			*bytes_read = 0;
+
 		return GNOME_VFS_OK;
 	}
 		
@@ -181,7 +197,7 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 	result = GNOME_VFS_OK;
 
 	if (input_buffer->byte_count == 0) {
-		if (! refill_input_buffer (socket_buffer)) {
+		if (! refill_input_buffer (socket_buffer, cancellation)) {
 			/* The buffer is empty but we had an error last time we
 			   filled it, so we report the error.  */
 			result = input_buffer->last_error;
@@ -189,22 +205,142 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 		}
 	}
 
+	n = 0;
+	
 	if (input_buffer->byte_count != 0) {
 		n = MIN (bytes, input_buffer->byte_count);
 		memcpy (buffer, input_buffer->data + input_buffer->offset, n);
 		input_buffer->byte_count -= n;
 		input_buffer->offset += n;
-		if (bytes_read != NULL) {
-			*bytes_read = n;
-		}
-	} else {
-		if (bytes_read != NULL) {
+	}
+	
+	if (bytes_read != NULL) {
+		*bytes_read = n;
+	}
+	
+	return result;
+}
+
+/**
+ * gnome_vfs_socket_buffer_read_until:
+ * @socket_buffer: buffered socket to read data from.
+ * @buffer: allocated buffer of at least @bytes bytes to be read into.
+ * @bytes: maximum number of bytes to read from @socket into @socket_buffer.
+ * @boundary: the boundary until wich is read.
+ * @boundary_len: the length of the boundary.
+ * @bytes_read: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually read from the socket on return.
+ * @got_boundary: pointer to a gboolean  which will be %TRUE if the boundary
+ * was found or FALSE otherwise.
+ * @cancellation: handle allowing cancellation of the operation.
+ *
+ * Read up to @bytes bytes of data from the @socket into @socket_buffer 
+ * until boundary is reached. @got_boundary will be set accordingly.
+ *
+ * Note that if @bytes is smaller than @boundary_len there is no way
+ * to detected the boundary! So if you want to make sure that every boundary
+ * is found (in a loop maybe) asure that @bytes is at least as big as 
+ * @boundary_len.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ *
+ * Since: 2.8
+ **/
+GnomeVFSResult
+gnome_vfs_socket_buffer_read_until (GnomeVFSSocketBuffer *socket_buffer,
+				    gpointer buffer,
+				    GnomeVFSFileSize bytes,
+				    gconstpointer boundary,
+				    GnomeVFSFileSize boundary_len,
+				    GnomeVFSFileSize *bytes_read,
+				    gboolean *got_boundary,
+				    GnomeVFSCancellation *cancellation)
+{
+	Buffer *input_buffer;
+	GnomeVFSResult result;
+	GnomeVFSFileSize n, max_scan;
+	char *iter, *start, *delim;
+
+	g_return_val_if_fail (socket_buffer != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (buffer != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (boundary != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (got_boundary != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (boundary_len < BUFFER_SIZE, GNOME_VFS_ERROR_TOO_BIG);
+
+	*got_boundary = FALSE;
+
+	/* Quote from UNIX 98:
+	   "If nbyte is 0, read() will return 0 and have no other results."
+	*/
+	if (bytes == 0) {
+		if (bytes_read != NULL)
 			*bytes_read = 0;
+
+		return GNOME_VFS_OK;
+	}
+
+	input_buffer = &socket_buffer->input_buffer;
+	result = GNOME_VFS_OK;
+	
+	/* we are looping here to catch the case where we are close
+	 * to eof and haveing less or equal bytes then boundary_len */
+	while (input_buffer->byte_count <= boundary_len) {
+		if (! refill_input_buffer (socket_buffer, cancellation)) {
+			break;
 		}
 	}
 
-	if (result == GNOME_VFS_ERROR_EOF) {
-		result = GNOME_VFS_OK;
+	/* At this point we have either byte_count > boundary_len or
+	 * we have and error during refill */
+
+	n = 0;
+	start = input_buffer->data + input_buffer->offset;
+	max_scan = MIN (input_buffer->byte_count, bytes);
+
+	/* if max_scan is greater then boundary_len do a scan (I) 
+	 * otherwise we had an error during the loop above or bytes is
+	 * too small. (II) We handle the case where boundary_len ==
+	 * max_scan in (II). */
+
+	if (max_scan > boundary_len) {
+
+		delim = start + max_scan;
+		for (iter = start; iter + boundary_len <= delim; iter++) {
+			if (!memcmp (iter, boundary, boundary_len)) {
+				*got_boundary = TRUE;
+				/* We wanna have the boundary fetched */
+				iter += boundary_len;
+				break;
+			}
+		}
+
+		/* Fetch data data until iter */
+		n = iter - start;
+
+	} else /* (II) */ {
+
+		if (max_scan == boundary_len &&
+			!memcmp (start, boundary, boundary_len)) {
+			*got_boundary = TRUE;
+		}
+
+		n = max_scan;
+	}
+
+	if (n > 0) {
+
+		memcpy (buffer, start, n);
+		input_buffer->byte_count -= n;
+		input_buffer->offset += n;
+		/* queque up the fill buffer error if any
+		 * until the buffer is flushed */
+	} else {
+		result = input_buffer->last_error;
+		input_buffer->last_error = GNOME_VFS_OK;
+	}
+
+	if (bytes_read != NULL) {
+		*bytes_read = n;
 	}
 
 	return result;
@@ -212,9 +348,10 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
 
 /**
  * gnome_vfs_socket_buffer_peekc:
- * @socket_buffer: the socket buffer to read from
+ * @socket_buffer: the socket buffer to read from.
  * @character: pointer to a char, will contain a character on return from
- * a successful "peek"
+ * a successful "peek".
+ * @cancellation: handle allowing cancellation of the operation.
  *
  * Peek at the next character in @socket_buffer without actually reading
  * the character in. The next read will retrieve @c (as well as any following
@@ -224,7 +361,8 @@ gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
  **/
 GnomeVFSResult
 gnome_vfs_socket_buffer_peekc (GnomeVFSSocketBuffer *socket_buffer,
-			       gchar *character)
+			       gchar *character,
+			       GnomeVFSCancellation *cancellation)
 {
 	GnomeVFSResult result;
 	Buffer *input_buffer;
@@ -236,7 +374,7 @@ gnome_vfs_socket_buffer_peekc (GnomeVFSSocketBuffer *socket_buffer,
 	result = GNOME_VFS_OK;
 
 	if (input_buffer->byte_count == 0) {
-		if (!refill_input_buffer (socket_buffer)) {
+		if (!refill_input_buffer (socket_buffer, cancellation)) {
 			/* The buffer is empty but we had an error last time we
 			   filled it, so we report the error.  */
 			result = input_buffer->last_error;
@@ -254,7 +392,8 @@ gnome_vfs_socket_buffer_peekc (GnomeVFSSocketBuffer *socket_buffer,
 
 
 static GnomeVFSResult
-flush (GnomeVFSSocketBuffer *socket_buffer)
+flush (GnomeVFSSocketBuffer *socket_buffer,
+       GnomeVFSCancellation *cancellation)
 {
 	Buffer *output_buffer;
 	GnomeVFSResult result;
@@ -266,8 +405,14 @@ flush (GnomeVFSSocketBuffer *socket_buffer)
 		result = gnome_vfs_socket_write (socket_buffer->socket, 
 						 output_buffer->data,
 						 output_buffer->byte_count,
-						 &bytes_written);
+						 &bytes_written,
+						 cancellation);
 		output_buffer->last_error = result;
+
+		if (result != GNOME_VFS_OK) {
+			return result;
+		}
+		
 		output_buffer->byte_count -= bytes_written;
 	}
 
@@ -281,6 +426,7 @@ flush (GnomeVFSSocketBuffer *socket_buffer)
  * @bytes: number of bytes from @buffer to write to @socket_buffer
  * @bytes_written: pointer to a GnomeVFSFileSize, will contain
  * the number of bytes actually written to the socket on return.
+ * @cancellation: handle allowing cancellation of the operation
  *
  * Write @bytes bytes of data from @buffer to @socket_buffer.
  *
@@ -290,7 +436,8 @@ GnomeVFSResult
 gnome_vfs_socket_buffer_write (GnomeVFSSocketBuffer *socket_buffer, 
 			       gconstpointer buffer,
 			       GnomeVFSFileSize bytes,
-			       GnomeVFSFileSize *bytes_written)
+			       GnomeVFSFileSize *bytes_written,
+			       GnomeVFSCancellation *cancellation)
 {
 	Buffer *output_buffer;
 	GnomeVFSFileSize write_count;
@@ -312,14 +459,15 @@ gnome_vfs_socket_buffer_write (GnomeVFSSocketBuffer *socket_buffer,
 			GnomeVFSFileSize n;
 
 			n = MIN (BUFFER_SIZE - output_buffer->byte_count,
-				 bytes);
+				 bytes - write_count);
 			memcpy (output_buffer->data + output_buffer->byte_count,
 				p, n);
 			p += n;
 			write_count += n;
 			output_buffer->byte_count += n;
-		} else {
-			result = flush (socket_buffer);
+		}
+		if (output_buffer->byte_count >= BUFFER_SIZE) {
+			result = flush (socket_buffer, cancellation);
 			if (result != GNOME_VFS_OK) {
 				break;
 			}
@@ -336,17 +484,19 @@ gnome_vfs_socket_buffer_write (GnomeVFSSocketBuffer *socket_buffer,
 /**
  * gnome_vfs_socket_buffer_flush:
  * @socket_buffer: buffer to flush
+ * @cancellation: handle allowing cancellation of the operation
  *
  * Write all outstanding data to @socket_buffer.
  *
  * Return value: GnomeVFSResult indicating the success of the operation
  **/
 GnomeVFSResult   
-gnome_vfs_socket_buffer_flush (GnomeVFSSocketBuffer *socket_buffer)
+gnome_vfs_socket_buffer_flush (GnomeVFSSocketBuffer *socket_buffer,
+			       GnomeVFSCancellation *cancellation)
 {
 	g_return_val_if_fail (socket_buffer != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
-	return flush (socket_buffer);
+	return flush (socket_buffer, cancellation);
 }
 
 

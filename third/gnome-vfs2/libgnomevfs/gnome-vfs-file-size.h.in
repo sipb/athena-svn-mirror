@@ -26,6 +26,8 @@
 #ifndef GNOME_VFS_FILE_SIZE_H
 #define GNOME_VFS_FILE_SIZE_H
 
+#include <glib/gtypes.h>
+
 /*
  * This defines GnomeVFSFileSize and GnomeVFSFileOffset
  *
@@ -45,7 +47,7 @@
 #define GNOME_VFS_SIZE_FORMAT_STR "@VFS_SIZE_PRINTF@"
 #define GNOME_VFS_OFFSET_FORMAT_STR "@VFS_OFFSET_PRINTF@"
 
-typedef @VFS_SIZE@ GnomeVFSFileSize;
-typedef @VFS_OFFSET@ GnomeVFSFileOffset;
+G_GNUC_EXTENSION typedef @VFS_SIZE@ GnomeVFSFileSize;
+G_GNUC_EXTENSION typedef @VFS_OFFSET@ GnomeVFSFileOffset;
 
 #endif /* GNOME_VFS_FILE_SIZE_H */

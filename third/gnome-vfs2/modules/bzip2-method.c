@@ -549,7 +549,7 @@ do_get_file_info  (GnomeVFSMethod *method,
 			file_info->name[namelen-4] = '\0';
 
 		/* we can't tell the size without uncompressing it */
-		//file_info->valid_fields &= ~GNOME_VFS_FILE_INFO_FIELDS_SIZE;
+		/*file_info->valid_fields &= ~GNOME_VFS_FILE_INFO_FIELDS_SIZE;*/
 
 		/* guess the mime type of the file inside */
 		/* FIXME bugzilla.eazel.com 2791: guess mime based on contents */

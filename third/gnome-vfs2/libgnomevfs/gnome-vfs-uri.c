@@ -93,18 +93,20 @@ typedef struct {
 	char bv[32];
 } UriStrspnSet; 
 
-UriStrspnSet uri_strspn_sets[] = {
-	{":@" GNOME_VFS_URI_PATH_STR, FALSE, ""},
+static UriStrspnSet uri_strspn_sets[] = {
+	{":@]" GNOME_VFS_URI_PATH_STR, FALSE, ""},
 	{"@" GNOME_VFS_URI_PATH_STR, FALSE, ""},
-	{":" GNOME_VFS_URI_PATH_STR, FALSE, ""}
+	{":" GNOME_VFS_URI_PATH_STR, FALSE, ""},
+	{"]" GNOME_VFS_URI_PATH_STR, FALSE, ""}
 };
 
 #define URI_DELIMITER_ALL_SET (uri_strspn_sets + 0)
 #define URI_DELIMITER_USER_SET (uri_strspn_sets + 1)
 #define URI_DELIMITER_HOST_SET (uri_strspn_sets + 2)
+#define URI_DELIMITER_IPV6_SET (uri_strspn_sets + 3)
 
 #define BV_SET(bv, idx) (bv)[((guchar)(idx))>>3] |= (1 << ( (idx) & 7) )
-#define BV_IS_SET(bv, idx) ((bv)[(idx)>>3] & (1 << ( (idx) & 7)))
+#define BV_IS_SET(bv, idx) ((bv)[((guchar)(idx))>>3] & (1 << ( (idx) & 7)))
 
 static const char *
 uri_strspn_to(const char *str, UriStrspnSet *set, const char *path_end)
@@ -171,6 +173,35 @@ split_toplevel_uri (const gchar *path, guint path_len,
 	cur = uri_strspn_to (cur_tok_start, URI_DELIMITER_ALL_SET, path_end);
 
 	if (cur != NULL) {
+		const char *tmp;
+
+		if (*cur == ':') {
+			/* This ':' belongs to username or IPv6 address.*/
+			tmp = uri_strspn_to (cur_tok_start, URI_DELIMITER_USER_SET, path_end);
+
+			if (tmp == NULL || *tmp != '@') {
+				tmp = uri_strspn_to (cur_tok_start, URI_DELIMITER_IPV6_SET, path_end);
+
+				if (tmp != NULL && *tmp == ']') {
+					cur = tmp;
+				}
+			}
+		}
+	}
+
+	if (cur != NULL) {
+
+		/* Check for IPv6 address. */
+		if (*cur == ']') {
+
+			/*  No username:password in the URI  */
+			/*  cur points to ']'  */
+
+			cur = uri_strspn_to (cur, URI_DELIMITER_HOST_SET, path_end);
+		}
+	}
+
+	if (cur != NULL) {
 		next_delimiter = uri_strspn_to (cur, URI_DELIMITER_USER_SET, path_end);
 	} else {
 		next_delimiter = NULL;
@@ -201,7 +232,15 @@ split_toplevel_uri (const gchar *path, guint path_len,
 
 		if (*cur != '/') {
 			URI_MOVE_PAST_DELIMITER;
-			cur = uri_strspn_to (cur_tok_start, URI_DELIMITER_HOST_SET, path_end);
+
+			/* Move cur to point to ':' after ']' */
+			cur = uri_strspn_to (cur_tok_start, URI_DELIMITER_IPV6_SET, path_end);
+
+			if (cur != NULL && *cur == ']') {  /* For IPv6 address */
+				cur = uri_strspn_to (cur, URI_DELIMITER_HOST_SET, path_end);
+			} else {
+				cur = uri_strspn_to (cur_tok_start, URI_DELIMITER_HOST_SET, path_end);
+			}
 		} else {
 			cur_tok_start = cur;
 		}
@@ -278,7 +317,16 @@ split_toplevel_uri (const gchar *path, guint path_len,
 
 done:
 	if (*host_return != NULL) {
-		host = g_ascii_strdown (*host_return, -1);
+
+		/* Check for an IPv6 address in square brackets.*/
+		if (strchr (*host_return, '[') && strchr (*host_return, ']') && strchr (*host_return, ':')) {
+
+			/* Extract the IPv6 address from square braced string. */
+			host = g_ascii_strdown ((*host_return) + 1, strlen (*host_return) - 2);
+		} else {
+			host = g_ascii_strdown (*host_return, -1);
+		}
+
 		g_free (*host_return);
 		*host_return = host;
 
@@ -432,7 +480,9 @@ parse_uri_substring (const gchar *substring, GnomeVFSURI *parent)
  * gnome_vfs_uri_new:
  * @text_uri: A string representing a URI.
  * 
- * Create a new URI from @text_uri.
+ * Create a new URI from @text_uri. Unsupported and unsafe methods
+ * are not allowed and will result in %null% being returned. URL
+ * transforms are allowed.
  * 
  * Return value: The new URI.
  **/
@@ -577,6 +627,7 @@ is_uri_relative (const char *uri)
 	return  !(':' == *current);
 }
 
+
 /*
  * Remove "./" segments
  * Compact "../" segments inside the URI
@@ -668,134 +719,123 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 {
 	char *result = NULL;
 
-	g_return_val_if_fail (base_uri != NULL, g_strdup (uri));
-	g_return_val_if_fail (uri != NULL, NULL);
-
-	/* See section 5.2 in RFC 2396 */
-
-	/* FIXME bugzilla.eazel.com 4413: This function does not take
-	 * into account a BASE tag in an HTML document, so its
-	 * functionality differs from what Mozilla itself would do.
+	char *mutable_base_uri;
+	char *mutable_uri;
+	
+	char *uri_current;
+	gsize base_uri_length;
+	char *separator;
+	
+	/* We may need one extra character
+	 * to append a "/" to uri's that have no "/"
+	 * (such as help:)
 	 */
 
-	if (is_uri_relative (uri)) {
-		char *mutable_base_uri;
-		char *mutable_uri;
+	mutable_base_uri = g_malloc(strlen(base_uri)+2);
+	strcpy (mutable_base_uri, base_uri);
+		
+	uri_current = mutable_uri = g_strdup (uri);
 
-		char *uri_current;
-		gsize base_uri_length;
-		char *separator;
+	/* Chew off Fragment and Query from the base_url */
 
-		/* We may need one extra character
-		 * to append a "/" to uri's that have no "/"
-		 * (such as help:)
+	separator = strrchr (mutable_base_uri, '#'); 
+
+	if (separator) {
+		*separator = '\0';
+	}
+
+	separator = strrchr (mutable_base_uri, '?');
+
+	if (separator) {
+		*separator = '\0';
+	}
+
+	if ('/' == uri_current[0] && '/' == uri_current [1]) {
+		/* Relative URI's beginning with the authority
+		 * component inherit only the scheme from their parents
 		 */
 
-		mutable_base_uri = g_malloc(strlen(base_uri)+2);
-		strcpy (mutable_base_uri, base_uri);
-		
-		uri_current = mutable_uri = g_strdup (uri);
-
-		/* Chew off Fragment and Query from the base_url */
-
-		separator = strrchr (mutable_base_uri, '#'); 
+		separator = strchr (mutable_base_uri, ':');
 
 		if (separator) {
-			*separator = '\0';
-		}
+			separator[1] = '\0';
+		}			  
+	} else if ('/' == uri_current[0]) {
+		/* Relative URI's beginning with '/' absolute-path based
+		 * at the root of the base uri
+		 */
 
-		separator = strrchr (mutable_base_uri, '?');
+		separator = strchr (mutable_base_uri, ':');
 
+		/* g_assert (separator), really */
 		if (separator) {
-			*separator = '\0';
-		}
-
-		if ('/' == uri_current[0] && '/' == uri_current [1]) {
-			/* Relative URI's beginning with the authority
-			 * component inherit only the scheme from their parents
-			 */
-
-			separator = strchr (mutable_base_uri, ':');
-
-			if (separator) {
-				separator[1] = '\0';
-			}			  
-		} else if ('/' == uri_current[0]) {
-			/* Relative URI's beginning with '/' absolute-path based
-			 * at the root of the base uri
-			 */
-
-			separator = strchr (mutable_base_uri, ':');
-
-			/* g_assert (separator), really */
-			if (separator) {
-				/* If we start with //, skip past the authority section */
-				if ('/' == separator[1] && '/' == separator[2]) {
-					separator = strchr (separator + 3, '/');
-					if (separator) {
-						separator[0] = '\0';
-					}
-				} else {
-				/* If there's no //, just assume the scheme is the root */
-					separator[1] = '\0';
+			/* If we start with //, skip past the authority section */
+			if ('/' == separator[1] && '/' == separator[2]) {
+				separator = strchr (separator + 3, '/');
+				if (separator) {
+					separator[0] = '\0';
 				}
-			}
-		} else if ('#' != uri_current[0]) {
-			/* Handle the ".." convention for relative uri's */
-
-			/* If there's a trailing '/' on base_url, treat base_url
-			 * as a directory path.
-			 * Otherwise, treat it as a file path, and chop off the filename
-			 */
-
-			base_uri_length = strlen (mutable_base_uri);
-			if ('/' == mutable_base_uri[base_uri_length-1]) {
-				/* Trim off '/' for the operation below */
-				mutable_base_uri[base_uri_length-1] = 0;
 			} else {
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
+				/* If there's no //, just assume the scheme is the root */
+				separator[1] = '\0';
+			}
+		}
+	} else if ('#' != uri_current[0]) {
+		/* Handle the ".." convention for relative uri's */
+
+		/* If there's a trailing '/' on base_url, treat base_url
+		 * as a directory path.
+		 * Otherwise, treat it as a file path, and chop off the filename
+		 */
+
+		base_uri_length = strlen (mutable_base_uri);
+		if ('/' == mutable_base_uri[base_uri_length-1]) {
+			/* Trim off '/' for the operation below */
+			mutable_base_uri[base_uri_length-1] = 0;
+		} else {
+			separator = strrchr (mutable_base_uri, '/');
+			if (separator) {
+				/* Make sure we don't eat a domain part */
+				char *tmp = separator - 1;
+				if ((separator != mutable_base_uri) && (*tmp != '/')) {
 					*separator = '\0';
 				}
 			}
-
-			remove_internal_relative_components (uri_current);
-
-			/* handle the "../"'s at the beginning of the relative URI */
-			while (0 == strncmp ("../", uri_current, 3)) {
-				uri_current += 3;
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
-					*separator = '\0';
-				} else {
-					/* <shrug> */
-					break;
-				}
-			}
-
-			/* handle a ".." at the end */
-			if (uri_current[0] == '.' && uri_current[1] == '.' 
-			    && uri_current[2] == '\0') {
-
-			    	uri_current += 2;
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
-					*separator = '\0';
-				}
-			}
-
-			/* Re-append the '/' */
-			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
-			mutable_base_uri [strlen(mutable_base_uri)] = '/';
 		}
 
-		result = g_strconcat (mutable_base_uri, uri_current, NULL);
-		g_free (mutable_base_uri); 
-		g_free (mutable_uri); 
+		remove_internal_relative_components (uri_current);
 
-	} else {
-		result = g_strdup (uri);
+		/* handle the "../"'s at the beginning of the relative URI */
+		while (0 == strncmp ("../", uri_current, 3)) {
+			uri_current += 3;
+			separator = strrchr (mutable_base_uri, '/');
+			if (separator) {
+				*separator = '\0';
+			} else {
+				/* <shrug> */
+				break;
+			}
+		}
+
+		/* handle a ".." at the end */
+		if (uri_current[0] == '.' && uri_current[1] == '.' 
+		    && uri_current[2] == '\0') {
+
+			uri_current += 2;
+			separator = strrchr (mutable_base_uri, '/');
+			if (separator) {
+				*separator = '\0';
+			}
+		}
+
+		/* Re-append the '/' */
+		mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
+		mutable_base_uri [strlen(mutable_base_uri)] = '/';
 	}
+
+	result = g_strconcat (mutable_base_uri, uri_current, NULL);
+	g_free (mutable_base_uri); 
+	g_free (mutable_uri); 
 	
 	return result;
 }
@@ -817,13 +857,21 @@ gnome_vfs_uri_resolve_relative (const GnomeVFSURI *base,
 	char *text_new;
 	GnomeVFSURI *uri;
 
+	g_assert (relative_reference != NULL);
+
 	if (base == NULL) {
 		text_base = g_strdup ("");
 	} else {
 		text_base = gnome_vfs_uri_to_string (base, 0);
 	}
-	text_new = make_full_uri_from_relative (text_base, relative_reference);
 
+	if (is_uri_relative (relative_reference)) {
+		text_new = make_full_uri_from_relative (text_base, 
+							relative_reference);
+	} else {
+		text_new = g_strdup (relative_reference);
+	}
+	
 	uri = gnome_vfs_uri_new (text_new);
 
 	g_free (text_base);
@@ -1095,7 +1143,16 @@ gnome_vfs_uri_to_string (const GnomeVFSURI *uri,
 
 		if (top_level_uri->host_name != NULL
 			&& (hide_options & GNOME_VFS_URI_HIDE_HOST_NAME) == 0) {
-		       	g_string_append (string, top_level_uri->host_name);
+
+			/* Check for an IPv6 address. */
+
+			if (strchr (top_level_uri->host_name, ':')) {
+				g_string_append_c (string, '[');
+				g_string_append (string, top_level_uri->host_name);
+				g_string_append_c (string, ']');
+			} else {
+				g_string_append (string, top_level_uri->host_name);
+			}
 		}
 		
 		if (top_level_uri->host_port > 0 
@@ -1118,9 +1175,11 @@ gnome_vfs_uri_to_string (const GnomeVFSURI *uri,
 	}
 
 	if (uri->parent != NULL) {
+		gchar *uri_str;
+		uri_str = gnome_vfs_uri_to_string (uri->parent, hide_options);
 		g_string_prepend_c (string, '#');
-		g_string_prepend (string, gnome_vfs_uri_to_string (uri->parent, 
-								   hide_options));
+		g_string_prepend (string, uri_str);
+		g_free (uri_str);
 	}
 
 	result = string->str;
@@ -1882,26 +1941,6 @@ gnome_vfs_uri_list_free (GList *list)
 	g_list_free (gnome_vfs_uri_list_unref (list));
 }
 
-
-static gboolean
-is_uri_partial (const char *uri)
-{
-	const char *current;
-
-	/* RFC 2396 section 3.1 */
-	for (current = uri ; 
-		*current
-		&& 	((*current >= 'a' && *current <= 'z')
-			 || (*current >= 'A' && *current <= 'Z')
-			 || (*current >= '0' && *current <= '9')
-			 || ('-' == *current)
-			 || ('+' == *current)
-			 || ('.' == *current)) ;
-	     current++);
-
-	return  !(':' == *current);
-}
-
 /**
  * gnome_vfs_uri_make_full_from_relative:
  * @base_uri: a string representing the base URI
@@ -1910,7 +1949,8 @@ is_uri_partial (const char *uri)
  * Returns a full URI given a full base URI, and a secondary URI which may
  * be relative.
  *
- * Return value: the URI (NULL for some bad errors).
+ * Return value: a newly allocated string containing the URI 
+ * (NULL for some bad errors).
  **/
 char *
 gnome_vfs_uri_make_full_from_relative (const char *base_uri,
@@ -1926,115 +1966,10 @@ gnome_vfs_uri_make_full_from_relative (const char *base_uri,
 		result = g_strdup (relative_uri);
 	} else if (relative_uri == NULL) {
 		result = g_strdup (base_uri);
-	} else if (!is_uri_partial (relative_uri)) {
-		result = g_strdup (relative_uri);
+	} else if (is_uri_relative (relative_uri)) {
+		result = make_full_uri_from_relative (base_uri, relative_uri);
 	} else {
-		char *mutable_base_uri;
-		char *mutable_uri;
-
-		char *uri_current;
-		size_t base_uri_length;
-		char *separator;
-
-		mutable_base_uri = g_strdup (base_uri);
-		uri_current = mutable_uri = g_strdup (relative_uri);
-
-		/* Chew off Fragment and Query from the base_url */
-
-		separator = strrchr (mutable_base_uri, '#'); 
-
-		if (separator) {
-			*separator = '\0';
-		}
-
-		separator = strrchr (mutable_base_uri, '?');
-
-		if (separator) {
-			*separator = '\0';
-		}
-
-		if ('/' == uri_current[0] && '/' == uri_current [1]) {
-			/* Relative URI's beginning with the authority
-			 * component inherit only the scheme from their parents
-			 */
-
-			separator = strchr (mutable_base_uri, ':');
-
-			if (separator) {
-				separator[1] = '\0';
-			}			  
-		} else if ('/' == uri_current[0]) {
-			/* Relative URI's beginning with '/' absolute-path based
-			 * at the root of the base uri
-			 */
-
-			separator = strchr (mutable_base_uri, ':');
-
-			/* g_assert (separator), really */
-			if (separator) {
-				/* If we start with //, skip past the authority section */
-				if ('/' == separator[1] && '/' == separator[2]) {
-					separator = strchr (separator + 3, '/');
-					if (separator) {
-						separator[0] = '\0';
-					}
-				} else {
-				/* If there's no //, just assume the scheme is the root */
-					separator[1] = '\0';
-				}
-			}
-		} else if ('#' != uri_current[0]) {
-			/* Handle the ".." convention for relative uri's */
-
-			/* If there's a trailing '/' on base_url, treat base_url
-			 * as a directory path.
-			 * Otherwise, treat it as a file path, and chop off the filename
-			 */
-
-			base_uri_length = strlen (mutable_base_uri);
-			if ('/' == mutable_base_uri[base_uri_length-1]) {
-				/* Trim off '/' for the operation below */
-				mutable_base_uri[base_uri_length-1] = 0;
-			} else {
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
-					*separator = '\0';
-				}
-			}
-
-			remove_internal_relative_components (uri_current);
-
-			/* handle the "../"'s at the beginning of the relative URI */
-			while (0 == strncmp ("../", uri_current, 3)) {
-				uri_current += 3;
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
-					*separator = '\0';
-				} else {
-					/* <shrug> */
-					break;
-				}
-			}
-
-			/* handle a ".." at the end */
-			if (uri_current[0] == '.' && uri_current[1] == '.' 
-			    && uri_current[2] == '\0') {
-
-			    	uri_current += 2;
-				separator = strrchr (mutable_base_uri, '/');
-				if (separator) {
-					*separator = '\0';
-				}
-			}
-
-			/* Re-append the '/' */
-			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
-			mutable_base_uri [strlen(mutable_base_uri)] = '/';
-		}
-
-		result = g_strconcat (mutable_base_uri, uri_current, NULL);
-		g_free (mutable_base_uri); 
-		g_free (mutable_uri); 
+		result = g_strdup (relative_uri);
 	}
 	
 	return result;
@@ -2104,4 +2039,28 @@ gnome_vfs_uri_list_parse (const gchar* uri_list)
 	}
 
 	return g_list_reverse (result);
+}
+
+/* enumerations from "gnome-vfs-uri.h"
+ * This is normally automatically-generated, but glib-mkenums could not
+ * guess the correct get_type() function name for this enum.
+ */
+GType
+gnome_vfs_uri_hide_options_get_type (void)
+{
+  static GType etype = 0;
+  if (etype == 0) {
+    static const GFlagsValue values[] = {
+      { GNOME_VFS_URI_HIDE_NONE, "GNOME_VFS_URI_HIDE_NONE", "none" },
+      { GNOME_VFS_URI_HIDE_USER_NAME, "GNOME_VFS_URI_HIDE_USER_NAME", "user-name" },
+      { GNOME_VFS_URI_HIDE_PASSWORD, "GNOME_VFS_URI_HIDE_PASSWORD", "password" },
+      { GNOME_VFS_URI_HIDE_HOST_NAME, "GNOME_VFS_URI_HIDE_HOST_NAME", "host-name" },
+      { GNOME_VFS_URI_HIDE_HOST_PORT, "GNOME_VFS_URI_HIDE_HOST_PORT", "host-port" },
+      { GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD, "GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD", "toplevel-method" },
+      { GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER, "GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER", "fragment-identifier" },
+      { 0, NULL, NULL }
+    };
+    etype = g_flags_register_static ("GnomeVFSURIHideOptions", values);
+  }
+  return etype;
 }

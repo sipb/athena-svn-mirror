@@ -30,6 +30,7 @@ gnome-vfs-socket-buffer
 
 @socket_buffer: 
 @close_socket: 
+@cancellation: 
 @Returns: 
 
 
@@ -42,6 +43,7 @@ gnome-vfs-socket-buffer
 @buffer: 
 @bytes: 
 @bytes_read: 
+@cancellation: 
 @Returns: 
 
 
@@ -52,6 +54,7 @@ gnome-vfs-socket-buffer
 
 @socket_buffer: 
 @character: 
+@cancellation: 
 @Returns: 
 
 
@@ -64,6 +67,7 @@ gnome-vfs-socket-buffer
 @buffer: 
 @bytes: 
 @bytes_written: 
+@cancellation: 
 @Returns: 
 
 
@@ -73,8 +77,25 @@ gnome-vfs-socket-buffer
 </para>
 
 @socket_buffer: 
+@cancellation: 
 @Returns: 
 <!-- # Unused Parameters # -->
 @buffer: 
+
+
+<!-- ##### FUNCTION gnome_vfs_socket_buffer_read_until ##### -->
+<para>
+
+</para>
+
+@socket_buffer: 
+@buffer: 
+@bytes: 
+@boundary: 
+@boundary_len: 
+@bytes_read: 
+@got_boundary: 
+@cancellation: 
+@Returns: 
 
 

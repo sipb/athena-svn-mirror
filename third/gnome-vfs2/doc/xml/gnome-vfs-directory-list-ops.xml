@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-directory-list-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-directory-list-ops">
 <refmeta>
-<refentrytitle>
-Listing Directory Contents</refentrytitle>
+<refentrytitle>Listing Directory Contents</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Listing Directory Contents</refname><refpurpose>
+<refname>Listing Directory Contents</refname><refpurpose>
 Listing the contents of directories.</refpurpose>
 </refnamediv>
 
@@ -73,6 +71,8 @@ enum        <link linkend="GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisit
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -84,7 +84,7 @@ enum        <link linkend="GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisit
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSDirectoryVisitOptions"/>enum GnomeVFSDirectoryVisitOptions</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSDirectoryVisitOptions</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_DIRECTORY_VISIT_DEFAULT = 0,
 	GNOME_VFS_DIRECTORY_VISIT_SAMEFS = 1 &lt;&lt; 0,
 	GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK = 1 &lt;&lt; 1
@@ -114,7 +114,7 @@ file system as the parent
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSDirectoryVisitFunc"/>GnomeVFSDirectoryVisitFunc ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    (*GnomeVFSDirectoryVisitFunc)   (const <link linkend="gchar">gchar</link> *rel_path,
+<indexterm><primary>GnomeVFSDirectoryVisitFunc</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    (*GnomeVFSDirectoryVisitFunc)   (const <link linkend="gchar">gchar</link> *rel_path,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="gboolean">gboolean</link> recursing_will_loop,
                                              <link linkend="gpointer">gpointer</link> data,
@@ -144,7 +144,7 @@ file system as the parent
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-open"/>gnome_vfs_directory_open ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_open     (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> **handle,
+<indexterm><primary>gnome_vfs_directory_open</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_open     (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> **handle,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>
 <para>
@@ -168,7 +168,7 @@ entries one by one.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-open-from-uri"/>gnome_vfs_directory_open_from_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_open_from_uri
+<indexterm><primary>gnome_vfs_directory_open_from_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_open_from_uri
                                             (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> **handle,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>
@@ -193,7 +193,7 @@ entries one by one.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-read-next"/>gnome_vfs_directory_read_next ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_read_next
+<indexterm><primary>gnome_vfs_directory_read_next</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_read_next
                                             (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> *handle,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *file_info);</programlisting>
 <para>
@@ -213,7 +213,7 @@ the entry will be stored
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-close"/>gnome_vfs_directory_close ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_close    (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> *handle);</programlisting>
+<indexterm><primary>gnome_vfs_directory_close</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_close    (<link linkend="GnomeVFSDirectoryHandle">GnomeVFSDirectoryHandle</link> *handle);</programlisting>
 <para>
 Close <parameter>handle</parameter>.</para>
 <para>
@@ -227,7 +227,7 @@ Close <parameter>handle</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-visit"/>gnome_vfs_directory_visit ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit    (const <link linkend="gchar">gchar</link> *uri,
+<indexterm><primary>gnome_vfs_directory_visit</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit    (const <link linkend="gchar">gchar</link> *uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> info_options,
                                              <link linkend="GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</link> visit_options,
                                              <link linkend="GnomeVFSDirectoryVisitFunc">GnomeVFSDirectoryVisitFunc</link> callback,
@@ -258,7 +258,7 @@ retrieved
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-visit-uri"/>gnome_vfs_directory_visit_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_uri
+<indexterm><primary>gnome_vfs_directory_visit_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_uri
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> info_options,
                                              <link linkend="GnomeVFSDirectoryVisitOptions">GnomeVFSDirectoryVisitOptions</link> visit_options,
@@ -291,7 +291,7 @@ retrieved
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-visit-files"/>gnome_vfs_directory_visit_files ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_files
+<indexterm><primary>gnome_vfs_directory_visit_files</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_files
                                             (const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GList">GList</link> *file_list,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> info_options,
@@ -327,7 +327,7 @@ Affects the way visiting is done.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-visit-files-at-uri"/>gnome_vfs_directory_visit_files_at_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_files_at_uri
+<indexterm><primary>gnome_vfs_directory_visit_files_at_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_visit_files_at_uri
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GList">GList</link> *file_list,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> info_options,
@@ -363,7 +363,7 @@ Affects the way visiting is done.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-directory-list-load"/>gnome_vfs_directory_list_load ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_list_load
+<indexterm><primary>gnome_vfs_directory_list_load</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_directory_list_load
                                             (<link linkend="GList">GList</link> **list,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>

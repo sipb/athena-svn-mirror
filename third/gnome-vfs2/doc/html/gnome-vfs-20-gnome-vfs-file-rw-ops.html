@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reading and Writing</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations" title="File Handling"><link rel="previous" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="next" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#id2579229" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#id2579247" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-file-and-dirs-ops.html#gnome-vfs-file-operations"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-info-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-file-rw-ops"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Reading and Writing</span></h2><p>Reading and Writing &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#GnomeVFSSeekPosition">GnomeVFSSeekPosition</a>;
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#gnome-vfs-read">gnome_vfs_read</a>               (GnomeVFSHandle *handle,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#gnome-vfs-write">gnome_vfs_write</a>              (GnomeVFSHandle *handle,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#gnome-vfs-seek">gnome_vfs_seek</a>               (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#GnomeVFSSeekPosition">GnomeVFSSeekPosition</a> whence,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileOffset">GnomeVFSFileOffset</a> offset);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#gnome-vfs-tell">gnome_vfs_tell</a>               (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *offset_return);
+</pre></div><div class="refsect1" lang="en"><a name="id2579229"></a><h2>Description</h2><p>
+  Reading and writing operations are explained, also <i class="parameter"><tt>gnome_vfs_seek</tt></i>, which
+  is used to move the file pointer inside the file.
+</p></div><div class="refsect1" lang="en"><a name="id2579247"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2579253"></a><h3><a name="GnomeVFSSeekPosition"></a>enum GnomeVFSSeekPosition</h3><a class="indexterm" name="id2579264"></a><pre class="programlisting">typedef enum {
+        GNOME_VFS_SEEK_START,
+        GNOME_VFS_SEEK_CURRENT,
+        GNOME_VFS_SEEK_END
+} GnomeVFSSeekPosition;
+</pre><p>
+This is used to specify the start position for seek operations.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_VFS_SEEK_START</tt></span></td><td> Start of the file.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_SEEK_CURRENT</tt></span></td><td> Current position.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_SEEK_END</tt></span></td><td> End of the file.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579335"></a><h3><a name="gnome-vfs-read"></a>gnome_vfs_read ()</h3><a class="indexterm" name="id2579345"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_read               (GnomeVFSHandle *handle,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read);</pre><p>
+Read <i class="parameter"><tt>bytes</tt></i> from <i class="parameter"><tt>handle</tt></i>.  As with Unix system calls, the number of
+bytes read can effectively be less than <i class="parameter"><tt>bytes</tt></i> on return and will be
+stored in <i class="parameter"><tt>bytes_read</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> Handle of the file to read data from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> Pointer to a buffer that must be at least <i class="parameter"><tt>bytes</tt></i> bytes large
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td> Number of bytes to read
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_read</tt></i> :</span></td><td> Pointer to a variable that will hold the number of bytes
+effectively read on return.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579506"></a><h3><a name="gnome-vfs-write"></a>gnome_vfs_write ()</h3><a class="indexterm" name="id2579517"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_write              (GnomeVFSHandle *handle,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written);</pre><p>
+Write <i class="parameter"><tt>bytes</tt></i> into the file opened through <i class="parameter"><tt>handle</tt></i>.  As with Unix system
+calls, the number of bytes written can effectively be less than <i class="parameter"><tt>bytes</tt></i> on
+return and will be stored in <i class="parameter"><tt>bytes_written</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> Handle of the file to write data to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> Pointer to the buffer containing the data to be written
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes</tt></i> :</span></td><td> Number of bytes to write
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bytes_written</tt></i> :</span></td><td> Pointer to a variable that will hold the number of bytes
+effectively written on return.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579673"></a><h3><a name="gnome-vfs-seek"></a>gnome_vfs_seek ()</h3><a class="indexterm" name="id2579683"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_seek               (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-rw-ops.html#GnomeVFSSeekPosition">GnomeVFSSeekPosition</a> whence,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileOffset">GnomeVFSFileOffset</a> offset);</pre><p>
+Set the current position for reading/writing through <i class="parameter"><tt>handle</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> Handle for which the current position must be changed
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>whence</tt></i> :</span></td><td> Integer value representing the starting position
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> Number of bytes to skip from the position specified by <i class="parameter"><tt>whence</tt></i>
+(a positive value means to move forward; a negative one to move backwards)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579803"></a><h3><a name="gnome-vfs-tell"></a>gnome_vfs_tell ()</h3><a class="indexterm" name="id2579814"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_tell               (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *offset_return);</pre><p>
+Return the current position on <i class="parameter"><tt>handle</tt></i>. This is the point in the file
+pointed to by handle that reads and writes will occur on.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>handle</tt></i> :</span></td><td> Handle for which the current position must be retrieved
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset_return</tt></i> :</span></td><td> Pointer to a variable that will contain the current position
+on return
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html"><b>&lt;&lt; Basic File Operations</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-info-ops.html"><b>Getting and Setting File Information &gt;&gt;</b></a></td></tr></table></body></html>

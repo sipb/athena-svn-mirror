@@ -758,6 +758,7 @@ gnome_vfs_monitor_add (GnomeVFSMonitorHandle **handle,
 	}
 
 	if (!VFS_METHOD_HAS_FUNC(uri->method, monitor_add)) {
+		gnome_vfs_uri_unref (uri);
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 

@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-directory-find-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-directory-find-ops">
 <refmeta>
-<refentrytitle>
-Locating Standard Directories</refentrytitle>
+<refentrytitle>Locating Standard Directories</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Locating Standard Directories</refname><refpurpose>
+<refname>Locating Standard Directories</refname><refpurpose>
 Utilities for locating standard directories such as the desktop and trash</refpurpose>
 </refnamediv>
 
@@ -34,6 +32,8 @@ enum        <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind<
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -45,7 +45,7 @@ enum        <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind<
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSFindDirectoryKind"/>enum GnomeVFSFindDirectoryKind</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFindDirectoryKind</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_DIRECTORY_KIND_DESKTOP = 1000,
 	GNOME_VFS_DIRECTORY_KIND_TRASH = 1001
 } GnomeVFSFindDirectoryKind;
@@ -55,7 +55,7 @@ enum        <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind<
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-find-directory"/>gnome_vfs_find_directory ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_find_directory     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *near_uri,
+<indexterm><primary>gnome_vfs_find_directory</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_find_directory     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *near_uri,
                                              <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link> kind,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> **result,
                                              <link linkend="gboolean">gboolean</link> create_if_needed,

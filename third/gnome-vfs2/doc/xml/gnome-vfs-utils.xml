@@ -1,12 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-utils">
+<refentry id="gnome-vfs-20-gnome-vfs-utils">
 <refmeta>
 <refentrytitle>gnome-vfs-utils</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>gnome-vfs-utils</refname><refpurpose></refpurpose>
+<refname>gnome-vfs-utils</refname><refpurpose>various utilities functions to manipulate uris</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -15,46 +15,57 @@
 
 
 
-char*       <link linkend="gnome-vfs-format-file-size-for-display">gnome_vfs_format_file_size_for_display</link>
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-format-file-size-for-display">gnome_vfs_format_file_size_for_display</link>
                                             (<link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> size);
-char*       <link linkend="gnome-vfs-escape-string">gnome_vfs_escape_string</link>         (const char *string);
-char*       <link linkend="gnome-vfs-escape-path-string">gnome_vfs_escape_path_string</link>    (const char *path);
-char*       <link linkend="gnome-vfs-escape-host-and-path-string">gnome_vfs_escape_host_and_path_string</link>
-                                            (const char *path);
-char*       <link linkend="gnome-vfs-escape-slashes">gnome_vfs_escape_slashes</link>        (const char *string);
-char*       <link linkend="gnome-vfs-escape-set">gnome_vfs_escape_set</link>            (const char *string,
-                                             const char *match_set);
-char*       <link linkend="gnome-vfs-unescape-string">gnome_vfs_unescape_string</link>       (const char *escaped_string,
-                                             const char *illegal_characters);
-char*       <link linkend="gnome-vfs-make-uri-canonical">gnome_vfs_make_uri_canonical</link>    (const char *uri);
-char*       <link linkend="gnome-vfs-make-path-name-canonical">gnome_vfs_make_path_name_canonical</link>
-                                            (const char *path);
-char*       <link linkend="gnome-vfs-expand-initial-tilde">gnome_vfs_expand_initial_tilde</link>  (const char *path);
-char*       <link linkend="gnome-vfs-unescape-string-for-display">gnome_vfs_unescape_string_for_display</link>
-                                            (const char *escaped);
-char*       <link linkend="gnome-vfs-get-local-path-from-uri">gnome_vfs_get_local_path_from_uri</link>
-                                            (const char *uri);
-char*       <link linkend="gnome-vfs-get-uri-from-local-path">gnome_vfs_get_uri_from_local_path</link>
-                                            (const char *local_full_path);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-escape-string">gnome_vfs_escape_string</link>         (const <link linkend="char">char</link> *string);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-escape-path-string">gnome_vfs_escape_path_string</link>    (const <link linkend="char">char</link> *path);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-escape-host-and-path-string">gnome_vfs_escape_host_and_path_string</link>
+                                            (const <link linkend="char">char</link> *path);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-escape-slashes">gnome_vfs_escape_slashes</link>        (const <link linkend="char">char</link> *string);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-escape-set">gnome_vfs_escape_set</link>            (const <link linkend="char">char</link> *string,
+                                             const <link linkend="char">char</link> *match_set);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-unescape-string">gnome_vfs_unescape_string</link>       (const <link linkend="char">char</link> *escaped_string,
+                                             const <link linkend="char">char</link> *illegal_characters);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-uri-canonical">gnome_vfs_make_uri_canonical</link>    (const <link linkend="char">char</link> *uri);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-path-name-canonical">gnome_vfs_make_path_name_canonical</link>
+                                            (const <link linkend="char">char</link> *path);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-uri-from-input">gnome_vfs_make_uri_from_input</link>   (const <link linkend="char">char</link> *uri);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-uri-from-input-with-dirs">gnome_vfs_make_uri_from_input_with_dirs</link>
+                                            (const <link linkend="char">char</link> *uri,
+                                             <link linkend="GnomeVFSMakeURIDirs">GnomeVFSMakeURIDirs</link> dirs);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-uri-from-shell-arg">gnome_vfs_make_uri_from_shell_arg</link>
+                                            (const <link linkend="char">char</link> *uri);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-make-uri-full-from-relative">gnome_vfs_make_uri_full_from_relative</link>
+                                            (const <link linkend="char">char</link> *base_uri,
+                                             const <link linkend="char">char</link> *relative_uri);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-expand-initial-tilde">gnome_vfs_expand_initial_tilde</link>  (const <link linkend="char">char</link> *path);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-unescape-string-for-display">gnome_vfs_unescape_string_for_display</link>
+                                            (const <link linkend="char">char</link> *escaped);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-get-local-path-from-uri">gnome_vfs_get_local_path_from_uri</link>
+                                            (const <link linkend="char">char</link> *uri);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-get-uri-from-local-path">gnome_vfs_get_uri_from_local_path</link>
+                                            (const <link linkend="char">char</link> *local_full_path);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-is-executable-command-string">gnome_vfs_is_executable_command_string</link>
-                                            (const char *command_string);
-void        <link linkend="gnome-vfs-list-deep-free">gnome_vfs_list_deep_free</link>        (<link linkend="GList">GList</link> *list);
+                                            (const <link linkend="char">char</link> *command_string);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-list-deep-free">gnome_vfs_list_deep_free</link>        (<link linkend="GList">GList</link> *list);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-get-volume-free-space">gnome_vfs_get_volume_free_space</link>
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *vfs_uri,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *size);
-char*       <link linkend="gnome-vfs-icon-path-from-filename">gnome_vfs_icon_path_from_filename</link>
-                                            (const char *filename);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-icon-path-from-filename">gnome_vfs_icon_path_from_filename</link>
+                                            (const <link linkend="char">char</link> *filename);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-is-primary-thread">gnome_vfs_is_primary_thread</link>     (void);
-char*       <link linkend="gnome-vfs-get-uri-scheme">gnome_vfs_get_uri_scheme</link>        (const char *uri);
-<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-uris-match">gnome_vfs_uris_match</link>            (const char *uri_1,
-                                             const char *uri_2);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-get-uri-scheme">gnome_vfs_get_uri_scheme</link>        (const <link linkend="char">char</link> *uri);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-uris-match">gnome_vfs_uris_match</link>            (const <link linkend="char">char</link> *uri_1,
+                                             const <link linkend="char">char</link> *uri_2);
 #define     <link linkend="GNOME-VFS-ASSERT-PRIMARY-THREAD-CAPS">GNOME_VFS_ASSERT_PRIMARY_THREAD</link>
 #define     <link linkend="GNOME-VFS-ASSERT-SECONDARY-THREAD-CAPS">GNOME_VFS_ASSERT_SECONDARY_THREAD</link>
-<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-read-entire-file">gnome_vfs_read_entire_file</link>   (const char *uri,
-                                             int *file_size,
-                                             char **file_contents);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-read-entire-file">gnome_vfs_read_entire_file</link>   (const <link linkend="char">char</link> *uri,
+                                             <link linkend="int">int</link> *file_size,
+                                             <link linkend="char">char</link> **file_contents);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -73,7 +84,7 @@ char*       <link linkend="gnome-vfs-get-uri-scheme">gnome_vfs_get_uri_scheme</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-format-file-size-for-display"/>gnome_vfs_format_file_size_for_display ()</title>
-<programlisting>char*       gnome_vfs_format_file_size_for_display
+<indexterm><primary>gnome_vfs_format_file_size_for_display</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_format_file_size_for_display
                                             (<link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> size);</programlisting>
 <para>
 Formats the file size passed in <parameter>bytes</parameter> in a way that is easy for
@@ -90,7 +101,7 @@ gigabytes, choosing whatever is appropriate.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-escape-string"/>gnome_vfs_escape_string ()</title>
-<programlisting>char*       gnome_vfs_escape_string         (const char *string);</programlisting>
+<indexterm><primary>gnome_vfs_escape_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_escape_string         (const <link linkend="char">char</link> *string);</programlisting>
 <para>
 Escapes <parameter>string</parameter>, replacing any and all special characters 
 with equivalent escape sequences.</para>
@@ -106,7 +117,7 @@ but with all special characters escaped
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-escape-path-string"/>gnome_vfs_escape_path_string ()</title>
-<programlisting>char*       gnome_vfs_escape_path_string    (const char *path);</programlisting>
+<indexterm><primary>gnome_vfs_escape_path_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_escape_path_string    (const <link linkend="char">char</link> *path);</programlisting>
 <para>
 Escapes <parameter>path</parameter>, replacing only special characters that would not
 be found in paths (so '/', '&amp;', '=', and '?' will not be escaped by
@@ -123,8 +134,8 @@ with non-path characters escaped
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-escape-host-and-path-string"/>gnome_vfs_escape_host_and_path_string ()</title>
-<programlisting>char*       gnome_vfs_escape_host_and_path_string
-                                            (const char *path);</programlisting>
+<indexterm><primary>gnome_vfs_escape_host_and_path_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_escape_host_and_path_string
+                                            (const <link linkend="char">char</link> *path);</programlisting>
 <para>
 Escapes <parameter>path</parameter>, replacing only special characters that would not
 be found in paths or host name (so '/', '&amp;', '=', ':', '@' 
@@ -141,7 +152,7 @@ with non-path/host characters escaped
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-escape-slashes"/>gnome_vfs_escape_slashes ()</title>
-<programlisting>char*       gnome_vfs_escape_slashes        (const char *string);</programlisting>
+<indexterm><primary>gnome_vfs_escape_slashes</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_escape_slashes        (const <link linkend="char">char</link> *string);</programlisting>
 <para>
 Escapes only '/' and '%' characters in <parameter>string</parameter>, replacing
 them with their escape sequence equivalents.</para>
@@ -157,8 +168,8 @@ but with no unescaped '/' or '%' characters
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-escape-set"/>gnome_vfs_escape_set ()</title>
-<programlisting>char*       gnome_vfs_escape_set            (const char *string,
-                                             const char *match_set);</programlisting>
+<indexterm><primary>gnome_vfs_escape_set</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_escape_set            (const <link linkend="char">char</link> *string,
+                                             const <link linkend="char">char</link> *match_set);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -175,8 +186,8 @@ but with no unescaped '/' or '%' characters
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-unescape-string"/>gnome_vfs_unescape_string ()</title>
-<programlisting>char*       gnome_vfs_unescape_string       (const char *escaped_string,
-                                             const char *illegal_characters);</programlisting>
+<indexterm><primary>gnome_vfs_unescape_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_unescape_string       (const <link linkend="char">char</link> *escaped_string,
+                                             const <link linkend="char">char</link> *illegal_characters);</programlisting>
 <para>
 Decodes escaped characters (i.e. PERCENTxx sequences) in <parameter>escaped_string</parameter>.
 Characters are encoded in PERCENTxy form, where xy is the ASCII hex code 
@@ -198,7 +209,7 @@ in <parameter>illegal_characters</parameter>.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-make-uri-canonical"/>gnome_vfs_make_uri_canonical ()</title>
-<programlisting>char*       gnome_vfs_make_uri_canonical    (const char *uri);</programlisting>
+<indexterm role="2.2"><primary>gnome_vfs_make_uri_canonical</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_uri_canonical    (const <link linkend="char">char</link> *uri);</programlisting>
 <para>
 Standarizes the format of the uri being passed, so that it can be used
 later in other functions that expect a canonical URI.</para>
@@ -216,8 +227,8 @@ representation of <parameter>uri</parameter>.
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-make-path-name-canonical"/>gnome_vfs_make_path_name_canonical ()</title>
-<programlisting>char*       gnome_vfs_make_path_name_canonical
-                                            (const char *path);</programlisting>
+<indexterm><primary>gnome_vfs_make_path_name_canonical</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_path_name_canonical
+                                            (const <link linkend="char">char</link> *path);</programlisting>
 <para>
 Calls _gnome_vfs_canonicalize_pathname, allocating storage for the 
 result and providing for a cleaner memory management.</para>
@@ -231,8 +242,101 @@ result and providing for a cleaner memory management.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="gnome-vfs-make-uri-from-input"/>gnome_vfs_make_uri_from_input ()</title>
+<indexterm role="2.2"><primary>gnome_vfs_make_uri_from_input</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_uri_from_input   (const <link linkend="char">char</link> *uri);</programlisting>
+<para>
+Takes a user input path/URI and makes a valid URI out of it.
+</para>
+<para>
+This function is the reverse of gnome_vfs_format_uri_for_display
+but it also handles the fact that the user could have typed
+arbitrary UTF8 in the entry showing the string.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a possibly mangled "uri", in UTF8
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated uri.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.2
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-make-uri-from-input-with-dirs"/>gnome_vfs_make_uri_from_input_with_dirs ()</title>
+<indexterm role="2.4"><primary>gnome_vfs_make_uri_from_input_with_dirs</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_uri_from_input_with_dirs
+                                            (const <link linkend="char">char</link> *uri,
+                                             <link linkend="GnomeVFSMakeURIDirs">GnomeVFSMakeURIDirs</link> dirs);</programlisting>
+<para>
+Determines a fully qualified URL from a relative or absolute input path.
+Basically calls gnome_vfs_make_uri_from_input except it specifically
+tries to support paths relative to the specified directories (can be homedir
+and/or current directory).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a relative or absolute path
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dirs</parameter>&nbsp;:</term>
+<listitem><simpara> directory to use as a base directory if <parameter>uri</parameter> is a relative path.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated string containing the fully qualified URL
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.4
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-make-uri-from-shell-arg"/>gnome_vfs_make_uri_from_shell_arg ()</title>
+<indexterm role="2.2"><primary>gnome_vfs_make_uri_from_shell_arg</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_uri_from_shell_arg
+                                            (const <link linkend="char">char</link> *uri);</programlisting>
+<para>
+Similar to gnome_vfs_make_uri_from_input, except that:
+</para>
+<para>
+1) guesses relative paths instead of http domains
+2) doesn't bother stripping leading/trailing white space
+3) doesn't bother with ~ expansion--that's done by the shell</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a possibly mangled "uri"
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated uri
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.2
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-make-uri-full-from-relative"/>gnome_vfs_make_uri_full_from_relative ()</title>
+<indexterm role="2.2"><primary>gnome_vfs_make_uri_full_from_relative</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_make_uri_full_from_relative
+                                            (const <link linkend="char">char</link> *base_uri,
+                                             const <link linkend="char">char</link> *relative_uri);</programlisting>
+<para>
+Returns a full URI given a full base URI, and a secondary URI which may
+be relative.
+</para>
+<para>
+This function is deprecated, please use 
+gnome_vfs_uri_make_full_from_relative from gnome-vfs-uri.h</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>base_uri</parameter>&nbsp;:</term>
+<listitem><simpara> uri to use as the base for the full uri
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>relative_uri</parameter>&nbsp;:</term>
+<listitem><simpara> full or relative path to append to the base uri
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the URI (NULL for some bad errors).
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.2
+</para></refsect2>
+<refsect2>
 <title><anchor id="gnome-vfs-expand-initial-tilde"/>gnome_vfs_expand_initial_tilde ()</title>
-<programlisting>char*       gnome_vfs_expand_initial_tilde  (const char *path);</programlisting>
+<indexterm><primary>gnome_vfs_expand_initial_tilde</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_expand_initial_tilde  (const <link linkend="char">char</link> *path);</programlisting>
 <para>
 If <parameter>path</parameter> starts with a ~, representing the user's home
 directory, expand it to the actual path location.</para>
@@ -248,8 +352,8 @@ tilde (if there was one) converted to an actual path
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-unescape-string-for-display"/>gnome_vfs_unescape_string_for_display ()</title>
-<programlisting>char*       gnome_vfs_unescape_string_for_display
-                                            (const char *escaped);</programlisting>
+<indexterm><primary>gnome_vfs_unescape_string_for_display</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_unescape_string_for_display
+                                            (const <link linkend="char">char</link> *escaped);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -263,8 +367,8 @@ tilde (if there was one) converted to an actual path
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-local-path-from-uri"/>gnome_vfs_get_local_path_from_uri ()</title>
-<programlisting>char*       gnome_vfs_get_local_path_from_uri
-                                            (const char *uri);</programlisting>
+<indexterm><primary>gnome_vfs_get_local_path_from_uri</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_get_local_path_from_uri
+                                            (const <link linkend="char">char</link> *uri);</programlisting>
 <para>
 Create a local path for a file:/// URI. Do not use with URIs
 of other methods.</para>
@@ -274,15 +378,15 @@ of other methods.</para>
 <varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
 <listitem><simpara> URI to convert to a local path
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the local path 
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated string containing the local path 
 NULL is returned on error or if the uri isn't a file: URI
 without a fragment identifier (or chained URI).
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-uri-from-local-path"/>gnome_vfs_get_uri_from_local_path ()</title>
-<programlisting>char*       gnome_vfs_get_uri_from_local_path
-                                            (const char *local_full_path);</programlisting>
+<indexterm><primary>gnome_vfs_get_uri_from_local_path</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_get_uri_from_local_path
+                                            (const <link linkend="char">char</link> *local_full_path);</programlisting>
 <para>
 Returns a file:/// URI for the local path <parameter>local_full_path</parameter>.</para>
 <para>
@@ -291,14 +395,14 @@ Returns a file:/// URI for the local path <parameter>local_full_path</parameter>
 <varlistentry><term><parameter>local_full_path</parameter>&nbsp;:</term>
 <listitem><simpara> a full local filesystem path (i.e. not relative)
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the URI corresponding to <parameter>local_full_path</parameter> 
-(NULL for some bad errors).
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated string containing the URI corresponding 
+to <parameter>local_full_path</parameter> (NULL for some bad errors).
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-is-executable-command-string"/>gnome_vfs_is_executable_command_string ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_is_executable_command_string
-                                            (const char *command_string);</programlisting>
+<indexterm><primary>gnome_vfs_is_executable_command_string</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_is_executable_command_string
+                                            (const <link linkend="char">char</link> *command_string);</programlisting>
 <para>
 Checks if <parameter>command_string</parameter> starts with the full path of an executable file
 or an executable in $PATH.</para>
@@ -314,9 +418,9 @@ FALSE otherwise.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-list-deep-free"/>gnome_vfs_list_deep_free ()</title>
-<programlisting>void        gnome_vfs_list_deep_free        (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_list_deep_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_list_deep_free        (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
-Free <parameter>list</parameter>, and call <link linkend="g-free">g_free</link>() on all data members.</para>
+Free <parameter>list</parameter>, and call <link linkend="g-free"><function>g_free()</function></link> on all data members.</para>
 <para>
 
 </para><variablelist role="params">
@@ -326,12 +430,12 @@ Free <parameter>list</parameter>, and call <link linkend="g-free">g_free</link>(
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-volume-free-space"/>gnome_vfs_get_volume_free_space ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_volume_free_space
+<indexterm><primary>gnome_vfs_get_volume_free_space</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_volume_free_space
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *vfs_uri,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *size);</programlisting>
 <para>
 Stores in <parameter>size</parameter> the amount of free space on a volume.
-This only works for local file systems with the file: scheme.</para>
+This only works for URIs with the file: scheme.</para>
 <para>
 
 </para><variablelist role="params">
@@ -346,8 +450,8 @@ This only works for local file systems with the file: scheme.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-icon-path-from-filename"/>gnome_vfs_icon_path_from_filename ()</title>
-<programlisting>char*       gnome_vfs_icon_path_from_filename
-                                            (const char *filename);</programlisting>
+<indexterm><primary>gnome_vfs_icon_path_from_filename</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_icon_path_from_filename
+                                            (const <link linkend="char">char</link> *filename);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -361,7 +465,7 @@ This only works for local file systems with the file: scheme.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-is-primary-thread"/>gnome_vfs_is_primary_thread ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_is_primary_thread     (void);</programlisting>
+<indexterm><primary>gnome_vfs_is_primary_thread</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_is_primary_thread     (void);</programlisting>
 <para>
 Check if the current thread is the thread with the main glib event loop.</para>
 <para>
@@ -373,7 +477,7 @@ main glib event loop
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-uri-scheme"/>gnome_vfs_get_uri_scheme ()</title>
-<programlisting>char*       gnome_vfs_get_uri_scheme        (const char *uri);</programlisting>
+<indexterm role="2.2"><primary>gnome_vfs_get_uri_scheme</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_get_uri_scheme        (const <link linkend="char">char</link> *uri);</programlisting>
 <para>
 Retrieve the scheme used in <parameter>uri</parameter></para>
 <para>
@@ -382,15 +486,16 @@ Retrieve the scheme used in <parameter>uri</parameter></para>
 <varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
 <listitem><simpara> a stringified URI
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A string containing the scheme
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A newly allocated string containing the scheme, NULL
+if <parameter>uri</parameter> it doesn't seem to contain a scheme
 
 </simpara></listitem></varlistentry>
 </variablelist><para>Since  2.2
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uris-match"/>gnome_vfs_uris_match ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uris_match            (const char *uri_1,
-                                             const char *uri_2);</programlisting>
+<indexterm role="2.2"><primary>gnome_vfs_uris_match</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uris_match            (const <link linkend="char">char</link> *uri_1,
+                                             const <link linkend="char">char</link> *uri_2);</programlisting>
 <para>
 Compare two URIs.</para>
 <para>
@@ -409,7 +514,7 @@ Compare two URIs.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-ASSERT-PRIMARY-THREAD-CAPS"/>GNOME_VFS_ASSERT_PRIMARY_THREAD</title>
-<programlisting>#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
+<indexterm><primary>GNOME_VFS_ASSERT_PRIMARY_THREAD</primary></indexterm><programlisting>#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
 </programlisting>
 <para>
 Asserts that the current thread is the thread with 
@@ -419,7 +524,7 @@ the main glib event loop</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-ASSERT-SECONDARY-THREAD-CAPS"/>GNOME_VFS_ASSERT_SECONDARY_THREAD</title>
-<programlisting>#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
+<indexterm><primary>GNOME_VFS_ASSERT_SECONDARY_THREAD</primary></indexterm><programlisting>#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
 </programlisting>
 <para>
 Asserts that the current thread is NOT the thread with
@@ -429,9 +534,9 @@ the main glib event loop</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-read-entire-file"/>gnome_vfs_read_entire_file ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_read_entire_file   (const char *uri,
-                                             int *file_size,
-                                             char **file_contents);</programlisting>
+<indexterm role="2.2"><primary>gnome_vfs_read_entire_file</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_read_entire_file   (const <link linkend="char">char</link> *uri,
+                                             <link linkend="int">int</link> *file_size,
+                                             <link linkend="char">char</link> **file_contents);</programlisting>
 <para>
 Reads an entire file into memory for convenience. Beware accidentally
 loading large files into memory with this function.</para>

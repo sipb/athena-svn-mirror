@@ -158,13 +158,13 @@ _gnome_vfs_process_init (void)
 		return FALSE;
 	}
 
+        pid_to_process = g_hash_table_new (NULL, NULL);
+
 	sigchld_action.sa_handler =  sigchld_handler;
 	sigemptyset (&sigchld_action.sa_mask);
 	sigchld_action.sa_flags = 0;
 
 	sigaction (SIGCHLD, &sigchld_action, &old_sigchld_action);
-
-	pid_to_process = g_hash_table_new (NULL, NULL);
 
 	wake_up_channel_in = g_io_channel_unix_new (pipe_fd[0]);
 	wake_up_channel_out_fd = pipe_fd[1];
@@ -257,7 +257,7 @@ _gnome_vfs_process_free (GnomeVFSProcess *process)
  * 
  * Return value: A numeric value reporting the result of the operation.
  **/
-GnomeVFSProcessRunResult
+GnomeVFSProcessResult
 _gnome_vfs_process_signal (GnomeVFSProcess *process,
 			  guint signal_number)
 {

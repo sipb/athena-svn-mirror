@@ -38,8 +38,6 @@ typedef GnomeVFSResult (* GnomeVFSSniffBufferReadCall)(gpointer context,
 		
 typedef struct GnomeVFSMimeSniffBuffer GnomeVFSMimeSniffBuffer;
 
-void			 _gnome_vfs_mime_clear_magic_table 		(void);
-
 GnomeVFSMimeSniffBuffer	*_gnome_vfs_mime_sniff_buffer_new_from_handle 	
 					(GnomeVFSHandle 		*file);
 GnomeVFSMimeSniffBuffer	*_gnome_vfs_mime_sniff_buffer_new_from_memory 
@@ -63,7 +61,6 @@ GnomeVFSResult		 _gnome_vfs_mime_sniff_buffer_get
 
 const char  		*gnome_vfs_get_mime_type_for_buffer
 					 (GnomeVFSMimeSniffBuffer	*buffer);
-
 gboolean		 _gnome_vfs_sniff_buffer_looks_like_text
 					 (GnomeVFSMimeSniffBuffer	*buffer);
 gboolean		 _gnome_vfs_sniff_buffer_looks_like_mp3

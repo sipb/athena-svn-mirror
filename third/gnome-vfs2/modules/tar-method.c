@@ -541,7 +541,7 @@ do_get_file_info (GnomeVFSMethod *method,
 		  GnomeVFSFileInfoOptions options,
 		  GnomeVFSContext *context)
 {
-	TarFile *tar = ensure_tarfile (uri);
+	TarFile *tar;
 	GNode *node;
 	union TARPET_block *current;
 	gchar *name;
@@ -549,6 +549,11 @@ do_get_file_info (GnomeVFSMethod *method,
 	char *mime_type;
 	int i;
 
+	if (!uri->parent)
+		return GNOME_VFS_ERROR_INVALID_URI;
+
+	tar = ensure_tarfile (uri);
+	
 	if (uri->text)
 		node = tree_lookup_entry (tar->info_tree, uri->text);
 	else

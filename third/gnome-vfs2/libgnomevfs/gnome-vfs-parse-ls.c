@@ -52,51 +52,56 @@
 #endif
 
 
-/* FIXME bugzilla.eazel.com 1179:
- * remove these globals.  */
-static int saveuid = -993;
-static char saveuname[TUNMLEN];
-static int my_uid = -993;
+typedef struct {
+	int saveuid;
+	int my_uid;
+	char saveuname[TUNMLEN];
+} finduid_cache;
+#define finduid_cache_init {-993, -993}
 
-static int savegid = -993;
-static char savegname[TGNMLEN];
-static int my_gid = -993;
+typedef struct {
+	int savegid;
+	int my_gid;
+	char savegname[TGNMLEN];
+} findgid_cache;
+#define findgid_cache_init {-993, -993}
 
-#define myuid	( my_uid < 0? (my_uid = getuid ()): my_uid )
-#define	mygid	( my_gid < 0? (my_gid = getgid ()): my_gid )
-
-static int finduid (char *uname)
+static int finduid (char *uname, finduid_cache *cache)
 {
 	struct passwd *pw;
 	
-	if (uname[0] != saveuname[0]/* Quick test w/o proc call */
-	    || 0 != strncmp (uname, saveuname, TUNMLEN)) {
-		strncpy (saveuname, uname, TUNMLEN);
+	if (uname[0] != cache->saveuname[0]/* Quick test w/o proc call */
+	    || 0 != strncmp (uname, cache->saveuname, TUNMLEN)) {
+		strncpy (cache->saveuname, uname, TUNMLEN);
 		pw = getpwnam (uname);
 		if (pw) {
-			saveuid = pw->pw_uid;
+			cache->saveuid = pw->pw_uid;
 		} else {
-			saveuid = myuid;
+			if (cache->my_uid < 0)
+				cache->my_uid = getuid ();
+			cache->saveuid = cache->my_uid;
 		}
 	}
-	return saveuid;
+	return cache->saveuid;
 }
 
-static int findgid (char *gname)
+static int findgid (char *gname, findgid_cache *cache)
 {
 	struct group *gr;
 	
-	if (gname[0] != savegname[0]/* Quick test w/o proc call */
-	    || 0 != strncmp (gname, savegname, TUNMLEN)) {
-		strncpy (savegname, gname, TUNMLEN);
+	if (gname[0] != cache->savegname[0]/* Quick test w/o proc call */
+	    || 0 != strncmp (gname, cache->savegname, TUNMLEN)) {
+		strncpy (cache->savegname, gname, TUNMLEN);
 		gr = getgrnam (gname);
 		if (gr) {
-			savegid = gr->gr_gid;
+			cache->savegid = gr->gr_gid;
 		} else {
-			savegid = mygid;
+			if (cache->my_gid < 0)
+				cache->my_gid = getgid ();
+			cache->savegid = cache->my_gid;
 		}
 	}
-	return savegid;
+	return cache->savegid;
 }
 
 
@@ -477,6 +482,8 @@ gnome_vfs_parse_ls_lga (const char *p,
 	int i;
 	int nlink;
 	char *p_copy, *p_pristine;
+	finduid_cache uid_cache = finduid_cache_init;
+	findgid_cache gid_cache = findgid_cache_init;
 
 	if (strncmp (p, "total", 5) == 0)
 		return 0;
@@ -521,7 +528,7 @@ gnome_vfs_parse_ls_lga (const char *p,
 	s->st_nlink = nlink;
 
 	if (!is_num (columns[1]))
-		s->st_uid = finduid (columns [1]);
+		s->st_uid = finduid (columns [1], &uid_cache);
 	else
 		s->st_uid = (uid_t) atol (columns [1]);
 
@@ -546,13 +553,13 @@ gnome_vfs_parse_ls_lga (const char *p,
 		if (is_num (columns[2]))
 			s->st_gid = (gid_t) atol (columns [2]);
 		else
-			s->st_gid = findgid (columns [2]);
+			s->st_gid = findgid (columns [2], &gid_cache);
 		idx2 = 3;
 	}
 
 	/* This is device */
 	if (S_ISCHR (s->st_mode) || S_ISBLK (s->st_mode)) {
-		int maj, min;
+		guint32 maj, min;
 	
 		if (!is_num (columns[idx2])
 		    || sscanf (columns [idx2], " %d,", &maj) != 1)
@@ -563,7 +570,14 @@ gnome_vfs_parse_ls_lga (const char *p,
 			goto error;
 	
 #ifdef HAVE_ST_RDEV
-		s->st_rdev = ((maj & 0xff) << 8) | (min & 0xffff00ff);
+		/* Starting from linux 2.6, minor number is split between bits 
+		 * 0-7 and 20-31 of dev_t. This calculation is also valid
+		 * on older kernel with 8 bit minor and major numbers 
+		 * http://lwn.net/Articles/49966/ has a pretty good explanation
+		 * of the format of dev_t
+		 */
+		min = (min & 0xff) | ((min & 0xfff00) << 12);
+		s->st_rdev = ((maj & 0xfff) << 8) | (min & 0xfff000ff);
 #endif
 		s->st_size = 0;
 	

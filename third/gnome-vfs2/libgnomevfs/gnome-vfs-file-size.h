@@ -26,6 +26,8 @@
 #ifndef GNOME_VFS_FILE_SIZE_H
 #define GNOME_VFS_FILE_SIZE_H
 
+#include <glib/gtypes.h>
+
 /*
  * This defines GnomeVFSFileSize and GnomeVFSFileOffset
  *
@@ -45,7 +47,7 @@
 #define GNOME_VFS_SIZE_FORMAT_STR "Lu"
 #define GNOME_VFS_OFFSET_FORMAT_STR "Ld"
 
-typedef unsigned long long GnomeVFSFileSize;
-typedef long long GnomeVFSFileOffset;
+G_GNUC_EXTENSION typedef unsigned long long GnomeVFSFileSize;
+G_GNUC_EXTENSION typedef long long GnomeVFSFileOffset;
 
 #endif /* GNOME_VFS_FILE_SIZE_H */

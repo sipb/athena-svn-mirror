@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-result">
+<refentry id="gnome-vfs-20-gnome-vfs-result">
 <refmeta>
-<refentrytitle>
-GnomeVFSResult</refentrytitle>
+<refentrytitle>GnomeVFSResult</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-GnomeVFSResult</refname><refpurpose>
+<refname>GnomeVFSResult</refname><refpurpose>
 Result of I/O operations, the equivalent of errno</refpurpose>
 </refnamediv>
 
@@ -19,14 +17,18 @@ Result of I/O operations, the equivalent of errno</refpurpose>
 
 
 enum        <link linkend="GnomeVFSResult">GnomeVFSResult</link>;
-const char* <link linkend="gnome-vfs-result-to-string">gnome_vfs_result_to_string</link>      (<link linkend="GnomeVFSResult">GnomeVFSResult</link> result);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-result-to-string">gnome_vfs_result_to_string</link>      (<link linkend="GnomeVFSResult">GnomeVFSResult</link> result);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-result-from-errno-code">gnome_vfs_result_from_errno_code</link>
-                                            (int errno_code);
+                                            (<link linkend="int">int</link> errno_code);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-result-from-errno">gnome_vfs_result_from_errno</link>  (void);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-result-from-h-errno">gnome_vfs_result_from_h_errno</link>
                                             (void);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-result-from-h-errno-val">gnome_vfs_result_from_h_errno_val</link>
+                                            (<link linkend="int">int</link> h_errno_code);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -45,7 +47,7 @@ const char* <link linkend="gnome-vfs-result-to-string">gnome_vfs_result_to_strin
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSResult"/>enum GnomeVFSResult</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSResult</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_OK,
 	GNOME_VFS_ERROR_NOT_FOUND,
 	GNOME_VFS_ERROR_GENERIC,
@@ -88,6 +90,14 @@ const char* <link linkend="gnome-vfs-result-to-string">gnome_vfs_result_to_strin
 	GNOME_VFS_ERROR_SERVICE_OBSOLETE,
 	GNOME_VFS_ERROR_PROTOCOL_ERROR,
 	GNOME_VFS_ERROR_NO_MASTER_BROWSER,
+	GNOME_VFS_ERROR_NO_DEFAULT,
+	GNOME_VFS_ERROR_NO_HANDLER,
+	GNOME_VFS_ERROR_PARSE,
+	GNOME_VFS_ERROR_LAUNCH,
+	GNOME_VFS_ERROR_TIMEOUT,
+	GNOME_VFS_ERROR_NAMESERVER,
+	GNOME_VFS_ERROR_LOCKED,
+	GNOME_VFS_ERROR_DEPRECATED_FUNCTION,
 	GNOME_VFS_NUM_ERRORS
 } GnomeVFSResult;
 </programlisting>
@@ -96,7 +106,7 @@ const char* <link linkend="gnome-vfs-result-to-string">gnome_vfs_result_to_strin
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-result-to-string"/>gnome_vfs_result_to_string ()</title>
-<programlisting>const char* gnome_vfs_result_to_string      (<link linkend="GnomeVFSResult">GnomeVFSResult</link> result);</programlisting>
+<indexterm><primary>gnome_vfs_result_to_string</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_result_to_string      (<link linkend="GnomeVFSResult">GnomeVFSResult</link> result);</programlisting>
 <para>
 Returns a string representation of <parameter>result</parameter>, useful for debugging
 purposes, but probably not appropriate for passing to the user.</para>
@@ -111,8 +121,8 @@ purposes, but probably not appropriate for passing to the user.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-result-from-errno-code"/>gnome_vfs_result_from_errno_code ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_errno_code
-                                            (int errno_code);</programlisting>
+<indexterm><primary>gnome_vfs_result_from_errno_code</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_errno_code
+                                            (<link linkend="int">int</link> errno_code);</programlisting>
 <para>
 Converts a system errno value to a GnomeVFSResult.</para>
 <para>
@@ -126,7 +136,7 @@ Converts a system errno value to a GnomeVFSResult.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-result-from-errno"/>gnome_vfs_result_from_errno ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_errno  (void);</programlisting>
+<indexterm><primary>gnome_vfs_result_from_errno</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_errno  (void);</programlisting>
 <para>
 Converts the system errno to a GnomeVFSResult.</para>
 <para>
@@ -137,7 +147,7 @@ Converts the system errno to a GnomeVFSResult.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-result-from-h-errno"/>gnome_vfs_result_from_h_errno ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_h_errno
+<indexterm><primary>gnome_vfs_result_from_h_errno</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_h_errno
                                             (void);</programlisting>
 <para>
 Converts the system "h_errno" to a GnomeVFSResult (h_errno represents errors
@@ -146,6 +156,22 @@ accessing and finding internet hosts)</para>
 
 </para><variablelist role="params">
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a GnomeVFSResult equivalent to the current system "h_errno"
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-result-from-h-errno-val"/>gnome_vfs_result_from_h_errno_val ()</title>
+<indexterm><primary>gnome_vfs_result_from_h_errno_val</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_result_from_h_errno_val
+                                            (<link linkend="int">int</link> h_errno_code);</programlisting>
+<para>
+Converts the error code of <parameter>h_errno</parameter> into a <link linkend="GnomeVFSResult"><type>GnomeVFSResult</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>h_errno_code</parameter>&nbsp;:</term>
+<listitem><simpara> A integer containing representing the same error codes
+as the system h_errno.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The <link linkend="GnomeVFSResult"><type>GnomeVFSResult</type></link> equivalent to the h_errno error code.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

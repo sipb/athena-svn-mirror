@@ -2,7 +2,7 @@
 gnome-vfs-standard-callbacks
 
 <!-- ##### SECTION Short_Description ##### -->
-
+standard callbacks for use by gnome-vfs module writers
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -28,11 +28,15 @@ gnome-vfs-standard-callbacks
 
 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackAuthenticationOut ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackAuthenticationOut ##### -->
 <para>
 
 </para>
 
+@username: 
+@password: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS ##### -->
 <para>
@@ -41,17 +45,23 @@ gnome-vfs-standard-callbacks
 
 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackAdditionalHeadersIn ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackAdditionalHeadersIn ##### -->
 <para>
 
 </para>
 
+@uri: 
+@reserved1: 
+@reserved2: 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackAdditionalHeadersOut ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackAdditionalHeadersOut ##### -->
 <para>
 
 </para>
 
+@headers: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS ##### -->
 <para>
@@ -60,17 +70,24 @@ gnome-vfs-standard-callbacks
 
 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackReceivedHeadersIn ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackReceivedHeadersIn ##### -->
 <para>
 
 </para>
 
+@uri: 
+@headers: 
+@reserved1: 
+@reserved2: 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackReceivedHeadersOut ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackReceivedHeadersOut ##### -->
 <para>
 
 </para>
 
+@dummy: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE ##### -->
 <para>
@@ -79,15 +96,23 @@ gnome-vfs-standard-callbacks
 
 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackStatusMessageIn ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackStatusMessageIn ##### -->
 <para>
 
 </para>
 
+@uri: 
+@message: 
+@percentage: 
+@reserved1: 
+@reserved2: 
 
-<!-- ##### TYPEDEF GnomeVFSModuleCallbackStatusMessageOut ##### -->
+<!-- ##### STRUCT GnomeVFSModuleCallbackStatusMessageOut ##### -->
 <para>
 
 </para>
 
+@dummy: 
+@reserved1: 
+@reserved2: 
 

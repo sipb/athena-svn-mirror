@@ -33,8 +33,8 @@ System (version for POSIX threads).
 #include "gnome-vfs-async-job-map.h"
 #include "gnome-vfs-job-slave.h"
 #include "gnome-vfs-job-queue.h"
+#include "gnome-vfs-private-utils.h"
 #include <errno.h>
-#include <fcntl.h>
 #include <glib/gmessages.h>
 #include <glib/gstrfuncs.h>
 #include <libgnomevfs/gnome-vfs-cancellable-ops.h>
@@ -44,9 +44,20 @@ System (version for POSIX threads).
 #include <string.h>
 #include <unistd.h>
 
-GStaticPrivate job_private = G_STATIC_PRIVATE_INIT;
+static GStaticPrivate job_private = G_STATIC_PRIVATE_INIT;
 
 #if GNOME_VFS_JOB_DEBUG
+
+char *job_debug_types[] = {
+	"open", "open as channel",
+	"create", "create symbolic link",
+	"create as channel", "close",
+	"read", "write", "seek", "read write done",
+	"load directory", "find directory",
+	"xfer", "get file info", "set file info",
+	"module callback", "file control",
+	"**error**"
+};
 
 /* FIXME bugzilla.eazel.com 1130
  * - this is should use the correct static mutex initialization macro.
@@ -66,46 +77,6 @@ static gboolean dispatch_sync_job_callback          (gpointer              data)
 
 static void	clear_current_job 		    (void);
 static void	set_current_job 		    (GnomeVFSJob *context);
-
-static void
-set_fl (int fd, int flags)
-{
-	int val;
-
-	val = fcntl (fd, F_GETFL, 0);
-	if (val < 0) {
-		g_warning ("fcntl() F_GETFL failed: %s", strerror (errno));
-		return;
-	}
-
-	val |= flags;
-	
-	val = fcntl (fd, F_SETFL, val);
-	if (val < 0) {
-		g_warning ("fcntl() F_SETFL failed: %s", strerror (errno));
-		return;
-	}
-}
-
-static void
-clr_fl (int fd, int flags)
-{
-	int val;
-
-	val = fcntl (fd, F_GETFL, 0);
-	if (val < 0) {
-		g_warning ("fcntl() F_GETFL failed: %s", strerror (errno));
-		return;
-	}
-
-	val &= ~flags;
-	
-	val = fcntl (fd, F_SETFL, val);
-	if (val < 0) {
-		g_warning ("fcntl() F_SETFL failed: %s", strerror (errno));
-		return;
-	}
-}
 
 /*
  *   Find out whether or not a given job should be left in
@@ -132,6 +103,7 @@ _gnome_vfs_job_complete (GnomeVFSJob *job)
 		return FALSE;
 	case GNOME_VFS_OP_READ_WRITE_DONE:
 	case GNOME_VFS_OP_FILE_CONTROL:
+	case GNOME_VFS_OP_SEEK:
 		return FALSE;
 	
 	default:
@@ -146,14 +118,18 @@ static void
 job_oneway_notify (GnomeVFSJob *job, GnomeVFSNotifyResult *notify_result)
 {
 	if (_gnome_vfs_async_job_add_callback (job, notify_result)) {
-		JOB_DEBUG (("job %u, callback %u", GPOINTER_TO_UINT (notify_result->job_handle),
-			notify_result->callback_id));
+		JOB_DEBUG (("job %u, callback %u type '%s'",
+			    GPOINTER_TO_UINT (notify_result->job_handle),
+			    notify_result->callback_id,
+			    JOB_DEBUG_TYPE (job->op->type)));
 	
 		g_idle_add (dispatch_job_callback, notify_result);
 	} else {
-		JOB_DEBUG (("Barfing on oneway cancel %u (%d)",
+		JOB_DEBUG (("Barfing on oneway cancel %u (%d) type '%s'",
 			    GPOINTER_TO_UINT (notify_result->job_handle),
-			    job->op->type));
+			    job->op->type, JOB_DEBUG_TYPE (job->op->type)));
+		/* TODO: We can leak handle here, if an open succeded.
+		 * See bug #123472 */
 		_gnome_vfs_job_destroy_notify_result (notify_result);
 	}
 }
@@ -245,6 +221,14 @@ dispatch_write_callback (GnomeVFSNotifyResult *notify_result)
 						     notify_result->specifics.write.num_bytes,
 						     notify_result->specifics.write.bytes_written,
 						     notify_result->specifics.write.callback_data);
+}
+
+static void
+dispatch_seek_callback (GnomeVFSNotifyResult *notify_result)
+{
+	(* notify_result->specifics.seek.callback) (notify_result->job_handle,
+						    notify_result->specifics.seek.result,
+						    notify_result->specifics.seek.callback_data);
 }
 
 static void
@@ -383,10 +367,10 @@ _gnome_vfs_job_destroy_notify_result (GnomeVFSNotifyResult *notify_result)
 	case GNOME_VFS_OP_CREATE_AS_CHANNEL:
 	case GNOME_VFS_OP_CREATE_SYMBOLIC_LINK:
 	case GNOME_VFS_OP_WRITE:
+	case GNOME_VFS_OP_SEEK:
 	case GNOME_VFS_OP_OPEN:
 	case GNOME_VFS_OP_OPEN_AS_CHANNEL:
 	case GNOME_VFS_OP_READ:
-	case GNOME_VFS_OP_XFER:
 		g_free (notify_result);
 		break;
 		
@@ -418,6 +402,14 @@ _gnome_vfs_job_destroy_notify_result (GnomeVFSNotifyResult *notify_result)
 		g_free (notify_result);
 		break;
 
+	case GNOME_VFS_OP_XFER:
+		/* the XFER result is allocated on the stack */
+		break;
+		
+	case GNOME_VFS_OP_MODULE_CALLBACK:
+		/* the MODULE_CALLBACK result is allocated on the stack */
+		break;
+	
 	default:
 		g_assert_not_reached ();
 		break;
@@ -491,7 +483,8 @@ dispatch_job_callback (gpointer data)
 	
 	notify_result = (GnomeVFSNotifyResult *) data;
 
-	JOB_DEBUG (("%u", GPOINTER_TO_UINT (notify_result->job_handle)));	
+	JOB_DEBUG (("%u type '%s'", GPOINTER_TO_UINT (notify_result->job_handle),
+		    JOB_DEBUG_TYPE (notify_result->type)));
 	
 	_gnome_vfs_async_job_callback_valid (notify_result->callback_id, &valid, &cancelled);
 	_gnome_vfs_async_job_remove_callback (notify_result->callback_id);
@@ -582,6 +575,9 @@ dispatch_job_callback (gpointer data)
 		break;
 	case GNOME_VFS_OP_WRITE:
 		dispatch_write_callback (notify_result);
+		break;
+	case GNOME_VFS_OP_SEEK:
+		dispatch_seek_callback (notify_result);
 		break;
 	case GNOME_VFS_OP_FILE_CONTROL:
 		dispatch_file_control_callback (notify_result);
@@ -727,6 +723,7 @@ gnome_vfs_op_destroy (GnomeVFSOp *op)
 		break;
 	case GNOME_VFS_OP_READ:
 	case GNOME_VFS_OP_WRITE:
+	case GNOME_VFS_OP_SEEK:
 	case GNOME_VFS_OP_CLOSE:
 	case GNOME_VFS_OP_READ_WRITE_DONE:
 		break;
@@ -734,7 +731,7 @@ gnome_vfs_op_destroy (GnomeVFSOp *op)
 		g_free (op->specifics.file_control.operation);
 		break;
 	default:
-		g_warning (_("Unknown op type %u"), op->type);
+		g_warning (_("Unknown operation type %u"), op->type);
 	}
 	
 	g_assert (gnome_vfs_context_get_cancellation (op->context) != NULL);
@@ -748,8 +745,9 @@ gnome_vfs_op_destroy (GnomeVFSOp *op)
 void
 _gnome_vfs_job_go (GnomeVFSJob *job)
 {
-	JOB_DEBUG (("new job %u, op %d, unlocking job lock",
-		GPOINTER_TO_UINT (job->job_handle), job->op->type));
+	JOB_DEBUG (("new job %u, op %d, type '%s' unlocking job lock",
+		    GPOINTER_TO_UINT (job->job_handle), job->op->type,
+		    JOB_DEBUG_TYPE (job->op->type)));
 
 	/* Fire up the async job thread. */
 	if (!_gnome_vfs_job_schedule (job)) {
@@ -849,7 +847,7 @@ serve_channel_read (GnomeVFSHandle *handle,
 
 					fd = g_io_channel_unix_get_fd (channel_out);
 					
-					clr_fl (fd, O_NONBLOCK);
+					_gnome_vfs_clear_fd_flags (fd, O_NONBLOCK);
 				} else {
 					if (written_bytes_in_buffer > 0) {
 						/* Need to shift the unwritten bytes
@@ -1036,7 +1034,7 @@ execute_open_as_channel (GnomeVFSJob *job)
 	 * thread is blocking for some reason the slave can keep
 	 * reading data.
 	 */
-	set_fl (pipefd[1], O_NONBLOCK);
+	_gnome_vfs_set_fd_flags (pipefd[1], O_NONBLOCK);
 	
 	channel_in = g_io_channel_unix_new (pipefd[0]);
 	channel_out = g_io_channel_unix_new (pipefd[1]);
@@ -1256,6 +1254,30 @@ execute_write (GnomeVFSJob *job)
 									     job->op->context);
 
 	job->op->type = GNOME_VFS_OP_READ_WRITE_DONE;
+
+	job_oneway_notify (job, notify_result);
+}
+
+static void
+execute_seek (GnomeVFSJob *job)
+{
+	GnomeVFSResult result;
+	GnomeVFSSeekOp *seek_op;
+	GnomeVFSNotifyResult *notify_result;
+
+	seek_op = &job->op->specifics.seek;
+
+	result = gnome_vfs_seek_cancellable (job->handle,
+					     seek_op->whence,
+					     seek_op->offset,
+					     job->op->context);
+
+	notify_result = g_new0 (GnomeVFSNotifyResult, 1);
+	notify_result->job_handle = job->job_handle;
+	notify_result->type = job->op->type;
+	notify_result->specifics.seek.result = result;
+	notify_result->specifics.seek.callback = (GnomeVFSAsyncSeekCallback) job->op->callback;
+	notify_result->specifics.seek.callback_data = job->op->callback_data;
 
 	job_oneway_notify (job, notify_result);
 }
@@ -1612,7 +1634,8 @@ _gnome_vfs_job_execute (GnomeVFSJob *job)
 	if (!job->cancelled) {
 		set_current_job (job);
 
-		JOB_DEBUG (("executing %u %d", id, job->op->type));
+		JOB_DEBUG (("executing %u %d type %s", id, job->op->type,
+			    JOB_DEBUG_TYPE (job->op->type)));
 
 		switch (job->op->type) {
 		case GNOME_VFS_OP_OPEN:
@@ -1638,6 +1661,9 @@ _gnome_vfs_job_execute (GnomeVFSJob *job)
 			break;
 		case GNOME_VFS_OP_WRITE:
 			execute_write (job);
+			break;
+		case GNOME_VFS_OP_SEEK:
+			execute_seek (job);
 			break;
 		case GNOME_VFS_OP_LOAD_DIRECTORY:
 			execute_load_directory (job);

@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-file-size">
+<refentry id="gnome-vfs-20-gnome-vfs-file-size">
 <refmeta>
-<refentrytitle>
-GnomeVFSFileSize</refentrytitle>
+<refentrytitle>GnomeVFSFileSize</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-GnomeVFSFileSize</refname><refpurpose></refpurpose>
+<refname>GnomeVFSFileSize</refname><refpurpose></refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -32,6 +30,8 @@ typedef     <link linkend="GnomeVFSFileOffset">GnomeVFSFileOffset</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -43,35 +43,35 @@ typedef     <link linkend="GnomeVFSFileOffset">GnomeVFSFileOffset</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GNOME-VFS-OFFSET-IS-LONG-LONG-CAPS"/>GNOME_VFS_OFFSET_IS_LONG_LONG</title>
-<programlisting>#define GNOME_VFS_OFFSET_IS_LONG_LONG
+<indexterm><primary>GNOME_VFS_OFFSET_IS_LONG_LONG</primary></indexterm><programlisting>#define GNOME_VFS_OFFSET_IS_LONG_LONG
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-SIZE-FORMAT-STR-CAPS"/>GNOME_VFS_SIZE_FORMAT_STR</title>
-<programlisting>#define GNOME_VFS_SIZE_FORMAT_STR "Lu"
+<indexterm><primary>GNOME_VFS_SIZE_FORMAT_STR</primary></indexterm><programlisting>#define GNOME_VFS_SIZE_FORMAT_STR "Lu"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-OFFSET-FORMAT-STR-CAPS"/>GNOME_VFS_OFFSET_FORMAT_STR</title>
-<programlisting>#define GNOME_VFS_OFFSET_FORMAT_STR "Ld"
+<indexterm><primary>GNOME_VFS_OFFSET_FORMAT_STR</primary></indexterm><programlisting>#define GNOME_VFS_OFFSET_FORMAT_STR "Ld"
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFileSize"/>GnomeVFSFileSize</title>
-<programlisting>typedef unsigned long long GnomeVFSFileSize;
+<indexterm><primary>GnomeVFSFileSize</primary></indexterm><programlisting>G_GNUC_EXTENSION typedef unsigned long long GnomeVFSFileSize;
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFileOffset"/>GnomeVFSFileOffset</title>
-<programlisting>typedef long long GnomeVFSFileOffset;
+<indexterm><primary>GnomeVFSFileOffset</primary></indexterm><programlisting>G_GNUC_EXTENSION typedef long long GnomeVFSFileOffset;
 </programlisting>
 <para>
 

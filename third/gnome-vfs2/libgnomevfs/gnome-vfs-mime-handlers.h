@@ -65,8 +65,9 @@ typedef struct {
  * This data structure describes an action that can be done 
  * on a file.
  **/
+typedef struct _GnomeVFSMimeAction GnomeVFSMimeAction;
 
-typedef struct {
+struct _GnomeVFSMimeAction{
 	GnomeVFSMimeActionType action_type;
 	union {
 		Bonobo_ServerInfo *component;
@@ -76,60 +77,19 @@ typedef struct {
 
 	/* Padded to avoid future breaks in ABI compatibility */
 	void *reserved1;
-} GnomeVFSMimeAction;
+};
 
 GnomeVFSMimeApplication *gnome_vfs_mime_application_copy                   (GnomeVFSMimeApplication *application);
 GnomeVFSMimeActionType   gnome_vfs_mime_get_default_action_type            (const char              *mime_type);
 GnomeVFSMimeAction *     gnome_vfs_mime_get_default_action                 (const char              *mime_type);
 GnomeVFSMimeApplication *gnome_vfs_mime_get_default_application            (const char              *mime_type);
 Bonobo_ServerInfo *      gnome_vfs_mime_get_default_component              (const char              *mime_type);
-GList *                  gnome_vfs_mime_get_short_list_applications        (const char              *mime_type);
-GList *                  gnome_vfs_mime_get_short_list_components          (const char              *mime_type);
 GList *                  gnome_vfs_mime_get_all_applications               (const char              *mime_type);
 GList *                  gnome_vfs_mime_get_all_components                 (const char              *mime_type);
-GnomeVFSResult           gnome_vfs_mime_set_default_action_type            (const char              *mime_type,
-									    GnomeVFSMimeActionType   action_type);
-GnomeVFSResult           gnome_vfs_mime_set_default_application            (const char              *mime_type,
-									    const char              *application_id);
-GnomeVFSResult           gnome_vfs_mime_set_default_component              (const char              *mime_type,
-									    const char              *component_iid);
 
 const char  		*gnome_vfs_mime_get_icon 			   (const char 		    *mime_type);
-GnomeVFSResult  	 gnome_vfs_mime_set_icon 			   (const char 		    *mime_type,
-									    const char		    *filename);
 const char 	        *gnome_vfs_mime_get_description   		   (const char              *mime_type);
-GnomeVFSResult		 gnome_vfs_mime_set_description			   (const char		    *mime_type,
-									    const char		    *description);
-
 gboolean 	         gnome_vfs_mime_can_be_executable   		   (const char              *mime_type);
-GnomeVFSResult	 	 gnome_vfs_mime_set_can_be_executable   	   (const char              *mime_type,
-									    gboolean		     new_value);
-
-/* Stored as delta to current user level - API function computes delta and stores in prefs */
-GnomeVFSResult           gnome_vfs_mime_set_short_list_applications        (const char              *mime_type,
-									    GList                   *application_ids);
-GnomeVFSResult           gnome_vfs_mime_set_short_list_components          (const char              *mime_type,
-									    GList                   *component_iids);
-GnomeVFSResult           gnome_vfs_mime_add_application_to_short_list      (const char              *mime_type,
-									    const char              *application_id);
-GnomeVFSResult           gnome_vfs_mime_remove_application_from_short_list (const char              *mime_type,
-									    const char              *application_id);
-GnomeVFSResult           gnome_vfs_mime_add_component_to_short_list        (const char              *mime_type,
-									    const char              *iid);
-GnomeVFSResult           gnome_vfs_mime_remove_component_from_short_list   (const char              *mime_type,
-									    const char              *iid);
-GnomeVFSResult           gnome_vfs_mime_add_extension                      (const char              *mime_type,
-									    const char              *extension);
-GnomeVFSResult           gnome_vfs_mime_remove_extension                   (const char              *mime_type,
-									    const char              *extension);
-
-
-/* No way to override system list; can only add. */
-GnomeVFSResult           gnome_vfs_mime_extend_all_applications            (const char              *mime_type,
-									    GList                   *application_ids);
-/* Only "user" entries may be removed. */
-GnomeVFSResult           gnome_vfs_mime_remove_from_all_applications       (const char              *mime_type,
-									    GList                   *application_ids);
 GnomeVFSMimeApplication *gnome_vfs_mime_application_new_from_id            (const char              *id);
 void                     gnome_vfs_mime_application_free                   (GnomeVFSMimeApplication *application);
 void                     gnome_vfs_mime_action_free                        (GnomeVFSMimeAction      *action);
@@ -149,6 +109,66 @@ GList *                  gnome_vfs_mime_remove_component_from_list         (GLis
 									    gboolean                *did_remove);
 GList *                  gnome_vfs_mime_id_list_from_component_list        (GList                   *components);
 GList *                  gnome_vfs_mime_id_list_from_application_list      (GList                   *applications);
+
+
+/* For launching mime actions & application */
+GnomeVFSResult           gnome_vfs_mime_action_launch                      (GnomeVFSMimeAction      *action,
+									    GList                   *uris);
+GnomeVFSResult           gnome_vfs_mime_action_launch_with_env             (GnomeVFSMimeAction      *action,
+									    GList                   *uris,
+									    char                   **envp);
+GnomeVFSResult           gnome_vfs_mime_application_launch                 (GnomeVFSMimeApplication *app,
+									    GList                   *uris);
+GnomeVFSResult           gnome_vfs_mime_application_launch_with_env	   (GnomeVFSMimeApplication *app,
+									    GList                   *uris,
+									    char                   **envp);
+
+#ifndef GNOME_VFS_DISABLE_DEPRECATED
+
+/* Stored as delta to current user level - API function computes delta and stores in prefs */
+GnomeVFSResult           gnome_vfs_mime_add_extension                      (const char              *mime_type,
+									    const char              *extension);
+GnomeVFSResult           gnome_vfs_mime_remove_extension                   (const char              *mime_type,
+									    const char              *extension);
+GnomeVFSResult           gnome_vfs_mime_set_default_action_type            (const char              *mime_type,
+									    GnomeVFSMimeActionType   action_type);
+GnomeVFSResult           gnome_vfs_mime_set_default_application            (const char              *mime_type,
+									    const char              *application_id);
+GnomeVFSResult           gnome_vfs_mime_set_default_component              (const char              *mime_type,
+									    const char              *component_iid);
+GnomeVFSResult  	 gnome_vfs_mime_set_icon 			   (const char 		    *mime_type,
+									    const char		    *filename);
+GnomeVFSResult		 gnome_vfs_mime_set_description			   (const char		    *mime_type,
+									    const char		    *description);
+
+GnomeVFSResult	 	 gnome_vfs_mime_set_can_be_executable   	   (const char              *mime_type,
+									    gboolean		     new_value);
+
+
+/* No way to override system list; can only add. */
+GnomeVFSResult           gnome_vfs_mime_extend_all_applications            (const char              *mime_type,
+									    GList                   *application_ids);
+/* Only "user" entries may be removed. */
+GnomeVFSResult           gnome_vfs_mime_remove_from_all_applications       (const char              *mime_type,
+									    GList                   *application_ids);
+
+
+GList *                  gnome_vfs_mime_get_short_list_applications        (const char              *mime_type);
+GList *                  gnome_vfs_mime_get_short_list_components          (const char              *mime_type);
+GnomeVFSResult           gnome_vfs_mime_set_short_list_applications        (const char              *mime_type,
+									    GList                   *application_ids);
+GnomeVFSResult           gnome_vfs_mime_set_short_list_components          (const char              *mime_type,
+									    GList                   *component_iids);
+GnomeVFSResult           gnome_vfs_mime_add_application_to_short_list      (const char              *mime_type,
+									    const char              *application_id);
+GnomeVFSResult           gnome_vfs_mime_remove_application_from_short_list (const char              *mime_type,
+									    const char              *application_id);
+GnomeVFSResult           gnome_vfs_mime_add_component_to_short_list        (const char              *mime_type,
+									    const char              *iid);
+GnomeVFSResult           gnome_vfs_mime_remove_component_from_short_list   (const char              *mime_type,
+									    const char              *iid);
+
+#endif /* GNOME_VFS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

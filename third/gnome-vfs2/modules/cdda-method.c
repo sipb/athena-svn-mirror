@@ -123,7 +123,7 @@ cdda_context_new (cdrom_drive *drive, GnomeVFSURI *uri)
 	context->access_count = 0;
 	context->cddb_discid = CDDBDiscid (drive);
 
-	// Look up CDDB info
+	/* Look up CDDB info */
 	gconf_client = gconf_client_get_default ();
 		
 	use_proxy = gconf_client_get_bool (gconf_client, USE_PROXY_KEY, NULL);
@@ -175,11 +175,11 @@ cdda_set_file_info_for_root (CDDAContext *context, GnomeVFSURI *uri)
 {
 	g_assert (context);
 
-	// We don't know the io_block size
+	/* We don't know the io_block size */
 	context->file_info->io_block_size = 0;
 	context->file_info->valid_fields -= GNOME_VFS_FILE_INFO_FIELDS_IO_BLOCK_SIZE;		
 	context->file_info->name = gnome_vfs_uri_extract_short_path_name (uri);
-	//context->file_info->name = g_strdup (context->disc_data.data_title);		
+	/*context->file_info->name = g_strdup (context->disc_data.data_title);*/
 	context->file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
 	context->file_info->mime_type = g_strdup ("x-directory/normal");
 	context->file_info->atime = time (NULL);
@@ -231,7 +231,7 @@ get_track_index_from_uri (CDDAContext *context, GnomeVFSURI *uri) {
 	escaped_name = gnome_vfs_unescape_string_for_display (base_name);
 	g_free (base_name);
 
-	// Check and see if filename is in cddb data list
+	/* Check and see if filename is in cddb data list */
 	for (index = 0; index < context->drive->tracks; index++) {
 		if (strcmp (escaped_name, context->disc_data.data_track[index].track_name) == 0) {
 			g_free (escaped_name);
@@ -257,9 +257,9 @@ do_open (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 	result = GNOME_VFS_ERROR_GENERIC;
 	*method_handle = NULL;
 
-	//g_message ("cdda do_open: %s", gnome_vfs_uri_get_path (uri));
+	/*g_message ("cdda do_open: %s", gnome_vfs_uri_get_path (uri));*/
 
-	// Load in context for disc if we not yet done so.
+	/* Load in context for disc if we not yet done so. */
 	if (global_context == NULL) {
 		base_name = gnome_vfs_uri_extract_short_path_name (uri);
 		if (base_name[0] == GNOME_VFS_URI_PATH_CHR) {
@@ -272,7 +272,7 @@ do_open (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 		dirname = gnome_vfs_uri_extract_dirname (uri);			
 		schemedir = g_strdup_printf ("cdda://%s", dirname);
 		
-		// Remove trailing '/' if there is one 
+		/* Remove trailing '/' if there is one */
 		sep = strrchr (schemedir, '/');
 		if (sep != NULL) {
 			schemedir [strlen (schemedir) - 1] = '\0';
@@ -284,18 +284,18 @@ do_open (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 		gnome_vfs_uri_unref (dir_uri);
 
 		if (result != GNOME_VFS_OK) {
-			//g_message ("cdda do_open: Unable to load context");
+			/*g_message ("cdda do_open: Unable to load context");*/
 			return result;
 		}
 	}
 
 	if (mode == GNOME_VFS_OPEN_READ) {
-		// Make sure file is present
+		/* Make sure file is present */
 		if (is_file_is_on_disc (global_context, uri)) {
 			result = GNOME_VFS_OK;			
 			read_handle = read_handle_new (uri);
 			
-			// Set up cdparanoia
+			/* Set up cdparanoia */
 			if (!read_handle->inited) {
 				int track;
 				int paranoia_mode;
@@ -307,7 +307,7 @@ do_open (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 				}
 				
  				if (!cdda_track_audiop (global_context->drive, track)) {
-    					//g_message ("Error. Selected track is not an audio track.");
+    					/*g_message ("Error. Selected track is not an audio track.");*/
     					return GNOME_VFS_ERROR_GENERIC;
   				}
 
@@ -323,7 +323,7 @@ do_open (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 				read_handle->last_sector += offset;
 
 				read_handle->paranoia = paranoia_init (global_context->drive);
-				//paranoia_mode = PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP;
+				/*paranoia_mode = PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP;*/
 				paranoia_mode = PARANOIA_MODE_DISABLE;
   				paranoia_modeset (read_handle->paranoia, paranoia_mode);
 				cdda_verbose_set (global_context->drive, CDDA_MESSAGE_PRINTIT,CDDA_MESSAGE_FORGETIT);
@@ -351,7 +351,7 @@ do_close (GnomeVFSMethod *method,
 {
 	ReadHandle *read_handle;
 	
-	//g_message ("cdda do_close");
+	/*g_message ("cdda do_close");*/
 
 	g_return_val_if_fail (method_handle != NULL, GNOME_VFS_ERROR_INTERNAL);
 
@@ -538,10 +538,10 @@ get_file_info_for_basename (CDDAContext *context, const char *base_name)
 		return GNOME_VFS_ERROR_GENERIC;
 	}
 	
-	// Check and see if filename is in cddb data list
+	/* Check and see if filename is in cddb data list */
 	for (index = 0; index < context->drive->tracks; index++) {
 		if (strcmp (base_name, context->disc_data.data_track[index].track_name) == 0) {
-			// Populate file info struture
+			/* Populate file info structure */
 			context->file_info->io_block_size = CD_FRAMESIZE_RAW;			
 			context->file_info->name = g_strdup (base_name);
 			context->file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
@@ -577,29 +577,29 @@ do_get_file_info (GnomeVFSMethod *method,
 	GnomeVFSResult result;
 	char *escaped_name;
 
-	//g_message ("do_get_file_info: %s", gnome_vfs_uri_get_path (uri));
+	/*g_message ("do_get_file_info: %s", gnome_vfs_uri_get_path (uri));*/
 	
 	use_base = FALSE;
 	use_cache = FALSE;
 
 	result = GNOME_VFS_OK;
 	
-	// Get basename
+	/* Get basename */
 	base_name = gnome_vfs_uri_extract_short_path_name (uri);
 	escaped_name = gnome_vfs_unescape_string_for_display (base_name);
 	g_free (base_name);
 
-	// Extract path and attempt to open
+	/* Extract path and attempt to open */
 	drive = open_cdda_device (uri);
 	if (drive == NULL) {
-			// OK. We failed to open. Let's try the parent...
+			/* OK. We failed to open. Let's try the parent... */
 			gchar *dirname, *schemedir, *sep;
 			GnomeVFSURI *dir_uri;
 			
 			dirname = gnome_vfs_uri_extract_dirname (uri);			
 			schemedir = g_strdup_printf ("cdda://%s", dirname);
 			
-			// Remove trailing '/' if there is one 
+			/* Remove trailing '/' if there is one  */
 			sep = strrchr (schemedir, '/');
 			if (sep != NULL) {
 				schemedir [strlen (schemedir) - 1] = '\0';
@@ -620,22 +620,26 @@ do_get_file_info (GnomeVFSMethod *method,
 			use_base = TRUE;
 	}
 
-	// Check and see if we already have opened and stashed this drive
+	/* Check and see if we already have opened and stashed this drive */
 	if (!use_base) {
 		if (global_context != NULL) {
+#ifdef __linux__
 			if (strcmp (drive->cdda_device_name, global_context->drive->cdda_device_name) == 0) {
+#elif defined(__FreeBSD__)
+			if (strcmp (drive->dev->device_path, global_context->drive->dev->device_path) == 0) {
+#endif
 				use_cache = TRUE;
 				cdda_close (drive);
 				gnome_vfs_file_info_copy (file_info, global_context->file_info);
 			} else {
-				// We have a new drive.
+				/* We have a new drive. */
 				cdda_context_free (global_context);
 				global_context = cdda_context_new (drive, uri);
 				cdda_set_file_info_for_root (global_context, uri);
 				gnome_vfs_file_info_copy (file_info, global_context->file_info);
 			}			
 		} else {
-			// Create a new context
+			/* Create a new context */
 			global_context = cdda_context_new (drive, uri);
 			cdda_set_file_info_for_root (global_context, uri);
 			gnome_vfs_file_info_copy (file_info, global_context->file_info);
@@ -671,22 +675,22 @@ do_open_directory (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 	use_base = FALSE;
 	use_cache = FALSE;
 	
-	// Get basename
+	/* Get basename */
 	base_name = gnome_vfs_uri_extract_short_path_name (uri);
 	escaped_name = gnome_vfs_unescape_string_for_display (base_name);
 	g_free (base_name);
 
-	// Make sure we can open URI
+	/* Make sure we can open URI */
 	drive = open_cdda_device (uri);
 	if (drive == NULL) {								
-			// OK. We failed to open. Let's try the parent...
+			/* OK. We failed to open. Let's try the parent... */
 			gchar *dirname, *schemedir, *sep;
 			GnomeVFSURI *dir_uri;
 
 			dirname = gnome_vfs_uri_extract_dirname (uri);			
 			schemedir = g_strdup_printf ("cdda://%s", dirname);
 			
-			// Remove trailing '/' if there is one 
+			/* Remove trailing '/' if there is one */
 			sep = strrchr (schemedir, '/');
 			if (sep != NULL) {
 				schemedir [strlen (schemedir) - 1] = '\0';
@@ -707,25 +711,29 @@ do_open_directory (GnomeVFSMethod *method, GnomeVFSMethodHandle **method_handle,
 	}
 
 	if (!use_base) {
-		// Check for cache
+		/* Check for cache */
 		if (global_context != NULL) {
+#ifdef __linux__
 				if (strcmp (drive->cdda_device_name, global_context->drive->cdda_device_name) != 0) {
-					//	Clear old cache
+#elif defined(__FreeBSD__)
+				if (strcmp (drive->dev->device_path, global_context->drive->dev->device_path) != 0) {
+#endif
+					/*	Clear old cache */
 					cdda_context_free (global_context);
 					global_context = cdda_context_new (drive, uri);
 					cdda_set_file_info_for_root (global_context, uri);
 				} else {
-					//g_message ("Using cache");
+					/* g_message ("Using cache"); */
 					cdda_close (drive);
 				}
 		} else {
-			// Allocate new context
+			/* Allocate new context */
 			global_context = cdda_context_new (drive, uri);
 			cdda_set_file_info_for_root (global_context, uri);
 		}
 	} else {
-		// This is a file. Blast cache.
-		//g_message ("Use base: %s", escaped_name);
+		/* This is a file. Blast cache.*/
+		/* g_message ("Use base: %s", escaped_name); */
 		cdda_context_free (global_context);
 		global_context = NULL;
 		*method_handle = NULL;
@@ -748,10 +756,10 @@ do_close_directory (GnomeVFSMethod *method,
 {
 	CDDAContext *cdda_context = (CDDAContext *)method_handle;
 
-	//g_message ("cdda do_close_directory");
+	/*g_message ("cdda do_close_directory");*/
 
 	if (cdda_context == NULL) {
-		//g_message ("cdda do_close_directory: NULL cdda context");	
+		/*g_message ("cdda do_close_directory: NULL cdda context");*/
 		return GNOME_VFS_ERROR_GENERIC;
 	}
 	
@@ -778,7 +786,7 @@ get_data_size (cdrom_drive *drive, int track)
 		size = ((total_seconds * 44) * 2 * 2) * 1024;
 	}
 
-	//g_message ("get_data_size: %d", size);
+	/*g_message ("get_data_size: %d", size);*/
 	
 	return size;
 }
@@ -798,7 +806,7 @@ get_data_size_from_uri (GnomeVFSURI *uri, CDDAContext *context)
 
 	base_name = gnome_vfs_uri_extract_short_path_name (uri);
 	
-	// Check and see if filename is in cddb data list
+	/* Check and see if filename is in cddb data list */
 	for (index = 0; index < context->drive->tracks; index++) {
 		if (strcmp (base_name, context->disc_data.data_track[index].track_name) == 0) {	
 			if (cdda_track_audiop (context->drive, index+1)) {
@@ -829,7 +837,7 @@ do_read_directory (GnomeVFSMethod *method,
 
 	CDDAContext *cdda_context = (CDDAContext *) method_handle;
 
-	//g_message ("cdda do_read_directory");
+	/*g_message ("cdda do_read_directory");*/
 	
 	if (cdda_context == NULL) {
 		g_warning ("do_read_directory: NULL context");
@@ -837,7 +845,7 @@ do_read_directory (GnomeVFSMethod *method,
 	}
 
 	if (cdda_context->access_count >= cdda_context->drive->tracks) {
-		//g_message ("do_read_directory: over access count");
+		/*g_message ("do_read_directory: over access count");*/
 		return GNOME_VFS_ERROR_EOF;
 	}
 

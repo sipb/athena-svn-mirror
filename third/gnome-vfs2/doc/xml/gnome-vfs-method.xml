@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-method">
+<refentry id="gnome-vfs-20-gnome-vfs-method">
 <refmeta>
 <refentrytitle>gnome-vfs-method</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -15,9 +15,9 @@
 
 
 
-<link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* (<link linkend="GnomeVFSMethodInitFunc">*GnomeVFSMethodInitFunc</link>)   (const char *method_name,
-                                             const char *config_args);
-void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownFunc</link>)   (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);
+<link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* (<link linkend="GnomeVFSMethodInitFunc">*GnomeVFSMethodInitFunc</link>)   (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *config_args);
+<link linkend="void">void</link>        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownFunc</link>)   (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> (<link linkend="GnomeVFSMethodTruncateFunc">*GnomeVFSMethodTruncateFunc</link>)
                                             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
@@ -41,6 +41,8 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -52,8 +54,8 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSMethodInitFunc"/>GnomeVFSMethodInitFunc ()</title>
-<programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* (*GnomeVFSMethodInitFunc)   (const char *method_name,
-                                             const char *config_args);</programlisting>
+<indexterm><primary>GnomeVFSMethodInitFunc</primary></indexterm><programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* (*GnomeVFSMethodInitFunc)   (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *config_args);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -70,7 +72,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMethodShutdownFunc"/>GnomeVFSMethodShutdownFunc ()</title>
-<programlisting>void        (*GnomeVFSMethodShutdownFunc)   (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);</programlisting>
+<indexterm><primary>GnomeVFSMethodShutdownFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSMethodShutdownFunc)   (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -82,7 +84,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMethodTruncateFunc"/>GnomeVFSMethodTruncateFunc ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSMethodTruncateFunc)
+<indexterm><primary>GnomeVFSMethodTruncateFunc</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSMethodTruncateFunc)
                                             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> length,
@@ -109,7 +111,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMethodTruncateHandleFunc"/>GnomeVFSMethodTruncateHandleFunc ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSMethodTruncateHandleFunc)
+<indexterm><primary>GnomeVFSMethodTruncateHandleFunc</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSMethodTruncateHandleFunc)
                                             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method,
                                              <link linkend="GnomeVFSMethodHandle">GnomeVFSMethodHandle</link> *handle,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> length,
@@ -136,7 +138,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="VFS-METHOD-HAS-FUNC-CAPS"/>VFS_METHOD_HAS_FUNC()</title>
-<programlisting>#define VFS_METHOD_HAS_FUNC(method,func) ((((char *)&amp;((method)-&gt;func)) - ((char *)(method)) &lt; (method)-&gt;method_table_size) &amp;&amp; method-&gt;func != NULL)
+<indexterm><primary>VFS_METHOD_HAS_FUNC</primary></indexterm><programlisting>#define VFS_METHOD_HAS_FUNC(method,func) ((((char *)&amp;((method)-&gt;func)) - ((char *)(method)) &lt; (method)-&gt;method_table_size) &amp;&amp; method-&gt;func != NULL)
 </programlisting>
 <para>
 
@@ -152,7 +154,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-method-init"/>gnome_vfs_method_init ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_method_init           (void);</programlisting>
+<indexterm><primary>gnome_vfs_method_init</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_method_init           (void);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -163,7 +165,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-method-get"/>gnome_vfs_method_get ()</title>
-<programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* gnome_vfs_method_get        (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<indexterm><primary>gnome_vfs_method_get</primary></indexterm><programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* gnome_vfs_method_get        (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -177,7 +179,7 @@ void        (<link linkend="GnomeVFSMethodShutdownFunc">*GnomeVFSMethodShutdownF
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-transform-get"/>gnome_vfs_transform_get ()</title>
-<programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* gnome_vfs_transform_get  (const <link linkend="gchar">gchar</link> *name);</programlisting>
+<indexterm><primary>gnome_vfs_transform_get</primary></indexterm><programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* gnome_vfs_transform_get  (const <link linkend="gchar">gchar</link> *name);</programlisting>
 <para>
 
 </para><variablelist role="params">

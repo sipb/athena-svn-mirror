@@ -1,9 +1,8 @@
 <!-- ##### SECTION Title ##### -->
-
 MIME typing
 
 <!-- ##### SECTION Short_Description ##### -->
-
+functions to get a mime-type for a file using its name or its content
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

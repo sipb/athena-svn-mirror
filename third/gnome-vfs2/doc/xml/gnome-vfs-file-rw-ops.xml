@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-file-rw-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-file-rw-ops">
 <refmeta>
 <refentrytitle>Reading and Writing</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -38,6 +38,8 @@ enum        <link linkend="GnomeVFSSeekPosition">GnomeVFSSeekPosition</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -50,7 +52,7 @@ enum        <link linkend="GnomeVFSSeekPosition">GnomeVFSSeekPosition</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSSeekPosition"/>enum GnomeVFSSeekPosition</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSSeekPosition</primary></indexterm><programlisting>typedef enum {
         GNOME_VFS_SEEK_START,
         GNOME_VFS_SEEK_CURRENT,
         GNOME_VFS_SEEK_END
@@ -79,7 +81,7 @@ This is used to specify the start position for seek operations.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-read"/>gnome_vfs_read ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_read               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
+<indexterm><primary>gnome_vfs_read</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_read               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);</programlisting>
@@ -108,7 +110,7 @@ effectively read on return.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-write"/>gnome_vfs_write ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_write              (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
+<indexterm><primary>gnome_vfs_write</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_write              (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);</programlisting>
@@ -137,7 +139,7 @@ effectively written on return.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-seek"/>gnome_vfs_seek ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_seek               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
+<indexterm><primary>gnome_vfs_seek</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_seek               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
                                              <link linkend="GnomeVFSSeekPosition">GnomeVFSSeekPosition</link> whence,
                                              <link linkend="GnomeVFSFileOffset">GnomeVFSFileOffset</link> offset);</programlisting>
 <para>
@@ -160,7 +162,7 @@ Set the current position for reading/writing through <parameter>handle</paramete
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-tell"/>gnome_vfs_tell ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_tell               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
+<indexterm><primary>gnome_vfs_tell</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_tell               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *offset_return);</programlisting>
 <para>
 Return the current position on <parameter>handle</parameter>. This is the point in the file

@@ -37,7 +37,6 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-module-callback.h>
 #include <libgnomevfs/gnome-vfs-module-callback-private.h>
-#include <semaphore.h>
 
 typedef struct GnomeVFSJob GnomeVFSJob;
 
@@ -51,9 +50,12 @@ extern GStaticMutex debug_mutex;
 
 #define JOB_DEBUG_PRINT(x)			\
 G_STMT_START{					\
+	struct timeval _tt;			\
+	gettimeofday(&_tt, NULL);		\
+	printf ("%ld:%6.ld ", _tt.tv_sec, _tt.tv_usec); \
 	g_static_mutex_lock (&debug_mutex);	\
-	fputs (__FUNCTION__ ":", stdout);	\
-	printf ("%d ", __LINE__);		\
+	fputs (__FUNCTION__, stdout);		\
+	printf (": %d ", __LINE__);		\
 	printf x;				\
 	fputc ('\n', stdout);			\
 	fflush (stdout);			\
@@ -63,13 +65,18 @@ G_STMT_START{					\
 #endif
 
 #if GNOME_VFS_JOB_DEBUG
+#include <sys/time.h>
+
+extern char *job_debug_types[];
 
 #define JOB_DEBUG(x) JOB_DEBUG_PRINT(x)
 #define JOB_DEBUG_ONLY(x) x
+#define JOB_DEBUG_TYPE(x) (job_debug_types[(x)])
 
 #else
 #define JOB_DEBUG(x)
 #define JOB_DEBUG_ONLY(x)
+#define JOB_DEBUG_TYPE(x)
 
 #endif
 
@@ -87,6 +94,7 @@ enum GnomeVFSOpType {
 	GNOME_VFS_OP_CLOSE,
 	GNOME_VFS_OP_READ,
 	GNOME_VFS_OP_WRITE,
+	GNOME_VFS_OP_SEEK,
 	GNOME_VFS_OP_READ_WRITE_DONE,
 	GNOME_VFS_OP_LOAD_DIRECTORY,
 	GNOME_VFS_OP_FIND_DIRECTORY,
@@ -194,6 +202,17 @@ typedef struct {
 } GnomeVFSWriteOpResult;
 
 typedef struct {
+	GnomeVFSSeekPosition whence;
+	GnomeVFSFileOffset offset;
+} GnomeVFSSeekOp;
+
+typedef struct {
+	GnomeVFSAsyncSeekCallback callback;
+	void *callback_data;
+	GnomeVFSResult result;
+} GnomeVFSSeekOpResult;
+
+typedef struct {
 	GList *uris; /* GnomeVFSURI* */
 	GnomeVFSFileInfoOptions options;
 } GnomeVFSGetFileInfoOp;
@@ -298,6 +317,7 @@ typedef union {
 	GnomeVFSCloseOp close;
 	GnomeVFSReadOp read;
 	GnomeVFSWriteOp write;
+	GnomeVFSSeekOp seek;
 	GnomeVFSLoadDirectoryOp load_directory;
 	GnomeVFSXferOp xfer;
 	GnomeVFSGetFileInfoOp get_file_info;
@@ -330,6 +350,7 @@ typedef union {
 	GnomeVFSCloseOpResult close;
 	GnomeVFSReadOpResult read;
 	GnomeVFSWriteOpResult write;
+	GnomeVFSSeekOpResult seek;
 	GnomeVFSGetFileInfoOpResult get_file_info;
 	GnomeVFSSetFileInfoOpResult set_file_info;
 	GnomeVFSFindDirectoryOpResult find_directory;

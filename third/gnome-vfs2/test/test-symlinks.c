@@ -90,7 +90,8 @@ deal_with_result (GnomeVFSResult result, GnomeVFSResult expected_result,
 	const char *write_buffer = "this is test data...we should read the same thing";
 	GnomeVFSHandle *handle;
 	GnomeVFSFileSize bytes_written, temp;
-	GnomeVFSFileInfo info_uri, info_target;
+	GnomeVFSFileInfo info_uri = {NULL};
+	GnomeVFSFileInfo info_target = {NULL};
 	int return_value = 1;
 	const gchar *result_string;
 	GnomeVFSResult error;	
@@ -138,12 +139,16 @@ deal_with_result (GnomeVFSResult result, GnomeVFSResult expected_result,
 				printf ("Symlink problem: link following is not working\n");
 				printf ("File: %s   Link: %s\n", target_uri, uri);
 			}
+			gnome_vfs_file_info_clear (&info_uri);
 			gnome_vfs_get_file_info_uri (real_uri, &info_uri, GNOME_VFS_FILE_INFO_DEFAULT);
+			gnome_vfs_file_info_clear (&info_target);
 			gnome_vfs_get_file_info_uri (real_uri_target, &info_target, GNOME_VFS_FILE_INFO_DEFAULT);
 			if (info_uri.inode == info_target.inode) {
 				printf ("Symlink problem: link following is happening when it shouldn't be.\n");
 				printf ("File: %s   Link: %s\n", target_uri, uri);
 			}
+			gnome_vfs_file_info_clear (&info_uri);
+			gnome_vfs_file_info_clear (&info_target);
 		}
 		gnome_vfs_file_info_unref (info);
 		if (unlink) {

@@ -30,6 +30,7 @@
 #include "gnome-vfs-module-callback-module-api.h"
 #include "gnome-vfs-module-callback-private.h"
 #include "gnome-vfs-backend.h"
+#include "gnome-vfs-private.h"
 
 /* -- Private data structure declarations -- */
 
@@ -808,7 +809,6 @@ gnome_vfs_async_module_callback_pop (const char *callback_name)
 			 callback_name);
 }
 
-
 /* -- Module-only entry points -- */
 
 /**
@@ -848,6 +848,12 @@ gnome_vfs_module_callback_invoke (const char    *callback_name,
 
 	callback = NULL;
 
+	if (gnome_vfs_get_is_daemon()) {
+		return _gnome_vfs_module_callback_marshal_invoke (callback_name,
+								  in, in_size,
+								  out, out_size);
+	}
+	
 	initialize_per_thread_if_needed ();
 
 	if (g_private_get (in_async_thread_key) != NULL) {

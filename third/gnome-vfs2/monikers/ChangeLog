@@ -1,3 +1,33 @@
+2004-08-01  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo-stream-vfs.c
+	(bonobo_stream_vfs_storageinfo_from_file_info): Don't crash if
+	fi->name is NULL.
+
+2003-04-17  Michael Meeks  <michael@ximian.com>
+
+	* GNOME_VFS_Moniker_std.server.in.in: remove .so suffix.
+
+2003-02-04  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo-storage-vfs.c (vfs_open_stream): Duplicate the
+	CORBA_Object reference being returned, otherwise the same
+	CORBA_Object is released twice when the client calls
+	bonobo_object_release_unref. This happens when client == server,
+	which is always the case currently.
+	(vfs_open_storage): Fix the same problem as in vfs_open_stream.
+	(vfs_open_storage): Set exception when gnome_vfs_make_directory fails.
+
+2003-02-03  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo-storage-vfs.c (bonobo_storage_vfs_open): Raise exception
+	if the URI is *not* a directory, as opposed to raising one if it
+	is a directory.
+
+	* bonobo-stream-vfs.c (bonobo_stream_vfs_storageinfo_from_file_info):
+	Look into fi->valid_fields instead of fi->flags to see if a field
+	is defined.
+
 2002-11-27  Jody Goldberg <jody@gnome.org>
 
 	* Release 2.1.3.1

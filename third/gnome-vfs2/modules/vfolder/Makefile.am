@@ -35,7 +35,7 @@ EXTRA_DIST =					\
 
 ###  Module setup
 
-module_flags = -export_dynamic -avoid-version
+module_flags = -export_dynamic -avoid-version -module -no-undefined
 modulesdir = $(libdir)/gnome-vfs-2.0/modules
 
 modules_LTLIBRARIES = libvfolder-desktop.la
@@ -50,7 +50,10 @@ libvfolder_desktop_la_SOURCES = \
 	vfolder-common.h 	\
 	vfolder-method.c
 libvfolder_desktop_la_LDFLAGS = $(module_flags)
-libvfolder_desktop_la_LIBADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la $(TEST_LIBS)
+libvfolder_desktop_la_LIBADD = \
+	$(top_builddir)/libgnomevfs/libgnomevfs-2.la \
+	$(TEST_LIBS)		\
+	$(MODULES_XML_LIBS)
 
 ###  Default .vfolder-info files
 
@@ -78,6 +81,8 @@ VFOLDER_INFO_CREATE = 				 \
 
 noinst_PROGRAMS = test-vfolder
 noinst_DATA = test-vfolder-parent.vfolder-info test-vfolder.vfolder-info
+
+CLEANFILES = $(vfolder_DATA) $(noinst_DATA)
 
 module_path = \
 	$(top_builddir)/modules/vfolder/.libs:$(top_builddir)/modules/.libs

@@ -2,7 +2,7 @@
 gnome-vfs-module-callback-module-api
 
 <!-- ##### SECTION Short_Description ##### -->
-
+invoking callbacks from a gnome-vfs module to ask the application for necessary information (authentication, ...)
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

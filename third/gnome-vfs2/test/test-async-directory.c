@@ -278,6 +278,9 @@ main (int argc, const char **argv)
 	popt_context = poptGetContext ("test-vfs", argc, argv,
 				       options, 0);
 
+	while (poptGetNextOpt (popt_context) != -1)
+		;
+
 	args = poptGetArgs (popt_context);
 	if (args == NULL || args[1] != NULL) {
 		fprintf (stderr, "Usage: %s [<options>] <uri>\n", argv[0]);

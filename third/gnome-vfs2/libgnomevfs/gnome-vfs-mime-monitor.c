@@ -34,7 +34,7 @@ enum {
 
 enum {
 	LOCAL_MIME_DIR,
-	GNOME_MIME_DIR,
+	GNOME_MIME_DIR
 };
 
 static guint signals[LAST_SIGNAL];
@@ -55,6 +55,8 @@ struct _GnomeVFSMIMEMonitorPrivate
 	/* The hoops I jump through */
 	MonitorCallbackData *gnome_callback_data;
 	MonitorCallbackData *local_callback_data;
+
+	guint mime_update_tag;
 };
 
 
@@ -124,6 +126,16 @@ gnome_vfs_mime_monitor_init (GnomeVFSMIMEMonitor *monitor)
 	g_free (mime_dir);
 }
 
+static gboolean
+mime_dir_emit_data_changed (gpointer user_data)
+{
+	MonitorCallbackData *monitor_callback_data = (MonitorCallbackData *)user_data;
+
+	_gnome_vfs_mime_monitor_emit_data_changed (monitor_callback_data->monitor);
+	monitor_callback_data->monitor->priv->mime_update_tag = 0;
+
+	return FALSE;	
+}
 
 static void
 mime_dir_changed_callback (GnomeVFSMonitorHandle    *handle,
@@ -138,8 +150,15 @@ mime_dir_changed_callback (GnomeVFSMonitorHandle    *handle,
 		_gnome_vfs_mime_info_mark_gnome_mime_dir_dirty ();
 	else if (monitor_callback_data->type == LOCAL_MIME_DIR)
 		_gnome_vfs_mime_info_mark_user_mime_dir_dirty ();
-		
-	_gnome_vfs_mime_monitor_emit_data_changed (monitor_callback_data->monitor);
+
+	/* We delay the callback for a short while in order to combine several
+	 * changes, something which often happens due to several fam events.
+	 */
+	if (monitor_callback_data->monitor->priv->mime_update_tag == 0) {
+               monitor_callback_data->monitor->priv->mime_update_tag = 
+		       g_timeout_add (100, mime_dir_emit_data_changed, user_data);
+       	}
+
 }
 
 static void
@@ -147,6 +166,9 @@ gnome_vfs_mime_monitor_finalize (GObject *object)
 {
 	gnome_vfs_monitor_cancel (GNOME_VFS_MIME_MONITOR (object)->priv->global_handle);
 	gnome_vfs_monitor_cancel (GNOME_VFS_MIME_MONITOR (object)->priv->local_handle);
+	if (GNOME_VFS_MIME_MONITOR (object)->priv->mime_update_tag != 0) {
+		g_source_remove (GNOME_VFS_MIME_MONITOR (object)->priv->mime_update_tag);
+	}
 	g_free (GNOME_VFS_MIME_MONITOR (object)->priv->gnome_callback_data);
 	g_free (GNOME_VFS_MIME_MONITOR (object)->priv->local_callback_data);
 	g_free (GNOME_VFS_MIME_MONITOR (object)->priv);

@@ -41,7 +41,6 @@ bonobo_moniker_vfs_resolve (BonoboMoniker               *moniker,
 					     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 			return CORBA_OBJECT_NIL;
 		}
-
 		return CORBA_Object_duplicate (BONOBO_OBJREF (stream), ev);
 
 	}

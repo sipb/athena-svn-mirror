@@ -569,6 +569,51 @@ gnome_vfs_async_write (GnomeVFSAsyncHandle *handle,
 }
 
 /**
+ * gnome_vfs_async_seek:
+ * @handle: Handle for which the current position must be changed
+ * @whence: Integer value representing the starting position
+ * @offset: Number of bytes to skip from the position specified by @whence
+ * (a positive value means to move forward; a negative one to move backwards)
+ * @callback: function to be called when the operation is complete
+ * @callback_data: data to pass @callback
+ * 
+ * Set the current position for reading/writing through @handle.
+ * When the operation is complete, @callback will be called with the
+ * result of the operation and @callback_data.
+ **/
+void
+gnome_vfs_async_seek (GnomeVFSAsyncHandle *handle,
+		      GnomeVFSSeekPosition whence,
+		      GnomeVFSFileOffset offset,
+		      GnomeVFSAsyncSeekCallback callback,
+		      gpointer callback_data)
+{
+	GnomeVFSJob *job;
+	GnomeVFSSeekOp *seek_op;
+
+	g_return_if_fail (handle != NULL);
+	g_return_if_fail (callback != NULL);
+
+	_gnome_vfs_async_job_map_lock ();
+	job = _gnome_vfs_async_job_map_get_job (handle);
+	if (job == NULL) {
+		g_warning ("trying to seek in a non-existing handle");
+		_gnome_vfs_async_job_map_unlock ();
+		return;
+	}
+
+	_gnome_vfs_job_set (job, GNOME_VFS_OP_SEEK,
+			   (GFunc) callback, callback_data);
+
+	seek_op = &job->op->specifics.seek;
+	seek_op->whence = whence;
+	seek_op->offset = offset;
+
+	_gnome_vfs_job_go (job);
+	_gnome_vfs_async_job_map_unlock ();
+}
+
+/**
  * gnome_vfs_async_create_symbolic_link:
  * @handle_return: when the function returns will point to a handle for
  * the async operation.

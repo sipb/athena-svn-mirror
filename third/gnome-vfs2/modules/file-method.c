@@ -36,6 +36,8 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-monitor-private.h>
+#include <libgnomevfs/gnome-vfs-private-utils.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -56,7 +58,8 @@
 #endif
 
 #ifdef HAVE_FAM
-FAMConnection *fam_connection = NULL;
+static FAMConnection *fam_connection = NULL;
+static gint fam_watch_id = 0;
 G_LOCK_DEFINE_STATIC (fam_connection);
 
 typedef struct {
@@ -97,13 +100,14 @@ GET_PATH_MAX (void)
 #define OPEN open
 #endif
 
-#ifdef HAVE_LSEEK64
+#if defined(HAVE_LSEEK64) && defined(HAVE_OFF64_T)
 #define LSEEK lseek64
 #define OFF_T off64_t
 #else
 #define LSEEK lseek
 #define OFF_T off_t
 #endif
+
 
 static gchar *
 get_path_from_uri (GnomeVFSURI const *uri)
@@ -559,8 +563,16 @@ get_mime_type (GnomeVFSFileInfo *info,
 		 */
 		mime_type = "x-special/symlink";
 	} else {
-		mime_type = gnome_vfs_get_file_mime_type (full_name,
-			stat_buffer, (options & GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE) != 0);
+		if (options & GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE) {
+			mime_type = gnome_vfs_get_file_mime_type (full_name,
+								  stat_buffer, TRUE);
+		} else if (options & GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE) {
+			mime_type = gnome_vfs_get_file_mime_type (full_name,
+								  stat_buffer, FALSE);
+		} else {
+			mime_type = gnome_vfs_get_file_mime_type_fast (full_name,
+								       stat_buffer);
+		}
 	}
 
 	g_assert (mime_type);
@@ -582,6 +594,7 @@ read_link (const gchar *full_name)
 
                 read_size = readlink (full_name, buffer, size);
 		if (read_size < 0) {
+			g_free (buffer);
 			return NULL;
 		}
                 if (read_size < size) {
@@ -627,6 +640,8 @@ get_stat_info (GnomeVFSFileInfo *file_info,
 	gboolean recursive;
 	char *link_file_path;
 	char *symlink_name;
+	char *symlink_dir;
+	char *newpath;
 	
 	followed_symlink = FALSE;
 	
@@ -683,6 +698,16 @@ get_stat_info (GnomeVFSFileInfo *file_info,
 			if (symlink_name == NULL) {
 				g_free (link_file_path);
 				return gnome_vfs_result_from_errno ();
+			}
+			if ((options & GNOME_VFS_FILE_INFO_FOLLOW_LINKS) &&
+			    symlink_name[0] != '/') {
+				symlink_dir = g_path_get_dirname (link_file_path);
+				newpath = g_build_filename (symlink_dir,
+							    symlink_name, NULL);
+				g_free (symlink_dir);
+				g_free (symlink_name);
+				symlink_name = gnome_vfs_make_path_name_canonical (newpath);
+				g_free (newpath);
 			}
 			
 			if ((options & GNOME_VFS_FILE_INFO_FOLLOW_LINKS) == 0
@@ -771,6 +796,10 @@ do_close_directory (GnomeVFSMethod *method,
 	return GNOME_VFS_OK;
 }
 
+#ifndef HAVE_READDIR_R
+G_LOCK_DEFINE_STATIC (readdir);
+#endif
+
 static GnomeVFSResult
 do_read_directory (GnomeVFSMethod *method,
 		   GnomeVFSMethodHandle *method_handle,
@@ -785,6 +814,7 @@ do_read_directory (GnomeVFSMethod *method,
 	handle = (DirectoryHandle *) method_handle;
 	
 	errno = 0;
+#ifdef HAVE_READDIR_R	
 	if (readdir_r (handle->dir, handle->current_entry, &result) != 0) {
 		/* Work around a Solaris bug.
 		 * readdir64_r returns -1 instead of 0 at EOF.
@@ -794,6 +824,21 @@ do_read_directory (GnomeVFSMethod *method,
 		}
 		return gnome_vfs_result_from_errno ();
 	}
+#else
+	G_LOCK (readdir);
+	errno = 0;
+	result = readdir (handle->dir);
+
+	if (result == NULL && errno != 0) {
+		GnomeVFSResult ret = gnome_vfs_result_from_errno ();
+		G_UNLOCK (readdir);
+		return ret;
+	}
+	if (result != NULL) {
+		memcpy (handle->current_entry, result, sizeof (struct dirent));
+	}
+	G_UNLOCK (readdir);
+#endif
 	
 	if (result == NULL) {
 		return GNOME_VFS_ERROR_EOF;
@@ -926,7 +971,9 @@ do_is_local (GnomeVFSMethod *method,
 		struct stat statbuf;
 		if (stat (path, &statbuf) == 0) {
 			char *type = filesystem_type (path, path, &statbuf);
-			gboolean is_local = strcmp (type, "nfs") && strcmp (type, "afs");
+			gboolean is_local = ((strcmp (type, "nfs") != 0) && 
+					     (strcmp (type, "afs") != 0) &&
+					     (strcmp (type, "ncpfs") != 0));
 			local = GINT_TO_POINTER (is_local ? 1 : -1);
 			g_hash_table_insert (fstype_hash, path, local);
 		}
@@ -1054,25 +1101,17 @@ append_trash_path (const char *path)
 	}
 }
 
-/* Try to find the Trash in @current_directory. If not found, collect all the 
- * directories in @current_directory to visit later.
- */
 static char *
-find_trash_in_one_hierarchy_level (const char *current_directory, dev_t near_device_id, 
-	GList **directory_list, GnomeVFSContext *context)
+find_trash_in_hierarchy (const char *start_dir, dev_t near_device_id, GnomeVFSContext *context)
 {
 	char *trash_path;
-	char *item_path;
 	struct stat stat_buffer;
-	DIR *directory;
-	struct dirent *item_buffer;
-	struct dirent *item;
 
 	if (gnome_vfs_context_check_cancellation (context))
 		return NULL;
 
 	/* check if there is a trash in this directory */
-	trash_path = append_trash_path (current_directory);
+	trash_path = append_trash_path (start_dir);
 	if (lstat (trash_path, &stat_buffer) == 0 && S_ISDIR (stat_buffer.st_mode)) {
 		/* found it, we are done */
 		g_assert (near_device_id == stat_buffer.st_dev);
@@ -1080,80 +1119,7 @@ find_trash_in_one_hierarchy_level (const char *current_directory, dev_t near_dev
 	}
 	g_free (trash_path);
 
-
-	if (gnome_vfs_context_check_cancellation (context))
-		return NULL;
-
-	/* Trash not in this directory.
-	 * Collect the list of all the directories in this directory to visit later.
-	 */
-	directory = opendir (current_directory);
-	if (directory == NULL) {
-		return NULL;
-	}
-
-	item_buffer = g_malloc (sizeof (struct dirent) + GET_PATH_MAX() + 1);
-	for (;;) {
-		if (readdir_r (directory, item_buffer, &item) != 0 || item == NULL) {
-			break;
-		}
-
-		if (gnome_vfs_context_check_cancellation (context))
-			break;
-
-		if (strcmp (item->d_name, ".") == 0
-			|| strcmp (item->d_name, "..") == 0)
-			continue;
-
-		item_path = append_to_path (current_directory, item->d_name);
-		if (lstat (item_path, &stat_buffer) == 0 
-			&& S_ISDIR (stat_buffer.st_mode)
-			&& near_device_id == stat_buffer.st_dev) {
-
-			/* Directory -- put it on the list to search, 
-			 * just as long as it is on the same device.
-			 */
-			*directory_list = g_list_prepend (*directory_list, item_path);
-		} else {
-			g_free (item_path);
-		}
-		if (gnome_vfs_context_check_cancellation (context))
-			break;
-	}
-
-
-	closedir (directory);
-	g_free (item_buffer);
 	return NULL;
-}
-
-/* Do a width-first search of the directory hierarchy starting at start_dir,
- * looking for the trash directory. 
- * Not doing a traditional depth-first search here to prevent descending too deep in
- * the hierarchy -- we expect the Trash to be in a reasonably "shallow" location.
- * 
- * We only look MAX_TRASH_SEARCH_DEPTH deep, if the Trash is deeper in the hierarchy,
- * we will fail to find it.
- */
-static char *
-find_trash_in_hierarchy (const char *start_dir, dev_t near_device_id, GnomeVFSContext *context)
-{
-	GList *next_directory_list;
-	char *result;
-
-#ifdef DEBUG_FIND_DIRECTORY
-	g_print ("searching for trash in %s\n", start_dir);
-#endif
-
-	next_directory_list = NULL;
-
-	/* Search the top level. */
-	result = find_trash_in_one_hierarchy_level (start_dir, near_device_id, 
-		&next_directory_list, context);
-	
-	gnome_vfs_list_deep_free (next_directory_list);
-
-	return result;
 }
 
 static GList *cached_trash_directories;
@@ -1228,7 +1194,7 @@ find_disk_top_directory (const char *item_on_disk,
 		}
 		
 		*last_slash = '\0';
-		if (lstat (disk_top_directory, &stat_buffer) < 0
+		if (stat (disk_top_directory, &stat_buffer) < 0
 			|| stat_buffer.st_dev != near_device_id) {
 			/* we ran past the root of the disk we are exploring */
 			g_free (disk_top_directory);
@@ -1394,6 +1360,7 @@ read_saved_cached_trash_entries (void)
 	char escaped_mount_point[PATH_MAX], escaped_trash_path[PATH_MAX];
 	char *mount_point, *trash_path;
 	struct stat stat_buffer;
+	gboolean removed_item;
 
 	/* empty the old locally cached entries */
 	g_list_foreach (cached_trash_directories, 
@@ -1407,6 +1374,7 @@ read_saved_cached_trash_entries (void)
 	cache_file = fopen (cache_file_path, "r");
 
 	if (cache_file != NULL) {
+		removed_item = FALSE;
 		for (;;) {
 			if (fgets (buffer, sizeof (buffer), cache_file) == NULL) {
 				break;
@@ -1421,22 +1389,31 @@ read_saved_cached_trash_entries (void)
 
 				if (trash_path != NULL 
 					&& mount_point != NULL
-					&& (strcmp (trash_path, NON_EXISTENT_TRASH_ENTRY) == 0 || lstat (trash_path, &stat_buffer) == 0)
-					&& lstat (mount_point, &stat_buffer) == 0) {
-					/* We either know the trash doesn't exist or we checked that it's really
+					&& (strcmp (trash_path, NON_EXISTENT_TRASH_ENTRY) != 0 && lstat (trash_path, &stat_buffer) == 0)
+					&& stat (mount_point, &stat_buffer) == 0) {
+					/* We know the trash exist and we checked that it's really
 					 * there - this is a good entry, copy it into the local cache.
+					 * We don't want to rely on old non-existing trash entries, as they
+					 * could have changed now, and they stick around filling up the cache,
+					 * and slowing down startup.
 					 */
 					 add_local_cached_trash_entry (stat_buffer.st_dev, trash_path, mount_point);
 #ifdef DEBUG_FIND_DIRECTORY
 					g_print ("read trash item cache entry %s %s\n", trash_path, mount_point);
 #endif
+				} else {
+					removed_item = TRUE;
 				}
 			}
 			
 			g_free (trash_path);
 			g_free (mount_point);
 		}
-		fclose (cache_file);	
+		fclose (cache_file);
+		/* Save cache to get rid of stuff from on-disk cache */
+		if (removed_item) {
+			save_trash_entry_cache ();
+		}
 	}
 	
 	g_free (cache_file_path);
@@ -1537,7 +1514,7 @@ find_or_create_trash_near (const char *full_name_near, dev_t near_device_id,
 	result = NULL;
 	/* figure out the topmost disk directory */
 	disk_top_directory = find_disk_top_directory (full_name_near, 
-		near_device_id, context);
+						      near_device_id, context);
 
 	if (disk_top_directory == NULL) {
 		/* Failed to find it, don't look at this disk until we
@@ -1765,13 +1742,49 @@ rename_helper (const gchar *old_full_name,
 	gboolean old_exists;
 	struct stat statbuf;
 	gint retval;
+	gchar *temp_name;
+	GnomeVFSHandle *temp_handle;
+	GnomeVFSResult result;
 
 	retval = stat (new_full_name, &statbuf);
 	if (retval == 0) {
-		/* If we are not allowed to replace an existing file, return an
-                   error.  */
-		if (! force_replace)
+		/* Special case for files on case insensitive (vfat) filesystems:
+		 * If the old and the new name only differ by case,
+		 * try renaming via a temp file name.
+		 */
+		if (g_ascii_strcasecmp (old_full_name, new_full_name) == 0
+		    && strcmp (old_full_name, new_full_name) != 0 && ! force_replace) {
+
+			if (gnome_vfs_context_check_cancellation (context))
+				return GNOME_VFS_ERROR_CANCELLED;
+			
+			result = gnome_vfs_create_temp (old_full_name, &temp_name, &temp_handle);
+			if (result != GNOME_VFS_OK)
+				return result;
+			gnome_vfs_close (temp_handle);
+			unlink (temp_name);
+			
+			retval = rename (old_full_name, temp_name);
+			if (retval == 0) {
+				if (stat (new_full_name, &statbuf) != 0 
+				    && rename (temp_name, new_full_name) == 0) {
+					/* Success */
+					return GNOME_VFS_OK;
+				}
+				/* Revert the filename back to original */ 
+				retval = rename (temp_name, old_full_name);
+				if (retval == 0) {
+					return GNOME_VFS_ERROR_FILE_EXISTS;
+				}
+			}
+			return gnome_vfs_result_from_errno_code (retval);
+		
+		} else if (! force_replace) {
+			/* If we are not allowed to replace an existing file, 
+			 * return an error.
+			 */
 			return GNOME_VFS_ERROR_FILE_EXISTS;
+		}
 		old_exists = TRUE;
 	} else {
 		old_exists = FALSE;
@@ -2062,13 +2075,9 @@ do_set_file_info (GnomeVFSMethod *method,
 
 #ifdef HAVE_FAM
 static gboolean
-fam_callback (GIOChannel *source,
-	      GIOCondition condition,
-	      gpointer data)
+fam_do_iter_unlocked (void)
 {
-	G_LOCK (fam_connection);
-
-	while (FAMPending(fam_connection)) {
+	while (fam_connection != NULL && FAMPending(fam_connection)) {
 		FAMEvent ev;
 		FileMonitorHandle *handle;
 		gboolean cancelled;
@@ -2077,8 +2086,9 @@ fam_callback (GIOChannel *source,
 		if (FAMNextEvent(fam_connection, &ev) != 1) {
 			FAMClose(fam_connection);
 			g_free(fam_connection);
-			fam_connection = FALSE;
-			G_UNLOCK (fam_connection);
+			g_source_remove (fam_watch_id);
+			fam_watch_id = 0;
+			fam_connection = NULL;
 			return FALSE;
 		}
 
@@ -2131,6 +2141,7 @@ fam_callback (GIOChannel *source,
 			} else
 				info_uri = gnome_vfs_uri_append_file_name (handle->uri, ev.filename);
 
+			/* This queues an idle, so there are no reentrancy issues */
 			gnome_vfs_monitor_callback ((GnomeVFSMethodHandle *)handle,
 						    info_uri, 
 						    event_type);
@@ -2138,9 +2149,22 @@ fam_callback (GIOChannel *source,
 		}
 	}
 
+	return TRUE;
+}
+
+static gboolean
+fam_callback (GIOChannel *source,
+	      GIOCondition condition,
+	      gpointer data)
+{
+	gboolean res;
+	G_LOCK (fam_connection);
+
+	res = fam_do_iter_unlocked ();
+
 	G_UNLOCK (fam_connection);
 
-	return TRUE;
+	return res;
 }
 
 
@@ -2149,23 +2173,24 @@ static gboolean
 monitor_setup (void)
 {
 	GIOChannel *ioc;
-	gint watch_id;
 
 	G_LOCK (fam_connection);
 
 	if (fam_connection == NULL) {
 		fam_connection = g_malloc0(sizeof(FAMConnection));
-		if (FAMOpen2(fam_connection, "test-monitor") != 0) {
+		if (FAMOpen2(fam_connection, "gnome-vfs user") != 0) {
+#ifdef DEBUG_FAM
 			g_print ("FAMOpen failed, FAMErrno=%d\n", FAMErrno);
+#endif
 			g_free(fam_connection);
 			fam_connection = NULL;
 			G_UNLOCK (fam_connection);
 			return FALSE;
 		}
 		ioc = g_io_channel_unix_new (FAMCONNECTION_GETFD(fam_connection));
-		watch_id = g_io_add_watch (ioc,
-					   G_IO_IN | G_IO_HUP | G_IO_ERR,
-					   fam_callback, fam_connection);
+		fam_watch_id = g_io_add_watch (ioc,
+					       G_IO_IN | G_IO_HUP | G_IO_ERR,
+					       fam_callback, fam_connection);
 		g_io_channel_unref (ioc);
 	}
 
@@ -2189,24 +2214,36 @@ do_monitor_add (GnomeVFSMethod *method,
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 
+	filename = get_path_from_uri (uri);
+	if (filename == NULL) {
+		return GNOME_VFS_ERROR_INVALID_URI;
+	}
+	
 	handle = g_new0 (FileMonitorHandle, 1);
 	handle->uri = uri;
 	handle->cancelled = FALSE;
 	gnome_vfs_uri_ref (uri);
-	filename = get_path_from_uri (uri);
+
+	G_LOCK (fam_connection);
+	/* We need to queue up incoming messages to avoid blocking on write
+	   if there are many monitors being added */
+	fam_do_iter_unlocked ();
+
+	if (fam_connection == NULL) {
+		G_UNLOCK (fam_connection);
+		return GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
 	
 	if (monitor_type == GNOME_VFS_MONITOR_FILE) {
-		G_LOCK (fam_connection);
 		FAMMonitorFile (fam_connection, filename, 
 			&handle->request, handle);
-		G_UNLOCK (fam_connection);
 	} else {
-		G_LOCK (fam_connection);
 		FAMMonitorDirectory (fam_connection, filename, 
 			&handle->request, handle);
-		G_UNLOCK (fam_connection);
 	}
 
+	G_UNLOCK (fam_connection);
+	
 	*method_handle_return = (GnomeVFSMethodHandle *)handle;
 
 	g_free (filename);
@@ -2233,6 +2270,16 @@ do_monitor_cancel (GnomeVFSMethod *method,
 
 	handle->cancelled = TRUE;
 	G_LOCK (fam_connection);
+
+	/* We need to queue up incoming messages to avoid blocking on write
+	   if there are many monitors being canceled */
+	fam_do_iter_unlocked ();
+
+	if (fam_connection == NULL) {
+		G_UNLOCK (fam_connection);
+		return GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
+	
 	FAMCancelMonitor (fam_connection, &handle->request);
 	G_UNLOCK (fam_connection);
 

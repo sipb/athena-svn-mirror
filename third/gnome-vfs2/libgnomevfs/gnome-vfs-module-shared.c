@@ -132,6 +132,12 @@ gnome_vfs_stat_to_file_info (GnomeVFSFileInfo *file_info,
 	file_info->size = statptr->st_size;
 	file_info->block_count = statptr->st_blocks;
 	file_info->io_block_size = statptr->st_blksize;
+	if (file_info->io_block_size > 0 &&
+	    file_info->io_block_size < 4096) {
+		/* Never use smaller block than 4k,
+		   should probably be pagesize.. */
+		file_info->io_block_size = 4096;
+	}
 
 	file_info->atime = statptr->st_atime;
 	file_info->ctime = statptr->st_ctime;

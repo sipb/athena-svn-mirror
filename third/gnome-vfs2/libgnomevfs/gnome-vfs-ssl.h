@@ -36,18 +36,26 @@ gboolean        gnome_vfs_ssl_enabled        (void);
 /* FIXME: add *some* kind of cert verification! */
 GnomeVFSResult  gnome_vfs_ssl_create         (GnomeVFSSSL **handle_return,
 		                              const char *host, 
-		                              unsigned int port);
+		                              unsigned int port,
+					      GnomeVFSCancellation *cancellation);
 GnomeVFSResult  gnome_vfs_ssl_create_from_fd (GnomeVFSSSL **handle_return,
-					      gint fd);
+					      gint fd,
+					      GnomeVFSCancellation *cancellation);
 GnomeVFSResult  gnome_vfs_ssl_read           (GnomeVFSSSL *ssl,
 					      gpointer buffer,
 					      GnomeVFSFileSize bytes,
-				      	      GnomeVFSFileSize *bytes_read);
+				      	      GnomeVFSFileSize *bytes_read,
+					      GnomeVFSCancellation *cancellation);
 GnomeVFSResult  gnome_vfs_ssl_write          (GnomeVFSSSL *ssl,
 					      gconstpointer buffer,
 					      GnomeVFSFileSize bytes,
-					      GnomeVFSFileSize *bytes_written);
-void            gnome_vfs_ssl_destroy        (GnomeVFSSSL *ssl);
+					      GnomeVFSFileSize *bytes_written,
+					      GnomeVFSCancellation *cancellation);
+void            gnome_vfs_ssl_destroy        (GnomeVFSSSL *ssl,
+					      GnomeVFSCancellation *cancellation);
+GnomeVFSResult  gnome_vfs_ssl_set_timeout    (GnomeVFSSSL *ssl,
+					      GTimeVal *timeout,
+					      GnomeVFSCancellation *cancellation);
 GnomeVFSSocket *gnome_vfs_ssl_to_socket      (GnomeVFSSSL *ssl);
 
 G_END_DECLS

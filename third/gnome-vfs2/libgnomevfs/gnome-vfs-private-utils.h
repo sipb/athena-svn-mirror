@@ -35,6 +35,8 @@
 
 G_BEGIN_DECLS
 
+gboolean	 _gnome_vfs_have_ipv6			 (void);
+
 gchar   	*_gnome_vfs_canonicalize_pathname         (char *path);
 GnomeVFSResult   gnome_vfs_remove_optional_escapes 	 (char *escaped_uri);
 
@@ -57,7 +59,6 @@ GnomeVFSResult	gnome_vfs_create_temp 	(const gchar *prefix,
 gboolean	gnome_vfs_atotm		(const gchar *time_string,
 					 time_t *value_return);
 
-/* Wrapper around gnome_i18n_get_language_list(). */
 GList	       *gnome_vfs_i18n_get_language_list
 					(const gchar *category_name);
 
@@ -79,6 +80,18 @@ GnomeVFSResult  _gnome_vfs_uri_resolve_all_symlinks (const char *text_uri,
 
 gboolean  _gnome_vfs_uri_is_in_subdir (GnomeVFSURI *uri, GnomeVFSURI *dir);
 
+
+GnomeVFSResult _gnome_vfs_url_show_using_handler_with_env (const char   *url,
+                                                           char        **envp);
+gboolean       _gnome_vfs_use_handler_for_scheme          (const char   *scheme);
+
+gboolean       _gnome_vfs_prepend_terminal_to_vector      (int          *argc,
+							   char       ***argv);
+
+gboolean       _gnome_vfs_set_fd_flags                    (int           fd,
+                                                           int           flags);
+gboolean       _gnome_vfs_clear_fd_flags                  (int           fd,
+                                                           int           flags);
 
 G_END_DECLS
 

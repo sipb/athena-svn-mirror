@@ -30,6 +30,7 @@
 #define GNOME_VFS_SOCKET_H
 
 #include <glib/gtypes.h>
+#include <libgnomevfs/gnome-vfs-cancellation.h>
 #include <libgnomevfs/gnome-vfs-file-size.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 
@@ -37,22 +38,29 @@ G_BEGIN_DECLS
 
 typedef struct GnomeVFSSocket GnomeVFSSocket;
 
-
 typedef GnomeVFSResult (*GnomeVFSSocketReadFunc)  (gpointer connection,
 						   gpointer buffer, 
 						   GnomeVFSFileSize bytes, 
-						   GnomeVFSFileSize *bytes_read);
+						   GnomeVFSFileSize *bytes_read,
+						   GnomeVFSCancellation *cancellation);
 typedef GnomeVFSResult (*GnomeVFSSocketWriteFunc) (gpointer connection, 
 						   gconstpointer buffer,
 						   GnomeVFSFileSize bytes,
-						   GnomeVFSFileSize *bytes_written);
+						   GnomeVFSFileSize *bytes_written,
+						   GnomeVFSCancellation *cancellation);
 
-typedef void           (*GnomeVFSSocketCloseFunc) (gpointer connection);
+typedef void           (*GnomeVFSSocketCloseFunc) (gpointer connection,
+						   GnomeVFSCancellation *cancellation);
+
+typedef GnomeVFSResult (*GnomeVFSSocketSetTimeoutFunc) (gpointer connection,
+							GTimeVal *timeout,
+							GnomeVFSCancellation *cancellation);
 
 typedef struct {
   GnomeVFSSocketReadFunc read;
   GnomeVFSSocketWriteFunc write;
   GnomeVFSSocketCloseFunc close;
+  GnomeVFSSocketSetTimeoutFunc set_timeout;
 } GnomeVFSSocketImpl;
 
 
@@ -61,13 +69,20 @@ GnomeVFSSocket* gnome_vfs_socket_new     (GnomeVFSSocketImpl *impl,
 GnomeVFSResult  gnome_vfs_socket_write   (GnomeVFSSocket     *socket, 
 					  gconstpointer       buffer,
 					  int                 bytes, 
-					  GnomeVFSFileSize   *bytes_written);
-GnomeVFSResult  gnome_vfs_socket_close   (GnomeVFSSocket     *socket);
+					  GnomeVFSFileSize   *bytes_written,
+					  GnomeVFSCancellation *cancellation);
+GnomeVFSResult  gnome_vfs_socket_close   (GnomeVFSSocket     *socket,
+					  GnomeVFSCancellation *cancellation);
 GnomeVFSResult  gnome_vfs_socket_read    (GnomeVFSSocket     *socket, 
 					  gpointer            buffer, 
 					  GnomeVFSFileSize    bytes, 
-					  GnomeVFSFileSize   *bytes_read);
-
+					  GnomeVFSFileSize   *bytes_read,
+					  GnomeVFSCancellation *cancellation);
+GnomeVFSResult  gnome_vfs_socket_set_timeout
+					 (GnomeVFSSocket *socket,
+					  GTimeVal *timeout,
+					  GnomeVFSCancellation *cancellation);
+void            gnome_vfs_socket_free   (GnomeVFSSocket *socket);
 G_END_DECLS
 
 #endif /* GNOME_VFS_SOCKET_H */

@@ -31,6 +31,8 @@
 #endif
 
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-monitor.h>
+#include <libgnomevfs/gnome-vfs-method.h>
 
 G_BEGIN_DECLS
 
@@ -48,6 +50,11 @@ GnomeVFSResult  gnome_vfs_set_meta_for_list 	(GnomeVFSFileInfo  *info,
 					    	 const GList       *meta_keys);
 	
 const char     *gnome_vfs_get_special_mime_type (GnomeVFSURI       *uri);
+
+void            gnome_vfs_monitor_callback (GnomeVFSMethodHandle *method_handle,
+					    GnomeVFSURI *info_uri,
+					    GnomeVFSMonitorEventType event_type);
+
 
 G_END_DECLS
 

@@ -1177,9 +1177,9 @@ set_desktop_file_key (GString *fullbuf, gchar *key, gchar *value)
 			key_idx [-1] == '\r')) {
 		/* Look for the end of the value */
 		val_end = strchr (key_idx, '\n');
-		if (val_end < 0)
+		if (val_end == NULL)
 			val_end = strchr (key_idx, '\r');
-		if (val_end < 0)
+		if (val_end == NULL)
 			val_end = &fullbuf->str [fullbuf->len - 1];
 
 		/* Erase the old name */

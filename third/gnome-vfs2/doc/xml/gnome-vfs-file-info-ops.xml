@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-file-info-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-file-info-ops">
 <refmeta>
 <refentrytitle>Getting and Setting File Information</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -40,19 +40,21 @@
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
-    Applications can use the <link linkend="gnome-vfs-get-file-info">gnome_vfs_get_file_info</link> family of operations to
+    Applications can use the <link linkend="gnome-vfs-get-file-info"><type>gnome_vfs_get_file_info</type></link> family of operations to
     retrieve file information, as this operation can be quite costly in
     terms of time (specilly when sniffing the MIME type) applications can 
     specify which information need at any time, reducing the performance 
     impact.
 </para>
 <para>
-    All of these operations use a <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> data structure that holds 
+    All of these operations use a <link linkend="GnomeVFSFileInfo"><type>GnomeVFSFileInfo</type></link> data structure that holds 
     the file information, there are several methods that can be used to 
-    manipulate this information. See <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> for more information.
+    manipulate this information. See <link linkend="GnomeVFSFileInfo"><type>GnomeVFSFileInfo</type></link> for more information.
 </para>
 </refsect1>
 
@@ -60,7 +62,7 @@
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-get-file-info"/>gnome_vfs_get_file_info ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info      (const <link linkend="gchar">gchar</link> *text_uri,
+<indexterm><primary>gnome_vfs_get_file_info</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info      (const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>
 <para>
@@ -85,7 +87,7 @@ to retrieve for the file
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-file-info-uri"/>gnome_vfs_get_file_info_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info_uri  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_get_file_info_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info_uri  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>
 <para>
@@ -110,7 +112,7 @@ to retrieve for the file
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-file-info-from-handle"/>gnome_vfs_get_file_info_from_handle ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info_from_handle
+<indexterm><primary>gnome_vfs_get_file_info_from_handle</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_get_file_info_from_handle
                                             (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options);</programlisting>
@@ -136,7 +138,7 @@ to retrieve for the file
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-set-file-info-uri"/>gnome_vfs_set_file_info_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_file_info_uri  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_set_file_info_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_file_info_uri  (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</link> mask);</programlisting>
 <para>
@@ -159,7 +161,7 @@ corresponding bit in <parameter>mask</parameter> is set is actually modified.</p
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-set-file-info"/>gnome_vfs_set_file_info ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_file_info      (const <link linkend="gchar">gchar</link> *text_uri,
+<indexterm><primary>gnome_vfs_set_file_info</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_file_info      (const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</link> mask);</programlisting>
 <para>
@@ -191,7 +193,7 @@ corresponding bit in <parameter>mask</parameter> is set is actually modified.</p
 
 <variablelist>
 <varlistentry>
-<term><link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link></term>
+<term><link linkend="GnomeVFSFileInfo"><type>GnomeVFSFileInfo</type></link></term>
 </varlistentry>
 </variablelist>
 

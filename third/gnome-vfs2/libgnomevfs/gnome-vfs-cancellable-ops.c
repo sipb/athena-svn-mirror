@@ -28,6 +28,7 @@
 #include <config.h>
 #include "gnome-vfs-cancellable-ops.h"
 #include "gnome-vfs-method.h"
+#include "gnome-vfs-private-utils.h"
 #include "gnome-vfs-handle-private.h"
 
 #include <glib/gmessages.h>
@@ -172,6 +173,8 @@ gnome_vfs_get_file_info_uri_cancellable (GnomeVFSURI *uri,
 {
 	GnomeVFSResult result;
 
+	g_return_val_if_fail (uri != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	
 	if (gnome_vfs_context_check_cancellation (context))
 		return GNOME_VFS_ERROR_CANCELLED;
 
@@ -264,6 +267,7 @@ gnome_vfs_find_directory_cancellable (GnomeVFSURI *near_uri,
 				      GnomeVFSContext *context)
 {
 	GnomeVFSResult result;
+	GnomeVFSURI *resolved_uri;
 
 	g_return_val_if_fail (result_uri != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
@@ -275,6 +279,14 @@ gnome_vfs_find_directory_cancellable (GnomeVFSURI *near_uri,
 	} else {
 		/* assume file: method and the home directory */
 		near_uri = gnome_vfs_uri_new (g_get_home_dir());
+		/* Need to expand the final symlink, since if the homedir is a symlink
+		 * we want to look at the device the home symlink points to, not the
+		 * one the symlink is stored on */
+		if (_gnome_vfs_uri_resolve_all_symlinks_uri (near_uri,
+							     &resolved_uri) == GNOME_VFS_OK) {
+			gnome_vfs_uri_unref (near_uri);
+			near_uri = resolved_uri;
+		}
 	}
 
 	g_assert (near_uri != NULL);

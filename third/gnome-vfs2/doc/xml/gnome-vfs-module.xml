@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-module">
+<refentry id="gnome-vfs-20-gnome-vfs-module">
 <refmeta>
 <refentrytitle>gnome-vfs-module</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -15,13 +15,15 @@
 
 
 
-<link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* <link linkend="vfs-module-init">vfs_module_init</link>             (const char *method_name,
-                                             const char *args);
-<link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* <link linkend="vfs-module-transform">vfs_module_transform</link>     (const char *method_name,
-                                             const char *args);
-void        <link linkend="vfs-module-shutdown">vfs_module_shutdown</link>             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);
+<link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* <link linkend="vfs-module-init">vfs_module_init</link>             (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *args);
+<link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* <link linkend="vfs-module-transform">vfs_module_transform</link>     (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *args);
+<link linkend="void">void</link>        <link linkend="vfs-module-shutdown">vfs_module_shutdown</link>             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -40,8 +42,8 @@ void        <link linkend="vfs-module-shutdown">vfs_module_shutdown</link>      
 <title>Details</title>
 <refsect2>
 <title><anchor id="vfs-module-init"/>vfs_module_init ()</title>
-<programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* vfs_module_init             (const char *method_name,
-                                             const char *args);</programlisting>
+<indexterm><primary>vfs_module_init</primary></indexterm><programlisting><link linkend="GnomeVFSMethod">GnomeVFSMethod</link>* vfs_module_init             (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *args);</programlisting>
 <para>
 Standard extern call implemented by each filesystem module. This is called
 to initialize the module and setup any basic structures / connections the
@@ -63,8 +65,8 @@ this module.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="vfs-module-transform"/>vfs_module_transform ()</title>
-<programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* vfs_module_transform     (const char *method_name,
-                                             const char *args);</programlisting>
+<indexterm><primary>vfs_module_transform</primary></indexterm><programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* vfs_module_transform     (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *args);</programlisting>
 <para>
 Shift an already instanced module to a new method name. This call is not implemented
 by most modules and is optional.</para>
@@ -84,7 +86,7 @@ this module.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="vfs-module-shutdown"/>vfs_module_shutdown ()</title>
-<programlisting>void        vfs_module_shutdown             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);</programlisting>
+<indexterm><primary>vfs_module_shutdown</primary></indexterm><programlisting><link linkend="void">void</link>        vfs_module_shutdown             (<link linkend="GnomeVFSMethod">GnomeVFSMethod</link> *method);</programlisting>
 <para>
 Called to tell a module to end any active operations, free all used memory,
 and close any connections (as appropriate) or resources.</para>

@@ -466,26 +466,28 @@ test_vfolder_ops (void)
 	 * Move existing directory with children inside a new directory.
 	 */
 
-	// create dir
-	// delete new dir
-	// delete existing dir
+	/* create dir
+	 * create dir
+	 * delete new dir
+	 * delete existing dir
 
-	// create file
-	// create file with keywords, check appearance in vfolders
-	// edit new file
-	// edit existing file
-	// move new file
-	// move existing file
-	// set filename new file
-	// set filename existing file
-	// delete new file
-	// delete existing file
-	
-	// monitor file creation
-	// monitor file edit
-	// monitor file delete
-	// monitor dir creation
-	// monitor dir delete	
+	 * create file
+	 * create file with keywords, check appearance in vfolders
+	 * edit new file
+	 * edit existing file
+	 * move new file
+	 * move existing file
+	 * set filename new file
+	 * set filename existing file
+	 * delete new file
+	 * delete existing file
+ 
+	 * monitor file creation
+	 * monitor file edit
+	 * monitor file delete
+	 * monitor dir creation
+	 * monitor dir delete	
+	 */
 	
 	return 0;
 }

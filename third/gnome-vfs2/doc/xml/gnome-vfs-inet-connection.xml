@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-inet-connection">
+<refentry id="gnome-vfs-20-gnome-vfs-inet-connection">
 <refmeta>
 <refentrytitle>gnome-vfs-inet-connection</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -20,19 +20,30 @@
                                              const <link linkend="gchar">gchar</link> *host_name,
                                              <link linkend="guint">guint</link> host_port,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
-void        <link linkend="gnome-vfs-inet-connection-destroy">gnome_vfs_inet_connection_destroy</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-inet-connection-destroy">gnome_vfs_inet_connection_destroy</link>
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
-void        <link linkend="gnome-vfs-inet-connection-free">gnome_vfs_inet_connection_free</link>  (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-inet-connection-free">gnome_vfs_inet_connection_free</link>  (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* <link linkend="gnome-vfs-inet-connection-to-socket">gnome_vfs_inet_connection_to_socket</link>
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);
 <link linkend="GnomeVFSSocketBuffer">GnomeVFSSocketBuffer</link>* <link linkend="gnome-vfs-inet-connection-to-socket-buffer">gnome_vfs_inet_connection_to_socket_buffer</link>
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);
-int         <link linkend="gnome-vfs-inet-connection-get-fd">gnome_vfs_inet_connection_get_fd</link>
+<link linkend="int">int</link>         <link linkend="gnome-vfs-inet-connection-get-fd">gnome_vfs_inet_connection_get_fd</link>
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-inet-connection-create-from-address">gnome_vfs_inet_connection_create_from_address</link>
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> **connection_return,
+                                             <link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address,
+                                             <link linkend="guint">guint</link> host_port,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* <link linkend="gnome-vfs-inet-connection-get-address">gnome_vfs_inet_connection_get_address</link>
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-inet-connection-get-ip">gnome_vfs_inet_connection_get_ip</link>
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -51,36 +62,36 @@ int         <link linkend="gnome-vfs-inet-connection-get-fd">gnome_vfs_inet_conn
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-create"/>gnome_vfs_inet_connection_create ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_inet_connection_create
+<indexterm><primary>gnome_vfs_inet_connection_create</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_inet_connection_create
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> **connection_return,
                                              const <link linkend="gchar">gchar</link> *host_name,
                                              <link linkend="guint">guint</link> host_port,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
-Creates a connection at <parameter>handle_return</parameter> to <parameter>host_name</parameter> using
+Creates a connection at <parameter>connection_return</parameter> to <parameter>host_name</parameter> using
 port <parameter>port</parameter>.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection_return</parameter>&nbsp;:</term>
-<listitem><simpara> pointer to a GnomeVFSInetConnection, which will
+<listitem><simpara> Pointer to a GnomeVFSInetConnection, which will.
 contain an allocated GnomeVFSInetConnection object on return.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>host_name</parameter>&nbsp;:</term>
-<listitem><simpara> string indicating the host to establish an internet connection with
+<listitem><simpara> String indicating the host to establish an internet connection with.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>host_port</parameter>&nbsp;:</term>
-<listitem><simpara> the port number to connect to
+<listitem><simpara> The port number to connect to.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
-<listitem><simpara> handle allowing cancellation of the operation
+<listitem><simpara> handle allowing cancellation of the operation.
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeVFSResult"><type>GnomeVFSResult</type></link> indicating the success of the operation.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-destroy"/>gnome_vfs_inet_connection_destroy ()</title>
-<programlisting>void        gnome_vfs_inet_connection_destroy
+<indexterm><primary>gnome_vfs_inet_connection_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_inet_connection_destroy
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
@@ -89,31 +100,31 @@ Closes/Destroys <parameter>connection</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
-<listitem><simpara> connection to destroy
+<listitem><simpara> Connection to destroy.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
-<listitem><simpara> handle for cancelling the operation
+<listitem><simpara> Handle for cancelling the operation.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-free"/>gnome_vfs_inet_connection_free ()</title>
-<programlisting>void        gnome_vfs_inet_connection_free  (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
+<indexterm><primary>gnome_vfs_inet_connection_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_inet_connection_free  (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection,
                                              <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<para>
+Frees <parameter>connection</parameter> without closing the socket.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> Connection to free.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
-<listitem><simpara>
-
-
+<listitem><simpara> Handle for cancelling the operation.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-to-socket"/>gnome_vfs_inet_connection_to_socket ()</title>
-<programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_inet_connection_to_socket
+<indexterm><primary>gnome_vfs_inet_connection_to_socket</primary></indexterm><programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_inet_connection_to_socket
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
 <para>
 Wrapper <parameter>connection</parameter> inside a standard GnomeVFSSocket for convenience.</para>
@@ -121,14 +132,14 @@ Wrapper <parameter>connection</parameter> inside a standard GnomeVFSSocket for c
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
-<listitem><simpara> connection to convert to wrapper in a GnomeVFSSocket
+<listitem><simpara> Connection to convert to wrapper in a GnomeVFSSocket.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created GnomeVFSSocket around <parameter>connection</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-to-socket-buffer"/>gnome_vfs_inet_connection_to_socket_buffer ()</title>
-<programlisting><link linkend="GnomeVFSSocketBuffer">GnomeVFSSocketBuffer</link>* gnome_vfs_inet_connection_to_socket_buffer
+<indexterm><primary>gnome_vfs_inet_connection_to_socket_buffer</primary></indexterm><programlisting><link linkend="GnomeVFSSocketBuffer">GnomeVFSSocketBuffer</link>* gnome_vfs_inet_connection_to_socket_buffer
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
 <para>
 Wrapper <parameter>connection</parameter> inside a standard GnomeVFSSocketBuffer for convenience.</para>
@@ -136,14 +147,14 @@ Wrapper <parameter>connection</parameter> inside a standard GnomeVFSSocketBuffer
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
-<listitem><simpara> connection to convert to wrapper in a GnomeVFSSocketBuffer
+<listitem><simpara> Connection to convert to wrapper in a GnomeVFSSocketBuffer.
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly created GnomeVFSSocketBuffer around <parameter>connection</parameter>.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-get-fd"/>gnome_vfs_inet_connection_get_fd ()</title>
-<programlisting>int         gnome_vfs_inet_connection_get_fd
+<indexterm><primary>gnome_vfs_inet_connection_get_fd</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_vfs_inet_connection_get_fd
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
 <para>
 Retrieve the UNIX file descriptor corresponding to <parameter>connection</parameter>.</para>
@@ -151,11 +162,76 @@ Retrieve the UNIX file descriptor corresponding to <parameter>connection</parame
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
-<listitem><simpara> connection to get the file descriptor from
+<listitem><simpara> Connection to get the file descriptor from
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> file descriptor
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-inet-connection-create-from-address"/>gnome_vfs_inet_connection_create_from_address ()</title>
+<indexterm role="2.8"><primary>gnome_vfs_inet_connection_create_from_address</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_inet_connection_create_from_address
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> **connection_return,
+                                             <link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address,
+                                             <link linkend="guint">guint</link> host_port,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<para>
+Creates a connection at <parameter>connection_return</parameter> to <parameter>address</parameter> using
+port <parameter>port</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>connection_return</parameter>&nbsp;:</term>
+<listitem><simpara> Pointer to a GnomeVFSInetConnection, which will.
+contain An allocated GnomeVFSInetConnection object on return.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>address</parameter>&nbsp;:</term>
+<listitem><simpara> A valid <link linkend="GnomeVFSAddress"><type>GnomeVFSAddress</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>host_port</parameter>&nbsp;:</term>
+<listitem><simpara> The port number to connect to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> Handle allowing cancellation of the operation.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GnomeVFSResult"><type>GnomeVFSResult</type></link> indicating the success of the operation.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-inet-connection-get-address"/>gnome_vfs_inet_connection_get_address ()</title>
+<indexterm><primary>gnome_vfs_inet_connection_get_address</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_inet_connection_get_address
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
+<para>
+Retrieve the address of the other side of a connected <parameter>connection</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
+<listitem><simpara> Connection to get the address from. 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A <link linkend="GnomeVFSAddress"><type>GnomeVFSAddress</type></link> containing the address.
+
+Since 2.8
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-inet-connection-get-ip"/>gnome_vfs_inet_connection_get_ip ()</title>
+<indexterm role="2.8"><primary>gnome_vfs_inet_connection_get_ip</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_inet_connection_get_ip
+                                            (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
+<para>
+Retrieve the ip address of the other side of a connected <parameter>connection</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
+<listitem><simpara> Connection to get the ip from.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> String version of the ip.
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.8
+</para></refsect2>
 
 </refsect1>
 
