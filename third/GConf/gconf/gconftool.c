@@ -38,6 +38,8 @@ static int recursive_list = FALSE;
 static int set_schema_mode = FALSE;
 static char* value_type = NULL;
 static int get_type_mode = FALSE;
+static int get_list_size_mode = FALSE;
+static int get_list_element_mode = FALSE;
 static char* value_list_type = NULL;
 static char* value_car_type = NULL;
 static char* value_cdr_type = NULL;
@@ -185,6 +187,24 @@ struct poptOption options[] = {
     &get_type_mode,
     0,
     N_("Print the data type of a key to standard output."),
+    NULL
+  },
+  {
+    "get-list-size",
+    '\0',
+    POPT_ARG_NONE,
+    &get_list_size_mode,
+    0,
+    N_("Get the number of elements in a list key."),
+    NULL
+  },
+  {
+    "get-list-element",
+    '\0',
+    POPT_ARG_NONE,
+    &get_list_element_mode,
+    0,
+    N_("Get a specific element from a list key, numerically indexed."),
     NULL
   },
   { 
@@ -362,6 +382,8 @@ static void do_spawn_daemon(GConfEngine* conf);
 static int do_get(GConfEngine* conf, const gchar** args);
 static int do_set(GConfEngine* conf, const gchar** args);
 static int do_get_type(GConfEngine* conf, const gchar** args);
+static int do_get_list_size(GConfEngine* conf, const gchar** args);
+static int do_get_list_element(GConfEngine* conf, const gchar** args);
 static int do_set_schema(GConfEngine* conf, const gchar** args);
 static int do_all_entries(GConfEngine* conf, const gchar** args);
 static int do_unset(GConfEngine* conf, const gchar** args);
@@ -407,7 +429,10 @@ main (int argc, char** argv)
     }
 
   if ((set_mode && get_mode) ||
-      (set_mode && unset_mode))
+      (set_mode && unset_mode) ||
+      (set_mode && get_type_mode) ||
+      (set_mode && get_list_size_mode) ||
+      (set_mode && get_list_element_mode)) 
     {
       fprintf(stderr, _("Can't set and get/unset simultaneously\n"));
       return 1;
@@ -422,7 +447,10 @@ main (int argc, char** argv)
 
   if ((all_entries_mode && get_mode) ||
       (all_entries_mode && set_mode) ||
-      (all_entries_mode && unset_mode))
+      (all_entries_mode && get_type_mode) ||
+      (all_entries_mode && unset_mode) ||
+      (all_entries_mode && get_list_size_mode) ||
+      (all_entries_mode && get_list_element_mode))
     {
       fprintf(stderr, _("Can't use --all-entries with --get or --set\n"));
       return 1;
@@ -430,7 +458,10 @@ main (int argc, char** argv)
 
   if ((all_subdirs_mode && get_mode) ||
       (all_subdirs_mode && set_mode) ||
-      (all_subdirs_mode && unset_mode))
+      (all_subdirs_mode && get_type_mode) ||
+      (all_subdirs_mode && unset_mode) ||
+      (all_subdirs_mode && get_list_size_mode) ||
+      (all_subdirs_mode && get_list_element_mode))
     {
       fprintf(stderr, _("Can't use --all-dirs with --get or --set\n"));
       return 1;
@@ -439,6 +470,9 @@ main (int argc, char** argv)
   if ((recursive_list && get_mode) ||
       (recursive_list && set_mode) ||
       (recursive_list && unset_mode) ||
+      (recursive_list && get_type_mode) ||
+      (recursive_list && get_list_size_mode) ||
+      (recursive_list && get_list_element_mode) ||
       (recursive_list && all_entries_mode) ||
       (recursive_list && all_subdirs_mode))
     {
@@ -449,6 +483,9 @@ main (int argc, char** argv)
   if ((set_schema_mode && get_mode) ||
       (set_schema_mode && set_mode) ||
       (set_schema_mode && unset_mode) ||
+      (set_schema_mode && get_type_mode) ||
+      (set_schema_mode && get_list_size_mode) ||
+      (set_schema_mode && get_list_element_mode) ||
       (set_schema_mode && all_entries_mode) ||
       (set_schema_mode && all_subdirs_mode))
     {
@@ -470,6 +507,7 @@ main (int argc, char** argv)
 
   if (ping_gconfd && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                       all_subdirs_mode || all_entries_mode || recursive_list || 
+                      get_type_mode || get_list_size_mode || get_list_element_mode ||
                       spawn_gconfd || dir_exists || schema_file || makefile_install_mode ||
                       break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -480,6 +518,7 @@ main (int argc, char** argv)
 
   if (dir_exists && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                      all_subdirs_mode || all_entries_mode || recursive_list || 
+                     get_type_mode || get_list_size_mode || get_list_element_mode ||
                      spawn_gconfd || schema_file || makefile_install_mode ||
                      break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -490,6 +529,7 @@ main (int argc, char** argv)
 
   if (schema_file && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                       all_subdirs_mode || all_entries_mode || recursive_list || 
+                      get_type_mode || get_list_size_mode || get_list_element_mode ||
                       spawn_gconfd || dir_exists || makefile_install_mode ||
                       break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -501,6 +541,7 @@ main (int argc, char** argv)
 
   if (makefile_install_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
                                 break_key_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -512,6 +553,7 @@ main (int argc, char** argv)
 
   if (break_key_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
                                 makefile_install_mode || break_dir_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -523,6 +565,7 @@ main (int argc, char** argv)
   
   if (break_dir_mode && (shutdown_gconfd || set_mode || get_mode || unset_mode ||
                                 all_subdirs_mode || all_entries_mode || recursive_list || 
+                                get_type_mode || get_list_size_mode || get_list_element_mode ||
                                 spawn_gconfd || dir_exists || schema_file ||
                                 break_key_mode || makefile_install_mode || short_docs_mode ||
                          long_docs_mode || schema_name_mode))
@@ -708,7 +751,27 @@ main (int argc, char** argv)
   if (get_type_mode)
     {
       const gchar** args = poptGetArgs(ctx);
-      if (do_get_type(conf, args)  == 1)
+      if (do_get_type(conf, args) == 1)
+        {
+          gconf_engine_unref(conf);
+          return 1;
+        }
+    }
+
+  if (get_list_size_mode)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      if (do_get_list_size(conf, args) == 1)
+        {
+          gconf_engine_unref(conf);
+          return 1;
+        }
+    }
+
+  if (get_list_element_mode)
+    {
+      const gchar** args = poptGetArgs(ctx);
+      if (do_get_list_element(conf, args) == 1)
         {
           gconf_engine_unref(conf);
           return 1;
@@ -1280,6 +1343,117 @@ do_get_type(GConfEngine* conf, const gchar** args)
     }
   return 0;
 }
+
+static int
+do_get_list_size(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+  GConfValue *list = NULL;
+
+  if (args == NULL || *args == NULL)
+    {
+      fprintf(stderr, _("Must specify a key to lookup size of.\n"));
+      return 1;
+    }
+
+  list = gconf_engine_get (conf, *args, &err);
+
+  if (list == NULL)
+    {
+      if (err == NULL)
+	{
+	  fprintf(stderr, _("No value set for `%s'\n"), *args);
+	}
+      else
+	{
+	  fprintf(stderr, _("Failed to get value for `%s': %s\n"),
+		  *args, err->message);
+	  g_error_free(err);
+	  err = NULL;
+	}
+
+      return 1;
+    }
+
+  if (list->type != GCONF_VALUE_LIST)
+    {
+      fprintf(stderr, _("Key %s is not a list.\n"), *args);
+      return 1;
+    }
+
+  printf("%u\n", g_slist_length(gconf_value_get_list(list)));
+
+  return 0;
+}
+
+static int
+do_get_list_element(GConfEngine* conf, const gchar** args)
+{
+  GError* err = NULL;
+  GConfValue *list = NULL, *element = NULL;
+  GSList *iter = NULL;
+  gchar* s = NULL;
+  int idx = 0;
+
+  if (args == NULL || *args == NULL)
+    {
+      fprintf(stderr, _("Must specify a key from which to get list element.\n"));
+      return 1;
+    }
+
+  list = gconf_engine_get (conf, *args, &err);
+
+  if (list == NULL)
+    {
+      if (err == NULL)
+	{
+	  fprintf(stderr, _("No value set for `%s'\n"), *args);
+	}
+      else
+	{
+	  fprintf(stderr, _("Failed to get value for `%s': %s\n"),
+		  *args, err->message);
+	  g_error_free(err);
+	  err = NULL;
+	}
+
+      return 1;
+    }
+
+  if (list->type != GCONF_VALUE_LIST)
+    {
+      fprintf(stderr, _("Key %s is not a list.\n"), *args);
+      return 1;
+    }
+
+  if (args[1] == NULL)
+    {
+      fprintf(stderr, _("Must specify list index.\n"));
+      return 1;
+    }
+
+  idx = atoi(args[1]);
+  if (idx < 0)
+    {
+      fprintf(stderr, _("List index must be non-negative.\n"));
+      return 1;
+    }
+
+  iter = gconf_value_get_list(list);
+  element = g_slist_nth_data(iter, idx);
+
+  if (element == NULL)
+    {
+      fprintf(stderr, _("List index is out of bounds.\n"));
+      return 1;
+    }
+
+  s = gconf_value_to_string(element);
+  printf("%s\n", s);
+  g_free(s);
+
+  return 0;
+} 
 
 enum
 {
