@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.15 1991-09-10 11:02:33 lwvanels Exp $
+ *	$Id: c_io.c,v 1.16 1991-10-31 14:58:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.15 1991-09-10 11:02:33 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.16 1991-10-31 14:58:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -283,6 +283,55 @@ read_text_into_file(fd, filename)
   return(SUCCESS);
 }
 
+ERRCODE
+read_file_into_text(filename,bufp)
+     char *filename;
+     char **bufp;
+{
+  char *buf;
+  int nbytes;
+  int fd;
+  struct stat statbuf;
+  char error[ERROR_SIZE];
+
+  buf = *bufp;
+  if (stat(filename,&statbuf) != 0) {
+    sprintf(error,"read_file_into_text: bad stat value on file %s",
+	    filename);
+    olc_perror(error);
+    return(ERROR);
+  }
+  nbytes = statbuf.st_size;
+
+  if ((buf = (char *)malloc((unsigned) (nbytes +1))) == (char *) NULL) {
+    olc_perror("read_file_into_text: Can't allocate memory.");
+    return(ERROR);
+  }
+
+  if ((fd = open(filename,O_RDONLY,0)) < 0) {
+    free(buf);
+    sprintf(error,"read_file_into_text: error opening %s", filename);
+    olc_perror(error);
+    return(ERROR);
+  }
+
+  if (read(fd,buf,nbytes) != nbytes) {
+    free(buf);
+    sprintf(error,"read_fie_into_text: error reading %s", filename);
+    olc_perror(error);
+    close(fd);
+    return(ERROR);
+  }
+
+  if (close(fd) < 0) {
+    sprintf(error,"read_file_into_text: error closing %s", filename);
+    olc_perror(error);
+  }
+
+  buf[nbytes] = '\0';
+  *bufp = buf;
+  return(SUCCESS);
+}
 
 
 /*
