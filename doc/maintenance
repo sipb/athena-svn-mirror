@@ -125,10 +125,10 @@ general architecture of the wash process is:
 	  fails, the update script sends mail to source-wash@mit.edu.
 	  This machine is on read:source and write:update.
 
-	* Each night at 3am, a machine of each architecture (currently
-	  snuggle and kenmore) recreates empty /build and /localsrvd
-	  filesystems and performs a build of the tree with /srvd
-	  pointed at /localsrvd.  If the build fails, the update
+	* Each night at 4:30am, a machine of each architecture
+	  (currently snuggle and kenmore) recreates empty /build and
+	  /localsrvd filesystems and performs a build of the tree with
+	  /srvd pointed at /localsrvd.  If the build fails, the update
 	  script sends mail to source-wash@mit.edu with the last few
 	  lines of the wash log, and saves the wash log in /var/wash
 	  on the local disk.
