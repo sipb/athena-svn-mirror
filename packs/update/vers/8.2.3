@@ -1,0 +1,16 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	echo "/.login"				>> "$CONFCHG"
+	;;
+esac
+
+echo "/etc/athena/sshd1"			>> "$DEADFILES"
+echo "/etc/sshd.pid"				>> "$DEADFILES"
+echo "/etc/zhm.pid"				>> "$DEADFILES"
+echo "/etc/named.pid"				>> "$DEADFILES"
+echo "/etc/named.boot"				>> "$DEADFILES"
