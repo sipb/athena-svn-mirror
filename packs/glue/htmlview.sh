@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.2 2000-09-21 15:09:01 ghudson Exp $
+# $Id: htmlview.sh,v 1.3 2001-03-26 20:02:40 ghudson Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -7,12 +7,14 @@
 #
 #   htmlview - script to view an HTML doc in an existing browser if
 #	       possible, otherwise start up a new one
-  usage="Usage: htmlview [ -c ] URL
-	-c indicates that SSL/certificate authentication is required."
-  optstring=c
+  usage="Usage: htmlview [ -c ] [ -f ]  URL
+        -c indicates that SSL/certificate authentication is required.
+        -f forces Lynx to treat displayed files as HTML"
+  optstring=cf
 
 # Parse options
 cert_required=false
+force_lynx_html=false
 args="`getopt $optstring $*`"
 if [ $? != 0 ]; then
      echo "$usage" >&2
@@ -22,6 +24,8 @@ for arg in $args
 do
   case $arg in
     -c) cert_required=true
+      ;;
+    -f) lynx_flags="-force_html"
       ;;
     --)
       ;;
@@ -100,7 +104,7 @@ esac
 echo "$0: Could not run Netscape.  Will try Lynx." >&2
 
 # Start Lynx
-/bin/athena/attachandrun infoagents lynx lynx "$url"
+/bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url"
 
 echo "$0: Could not find or start any WWW browser." >&2
 exit 1
