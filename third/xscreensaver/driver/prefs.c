@@ -147,6 +147,8 @@ static const char * const prefs[] = {
   "lockVTs",
   "lockTimeout",
   "startLocked",
+  "lockCommand",
+  "unlockCommand",
   "passwdTimeout",
   "maxIdleTime",
   "visualID",
@@ -611,6 +613,8 @@ write_init_file (saver_preferences *p, const char *version_string)
       CHECK("lockVTs")		continue;  /* don't save */
 # endif
       CHECK("startLocked")	type = pref_bool, b = p->start_locked_p;
+      CHECK("lockCommand")	type = pref_str,  s = p->lock_command;
+      CHECK("unlockCommand")	type = pref_str,  s = p->unlock_command;
       CHECK("lockTimeout")	type = pref_time, t = p->lock_timeout;
       CHECK("passwdTimeout")	type = pref_time, t = p->passwd_timeout;
       CHECK("maxIdleTime")	type = pref_time, t = p->max_idle_time;
@@ -765,6 +769,8 @@ load_init_file (saver_preferences *p)
   p->lock_p	    = get_boolean_resource ("lock", "Boolean");
   p->lock_vt_p	    = get_boolean_resource ("lockVTs", "Boolean");
   p->start_locked_p = get_boolean_resource ("startLocked", "Boolean");
+  p->lock_command   = get_string_resource ("lockCommand", "LockCommand");
+  p->unlock_command = get_string_resource ("unlockCommand", "UnlockCommand");
   p->fade_p	    = get_boolean_resource ("fade", "Boolean");
   p->unfade_p	    = get_boolean_resource ("unfade", "Boolean");
   p->fade_seconds   = 1000 * get_seconds_resource ("fadeSeconds", "Time");

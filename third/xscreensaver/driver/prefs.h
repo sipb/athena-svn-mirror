@@ -37,6 +37,8 @@ struct saver_preferences {
   Bool lock_vt_p;		/* whether to lock VTs too, if possible */
   Bool start_locked_p;		/* whether to start locked, and exit
 				   on unlock */
+  char *lock_command;		/* command to run when locking screen */
+  char *unlock_command;		/* command to run when unlocking screen */
 
   Bool fade_p;			/* whether to fade to black, if possible */
   Bool unfade_p;		/* whether to fade from black, if possible */

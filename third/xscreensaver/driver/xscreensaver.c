@@ -132,6 +132,7 @@
 #include <X11/Shell.h>
 #include <X11/Xos.h>
 #include <netdb.h>	/* for gethostbyname() */
+#include <signal.h>
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Error.h>
@@ -177,6 +178,8 @@ static XrmOptionDescRec options [] = {
   { "-no-lock-vts",	   ".lockVTs",		XrmoptionNoArg, "off" },
   { "-start-locked",	   ".startLocked",	XrmoptionNoArg, "on" },
   { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
+  { "-lock-command",	   ".lockCommand",	XrmoptionSepArg, 0 },
+  { "-unlock-command",	   ".unlockCommand",	XrmoptionSepArg, 0 },
   { "-visual",		   ".visualID",		XrmoptionSepArg, 0 },
   { "-install",		   ".installColormap",	XrmoptionNoArg, "on" },
   { "-no-install",	   ".installColormap",	XrmoptionNoArg, "off" },
@@ -873,6 +876,7 @@ main_loop (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
   Bool ok_to_unblank;
+  pid_t lock_command_pid;
 
   while (1)
     {
@@ -920,6 +924,23 @@ main_loop (saver_info *si)
 	si->lock_id = XtAppAddTimeOut (si->app, p->lock_timeout,
 				       activate_lock_timer,
 				       (XtPointer) si);
+
+      if (si->locked_p && p->lock_command && *p->lock_command)
+	{
+	  lock_command_pid = fork ();
+	  switch (lock_command_pid)
+	    {
+	    case -1:
+	      fprintf (stderr, "%s: Could not fork to run lock command.\n",
+		       blurb());
+	      break;
+
+	    case 0:
+	      setsid ();
+	      system (p->lock_command);
+	      _exit (0);
+	    }
+	}
 #endif /* !NO_LOCKING */
 
 
@@ -957,6 +978,29 @@ main_loop (saver_info *si)
       /* Kill before unblanking, to stop drawing as soon as possible. */
       kill_screenhack (si);
       unblank_screen (si);
+
+      if (si->locked_p)
+	{
+	  if (p->lock_command && lock_command_pid > 0)
+	    {
+	      kill (-lock_command_pid, SIGTERM);
+	      lock_command_pid = 0;
+	    }
+	  if (p->unlock_command && *p->unlock_command)
+	    {
+	      switch (lock_command_pid)
+		{
+		case -1:
+		  fprintf (stderr, "%s: Could not fork to run unlock "
+			   "command.\n", blurb());
+		  break;
+
+		case 0:
+		  system (p->unlock_command);
+		  _exit (0);
+		}
+	    }
+	}
 
       si->locked_p = False;
       si->demoing_p = 0;

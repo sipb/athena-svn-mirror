@@ -24,6 +24,8 @@ xss - graphics hack and screen locker, launched when the user is idle
 [\-lock\-timeout \fIint\fP] \
 [\-start\-locked] \
 [\-no\-start\-locked] \
+[\-lock\-command \fIcommand\fP] \
+[\-unlock\-command \fIcommand\fP] \
 [\-visual \fIvisual\fP] \
 [\-install] \
 [\-no\-install] \
@@ -155,6 +157,15 @@ screen blanks.
 .B startLocked\fP (class \fBBoolean\fP)
 Tells xss to start up locked and exit immediately after the screen is
 unlocked.
+.TP 8
+.B lockCommand\fP (class \fBLockCommand\fP)
+Specifies a command to run when the screen is locked. If the command
+is still running when the screen is unlocked, it will be killed (with
+a SIGTERM).
+.TP 8
+.B unlockCommand\fP (class \fBUnlockCommand\fP)
+Specifies a command to run when the screen is unlocked. (The unlock
+command is run after the lock command, if any, is killed.)
 .TP 8
 .B passwdTimeout\fP (class \fBTime\fP)
 If the screen is locked, then this is how many seconds the password dialog box
@@ -515,6 +526,12 @@ Same as setting the \fstartLocked\fP resource to \fItrue\fP.
 .TP 8
 .B \-no\-start\-locked
 Same as setting the \fstartLocked\fP resource to \fIfalse\fP.
+.TP 8
+.B \-lock\-command
+Same as the \fIlockCommand\fP resource.
+.TP 8
+.B \-unlock\-command
+Same as the \fIunlockCommand\fP resource.
 .TP 8
 .B \-visual \fIvisual\fP
 Same as the \fIvisualID\fP resource.
