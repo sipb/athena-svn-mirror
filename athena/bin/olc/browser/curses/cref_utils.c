@@ -3,6 +3,8 @@
  *      Student Consulting Staff
  *	MIT Project Athena
  *
+ *	Lucien Van Elsen
+ *	MIT Project Athena
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
  *      Permission to use, copy, modify, and distribute this program
@@ -22,12 +24,14 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.5 1991-04-14 17:25:27 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.6 1991-09-10 15:12:30 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.5 1991-04-14 17:25:27 lwvanels Exp $";
-#endif	lint
+#ifndef SABER
+static char *rcsid_commands_c = "$Header: ";
+#endif
+#endif
 
 #include <mit-copyright.h>
 
