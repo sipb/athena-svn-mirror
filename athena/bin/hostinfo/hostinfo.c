@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.7 1993-10-23 17:07:42 probe Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.8 1994-03-30 10:17:06 miki Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -152,7 +152,11 @@ main(argc, argv)
 	    }
 	}
 
+#ifdef SOLARIS
+      if(!host_entry)
+#else
       if(host_entry = (struct hostent *)0)
+#endif
 	{
 	  host_entry = gethostbyname(hostname);
 	  if(host_entry)
