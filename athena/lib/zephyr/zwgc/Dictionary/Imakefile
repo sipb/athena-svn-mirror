@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v $
 /**/#	$Author: lwvanels $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v 1.4 1991-12-05 15:33:53 lwvanels Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Dictionary/Imakefile,v 1.5 1992-07-13 17:00:45 lwvanels Exp $
 /**/#
 
 LIBS= $(ZEPHYR_LIB) $(COMERR_LIB) $(KRB_LIB) $(DES_LIB)
@@ -23,6 +23,7 @@ LINCLUDES = -I../Memory -I../String
 GENERATORS= generate_dictionary_instance
 
 SRCDIR= ${SRCTOP}/zwgc/Dictionary
+BUILDDIR= ${BUILDTOP}/zwgc/Dictionary
 CODE= ${GENERATORS} ${REALSRCS} ${REALHDRS} Imakefile
 
 normal_obj_rule()
@@ -41,12 +42,12 @@ dictionary_spec: dictionary.h
 # Generate a int dictionary instance:
 #
 int_dictionary.c int_dictionary.h: dictionary.c dictionary.h
-	./generate_dictionary_instance ${SRCDIR} int
+	./generate_dictionary_instance ${BUILDDIR} int
 #
 # Generate a string dictionary instance:
 #
 string_dictionary.c string_dictionary.h: dictionary.c dictionary.h
-	./generate_dictionary_instance ${SRCDIR} string new_string.h
+	./generate_dictionary_instance ${BUILDDIR} string new_string.h
 
 clean::
 	$(RM) $(OBJS) dictionary_spec int_dictionary.c string_dictionary.c \
