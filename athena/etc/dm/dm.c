@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.1 1999-10-14 22:18:55 kcr Exp $
+/* $Id: dm.c,v 1.2 1999-10-15 23:11:47 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,18 +41,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.1 1999-10-14 22:18:55 kcr Exp $";
-#endif
-
-/* Non-portable termios flags we'd like to set. */
-#ifndef IMAXBEL
-#define IMAXBEL 0
-#endif
-#ifndef ECHOCTL
-#define ECHOCTL 0
-#endif
-#ifndef TAB3
-#define TAB3 0
+static char *rcsid_main = "$Id: dm.c,v 1.2 1999-10-15 23:11:47 kcr Exp $";
 #endif
 
 /* Process states */
@@ -105,7 +94,6 @@ static void catchalarm(int signo);
 static void xready(int signo);
 static void shutdown(int signo);
 static void loginready(int signo);
-static char *number(int x);
 static char *getconf(char *file, char *name);
 static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
@@ -113,9 +101,7 @@ static void start_console(char *line, char **argv, int redir);
 static void cleanup(char *tty);
 static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
-#ifdef SRIOCSREDIR
-static int grabconsole(void);
-#endif
+static void writepid(char *file, pid_t pid);
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -129,31 +115,6 @@ static int grabconsole(void);
 
 static    int max_fd;
 
-#ifdef SRIOCSREDIR
-static int grabconsole(void)
-{
-    int	console;
-    int		p[2];
-    
-    if (pipe(p) < 0) {
-       fprintf(stderr, "dm: could not open pipe: %s\n",strerror(errno));
-       exit(1);
-    }
-
-    if ((console = open("/dev/console", O_RDONLY)) < 0 ) {
-        fprintf(stderr, "dm:could not open /dev/console: %s\n",
-		strerror(errno));
-	exit(1);
-    }
-    if (ioctl(console, SRIOCSREDIR, p[1]) < 0) {
-        fprintf(stderr, "dm:could not issue ioctl: %s\n",strerror(errno));
-	syslog(LOG_DEBUG, "Can't issue SRIOCSREDIR ioctl: %m");
-	exit(1);
-    }
-    return(p[0]);
-}
-#endif
-
 /* Setup signals, start X, start console, start login, wait */
 
 int main(int argc, char **argv)
@@ -163,10 +124,6 @@ int main(int argc, char **argv)
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
     int pgrp, file, tries, count, redir = TRUE;
-#ifdef TIOCCONS
-    int on = 1;
-#endif
-
     char dpyname[10], dpyacl[40];
     Display *dpy;
     XHostAddress *hosts;
@@ -176,11 +133,13 @@ int main(int argc, char **argv)
     time_t now, last_console_failure = 0;
     struct sigaction sigact;
     sigset_t mask;
+#if defined(SRIOCSREDIR) || defined(TIOCCONS)
+    int on;
+#endif
 
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags = 0;
     (void) sigemptyset(&sig_zero);
-
 
 /*
  * Note about setting environment variables in dm:
@@ -283,11 +242,8 @@ int main(int argc, char **argv)
     p = getconf(conf, "console");
     if (p == NULL)
       console_login(conf, "\ndm: Can't find console command line\n");
-#ifdef SRIOCSREDIR
-    consoleargv = parseargs(p, "-inputfd", "0", NULL);
-#else
+
     consoleargv = parseargs(p, NULL, NULL, NULL);
-#endif
 
     p = getconf(conf, "login");
     if (p == NULL)
@@ -325,10 +281,7 @@ int main(int argc, char **argv)
     tcsetpgrp(0, pgrp);
 
     /* save our pid file */
-    if ((file = open(dmpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
-	write(file, number(getpid()), strlen(number(getpid())));
-	close(file);
-    }
+    writepid(dmpidf, getpid());
 
     /* Fire up X */
     xpid = 0;
@@ -359,10 +312,7 @@ int main(int argc, char **argv)
 	    break;
 	default:
 	    sprintf(xpidf, xpids, dpynum);
-	    if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
-		write(file, number(xpid), strlen(number(xpid)));
-		close(file);
-	    }
+	    writepid(xpidf, xpid);
 
 	    if (x_running == STARTUP) {
 		alarm(X_START_WAIT);
@@ -468,10 +418,21 @@ int main(int argc, char **argv)
 	    (void) setsid();
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
+	    if (redir) {
+	      /* really ought to check the return status of these */
+#ifdef SRIOCSREDIR
+	      on=open("/dev/console", O_RDONLY);
+	      if(on>=0) {
+		ioctl(on, SRIOCSREDIR, 1);
+		close(on);
+	      }
+#else
 #ifdef TIOCCONS
-	    if (redir)
-		ioctl(1, TIOCCONS, &on);
+	      on=1;
+	      ioctl(1, TIOCCONS, &on);
 #endif
+#endif
+	    }
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
 	    /* ignoring SIGUSR1 will cause xlogin to send us a SIGUSR1
 	     * when it is ready
@@ -575,7 +536,7 @@ int main(int argc, char **argv)
 
 static void console_login(char *conf, char *msg)
 {
-    int i, graceful = FALSE, cfirst = TRUE, pgrp;
+    int i, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
     char *p, **cargv;
@@ -644,12 +605,8 @@ static void console_login(char *conf, char *msg)
 
 static void start_console(char *line, char **argv, int redir)
 {
-    int file, pgrp, i;
-    char *number(), c, buf[64], **argvp;
-    struct termios tc;
-#ifdef SRIOCSREDIR
-    int fd;
-#endif
+    int file, i;
+    char c;
 
     syslog(LOG_DEBUG, "Starting console");
     if (console_tty == 0) {
@@ -691,66 +648,10 @@ static void start_console(char *line, char **argv, int redir)
 	setsid();
 	dup2(console_tty, 0);
 	close(console_tty);
-#ifdef SRIOCSREDIR
-	if (redir)
-	  fd = grabconsole();
-#endif
-	/* Since we are the session leader, we must initialize the tty */
-	(void) tcgetattr(0, &tc);
-	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY|IMAXBEL;
-	tc.c_oflag = OPOST|ONLCR|TAB3;
-	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK|ECHOCTL;
-	tc.c_cc[VMIN] = 1;
-	tc.c_cc[VTIME] = 0;
-
-	/* assume that the OS requires us to initialize the remaining
-	   c_cc entries if and only if it defines the canonical values
-	   for us */
-#ifdef CERASE
-	tc.c_cc[VERASE] = CERASE;
-	tc.c_cc[VKILL] = CKILL;
-	tc.c_cc[VEOF] = CEOF;
-	tc.c_cc[VINTR] = CINTR;
-	tc.c_cc[VQUIT] = CQUIT;
-	tc.c_cc[VSTART] = CSTART;
-	tc.c_cc[VSTOP] = CSTOP;
-	tc.c_cc[VEOL] = _POSIX_VDISABLE;
-	/* The following are common extensions to POSIX */
-#ifdef VEOL2
-	tc.c_cc[VEOL2] = _POSIX_VDISABLE;
-#endif
-#ifdef VSUSP
-	tc.c_cc[VSUSP] = CSUSP;
-#endif
-#ifdef VDSUSP
-	tc.c_cc[VDSUSP] = CDSUSP;
-#endif
-#ifdef VLNEXT
-	tc.c_cc[VLNEXT] = CLNEXT;
-#endif
-#ifdef VREPRINT
-	tc.c_cc[VREPRINT] = CRPRNT;
-#endif
-#ifdef VDISCRD
-	tc.c_cc[VDISCRD] = CFLUSH;
-#endif
-#ifdef VWERSE
-	tc.c_cc[VWERSE] = CWERASE;
-#endif
-#endif /* CERASE */
-	tcsetattr(0, TCSANOW, &tc);
 
 	setgid(DAEMON);
 	setuid(DAEMON);
 	(void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
-#ifdef SRIOCSREDIR
-	/* Icky hack: last two args are "-inputfd" and "0"; change the last
-	 * one to be the console fd. */
-	sprintf(buf, "%d", fd);
-	for (argvp = argv; *argvp; argvp++)
-	    ;
-	*(argvp - 1) = buf;
-#endif
 	execv(argv[0], argv);
 	fprintf(stderr,"dm: Failed to exec console: %s\n", strerror(errno));
 	_exit(1);
@@ -759,10 +660,7 @@ static void start_console(char *line, char **argv, int redir)
 		strerror(errno));
 	_exit(1);
     default:
-	if ((file = open(consolepidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
-	    write(file, number(consolepid), strlen(number(consolepid)));
-	    close(file);
-	}
+        writepid(consolepidf, consolepid);
     }
 }
 
@@ -1016,29 +914,6 @@ static char **parseargs(char *line, char *extra, char *extra1, char *extra2)
     return(ret);
 }
 
-
-/* Convert an int to a string, and return a pointer to this string in a
- * static buffer.  The string will be newline and null terminated.
- */
-
-static char *number(int x)
-{
-#define NDIGITS 16
-    static char buffer[NDIGITS];
-    char *p = &buffer[NDIGITS-1];
-
-    *p-- = 0;
-    *p-- = '\n';
-    while (x) {
-	*p-- = x % 10 + '0';
-	x = x / 10;
-    }
-    if (p == &buffer[NDIGITS-3])
-      *p-- = '0';
-    return(p+1);
-}
-
-
 /* Find a named field in the config file.  Config file contains 
  * comment lines starting with #, and lines with a field name,
  * whitespace, then field value.  This routine returns the field
@@ -1119,4 +994,18 @@ static void x_stop_wait(void)
     alarm(0);
     sleep(X_STOP_WAIT);
     sigprocmask(SIG_SETMASK, &omask, NULL);
+}
+
+/* Write a given pid (any number, really) to a given file */
+static void writepid(char *file, pid_t pid)
+{
+  FILE *fp;
+
+  fp=fopen(file, "w");
+
+  if(fp==NULL)
+    return;
+
+  fprintf(fp, "%d\n", pid);
+  fclose(fp);
 }
