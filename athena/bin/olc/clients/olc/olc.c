@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.22 1991-01-03 15:45:10 lwvanels Exp $
+ *	$Id: olc.c,v 1.23 1991-01-21 01:17:15 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.22 1991-01-03 15:45:10 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.23 1991-01-21 01:17:15 lwvanels Exp $";
 #endif
 #endif
 
@@ -83,6 +83,7 @@ COMMAND OLC_Command_Table[] = {
   "show",	do_olc_show,		"Show any new messages",
   "status",	do_olc_status,		"Print your status",
   "topic",	do_olc_topic,		"Find question topic",
+  "version",	do_olc_version,		"Print version number",
   "who",	do_olc_who,		"Find name of connected consultant",
   (char *) NULL, (int(*)()) NULL,	""
   };
@@ -111,7 +112,6 @@ COMMAND OLCR_Command_Table[] = {
   "motd",	do_olc_motd,		"See motd",
   "off",	do_olc_off,		"Sign off",
   "on",		do_olc_on,		"Sign on",
-/*"queue",	do_olc_queue,		"Show/Change queues",*/
   "quit",	do_quit,		"Quit",
   "replay",	do_olc_replay,		"Replay the conversation",	   
   "send",	do_olc_send,		"Send a message",		       
@@ -121,6 +121,7 @@ COMMAND OLCR_Command_Table[] = {
   "stock",	do_olc_stock,		"Browse thru stock answers",
 #endif
   "topic",	do_olc_topic,		"Show/Change question topic",
+  "version",	do_olc_version,		"Print version number",
   "who",	do_olc_who,		"Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
   };
