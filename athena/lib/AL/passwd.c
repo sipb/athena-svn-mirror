@@ -18,7 +18,31 @@
 #endif
 
 /* XXX do reference count */
-long ALincRefCount(ALsession session) { return 0L; }
+long ALincRefCount(ALsession session)
+{ return 0L; }
+
+/* set error context to contents of a file */
+void
+ALgetErrorContextFromFile(ALsession session, char *filename)
+{
+  int fd, cnt;
+
+  fd = open(filename, O_RDONLY);
+  if (fd < 0)
+    {
+      ALcontext(session)[0]='\0';
+    }
+  else
+    {
+      /* put contents of NOCREATE file in error context */
+      cnt = read(fd, ALcontext(session), ALlengthErrContext);
+
+      /* null-terminate the string */
+      if (cnt < ALlengthErrContext) ALcontext(session)[cnt] = '\0';
+      else ALcontext(session)[ALlengthErrContext] = '\0';
+    }
+  return;
+}
 
 /* Add user to passwd file */
 
@@ -41,21 +65,14 @@ ALaddPasswdEntry(ALsession session)
   /* if NOCREATE is set, return an error */
   if (ALisTrue(session, ALhaveNOCREATE))
     {
-      fd = open(ALfileNOCREATE, O_RDONLY);
-      if (fd < 0)
-	{
-	  ALcontext(session)[0]='\0';
-	}
-      else
-	{
-	  /* put contents of NOCREATE file in error context */
-	  cnt = read(fd, ALcontext(session), ALlengthErrContext);
-
-	  /* null-terminate the string */
-	  if (cnt < ALlengthErrContext) ALcontext(session)[cnt] = '\0';
-	  else ALcontext(session)[ALlengthErrContext] = '\0';
-	}
+      ALgetErrorContextFromFile(session, ALfileNOCREATE);
       return(ALerrNOCREATE);
+    }
+
+  if (ALisTrue(session, ALisRemoteSession) && ALisTrue(session, ALhaveNOREMOTE))
+    {
+      ALgetErrorContextFromFile(session, ALfileNOREMOTE);
+      return(ALerrNOREMOTE);
     }
 
   /* lock password file */
@@ -98,6 +115,7 @@ ALaddPasswdEntry(ALsession session)
     close(fd);
     unlink("/etc/ptmp");
 
+  /* printf("Added %s to /etc/passwd\n", ALpw_dir(session)); */
   return 0L;
 }
 
