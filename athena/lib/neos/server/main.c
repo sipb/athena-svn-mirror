@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.2 1996-09-20 04:40:23 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.3 1997-09-20 06:50:42 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.2 1996-09-20 04:40:23 ghudson Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/main.c,v 1.3 1997-09-20 06:50:42 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -109,7 +109,8 @@ main(argc, argv)
     if (!hent)
 	fatal("Can't canonicalize local host name");
 
-    (void) strcpy(my_canonhostname, hent->h_name);
+    (void) strncpy(my_canonhostname, hent->h_name, sizeof(my_canonhostname));
+    my_canonhostname[sizeof(my_canonhostname) - 1] = '\0';
 
 #ifdef MULTI
     signal(SIGCHLD, child_dead);

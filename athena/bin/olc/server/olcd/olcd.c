@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.61 1996-09-20 02:36:37 ghudson Exp $
+ *	$Id: olcd.c,v 1.62 1997-09-20 06:50:02 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.61 1996-09-20 02:36:37 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.62 1997-09-20 06:50:02 ghudson Exp $";
 #endif
 #endif
 
@@ -335,7 +335,8 @@ dbmallopt(MALLOC_ERRFILE,&m);
 	log_error("olcd: Unable to get host entry for this host: %m");
 	exit(ERROR);
     }
-    (void) strcpy(hostname, this_host_entry->h_name);
+    (void) strncpy(hostname, this_host_entry->h_name, sizeof(hostname));
+    hostname[sizeof(hostname) - 1] = '\0';
 
 #ifdef HESIOD
     if (!hostset)
