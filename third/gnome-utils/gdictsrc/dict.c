@@ -1,4 +1,4 @@
-/* $Id: dict.c,v 1.1.1.3 2003-01-04 21:13:21 ghudson Exp $ */
+/* $Id: dict.c,v 1.1.1.4 2004-10-04 05:05:46 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*
@@ -32,6 +32,20 @@
 #include <gnome.h>
 
 #include "dict.h"
+
+gboolean have_ipv6() {
+#ifdef ENABLE_IPV6
+    int s;
+
+    s = socket(AF_INET6, SOCK_STREAM, 0);
+    if (s != -1) {
+	close(s);
+	return TRUE;
+    }
+
+#endif
+    return FALSE;
+}
 
 static gint dict_context_do_dns_lookup (dict_context_t *context);
 
@@ -76,10 +90,11 @@ void dict_res_destroy (dict_res_t *res)
 
 static int dict_write (dict_context_t *context, GString *str) 
 {
-    int res, amt;
-  
+    int res;
+    gsize amt;
+
     res = g_io_channel_write(context->channel, str->str, str->len, &amt);
-    
+
     if (res != G_IO_ERROR_NONE)
 	return -1;
     else
@@ -123,7 +138,8 @@ dict_command_done (dict_command_t *command)
 static int 
 cycle_buffer (dict_context_t *context) 
 {
-    int amt_read, res;
+    gsize amt_read;
+    int res;
     GIOChannelError chanerr;
 
     if (!context->channel)
@@ -150,7 +166,7 @@ cycle_buffer (dict_context_t *context)
 		return -1;
         } else if (res != G_IO_ERROR_NONE)
 	    return -1;
-        
+
         context->write_ptr += amt_read;
         return 0;
     }
@@ -657,7 +673,7 @@ static gboolean dict_data_notify (GIOChannel *channel, GIOCondition cond,
         dict_disconnect (context);
         dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
                                          GTK_MESSAGE_ERROR,
-                                         GTK_BUTTONS_CLOSE,
+                                         GTK_BUTTONS_OK,
                                          _("A serious error occured. Please check that your server and port are correct. For reference the default server is dict.org and the port 2628"));
         g_signal_connect_swapped (GTK_OBJECT (dialog), "response",
                                   G_CALLBACK (gtk_widget_destroy),
@@ -687,12 +703,22 @@ dict_context_t *dict_context_new (gchar *server, gushort port)
     context->hostname = g_strdup
 	    ((server != NULL) ? server : DICT_DEFAULT_SERVER);
     context->hostinfo = NULL;
-    context->sockaddr.sin_family = AF_INET;
-    context->sockaddr.sin_port =
-	htons ((port > 0) ? port : DICT_DEFAULT_PORT);
-    context->read_ptr = context->write_ptr = context->read_buf;
 
+#ifdef ENABLE_IPV6
+    context->host6info = NULL;
+#endif
+
+    context->read_ptr = context->write_ptr = context->read_buf;
     dict_context_do_dns_lookup (context);
+
+#ifdef ENABLE_IPV6
+    if (context->sockaddr.ss_family == AF_INET6)
+	((struct sockaddr_in6 *) &context->sockaddr)->sin6_port = 
+	    htons ((port > 0) ? port : DICT_DEFAULT_PORT);
+    else
+#endif
+	((struct sockaddr_in *) &context->sockaddr)->sin_port =
+	    htons ((port > 0) ? port : DICT_DEFAULT_PORT);
 
     return context;
 }
@@ -746,13 +772,28 @@ int dict_connect (dict_context_t *context)
 {
     int sock_fd;
     int old_flags;
+    int addrlen;
 
     g_return_val_if_fail (context != NULL, 0);
 
     if (context->channel) return 0;
     
-    if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-	return -1;
+#ifdef ENABLE_IPV6
+    if (context->sockaddr.ss_family == AF_INET6) {
+
+	if ((sock_fd = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
+	    return -1;
+
+	addrlen = sizeof(struct sockaddr_in6);
+    }
+    else
+#endif
+    {
+	if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	    return -1;
+
+	addrlen = sizeof(struct sockaddr_in);
+    }
     
     if ((old_flags = fcntl (sock_fd, F_GETFL, 0)) == -1)
 	return -1;
@@ -760,7 +801,7 @@ int dict_connect (dict_context_t *context)
     if (fcntl (sock_fd, F_SETFL, old_flags | O_NONBLOCK) == -1)
 	return -1;
     
-    if (connect(sock_fd, (struct sockaddr*)&context->sockaddr, sizeof(context->sockaddr)) != 0
+    if (connect(sock_fd, (struct sockaddr *) &context->sockaddr, addrlen) != 0
 	&& errno != EINPROGRESS)
 	return -1;
     
@@ -1007,9 +1048,11 @@ int dict_command_invoke (dict_command_t *command,
 
     if (!context) context = command->context;
 
-    if (context->hostinfo == NULL) {
-	if (dict_context_do_dns_lookup (context) < 0) return -2;
-    }
+#ifdef ENABLE_IPV6
+    if (context->host6info == NULL)
+#endif
+	if (context->hostinfo == NULL)
+	    if (dict_context_do_dns_lookup (context) < 0) return -2;
 
     /* If the context is already in use, clone it and set the new context
      * to temporary (unless it is a connect or disconnect commmand)
@@ -1089,13 +1132,44 @@ gint dict_context_do_dns_lookup (dict_context_t *context)
     if (context->hostinfo != NULL) return 0;
 
     if (context->hostname == NULL) return -1;
+#ifdef ENABLE_IPV6
+    if (context->host6info != NULL) return 0;
 
-    if ((context->hostinfo = gethostbyname (context->hostname)) != NULL) {
-	bcopy(context->hostinfo->h_addr, &context->sockaddr.sin_addr,
-	      context->hostinfo->h_length);
-	return 0;
+    if (have_ipv6()) {
+	struct addrinfo hints, *res;
+
+	memset (&hints, 0, sizeof (hints));
+	hints.ai_socktype = SOCK_STREAM;
+
+	if (getaddrinfo (context->hostname, NULL, &hints, &(context->host6info)) == 0) {
+	    for (res = context->host6info; res; res = res->ai_next)
+		if (res->ai_family == AF_INET6 || res->ai_family == AF_INET)
+		    break;
+
+	    if (res) {
+		if (res->ai_family == AF_INET6) {
+		    bcopy(&((struct sockaddr_in6 *) res->ai_addr)->sin6_addr, &((struct sockaddr_in6 *) &context->sockaddr)->sin6_addr, sizeof (struct in6_addr));
+		}
+
+		if (res->ai_family == AF_INET) {
+		    bcopy(&((struct sockaddr_in *) res->ai_addr)->sin_addr, &((struct sockaddr_in *) &context->sockaddr)->sin_addr, sizeof (struct in_addr));
+		}
+
+		context->sockaddr.ss_family = res->ai_family;
+		return 0;
+	    }    
+	}
     }
-    else {
-	return -1;
+    else
+#endif
+    {
+	((struct sockaddr_in *) &context->sockaddr)->sin_family = AF_INET;
+	if ((context->hostinfo = gethostbyname (context->hostname)) != NULL) {
+	    bcopy(context->hostinfo->h_addr, &((struct sockaddr_in *)&(context->sockaddr))->sin_addr,
+		context->hostinfo->h_length);
+	    return 0;
+	}
     }
+
+    return -1;
 }

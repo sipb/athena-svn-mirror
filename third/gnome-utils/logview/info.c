@@ -25,9 +25,6 @@
 #include <time.h>
 #include <sys/stat.h>
 #include "logview.h"
-#if 0
-#include "close.xpm"
-#endif
 
 void LogInfo (GtkWidget * widget, gpointer user_data);
 void CloseLogInfo (GtkWidget * widget, GtkWindow ** window);
@@ -62,7 +59,7 @@ LogInfo (GtkWidget * widget, gpointer user_data)
       return;
 
    if (InfoDialog == NULL) {
-      InfoDialog = gtk_dialog_new_with_buttons (_("Log stats"),
+      InfoDialog = gtk_dialog_new_with_buttons (_("Properties"),
                                                   GTK_WINDOW_TOPLEVEL,
                                                   GTK_DIALOG_DESTROY_WITH_PARENT,
                                                   GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
@@ -82,7 +79,8 @@ LogInfo (GtkWidget * widget, gpointer user_data)
       gtk_window_set_default_size (GTK_WINDOW (InfoDialog), 425, 200);
       gtk_dialog_set_default_response (GTK_DIALOG (InfoDialog),
                                        GTK_RESPONSE_CLOSE);
-      gtk_container_set_border_width (GTK_CONTAINER (InfoDialog), 0);
+      gtk_dialog_set_has_separator (GTK_DIALOG(InfoDialog), FALSE);
+      gtk_container_set_border_width (GTK_CONTAINER (InfoDialog), 5);
       gtk_widget_realize (InfoDialog);
 
       RepaintLogInfo ();
@@ -118,8 +116,7 @@ RepaintLogInfo (void)
 
        scrolled_window = gtk_scrolled_window_new (NULL, NULL);
        gtk_widget_set_sensitive (scrolled_window, TRUE);
-       gtk_container_set_border_width (GTK_CONTAINER (scrolled_window),
-                                       GNOME_PAD_SMALL);
+       gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), 5);
        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
                                        GTK_POLICY_AUTOMATIC,
                                        GTK_POLICY_AUTOMATIC);
@@ -139,7 +136,7 @@ RepaintLogInfo (void)
        gtk_tree_view_column_set_sizing (column1, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
        gtk_tree_view_column_set_resizable (column1, TRUE);
        gtk_tree_view_append_column (GTK_TREE_VIEW (info_tree), column1);
-       gtk_tree_view_column_set_spacing (column1, GNOME_PAD_BIG);
+       gtk_tree_view_column_set_spacing (column1, 12);
 
        renderer = gtk_cell_renderer_text_new ();
        column2 = gtk_tree_view_column_new_with_attributes ("", renderer,
@@ -147,12 +144,12 @@ RepaintLogInfo (void)
        gtk_tree_view_column_set_sizing (column2, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
        gtk_tree_view_column_set_resizable (column2, TRUE);
        gtk_tree_view_append_column (GTK_TREE_VIEW (info_tree), column2);
-       gtk_tree_view_column_set_spacing (column2, GNOME_PAD_BIG);
+       gtk_tree_view_column_set_spacing (column2, 12);
 
        /* Add entries to the list */
        for (i = 0; titles[i]; i++) {
            gtk_list_store_append (GTK_LIST_STORE (store), &iter);
-           gtk_list_store_set (GTK_LIST_STORE (store), &iter, 0, titles[i], -1);
+           gtk_list_store_set (GTK_LIST_STORE (store), &iter, 0, _(titles[i]), -1);
        }
 
    }
@@ -168,7 +165,7 @@ RepaintLogInfo (void)
    /* Check that there is at least one log */
    if (curlog == NULL) {
        if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
-           g_snprintf (buffer, sizeof (buffer), "");
+           g_snprintf (buffer, sizeof (buffer), "%c", '\0');
            i = 0;
            while (1) {
                gtk_list_store_set (GTK_LIST_STORE (store), &iter, 1, buffer, -1);
@@ -183,7 +180,9 @@ RepaintLogInfo (void)
    if (gtk_tree_model_get_iter_root (GTK_TREE_MODEL (store), &iter)) {
     
        g_snprintf (buffer, sizeof (buffer),
-                   _("%ld bytes"), (long) curlog->lstats.size);
+                   ngettext ("%ld byte", "%ld bytes",
+                            (long) curlog->lstats.size),
+                   (long) curlog->lstats.size);
        gtk_list_store_set (GTK_LIST_STORE (store), &iter, 1, buffer, -1);
 
        gtk_tree_model_iter_next (GTK_TREE_MODEL (store), &iter);

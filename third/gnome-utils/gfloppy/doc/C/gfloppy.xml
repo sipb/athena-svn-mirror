@@ -2,9 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
  <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "2.0">
-  <!ENTITY manrevision "2.0">
-  <!ENTITY date "June 2002">
+  <!ENTITY appversion "2.4">
+  <!ENTITY manrevision "2.1">
+  <!ENTITY date "January 2003">
   <!ENTITY app "<application>MY-GNOME-APPLICATION</application>">
 
 ]>
@@ -22,6 +22,10 @@
       <year>2002</year> 
       <holder>John Fleck</holder> 
     </copyright>
+    <copyright>
+      <year>2003</year>
+      <holder>Baris Cicek</holder>
+		</copyright>
 <!-- translators: uncomment this:
 
   <copyright>
@@ -38,6 +42,15 @@
    &legal;
    
     <authorgroup> 
+      <author> 
+		<firstname>Baris</firstname> 
+		<surname>Cicek</surname> 
+		<affiliation> 
+	  		<orgname>GNOME Documentation Project</orgname> 
+	  		<address> <email>bcicek@phreaker.net</email> </address> 
+		</affiliation> 
+      </author> 
+
       <author> 
 		<firstname>John</firstname> 
 		<surname>Fleck</surname> 
@@ -88,12 +101,25 @@
 		<revnumber>Gfloppy Manual V&manrevision;</revnumber> 
 		<date>&date;</date> 
 		<revdescription> 
+	  		<para role="author">Baris Cicek
+	    	<email>bcicek@phreaker.net</email>
+	  		</para>
+	  		<para role="publisher">GNOME Documentation Project</para>
+		</revdescription> 
+      </revision> 
+
+      <revision> 
+		<revnumber>Gfloppy Manual V4.0</revnumber> 
+		<date>June
+		 2002</date> 
+		<revdescription> 
 	  		<para role="author">John Fleck
 	    	<email>jfleck@inkstain.net</email>
 	  		</para>
 	  		<para role="publisher">GNOME Documentation Project</para>
 		</revdescription> 
       </revision> 
+
       <revision> 
 		<revnumber>Gfloppy Manual</revnumber> 
 		<date>2000</date> 
@@ -138,8 +164,8 @@
 
   <para>
    To run <application>GFloppy</application>, select
-   <guimenuitem>gfloppy</guimenuitem> from the
-   <guisubmenu>Utility</guisubmenu> submenu of the <guimenu>Main
+   <guimenuitem>Floppy Formatter</guimenuitem> from the
+   <guisubmenu>System Tools</guisubmenu> submenu of the <guimenu>Main
    Menu</guimenu>, <!-- right-click on the floppy icon on your desktop and
    select <guisubmenu>Format Floppy</guisubmenu>, -->or type
    <command>gfloppy</command> on the command line. 
@@ -192,27 +218,60 @@
      containing files you wish to keep.
     </para>
    </warning>
-
-   <para>
-    Select your file system type. If you need to use your floppy under
-    DOS or Windows, choose <guibutton>DOS (FAT16)</guibutton>. Otherwise,
-    choose <guibutton>Linux Native (ext2)</guibutton>. Linux Native
-    cannot be read on most non-Linux machines.
-   </para>
-
-   <para>
+  <para>
     GFloppy needs to know the density of your floppy disk, the amount of data
     it can hold. Most disks today are High Density, 1.44MB 3.5".
    </para>
 
    <para>
+    Select your file system type. If you need to use your floppy under
+    DOS or Windows, choose <guibutton>DOS (FAT)</guibutton>. Otherwise,
+    choose <guibutton>Linux Native (ext2)</guibutton>. Linux Native
+    cannot be read on most non-Linux machines.
+   </para>
+	 <para>
+		You can also give <guibutton>Volume name</guibutton> to your newly formatted
+		floppies. To do this type your label in the text box under <guibutton>Filesystem
+		Settings</guibutton>.
+	 </para>
+
+	 <para>
+		Finally, you should select the mode of your formatting. 
+		<variablelist>
+	  <varlistentry><term><guibutton>Quick</guibutton></term>
+		<listitem>
+			<para>
+			Quick format is fastest but does not check your floppy for bad "blocks". It
+			just deletes the file table so your data is theoretically recoverable.
+			</para>
+		</listitem>
+		</varlistentry>
+		<varlistentry><term><guibutton>Standard</guibutton></term>
+		<listitem>
+			<para>
+			Standard format is a low-level format, but it does not check bad blocks. Thus if 
+			you have a faulty floppy it will fail to format.
+			</para>	
+		</listitem>
+		</varlistentry>
+		<varlistentry><term><guibutton>Thorough</guibutton></term>
+		<listitem>
+			<para>
+			Thorough format checks floppy for bad blocks and low-level format it.
+			</para>
+		</listitem>
+		</varlistentry>
+		</variablelist>
+		</para>
+<!--
+   <para>
     Quick format is faster but does not check your floppy disk for bad
     "blocks". The slower regular format is useful if you have not formatted your
     floppy before, or if you suspect your disk might be bad.
    </para>
-
+-->
    <para>
-    Now, click on the <guibutton>Format</guibutton> button to start formatting your
+    Click on the <guibutton>Format</guibutton> button to start formatting your
     floppy disk, as shown in these figures.
    </para>
 
@@ -221,7 +280,7 @@
     filesystem on your disk.</para>
 
    <para>
-      Unless you select <guibutton>Quick Format</guibutton>,
+      Unless you select <guibutton>Quick Format</guibutton> or <guibutton>Standard</guibutton>,
     <application>GFloppy</application> checks for bad "blocks" on your floppy. If
     <application>Gfloppy</application> finds any, your floppy is
     wearing out.
@@ -230,11 +289,8 @@
 
    <para>
       <application>GFloppy</application> will let you know if it was successful
-    and ask you if you want to format
-    another disk. If you click <guibutton>Yes</guibutton>, GFloppy places you
-    back at the main screen, otherwise it quits.
-
-      
+    and it will return you to the main window.
+  
     </para>
   </sect1>
 
@@ -242,17 +298,16 @@
   <title>Troubleshooting</title>
    <para>
     When no floppy disk is inserted, GFloppy displays a dialog
-    informing you that it was unable to create a filesystem.
-    
-   </para>
+    informing you that there's no media to be formated. 
+	</para>
+	<para>
+		If your disk is write protected, GFloppy will warn you as well. 
+    To un-write protect your floppy, eject it and turn it over. Standard 
+		3.5 inch floppies have a small black tab in the upper-left corner. Slide 
+		it down so it covers the hole. If the floppy does not have a 
+		black tab, it is permanently write protected.
+	</para>
 <!--
-   <para>
-    If GFloppy displays <xref linkend="writeprotected"/> under a slow format,
-    your floppy is write protected. To un-write protect your floppy, eject it
-    and turn it over. Standard 3.5" floppies have a small black tab in
-    the upper-left corner. Slide it down so it covers the hole. If the 3.5"
-    floppy does not have a black tab, it is permanently write protected.
-
       <screenshot id="writeprotected">
 	<mediaobject>
 	  <imageobject>
@@ -325,13 +380,13 @@
    GNOME bug tracking database</ulink>. If you are using GNOME 1.1 or later, you
    can also use <application>Bug Report Tool</application>
    (<command>bug-buddy</command>), available in the
-   <guisubmenu>Utilities</guisubmenu> submenu of <guimenu>Main Menu</guimenu>,
+   <guisubmenu>Programming</guisubmenu> submenu of <guimenu>Main Menu</guimenu>,
    for submitting bug reports.
   </para>
 
   <para>
-   This manual was written by Kenny Graunke
-   (<email>kenny@whitecape.org</email>). Please send all comments and
+   This manual was written by Baris Cicek
+   (<email>bcicek@phreaker.net</email>). Please send all comments and
    suggestions regarding this manual to the <ulink type="http"
    url="http://developer.gnome.org/projects/gdp/">GNOME Documentation Project</ulink> 
    by sending an email to <email>docs@gnome.org</email>. You can also

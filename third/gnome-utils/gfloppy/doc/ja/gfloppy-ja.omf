@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<omf>
+  <resource>
+    <creator>
+      Baris Cicek
+    </creator>
+    <title>
+      フロッピー初期化ツール マニュアル
+    </title>
+    <contributor>
+      emerald@gnome.gr.jp (Japan GNOME Users Group)
+    </contributor>
+    <date>
+      January 27, 2003
+    </date>
+    <subject category="GNOME|ユーティリティ"/>
+      <format mime="text/xml" dtd=""/>
+      <identifier url="gfloppy.xml"/>
+      <language code="ja"/>
+      <relation seriesid="c13ed0ce-5731-11d6-86cc-c769addc7b88"/>
+  </resource>
+</omf>

@@ -1,43 +1,40 @@
 <?xml version="1.0"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
-"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
-  <!ENTITY legal SYSTEM "legal.xml">
-  <!ENTITY appversion "1.106.0">
-  <!ENTITY manrevision "2.2">
-  <!ENTITY date "November 2002">
-  <!ENTITY app "Dictionary">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY app "Dictionary">
+<!ENTITY appversion "2.5.2">
+<!ENTITY date "February 2004">
+<!ENTITY legal SYSTEM "legal.xml">
+<!ENTITY manrevision "2.5">
 ]>
-<!-- This file covers the Dictionary applet and application. -->
+<!-- This file describes the Dictionary applet and application. -->
 <!-- 
       (Do not remove this comment block.)
   Maintained by the GNOME Documentation Project
   http://developer.gnome.org/projects/gdp
   Template version: 2.0 beta
-  Template last modified Apr 11, 2002
+  Template last modified 11 April, 2002
   
 -->
 <!-- =============Document Header ============================= -->
 <article id="index" lang="en">
-<!-- please do not change the id; for translations, change lang to -->
+<!-- please do not change the id; for translations, change language to -->
 <!-- appropriate code -->
   <articleinfo> 
-    <title>&app; Manual V&manrevision;</title>       
+    <title>&app; Manual V&manrevision;</title>  
     <copyright>
-      <year>2002</year>
+      <year>2003, 2002, 2000</year>
       <holder>John Fleck</holder>
     </copyright>
+    
     <copyright> 
-      <year>2002</year> 
+      <year>2004, 2002</year> 
       <holder>Sun Microsystems</holder> 
     </copyright> 
-    <copyright> 
-      <year>2000</year> 
-      <holder>John Fleck</holder> 
-    </copyright>
+    
 <!-- translators: uncomment this:
 
   <copyright>
-   <year>2002</year>
+   <year>2004</year>
    <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
   </copyright>
 
@@ -54,7 +51,7 @@
 	<surname>GNOME Documentation Team</surname> 
 	<affiliation> 
 	  <orgname>Sun Microsystems</orgname> 
-	  <address> <email>gdocteam@sun.com</email> </address> 
+	   
 	</affiliation> 
       </author> 
       <author> 
@@ -80,8 +77,26 @@
     </authorgroup>
 
     <revhistory>
-      <revision>
-	<revnumber>&app; Manual V &manrevision;</revnumber>
+      <revision> 
+	<revnumber>&app; Manual V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team
+	    
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision><revision>
+	<revnumber>&app; Manual V2.4 </revnumber>
+	<date>July 2003</date>
+	<revdescription>
+	  <para role="author">John Fleck
+	    <email>jfleck@inkstain.net</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription>
+      </revision><revision>
+	<revnumber>&app; Manual V2.3 </revnumber>
 	<date>November 2002</date>
 	<revdescription>
 	  <para role="author">John Fleck
@@ -91,22 +106,25 @@
 	</revdescription>
       </revision>
       <revision> 
-	<revnumber>&app; Manual V 2.1</revnumber> 
-	<date>&date;</date> 
+	<revnumber>&app; Manual V 2.2</revnumber> 
+	<date>August</date> 
 	<revdescription> 
-	  <para role="author">Sun GNOME Documentation Team
-	    <email>gdocteam@sun.com</email>
-	  </para>
+	  <para role="author">Sun GNOME Documentation Team</para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision><revision> 
+	<revnumber>&app; Manual V 2.1</revnumber> 
+	<date>May 2002</date> 
+	<revdescription> 
+	  <para role="author">Sun GNOME Documentation Team</para>
 	  <para role="publisher">GNOME Documentation Project</para>
 	</revdescription> 
       </revision> 
       <revision> 
-	<revnumber>Dictionary Manual V&manrevision;</revnumber> 
+	<revnumber>&app; Manual V2.0</revnumber> 
 	<date>May 2002</date> 
 	<revdescription> 
-	  <para role="author">Sun GNOME Documentation Team
-	    <email>gdocteam@sun.com</email>
-	  </para>
+	  <para role="author">Sun GNOME Documentation Team</para>
 	  <para role="publisher">GNOME Documentation Project</para>
 	</revdescription> 
       </revision>
@@ -128,8 +146,7 @@
       <title>Feedback</title> 
       <para>To report a bug or make a suggestion regarding the &app; application or
 	this manual, follow the directions in the 
-	<ulink url="ghelp:gnome-feedback"
-	  type="help">GNOME Feedback Page</ulink>. 
+	<ulink url="ghelp:gnome-feedback" type="help">GNOME Feedback Page</ulink>. 
       </para>
 <!-- Translators may also add here feedback address for translations -->
     </legalnotice> 
@@ -145,7 +162,7 @@
   <sect1 id="gdict-introduction"> 
     <title>Introduction</title> 
     <para>The <application>&app;</application> application enables you to look up an online dictionary for 
-	definitions and correct spellings of words. </para> 
+	definitions and correct spellings of words.</para> 
   </sect1>
 
   <sect1 id="gdict-getting-started">
@@ -153,8 +170,7 @@
     
     <sect2 id="gdict-to-start">
     <title>To Start &app;</title>
-    <para>You can start <application>&app;</application> in the following ways:
-    </para> 
+    <para>You can start <application>&app;</application> in the following ways:</para> 
     <variablelist>
     	<varlistentry>
     		<term><guimenu>Applications</guimenu> menu</term>
@@ -191,7 +207,7 @@
 		  			</mediaobject> 
 				</screenshot> 
 	 		</figure> 
-	    <para>To start the <application>&app;</application> application, click on the applet's <guibutton>Lookup</guibutton> button. </para>
+	    <para>To start the <application>&app;</application> application, click on the <guibutton>Lookup</guibutton> button.</para>
     		</listitem>
     	</varlistentry>
     </variablelist>
@@ -210,8 +226,7 @@
 	<title>&app; Window</title> 
 	<screenshot> 
 	  <mediaobject> 
-	    <imageobject><imagedata
-		fileref="figures/gdict_window.png" format="PNG"/> 
+	    <imageobject><imagedata fileref="figures/gdict_window.png" format="PNG"/> 
 	    </imageobject>
 	    <textobject> 
 	      <phrase>Shows &app; main window. Contains titlebar, menubar, Word text box, and Look Up Word button. </phrase> 
@@ -250,9 +265,7 @@
 		<varlistentry>
 		<term>Statusbar </term>
 		<listitem>
-		<para><application>&app;</application> displays status messages in the statusbar. <application>&app;</application>
-		also displays a <guilabel>Find</guilabel> text box in the statusbar if you choose <menuchoice><guimenu>Edit</guimenu>
-    		<guimenuitem>Find</guimenuitem></menuchoice>.</para>
+		<para><application>&app;</application> displays status messages in the statusbar.</para>
 		</listitem>
 		</varlistentry>
 	</variablelist>
@@ -327,12 +340,11 @@
     	<para>To find text in the display area, perform the following steps:</para>
     	<orderedlist>
     		<listitem><para>Choose <menuchoice><guimenu>Edit</guimenu>
-    		<guimenuitem>Find</guimenuitem></menuchoice>. <application>&app;</application> displays
-    		a <guilabel>Find</guilabel> text box in the statusbar. </para> </listitem>
-    		<listitem><para>Type the string that you want to find in the <guilabel>Find</guilabel> text box,
+    		<guimenuitem>Find</guimenuitem></menuchoice>.</para> </listitem>
+    		<listitem><para>Type the string that you want to find in the <guilabel>Search for</guilabel> text box of the <guilabel>Find</guilabel> dialog,
     		then press <keycap>Return</keycap>. You cannot use wildcards.</para></listitem>
     		<listitem><para>To find the next occurrence of the word, choose <menuchoice><guimenu>Edit</guimenu>
-    		<guimenuitem>Find Again</guimenuitem></menuchoice>.</para></listitem>
+    		<guimenuitem>Find Next</guimenuitem></menuchoice>.</para></listitem>
     	</orderedlist>	
     </sect2>
 
@@ -352,7 +364,7 @@
 		<term><guilabel>Server</guilabel> </term>
 		<listitem>
 		<para>Use this text box to specify the online server that <application>&app;</application> accesses. Click 
-		<guibutton>Default</guibutton> to revert to the default setting.</para>
+		<guibutton>Default Server</guibutton> to revert to the default setting.</para>
 		<para>Default: dict.org.</para>
 		</listitem>
 		</varlistentry>
@@ -360,14 +372,14 @@
 		<term><guilabel>Port</guilabel> </term>
 		<listitem>
 		<para>Use this text box to specify the port number that <application>&app;</application> uses to access the dictionary server. Click 
-		<guibutton>Default</guibutton> to revert to the default setting.</para>
+		<guibutton>Default Port</guibutton> to revert to the default setting.</para>
 		<para>Default: 2628.</para>
 		</listitem>
 		</varlistentry>
 		<varlistentry>
 		<term><guilabel>Smart lookup</guilabel> </term>
 		<listitem>
-		<para>Information about this option will be available in a future release of the manual.</para>
+	  <para>When selected, this option launches a search for alternative spellings if no instances of the entered spelling are found..</para>
 		<para>Default: selected.</para>
 		</listitem>
 		</varlistentry>

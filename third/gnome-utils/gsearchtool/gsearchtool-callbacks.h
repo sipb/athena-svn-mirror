@@ -49,6 +49,9 @@ click_find_cb	 		(GtkWidget 	*widget,
 void
 click_stop_cb 			(GtkWidget 	*widget, 
 	       			 gpointer 	data);
+void
+click_expander_cb		(GtkWidget	*widget, 
+				 gpointer 	data);
 void   
 size_allocate_cb 		(GtkWidget 	*widget,
 				 GtkAllocation  *allocation, 
@@ -66,8 +69,8 @@ void
 constraint_update_info_cb 	(GtkWidget 	*widget, 
 				 gpointer 	data);	
 void    
-constraint_menu_toggled_cb	(GtkWidget 	*widget, 
-				 gpointer 	data);
+constraint_menu_item_activate_cb(GtkWidget 	*widget,
+                                 gpointer 	data);
 void    
 constraint_entry_changed_cb 	(GtkWidget 	*widget, 
 				 gpointer 	data);
@@ -80,6 +83,9 @@ open_file_cb 			(GtkWidget 	*widget,
 void	
 open_folder_cb 			(GtkWidget 	*widget, 
 				 gpointer 	data);
+void	
+move_to_trash_cb		(GtkWidget 	*widget, 
+				 gpointer 	data);				 
 void  
 drag_begin_file_cb  		(GtkWidget          *widget,
 	      			 GdkDragContext     *context,
@@ -94,12 +100,19 @@ drag_file_cb  			(GtkWidget          *widget,
 	       			 guint               info,
 	       			 guint               time,
 	       			 gpointer            data);
+void  
+drag_data_animation_cb		(GtkWidget          *widget,
+	      			 GdkDragContext     *context,
+	       			 GtkSelectionData   *selection_data,
+	       			 guint               info,
+	       			 guint               time,
+	       			 gpointer            data);
 void    
 show_file_selector_cb 		(GtkWidget 	*widget,
 				 gpointer 	data);
 void   	
-save_results_cb 		(GtkFileSelection   *selector, 
-				 gpointer 	    user_data, 
+save_results_cb 		(GtkWidget         *chooser, 
+				 gint	 	    response, 
 				 gpointer 	    data);
 void    
 save_session_cb 		(GnomeClient 	    *client, 
@@ -131,6 +144,18 @@ gboolean
 file_button_press_event_cb	(GtkWidget 	*widget, 
 				 GdkEventButton *event, 
 				 gpointer 	data);
+gboolean	
+file_key_press_event_cb		(GtkWidget 	*widget,
+				 GdkEventKey    *event,
+				 gpointer 	data);
+gboolean
+not_running_timeout_cb 		(gpointer data);
+
+void
+disable_quick_search_cb         (GtkWidget 	*dialog, 
+				 gint      	response, 
+				 gpointer  	data);
+
 #ifdef __cplusplus
 }
 #endif

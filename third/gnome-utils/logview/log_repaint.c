@@ -99,21 +99,17 @@ static void iterate_thru_children(GtkTreeView  *tree_view,
 /**
  * Recursively called until the row specified by orig is found.
  *
- * *count will be set to the visible row number of the child
+ * *count will be set to the  row number of the child
  * relative to the row that was initially passed in as tree_path.
  *
- * *count will be -1 if orig is not found as a child (a row that is
- * not visible will not be found, e.g. if the row is inside a
- * collapsed row).  If NULL is passed in as orig, *count will
- * be a count of the visible children.
+ * *count will be -1 if orig is not found as a child.
+ * If NULL is passed in as orig, *count will
+ * be a count of the all the children (visible + collapsed (invisible)).
  *
  * NOTE: the value for depth must be 0 when this recursive function
  * is initially called, or it may not function as expected.
- * 
- * I took this function from gail/gail/gailtreeview.c 
  **/
-
-static void
+static void 
 iterate_thru_children(GtkTreeView  *tree_view,
                       GtkTreeModel *tree_model,
                       GtkTreePath  *tree_path,
@@ -125,7 +121,7 @@ iterate_thru_children(GtkTreeView  *tree_view,
 
   gtk_tree_model_get_iter (tree_model, &iter, tree_path);
 
-  if (orig != NULL && !gtk_tree_path_compare (tree_path, orig))
+  if (orig != NULL && !gtk_tree_path_compare (tree_path, orig)) 
     /* Found it! */
     return;
 
@@ -135,22 +131,19 @@ iterate_thru_children(GtkTreeView  *tree_view,
       *count = -1;
       return;
     }
-  else if /* (gtk_tree_view_row_expanded (tree_view, tree_path) && */
-    (gtk_tree_model_iter_has_child (tree_model, &iter))
+  else if (gtk_tree_model_iter_has_child (tree_model, &iter))
     {
-     /* we do not want to count the Date Header row 
-        (*count)++; */ 
       gtk_tree_path_append_index (tree_path, 0);
       iterate_thru_children (tree_view, tree_model, tree_path,
                              orig, count, (depth + 1));
       return;
     }
-  else if (gtk_tree_model_iter_next (tree_model, &iter))
+  else if (gtk_tree_model_iter_next (tree_model, &iter)) 
     {
       (*count)++;
       tree_path = gtk_tree_model_get_path (tree_model, &iter);
       iterate_thru_children (tree_view, tree_model, tree_path,
-                             orig, count, depth);
+                             orig, count, depth); 
       gtk_tree_path_free (tree_path);
       return;
   }
@@ -171,7 +164,7 @@ iterate_thru_children(GtkTreeView  *tree_view,
           if (gtk_tree_path_get_depth (tree_path) == 0)
               /* depth is now zero so */
             return;
-          gtk_tree_path_next (tree_path);
+          gtk_tree_path_next (tree_path);	
 
           /* Verify that the next row is a valid row! */
           exit_loop = gtk_tree_model_get_iter (tree_model, &temp_iter, tree_path);
@@ -189,7 +182,7 @@ iterate_thru_children(GtkTreeView  *tree_view,
                  /*
                   * If depth is 1 and gtk_tree_model_get_iter returns FALSE,
                   * then we are at the last row, so just return.
-                  */
+                  */ 
                   if (orig != NULL)
                     *count = -1;
 
@@ -209,6 +202,7 @@ iterate_thru_children(GtkTreeView  *tree_view,
                             orig, count, new_depth);
       return;
     }
+
  /*
   * If it gets here, then the path wasn't found.  Situations
   * that would cause this would be if the path passed in is
@@ -221,9 +215,7 @@ iterate_thru_children(GtkTreeView  *tree_view,
     *count = -1;
 
   return;
-
 }
-
 /* ----------------------------------------------------------------------
    NAME:        handle_row_activation_cb
    DESCRIPTION: User pressed space bar on a row in the main window
@@ -233,7 +225,6 @@ void
 handle_row_activation_cb (GtkTreeView *treeview, GtkTreePath *path,
      GtkTreeViewColumn *arg2, gpointer user_data)
 {
-    GtkTreeIter iter;
     GtkTreeModel *model;
     GtkTreePath *root_tree;
     gint row = 0;
@@ -484,8 +475,8 @@ DrawLogLines (Log *current_log)
    GtkTreePath *path;
    LogLine *line;
    char tmp[4096];
-   char *utf8;
-   gint i = 0, count = 0;
+   char *utf8 = NULL;
+   gint i = 0;
    gint cm, cd;
 
    
@@ -509,6 +500,12 @@ DrawLogLines (Log *current_log)
                PROCESS, FALSE, MESSAGE, FALSE, -1);
            cm = line->month;
            cd = line->date;
+
+           /* store pointer to this date header, using the current
+            * month and day as the key */
+           g_hash_table_insert (current_log->date_headers,
+                        DATEHASH (cm, cd),
+                        gtk_tree_model_get_path (tree_model, &iter));
        }
        if (line->hour >= 0 && line->min >= 0 && line->sec >= 0) {
 	       struct tm date = {0};
@@ -591,7 +588,7 @@ log_redrawdetail ()
 int
 InitPages ()
 {
-   if (user_prefs && user_prefs->logfile == NULL)
+   if (user_prefs == NULL || user_prefs->logfile == NULL)
 	return -1;
 
    curlog = OpenLogFile (user_prefs->logfile);

@@ -25,7 +25,11 @@
         <oaf_attribute name="name" type="string" _value="Dictionary Lookup"/>
         <oaf_attribute name="description" type="string" _value="Lookup words in an online dictionary"/>
         <oaf_attribute name="panel:category" type="string" _value="Accessories"/>
-        <oaf_attribute name="panel:icon" type="string" value="gdict.png"/>
+        <oaf_attribute name="panel:icon" type="string" value="gdict"/>
+	<oaf_attribute name="bugzilla:bugzilla" type="string" value="GNOME"/>
+	<oaf_attribute name="bugzilla:product" type="string" value="gnome-utils"/>
+	<oaf_attribute name="bugzilla:component" type="string" value="gdict"/>
+	<oaf_attribute name="bugzilla:other_binaries" type="string" value="gdict-applet"/>
 
 </oaf_server>
 

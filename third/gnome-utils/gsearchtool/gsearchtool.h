@@ -28,23 +28,27 @@
 #ifndef _GSEARCHTOOL_H_
 #define _GSEARCHTOOL_H_
 
-#define GDK_DISABLE_DEPRECATED
-#define GDK_PIXBUF_DISABLE_DEPRECATED
-#define G_DISABLE_DEPRECATED
-#define GTK_DISABLE_DEPRECATED
-#define GNOME_DISABLE_DEPRECATED
+#define MINIMUM_WINDOW_WIDTH   422
+#define MINIMUM_WINDOW_HEIGHT  310
+#define GNOME_SEARCH_TOOL_ICON  "gnome-searchtool"
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif
 
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
+static GConfClient * global_gconf_client;
+
 typedef enum {
 	SEARCH_CONSTRAINT_END, 
 	SEARCH_CONSTRAINT_BOOL, 
 	SEARCH_CONSTRAINT_TEXT,
 	SEARCH_CONSTRAINT_NUMBER,
-	SEARCH_CONSTRAINT_TIME,
+	SEARCH_CONSTRAINT_TIME_LESS,
+	SEARCH_CONSTRAINT_TIME_MORE,
 	SEARCH_CONSTRAINT_SEPARATOR
 } SearchConstraintType;
 
@@ -68,34 +72,41 @@ typedef enum {
 	NUM_COLUMNS
 } ResultColumn;
 	  
-struct _SearchStruct {
+extern struct _SearchStruct {
 	gint			pid;
 	gint 	        	timeout;
 	gchar			*look_in_folder;
 	gchar           	*file_is_named_pattern;
 	gchar 	  		*regex_string;
+	gchar                   *date_format_pref;
 	gboolean		lock;	
 	gboolean		show_hidden_files;
 	gboolean		regex_matching_enabled;
+	gboolean		not_running_timeout;
+	gboolean		aborted;
+	gboolean		quick_mode;
 	RunStatus        	running;
+	GHashTable              *pixbuf_hash;
 } search_command;
 
-struct _InterfaceStruct {
+extern struct _InterfaceStruct {
 	GtkWidget		*file_is_named_entry;
 	GtkWidget 		*look_in_folder_entry;
 	GtkWidget		*find_button;
 	GtkWidget		*stop_button;
 	GtkWidget 		*save_button;
 	GtkWidget 		*main_window;	
+	GtkWidget               *spinner;
+	GdkPixbuf		*pixbuf;	
 	GtkWidget		*table;	
 	GtkWidget 		*file_selector;
-	GtkWidget 		*status_bar;
-	GtkWidget   		*progress_bar;
-	GtkWidget	 	*disclosure;
+	GtkWidget		*expander;
 	GtkWidget		*add_button;
 	GtkWidget 		*additional_constraints;
 	GtkWidget		*constraint_menu;
+	GtkWidget		*constraint_menu_label;
 	GtkWidget 		*constraint;
+	GtkWidget		*results_label;
 	GtkWidget       	*results;
 	GtkWidget        	*tree;
 	GtkListStore     	*model;	
@@ -106,7 +117,6 @@ struct _InterfaceStruct {
 	GList 			*selected_constraints;
 	gchar 		 	*save_results_file;	
 	gint 		  	selected_constraint;
-	GnomeIconTheme	 	*icon_theme;
 	gboolean  	  	is_gail_loaded;
 } interface;
 
@@ -128,7 +138,8 @@ spawn_search_command 		(gchar *command);
 
 void  		
 add_constraint 			(gint constraint_id,
-				 gchar *value);
+				 gchar *value,
+				 gboolean show_constraint);
 
 void  		
 remove_constraint 		(gint constraint_id);
@@ -139,8 +150,19 @@ update_constraint_info 		(SearchConstraint *constraint,
 void
 set_constraint_selected_state	(gint		constraint_id, 
 				 gboolean	state);
-gboolean
-update_progress_bar 		(gpointer data);
+void
+set_constraint_gconf_boolean 	(gint 		constraint_id, 
+				 gboolean 	flag);
+void
+set_clone_command		(gint *argcp,
+				 gchar ***argvp,
+				 gpointer client_data,
+				 gboolean escape_values);
+gchar *
+get_desktop_item_name 		(void);
+
+void
+update_search_counts 		(void);
 
 #ifdef __cplusplus
 }

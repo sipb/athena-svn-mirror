@@ -2,13 +2,13 @@
 <omf>
        <resource>
 	<creator>
-	Kenny Graunke
+	Baris Cicek
 	</creator>
        <title>
-      The Gfloppy Manual
+      The GNOME Floppy Formatter Manual
     </title>
     <date>
-	April 23, 2002
+	January 27, 2003
     </date>
      <subject category="GNOME|Utilities"/>
      <format mime="text/xml" dtd=""/>

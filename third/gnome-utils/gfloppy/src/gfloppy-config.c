@@ -19,6 +19,7 @@
  */
 
 #include <glib.h>
+#include <string.h>
 #include <gconf/gconf-client.h>
 
 #include "gfloppy-config.h"
@@ -56,11 +57,11 @@ gfloppy_config_load (GFloppyConfig *config,
 	check_gconf_error (&error);
 
         /* Check to make sure that it's a valid string */
-        if (config->default_fs == NULL) {
-            config->default_fs = g_strdup (GFLOPPY_CONFIG_FS_EXT2);
-        } else if (strcmp (config->default_fs, GFLOPPY_CONFIG_FS_EXT2) && strcmp (config->default_fs, GFLOPPY_CONFIG_FS_FAT)) {
-            g_free (config->default_fs);
-            config->default_fs = g_strdup (GFLOPPY_CONFIG_FS_EXT2);
+        if (config->default_fs == NULL)
+		config->default_fs = g_strdup (GFLOPPY_CONFIG_FS_FAT);
+        else if (config->default_fs && strcmp (config->default_fs, GFLOPPY_CONFIG_FS_EXT2) && strcmp (config->default_fs, GFLOPPY_CONFIG_FS_FAT)) {
+		g_free (config->default_fs);
+		config->default_fs = g_strdup (GFLOPPY_CONFIG_FS_FAT);
         }
 
 	config->default_formatting_mode = gconf_client_get_int (client, "/apps/gfloppy/default_formatting_mode", &error);
@@ -86,10 +87,12 @@ gfloppy_config_save (GFloppyConfig *config,
 	g_return_if_fail (config != NULL);
 	g_return_if_fail (client != NULL);
 
-	gconf_client_set_string (client, "/apps/gfloppy/default_fs", config->default_fs, &error);
+	if (gconf_client_key_is_writable (client, "/apps/gfloppy/default_fs", &error))
+		gconf_client_set_string (client, "/apps/gfloppy/default_fs", config->default_fs, &error);
 	check_gconf_error (&error);
 
-	gconf_client_set_int (client, "/apps/gfloppy/default_formatting_mode", config->default_formatting_mode, &error);
+	if (gconf_client_key_is_writable (client, "/apps/gfloppy/default_formatting_mode", &error))
+		gconf_client_set_int (client, "/apps/gfloppy/default_formatting_mode", config->default_formatting_mode, &error);
 	check_gconf_error (&error);
 }
 

@@ -40,9 +40,6 @@ gdict_applet_LDADD = $(GNOME_UTILS_LIBS) $(APPLET_LIBS)
 
 man_MANS = gnome-dictionary.1
 
-pixmapsdir = $(datadir)/pixmaps
-pixmaps_DATA = gdict.png
-
 gdictappdir  = $(datadir)/applications
 gdictapp_in_files = gnome-dictionary.desktop.in
 gdictapp_DATA = $(gdictapp_in_files:.desktop.in=.desktop)
@@ -60,7 +57,7 @@ $(server_in_files): $(server_in_files:.server.in=.server.in.in)
 
 @INTLTOOL_SERVER_RULE@
 
-schemadir   = $(sysconfdir)/gconf/schemas
+schemadir   = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_file = gdict.schemas.in
 schema_DATA = $(schemas_in_file:.schemas.in=.schemas)
 schema_source_data = $(foreach file, $(schema_DATA), $(srcdir)/$(file))
@@ -70,9 +67,7 @@ EXTRA_DIST = \
 	GNOME_GDictApplet.server.in.in \
 	$(gdictapp_in_files) \
 	$(gdictapp_DATA) \
-	$(pixmaps_DATA) \
 	$(man_MANS) \
-	$(top_srcdir)/sgmldocs.make \
 	$(schema_DATA) \
 	$(ui_DATA)
 
@@ -80,7 +75,11 @@ CLEANFILES = $(server_in_files) \
 	$(server_DATA) \
 	$(gdictapp_DATA)
 
+if GCONF_SCHEMAS_INSTALL
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
 		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schema_source_data) ; \
 	fi
+else
+install-data-local:
+endif

@@ -39,17 +39,14 @@ void
 AboutShowWindow (GtkWidget *widget, gpointer user_data)
 {
   GdkPixbuf *logo = NULL;
-  const char *author[] = {N_("Cesar Miquel (miquel@df.uba.ar)"), NULL};
-  char *comments = N_("This program is part of the GNOME project. " 
-"Logview comes with ABSOLUTELY NO WARRANTY. This is free " 
-"software, and you are welcome to redistribute it under the conditions "
-"of the GNU General Public Licence. The log icon is a courtesy of "
-"Tuomas Kuosmanen (a.k.a tigert).");
+  /* Author needs some sort of dash over the 'e' in Cesar  - U-00E9 */
+  const char *author[] = { N_("Cesar Miquel (miquel@df.uba.ar)"), NULL};
+  char *comments = N_("A system log viewer for GNOME.");
   gchar *documenters[] = {
 	  NULL
   };
   /* Translator credits */
-  gchar *translator_credits = _("translator_credits");
+  gchar *translator_credits = _("translator-credits");
 
   if (about_window != NULL) {
 	  gtk_widget_show_now (about_window);
@@ -57,9 +54,9 @@ AboutShowWindow (GtkWidget *widget, gpointer user_data)
 	  return;
   }
 
-  logo = gdk_pixbuf_new_from_file (DATADIR G_DIR_SEPARATOR_S "pixmaps" G_DIR_SEPARATOR_S "gnome-log.png", NULL);
-  about_window = gnome_about_new (_("GNOME System Log Viewer"), VERSION,
-           			  N_("Copyright (C) 1998"),
+  logo = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), "logviewer", 48, 0, NULL);
+  about_window = gnome_about_new (_("System Log Viewer"), VERSION,
+           			  "Copyright \xc2\xa9 1998-2003 Free Software Foundation, Inc.",
 				  _(comments),
 				  author,
 				  (const char **)documenters,

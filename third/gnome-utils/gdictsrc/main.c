@@ -1,4 +1,4 @@
-/* $Id: main.c,v 1.1.1.4 2003-01-29 20:33:38 ghudson Exp $ */
+/* $Id: main.c,v 1.1.1.5 2004-10-04 05:05:58 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -51,10 +51,10 @@ static gint save_yourself_cb (GnomeClient       *client,
     return TRUE;
 }
 
-static gint client_die_cb (GnomeClient *client, gpointer client_data)
+/* static gint client_die_cb (GnomeClient *client, gpointer client_data)
 {
 	gtk_main_quit ();
-}
+}*/
 
 const char **
 get_command_line_args (GnomeProgram *program)
@@ -73,10 +73,10 @@ get_command_line_args (GnomeProgram *program)
 int main (int argc, char *argv[])
 {
     gint i;
-    GDictApplet * applet = NULL;
     GnomeClient *client;
     GnomeProgram *program;
     const char **args;
+    GtkIconInfo *icon_info;
 
     bindtextdomain(GETTEXT_PACKAGE, GNOMELOCALEDIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -100,8 +100,11 @@ int main (int argc, char *argv[])
 	     */
     }
     
-    
-    gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gdict.png");
+    icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "gdict", 48, 0);
+    if (icon_info) {
+        gnome_window_icon_set_default_from_file (gtk_icon_info_get_filename (icon_info));
+        gtk_icon_info_free (icon_info);
+    }
     gdict_app_create (FALSE);
     gdict_pref_load ();
 

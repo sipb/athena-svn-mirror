@@ -22,6 +22,7 @@
 #undef HAVE_GNOME_PRINT
 #undef HAVE_LINUX_FD_H
 #undef PATH_MESSAGES
+#undef ENABLE_IPV6
 
 /* Define if LibGTop has support for multiple processors. */
 #undef HAVE_LIBGTOP_SMP
@@ -103,6 +104,9 @@
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
 
+/* Define to 1 if you have the <et/com_err.h> header file. */
+#undef HAVE_ET_COM_ERR_H
+
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
@@ -153,6 +157,9 @@
 
 /* Define to 1 if you have the `strftime' function. */
 #undef HAVE_STRFTIME
+
+/* Define if strftime supports %E and %O modifiers. */
+#undef HAVE_STRFTIME_EXTENSION
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H

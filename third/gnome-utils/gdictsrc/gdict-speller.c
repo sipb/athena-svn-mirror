@@ -1,4 +1,4 @@
-/* $Id: gdict-speller.c,v 1.1.1.3 2003-01-04 21:13:23 ghudson Exp $ */
+/* $Id: gdict-speller.c,v 1.1.1.4 2004-10-04 05:06:29 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -115,7 +115,6 @@ gdict_speller_init (GDictSpeller *speller) {
     GtkWidget *label, *button, *scrolled_win;
     GtkWidget *hbox;
     GtkWidget *vbox;
-    GtkWidget *frame;
     GtkListStore *model;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
@@ -126,10 +125,10 @@ gdict_speller_init (GDictSpeller *speller) {
     speller->spell_cmd = NULL;
     speller->strat = gdict_pref.dfl_strat;
     
-    vbox = gtk_vbox_new (FALSE, 8);
-    g_object_set (G_OBJECT (vbox), "border_width", 6, NULL);
+    vbox = gtk_vbox_new (FALSE, 6);
+    g_object_set (G_OBJECT (vbox), "border_width", 5, NULL);
     
-    hbox = gtk_hbox_new (FALSE, 8);
+    hbox = gtk_hbox_new (FALSE, 12);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
     
     label = gtk_label_new_with_mnemonic (_("_Word:"));
@@ -146,16 +145,12 @@ gdict_speller_init (GDictSpeller *speller) {
     {
         add_atk_namedesc (label, _("Word"), _("Word"));
         add_atk_namedesc (GTK_WIDGET(speller->word_entry), _("Word Entry"), _("Enter a word to know the spelling"));
-        add_atk_relation (GTK_WIDGET(speller->word_entry), label, ATK_RELATION_LABELLED_BY);
     }
-  
-    if (gail_loaded)
-        add_atk_namedesc (GTK_WIDGET (button), NULL, _("Click to do the spell check"));
-    
-    speller->hbox = gtk_hbox_new (FALSE, 8);
+      
+    speller->hbox = gtk_hbox_new (FALSE, 12);
     gtk_box_pack_start (GTK_BOX (vbox), speller->hbox, FALSE, FALSE, 0);
     
-    ss_label = gtk_label_new_with_mnemonic (_("Search S_trategy:"));
+    ss_label = gtk_label_new_with_mnemonic (_("Search s_trategy:"));
     gtk_box_pack_start (GTK_BOX (speller->hbox), ss_label, FALSE, FALSE, 0);
         
     
@@ -166,26 +161,24 @@ gdict_speller_init (GDictSpeller *speller) {
     gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
     g_signal_connect (G_OBJECT (button), "clicked", G_CALLBACK (spell_button_pressed),
     		      speller);
+    if (gail_loaded)
+        add_atk_namedesc (GTK_WIDGET (button), NULL, _("Click to do the spell check"));
 
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-
-    frame = gtk_frame_new (NULL);
     
-    label = gtk_label_new_with_mnemonic (_("Search _Results"));
+    label = gtk_label_new_with_mnemonic (_("Search _results:"));
     gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
     g_object_set (G_OBJECT (label), "xalign", 0.0, NULL);
-   
-    gtk_frame_set_label_widget (GTK_FRAME (frame), label);
-    gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
     
     scrolled_win = gtk_scrolled_window_new (NULL, NULL);
-    g_object_set (G_OBJECT (scrolled_win), "border_width", 6, NULL);
+    gtk_label_set_mnemonic_widget (GTK_LABEL (label), GTK_WIDGET (scrolled_win));
 
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_win),
                                     GTK_POLICY_NEVER,
                                     GTK_POLICY_AUTOMATIC);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_win),
-					 GTK_SHADOW_ETCHED_IN);
+					 GTK_SHADOW_NONE);
     gtk_widget_set_size_request (scrolled_win, 400, 250);
     
     model = gtk_list_store_new (1, G_TYPE_STRING);
@@ -213,7 +206,7 @@ gdict_speller_init (GDictSpeller *speller) {
     gtk_tree_view_append_column (GTK_TREE_VIEW (speller->word_list), column);
 
     gtk_container_add (GTK_CONTAINER (scrolled_win), speller->word_list);
-    gtk_container_add (GTK_CONTAINER (frame), scrolled_win);
+    gtk_box_pack_start (GTK_BOX (vbox), scrolled_win, TRUE, TRUE, 0);
    
     gtk_container_add (GTK_CONTAINER (GTK_DIALOG (speller)->vbox), vbox);
 		    
@@ -234,7 +227,9 @@ gdict_speller_init (GDictSpeller *speller) {
 
 
     gtk_window_set_title (GTK_WINDOW (speller), _("Check Spelling"));
-                           
+    gtk_dialog_set_has_separator (GTK_DIALOG (speller), FALSE);
+    g_object_set (G_OBJECT (speller), "border_width", 5, NULL);
+                          
     gtk_widget_show_all (GTK_WIDGET (GTK_DIALOG (speller)->vbox));
 }
 
@@ -284,17 +279,11 @@ gdict_speller_class_init (GDictSpellerClass *class) {
  */
 
 GtkWidget *
-gdict_speller_new (dict_context_t *context) {
-    GDictSpeller *speller;
-    
-    g_return_val_if_fail (context != NULL, NULL);
-    
-    speller = GDICT_SPELLER (gtk_type_new (gdict_speller_get_type ()));
-    speller->context = context;
-    
-    gdict_speller_reset_strat (speller);
-    
-    return GTK_WIDGET (speller);
+gdict_speller_new () {
+    GtkWidget	 *widget;
+ 
+    widget = g_object_new (gdict_speller_get_type (), NULL);
+    return widget;
 }
 
 /* gdict_speller_destroy
@@ -488,7 +477,7 @@ spell_error_cb (dict_command_t *command, DictStatusCode code,
         string = g_strdup_printf (_("Error invoking query: %s"), message);
         dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
                                   	 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-                                  	 "%s", string, NULL); 
+                                  	 "%s", string); 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
         g_free (string);

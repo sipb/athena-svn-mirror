@@ -43,6 +43,7 @@ static GFloppy floppy;
 static GladeXML *xml;
 static GtkWidget *toplevel = NULL;
 
+gboolean devfs_mode = FALSE;
 gboolean prefer_mkdosfs_backend;
 
 /* Only needed if more then one device exists */
@@ -52,22 +53,29 @@ static GList *valid_devices = NULL;
 static GFloppyFormattingMode get_selected_formatting_mode ();
 static void type_option_changed_cb     (GtkOptionMenu   *option_menu,
 					gpointer         data);
+/*
 static void set_widget_sensitive_from  (GtkToggleButton *button,
 					gpointer         data);
+*/
+
+static char *
+get_mformat_device (char *device)
+{
+	/* FIXME: what the heck is /dev/fd2 and /dev/fd3 ?? */
+	if (!strcmp (device, "/dev/floppy/1") || !strcmp (device, "/dev/fd1"))
+		return "b:";
+
+	return "a:";
+}
 
 static void
-devices_option_activated (GtkWidget *menu_item, gchar *device)
+devices_option_activated (GtkWidget *menu_item, char *device)
 {
 	g_free (floppy.device);
 	g_free (floppy.mdevice);
 
 	floppy.device = g_strdup (device);
-
-	/* FIXME: what the heck is /dev/fd2 and /dev/fd3 ?? */
-	if (strncmp (floppy.device, "/dev/fd1", strlen ("/dev/fd1")) == 0)
-		floppy.mdevice = g_strdup ("b:");
-	else
-		floppy.mdevice = g_strdup ("a:");
+	floppy.mdevice = g_strdup (get_mformat_device (device));
 }
 
 static void
@@ -128,7 +136,7 @@ init_commands (void)
 
 		error_dialog = gtk_message_dialog_new (NULL, 0,
 						       GTK_MESSAGE_ERROR,
-						       GTK_BUTTONS_CLOSE,
+						       GTK_BUTTONS_OK,
 						       _("Neither the mke2fs nor the mkdosfs/mformat applications are installed. You can't format a floppy without one of them."));
 
 		gtk_dialog_run (GTK_DIALOG (error_dialog));
@@ -143,7 +151,8 @@ init_devices (void)
 {
 	GtkWidget *device_option;
 	GtkWidget *device_entry;
-	gchar *msg = NULL;
+	GtkWidget *device_label;
+	char *msg = NULL;
 	gint ok_devices_present = 0;
 
 	/* First check --device arg */
@@ -170,7 +179,7 @@ init_devices (void)
 			gtk_widget_set_sensitive (toplevel, FALSE);
 			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), 0,
 							 GTK_MESSAGE_ERROR,
-							 GTK_BUTTONS_CLOSE,
+							 GTK_BUTTONS_OK,
 							 msg);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
@@ -180,85 +189,95 @@ init_devices (void)
 		ok_devices_present = 1;
 	} else {
 		GFloppyStatus status[NUM_DEVICES_TO_CHECK];
-		gint i;
 		char device[32];
+		gint i;
 
 		for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
-			sprintf(device,"/dev/fd%d", i);
+			sprintf (device,"/dev/floppy/%d", i);
 			status[i] = test_floppy_device (device);
-			if (status[i] == GFLOPPY_DEVICE_OK)
+
+			if (status[i] == GFLOPPY_NO_DEVICE && !devfs_mode) {
+				sprintf (device,"/dev/fd%d", i);
+				status[i] = test_floppy_device (device);
+			} else
+				devfs_mode = TRUE;
+
+			if (status[i] == GFLOPPY_DEVICE_OK) 
 				ok_devices_present++;
 		}
+
 		if (ok_devices_present == 0) {
 			GtkWidget *toplevel;
 			GtkWidget *dialog;
 
-			/* Lets assume that there's only a problem with /dev/fd0 */
+			/* FIXME: Let's assume that there's only a problem with /dev/fd0 */
 			switch (status[0]) {
 			case GFLOPPY_NO_DEVICE:
-				msg = g_strdup_printf (_("Unable to open the device %s, formatting cannot continue."), "/dev/fd0");
+				msg = g_strdup_printf (_("Unable to open any device, formatting cannot continue."));
 				break;
 			case GFLOPPY_DEVICE_DISCONNECTED:
-				msg = g_strdup_printf (_("The device %s is disconnected.\nPlease attach device to continue."), "/dev/fd0");
+				msg = g_strdup_printf (_("The device %s is disconnected.\nPlease attach device to continue."), _("/dev/floppy/0 or /dev/fd0"));
 				break;
 			case GFLOPPY_INVALID_PERMISSIONS:
-				msg = g_strdup_printf (_("You do not have the proper permissions to write to %s, formatting will not be possible.\nContact your system administrator about getting write permissions."), "/dev/fd0");
+				msg = g_strdup_printf (_("You do not have the proper permissions to write to %s, formatting will not be possible.\nContact your system administrator about getting write permissions."), _("/dev/floppy/0 or /dev/fd0"));
 				break;
 			default:
 				g_assert_not_reached ();
 			}
+
 			toplevel = glade_xml_get_widget (xml, "toplevel");
 			gtk_widget_set_sensitive (toplevel, FALSE);
 			dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), 0,
 							 GTK_MESSAGE_ERROR,
-							 GTK_BUTTONS_CLOSE,
+							 GTK_BUTTONS_OK,
 							 msg);
+			g_free (msg);
 			gtk_dialog_run (GTK_DIALOG (dialog));
 			gtk_widget_destroy (dialog);
 			exit (1);
 		} else if (ok_devices_present == 1) {
-			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
+			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++)
 				if (status[i] == GFLOPPY_DEVICE_OK) {
-					floppy.device = g_strdup_printf ("/dev/fd%d", i);
+					floppy.device = g_strdup_printf ("%s%d", (devfs_mode ? "/dev/floppy/" : "/dev/fd"), i);
 					break;
 				}
-			}
 		} else {
-			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++) {
+			for (i = 0; i < NUM_DEVICES_TO_CHECK; i++)
 				if (status[i] == GFLOPPY_DEVICE_OK) {
-					valid_devices = g_list_append (valid_devices, g_strdup_printf ("/dev/fd%d", i));
+					char *d = g_strdup_printf ("%s%d", (devfs_mode ? "/dev/floppy/" : "/dev/fd"), i);
+
+					valid_devices = g_list_append (valid_devices, d);
+
 					if (floppy.device == NULL)
-						floppy.device = g_strdup_printf ("/dev/fd%d", i);
+						floppy.device = g_strdup (d);
 				}
-			}
 		}
 	}
 
-	/* FIXME: what the heck is /dev/fd2 and /dev/fd3 ?? */
-	if (strncmp (floppy.device, "/dev/fd1", strlen ("/dev/fd1")) == 0)
-		floppy.mdevice = g_strdup ("b:");
-	else
-		floppy.mdevice = g_strdup ("a:");
+	floppy.mdevice = g_strdup (get_mformat_device (floppy.device));
 
 	/* set up the UI */
 	device_option = glade_xml_get_widget (xml, "device_option");
 	device_entry = glade_xml_get_widget (xml, "device_entry");
+	device_label = glade_xml_get_widget (xml, "device_label");
 
 	if (ok_devices_present == 1) {
 		gtk_widget_hide (device_option);
 		gtk_widget_show (device_entry);
 		gtk_entry_set_text (GTK_ENTRY (device_entry), floppy.device);
+		gtk_label_set_mnemonic_widget (GTK_LABEL(device_label), GTK_WIDGET(device_entry));	
 	} else {
 		GtkWidget *menu;
 		GList *list;
 
 		gtk_widget_show (device_option);
 		gtk_widget_hide (device_entry);
+		gtk_label_set_mnemonic_widget (GTK_LABEL(device_label), GTK_WIDGET(device_option));		
 		gtk_option_menu_remove_menu (GTK_OPTION_MENU (device_option));
 		menu = gtk_menu_new ();
 		for (list = valid_devices; list; list = list->next) {
 			GtkWidget *menu_item;
-			menu_item = gtk_menu_item_new_with_label ((gchar *)list->data);
+			menu_item = gtk_menu_item_new_with_label ((char *)list->data);
 			gtk_signal_connect (GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC (devices_option_activated), list->data);
 			gtk_widget_show (menu_item);
 			gtk_menu_append (GTK_MENU (menu), menu_item);
@@ -266,27 +285,6 @@ init_devices (void)
 		gtk_widget_show_all (menu);
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (device_option), menu);
 		gtk_option_menu_set_history (GTK_OPTION_MENU (device_option), 0);
-	}
-}
-
-static void
-set_floppy_extended_device (void)
-{
-	switch (floppy.size) {
-	case 0:
-		floppy.extended_device = g_strdup_printf ("%sH1440", floppy.device);
-		break;
-	case 1:
-		floppy.extended_device = g_strdup_printf ("%sh1200", floppy.device);
-		break;
-	case 2:
-		floppy.extended_device = g_strdup_printf ("%sD720", floppy.device);
-		break;
-	case 3:
-		floppy.extended_device = g_strdup_printf ("%sd360", floppy.device);
-		break;
-	default:
-		g_assert_not_reached ();
 	}
 }
 
@@ -310,6 +308,7 @@ get_selected_formatting_mode ()
 			return i;
 
 	g_assert_not_reached ();
+	return i;
 }
 
 static void
@@ -343,6 +342,7 @@ type_option_changed_cb (GtkOptionMenu *option_menu,
 		gtk_widget_hide (note_label);
 }
 
+/* 
 static void
 set_widget_sensitive_from (GtkToggleButton *button,
 			   gpointer         data)
@@ -361,6 +361,7 @@ set_widget_sensitive_from (GtkToggleButton *button,
 	if (active)
 		gtk_widget_grab_focus (widget);
 }
+*/
 
 gint
 on_toplevel_delete_event (GtkWidget *w, GdkEventKey *e)
@@ -381,13 +382,15 @@ on_help_button_clicked (GtkWidget *widget, gpointer user_data)
 {
 	GError *error = NULL;
 
-	gnome_help_display ("gfloppy", "intro", &error);
+	gnome_help_display_desktop (NULL, "user-guide",
+				    "user-guide.xml",
+				    "gosnautilus-469", &error);
 
 	if (error) {
 		GtkWidget *dialog;
 
 		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), GTK_DIALOG_MODAL,
-						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+						 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
 						 _("Could not display help for the "
 						   "floppy formatter.\n"
 						   "%s"),
@@ -405,7 +408,6 @@ on_help_button_clicked (GtkWidget *widget, gpointer user_data)
 void
 on_format_button_clicked (GtkWidget *widget, gpointer user_data)
 {
-	GtkWidget *dialog;
 	GtkWidget *type_option;
 	GtkWidget *density_option;
 	GtkWidget *volume_name_entry;
@@ -414,20 +416,23 @@ on_format_button_clicked (GtkWidget *widget, gpointer user_data)
         density_option = glade_xml_get_widget (xml, "density_option");
 	volume_name_entry = glade_xml_get_widget (xml, "volume_name_entry");
 
-	floppy.volume_name = (gchar *) gtk_entry_get_text (GTK_ENTRY (volume_name_entry));
+	floppy.volume_name = (char *) gtk_entry_get_text (GTK_ENTRY (volume_name_entry));
 
 	if (strstr (floppy.volume_name, " ")) {
 		GtkWidget *dialog;
 
 		dialog = gtk_message_dialog_new (GTK_WINDOW (toplevel), GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
+						 GTK_BUTTONS_OK,
 						 _("The volume name can't contain any blank space."));
 		gtk_dialog_run (GTK_DIALOG (dialog));
 		gtk_widget_destroy (dialog);
 
 		return;
 	}
+
+	if (strlen (floppy.volume_name) == 0)
+		floppy.volume_name = NULL;
 
 	gtk_widget_set_sensitive (toplevel, FALSE);
 
@@ -440,8 +445,6 @@ on_format_button_clicked (GtkWidget *widget, gpointer user_data)
 	floppy.size = gtk_option_menu_get_history (GTK_OPTION_MENU (density_option));
 	floppy.formatting_mode = get_selected_formatting_mode ();
 
-	set_floppy_extended_device ();
-
         start_format ();
 
         gtk_widget_set_sensitive (toplevel, TRUE);
@@ -451,7 +454,7 @@ int
 main (int argc, char *argv[])
 {
 	const GnomeIconData *icon_data;
-	gchar *icon_path = NULL;
+	char *icon_path = NULL;
 	GConfClient *client;
 	GFloppyConfig config;
         GnomeIconTheme *icon_theme;
@@ -459,9 +462,9 @@ main (int argc, char *argv[])
 	GtkWidget *type_option;
 	GtkWidget *quick_format_rb;
 	GtkWidget *default_mode_rb;
-	GtkWidget *device_combo;
+	GtkWidget *label;
+	GtkSizeGroup *size_group;
 	GSList *l;
-	gint i;
         gint base_size;
 
 	struct poptOption gfloppy_opts[] = {
@@ -508,6 +511,20 @@ main (int argc, char *argv[])
 	type_option = glade_xml_get_widget (xml, "type_option");
         quick_format_rb = glade_xml_get_widget (xml, "quick_format_rb");
 
+	size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
+	
+	label = glade_xml_get_widget (xml, "device_label");
+	gtk_size_group_add_widget (size_group, label);
+
+	label = glade_xml_get_widget (xml, "density_label");
+	gtk_size_group_add_widget (size_group, label);
+	
+	label = glade_xml_get_widget (xml, "type_label");
+	gtk_size_group_add_widget (size_group, label);
+	
+	label = glade_xml_get_widget (xml, "volume_name_label");
+	gtk_size_group_add_widget (size_group, label);
+ 
 	/* Signals connection */
 	
 	glade_xml_signal_autoconnect (xml);
@@ -554,7 +571,8 @@ main (int argc, char *argv[])
 	if (!floppy.mke2fs_cmd || !(floppy.mkdosfs_cmd || floppy.mformat_cmd)) {
 		GtkWidget *menu;
 		GtkWidget *menuitem;
-		const gchar *text;
+		GtkWidget *label;
+		const char *text;
 
 		/* Well, is there's any proper solution ? */
 		menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (type_option));
@@ -568,6 +586,9 @@ main (int argc, char *argv[])
 
 		gtk_widget_hide (type_option);
 		gtk_widget_show (fs_entry);
+		
+		label = glade_xml_get_widget (xml, "type_label");
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), GTK_WIDGET(fs_entry));
 	}
 
 	gtk_widget_show (GTK_WIDGET (toplevel));

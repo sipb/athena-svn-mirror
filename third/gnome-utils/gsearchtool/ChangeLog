@@ -1,3 +1,938 @@
+2004-08-01  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c:  Fixes for GNOME's new mime 
+	system.
+	
+2004-07-31  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-search-tool.schemas:  Add force_quick_search key.
+	
+	* gsearchtool.c: (build_search_command):  Check value of
+	force_quick_search key.
+
+2004-07-29  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-search-tool.desktop.in:  Update comment description.
+	
+2004-07-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-callbacks.c, gsearchtool-support.c:
+	Fix all memory leaks found using "valgrind --tool=memcheck
+	--leak-check=yes".
+
+2004-07-16  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* help/C/gnome-search-tool.xml:  Update documentation accordingly.
+
+	* help/C/figures/gnome-search-tool_window.png:  Update.
+
+2004-07-13  Shakti Sen  <shprasad@novell.com>
+
+	* gsearchtool.c (build_search_command):
+	"at least", for comparison, includes the size which is specified.
+	Similarly, "at most" includes the size which is specified. 
+	
+	Fixes bug #147465.
+
+2004-07-16  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.h:  Add gsearchtool_gconf_get_string().
+	
+	* gsearchtool-support.c:  (get_readable_date):  Remove
+	local date_format_pref and use a global variable.  This
+	way we don't perform a gconf lookup for each file in the
+	search results list.
+	
+	* gsearchtool.c: (spawn_search_command): Set global
+	date_format_pref here.
+	
+	* gsearchtool.h:  Add global date_format_pref.
+	
+2004-07-16  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c:  (get_readable_date):  Use the
+	/apps/nautilus/preferences/date_format key to determine the
+	format of the date modified field in the search results list.
+	
+2004-07-13  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Add "'!' -type p" to the contains the text
+	searches; otherwise, we will deadlock when greping a fifo.
+	
+2004-07-13  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.[ch]:  Rename backslash_backslashes()
+	to backslash_special_characters().  Escape '-' characters in
+	backslash_special_characters().  Fixes bug #147480.
+	
+	* gsearchtool.c:  Rename backslash_backslashes() to 
+	backslash_special_characters().
+	 
+2004-07-12  Shakti Sen  <shprasad@novell.com>
+
+	* gsearchtool.c (build_search_command):
+	Removed "'!' -type p" to list the pipes as well.
+
+	Fixes bug #147410
+
+2004-07-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* help/C/gnome-search-tool.xml:  Add Quick Search documentation.
+	
+2004-07-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (handle_search_command_stderr_io):  Fix
+	mnemonic conflict.
+	
+2004-07-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch], gsearchtool-alert-dialog.[ch], 
+	gsearchtool-callbacks.[ch], gsearchtool-support.[ch]:
+	Improve alert messages created when a search sends output to 
+	stderr.  Also, if performing a quick search and an error occurs
+	then prompt the user to disable the quick search option.  This
+	addresses the remaining part of bug #137404.
+ 
+2004-07-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Toggle the sensitivity of the available 
+	options menu and its label.
+
+2004-06-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (create_constraint_box)  Follow the HIG and put 
+	the unit labels after the text entries where appropriate.
+	
+2004-06-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c: (file_key_press_event_cb)
+	Fix bug #144414, correct Ctrl+Space.
+ 
+2004-06-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c: (open_file_cb) (file_event_after_cb)
+	Display proper error message if the file/folder does not 
+	exist.  Fixes bug #143772.
+	
+2004-06-07  Dennis Cranston <dennis_cranston at yahoo com>
+	 
+	God bless President Reagan and his family.
+		
+	"Whatever else history may say about me when I'm gone, I hope it 
+	will record that I appealed to your best hopes, not your worst fears; 
+	to your confidence rather than your doubts. My dream is that you will 
+	travel the road ahead with liberty's lamp guiding your steps and 
+	opportunity's arm steadying your way."
+	
+	Ronald Wilson Reagan (February 6, 1911 - June 5, 2004)
+
+2004-05-13  Jorn Baayen  <jbaayen@gnome.org>
+
+	* gsearchtool.c: (create_search_results_section):
+
+	Use GTK_SHADOW_IN for consistency.
+
+2004-04-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Fix bug #136073, "Dialog box shows incorrect
+	name with UI grab."
+	
+2004-04-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-support.[ch]:  Fix bug #140809,
+	"Searching for text containing backslashes inside of files 
+	requires you to escape the backslashes."
+	
+2004-04-20  Glynn Foster <glynn.foster@sun.com>
+
+	* Makefile.am: Fix distcheck.
+
+2004-04-02  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Fix 'CFLAGS=-fdata-sections' compiler
+	errors.  Based on proposed patch from Heikki Tauriainen.
+	Fixes bug #137671.  
+	
+2004-04-01  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-alert-dialog.c:  (gsearch_alert_dialog_new):
+	Fix compiler warning.
+	
+2004-04-01  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c: Fixes bug #137404.  
+	
+2004-03-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* help/*: Update online localized user help.
+
+2004-03-19 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help/C/gnome-search-tool.xml: Updated based on Bug #137596.
+        * help/C/gnome-search-tool-C.omf: Updated date and manual version.
+	* help/C/l10n.txt: Updated for manual version 2.5.
+
+2004-03-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.[ch]: (gsearchtool_strdup_strftime):
+	Update this function to match the current eel version. 
+	Adds conditional support for the %E and %O strftime 
+	modifiers.  Fixes bug #136419.
+	
+2004-02-26 Breda McColgan <breda.mccolgan@sun.com>
+
+        * help/C/gnome-search-tool.xml: Updated for GNOME 2.6, technical review draft
+        * help/C/gnome-search-tool-C.omf: Updated for GNOME 2.6
+        * help/C/l10n.txt: Updated for GNOME 2.6
+        * help/C/figures/gnome-search-tool_window.png: Updated for GNOME 2.6
+
+2004-02-19  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (create_main_window):  Use the 
+	GtkFileChooser dialog for the browse dialog. 
+
+2004-02-23  Julio M Merino Vidal <jmmv@menta.net>
+                                                                                
+        * Makefile.am: honour gconf configure option
+                                                                                
+2004-02-20  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (create_constraint_box, create_main_window):
+	More accessibility fixes from Padraig Obriain.  Fixes bug
+	#134962.
+	
+2004-02-19  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (create_main_window):  Cleanup code and 
+	add a reference to the open libgnomeui bug #132043.
+	
+2004-02-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (create_additional_constraint_section):
+	Fix accessibility bug #128979.
+	 
+2004-02-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  (create_main_window):  Add code to
+	enable the new filechooser dialog for the 'Look in Folder'.
+	But disable it until the libgnomeui widget stabilized.
+	
+2004-02-06  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-alert-dialog.c: (gsearch_alert_dialog_new):
+	Set ATK_ROLE_ALERT role of dialogs.
+	
+2004-01-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (handle_search_command_stdout_io):
+	Add a GTimer and use it to refresh the search results.
+	 
+2004-01-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* Makefile.am:  Added new files.
+	
+2004-01-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-spinner.[ch]:  New files (borrowed from 
+	epiphany) for the search animation. 
+	
+	* gsearchtool.[ch]:  Use the new spinner functions for 
+	building and managing the search animation.  These 
+	animation files are in the gnome-icon-theme module.  
+	The files are gnome-searchtool-animation.png and
+	gnome-searchtool-animation-rest.png.
+	
+2004-01-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (handle_search_command_stdout_io):
+	Small tweak to the gtk events handling.
+	
+2004-01-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c: (get_file_type_for_mime_type): Added 
+	logic for socket and fifo links.
+	
+	* gsearchtool-support.c (get_file_pixbuf_for_mime_type): Added
+	logic for fifos.
+	
+2004-01-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (handle_search_command_stdout_io):
+	Improved performance when building the search results.
+	
+	* gsearchtool-support.[ch]:  Fixed up a #define.
+	 
+2004-01-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-support.[ch]: 
+	(get_file_type_for_mime_type):  More shared-mime-info
+	related fixes.
+	
+2004-01-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-support.c: Replace 
+	gnome_vfs_get_mime_type() function calls with 
+	gnome_vfs_get_file_mime_type().
+
+2004-01-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchool.c (add_file_to_search_results):  Fallback
+	to mime type when the mime description is null.
+	
+2004-01-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c (show_file_selector_cb):
+	Added call to gtk_file_chooser_set_filename().
+	
+2004-01-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Added a pixbuf hash.
+	Removed custom code to scale the icons.  The Gtk+ theme will 
+	handle it.
+	
+	* gsearchtool-support.[ch]: (get_file_pixbuf_for_mime_type):
+	Store the icon pixbufs in a hash table.  This decreases 
+	memory usage.
+	
+2004-01-05  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]: Replaced GnomeIconTheme with GtkIconTheme.
+	  Also, do not use locate for finding files in the /var, /dev, 
+	  & /proc directories.
+	  
+	* gsearchtool-support.[ch]:  Added is_path_in_[var|dev|proc]_folder().
+	
+2004-01-01  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: (update_search_counts):  Fix another fuck up 
+	in Christian Neumair's commit.  I strongly recommend building 
+	and testing a patch before committing it.
+	
+2003-12-13  Michael Terry <mterry@fastmail.fm>
+
+       * Makefile.am, gnome-search-tool.desktop.in, gsearchtool.c,
+       gsearchtool.h: Use gnome-icon-theme instead of built-in icons.  Fixes
+       #129283.
+
+2003-12-31  Glynn Foster  <glynn.foster@sun.com>
+
+	* gsearchtool-callbacks.c: (open_folder_cb): Fix broken build.
+
+2003-12-30  Christian Neumair  <chris@gnome-de.org>
+
+	* gsearchtool-callbacks.c: (open_folder_cb, open_file_cb:
+	* gsearchtool.c: (update_search_counts): Use ngettext for plurals
+	(#106700).
+
+2003-12-14  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* A great day for celebration.
+	
+	THE PRESIDENT OF THE UNITED STATES OF AMERICA: "Good afternoon. 
+	Yesterday, December the 13th, at around 8:30 p.m. Baghdad time, 
+	United States military forces captured Saddam Hussein alive. 
+	He was found near a farmhouse outside the city of Tikrit, 
+	in a swift raid conducted without casualties. And now the 
+	former dictator of Iraq will face the justice he denied to 
+	millions.
+
+	The capture of this man was crucial to the rise of a free Iraq. 
+	It marks the end of the road for him, and for all who bullied 
+	and killed in his name. For the Baathist holdouts largely 
+	responsible for the current violence, there will be no return 
+	to the corrupt power and privilege they once held. For the 
+	vast majority of Iraqi citizens who wish to live as free 
+	men and women, this event brings further assurance that the 
+	torture chambers and the secret police are gone forever.
+
+	And this afternoon, I have a message for the Iraqi people: 
+	You will not have to fear the rule of Saddam Hussein ever 
+	again. All Iraqis who take the side of freedom have taken 
+	the winning side. The goals of our coalition are the same 
+	as your goals -- sovereignty for your country, dignity for
+	your great culture, and for every Iraqi citizen, the 
+	opportunity for a better life.
+
+	In the history of Iraq, a dark and painful era is over. A 
+	hopeful day has arrived. All Iraqis can now come together 
+	and reject violence and build a new Iraq.
+
+	The success of yesterday's mission is a tribute to our men 
+	and women now serving in Iraq. The operation was based on 
+	the superb work of intelligence analysts who found the 
+	dictator's footprints in a vast country. The operation was 
+	carried out with skill and precision by a brave fighting 
+	force. Our servicemen and women and our coalition allies 
+	have faced many dangers in the hunt for members of the fallen 
+	regime, and in their effort to bring hope and freedom to the 
+	Iraqi people. Their work continues, and so do the risks. 
+	Today, on behalf of the nation, I thank the members of our 
+	Armed Forces and I congratulate them.
+
+	I also have a message for all Americans: The capture of 
+	Saddam Hussein does not mean the end of violence in Iraq. 
+	We still face terrorists who would rather go on killing the 
+	innocent than accept the rise of liberty in the heart of 
+	the Middle East. Such men are a direct threat to the American 
+	people, and they will be defeated.
+
+	We've come to this moment through patience and resolve and 
+	focused action. And that is our strategy moving forward. 
+	The war on terror is a different kind of war, waged capture 
+	by capture, cell by cell, and victory by victory. Our security 
+	is assured by our perseverance and by our sure belief in the 
+	success of liberty. And the United States of America will not 
+	relent until this war is won.
+
+	May God bless the people of Iraq, and may God bless America. 
+	Thank you." 
+	
+2003-12-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c:  Small verbage change.
+
+2003-12-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c:  Remove gtk_window_set_default_size() 
+	for the GtkFileChooser.  Fixes bug 129115.
+
+2003-12-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* help/C/gnome-search-tool.xml:  Updated for "Show hidden
+	and backup files" terminology change.
+	
+2003-12-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: Hide backup files by default.
+	 
+2003-12-09  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-alert-dialog.[ch]:  New files to implement 
+	an HIG compliant alert dialog.
+	
+	* Makefile.am:  Added gsearchtool-alert-dialog.[ch].
+	
+	* gsearchtool.c, gsearchtool-callbacks.c:  Modified to 
+	use the alert dialog.  
+	
+	* gsearchtool-support.[ch]:  Removed gsearchtool_hig_dialog_new().
+	Added gsearchtool_button_new_with_stock_icon().
+	
+	* gsearchtool-callbacks.c:  Modified open_file_cb() and
+	file_event_after_cb() to match the behavior of the
+	spacial nautilus.
+	
+2003-12-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c:  HIGify the primary message
+	of the alert dialog.  The correct format should be: 
+	<span weight="bold" size="larger">.
+	
+2003-12-06  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.[ch]: Replace GtkFileSelection 
+	with GtkFileChooser.  Based on patch provided by
+	Jan Arne Petersen  <jpetersen@uni-bonn.de>.
+
+2003-12-03  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Fix bug report 128454. Add atk relations 
+	for the expander widget. Based on patch submitted by
+	padraig.obriain@sun.com.
+	
+2003-12-02  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Add atk name description to the expander
+	widget.  Fixes the gsearchtool part of bug 128378.
+
+2003-11-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch], gsearchtool-callbacks.[ch]: Use the
+	new gtk expander widget. 
+	
+	* help/C/figures/gnome-search-tool_window.png: Update
+	accordingly.
+	
+2003-11-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: Resolve bug report 127293.
+	
+2003-11-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.h:  Bye bye deprecated flags.
+	
+2003-11-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* gsearchtool.h: remove disable deprecated flags temporarily
+	so we can at least distcheck easily - Dennis, if it builds 
+	nicely, please remove as I'm just trying to make a release.
+
+2003-10-20  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c:  Move translator comment.
+	
+2003-10-16  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  (Bug report 119720) Add support
+	for 'Move to Trash' to the search results list.  Add
+	update_search_counts() function.
+	
+	* gsearchtool-callbacks.[ch]:  Add 'Move to Trash'
+	item to popup menu.  Add get_trash_path() and 
+	move_to_trash_cb() functions.  Handle GDK_Delete
+	keyval event.
+	
+	* gsearchtool-support.c: Add a CANCEL/DELETE type
+	dialog to the gsearchtool_hig_dialog_new() function.
+	
+2003-10-15  Dennis Cranston <dennis_cranston at yahoo com>
+	
+	* gsearchtool.c, gsearchtool-callbacks.c, and 
+	  gsearchtool-support.c:  Various memory leak fixes
+	  for bug report #124656. Patch provided by Kjartan 
+	  Maraas <kmarass at gnome org>.
+	  
+2003-10-14  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Add support for the GDK_ACTION_ASK
+	drag and drog method.  (Changes have been checked in 
+	to Nautilus 2.5+ to support it.)
+	
+2003-10-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c: Ditto.
+	
+2003-10-10  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Support drag and drop with BUTTON2.
+	
+2003-09-29  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Fix for a portability issue detected on 
+	AIX. See bug report 123191, "G_IO_HUP is not enough to
+	detect broken pipe".
+	(http://bugzilla.gnome.org/show_bug.cgi?id=123191)
+	
+2003-09-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-support.c:  Add a comment for translators.
+	(http://bugzilla.gnome.org/show_bug.cgi?id=120434)
+	
+2003-09-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Fix for bug report 122704.
+	(http://bugzilla.gnome.org/show_bug.cgi?id=122704)
+	
+2003-09-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-search-tool-animation.png:  Small touch up.
+
+2003-09-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Fix for bug report 122419.
+	(http://bugzilla.gnome.org/show_bug.cgi?id=122419)
+	
+	* gsearchtool-callbacks.[ch]:  Rename the callback function 
+	constraint_menu_toggled_cb to constraint_menu_item_activate_cb.
+	
+2003-09-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c:  Apply fix based on patch from
+	Hidetoshi Tajima (hidetoshi.tajima@sun.com) for bug report 
+	122402. (http://bugzilla.gnome.org/show_bug.cgi?id=122402)
+
+2003-08-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gnome-search-tool.schemas, gsearchtool.c:  Clean up gconf
+	key paths.
+
+2003-08-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  Do not use the locate command for finding
+	files in the /tmp directory.
+	
+	* gsearchtool-support.[ch]:  Added is_path_in_tmp_folder().
+	
+Thu Aug 21 17:03:22 2003  George Lebl <jirka@5z.com>
+
+	* gsearchtool.[ch]: the 'pixmap' field is not used anymore
+	  and was just causing trouble.  Fix the width being too large
+	  for drawing and so the icon is now back and no more
+	  runtime warnings.  Also don't screw up in case the icon
+	  with the animation is not found, handle pixbuf == NULL
+	  case.  Also set the interface structure to all 0 with
+	  memset just for anality
+
+	* gsearchtool.c: fix shell escaping, use g_shell_quote
+	  and not g_strescape which is not correct and could lead
+	  to errors and fix a leak when eascaping
+
+	* gsearchtool.c, gsearchtool-callbacks.c, gsearchtool-support.c:
+	  Never, ever under any circumstances do if (foo == TRUE), since
+	  foo could be something other then '1' (which is the value of
+	  the TRUE define) and still TRUE.  This leads to VERY subtle
+	  errors that are hard to catch.  foo == FALSE is fine since there
+	  is only one FALSE value (0).  foo != FALSE could be used but
+	  that adds more confusion then clarity.
+
+2003-06-18  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: According to the HIG use header capitalization 
+	for titlebar labels.
+ 
+2003-05-31  Christian Neumair  <chris@gnome-de.org>
+
+	* gsearchtool.c: Moved gettext call for available options
+	menu so that it gets localized in spite of the
+	remove_mnemonic_character call.
+
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-callback.c:  HIGify the alert 
+	dialogs.  Replaced function calls to gtk_message_dialog_new () 
+	with gsearchtool_hig_dialog_new ().
+	
+	* gsearchtool-support.[ch]: Added gsearchtool_hig_dialog_new ().
+		
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (create_main_window):  Update a few atk 
+	name descriptions.
+	
+	* gsearchtool-callbacks.c (drag_data_animation_cb):  
+	Simplify code.
+
+2003-05-29  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c (drag_data_animation_cb):  Added
+	startup notification support to desktop files.
+	
+2003-05-29  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]: Added drag and drop support to the 
+	animation image.  Dragging the animation drops a desktop file
+	to launch a search with the same search options. Added a
+	get_desktop_item_name () function.  Added an argument to 
+	set_clone_command () to support escaping of arguments.
+	
+	* gsearchtool-callbacks.[ch]: Added drag_data_animation_cb ().
+	
+	* gsearchtool-support.[ch]: Added gsearchtool_unique_filename ().
+	
+	* Makefile.am:  Added GNOMEDESKTOP_CFLAGS & GNOMEDESKTOP_LIBS.
+	
+2003-05-28  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (add_constraint) , gsearchtool-callbacks.c
+	(click_check_button_cb):  Adjust minimum size of window
+	depending on whether more options are shown or hidden.
+	
+	* gsearchtool.h:  Added defines for minimum window width
+	and height.
+
+2003-05-28  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool-callbacks.c (save_results_cb):  Fix bug
+	report #113868 based on patch by hidetoshi.tajima@sun.com 
+	(Hidetoshi Tajima).
+
+2003-05-28  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (build_search_command):  Added a hidden 
+	'disable_quick_search' gconf key and when set to TRUE the 
+	search tool will not use the locate command for performing 
+	simple file name searches.  By default the key is set to FALSE.
+
+	* gnome-search-tool.schemas:  Added the 'disable_quick_search' 
+	gconf key.
+ 
+2003-05-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c  (add_file_to_search_results): Modified sort order 
+	of the listview columns to match nautilus.
+	
+	* gsearchtool-support.[ch]:  Remove get_date().
+ 
+2003-05-23  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (main): Support svg icons.
+
+2003-05-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c: Fix recent added mnemonics clash.
+
+2003-05-22  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (update_animation_timeout_cb):  Fix displaying
+	frames at start and end of animation twice.
+
+2003-05-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* help/C/figures/gnome-search-tool_window.png:  Updated.
+	
+2003-05-21  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Convert the image into an animation.  
+	Remove the status and progress bar.  Place status information
+	across from the search results label and in the window title.
+	
+	* gsearchtool-callbacks.c: Remove duplicate code.
+		
+	* Makefile.am:  Add an animation file for installation.
+	
+	* gnome-search-tool-animation.png:  Add a simple animation file,
+	maybe someday a graphic artist will put together a better file.	
+	
+2003-05-20  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-callbacks.[ch]:  Change function
+	toggle_check_button_cb() to click_check_button_cb().
+
+2003-05-20  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.[ch]:  Replace disclosure widget with a standard 
+	check button with mnemonic label.  This synchronizes the UI with 
+	recent changes made to the run application dialog.  
+	
+	* gsearchtool-callbacks.[ch]:  Add a toggle_check_button_cb()
+	function.
+	
+	* gsearchtool-support.[ch]:  Remove code for the custom 
+	disclosure widget.
+	
+	* help/C/figures/gnome-search-tool_window.png:  Update for this
+	change.
+	
+	* help/C/gnome-search-tool.xml: Update for this change.
+	  
+2003-05-19  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (create_main_window)  minor HIG spacing adjustment
+	to button spacing.
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (create_main_window)  convert g_get_current_dir()
+	value to utf8.
+
+2003-05-17  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c (setup_case_insensitive_arguments)  Correct
+	a typo.  This should fix bug 112945.
+
+2003-05-06  Kaushal Kumar <kaushal.kumar@wipro.com>
+
+	* gsearchtool.c (spawn_search_command): Removed the flag 
+	G_SPAWN_DO_NOT_REAP_CHILD from g_spawn_async_with_pipes call.
+	Fixes #112358.
+
+2004-04-29  Dennis M. Cranston <dennis_cranston at yahoo com>
+
+	* help/C/figures/gnome-search-tool_window.png:  Update for
+	previous commit.
+	
+2004-04-26  Dennis M. Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c, gsearchtool-callbacks.c:  Minor HIGification:
+	correct widget padding (remove GNOME_PAD*). Also, set scrolled
+	window's shadow type to GTK_SHADOW_NONE.
+	
+2004-04-25  Dennis M. Cranston <dennis_cranston at yahoo com>
+
+	* gsearchtool.c:  HIGify the mnemonic label of the listview.
+	
+	* help/C/figures/gnome-search-tool_window.png:  Update accordingly.
+	* help/C/gnome-search-tool.xml: Update accordingly.
+	
+
+2004-04-09  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* help/Makefile.am:  Commented out recently checked-in
+	& broken translations (de es fr it sv ko zh_CN zh_TW).  
+	Looking at the screenshots, the documentation is 
+	outdated.
+
+2003-04-05  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  make_list_of_templates() emit the
+	activate signal.
+
+2003-03-30  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool-callbacks.c:  Prevent a click on the find 
+	button from starting a new search immediately after a 
+	search has either aborted or finished.  This modification 
+	is similar to the commit on 2003-03-02 for the escape
+	key.
+
+2003-03-30  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  Fix the find & stop button resizing 
+	problem (discovered in Galaxy widget theme).
+	
+2003-03-25  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c, gsearchtool-callbacks.c:  Fix for bug 
+	report #107703, added a "Show hidden files and folders" 
+	option.
+
+	* gnome-search-tool.schemas:  Added a
+	show_hidden_files_and_folders key to the schemas file.
+
+	* help/C/gnome-search-tool.xml:  Updated documentation 
+	for additional options to include "Show hidden files and 
+	folders".  Also, converted a few 'directory' strings to 
+	'folder'.
+
+2003-03-17  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  Finished the remaining work for bug 
+	report #107805.  Based on a patch submitted by 
+	<pasupathi.duraisamy@wipro.com (Pasupathi)>.  
+
+2003-03-16  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool-support.c:  Disabled toggling of the 
+	show_additional_options gconf key, but keep it around 
+	for advanced users.
+
+2003-03-16  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  In create_constraint_box() set the 
+	appropriate constraint data (text/time/number) to value.
+	
+2003-03-15  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c, gsearchtool-callbacks.[ch]:  Applied 
+	a patch for bug report #107805: "gsearchtool is not 
+	fully session aware" based on a patch from  
+	<pasupathi.duraisamy@wipro.com (Pasupathi)>.
+
+	* gsearchtool.c:  Reordered popt argument handling
+	to match the order in the available options menu. 
+
+2003-03-14  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  Added g_set_application_name().
+	
+2003-03-14  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	Fix for bug report #107245, "gsearchtool does not retain
+	additional constraints".
+
+	* gnome-search-tool.schemas:  New schemas file.
+
+	* Makefile.am:  Added the schemas file.
+  
+	* gsearchtool.[ch]:  Added set_constraint_gconf_boolean()
+	and handle_gconf_settings().
+	
+	* gsearchtool-callbacks.c:  When removing an option set 
+	its gconf key to false.  Added gsearchtool_gconf_get_boolean() 
+	and gsearchtool_gconf_set_boolean().
+	
+	* gsearchtool-support.[ch]:  When toggling the disclosure
+	widget set its gconf key accordingly.
+	   
+2003-03-05  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  Connected the key press event to 
+	file_key_press_event_cb() for search results.
+	
+	* gsearchtool-callbacks.[ch]:  Added file_key_press_event_cb()
+	to open a file if space or return is pressed like in nautilus'
+	list view.  Also, removed an unused variable in 
+	constraint_entry_changed_cb().
+	
+2003-03-02  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.[ch]:  Prevent the escape key from quiting
+	the application immediately after a search has either aborted 
+	or finished.  Also, replaced deprecated gtk_timeout_*() calls.
+	
+	* gsearchtool-callbacks.[ch]:  Added not_running_timeout_cb().
+	Replaced deprecated gtk_timeout_*() calls.
+	
+2003-02-28  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* help/C/gnome-search-tool.xml:  Search rules table update.
+	
+2003-02-28  Dennis M. Cranston <dennis_cranston at yahoo.com>
+
+	* gsearchtool.c:  Remove unnecessary gtk_widget_set_sensitive().
+	
+2003-02-27  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Minor handle_search_command_stdout_io()
+	optimization.
+	
+2003-02-27  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* help/Makefile.am:  Comment out the broken ja directory
+	from SUBDIRS.
+	
+2003-02-27  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix for bug report #107118 based on patch 
+	from Kaushal Kumar <kaushal.kumar@wipro.com> to make the 
+	'Name contains' entry optional.  This means the 'Find' button 
+	is sensitive by default.  
+	
+	* gsearchtool-callbacks.c:  Fix for bug report #107118 
+	based on patch from Kaushal Kumar <kaushal.kumar@wipro.com> 
+	to make the 'Name contains' entry optional.
+	
+	* gsearchtool.c:  Include folders in search results!
+ 
+2003-02-23  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* help/ja/*: added Japanese translations by
+				KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* help/ja/Makefile.am:  added ja into SUBDIRS.
+
+2003-02-19  Dennis M. Cranston <dennis_cranston@yahoo.com>
+
+	* help/C/figures/gnome-search-tool_window.png:  Updated
+	screenshot.
+	
+2003-02-19  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Converted the search results section from 
+	a frame to a vbox and increased the padding between the result's 
+	label and window.  Also, added GTK_SHRINK flag to the filename
+	and folder entries.
+	
+2003-02-17  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool-support.c:  Do not exclude .gnome-desktop 
+	from the search results.  Fixes bug #106153.
+
+2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* help/C/gnome-search-tool.xml,
+	* help/C/figures/gnome-search-tool_window.png:
+	Updated the docs and screenshot for bugs #98548 and #100728.
+	
+2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix bug #102480.  Add mnemonics to additional 
+	options of type SEARCH_CONSTRAINT_TEXT.
+
+	* gsearchtool-support.[ch]:  Added remove_mnemonic_character().
+
+2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix bug #100728.  Default filename search 
+	constraint should be case insensitive (system dependent).  Also, 
+	converted the 'Contains the text' and 'File is not named' search 
+	constraints to be case insensitive for consistency.  
+
+2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+
+	* gsearchtool.c:  Fix bug #98548.  Default filename search 
+	should be by substring.  As a result, the 'file is named' 
+	entry has been renamed to 'Name contains'.
+
 2003-01-09  Dennis Cranston <dennis_cranston@yahoo.com>
 
 	* gsearchtool.c:  Do not use the locate command for finding
