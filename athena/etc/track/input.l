@@ -43,7 +43,8 @@ GLOBAL		{
 			return(BACKNEW);
 		}
 "\177"		{
-			return(ENDOFFILE);
+			strcat(linebuf,"\n");
+			return(NEWLINE);
 		}
 %%
 #undef input

@@ -7,14 +7,15 @@ int wordcnt = 0;
 %}
 %token WHITESPACE COLON BACKSLASH NEWLINE BACKNEW BANG WORD GEXCEPT ENDOFFILE
 %%
-sublist	: header entrylist opt_space 
+sublist	: opt_space header entrylist
 	;
-header	: 
+header	:
 		{
+			clear_ent();
 			entrycnt = 1;
 			clear_ent();
 		}
-	|   GEXCEPT opt_space COLON except COLON
+	| GEXCEPT opt_space COLON except COLON opt_space
 		{
 			savestr( &entries[ entrycnt].fromfile,
 				"GLOBAL_EXCEPTIONS");
@@ -23,16 +24,16 @@ header	:
 		}
         ;
 entrylist :
-	  |	entrylist entry
+	  |	entrylist entry opt_space
 	  ;
-entry	: linkmark fromname COLON toname COLON cmpname COLON except COLON shellcmd opt_newline
+entry: linkmark fromname COLON toname COLON cmpname COLON except COLON shellcmd
 		{
 			entrycnt++;
 			clear_ent();
 		}
 	;
-linkmark  :  opt_space
-	  |  opt_space BANG opt_space
+linkmark  :
+	  | BANG opt_space
 		{
 			entries[entrycnt].followlink = 1;
 		}
@@ -124,20 +125,26 @@ except  : opt_space
 		}
 	;
 wordlist: WORD
-	| wordlist opt_space WORD ;
-shellcmd: | WHITESPACE
+	| wordlist opt_space WORD
+	;
+shellcmd: nullcmd NEWLINE
 		{
 			savestr(&entries[entrycnt].cmdbuf,"");
 			doreset();
 		}
-	| shline
+	| nullcmd shline NEWLINE
 		{
 			savestr(&entries[entrycnt].cmdbuf,linebuf);
 			doreset();
 		}
 	;
+nullcmd:
+	| nullcmd WHITESPACE
+	| nullcmd BACKNEW
+	;
 shline:   black
 	| shline black
+	| shline WHITESPACE
 	| shline BACKNEW
 	;
 black:	  WORD
@@ -151,8 +158,6 @@ opt_space:
 	| opt_space opt_ele
 	;
 opt_ele : NEWLINE | WHITESPACE
-	;
-opt_newline: NEWLINE | NEWLINE ENDOFFILE | ENDOFFILE
 	;
 %%
 
