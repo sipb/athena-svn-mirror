@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.27 1994-06-13 06:58:42 cfields Exp $
+# $Id: Imakefile,v 1.28 1994-06-23 16:15:01 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -26,6 +26,17 @@ LIBS = /usr/athena/lib/libXaw.a  ../wcl/libWc.a \
       /usr/athena/lib/libXmu.a -lXt -lXext -lX11 -lkrb\
         -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
 #endif
+
+#ifdef _IBMR2
+PRESOURCES=Xlogin.rios.presed
+#endif
+#ifdef SOLARIS
+PRESOURCES=Xlogin.sun4.presed
+#endif
+#ifdef ultrix
+PRESOURCES=Xlogin.presed
+#endif
+
 create_dir(/etc/athena/login)
 create_dir(/etc/athena/login/bitmaps)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
@@ -36,20 +47,12 @@ install_program(xlogin,,$(ATHRETCDIR))
 all::	Xlogin
 install:: Xlogin
 
-#if defined(_IBMR2)
-Xlogin:	Xlogin.rios.presed $(ATHVERS)
+Xlogin: $(RESOURCES) $(ATHVERS)
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
 		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
-		Xlogin.rios.presed > Xlogin
-#else
-Xlogin:	Xlogin.presed $(ATHVERS)
-	. $(ATHVERS); \
-	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" \
-		-e "s:MOTD_FILE:/afs/athena.mit.edu/system/config/motd/login.$$ATHMAJV$$ATHMINV:" \
-		Xlogin.presed > Xlogin
-#endif
-	
+		$(PRESOURCES) > Xlogin
+
 install_file(bitmaps/check,/etc/athena/login/bitmaps/check)
 install_file(bitmaps/question,/etc/athena/login/bitmaps/question)
 install_file(bitmaps/warning,/etc/athena/login/bitmaps/warning)
