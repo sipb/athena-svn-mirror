@@ -8,7 +8,7 @@ endif
 
 SUBDIRS = lib src $(capplet)
 
-EXTRA_DIST = xalf.spec extras/README extras/netscape FAQ
+EXTRA_DIST = xalf.spec extras/README extras/netscape extras/netscape.diff FAQ
 
 
 

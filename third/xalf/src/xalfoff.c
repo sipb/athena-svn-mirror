@@ -1,17 +1,17 @@
 /*
- * xalfoff - turnoff xalf indicator
+ * xalfoff - turnoff xalf indicators
  *
- * Peter Åstrand <altic@lysator.liu.se> 2000. GPLV2. 
+ * Peter Åstrand <astrand@lysator.liu.se> 2001. GPLV2. 
  *
  * */
 
 #include <signal.h>
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #undef DEBUG 
-//#define DEBUG 
+/* Uncomment below for debugging */
+/* #define DEBUG */
 
 #ifdef DEBUG
 #   define DPRINTF(args) (fprintf args)
@@ -19,7 +19,7 @@
 #   define DPRINTF(args) 
 #endif
 
-#define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
+#define PID_ENV_NAME "XALF_LAUNCH_PID"
 
 int main(int   argc,
 	 char *argv[])
@@ -27,11 +27,11 @@ int main(int   argc,
     const char *pid_string;
     long int launch_pid;
     
-    pid_string = getenv (PID_PROPERTY_NAME);
+    pid_string = getenv (PID_ENV_NAME);
 
     if (!pid_string)
 	{
-	    DPRINTF ((stderr, "%s: Error: %s not found\n", argv[0], PID_PROPERTY_NAME));
+	    DPRINTF ((stderr, "%s: Error: %s not found\n", argv[0], PID_ENV_NAME));
 	    exit (1); 
 	}
 
@@ -43,9 +43,3 @@ int main(int   argc,
 
     return (0);
 }
-
-
-
-
-
-

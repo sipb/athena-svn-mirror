@@ -5,10 +5,6 @@ As root, do:
  make 
  make install-strip
 
-For Linux: If you install libxalflaunch.so in /usr/local/lib, make
-sure this directory is added to /etc/ld.so.conf. Run ldconfig after
-changing this file.
-
 
 Generic instructions follows. 
 -------------------------------------------------------------------------------

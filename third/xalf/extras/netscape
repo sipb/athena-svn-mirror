@@ -5,11 +5,17 @@ netscape=""
 prefdir=$HOME/.netscape
 prefcpck=$prefdir/nswrapper.copy_defs
 pref=$prefdir/preferences.js
-defs="-irix-session-management"
-defsrem="-irix-session-management -noraise -remote"
+lipref=$prefdir/liprefs.js
 b_opt="openBrowser"
 
 prefix=$(dirname $(dirname $0))
+sysname=`uname -m | sed "s|sparc64|sparc| ; s|^i[0-9]|i3|"`
+if [ "$sysname" = "alpha" ]; then
+   defs=""
+else
+   defs="-irix-session-management"
+fi
+defsrem="$defs -noraise -remote"
 
 if echo $0 | grep 'navigator' >/dev/null; then
     netscape=$prefix/lib/netscape/netscape-navigator
@@ -22,15 +28,31 @@ elif [ -x $prefix/lib/netscape/netscape-navigator ]; then
 else
     echo "You don't seem to have netscape installed."
     exit 1
+
 fi
 
-export TZ=:/etc/localtime
+procname=$netscape
 
-#Exterminate zombie netscapes, and wipe stale lock file.
+NS_LD_PRELOAD=$LD_PRELOAD
+
+if [ "$LANG" = "ja_JP.eucJP" -o "$LANG" = "ja_JP.ujis" -o "$LANG" = "ja_JP" -o "$LANG" = "ja" -o "$LANG" = "ko" -o "$LANG" = "ko_KR" -o "$LANG" = "ko_KR.eucKR" ]; then
+   [ "$NS_LD_PRELOAD" ] && NS_LD_PRELOAD="$NS_LD_PRELOAD:"
+   export NS_LD_PRELOAD="$NS_LD_PRELOAD/usr/lib/netscape/ns_bogus_locale.so"
+fi
+
+if [ "$sysname" = "sparc" ]; then
+   [ "$NS_LD_PRELOAD" ] && NS_LD_PRELOAD="$NS_LD_PRELOAD:"
+   export NS_LD_PRELOAD="$NS_LD_PRELOADlibBrokenLocale.so.1"
+fi
+
+# This couldn't hurt.
+export MOZILLA_LINUX_INSERT_LINK_FIX=1
+
+# Exterminate zombie netscapes, and wipe stale lock file.
 killstale () {
 
 	user="`whoami`"
-	ourpids="`/sbin/pidof $netscape`"
+	ourpids="`/sbin/pidof $procname`"
 	[ "$ourpids" != "" ] && ourpids=`ps u $ourpids | sed -n "s/^$user[ ]*\([^ ]*\)[ ].*/\1/p"`
 	
 	for p in $ourpids; do
@@ -44,26 +66,96 @@ killstale () {
 	return 0
 }
 
+# Look for the correct index.html page
+findlangfile() {
+	if [ -z $1 ]; then
+     		return
+	fi
+       
+	LANGFILE=$1
+	 
+	if [ -z $LANG ]; then
+		echo $LANGFILE
+      		return 0
+	fi
+		 
+	# Exact match: ex) ja_JP.eucJP -> ja_JP.eucJP
+	MATCHEDFILE=$LANGFILE.$LANG
+	if [ -e $MATCHEDFILE ]; then
+		LANGFILE=$MATCHEDFILE
+		echo $LANGFILE
+		return 0
+	fi
+				 
+	# No codeset match: ex) ja_JP.eucJP -> ja_JP
+	MATCHEDFILE=$LANGFILE.`echo $LANG | sed 's/\.[^\.]*$//'`
+	if [ -e $MATCHEDFILE ]; then
+		LANGFILE=$MATCHEDFILE
+		echo $LANGFILE
+		return 0
+	fi
+					       
+	# language name only match: ex) ja_JP.eucJP -> ja
+	MATCHEDFILE=$LANGFILE.`echo $LANG | cut -b 1-2`
+        if [ -e $MATCHEDFILE ]; then
+		LANGFILE=$MATCHEDFILE
+		echo $LANGFILE
+		return 0
+	fi
+	echo $LANGFILE
+	return 0
+}							     
+
+
+# Check the netscape lock file
+checklock () {
+	lock=`ls -l $HOME/.netscape/lock | awk '{ print $11 }'`
+	# Don't check the IP address; it may have changed.
+	#ipaddr=`echo $lock | awk -F : '{ print $1 }'`
+	pid=`echo $lock | awk -F : '{ print $2 }'`
+	#/sbin/ifconfig | grep -q "inet addr:$ipaddr" && \
+	pids=`/sbin/pidof $procname`
+	for apid in $pids ; do
+	  [ "$pid" = "$apid" ] && return 0
+	done
+	killstale
+	return 1
+}
+
 # Try calling existing netscape process with functions, else start one.
 newbrowser () {
 	[ $# -gt 0 ] && url=`echo $@ | sed 's/\ -[^ ]*//g; s/\( |	\)*//'`
-	if [ -L "$HOME/.netscape/lock" ]; then
+	if [ -L "$HOME/.netscape/lock" ] && checklock; then
+		idstr=
+		id=`xwininfo -tree -root | grep Netscape: | head -1 | awk '{ print $1 }'`
+		if [ -n "$id" ]; then
+		     idstr="-id $id"
+		fi
+		# Signal Xalf. Hide errors if Xalf is not installed. 
+		xalfoff 2>/dev/null
 		if [ "$url" = "" ]; then
-			xalfoff
-			$netscape $defsrem "xfeDoCommand($b_opt)" "$@" 2>/dev/null || \
-			{ killstale && exec $netscape $defs $cl_opt "$@" ; }
+			$netscape $idstr $defsrem "xfeDoCommand($b_opt)" "$@" 2>/dev/null || \
+			{ killstale && LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs $cl_opt "$@" ; }
 		else
-			xalfoff
-			$netscape $defsrem "xfeDoCommand(openBrowser)" 2>/dev/null && \
-				$netscape $defsrem "openURL($url)"  2>/dev/null || \
-			{ killstale && exec $netscape $defs "$@" ; }
+			$netscape $idstr $defsrem "openURL($url,new-window)" 2>/dev/null || \
+			{ killstale && LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs $cl_opt "$@" ; }
 		fi
 	else
+		if [ "$sysname" = "alpha" ]; then
+		    # Hello, we're on an alpha.  Running Tru64 binaires.
+		    # Running them in 31 bit address space.  Why do I crash
+		    # if the drag window is still around from the last run of
+		    # Netscape?  I'd better remove it...
+		    OLDID=`xprop -root _MOTIF_DRAG_WINDOW | cut -d' ' -f 5`
+		    xkill -id $OLDID > /dev/null 2>&1
+		    xprop -root -remove _MOTIF_DRAG_WINDOW > /dev/null 2>&1 
+		fi
 		if [ "$url" = "" ]; then
-			[ ${rerun:=0} -eq 1 ] && { sleep 3; xalfoff; $netscape $defsrem "xfeDoCommand($b_opt)" '$@' 2>/dev/null ; } &
-			    exec $netscape $defs $cl_opt "$@"
+			[ ${rerun:=0} -eq 1 ] && { sleep 3; $netscape $defsrem "openURL(,new-window)" '$@' 2>/dev/null ; } &
+			    sleep 1
+			    LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs $cl_opt "$@"
 		else
-			    exec $netscape $defs "$@"
+			    LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs $cl_opt "$@"
 		fi	
 	fi
 }
@@ -85,7 +177,7 @@ shift
 }
 
 oldopt () {
-          exec $netscape $defs "$@"
+          LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs "$@"
 }
 
 usage () {
@@ -163,13 +255,22 @@ if [ ! -f $prefcpck ]; then
 fi
 
 # set up home page
-HOMEPAGE=/usr/doc/HTML/index.html
+HOMEPAGE=`findlangfile /usr/doc/HTML/index.html`
 if [ -f $pref ]; then
-    if grep "\"browser.startup.homepage\"" \
+    if egrep "\"browser.startup.(homepage|page)\"" \
     $pref > /dev/null; then
         HOMEPAGE=""
     fi
 fi
+
+# Hack the locale. This is so wrong. Netscape should really fix their crap.
+for file in $pref $lipref ; do
+   if grep -q "pab.locale" $file 2>/dev/null ; then
+       cat $file | grep -v "pab.locale" > $file.new
+       mv -f $file $file.old
+       mv -f $file.new $file
+   fi
+done
 
 # main
 
@@ -181,8 +282,3 @@ case "$1" in
 esac	
 
 echo "An error occurred running $netscape."
-
-
-
-
-

@@ -80,7 +80,7 @@ VERSION = @VERSION@
 
 SUBDIRS = lib src $(capplet)
 
-EXTRA_DIST = xalf.spec extras/README extras/netscape FAQ
+EXTRA_DIST = xalf.spec extras/README extras/netscape extras/netscape.diff FAQ
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h

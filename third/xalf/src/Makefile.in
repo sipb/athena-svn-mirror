@@ -82,12 +82,11 @@ xalf_SOURCES = xalf.c getopt.c getopt1.c
 
 xalfoff_SOURCES = xalfoff.c
 
-xalf_LDADD = -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK_LIBS@
-xalfoff_LDADD = -lXmu -lXt -lSM -lICE -lXext -lX11 -lXext -L/usr/X11R6/lib @GTK_LIBS@
+xalf_LDADD = $(X_LIBS) $(X_PRE_LIBS) -lXmu -lXt -lX11 -lXext $(X_EXTRA_LIBS) @GTK_LIBS@
 
 INCLUDES = @GTK_CFLAGS@ 
 
-CFLAGS = -Wall -DLIBDIR=\""$(libdir)"\"
+CFLAGS = -DLIBDIR=\""$(libdir)"\"
 
 EXTRA_DIST = hourglass.xpm splash.xpm hgcursor.h hgcursor_mask.h getopt.h 	sp1.xpm sp2.xpm sp3.xpm sp4.xpm sp5.xpm sp6.xpm sp7.xpm sp8.xpm sp9.xpm 
 
@@ -101,10 +100,15 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 xalf_OBJECTS =  xalf.o getopt.o getopt1.o
 xalf_DEPENDENCIES = 
 xalf_LDFLAGS = 
 xalfoff_OBJECTS =  xalfoff.o
+xalfoff_LDADD = $(LDADD)
 xalfoff_DEPENDENCIES = 
 xalfoff_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

@@ -1,0 +1,25 @@
+--- netscape	Sun Apr 22 16:19:08 2001
++++ /usr/bin/netscape	Sun Apr 22 16:08:43 2001
+@@ -33,9 +33,11 @@
+ 
+ procname=$netscape
+ 
++NS_LD_PRELOAD=$LD_PRELOAD
++
+ if [ "$LANG" = "ja_JP.eucJP" -o "$LANG" = "ja_JP.ujis" -o "$LANG" = "ja_JP" -o "$LANG" = "ja" -o "$LANG" = "ko" -o "$LANG" = "ko_KR" -o "$LANG" = "ko_KR.eucKR" ]; then
+-   [ "$LD_PRELOAD" ] && NS_LD_PRELOAD="$LD_PRELOAD:"
+-   export NS_LD_PRELOAD="$LD_PRELOAD/usr/lib/netscape/ns_bogus_locale.so"
++   [ "$NS_LD_PRELOAD" ] && NS_LD_PRELOAD="$NS_LD_PRELOAD:"
++   export NS_LD_PRELOAD="$NS_LD_PRELOAD/usr/lib/netscape/ns_bogus_locale.so"
+ fi
+ 
+ if [ "$sysname" = "sparc" ]; then
+@@ -129,6 +131,8 @@
+ 		if [ -n "$id" ]; then
+ 		     idstr="-id $id"
+ 		fi
++		# Signal Xalf. Hide errors if Xalf is not installed. 
++		xalfoff 2>/dev/null
+ 		if [ "$url" = "" ]; then
+ 			$netscape $idstr $defsrem "xfeDoCommand($b_opt)" "$@" 2>/dev/null || \
+ 			{ killstale && LD_PRELOAD=$NS_LD_PRELOAD exec $netscape $defs $cl_opt "$@" ; }

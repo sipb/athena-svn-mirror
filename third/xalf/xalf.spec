@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.7
+%define ver      0.12
 %define rel      1
 %define prefix   /usr
 
@@ -10,7 +10,7 @@ Release: %rel
 Copyright: GPL
 Group: X11/Utilities
 Source: xalf-%{ver}.tgz
-#BuildRoot: /var/tmp/xalf-%{PACKAGE_VERSION}-root
+BuildRoot: /var/tmp/%{name}-root
 URL: http://www.lysator.liu.se/~astrand/projects/xalf
 
 %description
@@ -21,6 +21,24 @@ Gnomes tasklist_applet or KDE Taskbar), an generic splashscreen, an
 hourglass attached to the mouse cursor or an animated star. 
 
 %changelog
+* Sun Apr 22 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.12
+
+* Sun Apr 8 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.11
+
+* Mon Apr 2 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.11_test
+
+* Tue Mar 13 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.10
+
+* Wed Mar 07 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.9
+
+* Mon Feb 19 2001 Peter 흒trand <astrand@lysator.liu.se>
+- version 0.8 
+
 * Mon Feb 12 2001 Peter 흒trand <astrand@lysator.liu.se>
 - version 0.7 (yes, two releases on the same day!)
 
@@ -68,8 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/bin/xalf-capplet
 %{prefix}/share/pixmaps/hourglass-big.png
 %{prefix}/share/pixmaps/hourglass-small.png
-%{prefix}/share/control-center/Xalf/.directory
-%{prefix}/share/control-center/Xalf/settings.desktop
-%{prefix}/share/gnome/apps/Settings/Xalf/settings.desktop
+%{prefix}/share/control-center/Desktop/xalf-settings.desktop
+%{prefix}/share/gnome/apps/Settings/Desktop/xalf-settings.desktop
 
 

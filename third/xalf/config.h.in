@@ -1,7 +1,7 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
 
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
 
 #undef MULTI_PRELOAD
 

@@ -78,11 +78,11 @@ VERSION = @VERSION@
 
 lib_LTLIBRARIES = libxalflaunch.la
 
-libxalflaunch_la_SOURCES = xalflaunch.c
+libxalflaunch_la_SOURCES = xalflaunch.c 
 
 libxalflaunch_la_LDFLAGS = -version-info 0:1:0
 
-CFLAGS = -DLIBDIR=\""$(libdir)"\"
+CFLAGS = $(X_CFLAGS) -DLIBDIR=\""$(libdir)"\"
 
 LDFLAGS = -ldl
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -94,6 +94,10 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 libxalflaunch_la_LIBADD = 
 libxalflaunch_la_OBJECTS =  xalflaunch.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
