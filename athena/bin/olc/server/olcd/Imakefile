@@ -1,34 +1,40 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.4 1990-01-04 14:59:59 raeburn Exp $
+ * $Id: Imakefile,v 1.5 1990-01-16 05:31:10 raeburn Exp $
  */
 
-#define UseCPlusPlus
+/*#define UseCPlusPlus*/
+/*#define NoGCC*/
 
 /*
- * Define the above symbol to use G++ for compiling; otherwise, standard
- * $(CC) is used.
+ * Define UseCPlusPlus to use G++ for compiling; otherwise, standard
+ * $(CC) is used.  (NoGCC forces /bin/cc instead of the compiler
+ * specified in site.def.)
  */
 
 #ifdef UseCPlusPlus
+/* NOTE:  acl_files.c must be compiled as C code, not C++ */
 misc=-lg++
 
 .c.o:
 	$(C++) $(C++FLAGS) -c $<
 #else
 misc=
-#endif
+#ifdef NoGCC
+CC=/bin/cc
+#endif		/* NoGCC */
+#endif		/* UseCPlusPlus */
 
 SRCS=	backup.c data_utils.c db.c io.c log.c olcd.c \
 	data.c notify.c utils.c list.c acl_files.c \
-	requests_olc.c requests_admin.c
+	requests_olc.c requests_admin.c syslog.c
 
 OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
 	data.o notify.o utils.o list.o acl_files.o \
-	requests_olc.o requests_admin.o
+	requests_olc.o requests_admin.o syslog.o
 
 LOCAL_LIBRARIES=$(COMMONLIB)
-DEFINES=-DLOG -DTEST -DOLZ
+DEFINES=-DLOG -DSYSLOG
 DEPLIBS=$(LOCAL_LIBRARIES)
 
 
