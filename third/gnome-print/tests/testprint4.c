@@ -34,7 +34,7 @@
 #define P_WIDTH (21 * 72.0 / 2.54)
 #define P_HEIGHT (30 * 72.0 / 2.54)
 #define MARGIN (2 * 72.0 / 2.54)
-#define LINESPACING 16.0
+#define LINESPACING 6.0
 #define INDENT 20.0
 
 static int preview_gdk = FALSE;
@@ -61,9 +61,9 @@ static struct poptOption options [] = {
 static gint latin_to_utf8 (guchar * text, guchar * utext, gint ulength);
 #endif
 
-static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const guchar *e, gdouble x0, gdouble *y0, gdouble x1, gdouble y1)
+static gint
+print_paragraph (GnomePrintContext *pc, GnomeFont *font, const guchar *b, const guchar *e, gdouble x0, gdouble *y0, gdouble x1, gdouble y1)
 {
-	GnomeFont *font;
 	GSList *words;
 	const guchar *p;
 	gchar *ub, *u;
@@ -71,8 +71,9 @@ static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const gucha
 	gint space;
 	gdouble x, y;
 
-	font = gnome_font_new ("Helvetica", 12.0);
 	if (!font) return TRUE;
+	g_print ("Ascender %g\n", gnome_font_get_ascender (font));
+	g_print ("Descender %g\n", gnome_font_get_descender (font));
 	fontheight = gnome_font_get_ascender (font) + gnome_font_get_descender (font);
 	space = gnome_font_face_lookup_default (gnome_font_get_face (font), ' ');
 
@@ -89,7 +90,11 @@ static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const gucha
 		if (p < e) {
 			words = g_slist_prepend (words, u);
 			while ((p < e) && (*p > ' ')) {
+#if 0
 				u += g_unichar_to_utf8 (*p++, u);
+#else
+				*u++ = *p++;
+#endif
 			}
 			*u++ = '\0';
 		}
@@ -166,7 +171,7 @@ static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const gucha
 		gnome_print_moveto (pc, 0.0, 0.0);
 		gnome_print_glyphlist (pc, gl);
 		gnome_glyphlist_unref (gl);
-		*y0 = *y0 - LINESPACING;
+		*y0 = *y0 - gnome_font_get_size (font) - LINESPACING;
 		x = x0;
 	}
 
@@ -174,13 +179,11 @@ static gint print_paragraph (GnomePrintContext *pc, const guchar *b, const gucha
 
 	g_free (ub);
 
-	gnome_font_unref (font);
-
 	return FALSE;
 }
 
 static void
-do_print_text_page (GnomePrintContext *pc)
+do_print_text_page (GnomePrintContext *pc, GnomeFont *font)
 {
 	struct stat s;
 	gint fh, len;
@@ -211,7 +214,7 @@ do_print_text_page (GnomePrintContext *pc)
 						e = b;
 						while (*e) e++;
 					}
-					stop = print_paragraph (pc, b, e, x0, &y0, x1, y1);
+					stop = print_paragraph (pc, font, b, e, x0, &y0, x1, y1);
 					b = e;
 				} else {
 					stop = TRUE;
@@ -223,7 +226,7 @@ do_print_text_page (GnomePrintContext *pc)
 }
 
 static void
-do_print_test_page (GnomePrintContext *pc)
+do_print_test_page (GnomePrintContext *pc, GnomeFont *font)
 {
 	gdouble d;
 
@@ -235,7 +238,7 @@ do_print_test_page (GnomePrintContext *pc)
 }
 
 static void
-do_print (GnomePrintContext * pc, gdouble scale)
+do_print (GnomePrintContext * pc, gdouble scale, GnomeFont *font)
 {
 	/* Draw box at margins */
 	gnome_print_beginpage (pc, "printtest4 demo page");
@@ -267,9 +270,9 @@ do_print (GnomePrintContext * pc, gdouble scale)
 		gnome_print_grestore (pc);
 		gdk_pixbuf_unref (pixbuf);
 	} else if (gtest) {
-		do_print_test_page (pc);
+		do_print_test_page (pc, font);
 	} else {
-		do_print_text_page (pc);
+		do_print_text_page (pc, font);
 	}
 
 	gnome_print_showpage (pc);
@@ -283,7 +286,7 @@ delete_event (GtkWidget * widget)
 }
 
 static gint
-do_dialog (void)
+do_dialog (GnomeFont *font)
 {
 	GnomePrinter *printer;
 	GnomePrintContext *pc;
@@ -294,7 +297,7 @@ do_dialog (void)
 
 	pc = gnome_print_context_new_with_paper_size (printer, "US-Letter");
 
-	do_print (pc, 1.0);
+	do_print (pc, 1.0, font);
 
 	gnome_print_context_close (pc);
 
@@ -303,15 +306,10 @@ do_dialog (void)
 
 
 static void
-do_preview (gboolean aa)
+do_preview (GnomeFont *font, gboolean aa)
 {
 	GtkWidget * w, * sw, * c;
 	GnomePrintContext * pc;
-	GnomeFont * font;
-
-	font = gnome_font_new ("Helvetica Oblique", 18.0);
-	w = gnome_font_selection_dialog_new ("Test");
-	gtk_widget_show (w);
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
@@ -351,7 +349,7 @@ do_preview (gboolean aa)
 
 	pc = gnome_print_preview_new (GNOME_CANVAS (c), "A4");
 
-	do_print (pc, 1.0);
+	do_print (pc, 1.0, font);
 
 	gnome_print_context_close (pc);
 }
@@ -361,7 +359,7 @@ do_preview (gboolean aa)
 #define PMH (PMSCALE * P_HEIGHT)
 
 static void
-do_rbuf (gboolean alpha, gboolean frgba)
+do_rbuf (GnomeFont *font, gboolean alpha, gboolean frgba)
 {
 	GtkWidget * w, * sw, * p;
 	gint bpp;
@@ -397,7 +395,7 @@ do_rbuf (gboolean alpha, gboolean frgba)
 		pc = gnome_print_frgba_new (pc);
 	}
 
-	do_print (pc, 1.0);
+	do_print (pc, 1.0, font);
 
 	gnome_print_context_close (pc);
 
@@ -422,6 +420,9 @@ main (int argc, char ** argv)
 {
 	poptContext ctx = NULL;
 	const char **args;
+	GnomeFont *font;
+	GtkWidget *d, *w;
+	gint b;
 
 	gnome_init_with_popt_table ("TestPrint", "0.1", argc, argv, options, 0, &ctx);
 	args = poptGetArgs (ctx);
@@ -435,23 +436,33 @@ main (int argc, char ** argv)
 
 	poptFreeContext (ctx);
 
+	d = gnome_font_selection_dialog_new ("Test");
+	b = gnome_dialog_run (GNOME_DIALOG (d));
+	if (b == 0) {
+		w = gnome_font_selection_dialog_get_fontsel (GNOME_FONT_SELECTION_DIALOG (d));
+		font = gnome_font_selection_get_font (GNOME_FONT_SELECTION (w));
+	} else {
+		font = gnome_font_new_closest ("test (hehe)", GNOME_FONT_BOOK, FALSE, 18.0);
+	}
+	gtk_widget_destroy (d);
+
 	if (preview) {
-		do_preview (TRUE);
+		do_preview (font, TRUE);
 		gtk_main ();
 	} else if (preview_gdk) {
-		do_preview (FALSE);
+		do_preview (font, FALSE);
 		gtk_main ();
 	} else if (rbuf) {
-		do_rbuf (FALSE, FALSE);
+		do_rbuf (font, FALSE, FALSE);
 		gtk_main ();
 	} else 	if (rbuf_alpha) {
-		do_rbuf (TRUE, FALSE);
+		do_rbuf (font, TRUE, FALSE);
 		gtk_main ();
 	} else if (rbuf_frgba) {
-		do_rbuf (TRUE, TRUE);
+		do_rbuf (font, TRUE, TRUE);
 		gtk_main ();
 	} else {
-	     do_dialog ();
+	     do_dialog (font);
 	}
 
 

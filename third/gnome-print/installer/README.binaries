@@ -79,6 +79,24 @@ during postinstall - what according to my experience is
 single most common point of failure with gnome-print
 binaries.
 
+UPDATE: 05/11/2001
+
+There is now --smart argument for gnome-font-install, that
+tries to do everything automatically. It's default scan paths
+are defined in gnome-font-install.c - feel free to add more,
+if these are common on your system.
+
+The best way to do installing is now:
+
+1. Create and install prebuilt fontmaps
+2. Run gnome-font-install --smart in postinstall.
+   It does additional search, and registers fonts, that users
+   may have in system, but are not included in prebuilt fontmaps.
+
+Doing so guarantees, that even, if postinstall fails (I have
+encountered Type1 fonts that crash certain versions of FreeType),
+user still has set of standard fonts from prebuilt fontmaps.
+
 have fun
 Lauris Kaplinski <lauris@ximian.com>
 29.09.2001

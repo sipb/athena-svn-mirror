@@ -421,7 +421,15 @@ gnome_rfont_get_glyph_dimension (const GnomeRFont * rfont, gint glyph)
 
 	dim = g_new (GnomeRFontDimension, 1);
 
-	art_drect_svp (&dim->ddim, svp);
+	if (svp) {
+		art_drect_svp (&dim->ddim, svp);
+	} else {
+		/* fixme: This fixes crash for some unclear situation (Lauris) */
+		/* fixme: Theoretically everything should be handled by face (Lauris) */
+		dim->ddim.x0 = dim->ddim.y0 = 0.0;
+		dim->ddim.x1 = dim->ddim.y1 = 1.0;
+	}
+
 	art_drect_to_irect (&dim->idim, &dim->ddim);
 
 	g_hash_table_insert (rfont->dimensions, GINT_TO_POINTER (glyph), dim);
@@ -934,6 +942,11 @@ GDFMap gp_2_x_map[] = {
 	{"Utopia", {"utopia", "times", "times new roman", NULL}},
 	{"Dingbats", {"dingbats", "zapf dingbats", NULL}},
 	{"Helvetica", {"helvetica", "nimbus sans", NULL}},
+	{"Kochi Gothic", {"gothic", "mincho", "fixed", NULL}},
+	{"Kochi Mincho", {"mincho", "gothic", "fixed", NULL}},
+	{"MS Mincho", {"mincho", "gothic", "fixed", NULL}},
+	{"MS PMincho", {"mincho", "gothic", "fixed", NULL}},
+	{"Bitstream Cyberbit", {"fixed", NULL}},
 };
 
 #define gp_2_x_map_size (sizeof (gp_2_x_map) / sizeof (gp_2_x_map[0]))
@@ -988,7 +1001,10 @@ gnome_display_font_height (GnomeDisplayFont * gdf)
 {
 	g_return_val_if_fail (gdf != NULL, 0);
 	g_return_val_if_fail (gdf->gdk_font != NULL, 0);
-	g_return_val_if_fail (GDF_XFONT (gdf), 0);
+	if (!GDF_XFONT (gdf)) {
+		g_warning ("Cannot create X Font for GnomeDisplayFont %s %g", gnome_font_get_name (gdf->font), gdf->font->size);
+		return 0;
+	}
 
 	/* We return GnomeFont height here */
 	return MAX (gnome_font_get_size (gdf->font) * gdf->transform[0], gdf->gdk_font->ascent + gdf->gdk_font->descent);
@@ -996,11 +1012,11 @@ gnome_display_font_height (GnomeDisplayFont * gdf)
 
 GnomeDisplayFont * gnome_font_get_display_font (GnomeFont * font)
 {
-  return gnome_get_display_font( font->private->fontmap_entry->private->entry->familyname,
-				 font->private->fontmap_entry->private->weight_code,
-				 font->private->fontmap_entry->private->italic,
-				 font->private->size,
-				 1.0);
+	return gnome_get_display_font (font->face->entry->familyname,
+				       gnome_font_face_get_weight_code (font->face),
+				       gnome_font_face_is_italic (font->face),
+				       font->size,
+				       1.0);
 }
 
 /*
@@ -1039,7 +1055,10 @@ gnome_display_font_get_x_font_name (const GnomeDisplayFont * gdf)
 {
 	g_return_val_if_fail (gdf != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_RFONT (gdf), NULL);
-	g_return_val_if_fail (GDF_XFONT (gdf), NULL);
+	if (!GDF_XFONT (gdf)) {
+		g_warning ("Cannot create X Font for GnomeDisplayFont %s %g", gnome_font_get_name (gdf->font), gdf->font->size);
+		return 0;
+	}
 
 	return gdf->gdk_name;
 }
@@ -1049,7 +1068,10 @@ gnome_display_font_get_gdk_font (const GnomeDisplayFont * gdf)
 {
 	g_return_val_if_fail (gdf != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_RFONT (gdf), NULL);
-	g_return_val_if_fail (GDF_XFONT (gdf), NULL);
+	if (!GDF_XFONT (gdf)) {
+		g_warning ("Cannot create X Font for GnomeDisplayFont %s %g", gnome_font_get_name (gdf->font), gdf->font->size);
+		return 0;
+	}
 
 	return gdf->gdk_font;
 }
@@ -1162,16 +1184,23 @@ gdf_find_gdk_font (GnomeRFont * rfont)
 		}
 	}
 
+#if 0
 	if (!gdkfont) {
 		/* Try Helvetica */
 
 		gdf_find_measured_gdk_font ("helvetica", weight, italic, size, &gdkfont, &gdkname, &best);
 	}
+#endif
 
 	if (!gdkfont) {
 		/* No useful font found, so load 'fixed' */
 		
 		gdkfont = gdk_fontset_load ("fixed");
+		if (!gdkfont) gdkfont = gdk_font_load ("fixed");
+		if (!gdkfont) {
+			g_warning ("Serious error: Cannot load font 'fixed' - your program most probably will not work");
+			return FALSE;
+		}
 		gdkname = g_strdup ("fixed");
 	}
 
@@ -1195,12 +1224,14 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 {
 	gchar xname[1024];
 	gint pxsize;
-	gchar * bestname;
+	gchar *bestname;
+	gint mybest;
 
 	g_return_if_fail (strlen (name) < 512);
 
 	bestname = NULL;
 	pxsize = 0;
+	mybest = *best;
 
 	/* Try 0-sized font */
 
@@ -1216,14 +1247,14 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 		    "*", "*", /* Resolution X, Y */
 		    "*", "*", "*"); /* Spacing, Avg Width, Charset */
 
-	gdf_measure_string_name (xname, name, weight, italic, size, &bestname, best);
+	gdf_measure_string_name (xname, name, weight, italic, size, &bestname, &mybest);
 
 	if (!bestname) {
 		/* Try exact size */
 		pxsize = (gint) floor (size + 0.5);
 		g_snprintf (xname, 1024, "-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s",
 			    "*", name, "*", "*", "normal", "*", pxsize, "*", "*", "*", "*", "*", "*");
-		gdf_measure_string_name (xname, name, weight, italic, size, &bestname, best);
+		gdf_measure_string_name (xname, name, weight, italic, size, &bestname, &mybest);
 	}
 
 	if (!bestname) {
@@ -1233,11 +1264,11 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 		for (i = 1; i <= dev; i++) {
 			g_snprintf (xname, 1024, "-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s",
 				    "*", name, "*", "*", "normal", "*", (pxsize + i), "*", "*", "*", "*", "*", "*");
-			gdf_measure_string_name (xname, name, weight, italic, size, &bestname, best);
+			gdf_measure_string_name (xname, name, weight, italic, size, &bestname, &mybest);
 			if (*best == 0) break;
 			g_snprintf (xname, 1024, "-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s",
 				    "*", name, "*", "*", "normal", "*", (pxsize - i), "*", "*", "*", "*", "*", "*");
-			gdf_measure_string_name (xname, name, weight, italic, size, &bestname, best);
+			gdf_measure_string_name (xname, name, weight, italic, size, &bestname, &mybest);
 			if (*best == 0) break;
 		}
 	}
@@ -1258,6 +1289,7 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 		g_print ("Trying: %s\n", xname);
 #endif
 		f = gdk_fontset_load (xname);
+#if 0
 		if (!f) {
 			g_snprintf (xname, 1024, "-*-%s-%s-%s-%s-*-%d-*-*-*-*-*-%s",
 				    c[2], c[3], c[4], c[5], pxsize, c[13]);
@@ -1265,7 +1297,11 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 			g_print ("Trying: %s\n", xname);
 #endif
 			f = gdk_fontset_load (xname);
+			if (!f && (MB_CUR_MAX <= 1)) f = gdk_font_load (xname);
 		}
+#else
+		if (!f && (MB_CUR_MAX <= 1)) f = gdk_font_load (xname);
+#endif
 
 		if (f) {
 #ifdef VERBOSE
@@ -1275,6 +1311,7 @@ gdf_find_measured_gdk_font (const gchar * name, GnomeFontWeight weight, gboolean
 			*gdkname = g_strdup (xname);
 			if (*gdkfont) gdk_font_unref (*gdkfont);
 			*gdkfont = f;
+			*best = mybest;
 		}
 
 		g_free (bestname);

@@ -23,7 +23,9 @@ typedef struct _GPFontEntry GPFontEntry;
 typedef struct _GPFamilyEntry GPFamilyEntry;
 typedef struct _GPFontEntryT1 GPFontEntryT1;
 typedef struct _GPFontEntryT1Alias GPFontEntryT1Alias;
+typedef struct _GPFontEntryTT GPFontEntryTT;
 typedef struct _GPFontEntryAlias GPFontEntryAlias;
+typedef struct _GPFontEntrySpecial GPFontEntrySpecial;
 
 #include <sys/types.h>
 #include <glib.h>
@@ -35,16 +37,12 @@ typedef enum {
 	GP_FONT_ENTRY_TYPE1, /* Just ordinary Type1 font */
 	GP_FONT_ENTRY_TRUETYPE,
 	GP_FONT_ENTRY_TYPE1_ALIAS, /* Type1 font with foreign afm */
-	GP_FONT_ENTRY_ALIAS /* Full alias */
+	GP_FONT_ENTRY_ALIAS, /* Full alias */
+	GP_FONT_ENTRY_SPECIAL
 } GPFontEntryType;
 
 struct _GPFileEntry {
 	gchar * name;
-#if 0
-	/* We do not need those anymore (Lauris) */
-	size_t size;
-	time_t mtime;
-#endif
 };
 
 struct _GPFontMap {
@@ -58,17 +56,22 @@ struct _GPFontMap {
 	time_t mtime_user;
 
 	/* Name -> FontEntry */
-	GHashTable * fontdict;
+	GHashTable *fontdict;
 	/* Family name -> FamilyEntry */
-	GHashTable * familydict;
+	GHashTable *familydict;
 	/* List of FontEntries, sorted A-Z */
-	GSList * fonts;
+	GSList *fonts;
 	/* List of FamilyEntries, sorted A-Z */
-	GSList * families;
+	GSList *families;
 	/* List of font names (pointing to entry->name) */
-	GList * fontlist;
+	GList *fontlist;
 	/* List of family names (pointing to entry->name */
-	GList * familylist;
+	GList *familylist;
+
+	/* List of default entries (only for parsing, will be cleaned later) */
+	GSList *defaults;
+	/* Dictionary of defaults by language_COUNTRY code */
+	GHashTable *defaultsdict;
 };
 
 struct _GPFontEntry {
@@ -77,13 +80,16 @@ struct _GPFontEntry {
 	/* Our face */
 	GnomeFontFace * face;
 	/* Common fields */
-	gchar * name;
-	gchar * version;
-	gchar * familyname;
-	gchar * speciesname;
-	gchar * psname;
+	gchar *name;
+	gchar *version;
+	gchar *familyname;
+	gchar *speciesname;
+	gchar *psname;
 	/* fixme: fixme: fixme: */
-	gchar * weight;
+	gchar *weight;
+	/* Some parsed afm latin metrics */
+	GnomeFontWeight Weight;
+	gdouble ItalicAngle; /* italic < 0 */
 };
 
 struct _GPFamilyEntry {
@@ -97,27 +103,17 @@ struct _GPFontEntryT1 {
 	GPFontEntry entry;
 	GPFileEntry afm;
 	GPFileEntry pfb;
-	/* Some parsed afm latin metrics */
-	GnomeFontWeight Weight;
-	gdouble ItalicAngle; /* italic < 0 */
 };
-
-/*
-  Removed from the above structure:
-  
-	gboolean IsFixedPitch;
-	ArtDRect FontBBox;
-	gdouble UnderlinePosition;
-	gdouble UnderlineThickness;
-	gdouble CapHeight;
-	gdouble XHeight;
-	gdouble Ascender;
-	gdouble Descender;
-*/
 
 struct _GPFontEntryT1Alias {
 	GPFontEntryT1 t1;
 	gchar * alias;
+};
+
+struct _GPFontEntryTT {
+	GPFontEntry entry;
+	GPFileEntry ttf;
+	gint facenum;
 };
 
 struct _GPFontEntryAlias {
@@ -125,11 +121,24 @@ struct _GPFontEntryAlias {
 	GPFontEntry * ref;
 };
 
+struct _GPFontEntrySpecial {
+	GPFontEntry entry;
+	GPFileEntry file;
+	gint subface;
+	GSList *additional;
+};
+
 GPFontMap * gp_fontmap_get (void);
 void gp_fontmap_release (GPFontMap *);
 
 void gp_font_entry_ref (GPFontEntry * entry);
 void gp_font_entry_unref (GPFontEntry * entry);
+
+/* This is experimental method (not public anyways) (Lauris) */
+
+GPFontEntry *gp_font_entry_from_files (GPFontMap *map,
+				       const guchar *name, const guchar *family, const guchar *species, gboolean hidden,
+				       const guchar *filename, gint face, const GSList *additional);
 
 GnomeFontWeight gp_fontmap_lookup_weight (const gchar * weight);
 

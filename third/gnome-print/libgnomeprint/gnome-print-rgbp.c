@@ -53,15 +53,24 @@ gnome_print_rgbp_construct (GnomePrintRGBP   *rgbp,
 			    const GnomePaper *paper_info,
 			    int               dpi)
 {
-	g_return_val_if_fail (paper_info != NULL, NULL);
+	gdouble pw, ph;
+
+	if (paper_info == NULL) {
+		g_warning ("file %s: line %d: Missing paper info", __FILE__, __LINE__);
+		pw = 21 * 72 / 2.54;
+		ph = 29.7 * 72 / 2.54;
+	} else {
+		pw = gnome_paper_pswidth (paper_info);
+		ph = gnome_paper_psheight (paper_info);
+	}
 
 	/*
 	 * RGB (3 bytes) * dots-per-inch * page-width-in-inches * dpi-height
 	 */
 	rgbp->priv->dpi = dpi;
 
-	rgbp->priv->width = dpi * (gnome_paper_pswidth (paper_info) / 72.0);
-	rgbp->priv->height = dpi * (gnome_paper_psheight (paper_info) / 72.0);
+	rgbp->priv->width = dpi * (pw / 72.0);
+	rgbp->priv->height = dpi * (ph / 72.0);
 
 	/*
 	 * The buffer is big enough to hold a band (one inch).
@@ -111,8 +120,9 @@ gnome_print_rgbp_new (const char *paper_size, int dpi)
 	g_return_val_if_fail (dpi > 0, NULL);
 	
 	paper_info = gnome_paper_with_name (paper_size);
-	if (paper_info == NULL)
-		g_return_val_if_fail (FALSE, NULL);
+	if (paper_info == NULL) {
+		g_warning ("file %s: line %d: Cannot get info for paper %s", __FILE__, __LINE__, paper_size);
+	}
 
 	rgbp = gtk_type_new (gnome_print_rgbp_get_type ());
 	if (rgbp == NULL)

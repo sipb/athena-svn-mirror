@@ -57,7 +57,12 @@ gnome_printer_load_profiles_from (const char *filename, GnomePrinterProfileList 
 
 		gnome_config_pop_prefix ();
 		g_free(prefix);
-		*list = g_list_prepend (*list, pp);
+
+		if (pp->name && pp->driver && pp->output) {
+			*list = g_list_prepend (*list, pp);
+		} else {
+			g_free (pp);
+		}
 		g_free (name);
 	}
 	
@@ -106,7 +111,7 @@ gnome_printer_stock_profile (void)
 
 	pp = g_new0 (GnomePrinterProfile, 1);
 	pp->name = g_strdup (_("Generic Postscript"));
-	pp->driver = g_strdup ("gnome-print-ps");
+	pp->driver = g_strdup ("gnome-print-ps2");
 	pp->mime_type = g_strdup ("application/postscript");
 	pp->output = g_strdup ("output.ps");
 
@@ -117,20 +122,23 @@ static gint
 gpp_compare_profiles (GnomePrinterProfile *a, GnomePrinterProfile *b)
 {
 	/*
-	 *now that is silly ;) - but it works for stock profiles
+	 * Now that is silly ;) - but it works for stock profiles
 	 * and that is all we need
 	 */
 
-	if (!strcmp (a->driver, "gnome-print-ps2")) {
-		if (!strcmp (b->driver, "gnome-print-ps2")) {
-			return strcmp (a->output, b->output);
-		}
+	if (!strcmp (a->driver, "gnome-print-ps2") && !strcmp (b->driver, "gnome-print-ps2")) {
+		if (!strcmp (a->output, "command,lpr")) return -1;
+		if (!strcmp (b->output, "command,lpr")) return 1;
+		if (!strcmp (a->output, "file,output.ps")) return -1;
+		if (!strcmp (b->output, "file,output.ps")) return 1;
+		return strcmp (a->output, b->output);
+	} else if (!strcmp (a->driver, "gnome-print-ps2")) {
 		return -1;
-	} else {
-		if (!strcmp (b->driver, "gnome-print-ps2")) return 1;
+	}  else if (!strcmp (b->driver, "gnome-print-ps2")) {
+		return 1;
 	}
 
-	return 0;
+	return strcmp (a->output, b->output);
 }
 
 /**

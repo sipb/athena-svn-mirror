@@ -96,12 +96,16 @@ my @gs_fontpath = ();
 # Create ghostscript.fontmap
 my @options = (
 	       '--debug',
+	       '--clean',
 	       '--recursive',
 	       '--dynamic',
 	       "--target=$sysconfdir/gnome/fonts/gnome-print-ghostscript.fontmap",
 	       "--aliases=$srcdir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/gnome/fonts/adobe-urw.font",
 	       "$datadir/fonts/afms",
-	       "$datadir/fonts/pfbs"
+	       "$datadir/fonts/pfbs",
+	       "$datadir/fonts/type1"
 	       );
 {
     my $dir;
@@ -115,11 +119,14 @@ system ($installer, @options);
 # Create x11.fontmap
 my @options = (
 	       '--debug',
+	       '--clean',
 	       '--recursive',
 	       '--dynamic',
 	       "--target=$sysconfdir/gnome/fonts/gnome-print-x11.fontmap",
+	       "--aliases=$srcdir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/gnome/fonts/adobe-urw.font",
 	       "$datadir/fonts/afms",
-	       "$datadir/fonts/pfbs",
 	       '/usr/X11R6/lib/X11/fonts'
 	       );
 print "Info: running \"$installer ", join (' ', @options), "\".\n";
@@ -128,44 +135,32 @@ system ($installer, @options);
 # TeX fontmap
 my @options = (
 	       '--debug',
+	       '--clean',
 	       '--recursive',
 	       '--dynamic',
 	       "--target=$sysconfdir/gnome/fonts/gnome-print-tex.fontmap",
+	       "--aliases=$srcdir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/gnome/fonts/adobe-urw.font",
 	       "$datadir/fonts/afms",
-	       "$datadir/fonts/pfbs",
 	       '/usr/lib/texmf/fonts/afm',
-	       '/usr/lib/texmf/fonts/type1',
+	       '/usr/lib/texmf/fonts/type1/adobe',
+	       '/usr/lib/texmf/fonts/type1/omega',
 	       '/usr/share/texmf/fonts/afm',
-	       '/usr/share/texmf/fonts/type1'
+	       '/usr/share/texmf/fonts/type1/adobe',
+	       '/usr/share/texmf/fonts/type1/omega'
 	       );
 print "Info: running \"$installer ", join (' ', @options), "\".\n";
 system ($installer, @options);
 
+# Whatever remains
+my @options = (
+	       '--debug',
+	       '--smart',
+	       "--aliases=$srcdir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/fonts/adobe-urw.font",
+	       "--aliases=$datadir/gnome/fonts/adobe-urw.font",
+	       );
+print "Info: running \"$installer ", join (' ', @options), "\".\n";
+system ($installer, @options);
 
-#my @options = ('--debug',
-#     '--system',
-#     '--scan',
-#     '--no-copy',
-#     "--afm-path=$datadir/fonts/afms",
-#     "--pfb-path=$datadir/fonts/pfbs",
-#     "--target=$targetfile",
-#     );
-#{
-#    my $dir;
-#    foreach $dir (@gs_fontpath) {
-#	push @options, "--pfb-assignment=ghostscript,$dir";
-#	push @options, "--assignment=ghostscript,$dir";
-#    }
-#}
-#push @options, "--fontmap-path=$srcdir/fonts";
-#
-#
-#print "Info: running \"$installer ", join (' ', @options), "\".\n";
-#my $exitcode = system ($installer, @options);
-#die "Error: failed.\n" if $exitcode;
-#
-#chmod 0644 => $targetfile;
-#if (!-r $targetfile) {
-#    die "Error: something went very wrong.\n";
-#}
-#

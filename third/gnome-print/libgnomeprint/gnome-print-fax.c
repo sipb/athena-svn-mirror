@@ -295,7 +295,7 @@ fax_print_band (GnomePrintRGBP *rgbp, guchar *rgb_buffer, ArtIRect *rect)
 	g_return_val_if_fail (cols <= MAX_FAX_COLS, -1);
 	
 	{
-		gint x, y;
+		gint y;
 		guchar *p;
 		for (y = 0; y < rows - 4; y++) {
 			p = rgb_buffer + 3 * y * cols + 12;
@@ -425,8 +425,9 @@ gnome_print_fax_new (GnomePrinter *printer, const char *paper_size, int dpi)
 	fax = gtk_type_new (gnome_print_fax_get_type ());
 
 	paper_info = gnome_paper_with_name (paper_size);
-	if (paper_info == NULL)
-		g_return_val_if_fail (FALSE, NULL);
+	if (paper_info == NULL) {
+		g_warning ("file %s: line %d: Cannot get info for paper %s", __FILE__, __LINE__, paper_size);
+	}
 
 	if (!gnome_print_fax_construct (fax, printer, paper_info, dpi))
 		gtk_object_unref (GTK_OBJECT (fax));

@@ -45,7 +45,6 @@
 #include <libgnomeprint/gnome-print-rbuf.h>
 #include <libgnomeprint/gnome-print-rbuf-private.h>
 #include <libgnomeprint/gnome-font.h>
-#include <libgnomeprint/gt1-parset1.h>
 
 /*
  * Private structures

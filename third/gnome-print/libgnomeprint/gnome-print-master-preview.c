@@ -136,7 +136,7 @@ render_page (GnomePrintMasterPreview *pmp, int page)
 	 */
 	paper = pp->master->paper;
 	paper_name = gnome_paper_name (paper);
-	pp->output = (GnomePrintPreview *)gnome_print_preview_new (pp->canvas, paper_name);
+	pp->output = (GnomePrintPreview *) gnome_print_preview_new (pp->canvas, paper_name ? paper_name : "A4");
 
 	/*
 	 * Reset scrolling region always
@@ -601,7 +601,7 @@ create_preview_canvas (GnomePrintMasterPreview *pmp)
 	 */
 	paper = pp->master->paper;
 	paper_name = gnome_paper_name (paper);
-	pp->output = (GnomePrintPreview *)gnome_print_preview_new (pp->canvas, paper_name);
+	pp->output = (GnomePrintPreview *) gnome_print_preview_new (pp->canvas, paper_name ? paper_name : "A4");
 
 	/*
 	 * Now add some padding above and below and put a simulated
@@ -716,6 +716,8 @@ static GnomeUIInfo toolbar [] = {
 	GNOMEUIINFO_END
 };
 
+#define CM2PT(v) ((v) * 72 / 2.54)
+
 static void
 create_toplevel (GnomePrintMasterPreview *pmp)
 {
@@ -730,11 +732,11 @@ create_toplevel (GnomePrintMasterPreview *pmp)
 
 	paper  = pp->master->paper;
 	if (pp->landscape) {
-		pp->height = gnome_paper_pswidth  (paper);
-		pp->width  = gnome_paper_psheight (paper);
+		pp->height = paper ? gnome_paper_pswidth (paper) : CM2PT (21);
+		pp->width  = paper ? gnome_paper_psheight (paper) : CM2PT (29.7);
 	} else {
-		pp->width  = gnome_paper_pswidth  (paper);
-		pp->height = gnome_paper_psheight (paper);
+		pp->width  = paper ? gnome_paper_pswidth (paper) : CM2PT (21);
+		pp->height = paper ? gnome_paper_psheight (paper) : CM2PT (29.7);
 	}
 
 	width  = pp->width + PAGE_PAD * 3;

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
 "PO-Revision-Date: 2001-03-08 18:19+0900\n"
 "Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
 "Language-Team: Japanese\n"
@@ -14,42 +14,63 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "デバッグ情報の出力"
 
-#: installer/gnome-font-install.c:121
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr ""
+
+#: installer/gnome-font-install.c:145
 #, fuzzy
 msgid "Search directories recursively for font files"
 msgstr ".fontファイルの検索にこのパスを使う"
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
 msgstr ""
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "パス"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr ""
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr ""
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -69,20 +90,15 @@ msgstr "フォントサイズ:"
 msgid "Font Selection"
 msgstr "フォント選択"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "すばしこい茶色のキツネが怠惰な犬を飛び越します。"
 
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, fuzzy, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "フォントファイル %s を開けません\n"
-
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "読み込み状態 %s = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -269,64 +285,46 @@ msgstr "最大高さ"
 msgid "Zooms to fit the height of the page"
 msgstr "最大高さまで拡大"
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-"gnome-print-adminが見つかりませんでした。\n"
-"\n"
-"gnome-print-adminをインストールしてこのプリンタを設定してください。"
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-msgid "Print to file"
-msgstr "ファイルに印刷"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-msgid "Properties"
-msgstr "プロパティ"
-
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "プリンタ選択"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "状態:"
 
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "形式:"
 
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "場所:"
 
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "コメント:"
 
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "名前(_N):"
 
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "プリンタ(_P):"
 
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "ファイル(_F):"
 
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "プリンタ選択"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr "通常のPostScript"
@@ -418,6 +416,24 @@ msgstr "gnome-printテストページ、斜め"
 #: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "gnome-printテストページ、斜め。小"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "gnome-print-adminが見つかりませんでした。\n"
+#~ "\n"
+#~ "gnome-print-adminをインストールしてこのプリンタを設定してください。"
+
+#~ msgid "Print to file"
+#~ msgstr "ファイルに印刷"
+
+#~ msgid "Properties"
+#~ msgstr "プロパティ"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "読み込み状態 %s = %d\n"
 
 #~ msgid "Output file name"
 #~ msgstr "出力ファイル名"

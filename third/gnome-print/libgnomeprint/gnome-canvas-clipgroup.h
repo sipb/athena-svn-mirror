@@ -1,7 +1,8 @@
-#ifndef GNOME_CANVAS_CLIPGROUP_H
-#define GNOME_CANVAS_CLIPGROUP_H
+#ifndef __GNOME_CANVAS_CLIPGROUP_H__
+#define __GNOME_CANVAS_CLIPGROUP_H__
 
-/* Clipping group implementation for GnomeCanvas
+/*
+ * Clipping group implementation for GnomeCanvas
  *
  * GnomeCanvas is basically a port of the Tk toolkit's most excellent canvas widget.  Tk is
  * copyrighted by the Regents of the University of California, Sun Microsystems, and other parties.
@@ -9,22 +10,21 @@
  * TODO: Implement this in libgnomeui, possibly merge with real group
  *
  * Copyright (C) 1998,1999 The Free Software Foundation
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Author:
- *          Lauris Kaplinski <lauris@ariman.ee>
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
  */
 
 #include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
+
+BEGIN_GNOME_DECLS
 
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_vpath_dash.h>
+#include <libgnomeui/gnome-canvas.h>
 #include "gp-path.h"
-
-BEGIN_GNOME_DECLS
-
 
 #define GNOME_TYPE_CANVAS_CLIPGROUP            (gnome_canvas_clipgroup_get_type ())
 #define GNOME_CANVAS_CLIPGROUP(obj)            (GTK_CHECK_CAST ((obj), GNOME_TYPE_CANVAS_CLIPGROUP, GnomeCanvasClipgroup))
@@ -39,20 +39,17 @@ typedef struct _GnomeCanvasClipgroupClass GnomeCanvasClipgroupClass;
 struct _GnomeCanvasClipgroup {
 	GnomeCanvasGroup group;
 
-	GPPath * path;
+	GPPath *path;
 	ArtWindRule wind;
 
-	ArtSVP * svp;
+	ArtSVP *svp;
 };
 
 struct _GnomeCanvasClipgroupClass {
 	GnomeCanvasGroupClass parent_class;
 };
 
-
-/* Standard Gtk function */
 GtkType gnome_canvas_clipgroup_get_type (void);
-
 
 END_GNOME_DECLS
 

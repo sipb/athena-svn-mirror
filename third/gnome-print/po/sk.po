@@ -5,51 +5,71 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.26\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
-"PO-Revision-Date: 2001-07-20 14:21CET\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
+"PO-Revision-Date: 2001-12-13 16:47CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
-"Language-Team: Slovak <sk-i18n@linux.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.3\n"
+"X-Generator: KBabel 0.9.6\n"
 
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "Vytlaèi» ladiace informácie"
 
-#: installer/gnome-font-install.c:121
-#, fuzzy
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Pokúsi sa v¹etky vykona» automaticky"
+
+#: installer/gnome-font-install.c:145
 msgid "Search directories recursively for font files"
-msgstr "Pou¾i» túto cestu pre zápis súborov .font."
+msgstr "Hµada» v prieèinkoch rekurzívne súbory s písmami"
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
-msgstr ""
+msgstr "Zaèa» s prázdnou mapou písiem, nepou¾i» starú"
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Do súboru fontmap prida» pole poznámky o písme (copyright)"
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr ""
+msgstr "Vytvori» $HOME/.gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
-msgstr ""
+msgstr "Vytvori» $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
-msgstr ""
+msgstr "Vytvori» $DATADIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
-msgstr ""
+msgstr "Zapísa» výstup príkazu fontmap do zadaného súboru (- pre stdout)"
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr "Vráti» $DATADIR a $SYSCONFDIR pou¾ité pri in¹talácii gnome-print."
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
-msgstr ""
+msgstr "Súbor so známymi aliasmi"
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "CESTA"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr "Zadajte ¹tandardné písma pre ka¾dý jazyk"
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:fontname]"
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -69,20 +89,15 @@ msgstr "Veµkos»:"
 msgid "Font Selection"
 msgstr "Výber písma"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Rýchla hnedá lí¹ka skáèe cez lenivého psa."
 
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "Nepodarilo sa vytvori» pfa pre písmo %s\n"
-
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "naèítavanie stavu %s = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -269,63 +284,46 @@ msgstr "Celá vý¹ka"
 msgid "Zooms to fit the height of the page"
 msgstr "Zmení aby vy¹lo na celú vý¹ku stránky"
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-"gnome-print-admin nebol nájdený.\n"
-"Prosím, nain¹talujte gnome-print-admin pre nastavenie tejto tlaèiarne"
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-msgid "Print to file"
-msgstr "Tlaèi» do súboru"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-msgid "Properties"
-msgstr "Vlastnosti"
-
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "Vybra» tlaèiareò"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "Stav:"
 
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "Typ:"
 
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "Umiestnenie:"
 
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "Komentár:"
 
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "_Meno:"
 
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "_Tlaèiareò"
 
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "_Súbor"
 
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "Vybra» tlaèiareò"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr "©tandardný Postscript"
@@ -418,17 +416,16 @@ msgstr "Testovacia stránka GNOME print, sklonené"
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Testovacia stránka GNOME print, sklonené malé"
 
-#~ msgid "Output file name"
-#~ msgstr "Meno súboru výstupu"
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "gnome-print-admin nebol nájdený.\n"
+#~ "Prosím, nain¹talujte gnome-print-admin pre nastavenie tejto tlaèiarne"
 
-#~ msgid "Base for relative afm file names."
-#~ msgstr "Pou¾i» túto cestu pre hµadanie relatívnych mien súborov afm."
+#~ msgid "Print to file"
+#~ msgstr "Tlaèi» do súboru"
 
-#~ msgid "Base for relative pfb file names."
-#~ msgstr "Pou¾i» túto cestu pre hµadanie relatívnych mien súborov pfb."
-
-#~ msgid "Use this to set up a key/value pair for font files."
-#~ msgstr "Pou¾i» toto pre nastavenie páru kµúè/hodnota pre súbory písem."
-
-#~ msgid "KEY,PATH"
-#~ msgstr "K¥ÚÈ,CESTA"
+#~ msgid "Properties"
+#~ msgstr "Vlastnosti"

@@ -20,25 +20,21 @@ LIBGPA_TEST_LIBS =
 endif
 
 INCLUDES = \
-	$(GTK_CFLAGS)				\
-	-I$(top_srcdir)/intl 		\
-	-I$(top_builddir)/intl		\
-	-I$(top_srcdir)			\
-	-I$(top_srcdir)/libgnomeprint	\
-	$(GNOME_INCLUDEDIR)			\
-	$(PRINT_TEST_CFLAGS)		\
-	$(LIBGPA_TEST_CFLAGS)		\
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/intl \
+	-I$(top_builddir)/intl \
+	-I$(top_srcdir)/libgnomeprint \
+	$(LIBGNOMEPRINT_CFLAGS) \
 	-DPROFILEDIR=\""$(profilesdir)"\" 
 
 CPPFLAGS = @CPPFLAGS@ \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DBINDIR=\""$(bindir)"\"	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DBINDIR=\""$(bindir)"\" \
 	-DDATADIR=\""$(datadir)"\"
 
-print_libs =									\
-	$(top_builddir)/libgnomeprint/libgnomeprint.la	\
-	$(PRINT_TEST_LIBS)							\
-	$(LIBGPA_TEST_LIBS)							\
+print_libs = \
+	$(top_builddir)/libgnomeprint/libgnomeprint.la \
+	$(LIBGNOMEPRINT_LIBS) \
 	$(INTLLIBS)
 
 testprint_SOURCES = testprint.c

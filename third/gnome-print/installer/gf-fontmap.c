@@ -12,6 +12,7 @@
  *
  */
 
+#include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -37,6 +38,8 @@ static void gf_fontmap_load_dir (GFFontDB *db, const guchar *dirname, GFFontMapT
 static GFFontMap *gf_fontmap_load_file (const guchar *filename, GFFontMapType type);
 static void gf_fm_load_fonts_2_0 (GFFontMap *map, xmlNodePtr root);
 static void gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node);
+static void gf_fm_load_font_2_0_truetype (GFFontMap *map, xmlNodePtr node);
+static void gf_fm_load_common_data (GFFontEntry *e, xmlNodePtr node);
 
 static guchar *gf_fm_get_species_name (const guchar *fullname, const guchar *familyname);
 
@@ -140,6 +143,7 @@ gf_fontmap_new (GFFontMapType type, const guchar *path)
 
 	map = g_new (GFFontMap, 1);
 	map->next = NULL;
+	map->gpversion = 0.0;
 	map->type = type;
 	map->path = g_strdup (path);
 	map->fonts = NULL;
@@ -266,8 +270,14 @@ gf_fontmap_load_file (const guchar *filename, GFFontMapType type)
 			version = xmlGetProp (root, "version");
 			if (version) {
 				if (!strcmp (version, "2.0")) {
+					xmlChar *gpversion;
+					gpversion = xmlGetProp (root, "gpversion");
 					/* We are even right version */
 					map = gf_fontmap_new (type, filename);
+					if (gpversion) {
+						map->gpversion = (gint) floor (1000.0 * atof (gpversion) + 0.f);
+						xmlFree (gpversion);
+					}
 					gf_fm_load_fonts_2_0 (map, root);
 				}
 				xmlFree (version);
@@ -297,6 +307,9 @@ gf_fm_load_fonts_2_0 (GFFontMap *map, xmlNodePtr root)
 				if (!strcmp (format, "type1") || !strcmp (format, "type1alias")) {
 					/* We are type1/type1alias entry */
 					gf_fm_load_font_2_0_type1 (map, child);
+				} else if (!strcmp (format, "truetype")) {
+					/* We are truetype entry */
+					gf_fm_load_font_2_0_truetype (map, child);
 				}
 				xmlFree (format);
 			}
@@ -311,7 +324,6 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 	xmlChar *xmlname, *xmlfamilyname, *xmlpsname;
 	xmlNodePtr child;
 	GFFileEntry afm, pfb;
-	xmlChar *t;
 
 	/* Get our unique name */
 	xmlname = xmlGetProp (node, "name");
@@ -341,7 +353,7 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 			xmlChar *type, *xmlpath, *xmlmtime, *xmlsize;
 			/* We are <file> node */
 			type = xmlGetProp (child, "type");
-			if (!strcmp (type, "afm") && !afm.path) {
+			if (type && !strcmp (type, "afm") && !afm.path) {
 				xmlpath = xmlGetProp (child, "path");
 				if (xmlpath) {
 					xmlmtime = xmlGetProp (child, "mtime");
@@ -354,7 +366,7 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 					if (xmlsize) xmlFree (xmlsize);
 					xmlFree (xmlpath);
 				}
-			} else if (!strcmp (type, "pfb") && !pfb.path) {
+			} else if (type && !strcmp (type, "pfb") && !pfb.path) {
 				xmlpath = xmlGetProp (child, "path");
 				if (xmlpath) {
 					xmlChar *xmlalias;
@@ -371,11 +383,11 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 					xmlFree (xmlpath);
 				}
 			}
-			xmlFree (type);
+			if (type) xmlFree (type);
 		}
 		if (afm.path && pfb.path) break;
 	}
-	if (!afm.path || !pfb.path) {
+	if (!pfb.path) {
 		if (afm.path) g_free (afm.path);
 		if (afm.psname) g_free (afm.psname);
 		if (pfb.path) g_free (pfb.path);
@@ -389,15 +401,122 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 	/* We have enough information to build font */
 	e = g_new0 (GFFontEntry, 1);
 	e->type = GF_FONT_ENTRY_TYPE1;
-	e->files[0] = afm;
-	e->files[1] = pfb;
+	e->files[0] = pfb;
+	if (afm.path) e->files[1] = afm;
 	e->name = g_strdup (xmlname);
 	xmlFree (xmlname);
+	e->familyname = g_strdup (xmlfamilyname);
+	xmlFree (xmlfamilyname);
+
+	gf_fm_load_common_data (e, node);
+
+	g_hash_table_insert (map->fontdict, e->name, e);
+	if (map->last) {
+		map->last->next = e;
+	} else {
+		map->fonts = e;
+	}
+	map->last = e;
+}
+
+static void
+gf_fm_load_font_2_0_truetype (GFFontMap *map, xmlNodePtr node)
+{
+	GFFontEntry *e;
+	xmlChar *xmlname, *xmlfamilyname, *xmlpsname;
+	xmlNodePtr child;
+	GFFileEntry ttf;
+	xmlChar *t;
+
+	/* Get our unique name */
+	xmlname = xmlGetProp (node, "name");
+	if (!xmlname) return;
+	/* Check, whether we are already registered */
+	if (g_hash_table_lookup (map->fontdict, xmlname)) {
+		xmlFree (xmlname);
+		return;
+	}
+
+	/* Read required entries */
+	xmlfamilyname = xmlGetProp (node, "familyname");
+	xmlpsname = xmlGetProp (node, "psname");
+	if (!xmlfamilyname || !xmlpsname) {
+		xmlFree (xmlname);
+		if (xmlfamilyname) xmlFree (xmlfamilyname);
+		if (xmlpsname) xmlFree (xmlpsname);
+		return;
+	}
+
+	/* Search for file entries */
+	ttf.path = NULL;
+	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
+		/* Scan all children nodes */
+		if (!strcmp (child->name, "file")) {
+			xmlChar *type, *xmlpath, *xmlmtime, *xmlsize;
+			/* We are <file> node */
+			type = xmlGetProp (child, "type");
+			if (type && !strcmp (type, "ttf") && !ttf.path) {
+				xmlpath = xmlGetProp (child, "path");
+				if (xmlpath) {
+					xmlmtime = xmlGetProp (child, "mtime");
+					xmlsize = xmlGetProp (child, "size");
+					ttf.path = g_strdup (xmlpath);
+					ttf.mtime = (xmlmtime) ? atoi (xmlmtime) : 0;
+					ttf.size = (xmlsize) ? atoi (xmlsize) : 0;
+					ttf.psname = g_strdup (xmlpsname);
+					if (xmlmtime) xmlFree (xmlmtime);
+					if (xmlsize) xmlFree (xmlsize);
+					xmlFree (xmlpath);
+				}
+			}
+			if (type) xmlFree (type);
+		}
+		if (ttf.path) break;
+	}
+	if (!ttf.path) {
+		if (ttf.path) g_free (ttf.path);
+		if (ttf.psname) g_free (ttf.psname);
+		xmlFree (xmlname);
+		xmlFree (xmlfamilyname);
+		xmlFree (xmlpsname);
+		return;
+	}
+
+	/* We have enough information to build font */
+	e = g_new0 (GFFontEntry, 1);
+	e->type = GF_FONT_ENTRY_TRUETYPE;
+	e->files[0] = ttf;
+	e->name = g_strdup (xmlname);
+	xmlFree (xmlname);
+	e->familyname = g_strdup (xmlfamilyname);
+	xmlFree (xmlfamilyname);
+
+	gf_fm_load_common_data (e, node);
+
+	t = xmlGetProp (node, "subface");
+	e->face = (t) ? atoi (t) : 0;
+	if (t) xmlFree (t);
+
+	g_hash_table_insert (map->fontdict, e->name, e);
+	if (map->last) {
+		map->last->next = e;
+	} else {
+		map->fonts = e;
+	}
+	map->last = e;
+}
+
+static void
+gf_fm_load_common_data (GFFontEntry *e, xmlNodePtr node)
+{
+	xmlChar *t;
+
 	t = xmlGetProp (node, "version");
 	e->version = (t) ? g_strdup (t) : g_strdup ("1.0");
 	if (t) xmlFree (t);
-	e->familyname = g_strdup (xmlfamilyname);
-	xmlFree (xmlfamilyname);
+	t = xmlGetProp (node, "notice");
+	e->notice = (t) ? g_strdup (t) : NULL;
+	if (t) xmlFree (t);
 	t = xmlGetProp (node, "speciesname");
 	e->speciesname = (t) ? g_strdup (t) : (gchar *) gf_fm_get_species_name (e->name, e->familyname);
 	if (t) xmlFree (t);
@@ -413,13 +532,6 @@ gf_fm_load_font_2_0_type1 (GFFontMap *map, xmlNodePtr node)
 	} else {
 		e->italicangle = atof (t);
 		xmlFree (t);
-	}
-
-	g_hash_table_insert (map->fontdict, e->name, e);
-	if (map->last) {
-		map->last->next = e;
-	} else {
-		map->fonts = e;
 	}
 }
 

@@ -7,29 +7,31 @@ LIBGPA_TEST_LIBS =
 endif
 
 CPPFLAGS = @CPPFLAGS@ \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
-	-DBINDIR=\""$(bindir)"\"	\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DBINDIR=\""$(bindir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	-DLIBDIR=\""$(libdir)"\" \
 	-DFONTMAPDIR_STATIC=\""$(datadir)/gnome/fonts"\" \
-	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\"
+	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\" \
+	-DVERSION=\""$(VERSION)"\"
 
 INCLUDES = \
-	$(PRINT_INCLUDEDIR) \
-	-I$(top_srcdir) 	\
-	-I$(top_builddir)	\
-	$(LIBGPA_TEST_CFLAGS)			
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(LIBGNOMEPRINT_CFLAGS)			
 
 bin_PROGRAMS = gnome-font-install
 
 gnome_font_install_SOURCES = \
 	gnome-font-install.c \
 	gf-pfb.c gf-pfb.h \
+	gf-ttf.c gf-ttf.h \
 	gf-fontmap.c gf-fontmap.h \
 	parseAFM.c parseAFM.h
 
 gnome_font_install_LDADD = \
-	$(PRINT_TEST_LIBS) \
-	$(LIBGPA_TEST_LIBS) \
+	$(LIBGNOMEPRINT_LIBS) \
 	$(INTLLIBS)
 
 EXTRA_DIST = README.installer README.binaries README

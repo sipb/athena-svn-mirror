@@ -1,3 +1,228 @@
+2002-01-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-printer-dialog.c (set_profile): Extract printer from profile to
+	not force saving of default values as last used ones
+	(gnome_printer_dialog_create_printers_option_menu): Set history
+	(gnome_printer_widget_init): Correct last command/file usage
+
+2002-01-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am (INCLUDES): De-version profiles, thanks to Dobey for patch
+
+	* gnome-print.c (gnome_print_context_new_with_paper_size): Fallback
+	to A4 if paper_size is NULL
+
+	* gnome-printer-profile.c (gnome_printer_load_profiles_from): Skip
+	profile, if required filed(s) are missing
+
+2002-01-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font-face.c (gff_pso_ensure_buffer_tt): Signature change
+	(gff_pso_ensure_buffer_t1): Ditto
+	(gnome_font_face_pso_ensure_buffer): Track alias list, if needed
+	(gff_load): Ditto
+
+	* gp-fontmap.c (gp_fontmap_load): Ensure well-known aliases
+	(gp_fontmap_ensure_stdaliases): New method
+	(gp_font_entry_unref): Unref alias entry correctly
+
+	* gnome-font-face.c (gnome_font_face_get_font): Kill warning
+	(gnome_font_face_get_font_default): Ditto
+
+	* gnome-print-master.c (gnome_print_master_print): Ask before overwriting file
+
+	* gnome-printer-dialog.c (gnome_printer_widget_init): Set values from last instance
+	(gnome_printer_widget_get_printer): Save last instance
+
+2002-01-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-meta.c (gnome_print_meta_get_copy): Applied patch by
+	Morten Welinder, fixing unaligned read
+	(gnome_print_meta_access_buffer): Ditto
+
+2001-12-18  Hans Petter Jansson  <hpj@ximian.com>
+
+	* gnome-font-face.c: Include <stdlib.h> and <locale.h>.
+
+2001-12-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font-face.c (gnome_font_face_get_font): Use real method
+	(gnome_font_face_get_font_default): Ditto
+
+	* gnome-font-private.h: Added gnome_font_face_get_font_full declaration
+
+2001-12-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font.c (gnome_font_face_get_font_full): Made this nonstatic
+
+	* gp-fontmap.h: Added special entry type
+
+	* gnome-font-face.c (gnome_font_face_private_from_files): New
+	private method
+	(gff_load): Load private entry
+
+	* gp-fontmap.c (gp_font_entry_from_files): New method (not very
+	intelligent at moment)
+
+	* gnome-font-face-private.h: Added private header, meant solely
+	for synchronized support code (XST font installer)
+
+2001-11-25  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font-face.c (gnome_font_face_new): Accept NULL name
+	(gnome_font_unsized_closest): Ditto, fall back to locale default
+
+	* gnome-font.c (gnome_font_new): Accept NULL name
+	(gnome_font_new_closest): Ditto
+
+	* gp-fontmap.c (gp_fontmap_load): Initialize defaultdict, rescan defaults
+	(gp_fontmap_unref): Free defaults
+	(gp_fm_load_fonts_2_0): Parse <default> node
+
+	* gp-fontmap.h: Added defaults list and dict
+
+2001-11-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-rgbp.c (gnome_print_rgbp_construct): Default to A4
+	(gnome_print_rgbp_new): Emit warning if no paper info, but go on
+
+	* gnome-print-ps2.c (gnome_print_ps2_new): Default to A4
+
+	* gnome-print-preview.c (gnome_print_preview_construct): Default to A4
+
+	* gnome-print-pdf.c (gnome_print_pdf_pages): Default to A4
+
+	* gnome-print-master-preview.c (render_page): Default to A4
+	(create_preview_canvas): Ditto
+	(create_toplevel): Ditto
+
+	* gnome-print-master.c (gnome_print_master_print): Default to A4 if no paper
+
+	* gnome-print-fax.c (gnome_print_fax_new): Emit warning, but continue
+	if paper_info == NULL
+
+	* gnome-rfont.c (gnome_rfont_get_glyph_dimension): Added quick
+	workaround to prevent crash on some unclear error condition
+
+	* gnome-font-face.c (gnome_font_face_get_glyph_width): Initialize
+	width to 0 for the case we cannot load font
+
+	* gnome-font.c (gnome_font_get_glyph_width): Pass glyph value
+	checking to lower-level code, fixes bug #64130 (thanks to
+	frob@df.ru)
+
+2001-11-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-preview.c (gpp_gsave): Implement
+	(gpp_grestore): Ditto
+	(gpp_create_clip): Set data to fresh clipping group
+
+	* gnome-canvas-clipgroup.c (gnome_canvas_clipgroup_update): Clip bbox
+	(gnome_canvas_clipgroup_render): Implement, the main clipping code
+	(gcg_buf_new): Helper for fast alloc/free of buffers
+	(gcg_buf_free): Ditto
+	(gcg_mask_new): Ditto
+	(gcg_mask_free): Ditto
+
+2001-11-07  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-print-ps2.c (gnome_print_ps2_glyphlist): Extra safety check
+	(gnome_print_ps2_close): Safety check for some starnge circumstances
+
+2001-11-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-rfont.c (gdf_find_gdk_font): Commented out fallback to "helvetica"
+
+2001-11-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-rfont.c (gdf_find_gdk_font): Load font, if fontset fails
+	(gdf_find_measured_gdk_font): Ditto
+
+	* gnome-print-ps2.c: Use GFPSObject for basic font container
+	(gnome_print_ps2_glyphlist): Support 8/16 bit encoding
+	(gp_ps2_set_font_private): Use GFPSObject
+
+	* gnome-font-face.c (gnome_font_face_pso_new): New method, creates
+	container object for generating embeddable PostScript font
+	(gnome_font_face_pso_mark_glyph): Ditto
+	(gnome_font_face_pso_free): Ditto
+	(gnome_font_face_pso_ensure_buffer): Ditto
+	(gff_pso_ensure_buffer_t1): Ditto
+	(gff_pso_ensure_buffer_tt): Ditto
+	(gff_pso_ensure_buffer_empty): Ditto
+	(gf_pso_sprintf): Ditto
+	(gf_pso_ensure_space): Ditto
+
+	* parseTT.c: New file, TTF->Type1 converter, originally written
+	for ttf2pt1 project, adapted to gnome-print by Akira Tagoh
+
+	* gp-truetype-utils.h: New file
+
+	* gp-truetype-utils.c: New file, implements TTF splitting
+
+2001-10-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-text.c (gnome_text_layout_new): Do not use ligature info
+
+	* gnome-rfont.c (gnome_font_get_display_font): Use face methods,
+	instead of structure values directly
+
+	* gnome-font.c (gnome_font_get_glyph_kerning): Use face kerning
+	(gnome_font_face_get_glyph_kerning): Placeholder for now
+	Use cleaned up structure everywhere
+
+	* gp-fontmap.c (gp_fm_load_fonts_2_0): Load truetype entries
+	(gp_fm_load_font_2_0_truetype): New method
+	(gp_font_entry_2_0_truetype_load_files): Ditto
+
+	* gp-fontmap.h: Added TrueType entries, moved Weight and italicAngle
+	into base struct
+
+	* gnome-font-face.c (gnome_font_face_destroy): Use FreeType and
+	new cleaner structure
+	(gnome_font_face_get_arg): Ditto
+	(gnome_font_face_get_name): Ditto
+	(gnome_font_face_get_family_name): Ditto
+	(gnome_font_face_get_species_name): Ditto
+	(gnome_font_face_get_ps_name): Ditto
+	(gnome_font_face_get_num_glyphs): Ditto
+	(gnome_font_face_get_stdbbox): Ditto
+	(gnome_font_face_get_glyph_stdadvance): Ditto
+	(gnome_font_face_get_glyph_stdbbox): Ditto
+	(gnome_font_face_get_glyph_stdoutline): Ditto
+	(gnome_font_face_get_sample): Removed font-specific code, until
+	I figure out, how to do it best with FreeType
+	(gnome_font_face_new): New cleaner structure
+	(gnome_font_unsized_closest): Ditto
+	(gnome_font_face_get_font): Ditto
+	(gnome_font_face_lookup_default): Use FreeType lookup
+	(gff_load): New method, creates FreeType face object
+	(gff_load_metrics): New method, loads per-glyph metrics
+	(gff_load_outline): New method, loads per-glyph outline
+	(gfft2_move_to): New method
+	(gfft2_line_to): Ditto
+	(gfft2_conic_to): Ditto
+	(gfft2_cubic_to): Ditto
+	(gff_ol2bp): New method, converts FreeType outline to ArtBpath
+	(gnome_font_face_get_ascender): Use FreeType metrics
+	(gnome_font_face_get_descender): Ditto
+	(gnome_font_face_get_underline_position): Ditto
+	(gnome_font_face_get_underline_thickness): Ditto
+	(gnome_font_face_get_weight_code): New structure
+	(gnome_font_face_is_italic): Ditto
+	(gnome_font_face_is_fixed_width): Use freetype macro
+	(gnome_font_face_get_glyph_ps_name): Use freetype method
+	(gff_face_from_entry): Cleanup
+
+	* gnome-font-private.h: Sane internal structure from HEAD
+
+2001-10-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gnome-font-private.h: Cleaned up all internals, ported to FT2
+
+	* Makefile.am (libgnomeprint_la_LIBADD): Use LIBGNOMEPRINT_LIBS
+	(INCLUDES): Use LIBGNOMEPRINT_CFLAGS
+
 2001-10-12  Lauris Kaplinski  <lauris@ximian.com>
 
 	* gnome-print.c (gnome_print_showpage): Print empty page on

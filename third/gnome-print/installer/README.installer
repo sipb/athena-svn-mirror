@@ -16,6 +16,14 @@ If you delete font files, rerun
 
 So fontmaps will be updated
 
+Alternately, you can use even simpler --smart argument
+
+  gnome-font-install --debug --smart
+
+It creates appropriate fontmap depending on UID (root vs. user)
+and scans recursively standard set of font directories.
+It can be somewhat slow, as quite a lot of directories are scanned
+recursively.
 
 
 2. Quick usage (administrator)
@@ -33,7 +41,7 @@ there probably are no valid fonts.
 
 
 
-2. Font versioning
+4. Font versioning
 
 Of all font files (afm and pfb), gnome-font-install tries to build
 fonts with highest version numbers, so that
@@ -46,7 +54,7 @@ delete original afm-s first.
 
 
 
-3. Aliasing
+5. Aliasing
 
 .font files can specify font aliasing, mapping afm with different
 name to certain pfb file. This is quite inflexible, and is mostly
@@ -54,10 +62,11 @@ meant for using URW fonts with standard PostScript name.
 
 
 
-4. Full usage
+6. Full usage
 
 Usage: gnome-font-install [OPTION...] [FILE/DIRECTORY...]
   -d, --debug          Print out debugging information
+  -q, --smart          Tries to do everything automatically
   -r, --recursive      Search directories recursively for font files
   -c, --clean          Start from zero fontmap, instead of parsing old one
   -u, --user           Create $HOME/.gnome/fonts/gnome-print.fontmap

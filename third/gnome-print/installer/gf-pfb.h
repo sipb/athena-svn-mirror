@@ -3,14 +3,15 @@
 
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
-#include <libgnomeprint/parseAFM.h>
+#include "parseAFM.h"
 
 BEGIN_GNOME_DECLS
 
 typedef struct _GFPFB GFPFB;
 
 struct _GFPFB {
-	gchar * filename;
+	gchar *filename;
+	gboolean ascii;
 	GlobalFontInfo gfi;
 };
 

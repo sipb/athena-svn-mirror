@@ -14,7 +14,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/time.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
@@ -38,9 +38,12 @@ static void gp_fontmap_load_dir (GPFontMap *map, const guchar *dirname);
 static void gp_fontmap_load_file (GPFontMap *map, const guchar *filename);
 static void gp_fm_load_font_2_0_type1 (GPFontMap *map, xmlNodePtr node);
 static void gp_fm_load_font_2_0_type1alias (GPFontMap *map, xmlNodePtr node);
+static void gp_fm_load_font_2_0_truetype (GPFontMap *map, xmlNodePtr node);
 static void gp_font_entry_2_0_load_data (GPFontEntry *e, xmlNodePtr node);
 static void gp_font_entry_2_0_type1_load_files (GPFontEntryT1 *t1, xmlNodePtr node);
+static void gp_font_entry_2_0_truetype_load_files (GPFontEntryTT *tt, xmlNodePtr node);
 static void gp_fm_load_fonts_2_0 (GPFontMap * map, xmlNodePtr root);
+static void gp_fontmap_ensure_stdaliases (GPFontMap *map);
 
 static void gp_fontmap_ref (GPFontMap * map);
 static void gp_fontmap_unref (GPFontMap * map);
@@ -69,7 +72,6 @@ gp_fontmap_get (void)
 		/* If > 1 sec is passed from last query, check timestamps */
 		if ((time (NULL) > lastaccess) && gp_fm_is_changed (map)) {
 			/* Any directory is changed, so force rereading of map */
-			g_print ("Fontmap is changed, rereading\n");
 			gp_fontmap_release (map);
 			map = NULL;
 		}
@@ -107,7 +109,6 @@ gp_fontmap_unref (GPFontMap * map)
 	g_return_if_fail (map != NULL);
 
 	if (--map->refcount < 1) {
-		g_print ("Releasing fontmap\n");
 		if (map->familydict) g_hash_table_destroy (map->familydict);
 		if (map->fontdict) g_hash_table_destroy (map->fontdict);
 		if (map->familylist) {
@@ -126,6 +127,16 @@ gp_fontmap_unref (GPFontMap * map)
 			gp_font_entry_unref ((GPFontEntry *) map->fonts->data);
 			map->fonts = g_slist_remove (map->fonts, map->fonts->data);
 		}
+		while (map->defaults) {
+			GSList *l;
+			l = map->defaults->data;
+			map->defaults = g_slist_remove (map->defaults, l);
+			while (l) {
+				g_free (l->data);
+				l = g_slist_remove (l, l->data);
+			}
+		}
+		if (map->defaultsdict) g_hash_table_destroy (map->defaultsdict);
 		g_free (map);
 	}
 }
@@ -168,6 +179,8 @@ gp_fontmap_load (void)
 	map->families = NULL;
 	map->fontlist = NULL;
 	map->familylist = NULL;
+	map->defaults = NULL;
+	map->defaultsdict = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* User map */
 	homedir = g_get_home_dir ();
@@ -206,6 +219,9 @@ gp_fontmap_load (void)
 		g_free (filename);
 	}
 
+	/* Still more sanity check */
+	gp_fontmap_ensure_stdaliases (map);
+
 	/* Sort fonts alphabetically */
 	map->fonts = g_slist_sort (map->fonts, gp_fe_sortname);
 
@@ -235,6 +251,60 @@ gp_fontmap_load (void)
 		GPFamilyEntry * f;
 		f = (GPFamilyEntry *) l->data;
 		f->fonts = g_slist_sort (f->fonts, gp_fe_sortspecies);
+	}
+
+	/* Compose defaultsdict */
+	map->defaults = g_slist_reverse (map->defaults);
+	while (map->defaults) {
+		GSList *l;
+		guchar *locales, *fontname;
+		GPFontEntry *entry;
+		l = map->defaults->data;
+		map->defaults = g_slist_remove (map->defaults, l);
+		locales = l->data;
+		fontname = l->next->data;
+		g_slist_free (l);
+		entry = g_hash_table_lookup (map->fontdict, fontname);
+		if (!entry) {
+			GPFamilyEntry *fe;
+			/* Try family */
+			fe = g_hash_table_lookup (map->familydict, fontname);
+			if (fe && fe->fonts) {
+				entry = (GPFontEntry *) fe->fonts->data;
+				l = fe->fonts;
+				while (l) {
+					GPFontEntry *e;
+					e = (GPFontEntry *) l->data;
+					if (!strcasecmp (e->speciesname, "regular") ||
+					    !strcasecmp (e->speciesname, "roman") ||
+					    !strcasecmp (e->speciesname, "normal")) {
+						entry = e;
+						break;
+					}
+					l = l->next;
+				}
+			}
+		}
+		if (entry) {
+			guchar *l;
+			l = locales;
+			while (l) {
+				guchar *e;
+				e = strchr (l, ',');
+				if (e) {
+					*e = '\0';
+					e += 1;
+				}
+				if (!g_hash_table_lookup (map->defaultsdict, l)) {
+					GQuark q;
+					q = g_quark_from_string (l);
+					g_hash_table_insert (map->defaultsdict, g_quark_to_string (q), entry);
+				}
+				l = e;
+			}
+		}
+		g_free (locales);
+		g_free (fontname);
 	}
 
 	return map;
@@ -323,131 +393,6 @@ gp_fontmap_load_file (GPFontMap *map, const guchar *filename)
 	}
 }
 
-#if 0
-static void
-gp_fm_load_fonts (GPFontMap * map, xmlDoc * doc)
-{
-	xmlNodePtr root;
-
-	root = xmlDocGetRootElement (doc);
-
-	if (!strcmp (root->name, "fontmap")) {
-		xmlChar * version;
-
-		version = xmlGetProp (root, "version");
-
-		if (!version) {
-			/* Version 1.0 */
-			gp_fm_load_fonts_1_0 (map, root);
-		} else if (!strcmp (version, "2.0")) {
-			/* Version 2.0 */
-			xmlFree (version);
-			gp_fm_load_fonts_2_0 (map, root);
-		} else {
-			xmlFree (version);
-		}
-	}
-}
-
-static void
-gp_fm_load_fonts_1_0 (GPFontMap * map, xmlNodePtr root)
-{
-	xmlNodePtr child;
-
-	child = root->xmlChildrenNode;
-
-	while (child) {
-		xmlChar * format;
-		format = xmlGetProp (child, "format");
-		if (format) {
-			if (!strcmp (format, "type1")) {
-				/* We are type1 entry */
-				gp_fm_load_font_1_0 (map, child);
-			}
-			xmlFree (format);
-		}
-		child = child->next;
-	}
-}
-
-static void
-gp_fm_load_font_1_0 (GPFontMap * map, xmlNodePtr node)
-{
-	GPFontEntryT1 * t1;
-	GPFontEntry * e;
-	gchar * alias, * p;
-
-	alias = gp_xmlGetPropString (node, "alias");
-
-	if (alias) {
-		GPFontEntryT1Alias * t1a;
-		t1a = g_new0 (GPFontEntryT1Alias, 1);
-		t1a->t1.entry.type = GP_FONT_ENTRY_TYPE1_ALIAS;
-		t1a->alias = alias;
-		t1 = (GPFontEntryT1 *) t1a;
-	} else {
-		t1 = g_new0 (GPFontEntryT1, 1);
-		t1->entry.type = GP_FONT_ENTRY_TYPE1;
-	}
-
-	e = (GPFontEntry *) t1;
-
-	e->refcount = 1;
-	e->face = NULL;
-
-	t1->afm.name = gp_xmlGetPropString (node, "metrics");
-	t1->pfb.name = gp_xmlGetPropString (node, "glyphs");
-	e->name = gp_xmlGetPropString (node, "fullname");
-	e->version = gp_xmlGetPropString (node, "version");
-	e->familyname = gp_xmlGetPropString (node, "familyname");
-	e->psname = gp_xmlGetPropString (node, "name");
-
-	if (!(t1->afm.name && t1->pfb.name && e->name && e->familyname && e->psname)) {
-		gp_font_entry_unref (e);
-		return;
-	}
-
-	/* fixme: check integrity */
-	/* fixme: load afm */
-
-	/* Read fontmap 1.0 weight string */
-
-	e->weight = gp_xmlGetPropString (node, "weight");
-	if (e->weight) {
-		t1->Weight = gp_fontmap_lookup_weight (e->weight);
-	} else {
-		e->weight = g_strdup ("Book");
-		t1->Weight = GNOME_FONT_BOOK;
-	}
-
-	/* Discover species name */
-
-	e->speciesname = gp_fm_get_species_name (e->name, e->familyname);
-
-	/* Parse Italic from species name */
-
-	p = strstr (e->speciesname, "Italic");
-	if (!p) p = strstr (e->speciesname, "Oblique");
-
-	if (p) {
-		t1->ItalicAngle = -10.0;
-	} else {
-		t1->ItalicAngle = 0.0;
-	}
-
-	/* fixme: fixme: fixme: */
-
-	if (g_hash_table_lookup (map->fontdict, e->name)) {
-		gp_font_entry_unref (e);
-		return;
-	}
-
-	g_hash_table_insert (map->fontdict, e->name, e);
-	map->num_fonts++;
-	map->fonts = g_slist_prepend (map->fonts, e);
-}
-#endif
-
 /* Parse root element and build fontmap step 1 */
 
 static void
@@ -467,8 +412,27 @@ gp_fm_load_fonts_2_0 (GPFontMap * map, xmlNodePtr root)
 				} else if (!strcmp (format, "type1alias")) {
 					/* We are type1/type1alias entry */
 					gp_fm_load_font_2_0_type1alias (map, child);
+				} else if (!strcmp (format, "truetype")) {
+					/* We are truetype entry */
+					gp_fm_load_font_2_0_truetype (map, child);
 				}
 				xmlFree (format);
+			}
+		} else if (!strcmp (child->name, "default")) {
+			xmlChar *font;
+			font = xmlGetProp (child, "font");
+			if (font) {
+				xmlChar *locales;
+				guchar *loc;
+				GSList *l;
+				locales = xmlGetProp (child, "locales");
+				loc = (locales) ? g_strdup (locales) : g_strdup ("C");
+				/* fixme: This is not nice (Lauris) */
+				l = g_slist_prepend (NULL, g_strdup (font));
+				l = g_slist_prepend (l, loc);
+				map->defaults = g_slist_prepend (map->defaults, l);
+				if (locales) xmlFree (locales);
+				xmlFree (font);
 			}
 		}
 	}
@@ -500,12 +464,12 @@ gp_fm_load_font_2_0_type1 (GPFontMap *map, xmlNodePtr node)
 
 	gp_font_entry_2_0_load_data (e, node);
 	gp_font_entry_2_0_type1_load_files (t1, node);
-	if (!e->familyname || !e->psname || !t1->afm.name || !t1->pfb.name) {
+	if (!e->familyname || !e->psname || !t1->pfb.name) {
 		gp_font_entry_unref (e);
 		return;
 	}
 
-	t1->Weight = gp_fontmap_lookup_weight (e->weight);
+	e->Weight = gp_fontmap_lookup_weight (e->weight);
 
 	if (!e->speciesname) {
 		e->speciesname = gp_fm_get_species_name (e->name, e->familyname);
@@ -516,9 +480,9 @@ gp_fm_load_font_2_0_type1 (GPFontMap *map, xmlNodePtr node)
 		gchar *p;
 		p = strstr (e->speciesname, "Italic");
 		if (!p) p = strstr (e->speciesname, "Oblique");
-		t1->ItalicAngle = p ? -10.0 : 0.0;
+		e->ItalicAngle = p ? -10.0 : 0.0;
 	} else {
-		t1->ItalicAngle = atof (t);
+		e->ItalicAngle = atof (t);
 		xmlFree (t);
 	}
 
@@ -563,12 +527,12 @@ gp_fm_load_font_2_0_type1alias (GPFontMap *map, xmlNodePtr node)
 
 	gp_font_entry_2_0_load_data (e, node);
 	gp_font_entry_2_0_type1_load_files (t1, node);
-	if (!e->familyname || !e->psname || !t1->afm.name || !t1->pfb.name) {
+	if (!e->familyname || !e->psname || !t1->pfb.name) {
 		gp_font_entry_unref (e);
 		return;
 	}
 
-	t1->Weight = gp_fontmap_lookup_weight (e->weight);
+	e->Weight = gp_fontmap_lookup_weight (e->weight);
 
 	if (!e->speciesname) {
 		e->speciesname = gp_fm_get_species_name (e->name, e->familyname);
@@ -579,11 +543,68 @@ gp_fm_load_font_2_0_type1alias (GPFontMap *map, xmlNodePtr node)
 		gchar *p;
 		p = strstr (e->speciesname, "Italic");
 		if (!p) p = strstr (e->speciesname, "Oblique");
-		t1->ItalicAngle = p ? -10.0 : 0.0;
+		e->ItalicAngle = p ? -10.0 : 0.0;
 	} else {
-		t1->ItalicAngle = atof (t);
+		e->ItalicAngle = atof (t);
 		xmlFree (t);
 	}
+
+	g_hash_table_insert (map->fontdict, e->name, e);
+	map->num_fonts++;
+	map->fonts = g_slist_prepend (map->fonts, e);
+}
+
+static void
+gp_fm_load_font_2_0_truetype (GPFontMap *map, xmlNodePtr node)
+{
+	GPFontEntryTT *tt;
+	GPFontEntry *e;
+	xmlChar *xmlname, *t;
+
+	/* Get our unique name */
+	xmlname = xmlGetProp (node, "name");
+	/* Check, whether we are already registered */
+	if (g_hash_table_lookup (map->fontdict, xmlname)) {
+		xmlFree (xmlname);
+		return;
+	}
+
+	tt = g_new0 (GPFontEntryTT, 1);
+	e = (GPFontEntry *) tt;
+
+	e->type = GP_FONT_ENTRY_TRUETYPE;
+	e->refcount = 1;
+	e->face = NULL;
+	e->name = g_strdup (xmlname);
+	xmlFree (xmlname);
+
+	gp_font_entry_2_0_load_data (e, node);
+	gp_font_entry_2_0_truetype_load_files (tt, node);
+	if (!e->familyname || !e->psname || !tt->ttf.name) {
+		gp_font_entry_unref (e);
+		return;
+	}
+
+	e->Weight = gp_fontmap_lookup_weight (e->weight);
+
+	if (!e->speciesname) {
+		e->speciesname = gp_fm_get_species_name (e->name, e->familyname);
+	}
+
+	t = xmlGetProp (node, "italicangle");
+	if (t == NULL) {
+		gchar *p;
+		p = strstr (e->speciesname, "Italic");
+		if (!p) p = strstr (e->speciesname, "Oblique");
+		e->ItalicAngle = p ? -10.0 : 0.0;
+	} else {
+		e->ItalicAngle = atof (t);
+		xmlFree (t);
+	}
+
+	t = xmlGetProp (node, "subface");
+	tt->facenum = (t) ? atoi (t) : 0;
+	if (t) xmlFree (t);
 
 	g_hash_table_insert (map->fontdict, e->name, e);
 	map->num_fonts++;
@@ -619,137 +640,155 @@ gp_font_entry_2_0_type1_load_files (GPFontEntryT1 *t1, xmlNodePtr node)
 			xmlChar *type;
 			/* We are <file> node */
 			type = xmlGetProp (child, "type");
-			if (!strcmp (type, "afm") && !t1->afm.name) {
+			if (type && !strcmp (type, "afm") && !t1->afm.name) {
 				t1->afm.name = gp_xmlGetPropString (child, "path");
-			} else if (!strcmp (type, "pfb") && !t1->pfb.name) {
+			} else if (type && !strcmp (type, "pfb") && !t1->pfb.name) {
 				t1->pfb.name = gp_xmlGetPropString (child, "path");
 			}
-			xmlFree (type);
+			if (type) xmlFree (type);
 		}
 		if (t1->afm.name && t1->pfb.name) return;
 	}
 }
 
-#if 0
+/* Loads "afm" and "pfb" file nodes */
+
 static void
-gp_fm_load_font_2_0 (GPFontMap * map, xmlNodePtr node, gboolean alias)
+gp_font_entry_2_0_truetype_load_files (GPFontEntryTT *tt, xmlNodePtr node)
 {
-	GPFontEntryT1 * t1;
-	GPFontEntry * e;
-	gchar * p;
 	xmlNodePtr child;
-	xmlChar * t;
 
-	if (alias) {
-		GPFontEntryT1Alias * t1a;
-		t1a = g_new0 (GPFontEntryT1Alias, 1);
-		t1a->t1.entry.type = GP_FONT_ENTRY_TYPE1_ALIAS;
-		t1a->alias = gp_xmlGetPropString (node, "alias");
-		t1 = (GPFontEntryT1 *) t1a;
-	} else {
-		t1 = g_new0 (GPFontEntryT1, 1);
-		t1->entry.type = GP_FONT_ENTRY_TYPE1;
-	}
-
-	child = node->xmlChildrenNode;
-	while (child) {
+	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
+		/* Scan all children nodes */
 		if (!strcmp (child->name, "file")) {
-			xmlChar * type;
+			xmlChar *type;
+			/* We are <file> node */
 			type = xmlGetProp (child, "type");
-			if (!strcmp (type, "afm")) {
-				t1->afm.name = gp_xmlGetPropString (child, "path");
-				t = xmlGetProp (child, "size");
-				if (t) t1->afm.size = atoi (t);
-				if (t) xmlFree (t);
-				t = xmlGetProp (child, "mtime");
-				if (t) t1->afm.mtime = atoi (t);
-				if (t) xmlFree (t);
-			} else if (!strcmp (type, "pfb")) {
-				t1->pfb.name = gp_xmlGetPropString (child, "path");
-				t = xmlGetProp (child, "size");
-				if (t) t1->pfb.size = atoi (t);
-				if (t) xmlFree (t);
-				t = xmlGetProp (child, "mtime");
-				if (t) t1->pfb.mtime = atoi (t);
-				if (t) xmlFree (t);
+			if (type && !strcmp (type, "ttf") && !tt->ttf.name) {
+				tt->ttf.name = gp_xmlGetPropString (child, "path");
 			}
-			xmlFree (type);
+			if (type) xmlFree (type);
 		}
-		if (t1->afm.name && t1->pfb.name) break;
-		child = child->next;
+		if (tt->ttf.name) return;
 	}
-
-	e = (GPFontEntry *) t1;
-
-	e->refcount = 1;
-	e->face = NULL;
-
-	if (!(t1->afm.name && t1->pfb.name)) {
-		gp_font_entry_unref (e);
-		return;
-	}
-
-	e->name = gp_xmlGetPropString (node, "name");
-	e->version = gp_xmlGetPropString (node, "version");
-	e->familyname = gp_xmlGetPropString (node, "familyname");
-	e->speciesname = gp_xmlGetPropString (node, "speciesname");
-	e->psname = gp_xmlGetPropString (node, "psname");
-
-	if (!(e->name && e->familyname && e->psname)) {
-		gp_font_entry_unref (e);
-		return;
-	}
-
-	/* fixme: check integrity */
-	/* fixme: load afm */
-
-	/* Read fontmap 1.0 weight string */
-
-	e->weight = gp_xmlGetPropString (node, "weight");
-	if (e->weight) {
-		t1->Weight = gp_fontmap_lookup_weight (e->weight);
-	} else {
-		e->weight = g_strdup ("Book");
-		t1->Weight = GNOME_FONT_BOOK;
-	}
-
-	/* Discover species name */
-
-	if (!e->speciesname) e->speciesname = gp_fm_get_species_name (e->name, e->familyname);
-
-	/* Parse Italic */
-
-	t = xmlGetProp (node, "italicangle");
-	if (!t) {
-		p = strstr (e->speciesname, "Italic");
-		if (!p) p = strstr (e->speciesname, "Oblique");
-		if (p) {
-			t1->ItalicAngle = -10.0;
-		} else {
-			t1->ItalicAngle = 0.0;
-		}
-	} else {
-		t1->ItalicAngle = atof (t);
-		xmlFree (t);
-	}
-
-	/* fixme: fixme: fixme: */
-
-	if (g_hash_table_lookup (map->fontdict, e->name)) {
-		gp_font_entry_unref (e);
-		return;
-	}
-
-	g_hash_table_insert (map->fontdict, e->name, e);
-	map->num_fonts++;
-	map->fonts = g_slist_prepend (map->fonts, e);
 }
+
+/* This is experimental method (not public anyways) (Lauris) */
+
+GPFontEntry *gp_font_entry_from_files (GPFontMap *map,
+				       const guchar *name, const guchar *family, const guchar *species, gboolean hidden,
+				       const guchar *filename, gint face, const GSList *additional)
+{
+	GPFontEntrySpecial *s;
+	const GSList *l;
+	gchar *p;
+
+	g_return_val_if_fail (map != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (family != NULL, NULL);
+	g_return_val_if_fail (species != NULL, NULL);
+	g_return_val_if_fail (filename != NULL, NULL);
+
+	if (!hidden && g_hash_table_lookup (map->fontdict, name)) {
+		g_warning ("file %s: line %d: Font with name %s already exists", __FILE__, __LINE__, name);
+	}
+
+	s = g_new0 (GPFontEntrySpecial, 1);
+	s->entry.type = GP_FONT_ENTRY_SPECIAL;
+	s->entry.refcount = 1;
+	s->entry.face = NULL;
+	s->entry.name = g_strdup (name);
+
+	s->entry.version = g_strdup ("0.0");
+	s->entry.familyname = g_strdup (family);
+	s->entry.speciesname = g_strdup (species);
+	s->entry.psname = g_strdup ("Unnamed");
+
+	s->entry.weight = g_strdup ("Book");
+
+	s->file.name = g_strdup (filename);
+
+	for (l = additional; l != NULL; l = l->next) {
+		s->additional = g_slist_prepend (s->additional, g_strdup (l->data));
+	}
+	s->additional = g_slist_reverse (s->additional);
+
+	s->entry.Weight = gp_fontmap_lookup_weight (s->entry.weight);
+	p = strstr (s->entry.speciesname, "Italic");
+	if (!p) p = strstr (s->entry.speciesname, "Oblique");
+	s->entry.ItalicAngle = p ? -10.0 : 0.0;
+
+	s->subface = face;
+
+	return &s->entry;
+}
+
+/*
+ * This is workaround for large number of installer bugs
+ *
+ * We just force aliased entries for well-known substitutes of standard
+ * PS fonts
+ *
+ */
+
+typedef struct {
+	guchar *name;
+	guchar *familyname;
+	guchar *speciesname;
+	guchar *psname;
+	guchar *ref;
+} GPAliasData;
+
+static const GPAliasData aliasdata[] = {
+	{"Helvetica", "Helvetica", "Normal", "Helvetica", "Nimbus Sans L Regular"},
+	{"Helvetica Bold", "Helvetica", "Bold", "Helvetica-Bold", "Nimbus Sans L Bold"},
+	{"Helvetica Oblique", "Helvetica", "Oblique", "Helvetica-Oblique", "Nimbus Sans L Regular Italic"},
+	{"Helvetica Bold Oblique", "Helvetica", "Bold Oblique", "Helvetica-BoldOblique", "Nimbus Sans L Bold Italic"},
+	{"Times Roman", "Times", "Roman", "Times-Roman", "Nimbus Roman No9 L Regular"},
+	{"Times Bold", "Times", "Bold", "Times-Bold", "Nimbus Roman No9 L Medium"},
+	{"Times Italic", "Times", "Italic", "Times-Italic", "Nimbus Roman No9 L Regular Italic"},
+	{"Times Bold Italic", "Times", "Bold Italic", "Times-BoldItalic", "Nimbus Roman No9 L Medium Italic"},
+	{"Courier", "Courier", "Normal", "Courier", "Nimbus Mono L Regular"},
+	{"Courier Bold", "Courier", "Bold", "Courier-Bold", "Nimbus Mono L Bold"},
+	{"Courier Oblique", "Courier", "Oblique", "Courier-Oblique", "Nimbus Mono L Regular Oblique"},
+	{"Courier Bold Oblique", "Courier", "Bold Oblique", "Courier-BoldOblique", "Nimbus Mono L Bold Oblique"},
+	{NULL}
+};
 
 static void
-gp_fm_load_aliases (GPFontMap * map, xmlDoc * doc)
+gp_fontmap_ensure_stdaliases (GPFontMap *map)
 {
+	gint i;
+
+	for (i = 0; aliasdata[i].name; i++) {
+		if (!g_hash_table_lookup (map->fontdict, aliasdata[i].name) && g_hash_table_lookup (map->fontdict, aliasdata[i].ref)) {
+			GPFontEntry *ref;
+			GPFontEntryAlias *ea;
+			/* Build entry */
+			ref = g_hash_table_lookup (map->fontdict, aliasdata[i].ref);
+			ea = g_new0 (GPFontEntryAlias, 1);
+			ea->entry.type = GP_FONT_ENTRY_ALIAS;
+			ea->entry.refcount = 1;
+			ea->entry.face = NULL;
+			ea->entry.name = g_strdup (aliasdata[i].name);
+
+			ea->entry.version = g_strdup (ref->version);
+			ea->entry.familyname = g_strdup (aliasdata[i].familyname);
+			ea->entry.speciesname = g_strdup (aliasdata[i].speciesname);
+			ea->entry.psname = g_strdup (aliasdata[i].psname);
+
+			ea->entry.weight = g_strdup (ref->weight);
+			ea->entry.ItalicAngle = ref->ItalicAngle;
+
+			ea->ref = ref;
+			gp_font_entry_ref (ref);
+
+			g_hash_table_insert (map->fontdict, ea->entry.name, ea);
+			map->num_fonts++;
+			map->fonts = g_slist_prepend (map->fonts, ea);
+		}
+	}
 }
-#endif
 
 /*
  * Font Entry stuff
@@ -777,8 +816,9 @@ gp_font_entry_unref (GPFontEntry * entry)
 	g_return_if_fail (entry->refcount < 3);
 
 	if (--entry->refcount < 1) {
-		GPFontEntryT1 * t1;
-		GPFontEntryT1Alias * t1a;
+		GPFontEntryT1 *t1;
+		GPFontEntryT1Alias *t1a;
+		GPFontEntrySpecial *s;
 
 		g_return_if_fail (entry->face == NULL);
 
@@ -799,6 +839,15 @@ gp_font_entry_unref (GPFontEntry * entry)
 			if (t1->pfb.name) g_free (t1->pfb.name);
 			break;
 		case GP_FONT_ENTRY_ALIAS:
+			gp_font_entry_unref (((GPFontEntryAlias *) entry)->ref);
+			break;
+		case GP_FONT_ENTRY_SPECIAL:
+			s = (GPFontEntrySpecial *) entry;
+			if (s->file.name) g_free (s->file.name);
+			while (s->additional) {
+				g_free (s->additional->data);
+				s->additional = g_slist_remove (s->additional, s->additional->data);
+			}
 			break;
 		default:
 			g_assert_not_reached ();

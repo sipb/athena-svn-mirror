@@ -22,7 +22,6 @@
 #include <libgnomeprint/gnome-canvas-hacktext.h>
 #include <libgnomeprint/gnome-canvas-clipgroup.h>
 #include <libgnomeprint/gnome-font.h>
-#include <libgnomeprint/gt1-parset1.h>
 #include <libart_lgpl/art_pixbuf.h>
 #include <libgnome/gnome-paper.h>
 
@@ -128,6 +127,8 @@ gpp_create_clip (GnomePrintPreview * pp, ArtWindRule wind)
 		"wind", wind,
 		NULL);
 
+	gp_gc_set_data (priv->gc, clip);
+
 	return 1;
 }
 
@@ -177,7 +178,7 @@ gpp_image (GnomePrintContext *pc, const char *data, int width, int height, int r
 		for (y = 0; y < height; y++) {
 			gchar *sp, *dp;
 			gint x;
-			sp = data + y * rowstride;
+			sp = (gchar *) data + y * rowstride;
 			dp = dup + y * width * 3;
 			for (x = 0; x < width; x++){
 				*dp++ = *sp;
@@ -356,6 +357,30 @@ gpp_glyphlist (GnomePrintContext *pc, GnomeGlyphList * glyphlist)
 	return 0;
 }
 
+static gint
+gpp_gsave (GnomePrintContext *ctx)
+{
+	GnomePrintPreview *pp;
+
+	pp = GNOME_PRINT_PREVIEW (ctx);
+
+	gp_gc_gsave (pp->priv->gc);
+
+	return GNOME_PRINT_OK;
+}
+
+static gint
+gpp_grestore (GnomePrintContext *ctx)
+{
+	GnomePrintPreview *pp;
+
+	pp = GNOME_PRINT_PREVIEW (ctx);
+
+	gp_gc_grestore (pp->priv->gc);
+
+	return GNOME_PRINT_OK;
+}
+
 static int
 gpp_close (GnomePrintContext *pc)
 {
@@ -405,6 +430,8 @@ gpp_class_init (GnomePrintPreviewClass *class)
 	pc_class->showpage = gpp_showpage;
 	pc_class->beginpage = gpp_beginpage;
 	pc_class->glyphlist = gpp_glyphlist;
+	pc_class->gsave = gpp_gsave;
+	pc_class->grestore = gpp_grestore;
 	
 	pc_class->close = gpp_close;
 }
@@ -445,7 +472,10 @@ gnome_print_preview_construct (GnomePrintPreview *preview,
 	g_return_if_fail (GNOME_IS_PRINT_PREVIEW (preview));
 	g_return_if_fail (canvas != NULL);
 	g_return_if_fail (GNOME_IS_CANVAS (canvas));
-	g_return_if_fail (paper_info != NULL);
+
+	if (!paper_info) {
+		g_warning ("file %s: line %d: Missing paper info", __FILE__, __LINE__);
+	}
 
 	gtk_object_ref (GTK_OBJECT (canvas));
 	preview->canvas = canvas;
@@ -456,8 +486,8 @@ gnome_print_preview_construct (GnomePrintPreview *preview,
 	else
 		gnome_canvas_set_scroll_region (
 			canvas, 0, 0,
-			gnome_paper_pswidth (paper_info),
-			gnome_paper_psheight (paper_info));
+			paper_info ? gnome_paper_pswidth (paper_info) : 21.0 * 72 / 2.54,
+			paper_info ? gnome_paper_psheight (paper_info) : 29.7 * 72 / 2.54);
 
 	preview->priv->root = gnome_canvas_item_new (
 		gnome_canvas_root (preview->canvas),
@@ -490,7 +520,7 @@ gnome_print_preview_construct (GnomePrintPreview *preview,
 	 */
 
 	art_affine_scale (page2root, 1.0, -1.0);
-	page2root[5] = gnome_paper_psheight (paper_info);
+	page2root[5] = paper_info ? gnome_paper_psheight (paper_info) : 29.7 * 72 / 2.54;
 
 	gnome_canvas_item_affine_absolute (preview->priv->page, page2root);
 }
@@ -516,8 +546,6 @@ gnome_print_preview_new (GnomeCanvas *canvas, const char *paper_size)
 	g_return_val_if_fail (paper_size != NULL, NULL);
 
 	paper_info = gnome_paper_with_name (paper_size);
-	if (paper_info == NULL)
-		g_return_val_if_fail (FALSE, NULL);
 
 	preview = gtk_type_new (gnome_print_preview_get_type ());
 	if (preview == NULL)

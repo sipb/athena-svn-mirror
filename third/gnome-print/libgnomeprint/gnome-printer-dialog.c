@@ -25,31 +25,15 @@
 #include <libgnomeui/gnome-stock.h>
 
 #include <libgnomeprint/gnome-printer.h>
-#ifdef ENABLE_LIBGPA
-#include <libgnomeprint/gnome-printer-private.h>
-#else
 #include <libgnomeprint/gnome-printer-profile.h>
-#endif
 
 #include <libgnomeprint/gnome-printer-dialog.h>
-
-#ifdef ENABLE_LIBGPA
-#include <libgpa/gpa-printer.h>
-#include <libgpa/gpa-generic-ps.h>
-#include <libgpa/gpa-tags.h>
-#include <gmodule.h>
-#endif
 
 struct _GnomePrinterWidget {
 	GtkFrame frame;
 
-#ifdef ENABLE_LIBGPA
-	GList *printer_list;
-	GpaPrinter *gpa_printer;
-#else
-	GnomePrinterProfileList *profiles;
 	GnomePrinterProfile *profile;
-#endif	
+
 	GtkWidget *profile_selector;
 	
 	GtkWidget *label_state;
@@ -57,14 +41,11 @@ struct _GnomePrinterWidget {
 	GtkWidget *label_location;
 	GtkWidget *label_comment;
 
-#ifdef ENABLE_LIBGPA	
-	GtkWidget *print_to_file_button;
-#else	
 	GtkWidget *r1;
 	GtkWidget *r2;
 	GtkWidget *entry_command;
 	GtkWidget *entry_filename;
-#endif
+
 	GtkAccelGroup *accel_group;
 };
 
@@ -86,12 +67,12 @@ static GtkFrameClass    *widget_parent_class = NULL;
 
 static gchar *defaultpath = NULL;
 
-#ifdef ENABLE_LIBGPA
-gboolean print_to_file = FALSE;
-#endif
+static GnomePrinterProfileList *profiles = NULL;
+static GnomePrinterProfile *lastprofile = NULL;
+static gchar *lastfn = NULL;
+static gchar *lastcom = NULL;
+static gboolean lastiscom = FALSE;
 
-#ifdef ENABLE_LIBGPA
-#else
 static void
 gnome_printer_widget_b_cb (GtkWidget *b, GnomePrinterWidget *pd)
 {
@@ -100,87 +81,12 @@ gnome_printer_widget_b_cb (GtkWidget *b, GnomePrinterWidget *pd)
 	gtk_widget_grab_focus
 		(b == pd->r1 ? pd->entry_command : pd->entry_filename);
 }
-#endif
 
 static void
 set_text (GtkWidget *label, const char *msg)
 {
 	gtk_label_set_text (GTK_LABEL (label), msg ? msg : "");
 }
-
-#ifdef ENABLE_LIBGPA
-static void
-set_printer (GnomePrinterWidget *gpw, GpaPrinter *printer)
-{
-	const gchar *force_print_to_file;
-	static gchar *printer_id = NULL;
-	gboolean print_to_file_flag;
-	gboolean temp;
-	GList *list;
-
-	g_return_if_fail (GNOME_IS_PRINTER_WIDGET (gpw));
-
-	/* Set the printer that was used the last time the dialog
-	 * was poped up */
-	if (printer == NULL && printer_id != NULL) {
-		gint idx = 0;
-		list = gpw->printer_list;
-		for (; list != NULL; list = list->next) {
-			printer = (GpaPrinter *)list->data;
-			g_return_if_fail (GPA_IS_PRINTER (printer));
-			if (strcmp (printer_id, gpa_printer_get_id (printer)) == 0)
-				break;
-			idx++;
-		}
-		if (list == NULL)
-			printer = NULL;
-		else
-			gtk_option_menu_set_history (GTK_OPTION_MENU (gpw->profile_selector), idx);
-	}
-
-	/* No printer ? get the default one */
-	if (!printer)
-		printer = gpa_printer_get_default (gpw->printer_list);
-	g_return_if_fail (GPA_IS_PRINTER (printer));
-
-	/* Save the printer_id for the next time the dialog is created */
-	if (printer_id)
-		g_free (printer_id);
-	printer_id = gpa_printer_dup_id (printer);
-
-	/* Set the printer */
-	gpw->gpa_printer = printer;
-	
-	/* Set the labels */
-	set_text (gpw->label_state, "");
-	set_text (gpw->label_type, "");
-	set_text (gpw->label_location, "");
-	set_text (gpw->label_comment, "");
-
-	/* Set the print to file toggle button */
-	force_print_to_file =  gpa_printer_backend_info_get (printer,
-							     "GNOME",
-							     "ForcePrintToFile");
-
-	print_to_file_flag = (force_print_to_file && strcmp (force_print_to_file, GPA_TAG_TRUE) == 0);
-	gtk_widget_set_sensitive (gpw->print_to_file_button, !print_to_file_flag);
-	temp = print_to_file;
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpw->print_to_file_button),
-				      print_to_file_flag ? TRUE : print_to_file);
-	/* This will trigger a print_to_file_toggled, so set print_to_file as it was
-	 * was before we toggled it and thus saving what the user has set (or not set) */
-	print_to_file = temp;
-}
-
-static void
-printer_activate (GtkObject *item, GpaPrinter *printer)
-{
-	GnomePrinterWidget *gpw = gtk_object_get_user_data (item);
-
-	set_printer (gpw, printer);
-}
-
-#else
 
 static void
 set_profile (GnomePrinterWidget *gpw, GnomePrinterProfile *pp)
@@ -194,7 +100,7 @@ set_profile (GnomePrinterWidget *gpw, GnomePrinterProfile *pp)
 	/*
 	 * Load the printer status
 	 */
-	printer = gnome_printer_widget_get_printer (gpw);
+	printer = gnome_printer_profile_get_printer (gpw->profile, "test.output", NULL);
 	msg = gnome_printer_str_status (gnome_printer_get_status (printer));
 	gtk_label_set_text (GTK_LABEL (gpw->label_state), msg);
 	gtk_object_unref (GTK_OBJECT (printer));
@@ -231,10 +137,11 @@ set_profile (GnomePrinterWidget *gpw, GnomePrinterProfile *pp)
 	/*
 	 * Set the sensitivity of the widgets correctly
 	 */
-	if (GTK_TOGGLE_BUTTON (gpw->r1)->active)
+	if (GTK_TOGGLE_BUTTON (gpw->r1)->active) {
 		command = 1;
-	else
+	} else {
 		command = 0;
+	}
 	
 	gtk_widget_set_sensitive (gpw->entry_command, command);
 	gtk_widget_set_sensitive (gpw->entry_filename, !command);
@@ -247,7 +154,6 @@ profile_activate (GtkObject *item, GnomePrinterProfile *pp)
 
 	set_profile (gpw, pp);
 }
-#endif
 
 static guint
 label_at (GtkTable *t, const char *string, int col, int row)
@@ -276,169 +182,20 @@ empty_label_at (GtkTable *t, int col, int row)
 	return l;
 }
 
-#ifdef ENABLE_LIBGPA
-/* IMPORTANT : This struct is a mirror of the one in gnome-print-admin/libgpaui/gpa-config.c
- * keep them in sync */
-typedef struct _GpaConfigDlopenData GpaConfigDlopenData;
-struct _GpaConfigDlopenData
-{
-	gint (*gpa_config_printer) (GpaPrinter *printer, gboolean opened_by_app);
-	gint (*init_gpa_config_printer) (GpaConfigDlopenData *pd);
-};
-
-static void
-gnome_printer_dialog_gpa_not_installed (const gchar *error)
-{
-	GnomeDialog *dialog;
-	gchar *errstr = g_strdup (_("gnome-print-admin was not found.\n\n"
-				    "Please install gnome-print-admin to configure this printer"));
-	dialog = GNOME_DIALOG (gnome_error_dialog (errstr));
-	gnome_dialog_run_and_close (dialog);
-	g_free (errstr);
-}
-
-static void
-gnome_printer_dialog_properties_clicked (GtkWidget *widget, GnomePrinterWidget *gpw)
-{
-	GpaConfigDlopenData *gpa_config;
-	GModule *handle = NULL;
-	gchar *error = NULL;
-
-	gpa_config = g_new0 (GpaConfigDlopenData, 1);
-
-	/* 1, is gmodule suported int his plataform ? */
-	if (!g_module_supported ()) {
-		error = g_strdup ("g_module not supported on this plataform");
-		goto gnome_printer_dialog_properties_clicked_error;
-	}
-
-	/* 2. Can we open the library ? */
-	handle = g_module_open (GNOMEPRINT_LIBDIR "/libgpaui.so", 0);
-	if (handle == NULL) {
-		error = g_strdup (g_module_error ());
-		goto gnome_printer_dialog_properties_clicked_error;
-	}
-
-	/* 3. Can we find the init function ? */
-	if (!g_module_symbol (handle, "init_gpa_config_printer", 
-			      (gpointer*)&gpa_config->init_gpa_config_printer)) {
-		error = g_strdup ("Could not find the init_gpa_config_printer function in libgpaui");
-		goto gnome_printer_dialog_properties_clicked_error;
-	}
-
-	gpa_config->init_gpa_config_printer (gpa_config);
-
-	/* 4. Did the init function load the config function ? */
-	if (!gpa_config->gpa_config_printer) {
-		error = g_strdup ("Init function did not set ->gpa_config_printer");
-		goto gnome_printer_dialog_properties_clicked_error;
-	}
-
-	/* Go, go, go  ... */
-	gpa_config->gpa_config_printer (gpw->gpa_printer, TRUE);
-
-	/* gpa_config printer enters in it's own gtk_main loop so we can free
-	 * the struct and close the g_module after it is done */
-	g_free (gpa_config);
-	if (handle)
-		g_module_close (handle);
-	
-	return;
-	
-gnome_printer_dialog_properties_clicked_error:
-	gnome_printer_dialog_gpa_not_installed (error);
-	if (error)
-		g_free (error);
-	g_free (gpa_config);
-	if (handle)
-		g_module_close (handle);
-	
-	return;
-}
-
-static void
-gnome_printer_dialog_print_to_file_toggled (GtkWidget *button, gpointer no_used)
-{
-	g_return_if_fail (GTK_IS_BUTTON (button));
-	
-	print_to_file = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-}
-
-static GtkWidget *
-gnome_printer_dialog_create_print_to_file (GnomePrinterWidget *gpw)
-{
-	/* If this printer is Print to file only, set sensitivity
-	 * to off
-	 */
-	GtkWidget *check_button;
-	
-	check_button = gtk_check_button_new_with_label (_("Print to file"));
-
-	gpw->print_to_file_button = check_button;
-
-	gtk_signal_connect (GTK_OBJECT (check_button), "toggled",
-			    gnome_printer_dialog_print_to_file_toggled, NULL);
-
-	return check_button;
-}
-
-static GtkWidget *
-gnome_printer_dialog_create_properties_button (GnomePrinterWidget *gpw)
-{
-	GtkWidget *button;
-	
-	g_return_val_if_fail (GTK_IS_WIDGET (gpw), NULL);
-
-	button = gtk_button_new_with_label (_("Properties"));
-
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			    GTK_SIGNAL_FUNC (gnome_printer_dialog_properties_clicked),
-			    gpw);
-
-	return button;
-}
-#endif
-
-
 static GtkWidget *
 gnome_printer_dialog_create_printers_option_menu (GnomePrinterWidget *gpw)
 {
 	GtkWidget *option_menu;
 	GtkWidget *menu;
 	GList *list;
-	gint index = 0;
-#ifdef ENABLE_LIBGPA
-	gint index_counter = 0;
-#endif	
+	gint num, index;
 	
 	option_menu = gtk_option_menu_new ();
 	menu = gtk_menu_new ();
 
-#ifdef ENABLE_LIBGPA
-	for (list = gpw->printer_list; list; list = list->next){
-		GpaPrinter *printer;
-		GtkWidget *item;
-		const char *name;
+	num = index = 0;
 
-		printer = list->data;
-
-		g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
-		
-		if (gpa_printer_is_default (printer))
-			index = index_counter;
-		index_counter++;
-		
-		name = gpa_printer_get_name (printer);
-		item = gtk_menu_item_new_with_label (name);
-		gtk_widget_show (item);
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_signal_connect (
-			GTK_OBJECT (item), "activate",
-			GTK_SIGNAL_FUNC (printer_activate), printer);
-		gtk_object_set_user_data (GTK_OBJECT (item), gpw);
-	}
-#else
-	for (list = gpw->profiles; list; list = list->next){
+	for (list = profiles; list; list = list->next) {
 		GnomePrinterProfile *pp = list->data;
 		GtkWidget *item;
 		const char *name;
@@ -451,8 +208,10 @@ gnome_printer_dialog_create_printers_option_menu (GnomePrinterWidget *gpw)
 			GTK_OBJECT (item), "activate",
 			GTK_SIGNAL_FUNC (profile_activate), pp);
 		gtk_object_set_user_data (GTK_OBJECT (item), gpw);
+		if (pp == lastprofile) index = num;
+		num += 1;
 	}
-#endif
+
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
 	gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), index);
 
@@ -467,36 +226,19 @@ gnome_printer_widget_init (GtkObject *object)
 {
 	GnomePrinterWidget *gpw = GNOME_PRINTER_WIDGET (object);
 	GtkFrame *frame = GTK_FRAME (object);
-#ifdef ENABLE_LIBGPA
-	static GList * printers_list = NULL;
-	GtkWidget *properties_button;
-	GtkWidget *print_to_file_button;
-#else	
 	GtkWidget *r1, *r2;
 	guint command_key, filename_key;
-#endif	
+
 	GtkWidget *option_menu;
 	GtkTable *t;
 	guint profile_key;
 
 	gpw->accel_group = gtk_accel_group_new ();
 
-#ifdef ENABLE_LIBGPA
-	if (!printers_list) {
-		if (!gpa_printers_list_load (&printers_list) ||
-		    (g_list_length (printers_list) == 0)) {
-			GpaPrinter *ps_printer;
-			ps_printer = gpa_generic_ps_printer ();
-			if (ps_printer != NULL)
-				printers_list = g_list_prepend (printers_list,
-								ps_printer);
-		}
+	if (!profiles) {
+		profiles = gnome_printer_get_profiles ();
 	}
-	gpw->printer_list = printers_list;
-       
-#else	
-	gpw->profiles = gnome_printer_get_profiles ();
-#endif	
+
 	gtk_frame_set_label (frame, _("Select printer"));
 	
 	t = (GtkTable *) gtk_table_new (0, 0, FALSE);
@@ -515,16 +257,6 @@ gnome_printer_widget_init (GtkObject *object)
 	gpw->label_location = empty_label_at (t, 1, 9);
 	gpw->label_comment  = empty_label_at (t, 1, 10);
 
-#ifdef ENABLE_LIBGPA	
-	print_to_file_button = gnome_printer_dialog_create_print_to_file (gpw);
-	gtk_table_attach (t, print_to_file_button, 2, 3, 10, 11,
-			  0, 0,
-			  /*
-			  GTK_EXPAND | GTK_FILL,
-			  GTK_EXPAND | GTK_FILL,
-			  */
-			  2, 2);
-#endif	
 	/*
 	 * Create the menu with the printer profiles
 	 */
@@ -540,13 +272,6 @@ gnome_printer_widget_init (GtkObject *object)
 					    "grab_focus", gpw->accel_group,
 					    profile_key, GDK_MOD1_MASK, 0);
 
-#ifdef ENABLE_LIBGPA
-	properties_button = gnome_printer_dialog_create_properties_button (gpw);
-	gtk_table_attach (t, properties_button, 2, 3, 0, 1,
-			  GTK_EXPAND | GTK_FILL,
-			  GTK_EXPAND | GTK_FILL,
-			  2, 2);
-#else	
 	r1 = gtk_radio_button_new_with_label (NULL, "");
 	gpw->r1 = r1;
 	command_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (r1)->child),
@@ -563,22 +288,16 @@ gnome_printer_widget_init (GtkObject *object)
 			  GTK_EXPAND | GTK_FILL,
 			  2, 2);
 	
-	r2 = gtk_radio_button_new_with_label (GTK_RADIO_BUTTON (r1)->group,
-					      "");
+	r2 = gtk_radio_button_new_with_label (GTK_RADIO_BUTTON (r1)->group, "");
 	gpw->r2 = r2;
-	filename_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (r2)->child),
-					      _("_File"));
-	if (filename_key != GDK_VoidSymbol)
+	filename_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (r2)->child), _("_File"));
+	if (filename_key != GDK_VoidSymbol) {
 		gtk_widget_add_accelerator (gpw->r2, "clicked",
-							   gpw->accel_group, filename_key,
-							   GDK_MOD1_MASK, 0);
-	gtk_table_attach (GTK_TABLE (t), r2, 0, 1, 3, 4,
-			  GTK_EXPAND | GTK_FILL,
-			  GTK_EXPAND | GTK_FILL,
-			  2, 2);
-	gtk_signal_connect (GTK_OBJECT (r2), "clicked",
-			    (GtkSignalFunc) gnome_printer_widget_b_cb,
-			    (gpointer) gpw);
+					    gpw->accel_group, filename_key,
+					    GDK_MOD1_MASK, 0);
+	}
+	gtk_table_attach (GTK_TABLE (t), r2, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 2, 2);
+	gtk_signal_connect (GTK_OBJECT (r2), "clicked", GTK_SIGNAL_FUNC (gnome_printer_widget_b_cb), gpw);
 	
 	gpw->entry_command = gtk_entry_new ();
 	gtk_entry_set_text (GTK_ENTRY (gpw->entry_command), "lpr");
@@ -594,35 +313,33 @@ gnome_printer_widget_init (GtkObject *object)
 			  GTK_EXPAND | GTK_FILL,
 			  GTK_EXPAND | GTK_FILL,
 			  2, 2);
-#endif	
 
-#ifdef ENABLE_LIBGPA
-	if (gpw->printer_list)
-		set_printer (gpw, NULL);
-#else	
-	set_profile (gpw, gpw->profiles->data);
-#endif	
+	if (lastprofile) {
+		set_profile (gpw, lastprofile);
+#if 0
+		gtk_entry_set_text (GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (gpw->entry_filename))),
+				    g_strdup_printf ("fn %s com %s iscom %d", lastfn, lastcom, lastiscom));
+#else
+		if (lastiscom) {
+			if (!GTK_TOGGLE_BUTTON (gpw->r1)->active)
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpw->r1), TRUE);
+		} else {
+			if (!GTK_TOGGLE_BUTTON (gpw->r2)->active)
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpw->r2), TRUE);
+		}
+		if (lastfn) {
+			gtk_entry_set_text (GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (gpw->entry_filename))), lastfn);
+		}
+		if (lastcom) {
+			gtk_entry_set_text (GTK_ENTRY (gpw->entry_command), lastcom);
+		}
+#endif
+	} else {
+		set_profile (gpw, profiles->data);
+	}
+
 	gtk_widget_show_all (GTK_WIDGET (gpw));
 }
-
-/**
- * gnome_printer_widget_is_print_to_file:
- * @gpd: The dialog that needs to be queried
- * 
- * Determines if the user selected print to file or not
- * 
- * Return Value: TRUE if print to file selected, FALSE otherwise
- **/
-#ifdef ENABLE_LIBGPA
-static gboolean
-gnome_printer_widget_is_print_to_file (GnomePrinterWidget *gpw)
-{
-	g_return_val_if_fail (GNOME_IS_PRINTER_WIDGET (gpw), FALSE);
-	
-	return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (gpw->print_to_file_button));
-}
-#endif	
-
 
 static void
 gnome_printer_widget_destroy (GtkObject *object)
@@ -645,11 +362,10 @@ gnome_printer_widget_finalize (GtkObject *object)
 	GnomePrinterWidget *gpw;
 
 	gpw = GNOME_PRINTER_WIDGET (object);
-	
-#ifdef	ENABLE_LIBGPA
-#else	
+
+#if 0
 	gnome_printer_profile_free_profiles (gpw->profiles);
-#endif	
+#endif
 	
 	(* GTK_OBJECT_CLASS (widget_parent_class)->finalize) (object);
 }
@@ -692,42 +408,6 @@ gnome_printer_widget_get_type (void)
 	return printer_widget_type;
 }
 
-
-#ifdef ENABLE_LIBGPA	
-static GnomePrinter *
-gnome_printer_create_from_widget (GnomePrinterWidget *gpw)
-{
-	GnomePrinter *printer;
-	GpaPrinter *gpa_printer;
-	gchar *command;
-	gchar *file = NULL;
-
-	g_return_val_if_fail (GNOME_IS_PRINTER_WIDGET (gpw), NULL);
-
-	g_print ("Refing printer ..\n");
-	gpa_printer_ref (gpw->gpa_printer);
-	gpa_printer = gpw->gpa_printer;
-	
-	printer = gtk_type_new (gnome_printer_get_type ());
-
-	printer->gpa_printer = gpa_printer;
-	printer->gpa_settings = gpa_printer_settings_get_first (gpa_printer);
-	printer->print_to_file = gnome_printer_widget_is_print_to_file (gpw);
-	
-	command = gnome_printer_dup_command (printer);
-	if (printer->filename)
-		g_free (printer->filename);
-	if (file != NULL)
-		printer->filename = g_strdup (file);
-	else
-		printer->filename = g_strdup_printf ("|%s", command);
-	g_free (command);
-
-	return printer;
-}
-#endif
-
-
 /**
  * gnome_printer_widget_get_printer:
  * @widget: a GnomePrinterWidget
@@ -740,45 +420,45 @@ gnome_printer_create_from_widget (GnomePrinterWidget *gpw)
 GnomePrinter *
 gnome_printer_widget_get_printer (GnomePrinterWidget *widget)
 {
-#ifdef ENABLE_LIBGPA	
-	GnomePrinter *printer;
-	GnomePrinterWidget *gpw;
-
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-
-	gpw = GNOME_PRINTER_WIDGET (widget);
-	
-	printer = gnome_printer_create_from_widget (gpw);
-
-	g_print ("Getting printer from gnome printer widget..\n");
-	g_return_val_if_fail (GPA_IS_PRINTER (printer->gpa_printer), printer);
-	return printer;
-#else	
 	GnomePrinter *printer = NULL;
 	GnomePrinterWidget *gpw;
+	gchar *com, *fn;
 	
 	g_return_val_if_fail (widget != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINTER_WIDGET (widget), NULL);
 
 	gpw = GNOME_PRINTER_WIDGET (widget);
 
-	if (GTK_TOGGLE_BUTTON (gpw->r1)->active){
-		char *com = gtk_entry_get_text (GTK_ENTRY (gpw->entry_command));
+	fn = com = NULL;
 
-		printer = gnome_printer_profile_get_printer (gpw->profile, NULL, com);
-	} else if (GTK_TOGGLE_BUTTON (gpw->r2)->active){
-		gchar * dir;
-		gchar *fn;
-
-		fn = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (gpw->entry_filename), FALSE);
-		dir = g_dirname (fn);
+	if (GTK_TOGGLE_BUTTON (gpw->r1)->active) {
+		com = gtk_entry_get_text (GTK_ENTRY (gpw->entry_command));
+	} else if (GTK_TOGGLE_BUTTON (gpw->r2)->active) {
+		gchar *dir, *path;
+		fn = gtk_entry_get_text (GTK_ENTRY (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (gpw->entry_filename))));
+		path = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (gpw->entry_filename), FALSE);
+		dir = g_dirname (path);
 		gnome_file_entry_set_default_path (GNOME_FILE_ENTRY (gpw->entry_filename), dir);
 		g_free (dir);
-		printer = gnome_printer_profile_get_printer (gpw->profile, fn, NULL);
+	}
+
+	printer = gnome_printer_profile_get_printer (gpw->profile, fn, com);
+
+	/* Set last profile */
+	lastprofile = gpw->profile;
+	if (fn) {
+		if (lastfn) g_free (lastfn);
+		lastfn = g_strdup (fn);
+		lastiscom = FALSE;
+	}
+
+	if (com) {
+		if (lastcom) g_free (lastcom);
+		lastcom = g_strdup (com);
+		lastiscom = TRUE;
 	}
 
 	return printer;
-#endif	
 }
 
 /**
@@ -797,11 +477,6 @@ gnome_printer_widget_new (void)
 
 	gpw = gtk_type_new (gnome_printer_widget_get_type ());
 
-#ifdef ENABLE_LIBGPA	
-	if (GNOME_PRINTER_WIDGET (gpw)->printer_list == NULL)
-		return NULL;
-#endif	
-
 	return gpw;
 }
 
@@ -813,13 +488,7 @@ gnome_printer_widget_bind_editable_enters (GnomePrinterWidget * gpw, GnomeDialog
 	g_return_if_fail (dialog != NULL);
 	g_return_if_fail (GNOME_IS_DIALOG (dialog));
 
-#ifdef ENABLE_LIBGPA
-#else	
 	gnome_dialog_editable_enters (dialog, GTK_EDITABLE (gpw->entry_command));
-#if 0
-	gnome_dialog_editable_enters (dialog, GTK_EDITABLE (gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (gpw->entry_filename))));
-#endif
-#endif	
 }
 
 void
@@ -922,15 +591,8 @@ gnome_printer_dialog_new (void)
 			    GTK_WIDGET (pd->gnome_printer_widget), TRUE, TRUE, 0);
 	gpw = pd->gnome_printer_widget;
 
-#ifdef	ENABLE_LIBGPA
-#else	
 	gnome_dialog_editable_enters (GNOME_DIALOG(pd),
 				      GTK_EDITABLE(gpw->entry_command));
-#if 0
-	gnome_dialog_editable_enters (GNOME_DIALOG(pd),
-				      GTK_EDITABLE(gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (gpw->entry_filename))));
-#endif
-#endif
 	
 	gtk_widget_grab_focus (gpw->profile_selector);
 	gtk_window_add_accel_group (GTK_WINDOW (pd), gpw->accel_group);
@@ -989,6 +651,5 @@ gnome_printer_dialog_get_printer (GnomePrinterDialog *dialog)
 	g_return_val_if_fail (dialog != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINTER_DIALOG (dialog), NULL);
 
-	return gnome_printer_widget_get_printer (
-		GNOME_PRINTER_WIDGET (dialog->gnome_printer_widget));
+	return gnome_printer_widget_get_printer (GNOME_PRINTER_WIDGET (dialog->gnome_printer_widget));
 }

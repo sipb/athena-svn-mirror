@@ -22,9 +22,15 @@
 
 #include <config.h>
 
+#include <sys/stat.h>
+#include <ctype.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkobject.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-messagebox.h>
 
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
@@ -37,6 +43,8 @@
 
 static void gnome_print_master_class_init (GnomePrintMasterClass *class);
 static void gnome_print_master_init       (GnomePrintMaster      *gspaper);
+
+static gboolean alwaysoverwrite = FALSE;
 
 static GtkObjectClass *parent_class;
 
@@ -70,11 +78,13 @@ gnome_print_master_finalize (GtkObject *object)
 {
 	GnomePrintMaster *gpm = GNOME_PRINT_MASTER(object);
 
-	if (gpm->context != NULL)
+	if (gpm->context != NULL) {
 		gtk_object_unref (GTK_OBJECT (gpm->context));
+	}
 
-	if (gpm->printer)
+	if (gpm->printer) {
 		gtk_object_unref (GTK_OBJECT (gpm->printer));
+	}
 
 	GTK_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -301,15 +311,56 @@ gnome_print_master_print (GnomePrintMaster *gpm)
 	g_return_val_if_fail (GNOME_IS_PRINT_MASTER (gpm), -1);
 
 	printer = gpm->printer;
-	if (printer == NULL) {
-		printer = gnome_printer_dialog_new_modal ();
-		if (printer == NULL) {
-			return -1;
-		}
-	} else
-		gtk_object_ref (GTK_OBJECT (printer));
 
-	output = gnome_print_context_new_with_paper_size (printer, gnome_paper_name (gpm->paper));
+	/* I hate do {} while loops (Lauris) */
+	do {
+		if (!printer) {
+			printer = gnome_printer_dialog_new_modal ();
+			if (!printer) return -1;
+		} else {
+			gtk_object_ref (GTK_OBJECT (printer));
+		}
+		/* Check whether file exists */
+		if (printer && !alwaysoverwrite) {
+			const gchar *t;
+			t = printer->filename;
+			while (t && isspace (*t)) t += 1;
+			if (t && t[0] && (t[0] != '|') && (t[0] != '*')) {
+				struct stat s;
+				gchar *fn;
+				/* Regular file */
+				if ((t[0] == '~') && (t[1] == '/')) {
+					fn = g_concat_dir_and_file (g_get_home_dir (), t + 2);
+				} else if ((t[0] != '/') && (t[0] != '.')) {
+					fn = g_concat_dir_and_file (g_get_home_dir (), t);
+				} else {
+					fn = g_strdup (t);
+				}
+				if (!stat (fn, &s)) {
+					GtkWidget *mb;
+					gchar *msg;
+					gint b;
+					/* Present dialog */
+					msg = g_strdup_printf (_("File %s already exists.\nIs it OK to overwrite its contents?"), fn);
+					mb = gnome_message_box_new (msg,
+								    GNOME_MESSAGE_BOX_QUESTION,
+								    GNOME_STOCK_BUTTON_YES,
+								    GNOME_STOCK_BUTTON_NO,
+								    NULL);
+					b = gnome_dialog_run_and_close (GNOME_DIALOG (mb));
+					if (b == 1) {
+						/* Shouldn't overwrite */
+						gtk_object_unref (GTK_OBJECT (printer));
+						printer = NULL;
+					}
+					g_free (msg);
+				}
+				g_free (fn);
+			}
+		}
+	} while (!printer);
+
+	output = gnome_print_context_new_with_paper_size (printer, gpm->paper ? gnome_paper_name (gpm->paper) : "A4");
 
 	if (output == NULL) {
 		gtk_object_unref (GTK_OBJECT (printer));
