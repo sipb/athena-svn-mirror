@@ -1,10 +1,14 @@
 #!/bin/sh
-# $Id: netscape.sh,v 1.2 2000-07-29 14:18:23 ghudson Exp $
+# $Id: netscape.sh,v 1.3 2000-09-21 15:08:07 ghudson Exp $
 
 localscript=/var/athena/infoagents/arch/share/bin/netscape.adjusted
 if [ -x $localscript ]; then
-  /bin/athena/attach -nq infoagents
-  exec $localscript "$@"
+  locker=`/bin/athena/attach -np infoagents`
+  if [ -f "$locker/.nolocal" ]; then
+    exec /bin/athena/attachandrun infoagents netscape "$0" "$@"
+  else
+    exec $localscript "$@"
+  fi
 else
   exec /bin/athena/attachandrun infoagents netscape "$0" "$@"
 fi
