@@ -1,102 +1,24 @@
-
 #
-# 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v $
-#	$Author: probe $
-#	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.4 1990-11-18 21:45:08 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.5 1991-01-22 13:23:49 probe Exp $
+#
+
 DESTDIR=
-INCDIR= /usr/include
-CFLAGS=	-O -I${INCDIR} -DX11
 
-# Programs that live in subdirectories, and have makefiles of their own.
-#
 #ifdef ultrix
-SUBDIR=  track xdm
-CONSGETTY=console-getty
+#define ISUBDIRS	cleanup track xdm
+XSCRIPTS=console-getty
 #else
-SUBDIR= nip rvd track xdm
+#define ISUBDIRS	cleanup netconfig rvd track xdm
 #endif
 
-# Shell scripts that need only be installed and are never removed.
-#
-SCRIPT= backup backuperr clean_tmp_areas cppart csh_commands_path \
-	cut_msgs dumptape sh_commands_path shutdown_notify \
-	stop_mailer suid_afs_cells rti_users $(CONSGETTY)
+SCRIPT= clean_tmp_areas csh_commands_path reactivate \
+	sh_commands_path shutdown_notify \
+	suid_afs_cells rti_users $(XSCRIPTS)
 
-# C programs that live in the current directory and do not need
-# explicit make lines.
-#
-STD= gettime newsyslog
-SRCS=gettime.c log.c login-shutdown.c newsyslog.c
-
-# Programs that must run setgid to kmem
-#
-SETGID=
-
-# Special, the login-shutdown shell
-
-LOGSD= login-shutdown
-# Programs that must be owned by backup and in group "operator"
-#
-# OP_GID is the group ID for group operator
-BACKUP= backup backuperr dumptape
-OP_GID = 28
-
-# C programs that live in the current directory and need explicit make lines.
-# (make depend has special rules for these files)
-#
-NSTD= login-shutdown
-
-all::	${SUBDIR} ${STD} ${NSTD} ${SETGID}
-
-${SUBDIR}: FRC
-	cd $@; make ${MFLAGS} all; cd ..
-
-FRC:
-
-${STD}:
-	${CC} ${CFLAGS} -o $@ $@.c
-
+SimpleProgram(newsyslog,newsyslog.o,,/etc/athena/)
+SimpleProgram(gettime,gettime.o,,/etc/athena/)
 
 install::
-	for i in ${SUBDIR}; do \
-		(cd $$i; make ${MFLAGS} DESTDIR=${DESTDIR} install; cd ..); \
-		done
 	for i in ${SCRIPT}; do \
-		install -c $$i.sh ${DESTDIR}/etc/athena/$$i; \
+		$(INSTALL) InstPgmFlags $$i.sh ${DESTDIR}/etc/athena/$$i; \
 		done
-	for i in ${STD} ${NSTD} ${OSETUID}; do \
-		(install -c -s $$i ${DESTDIR}/etc/athena/$$i); \
-		done
-#	for i in ${SETGID}; do (chgrp kmem ${DESTDIR}/etc/athena/$$i; \
-#		chmod 2755 ${DESTDIR}/etc/athena/$$i); \
-#	done
-
-	for i in ${BACKUP}; do \
-		/etc/chown $$USER ${DESTDIR}/etc/athena/$$i; \
-		chgrp ${OP_GID} ${DESTDIR}/etc/athena/$$i; \
-		chmod 774 ${DESTDIR}/etc/athena/$$i; \
-		/etc/chown backup ${DESTDIR}/etc/athena/$$i; \
-		done
-	for i in ${LOGSD}; do \
-		install -c -m 4755 -o root $$i ${DESTDIR}/etc/athena/; \
-		done
-
-clean::
-	rm -f a.out core *.s *.o ${STD} ${NSTD}
-	for i in ${SUBDIR}; do (cd $$i; make ${MFLAGS} clean; cd ..); done
-	rm -f ${STD} ${NSTD}
-
-depend::
-	touch Make.depend; makedepend -fMake.depend -o '' ${CFLAGS} ${SRCS}
-	for i in ${SUBDIR}; do (cd $$i; make ${MFLAGS} depend); done
-
-# Files listed in ${NSTD} have explicit make lines given below.
-
-login-shutdown:
-	cc -o login-shutdown login-shutdown.c
-
-toehold:
-	${CC} ${CFLAGS} -o toehold toehold.c -lX11
-
-# DO NOT DELETE THIS LINE -- make depend depends on it.
