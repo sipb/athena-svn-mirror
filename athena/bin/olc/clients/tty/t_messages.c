@@ -16,11 +16,11 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.10 1990-03-01 18:07:34 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.11 1990-04-25 16:50:24 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -210,7 +210,7 @@ t_check_messages(Request)
 	}
 	strcat (prompt, " unread message.  Display?  ");
 
-	if (get_yn (prompt))
+	if (get_yn (prompt) == 'y')
 	    display_file (file, TRUE);
     }
 
@@ -227,7 +227,7 @@ t_check_connected_messages(Request)
     set_option(Request->options,CONNECTED_OPT);
     status = OShowMessageIntoFile(Request,file);
     if(status == SUCCESS) {
-	if (get_yn ("User has unread message.  Display?  "))
+	if (get_yn ("User has unread message.  Display?  ") == 'y')
 	    display_file (file, TRUE);
     }
     unset_option(Request->options,CONNECTED_OPT);
