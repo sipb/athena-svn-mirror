@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.19 1992-06-24 15:53:05 lwvanels Exp $
+ *   $Id: quota.c,v 1.20 1992-07-23 14:52:00 miki Exp $
  */
 
 #include <stdio.h>
@@ -395,8 +395,12 @@ showquotas(id,name)
 	    ultlocalquotas++;
 	    continue;
 #else
+#ifndef sun
 	    if (getlocalquota(mntp,id,&qvalues) < 0)
 		continue;
+#else
+            continue;
+#endif
 	}
 #endif
 #else /* ultrix */
