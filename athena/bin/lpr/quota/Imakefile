@@ -1,5 +1,5 @@
 /* 
- *	$Id: Imakefile,v 1.6 1991-02-09 16:37:02 epeisach Exp $
+ *	$Id: Imakefile,v 1.7 1991-03-01 11:59:32 epeisach Exp $
  *	$Author: epeisach $
  *	$Locker:  $
  *
@@ -26,12 +26,12 @@ SRCS=	gquota_dba.c uid_strings.c \
 	qmain.c quota_dba.c quota_ncs_sstub.c quota_server.c quotacap.c \
 	server_krb.c quota_notify.c quota_logger.c strings.c parser.c \
 	journal.c user.c periodic.c logger_ncs_sstub.c logger_server.c \
-	${V1SRC}
+	${V1SRC} parse_quotacap.c
 
 OBJS=	qmain.o quota_dba.o quota_ncs_sstub.o quota_server.o quotacap.o \
 	server_krb.o quota_notify.o quota_logger.o strings.o parser.o \
 	journal.o user.o periodic.o logger_ncs_sstub.o logger_server.o \
-	gquota_dba.o uid_strings.o ${V1OBJ}
+	gquota_dba.o uid_strings.o ${V1OBJ} parse_quotacap.o
 
 #ifdef V1COMP
 V1SRC=  quota_ncs_v1_sstub.c quota_server_v1.c \
@@ -135,12 +135,13 @@ SimpleProgram(lpquota,${COBJS},${LIBS},$(ATHBINDIR)/lpquota)
 
 /* generic */
 build_program(qdb_create,${LOBJS},,$(LIBS))
+#if 0
+build_program(lpqck,lpqck.o parse_quotacap.o quotacap.o,,$(LIBS))
+#endif
 
 /* log programs */
 build_program(dump_logs,dump_logs.o journal.o user.o parser.o \
 	strings.o,,$(LIBS))
-build_program(lrestore,lrestore.o periodic.o user.o strings.o \
-	journal.o parser.o quotacap.o,,$(LIBS))
 build_program(consist,consist.o journal.o user.o strings.o,,$(LIBS))
 build_program(dump_user,dump_user.o user.o strings.o,,$(LIBS))
 
