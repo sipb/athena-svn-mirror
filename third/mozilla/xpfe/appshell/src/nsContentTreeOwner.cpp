@@ -40,6 +40,9 @@
 #include "nsIAuthPrompt.h"
 #include "nsIWindowMediator.h"
 #include "nsIXULBrowserWindow.h"
+#include "nsIPrincipal.h"
+#include "nsIURIFixup.h"
+#include "nsCDefaultURIFixup.h"
 
 // Needed for nsIDocument::FlushPendingNotifications(...)
 #include "nsIDOMDocument.h"
@@ -93,6 +96,7 @@ NS_IMPL_RELEASE(nsContentTreeOwner)
 NS_INTERFACE_MAP_BEGIN(nsContentTreeOwner)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDocShellTreeOwner)
    NS_INTERFACE_MAP_ENTRY(nsIDocShellTreeOwner)
+   NS_INTERFACE_MAP_ENTRY(nsIDocShellTreeOwnerTmp)
    NS_INTERFACE_MAP_ENTRY(nsIBaseWindow)
    NS_INTERFACE_MAP_ENTRY(nsIWebBrowserChrome)
    NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
@@ -152,6 +156,13 @@ NS_IMETHODIMP nsContentTreeOwner::GetInterface(const nsIID& aIID, void** aSink)
 NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
    nsIDocShellTreeItem* aRequestor, nsIDocShellTreeItem** aFoundItem)
 {
+  return FindItemWithNameTmp(aName, aRequestor, nsnull, aFoundItem);
+}
+
+NS_IMETHODIMP nsContentTreeOwner::FindItemWithNameTmp(const PRUnichar* aName,
+   nsIDocShellTreeItem* aRequestor, nsIDocShellTreeItem* aOriginalRequestor,
+   nsIDocShellTreeItem** aFoundItem)
+{
    NS_ENSURE_ARG_POINTER(aFoundItem);
 
    *aFoundItem = nsnull;
@@ -202,15 +213,29 @@ NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
             *aFoundItem = shellAsTreeItem;
             NS_ADDREF(*aFoundItem);
             }
-         else if(aRequestor != shellAsTreeItem.get())
+         else
             {
-            // Do this so we can pass in the tree owner as the requestor so the child knows not
-            // to call back up.
-            nsCOMPtr<nsIDocShellTreeOwner> shellOwner;
-            shellAsTreeItem->GetTreeOwner(getter_AddRefs(shellOwner));
-            nsCOMPtr<nsISupports> shellOwnerSupports(do_QueryInterface(shellOwner));
+            // Get the root tree item of same type, since roots are the only
+            // things that call into the treeowner to look for named items.
+            nsCOMPtr<nsIDocShellTreeItem> root;
+            shellAsTreeItem->GetSameTypeRootTreeItem(getter_AddRefs(root));
+            NS_ASSERTION(root, "Must have root tree item of same type");
+            shellAsTreeItem = root;
+            if(aRequestor != shellAsTreeItem)
+               {
+               // Do this so we can pass in the tree owner as the
+               // requestor so the child knows not to call back up.
+               nsCOMPtr<nsIDocShellTreeOwner> shellOwner;
+               shellAsTreeItem->GetTreeOwner(getter_AddRefs(shellOwner));
+               nsCOMPtr<nsISupports> shellOwnerSupports(do_QueryInterface(shellOwner));
 
-            shellAsTreeItem->FindItemWithName(aName, shellOwnerSupports, aFoundItem);
+               nsCOMPtr<nsIDocShellTreeItemTmp> shellAsTreeItemTmp =
+                 do_QueryInterface(shellAsTreeItem);
+               shellAsTreeItemTmp->FindItemWithNameTmp(aName,
+                                                       shellOwnerSupports,
+                                                       aOriginalRequestor,
+                                                       aFoundItem);
+               }
             }
          if(*aFoundItem)
             return NS_OK;
@@ -595,13 +620,13 @@ NS_IMETHODIMP nsContentTreeOwner::SetTitle(const PRUnichar* aTitle)
    // We only allow the title to be set from the primary content shell
   if(!mPrimary || !mContentTitleSetting)
     return NS_OK;
-  
+
   nsAutoString   title;
   nsAutoString   docTitle(aTitle);
 
   if (docTitle.IsEmpty())
     docTitle.Assign(mTitleDefault);
-  
+
   if (!docTitle.IsEmpty()) {
     if (!mTitlePreface.IsEmpty()) {
       // Title will be: "Preface: Doc Title - Mozilla"
@@ -612,11 +637,64 @@ NS_IMETHODIMP nsContentTreeOwner::SetTitle(const PRUnichar* aTitle)
       // Title will be: "Doc Title - Mozilla"
       title = docTitle;
     }
-  
-    title += mTitleSeparator + mWindowTitleModifier;
+
+    if (!mWindowTitleModifier.IsEmpty())
+      title += mTitleSeparator + mWindowTitleModifier;
   }
   else
     title.Assign(mWindowTitleModifier); // Title will just be plain "Mozilla"
+
+  //
+  // if there is no location bar we modify the title to display at least
+  // the scheme and host (if any) as an anti-spoofing measure.
+  //
+  nsCOMPtr<nsIDOMElement> docShellElement;
+  mXULWindow->GetWindowDOMElement(getter_AddRefs(docShellElement));
+
+  if (docShellElement) {
+    nsAutoString chromeString;
+    docShellElement->GetAttribute(NS_LITERAL_STRING("chromehidden"), chromeString);
+    if (chromeString.Find(NS_LITERAL_STRING("location")) != kNotFound) {
+      //
+      // location bar is turned off, find the browser location
+      //
+      // use the document's nsPrincipal to find the true owner
+      // in case of javascript: or data: documents
+      //
+      nsCOMPtr<nsIDocShellTreeItem> dsitem;
+      GetPrimaryContentShell(getter_AddRefs(dsitem));
+      nsCOMPtr<nsIDOMDocument> domdoc(do_GetInterface(dsitem));
+      nsCOMPtr<nsIDocument> doc(do_QueryInterface(domdoc));
+      if (doc) {
+        nsCOMPtr<nsIURI> uri;
+        nsIPrincipal* principal = doc->GetPrincipal();
+        if (principal) {
+          principal->GetURI(getter_AddRefs(uri));
+          if (uri) {
+            //
+            // remove any user:pass information
+            //
+            nsCOMPtr<nsIURIFixup> fixup(do_GetService(NS_URIFIXUP_CONTRACTID));
+            if (fixup) {
+              nsCOMPtr<nsIURI> tmpuri;
+              nsresult rv = fixup->CreateExposableURI(uri,getter_AddRefs(tmpuri));
+              if (NS_SUCCEEDED(rv) && tmpuri) {
+                nsCAutoString prepath;
+                tmpuri->GetPrePath(prepath);
+                if (!prepath.IsEmpty()) {
+                  //
+                  // We have a scheme/host, update the title
+                  //
+                  title.Insert(NS_ConvertUTF8toUTF16(prepath) +
+                               mTitleSeparator, 0);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   // XXX Don't need to fully qualify this once I remove nsWebShellWindow::SetTitle
   // return mXULWindow->SetTitle(title.get());
@@ -720,9 +798,8 @@ void nsContentTreeOwner::XULWindow(nsXULWindow* aXULWindow)
                 mTitleDefault = mWindowTitleModifier;
                 mWindowTitleModifier.Truncate();
             }
-#else
-            docShellElement->GetAttribute(NS_LITERAL_STRING("titlemenuseparator"), mTitleSeparator);
 #endif
+            docShellElement->GetAttribute(NS_LITERAL_STRING("titlemenuseparator"), mTitleSeparator);
             }
          }
       else

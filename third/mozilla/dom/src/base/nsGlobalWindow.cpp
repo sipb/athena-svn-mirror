@@ -2199,6 +2199,71 @@ GlobalWindowImpl::DispatchCustomEvent(const char *aEventName)
   return preventDefault;
 }
 
+static already_AddRefed<nsIDocShellTreeItem>
+GetCallerDocShellTreeItem()
+{
+  nsCOMPtr<nsIJSContextStack> stack =
+    do_GetService(sJSStackContractID);
+
+  JSContext *cx = nsnull;
+
+  if (stack) {
+    stack->Peek(&cx);
+  }
+
+  nsIDocShellTreeItem *callerItem = nsnull;
+
+  if (cx) {
+    nsCOMPtr<nsIWebNavigation> callerWebNav =
+      do_GetInterface(nsJSUtils::GetDynamicScriptGlobal(cx));
+
+    if (callerWebNav) {
+      CallQueryInterface(callerWebNav, &callerItem);
+    }
+  }
+
+  return callerItem;
+}
+
+PRBool
+GlobalWindowImpl::WindowExists(const nsAString& aName)
+{
+  nsCOMPtr<nsIDocShellTreeItem> caller = GetCallerDocShellTreeItem();
+  PRBool foundWindow = PR_FALSE;
+
+  if (!caller) {
+    // If we can't reach a caller, try to use our own docshell
+    caller = do_QueryInterface(mDocShell);
+  }
+
+  nsCOMPtr<nsIDocShellTreeItemTmp> docShell(do_QueryInterface(mDocShell));
+
+  if (docShell) {
+    nsCOMPtr<nsIDocShellTreeItem> namedItem;
+
+    docShell->FindItemWithNameTmp(PromiseFlatString(aName).get(), nsnull,
+                                  caller, getter_AddRefs(namedItem));
+
+    foundWindow = !!namedItem;
+  } else {
+    // No caller reachable and we don't have a docshell any more. Fall
+    // back to using the windowwatcher service to find any window by
+    // name.
+
+    nsCOMPtr<nsIWindowWatcher> wwatch =
+      do_GetService(NS_WINDOWWATCHER_CONTRACTID);
+    if (wwatch) {
+      nsCOMPtr<nsIDOMWindow> namedWindow;
+      wwatch->GetWindowByName(PromiseFlatString(aName).get(), nsnull,
+                              getter_AddRefs(namedWindow));
+
+      foundWindow = !!namedWindow;
+    }
+  }
+
+  return foundWindow;
+}
+
 NS_IMETHODIMP GlobalWindowImpl::SetFullScreen(PRBool aFullScreen)
 {
   // Only chrome can change our fullScreen mode.
@@ -2527,7 +2592,14 @@ GlobalWindowImpl::Prompt(const nsAString& aMessage,
                          PRUint32 aSavePassword,
                          nsAString& aReturn)
 {
-  nsCOMPtr<nsIAuthPrompt> prompter(do_GetInterface(mDocShell));
+  nsresult rv;
+  nsCOMPtr<nsIWindowWatcher> wwatch =
+    do_GetService(NS_WINDOWWATCHER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIAuthPrompt> prompter;
+  wwatch->GetNewAuthPrompter(this, getter_AddRefs(prompter));
+
   NS_ENSURE_TRUE(prompter, NS_ERROR_FAILURE);
 
   // Reset popup state while opening a modal dialog, and firing events
@@ -2553,9 +2625,8 @@ GlobalWindowImpl::Prompt(const nsAString& aMessage,
 
   // Test whether title needs to prefixed with [script]
   nsAutoString title;
-  PRBool isChrome = PR_FALSE;
-  nsresult rv = CheckSecurityIsChromeCaller(&isChrome);
-  if (NS_FAILED(rv) || !isChrome) {
+  PRBool isChrome = IsCallerChrome();
+  if (!isChrome) {
       MakeScriptDialogTitle(aTitle, title);
   } else {
       title.Assign(aTitle);
@@ -3274,14 +3345,8 @@ GlobalWindowImpl::CheckOpenAllow(PopupControlState aAbuseLevel,
             name.Equals(NS_LITERAL_STRING("_main")))
           allowWindow = allowSelf;
         else {
-          nsCOMPtr<nsIWindowWatcher> wwatch =
-              do_GetService(NS_WINDOWWATCHER_CONTRACTID);
-          if (wwatch) {
-            nsCOMPtr<nsIDOMWindow> namedWindow;
-            wwatch->GetWindowByName(PromiseFlatString(aName).get(), this,
-                                    getter_AddRefs(namedWindow));
-            if (namedWindow)
-              allowWindow = allowExtant;
+          if (WindowExists(name)) {
+            allowWindow = allowExtant;
           }
         }
       }

@@ -63,6 +63,7 @@ REQUIRES	= xpcom \
 		  commandhandler \
 		  editor \
 		  history \
+		  windowwatcher \
 		  $(NULL)
 
 SDK_XPIDLSRCS = \
@@ -75,8 +76,11 @@ XPIDLSRCS	= \
 		nsIDocShell.idl			\
 		nsIDocShellLoadInfo.idl	\
 		nsIDocShellTreeItem.idl	\
+		nsIDocShellTreeItemTmp.idl \
 		nsIDocShellTreeNode.idl	\
+		nsIDocShellTreeNodeTmp.idl \
 		nsIDocShellTreeOwner.idl	\
+		nsIDocShellTreeOwnerTmp.idl	\
 		nsIDocShellHistory.idl \
 		nsIGlobalHistory2.idl \
 		nsIMarkupDocumentViewer.idl	\
