@@ -390,7 +390,7 @@ CheckReadFromPipe( fd, bufP, lenP, waitEOF )
     int *lenP;
     Bool waitEOF;
 {
-    long nread;
+    int nread;
 /*  DEBUG2( " CheckReadFromPipe #%d,len=%d,", fd, *lenP )  */
 #ifdef FIONREAD
     if (!ioctl( fd, FIONREAD, &nread )) {
