@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v $
- *	$Author: jfc $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.19 1990-12-12 02:12:18 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.20 1990-12-20 03:14:12 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.19 1990-12-12 02:12:18 jfc Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.20 1990-12-20 03:14:12 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -107,7 +107,7 @@ static Code_t Z_RetSubs(notice, nsubs, auth_routine)
 	while (!nrecv || !gimmeack) {
 		tv.tv_sec = 0;
 		tv.tv_usec = 500000;
-		for (i=0;i<HM_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
+		for (i=0;i<SRV_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
 						  intervals */
 			gotone = 0;
 			read = setup;
