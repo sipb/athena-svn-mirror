@@ -7,7 +7,7 @@ AM_CONFIG_HEADER(config.h)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(gnome-libs, 1.2.12)
+AM_INIT_AUTOMAKE(gnome-libs, 1.2.13)
 
 AM_ACLOCAL_INCLUDE(macros)
 
@@ -105,8 +105,7 @@ if test x$enable_debug = xyes ; then
   AC_DEFINE(GNOME_ENABLE_DEBUG)
 fi
 
-ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr wa zh_CN.GB2312 zh_TW.Big5"
-	
+ALL_LINGUAS="az ca cs da de el en_GB es et eu fi fr ga gl hr hu it ja ko lt nl nn no pl pt pt_BR ro ru sk sl sp sr sv ta tr uk vi wa zh_CN.GB2312 zh_TW.Big5"
 AM_GNOME_GETTEXT
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed

@@ -194,7 +194,7 @@ while test $# -gt 0; do
 	done
 	;;
     zvt)
-	the_libs="$the_libs @GNOME_LIBDIR@ @ZVT_LIBS@"
+	the_libs="$the_libs @GNOME_LIBDIR@ @ZVT_LIBS@ @GDK_IMLIB_LIBS@"
 	;;
     libgtop)
 	the_libs="$the_libs `libgtop-config --libs --extra-libs`"
