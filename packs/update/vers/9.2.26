@@ -4,3 +4,34 @@ if [ -d /var/sadm/pkg/SUNWmdu ]; then
   pkgrm -n -a $LIBDIR/noask SUNWmdu
   echo "SUNWmdu"					>> $PACKAGES
 fi
+
+cat >> $DEADFILES << EOM
+/usr/athena/include/mozilla/xpcom/nsHashtableEnumerator.h
+/usr/athena/include/mozilla/xpcom/nsIArena.h
+/usr/athena/include/mozilla/uconv/nsICharsetConverterManager2.h
+/usr/athena/include/mozilla/widget/nsIPopUpMenu.h
+/usr/athena/include/mozilla/widget/nsIDragTracker.h
+/usr/athena/include/mozilla/mng
+/usr/athena/include/mozilla/content/nsHTMLUtils.h
+/usr/athena/include/mozilla/accessibility/nsIAccessibleEventReceiver.h
+/usr/athena/include/mozilla/appcomps/nsIBrowserHistory.h
+/usr/athena/include/mozilla/appcomps/nsIGlobalHistory.h
+/usr/athena/include/mozilla/cookie/nsCookieHTTPNotify.h
+/usr/athena/include/mozilla/cookie/nsCCookie.h
+/usr/athena/include/mozilla/inspector/inIScreenCapturer.h
+/usr/athena/include/mozilla/inspector/inIBitmap.h
+/usr/athena/include/mozilla/inspector/inIBitmapDepot.h
+/usr/athena/include/mozilla/inspector/inIBitmapURI.h
+/usr/athena/include/mozilla/inspector/inIPNGEncoder.h
+/usr/athena/lib/mozilla/libultrasparc4.so
+/usr/athena/lib/mozilla/mkdepend
+/usr/athena/lib/mozilla/components/libimgmng.so
+/usr/athena/share/idl/mozilla/nsICharsetConverterManager2.idl
+/usr/athena/share/idl/mozilla/nsIDragTracker.idl
+/usr/athena/share/idl/mozilla/nsIAccessibleEventReceiver.idl
+/usr/athena/share/idl/mozilla/inIScreenCapturer.idl
+/usr/athena/share/idl/mozilla/inIBitmap.idl
+/usr/athena/share/idl/mozilla/inIBitmapDepot.idl
+/usr/athena/share/idl/mozilla/inIBitmapURI.idl
+/usr/athena/share/idl/mozilla/inIPNGEncoder.idl
+EOM
