@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.7 1989-05-25 16:09:37 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.8 1989-10-02 08:37:45 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.7 1989-05-25 16:09:37 jtkohl Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.8 1989-10-02 08:37:45 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -56,6 +56,7 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
 #else
     notice->z_auth = 1;
     notice->z_authent_len = 0;
+    notice->z_ascii_authent = "";
     return (Z_FormatRawHeader(notice, buffer, buffer_len, len, (char **) 0));
 #endif
 }
