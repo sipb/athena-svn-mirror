@@ -2,6 +2,7 @@
 ; Reverse-resolve localhost.
 ;
 
+$TTL 3600000
 @	IN	SOA	bitsy.mit.edu. bugs.mit.edu. (
 				1	; Serial
 				3600	; Refresh 1 hour
