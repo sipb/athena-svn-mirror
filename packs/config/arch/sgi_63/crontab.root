@@ -1,4 +1,4 @@
-# $Revision: 1.4 $
+# $Revision: 1.5 $
 #
 # The root crontab can be used to perform accounting data collection
 #	and cleanup.
@@ -47,7 +47,8 @@
 # Run disk cleaning cycle for affected IBM Ultrstar drives twice weekly
 45 2 * * 0,4 /sbin/diskpatch -FH30 -S11
 # If we are running smap, attempt to send queued mail
-0,15,30,45    *       *       *       *       /sbin/chkconfig sendmail;if test $? -ne 0 || /sbin/chkconfig smap; then /usr/lib/sendmail -q > /dev/null 2>&1; fi
+# Athena mod: Skip this; we always run sendmail -q once per hour, see below
+#0,15,30,45    *       *       *       *       /sbin/chkconfig sendmail;if test $? -ne 0 || /sbin/chkconfig smap; then /usr/lib/sendmail -q > /dev/null 2>&1; fi
 #
 # Reorganize file systems
 #
