@@ -1,18 +1,35 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
 .\"     $Author: treese $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.1 1987-08-02 21:31:34 treese Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.2 1987-08-02 21:31:53 treese Exp $
 
 .TH MACHTYPE 1 "June 23, 1987"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
+[-c] [-d] [-k kernel] [-m memory]
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "vax" when run on a
 VAX processor (including VAXstation II and VAXstation 2000), and "rt"
-when run on an IBM RT/PC workstation.
+when run on an IBM RT/PC workstation.  If the
+.B -c
+flag is given, it will print the specific cpu type, one of
+VAX780, VAX750, VAX730, VAX8600, VAX8200, MVAX-II, VAXSTAR, or IBM032
+as appropriate.  If the
+.B -d
+flag is given, it will print the types of display heads attached to
+the system, one or more of
+QVSS, QDSS, SM, VS100, or APA16.  The
+.B -k
+and
+.B -m
+flags override the default files of
+.I /vmunix
+and
+.I /dev/kmem
+used to look up the specific cpu type and displays.
 .PP
 .I Machtype
 is useful for conditionalizing shell scripts, .login files, etc. in an
