@@ -177,6 +177,12 @@
 #ifdef	vax
 #define	MACHINE			"vax"
 #endif
+#if defined(ultrix) && defined(vax)
+#define MACHINE			"ultrix", "vax"
+#endif
+#if defined(ultrix) && defined(mips)
+#define MACHINE			"ultrix", "mips"
+#endif
 #ifdef	apollo
 #define	MACHINE			"m68000"
 #endif
