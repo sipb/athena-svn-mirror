@@ -16,20 +16,26 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.5 1989-11-17 14:53:24 tjcoppet Exp $
+ *      $Author: raeburn $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.6 1989-12-28 18:13:52 raeburn Exp $
  */
 
-#include <stdio.h>                  
-#include <strings.h>                
+#include <olc/lang.h>
+
+#if is_cplusplus
+extern "C" {
+#endif
+
+#include <stdio.h>
+#include <strings.h>
 
 #ifdef KERBEROS
 #include <krb.h>
-#endif KERBEROS
+#endif
 
 #ifdef HESIOD
 #include <hesiod.h>
-#endif HESIOD
+#endif
 
 #include <olc/macros.h>
 #include <olc/structs.h>
@@ -37,6 +43,10 @@
 #include <olc/procs.h>
 #include <olc/status.h>
 
+#if is_cpluscplus
+};
+#endif
+    
 #define VERSION_STRING "3.0a"
 
 /* 
