@@ -25,7 +25,7 @@
  * Static functions can be named in any fashion.
  */
 
-static const char rcsid[] = "$Id: rk_lib.c,v 1.2 1999-12-09 22:23:54 danw Exp $";
+static const char rcsid[] = "$Id: rk_lib.c,v 1.3 2000-02-18 14:43:02 ghudson Exp $";
 
 #include <stdio.h>
 #include <string.h>
@@ -178,7 +178,7 @@ int rki_send_rkinit_info(int version, rkinit_info *info)
 
 static sigjmp_buf timeout_env;
 
-static void rki_timeout(void)
+static void rki_timeout(int sig)
 {
     sprintf(errbuf, "%d seconds exceeded.", RKINIT_TIMEOUTVAL);
     rkinit_errmsg(errbuf);
