@@ -41,7 +41,7 @@
  *
  */
 /*
- * $Id: prot.c,v 1.1.1.1 2002-10-13 18:02:36 ghudson Exp $
+ * $Id: prot.c,v 1.1.1.2 2003-02-14 21:39:13 ghudson Exp $
  */
 
 #include <config.h>
@@ -214,6 +214,7 @@ int prot_settimeout(struct protstream *s, int timeout)
 int prot_setflushonread(struct protstream *s, struct protstream *flushs)
 {
     assert(!s->write);
+    if(flushs) assert(flushs->write);
 
     s->flushonread = flushs;
     return 0;
@@ -589,6 +590,9 @@ int prot_flush(struct protstream *s)
 #endif /* HAVE_SSL */
 	if (n == -1 && errno != EINTR) {
 	    s->error = xstrdup(strerror(errno));
+            /* Reset the output buffer, we are returning EOF */
+            s->ptr = s->buf;
+            s->cnt = s->maxplain;
 	    return EOF;
 	}
 
@@ -752,7 +756,7 @@ char *prot_fgets(char *buf, unsigned size, struct protstream *s)
     assert(!s->write);
 
     if (size < 2) return 0;
-    size -= 2;
+    size--;
 
     while (size && (c = prot_getc(s)) != EOF) {
 	size--;

@@ -65,7 +65,7 @@
 #include "auth_krb_pts.h"
 
 
-static char rcsid[] = "$Id: ptexpire.c,v 1.1.1.1 2002-10-13 18:04:40 ghudson Exp $";
+static char rcsid[] = "$Id: ptexpire.c,v 1.1.1.2 2003-02-14 21:37:57 ghudson Exp $";
 
 int main(int argc, char *argv[])
 {
@@ -141,8 +141,12 @@ int main(int argc, char *argv[])
 	syslog(LOG_ERR, "db_create: %s", db_strerror(r));
 	return 1;
     }
-	
+
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
+    r = ptdb->open(ptdb, NULL, fnamebuf, NULL, DB_HASH, 0, 0664);
+#else
     r = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, 0, 0664);
+#endif
     if (r != 0) {
 	syslog(LOG_ERR, "opening %s: %s", fnamebuf, db_strerror(r));
 	return 1;

@@ -39,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: cyrusdb_flat.c,v 1.1.1.1 2002-10-13 18:02:46 ghudson Exp $ */
+/* $Id: cyrusdb_flat.c,v 1.1.1.2 2003-02-14 21:39:06 ghudson Exp $ */
 
 #include <config.h>
 
@@ -183,7 +183,7 @@ static int myarchive(const char **fnames, const char *dirname)
 
 static int myopen(const char *fname, struct db **ret)
 {
-    struct db *db = (struct db *) xmalloc(sizeof(struct db));
+    struct db *db = (struct db *) xzmalloc(sizeof(struct db));
     struct stat sbuf;
 
     assert(fname && ret);
@@ -203,8 +203,6 @@ static int myopen(const char *fname, struct db **ret)
     }
     db->ino = sbuf.st_ino;
 
-    db->base = 0;
-    db->len = 0;
     map_refresh(db->fd, 0, &db->base, &db->len, sbuf.st_size,
 		fname, 0);
     db->size = sbuf.st_size;
@@ -246,11 +244,16 @@ static int starttxn_or_refetch(struct db *db, struct txn **mytid)
 	*mytid = new_txn();
 
 	if (db->ino != sbuf.st_ino) {
+            /* lock_reopen() picked up a new file */
+
 	    map_free(&db->base, &db->len);
 	}
 	map_refresh(db->fd, 0, &db->base, &db->len, sbuf.st_size,
 		    db->fname, 0);
+
+        /* we now have the latest & greatest open */
 	db->size = sbuf.st_size;
+        db->ino = sbuf.st_ino;
     }
 
     if (!mytid) {
@@ -405,7 +408,8 @@ static int mystore(struct db *db,
     struct iovec iov[10];
     int niov;
     struct stat sbuf;
-
+    char *tmpkey = NULL;
+    
     /* lock file, if needed */
     if (!mytid || !*mytid) {
 	r = lock_reopen(db->fd, db->fname, &sbuf, &lockfailaction);
@@ -427,12 +431,21 @@ static int mystore(struct db *db,
 	}
     }
 
+    /* if we need to truncate the key, do so */
+    if(key[keylen] != '\0') {
+	tmpkey = xmalloc(keylen + 1);
+	memcpy(tmpkey, key, keylen);
+	tmpkey[keylen] = '\0';
+	key = tmpkey;
+    }
+
     /* find entry, if it exists */
     offset = bsearch_mem(key, 1, db->base, db->size, 0, &len);
 
     /* overwrite? */
     if (len && !overwrite) {
 	if (mytid) abort_txn(db, *mytid);
+	if (tmpkey) free(tmpkey);
 	return CYRUSDB_EXISTS;
     }
 
@@ -449,6 +462,7 @@ static int mystore(struct db *db,
     if (r < 0) {
         syslog(LOG_ERR, "opening %s for writing failed: %m", fnamebuf);
 	if (mytid) abort_txn(db, *mytid);
+	if (tmpkey) free(tmpkey);
 	return CYRUSDB_IOERROR;
     }
 
@@ -500,6 +514,7 @@ static int mystore(struct db *db,
 	    rename(fnamebuf, db->fname) == -1) {
 	    syslog(LOG_ERR, "IOERROR: writing %s: %m", fnamebuf);
 	    close(writefd);
+	    if (tmpkey) free(tmpkey);
 	    return CYRUSDB_IOERROR;
 	}
 
@@ -519,6 +534,8 @@ static int mystore(struct db *db,
 	    db->fname, 0);
 	db->size = sbuf.st_size;
     }
+
+    if(tmpkey) free(tmpkey);
 
     return r;
 }

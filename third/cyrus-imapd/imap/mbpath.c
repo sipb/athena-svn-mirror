@@ -1,6 +1,6 @@
 /* mbpath.c -- help the sysadmin to find the path matching the mailbox
  *
- * $Id: mbpath.c,v 1.1.1.1 2002-10-13 18:05:05 ghudson Exp $
+ * $Id: mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $
  * 
  * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -42,7 +42,7 @@
  *
  */
 
-/* static char _rcsid[] = "$Id: mbpath.c,v 1.1.1.1 2002-10-13 18:05:05 ghudson Exp $"; */
+/* static char _rcsid[] = "$Id: mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $"; */
 
 #include <config.h>
 
@@ -51,6 +51,7 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 #include <ctype.h>
 #include <fcntl.h>
@@ -73,8 +74,6 @@
 extern int optind;
 extern char *optarg;
 
-extern int errno;
-
 void
 fatal(const char *s, int code) 
 {
@@ -87,9 +86,9 @@ fatal(const char *s, int code)
 
 static int 
 usage(void) {
-  fprintf(stderr,"usage: cdmb [-C <alt_config>] [-q] <mailbox name>...\n");
+  fprintf(stderr,"usage: mbpath [-C <alt_config>] [-q] <mailbox name>...\n");
   fprintf(stderr,"\t-q\tquietly drop any error messages\n");
-  fatal(NULL, -1);
+  exit(-1);
 }
 
 int
@@ -146,5 +145,5 @@ main(int argc, char **argv)
   exit(0);
 }
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/imap/mbpath.c,v 1.1.1.1 2002-10-13 18:05:05 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/imap/mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $ */
 

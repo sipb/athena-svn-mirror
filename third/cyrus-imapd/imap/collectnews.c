@@ -1,5 +1,5 @@
 /* collectnews.c -- program to add news articles to relevant header files
- $Id: collectnews.c,v 1.1.1.1 2002-10-13 18:05:04 ghudson Exp $
+ $Id: collectnews.c,v 1.1.1.2 2003-02-14 21:38:18 ghudson Exp $
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <errno.h>
 
 #include "imapconf.h"
 #include "exitcodes.h"
@@ -59,7 +60,6 @@
 #include "append.h"
 #include "convert_code.h"
 
-extern int errno;
 extern int optind;
 extern char *optarg;
 

@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: config.c,v 1.1.1.1 2002-10-13 18:02:53 ghudson Exp $ */
+/* $Id: config.c,v 1.1.1.2 2003-02-14 21:38:18 ghudson Exp $ */
 
 #include <config.h>
 
@@ -55,6 +55,7 @@
 #if HAVE_UNISTD_H
 # include <unistd.h>
 #endif
+#include <errno.h>
 
 #include "imapconf.h"
 #include "exitcodes.h"
@@ -65,8 +66,6 @@
 #include "mupdate_err.h"
 #include "hash.h"
 #include "prot.h" /* for PROT_BUFSIZE */
-
-extern int errno;
 
 #define CONFIG_FILENAME "/etc/imapd.conf"
 
@@ -347,7 +346,7 @@ static int isa(struct auth_state *authstate, const char *opt)
 	char *p;
 	
 	for (p = (char *) val; *p && !isspace((int) *p); p++);
-	strncpy(buf, val, p-val);
+	memcpy(buf, val, p-val);
 	buf[p-val] = 0;
 
 	if (auth_memberof(authstate, buf)) {

@@ -10,14 +10,14 @@
 <a href="#FILES">FILES</a><br>
 <a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
 <!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Fri Aug 30 14:41:53 2002
+<!-- CreationDate: Mon Feb  3 16:31:15 2003
  -->
 <!-- Total number of pages: 1 -->
 <!-- Page: 1 -->
 <!-- left  margin: 100 -->
 <!-- right margin: 750 -->
 <a name="NAME"></a><h2>NAME</h2><p><font size=3>ipurge - delete mail from IMAP mailbox or partition based on age or size</p>
-<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>ipurge</B> <font size=3>[ <font size=3><B>-f</B> <font size=3>] [ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-x</B> <font size=3>]<br>
+<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>ipurge</B> <font size=3>[ <font size=3><B>-f</B> <font size=3>] [ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-x</B> <font size=3>] [ <font size=3><B>-s</B> <font size=3>]<br>
 <span style=" text-indent: 0.2100in;"></span>[ <font size=3><B>-d</B> <font size=3><I>days</I> <font size=3>| <font size=3><B>-b</B> <font size=3><I>bytes</I> <font size=3>| <font size=3><B>-k</B> <font size=3><I>Kbytes</I> <font size=3>| <font size=3><B>-m</B> <font size=3><I>Mbytes</I> <font size=3>]<br>
 <span style=" text-indent: 0.2100in;"></span>[ <font size=3><I>mailbox-pattern</I><font size=3>... ]</p>
 <a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Ipurge</I> <font size=3>deletes messages from the mailbox(es) specified by <font size=3><I>mailbox-pattern</I> <font size=3>that are older or larger than specified by the <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B> <font size=3>options. If no <font size=3><I>mailbox-pattern</I> <font size=3>is given, <font size=3><I>ipurge</I> <font size=3>works on all mailboxes. If the <font size=3><B>-x</B> <font size=3>option is given, the message age and size MUST match exactly those specified by <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B><font size=3>. The are no default val- ues, and at least one of <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B> <font size=3>MUST be specified.</p>
@@ -60,11 +60,13 @@
 <tr valign="top" align="left">
 <td valign="top" align="left"  width="12.6154%">
 <p><font size=3><B>-x</p>
+</B><p><font size=3><B>-s</p>
 </B></td>
 <td valign="top" align="left"  width="7.3846%">
 </td>
 <td valign="top" align="left"  width="57.6923%">
 <p><font size=3>Perform an exact match on age or size (instead of older or larger).</p>
+<p><font size=3>Skip over messages that have the \Flagged flag set.</p>
 </td>
 <td valign="top" align="left"  width="22.3077%">
 </td>

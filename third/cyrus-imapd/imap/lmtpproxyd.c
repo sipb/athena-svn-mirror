@@ -1,6 +1,6 @@
 /* lmtpproxyd.c -- Program to proxy mail delivery
  *
- * $Id: lmtpproxyd.c,v 1.1.1.1 2002-10-13 18:02:53 ghudson Exp $
+ * $Id: lmtpproxyd.c,v 1.1.1.2 2003-02-14 21:38:19 ghudson Exp $
  * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,8 +87,6 @@ struct protstream *deliver_out = NULL, *deliver_in = NULL;
 
 extern int optind;
 extern char *optarg;
-
-extern int errno;
 
 /* a final destination for a message */
 struct rcpt {
@@ -285,12 +283,8 @@ int service_main(int argc __attribute__((unused)),
     prot_setflushonread(deliver_in, deliver_out);
     prot_settimeout(deliver_in, 300);
 
-    while ((opt = getopt(argc, argv, "C:Dq")) != EOF) {
+    while ((opt = getopt(argc, argv, "q")) != EOF) {
 	switch(opt) {
-	case 'C': /* alt config file - handled by service::main() */
-	    break;
-	case 'D': /* ext debugger - handled by service::main() */
- 	    break;
 	case 'q':
 	    quotaoverride = 1;
 	    break;

@@ -1,7 +1,7 @@
 /* imtest.c -- IMAP/POP3/LMTP/SMTP/MUPDATE/MANAGESIEVE test client
  * Ken Murchison (multi-protocol implementation)
  * Tim Martin (SASL implementation)
- * $Id: imtest.c,v 1.1.1.1 2002-10-13 18:03:00 ghudson Exp $
+ * $Id: imtest.c,v 1.1.1.2 2003-02-14 21:38:14 ghudson Exp $
  *
  * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -173,7 +173,6 @@ struct tls_cmd_t {
     char *cmd;		/* tls command string */
     char *ok;		/* start tls prompt */
     char *fail;		/* failure response */
-    int auto_capa;	/* capa response given automatically after TLS */
 };
 
 struct sasl_cmd_t {
@@ -891,7 +890,7 @@ void interaction (int id, const char *challenge, const char *prompt,
 	if (username != NULL) {
 	    strcpy(result, username);
 	} else {
-	    strcpy(result, getpwuid(getuid())->pw_name);
+	    strcpy(result, "");
 	}
     } else if (id==SASL_CB_AUTHNAME) {
 	if (authname != NULL) {
@@ -1564,7 +1563,7 @@ static char *imap_parse_mechlist(char *str)
     return ret;
 }
 
-static int auth_login(void)
+static int auth_imap(void)
 {
     char str[1024];
     /* we need username and password to do "login" */
@@ -1610,7 +1609,7 @@ static int imap_do_auth(struct sasl_cmd_t *sasl_cmd,
 
     if (mech) {
 	if (!strcasecmp(mech, "login")) {
-	    result = auth_login();
+	    result = auth_imap();
 	} else {
 	    result = auth_sasl(sasl_cmd, mech);
 	}
@@ -1618,7 +1617,7 @@ static int imap_do_auth(struct sasl_cmd_t *sasl_cmd,
 	if (mechlist) {
 	    result = auth_sasl(sasl_cmd, mechlist);
 	} else {
-	    result = auth_login();
+	    result = auth_imap();
 	}
     }
 
@@ -1821,7 +1820,7 @@ static void *pop3_parse_banner(char *str)
     return chal;
 }
 
-static int auth_user(void)
+static int auth_pop(void)
 {
     char str[1024];
     /* we need username and password to do USER/PASS */
@@ -1920,7 +1919,7 @@ static int pop3_do_auth(struct sasl_cmd_t *sasl_cmd, void *rock,
 	if (!strcasecmp(mech, "apop")) {
 	    result = auth_apop((char *) rock);
 	} else if (!strcasecmp(mech, "user")) {
-	    result = auth_user();
+	    result = auth_pop();
 	} else {
 	    result = auth_sasl(sasl_cmd, mech);
 	}
@@ -1930,7 +1929,7 @@ static int pop3_do_auth(struct sasl_cmd_t *sasl_cmd, void *rock,
 	} else if (rock) {
 	    result = auth_apop((char *) rock);
 	} else {
-	    result = auth_user();
+	    result = auth_pop();
 	}
     }
 
@@ -2080,7 +2079,7 @@ static struct protocol_t protocols[] = {
     { "imap", "imaps", "imap",
       { 0, "* OK", NULL },
       { "C01 CAPABILITY", "C01 ", "STARTTLS", "AUTH=", &imap_parse_mechlist },
-      { "S01 STARTTLS", "S01 OK", "S01 NO", 0 },
+      { "S01 STARTTLS", "S01 OK", "S01 NO" },
       { "A01 AUTHENTICATE", 0, NULL, NULL, "A01 OK", "A01 NO", "+ ", "*" },
       &imap_do_auth, { "Q01 LOGOUT", "Q01 " },
       &imap_init_conn, &generic_pipe, &imap_reset
@@ -2088,14 +2087,14 @@ static struct protocol_t protocols[] = {
     { "pop3", "pop3s", "pop",
       { 0, "+OK ", &pop3_parse_banner },
       { "CAPA", ".", "STLS", "SASL ", NULL },
-      { "STLS", "+OK", "-ERR", 0 },
+      { "STLS", "+OK", "-ERR" },
       { "AUTH", 0, "=", NULL, "+OK", "-ERR", "+ ", "*" },
       &pop3_do_auth, { "QUIT", "+OK" }, NULL, NULL, NULL
     },
     { "lmtp", NULL, "lmtp",
       { 0, "220 ", NULL },
       { "LHLO example.com", "250 ", "STARTTLS", "AUTH ", NULL },
-      { "STARTTLS", "220", "454", 0 },
+      { "STARTTLS", "220", "454" },
       { "AUTH", 0, "=", NULL, "235", "5", "334 ", "*" },
       &xmtp_do_auth, { "QUIT", "221" },
       &xmtp_init_conn, &generic_pipe, &xmtp_reset
@@ -2103,7 +2102,7 @@ static struct protocol_t protocols[] = {
     { "smtp", "smtps", "smtp",
       { 0, "220 ", NULL },
       { "EHLO example.com", "250 ", "STARTTLS", "AUTH ", NULL },
-      { "STARTTLS", "220", "454", 0 },
+      { "STARTTLS", "220", "454" },
       { "AUTH", 0, "=", NULL, "235", "5", "334 ", "*" },
       &xmtp_do_auth, { "QUIT", "221" },
       &xmtp_init_conn, &generic_pipe, &xmtp_reset
@@ -2118,7 +2117,7 @@ static struct protocol_t protocols[] = {
     { "sieve", NULL, SIEVE_SERVICE_NAME,
       { 1, "OK", NULL },
       { "CAPABILITY", "OK", "\"STARTTLS\"", "\"SASL\" ", NULL },
-      { "STARTTLS", "OK", "NO", 1 },
+      { "STARTTLS", "OK", "NO" },
       { "AUTHENTICATE", 1, "=", &sieve_parse_success, "OK", "NO", NULL, "*" },
       NULL, { "LOGOUT", "OK" }, NULL, NULL, NULL
     },
@@ -2408,8 +2407,7 @@ int main(int argc, char **argv)
 			   "since they might have changed\n");
 		if (mechlist) free(mechlist);
 		mechlist = ask_capability(&protocol->capa_cmd,
-					  &server_supports_tls,
-					  protocol->tls_cmd.auto_capa);
+					  &server_supports_tls, 0);
 	    }
 	    
 	} else if ((dotls==1) && (server_supports_tls!=1)) {

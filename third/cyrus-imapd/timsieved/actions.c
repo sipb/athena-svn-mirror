@@ -1,6 +1,6 @@
 /* actions.c -- executes the commands for timsieved
  * Tim Martin
- * $Id: actions.c,v 1.1.1.1 2002-10-13 18:00:31 ghudson Exp $
+ * $Id: actions.c,v 1.1.1.2 2003-02-14 21:38:07 ghudson Exp $
  * 
  */
 /*
@@ -151,7 +151,8 @@ int capabilities(struct protstream *conn, sasl_conn_t *saslconn)
     unsigned mechcount;
 
     /* implementation */
-    prot_printf(conn, "\"IMPLEMENTATION\" \"" SIEVED_IDENT " " SIEVED_VERSION "\"\r\n");
+    prot_printf(conn, "\"IMPLEMENTATION\" \"Cyrus timsieved %s\"\r\n",
+		CYRUS_VERSION);
     
     /* SASL */
     if (sasl_listmech(saslconn, NULL, 

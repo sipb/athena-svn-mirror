@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- $Id: changes.html,v 1.1.1.1 2002-10-13 18:03:22 ghudson Exp $ -->
+<!-- $Id: changes.html,v 1.1.1.2 2003-02-14 21:39:25 ghudson Exp $ -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta name="generator" content="HTML Tidy, see www.w3.org" />
@@ -8,6 +8,51 @@
 </head>
 <body>
 <h1>Changes to the Cyrus IMAP Server</h1>
+
+<h2>Changes to the Cyrus IMAP Server since 2.1.11</h2>
+<ul>
+<li>Master now will forcibly exit if a service is not executable</li>
+<li>Master now has a daemon mode and pidfile support (-d and -p options)</li>
+<li>Berkeley DB Configuration methods have changed.  Hopefully they're
+more generic now.  You can still use --with-dbdir, or you can use
+--with-bdb-libdir and --with-bdb-incdir</li>
+<li>timsieved now handles usernames with dots (when unixhierarchysep is active)</li>
+<li>tugowar has been removed from the distribution.</li>
+<li>Squatter now has an option to skip unmodified mailboxes.</li>
+<li>Properly hash username to remove a user's sieve scripts when their INBOX
+is removed.</li>
+<li>Reset output buffer when prot_flush returns EOF.</li>
+<li>Minor Makefile improvements with use of $(srcdir)</li>
+<li>Remotepurge improvement for empty mailboxes</li>
+<li>Fix for AFS overwriting the canonicalized username in ptloader</li>
+<li>Security audit of imapd.c performed by SecurityAppraisers and Bynari</li>
+</ul>
+
+<h2>Changes to the Cyrus IMAP Server since 2.1.10</h2>
+<ul>
+<li>Fixed some potential buffer overflows in the sieve code, as well
+as a pre-login buffer overflow in the IMAP parsing code.</li>
+<li>ipurge can now skip flagged messages</li>
+<li>Fix a problem with the flat backend and tracking new files</li>
+<li>Fix a problem with the memory pool routines on 64-bit machines</li>
+</ul>
+
+<h2>Changes to the Cyrus IMAP Server since 2.1.9</h2>
+<ul>
+<li>support Berkley DB 4.1
+<li>more portable use of errno throughout
+<li>timsieved now does telemetry logging
+<li>libcyrus.a no longer supplies fs_get() and fs_give()
+<li>fixed use of errno on some platforms
+<li>fixed a bug in quota tracking across RENAMEs
+<li>fixed an off-by-one error in the prot layer
+<li>add support for character sets: iso-8859-15 and windows-1252
+<li>Add the "at" method of running EVENTs to master, also has the side
+effect of events running every period minutes, intead of every period +
+run time minutes.
+<li>timsieved version now tracks with IMAPd version
+<li>minor documentation updates
+</ul>
 
 <h2>Changes to the Cyrus IMAP Server since 2.1.8</h2>
 <ul>
@@ -1677,7 +1722,7 @@ message for this common configuration error.</li>
 </ul>
 
 <hr />
-last modified: $Date: 2002-10-13 18:03:22 $ <br />
+last modified: $Date: 2003-02-14 21:39:25 $ <br />
 <a href="index.html">Return</a> to the Cyrus IMAP Server Home Page
 </body>
 </html>

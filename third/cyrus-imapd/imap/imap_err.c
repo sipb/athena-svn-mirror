@@ -49,6 +49,9 @@ static const char * const text[] = {
 	"Login incorrect",
 	"Anonymous login is not permitted",
 	"Unsupported quota resource",
+	"Authentication failed",
+	"Client cancelled authentication",
+	"Protocol error during authentication",
 	"Mailbox is over quota",
 	"Mailbox is at %d%% of quota",
 	"Message %d no longer exists",
@@ -72,7 +75,7 @@ struct et_list {
 };
 extern struct et_list *_et_list;
 
-static const struct error_table et = { text, -1904809472L, 48 };
+static const struct error_table et = { text, -1904809472L, 51 };
 
 static struct et_list link = { 0, 0 };
 

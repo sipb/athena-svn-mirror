@@ -40,7 +40,7 @@ exec perl -x -S $0 ${1+"$@"} # -*-perl-*-
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: sieveshell.pl,v 1.1.1.1 2002-10-13 18:01:27 ghudson Exp $
+# $Id: sieveshell.pl,v 1.1.1.2 2003-02-14 21:38:40 ghudson Exp $
 #
 
 use Cyrus::SIEVE::managesieve;
@@ -173,11 +173,12 @@ my $obj = sieve_get_handle($acapserver,
 			   "prompt", "prompt", "prompt", "prompt");
 
 if (!defined $obj) {
-    my $err = sieve_get_global_error();
-    die "unable to connect to server: $err";
+    die "unable to connect to server";
 }
 
 my $term = Term::ReadLine->new("sieveshell");
+
+$term->ornaments(0);
 
 while(defined($_  = $term->readline('> '))){
   
@@ -201,6 +202,7 @@ while(defined($_  = $term->readline('> '))){
       }
       if ($ret != 0) { 
 	my $errstr = sieve_get_error($obj);
+	$errstr = "unknown error" if(!defined($errstr));
 	print "upload failed: $errstr\n"; 
       }
     } elsif (($words[0] eq "list") || 
@@ -209,6 +211,7 @@ while(defined($_  = $term->readline('> '))){
 	$ret = sieve_list($obj, "list_cb");
 	if ($ret != 0) { 
 	    my $errstr = sieve_get_error($obj);
+	    $errstr = "unknown error" if(!defined($errstr));
 	    print "list failed: $errstr\n";
 	}
     } elsif (($words[0] eq "activate") || 
@@ -220,6 +223,7 @@ while(defined($_  = $term->readline('> '))){
 	$ret = sieve_activate($obj, $words[1]);
 	if ($ret != 0) { 
 	    my $errstr = sieve_get_error($obj);
+	    $errstr = "unknown error" if(!defined($errstr));
 	    print "activate failed: $errstr\n";
 	}
     } elsif (($words[0] eq "deactivate") || 
@@ -231,6 +235,7 @@ while(defined($_  = $term->readline('> '))){
 	$ret = sieve_activate($obj, "");
 	if ($ret != 0) { 
 	    my $errstr = sieve_get_error($obj);
+	    $errstr = "unknown error" if(!defined($errstr));
 	    print "deactivate failed: $errstr\n";
 	}
     } elsif (($words[0] eq "delete") || 
@@ -242,6 +247,7 @@ while(defined($_  = $term->readline('> '))){
 	$ret = sieve_delete($obj, $words[1]);
 	if ($ret != 0) { 
 	    my $errstr = sieve_get_error($obj);
+	    $errstr = "unknown error" if(!defined($errstr));
 	    print "delete failed: $errstr\n"; 
 	}
     } elsif (($words[0] eq "get") || 
@@ -254,6 +260,7 @@ while(defined($_  = $term->readline('> '))){
 	$ret = sieve_get($obj, $words[1], $str);
 	if ($ret != 0) { 
 	    my $errstr = sieve_get_error($obj);
+	    $errstr = "unknown error" if(!defined($errstr));
 	    print "get failed: $errstr\n"; 
 	} else {
 	    if ($words[2]) {

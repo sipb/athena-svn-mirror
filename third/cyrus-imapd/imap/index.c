@@ -41,7 +41,7 @@
  *
  */
 /*
- * $Id: index.c,v 1.1.1.1 2002-10-13 18:03:03 ghudson Exp $
+ * $Id: index.c,v 1.1.1.2 2003-02-14 21:39:20 ghudson Exp $
  */
 #include <config.h>
 
@@ -80,8 +80,6 @@
 
 #include "index.h"
 
-extern int errno;
-
 extern void printastring (const char *s);
 
 /* The index and cache files, mapped into memory */
@@ -115,7 +113,7 @@ static char *seenuids;		/* Sequence of UID's from last seen checkpoint */
 typedef int index_sequenceproc_t(struct mailbox *mailbox, unsigned msgno,
 				 void *rock);
 
-static int index_forsequence(struct mailbox *mailbox, char *sequence,
+static int index_forsequence(struct mailbox *mailbox, const char *sequence,
 			     int usinguid,
 			     index_sequenceproc_t *proc, void *rock,
 			     int* fetchedsomething);
@@ -748,7 +746,7 @@ int oldexists;
  */
 void
 index_fetch(struct mailbox* mailbox,
-	    char* sequence,
+	    const char* sequence,
 	    int usinguid,
 	    struct fetchargs* fetchargs,
 	    int* fetchedsomething)
@@ -1470,7 +1468,7 @@ int index_expungeuidlist(struct mailbox *mailbox, void *rock,
  */
 static int
 index_forsequence(struct mailbox* mailbox,
-		  char* sequence,
+		  const char* sequence,
 		  int usinguid,
 		  index_sequenceproc_t proc,
 		  void* rock,
@@ -1684,7 +1682,10 @@ unsigned octet_count;
 
     while (*p != ']' && *p != 'M') {
 	skip = 0;
-	while (isdigit((int) *p)) skip = skip * 10 + *p++ - '0';
+	while (isdigit((int) *p)) {
+            skip = skip * 10 + *p++ - '0';
+            /* xxx overflow */
+        }
 	if (*p == '.') p++;
 
 	/* section number too large */
@@ -1779,7 +1780,10 @@ const char *cacheitem;
 
     while (*p != 'H') {
 	skip = 0;
-	while (isdigit((int) *p)) skip = skip * 10 + *p++ - '0';
+	while (isdigit((int) *p)) {
+            skip = skip * 10 + *p++ - '0';
+            /* xxx overflow */
+        }
 	if (*p == '.') p++;
 
 	/* section number too large */
@@ -3406,14 +3410,18 @@ static char *_index_extract_subject(char *s, int *is_refwd)
 			x = NULL;
 			break;
 		    }
-		    else if (*x == ']')			/* end of blob, done */
+		    else if (*x == ']') {		/* end of blob, done */
 			break;
 		    			/* if we have a digit, and we're still
 					   counting, keep building the count */
-		    else if (isdigit((int) *x) && count != -1)
+		    } else if (isdigit((int) *x) && count != -1) {
 			count = count * 10 + *x - '0';
-		    else				/* no digit, */
+                        if (count < 0) {                /* overflow */
+                            count = -1; /* abort counting */
+                        }
+		    } else {				/* no digit, */
 			count = -1;			/*  abort counting */
+                    }
 		    x++;
 		}
 
@@ -3777,7 +3785,7 @@ static void index_thread_orderedsubj(unsigned *msgno_list, int nmsg,
 				  { SORT_SEQUENCE, 0, {{NULL, NULL}} }};
     unsigned psubj_hash = 0;
     char *psubj;
-    Thread *head, *newnode, *cur, *parent;
+    Thread *head, *newnode, *cur, *parent, *last;
 
     /* Create/load the msgdata array */
     freeme = msgdata = index_msgdata_load(msgno_list, nmsg, sortcrit);
@@ -3802,25 +3810,32 @@ static void index_thread_orderedsubj(unsigned *msgno_list, int nmsg,
     parent = head;	/* parent is the head node */
     psubj = NULL;	/* no previous subject */
     cur = NULL;		/* no current thread */
+    last = NULL;	/* no last child */
 
     while (msgdata) {
+	newnode->msgdata = msgdata;
+
 	/* if no previous subj, or
 	   current subj = prev subj (subjs have same hash, and
 	   the strings are equal), then add message to current thread */
 	if (!psubj ||
 	    (msgdata->xsubj_hash == psubj_hash &&
 	     !strcmp(msgdata->xsubj, psubj))) {
-	    parent->child = newnode;	/* create a new child */
-	    parent->child->msgdata = msgdata;
-	    if (!cur)
-		cur = parent->child;	/* first thread */
-	    parent = parent->child;	/* this'll be the parent 
-					   next time around */
+	    /* if no children, create first child */
+	    if (!parent->child) {
+		last = parent->child = newnode;
+		if (!cur)		/* first thread */
+		    parent = cur = parent->child;
+	    }
+	    /* otherwise, add to siblings */
+	    else {
+		last->next = newnode;
+		last = last->next;
+	    }
 	}
 	/* otherwise, create a new thread */
 	else {
 	    cur->next = newnode;	/* create and start a new thread */
-	    cur->next->msgdata = msgdata;
 	    parent = cur = cur->next;	/* now work with the new thread */
 	}
 

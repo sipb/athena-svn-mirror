@@ -10,7 +10,7 @@
 <a href="#ACCESS CONTROL">ACCESS CONTROL</a><br>
 <a href="#SEE ALSO">SEE ALSO</a><br>
 <!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Fri Aug 30 14:41:53 2002
+<!-- CreationDate: Mon Feb  3 16:31:14 2003
  -->
 <!-- Total number of pages: 2 -->
 <!-- Page: 1 -->
@@ -186,6 +186,9 @@ This section is typically used to perform scheduled cleanup/maintenance.</p>
 <p><font size=3><B>period=</B><font size=3>0<br>
 <span style=" text-indent: 0.3000in;"></span>The interval (in minutes) at which to run the command. This integer value is optional, but SHOULD be a pos-<br>
 <span style=" text-indent: 0.3000in;"></span>itive integer &gt; 10.</p>
+<p><font size=3><B>at=</B><font size=3>&lt;hhmm&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>The time (24-hour format) at which to run the command each day. If set to a valid time (0000-2359), period<br>
+<span style=" text-indent: 0.3000in;"></span>is automatically set to 1440. This string argument is optional.</p>
 <a name="EXAMPLE"></a><h2>EXAMPLE</h2><p><font size=3># example cyrus.conf</p>
 
 <table width="100%"  rules="none"  frame="none"  cols="4">
@@ -246,8 +249,8 @@ cmd="lmtpd" listen="localhost:lmtp"</p>
 <td valign="top" align="left"  width="3.5385%">
 </td>
 <td valign="top" align="left"  width="39.3846%">
-<p><font size=3>cmd="ctl_deliver -E 3" period=1440<br>
-cmd="tls_prune" period=1440</p>
+<p><font size=3>cmd="ctl_deliver -E 3" at=0400<br>
+cmd="tls_prune" at=0400</p>
 </td>
 <td valign="top" align="left"  width="45.2308%">
 </td>

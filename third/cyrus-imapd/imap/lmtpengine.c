@@ -1,5 +1,5 @@
 /* lmtpengine.c: LMTP protocol engine
- * $Id: lmtpengine.c,v 1.1.1.1 2002-10-13 18:03:13 ghudson Exp $
+ * $Id: lmtpengine.c,v 1.1.1.2 2003-02-14 21:38:13 ghudson Exp $
  *
  * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -125,6 +125,11 @@ struct clientdata {
 /* defined in lmtpd.c or lmtpproxyd.c */
 extern int deliver_logfd;
 
+extern int saslserver(sasl_conn_t *conn, const char *mech,
+		      const char *init_resp, const char *continuation,
+		      struct protstream *pin, struct protstream *pout,
+		      int *sasl_result, char **success_data);
+
 /* Enable the resetting of a sasl_conn_t */
 static int reset_saslconn(sasl_conn_t **conn);
 
@@ -136,6 +141,7 @@ static struct
     char *authid;
 } saslprops = {NULL,NULL,0,NULL};
 
+#ifdef USING_SNMPGEN
 /* round to nearest 1024 bytes and return number of Kbytes.
  used for SNMP updates. */
 static int roundToK(int x)
@@ -148,6 +154,9 @@ static int roundToK(int x)
     else
 	return ri+1;    
 }
+#else
+#define roundToK(x)
+#endif /* USING_SNMPGEN */
 
 static void send_lmtp_error(struct protstream *pout, int r)
 {
@@ -1364,9 +1373,7 @@ void lmtpmode(struct lmtp_func *func,
       case 'A':
 	  if (!strncasecmp(buf, "auth ", 5)) {
 	      char mech[128];
-	      char *in = NULL;
-	      const char *out = NULL;
-	      unsigned int inlen, outlen;
+	      int sasl_result;
 	      const char *user;
 	      
 	      if (authenticated > 0) {
@@ -1392,98 +1399,52 @@ void lmtpmode(struct lmtp_func *func,
 		  p = NULL;
 	      }
 	      strlcpy(mech, buf + 5, sizeof(mech));
-	      if (p == NULL) {
-		  in = NULL;
-		  inlen = 0;
-	      } else if (!strcmp(p, "=")) {
-		  /* zero-length initial response */
-		  in = xstrdup("");
-		  inlen = 0;
-	      } else {
-		  unsigned len = strlen(p);
-		  in = xmalloc(len+1);
-		  r = sasl_decode64(p, len, in, len, &inlen);
-		  if (r != SASL_OK) {
-		      prot_printf(pout,
-				  "501 5.5.4 cannot base64 decode\r\n");
-		      if (in) { free(in); in = NULL; }
-		      continue;
-		  }
-	      }
-	      
-	      r = sasl_server_start(cd.conn, mech,
-				    in, inlen,
-				    &out, &outlen);
-	      if (in) { free(in); in = NULL; }
-	      if (r == SASL_NOMECH) {
-		  prot_printf(pout, 
-			      "504 Unrecognized authentication type.\r\n");
-		  continue;
-	      }
-	      
-	      while (r == SASL_CONTINUE) {
-		  char inbase64[4096];
-		  unsigned len;
 
-		  if(out) {
-		    r = sasl_encode64(out, outlen, 
-				    inbase64, sizeof(inbase64), NULL);
-		    if (r != SASL_OK) break;
-	  
-		    /* send out */
-		    prot_printf(pout,"334 %s\r\n", inbase64);
-		  }
-		  
-		  /* read a line */
-		  if (!prot_fgets(buf, sizeof(buf)-1, pin)) {
-		      goto cleanup;
-		  }
-		  p = buf + strlen(buf) - 1;
-		  if (p >= buf && *p == '\n') *p-- = '\0';
-		  if (p >= buf && *p == '\r') *p-- = '\0';
+	      r = saslserver(cd.conn, mech, p, "334 ",
+			     pin, pout, &sasl_result, NULL);
 
-		  if(buf[0] == '*') {
+	      if (r) {
+		  const char *errorstring = NULL;
+
+		  switch (r) {
+		  case IMAP_SASL_CANCEL:
 		      prot_printf(pout,
 				  "501 5.5.4 client canceled authentication\r\n");
-		      reset_saslconn(&cd.conn);
-		      goto nextcmd;
-		  }
-		  
-		  len = strlen(buf);
-		  in = xmalloc(len+1);
-		  r = sasl_decode64(buf, len, in, len, &inlen);
-		  if (r != SASL_OK) {
+		      break;
+		  case IMAP_SASL_PROTERR:
+		      errorstring = prot_error(pin);
+
 		      prot_printf(pout,
-				  "501 5.5.4 cannot base64 decode\r\n");
-		      reset_saslconn(&cd.conn);
-		      goto nextcmd;
+				  "501 5.5.4 Error reading client response: %s\r\n",
+				  errorstring ? errorstring : "");
+		      break;
+		  default:
+		      if (sasl_result == SASL_NOMECH) {
+			  prot_printf(pout, 
+				      "504 Unrecognized authentication type.\r\n");
+			  continue;
+		      }
+		      else {
+			  sleep(3);
+		  
+			  syslog(LOG_ERR, "badlogin: %s %s %s",
+				 remoteaddr.sin_family == AF_INET ?
+				 inet_ntoa(remoteaddr.sin_addr) :
+				 "[unix socket]",
+				 mech,
+				 sasl_errdetail(cd.conn));
+		  
+			  snmp_increment_args(AUTHENTICATION_NO, 1,
+					      VARIABLE_AUTH, hash_simple(mech), 
+					      VARIABLE_LISTEND);
+
+			  prot_printf(pout, "501 5.5.4 %s\r\n",
+				      sasl_errstring((r == SASL_NOUSER ?
+						      SASL_BADAUTH : r),
+						     NULL, NULL));
+		      }
 		  }
 
-		  r = sasl_server_step(cd.conn,
-				       in, inlen,
-				       &out, &outlen);
-		  if (in) { free(in); in = NULL; }
-	      }
-	      
-	      if (in) { free(in); in = NULL; }
-	      if ((r != SASL_OK) && (r != SASL_CONTINUE)) {
-		  sleep(3);
-		  
-		  syslog(LOG_ERR, "badlogin: %s %s %s",
-			 remoteaddr.sin_family == AF_INET ?
-			 inet_ntoa(remoteaddr.sin_addr) :
-			 "[unix socket]",
-			 mech,
-			 sasl_errdetail(cd.conn));
-		  
-		  snmp_increment_args(AUTHENTICATION_NO, 1,
-				      VARIABLE_AUTH, hash_simple(mech), 
-				      VARIABLE_LISTEND);
-
-		  prot_printf(pout, "501 5.5.4 %s\r\n",
-		       sasl_errstring((r == SASL_NOUSER ? SASL_BADAUTH : r),
-				      NULL, NULL));
-		  
 		  reset_saslconn(&cd.conn);
 		  continue;
 	      }
@@ -2086,43 +2047,79 @@ static int do_auth(struct lmtp_conn *conn)
     secprops = mysasl_secprops(0);
     r = sasl_setprop(conn->saslconn, SASL_SEC_PROPS, secprops);
     if (r != SASL_OK) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: could not sasl_setprop the security properties");
+	
 	return AUTH_ERROR;
     }
 
     /* set the IP addresses */
     addrsize=sizeof(struct sockaddr_in);
-    if (getpeername(conn->sock, (struct sockaddr *)&saddr_r, &addrsize) != 0)
+    if (getpeername(conn->sock, (struct sockaddr *)&saddr_r, &addrsize) != 0) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: getpeername() failed");
 	return AUTH_ERROR;
+    }
+    
     addrsize=sizeof(struct sockaddr_in);
-    if (getsockname(conn->sock, (struct sockaddr *)&saddr_l,&addrsize)!=0)
+    if (getsockname(conn->sock, (struct sockaddr *)&saddr_l,&addrsize)!=0) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: getsockname() failed");
 	return AUTH_ERROR;
+    }
+    
 
     if (iptostring((struct sockaddr *)&saddr_r,
-		   sizeof(struct sockaddr_in), remoteip, 60) != 0)
+		   sizeof(struct sockaddr_in), remoteip, 60) != 0) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: iptostring() (remote) failed");
 	return AUTH_ERROR;
+    }
+    
     if (iptostring((struct sockaddr *)&saddr_l,
-		   sizeof(struct sockaddr_in), localip, 60) != 0)
+		   sizeof(struct sockaddr_in), localip, 60) != 0) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: iptostring() (local) failed");	
 	return AUTH_ERROR;
+    }
 
     r = sasl_setprop(conn->saslconn, SASL_IPLOCALPORT, localip);
-    if (r != SASL_OK) return AUTH_ERROR;
+    if (r != SASL_OK) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: sasl_setprop(SASL_IPLOCALPORT) failed");
+	return AUTH_ERROR;
+    }
+    
     r = sasl_setprop(conn->saslconn, SASL_IPREMOTEPORT, remoteip);
-    if (r != SASL_OK) return AUTH_ERROR;
+    if (r != SASL_OK) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: sasl_setprop(SASL_IPREMOTEPORT) failed");
+	return AUTH_ERROR;
+    }
 
     /* we now do the actual SASL exchange */
     r = sasl_client_start(conn->saslconn, 
 			  conn->mechs,
 			  NULL, &out, &outlen, &mechusing);
-    if ((r != SASL_OK) && (r != SASL_CONTINUE))
+    if ((r != SASL_OK) && (r != SASL_CONTINUE)) {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: sasl_client_start failed (%s)",
+	       sasl_errdetail(conn->saslconn));
 	return AUTH_ERROR;
+    }
 
     if (out == NULL) {
 	prot_printf(conn->pout, "AUTH %s\r\n", mechusing);
     } else {
 	/* send initial challenge */
 	r = sasl_encode64(out, outlen, buf, sizeof(buf), &b64len);
-	if (r != SASL_OK)
+	if (r != SASL_OK) {
+	    syslog(LOG_ERR,
+		   "lmtpengine do_auth: sasl_encode64[1] failed (%s)",
+		   sasl_errstring(r, NULL, NULL));
 	    return AUTH_ERROR;
+	}
+	
 	prot_printf(conn->pout, "AUTH %s %s\r\n", mechusing, buf);
     }
 
@@ -2135,11 +2132,18 @@ static int do_auth(struct lmtp_conn *conn)
 	    free(in);
 	}
 	if (r != SASL_OK && r != SASL_CONTINUE) {
+	    syslog(LOG_ERR,
+		   "lmtpengine do_auth: sasl_client_step failed (%s)",
+		   sasl_errdetail(conn->saslconn));
+
 	    return AUTH_ERROR;
 	}
 
 	r = sasl_encode64(out, outlen, buf, sizeof(buf), &b64len);
 	if (r != SASL_OK) {
+	    syslog(LOG_ERR,
+		   "lmtpengine do_auth: sasl_encode64[2] failed (%s)",
+		   sasl_errstring(r, NULL, NULL));
 	    return AUTH_ERROR;
 	}
 
@@ -2156,6 +2160,9 @@ static int do_auth(struct lmtp_conn *conn)
 	/* success */
 	return AUTH_OK;
     } else {
+	syslog(LOG_ERR,
+	       "lmtpengine do_auth: failed to authenticate");
+
 	/* don't bounce the message just because *we* can't authenticate */
 	return AUTH_ERROR;
     }

@@ -2,7 +2,7 @@
 /*
  * addr.y -- RFC 822 address parser
  * Ken Murchison
- * $Id: addr.y,v 1.1.1.1 2002-10-13 18:00:28 ghudson Exp $
+ * $Id: addr.y,v 1.1.1.2 2003-02-14 21:38:48 ghudson Exp $
  */
 /***********************************************************
         Copyright 1999 by Carnegie Mellon University
@@ -31,7 +31,8 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <string.h>
 
 #include "addr.h"
-
+#include "script.h"
+    
 int yyerror(char *msg);
 extern int yylex(void);
 
@@ -40,33 +41,7 @@ extern int yylex(void);
 
 %token ATOM QTEXT DTEXT
 
-%start sieve_address
-
 %%
-address: mailbox			/* one addressee */
-	| group				/* named list */
-	;
-
-group: phrase ':' ';'
-	| phrase ':' mailboxes ';'
-	;
-
-mailboxes: mailbox
-	| mailbox ',' mailboxes
-	;
-
-mailbox: addrspec			/* simple address */
-	| phrase routeaddr		/* name & addr-spec */
-	;
-
-routeaddr: '<' addrspec '>'
-	| '<' route ':' addrspec '>'
-	;
-
-route: '@' domain			/* path-relative */
-	| '@' domain ',' route
-	;
-
 sieve_address: addrspec			/* simple address */
 	| phrase '<' addrspec '>'	/* name & addr-spec */
 	;
@@ -108,8 +83,6 @@ qstring: '"' QTEXT '"'
 /* copy address error message into buffer provided by sieve parser */
 int yyerror(char *s)
 {
-extern char addrerr[];
-
-    strcpy(addrerr, s);
+    strlcpy(addrerr, s, sizeof(addrerr));
     return 0;
 }

@@ -1,5 +1,5 @@
 # Makefile for cyrus imap server and associated programs
-# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:02:40 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2003-02-14 21:38:50 ghudson Exp $
 # 
 # @configure_input@
 # 
@@ -62,7 +62,7 @@ CYRUS_USER=@cyrus_user@
 CYRUS_GROUP=@cyrus_group@
 
 DEFS = @DEFS@ @LOCALDEFS@
-CPPFLAGS = -I. -I.. -I../sieve -I$(srcdir) -I$(srcdir)/../lib -I$(srcdir)/../acap -I../acap @COM_ERR_CPPFLAGS@ @SIEVE_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+CPPFLAGS = -I. -I.. -I$(srcdir) -I$(srcdir)/../lib -I$(srcdir)/../sieve -I$(srcdir)/../acap @COM_ERR_CPPFLAGS@ @SIEVE_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
 IMAP_LIBS = @IMAP_LIBS@
 SIEVE_LIBS = @SIEVE_LIBS@
 IMAP_COM_ERR_LIBS = @IMAP_COM_ERR_LIBS@
@@ -98,9 +98,9 @@ cyrus_prefix = @cyrus_prefix@
 
 LOBJS= append.o mailbox.o mboxlist.o mupdate-client.o mboxname.o message.o \
 	config.o imap_err.o mupdate_err.o proc.o setproctitle.o convert_code.o \
-	duplicate.o saslclient.o acapmbox.o signals.o annotate.o \
+	duplicate.o saslclient.o saslserver.o acapmbox.o signals.o annotate.o \
 	search_engines.o squat.o squat_internal.o mbdump.o \
-	base64.o imapparse.o telemetry.o user.o notify.o $(SEEN) $(IDLE)
+	imapparse.o telemetry.o user.o notify.o $(SEEN) $(IDLE)
 
 IMAPDOBJS=pushstats.o backend.o imapd.o index.o tls.o version.o
 
@@ -113,9 +113,8 @@ SERVICETHREAD=../master/service-thread.o
 
 PROGS = imapd lmtpd pop3d \
 	fud reconstruct quota mbpath ipurge \
-	cyrdump chk_cyrus cvt_cyrusdb deliver \
-	ctl_mboxlist ctl_deliver ctl_cyrusdb squatter \
-	@IMAP_PROGS@
+	cyrdump chk_cyrus cvt_cyrusdb deliver ctl_mboxlist \
+	ctl_deliver ctl_cyrusdb squatter @IMAP_PROGS@
 
 BUILTSOURCES = imap_err.c imap_err.h pushstats.c pushstats.h \
 	lmtpstats.c lmtpstats.h xversion.h mupdate_err.c mupdate_err.h

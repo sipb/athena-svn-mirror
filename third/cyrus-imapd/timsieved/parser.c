@@ -1,7 +1,7 @@
 /* parser.c -- parser used by timsieved
  * Tim Martin
  * 9/21/99
- * $Id: parser.c,v 1.1.1.1 2002-10-13 18:01:34 ghudson Exp $
+ * $Id: parser.c,v 1.1.1.2 2003-02-14 21:38:58 ghudson Exp $
  */
 /*
  * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
@@ -56,13 +56,14 @@
 #include <sasl/sasl.h>
 #include <sasl/saslutil.h>
 
-#include "mboxlist.h"
-#include "xmalloc.h"
-#include "prot.h"
-#include "tls.h"
-#include "lex.h"
 #include "actions.h"
 #include "exitcodes.h"
+#include "lex.h"
+#include "mboxlist.h"
+#include "prot.h"
+#include "telemetry.h"
+#include "tls.h"
+#include "xmalloc.h"
 
 extern char sieved_clienthost[250];
 
@@ -74,6 +75,9 @@ const char *referral_host = NULL;
 int authenticated = 0;
 int verify_only = 0;
 int starttls_done = 0;
+
+struct namespace sieve_namespace;
+
 #ifdef HAVE_SSL
 /* our tls connection, if any */
 static SSL *tls_conn = NULL;
@@ -81,6 +85,7 @@ static SSL *tls_conn = NULL;
 
 /* from elsewhere */
 void fatal(const char *s, int code);
+extern int sieved_logfd;
 
 /* forward declarations */
 static void cmd_logout(struct protstream *sieved_out,
@@ -105,24 +110,6 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
   /* get one token from the lexer */
   while(token == EOL) 
       token = timlex(NULL, NULL, sieved_in);
-
-  /* If we have a referral host, no matter what the command is, we want
-   * to send them there */
-  /* note that referral_host is only non-NULL if we are authenticated */
-  if(referral_host && token != LOGOUT) {
-      char buf[4096];
-      char *c;
-
-      /* Truncate the hostname if necessary */
-      strcpy(buf, referral_host);
-      c = strchr(buf, '!');
-      if(c) *c = '\0';
-      
-      prot_printf(sieved_out, "BYE (REFERRAL \"%s\") \"Try Remote.\"\r\n",
-		  buf);
-      ret = TRUE;
-      goto done;
-  }
 
   if (!authenticated && (token > 255) && (token!=AUTHENTICATE) &&
       (token!=LOGOUT) && (token!=CAPABILITY) &&
@@ -193,6 +180,12 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
 	error_msg = "Authentication Error";
 	goto error;
     }
+
+#if 0 /* XXX - not implemented in sieveshell*/
+    /* referral_host is non-null only once we are authenticated */
+    if(referral_host)
+	goto do_referral;
+#endif
     break;
 
   case CAPABILITY:
@@ -201,6 +194,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
 	  error_msg = "Expected EOL";
 	  goto error;
       }
+
+      if(referral_host)
+	  goto do_referral;
 
       capabilities(sieved_out, sieved_saslconn);
       break;
@@ -236,6 +232,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
 	  goto error;
       }
 
+      if(referral_host)
+	  goto do_referral;
+
       cmd_havespace(sieved_out, sieve_name, num);
 
       break;
@@ -249,6 +248,8 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
 	  error_msg = "Garbage after logout command";
 	  goto error;
       }
+
+      /* no referral for logout */
 
       cmd_logout(sieved_out, sieved_in);
       
@@ -274,6 +275,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       error_msg = "Expected EOL";
       goto error;
     }
+
+    if(referral_host)
+	goto do_referral;
 
     getscript(sieved_out, sieve_name);
     
@@ -311,6 +315,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       goto error;
     }
 
+    if(referral_host)
+	goto do_referral;
+
     putscript(sieved_out, sieve_name, sieve_data, verify_only);
     
     break;
@@ -333,6 +340,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       error_msg = "Expected EOL";
       goto error;
     }
+
+    if(referral_host)
+	goto do_referral;
 
     setactive(sieved_out, sieve_name);
     
@@ -357,6 +367,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       goto error;
     }
 
+    if(referral_host)
+	goto do_referral;
+
     deletescript(sieved_out, sieve_name);
     
     break;
@@ -369,6 +382,9 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       goto error;
     }
 
+    if(referral_host)
+	goto do_referral;
+    
     listscripts(sieved_out);
     
     break;
@@ -381,12 +397,15 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       goto error;
     }
 
+    if(referral_host)
+	goto do_referral;
+
     cmd_starttls(sieved_out, sieved_in);
     
     break;
 
   default:
-    error_msg="Expected a command. Got something else";
+    error_msg="Expected a command. Got something else.";
     goto error;
     break;
 
@@ -415,6 +434,23 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
   prot_flush(sieved_out);
 
   return FALSE;
+
+ do_referral:
+  {
+      char buf[4096];
+      char *c;
+
+      /* Truncate the hostname if necessary */
+      strcpy(buf, referral_host);
+      c = strchr(buf, '!');
+      if(c) *c = '\0';
+      
+      prot_printf(sieved_out, "BYE (REFERRAL \"%s\") \"Try Remote.\"\r\n",
+		  buf);
+      ret = TRUE;
+      goto done;
+  }
+
 }
 
 
@@ -600,13 +636,29 @@ static int cmd_authenticate(struct protstream *sieved_out,
       /* Check for a remote mailbox (should we setup a redirect?) */
       char inboxname[1024];
       char *server;
+      int r;
       int type;
       
       strcpy(inboxname, "user.");
       strcat(inboxname, username);
 
-      mboxlist_detail(inboxname, &type, &server, NULL, NULL, NULL);
+      /* Set namespace */
+      if ((r = mboxname_init_namespace(&sieve_namespace, 1)) != 0) {
+          *errmsg = "mailbox unknown";
+	  return FALSE;
+      }
+
+      /* Translate any separators in userid */
+      mboxname_hiersep_tointernal(&sieve_namespace, inboxname+5);
+
+      r = mboxlist_detail(inboxname, &type, &server, NULL, NULL, NULL);
       
+      if(r) {
+	  /* mboxlist_detail error */
+	  *errmsg = "mailbox unknown";
+	  return FALSE;
+      }
+
       if(type & MBTYPE_REMOTE) {
 	  /* It's a remote mailbox, we want to set up a referral */
 	  referral_host = xstrdup(server);
@@ -646,7 +698,8 @@ static int cmd_authenticate(struct protstream *sieved_out,
   prot_setsasl(sieved_in, sieved_saslconn);
   prot_setsasl(sieved_out, sieved_saslconn);
 
-  /* free memory */
+  /* Create telemetry log */
+  sieved_logfd = telemetry_log(username, sieved_in, sieved_out);
 
   return TRUE;
 }
@@ -716,7 +769,7 @@ static int cmd_starttls(struct protstream *sieved_out, struct protstream *sieved
 
     starttls_done = 1;
 
-    return capabilities(sieved_out, sieved_saslconn);
+    return result;
 }
 #else
 static int cmd_starttls(struct protstream *sieved_out, struct protstream *sieved_in)

@@ -1,4 +1,4 @@
-/* $Id: acconfig.h,v 1.1.1.1 2002-10-13 18:02:52 ghudson Exp $ */
+/* $Id: acconfig.h,v 1.1.1.2 2003-02-14 21:39:26 ghudson Exp $ */
 /* 
  * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -140,6 +140,9 @@
 /* do we have rlim_t? */
 #undef HAVE_RLIM_T
 
+/* path to pid lockfile for master */
+#undef MASTER_PIDFILE
+
 /* do we have fdatasync */
 #undef HAVE_FDATASYNC
 
@@ -149,6 +152,10 @@
 #undef CONFIG_DB_SEEN
 #undef CONFIG_DB_SUBS
 #undef CONFIG_DB_TLS
+
+/* IPv6 */
+#undef HAVE_GETADDRINFO
+#undef HAVE_GETNAMEINFO
 
 @BOTTOM@
 
@@ -201,9 +208,12 @@ typedef int rlim_t;
 #ifndef HAVE_GETADDRINFO
 #define	getaddrinfo	sasl_getaddrinfo
 #define	freeaddrinfo	sasl_freeaddrinfo
-#define	getnameinfo	sasl_getnameinfo
 #define	gai_strerror	sasl_gai_strerror
 #include "gai.h"
+#endif
+
+#ifndef HAVE_GETNAMEINFO
+#define	getnameinfo	sasl_getnameinfo
 #endif
 
 #ifndef	NI_WITHSCOPEID

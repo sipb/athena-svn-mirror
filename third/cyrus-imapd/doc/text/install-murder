@@ -190,6 +190,15 @@ Configuring the frontends
     connect to the frontends, and the frontends will proxy or refer as
     applicable to the blackend servers.
 
+Additional backend configuration
+
+    If your authentication system requires usernames, passwords, etc, to
+    authenticate (e.g. it isn't Kerberos), then you will also need to
+    specify proxy_authname (and friends) in the backend imapd.confs as
+    well. This is so that the backends can authenticate to eachother to
+    facilitate maibox moves. (Backend machines will need to be full
+    admins). 
+
 Delivering mail
 
     To deliver mail to your Murder, configure your MTA just as you did

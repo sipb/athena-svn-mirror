@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.1.1.1 2002-10-13 18:03:02 ghudson Exp $ */
+/* $Id: IMAP.xs,v 1.1.1.2 2003-02-14 21:38:42 ghudson Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -50,9 +50,13 @@
 #include "perl.h"
 #include "XSUB.h"
 #include <pwd.h>
+#include <unistd.h>
+
 #include "imclient.h"
-#include "cyrperl.h"
 #include "imapurl.h"
+#include "xmalloc.h"
+
+#include "cyrperl.h"
 
 typedef struct xscyrus *Cyrus_IMAP;
 
@@ -66,8 +70,7 @@ typedef struct xscyrus *Cyrus_IMAP;
  */
 
 /* hack, since libcyrus apparently expects fatal() to exist */
-void
-fatal(char *s, int exit)
+void fatal(const char *s, int exit)
 {
   croak(s);
 }
@@ -120,8 +123,7 @@ void imclient_xs_cb(struct imclient *client, struct xsccb *rock,
   PUSHMARK(SP);
   XPUSHs(sv_2mortal(newSVpv("-client", 0)));
   rv = newSVsv(&sv_undef);
-  sv_setref_pv(rv, rock->client->class, (void *) rock->client);
-  rock->client->cnt++;
+  sv_setref_pv(rv, NULL, (void *) rock->client);
   XPUSHs(rv);
   if (rock->prock != &sv_undef) {
     XPUSHs(sv_2mortal(newSVpv("-rock", 0)));
@@ -294,7 +296,7 @@ CODE:
 	  XSRETURN_UNDEF;
 	}
 	ST(0) = sv_newmortal();
-/*fprintf(stderr, "!NEW %p\n", rv);*/
+	/* fprintf(stderr, "!NEW %p %s\n", rv, class); */
 	sv_setref_pv(ST(0), class, (void *) rv);
 
 void
@@ -303,8 +305,9 @@ imclient_DESTROY(client)
 PREINIT:
 	struct xscb *nx;
 CODE:
-/*fprintf(stderr, "!DESTROY %p %d\n", client, client->cnt);*/
+/* fprintf(stderr, "!DESTROY %p %d\n", client, client->cnt); */
 	if (!--client->cnt) {
+/* printf("closing\n"); */
 	  imclient_close(client->imclient);
 	  while (client->cb) {
 	    nx = client->cb->next;

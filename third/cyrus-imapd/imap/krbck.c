@@ -1,5 +1,5 @@
 /* krbck.c -- Test KERBEROS_V4 server configuration
- * $Id: krbck.c,v 1.1.1.1 2002-10-13 18:02:30 ghudson Exp $
+ * $Id: krbck.c,v 1.1.1.2 2003-02-14 21:38:19 ghudson Exp $
  
  * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
  *
@@ -61,8 +61,6 @@
 
 #define CONFIG_FILENAME "/etc/imapd.conf"
 #define MAX_FILENAME_LEN 255
-
-int errno;
 
 static int  evalcheck(char*, int, char*);
 static void evalerrorno(int);

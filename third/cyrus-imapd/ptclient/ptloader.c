@@ -42,7 +42,7 @@
  */
 
 static char rcsid[] __attribute__((unused)) = 
-      "$Id: ptloader.c,v 1.1.1.1 2002-10-13 18:01:07 ghudson Exp $";
+      "$Id: ptloader.c,v 1.1.1.2 2003-02-14 21:39:18 ghudson Exp $";
 
 #include <config.h>
 
@@ -117,8 +117,8 @@ main(argc, argv)
     user = AUTH_USER;
 
     /* normally LOCAL6, but do this while we're logging keys */
-    openlog(PTCLIENT, LOG_PID, LOG_LOCAL7);
-    syslog(LOG_NOTICE, "starting: $Id: ptloader.c,v 1.1.1.1 2002-10-13 18:01:07 ghudson Exp $");
+    openlog("ptloader", LOG_PID, LOG_LOCAL7);
+    syslog(LOG_NOTICE, "starting: $Id: ptloader.c,v 1.1.1.2 2003-02-14 21:39:18 ghudson Exp $");
 
     while ((opt = getopt(argc, argv, "Uspd:l:f:u:t:")) != EOF) {
 	switch (opt) {
@@ -267,6 +267,7 @@ int c;
     DBT key, data;
     char indata[PTS_DB_KEYSIZE];
     char user[PR_MAXNAMELEN];
+    char user_tmp[PR_MAXNAMELEN];
     namelist groups;
     int i,fd,rc;
     size_t size;
@@ -316,8 +317,11 @@ int c;
     memset(&groups, 0, sizeof(groups));
     groups.namelist_len = 0;
     groups.namelist_val = NULL;
-    
-    if ((rc = pr_ListMembers(user, &groups))) {
+
+    /* afs is going to overwrite our nice canonicalized user if we don't
+     * give it something else to chew on */
+    strlcpy(user_tmp, user, sizeof(user_tmp));
+    if ((rc = pr_ListMembers(user_tmp, &groups))) {
         syslog(LOG_ERR, "pr_ListMembers %s: %s", user, error_message(rc));
         reply = error_message(rc);
         goto sendreply;
@@ -370,10 +374,22 @@ int c;
     strcpy(fnamebuf, STATEDIR);
     strcat(fnamebuf, PTS_DBFIL);
     rc = db_create(&ptdb, NULL, 0);
-    if (!rc) rc = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, 0, 0664);
+    if (!rc) {
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
+	rc = ptdb->open(ptdb, NULL, fnamebuf, NULL, DB_HASH, DB_AUTO_COMMIT, 0664);
+#else
+	rc = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, 0, 0664);
+#endif
+    }
     if (rc == ENOENT) {
 	rc = db_create(&ptdb, NULL, 0);
-	if (!rc) rc = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, DB_CREATE, 0664);
+	if (!rc) {
+#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 1
+	    rc = ptdb->open(ptdb, NULL, fnamebuf, NULL, DB_HASH, DB_CREATE | DB_AUTO_COMMIT, 0664);
+#else
+	    rc = ptdb->open(ptdb, fnamebuf, NULL, DB_HASH, DB_CREATE, 0664);
+#endif
+	}
     }
     if (rc != 0) {
         syslog(LOG_ERR, "IOERROR: opening database %s: %s", fnamebuf,
@@ -557,4 +573,4 @@ void fatal(const char *msg, int exitcode)
     syslog(LOG_ERR, "%s", msg);
     exit(-1);
 }
-/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/ptclient/ptloader.c,v 1.1.1.1 2002-10-13 18:01:07 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/ptclient/ptloader.c,v 1.1.1.2 2003-02-14 21:39:18 ghudson Exp $ */

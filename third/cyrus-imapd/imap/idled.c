@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: idled.c,v 1.1.1.1 2002-10-13 18:02:29 ghudson Exp $ */
+/* $Id: idled.c,v 1.1.1.2 2003-02-14 21:38:53 ghudson Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -264,9 +264,9 @@ int main(int argc, char **argv)
 
     while ((opt = getopt(argc, argv, "C:d")) != EOF) {
 	switch (opt) {
-	case 'C': /* alt config file */
-	    alt_config = optarg;
-	    break;
+        case 'C': /* alt config file */
+            alt_config = optarg;
+            break;
 	case 'd': /* don't fork. debugging mode */
 	    debugmode = 1;
 	    break;
