@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char *rcsid_globals_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 1.2 1986-01-25 15:08:29 treese Exp $";
+static char *rcsid_globals_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 1.3 1986-01-29 14:47:20 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -35,16 +35,24 @@ extern ERRCODE	next_page();
 extern ERRCODE	prev_page();
 extern ERRCODE	quit();
 extern ERRCODE	goto_entry();
+extern ERRCODE	define_abbrev();
+extern ERRCODE	list_abbrevs();
+extern ERRCODE	insert_entry();
+extern ERRCODE	remove_entry();
 
 /* Command table. */
 
 COMMAND Command_Table[] = {
 	'?',	print_help,	"Print help information.",
+	'd',	define_abbrev,	"Define a new abbreviation.",
 	'g',	goto_entry,	"Go to a specified entry.",
 	'h',	print_help,	"Print help information.",
+	'i',	insert_entry,	"Insert a new entry.",
+	'l',	list_abbrevs,	"List all abbreviations.",
 	'n',	next_entry,	"Go to the next entry.",
 	'p',	prev_entry,	"Go to the previous entry.",
 	'q',	quit,		"Quit CREF.",
+	'r',	remove_entry,	"Remove an entry from CREF.",
 	's',	save_to_file,	"Save an entry to a file.",
 	't',	top,		"Go to the top level.",
 	'u',	up_level,	"Go up one level.",
@@ -66,6 +74,7 @@ int Command_Count;			/* Number of CREF commands. */
 char Save_File[FILENAME_SIZE];		/* Default save file. */
 char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
 ABBREV Abbrev_Table[MAX_ABBREVS];	/* Abbreviation table. */
+int Abbrev_Count;			/* Number of abbreviations. */
 
 /* Function:	init_globals() initializes the global state variables.
  * Arguments:	None.
@@ -76,17 +85,19 @@ ABBREV Abbrev_Table[MAX_ABBREVS];	/* Abbreviation table. */
  *	to change these should be done later.
  */
 
-init_globals(argc, argv)
+init_globals()
 {
   struct passwd *user_info;		/* User password entry. */
 
   Command_Count = sizeof(Command_Table)/sizeof(COMMAND);
   strcpy(Root_Dir, CREF_ROOT);
   set_current_dir(Root_Dir);
-  Current_Index = 0;
+  Current_Index = 1;
+  Entry_Count = 0;
   Previous_Index = 0;
-  Index_Start = 0;
+  Index_Start = 1;
   Is_Consultant = FALSE;
+  Abbrev_Count = 0;
   strcpy(Save_File, "cref_info");
 
   user_info = getpwuid(getuid());

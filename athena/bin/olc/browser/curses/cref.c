@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.6 1986-01-25 15:07:54 treese Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.c,v 1.7 1986-01-29 14:45:27 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -83,7 +83,7 @@ command_loop()
 	      clrtoeol();
 	      refresh();
 	      entry_index = atoi(inbuf);
-	      display_entry(entry_index - 1);
+	      display_entry(entry_index);
 	    }
 	}
       else if (command == '\n')
@@ -122,37 +122,28 @@ parse_args(argc, argv)
   int c;				/* Option character. */
   char filename[FILENAME_SIZE];		/* Option filename directory. */
 
-  while ( (c = getopt(argc, argv, "r:s:f:a:")) != EOF)
+  while ( (c = getopt(argc, argv, "r:s:f:a:c:")) != EOF)
     switch (c)
       {
       case 'r':
 	strcpy(filename, optarg);
 	if (filename[0] != '/')
-	  {
-	    fprintf(stderr, "Invalid root directory %s\n", filename);
-	    exit(ERROR);
-	  }
+	    err_exit("Invalid root directory:", filename);
 	strcpy(Root_Dir, filename);
 	strcpy(Current_Dir, Root_Dir);
 	if (check_cref_dir(Current_Dir) != TRUE)
-	  err_exit("Invalid CREF directory:\n", Current_Dir);
+	  err_exit("Invalid CREF directory:", Current_Dir);
 	break;
       case 's':
 	strcpy(filename, optarg);
 	if (filename[0] == '-')
-	  {
-	    fprintf(stderr, "Invalid default storage file %s\n", filename);
-	    exit(ERROR);
-	  }
+	  err_exit("Invalid default storage file:", filename);
 	strcpy(Save_File, filename);
 	break;
       case 'f':
 	strcpy(filename, optarg);
 	if (filename[0] == '-')
-	  {
-	    fprintf(stderr, "Invalid file offset %s\n", filename);
-	    exit(ERROR);
-	  }
+	  err_exit("Invalid file offset:", filename);
 	strcpy(Current_Dir, Root_Dir);
 	strcat(Current_Dir, "/");
 	strcat(Current_Dir, filename);
@@ -162,11 +153,17 @@ parse_args(argc, argv)
       case 'a':
 	strcpy(filename, optarg);
 	if (filename[0] == '-')
-	  {
-	    fprintf(stderr, "Invalid abbreviation filename %s\n", filename);
-	    exit(ERROR);
-	  }
+	  err_exit("Invalid abbreviation filename:", filename);
 	strcpy(Abbrev_File, filename);
+	break;
+      case 'c':
+	strcpy(filename, optarg);
+	if (filename[0] != '/')
+	    err_exit("Invalid root directory:", filename);
+	strcpy(Root_Dir, filename);
+	strcpy(Current_Dir, Root_Dir);
+	if (create_cref_dir(Current_Dir) != SUCCESS)
+	  err_abort("cref: Cannot create new root.\n");
 	break;
       case '?':
       default:

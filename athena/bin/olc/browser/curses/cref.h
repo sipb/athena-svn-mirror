@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v $
  *	$Author: treese $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.3 1986-01-25 15:08:49 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref.h,v 1.4 1986-01-29 14:48:37 treese Exp $
  */
 
 
@@ -47,8 +47,8 @@ typedef struct tCOMMAND {
 /* Structure describing a CREF abbreviation. */
 
 typedef struct tABBREV {
-	char label[LINE_LENGTH];	/* Label for a particular place. */
-	char filename[FILENAME_SIZE];	/* Filename belonging to label. */
+	char abbrev[LINE_LENGTH];	/* Abbrev. for a particular place. */
+	char filename[FILENAME_SIZE];	/* Filename belonging to abbrev. */
 	} ABBREV;
 
 /* Where things are. */
@@ -64,6 +64,7 @@ typedef struct tABBREV {
 #define	CREF_PROMPT	"cref> "	/* Prompt string. */
 
 #define	CREF_ENTRY	"entry"		/* String for a file entry. */
+#define CREF_SUBDIR	"directory"	/* String for a directory entry. */
 #define	CREF_FILE	100		/* Code for a file entry. */
 #define CREF_DIR	101		/* Code for a directory. */
 
@@ -71,6 +72,8 @@ typedef struct tABBREV {
 #define CONTENTS_DELIM	':'		/* Delimiter in contents. */
 
 #define	CONSULT_GROUP	"consult"	/* Consultants group. */
+#define FILE_PROT	0644		/* Default file protection. */
+#define DIR_PROT	0755		/* Default directory protection. */
 
 /* Error Codes. */
 

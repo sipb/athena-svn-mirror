@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.5 1986-01-25 15:07:35 treese Exp $";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.6 1986-01-29 14:45:00 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -44,11 +44,7 @@ print_help()
     }
   printf("   <space>\tDisplay next index page.\n");
   printf("   <number>\tDisplay specified entry.\n");
-  standout();
-  mvaddstr(LINES-1, 0, "Hit any key to continue");
-  standend();
-  refresh();
-  getch();
+  wait_for_key();
   clear();
   make_display();
 }
@@ -76,7 +72,7 @@ prev_entry()
 {
   int new_index;				/* New entry index. */
   
-  if ( (new_index = Current_Index - 1) < 0)
+  if ( (new_index = Current_Index - 1) < 1)
     message(1, "Beginning of entries.");
   else
     display_entry(new_index);
@@ -118,7 +114,7 @@ up_level()
 	{
 	  set_current_dir(new_dir);
 	  Current_Index = Previous_Index;
-	  Previous_Index = 0;
+	  Previous_Index = 1;
 	}
     }
   make_display();
@@ -133,12 +129,10 @@ up_level()
 save_to_file()
 {
   ENTRY *save_entry;			/* Entry to save. */
-  int out_fd;				/* Ouput file descriptor. */
-  int in_fd;				/* Input file descriptor. */
+  int fd;				/* Input file descriptor. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   char error[ERRSIZE];			/* Error message. */
   int save_index;			/* Index of desired entry. */
-  int nbytes;				/* Number of bytes read. */
   char msg[LINE_LENGTH];		/* Message for saving file. */
   char filename[FILENAME_SIZE];		/* Name of file to use. */
 
@@ -148,7 +142,7 @@ save_to_file()
   if (inbuf[0] == (char) NULL)
     return;
   save_index = atoi(inbuf);
-  if ( (save_entry = get_entry(save_index)) == NULL)
+  if ( (save_entry = get_entry(save_index - 1)) == NULL)
     {
       message(2, "Invalid entry number.");
       return;
@@ -158,7 +152,7 @@ save_to_file()
       message(2, "Can't save directory entry.");
       return;
     }
-  if ( (in_fd = open(save_entry->filename, O_RDONLY, 0)) < 0)
+  if ( (fd = open(save_entry->filename, O_RDONLY, 0)) < 0)
     {
       if (errno == EPERM)
 	sprintf(error,"You are not allowed to read this file");
@@ -166,6 +160,7 @@ save_to_file()
       message(1, error);
       return;
     }
+  close(fd);
   sprintf(msg, "Filename (default %s)? ", Save_File);
   message(1, msg);
   inbuf[0] = (char) NULL;
@@ -175,17 +170,7 @@ save_to_file()
   else
     strcpy(filename, inbuf);
   message(1, "");
-  if ((out_fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0)
-    {
-      sprintf(error, "Unable to open file %s\n", filename);
-      message(1, error);
-      return;
-    }
-  while ( (nbytes = read(in_fd, inbuf, LINE_LENGTH)) == LINE_LENGTH)
-    write(out_fd, inbuf, LINE_LENGTH);
-  write(out_fd, inbuf, nbytes);
-  close(out_fd);
-  close(in_fd);
+  copy_file(save_entry->filename, filename);
 }
 
 /* Function:	next_page() displays the next page of the index.
@@ -215,8 +200,8 @@ next_page()
 prev_page()
 {
   Index_Start = Index_Start - MAX_INDEX_LINES + 1;
-  if (Index_Start < 0)
-    Index_Start = 0;
+  if (Index_Start < 1)
+    Index_Start = 1;
   make_display();
 }
 
@@ -258,11 +243,14 @@ goto_entry()
  
   i = 0;
 
-  while ( Abbrev_Table[i].label[i] != (char) NULL)
+  while ( i < Abbrev_Count)
     {
-      if ( ! strcmp(inbuf, Abbrev_Table[i].label) )
+      if ( ! strcmp(inbuf, Abbrev_Table[i].abbrev) )
 	{
-	  make_path(Root_Dir, Abbrev_Table[i].filename, new_dir);
+	  if (Abbrev_Table[i].filename[0] == '/')
+	    strcpy(new_dir, Abbrev_Table[i].filename);
+	  else
+	    make_path(Root_Dir, Abbrev_Table[i].filename, new_dir);
 	  if (check_cref_dir(new_dir) == TRUE)
 	    {
 	      set_current_dir(new_dir);
@@ -279,8 +267,316 @@ goto_entry()
 	}
       i++;
     }
-  sprintf(error, "Label %s is not defined.", inbuf);
+  sprintf(error, "Abbreviation %s is not defined.", inbuf);
   message(1, error);
 }
 
+/* Function:	define_abbrev() defines a new abbreviation and adds it
+ *			to the current user abbreviation file.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
 
+define_abbrev()
+{
+  FILE *fp;				/* File pointer. */
+  char error[ERRSIZE];			/* Error message. */
+  char inbuf[LINE_LENGTH];		/* Input buffer. */
+  int index;				/* Entry index. */
+  ENTRY *entry;				/* Entry to get abbreviation. */
+
+  if ( (fp = fopen(Abbrev_File, "a")) == (FILE *) NULL)
+      {
+	sprintf(error, "Unable to open abbreviation file %s", Abbrev_File);
+	message(1, error);
+	return;
+      }
+  inbuf[0] = (char) NULL;
+  message(1, "Define abbreviation for entry: ");
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
+  index = atoi(inbuf);
+  if ( (entry = get_entry(index - 1)) == NULL)
+    {
+      message(2, "Invalid entry number.");
+      return;
+    }
+  if (entry->type != CREF_DIR)
+    {
+      message(2, "Can't define abbreviation for file entry.");
+      return;
+    }
+  message(1, "Abbreviation: ");
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
+  if (Abbrev_Count >= MAX_ABBREVS)
+    {
+      message(1, "Too many abbreviations.");
+      return;
+    }
+  fprintf(fp, "%s\t%s\n", inbuf, entry->filename);
+  strcpy(Abbrev_Table[Abbrev_Count].abbrev, inbuf);
+  strcpy(Abbrev_Table[Abbrev_Count].filename, entry->filename);
+  Abbrev_Count++;
+  Abbrev_Table[Abbrev_Count].abbrev[0] = (char) NULL;
+  Abbrev_Table[Abbrev_Count].filename[0] = (char) NULL;
+  fclose(fp);
+}
+
+/* Function:	list_abbrevs() lists all known abbreviations.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+list_abbrevs()
+{
+  int index;				/* Index in abbrev. table. */
+  int curr_line;			/* Current screen line. */
+
+  clear();
+  refresh();
+  curr_line = 0;
+  printf("Abbreviations are:\n\n");
+  for (index = 0; index < Abbrev_Count; index++, curr_line++)
+    {
+      if (curr_line > LINES - 2)
+	{
+	  standout();
+	  mvaddstr(LINES-1, 0, "Hit any key to continue");
+	  standend();
+	  refresh();
+	  getch();
+	  clear();
+	  curr_line = 0;
+	}
+      printf("%s\t%s\n", Abbrev_Table[index].abbrev,
+	     Abbrev_Table[index].filename);
+    }
+  standout();
+  mvaddstr(LINES-1, 0, "Hit any key to continue");
+  standend();
+  refresh();
+  getch();
+  clear();
+  make_display();
+}
+
+/* Function:	insert_entry() inserts a new entry into the current CREF
+ *			contents file.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+insert_entry()
+{
+  FILE *fp;				/* File pointer. */
+  char contents[FILENAME_SIZE];		/* Contents filename. */
+  char inbuf[LINE_LENGTH];		/* Input buffer. */
+  int index;				/* Entry index. */
+  int i;				/* Index variable. */
+  char curr_type[LINE_LENGTH];		/* Current type string. */
+  int type;				/* Type of entry. */
+  char type_name[LINE_LENGTH];		/* Name of entry type. */
+  char title[LINE_LENGTH];		/* Title of entry. */
+  char filename[FILENAME_SIZE];		/* Filename to use. */
+  char formatter[LINE_LENGTH];		/* Text formatter to use. */
+  char spare[LINE_LENGTH];		/* Additional information. */
+  char newdir[FILENAME_SIZE];		/* New directory pathname. */
+  char newfile[FILENAME_SIZE];		/* New file pathname. */
+  int row;				/* Row on screen. */
+
+  row = 0;
+  make_path(Current_Dir, CONTENTS, contents);
+  inbuf[0] = (char) NULL;
+  message(1, "Insert entry before: ");
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
+  index = atoi(inbuf);
+  if ( index < 1 )
+    {
+      message(2, "Invalid entry number.");
+      return;
+    }
+  clear();
+  refresh();
+  while ( (inbuf[0] != 'f') && (inbuf[0] != 'd') )
+    {
+      mvaddstr(row++, 0, "Is the entry a file [f] or a new directory [d]? ");
+      refresh();
+      inbuf[0] = (char) NULL;
+      get_input(inbuf);
+    }
+  if (inbuf[0] == 'f')
+    type = CREF_FILE;
+  else if (inbuf[0] == 'd')
+    type = CREF_DIR;
+  mvaddstr(row++, 0, "Title of entry: ");
+  refresh();
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
+  strcpy(title, inbuf);
+  mvaddstr(row++, 0, "Filename of entry: ");
+  refresh();
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
+  strcpy(filename, inbuf);
+  if (type == CREF_FILE)
+    {
+      strcpy(type_name, CREF_ENTRY);
+      mvaddstr(row++, 0, "Text formatter to use (<CR> for none): ");
+      refresh();
+      inbuf[0] = (char) NULL;
+      get_input(inbuf);
+      if (inbuf[0] == (char) NULL)
+	strcpy(formatter, "none");
+      else
+	strcpy(formatter, inbuf);
+    }
+  else
+    {
+      strcpy(formatter, "none");
+      strcpy(type_name, CREF_SUBDIR);
+    }
+  mvaddstr(row++, 0, "Additional information: ");
+  refresh();
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
+  strcpy(spare, inbuf);
+
+  mvaddstr(row++, 0, "Is this information correct [y/n]? ");
+  refresh();
+  inbuf[0] = (char) NULL;
+  get_input(inbuf);
+  if (inbuf[0] != 'y')
+    {
+      clear();
+      make_display();
+      return;
+    }
+
+  if (index > Entry_Count)
+    {
+      if ( (fp = fopen(contents, "a")) == (FILE *) NULL)
+	{
+	  message(1, "Unable to open contents file.");
+	  make_display();
+	  return;
+	}
+      fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
+	      title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
+	      CONTENTS_DELIM, spare);
+    }
+else
+  {
+    if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
+      {
+	message(1, "Unable to open contents file.");
+	make_display();
+	return;
+      }
+    
+    i = 0;
+    while (i < Entry_Count)
+      {
+	if (i == (index - 1))
+	  {
+	    fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
+		    title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
+		    CONTENTS_DELIM, spare);
+	  }
+	if (Entry_Table[i].type == CREF_FILE)
+	  strcpy(curr_type, CREF_ENTRY);
+	else
+	  strcpy(curr_type, CREF_SUBDIR);
+	fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
+		Entry_Table[i].title,CONTENTS_DELIM, Entry_Table[i].filename,
+		CONTENTS_DELIM, Entry_Table[i].formatter,
+		CONTENTS_DELIM, Entry_Table[i].spare);
+	i++;
+      }
+  }
+  fclose(fp);
+
+  if (type == CREF_DIR)
+    {
+      make_path(Current_Dir, filename, newdir);
+      create_cref_dir(newdir);
+    }
+  else if (type == CREF_FILE)
+    {
+      make_path(Current_Dir, filename, newfile);
+      copy_file(filename, newfile);
+    }
+  set_current_dir(Current_Dir);
+  wait_for_key();
+  clear();
+  make_display();
+}
+
+/* Function:	remove_entry() removes an entry from the CREF
+ *			contents file.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+remove_entry()
+{
+  FILE *fp;				/* File pointer. */
+  char contents[FILENAME_SIZE];		/* Contents filename. */
+  char inbuf[LINE_LENGTH];		/* Input buffer. */
+  int index;				/* Entry index. */
+  int i;				/* Index variable. */
+  char curr_type[LINE_LENGTH];		/* Current type string. */
+  ENTRY *entry;				/* Entry to be removed. */
+  int j;				/* Index variable. */
+
+  make_path(Current_Dir, CONTENTS, contents);
+  inbuf[0] = (char) NULL;
+  message(1, "Remove entry: ");
+  get_input(inbuf);
+  if (inbuf[0] == (char) NULL)
+    return;
+  index = atoi(inbuf);
+  if ( (entry = get_entry(index)) == (ENTRY *) NULL )
+    {
+      message(2, "Invalid entry number.");
+      return;
+    }
+
+  if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
+    {
+      message(1, "Unable to open contents file.");
+      make_display();
+      return;
+    }
+
+  i = 1;
+  while (i <= Entry_Count)
+    {
+      if (i != index)
+	{
+	  j = i - 1;
+	  if (Entry_Table[j].type == CREF_FILE)
+	    strcpy(curr_type, CREF_ENTRY);
+	  else
+	    strcpy(curr_type, CREF_SUBDIR);
+	  fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
+		  Entry_Table[j].title,CONTENTS_DELIM, Entry_Table[j].filename,
+		  CONTENTS_DELIM, Entry_Table[j].formatter,
+		  CONTENTS_DELIM, Entry_Table[j].spare);
+	}
+      i++;
+    }
+  if (unlink(entry->filename) < 0)
+      message(1, "Unable to remove entry (may be directory)");
+  set_current_dir(Current_Dir);
+  make_display();
+}

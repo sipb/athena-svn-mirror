@@ -8,7 +8,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v $
  *	$Author: treese $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v 1.3 1986-01-25 15:08:54 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v 1.4 1986-01-29 14:48:51 treese Exp $
  */
 
 /* System Variables. */
@@ -30,3 +30,4 @@ extern int Command_Count;		/* Number of CREF commands. */
 extern char Save_File[];		/* Default save file. */
 extern char Abbrev_File[];		/* Abbreviation file. */
 extern ABBREV Abbrev_Table[];		/* Abbreviation table. */
+extern int Abbrev_Count;		/* Number of abbreviations. */

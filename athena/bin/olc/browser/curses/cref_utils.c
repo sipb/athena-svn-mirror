@@ -11,7 +11,7 @@
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.4 1986-01-25 15:08:06 treese Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 1.5 1986-01-29 14:45:40 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -106,13 +106,13 @@ check_consultant()
 
 ERRCODE
 call_program(program, argument)
-     char *program;				/* Name of program to be called. */
-     char *argument;				/* Argument to be passed to program. */
+     char *program;			/* Name of program to be called. */
+     char *argument;			/* Argument to be passed to program. */
 {
-  int pid;			/* Process id for forking. */
-  char error[ERRSIZE];		/* Error message. */
-  extern int errno;
-  extern char *sys_errlist[];
+  int pid;				/* Process id for forking. */
+  char error[ERRSIZE];			/* Error message. */
+  extern int errno;			/* Global error variable. */
+  extern char *sys_errlist[];		/* System error messages. */
   
   if ( (pid = fork() ) == -1)
     {
@@ -128,10 +128,11 @@ call_program(program, argument)
       message(1, error);
       return(ERROR);
     }
-  else	{
-    wait(0);
-    return(SUCCESS);
-  }
+  else
+    {
+      wait(0);
+      return(SUCCESS);
+    }
 }
 
 /* Function:	get_input() gets an input string from the terminal.  It
@@ -161,10 +162,9 @@ get_input(buffer)
     }
   
   length = strlen(buffer);
-  ptr = buffer + length - 1;
+  ptr = buffer + length;
   noecho();
   getyx(stdscr, y, x);
-  x++;
   x_start = x - length;
   addstr(buffer);
   refresh();
@@ -172,7 +172,7 @@ get_input(buffer)
     {
       if (c == tty.sg_erase)
 	{
-	  if (x > xstart)
+	  if (x > x_start)
 	    {
 	      x--;
 	      move(y, x);
@@ -180,6 +180,13 @@ get_input(buffer)
 	      refresh();
 	      *ptr = (char) NULL;
 	      ptr--;
+	    }
+	  else if (x == x_start)
+	    {
+	      move(y, x-1);
+	      clrtoeol();
+	      refresh();
+	      *ptr = (char) NULL;
 	    }
 	}
       else if (c == tty.sg_kill)
@@ -193,16 +200,16 @@ get_input(buffer)
 	}
       else if (isalnum(c) || ispunct(c) || isspace(c))
 	{
-	  ptr++;
 	  *ptr = c;
-	  addch(c);
+	  ptr++;
 	  x++;
+	  addch(c);
 	  refresh();
 	}
       else
 	putchar('\007');
     }
-  *(ptr+1) = (char) NULL;
+  *(ptr) = (char) NULL;
   echo();
 }
 
@@ -245,4 +252,87 @@ make_path(head, tail, buffer)
   strcpy(buffer, head);
   strcat(buffer, "/");
   strcat(buffer, tail);
+}
+
+/* Function:	copy_file() makes a copy of a file.
+ * Arguments:	src_file:	Source filename.
+ *		dest_file:	Destination filename.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+copy_file(src_file, dest_file)
+     char *src_file;
+     char *dest_file;
+{
+  int in_fd;				/* Input file descriptor. */
+  int out_fd;				/* Output file descriptor */
+  char inbuf[LINE_LENGTH];		/* Input buffer. */
+  char error[ERRSIZE];			/* Error message. */
+  int nbytes;				/* Number of bytes read. */
+
+  if ((in_fd = open(src_file, O_RDONLY, 0)) < 0)
+    {
+      sprintf(error, "Unable to open input file %s\n", src_file);
+      message(1, error);
+      return;
+    }
+  if ((out_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, FILE_PROT)) < 0)
+    {
+      sprintf(error, "Unable to open output file %s\n", dest_file);
+      message(1, error);
+      return;
+    }
+  while ( (nbytes = read(in_fd, inbuf, LINE_LENGTH)) == LINE_LENGTH)
+    write(out_fd, inbuf, LINE_LENGTH);
+  write(out_fd, inbuf, nbytes);
+  close(out_fd);
+  close(in_fd);
+}
+
+/* Function:	wait_for_key() prints a message at the bottom of the
+ *			screen and waits for the user to type a key.
+ * Arguments:	None.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+wait_for_key()
+{
+  standout();
+  mvaddstr(LINES-1, 0, "Hit any key to continue");
+  standend();
+  refresh();
+  getch();
+}
+
+/* Function:	create_cref_dir() makes a new CREF directory with an
+ *			empty contents file.
+ * Arguments:	dir:	Name of directory to create.
+ * Returns:	Nothing.
+ * Notes:
+ */
+
+create_cref_dir(dir)
+     char *dir;
+{
+  FILE *fp;				/* FILE pointer. */
+  char contents[FILENAME_SIZE];		/* Name of contents file. */
+      
+  make_path(dir, CONTENTS, contents);
+  if (mkdir(dir, DIR_PROT) < 0)
+    {
+      printf("\nUnable to create directory %s.\n", dir);
+      return(ERROR);
+    }
+  else if ( (fp = fopen(contents, "w")) == NULL)
+    {
+      printf("\nUnable to create file %s\n", contents);
+      return(ERROR);
+    }
+  else
+    {
+    fclose(fp);
+    return(SUCCESS);
+  }
 }

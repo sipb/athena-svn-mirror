@@ -10,7 +10,7 @@
  */
 
 #ifndef lint
-static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.3 1986-01-22 21:15:04 treese Exp $";
+static char *rcsid_display_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 1.4 1986-01-29 14:45:48 treese Exp $";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -111,13 +111,15 @@ make_display()
   ENTRY *curr_entry;			/* Current index entry. */
   char current_dir[FILENAME_SIZE];	/* Current directory. */
   char display_line[LINE_LENGTH];	/* Line to display. */
-  int max_index_lines;			/* Max # to display. */
-  int start_index;			/* Index to start with. */
   int curr_line;			/* Current screen line. */
   int curr_index;			/* Current index. */
   int index_line;			/* Current index line. */
   
-  clear();
+  for (curr_line = 0; curr_line < LINES - 2; curr_line++)
+    {
+      move(curr_line, 0);
+      clrtoeol();
+    }
   strcpy(current_dir, Current_Dir);
   center(0, CREF_HEADER);
   center(1, current_dir);
@@ -130,7 +132,7 @@ make_display()
       if (curr_entry == NULL)
 	break;
       move(curr_line, 15);
-      sprintf(display_line, "%3d", curr_index + 1);
+      sprintf(display_line, "%3d", curr_index);
       if (curr_entry->type == CREF_DIR)
 	strcat(display_line, "* ");
       else
@@ -181,7 +183,7 @@ display_entry(index)
   else if (entry->type == CREF_DIR)
     {
       Previous_Index = Current_Index;
-      Current_Index = 0;
+      Current_Index = 1;
       set_current_dir(entry->filename);
       make_display();
     }
