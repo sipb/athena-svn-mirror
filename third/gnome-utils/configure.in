@@ -85,6 +85,11 @@ dnl *******************************
 GNOME_CHECK_GUILE
 
 dnl *******************************
+dnl gnome-print checks
+dnl *******************************
+AC_SUBST(GNOME_PRINT_LIBS)
+
+dnl *******************************
 dnl LibGlade
 dnl *******************************
 AC_MSG_CHECKING(for Glade libraries >= 0.11)
