@@ -275,6 +275,9 @@
  * contains the expected fields.  The files utmp and wtmp seem to
  * exist, but not utmpx or wtmpx.
  *
+ * When writing a logout entry, the presence of a non-empty username
+ * confuses last.
+ *
  * AIX 4.3.x:
  *
  * The ut_exit field seems to exist in utmp, but not utmpx. The files
@@ -300,6 +303,9 @@
  * available, we write the utmpx or utmp structure out to disk
  * ourselves, though sometimes conversion from utmpx to utmp format is
  * needed.
+ *
+ * We assume that at logout the system is ok with with having an empty
+ * username both in utmp and wtmp.
  */
 
 #include <com_err.h>
@@ -332,7 +338,7 @@
 #else
 #define PTY_STRUCT_UTMPX struct utmp
 #define PTY_SETUTXENT setutent
-#define PTY_GETUTXENT gettutent
+#define PTY_GETUTXENT getutent
 #define PTY_GETUTXLINE getutline
 #define PTY_PUTUTXLINE pututline
 #define PTY_ENDUTXENT endutent
@@ -526,7 +532,7 @@ pty_update_utmp(int process_type, int pid, const char *username,
 #ifdef __hpux
     strcpy(utmp_id, cp);
 #else
-    if (len >= 2 && *(cp - 1) != '/')
+    if (len > 2 && *(cp - 1) != '/')
       sprintf(utmp_id, "k%s", cp - 1);
     else
       sprintf(utmp_id, "k0%s", cp);
@@ -611,13 +617,6 @@ pty_update_utmp(int process_type, int pid, const char *username,
 	strncpy(utx2.ut_line, utxtmp->ut_line, sizeof(utx2.ut_line));
     }
 
-    if (username[0] == '\0'
-	&& (flags & PTY_UTMP_USERNAME_VALID) && utxtmp != NULL) {
-	/* Use the ut_user from the entry we looked up, if any. */
-	/* XXX Is this really necessary? */
-	strncpy(utx2.ut_user, utxtmp->ut_user, sizeof(utx2.ut_user));
-    }
-
     PTY_SETUTXENT();
     PTY_PUTUTXLINE(&utx);
     PTY_ENDUTXENT();
@@ -640,18 +639,25 @@ pty_update_utmp(int process_type, int pid, const char *username,
 		const char *line, const char *host, int flags)
 {
     struct utmp ent, ut;
+    const char *cp;
     int tty, lc, fd;
+    off_t seekpos;
+    ssize_t ret;
     struct stat statb;
 
     memset(&ent, 0, sizeof(ent));
 #ifdef HAVE_STRUCT_UTMP_UT_HOST
-    strncpy(ent.ut_host, host, sizeof(ent.ut_host));
+    if (host)
+	strncpy(ent.ut_host, host, sizeof(ent.ut_host));
 #endif
     strncpy(ent.ut_name, username, sizeof(ent.ut_name));
-    strncpy(ent.ut_line, line, sizeof(ent.ut_line));
+    cp = line;
+    if (strncmp(cp, "/dev/", sizeof("/dev/") - 1) == 0)
+	cp += sizeof("/dev/") - 1;
+    strncpy(ent.ut_line, cp, sizeof(ent.ut_line));
     (void)time(&ent.ut_time);
 
-    if (flags & PTY_TTYSLOT_USABLE) 
+    if (flags & PTY_TTYSLOT_USABLE)
 	tty = ttyslot();
     else {
 	tty = -1;
@@ -659,8 +665,8 @@ pty_update_utmp(int process_type, int pid, const char *username,
 	if (fd == -1)
 	    return errno;
 	for (lc = 0; ; lc++) {
-	    if (lseek(fd, (off_t)(lc * sizeof(struct utmp)),
-		      SEEK_SET))
+	    seekpos = lseek(fd, (off_t)(lc * sizeof(struct utmp)), SEEK_SET);
+	    if (seekpos != (off_t)(lc * sizeof(struct utmp)))
 		break;
 	    if (read(fd, (char *) &ut, sizeof(struct utmp))
 		!= sizeof(struct utmp))
@@ -680,12 +686,13 @@ pty_update_utmp(int process_type, int pid, const char *username,
 	    close(fd);
 	    return 0;
 	}
-	if (lseek(fd, (off_t)(tty * sizeof(struct utmp)), SEEK_SET)) {
+	seekpos = lseek(fd, (off_t)(tty * sizeof(struct utmp)), SEEK_SET);
+	if (seekpos != (off_t)(tty * sizeof(struct utmp))) {
 	    close(fd);
 	    return 0;
 	}
-	if (write(fd, (char *)&ent, sizeof(struct utmp))
-	    != sizeof(struct utmp)) {
+	ret = write(fd, (char *)&ent, sizeof(struct utmp));
+	if (ret != sizeof(struct utmp)) {
 	    ftruncate(fd, statb.st_size);
 	}
 	close(fd);

@@ -82,14 +82,21 @@
 #endif
 #endif
 
-#if defined(HAVE_VHANGUP) && !defined(OPEN_CTTY_ONLY_ONCE) 
-#define VHANG_first /* Breaks under Ultrix and others where you cannot get controlling terminal twice.*/
+#if defined(HAVE_VHANGUP) && !defined(OPEN_CTTY_ONLY_ONCE) \
+	&& !defined(HAVE_REVOKE)
+/*
+ * Breaks under Ultrix and others where you cannot get controlling
+ * terminal twice.
+ */
+#define VHANG_FIRST
 #define VHANG_LAST
 #endif
 
 /* Internal functions */
+#ifdef __STDC__
 long ptyint_void_association(void);
 long ptyint_open_ctty (char *slave, int *fd);
+long ptyint_getpty_ext(int *, char *, int, int);
 #ifdef HAVE_SETUTXENT
 long ptyint_update_wtmpx(struct utmpx *utx);
 #endif
@@ -98,6 +105,19 @@ long ptyint_update_wtmpx(struct utmpx *utx);
 long ptyint_update_wtmp(struct utmp *ut);
 #endif
 void ptyint_vhangup(void);
+#else /*__STDC__*/
+
+long ptyint_void_association();
+long ptyint_getpty_ext();
+#ifdef HAVE_SETUTXENT
+long ptyint_update_wtmpx();
+#endif
+#if !(defined(WTMPX_FILE) && defined(HAVE_UPDWTMPX)) \
+	|| !defined(HAVE_SETUXENT)
+long ptyint_update_wtmp();
+#endif
+void ptyint_vhangup();
+#endif /* __STDC__*/
 
 #define __PTY_INT_H__
 #endif

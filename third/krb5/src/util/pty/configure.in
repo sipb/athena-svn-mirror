@@ -30,11 +30,13 @@ ac_cv_func_setsid=no # setsid doesn't do the right thing under Ultrix even thoug
 # Moreover, strops.h trashes sys/ioctl.h
 krb5_cv_has_streams=no
 ;;
-alpha-dec-osf*)
+alpha*-dec-osf*)
 	AC_CHECK_LIB(security,main,
 		AC_DEFINE(HAVE_SETLUID)
 		LOGINLIBS="$LOGINLIBS -lsecurity"
 	)
+	AC_MSG_RESULT(will open ctty prior to revoke due to OSF/1 lossage)
+	AC_DEFINE(REVOKE_NEEDS_OPEN)
 	;;
 *-*-solaris*)
      AC_DEFINE(PUSH_PTEM)
@@ -67,11 +69,6 @@ AC_CHECK_HEADER(termios.h,AC_CHECK_FUNC(cfsetispeed,AC_DEFINE(POSIX_TERMIOS)))
 #
 # utmp related hair here.  There's lots of it.
 #
-
-dnl
-dnl needed for some old symbols still used by sane_hostname.c
-dnl
-CHECK_UTMP
 
 AC_CHECK_HEADERS(utmp.h utmpx.h)
 AC_CHECK_FUNCS(setutent setutxent updwtmp updwtmpx logwtmp getutmp getutmpx)
@@ -137,7 +134,7 @@ krb5_utmp_e_termination=`echo $krb5_mem|sed -e 's%_exit$%_termination%'`], )
 fi
 
 if test "$krb5_cv_struct_utmpx_ut_exit" = yes; then
-  AC_MSG_RESULT(checking for working ut_exit.e_exit in struct utmp)
+  AC_MSG_RESULT(checking for working ut_exit.e_exit in struct utmpx)
   for krb5_mem in __e_exit ut_e_exit ut_exit e_exit; do
     K5_CHECK_UT_EXIT_MEMBER(utmpx, $krb5_mem,
 [krb5_utmpx_e_exit=$krb5_mem
@@ -261,4 +258,6 @@ ADD_DEF(-DKERBEROS)
 AC_C_CONST
 KRB5_BUILD_LIBRARY_WITH_DEPS
 KRB5_BUILD_LIBOBJS
+KRB5_BUILD_PROGRAM
+KRB5_RUN_FLAGS
 V5_AC_OUTPUT_MAKEFILE
