@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.11 1996-09-20 04:12:35 ghudson Exp $
+ * $Id: track.h,v 4.12 1998-01-26 06:23:18 ghudson Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -36,7 +36,7 @@
 #define DEF_FROMROOT	"/srvd"
 
 /* Default subscription list */
-#define DEF_LOG 	"/usr/tmp/TRACKLOG"
+#define DEF_LOG 	"/var/tmp/TRACKLOG"
 
 /* Default root for destination of transfer: "" == root. */
 #define DEF_TOROOT	""
