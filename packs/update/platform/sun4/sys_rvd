@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.26 1997-03-26 21:04:22 ghudson Exp $
+## $Id: sys_rvd,v 1.27 1997-03-28 10:36:30 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -23,6 +23,7 @@ GLOBAL : *.CKP *.local *.pid :
 		syslog.conf
 		:
 	/etc/mail:::
+		aliases
 		sendmail.cf
 		:
 	/etc/athena:::
