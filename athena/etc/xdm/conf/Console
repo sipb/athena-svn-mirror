@@ -1,0 +1,37 @@
+Console*form.padding:	1
+Console*form.form:	hide: 0 0 - -					\
+			scrollBarWindow: 0 hide - 100			\
+			textDisplayWindow: scrollBarWindow hide 100 100	\
+			title: hide 0 100 scrollBarWindow
+
+Console*borderWidth:			1
+Console*hide.hideButton.borderWidth:	1
+Console*hide.borderWidth:		0
+
+Console*window.borderWidth:		2
+Console*window.geometry:		503x207-0+0
+Console*window.title:			Console
+Console*window.deleteProc:		delete()
+Console*window.mapNotifyProc:		mapnotify()
+Console*window.mapped:			0
+
+Console*scrollBarWindow.title:		ScrollBar
+Console*scrollBarWindow.cursorCode:	116
+Console*scrollBarWindow.backgroundPixmap: /afs/athena/astaff/project/adt/src/gray
+Console*scrollBarWindow.width:		15
+Console*scrollBarWindow.height:		200
+
+Console*scrollbar.changeProc:		newvalue()
+
+Console*textdisplay.font:		fixed
+Console*textdisplay.resizeProc:		textresize()
+
+Console*hide*label:			Hide
+Console*hide*padding:			2
+Console*title.Center:			1
+Console*hideButton.activateProc:	hide()
+
+Console*iconWindow.mapped:		0
+Console*iconWindow.icon.icon:		/afs/athena/astaff/project/adt/src/console.bits
+Console*iconWindow.icon.Center:		1
+Console*iconWindow.geometry:		50x50

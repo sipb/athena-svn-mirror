@@ -1,0 +1,85 @@
+#!/bin/sh
+# Script to bounce the packs on an Athena workstation
+#
+#	$Source: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/reactivate,v $
+#	$Author: mar $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/reactivate,v 1.1 1990-11-05 16:50:59 mar Exp $
+
+PATH=/bin:/usr/ucb:/usr/bin; export PATH
+
+umask 22
+
+echo Reactivating workstation...
+
+# Flush all NFS uid mappings
+/bin/athena/nfsid -p -a
+
+# Perform an update if appropriate (do this early in the sequence)
+if [ -f /srvd/auto_update ] ; then 
+	/srvd/auto_update deactivate
+fi
+
+# Tell the Zephyr hostmanager to reset state
+if [ -f /etc/athena/zhm.pid ] ; then 
+	kill -HUP `cat /etc/athena/zhm.pid`
+fi
+
+# Then clean temporary areas (including temporary home directories)
+if [ -f /usr/bin/find ] ;  then
+	(cd /tmp; find . -type f -exec /bin/rm -f {} \; )
+	(cd /tmp; find . -type d -exec /bin/rmdir -f {} \; )
+	(cd /usr/tmp; find . -mtime +4 -exec /bin/rm -f {} \; )
+fi
+
+# Next, restore password, group, and AFS-cell files
+if [ -f /etc/passwd.local ] ; then
+	/bin/cp /etc/passwd.local /etc/ptmp
+	/bin/mv -f /etc/ptmp /etc/passwd
+fi
+if [ -f /etc/group.local ] ; then
+	/bin/cp /etc/group.local /etc/gtmp
+	/bin/mv -f /etc/gtmp /etc/group
+fi
+if [ -f /afs/athena.mit.edu/service/CellServDB ] ; then
+	/bin/cp -p /afs/athena.mit.edu/service/CellServDB \
+		   /usr/vice/etc/CellServDB.public
+fi
+if [ -f /afs/athena.mit.edu/service/aklog ] ; then
+	/bin/cp -p /afs/athena.mit.edu/service/aklog \
+		   /bin/athena/aklog
+fi
+
+# Finally, detach all remote filesystems
+/bin/athena/detach -O -h -n -a 
+
+
+# Now start activate again
+
+. /etc/rc.conf
+/etc/athena/save_cluster_info
+
+if [ -f /etc/clusterinfo.bsh ] ; then
+	. /etc/clusterinfo.bsh
+else
+	if [ "${RVDCLIENT}" = "true" ]; then
+		echo "Can't find library servers."		>${OUTPUT}
+		exit 1
+	fi
+fi
+
+if [ "${RVDCLIENT}" = "true" ]; then
+	if [ "${USRLIB}" = "" ]; then
+		/bin/athena/attach	-h -n -o hard  $SYSLIB
+	else
+		/bin/athena/attach	-h -n -o hard  $SYSLIB \
+					-h -n -o hard  $USRLIB
+	fi
+fi
+
+if [ -f /usr/athena/access_off ]; then /usr/athena/access_off; fi
+
+if [ -f /etc/athena/reactivate.local ]; then
+	/etc/athena/reactivate.local
+fi
+
+exit 0

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/bin/athena/attach -n -h -q -f register
+/mit/register/xregister

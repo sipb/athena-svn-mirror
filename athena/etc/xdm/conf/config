@@ -1,0 +1,6 @@
+# DM Configuration for monochrome vaxen
+
+#prog	command line
+X	/etc/Xqvss -v :0
+console	/afs/athena/astaff/project/xdm/@sys/bin/console -f /afs/athena/astaff/project/xdm/@sys/conf/Console -display :0.0
+login	/afs/athena/astaff/project/xdm/@sys/bin/xlogin -config /afs/athena/astaff/project/xdm/@sys/conf -display :0.0
