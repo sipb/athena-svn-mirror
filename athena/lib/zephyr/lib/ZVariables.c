@@ -4,7 +4,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: ZVariables.c,v 1.16 1999-01-22 23:19:30 ghudson Exp $
+ *	$Id: ZVariables.c,v 1.17 1999-06-03 14:51:42 danw Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid_ZVariables_c[] = "$Id: ZVariables.c,v 1.16 1999-01-22 23:19:30 ghudson Exp $";
+static char rcsid_ZVariables_c[] = "$Id: ZVariables.c,v 1.17 1999-06-03 14:51:42 danw Exp $";
 #endif
 
 #include <internal.h>
@@ -116,19 +116,24 @@ static int get_localvarfile(bfr)
     char *envptr;
     struct passwd *pwd;
 
-    envptr = getenv("HOME");
+    envptr = getenv("ZEPHYR_VARS");
     if (envptr)
-	(void) strcpy(bfr, envptr);
+    	(void) strcpy(bfr, envptr);
     else {
-	if (!(pwd = getpwuid((int) getuid()))) {
-	    fprintf(stderr, "Zephyr internal failure: Can't determine your home directory.\n");
-	    return (1);
+    	envptr = getenv("HOME");
+	if (envptr)
+	    (void) strcpy(bfr, envptr);
+	else {
+	    if (!(pwd = getpwuid((int) getuid()))) {
+		fprintf(stderr, "Zephyr internal failure: Can't determine your home directory.\n");
+		return (1);
+	    }
+	    (void) strcpy(bfr, pwd->pw_dir);
 	}
-	(void) strcpy(bfr, pwd->pw_dir);
-    }
 
-    (void) strcat(bfr, "/");
-    (void) strcat(bfr, ".zephyr.vars");
+	(void) strcat(bfr, "/");
+	(void) strcat(bfr, ".zephyr.vars");
+    }
     return (0);
 } 
 	
