@@ -1,0 +1,129 @@
+/*
+ *  Imakefile for Athena Dashboard
+ *  Copyright (c) 1991, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Imakefile,v $
+ *   $Author: vanharen $ 
+ *
+ * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+#include "../Xj.tmpl"
+
+#include "mit-copyright.h"
+
+SINTABLE	=	sintable
+
+#if defined(HaveShapeExtension)
+SHAPE_DEF	=	-DSHAPE
+#else /* HaveShapeExtension */
+SHAPE_DEF	=
+#endif
+
+#if defined(AIXArchitecture)
+SPECIALOBJS	=	strcasecmp.o
+SPECIAL_C	=	strcasecmp.c
+#else
+#if defined(RtArchitecture) || (defined(VaxArchitecture) && !defined(UltrixArchitecture))
+SPECIALOBJS	=	vsprintf.o
+SPECIAL_C	=	vsprintf.c
+#else
+SPECIALOBJS	=
+SPECIAL_C	=
+#endif
+#endif
+
+STR_OBJS	=	StrToBool.o StrToDirect.o StrToJust.o \
+			StrToOrient.o StrToPixmap.o StrToXColor.o \
+			StrToXFont.o
+STR_C		=	StrToBool.c StrToDirect.c StrToJust.c \
+			StrToOrient.c StrToPixmap.c StrToXColor.c \
+			StrToXFont.c
+
+LABEL_OBJS	=	Label.o
+LABEL_SRCS	=	Label.c
+LABEL_HDRS	=	Label.h
+NLABEL_OBJS	=	NLabel.o SmplLabel.o
+NLABEL_SRCS	=	NLabel.c SmplLabel.c
+NLABEL_HDRS	=	NLabel.h SmplLabel.h
+
+L_OBJS		=	${LABEL_OBJS}
+L_SRCS		=	${LABEL_SRCS}
+L_HDRS		=	${LABEL_HDRS}
+
+OBJS		=	AClock.o Arrow.o Button.o DClock.o Drawing.o \
+			Form.o Jets.o ${L_OBJS} Menu.o ScrollBar.o \
+			TextDisplay.o Tree.o Window.o \ 
+			hash.o registerCallbacks.o xselect.o warn.o \
+			XjVaCreateJet.o \
+			${STR_OBJS} ${SPECIALOBJS}
+SRCS		=	AClock.c Arrow.c Button.c DClock.c Drawing.c \
+			Form.c Jets.c ${L_SRCS} Menu.c ScrollBar.c \
+			TextDisplay.c Tree.c Window.c \ 
+			hash.c registerCallbacks.c xselect.c warn.c \
+			XjVaCreateJet.c \
+			${STR_C} ${SPECIAL_C}
+HEADERS		=	AClock.h Arrow.h Button.h DClock.h Drawing.h \
+			Form.h Jets.h ${L_HDRS} Menu.h ScrollBar.h \
+			TextDisplay.h Tree.h Window.h \
+			hash.h xselect.h warn.h
+
+SIN_OBJS	=	sintable.o
+
+NOTUSED		=	Icon.c StripChart.c get_load.c get_cpu.c List.c
+
+SIN_LIBS	=	-lm
+
+#ifdef RtArchitecture
+DEFINES		=	${SHAPE_DEF} -D_BSD -D_BSD_INCLUDES \
+			-DAIXV=12 \
+			-DAPPDEFDIR=\"/usr/athena/lib/X11/app-defaults\" \
+			-DBITMAPDIR=\"/usr/athena/lib/X11/bitmaps\"
+#else
+DEFINES		=	${SHAPE_DEF} \
+			-DAPPDEFDIR=\"/usr/athena/lib/X11/app-defaults\" \
+			-DBITMAPDIR=\"/usr/athena/lib/X11/bitmaps\"
+#endif
+
+
+
+all::	sintable.h
+
+NormalLibraryTarget(Xj,${OBJS})
+InstallLibrary(Xj,${USRLIBDIR})
+
+BuildIncludes($(HEADERS),Xj,..)
+MakeDirectories(install,$(INCDIR)/Xj)
+InstallMultiple($(HEADERS),$(INCDIR)/Xj)
+
+
+NormalProgramTarget(${SINTABLE},${SIN_OBJS},,,${SIN_LIBS})
+
+depend:: sintable.h
+depend:: includes
+
+DependTarget()
+
+sintable.h: ${SINTABLE}
+	${RM} $@
+	./${SINTABLE} > $@
+
+clean::
+	${RM} sintable.h
+	${RM} strings
+	${RM} x.c
+
+/* .c.o:
+ *	${CC} ${CFLAGS} -E $*.c | xstr -c -
+ *	${CC} ${CFLAGS} -c x.c
+ *	mv x.o $*.o
+ *	${RM} x.c
+ *
+ *xs.o:
+ *	xstr
+ *	${CC} ${CFLAGS} -c xs.c
+ */
