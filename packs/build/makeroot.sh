@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.18 2003-07-02 19:32:26 ghudson Exp $
+# $Id: makeroot.sh,v 1.19 2004-02-20 03:36:28 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -41,16 +41,31 @@ linux)
 sun4)
   pwconv=/usr/sbin/pwconv
 
+  # Create an admin file for pkgadd, which will skip most checks, but
+  # will check package dependencies.
+  admin=/tmp/admin$$
+  rm -rf "$admin"
+  cat > "$admin" << 'EOF'
+mail=
+instance=unique
+partial=nocheck
+runlevel=nocheck
+idepend=quit
+rdepend=quit
+space=nocheck
+setuid=nocheck
+conflict=nocheck
+action=nocheck
+basedir=default
+EOF
+
   # Install packages.
-  for i in `cat /install/cdrom/install-local-u`; do
+  for i in `cat /install/cdrom/.order.install`; do
     echo "$i: \c"
-    jot -b y 50 | pkgadd -R "$root" -d /install/cdrom "$i"
-  done 2>/dev/null
-  for i in `cat /install/cdrom/install-nolocal-u`; do
-    echo "$i: \c"
-    jot -b y 50 | pkgadd -R "$root" -d /install/cdrom/cdrom.link "$i"
+    pkgadd -n -R "$root" -a "$admin" -d /install/cdrom "$i"
   done 2>/dev/null
   cp /install/cdrom/INST_RELEASE "$root/var/sadm/system/admin"
+  rm -f "$admin"
 
   # Install patches.
   jot -b y 50 | patchadd -d -R "$root" -u -M /install/patches/patches.link \
