@@ -1,6 +1,6 @@
 #| nokogiri-color-preview.jl -- color previews
 
-   $Id: color-preview.jl,v 1.1.1.1 2000-11-12 06:26:47 ghudson Exp $
+   $Id: color-preview.jl,v 1.1.1.2 2003-01-05 00:31:59 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -27,7 +27,7 @@
 	    set-button-color)
 
     (open rep
-	  gui.gtk)
+	  gui.gtk-2.gtk)
 
   (defconst color-preview-width 28)
   (defconst color-preview-height 16)
@@ -63,4 +63,4 @@
 		(when (gtk-preview-p w)
 		  (set-preview-color w color)
 		  (gtk-widget-draw-interp w)))
-	      (gtk-container-children button))))))
+	      (gtk-container-get-children button))))))

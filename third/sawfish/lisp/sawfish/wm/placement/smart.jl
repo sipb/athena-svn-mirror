@@ -1,5 +1,5 @@
 ;; smart-placement.jl -- ``intelligent'' window placement
-;; $Id: smart.jl,v 1.1.1.3 2002-03-20 04:59:18 ghudson Exp $
+;; $Id: smart.jl,v 1.1.1.4 2003-01-05 00:33:08 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -52,6 +52,7 @@
     (open rep
 	  sawfish.wm.util.rects
 	  sawfish.wm.util.groups
+	  sawfish.wm.util.workarea
 	  sawfish.wm.windows
 	  sawfish.wm.misc
 	  sawfish.wm.events
@@ -65,11 +66,8 @@
   (defvar sp-avoided-windows-weight 100)
   (defvar sp-normal-windows-weight 1)
 
-  (defcustom sp-padding 4
-    "Try to leave at least this many pixels between window edges in first/best-fit."
-    :group placement
-    :type (number 0 64)
-    :user-level expert)
+  (defvar sp-padding 0
+    "Try to leave at least this many pixels between window edges in first/best-fit.")
 
   ;; the maximum number of points to keep in each grid dimension
   (defvar sp-max-points 10)
@@ -379,25 +377,27 @@ the proposed placement to the center of the screen."
 			     (t sp-normal-windows-weight)))))
 	     (grid (sp-make-grid rects t))
 	     (dims (window-frame-dimensions w))
+	     (workarea (calculate-workarea #:window w))
+	     (workarea-width (- (nth 2 workarea) (nth 0 workarea)))
+	     (workarea-height (- (nth 3 workarea) (nth 1 workarea)))
 	     point)
 
 	;; first try with padding
 	(when (and (> sp-padding 0)
-		   (<= (+ (car dims) sp-padding) (screen-width))
-		   (<= (+ (cdr dims) sp-padding) (screen-height)))
-	  (rplaca dims (+ (car dims) (* sp-padding 2)))
-	  (rplacd dims (+ (cdr dims) (* sp-padding 2)))
-	  (setq point (fit-fun dims grid rects))
+		   (<= (+ (car dims) (* sp-padding 2)) workarea-width)
+		   (<= (+ (cdr dims) (* sp-padding 2)) workarea-height))
+	  (let ((padded-dims (cons (+ (car dims) (* sp-padding 2))
+				   (+ (cdr dims) (* sp-padding 2)))))
+	    (setq point (fit-fun padded-dims grid rects)))
 	  (when point
 	    (rplaca point (+ (car point) sp-padding))
 	    (rplacd point (+ (cdr point) sp-padding))))
 
 	;; then try without padding
 	(when (null point)
-	  (setq dims (window-frame-dimensions w))
-	  (rplaca dims (min (car dims) (screen-width)))
-	  (rplacd dims (min (cdr dims) (screen-height)))
-	  (setq point (fit-fun dims grid rects)))
+	  (let ((smallest-dims (cons (min (car dims) workarea-width)
+				     (min (cdr dims) workarea-height))))
+	    (setq point (fit-fun smallest-dims grid rects))))
 
 	(if point
 	    (move-window-to w (car point) (cdr point))
@@ -422,7 +422,7 @@ the proposed placement to the center of the screen."
 ;;; init
 
   ;;###autoload
-  (define-placement-mode 'first-fit place-window-first-fit)
+  (define-placement-mode 'first-fit place-window-first-fit #:for-normal t)
   (define-placement-mode 'best-fit place-window-best-fit)
   (define-placement-mode 'best-fit-group place-window-best-fit-group)
   (define-placement-mode 'first-fit-or-interactive place-window-first-fit-or-interactive))

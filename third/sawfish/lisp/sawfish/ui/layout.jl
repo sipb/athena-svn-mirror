@@ -1,6 +1,6 @@
 #| nokogiri-layout.jl -- arranging groups of slots
 
-   $Id: layout.jl,v 1.1.1.2 2001-01-13 14:58:01 ghudson Exp $
+   $Id: layout.jl,v 1.1.1.3 2003-01-05 00:32:00 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -30,7 +30,7 @@
 	    make-label)
 
     ((open rep
-	   gui.gtk
+	   gui.gtk-2.gtk
 	   rep.regexp
 	   sawfish.ui.slot
 	   sawfish.gtk.widget)
@@ -55,6 +55,7 @@
 ;;; basic layout styles
 
   (define (layout-single style slots)
+    (declare (unused style))
     (cond ((null slots)
 	   (let ((placeholder (gtk-vbox-new nil 0)))
 	     (gtk-widget-show placeholder)
@@ -86,7 +87,7 @@
   (define (layout-frame style slots)
     (let ((frame (gtk-frame-new (cadr style)))
 	  (vbox (layout-slots 'vbox slots)))
-      (gtk-container-border-width frame box-border)
+      (gtk-container-set-border-width frame box-border)
       (gtk-container-add frame vbox)
       (gtk-widget-show frame)
       frame))

@@ -18,7 +18,7 @@
    along with sawfish; see the file COPYING.  If not, write to
    the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: top-left.jl,v 1.1.1.1 2001-01-13 14:58:56 ghudson Exp $
+   $Id: top-left.jl,v 1.1.1.2 2003-01-05 00:32:31 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>
 |#
@@ -49,7 +49,7 @@
 	  sawfish.wm.placement
 	  sawfish.wm.workspace
 	  sawfish.wm.viewport
-	  sawfish.wm.state.maximize
+	  sawfish.wm.util.workarea
 	  sawfish.wm.state.iconify)
 
   (define top-left '(8 . 8))
@@ -85,18 +85,8 @@
 	     point)
 	    (t (loop (next-position point))))))
 
-  (define (workarea-for w)
-    (or (maximize-find-workarea w)
-	(let* ((head (current-head w))
-	       (head-off (head-offset head))
-	       (head-dims (head-dimensions head)))
-	  (list (car head-off)
-		(cdr head-off)
-		(+ (car head-off) (car head-dims))
-		(+ (cdr head-off) (cdr head-dims))))))
-
   (define (place-window-top-left w)
-    (let* ((workarea (workarea-for w))
+    (let* ((workarea (calculate-workarea #:window w))
 	   (dims (window-dimensions w))
 	   (f-dims (window-frame-dimensions w))
 	   (hints (window-size-hints w))
@@ -137,4 +127,4 @@
 	  ((placement-mode 'randomly) w)))))
 
   ;;###autoload
-  (define-placement-mode 'top-left place-window-top-left))
+  (define-placement-mode 'top-left place-window-top-left #:for-normal t))

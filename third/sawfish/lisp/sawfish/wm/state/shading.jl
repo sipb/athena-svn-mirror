@@ -1,5 +1,5 @@
 ;; shading.jl -- window ``shading''
-;; $Id: shading.jl,v 1.1.1.2 2001-01-13 14:59:00 ghudson Exp $
+;; $Id: shading.jl,v 1.1.1.3 2003-01-05 00:32:23 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,10 +39,8 @@
 
   (define-structure-alias shading sawfish.wm.state.shading)
 
-  (defcustom raise-windows-when-unshaded nil
-    "Raise windows when they are unshaded."
-    :group misc
-    :type boolean)
+  (defvar raise-windows-when-unshaded nil
+    "Raise windows when they are unshaded.")
 
   (define (window-shaded-p w) (window-get w 'shaded))
 
@@ -100,6 +98,7 @@ state."
   (add-hook 'add-window-hook shading-add-window t)
 
   (define (shading-after-swap-in w space)
+    (declare (unused space))
     (unless (eq (window-get w 'shaded)
 		(window-get w 'hide-client))
       (window-put w 'hide-client (window-get w 'shaded))

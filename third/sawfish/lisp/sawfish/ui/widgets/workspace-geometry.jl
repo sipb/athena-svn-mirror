@@ -1,6 +1,6 @@
 #| nokogiri-widgets/workspace-geometry.jl
 
-   $Id: workspace-geometry.jl,v 1.1.1.2 2001-01-13 14:57:36 ghudson Exp $
+   $Id: workspace-geometry.jl,v 1.1.1.3 2003-01-05 00:31:57 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,10 +26,9 @@
 (define-structure sawfish.ui.widgets.workspace-geometry ()
 
     (open rep
-	  gui.gtk
-	  gui.gnome.canvas
-	  gui.gnome.canvas-pixbuf
-	  gui.gtk.gdk-pixbuf
+	  gui.gtk-2.gtk
+	  gui.gtk-2.gnome-canvas
+	  gui.gtk-2.gdk-pixbuf
 	  rep.io.files
 	  sawfish.gtk.widget
 	  sawfish.ui.layout)

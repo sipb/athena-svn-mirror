@@ -1,5 +1,5 @@
 ;; rects.jl -- rectangle manipulation
-;; $Id: rects.jl,v 1.1.1.1 2000-11-12 06:26:41 ghudson Exp $
+;; $Id: rects.jl,v 1.1.1.2 2003-01-05 00:32:33 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -29,6 +29,8 @@
 	    rectangle-corners
 	    rectangle-center
 	    rectangle-center*
+	    rectangle-union
+	    rectangle-intersection
 	    rect-1d-overlap
 	    rect-2d-overlap
 	    rect-2d-overlap*
@@ -147,6 +149,25 @@ corners of the rectangle RECT."
   (define (rectangle-center* point dims)
     (cons (+ (car point) (/ (car dims) 2))
 	  (+ (cdr point) (/ (cdr dims) 2))))
+
+  (define (rectangle-union rect1 rect2)
+    (list (min (nth 0 rect1) (nth 0 rect2))
+	  (min (nth 1 rect1) (nth 1 rect2))
+	  (max (nth 2 rect1) (nth 2 rect2))
+	  (max (nth 3 rect1) (nth 3 rect2))
+	  (nth 4 rect1)))
+
+  (define (rectangle-intersection rect1 rect2)
+    (let ((rect (list (max (nth 0 rect1) (nth 0 rect2))
+		      (max (nth 1 rect1) (nth 1 rect2))
+		      (min (nth 2 rect1) (nth 2 rect2))
+		      (min (nth 3 rect1) (nth 3 rect2))
+		      (nth 4 rect1))))
+      (if (or (>= (nth 0 rect) (nth 2 rect))
+	      (>= (nth 1 rect) (nth 3 rect)))
+	  ;; empty
+	  nil
+	rect)))
 
 
 ;;; overlap

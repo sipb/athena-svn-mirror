@@ -1,5 +1,5 @@
 ;; maximize.jl -- window maximization
-;; $Id: maximize.jl,v 1.1.1.4 2002-03-20 05:00:31 ghudson Exp $
+;; $Id: maximize.jl,v 1.1.1.5 2003-01-05 00:33:09 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,6 +24,7 @@
     (export window-maximized-p
 	    window-maximized-horizontally-p
 	    window-maximized-vertically-p
+	    window-maximized-fullscreen-p
 	    window-unmaximized-position
 	    window-unmaximized-dimensions
 	    window-maximizable-p
@@ -44,12 +45,15 @@
 	    maximize-fill-window-horizontally
 	    maximize-fill-window-toggle
 	    maximize-fill-window-vertically-toggle
-	    maximize-fill-window-horizontally-toggle)
+	    maximize-fill-window-horizontally-toggle
+	    maximize-window-fullscreen
+	    maximize-window-fullscreen-toggle)
 
     (open rep
 	  rep.system
 	  sawfish.wm.util.edges
 	  sawfish.wm.util.rects
+	  sawfish.wm.util.workarea
 	  sawfish.wm.windows
 	  sawfish.wm.commands
 	  sawfish.wm.custom
@@ -66,33 +70,22 @@
   ;; This sets the window property `unmaximized-geometry' of each
   ;; currently maximize window to `(X Y W H)', the saved geometry.
 
-  (defcustom maximize-always-expands nil
-    "Maximizing a window in one dimension must increase the size of that dimension."
-    :group (min-max maximize)
-    :user-level expert
-    :type boolean)
+  (defvar maximize-always-expands nil
+    "Maximizing a window in one dimension must increase the size of that dimension.")
 
-  (defcustom maximize-raises t
-    "Raise windows when they are maximized."
-    :group (min-max maximize)
-    :type boolean)
+  (defvar maximize-raises t
+    "Raise windows when they are maximized.")
 
-  (defcustom maximize-ignore-when-filling t
-    "Let unmanaged windows be overlapped when filling windows."
-    :group (min-max maximize)
-    :user-level expert
-    :type boolean)
+  (defvar maximize-ignore-when-filling t
+    "Let unmanaged windows be overlapped when filling windows.")
 
-  (defcustom maximize-avoid-avoided t
-    "Don't cover `avoided' windows when maximizing."
-    :group (min-max maximize)
-    :user-level expert
-    :type boolean)
+  (defvar maximize-avoid-avoided t
+    "Don't cover `avoided' windows when maximizing.")
 
   (defcustom move-lock-when-maximized t
     "Lock position and size while windows are maximized."
     :type boolean
-    :group (min-max maximize))
+    :group min-max)
   
   ;; called when a window is maximized, args (W #!optional DIRECTION)
   (defvar window-maximized-hook nil)
@@ -106,6 +99,9 @@
   (define (window-maximized-p w)
     (window-get w 'unmaximized-geometry))
 
+  (define (window-maximized-fullscreen-p w)
+    (window-get w 'maximized-fullscreen))
+
   (define (window-maximized-horizontally-p w)
     (window-get w 'maximized-horizontally))
 
@@ -114,21 +110,35 @@
 
   (define (window-unmaximized-position w)
     (let ((coords (window-position w))
-	  (old-geom (window-get w 'unmaximized-geometry)))
+	  (old-geom (unmaximized-geometry w)))
       (when (window-maximized-horizontally-p w)
 	(rplaca coords (nth 0 old-geom)))
       (when (window-maximized-vertically-p w)
-	(rplaca coords (nth 1 old-geom)))
+	(rplacd coords (nth 1 old-geom)))
       coords))
 
   (define (window-unmaximized-dimensions w)
     (let ((dims (window-dimensions w))
-	  (old-geom (window-get w 'unmaximized-geometry)))
+	  (old-geom (unmaximized-geometry w)))
       (when (window-maximized-horizontally-p w)
 	(rplaca dims (nth 2 old-geom)))
       (when (window-maximized-vertically-p w)
 	(rplacd dims (nth 3 old-geom)))
       dims))
+
+  (define (save-unmaximized-geometry w)
+    (unless (window-get w 'unmaximized-geometry)
+      (let ((coords (window-position w))
+	    (dims (window-dimensions w)))
+	(window-put w 'unmaximized-geometry (list (car coords) (cdr coords)
+						  (car dims) (cdr dims))))))
+
+  (define (discard-unmaximized-geometry w)
+    (window-put w 'unmaximized-geometry nil)
+    (pop-window-type w 'sawfish.wm.state.maximize))
+
+  (define (unmaximized-geometry w)
+    (window-get w 'unmaximized-geometry))
 
   (define (maximize-discard w #!optional horizontally vertically)
     (when horizontally
@@ -137,7 +147,7 @@
       (window-put w 'maximized-vertically nil))
     (let ((dims (window-dimensions w))
 	  (coords (window-position w))
-	  (saved (window-get w 'unmaximized-geometry)))
+	  (saved (unmaximized-geometry w)))
       (when saved
 	(unless (window-maximized-horizontally-p w)
 	  (rplaca saved (car coords))
@@ -147,7 +157,7 @@
 	  (rplaca (nthcdr 3 saved) (cdr dims))))
       (when (and (not (window-maximized-vertically-p w))
 		 (not (window-maximized-horizontally-p w)))
-	(window-put w 'unmaximized-geometry nil))))
+	(discard-unmaximized-geometry w))))
 
   (define (maximize-discard-move w directions #!key successful)
     (when successful
@@ -239,39 +249,9 @@
 
 ;;; 2D packing
 
-  (define (find-max-rectangle avoided edges #!optional head)
-    (let* ((grid (grid-from-edges (car edges) (cdr edges)))
-	   rects)
-      (setq rects (rectangles-from-grid
-		   (sort (car grid)) (sort (cdr grid))
-		   (lambda (rect)
-		     ;; the rectangle mustn't overlap any avoided windows
-		     ;; or span multiple heads, or be on a different head
-		     ;; to that requested
-		     (catch 'foo
-		       (mapc (lambda (w)
-			       (when (or (> (rect-2d-overlap
-					     (window-frame-dimensions w)
-					     (window-position w)
-					     rect) 0)
-					 (/= (rectangle-heads rect) 1)
-					 (and head (/= head (find-head (car rect) (cadr rect)))))
-				 (throw 'foo nil)))
-			     avoided)
-		       t))))
-
-      ;; find the largest rectangle
-      (let ((max-area 0)
-	    (max-rect nil))
-	(mapc (lambda (rect)
-		(when (and (rect-wholly-visible-p rect)
-			   (> (rectangle-area rect) max-area))
-		  (setq max-area (rectangle-area rect))
-		  (setq max-rect rect))) rects)
-	max-rect)))
-
   (define (do-both window avoided edges coords dims fdims)
-    (let ((max-rect (find-max-rectangle avoided edges (current-head window))))
+    (let ((max-rect (largest-rectangle-from-edges
+		     edges #:avoided avoided #:head (current-head window))))
       (when max-rect
 	(rplaca coords (nth 0 max-rect))
 	(rplacd coords (nth 1 max-rect))
@@ -327,17 +307,10 @@
 
 ;;; misc functions
 
-  (define (maximize-find-workarea #!optional w #!key head)
-    "Return the rectangle representing the largest rectangle on the screen that
-doesn't overlap any avoided windows, or nil."
-    (unless head
-      (setq head (current-head w)))
-    (let* ((avoided (avoided-windows w))
-	   (edges (get-visible-window-edges
-		   #:with-ignored-windows t
-		   #:windows avoided
-		   #:include-heads (list head))))
-      (find-max-rectangle avoided edges head)))
+  (define (maximize-find-workarea #!optional w #!key head head-fallback)
+    "This function is deprecated. Use calculate-workarea instead."
+    (declare (unused head-fallback))
+    (calculate-workarea #:window w #:head head))
 
   (define (window-locked-vertically-p w)
     (and move-lock-when-maximized
@@ -366,6 +339,8 @@ doesn't overlap any avoided windows, or nil."
     "Maximize the dimensions of the window."
     (let ((unshade-selected-windows t))
       (display-window-without-focusing w))
+    (when (window-maximized-fullscreen-p w)
+      (maximize-window-fullscreen w nil))
     (let* ((coords (window-position w))
 	   (dims (window-dimensions w))
 	   (fdims (window-frame-dimensions w))
@@ -376,9 +351,7 @@ doesn't overlap any avoided windows, or nil."
 		   #:windows avoided
 		   #:include-heads (list (current-head w)))))
       (when (window-maximizable-p w direction hints)
-	(unless (window-get w 'unmaximized-geometry)
-	  (window-put w 'unmaximized-geometry (list (car coords) (cdr coords)
-						    (car dims) (cdr dims))))
+	(save-unmaximized-geometry w)
 	(cond ((null direction)
 	       (if (not only-1d)
 		   (do-both w avoided edges coords dims fdims)
@@ -403,14 +376,14 @@ doesn't overlap any avoided windows, or nil."
   ;; does all unmaximizing except for changing the window properties and
   ;; calling the hooks
   (define (unmaximize-window-1 w #!optional direction before)
-    (let ((geom (window-get w 'unmaximized-geometry))
+    (let ((geom (unmaximized-geometry w))
 	  (coords (window-position w))
 	  (dims (window-dimensions w)))
       (when geom
-	(when (or (null direction) (eq direction 'horizontal))
+	(when (memq direction '(() fullscreen horizontal))
 	  (rplaca coords (nth 0 geom))
 	  (rplaca dims (nth 2 geom)))
-	(when (or (null direction) (eq direction 'vertical))
+	(when (memq direction '(() fullscreen vertical))
 	  (rplacd coords (nth 1 geom))
 	  (rplacd dims (nth 3 geom)))
 	(when before
@@ -422,13 +395,15 @@ doesn't overlap any avoided windows, or nil."
     "Restore the dimensions of the window to its original, unmaximized, state."
     (unmaximize-window-1 w direction
      (lambda ()
-       (when (or (null direction) (eq direction 'horizontal))
+       (when (memq direction '(() fullscreen horizontal))
 	 (window-put w 'maximized-horizontally nil))
-       (when (or (null direction) (eq direction 'vertical))
+       (when (memq direction '(() fullscreen vertical))
 	 (window-put w 'maximized-vertically nil))
+       (window-put w 'maximized-fullscreen nil)
        (when (and (not (window-maximized-vertically-p w))
-		  (not (window-maximized-horizontally-p w)))
-	 (window-put w 'unmaximized-geometry nil))))
+		  (not (window-maximized-horizontally-p w))
+		  (not (window-maximized-fullscreen-p w)))
+	 (discard-unmaximized-geometry w))))
     (call-window-hook 'window-unmaximized-hook w (list direction))
     (call-window-hook 'window-state-change-hook w (list '(maximized))))
 
@@ -516,17 +491,57 @@ unmaximized."
   (define-command 'maximize-fill-window-vertically-toggle maximize-fill-window-vertically-toggle #:spec "%W")
 
 
+;; fullscreen commands
+
+  (define (maximize-window-fullscreen w state)
+    (cond ((and state (not (window-maximized-fullscreen-p w)))
+	   (when (window-maximizable-p w)
+	     (let ((head-offset (current-head-offset w))
+		   (head-dims (current-head-dimensions w)))
+	       (save-unmaximized-geometry w)
+	       (window-put w 'unmaximized-type (window-type w))
+	       (push-window-type w 'unframed 'sawfish.wm.state.maximize)
+	       (move-resize-window-to w (car head-offset) (cdr head-offset)
+				      (car head-dims) (cdr head-dims))
+	       (raise-window* w)
+	       (window-put w 'maximized-fullscreen t)
+	       (window-put w 'maximized-vertically t)
+	       (window-put w 'maximized-horizontally t)
+	       (call-window-hook 'window-maximized-hook
+				 w (list 'fullscreen))
+	       (call-window-hook 'window-state-change-hook
+				 w (list '(maximized))))))
+
+	  ((and (not state) (window-maximized-fullscreen-p w))
+	   (unmaximize-window w 'fullscreen))))
+
+  (define (maximize-window-fullscreen-toggle w)
+    (maximize-window-fullscreen w (not (window-maximized-fullscreen-p w))))
+
+  (define-command 'maximize-window-fullscreen
+    maximize-window-fullscreen #:spec "%W")
+  (define-command 'maximize-window-fullscreen-toggle
+    maximize-window-fullscreen-toggle #:spec "%W")
+
+
 ;;; initialisation
 
   (define (after-add-window w)
     (let ((vert (window-get w 'queued-vertical-maximize))
-	  (horiz (window-get w 'queued-horizontal-maximize)))
-      (when (or vert horiz)
-	(window-put w 'queued-vertical-maximize nil)
-	(window-put w 'queued-horizontal-maximize nil)
-	(maximize-window w (cond ((and vert horiz) nil)
-				 (vert 'vertical)
-				 (horiz 'horizontal))))))
+	  (horiz (window-get w 'queued-horizontal-maximize))
+	  (full (window-get w 'queued-fullscreen-maximize)))
+      (when (or vert horiz full)
+	(when vert
+	  (window-put w 'queued-vertical-maximize nil))
+	(when horiz
+	  (window-put w 'queued-horizontal-maximize nil))
+	(when full
+	  (window-put w 'queued-fullscreen-maximize nil))
+	(if full
+	    (maximize-window-fullscreen w t)
+	  (maximize-window w (cond ((and vert horiz) nil)
+				   (vert 'vertical)
+				   (horiz 'horizontal)))))))
 
   (add-hook 'after-add-window-hook after-add-window)
 
@@ -561,10 +576,30 @@ unmaximized."
 	      ;; avoided windows
 	      (add-hook 'add-window-hook check-if-maximizable)))
 
-  (sm-add-saved-properties
-   'unmaximized-geometry 'maximized-vertically 'maximized-horizontally)
+  (add-hook 'sm-window-save-functions
+	    (lambda (w)
+	      (if (window-maximized-fullscreen-p w)
+		  (list '(maximized-fullscreen . t))
+		(nconc (and (window-maximized-horizontally-p w)
+			    (list '(maximized-horizontally . t)))
+		       (and (window-maximized-vertically-p w)
+			    (list '(maximized-vertically . t)))))))
+
+  (add-hook 'sm-restore-window-hook
+	    (lambda (w alist)
+	      (mapc (lambda (cell)
+		      (let ((v (cdr (assq (car cell) alist))))
+			(when v
+			  (window-put w (cdr cell) v))))
+		    '((maximized-fullscreen . queued-fullscreen-maximize)
+		      (maximized-vertically . queued-vertical-maximize)
+		      (maximized-horizontally . queued-horizontal-maximize)))))
+
+  (sm-add-saved-properties 'unmaximized-geometry)
+
   (add-swapped-properties
-   'unmaximized-geometry 'maximized-vertically 'maximized-horizontally)
+   'unmaximized-geometry 'maximized-vertically
+   'maximized-horizontally 'maximized-fullscreen)
 
   ;; This is now disabled - it doesn't really make sense for moving..
   ;; (add-hook 'after-move-hook maximize-discard-move)

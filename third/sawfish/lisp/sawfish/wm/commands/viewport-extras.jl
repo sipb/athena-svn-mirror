@@ -1,6 +1,6 @@
 #| viewport-extras.jl -- extra viewport commands
 
-   $Id: viewport-extras.jl,v 1.1.1.1 2001-01-13 14:58:23 ghudson Exp $
+   $Id: viewport-extras.jl,v 1.1.1.2 2003-01-05 00:32:20 ghudson Exp $
 
    Contributed by: Dams Nadé <anvil@amin.unice.fr>
 |#
@@ -59,7 +59,7 @@
       (set-window-and-viewport w (car prevs) (cdr prevs))))
 
   ;;###autoload
-  (define-command 'move-viewport-next move-viewport-next)
-  (define-command 'move-viewport-previous move-viewport-previous)
-  (define-command 'move-window-previous move-window-previous #:spec "%W")
-  (define-command 'move-window-next move-window-next #:spec "%W"))
+  (define-command 'move-viewport-next move-viewport-next #:class 'viewport)
+  (define-command 'move-viewport-previous move-viewport-previous #:class 'viewport)
+  (define-command 'move-window-previous move-window-previous #:spec "%W" #:class 'viewport)
+  (define-command 'move-window-next move-window-next #:spec "%W" #:class 'viewport))

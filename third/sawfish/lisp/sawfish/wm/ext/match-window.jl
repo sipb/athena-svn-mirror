@@ -1,5 +1,5 @@
 ;; match-window.jl -- match windows to properties
-;; $Id: match-window.jl,v 1.1.1.4 2002-03-20 05:00:17 ghudson Exp $
+;; $Id: match-window.jl,v 1.1.1.5 2003-01-05 00:33:07 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -251,7 +251,7 @@
 	    ((tem (assq p prop-cache)))
 	  (if tem
 	      (cdr tem)
-	    (setq tem (get-x-property w p))
+	    (setq tem (copy-sequence (get-x-property w p)))
 	    (when (and tem (eq (car tem) 'STRING))
 	      (rplaca (cddr tem) (get-x-text-property w p)))
 	    (when (and tem (get p 'match-window-formatter))
@@ -287,7 +287,8 @@
 		  (when feature
 		    (require feature)))
 		((or (get (car cell) 'match-window-setter) window-put)
-		 w (car cell) (cdr cell)))
+		 w (car cell)
+		 (if (eq (cdr cell) '#f) nil (cdr cell))))
 	      actions)
 	;; hack alert!
 	(when (assq 'position actions)

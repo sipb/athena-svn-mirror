@@ -1,6 +1,6 @@
 #| nokogiri-i18n -- support for internationalization
 
-   $Id: i18n.jl,v 1.1.1.1 2000-11-12 06:27:04 ghudson Exp $
+   $Id: i18n.jl,v 1.1.1.2 2003-01-05 00:32:37 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -59,4 +59,6 @@
       (let ((locale-dir (wm-locale-dir)))
 	(when locale-dir
 	  (bindtextdomain "sawfish" locale-dir)
+	  (when (boundp 'bindtextdomaincodeset)
+	    (bindtextdomaincodeset "sawfish" "UTF-8"))
 	  (textdomain "sawfish"))))))

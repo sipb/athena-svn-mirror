@@ -1,6 +1,6 @@
 #| nokogiri-slot.jl -- managing individual config items
 
-   $Id: slot.jl,v 1.1.1.2 2001-01-13 14:57:48 ghudson Exp $
+   $Id: slot.jl,v 1.1.1.3 2003-01-05 00:32:17 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,7 +26,6 @@
     (export slot-name
 	    slot-widget
 	    slot-old-value
-	    slot-user-level
 	    slot-gtk-widget
 	    slot-doc slot-flags
 	    slot-layout set-slot-layout
@@ -38,7 +37,7 @@
 	    custom-symbol-value)
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  rep.system
 	  rep.data.tables
 	  rep.data.records
@@ -46,10 +45,9 @@
 	  sawfish.ui.wm)
 
   (define-record-type :slot
-    (create-slot name user-level old-value flags)
+    (create-slot name old-value flags)
     ;; [no predicate]
     (name slot-name)			;name of config item
-    (user-level slot-user-level)	;user-level of slot, a symbol
     (widget slot-widget slot-widget-set) ;associated lisp widget
     (layout slot-layout set-slot-layout) ;gtk widget if the slot is displayed
     (old-value slot-old-value)		;original value of slot's config
@@ -67,8 +65,6 @@
 
   (defvar *nokogiri-slot-changed-hook* '())
 
-  (define default-user-level 'intermediate)	;XXX should be a constant
-
 
 ;;; slot creation, data structure mgmt
 
@@ -85,6 +81,7 @@
 
   (define (update-all-dependences)
     (table-walk (lambda (dep slots)
+		  (declare (unused slots))
 		  (update-dependences (get-slot dep))) dependence-table))
 
   ;; called when the value of SLOT changes
@@ -94,9 +91,8 @@
 
   (define (slot-gtk-widget slot) (widget-gtk-widget (slot-widget slot)))
 
-  (define (make-slot #!key name value type doc depends widget-flags
-		     (user-level default-user-level))
-    (let ((slot (create-slot name user-level value widget-flags)))
+  (define (make-slot #!key name value type doc depends widget-flags)
+    (let ((slot (create-slot name value widget-flags)))
       (table-set slot-table (slot-name slot) slot)
 
       ;; install dependendences

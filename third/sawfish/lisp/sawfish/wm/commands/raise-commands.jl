@@ -1,5 +1,5 @@
 ;; raise-commands.jl -- some commands for raising windows
-;; $Id: raise-commands.jl,v 1.1.1.2 2001-01-13 14:58:51 ghudson Exp $
+;; $Id: raise-commands.jl,v 1.1.1.3 2003-01-05 00:32:20 ghudson Exp $
 
 ;; Copyright (C) 1999-2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -94,8 +94,8 @@ has, then replay any pointer events that invoked the command."
 
   ;;###autoload
   (define-command 'raise-window-and-pass-through-click
-    window-and-pass-through-click #:spec "%w" #:user-level 'expert)
+    window-and-pass-through-click #:spec "%w" #:class 'advanced)
   (define-command 'raise-group-and-pass-through-click
-    group-and-pass-through-click #:spec "%w" #:user-level 'expert)
+    group-and-pass-through-click #:spec "%w" #:class 'advanced)
   (define-command 'raise-transients-and-pass-through-click
-    transients-and-pass-through-click #:spec "%w" #:user-level 'expert))
+    transients-and-pass-through-click #:spec "%w" #:class 'advanced))

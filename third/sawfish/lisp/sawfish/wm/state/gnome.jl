@@ -1,5 +1,5 @@
 ;; gnome.jl -- minimal GNOME compliance
-;; $Id: gnome.jl,v 1.1.1.4 2002-03-20 05:00:12 ghudson Exp $
+;; $Id: gnome.jl,v 1.1.1.5 2003-01-05 00:32:32 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -32,7 +32,11 @@
 	    WIN_HINTS_SKIP_WINLIST
 	    WIN_HINTS_SKIP_TASKLIST
 	    WIN_HINTS_FOCUS_ON_CLICK
-	    WIN_HINTS_DO_NOT_COVER)
+	    WIN_HINTS_DO_NOT_COVER
+	    gnome-set-hint
+	    gnome-clear-hint
+	    gnome-toggle-hint
+	    gnome-hint-set-p)
 
     (open rep
 	  rep.regexp
@@ -84,6 +88,41 @@
 		       (setq clients (cons (window-id w) clients)))))
       (setq vec (apply vector clients))
       (set-x-property 'root '_WIN_CLIENT_LIST vec 'CARDINAL 32)))
+
+  (define (gnome-set-hint w bit)
+    (let ((hints (get-x-property w '_WIN_HINTS)))
+      (if hints
+	  (setq hints (aref (nth 2 hints) 0))
+	(setq hints 0))
+      (setq hints (logior bit hints))
+      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
+
+  (define (gnome-clear-hint w bit)
+    (let ((hints (get-x-property w '_WIN_HINTS)))
+      (if hints
+	  (setq hints (aref (nth 2 hints) 0))
+	(setq hints 0))
+      (setq hints (logand (lognot bit) hints))
+      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
+
+  (define (gnome-toggle-hint w bit)
+    (let ((hints (get-x-property w '_WIN_HINTS)))
+      (if hints
+	  (setq hints (aref (nth 2 hints) 0))
+	(setq hints 0))
+      (setq hints (logxor bit hints))
+      (set-x-property w '_WIN_HINTS (vector hints) 'CARDINAL 32)))
+
+  ;; Queries whether a property in _WIN_HINTS is set.  Involves a
+  ;; server roundtrip as it does get-x-property.
+  (define (gnome-hint-set-p w bit)
+    (let ((hints (get-x-property w '_WIN_HINTS)))
+      (if hints
+	  (setq hints (aref (nth 2 hints) 0))
+	  (setq hints 0))
+      (if (zerop (logand bit hints))
+	  nil
+	  t)))
 
   (define current-workspace-index nil)
   (define current-workspace-count 0)
@@ -185,19 +224,7 @@
       (when (and class (>= (length class) 2))
 	(cond ((and (string= (aref class 1) "Panel")
 		    (string= (aref class 0) "panel_window"))
-	       ;; XXX I don't think the GNOME hints specify these things...
-	       (window-put w 'focus-click-through t)
-	       (window-put w 'no-history t)
-	       (window-put w 'never-iconify t)
-	       (window-put w 'never-maximize t)
-	       ;; XXX the panel is broken, in that it doesn't check
-	       ;; XXX that the wm gave it the position that it wanted.
-	       ;; XXX (The wm is under no obligation; the panel should
-	       ;; XXX move itself to the required position after
-	       ;; XXX initially mapping the window, or perhaps it
-	       ;; XXX should use the USPosition hints?). The following
-	       ;; XXX line prevents panel windows being placed at all
-	       (window-put w 'placed t))
+	       (mark-window-as-dock w))
 	      ((string= (aref class 1) "gmc-desktop-icon")
 	       (window-put w 'focus-click-through t)
 	       (window-put w 'never-focus t)
@@ -414,4 +441,5 @@
     (require 'sawfish.wm.gnome.match-window))
 
   (add-window-menu-toggle (_ "In GNOME _task list")
-			  'gnome-toggle-skip-tasklist))
+			  'gnome-toggle-skip-tasklist
+			  (lambda (w) (not (gnome-hint-set-p w WIN_HINTS_SKIP_TASKLIST)))))

@@ -1,3 +1,725 @@
+2002-11-09  John Harper  <jsh@unfactored.org>
+
+	* version 1.2
+
+2002-11-08  John Harper  <jsh@unfactored.org>
+
+	Merged from HEAD:
+
+	* sawfish/wm/util/font.jl: handle XLFD fonts with no dashes,
+	e.g. like "fixed", also, be more intelligent when creating
+	Pango names
+
+2002-11-03  John Harper  <jsh@unfactored.org>
+
+	Merged these changes from HEAD:
+
+	* sawfish/wm/session/init.jl, sawfish/wm/session/load.jl
+	(sm-sloppy-id-matching): added this option to let me get some
+	level of session management from broken applications (xterm in
+	this case, which doesn't seem to set SM_CLIENT_ID by the time
+	it maps the window)
+
+	* sawfish/wm/util/font.jl (xlfd-description->face,
+	face->xlfd-description): the missing pieces to this module.
+
+	Also, handle the Xft abbreviated styles more correctly
+
+	* sawfish/wm/windows.jl (dock-window-depth): changed this
+	again, now to zero, the depth of normal windows
+
+2002-11-03  John Harper  <jsh@unfactored.org>
+
+	Merged these changes from HEAD:
+
+	* sawfish/wm/custom.jl: font [de]serializers now export (TYPE .
+	NAME), they accept both this and the old untyped form
+
+	* sawfish/wm/util/font.jl: new file, some functions for
+	representing font (face) names, and converting between Xft and
+	Pango representations of these names. Somewhat incomplete
+	(doesn't know how to map Pango widths to Xft yet)
+
+	2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/menus.jl: added some more accelerators
+	* sawfish/wm/workspace.jl (static-workspace-menus): added a few
+	accelerators (for #76286)
+
+2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/keymaps.jl (wm-modifier-value): shorter doc string
+
+2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* more merging:
+
+	2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/gaol.jl: added get-font-typed, font-type-exists-p
+	and font-name functions
+
+	* sawfish/wm/windows.jl (dock-window-depth): changed to -3,
+	places the dock above the desktop, but below pretty much
+	everything else
+
+2002-10-20  John Harper  <jsh@unfactored.org>
+
+	* more merging:
+
+	2002-10-20  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/windows.jl (window-transient-p,
+	mark-window-as-transient): new functions. window-transient-p
+	used to be in C code
+
+	* sawfish/wm/state/wm-spec.jl: _TYPE_DIALOG now marks the
+	window as transients of the root window, this means that
+	windows with this type pick up all facets of transient window
+	behaviour, not just their frame type. (E.g., it stops
+	_TYPE_DIALOG windows being placed like application windows)
+
+	* sawfish/wm/frames.jl: import sawfish.wm.windows, not
+	sawfish.wm.windows.subrs, to get window-transient-p
+
+	2002-10-19  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (set-window-hints): handle
+	windows not on the current desktop (they may have recently
+	changed workspaces). Fixes #95158
+
+	2002-10-18  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (client-message-handler):
+	half-assed implementation of _MOVERESIZE_SIZE_KEYBOARD and
+	_MOVE_KEYBOARD. Fixes #95772
+
+	2002-10-17  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl: support some 1.1 features:
+	_NET_WM_STATE_BELOW, _NET_WM_STATE_ABOVE, _NET_WM_TYPE_UTILITY,
+	_NET_WM_TYPE_SPLASH, _NET_WM_TYPE_MENU, _NET_WM_TYPE_TOOLBAR.
+	(Last two are actually 1.0)
+
+	* sawfish/wm/frames.jl (frame-type-fallback-alist): added more
+	types: utility, toolbar, menu, splash
+
+	* sawfish/wm/windows.jl (mark-window-as-desktop,
+	mark-window-as-dock): set more properties, including window
+	depth and type
+
+	* sawfish/wm/stacking.jl: exported window-depth function
+
+	2002-10-06  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/workspace.jl: don't add ``iconified'' as a
+	workspace-local property, it's global by nature. Fixes #94530
+
+	2002-10-03  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/misc.jl (get-x-text-property,
+	set-x-text-property): these functions now written in lisp so
+	that they use the property cache
+
+2002-09-30  John Harper  <jsh@unfactored.org>
+
+	* merged more changes from HEAD:
+
+	2002-09-29    <jsh@unfactored.org>
+
+	* sawfish/wm/state/configure.jl (configure-request-handler): fixed
+	bug of not checking for locked dimensions before overwriting the
+	dims variable. This fixes #88788
+
+	* sawfish/wm/state/wm-spec.jl (_NET_WM_STATE_FULLSCREEN): fixed
+	stupid bug I recently introduced stopping windows putting
+	themselves into fullscreen mode
+
+	2002-09-28  John Harper  <jsh@unfactored.org>
+
+	Work to fix #83431:
+
+	* sawfish/wm/state/configure.jl (configure-request-handler):
+	handle nil x or y components of `position' request.
+
+	* sawfish/wm/windows.jl (adjust-position-for-gravity/x,
+	adjust-position-for-gravity/y): new functions, factored out of
+	adjust-position-for-gravity, which is now defined in terms of
+	these two
+
+	2002-09-26  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/commands/grow-pack.jl (bump-distance): patch from
+	Daniel Pfeiffer <occitan@esperanto.org> to fix bug "when two
+	windows have the same size in the direction perpendicular to
+	the pack"
+
+	2002-09-25  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/ext/match-window.jl (match-window): don't modify
+	the list returned by get-x-property, copy it first
+
+	2002-09-23  John Harper  <jsh@unfactored.org>
+
+	Work to fix #81616 (fullscreen windows lose their original
+	frame type when loaded from saved session):
+
+	* sawfish/wm/state/maximize.jl: more work on session
+	management. Fullscreen windows shouldn't lose their unmaximized
+	'type property anymore
+
+	* sawfish/wm/frames.jl (push-window-type, pop-window-type):
+	mechanism for setting a temporary window type (that doesn't get
+	saved in the session file)
+
+	* sawfish/wm/session/load.jl, sawfish/wm/session/init.jl
+	(sm-add-restored-properties, sm-restored-properties):
+	properties to restored but not save (i.e. assumes they're saved
+	by hand using the sm-window-save-functions hook)
+
+	2002-09-22  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (wm-spec-maximize-handler): don't
+	mark the window as maximized when it's fullscreen, avoids
+	confusing the restart handler. Also, some other cleanup of the
+	fullscreen code
+
+	* sawfish/wm/state/maximize.jl (after-add-window): check for
+	queued-fullscreen-maximize property
+
+	* sawfish/wm/state/maximize.jl: added a function to
+	sm-window-save-functions to save the queued-foo-maximize
+	properties into the session file, not the actual properties.
+	Makes restart process cleaner
+
+	2002-09-22  John Harper  <jsh@unfactored.org>
+
+	Work to (partially) support _NET_WORKAREA property, for #90291:
+
+	* sawfish/wm/util/workarea.jl (workarea-changed-hook): new
+	hook, emitted whenever the set of struts changes
+
+	(calculate-workarea-from-struts): new function, calculates the
+	workarea solely from struts
+
+	* sawfish/wm/state/wm-spec.jl (update-workspace-hints): set
+	_NET_WORKAREA to the workarea as defined by all "strut"
+	properties. This isn't quite the same as sawfish's native idea
+	of "workarea", but it's not possible to set that value on the
+	root, since it's a function of each window (i.e. each window
+	may have a different workarea)
+
+	2002-08-18  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/ext/edge-flip.jl (edge-flip-for-edge): use
+	workspace-grid module in workspace mode. Patch from Michael
+	Toomim <toomim@cs.berkeley.edu>
+
+	* sawfish/wm/ext/workspace-grid.jl (send-to-workspace-right):
+	added magic autoload comments
+
+	2002-08-18  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/ext/workspace-grid.jl: new module from Michael
+	Toomim <toomim@cs.berkeley.edu> to interpret the
+	_NET_DESKTOP_LAYOUT wm-spec hints and provide two dimensional
+	workspace commands
+
+	2002-08-03  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/windows.jl (dock-window-properties): fix typo.
+	Patch from Greg Morris <gmorris@pscs.org>
+
+	2002-07-23  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/maximize.jl (window-unmaximized-position):
+	patch from Claudio Bley <bley@cs.uni-magdeburg.de> to fix typo
+
+	2002-07-01  John Harper  <jsh@unfactored.org>
+
+	* Makefile.in: invoke sawfish script directly when compiling
+
+	2002-06-30  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/placement/smart.jl (sp-padding): defaults to zero
+
+2002-06-28  John Harper  <jsh@unfactored.org>
+
+	* version 1.1
+
+2002-06-28  John Harper  <jsh@unfactored.org>
+
+	* more merging:
+
+	2002-06-17  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/util/display-window.jl
+	(display-window-without-focusing): patch from merlin to recover
+	"lost" windows
+
+2002-05-29  John Harper  <jsh@unfactored.org>
+
+	* more merging:
+
+	2002-05-28  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/commands/move-resize.jl (motion): when displaying
+	logical size, use (or base 0) not 1 to get the correct result.
+	Patch from merlin <merlin@merlin.org>
+
+	2002-05-26  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/placement/stagger.jl: respects workarea now. Fixes
+	#74307
+
+	2002-05-24  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (client-message-handler): don't
+	select the new desktop when moving window after _NET_WM_DESKTOP
+
+	* sawfish/wm/workspace.jl
+	(send-window-to-workspace-from-first): added optional SELECT
+	param
+
+2002-05-21  John Harper  <jsh@unfactored.org>
+
+	* More merging from HEAD:
+
+	2002-05-13  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/gnome/integration.jl: admit defeat and go back to
+	loading xterm module all the time
+
+	2002-05-11  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/gnome/integration.jl (gnome-use-capplet-changed):
+	removed duplicate eval-when-compile
+
+	2002-05-10  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/frames.jl (cursor-for-frame-part): require
+	maximize module to fix #81441
+
+	2002-05-06  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm.jl: patch from Christophe Fergeau
+	<teuf@users.sourceforge.net> to call bindtextdomaincodeset
+	function. Modified to only call it if it exists
+
+2002-05-06  John Harper  <jsh@unfactored.org>
+
+	* More merging from HEAD:
+
+	2002-05-03  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/gnome/integration.jl (gnome-use-capplet-changed):
+	require xterm module when compiling
+
+	2002-04-27  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/transient.jl (transient-map-window,
+	transient-unmap-window): use set-input-focus not
+	activate-window (which raises the window..)
+
+	2002-04-25  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/session/init.jl (sm-init): make the
+	CurrentDirectory a valid filename (e.g., no "~" characters)
+
+	2002-04-23  John Harper  <jsh@unfactored.org>
+
+	Work to support _NET_WM_STRUT. Fixes #66608 (not tested):
+
+	* sawfish/wm/util/workarea.jl: new module, moved the workarea
+	calculations here from the maximize module. Added support for
+	"struts"
+
+	* sawfish/wm/state/wm-spec.jl (honour-client-state): call
+	define-window-strut if _NET_WM_STRUT is set
+
+	* sawfish/wm/windows.jl (dock-window-properties): new variable,
+	list of properties to set on dock windows
+
+	2002-04-23  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/menus.jl (window-ops-menu): removed viewport
+	operations. Fixes #73122
+
+	2002-04-22  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (set-ws-hints):
+	_NET_DESKTOP_NAMES property is in UTF8_STRING encoding. Adapted
+	from Gregory Merchan <merchan@phys.lsu.edu>
+
+	* sawfish/wm/util/window-order.jl (on-viewport-change): only
+	don't focus most recent in enter-exit mode. Fixes #67007
+
+	* sawfish/wm/workspace.jl, sawfish/wm/viewport.jl,
+	sawfish/wm/state/wm-spec.jl: Fixed #74904, support
+	_NET_NUMBER_OF_DESKTOPS and _NET_DESKTOP_GEOMETRY client
+	messages
+
+2002-04-21  John Harper  <jsh@unfactored.org>
+
+	* Merged changes from HEAD:
+
+	2002-04-21  John Harper  <jsh@unfactored.org>
+
+	More reorganization. Removed all mentions of viewports and
+	viewport commands from the configurator, simplified workspace
+	configuration, etc..
+
+	* sawfish/wm/workspace.jl, sawfish/wm/viewport.jl,
+	sawfish/wm/placement.jl, sawfish/wm/autoload.jl: 
+
+	* sawfish/wm/commands/xterm.jl,
+	sawfish/wm/commands/viewport-linear.jl,
+	sawfish/wm/commands/viewport-extras.jl,
+	sawfish/wm/commands/move-resize.jl,
+	sawfish/wm/commands/groups.jl: 
+
+	* sawfish/wm/ext/shade-hover.jl,
+	sawfish/wm/ext/hide-dialogs.jl, sawfish/wm/ext/edge-flip.jl,
+	sawfish/wm/ext/auto-raise.jl: 
+
+	* sawfish/wm/gnome/menus.jl, sawfish/wm/gnome/integration.jl: 
+
+	* sawfish/wm/state/iconify.jl: 
+
+	* sawfish/wm/util/compat.jl, sawfish/wm/util/autoloader.jl: 
+
+	2002-04-20  John Harper  <jsh@unfactored.org>
+
+	More slash and burning. Removed user levels (a failed
+	experiment). Removed more options, etc
+
+	* sawfish/wm/workspace.jl, sawfish/wm/windows.jl,
+	sawfish/wm/stacking.jl, sawfish/wm/placement.jl,
+	sawfish/wm/keymaps.jl, sawfish/wm/frames.jl,
+	sawfish/wm/focus.jl, sawfish/wm/custom.jl,
+	sawfish/wm/commands.jl, sawfish/wm/autoload.jl: 
+
+	* sawfish/wm/commands/xterm.jl, sawfish/wm/commands/x-cycle.jl,
+	sawfish/wm/commands/slide-window.jl,
+	sawfish/wm/commands/size-window.jl,
+	sawfish/wm/commands/raise-commands.jl,
+	sawfish/wm/commands/move-resize.jl,
+	sawfish/wm/commands/groups.jl, sawfish/wm/commands/describe.jl:
+
+	* sawfish/wm/ext/window-history.jl, sawfish/wm/ext/tooltips.jl,
+	sawfish/wm/ext/shade-hover.jl, sawfish/wm/ext/error-handler.jl,
+	sawfish/wm/ext/edge-flip.jl, sawfish/wm/ext/auto-raise.jl,
+	sawfish/wm/ext/audio-events.jl, sawfish/wm/ext/3d-hack.jl: 
+
+	* sawfish/wm/placement/top-left.jl,
+	sawfish/wm/placement/smart.jl: 
+
+	* sawfish/wm/state/transient.jl, sawfish/wm/state/iconify.jl: 
+
+	* sawfish/wm/util/play-audio.jl, sawfish/wm/util/nokogiri.jl,
+	sawfish/wm/util/display-window.jl, sawfish/wm/util/compat.jl: 
+
+	2002-04-20  John Harper  <jsh@unfactored.org>
+
+	Removed a lot of dead wood. Deleted some options altogether,
+	made a lot more into standard variables (i.e. they can still be
+	set using setq, but don't appear in the configurator). Also got
+	rid of all warp-pointer type options, this is now part of the
+	focus mode -- click to focus doesn't warp, focus follows mouse
+	does
+
+	Still to do: remove user levels, more pruning of move-resize
+	and workspace groups
+
+	* sawfish/wm/workspace.jl, sawfish/wm/windows.jl,
+	sawfish/wm/viewport.jl, sawfish/wm/stacking.jl,
+	sawfish/wm/menus.jl, sawfish/wm/keymaps.jl,
+	sawfish/wm/frames.jl, sawfish/wm/focus.jl,
+	sawfish/wm/defaults.jl, sawfish/wm/custom.jl,
+	sawfish/wm/custom-defaults.jl, sawfish/wm/autoload.jl: 
+
+	* sawfish/wm/commands/xterm.jl, sawfish/wm/commands/x-cycle.jl,
+	sawfish/wm/commands/move-resize.jl,
+	sawfish/wm/commands/grow-pack.jl: 
+
+	* sawfish/wm/ext/window-history.jl, sawfish/wm/ext/tooltips.jl,
+	sawfish/wm/ext/error-handler.jl, sawfish/wm/ext/edge-flip.jl,
+	sawfish/wm/ext/beos-window-menu.jl,
+	sawfish/wm/ext/auto-raise.jl, sawfish/wm/ext/audio-events.jl: 
+
+	* sawfish/wm/state/transient.jl, sawfish/wm/state/shading.jl,
+	sawfish/wm/state/maximize.jl, sawfish/wm/state/iconify.jl,
+	sawfish/wm/state/configure.jl: 
+
+	* sawfish/wm/util/stacking.jl, sawfish/wm/util/nokogiri.jl,
+	sawfish/wm/util/groups.jl, sawfish/wm/util/display-window.jl,
+	sawfish/wm/util/compat.jl: 
+
+	2002-04-14  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* sawfish/wm/commands/grow-pack.jl (grow-pack): New group, parent
+	is `misc'.
+	(grow-is-maximize, pack-warp-pointer, grow-pack-bump-obscured)
+	(grow-pack-bump-other-depth, grow-pack-bump-ignored): Use the new
+	group for the customization options.
+	Suggestion from John Harper.
+
+	2002-04-11  Kai Groﬂjohann  <Kai.Grossjohann@CS.Uni-Dortmund.DE>
+
+	* sawfish/wm/commands/grow-pack.jl (grow-pack-bump-ignored): New
+	user option.  Suggestion from Markus Holmberg.
+	(bump-distance): Optionally ignore ignored windows.
+
+	2002-04-18  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/ext/match-window.jl: accept #f for false in
+	options. Adapted from merlin <merlin@merlin.org>
+
+	* sawfish/wm/ext/edge-flip.jl (edge-flip-warp-pointer): made
+	the description a bit clearer (hopefully). #77668
+
+	* sawfish/wm/windows.jl (mark-window-as-dock): set
+	fixed-position property. Should fix #78582
+
+	2002-04-10  John Harper  <jsh@unfactored.org>
+
+	Fixed #70071:
+
+	* sawfish/wm/windows.jl (mark-window-as-dock, dock-window-p):
+	new functions
+	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks): call
+	mark-window-as-dock
+	* sawfish/wm/state/wm-spec.jl (wm-class-hacks, DOCK type): call
+	mark-window-as-dock
+	* sawfish/wm/commands/x-cycle.jl (cycle-dock,
+	cycle-dock-backwards): new commands. Also made it so that the
+	selection functions have to call window-in-cycle-p themselves
+	* sawfish/wm/windows.jl (window-in-cycle-p): new keyword arg
+	IGNORE-CYCLE-skip
+
+	2002-04-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (client-message-handler): before
+	doing move-resize requests, fetch and save a timestamp so that
+	grabs don't fail. Fixes #77041
+
+	2002-03-24  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/animation/outline.jl: add error handling around
+	calls to the window-outline drawing code. Ungrab the server on
+	an error. Band-aid for #75984
+
+2002-04-12  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/commands/help.jl, sawfish/wm/commands/gnome.jl:
+	use "gnome-help" program instead of "gnome-help-browser".
+	Should fix #77343
+
+2002-04-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/gnome/integration.jl (gnome-use-capplet): removed
+	this option; marked it obsolete
+
+2002-03-19  John Harper  <jsh@unfactored.org>
+
+	* Merged changes from HEAD:
+
+	2002-03-09  John Harper  <jsh@pixelslut.com>
+
+	* sawfish/wm/state/wm-spec.jl (supported-atoms): updated to
+	include all atoms we recognize, not just top-level things
+
+	* sawfish/wm/state/maximize.jl (window-maximized-fullscreen-p,
+	maximize-window-fullscreen, maximize-window-fullscreen-toggle):
+	support a new type of maximization, called `fullscreen'. In
+	this mode the window's borders are removed and it fills the
+	entire area of the head (even if it's size hints would dictate
+	otherwise)
+
+	* sawfish/wm/state/wm-spec.jl: support _NET_WM_STATE_FULLSCREEN
+
+	(the above two changes fix #73970)
+
+	* sawfish/wm/util/ping.jl: actually tested this code (Gtk+ 2
+	supports the protocol). Fixed some bugs. Don't use X server
+	timestamps as the unique id anymore (since they may not be
+	unique), use a unique sequence number instead
+
+	(ping-window): TIMEOUT-MSECS is now optional and defaults to
+	one second
+
+	2002-03-03  John Harper  <jsh@pixelslut.com>
+
+	* sawfish/wm/placement/off-center.jl (workarea-for): replaced
+	by a single call to maximize-find-workarea
+
+	* sawfish/wm/placement.jl: added `#:head-fallback t' in some
+	calls to maximize-find-workarea. Should fix #73297
+
+	* sawfish/wm/state/maximize.jl (maximize-find-workarea):
+	removed extra #!key token
+
+	2002-02-22  John Harper  <jsh@pixelslut.com>
+
+	* sawfish/wm/viewport.jl (viewport-load-state): add the current
+	viewport offsets into any set window geometries
+
+	* sawfish/wm/state/wm-spec.jl (set-ws-hints): fixed using
+	screen-width instead of screen-height (noticed by
+	tal00r@ecs.soton.ac.uk)
+
+	2002-02-21  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/stacking.jl (stacking-add-window): don't put
+	windows below the default depth just because their parent is.
+	Fixes #67978
+
+	2002-02-17  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/commands/move-resize.jl (move-resize-map): added
+	any-off2 and any-off3 bindings. Fixes #67134
+
+	2001-12-02  Daniel Pfeiffer  <occitan@esperanto.org>
+
+	* grow-pack.jl: This fixes some bugs:
+
+	- If a window was less than width-inc or height-inc away from the
+	next window, that next window was also ignored for packing.
+	- The variable grow-window-repeat did not serve it's purpose.
+	Instead it influenced whether width-inc or height-inc were
+	respected, which is an error (or at least a hacker option :-), no
+	matter what the variable is called.
+	- Typo preventing vertical growing to behave as maximize (maximzed).
+	- The underlying functions of the commands were not exported,
+	making them inaccessible to lisp and their documentation strings
+	somewhat useless.
+
+	One esthetical bug remains: depending on focus-mode neither
+	frame-draw/state-mutex nor focus-ignore-pointer-events prevent two
+	flickering frame highlights.  When moving, focus leaves the window
+	if it moves beyond pointer, when warping it goes back.  Any ideas?
+
+	And adds a few features:
+
+	- Optionally separate layers/depths (as discussed on the
+	mailing-list some time ago).  I found this to also have to handle
+	avoided windows (panel may be on its own depth).
+	<http://lists.eazel.com/pipermail/sawfish/2001-August/001634.html>
+	- Optionally ignore totally obscured windows.
+	- Optionally grow or pack by given amount of pixels.  To be useful
+	requires a prefix setter.  Until that makes it into sawfish 1.0.2,
+	get a patch.
+	http://dapfy.bei.t-online.de/sawfish/move-viewport/
+	- Optionally maximize in one direction.
+	- Do i18n on menu.  (Eight new strings to be done by translators.)
+
+	Despite added functionality the new code is both smaller and faster.
+
+2001-11-17  John Harper  <jsh@unfactored.org>
+
+	* Makefile.in: just call the libtool-created sawfish script
+	directly
+
+2001-12-17  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes GNOME bug #67138.  However, the rest of smart.jl seems to be
+	using screen-width and screen-height all over the place, so this
+	may not be complete yet.
+
+	* sawfish/wm/placement/top-left.jl (workarea-for): Removed.
+	(place-window-top-left): Use maximize-find-workarea with the
+	head-fallback parameter instead of workarea-for.
+
+	* sawfish/wm/state/maximize.jl (maximize-find-workarea): Added a
+	key parameter head-fallback.  If non-nil and the workarea turns
+	out to be empty, it will fall back to a rectangle that represents
+	the head area.
+
+	* sawfish/wm/placement/smart.jl (sp-do-placement): Use the
+	workarea width and height instead of the screen width and height.
+
+2001-12-14  John Harper  <jsh@unfactored.org>
+
+	[Committed by Federico Mena Quintero <federico@ximian.com> on
+	behalf of J.S.H.]
+
+	* sawfish/wm/placement.jl (place-window-randomly): fixed bug of
+	possibly adding the head offset twice.
+
+2001-12-11  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes GNOME bug #66761.
+
+	* sawfish/wm/state/gnome.jl (gnome-set-hint): Moved over from
+	commands/gnome.jl; these should really be here.
+	(gnome-clear-hint): Likewise.
+	(gnome-toggle-hint): Likewise.
+
+	* sawfish/wm/state/gnome.jl (gnome-hint-set-p): New exported
+	function; queries whether a property in _WIN_HINTS is set.
+
+	* sawfish/wm/state/gnome.jl: Added a predicate to the
+	`(add-window-menu-toggle "In GNOME task list' so that we can show
+	the menu item as a proper toggle.
+
+2001-12-09  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl (set-window-hints): don't mark
+	the window as being sticky just because it's not swapped into
+	any workspace..
+
+2001-12-06  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/workspace.jl (select-workspace-interactively):
+	remove the interactive spec. Pointed out by Michal Maruπka
+	<mmc@maruska.dyndns.org>
+
+2001-12-04  Federico Mena Quintero  <federico@ximian.com>
+
+	* sawfish/wm/viewport.jl
+	(move-window-to-viewport-and-move-viewport): Per JSH's suggestion,
+	use raise-window* instead of plain raise-window so that any
+	transients are raised if appropriate.
+
+2001-12-04  Federico Mena Quintero  <federico@ximian.com>
+
+	* sawfish/wm/viewport.jl
+	(move-window-to-viewport-and-move-viewport): New function that
+	generalizes move-window-left and friends.  Also raises the window
+	in its layer so that it doesn't appear occluded when flipping the
+	viewport.  Sticks/unsticks the window to avoid flashing, as well.
+	(move-window-left): Use move-window-to-viewport-and-move-viewport.
+	(move-window-right): Likewise.
+	(move-window-down): Likewise.
+	(move-window-up): Likewise.
+
+2001-12-04  Federico Mena Quintero  <federico@ximian.com>
+
+	* sawfish/wm/viewport.jl (set-viewport): Grab the server while we
+	move the windows.
+
+2001-12-02  John Harper  <jsh@unfactored.org>
+
+	* sawfish/wm/state/wm-spec.jl: check that some values are
+	symbolp before calling get on them. Patch from Michal
+	Politowski <mpol@charybda.icm.edu.pl> via Christian Marillat
+	<marillat.christian@wanadoo.fr>
+
+2001-10-27  John Harper  <jsh@unfactored.org>
+
+	Fixed the bug where `transients-above' and `layer' stacking
+	constraints can conflict and stop stacking working (gnome
+	bugzilla 48412):
+
+	* sawfish/wm/stacking.jl
+	(stacking-constraint:transients-above-parent,
+	stacking-constraint:transients-above-all): check the depth of
+	the windows being compared. Depth overrides the transient-of
+	stacking relation
+
+	(stacking-add-window): transient windows get the depth of their
+	highest parent window instead of the default of zero
+
 2001-10-14  John Harper  <jsh@unfactored.org>
 
 	* version 1.0.1
@@ -207,7 +929,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	Added an extra deserialize/serialize pair when applying values
 	from the UI. This is so that the customize-set function can do
 	some kind of transformation at some point in the future..
-	
+
 	* sawfish/wm/custom.jl (make-custom-form): now requires an
 	unserialized VALUE. It serializes it before creating the form
 
@@ -360,7 +1082,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	implement the _NET_ACTIVE_WINDOW request. Added a
 	_NET_WM_DESKTOP handler - handles making the window sticky or
 	changing its workspace
-	
+
 2001-02-22  John Harper  <jsh@eazel.com>
 
 	* sawfish/wm/placement.jl (place-window): don't try to place
@@ -384,8 +1106,8 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 
 	* version 0.37
 
-	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks): 
-	* sawfish/wm/state/wm-spec.jl (wm-class-hacks): 
+	* sawfish/wm/state/gnome.jl (gnome-window-class-hacks):
+	* sawfish/wm/state/wm-spec.jl (wm-class-hacks):
 	Look for `Panel/panel_window' instead of `Panel/panel'. This
 	may not work well immediately, but it will with the forthcoming
 	gnome-core release
@@ -460,14 +1182,14 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 
 2001-01-25  John Harper  <jsh@eazel.com>
 
-	Fixed bug 5984 (locked-size-when-maximized is confusing):	
+	Fixed bug 5984 (locked-size-when-maximized is confusing):
 
 	* sawfish/wm/frames.jl (frame-part-classes): use calls to
 	define-frame-class to populate this alist
 
 	(cursor-for-frame-part): new function, creates functions to
 	return the correct cursor. Uses frame-part-movable-p to see
-	which cursor should be displayed 
+	which cursor should be displayed
 
 	* sawfish/wm/state/maximize.jl (frame-part-movable-p): new
 	function
@@ -873,7 +1595,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* sawfish/wm/swapper.jl, sawfish/wm/stacking.jl,
 	sawfish/wm/menus.jl, sawfish/wm/commands/x-cycle.jl,
 	sawfish/wm/ext/tooltips.jl, sawfish/wm/ext/match-window.jl,
-	sawfish/wm/ext/edge-flip.jl, sawfish/wm/gnome/match-window.jl, 
+	sawfish/wm/ext/edge-flip.jl, sawfish/wm/gnome/match-window.jl,
 	sawfish/wm/placement/smart.jl, sawfish/wm/state/maximize.jl,
 	sawfish/wm/theming/make-theme.jl, sawfish/wm/util/gtkrc.jl:
 	Added some `(unused ...)' declarations to turn off some
@@ -1262,7 +1984,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	sawfish.wm.ext.match-window instead of just match-window
 
 	* sawfish/wm/focus.jl (focus-enter-fun, focus-leave-fun):
-	accept an extra MODE parameter		
+	accept an extra MODE parameter
 	(enter-exit mode): pointer-leave events only cause focus to be
 	jettisoned if (eq MODE 'normal)
 
@@ -1605,21 +2327,21 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* sawfish/wm/workspace.jl, sawfish/wm/windows.jl,
 	sawfish/wm/user.jl, sawfish/wm/server.jl, sawfish/wm/misc.jl,
 	sawfish/wm/menus.jl, sawfish/wm/gaol.jl, sawfish/wm/frames.jl,
-	sawfish/wm/customize.jl, sawfish/wm/commands.jl: 
+	sawfish/wm/customize.jl, sawfish/wm/commands.jl:
 	* sawfish/wm/commands/xterm.jl,
 	sawfish/wm/commands/viewport-linear.jl,
 	sawfish/wm/commands/move-resize.jl,
-	sawfish/wm/commands/help.jl, sawfish/wm/commands/describe.jl: 
+	sawfish/wm/commands/help.jl, sawfish/wm/commands/describe.jl:
 	* sawfish/wm/ext/window-history.jl, sawfish/wm/ext/tooltips.jl,
 	sawfish/wm/ext/match-window.jl,
-	sawfish/wm/ext/error-handler.jl, sawfish/wm/ext/3d-hack.jl: 
-	* sawfish/wm/gnome/menus.jl: 
+	sawfish/wm/ext/error-handler.jl, sawfish/wm/ext/3d-hack.jl:
+	* sawfish/wm/gnome/menus.jl:
 	* sawfish/wm/session/save.jl, sawfish/wm/session/load.jl,
-	sawfish/wm/session/init.jl: 
+	sawfish/wm/session/init.jl:
 	* sawfish/wm/util/with-output.jl, sawfish/wm/util/prompt.jl,
 	sawfish/wm/util/prompt-wm.jl, sawfish/wm/util/nokogiri.jl,
 	sawfish/wm/util/keymap.jl, sawfish/wm/util/gtkrc.jl,
-	sawfish/wm/util/compat.jl: 
+	sawfish/wm/util/compat.jl:
 
 	No need to explicitly open `rep.io.streams' anymore
 
@@ -1633,7 +2355,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 
 2000-09-08  John Harper  <john@dcs.warwick.ac.uk>
 
-	* sawfish/wm.jl: 
+	* sawfish/wm.jl:
 
 	* sawfish/wm/workspace.jl, sawfish/wm/windows.jl,
 	sawfish/wm/window-anim.jl, sawfish/wm/viewport.jl,
@@ -1643,40 +2365,40 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	sawfish/wm/menus.jl, sawfish/wm/keymaps.jl, sawfish/wm/gaol.jl,
 	sawfish/wm/frames.jl, sawfish/wm/focus.jl,
 	sawfish/wm/customize.jl, sawfish/wm/custom.jl,
-	sawfish/wm/commands.jl: 
+	sawfish/wm/commands.jl:
 
 	* sawfish/wm/commands/xterm.jl, sawfish/wm/commands/x-cycle.jl,
 	sawfish/wm/commands/viewport-linear.jl,
 	sawfish/wm/commands/move-resize.jl,
 	sawfish/wm/commands/help.jl, sawfish/wm/commands/gnome.jl,
-	sawfish/wm/commands/describe.jl: 
+	sawfish/wm/commands/describe.jl:
 
 	* sawfish/wm/ext/window-history.jl, sawfish/wm/ext/tooltips.jl,
 	sawfish/wm/ext/shade-hover.jl, sawfish/wm/ext/match-window.jl,
 	sawfish/wm/ext/error-handler.jl, sawfish/wm/ext/edge-flip.jl,
 	sawfish/wm/ext/auto-raise.jl, sawfish/wm/ext/audio-events.jl,
-	sawfish/wm/ext/3d-hack.jl: 
+	sawfish/wm/ext/3d-hack.jl:
 
-	* sawfish/wm/gnome/menus.jl: 
+	* sawfish/wm/gnome/menus.jl:
 
 	* sawfish/wm/session/save.jl, sawfish/wm/session/load.jl,
-	sawfish/wm/session/init.jl: 
+	sawfish/wm/session/init.jl:
 
 	* sawfish/wm/state/wm-spec.jl, sawfish/wm/state/transient.jl,
 	sawfish/wm/state/shading.jl, sawfish/wm/state/open-look.jl,
 	sawfish/wm/state/mwm.jl, sawfish/wm/state/maximize.jl,
 	sawfish/wm/state/ignored.jl, sawfish/wm/state/iconify.jl,
-	sawfish/wm/state/gnome.jl, sawfish/wm/state/configure.jl: 
+	sawfish/wm/state/gnome.jl, sawfish/wm/state/configure.jl:
 
 	* sawfish/wm/theming/make-theme.jl,
-	sawfish/wm/theming/make-theme-preview.jl: 
+	sawfish/wm/theming/make-theme-preview.jl:
 
 	* sawfish/wm/util/with-output.jl,
 	sawfish/wm/util/window-order.jl, sawfish/wm/util/prompt.jl,
 	sawfish/wm/util/prompt-wm.jl, sawfish/wm/util/prompt-extras.jl,
 	sawfish/wm/util/play-audio.jl, sawfish/wm/util/nokogiri.jl,
 	sawfish/wm/util/keymap.jl, sawfish/wm/util/gtkrc.jl,
-	sawfish/wm/util/groups.jl, sawfish/wm/util/compat.jl: 
+	sawfish/wm/util/groups.jl, sawfish/wm/util/compat.jl:
 
 	Open the necessary modules that aren't included in `rep'
 	structure anymore (rep.regexp, rep.system, rep.io.streams,
@@ -1693,13 +2415,13 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* sawfish/wm/customize.jl, sawfish/wm/custom.jl: added module
 	aliases
 
-	* sawfish/wm/menus.jl: 
+	* sawfish/wm/menus.jl:
 	* sawfish/wm/state/iconify.jl: moved the `Iconify' window menu
 	item to the `Toggle' submenu, and called it `Minimized'
 
-	* sawfish/wm/workspace.jl, sawfish/wm/frames.jl: 
+	* sawfish/wm/workspace.jl, sawfish/wm/frames.jl:
 	* sawfish/wm/ext/old-window-menu.jl,
-	sawfish/wm/ext/beos-window-menu.jl: 
+	sawfish/wm/ext/beos-window-menu.jl:
 	* sawfish/wm/util/groups.jl: create radio-button menu-items
 	where appropriate
 
@@ -1716,9 +2438,9 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	(popup-window-menu): now takes a window as its sole arg, then
 	sets menu-args to the singleton list containing this value
 
-	* sawfish/wm/frames.jl, workspace.jl: 
+	* sawfish/wm/frames.jl, workspace.jl:
 	* sawfish/wm/ext/old-window-menu.jl,
-	sawfish/wm/ext/beos-window-menu.jl: 
+	sawfish/wm/ext/beos-window-menu.jl:
 	* sawfish/wm/util/groups.jl: use check-items where appropriate
 	when creating menus
 
@@ -1908,19 +2630,19 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	sawfish/wm/commands/move-resize.jl,
 	sawfish/wm/commands/grow-pack.jl,
 	sawfish/wm/commands/groups.jl, sawfish/wm/commands/gnome.jl,
-	sawfish/wm/commands/describe.jl: 
+	sawfish/wm/commands/describe.jl:
 	* sawfish/wm/ext/window-history.jl, sawfish/wm/ext/tooltips.jl,
-	sawfish/wm/ext/edge-flip.jl: 
-	* sawfish/wm/gnome/menus.jl: 
-	* sawfish/wm/placement/smart.jl: 
-	* sawfish/wm/session/load.jl: 
+	sawfish/wm/ext/edge-flip.jl:
+	* sawfish/wm/gnome/menus.jl:
+	* sawfish/wm/placement/smart.jl:
+	* sawfish/wm/session/load.jl:
 	* sawfish/wm/state/transient.jl, sawfish/wm/state/shading.jl,
 	sawfish/wm/state/maximize.jl, sawfish/wm/state/ignored.jl,
-	sawfish/wm/state/iconify.jl: 
+	sawfish/wm/state/iconify.jl:
 	* sawfish/wm/util/prompt.jl, sawfish/wm/util/prompt-extras.jl,
 	sawfish/wm/util/nokogiri.jl, sawfish/wm/util/gtkrc.jl,
 	sawfish/wm/util/edges.jl, sawfish/wm/util/display-window.jl,
-	sawfish/wm/util/compat.jl: 
+	sawfish/wm/util/compat.jl:
 
 	Updated for new define-command interface
 
@@ -1952,7 +2674,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	sawfish/wm/util/prompt.jl, sawfish/wm/util/prompt-wm.jl,
 	sawfish/wm/util/prompt-extras.jl, sawfish/wm/util/keymap.jl,
 	sawfish/wm/util/groups.jl, sawfish/wm/util/edges.jl,
-	sawfish/wm/util/display-window.jl, sawfish/wm/util/compat.jl: 
+	sawfish/wm/util/display-window.jl, sawfish/wm/util/compat.jl:
 
 	use #!optional and #!rest instead of deprecated &optional and
 	&rest
@@ -2003,7 +2725,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 2000-08-10  John Harper  <john@dcs.warwick.ac.uk>
 
 	* sawfish/wm/placement.jl (adjust-window-for-gravity): use
-	adjust-position-for-gravity 
+	adjust-position-for-gravity
 
 	* sawfish/wm/windows.jl (adjust-position-for-gravity): new
 	function (abstracted from adjust-window-for-gravity)
@@ -4781,7 +5503,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* workspace.jl (ws-saved-state): fixed
 
 	* customize.jl (default-font): add after-setting-frame-option
-	as :after-set function 
+	as :after-set function
 
 1999-10-08  John Harper  <john@dcs.warwick.ac.uk>
 
@@ -5069,7 +5791,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* workspace.jl (window-menu): only include non-ignored windows
 
 	* smart-placement.jl (sp-cost): multiple x-edges by y-edges
-	instead of adding when calculating space usefulness 
+	instead of adding when calculating space usefulness
 
 1999-09-21  John Harper  <john@dcs.warwick.ac.uk>
 
@@ -5118,7 +5840,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* version 0.7
 
 	* x-cycle.jl (x-cycle-next): if the next window was iconified,
-	display its name surrounded by square brackets 
+	display its name surrounded by square brackets
 
 	* smart-placement.jl (place-window-first-fit): do first-fit
 	window placement
@@ -5451,7 +6173,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	* frames.jl: create commands to set the frame of a window to
 	each of the possible window types
 	(set-frame-for-window): new optional arg TYPE
-	
+
 
 	* customize.jl (customize): require all the custom-require
 	features
@@ -5599,7 +6321,7 @@ Sat Aug 18 16:32:37 2001  Owen Taylor  <otaylor@redhat.com>
 	placement mode
 
 	* open-look.jl, mwm.jl: new files, implement some of the Motif
-	and OpenLook window hints 
+	and OpenLook window hints
 	* sawmill.jl: require mwm and open-look
 
 	* frames.jl (window-type): moved from transient.jl; if the

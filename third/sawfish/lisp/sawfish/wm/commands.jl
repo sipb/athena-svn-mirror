@@ -1,6 +1,6 @@
 #| commands.jl -- managing the command database
 
-   $Id: commands.jl,v 1.1.1.2 2002-03-20 04:56:19 ghudson Exp $
+   $Id: commands.jl,v 1.1.1.3 2003-01-05 00:32:18 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -28,7 +28,7 @@
 	    autoload-command
 	    command-ref
 	    command-type
-	    command-user-level
+	    command-class
 	    apply-command
 	    call-command
 	    prefix-numeric-argument
@@ -76,7 +76,7 @@ evaluated.")
   (define autoloader (make-autoloader getter setter))
   (define real-getter (autoloader-ref getter))
 
-  (define (apply-command-keys name #!key spec type doc doc-key user-level)
+  (define (apply-command-keys name #!key spec type doc doc-key class)
     (when spec
       (put name 'command-spec spec))
     (when type
@@ -85,8 +85,8 @@ evaluated.")
       (put name 'command-doc doc))
     (when doc-key
       (put name 'command-doc-key doc-key))
-    (when user-level
-      (put name 'command-user-level user-level)))
+    (when class
+      (put name 'command-class class)))
 
   (define (define-command name fun . keys)
     "Define a window managed command called NAME (a symbol). The
@@ -119,7 +119,7 @@ command called NAME (optionally whose arguments have custom-type TYPE)."
 	(cadr (function-spec (command-ref name)))))
 
   (define (command-type name) (get name 'custom-command-args))
-  (define (command-user-level name) (get name 'command-user-level))
+  (define (command-class name) (or (get name 'command-class) 'default))
 
   (define (commandp arg)
     "Return t if ARG names a command."

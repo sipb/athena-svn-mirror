@@ -11,7 +11,7 @@ exec rep "$0" "$@"
 
 #| nokogiri-main.jl -- entry point
 
-   $Id: main.jl.in,v 1.1.1.2 2001-01-13 14:57:52 ghudson Exp $
+   $Id: main.jl.in,v 1.1.1.3 2003-01-05 00:32:17 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -40,8 +40,7 @@ exec rep "$0" "$@"
 	  sawfish.gtk.widget
 	  sawfish.ui.i18n
 	  sawfish.ui.shell
-	  sawfish.ui.group
-	  sawfish.ui.user-level)
+	  sawfish.ui.group)
 
   (define socket-id nil)
 
@@ -60,11 +59,8 @@ where OPTIONS are any of:\n
       (setq group (read-from-string group))
       (set-top-group (if (listp group) group `(root ,group)))))
 
-  (let ((level (get-command-line-option "--user-level" t)))
-    (when level
-      (setq *nokogiri-user-level* (read-from-string level))))
-
-  (when (get-command-line-option "--flatten")
+  ;; XXX remove the "or t" when trees work again
+  (when (or t (get-command-line-option "--flatten"))
     (setq *nokogiri-flatten-groups* t))
 
   (when (get-command-line-option "--single-level")

@@ -1,5 +1,5 @@
 ;; play-audio.jl -- functions for playing sound samples
-;; $Id: play-audio.jl,v 1.1.1.1 2000-11-12 06:27:06 ghudson Exp $
+;; $Id: play-audio.jl,v 1.1.1.2 2003-01-05 00:32:24 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -43,7 +43,6 @@
     "The program used to play audio samples. If unset, built-in support for \
 ESD is used."
     :type (optional program)
-    :user-level expert
     :group audio)
 
   ;; currently running audio process

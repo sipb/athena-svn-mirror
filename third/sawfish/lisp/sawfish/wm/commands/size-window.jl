@@ -1,5 +1,5 @@
 ;; size-window -- resizing window iteratively (like `C-x ^' in emacs)
-;; $Id: size-window.jl,v 1.1.1.1 2000-11-12 06:26:42 ghudson Exp $
+;; $Id: size-window.jl,v 1.1.1.2 2003-01-05 00:32:20 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -32,12 +32,9 @@
 	  sawfish.wm.commands
 	  sawfish.wm.custom)
 
-  (defcustom size-window-def-increment 16
+  (defvar size-window-def-increment 16
     "Default increment for size-window commands (when the window doesn't
-specify it's own increments)."
-    :group move
-    :user-level expert
-    :type (number 1))
+specify it's own increments).")
 
   (define (size-window w cols rows)
     "Increase the size of window W by COLS columns and ROWS rows (each of which

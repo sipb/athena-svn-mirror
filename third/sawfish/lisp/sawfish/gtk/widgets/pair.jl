@@ -1,6 +1,6 @@
 #| nokogiri-widgets/pair.jl -- cons-cell widget
 
-   $Id: pair.jl,v 1.1.1.1 2000-11-12 06:26:47 ghudson Exp $
+   $Id: pair.jl,v 1.1.1.2 2003-01-05 00:33:23 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,22 +24,29 @@
 (define-structure sawfish.gtk.widgets.pair ()
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  sawfish.gtk.widget)
 
   ;; (pair CAR-SPEC CDR-SPEC)
 
+  (define (box-packer arg)
+    (case arg
+      ((start) gtk-box-pack-start)
+      ((end) gtk-box-pack-end)
+      (t gtk-container-add)))
+
   (define (make-pair-item changed-callback left right
-			  #!optional use-vbox reversed)
+			  #!optional use-vbox reversed packing)
     (let ((hbox ((if use-vbox gtk-vbox-new gtk-hbox-new) nil box-spacing))
 	  (left-widget (make-widget left changed-callback))
 	  (right-widget (make-widget right changed-callback)))
 
-      (unless reversed
-	(gtk-container-add hbox (widget-gtk-widget left-widget)))
-      (gtk-container-add hbox (widget-gtk-widget right-widget))
-      (when reversed
-	(gtk-container-add hbox (widget-gtk-widget left-widget)))
+      (let ((w1 (if (not reversed) left-widget right-widget))
+	    (w2 (if (not reversed) right-widget left-widget)))
+
+	((box-packer (car packing)) hbox (widget-gtk-widget w1))
+	((box-packer (cdr packing)) hbox (widget-gtk-widget w2)))
+
       (gtk-widget-show hbox)
 
       (lambda (op)

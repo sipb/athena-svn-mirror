@@ -1,5 +1,5 @@
 /* sawmill.h -- Main include file, brings in all the rest
-   $Id: sawmill.h,v 1.2 1999/07/25 15:02:21 john Exp
+   $Id: sawmill.h,v 1.1.1.4 2003-01-05 00:33:31 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -37,7 +37,7 @@
 #if defined (HAVE_IMLIB)
 # include <Imlib.h>
 #elif defined (HAVE_GDK_PIXBUF)
-# include <gdk-pixbuf/gdk-pixbuf-xlib.h>
+# include <gdk-pixbuf-xlib/gdk-pixbuf-xlib.h>
 #else
 # error "Need an image handling library!"
 #endif
@@ -144,7 +144,6 @@ typedef struct lisp_window {
     XWindowAttributes attr;
     XSizeHints hints;
     XWMHints *wmhints;
-    Window transient_for_hint;
     Window *cmap_windows;
     int n_cmap_windows;
     repv full_name, name, icon_name;
@@ -169,15 +168,16 @@ typedef struct lisp_window {
 #define WINDOW_FOCUSED_P(w) (focus_window == w)
 #define WINDOW_IS_GONE_P(w) (w->id == 0)
 
+typedef struct Lisp_Font_Class_struct Lisp_Font_Class;
+
 /* An allocated font */
 typedef struct lisp_font {
     repv car;
     struct lisp_font *next;
+    const Lisp_Font_Class *class;
+    repv type;
     repv name;
-    union {
-	XFontSet set;
-	XFontStruct *str;
-    } font;
+    void *font;
     repv plist;
     int ascent, descent;
 } Lisp_Font;
@@ -185,14 +185,11 @@ typedef struct lisp_font {
 #define FONTP(v)	rep_CELL16_TYPEP(v, font_type)
 #define VFONT(v)	((Lisp_Font *)rep_PTR(v))
 
-#define FF_FONT_STRUCT	(1 << (rep_CELL16_TYPE_BITS + 0))
-#define FONT_STRUCT_P(v) (VFONT(v)->car & FF_FONT_STRUCT)
-
 /* An allocated color */
 typedef struct lisp_color {
     repv car;
     struct lisp_color *next;
-    int red, green, blue;		/* each 16 bits */
+    int red, green, blue, alpha;	/* each 16 bits */
     int pixel;				/* somewhere in the screen's cmap */
 } Lisp_Color;
 
@@ -321,6 +318,8 @@ enum exit_codes {
 #define MAX(x,y) (((x) > (y)) ? (x) : (y))
 #undef MIN
 #define MIN(x,y) (((x) < (y)) ? (x) : (y))
+#undef CLAMP
+#define CLAMP(x,l,h) (((x) > (h)) ? (h) : (((x) < (l)) ? (l) : (x)))
 
 #undef POS
 #define POS(x)   MAX(x, 0)
@@ -345,6 +344,39 @@ enum exit_codes {
 # define DB(x) db_printf x
 #else
 # define DB(x) printf x
+#endif
+
+#ifndef NDEBUG
+# define return_if_fail(x)					\
+    do {							\
+	if (!(x)) {						\
+	    fprintf (stderr, "%s:%d: assertion failed: %s\n",	\
+		     __FILE__, __LINE__, #x);			\
+	    return;						\
+	}							\
+    } while (0)
+
+# define return_val_if_fail(x, v)				\
+    do {							\
+	if (!(x)) {						\
+	    fprintf (stderr, "%s:%d: assertion failed: %s\n",	\
+		     __FILE__, __LINE__, #x);			\
+	    return (v);						\
+	}							\
+    } while (0)
+
+#define nonterminal_assert(x)					\
+    do {							\
+	if (!(x)) {						\
+	    fprintf (stderr, "%s:%d: assertion failed: %s\n",	\
+		     __FILE__, __LINE__, #x);			\
+	}							\
+    } while (0)
+	
+#else
+# define return_if_fail(x) do {} while (0)
+# define return_val_if_fail(x, v) do {} while (0)
+# define nonterminal_assert(x) do {} while (0)
 #endif
 
 #endif /* SAWMILL_H */

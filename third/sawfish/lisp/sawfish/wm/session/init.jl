@@ -1,5 +1,5 @@
 ;; sm-init.jl -- session manager code loaded on startup
-;; $Id: init.jl,v 1.1.1.2 2001-03-09 19:34:59 ghudson Exp $
+;; $Id: init.jl,v 1.1.1.3 2003-01-05 00:33:30 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -23,6 +23,7 @@
 
     (export sm-find-file
 	    sm-add-saved-properties
+	    sm-add-restored-properties
 	    sm-get-window-prop
 	    sm-save-yourself
 	    sm-init)
@@ -50,6 +51,9 @@
   (defvar sm-saved-window-properties nil
     "List of window properties saved with the session.")
 
+  (defvar sm-restored-window-properties nil
+    "Extra window properties restored from the session.")
+
   (defvar sm-window-save-functions nil
     "List of functions called when the state of each window is saved. Each
 function should return a list of alist elements that will be saved in
@@ -62,6 +66,12 @@ the window.")
 
   (defvar sm-after-restore-hook nil
     "Hook called after loading a saved session.")
+
+  (defvar sm-sloppy-id-matching nil
+    "When loading sessions, the algorithm that matches saved session data
+to running clients requires that if one has a session id, then so must
+the other, and they must match. Setting this variable to true turns
+that feature off, allowing some broken clients to be session managed.")
 
 ;;; utilities
 
@@ -76,6 +86,13 @@ the window.")
 	    (or (memq p sm-saved-window-properties)
 		(setq sm-saved-window-properties
 		      (cons p sm-saved-window-properties))))
+	  props))
+
+  (define (sm-add-restored-properties #!rest props)
+    (mapc (lambda (p)
+	    (or (memq p sm-restored-window-properties)
+		(setq sm-restored-window-properties
+		      (cons p sm-restored-window-properties))))
 	  props))
 
   ;; find PROP associated with W, or nil
@@ -165,7 +182,7 @@ the window.")
 
       (set-restart-command)
 
-      (sm-set-property "CurrentDirectory" default-directory)
+      (sm-set-property "CurrentDirectory" (local-file-name default-directory))
       (sm-set-property "ProcessId" (format nil "%d" (process-id)))
       (sm-set-property "Program" (car saved-command-line-args))
       (sm-set-property "UserId" (user-login-name))

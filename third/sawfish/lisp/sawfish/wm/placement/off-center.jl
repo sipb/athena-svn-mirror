@@ -18,7 +18,7 @@
    along with sawfish; see the file COPYING.  If not, write to
    the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: off-center.jl,v 1.1.1.1 2001-01-13 14:58:51 ghudson Exp $
+   $Id: off-center.jl,v 1.1.1.2 2003-01-05 00:32:30 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>
 |#
@@ -42,7 +42,7 @@
 	  sawfish.wm.viewport
 	  sawfish.wm.workspace
 	  sawfish.wm.util.rects
-	  sawfish.wm.state.maximize
+	  sawfish.wm.util.workarea
 	  sawfish.wm.state.iconify)
 
   (define multipliers '[(0 . 0)		;centered
@@ -105,18 +105,8 @@
   (define (within-rectangle point dims rect)
     (= (rect-2d-overlap dims point rect) (* (car dims) (cdr dims))))
 
-  (define (workarea-for w)
-    (or (maximize-find-workarea w)
-	(let* ((head (current-head w))
-	       (head-off (head-offset head))
-	       (head-dims (head-dimensions head)))
-	  (list (car head-off)
-		(cdr head-off)
-		(+ (car head-off) (car head-dims))
-		(+ (cdr head-off) (cdr head-dims))))))
-
   (define (place-window-off-center w)
-    (let* ((workarea (workarea-for w))
+    (let* ((workarea (calculate-workarea #:window w))
 	   (fdims (window-frame-dimensions w))
 	   (center (rectangle-center workarea)))
 

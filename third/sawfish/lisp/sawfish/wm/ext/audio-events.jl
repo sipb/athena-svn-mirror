@@ -1,5 +1,5 @@
 ;; audio-events.jl -- map wm actions to audio samples
-;; $Id: audio-events.jl,v 1.1.1.3 2001-03-09 19:34:39 ghudson Exp $
+;; $Id: audio-events.jl,v 1.1.1.4 2003-01-05 00:32:21 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -41,15 +41,11 @@
   (defcustom audio-events-enabled nil
     "Play sound effects for window events."
     :type boolean
-    :user-level novice
     :require sawfish.wm.ext.audio-events
     :group audio)
 
-  (defcustom audio-for-ignored-windows nil
-    "Play sound effects for unmanaged windows."
-    :type boolean
-    :depends audio-events-enabled
-    :group audio)
+  (defvar audio-for-ignored-windows nil
+    "Play sound effects for unmanaged windows.")
 
   ;; standard events are: iconified, uniconified, shaded, unshaded,
   ;; maximized, unmaximized, mapped, unmapped, mapped-transient,

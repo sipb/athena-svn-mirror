@@ -1,3 +1,292 @@
+2002-11-09  John Harper  <jsh@unfactored.org>
+
+	* version 1.2
+
+2002-11-03  John Harper  <jsh@unfactored.org>
+
+	* merged color changes from HEAD:
+
+	* sawmill.h (Lisp_Color): now contains alpha value
+
+	* colors.c (Fget_color_rgb, Fget_color): both now take an extra
+	ALPHA parameter
+	(Fcolor_rgb, Fcolor_rgb_8): both now return an extra element in
+	the list, the alpha value
+
+	* fonts.c (xft_draw): use alpha field in color, instead of
+	defaulting to fully opaque
+
+	* images.c, functions.c, frames.c, cursors.c: updated callers
+
+2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* merged font changes from HEAD:
+
+	2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* fonts.c, sawmill.h: different font rendering methods are now
+	better abstracted, using the Lisp_Font_Class structure
+
+	(get-font-typed, font-type-exists-p, font-type): new functions,
+	allows a font to be loaded from a type+name combination,
+	instead of just a name, which may be ambiguous when multiple
+	renderers are being used
+
+	Current types are "xlfd" for traditional X fonts, and "Xft" for
+	Xft client-side rendered fonts. The old get-font function
+	always tries to load xlfd fonts, for backwards compatibility
+
+	For now, Xft fonts can be used like this:
+
+	(when (and (boundp 'font-type-exists-p)
+		   (font-type-exists-p "Xft"))
+	  (setq default-font (get-font-typed "Xft" "Trebuchet MS-11")))
+
+	2002-11-02  John Harper  <jsh@unfactored.org>
+
+	* fonts.c (x_draw_string): now takes an explicit foreground
+	color parameter, instead of using the one in the gc
+
+	* x.c, sawmill_subrs.h, functions.c, frames.c: updated callers
+
+2002-10-20  John Harper  <jsh@unfactored.org>
+
+	* more merging:
+
+	2002-10-20  John Harper  <jsh@unfactored.org>
+
+	* windows.c, sawmill_subrs.h, sawmill.h, events.c: removed code
+	to read WM_TRANSIENT_FOR property, handled by Lisp code now
+
+	2002-10-19  John Harper  <jsh@unfactored.org>
+
+	* keys.c (find_meta): use our own nconc function
+
+	2002-10-03  John Harper  <jsh@unfactored.org>
+
+	* functions.c (Fget_x_text_property, Fset_x_text_property):
+	deleted, these are now written in lisp
+
+2002-09-30  John Harper  <jsh@unfactored.org>
+
+	* merging from HEAD:
+
+	2002-10-01  John Harper  <jsh@unfactored.org>
+
+	* property-cache.c (property_cache_ref): fixed silly bug
+	(returning nil not null before cache is initialized)
+
+	2002-09-29  John Harper  <jsh@unfactored.org>
+
+	* sawmill.h, fonts.c: refactored some of the font loading code
+
+	2002-09-28  John Harper  <jsh@unfactored.org>
+
+	* events.c (configure_request): for `position' configuration,
+	pass nil x or y if unset (instead of just ignoring it). Part of
+	fixing #83431
+
+	2002-09-28  John Harper  <jsh@unfactored.org>
+
+	Some performance optimizations, especially avoiding server
+	round trips:
+
+	* property-cache.c: new file, cache results of
+	[gs]et-x-property (doesn't do [gs]et-x-text-property yet)
+
+	* functions.c, frames.c, events.c: use/maintain the property
+	cache
+
+	* frames.c (apply_mask, configure_frame_part): turn off
+	graphics exposure events in GCs
+	* functions.c (refresh_message_window): same
+	* images.c (paste_image_to_drawable): same
+
+	* frames.c (set_frame_part_bg): don't reshape frames every time
+	we redraw the background, too expensive
+
+	2002-09-21  John Harper  <jsh@unfactored.org>
+
+	* stacking-list.c: replaced assert () instances by non-terminal
+	macros, i.e. they'll print a message but not abort the program.
+	Lame-ass way of "fixing" #81027
+
+	* sawmill.h (return_if_fail, return_val_if_fail,
+	nonterminal_assert): new macros
+
+	* windows.c (Fwindow_size_hints): accept min size == 0 and set
+	it to one, should fix #77639
+
+	2002-09-01  John Harper  <jsh@unfactored.org>
+
+	* server.c (server_accept_connection): don't pass null pointers
+	to accept (), it's been reported to cause crashes (patch
+	suggested by Sergey Bratus <sergey@cs.dartmouth.edu>)
+
+2002-06-28  John Harper  <jsh@unfactored.org>
+
+	* version 1.1
+
+2002-05-06  John Harper  <jsh@unfactored.org>
+
+	* More merging from HEAD:
+
+	2002-04-22  John Harper  <jsh@unfactored.org>
+
+	* functions.c (Fset_x_text_property): added optional fourth arg
+	ENCODING-ATOM. To allow #67397 to be fixed
+
+	* events.c: more focus change fallout
+
+2002-04-21  John Harper  <jsh@unfactored.org>
+
+	* Merged changes from HEAD:
+
+	2002-04-21  John Harper  <jsh@unfactored.org>
+
+	* events.c (events_init): pointer-motion-threshold isn't set
+
+	2002-04-17  John Harper  <jsh@unfactored.org>
+
+	Work to fix fallout from fix for #67958 (focus getting lost
+	sometimes):
+
+	* windows.c (pending_focus_window): deleted this variable
+
+	(focus_off_window): if the window is the one that's currently
+	focused, call XSetInputFocus to immediately transfer focus to
+	our window that gets the focus if nothing else has it. This
+	avoids us getting left with nothing focused (e.g. if we send
+	WM_TAKE_FOCUS to a window that doesn't accept the focus)
+
+	* windows.c (commit_queued_focus_change): disabled call to
+	check_for_lost_focus ()
+
+	* windows.c (find_window_by_id, x_find_window_by_id): don't do
+	debugging printing here
+	* events.c (handle_input_mask): print names of windows when
+	debugging is enabled
+
+	2002-04-12  John Harper  <jsh@unfactored.org>
+
+	* windows.c (remove_window, install_window_frame,
+	remove_window_frame): update pending_focus_window and
+	queued_focus_id as necessary (fixes a "lost focus" bug)
+
+	2002-04-09  John Harper  <jsh@unfactored.org>
+
+	* windows.c (commit_queued_focus_change, focus_on_window,
+	focus_off_window): removed broken "timestamp - 1" kludge.
+	Instead defer both sending WM_TAKE_FOCUS and focusing windows
+	until idle time. Fixes #67958
+
+	* events.c (button_press, motion_notify): only accept pointer
+	events we're expecting (either directly on one of our windows,
+	or while the pointer is grabbed)
+	(mark_pointer_grabbed, ungrab_pointer): new functions
+	* main.c, keys.c, functions.c, frames.c: call ungrab_pointer ()
+	instead of XUngrabPointer (). Fixes #44239
+
+	* images.c (bevel_pixel): use integer arithmetic
+	* sawmill.h: define CLAMP macro
+
+	* main.c (main): if DEBUG == 1, put stdout into line buffering
+	mode
+
+	2002-04-08  John Harper  <jsh@unfactored.org>
+
+	* libclient.c (unix_server_init): print an error message if
+	connect () fails
+
+	2002-04-03  John Harper  <jsh@unfactored.org>
+
+	* display.c (error_handler): only interpret BadWindow and
+	BadDrawable errors as meaning that a window died. May fix
+	#74799
+
+	2002-04-02  John Harper  <jsh@unfactored.org>
+
+	* events.c (Fx_server_timestamp): added another arg STORE. When
+	true, save the timestamp for later use.. needed for #77041
+
+	2002-03-19  John Harper  <jsh@unfactored.org>
+
+	* functions.c (message_event_handler): only redraw on the final
+	expose event
+
+2002-03-19  John Harper  <jsh@unfactored.org>
+
+	* Merged changes from HEAD:
+
+	2002-03-01  John Harper  <jsh@pixelslut.com>
+
+	* windows.c (manage_windows): unmap the window before faking
+	the call to the map-request event handler. Fixes #67601 (causes
+	the expected map-notify event to be sent when we later map it)
+
+	2002-02-17  John Harper  <jsh@unfactored.org>
+
+	* windows.c (remove_window): check for w->id == 0 immediately
+	before calling remove_from_stacking_list (). Avoids triggering
+	an assertion on logout (since remove_window () may be called
+	recursively from the error handler!)
+
+	2002-01-24  John Harper  <jsh@unfactored.org>
+
+	* frames.c: fixed definitions of Qtop and Qbottom. This bug
+	must have existed forever!
+
+2002-01-10  Sander Vesik <sander.vesik@sun.com>
+
+	* image.c: gdk_pixbuf_new_from_file now takes two parameters
+
+	* main.c: conditionaly include glib-object.h and call
+	g_type_init() if we are using gdk_pixbuf
+
+	* gtk-style.c: GtkRcStyle no longer has font and font_set
+	members
+
+	* sawmill.h: gdk-pixbuf-xlib.h now lives in gdk-pixbuf-xlib
+
+2001-12-05  John Harper  <jsh@unfactored.org>
+
+	* windows.c (Fwindow_visibility): check argument is windowp
+	(patch from Michal Maru¹ka <mmc@maruska.dyndns.org>)
+
+2001-11-12  John Harper  <jsh@unfactored.org>
+
+	Fixed bug of not rereading WM_WINDOW_PROTOCOLS when it changes:
+
+	* events.c (property_notify): call get_window_protocols on
+	WM_WINDOW_PROTOCOLS events
+
+	* windows.c (get_window_protocols): clear the window's
+	does_wm_X flags before reading the property
+
+2001-11-03  John Harper  <jsh@unfactored.org>
+
+	Fixed bug where Nautilus windows often don't get focused in
+	focus follows mouse mode:
+
+	* windows.c (focus_on_window): don't call XSetInputFocus ()
+	directly store the parameters for later
+
+	(commit_queued_focus_change): new function, calls
+	XSetInputFocus () if there's a queued focus change waiting
+
+	* events.c (handle_input_mask): call commit_queued_focus_change
+	() before exiting
+
+2001-10-21  John Harper  <jsh@unfactored.org>
+
+	Fixed bug where warp-cursor doesn't invalidate the pointer
+	location cache:
+
+	* functions.c (Fwarp_cursor): call
+	invalidate_cached_mouse_position after warping the cursor
+
+	* events.c (invalidate_cached_mouse_position): new function
+
 2001-10-14  John Harper  <jsh@unfactored.org>
 
 	* version 1.0.1

@@ -1,6 +1,6 @@
 #| nokogiri-widgets/event.jl
 
-   $Id: event.jl,v 1.1.1.2 2001-03-09 19:35:10 ghudson Exp $
+   $Id: event.jl,v 1.1.1.3 2003-01-05 00:32:09 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -25,7 +25,7 @@
 
     (open rep
 	  rep.regexp
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  sawfish.gtk.widget
 	  sawfish.ui.wm)
 
@@ -39,8 +39,8 @@
       (gtk-box-pack-end hbox grab)
       (gtk-widget-show-all hbox)
 
-      (gtk-signal-connect entry "changed" (make-signal-callback changed))
-      (gtk-signal-connect grab "clicked"
+      (g-signal-connect entry "changed" (make-signal-callback changed))
+      (g-signal-connect grab "clicked"
 			  (lambda ()
 			    (gtk-entry-set-text entry (wm-grab-key))))
 

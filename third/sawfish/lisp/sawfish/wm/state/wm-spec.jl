@@ -1,6 +1,6 @@
 ;; wm-spec.jl -- implement the new (GNOME/KDE) wm hints spec
 
-;; $Id: wm-spec.jl,v 1.1.1.4 2002-03-20 04:56:16 ghudson Exp $
+;; $Id: wm-spec.jl,v 1.1.1.5 2003-01-05 00:33:14 ghudson Exp $
 
 ;; Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -28,18 +28,24 @@
     (open rep
 	  rep.system
 	  sawfish.wm.misc
+	  sawfish.wm.events
 	  sawfish.wm.windows
 	  sawfish.wm.workspace
 	  sawfish.wm.viewport
-	  sawfish.wm.state.maximize
-	  sawfish.wm.state.iconify)
+	  sawfish.wm.state.iconify
+	  sawfish.wm.util.workarea)
 
   ;; todo:
 
-  ;; - _NET_WORKAREA
   ;; - _NET_WM_NAME		-- needs to be in C code?
-  ;; - _NET_WM_STRUT
   ;; - _NET_WM_ICON
+
+  ;; 1.1 additions:
+  ;;  - _NET_WM_ALLOWED_ACTIONS
+  ;;  - _STATE_HIDDEN?
+  ;;  - _NET_WM_MOVERESIZE changes
+  ;;  - _NET_SHOWING_DESKTOP?
+  ;;  - _NET_MOVERESIZE_WINDOW
 
   ;; maybe add some state extensions for things the spec doesn't
   ;; cover but existed in the old GNOME spec; e.g. _GNOME_WM_STATE_FOO
@@ -57,6 +63,8 @@
   (defconst _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT 6)
   (defconst _NET_WM_MOVERESIZE_SIZE_LEFT 7)
   (defconst _NET_WM_MOVERESIZE_MOVE 8)
+  (defconst _NET_WM_MOVERESIZE_SIZE_KEYBOARD 9)
+  (defconst _NET_WM_MOVERESIZE_MOVE_KEYBOARD 10)
 
   (defconst _NET_WM_STATE_REMOVE 0)
   (defconst _NET_WM_STATE_ADD 1)
@@ -64,14 +72,59 @@
 
   (define wm-spec-window-id nil)
 
-  (define supported-protocols
-    [_NET_CLIENT_LIST _NET_CLIENT_LIST_STACKING _NET_NUMBER_OF_DESKTOPS
-     _NET_DESKTOP_GEOMETRY _NET_DESKTOP_VIEWPORT _NET_CURRENT_DESKTOP
-     _NET_DESKTOP_NAMES _NET_ACTIVE_WINDOW _NET_CLOSE_WINDOW
-     _NET_WM_MOVERESIZE _NET_WM_DESKTOP _NET_WM_WINDOW_TYPE _NET_WM_STATE])
+  (define supported-atoms
+    [_NET_ACTIVE_WINDOW
+     _NET_CLIENT_LIST
+     _NET_CLIENT_LIST_STACKING
+     _NET_CLOSE_WINDOW
+     _NET_CURRENT_DESKTOP
+     _NET_DESKTOP_GEOMETRY
+     _NET_DESKTOP_NAMES
+     _NET_DESKTOP_VIEWPORT
+     _NET_NUMBER_OF_DESKTOPS
+     _NET_PROTOCOLS
+     _NET_SUPPORTED
+     _NET_SUPPORTING_WM_CHECK
+     _NET_WORKAREA
+     _NET_WM_ICON_GEOMETRY
+     _NET_WM_MOVERESIZE
+     _NET_WM_MOVERESIZE_MOVE
+     _NET_WM_MOVERESIZE_SIZE_BOTTOM
+     _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT
+     _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT
+     _NET_WM_MOVERESIZE_SIZE_LEFT
+     _NET_WM_MOVERESIZE_SIZE_RIGHT
+     _NET_WM_MOVERESIZE_SIZE_TOP
+     _NET_WM_MOVERESIZE_SIZE_TOPLEFT
+     _NET_WM_MOVERESIZE_SIZE_TOPRIGHT
+     _NET_WM_MOVERESIZE_SIZE_KEYBOARD
+     _NET_WM_MOVERESIZE_MOVE_KEYBOARD
+     _NET_WM_PING
+     _NET_WM_STATE
+     _NET_WM_STATE_ABOVE
+     _NET_WM_STATE_ADD
+     _NET_WM_STATE_BELOW
+     _NET_WM_STATE_FULLSCREEN
+     _NET_WM_STATE_MAXIMIZED
+     _NET_WM_STATE_MAXIMIZED_HORZ
+     _NET_WM_STATE_MAXIMIZED_VERT
+     _NET_WM_STATE_REMOVE
+     _NET_WM_STATE_SHADED
+     _NET_WM_STATE_SKIP_PAGER
+     _NET_WM_STATE_STICKY
+     _NET_WM_STATE_TOGGLE
+     _NET_WM_STRUT
+     _NET_WM_WINDOW_TYPE
+     _NET_WM_WINDOW_TYPE_DESKTOP
+     _NET_WM_WINDOW_TYPE_DIALOG
+     _NET_WM_WINDOW_TYPE_DOCK
+     _NET_WM_WINDOW_TYPE_TOOLBAR
+     _NET_WM_WINDOW_TYPE_MENU
+     _NET_WM_WINDOW_TYPE_UTILITY
+     _NET_WM_WINDOW_TYPE_SPLASH])
   
-  (defconst desktop-layer -4)
-  (defconst dock-layer +4)
+  (defvar wm-spec-below-depth +2)
+  (defvar wm-spec-above-depth +2)
 
   (define supported-states '())
 
@@ -101,12 +154,14 @@
   (define last-workspace-names nil)
   (define last-area nil)
   (define last-area-count nil)
+  (define last-workarea nil)
 
   (define (update-workspace-hints)
     (let* ((limits (workspace-limits))
 	   (port (screen-viewport))
 	   (port-size viewport-dimensions)
-	   (total-workspaces (1+ (- (cdr limits) (car limits)))))
+	   (total-workspaces (1+ (- (cdr limits) (car limits))))
+	   (workarea (make-vector (* 4 total-workspaces))))
 
       (define (set-ws-hints)
 	;; _NET_NUMBER_OF_DESKTOPS
@@ -119,7 +174,8 @@
 	(unless (equal last-workspace-names workspace-names)
 	  (setq last-workspace-names workspace-names)
 	  (set-x-text-property 'root '_NET_DESKTOP_NAMES
-			       (apply vector workspace-names)))
+			       (apply vector workspace-names)
+			       'UTF8_STRING))
 
 	;; _NET_CURRENT_DESKTOP
 	(unless (equal last-workspace
@@ -144,19 +200,35 @@
 		  (set-x-property 'root '_NET_DESKTOP_VIEWPORT
 				  view 'CARDINAL 32)
 		(aset view (* i 2) (* (car port) (screen-width)))
-		(aset view (1+ (* i 2)) (* (cdr port) (screen-width)))
-		(loop (1+ i)))))))
+		(aset view (1+ (* i 2)) (* (cdr port) (screen-height)))
+		(loop (1+ i))))))
+
+	;; _NET_WORKAREA
+	(unless (equal last-workarea workarea)
+	  (set-x-property 'root '_NET_WORKAREA workarea 'CARDINAL 32)
+	  (setq last-workarea workarea)))
 
       (define (set-window-hints w)
-	(let
-	    ;; XXX the gnome-wm standard sucks..!
-	    ((space (and (not (window-sticky-p/workspace w))
-			 (window-get w 'swapped-in))))
-	  (if space
-	      (set-x-property w '_NET_WM_DESKTOP
-			      (vector (- space (car limits))) 'CARDINAL 32)
-	    (set-x-property w '_NET_WM_DESKTOP
-			    (vector #xffffffff) 'CARDINAL 32))))
+	(let ((vec (if (window-sticky-p/workspace w)
+		       (vector #xffffffff)
+		     (let ((space (or (window-get w 'swapped-in)
+				      (car (window-workspaces w)))))
+		       (and space (vector (- space (car limits))))))))
+	  (unless (equal vec (window-get w 'wm-spec/last-workspace))
+	    (if vec
+		(set-x-property w '_NET_WM_DESKTOP vec 'CARDINAL 32)
+	      (delete-x-property w '_NET_WM_DESTOP))
+	    (window-put w 'wm-spec/last-workspace vec))))
+
+      ;; calculate workareas
+      (do ((i 0 (1+ i)))
+	  ((= i total-workspaces))
+	(let ((area (calculate-workarea-from-struts
+		     #:workspace (+ i (car limits)))))
+	  (aset workarea (+ (* i 4) 0) (nth 0 area))
+	  (aset workarea (+ (* i 4) 1) (nth 1 area))
+	  (aset workarea (+ (* i 4) 2) (- (nth 2 area) (nth 0 area)))
+	  (aset workarea (+ (* i 4) 3) (- (nth 3 area) (nth 1 area)))))
 		 
       ;; apparently some pagers don't like it if we place windows
       ;; on (temporarily) non-existent workspaces
@@ -201,31 +273,14 @@
     (when (>= (length geom) 2)
       (window-put w 'icon-position (cons (aref geom 0) (aref geom 1)))))
 
-  (define (wm-class-hacks w)
-    (let ((class (get-x-text-property w 'WM_CLASS)))
-      (when (and class (>= (length class) 2))
-	(cond ((or (and (string= (aref class 1) "Panel")
-			(string= (aref class 0) "panel_window"))
-		   (and (string= (aref class 1) "kicker")
-			(string= (aref class 0) "Panel")))
-	       (window-put w 'focus-click-through t)
-	       (window-put w 'avoid t)
-	       (window-put w 'no-history t)
-	       (window-put w 'never-iconify t)
-	       (window-put w 'never-maximize t)
-	       (window-put w 'sticky t)
-	       (window-put w 'sticky-viewport t)
-	       ;; XXX see gnome.jl for why this is needed..
-	       (window-put w 'placed t))
-	      ((string= (aref class 1) "gmc-desktop-icon")
-	       (window-put w 'never-focus t)
-	       (window-put w 'never-iconify t)
-	       (window-put w 'never-maximize t))))))
+  (define (update-strut w)
+    (let ((strut (get-x-property w '_NET_WM_STRUT)))
+      (when (and strut (eq (nth 0 strut) 'CARDINAL))
+	(let ((data (nth 2 strut)))
+	  (define-window-strut w (aref data 0) (aref data 2)
+			       (aref data 1) (aref data 3))))))
 
   (define (honour-client-state w)
-    ;; things the wm-hints doesn't supply
-    (wm-class-hacks w)
-
     (let ((space (get-x-property w '_NET_WM_DESKTOP)))
       (when space
 	(setq space (aref (nth 2 space) 0))
@@ -253,6 +308,8 @@
 	  (call-state-fun w (aref state i) 'init))
 	(window-put w 'wm-spec-last-states (vector->list state))))
 
+    (update-strut w)
+
     (let ((geom (get-x-property w '_NET_WM_ICON_GEOMETRY)))
       (when geom
 	(update-icon-geometry w (nth 2 geom)))))
@@ -260,7 +317,10 @@
 
 ;;; helper functions
 
-  (define (define-wm-spec-window-type x fun) (put x 'wm-spec-type fun))
+  (define (define-wm-spec-window-type x fun)
+    (if (listp x)
+	(mapc (lambda (y) (define-wm-spec-window-type y fun)) x)
+      (put x 'wm-spec-type fun)))
 
   (define (define-wm-spec-window-state x fun #!key pseudo)
     (put x 'wm-spec-state fun)
@@ -269,42 +329,48 @@
     (when pseudo
       (put x 'wm-spec-pseudo-state t)))
 
-  (define (supported-state-p x) (get x 'wm-spec-state))
-  (define (pseudo-state-p x) (get x 'wm-spec-pseudo-state))
+  (define (supported-state-p x) (and (symbolp x) (get x 'wm-spec-state)))
+  (define (pseudo-state-p x) (and (symbolp x) (get x 'wm-spec-pseudo-state)))
 
   (define (call-state-fun w state mode)
-    (let ((fun (get state 'wm-spec-state)))
+    (let ((fun (and (symbolp state) (get state 'wm-spec-state))))
       (when fun
 	(fun w mode))))
 
-  (define-wm-spec-window-type
-   '_NET_WM_WINDOW_TYPE_DESKTOP
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_DESKTOP
    (lambda (w)
-     (require 'sawfish.wm.stacking)
-     (mark-window-as-desktop w)
-     (window-put w 'fixed-position t)
-     ;; I thought these would be set by the application, but KDE doesn't..
-     (window-put w 'type 'unframed)
-     (window-put w 'sticky t)
-     (window-put w 'sticky-viewport t)
-     (set-window-depth w desktop-layer)))
+     (mark-window-as-desktop w)))
 
-  (define-wm-spec-window-type
-   '_NET_WM_WINDOW_TYPE_DOCK
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_DOCK
    (lambda (w)
-     (require 'sawfish.wm.stacking)
-     (set-window-depth w dock-layer)
-     (window-put w 'window-list-skip t)
-     (window-put w 'cycle-skip t)))
+     (mark-window-as-dock w)))
 
-  (define-wm-spec-window-type
-   '_NET_WM_WINDOW_TYPE_DIALOG
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_DIALOG
+   (lambda (w)
+     (mark-window-as-transient w)))
+
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_UTILITY
    (lambda (w)
      (require 'sawfish.wm.frames)
-     (set-window-type w 'transient)))
+     (set-window-type w 'utility)))
 
-  (define-wm-spec-window-state
-   '_NET_WM_STATE_STICKY
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_TOOLBAR
+   (lambda (w)
+     (require 'sawfish.wm.frames)
+     (set-window-type w 'toolbar)))
+
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_MENU
+   (lambda (w)
+     (require 'sawfish.wm.frames)
+     (set-window-type w 'menu)))
+
+  (define-wm-spec-window-type '_NET_WM_WINDOW_TYPE_SPLASH
+   (lambda (w)
+     (require 'sawfish.wm.frames)
+     (set-window-type w 'splash)
+     (window-put w 'place-mode 'centered)))
+
+  (define-wm-spec-window-state '_NET_WM_STATE_STICKY
    (lambda (w mode)
      (case mode
        ((init)   (window-put w 'sticky-viewport t))
@@ -326,10 +392,12 @@
 	((remove) (unmaximize-window w direction))
 	((add)    (maximize-window w direction))
 	((toggle) (maximize-window-toggle w direction))
-	((get)    (case direction
-		    ((vertical) (window-maximized-vertically-p w))
-		    ((horizontal) (window-maximized-horizontally-p w))
-		    (t (window-maximized-p w)))))))
+	((get)    (if (window-maximized-fullscreen-p w)
+		      nil
+		    (case direction
+		      ((vertical) (window-maximized-vertically-p w))
+		      ((horizontal) (window-maximized-horizontally-p w))
+		      (t (window-maximized-p w))))))))
 
   (define-wm-spec-window-state '_NET_WM_STATE_MAXIMIZED_VERT
 			       (wm-spec-maximize-handler 'vertical))
@@ -339,8 +407,7 @@
 			       (wm-spec-maximize-handler nil)
 			       #:pseudo t)
 
-  (define-wm-spec-window-state
-   '_NET_WM_STATE_SHADED
+  (define-wm-spec-window-state '_NET_WM_STATE_SHADED
    (lambda (w mode)
      (require 'sawfish.wm.state.shading)
      (case mode
@@ -350,8 +417,7 @@
        ((toggle) (toggle-window-shaded w))
        ((get)    (window-get w 'shaded)))))
 
-  (define-wm-spec-window-state
-   '_NET_WM_STATE_SKIP_PAGER
+  (define-wm-spec-window-state '_NET_WM_STATE_SKIP_PAGER
    (lambda (w mode)
      (case mode
        ((init add) (window-put w 'window-list-skip t))
@@ -359,6 +425,35 @@
        ((toggle)   (window-put w 'window-list-skip
 			       (not (window-get w 'window-list-skip))))
        ((get)      (window-get w 'window-list-skip)))))
+
+  (define-wm-spec-window-state '_NET_WM_STATE_FULLSCREEN
+   (lambda (w mode)
+     (require 'sawfish.wm.state.maximize)
+     (case mode
+       ((init) (window-put w 'queued-fullscreen-maximize t))
+       ((add remove) (maximize-window-fullscreen w (eq mode 'add)))
+       ((toggle) (maximize-window-fullscreen-toggle w))
+       ((get) (window-maximized-fullscreen-p w)))))
+
+  (define (above-below-handler depth w mode)
+    (require 'sawfish.wm.stacking)
+    (case mode
+      ((init)
+       (window-put w 'depth depth))
+      ((add remove)
+       (set-window-depth w (if (eq mode 'add) depth 0)))
+      ((toggle)
+       (set-window-depth w (if (= (window-depth w) depth) 0 depth)))
+      ((get)
+       (= (window-depth w) depth))))
+
+  (define-wm-spec-window-state '_NET_WM_STATE_BELOW
+   (lambda (w mode)
+     (above-below-handler wm-spec-below-depth w mode)))
+
+  (define-wm-spec-window-state '_NET_WM_STATE_ABOVE
+   (lambda (w mode)
+     (above-below-handler wm-spec-above-depth w mode)))
 
 
 ;;; client messages
@@ -374,7 +469,10 @@
 	 (when (and (windowp w) (window-mapped-p w))
 	   (require 'sawfish.wm.commands.move-resize)
 	   (let ((mode (aref data 2)))
-	     (if (eq mode _NET_WM_MOVERESIZE_MOVE)
+	     ;; don't want grabs failing, sigh
+	     (x-server-timestamp t t)
+	     (if (or (eq mode _NET_WM_MOVERESIZE_MOVE)
+		     (eq mode _NET_WM_MOVERESIZE_MOVE_KEYBOARD))
 		 (move-window-interactively w)
 	       (let ((move-resize-moving-edges
 		      (cond ((eq mode _NET_WM_MOVERESIZE_SIZE_TOPLEFT) '(top left))
@@ -387,9 +485,11 @@
 			    ((eq mode _NET_WM_MOVERESIZE_SIZE_RIGHT) '(right)))))
 		 (resize-window-interactively w))))))
 
-	((_NET_NUMBER_OF_DESKTOPS _NET_DESKTOP_GEOMETRY)
-	 ;; XXX these conflict with user preferences
-	 )
+	((_NET_NUMBER_OF_DESKTOPS)
+	 (set-number-of-workspaces (aref data 0)))
+
+	((_NET_DESKTOP_GEOMETRY)
+	 (set-number-of-viewports (aref data 0) (aref data 1)))
 
 	((_NET_DESKTOP_VIEWPORT)
 	 (set-viewport (aref data 0) (aref data 1)))
@@ -398,6 +498,8 @@
 	 (select-workspace (workspace-id-from-logical (aref data 0))))
 
 	((_NET_DESKTOP_NAMES)
+	 ;; XXX this is kind of broken now we use workspace-names to
+	 ;; XXX define the minimum number of workspaces to display?
 	 (setq data (aref data 0))
 	 (let loop ((i 0)
 		    (out '()))
@@ -436,7 +538,7 @@
 		 (make-window-sticky/workspace w)
 	       ;; changing the desktop
 	       (make-window-unsticky/workspace w)
-	       (send-window-to-workspace-from-first w desktop)))))
+	       (send-window-to-workspace-from-first w desktop nil)))))
 
 	(t (setq handled nil)))
       handled))
@@ -450,7 +552,9 @@
       ((_NET_WM_ICON_GEOMETRY)
        (let ((geom (get-x-property w '_NET_WM_ICON_GEOMETRY)))
 	 (when geom
-	   (update-icon-geometry w (nth 2 geom)))))))
+	   (update-icon-geometry w (nth 2 geom)))))
+      ((_NET_WM_STRUT)
+       (update-strut w))))
 
 
 ;;; utilities
@@ -472,7 +576,7 @@
 		    (vector wm-spec-window-id) 'WINDOW 32)
     (set-x-property wm-spec-window-id '_NET_WM_NAME "Sawfish" 'STRING 8)
 
-    (set-x-property 'root '_NET_SUPPORTED supported-protocols 'ATOM 32)
+    (set-x-property 'root '_NET_SUPPORTED supported-atoms 'ATOM 32)
 
     (let ((current-desktop (get-x-property 'root '_NET_CURRENT_DESKTOP)))
       (when (and current-desktop
@@ -490,6 +594,7 @@
     (add-hook 'workspace-state-change-hook update-workspace-hints)
     (add-hook 'viewport-resized-hook update-workspace-hints)
     (add-hook 'viewport-moved-hook update-workspace-hints)
+    (add-hook 'workarea-changed-hook update-workspace-hints)
 
     (add-hook 'add-window-hook update-client-list-hints)
     (add-hook 'destroy-notify-hook update-client-list-hints)

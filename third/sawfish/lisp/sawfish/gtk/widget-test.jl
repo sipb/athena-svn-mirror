@@ -1,6 +1,6 @@
 #| nokogiri-widget-test.jl -- test harness for widgets
 
-   $Id: widget-test.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+   $Id: widget-test.jl,v 1.1.1.2 2003-01-05 00:32:05 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -26,7 +26,7 @@
     (export test-widget)
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  rep.system
 	  sawfish.gtk.widget)
 
@@ -43,7 +43,7 @@
 	(widget-set widget initial-value))
       (let ((window (gtk-window-new 'toplevel)))
 	(gtk-container-add window (widget-gtk-widget widget))
-	(gtk-signal-connect window "delete_event"
+	(g-signal-connect window "delete_event"
 			    (lambda () (throw 'done t)))
 	(gtk-widget-show-all window)
 	(unwind-protect

@@ -1,6 +1,6 @@
 #| nokogiri-widgets/icon.jl -- GNOME icon entry widget
 
-   $Id: icon.jl,v 1.1.1.1 2000-11-12 06:27:04 ghudson Exp $
+   $Id: icon.jl,v 1.1.1.2 2003-01-05 00:32:09 ghudson Exp $
 
    Originally written by Bruce Miller <docmad@md.prestige.net>
 
@@ -26,15 +26,15 @@
 (define-structure sawfish.ui.widgets.icon ()
 
     (open rep
-	  gui.gtk
-	  gui.gnome.ui
+	  gui.gtk-2.gtk
+	  gui.gtk-2.gnome-ui
 	  rep.io.files
 	  sawfish.gtk.widget)
 
   (define (make-icon-item changed-callback)
     (let* ((widget (gnome-icon-entry-new "IconEntry" (_ "Select Icon"))))
       (when changed-callback
-	(gtk-signal-connect (gnome-icon-entry-gtk-entry widget) "changed"
+	(g-signal-connect (gnome-icon-entry-gtk-entry widget) "changed"
 			    (make-signal-callback changed-callback)))
       (gtk-widget-show widget)
       (lambda (op)

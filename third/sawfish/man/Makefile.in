@@ -1,6 +1,6 @@
 # Makefile.in for sawmill's Texinfo manual
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.2 2001-01-13 14:57:33 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.3 2003-01-05 00:32:24 ghudson Exp $
 #
 # This file is part of sawmill.
 #
@@ -58,14 +58,14 @@ install : sawfish.info installdirs
 	for f in sawfish.info*; do \
  	  $(INSTALL_DATA) $$f $(DESTDIR)$(infodir); \
 	done
-	-install-info sawfish.info $(DESTDIR)$(infodir)/dir
+	-install-info --info-dir=$(DESTDIR)$(infodir) sawfish.info
 
 installdirs : mkinstalldirs
 	$(SHELL) $< $(DESTDIR)$(infodir)
 
 uninstall :
 	rm -f $(DESTDIR)$(infodir)/sawfish.info*
-	-install-info --delete sawfish.info $(DESTDIR)$(infodir)/dir
+	-install-info --remove --info-dir=$(DESTDIR)$(infodir) sawfish.info
 
 clean :
 	rm -f *~ sawfish.info* sawfish.?? sawfish.???

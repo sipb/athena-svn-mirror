@@ -1,5 +1,5 @@
 ;; gnome-menu.jl -- replace the apps-menu by the gnome menu tree
-;; $Id: menus.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: menus.jl,v 1.1.1.2 2003-01-05 00:32:22 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -147,10 +147,7 @@
 	       ;; create a menu item
 	       `(,(or name exec)
 		 (system ,(concat (if terminal
-				      (progn
-					(require 'sawfish.wm.commands.xterm)
-					;; XXX hope that this supports `-e'
-					(concat xterm-program " -e " exec))
+				      (concat "gnome-terminal -e " exec)
 				    exec) " &"))))))))
 
   (define (gnome-menu-read-order filename)

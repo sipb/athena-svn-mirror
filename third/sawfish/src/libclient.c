@@ -1,5 +1,5 @@
 /* libclient.c -- shared code for client program to communicate with server
-   $Id: libclient.c,v 1.1.1.1 2000-11-12 06:26:38 ghudson Exp $
+   $Id: libclient.c,v 1.1.1.2 2003-01-05 00:32:26 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -403,6 +403,7 @@ unix_server_init (char *display)
 	    return 0;
 	}
 	close (socket_fd);
+	fprintf (stderr, "error: can't connect to socket %s\n", addr.sun_path);
 	return 1;
     }
     perror ("socket");

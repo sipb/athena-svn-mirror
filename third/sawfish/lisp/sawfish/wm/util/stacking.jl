@@ -1,6 +1,6 @@
 #| stacking.jl -- customizable stacking functions
 
-   $Id: stacking.jl,v 1.1.1.3 2002-03-20 05:00:25 ghudson Exp $
+   $Id: stacking.jl,v 1.1.1.4 2003-01-05 00:32:24 ghudson Exp $
 
    Copyright (C) 2000 Eazel, Inc
 
@@ -44,7 +44,7 @@
   (defcustom user-raise-type 'transients
     "When raising a window, also raise its: \\w"
     :type (choice none transients group)
-    :group misc)
+    :group (misc stacking))
 
   (define (raise-window* w)
     "Raise the window to its highest allowed position in the stacking order."

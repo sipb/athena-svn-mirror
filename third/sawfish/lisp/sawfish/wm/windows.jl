@@ -1,6 +1,6 @@
 #| windows.jl -- miscellaneous window mgmt functions
 
-   $Id: windows.jl,v 1.1.1.3 2002-03-20 05:00:15 ghudson Exp $
+   $Id: windows.jl,v 1.1.1.4 2003-01-05 00:33:29 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -28,15 +28,22 @@
      (export get-window-by-name
 	     get-window-by-name-re
 	     window-really-wants-input-p
+	     window-transient-p
+	     mark-window-as-transient
 	     desktop-window-p
 	     mark-window-as-desktop
+	     dock-window-p
+	     mark-window-as-dock
 	     window-in-cycle-p
 	     window-class
 	     warp-cursor-to-window
+	     activate-window
 	     constrain-dimension-to-hints
 	     resize-window-with-hints
 	     resize-window-with-hints*
 	     window-gravity
+	     adjust-position-for-gravity/x
+	     adjust-position-for-gravity/y
 	     adjust-position-for-gravity
 	     get-window-wm-protocols
 	     window-supports-wm-protocol-p
@@ -60,27 +67,15 @@
 	  sawfish.wm.misc
 	  sawfish.wm.commands)
 
-  (defcustom ignore-window-input-hint nil
-    "Give focus to windows even when they haven't asked for it."
-    :tooltip "Windows should set the `accepts input' hint in their WM_HINTS \
-property to show if they require the focus or not."
-    :type boolean
-    :user-level expert
-    :group focus)
+  (defvar ignore-window-input-hint nil
+    "Give focus to windows even when they haven't asked for it.")
 
-  (defcustom warp-to-window-x-offset -1
-    "Offset (%) from left window edge when warping pointer."
-    :tooltip "A negative number means outside the left window edge."
-    :type (number -65536 65535)
-    :user-level expert
-    :group focus)
- 
-  (defcustom warp-to-window-y-offset -1
-    "Offset (%) from top window edge when warping pointer."
-    :tooltip "A negative number means outside the top window edge."
-    :type (number -65536 65535)
-    :user-level expert
-    :group focus)
+  (defvar warp-to-window-offset (cons -1 -1)
+    "Offset (%) from window edges when warping pointer. A negative number
+means outside the left window edge.")
+
+  (defvar warp-to-window-enabled nil
+    "When false, disable warping the cursor to windows.")
  
   (defvar dont-avoid-ignored t
     "When non-nil, ignored windows aren't avoided by default.")
@@ -88,12 +83,24 @@ property to show if they require the focus or not."
   (defvar avoid-by-default nil
     "When non-nil, any unspecified windows are avoided by default.")
 
-  (defcustom uniquify-name-format "%s [%d]"
-    "Format to create unique window names."
-    :tooltip "Has two arguments (NAME INDEX) applied to it."
-    :type string
-    :user-level expert
-    :group misc)
+  (defvar uniquify-name-format "%s [%d]"
+    "Format to create unique window names.")
+
+  (defvar dock-window-properties
+    '(window-list-skip cycle-skip fixed-position focus-click-through
+      avoid no-history never-iconify never-maximize sticky
+      sticky-viewport placed)
+    "List of properties set (to true) on windows marked as docks.")
+
+  (defvar desktop-window-properties
+    '(fixed-position sticky sticky-viewport)
+    "List of properties set (to true) on windows marked as desktops.")
+
+  (defvar desktop-window-depth -4
+    "The stacking depth of desktop windows.")
+
+  (defvar dock-window-depth 0
+    "The stacking depth of dock windows.")
 
 
 ;;; finding windows, reading properties
@@ -117,14 +124,36 @@ Returns nil if no such window is found."
 	     (window-get w 'ignore-window-input-hint)
 	     (window-wants-input-p w))))
 
+  (define (window-transient-p w)
+    "Return non-nil if WINDOW is a transient window. The returned value will
+then be the numeric id of its parent window."
+    (or (window-get w 'transient-for)
+	(let ((prop (get-x-property w 'WM_TRANSIENT_FOR)))
+	  (when (and prop (eq (car prop) 'WINDOW)
+		     (eql (cadr prop) 32) (>= (length (caddr prop)) 1))
+	    (aref (caddr prop) 0)))))
+
+  (define (mark-window-as-transient w)
+    "Mark that window W is a dialog window of some sort."
+    (require 'sawfish.wm.frames)
+    (unless (window-transient-p w)
+      (window-put w 'transient-for (root-window-id)))
+    (set-window-type w 'transient))
+
   (define (desktop-window-p arg)
     "Return true if ARG represents a desktop window."
     (or (eq arg 'root) (and (windowp arg) (window-get arg 'desktop))))
 
   (define (mark-window-as-desktop w)
     "Mark that the window associated with object W is a desktop window."
+    (require 'sawfish.wm.stacking)
+    (require 'sawfish.wm.frames)
     (window-put w 'desktop t)
-    (window-put w 'keymap root-window-keymap))
+    (window-put w 'keymap root-window-keymap)
+    (mapc (lambda (p)
+	    (window-put w p t)) desktop-window-properties)
+    (set-window-type w 'unframed)
+    (set-window-depth w desktop-window-depth))
 
   (define (focus-desktop)
     "Transfer input focus to the desktop window (if one exists)."
@@ -134,11 +163,24 @@ Returns nil if no such window is found."
 
   (define-command 'focus-desktop focus-desktop)
 
-  (define (window-in-cycle-p w)
+  (define (dock-window-p arg)
+    "Return true if ARG represents a dock window (i.e. the GNOME panel)."
+    (and (windowp arg) (window-get arg 'dock-type)))
+
+  (define (mark-window-as-dock w)
+    "Mark that the window associated with object W is a dock window."
+    (require 'sawfish.wm.stacking)
+    (require 'sawfish.wm.frames)
+    (window-put w 'dock-type t)
+    (mapc (lambda (p)
+	    (window-put w p t)) dock-window-properties)
+    (set-window-depth w dock-window-depth))
+
+  (define (window-in-cycle-p w #!key ignore-cycle-skip)
     "Returns true if the window W should be included when cycling between
 windows."
     (and (window-really-wants-input-p w)
-	 (not (or (window-get w 'cycle-skip)
+	 (not (or (and (not ignore-cycle-skip) (window-get w 'cycle-skip))
 		  (desktop-window-p w)))))
 
   (define (window-class w)
@@ -177,21 +219,32 @@ associated with object WINDOW.
 
 If X and Y are nil, then the pointer is moved to a default position, as
 specified by the user."
-    (let ((coords (window-position w))
-	  (foff (window-frame-offset w))
-	  (dims (window-dimensions w)))
-      (unless x
-	(setq x
-	      (if (< warp-to-window-x-offset 0)
-		  warp-to-window-x-offset
-		(quotient (* (car dims) warp-to-window-x-offset) 100))))
-      (unless y
-	(setq y (if (< warp-to-window-y-offset 0)
-		    warp-to-window-y-offset
-		  (quotient (* (cdr dims) warp-to-window-y-offset) 100))))
-      (warp-cursor
-       (max 0 (min (1- (screen-width)) (+ x (car coords) (- (car foff)))))
-       (max 0 (min (1- (screen-height)) (+ y (cdr coords) (- (cdr foff))))))))
+    (when warp-to-window-enabled
+      (let ((coords (window-position w))
+	    (foff (window-frame-offset w))
+	    (dims (window-dimensions w)))
+	(unless x
+	  (setq x
+		(if (< (car warp-to-window-offset) 0)
+		    (car warp-to-window-offset)
+		  (quotient (* (car dims) (car warp-to-window-offset)) 100))))
+	(unless y
+	  (setq y (if (< (cdr warp-to-window-offset) 0)
+		      (cdr warp-to-window-offset)
+		    (quotient (* (cdr dims) (cdr warp-to-window-offset)) 100))))
+	(warp-cursor
+	 (max 0 (min (1- (screen-width)) (+ x (car coords) (- (car foff)))))
+	 (max 0 (min (1- (screen-height)) (+ y (cdr coords) (- (cdr foff)))))))))
+
+  (define (activate-window w)
+    (require 'sawfish.wm.focus)
+    (require 'sawfish.wm.util.stacking)
+    (require 'sawfish.wm.util.window-order)
+    (raise-window* w)
+    (when (window-really-wants-input-p w)
+      (set-input-focus w))
+    (warp-pointer-if-necessary w)
+    (window-order-push w))
 
 
 ;;; resizing windows in accordance with their size hints
@@ -248,45 +301,49 @@ If HINTS is non-nil, then it is the size hints structure to use. Otherwise
 	;; default gravity is NorthWest (from ICCCM)
 	'north-west))
 
+  (define (adjust-position-for-gravity/x w grav x #!key inverse)
+    (let* ((tl-off (car (window-frame-offset w)))
+	   (br-off (- (car (window-frame-dimensions w))
+		      (car (window-dimensions w))))
+	   (sign (if inverse -1 +1)))
+      (cond ((eq grav 'static)
+	     ;; static gravity is relative to the original
+	     ;; client window position
+	     (+ x (* sign tl-off)))
+	    ((memq grav '(east south-east north-east))
+	     ;; relative to the right of the frame
+	     (- x (* sign (+ br-off (* -2 (window-border-width w))))))
+	    ((memq grav '(north center south))
+	     ;; relative to the horizontal center of the frame
+	     (- x (* sign (quotient
+			   (+ br-off (* -2 (window-border-width w))) 2))))
+	    (t x))))
+
+  (define (adjust-position-for-gravity/y w grav y #!key inverse)
+    (let* ((tl-off (window-frame-offset w))
+	   (br-off (- (cdr (window-frame-dimensions w))
+		      (cdr (window-dimensions w))))
+	   (sign (if inverse -1 +1)))
+      (cond ((eq grav 'static)
+	     ;; static gravity is relative to the original
+	     ;; client window position
+	     (+ y (* sign tl-off)))
+	    ((memq grav '(south south-east south-west))
+	     ;; relative to the bottom of the frame
+	     (- y (* sign (+ br-off (* -2 (window-border-width w))))))
+	    ((memq grav '(east center west))
+	     ;; relative to the vertical center of the frame
+	     (- y (* sign (quotient
+			   (+ br-off (* -2 (window-border-width w))) 2))))
+	    (t y))))
+
   ;; UNADJUST means to reverse the gravity compensation, suitable for
   ;; when unmanaging windows at shutdown
   (define (adjust-position-for-gravity w grav coords #!optional unadjust)
-    (let* ((tl-off (window-frame-offset w))
-	   (br-off (let ((w-dims (window-dimensions w))
-			 (f-dims (window-frame-dimensions w)))
-		     (cons (- (car f-dims) (car w-dims))
-			   (- (cdr f-dims) (cdr w-dims)))))
-	   (sign (if unadjust -1 +1)))
-      (setq coords (cons (car coords) (cdr coords)))
-      (if (eq grav 'static)
-	  (progn
-	    ;; static gravity is relative to the original
-	    ;; client window position
-	    (rplaca coords (+ (car coords) (* sign (car tl-off))))
-	    (rplacd coords (+ (cdr coords) (* sign (cdr tl-off)))))
-	(when (memq grav '(east south-east north-east))
-	  ;; relative to the right of the frame
-	  (rplaca coords (- (car coords)
-			    (* sign (+ (car br-off)
-				       (* -2 (window-border-width w)))))))
-	(when (memq grav '(north center south))
-	  ;; relative to the horizontal center of the frame
-	  (rplaca coords (- (car coords)
-			    (* sign (quotient (+ (car br-off)
-				                 (* -2 (window-border-width w)))
-                                              2)))))
-	(when (memq grav '(south south-east south-west))
-	  ;; relative to the bottom of the frame
-	  (rplacd coords (- (cdr coords)
-			    (* sign (+ (cdr br-off)
-				       (* -2 (window-border-width w)))))))
-	(when (memq grav '(east center west))
-	  ;; relative to the vertical center of the frame
-	  (rplacd coords (- (cdr coords)
-			    (* sign (quotient (+ (cdr br-off)
-				                 (* -2 (window-border-width w)))
-                            	              2))))))
-      coords))
+    (cons (adjust-position-for-gravity/x
+	   w grav (car coords) #:inverse unadjust)
+	  (adjust-position-for-gravity/y
+	   w grav (cdr coords) #:inverse unadjust)))
 
 
 ;;; deleting windows

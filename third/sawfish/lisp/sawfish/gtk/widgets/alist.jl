@@ -1,6 +1,6 @@
 #| nokogiri-widgets/alist.jl -- alist widget
 
-   $Id: alist.jl,v 1.1.1.2 2001-01-13 14:57:47 ghudson Exp $
+   $Id: alist.jl,v 1.1.1.3 2003-01-05 00:31:56 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,7 +24,7 @@
 (define-structure sawfish.gtk.widgets.alist ()
 
     (open rep
-	  gui.gtk
+	  gui.gtk-2.gtk
 	  sawfish.gtk.widget
 	  sawfish.gtk.widget-dialog)
 

@@ -1,6 +1,6 @@
 #| nokogiri-sawfish.jl -- code to load into window manager
 
-   $Id: nokogiri.jl,v 1.1.1.3 2002-03-20 04:59:35 ghudson Exp $
+   $Id: nokogiri.jl,v 1.1.1.4 2003-01-05 00:32:24 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,26 +39,11 @@
 	  sawfish.wm.util.keymap
 	  sawfish.wm.ext.match-window)
 
-
-;;; meta customizations
+  (defvar customize-show-symbols nil
+    "Show variable names of each customization option.")
 
-  (defcustom nokogiri-user-level 'intermediate
-    "Show options suitable for \\w users."
-    :type (choice novice intermediate expert)
-    :user-level novice
-    :group ())
-
-  (defcustom nokogiri-buttons 'ok
-    "Buttons shown in configurator: \\w"
-    :type (choice ok revert/cancel/ok apply/revert/cancel/ok)
-    :user-level expert
-    :group ())
-
-  (defcustom customize-show-symbols nil
-    "Show variable names of each customization option."
-    :group misc
-    :user-level expert
-    :type boolean)
+  (defvar customize-command-classes '(default)
+    "Also include commands of these classes the key bindings panel.")
 
 
 ;;; interfaces
@@ -71,7 +56,6 @@
 	   (value (if (get symbol 'custom-get)
 		      ((get symbol 'custom-get) symbol)
 		    (custom-serialize (symbol-value symbol) type)))
-	   (user-level (get symbol 'custom-user-level))
 	   (widget-flags (get symbol 'custom-widget-flags)))
       (when (stringp doc)
 	(setq doc (_ doc))
@@ -99,7 +83,6 @@
 		   #:value value)
 	     (and dep (list #:depends dep))
 	     (and doc (list #:doc doc))
-	     (and user-level (list #:user-level user-level))
 	     (and widget-flags (list #:widget-flags widget-flags)))))
 
   (define (nokogiri-report-slots names)
@@ -126,16 +109,14 @@
 
   (define (nokogiri-report-commands)
     (mapcar (lambda (sym)
-	      (let ((params (command-type sym))
-		    (user-level (command-user-level sym)))
-		(if (or params user-level)
-		    (nconc (list sym)
-			   (and params (list #:type params))
-			   (and user-level (list #:user-level user-level)))
+	      (let ((params (command-type sym)))
+		(if params
+		    (list sym #:type params)
 		  sym)))
 	    (sort (apropos "" (lambda (x)
 				(and (commandp x)
-				     (not (get x 'deprecated-command))))))))
+				     (memq (command-class x)
+					   customize-command-classes)))))))
 
   (define (nokogiri-grab-key) (event-name (read-event)))
 

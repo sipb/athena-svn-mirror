@@ -1,5 +1,5 @@
 /* display.c -- display handling
-   $Id: display.c,v 1.1.1.3 2002-03-20 05:00:02 ghudson Exp $
+   $Id: display.c,v 1.1.1.4 2003-01-05 00:32:25 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -85,7 +85,8 @@ error_handler (Display *dpy, XErrorEvent *ev)
     if (ev->resourceid == 0)		/* probably a deleted window */
 	return 0;
     w = x_find_window_by_id (ev->resourceid);
-    if (w != 0)
+    if (w != 0 && (ev->error_code == BadWindow
+		   || ev->error_code == BadDrawable))
     {
 	DB(("error_handler (%s)\n", rep_STR(w->name)));
 	if (!WINDOW_IS_GONE_P (w))
