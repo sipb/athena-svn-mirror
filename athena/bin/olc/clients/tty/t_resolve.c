@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.12 1991-01-21 01:13:59 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.13 1992-01-10 19:57:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.12 1991-01-21 01:13:59 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.13 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -65,12 +65,13 @@ t_done(Request,title,check)
 	      {
 		*buf = '\0';
 		get_prompted_input("Do you wish to resolve this question? ",
-				   buf);
+				   buf,LINE_SIZE,0);
 		if(*buf != 'y')
 		  return(SUCCESS);
 	      }
 	  }
-	  get_prompted_input("Enter a title for this conversation: ", buf);
+	  get_prompted_input("Enter a title for this conversation: ", buf,
+			     LINE_SIZE,0);
 	  title = &buf[0];
 	  break;
 
@@ -81,7 +82,7 @@ t_done(Request,title,check)
 	      {
 		*buf = '\0';
 		get_prompted_input("Do you wish to mark this question \"done\"? "
-				   ,buf);
+				   ,buf, LINE_SIZE,0);
 		if(*buf != 'y')
 		  return(SUCCESS);
 	      }
@@ -90,7 +91,7 @@ t_done(Request,title,check)
 	    printf("and OLC will save your question until a consultant can answer it.  If you\n");
 	    printf("wish to withdraw your question, use the 'cancel' command.\n");
 	    buf[0] = '\0';
-	    get_prompted_input("Really done? [y/n] ", buf);
+	    get_prompted_input("Really done? [y/n] ", buf, LINE_SIZE,0);
 	    if(buf[0] != 'y')             
 	      {
 		printf("OK, your question will remain in the queue.\n");
@@ -145,9 +146,10 @@ t_done(Request,title,check)
     case OK:
       printf("The consultant has been notified that you are finished with your question.\n");
       printf("Thank you for using OLC!\n");
-     if(OLC)
-        exit(0);
-     
+      if(OLC) {
+	exit(0);
+      }
+
       t_set_default_instance(Request);
       break;
 
@@ -157,8 +159,9 @@ t_done(Request,title,check)
       else
 	  printf("%s's [%d] question is resolved.\n",
 		 Request->target.username, Request->target.instance);
-      if(OLC)
+      if(OLC) {
 	exit(0);
+      }
 
       t_set_default_instance(Request);
       break;
@@ -215,7 +218,7 @@ t_cancel(Request,title)
 
       buf[0] = '\0';
       get_prompted_input("Are you sure you wish to cancel this question? ",
-			 buf);
+			 buf, BUFSIZ,0);
       if(buf[0] != 'y')            
 	{
 	  printf("OK, your question will remain in the queue.\n");
@@ -254,15 +257,17 @@ t_cancel(Request,title)
     case SUCCESS:
       printf("Question cancelled. \n");
       t_set_default_instance(Request);
-      if(OLC)
+      if(OLC) {
 	exit(0);
+      }
       status = SUCCESS;
       break;
 
     case OK:
       printf("Your question has been cancelled.\n");
-      if(OLC)
-         exit(0);
+      if(OLC) {
+	exit(0);
+      }
       
       t_set_default_instance(Request);
       break;

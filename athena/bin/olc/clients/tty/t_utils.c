@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.31 1991-09-10 13:36:18 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.32 1992-01-10 19:57:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.31 1991-09-10 13:36:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.32 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -409,35 +409,39 @@ handle_response(response, req)
       printf("Your Kerberos tickets have expired. ");
       printf(" To renew your Kerberos tickets,\n");
       printf("type:    kinit\n");
-      if(OLC)
+      if(OLC) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
+      }
       exit(ERROR);
     case NO_TKT_FIL: 
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("You do not have a Kerberos ticket file.  To ");
       printf("get one, \ntype:    kinit\n");
-      if(OLC)
+      if(OLC) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
+      }
       exit(ERROR);
     case TKT_FIL_ACC:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Cannot access your Kerberos ticket file.\n");
       printf("Try:              setenv   KRBTKFILE  /tmp/random\n");
       printf("                  kinit\n");
-      if(OLC)
+      if(OLC) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
+      }
       exit(ERROR);
     case RD_AP_TIME:
       fprintf(stderr, "(%s)\n",krb_err_txt[response]);
       printf("Kerberos authentication failed: workstation clock is ");
       printf("incorrect.\nPlease contact Athena operations and move to ");
       printf("another workstation.\n");
-      if(OLC)
+      if(OLC) {
 	printf("%s",kmessage);
 	printf("%s\n",kmessage2);
+      }
       exit(ERROR);
 #endif /* KERBEROS */
 
@@ -469,18 +473,33 @@ handle_response(response, req)
  */
 
 ERRCODE
-get_prompted_input(prompt, buf)
+get_prompted_input(prompt, buf, buflen, add_to_hist)
      char *prompt;		/* Prompt to use. */
      char *buf;		        /* Input line buffer. */
+     int buflen;
+     int add_to_hist;
 {
-  char *gets();		        /* Get a string from the stdin. */
+  char *line, *p;
+  static int done_gl_init = 0;
 	
-  printf("%s", prompt);
-  if (gets(buf) == (char *) NULL) 
-    {
-      printf("\n");
-      exit(0);
-    }
+  if (! done_gl_init) {
+    /* should really get the terminal line width.. */
+    gl_init(80);
+    done_gl_init = 1;
+  } else {
+    gl_char_init();
+  }
+  line = getline(prompt,add_to_hist);
+  gl_char_cleanup();
+
+  p = index(line,'\n');
+  if (p != NULL)
+    *p = '\0';
+  if (line[0] == '\0') {
+    printf("\n");
+    exit(0);
+  }
+  strncpy(buf,line,buflen);
   return(SUCCESS);
 }
 
@@ -499,7 +518,7 @@ get_yn (prompt)
 {
     char buf[LINE_SIZE], *b;
     while (1) {
-	get_prompted_input (prompt, buf);
+	get_prompted_input (prompt, buf, LINE_SIZE,0);
 	b = buf;
 	while (*b == ' ' || *b == '\t')
 	    b++;
@@ -551,7 +570,7 @@ what_now(file, edit_first, editor)
       while (inbuf[0] == '\0') 
 	{
 	  (void) get_prompted_input("\nWhat now? (type '?' for options): ", 
-				    inbuf);
+				    inbuf,LINE_SIZE,0);
 	  if (inbuf[0] == '?' || inbuf[0] == '\0' || inbuf[0] == 'h') {
 	    printf("Commands are:\n");
 	    printf("\t?\tPrint help information.\n");

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.22 1991-04-08 14:53:02 lwvanels Exp $
+ *	$Id: t_send.c,v 1.23 1992-01-10 19:57:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.22 1991-04-08 14:53:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.23 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -252,7 +252,7 @@ t_mail(Request,file,editor,smargs, check,noedit, header)
 	if(can_receive_mail(username) != SUCCESS)
 	  {
 	    printf("%s is not registered with local mail server.\n",username);
-	    get_prompted_input("continue? ",buf);
+	    get_prompted_input("continue? ",buf, BUF_SIZE,0);
 	    if(buf[0]!='y')
 	      return(ERROR);
 	  }

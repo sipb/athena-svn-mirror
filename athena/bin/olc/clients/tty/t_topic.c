@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v $
- *	$Id: t_topic.c,v 1.9 1990-11-14 15:00:07 lwvanels Exp $
+ *	$Id: t_topic.c,v 1.10 1992-01-10 19:57:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.9 1990-11-14 15:00:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.10 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -71,7 +71,7 @@ t_input_topic(Request,topic,flags)
 	{
 	  bufP = buf;
           if(!fudge)
-       	     (void) get_prompted_input("Topic: ", buf);
+       	     (void) get_prompted_input("Topic: ", buf, LINE_SIZE,0);
           else
            {
              strcpy(buf,topic);

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.21 1991-11-05 14:09:06 lwvanels Exp $
+ *	$Id: t_status.c,v 1.22 1992-01-10 19:57:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.21 1991-11-05 14:09:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.22 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -321,7 +321,8 @@ t_input_status(Request,string)
       printf("\t\tpickup\n");
      
       buf[0] = '\0'; 
-      get_prompted_input("enter new status (<return> to exit): ",buf);
+      get_prompted_input("enter new status (<return> to exit): ",buf,
+			 BUF_SIZE,0);
       if(buf[0] == '\0')
 	return(ERROR);
     }

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v $
- *	$Id: t_db.c,v 1.6 1991-08-23 13:35:34 raek Exp $
- *	$Author: raek $
+ *	$Id: t_db.c,v 1.7 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.6 1991-08-23 13:35:34 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.7 1992-01-10 19:57:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -88,7 +88,7 @@ t_change_dbinfo(Request)
 
   sprintf(mesg, "title [%s]: ",dbinfo.title1);
   buf[0] = '\0';
-  get_prompted_input(mesg,buf);
+  get_prompted_input(mesg,buf,BUF_SIZE,0);
   if(buf[0] != '\0')
     {
       strncpy(dbinfo.title1, buf,TITLE_SIZE);
@@ -97,7 +97,7 @@ t_change_dbinfo(Request)
   
   sprintf(mesg, "# questions allowed to ask [%d]: ",dbinfo.max_ask);
   buf[0] = '\0';
-  get_prompted_input(mesg,buf);
+  get_prompted_input(mesg,buf,BUF_SIZE,0);
   if(buf[0] != '\0')
     {
       if(atoi(buf) > 0)
@@ -106,7 +106,7 @@ t_change_dbinfo(Request)
 
   sprintf(mesg, "title [%s]: ",dbinfo.title2);
   buf[0] = '\0';
-  get_prompted_input(mesg,buf);
+  get_prompted_input(mesg,buf,BUF_SIZE,0);
   if(buf[0] != '\0')
     {
       strncpy(dbinfo.title2, buf,TITLE_SIZE);
@@ -115,7 +115,7 @@ t_change_dbinfo(Request)
 
   sprintf(mesg, "# questions allowed to answer [%d]: ",dbinfo.max_answer);
   buf[0] = '\0';
-  get_prompted_input(mesg,buf);
+  get_prompted_input(mesg,buf,BUF_SIZE,0);
   if(buf[0] != '\0')
     {
       if(atoi(buf) > 0)
