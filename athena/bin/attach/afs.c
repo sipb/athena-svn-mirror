@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.11 1996-09-19 22:12:04 ghudson Exp $
+ * $Id: afs.c,v 1.12 1997-05-13 13:47:22 danw Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.11 1996-09-19 22:12:04 ghudson Exp $";
+static char *rcsid = "$Id: afs.c,v 1.12 1997-05-13 13:47:22 danw Exp $";
 
 #include "attach.h"
 
@@ -53,9 +53,11 @@ afs_attach(at, mopt, errorout)
 	if (use_zephyr)
 		afs_auth_flags |= AFSAUTH_DOZEPHYR;
 	
-	if (afs_auth_internal(at->hesiodname, at->hostdir,
-			      at->hostaddr, afs_auth_flags) == FAILURE)
-		return(FAILURE);
+	if (afs_auth_flags & (AFSAUTH_DOZEPHYR | AFSAUTH_DOAUTH)) {
+		if (afs_auth_internal(at->hesiodname, at->hostdir,
+				      at->hostaddr, afs_auth_flags) == FAILURE)
+			return(FAILURE);
+	}
 	
 	if (debug_flag)
 		printf("lstating %s...\n", at->hostdir);
