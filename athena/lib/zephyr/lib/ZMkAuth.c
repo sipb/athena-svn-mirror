@@ -10,18 +10,17 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.6 1989-05-25 16:02:00 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.7 1989-05-25 16:09:37 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.6 1989-05-25 16:02:00 jtkohl Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.7 1989-05-25 16:09:37 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
+#include <zephyr/zephyr_internal.h>
 #ifdef KERBEROS
 #include "krb_err.h"
 #endif
-
-#include <zephyr/zephyr_internal.h>
 
 Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     ZNotice_t *notice;
