@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67 1995-01-27 09:35:16 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.67.1.1 1995-10-06 23:39:31 cfields Exp $
  */
 
 #include <stdio.h>
 #include <pwd.h>
-#ifdef SOLARIS
+#ifdef SYSV
 #include <shadow.h>
 #include <unistd.h>
 #include <limits.h>
@@ -17,7 +17,7 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/param.h>
-#ifdef SOLARIS
+#ifdef SYSV
 #include <dirent.h>
 #else
 #include <sys/dir.h>
@@ -26,8 +26,11 @@
 #include <sys/time.h>
 #include <utmp.h>
 #include <netdb.h>
-#ifndef SOLARIS
+#ifndef SYSV
 #include <ttyent.h>
+#endif
+#ifdef sgi
+#include <sys/statfs.h>
 #endif
 #include <errno.h>
 #ifndef ultrix
@@ -102,20 +105,25 @@
 #define NOCRACK "/etc/nocrack"
 #endif
 #define MOTD "/etc/motd"
+#ifndef SYSV
 #define UTMP "/etc/utmp"
-#ifdef SOLARIS
-#define UTMPX "/etc/utmpx"
-#define WTMPX "/usr/adm/wtmpx"
-#endif
 #define WTMP "/usr/adm/wtmp"
+#endif
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
+#ifdef sgi
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/usr/bin:/bin:/etc:/usr/etc:/usr/bin/X11:/usr/andrew/bin:.";
+#else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
+#endif
 #endif
 #define file_exists(f) (access((f), F_OK) == 0)
 
+#ifdef sgi
+extern FILE *xdmstream;
+#endif
 
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
@@ -170,7 +178,11 @@ char *display;
 #endif
     struct passwd *pwd;
     struct group *gr;
+#ifdef SYSV
+    struct utimbuf times;
+#else
     struct timeval times[2];
+#endif
     long salt;
     char saltc[2], c;
     char encrypt[PASSWORD_LEN+1];
@@ -185,7 +197,9 @@ char *display;
     int local_ok = FALSE;	/* verified from local password file */
     int nocreate = FALSE;	/* not allowed to modify passwd file */
     int nologin = FALSE;	/* logins disabled */
-
+#ifdef sgi
+    int f;
+#endif
 
     /* 4.2 vs 4.3 style syslog */
 #ifndef  LOG_ODELAY
@@ -232,7 +246,7 @@ char *display;
 	if (getpwuid(pwd->pw_uid))
 	    return("This account conflicts with a locally defined account... aborting.");
 
-#if defined(_AIX)
+#if defined(_AIX) || defined(sgi)
 	/* Perhaps this should always be true??? */
 	
 	/*
@@ -244,13 +258,22 @@ char *display;
 #endif
     }
 
-    /* The terminal name on the Rios is likely to be something like pts/0; we */
-    /* don't want any  /'s in the path name; replace them with _'s */
-    strcpy(fixed_tty,tty);
-    while (p = (char *) index(fixed_tty,'/'))
-      *p = '_';
-    sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
-    setenv("KRBTKFILE", tkt_file, 1);
+    /* The terminal name on the Rios is likely to be something like pts/0; */
+    /* we don't want any  /'s in the path name; replace them with _'s */
+    if (tty != NULL)
+      {
+	strcpy(fixed_tty,tty);
+	while (p = (char *) index(fixed_tty,'/'))
+	  *p = '_';
+	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
+	setenv("KRBTKFILE", tkt_file, 1);
+      }
+    else
+      {
+	sprintf(tkt_file, "/tmp/tkt%d", pwd->pw_uid);
+	setenv("KRBTKFILE", tkt_file, 1);
+      }
+
     /* we set the ticket file here because a previous dest_tkt() might
        have cached the wrong ticket file. */
     krb_set_tkt_string(tkt_file);
@@ -265,7 +288,7 @@ char *display;
     setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
     setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
 #else
-#ifndef SOLARIS
+#if !defined(SOLARIS) && !defined(sgi)
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
 #endif
@@ -317,7 +340,7 @@ char *display;
 	cleanup(NULL);
 	return(errbuf);
     }
-#ifndef SOLARIS 
+#if !defined(SOLARIS) && !defined(sgi)
     /* Make sure root login is on a secure tty */
     if (pwd->pw_uid == ROOT) {
 	struct ttyent *te;
@@ -331,7 +354,7 @@ char *display;
     }
 #endif
 
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
     chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
 #endif
 #ifdef KRB5
@@ -408,10 +431,11 @@ char *display;
 	}
     }
 
+#ifndef sgi /* BUG: need to do this */
     if (!nocreate) {
 	glist = hes_resolve(user, "grplist");
 	if (glist && glist[0]) {
-	    /* add_to_group() will corrupt the list, so was save a copy first */
+	    /* add_to_group() will corrupt the list, so we save a copy first */
 	    strcpy(errbuf, glist[0]);
 	    if (msg = add_to_group(user, glist[0])) {
 		cleanup(pwd);
@@ -420,6 +444,7 @@ char *display;
 	    strcpy(glist[0], errbuf);
 	}
     }
+#endif
 
     /*
      * Set up the user's environment.
@@ -488,6 +513,10 @@ char *display;
     environment[i++] = strsave(errbuf);
     PASSENV("TZ");
 
+#ifdef sgi
+    PASSENV("XAUTHORITY");
+#endif
+
 #if defined(_AIX) && defined(_IBMR2)
 #ifndef XDM
     environment[i++] = "SYSENVIRON:";
@@ -503,19 +532,27 @@ char *display;
 #endif
     environment[i++] = NULL;
 
+#ifndef sgi /* BUG... do this */
     add_utmp(user, tty, display);
+#endif
     if (pwd->pw_uid == ROOT)
-      syslog(LOG_CRIT, "ROOT LOGIN on tty %s", tty);
+      syslog(LOG_CRIT, "ROOT LOGIN on tty %s", tty ? tty : "X");
 
     /* Set the owner and modtime on the tty */
     sprintf(errbuf, "/dev/%s", tty);
     gr = getgrnam("tty");
     chown(errbuf, pwd->pw_uid, gr ? gr->gr_gid : pwd->pw_gid);
     chmod(errbuf, 0620);
+
+#ifdef SYSV
+    times.actime = times.modtime = time(NULL);
+    utime(errbuf, &times);
+#else
     gettimeofday(&times[0], NULL);
     times[1].tv_sec = times[0].tv_sec;
     times[1].tv_usec = times[0].tv_usec;
     utimes(errbuf, times);
+#endif
 
 #ifdef XDM
     {
@@ -534,6 +571,7 @@ char *display;
     }
 #endif /* XDM */
 
+#ifndef sgi /* Not appropriate using xdm on the SGI. */
 #if defined(_AIX) && defined(_IBMR2)
     /* KLUDGE (working around AIX libs.a bugs):
      * Flush any stray references to userdb/pwdb.
@@ -559,6 +597,7 @@ char *display;
     if (i)
       return(lose("Unable to set your user ID.\n"));
 #endif
+#endif /* sgi */
 
     if (chdir(pwd->pw_dir))
       fprintf(stderr, "Unable to connect to your home directory.\n");
@@ -574,8 +613,32 @@ char *display;
     setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,
 	    environment,(char *)newargv);
 #else
+#ifdef sgi
+    /* Output username and environment information and let xdm log us in. */
+    fprintf(xdmstream, "%s", pwd->pw_name);
+    fputc(0, xdmstream);
+    for (i = 0; environment[i] != NULL; i++)
+      {
+	fprintf(xdmstream, "%s", environment[i]);        
+	fputc(0, xdmstream);
+      }
+
+    /* We put out two extra environment variables, to contain errbuf
+       and script, since we don't get to call the session script with
+       those arguments directly. elmer will convert them into args
+       when executing Xsession. */
+    fprintf(xdmstream, "ARG1=%d", option);
+    fputc(0, xdmstream);
+    if (script != NULL)
+      {
+	fprintf(xdmstream, "ARG2=%s", script);
+	fputc(0, xdmstream);
+      }
+    exit(0);
+#else
     execle(session, "sh", errbuf, script, NULL, environment);
-#endif
+#endif /* sgi */
+#endif /* _AIX */
 
     return(lose("Failed to start session."));
 }
@@ -795,7 +858,7 @@ int exists;
 	    (void) unlink("/etc/ptmp");
     }
 #ifdef SOLARIS
-    etc_shadow = fopen("etc/shadow", "a");
+    etc_shadow = fopen("/etc/shadow", "a");
 #endif
     etc_passwd = fopen("/etc/passwd", "a");
     if (etc_passwd == NULL) {
@@ -832,7 +895,12 @@ int exists;
      * us after we exit
      */
 #ifndef XDM
+#ifdef sgi /* BUG... need to fill this in. */
+    /* Here we set a flag for elmer... Must fill in tty in
+       utmp for elmer to know what password entry to remove. */
+#else
     kill(getppid(), SIGUSR2);
+#endif
 #endif
     added_to_passwd = TRUE;
     return(0);
@@ -1158,6 +1226,16 @@ char *dir;
     return((stbuf.st_flag & FS_REMOTE) ? TRUE : FALSE);
 #endif
 
+#ifdef sgi
+#define REMOTEDONE /* BUG... Don't get the idea I did this right. */
+    struct statfs sbuf;
+
+    if (statfs(dir, &sbuf, sizeof(sbuf), 0) < 0)
+      return(TRUE);
+
+    return(FALSE);
+#endif
+ 
 #ifdef ultrix
 #define REMOTEDONE
     struct fs_data sbuf;
@@ -1239,11 +1317,10 @@ char *s;
 }
 
 
-#ifndef _AIX
 /* replacement for library ttyslot routine which takes tty as argument
  * rather than finding controlling tty (which is often undefined in xlogin).
  */
-#ifndef SOLARIS
+#ifdef ultrix
 int myttyslot(tty)
 char *tty;
 {
@@ -1262,74 +1339,87 @@ char *tty;
     return(0);
 }
 #endif
-#endif /* _AIX */
-
 
 add_utmp(user, tty, display)
 char *user;
 char *tty;
 char *display;
 {
-    struct utmp ut_tmp;
     struct utmp ut_entry;
-#ifdef SOLARIS
+#ifndef SYSV
+    struct utmp ut_tmp;
+#else
+    struct utmp *ut_tmp;
     struct utmpx utx_entry;
-    struct utmpx utx_tmp;
-#endif /* SOLARIS */
+    struct utmpx *utx_tmp;
+#endif /* SYSV */
     int f;
-#if !defined(_AIX) && !defined(SOLARIS)
+#ifdef ultrix
     int slot = myttyslot(tty);
-#endif /* !AIX && !SOLARIS */
+#endif /* !AIX && !SYSV */
+
     memset(&ut_entry, 0, sizeof(ut_entry));
-#ifdef SOLARIS
+#ifdef SYSV
     memset(&utx_entry, 0, sizeof(utx_entry));
-#endif /* SOLARIS */
-    strncpy(ut_entry.ut_line, tty, 8);
-    strncpy(ut_entry.ut_name, user, 8);
-#ifdef SOLARIS
-    strncpy(utx_entry.ut_line, tty, 8);
-    strncpy(utx_entry.ut_name, user, 8);
-#endif /* SOLARIS */
-    /* leave space for \0 */
-#ifdef SOLARIS
-    strncpy(utx_entry.ut_host, display, 15);
-    utx_entry.ut_host[15] = 0;
-#else /* !SOLARIS */
-    strncpy(ut_entry.ut_host, display, 15);
-    ut_entry.ut_host[15] = 0;
-#endif /* SOLARIS */
+#endif /* SYSV */
+
+    strncpy(ut_entry.ut_line, tty, sizeof ut_entry.ut_line);
+    strncpy(ut_entry.ut_name, user, sizeof ut_entry.ut_name);
+#ifdef SYSV
+    strncpy(utx_entry.ut_line, tty, sizeof utx_entry.ut_line);
+    strncpy(utx_entry.ut_name, user, sizeof utx_entry.ut_name);
+#endif /* SYSV */
+
+    /* Be sure the host string is null terminated. */
+#ifdef SYSV
+    strncpy(utx_entry.ut_host, display, sizeof utx_entry.ut_host);
+    utx_entry.ut_host[(sizeof utx_entry.ut_host) - 1] = '\0';
+#else /* !SYSV */
+    strncpy(ut_entry.ut_host, display, sizeof ut_entry.ut_host);
+    ut_entry.ut_host[(sizeof ut_entry.ut_host) - 1] = '\0';
+#endif /* SYSV */
+
     time(&(ut_entry.ut_time));
-#ifdef SOLARIS
+#ifdef SYSV
     gettimeofday(&utx_entry.ut_tv);
-#endif /* SOLARIS */
-#if defined(_AIX) || defined(SOLARIS)
+#endif /* SYSV */
+
+#if defined(_AIX) || defined(SYSV)
     ut_entry.ut_pid = getppid();
     ut_entry.ut_type = USER_PROCESS;
-#ifdef SOLARIS
+#endif /* _AIX */
+#ifdef SYSV
     utx_entry.ut_pid = getppid();
     utx_entry.ut_type = USER_PROCESS;
-    strncpy(utx_entry.ut_id,"XLOG",4);
-    strncpy(ut_entry.ut_id,"XLOG",4);
-#endif /* SOLARIS */
-#endif						/* _AIX */
-#ifdef SOLARIS
+    strncpy(utx_entry.ut_id, "XLOG", sizeof utx_entry.ut_id);
+    strncpy(ut_entry.ut_id, "XLOG", sizeof ut_entry.ut_id);
+#endif /* SYSV */
+
+#ifdef SYSV
     setutent();
+    while (ut_tmp = getutline(&ut_entry))
+      if (!strncmp(ut_tmp->ut_id, "XLOG", sizeof (ut_tmp->ut_id)))
+	break;
     pututline(&ut_entry);
+
     setutxent();
+    while (utx_tmp = getutxline(&utx_entry))
+      if (!strncmp(utx_tmp->ut_id, "XLOG", sizeof (utx_tmp->ut_id)))
+	break;
     pututxline(&utx_entry);
 
-    if ( (f = open( WTMP, O_WRONLY|O_APPEND)) >= 0) {
+    if ( (f = open( WTMP_FILE, O_WRONLY|O_APPEND)) >= 0) {
         write(f, (char *) &ut_entry, sizeof(ut_entry));
         close(f);
     }
-    if ( (f = open( WTMPX, O_WRONLY|O_APPEND)) >= 0) {
+    if ( (f = open( WTMPX_FILE, O_WRONLY|O_APPEND)) >= 0) {
         write(f, (char *) &utx_entry, sizeof(utx_entry));
         close(f);
 }
-#else /* !SOLARIS */
+#else /* !SYSV */
 
     if ((f = open(UTMP, O_RDWR )) >= 0) {
-#if !defined(_AIX) && !defined(SOLARIS)
+#ifdef ultrix
 	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
 #else						/* _AIX */
 	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
@@ -1346,7 +1436,7 @@ char *display;
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
-#endif /* SOLARIS */
+#endif /* SYSV */
 }
 
 #ifdef _IBMR2
