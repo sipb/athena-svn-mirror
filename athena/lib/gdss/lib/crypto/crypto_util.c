@@ -38,7 +38,6 @@
 #include <time.h>
 #endif
 #include <sys/types.h>
-#include <sys/timeb.h>
 #include "random.h"
 #include "BigNum.h"
 #include "BigRSA.h"
