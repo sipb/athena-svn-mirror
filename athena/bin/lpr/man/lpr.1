@@ -26,7 +26,7 @@ lpr \- off line print
 .B \-T
 .I title
 ] [
-.B \-ptncfrhszuk
+.B \-ptncfrhszukl
 ] [
 filename ...
 ]
@@ -96,6 +96,11 @@ You can now print in landscape mode on any POSTSCRIPT printer using
 .IP \fB\-f\fP 5
 Use a filter which interprets the first character of each line as a
 standard FORTRAN carriage control character.
+.IP \fB\-l\fP 5
+Explicitly specifies no filtering of the files (not normally used, as
+most print spoolers depend on proper filtering of the data, but this
+may be useful for sending preprocessed output for spooling to
+misconfigured print servers).
 .PP
 The remaining single letter options have the following meaning.
 .IP \fB\-r\fP 5
