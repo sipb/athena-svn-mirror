@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.1 1996-09-20 05:07:45 ghudson Exp $
+# $Id: config.site,v 1.2 1996-10-06 21:08:03 ghudson Exp $
 #
 
 athena=true
@@ -29,5 +29,7 @@ case "${HOSTTYPE}" in
 esac
 
 prefix=/usr/athena
+datadir='${prefix}/lib'
+sbindir='${prefix}/etc'
 lbindir=/bin/athena
 lsbindir=/etc/athena
