@@ -338,7 +338,7 @@ char *w;
 
 	p[-1] = 0;
 
-	if (index ("SXZHY", p[-2]) == NULL || (p[-2] == 'Y' && vowel (p[-3]))) {
+	if (strchr ("SXZHY", p[-2]) == NULL || (p[-2] == 'Y' && vowel (p[-3]))) {
 		if (cflag)
 			printf ("%s/S\n", w);
 		else if ((dent = lookup (w, strlen (w), 1)) != NULL
@@ -439,7 +439,7 @@ char *w;
 		return;
 	case 'E': /* S (except simple adding of an S) */
 		p[-2] = 0;	/* drop the ES */
-		if (index ("SXZH", p[-3]) != NULL) {
+		if (strchr ("SXZH", p[-3]) != NULL) {
 			if (cflag)
 				printf ("%s/S\n", w);
 			else if ((dent = lookup (w, strlen (w), 1)) != NULL) {

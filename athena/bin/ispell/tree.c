@@ -60,7 +60,7 @@ static char personaldict[MAXPATHLEN];
 static FILE *dictf;
 static newwords = 0;
 
-extern char *index ();
+
 extern struct dent *hashtbl;
 extern int hashsize;
 
@@ -139,7 +139,7 @@ char *p;
 
 		if (buf [ len ] == '\n')
 			buf [ len-- ] = '\0';
-		if ((h = index (buf, '/')) != NULL)
+		if ((h = strchr (buf, '/')) != NULL)
 			*h++ = '\0';
 		dp = treeinsert (buf, 1);
 		if (h != NULL) {

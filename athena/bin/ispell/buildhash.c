@@ -248,7 +248,7 @@ makedent (lbuf, d)
 char *lbuf;
 struct dent *d;
 {
-	char *p, *index();
+	char *p;
 
 	d->next = NULL;
 	d->used = 1;
@@ -269,7 +269,7 @@ struct dent *d;
 	d->keep = 0;
 	d->keep = 0;
 
-	p = index (lbuf, '/');
+	p = strchr (lbuf, '/');
 	if (p != NULL)
 		*p = 0;
 	if (strlen (lbuf) > WORDLEN - 1) {
