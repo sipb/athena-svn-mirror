@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.6 1990-01-05 06:22:47 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.7 1990-01-10 12:23:05 vanharen Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -75,7 +75,13 @@ static struct servent *service = (struct servent *)NULL; /* service entry */
  */
 
 ERRCODE
+#ifdef __STDC__
 read_request(int fd, REQUEST *request)
+#else
+read_request(fd, request)
+     int fd;
+     REQUEST *request;
+#endif /* STDC */
 {
   static IO_REQUEST io_req;
 
@@ -131,7 +137,15 @@ return(SUCCESS);
 
 
 
+int
+#ifdef __STDC__
 send_list(int fd, REQUEST *request, LIST *list)
+#else
+send_list(fd, request, list)
+     int fd;
+     REQUEST *request;
+     LIST *list;
+#endif /* STDC */
 {
   LIST list_rq;
   OLDLIST frep;
@@ -186,7 +200,14 @@ send_list(int fd, REQUEST *request, LIST *list)
 }
   
 
+ERRCODE
+#ifdef __STDC__
 send_person(int fd, PERSON *person)
+#else
+send_person(fd, person)
+     int fd;
+     PERSON *person;
+#endif /* STDC */
 {
   PERSON person_rq;
 
