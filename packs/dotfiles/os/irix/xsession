@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.1 1998-12-25 19:33:18 ghudson Exp $
+# $Id: xsession,v 1.2 1999-05-10 23:05:01 danw Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -84,6 +84,7 @@ if (! $?skip_sgi) then
   endif
 
   $initdir/Xsession.dt
+  setenv WINDOW_MANAGER 4Dwm
 
   if ((! $?NOCALLS) && (-r .lang)) then
     setenv LANG `cat .lang`
