@@ -1,6 +1,0 @@
-News for Audio File Library version 0.2.5
-Michael Pruett <michael@68k.org>
-
-Fix bugs related to processing 24-bit audio data.
-
-Made AIFF/AIFF-C parsing more robust.
