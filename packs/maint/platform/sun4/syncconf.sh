@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 1997-02-15 20:02:47 ghudson Exp $
+# $Id: syncconf.sh,v 1.2 1997-03-14 21:37:37 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/etc/athena/.rc.conf.sync
@@ -12,33 +12,22 @@ startup=
 echo=echo
 maybe=
 
-# Usage: syncrc2 scriptname order value
-# e.g. "syncrc2 mail 50 false" turns off the /etc/rc2.d/S50mail link.
-syncrc2()
+# Usage: syncrc level {K/S} order scriptname boolvalue
+# e.g. "syncrc 2 S 50 mail false" turns off the /etc/rc2.d/S50mail link
+syncrc()
 {
-	if [ "$3" = false ]; then
-		prefix=s
+	uprefix=$2
+	lprefix=`echo $uprefix | tr SK sk`
+	if [ "$5" = false ]; then
+		prefix="$lprefix"
 	else
-		prefix=S
+		prefix="$uprefix"
 	fi
-	if [ "$3" != false -a ! -h "/etc/rc2.d/S$2$1" ]; then
+	if [ "$1$prefix" = 2S -a ! -h "/etc/rc2.d/S$3$4" ]; then
 		rc2added=1
 	fi
-	$maybe rm -f "/etc/rc2.d/s$2$1" "/etc/rc2.d/S$2$1"
-	$maybe ln -s "../init.d/$2" "/etc/rc2.d/$prefix$2$1"
-}
-
-# Usage: syncrc scriptname order value
-# e.g. "syncrc0 mail 20 true" turns on the /etc/rc2.d/K20mail link.
-syncrc0()
-{
-	if [ "$3" = false ]; then
-		prefix=k
-	else
-		prefix=K
-	fi
-	$maybe rm -f "/etc/rc0.d/k$2$1" "/etc/rc0.d/K$2$1"
-	$maybe ln -s "../init.d/$2" "/etc/rc0.d/$prefix$2$1"
+	$maybe rm -f "/etc/rc$1.d/$lprefix$3$4" "/etc/rc$1.d/$uprefix$3$4"
+	$maybe ln -s "../init.d/$4" "/etc/rc$1.d/$prefix$3$4"
 }
 
 remove()
@@ -88,13 +77,17 @@ handle()
 
 	case "$1" in
 	NFSSRV)
-		syncrc2 nfs.server 99 "$NFSSRV"
-		syncrc0 nfs.server 66 "$NFSSRV"
+		syncrc 0 K 66 nfs.server "$NFSSRV"
+		syncrc 1 K 65 nfs.server "$NFSSRV"
+		syncrc 2 K 60 nfs.server "$NFSSRV"
+		syncrc 3 S 15 nfs.server "$NFSSRV"
 		;;
 
 	NFSCLIENT)
-		syncrc2 nfs.client 73 "$NFSCLIENT"
-		syncrc0 nfs.client 75 "$NFSCLIENT"
+		syncrc 0 K 75 nfs.client "$NFSCLIENT"
+		syncrc 1 K 80 nfs.client "$NFSCLIENT"
+		syncrc 2 K 65 nfs.client "$NFSCLIENT"
+		syncrc 2 S 73 nfs.client "$NFSCLIENT"
 		;;
 
 	HOSTADDR)
