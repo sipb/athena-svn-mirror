@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: atk\n"
-"POT-Creation-Date: 2002-11-22 08:13+0000\n"
+"POT-Creation-Date: 2003-01-20 09:26+0000\n"
 "PO-Revision-Date: 2002-06-26 11:15+0200\n"
 "Last-Translator: Yanko Kaneti <yaneti@declera.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"

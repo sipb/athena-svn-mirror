@@ -82,23 +82,25 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="atk-role-get-l
 
 </refsect1>
 
+
+
 <refsect1>
 <title>Properties</title>
 <synopsis>
 
-  &quot;<link linkend="AtkObject--accessible-name">accessible-name</link>&quot;      <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="AtkObject--accessible-description">accessible-description</link>&quot; <link linkend="gchararray">gchararray</link>           : Read / Write
-  &quot;<link linkend="AtkObject--accessible-parent">accessible-parent</link>&quot;    <link linkend="AtkObject">AtkObject</link>            : Read / Write
-  &quot;<link linkend="AtkObject--accessible-value">accessible-value</link>&quot;     <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="AtkObject--accessible-role">accessible-role</link>&quot;      <link linkend="gint">gint</link>                 : Read / Write
   &quot;<link linkend="AtkObject--accessible-component-layer">accessible-component-layer</link>&quot; <link linkend="gint">gint</link>                 : Read
   &quot;<link linkend="AtkObject--accessible-component-mdi-zorder">accessible-component-mdi-zorder</link>&quot; <link linkend="gint">gint</link>                 : Read
+  &quot;<link linkend="AtkObject--accessible-description">accessible-description</link>&quot; <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="AtkObject--accessible-name">accessible-name</link>&quot;      <link linkend="gchararray">gchararray</link>           : Read / Write
+  &quot;<link linkend="AtkObject--accessible-parent">accessible-parent</link>&quot;    <link linkend="AtkObject">AtkObject</link>            : Read / Write
+  &quot;<link linkend="AtkObject--accessible-role">accessible-role</link>&quot;      <link linkend="gint">gint</link>                 : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-caption">accessible-table-caption</link>&quot; <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-column-description">accessible-table-column-description</link>&quot; <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-column-header">accessible-table-column-header</link>&quot; <link linkend="AtkObject">AtkObject</link>            : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-row-description">accessible-table-row-description</link>&quot; <link linkend="gchararray">gchararray</link>           : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-row-header">accessible-table-row-header</link>&quot; <link linkend="AtkObject">AtkObject</link>            : Read / Write
   &quot;<link linkend="AtkObject--accessible-table-summary">accessible-table-summary</link>&quot; <link linkend="AtkObject">AtkObject</link>            : Read / Write
+  &quot;<link linkend="AtkObject--accessible-value">accessible-value</link>&quot;     <link linkend="gdouble">gdouble</link>              : Read / Write
 </synopsis>
 </refsect1>
 
@@ -256,378 +258,378 @@ ATK_ROLE_LAST_DEFINED is not necessarily an error.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>ATK_ROLE_INVALID</literal></term>
-<listitem><para> Invalid role
-</para></listitem>
+<listitem><simpara> Invalid role
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ACCEL_LABEL</literal></term>
-<listitem><para> A label which represents an accelerator
-</para></listitem>
+<listitem><simpara> A label which represents an accelerator
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ALERT</literal></term>
-<listitem><para> An object which is an alert to the user
-</para></listitem>
+<listitem><simpara> An object which is an alert to the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ANIMATION</literal></term>
-<listitem><para> An object which is an animated image
-</para></listitem>
+<listitem><simpara> An object which is an animated image
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ARROW</literal></term>
-<listitem><para> An arrow in one of the four cardinal directions
-</para></listitem>
+<listitem><simpara> An arrow in one of the four cardinal directions
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_CALENDAR</literal></term>
-<listitem><para>  An object that displays a calendar and allows the user to select a date
-</para></listitem>
+<listitem><simpara>  An object that displays a calendar and allows the user to select a date
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_CANVAS</literal></term>
-<listitem><para> An object that can be drawn into and is used to trap events
-</para></listitem>
+<listitem><simpara> An object that can be drawn into and is used to trap events
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_CHECK_BOX</literal></term>
-<listitem><para> A choice that can be checked or unchecked and provides a separate indicator for the current state
-</para></listitem>
+<listitem><simpara> A choice that can be checked or unchecked and provides a separate indicator for the current state
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_CHECK_MENU_ITEM</literal></term>
-<listitem><para> A menu item with a check box
-</para></listitem>
+<listitem><simpara> A menu item with a check box
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_COLOR_CHOOSER</literal></term>
-<listitem><para> A specialized dialog that lets the user choose a color
-</para></listitem>
+<listitem><simpara> A specialized dialog that lets the user choose a color
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_COLUMN_HEADER</literal></term>
-<listitem><para> The header for a column of data
-</para></listitem>
+<listitem><simpara> The header for a column of data
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_COMBO_BOX</literal></term>
-<listitem><para> A list of choices the user can select from
-</para></listitem>
+<listitem><simpara> A list of choices the user can select from
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DATE_EDITOR</literal></term>
-<listitem><para> An object whose purpose is to allow a user to edit a date
-</para></listitem>
+<listitem><simpara> An object whose purpose is to allow a user to edit a date
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DESKTOP_ICON</literal></term>
-<listitem><para> An inconifed internal frame within a DESKTOP_PANE
-</para></listitem>
+<listitem><simpara> An inconifed internal frame within a DESKTOP_PANE
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DESKTOP_FRAME</literal></term>
-<listitem><para> A pane that supports internal frames and iconified versions of those internal frames
-</para></listitem>
+<listitem><simpara> A pane that supports internal frames and iconified versions of those internal frames
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DIAL</literal></term>
-<listitem><para> An object whose purpose is to allow a user to set a value
-</para></listitem>
+<listitem><simpara> An object whose purpose is to allow a user to set a value
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DIALOG</literal></term>
-<listitem><para> A top level window with title bar and a border
-</para></listitem>
+<listitem><simpara> A top level window with title bar and a border
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DIRECTORY_PANE</literal></term>
-<listitem><para> A pane that allows the user to navigate through and select the contents of a directory
-</para></listitem>
+<listitem><simpara> A pane that allows the user to navigate through and select the contents of a directory
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_DRAWING_AREA</literal></term>
-<listitem><para> An object used for drawing custom user interface elements
-</para></listitem>
+<listitem><simpara> An object used for drawing custom user interface elements
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_FILE_CHOOSER</literal></term>
-<listitem><para> A specialized dialog that lets the user choose a file
-</para></listitem>
+<listitem><simpara> A specialized dialog that lets the user choose a file
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_FILLER</literal></term>
-<listitem><para> A object that fills up space in a user interface
-</para></listitem>
+<listitem><simpara> A object that fills up space in a user interface
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_FONT_CHOOSER</literal></term>
-<listitem><para> A specialized dialog that lets the user choose a font
-</para></listitem>
+<listitem><simpara> A specialized dialog that lets the user choose a font
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_FRAME</literal></term>
-<listitem><para> A top level window with a title bar, border, menubar, etc.
-</para></listitem>
+<listitem><simpara> A top level window with a title bar, border, menubar, etc.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_GLASS_PANE</literal></term>
-<listitem><para> A pane that is guaranteed to be painted on top of all panes beneath it
-</para></listitem>
+<listitem><simpara> A pane that is guaranteed to be painted on top of all panes beneath it
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_HTML_CONTAINER</literal></term>
-<listitem><para> A document container for HTML, whose children represent the document content
-</para></listitem>
+<listitem><simpara> A document container for HTML, whose children represent the document content
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ICON</literal></term>
-<listitem><para> A small fixed size picture, typically used to decorate components
-</para></listitem>
+<listitem><simpara> A small fixed size picture, typically used to decorate components
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_IMAGE</literal></term>
-<listitem><para> An object whose primary purpose is to display an image
-</para></listitem>
+<listitem><simpara> An object whose primary purpose is to display an image
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_INTERNAL_FRAME</literal></term>
-<listitem><para> A frame-like object that is clipped by a desktop pane
-</para></listitem>
+<listitem><simpara> A frame-like object that is clipped by a desktop pane
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_LABEL</literal></term>
-<listitem><para> An object used to present an icon or short string in an interface
-</para></listitem>
+<listitem><simpara> An object used to present an icon or short string in an interface
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_LAYERED_PANE</literal></term>
-<listitem><para> A specialized pane that allows its children to be drawn in layers, providing a form of stacking order
-</para></listitem>
+<listitem><simpara> A specialized pane that allows its children to be drawn in layers, providing a form of stacking order
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_LIST</literal></term>
-<listitem><para> An object that presents a list of objects to the user and allows the user to select one or more of them 
-</para></listitem>
+<listitem><simpara> An object that presents a list of objects to the user and allows the user to select one or more of them 
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_LIST_ITEM</literal></term>
-<listitem><para> An object that represents an element of a list 
-</para></listitem>
+<listitem><simpara> An object that represents an element of a list 
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_MENU</literal></term>
-<listitem><para> An object usually found inside a menu bar that contains a list of actions the user can choose from
-</para></listitem>
+<listitem><simpara> An object usually found inside a menu bar that contains a list of actions the user can choose from
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_MENU_BAR</literal></term>
-<listitem><para> An object usually drawn at the top of the primary dialog box of an application that contains a list of menus the user can choose from 
-</para></listitem>
+<listitem><simpara> An object usually drawn at the top of the primary dialog box of an application that contains a list of menus the user can choose from 
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_MENU_ITEM</literal></term>
-<listitem><para> An object usually contained in a menu that presents an action the user can choose
-</para></listitem>
+<listitem><simpara> An object usually contained in a menu that presents an action the user can choose
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_OPTION_PANE</literal></term>
-<listitem><para> A specialized pane whose primary use is inside a DIALOG
-</para></listitem>
+<listitem><simpara> A specialized pane whose primary use is inside a DIALOG
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PAGE_TAB</literal></term>
-<listitem><para> An object that is a child of a page tab list
-</para></listitem>
+<listitem><simpara> An object that is a child of a page tab list
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PAGE_TAB_LIST</literal></term>
-<listitem><para> An object that presents a series of panels (or page tabs), one at a time, through some mechanism provided by the object 
-</para></listitem>
+<listitem><simpara> An object that presents a series of panels (or page tabs), one at a time, through some mechanism provided by the object 
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PANEL</literal></term>
-<listitem><para> A generic container that is often used to group objects
-</para></listitem>
+<listitem><simpara> A generic container that is often used to group objects
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PASSWORD_TEXT</literal></term>
-<listitem><para> A text object uses for passwords, or other places where the text content is not shown visibly to the user
-</para></listitem>
+<listitem><simpara> A text object uses for passwords, or other places where the text content is not shown visibly to the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_POPUP_MENU</literal></term>
-<listitem><para> A temporary window that is usually used to offer the user a list of choices, and then hides when the user selects one of those choices
-</para></listitem>
+<listitem><simpara> A temporary window that is usually used to offer the user a list of choices, and then hides when the user selects one of those choices
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PROGRESS_BAR</literal></term>
-<listitem><para> An object used to indicate how much of a task has been completed
-</para></listitem>
+<listitem><simpara> An object used to indicate how much of a task has been completed
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PUSH_BUTTON</literal></term>
-<listitem><para> An object the user can manipulate to tell the application to do something
-</para></listitem>
+<listitem><simpara> An object the user can manipulate to tell the application to do something
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_RADIO_BUTTON</literal></term>
-<listitem><para> A specialized check box that will cause other radio buttons in the same group to become unchecked when this one is checked
-</para></listitem>
+<listitem><simpara> A specialized check box that will cause other radio buttons in the same group to become unchecked when this one is checked
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_RADIO_MENU_ITEM</literal></term>
-<listitem><para> A check menu item which belongs to a group. At each instant exactly one of the radio menu items from a group is selected
-</para></listitem>
+<listitem><simpara> A check menu item which belongs to a group. At each instant exactly one of the radio menu items from a group is selected
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ROOT_PANE</literal></term>
-<listitem><para> A specialized pane that has a glass pane and a layered pane as its children
-</para></listitem>
+<listitem><simpara> A specialized pane that has a glass pane and a layered pane as its children
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_ROW_HEADER</literal></term>
-<listitem><para> The header for a row of data
-</para></listitem>
+<listitem><simpara> The header for a row of data
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SCROLL_BAR</literal></term>
-<listitem><para> An object usually used to allow a user to incrementally view a large amount of data.
-</para></listitem>
+<listitem><simpara> An object usually used to allow a user to incrementally view a large amount of data.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SCROLL_PANE</literal></term>
-<listitem><para> An object that allows a user to incrementally view a large amount of information
-</para></listitem>
+<listitem><simpara> An object that allows a user to incrementally view a large amount of information
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SEPARATOR</literal></term>
-<listitem><para> An object usually contained in a menu to provide a visible and logical separation of the contents in a menu
-</para></listitem>
+<listitem><simpara> An object usually contained in a menu to provide a visible and logical separation of the contents in a menu
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SLIDER</literal></term>
-<listitem><para> An object that allows the user to select from a bounded range
-</para></listitem>
+<listitem><simpara> An object that allows the user to select from a bounded range
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SPLIT_PANE</literal></term>
-<listitem><para> A specialized panel that presents two other panels at the same time
-</para></listitem>
+<listitem><simpara> A specialized panel that presents two other panels at the same time
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_SPIN_BUTTON</literal></term>
-<listitem><para> An object used to get an integer or floating point number from the user
-</para></listitem>
+<listitem><simpara> An object used to get an integer or floating point number from the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_STATUSBAR</literal></term>
-<listitem><para> An object which reports messages of minor importance to the user
-</para></listitem>
+<listitem><simpara> An object which reports messages of minor importance to the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TABLE</literal></term>
-<listitem><para> An object used to represent information in terms of rows and columns
-</para></listitem>
+<listitem><simpara> An object used to represent information in terms of rows and columns
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TABLE_CELL</literal></term>
-<listitem><para> A cell in a table
-</para></listitem>
+<listitem><simpara> A cell in a table
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TABLE_COLUMN_HEADER</literal></term>
-<listitem><para> The header for a column of a table
-</para></listitem>
+<listitem><simpara> The header for a column of a table
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TABLE_ROW_HEADER</literal></term>
-<listitem><para> The header for a row of a table
-</para></listitem>
+<listitem><simpara> The header for a row of a table
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TEAR_OFF_MENU_ITEM</literal></term>
-<listitem><para> A menu item used to tear off and reattach its menu
-</para></listitem>
+<listitem><simpara> A menu item used to tear off and reattach its menu
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TERMINAL</literal></term>
-<listitem><para> An object that represents an accessible terminal
-</para></listitem>
+<listitem><simpara> An object that represents an accessible terminal
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TEXT</literal></term>
-<listitem><para> An object that presents text to the user
-</para></listitem>
+<listitem><simpara> An object that presents text to the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TOGGLE_BUTTON</literal></term>
-<listitem><para> A specialized push button that can be checked or unchecked, but does not provide a separate indicator for the current state
-</para></listitem>
+<listitem><simpara> A specialized push button that can be checked or unchecked, but does not provide a separate indicator for the current state
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TOOL_BAR</literal></term>
-<listitem><para> A bar or palette usually composed of push buttons or toggle buttons
-</para></listitem>
+<listitem><simpara> A bar or palette usually composed of push buttons or toggle buttons
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TOOL_TIP</literal></term>
-<listitem><para> An object that provides information about another object
-</para></listitem>
+<listitem><simpara> An object that provides information about another object
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TREE</literal></term>
-<listitem><para> An object used to represent hierarchical information to the user
-</para></listitem>
+<listitem><simpara> An object used to represent hierarchical information to the user
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_TREE_TABLE</literal></term>
-<listitem><para> An object capable of expanding and collapsing rows as well as showing multiple columns of data
-</para></listitem>
+<listitem><simpara> An object capable of expanding and collapsing rows as well as showing multiple columns of data
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_UNKNOWN</literal></term>
-<listitem><para> The object contains some Accessible information, but its role is not known
-</para></listitem>
+<listitem><simpara> The object contains some Accessible information, but its role is not known
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_VIEWPORT</literal></term>
-<listitem><para> An object usually used in a scroll pane
-</para></listitem>
+<listitem><simpara> An object usually used in a scroll pane
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_WINDOW</literal></term>
-<listitem><para> A top level window with no title or border.
-</para></listitem>
+<listitem><simpara> A top level window with no title or border.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_HEADER</literal></term>
-<listitem><para> An object that serves as a document header.
-</para></listitem>
+<listitem><simpara> An object that serves as a document header.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_FOOTER</literal></term>
-<listitem><para> An object that serves as a document footer.
-</para></listitem>
+<listitem><simpara> An object that serves as a document footer.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_PARAGRAPH</literal></term>
-<listitem><para> An object which is contains a paragraph of text content.
-</para></listitem>
+<listitem><simpara> An object which is contains a paragraph of text content.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_RULER</literal></term>
-<listitem><para> An object which describes margins and tab stops, etc. for text objects which it controls (should have CONTROLLER_FOR relation to such).
-</para></listitem>
+<listitem><simpara> An object which describes margins and tab stops, etc. for text objects which it controls (should have CONTROLLER_FOR relation to such).
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_APPLICATION</literal></term>
-<listitem><para> The object is an application object, which may contain <parameter>ATK_ROLE_FRAME</parameter> objects or other types of accessibles.
-</para></listitem>
+<listitem><simpara> The object is an application object, which may contain <parameter>ATK_ROLE_FRAME</parameter> objects or other types of accessibles.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_ROLE_LAST_DEFINED</literal></term>
-<listitem><para> not a valid role, used for finding end of enumeration
-</para></listitem>
+<listitem><simpara> not a valid role, used for finding end of enumeration
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -639,10 +641,10 @@ Registers the role specified by <parameter>name</parameter>.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para> a character string describing the new role.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkRole">AtkRole</link> for the new role.
-</para></listitem></varlistentry>
+<listitem><simpara> a character string describing the new role.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkRole">AtkRole</link> for the new role.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="AtkLayer">enum AtkLayer</title>
@@ -667,43 +669,43 @@ determinations of when components occlude one another.
 </para><variablelist role="enum">
 <varlistentry>
 <term><literal>ATK_LAYER_INVALID</literal></term>
-<listitem><para> The object does not have a layer
-</para></listitem>
+<listitem><simpara> The object does not have a layer
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_BACKGROUND</literal></term>
-<listitem><para> This layer is reserved for the desktop background
-</para></listitem>
+<listitem><simpara> This layer is reserved for the desktop background
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_CANVAS</literal></term>
-<listitem><para> This layer is used for Canvas components
-</para></listitem>
+<listitem><simpara> This layer is used for Canvas components
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_WIDGET</literal></term>
-<listitem><para> This layer is normally used for components
-</para></listitem>
+<listitem><simpara> This layer is normally used for components
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_MDI</literal></term>
-<listitem><para> This layer is used for layered components
-</para></listitem>
+<listitem><simpara> This layer is used for layered components
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_POPUP</literal></term>
-<listitem><para> This layer is used for popup components, such as menus
-</para></listitem>
+<listitem><simpara> This layer is used for popup components, such as menus
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_OVERLAY</literal></term>
-<listitem><para> This layer is reserved for future use.
-</para></listitem>
+<listitem><simpara> This layer is reserved for future use.
+</simpara></listitem>
 </varlistentry>
 <varlistentry>
 <term><literal>ATK_LAYER_WINDOW</literal></term>
-<listitem><para> This layer is used for toplevel windows.
-</para></listitem>
+<listitem><simpara> This layer is used for toplevel windows.
+</simpara></listitem>
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -742,12 +744,12 @@ to class and interface structures to allow for expansion in the future.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="AtkPropertyChangeHandler">AtkPropertyChangeHandler ()</title>
@@ -758,13 +760,13 @@ An AtkPropertyChangeHandler is a function which is executed when an AtkObject's 
 <link linkend="atk-object-connect-property-change-handler">atk_object_connect_property_change_handler</link>().
 </para><variablelist role="params">
 <varlistentry><term><parameter>Param1</parameter>&nbsp;:</term>
-<listitem><para>
-</para></listitem></varlistentry>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-implementor-ref-accessible">atk_implementor_ref_accessible ()</title>
@@ -776,11 +778,11 @@ the object implements <link linkend="AtkObjectIface">AtkObjectIface</link></para
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>implementor</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="GObject">GObject</link> instance which should implement <link linkend="AtkImplementorIface">AtkImplementorIface</link>
+<listitem><simpara> The <link linkend="GObject">GObject</link> instance which should implement <link linkend="AtkImplementorIface">AtkImplementorIface</link>
 if a non-null return value is required.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a reference to an object's <link linkend="AtkObject">AtkObject</link> implementation
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a reference to an object's <link linkend="AtkObject">AtkObject</link> implementation
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-name">atk_object_get_name ()</title>
@@ -791,10 +793,10 @@ Gets the accessible name of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a character string representing the accessible name of the object.
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a character string representing the accessible name of the object.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-description">atk_object_get_description ()</title>
@@ -806,12 +808,12 @@ Gets the accessible description of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a character string representing the accessible description
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a character string representing the accessible description
 of the accessible.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-parent">atk_object_get_parent ()</title>
@@ -822,10 +824,10 @@ Gets the accessible parent of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="AtkObject">AtkObject</link> representing the accessible parent of the accessible
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="AtkObject">AtkObject</link> representing the accessible parent of the accessible
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-n-accessible-children">atk_object_get_n_accessible_children ()</title>
@@ -837,11 +839,11 @@ Gets the number of accessible children of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an integer representing the number of accessible children
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an integer representing the number of accessible children
 of the accessible.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-ref-accessible-child">atk_object_ref_accessible_child ()</title>
@@ -855,14 +857,14 @@ at index 0, the second at index 1 and so on.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> a gint representing the position of the child, starting from 0
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkObject">AtkObject</link> representing the specified accessible child
+<listitem><simpara> a gint representing the position of the child, starting from 0
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkObject">AtkObject</link> representing the specified accessible child
 of the accessible.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-ref-relation-set">atk_object_ref_relation_set ()</title>
@@ -873,10 +875,10 @@ Gets the <link linkend="AtkRelationSet">AtkRelationSet</link> associated with th
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkRelationSet">AtkRelationSet</link> representing the relation set of the object.
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkRelationSet">AtkRelationSet</link> representing the relation set of the object.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-layer">atk_object_get_layer ()</title>
@@ -888,10 +890,10 @@ DEPRECATED: use atk_component_get_layer instead!</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkLayer">AtkLayer</link> which is the layer of the accessible
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkLayer">AtkLayer</link> which is the layer of the accessible
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-mdi-zorder">atk_object_get_mdi_zorder ()</title>
@@ -904,12 +906,12 @@ DEPRECATED: use atk_component_get_mdi_zorder instead!</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gint which is the zorder of the accessible, i.e. the depth at 
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gint which is the zorder of the accessible, i.e. the depth at 
 which the component is shown in relation to other components in the same 
 container.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-role">atk_object_get_role ()</title>
@@ -920,10 +922,10 @@ Gets the role of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an <link linkend="AtkRole">AtkRole</link> which is the role of the accessible
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an <link linkend="AtkRole">AtkRole</link> which is the role of the accessible
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-ref-state-set">atk_object_ref_state_set ()</title>
@@ -935,11 +937,11 @@ unreference it when it is no longer needed.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a reference to an <link linkend="AtkStateSet">AtkStateSet</link> which is the state
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a reference to an <link linkend="AtkStateSet">AtkStateSet</link> which is the state
 set of the accessible
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-get-index-in-parent">atk_object_get_index_in_parent ()</title>
@@ -951,10 +953,10 @@ accessible does not have an accessible parent.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> an integer which is the index of the accessible in its parent
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> an integer which is the index of the accessible in its parent
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-set-name">atk_object_set_name ()</title>
@@ -966,11 +968,11 @@ Sets the accessible name of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para> a character string to be set as the accessible name
-</para></listitem></varlistentry>
+<listitem><simpara> a character string to be set as the accessible name
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-set-description">atk_object_set_description ()</title>
@@ -982,11 +984,11 @@ Sets the accessible description of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>description</parameter>&nbsp;:</term>
-<listitem><para> a character string to be set as the accessible description
-</para></listitem></varlistentry>
+<listitem><simpara> a character string to be set as the accessible description
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-set-parent">atk_object_set_parent ()</title>
@@ -998,11 +1000,11 @@ Sets the accessible parent of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>parent</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link> to be set as the accessible parent
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link> to be set as the accessible parent
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-set-role">atk_object_set_role ()</title>
@@ -1014,11 +1016,11 @@ Sets the role of the accessible.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>role</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkRole">AtkRole</link> to be set as the role
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkRole">AtkRole</link> to be set as the role
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-connect-property-change-handler">atk_object_connect_property_change_handler ()</title>
@@ -1031,14 +1033,14 @@ Specifies a function to be called when a property changes value.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>handler</parameter>&nbsp;:</term>
-<listitem><para> a function to be called when a property changes its value
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a <link linkend="guint">guint</link> which is the handler id used in 
+<listitem><simpara> a function to be called when a property changes its value
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="guint">guint</link> which is the handler id used in 
 <link linkend="atk-object-remove-property-change-handler">atk_object_remove_property_change_handler</link>()
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-remove-property-change-handler">atk_object_remove_property_change_handler ()</title>
@@ -1051,11 +1053,11 @@ Removes a property change handler.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>handler_id</parameter>&nbsp;:</term>
-<listitem><para> a guint which identifies the handler to be removed.
-</para></listitem></varlistentry>
+<listitem><simpara> a guint which identifies the handler to be removed.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-notify-state-change">atk_object_notify_state_change ()</title>
@@ -1068,14 +1070,14 @@ Emits a state-change signal for the specified state.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>state</parameter>&nbsp;:</term>
-<listitem><para> an <link linkend="AtkState">AtkState</link> whose state is changed
-</para></listitem></varlistentry>
+<listitem><simpara> an <link linkend="AtkState">AtkState</link> whose state is changed
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>value</parameter>&nbsp;:</term>
-<listitem><para> a gboolean which indicates whether the state is being set on or off
-</para></listitem></varlistentry>
+<listitem><simpara> a gboolean which indicates whether the state is being set on or off
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-initialize">atk_object_initialize ()</title>
@@ -1090,11 +1092,11 @@ to create an instance of a subclass of <link linkend="AtkObject">AtkObject</link
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>accessible</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="gpointer">gpointer</link> which identifies the object for which the AtkObject was created.
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="gpointer">gpointer</link> which identifies the object for which the AtkObject was created.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-add-relationship">atk_object_add_relationship ()</title>
@@ -1107,16 +1109,16 @@ Adds a relationship of the specified type with the specified target.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>object</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkObject">AtkObject</link> to which an AtkRelation is to be added. 
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkObject">AtkObject</link> to which an AtkRelation is to be added. 
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>relationship</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkRelationType">AtkRelationType</link> of the relation
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkRelationType">AtkRelationType</link> of the relation
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>target</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkObject">AtkObject</link> which is to be the target of the relation.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>TRUE if the relationship is added.
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkObject">AtkObject</link> which is to be the target of the relation.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>TRUE if the relationship is added.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-object-remove-relationship">atk_object_remove_relationship ()</title>
@@ -1129,16 +1131,16 @@ Removes a relationship of the specified type with the specified target.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>object</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkObject">AtkObject</link> from which an AtkRelation is to be removed. 
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkObject">AtkObject</link> from which an AtkRelation is to be removed. 
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>relationship</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkRelationType">AtkRelationType</link> of the relation
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkRelationType">AtkRelationType</link> of the relation
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>target</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkObject">AtkObject</link> which is the target of the relation to be removed.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>TRUE if the relationship is removed.
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkObject">AtkObject</link> which is the target of the relation to be removed.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>TRUE if the relationship is removed.
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-role-get-name">atk_role_get_name ()</title>
@@ -1149,10 +1151,10 @@ Gets the description string describing the <link linkend="AtkRole">AtkRole</link
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>role</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkRole">AtkRole</link> whose name is required
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the string describing the AtkRole
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkRole">AtkRole</link> whose name is required
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the string describing the AtkRole
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-role-get-localized-name">atk_role_get_localized_name ()</title>
@@ -1164,10 +1166,10 @@ Gets the localized description string describing the <link linkend="AtkRole">Atk
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>role</parameter>&nbsp;:</term>
-<listitem><para> The <link linkend="AtkRole">AtkRole</link> whose localized name is required
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the localized string describing the AtkRole
-</para></listitem></varlistentry>
+<listitem><simpara> The <link linkend="AtkRole">AtkRole</link> whose localized name is required
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the localized string describing the AtkRole
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-role-for-name">atk_role_for_name ()</title>
@@ -1178,69 +1180,95 @@ Get the <link linkend="AtkRole">AtkRole</link> type corresponding to a rolew nam
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><para> a string which is the (non-localized) name of an ATK role.
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the <link linkend="AtkRole">AtkRole</link> enumerated type corresponding to the specified
+<listitem><simpara> a string which is the (non-localized) name of an ATK role.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="AtkRole">AtkRole</link> enumerated type corresponding to the specified
 name,
          or <link linkend="ATK-ROLE-INVALID-CAPS">ATK_ROLE_INVALID</link> if no matching role is found.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>
 <refsect1>
 <title>Properties</title>
 <variablelist>
-<varlistentry><term><anchor id="AtkObject--accessible-name">&quot;<literal>accessible-name</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>Object instance's name formatted for assistive technology access.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="AtkObject--accessible-description">&quot;<literal>accessible-description</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
-<listitem>
-<para>Description of an object, formatted for assistive technology access.</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="AtkObject--accessible-parent">&quot;<literal>accessible-parent</literal>&quot; (<link linkend="AtkObject">AtkObject</link> : Read / Write)</term>
-<listitem>
-<para>Is used to notify that the parent has changed .</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="AtkObject--accessible-value">&quot;<literal>accessible-value</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>Is used to notify that the value has changed .</para>
-</listitem></varlistentry>
-<varlistentry><term><anchor id="AtkObject--accessible-role">&quot;<literal>accessible-role</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
-<listitem>
-<para>The accessible role of this object .</para>
-</listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-component-layer">&quot;<literal>accessible-component-layer</literal>&quot; (<link linkend="gint">gint</link> : Read)</term>
 <listitem>
-<para>The accessible layer of this object .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-component-mdi-zorder">&quot;<literal>accessible-component-mdi-zorder</literal>&quot; (<link linkend="gint">gint</link> : Read)</term>
 <listitem>
-<para>The accessible MDI value of this object .</para>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="AtkObject--accessible-description">&quot;<literal>accessible-description</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="AtkObject--accessible-name">&quot;<literal>accessible-name</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="AtkObject--accessible-parent">&quot;<literal>accessible-parent</literal>&quot; (<link linkend="AtkObject">AtkObject</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="AtkObject--accessible-role">&quot;<literal>accessible-role</literal>&quot; (<link linkend="gint">gint</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-caption">&quot;<literal>accessible-table-caption</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table caption has changed .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-column-description">&quot;<literal>accessible-table-column-description</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table columnscription has changed .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-column-header">&quot;<literal>accessible-table-column-header</literal>&quot; (<link linkend="AtkObject">AtkObject</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table column header has changed .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-row-description">&quot;<literal>accessible-table-row-description</literal>&quot; (<link linkend="gchararray">gchararray</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table row description has changed .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-row-header">&quot;<literal>accessible-table-row-header</literal>&quot; (<link linkend="AtkObject">AtkObject</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table row header has changed .</para>
+<para>
+
+</para>
 </listitem></varlistentry>
 <varlistentry><term><anchor id="AtkObject--accessible-table-summary">&quot;<literal>accessible-table-summary</literal>&quot; (<link linkend="AtkObject">AtkObject</link> : Read / Write)</term>
 <listitem>
-<para>Is used to notify that the table summary has changed .</para>
+<para>
+
+</para>
+</listitem></varlistentry>
+<varlistentry><term><anchor id="AtkObject--accessible-value">&quot;<literal>accessible-value</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para>
 </listitem></varlistentry>
 
 </variablelist>
@@ -1256,14 +1284,14 @@ name,
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>
+<listitem><simpara>
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkObject-children-changed">The &quot;children-changed&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkObject">AtkObject</link> *atkobject,
                                             <link linkend="guint">guint</link> arg1,
@@ -1274,17 +1302,17 @@ The children_changed signal supports two details, "add" and "remove" which
 indicate whether a child was added or removed
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The index of the added or removed child
-</para></listitem></varlistentry>
+<listitem><simpara>The index of the added or removed child
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>The child which was added or removed
+<listitem><simpara>The child which was added or removed
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkObject-focus-event">The &quot;focus-event&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkObject">AtkObject</link> *atkobject,
                                             <link linkend="gboolean">gboolean</link> arg1,
@@ -1293,14 +1321,14 @@ indicate whether a child was added or removed
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>A boolean value which indicates whether or not the focus event is is or out.
+<listitem><simpara>A boolean value which indicates whether or not the focus event is is or out.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkObject-property-change">The &quot;property-change&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkObject">AtkObject</link> *atkobject,
                                             <link linkend="gpointer">gpointer</link> arg1,
@@ -1310,14 +1338,14 @@ This signal support a detail which identifies the property which has
 changed.
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The new value of the property which changed.
+<listitem><simpara>The new value of the property which changed.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkObject-state-change">The &quot;state-change&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkObject">AtkObject</link> *atkobject,
                                             <link linkend="gchar">gchar</link> *arg1,
@@ -1327,17 +1355,17 @@ changed.
 This signal support, which may be any of the accessible state types.
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
-</para></listitem></varlistentry>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
-<listitem><para>The name of the state which has changed
-</para></listitem></varlistentry>
+<listitem><simpara>The name of the state which has changed
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>arg2</parameter>&nbsp;:</term>
-<listitem><para>A boolean which indicates whether the state has been set or unset.
+<listitem><simpara>A boolean which indicates whether the state has been set or unset.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2><refsect2><title><anchor id="AtkObject-visible-data-changed">The &quot;visible-data-changed&quot; signal</title>
 <programlisting>void        user_function                  (<link linkend="AtkObject">AtkObject</link> *atkobject,
                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
@@ -1345,11 +1373,11 @@ This signal support, which may be any of the accessible state types.
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>atkobject</parameter>&nbsp;:</term>
-<listitem><para>the object which received the signal.
+<listitem><simpara>the object which received the signal.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><para>user data set when the signal handler was connected.</para></listitem></varlistentry>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 </refsect1>
 

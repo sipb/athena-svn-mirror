@@ -1,4 +1,4 @@
-<refentry id="atk-AtkAction">
+<refentry id="AtkAction">
 <refmeta>
 <refentrytitle>AtkAction</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,7 +15,7 @@ activate/interact with,</refpurpose>
 
 
 
-struct      <link linkend="AtkAction">AtkAction</link>;
+struct      <link linkend="AtkAction-struct">AtkAction</link>;
 <link linkend="gboolean">gboolean</link>    <link linkend="atk-action-do-action">atk_action_do_action</link>            (<link linkend="AtkAction">AtkAction</link> *action,
                                              <link linkend="gint">gint</link> i);
 <link linkend="gint">gint</link>        <link linkend="atk-action-get-n-actions">atk_action_get_n_actions</link>        (<link linkend="AtkAction">AtkAction</link> *action);
@@ -36,6 +36,23 @@ G_CONST_RETURN <link linkend="gchar">gchar</link>* <link linkend="atk-action-get
 
 </synopsis>
 </refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GInterface">GInterface</link>
+   +----AtkAction
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Implementations</title>
+<para>
+AtkAction is implemented by <link linkend="AtkNoOpObject">AtkNoOpObject</link> and <link linkend="AtkHyperlink">AtkHyperlink</link>.
+</para>
+</refsect1>
 
 
 
@@ -77,7 +94,7 @@ terminology for <link linkend="AtkAction">AtkAction</link> names.
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="AtkAction">struct AtkAction</title>
+<title><anchor id="AtkAction-struct">struct AtkAction</title>
 <programlisting>struct AtkAction;</programlisting>
 <para>
 The AtkAction structure does not contain any fields.
@@ -92,14 +109,14 @@ Perform the specified action on the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> <literal>TRUE</literal> if success, <literal>FALSE</literal> otherwise
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if success, <literal>FALSE</literal> otherwise
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-get-n-actions">atk_action_get_n_actions ()</title>
@@ -112,11 +129,11 @@ If there are more than one, the first one is considered the
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a the number of actions, or 0 if <parameter>action</parameter> does not
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a the number of actions, or 0 if <parameter>action</parameter> does not
 implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-get-description">atk_action_get_description ()</title>
@@ -129,14 +146,14 @@ Returns a description of the specified action of the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>a description string, or <literal>NULL</literal>
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a description string, or <literal>NULL</literal>
 if <parameter>action</parameter> does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-get-name">atk_action_get_name ()</title>
@@ -148,14 +165,14 @@ Returns the name of the specified action of the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>a name string, or <literal>NULL</literal>
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a name string, or <literal>NULL</literal>
 if <parameter>action</parameter> does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-get-localized-name">atk_action_get_localized_name ()</title>
@@ -168,14 +185,14 @@ Returns the localized name of the specified action of the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>a name string, or <literal>NULL</literal>
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a name string, or <literal>NULL</literal>
 if <parameter>action</parameter> does not implement this interface.
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-get-keybinding">atk_action_get_keybinding ()</title>
@@ -188,15 +205,15 @@ Returns a keybinding associated with this action, if one exists.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para>a string representing the keybinding, or <literal>NULL</literal>
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a string representing the keybinding, or <literal>NULL</literal>
 if there is no keybinding for this action.
 
-</para></listitem></varlistentry>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="atk-action-set-description">atk_action_set_description ()</title>
@@ -209,16 +226,16 @@ Sets a description of the specified action of the object.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>action</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link> instance that implements AtkActionIface
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>i</parameter>&nbsp;:</term>
-<listitem><para> the action index corresponding to the action to be performed 
-</para></listitem></varlistentry>
+<listitem><simpara> the action index corresponding to the action to be performed 
+</simpara></listitem></varlistentry>
 <varlistentry><term><parameter>desc</parameter>&nbsp;:</term>
-<listitem><para> the description to be assigned to this action
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a gboolean representing if the description was successfully set;
-</para></listitem></varlistentry>
+<listitem><simpara> the description to be assigned to this action
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a gboolean representing if the description was successfully set;
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

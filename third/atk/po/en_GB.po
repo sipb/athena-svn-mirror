@@ -3,11 +3,10 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: atk\n"
-"POT-Creation-Date: 2002-11-22 08:13+0000\n"
+"POT-Creation-Date: 2003-01-20 09:26+0000\n"
 "PO-Revision-Date: 2002-11-18 17:29+0000\n"
 "Last-Translator: Abi Brady <morwen@evilmagic.org>\n"
 "Language-Team: en_GB\n"

@@ -31,6 +31,14 @@ struct      <link linkend="AtkNoOpObject-struct">AtkNoOpObject</link>;
 
 </refsect1>
 
+<refsect1>
+<title>Implemented Interfaces</title>
+<para>
+AtkNoOpObject implements <link linkend="AtkAction">AtkAction</link>, <link linkend="AtkComponent">AtkComponent</link>, <link linkend="AtkEditableText">AtkEditableText</link>, <link linkend="AtkImage">AtkImage</link>, <link linkend="AtkSelection">AtkSelection</link>, <link linkend="AtkText">AtkText</link>, <link linkend="AtkTable">AtkTable</link> and <link linkend="AtkValue">AtkValue</link>.
+</para>
+</refsect1>
+
+
 
 
 
@@ -61,10 +69,10 @@ Application maintainers should not use this method.</para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>obj</parameter>&nbsp;:</term>
-<listitem><para> a <link linkend="GObject">GObject</link>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> a default (non-functioning stub) <link linkend="AtkObject">AtkObject</link>
-</para></listitem></varlistentry>
+<listitem><simpara> a <link linkend="GObject">GObject</link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a default (non-functioning stub) <link linkend="AtkObject">AtkObject</link>
+</simpara></listitem></varlistentry>
 </variablelist></refsect2>
 
 </refsect1>

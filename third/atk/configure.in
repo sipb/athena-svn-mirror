@@ -31,16 +31,16 @@ dnl set ATK_BINARY_AGE _and_ ATK_INTERFACE_AGE to 0.
 dnl The triplet 
 ATK_MAJOR_VERSION=1
 ATK_MINOR_VERSION=2
-ATK_MICRO_VERSION=0
+ATK_MICRO_VERSION=2
 ATK_VERSION=$ATK_MAJOR_VERSION.$ATK_MINOR_VERSION.$ATK_MICRO_VERSION
 
 dnl The X.Y in -latk-X.Y line. This is expected to stay 1.0 until Atk 2.
 ATK_API_VERSION=1.0
 
 dnl Number of releases since we've added interfaces
-ATK_INTERFACE_AGE=0
+ATK_INTERFACE_AGE=2
 
-ATK_BINARY_AGE=200
+ATK_BINARY_AGE=202
 
 AC_SUBST(ATK_MAJOR_VERSION)
 AC_SUBST(ATK_MINOR_VERSION)
@@ -69,7 +69,7 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
   [Define the gettext package to be used])
 
-ALL_LINGUAS="bg cs da de en_GB es he hu ms nl no ru sv uk vi"
+ALL_LINGUAS="bg ca cs da de en_GB el es fi fr he hu ko it lv ms nl no pl ru sq sv uk vi zh_CN"
 AM_GLIB_GNU_GETTEXT
 
 # AM_GLIB_GNU_GETTEXT above substs $DATADIRNAME
@@ -137,6 +137,16 @@ PKG_CHECK_MODULES(DEP, glib-2.0 >= $GLIB_REQUIRED_VERSION $GLIB_PACKAGES, , AC_M
 
 # Rerun PKG_CONFIG to add gthread-2.0 cflags, but not libs
 DEP_CFLAGS=`$PKG_CONFIG --cflags $GLIB_PACKAGES gthread-2.0`
+
+AC_ARG_WITH(html-dir, [	 --with-html-dir=PATH	 path to installed docs ])
+
+if test "x$with_html_dir" = "x" ; then
+  HTML_DIR='${datadir}/gtk-doc/html'
+else
+  HTML_DIR=$with_html_dir
+fi
+
+AC_SUBST(HTML_DIR)
 
 gtk_doc_min_version=0.9
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
