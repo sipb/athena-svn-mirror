@@ -6,6 +6,10 @@ sun4)
 	;;
 
 sgi)
+	rm -f /etc/init.d/axdm /etc/rc2.d/S98xdm /etc/rc0.d/K02xdm
+	ln -s ../init.d/xdm /etc/rc2.d/S98xdm
+	ln -s ../init.d/xdm /etc/rc0.d/K02xdm
+
 	osrel=`uname -r`
 	# Boot up the miniroot to upgrade the OS.
 	echo "NEWOS=true"				>> "$CONFVARS"
