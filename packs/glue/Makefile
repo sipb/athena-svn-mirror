@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20 1997-10-13 15:50:30 ghudson Exp $
+# $Id: Makefile,v 1.21 1997-11-03 20:46:06 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -69,7 +69,7 @@ sis: sis.in
 		sed -e "s|@BINDIR@|$$bindir|g" sis.in > $@
 
 verify-message: verify-message.in
-	path=`athdir -c -p /mit/pgp -t bin`; \
+	path=`athdir -c -p /mit/pgp -t bin`/pgp; \
 		sed -e "s|@PATH@|$$path|g" verify-message.in > $@
 
 check:
