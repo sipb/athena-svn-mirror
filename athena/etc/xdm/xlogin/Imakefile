@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.3 1991-06-28 20:27:15 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.4 1992-04-01 20:59:33 lwvanels Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -23,6 +23,16 @@ create_dir(/etc/athena/login)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
 SimpleProgram(xlogin,$(OBJS),$(LIBS),/etc/athena/xlogin)
 
+#if defined(_IBMR2)
+all::
+	. $(ATHVERS); \
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.rios.presed > Xlogin
+#else
+all::
+	. $(ATHVERS); \
+	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.presed > Xlogin
+#endif
+	
 install_file(check,/etc/athena/login/check)
 install_file(question,/etc/athena/login/question)
 install_file(warning,/etc/athena/login/warning)
@@ -41,11 +51,7 @@ install_file(is2.xbm,/etc/athena/login/is2.xbm)
 install_file(is3.xbm,/etc/athena/login/is3.xbm)
 install_file(is4.xbm,/etc/athena/login/is4.xbm)
 install_file(is5.xbm,/etc/athena/login/is5.xbm)
-#if defined(_AIX) && defined(i386)
-install_file(Xlogin.ps2,/etc/athena/login/Xlogin)
-#else
 install_file(Xlogin,/etc/athena/login/Xlogin)
-#endif
 install_man(timeout.1,timeout.1)
 install_man(xlogin.8,xlogin.8)
 
