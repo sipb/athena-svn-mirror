@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Window.h,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -33,7 +33,7 @@ extern WindowClassRec windowClassRec;
 typedef struct {
   int foreground, background, borderColor;
   int borderWidth;
-  Boolean overrideRedirect, rootTransient;
+  Boolean overrideRedirect, rootTransient, showCommand;
   char *title;
   char *geometry;
   char *defGeometry;
@@ -76,6 +76,8 @@ typedef struct _WindowInfo {
 #define XjNminHeight "minHeight"
 #define XjCOverrideRedirect "OverrideRedirect"
 #define XjNoverrideRedirect "overrideRedirect"
+#define XjCShowCommand "ShowCommand"
+#define XjNshowCommand "showCommand"
 #define XjCRootTransient "RootTransient"
 #define XjNrootTransient "rootTransient"
 #define XjNcursorCode "cursorCode"
