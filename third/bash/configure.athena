@@ -1,1 +1,1 @@
-./configure --bindir=/bin/athena
+./configure --bindir=/bin/athena --with-afs
