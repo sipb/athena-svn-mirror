@@ -11,8 +11,13 @@ and ssh has the necessary privileges.)
 */
 
 /*
- * $Id: scp.c,v 1.1.1.1 1997-10-17 22:26:13 danw Exp $
+ * $Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  1998/03/30 22:23:06  kivinen
+ * 	Changed size variable to be off_t instead of int when reading
+ * 	file. This should fix the 2GB file size limit if your system
+ * 	supports > 2GB files.
+ *
  * Revision 1.8  1997/06/04 13:52:52  kivinen
  * 	Moved ssh_options before other options so you can override
  * 	options given by scp.
@@ -100,7 +105,7 @@ and ssh has the necessary privileges.)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.1 1997-10-17 22:26:13 danw Exp $
+ *	$Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
  */
 
 #ifndef lint
@@ -759,9 +764,9 @@ sink(argc, argv)
 	struct stat stb;
 	enum { YES, NO, DISPLAYED } wrerr;
 	BUF *bp;
-	off_t i, j;
+	off_t i, j, size;
 	int amt, count, exists, first, mask, mode, ofd, omode;
-	int setimes, size, targisdir, wrerrno = 0;
+	int setimes, targisdir, wrerrno = 0;
 	char ch, *cp, *np, *targ, *why, *vect[1], buf[2048];
   	struct utimbuf ut;
   	int dummy_usec;
@@ -1106,7 +1111,7 @@ run_err(const char *fmt, ...)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.1 1997-10-17 22:26:13 danw Exp $
+ *	$Id: scp.c,v 1.1.1.2 1998-05-13 19:11:30 danw Exp $
  */
 
 char *

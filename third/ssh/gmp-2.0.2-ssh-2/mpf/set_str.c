@@ -56,7 +56,7 @@ mpf_set_str (mpf_ptr x, const char *str, int base)
 #else
 mpf_set_str (x, str, base)
      mpf_ptr x;
-     char *str;
+     const char *str;
      int base;
 #endif
 {

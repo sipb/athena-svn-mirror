@@ -514,7 +514,7 @@ extern USItype __udiv_qrnnd ();
 
 #if (defined (__mc68000__) || defined (__mc68020__) || defined (__NeXT__) || defined(mc68020)) && W_TYPE_SIZE == 32
 #define add_ssaaaa(sh, sl, ah, al, bh, bl) \
-  __asm__ ("add%.l %5,%1
+  __asm__ ("add%.l %5,%1;						\
 	addx%.l %3,%0"							\
 	   : "=d" ((USItype)(sh)),					\
 	     "=&d" ((USItype)(sl))					\
@@ -523,7 +523,7 @@ extern USItype __udiv_qrnnd ();
 	     "%1" ((USItype)(al)),					\
 	     "g" ((USItype)(bl)))
 #define sub_ddmmss(sh, sl, ah, al, bh, bl) \
-  __asm__ ("sub%.l %5,%1
+  __asm__ ("sub%.l %5,%1;						\
 	subx%.l %3,%0"							\
 	   : "=d" ((USItype)(sh)),					\
 	     "=&d" ((USItype)(sl))					\
