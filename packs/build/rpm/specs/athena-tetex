@@ -6,7 +6,8 @@ Provides: tetex = 2.0.2
 
 # There are some perl-tk scripts in here which we don't care about.
 # This is the easiest hack to solve the problem, though it means the
-# athena-tetex package won't have any dependencies.
+# athena-tetex package won't have any dependencies except for
+# athena-base.
 AutoReq: 0
 
 %description

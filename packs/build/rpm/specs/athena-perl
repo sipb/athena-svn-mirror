@@ -7,7 +7,7 @@ Provides: perl = 1:5.8.0
 # Auto-requirement checking on the perl package generates some odd
 # perl dependencies like perl(v5.6.) which we don't want to have.
 # This is the simplest answer, though it means the athena-perl package
-# won't have any dependencies.
+# won't have any dependencies except for athena-base.
 AutoReq: 0
 
 %description
