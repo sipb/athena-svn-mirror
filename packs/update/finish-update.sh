@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.9 1998-03-27 19:10:22 ghudson Exp $
+# $Id: finish-update.sh,v 1.10 1998-04-08 17:06:56 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -31,7 +31,7 @@ if [ -s "$AUXDEVS" ]; then
 fi
 
 # Remove the version script state files.
-rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$DEADFILES"
+rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
 rm -f "$LOCALPACKAGES" "$LINKPACKAGES"
 
 echo "Updating version"

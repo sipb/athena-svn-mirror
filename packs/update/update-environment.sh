@@ -1,10 +1,11 @@
-export CONFCHG CONFVARS AUXDEVS OLDBINS DEADFILES LOCALPACKAGES
+export CONFCHG CONFVARS AUXDEVS OLDBINS OLDLIBS DEADFILES LOCALPACKAGES
 export LINKPACKAGES CONFDIR LIBDIR SERVERDIR PATH HOSTTYPE CPUTYPE
 
 CONFCHG=$UPDATE_ROOT/var/athena/update.confchg
 CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
 AUXDEVS=$UPDATE_ROOT/var/athena/update.auxdevs
 OLDBINS=$UPDATE_ROOT/var/athena/update.oldbins
+OLDLIBS=$UPDATE_ROOT/var/athena/update.oldlibs
 DEADFILES=$UPDATE_ROOT/var/athena/update.deadfiles
 LOCALPACKAGES=$UPDATE_ROOT/var/athena/update.localpackages
 LINKPACKAGES=$UPDATE_ROOT/var/athena/update.linkpackages
