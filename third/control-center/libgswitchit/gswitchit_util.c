@@ -60,8 +60,8 @@ GSwitchItLogAppender (const char file[], const char function[],
 		      int level, const char format[], va_list args)
 {
 	time_t now = time (NULL);
-	g_log (NULL, G_LOG_LEVEL_DEBUG, "[%08ld,%03d,%s:%s/] \t", now,
-	       level, file, function);
+	g_log (NULL, G_LOG_LEVEL_DEBUG, "[%08ld,%03d,%s:%s/] \t",
+	       (long)now, level, file, function);
 	g_logv (NULL, G_LOG_LEVEL_DEBUG, format, args);
 }
 

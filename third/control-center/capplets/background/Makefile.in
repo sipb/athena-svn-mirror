@@ -467,15 +467,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-wp-capplet.o: gnome-wp-capplet.c gnome-wp-capplet.h ../../config.h \
-	gnome-wp-info.h gnome-wp-item.h gnome-wp-utils.h gnome-wp-xml.h
-gnome-wp-info.o: gnome-wp-info.c ../../config.h gnome-wp-info.h
-gnome-wp-item.lo gnome-wp-item.o : gnome-wp-item.c ../../config.h \
-	gnome-wp-item.h gnome-wp-info.h gnome-wp-utils.h
-gnome-wp-utils.lo gnome-wp-utils.o : gnome-wp-utils.c gnome-wp-utils.h
-gnome-wp-xml.lo gnome-wp-xml.o : gnome-wp-xml.c gnome-wp-capplet.h \
-	../../config.h gnome-wp-info.h gnome-wp-item.h gnome-wp-utils.h \
-	gnome-wp-xml.h
 
 info-am:
 info: info-am

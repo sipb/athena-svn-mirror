@@ -350,9 +350,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-keyboard-drawing.o: keyboard-drawing.c ../config.h keyboard-drawing.h \
-	keyboard-marshal.h
-keyboard-marshal.o: keyboard-marshal.c
 
 info-am:
 info: info-am

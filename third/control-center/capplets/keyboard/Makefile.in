@@ -459,41 +459,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-keyboard-properties-xkb.o: gnome-keyboard-properties-xkb.c \
-	../../config.h ../../libgswitchit/gswitchit_xkb_config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/capplet-stock-icons.h \
-	../accessibility/keyboard/accessibility-keyboard.h \
-	gnome-keyboard-properties-xkb.h
-gnome-keyboard-properties-xkblt.o: gnome-keyboard-properties-xkblt.c \
-	../../config.h ../../libgswitchit/gswitchit_xkb_config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/capplet-stock-icons.h \
-	../accessibility/keyboard/accessibility-keyboard.h \
-	gnome-keyboard-properties-xkb.h
-gnome-keyboard-properties-xkbot.o: gnome-keyboard-properties-xkbot.c \
-	../../config.h ../../libgswitchit/gswitchit_xkb_config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/capplet-stock-icons.h \
-	../accessibility/keyboard/accessibility-keyboard.h \
-	gnome-keyboard-properties-xkb.h
-gnome-keyboard-properties-xkbpv.o: gnome-keyboard-properties-xkbpv.c \
-	../../config.h ../../capplets/common/capplet-util.h \
-	gnome-keyboard-properties-xkb.h \
-	../../libkbdraw/keyboard-drawing.h
-gnome-keyboard-properties.o: gnome-keyboard-properties.c ../../config.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/capplet-stock-icons.h \
-	../accessibility/keyboard/accessibility-keyboard.h \
-	gnome-keyboard-properties-xkb.h
 
 info-am:
 info: info-am

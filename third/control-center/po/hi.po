@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-control-center.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-14 13:27-0400\n"
+"POT-Creation-Date: 2005-02-21 13:27+0100\n"
 "PO-Revision-Date: 2004-07-18 14:22+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -442,7 +442,7 @@ msgid "Just apply settings and quit"
 msgstr "विन्यास लागू करें और बाहर हों"
 
 #: capplets/common/capplet-util.c:243
-#: capplets/default-applications/gnome-default-applications-properties.c:735
+#: capplets/default-applications/gnome-default-applications-properties.c:765
 #: capplets/keyboard/gnome-keyboard-properties.c:224
 #: capplets/mouse/gnome-mouse-properties.c:812
 #: capplets/sound/sound-properties-capplet.c:244
@@ -641,31 +641,33 @@ msgid "Encompass"
 msgstr "एनकम्पास"
 
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:12
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:13
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:14
 msgid "Firebird/FireFox"
 msgstr "फ़ायरफॉक्स/फ़ायरबर्ड"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:13
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:14
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:15
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:16
 msgid "Mozilla/Netscape 6"
 msgstr "मोज़िला/नेटस्केप 6"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:15
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:17
 msgid "Netscape Communicator"
 msgstr "नेटस्केप कम्यूनिकेटर"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:16
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:18
 msgid "Konqueror"
 msgstr "कॉन्क्वेरर"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:17
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:19
 msgid "W3M Text Browser"
 msgstr "डबल्यू3एम पाठ ब्राउज़र"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:18
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:20
 msgid "Lynx Text Browser"
 msgstr "लायंक्स पाठ ब्राउज़र"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:19
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:21
 msgid "Links Text Browser"
 msgstr "लिंक्स पाठ ब्राउज़र"
 
@@ -676,50 +678,50 @@ msgstr "लिंक्स पाठ ब्राउज़र"
 #. * there is only one (the first entry in this list) Evolution entry
 #. * in the list shown to the user
 #.
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:34
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:35
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:36
 #: capplets/default-applications/gnome-default-applications-properties-structs.c:37
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:38
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:39
 msgid "Evolution Mail Reader"
 msgstr "एवॉल्यूशन डाक पाठक"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:38
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:40
 msgid "Balsa"
 msgstr "बाल्सा"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:39
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:41
 msgid "KMail"
 msgstr "के-मेल"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:40
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:42
 msgid "Mozilla Mail"
 msgstr "मोज़िला मेल"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:41
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:43
 msgid "Mutt"
 msgstr "मट"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:52
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:54
 msgid "Gnome Terminal"
 msgstr "गनोम टर्मिनल"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:53
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:55
 msgid "Standard XTerminal"
 msgstr "मानक एक्स-टर्मिनल"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:54
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:56
 msgid "NXterm"
 msgstr "एनएक्स-टर्म"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:55
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:57
 msgid "RXVT"
 msgstr "आरएक्सवीटी"
 
-#: capplets/default-applications/gnome-default-applications-properties-structs.c:56
+#: capplets/default-applications/gnome-default-applications-properties-structs.c:58
 msgid "ETerm"
 msgstr "ई-टर्म"
 
-#: capplets/default-applications/gnome-default-applications-properties.c:108
+#: capplets/default-applications/gnome-default-applications-properties.c:123
 msgid "Please specify a name and a command for this editor."
 msgstr "कृपया इस संपादक हेतु नाम और कमांड निश्चित करें"
 
@@ -2080,7 +2082,7 @@ msgstr "संस्थापित करने हेतु कोई प्�
 msgid "The theme file location specified to install is invalid"
 msgstr "संस्थापित करने हेतु प्रसंग फ़ाइल निर्दिष्ट किया है वह अवैध है"
 
-#: capplets/theme-switcher/gnome-theme-installer.c:173
+#: capplets/theme-switcher/gnome-theme-installer.c:194
 #, c-format
 msgid ""
 "%s is the path where the theme files will be installed. This can not be "
@@ -2662,21 +2664,21 @@ msgid ""
 "software."
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:170
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:172
 msgid ""
 "The X system keyboard settings differ from your current GNOME keyboard "
 "settings.  Which set would you like to use?"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:173
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:175
 msgid "Use X settings"
 msgstr "एक्स विन्यास उपयोग करें"
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:175
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:177
 msgid "Use GNOME settings"
 msgstr "गनोम विन्यास उपयोग करें"
 
-#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:227
+#: gnome-settings-daemon/gnome-settings-keyboard-xkb.c:231
 #, c-format
 msgid ""
 "You have a keyboard remapping file (%s) in your home directory whose "
@@ -3104,11 +3106,11 @@ msgstr "एक्सकेबी विकल्प"
 msgid "XKB settings in gconf will be overridden from the system ASAP"
 msgstr "तंत्र से जितना संभव हो जल्दी ही, जी-कॉन्फ़ में एक्सकेबी विन्यास ओवरराइड हो जाएँगे "
 
-#: typing-break/drw-break-window.c:214
+#: typing-break/drw-break-window.c:209
 msgid "_Postpone break"
 msgstr "ब्रेक स्थगित करें (_P)"
 
-#: typing-break/drw-break-window.c:262
+#: typing-break/drw-break-window.c:256
 msgid "Take a break!"
 msgstr "एक ब्रेक लें!"
 

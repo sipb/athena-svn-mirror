@@ -33,8 +33,7 @@
 	    </locale>
 
 	    <locale name="bg">
-	        <short>Стъпка при увеличение/
-намаляване на звука</short>
+	        <short>Стъпка при изменение на звука</short>
 		<long>Стъпка при увеличаване на звука като процент</long>
 	    </locale>
 
@@ -128,6 +127,11 @@
 		<long>Hangerő lépésköze a hangerő százalékában.</long>
 	    </locale>
 
+	    <locale name="id">
+	        <short>Tingkatan volume</short>
+		<long>Tingkatan volume suara dalam persentase.</long>
+	    </locale>
+
 	    <locale name="is">
 	        <short>Hljóðstyrksþrep</short>
 		
@@ -151,6 +155,11 @@
 	    <locale name="lt">
 	        <short>Garsumo žingnis</short>
 		<long>Garsumo žingsnelis procentine garsumo dalimi.</long>
+	    </locale>
+
+	    <locale name="mk">
+	        <short>Ниво на гласност</short>
+		<long>Ниво на гласност како процент од гласноста</long>
 	    </locale>
 
 	    <locale name="mn">
@@ -181,6 +190,11 @@
 	    <locale name="no">
 	        <short>Volumsteg</short>
 		<long>Volumsteg som prosent av volumet.</long>
+	    </locale>
+
+	    <locale name="nso">
+	        <short>Peakanyo ya bolumo</short>
+		<long>Peakanyo ya bolumo go ya ka phesente ya bolumo.</long>
 	    </locale>
 
 	    <locale name="pa">
@@ -271,6 +285,11 @@
 	    <locale name="zh_TW">
 	        <short>音度</short>
 		<long>音度是音量的百分比。</long>
+	    </locale>
+
+	    <locale name="zu">
+	        <short>Inyathelo lwevolumu</short>
+		<long>Inyathelo lwevolumu njengamaphesenti.</long>
 	    </locale>
 	</schema>
 
@@ -399,6 +418,11 @@
                 <long>Némítás parancsikonja</long>
             </locale>
 
+            <locale name="id">
+                <short>Volume bisu</short>
+                <long>Tombol untuk membisukan suara komputer.</long>
+            </locale>
+
             <locale name="it">
                 <short>Azzera il volume</short>
                 <long>Scorciatoia per l&apos;azzeramento del volume</long>
@@ -452,6 +476,11 @@
             <locale name="no">
                 <short>Demp volum</short>
                 <long>Snarvei for demp volum.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Go nolofatšwa ga bolumo</short>
+                <long>Kgaoletšo ya go nolofatšwa ga bolumo</long>
             </locale>
 
             <locale name="pa">
@@ -543,6 +572,11 @@
                 <short>靜音</short>
                 <long>靜音鍵的捷徑</long>
             </locale>
+
+            <locale name="zu">
+                <short>Ukucisha ivolumu okwesikhashana</short>
+                <long>Ukunqamula kokucisha ivolumu okwesikhashana</long>
+            </locale>
         </schema>
 
 
@@ -617,7 +651,7 @@
             </locale>
 
             <locale name="el">
-                <short>Μεί_ωση έντασης</short>
+                <short>Μείωση έντασης</short>
                 <long>Συντόμευση μείωσης έντασης.</long>
             </locale>
 
@@ -669,6 +703,11 @@
             <locale name="hu">
                 <short>Halkítás</short>
                 <long>Halkítás parancsikonja.</long>
+            </locale>
+
+            <locale name="id">
+                <short>Kecilkan suara</short>
+                <long>Tombol untuk mengecilkan volume suara.</long>
             </locale>
 
             <locale name="is">
@@ -729,6 +768,11 @@
             <locale name="no">
                 <short>Volum ned</short>
                 <long>Snarvei for volum ned.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Bolumo e tlase</short>
+                <long>Kgaoletšo ya bolumo e tlase.</long>
             </locale>
 
             <locale name="pa">
@@ -819,6 +863,11 @@
             <locale name="zh_TW">
                 <short>調低音量</short>
                 <long>調低音量的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Ivolumu ephantsi</short>
+                <long>Ukunqamula kwevolumu ephantsi.</long>
             </locale>
         </schema>
 
@@ -948,6 +997,11 @@
                 <long>Hangosítás parancsikonja.</long>
             </locale>
 
+            <locale name="id">
+                <short>Besarkan suara</short>
+                <long>Tombol untuk memperbesar volume suara.</long>
+            </locale>
+
             <locale name="is">
                 <short>Hækka hljóðstyrk</short>
                 
@@ -1006,6 +1060,11 @@
             <locale name="no">
                 <short>Volum opp</short>
                 <long>Snarvei for volum opp.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Bolumo e godimo</short>
+                <long>Kgaoletšo ya bolumo e godimo.</long>
             </locale>
 
             <locale name="pa">
@@ -1096,6 +1155,11 @@
             <locale name="zh_TW">
                 <short>調高音量</short>
                 <long>調高音量的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Ivolumu ephezulu</short>
+                <long>Ukuqamula ivolumu ephezulu.</long>
             </locale>
         </schema>
 
@@ -1205,6 +1269,16 @@
                 <long>Kijelentkezés gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Keluar</short>
+                <long>Tombol untuk keluar dari sistem.</long>
+            </locale>
+
+            <locale name="it">
+                <short>Termina sessione</short>
+                <long>Scorciatoia di «Termina sessione».</long>
+            </locale>
+
             <locale name="ja">
                 <short>ログアウト</short>
                 <long>ログアウトする機能のショートカットです。</long>
@@ -1243,6 +1317,11 @@
             <locale name="no">
                 <short>Logg ut</short>
                 <long>Snarvei for å logge ut.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>E-tšwa</short>
+                <long>Kgaoletšo ya go tšwa.</long>
             </locale>
 
             <locale name="pa">
@@ -1323,6 +1402,11 @@
             <locale name="zh_CN">
                 <short>注销</short>
                 <long>注销的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Phuma</short>
+                <long>Phuma ngokunqamula.</long>
             </locale>
         </schema>
 
@@ -1457,9 +1541,14 @@
                 <long>Kiadás gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Keluarkan Media</short>
+                <long>Tombol untuk mengeluarkan media</long>
+            </locale>
+
             <locale name="it">
                 <short>Espelli</short>
-                <long>Scorciatoia per l&apos;espulsione.</long>
+                <long>Scorciatoia di «Espelli».</long>
             </locale>
 
             <locale name="ja">
@@ -1510,6 +1599,11 @@
             <locale name="no">
                 <short>Løs ut</short>
                 <long>Snarvei for å løse ut skuffen.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Ntšha</short>
+                <long>Kgaoletšo ya go tšwa.</long>
             </locale>
 
             <locale name="pa">
@@ -1600,6 +1694,11 @@
             <locale name="zh_TW">
                 <short>退出</short>
                 <long>退出的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Khipa</short>
+                <long>Ukunqamula kokukhipha.</long>
             </locale>
         </schema>
 
@@ -1709,6 +1808,16 @@
                 <long>Saját mappa gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Folder rumah</short>
+                <long>Tombol untuk membuka folder rumah</long>
+            </locale>
+
+            <locale name="it">
+                <short>Cartella personale</short>
+                <long>Scorciatoia di «Cartella personale».</long>
+            </locale>
+
             <locale name="ja">
                 <short>ホーム・フォルダ</short>
                 <long>ホーム・フォルダへジャンプする機能のショートカットです。</long>
@@ -1747,6 +1856,11 @@
             <locale name="no">
                 <short>Hjemmekatalog</short>
                 <long>Snarvei til hjemmekatalog.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Sephuthedi sa gae</short>
+                <long>Kgaoletšo ya sephuthedi sa gae.</long>
             </locale>
 
             <locale name="pa">
@@ -1827,6 +1941,11 @@
             <locale name="zh_CN">
                 <short>主文件夹</short>
                 <long>主文件夹的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Isibaya sasekhaya</short>
+                <long>Ukunqamula kwesibaya sasekhaya.</long>
             </locale>
         </schema>
 
@@ -1956,6 +2075,11 @@
                 <long>Keresés gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Cari</short>
+                <long>Tombol untuk mencari.</long>
+            </locale>
+
             <locale name="is">
                 <short>Leita</short>
                 
@@ -1963,7 +2087,7 @@
 
             <locale name="it">
                 <short>Cerca</short>
-                <long>Scorciatoia per la ricerca.</long>
+                <long>Scorciatoia di «Cerca».</long>
             </locale>
 
             <locale name="ja">
@@ -2014,6 +2138,11 @@
             <locale name="no">
                 <short>Søk</short>
                 <long>Snarvei for søk.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Nyakišiša</short>
+                <long>Nyakišiša kgaoletšo.</long>
             </locale>
 
             <locale name="pa">
@@ -2104,6 +2233,11 @@
             <locale name="zh_TW">
                 <short>尋找</short>
                 <long>尋找的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Hlola</short>
+                <long>Ukuqamula uma uhlola.</long>
             </locale>
         </schema>
 
@@ -2238,6 +2372,11 @@
                 <long>E-mail gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>E-mail</short>
+                <long>Tombol singkat untuk email</long>
+            </locale>
+
             <locale name="is">
                 <short>Netfang</short>
                 
@@ -2245,7 +2384,7 @@
 
             <locale name="it">
                 <short>Email</short>
-                <long>Scorciatoia per l&apos;email</long>
+                <long>Scorciatoia di «Email».</long>
             </locale>
 
             <locale name="ja">
@@ -2296,6 +2435,11 @@
             <locale name="no">
                 <short>E-post</short>
                 <long>Snarvei for e-post.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Poso ya elektronike</short>
+                <long>Kgaoletšo ya poso ya elektronike.</long>
             </locale>
 
             <locale name="pa">
@@ -2386,6 +2530,11 @@
             <locale name="zh_TW">
                 <short>電子郵件</short>
                 <long>電子郵件的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Umyalezo-kagesi</short>
+                <long>Ukunqamula komyalezo-kagesi.</long>
             </locale>
         </schema>
 
@@ -2515,6 +2664,11 @@
                 <long>Elalvás gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Tidur</short>
+                <long>Tombol untuk menidurkan komputer.</long>
+            </locale>
+
             <locale name="it">
                 <short>Sleep</short>
                 <long>Scorciatoia per la modalità «sleep».</long>
@@ -2568,6 +2722,11 @@
             <locale name="no">
                 <short>Dvale</short>
                 <long>Snarvei for dvale.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Robala</short>
+                <long>Kgaoletšo ya go robala.</long>
             </locale>
 
             <locale name="pa">
@@ -2658,6 +2817,11 @@
             <locale name="zh_TW">
                 <short>睡眠</short>
                 <long>睡眠的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Cisha</short>
+                <long>Ukunqamula uma ucisha.</long>
             </locale>
         </schema>
 
@@ -2767,6 +2931,16 @@
                 <long>Képernyő lezárásának gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Kunci layar</short>
+                <long>Tombol untuk mengunci layar.</long>
+            </locale>
+
+            <locale name="it">
+                <short>Blocca schermo</short>
+                <long>Scorciatoia di «Blocca schermo».</long>
+            </locale>
+
             <locale name="ja">
                 <short>画面のロック</short>
                 <long>画面をロックする機能のショートカットです。</long>
@@ -2805,6 +2979,11 @@
             <locale name="no">
                 <short>Lås skjerm</short>
                 <long>Snarvei for å låse skjermen.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Notlela sekirini</short>
+                <long>Notlela kgaoletšo ya sekirini.</long>
             </locale>
 
             <locale name="pa">
@@ -2885,6 +3064,11 @@
             <locale name="zh_CN">
                 <short>锁住屏幕</short>
                 <long>锁住屏幕的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Vala ubuso besiga-nyezi</short>
+                <long>Vala ukunqamula kobuso besi-nyezi.</long>
             </locale>
         </schema>
 
@@ -2994,6 +3178,16 @@
                 <long>Súgóböngésző indításának gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Tampilkan layar bantuan</short>
+                <long>Tombol untuk menampilkan layar bantuan</long>
+            </locale>
+
+            <locale name="it">
+                <short>Avvia il visualizzatore di manuali</short>
+                <long>Scorciatoia di «avvia il visualizzatore di manuali».</long>
+            </locale>
+
             <locale name="ja">
                 <short>ヘルプ・ブラウザの起動</short>
                 <long>ヘルプ・ブラウザを起動する機能のショートカットです。</long>
@@ -3032,6 +3226,11 @@
             <locale name="no">
                 <short>Start hjelpleser</short>
                 <long>Snarvei for å starte hjelpleser.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Tsebagatša sefetleki sa thušo</short>
+                <long>Tsebagatša kgaoletšo ya sefetleki sa thušo.</long>
             </locale>
 
             <locale name="pa">
@@ -3112,6 +3311,11 @@
             <locale name="zh_CN">
                 <short>调用帮助浏览器</short>
                 <long>调用帮助浏览器的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Ngenisa usizo lwesiyaluzi</short>
+                <long>Ngenisa usizo lokunqamula isiyaluzi.</long>
             </locale>
         </schema>
 
@@ -3221,6 +3425,16 @@
                 <long>Webböngésző indításának gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Tampilkan penjelajah web</short>
+                <long>Tombol untuk menampilkan penjelajah web.</long>
+            </locale>
+
+            <locale name="it">
+                <short>Avvia Browser Web</short>
+                <long>Scorciatoia di «Avvia Browser Web».</long>
+            </locale>
+
             <locale name="ja">
                 <short>ウェブ・ブラウザの起動</short>
                 <long>ウェブ・ブラウザを起動する機能のショートカットです。</long>
@@ -3259,6 +3473,11 @@
             <locale name="no">
                 <short>Start nettleser</short>
                 <long>Snarvei for å starte nettleser.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Tsebagatša sefetleki sa wepe</short>
+                <long>Tsebagatša kgaoletšo ya sefetleki sa wepe.</long>
             </locale>
 
             <locale name="pa">
@@ -3339,6 +3558,11 @@
             <locale name="zh_CN">
                 <short>调用 Web 浏览器</short>
                 <long>调用 Web 浏览器的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Ngenisa isiyaluzi solwembu</short>
+                <long>Ngenisa ukunqamula kwesiyaluzi solwembu.</long>
             </locale>
         </schema>
 
@@ -3468,6 +3692,11 @@
                 <long>Fényesség csökkentésének gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Turunkan kecerahan</short>
+                <long>Tombol untuk menurunkan kecerahan layar</long>
+            </locale>
+
             <locale name="is">
                 <short>Minnka birtustig</short>
                 
@@ -3475,7 +3704,7 @@
 
             <locale name="it">
                 <short>Diminiusci luminosità</short>
-                <long>Scorciatoia per diminuire la luminosità.</long>
+                <long>Scorciatoia di «Diminuisci luminosità».</long>
             </locale>
 
             <locale name="ja">
@@ -3526,6 +3755,11 @@
             <locale name="no">
                 <short>Lysstyrke ned</short>
                 <long>Snarvei for å skru ned lysstyrken.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Go taga go tlase</short>
+                <long>Kgaoletšo ya go taga go tlase.</long>
             </locale>
 
             <locale name="pa">
@@ -3616,6 +3850,11 @@
             <locale name="zh_TW">
                 <short>調低亮度</short>
                 <long>調低亮度的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Ukukhanya phantsi</short>
+                <long>Ukunqamula kokukhanya okuphantsi.</long>
             </locale>
         </schema>
 
@@ -3745,6 +3984,11 @@
                 <long>Fényesség növelésének gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Naikkan kecerahan</short>
+                <long>Tombol untuk menaikkan kecerahan layar</long>
+            </locale>
+
             <locale name="is">
                 <short>Auka birtustig</short>
                 
@@ -3752,7 +3996,7 @@
 
             <locale name="it">
                 <short>Aumenta luminosità</short>
-                <long>Scorciatoia per aumentare la luminosità.</long>
+                <long>Scorciatoia di «Aumenta luminosità».</long>
             </locale>
 
             <locale name="ja">
@@ -3803,6 +4047,11 @@
             <locale name="no">
                 <short>Lysstyrke opp</short>
                 <long>Snarvei for å skru opp lysstyrken.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Go taga go godimo</short>
+                <long>Kgaoletšo ya go taga go godimo.</long>
             </locale>
 
             <locale name="pa">
@@ -3894,6 +4143,11 @@
                 <short>調高亮度</short>
                 <long>調高亮度的捷徑。</long>
             </locale>
+
+            <locale name="zu">
+                <short>Ukukhanya phezulu</short>
+                <long>Ukunqamula kokukhanya okuphezulu.</long>
+            </locale>
         </schema>
 
 
@@ -3918,8 +4172,8 @@
             </locale>
 
             <locale name="bg">
-                <short>Изпълнение (или Изпълнение/Пауза)</short>
-                <long>Изпълнение (или Изпълнение/Пауза) бърз бутон</long>
+                <short>Изпълнение (или Изпълнение/пауза)</short>
+                <long>Изпълнение (или Изпълнение/пауза) бърз бутон</long>
             </locale>
 
             <locale name="bn">
@@ -4002,6 +4256,16 @@
                 <long>Lejátszás (vagy lejátszás/szünet) gomb gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Putar (atau putar/istirahat)</short>
+                <long>Tombol untuk memutar lagu atau istirahatkan lagu.</long>
+            </locale>
+
+            <locale name="it">
+                <short>Riproduci (o Riproduci/Pausa)</short>
+                <long>Scorciatoia del tasto «Riproduci (o Riproduci/Pausa)».</long>
+            </locale>
+
             <locale name="ja">
                 <short>演奏 (または演奏/一時停止)</short>
                 <long>演奏 (または演奏/一時停止のトグル) 機能のショートカットです。</long>
@@ -4042,6 +4306,11 @@
                 <long>Snarvei for å spill av/pause.</long>
             </locale>
 
+            <locale name="nso">
+                <short>Bapala (goba bapala/emiša nakwana)</short>
+                <long>Bapala (goba bapala/emiša nakwana) kgaoletšo ya senotlelo.</long>
+            </locale>
+
             <locale name="pa">
                 <short>ਚਲਾਉ (ਜਾਂ ਚਲਾਉ/ਵਿਰਾਮ)</short>
                 <long>ਚਲਾਉ (ਜਾਂ ਚਲਾਉ/ਵਿਰਾਮ) ਕੀ ਦਾ ਸ਼ਾਰਟਕਟ ਹੈ।</long>
@@ -4068,7 +4337,7 @@
             </locale>
 
             <locale name="ru">
-                <short>Воспроизвести (или Воспроизвести/Пауза)</short>
+                <short>Воспроизведение (или Воспроизведение/Пауза)</short>
                 <long>Комбинация клавиш для воспроизведения (или воспроизведения/паузы).</long>
             </locale>
 
@@ -4120,6 +4389,11 @@
             <locale name="zh_CN">
                 <short>播放(或播放/暂停)</short>
                 <long>播放(或播放/暂停)键的快捷键。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Dlala (noma dlala/misa isikhashana)</short>
+                <long>Dlala (noma dlala/misa isikhashana) inkinombho lokunqamula.</long>
             </locale>
         </schema>
 
@@ -4254,9 +4528,14 @@
                 <long>Szünet gomb gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Istirahat</short>
+                <long>Tombol untuk menghentikan lagu sementara.</long>
+            </locale>
+
             <locale name="it">
                 <short>Pausa</short>
-                <long>Scorciatoia per il tasto di pausa.</long>
+                <long>Scorciatoia del tasto «Pausa».</long>
             </locale>
 
             <locale name="ja">
@@ -4307,6 +4586,11 @@
             <locale name="no">
                 <short>Pause</short>
                 <long>Snarvei for pausetasten.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Emiša nakwana</short>
+                <long>Emiša kgaoletšo ya senotlelo nakwana.</long>
             </locale>
 
             <locale name="pa">
@@ -4397,6 +4681,11 @@
             <locale name="zh_TW">
                 <short>暫停</short>
                 <long>暫停鍵的捷徑</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Yima isikhashana</short>
+                <long>Inkinombho lokunqamula kokuma isikhashana.</long>
             </locale>
         </schema>
 
@@ -4526,6 +4815,11 @@
                 <long>Lejátszás leállítása gomb parancsikonja.</long>
             </locale>
 
+            <locale name="id">
+                <short>Tombol stop</short>
+                <long>Tombol untuk menghentikan pemutaran lagu.</long>
+            </locale>
+
             <locale name="it">
                 <short>Tasto ferma la riproduzione</short>
                 <long>Scorcaitoia per il tasto di interruzione riproduzione.</long>
@@ -4547,8 +4841,8 @@
             </locale>
 
             <locale name="mk">
-                <short>Копче за запирање на плејбекот</short>
-                
+                <short>Копче за запирање на плејбек</short>
+                <long>Кратенка за запирање на плејбек</long>
             </locale>
 
             <locale name="mn">
@@ -4581,6 +4875,11 @@
                 <long>Snarvei for stoppknappen.</long>
             </locale>
 
+            <locale name="nso">
+                <short>Emiša senotlelo sa bapala o boele morago</short>
+                <long>Emiša kgaoletšo ya senotlelo sa balapa o boele morago.</long>
+            </locale>
+
             <locale name="pa">
                 <short>ਚੱਲਦੇ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਕੀ</short>
                 <long>ਚੱਲਦੇ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ ਸ਼ਾਰਟਕਟ ਹੈ।</long>
@@ -4607,7 +4906,7 @@
             </locale>
 
             <locale name="ru">
-                <short>Остановить</short>
+                <short>Клавиша остановки воспроизведения</short>
                 <long>Комбинация клавиш для остановки воспроизведения.</long>
             </locale>
 
@@ -4669,6 +4968,11 @@
             <locale name="zh_TW">
                 <short>停止播放鍵</short>
                 <long>停止播放鍵的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Inkinombho lokunmisa ukudlala</short>
+                <long>Inkinombho lokumisa elinqamulayo.</long>
             </locale>
         </schema>
 
@@ -4798,9 +5102,14 @@
                 <long>Előző dal gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Lewatkan ke trek sebelumnya</short>
+                <long>Tombol untuk memutar trek sebelumnya.</long>
+            </locale>
+
             <locale name="it">
-                
-                <long>Scorciatoia per il tasto traccia precedente.</long>
+                <short>Salta alla traccia precedente</short>
+                <long>Scorciatoia del tasto «Traccia precedente».</long>
             </locale>
 
             <locale name="ja">
@@ -4851,6 +5160,11 @@
             <locale name="no">
                 <short>Hopp til forrige spor</short>
                 <long>Snarvei for forrige sang.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Tabogela go koša e fetilego</short>
+                <long>Kgaoletšo ya senotlelo ya kotša e fetilego.</long>
             </locale>
 
             <locale name="pa">
@@ -4941,6 +5255,11 @@
             <locale name="zh_TW">
                 
                 <long>上一首按鍵的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Buyela engomeni edlulile</short>
+                <long>Ingoma edlulile inkinombho lokunqamula.</long>
             </locale>
         </schema>
 
@@ -5070,9 +5389,14 @@
                 <long>Következő dal gyorsbillentyűje.</long>
             </locale>
 
+            <locale name="id">
+                <short>Lewatkan ke trek berikut</short>
+                <long>Tombol untuk memutar trek berikutnya.</long>
+            </locale>
+
             <locale name="it">
-                
-                <long>Scorciatoia per il tasto traccia successiva.</long>
+                <short>Salta alla traccia successiva</short>
+                <long>Scorciatoia del tasto «Traccia successiva».</long>
             </locale>
 
             <locale name="ja">
@@ -5123,6 +5447,11 @@
             <locale name="no">
                 <short>Hopp til neste spor</short>
                 <long>Snarvei for neste sang.</long>
+            </locale>
+
+            <locale name="nso">
+                <short>Tabogela go koša e latelago</short>
+                <long>Kgaoletšo ya senotlelo ya koša e latelago.</long>
             </locale>
 
             <locale name="pa">
@@ -5213,6 +5542,11 @@
             <locale name="zh_TW">
                 
                 <long>下一首按鍵的捷徑。</long>
+            </locale>
+
+            <locale name="zu">
+                <short>Dlulela engomeni elandelayo</short>
+                <long>Okulandela kokunqamula kwenkinombho.</long>
             </locale>
         </schema>
 

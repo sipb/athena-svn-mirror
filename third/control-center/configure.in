@@ -1,7 +1,7 @@
 AC_INIT(control-center)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(control-center, 2.8.0)
+AM_INIT_AUTOMAKE(control-center, 2.8.2)
 
 AM_MAINTAINER_MODE
 
@@ -32,7 +32,7 @@ fi
 changequote([,])dnl
 
 # Internationalization support
-ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko lt lv mk ml mn ms nb nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="af am ar az be bg bn bs ca cs cy da de el en_CA en_GB es et eu fa fi fr ga gl gu he hi hr hu id is it ja ko lt lv mk ml mn ms nb nl nn no nso pa pl pt pt_BR ro ru sk sl sq sr sr@Latn sv ta th tr uk vi wa zh_CN zh_TW zu"
 
 GETTEXT_PACKAGE=control-center-2.0
 AC_SUBST(GETTEXT_PACKAGE)
@@ -43,11 +43,6 @@ AM_GLIB_GNU_GETTEXT
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(putenv)
 AC_CHECK_FUNCS(setenv)
-AC_CHECK_FUNCS(ngettext, have_ngettext=yes)
-
-if test x"$have_ngettext" != "xyes"; then
-	AC_MSG_ERROR([Your Gettext installation doesn't seem to support ngettext to handle translation of plural forms. Please install GNU Gettext])
-fi;
 
 AC_PATH_XTRA
 x_libs="$X_PRE_LIBS $X_LIBS -lX11 $X_EXTRA_LIBS"
@@ -485,6 +480,7 @@ else
 fi
 
 AC_DEFINE_UNQUOTED(GNOMECC_DATA_DIR, "${real_prefix}/share/${GETTEXT_PACKAGE}",[Path to gnomecc data files])
+AC_DEFINE_UNQUOTED(PREFIX, "$prefix", [install prefix])
 GNOMECC_ICONS_DIR='$(datadir)/'${GETTEXT_PACKAGE}'/icons'
 AC_SUBST(GNOMECC_ICONS_DIR)
 GNOMECC_DESKTOP_DIR='$(datadir)/'${GETTEXT_PACKAGE}'/capplets'

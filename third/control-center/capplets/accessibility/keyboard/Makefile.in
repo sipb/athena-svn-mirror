@@ -473,16 +473,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-accessibility-keyboard.o: accessibility-keyboard.c ../../../config.h \
-	../../../capplets/common/capplet-util.h \
-	../../../capplets/common/capplet-stock-icons.h \
-	../../../capplets/common/gconf-property-editor.h \
-	../../../capplets/common/activate-settings-daemon.h
-gnome-accessibility-keyboard-properties.o: \
-	gnome-accessibility-keyboard-properties.c ../../../config.h \
-	../../../capplets/common/capplet-util.h \
-	../../../capplets/common/activate-settings-daemon.h \
-	accessibility-keyboard.h
 
 info-am:
 info: info-am

@@ -39,10 +39,25 @@
 #include "capplet-util.h"
 #include "gconf-property-editor.h"
 
+// Set http, https, about, and unknown keys to the chosen web browser.
+#define DEFAULT_APPS_KEY_HTTP_PATH "/desktop/gnome/url-handlers/http"
+#define DEFAULT_APPS_KEY_HTTP_NEEDS_TERM DEFAULT_APPS_KEY_HTTP_PATH"/needs_terminal"
+#define DEFAULT_APPS_KEY_HTTP_EXEC       DEFAULT_APPS_KEY_HTTP_PATH"/command"
 
-#define DEFAULT_APPS_KEY_BROWSER_PATH "/desktop/gnome/url-handlers/http"
-#define DEFAULT_APPS_KEY_BROWSER_NEEDS_TERM DEFAULT_APPS_KEY_BROWSER_PATH"/needs_terminal"
-#define DEFAULT_APPS_KEY_BROWSER_EXEC       DEFAULT_APPS_KEY_BROWSER_PATH"/command"
+#define DEFAULT_APPS_KEY_HTTPS_PATH "/desktop/gnome/url-handlers/https"
+#define DEFAULT_APPS_KEY_HTTPS_NEEDS_TERM DEFAULT_APPS_KEY_HTTPS_PATH"/needs_terminal"
+#define DEFAULT_APPS_KEY_HTTPS_EXEC       DEFAULT_APPS_KEY_HTTPS_PATH"/command"
+
+// While gnome-vfs2 does not use the "unknown" key, several widespread apps like htmlview
+// have read it for the past few years.  Setting it should not hurt.
+#define DEFAULT_APPS_KEY_UNKNOWN_PATH "/desktop/gnome/url-handlers/unknown"
+#define DEFAULT_APPS_KEY_UNKNOWN_NEEDS_TERM DEFAULT_APPS_KEY_UNKNOWN_PATH"/needs_terminal"
+#define DEFAULT_APPS_KEY_UNKNOWN_EXEC       DEFAULT_APPS_KEY_UNKNOWN_PATH"/command"
+
+// about:blank and other about: URI's are commonly used by browsers too
+#define DEFAULT_APPS_KEY_ABOUT_PATH "/desktop/gnome/url-handlers/about"
+#define DEFAULT_APPS_KEY_ABOUT_NEEDS_TERM DEFAULT_APPS_KEY_ABOUT_PATH"/needs_terminal"
+#define DEFAULT_APPS_KEY_ABOUT_EXEC       DEFAULT_APPS_KEY_ABOUT_PATH"/command"
 
 #define DEFAULT_APPS_KEY_MAILER_PATH "/desktop/gnome/url-handlers/mailto"
 #define DEFAULT_APPS_KEY_MAILER_NEEDS_TERM DEFAULT_APPS_KEY_MAILER_PATH"/needs_terminal"
@@ -344,9 +359,24 @@ setup_peditors (GConfClient *client,
 {
         GConfChangeSet *changeset = NULL;
 
-	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_BROWSER_NEEDS_TERM,
+	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_HTTP_NEEDS_TERM,
 				   WID ("web_custom_terminal_toggle"), NULL);
-	gconf_peditor_new_string  (changeset, DEFAULT_APPS_KEY_BROWSER_EXEC,
+	gconf_peditor_new_string  (changeset, DEFAULT_APPS_KEY_HTTP_EXEC,
+				   WID ("web_custom_command_entry"), NULL);
+
+	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_HTTPS_NEEDS_TERM,
+				   WID ("web_custom_terminal_toggle"), NULL);
+	gconf_peditor_new_string  (changeset, DEFAULT_APPS_KEY_HTTPS_EXEC,
+				   WID ("web_custom_command_entry"), NULL);
+
+	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_UNKNOWN_NEEDS_TERM,
+				   WID ("web_custom_terminal_toggle"), NULL);
+	gconf_peditor_new_string  (changeset, DEFAULT_APPS_KEY_UNKNOWN_EXEC,
+				   WID ("web_custom_command_entry"), NULL);
+
+	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_ABOUT_NEEDS_TERM,
+				   WID ("web_custom_terminal_toggle"), NULL);
+	gconf_peditor_new_string  (changeset, DEFAULT_APPS_KEY_ABOUT_EXEC,
 				   WID ("web_custom_command_entry"), NULL);
 
 	gconf_peditor_new_boolean (changeset, DEFAULT_APPS_KEY_MAILER_NEEDS_TERM,
@@ -369,12 +399,12 @@ read_browser (GConfClient *client,
 	gboolean needs_term;
 	gint i;
 
-	needs_term = gconf_client_get_bool (client, DEFAULT_APPS_KEY_BROWSER_NEEDS_TERM, &error);
+	needs_term = gconf_client_get_bool (client, DEFAULT_APPS_KEY_HTTP_NEEDS_TERM, &error);
 	if (error) {
 		/* hp will shoot me -- I'll do this later. */
 		return;
 	}
-	browser = gconf_client_get_string (client, DEFAULT_APPS_KEY_BROWSER_EXEC, &error);
+	browser = gconf_client_get_string (client, DEFAULT_APPS_KEY_HTTP_EXEC, &error);
 	if (error) {
 		return;
 	}
@@ -393,7 +423,7 @@ read_browser (GConfClient *client,
 			return;
 		}
 	}
-	if (strlen(browser) != 0) {
+	if (browser && strlen(browser) != 0) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("web_select_radio")), TRUE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("web_custom_radio")), TRUE);
 	} else {
@@ -438,7 +468,7 @@ read_mailer (GConfClient *client,
 		}
         }
 		
-	if (strlen(mailer) != 0) {
+	if (mailer && strlen(mailer) != 0) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("mail_select_radio")), TRUE);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("mail_custom_radio")), TRUE);
 	} else {
@@ -458,7 +488,7 @@ browser_setup_custom (GtkWidget *entry,
 	const gchar *browser = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	for (i = 0; i < G_N_ELEMENTS (possible_browsers); i++ ) {
-		if (! strcmp (_(possible_browsers[i].name), browser)) {
+		if (! strcmp (_(possible_browsers[i].name), browser) && possible_browsers[i].in_path) {
 		        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("web_custom_terminal_toggle")),
 						      possible_browsers[i].needs_term);
 			gtk_entry_set_text (GTK_ENTRY (WID ("web_custom_command_entry")),
@@ -476,7 +506,7 @@ mailer_setup_custom (GtkWidget *entry,
 	const gchar *mailer = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	for (i = 0; i < G_N_ELEMENTS (possible_mailers); i++ ) {
-		if (! strcmp (_(possible_mailers[i].name), mailer)) {
+		if (! strcmp (_(possible_mailers[i].name), mailer) && possible_mailers[i].in_path) {
 		        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (WID ("mail_custom_terminal_toggle")),
 						      possible_mailers[i].needs_term);
 			gtk_entry_set_text (GTK_ENTRY (WID ("mail_custom_command_entry")),
@@ -537,7 +567,7 @@ terminal_setup_custom (GtkWidget *entry,
 	const gchar *terminal = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	for (i = 0; i < G_N_ELEMENTS (possible_terminals); i++ ) {
-		if (! strcmp (_(possible_terminals[i].name), terminal)) {
+		if (! strcmp (_(possible_terminals[i].name), terminal) && possible_terminals[i].in_path) {
 			gtk_entry_set_text (GTK_ENTRY (WID ("terminal_custom_command_entry")), possible_terminals[i].exec);
 			gtk_entry_set_text (GTK_ENTRY (WID ("terminal_custom_exec_entry")), possible_terminals[i].exec_arg);
 			return;
@@ -554,7 +584,7 @@ value_changed_cb (GConfClient *client,
 	g_return_if_fail (key != NULL);
 	if (strncmp (key, DEFAULT_APPS_KEY_MAILER_PATH, strlen (DEFAULT_APPS_KEY_MAILER_PATH)) == 0) {
 		gconf_client_set_bool (client, DEFAULT_APPS_KEY_MAILER_PATH"/enabled", TRUE, NULL);
-	} else if (strncmp (key, DEFAULT_APPS_KEY_BROWSER_PATH, strlen (DEFAULT_APPS_KEY_BROWSER_PATH)) == 0) {
+	} else if (strncmp (key, DEFAULT_APPS_KEY_HTTP_PATH, strlen (DEFAULT_APPS_KEY_HTTP_PATH)) == 0) {
 	} else if (strncmp (key, DEFAULT_APPS_KEY_TERMINAL_PATH, strlen (DEFAULT_APPS_KEY_TERMINAL_PATH)) == 0) {
 	}
 }

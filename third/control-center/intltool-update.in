@@ -30,7 +30,7 @@
 
 ## Release information
 my $PROGRAM = "intltool-update";
-my $VERSION = "0.31";
+my $VERSION = "0.31.2";
 my $PACKAGE = "intltool";
 
 ## Loaded modules
@@ -954,19 +954,23 @@ sub FindPackageName
     if ($conf_source =~ /^AM_INIT_AUTOMAKE\(([^,\)]+),([^,\)]+)/m)
     {
 	($name, $version) = ($1, $2);
-	($varhash{"AC_PACKAGE_NAME"} = $name) =~ s/[\[\]\s]//g;
-	($varhash{"PACKAGE"} = $name) =~ s/[\[\]\s]//g;
-	($varhash{"AC_PACKAGE_VERSION"} = $version) =~ s/[\[\]\s]//g;
- 	($varhash{"VERSION"} = $version) =~ s/[\[\]\s]//g;
-   }
+	$name    =~ s/[\[\]\s]//g;
+	$version =~ s/[\[\]\s]//g;
+	$varhash{"AC_PACKAGE_NAME"} = $name;
+	$varhash{"PACKAGE"} = $name;
+	$varhash{"AC_PACKAGE_VERSION"} = $version;
+	$varhash{"VERSION"} = $version;
+    }
     
     if ($conf_source =~ /^AC_INIT\(([^,\)]+),([^,\)]+)/m) 
     {
 	($name, $version) = ($1, $2);
-	($varhash{"AC_PACKAGE_NAME"} = $name) =~ s/[\[\]\s]//g;
-	($varhash{"PACKAGE"} = $name) =~ s/[\[\]\s]//g;
-	($varhash{"AC_PACKAGE_VERSION"} = $version) =~ s/[\[\]\s]//g;
- 	($varhash{"VERSION"} = $version) =~ s/[\[\]\s]//g;
+	$name    =~ s/[\[\]\s]//g;
+	$version =~ s/[\[\]\s]//g;
+	$varhash{"AC_PACKAGE_NAME"} = $name;
+	$varhash{"PACKAGE"} = $name;
+	$varhash{"AC_PACKAGE_VERSION"} = $version;
+	$varhash{"VERSION"} = $version;
     }
 
     # \s makes this not work, why?
@@ -1018,7 +1022,7 @@ sub FindMakevarsDomain
 	close IN;
     }
 
-    $domain = $1 if $makevars_source =~ /^DOMAIN[ ]*=\[?([^\n\]]+)/m;
+    $domain = $1 if $makevars_source =~ /^DOMAIN[ ]*=\[?([^\n\]\$]+)/m;
     $domain =~ s/^\s+//;
     $domain =~ s/\s+$//;
     

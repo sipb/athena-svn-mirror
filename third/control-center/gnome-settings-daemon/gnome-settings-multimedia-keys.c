@@ -539,13 +539,11 @@ dialog_show (Acme *acme)
 	x = ((screen_w - orig_w) / 2) + geometry.x;
 	y = geometry.y + (screen_h / 2) + (screen_h / 2 - orig_h) / 2;
 
+	gtk_window_move (GTK_WINDOW (acme->dialog), x, y);
+
 	gtk_widget_show (acme->dialog);
 
-	gdk_window_move (GTK_WIDGET (acme->dialog)->window, x, y);
-
-	/* this makes sure the dialog is actually shown */
-	while (gtk_events_pending())
-		gtk_main_iteration();
+	gdk_display_sync (gdk_screen_get_display (acme->current_screen));
 
 	acme->dialog_timeout = gtk_timeout_add (DIALOG_TIMEOUT,
 			(GtkFunction) dialog_hide, acme);
@@ -632,7 +630,7 @@ do_www_action (Acme *acme, const char *url)
 	}
 
 	if (url == NULL)
-		command = g_strdup_printf (string, "about:blank");
+		command = g_strdup_printf (string, "");
 	else
 		command = g_strdup_printf (string, url);
 
@@ -645,17 +643,7 @@ do_www_action (Acme *acme, const char *url)
 static void
 do_exit_action (Acme *acme)
 {
-	GnomeClient *master;
-
-	master = gnome_master_client();
-	g_return_if_fail(master != NULL);
-
-	gnome_client_request_save(master,
-			GNOME_SAVE_BOTH,
-			TRUE,
-			GNOME_INTERACT_ANY,
-			FALSE,
-			TRUE);
+	execute ("gnome-session-save --kill", FALSE);
 }
 
 static void

@@ -463,36 +463,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-theme-details.o: gnome-theme-details.c ../../config.h \
-	../../libwindow-settings/gnome-wm-manager.h \
-	../../libwindow-settings/gnome-window-manager.h \
-	../../capplets/common/capplet-util.h gnome-theme-manager.h \
-	gnome-theme-details.h gnome-theme-installer.h \
-	../../capplets/common/gnome-theme-info.h
-gnome-theme-installer.o: gnome-theme-installer.c ../../config.h \
-	../../libwindow-settings/gnome-wm-manager.h \
-	../../libwindow-settings/gnome-window-manager.h \
-	gnome-theme-installer.h \
-	../../capplets/common/gnome-theme-info.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/file-transfer-dialog.h
-gnome-theme-manager.o: gnome-theme-manager.c ../../config.h \
-	../../libwindow-settings/gnome-wm-manager.h \
-	../../libwindow-settings/gnome-window-manager.h \
-	../../capplets/common/gnome-theme-info.h gnome-theme-save.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/activate-settings-daemon.h \
-	../../capplets/common/gconf-property-editor.h \
-	../../capplets/common/file-transfer-dialog.h \
-	gnome-theme-manager.h gnome-theme-details.h \
-	gnome-theme-installer.h ../../capplets/common/theme-thumbnail.h \
-	../../capplets/common/gnome-theme-apply.h
-gnome-theme-save.o: gnome-theme-save.c \
-	../../capplets/common/gnome-theme-info.h gnome-theme-save.h \
-	gnome-theme-manager.h ../../capplets/common/capplet-util.h \
-	gnome-theme-save-data.c
 
 info-am:
 info: info-am

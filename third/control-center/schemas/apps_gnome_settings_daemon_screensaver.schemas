@@ -33,7 +33,7 @@
             </locale>
 
             <locale name="bg">
-	        <short>Стартиране на Екранния предпазител</short>
+	        <short>Стартиране на екранния предпазител</short>
                 <long>Пускане на XScreenSaver при влизане в системата</long>
             </locale>
 
@@ -207,6 +207,11 @@
                 <long>Kjør XScreenSaver ved pålogging</long>
             </locale>
 
+            <locale name="nso">
+	        <short>Thoma Seboloki sa Sekirini sa X</short>
+                <long>Diriša Seboloki sa Sekirini sa X ge o tsena</long>
+            </locale>
+
             <locale name="pa">
 	        <short>X ਵਿਹਲਾ-ਪਰਦਾ ਸ਼ੁਰੂ ਕਰੋ</short>
                 <long>ਦਾਖਲੇ ਸਮੇ  X-ਵਿਹਲਾ-ਪਰਦਾ ਚਾਲੂ ਕਰੋ</long>
@@ -301,6 +306,11 @@
 	        <short>啟動 XScreenSaver</short>
                 <long>登入時執行 XScreenSaver</long>
             </locale>
+
+            <locale name="zu">
+	        <short>Qala XScreenSaver</short>
+                <long>Sebenzisa XSreenSaver uma ungena</long>
+            </locale>
         </schema>
 	<schema>
 	    <key>/schemas/apps/gnome_settings_daemon/screensaver/show_startup_errors</key>
@@ -380,7 +390,7 @@
 
             <locale name="en_CA">
                 <short>Show Startup Errors</short>
-	        <long>Display a dialog when there are errors running XScreenSaver</long>
+	        <long>Display a dialogue when there are errors running XScreenSaver</long>
 	    </locale>
 
             <locale name="en_GB">
@@ -415,7 +425,7 @@
 
             <locale name="gu">
                 <short>ચાલુ થતી વખતની ભૂલો બતાવો</short>
-	        <long>જ્યારે એક્સસ્ક્રીનસેવર ચાલુ કરતાં ભૂલ આવે ત્યારે સંવાદ વાપરાે</long>
+	        <long>જ્યારે એક્સસ્ક્રીનસેવર ચાલુ કરતાં ભૂલ આવે ત્યારે સંવાદ વાપરો</long>
 	    </locale>
 
             <locale name="he">
@@ -440,7 +450,7 @@
 
             <locale name="id">
                 <short>Tampilkan Error saat Startup</short>
-	        
+	        <long>Tampilkan dialog saat ada error dalam menjalankan XScreenSaver</long>
 	    </locale>
 
             <locale name="is">
@@ -506,6 +516,11 @@
             <locale name="no">
                 <short>Vis feil ved oppstart</short>
 	        <long>Vis en dialog når det oppstår problemer med å kjøre XScreenSaver</long>
+	    </locale>
+
+            <locale name="nso">
+                <short>Bontšha Diphošo tša go Thoma</short>
+	        <long>Bontšha poledišano ge go na le diphošo tša go diriša Seboloki sa Sekirini sa X</long>
 	    </locale>
 
             <locale name="pa">
@@ -601,6 +616,11 @@
             <locale name="zh_TW">
                 <short>顯示啟動時發生的錯誤</short>
 	        <long>如果執行 XScreenSaver 時出現錯誤則顯示對話方塊</long>
+	    </locale>
+
+            <locale name="zu">
+                <short>Khombisa amaphutha okungena</short>
+	        <long>Bonisa ibhokisi uma kukho amaphutha akhona XScreenSaver</long>
 	    </locale>
 	</schema>
     </schemalist>

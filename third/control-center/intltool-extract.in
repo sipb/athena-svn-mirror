@@ -32,7 +32,7 @@
 ## Release information
 my $PROGRAM      = "intltool-extract";
 my $PACKAGE      = "intltool";
-my $VERSION      = "0.31";
+my $VERSION      = "0.31.2";
 
 ## Loaded modules
 use strict; 
@@ -115,6 +115,7 @@ sub place_normal {
 }   
 
 sub place_local {
+    $FILE	 = $ARGV[0];
     $OUTFILE     = fileparse($FILE, ());
     if (!-e "tmp/") { 
         system("mkdir tmp/"); 
@@ -266,11 +267,12 @@ sub type_keys {
 sub type_xml {
     ### For generic translatable XML files ###
         
-    while ($input =~ /\s_$w+\s*=\s*\"([^"]+)\"/sg) { # "
-        $messages{entity_decode_minimal($1)} = [];
+    while ($input =~ /(?:<!--([^>]*?)-->[^\n]*\n?[^\n]*)?\s_$w+\s*=\s*\"([^"]+)\"/sg) { # "
+        $messages{entity_decode_minimal($2)} = [];
+        $comments{entity_decode_minimal($2)} = $1 if (defined($1));
     }
 
-    while ($input =~ /(?:<!--([^>]*?)-->\s*)?<_($w+)(?: xml:space="($w+)")?>(.+?)<\/_\2>/sg) {
+    while ($input =~ /(?:<!--([^>]*?)-->\s*)?<_($w+)(?: xml:space="($w+)")?[^>]*>(.+?)<\/_\2>/sg) {
         $_ = $4;
         if (!defined($3) || $3 ne "preserve") {
             s/\s+/ /g;

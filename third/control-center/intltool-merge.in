@@ -35,7 +35,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.31";
+my $VERSION = "0.31.2";
 
 ## Loaded modules
 use strict; 
@@ -255,7 +255,7 @@ sub gather_po_files
 sub get_local_charset
 {
     my ($encoding) = @_;
-    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/opt/gnome28/lib/charset.alias";
+    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/usr/lib/charset.alias";
 
     # seek character encoding aliases in charset.alias (glib)
 

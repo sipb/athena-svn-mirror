@@ -416,14 +416,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-startup.o: gnome-startup.c ../config.h gnome-startup.h
-gswitchit_config.o: gswitchit_config.c ../config.h \
-	gswitchit_applet_config.h gswitchit_xkb_config_private.h \
-	gswitchit_xkb_config.h gswitchit_plugin.h
-gswitchit_plugin_manager.o: gswitchit_plugin_manager.c ../config.h \
-	gswitchit_plugin_manager.h gswitchit_plugin.h \
-	gswitchit_xkb_config.h
-gswitchit_util.o: gswitchit_util.c ../config.h gswitchit_util.h
 
 info-am:
 info: info-am

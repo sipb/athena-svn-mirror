@@ -425,11 +425,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-window-properties.o: gnome-window-properties.c ../../config.h \
-	../../libwindow-settings/gnome-wm-manager.h \
-	../../libwindow-settings/gnome-window-manager.h \
-	../../capplets/common/capplet-util.h \
-	../../capplets/common/gconf-property-editor.h
 
 info-am:
 info: info-am

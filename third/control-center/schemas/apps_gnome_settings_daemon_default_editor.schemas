@@ -31,6 +31,11 @@
         <long>Калі ІСЬЦІНА, апрацоўшчыкі для text/plain і text/* мусяць быць сынхранізаваныя</long>
       </locale>
 
+      <locale name="bg">
+        <short>Еднаква обработка на text/plain и text/*</short>
+        <long>Ако е зададено като &quot;истина&quot;, програмата за обработка на text/plain и text/* ще е една и съща</long>
+      </locale>
+
       <locale name="bn">
         <short>text/plain এবং text/* প্রক্রিয়াকারীকে সিঙ্ক (Sync) করো</short>
         <long>এটি সত্য হলে text/plain এবং text/* এর মাইম প্রক্রিয়াকারীকে সিঙ্ক (Sync) অবস্থায় রাখা হবে</long>
@@ -103,7 +108,7 @@
 
       <locale name="gu">
         <short>સિંક લખાણ/સાદું અને લખાણ/* માટેનાં હેન્ડલરો</short>
-        <long>જો સાચુું હોય તો, લખાણ/સાદું અને લખાણ/* માટે માઈમ હેન્ડલર સિંકમાં સાચવી રાખો</long>
+        <long>જો સાચું હોય તો, લખાણ/સાદું અને લખાણ/* માટે માઈમ હેન્ડલર સિંકમાં સાચવી રાખો</long>
       </locale>
 
       <locale name="he">
@@ -124,6 +129,11 @@
       <locale name="hu">
         <short>A text/plain és a text/* kezelőjének szinkronizálása</short>
         <long>Ha be van állítva, a text/plain és a text/* MIME-kezelője szinkronban lesz</long>
+      </locale>
+
+      <locale name="id">
+        <short>Sinkronisasikan pengelola text/plain dan text/*</short>
+        <long>Jika diisi true, pengelola mime untuk text/plain dan text/* akan disinkronkan</long>
       </locale>
 
       <locale name="is">
@@ -189,6 +199,11 @@
       <locale name="no">
         <short>Synkroniser håndterere for text/plain og text/*</short>
         <long>Hvis satt til sann vil MIME-håndtererene for text/plain og text/* holdes synkronisert</long>
+      </locale>
+
+      <locale name="nso">
+        <short>text/plain (sengwalwa/se se nago selo) e rulagantšwego le baswari ba text/* (sengwalwa)</short>
+        <long>Ge eba e le therešo, baswari ba mime bakeng sa text/plain (sengwalwa/se se nago selo) le text/* (sengwalwa) di tla bolokwa di rulagantšwe</long>
       </locale>
 
       <locale name="pa">
@@ -284,6 +299,11 @@
       <locale name="zh_TW">
         <short>text/plain 及 text/* 處理方式保持一致</short>
         <long>如選用本選項，text/plain 及 text/* 的 mime 處理方式會保持一致</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Sync text/plain and text/* abaphathi</short>
+        <long>Uma kuyiqiniso, abaphathi be-mime text/plain and text/* lizogcinwa phakathi kwe-sync</long>
       </locale>
     </schema>
   </schemalist>

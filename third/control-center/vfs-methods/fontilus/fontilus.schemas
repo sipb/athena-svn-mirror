@@ -199,9 +199,14 @@
         <long>Sett denne nøkkelen til kommandoen som brukes til oppretting av miniatyrer for TrueType-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa difonto tša Mohuta wa Therešo</short>
+        <long>Beakanya senotlelo se go taelo e dirišeditšwego go hlama dikhutsofatšo tša difonto tša Mohuta wa Therešo.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਫੋਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਕਮਾਂਡ, ਜੋ ਫੋਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <short>ਫੋਂਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
+        <long>ਕਮਾਂਡ, ਜੋ ਫੋਂਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -292,6 +297,11 @@
       <locale name="zh_TW">
         <short>製作 TrueType 字型縮圖的指令</short>
         <long>本設定鍵指定了用來製作 TrueType 字型縮圖的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Gcizelela umyalo wesiqwema se-TrueType</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo zesiqwema se-TrueType.</long>
       </locale>
     </schema>
     <schema>
@@ -491,9 +501,14 @@
         <long>Hvis sann; vis miniatyrer av TrueType-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba go swanetše go khutsofatšwe difonto tša Mohuta wa Therešo</short>
+        <long>Ge eba e beakantšwe gore e be therešo, gona difonto tša Mohuta wa Therešo di tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਕੀ ਫੋਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਟਰੂ-ਟਾਇਪ(TrueType) ਫੋਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <short>ਕੀ ਫੋਂਟ ਟਰੂ-ਟਾਈਪ(TrueType) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
+        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਟਰੂ-ਟਾਇਪ(TrueType) ਫੋਂਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -584,6 +599,11 @@
       <locale name="zh_TW">
         <short>是否為 TrueType 字型製作縮圖</short>
         <long>如選用本選項，則會顯示 TrueType 字型的縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Mhlambe ukugcizelela iziqwema ze-TrueType</short>
+        <long>Uma ihlelwe ukuba yiqiniso, ngakho ke TrueType amaqwema azogcizelelwa.</long>
       </locale>
     </schema>
 
@@ -785,9 +805,14 @@
         <long>Sett denne nøkkelen til kommandoen som brukes for oppretting av miniatyrer for Type1-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa difonto tša Mohuta wa 1</short>
+        <long>Beakanya senotlelo se go taelo e dirišeditšwego go hlama dikhutsofatšo tša difonto tša Mohuta wa 1.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਫੋਟ ਟਾਈਪ ੧(Type1) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਕਮਾਂਡ, ਜੋ ਫੋਟ ਟਾਈਪ ੧(Type1) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <short>ਫੋਂਟ ਟਾਈਪ ੧(Type1) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
+        <long>ਕਮਾਂਡ, ਜੋ ਫੋਂਟ ਟਾਈਪ ੧(Type1) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -878,6 +903,11 @@
       <locale name="zh_TW">
         <short>製作 Type1 字型縮圖的指令</short>
         <long>本設定鍵指定了用來製作 Type1 字型縮圖的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Gcizelela umyalo wesiqwema se-Type1</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo zesiqwema se-Type1.</long>
       </locale>
     </schema>
     <schema>
@@ -1077,9 +1107,14 @@
         <long>Hvis sann; vis miniatyrer av Type1-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba go swanetše go khutsofatšwe difonto tša Mohuta wa 1</short>
+        <long>Ge eba e beakantšwe gore e be therešo, gona difonto tša Mohuta wa 1 di tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਕੀ ਫੋਟ ਟਾਈਪ ੧(Type1) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਟਾਈਪ ੧Type1) ਫੋਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <short>ਕੀ ਫੋਂਟ ਟਾਈਪ ੧(Type1) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
+        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਟਾਈਪ ੧Type1) ਫੋਂਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -1170,6 +1205,11 @@
       <locale name="zh_TW">
         <short>是否為 Type1 字型製作縮圖</short>
         <long>如選用本選項，則會顯示 Type1 字型的縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Mhlambe ukugcizelela iziqwema ze-Type1</short>
+        <long>Uma ihlelwe ukuba yiqiniso, ngakho ke Type1 amaqwema azogcizelelwa.</long>
       </locale>
     </schema>
 
@@ -1371,9 +1411,14 @@
         <long>Sett denne nøkkelen til kommandoen som brukes til oppretting av miniatyrer for PCF-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa difonto tša PCF</short>
+        <long>Beakanya senotlelo se go taelo e dirišeditšwego go hlama dikhutsofatšo tša difonto tša PCF.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਫੋਟ ਪੀਸੀਐਫ(PCF) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਕਮਾਂਡ, ਜੋ ਫੋਟ ਪੀਸੀਐਫ(PCF) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <short>ਫੋਂਟ ਪੀਸੀਐਫ(PCF) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
+        <long>ਕਮਾਂਡ, ਜੋ ਫੋਂਟ ਪੀਸੀਐਫ(PCF) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -1464,6 +1509,11 @@
       <locale name="zh_TW">
         <short>製作 PCF 字型縮圖的指令</short>
         <long>本設定鍵指定了用來製作 PCF 字型縮圖的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Gcizelela umyalo wesiqwema se-PCF</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo zesiqwema se-PCF.</long>
       </locale>
     </schema>
     <schema>
@@ -1663,9 +1713,14 @@
         <long>Hvis sann; vis miniatyrer av PCF-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba go swanetše go khutsofatšwe difonto tša PCF</short>
+        <long>Ge eba e beakantšwe e le therešo, gona difonto tša PCF di tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਕੀ ਫੋਟ ਪੀਸੀਐਫ(PCF) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਪੀਸੀਐਫ(PCF) ਫੋਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <short>ਕੀ ਫੋਂਟ ਪੀਸੀਐਫ(PCF) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
+        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਪੀਸੀਐਫ(PCF) ਫੋਂਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -1756,6 +1811,11 @@
       <locale name="zh_TW">
         <short>是否為 PCF 字型製作縮圖</short>
         <long>如選用本選項，則會顯示 PCF 字型的縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Mhlambe ukugcizelela iziqwema ze-PCF</short>
+        <long>Uma ihlelwe ukuba yiqiniso, ngakho ke PCF amaqwema azogcizelelwa.</long>
       </locale>
     </schema>
 
@@ -1957,9 +2017,14 @@
         <long>Sett denne nøkkelen til kommandoen som brukes til oppretting av miniatyrer for OpenType-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Taelo ya khutsofatšo bakeng sa difonto tša Mohuta o Bulegilego</short>
+        <long>Beakanya senotlelo se go taelo e dirišeditšwego go hlama dikhutsofatšo tša difonto tša Mohuta o Bulegilego.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਫੋਟ ਓਪਨਟਾਈਪ(OpenType) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
-        <long>ਕਮਾਂਡ, ਜੋ ਫੋਟ ਓਪਨ-ਟਾਈਪ(OpenType) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ|</long>
+        <short>ਫੋਂਟ ਓਪਨਟਾਈਪ(OpenType) ਲਈ ਥੰਬਨੇਲ ਕਮਾਂਡ</short>
+        <long>ਕਮਾਂਡ, ਜੋ ਫੋਂਟ ਓਪਨ-ਟਾਈਪ(OpenType) ਲਈ ਥੰਬਨੇਲ ਬਣਾਉਦੀ ਹੈ, ਨੂੰ ਇਹ ਕੀ ਨਿਰਧਾਰਿਤ ਕਰੋ।</long>
       </locale>
 
       <locale name="pl">
@@ -2050,6 +2115,11 @@
       <locale name="zh_TW">
         <short>製作 OpenType 字型縮圖的指令</short>
         <long>本設定鍵指定了用來製作 OpenType 字型縮圖的指令。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Gcizelela umyalo wesiqwema se-OpenType</short>
+        <long>Hlela lenkinombho kumyalo osebenzisiwe ukudala izigcizelelo zesiqwema se-OpenType.</long>
       </locale>
     </schema>
     <schema>
@@ -2249,9 +2319,14 @@
         <long>Hvis sann; vis miniatyrer av OpenType-skrifter.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba go swanetše go khutsofatšwe difonto tša Mohuta o Bulegilego</short>
+        <long>Ge eba e beakantšwe gore e be therešo, gona difonto tša Mohuta o Bulegilego di tla khutsofatšwa.</long>
+      </locale>
+
       <locale name="pa">
-        <short>ਕੀ ਫੋਟ ਓਪਨ-ਟਾਈਪ(OpenType) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
-        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਓਪਨ-ਟਾਈਪ(OpenType) ਫੋਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ|</long>
+        <short>ਕੀ ਫੋਂਟ ਓਪਨ-ਟਾਈਪ(OpenType) ਨੂੰ ਥੰਬਨੇਲ ਕਰਨਾ ਹੈ</short>
+        <long>ਜੇਕਰ ਇਹ ਸੱਚ ਹੈ ਤਾਂ, ਓਪਨ-ਟਾਈਪ(OpenType) ਫੋਂਟ ਥੰਬਨੇਲ ਬਣ ਜਾਣਗੇ।</long>
       </locale>
 
       <locale name="pl">
@@ -2342,6 +2417,11 @@
       <locale name="zh_TW">
         <short>是否為 OpenType 字型製作縮圖</short>
         <long>如選用本選項，則會顯示 OpenType 字型的縮圖。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Mhlambe ukugcizelela iziqwema ze-OpenType</short>
+        <long>Uma ihlelwe ukuba yiqiniso, ngakho ke OpenType amaqwema azogcizelelwa.</long>
       </locale>
     </schema>
 

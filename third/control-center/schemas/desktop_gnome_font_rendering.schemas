@@ -152,7 +152,7 @@
 
             <locale name="id">
 	        <short>DPI</short>
-                
+                <long>Resolusi yang digunakan untuk melakukan konversi ukuran huruf ke ukuran piksel dalam satuan titik per inci</long>
             </locale>
 
             <locale name="is">
@@ -220,9 +220,14 @@
                 <long>Oppløsning som brukes for å konvertere skriftstørrelser til pikselstørrelser i punkter per tomme</long>
             </locale>
 
+            <locale name="nso">
+	        <short>DPI</short>
+                <long>Setlamo se dirišitšwego go fetolela bogolo bja fonto go bogolo bja dikarolwana tše bopago seswantšho, ka dintlha go ya ka noko</long>
+            </locale>
+
             <locale name="pa">
 	        <short>DPI</short>
-                <long>ਰੈਜੋਲੇਸ਼ਨ, ਜੋ ਕਿ ਫੋਟ ਅਕਾਰ ਨੂੰ ਪਿਕਸਲ ਅਕਾਰ ਵਿੱਚ ਤਬਦੀਲ ਕਰ ਦਿੰਦਾ ਹੈ, ਬਿੰਦੂ ਪ੍ਰਤੀ ਇੰਚ</long>
+                <long>ਰੈਜੋਲੇਸ਼ਨ, ਜੋ ਕਿ ਫੋਂਟ ਅਕਾਰ ਨੂੰ ਪਿਕਸਲ ਅਕਾਰ ਵਿੱਚ ਤਬਦੀਲ ਕਰ ਦਿੰਦਾ ਹੈ, ਬਿੰਦੂ ਪ੍ਰਤੀ ਇੰਚ</long>
             </locale>
 
             <locale name="pl">
@@ -313,6 +318,11 @@
             <locale name="zh_TW">
 	        <short>DPI</short>
                 <long>將字型大小轉換至像素大小時，使用的解析度，單位為每英吋多少點</long>
+            </locale>
+
+            <locale name="zu">
+	        <short>DPI</short>
+                <long>Isinqumo sisebenziselwa ukushintsha iisayizi zesiqwema kumachashazana, ichaphaza ngobude</long>
             </locale>
         </schema>
 	<schema>
@@ -468,7 +478,7 @@
 
             <locale name="id">
 	        <short>Antialias</short>
-                
+                <long>Jenis antialias yang digunakan saat menggambar huruf. Anda dapat mengisikan: &quot;none&quot; - tanpa aliasing, &quot;grayscale&quot; - antialias skala abu-abu standar, &quot;rgba&quot; - antialiasing subpiksel (digunakan pada layar LCD).</long>
             </locale>
 
             <locale name="is">
@@ -542,9 +552,14 @@
                 <long>Type antialiasing som skal brukes ved rendring av skrifter. Mulige verdier er: «none» - ingen antialiasing. «greyscale» - standard antialiasing med gråtoner. «rgba» - antialiasing under pikselnivå (Kun LCD-skjermer).</long>
             </locale>
 
+            <locale name="nso">
+	        <short>Kgahlanong le tsela e nngwe</short>
+                <long>Mohuta wa kgahlanong le leina le lengwe leo le swanetšego go dirišwa ge go newa difonto. Boleng bjo kgonegago ke: &quot;ga e gona&quot; - ga go na kgahlano le leina le lengwe. &quot;sekala se se tshetla&quot; - kgahlano le leina le lengwe ya sekala se se tshetla sa motheo. &quot;rgba&quot; - kgahlano le leina le lengwe ga dikarolwana tše bopago seswantšho. (Dikirini tša LCD feela).</long>
+            </locale>
+
             <locale name="pa">
 	        <short>ਐਟੀਲਾਈਸਿੰਗ</short>
-                <long>ਫੋਟ ਰੈਡਇੰਗ ਵਿੱਚ ਵਰਤੀ ਜਾਦੀ ਐਟੀਲਾਇੰਗ ਦੀ ਕਿਸਮ। ਸੰਭਵ ਮੁੱਲ ਹਨਃ&quot;ਕੋਈ ਨਹੀ&quot; - ਕੋਈ ਐਟੀਲਾਇੰਗ ਨਹੀ। &quot;ਸਲੇਟੀ-ਪੈਮਾਨਾ&quot; -ਮੂਲ ਸਲੇਟੀ ਐਟੀਲਾਇੰਗ।&quot;rgba&quot; - ਸਬ-ਪਿਕਸਲ ਐਟੀਲਾਇੰਗ (ਸਿਰਫ LCD ਪਰਦਿਆਂ ਲਈ)</long>
+                <long>ਫੋਂਟ ਰੈਡਇੰਗ ਵਿੱਚ ਵਰਤੀ ਜਾਦੀ ਐਟੀਲਾਇੰਗ ਦੀ ਕਿਸਮ। ਸੰਭਵ ਮੁੱਲ ਹਨ:&quot;ਕੋਈ ਨਹੀ&quot; - ਕੋਈ ਐਟੀਲਾਇੰਗ ਨਹੀ। &quot;ਸਲੇਟੀ-ਪੈਮਾਨਾ&quot; -ਮੂਲ ਸਲੇਟੀ ਐਟੀਲਾਇੰਗ।&quot;rgba&quot; - ਸਬ-ਪਿਕਸਲ ਐਟੀਲਾਇੰਗ (ਸਿਰਫ LCD ਪਰਦਿਆਂ ਲਈ)</long>
             </locale>
 
             <locale name="pl">
@@ -642,6 +657,11 @@
 “grayscale”─ 標準的平滑化方式 (使用灰階顏色)。
 “rgba”─ 次像素 (subpixel) 平滑化方式，只適用於 LCD 螢幕。</long>
             </locale>
+
+            <locale name="zu">
+	        <short>Ukuqalisa</short>
+                <long>Uhlobo lokuqala uma unikela ngamqwesi. Amanani akhonekayo yilawa: &quot;lutho&quot; - akuna siqalo. &quot;grayscale&quot; - igrayscale ejwayelekile. &quot;rgba&quot; - ichashazana liyaqalisa. (ubuso besiganyezi be-LCD kuphela).</long>
+            </locale>
         </schema>
 	<schema>
 	    <key>/schemas/desktop/gnome/font_rendering/hinting</key>
@@ -682,7 +702,7 @@
 
             <locale name="bg">
 	        <short>Подсказване</short>
-                
+                <long>Вид подсказки при изписването на шрифтове. Възможните стойности са: &quot;без&quot; - без подсказки, &quot;леки&quot;, &quot;средни&quot; и &quot;пълни&quot; - най-силни подсказки. Това може да доведе до промяна на очертанията.</long>
             </locale>
 
             <locale name="bn">
@@ -762,7 +782,7 @@
 
             <locale name="gu">
 	        <short>સંકેત આપવો</short>
-                <long>ફોન્ટને ઘાટ અાપતી વખતની સુચનાઓના પ્રકાર. શક્ય કિંમતો છેઃ: &quot;કંઈ જ નહિ&quot; - કોઈ જ સુચના નહિ, &quot;ઓછી&quot;, &quot;સામાન્ય&quot;, અથવા &quot;આખી&quot; -બધી સુચનાઓ સંભવિત છે ; અક્ષરોની આકૃતિઓનો નાશ થઈ શકે છે.</long>
+                <long>ફોન્ટને ઘાટ આપતી વખતની સુચનાઓના પ્રકાર. શક્ય કિંમતો છેઃ: &quot;કંઈ જ નહિ&quot; - કોઈ જ સુચના નહિ, &quot;ઓછી&quot;, &quot;સામાન્ય&quot;, અથવા &quot;આખી&quot; -બધી સુચનાઓ સંભવિત છે ; અક્ષરોની આકૃતિઓનો નાશ થઈ શકે છે.</long>
             </locale>
 
             <locale name="he">
@@ -783,6 +803,11 @@
             <locale name="hu">
 	        <short>Hinting</short>
                 <long>A betűk megjelenítéséhez használt hinting típusa. A lehetséges értékek: &quot;Nincs&quot; - nincs hinting, &quot;Enyhe&quot;, &quot;Közepes&quot; és &quot;Teljes&quot; - akkora hinting, amennyi csak lehetséges; eltorzíthatja a betűk alakját.</long>
+            </locale>
+
+            <locale name="id">
+	        <short>Hinting</short>
+                <long>Jenis hinting yang digunakan saat menggambar huruf. Anda dapat mengisikan: &quot;none&quot; - tanpa hinting, &quot;slight&quot;, &quot;medium&quot;, dan &quot;full&quot; - yang nilainya menggambarkan besarnya hinting; hati-hati karena bentuk huruf dapat agak rusak.</long>
             </locale>
 
             <locale name="is">
@@ -855,9 +880,14 @@
                 <long>Type hinting som skal brukes ved rendring av skrifter. Mulige verdier er «none» - ingen hinting, «slight», «medium» og «full» - så mye hinting som mulig; kan forårsake forvrengning av bokstavenes form.</long>
             </locale>
 
+            <locale name="nso">
+	        <short>Go eletša</short>
+                <long>Mohuta wa keletšo yeo e swanetšego go dirišwa ge go newa difonto. Boleng bjo kgonegago ke: &quot;ga e gona&quot; - ga go na keletšo, &quot;ganyenyane&quot;, &quot;magareng&quot;, le &quot;tletšego&quot; - keletšo e ntši ka mo go ka kgonegago; e ka baka kgopamišo ya difomo tša lengwalo.</long>
+            </locale>
+
             <locale name="pa">
 	        <short>ਸੰਕੇਤ</short>
-                <long>ਫੋਟ ਰੈਨਡਇੰਗ ਲਈ ਵਰਤਣ ਵਾਲੁ ਸੰਕੇਤਾਂ ਦੀ ਕਿਸਮ। ਸੰਭਵ ਮੁੱਲ ਹਨਃ &quot;ਕੋਈ ਨਹੀ&quot; - ਕੋਈ ਸੰਕੇਤ ਨਹੀ, &quot;ਥੋੜੇ&quot; , &quot; ਜਿਆਦਾ&quot;, ਅਤੇ &quot;ਸਾਰੇ&quot; - ਜਿੰਨ੏ੇ ਸੰਭਵ ਹੋ ਸਕੇ, ਕੁੱਝ ਅੱਖਰਾਂ ਵਿੱਚ ਨੁਕਸ ਆ ਸਕਦਾ ਹੈ।</long>
+                <long>ਫੋਂਟ ਰੈਨਡਇੰਗ ਲਈ ਵਰਤਣ ਵਾਲੁ ਸੰਕੇਤਾਂ ਦੀ ਕਿਸਮ। ਸੰਭਵ ਮੁੱਲ ਹਨ: &quot;ਕੋਈ ਨਹੀ&quot; - ਕੋਈ ਸੰਕੇਤ ਨਹੀ, &quot;ਥੋੜੇ&quot; , &quot; ਜਿਆਦਾ&quot;, ਅਤੇ &quot;ਸਾਰੇ&quot; - ਜਿੰਨ੏ੇ ਸੰਭਵ ਹੋ ਸਕੇ, ਕੁੱਝ ਅੱਖਰਾਂ ਵਿੱਚ ਨੁਕਸ ਆ ਸਕਦਾ ਹੈ।</long>
             </locale>
 
             <locale name="pl">
@@ -949,6 +979,11 @@
 	        <short>Hinting</short>
                 <long>描繪字型時使用的 hinting 方式。可接受的值為：
 “none”(不使用 hinting)、“slight”、“medium”及“full”(完整 hinting；可能會令字體變型)。</long>
+            </locale>
+
+            <locale name="zu">
+	        <short>Ukwexwayisa</short>
+                <long>Uhlobo lokuxwayisa ukulisebenzisa uma unikela ngamaqwesi. Amanani akhonekayo yilawa: &quot;lutho&quot; - akuna sixwayiso, &quot;kancane&quot;, &quot;phakathi&quot;, futhi &quot;igcwale&quot; - wexwayise ngakho konke onakho; kungonakalisa amafomu ezincwadi.</long>
             </locale>
         </schema>
 	<schema>
@@ -1090,7 +1125,7 @@
 
             <locale name="id">
 	        <short>Urutan RGBA</short>
-                
+                <long>Urutan elemen subpiksel pada layar LCD. Ini digunakan pada saat antialias diset ke &quot;rgba&quot;. Anda dapat mengisikan: &quot;rgb&quot; - merah di kiri, ini yang paling sering digunakan. &quot;bgr&quot; biru di kiri, &quot;vrgb&quot; - merah di atas, &quot;vbgr&quot; - merah di bawah.</long>
             </locale>
 
             <locale name="is">
@@ -1163,9 +1198,14 @@
                 <long>Rekkefølgen på elementer under pikselnivå på en LCD-skjerm; brukes kun når antialiasing er satt til «rgba». Mulige verdier er: «rgb» - rød til venstre, mest vanlig. «bgr» - blå til venstre. «vrgb» - rød øverst. «vbgr» - rød nederst.</long>
             </locale>
 
+            <locale name="nso">
+	        <short>Tatelano ya RGBA</short>
+                <long>Tatelano ya dikarolo tša dikarolwana tše bopago seswantšho sekirining sa LCD ; se dirišwago feela ge go kgahlanong le leina le lengwe go beakanywa go &quot;rgba&quot;. Boleng bjo kgonegago ke: &quot;rgb&quot; - khwibidu go lanngele, tlwaelegilego kudu. &quot;bgr&quot; - tala-lerata go lanngele. &quot;vrgb&quot; - khwibidu godimo. &quot;vbgr&quot; - khwibidu ka tlase.</long>
+            </locale>
+
             <locale name="pa">
 	        <short>RGBA ਕ੍ਰਮ</short>
-                <long>ਇੱਕ LCD ਪਰਦੇ ਤੇ ਸਬ-ਪਿਕਸਲ ਦਾ ਕ੍ਰਮ। ਇਹ ਤਾਂ ਹੀ ਵਰਤਿਆ ਜਾਵੇਗਾ, ਜਦ ਕਿ ਐਟੀਲਾਇੰਗ ਨੂੰ&quot;rgba&quot; ਨਿਰਧਾਰਿਤ ਕੀਤਾ ਜਾਵੇਗਾ। ਉਪਲੱਬਧ ਮੁੱਲ ਹਨਃ &quot;rgb&quot; ਖੱਬੇ ਲਾਲ, ਆਮ ਹੈ&quot;bgr&quot;- ਖੱਬੇ ਨੀਲਾ, &quot;vrgb&quot; - ਉਪੱਰ ਲਾਲ। &quot;vbgr&quot; - ਥੱਲੇ ਲਾਲ।</long>
+                <long>ਇੱਕ LCD ਪਰਦੇ ਤੇ ਸਬ-ਪਿਕਸਲ ਦਾ ਕ੍ਰਮ। ਇਹ ਤਾਂ ਹੀ ਵਰਤਿਆ ਜਾਵੇਗਾ, ਜਦ ਕਿ ਐਟੀਲਾਇੰਗ ਨੂੰ&quot;rgba&quot; ਨਿਰਧਾਰਿਤ ਕੀਤਾ ਜਾਵੇਗਾ। ਉਪਲੱਬਧ ਮੁੱਲ ਹਨ: &quot;rgb&quot; ਖੱਬੇ ਲਾਲ, ਆਮ ਹੈ&quot;bgr&quot;- ਖੱਬੇ ਨੀਲਾ, &quot;vrgb&quot; - ਉਪੱਰ ਲਾਲ। &quot;vbgr&quot; - ਥੱਲੇ ਲਾਲ।</long>
             </locale>
 
             <locale name="pl">
@@ -1264,6 +1304,11 @@
 “bgr”─ 左邊是藍色。
 “vrgb”─ 頂端是紅色。
 “vbgr”─ 頂端是藍色。</long>
+            </locale>
+
+            <locale name="zu">
+	        <short>Umyalo we-RGBA</short>
+                <long>Inhlelo yamalungu wamachashazana ebusweni besiga-nyezi LCD; lusebenziswe kuphela uma kuqalwa ukuhlelwa ku &quot;rgba&quot;. Amanani akhonekayo yilawa: &quot;rgb&quot; - okubomvu kwesonxele, kwejwayelekile kaningi. &quot;bgr&quot; - luhlaza ngakwesonxele. &quot;vrgb&quot; - ubomvu ngaphezulu. &quot;vbgr&quot; - ibomvu ngaphantsi.</long>
             </locale>
         </schema>
     </schemalist>
