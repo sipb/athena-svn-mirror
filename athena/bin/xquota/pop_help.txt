@@ -1,12 +1,12 @@
 This is the help file for the xquota popup window.  This window has four sections.  
 
-The first section contains static information.  The name of the program and version number are visable on the top line.  The next line contains the name of the machine that your home filesystem is on, and the directory of your filesystemon that machine.
+The first section contains static information.  The name of the program and version number are visible on the top line.  The next line contains the name of the machine that your home filesystem is on, and the directory of your filesystem that machine.
 
 The next section contains the meat of the information it has your hard and soft quotas, as well as the amount of space you are currently using.  The last time that xquota checked the quota is also displayed here.
 
 The next section has a scrollbar, and displays any messages that xquota needs to send you.  
 
-The last section contains the command buttons that allow you to access the variou feature of xquota.  The commands are:
+The last section contains the command buttons that allow you to access the various feature of xquota.  The commands are:
 
 Done - click this button when you want to remove the popup window.
 
