@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2001-04-29 02:05:41 ghudson Exp $
+# $Id: Makefile,v 1.3 2001-05-04 14:44:56 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 VICE=/usr/vice/etc
@@ -27,6 +27,7 @@ install:
 	install -c -m 555 CellServDB ${DESTDIR}${VICE}
 	install -c -m 555 cacheinfo ${DESTDIR}${VICE}
 	install -c -m 555 afs.rc ${DESTDIR}/etc/rc.d/init.d/afs
+	install -c -m 555 afs.conf $(DESTDIR)/etc/sysconfig/afs
 	install -c -m 444 include/afs/acl.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs.h ${DESTDIR}${WS}/include/afs
 	install -c -m 444 include/afs/afs_Admin.h ${DESTDIR}${WS}/include/afs
