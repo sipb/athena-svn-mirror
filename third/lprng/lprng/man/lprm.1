@@ -11,7 +11,7 @@ lprm \- remove jobs from the line printer spooling queue
 .B \-a
 ]
 [
-.B \-A
+.B \-A authtype
 ]
 [
 .BI \-D debugopt
@@ -117,8 +117,9 @@ shell glob expansion.
 .sp
 lprm -Pt1 'nobody@system*'
 .SH OPTIONS
-.IP "\fB\-A\fR" 5
-Use authentication when sending a request to the server.
+.IP "\fB\-A \fIauthtype\fR" 5
+Use the named authentication type (which may be "none") when sending a
+request to the server.
 .IP "\fB\-a\fR" 5
 Remove files from all spool queues available to the user.
 .IP "\fB\-P\fIprinter\fR" 5
