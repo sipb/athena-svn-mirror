@@ -1,2 +1,0 @@
-#!/bin/sh
-./configure --with-openssl=$ATHTOOLROOT/usr/athena

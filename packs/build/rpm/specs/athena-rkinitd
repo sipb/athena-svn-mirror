@@ -1,9 +1,0 @@
-Name: athena-rkinitd
-Summary: An Athena server for rkinit requests
-Copyright: MIT
-Group: Applications/Internet
-
-Requires: athena-krb5 athena-librkinit
-
-%description
-A server to allow users to obtain kerberos tickets on remote machines.
