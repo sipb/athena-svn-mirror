@@ -136,9 +136,11 @@ rpm -i --force $pkglist || errorout "$0: rpm package installation failed"
 
 config=$SYSPREFIX/config/$athenaversion
 
-for i in services syslog.conf inittab info-dir inetd.conf conf.linuxconf; do
+for i in services syslog.conf inittab info-dir xinetd.conf; do
     cp $config/etc/$i /etc/$i
 done
+
+rsync -q -r --delete $config/etc/xinetd.d /etc
 
 for i in /etc/passwd /etc/shadow /etc/group; do
     if [ -r $config$i ]; then
