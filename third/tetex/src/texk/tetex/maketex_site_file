@@ -1,3 +1,0 @@
-: ${MT_FEATURES=appendonlydir}
-: ${MODE=ljfour}
-: ${BDPI=600}

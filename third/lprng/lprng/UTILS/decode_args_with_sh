@@ -1,26 +1,0 @@
-#!/bin/sh 
-# this is an example of how to use /bin/sh and LPRng
-# to get the options
-# it is also a really nasty lpf filter
-while [ "X$1" != "X" ] ; do
-	v=`expr "$1" : '-\(.\).*'`;
-	if [ "X$v" = "X" ] ; then
-		# end of options, $@ contains rest
-		break;
-	fi;
-	s=`expr "$1" : '-.\(.*\)`;
-	case "$v" in
-		c ) s=1;;
-		?* )
-			if [ "X$s" = "X" ] ; then shift; s=$1; fi;
-			;;
-	esac;
-	eval "$v=\"$s\"; export $v";
-	shift;
-done
-# example of how to use for a quick lpf filter:
-if [ "$c" = "1" ]; then 
-   cat 
-else 
-   sed -e 's/$//' -e '$s/$//'
-fi
