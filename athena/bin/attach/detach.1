@@ -1,4 +1,4 @@
-.\" $Id: detach.1,v 1.7 1998-03-17 04:02:34 cfields Exp $
+.\" $Id: detach.1,v 1.8 1998-04-08 21:51:48 cfields Exp $
 .\"
 .TH DETACH 1 "7 March 1998"
 .ds ]W MIT Project Athena
@@ -126,13 +126,13 @@ list, \fIdetach\fP continues with the other filesystems and returns
 the exit status 2 after attempting to detach all the other filesystems.
 
 .SH NOTE
-The programs \fIadd(1)\fP, \fIattach(1)\fP, \fIdetach(1)\fP, \fInfsid(1)\fP,
-and \fIzinit(8)\fP are all really the same program.  Typically
-\fIdetach(1)\fP, \fInfsid(1)\fP and \fIzinit(8)\fP (but not \fIadd(1)\fP)
-are links to \fIattach\fP.  Argv[0] is used to determine which one of the
-programs is run.  This may be overridden by specifying -P
-\fIprogname\fP, where \fIprogname\fP should be one of the above five
-program names.
+The programs \fIadd(1)\fP, \fIattach(1)\fP, \fIattachandrun(1)\fP,
+\fIdetach(1)\fP, \fInfsid(1)\fP, and \fIzinit(8)\fP are all really the
+same program.  Typically \fIattachandrun\fR, \fIdetach(1)\fP,
+\fInfsid(1)\fP and \fIzinit(8)\fP (but not \fIadd(1)\fP) are links to
+\fIattach\fP.  Argv[0] is used to determine which one of the programs
+is run.  This may be overridden by specifying -P \fIprogname\fP, where
+\fIprogname\fP should be one of the above five program names.
 
 .SH FILES
 /var/athena/attachtab
