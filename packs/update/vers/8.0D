@@ -17,13 +17,13 @@ SUN*)
 	fi
 
 	# Fix ADDR if it doesn't match the system's address.
-	if [ -z "$ADDR" -o "`ifconfig -a | grep -c "inet $ADDR"`" -eq 0 ]; then
+	if [ -z "$ADDR" -o `ifconfig -a | grep -c "inet $ADDR"` -eq 0 ]; then
 		ADDR="`ifconfig -a | awk '/^	inet/ \
 			{ if ($2 != "127.0.0.1") { print $2; exit } }'`"
 	fi
 
 	# Now rewrite /etc/athena/rc.conf.
-	echo "Fixing rc.conf; old version in /etc/athena/rc.conf.old."
+	echo "Rewriting rc.conf."
 	cat > /etc/athena/rc.conf.new << EOCONF
 #!/bin/sh -
 #
@@ -61,8 +61,6 @@ NOREMOTE=$NOREMOTE;		export NOREMOTE		# Deny access to remote users not in /etc/
 AUTOUPDATE=$AUTOUPDATE;	export AUTOUPDATE	# Automatically update?
 EOCONF
 
-	rm -f /etc/athena/rc.conf.old
-	mv /etc/athena/rc.conf /etc/athena/rc.conf.old
 	mv /etc/athena/rc.conf.new /etc/athena/rc.conf
 
 	;;
