@@ -1,7 +1,7 @@
 #
 # Makefile for mts/sendmail subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:12 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-23 17:00:27 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -25,7 +25,7 @@ LORDER  = @LORDER@
 TSORT   = @TSORT@
 RANLIB  = @RANLIB@
 
-COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .o
