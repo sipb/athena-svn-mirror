@@ -35,6 +35,7 @@ install:
 		make CFLAGS="$(CFLAGS)" BIN="$(BIN)" LIB="$(LIB)" MAN1="$(MAN1)" MAN3="$(MAN3)" MAN8="$(MAN8)" DESTDIR=$(DESTDIR) install ; \
 		cd .. ; \
 	done
+	-install -c -m 0444 etc/snmpd.conf $(DESTDIR)/etc/snmpd.conf
 
 instman:
 	@-mkdir ${DESTDIR}/include/arpa/snmp
