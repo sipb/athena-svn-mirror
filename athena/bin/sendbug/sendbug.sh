@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.15 1996-07-06 18:55:06 ghudson Exp $
+# $Id: sendbug.sh,v 1.16 1996-08-19 21:14:55 ghudson Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -77,21 +77,14 @@ Remember to save the file before exiting the editor.
 EOF
 
 if [ -r "${MH-$HOME/.mh_profile}" ]; then
-	comp -form "$report_file"
+	PATH="$saved_path" /usr/athena/bin/comp -form "$report_file"
 	rm "$report_file"
 	exit 0
 fi
 # not using MH; run the editor, and send, ourselves.
 MH=/dev/null; export MH
 if [ "${EDITOR}" = "" ]; then
-	EDITOR=emacs ; export EDITOR
-else
-	# User's $EDITOR may rely on user's path.  Change to saved path.
-	# This compromises the purpose of setting the path at the beginning
-	# (because "whatnow" will get run with the user's path), but there's
-	# no way to specify one path for whatnow and one for the editor it
-	# runs.
-	PATH="$saved_path"
+	EDITOR=/usr/athena/bin/emacs ; export EDITOR
 fi
 
-exec whatnow -editor "$EDITOR" "$report_file"
+PATH="$saved_path" exec whatnow -editor "$EDITOR" "$report_file"
