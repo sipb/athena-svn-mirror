@@ -1,15 +1,17 @@
 #!/bin/sh -
 #
-# $Id: config_afs.sh,v 1.17 1999-12-07 21:46:24 danw Exp $
+# $Id: config_afs.sh,v 1.18 2002-02-14 05:42:39 zacheiss Exp $
 #
 # This script configures the workstation's notion of AFS.
 # 1. It updates the cell location information from /usr/vice/etc/CellServDB
 # 2. It updates the cell setuid information from /usr/vice/etc/SuidCells
+# 3. It updates the cell alias information from /usr/vice/etc/CellAlias
 PATH=/bin:/bin/athena:/usr/bin; export PATH
 
 VICEDIR=/usr/vice/etc
 CELLDB=${VICEDIR}/CellServDB
 SUIDDB=${VICEDIR}/SuidCells
+ALIAS=${VICEDIR}/CellAlias
 
 echo "Updating cell location information"
 rm -f ${VICEDIR}/Ctmp
@@ -57,5 +59,23 @@ cat ${SUIDDB} | awk '
 				printf("fs setcell %s -suid\n", cells[i]);
 				printf("echo %s\n", cells[i]); } } }' | sh
 
+
+echo "Updating cell alias information"
 rm -f ${VICEDIR}/Ctmp
+cp /afs/athena.mit.edu/service/CellAlias ${VICEDIR}/Ctmp &&
+	[ -s ${VICEDIR}/Ctmp ] &&
+	mv -f ${VICEDIR}/Ctmp ${ALIAS}.public &&
+	cat ${ALIAS}.public ${ALIAS}.local >${VICEDIR}/Ctmp 2>/dev/null
+[ -s ${VICEDIR}/Ctmp ] && {
+	cmp -s ${VICEDIR}/Ctmp ${ALIAS} || {
+		rm -f ${ALIAS}.last &&
+		mv -f ${VICEDIR}/Ctmp ${ALIAS} &&
+		chmod 644 ${ALIAS} &&
+		sync &&
+		awk '
+			/^#/ {next} \
+			NF == 2 && {print "fs newalias",$2,$1}' ${ALIAS} | sh
+	}
+}
+
 exit 0
