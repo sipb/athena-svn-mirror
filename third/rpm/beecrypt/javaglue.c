@@ -4,24 +4,20 @@
 
 #define BEECRYPT_DLL_EXPORT
 
-#if defined(__LCLINT__)
-#endif
 #define	JNIEXPORT /*@unused@*/
 #define	JNICALL
 
+#include "system.h"
 #include "beecrypt.h"
 #include "blockmode.h"
 
+#undef	JAVAGLUE
+#define	JAVAGLUE	0	/* XXX disable for now */
+
 #if JAVAGLUE
 
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_MALLOC_H
-# include <malloc.h>
-#endif
-
 #include "javaglue.h"
+#include "debug.h"
 
 /* For now, I'm lazy ... */
 /*@-nullpass -nullret -shiftsigned -usedef -temptrans -freshtrans @*/

@@ -5,20 +5,31 @@
 #include "system.h"
 
 #include <rpmlib.h>
+
+#include "rpmds.h"
+
 #include "debug.h"
 
-static struct rpmlibProvides_s {
-/*@observer@*/ /*@null@*/ const char * featureName;
-/*@observer@*/ /*@null@*/ const char * featureEVR;
+/**
+ */
+struct rpmlibProvides_s {
+/*@observer@*/ /*@null@*/
+    const char * featureName;
+/*@observer@*/ /*@null@*/
+    const char * featureEVR;
     int featureFlags;
-/*@observer@*/ /*@null@*/ const char * featureDescription;
-} rpmlibProvides[] = {
+/*@observer@*/ /*@null@*/
+    const char * featureDescription;
+};
+
+/*@observer@*/ /*@unchecked@*/
+static struct rpmlibProvides_s rpmlibProvides[] = {
     { "rpmlib(VersionedDependencies)",	"3.0.3-1",
 	(RPMSENSE_RPMLIB|RPMSENSE_EQUAL),
     N_("PreReq:, Provides:, and Obsoletes: dependencies support versions.") },
     { "rpmlib(CompressedFileNames)",	"3.0.4-1",
 	(RPMSENSE_RPMLIB|RPMSENSE_EQUAL),
-    N_("file name(s) are stored as (dirName,baseName,dirIndex) tuple, not as path.")},
+    N_("file name(s) stored as (dirName,baseName,dirIndex) tuple, not as path.")},
     { "rpmlib(PayloadIsBzip2)",		"3.0.5-1",
 	(RPMSENSE_RPMLIB|RPMSENSE_EQUAL),
     N_("package payload is compressed using bzip2.") },
@@ -37,6 +48,9 @@ static struct rpmlibProvides_s {
     { "rpmlib(PartialHardlinkSets)",    "4.0.4-1",
 	(                RPMSENSE_EQUAL),
     N_("a hardlink file set may be installed without being complete.") },
+    { "rpmlib(ConcurrentAccess)",    "4.1-1",
+	(                RPMSENSE_EQUAL),
+    N_("package scriptlets may access the rpm database while installing.") },
     { NULL,				NULL, 0,	NULL }
 };
 
@@ -45,25 +59,34 @@ void rpmShowRpmlibProvides(FILE * fp)
     const struct rpmlibProvides_s * rlp;
 
     for (rlp = rpmlibProvides; rlp->featureName != NULL; rlp++) {
-	fprintf(fp, "    %s", rlp->featureName);
-	if (rlp->featureEVR && rlp->featureFlags)
-	    printDepFlags(fp, rlp->featureEVR, rlp->featureFlags);
-	fprintf(fp, "\n");
-	if (rlp->featureDescription)
-	    fprintf(fp, "\t%s\n", rlp->featureDescription);
+/*@-nullpass@*/ /* FIX: rlp->featureEVR not NULL */
+	rpmds pro = rpmdsSingle(RPMTAG_PROVIDENAME, rlp->featureName,
+			rlp->featureEVR, rlp->featureFlags);
+/*@=nullpass@*/
+	const char * DNEVR = rpmdsDNEVR(pro);
+
+	if (pro != NULL && DNEVR != NULL) {
+	    fprintf(fp, "    %s\n", DNEVR+2);
+	    if (rlp->featureDescription)
+		fprintf(fp, "\t%s\n", rlp->featureDescription);
+	}
+	pro = rpmdsFree(pro);
     }
 }
 
-int rpmCheckRpmlibProvides(const char * keyName, const char * keyEVR,
-	int keyFlags)
+int rpmCheckRpmlibProvides(const rpmds key)
 {
     const struct rpmlibProvides_s * rlp;
     int rc = 0;
 
     for (rlp = rpmlibProvides; rlp->featureName != NULL; rlp++) {
-	if (rlp->featureEVR && rlp->featureFlags)
-	    rc = rpmRangesOverlap(keyName, keyEVR, keyFlags,
-		rlp->featureName, rlp->featureEVR, rlp->featureFlags);
+	if (rlp->featureEVR && rlp->featureFlags) {
+	    rpmds pro;
+	    pro = rpmdsSingle(RPMTAG_PROVIDENAME, rlp->featureName,
+			rlp->featureEVR, rlp->featureFlags);
+	    rc = rpmdsCompare(pro, key);
+	    pro = rpmdsFree(pro);
+	}
 	if (rc)
 	    break;
     }
@@ -77,13 +100,16 @@ int rpmGetRpmlibProvides(const char *** provNames, int ** provFlags,
     int * flags;
     int n = 0;
     
+/*@-boundswrite@*/
     while (rpmlibProvides[n].featureName != NULL)
         n++;
+/*@=boundswrite@*/
 
     names = xcalloc((n+1), sizeof(*names));
     versions = xcalloc((n+1), sizeof(*versions));
     flags = xcalloc((n+1), sizeof(*flags));
     
+/*@-boundswrite@*/
     for (n = 0; rpmlibProvides[n].featureName != NULL; n++) {
         names[n] = rpmlibProvides[n].featureName;
         flags[n] = rpmlibProvides[n].featureFlags;
@@ -110,6 +136,7 @@ int rpmGetRpmlibProvides(const char *** provNames, int ** provFlags,
     else
 	versions = _free(versions);
     /*@=branchstate@*/
+/*@=boundswrite@*/
 
     /*@-compmempass@*/ /* FIX: rpmlibProvides[] reachable */
     return n;

@@ -4,19 +4,6 @@
 
 #include "system.h"
 
-#if defined(__LCLINT__)
-/*@-redef@*/
-typedef	unsigned int u_int32_t;
-typedef	unsigned short u_int16_t;
-typedef	unsigned char u_int8_t;
-/*@-incondefs@*/	/* LCLint 3.0.0.15 */
-typedef	int int32_t;
-/*@=incondefs@*/
-/*@=redef@*/
-#endif
-
-#include <db3/db.h>
-
 #include <rpmlib.h>
 #include <rpmmacro.h>
 
@@ -35,24 +22,17 @@ typedef	int int32_t;
 struct _dbiIndex db3dbi;
 /*@=exportlocal =exportheadervar@*/
 
-/** \ingroup db3
- *  Analogue to struct poptOption
- */
-struct dbOption {
-/*@observer@*/ /*@null@*/const char * longName;	/* may be NULL */
-    const char shortName;	/* may be '\0' */
-    int argInfo;
-/*@null@*/ void * arg;		/* depends on argInfo */
-    int val;			/* 0 means don't return, just update flag */
-/*@observer@*/ /*@null@*/ const char * descrip; /*!< description for autohelp -- may be NULL */
-/*@observer@*/ /*@null@*/ const char * argDescrip; /*!< argument description for autohelp */
-};
+/*@unchecked@*/
+static int dbi_use_cursors;
+
+/*@unchecked@*/
+static int dbi_tear_down;
 
 /*@-compmempass -immediatetrans -exportlocal -exportheadervar@*/
 /** \ingroup db3
  */
 /*@unchecked@*/
-struct dbOption rdbOptions[] = {
+struct poptOption rdbOptions[] = {
  /* XXX DB_CXX_NO_EXCEPTIONS */
  { "client",	0,POPT_BIT_SET,	&db3dbi.dbi_ecflags, DB_CLIENT,
 	NULL, NULL },
@@ -151,13 +131,11 @@ struct dbOption rdbOptions[] = {
 
  { "verify",	0,POPT_ARG_NONE,	&db3dbi.dbi_verify_on_close, 0,
 	NULL, NULL },
- { "teardown",	0,POPT_ARG_NONE,	&db3dbi.dbi_tear_down, 0,
+ { "teardown",	0,POPT_ARG_NONE,	&dbi_tear_down, 0,
 	NULL, NULL },
- { "usecursors",0,POPT_ARG_NONE,	&db3dbi.dbi_use_cursors, 0,
+ { "usecursors",0,POPT_ARG_NONE,	&dbi_use_cursors, 0,
 	NULL, NULL },
  { "usedbenv",	0,POPT_ARG_NONE,	&db3dbi.dbi_use_dbenv, 0,
-	NULL, NULL },
- { "rmwcursor",	0,POPT_ARG_NONE,	&db3dbi.dbi_get_rmw_cursor, 0,
 	NULL, NULL },
  { "nofsync",	0,POPT_ARG_NONE,	&db3dbi.dbi_no_fsync, 0,
 	NULL, NULL },
@@ -212,9 +190,11 @@ struct dbOption rdbOptions[] = {
  { "lorder",	0,POPT_ARG_INT,		&db3dbi.dbi_lorder, 0,
 	NULL, NULL },
 
- { "mp_mmapsize", 0,POPT_ARG_INT,	&db3dbi.dbi_mp_mmapsize, 0,
+ { "mmapsize", 0,POPT_ARG_INT,		&db3dbi.dbi_mmapsize, 0,
 	NULL, NULL },
- { "mp_size",	0,POPT_ARG_INT,		&db3dbi.dbi_mp_size, 0,
+ { "mp_mmapsize", 0,POPT_ARG_INT,	&db3dbi.dbi_mmapsize, 0,
+	NULL, NULL },
+ { "mp_size",	0,POPT_ARG_INT,		&db3dbi.dbi_cachesize, 0,
 	NULL, NULL },
  { "pagesize",	0,POPT_ARG_INT,		&db3dbi.dbi_pagesize, 0,
 	NULL, NULL },
@@ -257,61 +237,9 @@ struct dbOption rdbOptions[] = {
  { "q_extentsize", 0,POPT_ARG_INT,	&db3dbi.dbi_q_extentsize, 0,
 	NULL, NULL },
 
- { NULL, 0,0, NULL, 0, NULL, NULL }
+    POPT_TABLEEND
 };
 /*@=compmempass =immediatetrans =exportlocal =exportheadervar@*/
-
-static int dbSaveLong(const struct dbOption * opt, int argInfo, long aLong)
-	/*@modifies opt->arg @*/
-{
-    if (argInfo & POPT_ARGFLAG_NOT)
-	aLong = ~aLong;
-    if (opt->arg != NULL)
-    switch (argInfo & POPT_ARGFLAG_LOGICALOPS) {
-    case 0:
-	*((long *) opt->arg) = aLong;
-	break;
-    case POPT_ARGFLAG_OR:
-	*((long *) opt->arg) |= aLong;
-	break;
-    case POPT_ARGFLAG_AND:
-	*((long *) opt->arg) &= aLong;
-	break;
-    case POPT_ARGFLAG_XOR:
-	*((long *) opt->arg) ^= aLong;
-	break;
-    default:
-	return POPT_ERROR_BADOPERATION;
-	/*@notreached@*/ break;
-    }
-    return 0;
-}
-
-static int dbSaveInt(const struct dbOption * opt, int argInfo, long aLong)
-	/*@modifies opt->arg @*/
-{
-    if (argInfo & POPT_ARGFLAG_NOT)
-	aLong = ~aLong;
-    if (opt->arg != NULL)
-    switch (argInfo & POPT_ARGFLAG_LOGICALOPS) {
-    case 0:
-	*((int *) opt->arg) = aLong;
-	break;
-    case POPT_ARGFLAG_OR:
-	*((int *) opt->arg) |= aLong;
-	break;
-    case POPT_ARGFLAG_AND:
-	*((int *) opt->arg) &= aLong;
-	break;
-    case POPT_ARGFLAG_XOR:
-	*((int *) opt->arg) ^= aLong;
-	break;
-    default:
-	return POPT_ERROR_BADOPERATION;
-	/*@notreached@*/ break;
-    }
-    return 0;
-}
 
 dbiIndex db3Free(dbiIndex dbi)
 {
@@ -320,6 +248,7 @@ dbiIndex db3Free(dbiIndex dbi)
 	dbi->dbi_home = _free(dbi->dbi_home);
 	dbi->dbi_file = _free(dbi->dbi_file);
 	dbi->dbi_subfile = _free(dbi->dbi_subfile);
+	dbi->dbi_tmpdir = _free(dbi->dbi_tmpdir);
 	dbi->dbi_host = _free(dbi->dbi_host);
 	dbi->dbi_errpfx = _free(dbi->dbi_errpfx);
 	dbi->dbi_re_source = _free(dbi->dbi_re_source);
@@ -332,27 +261,22 @@ dbiIndex db3Free(dbiIndex dbi)
 /** @todo Set a reasonable "last gasp" default db config. */
 /*@observer@*/ /*@unchecked@*/
 static const char *db3_config_default =
-    "db3:hash:mpool:cdb:usecursors:verbose:mp_mmapsize=8Mb:mp_size=512Kb:pagesize=512:perms=0644";
+    "db3:hash:mpool:cdb:usecursors:verbose:mp_mmapsize=8Mb:cachesize=512Kb:pagesize=512:perms=0644";
 
-dbiIndex db3New(rpmdb rpmdb, int rpmtag)
+/*@-bounds@*/
+dbiIndex db3New(rpmdb rpmdb, rpmTag rpmtag)
 {
     dbiIndex dbi = xcalloc(1, sizeof(*dbi));
     char dbiTagMacro[128];
     char * dbOpts;
 
     sprintf(dbiTagMacro, "%%{_dbi_config_%s}", tagName(rpmtag));
-    /*@-nullpass@*/
     dbOpts = rpmExpand(dbiTagMacro, NULL);
-    /*@=nullpass@*/
     if (!(dbOpts && *dbOpts && *dbOpts != '%')) {
 	dbOpts = _free(dbOpts);
-	/*@-nullpass@*/
 	dbOpts = rpmExpand("%{_dbi_config}", NULL);
-	/*@=nullpass@*/
 	if (!(dbOpts && *dbOpts && *dbOpts != '%')) {
-	    /*@-nullpass@*/
 	    dbOpts = rpmExpand(db3_config_default, NULL);
-	    /*@=nullpass@*/
 	}
     }
 
@@ -363,8 +287,9 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
 	char *p, *pe;
 
 	memset(&db3dbi, 0, sizeof(db3dbi));
+/*=========*/
 	for (o = dbOpts; o && *o; o = oe) {
-	    struct dbOption *opt;
+	    struct poptOption *opt;
 	    const char * tok;
 	    int argInfo;
 
@@ -414,16 +339,18 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
 	    switch (argInfo & POPT_ARG_MASK) {
 
 	    case POPT_ARG_NONE:
-		(void) dbSaveInt(opt, argInfo, 1L);
+		(void) poptSaveInt((int *)opt->arg, argInfo, 1L);
 		/*@switchbreak@*/ break;
 	    case POPT_ARG_VAL:
-		(void) dbSaveInt(opt, argInfo, (long)opt->val);
+		(void) poptSaveInt((int *)opt->arg, argInfo, (long)opt->val);
 	    	/*@switchbreak@*/ break;
 	    case POPT_ARG_STRING:
 	    {	const char ** t = opt->arg;
 		/*@-mods@*/
 		if (t) {
+/*@-unqualifiedtrans@*/ /* FIX: opt->arg annotation in popt.h */
 		    *t = _free(*t);
+/*@=unqualifiedtrans@*/
 		    *t = xstrdup( (p ? p : "") );
 		}
 		/*@=mods@*/
@@ -452,7 +379,7 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
 				opt->longName);
 			continue;
 		    }
-		    (void) dbSaveLong(opt, argInfo, aLong);
+		    (void) poptSaveLong((long *)opt->arg, argInfo, aLong);
 		    /*@switchbreak@*/ break;
 		} else {
 		    if (aLong > INT_MAX || aLong < INT_MIN) {
@@ -461,13 +388,14 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
 				opt->longName);
 			continue;
 		    }
-		    (void) dbSaveInt(opt, argInfo, aLong);
+		    (void) poptSaveInt((int *)opt->arg, argInfo, aLong);
 		}
 	      }	/*@switchbreak@*/ break;
 	    default:
 		/*@switchbreak@*/ break;
 	    }
 	}
+/*=========*/
     }
     /*@=branchstate@*/
 
@@ -481,9 +409,9 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
     if (!(dbi->dbi_perms & 0600))
 	dbi->dbi_perms = 0644;
     dbi->dbi_mode = rpmdb->db_mode;
-    /*@-keeptrans@*/
+    /*@-assignexpose -newreftrans@*/ /* FIX: figger rpmdb/dbi refcounts */
 /*@i@*/	dbi->dbi_rpmdb = rpmdb;
-    /*@=keeptrans@*/
+    /*@=assignexpose =newreftrans@*/
     dbi->dbi_rpmtag = rpmtag;
     
     /*
@@ -501,14 +429,13 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
     }
     /*@=sizeoftype@*/
 
-    dbi->dbi_use_cursors = 1;		/* db3 cursors are always used now. */
+    dbi->dbi_byteswapped = 0;	/* -1 unknown, 0 native order, 1 alien order */
 
     if (!dbi->dbi_use_dbenv) {		/* db3 dbenv is always used now. */
 	dbi->dbi_use_dbenv = 1;
 	dbi->dbi_eflags |= (DB_INIT_MPOOL|DB_JOINENV);
-	dbi->dbi_mp_mmapsize = 8 * 1024 * 1024;
-	dbi->dbi_mp_size = 512 * 1024;
-	dbi->dbi_tear_down = 1;
+	dbi->dbi_mmapsize = 16 * 1024 * 1024;
+	dbi->dbi_cachesize = 1 * 1024 * 1024;
     }
 
     if ((dbi->dbi_bt_flags | dbi->dbi_h_flags) & DB_DUP)
@@ -518,11 +445,13 @@ dbiIndex db3New(rpmdb rpmdb, int rpmtag)
     return dbi;
     /*@=globstate@*/
 }
+/*@=bounds@*/
 
+/*@-boundswrite@*/
 const char *const prDbiOpenFlags(int dbflags, int print_dbenv_flags)
 {
     static char buf[256];
-    struct dbOption *opt;
+    struct poptOption *opt;
     char * oe;
 
     oe = buf;
@@ -553,5 +482,6 @@ const char *const prDbiOpenFlags(int dbflags, int print_dbenv_flags)
     }
     return buf;
 }
+/*@=boundswrite@*/
 
 #endif

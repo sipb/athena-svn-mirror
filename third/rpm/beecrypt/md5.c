@@ -25,11 +25,11 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "md5.h"
 #include "mp32.h"
 #include "endianness.h"
+#include "debug.h"
 
 /** \ingroup HASH_md5_m
  */
@@ -40,6 +40,7 @@ static uint32 md5hinit[4] = { 0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476 };
 const hashFunction md5 = { "MD5", sizeof(md5Param), 64, 4 * sizeof(uint32), (hashFunctionReset) md5Reset, (hashFunctionUpdate) md5Update, (hashFunctionDigest) md5Digest };
 /*@=sizeoftype@*/
 
+/*@-boundswrite@*/
 int md5Reset(register md5Param* p)
 {
 	mp32copy(4, p->h, md5hinit);
@@ -48,6 +49,7 @@ int md5Reset(register md5Param* p)
 	p->offset = 0;
 	return 0;
 }
+/*@=boundswrite@*/
 
 #define FF(a, b, c, d, w, s, t)	\
 	a += ((b&(c^d))^d) + w + t;	\
@@ -70,6 +72,7 @@ int md5Reset(register md5Param* p)
 	a += b;
 
 #ifndef ASM_MD5PROCESS
+/*@-boundsread@*/
 void md5Process(md5Param* p)
 {
 	register uint32 a,b,c,d;
@@ -164,8 +167,10 @@ void md5Process(md5Param* p)
 	p->h[2] += c;
 	p->h[3] += d;
 }
+/*@=boundsread@*/
 #endif
 
+/*@-boundswrite@*/
 int md5Update(md5Param* p, const byte* data, int size)
 {
 	register int proclength;
@@ -187,9 +192,11 @@ int md5Update(md5Param* p, const byte* data, int size)
 	}
 	return 0;
 }
+/*@=boundswrite@*/
 
 /** \ingroup HASH_md5_m
  */
+/*@-boundswrite@*/
 static void md5Finish(md5Param* p)
 	/*@modifies p @*/
 {
@@ -228,7 +235,9 @@ static void md5Finish(md5Param* p)
 	#endif
 	p->offset = 0;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 int md5Digest(md5Param* p, uint32* data)
 {
 	md5Finish(p);
@@ -236,3 +245,4 @@ int md5Digest(md5Param* p, uint32* data)
 	(void) md5Reset(p);
 	return 0;
 }
+/*@=boundswrite@*/

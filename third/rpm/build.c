@@ -7,54 +7,44 @@
 #include <rpmcli.h>
 #include <rpmbuild.h>
 
+#include "rpmps.h"
+#include "rpmte.h"
+#include "rpmts.h"
+
 #include "build.h"
 #include "debug.h"
 
-/*@access rpmTransactionSet @*/	/* XXX compared with NULL @*/
+/*@access rpmts @*/	/* XXX compared with NULL @*/
 /*@access rpmdb @*/		/* XXX compared with NULL @*/
 /*@access FD_t @*/		/* XXX compared with NULL @*/
 
 /**
  */
-static int checkSpec(Header h)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies h, rpmGlobalMacroContext,
-		fileSystem, internalState @*/
+static int checkSpec(rpmts ts, Header h)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies ts, h, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
-    const char * rootdir = NULL;
-    rpmdb db = NULL;
-    int mode = O_RDONLY;
-    rpmTransactionSet ts;
-    rpmDependencyConflict conflicts;
-    int numConflicts;
+    rpmps ps;
     int rc;
 
-    if (!headerIsEntry(h, RPMTAG_REQUIREFLAGS))
+    if (!headerIsEntry(h, RPMTAG_REQUIRENAME)
+     && !headerIsEntry(h, RPMTAG_CONFLICTNAME))
 	return 0;
 
-    if (rpmdbOpen(rootdir, &db, mode, 0644)) {
-	const char * dn;
-	dn = rpmGetPath( (rootdir ? rootdir : ""), "%{_dbpath}", NULL);
-	rpmError(RPMERR_OPEN, _("cannot open rpm database in %s\n"), dn);
-	dn = _free(dn);
-	exit(EXIT_FAILURE);
-    }
-    ts = rpmtransCreateSet(db, rootdir);
+    rc = rpmtsAddInstallElement(ts, h, NULL, 0, NULL);
 
-    rc = rpmtransAddPackage(ts, h, NULL, NULL, 0, NULL);
+    rc = rpmtsCheck(ts);
 
-    rc = rpmdepCheck(ts, &conflicts, &numConflicts);
-    if (rc == 0 && conflicts) {
-	rpmMessage(RPMMESS_ERROR, _("failed build dependencies:\n"));
-	printDepProblems(stderr, conflicts, numConflicts);
-	conflicts = rpmdepFreeConflicts(conflicts, numConflicts);
+    ps = rpmtsProblems(ts);
+    if (rc == 0 && rpmpsNumProblems(ps) > 0) {
+	rpmMessage(RPMMESS_ERROR, _("Failed build dependencies:\n"));
+	rpmpsPrint(NULL, ps);
 	rc = 1;
     }
+    ps = rpmpsFree(ps);
 
-    ts = rpmtransFree(ts);
-    if (db != NULL)
-	(void) rpmdbClose(db);
+    /* XXX nuke the added package. */
+    rpmtsClean(ts);
 
     return rc;
 }
@@ -67,8 +57,8 @@ static int checkSpec(Header h)
 /**
  */
 static int isSpecFile(const char * specfile)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fileSystem, internalState @*/
 {
     char buf[256];
     const char * s;
@@ -95,9 +85,11 @@ static int isSpecFile(const char * specfile)
 	case ':':
 	    checking = 0;
 	    /*@switchbreak@*/ break;
+/*@-boundsread@*/
 	default:
 	    if (checking && !(isprint(*s) || isspace(*s))) return 0;
 	    /*@switchbreak@*/ break;
+/*@=boundsread@*/
 	}
     }
     return 1;
@@ -105,13 +97,13 @@ static int isSpecFile(const char * specfile)
 
 /**
  */
-static int buildForTarget(const char * arg, BTA_t ba,
-		const char * passPhrase, char * cookie)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies rpmGlobalMacroContext,
-		fileSystem, internalState @*/
+/*@-boundswrite@*/
+static int buildForTarget(rpmts ts, const char * arg, BTA_t ba)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies ts, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
+    const char * passPhrase = ba->passPhrase;
+    const char * cookie = ba->cookie;
     int buildAmount = ba->buildAmount;
     const char * buildRootURL = NULL;
     const char * specFile;
@@ -267,23 +259,28 @@ static int buildForTarget(const char * arg, BTA_t ba,
     /* Parse the spec file */
 #define	_anyarch(_f)	\
 (((_f)&(RPMBUILD_PREP|RPMBUILD_BUILD|RPMBUILD_INSTALL|RPMBUILD_PACKAGEBINARY)) == 0)
-    if (parseSpec(&spec, specURL, ba->rootdir, buildRootURL, 0, passPhrase,
-		cookie, _anyarch(buildAmount), ba->force)) {
+    if (parseSpec(ts, specURL, ba->rootdir, buildRootURL, 0, passPhrase,
+		cookie, _anyarch(buildAmount), ba->force))
+    {
 	rc = 1;
 	goto exit;
     }
 #undef	_anyarch
+    if ((spec = rpmtsSetSpec(ts, NULL)) == NULL) {
+	rc = 1;
+	goto exit;
+    }
 
     /* Assemble source header from parsed components */
     initSourceHeader(spec);
 
     /* Check build prerequisites */
-    if (!ba->noDeps && checkSpec(spec->sourceHeader)) {
+    if (!ba->noDeps && checkSpec(ts, spec->sourceHeader)) {
 	rc = 1;
 	goto exit;
     }
 
-    if (buildSpec(spec, buildAmount, ba->noBuild)) {
+    if (buildSpec(ts, spec, buildAmount, ba->noBuild)) {
 	rc = 1;
 	goto exit;
     }
@@ -297,18 +294,28 @@ exit:
     buildRootURL = _free(buildRootURL);
     return rc;
 }
+/*@=boundswrite@*/
 
-int build(const char * arg, BTA_t ba,
-	const char * passPhrase, char * cookie, const char * rcfile)
+int build(rpmts ts, const char * arg, BTA_t ba, const char * rcfile)
 {
     char *t, *te;
     int rc = 0;
     char * targets = ba->targets;
 #define	buildCleanMask	(RPMBUILD_RMSOURCE|RPMBUILD_RMSPEC)
     int cleanFlags = ba->buildAmount & buildCleanMask;
+    rpmVSFlags vsflags, ovsflags;
+
+    vsflags = rpmExpandNumeric("%{_vsflags_build}");
+    if (ba->qva_flags & VERIFY_DIGEST)
+	vsflags |= _RPMVSF_NODIGESTS;
+    if (ba->qva_flags & VERIFY_SIGNATURE)
+	vsflags |= _RPMVSF_NOSIGNATURES;
+    if (ba->qva_flags & VERIFY_HDRCHK)
+	vsflags |= RPMVSF_NOHDRCHK;
+    ovsflags = rpmtsSetVSFlags(ts, vsflags);
 
     if (targets == NULL) {
-	rc =  buildForTarget(arg, ba, passPhrase, cookie);
+	rc =  buildForTarget(ts, arg, ba);
 	goto exit;
     }
 
@@ -334,12 +341,13 @@ int build(const char * arg, BTA_t ba,
 	/* Read in configuration for target. */
 	rpmFreeMacros(NULL);
 	(void) rpmReadConfigFiles(rcfile, target);
-	rc = buildForTarget(arg, ba, passPhrase, cookie);
+	rc = buildForTarget(ts, arg, ba);
 	if (rc)
 	    break;
     }
 
 exit:
+    vsflags = rpmtsSetVSFlags(ts, ovsflags);
     /* Restore original configuration. */
     rpmFreeMacros(NULL);
     (void) rpmReadConfigFiles(rcfile, NULL);

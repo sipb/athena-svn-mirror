@@ -1,6 +1,6 @@
 Welcome to the BeeCrypt crypto library!
 
-Copyright (c) 1997, 1998, 1999, 2000, 2001 Virtual Unlimited B.V.
+Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002 Virtual Unlimited B.V.
 
 Author: Bob Deblier <bob@virtualunlimited.com>
 
@@ -23,14 +23,11 @@ this distribution.
 
 
 
-Welcome to version 2.1.0 of BeeCrypt:
+Welcome to version 2.2.0 of BeeCrypt:
 
-As you can see from the entries in the NEWS file, quite a lot has been
-added again, and compiling the library should now be even easier, since
-we've switched to automake & libtool.
-
-The configure script has a few new options, which will be described in
-detail below.
+AES support has been added, and the library has been thoroughly debugged,
+with the addition of unit tests. Once you've built the library, you can
+verify the correct functioning with 'make check'.
 
 As usual, your comments are welcome.
 
@@ -80,55 +77,56 @@ provider and the counterpart of this library.
 Included in the library are:
     - entropy sources for initializing pseudo-random generators
     - pseudo-random generators: FIPS-186, Mersenne Twister
-    - block ciphers: Blowfish
+    - block ciphers: AES, Blowfish
     - hash functions: MD5, SHA-1, SHA-256
-    - keyed hash functions: MD5/HMAC, SHA-1/HMAC, SHA-256/HMAC
+    - keyed hash functions: HMAC-MD5, HMAC-SHA-1, HMAC-SHA-256
     - multi-precision integer library, with assembler-optimized routines
-	  for several processors
+      for several processors
     - probabilistic primality testing, with optimized small prime trial
-	  division
+      division
     - discrete logarithm parameter generation over a prime field
     - Diffie-Hellman key agreement
+    - DSA signature scheme
     - ElGamal signature scheme (two variants)
-	- RSA keypair generation with chinese remainder theorem variables
-	- RSA public & private key operations
-	- DHAES encryption scheme
+    - RSA keypair generation with chinese remainder theorem variables
+    - RSA public & private key operations
+    - DHAES encryption scheme
 
 Planned for the near future are:
+    - mp64 library for operation on 64-bit computers (and possibly also
+      on certain 32-bit platforms)
     - compliance with and compliance statements for IEEE P1363
-    - DSA (i.e. the rest of FIPS-186)
-    - more blockciphers (Rijndael a.k.a AES, Twofish, ... )
+    - more blockciphers (Twofish, ... )
 	- more hash functions (RIPEMD-160, SHA-384, SHA-512, HAVAL, Tiger)
+	- RSA signatures as specified by RFC-2440.
 	- Elliptic Curves (ECDSA, ... )
+    - more blockcipher modes (OFB, ... )
 
 The library has been tested on the following platforms:
-	- FreeBSD 4.0 alpha
-	- FreeBSD 4.0, 4.2 x86
-		- includes assembler optimization (tuned for Pentium and higher)
-	- Linux glibc 2.x alpha
-	- Linux glibc 2.x arm
-		- includes assembler optimization
+    - FreeBSD 4.0 alpha
+    - FreeBSD 4.0, 4.2 x86
+        - includes assembler optimization (tuned for Pentium and higher)
+    - Linux glibc 2.x alpha
+    - Linux glibc 2.x arm
+        - includes assembler optimization
     - Linux glibc 2.x ppc
-        - includes assembler optimization (for generic 32-bit PowerPC)
-	- Linux glibc 2.x sparc
-		- includes assembler optimization for sparc v8
+        - includes assembler optimization for 32-bit PowerPC
+     - Linux glibc 2.x sparc
+        - includes assembler optimization for Sparc v8
     - Linux glibc 2.x x86
         - includes assembler optimization (tuned for Pentium and higher)
     - Solaris 2.6/2.7/2.8 sparc (with Forte or gnu compilers)
-        - includes assembler optimization for sparc v8, v8plus and v9
-	- Solaris 2.7/2.8 x86 (with Forte or gnu compilers)
-		- includes assembler optimization (tuned for Pentium and higher)
-	- Tru64 Unix alpha
+        - includes assembler optimization for Sparc v8, v8plus and v9
+    - Solaris 2.7/2.8 x86 (with Forte or gnu compilers)
+        - includes assembler optimization (tuned for Pentium and higher)
+    - Tru64 Unix alpha
     - Win32 (Windows 95, 98, NT 4.0, 2000)
         - includes assembler optimization (tuned for Pentium and higher)
 
 The library is currently in the process of being ported to:
-	- Cygwin (the DLL builds now, but needs to be tested)
-	- Darwin (Darwin 1.2 doesn't seem to run on our PowerMac 7300/166,
-	  and 1.0.2 was flaky, so any volunteer effort would be appreciated)
-	- QNX (I currently don't have a testing system anymore)
-
-
+    - Darwin (apparently Apple has decided to change the PPC assembler format;
+      this will need a fix)
+    - Cygwin (Can't seem to get the DLL to build properly with the current version of the autotools)
 
 For more information, refer to the HTML documentation in the docs directory.
 
@@ -142,4 +140,3 @@ or contact me at mailto:beecrypt@virtualunlimited.com
 Sincerely,
 
 Bob Deblier
-Virtual Unlimited

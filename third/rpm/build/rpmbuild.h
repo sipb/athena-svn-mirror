@@ -6,7 +6,7 @@
  *  This is the *only* module users of librpmbuild should need to include.
  */
 
-#include <rpmcli.h>
+#include "rpmcli.h"
 
 /* and it shouldn't need these :-( */
 #include "stringbuf.h"
@@ -23,17 +23,18 @@ typedef enum rpmBuildFlags_e {
 /*@-enummemuse@*/
     RPMBUILD_NONE	= 0,
 /*@=enummemuse@*/
-    RPMBUILD_PREP	= (1 << 0),	/*!< Execute %%prep. */
-    RPMBUILD_BUILD	= (1 << 1),	/*!< Execute %%build. */
-    RPMBUILD_INSTALL	= (1 << 2),	/*!< Execute %%install. */
-    RPMBUILD_CLEAN	= (1 << 3),	/*!< Execute %%clean. */
-    RPMBUILD_FILECHECK	= (1 << 4),	/*!< Check %%files manifest. */
-    RPMBUILD_PACKAGESOURCE = (1 << 5),	/*!< Create source package. */
-    RPMBUILD_PACKAGEBINARY = (1 << 6),	/*!< Create binary package(s). */
-    RPMBUILD_RMSOURCE	= (1 << 7),	/*!< Remove source(s) and patch(s). */
-    RPMBUILD_RMBUILD	= (1 << 8),	/*!< Remove build sub-tree. */
-    RPMBUILD_STRINGBUF	= (1 << 9),	/*!< only for doScript() */
-    RPMBUILD_RMSPEC	= (1 << 10)	/*!< Remove spec file. */
+    RPMBUILD_PREP	= (1 <<  0),	/*!< Execute %%prep. */
+    RPMBUILD_BUILD	= (1 <<  1),	/*!< Execute %%build. */
+    RPMBUILD_INSTALL	= (1 <<  2),	/*!< Execute %%install. */
+    RPMBUILD_CHECK	= (1 <<  3),	/*!< Execute %%check. */
+    RPMBUILD_CLEAN	= (1 <<  4),	/*!< Execute %%clean. */
+    RPMBUILD_FILECHECK	= (1 <<  5),	/*!< Check %%files manifest. */
+    RPMBUILD_PACKAGESOURCE = (1 <<  6),	/*!< Create source package. */
+    RPMBUILD_PACKAGEBINARY = (1 <<  7),	/*!< Create binary package(s). */
+    RPMBUILD_RMSOURCE	= (1 <<  8),	/*!< Remove source(s) and patch(s). */
+    RPMBUILD_RMBUILD	= (1 <<  9),	/*!< Remove build sub-tree. */
+    RPMBUILD_STRINGBUF	= (1 << 10),	/*!< only for doScript() */
+    RPMBUILD_RMSPEC	= (1 << 11)	/*!< Remove spec file. */
 } rpmBuildFlags;
 /*@=typeuse@*/
 
@@ -49,25 +50,26 @@ typedef enum rpmBuildFlags_e {
  * Spec file parser states.
  */
 typedef enum rpmParseState_e {
-    PART_NONE		= 0,	/*!< */
-    PART_PREAMBLE	= 1,	/*!< */
-    PART_PREP		= 2,	/*!< */
-    PART_BUILD		= 3,	/*!< */
-    PART_INSTALL	= 4,	/*!< */
-    PART_CLEAN		= 5,	/*!< */
-    PART_FILES		= 6,	/*!< */
-    PART_PRE		= 7,	/*!< */
-    PART_POST		= 8,	/*!< */
-    PART_PREUN		= 9,	/*!< */
-    PART_POSTUN		= 10,	/*!< */
-    PART_DESCRIPTION	= 11,	/*!< */
-    PART_CHANGELOG	= 12,	/*!< */
-    PART_TRIGGERIN	= 13,	/*!< */
-    PART_TRIGGERUN	= 14,	/*!< */
-    PART_VERIFYSCRIPT	= 15,	/*!< */
-    PART_BUILDARCHITECTURES= 16,/*!< */
-    PART_TRIGGERPOSTUN	= 17,	/*!< */
-    PART_LAST		= 18	/*!< */
+    PART_NONE		=  0,	/*!< */
+    PART_PREAMBLE	=  1,	/*!< */
+    PART_PREP		=  2,	/*!< */
+    PART_BUILD		=  3,	/*!< */
+    PART_INSTALL	=  4,	/*!< */
+    PART_CHECK		=  5,	/*!< */
+    PART_CLEAN		=  6,	/*!< */
+    PART_FILES		=  7,	/*!< */
+    PART_PRE		=  8,	/*!< */
+    PART_POST		=  9,	/*!< */
+    PART_PREUN		= 10,	/*!< */
+    PART_POSTUN		= 11,	/*!< */
+    PART_DESCRIPTION	= 12,	/*!< */
+    PART_CHANGELOG	= 13,	/*!< */
+    PART_TRIGGERIN	= 14,	/*!< */
+    PART_TRIGGERUN	= 15,	/*!< */
+    PART_VERIFYSCRIPT	= 16,	/*!< */
+    PART_BUILDARCHITECTURES= 17,/*!< */
+    PART_TRIGGERPOSTUN	= 18,	/*!< */
+    PART_LAST		= 19	/*!< */
 } rpmParseState;
 
 #define STRIP_NOTHING             0
@@ -89,7 +91,7 @@ void freeNames(void)
 /** \ingroup rpmbuild
  * Return cached user name from user id.
  * @todo Implement using hash.
- * @param		user id
+ * @param uid		user id
  * @return		cached user name
  */
 extern /*@observer@*/ const char * getUname(uid_t uid)	/*@*/;
@@ -97,7 +99,7 @@ extern /*@observer@*/ const char * getUname(uid_t uid)	/*@*/;
 /** \ingroup rpmbuild
  * Return cached user name.
  * @todo Implement using hash.
- * @param		user name
+ * @param uname		user name
  * @return		cached user name
  */
 extern /*@observer@*/ const char * getUnameS(const char * uname)	/*@*/;
@@ -105,7 +107,7 @@ extern /*@observer@*/ const char * getUnameS(const char * uname)	/*@*/;
 /** \ingroup rpmbuild
  * Return cached user id.
  * @todo Implement using hash.
- * @param		user name
+ * @param uname		user name
  * @return		cached uid
  */
 uid_t getUidS(const char * uname)	/*@*/;
@@ -113,7 +115,7 @@ uid_t getUidS(const char * uname)	/*@*/;
 /** \ingroup rpmbuild
  * Return cached group name from group id.
  * @todo Implement using hash.
- * @param		group id
+ * @param gid		group id
  * @return		cached group name
  */
 extern /*@observer@*/ const char * getGname(gid_t gid)		/*@*/;
@@ -121,7 +123,7 @@ extern /*@observer@*/ const char * getGname(gid_t gid)		/*@*/;
 /** \ingroup rpmbuild
  * Return cached group name.
  * @todo Implement using hash.
- * @param		group name
+ * @param gname		group name
  * @return		cached group name
  */
 extern /*@observer@*/ const char * getGnameS(const char * gname)	/*@*/;
@@ -129,7 +131,7 @@ extern /*@observer@*/ const char * getGnameS(const char * gname)	/*@*/;
 /** \ingroup rpmbuild
  * Return cached group id.
  * @todo Implement using hash.
- * @param		group name
+ * @param gname		group name
  * @return		cached gid
  */
 gid_t getGidS(const char * gname)	/*@*/;
@@ -153,19 +155,18 @@ extern /*@observer@*/ int_32 * const getBuildTime(void)	/*@*/;
  * @return		0 on success, 1 on EOF, <0 on error
  */
 int readLine(Spec spec, int strip)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState  @*/;
 
 /** \ingroup rpmbuild
  * Stop reading from spec file, freeing resources.
  * @param spec		spec file control structure
  */
 void closeSpec(/*@partial@*/ Spec spec)
-	/*@globals fileSystem@*/
-	/*@modifies spec->fileStack, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies spec->fileStack, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Truncate comment lines.
@@ -208,12 +209,12 @@ void addChangelogEntry(Header h, time_t time, const char * name,
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem @*/
-	/*@modifies spec->build, spec->install, spec->clean, spec->macros,
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies spec->build, spec->install, spec->check, spec->clean,
+		spec->macros,
 		spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Parse %%changelog section of a spec file.
@@ -221,12 +222,11 @@ int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parseChangelog(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
 		spec->packages->header,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Parse %%description section of a spec file.
@@ -234,13 +234,12 @@ int parseChangelog(Spec spec)
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parseDescription(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->packages,
 		spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
 		spec->st,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState  @*/;
 
 /** \ingroup rpmbuild
  * Parse %%files section of a spec file.
@@ -248,12 +247,11 @@ int parseDescription(Spec spec)
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parseFiles(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->packages,
 		spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Parse tags from preamble of a spec file.
@@ -280,12 +278,11 @@ int parsePreamble(Spec spec, int initialPackage)
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parsePrep(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->prep, spec->buildSubdir, spec->macros,
 		spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Parse dependency relations from spec file and/or autogenerated output buffer.
@@ -309,12 +306,11 @@ int parseRCPOT(Spec spec, Package pkg, const char * field, int tag, int index,
  * @return		>= 0 next rpmParseState, < 0 on error
  */
 int parseScript(Spec spec, int parsePart)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->packages,
 		spec->fileStack, spec->readStack, spec->line, spec->lineNum,
 		spec->nextline, spec->nextpeekc, spec->lbuf, spec->sl,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState  @*/;
 
 /** \ingroup rpmbuild
  * Evaluate boolean expression.
@@ -370,7 +366,8 @@ int lookupPackage(Spec spec, /*@null@*/ const char * name, int flag,
  * @param spec		spec file control structure
  * @return		package control structure
  */
-/*@only@*/ Package newPackage(Spec spec)
+/*@only@*/
+Package newPackage(Spec spec)
 	/*@modifies spec->packages, spec->packages->next @*/;
 
 /** \ingroup rpmbuild
@@ -378,16 +375,20 @@ int lookupPackage(Spec spec, /*@null@*/ const char * name, int flag,
  * @param packages	package control structure chain
  * @return		NULL
  */
-/*@null@*/ Package freePackages(/*@only@*/ /*@null@*/ Package packages)
-	/*@modifies packages @*/;
+/*@null@*/
+Package freePackages(/*@only@*/ /*@null@*/ Package packages)
+	/*@globals fileSystem @*/
+	/*@modifies packages, fileSystem @*/;
 
 /** \ingroup rpmbuild
  * Destroy package control structure.
  * @param pkg		package control structure
  * @return		NULL
  */
-/*@null@*/ Package  freePackage(/*@only@*/ /*@null@*/ Package pkg)
-	/*@modifies pkg @*/;
+/*@null@*/
+Package  freePackage(/*@only@*/ /*@null@*/ Package pkg)
+	/*@globals fileSystem @*/
+	/*@modifies pkg, fileSystem @*/;
 
 /** \ingroup rpmbuild
  * Add dependency to header, filtering duplicates.
@@ -444,16 +445,15 @@ void initSourceHeader(Spec spec)
  * @return		0 on success
  */
 int processSourceFiles(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->sourceHeader, spec->sourceCpioList,
 		spec->buildRestrictions, spec->BANames,
 		spec->packages->header,
-		rpmGlobalMacroContext, fileSystem @*/;
+		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Parse spec file into spec control structure.
- * @retval specp	spec file control structure
+ * @param ts		transaction set (spec file control in ts->spec)
  * @param specFile
  * @param rootURL
  * @param buildRootURL
@@ -464,57 +464,29 @@ int processSourceFiles(Spec spec)
  * @param force
  * @return
  */
-int parseSpec(/*@out@*/ Spec * specp, const char * specFile,
+int parseSpec(rpmts ts, const char * specFile,
 		/*@null@*/ const char * rootURL,
 		/*@null@*/ const char * buildRootURL,
 		int recursing,
 		/*@null@*/ const char * passPhrase,
 		/*@null@*/ char * cookie,
 		int anyarch, int force)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies *specp,
-		rpmGlobalMacroContext, fileSystem, internalState @*/;
-
-/** \ingroup rpmbuild
- * @retval specp	spec file control structure
- * @param specFile
- * @param rootdir
- * @param buildRoot
- * @param recursing	parse is recursive?
- * @param passPhrase
- * @param cookie
- * @param anyarch
- * @param force
- * @return
- */
-/*@-declundef@*/
-extern int (*parseSpecVec) (Spec * specp, const char * specFile,
-		const char * rootdir,
-		/*@null@*/ const char * buildRoot,
-		int recursing,
-		/*@null@*/ const char * passPhrase,
-		/*@null@*/ char * cookie,
-		int anyarch, int force)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies *specp,
-		rpmGlobalMacroContext, fileSystem, internalState @*/;
-/*@=declundef@*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies ts, rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /** \ingroup rpmbuild
  * Build stages state machine driver.
+ * @param ts		transaction set
  * @param spec		spec file control structure
  * @param what		bit(s) to enable stages of build
  * @param test		don't execute scripts or package if testing
  * @return		0 on success
  */
-int buildSpec(Spec spec, int what, int test)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
+int buildSpec(rpmts ts, Spec spec, int what, int test)
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->sourceHeader, spec->sourceCpioList, spec->cookie,
-		spec->sourceRpmName, spec->macros,
-		spec->BASpecs,
+		spec->sourceRpmName, spec->sourcePkgId,
+		spec->macros, spec->BASpecs,
 		spec->buildRestrictions, spec->BANames,
 		spec->packages->cpioList, spec->packages->fileList,
 		spec->packages->specialDoc, spec->packages->header,
@@ -526,9 +498,8 @@ int buildSpec(Spec spec, int what, int test)
  * @return		0 on success
  */
 int packageBinaries(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies spec->packages->header,
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies spec->packages->header, spec->packages->cpioList,
 		spec->sourceRpmName,
 		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
@@ -538,10 +509,9 @@ int packageBinaries(Spec spec)
  * @return		0 on success
  */
 int packageSources(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem, internalState @*/
-	/*@modifies spec->sourceHeader, spec->cookie,
-		spec->sourceRpmName,
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies spec->sourceHeader, spec->cookie, spec->sourceCpioList,
+		spec->sourceRpmName, spec->sourcePkgId,
 		rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /*@=redecl@*/

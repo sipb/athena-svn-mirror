@@ -25,43 +25,52 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
+#include "beecrypt.h"
+#include "mp32opt.h"
 #include "mp32.h"
-
-#include <stdio.h>
+#include "debug.h"
 
 #ifndef ASM_MP32ZERO
+/*@-boundswrite@*/
 void mp32zero(register uint32 xsize, register uint32* xdata)
 {
 	while (xsize--)
 		*(xdata++) = 0;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32FILL
+/*@-boundswrite@*/
 void mp32fill(register uint32 xsize, register uint32* xdata, register uint32 val)
 {
 	while (xsize--)
 		*(xdata++) = val;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ODD
+/*@-boundsread@*/
 int mp32odd(register uint32 xsize, register const uint32* xdata)
 {
 	return (xdata[xsize-1] & 0x1);
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32EVEN
+/*@-boundsread@*/
 int mp32even(register uint32 xsize, register const uint32* xdata)
 {
 	return !(xdata[xsize-1] & 0x1);
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32Z
+/*@-boundsread@*/
 int mp32z(register uint32 xsize, register const uint32* xdata)
 {
 	while (xsize--)
@@ -69,9 +78,11 @@ int mp32z(register uint32 xsize, register const uint32* xdata)
 			return 0;
 	return 1;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32NZ
+/*@-boundsread@*/
 int mp32nz(register uint32 xsize, register const uint32* xdata)
 {
 	while (xsize--)
@@ -79,9 +90,11 @@ int mp32nz(register uint32 xsize, register const uint32* xdata)
 			return 1;
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32EQ
+/*@-boundsread@*/
 int mp32eq(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -97,6 +110,7 @@ int mp32eq(register uint32 size, register const uint32* xdata, register const ui
 
 	return 1;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32EQX
@@ -118,6 +132,7 @@ int mp32eqx(register uint32 xsize, register const uint32* xdata, register uint32
 #endif
 
 #ifndef ASM_MP32NE
+/*@-boundsread@*/
 int mp32ne(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -133,6 +148,7 @@ int mp32ne(register uint32 size, register const uint32* xdata, register const ui
 
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32NEX
@@ -154,6 +170,7 @@ int mp32nex(register uint32 xsize, register const uint32* xdata, register uint32
 #endif
 
 #ifndef ASM_MP32GT
+/*@-boundsread@*/
 int mp32gt(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -166,6 +183,7 @@ int mp32gt(register uint32 size, register const uint32* xdata, register const ui
 	}
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32GTX
@@ -187,6 +205,7 @@ int mp32gtx(register uint32 xsize, register const uint32* xdata, register uint32
 #endif
 
 #ifndef ASM_MP32LT
+/*@-boundsread@*/
 int mp32lt(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -199,6 +218,7 @@ int mp32lt(register uint32 size, register const uint32* xdata, register const ui
 	}
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32LTX
@@ -220,6 +240,7 @@ int mp32ltx(register uint32 xsize, register const uint32* xdata, register uint32
 #endif
 
 #ifndef ASM_MP32GE
+/*@-boundsread@*/
 int mp32ge(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -232,9 +253,11 @@ int mp32ge(register uint32 size, register const uint32* xdata, register const ui
 	}
 	return 1;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32GEX
+/*@-boundsread@*/
 int mp32gex(register uint32 xsize, register const uint32* xdata, register uint32 ysize, register const uint32* ydata)
 {
 	if (xsize > ysize)
@@ -250,9 +273,11 @@ int mp32gex(register uint32 xsize, register const uint32* xdata, register uint32
 	else
 		return mp32ge(xsize, xdata, ydata);
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32LE
+/*@-boundsread@*/
 int mp32le(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
 	while (size--)
@@ -265,9 +290,11 @@ int mp32le(register uint32 size, register const uint32* xdata, register const ui
 	}
 	return 1;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32LEX
+/*@-boundsread@*/
 int mp32lex(register uint32 xsize, register const uint32* xdata, register uint32 ysize, register const uint32* ydata)
 {
 	if (xsize > ysize)
@@ -283,10 +310,12 @@ int mp32lex(register uint32 xsize, register const uint32* xdata, register uint32
 	else
 		return mp32le(xsize, xdata, ydata);
 }
+/*@=boundsread@*/
 #endif
 
 
 #ifndef ASM_MP32ISONE
+/*@-boundsread@*/
 int mp32isone(register uint32 xsize, register const uint32* xdata)
 {
 	xdata += xsize;
@@ -299,9 +328,11 @@ int mp32isone(register uint32 xsize, register const uint32* xdata)
 	}
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32ISTWO
+/*@-boundsread@*/
 int mp32istwo(register uint32 xsize, register const uint32* xdata)
 {
 	xdata += xsize;
@@ -314,9 +345,11 @@ int mp32istwo(register uint32 xsize, register const uint32* xdata)
 	}
 	return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32EQMONE
+/*@-boundsread@*/
 int mp32eqmone(register uint32 size, register const uint32* xdata, register const uint32* ydata)
 {
     xdata += size;
@@ -331,9 +364,11 @@ int mp32eqmone(register uint32 size, register const uint32* xdata, register cons
     }
     return 0;
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32LEONE
+/*@-boundsread@*/
 int mp32leone(register uint32 xsize, register const uint32* xdata)
 {
 	xdata += xsize;
@@ -347,47 +382,60 @@ int mp32leone(register uint32 xsize, register const uint32* xdata)
 		return 1;
 	}
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32MSBSET
 int mp32msbset(/*@unused@*/ register uint32 xsize, register const uint32* xdata)
 {
+/*@-boundsread@*/
 	return ((*xdata) & 0x80000000);
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32LSBSET
 int mp32lsbset(register uint32 xsize, register const uint32* xdata)
 {
+/*@-boundsread@*/
     return xdata[xsize-1] & 0x1;
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32SETMSB
 void mp32setmsb(/*@unused@*/ register uint32 xsize, register uint32* xdata)
 {
+/*@-boundsread@*/
 	*xdata |= 0x80000000;
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32SETLSB
 void mp32setlsb(register uint32 xsize, register uint32* xdata)
 {
+/*@-boundsread@*/
 	xdata[xsize-1] |= 0x00000001;
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32CLRMSB
 void mp32clrmsb(/*@unused@*/ register uint32 xsize, register uint32* xdata)
 {
+/*@-boundsread@*/
 	*xdata &= 0x7fffffff;
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32CLRLSB
 void mp32clrlsb(register uint32 xsize, register uint32* xdata)
 {
+/*@-boundsread@*/
     xdata[xsize-1] &= 0xfffffffe;
+/*@=boundsread@*/
 }
 #endif
 
@@ -397,12 +445,15 @@ void mp32xor(register uint32 size, register uint32* xdata, register const uint32
 	do
 	{
 		--size;
+/*@-boundsread@*/
 		xdata[size] ^= ydata[size];
+/*@=boundsread@*/
 	} while (size);
 }
 #endif
 
 #ifndef ASM_MP32NOT
+/*@-boundswrite@*/
 void mp32not(register uint32 xsize, register uint32* xdata)
 {
 	do
@@ -411,18 +462,22 @@ void mp32not(register uint32 xsize, register uint32* xdata)
 		xdata[xsize] = ~xdata[xsize];
 	} while (xsize);
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SETW
+/*@-boundswrite@*/
 void mp32setw(register uint32 xsize, register uint32* xdata, register uint32 y)
 {
 	while (--xsize)
 		*(xdata++) = 0;
 	*(xdata++) = y;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SETX
+/*@-boundswrite@*/
 void mp32setx(register uint32 xsize, register uint32* xdata, register uint32 ysize, register const uint32* ydata)
 {
 	while (xsize > ysize)
@@ -438,9 +493,11 @@ void mp32setx(register uint32 xsize, register uint32* xdata, register uint32 ysi
 	while (xsize--)
 		*(xdata++) = *(ydata++);
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ADDW
+/*@-boundswrite@*/
 uint32 mp32addw(register uint32 xsize, register uint32* xdata, register uint32 y)
 {
 	register uint64 temp;
@@ -458,9 +515,11 @@ uint32 mp32addw(register uint32 xsize, register uint32* xdata, register uint32 y
 	}
 	return (uint32)(temp >> 32);
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ADD
+/*@-boundswrite@*/
 uint32 mp32add(register uint32 size, register uint32* xdata, register const uint32* ydata)
 {
 	register uint64 temp;
@@ -479,6 +538,7 @@ uint32 mp32add(register uint32 size, register uint32* xdata, register const uint
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ADDX
@@ -499,6 +559,7 @@ uint32 mp32addx(register uint32 xsize, register uint32* xdata, register uint32 y
 #endif
 
 #ifndef ASM_MP32SUBW
+/*@-boundswrite@*/
 uint32 mp32subw(register uint32 xsize, register uint32* xdata, register uint32 y)
 {
 	register uint64 temp;
@@ -518,9 +579,11 @@ uint32 mp32subw(register uint32 xsize, register uint32* xdata, register uint32 y
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SUB
+/*@-boundswrite@*/
 uint32 mp32sub(register uint32 size, register uint32* xdata, register const uint32* ydata)
 {
 	register uint64 temp;
@@ -539,6 +602,7 @@ uint32 mp32sub(register uint32 size, register uint32* xdata, register const uint
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SUBX
@@ -567,6 +631,7 @@ void mp32neg(register uint32 xsize, register uint32* xdata)
 #endif
 
 #ifndef ASM_MP32SETMUL
+/*@-boundswrite@*/
 uint32 mp32setmul(register uint32 size, register uint32* result, register const uint32* xdata, register uint32 y)
 {
 	register uint64 temp;
@@ -585,9 +650,11 @@ uint32 mp32setmul(register uint32 size, register uint32* result, register const 
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ADDMUL
+/*@-boundswrite@*/
 uint32 mp32addmul(register uint32 size, register uint32* result, register const uint32* xdata, register uint32 y)
 {
 	register uint64 temp;
@@ -607,9 +674,11 @@ uint32 mp32addmul(register uint32 size, register uint32* result, register const 
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32MUL
+/*@-boundswrite@*/
 void mp32mul(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize, const uint32* ydata)
 {
 	/*@-mods@*/
@@ -648,9 +717,11 @@ void mp32mul(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize, co
 	}
 	/*@=mods@*/
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32ADDSQRTRC
+/*@-boundswrite@*/
 uint32 mp32addsqrtrc(register uint32 size, register uint32* result, register const uint32* xdata)
 {
 	register uint64 temp;
@@ -672,9 +743,11 @@ uint32 mp32addsqrtrc(register uint32 size, register uint32* result, register con
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SQR
+/*@-boundswrite@*/
 void mp32sqr(register uint32* result, register uint32 xsize, register const uint32* xdata)
 {
 	register uint32 carry;
@@ -702,6 +775,7 @@ void mp32sqr(register uint32* result, register uint32 xsize, register const uint
 	(void) mp32addsqrtrc(xsize, result, xdata);
 	/*@=mods@*/
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SIZE
@@ -709,8 +783,10 @@ uint32 mp32size(register uint32 xsize, register const uint32* xdata)
 {
 	while (xsize)
 	{
+/*@-boundsread@*/
 		if (*xdata)
 			return xsize;
+/*@=boundsread@*/
 		xdata++;
 		xsize--;
 	}
@@ -728,15 +804,15 @@ uint32 mp32norm(register uint32 xsize, register uint32* xdata)
 #endif
 
 #ifndef ASM_MP32DIVPOWTWO
+/* need to eliminate this function, as it is not aptly named */
 uint32 mp32divpowtwo(register uint32 xsize, register uint32* xdata)
 {
-	register uint32 shift = mp32lszcnt(xsize, xdata);
-	mp32rshift(xsize, xdata, shift);
-	return shift;
+	return mp32rshiftlsz(xsize, xdata);
 }
 #endif
 
 #ifndef ASM_MP32DIVTWO
+/*@-boundswrite@*/
 void mp32divtwo(register uint32 xsize, register uint32* xdata)
 {
 	register uint32 temp;
@@ -749,18 +825,22 @@ void mp32divtwo(register uint32 xsize, register uint32* xdata)
 		carry = (temp << 31);
 	}
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32SDIVTWO
 void mp32sdivtwo(register uint32 xsize, register uint32* xdata)
 {
 	mp32divtwo(xsize, xdata);
+/*@-boundsread@*/
 	if (*xdata & 0x40000000)
 		*xdata |= 0x80000000;
+/*@=boundsread@*/
 }
 #endif
 
 #ifndef ASM_MP32MULTWO
+/*@-boundswrite@*/
 uint32 mp32multwo(register uint32 xsize, register uint32* xdata)
 {
 	register uint32 temp;
@@ -775,6 +855,7 @@ uint32 mp32multwo(register uint32 xsize, register uint32* xdata)
 	}
 	return carry;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32MSZCNT
@@ -785,7 +866,9 @@ uint32 mp32mszcnt(register uint32 xsize, register const uint32* xdata)
 
 	while (i < xsize)
 	{
+/*@-boundsread@*/
 		register uint32 temp = xdata[i++];
+/*@=boundsread@*/
 		if (temp)
 		{
 			while (!(temp & 0x80000000))
@@ -809,7 +892,9 @@ uint32 mp32lszcnt(register uint32 xsize, register const uint32* xdata)
 
 	while (xsize--)
 	{
+/*@-boundsread@*/
 		register uint32 temp = xdata[xsize];
+/*@=boundsread@*/
 		if (temp)
 		{
 			while (!(temp & 0x1))
@@ -827,6 +912,7 @@ uint32 mp32lszcnt(register uint32 xsize, register const uint32* xdata)
 #endif
 
 #ifndef ASM_MP32LSHIFT
+/*@-boundswrite@*/
 void mp32lshift(register uint32 xsize, register uint32* xdata, uint32 count)
 {
 	register uint32 words = count >> 5;
@@ -859,9 +945,11 @@ void mp32lshift(register uint32 xsize, register uint32* xdata, uint32 count)
 	else
 		mp32zero(xsize, xdata);
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32RSHIFT
+/*@-boundswrite@*/
 void mp32rshift(register uint32 xsize, register uint32* xdata, uint32 count)
 {
 	register uint32 words = count >> 5;
@@ -894,11 +982,72 @@ void mp32rshift(register uint32 xsize, register uint32* xdata, uint32 count)
 	else
 		mp32zero(xsize, xdata);
 }
+/*@=boundswrite@*/
+#endif
+
+#ifndef ASM_MP32RSHIFTLSZ
+/* x must be != 0 */
+/*@-boundswrite@*/
+uint32 mp32rshiftlsz(register uint32 xsize, register uint32* xdata)
+{
+	register uint32* slide = xdata+xsize-1;
+	register uint32  zwords = 0; /* counter for 'all zero bit' words */
+	register uint32  lbits, rbits = 0; /* counter for 'least significant zero' bits */
+	register uint32  temp, carry = 0;
+
+	xdata = slide;
+
+	/* count 'all zero' words and move src pointer */
+	while (xsize--)
+	{
+		/* test if we a non-zero word */
+		if ((carry = *(slide--)))
+		{
+			/* count 'least signification zero bits and set zbits counter */
+			while (!(carry & 0x1))
+			{
+				carry >>= 1;
+				rbits++;
+			}
+			break;
+		}
+		zwords++;
+	}
+
+	/* shouldn't happen, but let's test anyway */
+	if (xsize == 0)
+		return 0;
+
+	/* prepare right-shifting of data */
+	lbits = 32-rbits;
+
+	/* shift data */
+	while (xsize--)
+	{
+		temp = *(slide--);
+		*(xdata--) = (temp << lbits) | carry;
+		carry = (temp >> rbits);
+	}
+
+	/* store the final carry */
+	*(xdata--) = carry;
+
+	/* store the return value in temp */
+	temp = (zwords << 5) + rbits;
+
+	/* zero the (zwords) most significant words */
+	while (zwords--)
+		*(xdata--) = 0;
+
+	return temp;
+}
+/*@=boundswrite@*/
 #endif
 
 /* try an alternate version here, with descending sizes */
 /* also integrate lszcnt and rshift properly into one function */
 #ifndef ASM_MP32GCD_W
+/*@-boundswrite@*/
 /**
  * mp32gcd_w
  *  need workspace of (size) words
@@ -919,38 +1068,48 @@ void mp32gcd_w(uint32 size, const uint32* xdata, const uint32* ydata, uint32* re
 		mp32copy(size, result, xdata);
 	}
 		
-	/* start with doing mp32divpowtwo on both workspace and result, and store the returned values */
 	/* get the smallest returned values, and set shift to that */
 
-	if ((temp = mp32lszcnt(size, wksp)))
-		mp32rshift(size, wksp, temp);
+	shift = mp32rshiftlsz(size, wksp);
 
-	shift = temp;
-
-	if ((temp = mp32lszcnt(size, result)))
-		mp32rshift(size, result, temp);
+	temp = mp32rshiftlsz(size, result);
 
 	if (shift > temp)
 		shift = temp;
 
 	while (mp32nz(size, wksp))
 	{
-		if ((temp = mp32lszcnt(size, wksp)))
-			mp32rshift(size, wksp, temp);
-
-		if ((temp = mp32lszcnt(size, result)))
-			mp32rshift(size, result, temp);
+		(void) mp32rshiftlsz(size, wksp);
+		(void) mp32rshiftlsz(size, result);
 
 		if (mp32ge(size, wksp, result))
 			(void) mp32sub(size, wksp, result);
 		else
 			(void) mp32sub(size, result, wksp);
+
+		/* slide past zero words in both operands by increasing pointers and decreasing size */
+		if ((*wksp == 0) && (*result == 0))
+		{
+			size--;
+			wksp++;
+			result++;
+		}
 	}
+
+	/* figure out if we need to slide the result pointer back */
+	if ((temp = shift >> 5))
+	{
+		size += temp;
+		result -= temp;
+	}
+
 	mp32lshift(size, result, shift);
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32NMODW
+/*@-boundswrite@*/
 uint32 mp32nmodw(uint32* result, uint32 xsize, const uint32* xdata, uint32 y, uint32* wksp)
 {
 	/* result size xsize, wksp size xsize+1 */
@@ -969,12 +1128,12 @@ uint32 mp32nmodw(uint32* result, uint32 xsize, const uint32* xdata, uint32 y, ui
 
 	while (qsize--)
 	{
-		/* printf("result = "); MP32println(xsize+1, result); */
+		/* fprintf(stderr, "result = "); MP32println(stderr, xsize+1, result); */
 		/* get the two high words of r into temp */
 		temp = rdata[0];
 		temp <<= 32;
 		temp += rdata[1];
-		/* printf("q = %016llx / %08lx\n", temp, msw); */
+		/* fprintf(stderr, "q = %016llx / %08lx\n", temp, msw); */
 		temp /= y;
 		/*
 			temp *= y;
@@ -983,29 +1142,31 @@ uint32 mp32nmodw(uint32* result, uint32 xsize, const uint32* xdata, uint32 y, ui
 		*/
 		q = (uint32) temp;
 
-		/* printf("q = %08x\n", q); */
+		/* fprintf(stderr, "q = %08x\n", q); */
 		/*@-evalorder@*/
 		*wksp = mp32setmul(1, wksp+1, &y, q);
 		/*@=evalorder@*/
 
-		/* printf("mplt "); mp32print(2, rdata); printf(" < "); mp32println(2, wksp); */
+		/* fprintf(stderr, "mplt "); mp32print(2, rdata); fprintf(stderr, " < "); mp32println(stderr, 2, wksp); */
 		while (mp32lt(2, rdata, wksp))
 		{
-			/* printf("mp32lt! "); mp32print(2, rdata); printf(" < "); mp32println(2, wksp); */
-			/* printf("decreasing q\n"); */
+			/* fprintf(stderr, "mp32lt! "); mp32print(2, rdata); fprintf(stderr, " < "); mp32println(stderr, 2, wksp); */
+			/* fprintf(stderr, "decreasing q\n"); */
 			(void) mp32subx(2, wksp, 1, &y);
 			/* q--; */
 		}
-		/* printf("subtracting\n"); */
+		/* fprintf(stderr, "subtracting\n"); */
 		(void) mp32sub(2, rdata, wksp);
 		rdata++;
 	}
 
 	return *rdata;
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32NMOD
+/*@-boundswrite@*/
 void mp32nmod(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize, const uint32* ydata, uint32* wksp)
 {
 	/* result size xsize, wksp size xsize+1 */
@@ -1021,36 +1182,38 @@ void mp32nmod(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize, c
 
 	while (qsize--)
 	{
-		/* printf("result = "); mp32println(xsize+1, result); */
+		/* fprintf(stderr, "result = "); mp32println(stderr, xsize+1, result); */
 		/* get the two high words of r into temp */
 		temp = rdata[0];
 		temp <<= 32;
 		temp += rdata[1];
-		/* printf("q = %016llx / %08lx\n", temp, msw); */
+		/* fprintf(stderr, "q = %016llx / %08lx\n", temp, msw); */
 		temp /= msw;
 		q = (uint32) temp;
 
-		/* printf("q = %08x\n", q); */
+		/* fprintf(stderr, "q = %08x\n", q); */
 		/*@-evalorder@*/
 		*wksp = mp32setmul(ysize, wksp+1, ydata, q);
 		/*@=evalorder@*/
 
-		/* printf("mp32lt "); mp32print(ysize+1, rdata); printf(" < "); mp32println(ysize+1, wksp); */
+		/* fprintf(stderr, "mp32lt "); mp32print(ysize+1, rdata); fprintf(stderr, " < "); mp32println(stderr, ysize+1, wksp); */
 		while (mp32lt(ysize+1, rdata, wksp))
 		{
-			/* printf("mp32lt! "); mp32print(ysize+1, rdata); printf(" < "); mp32println(ysize+1, wksp); */
-			/* printf("decreasing q\n"); */
+			/* fprintf(stderr, "mp32lt! "); mp32print(ysize+1, rdata); fprintf(stderr, " < "); mp32println(stderr, ysize+1, wksp); */
+			/* fprintf(stderr, "decreasing q\n"); */
 			(void) mp32subx(ysize+1, wksp, ysize, ydata);
 			q--;
 		}
-		/* printf("subtracting\n"); */
+		/* fprintf(stderr, "subtracting\n"); */
 		(void) mp32sub(ysize+1, rdata, wksp);
 		rdata++;
 	}
 }
+/*@=boundswrite@*/
 #endif
 
 #ifndef ASM_MP32NDIVMOD
+/*@-boundswrite@*/
 void mp32ndivmod(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize, const uint32* ydata, register uint32* wksp)
 {
 	/* result must be xsize+1 in length */
@@ -1065,7 +1228,7 @@ void mp32ndivmod(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize
 	/*@-compdef@*/ /* LCL: result+1 undefined */
 	if (mp32ge(ysize, result+1, ydata))
 	{
-		/* printf("subtracting\n"); */
+		/* fprintf(stderr, "subtracting\n"); */
 		(void) mp32sub(ysize, result+1, ydata);
 		*(result++) = 1;
 	}
@@ -1076,35 +1239,36 @@ void mp32ndivmod(uint32* result, uint32 xsize, const uint32* xdata, uint32 ysize
 	/*@-usedef@*/	/* LCL: result[0] is set */
 	while (qsize--)
 	{
-		/* printf("result = "); mp32println(xsize+1, result); */
+		/* fprintf(stderr, "result = "); mp32println(stderr, xsize+1, result); */
 		/* get the two high words of r into temp */
 		temp = result[0];
 		temp <<= 32;
 		temp += result[1];
-		/* printf("q = %016llx / %08lx\n", temp, msw); */
+		/* fprintf(stderr, "q = %016llx / %08lx\n", temp, msw); */
 		temp /= msw;
 		q = (uint32) temp;
 
-		/* printf("q = %08x\n", q); */
+		/* fprintf(stderr, "q = %08x\n", q); */
 
 		/*@-evalorder@*/
 		*wksp = mp32setmul(ysize, wksp+1, ydata, q);
 		/*@=evalorder@*/
 
-		/* printf("mp32lt "); mp32print(ysize+1, result); printf(" < "); mp32println(ysize+1, wksp); */
+		/* fprintf(stderr, "mp32lt "); mp32print(ysize+1, result); fprintf(stderr, " < "); mp32println(stderr, ysize+1, wksp); */
 		while (mp32lt(ysize+1, result, wksp))
 		{
-			/* printf("mp32lt! "); mp32print(ysize+1, result); printf(" < "); mp32println(ysize+1, wksp); */
-			/* printf("decreasing q\n"); */
+			/* fprintf(stderr, "mp32lt! "); mp32print(ysize+1, result); fprintf(stderr, " < "); mp32println(stderr, ysize+1, wksp); */
+			/* fprintf(stderr, "decreasing q\n"); */
 			(void) mp32subx(ysize+1, wksp, ysize, ydata);
 			q--;
 		}
-		/* printf("subtracting\n"); */
+		/* fprintf(stderr, "subtracting\n"); */
 		(void) mp32sub(ysize+1, result, wksp);
 		*(result++) = q;
 	}
 	/*@=usedef@*/
 }
+/*@=boundswrite@*/
 #endif
 
 /*
@@ -1128,20 +1292,32 @@ void mp32unpack(uint32 size, uint8* bytes, const uint32* bits)
 */
 
 #ifndef ASM_MP32PRINT
-void mp32print(register uint32 xsize, register const uint32* xdata)
+/*@-boundsread@*/
+void mp32print(register FILE * fp, register uint32 xsize, register const uint32* xdata)
 {
+	if (xdata == NULL)
+	 	return;
+	if (fp == NULL)
+		fp = stderr;
 	while (xsize--)
-		printf("%08x", *(xdata++));
-	(void) fflush(stdout);
+		fprintf(fp, "%08x", *(xdata++));
+	(void) fflush(fp);
 }
+/*@=boundsread@*/
 #endif
 
 #ifndef ASM_MP32PRINTLN
-void mp32println(register uint32 xsize, register const uint32* xdata)
+/*@-boundsread@*/
+void mp32println(register FILE * fp, register uint32 xsize, register const uint32* xdata)
 {
+	if (xdata == NULL)
+	 	return;
+	if (fp == NULL)
+		fp = stderr;
 	while (xsize--)
-		printf("%08x", *(xdata++));
-	printf("\n");
-	(void) fflush(stdout);
+		fprintf(fp, "%08x", *(xdata++));
+	fprintf(fp, "\n");
+	(void) fflush(fp);
 }
+/*@=boundsread@*/
 #endif

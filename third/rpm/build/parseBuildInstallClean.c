@@ -9,6 +9,7 @@
 
 /*@access StringBuf @*/
 
+/*@-boundswrite@*/
 int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
 {
     int nextPart, rc;
@@ -22,6 +23,9 @@ int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
     } else if (parsePart == PART_INSTALL) {
 	sbp = &(spec->install);
 	name = "%install";
+    } else if (parsePart == PART_CHECK) {
+	sbp = &(spec->check);
+	name = "%check";
     } else if (parsePart == PART_CLEAN) {
 	sbp = &(spec->clean);
 	name = "%clean";
@@ -36,7 +40,7 @@ int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
     
     *sbp = newStringBuf();
 
-    /* There are no options to %build, %install, or %clean */
+    /* There are no options to %build, %install, %check, or %clean */
     if ((rc = readLine(spec, STRIP_NOTHING)) > 0)
 	return PART_NONE;
     if (rc)
@@ -52,3 +56,4 @@ int parseBuildInstallClean(Spec spec, rpmParseState parsePart)
 
     return nextPart;
 }
+/*@=boundswrite@*/

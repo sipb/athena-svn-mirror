@@ -7,7 +7,19 @@
 
 ulimit -c 0
 
-filelist=`sed "s/['\"]/\\\&/g"`
+#
+# --- Set needed to 0 for traditional find-requires behavior.
+needed=1
+if [ X"$1" = Xldd ]; then
+    needed=0
+elif [ X"$1" = Xobjdump ]; then
+    needed=1
+fi
+
+#
+# --- Grab the file manifest and classify files.
+#filelist=`sed "s/['\"]/\\\&/g"`
+filelist=`sed "s/[]['\"*?{}]/\\\\\&/g"`
 exelist=`echo $filelist | xargs -r file | egrep -v ":.* (commands|script) " | \
 	grep ":.*executable" | cut -d: -f1`
 scriptlist=`echo $filelist | xargs -r file | \
@@ -27,39 +39,41 @@ case `uname -m` in
   *)		mark64="()(64bit)" ;;
 esac
 
+if [ "$needed" -eq 0 ]; then
 #
-# --- Executable sonames.
-for f in $exelist; do
+# --- Executable dependency sonames.
+  for f in $exelist; do
     [ -r $f -a -x $f ] || continue
     lib64=`if file -L $f 2>/dev/null | \
 	grep "ELF 64-bit" >/dev/null; then echo "$mark64"; fi`
     ldd $f | awk '/=>/ {
-	if ($1 !~ /libNoVersion.so/ && $1 !~ /4[um]lib.so/) {
+	if ($1 !~ /libNoVersion.so/ && $1 !~ /4[um]lib.so/ && $1 !~ /libredhat-kernel.so/) {
 	    gsub(/'\''"/,"\\&",$1);
 	    printf "%s'$lib64'\n", $1
 	}
     }'
-done | xargs -r -n 1 basename | sort -u
+  done | xargs -r -n 1 basename | sort -u
 
 #
-# --- Library sonames.
-for f in $liblist; do
+# --- Library dependency sonames.
+  for f in $liblist; do
     [ -r $f ] || continue
     lib64=`if file -L $f 2>/dev/null | \
 	grep "ELF 64-bit" >/dev/null; then echo "$mark64"; fi`
     ldd $f | awk '/=>/ {
-	if ($1 !~ /libNoVersion.so/ && $1 !~ /4[um]lib.so/) {
+	if ($1 !~ /libNoVersion.so/ && $1 !~ /4[um]lib.so/ && $1 !~ /libredhat-kernel.so/) {
 	    gsub(/'\''"/,"\\&",$1);
 	    printf "%s'$lib64'\n", $1
 	}
     }'
-done | xargs -r -n 1 basename | sort -u
+  done | xargs -r -n 1 basename | sort -u
+fi
 
 #
 # --- Script interpreters.
 for f in $scriptlist; do
     [ -r $f -a -x $f ] || continue
-    interp=`head -1 $f | sed -e 's/^\#\![ 	]*//' | cut -d" " -f1`
+    interp=`head -n 1 $f | sed -e 's/^\#\![ 	]*//' | cut -d" " -f1`
     interplist="$interplist $interp"
     case $interp in
     */perl)	perllist="$perllist $f" ;;
@@ -68,7 +82,7 @@ done
 [ -n "$interplist" ] && { echo "$interplist" | tr '[:blank:]' \\n | sort -u ; }
 
 #
-# --- Find perl module files.
+# --- Add perl module files to perllist.
 for f in $filelist; do
     [ -r $f -a "${f%.pm}" != "${f}" ] && perllist="$perllist $f"
 done
@@ -80,17 +94,25 @@ for f in $liblist $exelist ; do
     [ -r $f ] || continue
     lib64=`if file -L $f 2>/dev/null | \
 	grep "ELF 64-bit" >/dev/null; then echo "$mark64"; fi`
-    objdump -p $f | awk '
-	BEGIN { START=0; LIBNAME=""; }
-	/Version References:/ { START=1; }
-	/required from/ && (START==1) {
+    objdump -p $f | awk 'BEGIN { START=0; LIBNAME=""; needed='$needed'; }
+	/^$/ { START=0; }
+	/^Dynamic Section:$/ { START=1; }
+	(START==1) && /NEEDED/ {
+	    if (needed) {
+		if ("'$lib64'" != "") {
+		    sub(/$/, "()'$lib64'", $2) ;
+		}
+		print $2 ;
+	    }
+	}
+	/^Version References:$/ { START=2; }
+	(START==2) && /required from/ {
 	    sub(/:/, "", $3);
 	    LIBNAME=$3;
 	}
-	(START==1) && (LIBNAME!="") && ($4!="") && (($4~/^GLIBC_*/) || ($4~/^GCC_*/)) {
+	(START==2) && (LIBNAME!="") && ($4!="") && (($4~/^GLIBC_*/) || ($4~/^GCC_*/)) {
 	    print LIBNAME "(" $4 ")'$lib64'";
 	}
-	/^$/ { START=0; }
     '
 done | sort -u
 

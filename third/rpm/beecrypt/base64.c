@@ -25,27 +25,12 @@
  *
  */
 
-#define BEECRYPT_DLL_EXPORT
-
+#include "system.h"
 #include "base64.h"
+#include "debug.h"
 
 /*@unchecked@*/
 static int _debug = 0;
-
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
-#if HAVE_STRING_H
-# include <string.h>
-#endif
-#if HAVE_CTYPE_H
-# include <ctype.h>
-#endif
-#if HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-
-#include <stdio.h>
 
 /*@unchecked@*/ /*@observer@*/
 static const char* to_b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -53,6 +38,7 @@ static const char* to_b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy
 /* encode 64 characters per line */
 #define CHARS_PER_LINE	64
 
+/*@-boundswrite@*/
 char* b64enc(const memchunk* chunk)
 {
 	int div = chunk->size / 3;
@@ -114,7 +100,9 @@ char* b64enc(const memchunk* chunk)
 	return string;
 	/*@=dependenttrans@*/
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 memchunk* b64dec(const char* string)
 {
 	/* return a decoded memchunk, or a null pointer in case of failure */
@@ -250,13 +238,15 @@ memchunk* b64dec(const char* string)
 
 	return rc;
 }
+/*@=boundswrite@*/
 
 int b64encode_chars_per_line = B64ENCODE_CHARS_PER_LINE;
 
 const char * b64encode_eolstr = B64ENCODE_EOLSTR;
 
+/*@-boundswrite@*/
 /*@-internalglobs -modfilesys @*/
-char * b64encode (const void * data, int ns)
+char * b64encode (const void * data, size_t ns)
 {
     static char b64enc[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -285,7 +275,7 @@ char * b64encode (const void * data, int ns)
 
     lc = 0;
     if (te)
-    while (ns) {
+    while (ns > 0) {
 
 if (_debug)
 fprintf(stderr, "%7u %02x %02x %02x -> %02x %02x %02x %02x\n",
@@ -338,12 +328,14 @@ fprintf(stderr, "%7u %02x %02x %02x -> %02x %02x %02x %02x\n",
     /*@=mustfree =compdef @*/
 }
 /*@=globs =internalglobs =modfilesys @*/
+/*@=boundswrite@*/
 
 /*@-internalglobs -modfilesys @*/
 #define CRC24_INIT 0xb704ceL
 #define CRC24_POLY 0x1864cfbL
 
-char * b64crc (const void * data, int ns)
+/*@-boundsread@*/
+char * b64crc (const unsigned char * data, size_t ns)
 {
     const unsigned char *s = data;
     uint32 crc = CRC24_INIT;
@@ -368,12 +360,14 @@ char * b64crc (const void * data, int ns)
     ns = 3;
     return b64encode(data, ns);
 }
+/*@=boundsread@*/
 /*@=internalglobs =modfilesys @*/
 
 const char * b64decode_whitespace = B64DECODE_WHITESPACE;
 
 /*@-internalglobs -modfilesys @*/
-int b64decode (const char * s, void ** datap, int *lenp)
+/*@-boundswrite@*/
+int b64decode (const char * s, void ** datap, size_t *lenp)
 {
     unsigned char b64dec[256];
     const unsigned char *t;
@@ -469,4 +463,5 @@ fprintf(stderr, "%7u %02x %02x %02x %02x -> %02x %02x %02x\n",
 
     return 0;
 }
+/*@=boundswrite@*/
 /*@=globs =internalglobs =modfilesys @*/

@@ -1,4 +1,4 @@
-/** \ingroup rpmtrans
+/** \ingroup rpmts
  * \file lib/rpmvercmp.c
  */
 
@@ -33,6 +33,8 @@ int rpmvercmp(const char * a, const char * b)
     two = str2;
 
     /* loop through each version segment of str1 and str2 and compare them */
+    /*@-branchstate@*/
+/*@-boundsread@*/
     while (*one && *two) {
 	while (*one && !xisalnum(*one)) one++;
 	while (*two && !xisalnum(*two)) two++;
@@ -55,15 +57,18 @@ int rpmvercmp(const char * a, const char * b)
 
 	/* save character at the end of the alpha or numeric segment */
 	/* so that they can be restored after the comparison */
+/*@-boundswrite@*/
 	oldch1 = *str1;
 	*str1 = '\0';
 	oldch2 = *str2;
 	*str2 = '\0';
+/*@=boundswrite@*/
 
 	/* take care of the case where the two version segments are */
 	/* different types: one numeric, the other alpha (i.e. empty) */
 	if (one == str1) return -1;	/* arbitrary */
-	if (two == str2) return -1;
+	/* XXX See patch #60884 (and details) from bugzilla #50977. */
+	if (two == str2) return (isnum ? 1 : -1);
 
 	if (isnum) {
 	    /* this used to be done by converting the digit segments */
@@ -87,17 +92,23 @@ int rpmvercmp(const char * a, const char * b)
 	if (rc) return rc;
 
 	/* restore character that was replaced by null above */
+/*@-boundswrite@*/
 	*str1 = oldch1;
 	one = str1;
 	*str2 = oldch2;
 	two = str2;
+/*@=boundswrite@*/
     }
+    /*@=branchstate@*/
+/*@=boundsread@*/
 
     /* this catches the case where all numeric and alpha segments have */
     /* compared identically but the segment sepparating characters were */
     /* different */
+/*@-boundsread@*/
     if ((!*one) && (!*two)) return 0;
 
     /* whichever version still has characters left over wins */
     if (!*one) return -1; else return 1;
+/*@=boundsread@*/
 }

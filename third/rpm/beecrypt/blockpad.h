@@ -51,13 +51,14 @@ memchunk* pkcs5Pad  (int blockbytes, /*@only@*/ /*@null@*/ memchunk* tmp)
  * @return		buffer with pad removed
  */
 BEECRYPTAPI /*@only@*/ /*@null@*/
-memchunk* pkcs5Unpad(int blockbytes, /*@returned@*/ /*@null@*/ memchunk* tmp)
+memchunk* pkcs5Unpad(int blockbytes,
+		/*@returned@*/ /*@null@*/ /*@out@*/ memchunk* tmp)
 	/*@modifies tmp */;
 
 /**
  * Copy/enlarge buffer to boundary.
  * @param blockbytes	desired block alignment/pad boundary
- * @param tmp		buffer to pad
+ * @param src		buffer to pad
  * @return		copy of buffer with pad added
  */
 BEECRYPTAPI /*@only@*/ /*@null@*/
@@ -67,7 +68,7 @@ memchunk* pkcs5PadCopy  (int blockbytes, const memchunk* src)
 /**
  * Copy/shrink buffer to boundary.
  * @param blockbytes	desired block alignment/pad boundary
- * @param tmp		buffer to unpad
+ * @param src		buffer to unpad
  * @return		copy of buffer with pad removed
  */
 BEECRYPTAPI /*@only@*/ /*@null@*/ /*@unused@*/

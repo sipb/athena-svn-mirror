@@ -1,7 +1,7 @@
 #
 # Makefile.am contains the top-level automake definitions
 #
-# Copyright (c) 2001 Virtual Unlimited B.V.
+# Copyright (c) 2001, 2002 Virtual Unlimited B.V.
 #
 # Author: Bob Deblier <bob@virtualunlimited.com>
 #
@@ -34,42 +34,53 @@ LIBBEECRYPT_LT_REVISION = 0
 
 AUTOMAKE_OPTIONS = gnu check-news no-dependencies
 
+LINT = splint
+
 SUBDIRS = docs gas masm mwerks tests
 
 SUFFIXES = .S
 .S.lo:
 	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
 
-BEECRYPT_OBJECTS = base64.lo beecrypt.lo blockmode.lo blockpad.lo blowfish.lo blowfishopt.lo dhaes.lo dldp.lo dlkp.lo dlpk.lo dlsvdp-dh.lo dsa.lo elgamal.lo endianness.lo entropy.lo fips180.lo fips180opt.lo fips186.lo hmac.lo hmacmd5.lo hmacsha1.lo hmacsha256.lo md5.lo memchunk.lo mp32.lo mp32barrett.lo mp32number.lo mp32opt.lo mp32prime.lo mtprng.lo rsa.lo rsakp.lo rsapk.lo sha256.lo timestamp.lo
+BEECRYPT_OBJECTS = aes.lo aesopt.lo base64.lo beecrypt.lo blockmode.lo blockpad.lo blowfish.lo blowfishopt.lo dhaes.lo dldp.lo dlkp.lo dlpk.lo dlsvdp-dh.lo dsa.lo elgamal.lo endianness.lo entropy.lo fips186.lo hmac.lo hmacmd5.lo hmacsha1.lo hmacsha256.lo md5.lo memchunk.lo mp32.lo mp32barrett.lo mp32number.lo mp32opt.lo mp32prime.lo mtprng.lo rsa.lo rsakp.lo rsapk.lo sha1.lo sha1opt.lo sha256.lo timestamp.lo
 
 BEECRYPT_JAVA_OBJECTS = javaglue.lo
 
-lib_LTLIBRARIES = libbeecrypt.la
+usrlibdir = $(libdir)@MARK64@
+usrlib_LTLIBRARIES = libbeecrypt.la
 
-libbeecrypt_la_SOURCES = base64.c beecrypt.c blockmode.c blockpad.c blowfish.c dhaes.c dldp.c dlkp.c dlpk.c dlsvdp-dh.c dsa.c elgamal.c endianness.c entropy.c fips180.c fips186.c hmac.c hmacmd5.c hmacsha1.c hmacsha256.c javaglue.c md5.c memchunk.c mp32.c mp32barrett.c mp32number.c mp32prime.c mtprng.c rsa.c rsakp.c rsapk.c sha256.c timestamp.c
+libbeecrypt_la_SOURCES = aes.c base64.c beecrypt.c blockmode.c blockpad.c blowfish.c dhaes.c dldp.c dlkp.c dlpk.c dlsvdp-dh.c dsa.c elgamal.c endianness.c entropy.c fips186.c hmac.c hmacmd5.c hmacsha1.c hmacsha256.c javaglue.c md5.c memchunk.c mp32.c mp32barrett.c mp32number.c mp32prime.c mtprng.c rsa.c rsakp.c rsapk.c sha1.c sha256.c timestamp.c
 
 libbeecrypt_la_DEPENDENCIES = $(BEECRYPT_OBJECTS) $(BEECRYPT_JAVA_OBJECTS)
 
-libbeecrypt_la_LIBADD = blowfishopt.lo fips180opt.lo mp32opt.lo
+libbeecrypt_la_LIBADD = aesopt.lo blowfishopt.lo mp32opt.lo sha1opt.lo
 
 libbeecrypt_la_LDFLAGS = -version-info $(LIBBEECRYPT_LT_CURRENT):$(LIBBEECRYPT_LT_REVISION):$(LIBBEECRYPT_LT_AGE)
 
-pkginclude_HEADERS = base64.h beecrypt.h blockmode.h blockpad.h blowfish.h blowfishopt.h dhaes.h dldp.h dlkp.h dlpk.h dlsvdp-dh.h dsa.h elgamal.h endianness.h entropy.h fips180.h fips180opt.h fips186.h hmac.h hmacmd5.h hmacsha1.h hmacsha256.h md5.h memchunk.h mp32.h mp32barrett.h mp32number.h mp32opt.h mp32prime.h mtprng.h rsa.h rsakp.h rsapk.h sha256.h timestamp.h
+pkginclude_HEADERS = aes.h base64.h beecrypt.h blockmode.h blockpad.h blowfish.h dhaes.h dldp.h dlkp.h dlpk.h dlsvdp-dh.h dsa.h elgamal.h endianness.h entropy.h fips186.h hmac.h hmacmd5.h hmacsha1.h hmacsha256.h md5.h memchunk.h mp32.h mp32barrett.h mp32number.h mp32prime.h mtprng.h rsa.h rsakp.h rsapk.h sha1.h sha256.h timestamp.h
 
-EXTRA_DIST = BENCHMARKS BUGS CONTRIBUTORS Doxyfile.in Doxyheader README.DLL README.WIN32 beecrypt.def beecrypt.mcp beecrypt.rc beecrypt.spec config.h config.gas.h config.win.h javaglue.h
+noinst_HEADERS = aesopt.h beecrypt.api.h beecrypt.gas.h beecrypt.win.h \
+	blowfishopt.h debug.h mp32opt.h sha1opt.h system.h
+
+EXTRA_DIST = BENCHMARKS BUGS CONTRIBUTORS Doxyfile.in Doxyheader README README.DARWIN README.DLL README.WIN32 beecrypt.def beecrypt.rc beecrypt.spec types.h javaglue.h installgen.sh
 
 .PHONY: beetest
 beetest: all
-	make -C tests beetest
+	${MAKE} -C tests beetest
 	./tests/beetest
 
+beecrypt.lcd: Makefile.am ${libbeecrypt_la_SOURCES} ${pkginclude_HEADERS} ${noinst_HEADERS}
+	lclint $(DEFS) $(INCLUDES) ${libbeecrypt_la_SOURCES} -dump $@
+
+# XXX don't bite into gcj java dependencies (yet)
 .PHONY: sources
 sources:
-	@echo $(libbeecrypt_la_SOURCES:%=beecrypt/%)
+	@echo $(libbeecrypt_la_SOURCES:%=beecrypt/%) | sed -e 's,beecrypt/javaglue.c,,'
 
-.PHONY: lclint
-lclint:
-	lclint $(DEFS) $(INCLUDES) ${libbeecrypt_la_SOURCES} tests/beetest.c
+# XXX don't bite into javaglue.c (yet)
+.PHONY: lint
+lint:
+	$(LINT) $(DEFS) $(INCLUDES) $(libbeecrypt_la_SOURCES:javaglue.c=) tests/beetest.c
 
 .PHONY: listobjs
 listobjs:

@@ -20,9 +20,8 @@ static int _build_debug = 0;
 /**
  */
 static void doRmSource(Spec spec)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies rpmGlobalMacroContext, fileSystem, internalState  @*/
 {
     struct Source *p;
     Package pkg;
@@ -96,6 +95,12 @@ int doScript(Spec spec, int what, const char *name, StringBuf sb, int test)
 	sb = spec->install;
 	mTemplate = "%{__spec_install_template}";
 	mPost = "%{__spec_install_post}";
+	break;
+    case RPMBUILD_CHECK:
+	name = "%check";
+	sb = spec->check;
+	mTemplate = "%{__spec_check_template}";
+	mPost = "%{__spec_check_post}";
 	break;
     case RPMBUILD_CLEAN:
 	name = "%clean";
@@ -184,11 +189,13 @@ int doScript(Spec spec, int what, const char *name, StringBuf sb, int test)
     
 if (_build_debug)
 fprintf(stderr, "*** rootURL %s buildDirURL %s\n", rootURL, buildDirURL);
+/*@-boundsread@*/
     if (buildDirURL && buildDirURL[0] != '/' &&
 	(urlSplit(buildDirURL, &u) != 0)) {
 	rc = RPMERR_SCRIPT;
 	goto exit;
     }
+/*@=boundsread@*/
     if (u != NULL) {
 	switch (u->urltype) {
 	case URL_IS_FTP:
@@ -214,7 +221,9 @@ fprintf(stderr, "*** addMacros\n");
 	/*@-mods@*/
 	errno = 0;
 	/*@=mods@*/
+/*@-boundsread@*/
 	(void) execvp(argv[0], (char *const *)argv);
+/*@=boundsread@*/
 
 	rpmError(RPMERR_SCRIPT, _("Exec of %s failed (%s): %s\n"),
 		scriptName, name, strerror(errno));
@@ -261,7 +270,7 @@ fprintf(stderr, "*** delMacros\n");
     return rc;
 }
 
-int buildSpec(Spec spec, int what, int test)
+int buildSpec(rpmts ts, Spec spec, int what, int test)
 {
     int rc = 0;
 
@@ -271,12 +280,14 @@ int buildSpec(Spec spec, int what, int test)
 	/* packaging on the first run, and skip RMSOURCE altogether */
 	if (spec->BASpecs != NULL)
 	for (x = 0; x < spec->BACount; x++) {
-	    if ((rc = buildSpec(spec->BASpecs[x],
+/*@-boundsread@*/
+	    if ((rc = buildSpec(ts, spec->BASpecs[x],
 				(what & ~RPMBUILD_RMSOURCE) |
 				(x ? 0 : (what & RPMBUILD_PACKAGESOURCE)),
 				test))) {
 		goto exit;
 	    }
+/*@=boundsread@*/
 	}
     } else {
 	if ((what & RPMBUILD_PREP) &&
@@ -289,6 +300,10 @@ int buildSpec(Spec spec, int what, int test)
 
 	if ((what & RPMBUILD_INSTALL) &&
 	    (rc = doScript(spec, RPMBUILD_INSTALL, NULL, NULL, test)))
+		goto exit;
+
+	if ((what & RPMBUILD_CHECK) &&
+	    (rc = doScript(spec, RPMBUILD_CHECK, NULL, NULL, test)))
 		goto exit;
 
 	if ((what & RPMBUILD_PACKAGESOURCE) &&

@@ -16,86 +16,139 @@ extern time_t get_date(const char * p, void * now);	/* XXX expedient lies */
 /*@unchecked@*/
 struct rpmInstallArguments_s rpmIArgs;
 
-#define	POPT_RELOCATE		-1016
-#define	POPT_EXCLUDEPATH	-1019
-#define	POPT_ROLLBACK		-1024
+#define	POPT_RELOCATE		-1021
+#define	POPT_EXCLUDEPATH	-1022
+#define	POPT_ROLLBACK		-1023
 
-/*@exits@*/ static void argerror(const char * desc)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/
+/*@exits@*/
+static void argerror(const char * desc)
+	/*@globals stderr, fileSystem @*/
+	/*@modifies stderr, fileSystem @*/
 {
+    /*@-modfilesys -globs @*/
     fprintf(stderr, _("%s: %s\n"), __progname, desc);
+    /*@=modfilesys =globs @*/
     exit(EXIT_FAILURE);
-
 }
 
 /**
  */
+/*@-bounds@*/
 static void installArgCallback( /*@unused@*/ poptContext con,
 		/*@unused@*/ enum poptCallbackReason reason,
 		const struct poptOption * opt, const char * arg,
 		/*@unused@*/ const void * data)
-	/*@modifies rpmIArgs */
+	/*@globals rpmIArgs, stderr, fileSystem @*/
+	/*@modifies rpmIArgs, stderr, fileSystem @*/
 {
     struct rpmInstallArguments_s * ia = &rpmIArgs;
 
-#if 0
-fprintf(stderr, "*** opt %s %c info 0x%x arg %p val 0x%x arg %p %s\n", opt->longName, opt->shortName, opt->argInfo, opt->arg, opt->val, arg, arg);
-#endif
-
     /* XXX avoid accidental collisions with POPT_BIT_SET for flags */
+    /*@-branchstate@*/
     if (opt->arg == NULL)
     switch (opt->val) {
+
+    case 'i':
+	ia->installInterfaceFlags |= INSTALL_INSTALL;
+	break;
+
     case POPT_EXCLUDEPATH:
 	if (arg == NULL || *arg != '/') 
 	    argerror(_("exclude paths must begin with a /"));
 	ia->relocations = xrealloc(ia->relocations, 
 			sizeof(*ia->relocations) * (ia->numRelocations + 1));
-	/*@-temptrans@*/
-	ia->relocations[ia->numRelocations].oldPath = arg;
-	/*@=temptrans@*/
+/*@-temptrans@*/
+	ia->relocations[ia->numRelocations].oldPath = xstrdup(arg);
+/*@=temptrans@*/
 	ia->relocations[ia->numRelocations].newPath = NULL;
 	ia->numRelocations++;
 	break;
     case POPT_RELOCATE:
-      {	char * newPath = NULL;
+      { char * oldPath = NULL;
+	char * newPath = NULL;
+	
 	if (arg == NULL || *arg != '/') 
 	    argerror(_("relocations must begin with a /"));
-	if (!(newPath = strchr(arg, '=')))
+	oldPath = xstrdup(arg);
+	if (!(newPath = strchr(oldPath, '=')))
 	    argerror(_("relocations must contain a ="));
 	*newPath++ = '\0';
 	if (*newPath != '/') 
 	    argerror(_("relocations must have a / following the ="));
 	ia->relocations = xrealloc(ia->relocations, 
 			sizeof(*ia->relocations) * (ia->numRelocations + 1));
-	/*@-temptrans@*/
-	ia->relocations[ia->numRelocations].oldPath = arg;
-	/*@=temptrans@*/
-	/*@-kepttrans@*/
+/*@-temptrans@*/
+	ia->relocations[ia->numRelocations].oldPath = oldPath;
+/*@=temptrans@*/
+/*@-kepttrans -usereleased @*/
 	ia->relocations[ia->numRelocations].newPath = newPath;
-	/*@=kepttrans@*/
+/*@=kepttrans =usereleased @*/
 	ia->numRelocations++;
       }	break;
+
     case POPT_ROLLBACK:
       {	time_t tid;
-	if (arg == NULL) 
+	if (arg == NULL)
 	    argerror(_("rollback takes a time/date stamp argument"));
+
+	/*@-moduncon@*/
 	tid = get_date(arg, NULL);
+	/*@=moduncon@*/
 
 	if (tid == (time_t)-1 || tid == (time_t)0)
 	    argerror(_("malformed rollback time/date stamp argument"));
 	ia->rbtid = tid;
       }	break;
-    default:
+
+    case RPMCLI_POPT_NODIGEST:
+	ia->qva_flags |= VERIFY_DIGEST;
 	break;
+
+    case RPMCLI_POPT_NOSIGNATURE:
+	ia->qva_flags |= VERIFY_SIGNATURE;
+	break;
+
+    case RPMCLI_POPT_NOHDRCHK:
+	ia->qva_flags |= VERIFY_HDRCHK;
+	break;
+
+    case RPMCLI_POPT_NODEPS:
+	ia->noDeps = 1;
+	break;
+
+    case RPMCLI_POPT_NOMD5:
+	ia->transFlags |= RPMTRANS_FLAG_NOMD5;
+	break;
+
+    case RPMCLI_POPT_FORCE:
+	ia->probFilter |=
+		( RPMPROB_FILTER_REPLACEPKG
+		| RPMPROB_FILTER_REPLACEOLDFILES
+		| RPMPROB_FILTER_REPLACENEWFILES
+		| RPMPROB_FILTER_OLDPACKAGE );
+	break;
+
+    case RPMCLI_POPT_NOSCRIPTS:
+	ia->transFlags |= (_noTransScripts | _noTransTriggers);
+	break;
+
     }
+    /*@=branchstate@*/
 }
+/*@=bounds@*/
 
 /**
  */
+/*@-bitwisesigned -compmempass @*/
+/*@unchecked@*/
 struct poptOption rpmInstallPoptTable[] = {
- { NULL, '\0', POPT_ARG_CALLBACK | POPT_CBFLAG_INC_DATA,
+/*@-type@*/ /* FIX: cast? */
+ { NULL, '\0', POPT_ARG_CALLBACK | POPT_CBFLAG_INC_DATA | POPT_CBFLAG_CONTINUE,
 	installArgCallback, 0, NULL, NULL },
+/*@=type@*/
+
+ { "aid", '\0', POPT_BIT_SET, &rpmIArgs.transFlags, RPMTRANS_FLAG_ADDINDEPS,
+	N_("add suggested packages to transaction"), NULL },
 
  { "allfiles", '\0', POPT_BIT_SET,
 	&rpmIArgs.transFlags, RPMTRANS_FLAG_ALLFILES,
@@ -106,6 +159,10 @@ struct poptOption rpmInstallPoptTable[] = {
 	N_("remove all packages which match <package> (normally an error is generated if <package> specified multiple packages)"),
 	NULL},
 
+ { "anaconda", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
+ 	&rpmIArgs.transFlags, RPMTRANS_FLAG_ANACONDA,
+	N_("use anaconda \"presentation order\""), NULL},
+
  { "apply", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN, &rpmIArgs.transFlags,
 	(_noTransScripts|_noTransTriggers|
 		RPMTRANS_FLAG_APPLYONLY|RPMTRANS_FLAG_PKGCOMMIT),
@@ -114,24 +171,25 @@ struct poptOption rpmInstallPoptTable[] = {
  { "badreloc", '\0', POPT_BIT_SET,
 	&rpmIArgs.probFilter, RPMPROB_FILTER_FORCERELOCATE,
 	N_("relocate files in non-relocateable package"), NULL},
- { "chainsaw", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
-	&rpmIArgs.transFlags, RPMTRANS_FLAG_CHAINSAW,
-	N_("use chainsaw dependency tree decimation when ordering"), NULL},
  { "dirstash", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
 	&rpmIArgs.transFlags, RPMTRANS_FLAG_DIRSTASH,
 	N_("save erased package files by renaming into sub-directory"), NULL},
  { "erase", 'e', POPT_BIT_SET,
 	&rpmIArgs.installInterfaceFlags, INSTALL_ERASE,
 	N_("erase (uninstall) package"), N_("<package>+") },
+ { "excludeconfigs", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
+	&rpmIArgs.transFlags, RPMTRANS_FLAG_NOCONFIGS,
+	N_("do not install configuration files"), NULL},
  { "excludedocs", '\0', POPT_BIT_SET,
 	&rpmIArgs.transFlags, RPMTRANS_FLAG_NODOCS,
 	N_("do not install documentation"), NULL},
  { "excludepath", '\0', POPT_ARG_STRING, 0, POPT_EXCLUDEPATH,
 	N_("skip files with leading component <path> "),
 	N_("<path>") },
- { "force", '\0', POPT_BIT_SET, &rpmIArgs.probFilter,
-	(RPMPROB_FILTER_REPLACEPKG | RPMPROB_FILTER_REPLACEOLDFILES | RPMPROB_FILTER_REPLACENEWFILES | RPMPROB_FILTER_OLDPACKAGE),
+
+ { "force", '\0', 0, NULL, RPMCLI_POPT_FORCE,
 	N_("short hand for --replacepkgs --replacefiles"), NULL},
+
  { "freshen", 'F', POPT_BIT_SET, &rpmIArgs.installInterfaceFlags,
 	(INSTALL_UPGRADE|INSTALL_FRESHEN|INSTALL_INSTALL),
 	N_("upgrade package(s) if already installed"),
@@ -147,23 +205,38 @@ struct poptOption rpmInstallPoptTable[] = {
  { "ignoresize", '\0', POPT_BIT_SET, &rpmIArgs.probFilter,
 	(RPMPROB_FILTER_DISKSPACE|RPMPROB_FILTER_DISKNODES),
 	N_("don't check disk space before installing"), NULL},
- { "includedocs", '\0', 0, &rpmIArgs.incldocs, 0,
+ { "includedocs", '\0', POPT_ARGFLAG_DOC_HIDDEN, &rpmIArgs.incldocs, 0,
 	N_("install documentation"), NULL},
- { "install", '\0', POPT_BIT_SET,
-	&rpmIArgs.installInterfaceFlags, INSTALL_INSTALL,
-	N_("install package"), N_("<packagefile>+") },
+
+ { "install", 'i', 0, NULL, 'i',
+	N_("install package(s)"), N_("<packagefile>+") },
+
  { "justdb", '\0', POPT_BIT_SET, &rpmIArgs.transFlags, RPMTRANS_FLAG_JUSTDB,
 	N_("update the database, but do not modify the filesystem"), NULL},
- { "nodeps", '\0', 0, &rpmIArgs.noDeps, 0,
+
+ { "noconfigs", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
+	&rpmIArgs.transFlags, RPMTRANS_FLAG_NOCONFIGS,
+	N_("do not install configuration files"), NULL},
+ { "nodeps", '\0', 0, NULL, RPMCLI_POPT_NODEPS,
 	N_("do not verify package dependencies"), NULL },
+ { "nodocs", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
+	&rpmIArgs.transFlags, RPMTRANS_FLAG_NODOCS,
+	N_("do not install documentation"), NULL},
+
+ { "nomd5", '\0', 0, NULL, RPMCLI_POPT_NOMD5,
+	N_("don't verify MD5 digest of files"), NULL },
  { "noorder", '\0', POPT_BIT_SET,
 	&rpmIArgs.installInterfaceFlags, INSTALL_NOORDER,
 	N_("do not reorder package installation to satisfy dependencies"),
 	NULL},
 
- { "noscripts", '\0', POPT_BIT_SET, &rpmIArgs.transFlags,
-	(_noTransScripts|_noTransTriggers),
+ { "nosuggest", '\0', POPT_BIT_SET, &rpmIArgs.transFlags,
+	RPMTRANS_FLAG_NOSUGGEST,
+	N_("do not suggest missing dependency resolution(s)"), NULL},
+
+ { "noscripts", '\0', 0, NULL, RPMCLI_POPT_NOSCRIPTS,
 	N_("do not execute package scriptlet(s)"), NULL },
+
  { "nopre", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN, &rpmIArgs.transFlags,
 	RPMTRANS_FLAG_NOPRE,
 	N_("do not execute %%pre scriptlet (if any)"), NULL },
@@ -177,8 +250,14 @@ struct poptOption rpmInstallPoptTable[] = {
 	RPMTRANS_FLAG_NOPOSTUN,
 	N_("do not execute %%postun scriptlet (if any)"), NULL },
 
- { "notriggers", '\0', POPT_BIT_SET, &rpmIArgs.transFlags,
-	_noTransTriggers,
+ { "nodigest", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NODIGEST,
+        N_("don't verify package digest(s)"), NULL },
+ { "nohdrchk", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NOHDRCHK,
+        N_("don't verify database header(s) when retrieved"), NULL },
+ { "nosignature", '\0', POPT_ARGFLAG_DOC_HIDDEN, 0, RPMCLI_POPT_NOSIGNATURE,
+        N_("don't verify package signature(s)"), NULL },
+
+ { "notriggers", '\0', POPT_BIT_SET, &rpmIArgs.transFlags, _noTransTriggers,
 	N_("do not execute any scriptlet(s) triggered by this package"), NULL},
  { "notriggerprein", '\0', POPT_BIT_SET|POPT_ARGFLAG_DOC_HIDDEN,
 	&rpmIArgs.transFlags, RPMTRANS_FLAG_NOTRIGGERPREIN,
@@ -227,3 +306,4 @@ struct poptOption rpmInstallPoptTable[] = {
 
    POPT_TABLEEND
 };
+/*@=bitwisesigned =compmempass @*/

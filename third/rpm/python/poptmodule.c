@@ -6,7 +6,7 @@
 
 #define PY_POPT_VERSION "0.2"
 
-static const char *rcs_id = "$Id: poptmodule.c,v 1.1.1.1 2002-09-14 23:13:55 ghudson Exp $";
+static const char *rcs_id = "$Id: poptmodule.c,v 1.1.1.2 2003-03-23 06:30:39 ghudson Exp $";
 
 static char *module_doc = "Python bindings for the popt library\n\
 \n\
@@ -27,7 +27,7 @@ and is always available from ftp://ftp.rpm.org/pub/rpm/dist";
 
 /* Functins and datatypes needed for the context object */
 typedef struct poptContext_s {
-    PyObject_HEAD;
+    PyObject_HEAD
     struct poptOption *options;
     int optionsNo;
     poptContext ctx;
@@ -329,7 +329,7 @@ static void ctxDealloc(poptContextObject *self, PyObject *args)
         self->options = NULL;
     }
     poptFreeContext(self->ctx);
-    PyMem_DEL(self);
+    PyObject_Del(self);
 }
 
 static PyTypeObject poptContextType = {
@@ -598,7 +598,7 @@ static PyObject * getContext(PyObject *self, PyObject *args)
 	/* Presumably they've set the exception at a previous level */
 	return NULL;
     /* Parse argv */
-    c = PyObject_NEW(poptContextObject, &poptContextType);
+    c = PyObject_New(poptContextObject, &poptContextType);
     c->options = opts;
     c->optionsNo = count;
     c->opt = -1;

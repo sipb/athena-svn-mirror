@@ -36,7 +36,7 @@ extern MacroContext rpmCLIMacroContext;
  * identified by the token '://', so file paths must not begin with '//'.
  */
 /*@-redecl@*/
-/*@observer@*/ /*@unchecked@*/
+/*@observer@*/ /*@checked@*/
 extern const char * macrofiles;
 /*@=redecl@*/
 
@@ -112,7 +112,7 @@ void	delMacro	(/*@null@*/ MacroContext mc, const char * n)
 /**
  * Define macro in context.
  * @param mc		macro context (NULL uses global context).
- * @param n		macro name, options, body
+ * @param macro		macro name, options, body
  * @param level		macro recursion level (0 is entry API)
  * @return		@todo Document.
  */
@@ -137,8 +137,8 @@ void	rpmLoadMacros	(/*@null@*/ MacroContext mc, int level)
  */
 void	rpmInitMacros	(/*@null@*/ MacroContext mc, const char * macrofiles)
 	/*@globals rpmGlobalMacroContext, rpmCLIMacroContext,
-		fileSystem @*/
-	/*@modifies rpmGlobalMacroContext, fileSystem @*/;
+		fileSystem, internalState @*/
+	/*@modifies rpmGlobalMacroContext, fileSystem, internalState @*/;
 
 /**
  * Destroy macro context.
@@ -163,8 +163,8 @@ typedef enum rpmCompressedMagic_e {
  */
 int	isCompressed	(const char * file,
 				/*@out@*/ rpmCompressedMagic * compressed)
-	/*@globals fileSystem@*/
-	/*@modifies *compressed, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies *compressed, fileSystem, internalState @*/;
 
 /**
  * Return (malloc'ed) concatenated macro expansion(s).
@@ -180,7 +180,8 @@ char * rpmExpand	(/*@null@*/ const char * arg, ...)
  * @param path		path to canonicalize (in-place)
  * @return		canonicalized path (malloc'ed)
  */
-/*@null@*/ char * rpmCleanPath	(/*@null@*/ char * path)
+/*@null@*/
+char * rpmCleanPath	(/*@returned@*/ /*@null@*/ char * path)
 	/*@modifies *path @*/;
 
 /**

@@ -14,22 +14,29 @@
 
 /*@access StringBuf @*/
 
+/*@-boundswrite@*/
 char * rpmPermsString(int mode)
 {
     char *perms = xstrdup("----------");
    
-    if (S_ISDIR(mode)) 
+    if (S_ISREG(mode)) 
+	perms[0] = '-';
+    else if (S_ISDIR(mode)) 
 	perms[0] = 'd';
     else if (S_ISLNK(mode))
 	perms[0] = 'l';
     else if (S_ISFIFO(mode)) 
 	perms[0] = 'p';
+    /*@-unrecog@*/
     else if (S_ISSOCK(mode)) 
 	perms[0] = 's';
+    /*@=unrecog@*/
     else if (S_ISCHR(mode))
 	perms[0] = 'c';
     else if (S_ISBLK(mode))
 	perms[0] = 'b';
+    else
+	perms[0] = '?';
 
     if (mode & S_IRUSR) perms[1] = 'r';
     if (mode & S_IWUSR) perms[2] = 'w';
@@ -54,8 +61,10 @@ char * rpmPermsString(int mode)
 
     return perms;
 }
+/*@=boundswrite@*/
 
 /**@todo Infinite loops through manifest files exist, operator error for now. */
+/*@-boundsread@*/
 int rpmReadPackageManifest(FD_t fd, int * argcPtr, const char *** argvPtr)
 {
     StringBuf sb = newStringBuf();
@@ -65,10 +74,13 @@ int rpmReadPackageManifest(FD_t fd, int * argcPtr, const char *** argvPtr)
     const char ** av = NULL;
     int argc = (argcPtr ? *argcPtr : 0);
     const char ** argv = (argvPtr ? *argvPtr : NULL);
-    FILE * f = fdGetFp(fd);
+/*@+voidabstract@*/
+    FILE * f = (FILE *) fdGetFp(fd);
+/*@=voidabstract@*/
     int rc = 0;
     int i;
 
+/*@-boundswrite@*/
     if (f != NULL)
     while (1) {
 	char line[BUFSIZ];
@@ -103,8 +115,10 @@ int rpmReadPackageManifest(FD_t fd, int * argcPtr, const char *** argvPtr)
 	appendStringBuf(sb, s);
     }
 
+    /*@-branchstate@*/
     if (s == NULL)		/* XXX always true */
 	s = getStringBuf(sb);
+    /*@=branchstate@*/
 
     if (!(s && *s)) {
 	rc = 1;
@@ -144,16 +158,22 @@ int rpmReadPackageManifest(FD_t fd, int * argcPtr, const char *** argvPtr)
     }
     if (argcPtr)
 	*argcPtr = ac;
+/*@=boundswrite@*/
 
 exit:
+    /*@-branchstate@*/
     if (argvPtr == NULL || (rc != 0 && av)) {
 	if (av)
+/*@-boundswrite@*/
 	for (i = 0; i < ac; i++)
 	    /*@-unqualifiedtrans@*/av[i] = _free(av[i]); /*@=unqualifiedtrans@*/
+/*@=boundswrite@*/
 	/*@-dependenttrans@*/ av = _free(av); /*@=dependenttrans@*/
     }
+    /*@=branchstate@*/
     sb = freeStringBuf(sb);
-    /*@-nullstate@*/
+    /*@-nullstate@*/ /* FIX: *argvPtr may be NULL. */
     return rc;
     /*@=nullstate@*/
 }
+/*@=boundsread@*/

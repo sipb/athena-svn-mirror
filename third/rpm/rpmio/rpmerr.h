@@ -57,8 +57,8 @@ typedef enum rpmerrCode_e {
     RPMERR_RPMRC	= _em(24),  /*!< bad line in rpmrc */
     RPMERR_NOSPEC	= _em(25),  /*!< .spec file is missing */
     RPMERR_NOTSRPM	= _em(26),  /*!< a source rpm was expected */
-    RPMERR_FLOCK	= _em(27),  /*!< locking the database failed */
 /*@-enummemuse@*/
+    RPMERR_FLOCK	= _em(27),  /*!< locking the database failed */
     RPMERR_OLDPACKAGE	= _em(28),  /*!< trying upgrading to old version */
 /*    	RPMERR_BADARCH  = _em(29),  bad architecture or arch mismatch */
 /*@=enummemuse@*/
@@ -76,8 +76,8 @@ typedef enum rpmerrCode_e {
     RPMMESS_ALTNAME	= _em(38),  /*!< file written as .rpmnew */
     RPMMESS_PREREQLOOP	= _em(39),  /*!< loop in prerequisites */
     RPMERR_BADRELOCATE	= _em(40),  /*!< bad relocation was specified */
-/*@=enummemuse@*/
     RPMERR_OLDDB	= _em(41),  /*!< old format database */
+/*@=enummemuse@*/
 
     RPMERR_UNMATCHEDIF	= _em(107), /*!< unclosed %ifarch or %ifos */
     RPMERR_RELOAD	= _em(108), /*!< */
@@ -105,11 +105,11 @@ typedef enum rpmerrCode_e {
     RPMERR_QUERY	= _em(124), /*!< */
     RPMERR_QFMT		= _em(125), /*!< */
     RPMERR_DBCONFIG	= _em(126), /*!< */
-    RPMERR_DBERR	= _em(127), /*!< */
 /*@-enummemuse@*/
+    RPMERR_DBERR	= _em(127), /*!< */
     RPMERR_BADPACKAGE	= _em(128), /*!< getNextHeader: %s */
-/*@=enummemuse@*/
     RPMERR_FREELIST	= _em(129), /*!< free list corrupt (%u)- please ... */
+/*@=enummemuse@*/
     RPMERR_DATATYPE	= _em(130), /*!< Data type %d not supported */
     RPMERR_BUILDROOT	= _em(131), /*!< */
     RPMERR_MAKETEMP	= _em(132), /*!< makeTempFile failed */
@@ -127,10 +127,13 @@ typedef enum rpmerrCode_e {
     RPMERR_BADSIGTYPE	= _em(200), /*!< Unknown signature type */
     RPMERR_SIGGEN	= _em(201), /*!< Error generating signature */
     RPMERR_SIGVFY	= _nm(202), /*!< */
+    RPMERR_IMPORT	= _em(203), /*!< */
 
     RPMDEBUG_UNLINK	= _dm(512u+16),	/*!< unlink(2) failed */
     RPMDEBUG_RMDIR	= _dm(512u+17),	/*!< rmdir(2) failed */
+/*@-enummemuse@*/
     RPMWARN_FLOCK	= _wm(512u+27)	/*!< locking the database failed */
+/*@=enummemuse@*/
 } rpmerrCode;
 /*@=typeuse @*/
 

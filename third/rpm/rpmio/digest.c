@@ -4,10 +4,6 @@
 
 #include "system.h"
 #include "rpmio_internal.h"
-#include "beecrypt.h"
-#include "md5.h"
-#include "endianness.h"
-#include "fips180.h"
 #include "debug.h"
 
 #ifdef	SHA_DEBUG
@@ -35,6 +31,7 @@ struct DIGEST_CTX_s {
 	/*@modifies param, digest @*/;	/*!< Digest finish. */
 };
 
+/*@-boundsread@*/
 DIGEST_CTX
 rpmDigestDup(DIGEST_CTX octx)
 {
@@ -42,6 +39,7 @@ rpmDigestDup(DIGEST_CTX octx)
     nctx->param = memcpy(xcalloc(1, nctx->paramlen), octx->param, nctx->paramlen);
     return nctx;
 }
+/*@=boundsread@*/
 
 DIGEST_CTX
 rpmDigestInit(pgpHashAlgo hashalgo, rpmDigestFlags flags)
@@ -88,7 +86,9 @@ rpmDigestInit(pgpHashAlgo hashalgo, rpmDigestFlags flags)
 	/*@notreached@*/ break;
     }
 
+/*@-boundsread@*/
     xx = (*ctx->Reset) (ctx->param);
+/*@=boundsread@*/
 
 DPRINTF((stderr, "*** Init(%x) ctx %p param %p\n", flags, ctx, ctx->param));
     return ctx;
@@ -99,7 +99,9 @@ int
 rpmDigestUpdate(DIGEST_CTX ctx, const void * data, size_t len)
 {
 DPRINTF((stderr, "*** Update(%p,%p,%d) param %p \"%s\"\n", ctx, data, len, ctx->param, ((char *)data)));
+/*@-boundsread@*/
     return (*ctx->Update) (ctx->param, data, len);
+/*@=boundsread@*/
 }
 /*@=mustmod@*/
 
@@ -115,6 +117,7 @@ static union _dendian {
 #define        IS_BIG_ENDIAN()         (_endian->b[0] == '\x44')
 #define        IS_LITTLE_ENDIAN()      (_endian->b[0] == '\x11')
 
+/*@-boundswrite@*/
 int
 rpmDigestFinal(/*@only@*/ DIGEST_CTX ctx, /*@out@*/ void ** datap,
 	/*@out@*/ size_t *lenp, int asAscii)
@@ -167,3 +170,4 @@ DPRINTF((stderr, "*** Final(%p,%p,%p,%d) param %p digest %p\n", ctx, datap, lenp
     free(ctx);
     return 0;
 }
+/*@=boundswrite@*/

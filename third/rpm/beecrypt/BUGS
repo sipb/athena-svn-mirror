@@ -2,6 +2,13 @@ Legend:
 	- = open bug
 	* = fixed bug
 
+2.2.0:
+	* bug in certain instances of computing modular inverse.
+	* incorrectly translated intel-style assembler version of x86 mp32odd and mp32even routines into gnu assembler format.
+	* base64 decoding of '+' and '/' characters is wrong.
+	* incorrect testing of the result of the gcd operation in mp32prndconone.
+	* Chinese Remainer Theorem for RSA private key operation doesn't work
+
 2.1.0:
 	* Entropy gathering from /dev/dsp contained error; size in words of entropy data to gather was overwritten with audio sample size - which resulted in much less entropy.
 

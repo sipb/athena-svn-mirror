@@ -11,6 +11,17 @@ extern "C" {
 #endif
 
 /**
+ * Create directory if it does not exist, and make sure path is writable.
+ * @note This will only create last component of directory path.
+ * @param dpath		directory path
+ * @param dname		directory use string
+ * @return		rpmRC return code
+ */
+rpmRC rpmMkdirPath (const char * dpath, const char * dname)
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fileSystem, internalState @*/;
+
+/**
  * Split string into fields separated by a character.
  * @param str		string
  * @param length	length of string
@@ -38,8 +49,10 @@ void freeSplitString( /*@only@*/ char ** list)
 	/*@modifies *s */
 {
     char * t;
+/*@-boundswrite@*/
     for (t = s + strlen(s) - 1; *t == c && t >= s; t--)
 	*t = '\0';
+/*@=boundswrite@*/
     return s;
 }
 
@@ -47,7 +60,7 @@ void freeSplitString( /*@only@*/ char ** list)
  * Like the libc function, but malloc()'s the space needed.
  * @param name		variable name
  * @param value		variable value
- * @param overwrte	should an existing variable be changed?
+ * @param overwrite	should an existing variable be changed?
  * @return		0 on success
  */
 int dosetenv(const char * name, const char * value, int overwrite)
@@ -58,7 +71,7 @@ int dosetenv(const char * name, const char * value, int overwrite)
  * Like the libc function, but malloc()'s the space needed.
  * @param str		"name=value" string
  * @return		0 on success
-  */
+ */
 int doputenv(const char * str)
 	/*@globals environ@*/
 	/*@modifies *environ @*/;
@@ -83,101 +96,26 @@ int makeTempFile(/*@null@*/ const char * prefix,
 		fileSystem, internalState @*/
 	/*@modifies *fnptr, *fdptr, rpmGlobalMacroContext,
 		fileSystem, internalState @*/;
- 
+
 /**
  * Return (malloc'd) current working directory.
  * @return		current working directory (malloc'ed)
  */
 /*@only@*/ char * currentDirectory(void)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/;
-
-/**
- * Convert absolute path tag to (dirname,basename,dirindex) tags.
- * @param h		header
- */
-void compressFilelist(Header h)
-	/*@modifies h @*/;
-
-/**
- * Convert (dirname,basename,dirindex) tags to absolute path tag.
- * @param h		header
- */
-void expandFilelist(Header h)
-	/*@modifies h @*/;
-
-/**
- * @param h		header
- */
-void buildOrigFileList(Header h, /*@out@*/ const char *** fileListPtr, 
-			/*@out@*/ int * fileCountPtr)
-	/*@modifies *fileListPtr, *fileCountPtr @*/;
+	/*@*/;
 
 /**
  */
 /*@-exportlocal@*/
-int myGlobPatternP (const char *patternURL)
-	/*@*/;
+int myGlobPatternP (const char *patternURL)	/*@*/;
 /*@=exportlocal@*/
 
 /**
  */
 int rpmGlob(const char * patterns, /*@out@*/ int * argcPtr,
 		/*@out@*/ const char *** argvPtr)
-	/*@globals fileSystem @*/
+	/*@globals fileSystem@*/
 	/*@modifies *argcPtr, *argvPtr, fileSystem @*/;
-
-/**
- * Retrofit a Provides: name = version-release dependency into legacy
- * packages.
- * @param h		header
- */
-void providePackageNVR(Header h)
-	/*@modifies h @*/;
-
-/**
- * Calculate MD5 sum for file.
- * @todo Eliminate, use beecrypt instead.
- * @param fn		file name
- * @retval digest	address of md5sum
- * @param asAscii	return md5sum as ascii string?
- * @return		0 on success, 1 on error
- */
-/*@-exportlocal@*/
-int domd5(const char * fn, /*@out@*/ unsigned char * digest, int asAscii)
-	/*@globals fileSystem@*/
-	/*@modifies digest, fileSystem @*/;
-/*@=exportlocal@*/
-
-/**
- * Return MD5 sum of file as ASCII string.
- * @todo Eliminate, use beecrypt instead.
- * @param fn		file name
- * @retval digest	MD5 digest
- * @return		0 on success, 1 on error
- */
-/*@unused@*/ static inline
-int mdfile(const char * fn, /*@out@*/ unsigned char * digest)
-	/*@globals fileSystem@*/
-	/*@modifies digest, fileSystem @*/
-{
-    return domd5(fn, digest, 1);
-}
-
-/**
- * Return MD5 sum of file as binary data.
- * @todo Eliminate, use beecrypt instead.
- * @param fn		file name
- * @retval bindigest	MD5 digest
- * @return		0 on success, 1 on error
- */
-/*@unused@*/ static inline
-int mdbinfile(const char * fn, /*@out@*/ unsigned char * bindigest)
-	/*@globals fileSystem@*/
-	/*@modifies bindigest, fileSystem @*/
-{
-    return domd5(fn, bindigest, 0);
-}
 
 #ifdef __cplusplus
 }

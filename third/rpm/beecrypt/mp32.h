@@ -33,6 +33,7 @@
 #if HAVE_STRING_H
 # include <string.h>
 #endif
+#include <stdio.h>
 
 #include "mp32opt.h"
 
@@ -47,9 +48,9 @@ void mp32copy(uint32 size, /*@out@*/ uint32* dst, const uint32* src)
 	/*@modifies dst @*/;
 #ifndef ASM_MP32COPY
 #ifdef	__LCLINT__
-#define mp32copy(size, dst, src) memmove(dst, src, ((unsigned)(size)) << 2)
+# define mp32copy(size, dst, src) memmove(dst, src, ((unsigned)(size)) << 2)
 #else
-#define mp32copy(size, dst, src) memcpy(dst, src, (size) << 2)
+# define mp32copy(size, dst, src) memcpy(dst, src, (size) << 2)
 #endif
 #endif
 
@@ -60,9 +61,9 @@ void mp32move(uint32 size, /*@out@*/ uint32* dst, const uint32* src)
 	/*@modifies dst @*/;
 #ifndef ASM_MP32MOVE
 #ifdef	__LCLINT__
-#define mp32move(size, dst, src) memmove(dst, src, ((unsigned)(size)) << 2)
+# define mp32move(size, dst, src) memmove(dst, src, ((unsigned)(size)) << 2)
 #else
-#define mp32move(size, dst, src) memmove(dst, src, (size) << 2)
+# define mp32move(size, dst, src) memmove(dst, src, (size) << 2)
 #endif
 #endif
 
@@ -331,7 +332,7 @@ uint32 mp32mszcnt(uint32 xsize, const uint32* xdata)
 /**
  */
 /*@-exportlocal@*/
-BEECRYPTAPI
+BEECRYPTAPI /*@unused@*/
 uint32 mp32lszcnt(uint32 xsize, const uint32* xdata)
 	/*@*/;
 /*@=exportlocal@*/
@@ -353,12 +354,18 @@ void mp32rshift(uint32 xsize, uint32* xdata, uint32 count)
 /**
  */
 BEECRYPTAPI
-uint32 mp32norm(uint32 xsize, uint32* xdata)
+uint32 mp32rshiftlsz(uint32 xsize, uint32* xdata)
 	/*@modifies xdata @*/;
 
 /**
  */
 BEECRYPTAPI
+uint32 mp32norm(uint32 xsize, uint32* xdata)
+	/*@modifies xdata @*/;
+
+/**
+ */
+BEECRYPTAPI /*@unused@*/
 uint32 mp32divpowtwo(uint32 xsize, uint32* xdata)
 	/*@modifies xdata @*/;
 
@@ -433,16 +440,16 @@ void mp32ndivmod(/*@out@*/ uint32* result, uint32 xsize, const uint32* xdata, ui
 /**
  */
 BEECRYPTAPI /*@unused@*/
-void mp32print(uint32 xsize, const uint32* xdata)
+void mp32print(/*@null@*/ FILE * fp, uint32 xsize, /*@null@*/ const uint32* xdata)
 	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/;
+	/*@modifies *fp, fileSystem @*/;
 
 /**
  */
 BEECRYPTAPI /*@unused@*/
-void mp32println(uint32 xsize, const uint32* xdata)
+void mp32println(/*@null@*/ FILE * fp, uint32 xsize, /*@null@*/ const uint32* xdata)
 	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/;
+	/*@modifies *fp, fileSystem @*/;
 
 #ifdef __cplusplus
 }

@@ -66,6 +66,7 @@ static void addOrAppendListEntry(Header h, int_32 tag, char * line)
 
 /**
  */
+/*@-boundswrite@*/
 static int parseSimplePart(char *line, /*@out@*/char **name, /*@out@*/int *flag)
 	/*@globals internalState@*/
 	/*@modifies *name, *flag, internalState @*/
@@ -96,6 +97,7 @@ static int parseSimplePart(char *line, /*@out@*/char **name, /*@out@*/int *flag)
 
     return (strtok(NULL, " \t\n")) ? 1 : 0;
 }
+/*@=boundswrite@*/
 
 /**
  */
@@ -108,7 +110,8 @@ static inline int parseYesNo(const char * s)
 }
 
 typedef struct tokenBits_s {
-/*@observer@*/ /*@null@*/ const char * name;
+/*@observer@*/ /*@null@*/
+    const char * name;
     rpmsenseFlags bits;
 } * tokenBits;
 
@@ -140,6 +143,7 @@ static struct tokenBits_s buildScriptBits[] = {
 
 /**
  */
+/*@-boundswrite@*/
 static int parseBits(const char * s, const tokenBits tokbits,
 		/*@out@*/ rpmsenseFlags * bp)
 	/*@modifies *bp @*/
@@ -173,6 +177,7 @@ static int parseBits(const char * s, const tokenBits tokbits,
     if (c == 0 && bp) *bp = bits;
     return (c ? RPMERR_BADSPEC : 0);
 }
+/*@=boundswrite@*/
 
 /**
  */
@@ -181,11 +186,13 @@ static inline char * findLastChar(char * s)
 {
     char *res = s;
 
+/*@-boundsread@*/
     while (*s != '\0') {
 	if (! xisspace(*s))
 	    res = s;
 	s++;
     }
+/*@=boundsread@*/
 
     /*@-temptrans -retalias@*/
     return res;
@@ -205,11 +212,13 @@ static int isMemberInEntry(Header h, const char *name, rpmTag tag)
 
     if (!hge(h, tag, &type, (void **)&names, &count))
 	return -1;
+/*@-boundsread@*/
     while (count--) {
 	if (!xstrcasecmp(names[count], name))
 	    break;
     }
     names = hfd(names, type);
+/*@=boundsread@*/
     return (count >= 0 ? 1 : 0);
 }
 
@@ -265,6 +274,7 @@ static int checkForRequired(Header h, const char * NVR)
     int res = 0;
     rpmTag * p;
 
+/*@-boundsread@*/
     for (p = requiredTags; *p != 0; p++) {
 	if (!headerIsEntry(h, *p)) {
 	    rpmError(RPMERR_BADSPEC,
@@ -273,6 +283,7 @@ static int checkForRequired(Header h, const char * NVR)
 	    res = 1;
 	}
     }
+/*@=boundsread@*/
 
     return res;
 }
@@ -310,7 +321,8 @@ static int checkForDuplicates(Header h, const char * NVR)
 /*@observer@*/ /*@unchecked@*/
 static struct optionalTag {
     rpmTag	ot_tag;
-/*@observer@*/ /*@null@*/ const char * ot_mac;
+/*@observer@*/ /*@null@*/
+    const char * ot_mac;
 } optionalTags[] = {
     { RPMTAG_VENDOR,		"%{vendor}" },
     { RPMTAG_PACKAGER,		"%{packager}" },
@@ -329,20 +341,22 @@ static void fillOutMainPackage(Header h)
 
     for (ot = optionalTags; ot->ot_mac != NULL; ot++) {
 	if (!headerIsEntry(h, ot->ot_tag)) {
+/*@-boundsread@*/
 	    const char *val = rpmExpand(ot->ot_mac, NULL);
 	    if (val && *val != '%')
 		(void) headerAddEntry(h, ot->ot_tag, RPM_STRING_TYPE, (void *)val, 1);
 	    val = _free(val);
+/*@=boundsread@*/
 	}
     }
 }
 
 /**
  */
+/*@-boundswrite@*/
 static int readIcon(Header h, const char * file)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies h, rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies h, rpmGlobalMacroContext, fileSystem, internalState  @*/
 {
     const char *fn = NULL;
     char *icon;
@@ -397,6 +411,7 @@ exit:
     fn = _free(fn);
     return rc;
 }
+/*@=boundswrite@*/
 
 spectag stashSt(Spec spec, Header h, int tag, const char * lang)
 {
@@ -442,16 +457,16 @@ extern int noLang;
 
 /**
  */
+/*@-boundswrite@*/
 static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 			     const char *lang)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
 	/*@modifies spec->macros, spec->st, spec->buildRootURL,
 		spec->sources, spec->numSources, spec->noSource,
 		spec->buildRestrictions, spec->BANames, spec->BACount,
 		spec->line, spec->gotBuildRootURL,
 		pkg->header, pkg->autoProv, pkg->autoReq, pkg->icon,
-		rpmGlobalMacroContext, fileSystem @*/
+		rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     HGE_t hge = (HGE_t)headerGetEntryMinMemory;
     HFD_t hfd = headerFreeData;
@@ -493,11 +508,11 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	multiToken = 1;
 
     switch (tag) {
-      case RPMTAG_NAME:
-      case RPMTAG_VERSION:
-      case RPMTAG_RELEASE:
-      case RPMTAG_URL:
-      case RPMTAG_RHNPLATFORM:
+    case RPMTAG_NAME:
+    case RPMTAG_VERSION:
+    case RPMTAG_RELEASE:
+    case RPMTAG_URL:
+    case RPMTAG_RHNPLATFORM:
 	SINGLE_TOKEN_ONLY;
 	/* These macros are for backward compatibility */
 	if (tag == RPMTAG_VERSION) {
@@ -517,20 +532,20 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	}
 	(void) headerAddEntry(pkg->header, tag, RPM_STRING_TYPE, field, 1);
 	break;
-      case RPMTAG_GROUP:
-      case RPMTAG_SUMMARY:
+    case RPMTAG_GROUP:
+    case RPMTAG_SUMMARY:
 	(void) stashSt(spec, pkg->header, tag, lang);
 	/*@fallthrough@*/
-      case RPMTAG_DISTRIBUTION:
-      case RPMTAG_VENDOR:
-      case RPMTAG_LICENSE:
-      case RPMTAG_PACKAGER:
+    case RPMTAG_DISTRIBUTION:
+    case RPMTAG_VENDOR:
+    case RPMTAG_LICENSE:
+    case RPMTAG_PACKAGER:
 	if (!*lang)
 	    (void) headerAddEntry(pkg->header, tag, RPM_STRING_TYPE, field, 1);
 	else if (!(noLang && strcmp(lang, RPMBUILD_DEFAULT_LANG)))
 	    (void) headerAddI18NString(pkg->header, tag, field, lang);
 	break;
-      case RPMTAG_BUILDROOT:
+    case RPMTAG_BUILDROOT:
 	SINGLE_TOKEN_ONLY;
       {	const char * buildRoot = NULL;
 	const char * buildRootURL = spec->buildRootURL;
@@ -576,7 +591,7 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	}
 	buildRootURL = _free(buildRootURL);
       }	break;
-      case RPMTAG_PREFIXES:
+    case RPMTAG_PREFIXES:
 	addOrAppendListEntry(pkg->header, tag, field);
 	xx = hge(pkg->header, tag, &type, (void **)&array, &num);
 	while (num--) {
@@ -591,7 +606,7 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	}
 	array = hfd(array, type);
 	break;
-      case RPMTAG_DOCDIR:
+    case RPMTAG_DOCDIR:
 	SINGLE_TOKEN_ONLY;
 	if (field[0] != '/') {
 	    rpmError(RPMERR_BADSPEC,
@@ -603,7 +618,7 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	delMacro(NULL, "_docdir");
 	addMacro(NULL, "_docdir", NULL, field, RMIL_SPEC);
 	break;
-      case RPMTAG_EPOCH:
+    case RPMTAG_EPOCH:
 	SINGLE_TOKEN_ONLY;
 	if (parseNum(field, &num)) {
 	    rpmError(RPMERR_BADSPEC,
@@ -613,38 +628,38 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	}
 	xx = headerAddEntry(pkg->header, tag, RPM_INT32_TYPE, &num, 1);
 	break;
-      case RPMTAG_AUTOREQPROV:
+    case RPMTAG_AUTOREQPROV:
 	pkg->autoReq = parseYesNo(field);
 	pkg->autoProv = pkg->autoReq;
 	break;
-      case RPMTAG_AUTOREQ:
+    case RPMTAG_AUTOREQ:
 	pkg->autoReq = parseYesNo(field);
 	break;
-      case RPMTAG_AUTOPROV:
+    case RPMTAG_AUTOPROV:
 	pkg->autoProv = parseYesNo(field);
 	break;
-      case RPMTAG_SOURCE:
-      case RPMTAG_PATCH:
+    case RPMTAG_SOURCE:
+    case RPMTAG_PATCH:
 	SINGLE_TOKEN_ONLY;
 	macro = NULL;
 	if ((rc = addSource(spec, pkg, field, tag)))
 	    return rc;
 	break;
-      case RPMTAG_ICON:
+    case RPMTAG_ICON:
 	SINGLE_TOKEN_ONLY;
 	if ((rc = addSource(spec, pkg, field, tag)))
 	    return rc;
 	if ((rc = readIcon(pkg->header, field)))
 	    return RPMERR_BADSPEC;
 	break;
-      case RPMTAG_NOSOURCE:
-      case RPMTAG_NOPATCH:
+    case RPMTAG_NOSOURCE:
+    case RPMTAG_NOPATCH:
 	spec->noSource = 1;
 	if ((rc = parseNoSource(spec, field, tag)))
 	    return rc;
 	break;
-      case RPMTAG_BUILDPREREQ:
-      case RPMTAG_BUILDREQUIRES:
+    case RPMTAG_BUILDPREREQ:
+    case RPMTAG_BUILDREQUIRES:
 	if ((rc = parseBits(lang, buildScriptBits, &tagflags))) {
 	    rpmError(RPMERR_BADSPEC,
 		     _("line %d: Bad %s: qualifiers: %s\n"),
@@ -654,8 +669,8 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	if ((rc = parseRCPOT(spec, pkg, field, tag, 0, tagflags)))
 	    return rc;
 	break;
-      case RPMTAG_REQUIREFLAGS:
-      case RPMTAG_PREREQ:
+    case RPMTAG_REQUIREFLAGS:
+    case RPMTAG_PREREQ:
 	if ((rc = parseBits(lang, installScriptBits, &tagflags))) {
 	    rpmError(RPMERR_BADSPEC,
 		     _("line %d: Bad %s: qualifiers: %s\n"),
@@ -665,21 +680,21 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	if ((rc = parseRCPOT(spec, pkg, field, tag, 0, tagflags)))
 	    return rc;
 	break;
-      case RPMTAG_BUILDCONFLICTS:
-      case RPMTAG_CONFLICTFLAGS:
-      case RPMTAG_OBSOLETEFLAGS:
-      case RPMTAG_PROVIDEFLAGS:
+    case RPMTAG_BUILDCONFLICTS:
+    case RPMTAG_CONFLICTFLAGS:
+    case RPMTAG_OBSOLETEFLAGS:
+    case RPMTAG_PROVIDEFLAGS:
 	tagflags = RPMSENSE_ANY;
 	if ((rc = parseRCPOT(spec, pkg, field, tag, 0, tagflags)))
 	    return rc;
 	break;
-      case RPMTAG_EXCLUDEARCH:
-      case RPMTAG_EXCLUSIVEARCH:
-      case RPMTAG_EXCLUDEOS:
-      case RPMTAG_EXCLUSIVEOS:
+    case RPMTAG_EXCLUDEARCH:
+    case RPMTAG_EXCLUSIVEARCH:
+    case RPMTAG_EXCLUDEOS:
+    case RPMTAG_EXCLUSIVEOS:
 	addOrAppendListEntry(spec->buildRestrictions, tag, field);
 	break;
-      case RPMTAG_BUILDARCHS:
+    case RPMTAG_BUILDARCHS:
 	if ((rc = poptParseArgvString(field,
 				      &(spec->BACount),
 				      &(spec->BANames)))) {
@@ -692,7 +707,7 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
 	    spec->BANames = _free(spec->BANames);
 	break;
 
-      default:
+    default:
 	rpmError(RPMERR_INTERNAL, _("Internal error: Bogus tag %d\n"), tag);
 	return RPMERR_INTERNAL;
     }
@@ -702,6 +717,7 @@ static int handlePreambleTag(Spec spec, Package pkg, int tag, const char *macro,
     
     return 0;
 }
+/*@=boundswrite@*/
 
 /* This table has to be in a peculiar order.  If one tag is the */
 /* same as another, plus a few letters, it must come first.     */
@@ -712,7 +728,8 @@ typedef struct PreambleRec_s {
     rpmTag tag;
     int len;
     int multiLang;
-/*@observer@*/ /*@null@*/ const char * token;
+/*@observer@*/ /*@null@*/
+    const char * token;
 } * PreambleRec;
 
 /*@unchecked@*/
@@ -776,6 +793,7 @@ static inline void initPreambleList(void)
 
 /**
  */
+/*@-boundswrite@*/
 static int findPreambleTag(Spec spec, /*@out@*/int * tag,
 		/*@null@*/ /*@out@*/ const char ** macro, /*@out@*/ char * lang)
 	/*@modifies *tag, *macro, *lang @*/
@@ -831,7 +849,9 @@ static int findPreambleTag(Spec spec, /*@out@*/int * tag,
 	/*@=onlytrans =observertrans =dependenttrans@*/
     return 0;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 int parsePreamble(Spec spec, int initialPackage)
 {
     int nextPart;
@@ -927,3 +947,4 @@ int parsePreamble(Spec spec, int initialPackage)
 
     return nextPart;
 }
+/*@=boundswrite@*/

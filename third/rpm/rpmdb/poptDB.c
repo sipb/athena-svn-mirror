@@ -11,10 +11,6 @@
 
 struct rpmDatabaseArguments_s rpmDBArgs;
 
-/*@-redecl@*/
-extern int _noDirTokens;
-/*@=redecl@*/
-
 /**
  */
 struct poptOption rpmDatabasePoptTable[] = {

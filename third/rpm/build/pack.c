@@ -7,21 +7,29 @@
 
 #include <rpmio_internal.h>
 #include <rpmbuild.h>
+
+#include "rpmps.h"
+
+#include "cpio.h"
+#include "fsm.h"
+#include "psm.h"
+
+#define	_RPMFI_INTERNAL		/* XXX fi->fsm */
+#include "rpmfi.h"
+#include "rpmts.h"
+
 #include "buildio.h"
 
-#include "misc.h"
+#include "legacy.h"	/* XXX providePackageNVR */
 #include "signature.h"
 #include "rpmlead.h"
 #include "debug.h"
 
-/*@-redecl@*/
-extern int _noDirTokens;
-/*@=redecl@*/
-
-/*@access StringBuf @*/	/* compared with NULL */
-/*@access TFI_t @*/	/* compared with NULL */
+/*@access rpmts @*/
+/*@access rpmfi @*/	/* compared with NULL */
 /*@access Header @*/	/* compared with NULL */
 /*@access FD_t @*/	/* compared with NULL */
+/*@access StringBuf @*/	/* compared with NULL */
 /*@access CSA_t @*/
 
 /**
@@ -47,18 +55,17 @@ static inline int genSourceRpmName(Spec spec)
  */
 static int cpio_doio(FD_t fdo, /*@unused@*/ Header h, CSA_t csa,
 		const char * fmodeMacro)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies fdo, csa, rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies fdo, csa, rpmGlobalMacroContext,
+		fileSystem, internalState @*/
 {
-    const char * rootDir = "/";
-    rpmdb rpmdb = NULL;
-    rpmTransactionSet ts = rpmtransCreateSet(rpmdb, rootDir);
-    TFI_t fi = csa->cpioList;
+    rpmts ts = rpmtsCreate();
+    rpmfi fi = csa->cpioList;
     const char *failedFile = NULL;
     FD_t cfd;
     int rc, ec;
 
+/*@-boundsread@*/
     {	const char *fmode = rpmExpand(fmodeMacro, NULL);
 	if (!(fmode && fmode[0] == 'w'))
 	    fmode = xstrdup("w9.gzdio");
@@ -68,6 +75,7 @@ static int cpio_doio(FD_t fdo, /*@unused@*/ Header h, CSA_t csa,
 	/*@=nullpass@*/
 	fmode = _free(fmode);
     }
+/*@=boundsread@*/
     if (cfd == NULL)
 	return 1;
 
@@ -88,7 +96,7 @@ static int cpio_doio(FD_t fdo, /*@unused@*/ Header h, CSA_t csa,
     }
 
     failedFile = _free(failedFile);
-    ts = rpmtransFree(ts);
+    ts = rpmtsFree(ts);
 
     return rc;
 }
@@ -96,8 +104,8 @@ static int cpio_doio(FD_t fdo, /*@unused@*/ Header h, CSA_t csa,
 /**
  */
 static int cpio_copy(FD_t fdo, CSA_t csa)
-	/*@globals fileSystem@*/
-	/*@modifies fdo, csa, fileSystem @*/
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fdo, csa, fileSystem, internalState @*/
 {
     char buf[BUFSIZ];
     size_t nb;
@@ -122,9 +130,8 @@ static int cpio_copy(FD_t fdo, CSA_t csa)
  */
 static /*@only@*/ /*@null@*/ StringBuf addFileToTagAux(Spec spec,
 		const char * file, /*@only@*/ StringBuf sb)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     char buf[BUFSIZ];
     const char * fn = buf;
@@ -160,9 +167,8 @@ static /*@only@*/ /*@null@*/ StringBuf addFileToTagAux(Spec spec,
 /**
  */
 static int addFileToTag(Spec spec, const char * file, Header h, int tag)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies h, rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies h, rpmGlobalMacroContext, fileSystem, internalState @*/
 {
     HGE_t hge = (HGE_t)headerGetEntryMinMemory;
     StringBuf sb = newStringBuf();
@@ -185,9 +191,8 @@ static int addFileToTag(Spec spec, const char * file, Header h, int tag)
 /**
  */
 static int addFileToArrayTag(Spec spec, const char *file, Header h, int tag)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies h, rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies h, rpmGlobalMacroContext, fileSystem, internalState  @*/
 {
     StringBuf sb = newStringBuf();
     char *s;
@@ -205,9 +210,9 @@ static int addFileToArrayTag(Spec spec, const char *file, Header h, int tag)
 /**
  */
 static int processScriptFiles(Spec spec, Package pkg)
-	/*@globals rpmGlobalMacroContext,
-		fileSystem@*/
-	/*@modifies pkg->header, rpmGlobalMacroContext, fileSystem @*/
+	/*@globals rpmGlobalMacroContext, fileSystem, internalState @*/
+	/*@modifies pkg->header, rpmGlobalMacroContext,
+		fileSystem, internalState @*/
 {
     struct TriggerFileEntry *p;
     
@@ -274,6 +279,7 @@ static int processScriptFiles(Spec spec, Package pkg)
     return 0;
 }
 
+/*@-boundswrite@*/
 int readRPM(const char *fileName, Spec *specp, struct rpmlead *lead,
 		Header *sigs, CSA_t csa)
 {
@@ -317,18 +323,30 @@ int readRPM(const char *fileName, Spec *specp, struct rpmlead *lead,
     /* XXX the header just allocated will be allocated again */
     spec->packages->header = headerFree(spec->packages->header);
 
-   /* Read the rpm lead, signatures, and header */
-    rc = rpmReadPackageInfo(fdi, sigs, &spec->packages->header);
+    /* Read the rpm lead, signatures, and header */
+    {	rpmts ts = rpmtsCreate();
+
+	/* XXX W2DO? pass fileName? */
+	/*@-mustmod@*/      /* LCL: segfault */
+	rc = rpmReadPackageFile(ts, fdi, "readRPM",
+			 &spec->packages->header);
+	/*@=mustmod@*/
+
+	ts = rpmtsFree(ts);
+
+	if (sigs) *sigs = NULL;			/* XXX HACK */
+    }
+
     switch (rc) {
-    case RPMRC_BADMAGIC:
+    case RPMRC_OK:
+    case RPMRC_NOKEY:
+    case RPMRC_NOTTRUSTED:
+	break;
+    case RPMRC_NOTFOUND:
 	rpmError(RPMERR_BADMAGIC, _("readRPM: %s is not an RPM package\n"),
 		(fileName ? fileName : "<stdin>"));
 	return RPMERR_BADMAGIC;
-    case RPMRC_OK:
-	break;
     case RPMRC_FAIL:
-    case RPMRC_BADSIZE:
-    case RPMRC_SHORTREAD:
     default:
 	rpmError(RPMERR_BADMAGIC, _("readRPM: reading header from %s\n"),
 		(fileName ? fileName : "<stdin>"));
@@ -350,11 +368,14 @@ int readRPM(const char *fileName, Spec *specp, struct rpmlead *lead,
 
     return 0;
 }
+/*@=boundswrite@*/
 
+#ifdef	DYING
 /*@unchecked@*/
 static unsigned char header_magic[8] = {
         0x8e, 0xad, 0xe8, 0x01, 0x00, 0x00, 0x00, 0x00
 };
+#endif
 
 #define	RPMPKGVERSION_MIN	30004
 #define	RPMPKGVERSION_MAX	40003
@@ -382,15 +403,16 @@ static int rpmLeadVersion(void)
     return rpmlead_version;
 }
 
-int writeRPM(Header *hdrp, const char *fileName, int type,
-		    CSA_t csa, char *passPhrase, const char **cookie)
+/*@-boundswrite@*/
+int writeRPM(Header *hdrp, unsigned char ** pkgidp, const char *fileName,
+		int type, CSA_t csa, char *passPhrase, const char **cookie)
 {
     FD_t fd = NULL;
     FD_t ifd = NULL;
-    int count, sigtype;
+    int_32 count, sigtag;
     const char * sigtarget;
     const char * rpmio_flags = NULL;
-    const char * sha1 = NULL;
+    const char * SHA1 = NULL;
     char *s;
     char buf[BUFSIZ];
     Header h;
@@ -401,12 +423,17 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     h = headerLink(*hdrp);
     *hdrp = headerFree(*hdrp);
 
+    if (pkgidp)
+	*pkgidp = NULL;
+
+#ifdef	DYING
     if (Fileno(csa->cpioFdIn) < 0) {
 	csa->cpioArchiveSize = 0;
 	/* Add a bogus archive size to the Header */
 	(void) headerAddEntry(h, RPMTAG_ARCHIVESIZE, RPM_INT32_TYPE,
 		&csa->cpioArchiveSize, 1);
     }
+#endif
 
     /* Binary packages now have explicit Provides: name = version-release. */
     if (type == RPMLEAD_BINARY)
@@ -471,10 +498,13 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
 	goto exit;
     }
 
+    fdInitDigest(fd, PGPHASHALGO_SHA1, 0);
     if (headerWrite(fd, h, HEADER_MAGIC_YES)) {
 	rc = RPMERR_NOSPACE;
 	rpmError(RPMERR_NOSPACE, _("Unable to write temp header\n"));
     } else { /* Write the archive and get the size */
+	(void) Fflush(fd);
+	fdFiniDigest(fd, PGPHASHALGO_SHA1, (void **)&SHA1, NULL, 1);
 	if (csa->cpioList != NULL) {
 	    rc = cpio_doio(fd, h, csa, rpmio_flags);
 	} else if (Fileno(csa->cpioFdIn) >= 0) {
@@ -489,6 +519,7 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     if (rc)
 	goto exit;
 
+#ifdef	DYING
     /*
      * Set the actual archive size, and rewrite the header.
      * This used to be done using headerModifyEntry(), but now that headers
@@ -507,19 +538,20 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     }
 
     (void) Fflush(fd);
-    if (Fseek(fd, sizeof(header_magic), SEEK_SET) == -1) {
+    if (Fseek(fd, 0, SEEK_SET) == -1) {
 	rc = RPMERR_FSEEK;
 	rpmError(RPMERR_FSEEK, _("%s: Fseek failed: %s\n"),
 			sigtarget, Fstrerror(fd));
     }
 
     fdInitDigest(fd, PGPHASHALGO_SHA1, 0);
-    if (headerWrite(fd, h, HEADER_MAGIC_NO)) {
+    if (headerWrite(fd, h, HEADER_MAGIC_YES)) {
 	rc = RPMERR_NOSPACE;
 	rpmError(RPMERR_NOSPACE, _("Unable to write final header\n"));
     }
     (void) Fflush(fd);
-    fdFiniDigest(fd, PGPHASHALGO_SHA1, (void **)&sha1, NULL, 1);
+    fdFiniDigest(fd, PGPHASHALGO_SHA1, (void **)&SHA1, NULL, 1);
+#endif
 
     (void) Fclose(fd);
     fd = NULL;
@@ -533,14 +565,20 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     sig = rpmNewSignature();
     (void) rpmAddSignature(sig, sigtarget, RPMSIGTAG_SIZE, passPhrase);
     (void) rpmAddSignature(sig, sigtarget, RPMSIGTAG_MD5, passPhrase);
-    if ((sigtype = rpmLookupSignatureType(RPMLOOKUPSIG_QUERY)) > 0) {
-	rpmMessage(RPMMESS_NORMAL, _("Generating signature: %d\n"), sigtype);
-	(void) rpmAddSignature(sig, sigtarget, sigtype, passPhrase);
+
+    if ((sigtag = rpmLookupSignatureType(RPMLOOKUPSIG_QUERY)) > 0) {
+	rpmMessage(RPMMESS_NORMAL, _("Generating signature: %d\n"), sigtag);
+	(void) rpmAddSignature(sig, sigtarget, sigtag, passPhrase);
     }
     
-    if (sha1) {
-	(void) headerAddEntry(sig, RPMTAG_SHA1HEADER, RPM_STRING_TYPE, sha1, 1);
-	sha1 = _free(sha1);
+    if (SHA1) {
+	(void) headerAddEntry(sig, RPMSIGTAG_SHA1, RPM_STRING_TYPE, SHA1, 1);
+	SHA1 = _free(SHA1);
+    }
+
+    {	int_32 payloadSize = csa->cpioArchiveSize;
+	(void) headerAddEntry(sig, RPMSIGTAG_PAYLOADSIZE, RPM_INT32_TYPE,
+			&payloadSize, 1);
     }
 
     /* Reallocate the signature into one contiguous region. */
@@ -589,7 +627,7 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
 	    strncpy(lead.name, buf, sizeof(lead.name));
 	}
 
-	if (writeLead(fd, &lead)) {
+	if (writeLead(fd, &lead) != RPMRC_OK) {
 	    rc = RPMERR_NOSPACE;
 	    rpmError(RPMERR_NOSPACE, _("Unable to write package: %s\n"),
 		 Fstrerror(fd));
@@ -612,6 +650,7 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     }
 
     /* Add signatures to header, and write header into the package. */
+    /* XXX header+payload digests/signatures might be checked again here. */
     {	Header nh = headerRead(ifd, HEADER_MAGIC_YES);
 
 	if (nh == NULL) {
@@ -654,8 +693,20 @@ int writeRPM(Header *hdrp, const char *fileName, int type,
     rc = 0;
 
 exit:
-    sha1 = _free(sha1);
+    SHA1 = _free(SHA1);
     h = headerFree(h);
+
+    /* XXX Fish the pkgid out of the signature header. */
+    if (sig != NULL && pkgidp != NULL) {
+	int_32 tagType;
+	unsigned char * MD5 = NULL;
+	int_32 c;
+	int xx;
+	xx = headerGetEntry(sig, RPMSIGTAG_MD5, &tagType, (void **)&MD5, &c);
+	if (tagType == RPM_BIN_TYPE && MD5 != NULL && c == 16)
+	    *pkgidp = MD5;
+    }
+
     sig = rpmFreeSignature(sig);
     if (ifd) {
 	(void) Fclose(ifd);
@@ -677,6 +728,7 @@ exit:
 
     return rc;
 }
+/*@=boundswrite@*/
 
 /*@unchecked@*/
 static int_32 copyTags[] = {
@@ -686,6 +738,7 @@ static int_32 copyTags[] = {
     0
 };
 
+/*@-boundswrite@*/
 int packageBinaries(Spec spec)
 {
     struct cpioSourceArchive_s csabuf;
@@ -729,6 +782,10 @@ int packageBinaries(Spec spec)
 	(void) genSourceRpmName(spec);
 	(void) headerAddEntry(pkg->header, RPMTAG_SOURCERPM, RPM_STRING_TYPE,
 		       spec->sourceRpmName, 1);
+	if (spec->sourcePkgId != NULL) {
+	(void) headerAddEntry(pkg->header, RPMTAG_SOURCEPKGID, RPM_BIN_TYPE,
+		       spec->sourcePkgId, 16);
+	}
 	
 	{   const char *binFormat = rpmGetPath("%{_rpmfilename}", NULL);
 	    char *binRpm, *binDir;
@@ -770,11 +827,13 @@ int packageBinaries(Spec spec)
 	/*@-type@*/ /* LCL: function typedefs */
 	csa->cpioFdIn = fdNew("init (packageBinaries)");
 	/*@-assignexpose -newreftrans@*/
-/*@i@*/	csa->cpioList = pkg->cpioList;
+	csa->cpioList = rpmfiLink(pkg->cpioList, "packageBinaries");
 	/*@=assignexpose =newreftrans@*/
 
-	rc = writeRPM(&pkg->header, fn, RPMLEAD_BINARY,
+	rc = writeRPM(&pkg->header, NULL, fn, RPMLEAD_BINARY,
 		    csa, spec->passPhrase, NULL);
+
+	csa->cpioList = rpmfiFree(csa->cpioList);
 	csa->cpioFdIn = fdFree(csa->cpioFdIn, "init (packageBinaries)");
 	/*@=type@*/
 	fn = _free(fn);
@@ -784,7 +843,9 @@ int packageBinaries(Spec spec)
     
     return 0;
 }
+/*@=boundswrite@*/
 
+/*@-boundswrite@*/
 int packageSources(Spec spec)
 {
     struct cpioSourceArchive_s csabuf;
@@ -811,14 +872,18 @@ int packageSources(Spec spec)
 	/*@-type@*/ /* LCL: function typedefs */
 	csa->cpioFdIn = fdNew("init (packageSources)");
 	/*@-assignexpose -newreftrans@*/
-/*@i@*/	csa->cpioList = spec->sourceCpioList;
+	csa->cpioList = rpmfiLink(spec->sourceCpioList, "packageSources");
 	/*@=assignexpose =newreftrans@*/
 
-	rc = writeRPM(&spec->sourceHeader, fn, RPMLEAD_SOURCE,
+	spec->sourcePkgId = NULL;
+	rc = writeRPM(&spec->sourceHeader, &spec->sourcePkgId, fn, RPMLEAD_SOURCE,
 		csa, spec->passPhrase, &(spec->cookie));
+
+	csa->cpioList = rpmfiFree(csa->cpioList);
 	csa->cpioFdIn = fdFree(csa->cpioFdIn, "init (packageSources)");
 	/*@=type@*/
 	fn = _free(fn);
     }
     return rc;
 }
+/*@=boundswrite@*/

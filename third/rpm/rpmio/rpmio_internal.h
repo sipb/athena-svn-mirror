@@ -8,7 +8,89 @@
 
 #include <rpmio.h>
 #include <rpmurl.h>
+
+#include <beecrypt/types.h>
 #include <rpmpgp.h>
+
+/* Drag in the beecrypt includes. */
+#include <beecrypt/beecrypt.h>
+#include <beecrypt/base64.h>
+#include <beecrypt/dsa.h>
+#include <beecrypt/endianness.h>
+#include <beecrypt/md5.h>
+#include <beecrypt/mp32.h>
+#include <beecrypt/rsa.h>
+#include <beecrypt/rsapk.h>
+#include <beecrypt/sha1.h>
+
+/** \ingroup rpmio
+ * Values parsed from OpenPGP signature/pubkey packet(s).
+ */
+struct pgpDigParams_s {
+/*@only@*/ /*@null@*/
+    const char * userid;
+/*@only@*/ /*@null@*/
+    const byte * hash;
+    const char * params[4];
+    byte tag;
+
+    byte version;		/*!< version number. */
+    byte time[4];		/*!< time that the key was created. */
+    byte pubkey_algo;		/*!< public key algorithm. */
+
+    byte hash_algo;
+    byte sigtype;
+    byte hashlen;
+    byte signhash16[2];
+    byte signid[8];
+    byte saved;
+#define	PGPDIG_SAVED_TIME	(1 << 0)
+#define	PGPDIG_SAVED_ID		(1 << 1)
+
+};
+
+/** \ingroup rpmio
+ * Container for values parsed from an OpenPGP signature and public key.
+ */
+struct pgpDig_s {
+    struct pgpDigParams_s signature;
+    struct pgpDigParams_s pubkey;
+
+    size_t nbytes;		/*!< No. bytes of plain text. */
+
+/*@only@*/ /*@null@*/
+    DIGEST_CTX sha1ctx;		/*!< (dsa) sha1 hash context. */
+/*@only@*/ /*@null@*/
+    DIGEST_CTX hdrsha1ctx;	/*!< (dsa) header sha1 hash context. */
+/*@only@*/ /*@null@*/
+    void * sha1;		/*!< (dsa) V3 signature hash. */
+    size_t sha1len;		/*!< (dsa) V3 signature hash length. */
+
+/*@only@*/ /*@null@*/
+    DIGEST_CTX md5ctx;		/*!< (rsa) md5 hash context. */
+#ifdef	NOTYET
+/*@only@*/ /*@null@*/
+    DIGEST_CTX hdrmd5ctx;	/*!< (rsa) header md5 hash context. */
+#endif
+/*@only@*/ /*@null@*/
+    void * md5;			/*!< (rsa) V3 signature hash. */
+    size_t md5len;		/*!< (rsa) V3 signature hash length. */
+
+    /* DSA parameters. */
+    mp32barrett p;
+    mp32barrett q;
+    mp32number g;
+    mp32number y;
+    mp32number hm;
+    mp32number r;
+    mp32number s;
+
+    /* RSA parameters. */
+    rsapk rsa_pk;
+    mp32number m;
+    mp32number c;
+    mp32number rsahm;
+};
 
 /** \ingroup rpmio
  */
@@ -47,63 +129,11 @@ typedef	/*@abstract@*/ struct {
 } * FDSTAT_t;
 
 /** \ingroup rpmio
- * Bit(s) to control digest operation.
- */
-typedef enum rpmDigestFlags_e {
-    RPMDIGEST_NONE	= 0
-} rpmDigestFlags;
-
-/** \ingroup rpmio
  */
 typedef struct _FDDIGEST_s {
     pgpHashAlgo		hashalgo;
     DIGEST_CTX		hashctx;
 } * FDDIGEST_t;
-
-/** \ingroup rpmio
- * Duplicate a digest context.
- * @param ctx		existing digest context
- * @return		duplicated digest context
- */
-/*@only@*/ /*@unused@*/
-DIGEST_CTX rpmDigestDup(DIGEST_CTX octx)
-	/*@*/;
-
-/** \ingroup rpmio
- * Initialize digest.
- * Set bit count to 0 and buffer to mysterious initialization constants.
- * @param flags		bit(s) to control digest operation
- * @return		digest context
- */
-/*@only@*/
-DIGEST_CTX rpmDigestInit(pgpHashAlgo hashalgo, rpmDigestFlags flags)
-	/*@*/;
-
-/** \ingroup rpmio
- * Update context with next plain text buffer.
- * @param ctx		digest context
- * @param data		next data buffer
- * @param len		no. bytes of data
- * @return		0 on success
- */
-int rpmDigestUpdate(DIGEST_CTX ctx, const void * data, size_t len)
-	/*@modifies ctx @*/;
-
-/** \ingroup rpmio
- * Return digest and destroy context.
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
- * 1 0* (64-bit count of bits processed, MSB-first)
- *
- * @param ctx		digest context
- * @retval datap	address of returned digest
- * @retval lenp		address of digest length
- * @param asAscii	return digest as ascii string?
- * @return		0 on success
- */
-int rpmDigestFinal(/*@only@*/ DIGEST_CTX ctx,
-	/*@null@*/ /*@out@*/ void ** datap,
-	/*@null@*/ /*@out@*/ size_t * lenp, int asAscii)
-		/*@modifies *datap, *lenp @*/;
 
 /** \ingroup rpmio
  * The FD_t File Handle data structure.
@@ -149,11 +179,21 @@ struct _FD_s {
 extern int _rpmio_debug;
 /*@=redecl@*/
 
+/*@-redecl@*/
+/*@unchecked@*/
+extern int _ftp_debug;
+/*@=redecl@*/
+
 #define DBG(_f, _m, _x) \
     if ((_rpmio_debug | ((_f) ? ((FD_t)(_f))->flags : 0)) & (_m)) fprintf _x
 
+#if defined(__LCLINT__XXX)
+#define DBGIO(_f, _x)
+#define DBGREFS(_f, _x)
+#else
 #define DBGIO(_f, _x)   DBG((_f), RPMIO_DEBUG_IO, _x)
 #define DBGREFS(_f, _x) DBG((_f), RPMIO_DEBUG_REFS, _x)
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -169,35 +209,37 @@ int fdFgets(FD_t fd, char * buf, size_t len)
  */
 /*@null@*/ FD_t ftpOpen(const char *url, /*@unused@*/ int flags,
                 /*@unused@*/ mode_t mode, /*@out@*/ urlinfo *uret)
-	/*@globals fileSystem @*/
-	/*@modifies *uret, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies *uret, fileSystem, internalState @*/;
 
 /** \ingroup rpmio
  */
 int ftpReq(FD_t data, const char * ftpCmd, const char * ftpArg)
-	/*@globals fileSystem @*/
-	/*@modifies data, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies data, fileSystem, internalState @*/;
 
 /** \ingroup rpmio
  */
 int ftpCmd(const char * cmd, const char * url, const char * arg2)
-	/*@globals fileSystem @*/
-	/*@modifies fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies fileSystem, internalState @*/;
 
 /** \ingroup rpmio
  */
 int ufdClose( /*@only@*/ void * cookie)
-	/*@globals fileSystem @*/
-	/*@modifies cookie, fileSystem @*/;
+	/*@globals fileSystem, internalState @*/
+	/*@modifies cookie, fileSystem, internalState @*/;
 
 /** \ingroup rpmio
  */
 /*@unused@*/ static inline
-/*@null@*/ const FDIO_t fdGetIo(FD_t fd)
+/*@null@*/ FDIO_t fdGetIo(FD_t fd)
 	/*@*/
 {
     FDSANE(fd);
+/*@-boundsread@*/
     return fd->fps[fd->nfps].io;
+/*@=boundsread@*/
 }
 
 /** \ingroup rpmio
@@ -208,9 +250,11 @@ void fdSetIo(FD_t fd, /*@kept@*/ /*@null@*/ FDIO_t io)
 	/*@modifies fd @*/
 {
     FDSANE(fd);
+/*@-boundswrite@*/
     /*@-assignexpose@*/
     fd->fps[fd->nfps].io = io;
     /*@=assignexpose@*/
+/*@=boundswrite@*/
 }
 /*@=nullstate@*/
 
@@ -221,9 +265,11 @@ void fdSetIo(FD_t fd, /*@kept@*/ /*@null@*/ FDIO_t io)
 	/*@*/
 {
     FDSANE(fd);
+/*@-boundsread@*/
     /*@+voidabstract@*/
     return ((FILE *)fd->fps[fd->nfps].fp);
     /*@=voidabstract@*/
+/*@=boundsread@*/
 }
 
 /** \ingroup rpmio
@@ -233,7 +279,9 @@ void fdSetIo(FD_t fd, /*@kept@*/ /*@null@*/ FDIO_t io)
 	/*@*/
 {
     FDSANE(fd);
+/*@-boundsread@*/
     return fd->fps[fd->nfps].fp;
+/*@=boundsread@*/
 }
 
 /** \ingroup rpmio
@@ -244,9 +292,11 @@ void fdSetFp(FD_t fd, /*@kept@*/ /*@null@*/ void * fp)
 	/*@modifies fd @*/
 {
     FDSANE(fd);
+/*@-boundswrite@*/
     /*@-assignexpose@*/
     fd->fps[fd->nfps].fp = fp;
     /*@=assignexpose@*/
+/*@=boundswrite@*/
 }
 /*@=nullstate@*/
 
@@ -257,7 +307,9 @@ int fdGetFdno(FD_t fd)
 	/*@*/
 {
     FDSANE(fd);
+/*@-boundsread@*/
     return fd->fps[fd->nfps].fdno;
+/*@=boundsread@*/
 }
 
 /** \ingroup rpmio
@@ -267,7 +319,9 @@ void fdSetFdno(FD_t fd, int fdno)
 	/*@modifies fd @*/
 {
     FDSANE(fd);
+/*@-boundswrite@*/
     fd->fps[fd->nfps].fdno = fdno;
+/*@=boundswrite@*/
 }
 
 /** \ingroup rpmio
@@ -314,7 +368,9 @@ void fdPush(FD_t fd, FDIO_t io, void * fp, int fdno)
 	/*@modifies fd @*/
 {
     if (fd == NULL || fd->stats == NULL) return;
+/*@-boundswrite@*/
     fd->stats->ops[opx].count++;
+/*@=boundswrite@*/
     (void) gettimeofday(&fd->stats->begin, NULL);
 }
 
@@ -343,6 +399,7 @@ void fdstat_exit(/*@null@*/ FD_t fd, int opx, ssize_t rc)
     if (fd == NULL) return;
     if (rc == -1) fd->syserrno = errno;
     if (fd->stats == NULL) return;
+/*@-boundswrite@*/
     (void) gettimeofday(&end, NULL);
     if (rc >= 0) {
 	switch(opx) {
@@ -357,10 +414,12 @@ void fdstat_exit(/*@null@*/ FD_t fd, int opx, ssize_t rc)
     }
     fd->stats->ops[opx].msecs += tvsub(&end, &fd->stats->begin);
     fd->stats->begin = end;	/* structure assignment */
+/*@=boundswrite@*/
 }
 
 /** \ingroup rpmio
  */
+/*@-boundsread@*/
 /*@unused@*/ static inline
 void fdstat_print(/*@null@*/ FD_t fd, const char * msg, FILE * fp)
 	/*@globals fileSystem @*/
@@ -391,6 +450,7 @@ void fdstat_print(/*@null@*/ FD_t fd, const char * msg, FILE * fp)
 	}
     }
 }
+/*@=boundsread@*/
 
 /** \ingroup rpmio
  */
@@ -467,7 +527,7 @@ void fdInitDigest(FD_t fd, pgpHashAlgo hashalgo, int flags)
  * Update digest(s) attached to fd.
  */
 /*@unused@*/ static inline
-void fdUpdateDigests(FD_t fd, const byte * buf, ssize_t buflen)
+void fdUpdateDigests(FD_t fd, const unsigned char * buf, ssize_t buflen)
 	/*@modifies fd @*/
 {
     int i;
@@ -504,14 +564,16 @@ void fdFiniDigest(FD_t fd, pgpHashAlgo hashalgo,
 	fddig->hashctx = NULL;
 	break;
     }
+/*@-boundswrite@*/
     if (i < 0) {
 	if (datap) *datap = NULL;
 	if (lenp) *lenp = 0;
-	return;
-    } else if (i == imax)
-	fd->ndigests = imax - 1;
-    else
-	fd->ndigests = imax;
+    }
+/*@=boundswrite@*/
+
+    fd->ndigests = imax;
+    if (i < imax)
+	fd->ndigests++;		/* convert index to count */
 }
 
 /*@-shadow@*/
@@ -524,16 +586,23 @@ int fdFileno(/*@null@*/ void * cookie)
     FD_t fd;
     if (cookie == NULL) return -2;
     fd = c2f(cookie);
+/*@-boundsread@*/
     return fd->fps[0].fdno;
+/*@=boundsread@*/
 }
 /*@=shadow@*/
 
 /**
+ * Read an entire file into a buffer.
+ * @param fn		file name to read
+ * @retval *bp		(malloc'd) buffer address
+ * @retval *blenp	(malloc'd) buffer length
+ * @return		0 on success
  */
 int rpmioSlurp(const char * fn,
-                /*@out@*/ const byte ** bp, /*@out@*/ ssize_t * blenp)
-        /*@globals fileSystem @*/
-        /*@modifies *bp, *blenp, fileSystem @*/;
+                /*@out@*/ const unsigned char ** bp, /*@out@*/ ssize_t * blenp)
+        /*@globals fileSystem, internalState @*/
+        /*@modifies *bp, *blenp, fileSystem, internalState @*/;
 
 #ifdef __cplusplus
 }

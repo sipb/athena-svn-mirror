@@ -2,7 +2,7 @@
  * \file popt/poptconfig.c
  */
 
-/* (C) 1998-2000 Red Hat, Inc. -- Licensing details are in the COPYING
+/* (C) 1998-2002 Red Hat, Inc. -- Licensing details are in the COPYING
    file accompanying popt source distributions, available from 
    ftp://ftp.rpm.org/pub/rpm/dist. */
 
@@ -21,6 +21,7 @@ static void configLine(poptContext con, char * line)
     poptItem item = alloca(sizeof(*item));
     int i, j;
     
+/*@-boundswrite@*/
     memset(item, 0, sizeof(*item));
 
     /*@-type@*/
@@ -80,6 +81,7 @@ static void configLine(poptContext con, char * line)
 	item->argc = j;
     }
     /*@=modobserver@*/
+/*@=boundswrite@*/
 	
     /*@-nullstate@*/ /* FIX: item->argv[] may be NULL */
     if (!strcmp(entryType, "alias"))
@@ -124,6 +126,7 @@ int poptReadConfigFile(poptContext con, const char * fn)
     if (close(fd) == -1)
 	return POPT_ERROR_ERRNO;
 
+/*@-boundswrite@*/
     dst = buf = alloca(fileLength + 1);
 
     chptr = file;
@@ -155,11 +158,13 @@ int poptReadConfigFile(poptContext con, const char * fn)
 	}
     }
     /*@=infloops@*/
+/*@=boundswrite@*/
 
     return 0;
 }
 
-int poptReadDefaultConfig(poptContext con, /*@unused@*/ int useEnv) {
+int poptReadDefaultConfig(poptContext con, /*@unused@*/ int useEnv)
+{
     char * fn, * home;
     int rc;
 
@@ -169,7 +174,9 @@ int poptReadDefaultConfig(poptContext con, /*@unused@*/ int useEnv) {
 
     rc = poptReadConfigFile(con, "/etc/popt");
     if (rc) return rc;
+#if defined(HAVE_GETUID) && defined(HAVE_GETEUID)
     if (getuid() != geteuid()) return 0;
+#endif
 
     if ((home = getenv("HOME"))) {
 	fn = alloca(strlen(home) + 20);

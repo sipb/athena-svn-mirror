@@ -1,11 +1,432 @@
+4.1 -> 4.2:
+	- set cachesize without a dbenv, the default is far too small.
+	- db: don't return EACCES on db->close w/o environment.
+	- unify cachesize configuration, with (or without) a dbenv.
+	- comments regarding unsupported (yet) db-4.1.17 functionality.
+	- update to db-4.1.24 final.
+	- eliminate myftw, use Fts(3) instead.
+	- dump libelf, gulp elfutils, for now.
+	- python: permit headers to be hashed.
+	- use %%{_lib} for libraries.
+	- include file-3.39 (with homebrewed) libfmagic, for now.
+	- add debug sub-package patch.
+	- re-add elfutils/libdwarf (for dwarf.h), eliminate tools/dwarf2.h.
+	- resurrect genhdlist "greased lightning" pathway for now.
+	- elfutils: avoid gcc-3.2 ICE on x86_64 for now.
+	- add /usr/lib/rpm/rpmdeps.
+	- add /usr/lib/rpm/magic.
+	- fix: /dev/initctl has not MD5 segfault (#76718).
+	- rpm.8: gpg uses GNUPGHOME, not GPGPATH (#76691).
+	- add error message on glob failure (#76012).
+	- add _javadir/_javadocdir/_javaclasspath macros.
+	- fix: bash must have functional libtermcap.so.2.
+	- update to elfutils-0.56.
+	- have debug sub-subpackage use external, not internal, elfutils.
+	- apply patches 1-6 to db-4.1.24.
+	- resurrect availablePackages one more time.
+	- fix: option conflict error message (#77373).
+	- add AC_SYS_LARGFILE throughout.
+	- statically link rpmdeps against (internal) libfmagic.
+	- use rpmdeps rather than find-{requires,provides}.
+	- bundle libfmagic into librpmbuild for now.
+	- apply patches 7 and 8 to db-4.1.24.
+	- upgrade to elfutils-0.59.
+	- add -g to all platforms optflags.
+	- build with external elfutils (preferred), if available.
+	- upgrade to elfutils-0.63.
+	- link rpm libraries together, use shared helpers with external -lelf.
+	- move libfmagic to librpmio.
+	- use libtool-1.4.3, autoconf-2.56.
+	- add explicit -L/lib64 -L/usr/lib64 for libtool mode=relink on x86_64.
+	- use usrlib_LTLIBRARIES to install directly in /usr/lib64 instead.
+	- late rpmts reference causes premature free (#78862).
+	- internal automagic dependency generation (disabled for now).
+	- don't generate dependencies unless execute bit is set.
+	- enable internal automagic dependency generation as default.
+	- fix: add rpmlib(VersionedDependencies) if versioned Provides: found.
+	- fix: add %%ifnarch noarch to debug_package macro.
+	- debug_packages "works", but non-noarch w/o %setup has empty payload.
+	- make dependency generation "opt-in" in order to build in distro.
+	- fix: make sure each library has DT_NEEDED for all unresolved syms.
+	- generate Elf provides even if file is not executable.
+	- disable fcntl(2) lock on Packages until glibc+nptl is fixed.
+	- make cdb locks "private" for pthreads compatibility w/o NPTL.
+	- add --enable-posixmutexes to use NPTL.
+	- make dependency generation "opt-out" everywhere.
+	- rebuild against glibc with fcntl fixed in libpthread.
+	- re-enable CDB locking, removing "private" from %%__dbi_cdb macro.
+	- popt aliases for -U et al to achieve dynamic link with nptl.
+	- add --file{class,provide,require} popt aliases and header extensions.
+	- statically link against /usr/lib/nptl/libpthread.a, if present.
+	- remove popt aliases for -U et al.
+	- add -I/usr/include/nptl, Conflicts: kernel < 2.4.20.
+	- dynamically link /bin/rpm, link against good old -lpthread.
+	- test pthread_{mutex,cond}attr_setpshared(), add DB_ENV_PRIVATE if not.
+	- error on exclusive Packages fcntl lock if DB_ENV_PRIVATE is set.
+	- copy compressFilelist to convertdb1.c, remove internal legacy.h.
+	- add --enable-posixmutexes when configuring on linux.
+	- add rpmdb_{deadlock,dump,load,svc,stat,verify} utilities.
+	- include srpm pkgid in binary headers (#71460).
+	- add %check scriptlet to run after %install (#64137).
+	- simplify specfile query linkage loop.
+	- drill rpmts into parseSpec(), carrying Spec along.
+	- fix: remove rpmfi scareMem so that headers can be reloaded on ia64.
+	- fix: set DB_PRIVATE, not DB_ENV_PRIVATE, if unshared posix mutexes.
+	- remove useless kernel/glibc dependencies (#79872).
+	- add matching "config(N) = EVR"  dependencies iff %%config is found.
+	- add %%pubkey attribute to read armored pubkey files into header.
+	- permit both relative/absolute paths, display 'P' when verifying.
+	- resurrect automagic perl(foo) dependency generation.
+	- add BETA-GPG-KEY (but not in headers using %%pubkey yet).
+	- disable perl module magic rule.
+	- ignore ENOENT return from db->close (#80514,#79314).
+	- fix builddir relative inclusion, add %%pubkeys to rpm header.
+	- fix: package relocations were broken (#75057).
+	- error if querying with iterator on different sized arrays.
+	- add rpmfi methods to access color, class, and dependencies.
+	- don't segfault with packages produced by rpm-2.93 (#80618).
+	- python: eliminate hash.[ch] and upgrade.[ch], methods too.
+	- fix :armor query extension, tgpg mktmp handling (#80684).
+	- use rpmfiFClass() underneath --fileclass.
+	- use rpmfiFDepends() underneath --fileprovide and --filerequire.
+	- python: add fi.FColor() and fi.FClass() methods.
+	- calculate dependency color and refernces.
+	- python: add ds.Color() and ds.Refs() methods.
+	- fix: typo in assertion.
+	- add rpmts/rpmte/rpmfi/rpmds element colors.
+	- ignore items not in our rainbow (i.e. colors are functional).
+	- fix: dependency helpers now rate limited at 10ms, not 1s.
+	- add per-arch canonical color, only x86_64 enabled for now.
+	- file: avoid ogg/vorbis file classification problems.
+	- portabilitly: solaris fixes.
+	- for DSO's, provide the file basename if DT_SONAME not found.
+	- add perldeps.pl, start to replace perl.{prov,req}.
+	- file: read elf64 notes correctly.
+	- python: put rpmmodule.so where python expects to find.
+	- add brp-strip-static-archive build root policy helper.
+	- add -lelf to rpm LDFLAGS, not LDADD, since there is no libelf.la now.
+	- fix: obscure corner case(s) with rpmvercmp (#50977).
+	- file: *really* read elf64 notes correctly.
+	- python: restore thread context on errorCB (#80744).
+	- teach rpmquery to return "owning" package(s) in spite of alternatives.
+	- duplicate package checks with arch/os checks if colored.
+	- file conflict checks with colors.
+	- fix: debugedit.c problem.
+	- permit anaconda to choose "presentation order".
+	- fix: more debugedit.c problems.
+	- fix: clean relocation path for --prefix=/.
+	- python: permit stdout/stderr to be remapped to install.log.
+	- pay attention to package color when upgrading identical packages.
+	- fix: trap SIGPIPE, close database(s).
+	- configurable default query output format.
+	- popt: diddle doxygen/splint annotations, corrected doco.
+	- file: fix ogg/vorbis file classification problems.
+	- skip fingerprints in /usr/share/doc and /usr/src/debug.
+	- add file(1) as /usr/lib/rpm/rpmfile.
+	- enable transaction coloring for s390x/ppc64.
+	- file: check size read from elf header (#85297).
+	- fix: memory leak (85522).
+	- build with internal elfutils if not installed.
+	- fix: close db cursors to remove rpmdb references on signal exit.
+	- fix: short option help missing string terminator.
+
+4.0.4 -> 4.1:
+	- loosely wire beecrypt library into rpm.
+	- drop rpmio/base64.[ch] in favor of beecrypt.
+	- drop lib/md5*.[ch] files in favor of beecrypt.
+	- legacy: drop brokenMD5 support (rpm-2.3.3 to rpm-2.3.8 on sparc).
+	- eliminate DYING code.
+	- bind beecrypt md5/sha1 underneath rpmio.
+	- create RFC-2440 OpenPGP API in rpmio.
+	- proof-of-concept GPG/DSA verification for legacy signatures.
+	- upgrade to beecrypt-2.2.0pre.
+	- proof-of-concept PGP/RSA verification for legacy signatures.
+	- ratchet up to lclint "strict" level.
+	- upgrade to db-4.0.7.
+	- use only header methods, routines are now static.
+	- beecrypt is at least as good as pgp/gpg on verify, pulling the plug.
+	- add :base64 and :armor format extensions, dump binary tags in hex.
+	- proof-of-concept pubkey retrieval from RPM-{PGP,GPG}-KEY.
+	- stupid macros to configure public key file paths.
+	- all symbols but hdrVec are now forward references in linkage.
+	- generate an rpm header on the fly for imported pubkeys.
+	- wire transactions through rpmcli signature modes.
+	- wire transactions through rpmcli query/verify modes.
+	- wire transactions through rpmcli install/erase modes.
+	- legacy signatures always checked (where possible) on package read.
+	- wire transactions through rpmcli build modes.
+	- lazy rpmdb open/close through transaction methods (mostly anyways).
+	- no-brainer refcounts for rpmdb object.
+	- check added header against transaction set, replace if newer.
+	- transaction sets created in cli main.
+	- no-brainer refcounts for ts object.
+	- memory indices for dependency check are typedef'd and abstract'd.
+	- no-brainer refcounts for fi object, debug the mess.
+	- dump the header early in transaction, recreate fi before installing.
+	- start hiding availablePackage data/methods in rpmal.c/rpmal.h.
+	- add some dinky availablePackage methods.
+	- transaction.c: cleanly uncouple availablePackage from TFI_t.
+	- add header refcount annotations throughout.
+	- depends.c: availablePackage is (almost) opaque.
+	- invent some toy transactionElement iterators.
+	- create rpmDepSet constructors/destructors.
+	- create toy rpmDepSet iterators.
+	- rpmRangesOverlap renamed to dsCompare, add dsNotify method as well.
+	- depends.c: rpmDepSet is (almost) opaque, move to rpmds.[ch].
+	- rpmds: create dsProblem(), dsiGetDNEVR() retrieved DNEVR, not N.
+	- depends.h: hack around teIterator() et al from include for now.
+	- rpmds: move trigger dependencies into a rpmDepSet as well.
+	- rpmal: availablePackage is totally opaque, alKey with index replaces.
+	- linear search on added package provides is dumb.
+	- discarding entire signature header when using --addsign is dumb.
+	- rip out rpmDependencyConflict, replace with rpmProblem instead.
+	- no-brainer refcounts for rpmProblemSet object.
+	- header tag sets are per-transactionElement, not per-availablePackage.
+	- no-brainer refcounts for rpmDepSet and rpmFNSet objects.
+	- strip header tags for erased as well as installed transactionElements.
+	- common structure elements for unification of TFI_t and rpmFNSet.
+	- factor per-transactionElement data out of TFI_t through pointer ref.
+	- unify rpmFNSet into TFI_t.
+	- eliminate header reference in rpmtransAddPackage, use TFI_t data.
+	- commit to using rpmDepSet and TFI_t, not header.
+	- lclint rpmio fiddles.
+	- split file info tag sets into rpmfi.c.
+	- create toy TFI_t iterators.
+	- tweak overlapped file fingerprint retrieval for speed.
+	- transaction.c: use wrappers/iterators to access TFI_t.
+	- annotations to make a transactionElement opaque.
+	- use array of pointers rather than contiguous array for ts->order.
+	- methods to complete making transactionElement opaque.
+	- use TR_REMOVED relations as well as TR_ADDED for ordering.
+	- drop requirement that removed packages immediately follow added.
+	- hybrid chainsaw/presentation ordering algorithm.
+	- convert file md5sum's to binary on the fly, reducing memory footprint.
+	- header handling moved to librpmdb to avoid linkage loops.
+	- fix a couple dinky memory leaks.
+	- build with an internal zlib for now.
+	- protect brp-compress against /bin/ls output ambiguity (#56656,#56336).
+	- 3 madvise calls and a 16Mb mmapped buffer == ~5% install speedup. Wow.
+	- use db-4.0.14 final internally.
+	- 1st crack at making zlib rsync friendly.
+	- lclint-3.0.0.19 fiddles.
+	- simple automake wrapper for zlib.
+	- splint fiddles.
+	- make peace with gcc-3.1, remove compiler cruft.
+	- make peace with automake et al in 8.0, ugh.
+	- add payload uncompressed size to signature to avoid rewriting header.
+	- drill header sha1 into signature parallel to header+payload md5.
+	- mandatory "most effective" signature check on query/verify/install.
+	- don't bother adding empty filemd's to index.
+	- add Pubkey index, using signer id as binary key.
+	- display pubkeys in hex when debugging db access.
+	- retrieve pubkey(s) from rpmdb, not from detached signature file.
+	- add header DSA signature.
+	- add header RSA signature (untested, disabled for now).
+`	- don't bother with signing check if 16 bits of hash don't match.
+	- only V3 signatures for now.
+	- wire --nodigest/--nosignature options to checksig/query/verify modes.
+	- splint annotations, signature cleanup.
+	- drill ts/fi through verify mode, add methods to keep fi abstract.
+	- use mmap when calculating file digests on verify, ~20% faster.
+	- permit --dbpath and --root with signature (i.e. --import) modes.
+	- beecrypt: add types.h, eliminate need for config.gnu.h.
+	- rescusitate --rebuild.
+	- use rpmdb-redhat to suggest dependency resolution(s).
+	- merge conflicts into problems, handle as transaction set variable.
+	- use build time to choose one of multiple alternative suggestions.
+	- add --nosuggests to disable suggested resolutions.
+	- attempt to make peace with automake-1.6.1, autoconf-2.53.
+	- rip out two layers of dbN gook, internal Berkeley db is here to stay.
+	- eliminate db1 support.
+	- enable CDB by default.
+	- use DBT_DB_MALLOC to eliminate re-malloc'ing header blobs.
+	- rework most of rpmdb.c prepatory to implementing duplicates.
+	- fix: 2 memory leaks in headerSprintf.
+	- fix: db mire's access out-of-bounds memory.
+	- plug install mode leaks.
+	- opaque (well mostly) rpmTransactionSet using methods.
+	- Grand Renaming of rpm data types.
+	- fix: synthesize unpacking progress callbacks for packages w/o files.
+	- python: add rpmds/rpmfi/rpmts methods.
+	- python: re-enable rpm-python sub-package.
+	- fix: resurrect "()(64bit)" markings using objdump.
+	- python: add rpmal/rpmte/rpmfd methods.
+	- perl: drop cpanflute and cpanflute2, will be in Chip's CPAN package.
+	- python: eliminate legacy db methods, add ts.dbMatch method.
+	- fix: use getgrnam, not getpwnam, to convert gid -> group.
+	- fix: avoid sign extension, use only 16 bits, when verifying rdev.
+	- python: separate {add,del}Macro methods, prepare for macro dictionary.
+	- i18n: copy current production PO files to top-of-stack.
+	- python: include rpmdb module, renamed from bsddb3.
+	- use /etc/rpm/platform (if it exists), rather than uname(2), for arch.
+	- python: portability fiddles (#54350).
+	- check inodes (but not blocks) on FAT file systems (#64256).
+	- add /usr/lib/rpm/redhat/* per-vendor configuration.
+	- remove build mode compatibility aliases, documented and gone.
+	- document digital signature verification in rpm.8.
+	- fix: separate existence and number checks for problems found (#66552).
+	- beecrypt: merge changes from beecrypt-2.3.0.
+	- beecrypt: merge doxygen markup with rpmapi doco.
+	- beecrypt: revert cpu/arch compile option mixup (#66752).
+	- ix86: make sure that rpm can verify prelinked shared libraries.
+	- don't install /usr/lib/rpm/redhat per-vendor configuration anymore.
+	- add translated man pages from PLD.
+	- resurrect libelf with Elf64, prelink verify should work everywhere.
+	- fix: reading macro files can corrupt memory if BUFSIZ is teensy.
+	- fix: assertion failure iff incomplete package install (#66837).
+	- python: link internal libelf (if used) directly into rpmmodule.so.
+	- use rpmdb-redhat for suggestions if/when configured (#67430).
+	- disambiguate failures to import (with error messages, duh).
+	- fix: multiple relocations (#67596).
+	- add --build/--program-prefix, delete libtoolize, from %configure.
+	- find-lang.sh: make sure that mo pattern matches leading '/' (#67368).
+	- disambiguate added/installed dependency failures (#50388).
+	- rescusitate remote ftp globs (#67678).
+	- open rpmdb early RDONLY, reopen later RDWR, avoid signed srpm noise.
+	- turn off annoying gpg secmem warning.
+	- warn only once for each NOKEY/UNTRUSTED key id.
+	- factor common options into table, add rpmcliInit() and rpmcliFini().
+	- add preliminary rpmgraph(8) and rpmcache(8) executables to rpm-devel.
+	- use rpmfi in showQueryPackage(), eliminating headerGetEntry().
+	- fix: forgot lazy open of database on --freshen path (#67907).
+	- proof-of-concept rpmcache functionality.
+	- fix: do lazy open of database in rpmtsInitDB() (#67994).
+	- update rpmcache.8.
+	- fix: permit deletions of added packages (#67108).
+	- placeholders for manifest constants for SuSE patch packages.
+	- fix: repair 2ndary match criteria with rpmdb iterators.
+	- update for sv.po.
+	- display signature details using rpm -qi.
+	- skip signing packages already signed with same key (#62118).
+	- install rpmal.h and rpmhash.h, implicit rpmps.hinclude, for now.
+	- revert headerFree/headerLink/headerUnlink debugging.
+	- popt: mingw32 portability configure check (#67911).
+	- teach gendiff about unreadable files (#42666).
+	- python: sanity check fixes on rpmts/rpmte methods.
+	- have rpmdb-redhat autoconfigure rpm to use %%_solve_dbpath.
+	- popt: parse file into string of options (#56860).
+	- version added to *.la dependency libraries (#69063).
+	- expose digests in rpmio API, but hide internal beecrypt API (#68999).
+	- add methods to make signature handling opaque wrto rpmts.
+	- verify signatures/digests retrieved through rpmdbNextIterator().
+	- imbue %ghost with missingok attribute with --verify (#68933).
+	- fix: segfault if given a text file as 2nd arg to -Uvh (#69508).
+	- python: add ts.hdrCheck(), ts.rebuildDB() methods.
+	- python: iterating on an ts object returns transaction elements now.
+	- add yellowdog as vendor.
+	- python: remove the old initdb/rebuilddb methods, use ts.fooDB().
+	- python: 1st crack at backport to 1.5.2.
+	- popt: fix --usage (#62234).
+	- fix: --repackage repaired (#67217).
+	- fix: rpm2cpio disables signature checks (i.e. same behavior).
+	- popt: display sub-table options only once on --usage.
+	- wire --nosignatures et al as common options, rework CLI options.
+	- python: don't segfault in ts.GetKeys() on erased packages.
+	- update trpm.
+	- factor all mode-specific options into mode-specific tables.
+	- treat an unspecified epoch as Epoch: 0 everywhere.
+	- detect athlon/duron with CMOV (PLD).
+	- prevent stale locks in __db files by closing databases on signals.
+	- make --querytags a common option, fix errant regex (#70135).
+	- db3: increase mpool and cachesize, compile w/o --enable-debug.
+	- configurable (default off) build failure if missing %%doc files (PLD).
+	- configurable (default off) build failure iff unpackaged files (PLD).
+	- change from default off to default on.
+	- python: methods to disable all new features for benchmarking.
+	- preserve rpmdb file attributes across --rebuilddb (#70367).
+	- fix: identify athlon with 3DNOWEXT as "athlon", not "i786" (#70539).
+	- fix: repair --root with --verify (#70527).
+	- fix: signed pubkeys were imported incorrectly (#68291).
+	- include tgpg script to verify signatures using only gpg.
+	- check header blobs on export (i.e. rpmdbAdd()).
+	- enable iterator header blob checks for install/erase modes.
+	- python: _vsflags_up2date macro to configure verify signature flags.
+	- resurrect --rollback.
+	- renumber the callback types to be an orthogonal bit mask.
+	- provide repackage progress callbacks, compression is slow.
+	- fix: don't repackage %%ghost files.
+	- add --predefine to define macros before reading macro configuration.
+	- python: bare bones rollback bindings.
+	- python: enable threads on callbacks and longish rpmlib calls.
+	- python: expose RPMTAG_SOURCEPACKAGE to identify source headers.
+	- python: eliminate rpm.headerFromPackage() tuple return, deprecated.
+	- python: add ts.hdrFromFdno(fdno) method.
+	- fix: check for lead magic, better error message on failure (#69751).
+	- python: the death of rpmdb-py.[ch], use ts.fooDB() methods instead.
+	- python: the death of rpm.headerFromPackage(), use ts.hdrFromFdno().
+	- python: permit direct ts.dbMatch() python iterations.
+	- python: the death of rpm.checksig(), use ts.hdrFromFdno() instead.
+	- add bitmask for precise control of signature/digest verification.
+	- python: bindings to import pubkeys and display openpgp packets.
+	- fix: src.rpm installs need fd pos at payload.
+	- python: add return codes for rollbacks and fooDB methods.
+	- avoid generating fingerprints for locale/zoneinfo sub-directories.
+	- python: add (optional) ts.check() callback.
+	- python: include instance in IDTXload, filename in IDTXglob, return
+	- python: argument to ts.addErase (if integer) deletes that instance.
+	- python: rpmmi methods to return this instance, and number of members.
+	- supply transitive closure for CLI packages from rpmdb-redhat database.
+	- fix: rebuilddb stat'ed target, not source, for rename sanity.
+	- create /var/lib/rpm if non-existent in, say, a chroot.
+	- erased packages are now repackaged into /var/spool/repackage.
+	- fix: rebuilddb stat'ed target, not source, for rename sanity, take 2.
+	- python: explicit method to set transFlags.
+	- python: stuff package name into a string for repackage callbacks.
+	- rollback: re-create empty transaction set for multiple rollbacks.
+	- fix: %%basename typo (Dmitry V. Levin<ldv@altlinux.org>).
+	- fix: queryformat segfaults (Dmitry V. Levin<ldv@altlinux.org>).
+	- add --with-efence to configure, check install/upgrade with efence.
+	- beecrypt: short hex string conversion overflows target buffer.
+	- mark "successors only" packages in transaction.
+	- reap scriptlets with SIGCHLD handler.
+	- rename PSM_t to rpmpsm, add methods and refcounts to manage.
+	- remove %%configure/%%makeinstall from arch-os/macros, default is OK.
+	- don't export MALLOC_CHECK_ to scriptlets.
+	- squeaky clean memory leak checking.
+	- always malloc rpmfi structure, refcounts are correct in rpmtsRun().
+	- skip redundant /sbin/ldconfig scripts on upgrade (if possible).
+	- python: stupid typo broke ts.check().
+	- fix: add epoch to "already installed" check.
+	- check for interrupt during iteration.
+	- python: add ts.setProbFilter() method, remove ts.run() argument.
+	- fix: region trailer offset sanity check wrong (#71996).
+	- fix: don't stop if db1 database is currently in /var/lib/rpm (#72224).
+	- add a macro to create a sub-package with debugging symbols.
+	- merge signature returns into rpmRC.
+	- python: exceptions on NOKEY/NOTTRUSTED.
+	- python: don't remap NOKEY/UNTRUSTED to OK.
+	- beecrypt: change local absolute symbols to defines for prelinking.
+	- update ru.po.
+	- fix: handle NOKEY/NOTTRUSTED returns as if OK, always return header.
+	- portability: carry libelf in src rpm, include signal.h.
+	- fix: segfault with --checksig, plug memory leak (#72455).
+	- rpm-4.1 release candidate.
+	- requirement on libelf >= 0.8.2 to work around incompatible soname (#72792).
+	- fix: common sanity check on headers, prevent segfault (#72590).
+	- limit number of NOKEY/UNTRUSTED keys that will be warned once.
+	- libadd -lelf to rpmdb (#73024).
+	- portability: non-linux is easier, more to do (#72893).
+	- fix: SIGCHLD reaper race (#73134).
+	- fix: don't exit with open cursor, there be a stale lock.
+	- fix: check for signal induced exit more often (#73193).
+	- reinterpret the _unsafe_rollbacks macro as earliest rollback.
+	- fix: always do rpmalMakeIndex.
+	- fix: resurrect --triggers (#73330).
+	- python: typo in NOKEY exception string.
+	- fix: parse pgp packets more carefully.
+	- fix: parse header data more carefully.
+	- fix: register SIGCHLD handler before forking (#73134).
+	- better diagnostics on failed header parsing.
+	- lclint clean.
+	- rpm-4.1 release.
+	- fix: make sure that psm->child pid is set before SIGCHLD is handled.
+	- fix: use size_t consistently, avoid segfault on ia64.
+	- use %%{_lib} for libraries.
+	- fix: permit build with --disable-nls (#76258).
+
 4.0.3 -> 4.0.4:
-	- turn off rpm-perl until it's self-hosting.
-	- jigger up rpm-python with python-2.2b2 for now.
-	- remove libtoolize from %%configure for now (#57039).
-	- teach find-requires to autogenerate GCC_3.0 dependencies.
 	- solaris: translate i86pc to i386 (#57182).
 	- fix: %GNUconfigure breaks with single quotes (#57264).
-	- look for PY_VERSION 2.2c1.
 	- fix: typo in find-requires.
 	- tru64 compiler message cleanup.
 	- add buildarch lines for hppa (#57728).
@@ -13,7 +434,6 @@
 	- handle lazy db open's in chroot with absolute path, not prefix strip.
 	- Depends should use CDB if configured.
 	- autodetect python 1.5/2.2.
-	- use db-4.0.14 final internally.
 	- make rpm-perl package self-hosting (#57748).
 	- permit gpg/pgp/pgp5 execs to be reconfigured.
 	- fix: signing multiple times dinna work, discard immutable region.
@@ -22,25 +442,21 @@
 	- missing key(s) on keyring when verifying a signature is now an error.
 	- remove dependency whiteout.
 	- calculate rpm-4.1 ordering/orientation metrics in rpmdepOrder().
-	- use beecrypt routines to calculate digests in rpm.
-	- dump legacy support for broken md5 signatures.
 	- sync popt and rpmio with rpm-4.1, rpmio has OpenPGP API.
 	- sync rpmdb and build with rpm-4.1, lots of splint annotations.
 	- add :armor and :base64 query format qualifiers for binary signatures.
 	- fix: query format qualifiers needed header.c merge.
+	- fix: query format qualifiers needed header.c merge.
 	- ppc64 arch added (#58634,#58636).
 	- turn on auto-generated perl requirements (#58519, #58536, #58537).
-	- add internal (customized) version of zlib.
 	- fix: %exclude functional (again).
 	- trap SIGILL for ppc64 inline asm voodoo fix from cross-dressed ppc32.
-	- rpm-perl: force numeric comparison on rpm version (#58882).
 	- fix: fancy hash fiddles if not a tty.
 	- fix: handle /.../ correctly in rpmCleanPath().
 	- transaction rollback code in rpmRollback().
 	- Red Hat 6.2 portability cruft.
-	- legacy: configurable whiteout for known Red Hat 7x dependency loops.
+	- legacy: configurable whiteout for known Red Hat dependency loops.
 	- perl.req: don't mis-generate dependencies like perl(::path/to/foo.pl).
-	- use chainsaw algorithm for dependency tree decimation when ordering.
 	- permit args to be hidden within %__find_{requires,provides}.
 	- a couple more perl.{prov,req} fiddles.
 	- macro for %files, always include %defattr(), redhat config only.
@@ -53,9 +469,17 @@
 	- query/verify by install transaction id.
 	- rpm-4.0.4 release candidate.
 	- add cpanflute2, another perl.req fiddle.
-	- don't do close-on-exec, 2 powertools packages cannot be read when
-	  doing.
 	- reapply Berkeley DB patch #4491.
+	- make --addsign and --resign behave exactly the same.
+	- *really* dump signature header immutable region.
+	- speedup large queries by ~50%.
+	- revert to presentation ordering Yet Again (#62158).
+	- non-glibc: on upgrade, mergesort is much faster than quicksort.
+	- fix: queries that evaluated to "" incorrectly returned NULL.
+	- fix: packages produced by rpm-4.0 dinna merge signature tags.
+	- fix: rpmdb iterator memory leak in python bindings.
+	- fix: include <sys/time.h> for 6.2 python modules.
+	- remove vestiges of mipseb arch (#62408).
 
 4.0.2 -> 4.0.3:
 	- update per-interpreter dependency scripts, add sql/tcl (#20295).
@@ -298,9 +722,8 @@
 	- fix: big-endian's with sizeof(time_t) != sizeof(int_32) mtime broken.
 	- fix: add Korean message catalogs (#54473).
 	- add RPHNPLATFORM and PLATFORM tags.
-	- rpm-4.0.3 released.
 
-4.0 -> 4.0.2
+4.0 -> 4.0.[12]
 	- fix: avoid calling getpass twice as side effect of xstrdup macro
 	  (katzj@linuxpower.org) (#17672).
 	- order packages using tsort, clipping Requires:'s in dependency loops.
@@ -476,7 +899,7 @@
 	- fix: (segfault) verify needs rpmdb while query does not.
 	- add calculated nlink field to -qlv output (like ls -al).
 	- detects and builds properly against the new fopencookie API in
-          glibc 2.2.
+	  glibc 2.2.
 	- change popt exec alias in oreder to exec rpm children.
 	- split rpm into 5 pieces along major mode fault lines with popt glue.
 	- turn on new, more complete version of %%configure.
@@ -554,9 +977,9 @@
 	- builds against bzip2 1.0
 	- fix: resurrect symlink unique'ifying property of finger prints.
 	- fix: broken glob test with empty build directory (Geoff Keating).
-        - fix: create per-platform directories correctly.
-        - update brp-* scripts from rpm-4.0, enable in per-platform config.
-        - alpha: add -mieee to default optflags.
+	- fix: create per-platform directories correctly.
+	- update brp-* scripts from rpm-4.0, enable in per-platform config.
+	- alpha: add -mieee to default optflags.
 	- add RPMTAG_OPTFLAGS, configured optflags when package was built.
 	- add RPMTAG_DISTURL for rpmfind-like tools (content unknown yet).
 	- teach brp-compress about /usr/info and /usr/share/info as well.
@@ -891,8 +1314,8 @@
 	- preliminary macro environment as side effect of rpmrc parse.
 	- macro handling in rpmlib -- rework include: tag with macro expansion.
 	- first attempt at librpmbuild API.
-        - fixed lib/rpmrc.c to accept include: tags (AdV)
-        - fixed the CHANGES file to reflect that this is 2.9, not 3.0 (AdV)
+	- fixed lib/rpmrc.c to accept include: tags (AdV)
+	- fixed the CHANGES file to reflect that this is 2.9, not 3.0 (AdV)
 	- aggregate system includes into system.h.
 	- rearrange functions to minimize exported routines in librpmbuild API.
 	- generalize cpio I/O to eliminate pipe to exec'd gzip on install.
@@ -956,7 +1379,7 @@
 	- portable mode_t/pid_t typedefs.
 	- fix check for trailing / in Prefix:
 	- remove 2 character language name assumption.
-        - add /usr/lib/rpm/find-lang.sh (W. L. Estes <wlestes@uncg.edu>)
+	- add /usr/lib/rpm/find-lang.sh (W. L. Estes <wlestes@uncg.edu>)
 	- miscellaneous portability cruft (Eugene Kanter).
 	- Makefile: don't use ln -sf.
 	- getOutputFrom(): fix race between last read on pipe and child death
@@ -988,7 +1411,7 @@
 	- solaris portability patch resurrection (Steve Sanberg).
 	- permit autogen.sh to work on non "prefix=/usr" hosts.
 	- add %license/%readme virtual file attributes.
-        - align "Build Host:" with other fields.
+	- align "Build Host:" with other fields.
 
 2.5.2 -> 2.5.3:
 	- copy changelog tags to sub-packages just before packaging.
@@ -1073,7 +1496,7 @@
 	- fix typo in %triggerpostun generation
 	- include icons in source packages
 	- headerGetEntry() should return count of 1 when returning
-          strings plucked from i18n strings
+	  strings plucked from i18n strings
 	- do not remove comments in scripts
 	- save/restore existing arch when done with buildarch
 	- copy the I18N table to the source header so i18n stuff works
@@ -1082,14 +1505,14 @@
 	- shared files weren't being handled properly in net shared paths
 
 2.4.108 -> 2.4.109:
-        - remove icons with --rmsource
-        - do dependecy generation on -bl
-        - check files on all packages on -bl
+	- remove icons with --rmsource
+	- do dependecy generation on -bl
+	- check files on all packages on -bl
 	- integrate Jeff Johnson's memleak patches
 	- added OSF1 autodep scripts
 
 2.4.107 -> 2.4.108:
-        - make --clean work with no %setup
+	- make --clean work with no %setup
 	- fixed FSSIZES problem introduced in 2.4.107
 	- fixed search for find-requires.sh
 	- improved solaris autodeps scripts
@@ -1098,7 +1521,7 @@
 2.4.106 -> 2.4.107:
 	- --nomd5 wasn't handled properly
 	- updated configure.in find-req and find-prov checks (Tim Mooney)
-        - make --rmsource actually work
+	- make --rmsource actually work
 	- run postun triggers
 
 2.4.105 -> 2.4.106:
@@ -1163,8 +1586,8 @@
 
 2.4.100 -> 2.4.101:
 	- handle files with spaces (put double quotes around them)
-        - new rpmrc setting, buildshell, can be used to set shell
-          used for build scripts (default is /bin/sh)
+	- new rpmrc setting, buildshell, can be used to set shell
+	  used for build scripts (default is /bin/sh)
 	- fix bug where macros were being improperly set for
 	  Patch: and Source: lines
 	- may use "instchangelog" in rpmrc to limit the maxmium number of 
@@ -1172,11 +1595,11 @@
 	  (-1 means store all of them)
 	- default instchangelog is set to 5
 	- headerRemoveEntry() didn't free the item's data -- this led to
-  	  a slight memory leak when installing packages
-        - implemented generic file relocations at install time
-          (use --relocate <oldpath>=<newpath>, i.e. --relocate /usr=/foo)
-        - added --badreloc flag to force RPM to relocate files which packages
-          haven't advertised as relocateable
+	  a slight memory leak when installing packages
+	- implemented generic file relocations at install time
+	  (use --relocate <oldpath>=<newpath>, i.e. --relocate /usr=/foo)
+	- added --badreloc flag to force RPM to relocate files which packages
+	  haven't advertised as relocateable
 	- fix return code on failed uncompresses in %prep
 	- preliminary handling of bzip2 compressed files
 	- differentiates between big and little endian mips
@@ -1194,9 +1617,9 @@
 
 2.4.12 -> 2.4.99:
 	- added many more i18n strings
-        - merged in large rewrite of build code, which includes the following
+	- merged in large rewrite of build code, which includes the following
 	  changes:
-            - new option --rmsource
+	    - new option --rmsource
 	    - all scripts can now take -p <prog>
 	    - more strict about %package placement and use of main package 
 	      preamble
@@ -1206,7 +1629,7 @@
 	    - Root: is depricated.  Use BuildRoot: instead
 	    - "nosrc" sources arn't deleted when sources are removed
 	    - New tag DocDir: <dir> to set alternate doc dir (default is 
-              /usr/doc)
+	      /usr/doc)
 	    - %doc should work as expected with buildroot, prefix, DocDir:
 	    - all file processing is done before any packaging
 	    - should work with modern patch programs (later than 2.1)
@@ -1214,8 +1637,8 @@
 	    - %define only defines a macro if it starts a line
 	    - script prog entries are now arrays (ie with arguments)
 	    - standard macros: tag names, buildarch, buildos, buildarch_lc, 
-              buildos_lc, PATCHn, SOURCEn, PATCHURLn, SOURCEURLn, sourcedir, 
-              builddir, optflags
+	      buildos_lc, PATCHn, SOURCEn, PATCHURLn, SOURCEURLn, sourcedir, 
+	      builddir, optflags
 	    - deprecate require_distribution, require_icon, require_vendor
 	    - add RPMTAG_FILEDEVICES and RPMTAG_FILEINODES to header
 	    - export variables in scripts
@@ -1284,7 +1707,7 @@
 	- archivesize tag was incorrect for packages with hard links
 	- moved popt into a separate library
 	- directory created with %doc is now name-version (dropped
-          the release)
+	  the release)
 	- added buildarch/buildos macros
 	- added %ghost file option
 	- updated linux.req to only find requirements for exectuable files
@@ -1735,7 +2158,7 @@
 	- -h and -v work for source package >= V2
 	- -h output is much smoother now
 	- new AutoReqProv: tag in spec file can disable automatic
-          require/provide generation
+	  require/provide generation
 	- fixed md5sum problem on big endian machines in a way that's
 	  mostly backwards compatible; this hack will be removed someday
 	- added :fflags tag
@@ -1845,7 +2268,7 @@
 
 2.1.1 -> 2.1.2:
 	- fixed error message for unrelocateable packages
-        - automatic shared lib provides now work with buildprefix
+	- automatic shared lib provides now work with buildprefix
 	- fixed dependency checking during upgrades to work if the
 	  package wasn't previously installed
 	- clean up temp file after signature check
@@ -1856,7 +2279,7 @@
 	- fixed -qi query format 
 
 2.0.11 -> 2.1:
-        - added --requires, --whatrequires, --provides and 
+	- added --requires, --whatrequires, --provides and 
 	  --whatprovides queries
 	- using a string array tag in a queryformat results in every
 	  item in the string being printed out with spaces in between
@@ -1878,7 +2301,7 @@
 	- always do at least an MD5 "signature"
 	  as a result, -K will always tell you something
 	- signatures now include a simple "header+archive size" check
-          just calling readSignature() checks this
+	  just calling readSignature() checks this
 	- --nopgp (with -K) to skip PGP check, just do MD5
 	- allow '#' comments in preamble and %files section
 	- fixed -qsv to print both the states and the file information	
@@ -1911,7 +2334,7 @@
 	  queryFormats
 
 2.0.10 -> 2.0.11:
-        - fixed chmod(symlink) bug (since 2.0.9)
+	- fixed chmod(symlink) bug (since 2.0.9)
 
 2.0.9 -> 2.0.10:
 	- fixed the fix to rpm -q <num> bug
@@ -1948,7 +2371,7 @@
 	  will probably won't be implemented in RPM 2.x anyway
 
 2.0.6 -> 2.0.7:
-        - builds now set umask 022 for all scripts
+	- builds now set umask 022 for all scripts
 	- queries relative paths correctly (thanks to Johnie Stafford)
 	- fixed error codes for failed installs
 	- don't add NULL entry to group index for packages that don't
@@ -2041,7 +2464,7 @@
 
 1.4.2 -> 1.4.3:
 	- added tokens for SPARC, MIPS, PowerPC, and 680x0 architectures
-        - fixed sparc arch, added arch sanity check
+	- fixed sparc arch, added arch sanity check
 
 1.4.1 -> 1.4.2:
 	- added --root to man page, usage, and help messages

@@ -2,7 +2,11 @@
 
 #include "system.h"
 
-#include "rpmlib.h"
+#include <rpmlib.h>
+#include <rpmpgp.h>
+
+#include "depends.c"
+
 #include "debug.h"
 
 int main(int argc, char **argv)
@@ -10,7 +14,7 @@ int main(int argc, char **argv)
     FD_t fdi, fdo;
     Header h;
     char * rpmio_flags;
-    int rc, isSource;
+    rpmRC rc;
     FD_t gzdi;
     
     setprogname(argv[0]);	/* Retrofit glibc __progname */
@@ -26,14 +30,32 @@ int main(int argc, char **argv)
     }
     fdo = fdDup(STDOUT_FILENO);
 
-    rc = rpmReadPackageHeader(fdi, &h, &isSource, NULL, NULL);
+    {	rpmts ts = rpmtsCreate();
+	rpmVSFlags vsflags = 0;
+
+	/* XXX retain the ageless behavior of rpm2cpio */
+        vsflags |= _RPMVSF_NODIGESTS;
+        vsflags |= _RPMVSF_NOSIGNATURES;
+        vsflags |= RPMVSF_NOHDRCHK;
+	(void) rpmtsSetVSFlags(ts, vsflags);
+
+	/*@-mustmod@*/      /* LCL: segfault */
+	rc = rpmReadPackageFile(ts, fdi, "rpm2cpio", &h);
+	/*@=mustmod@*/
+
+	ts = rpmtsFree(ts);
+    }
+
     switch (rc) {
-    case 0:
+    case RPMRC_OK:
+    case RPMRC_NOKEY:
+    case RPMRC_NOTTRUSTED:
 	break;
-    case 1:
+    case RPMRC_NOTFOUND:
 	fprintf(stderr, _("argument is not an RPM package\n"));
 	exit(EXIT_FAILURE);
 	break;
+    case RPMRC_FAIL:
     default:
 	fprintf(stderr, _("error reading header from package\n"));
 	exit(EXIT_FAILURE);
