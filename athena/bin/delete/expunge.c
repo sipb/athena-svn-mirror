@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.4 1989-02-01 03:42:00 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.5 1989-03-08 09:58:52 jik Exp $";
 #endif
 
 /*
@@ -190,16 +190,32 @@ int num;
 	       return(ERROR_MASK);
 	  
 	  found_files = get_the_files(start_dir, file_re, &num_found);
-	  free(file_re);
 	  if (num_found)
 	       num_found = process_files(found_files, num_found);
 	  total += num_found;
 	  if (! num_found) if (! force) {
-	       fprintf(stderr, "%s: %s: nothing to expunge\n",
-		       whoami, ((files[num - 1] == "") ? "." :
-				files[num - 1]));
-	       status |= ERROR_MASK;
+	       /*
+		* There are three different situations here.  Eiter we
+		* are dealing with an existing directory with no
+	        * deleted files in it, or we are deleting with a
+	        * non-existing deleted file with wildcards, or we are
+	        * dealing with a non-existing deleted file without
+	        * wildcards.  In the former case we print nothing, and
+	        * in the latter cases we print either "no match" or
+	        * "not found" respectively
+		*/
+	       if (no_wildcards(file_re)) {
+		    if (! directory_exists(files[num - 1])) {
+			 fprintf(stderr, "%s: %s: not found\n",
+				 whoami, files[num - 1]);
+		    }
+	       }
+	       else {
+		    fprintf(stderr, "%s: %s: no match\n", whoami,
+			    files[num - 1]);
+	       }
 	  }
+	  free(file_re);
      }
      if (total && listfiles) {
 	  list_files();
