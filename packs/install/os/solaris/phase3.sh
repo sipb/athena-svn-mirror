@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3.2.1 1999-11-09 01:48:48 ghudson Exp $
+# $Id: phase3.sh,v 1.3.2.2 2000-06-08 16:36:20 ghudson Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -165,8 +165,7 @@ sed -e 	"s#^HOST=[^;]*#HOST=$hostname#
 	s#^SYSTEM=[^;]*#SYSTEM=Solaris#" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
-echo installed on `date` from `df -k / | tail -1 | awk '{print $1}'` \
-	> /root/etc/athena/version
+echo installed on `date` from `/os/usr/bin/tail -1 /etc/vfstab | awk -F: '{print $1}'` > /root/etc/athena/version
 if [ $CUSTOM = Y ]; then
 	if [ $PARTITION = Y ]; then
 		echo custom install with custom partitioning \
@@ -203,6 +202,10 @@ echo "Installing bootblocks on root "
 installboot "/os/usr/platform/$platform/lib/fs/ufs/bootblk" "$rrootdrive"
 cd /root
 
+echo "reset the boot device .. just in case"
+/os/usr/platform/$platform/sbin/eeprom \
+	"`/os/usr/platform/$platform/sbin/eeprom boot-device | \
+	sed -e 's/:[^ ]*//'`"
 # Note: device scripts depend on ROOT being set properly.
 auxdir=/srvd/install/aux.devs
 if [ -d $auxdir ]; then
