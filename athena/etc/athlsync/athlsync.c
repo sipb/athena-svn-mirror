@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athlsync.c,v 1.1 2002-10-17 05:10:33 ghudson Exp $";
+static const char rcsid[] = "$Id: athlsync.c,v 1.2 2004-12-28 22:19:24 ghudson Exp $";
 
 /* athlsync - Sync a locker's contents to local disk */
 
@@ -473,14 +473,15 @@ static int same_stats(struct stat *st1, struct stat *st2)
 
 /* Return mode adjusted for a copy from AFS to local disk, by turning
  * on the read bits and possibly the executable bits for "group" and
- * "other" access.
+ * "other" access.  Also turn off the write bits for group and other.
  */
 static mode_t adjust_mode(mode_t mode)
 {
   mode_t rmask = S_IRGRP | S_IROTH;
   mode_t xmask = (mode & S_IXUSR) ? (S_IXGRP | S_IXOTH) : 0;
+  mode_t wmask = ~(S_IWGRP | S_IWOTH);
 
-  return mode | rmask | xmask;
+  return (mode | rmask | xmask) & wmask;
 }
 
 /* Concatenate two paths, making sure there is a / between them. */
