@@ -20,12 +20,9 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
-
-#include <olc/olc.h>
-#include <olcd.h>
 #include <sys/types.h>          /* Standard type defs. */
 #include <sys/socket.h>		/* IPC definitions. */
 #include <sys/file.h>		/* File I/O definitions. */
@@ -41,10 +38,13 @@
 
 #ifdef SYSLOG
 #include <syslog.h>             /* syslog do hickies */
-#endif SYSLOG
+#endif
+
+#include <olc/olc.h>
+#include <olcd.h>
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.7 1989-12-22 16:26:52 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.8 1990-01-03 23:30:53 raeburn Exp $";
 
 /* Global variables. */
 
@@ -64,6 +64,8 @@ extern char *TICKET_FILE;
 extern int krb_ap_req_debug;
 #endif KERBEROS
 
+static void flush_olc_userlogs (void);
+static void process_request (int, struct sockaddr_in *);
 
 
 /* Static variables */
@@ -297,7 +299,7 @@ main(argc, argv)
    * s&m
    */
 
-  if (bind(fd, &sin, sizeof(struct sockaddr_in)) < 0) 
+  if (bind(fd, (struct sockaddr *) &sin, sizeof(struct sockaddr_in)) < 0) 
     {
       perror("Can't bind socket");
       exit(ERROR);
@@ -360,7 +362,7 @@ main(argc, argv)
       int s;		        /* Duplicated file descriptor */
       int len = sizeof (from);  /* Length of address. */
 
-      s = accept(fd, &from, &len);		
+      s = accept(fd, (struct sockaddr *) &from, &len);		
       if (s < 0) 
 	{
 	  if (errno == EINTR)
@@ -400,7 +402,7 @@ main(argc, argv)
  *	request in the request table.
  */
 
-process_request(fd, from)
+static void process_request(fd, from)
       int fd;                 /* File descriptor for socket. */
       struct sockaddr_in *from;
 {
@@ -413,11 +415,11 @@ process_request(fd, from)
 
   index = 0;
   processing_request = 1;
-  if(read_request(fd, &request) != SUCCESS)
-    {
-      log_error("Error in reading request");
-      return(ERROR);
-    }
+  if(read_request(fd, &request) != SUCCESS) {
+/*      log_error("Error in reading request");*/
+      perror ("Error in reading request");
+      return;
+  }
   type = request.request_type;
 
 #ifdef KERBEROS
@@ -443,7 +445,7 @@ process_request(fd, from)
 
   /* authenticate requestor using kerberos if available */
 
-  auth = authenticate(&request, from->sin_addr);
+  auth = authenticate(&request, from->sin_addr.s_addr);
   if (auth)
     {
       send_response(fd,auth);
@@ -486,7 +488,7 @@ process_request(fd, from)
 }
 
 
-flush_olc_userlogs()
+static void flush_olc_userlogs()
 {
   /* placeholder until this is really written */
   /*
@@ -563,8 +565,8 @@ punt(sig)
 
 
 authenticate(request, addr)
-     REQUEST *request;
-     unsigned long addr;
+    REQUEST *request;
+    unsigned long addr;
 {
 
 #ifdef KERBEROS
