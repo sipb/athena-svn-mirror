@@ -1,3 +1,7 @@
+FXCL_LINKS= fx_open.3 fx_close.3 fx_create.3 fx_acl_add.3 fx_acl_del.3 \
+fx_acl_list.3 fx_acl_list_destroy.3 fx_list.3 fx_list_destroy.3 paper_copy.3 \
+fx_move.3 fx_copy.3 fx_delete.3
+
 create_dir($(ATHMANDIR)/man1)
 create_dir($(ATHMANDIR)/man3)
 
@@ -14,6 +18,7 @@ install_man(return.1,return.1)
 install_man(turnin.1,turnin.1)
 install_man(uncollect.1,uncollect.1)
 install_man(fxcl.3,fxcl.3)
+install_man_links(fxcl.3,$(FXCL_LINKS))
 
 
 clean::
