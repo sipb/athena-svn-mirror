@@ -93,7 +93,7 @@ Distribution sites for software under third
 
 	afsbin		See below.
 	bind		ftp.isc.org:isc/bind/src
-	emacs		ftp.gnu.org:pub/gnu/emacs
+	emacs		ftp.gnu.org:pub/gnu/emacs; see also "leim"
 	gcc		ftp.gnu.org:pub/gnu/gcc
 	gmake		ftp.gnu.org:pub/gnu/make
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
@@ -103,6 +103,7 @@ Distribution sites for software under third
 	kermit		http://www.columbia.edu/kermit
 	krb5*		http://web.mit.edu/network/kerberos-form.html
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
+	leim		ftp.gnu.org:pub/gnu/emacs; see below
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
@@ -181,7 +182,14 @@ LPRng
 We import three packages: the LPRng sources themselves
 (LPRng/LPRng-x.tgz) into third/lprng/lprng, the LPRng documentation
 (LPRng/LPRng_DOC-x.tgz) into third/lprng/doc, and the ifhp filter
-(FILTERS/ifhp-x.tgz) nito third/lprng/ifhp.
+(FILTERS/ifhp-x.tgz) into third/lprng/ifhp.
+
+LEIM
+----
+
+LEIM (Library of Emacs Input Methods) is built as part of Emacs, but
+distributed separately. New versions of LEIM should be imported along
+with new versions of Emacs, in third/emacs/leim.
 
 TeX
 ---
