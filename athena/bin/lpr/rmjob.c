@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.2 1989-12-13 15:23:52 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.3 1990-04-16 11:48:51 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.2 1989-12-13 15:23:52 probe Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.3 1990-04-16 11:48:51 epeisach Exp $";
 #endif lint
 
 /*
@@ -39,6 +39,14 @@ int	all = 0;		/* eliminate all files (root only) */
 int	cur_daemon;		/* daemon's pid */
 char	current[40];		/* active control file name */
 int	assasinated = 0;	/* 1 means we've killed the lpd */
+
+#ifdef KERBEROS && !(SERVER)
+extern int      use_kerberos;
+extern int      kerberos_override;
+short KA;
+KTEXT_ST kticket;
+long kerror;
+#endif KERBEROS
 
 #ifdef SERVER
 int	iscf();
@@ -78,6 +86,16 @@ rmjob()
 	if ((RP = pgetstr("rp", &bp)) == NULL)
 		RP = DEFLP;
 	RM = pgetstr("rm", &bp);
+
+#ifdef KERBEROS && !(SERVER)
+        KA = pgetnum("ka");
+        if (KA > 0)
+            use_kerberos = 1;
+        else
+            use_kerberos = 0;
+        if (kerberos_override > -1)
+            use_kerberos = kerberos_override;
+#endif KERBEROS
 
 	/*
 	 * If the format was `lprm -' and the user isn't the super-user,
@@ -298,8 +316,13 @@ isowner(owner, file)
 {
 	if (!strcmp(person, root) && (from == host || !strcmp(from, file+6)))
 		return(1);
+#ifdef KERBEROS
+	if (!strcmp(person, owner))
+		return(1);
+#else
 	if (!strcmp(person, owner) && !strcmp(from, file+6))
 		return(1);
+#endif KERBEROS
 	if (from != host)
 		printf("%s: ", host);
 	printf("%s: Permission denied\n", file);
@@ -315,7 +338,12 @@ chkremote()
 {
 	register char *cp;
 	register int i, rem;
+#ifndef SERVER
+	register int resp;
+	int n;
+#endif
 	char buf[BUFSIZ];
+
 
 #ifndef SERVER
 	char name[255];
@@ -393,6 +421,46 @@ chkremote()
 			printf("%s: ", host);
 		printf("connection to %s is down\n", RM);
 	} else {
+#ifndef SERVER
+#ifdef KERBEROS
+		if (use_kerberos) {
+                        /* If we require kerberos authentication,
+                         * then send credentials
+                         * over
+                         */
+                        (void) sprintf(line, "k%s\n", RP);
+                        n = strlen(line);
+                        if (write(rem, line, n) != n)
+				fatal("Error sending kerberos opcode.\n");
+
+			if ((resp = responser(rem)) != '\0') {
+			    fprintf(stderr,
+				    "Remote printer does not support kerberos authentication\n");
+			    if(kerberos_override == 1) 
+				fprintf(stderr, "Try again without the -k flag\n");
+			    if(kerberos_override == -1) 
+				fprintf(stderr,"Try again using the -u option\n");
+			    exit(1);
+			}
+			
+                        kerror = krb_sendauth(0L, rem, &kticket, KLPR_SERVICE,
+                                              RM, (char *)krb_realmofhost(RM),
+                                              0, (MSG_DAT *) 0,
+                                              (CREDENTIALS *) 0,
+                                              (bit_64 *) 0,
+                                              (struct sockaddr_in *)0,
+                                              (struct sockaddr_in *)0,
+                                              "KLPRV0.1");
+                        if (kerror != KSUCCESS)
+                            fatal("Kerberos authentication failed. Use kinit and try again.\n");
+			if ((resp = responser(rem)) != '\0') {
+			    if (resp == '\3') 
+				fatal("Authentication failed. Use kinit and then try again.\n");
+			    else fatal("Syncronization error.\n");
+			}
+		    }
+#endif KERBEROS
+#endif !(SERVER)
 		i = strlen(buf);
 		if (write(rem, buf, i) != i)
 			fatal("Lost connection");
@@ -413,3 +481,22 @@ iscf(d)
 }
 #endif SERVER
 
+/*
+ * Check to make sure there have been no errors and that both programs
+ * are in sync with eachother.
+ * Return non-zero if the connection was lost.
+ */
+
+#if !defined(SERVER)
+static responser(fd)
+int fd;
+{
+	char resp;
+
+	if (read(fd, &resp, 1) != 1) {
+		fprintf(stderr,"Lost connection to printer....\n");
+		return(-1);
+	}
+	return(resp);
+}
+#endif
