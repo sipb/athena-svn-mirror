@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.1 1989-05-22 10:51:24 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.2 1989-05-22 10:58:39 epeisach Exp $";
 #endif
 /* pscomm.c
  *
@@ -79,6 +79,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/05/22  10:51:24  epeisach
+ * Initial revision
+ * 
  * Revision 2.2  87/11/17  16:51:17  byron
  * Release 2.1
  * 
@@ -903,12 +906,12 @@ register int c;
 	    st = normal;
 	    break;
 	case twop:
-	    if (c == '\[') {
+	    if (c == '[') {
 		st = inmessage;
 		NextChChar(c);
 		break;
 	    }
-	    if (c == '\%') {
+	    if (c == '%') {
 		putc('%',jobout);
 		VOIDC fflush(jobout);
 		/* don't do anything to cp */
@@ -922,13 +925,13 @@ register int c;
 	    break;
 	case inmessage:
 	    NextChChar(c);
-	    if (c == '\]') st = close1;
+	    if (c == ']') st = close1;
 	    break;
 	case close1:
 	    NextChChar(c);
 	    switch (c) {
 		case '%': st = close2; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		case ' ': break;
 		default: st = inmessage; break;
 	    }
@@ -937,7 +940,7 @@ register int c;
 	    NextChChar(c);
 	    switch (c) {
 		case '%': st = close3; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    break;
@@ -945,7 +948,7 @@ register int c;
 	    NextChChar(c);
 	    switch (c) {
 		case '\r': st = close4; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    break;
@@ -953,7 +956,7 @@ register int c;
 	    NextChChar(c);
 	    switch(c) {
 		case '\n': st = normal; break;
-		case '\]': st = close1; break;
+		case ']': st = close1; break;
 		default: st = inmessage; break;
 	    }
 	    if (st == normal) {
