@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <string.h>
 
 int main(int argc, char **argv)
 {
@@ -60,7 +61,7 @@ int main(int argc, char **argv)
 #endif
 
     format = bits | channels | mode | func;
-    printf( "opening socket, format = 0x%08x at %d Hz\n", 
+    fprintf( stderr, "opening socket, format = 0x%08x at %d Hz\n", 
 	    format, rate );
    
     /* sock = esd_play_stream( format, rate ); */

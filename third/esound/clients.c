@@ -1,4 +1,5 @@
 #include "esd-server.h"
+#include <time.h>
 
 #ifdef HAVE_SYS_IOCTL_H
 # include <sys/ioctl.h>
@@ -17,6 +18,7 @@ int deny_severity = LOG_WARNING;
 
 /*******************************************************************/
 /* globals */
+extern int esd_use_tcpip; 
 
 /* the list of the currently connected clients */
 esd_client_t *esd_clients_list;
@@ -140,6 +142,7 @@ int get_new_clients( int listen )
 			(unsigned int) addr % 256, port ); );
 
 #ifdef USE_LIBWRAP
+	    if (esd_use_tcpip)
 	    {
 		struct request_info req;
 		struct servent *serv;
@@ -270,7 +273,7 @@ int wait_for_clients_and_data( int listen )
 	"paused=%d, samples=%d, auto=%d, standby=%d, record=%d, ready=%d\n",
 	is_paused_here, esd_playing_samples, 
 	esd_autostandby_secs, esd_on_standby, 
-	(esd_recorder != 0), ready ); );
+	(esd_recorder_list != 0), ready ); );
 
     /* TODO: return ready, and do this in esd.c */
     if ( ready <= 0 ) {

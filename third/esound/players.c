@@ -4,7 +4,8 @@
 
 /*******************************************************************/
 /* globals */
-esd_player_t *esd_players_list = NULL;
+
+esd_player_t *esd_players_list = NULL; 
 esd_player_t *esd_recorder_list = NULL;
 esd_player_t *esd_monitor_list = NULL;
 
@@ -291,16 +292,21 @@ int read_player( esd_player_t *player )
 			   &rd_fds, NULL, NULL, &timeout ) ;
 	if ( can_read > 0 )
 	{
-	    ESD_READ_BIN( player->source_id, player->data_buffer, 
-			  player->buffer_length, actual, "str rd" );
-
-	    /* check for end of stream */
-	    if ( actual == 0 
-		 || ( actual < 0 && errno != EAGAIN && errno != EINTR ) )
-		return -1;
- 
-	    /* more data, save how much we got */
-	    player->actual_length = actual;
+	    player->actual_length = 0;
+	    do {
+		ESD_READ_BIN( player->source_id,
+			      player->data_buffer + player->actual_length, 
+			      player->buffer_length - player->actual_length,
+			      actual, "str rd" );
+		
+		/* check for end of stream */
+		if ( actual == 0 
+		     || ( actual < 0 && errno != EAGAIN && errno != EINTR ) )
+		    return -1;
+		/* more data, save how much we got */
+		if ( actual > 0 )
+		   player->actual_length += actual;
+	    } while (player->actual_length < player->buffer_length);
 
 	    /* endian swap multi-byte data if we need to */
 	    client = (esd_client_t *) (player->parent);
@@ -309,7 +315,7 @@ int read_player( esd_player_t *player )
 	    {
 		buffer = (unsigned short*) player->data_buffer;
 		for ( pos = buffer 
-			  ; pos < buffer + actual / sizeof(short)
+			  ; pos < buffer + player->actual_length / sizeof(short)
 			  ; pos ++ )
 		{
 		    data = swap_endian_16( (*pos) );

@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -59,9 +59,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AO_CFLAGS = @AO_CFLAGS@
+AO_LIBS = @AO_LIBS@
 AS = @AS@
 AUDIOFILE_CFLAGS = @AUDIOFILE_CFLAGS@
 AUDIOFILE_CONFIG = @AUDIOFILE_CONFIG@
+AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
 CC = @CC@
 CPP = @CPP@
 DB2HTML = @DB2HTML@
@@ -70,22 +73,25 @@ DISTDOCS = @DISTDOCS@
 DLLTOOL = @DLLTOOL@
 DL_LIB = @DL_LIB@
 DOCS = @DOCS@
-ESDDSP = @ESDDSP@
-ESDPLAY = @ESDPLAY@
+ECHO = @ECHO@
+ESD_DIR = @ESD_DIR@
 ESD_MAJOR_VERSION = @ESD_MAJOR_VERSION@
 ESD_MICRO_VERSION = @ESD_MICRO_VERSION@
 ESD_MINOR_VERSION = @ESD_MINOR_VERSION@
+ESD_PC_DIR = @ESD_PC_DIR@
 ESD_VERSION = @ESD_VERSION@
 ESD_VERSION_INFO = @ESD_VERSION_INFO@
-LD = @LD@
+EXEEXT = @EXEEXT@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-USE_SYMBOL_UNDERSCORE = @USE_SYMBOL_UNDERSCORE@
+SOUND_LIBS = @SOUND_LIBS@
+STRIP = @STRIP@
 VERSION = @VERSION@
 WRAP_LIB = @WRAP_LIB@
 have_db2html = @have_db2html@
@@ -95,58 +101,56 @@ SUBDIRS = docs
 
 SPEC_FILE = esound.spec
 
-AUDIOFILE_LIBS = @AUDIOFILE_LIBS@
-LIBESDDSP = @LIBESDDSP@
-SOUND_LIBS = @SOUND_LIBS@
-
-INCLUDES = @AUDIOFILE_CFLAGS@ -DSYSCONFDIR="\"$(sysconfdir)\""
-
-bin_SCRIPTS =  	@ESDDSP@		esd-config
+INCLUDES = $(AUDIOFILE_CFLAGS) -DSYSCONFDIR=\"$(sysconfdir)\"     -DSERVERDIR=\"$(ESD_DIR)\"
 
 
-EXTRA_SCRIPTS = esddsp
+@BUILD_ESDDSP_TRUE@ESDDSP = esddsp
+@BUILD_ESDDSP_TRUE@libesddsp_la = libesddsp.la
+@BUILD_ESDPLAY_TRUE@ESDPLAY = esdplay
 
-EXTRA_DIST =  	esound.pc.in		esound.spec.in		esd-config.in	        esd.conf        	esd.m4 			TIPS 			test-script 		test.wav 		getopt.h 		TODO
+getopt_extra = getopt.c getopt1.c
 
+@NEED_GETOPT_TRUE@getopt_src = $(getopt_extra)
 
-lib_LTLIBRARIES = libesd.la @LIBESDDSP@
-
-libesd_la_SOURCES =  	esdlib.c		esdmgr.c		esdfile.c		esd_config.c		audio.c			genrand.c		genrand.h
-
-
-libesd_la_LDFLAGS = -version-info @ESD_VERSION_INFO@
-
-libesd_la_LIBADD = @AUDIOFILE_LIBS@ @SOUND_LIBS@ -lm
-
-EXTRA_LTLIBRARIES =  	libesddsp.la
+bin_SCRIPTS =  	$(ESDDSP)		esd-config
 
 
-libesddsp_la_LDFLAGS = -rpath $(libdir) -version-info @ESD_VERSION_INFO@
+lib_LTLIBRARIES = libesd.la $(libesddsp_la)
 
-libesddsp_la_LIBADD = @DL_LIB@ -lm
+libesd_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
+libesd_la_LIBADD = $(AUDIOFILE_LIBS) $(SOUND_LIBS)
+
+libesd_la_SOURCES =  	esdlib.c		esdmgr.c		esdfile.c		esd_config.c		audio.c			genrand.c		genrand.h		util.c
+
+
+# one of these gets included by audio.c
+AUDIO_BACKENDS =  	audio_aix.c		audio_alsa.c		audio_alsa09.c  	audio_hpux.c		audio_irix.c		audio_none.c		audio_oss.c		audio_mklinux.c		audio_solaris.c	
+
+
+libesddsp_la_LDFLAGS = -version-info $(ESD_VERSION_INFO)
+libesddsp_la_LIBADD = $(DL_LIB) -lm
 
 libesddsp_la_SOURCES =  	esddsp.c
-
-
-EXTRA_libesd_la_SOURCES =  	audio_aix.c		audio_alsa.c		audio_hpux.c		audio_irix.c		audio_none.c		audio_oss.c		audio_mklinux.c		audio_solaris.c	
 
 
 include_HEADERS =  	esd.h
 
 
-bin_PROGRAMS =  	esd			esdcat			esdctl			esdfilt			esdmon			esdrec			esdsample		esdloop			@ESDPLAY@
+esddir = @ESD_DIR@
+
+esd_PROGRAMS =  	esd		
 
 
-EXTRA_PROGRAMS =  	esdplay
+bin_PROGRAMS =  	esdcat			esdctl			esdfilt			esdmon			esdrec			esdsample		esdloop			$(ESDPLAY)
 
 
-esd_SOURCES =  	esd.c 			clients.c		filter.c		mix.c			players.c		proto.c			samples.c		esd-server.h
+esd_SOURCES =  	esd.c 			clients.c		filter.c		mix.c			players.c		proto.c			samples.c		$(getopt_src)   	util.c			esd-server.h
 
 
 esdcat_SOURCES =  	esdcat.c
 
 
-esdctl_SOURCES =  	esdctl.c
+esdctl_SOURCES =  	$(getopt_src) 	esdctl.c
 
 
 esdfilt_SOURCES =  	esdfilt.c
@@ -164,16 +168,12 @@ esdsample_SOURCES =  	esdsample.c
 esdloop_SOURCES =  	esdloop.c
 
 
-EXTRA_esdplay_SOURCES =  	esdplay.c
+esdplay_SOURCES =  	$(getopt_src) 	esdplay.c
 
 
-LDADD = libesd.la $(AUDIOFILE_LIBS) -lm
+LDADD = libesd.la $(AUDIOFILE_LIBS)
 
-LIBOBJS = @LIBOBJS@
-
-esd_LDADD = $(LIBOBJS) $(WRAP_LIB) $(LDADD)
-esdctl_LDADD = $(LIBOBJS) $(LDADD)
-esdplay_LDADD = $(LIBOBJS) $(LDADD)
+esd_LDADD = $(WRAP_LIB) $(LDADD)
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = esd.m4
@@ -181,10 +181,11 @@ m4data_DATA = esd.m4
 esdconfdir = $(sysconfdir)
 esdconf_DATA = esd.conf
 
-CLEANFILES = esound.spec esound.pc
-
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = esound.pc
+
+EXTRA_DIST =  	$(getopt_extra)		esddsp			esound.pc.in		esound.spec		esound.spec.in		esd-config.in	        esd.conf        	esd.m4 			TIPS 			test-script 		test.wav 		getopt.h 		TODO			MAINTAINERS		$(AUDIO_BACKENDS)
+
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -196,48 +197,66 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libesddsp_la_DEPENDENCIES = 
-libesddsp_la_OBJECTS =  esddsp.lo
 libesd_la_DEPENDENCIES = 
 libesd_la_OBJECTS =  esdlib.lo esdmgr.lo esdfile.lo esd_config.lo \
-audio.lo genrand.lo
-PROGRAMS =  $(bin_PROGRAMS)
+audio.lo genrand.lo util.lo
+libesddsp_la_DEPENDENCIES = 
+libesddsp_la_OBJECTS =  esddsp.lo
+@BUILD_ESDPLAY_TRUE@bin_PROGRAMS =  esdcat$(EXEEXT) esdctl$(EXEEXT) \
+@BUILD_ESDPLAY_TRUE@esdfilt$(EXEEXT) esdmon$(EXEEXT) esdrec$(EXEEXT) \
+@BUILD_ESDPLAY_TRUE@esdsample$(EXEEXT) esdloop$(EXEEXT) \
+@BUILD_ESDPLAY_TRUE@esdplay$(EXEEXT)
+@BUILD_ESDPLAY_FALSE@bin_PROGRAMS =  esdcat$(EXEEXT) esdctl$(EXEEXT) \
+@BUILD_ESDPLAY_FALSE@esdfilt$(EXEEXT) esdmon$(EXEEXT) esdrec$(EXEEXT) \
+@BUILD_ESDPLAY_FALSE@esdsample$(EXEEXT) esdloop$(EXEEXT)
+esd_PROGRAMS =  esd$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS) $(esd_PROGRAMS)
 
-esdplay_SOURCES = esdplay.c
-esdplay_OBJECTS =  esdplay.o
-esdplay_DEPENDENCIES =  @LIBOBJS@ libesd.la
-esdplay_LDFLAGS = 
-esd_OBJECTS =  esd.o clients.o filter.o mix.o players.o proto.o \
-samples.o
-esd_DEPENDENCIES =  @LIBOBJS@ libesd.la
-esd_LDFLAGS = 
-esdcat_OBJECTS =  esdcat.o
+esdcat_OBJECTS =  esdcat.$(OBJEXT)
 esdcat_LDADD = $(LDADD)
 esdcat_DEPENDENCIES =  libesd.la
 esdcat_LDFLAGS = 
-esdctl_OBJECTS =  esdctl.o
-esdctl_DEPENDENCIES =  @LIBOBJS@ libesd.la
+@NEED_GETOPT_FALSE@esdctl_OBJECTS =  esdctl.$(OBJEXT)
+@NEED_GETOPT_TRUE@esdctl_OBJECTS =  getopt.$(OBJEXT) getopt1.$(OBJEXT) \
+@NEED_GETOPT_TRUE@esdctl.$(OBJEXT)
+esdctl_LDADD = $(LDADD)
+esdctl_DEPENDENCIES =  libesd.la
 esdctl_LDFLAGS = 
-esdfilt_OBJECTS =  esdfilt.o
+esdfilt_OBJECTS =  esdfilt.$(OBJEXT)
 esdfilt_LDADD = $(LDADD)
 esdfilt_DEPENDENCIES =  libesd.la
 esdfilt_LDFLAGS = 
-esdmon_OBJECTS =  esdmon.o
+esdmon_OBJECTS =  esdmon.$(OBJEXT)
 esdmon_LDADD = $(LDADD)
 esdmon_DEPENDENCIES =  libesd.la
 esdmon_LDFLAGS = 
-esdrec_OBJECTS =  esdrec.o
+esdrec_OBJECTS =  esdrec.$(OBJEXT)
 esdrec_LDADD = $(LDADD)
 esdrec_DEPENDENCIES =  libesd.la
 esdrec_LDFLAGS = 
-esdsample_OBJECTS =  esdsample.o
+esdsample_OBJECTS =  esdsample.$(OBJEXT)
 esdsample_LDADD = $(LDADD)
 esdsample_DEPENDENCIES =  libesd.la
 esdsample_LDFLAGS = 
-esdloop_OBJECTS =  esdloop.o
+esdloop_OBJECTS =  esdloop.$(OBJEXT)
 esdloop_LDADD = $(LDADD)
 esdloop_DEPENDENCIES =  libesd.la
 esdloop_LDFLAGS = 
+@NEED_GETOPT_FALSE@esdplay_OBJECTS =  esdplay.$(OBJEXT)
+@NEED_GETOPT_TRUE@esdplay_OBJECTS =  getopt.$(OBJEXT) getopt1.$(OBJEXT) \
+@NEED_GETOPT_TRUE@esdplay.$(OBJEXT)
+esdplay_LDADD = $(LDADD)
+esdplay_DEPENDENCIES =  libesd.la
+esdplay_LDFLAGS = 
+@NEED_GETOPT_FALSE@esd_OBJECTS =  esd.$(OBJEXT) clients.$(OBJEXT) \
+@NEED_GETOPT_FALSE@filter.$(OBJEXT) mix.$(OBJEXT) players.$(OBJEXT) \
+@NEED_GETOPT_FALSE@proto.$(OBJEXT) samples.$(OBJEXT) util.$(OBJEXT)
+@NEED_GETOPT_TRUE@esd_OBJECTS =  esd.$(OBJEXT) clients.$(OBJEXT) \
+@NEED_GETOPT_TRUE@filter.$(OBJEXT) mix.$(OBJEXT) players.$(OBJEXT) \
+@NEED_GETOPT_TRUE@proto.$(OBJEXT) samples.$(OBJEXT) getopt.$(OBJEXT) \
+@NEED_GETOPT_TRUE@getopt1.$(OBJEXT) util.$(OBJEXT)
+esd_DEPENDENCIES =  libesd.la
+esd_LDFLAGS = 
 SCRIPTS =  $(bin_SCRIPTS)
 
 CFLAGS = @CFLAGS@
@@ -252,20 +271,20 @@ HEADERS =  $(include_HEADERS)
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h acinclude.m4 \
 aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-esd-config.in esddsp.in esound.pc.in esound.spec.in getopt.c getopt1.c \
-install-sh ltconfig ltmain.sh missing mkinstalldirs
+esd-config.in esddsp.in esound.pc.in esound.spec.in install-sh \
+ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libesddsp_la_SOURCES) $(libesd_la_SOURCES) $(EXTRA_libesd_la_SOURCES) esdplay.c $(EXTRA_esdplay_SOURCES) $(esd_SOURCES) $(esdcat_SOURCES) $(esdctl_SOURCES) $(esdfilt_SOURCES) $(esdmon_SOURCES) $(esdrec_SOURCES) $(esdsample_SOURCES) $(esdloop_SOURCES)
-OBJECTS = $(libesddsp_la_OBJECTS) $(libesd_la_OBJECTS) esdplay.o $(esd_OBJECTS) $(esdcat_OBJECTS) $(esdctl_OBJECTS) $(esdfilt_OBJECTS) $(esdmon_OBJECTS) $(esdrec_OBJECTS) $(esdsample_OBJECTS) $(esdloop_OBJECTS)
+SOURCES = $(libesd_la_SOURCES) $(libesddsp_la_SOURCES) $(esdcat_SOURCES) $(esdctl_SOURCES) $(esdfilt_SOURCES) $(esdmon_SOURCES) $(esdrec_SOURCES) $(esdsample_SOURCES) $(esdloop_SOURCES) $(esdplay_SOURCES) $(esd_SOURCES)
+OBJECTS = $(libesd_la_OBJECTS) $(libesddsp_la_OBJECTS) $(esdcat_OBJECTS) $(esdctl_OBJECTS) $(esdfilt_OBJECTS) $(esdmon_OBJECTS) $(esdrec_OBJECTS) $(esdsample_OBJECTS) $(esdloop_OBJECTS) $(esdplay_OBJECTS) $(esd_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps Makefile
 
@@ -345,6 +364,11 @@ uninstall-libLTLIBRARIES:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -353,6 +377,7 @@ uninstall-libLTLIBRARIES:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -380,11 +405,11 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libesddsp.la: $(libesddsp_la_OBJECTS) $(libesddsp_la_DEPENDENCIES)
-	$(LINK)  $(libesddsp_la_LDFLAGS) $(libesddsp_la_OBJECTS) $(libesddsp_la_LIBADD) $(LIBS)
-
 libesd.la: $(libesd_la_OBJECTS) $(libesd_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libesd_la_LDFLAGS) $(libesd_la_OBJECTS) $(libesd_la_LIBADD) $(LIBS)
+
+libesddsp.la: $(libesddsp_la_OBJECTS) $(libesddsp_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libesddsp_la_LDFLAGS) $(libesddsp_la_OBJECTS) $(libesddsp_la_LIBADD) $(LIBS)
 
 mostlyclean-binPROGRAMS:
 
@@ -411,41 +436,66 @@ uninstall-binPROGRAMS:
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
 	done
 
-esdplay: $(esdplay_OBJECTS) $(esdplay_DEPENDENCIES)
-	@rm -f esdplay
-	$(LINK) $(esdplay_LDFLAGS) $(esdplay_OBJECTS) $(esdplay_LDADD) $(LIBS)
+mostlyclean-esdPROGRAMS:
 
-esd: $(esd_OBJECTS) $(esd_DEPENDENCIES)
-	@rm -f esd
-	$(LINK) $(esd_LDFLAGS) $(esd_OBJECTS) $(esd_LDADD) $(LIBS)
+clean-esdPROGRAMS:
+	-test -z "$(esd_PROGRAMS)" || rm -f $(esd_PROGRAMS)
 
-esdcat: $(esdcat_OBJECTS) $(esdcat_DEPENDENCIES)
-	@rm -f esdcat
+distclean-esdPROGRAMS:
+
+maintainer-clean-esdPROGRAMS:
+
+install-esdPROGRAMS: $(esd_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(esddir)
+	@list='$(esd_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(esddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(esddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-esdPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(esd_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(esddir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+esdcat$(EXEEXT): $(esdcat_OBJECTS) $(esdcat_DEPENDENCIES)
+	@rm -f esdcat$(EXEEXT)
 	$(LINK) $(esdcat_LDFLAGS) $(esdcat_OBJECTS) $(esdcat_LDADD) $(LIBS)
 
-esdctl: $(esdctl_OBJECTS) $(esdctl_DEPENDENCIES)
-	@rm -f esdctl
+esdctl$(EXEEXT): $(esdctl_OBJECTS) $(esdctl_DEPENDENCIES)
+	@rm -f esdctl$(EXEEXT)
 	$(LINK) $(esdctl_LDFLAGS) $(esdctl_OBJECTS) $(esdctl_LDADD) $(LIBS)
 
-esdfilt: $(esdfilt_OBJECTS) $(esdfilt_DEPENDENCIES)
-	@rm -f esdfilt
+esdfilt$(EXEEXT): $(esdfilt_OBJECTS) $(esdfilt_DEPENDENCIES)
+	@rm -f esdfilt$(EXEEXT)
 	$(LINK) $(esdfilt_LDFLAGS) $(esdfilt_OBJECTS) $(esdfilt_LDADD) $(LIBS)
 
-esdmon: $(esdmon_OBJECTS) $(esdmon_DEPENDENCIES)
-	@rm -f esdmon
+esdmon$(EXEEXT): $(esdmon_OBJECTS) $(esdmon_DEPENDENCIES)
+	@rm -f esdmon$(EXEEXT)
 	$(LINK) $(esdmon_LDFLAGS) $(esdmon_OBJECTS) $(esdmon_LDADD) $(LIBS)
 
-esdrec: $(esdrec_OBJECTS) $(esdrec_DEPENDENCIES)
-	@rm -f esdrec
+esdrec$(EXEEXT): $(esdrec_OBJECTS) $(esdrec_DEPENDENCIES)
+	@rm -f esdrec$(EXEEXT)
 	$(LINK) $(esdrec_LDFLAGS) $(esdrec_OBJECTS) $(esdrec_LDADD) $(LIBS)
 
-esdsample: $(esdsample_OBJECTS) $(esdsample_DEPENDENCIES)
-	@rm -f esdsample
+esdsample$(EXEEXT): $(esdsample_OBJECTS) $(esdsample_DEPENDENCIES)
+	@rm -f esdsample$(EXEEXT)
 	$(LINK) $(esdsample_LDFLAGS) $(esdsample_OBJECTS) $(esdsample_LDADD) $(LIBS)
 
-esdloop: $(esdloop_OBJECTS) $(esdloop_DEPENDENCIES)
-	@rm -f esdloop
+esdloop$(EXEEXT): $(esdloop_OBJECTS) $(esdloop_DEPENDENCIES)
+	@rm -f esdloop$(EXEEXT)
 	$(LINK) $(esdloop_LDFLAGS) $(esdloop_OBJECTS) $(esdloop_LDADD) $(LIBS)
+
+esdplay$(EXEEXT): $(esdplay_OBJECTS) $(esdplay_DEPENDENCIES)
+	@rm -f esdplay$(EXEEXT)
+	$(LINK) $(esdplay_LDFLAGS) $(esdplay_OBJECTS) $(esdplay_LDADD) $(LIBS)
+
+esd$(EXEEXT): $(esd_OBJECTS) $(esd_DEPENDENCIES)
+	@rm -f esd$(EXEEXT)
+	$(LINK) $(esd_LDFLAGS) $(esd_OBJECTS) $(esd_LDADD) $(LIBS)
 
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -574,7 +624,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -686,7 +736,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-audio.lo audio.o : audio.c esd.h config.h getopt.h audio_oss.c
+audio.lo audio.o : audio.c esd.h config.h getopt.h audio_alsa09.c
 clients.o: clients.c esd-server.h esd.h config.h getopt.h
 esd.o: esd.c esd-server.h esd.h config.h getopt.h
 esd_config.lo esd_config.o : esd_config.c getopt.h
@@ -708,6 +758,7 @@ mix.o: mix.c esd-server.h esd.h config.h getopt.h
 players.o: players.c esd-server.h esd.h config.h getopt.h
 proto.o: proto.c esd-server.h esd.h config.h getopt.h
 samples.o: samples.c esd-server.h esd.h config.h getopt.h
+util.o: util.c esd.h
 
 info-am:
 info: info-recursive
@@ -724,17 +775,18 @@ install-exec-am: install-libLTLIBRARIES install-binPROGRAMS \
 		install-binSCRIPTS
 install-exec: install-exec-recursive
 
-install-data-am: install-esdconfDATA install-m4dataDATA \
-		install-pkgconfigDATA install-includeHEADERS
+install-data-am: install-esdPROGRAMS install-esdconfDATA \
+		install-m4dataDATA install-pkgconfigDATA \
+		install-includeHEADERS
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
-		uninstall-binSCRIPTS uninstall-esdconfDATA \
-		uninstall-m4dataDATA uninstall-pkgconfigDATA \
-		uninstall-includeHEADERS
+		uninstall-esdPROGRAMS uninstall-binSCRIPTS \
+		uninstall-esdconfDATA uninstall-m4dataDATA \
+		uninstall-pkgconfigDATA uninstall-includeHEADERS
 uninstall: uninstall-recursive
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 		$(HEADERS) config.h
@@ -744,15 +796,14 @@ install-strip:
 installdirs: installdirs-recursive
 installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(bindir) $(DESTDIR)$(esdconfdir) \
-		$(DESTDIR)$(m4datadir) $(DESTDIR)$(pkgconfigdir) \
-		$(DESTDIR)$(includedir)
+		$(DESTDIR)$(esddir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(esdconfdir) $(DESTDIR)$(m4datadir) \
+		$(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
@@ -761,20 +812,21 @@ distclean-generic:
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
 		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-binPROGRAMS mostlyclean-tags \
-		mostlyclean-generic
+		mostlyclean-binPROGRAMS mostlyclean-esdPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-tags clean-generic \
-		mostlyclean-am
+		clean-binPROGRAMS clean-esdPROGRAMS clean-tags \
+		clean-generic mostlyclean-am
 
 clean: clean-recursive
 
 distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS distclean-tags \
-		distclean-generic clean-am
+		distclean-libtool distclean-binPROGRAMS \
+		distclean-esdPROGRAMS distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-recursive
@@ -783,7 +835,8 @@ distclean: distclean-recursive
 maintainer-clean-am:  maintainer-clean-hdr \
 		maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS maintainer-clean-tags \
+		maintainer-clean-binPROGRAMS \
+		maintainer-clean-esdPROGRAMS maintainer-clean-tags \
 		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
@@ -799,7 +852,9 @@ distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
 clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-binSCRIPTS install-binSCRIPTS \
+install-binPROGRAMS mostlyclean-esdPROGRAMS distclean-esdPROGRAMS \
+clean-esdPROGRAMS maintainer-clean-esdPROGRAMS uninstall-esdPROGRAMS \
+install-esdPROGRAMS uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-esdconfDATA install-esdconfDATA uninstall-m4dataDATA \
 install-m4dataDATA uninstall-pkgconfigDATA install-pkgconfigDATA \
 uninstall-includeHEADERS install-includeHEADERS install-data-recursive \
@@ -828,11 +883,10 @@ doc:
 	done
 
 dist-hook: doc esound.spec
-	cp $(SPEC_FILE) $(distdir)
 	test -d $(distdir)/docs || mkdir $(distdir)/docs 
 	cp $(srcdir)/docs/esound.sgml $(distdir)/docs
-	cp -r $(srcdir)/docs/esound $(distdir)/docs/html
-	cp $(srcdir)/docs/esound.ps $(distdir)/docs
+	-cp -r $(srcdir)/docs/esound $(distdir)/docs/html
+	-cp $(srcdir)/docs/esound.ps $(distdir)/docs
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
