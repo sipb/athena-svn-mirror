@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.25 1997-05-15 20:20:22 ghudson Exp $
+# $Id: update_ws.sh,v 1.26 1997-07-04 00:54:34 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -128,14 +128,18 @@ if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
 	exit 1
 fi
 
-# Find out if the version in /srvd/.rvdinfo is newer than /etc/athena/version.
+# Find out if the version in /srvd/.rvdinfo is newer than
+# /etc/athena/version.  Distinguish between major, minor, and patch
+# releases so that we can desynchronize patch releases.
 packsnewer=`echo "$NEWVERS $VERSION" | awk '{
 	split($1, v1, ".");
 	split($2, v2, ".");
-	if (v1[1] + 0 > v2[1] + 0 || \
-	    (v1[1] + 0 == v2[1] + 0 && v1[2] + 0 > v2[2] + 0) || \
-	    (v1[1] == v2[1] && v1[2] == v2[2] && v1[3] + 0 > v2[3] + 0))
-		print "true"; }'`
+	if (v1[1] + 0 > v2[1] + 0)
+		print "major";
+	else if (v1[1] + 0 == v2[1] + 0 && v1[2] + 0 > v2[2] + 0)
+		print "minor";
+	else if (v1[1] == v2[1] && v1[2] == v2[2] && v1[3] + 0 > v2[3] + 0)
+		print "patch"; }'`
 
 # If the packs aren't any newer, print an appropriate message and exit.
 if [ -z "$packsnewer" ]; then
@@ -194,12 +198,16 @@ EOF
 	exit 1
 fi
 
-if [ "$method" = Auto ]; then
-	# The packs are newer and we want to take the update, but not
-	# necessarily right now.  Use desync to stagger the update
-	# over a four-hour period.  (Use the version from /srvd for
-	# now to make sure the -t option works, since that option was
-	# not introduced until 8.1.)
+if [ "$method" = Auto -a "$packsnewer" = patch ]; then
+	# There is a patch release available and we want to take the
+	# update, but not necessarily right now.  Use desync to
+	# stagger the update over a four-hour period.  (Use the
+	# version from /srvd for now to make sure the -t option works,
+	# since that option was not introduced until 8.1.)  Note
+	# that we only do desynchronization here for patch releases.
+	# Desynchronization for major or minor releases is handled in
+	# getcluster, since we don't want the workstation to run with
+	# a new, possibly incompatible version of the packs.
 
 	/srvd/etc/athena/desync -t /var/athena/update.desync 14400
 	if [ $? -ne 0 ]; then
