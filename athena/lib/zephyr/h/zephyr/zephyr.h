@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.16 1987-10-25 03:20:01 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.17 1987-11-01 17:49:00 rfrench Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -201,6 +201,7 @@ extern int ZMakeAuthentication();
 
 /* Class Instance is principal of user who is logging in or logging out */
 
+#define EXPOSE_NONE		"NONE"		/* Opcode: Not visible */
 #define EXPOSE_OPSTAFF		"OPSTAFF"	/* Opcode: Opstaff visible */
 #define EXPOSE_REALMVIS		"REALM_VISIBLE"	/* Opcode: Realm visible */
 #define EXPOSE_REALMANN		"REALM_ANNOUNCE"/* Opcode: Realm announced */
