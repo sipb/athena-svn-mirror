@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.7 1999-07-14 17:37:19 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.8 1999-09-22 22:25:06 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -460,7 +460,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
   if (vice_id == ANONYMOUSID)
     strncpy(client.name, user, MAXKTCNAMELEN - 1);
   else
-    sprintf(client.name, "AFS ID %d", vice_id);
+    sprintf(client.name, "AFS ID %ld", vice_id);
   free(user);
   strcpy(client.instance, "");
   strncpy(client.cell, crealm, MAXKTCREALMLEN - 1);

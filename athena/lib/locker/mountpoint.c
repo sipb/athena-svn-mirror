@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.6 1999-08-19 18:38:59 ghudson Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.7 1999-09-22 22:25:07 danw Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -351,7 +351,7 @@ cleanup:
  */
 int locker__build_mountpoint(locker_context context, locker_attachent *at)
 {
-  char *q, *p;
+  char *q;
   int status;
 
   status = get_dirlock(context, at, F_RDLCK);
@@ -361,7 +361,7 @@ int locker__build_mountpoint(locker_context context, locker_attachent *at)
   if (at->buildfrom)
     {
       /* Create any remaining directories. */
-      p = q = at->mountpoint + (strrchr(at->buildfrom, '/') - at->buildfrom);
+      q = at->mountpoint + (strrchr(at->buildfrom, '/') - at->buildfrom);
       while (!status)
 	{
 	  q = strchr(q + 1, '/');

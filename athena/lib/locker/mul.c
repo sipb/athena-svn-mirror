@@ -18,7 +18,7 @@
  * into attachtab.c, attach.c, and detach.c.)
  */
 
-static const char rcsid[] = "$Id: mul.c,v 1.2 1999-03-29 17:33:24 danw Exp $";
+static const char rcsid[] = "$Id: mul.c,v 1.3 1999-09-22 22:25:08 danw Exp $";
 
 #include <sys/stat.h>
 #include <ctype.h>
@@ -53,7 +53,7 @@ static int mul_parse(locker_context context, char *name, char *desc,
 		     char *mountpoint, locker_attachent **atp)
 {
   int status;
-  char *p, *q, *dup, *lasts = NULL;
+  char *p, *dup, *lasts = NULL;
   locker_attachent *at, *attmp;
 
   if (!name)
@@ -79,7 +79,7 @@ static int mul_parse(locker_context context, char *name, char *desc,
   if (!strncmp(desc, "MUL ", 4))
     {
       p = desc + 4;
-      while (isspace(*p))
+      while (isspace((unsigned char)*p))
 	p++;
     }
   else

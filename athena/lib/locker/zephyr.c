@@ -17,9 +17,10 @@
  * pertaining to lockers.
  */
 
-static const char rcsid[] = "$Id: zephyr.c,v 1.4 1999-05-22 17:57:55 danw Exp $";
+static const char rcsid[] = "$Id: zephyr.c,v 1.5 1999-09-22 22:25:08 danw Exp $";
 
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <com_err.h>
