@@ -68,7 +68,7 @@ extern char *getenv(const char *name);
 extern int validate_user(char *name, char *password);
 
 static Bool
-vms_passwd_valid_p(char *pw, Bool verbose_p)
+vms_passwd_valid_p(char *pw, saver_preferences *p)
 {
   return (validate_user (getenv("USER"), typed_passwd) == 1);
 }
@@ -1352,7 +1352,7 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
         {
           update_passwd_window (si, "Checking...", pw->ratio);
           XSync (si->dpy, False);
-          if (passwd_valid_p (typed_passwd, p->verbose_p))
+          if (passwd_valid_p (typed_passwd, p))
             pw->state = pw_ok;
           else
             pw->state = pw_fail;

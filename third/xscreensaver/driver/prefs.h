@@ -22,6 +22,8 @@ struct screenhack {
 
 typedef enum { RANDOM_HACKS, ONE_HACK, BLANK_ONLY, DONT_BLANK } saver_mode;
 
+typedef enum { INVALID, OLDER, ALWAYS, NEVER } renew_mode;
+
 typedef struct saver_preferences saver_preferences;
 
 
@@ -106,6 +108,8 @@ struct saver_preferences {
   char *prefs_command;		/* How to edit preferences. */
   char *help_url;		/* Where the help document resides. */
   char *load_url_command;	/* How one loads URLs. */
+  renew_mode renew;		/* When to renew Kerberos credentials. */
+  char *renew_command;		/* Command to run when renewing credentials. */
 };
 
 

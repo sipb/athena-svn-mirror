@@ -37,25 +37,29 @@ struct auth_methods {
   const char *name;
   Bool (*init) (saver_preferences *p);
   Bool (*priv_init) (int argc, char **argv, Bool verbose_p);
-  Bool (*valid_p) (const char *typed_passwd, Bool verbose_p);
+  Bool (*valid_p) (const char *typed_passwd, saver_preferences *p);
   Bool initted_p;
   Bool priv_initted_p;
 };
 
 
 extern Bool explicit_lock_init (saver_preferences *p);
-extern Bool explicit_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
+extern Bool explicit_passwd_valid_p (const char *typed_passwd,
+				     saver_preferences *p);
 #ifdef HAVE_KERBEROS
 extern Bool kerberos_lock_init (saver_preferences *p);
-extern Bool kerberos_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
+extern Bool kerberos_passwd_valid_p (const char *typed_passwd,
+				     saver_preferences *p);
 #endif
 #ifdef HAVE_PAM
 extern Bool pam_priv_init (int argc, char **argv, Bool verbose_p);
-extern Bool pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
+extern Bool pam_passwd_valid_p (const char *typed_passwd,
+				saver_preferences *p);
 #endif
 extern Bool pwent_lock_init (saver_preferences *p);
 extern Bool pwent_priv_init (int argc, char **argv, Bool verbose_p);
-extern Bool pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
+extern Bool pwent_passwd_valid_p (const char *typed_passwd,
+				  saver_preferences *p);
 
 
 /* The authorization methods to try, in order.
@@ -128,13 +132,13 @@ lock_init (saver_preferences *p)
 
 
 Bool 
-passwd_valid_p (const char *typed_passwd, Bool verbose_p)
+passwd_valid_p (const char *typed_passwd, saver_preferences *p)
 {
   int i, j;
   for (i = 0; i < countof(methods); i++)
     {
       int ok_p = (methods[i].initted_p &&
-                  methods[i].valid_p (typed_passwd, verbose_p));
+                  methods[i].valid_p (typed_passwd, p));
 
       check_for_leaks (methods[i].name);
 
@@ -145,7 +149,7 @@ passwd_valid_p (const char *typed_passwd, Bool verbose_p)
              an earlier authentication method fails and a later one succeeds,
              something screwy is probably going on.)
            */
-          if (verbose_p && i > 0)
+          if (p->verbose_p && i > 0)
             {
               for (j = 0; j < i; j++)
                 if (methods[j].initted_p)

@@ -379,6 +379,32 @@ set this number by hand: let
 .BR xscreensaver\-demo (1)
 do it for you!
 .TP 8
+.B renew\fP (class \fBRenew\fP)
+Controls whether xscreensaver renews Kerberos credentials when the
+Kerberos password is used to unlock the screen.  Legal values are:
+.RS 8
+.TP 8
+.B invalid
+Only renew credentials when the existing credentials have expired, or
+have been destroyed.  This is the default.
+.TP 8
+.B older
+Renew credentials when the existing credentials will expire before the
+new credentials, or are not valid.
+.TP 8
+.B always
+Always renew credentials, regardless of whether the existing credentials
+are still valid.
+.TP 8
+.B never
+Never renew credentials, even if the existing credentials are no longer
+valid.
+
+.RE
+.TP 8
+.B renewCommand\fP (class \fBRenewCommand\fP)
+Specifies a shell command to run after renewing Kerberos credentials.
+.TP 8
 .B programs\fP (class \fBPrograms\fP)
 The graphics hacks which \fIxscreensaver\fP runs when the user is idle.
 The value of this resource is a multi-line string, one \fIsh\fP-syntax

@@ -44,6 +44,8 @@
 "*manualCommand: yelp 'man:%s' || gnome-help-browser 'man:%s'",
 "*dateFormat:		%d-%b-%y (%a); %I:%M %p",
 "*installColormap:	True",
+"*renew:	invalid",
+"*renewCommand:	fsid -a > /dev/null && zctl load /dev/null > /dev/null",
 "*programs:								      \
 -		 \"Qix (solid)\" 	qix -root -solid -segments 100		    \\n\
 -	   \"Qix (transparent)\" 	qix -root -count 4 -solid -transparent	    \\n\

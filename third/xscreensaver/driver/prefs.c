@@ -285,6 +285,8 @@ static const char * const prefs[] = {
   "overlayTextForeground",	/* not saved -- X resources only */
   "bourneShell",		/* not saved -- X resources only */
   "passwd",
+  "renew",
+  "renewCommand",
   0
 };
 
@@ -824,6 +826,12 @@ write_init_file (saver_preferences *p, const char *version_string,
       CHECK("overlayTextForeground") continue;  /* don't save */
       CHECK("bourneShell")	continue;
       CHECK("passwd")		type = pref_str,  s = p->passwd;
+      CHECK("renew")		type = pref_str,
+                                s = (p->renew == NEVER ? "never" :
+                                     p->renew == ALWAYS ? "always" :
+                                     p->renew == OLDER ? "older" :
+                                     "invalid");
+      CHECK("renewCommand")	type = pref_str,  s = p->renew_command;
       else			abort();
 # undef CHECK
 
@@ -1091,6 +1099,16 @@ load_init_file (saver_preferences *p)
     else                                    p->mode = RANDOM_HACKS;
     if (s) free (s);
   }
+
+  {
+    char *s = get_string_resource ("renew", "Renew");
+    if      (s && !strcasecmp (s, "never"))  p->renew = NEVER;
+    else if (s && !strcasecmp (s, "always")) p->renew = ALWAYS;
+    else if (s && !strcasecmp (s, "older"))  p->renew = OLDER;
+    else                                     p->renew = INVALID;
+    if (s) free (s);
+  }
+  p->renew_command = get_string_resource ("renewCommand", "RenewCommand");
 
   if (system_default_screenhack_count)  /* note: first_time is also true */
     {

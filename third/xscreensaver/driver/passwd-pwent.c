@@ -255,7 +255,7 @@ passwds_match_p (const char *cleartext, const char *ciphertext)
    belongs to the logged in user (real uid, not effective) or not.
  */
 Bool
-pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
+pwent_passwd_valid_p (const char *typed_passwd, saver_preferences *p)
 {
   if (encrypted_user_passwd &&
       passwds_match_p (typed_passwd, encrypted_user_passwd))
@@ -283,7 +283,7 @@ explicit_lock_init (saver_preferences *p)
 }
 
 Bool
-explicit_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
+explicit_passwd_valid_p (const char *typed_passwd, saver_preferences *p)
 {
   if (explicit_passwd && *explicit_passwd &&
       passwds_match_p (typed_passwd, explicit_passwd))

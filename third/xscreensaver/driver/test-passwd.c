@@ -216,7 +216,7 @@ main (int argc, char **argv)
           if (pass[strlen(pass)-1] == '\n')
             pass[strlen(pass)-1] = 0;
 
-          if (passwd_valid_p (pass, True))
+          if (passwd_valid_p (pass, p))
             printf ("%s: Ok!\n", progname);
           else
             printf ("%s: Wrong!\n", progname);

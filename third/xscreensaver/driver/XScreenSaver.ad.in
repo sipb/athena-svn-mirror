@@ -104,6 +104,8 @@
 !
 *installColormap:	True
 
+*renew:			invalid
+*renewCommand:		fsid -a > /dev/null && zctl load /dev/null > /dev/null
 
 ! Any program which can draw on the root window will work as a screensaver.
 ! The following resource enumerates them.
