@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Id: bdump.c,v 1.38 1991-03-28 17:04:51 raeburn Exp $
+ *	$Id: bdump.c,v 1.39 1991-05-13 13:11:38 raeburn Exp $
  *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -547,7 +547,7 @@ bdump_get(ZNotice_t *notice, int auth, sockaddr_in *who, ZServerDesc_t *server)
 {
 #if 1
 	if (zdebug)
-		syslog(LOG_DEBUG, "bdump_get: bdump v%d avail %s",
+		syslog(LOG_DEBUG, "bdump_get: bdump v%s avail %s",
 		       notice->z_class_inst, inet_ntoa(who->sin_addr));
 #endif
 
