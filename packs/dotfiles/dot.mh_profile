@@ -1,6 +1,0 @@
-Path: Mail
-Editor: /usr/athena/emacs
-Msg-Protect: 600
-Folder-Protect: 700
-Prompter-next: emacs
-rmmproc: /bin/athena/delete

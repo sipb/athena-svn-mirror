@@ -1,3 +1,0 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/bsd.cf,v 1.2 1990-11-15 09:03:04 lwvanels Exp $ */
-#define HaveGcc 1
-#define HasSaberC 1
