@@ -1,4 +1,4 @@
-# $Id: packages,v 1.181 2002-10-29 15:30:15 ghudson Exp $
+# $Id: packages,v 1.182 2002-11-06 06:48:35 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -236,4 +236,3 @@ packs/install			late package base
 packs/maint			late package ws
 packs/update			late except linux
 packs/build/config		late package imakecf
-packs/build/finish		late except linux
