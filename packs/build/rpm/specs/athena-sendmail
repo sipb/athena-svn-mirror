@@ -14,6 +14,7 @@ The Mail Transfer Agent for Athena.
 rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+rm -f $RPM_BUILD_ROOT/etc/sendmail.st
 
 # Extra files
 cp aliases $RPM_BUILD_ROOT/etc/aliases
@@ -46,8 +47,7 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/75sendmail
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/aliases$|%config \0|" \
-      -e "s|^/etc/sendmail.cf$|%config \0|" \
-      -e "\,^/etc/sendmail.st$,d" |
+      -e "s|^/etc/sendmail.cf$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /var/spool/mqueue" >> rpm.filelist
 
