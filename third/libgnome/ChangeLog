@@ -1,3 +1,704 @@
+2004-09-12  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.8.0
+
+	* NEWS: Update
+
+=================== 2.7.92 ====================
+
+2004-08-30  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.92
+
+2004-08-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-i18n.c: Fix a warning caused by a missin
+	declaration of bonobo_activation_i18n_get_language_list().
+	* libgnome/gnome-program.c: (gnome_program_init_paramv):
+	s/NULL/0 in parameter list. Closes bug #150986.
+
+=================== 2.7.91 ====================
+	
+2004-08-16  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.91
+
+2004-08-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-config.c: (free_sections),
+	(escape_string_and_dup), (load), (access_config),
+	(gnome_config_init_iterator_), (gnome_config_iterator_next):
+	* libgnome/gnome-util.c: (gnome_util_user_shell): Fix 0 vs NULL
+	usage. Closes bug #149828.
+
+2004-08-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-11  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	* configure.in: Added gobject-2.0 to the PKG_CHECK_MODULES for LIBGNOME
+	so all libgnome's symbol references are resolvable (i.e. it builds 
+	with LDFLAGS=-Wl,-z,defs).
+
+2004-08-11  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnome/gnome-i18n.c (gnome_i18n_get_language_list):
+	Upe bonobo_activation_i18n_get_language_list() to avoid
+	duplication of local alias tables.
+
+==================== 2.7.2 ====================
+
+Mon Jul 19 23:18:19 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: Release 2.7.2
+
+2004-07-04  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* libgnome/gnome-program.h: Add prototype for
+	gnome_program_init_paramv.
+
+	* libgnome/gnome-program.c (gnome_program_init_common): Rename
+	from gnome_program_initv; Add parameters 'nparams', 'params';
+	Allow instantiation of the GnomeProgram using either
+	g_object_new_valist or g_object_newv, depending on the supplied
+	arguments.
+	(gnome_program_initv): Delegates to gnome_program_init_common().
+	(gnome_program_init_paramv): New function, GParameter variant of
+	gnome_program_init. Delegates to gnome_program_init_common().
+
+2004-06-08  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Added "ne" Nepali in ALL_LINGUAS
+
+==================== 2.7.1 ====================
+
+2004-05-31  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.1
+
+	* NEWS: Update
+
+2004-05-30  Anders Carlsson  <andersca@gnome.org>
+
+	* schemas/desktop_gnome_lockdown.schemas.in: Fix grammar,
+	#137200, Dafydd Harries.
+
+2004-05-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-program.c: (gnome_program_instance_init):
+	Commit a fix for broken sound events. Investigation and fix
+	by Colin Walters <walters at redhat com>. Should fix
+	bug #142502.
+
+2004-05-13  James Henstridge  <james@daa.com.au>
+
+	* Makefile.am (ACLOCAL_AMFLAGS): set so that aclocal gets called
+	with contents of $ACLOCAL_FLAGS environment variable.
+
+	* acconfig.h: remove file. All used AC_DEFINE()'s have help
+	strings.
+
+2004-05-11  James Henstridge  <james@daa.com.au>
+
+	* configure.in: use AC_HELP_STRING() to format the help string for
+	--enable-rebuild.
+
+2004-05-07  James Henstridge  <james@daa.com.au>
+
+	* configure.in: remove some env variables that weren't being used.
+	Use AM_GLIB_DEFINE_LOCALEDIR() to define the localedir, like gtk+
+	does.
+
+	* libgnome/Makefile.am: fix built sources to work correctly with
+	read only source directory.
+
+2004-05-05  James Henstridge  <james@daa.com.au>
+
+	* Makefile.am: get rid of intltool files on "make distclean".
+
+	* gnome-data/Makefile.am (CLEANFILES): get rid of .soundlist files
+	on "make clean".
+
+	* schemas/Makefile.am (CLEANFILES): get rid of .schemas files in
+	"make clean".
+
+	* monikers/Makefile.am (CLEANFILES): don't use += before =.
+
+	* doc/reference/Makefile.am: update to use gtk-doc.make
+	boilerplate.
+
+	* Makefile.am: require Automake >= 1.7, pass --enable-gtk-doc
+	during "make distcheck".
+
+	* configure.in: update to use more modern autoconf features.  Use
+	GTK_DOC_CHECK macro to find gtk-doc.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require Automake >= 1.7
+
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-init.c: (safe_mkdir), (libgnome_userdir_setup):
+	Add a new mkdir function that's safe against trailing slashes and use it.
+	(#106117, Julio Merino)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-help.c (locate_help_file): First try locating
+	the file without appending an extension (#136242, Toshio Kuratomi)
+
+	* libgnome/gnome-score.c (gnome_score_get_notable): Set
+	scoretimes to NULL, (#117305, Steve Chaplin).
+
+	* gnome-data/Makefile.am:
+	* libgnome/gnome-program.c: (gnome_program_preinit):
+	* libgnome/gnome-util.c: (gnome_unsetenv):
+	* schemas/Makefile.am:
+	A couple of portability fixes (#131394, The Written Word)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-program.c: (gnome_program_get_property):
+	Fix memory leak. (#135773, Christian Persche)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in:
+	* doc/reference/Makefile.am:
+	* doc/reference/libgnome-docs.sgml:
+	* doc/reference/version.xml.in:
+	Put version number in reference docs.
+	(#125759, Steve Chaplin)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-sound.c: Fix crash when reading invalid
+	audio files. (#124519, Chris Lahey)
+
+=================== 2.6.1.1 ===================
+
+2004-04-20  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Fix soname and release 2.6.1.1
+
+==================== 2.6.1 ====================
+
+2004-04-19  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.1 "Triclops"
+
+	* NEWS: Update
+
+2004-04-13  Colin Walters  <walters@redhat.com>
+
+	* libgnome/gnome-program.c: Remove G_PARAM_CONSTRUCT_ONLY from
+	sound properties, since they are set slightly after object
+	initialization.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-i18n.h: Fix comment after #endif to
+	denote the right file. Patch from Gustavo R. Montesino 
+	<ikki_gerrard at yahoo.com>. Closes bug #133788.
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+==================== 2.6.0 ====================
+
+2004-03-22  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.0 "Zoomer"
+
+	* Makefile.am (EXTRA_DIST): Add NEWS
+
+	* NEWS: Update 
+
+Wed Mar 17 12:34:30 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* schemas/desktop_gnome_interface.schemas.in: Add
+	file_chooser_backend schema.
+
+2004-03-16  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.92.1
+
+	* libgnome/gnome-init.c: (libgnome_userdir_setup),
+	(libgnome_module_info_get):
+	Put back the bind_textdomain_codeset, and use g_printerr
+	instead of fprintf on stderr. This partially fixes #106549.
+	
+2004-03-15  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.92
+
+2004-03-09  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.91
+
+2004-03-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in, libgnome/Makefile.am,
+	libgnome/libgnome-2.0-uninstalled.pc.in: Add
+	uninstalled pc file.
+
+2004-02-25  Danilo ≈†egan  <dsegan@gmx.net>
+
+	* configure.in: Added sr@ije to ALL_LINGUAS.
+
+2004-02-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.90
+
+2004-02-20  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* schemas/desktop_gnome_lockdown.schemas.in: Fix typo.
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* schemas/desktop_gnome_lockdown.schemas.in:
+	Add lockdown schemas.
+
+2004-02-03  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.4
+
+	* schemas/Makefile.am (install-data-local): Revert fix 
+	since it broke distcheck
+
+2004-01-23  Jody Goldberg <jody@gnome.org>
+
+	* libgnome/gnome-program.c : Add missing #include <locale.h> so that
+	  things compile.
+
+2004-01-21  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-program.c: (gnome_program_preinit):
+	Translate strings instead of just marking them.
+	(Completely fixes #106549, patch by Christian Neumair).
+	
+2004-01-21  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnome/gnome-init.c: (libgnome_module_info_get):
+	* libgnome/gnome-program.c: (gnome_program_parse_args):
+	Fix translation of program arguments. 
+	(#106549, patch by Hidetoshi Tajima).
+	
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* schemas/Makefile.am (install-data-local): builddir != srcdir fix.
+
+2004-01-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-config.h: Merge fix for bug #129744.
+
+2004-01-14  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.3
+
+2003-12-28  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.2
+
+2003-12-08  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.1
+
+2003-12-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* schemas/Makefile.am,
+	  schemas/desktop_gnome_url_handlers.schemas.in:
+	Remove the url_hanlders schemas. They've been moved
+	to gnome-vfs.
+
+2003-11-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.0
+
+2003-10-27   Mark Finlay <sisobATtuxfamilyDOTorg>
+
+	* schemas/desktop_gnome_background.schemas.in:
+	Change default background color.
+
+2003-09-23  Hidetoshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* libgnome/gnome-init.c: make --help work with popt-1.7.
+	Fix bug 123052.
+
+2003-09-01  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.4.0
+
+	* schemas/Makefile.am (schema_in_files): Ship
+	.schemas in tarball since that's what everyone else is doing.
+
+2003-09-01  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2003-08-26  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* schemas/Makefile.am:
+	Ship .schemas.in in tarball, not .schemas.
+
+2003-08-25  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.3.7
+
+2003-08-25  Alexander Larsson  <alexl@redhat.com>
+
+	* schemas/desktop_gnome_url_handlers.schemas.in:
+	Add http url handlers.
+
+2003-08-17  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+        * configure.in: Added Thai (th) to ALL_LINGUAS.
+
+2003-08-11  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.6
+
+2003-07-23  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* libgnome/gnome-program.c (gnome_program_initv): Don't create new
+	pointer arrays for program_module_list and program_modules if such
+	arrays already exist, which may happen if
+	gnome_program_module_register() has been called directly by the
+	programmer.
+
+2003-07-11  Dennis Cranston <dennis_cranston at yahoo com>
+
+	Fixes for ui-review bug number 99533.
+	
+	* gnome-data/gtk-events-2.soundlist.in:  
+	  s/Action button click/Click on command button,
+	  s/Check box toggled/Select check box,
+	  s/Menu item activation/Choose menu item.
+	
+	* gnome-data/gnome-2.soundlist.in:
+	  s/GNOME system events/System events,
+	  s/Error Messages/Error message,
+	  s/Informational Messages/Informational message,
+	  s/Login/Log in,
+	  s/Logout/Log out,
+	  s/Miscellaneous Messages/Miscellaneous message,
+	  s/Question Dialogs/Question dialog,
+	  s/Warning Messages/Warning message.
+
+2003-07-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-program.c: (gnome_program_postinit):
+	* libgnome/gnome-score.c: (gnome_score_child): Merge
+	fixes for bug #116794 + one more :)
+
+2003-07-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* schemas/desktop_gnome_interface.schemas.in:
+	Add default value for monospace font name
+	(Patch by Owen Taylor).
+	
+2003-07-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in:
+	Remove libxml and libxslt deps.
+	
+2003-07-08  Anders Carlsson  <andersca@codefactory.se>
+
+	* Makefile.am:
+	* configure.in:
+	* help-converters/Makefile.am:
+	* help-converters/README:
+	* help-converters/docbook/.cvsignore:
+	* help-converters/docbook/AUTHORS:
+	* help-converters/docbook/Makefile.am:
+	* help-converters/docbook/README:
+	* help-converters/docbook/gnome-customization/.cvsignore:
+	* help-converters/docbook/gnome-customization/Makefile.am:
+	* help-converters/docbook/gnome-customization/gnome-custom.xsl:
+	* help-converters/docbook/gnome-customization/gnome-customization.x
+	sl:
+	* help-converters/docbook/gnome-customization/l10n.xml:
+	* help-converters/docbook/gnome-db2html3.c:
+	* help-converters/gnome-vfs-module/.cvsignore:
+	* help-converters/gnome-vfs-module/Makefile.am:
+	* help-converters/gnome-vfs-module/help-method.c:
+	* help-converters/gnome-vfs-module/help-method.h:
+	* help-converters/gnome-vfs-module/help-methods.conf.in:
+	* help-converters/info/.cvsignore:
+	* help-converters/info/Makefile.am:
+	* help-converters/info/data.h:
+	* help-converters/info/html.c:
+	* help-converters/info/html.h:
+	* help-converters/info/main.c:
+	* help-converters/info/parse.c:
+	* help-converters/info/parse.h:
+	* help-converters/info/utils.c:
+	* help-converters/info/utils.h:
+	* help-converters/info/version.h:
+	* help-converters/man/.cvsignore:
+	* help-converters/man/Makefile.am:
+	* help-converters/man/README:
+	* help-converters/man/gnome-man2html.c:
+	* help-converters/man/man2html.8:
+	Remove help converters (#98761)
+	
+2003-07-04  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.3.1
+
+2003-07-02  Anders Carlsson  <andersca@codefactory.se>
+
+	* doc/reference/.cvsignore:
+	* doc/reference/Makefile.am:
+	* doc/reference/libgnome-docs.sgml:
+	Generate xml reference docs (#111796, Matthias Clasen)
+	
+2003-06-30  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnome/gnome-gconf.h: Add G_BEGIN_DECLS and G_END_DECLS.
+
+2003-06-27  Richard Hult  <richard@imendio.com>
+
+	* schemas/desktop_gnome_typing_break.schemas.in: Remove the unused
+	schemas so we don't get stuck with them after a release. Also use
+	the correct name for the postpone key.
+
+Thu Jun 26 07:35:41 2003  Jonathan Blandford  <jrb@gnome.org>
+
+	* schemas/desktop_gnome_typing_break.schemas.in: new schemas file
+	for the typing-break-daemon.
+
+2003-06-24  Anders Carlsson  <andersca@codefactory.se>
+
+	* schemas/desktop_gnome_peripherals_mouse.schemas.in: Fix typo.
+	(#100283, Christian Rose)	
+	(#104140, Christian Rose)
+
+	* schemas/desktop_gnome_interface.schemas.in: Fix typo.
+	(#100280, Christian Rose)
+
+	* schemas/desktop_gnome_accessibility_startup.schemas.in: 
+	Use "Applications", not "Apps". (#115570, Christian Rose)
+
+	* libgnome/gnome-util.c: (gnome_util_user_shell):
+	Check that the shells exist and that they are executable.
+	(#91925, Giovanni Pardini).
+	
+2003-06-24  Anders Carlsson  <andersca@codefactory.se>
+
+	* help-converters/info/main.c: (main):
+	Use g_strdup_printf instead of sprintf. 
+	(#109889, Christian Marillat).
+	
+2003-06-24  Anders Carlsson  <andersca@codefactory.se>
+
+	* help-converters/man/gnome-man2html.c: Use glib versions of
+	string functions. (Fixes #81355, Morten Welinder.)
+
+	* schemas/Makefile.am:
+	Honor for --disable-schemas-install (#106119, Julio Merino.)
+	
+2003-06-24  Anders Carlsson  <andersca@codefactory.se>
+
+	* schemas/desktop_gnome_interface.schemas.in:
+	* schemas/desktop_gnome_peripherals_keyboard.schemas.in:
+	Put literal values inside quotes. (#100278, Christian Rose)
+	
+2003-06-23  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnome/.cvsignore:
+	* libgnome/Makefile.am:
+	* libgnome/gnome-open.c: (main):
+	Add gnome-open.
+	
+Tue Jun 10 12:51:27 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* schemas/desktop_gnome_accessibility_startup.schemas.in: Patch
+	from Bill Haneman <bill.haneman@sun.com> to add at_start support.
+
+2003-06-10  Jody Goldberg <jody@gnome.org>
+
+	* schemas/desktop_gnome_url_handlers.schemas.in : we still need
+	  ghelp, info, and man to keep the help system working.
+
+2003-05-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-program.c: Merge fix for
+	bug #113660.
+
+2003-05-16  Telsa Gwynne <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added cy to ALL_LINGUAS
+
+2003-05-12  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* libgnome/gnome-init.c (libgnome_module_info_get): 
+	call bindtextdomain and bind_textdomain_codeset() earlier
+	than the current, fixing bug #99224.
+	
+2003-05-09  Sam√Öel J√Ön Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" into ALL_LINGUAS
+
+Thu May  8 18:31:02 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* help-converters/info/main.c (file_exists): make it compile on
+	C89 compilers.
+
+2003-05-08  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL which is necessary for
+	building shared library on win32 platform.
+
+	* libgnome/Makefile.am (libgnome_2_la_LDFLAGS): add -no-undefined
+	which is necessary for building shared library on some platforms
+	(e.g. Win32, BeOS).
+
+	* libgnome/libgnome-2.0.pc.in (Libs): add -lpopt.
+
+	* help-converters/gnome-vfs-module/Makefile.am:
+	(module_flags): add -module and -no-undefined.
+	(libvfs_help_la_LIBADD): add $(top_builddir)/libgnome/libgnome-2.la.
+
+	* help-converters/gnome-vfs-module/help-methods.conf.in: remove "lib"
+	prefix and ".so" suffix from module names. Because these are added
+	automatically by g_module_build_path(), and they breaks on Cygwin.
+	Cygwin uses "cyg" and ".dll" respectively.
+
+	* monikers/GNOME_Moniker_std.server.in.in: remove ".so" from module
+	name.
+
+	* monikers/Makefile.am (libmoniker_extra_2_la_LDFLAGS): add
+	-no-undefined.
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
+
+2003-05-04  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" in ALL_LINGUAS
+
+2003-05-01  Kjartan Maraas  <set EMAIL_ADDRESS environment variable>
+
+	* libgnome/gnome-i18n.c: (unalias_lang): Locate locale.alias
+	in LIBGNOME_DATADIR also. Patch from Julio Merino
+	<jmmv@hispabsd.org>. Fixes bug #106180.
+
+2003-05-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* schemas/desktop_gnome_interface.schemas.in: Fix typo.
+	Fixes bug #104422.
+
+2003-05-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* Same as below: Fix crashes when feeding dirs to the
+	help converters. Merged from branch.
+	* help-converters/man/Makefile.am:
+	* help-converters/man/gnome-man2html.c: (output_meta_element),
+	(scan_request): Fix for bug #79071. Localised man pages work.
+
+2003-05-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* help-converters/man/gnome-man2html.c: (main): Fix for
+	bug #73597. Patch from Roderich Schupp.
+	* libgnome/gnome-config.c: (check_path): Use NULL in g_string_new()
+	* libgnome/gnome-exec.c: (gnome_execute_shell_fds): Fix a typo in
+	a comment.
+
+2003-04-25  Alexander Larsson  <alexl@redhat.com>
+
+        Patch by Frank Worsley <fworsley@shaw.ca>
+
+	* libgnome/gnome-url.c: (gnome_url_show_with_env):
+	now just calls gnome_vfs_show_url and wrap error codes in GErrors
+	
+	* libgnome/gnome-url.h:
+	updated for new functions
+	
+	* schemas/desktop_gnome_url_handlers.schemas.in:
+	cleaned up the url handler schemas. removed unneeded schemas and moved
+	others into gnome-vfs
+
+2003-04-14 Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added ga (irish) to ALL_LINGUAS
+       
+2003-04-12  Arvind Samptur <arvind.samptur@wipro.com>
+	* libgnome/gnome-exec.c: (gnome_execute_async_with_env_fds):
+	waitpid() could fail due to a interrupted system call, loop till you
+	succeed. #110100
+
+	Reviewed by: Mark McLoughlin <mark@skynet.ie>
+
+2003-04-11  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
+
+	*  libgnome/gnome-url.c (gnome_url_show_with_env): 
+	Make sure url substitution takes place for customized web
+	browser command. Fixes bug#108909.
+	
+	Reviewed by: Mark McLoughlin <mark@skynet.ie>
+	
+2003-03-27  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Releae 2.3.0
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "ml" in ALL_LINGUAS
+
+2003-03-16  Andras Timar  <timar@gnome.hu>
+
+	* help-converters/docbook/gnome-customization/l10n.xml:
+        Added Hungarian translation.
+
+2003-02-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Require intltool version that supports
+	merging translations of .schemas files
+	* doc/reference/Makefile.am: Removed extra '\'
+	* libgnome/gnome-help.c (gnome_help_display_desktop_with_env):
+	Plug a leak.
+	
+2003-02-11  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* help-converters/gnome-vfs-module/Makefile.am:
+	Fix tinderbox bustage introduced by my previous commit.
+
+2003-02-10  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* help-converters/gnome-vfs-module/Makefile.am:
+	* help-converters/gnome-vfs-module/help-methods.conf:
+	* help-converters/gnome-vfs-module/help-methods.conf.in:
+	be sure to generate help-methods.conf based on libexecdir value 
+	(bug #91169)
+
+2003-02-10  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+Thu Jan 30 22:28:43 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* schemas/desktop_gnome_interface.schemas.in: change default GTK+ theme.
+
 2003-01-23  Alexander Larsson  <alexl@redhat.com>
 
 	* libgnome/Makefile.am (libgnome_2_la_LDFLAGS): 
@@ -181,7 +882,7 @@ Thu Sep 26 17:25:26 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 2002-08-15  Mikael Hallendal  <micke@codefactory.se>
 
 	* help-converters/man/gnome-man2html.c:
-	(scan_table): applied patch from Kjaartan fixing #77895
+	(scan_table): applied patch from Kjartan fixing #77895
 
 2002-08-15  Padraig O'Briain  <padraig.obriain@sun.com>
 
@@ -261,7 +962,7 @@ Thu Sep 26 17:25:26 2002  HideToshi Tajima  <hidetoshi.tajima@sun.com>
 
 	* configure.in: Update required versions and update version to 2.0.0
 
-2002-06-05  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2002-06-05  Carlos Perell√Ö Mar√Ön <carlos@gnome-db.org>
 
 	* schemas/*.schemas: Renamed as *.schemas.in
 	* schemas/Makefile.am: Added the rule to use intltool for schemas
@@ -2224,7 +2925,7 @@ Thu Jun 28 10:39:18 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* libgnome/libgnome/gnome-fileconvert.[ch]: remove.
 
-2001-07-02  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-07-02  Carlos Perell√Ö Mar√Ön <carlos@gnome-db.org>
 
 	* libgnome/gnome-ditem.c, libgnome-init.c: Now it compile with the
 	latest bonobo-conf
@@ -2244,7 +2945,7 @@ Sat Jun 30 15:54:25 2001  Jonathan Blandford  <jrb@redhat.com>
 
 	* configure.in: Added ta to the languages list.
 
-2001-06-19  HÈctor GarcÌa ¡lvarez <hector@scouts-es.org>
+2001-06-19  H√Öctor Garc√Öa √Ålvarez <hector@scouts-es.org>
 
 	* configure.in: Added "es" for Spanish to $ALL_LINGUAS
 	

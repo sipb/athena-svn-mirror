@@ -211,7 +211,7 @@ gnome_execute_async_with_env_fds (const char *dir, int argc,
 
   /* do this after the read's in case some OS's handle blocking on pipe writes
      differently */
-  waitpid(immediate_child_pid, &itmp, 0); /* eat zombies */
+   while ((waitpid(immediate_child_pid, &itmp, 0)== -1) && (errno == EINTR)); /* eat zombies */
 
   close(parent_comm_pipes[0]);
 
@@ -312,7 +312,7 @@ gnome_execute_shell_fds (const char *dir, const char *commandline,
 
   argv[0] = user_shell;
   argv[1] = "-c";
-  /* neccessary cast, to avoid warning, but safe */
+  /* necessary cast, to avoid warning, but safe */
   argv[2] = (char *)commandline;
   argv[3] = NULL;
 

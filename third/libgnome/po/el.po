@@ -1,8 +1,7 @@
+# translation of el.po to 
+# translation of el.po to Greek
 # gnome-libs Greek PO file
-# Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
-# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
-# Simos Xenitellis <simos@hellug.gr>, 1999, 2001, 2002.
-# Kostas Papadimas <pkst@gmx.net>, 2003
+# Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
 # Credits: Most of the work done by Spiros.
 #
 # simos: 31Jan2002, 383 messages, keeping logs of translation.
@@ -10,62 +9,72 @@
 # kostas: 04Nov2002, 77 messages, completed translation.
 # simos: 04Nov2002, 77 messages, full review.
 # kostas: 02Jan2003, 216 messages,updated translation for Gnome 2.1x
-#
+# kostas: 28Jan2003, 220 messages, updated translation
+# kostas: 10Aug2003, 224 messages, updated translation
+# kostas: 03Sep2003, 230 messages, updated translation
+# nikos: 04Sep2003, review translation
+# nikos: 16Mar2004, review translation
+# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
+# Simos Xenitellis <simos@hellug.gr>, 1999, 2001, 2002.
+# Kostas Papadimas <pkst@gmx.net>, 2003.
+# Nikos Charonitakis <frolix68@yahoo.gr>, 2003, 2004.
+# Kostas Papadimas <pkst@gnome.org>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnome 2.0.5\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2003-01-02 18:46+0200\n"
-"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
-"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"Project-Id-Version: el\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-09-04 17:47+0300\n"
+"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
+"Language-Team:  <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
-msgstr "Μηνύματα Σφαλμάτων"
+msgid "Error message"
+msgstr "Μήνυμα σφάλματος"
 
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "Γεγονότα συστήματος του GNOME"
+msgid "Informational message"
+msgstr "Mηνύματα πληροφόρησης"
 
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "Mηνύματα Πληροφόρησης"
+msgid "Log in"
+msgstr "Είσοδος"
 
 #: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
-msgstr "Έναρξη συνεδρίας"
+msgid "Log out"
+msgstr "Αποσύνδεση"
 
 #: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
-msgstr "Τερματισμός συνεδρίας"
+msgid "Miscellaneous message"
+msgstr "Διάφορα μηνύματα"
 
 #: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
-msgstr "Διάφορα Μηνύματα"
+msgid "Question dialog"
+msgstr "Διάλογος με ερωτήσεις"
 
 #: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
-msgstr "Διάλογοι με Ερωτήσεις"
+msgid "System events"
+msgstr "Γεγονότα συστήματος"
 
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
-msgstr "Μηνύματα Προειδοποιήσεων"
+msgid "Warning message"
+msgstr "Μήνυμα προειδοποιήσης"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "Ενέργεια πατήματος του ποντικιού"
+msgid "Choose menu item"
+msgstr "Επιλογή αντικειμένου μενού"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "Αλλαγή ένδειξης ενός \"checkbox\""
+msgid "Click on command button"
+msgstr "Κλικ σε κουμπί εντολής"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "Ενεργοποίηση γραμμής σε μενού"
+msgid "Select check box"
+msgstr "Επιλογή κουτιού check"
 
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
@@ -95,7 +104,7 @@ msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
 "installation."
 msgstr ""
-"Αδυναμία προβολής βοήθειας, το %s δεν είναι κατάλογος. Παρακαλώ ελέξτε την "
+"Αδυναμία εμφάνισης βοήθειας, το %s δεν είναι κατάλογος. Παρακαλώ ελέξτε την "
 "εγκατάσταση σας."
 
 #: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
@@ -117,11 +126,6 @@ msgstr "Αδυναμία εύρεσης doc_id %s στη διαδρομή της
 msgid "Help document %s/%s not found"
 msgstr "Το αρχείο βοήθειας %s/%s δε βρέθηκε"
 
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr ""
-"Πάρα πολλά επίπεδα ψευδονύμων για locale, μπορεί να προκαλείται από βρόγχο"
-
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
 msgid "Bonobo Support"
@@ -131,12 +135,12 @@ msgstr "Υποστήριξη Bonobo"
 msgid "Bonobo activation Support"
 msgstr "Υποστήριξη ενεργοποίησης Bonobo "
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
 msgstr "Αδυναμία δημιουργίας καταλόγου ρυθμίσεων ανά χρήστη gnome `%s': %s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
@@ -145,179 +149,179 @@ msgstr ""
 "Αδυναμία ορισμού λειτουργίας 0700 σε ιδιωτικό κατάλογο ρυθμίσεων ανά χρήστη "
 "gnome `%s': %s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
 msgstr "Αδυναμία δημιουργίας καταλόγου συντομεύσεων gnome `%s': %s\n"
 
 #
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
-msgstr "Απενεργοποίηση χρήσης εξυπηρέτη ήχου"
+msgstr "Απενεργοποίηση χρήσης εξυπηρετητή ήχου"
 
 #
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
-msgstr "Ενεργοποίηση χρήσης εξυπηρέτη ήχου"
+msgstr "Ενεργοποίηση χρήσης εξυπηρετητή ήχου"
 
 #
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
-msgstr "Σύστημα:θύρα όπου βρίσκεται ο εν χρήση εξυπηρέτης ήχου"
+msgstr "Σύστημα:θύρα όπου βρίσκεται ο εν χρήση εξυπηρετητής ήχου"
 
 #
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
-msgstr "ΣΎΣΤΗΜΑ:ΘΎΡΑ"
+msgstr "ΣΥΣΤΗΜΑ:ΘΥΡΑ"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
-msgstr "Ιδεατό Σύστημα Αρχείων GNOME"
+msgstr "Εικονικό Σύστημα Αρχείων GNOME"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "Βιβλιοθήκη GNOME"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "Πίνακας Popt"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "Ο πίνακας επιλογών του popt"
 
-#: libgnome/gnome-program.c:434
-msgid "Popt Flags"
-msgstr "Σημαίες popt"
-
 #: libgnome/gnome-program.c:435
+msgid "Popt Flags"
+msgstr "Σημαίες Popt"
+
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "Οι σημαίες που θα χρησιμοποιούνται στο popt"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "Πλαίσιο Popt"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
 msgstr "Ο δείκτης πλαισίου popt που χρησιμοποιεί το GnomeProgram"
 
-#: libgnome/gnome-program.c:452
+#: libgnome/gnome-program.c:453
 msgid "Human readable name"
 msgstr "Αναγνώσιμο όνομα"
 
 #
-#: libgnome/gnome-program.c:453
+#: libgnome/gnome-program.c:454
 msgid "Human readable name of this application"
 msgstr "Αναγνώσιμο όνομα εφαρμογής"
 
 #
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "Διαδρομή GNOME"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "Διαδρομή όπου θα γίνει αναζήτηση για εγκαταστημένα αρχεία"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "Ταυτότητα εφαρμογής"
 
 #
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "Αλφαριθμητικό ταυτότητας για χρήση για αυτήν την εφαρμογή"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "Έκδοση εφαρμογής"
 
 #
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
-msgstr "Έκδοση της εφαρμογής"
+msgstr "Έκδοση αυτής της εφαρμογής"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "Πρόθεμα GNOME"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "Πρόθεμα (prefix) στο οποίο εγκαταστάθηκε το GNOME"
 
-#: libgnome/gnome-program.c:498
+#: libgnome/gnome-program.c:499
 msgid "GNOME Libdir"
 msgstr "Κατάλογος βιβλιοθηκών GNOME"
 
-#: libgnome/gnome-program.c:499
+#: libgnome/gnome-program.c:500
 msgid "Library prefix where GNOME was installed"
 msgstr "Πρόθεμα βιβλιοθήκης (libdir) όπου εγκαταστάθηκε το GNOME"
 
 #
-#: libgnome/gnome-program.c:508
+#: libgnome/gnome-program.c:509
 msgid "GNOME Datadir"
 msgstr "Κατάλογος δεδομένων GNOME"
 
-#: libgnome/gnome-program.c:509
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "Πρόθεμα δεδομένων (datadir) όπου εγκαταστάθηκε το GNOME"
 
-#: libgnome/gnome-program.c:518
+#: libgnome/gnome-program.c:519
 msgid "GNOME Sysconfdir"
 msgstr "GNOME Sysconfdir"
 
-#: libgnome/gnome-program.c:519
+#: libgnome/gnome-program.c:520
 msgid "Configuration prefix where GNOME was installed"
 msgstr "Πρόθεμα ρυθμίσεων (sysconfigdir) όπου εγκαταστάθηκε το GNOME"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "Πρόθεμα εφαρμογών GNOME"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "Πρόθεμα όπου εγκαταστάθηκε αυτή η εφαρμογή"
 
-#: libgnome/gnome-program.c:538
+#: libgnome/gnome-program.c:539
 msgid "GNOME App Libdir"
 msgstr "Κατάλογος βιβλιοθηκών εφαρμογών GNOME"
 
-#: libgnome/gnome-program.c:539
+#: libgnome/gnome-program.c:540
 msgid "Library prefix where this application was installed"
 msgstr "Πρόθεμα βιβλιοθήκης όπου εγκαταστάθηκε αυτή η εφαρμογή"
 
 #
-#: libgnome/gnome-program.c:548
+#: libgnome/gnome-program.c:549
 msgid "GNOME App Datadir"
 msgstr "Κατάλογος δεδομένων εφαρμογών GNOME"
 
-#: libgnome/gnome-program.c:549
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "Πρόθεμα δεδομένων όπου εγκαταστάθηκε αυτή η εφαρμογή"
 
-#: libgnome/gnome-program.c:558
+#: libgnome/gnome-program.c:559
 msgid "GNOME App Sysconfdir"
 msgstr "Κατάλογος Sysconfdir εφαρμογών GNOME"
 
-#: libgnome/gnome-program.c:559
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr "Πρόθεμα ρυθμίσεων όπου εγκαταστάθηκε αυτή η εφαρμογή"
 
-#: libgnome/gnome-program.c:568
+#: libgnome/gnome-program.c:569
 msgid "Create Directories"
 msgstr "Δημιουργία Καταλόγων"
 
-#: libgnome/gnome-program.c:569
+#: libgnome/gnome-program.c:570
 msgid "Create standard GNOME directories on startup"
 msgstr "Δημιουργία τυποποιημένων καταλόγων GNOME κατά την εκκίνηση"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "Ενεργοποίηση Ήχου"
 
 #
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "Ενεργοποίηση ήχου κατά την εκκίνηση"
 
@@ -330,21 +334,63 @@ msgid "How to connect to esd"
 msgstr "Πώς να συνδεθείτε στο esd"
 
 #
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "Επιλογές βοήθειας"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "Επιλογές εφαρμογής"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "Δυναμικές μονάδες για φόρτωση"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
 msgstr "ΣΥΣΤΑΤΙΚΌ1,ΣΥΣΤΑΤΙΚΌ2,..."
+
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "Άγνωστο εσωτερικό σφάλμα κατά την προβολή αυτής της τοποθεσίας."
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "Η καθορισμένη τοποθεσία δεν είναι έγκυρη."
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr ""
+"Σφάλμα κατά την ανάλυση της εξ ορισμού εντολής ενέργειας που σχετίζεται με "
+"αυτή την τοποθεσία."
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr ""
+"Σφάλμα κατά την εκκίνηση της εξ ορισμού εντολής ενέργειας που σχετίζεται με "
+"αυτή την τοποθεσία."
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "Δεν υπάρχει  εξ ορισμού ενέργεια που σχετίζεται με αυτή την τοποθεσία."
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "Η εξ ορισμού ενέργεια δεν υποστηρίζει αυτό το πρωτόκολλο."
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "Άγνωστος κωδικός σφάλματος: %d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "Σφάλμα εμφάνισης  url: %s\n"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
@@ -376,13 +422,13 @@ msgstr "Ήχος μπιπ κατα το πάτημα modifier"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
 msgid "Disable if two keys are pressed at the same time."
-msgstr "Απενεργοποίηση αν δύο πλήκτρα πατηθούν την ίδια στιγμή"
+msgstr "Απενεργοποίηση αν δύο πλήκτρα πατηθούν την ίδια στιγμή."
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:3
 msgid ""
 "Do not accept a key as being pressed unless held for @delay milliseconds"
 msgstr ""
-"Να μην γίνεται αποδοχή ενός πλήκτρου αν δεν πατηθεί και κρατηθεί @delay "
+"Να μη γίνεται αποδοχή ενός πλήκτρου αν δεν πατηθεί και κρατηθεί @delay "
 "milliseconds"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:4
@@ -395,8 +441,8 @@ msgstr ""
 msgid ""
 "How many milliseconds to wait before mouse movement keys start to operate"
 msgstr ""
-"Χιλιοστά δευτερολέπτου αναμονής μέχρι την έναρξη της λειτουργίας των πλήκτρν "
-"κίνησης ποντικιού "
+"Χιλιοστά δευτερολέπτου αναμονής μέχρι την έναρξη της λειτουργίας των "
+"πλήκτρων κίνησης ποντικιού "
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:6
 msgid "How many pixels per second to move at the maximum speed"
@@ -426,18 +472,30 @@ msgstr "ελάχιστο χρονικό μεσοδιάστημα σε χιλιο
 msgid "pixels per seconds"
 msgstr "εικονοστοιχεία ανά δευτερόλεπτο"
 
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr ""
+"Μια λίστα εφαρμογών βοηθητικής τεχνολογίας που θα εκκινούνται μαζί με την "
+"εκκίνηση της επιφάνειας εργασίας του GNOME "
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "Εκκίνηση Εφαρμογών Βοηθητικής Τεχνολογίας"
+
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
-msgstr "Ο φυλλομετρητής χρειάζεται τερματικό"
+msgstr "Ο περιηγητής χρειάζεται τερματικό"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:2
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:1
 msgid "Browser understands remote"
-msgstr "Ο φυλλομετρητής κατανοεί αποκακρυσμένο"
+msgstr "Ο περιηγητής κατανοεί αποκακρυσμένο"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:3
 msgid "Default browser"
-msgstr "Εξ ορισμού Φυλλομετρητής "
+msgstr "Προεπιλεγμένος περιηγητής "
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:4
 msgid "Default browser for all URLs"
@@ -445,15 +503,15 @@ msgstr "Εξ ορισμού Φυλλομετρητής για όλα τα URLs"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:5
 msgid "Whether the default browser needs a terminal to run"
-msgstr "Αν ο εξ ορισμού φυλλομετρητής χρειάζεται τερματικό για να εκτελεσθεί"
+msgstr "Αν ο προεπιλεγμένος περιηγητής χρειάζεται τερματικό για να εκτελεσθεί"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:6
 msgid "Whether the default browser understands netscape remote"
-msgstr "Αν ο εξ ορισμού φυλλομετρητής κατανοεί netscape remote"
+msgstr "Αν ο προεπιλεγμένος περιηγητής κατανοεί netscape remote"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
 msgid "Default help viewer"
-msgstr "Εξ ορισμού πρόγραμμα προβολής βοήθειας"
+msgstr "Προεπιλεγμένο πρόγραμμα προβολής βοήθειας"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
 msgid "Help viewer needs terminal"
@@ -461,12 +519,12 @@ msgstr "Το πρόγραμμα προβολής βοήθειας χρειάζε
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:4
 msgid "Whether the default help viewer accepts URLs"
-msgstr "Αν το εξ ορισμού πρόγραμμα προβολής βοήθειας δέχεται  URLs"
+msgstr "Αν το προεπιλεγμένο πρόγραμμα προβολής βοήθειας δέχεται  URLs"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:5
 msgid "Whether the default help viewer needs a terminal to run"
 msgstr ""
-"Αν το εξ ορισμού πρόγραμμα προβολής βοήθειας χρειάζεται τερματικό για να "
+"Αν το προεπιλεγμένο πρόγραμμα προβολής βοήθειας χρειάζεται τερματικό για να "
 "εκτελεσθεί"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
@@ -474,11 +532,11 @@ msgid ""
 "Argument used to execute programs in the terminal defined by the 'exec' key."
 msgstr ""
 "Όρισμα που χρησιμοποείται για την εκτέλεση προγραμμάτων σε τερματικό που "
-"καθορίζονατι από το 'exec' key."
+"καθορίζονται από το 'exec' key."
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
 msgid "Exec Arguments"
-msgstr "Ορίσματα εκτέλεσης"
+msgstr "Ορίσματα Εκτέλεσης"
 
 #
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:3
@@ -494,7 +552,7 @@ msgstr ""
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:1
 msgid "A list with names of the first window manager workspaces."
 msgstr ""
-"Μια λίστα με ονόματα των χώρων εργασίας του πρώτου διαχειριστή παραθύρων"
+"Μια λίστα με ονόματα των χώρων εργασίας του πρώτου διαχειριστή παραθύρων."
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:2
 msgid "Fallback window manager"
@@ -503,7 +561,7 @@ msgstr "Διαχειριστής Παραθύρων Προσφυγής"
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:3
 msgid "Fallback window manager if user window manager can't be found"
 msgstr ""
-"Διαχειριστής παραθύρων προσφυγής αν ο διαχειριστής παραθύρων του χρήστη δεν "
+"Διαχειριστής παραθύρων προσφυγής αν ο διαχειριστής παραθύρων του χρήστη δε "
 "μπορεί να βρεθεί"
 
 #: schemas/desktop_gnome_applications_window_manager.schemas.in.h:4
@@ -529,7 +587,7 @@ msgstr "Διαχειριστής παραθύρων που θα εκτελείτ
 
 #: schemas/desktop_gnome_background.schemas.in.h:1
 msgid "Color Shading Type"
-msgstr "Τύπος σκίασης χρώματος"
+msgstr "Τύπος Σκίασης Χρώματος"
 
 #: schemas/desktop_gnome_background.schemas.in.h:2
 msgid ""
@@ -537,16 +595,16 @@ msgid ""
 "values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
 msgstr ""
 "Καθορίζει τον τρόπο με τον οποίο εμφανίζεται η εικόνα από το όνομα αρχείο "
-"της ταπετσαρίας. Οι πιθανές ριμές είναι  \"καμμία\", \"ταπετσαρία\", "
+"της ταπετσαρίας. Οι πιθανές τιμές είναι  \"καμμία\", \"ταπετσαρία\", "
 "\"κεντραρισμένη\", \"σε κλίμακα\", \"τεντωμένη\"."
 
 #: schemas/desktop_gnome_background.schemas.in.h:3
 msgid "Draw Desktop Background"
-msgstr "Σχεδίαση παρασκηνίου επιφάνειας εργασίας"
+msgstr "Σχεδίαση Παρασκηνίου Επιφάνειας εργασίας"
 
 #: schemas/desktop_gnome_background.schemas.in.h:4
 msgid "File to use for the background image"
-msgstr "Αρχείο που χρησιμοποιείται για την εικόνα παρασκηνίου"
+msgstr "Αρχείο που θα χρησιμοποιείται για την εικόνα παρασκηνίου"
 
 #: schemas/desktop_gnome_background.schemas.in.h:5
 msgid "Have GNOME draw the desktop background"
@@ -571,7 +629,7 @@ msgstr "Αδιαφάνεια με την οποία θα σχεδιάζεται 
 
 #: schemas/desktop_gnome_background.schemas.in.h:9
 msgid "Picture Filename"
-msgstr "Όνομα αρχείου εικόνας"
+msgstr "Όνομα Αρχείου Εικόνας"
 
 #: schemas/desktop_gnome_background.schemas.in.h:10
 msgid "Picture Opacity"
@@ -588,7 +646,7 @@ msgstr "Κύριο Χρώμα"
 #: schemas/desktop_gnome_background.schemas.in.h:13
 msgid "Right or Bottom color when drawing gradients, not used for solid color."
 msgstr ""
-"Δεξιό ή κάτω χρώμα κατά την σχεδίαση διαβαθμίσεων, δεν χρησιμοποιείται για "
+"Δεξιό ή κάτω χρώμα κατά τη σχεδίαση διαβαθμίσεων, δε χρησιμοποιείται για "
 "συμπαγές χρώμα."
 
 #: schemas/desktop_gnome_background.schemas.in.h:14
@@ -597,7 +655,7 @@ msgstr "Δευτερεύον Χρώμα"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:1
 msgid "File Icon Theme"
-msgstr "Θέμα εικονιδίου αρχείου"
+msgstr "Θέμα Εικονιδίου Αρχείου"
 
 #: schemas/desktop_gnome_file_views.schemas.in.h:2
 msgid "Theme used for displaying file icons"
@@ -609,7 +667,7 @@ msgstr "Όνομα βάσης του εξ ορισμού θέματος που �
 
 #: schemas/desktop_gnome_interface.schemas.in.h:2
 msgid "Can Change Accels"
-msgstr "Δυνατότητα αλλαγής συντομεύσεων"
+msgstr "Δυνατότητα Αλλαγής Συντομεύσεων"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:3
 msgid "Cursor Blink"
@@ -617,7 +675,7 @@ msgstr "Παλλόμενος δρομέας"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:4
 msgid "Cursor Blink Time"
-msgstr "Χρόνος παλμών δρομέα"
+msgstr "Χρόνος Παλμών Δρομέα"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:5
 msgid "Default font"
@@ -629,7 +687,7 @@ msgstr "Ενεργοποίηση Προσβασιμότητας "
 
 #: schemas/desktop_gnome_interface.schemas.in.h:7
 msgid "Enable Animations"
-msgstr "Ενεργοποίηση κινούμενων εικόνων"
+msgstr "Ενεργοποίηση Κινούμενων Εικόνων"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:8
 msgid "GTK IM Preedit Style"
@@ -637,7 +695,7 @@ msgstr "Στύλ Preedit GTK IM "
 
 #: schemas/desktop_gnome_interface.schemas.in.h:9
 msgid "GTK IM Status Style"
-msgstr "Στύλ κατάστασης GTK IM "
+msgstr "Στύλ Κατάστασης GTK IM "
 
 #: schemas/desktop_gnome_interface.schemas.in.h:10
 msgid "Gtk+ Theme"
@@ -645,79 +703,105 @@ msgstr "Θέμα Gtk+"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:11
 msgid "Icon Theme"
-msgstr "Θέμα εικονιδίου"
+msgstr "Θέμα Εικονιδίου"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:12
 msgid "Icon theme to use for the panel, nautilus etc."
 msgstr "Θέμα εικονιδίου που χρησιμοποιείται για το ταμπλώ, το ναυτίλο κτλ."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
+msgid "Length of the cursor blink cycle, in milliseconds"
 msgstr "Διάρκεια του κύκλου εναλλαγής παλμού δρομέα σε χιλιοστά δευτερολ."
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
 msgid "Menubar Detachable"
-msgstr "Αποσπώμενη μπάρα μενού"
+msgstr "Αποσπώμενη Μπάρα Μενού"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:15
 msgid "Menus Have Icons"
-msgstr "Τα μενού έχουν εικονίδια"
+msgstr "Τα Μενού Έχουν Εικονίδια"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:16
 msgid "Menus Have Tearoff"
-msgstr "Τα μενού έχουν αποσπώμενα"
+msgstr "Τα Μενού Είναι Αποσπώμενα"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Module for GtkFileChooser"
+msgstr "Λειτουργικό στοιχείο για GtkFileChooser"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
+msgstr ""
+"Λειτουργικό στοιχείο για χρήση ως μοντέλο αρχείου συστήματος για το γραφικό "
+"συστατικό GtkFileChooser . Οι πιθανές τιμές είναι \"gnome-vfs\" και \"gtk+\"."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Monospace font"
+msgstr "Γραμματοσειρά Monospace "
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
+msgstr ""
+"Όνομα γραμματοσειράς Monospace (σταθερού-πλάτους) για χρήση σε τοποθεσίες "
+"όπως τερματικά."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
 msgid "Name of the GTK+ input method Preedit Style used by gtk+."
 msgstr ""
 "Όνομα της μέθοδου εισαγωγής GTK+ Preedit Style που χρησιμοποείται από το  gtk"
 "+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:18
+#: schemas/desktop_gnome_interface.schemas.in.h:22
 msgid "Name of the GTK+ input method Status Style used by gtk+."
 msgstr ""
 "Όνομα της μέθοδου εισαγωγής GTK+ Status Style που χρησιμοποείται από το  gtk"
 "+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:19
+#: schemas/desktop_gnome_interface.schemas.in.h:23
 msgid "Name of the default font used by gtk+."
 msgstr "Όνομα της προεπιλεγμένης γραμματοσειράς για χρήση από το gtk+."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:20
+#: schemas/desktop_gnome_interface.schemas.in.h:24
 msgid "Status Bar on Right"
-msgstr "Γραμμή κατάστασης στα δεξιά"
+msgstr "Γραμμή Κατάστασης στα Δεξιά"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:21
+#: schemas/desktop_gnome_interface.schemas.in.h:25
 msgid "This specifies the size of icons displayed in toolbars"
 msgstr ""
 "Αυτό καθορίζει το μέγεθος των εικονιδίων που εμφανίζονται στις εργαλειοθήκες"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:22
-msgid "Toolbar Detachable"
-msgstr "Αποσπώμενη εργαλειοθήκη"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:23
-msgid "Toolbar Icon Size"
-msgstr "Μέγεθος εικονιδίου εργαλειοθήκης"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:24
-msgid "Toolbar Style"
-msgstr "Στύλ εργαλειοθήκης"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
-msgstr ""
-"Στύλ εργαλειοθήκης. Οι έγκυρες τιμές είναι both, both_horiz, icon, and text"
-
 #: schemas/desktop_gnome_interface.schemas.in.h:26
-msgid "Use Custom Font"
-msgstr "Χρήση προσαρμοσμένης γραμματοσειράς"
+msgid "Toolbar Detachable"
+msgstr "Αποσπώμενη Εργαλειοθήκη"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:27
+msgid "Toolbar Icon Size"
+msgstr "Μέγεθος Εικονιδίου Εργαλειοθήκης"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:28
+msgid "Toolbar Style"
+msgstr "Στύλ Εργαλειοθήκης"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
+msgstr ""
+"Στύλ εργαλειοθήκης. Οι έγκυρες τιμές είναι \"both\", \"both_horiz\", \"icon"
+"\", και \"text\""
+
+#: schemas/desktop_gnome_interface.schemas.in.h:30
+msgid "Use Custom Font"
+msgstr "Χρήση Προσαρμοσμένης Γραμματοσειράς"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:31
 msgid "Whether Applications should have accessibility support"
 msgstr "Αν οι εφαρμογές θα υποστηρίζπυν προσβασιμότητα"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:28
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
@@ -725,44 +809,96 @@ msgstr ""
 "Αν θα εμφανίζονται οι κινούμενες εικόνες. Σημείωση: Αυτό είναι ένα γενικό "
 "κλειδί, αλλάζει την συμπεριφορά του διαχειριστή παραθύρων, του ταμπλώ κτλ."
 
-#: schemas/desktop_gnome_interface.schemas.in.h:29
+#: schemas/desktop_gnome_interface.schemas.in.h:33
 msgid "Whether menus may display an icon next to a menu entry"
 msgstr "Αν τα μενού θα εμφανίζουν ένα εικονίδιο δίπλα στην καταχώρηση μενού"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:30
+#: schemas/desktop_gnome_interface.schemas.in.h:34
 msgid "Whether menus should have a tearoff"
 msgstr "Αν οι στηλοθέτες θα πρέπει να έχουν tearoff"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:31
-msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
-"popped up"
-msgstr ""
-"Αν ο χρήστης θα μπορεί να εισάγει δυναμικά μια νέα συντόμευση όταν το μενού "
-"αναδύεται."
-
-#: schemas/desktop_gnome_interface.schemas.in.h:32
+#: schemas/desktop_gnome_interface.schemas.in.h:35
 msgid "Whether the cursor should blink"
 msgstr "Αν θα πάλλεται ο δρομέας"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:33
+#: schemas/desktop_gnome_interface.schemas.in.h:36
 msgid "Whether the user can detach menubars and move them around"
 msgstr "Αν ο χρήστης θα  μπορεί να αποσπά τα μενού και να τα μετακινεί τριγύρω"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:34
+#: schemas/desktop_gnome_interface.schemas.in.h:37
 msgid "Whether the user can detach toolbars and move them around"
 msgstr ""
 "Αν ο χρήστης θα  μπορεί να αποσπά τις εργαλειθήκες και να τις μετακινεί "
 "τριγύρω"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:35
+#: schemas/desktop_gnome_interface.schemas.in.h:38
+msgid ""
+"Whether the user can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr ""
+"Αν ο χρήστης θα μπορεί να εισάγει δυναμικά μια νέα συντόμευση όταν το μενού "
+"αναδύεται."
+
+#: schemas/desktop_gnome_interface.schemas.in.h:39
 msgid "Whether to display a status bar meter on the right"
 msgstr "Αν θα εμφανίζεται στα δεξιά μετρητής γραμμής κατάστασης"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:36
+#: schemas/desktop_gnome_interface.schemas.in.h:40
 msgid "Whether to use a custom font in gtk+ applications."
 msgstr ""
 "Αν θα χρησιμοποιείται προσαρμοσμένη γραμματοσειρά από τις εφαρμογές gtk+."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "Απενεργοποίηση γραμμής εντολών"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "Απενεργοποίηση διαμόρφωσης εκτύπωσης"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "Απενεργοποίηση εκτύπωσης"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "Απενεργοποίηση αποθήκευσης αρχείων στον δίσκο"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
+msgstr ""
+"Αποτρέπει την πρόσβαση από τον χρήστη στο τερματικό ή καθορίζει την εκτέλεση "
+"μιας συγκεκριμένης εντολής. Για παράδειγμα, αυτό δεν θα επιτρέπει την "
+"πρόσβαση στον διάλογο του ταμπλώ \"Εκτέλεση εφαρμογής\"."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"Δεν επιτρέπει στον χρήστη να τροποποιήσει τις ρυθμίσεις εκτύπωσης. Για "
+"παράδειγμα αυτό θα αποτρέψει την πρόσβαση στους διαλόγους \"Διαμόρφωση "
+"εκτύπωσης\" σε όλες τις εφαρμογές."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr ""
+"Δεν επιτρέπει στον χρήστη να εκτυπώσει. Για παράδειγμα αυτό θα αποτρέψει "
+"την  πρόσβαση στους διαλόγους \"Εκτύπωση\" σε όλες τις εφαρμογές."
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"Δεν επιτρέπει στον χρήστη την αποθήκευση αρχείων στον δίσκο. Για παράδειγμα "
+"αυτό θα  αποτρέψει την  πρόσβαση στους διαλόγους \"Αποθήκευση ως\" σε όλες "
+"τις εφαρμογές."
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
@@ -773,8 +909,8 @@ msgid "Keyboard Bell Custom Filename"
 msgstr "Όνομα αρχείου προσαρμοσμένης καμπάνας πληκτρολογίου"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
-msgstr "πιθανές τιμές είναι ενεργό, ανενεργό και προσαρμοσμένο."
+msgid "possible values are \"on\", \"off\", and \"custom\"."
+msgstr "πιθανές τιμές είναι \"ενεργό\", \"ανενεργό\" και \"προσαρμοσμένο\"."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
 msgid ""
@@ -789,27 +925,25 @@ msgid "Cursor font"
 msgstr "Γραμματοσειρά δρομέα"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
-#, fuzzy
 msgid "Cursor size"
-msgstr "Παλλόμενος δρομέας"
+msgstr "Μέγεθος δρομέα "
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
-#, fuzzy
 msgid "Cursor theme"
-msgstr "Γραμματοσειρά δρομέα"
+msgstr "Θέμα δρομέα"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
-#, fuzzy
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
-"Όνομα γραμματοσειράς του δρομέα. Αν δεν ορισθεί χρησιμοποιείται η εξ ορισμού "
-"γραμματοσειρά. Αυτή η τιμή ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή "
-"X, έτσι η αλλαγή της στην μέση της συνεδρίας δεν θα έχει αποτέλεσμα μέχρι "
-"την επόμενη εισοδο σας στην συνεδρία."
+"Όνομα θέματος του δρομέα. Χρησιμοποιείται μόνο από εξυπηρετητές Χ που "
+"υποστηρίζουν Xcursor, όπως το XFree86 4.3 και νεώτερο. Αυτή η τιμή "
+"ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή X, έτσι η αλλαγή της στην "
+"μέση της συνεδρίας δεν θα έχει αποτέλεσμα μέχρι την επόμενη είσοδο σας στην "
+"συνεδρία."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
 msgid "Distance before a drag is started"
@@ -826,22 +960,22 @@ msgstr ""
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:8
 msgid "Double Click Time"
-msgstr "Χρόνος διπλού κλίκ"
+msgstr "Χρόνος Διπλού Κλίκ"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:9
 msgid "Drag Threshold"
-msgstr "Σύρσιμο αφετηρίας"
+msgstr "Σύρσιμο Αφετηρίας"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
 "Όνομα γραμματοσειράς του δρομέα. Αν δεν ορισθεί χρησιμοποιείται η εξ ορισμού "
 "γραμματοσειρά. Αυτή η τιμή ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή "
-"X, έτσι η αλλαγή της στην μέση της συνεδρίας δεν θα έχει αποτέλεσμα μέχρι "
-"την επόμενη εισοδο σας στην συνεδρία."
+"X, έτσι η αλλαγή της στην μέση της συνεδρίας δε θα έχει αποτέλεσμα μέχρι την "
+"επόμενη είσοδο σας στη συνεδρία."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:11
 msgid ""
@@ -861,7 +995,7 @@ msgstr "Εντοπισμός Δείκτη"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:14
 msgid "Motion Threshold"
-msgstr "Κατώφλι κίνησης"
+msgstr "Κατώφλι Κίνησης"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:15
 msgid "Mouse button orientation"
@@ -869,23 +1003,22 @@ msgstr "Προσανατολισμός πλήκτρου ποντικιού"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:16
 msgid "Single Click"
-msgstr "Μονό κλίκ"
+msgstr "Μονό Κλίκ"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:17
 msgid "Single click to open icons"
 msgstr "Μονό κλίκ για το άνοιγμα εικονιδίων"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
-#, fuzzy
 msgid ""
 "Size of the cursor referenced by cursor_theme. This value is only propagated "
 "to the X server start of each session, so changing it mid-session won't have "
 "an effect until the next time you log in."
 msgstr ""
-"Όνομα γραμματοσειράς του δρομέα. Αν δεν ορισθεί χρησιμοποιείται η εξ ορισμού "
-"γραμματοσειρά. Αυτή η τιμή ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή "
-"X, έτσι η αλλαγή της στην μέση της συνεδρίας δεν θα έχει αποτέλεσμα μέχρι "
-"την επόμενη εισοδο σας στην συνεδρία."
+"Μέγεθος του δρομέα όπως ορίζεται από το θέμα δρομέα. Αυτή η τιμή "
+"ενεργοποιείται κατά την εκκίνηση του εξυπηρετητή X, έτσι η αλλαγή της στη "
+"μέση της συνεδρίας δε θα έχει αποτέλεσμα μέχρι την επόμενη είσοδο σας στη "
+"συνεδρία."
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
 msgid "Swap left and right mouse buttons for left-handed mice"
@@ -898,7 +1031,7 @@ msgstr "Ενεργοποίηση ESD"
 #
 #: schemas/desktop_gnome_sound.schemas.in.h:2
 msgid "Enable sound server startup."
-msgstr "Ενεργοποίηση εκκίνησης εξυπηρετητή ήχων"
+msgstr "Ενεργοποίηση εκκίνησης εξυπηρετητή ήχων."
 
 #: schemas/desktop_gnome_sound.schemas.in.h:3
 msgid "Sounds for events"
@@ -908,166 +1041,46 @@ msgstr "Ήχοι για συμβάντα"
 msgid "Whether to play sounds on user events."
 msgstr "Αν θα αναπαράγονται ήχοι στα γεγονότα χρήστη."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr "Εξ ορισμού χειριστής URL "
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "Απενεργοποίηση όλων των εξωτερικών προγραμμάτων προεπισκόπησης"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs εφαρμογών"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs ghelp"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs πληροφοριών"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs man"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs προτιμήσεων"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs ρυθμίσεων εξυπηρετητή"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs του Ξεκινήστε Εδώ"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs των ρυθμίσεων συστήματος"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των URLs των απορριμάτων"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr "Πώς θα γίνεται ο χειρισμός των άγνωστων URLs"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "Εκτέλεση προγράμματος σε τερματικό"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
 msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο εφαρμογές/εντολή για να "
-"χειρίζεται τα  URLs εφαρμογών"
+"Ορισμός σε true για την απενεργοποίηση όλων των εξωτερικών προγραμμάτων "
+"προεπισκόπησης ανεξάρτητα από το αν είναι απενεργοποιημένα ή ενεργοποιημένα."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο προτιμήσεις/εντολή για να "
-"χειρίζεται τα  URLs προτιμήσεων"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "Να επιτρέπεται η αναβολή διαλειμμάτων"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο προγράμματα/εντολή για να "
-"χειρίζεται τα  URLs ghelp"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "Ώρα διαλείμματος"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο προγράμματα/πληροφορίες "
-"για να χειρίζεται τα  URLs πληροφοριών"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "Αριθμός λεπτών πληκτρολόγησης πριν την έναρξη διαλείμματος."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο προγράμματα/man για να "
-"χειρίζεται τα  URLs man"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "Αριθμός λεπτών που διαρκεί το διάλειμμα πληκτρολόγησης."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο προγράμματα/άγνωστα για να "
-"χειρίζεται τα άγνωστα URLs "
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "Χρόνος πληκτρολόγησης"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο ρυθμίσεις-εξυπηρετητή/"
-"εντολή για να χειρίζεται τα  URLs των ρυθμίσεων εξυπηρετητή"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "Αν το κλείδωμα πληκτρολογίου θα είναι ενεργοποιημένο ή όχι"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο Ξεκινήστε Εδώ/εντολή για "
-"να χειρίζεται τα  URLs του Ξεκινήστε Εδώ"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "Αν το κλείδωμα πληκτρολογίου θα είναι ενεργοποιημένο ή όχι."
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο ρυθμίσεις-συστήματος/"
-"εντολή για να χειρίζεται τα  URLs των ρυθμίσεων συστήματος"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr ""
-"Ορισμός σε true ώστε να ορισθεί ένα πρόγραμμα στο Απορρίματα/εντολή για να "
-"χειρίζεται τα  URLs των Απορριμάτων"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr ""
-"True αν το πρόγραμμα που χειρίζεται τα URL πρέπει να εκτελείται σε τερματικό"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr "Χειριστής URL για τις σελίδες εφαρμογών"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr "Χειριστής URL για τις σελίδες ghelp"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr "Χειριστής URL για τις σελίδες πληροφοριών"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr "Χειριστής URL για τις σελίδες man"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr "Χειριστής URL για τις σελίδες προτιμήσεων"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr "Χειριστής URL για τις σελίδες ρυθμίσεων συστήματος"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr "Χειριστής URL για τις σελίδες Ξεκινήστε Εδώ"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr "Χειριστής URL για τις σελίδες ρυθμίσεων συστήματος"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr "Χειριστής URL για τις σελίδες απορριμάτων"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "Αν θα αναβάλλεται ή όχι η οθόνη διαλείμματος πληκτρολόγησης."

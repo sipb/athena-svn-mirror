@@ -1,40 +1,122 @@
-August 11, 2001:
-===============
+libgnome 2.8.0
+--------------
 
-* Released libgnome 1.102.0 "Roswell".
+What's new since 2.7.2
 
-  - a few bug fixes.
+* Bug fixes:
+	- Various fixes (Kjartan Maraas)
+	- Avoid duplication of locale alias tables by using the ones
+	  in bonobo-activation (Alexander Larsson)
 
-August 9, 2001:
-==============
+* Translations:
+        - New Norwegian Bookmal translation (Kjartan Maraas)
+	- Various updated translations (ar, az, cs, bg, bs, ca, cs,
+					cy, de, el, es, eu, en_gb, fi,
+					gu, hu, ja, ko, mn, nb, ne,
+					nl, nn, no, pa, pl, pt, ro,
+					ru, sk, sq, sr, sv, tr, uk,
+					zh_CH)
 
-* Released libgnome 1.101.0 "Pearl Harbor".
+libgnome 2.7.2
+--------------
 
-  - after a discussion & release meeting, removed all the sound stuff.
+What's new since 2.7.1
 
-  - added back gnome_*_file and gnome_unconditional_*_file for
-    convenience, #defines them as gnome_program_locate_file() calls.
+* Bug fixes:
+	- Allow language binding instantiation of GnomeProgram
 
-August 3, 2001:
-==============
+* Translations:
+	- Various updated translations (ne)
 
-* Released libgnome 1.100.0 "Nature One".
+libgnome 2.7.0
+--------------
 
-  This is the first library freeze release of libgnome.
+What's new since 2.6.1
 
-  The following files are API frozen for GNOME 2.0:
+* Bug fixes:
+	- Various fixes (Chris Lahey, Christian Persche,
+			 Steve Chaplin, Toshio Kuratomi,
+			 Julio Merino, Kjartan Maraas)
 
-        libgnome/gnome-program.[ch]
-        libgnome/gnome-init.[ch]
-        libgnome/gnome-preferences.[ch]
-        libgnome/gnome-i18n.h (*)
-        libgnome/gnome-sound.[ch]
-        libgnome/gnome-triggers.[ch]
-        libgnome/gnome-exec.[ch]
+* Features:
+	- Update to automake 1.7 (James Henstridge)
 
-  The following files are semi-API frozen:
+* Translations:
+	- Various updated translations (en_CA, hu, nl)
 
-        libgnome/gnome-url.[ch] - someone needs to have a look at it.
+libgnome 2.6.1 "Triclops"
+-------------------------
 
+What's new since 2.6.0
 
+* Bug fixes:
+	- Various fixes (Kjartan Maraas, Colin Walters)
 
+* Translations:
+	- Added Punjabi translation (Amanpreet Singh Alam)
+	- Added Gujarati translation (Gujarati Team)
+	- Various updated translations (az, ar, be, ca, cs, cy, da, de, 
+					en_CA, en_GB, el, es, et, eu, fi, 
+					he, hr, id, it, ja, ko, lt, nn, nl, 
+					no, pl, pt, pt_BR, ro, ru, sk, sr@ije, 
+					sq, sr, sr@Latn, sv, ta, th, tr, uk, 
+					zh_CN, wa)
+
+libgnome 2.6.0 "Zoomer"
+-----------------------
+
+What's new since 2.4
+
+* Improvements:
+	- Add File Chooser backend schema (Jonathan Blandford)
+
+* Bug fixes:
+	- Fix translation of program arguments (Hidetoshi Tajima, 
+						Christian Neumair,
+						Anders Carlsson)
+* Translations:
+	- Added Canadian English translation (Adam Weinberger)
+	- Added Croatian translation (Robert Sedak)
+	- Added Serbian Jekavian translation (Bojan SuziúÙ†ß)
+	- Added Romanian translation (MiúÙ†ˇu Moldovan, Mugurel Tudor)
+
+	- Updated Albanian translation (Laurent Dhima)
+	- Updated Arabic translation (Arafat Medini)
+	- Updated Azerbaijani translation (MúÙ£Ÿtin úÙ°œmirov)
+	- Updated Belarusian translation (Ales Nyakhaychyk)
+	- Updated Brazilian Portuguese translation (Augusta Margues da Silva, 
+					            Raphael Higino, 
+					  	    Everson Santos Araujo)
+	- Updated British translation (Gareth Owen)
+	- Updated Catalan translation (Jordi Mallach)
+	- Updated Czech translation (Miloslav Trmac)
+ 	- Updated Danish translation (Ole Laursen)
+	- Updated Dutch translation (Vincent van Adrighem, 
+				     Reinout van Schouwen)
+	- Updated Estonian translation (TÅıivo LeedjÅ‰rv)
+	- Updated Finnish translation (Pauli Virtanen)
+ 	- Updated French translation (Christophe Merlet)
+	- Updated German translation (Christian Neumair)
+	- Updated Greek translation (Kostas Papadimas)
+	- Updated Hungarian translation (Andras Timar)
+	- Updated Irish translation (Alastair McKinstry)
+	- Updated Italian translation (Alesso Frusciante)
+	- Updated Japanese translation (Takeshi AIHANA)
+	- Updated Korean translation (Changwoo Ryu)
+	- Updated Lithuanian translation (úÙ°Ωygimantas BeruúÙ†≠ka, Tomas Kuliavas)
+	- Updated Mongolian translation (Sanlig Badral)
+	- Updated Norwegian translation (Kjartan Maraas)
+	- Updated Norwegian Nynorsk translation (Å≈smund SkjÅÊveland)
+	- Updated Polish translation (GNOME PL Team)
+	- Updated Portuguese translation (Duarte Loreto)
+	- Updated Russian translation (Russian Team)
+	- Updated Serbian translations (Danilo úÙ°†egan)
+	- Updated Simplified Chinese translation (Funda Wang)
+	- Updated Slovak translation (Marcel Telka)
+	- Updated Spanish translation (Francisco Javier F. Serrador)
+	- Updated Swedish translation (Christian Rose)
+	- Updated Tamil translation (Dinesh Nadarajah)
+	- Updated Thai translation (Paisa Seeluangsawat)
+	- Updated Turkish translation (Ismail Aslan)
+	- Updated Ukranian translation (Maxim Dziumanenko, Yuriy Syrota)
+	- Updated Welsh translation (Dafydd Harries, Rhys Jones)

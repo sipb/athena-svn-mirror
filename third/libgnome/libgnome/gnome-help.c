@@ -41,7 +41,7 @@ static char *
 locate_help_file (const char *path, const char *doc_name)
 {
 	int i;
-	char *exts[] = { ".xml", ".docbook", ".sgml", ".html", "", NULL };
+	char *exts[] = { "", ".xml", ".docbook", ".sgml", ".html", NULL };
 	const GList *lang_list = gnome_i18n_get_language_list ("LC_MESSAGES");
 
 	for (;lang_list != NULL; lang_list = lang_list->next) {
@@ -369,10 +369,11 @@ gnome_help_display_desktop_with_env (GnomeProgram  *program,
 		url = g_strconcat ("ghelp://", file, NULL);
 	}
 
-	g_free (file);
-
 	retval = gnome_help_display_uri_with_env (url, envp, error);
 
+	g_free (file);
+	g_free (url);
+	
 	return retval;
 }
 

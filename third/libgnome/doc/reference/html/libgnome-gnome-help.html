@@ -1,1676 +1,196 @@
-<HTML
-><HEAD
-><TITLE
->gnome-help</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GNOME Library Reference Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="Displaying help and external info"
-HREF="x2754.html"><LINK
-REL="PREVIOUS"
-TITLE="Displaying help and external info"
-HREF="x2754.html"><LINK
-REL="NEXT"
-TITLE="gnome-url"
-HREF="libgnome-gnome-url.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><TABLE
-WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="x2754.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="x2754.html"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
-><TH
-WIDTH="100%"
-align="center"
->GNOME Library Reference Manual</TH
-><TD
-><A
-ACCESSKEY="n"
-HREF="libgnome-gnome-url.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
-></TD
-></TR
-></TABLE
-><H1
-><A
-NAME="LIBGNOME-GNOME-HELP"
-></A
->gnome-help</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN2762"
-></A
-><H2
->Name</H2
->gnome-help&nbsp;--&nbsp;Display application and GNOME system help.</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN2765"
-></A
-><H2
->Synopsis</H2
-><PRE
-CLASS="SYNOPSIS"
->&#13;#include &lt;libgnome/libgnome.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-help</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="ch01s03.html" title="Displaying help and external info"><link rel="previous" href="ch01s03.html" title="Displaying help and external info"><link rel="next" href="libgnome-gnome-url.html" title="gnome-url"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-help.html#id2937856" title="Description"><link rel="section" href="libgnome-gnome-help.html#id2937869" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01s03.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01s03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="libgnome-gnome-url.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-help"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-help</span></h2><p>gnome-help &#8212; Display application and GNOME system help.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnome/libgnome.h&gt;
 
 
-enum        <A
-HREF="libgnome-gnome-help.html#GNOMEHELPERROR"
->GnomeHelpError</A
->;
-#define     <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-ERROR-CAPS"
->GNOME_HELP_ERROR</A
->
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY"
->gnome_help_display</A
->              (const char *file_name,
+enum        <a href="libgnome-gnome-help.html#GnomeHelpError">GnomeHelpError</a>;
+#define     <a href="libgnome-gnome-help.html#GNOME-HELP-ERROR-CAPS">GNOME_HELP_ERROR</a>
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display">gnome_help_display</a>              (const char *file_name,
                                              const char *link_id,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-WITH-DOC-ID"
->gnome_help_display_with_doc_id</A
->  (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-with-doc-id">gnome_help_display_with_doc_id</a>  (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-WITH-DOC-ID-AND-ENV"
->gnome_help_display_with_doc_id_and_env</A
->
-                                            (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-with-doc-id-and-env">gnome_help_display_with_doc_id_and_env</a>
+                                            (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              char **envp,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-DESKTOP"
->gnome_help_display_desktop</A
->      (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-desktop">gnome_help_display_desktop</a>      (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-DESKTOP-WITH-ENV"
->gnome_help_display_desktop_with_env</A
->
-                                            (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-desktop-with-env">gnome_help_display_desktop_with_env</a>
+                                            (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              char **envp,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-URI"
->gnome_help_display_uri</A
->          (const char *help_uri,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-uri">gnome_help_display_uri</a>          (const char *help_uri,
                                              GError **error);
-gboolean    <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-URI-WITH-ENV"
->gnome_help_display_uri_with_env</A
-> (const char *help_uri,
+gboolean    <a href="libgnome-gnome-help.html#gnome-help-display-uri-with-env">gnome_help_display_uri_with_env</a> (const char *help_uri,
                                              char **envp,
-                                             GError **error);&#13;</PRE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2795"
-></A
-><H2
->Description</H2
-><P
->These functions provide a way to display help files that are either installed
+                                             GError **error);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2937856"></a><h2>Description</h2><p>
+These functions provide a way to display help files that are either installed
 as part of the main GNOME installation or that are specific to the current
-application.</P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2798"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2800"
-></A
-><H3
-><A
-NAME="GNOMEHELPERROR"
-></A
->enum GnomeHelpError</H3
-><PRE
-CLASS="PROGRAMLISTING"
->typedef enum {
+application.
+</p></div><div class="refsect1" lang="en"><a name="id2937869"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2937875"></a><h3><a name="GnomeHelpError"></a>enum GnomeHelpError</h3><a class="indexterm" name="id2937885"></a><pre class="programlisting">typedef enum {
   GNOME_HELP_ERROR_INTERNAL, 
   GNOME_HELP_ERROR_NOT_FOUND
-} GnomeHelpError;</PRE
-><P
->The different error codes which can be thrown in the <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-ERROR-CAPS"
->GNOME_HELP_ERROR</A
-> domain.</P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2807"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GNOME_HELP_ERROR_INTERNAL</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Something went wrong internally. This is most
-likely caused by a resource problem or bad installation.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2812"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="LITERAL"
->GNOME_HELP_ERROR_NOT_FOUND</TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Help file does not exist.&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2817"
-></A
-><H3
-><A
-NAME="GNOME-HELP-ERROR-CAPS"
-></A
->GNOME_HELP_ERROR</H3
-><PRE
-CLASS="PROGRAMLISTING"
->#define GNOME_HELP_ERROR (gnome_help_error_quark ())</PRE
-><P
->The class (or domain) of errors raised directly by the gnome-help module. This
-is used as a value in the domain field of the GError structure.</P
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2823"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY"
-></A
->gnome_help_display ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display              (const char *file_name,
+} GnomeHelpError;
+</pre><p>
+The different error codes which can be thrown in the <a href="libgnome-gnome-help.html#GNOME-HELP-ERROR-CAPS"><span class="type">GNOME_HELP_ERROR</span></a> domain.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GNOME_HELP_ERROR_INTERNAL</tt></span></td><td>Something went wrong internally. This is most
+likely caused by a resource problem or bad installation.
+</td></tr><tr><td><span class="term"><tt class="literal">GNOME_HELP_ERROR_NOT_FOUND</tt></span></td><td>Help file does not exist.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2937947"></a><h3><a name="GNOME-HELP-ERROR-CAPS"></a>GNOME_HELP_ERROR</h3><a class="indexterm" name="id2937959"></a><pre class="programlisting">#define GNOME_HELP_ERROR (gnome_help_error_quark ())
+</pre><p>
+The class (or domain) of errors raised directly by the gnome-help module. This
+is used as a value in the domain field of the <span class="type">GError</span> structure.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2937986"></a><h3><a name="gnome-help-display"></a>gnome_help_display ()</h3><a class="indexterm" name="id2937997"></a><pre class="programlisting">gboolean    gnome_help_display              (const char *file_name,
                                              const char *link_id,
-                                             GError **error);</PRE
-><P
->Displays the help file specified by <TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
-> at location <TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
-> in the
-preferred help browser of the user.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2834"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help document to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2839"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Can be <TT
-CLASS="LITERAL"
->NULL</TT
->. If set, refers to an anchor or section id within the
-requested document.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2845"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2852"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2860"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-WITH-DOC-ID"
-></A
->gnome_help_display_with_doc_id ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_with_doc_id  (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+                                             GError **error);</pre><p>
+Displays the help file specified by <i class="parameter"><tt>file_name</tt></i> at location <i class="parameter"><tt>link_id</tt></i> in the
+preferred help browser of the user.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>file_name</tt></i> :</span></td><td> The name of the help document to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>link_id</tt></i> :</span></td><td> Can be <tt class="literal">NULL</tt>. If set, refers to an anchor or section id within the
+requested document.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938153"></a><h3><a name="gnome-help-display-with-doc-id"></a>gnome_help_display_with_doc_id ()</h3><a class="indexterm" name="id2938165"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id  (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
-                                             GError **error);</PRE
-><P
->Displays the help file specified by <TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
-> at location <TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
-> within
-the <TT
-CLASS="PARAMETER"
-><I
->doc_id</I
-></TT
-> domain in the preferred help browser of the user.  Most of the
-time, you want to call <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY"
->gnome_help_display</A
->() instead.</P
-><P
->This function will display the help through creating a "ghelp" URI, by
-looking for <TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
-> in the applications installed help location (found by
-GNOME_FILE_DOMAIN_APP_HELP) and its app_id.  The resulting URI is roughly
+                                             GError **error);</pre><p>
+Displays the help file specified by <i class="parameter"><tt>file_name</tt></i> at location <i class="parameter"><tt>link_id</tt></i> within
+the <i class="parameter"><tt>doc_id</tt></i> domain in the preferred help browser of the user.  Most of the
+time, you want to call <a href="libgnome-gnome-help.html#gnome-help-display"><tt class="function">gnome_help_display()</tt></a> instead.
+</p><p>
+This function will display the help through creating a "ghelp" URI, by
+looking for <i class="parameter"><tt>file_name</tt></i> in the applications installed help location (found by
+<span class="type">GNOME_FILE_DOMAIN_APP_HELP</span>) and its app_id.  The resulting URI is roughly
 in the form "ghelp:appid/file_name?link_id".  If a matching file cannot be
-found, <TT
-CLASS="LITERAL"
->FALSE</TT
-> is returned and <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> is set.</P
-><P
->Please note that this only displays application help.  To display help files
+found, <tt class="literal">FALSE</tt> is returned and <i class="parameter"><tt>error</tt></i> is set.
+</p><p>
+Please note that this only displays application help.  To display help files
 from the global GNOME domain, you will want to use
-<A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-DESKTOP"
->gnome_help_display_desktop</A
->().</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2881"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The current application object, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for the default one.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2887"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->doc_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The document identifier, or <TT
-CLASS="LITERAL"
->NULL</TT
-> to default to the application ID
-(app_id) of the specified <TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2894"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help document to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2899"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Can be <TT
-CLASS="LITERAL"
->NULL</TT
->. If set, refers to an anchor or section id within the
-requested document.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2905"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2912"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2920"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-WITH-DOC-ID-AND-ENV"
-></A
->gnome_help_display_with_doc_id_and_env ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_with_doc_id_and_env
-                                            (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+<a href="libgnome-gnome-help.html#gnome-help-display-desktop"><tt class="function">gnome_help_display_desktop()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The current application object, or <tt class="literal">NULL</tt> for the default one.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doc_id</tt></i> :</span></td><td> The document identifier, or <tt class="literal">NULL</tt> to default to the application ID
+(app_id) of the specified <i class="parameter"><tt>program</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_name</tt></i> :</span></td><td> The name of the help document to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>link_id</tt></i> :</span></td><td> Can be <tt class="literal">NULL</tt>. If set, refers to an anchor or section id within the
+requested document.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938456"></a><h3><a name="gnome-help-display-with-doc-id-and-env"></a>gnome_help_display_with_doc_id_and_env ()</h3><a class="indexterm" name="id2938468"></a><pre class="programlisting">gboolean    gnome_help_display_with_doc_id_and_env
+                                            (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              char **envp,
-                                             GError **error);</PRE
-><P
->Like gnome_display_with_doc_id(), but the the contents of <TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->
+                                             GError **error);</pre><p>
+Like <tt class="function">gnome_display_with_doc_id()</tt>, but the the contents of <i class="parameter"><tt>envp</tt></i>
 will become the url viewer's environment rather than inheriting
-from the parents environment.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2932"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The current application object, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for the default one.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2938"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->doc_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The document identifier, or <TT
-CLASS="LITERAL"
->NULL</TT
-> to default to the application ID
-(app_id) of the specified <TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2945"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help document to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2950"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Can be <TT
-CLASS="LITERAL"
->NULL</TT
->. If set, refers to an anchor or section id within the
-requested document.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2956"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> child's environment, or <TT
-CLASS="LITERAL"
->NULL</TT
-> to inherit parent's.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2962"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2969"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN2977"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-DESKTOP"
-></A
->gnome_help_display_desktop ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_desktop      (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+from the parents environment.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The current application object, or <tt class="literal">NULL</tt> for the default one.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doc_id</tt></i> :</span></td><td> The document identifier, or <tt class="literal">NULL</tt> to default to the application ID
+(app_id) of the specified <i class="parameter"><tt>program</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_name</tt></i> :</span></td><td> The name of the help document to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>link_id</tt></i> :</span></td><td> Can be <tt class="literal">NULL</tt>. If set, refers to an anchor or section id within the
+requested document.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envp</tt></i> :</span></td><td> child's environment, or <tt class="literal">NULL</tt> to inherit parent's.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2938724"></a><h3><a name="gnome-help-display-desktop"></a>gnome_help_display_desktop ()</h3><a class="indexterm" name="id2938737"></a><pre class="programlisting">gboolean    gnome_help_display_desktop      (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
-                                             GError **error);</PRE
-><P
->Displays the GNOME system help file specified by <TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
-> at location
-<TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
-> in the preferred help browser of the user.  This is done by creating
-a "ghelp" URI, by looking for <TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
-> in the system help domain
-(GNOME_FILE_DOMAIN_HELP) and it's app_id.  This domain is determined when
-the library is compiled.  If a matching file cannot be found, <TT
-CLASS="LITERAL"
->FALSE</TT
-> is
-returned and <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> is set.</P
-><P
->Please note that this only displays system help.  To display help files
-for an application, you will want to use <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY"
->gnome_help_display</A
->().</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2995"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The current application object, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for the default one.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3001"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->doc_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help file relative to the system's help domain
-(GNOME_FILE_DOMAIN_HELP).</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3007"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help document to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3012"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Can be <TT
-CLASS="LITERAL"
->NULL</TT
->. If set, refers to an anchor or section id within the
-requested document.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3018"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3025"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN3033"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-DESKTOP-WITH-ENV"
-></A
->gnome_help_display_desktop_with_env ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_desktop_with_env
-                                            (<A
-HREF="libgnome-gnome-program.html#GNOMEPROGRAM"
->GnomeProgram</A
-> *program,
+                                             GError **error);</pre><p>
+Displays the GNOME system help file specified by <i class="parameter"><tt>file_name</tt></i> at location
+<i class="parameter"><tt>link_id</tt></i> in the preferred help browser of the user.  This is done by creating
+a "ghelp" URI, by looking for <i class="parameter"><tt>file_name</tt></i> in the system help domain
+(<span class="type">GNOME_FILE_DOMAIN_HELP</span>) and it's app_id.  This domain is determined when
+the library is compiled.  If a matching file cannot be found, <tt class="literal">FALSE</tt> is
+returned and <i class="parameter"><tt>error</tt></i> is set.
+</p><p>
+Please note that this only displays system help.  To display help files
+for an application, you will want to use <a href="libgnome-gnome-help.html#gnome-help-display"><tt class="function">gnome_help_display()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The current application object, or <tt class="literal">NULL</tt> for the default one.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doc_id</tt></i> :</span></td><td> The name of the help file relative to the system's help domain
+(<span class="type">GNOME_FILE_DOMAIN_HELP</span>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_name</tt></i> :</span></td><td> The name of the help document to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>link_id</tt></i> :</span></td><td> Can be <tt class="literal">NULL</tt>. If set, refers to an anchor or section id within the
+requested document.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939001"></a><h3><a name="gnome-help-display-desktop-with-env"></a>gnome_help_display_desktop_with_env ()</h3><a class="indexterm" name="id2939013"></a><pre class="programlisting">gboolean    gnome_help_display_desktop_with_env
+                                            (<a href="libgnome-gnome-program.html#GnomeProgram">GnomeProgram</a> *program,
                                              const char *doc_id,
                                              const char *file_name,
                                              const char *link_id,
                                              char **envp,
-                                             GError **error);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-DESKTOP"
->gnome_help_display_desktop</A
->(), but the the contents of <TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->
+                                             GError **error);</pre><p>
+Like <a href="libgnome-gnome-help.html#gnome-help-display-desktop"><tt class="function">gnome_help_display_desktop()</tt></a>, but the the contents of <i class="parameter"><tt>envp</tt></i>
 will become the url viewer's environment rather than inheriting
-from the parents environment.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3045"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->program</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The current application object, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for the default one.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3051"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->doc_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help file relative to the system's help domain
-(GNOME_FILE_DOMAIN_HELP).</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3057"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->file_name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The name of the help document to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3062"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->link_id</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Can be <TT
-CLASS="LITERAL"
->NULL</TT
->. If set, refers to an anchor or section id within the
-requested document.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3068"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> child's environment, or <TT
-CLASS="LITERAL"
->NULL</TT
-> to inherit parent's.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3074"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3081"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN3089"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-URI"
-></A
->gnome_help_display_uri ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_uri          (const char *help_uri,
-                                             GError **error);</PRE
-><P
->Displays <TT
-CLASS="PARAMETER"
-><I
->help_uri</I
-></TT
-> in the user's preferred viewer. You should never need to
+from the parents environment.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>program</tt></i> :</span></td><td> The current application object, or <tt class="literal">NULL</tt> for the default one.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>doc_id</tt></i> :</span></td><td> The name of the help file relative to the system's help domain
+(<span class="type">GNOME_FILE_DOMAIN_HELP</span>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_name</tt></i> :</span></td><td> The name of the help document to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>link_id</tt></i> :</span></td><td> Can be <tt class="literal">NULL</tt>. If set, refers to an anchor or section id within the
+requested document.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envp</tt></i> :</span></td><td> child's environment, or <tt class="literal">NULL</tt> to inherit parent's.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939264"></a><h3><a name="gnome-help-display-uri"></a>gnome_help_display_uri ()</h3><a class="indexterm" name="id2939275"></a><pre class="programlisting">gboolean    gnome_help_display_uri          (const char *help_uri,
+                                             GError **error);</pre><p>
+Displays <i class="parameter"><tt>help_uri</tt></i> in the user's preferred viewer. You should never need to
 call this function directly in code, since it is just a wrapper for
-<A
-HREF="libgnome-gnome-url.html#GNOME-URL-SHOW"
->gnome_url_show</A
->() and consequently the viewer used to display the results
+<a href="libgnome-gnome-url.html#gnome-url-show"><tt class="function">gnome_url_show()</tt></a> and consequently the viewer used to display the results
 depends upon the scheme of the URI (so it is not strictly a help-only
-function).</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3100"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->help_uri</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The URI to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3105"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3112"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN3120"
-></A
-><H3
-><A
-NAME="GNOME-HELP-DISPLAY-URI-WITH-ENV"
-></A
->gnome_help_display_uri_with_env ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gboolean    gnome_help_display_uri_with_env (const char *help_uri,
+function).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>help_uri</tt></i> :</span></td><td> The URI to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2939412"></a><h3><a name="gnome-help-display-uri-with-env"></a>gnome_help_display_uri_with_env ()</h3><a class="indexterm" name="id2939424"></a><pre class="programlisting">gboolean    gnome_help_display_uri_with_env (const char *help_uri,
                                              char **envp,
-                                             GError **error);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-help.html#GNOME-HELP-DISPLAY-URI"
->gnome_help_display_uri</A
->(), but the the contents of <TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->
+                                             GError **error);</pre><p>
+Like <a href="libgnome-gnome-help.html#gnome-help-display-uri"><tt class="function">gnome_help_display_uri()</tt></a>, but the the contents of <i class="parameter"><tt>envp</tt></i>
 will become the help viewer's environment rather than inheriting
-from the parents environment.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3131"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->help_uri</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> The URI to display.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3136"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envp</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> child's environment, or <TT
-CLASS="LITERAL"
->NULL</TT
-> to inherit parent's.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3142"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> A GError instance that will hold the specifics of any error which
-occurs during processing, or <TT
-CLASS="LITERAL"
->NULL</TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN3149"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> <TT
-CLASS="LITERAL"
->TRUE</TT
-> on success, <TT
-CLASS="LITERAL"
->FALSE</TT
-> otherwise (in which case <TT
-CLASS="PARAMETER"
-><I
->error</I
-></TT
-> will
-contain the actual error).</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-></DIV
-><TABLE
-CLASS="navigation"
-WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-ALIGN="left"
-><A
-ACCESSKEY="p"
-HREF="x2754.html"
-><B
->&lt;&lt;&lt;&nbsp;Displaying help and external info</B
-></A
-></TD
-><TD
-ALIGN="right"
-><A
-ACCESSKEY="n"
-HREF="libgnome-gnome-url.html"
-><B
->gnome-url&nbsp;&gt;&gt;&gt;</B
-></A
-></TD
-></TR
-></TABLE
-></BODY
-></HTML
->
+from the parents environment.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>help_uri</tt></i> :</span></td><td> The URI to display.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envp</tt></i> :</span></td><td> child's environment, or <tt class="literal">NULL</tt> to inherit parent's.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>error</tt></i> :</span></td><td> A <span class="type">GError</span> instance that will hold the specifics of any error which
+occurs during processing, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> on success, <tt class="literal">FALSE</tt> otherwise (in which case <i class="parameter"><tt>error</tt></i> will
+contain the actual error).
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch01s03.html"><b>&lt;&lt; Displaying help and external info</b></a></td><td align="right"><a accesskey="n" href="libgnome-gnome-url.html"><b>gnome-url &gt;&gt;</b></a></td></tr></table></body></html>

@@ -3,23 +3,29 @@
 schemadir   = $(GCONF_SCHEMA_FILE_DIR)
 schema_in_files = \
 	desktop_gnome_accessibility_keyboard.schemas.in		\
+	desktop_gnome_accessibility_startup.schemas.in		\
 	desktop_gnome_applications_browser.schemas.in		\
-	desktop_gnome_applications_help_viewer.schemas.in		\
+	desktop_gnome_applications_help_viewer.schemas.in	\
 	desktop_gnome_applications_terminal.schemas.in		\
 	desktop_gnome_applications_window_manager.schemas.in	\
-	desktop_gnome_file_views.schemas.in			\
-	desktop_gnome_interface.schemas.in				\
-	desktop_gnome_peripherals_mouse.schemas.in			\
-	desktop_gnome_peripherals_keyboard.schemas.in		\
-	desktop_gnome_sound.schemas.in                             \
 	desktop_gnome_background.schemas.in			\
-	desktop_gnome_url_handlers.schemas.in	\
-	desktop_gnome_thumbnailers.schemas.in	
+	desktop_gnome_file_views.schemas.in			\
+	desktop_gnome_interface.schemas.in			\
+	desktop_gnome_lockdown.schemas.in			\
+	desktop_gnome_peripherals_mouse.schemas.in		\
+	desktop_gnome_peripherals_keyboard.schemas.in		\
+	desktop_gnome_sound.schemas.in				\
+	desktop_gnome_typing_break.schemas.in			\
+	desktop_gnome_thumbnailers.schemas.in
 
 schema_DATA = $(schema_in_files:.schemas.in=.schemas)
 
 @INTLTOOL_SCHEMAS_RULE@
 
+# get rid of schemas during clean
+CLEANFILES = $(schema_DATA)
+
+if GCONF_SCHEMAS_INSTALL
 # don't do this if we are building in eg. rpm
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
@@ -27,5 +33,8 @@ install-data-local:
 			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
 		done \
 	fi
+else
+install-data-local:
+endif
 
-EXTRA_DIST = $(schema_DATA)
+EXTRA_DIST = $(schema_in_files) $(schema_DATA)

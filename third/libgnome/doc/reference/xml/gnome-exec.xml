@@ -1,0 +1,328 @@
+<refentry id="libgnome-gnome-exec">
+<refmeta>
+<refentrytitle>gnome-exec</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOME Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-exec</refname><refpurpose>Execution of programs from within GNOME applications.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnome/libgnome.h&gt;
+
+
+<link linkend="int">int</link>         <link linkend="gnome-execute-async">gnome_execute_async</link>             (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[]);
+<link linkend="int">int</link>         <link linkend="gnome-execute-async-fds">gnome_execute_async_fds</link>         (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="gboolean">gboolean</link> close_fds);
+<link linkend="int">int</link>         <link linkend="gnome-execute-async-with-env">gnome_execute_async_with_env</link>    (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="int">int</link> envc,
+                                             <link linkend="char">char</link> *const envv[]);
+<link linkend="int">int</link>         <link linkend="gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</link>
+                                            (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="int">int</link> envc,
+                                             <link linkend="char">char</link> *const envv[],
+                                             <link linkend="gboolean">gboolean</link> close_fds);
+<link linkend="int">int</link>         <link linkend="gnome-execute-shell">gnome_execute_shell</link>             (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline);
+<link linkend="int">int</link>         <link linkend="gnome-execute-shell-fds">gnome_execute_shell_fds</link>         (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline,
+                                             <link linkend="gboolean">gboolean</link> close_fds);
+<link linkend="void">void</link>        <link linkend="gnome-prepend-terminal-to-vector">gnome_prepend_terminal_to_vector</link>
+                                            (<link linkend="int">int</link> *argc,
+                                             <link linkend="char">char</link> ***argv);
+<link linkend="int">int</link>         <link linkend="gnome-execute-terminal-shell">gnome_execute_terminal_shell</link>    (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline);
+<link linkend="int">int</link>         <link linkend="gnome-execute-terminal-shell-fds">gnome_execute_terminal_shell_fds</link>
+                                            (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline,
+                                             <link linkend="gboolean">gboolean</link> close_fds);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The gnome-execute family of functions are provided to simplify execution of
+programs from withing GNOME applications.  These routines are required to avoid
+passing opened file descriptors to a child process (like the X11 sockets and
+CORBA sockets). They will also make sure to terminate properly.
+</para>
+<para>
+The range of possibilities goes from the most simple use to the most
+specialized ones.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-execute-async"/>gnome_execute_async ()</title>
+<indexterm><primary>gnome_execute_async</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_async             (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[]);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async-with-env"><function>gnome_execute_async_with_env()</function></link>, but doesn't add anything
+to child's environment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executesd, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of child, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-async-fds"/>gnome_execute_async_fds ()</title>
+<indexterm><primary>gnome_execute_async_fds</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_async_fds         (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="gboolean">gboolean</link> close_fds);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async-with-env-fds"><function>gnome_execute_async_with_env_fds()</function></link>, but doesn't add
+anything to child's environment.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal>, will close all but file descriptors 0, 1 and 2.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of child, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-async-with-env"/>gnome_execute_async_with_env ()</title>
+<indexterm><primary>gnome_execute_async_with_env</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_async_with_env    (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="int">int</link> envc,
+                                             <link linkend="char">char</link> *const envv[]);</programlisting>
+<para>
+This function forks and executes some program in the
+background.  On error, returns <literal>-1</literal>; in this case, <link linkend="errno"><type>errno</type></link> should hold a useful
+value.  Searches the path to find the child.  Environment settings in <parameter>envv</parameter>
+are added to the existing environment -- they do not completely replace it.
+This function closes all fds besides 0, 1, and 2 for the child</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or NULL for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of environment slots
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
+<listitem><simpara> Environment vector
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the process id, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-async-with-env-fds"/>gnome_execute_async_with_env_fds ()</title>
+<indexterm><primary>gnome_execute_async_with_env_fds</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_async_with_env_fds
+                                            (const <link linkend="char">char</link> *dir,
+                                             <link linkend="int">int</link> argc,
+                                             <link linkend="char">char</link> *const argv[],
+                                             <link linkend="int">int</link> envc,
+                                             <link linkend="char">char</link> *const envv[],
+                                             <link linkend="gboolean">gboolean</link> close_fds);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async-with-env"><function>gnome_execute_async_with_env()</function></link> but has a flag to
+decide whether or not to close fd's</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of arguments
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> Argument vector to exec child
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envc</parameter>&nbsp;:</term>
+<listitem><simpara> Number of environment slots
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>envv</parameter>&nbsp;:</term>
+<listitem><simpara> Environment vector
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> If <literal>TRUE</literal> will close all fds but 0,1, and 2
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the process id, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-shell"/>gnome_execute_shell ()</title>
+<indexterm><primary>gnome_execute_shell</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_shell             (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async-with-env"><function>gnome_execute_async_with_env()</function></link>, but uses the user's shell
+to run the desired program.  Note that the pid of the shell is returned, not
+the pid of the user's program.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of shell, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-shell-fds"/>gnome_execute_shell_fds ()</title>
+<indexterm><primary>gnome_execute_shell_fds</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_shell_fds         (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline,
+                                             <link linkend="gboolean">gboolean</link> close_fds);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async-with-env-fds"><function>gnome_execute_async_with_env_fds()</function></link>, but uses the user's
+shell to run the desired program.  Note that the pid of the shell is
+returned, not the pid of the user's program.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> Like close_fds in <link linkend="gnome-execute-async-with-env-fds"><function>gnome_execute_async_with_env_fds()</function></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of shell, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-prepend-terminal-to-vector"/>gnome_prepend_terminal_to_vector ()</title>
+<indexterm><primary>gnome_prepend_terminal_to_vector</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_prepend_terminal_to_vector
+                                            (<link linkend="int">int</link> *argc,
+                                             <link linkend="char">char</link> ***argv);</programlisting>
+<para>
+Prepends a terminal (either the one configured as default in
+the user's GNOME setup, or one of the common xterm emulators) to the passed
+in vector, modifying it in the process.  The vector should be allocated with
+<link linkend="g-malloc"><type>g_malloc</type></link>, as this will <link linkend="g-free"><type>g_free</type></link> the original vector.  Also all elements must
+have been allocated separately.  That is the standard glib/GNOME way of
+doing vectors however.  If the integer that <parameter>argc</parameter> points to is negative, the
+size will first be computed.  Also note that passing in pointers to a vector
+that is empty, will just create a new vector for you.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>argc</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the vector size
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>argv</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer to the vector
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-terminal-shell"/>gnome_execute_terminal_shell ()</title>
+<indexterm><primary>gnome_execute_terminal_shell</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_terminal_shell    (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline);</programlisting>
+<para>
+Like <link linkend="gnome-execute-async"><type>gnome_execute_async</type></link>, except that it runs the
+terminal as well.  Note that the pid of the terminal is
+returned, not the pid of the user's program.
+If commandline is <literal>NULL</literal>, just the shell is run.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or NULL for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of terminal, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-execute-terminal-shell-fds"/>gnome_execute_terminal_shell_fds ()</title>
+<indexterm><primary>gnome_execute_terminal_shell_fds</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_execute_terminal_shell_fds
+                                            (const <link linkend="char">char</link> *dir,
+                                             const <link linkend="char">char</link> *commandline,
+                                             <link linkend="gboolean">gboolean</link> close_fds);</programlisting>
+<para>
+Like <link linkend="gnome-execute-shell-fds"><function>gnome_execute_shell_fds()</function></link>, except that it runs the
+terminal as well.  Note that the pid of the terminal is
+returned, not the pid of the user's program.
+If commandline is <literal>NULL</literal>, just the shell is run.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>dir</parameter>&nbsp;:</term>
+<listitem><simpara> Directory in which child should be executed, or <literal>NULL</literal> for current
+      directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>commandline</parameter>&nbsp;:</term>
+<listitem><simpara> Shell command to execute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>close_fds</parameter>&nbsp;:</term>
+<listitem><simpara> Like close_fds in <link linkend="gnome-execute-async-with-env-fds"><function>gnome_execute_async_with_env_fds()</function></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> process id of terminal, or <literal>-1</literal> on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

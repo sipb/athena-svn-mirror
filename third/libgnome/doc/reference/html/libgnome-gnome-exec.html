@@ -1,1467 +1,168 @@
-<HTML
-><HEAD
-><TITLE
->gnome-exec</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK
-REL="HOME"
-TITLE="GNOME Library Reference Manual"
-HREF="index.html"><LINK
-REL="UP"
-TITLE="Initializing applications and starting programs"
-HREF="libgnome.html#AEN6"><LINK
-REL="PREVIOUS"
-TITLE="gnome-init"
-HREF="libgnome-gnome-init.html"><LINK
-REL="NEXT"
-TITLE="Configuration"
-HREF="x1296.html"><META
-NAME="GENERATOR"
-CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
-TYPE="text/css"
->.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE
-></HEAD
-><BODY
-CLASS="REFENTRY"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><TABLE
-WIDTH="100%"
-CLASS="navigation"
-SUMMARY="Navigation header"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-><A
-ACCESSKEY="p"
-HREF="libgnome-gnome-init.html"
-><IMG
-SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Prev"></A
-></TD
-><TD
-><A
-ACCESSKEY="u"
-HREF="libgnome.html#AEN6"
-><IMG
-SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Up"></A
-></TD
-><TD
-><A
-ACCESSKEY="h"
-HREF="index.html"
-><IMG
-SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Home"></A
-></TD
-><TH
-WIDTH="100%"
-align="center"
->GNOME Library Reference Manual</TH
-><TD
-><A
-ACCESSKEY="n"
-HREF="x1296.html"
-><IMG
-SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
-BORDER="0"
-ALT="Next"></A
-></TD
-></TR
-></TABLE
-><H1
-><A
-NAME="LIBGNOME-GNOME-EXEC"
-></A
->gnome-exec</H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN981"
-></A
-><H2
->Name</H2
->gnome-exec&nbsp;--&nbsp;Execution of programs from within GNOME applications.</DIV
-><DIV
-CLASS="REFSYNOPSISDIV"
-><A
-NAME="AEN984"
-></A
-><H2
->Synopsis</H2
-><PRE
-CLASS="SYNOPSIS"
->&#13;#include &lt;libgnome/libgnome.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-exec</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME Library Reference Manual"><link rel="up" href="libgnome.html#id2860442" title="Initializing applications and starting programs"><link rel="previous" href="libgnome-gnome-init.html" title="gnome-init"><link rel="next" href="ch01s02.html" title="Configuration"><link rel="chapter" href="libgnome.html" title="GNOME Library (libgnome)"><link rel="refentry" href="libgnome-gnome-program.html" title="gnome-program"><link rel="refentry" href="libgnome-gnome-init.html" title="gnome-init"><link rel="refentry" href="libgnome-gnome-exec.html" title="gnome-exec"><link rel="refentry" href="libgnome-gnome-gconf.html" title="gnome-gconf"><link rel="refentry" href="libgnome-gnome-config.html" title="gnome-config"><link rel="refentry" href="libgnome-gnome-i18n.html" title="gnome-i18n"><link rel="refentry" href="libgnome-gnome-help.html" title="gnome-help"><link rel="refentry" href="libgnome-gnome-url.html" title="gnome-url"><link rel="refentry" href="libgnome-gnome-score.html" title="gnome-score"><link rel="refentry" href="libgnome-gnome-util.html" title="gnome-util"><link rel="refentry" href="libgnome-gnome-sound.html" title="gnome-sound"><link rel="refentry" href="libgnome-gnome-triggers.html" title="gnome-triggers"><link rel="refentry" href="libgnome-libgnometypebuiltins.html" title="libgnometypebuiltins"><link rel="section" href="libgnome-gnome-exec.html#id2920282" title="Description"><link rel="section" href="libgnome-gnome-exec.html#id2920302" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libgnome-gnome-init.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="libgnome.html#id2860442"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME Library Reference Manual</th><td><a accesskey="n" href="ch01s02.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnome-gnome-exec"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-exec</span></h2><p>gnome-exec &#8212; Execution of programs from within GNOME applications.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnome/libgnome.h&gt;
 
 
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC"
->gnome_execute_async</A
->             (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-async">gnome_execute_async</a>             (const char *dir,
                                              int argc,
                                              char *const argv[]);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-FDS"
->gnome_execute_async_fds</A
->         (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-async-fds">gnome_execute_async_fds</a>         (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              gboolean close_fds);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV"
->gnome_execute_async_with_env</A
->    (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env">gnome_execute_async_with_env</a>    (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              int envc,
                                              char *const envv[]);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
->gnome_execute_async_with_env_fds</A
->
+int         <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds">gnome_execute_async_with_env_fds</a>
                                             (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              int envc,
                                              char *const envv[],
                                              gboolean close_fds);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-SHELL"
->gnome_execute_shell</A
->             (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-shell">gnome_execute_shell</a>             (const char *dir,
                                              const char *commandline);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-SHELL-FDS"
->gnome_execute_shell_fds</A
->         (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-shell-fds">gnome_execute_shell_fds</a>         (const char *dir,
                                              const char *commandline,
                                              gboolean close_fds);
-void        <A
-HREF="libgnome-gnome-exec.html#GNOME-PREPEND-TERMINAL-TO-VECTOR"
->gnome_prepend_terminal_to_vector</A
->
+void        <a href="libgnome-gnome-exec.html#gnome-prepend-terminal-to-vector">gnome_prepend_terminal_to_vector</a>
                                             (int *argc,
                                              char ***argv);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-TERMINAL-SHELL"
->gnome_execute_terminal_shell</A
->    (const char *dir,
+int         <a href="libgnome-gnome-exec.html#gnome-execute-terminal-shell">gnome_execute_terminal_shell</a>    (const char *dir,
                                              const char *commandline);
-int         <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-TERMINAL-SHELL-FDS"
->gnome_execute_terminal_shell_fds</A
->
+int         <a href="libgnome-gnome-exec.html#gnome-execute-terminal-shell-fds">gnome_execute_terminal_shell_fds</a>
                                             (const char *dir,
                                              const char *commandline,
-                                             gboolean close_fds);</PRE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1000"
-></A
-><H2
->Description</H2
-><P
->The gnome-execute family of functions are provided to simplify execution of
+                                             gboolean close_fds);
+</pre></div><div class="refsect1" lang="en"><a name="id2920282"></a><h2>Description</h2><p>
+The gnome-execute family of functions are provided to simplify execution of
 programs from withing GNOME applications.  These routines are required to avoid
 passing opened file descriptors to a child process (like the X11 sockets and
-CORBA sockets). They will also make sure to terminate properly.</P
-><P
->The range of possibilities goes from the most simple use to the most
-specialized ones.</P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1004"
-></A
-><H2
->Details</H2
-><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1006"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-ASYNC"
-></A
->gnome_execute_async ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_async             (const char *dir,
+CORBA sockets). They will also make sure to terminate properly.
+</p><p>
+The range of possibilities goes from the most simple use to the most
+specialized ones.
+</p></div><div class="refsect1" lang="en"><a name="id2920302"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2920307"></a><h3><a name="gnome-execute-async"></a>gnome_execute_async ()</h3><a class="indexterm" name="id2920319"></a><pre class="programlisting">int         gnome_execute_async             (const char *dir,
                                              int argc,
-                                             char *const argv[]);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV"
->gnome_execute_async_with_env</A
->(), but doesn't add anything
-to child's environment.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1014"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executesd, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1020"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of arguments</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1025"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Argument vector to exec child</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1030"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of child, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1036"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-ASYNC-FDS"
-></A
->gnome_execute_async_fds ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_async_fds         (const char *dir,
+                                             char *const argv[]);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env"><tt class="function">gnome_execute_async_with_env()</tt></a>, but doesn't add anything
+to child's environment.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executesd, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of arguments
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of child, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920446"></a><h3><a name="gnome-execute-async-fds"></a>gnome_execute_async_fds ()</h3><a class="indexterm" name="id2920457"></a><pre class="programlisting">int         gnome_execute_async_fds         (const char *dir,
                                              int argc,
                                              char *const argv[],
-                                             gboolean close_fds);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
->gnome_execute_async_with_env_fds</A
->(), but doesn't add
-anything to child's environment.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1045"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1051"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of arguments</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1056"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Argument vector to exec child</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1061"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->close_fds</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> If <TT
-CLASS="LITERAL"
->TRUE</TT
->, will close all but file descriptors 0, 1 and 2.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1067"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of child, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1073"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-ASYNC-WITH-ENV"
-></A
->gnome_execute_async_with_env ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_async_with_env    (const char *dir,
+                                             gboolean close_fds);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>, but doesn't add
+anything to child's environment.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of arguments
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt>, will close all but file descriptors 0, 1 and 2.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of child, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920613"></a><h3><a name="gnome-execute-async-with-env"></a>gnome_execute_async_with_env ()</h3><a class="indexterm" name="id2920624"></a><pre class="programlisting">int         gnome_execute_async_with_env    (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              int envc,
-                                             char *const envv[]);</PRE
-><P
->This function forks and executes some program in the
-background.  On error, returns <TT
-CLASS="LITERAL"
->-1</TT
->; in this case, errno should hold a useful
-value.  Searches the path to find the child.  Environment settings in <TT
-CLASS="PARAMETER"
-><I
->envv</I
-></TT
->
+                                             char *const envv[]);</pre><p>
+This function forks and executes some program in the
+background.  On error, returns <tt class="literal">-1</tt>; in this case, <span class="type">errno</span> should hold a useful
+value.  Searches the path to find the child.  Environment settings in <i class="parameter"><tt>envv</tt></i>
 are added to the existing environment -- they do not completely replace it.
-This function closes all fds besides 0, 1, and 2 for the child</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1083"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or NULL for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1088"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of arguments</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1093"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Argument vector to exec child</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1098"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of environment slots</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1103"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Environment vector</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1108"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> the process id, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1114"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
-></A
->gnome_execute_async_with_env_fds ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_async_with_env_fds
+This function closes all fds besides 0, 1, and 2 for the child</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or NULL for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of arguments
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envc</tt></i> :</span></td><td> Number of environment slots
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envv</tt></i> :</span></td><td> Environment vector
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the process id, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2920803"></a><h3><a name="gnome-execute-async-with-env-fds"></a>gnome_execute_async_with_env_fds ()</h3><a class="indexterm" name="id2920815"></a><pre class="programlisting">int         gnome_execute_async_with_env_fds
                                             (const char *dir,
                                              int argc,
                                              char *const argv[],
                                              int envc,
                                              char *const envv[],
-                                             gboolean close_fds);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV"
->gnome_execute_async_with_env</A
->() but has a flag to
-decide whether or not to close fd's</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1123"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1129"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of arguments</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1134"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Argument vector to exec child</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1139"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Number of environment slots</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1144"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->envv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Environment vector</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1149"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->close_fds</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> If <TT
-CLASS="LITERAL"
->TRUE</TT
-> will close all fds but 0,1, and 2</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1155"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> the process id, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1161"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-SHELL"
-></A
->gnome_execute_shell ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_shell             (const char *dir,
-                                             const char *commandline);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV"
->gnome_execute_async_with_env</A
->(), but uses the user's shell
+                                             gboolean close_fds);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env"><tt class="function">gnome_execute_async_with_env()</tt></a> but has a flag to
+decide whether or not to close fd's</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> Number of arguments
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> Argument vector to exec child
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envc</tt></i> :</span></td><td> Number of environment slots
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>envv</tt></i> :</span></td><td> Environment vector
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt> will close all fds but 0,1, and 2
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the process id, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921015"></a><h3><a name="gnome-execute-shell"></a>gnome_execute_shell ()</h3><a class="indexterm" name="id2921026"></a><pre class="programlisting">int         gnome_execute_shell             (const char *dir,
+                                             const char *commandline);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env"><tt class="function">gnome_execute_async_with_env()</tt></a>, but uses the user's shell
 to run the desired program.  Note that the pid of the shell is returned, not
-the pid of the user's program.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1169"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1175"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->commandline</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Shell command to execute</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1180"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of shell, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1186"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-SHELL-FDS"
-></A
->gnome_execute_shell_fds ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_shell_fds         (const char *dir,
+the pid of the user's program.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of shell, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921134"></a><h3><a name="gnome-execute-shell-fds"></a>gnome_execute_shell_fds ()</h3><a class="indexterm" name="id2921145"></a><pre class="programlisting">int         gnome_execute_shell_fds         (const char *dir,
                                              const char *commandline,
-                                             gboolean close_fds);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
->gnome_execute_async_with_env_fds</A
->(), but uses the user's
+                                             gboolean close_fds);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>, but uses the user's
 shell to run the desired program.  Note that the pid of the shell is
-returned, not the pid of the user's program.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1195"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1201"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->commandline</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Shell command to execute</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1206"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->close_fds</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Like close_fds in <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
->gnome_execute_async_with_env_fds</A
->()</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1212"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of shell, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1218"
-></A
-><H3
-><A
-NAME="GNOME-PREPEND-TERMINAL-TO-VECTOR"
-></A
->gnome_prepend_terminal_to_vector ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->void        gnome_prepend_terminal_to_vector
+returned, not the pid of the user's program.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> Like close_fds in <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of shell, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921285"></a><h3><a name="gnome-prepend-terminal-to-vector"></a>gnome_prepend_terminal_to_vector ()</h3><a class="indexterm" name="id2921297"></a><pre class="programlisting">void        gnome_prepend_terminal_to_vector
                                             (int *argc,
-                                             char ***argv);</PRE
-><P
->Prepends a terminal (either the one configured as default in
+                                             char ***argv);</pre><p>
+Prepends a terminal (either the one configured as default in
 the user's GNOME setup, or one of the common xterm emulators) to the passed
 in vector, modifying it in the process.  The vector should be allocated with
-g_malloc, as this will g_free the original vector.  Also all elements must
+<span class="type">g_malloc</span>, as this will <span class="type">g_free</span> the original vector.  Also all elements must
 have been allocated separately.  That is the standard glib/GNOME way of
-doing vectors however.  If the integer that <TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
-> points to is negative, the
+doing vectors however.  If the integer that <i class="parameter"><tt>argc</tt></i> points to is negative, the
 size will first be computed.  Also note that passing in pointers to a vector
-that is empty, will just create a new vector for you.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1228"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argc</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> a pointer to the vector size</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1233"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->argv</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> a pointer to the vector</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1238"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-TERMINAL-SHELL"
-></A
->gnome_execute_terminal_shell ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_terminal_shell    (const char *dir,
-                                             const char *commandline);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC"
->gnome_execute_async</A
->, except that it runs the
+that is empty, will just create a new vector for you.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> a pointer to the vector size
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> a pointer to the vector
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921402"></a><h3><a name="gnome-execute-terminal-shell"></a>gnome_execute_terminal_shell ()</h3><a class="indexterm" name="id2921413"></a><pre class="programlisting">int         gnome_execute_terminal_shell    (const char *dir,
+                                             const char *commandline);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-async"><span class="type">gnome_execute_async</span></a>, except that it runs the
 terminal as well.  Note that the pid of the terminal is
 returned, not the pid of the user's program.
-If commandline is <TT
-CLASS="LITERAL"
->NULL</TT
->, just the shell is run.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1247"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or NULL for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1252"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->commandline</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Shell command to execute</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1257"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of terminal, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN1263"
-></A
-><H3
-><A
-NAME="GNOME-EXECUTE-TERMINAL-SHELL-FDS"
-></A
->gnome_execute_terminal_shell_fds ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->int         gnome_execute_terminal_shell_fds
+If commandline is <tt class="literal">NULL</tt>, just the shell is run.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or NULL for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of terminal, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2921519"></a><h3><a name="gnome-execute-terminal-shell-fds"></a>gnome_execute_terminal_shell_fds ()</h3><a class="indexterm" name="id2921530"></a><pre class="programlisting">int         gnome_execute_terminal_shell_fds
                                             (const char *dir,
                                              const char *commandline,
-                                             gboolean close_fds);</PRE
-><P
->Like <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-SHELL-FDS"
->gnome_execute_shell_fds</A
->(), except that it runs the
+                                             gboolean close_fds);</pre><p>
+Like <a href="libgnome-gnome-exec.html#gnome-execute-shell-fds"><tt class="function">gnome_execute_shell_fds()</tt></a>, except that it runs the
 terminal as well.  Note that the pid of the terminal is
 returned, not the pid of the user's program.
-If commandline is <TT
-CLASS="LITERAL"
->NULL</TT
->, just the shell is run.</P
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1273"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->dir</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Directory in which child should be executed, or <TT
-CLASS="LITERAL"
->NULL</TT
-> for current
-      directory</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1279"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->commandline</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Shell command to execute</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1284"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->close_fds</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> Like close_fds in <A
-HREF="libgnome-gnome-exec.html#GNOME-EXECUTE-ASYNC-WITH-ENV-FDS"
->gnome_execute_async_with_env_fds</A
->()</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1290"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-> process id of terminal, or <TT
-CLASS="LITERAL"
->-1</TT
-> on error.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-></DIV
-><TABLE
-CLASS="navigation"
-WIDTH="100%"
-SUMMARY="Navigation footer"
-CELLPADDING="2"
-CELLSPACING="2"
-><TR
-VALIGN="middle"
-><TD
-ALIGN="left"
-><A
-ACCESSKEY="p"
-HREF="libgnome-gnome-init.html"
-><B
->&lt;&lt;&lt;&nbsp;gnome-init</B
-></A
-></TD
-><TD
-ALIGN="right"
-><A
-ACCESSKEY="n"
-HREF="x1296.html"
-><B
->Configuration&nbsp;&gt;&gt;&gt;</B
-></A
-></TD
-></TR
-></TABLE
-></BODY
-></HTML
->
+If commandline is <tt class="literal">NULL</tt>, just the shell is run.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dir</tt></i> :</span></td><td> Directory in which child should be executed, or <tt class="literal">NULL</tt> for current
+      directory
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>commandline</tt></i> :</span></td><td> Shell command to execute
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>close_fds</tt></i> :</span></td><td> Like close_fds in <a href="libgnome-gnome-exec.html#gnome-execute-async-with-env-fds"><tt class="function">gnome_execute_async_with_env_fds()</tt></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> process id of terminal, or <tt class="literal">-1</tt> on error.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libgnome-gnome-init.html"><b>&lt;&lt; gnome-init</b></a></td><td align="right"><a accesskey="n" href="ch01s02.html"><b>Configuration &gt;&gt;</b></a></td></tr></table></body></html>

@@ -2,82 +2,72 @@
 # Copyright (C) 2003 Free Software Foundation, Inc.
 # Wang Jian <lark@linux.net.cn>, 2001
 # Xiong Jiang <jxiong@offtopic.org>, 2003
+# Funda Wang <fundawang@linux.net.cn>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnome\n"
-"POT-Creation-Date: 2003-01-23 12:10+0100\n"
-"PO-Revision-Date: 2003-01-22 22:39+0800\n"
-"Last-Translator: Xiong Jiang <jxiong@offtopic.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 16:12+0200\n"
+"PO-Revision-Date: 2004-03-18 23:48+0800\n"
+"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0\n"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gnome-2.soundlist.in.h:1
-msgid "Error Messages"
+msgid "Error message"
 msgstr "错误消息"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gnome-2.soundlist.in.h:2
-msgid "GNOME system events"
-msgstr "GNOME 系统事件"
+msgid "Informational message"
+msgstr "信息性消息"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gnome-2.soundlist.in.h:3
-msgid "Informational Messages"
-msgstr "指示性消息"
-
-# SUN NEW TRANSLATION
-#: gnome-data/gnome-2.soundlist.in.h:4
-msgid "Login"
+msgid "Log in"
 msgstr "登录"
 
-# SUN NEW TRANSLATION
-#: gnome-data/gnome-2.soundlist.in.h:5
-msgid "Logout"
+#: gnome-data/gnome-2.soundlist.in.h:4
+msgid "Log out"
 msgstr "注销"
 
-# SUN NEW TRANSLATION
-#: gnome-data/gnome-2.soundlist.in.h:6
-msgid "Miscellaneous Messages"
+#: gnome-data/gnome-2.soundlist.in.h:5
+msgid "Miscellaneous message"
 msgstr "其它消息"
 
-# SUN NEW TRANSLATION
-#: gnome-data/gnome-2.soundlist.in.h:7
-msgid "Question Dialogs"
-msgstr "问题对话框"
+#: gnome-data/gnome-2.soundlist.in.h:6
+msgid "Question dialog"
+msgstr "提问对话框"
 
-# SUN NEW TRANSLATION
+#: gnome-data/gnome-2.soundlist.in.h:7
+msgid "System events"
+msgstr "系统事件"
+
 #: gnome-data/gnome-2.soundlist.in.h:8
-msgid "Warning Messages"
+msgid "Warning message"
 msgstr "警告消息"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gtk-events-2.soundlist.in.h:1
-msgid "Action button click"
-msgstr "单击操作按钮"
+msgid "Choose menu item"
+msgstr "选择菜单项"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gtk-events-2.soundlist.in.h:2
-msgid "Check box toggled"
-msgstr "复选框已切换"
+msgid "Click on command button"
+msgstr "单击命令按钮"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gtk-events-2.soundlist.in.h:3
-msgid "Menu item activation"
-msgstr "菜单项激活"
+msgid "Select check box"
+msgstr "选择复选框"
 
-# SUN NEW TRANSLATION
 #: gnome-data/gtk-events-2.soundlist.in.h:4
 msgid "User interface events"
 msgstr "用户界面事件"
 
 #: libgnome/gnome-exec.c:441
 msgid "Cannot find a terminal, using xterm, even if it may not work"
-msgstr "无法找到终端程序，使用 xterm，即使它也可能不工作"
+msgstr "找不到终端程序，将使用 xterm，即使它也可能不工作"
 
 #: libgnome/gnome-gconf.c:174
 msgid "GNOME GConf Support"
@@ -98,7 +88,7 @@ msgstr "无法找到 GNOME_FILE_DOMAIN_HELP 域。"
 msgid ""
 "Unable to show help as %s is not a directory.  Please check your "
 "installation."
-msgstr "因为 %s 不是目录，所以无法显示帮助。请检查您的安装情况。"
+msgstr "因为 %s 不是目录，所以无法显示帮助。请检查您的安装。"
 
 # SUN CHANGED MESSAGE
 #: libgnome/gnome-help.c:209 libgnome/gnome-help.c:225
@@ -106,7 +96,7 @@ msgstr "因为 %s 不是目录，所以无法显示帮助。请检查您的安�
 msgid ""
 "Unable to find the help files in either %s or %s.  Please check your "
 "installation"
-msgstr "在 %s 或 %s 中都无法找到帮助文件。请检查您的安装情况"
+msgstr "在 %s 或 %s 中都无法找到帮助文件。请检查您的安装"
 
 #: libgnome/gnome-help.c:339
 #, c-format
@@ -116,11 +106,7 @@ msgstr "无法在帮助路径中找到 doc_id %s"
 #: libgnome/gnome-help.c:360
 #, c-format
 msgid "Help document %s/%s not found"
-msgstr "没有找到帮助文件 %s/%s"
-
-#: libgnome/gnome-i18n.c:85
-msgid "Too many alias levels for a locale, may indicate a loop"
-msgstr "区域设置有太多的别名级别，可能是循环"
+msgstr "找不到帮助文件 %s/%s"
 
 #. FIXME: get this from bonobo
 #: libgnome/gnome-init.c:88
@@ -131,180 +117,180 @@ msgstr "Bonobo 支持"
 msgid "Bonobo activation Support"
 msgstr "Bonobo 激活支持"
 
-#: libgnome/gnome-init.c:305 libgnome/gnome-init.c:319
+#: libgnome/gnome-init.c:324 libgnome/gnome-init.c:338
 #, c-format
 msgid "Could not create per-user gnome configuration directory `%s': %s\n"
-msgstr "无法创建用户的 gnome 配置目录“%s”：%s\n"
+msgstr "无法创建每用户的 gnome 配置目录“%s”：%s\n"
 
-#: libgnome/gnome-init.c:328
+#: libgnome/gnome-init.c:347
 #, c-format
 msgid ""
 "Could not set mode 0700 on private per-user gnome configuration directory `%"
 "s': %s\n"
 msgstr "无法将用户私有的 gnome 配置目录“%s”的权限设置为 0700：%s\n"
 
-#: libgnome/gnome-init.c:335
+#: libgnome/gnome-init.c:354
 #, c-format
 msgid "Could not create gnome accelerators directory `%s': %s\n"
 msgstr "无法创建 gnome 加速目录“%s”：%s\n"
 
-#: libgnome/gnome-init.c:391
+#: libgnome/gnome-init.c:403
 msgid "Disable sound server usage"
 msgstr "禁用声音服务器"
 
-#: libgnome/gnome-init.c:394
+#: libgnome/gnome-init.c:406
 msgid "Enable sound server usage"
 msgstr "启用声音服务器"
 
-#: libgnome/gnome-init.c:397
+#: libgnome/gnome-init.c:409
 msgid "Host:port on which the sound server to use is running"
-msgstr "声音服务器使用的“主机:端口”是 "
+msgstr "要使用的声音服务器所运行的主机:端口"
 
-#: libgnome/gnome-init.c:399
+#: libgnome/gnome-init.c:411
 msgid "HOSTNAME:PORT"
-msgstr "主机:端口"
+msgstr "主机名:端口"
 
-#: libgnome/gnome-init.c:417
+#: libgnome/gnome-init.c:431
 msgid "GNOME Virtual Filesystem"
 msgstr "GNOME 虚拟文件系统"
 
-#: libgnome/gnome-init.c:438
+#: libgnome/gnome-init.c:452
 msgid "GNOME Library"
 msgstr "GNOME 库"
 
-#: libgnome/gnome-program.c:426
+#: libgnome/gnome-program.c:427
 msgid "Popt Table"
 msgstr "Popt 表"
 
-#: libgnome/gnome-program.c:427
+#: libgnome/gnome-program.c:428
 msgid "The table of options for popt"
 msgstr "popt 的选项表"
 
-#: libgnome/gnome-program.c:434
+#: libgnome/gnome-program.c:435
 msgid "Popt Flags"
 msgstr "Popt 标志"
 
-#: libgnome/gnome-program.c:435
+#: libgnome/gnome-program.c:436
 msgid "The flags to use for popt"
 msgstr "用于 popt 的标志"
 
-#: libgnome/gnome-program.c:443
+#: libgnome/gnome-program.c:444
 msgid "Popt Context"
 msgstr "Popt 上下文"
 
-#: libgnome/gnome-program.c:444
+#: libgnome/gnome-program.c:445
 msgid "The popt context pointer that GnomeProgram is using"
 msgstr "GnomeProgram 使用的 popt 上下文指针"
 
-#: libgnome/gnome-program.c:452
-msgid "Human readable name"
-msgstr "人可识别名字"
-
 #: libgnome/gnome-program.c:453
-msgid "Human readable name of this application"
-msgstr "该程序的人可识别名字"
+msgid "Human readable name"
+msgstr "人可识别的名字"
 
-#: libgnome/gnome-program.c:462
+#: libgnome/gnome-program.c:454
+msgid "Human readable name of this application"
+msgstr "该程序的人可识别的名字"
+
+#: libgnome/gnome-program.c:463
 msgid "GNOME path"
 msgstr "GNOME 路径"
 
-#: libgnome/gnome-program.c:463
+#: libgnome/gnome-program.c:464
 msgid "Path in which to look for installed files"
 msgstr "搜索安装的文件的路径"
 
-#: libgnome/gnome-program.c:472
+#: libgnome/gnome-program.c:473
 msgid "App ID"
 msgstr "程序ID"
 
-#: libgnome/gnome-program.c:473
+#: libgnome/gnome-program.c:474
 msgid "ID string to use for this application"
 msgstr "用于该程序的ID字符串"
 
-#: libgnome/gnome-program.c:480
+#: libgnome/gnome-program.c:481
 msgid "App version"
 msgstr "程序版本"
 
-#: libgnome/gnome-program.c:481
+#: libgnome/gnome-program.c:482
 msgid "Version of this application"
 msgstr "该程序的版本"
 
-#: libgnome/gnome-program.c:488
+#: libgnome/gnome-program.c:489
 msgid "GNOME Prefix"
 msgstr "GNOME 前缀"
 
-#: libgnome/gnome-program.c:489
+#: libgnome/gnome-program.c:490
 msgid "Prefix where GNOME was installed"
 msgstr "GNOME 安装位置的前缀"
 
-#: libgnome/gnome-program.c:498
+#: libgnome/gnome-program.c:499
 msgid "GNOME Libdir"
 msgstr "GNOME 库目录"
 
-#: libgnome/gnome-program.c:499
+#: libgnome/gnome-program.c:500
 msgid "Library prefix where GNOME was installed"
 msgstr "GNOME 安装位置的库目录前缀"
 
-#: libgnome/gnome-program.c:508
+#: libgnome/gnome-program.c:509
 msgid "GNOME Datadir"
 msgstr "GNOME 数据目录"
 
-#: libgnome/gnome-program.c:509
+#: libgnome/gnome-program.c:510
 msgid "Data prefix where GNOME was installed"
 msgstr "GNOME 安装位置的数据目录前缀"
 
-#: libgnome/gnome-program.c:518
+#: libgnome/gnome-program.c:519
 msgid "GNOME Sysconfdir"
 msgstr "GNOME 系统配置目录"
 
-#: libgnome/gnome-program.c:519
+#: libgnome/gnome-program.c:520
 msgid "Configuration prefix where GNOME was installed"
 msgstr "配置 GNOME 安装的目录前缀"
 
-#: libgnome/gnome-program.c:529
+#: libgnome/gnome-program.c:530
 msgid "GNOME App Prefix"
 msgstr "GNOME 程序前缀"
 
-#: libgnome/gnome-program.c:530
+#: libgnome/gnome-program.c:531
 msgid "Prefix where this application was installed"
 msgstr "本程序安装的目录前缀"
 
-#: libgnome/gnome-program.c:538
+#: libgnome/gnome-program.c:539
 msgid "GNOME App Libdir"
 msgstr "GNOME 程序库前缀"
 
-#: libgnome/gnome-program.c:539
+#: libgnome/gnome-program.c:540
 msgid "Library prefix where this application was installed"
 msgstr "本程序安装的库目录前缀"
 
-#: libgnome/gnome-program.c:548
+#: libgnome/gnome-program.c:549
 msgid "GNOME App Datadir"
 msgstr "GNOME 程序数据目录"
 
-#: libgnome/gnome-program.c:549
+#: libgnome/gnome-program.c:550
 msgid "Data prefix where this application was installed"
 msgstr "本程序安装的数据目录前缀"
 
-#: libgnome/gnome-program.c:558
+#: libgnome/gnome-program.c:559
 msgid "GNOME App Sysconfdir"
 msgstr "GNOME 程序系统配置目录"
 
-#: libgnome/gnome-program.c:559
+#: libgnome/gnome-program.c:560
 msgid "Configuration prefix where this application was installed"
 msgstr "本程序安装的配置目录前缀"
 
-#: libgnome/gnome-program.c:568
+#: libgnome/gnome-program.c:569
 msgid "Create Directories"
 msgstr "创建目录"
 
-#: libgnome/gnome-program.c:569
+#: libgnome/gnome-program.c:570
 msgid "Create standard GNOME directories on startup"
 msgstr "在启动时创建标准 GNOME 目录"
 
-#: libgnome/gnome-program.c:578
+#: libgnome/gnome-program.c:579
 msgid "Enable Sound"
 msgstr "启用声效"
 
-#: libgnome/gnome-program.c:579
+#: libgnome/gnome-program.c:580
 msgid "Enable sound on startup"
 msgstr "启动时启用声效"
 
@@ -316,26 +302,64 @@ msgstr "Espeaker"
 msgid "How to connect to esd"
 msgstr "如何连接 esd"
 
-#: libgnome/gnome-program.c:1352
+#: libgnome/gnome-program.c:1355
 msgid "Help options"
 msgstr "帮助选项"
 
-#: libgnome/gnome-program.c:1357
+#: libgnome/gnome-program.c:1360
 msgid "Application options"
 msgstr "程序选项"
 
-#: libgnome/gnome-program.c:1373
+#: libgnome/gnome-program.c:1376
 msgid "Dynamic modules to load"
 msgstr "要载入的动态模块"
 
-#: libgnome/gnome-program.c:1374
+#: libgnome/gnome-program.c:1377
 msgid "MODULE1,MODULE2,..."
-msgstr "MODULE1，MODULE2，..."
+msgstr "MODULE1,MODULE2，..."
+
+#: libgnome/gnome-url.c:81
+msgid "Unknown internal error while displaying this location."
+msgstr "显示此位置时发生了未知的内不错。"
+
+#: libgnome/gnome-url.c:88
+msgid "The specified location is invalid."
+msgstr "指定位置无效。"
+
+#: libgnome/gnome-url.c:95
+msgid ""
+"There was an error parsing the default action command associated with this "
+"location."
+msgstr "处理与此位置关联的默认操作命令时出错。"
+
+#: libgnome/gnome-url.c:103
+msgid ""
+"There was an error launching the default action command associated with this "
+"location."
+msgstr "调用与此位置关联的默认操作命令时出错。"
+
+#: libgnome/gnome-url.c:111
+msgid "There is no default action associated with this location."
+msgstr "没有与此位置关联的默认操作。"
+
+#: libgnome/gnome-url.c:118
+msgid "The default action does not support this protocol."
+msgstr "默认操作不支持此协议。"
+
+#: libgnome/gnome-url.c:125
+#, c-format
+msgid "Unknown error code: %d"
+msgstr "未知的错误代码：%d"
+
+#: libgnome/gnome-open.c:35
+#, c-format
+msgid "Error showing url: %s\n"
+msgstr "显示 URL 出错：%s\n"
 
 # SUN CHANGED MESSAGE
 #: monikers/GNOME_Moniker_std.server.in.in.h:1
 msgid "Extra Moniker factory"
-msgstr "额外的 Moniker 车间"
+msgstr "额外的 Moniker 工厂"
 
 #: monikers/GNOME_Moniker_std.server.in.in.h:2
 msgid "GConf moniker"
@@ -356,7 +380,7 @@ msgstr "配置中没有找到键 %s"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:1
 msgid "Beep when a modifier is pressed"
-msgstr "按下修饰键时鸣笛"
+msgstr "按下修饰键时响铃"
 
 #: schemas/desktop_gnome_accessibility_keyboard.schemas.in.h:2
 msgid "Disable if two keys are pressed at the same time."
@@ -400,6 +424,16 @@ msgstr "最小间隔毫秒数"
 msgid "pixels per seconds"
 msgstr "每秒像素点"
 
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:1
+msgid ""
+"List of assistive technology applications to start when logging into the "
+"GNOME desktop"
+msgstr "登录 GNOME 桌面后启动的辅助技术程序"
+
+#: schemas/desktop_gnome_accessibility_startup.schemas.in.h:2
+msgid "Startup Assistive Technology Applications"
+msgstr "启动辅助技术程序"
+
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:1
 msgid "Browser needs terminal"
 msgstr "浏览器需要终端"
@@ -415,7 +449,7 @@ msgstr "默认浏览器"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:4
 msgid "Default browser for all URLs"
-msgstr "所有 URL 的默认浏览器"
+msgstr "全部 URL 的默认浏览器"
 
 #: schemas/desktop_gnome_applications_browser.schemas.in.h:5
 msgid "Whether the default browser needs a terminal to run"
@@ -427,7 +461,7 @@ msgstr "默认的浏览器是否理解 Netscape 远程控制命令"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:2
 msgid "Default help viewer"
-msgstr "默认的帮助查看器"
+msgstr "默认帮助查看器"
 
 #: schemas/desktop_gnome_applications_help_viewer.schemas.in.h:3
 msgid "Help viewer needs terminal"
@@ -444,7 +478,7 @@ msgstr "默认的帮助查看器是否需要终端来运行"
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:1
 msgid ""
 "Argument used to execute programs in the terminal defined by the 'exec' key."
-msgstr "在‘执行’键定义的终端里执行程序的参数。"
+msgstr "在“执行”键定义的终端里执行程序的参数。"
 
 #: schemas/desktop_gnome_applications_terminal.schemas.in.h:2
 msgid "Exec Arguments"
@@ -499,8 +533,8 @@ msgid ""
 "Determines how the image set by wallpaper_filename is rendered. Possible "
 "values are \"none\", \"wallpaper\", \"centered\", \"scaled\", \"stretched\"."
 msgstr ""
-"决定如何显示墙纸文件名指定的图片。可用的值有：\"none\", \"wallpaper\", "
-"\"centered\", \"scaled\", \"stretched\"。"
+"决定如何显示墙纸文件名指定的图片。可用的值有：“none”, “wallpaper”, "
+"“centered”, “scaled”, “stretched”。"
 
 #: schemas/desktop_gnome_background.schemas.in.h:3
 msgid "Draw Desktop Background"
@@ -519,8 +553,8 @@ msgid ""
 "How to shade the background color. Possible values are \"horizontal-gradient"
 "\", \"vertical-gradient\", and \"solid\""
 msgstr ""
-"如何渐变背景颜色。可用的值有 \"horizontal-gradient\", \"vertical-gradient\", "
-"和 \"solid\""
+"如何渐变背景颜色。可用的值有“horizontal-gradient”，“vertical-"
+"gradient”和“solid”"
 
 #: schemas/desktop_gnome_background.schemas.in.h:7
 msgid "Left or Top color when drawing gradients, or the solid color."
@@ -564,7 +598,7 @@ msgstr "用于显示文件图标的主题"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:1
 msgid "Basename of the default theme used by gtk+."
-msgstr "gtk+ 使用的默认主题的基本名称"
+msgstr "gtk+ 使用的默认主题的基本名称。"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:2
 msgid "Can Change Accels"
@@ -611,7 +645,7 @@ msgid "Icon theme to use for the panel, nautilus etc."
 msgstr "用于面板、Nautilus 等的图标主题。"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:13
-msgid "Length of the cursor blink cycle, in milleseconds"
+msgid "Length of the cursor blink cycle, in milliseconds"
 msgstr "光标闪烁周期的长度，单位为毫秒"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:14
@@ -627,50 +661,73 @@ msgid "Menus Have Tearoff"
 msgstr "菜单具有分离条"
 
 #: schemas/desktop_gnome_interface.schemas.in.h:17
+msgid "Module for GtkFileChooser"
+msgstr "GtkFileChooser 的模块"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:18
+msgid ""
+"Module to use as the filesystem model for the GtkFileChooser widget. "
+"Possible values are \"gnome-vfs\" and \"gtk+\"."
+msgstr ""
+"GtkFileChooser 部件所用的文件系统模型的模块。可供选择的值是“gnome-vfs”和“gtk"
+"+”。"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:19
+msgid "Monospace font"
+msgstr "等距字体"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:20
+msgid ""
+"Name of a monospaced (fixed-width) font for use in locations like terminals."
+msgstr "类似终端程序等位置中所用的等距(固定宽度)字体。"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:21
 msgid "Name of the GTK+ input method Preedit Style used by gtk+."
 msgstr "gtk+ 使用的 GTK+ 输入法预编辑风格的名称。"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:18
+#: schemas/desktop_gnome_interface.schemas.in.h:22
 msgid "Name of the GTK+ input method Status Style used by gtk+."
 msgstr "gtk+ 使用的 GTK+ 输入法状态风格的名称。"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:19
+#: schemas/desktop_gnome_interface.schemas.in.h:23
 msgid "Name of the default font used by gtk+."
 msgstr "gtk+ 使用的默认字体的名称。"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:20
+#: schemas/desktop_gnome_interface.schemas.in.h:24
 msgid "Status Bar on Right"
 msgstr "状态栏位于右边"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:21
+#: schemas/desktop_gnome_interface.schemas.in.h:25
 msgid "This specifies the size of icons displayed in toolbars"
 msgstr "用来指定工具栏上显示的图标的大小"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:22
+#: schemas/desktop_gnome_interface.schemas.in.h:26
 msgid "Toolbar Detachable"
 msgstr "工具栏可分离"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:23
+#: schemas/desktop_gnome_interface.schemas.in.h:27
 msgid "Toolbar Icon Size"
 msgstr "工具栏图标大小"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:24
+#: schemas/desktop_gnome_interface.schemas.in.h:28
 msgid "Toolbar Style"
 msgstr "工具栏风格"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:25
-msgid "Toolbar Style. Valid values are both, both_horiz, icon, and text"
-msgstr "工具栏风格。有效的值是 both, both_horiz, icon, 和 text"
+#: schemas/desktop_gnome_interface.schemas.in.h:29
+msgid ""
+"Toolbar Style. Valid values are \"both\", \"both_horiz\", \"icon\", and "
+"\"text\""
+msgstr "工具栏风格。有效的值是“both”，“both_horiz”，“icon”和“text”"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:26
+#: schemas/desktop_gnome_interface.schemas.in.h:30
 msgid "Use Custom Font"
 msgstr "使用自定义字体"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:27
+#: schemas/desktop_gnome_interface.schemas.in.h:31
 msgid "Whether Applications should have accessibility support"
 msgstr "应用程序是否应该有辅助访问支持"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:28
+#: schemas/desktop_gnome_interface.schemas.in.h:32
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
@@ -678,39 +735,84 @@ msgstr ""
 "是否应该显示动画。注意：这是一个全局的设置，它将改变窗口管理器、面板等的行"
 "为。"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:29
+#: schemas/desktop_gnome_interface.schemas.in.h:33
 msgid "Whether menus may display an icon next to a menu entry"
 msgstr "是否在菜单上菜单项的旁边显示图标"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:30
+#: schemas/desktop_gnome_interface.schemas.in.h:34
 msgid "Whether menus should have a tearoff"
 msgstr "菜单是否应该有分离条"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:31
-msgid ""
-"Whether the User can dynamically type a new accelerator when a menu is "
-"popped up"
-msgstr "当菜单弹出后，用户是否能动态地输入新的加速键"
-
-#: schemas/desktop_gnome_interface.schemas.in.h:32
+#: schemas/desktop_gnome_interface.schemas.in.h:35
 msgid "Whether the cursor should blink"
 msgstr "光标是否应该闪烁"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:33
+#: schemas/desktop_gnome_interface.schemas.in.h:36
 msgid "Whether the user can detach menubars and move them around"
 msgstr "用户是否能分离菜单栏并四处移动它们"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:34
+#: schemas/desktop_gnome_interface.schemas.in.h:37
 msgid "Whether the user can detach toolbars and move them around"
 msgstr "用户是否能分离工具栏并四处移动它们"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:35
+#: schemas/desktop_gnome_interface.schemas.in.h:38
+msgid ""
+"Whether the user can dynamically type a new accelerator when a menu is "
+"popped up"
+msgstr "当菜单弹出后，用户是否能动态地输入新的加速键"
+
+#: schemas/desktop_gnome_interface.schemas.in.h:39
 msgid "Whether to display a status bar meter on the right"
 msgstr "是否在右边显示状态栏指示"
 
-#: schemas/desktop_gnome_interface.schemas.in.h:36
+#: schemas/desktop_gnome_interface.schemas.in.h:40
 msgid "Whether to use a custom font in gtk+ applications."
 msgstr "是否在 gtk+ 程序中使用自定义字体。"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:1
+msgid "Disable command line"
+msgstr "禁用命令行"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:2
+msgid "Disable print setup"
+msgstr "禁用打印设置"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:3
+msgid "Disable printing"
+msgstr "禁用打印"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:4
+msgid "Disable saving files to disk"
+msgstr "禁止将文件保存到磁盘"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:5
+msgid ""
+"Prevent the user from accessing the terminal or specifying a command line to "
+"be executed. For example, this would disable access to the panel's \"Run "
+"Application\" dialog."
+msgstr ""
+"避免用户表单访问终端或指定要执行的命令行。例如，这将禁止访问面板的“运行应用程"
+"序”对话框。"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:6
+msgid ""
+"Prevent the user from modifying print settings. For example, this would "
+"disable access to all applications' \"Print Setup\" dialogs."
+msgstr ""
+"避免用户修改打印设置。例如，这将禁止访问全部应用程序的“打印设置”对话框。"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:7
+msgid ""
+"Prevent the user from printing. For example, this would disable access to "
+"all applications' \"Print\" dialogs."
+msgstr "避免用户进行打印。例如，这将禁止访问全部应用程序的“打印”对话框。"
+
+#: schemas/desktop_gnome_lockdown.schemas.in.h:8
+msgid ""
+"Prevent the user from saving files to disk. For example, this would disable "
+"access to all applications' \"Save as\" dialogs."
+msgstr ""
+"避免用户将文件保存到磁盘。例如，这将禁止访问全部应用程序的“另存为”对话框。"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:1
 msgid "File name of the bell sound to be played"
@@ -721,8 +823,8 @@ msgid "Keyboard Bell Custom Filename"
 msgstr "自定义键盘铃声文件名"
 
 #: schemas/desktop_gnome_peripherals_keyboard.schemas.in.h:3
-msgid "possible values are on, off, and custom."
-msgstr "可用的值是 on, off, 和 custom。"
+msgid "possible values are \"on\", \"off\", and \"custom\"."
+msgstr "可用的值是“on”，“off”和“custom”。"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:1
 msgid ""
@@ -735,25 +837,23 @@ msgid "Cursor font"
 msgstr "光标字体"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:3
-#, fuzzy
 msgid "Cursor size"
-msgstr "光标闪烁"
+msgstr "光标大小"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:4
-#, fuzzy
 msgid "Cursor theme"
-msgstr "光标字体"
+msgstr "光标主题"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:5
-#, fuzzy
 msgid ""
 "Cursor theme name. Used only by Xservers that support Xcursor, such as "
-"XFree86 4.3 and later. This value is only propagated to the X server start "
-"of each session, so changing it mid-session won't have an effect until the "
-"next time you log in."
+"XFree86 4.3 and later. This value is only propagated to the X server at the "
+"start of each session, so changing it mid-session won't have an effect until "
+"the next time you log in."
 msgstr ""
-"光标字体的名称。如果未设置，则使用默认的字体。此设置只有在每次会话开始前传送"
-"给 X 服务器，因此在会话当中改变它不会有用，要等到您下次登录后才会起作用。"
+"光标主体的名称。仅对支持 Xcursor 的 Xserver 而言，例如 XFree86 4.3 或更新版"
+"本。此设置只有在每次会话开始前传送给 X 服务器，因此在会话当中改变它不会有用，"
+"要等到您下次登录后才会起作用。"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:6
 msgid "Distance before a drag is started"
@@ -775,8 +875,8 @@ msgstr "拖放阈值"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:10
 msgid ""
-"Font name of the cursor. If unset set, the default font is used. This value "
-"is only propagated to the X server start of each session, so changing it mid-"
+"Font name of the cursor. If unset, the default font is used. This value is "
+"only propagated to the X server start of each session, so changing it mid-"
 "session won't have an effect until the next time you log in."
 msgstr ""
 "光标字体的名称。如果未设置，则使用默认的字体。此设置只有在每次会话开始前传送"
@@ -813,14 +913,13 @@ msgid "Single click to open icons"
 msgstr "单击可打开图标"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:18
-#, fuzzy
 msgid ""
 "Size of the cursor referenced by cursor_theme. This value is only propagated "
 "to the X server start of each session, so changing it mid-session won't have "
 "an effect until the next time you log in."
 msgstr ""
-"光标字体的名称。如果未设置，则使用默认的字体。此设置只有在每次会话开始前传送"
-"给 X 服务器，因此在会话当中改变它不会有用，要等到您下次登录后才会起作用。"
+"光标主题引用的光标大小。此设置只在每次会话开始前传送给 X 服务器，因此在会话当"
+"中改变它不会有用，要等到您下次登录后才会起作用。"
 
 #: schemas/desktop_gnome_peripherals_mouse.schemas.in.h:19
 msgid "Swap left and right mouse buttons for left-handed mice"
@@ -842,169 +941,47 @@ msgstr "事件的声音"
 msgid "Whether to play sounds on user events."
 msgstr "是否在用户事件发生时播放声音。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
-msgid "Default URL show handler"
-msgstr "默认的 URL 显示处理程序"
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:1
+msgid "Disable all external thumbnailers"
+msgstr "禁用所有外部缩略图程序"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
-msgid "How to handle applications URLs"
-msgstr "如何处理“应用程序”URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
-msgid "How to handle ghelp URLs"
-msgstr "如何处理 ghelp URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
-msgid "How to handle info URLs"
-msgstr "如何处理 info URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
-msgid "How to handle man URLs"
-msgstr "如何处理 man URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
-msgid "How to handle preferences URLs"
-msgstr "如何处理 首选项 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
-msgid "How to handle server-settings URLs"
-msgstr "如何处理 服务器设置 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
-msgid "How to handle start-here URLs"
-msgstr "如何处理 从这里开始 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
-msgid "How to handle system-settings URLs"
-msgstr "如何处理 系统设置 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
-msgid "How to handle trash URLs"
-msgstr "如何处理 回收站 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
-msgid "How to handle unknown URLs"
-msgstr "如何处理未知的 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
-msgid "Run program in terminal"
-msgstr "在终端中运行程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+#: schemas/desktop_gnome_thumbnailers.schemas.in.h:2
 msgid ""
-"Set to true to have a program specified in applications/command handle "
-"applications URLs"
-msgstr "设置为“真”可以用在 应用程序/命令 中指定的程序来处理 应用程序 URL"
+"Set to true to disable all external thumbnailer programs, independent on "
+"whether they are independently disabled/enabled."
+msgstr "设为 true 可禁用所有外部缩略图程序，而不管这些程序自身是启用还是禁用。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
-msgid ""
-"Set to true to have a program specified in preferences/command handle "
-"preferences URLs"
-msgstr "设置为“真”可以用在 首选项/命令 中指定的程序来处理 首选项 URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:1
+msgid "Allow postponing of breaks"
+msgstr "允许推迟间断"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
-msgid ""
-"Set to true to have a program specified in programs/ghelp handle ghelp URLs"
-msgstr "设置为“真”可以用在 程序/ghelp 中指定的程序来处理 ghelp URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:2
+msgid "Break time"
+msgstr "间断时间"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
-msgid ""
-"Set to true to have a program specified in programs/info handle info URLs"
-msgstr "设置为“真”可以用在 程序/info 中指定的程序来处理 info URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:3
+msgid "Number of minutes of typing time before break mode starts."
+msgstr "间断模式开始前的最少打字时间。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
-msgid "Set to true to have a program specified in programs/man handle man URLs"
-msgstr "设置为“真”可以用在 程序/man 中指定的程序来处理 man URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:4
+msgid "Number of minutes that the typing break should last."
+msgstr "打字间断应该持续的分钟数。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
-msgid ""
-"Set to true to have a program specified in programs/unknown handle unknown "
-"URLs"
-msgstr "设置为“真”可以用在 程序/未知 中指定的程序来处理未知的 URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:5
+msgid "Type time"
+msgstr "打字时间"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
-msgid ""
-"Set to true to have a program specified in server-settings/command handle "
-"server-settings URLs"
-msgstr "设置为“真”可以用在 服务器设置/命令 中指定的程序来处理 服务器设置 URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:6
+msgid "Whether or not keyboard locking is enabled"
+msgstr "是否允许键盘锁定"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
-msgid ""
-"Set to true to have a program specified in start-here/command handle start-"
-"here URLs"
-msgstr "设置为“真”可以用在 从这里开始/命令 中指定的程序来处理 从这里开始 URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:7
+msgid "Whether or not keyboard locking is enabled."
+msgstr "是否允许键盘锁定。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
-msgid ""
-"Set to true to have a program specified in system-settings/command handle "
-"system-settings URLs"
-msgstr "设置为“真”可以用在 系统设置/命令 中指定的程序来处理 系统设置 URL"
+#: schemas/desktop_gnome_typing_break.schemas.in.h:8
+msgid "Whether or not the typing break screen can be postponed."
+msgstr "是否可推迟打字间断屏幕。"
 
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
-msgid ""
-"Set to true to have a program specified in trash/command handle trash URLs"
-msgstr "设置为“真”可以用在 回收站/命令 中指定的程序来处理 回收站 URL"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
-msgid "True if the program to handle this URL should be run in a terminal"
-msgstr "如果处理此 URL 的程序需要在终端中运行则设置为“真”"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
-msgid "URL handler for applications pages"
-msgstr "应用程序页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
-msgid "URL handler for ghelp pages"
-msgstr "ghelp 页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
-msgid "URL handler for info pages"
-msgstr "info 页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
-msgid "URL handler for man pages"
-msgstr "man 页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
-msgid "URL handler for preferences pages"
-msgstr "首选项页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
-msgid "URL handler for server-settings pages"
-msgstr "服务器设置页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
-msgid "URL handler for start-here pages"
-msgstr "从这里开始页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
-msgid "URL handler for system-settings pages"
-msgstr "系统设置页的 URL 处理程序"
-
-#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
-msgid "URL handler for trash pages"
-msgstr "回收站页的 URL 处理程序"
-
-#~ msgid ""
-#~ "Unable to find the GNOME_FILE_DOMAIN_HELP domain.  This implies that "
-#~ "gnome-libs was compiled incorrectly."
-#~ msgstr ""
-#~ "无法找到 GNOME_FILE_DOMAIN_HELP 域。这表明 gnome-libs 没有正确编译。"
-
-#~ msgid "Help document %s for %s not found"
-#~ msgstr "没有找到 %2$s 的帮助文档 %1$s"
-
-#~ msgid "Test option."
-#~ msgstr "测试选项。"
-
-#~ msgid "The Application Name"
-#~ msgstr "程序名"
-
-#~ msgid "Cannot parse: %s"
-#~ msgstr "无法解析：%s"
-
-#~ msgid "Can not bonobo_init"
-#~ msgstr "无法进行 bonobo_init"
-
-#~ msgid "Internal error"
-#~ msgstr "内部错误"
+#~ msgid "Too many alias levels for a locale, may indicate a loop"
+#~ msgstr "区域设置有太多的别名级别，可能是循环"

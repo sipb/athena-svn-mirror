@@ -1,0 +1,238 @@
+<refentry id="libgnome-gnome-triggers">
+<refmeta>
+<refentrytitle>gnome-triggers</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOME Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-triggers</refname><refpurpose>Hierarchical signal mechanism for GNOME events.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;libgnome/libgnome.h&gt;
+
+
+enum        <link linkend="GnomeTriggerType">GnomeTriggerType</link>;
+<link linkend="void">void</link>        (<link linkend="GnomeTriggerActionFunction">*GnomeTriggerActionFunction</link>)   (<link linkend="char">char</link> *msg,
+                                             <link linkend="char">char</link> *level,
+                                             <link linkend="char">char</link> *supinfo[]);
+struct      <link linkend="GnomeTrigger">GnomeTrigger</link>;
+<link linkend="void">void</link>        <link linkend="gnome-triggers-add-trigger">gnome_triggers_add_trigger</link>      (<link linkend="GnomeTrigger">GnomeTrigger</link> *nt,
+                                             ...);
+<link linkend="void">void</link>        <link linkend="gnome-triggers-vadd-trigger">gnome_triggers_vadd_trigger</link>     (<link linkend="GnomeTrigger">GnomeTrigger</link> *nt,
+                                             <link linkend="char">char</link> *supinfo[]);
+<link linkend="void">void</link>        <link linkend="gnome-triggers-do">gnome_triggers_do</link>               (const <link linkend="char">char</link> *msg,
+                                             const <link linkend="char">char</link> *level,
+                                             ...);
+<link linkend="void">void</link>        <link linkend="gnome-triggers-vdo">gnome_triggers_vdo</link>              (const <link linkend="char">char</link> *msg,
+                                             const <link linkend="char">char</link> *level,
+                                             const <link linkend="char">char</link> *supinfo[]);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The triggers API provides a way for applications to tell GNOME about
+interesting events that then cause something to happen (for example, playing a
+sound). An event can either be a function that is called, a sound that is
+played or an external command that is run.
+</para>
+<para>
+Each trigger can optionally have a <wordasword>level</wordasword> associated
+with it and a <wordasword>section</wordasword>. The
+<wordasword>section</wordasword> is a list of strings that help to classify the
+event, which imposes a hierarchy on the trigger system. For example, messages
+about the hard drive partition /dev/hda1 may come under the section ("system",
+"device", "disk", "/dev/hda1"). This means that an application could trigger
+all events for the ("system", "device") sections and include those events, or
+be more specific and just trigger those for ("system", "device", "disk",
+"/dev/hda1").
+</para>
+<para>
+At the present time, triggers are not widely used in GNOME, being mostly used
+to play sound events in response to certain actions.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeTriggerType"/>enum GnomeTriggerType</title>
+<indexterm><primary>GnomeTriggerType</primary></indexterm><programlisting>typedef enum {
+	GTRIG_NONE,
+	GTRIG_FUNCTION,
+	GTRIG_COMMAND,
+	GTRIG_MEDIAPLAY
+} GnomeTriggerType;
+</programlisting>
+<para>
+These are the different types of triggers that can be activated by an
+application.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>GTRIG_NONE</literal></term>
+<listitem><simpara>A null trigger type. Should never be used.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTRIG_FUNCTION</literal></term>
+<listitem><simpara>The trigger causes a function to be executed.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTRIG_COMMAND</literal></term>
+<listitem><simpara>The trigger causes a command to be executed (using <link linkend="execv"><function>execv()</function></link>).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>GTRIG_MEDIAPLAY</literal></term>
+<listitem><simpara>The trigger causes a sound to be played.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeTriggerActionFunction"/>GnomeTriggerActionFunction ()</title>
+<indexterm><primary>GnomeTriggerActionFunction</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeTriggerActionFunction)   (<link linkend="char">char</link> *msg,
+                                             <link linkend="char">char</link> *level,
+                                             <link linkend="char">char</link> *supinfo[]);</programlisting>
+<para>
+The signature of a function that can used as a target for <link linkend="GTRIG-FUNCTION-CAPS"><type>GTRIG_FUNCTION</type></link>
+types of <link linkend="GnomeTrigger"><type>GnomeTrigger</type></link> instances.
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara>The human-readable message that was passed to <link linkend="gnome-triggers-do"><function>gnome_triggers_do()</function></link>. May be
+<literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>level</parameter>&nbsp;:</term>
+<listitem><simpara>The severity level of the event. May be <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>supinfo</parameter>&nbsp;:</term>
+<listitem><simpara>The section in which the event belongs. This is a <literal>NULL</literal> terminated
+array.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeTrigger"/>struct GnomeTrigger</title>
+<indexterm><primary>GnomeTrigger</primary></indexterm><programlisting>struct GnomeTrigger {
+
+	GnomeTriggerType type;
+	union {
+		/*
+		 * These will be passed the same info as
+		 * gnome_triggers_do was given.
+		 */
+		GnomeTriggerActionFunction function;
+		gchar *command;
+		struct {
+			gchar *file;
+			int cache_id;
+		} media;
+	} u;
+        gchar *level;
+};
+</programlisting>
+<para>
+This structure stores the information about an action that is triggered for
+a particular event. A filled in instance of this structure is passed to
+<link linkend="gnome-triggers-add-trigger"><function>gnome_triggers_add_trigger()</function></link> and <link linkend="gnome-triggers-vadd-trigger"><function>gnome_triggers_vadd_trigger()</function></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-triggers-add-trigger"/>gnome_triggers_add_trigger ()</title>
+<indexterm><primary>gnome_triggers_add_trigger</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_triggers_add_trigger      (<link linkend="GnomeTrigger">GnomeTrigger</link> *nt,
+                                             ...);</programlisting>
+<para>
+Adds a new <link linkend="GnomeTrigger"><type>GnomeTrigger</type></link> instance to the event hierarchy.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>nt</parameter>&nbsp;:</term>
+<listitem><simpara> Information on the new trigger to be added.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> The section to add the trigger under.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-triggers-vadd-trigger"/>gnome_triggers_vadd_trigger ()</title>
+<indexterm><primary>gnome_triggers_vadd_trigger</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_triggers_vadd_trigger     (<link linkend="GnomeTrigger">GnomeTrigger</link> *nt,
+                                             <link linkend="char">char</link> *supinfo[]);</programlisting>
+<para>
+This does the same as <link linkend="gnome-triggers-add-trigger"><function>gnome_triggers_add_trigger()</function></link>, except the section is
+stored in the <literal>NULL</literal> terminated array <parameter>supinfo</parameter> instead of as a variable
+length argument list.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>nt</parameter>&nbsp;:</term>
+<listitem><simpara> Information on the new trigger to be added.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>supinfo</parameter>&nbsp;:</term>
+<listitem><simpara> The section to add the trigger under.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-triggers-do"/>gnome_triggers_do ()</title>
+<indexterm><primary>gnome_triggers_do</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_triggers_do               (const <link linkend="char">char</link> *msg,
+                                             const <link linkend="char">char</link> *level,
+                                             ...);</programlisting>
+<para>
+Notifies GNOME about an event happening, so that any appropriate handlers
+can be run.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> The human-readable message describing the event (can be <literal>NULL</literal>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>level</parameter>&nbsp;:</term>
+<listitem><simpara> The level of severity of the event, or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>...</parameter>&nbsp;:</term>
+<listitem><simpara> The classification of the event.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-triggers-vdo"/>gnome_triggers_vdo ()</title>
+<indexterm><primary>gnome_triggers_vdo</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_triggers_vdo              (const <link linkend="char">char</link> *msg,
+                                             const <link linkend="char">char</link> *level,
+                                             const <link linkend="char">char</link> *supinfo[]);</programlisting>
+<para>
+Notifies GNOME about an event happening, so that any appropriate handlers
+can be run. This does the same as <link linkend="gnome-trigger-do"><function>gnome_trigger_do()</function></link> except that it takes a
+<literal>NULL</literal> terminated array instead of a varargs list.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> The human-readable message describing the event (can be <literal>NULL</literal>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>level</parameter>&nbsp;:</term>
+<listitem><simpara> The level of severity of the event, or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>supinfo</parameter>&nbsp;:</term>
+<listitem><simpara> The classification of the event (<literal>NULL</literal> terminated array).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
