@@ -59,7 +59,7 @@ sunos4*)
 	SHLIB_LIBVERSION='$(SHLIB_LIBSUFF).$(SHLIB_MAJOR)$(SHLIB_MINOR)'
 	;;
 
-sunos5*-gcc*|solaris2*-gcc*)
+sunos5*-gcc*|solaris2*-*gcc*)
 	SHOBJ_CFLAGS=-fpic
 	SHOBJ_LD='${CC}'
 	SHOBJ_LDFLAGS='-shared -Wl,-i -Wl,-h,$@'
