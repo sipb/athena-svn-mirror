@@ -192,4 +192,9 @@ verify /usr/etc/syslogd
 verify /usr/etc/nsd
 verify /usr/lib32/libmdbm.so
 
+# Work around a reported vulnerability, which could be exploited by a
+# non-root user to read any file, by changing the permissions on a
+# world-writable appletalk directory.
+chmod o-w ${AIS_ROOT}/var/adm/appletalk/icons
+
 exit 0
