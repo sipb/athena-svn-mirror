@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.3 1990-07-10 21:14:27 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.4 1990-07-11 10:21:08 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.3 1990-07-10 21:14:27 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.4 1990-07-11 10:21:08 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -749,6 +749,16 @@ ndr_$long_int *flag;
 	return 0;
     }
 
+/*ARGSUSED*/
+quota_error_code QuotaServerStatus(h, auth, message)
+handle_t h;
+krb_ktext *auth;
+quota_message message;
+{
+    if(QD) strncpy(message, "Quota server currently shutdown",MESSAGE_SZ);
+    else strncpy(message, "Quota server up and running",MESSAGE_SZ);
+    return 0;
+}
 
 /* Warning these must reflect the idl file */
 static print_quota_v2$epv_t print_quota_v2$mgr_epv = {
@@ -756,7 +766,8 @@ static print_quota_v2$epv_t print_quota_v2$mgr_epv = {
     QuotaQuery,
     QuotaModifyUser,
     QuotaModifyAccount,
-    QuotaQueryAccount
+    QuotaQueryAccount,
+    QuotaServerStatus
     };
 
 register_quota_manager_v2()
