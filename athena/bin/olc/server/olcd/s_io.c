@@ -13,18 +13,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.16 1990-07-16 10:16:47 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: s_io.c,v 1.17 1990-08-20 04:39:50 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.16 1990-07-16 10:16:47 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.17 1990-08-20 04:39:50 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -54,9 +55,6 @@ extern "C" {
 
 extern char DaemonHost[];			/* Name of daemon's machine. */
 extern int errno;
-
-static struct hostent *hp = (struct hostent *)NULL; /* daemon host */
-static struct servent *service = (struct servent *)NULL; /* service entry */
 
 #define	MIN(a,b)	((a)>(b)?(b):(a))
 #define MAX(a,b)        ((a)<(b)?(b):(a))

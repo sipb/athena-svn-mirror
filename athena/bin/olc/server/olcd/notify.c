@@ -12,18 +12,19 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.21 1990-07-16 10:22:43 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: notify.c,v 1.22 1990-08-20 04:41:01 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.21 1990-07-16 10:22:43 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.22 1990-08-20 04:41:01 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -408,7 +409,6 @@ zsend_message(c_class, instance, opcode, username, message, flags)
 {
   ZNotice_t notice;		/* Zephyr notice */
   int ret;			/* return value */
-  char error[ERROR_SIZE];
   char buf[BUF_SIZE];
   char *signature = "From: OLC Service\n";
 
@@ -475,6 +475,7 @@ zsend(notice)
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
     }
+
 
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
