@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: lwvanels $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.8 1992-07-13 16:45:27 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.9 1992-07-17 15:21:03 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.8 1992-07-13 16:45:27 lwvanels Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.9 1992-07-17 15:21:03 miki Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -53,7 +53,7 @@ main(argc, argv)
 	char hostname[64];
 	int cc, host_retry;
 	extern int h_errno;
-#if !defined(ultrix) && defined(vax)
+#if defined(sun) || defined(vax) && !defined(ultrix)
 	int attempts = 0;
 #else
 	volatile int attempts = 0;
