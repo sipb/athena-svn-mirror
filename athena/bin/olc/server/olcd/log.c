@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.41 1991-04-14 17:32:24 lwvanels Exp $
+ *	$Id: log.c,v 1.42 1991-10-31 15:02:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.41 1991-04-14 17:32:24 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.42 1991-10-31 15:02:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -626,21 +626,32 @@ char *os;
   o_mach = os;
   
   p = p+1;
-  /* Look backwards for second comma to get memory */
-
-  memory = rindex(p,',');
-  if (memory==NULL)
-    return(stuff);
-  *memory = ';';
-  memory = rindex(p,',');
-  if (memory==NULL) {
-    memory = p;
-    o_disp = "none";
-  }
-  else {
+  /* Need to special case for RS/6000 entry; it is formatted
+     processor, display, xxxxxx K
+   */
+  if (strcmp(o_mach,"POWER") == 0) {
+    memory = rindex(p,',');
+    if (memory == NULL)
+      return(stuff);
     *memory = '\0';
     memory++;
     o_disp = p+1;
+  } else {
+    /* Look backwards for second comma to get memory */
+    memory = rindex(p,',');
+    if (memory==NULL)
+      return(stuff);
+    *memory = ';';
+    memory = rindex(p,',');
+    if (memory==NULL) {
+      memory = p;
+      o_disp = "none";
+    }
+    else {
+      *memory = '\0';
+      memory++;
+      o_disp = p+1;
+    }
   }
 
   /* strip whitespace off of front of machine name */
