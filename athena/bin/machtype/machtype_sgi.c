@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.9 1998-04-22 22:05:55 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.10 1998-09-03 01:14:11 ghudson Exp $
  *	$Locker:  $
  */
 
@@ -525,6 +525,10 @@ void do_INV_DISK(inventory_t *i)
 
 void do_INV_SCSICONTROL(inventory_t *i)
 {
+  /* Only display SCSI controller info when verbose */
+  if (!verbose)
+    return;
+
   switch (i->inv_type)
     {
     case INV_SCSICONTROL:
@@ -591,7 +595,8 @@ do_memory (kernel, mf)
 char *kernel;
 int mf;
 {
-  int pos, mem;
+  int pos, mem, nbpp;
+  nbpp = getpagesize() / 1024;
   pos = nl[X_maxmem].n_value;
   if(pos == 0) {
       fprintf(stderr, "can't find maxmem\n");
@@ -603,7 +608,7 @@ int mf;
       exit(4);
   } else {
     if(verbose)
-      printf("%#06x user, ",mem * getpagesize());
+      printf("%d user, ",mem * nbpp);
   }
   pos = nl[X_physmem].n_value;
   if(pos == 0) {
@@ -616,9 +621,9 @@ int mf;
       exit(4);
   } else {
     if(verbose)
-      printf("%#06x (%d M) total\n",mem * getpagesize(),(mem * getpagesize() + MEG/2)/MEG);
+      printf("%d (%d M) total\n",mem * nbpp,(mem * getpagesize() + MEG/2)/MEG);
     else
-      printf("%d\n", mem * getpagesize());
+      printf("%d\n", mem * nbpp);
   }
   return; 
 }
