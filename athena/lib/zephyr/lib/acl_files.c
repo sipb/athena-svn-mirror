@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/acl_files.c,v 1.1 1988-11-14 11:27:50 jtkohl Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/acl_files.c,v 1.2 1989-03-23 09:32:41 jtkohl Exp $";
 #endif lint
 
 /*** Routines for manipulating access control list files ***/
@@ -115,7 +115,7 @@ char *canon;
 	*canon++ = '\0';
     } 
 #ifdef KERBEROS
-else if(get_krbrlm(canon, 1) != KSUCCESS) {
+else if(krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }
 #endif
