@@ -118,7 +118,7 @@ foreach $i (@added) {
 	print DIFFMAIL "==================================================\n";
 	print DIFFMAIL "Initial contents of new file $i\n";
 	print DIFFMAIL "==================================================\n";
-	open(DIFF, "<$i") || die "Can't open added file $i";
+	open(DIFF, "diff -c /dev/null $i|");
 	print DIFFMAIL while (<DIFF>);
 	close DIFF;
 }
