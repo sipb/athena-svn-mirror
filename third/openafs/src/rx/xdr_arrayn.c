@@ -29,7 +29,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_arrayn.c,v 1.1.1.1 2002-01-31 21:50:18 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_arrayn.c,v 1.1.1.1.2.1 2002-08-05 22:07:47 ghudson Exp $");
 
 #if !defined(NeXT)
 
@@ -89,7 +89,10 @@ bool_t xdr_arrayN(xdrs, addrp, sizep, maxsize, elsize, elproc)
 	register caddr_t target = *addrp;
 	register u_int c;  /* the actual element count */
 	register bool_t stat = TRUE;
-	register int nodesize;
+	register u_int nodesize;
+
+	i = ((~0) >> 1) / elsize;
+	if (maxsize > i) maxsize = i;
 
 	/* like strings, arrays are really counted arrays */
 	if (! xdr_u_int(xdrs, sizep)) {

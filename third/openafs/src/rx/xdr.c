@@ -34,7 +34,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.1.1.1 2002-01-31 21:49:19 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.1.1.1.2.1 2002-08-05 22:07:36 ghudson Exp $");
 
 /*
  * xdr.c, Generic XDR routines implementation.
@@ -555,6 +555,8 @@ xdr_string(xdrs, cpp, maxsize)
 	register char *sp = *cpp;  /* sp is the actual string pointer */
 	u_int size;
 	u_int nodesize;
+
+	if (maxsize > ((~0) >> 1) - 1) maxsize = ((~0) >> 1) - 1;
 
 	/*
 	 * first deal with the length since xdr strings are counted-strings
