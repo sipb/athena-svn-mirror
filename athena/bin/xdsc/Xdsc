@@ -1,5 +1,4 @@
-*loggingOn:	True
-*logfile:	/afs/athena.mit.edu/user/s/sao/scores/xdsc.log
+*loggingOn:	False
 *BitmapFilePath:  /usr/athena/lib/X11/bitmaps:/usr/lib/X11/bitmaps:/usr/include/X11/bitmaps
 
 *font:					fixed
@@ -255,9 +254,10 @@ Shift<Key>Q:    KeyCallback(quitbutton) \n\
 *goto.translations: \
 #override \n\
 <Key>n: MenuCallback(gotobutton, numberbutton) \n\
-<Key>f: MenuCallback(gotobutton, firstbutton) \n\
-<Key>l: MenuCallback(gotobutton, lastbutton) \n\
-<Key>: MenuCallback(abort) \n\
+:<Key>f: MenuCallback(gotobutton, firstbutton) \n\
+:<Key>l: MenuCallback(gotobutton, lastbutton) \n\
+:<Key>s: MenuCallback(gotobutton, frefbutton) \n\
+:<Key>e: MenuCallback(gotobutton, lrefbutton) \n\
 
 *enter.translations: \
 #override \n\
