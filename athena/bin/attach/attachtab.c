@@ -1,7 +1,7 @@
 /*	Created by:	Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *
@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.4 1990-07-04 16:26:09 jfc Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.5 1991-01-22 16:16:03 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -33,7 +33,7 @@ static int attach_lock_count = 0;
 
 void lock_attachtab()
 {
-	char	*lockfn;
+	register char	*lockfn;
 	
 	if (debug_flag)
 		printf("Locking attachtab....");
@@ -87,10 +87,10 @@ void unlock_attachtab()
  */
 void get_attachtab()
 {
-	struct _attachtab	*atprev = NULL;
-	struct _attachtab	*at = NULL;
-	FILE			*f;
-	char			attach_buf[BUFSIZ];
+	register struct _attachtab	*atprev = NULL;
+	register struct _attachtab	*at = NULL;
+	register FILE			*f;
+	char				attach_buf[BUFSIZ];
 	
 	free_attachtab();
 	if ((f = fopen(attachtab_fn, "r")) == NULL)
@@ -138,10 +138,9 @@ void free_attachtab()
  */
 put_attachtab()
 {
-	FILE	*f;
-	struct	_attachtab	*at;
-	char	*tempfn;
-	int	i;
+	register FILE	*f;
+	register struct	_attachtab	*at;
+	register char	*tempfn;
 	
 	if (!(tempfn = malloc(strlen(attachtab_fn)+6))) {
 		fprintf(stderr,
@@ -167,6 +166,8 @@ put_attachtab()
 				inet_ntoa(at->hostaddr), at->rmdir, at->mntpt,
 				at->drivenum, at->mode);
 		else {
+			register int i;
+
 			fprintf(f, "%s %c%c%s %s %s %s %s %d %s %d ",
 				at->version, at->explicit ? '1' : '0',
 				at->status, (at->fs) ? at->fs->name : "---",
@@ -195,10 +196,10 @@ put_attachtab()
 
 void lint_attachtab()
 {
-	struct _attachtab	*atprev = NULL;
-	struct _attachtab	*at = NULL;
-	FILE			*f;
-	char			attach_buf[BUFSIZ];
+	register struct _attachtab	*atprev = NULL;
+	register struct _attachtab	*at = NULL;
+	FILE				*f;
+	char				attach_buf[BUFSIZ];
 	
 	free_attachtab();
 	if ((f = fopen(attachtab_fn, "r")) == NULL)
@@ -229,13 +230,13 @@ void lint_attachtab()
 /*
  * Convert an attachtab line to an attachtab structure
  */
-static int parse_attach(bfr, at, lint)
-    char *bfr;
-    struct _attachtab *at;
-    int lint;
+static int parse_attach(bfr, at, lintflag)
+    register char *bfr;
+    register struct _attachtab *at;
+    int lintflag;
 {
-    char	*cp, *dp;
-    int		old_version = 0; /* Backwards compat attachtab line */
+    register char *cp;
+    int	old_version = 0; 	/* Backwards compat attachtab line */
 
     if (!*bfr)
 	goto bad_line;
@@ -248,9 +249,10 @@ static int parse_attach(bfr, at, lint)
 
     if (!strcmp(cp, "A0"))
 	    old_version = 1;
-    else if (strcmp(cp, ATTACH_VERSION)) {
+    else
+    if (strcmp(cp, ATTACH_VERSION)) {
 	    fprintf(stderr, "Bad version number in %s\n", attachtab_fn);
-	    if(lint) 
+	    if(lintflag) 
 	      return FAILURE;
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
@@ -308,6 +310,8 @@ static int parse_attach(bfr, at, lint)
 	    if (*cp == ',')	/* If heading character is comma */
 		    cp = 0;	/* we have a null list*/
 	    while (cp) {
+		    register char *dp;
+		    
 		    if (dp = index(cp, ','))
 			    *dp++ = '\0';
 		    at->owners[at->nowners++] = atoi(cp);
@@ -339,10 +343,11 @@ static int parse_attach(bfr, at, lint)
     
 bad_line:
     fprintf(stderr,"Badly formatted entry in %s\n", attachtab_fn);
-    if(lint)
+    if (lintflag)
       return FAILURE;
     fprintf(stderr, abort_msg);
     exit(ERR_FATAL);
+    /* NOTREACHED */
 }
 
 /*
@@ -350,9 +355,9 @@ bad_line:
  * attachtab in memory
  */
 host_occurs(name)
-    char *name;
+    register char *name;
 {
-	struct _attachtab	*p;
+	register struct _attachtab	*p;
 
 	p = attachtab_first;
 	while (p) {
@@ -367,9 +372,9 @@ host_occurs(name)
  * Lookup an entry in attachtab  --- uses the linked list stored in memory
  */
 struct _attachtab *attachtab_lookup(hesiod)
-    char *hesiod;
+    register char *hesiod;
 {
-	struct _attachtab	*p;
+	register struct _attachtab	*p;
 
 	p = attachtab_first;
 	while (p) {
@@ -385,9 +390,9 @@ struct _attachtab *attachtab_lookup(hesiod)
  * 	stored in memory
  */
 struct _attachtab *attachtab_lookup_mntpt(pt)
-    char *pt;
+    register char *pt;
 {
-	struct _attachtab	*p;
+	register struct _attachtab	*p;
 
 	p = attachtab_first;
 	while (p) {
@@ -404,7 +409,7 @@ struct _attachtab *attachtab_lookup_mntpt(pt)
  * 	You must call put_attachtab to actually affect the copy on disk.
  */
 attachtab_delete(at)
-	struct _attachtab	*at;
+	register struct _attachtab	*at;
 {
 	if (!at)
 		return;
@@ -424,10 +429,10 @@ attachtab_delete(at)
  * Append an entry to the linked list database in attachtab
  */
 attachtab_append(at)
-	struct _attachtab *at;
+	register struct _attachtab *at;
 {
 
-	struct _attachtab *atnew;
+	register struct _attachtab *atnew;
 
 	if (!(atnew = (struct _attachtab *)
 	      malloc(sizeof(struct _attachtab)))) {
@@ -454,9 +459,9 @@ attachtab_append(at)
  * Replace an entry in the linked list 
  */
 attachtab_replace(at)
-	struct _attachtab *at;
+	register struct _attachtab *at;
 {
-	struct _attachtab *p, *next, *prev;
+	register struct _attachtab *p, *next, *prev;
 
 	/* If old_attab, write out entries in old format */
 	strcpy(at->version, old_attab ? "A0" : ATTACH_VERSION);
