@@ -2,12 +2,12 @@
 # Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-05 00:24:17 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-01-29 21:26:13 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: procman\n"
-"POT-Creation-Date: 2002-11-25 21:03-0500\n"
+"POT-Creation-Date: 2002-06-05 01:54+0200\n"
 "PO-Revision-Date: 2002-06-05 01:54+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -596,7 +596,7 @@ msgstr "Sover"
 msgid " (thread)"
 msgstr " (tråd)"
 
-#: src/proctable.c:938
+#: src/proctable.c:935
 #, c-format
 msgid "%s could not be found."
 msgstr "%s kunde inte hittas."

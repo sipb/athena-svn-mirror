@@ -73,6 +73,7 @@ my $ini_extension =
 "directory(\.in)+|".
 "soundlist(\.in)+|".
 "keys(\.in)+|".
+"theme(\.in)+|".
 "server(\.in)+";
 
 ## Always print as the first thing
@@ -188,7 +189,7 @@ sub determine_type ($)
        "(?:xml(\.in)*|ui|oaf(?:\.in)+|server(?:\.in)+|sheet(?:\.in)+|".
        "pong(?:\.in)+|etspec|schemas(?:\.in)+)";
    my $ini_regex =
-       "(?:desktop(?:\.in)+|caves(?:\.in)+|directory(?:\.in)+|".
+       "(?:desktop(?:\.in)+|theme(?:\.in)+|caves(?:\.in)+|directory(?:\.in)+|".
        "soundlist(?:\.in)+)";
 
    if ($type =~ /\[type: gettext\/([^\]].*)]/) {
