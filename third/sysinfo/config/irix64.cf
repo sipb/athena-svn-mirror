@@ -1,6 +1,0 @@
-#
-# $Id: irix64.cf,v 1.1.1.1 1996-10-07 20:16:56 ghudson Exp $
-#
-# SGI IRIX64 Sysinfo Configuration File
-#
-include		irix.cf
