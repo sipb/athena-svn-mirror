@@ -1,11 +1,11 @@
-/* $Id: Imakefile,v 1.5 1996-06-07 01:03:17 ghudson Exp $
+/* $Id: Imakefile,v 1.6 1996-06-08 01:11:13 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/newpag/Imakefile,v $
  */
 
 DEFINES=-I$(AFSDIR)/include
 
 #ifdef SOLARIS
-OSLIBS=-lucb
+OSLIBS=-lbsd
 #endif
 #ifdef sgi
 OSLIBS=-lsys
