@@ -19,6 +19,6 @@ typedef struct _wstruct {
   char *l1, *l2;
 } Warning;
 
-extern Warning *UserWarning();
+extern Warning *XjUserWarning();
 
 #endif /* _warn_h */
