@@ -19,7 +19,7 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.4 1988-06-23 13:39:07 jtkohl Exp $";
+static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.5 1988-06-28 16:20:56 jtkohl Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -39,7 +39,8 @@ main(argc,argv)
 	struct passwd *pwd;
 	char anyonename[BUFSIZ],name[BUFSIZ],cleanname[BUFSIZ],*envptr;
 	int onoff = ON,quiet = 0,justlist = 0;
-	int retval,arg,ind,wgport,one,numlocs,i;
+	int retval,arg,ind,one,numlocs,i;
+	short wgport;
 
 	if ((retval = ZInitialize()) != ZERR_NONE) {
 		com_err(argv[0],retval,"initializing");
