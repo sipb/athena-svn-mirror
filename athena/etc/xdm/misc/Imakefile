@@ -16,13 +16,17 @@
  *#include "mit-copyright.h"
  */
 
+error_table(pc_err)
+
 NANNY		=	nanny
 
-OBJS		=	nanny.o pc_bsd.o cons_sysv.o
+OBJS		=	pc_err.o nanny.o pc_bsd.o cons_sysv.o
 
-CFILES		=	nanny.c pc_bsd.c cons_sysv.c
+CFILES		=	pc_err.c nanny.c pc_bsd.c cons_sysv.c
 
-LIBS		=
+LIBS		=	-L/source/athena/lib/AL -lAL -lcom_err -lhesiod
+
+DEFINES		=	-I/source/athena/lib
 
 AnsiCC()
 
