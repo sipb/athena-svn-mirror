@@ -1,0 +1,46 @@
+# $Id: Makefile.in,v 1.1 1999-10-30 11:27:50 kcr Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_RPOGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+CFILES = config_console.c
+OBJS = config_console.o
+
+all: config_console
+
+config_console: config_console.o
+	${CC} ${LDFLAGS} -o config_console config_console.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} -m 4755 -o root ${srcdir}/config_console \
+		${DESTDIR}${bindir}
+	rm -f ${DESTDIR}${bindir}/show_console
+	rm -f ${DESTDIR}${bindir}/hide_console
+	ln -s config_console ${DESTDIR}${bindir}/show_console
+	ln -s config_console ${DESTDIR}${bindir}/hide_console
+	${INSTALL} -m 444 ${srcdir}/config_console.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/hide_console.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/show_console.1 ${DESTDIR}${mandir}/man1
