@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.7 1998-02-20 21:19:20 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.8 1998-10-26 22:00:43 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -22,8 +22,8 @@ dnl		Generates error if com_err not found.
 dnl	ATHENA_UTIL_SS
 dnl		Generates error if ss not found.
 dnl	ATHENA_REGEXP
-dnl		Sets RX_LIBS if rx library used; ensures POSIX regexp
-dnl		support.
+dnl		Sets REGEX_LIBS if rx library used; ensures POSIX
+dnl		regexp support.
 dnl	ATHENA_MOTIF
 dnl		Sets MOTIF_LIBS and defines HAVE_MOTIF if Motif used.
 dnl	ATHENA_MOTIF_REQUIRED
