@@ -1,12 +1,12 @@
 #!/bin/sh
-# $Id: fix-xconfig.sh,v 1.3 2000-10-14 17:31:34 ghudson Exp $
+# $Id: fix-xconfig.sh,v 1.4 2002-07-17 17:46:56 amb Exp $
 
 # fix-xconfig: Modify the X configuration to match timings retrieved
 # from read-edid and to have the desired maximum resolution.  Run from
 # athena-ws.rc on PUBLIC=true machines.
 
-PATH=/etc/athena:/bin:/usr/bin
-cfg=/etc/X11/XF86Config
+PATH=/etc/athena:/bin:/usr/bin:/sbin
+cfg=/etc/X11/XF86Config-4
 
 if [ ! -f $cfg ]; then
   exit
@@ -34,6 +34,12 @@ if echo "$edid" | grep -q 'Identifier "HP 90 Monitor"'; then
   vert=50-95
 fi
 
+if lspci -n|grep -q '102b:0525' ; then
+  # Special-case; the Matrix G400 series often can't really do
+  # horizontal sync rates over 90, despite claiming otherwise.
+  horiz=30-90
+fi
+
 if [ -n "$horiz" ]; then
   runsed "s/\(HorizSync$wsp\).*/\1$horiz/"
 fi
@@ -42,6 +48,17 @@ if [ -n "$vert" ]; then
   runsed "s/\(VertRefresh$wsp\).*/\1$vert/"
 fi
 
-# Second, get rid of any 1600x1200 mode which might be present.
+# Second, get rid of any 1600x1200 mode which might be present, switching
+# it to 1280x1024 if it's the only mode present.
 runsed "/^${optwsp}Modes$wsp\"1600x1200\"$optwsp\$/s/1600x1200/1280x1024/"
 runsed "/^[ 	]*Modes/s/\"1600x1200\"$optwsp//"
+
+# Add a ServerFlags section with the DontZap flag set, if not already present.
+if ! grep -qi "^${optwsp}Section${wsp}\"ServerFlags\"${optwsp}$" $cfg ; then
+  cat >> $cfg <<EOF
+
+Section "ServerFlags"
+	Option "DontZap"  "on"
+EndSection
+EOF
+fi
