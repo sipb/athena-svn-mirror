@@ -719,6 +719,7 @@ fork_and_exec (saver_info *si, const char *command, const char *desc)
 
     default:
       /* parent fork. */
+      (void) make_job (forked, command);
       break;
     }
 }
