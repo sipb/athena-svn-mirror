@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Imakefile,v 1.4 1993-06-14 15:37:02 vrt Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/Imakefile,v 1.5 1993-06-15 12:16:27 vrt Exp $
 #
 
 #ifdef vax
@@ -13,6 +13,3 @@ MACHLIBS=-lkvm
 #endif
 
 SimpleProgram(cleanup, cleanup.o,-lhesiod ${MACHLIBS},/etc/athena/)
-#ifdef SOLARIS
-install_program(cleanup,-m 4755 -o root,/etc/athena/)
-#endif
