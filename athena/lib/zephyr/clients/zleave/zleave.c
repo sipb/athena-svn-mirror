@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.10 1988-11-22 09:39:42 jtkohl Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.11 1989-04-19 16:54:08 jtkohl Exp $";
 #endif lint
 
 /*
@@ -355,11 +355,13 @@ long secs;
 		secs -= n;
 		if (n > 0)
 			sleep((unsigned) n);
-		l = getlogin();
-		if (l == NULL)
+		if (!use_zephyr) {
+		    l = getlogin();
+		    if (l == NULL)
 			exit(0);
-		if (!use_zephyr && (strcmp(origlogin, l) != 0))
+		    if (strcmp(origlogin, l) != 0)
 			exit(0);
+		}
 	}
 }
 
