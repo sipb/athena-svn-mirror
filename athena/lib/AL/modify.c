@@ -16,17 +16,57 @@
 #include <fcntl.h>
 #include <errno.h>
 
-int
-ALopenLockFile(char *filename)
-{
-  int cnt, fd;
+static char *lockFiles[ALlockMAX] =
+	{ PASSTEMP, SHADTEMP, "/etc/gtmp", "testlock" };
 
-  for (cnt = 10; cnt >= 0; cnt--)
-    {
-      if ((fd = open(filename, O_WRONLY|O_CREAT|O_EXCL, 0644)) > 0) break;
-      sleep(1);
-    }
-  return fd;
+char *
+ALlockFile(int lockfile)
+{
+  if (lockfile < 0 || lockfile > ALlockMAX)
+    return NULL;
+
+  return lockFiles[lockfile];
+}
+
+int
+ALopenLockFile(ALsession session, int lockfile)
+{
+  int cnt;
+
+  if (lockfile < 0 || lockfile > ALlockMAX)
+    return -1;
+
+  if (ALlock_fd(session, lockfile) == -1)
+    for (cnt = 10; cnt >= 0; cnt--)
+      {
+	if ((ALlock_fd(session, lockfile) = open(ALlockFile(lockfile),
+						 O_WRONLY|O_CREAT|O_EXCL,
+						 0600)) != -1)
+	  break;
+	sleep(1);
+      }
+
+  return ALlock_fd(session, lockfile);
+}
+
+int
+ALcloseLockFile(ALsession session, int lockfile)
+{
+  if (lockfile < 0 || lockfile > ALlockMAX)
+    return -1;
+
+  if (ALlock_fd(session, lockfile) == -1)
+    return -1;
+
+  /* If close returns an error, we assume that the caller must have
+     closed it (and therefore takes care of the rename/unlink for us),
+     so we shouldn't unlink it - it might be someone else's lock by
+     now. */
+  if (-1 != close(ALlock_fd(session, lockfile)))
+    unlink(ALlockFile(lockfile));
+
+  ALlock_fd(session, lockfile) = -1;
+  return 0;
 }
 
 /* Use ALmodifyRemoveUser() with ALmodifyLinesOfFile() to remove
@@ -73,7 +113,7 @@ long ALmodifyAppendPasswd(ALsession session, int fd)
 long
 ALmodifyLinesOfFile(ALsession session,
 		    char *filename,
-		    char *lockfilename,
+		    int lockfile,
 		    long (*modify)(ALsession, char[]),
 		    long (*append)(ALsession, int))
 {
@@ -85,8 +125,8 @@ ALmodifyLinesOfFile(ALsession session,
   char *ctxt;			/* error context */
 
   /* open lock file */
-  fd = ALopenLockFile(lockfilename);
-  if (fd < 0) ALreturnError(session, ALerrNoLock, lockfilename);
+  fd = ALopenLockFile(session, lockfile);
+  if (fd < 0) ALreturnError(session, ALerrNoLock, ALlockFile(lockfile));
 
   /* open file to read from */
   if ((oldfile = fopen(filename, "r"))== (FILE *)0)
@@ -98,7 +138,7 @@ ALmodifyLinesOfFile(ALsession session,
 
   /* set lockfile protection */
   if (fchmod(fd, stat_buf.st_mode) < 0)
-    { ctxt=lockfilename; goto CLEANUP; }
+    { ctxt=ALlockFile(lockfile); goto CLEANUP; }
 
   /* modify the file, line by line */
   while (fgets(buf, 1024, oldfile) != (char*)0)
@@ -111,7 +151,7 @@ ALmodifyLinesOfFile(ALsession session,
 
       /* write line to new file */
       cnt = write(fd, buf, strlen(buf));
-      if (cnt < 0) { ctxt=lockfilename; goto CLEANUP; }
+      if (cnt < 0) { ctxt=ALlockFile(lockfile); goto CLEANUP; }
     }
 
   /* close file to read */
@@ -122,14 +162,17 @@ ALmodifyLinesOfFile(ALsession session,
   if (append)
     {
       code = append(session, fd);
-      if (code) { ctxt = lockfilename; goto CLEANUP; }
+      if (code) { ctxt = ALlockFile(lockfile); goto CLEANUP; }
     }
 
   /* close lockfile */
-  if (close(fd) < 0) { ctxt=lockfilename; goto CLEANUP; }
+  if (close(fd) < 0) { ctxt=ALlockFile(lockfile); goto CLEANUP; }
   fd= -1;
+  ALcloseLockFile(session, lockfile);
 
-  if (rename(lockfilename, filename) < 0) { ctxt=filename; goto CLEANUP; }
+  if (rename(ALlockFile(lockfile), filename) < 0)
+    { ctxt=filename; goto CLEANUP; }
+
 
   return 0L;
 
@@ -137,6 +180,7 @@ ALmodifyLinesOfFile(ALsession session,
   if (!code) code = (long) errno;
   if (fd>=0) close(fd);
   if (oldfile) fclose(oldfile);
-  unlink(lockfilename);
+  unlink(ALlockFile(lockfile));
+  ALcloseLockFile(session, lockfile);
   ALreturnError(session, code, ctxt);
 }
