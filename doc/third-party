@@ -27,6 +27,15 @@ Third-party stuff not under third
 		and fetching it out of the vendor X distribution at
 		build time is contrary to principles.
 
+	* packs/config/platform/*
+	  packs/maint/platform/*
+
+		Some of the files in these directories are modified
+		versions of vendor configuration and /etc/init.d
+		files.  When an OS upgrade happens, changes must be
+		propagated from the newer configuration files into
+		these files.
+
 Distribution sites for software under third
 -------------------------------------------
 
