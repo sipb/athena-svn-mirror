@@ -20,12 +20,6 @@ DASH		=	dash
 DASHRESOURCES	=	Dash
 COMPILE		=	compile_menu
 
-#ifdef MacIIArchitecture
-M_LIB		=	-lmalloc
-#else
-M_LIB		=
-#endif
-
 #if defined(HaveKerberos)
 K_DEF		=	-DKERBEROS
 K_LIB		=	-lkrb
@@ -56,17 +50,49 @@ D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
 			${XMULIB} ${K_LIB} ${M_LIB}
 CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
 
-#if defined(AIXArchitecture)
-DEFINES		=	${K_DEF} ${A_DEF} -D_BSD -D_BSD_INCLUDES -DAIXV=12
+#if defined(HasPutenv)
+PUTENV_DEF	=	-DHAS_PUTENV
 #else
-DEFINES		=	${K_DEF} ${A_DEF}
+PUTENV_DEF	=
 #endif
 
+#if  defined(UltrixArchitecture) \
+  || defined(AIXArchitecture) \
+  || defined(MacIIArchitecture) \
+  || defined(SunArchitecture)
+ERRNO_DEF	=	-DNEED_ERRNO_DEFS
+#else
+ERRNO_DEF	=
+#endif
+
+#if defined(MacIIArchitecture)
+M_LIB		=	-lmalloc
+MAC_DEF		=	-DMAC_ARCH
+#else
+M_LIB		=
+MAC_DEF		=
+#endif
+
+#if defined(AIXArchitecture)
+AIX_DEF		=	-D_BSD -D_BSD_INCLUDES
+#else
+AIX_DEF		=
+#endif
+
+#if defined(RsArchitecture)
+RS_DEF		=	-DRS_ARCH
+#else
+RS_DEF		=
+#endif
+
+DEFINES		=	${PUTENV_DEF} ${ERRNO_DEF} \
+			${K_DEF} ${A_DEF} ${MAC_DEF} ${AIX_DEF} ${RS_DEF}
 INCLUDES	=	-I.. ${LOCAL_INCLUDES}
 
 
 AllTarget(${COMPILE})
 AllTarget(${DASH})
+AllTarget(${DASHRESOURCES})
 
 NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
 NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
