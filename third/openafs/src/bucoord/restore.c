@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.1.1.1 2002-01-31 21:50:04 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/restore.c,v 1.2 2003-08-13 19:07:51 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -188,7 +188,7 @@ bc_Restorer(aindex)
     afs_int32 level, tapeseq;
     afs_int32 foundvolume, voldumplevel;
     struct rx_connection *aconn = (struct rx_connection *)0;
-    statusP statusPtr, newStatusPtr;
+    statusP statusPtr = NULL, newStatusPtr;
 
     struct dumpinfo *dumpinfolist = (struct dumpinfo *)0;
     struct dumpinfo *pdi, *ndi, *di, dlevels[BC_MAXLEVELS];
@@ -713,6 +713,7 @@ bc_Restorer(aindex)
 	statusPtr->port       = port;
 	statusPtr->taskId     = dumpTaskPtr->dumpID;
 	statusPtr->jobNumber  = bc_jobNumber();
+	statusPtr->flags     |= NOREMOVE;
 	statusPtr->flags     &= ~STARTING;             /* clearStatus to examine */
 	if (tcarray[startentry].dumpLevel == 0)
 	    sprintf(statusPtr->taskName, "Full Restore");
@@ -743,12 +744,15 @@ bc_Restorer(aindex)
 	    IOMGR_Sleep(2);
 	}
 
+	if (statusPtr) deleteStatusNode(statusPtr);
+	statusPtr = NULL;
 	if (aconn) rx_DestroyConnection(aconn);
 	aconn = (struct rx_connection *)0;
     } /* while */
 
     /* free up everything */
   error_exit:
+    if (statusPtr) deleteStatusNode(statusPtr);  /* Clean up statusPtr - because NOREMOVE */
     if (aconn) rx_DestroyConnection(aconn);
 
     if (tcarray) free(tcarray);
