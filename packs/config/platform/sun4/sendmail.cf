@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.6 1997-03-28 10:36:00 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.7 1997-04-10 15:57:02 ghudson Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: ghudson $
 #
@@ -79,6 +79,8 @@ OF0640
 Og1
 # location of help file
 OH/usr/lib/sendmail.hf
+# Use name server; must set this to use MX records in Solaris 2.5.1 sendmail.
+OI
 # log level
 OL9
 # default messages to old style
