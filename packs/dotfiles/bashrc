@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.1.2.2 1999-06-28 19:32:00 ghudson Exp $
+# $Id: bashrc,v 1.1.2.3 1999-08-21 14:50:34 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -116,7 +116,7 @@ if [ "${ENV_SET+set}" != set ]; then
 	# Special version of ADD for the .bash_environment file.
 
 	add () {
-		eval "$( /bin/athena/attach -b -Padd -P"$athena_path" "$@" )"
+		eval "$( /bin/athena/attach -Padd -b -P"$athena_path" "$@" )"
 	}
 
 	# Run user environment customizations identified in your
@@ -191,7 +191,7 @@ Mail () { more /usr/prototype_user/README.mail ; }
 #   aliases dealing with x window system
 xresize () { set -f; eval "$( resize -u )"; set +f ; }
 
-if [ "${XSESSION+set}" == set ]; then
+if [ "${XSESSION+set}" = set ]; then
 	if [ -z "$XSESSION" ]; then
 		logout () { end_session && exit; }		# logout for X
 	else
