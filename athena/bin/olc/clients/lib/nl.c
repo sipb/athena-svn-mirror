@@ -10,13 +10,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v $
- *	$Id: nl.c,v 1.5 1991-04-10 00:16:35 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: nl.c,v 1.6 1991-08-23 12:57:56 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.5 1991-04-10 00:16:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/nl.c,v 1.6 1991-08-23 12:57:56 raek Exp $";
 #endif
 #endif
 
@@ -31,6 +31,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #include <olc/olc.h>
 #include <nl_requests.h>
+#include <lib_err.h>
 
 #define        MAX(a,b) (((a)>(b))?(a):(b))
 
@@ -146,7 +147,7 @@ KTEXT_ST my_auth;
     *buf = (char *) malloc(*buflen);
     if (*buf == NULL) {
       close(fd);
-      return(ERR_MEM);
+      return(OLCL_MEM_ERR);
     }
   }
 
@@ -243,7 +244,7 @@ KTEXT_ST my_auth;
     *buf = (char *) malloc(*buflen);
     if (*buf == NULL) {
       close(fd);
-      return(ERR_MEM);
+      return(OLCL_MEM_ERR);
     }
   }
 
