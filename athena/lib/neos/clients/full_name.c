@@ -3,7 +3,7 @@
  *
  * $Author
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v 1.1 1992-12-07 13:33:16 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/full_name.c,v 1.2 1992-12-23 11:49:08 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -31,7 +31,6 @@ char *full_name(name)
 {
   char **namelist, *realname, *tmp;
   static char finalname[256];
-  char *index();
   int i;
 
   if ((namelist = hes_resolve(name, "passwd")) == NULL) {
