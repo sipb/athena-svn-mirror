@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.13 1999-03-02 15:55:34 rbasch Exp $
+# $Id: finish-update.sh,v 1.14 1999-04-01 21:08:36 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -48,6 +48,17 @@ if [ -n "$LOCALPACKAGES" ]; then
 fi
 if [ -n "$LINKPACKAGES" ]; then
 	rm -f "$LINKPACKAGES".*
+fi
+
+# Convert old attachtab files.
+if [ -f /var/athena/attachtab ]; then
+	echo "Updating attachtab to liblocker format."
+	mv /var/athena/attachtab /var/athena/attachtab.old
+	mkdir /var/athena/attachtab
+	mkdir /var/athena/attachtab/locker
+	mkdir /var/athena/attachtab/mountpoint
+	mkdir /var/athena/attachtab/directory
+	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
 fi
 
 echo "Updating version"
