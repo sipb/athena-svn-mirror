@@ -1125,6 +1125,8 @@ READLINE:
 	if (message[0] == '-') {
 		PutUpWarning("WARNING", message + 1, False);
 		myfree (message);
+		curbyte = 0;
+		cursize = BUFSIZE;
 		goto READLINE;
 	}
 /*
@@ -1287,7 +1289,7 @@ ParseMeetingsFile()
 myfree(ptr)
 char	*ptr;
 {
-	if (ptr > 0) {
+	if ((int)ptr > 0) {
 		if (debug) fprintf (stderr, "Freeing %x\n",ptr);
 		free(ptr);
 	}
