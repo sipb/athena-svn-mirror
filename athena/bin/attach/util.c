@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: probe $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.13 1991-07-01 09:47:31 probe Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.14 1991-07-09 20:49:03 lwvanels Exp $";
 
 #include "attach.h"
 
@@ -875,7 +875,7 @@ int clean_attachtab(atp)
 					fprintf(stderr,
 						"nfs unmap(%s, %d)\n",
 						atp->host, atp->owners[i]);
-				(void) nfsid(atp->host, atp->hostaddr, 
+				(void) nfsid(atp->host, atp->hostaddr[0], 
 					     MOUNTPROC_KUIDUMAP, 1,
 					     atp->hesiodname, 0, atp->owners[i]);
 			}
