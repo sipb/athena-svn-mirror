@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.3 1990-07-04 16:26:29 jfc Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.4 1991-01-22 16:18:20 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -37,9 +37,6 @@ rvd_attach(at, mopt, errorout)
 	    fprintf(stderr, "%s: No free RVD drives\n", at->hesiodname);
 	return (FAILURE);
     }
-
-    if (debug_flag)
-	printf("avail_drive returned %d\n", vddrive);
 
     at->drivenum = vddrive;
     
