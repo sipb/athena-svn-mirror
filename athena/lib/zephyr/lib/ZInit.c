@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.1 1987-06-12 17:46:58 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.2 1987-06-12 17:58:07 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -18,7 +18,7 @@
 
 Code_t ZInitialize()
 {
-	init_zefl_err_tbl();
+	init_zeph_err_tbl();
 
 	return (ZERR_NONE);
 }
