@@ -1,0 +1,8 @@
+#!/bin/sh
+
+grep -s '^SMBSRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SMBSRV=false;		export SMBSRV		#  Samba server
+EOF
+
+exit 0		

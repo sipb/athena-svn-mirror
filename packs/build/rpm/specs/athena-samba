@@ -14,11 +14,22 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
-# Extra file
+# Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp smb.conf.athena $RPM_BUILD_ROOT/etc/athena/smb.conf
+
+mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp athena-samba.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-samba
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-samba
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/smb.conf|%config \0|" |
   sort > rpm.filelist
+
+%post
+grep -q ^SMBSRV /etc/athena/rc.conf || cat <<EOF >> /etc/athena/rc.conf
+SMBSRV=false;		export SMBSRV		#  Samba server
+EOF
+
+chkconfig --add athena-samba
