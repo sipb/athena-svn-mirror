@@ -1,4 +1,4 @@
-# $Id: packages,v 1.86 1999-09-11 18:05:00 danw Exp $
+# $Id: packages,v 1.87 1999-09-28 22:15:29 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -57,6 +57,7 @@ athena/bin/hostinfo		requires bind,perl
 athena/bin/just
 athena/bin/lert			requires krb5,hesiod
 athena/bin/machtype
+athena/bin/neos			requires fxcl,krb5,hesiod
 athena/bin/newpag		requires afsbin
 athena/bin/olc			requires krb5,hesiod,zephyr,et,motif,Mu,wcl
 athena/bin/passwd		requires krb5,al
@@ -78,6 +79,7 @@ athena/etc/cleanup		requires al
 athena/etc/console		requires Xj
 athena/etc/cviewd		requires larv
 athena/etc/desync
+athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
 athena/etc/larvnetd		requires larv,ares,hesiod
 athena/etc/listsuidcells	requires afsbin
@@ -94,10 +96,10 @@ athena/lib/al			requires hesiod,afsbin
 athena/lib/ares
 athena/lib/athdir
 athena/lib/et
+athena/lib/fxcl			requires krb5,hesiod
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,afsbin,et
-athena/lib/neos			requires krb5,hesiod
 athena/lib/ss			requires readline,et
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
