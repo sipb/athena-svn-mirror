@@ -885,7 +885,9 @@ copy(s)
 	char *s;
 {
 	char *p;
+#ifndef _AIX
 	extern char *malloc(), *strcpy();
+#endif
 
 	p = malloc((unsigned) strlen(s) + 1);
 	if (p == NULL)
