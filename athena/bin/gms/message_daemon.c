@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.1 1988-09-26 15:30:18 eichin Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.2 1988-09-27 00:52:39 eichin Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -139,19 +139,21 @@ main(argc,argv)
 
   /* Now that we have the header, we have to read the rest of the file
    * into the packet after it. The length-1 specification is to
-   * preserve a NUL at the end of the buffer. 
+   * preserve a NUL at the end of the buffer. Use msgfile to remember
+   * that we couldn't open it.
    */
-  readlen = read(msgfile, buf + headerlen, BFSZ-headerlen-1);
-  if(readlen == -1) {
-    /* read failed but open didn't, so record the error */
-    syslog(LOG_INFO, "GMS daemon read error [%s] reading message file <%s>",
-	   error_message(errno), GMS_SERVER_MESSAGE);
-    exit(errno);
+  if(msgfile != -1) {
+    readlen = read(msgfile, buf + headerlen, BFSZ-headerlen-1);
+    if(readlen == -1) {
+      /* read failed but open didn't, so record the error */
+      syslog(LOG_INFO, "GMS daemon read error [%s] reading message file <%s>",
+	     error_message(errno), GMS_SERVER_MESSAGE);
+      exit(errno);
+    }
+    /* protect the fencepost... */
+    buf[BFSZ-1] = '\0';
+    close(msgfile);
   }
-  /* protect the fencepost... */
-  buf[BFSZ-1] = '\0';
-  close(msgfile);
-
   /* send the packet back where it came from */
   if(-1 == sendto(0, buf, readlen+headerlen, 0, &from, sizeof(from))) {
     /* the send failed (probably a local error, or bad address or
