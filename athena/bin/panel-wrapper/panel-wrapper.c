@@ -255,6 +255,9 @@ int main(int argc, char **argv)
 	kill(getpid(), SIGTERM);
       else if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
 	confirm_logout();
+      /* This situation occurs upon logout when the X server exits. */
+      else if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+	return 1;
       else
 	{
 	  /* Exercise the X connection, so that we die if the server exits. */
