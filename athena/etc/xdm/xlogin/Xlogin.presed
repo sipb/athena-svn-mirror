@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.5 1990-11-18 18:25:59 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.6 1990-11-28 15:07:13 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -58,6 +58,7 @@ xlogin.Geometry: 		580x325+205+75
 *BorderWidth:			0
 *Background:			white
 *Foreground:			black
+*saveUnder:			False
 *Command.translations:		#override \
 				<Btn1Down>: set() \n\
 				<Btn2Down>: set() \n\
@@ -379,11 +380,11 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry2.label:		Athena On-Line Help (olh)
 *omenuEntry2.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/athena/olh -tty)
 *omenuEntry3.label:		Map/Status of Athena Clusters (xcluster)
-*omenuEntry3.callback:		runCB(/etc/athena/login/xcluster)
+*omenuEntry3.callback:		runCB(/usr/athena/lib/login/xcluster)
 *omenuEntry4.label:		MIT On-Line Information (TechInfo)
 *omenuEntry4.callback:		runCB(/usr/bin/X11/xterm -geometry 80x34+60+25 -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e /usr/athena/timeout 120 /usr/athena/techinfo)
 *omenuEntry5.label:		Library Access
-*omenuEntry5.callback:		runCB(/etc/athena/login/library)
+*omenuEntry5.callback:		runCB(/usr/athena/lib/login/library)
 *omenuEntry6.label:		MIT Campus Map (xinfo)
 *omenuEntry6.callback:		runCB(/usr/athena/xinfo -inactive 180 -display :0.0)
 *omenuEntry6a.label:		Display Workstation Configuration
@@ -392,12 +393,12 @@ xlogin.Geometry: 		580x325+205+75
 *omenuEntry7.justify:		center
 !*omenuEntry7.sensitive:		False
 *omenuEntry8.label:		Login to MITVMA
-*omenuEntry8.callback:		runCB(/etc/athena/login/mitvma)
+*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
-*omenuEntry9.callback:		runCB(/etc/athena/login/moira)
+*omenuEntry9.callback:		runCB(/usr/athena/lib/login/moira)
 *omenuEntry10.label:		Electronic Ombudsman (Lucy)
-*omenuEntry10.callback:		runCB(/etc/athena/login/lucy)
-*omenuEntry11.label:		Shutdown Window System
+*omenuEntry10.callback:		runCB(/usr/athena/lib/login/lucy)
+*omenuEntry11.label:		Shut Down Window System
 *omenuEntry11.callback:		WcExitCB(3)
 
 *register.wcClass:		commandWidgetClass
@@ -405,14 +406,14 @@ xlogin.Geometry: 		580x325+205+75
 *register.horizDistance:	180
 *register.label:		Register for an Account
 *register.fromVert:		*loptions
-*register.callback:		runCB(/afs/athena/astaff/project/xdm/src/conf/register)
+*register.callback:		runCB(/usr/athena/lib/login/register)
 
 
 ! ------------------------------------------------------------
 ! 		Option Shell Widget specifications.
 ! ------------------------------------------------------------
 
-*getSessionShell.geometry:	+200+400
+*getSessionShell.geometry:	+200+450
 
 *getsession.wcClass:		dialogWidgetClass
 *getsession.icon:		question
