@@ -1,7 +1,7 @@
 DEFINES=-DRVD -DNAMESERVER -DVFS $(MACHDEP)
 
 #if defined(SOLARIS)
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a /usr/athena/lib/libbsd.a
 #else
 AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 #endif
