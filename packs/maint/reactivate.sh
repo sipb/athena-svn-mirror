@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.6 1991-07-19 15:42:28 probe Exp $
+# $Id: reactivate.sh,v 1.7 1991-07-20 12:28:55 lwvanels Exp $
 
 trap "" 1 15
 
@@ -60,7 +60,7 @@ if [ -f /afs/athena.mit.edu/service/aklog ] ; then
 	${cp} /afs/athena.mit.edu/service/aklog \
 		   /bin/athena/aklog
 fi
-/etc/athena/config_afs &
+/etc/athena/config_afs > /dev/null 2>&1 &
 
 # punt any processes owned by users not in /etc/passwd
 /etc/athena/cleanup -passwd
