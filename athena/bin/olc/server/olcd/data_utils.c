@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.22 1990-12-05 21:17:25 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.23 1990-12-09 16:47:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.22 1990-12-05 21:17:25 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.23 1990-12-09 16:47:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,6 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <ctype.h>
 #include <sys/types.h>    
 #include <sys/time.h>
+#include <sys/stat.h>
 
 #ifdef __STDC__
 # define        P(s) s
@@ -205,6 +206,7 @@ create_knuckle(user)
   k->question = (QUESTION *) NULL;
   k->connected = (KNUCKLE *)  NULL;
   k->status = 0;
+  k->new_messages = -1;
   strcpy(k->title,k->user->title2);
 
 #ifdef TEST
@@ -521,13 +523,15 @@ delete_knuckle(knuckle,cont)
     free((char *) knuckle->question);
       
   /* free new messages */
-  if(knuckle->new_messages !=  (char *) NULL)
-    free((char *) knuckle->new_messages);
+  free_new_messages(knuckle);
+  knuckle->new_messages = -1;
       
+#ifdef LOG
   /* log it */
   (void) sprintf(msgbuf, "Deleting knuckle %s (%d)", 
 	  knuckle->user->username, knuckle->instance);
   log_status(msgbuf);
+#endif /* LOG */
 
   /* free it */
   free((char *)knuckle);
@@ -1087,18 +1091,6 @@ disconnect_knuckles(a, b)
 }
 
 
-void
-free_new_messages(knuckle)
-     KNUCKLE *knuckle;
-{
-  if(knuckle->new_messages != (char *) NULL)
-    {
-      free((char *) knuckle->new_messages);
-      knuckle->new_messages = (char *) NULL;
-    }
-}
-
-
 /*
  * Function:	match_maker
  * Arguments:	KNUCKLE* knuckle: The user or consultant who should be
@@ -1307,55 +1299,72 @@ match_maker(knuckle)
  */
 
 void
-new_message(msg_field, sender, message)
-     char **msg_field;	/* Place to store the new message. */
+new_message(target, sender, message)
+     KNUCKLE *target;
      KNUCKLE *sender;
      char *message;		/* Message string. */
 {
-  int curr_length;	        /* Length of current message. */
-  int msg_length;		/* Length of the new message. */
-  int length;	                 /* Length of header string. */
-  char *new_message;	        /* Ptr. to constructed new message. */
+  FILE *msg_file;
   char timebuf[TIME_SIZE];      /* Current time. */
-  char buf[BUF_SIZE];
+
+  if (target->new_messages == -1)
+    sprintf(target->nm_file,"%s/%s_%d.nm", LOG_DIR, target->user->username,
+	    target->instance);
+
+  msg_file = fopen(target->nm_file,"a");
+
+  if (msg_file == NULL) {
+    log_error("new_message: open: %m");
+    return;
+  }
 
   time_now(timebuf);
-  sprintf(buf,"\n--- Message from %s %s (%s@%s [%d]).\n    [%s]\n",
+  fprintf(msg_file,"\n--- Message from %s %s (%s@%s [%d]).\n    [%s]\n",
 	  sender->title, sender->user->realname,
 	  sender->user->username, sender->user->machine,
 	  sender->instance, timebuf);
-  length = strlen(buf);
-  
-  if (*msg_field == (char *) NULL)
-    curr_length = 0;
-  else
-    curr_length = strlen(*msg_field);
-  
-  msg_length = strlen(message);
-  new_message = malloc((unsigned) curr_length + msg_length + length + 10);
-  if (new_message == (char *)NULL) 
-    {
-      log_error("new_message: malloc failed");
-      return;
-    }
-
-  new_message[0] = '\0';
-  if (*msg_field != (char *) NULL) 
-    {
-      (void) strcpy(new_message, *msg_field);
-      (void) strcat(new_message, "\n");
-    }
-
-  (void) strcat(new_message, buf);
-  (void) strcat(new_message, message);
-
-  if (*msg_field != (char *)NULL)
-    free(*msg_field);
-
-  *msg_field = new_message;
+  fprintf(msg_file,"%s",message);
+  fclose(msg_file);
+  target->new_messages = 1;
 }
 
+int
+has_new_messages(target)
+     KNUCKLE *target;
+{
+  struct stat stat_info;
+  int result;
 
+  if ((target->new_messages == 0) ||
+      (target->new_messages == 1))
+    return(target->new_messages);
+
+  sprintf(target->nm_file,"%s/%s_%d.nm", LOG_DIR, target->user->username,
+	  target->instance);
+  result = stat(target->nm_file,&stat_info);
+  if ((result != 0) && (errno != ENOENT)) {
+    log_error("has_new_messages: stat: %m");
+    return(0);
+  }
+
+  if (result == 0) {
+    target->new_messages = 1;
+    return(1);
+  }
+  else {
+    target->new_messages = 0;
+    return(0);
+  }
+}
+  
+void
+free_new_messages(knuckle)
+     KNUCKLE *knuckle;
+{
+  if (knuckle->new_messages == 1)
+    unlink(knuckle->nm_file);
+  knuckle->new_messages = 0;
+}
 
 /*
  * Function:	get_status_info() returns some status information.
