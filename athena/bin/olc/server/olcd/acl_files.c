@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.12 1991-04-14 17:20:55 lwvanels Exp $
+ *	$Id: acl_files.c,v 1.13 1991-09-22 11:52:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.12 1991-04-14 17:20:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.13 1991-09-22 11:52:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -570,8 +570,8 @@ char *principal;
   /* It isn't there yet, copy the file and put it in */
   for(i = 0; i < acl_cache[idx].acl->size; i++) {
     if(acl_cache[idx].acl->tbl[i] != NULL) {
-      if(fputs(acl_cache[idx].acl->tbl[i], new) == NULL
-	 || putc('\n', new) != '\n') {
+      if((fputs(acl_cache[idx].acl->tbl[i], new) == 0)
+	 || (putc('\n', new) != '\n')) {
 	acl_abort(acl, new);
 	return(-1);
       }
