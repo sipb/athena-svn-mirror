@@ -1,4 +1,4 @@
-.\" $Id: desync.8,v 1.1 1997-03-14 21:20:24 ghudson Exp $
+.\" $Id: desync.8,v 1.1.10.1 2000-09-23 19:54:49 ghudson Exp $
 .\"
 .\" Copyright 1995, 1996, 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -24,7 +24,7 @@ desync \- desynchronize timed jobs on networks
 timefile ] [ range ]
 .SH DESCRIPTION
 .I desync
-is a tool which sleeps a random (ip-address seeded) period of time (up
+is a tool which sleeps a random (hostname seeded) period of time (up
 to an hour, by default) in order to skew the network load from several
 machines running
 .I cron
