@@ -1,17 +1,33 @@
-/* This file is part of the CREF finder.  It contains functions for executing
- * CREF commands.
- *
- *	Win Treese
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
  *	MIT Project Athena
  *
  *	Copyright (c) 1985 by the Massachusetts Institute of Technology
  *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v $
- *	$Author: treese $
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+/* This file is part of the CREF finder.  It contains functions for executing
+ * CREF commands.
+ *
+ *	$Source:
+ *	$Author:
+ *      $Header:
  */
 
+
 #ifndef lint
-static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 1.7 1986-02-09 16:40:55 treese Exp $";
+static char *rcsid_commands_c = "$Header: ";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -46,6 +62,7 @@ print_help()
   printf("   <number>\tDisplay specified entry.\n");
   wait_for_key();
   clear();
+  refresh();
   make_display();
 }
 
@@ -73,7 +90,7 @@ prev_entry()
   int new_index;				/* New entry index. */
   
   if ( (new_index = Current_Index - 1) < 1)
-    message(1, "Beginning of entries.");
+    messages("", "Beginning of entries.");
   else
     display_entry(new_index);
 }
@@ -89,7 +106,7 @@ next_entry()
   int new_index;				/* New entry index. */
   
   if ( (new_index = Current_Index + 1) > Entry_Count)
-    message(1, "No more entries.");
+    messages("", "No more entries.");
   else
     display_entry(new_index);
 }
@@ -144,12 +161,12 @@ save_to_file()
   save_index = atoi(inbuf);
   if ( (save_entry = get_entry(save_index)) == NULL)
     {
-      message(2, "Invalid entry number.");
+      messages("", "Invalid entry number.");
       return;
     }
   if (save_entry->type == CREF_DIR)
     {
-      message(2, "Can't save directory entry.");
+      messages("", "Can't save directory entry.");
       return;
     }
   if ( (fd = open(save_entry->filename, O_RDONLY, 0)) < 0)
@@ -232,11 +249,13 @@ goto_entry()
 {
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   char new_dir[FILENAME_SIZE];		/* New directory name. */
-  char error[ERRSIZE];			/* Error message. */
+  char error[ERRSIZE];
+  char line1[ERRSIZE];			/* Error message. */
+  char line2[ERRSIZE];
   int i;				/* Index variable. */
 
   inbuf[0] = (char) NULL;
-  message(1, "Go to? ");
+  message(1, "Go to?");
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
@@ -245,7 +264,7 @@ goto_entry()
 
   while ( i < Abbrev_Count)
     {
-      if ( ! strcmp(inbuf, Abbrev_Table[i].abbrev) )
+      if ( ! strcmp(inbuf, Abbrev_Table[i].abbrev))
 	{
 	  if (Abbrev_Table[i].filename[0] == '/')
 	    strcpy(new_dir, Abbrev_Table[i].filename);
@@ -255,13 +274,15 @@ goto_entry()
 	    {
 	      set_current_dir(new_dir);
 	      make_display();
+	      message(1,"");
 	      return;
 	    }
 	  else
 	    {
-	      sprintf(error, "%s is an invalid CREF path.",
+	      sprintf(line1, "No index:%s",
 		      Abbrev_Table[i].filename);
-	      message(1, error);
+	      sprintf(line2,"Please select a different abbreviation/entry.");
+	      messages(line1,line2);
 	      return;
 	    }
 	}
@@ -271,20 +292,22 @@ goto_entry()
   message(1, error);
 }
 
-/* Function:	define_abbrev() defines a new abbreviation and adds it
+/* Function:	add_abbrev() adds a new abbreviation 
  *			to the current user abbreviation file.
  * Arguments:	None.
  * Returns:	Nothing.
  * Notes:
  */
 
-define_abbrev()
+add_abbrev()
 {
   FILE *fp;				/* File pointer. */
   char error[ERRSIZE];			/* Error message. */
   char inbuf[LINE_LENGTH];		/* Input buffer. */
   int index;				/* Entry index. */
   ENTRY *entry;				/* Entry to get abbreviation. */
+  int i;				/* Abbrev count variable*/
+
 
   if ( (fp = fopen(Abbrev_File, "a")) == (FILE *) NULL)
       {
@@ -293,12 +316,12 @@ define_abbrev()
 	return;
       }
   inbuf[0] = (char) NULL;
-  message(1, "Define abbreviation for entry: ");
+  message(1, "Define abbreviation for entry:");
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
   index = atoi(inbuf);
-  if ( (entry = get_entry(index - 1)) == NULL)
+  if ( (entry = get_entry(index)) == NULL)
     {
       message(2, "Invalid entry number.");
       return;
@@ -308,6 +331,16 @@ define_abbrev()
       message(2, "Can't define abbreviation for file entry.");
       return;
     }
+  i=0;
+  while (i < Abbrev_Count)
+    {
+      if (strcmp(entry->filename,Abbrev_Table[i].filename) == 0)
+	{
+	  message(2, "Abbreviation for this entry already exists");
+	  return;
+	}
+      i++;
+    }
   message(1, "Abbreviation: ");
   inbuf[0] = (char) NULL;
   get_input(inbuf);
@@ -315,7 +348,7 @@ define_abbrev()
     return;
   if (Abbrev_Count >= MAX_ABBREVS)
     {
-      message(1, "Too many abbreviations.");
+      message(1, "Maximum number of abbreviations reached.");
       return;
     }
   fprintf(fp, "%s\t%s\n", inbuf, entry->filename);
@@ -325,6 +358,8 @@ define_abbrev()
   Abbrev_Table[Abbrev_Count].abbrev[0] = (char) NULL;
   Abbrev_Table[Abbrev_Count].filename[0] = (char) NULL;
   fclose(fp);
+  message(1,"");
+  return;
 }
 
 /* Function:	list_abbrevs() lists all known abbreviations.
@@ -346,22 +381,14 @@ list_abbrevs()
     {
       if (curr_line > LINES - 2)
 	{
-	  standout();
-	  mvaddstr(LINES-1, 0, "Hit any key to continue");
-	  standend();
-	  refresh();
-	  getch();
+	  wait_for_key();
 	  clear();
 	  curr_line = 0;
 	}
       printf("%s\t%s\n", Abbrev_Table[index].abbrev,
 	     Abbrev_Table[index].filename);
     }
-  standout();
-  mvaddstr(LINES-1, 0, "Hit any key to continue");
-  standend();
-  refresh();
-  getch();
+  wait_for_key();
   clear();
   make_display();
 }
@@ -386,15 +413,44 @@ insert_entry()
   char title[LINE_LENGTH];		/* Title of entry. */
   char filename[FILENAME_SIZE];		/* Filename to use. */
   char formatter[LINE_LENGTH];		/* Text formatter to use. */
-  char spare[LINE_LENGTH];		/* Additional information. */
+  char maintainer[LINE_LENGTH];		/* Maintainer of file. */
   char newdir[FILENAME_SIZE];		/* New directory pathname. */
   char newfile[FILENAME_SIZE];		/* New file pathname. */
   int row;				/* Row on screen. */
+  char *fullpath;
+  char *ptail;
+  char tail[FILENAME_SIZE];
+  char line1[ERRSIZE];
+  char line2[ERRSIZE];
+  char log_string[LOG_LENGTH];
+  char install_dir[FILENAME_SIZE];
+  char install_file[FILENAME_SIZE];
+  char install_path[FILENAME_SIZE];
+
+  if (Log_File[0] == (char) NULL)
+    {
+      message(1, "Enter full pathname of log file: ");
+      get_input(inbuf);
+      if (inbuf[0] == (char) NULL)
+	return;
+      if ( (fp = fopen(inbuf,"a")) < 0)
+	{
+	  sprintf(line1, "Unable to open: %s",inbuf);
+	  sprintf(line2, "Check the pathname and try again.");
+	  messages(line1,line2);
+	  return(FALSE);
+  	}
+      else
+	{
+	  strcpy(Log_File,inbuf);
+	  fclose(fp);
+	}
+    } 
 
   row = 0;
   make_path(Current_Dir, CONTENTS, contents);
   inbuf[0] = (char) NULL;
-  message(1, "Insert entry before: ");
+  message(1, "Insert entry as number:");
   get_input(inbuf);
   if (inbuf[0] == (char) NULL)
     return;
@@ -414,15 +470,22 @@ insert_entry()
       get_input(inbuf);
     }
   if (inbuf[0] == 'f')
-    type = CREF_FILE;
+    {
+      type = CREF_FILE;
+      mvaddstr(row++, 0, "File to be installed: ");
+      refresh();
+      inbuf[0] = (char) NULL;
+      get_input(inbuf);
+      strcpy(install_file,inbuf);
+    }
   else if (inbuf[0] == 'd')
     type = CREF_DIR;
-  mvaddstr(row++, 0, "Title of entry: ");
+  mvaddstr(row++, 0, "Title for index file: ");
   refresh();
   inbuf[0] = (char) NULL;
   get_input(inbuf);
   strcpy(title, inbuf);
-  mvaddstr(row++, 0, "Filename of entry: ");
+  mvaddstr(row++, 0, "Filename to be used: ");
   refresh();
   inbuf[0] = (char) NULL;
   get_input(inbuf);
@@ -444,11 +507,11 @@ insert_entry()
       strcpy(formatter, "none");
       strcpy(type_name, CREF_SUBDIR);
     }
-  mvaddstr(row++, 0, "Additional information: ");
+  mvaddstr(row++, 0, "Name of maintainer: ");
   refresh();
   inbuf[0] = (char) NULL;
   get_input(inbuf);
-  strcpy(spare, inbuf);
+  strcpy(maintainer, inbuf);
 
   mvaddstr(row++, 0, "Is this information correct [y/n]? ");
   refresh();
@@ -461,23 +524,70 @@ insert_entry()
       return;
     }
 
+  if (type == CREF_DIR)
+    {
+      make_path(Current_Dir, filename, newdir);
+      if (create_cref_dir(newdir)==ERROR)
+	{
+	  wait_for_key();
+	  clear();
+	  make_display();
+	  return;
+	}
+    }
+  else if (type == CREF_FILE)
+    {
+      make_path(Current_Dir, filename, newfile);
+      if (copy_file(install_file, newfile)==ERROR)
+	{
+	  wait_for_key();
+	  clear();
+	  make_display();
+	  return;
+	}
+    }
+
+
+
   if (index > Entry_Count)
     {
       if ( (fp = fopen(contents, "a")) == (FILE *) NULL)
 	{
-	  message(1, "Unable to open contents file.");
+	  sprintf(line1, "Unable to open:%s", contents);
+	  if (type == CREF_FILE)
+	    {
+	      if (unlink(newfile) < 0)
+		  sprintf(line2, "Unable to remove:%s",newfile);
+	    }
+	  else if (type == CREF_DIR)
+	    {
+	      if (rmdir(newdir) < 0)
+		sprintf(line2, "Unable to rmdir:%s",newdir);
+	    }
+	  messages(line1,line2);
 	  make_display();
 	  return;
 	}
       fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
 	      title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
-	      CONTENTS_DELIM, spare);
+	      CONTENTS_DELIM, maintainer);
     }
 else
   {
     if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
       {
-	message(1, "Unable to open contents file.");
+	sprintf(line1, "Unable to open:%s", contents);
+	if (type == CREF_FILE)
+	  {
+	    if (unlink(newfile) < 0)
+	      sprintf(line2, "Unable to remove:%s",newfile);
+	  }
+	else if (type == CREF_DIR)
+	  {
+	    if (rmdir(newdir) < 0)
+	      sprintf(line2, "Unable to rmdir:%s",newdir);
+	  }
+	messages(line1,line2);
 	make_display();
 	return;
       }
@@ -489,33 +599,39 @@ else
 	  {
 	    fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
 		    title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
-		    CONTENTS_DELIM, spare);
+		    CONTENTS_DELIM, maintainer);
 	  }
 	if (Entry_Table[i].type == CREF_FILE)
 	  strcpy(curr_type, CREF_ENTRY);
 	else
 	  strcpy(curr_type, CREF_SUBDIR);
+	fullpath=Entry_Table[i].filename;
+	ptail=tail;
+	extract_tail(fullpath,ptail);
 	fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
-		Entry_Table[i].title,CONTENTS_DELIM, Entry_Table[i].filename,
+		Entry_Table[i].title,CONTENTS_DELIM, tail,
 		CONTENTS_DELIM, Entry_Table[i].formatter,
-		CONTENTS_DELIM, Entry_Table[i].spare);
+		CONTENTS_DELIM, Entry_Table[i].maintainer);
 	i++;
       }
   }
   fclose(fp);
 
+  make_path(getwd(install_dir),install_file,install_path);  
+
+  if (type == CREF_FILE)
+    {
+      sprintf(log_string,"File: %s\n Installed as: %s\n Title: %s\n",
+	 install_path, newfile, title);  
+      log_status(Log_File, log_string);
+    }
   if (type == CREF_DIR)
     {
-      make_path(Current_Dir, filename, newdir);
-      create_cref_dir(newdir);
-    }
-  else if (type == CREF_FILE)
-    {
-      make_path(Current_Dir, filename, newfile);
-      copy_file(filename, newfile);
+      sprintf(log_string,"New Directory: %s\n Title: %s\n",
+	 newdir, title);
+      log_status(Log_File, log_string);
     }
   set_current_dir(Current_Dir);
-  wait_for_key();
   clear();
   make_display();
 }
@@ -527,7 +643,7 @@ else
  * Notes:
  */
 
-remove_entry()
+delete_entry()
 {
   FILE *fp;				/* File pointer. */
   char contents[FILENAME_SIZE];		/* Contents filename. */
@@ -537,7 +653,32 @@ remove_entry()
   char curr_type[LINE_LENGTH];		/* Current type string. */
   ENTRY *entry;				/* Entry to be removed. */
   int j;				/* Index variable. */
+  char *fullpath;
+  char *ptail;
+  char tail[FILENAME_SIZE];
+  char line1[ERRSIZE];
+  char line2[ERRSIZE];
+  char log_string[LOG_LENGTH];
 
+  if (Log_File[0] == (char) NULL)
+    {
+      message(1, "Enter full pathname of log file: ");
+      get_input(inbuf);
+      if (inbuf[0] == (char) NULL)
+	return;
+      if ( (fp = fopen(inbuf,"a")) < 0)
+	{
+	  sprintf(line1, "Unable to open: %s",inbuf);
+	  sprintf(line2, "Check the pathname and try again.");
+	  messages(line1,line2);
+	  return(FALSE);
+  	}
+      else
+	{
+	  strcpy(Log_File,inbuf);
+	  fclose(fp);
+	}
+    } 
   make_path(Current_Dir, CONTENTS, contents);
   inbuf[0] = (char) NULL;
   message(1, "Remove entry: ");
@@ -550,6 +691,12 @@ remove_entry()
       message(2, "Invalid entry number.");
       return;
     }
+  if (entry->type == CREF_DIR)
+    {
+      message(2, "Cannot remove a directory");
+      return;
+    }
+
 
   if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
     {
@@ -561,22 +708,56 @@ remove_entry()
   i = 1;
   while (i <= Entry_Count)
     {
-      if (i != index)
+      j = i - 1;
+      if (Entry_Table[j].type == CREF_FILE)
+	strcpy(curr_type, CREF_ENTRY);
+      else
+	strcpy(curr_type, CREF_SUBDIR);
+      fullpath=Entry_Table[j].filename;
+      ptail=tail;
+      extract_tail(fullpath,ptail);
+
+
+      if (i == index)
 	{
-	  j = i - 1;
-	  if (Entry_Table[j].type == CREF_FILE)
-	    strcpy(curr_type, CREF_ENTRY);
+	  if (unlink(entry->filename) < 0)
+	    {
+	      sprintf(line1, "Unable to remove: %s",entry->filename);
+	      sprintf(line2, "");
+	      messages(line1,line2);
+	      fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
+		      Entry_Table[j].title,CONTENTS_DELIM, tail,
+		      CONTENTS_DELIM, Entry_Table[j].formatter,
+		      CONTENTS_DELIM, Entry_Table[j].maintainer);
+	      wait_for_key();
+	    }
 	  else
-	    strcpy(curr_type, CREF_SUBDIR);
+	    {
+	      sprintf(log_string,"Deleted file: %s\n Title: %s\n",
+		      entry->filename,Entry_Table[j].title);
+	      log_status(Log_File, log_string);
+	    }
+	}
+      else
+	{
 	  fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
-		  Entry_Table[j].title,CONTENTS_DELIM, Entry_Table[j].filename,
+		  Entry_Table[j].title,CONTENTS_DELIM, tail,
 		  CONTENTS_DELIM, Entry_Table[j].formatter,
-		  CONTENTS_DELIM, Entry_Table[j].spare);
+		  CONTENTS_DELIM, Entry_Table[j].maintainer);
 	}
       i++;
     }
-  if (unlink(entry->filename) < 0)
-      message(1, "Unable to remove entry (may be directory)");
+
+  fclose(fp);
+  
   set_current_dir(Current_Dir);
+  clear();
+  make_display();
+}
+
+redisplay()
+{
+  set_current_dir(Current_Dir);
+  clear();
   make_display();
 }
