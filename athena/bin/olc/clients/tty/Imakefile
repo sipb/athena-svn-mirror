@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1991-04-18 21:36:26 lwvanels Exp $
+# $Id: Imakefile,v 1.5 1991-09-10 13:33:22 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/Imakefile,v $
 #
 # For copying and distribution information,
@@ -21,7 +21,16 @@ OBJS=	t_ask.o t_connect.o t_consult.o t_instance.o \
 	t_describe.o t_acl.o t_misc.o t_db.o \
 	t_list.o
 
-DEFINES = -DCDATE="\"`date`\""
+depend::
+	-$(RM) libtty.a
+	sh newvers.sh
+
+libtty.a:: newvers.sh
+	-$(RM) libtty.a
+	sh newvers.sh
+
+clean::
+	-$(RM) version.h
 
 LibraryTarget(tty,$(OBJS))
 SaberLibraryTarget(tty,$(SRCS),$(OBJS))
