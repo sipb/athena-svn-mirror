@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.4 1997-11-19 20:44:43 danw Exp $
+ * $Id: auth-passwd.c,v 1.5 1997-11-19 20:52:24 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1997/11/19 20:44:43  danw
+ * do chown later
+ *
  * Revision 1.3  1997/11/15 00:04:13  danw
  * Use atexit() functions to destroy tickets and call al_acct_revert.
  * Work around Solaris lossage with libucb and grantpt.
@@ -328,6 +331,7 @@ int verify_krb_v5_tgt (krb5_context c, krb5_ccache ccache,
   /* since krb5_sname_to_principal has done the work for us, just
      extract the name directly */
   strncpy(phost, krb5_princ_component(c, princ, 1)->data, BUFSIZ);
+  phost[BUFSIZ - 1] = '\0';
   
   /* Do we have host/<host> keys? */
   /* (use default keytab, kvno IGNORE_VNO to get the first match,
