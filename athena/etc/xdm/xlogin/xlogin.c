@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.24 1992-05-29 13:55:29 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.25 1992-06-03 16:35:40 epeisach Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <sys/file.h>
 #include <utmp.h>
 #include <fcntl.h>
 #include <X11/Intrinsic.h>
@@ -99,6 +100,7 @@ typedef struct _XLoginResources {
   Boolean blankAll;
   Boolean showMotd;
   String motdFile;
+  String motd2File;
 } XLoginResources;
 
 /*
@@ -122,9 +124,8 @@ static XrmOptionDescRec options[] = {
   {"-fp",	"*fontPath",		XrmoptionSepArg,	NULL},
   {"-blankall", "*blankAll",		XrmoptionNoArg,   (caddr_t) "on"},
   {"-noblankall","*blankAll",		XrmoptionNoArg,   (caddr_t) "off"},
-#ifdef MOTD_TEST
   {"-motdfile",	"*motdFile",		XrmoptionSepArg,	NULL},
-#endif
+  {"-motd2file","*motd2File",		XrmoptionSepArg,	NULL},
 };
 
 /*
@@ -167,10 +168,10 @@ static XtResource my_resources[] = {
      Offset(blankAll), XtRImmediate, (caddr_t) True},
   {"showMotd", XtCBoolean, XtRBoolean, sizeof(Boolean),
      Offset(showMotd), XtRImmediate, (caddr_t) True},
-#ifdef MOTD_TEST
   {"motdFile", XtCString, XtRString, sizeof(String),
      Offset(motdFile), XtRImmediate, (caddr_t) MOTD_FILENAME },
-#endif
+  {"motd2File", XtCString, XtRString, sizeof(String),
+     Offset(motd2File), XtRImmediate, (caddr_t) "" },
 };
 
 #undef Offset
@@ -444,8 +445,15 @@ move_instructions(data, timerid)
       XtSetArg(args[1], XtNheight, &y_max);
       XtGetValues(ins, args, 2);
 
-      x_max = WidthOfScreen(XtScreen(ins)) - x_max;
-      y_max = HeightOfScreen(XtScreen(ins)) - y_max;
+      if (WidthOfScreen(XtScreen(ins)) < x_max + 1)
+	x_max = 1;
+      else
+	x_max = WidthOfScreen(XtScreen(ins)) - x_max;
+      if (HeightOfScreen(XtScreen(ins)) < y_max + 1)
+	y_max = 1;
+      else
+	y_max = HeightOfScreen(XtScreen(ins)) - y_max;
+
     }
 
   x = random() % x_max;
@@ -613,17 +621,14 @@ screensave(data, timerid)
 do_motd()
 {
     static Widget motdtext = NULL;
-    static time_t modtime = 0;
-    struct stat stbuf;
+    static time_t modtime = 0, modtime2 = 0;
+    struct stat stbuf, stbuf2;
     Arg args[1];
     char buf[10000], *temp, *s, *d;
     int fid, len;
 
     if (!motdtext) {
 	motdtext = WcFullNameToWidget(appShell, "*motd");
-#ifndef MOTD_TEST
-	resources.motdFile = MOTD_FILENAME;
-#endif
 
 	/* Initialize motdtext to NULL in case it never gets set.
 	   This happens in the case of a bad stat on the motd
@@ -633,15 +638,28 @@ do_motd()
 	XtSetValues(motdtext, args, 1);
     }
 
-    if (resources.showMotd && resources.motdFile != NULL) {
-	if (!stat(resources.motdFile, &stbuf) &&
-	    stbuf.st_mtime > modtime) {
+    if (resources.showMotd) {
+	if ((resources.motdFile != NULL && *resources.motdFile &&
+	     !stat(resources.motdFile, &stbuf) &&
+	     stbuf.st_mtime > modtime) ||
+	    (resources.motd2File != NULL && *resources.motd2File &&
+	     !stat(resources.motd2File, &stbuf2) &&
+	     stbuf2.st_mtime > modtime2)) {
 	    /* time to update the motd */
 	    modtime = stbuf.st_mtime;
+	    modtime2 = stbuf2.st_mtime;
 	    /* read the new motd */
-	    if ((fid = open(resources.motdFile, O_RDONLY)) < 0) return;
-	    len = read(fid, buf, sizeof(buf));
-	    close(fid);
+	    len = 0;
+	    if (resources.motdFile != NULL && *resources.motdFile &&
+		(fid = open(resources.motdFile, O_RDONLY)) >= 0) {
+		len = read(fid, buf, sizeof(buf));
+		close(fid);
+	    }
+	    if (resources.motd2File != NULL && *resources.motd2File &&
+		(fid = open(resources.motd2File, O_RDONLY)) >= 0) {
+		len += read(fid, &(buf[len]), sizeof(buf) - len);
+		close(fid);
+	    }
 	    buf[len] = 0;
 
 	    /* de-tabbify the motd (label widgets don't do tabs) */
