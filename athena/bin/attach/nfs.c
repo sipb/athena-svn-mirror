@@ -1,11 +1,11 @@
 /*
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v $
- *	$Author: cfields $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.7 1994-08-24 02:46:50 cfields Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.8 1996-09-19 22:13:15 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -163,7 +163,7 @@ char **nfs_explicit(name)
 
     filsys_type = "NFS";
     strcpy(host, name);
-    dir = index(host, ':');
+    dir = strchr(host, ':');
     if (!dir) {
 	fprintf(stderr, "%s: Illegal explicit definition \"%s\" for type %s\n",
 		progname, name, filsys_type); 
@@ -185,7 +185,7 @@ char **nfs_explicit(name)
 	     * Zero out any domain names, since they're ugly as mount
 	     * points.
 	     */
-	    if (cp = index(temp, '.'))
+	    if (cp = strchr(temp, '.'))
 		    *cp = '\0';
 	    if (!strcmp(dir, "/")) {
 		    if (nfs_root_hack)

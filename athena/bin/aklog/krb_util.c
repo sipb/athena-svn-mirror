@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.3 1992-12-11 13:48:32 probe Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.4 1996-09-19 22:09:31 ghudson Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -27,7 +27,7 @@ static char rcsid_send_to_kdc_c[] =
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 #include <afs/param.h>
 #include <afs/cellconfig.h>
@@ -122,7 +122,7 @@ send_to_kdc(pkt,rpkt,realm)
         if (krb_debug)
             printf("krb_udp_port is %d\n", krb_udp_port);
     }
-    bzero((char *)&to, S_AD_SZ);
+    memset(&to, 0, S_AD_SZ);
     hostlist = (struct hostent *) malloc(sizeof(struct hostent));
     if (!hostlist)
         return (/*errno */SKDC_CANT);
@@ -161,15 +161,14 @@ send_to_kdc(pkt,rpkt,realm)
                     sizeof(struct hostent)*(n_hosts+1));
         if (!hostlist)
             return /*errno */SKDC_CANT;
-        bcopy((char *)host, (char *)&hostlist[n_hosts-1],
-              sizeof(struct hostent));
+        memcpy(&hostlist[n_hosts-1], host, sizeof(struct hostent));
         host = &hostlist[n_hosts-1];
         cp = malloc((unsigned)host->h_length);
         if (!cp) {
             retval = /*errno */SKDC_CANT;
             goto rtn;
         }
-        bcopy((char *)host->h_addr, cp, host->h_length);
+        memcpy(cp, host->h_addr, host->h_length);
 /* At least Sun OS version 3.2 (or worse) and Ultrix version 2.2
    (or worse) only return one name ... */
 #if !(defined(ULTRIX022) || (defined(SunOS) && SunOS < 40))
@@ -180,11 +179,9 @@ send_to_kdc(pkt,rpkt,realm)
         }
 #endif /* ULTRIX022 || SunOS */
         host->h_addr = cp;
-        bzero((char *)&hostlist[n_hosts],
-              sizeof(struct hostent));
+        memset(&hostlist[n_hosts], 0, sizeof(struct hostent));
         to.sin_family = host->h_addrtype;
-        bcopy(host->h_addr, (char *)&to.sin_addr,
-              host->h_length);
+        memcpy(&to.sin_addr, host->h_addr, host->h_length);
         to.sin_port = krb_udp_port;
         if (send_recv(pkt, rpkt, f, &to, hostlist)) {
             retval = KSUCCESS;
@@ -202,8 +199,7 @@ send_to_kdc(pkt,rpkt,realm)
 	if (!no_host) {
 	    for (host = hostlist; host->h_name != (char *)NULL; host++) {
 		to.sin_family = host->h_addrtype;
-		bcopy(host->h_addr, (char *)&to.sin_addr,
-		      host->h_length);
+		memcpy(&to.sin_addr, host->h_addr, host->h_length);
 		if (send_recv(pkt, rpkt, f, &to, hostlist)) {
 		    retval = KSUCCESS;
 		    goto rtn;

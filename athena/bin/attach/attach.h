@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.19 1996-04-26 17:12:17 ghudson Exp $
+ * $Id: attach.h,v 1.20 1996-09-19 22:13:12 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,7 @@
 #undef geterrno
 #endif
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/file.h>

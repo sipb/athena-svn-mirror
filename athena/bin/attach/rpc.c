@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v $
- *	$Author: vrt $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.12 1993-05-05 17:05:05 vrt Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.13 1996-09-19 22:13:16 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -54,7 +54,7 @@ struct cache_ent *lookup_cache_ent(addr)
     int i;
 
     for (i=0;i<first_free;i++)
-	if (!bcmp(&addr, &rpc_cache[i].addr, sizeof(addr)))
+	if (!memcmp(&addr, &rpc_cache[i].addr, sizeof(addr)))
 	    return (&rpc_cache[i]);
 
     return (NULL);
@@ -294,7 +294,7 @@ int nfsid(host, addr, op, errorout, errname, inattach, uid)
 		   op);
 	realm = (char *) krb_realmofhost(host);
 	strcpy(instance, host);
-	ptr = index(instance, '.');
+	ptr = strchr(instance, '.');
 	if (ptr)
 	    *ptr = '\0';
 	for (ptr=instance;*ptr;ptr++)

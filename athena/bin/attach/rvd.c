@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: probe $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.7 1992-07-31 19:22:22 probe Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.8 1996-09-19 22:13:17 ghudson Exp $";
 #endif
 
 #include "attach.h"
@@ -145,7 +145,7 @@ char **rvd_explicit(name)
     extern char *exp_hesptr[2];
 	
     strcpy(temp, name);
-    pack = index(temp, ':');
+    pack = strchr(temp, ':');
     if (!pack) {
 	fprintf(stderr, "%s: Illegal explicit definition for type %s\n",
 		name, filsys_type);

@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v $
- * $Author: probe $
+ * $Author: ghudson $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #ifdef OLD_KERBEROS
 
 static char *rcsid_getrealm_c =
-  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.3 1992-07-31 19:20:11 probe Exp $";
+  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.4 1996-09-19 22:13:13 ghudson Exp $";
 
 #include <mit-copyright.h>
 #include <strings.h>
@@ -55,7 +55,7 @@ char *host;
 	char trans_realm[REALM_SZ+1];
 	int retval;
 
-	domain = index(host, '.');
+	domain = strchr(host, '.');
 
 	/* prepare default */
 	if (domain) {

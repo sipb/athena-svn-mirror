@@ -1,11 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Id: mount.c,v 1.9 1994-03-25 15:57:35 miki Exp $
+ *	$Id: mount.c,v 1.10 1996-09-19 22:13:13 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.9 1994-03-25 15:57:35 miki Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.10 1996-09-19 22:13:13 ghudson Exp $";
 
 #include "attach.h"
 
@@ -423,9 +423,9 @@ nfs_fsname_compare(fsname1, fsname2)
 
 	(void) strcpy(host1, fsname1);
 	(void) strcpy(host2, fsname2);
-	if (rmdir1 = index(host1, ':'))
+	if (rmdir1 = strchr(host1, ':'))
 		*rmdir1++ = '\0';
-	if (rmdir2 = index(host2, ':'))
+	if (rmdir2 = strchr(host2, ':'))
 		*rmdir2++ = '\0';
 	if (host_compare(host1, host2)) {
 		if (!rmdir1 || !rmdir2)

@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.20 1996-04-26 17:09:07 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.21 1996-09-19 22:13:18 ghudson Exp $";
 
 #include "attach.h"
 
@@ -913,7 +913,7 @@ int host_compare(host1, host2)
 			return(!strcmp(host1, host2));
 		}
 	}
-	return(!bcmp(&sin1, &sin2, (sizeof sin1)));
+	return(!memcmp(&sin1, &sin2, (sizeof sin1)));
 }
 
 /*
