@@ -1,11 +1,49 @@
-/* Copyright MIT */
+/*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the workstation status portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
+ *
+ */
+
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.2 1990-04-26 18:14:39 tom Exp $";
+#endif
+
 
 #include "include.h"
-#ifdef ATHENA
+#include <mit-copyright.h>
+
+#ifdef MIT
 #include <utmp.h>
+
+static int stattime();
+static int get_load();
+static int get_time();
+
+#ifdef ATHENA
+static int get_ws_version();
 
 #define MAX_REPLY_SIZE 256
 #define VERSION_FILE "/etc/version"
+
+/*
+ * Function:    lu_relvers()
+ * Description: Top level callback for workstation version. 
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
 lu_relvers(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
@@ -33,8 +71,19 @@ lu_relvers(varnode, repl, instptr, reqflg)
   return(get_ws_version(repl->val.value.str.str,MAX_REPLY_SIZE));
 }
 
+#endif ATHENA
 
 
+/*
+ * Function:    lu_status()
+ * Description: Top level callback for workstation status. Supports:
+ *                    N_STATIME:   (INT)  time on agent
+ *                    N_STATLOAD:  (INT)  load on agent
+ *                    N_STATLOGIN: (INT)  1 if in use
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_status(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -68,11 +117,13 @@ lu_status(varnode, repl, instptr, reqflg)
 	return(BUILD_ERR);
       else
 	return(BUILD_SUCCESS);
+#ifdef LOGIN
     case N_STATLOGIN:
       if(get_inuse(&(repl->val.value.intgr)))
 	return(BUILD_ERR);
       else
 	return(BUILD_SUCCESS);
+#endif LOGIN
     default:
       return(BUILD_ERR);
     }
@@ -82,6 +133,15 @@ lu_status(varnode, repl, instptr, reqflg)
 
 
 
+/*
+ * Function:    lu_tuchtime()
+ * Description: Top level callback for mod time on files. Supports:
+ *                     aliases file
+ *                     credentials file
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_tuchtime(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -133,6 +193,16 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
 }
 
 
+
+
+/*
+ * Function:    stattime()
+ * Description: Returns modification time on given file.
+ * Returns:     time if success
+ *              0 if error
+ */
+
+static int
 stattime(file)
      char *file;
 {
@@ -149,6 +219,14 @@ stattime(file)
 }
 
 
+#ifdef ATHENA
+/*
+ * Function:    get_ws_version()
+ * Description: gets last line out of /etc/version and returns it in string
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int
 get_ws_version(string, size)
      char *string;
      int size;
@@ -167,13 +245,19 @@ get_ws_version(string, size)
     strncpy(string, buf, size);
 
   string[strlen(string)-1] = '\0';
-  fclose(fp);
+  (void) fclose(fp);
   return(BUILD_SUCCESS);
 }
+#endif ATHENA
 
 
+/*
+ * Function:    get_time()
+ * Description: gets the time
+ * Returns:     0
+ */
 
-
+static int
 get_time(ret)
      int *ret;
 {
@@ -183,6 +267,14 @@ get_time(ret)
 
 
 
+/*
+ * Function:    get_load()
+ * Description: gets the load, places it in ret
+ * Returns:     0 on success
+ *              4 on error?
+ */
+
+static int
 get_load(ret)
      int *ret;
 {
@@ -240,6 +332,15 @@ get_load(ret)
 
 #ifdef LOGIN
 
+/*
+ * Function:    get_inuse()
+ * Description: Decides if one is logegd in. If so, ret is set to # entries
+ *              in utmp. 
+ * Returns:     0 on success
+ *              4 on error
+ */
+
+int
 get_inuse(ret)
         int *ret;
 {
@@ -268,4 +369,4 @@ get_inuse(ret)
 }
 
 #endif LOGIN
-#endif ATHENA
+#endif MIT
