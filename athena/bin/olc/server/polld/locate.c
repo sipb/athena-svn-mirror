@@ -173,7 +173,7 @@ find_zephyr(person)
   strcat(namebuf,"@");
   strcat(namebuf,ZGetRealm());
 
-  if ((retval = ZLocateUser(namebuf,&numlocs)) != ZERR_NONE) {
+  if ((retval = ZLocateUser(namebuf,&numlocs,ZAUTH)) != ZERR_NONE) {
     syslog(LOG_WARNING,"zephyr error while locating user %s: %d", namebuf,
 	   retval);
     return(LOC_ERROR);
