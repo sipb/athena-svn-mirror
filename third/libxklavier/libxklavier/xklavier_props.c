@@ -13,6 +13,9 @@
 #include "xklavier_config.h"
 #include "xklavier_private.h"
 
+#define XKB_DEFAULT_MODEL "pc101"
+#define XKB_DEFAULT_LAYOUT "us"
+
 void XklConfigRecInit( XklConfigRecPtr data )
 {
   // clear the structure VarDefsPtr...
@@ -40,6 +43,22 @@ static Bool ListsEqual( int numItems1, char** items1,
   for( i = numItems1; --i >= 0; )
      if ( !PtrsEqual( *items1++ , *items2++ ) )
        return False;
+  return True;
+}
+
+static Bool _XklGetDefaultNamesProp( char **rulesFileOut, XklConfigRecPtr data )
+{
+  if ( rulesFileOut != NULL )
+    *rulesFileOut = strdup( XKB_DEFAULT_RULESET );
+  data->model = strdup( XKB_DEFAULT_MODEL );
+// keeping Nvariants = Nlayouts
+  data->numLayouts = data->numVariants = 1;
+  data->layouts = malloc( sizeof( char * ) );
+  data->layouts[0] = strdup( XKB_DEFAULT_LAYOUT );
+  data->variants = malloc( sizeof( char * ) );
+  data->variants[0] = strdup( "" );
+  data->numOptions = 0;
+  data->options = NULL;
   return True;
 }
 
@@ -98,11 +117,11 @@ void XklConfigRecReset( XklConfigRecPtr data )
 Bool XklConfigGetFromServer( XklConfigRecPtr data )
 {
 #ifdef XKB_HEADERS_PRESENT
-  char *rulesFile = NULL;
   Bool rv =
-    XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM], &rulesFile, data );
-  if( rulesFile != NULL )
-    free( rulesFile );
+    XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM], NULL, data );
+
+  if( !rv )
+    rv = _XklGetDefaultNamesProp( NULL, data );
 
   return rv;
 #else
@@ -113,12 +132,8 @@ Bool XklConfigGetFromServer( XklConfigRecPtr data )
 Bool XklConfigGetFromBackup( XklConfigRecPtr data )
 {
 #ifdef XKB_HEADERS_PRESENT
-  char *rulesFile = NULL;
   Bool rv =
-    XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], &rulesFile,
-                     data );
-  if( rulesFile != NULL )
-    free( rulesFile );
+    XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], NULL, data );
 
   return rv;
 #else
@@ -130,21 +145,24 @@ Bool XklBackupNamesProp(  )
 {
   Bool rv = True;
 #ifdef XKB_HEADERS_PRESENT
-  char *rf;
+  char *rf = NULL;
   XklConfigRec data;
+  Bool cgp = False;
 
   XklConfigRecInit( &data );
   if( XklGetNamesProp
-      ( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], &rf, &data ) )
+      ( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], NULL, &data ) )
   {
     XklConfigRecDestroy( &data );
-    if( rf != NULL )
-      free( rf );
     return True;
   }
   // "backup" property is not defined
   XklConfigRecReset( &data );
-  if( XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM], &rf, &data ) )
+  cgp = XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM], &rf, &data );
+  if ( !cgp )
+    cgp = _XklGetDefaultNamesProp( &rf, &data );
+
+  if ( cgp )
   {
 #if 0
     int i;
@@ -183,18 +201,15 @@ Bool XklRestoreNamesProp(  )
 {
   Bool rv = True;
 #ifdef XKB_HEADERS_PRESENT
-  char *rf;
+  char *rf = NULL;
   XklConfigRec data;
 
   XklConfigRecInit( &data );
-  if( !XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], &rf, &data ) )
+  if( !XklGetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM_BACKUP], NULL, &data ) )
   {
     XklConfigRecDestroy( &data );
     return False;
   }
-
-  if( rf != NULL )
-    free( rf );
 
   if( !XklSetNamesProp( _xklAtoms[XKB_RF_NAMES_PROP_ATOM], rf, &data ) )
   {
@@ -358,6 +373,9 @@ Bool XklSetNamesProp( Atom rulesAtom,
   if( !pval )
   {
     _xklLastErrorMsg = "Could not allocate buffer";
+    if ( allLayouts != NULL ) free( allLayouts );
+    if ( allVariants != NULL ) free( allVariants );
+    if ( allOptions != NULL ) free( allOptions );
     return False;
   }
   if( rulesFile )
@@ -393,8 +411,9 @@ Bool XklSetNamesProp( Atom rulesAtom,
   if( ( next - pval ) != len )
   {
     XklDebug( 150, "Illegal final position: %d/%d\n", ( next - pval ), len );
-    if( allOptions != NULL )
-      free( allOptions );
+    if ( allLayouts != NULL ) free( allLayouts );
+    if ( allVariants != NULL ) free( allVariants );
+    if ( allOptions != NULL ) free( allOptions );
     free( pval );
     _xklLastErrorMsg = "Internal property parsing error";
     return False;
@@ -410,8 +429,9 @@ Bool XklSetNamesProp( Atom rulesAtom,
   XklDebug( 150, "Stored [%s] of length %d to [%s] of %X: %d\n", pval, len,
             propName, _xklRootWindow, rv );
 #endif
-  if( allOptions != NULL )
-    free( allOptions );
+  if ( allLayouts != NULL ) free( allLayouts );
+  if ( allVariants != NULL ) free( allVariants );
+  if ( allOptions != NULL ) free( allOptions );
   free( pval );
   return True;
 }

@@ -121,14 +121,22 @@ static Bool _XklReadConfigItem( xmlNodePtr iptr, XklConfigItemPtr pci )
              XKL_MAX_CI_NAME_LENGTH - 1 );
 
   if( shortDescElement != NULL && shortDescElement->children != NULL )
+  {
+    char * lsd = _XklLocaleFromUtf8( shortDescElement->children->content );
     strncat( pci->shortDescription,
-             _XklLocaleFromUtf8( shortDescElement->children->content ),
+             lsd,
              XKL_MAX_CI_SHORT_DESC_LENGTH - 1 );
+    free( lsd );
+  }
 
   if( descElement != NULL && descElement->children != NULL )
+  {
+    char * ld = _XklLocaleFromUtf8( descElement->children->content );
     strncat( pci->description,
-             _XklLocaleFromUtf8( descElement->children->content ),
+             ld,
              XKL_MAX_CI_DESC_LENGTH - 1 );
+    free( ld );
+  }
   return True;
 }
 

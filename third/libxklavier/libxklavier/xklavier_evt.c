@@ -97,10 +97,17 @@ void _XklStdXkbHandler( int grp, XklStateChange changeType, unsigned inds,
 
   if( focusedApp != _xklCurClient )
   {
-    _xklCurState.group = grp;
-    _xklCurState.indicators = inds;
-
-    _XklAddAppWindow( focusedApp, ( Window ) NULL, False, &_xklCurState );
+    if ( !_XklGetAppState( focusedApp, &oldState ) )
+    {
+      _XklUpdateCurState( grp, inds, 
+                          "Updating the state from new focused window" );
+      _XklAddAppWindow( focusedApp, ( Window ) NULL, False, &_xklCurState );
+    }
+    else
+    {
+      grp = oldState.group;
+      inds = oldState.indicators;
+    }
     _xklCurClient = focusedApp;
     XklDebug( 160, "CurClient:changed to " WINID_FORMAT ", '%s'\n",
               _xklCurClient, _XklGetDebugWindowTitle( _xklCurClient ) );
@@ -111,8 +118,9 @@ void _XklStdXkbHandler( int grp, XklStateChange changeType, unsigned inds,
 
   if( setGroup || haveState )
   {
-    _xklCurState.group = setGroup ? grp : oldState.group;
-    _xklCurState.indicators = setInds ? inds : oldState.indicators;
+    _XklUpdateCurState( setGroup ? grp : oldState.group,
+                        setInds ? inds : oldState.indicators,
+                        "Restoring the state from the window" );
   }
 
   if( haveState )
@@ -147,8 +155,15 @@ void _XklXkbEvHandler( XkbEvent * kev )
       if( kev->state.changed & GROUP_CHANGE_MASK )
         _XklStdXkbHandler( kev->state.locked_group, GROUP_CHANGED, 0, False );
       else
+      {
         XklDebug( 200,
                   "This type of state notification is not regarding groups\n" );
+        if ( kev->state.locked_group != _xklCurState.group )
+          XklDebug( 0, 
+                    "ATTENTION! Currently cached group %d is not equal to the current group from the event: %d\n!",
+                    _xklCurState.group,
+                    kev->state.locked_group );
+      }
 
       break;
 
@@ -241,12 +256,7 @@ void _XklFocusInEvHandler( XFocusChangeEvent * fev )
       Bool transparent;
       XklState tmpState;
 
-      /**
-       *  For fast mouse movements - the state is probably not updated yet
-       *  (because of the group change notification being late).
-       *  so we'll enforce the update.
-       */
-      if( XklGetState( _xklCurClient, &tmpState ) )
+      if ( XklGetState ( _xklCurClient, &tmpState ) )
         _xklCurState = tmpState;
 
       _xklCurClient = appWin;
@@ -256,7 +266,8 @@ void _XklFocusInEvHandler( XFocusChangeEvent * fev )
       transparent = _XklIsTransparentAppWindow( appWin );
       if( transparent )
         XklDebug( 150, "Entering transparent window\n" );
-      if( XklIsGroupPerApp(  ) && !transparent )
+
+      if( XklIsGroupPerApp() == !transparent )
       {
         // We skip restoration only if we return to the same app window
         Bool doSkip = False;
@@ -279,6 +290,14 @@ void _XklFocusInEvHandler( XFocusChangeEvent * fev )
             XklDebug( 150,
                       "Restoring the group from %d to %d after gaining focus\n",
                       _xklCurState.group, selectedWindowState.group );
+            /**
+             *  For fast mouse movements - the state is probably not updated yet
+             *  (because of the group change notification being late).
+             *  so we'll enforce the update. But this should only happen in GPA mode
+             */
+            _XklUpdateCurState( selectedWindowState.group, 
+                                selectedWindowState.indicators,
+                                "Enforcing fast update of the current state" );
             XklLockGroup( selectedWindowState.group );
           } else
           {
@@ -317,7 +336,7 @@ void _XklFocusInEvHandler( XFocusChangeEvent * fev )
                     _xklCurState.indicators );
       } else
         XklDebug( 150,
-                  "Not restoring the group %d after gaining focus: global layout (or transparent window)\n",
+                  "Not restoring the group %d after gaining focus: global layout (xor transparent window)\n",
                   _xklCurState.group );
     } else
       XklDebug( 150, "Same app window - just do nothing\n" );

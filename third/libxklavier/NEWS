@@ -1,1 +1,5 @@
-Fixes, code reogranization
+1.04	Some memory leaks were nailed (thanks to kmaraas and valgrind).
+	Default ruleset for partially non-compliant servers introduced
+	(though it still long way to go for AccelleratedX support).
+	A couple of small tests introduced.
+	Hopefully the last release in 1.0x series.
