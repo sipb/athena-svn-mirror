@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.4 1989-01-27 03:13:29 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.5 1989-02-01 03:42:50 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -15,15 +15,14 @@ typedef short Boolean;
 #define True			(Boolean) 1
 #define False			(Boolean) 0
 
-typedef enum {
-     FtFile,
-     FtDirectory,
-     FtUnknown,
-} filetype;
-	  
+
+#define blk_to_k(x)		(x * DEV_BSIZE / 1024)
+
+#define FOLLOW_LINKS		1
+#define DONT_FOLLOW_LINKS	0
+     
 typedef struct filrec {
      char name[MAXNAMLEN];
-     filetype ftype;
      struct filrec *previous;
      struct filrec *parent;
      struct filrec *dirs;
@@ -31,6 +30,7 @@ typedef struct filrec {
      struct filrec *next;
      Boolean specified;
      Boolean freed;
+     struct stat specs;
 } filerec;
 
 
@@ -50,6 +50,5 @@ filerec *next_specified_directory();
 filerec *next_specified_in_directory();
 filerec *next_specified_leaf();
 
-filetype find_file_type();
-
 char *get_leaf_path();
+char **accumulate_names();

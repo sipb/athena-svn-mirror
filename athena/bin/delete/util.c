@@ -11,15 +11,17 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.4 1989-01-27 02:59:03 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.5 1989-02-01 03:42:29 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/dir.h>
 #include <strings.h>
 #include <pwd.h>
+#include "directories.h"
 #include "util.h"
 
 char *getenv();
@@ -131,8 +133,10 @@ yes() {
      char *val;
      
      val = fgets(buf, BUFSIZ, stdin);
-     if (! val)
+     if (! val) {
+	  printf("\n");
 	  exit(1);
+     }
      if (! index(buf, '\n')) do
 	  fgets(buf + 1, BUFSIZ - 1, stdin);
      while (! index(buf + 1, '\n'));
@@ -231,4 +235,17 @@ char *buf;
 	  return(0);
      }  
      return(1);
+}
+
+
+
+
+timed_out(file_ent, current_time, min_days)
+filerec *file_ent;
+int current_time, min_days;
+{
+     if ((current_time - file_ent->specs.st_mtime) / 86400 >= min_days)
+	  return(1);
+     else
+	  return(0);
 }

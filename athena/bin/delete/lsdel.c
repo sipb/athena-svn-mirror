@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.1 1989-01-27 10:17:37 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.2 1989-02-01 03:42:08 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,15 +20,17 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <strings.h>
-#include "lsdel.h"
+#include "col.h"
 #include "util.h"
 #include "directories.h"
 #include "pattern.h"
+#include "lsdel.h"
 
 char *malloc(), *realloc();
-int column_array();
+extern int current_time;
 
-int dirsonly, marktype, recursive;
+int block_total = 0;
+int dirsonly, recursive, timev, yield;
 char *whoami, *error_buf;
 
 main(argc, argv)
@@ -45,8 +47,8 @@ char *argv[];
 	  perror(whoami);
 	  exit(1);
      }
-     dirsonly = marktype = recursive = 0;
-     while ((arg = getopt(argc, argv, "dr")) != -1) {
+     dirsonly = recursive = timev = yield = 0;
+     while ((arg = getopt(argc, argv, "drt:y")) != -1) {
 	  switch (arg) {
 	  case 'd':
 	       dirsonly++;
@@ -54,15 +56,22 @@ char *argv[];
 	  case 'r':
 	       recursive++;
 	       break;
+	  case 't':
+	       timev = atoi(optarg);
+	       break;
+	  case 'y':
+	       yield++;
+	       break;
 	  default:
 	       usage();
 	       exit(1);
 	  }
      }
      if (optind == argc) {
-	  fprintf(stderr, "%s: no files specified.\n", whoami);
-	  usage();
-	  exit(1);
+	  char *cwd;
+
+	  cwd = ".";
+	  exit(ls(&cwd, 1));
      }
      exit(ls(&argv[optind], argc - optind));
 }
@@ -74,10 +83,12 @@ char *argv[];
 
 usage()
 {
-     printf("Usage: %s [ options ] filename ...\n", whoami);
+     printf("Usage: %s [ options ] [ filename [ ...]]\n", whoami);
      printf("Options are:\n");
      printf("     -d     list directory names, not contents\n");
      printf("     -r     recursive\n");
+     printf("     -t n   list n-day-or-older files only\n");
+     printf("     -y     report total space taken up by files\n");
 }
 
 
@@ -112,16 +123,19 @@ int num;
 	  free(file_re);
 	  total += num_found;
 	  if (num_found)
-	       process_files(found_files, num_found);
-	  else {
-	       fprintf(stderr, "%s: %s: no match\n",
-		       whoami, args[num - 1]);
+	       num_found = process_files(found_files, num_found);
+	  if (! num_found) {
+	       fprintf(stderr, "%s: %s: nothing to list\n",
+		       whoami, (*args[num - 1] == '\0' ? "." : args[num - 1]));
 	       status |= ERROR_MASK;
 	  }
      }
      if (total) {
 	  list_files();
      }
+     if (yield)
+	  printf("\nTotal space taken up by file%s: %dk\n",
+		 (total == 1 ? "" : "s"), blk_to_k(block_total));
      return(status);
 }
 
@@ -192,18 +206,25 @@ char **files;
 int num;
 {
      int i;
-
+     filerec *leaf;
+     
      for (i = 0; i < num; i++) {
-	  if (! add_path_to_tree(files[i], FtUnknown)) {
+	  if (! (leaf = add_path_to_tree(files[i]))) {
 	       fprintf(stderr, "%s: error adding path to filename tree\n",
 		       whoami);
 	       exit(1);
 	  }
-	  else
-	       free(files[i]);
+
+	  free(files[i]);
+	  if (! timed_out(leaf, current_time, timev)) {
+	       free_leaf(leaf);
+	       num--;
+	       continue;
+	  }
+	  block_total += leaf->specs.st_blocks;
      }
      free(files);
-     return(0);
+     return(num);
 }
 
 
@@ -215,34 +236,20 @@ list_files()
      filerec *current;
      char **strings;
      int num;
-     char newname[MAXPATHLEN];
-     
-     strings = (char **) malloc(0);
+
+     strings = (char **) malloc(sizeof(char *));
      num = 0;
-     
+     if (! strings) {
+	  perror(sprintf(error_buf, "%s: list_files", whoami));
+	  exit(1);
+     }
      current = get_root_tree();
-     if (! current->specified)
-	  current = next_specified_leaf(current);
-     while (current) {
-	  convert_to_user_name(get_leaf_path(current, newname), newname);
-	  num += 1;
-	  strings = (char **) realloc(strings, sizeof(char *) * num);
-	  strings[num - 1] = malloc(strlen(newname) + 1);
-	  strcpy(strings[num - 1], newname);
-	  current = next_specified_leaf(current);
-     }
+     strings = accumulate_names(current, strings, &num);
      current = get_cwd_tree();
-     if (! current->specified)
-	  current = next_specified_leaf(current);
-     while (current) {
-	  convert_to_user_name(get_leaf_path(current, newname), newname);
-	  num += 1;
-	  strings = (char **) realloc(strings, sizeof(char *) * num);
-	  strings[num - 1] = malloc(strlen(newname) + 1);
-	  strcpy(strings[num - 1], newname);
-	  current = next_specified_leaf(current);
-     }
-     column_array(strings, num, DEF_SCREEN_WIDTH, 0, 0, 2, 1, 0, 1,
-		  stdout);
+     strings = accumulate_names(current, strings, &num);
+     column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0, 1, stdout);
+     for ( ; num; num--)
+	  free(strings[num - 1]);
+     free(strings);
      return(0);
 }

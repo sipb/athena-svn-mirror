@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.3 1989-01-27 08:24:09 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.4 1989-02-01 03:42:00 jik Exp $";
 #endif
 
 /*
@@ -28,33 +28,27 @@
 #include <sys/param.h>
 #include <strings.h>
 #include <sys/stat.h>
+#include "col.h"
 #include "directories.h"
 #include "util.h"
 #include "pattern.h"
 #include "expunge.h"
 
 extern char *malloc(), *realloc();
+extern int current_time;
 
 char *whoami, *error_buf;
 
-int  time,		/* minimum mod time before undeletion */
+int  timev,		/* minimum mod time before undeletion */
      interactive,	/* query before each expunge */
      recursive,		/* expunge undeleted directories recursively */
      noop,		/* print what would be done instead of doing it */
      verbose,		/* print a line as each file is deleted */
      force,		/* do not ask for any confirmation */
-     listfiles;		/* list files at toplevel */
-int del_recursive = 1;	/* this tells the pattern matcher that we want */
-			/* it always to recurse on deleted */
-			/* directories, even when recursive is set to */
-			/* false. */
+     listfiles,		/* list files at toplevel */
+     yield;		/* print yield of expunge at end */
 
-
-int directoriesonly = 0;  /* we don't use this flag, but the */
-			  /* pattern-matching routines expect it to */
-			  /* exist, so we create it and set it to */
-			  /* false, which will cause the */
-			  /* pattern-matching routines to ignore it. */
+int blocks_removed = 0;
 
 
 
@@ -77,12 +71,12 @@ char *argv[];
      if (*whoami == 'p') { /* we're doing a purge */
 	  exit (purge());
      }
-     time = 0;
-     interactive = recursive = noop = verbose = listfiles = force = 0;
-     while ((arg = getopt(argc, argv, "t:irfnvl")) != -1) {
+     timev = 0;
+     yield = interactive = recursive = noop = verbose = listfiles = force = 0;
+     while ((arg = getopt(argc, argv, "t:irfnvly")) != -1) {
 	  switch (arg) {
 	  case 't':
-	       time = atoi(optarg);
+	       timev = atoi(optarg);
 	       break;
 	  case 'i':
 	       interactive++;
@@ -102,6 +96,9 @@ char *argv[];
 	  case 'l':
 	       listfiles++;
 	       break;
+	  case 'y':
+	       yield++;
+	       break;
 	  default:
 	       usage();
 	       exit(1);
@@ -109,7 +106,7 @@ char *argv[];
      }
      if (optind == argc) {
 	  char *dir;
-	  dir = "";
+	  dir = ".";
 	  status = status | expunge(&dir, 1); /* current working directory */
      }
      else
@@ -130,8 +127,8 @@ purge()
 	  perror(sprintf(error_buf, "%s: purge", whoami));
 	  exit(1);
      }
-     time = interactive = noop = verbose = force = 0;
-     listfiles = recursive = 1;
+     timev = interactive = noop = verbose = force = 0;
+     yield = listfiles = recursive = 1;
      get_home(home[0]);
      if (! *home[0]) {
 	  fprintf(stderr, "%s: purge: can't get home directory\n", whoami);
@@ -157,6 +154,7 @@ usage()
      printf("     -n     noop\n");
      printf("     -v     verbose\n");
      printf("     -l     list files before expunging\n");
+     printf("     -y     print yield of expunge\n");
      printf("     --     end options and start filenames\n");
 }
 
@@ -193,12 +191,13 @@ int num;
 	  
 	  found_files = get_the_files(start_dir, file_re, &num_found);
 	  free(file_re);
-	  total += num_found;
 	  if (num_found)
-	       process_files(found_files, num_found);
-	  else if (! force) {
-	       fprintf(stderr, "%s: %s cannot be expunged\n",
-		       whoami, files[num - 1]);
+	       num_found = process_files(found_files, num_found);
+	  total += num_found;
+	  if (! num_found) if (! force) {
+	       fprintf(stderr, "%s: %s: nothing to expunge\n",
+		       whoami, ((files[num - 1] == "") ? "." :
+				files[num - 1]));
 	       status |= ERROR_MASK;
 	  }
      }
@@ -207,18 +206,47 @@ int num;
 	  if (! force) if (! top_level())
 	       return(NO_DELETE_MASK);
      }
-     current = next_specified_leaf(get_root_tree());
+     current = get_root_tree();
      if (current)
-	  status = status | do_expunge(current);
-     current = next_specified_leaf(get_cwd_tree());
+	  status = status | expunge_specified(current);
+     current = get_cwd_tree();
      if (current)
-	  status = status | do_expunge(current);
+	  status = status | expunge_specified(current);
 
+     if (yield) {
+	  if (noop)
+	       printf("Total that would be expunged: %dk\n",
+		      blk_to_k(blocks_removed));
+	  else
+	       printf("Total expunged: %dk\n", blk_to_k(blocks_removed));
+     }
      return(status);
 }
 
 
 
+expunge_specified(leaf)
+filerec *leaf;
+{
+     int status = 0;
+
+     if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR))
+	  status = do_directory_expunge(leaf);
+     /* the "do_directory_expunge" really only asks the user if he */
+     /* wants to expunge the directory, it doesn't do any deleting. */
+     if (! status) {
+	  if (leaf->dirs)
+	       status |= expunge_specified(leaf->dirs);
+	  if (leaf->files)
+	       status |= expunge_specified(leaf->files);
+     }
+     if (leaf->specified)
+	  status |= really_do_expunge(leaf);
+     if (leaf->next)
+	  status |= expunge_specified(leaf->next);
+     free_leaf(leaf);
+     return(status);
+}
 
 
 process_files(files, num)
@@ -226,42 +254,23 @@ char **files;
 int num;
 {
      int i;
-
+     filerec *leaf;
+     
      for (i = 0; i < num; i++) {
-	  if (! add_path_to_tree(files[i], FtUnknown)) {
+	  if (! (leaf = add_path_to_tree(files[i]))) {
 	       fprintf(stderr, "%s: error adding path to filename tree\n",
 		       whoami);
 	       exit(1);
 	  }
-	  else
-	       free(files[i]);
+
+	  free(files[i]);
+	  if (! timed_out(leaf, current_time, timev)) {
+	       free_leaf(leaf);
+	       num--;
+	  }
      }
      free(files);
-     return(0);
-}
-
-
-
-
-do_expunge(file_ent)
-filerec *file_ent;
-{
-     int status = 0;
-     filerec *newent;
-
-     while(file_ent) {
-	  if (file_ent->ftype == FtDirectory) {
-	       status |= do_directory_expunge(file_ent);
-	       newent = next_specified_directory(file_ent);
-	  }
-	  else {
-	       status |= really_do_expunge(file_ent);
-	       newent = next_specified_leaf(file_ent);
-	  }
-	  free_leaf(file_ent);
-	  file_ent = newent;
-     }
-     return(status);
+     return(num);
 }
 
 
@@ -275,25 +284,17 @@ filerec *file_ent;
 do_directory_expunge(file_ent)
 filerec *file_ent;
 {
-     filerec *new_ent;
-     int status = 0;
      char buf[MAXPATHLEN];
 
      get_leaf_path(file_ent, buf);
      convert_to_user_name(buf, buf);
      
-     if (! timed_out(file_ent))
-	  return(NO_TIMEOUT_MASK);
      if (interactive) {
 	  printf("%s: Expunge directory %s? ", whoami, buf);
 	  if (! yes())
 	       return(NO_DELETE_MASK);
      }
-	  
-     new_ent = first_specified_in_directory(file_ent);
-     status |= do_expunge(new_ent);
-     status |= really_do_expunge(file_ent);
-     return(status);
+     return(0);
 }
 
 
@@ -312,27 +313,31 @@ filerec *file_ent;
      get_leaf_path(file_ent, real);
      convert_to_user_name(real, user);
 
-     if (! timed_out(file_ent))
-	  return(NO_TIMEOUT_MASK);
-     
      if (interactive) {
-	  printf ("%s: Expunge %s? ", whoami, user);
+	  printf ("%s: Expunge %s (%dk)? ", whoami, user,
+		  blk_to_k(file_ent->specs.st_blocks));
 	  if (! yes())
 	       return(NO_DELETE_MASK);
      }
 
      if (noop) {
-	  printf("%s: %s would be expunged\n", whoami, user);
+	  blocks_removed += file_ent->specs.st_blocks;
+	  printf("%s: %s (%dk) would be expunged (%dk total)\n", whoami, user,
+		 blk_to_k(file_ent->specs.st_blocks),
+		 blk_to_k(blocks_removed));
 	  return(0);
      }
 
-     if (file_ent->ftype == FtDirectory)
+     if ((file_ent->specs.st_mode & S_IFMT) == S_IFDIR)
 	  status = rmdir(real);
      else
 	  status = unlink(real);
      if (! status) {
+	  blocks_removed += file_ent->specs.st_blocks;
 	  if (verbose)
-	       printf("%s: %s expunged\n", whoami, user);
+	       printf("%s: %s (%dk) expunged (%dk total)\n", whoami, user,
+		      blk_to_k(file_ent->specs.st_blocks),
+		      blk_to_k(blocks_removed));
 	  return(0);
      }
      else {
@@ -345,32 +350,6 @@ filerec *file_ent;
 
 
 
-
-
-
-
-
-timed_out(file_ent)
-filerec *file_ent;
-{
-     char buf[MAXPATHLEN];
-     struct stat stat_buf;
-     struct timeval tm;
-     long diff;
-
-     if (time == 0) /* catch the common default case to save time */
-	  return (1);
-     
-     get_leaf_path(file_ent, buf);
-     if (lstat(buf, &stat_buf))
-	  return(1);
-     gettimeofday(&tm, (struct timezone *) NULL);
-     diff = (tm.tv_sec - stat_buf.st_mtime) / 86400;
-     if (diff >= time)
-	  return(1);
-     else
-	  return(0);
-}
 
 
 
@@ -391,25 +370,30 @@ printf("Do you wish to continue? ");
      return (yes());
 }
 
+
+
+
+
 list_files()
 {
      filerec *current;
-     char buf[MAXPATHLEN];
+     char **strings;
+     int num;
      
+     strings = (char **) malloc(sizeof(char *));
+     num = 0;
+     if (! strings) {
+	  if (! force)
+	       perror(sprintf(error_buf, "%s: list_files", whoami));
+	  exit(1);
+     }
      printf("The following deleted files are going to be expunged: \n\n");
 
      current = get_root_tree();
-     while (current = next_specified_leaf(current)) {
-	  get_leaf_path(current, buf);
-	  convert_to_user_name(buf, buf);
-	  printf("     %s\n", buf);
-     }
+     strings = accumulate_names(current, strings, &num);
      current = get_cwd_tree();
-     while (current = next_specified_leaf(current)) {
-	  get_leaf_path(current, buf);
-	  convert_to_user_name(buf, buf);
-	  printf("     %s\n", buf);
-     }
+     strings = accumulate_names(current, strings, &num);
+     column_array(strings, num, DEF_SCR_WIDTH, 0, 0, 2, 1, 0, 1, stdout);
      printf("\n");
      return(0);
 }

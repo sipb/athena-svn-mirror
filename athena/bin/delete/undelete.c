@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.13 1989-01-27 08:24:21 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.14 1989-02-01 03:42:21 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -171,13 +171,11 @@ char *file_exp;
      free(file_re);
      if (num_found) {
 	  process_files(found_files, num_found);
-	  if (*file_exp == '/') 
+	  if (*file_exp == '/')
 	       current = get_root_tree();
 	  else
 	       current = get_cwd_tree();
-	  current = next_specified_leaf(current);
-	  if (current)
-	       status = do_undelete(current);
+	  status = recurs_and_undelete(current);
      }
      else {
 	  if (! force)
@@ -186,6 +184,55 @@ char *file_exp;
      }
      return(status);
 }
+
+
+
+
+
+recurs_and_undelete(leaf)
+filerec *leaf;
+{
+     int status = 0;
+
+     if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR))
+	  status = do_directory_undelete(leaf);
+     /* the "do_directory_undelete" really only asks the user if he */
+     /* wants to expunge the directory, it doesn't do any deleting. */
+     if (! status) {
+	  if (leaf->dirs)
+	       status |= recurs_and_undelete(leaf->dirs);
+	  if (leaf->files)
+	       status |= recurs_and_undelete(leaf->files);
+     }
+     if (leaf->specified)
+	  status |= do_undelete(leaf);
+     if (leaf->next)
+	  status |= recurs_and_undelete(leaf->next);
+     free_leaf(leaf);
+     return(status);
+}
+
+
+
+
+
+
+do_directory_undelete(file_ent)
+filerec *file_ent;
+{
+     char buf[MAXPATHLEN];
+
+     get_leaf_path(file_ent, buf);
+     convert_to_user_name(buf, buf);
+     
+     if (interactive) {
+	  printf("%s: Undelete directory %s? ", whoami, buf);
+	  if (! yes())
+	       return(NO_DELETE_MASK);
+     }
+     return(0);
+}
+
 
 
 
@@ -218,7 +265,7 @@ int num;
 	  exit(1);
      }
      for (i = 0; i < num; i++) {
-	  if (!add_path_to_tree(new_files[i].real_name, FtUnknown)) {
+	  if (!add_path_to_tree(new_files[i].real_name)) {
 	       fprintf(stderr, "%s: error adding path to filename tree\n",
 		       whoami);
 	       exit(1);
@@ -235,35 +282,11 @@ int num;
      
 
 
-do_undelete(the_file)
-filerec *the_file;
-{
-     int status;
-     filerec *new_file;
-     
-     status = really_do_undelete(the_file);
-     if (status && (the_file->ftype == FtDirectory)) {
-	  new_file = next_specified_directory(the_file);
-	  if (new_file)
-	       status = status | do_undelete(new_file);
-     }
-     else {
-	  new_file = next_specified_leaf(the_file);
-	  if (new_file)
-	       status = status | do_undelete(new_file);
-     }
-     free_leaf(the_file);
-     return(status);
-}
-
-
-
-
 
 
 
      
-really_do_undelete(file_ent)
+do_undelete(file_ent)
 filerec *file_ent;
 {
      struct stat stat_buf;
@@ -273,7 +296,7 @@ filerec *file_ent;
      convert_to_user_name(real_name, user_name);
 
      if (interactive) {
-	  if (file_ent->ftype == FtDirectory)
+	  if ((file_ent->specs.st_mode & S_IFMT) == S_IFDIR)
 	       printf("%s: Undelete directory %s? ", whoami, user_name);
 	  else
 	       printf("%s: Undelete %s? ", whoami, user_name);

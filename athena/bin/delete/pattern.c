@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.5 1989-01-27 08:24:16 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.6 1989-02-01 03:42:15 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -77,6 +77,12 @@ char *file_pattern;
 	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
 		    return ((char *) NULL);
 	       continue;
+	  }
+	  else if (*cur_ptr == '.') {
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '\\'))
+		    return ((char *) NULL);
+	       if (! add_char(&re_pattern, &re_ptr, &guess_length, '.'))
+		    return ((char *) NULL);
 	  }
 	  else {
 	       if (! add_char(&re_pattern, &re_ptr, &guess_length, *cur_ptr))
@@ -189,7 +195,10 @@ int *num_found;
      int num_next;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      char new[MAXPATHLEN];
-     
+
+#ifdef DEBUG
+     printf("Looking for %s in %s\n", expression, base);
+#endif
      found = (char **) malloc(0);
      *num_found = num = 0;
 
@@ -242,6 +251,9 @@ int *num_found;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      char new[MAXPATHLEN];
      
+#ifdef DEBUG
+     printf("Looking for %s in %s\n", expression, base);
+#endif
      found = (char **) malloc(0);
      *num_found = num = 0;
 
@@ -249,8 +261,6 @@ int *num_found;
      if (! dirp)
 	  return(found);
 
-     readdir(dirp); readdir(dirp); /* get rid of . and .. */
-     
      strcpy(first, reg_firstpart(expression, rest));
 
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
@@ -300,6 +310,9 @@ int *num_found;
      int found_num, new_found_num;
      struct stat stat_buf;
      
+#ifdef DEBUG
+     printf("Looking for subs of %s\n", base);
+#endif
      found = (char **) malloc(0);
      *num_found = found_num = 0;
      
@@ -358,7 +371,6 @@ int *num_found;
 	       found_num++;
 	  }
 	  if (lstat(newname, &stat_buf)) {
-	       perror("foobar");
 	       continue;
 	  }
 	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
@@ -385,6 +397,9 @@ int *num_found;
      char **found;
      int num;
 
+#ifdef DEBUG
+     printf("Looking for contents of %s\n", base);
+#endif
      found = (char **) malloc(0);
      *num_found = num = 0;
    
@@ -414,6 +429,9 @@ int *num_found;
      char **found;
      int num;
 
+#ifdef DEBUG
+     printf("Looking for deleted contents of %s\n", base);
+#endif
      found = (char **) malloc(0);
      *num_found = num = 0;
    
@@ -450,6 +468,9 @@ int *num_found;
      char **new_found;
      int new_found_num;
      
+#ifdef DEBUG
+     printf("Looking for recursive deleted contents of %s\n", base);
+#endif
      found = (char **) malloc(0);
      *num_found = num = 0;
    
