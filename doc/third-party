@@ -183,6 +183,33 @@ anyone ever attempts a reorganization around distributions, they
 should probably just create a new hierarchy and delete the contents of
 the "lib" hierarchy.
 
+Imports of new versions
+-----------------------
+
+CVS (at least as of version 1.9) has the irritating weakness that
+import operations never delete files; you have to delete the removed
+files in a new version of a package by hand.  If the import command
+was "cvs import module vendor-branch release-tag", then to delete
+files you do:
+
+	cvs co -r vendor-branch module
+	cd module
+	cvs -n update -r release-tag |& \
+		awk '/no longer/ { print $3; }' > /tmp/files
+	xargs cvs rm < /tmp/files
+	cvs ci
+	awk '{print "module" $0; }' /tmp/files > /tmp/files2
+	xargs cvs rtag -r vendor-branch release-tag < /tmp/files2
+
+Yuck.  But it works.  For each deleted file, a dead revision will be
+checked in on the vendor branch and tagged with release-tag.  (The
+tagging part may be unnecessary, but should not be undesirable.)
+
+If, after an import, there are files which have been modified on the
+mainline but do not need to be locally modified any more, you can run
+"cvs admin -bvendor-branch" on the files to make them revert to the
+vendor branch.
+
 Third-party build systems
 -------------------------
 
