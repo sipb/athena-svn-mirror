@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.14 1987-07-22 18:06:48 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.15 1987-07-24 15:04:57 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -46,6 +46,7 @@ typedef struct _ZClient_t {
 	struct sockaddr_in zct_sin;	/* ipaddr/port of client */
 	struct _ZSubscr_t *zct_subs;	/* subscriptions */
 	C_Block zct_cblock;		/* session key for this client */
+	char	*zct_principal;		/* krb principal of user */
 } ZClient_t;
 
 typedef struct _ZClientList_t {
