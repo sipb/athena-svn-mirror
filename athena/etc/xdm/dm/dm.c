@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.19 1992-01-27 07:09:08 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.20 1992-04-17 04:10:18 lwvanels Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.19 1992-01-27 07:09:08 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.20 1992-04-17 04:10:18 lwvanels Exp $";
 #endif
 
 #ifndef NULL
@@ -1031,19 +1031,22 @@ char *login;
 
     if (!strcmp(login, "root")) return;
 
-    while ((access(passwdtf, F_OK) == 0) && --count) {
-	alarm(1);
-	sigpause(0);
-    }
-    if (count == 0) unlink(passwdtf);
-
-    oldfile = open(passwdf, O_RDONLY, 0);
-    if (oldfile < 0) return;
-    newfile = open(passwdtf, O_WRONLY|O_CREAT|O_TRUNC, 0644);
-    if (newfile < 0) {
-	close(oldfile);
+    for (count = 0; count < 10; count++)
+      if ((newfile = open(passwdtf, O_RDWR|O_CREAT|O_EXCL, 0644)) == -1 &&
+	  errno == EEXIST) {
+	  alarm(1);
+	  sigpause(0);
+      } else
+	break;
+    if (newfile == -1) {
+	if (count < 10)
+	  return(errno);
+	else
+	  (void) unlink(passwdtf);
 	return;
     }
+    oldfile = open(passwdf, O_RDONLY, 0);
+    if (oldfile < 0) return;
 
     /* process each line of file */
     cc = read(oldfile, buf, BUFSIZ);
