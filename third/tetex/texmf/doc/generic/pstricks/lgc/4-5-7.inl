@@ -1,1 +1,0 @@
-\psdiabox{\sffamily No Parking}
