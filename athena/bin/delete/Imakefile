@@ -5,8 +5,8 @@
  *     "mit-copying.h".
  *
  *     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
- *     $Author: jik $
- *     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.12 1991-06-14 01:35:55 jik Exp $
+ *     $Author: epeisach $
+ *     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.13 1991-07-08 17:23:08 epeisach Exp $
  *
  */
 
@@ -113,6 +113,8 @@ EXPUNGESRC= 	expunge.c directories.c pattern.c util.c col.c\
 		shell_regexp.c delete_errs.c errors.c stack.c
 LSDELSRC= 	lsdel.c util.c directories.c pattern.c col.c\
 		shell_regexp.c delete_errs.c errors.c stack.c
+
+all:: delete_errs.h
 
 SimpleProgram(delete,$(DELETEOBJS),$(LIBS),$(INSTALLDIR))
 SimpleProgram(undelete,$(UNDELETEOBJS),$(LIBS),$(INSTALLDIR))
