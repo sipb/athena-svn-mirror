@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.14 2001-03-26 20:21:02 ghudson Exp $
+# $Id: Makefile.athena,v 1.15 2002-02-23 10:02:29 zacheiss Exp $
 
 SHELL=/bin/sh
 
@@ -24,6 +24,7 @@ install:
 	 -e "s:\$$Config{install:\"$$SRVD\"\.\$$Config{install:" \
 	 utils/h2ph > h2phsrvd
 	chmod 755 h2phsrvd
-	dir=`pwd`; (cd /usr/include && find . -type f -print | xargs \
-  	 "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" "$$dir/h2phsrvd"); \
+	dir=`pwd`; (cd /usr/include && find . -type f -o -type l -print | \
+	  xargs "$$dir/perl" "-I$$SRVD/usr/athena/lib/perl5" \
+	  "$$dir/h2phsrvd"); \
 
