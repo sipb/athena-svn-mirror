@@ -94,6 +94,7 @@ Distribution sites for software under third
 	afsbin		See below.
 	ammonite	ftp.gnome.org:pub/GNOME/unstable/sources/ammonite
 	audiofile	ftp.gnome.org:pub/GNOME/stable/sources/audiofile
+	bash		ftp.gnu.org:pub/gnu/bash
 	bind		ftp.isc.org:isc/bind/src
 	binutils	ftp.gnu.org:pub/gnu/binutils
 	bonobo		ftp.gnome.org:pub/GNOME/stable/sources/bonobo
