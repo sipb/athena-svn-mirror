@@ -14,7 +14,7 @@ right_stick=false
 
 [Applet_2]
 id=Launcher
-base_location=gnome/athena/mail.desktop
+parameters=gnome/athena/mail.desktop
 position=54
 panel=0
 unique_panel_id=10000001
@@ -22,7 +22,7 @@ right_stick=false
 
 [Applet_3]
 id=Launcher
-base_location=gnome/athena/browser.desktop
+parameters=gnome/athena/browser.desktop
 position=105
 panel=0
 unique_panel_id=10000001
@@ -30,7 +30,7 @@ right_stick=false
 
 [Applet_4]
 id=Launcher
-base_location=gnome/athena/terminal.desktop
+parameters=gnome/athena/terminal.desktop
 position=156
 panel=0
 unique_panel_id=10000001
@@ -38,7 +38,7 @@ right_stick=false
 
 [Applet_5]
 id=Launcher
-base_location=gnome/athena/editor.desktop
+parameters=gnome/athena/editor.desktop
 position=207
 panel=0
 unique_panel_id=10000001
