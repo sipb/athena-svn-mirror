@@ -1,4 +1,4 @@
-# $Id: packages,v 1.216 2003-03-23 01:19:20 ghudson Exp $
+# $Id: packages,v 1.217 2003-03-24 03:51:02 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -264,7 +264,7 @@ third/rep-gtk			requires librep,glib2,gtk2,libgnome,libgnomeui,libgnomecanvas,li
 third/rs
 third/sawfish			requires librep,rep-gtk,gtk2,audiofile,esound,control-center,Xft
 third/scrollkeeper		requires intltool,libxml2,libxslt
-third/sendmail			requires hesiod,tcp_wrappers requires db
+third/sendmail			requires hesiod,tcp_wrappers,db
 third/soup			requires glib,libxml,popt,openssl
 third/startup-notification
 third/sysinfo			on solaris,irix,linux
