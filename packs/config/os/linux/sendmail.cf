@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.11 1999-10-16 02:26:55 jweiss Exp $
+# $Id: sendmail.cf,v 1.12 1999-10-16 20:09:44 danw Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -181,6 +181,9 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
+# Uncomment the following line to queue remote mail locally rather
+# than forwarding it all to the MIT mailhubs.
+# R$*<@$+>$*		$#smtp$@$2$:$1<@$2>$3		Remote mail
 R$*			$#smtp$@ATHENA.$D$:$1		All else to ATHENA
 
 #####################
