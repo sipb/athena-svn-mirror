@@ -4,8 +4,8 @@
 #	"mit-copyright.h".
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v $
-#	$Author: raeburn $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.7 1988-10-19 23:07:09 raeburn Exp $
+#	$Author: jtkohl $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.8 1990-01-09 17:26:13 jtkohl Exp $
 	et	zsrv
 
 ec ZSRV_BADASSOC,
@@ -35,5 +35,7 @@ ec ZSRV_UNKNOWNOPCODE,
 ec ZSRV_REQUEUE,
 	"Requeue for later processing"
 ec ZSRV_RCSID,
-	"$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_err.et,v 1.7 1988-10-19 23:07:09 raeburn Exp $"
+	"$Id: zsrv_err.et,v 1.8 1990-01-09 17:26:13 jtkohl Exp $"
+ec ZSRV_BADSUBPORT,
+	"Illegal port specified in subscription"
 	end
