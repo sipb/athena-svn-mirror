@@ -2,6 +2,7 @@
 
 case "$HOSTTYPE" in
 sun4)
+	chmod 600 /var/spool/mqueue/syslog /var/adm/sulog
 	;;
 
 sgi)
