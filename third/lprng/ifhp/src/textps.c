@@ -80,7 +80,7 @@ Patrick Powell Mon Aug 21 08:48:10 PDT 1995
 #endif /* PAGE_LENGTH */
 
 #ifndef BASELINE_OFFSET
-# define BASELINE_OFFSET 36.0
+# define BASELINE_OFFSET 72.0
 #endif /* not BASELINE_OFFSET */
 
 #ifndef BOTTOM_OFFSET
