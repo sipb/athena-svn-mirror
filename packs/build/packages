@@ -1,4 +1,4 @@
-# $Id: packages,v 1.60 1999-02-22 04:09:01 danw Exp $
+# $Id: packages,v 1.61 1999-02-22 18:30:28 danw Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -106,7 +106,6 @@ athena/bin/lert
 athena/bin/machtype		-irix
 athena/bin/write
 athena/bin/athdir
-athena/bin/lpr
 athena/bin/quota
 athena/bin/saferm
 athena/bin/passwd
