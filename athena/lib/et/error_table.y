@@ -73,8 +73,10 @@ description	:	QUOTED_STRING
 
 #ifndef	lint
 static char const rcsid_error_table_y[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_table.y,v 1.2 1992-11-05 17:31:44 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/error_table.y,v 1.3 1992-11-05 17:59:13 probe Exp $";
 #endif
+
+#include "et_lex.lex.c"
 
 extern FILE *hfile, *cfile;
 
@@ -228,4 +230,3 @@ set_table_num(string)
 	table_number = table_number << ERRCODE_RANGE;
 }
 
-#include "et_lex.lex.c"
