@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY version SYSTEM "version.xml">
+]>
+<refentry id="GtkSourceTagTable">
+<refmeta>
+<refentrytitle>GtkSourceTagTable</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GTKSOURCEVIEW Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GtkSourceTagTable</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+#include &lt;gtksourceview/gtksourcetagtable.h&gt;
+
+
+struct      <link linkend="GtkSourceTagTable-struct">GtkSourceTagTable</link>;
+<link linkend="GtkSourceTagTable">GtkSourceTagTable</link>* <link linkend="gtk-source-tag-table-new">gtk_source_tag_table_new</link> (void);
+<link linkend="void">void</link>        <link linkend="gtk-source-tag-table-add-tags">gtk_source_tag_table_add_tags</link>   (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *table,
+                                             const <link linkend="GSList">GSList</link> *tags);
+<link linkend="void">void</link>        <link linkend="gtk-source-tag-table-remove-source-tags">gtk_source_tag_table_remove_source_tags</link>
+                                            (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *table);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="GtkTextTagTable">GtkTextTagTable</link>
+         +----GtkSourceTagTable
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="GtkSourceTagTable-changed">changed</link>&quot;   <link linkend="void">void</link>        user_function      (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *sourcetagtable,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GtkSourceTagTable-struct"/>struct GtkSourceTagTable</title>
+<indexterm><primary>GtkSourceTagTable</primary></indexterm><programlisting>struct GtkSourceTagTable;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-tag-table-new"/>gtk_source_tag_table_new ()</title>
+<indexterm><primary>gtk_source_tag_table_new</primary></indexterm><programlisting><link linkend="GtkSourceTagTable">GtkSourceTagTable</link>* gtk_source_tag_table_new (void);</programlisting>
+<para>
+Creates a new <link linkend="GtkSourceTagTable"><type>GtkSourceTagTable</type></link>. The table contains no tags by
+default.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="GtkSourceTagTable"><type>GtkSourceTagTable</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-tag-table-add-tags"/>gtk_source_tag_table_add_tags ()</title>
+<indexterm><primary>gtk_source_tag_table_add_tags</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_source_tag_table_add_tags   (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *table,
+                                             const <link linkend="GSList">GSList</link> *tags);</programlisting>
+<para>
+Add a list of tag to the table. The added tags are assigned the highest priority
+in the table.
+</para>
+<para>
+If a tag is already present in table or has the same name as an already-added tag,
+then it is not added to the table.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>table</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkSourceTagTable"><type>GtkSourceTagTable</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tags</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GSList"><type>GSList</type></link> containing <link linkend="GtkTextTag"><type>GtkTextTag</type></link> objects 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gtk-source-tag-table-remove-source-tags"/>gtk_source_tag_table_remove_source_tags ()</title>
+<indexterm><primary>gtk_source_tag_table_remove_source_tags</primary></indexterm><programlisting><link linkend="void">void</link>        gtk_source_tag_table_remove_source_tags
+                                            (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *table);</programlisting>
+<para>
+Remove all the source tags from the table. This will remove the table's
+reference to the tags, so be careful - tags will end
+up destroyed if you don't have a reference to them.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>table</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="GtkSourceTagTable"><type>GtkSourceTagTable</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="GtkSourceTagTable-changed"/>The &quot;changed&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="GtkSourceTagTable">GtkSourceTagTable</link> *sourcetagtable,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>sourcetagtable</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

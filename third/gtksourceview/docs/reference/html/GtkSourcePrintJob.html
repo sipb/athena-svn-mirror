@@ -1,0 +1,1007 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourcePrintJob</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="reference" href="rn01.html" title="API reference"><link rel="refentry" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="refentry" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html" title="Searching in a GtkSourceBuffer"><link rel="refentry" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="refentry" href="GtkSourceView.html" title="GtkSourceView"><link rel="refentry" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="refentry" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="refentry" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="refentry" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="refentry" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="refentry" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="refentry" href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><link rel="section" href="GtkSourcePrintJob.html#id2853033" title="Object Hierarchy"><link rel="section" href="GtkSourcePrintJob.html#id2853048" title="Properties"><link rel="section" href="GtkSourcePrintJob.html#id2853216" title="Signal Prototypes"><link rel="section" href="GtkSourcePrintJob.html#id2853271" title="Description"><link rel="section" href="GtkSourcePrintJob.html#id2813356" title="Details"><link rel="section" href="GtkSourcePrintJob.html#id2857758" title="Properties"><link rel="section" href="GtkSourcePrintJob.html#id2858257" title="Signals"><link rel="section" href="GtkSourcePrintJob.html#id2858436" title="See Also"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gtksourceview-GtkSourceTagStyle.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="GtkSourcePrintJob"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GtkSourcePrintJob</span></h2><p>GtkSourcePrintJob &#8212; Printing a <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a>.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtksourceview/gtksourceprintjob.h&gt;
+
+
+struct      <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-struct">GtkSourcePrintJob</a>;
+<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-new">gtk_source_print_job_new</a> (GnomePrintConfig *config);
+<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-new-with-buffer">gtk_source_print_job_new_with_buffer</a>
+                                            (GnomePrintConfig *config,
+                                             <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-config">gtk_source_print_job_set_config</a> (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             GnomePrintConfig *config);
+GnomePrintConfig* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-config">gtk_source_print_job_get_config</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-buffer">gtk_source_print_job_set_buffer</a> (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);
+<a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-buffer">gtk_source_print_job_get_buffer</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-setup-from-view">gtk_source_print_job_setup_from_view</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-tabs-width">gtk_source_print_job_set_tabs_width</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tabs_width);
+<a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-tabs-width">gtk_source_print_job_get_tabs_width</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-wrap-mode">gtk_source_print_job_set_wrap_mode</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a> wrap);
+<a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a> <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-wrap-mode">gtk_source_print_job_get_wrap_mode</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-highlight">gtk_source_print_job_set_highlight</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> highlight);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-highlight">gtk_source_print_job_get_highlight</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-font-desc">gtk_source_print_job_set_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-font">gtk_source_print_job_set_font</a>   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);
+<a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-font-desc">gtk_source_print_job_get_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+<a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-font">gtk_source_print_job_get_font</a>   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-numbers-font-desc">gtk_source_print_job_set_numbers_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-numbers-font">gtk_source_print_job_set_numbers_font</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);
+<a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-numbers-font-desc">gtk_source_print_job_get_numbers_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+<a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-numbers-font">gtk_source_print_job_get_numbers_font</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-print-numbers">gtk_source_print_job_set_print_numbers</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> interval);
+<a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-numbers">gtk_source_print_job_get_print_numbers</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-text-margins">gtk_source_print_job_set_text_margins</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> top,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> bottom,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> left,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> right);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-text-margins">gtk_source_print_job_get_text_margins</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *top,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *bottom,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *left,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *right);
+GnomePrintJob* <a href="GtkSourcePrintJob.html#gtk-source-print-job-print">gtk_source_print_job_print</a>   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+GnomePrintJob* <a href="GtkSourcePrintJob.html#gtk-source-print-job-print-range">gtk_source_print_job_print_range</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *start,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *end);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkSourcePrintJob.html#gtk-source-print-job-print-range-async">gtk_source_print_job_print_range_async</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *start,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *end);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-cancel">gtk_source_print_job_cancel</a>     (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+GnomePrintJob* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-job">gtk_source_print_job_get_print_job</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+<a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-page">gtk_source_print_job_get_page</a>   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+<a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-page-count">gtk_source_print_job_get_page_count</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+GnomePrintContext* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-context">gtk_source_print_job_get_print_context</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-print-header">gtk_source_print_job_set_print_header</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> setting);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-header">gtk_source_print_job_get_print_header</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-print-footer">gtk_source_print_job_set_print_footer</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> setting);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-footer">gtk_source_print_job_get_print_footer</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-footer-font-desc">gtk_source_print_job_set_header_footer_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-footer-font">gtk_source_print_job_set_header_footer_font</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);
+<a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-header-footer-font-desc">gtk_source_print_job_get_header_footer_font_desc</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+<a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-header-footer-font">gtk_source_print_job_get_header_footer_font</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-format">gtk_source_print_job_set_header_format</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *left,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *center,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *right,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> separator);
+void        <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-footer-format">gtk_source_print_job_set_footer_format</a>
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *left,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *center,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *right,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> separator);
+
+</pre></div><div class="refsect1" lang="en"><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GtkSourcePrintJob
+</pre></div><div class="refsect1" lang="en"><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--buffer">buffer</a>"               <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a>       : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--config">config</a>"               GnomePrintConfig      : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--font">font</a>"                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--font-desc">font-desc</a>"            <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--header-footer-font">header-footer-font</a>"   <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--header-footer-font-desc">header-footer-font-desc</a>" <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--highlight">highlight</a>"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--numbers-font">numbers-font</a>"         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--numbers-font-desc">numbers-font-desc</a>"    <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--print-footer">print-footer</a>"         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--print-header">print-header</a>"         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--print-numbers">print-numbers</a>"        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--tabs-width">tabs-width</a>"           <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write
+  "<a href="GtkSourcePrintJob.html#GtkSourcePrintJob--wrap-mode">wrap-mode</a>"            <a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a>           : Read / Write
+</pre></div><div class="refsect1" lang="en"><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">begin-page</a>"
+            void        user_function      (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *sourceprintjob,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+"<a href="GtkSourcePrintJob.html#GtkSourcePrintJob-finished">finished</a>"  void        user_function      (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *sourceprintjob,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+The <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> object is used to print the contents of a
+<a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a>.  You can set various configuration options to
+customize the printed output, and the result is obtained as a
+<span class="type">GnomePrintJob</span> object, which you can then preview with
+<tt class="function">gnome_print_job_preview_new()</tt> or print directly with
+<tt class="function">gnome_print_job_print()</tt>.
+</p><p>
+Printing can be done synchronously and asynchronously.  Asynchronous
+methods are provided so you can give the user feedback about what's
+going on when printing long documents (see the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">"begin_page"</a>
+and <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-finished">"finished"</a>
+signals).
+</p><p>
+The task of a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> is to produce a <span class="type">GnomePrintJob</span>.  What
+this means is that once you get the resulting <span class="type">GnomePrintJob</span>, you
+might reuse the <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> to produce another output (with
+different configuration options for example) or just unreference it
+and forget about it.  The lifetime of the produced object is
+independent of that of the producer.
+</p><p>
+Before printing you should <span class="emphasis"><em>at least</em></span> set the
+<a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> you want to print (using
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-set-buffer"><tt class="function">gtk_source_print_job_set_buffer()</tt></a>).  Besides that, you might
+configure word wrapping, font, whether to print hightlighted text as
+seen in the <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a>, line numbers, basic headers and footers.
+</p><p>
+<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> can print basic headers and footers in each page.
+You can specify <tt class="function">strftime()</tt> like strings for text on the left, right
+and center of the top and bottom of the page.  You can also make
+<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> draw a separator line between the text document and
+the header and footer.  And you can specify a different font (from
+that used for the text document).
+</p><p>
+Customization beyond that is possible, but you have to do the printing
+manually.  To do that, you need to connect to the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">"begin_page"</a>
+signal of the job and allocate some space in the page using
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-set-text-margins"><tt class="function">gtk_source_print_job_set_text_margins()</tt></a>.  Whenever <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>
+is about to print a new text page, the signal will be emitted.  You
+can then get the <span class="type">GnomePrintContext</span> being used with
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-context"><tt class="function">gtk_source_print_job_get_print_context()</tt></a> and use Gnome Print functions
+directly.  The space you allocate is inside the document margins
+defined in the specified <span class="type">GnomePrintConfig</span>, but outside all print area
+used by <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> itself.
+</p><p>
+A quick bootstrap code sequence to get you started using
+<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a> is given below:
+</p><div class="informalexample"><pre class="programlisting">
+static GnomePrintJob *
+print_source_buffer_from_view (GtkSourceView *view, const gchar *title)
+{
+	GtkSourcePrintJob *job;
+	GnomePrintJob *print_job;
+
+	/* create the job using default print configuration */
+	job = gtk_source_print_job_new (NULL);
+
+	/* quickly setup the buffer, font and wrapping */
+	gtk_source_print_job_setup_from_view (job, view);
+
+	/* print line numbers every 5 lines, using default font */
+	gtk_source_print_job_set_print_numbers (job, 5);
+
+	/* print a header with the title centered */
+	gtk_source_print_job_set_header_footer_font (job, "Sans Regular 12.0");
+	gtk_source_print_job_set_header_format (job,
+	                                        NULL,
+	                                        title,
+	                                        NULL,
+	                                        TRUE);
+	gtk_source_print_job_set_print_header (job, TRUE);
+
+	/* print the page number in the page bottom */
+	gtk_source_print_job_set_footer_format (job,
+	                                        NULL,
+	                                        NULL,
+	                                        "Page <tt class="literal">N</tt> of <tt class="literal">Q</tt>",
+	                                        TRUE);
+	gtk_source_print_job_set_print_footer (job, TRUE);
+
+	/* print the whole buffer and return the result */
+	print_job = gtk_source_print_job_print (job);
+
+	/* job is no longer needed */
+	g_object_unref (job);
+
+	return print_job;
+}
+</pre></div></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob-struct"></a>struct GtkSourcePrintJob</h3><a class="indexterm" name="id2819068"></a><pre class="programlisting">struct GtkSourcePrintJob;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-new"></a>gtk_source_print_job_new ()</h3><a class="indexterm" name="id2853518"></a><pre class="programlisting"><a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a>* gtk_source_print_job_new (GnomePrintConfig *config);</pre><p>
+Creates a new print job object, initially setting the print configuration.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>config</tt></i> :</span></td><td> an optional <span class="type">GnomePrintConfig</span> object.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new print job object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-new-with-buffer"></a>gtk_source_print_job_new_with_buffer ()</h3><a class="indexterm" name="id2853576"></a><pre class="programlisting"><a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a>* gtk_source_print_job_new_with_buffer
+                                            (GnomePrintConfig *config,
+                                             <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);</pre><p>
+Creates a new print job to print <i class="parameter"><tt>buffer</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>config</tt></i> :</span></td><td> an optional <span class="type">GnomePrintConfig</span>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> the <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> to print (might be NULL).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new print job object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-config"></a>gtk_source_print_job_set_config ()</h3><a class="indexterm" name="id2853659"></a><pre class="programlisting">void        gtk_source_print_job_set_config (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             GnomePrintConfig *config);</pre><p>
+Sets the print configuration for the job.  If you don't set a
+configuration object for the print job, when needed one will be
+created with <tt class="function">gnome_print_config_default()</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>config</tt></i> :</span></td><td> a <span class="type">GnomePrintConfig</span> object to get printing configuration from.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-config"></a>gtk_source_print_job_get_config ()</h3><a class="indexterm" name="id2853742"></a><pre class="programlisting">GnomePrintConfig* gtk_source_print_job_get_config
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Gets the current <span class="type">GnomePrintConfig</span> the print job will use.  If not
+previously set, this will create a default configuration and return
+it.  The returned object reference is owned by the print job.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <span class="type">GnomePrintConfig</span> for the print job.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-buffer"></a>gtk_source_print_job_set_buffer ()</h3><a class="indexterm" name="id2853820"></a><pre class="programlisting">void        gtk_source_print_job_set_buffer (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a> *buffer);</pre><p>
+Sets the <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> the print job will print.  You need to
+specify a buffer to print, either by the use of this function or by
+creating the print job with <a href="GtkSourcePrintJob.html#gtk-source-print-job-new-with-buffer"><tt class="function">gtk_source_print_job_new_with_buffer()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> a <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-buffer"></a>gtk_source_print_job_get_buffer ()</h3><a class="indexterm" name="id2853910"></a><pre class="programlisting"><a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a>* gtk_source_print_job_get_buffer
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Gets the <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> the print job would print.  The returned
+object reference (if non NULL) is owned by the job object and
+should not be unreferenced.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> to print.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-setup-from-view"></a>gtk_source_print_job_setup_from_view ()</h3><a class="indexterm" name="id2853987"></a><pre class="programlisting">void        gtk_source_print_job_setup_from_view
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a href="GtkSourceView.html" title="GtkSourceView">GtkSourceView</a> *view);</pre><p>
+Convenience function to set several configuration options at once,
+so that the printed output matches <i class="parameter"><tt>view</tt></i>.  The options set are
+buffer (if not set already), tabs width, highlighting, wrap mode
+and default font.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>view</tt></i> :</span></td><td> a <a href="GtkSourceView.html" title="GtkSourceView"><span class="type">GtkSourceView</span></a> to get configuration from.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-tabs-width"></a>gtk_source_print_job_set_tabs_width ()</h3><a class="indexterm" name="id2854071"></a><pre class="programlisting">void        gtk_source_print_job_set_tabs_width
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> tabs_width);</pre><p>
+Sets the width (in equivalent spaces) of tabulations for the
+printed text.  The width in printing units will be calculated as
+the width of a string containing <i class="parameter"><tt>tabs_width</tt></i> spaces of the default
+font.  Tabulation stops are set for the full width of printed text.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>tabs_width</tt></i> :</span></td><td> the number of equivalent spaces for a tabulation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-tabs-width"></a>gtk_source_print_job_get_tabs_width ()</h3><a class="indexterm" name="id2854149"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       gtk_source_print_job_get_tabs_width
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the configured width (in equivalent spaces) of
+tabulations.  The default value is 8.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the width (in equivalent spaces) of a tabulation.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-wrap-mode"></a>gtk_source_print_job_set_wrap_mode ()</h3><a class="indexterm" name="id2854215"></a><pre class="programlisting">void        gtk_source_print_job_set_wrap_mode
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a> wrap);</pre><p>
+Sets the wrap mode for lines of text larger than the printable
+width.  See <a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+><span class="type">GtkWrapMode</span></a> for a definition of the possible values.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>wrap</tt></i> :</span></td><td> the wrap mode.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-wrap-mode"></a>gtk_source_print_job_get_wrap_mode ()</h3><a class="indexterm" name="id2854293"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a> gtk_source_print_job_get_wrap_mode
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the wrapping style for text lines wider than the
+printable width.  The default is no wrapping.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current wrapping mode for the print job.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-highlight"></a>gtk_source_print_job_set_highlight ()</h3><a class="indexterm" name="id2854358"></a><pre class="programlisting">void        gtk_source_print_job_set_highlight
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> highlight);</pre><p>
+Sets whether the printed text will be highlighted according to the
+buffer rules.  Both color and font style are applied.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>highlight</tt></i> :</span></td><td> TRUE if the printed text should be highlighted.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-highlight"></a>gtk_source_print_job_get_highlight ()</h3><a class="indexterm" name="id2854431"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_print_job_get_highlight
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines if the job is configured to print the text highlighted
+with colors and font styles.  Note that highlighting will happen
+only if the buffer to print has highlighting activated.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the printed output will be highlighted.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-font-desc"></a>gtk_source_print_job_set_font_desc ()</h3><a class="indexterm" name="id2854498"></a><pre class="programlisting">void        gtk_source_print_job_set_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);</pre><p>
+Sets the default font for the printed text.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>desc</tt></i> :</span></td><td> the <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+><span class="type">PangoFontDescription</span></a> for the default font
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-font"></a>gtk_source_print_job_set_font ()</h3><a class="indexterm" name="id2854576"></a><pre class="programlisting">void        gtk_source_print_job_set_font   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);</pre><p>
+Sets the default font for the printed text.  <i class="parameter"><tt>font_name</tt></i> should be a
+<span class="emphasis"><em>full font name</em></span> GnomePrint can understand
+(e.g. "Monospace Regular 10.0").
+</p><p>
+Note that <i class="parameter"><tt>font_name</tt></i> is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-font-desc"><tt class="function">gtk_source_print_job_set_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font_name</tt></i> :</span></td><td> the name of the default font.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-font-desc"></a>gtk_source_print_job_get_font_desc ()</h3><a class="indexterm" name="id2854681"></a><pre class="programlisting"><a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* gtk_source_print_job_get_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the default font to be used for the printed text.  The
+returned string is of the form "Fontfamily Style Size",
+for example "Monospace Regular 10.0".  The returned value
+should be freed when no longer needed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current text font description. This value is
+ owned by the job and must not be modified or freed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-font"></a>gtk_source_print_job_get_font ()</h3><a class="indexterm" name="id2854749"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      gtk_source_print_job_get_font   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the default font to be used for the printed text.  The
+returned string is of the form "Fontfamily Style Size",
+for example "Monospace Regular 10.0".  The returned value
+should be freed when no longer needed.
+</p><p>
+Note that the result is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-font-desc"><tt class="function">gtk_source_print_job_get_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the name of the current
+text font.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-numbers-font-desc"></a>gtk_source_print_job_set_numbers_font_desc ()</h3><a class="indexterm" name="id2854847"></a><pre class="programlisting">void        gtk_source_print_job_set_numbers_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);</pre><p>
+Sets the font for printing line numbers on the left margin.  If
+NULL is supplied, the default font (i.e. the one being used for the
+text) will be used instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>desc</tt></i> :</span></td><td> the <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+><span class="type">PangoFontDescription</span></a> for the font for line numbers, or <tt class="literal">NULL</tt>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-numbers-font"></a>gtk_source_print_job_set_numbers_font ()</h3><a class="indexterm" name="id2854933"></a><pre class="programlisting">void        gtk_source_print_job_set_numbers_font
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);</pre><p>
+Sets the font for printing line numbers on the left margin.  If
+NULL is supplied, the default font (i.e. the one being used for the
+text) will be used instead.
+</p><p>
+Note that <i class="parameter"><tt>font_name</tt></i> is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-numbers-font-desc"><tt class="function">gtk_source_print_job_set_numbers_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font_name</tt></i> :</span></td><td> the full name of the font for line numbers, or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-numbers-font-desc"></a>gtk_source_print_job_get_numbers_font_desc ()</h3><a class="indexterm" name="id2855042"></a><pre class="programlisting"><a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* gtk_source_print_job_get_numbers_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the font to be used for the line numbers. This function
+might return NULL if a specific font for numbers has not been set.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the line numbers font description or NULL. This value is
+ owned by the job and must not be modified or freed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-numbers-font"></a>gtk_source_print_job_get_numbers_font ()</h3><a class="indexterm" name="id2855112"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      gtk_source_print_job_get_numbers_font
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the font to be used for the line numbers.  The returned
+string is of the form "Fontfamily Style Size", for
+example "Monospace Regular 10.0".  The returned value
+should be freed when no longer needed.  This function might return
+NULL if a specific font for numbers has not been set.
+</p><p>
+Note that the result is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-numbers-font-desc"><tt class="function">gtk_source_print_job_get_numbers_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the name of the current
+line numbers font, or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-print-numbers"></a>gtk_source_print_job_set_print_numbers ()</h3><a class="indexterm" name="id2855212"></a><pre class="programlisting">void        gtk_source_print_job_set_print_numbers
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> interval);</pre><p>
+Sets the interval for printed line numbers.  If <i class="parameter"><tt>interval</tt></i> is 0 no
+numbers will be printed.  If greater than 0, a number will be
+printed every <i class="parameter"><tt>interval</tt></i> lines (i.e. 1 will print all line numbers).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>interval</tt></i> :</span></td><td> interval for printed line numbers.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-print-numbers"></a>gtk_source_print_job_get_print_numbers ()</h3><a class="indexterm" name="id2855297"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       gtk_source_print_job_get_print_numbers
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the interval used for line number printing.  If the
+value is 0, no line numbers will be printed.  The default value is
+1 (i.e. numbers printed in all lines).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the interval of printed line numbers.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-text-margins"></a>gtk_source_print_job_set_text_margins ()</h3><a class="indexterm" name="id2855368"></a><pre class="programlisting">void        gtk_source_print_job_set_text_margins
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> top,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> bottom,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> left,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> right);</pre><p>
+Sets the four user margins for the print job.  These margins are in
+addition to the document margins provided in the <span class="type">GnomePrintConfig</span>
+and will not be used for headers, footers or line numbers (those
+are calculated separatedly).  You can print in the space allocated
+by these margins by connecting to the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">"begin_page"</a> signal.  The
+space is around the printed text, and inside the margins specified
+in the <span class="type">GnomePrintConfig</span>.
+</p><p>
+The margin numbers are given in device units.  If any of the given
+values is less than 0, that particular margin is not altered by
+this function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>top</tt></i> :</span></td><td> the top user margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bottom</tt></i> :</span></td><td> the bottom user margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>left</tt></i> :</span></td><td> the left user margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>right</tt></i> :</span></td><td> the right user margin.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-text-margins"></a>gtk_source_print_job_get_text_margins ()</h3><a class="indexterm" name="id2855523"></a><pre class="programlisting">void        gtk_source_print_job_get_text_margins
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *top,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *bottom,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *left,
+                                             <a
+href="../glib/glib-Basic-Types.html#gdouble"
+>gdouble</a> *right);</pre><p>
+Determine the user set margins for the job.  This function
+retrieves the values previously set by
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-set-text-margins"><tt class="function">gtk_source_print_job_set_text_margins()</tt></a>.  The default for all four
+margins is 0.  Any of the pointers can be NULL if you want to
+ignore that value.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>top</tt></i> :</span></td><td> a pointer to a <a
+href="../glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to return the top margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>bottom</tt></i> :</span></td><td> a pointer to a <a
+href="../glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to return the bottom margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>left</tt></i> :</span></td><td> a pointer to a <a
+href="../glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to return the left margin.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>right</tt></i> :</span></td><td> a pointer to a <a
+href="../glib/glib-Basic-Types.html#gdouble"
+><span class="type">gdouble</span></a> to return the right margin.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-print"></a>gtk_source_print_job_print ()</h3><a class="indexterm" name="id2855684"></a><pre class="programlisting">GnomePrintJob* gtk_source_print_job_print   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Produces a <span class="type">GnomePrintJob</span> with the printed document.  The whole
+contents of the configured <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a> are printed.  The
+returned job is already closed and ready to be previewed (using
+<tt class="function">gnome_print_job_preview_new()</tt>) or printed directly.  The caller of
+this function owns a reference to the returned object, so <i class="parameter"><tt>job</tt></i> can
+be destroyed and the output will still be valid, or the document
+can be printed again with different settings.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a configured <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a closed <span class="type">GnomePrintJob</span> with the printed document, or
+NULL if printing could not be completed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-print-range"></a>gtk_source_print_job_print_range ()</h3><a class="indexterm" name="id2855786"></a><pre class="programlisting">GnomePrintJob* gtk_source_print_job_print_range
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *start,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *end);</pre><p>
+Similar to <a href="GtkSourcePrintJob.html#gtk-source-print-job-print"><tt class="function">gtk_source_print_job_print()</tt></a>, except you can specify a
+range of text to print.  The passed <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+><span class="type">GtkTextIter</span></a> values might be
+out of order.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a configured <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>start</tt></i> :</span></td><td> the start of the region of text to print.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end</tt></i> :</span></td><td> the end of the region of text to print.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a closed <span class="type">GnomePrintJob</span> with the text from <i class="parameter"><tt>start</tt></i> to
+<i class="parameter"><tt>end</tt></i> printed, or NULL if <i class="parameter"><tt>job</tt></i> could not print.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-print-range-async"></a>gtk_source_print_job_print_range_async ()</h3><a class="indexterm" name="id2855919"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_print_job_print_range_async
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *start,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *end);</pre><p>
+Starts to print <i class="parameter"><tt>job</tt></i> asynchronously.  This function will ready the
+<i class="parameter"><tt>job</tt></i> for printing and install an idle handler that will render one
+page at a time.
+</p><p>
+This function will not return immediatly, as only page rendering is
+done asynchronously.  Text retrieval and paginating happens within
+this function.  Also, if highlighting is enabled, the whole buffer
+needs to be highlighted first.
+</p><p>
+To get notification when the job has finished, you must connect to
+the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-finished">"finished"</a>
+signal.  After this signal is emitted you can retrieve the
+resulting <span class="type">GnomePrintJob</span> with <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-job"><tt class="function">gtk_source_print_job_get_print_job()</tt></a>.
+You may cancel the job with <a href="GtkSourcePrintJob.html#gtk-source-print-job-cancel"><tt class="function">gtk_source_print_job_cancel()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a configured <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>start</tt></i> :</span></td><td> the start of the region of text to print.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end</tt></i> :</span></td><td> the end of the region of text to print.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the print started.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-cancel"></a>gtk_source_print_job_cancel ()</h3><a class="indexterm" name="id2856068"></a><pre class="programlisting">void        gtk_source_print_job_cancel     (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Cancels an asynchronous printing operation.  This will remove any
+pending print idle handler and unref the current <span class="type">GnomePrintJob</span>.
+</p><p>
+Note that if you got a reference to the job's <span class="type">GnomePrintJob</span> (using
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-get-print-job"><tt class="function">gtk_source_print_job_get_print_job()</tt></a>) it will not be destroyed
+(since you hold a reference to it), but it will not be closed
+either.  If you wish to show or print the partially printed
+document you need to close it yourself.
+</p><p>
+This function has no effect when called from a non-asynchronous
+print operation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-print-job"></a>gtk_source_print_job_get_print_job ()</h3><a class="indexterm" name="id2856158"></a><pre class="programlisting">GnomePrintJob* gtk_source_print_job_get_print_job
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Gets a reference to the <span class="type">GnomePrintJob</span> which the <i class="parameter"><tt>job</tt></i> is printing
+or has recently finished printing.  You need to unref the returned
+object.
+</p><p>
+You may call this function in the middle of an asynchronous
+printing operation, but the returned <span class="type">GnomePrintJob</span> will not be
+closed until the last page is printed and the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-finished">"finished"</a>
+signal is emitted.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new reference to the <i class="parameter"><tt>job</tt></i>'s <span class="type">GnomePrintJob</span>, or
+NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-page"></a>gtk_source_print_job_get_page ()</h3><a class="indexterm" name="id2856262"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       gtk_source_print_job_get_page   (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the currently printing page number.  This function is
+only valid while printing (either synchronously or asynchronously).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current page number.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-page-count"></a>gtk_source_print_job_get_page_count ()</h3><a class="indexterm" name="id2856330"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>       gtk_source_print_job_get_page_count
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the total number of pages the job will print.  The
+returned value is only meaninful after pagination has finished.  In
+practice, for synchronous printing this means when <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">"begin_page"</a>
+is emitted, or after <a href="GtkSourcePrintJob.html#gtk-source-print-job-print-range-async"><tt class="function">gtk_source_print_job_print_range_async()</tt></a> has
+returned.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the number of pages of the printed job.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-print-context"></a>gtk_source_print_job_get_print_context ()</h3><a class="indexterm" name="id2856414"></a><pre class="programlisting">GnomePrintContext* gtk_source_print_job_get_print_context
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the <span class="type">GnomePrintContext</span> of the current job.  This
+function is only valid while printing.  Normally you would use this
+function to print in the margins set by
+<tt class="function">gtk_source_print_job_set_margins()</tt> in a handler for the <a href="GtkSourcePrintJob.html#GtkSourcePrintJob-begin-page">"begin_page"</a>
+signal.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a printing <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the current <span class="type">GnomePrintContext</span>.  The returned object
+is owned by <i class="parameter"><tt>job</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-print-header"></a>gtk_source_print_job_set_print_header ()</h3><a class="indexterm" name="id2856530"></a><pre class="programlisting">void        gtk_source_print_job_set_print_header
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> setting);</pre><p>
+Sets whether you want to print a header in each page.  The default
+header consists of three pieces of text and an optional line
+separator, configurable with
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-format"><tt class="function">gtk_source_print_job_set_header_format()</tt></a>.
+</p><p>
+Note that by default the header format is unspecified, and if it's
+empty it will not be printed, regardless of this setting.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>setting</tt></i> :</span></td><td> TRUE if you want the header to be printed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-print-header"></a>gtk_source_print_job_get_print_header ()</h3><a class="indexterm" name="id2856640"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_print_job_get_print_header
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines if a header is set to be printed for each page.  A
+header will be printed if this function returns TRUE
+<span class="emphasis"><em>and</em></span> some format strings have been specified
+with <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-format"><tt class="function">gtk_source_print_job_set_header_format()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the header is set to be printed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-print-footer"></a>gtk_source_print_job_set_print_footer ()</h3><a class="indexterm" name="id2856739"></a><pre class="programlisting">void        gtk_source_print_job_set_print_footer
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> setting);</pre><p>
+Sets whether you want to print a footer in each page.  The default
+footer consists of three pieces of text and an optional line
+separator, configurable with
+<a href="GtkSourcePrintJob.html#gtk-source-print-job-set-footer-format"><tt class="function">gtk_source_print_job_set_footer_format()</tt></a>.
+</p><p>
+Note that by default the footer format is unspecified, and if it's
+empty it will not be printed, regardless of this setting.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>setting</tt></i> :</span></td><td> TRUE if you want the footer to be printed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-print-footer"></a>gtk_source_print_job_get_print_footer ()</h3><a class="indexterm" name="id2856849"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_print_job_get_print_footer
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines if a footer is set to be printed for each page.  A
+footer will be printed if this function returns TRUE
+<span class="emphasis"><em>and</em></span> some format strings have been specified
+with <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-footer-format"><tt class="function">gtk_source_print_job_set_footer_format()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the footer is set to be printed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-header-footer-font-desc"></a>gtk_source_print_job_set_header_footer_font_desc ()</h3><a class="indexterm" name="id2856949"></a><pre class="programlisting">void        gtk_source_print_job_set_header_footer_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a> *desc);</pre><p>
+Sets the font for printing headers and footers.  If <tt class="literal">NULL</tt> is
+supplied, the default font (i.e. the one being used for the text)
+will be used instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>desc</tt></i> :</span></td><td> the <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+><span class="type">PangoFontDescription</span></a> for the font to be used in headers and footers, or <tt class="literal">NULL</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-header-footer-font"></a>gtk_source_print_job_set_header_footer_font ()</h3><a class="indexterm" name="id2857061"></a><pre class="programlisting">void        gtk_source_print_job_set_header_footer_font
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *font_name);</pre><p>
+Sets the font for printing headers and footers.  If NULL is
+supplied, the default font (i.e. the one being used for the text)
+will be used instead.
+</p><p>
+Note that <i class="parameter"><tt>font_name</tt></i> is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-footer-font-desc"><tt class="function">gtk_source_print_job_set_header_footer_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font_name</tt></i> :</span></td><td> the full name of the font to be used in headers and footers, or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-header-footer-font-desc"></a>gtk_source_print_job_get_header_footer_font_desc ()</h3><a class="indexterm" name="id2857192"></a><pre class="programlisting"><a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>* gtk_source_print_job_get_header_footer_font_desc
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the font to be used for the header and footer.  This function
+might return NULL if a specific font has not been set.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the header and footer font description or NULL. This value is
+ owned by the job and must not be modified or freed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-get-header-footer-font"></a>gtk_source_print_job_get_header_footer_font ()</h3><a class="indexterm" name="id2857280"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a>*      gtk_source_print_job_get_header_footer_font
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job);</pre><p>
+Determines the font to be used for the header and footer.  The
+returned string is of the form "Fontfamily Style Size",
+for example "Monospace Regular 10.0".  The returned value
+should be freed when no longer needed.  This function might return
+NULL if a specific font has not been set.
+</p><p>
+Note that the result is a <span class="type">GnomeFont</span> name not a Pango font
+description string. This function is deprecated since <span class="type">GnomeFont</span> is
+no longer used when implementing printing for GtkSourceView; you
+should use <a href="GtkSourcePrintJob.html#gtk-source-print-job-get-header-footer-font-desc"><tt class="function">gtk_source_print_job_get_header_footer_font_desc()</tt></a> instead.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the name of the current
+header and footer font, or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-header-format"></a>gtk_source_print_job_set_header_format ()</h3><a class="indexterm" name="id2857400"></a><pre class="programlisting">void        gtk_source_print_job_set_header_format
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *left,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *center,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *right,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> separator);</pre><p>
+Sets strftime like header format strings, to be printed on the
+left, center and right of the top of each page.  The strings may
+include strftime(3) codes which will be expanded at print time.
+All <tt class="function">strftime()</tt> codes are accepted, with the addition of <tt class="literal">N</tt> for the
+page number and <tt class="literal">Q</tt> for the page count.
+</p><p>
+<i class="parameter"><tt>separator</tt></i> specifies if a solid line should be drawn to separate
+the header from the document text.
+</p><p>
+If NULL is given for any of the three arguments, that particular
+string will not be printed.  For the header to be printed, in
+addition to specifying format strings, you need to enable header
+printing with <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-print-header"><tt class="function">gtk_source_print_job_set_print_header()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>left</tt></i> :</span></td><td> a format string to print on the left of the header.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>center</tt></i> :</span></td><td> a format string to print on the center of the header.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>right</tt></i> :</span></td><td> a format string to print on the right of the header.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>separator</tt></i> :</span></td><td> TRUE if you want a separator line to be printed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-print-job-set-footer-format"></a>gtk_source_print_job_set_footer_format ()</h3><a class="indexterm" name="id2857603"></a><pre class="programlisting">void        gtk_source_print_job_set_footer_format
+                                            (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *job,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *left,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *center,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *right,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> separator);</pre><p>
+Like <a href="GtkSourcePrintJob.html#gtk-source-print-job-set-header-format"><tt class="function">gtk_source_print_job_set_header_format()</tt></a>, but for the footer.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>job</tt></i> :</span></td><td> a <a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><span class="type">GtkSourcePrintJob</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>left</tt></i> :</span></td><td> a format string to print on the left of the footer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>center</tt></i> :</span></td><td> a format string to print on the center of the footer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>right</tt></i> :</span></td><td> a format string to print on the right of the footer.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>separator</tt></i> :</span></td><td> TRUE if you want a separator line to be printed.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>Properties</h2><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--buffer"></a>The "<tt class="literal">buffer</tt>" property</h3><pre class="programlisting">  "buffer"               <a href="GtkSourceBuffer.html" title="GtkSourceBuffer">GtkSourceBuffer</a>       : Read / Write</pre><p>GtkSourceBuffer object to print.</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--config"></a>The "<tt class="literal">config</tt>" property</h3><pre class="programlisting">  "config"               GnomePrintConfig      : Read / Write</pre><p>Configuration options for the print job.</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--font"></a>The "<tt class="literal">font</tt>" property</h3><pre class="programlisting">  "font"                 <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre><p>GnomeFont name to use for the document text (deprecated).</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--font-desc"></a>The "<tt class="literal">font-desc</tt>" property</h3><pre class="programlisting">  "font-desc"            <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write</pre><p>Font description name to use for the document text.</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--header-footer-font"></a>The "<tt class="literal">header-footer-font</tt>" property</h3><pre class="programlisting">  "header-footer-font"   <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre><p>GnomeFont name to use for the header and footer (deprecated).</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--header-footer-font-desc"></a>The "<tt class="literal">header-footer-font-desc</tt>" property</h3><pre class="programlisting">  "header-footer-font-desc" <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write</pre><p>Font description name to use for the header and footer.</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--highlight"></a>The "<tt class="literal">highlight</tt>" property</h3><pre class="programlisting">  "highlight"            <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre><p>Whether to print the document with highlighted syntax.</p><p>Default value: TRUE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--numbers-font"></a>The "<tt class="literal">numbers-font</tt>" property</h3><pre class="programlisting">  "numbers-font"         <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write</pre><p>GnomeFont name to use for the line numbers (deprecated).</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--numbers-font-desc"></a>The "<tt class="literal">numbers-font-desc</tt>" property</h3><pre class="programlisting">  "numbers-font-desc"    <a
+href="../pango/pango-Fonts.html#PangoFontDescription"
+>PangoFontDescription</a>  : Read / Write</pre><p>Font description to use for the line numbers.</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--print-footer"></a>The "<tt class="literal">print-footer</tt>" property</h3><pre class="programlisting">  "print-footer"         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre><p>Whether to print a footer in each page.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--print-header"></a>The "<tt class="literal">print-header</tt>" property</h3><pre class="programlisting">  "print-header"         <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>              : Read / Write</pre><p>Whether to print a header in each page.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--print-numbers"></a>The "<tt class="literal">print-numbers</tt>" property</h3><pre class="programlisting">  "print-numbers"        <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre><p>Interval of printed line numbers (0 means no numbers).</p><p>Allowed values: &lt;= 100</p><p>Default value: 1</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--tabs-width"></a>The "<tt class="literal">tabs-width</tt>" property</h3><pre class="programlisting">  "tabs-width"           <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a>                 : Read / Write</pre><p>Width in equivalent space characters of tabs.</p><p>Allowed values: &lt;= 100</p><p>Default value: 8</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob--wrap-mode"></a>The "<tt class="literal">wrap-mode</tt>" property</h3><pre class="programlisting">  "wrap-mode"            <a
+href="../gtk/GtkTextTag.html#GtkWrapMode"
+>GtkWrapMode</a>           : Read / Write</pre><p>Word wrapping mode.</p><p>Default value: GTK_WRAP_NONE</p></div></div><div class="refsect1" lang="en"><h2>Signals</h2><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob-begin-page"></a>The "begin-page" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *sourceprintjob,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Emitted whenever the <i class="parameter"><tt>sourceprintjob</tt></i> is about to print a new text
+page.  You can connect to this signal to provide the user with
+feedback about the progress of printing, or to customize the printed
+page by for example, printing your own headers and footers.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sourceprintjob</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourcePrintJob-finished"></a>The "finished" signal</h3><pre class="programlisting">void        user_function                  (<a href="GtkSourcePrintJob.html" title="GtkSourcePrintJob">GtkSourcePrintJob</a> *sourceprintjob,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Emitted whenever an asynchronous print job has finished.  You can
+connect to this signal to get notification when a job has finished
+printing.  When it's emitted, the <span class="type">GnomePrintJob</span> the <i class="parameter"><tt>sourceprintjob</tt></i>
+was producing has been closed and it can be either previewed or
+printed to the physical device.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sourceprintjob</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+The reference documentation for <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a>.  You might also want
+to check the Gnome Print library reference
+documentation.
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gtksourceview-GtkSourceTagStyle.html"><b>&lt;&lt; GtkSourceTagStyle</b></a></td><td align="right"></td></tr></table></body></html>

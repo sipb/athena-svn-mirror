@@ -1,0 +1,287 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GtkSourceTag</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="next" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="reference" href="rn01.html" title="API reference"><link rel="refentry" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="refentry" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html" title="Searching in a GtkSourceBuffer"><link rel="refentry" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="refentry" href="GtkSourceView.html" title="GtkSourceView"><link rel="refentry" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="refentry" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="refentry" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="refentry" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="refentry" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="refentry" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="refentry" href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><link rel="section" href="GtkSourceTag.html#id2802510" title="Object Hierarchy"><link rel="section" href="GtkSourceTag.html#id2842445" title="Properties"><link rel="section" href="GtkSourceTag.html#id2842476" title="Description"><link rel="section" href="GtkSourceTag.html#id2842486" title="Details"><link rel="section" href="GtkSourceTag.html#id2844614" title="Properties"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkSourceStyleScheme.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="GtkSourceTagTable.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GtkSourceTag"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GtkSourceTag</span></h2><p>GtkSourceTag &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GtkSyntaxTag"></a><a name="GtkPatternTag"></a><pre class="synopsis">
+
+#include &lt;gtksourceview/gtksourcetag.h&gt;
+
+
+struct      <a href="GtkSourceTag.html#GtkSourceTag-struct">GtkSourceTag</a>;
+struct      <a href="GtkSourceTag.html#GtkSourceTagClass">GtkSourceTagClass</a>;
+struct      <a href="GtkSourceTag.html#GtkSyntaxTag-struct">GtkSyntaxTag</a>;
+struct      <a href="GtkSourceTag.html#GtkSyntaxTagClass">GtkSyntaxTagClass</a>;
+struct      <a href="GtkSourceTag.html#GtkPatternTag-struct">GtkPatternTag</a>;
+struct      <a href="GtkSourceTag.html#GtkPatternTagClass">GtkPatternTagClass</a>;
+<a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>* <a href="GtkSourceTag.html#gtk-source-tag-get-style">gtk_source_tag_get_style</a> (<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a> *tag);
+void        <a href="GtkSourceTag.html#gtk-source-tag-set-style">gtk_source_tag_set_style</a>        (<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a> *tag,
+                                             const <a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a> *style);
+<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* <a href="GtkSourceTag.html#gtk-syntax-tag-new">gtk_syntax_tag_new</a>              (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_end);
+<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* <a href="GtkSourceTag.html#gtk-pattern-tag-new">gtk_pattern_tag_new</a>             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern);
+<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* <a href="GtkSourceTag.html#gtk-keyword-list-tag-new">gtk_keyword_list_tag_new</a>        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *keywords,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> case_sensitive,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> match_empty_string_at_beginning,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> match_empty_string_at_end,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *beginning_regex,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *end_regex);
+#define     <a href="GtkSourceTag.html#gtk-block-comment-tag-new">gtk_block_comment_tag_new</a>
+<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* <a href="GtkSourceTag.html#gtk-line-comment-tag-new">gtk_line_comment_tag_new</a>        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start);
+<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* <a href="GtkSourceTag.html#gtk-string-tag-new">gtk_string_tag_new</a>              (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_end,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> end_at_line_end);
+
+</pre></div><div class="refsect1" lang="en"><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>
+         +----GtkSourceTag
+               +----<a href="GtkSourceTag.html#GtkSyntaxTag">GtkSyntaxTag</a>
+               +----<a href="GtkSourceTag.html#GtkPatternTag">GtkPatternTag</a>
+</pre><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>
+         +----<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a>
+               +----GtkSyntaxTag
+</pre><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----<a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>
+         +----<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a>
+               +----GtkPatternTag
+</pre></div><div class="refsect1" lang="en"><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GtkSourceTag.html#GtkSourceTag--id">id</a>"                   <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct Only
+  "<a href="GtkSourceTag.html#GtkSourceTag--tag-style">tag-style</a>"            <a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>     : Read / Write
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceTag-struct"></a>struct GtkSourceTag</h3><a class="indexterm" name="id2842499"></a><pre class="programlisting">struct GtkSourceTag;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceTagClass"></a>struct GtkSourceTagClass</h3><a class="indexterm" name="id2842517"></a><pre class="programlisting">struct GtkSourceTagClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSyntaxTag-struct"></a>struct GtkSyntaxTag</h3><a class="indexterm" name="id2842535"></a><pre class="programlisting">struct GtkSyntaxTag;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSyntaxTagClass"></a>struct GtkSyntaxTagClass</h3><a class="indexterm" name="id2842553"></a><pre class="programlisting">struct GtkSyntaxTagClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkPatternTag-struct"></a>struct GtkPatternTag</h3><a class="indexterm" name="id2842571"></a><pre class="programlisting">struct GtkPatternTag;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkPatternTagClass"></a>struct GtkPatternTagClass</h3><a class="indexterm" name="id2842589"></a><pre class="programlisting">struct GtkPatternTagClass;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-tag-get-style"></a>gtk_source_tag_get_style ()</h3><a class="indexterm" name="id2842607"></a><pre class="programlisting"><a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>* gtk_source_tag_get_style (<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a> *tag);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>tag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-tag-set-style"></a>gtk_source_tag_set_style ()</h3><a class="indexterm" name="id2801814"></a><pre class="programlisting">void        gtk_source_tag_set_style        (<a href="GtkSourceTag.html" title="GtkSourceTag">GtkSourceTag</a> *tag,
+                                             const <a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a> *style);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>tag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>style</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-syntax-tag-new"></a>gtk_syntax_tag_new ()</h3><a class="indexterm" name="id2801873"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* gtk_syntax_tag_new              (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_end);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern_start</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern_end</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-pattern-tag-new"></a>gtk_pattern_tag_new ()</h3><a class="indexterm" name="id2801976"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* gtk_pattern_tag_new             (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-keyword-list-tag-new"></a>gtk_keyword_list_tag_new ()</h3><a class="indexterm" name="id2802062"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* gtk_keyword_list_tag_new        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Singly-Linked-Lists.html#GSList"
+>GSList</a> *keywords,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> case_sensitive,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> match_empty_string_at_beginning,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> match_empty_string_at_end,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *beginning_regex,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *end_regex);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>keywords</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>case_sensitive</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_empty_string_at_beginning</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_empty_string_at_end</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>beginning_regex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end_regex</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-block-comment-tag-new"></a>gtk_block_comment_tag_new</h3><a class="indexterm" name="id2844424"></a><pre class="programlisting">#define gtk_block_comment_tag_new	gtk_syntax_tag_new
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-line-comment-tag-new"></a>gtk_line_comment_tag_new ()</h3><a class="indexterm" name="id2844443"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* gtk_line_comment_tag_new        (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern_start</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-string-tag-new"></a>gtk_string_tag_new ()</h3><a class="indexterm" name="id2844528"></a><pre class="programlisting"><a
+href="../gtk/GtkTextTag.html"
+>GtkTextTag</a>* gtk_string_tag_new              (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *id,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *name,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_start,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *pattern_end,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> end_at_line_end);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern_start</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pattern_end</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>end_at_line_end</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>Properties</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceTag--id"></a>The "<tt class="literal">id</tt>" property</h3><pre class="programlisting">  "id"                   <a
+href="../gobject/gobject-Standard-Parameter-and-Value-Types.html#gchararray"
+>gchararray</a>            : Read / Write / Construct Only</pre><p>ID used to refer to the source tag.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><h3><a name="GtkSourceTag--tag-style"></a>The "<tt class="literal">tag-style</tt>" property</h3><pre class="programlisting">  "tag-style"            <a href="gtksourceview-GtkSourceTagStyle.html#GtkSourceTagStyle">GtkSourceTagStyle</a>     : Read / Write</pre><p>The style associated to the source tag.</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GtkSourceStyleScheme.html"><b>&lt;&lt; GtkSourceStyleScheme</b></a></td><td align="right"><a accesskey="n" href="GtkSourceTagTable.html"><b>GtkSourceTagTable &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,158 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Searching in a GtkSourceBuffer</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="GtkSourceView Reference Manual"><link rel="up" href="rn01.html" title="API reference"><link rel="previous" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="next" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="reference" href="rn01.html" title="API reference"><link rel="refentry" href="GtkSourceBuffer.html" title="GtkSourceBuffer"><link rel="refentry" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html" title="Searching in a GtkSourceBuffer"><link rel="refentry" href="gtksourceview-GtkSourceMarker.html" title="GtkSourceMarker"><link rel="refentry" href="GtkSourceView.html" title="GtkSourceView"><link rel="refentry" href="GtkSourceLanguage.html" title="GtkSourceLanguage"><link rel="refentry" href="GtkSourceLanguagesManager.html" title="GtkSourceLanguagesManager"><link rel="refentry" href="GtkSourceStyleScheme.html" title="GtkSourceStyleScheme"><link rel="refentry" href="GtkSourceTag.html" title="GtkSourceTag"><link rel="refentry" href="GtkSourceTagTable.html" title="GtkSourceTagTable"><link rel="refentry" href="gtksourceview-GtkSourceTagStyle.html" title="GtkSourceTagStyle"><link rel="refentry" href="GtkSourcePrintJob.html" title="GtkSourcePrintJob"><link rel="section" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#id2799034" title="Description"><link rel="section" href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#id2799044" title="Details"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GtkSourceBuffer.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="rn01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GtkSourceView Reference Manual</th><td><a accesskey="n" href="gtksourceview-GtkSourceMarker.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gtksourceview-Searching-in-a-GtkSourceBuffer"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Searching in a GtkSourceBuffer</span></h2><p>Searching in a GtkSourceBuffer &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;gtksourceview/gtksourceiter.h&gt;
+
+
+enum        <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#GtkSourceSearchFlags">GtkSourceSearchFlags</a>;
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#gtk-source-iter-backward-search">gtk_source_iter_backward_search</a> (const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str,
+                                             <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#GtkSourceSearchFlags">GtkSourceSearchFlags</a> flags,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_start,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_end,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *limit);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#gtk-source-iter-forward-search">gtk_source_iter_forward_search</a>  (const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str,
+                                             <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#GtkSourceSearchFlags">GtkSourceSearchFlags</a> flags,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_start,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_end,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *limit);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#gtk-source-iter-find-matching-bracket">gtk_source_iter_find_matching_bracket</a>
+                                            (<a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="GtkSourceSearchFlags"></a>enum GtkSourceSearchFlags</h3><a class="indexterm" name="id2799058"></a><pre class="programlisting">typedef enum
+{
+	GTK_SOURCE_SEARCH_VISIBLE_ONLY		 = 1 &lt;&lt; 0,
+	GTK_SOURCE_SEARCH_TEXT_ONLY		 = 1 &lt;&lt; 1,
+	GTK_SOURCE_SEARCH_CASE_INSENSITIVE	 = 1 &lt;&lt; 2
+	/* Possible future plans: SEARCH_REGEXP */
+} GtkSourceSearchFlags;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-iter-backward-search"></a>gtk_source_iter_backward_search ()</h3><a class="indexterm" name="id2799082"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_iter_backward_search (const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str,
+                                             <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#GtkSourceSearchFlags">GtkSourceSearchFlags</a> flags,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_start,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_end,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *limit);</pre><p>
+Same as <a
+href="../gtk/gtk-GtkTextIter.html#gtk-text-iter-backward-search"
+><tt class="function">gtk_text_iter_backward_search()</tt></a>, but supports case insensitive
+searching.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iter</tt></i> :</span></td><td> a <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+><span class="type">GtkTextIter</span></a> where the search begins
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> search string
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> bitmask of flags affecting the search
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_start</tt></i> :</span></td><td> return location for start of match, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_end</tt></i> :</span></td><td> return location for end of match, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>limit</tt></i> :</span></td><td> location of last possible <i class="parameter"><tt>match_start</tt></i>, or <tt class="literal">NULL</tt> for start of buffer
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether a match was found
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-iter-forward-search"></a>gtk_source_iter_forward_search ()</h3><a class="indexterm" name="id2798475"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_iter_forward_search  (const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *str,
+                                             <a href="gtksourceview-Searching-in-a-GtkSourceBuffer.html#GtkSourceSearchFlags">GtkSourceSearchFlags</a> flags,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_start,
+                                             <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *match_end,
+                                             const <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *limit);</pre><p>
+Searches forward for <i class="parameter"><tt>str</tt></i>. Any match is returned by setting 
+<i class="parameter"><tt>match_start</tt></i> to the first character of the match and <i class="parameter"><tt>match_end</tt></i> to the 
+first character after the match. The search will not continue past
+<i class="parameter"><tt>limit</tt></i>. Note that a search is a linear or O(n) operation, so you
+may wish to use <i class="parameter"><tt>limit</tt></i> to avoid locking up your UI on large
+buffers.
+</p><p>
+If the <span class="type">GTK_SOURCE_SEARCH_VISIBLE_ONLY</span> flag is present, the match may
+have invisible text interspersed in <i class="parameter"><tt>str</tt></i>. i.e. <i class="parameter"><tt>str</tt></i> will be a
+possibly-noncontiguous subsequence of the matched range. similarly,
+if you specify <span class="type">GTK_SOURCE_SEARCH_TEXT_ONLY</span>, the match may have
+pixbufs or child widgets mixed inside the matched range. If these
+flags are not given, the match must be exact; the special 0xFFFC
+character in <i class="parameter"><tt>str</tt></i> will match embedded pixbufs or child widgets.
+If you specify the <span class="type">GTK_SOURCE_SEARCH_CASE_INSENSITIVE</span> flag, the text will
+be matched regardless of what case it is in.
+</p><p>
+Same as <a
+href="../gtk/gtk-GtkTextIter.html#gtk-text-iter-forward-search"
+><tt class="function">gtk_text_iter_forward_search()</tt></a>, but supports case insensitive
+searching.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iter</tt></i> :</span></td><td> start of search
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> a search string
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> flags affecting how the search is done
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_start</tt></i> :</span></td><td> return location for start of match, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_end</tt></i> :</span></td><td> return location for end of match, or <tt class="literal">NULL</tt>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>limit</tt></i> :</span></td><td> bound for the search, or <tt class="literal">NULL</tt> for the end of the buffer
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> whether a match was found
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><h3><a name="gtk-source-iter-find-matching-bracket"></a>gtk_source_iter_find_matching_bracket ()</h3><a class="indexterm" name="id2746610"></a><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gtk_source_iter_find_matching_bracket
+                                            (<a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+>GtkTextIter</a> *iter);</pre><p>
+Tries to match the bracket character currently at <i class="parameter"><tt>iter</tt></i> with its
+opening/closing counterpart, and if found moves <i class="parameter"><tt>iter</tt></i> to the position
+where it was found.
+</p><p>
+<i class="parameter"><tt>iter</tt></i> must be a <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+><span class="type">GtkTextIter</span></a> belonging to a <a href="GtkSourceBuffer.html" title="GtkSourceBuffer"><span class="type">GtkSourceBuffer</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iter</tt></i> :</span></td><td> a <a
+href="../gtk/gtk-GtkTextIter.html#GtkTextIter"
+><span class="type">GtkTextIter</span></a>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the matching bracket was found and the <i class="parameter"><tt>iter</tt></i>
+iter moved.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GtkSourceBuffer.html"><b>&lt;&lt; GtkSourceBuffer</b></a></td><td align="right"><a accesskey="n" href="gtksourceview-GtkSourceMarker.html"><b>GtkSourceMarker &gt;&gt;</b></a></td></tr></table></body></html>
