@@ -6,7 +6,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.13 1991-05-06 23:12:22 lwvanels Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.14 1991-09-22 12:15:41 lwvanels Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
@@ -314,9 +314,15 @@
 #define PutenvDef
 #endif
 
+#if HasVoidSignalReturn
+#define SigRetDef	-DVOID_SIGRET
+#else
+/* otherwise, it has int * signal returns */
+#define SigRetDef
+#endif
 
 #define OptionDefines TermIODef PutenvDef ErrnoDef SelectMDef \
-AnsiIDef VforkDef
+AnsiIDef VforkDef SigRetDef
 
 
 #ifndef DestDir
