@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.4 1989-08-04 11:09:06 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.5 1989-08-07 14:45:44 tjcoppet Exp $";
 #endif
 
 
@@ -48,6 +48,7 @@ do_olc_motd(arguments)
 						    max(strlen(*arguments),2)))
 	{
           ++arguments;
+	  unlink(file);
 	  if(*arguments == NULL)
             {
 	      file[0] = '\0';
