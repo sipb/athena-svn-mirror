@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.7 1993-01-27 15:57:56 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.8 1993-01-29 14:34:10 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -306,6 +306,18 @@ xlogin.Geometry: 		580x325+205+105
 			login() \n\
 	<Key>Prior:	signalConsoleACT(show) \n\
 	<Key>Next:	signalConsoleACT(hide) \n\
+	<Key>Up:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.displayCaret: TRUE) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			idleReset() \
+			setfocus(*name_input) \n\
+	Shift<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
+			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.displayCaret: TRUE) \
+			WcSetValueACT(*name_input.borderColor: black) \
+			idleReset() \
+			setfocus(*name_input) \n\
 	<Key>:		insert-char() \
 			idleReset()
 
