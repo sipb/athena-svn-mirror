@@ -9,7 +9,7 @@
 usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release] source rpmname"
 
 sourcedir=/mit/source
-destdir=/usr/src/athena
+destdir=/build
 makepackage=yes
 
 while getopts s:d:v:r: opt; do
