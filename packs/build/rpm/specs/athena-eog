@@ -2,7 +2,7 @@ Name: athena-eog
 Summary: Eye of GNOME image viewer, for athena
 License: GPL
 Group: User Interface/Desktops
-Provides: eog = 1.0.4
+Provides: eog = 2.2.0
 
 Requires: athena-gnome-vfs2 athena-libgnomeprint athena-libgnomeui
 Requires: athena-libbonoboui athena-bonobo-activation athena-librsvg

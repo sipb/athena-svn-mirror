@@ -2,13 +2,13 @@ Name: athena-nautilus
 Summary: A file manager and graphical shell, for Athena
 License: GPL
 Group: User Interface/Desktop
-Provides: nautilus = 2.0.8
+Provides: nautilus = 2.2.0.2
 
 Requires: athena-libart_lgpl athena-bonobo-activation athena-libbonobo
 Requires: athena-libbonoboui athena-eel athena-esound athena-glib2
 Requires: athena-libgnomecanvas athena-gnome-desktop athena-libgnome
 Requires: athena-libgnomeui athena-gnome-vfs2 athena-gtk2 athena-librsvg
-Requires: athena-libxml2 athena-pango
+Requires: athena-libxml2 athena-pango athena-ORBit2
 
 %description
 Nautilus integrates access to files, applications, media, Internet-

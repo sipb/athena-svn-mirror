@@ -2,7 +2,7 @@ Name: athena-librsvg
 Summary: An SVG library based on libart, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: librsvg2 = 2.0.1
+Provides: librsvg2 = 2.2.1
 
 Requires: athena-gtk2 athena-glib2 athena-libart_lgpl athena-libxml2
 Requires: athena-pango

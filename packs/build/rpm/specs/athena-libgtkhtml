@@ -2,7 +2,7 @@ Name: athena-libgtkhtml
 Summary: An HTML widget, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: gtkhtml2 = 2.0.3
+Provides: gtkhtml2 = 2.2.0
 
 Requires: athena-gtk2 athena-libxml2 athena-gnome-vfs2 athena-gail
 

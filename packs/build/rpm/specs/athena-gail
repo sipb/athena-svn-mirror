@@ -2,7 +2,7 @@ Name: athena-gail
 Summary: Accessibility implementation for GTK+ and GNOME libraries
 License: LGPL
 Group: System Environment/Libraries
-Provides: gail = 0.17
+Provides: gail = 1.2.0
 
 Requires: athena-atk athena-gtk2 athena-libgnomecanvas
 

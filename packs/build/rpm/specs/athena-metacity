@@ -1,0 +1,10 @@
+Name: athena-metacity
+Summary: Metacity window manager, for athena
+License: GPL
+Group: User Interface/Desktops
+
+Requires: athena-gtk2 athena-GConf2 athena-startup-notification
+
+%description
+Metacity is a simple window manager that integrates nicely with
+GNOME 2.

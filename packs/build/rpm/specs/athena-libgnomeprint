@@ -2,7 +2,7 @@ Name: athena-libgnomeprint
 Summary: Printing library for GNOME, for Athena
 License: LGPL
 Group: System Environment/Base
-Provides: libgnomeprint = 1.116.3
+Provides: libgnomeprint = 2.2.1
 
 Requires: athena-glib2 athena-libart_lgpl athena-pango athena-libxml2
 Requires: athena-libbonobo athena-freetype

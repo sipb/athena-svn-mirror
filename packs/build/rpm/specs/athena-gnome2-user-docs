@@ -2,7 +2,7 @@ Name: athena-gnome2-user-docs
 Summary: GNOME user documentation, for Athena
 License: FDL
 Group: Documentation
-Provides: gnome-user-docs = 2.0.1
+Provides: gnome-user-docs = 2.0.4
 
 Requires: athena-scrollkeeper
 

@@ -2,10 +2,10 @@ Name: athena-gnome-terminal
 Summary: GNOME terminal, for Athena
 License: GPL
 Group: User Interface/Desktops
-Provides: gnome-terminal = 2.0.2
+Provides: gnome-terminal = 2.2.0
 
 Requires: athena-gtk2 athena-GConf2 athena-libglade2 athena-libgnomeui
-Requires: athena-libzvt
+Requires: athena-vte athena-startup-notification athena-Xft
 
 %description
 This package contains the GNOME terminal emulator application, which

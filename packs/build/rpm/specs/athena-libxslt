@@ -2,7 +2,7 @@ Name: athena-libxslt
 Summary: Library providing the Gnome XSLT engine, for Athena
 License: MIT
 Group: Development/Libraries
-Provides: libxslt = 1.0.23
+Provides: libxslt = 1.0.24
 Requires: athena-libxml2
 
 %description

@@ -2,12 +2,11 @@ Name: athena-bug-buddy
 Summary: A bug reporting utility for GNOME, for Athena
 License: GPL
 Group: Applications/System
-Provides: bug-buddy = 2.2.100
+Provides: bug-buddy = 2.2.101
 
-Requires: athena-scrollkeeper athena-bonobo-activation athena-gtk2
-Requires: athena-glib2 athena-gnome-desktop athena-gnome-vfs2
-Requires: athena-libbonobo athena-libgnomecanvas athena-libgnomeui
-Requires: athena-libglade2 athena-libxml2
+Requires: athena-scrollkeeper athena-bonobo-activation athena-gtk2 athena-glib2
+Requires: athena-gnome-vfs2 athena-libgnome athena-libgnomecanvas
+Requires: athena-libgnomeui athena-libglade2 athena-libxml2
 
 %description
 Bug-buddy is a bug reporting utility for the GNOME desktop GUI

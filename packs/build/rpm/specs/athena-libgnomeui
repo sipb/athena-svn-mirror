@@ -2,7 +2,7 @@ Name: athena-libgnomeui
 Summary: GNOME base GUI library, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnomeui = 2.0.6
+Provides: libgnomeui = 2.2.0.1
 
 Requires: athena-esound athena-libgnome athena-libgnomecanvas
 Requires: athena-libbonoboui athena-GConf2 athena-libglade2 athena-gtk2

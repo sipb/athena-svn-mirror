@@ -2,9 +2,10 @@ Name: athena-gnome-desktop
 Summary: Shared code for GNOME desktop components
 License: GPL
 Group: System Environment/Libraries
-Provides: gnome-desktop = 2.0.10
+Provides: gnome-desktop = 2.2.0
 
 Requires: athena-gtk2 athena-libgnomecanvas athena-libgnomeui athena-gnome-vfs2
+Requires: athena-startup-notification
 
 %description
 The gnome-desktop package contains an internal library

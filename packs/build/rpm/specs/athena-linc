@@ -2,7 +2,7 @@ Name: athena-linc
 Summary: Library for writing network programs, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: linc = 0.7.0
+Provides: linc = 1.0.1
 Requires: athena-glib2 athena-openssl
 
 %description

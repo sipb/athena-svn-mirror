@@ -2,7 +2,7 @@ Name: athena-libgnome
 Summary: GNOME base library, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnome = 2.0.6
+Provides: libgnome = 2.2.0.1
 
 Requires: athena-esound athena-GConf2 athena-glib2 athena-gnome-vfs2
 Requires: athena-libbonobo athena-libxml2 athena-libxslt

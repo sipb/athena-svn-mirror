@@ -2,7 +2,7 @@ Name: athena-libgnomecanvas
 Summary: GNOME Canvas widget, for Athena
 License: LGPL
 Group: System Environment/Libraries
-Provides: libgnomecanvas = 2.0.5
+Provides: libgnomecanvas = 2.2.0.1
 
 Requires: athena-gtk2 athena-libart_lgpl athena-pango athena-libglade2
 Requires: athena-glib2

@@ -2,7 +2,7 @@ Name: athena-atk
 Summary: Accessibility Toolkit, for Athena
 License: LGPL
 Group: Development/Libraries
-Provides: atk = 1.2.0
+Provides: atk = 1.2.2
 Requires: athena-glib2
 
 %description

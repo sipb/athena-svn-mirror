@@ -2,7 +2,7 @@ Name: athena-libbonoboui
 Summary: Bonobo user interface components
 License: LGPL
 Group: System Environment/Libraries
-Provides: libbonoboui = 2.0.3.3
+Provides: libbonoboui = 2.2.0
 
 Requires: athena-libgnomecanvas athena-libbonobo athena-libgnome
 Requires: athena-bonobo-activation athena-libxml2 athena-GConf2
