@@ -5,3 +5,4 @@
 # This program is run as root after the session terminates but
 # before the display is closed
 #
+/etc/athena/nanny -xdown
