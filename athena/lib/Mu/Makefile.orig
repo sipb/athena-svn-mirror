@@ -56,14 +56,14 @@ man/man3/MuGetFilename.3X \
 man/man3/MuGetString.3X \
 man/man3/MuHelpFile.3X \
 man/man3/MuInitialize.3X \
-man/man3/MuRegsiterNames.3X \
+man/man3/MuRegisterNames.3X \
 man/man3/MuRegisterWidget.3X \
 man/man3/MuSetEmacsBindings.3X \
 man/man3/MuSetTextTraversal.3X \
 man/man3/MuSetWaitCursor.3X 
 
 
-all: libMu.a mockup document test
+all: libMu.a mockup test document
 
 libMu.a: $(LIBMUOBJS)
 	rm -f libMu.a
@@ -72,13 +72,27 @@ libMu.a: $(LIBMUOBJS)
 
 $(LIBMUOBJS): Mu.h MuP.h
 
+
 mockup: mockup.o libMu.a
 	$(CC) $(CFLAGS) -o mockup mockup.o libMu.a $(LIBPATH) $(LIBS)
+
+
+test: TestMu
+
+TestMu: TestMu.o TestMu.uid libMu.a
+	$(CC) $(CFLAGS) -o TestMu TestMu.o libMu.a $(LIBPATH) $(LIBS)
+
+TestMu.uid: TestMu.uil
+	$(UIL) -I$(INCDIR)/uil -o TestMu.uid TestMu.uil
+
+TestMu.o: TestMu.c Mu.h
+
 
 document: MotifUtilities.PS
 
 MotifUtilities.PS: $(DOCSRC)
 	psroff -man -t $(DOCSRC) > MotifUtilities.PS
+
 
 install: libMu.a mockup document
 	cp libMu.a $(INSTALLLIB)		# install libMu.a
@@ -91,14 +105,6 @@ install: libMu.a mockup document
 	cp man/man1/* $(INSTALLMAN)/man1	# install man pages sec. 1
 	cp man/man3/* $(INSTALLMAN)/man3	# install man pages sec. 3
 	catman -M $(INSTALLMAN)			# format man pages
-
-test: TestMu
-
-TestMu: TestMu.o TestMu.uid libMu.a
-	$(CC) $(CFLAGS) -o TestMu TestMu.o libMu.a $(LIBPATH) $(LIBS)
-
-TestMu.uid: TestMu.uil
-	$(UIL) -I$(INCDIR)/uil -o TestMu.uid TestMu.uil
 
 clean: 
 	rm -f libMu.a mockup TestMu MotifUtilities.PS
