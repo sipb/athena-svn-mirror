@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.7 1997-09-08 20:45:31 ghudson Exp $
+# $Id: syncconf.sh,v 1.8 1997-09-29 21:00:24 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -95,7 +95,7 @@ handle()
 		oldaddr=`awk '{ a = $1; } END { print a; }' /etc/inet/hosts`
 
 		move /etc/nodename /etc/nodename.saved
-		move /etc/hostname.le0 /etc/hostname.le0.saved
+		move "/etc/hostname.$NETDEV" "/etc/hostname.$NETDEV.saved"
 		move /etc/defaultrouter /etc/defaultrouter.saved
 		move /etc/inet/hosts /etc/inet/hosts.saved
 
@@ -104,7 +104,7 @@ handle()
 		broadcast=$net.255.255
 
 		put	/etc/nodename "$HOST"
-		put	/etc/hostname.le0 "$HOST"
+		put	"/etc/hostname.$NETDEV" "$HOST"
 		put	/etc/defaultrouter "$gateway"
 		put	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "# Internet host table"
