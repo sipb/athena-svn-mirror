@@ -2,7 +2,7 @@ Name: athena-gnome-vfs
 Summary: GNOME virtual file-system libraries, for Athena
 Copyright: LGPL
 Group: System Environment/Libraries
-Provides: gnome-vfs = 1.0.4
+Provides: gnome-vfs = 1.0.5
 
 Requires: athena-gnome-libs athena-oaf athena-GConf
 
