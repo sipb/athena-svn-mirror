@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1991-1998 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1991-1999 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -131,6 +131,7 @@
 #include <X11/StringDefs.h>
 #include <X11/Shell.h>
 #include <X11/Xos.h>
+#include <netdb.h>	/* for gethostbyname() */
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Error.h>
@@ -142,7 +143,7 @@
 #endif /* !HAVE_XMU */
 
 #ifdef HAVE_XIDLE_EXTENSION
-#include <X11/extensions/xidle.h>
+# include <X11/extensions/xidle.h>
 #endif /* HAVE_XIDLE_EXTENSION */
 
 #include "xscreensaver.h"
@@ -188,6 +189,8 @@ static XrmOptionDescRec options [] = {
   { "-no-mit-extension",   ".mitSaverExtension",XrmoptionNoArg, "off" },
   { "-sgi-extension",	   ".sgiSaverExtension",XrmoptionNoArg, "on" },
   { "-no-sgi-extension",   ".sgiSaverExtension",XrmoptionNoArg, "off" },
+  { "-proc-interrupts",	   ".procInterrupts",	XrmoptionNoArg, "on" },
+  { "-no-proc-interrupts", ".procInterrupts",	XrmoptionNoArg, "off" },
   { "-splash",		   ".splash",		XrmoptionNoArg, "on" },
   { "-no-splash",	   ".splash",		XrmoptionNoArg, "off" },
   { "-nosplash",	   ".splash",		XrmoptionNoArg, "off" },
@@ -214,7 +217,7 @@ do_help (saver_info *si)
   fflush (stdout);
   fflush (stderr);
   fprintf (stdout, "\
-xscreensaver %s, copyright (c) 1991-1998 by Jamie Zawinski <jwz@jwz.org>\n\
+xscreensaver %s, copyright (c) 1991-1999 by Jamie Zawinski <jwz@jwz.org>\n\
 The standard Xt command-line options are accepted; other options include:\n\
 \n\
     -timeout <minutes>       When the screensaver should activate.\n\
@@ -288,6 +291,8 @@ saver_ehandler (Display *dpy, XErrorEvent *error)
 {
   saver_info *si = global_si_kludge;	/* I hate C so much... */
 
+  if (!real_stderr) real_stderr = stderr;
+
   fprintf (real_stderr, "\n"
 	   "#######################################"
 	   "#######################################\n\n"
@@ -304,17 +309,75 @@ saver_ehandler (Display *dpy, XErrorEvent *error)
 	}
       else
 	{
-	  fprintf(real_stderr,
-		  "%s: to dump a core file, re-run with `-sync'.\n"
-		  "%s: see http://www.jwz.org/xscreensaver/bugs.html\n"
-		  "\t\tfor bug reporting information.\n\n",
-		  blurb(), blurb());
+          fprintf (real_stderr,
+                   "#######################################"
+                   "#######################################\n\n");
+          fprintf (real_stderr,
+   "    If at all possible, please re-run xscreensaver with the command line\n"
+   "    arguments `-sync -verbose', and reproduce this bug.  That will cause\n"
+   "    xscreensaver to dump a `core' file to the current directory.  Please\n"
+   "    include the stack trace from that core file in your bug report.\n"
+   "\n"
+   "    http://www.jwz.org/xscreensaver/bugs.html explains how to create the\n"
+   "    most useful bug reports, and how to examine core files.\n"
+   "\n"
+   "    The more information you can provide, the better.  But please report\n"
+   "    report this bug, regardless!\n"
+   "\n");
+          fprintf (real_stderr,
+                   "#######################################"
+                   "#######################################\n\n");
+
 	  saver_exit (si, -1, 0);
 	}
     }
   else
     fprintf (real_stderr, " (nonfatal.)\n");
   return 0;
+}
+
+
+/* This error handler is used only while the X connection is being set up;
+   after we've got a connection, we don't use this handler again.  The only
+   reason for having this is so that we can present a more idiot-proof error
+   message than "cannot open display."
+ */
+static void 
+startup_ehandler (String name, String type, String class,
+                  String defalt,  /* one can't even spel properly
+                                     in this joke of a language */
+                  String *av, Cardinal *ac)
+{
+  char fmt[512];
+  String p[10];
+  saver_info *si = global_si_kludge;	/* I hate C so much... */
+  XrmDatabase *db = XtAppGetErrorDatabase(si->app);
+  *fmt = 0;
+  XtAppGetErrorDatabaseText(si->app, name, type, class, defalt,
+                            fmt, sizeof(fmt)-1, *db);
+
+  fprintf (stderr, "%s: ", blurb());
+
+  memset (p, 0, sizeof(p));
+  if (*ac > countof (p)) *ac = countof (p);
+  memcpy ((char *) p, (char *) av, (*ac) * sizeof(*av));
+  fprintf (stderr, fmt,		/* Did I mention that I hate C? */
+           p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]);
+  fprintf (stderr, "\n");
+
+  describe_uids (si, stderr);
+  fprintf (stderr, "\n"
+           "%s: Errors at startup are usually authorization problems.\n"
+           "              Did you read the manual?  Specifically, the parts\n"
+           "              that talk about XAUTH, XDM, and root logins?\n"
+           "\n"
+           "              http://www.jwz.org/xscreensaver/man.html\n"
+           "\n",
+           blurb());
+
+  fflush (stderr);
+  fflush (stdout);
+  exit (1);
 }
 
 
@@ -383,9 +446,12 @@ connect_to_server (saver_info *si, int *argc, char **argv)
   Widget toplevel_shell;
 
   XSetErrorHandler (saver_ehandler);
+
+  XtAppSetErrorMsgHandler (si->app, startup_ehandler);
   toplevel_shell = XtAppInitialize (&si->app, progclass,
 				    options, XtNumber (options),
 				    argc, argv, defaults, 0, 0);
+  XtAppSetErrorMsgHandler (si->app, 0);
 
   si->dpy = XtDisplay (toplevel_shell);
   si->prefs.db = XtDatabase (si->dpy);
@@ -507,7 +573,7 @@ print_banner (saver_info *si)
 
   if (p->verbose_p)
     fprintf (stderr,
-	     "%s %s, copyright (c) 1991-1998 "
+	     "%s %s, copyright (c) 1991-1999 "
 	     "by Jamie Zawinski <jwz@jwz.org>.\n",
 	     progname, si->version);
 
@@ -634,10 +700,13 @@ initialize_server_extensions (saver_info *si)
   Bool server_has_xidle_extension_p = False;
   Bool server_has_sgi_saver_extension_p = False;
   Bool server_has_mit_saver_extension_p = False;
+  Bool system_has_proc_interrupts_p = False;
+  const char *piwhy = 0;
 
   si->using_xidle_extension = p->use_xidle_extension;
   si->using_sgi_saver_extension = p->use_sgi_saver_extension;
   si->using_mit_saver_extension = p->use_mit_saver_extension;
+  si->using_proc_interrupts = p->use_proc_interrupts;
 
 #ifdef HAVE_XIDLE_EXTENSION
   server_has_xidle_extension_p = query_xidle_extension (si);
@@ -647,6 +716,9 @@ initialize_server_extensions (saver_info *si)
 #endif
 #ifdef HAVE_MIT_SAVER_EXTENSION
   server_has_mit_saver_extension_p = query_mit_saver_extension (si);
+#endif
+#ifdef HAVE_PROC_INTERRUPTS
+  system_has_proc_interrupts_p = query_proc_interrupts_available (si, &piwhy);
 #endif
 
   if (!server_has_xidle_extension_p)
@@ -681,6 +753,25 @@ initialize_server_extensions (saver_info *si)
       else
 	fprintf (stderr,
 		 "%s: not using server's lame MIT-SCREEN-SAVER extension.\n",
+		 blurb());
+    }
+
+  if (!system_has_proc_interrupts_p)
+    {
+      si->using_proc_interrupts = False;
+      if (p->verbose_p && piwhy)
+	fprintf (stderr, "%s: not using /proc/interrupts: %s.\n", blurb(),
+                 piwhy);
+    }
+  else if (p->verbose_p)
+    {
+      if (si->using_proc_interrupts)
+	fprintf (stderr,
+                 "%s: consulting /proc/interrupts for keyboard activity.\n",
+		 blurb());
+      else
+	fprintf (stderr,
+                "%s: not consulting /proc/interrupts for keyboard activity.\n",
 		 blurb());
     }
 }
@@ -729,7 +820,8 @@ select_events (saver_info *si)
      for window creation events, so that new subwindows will be noticed.
    */
   for (i = 0; i < si->nscreens; i++)
-    start_notice_events_timer (si, RootWindowOfScreen (si->screens[i].screen));
+    start_notice_events_timer (si, RootWindowOfScreen (si->screens[i].screen),
+                               False);
 
   if (p->verbose_p)
     fprintf (stderr, " done.\n");
@@ -945,7 +1037,7 @@ clientmessage_response (saver_info *si, Window w, Bool error,
   L++;
 
   XChangeProperty (si->dpy, w, XA_SCREENSAVER_RESPONSE, XA_STRING, 8,
-		   PropModeReplace, proto, L);
+		   PropModeReplace, (unsigned char *) proto, L);
   XSync (si->dpy, False);
   free (proto);
 }
@@ -1316,4 +1408,51 @@ analyze_display (saver_info *si)
 	  fprintf (stderr, "\n");
 	}
     }
+}
+
+Bool
+display_is_on_console_p (saver_info *si)
+{
+  Bool not_on_console = True;
+  char *dpystr = DisplayString (si->dpy);
+  char *tail = (char *) strchr (dpystr, ':');
+  if (! tail || strncmp (tail, ":0", 2))
+    not_on_console = True;
+  else
+    {
+      char dpyname[255], localname[255];
+      strncpy (dpyname, dpystr, tail-dpystr);
+      dpyname [tail-dpystr] = 0;
+      if (!*dpyname ||
+	  !strcmp(dpyname, "unix") ||
+	  !strcmp(dpyname, "localhost"))
+	not_on_console = False;
+      else if (gethostname (localname, sizeof (localname)))
+	not_on_console = True;  /* can't find hostname? */
+      else
+	{
+	  /* We have to call gethostbyname() on the result of gethostname()
+	     because the two aren't guarenteed to be the same name for the
+	     same host: on some losing systems, one is a FQDN and the other
+	     is not.  Here in the wide wonderful world of Unix it's rocket
+	     science to obtain the local hostname in a portable fashion.
+	     
+	     And don't forget, gethostbyname() reuses the structure it
+	     returns, so we have to copy the fucker before calling it again.
+	     Thank you master, may I have another.
+	   */
+	  struct hostent *h = gethostbyname (dpyname);
+	  if (!h)
+	    not_on_console = True;
+	  else
+	    {
+	      char hn [255];
+	      struct hostent *l;
+	      strcpy (hn, h->h_name);
+	      l = gethostbyname (localname);
+	      not_on_console = (!l || !!(strcmp (l->h_name, hn)));
+	    }
+	}
+    }
+  return !not_on_console;
 }

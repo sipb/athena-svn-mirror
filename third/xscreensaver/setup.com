@@ -15,6 +15,8 @@ $ crystal	:== $'mydir'crystal
 $ cynosure	:== $'mydir'cynosure
 $ decayscreen	:== $'mydir'decayscreen
 $ deco		:== $'mydir'deco
+$ deluxe	:== $'mydir'deluxe
+$ demon		:== $'mydir'demon
 $ discrete	:== $'mydir'discrete
 $ distort	:== $'mydir'distort
 $ drift		:== $'mydir'drift
@@ -44,6 +46,7 @@ $ lightning	:== $'mydir'lightning
 $ lisa		:== $'mydir'lisa
 $ lissie	:== $'mydir'lissie
 $ lmorph	:== $'mydir'lmorph
+$ loop		:== $'mydir'loop
 $ maze		:== $'mydir'maze
 $ moire		:== $'mydir'moire
 $ moire2	:== $'mydir'moire2
@@ -51,6 +54,7 @@ $ mountain	:== $'mydir'mountain
 $ munch		:== $'mydir'munch
 $ noseguy	:== $'mydir'noseguy
 $ pedal		:== $'mydir'pedal
+$ penetrate	:== $'mydir'penetrate
 $ penrose	:== $'mydir'penrose
 $ pyro		:== $'mydir'pyro
 $ qix		:== $'mydir'qix
@@ -67,6 +71,7 @@ $ spiral	:== $'mydir'spiral
 $ starfish	:== $'mydir'starfish
 $ strange	:== $'mydir'strange
 $ swirl		:== $'mydir'swirl
+$ t3d		:== $'mydir't3d
 $ triangle	:== $'mydir'triangle
 $ truchet	:== $'mydir'truchet
 $ vines		:== $'mydir'vines
