@@ -7,25 +7,17 @@ echo
 echo 'The various C compilers available are so different in the'
 echo 'arguments they take that we felt it would be misleading to'
 echo 'arbitrarily choose a C compiler and argument set and install it'
-echo 'as cc. So instead you are getting this printout.'
+echo 'as cc.  So instead you are getting this printout.'
 echo
 echo 'The SunSoft C compiler is now available. You may access it'
-echo 'by typing "add sunsoft" at the athena prompt. The compiler'
+echo 'by typing "add sunsoft" at the athena prompt.  The compiler'
 echo 'is called suncc.'
 echo
-echo 'The Cygnus gcc compiler is available. You may access it'
-echo 'by typing "add cygnus" at the athena prompt. The compiler is called'
-echo 'gcc, and may be accessed by runnig /mit/cygnus/sun4bin/gcc.'
+echo 'The Cygnus gcc compiler is available.  You may access it'
+echo 'by typing "add cygnus" at the athena prompt.  The compiler is'
+echo 'called gcc, and may be accessed by running /mit/cygnus/sun4bin/gcc.'
 echo
-echo 'The system was built with a script:'
-echo
-echo '#!/bin/sh'
-echo '/usr/gcc/bin/gcc -traditional -B/usr/gcc/lib/ -DSOLARIS -I/usr/gcc/include $@'
-echo
-echo 'If your application requires ANSI C, eliminate the flag'
-echo '" -traditional".'
-echo
-echo 'We do not recommend this script. The next release will be built'
-echo 'using the Sun compiler.'
+echo 'The Athena software was built with /usr/gcc/bin/gcc, which was'
+echo 'built from the Cygnus 95q2 gcc source tree.'
 echo
 exit 1
