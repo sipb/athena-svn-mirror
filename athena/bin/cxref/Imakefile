@@ -34,7 +34,7 @@ SORT=/usr/bin/sort
 # printer program, prt is for me, use pr on other systems
 P=pr
 
-SimpleProgram(docxref,$(SCANOBJS),-ll,$(LIB))
+SimpleProgram(docxref,$(SCANOBJS),,$(LIB))
 SimpleProgram(fmtxref,fmtxref.c,,$(LIB))
 SimpleProgram(cxrfilt,cxrfilt.c,,$(LIB))
 

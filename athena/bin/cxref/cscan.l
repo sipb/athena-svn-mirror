@@ -14,6 +14,7 @@
 */
 
 %{
+#undef yywrap
 extern int line_no;
 extern char *fname, *basename();
 %}
