@@ -1,6 +1,6 @@
 /* lisp.c -- Core of the Lisp, reading and evaluating...
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: lisp.c,v 1.1.1.2 2001-03-13 16:43:26 ghudson Exp $
+   $Id: lisp.c,v 1.1.1.3 2002-03-20 04:53:09 ghudson Exp $
 
    This file is part of Jade.
 
@@ -173,6 +173,8 @@ The number of list levels to descend when printing before abbreviating.
 DEFSYM(load, "load");
 DEFSYM(require, "require");
 
+DEFSYM(ellipsis, "...");
+
 /* When rep_TRUE Feval() calls the "debug-entry" function */
 rep_bool rep_single_step_flag;
 
@@ -201,6 +203,8 @@ int rep_test_int_period = 1000;
 static void default_test_int (void) { }
 void (*rep_test_int_fun)(void) = default_test_int;
 
+static int current_frame_id (void);
+
 
 /* Reading */
 
@@ -219,12 +223,35 @@ static inline int
 fast_getc (repv stream)
 {
     if (read_local_file)
-	return getc (rep_FILE (stream)->file.fh);
+    {
+	int c = getc (rep_FILE (stream)->file.fh);
+	if (c == '\n')
+	    rep_FILE (stream)->line_number++;
+	return c;
+    }
     else
 	return rep_stream_getc (stream);
 }
  
-DEFSTRING(nodot, "Nothing to dot second element of cons-cell to");
+static repv
+signal_reader_error (repv type, repv stream, char *message)
+{
+    repv error_data = Qnil;
+    if (message != 0)
+	error_data = Fcons (rep_string_dup (message), error_data);
+    if (rep_FILEP (stream))
+    {
+	if ((rep_FILE (stream)->car & rep_LFF_BOGUS_LINE_NUMBER) == 0)
+	{
+	    error_data = Fcons (rep_MAKE_INT (rep_FILE (stream)->line_number),
+				error_data);
+	}
+	error_data = Fcons (rep_FILE (stream)->name, error_data);
+    }
+    else
+	error_data = Fcons (stream, error_data);
+    return Fsignal (type, error_data);
+}
 
 static void
 read_comment (repv strm, int *c_p)
@@ -256,6 +283,11 @@ read_comment (repv strm, int *c_p)
     }
     if (c != EOF)
 	c = rep_stream_getc (strm);
+    else
+    {
+	signal_reader_error (Qpremature_end_of_stream,
+			     strm, "While reading a comment");
+    }
     *c_p = c;
 }
 
@@ -264,20 +296,24 @@ read_list(repv strm, register int *c_p)
 {
     repv result = Qnil;
     repv last = rep_NULL;
+    long start_line = read_local_file ? rep_FILE (strm)->line_number : -1;
     rep_GC_root gc_result;
-    rep_PUSHGC(gc_result, result);
+
     *c_p = rep_stream_getc(strm);
+    rep_PUSHGC(gc_result, result);
     while(result != rep_NULL)
     {
 	switch(*c_p)
 	{
 	case EOF:
-	    result = Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+	    result = signal_reader_error (Qpremature_end_of_stream,
+					  strm, "While reading a list");
 	    break;
 
 	case ' ':
 	case '\t':
 	case '\n':
+	case '\r':
 	case '\f':
 	    *c_p = fast_getc(strm);
 	    continue;
@@ -285,7 +321,8 @@ read_list(repv strm, register int *c_p)
 	case ';':
 	    {
 		register int c;
-		while((c = fast_getc(strm)) != EOF && c != '\n' && c != '\f')
+		while((c = fast_getc(strm)) != EOF
+		      && c != '\n' && c != '\f' && c != '\r')
 		    ;
 		*c_p = fast_getc(strm);
 		continue;
@@ -301,10 +338,11 @@ read_list(repv strm, register int *c_p)
 	    switch (*c_p)
 	    {
 	    case EOF:
-		result = Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		result = signal_reader_error (Qpremature_end_of_stream,
+					      strm, "After `.' in list");
 		goto end;
 
-	    case ' ': case '\t': case '\n': case '\f':
+	    case ' ': case '\t': case '\n': case '\f': case '\r':
 		if(last)
 		{
 		    repv this = readl(strm, c_p, Qpremature_end_of_stream);
@@ -318,8 +356,8 @@ read_list(repv strm, register int *c_p)
 		}
 		else
 		{
-		    result = Fsignal(Qinvalid_read_syntax,
-				     rep_LIST_1(rep_VAL(&nodot)));
+		    result = signal_reader_error (Qinvalid_read_syntax,
+						  strm, "Nothing to dot second element of cons to");
 		    goto end;
 		}
 		continue;
@@ -338,6 +376,8 @@ read_list(repv strm, register int *c_p)
 		{
 		    *c_p = c;
 		    read_comment (strm, c_p);
+		    if (rep_INTERRUPTP)
+			return rep_NULL;
 		    continue;
 		}
 		rep_stream_ungetc (strm, c);
@@ -360,6 +400,10 @@ read_list(repv strm, register int *c_p)
     }
 end:
     rep_POPGC;
+
+    if (result != rep_NULL)
+	rep_record_origin (result, strm, start_line);
+
     return result;
 }
 
@@ -403,7 +447,7 @@ read_symbol(repv strm, int *c_p, repv obarray)
 	}
 	switch(c)
 	{
-	case ' ':  case '\t': case '\n': case '\f':
+	case ' ':  case '\t': case '\n': case '\f': case '\r':
 	case '(':  case ')':  case '[':  case ']':
 	case '\'': case '"':  case ';':  case ',':
 	case '`':
@@ -419,7 +463,8 @@ read_symbol(repv strm, int *c_p, repv obarray)
 	    radix = 0;
 	    c = rep_stream_getc(strm);
 	    if(c == EOF)
-		return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		return signal_reader_error (Qpremature_end_of_stream,
+					    strm, "After `\\' in identifer");
 	    buf[i++] = c;
 	    break;
 
@@ -432,7 +477,8 @@ read_symbol(repv strm, int *c_p, repv obarray)
 		c = rep_stream_getc(strm);
 	    }
 	    if(c == EOF)
-		return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		return signal_reader_error (Qpremature_end_of_stream,
+					    strm, "After `|' in identifier");
 	    break;
 
 	default:
@@ -603,7 +649,10 @@ read_symbol(repv strm, int *c_p, repv obarray)
 done:
     buf[i] = 0;
     if (i == 0)
-	result = Fsignal (Qinvalid_read_syntax, rep_LIST_1 (strm));
+    {
+	result = signal_reader_error (Qinvalid_read_syntax, strm,
+				      "Zero length identifier");
+    }
     else if (radix > 0 && nfirst < i)
     {
 	/* It was a number of some sort */
@@ -716,7 +765,8 @@ read_str(repv strm, int *c_p)
 	    }
 	}
 	if(c == EOF)
-	    result = Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+	    result = signal_reader_error (Qpremature_end_of_stream,
+					  strm, "While reading a string");
 	else
 	{
 	    *c_p = rep_stream_getc(strm);
@@ -731,14 +781,37 @@ read_str(repv strm, int *c_p)
 static repv
 skip_chars (repv stream, const char *str, repv ret, int *ptr)
 {
+    int c;
     while (*str != 0)
     {
-	int c = rep_stream_getc (stream);
+	c = rep_stream_getc (stream);
 	if (c != *str++)
-	    return Fsignal (Qinvalid_read_syntax, rep_LIST_1(stream));
+	{
+	    char buf[256];
+#ifdef HAVE_SNPRINTF
+	    snprintf (buf, sizeof (buf), "Expecting `%s'", str - 1);
+#else
+	    sprintf (buf, "Expecting `%s'", str - 1);
+#endif
+	    return signal_reader_error (Qinvalid_read_syntax, stream, buf);
+	}
     }
-    *ptr = rep_stream_getc (stream);
-    return ret;
+
+    c = rep_stream_getc (stream);
+    switch (c)
+    {
+    case EOF:
+    case ' ': case '\t': case '\n': case '\f': case '\r':
+    case '(': case ')': case '[': case ']':
+    case '\'': case '"': case ';': case ',':
+    case '`':
+	*ptr = c;
+	return ret;
+
+    default:
+	return signal_reader_error (Qinvalid_read_syntax, stream,
+				    "expected end of token");
+    }
 }
 
 /* Using the above readlisp*() functions this classifies each type
@@ -761,13 +834,15 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 	case '\t':
 	case '\n':
 	case '\f':
+	case '\r':
 	    *c_p = fast_getc(strm);
 	    continue;
 
 	case ';':
 	    {
 		register int c;
-		while((c = fast_getc(strm)) != EOF && c != '\n' && c != '\f')
+		while((c = fast_getc(strm)) != EOF
+		      && c != '\n' && c != '\f' && c != '\r')
 		    ;
 		*c_p = rep_stream_getc(strm);
 		continue;
@@ -785,7 +860,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 	    if((*c_p = rep_stream_getc(strm)) == EOF)
 	    {
 		rep_POPGC;
-		return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		return signal_reader_error (Qpremature_end_of_stream,
+					    strm, "During ` or ' syntax");
 	    }
 	    rep_CADR(form) = readl(strm, c_p, Qpremature_end_of_stream);
 	    rep_POPGC;
@@ -803,14 +879,16 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 	    {
 	    case EOF:
 		rep_POPGC;
-		return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		return signal_reader_error (Qpremature_end_of_stream,
+					    strm, "During , syntax");
 
 	    case '@':
 		rep_CAR(form) = Qbackquote_splice;
 		if((*c_p = rep_stream_getc(strm)) == EOF)
 		{
 		    rep_POPGC;
-		    return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		    return signal_reader_error (Qpremature_end_of_stream,
+						strm, "During ,@ syntax");
 		}
 	    }
 	    rep_CADR(form) = readl(strm, c_p, Qpremature_end_of_stream);
@@ -832,10 +910,12 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		switch(c = rep_stream_getc(strm))
 		{
 		case EOF:
-		    return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		    return signal_reader_error (Qpremature_end_of_stream,
+						strm, "During ? syntax");
 		case '\\':
 		    if((*c_p = rep_stream_getc(strm)) == EOF)
-			return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+			return signal_reader_error (Qpremature_end_of_stream,
+						    strm, "During ? syntax");
 		    else
 			return rep_MAKE_INT(rep_stream_read_esc(strm, c_p));
 		    break;
@@ -851,7 +931,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		int c;
 
 	    case EOF:
-		return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		return signal_reader_error (Qpremature_end_of_stream,
+					    strm, "During # syntax");
 
 	    case '\'':
 		form = Fcons(Qfunction, Fcons(Qnil, Qnil));
@@ -859,7 +940,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		if((*c_p = rep_stream_getc(strm)) == EOF)
 		{
 		    rep_POPGC;
-		    return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+		    return signal_reader_error (Qpremature_end_of_stream,
+						strm, "During #' syntax");
 		}
 		rep_CADR(form) = readl(strm, c_p, Qpremature_end_of_stream);
 		rep_POPGC;
@@ -883,7 +965,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 						  | rep_Compiled;
 			    return vec;
 			}
-			goto error;
+			return signal_reader_error (Qinvalid_read_syntax,
+						    strm, "Invalid bytecode object");
 		    }
 		    break;
 		}
@@ -894,6 +977,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 	    case '|':
 		/* comment delimited by `#| ... |#' */
 		read_comment (strm, c_p);
+		if (rep_INTERRUPTP)
+		    return rep_NULL;
 		continue;
 
 	    case '\\':
@@ -917,20 +1002,20 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 
 		    c = rep_stream_getc (strm);
 		    if (c == EOF)
-			return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
+			return signal_reader_error (Qpremature_end_of_stream,
+						    strm, "During #\\ syntax");
 		    if (!isalpha (c))
 		    {
 			*c_p = rep_stream_getc (strm);
 			return rep_MAKE_INT (c);
 		    }
 		    c2 = rep_stream_getc (strm);
-		    if (c2 == EOF)
-			return Fsignal(Qpremature_end_of_stream, rep_LIST_1(strm));
-		    if (!isalpha (c2))
+		    if (!isalpha (c2) || c2 == EOF)
 		    {
 			*c_p = c2;
 			return rep_MAKE_INT (c);
 		    }
+
 		    c = tolower (c);
 		    c2 = tolower (c2);
 		    for (i = 0; char_names[i].name != 0; i++)
@@ -948,11 +1033,11 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 				    return rep_MAKE_INT (char_names[i].value);
 				}
 				if (c == EOF || tolower (c) != *ptr++)
-				    goto error;
+				    return signal_reader_error (Qinvalid_read_syntax, strm, "Unknown character name");
 			    }
 			}
 		    }
-		    goto error;
+		    return signal_reader_error (Qinvalid_read_syntax, strm, "Unknown character name");
 		}
 
 	    case '!':
@@ -963,6 +1048,8 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		    {
 			/* #! at the start of the file. Skip until !# */
 			read_comment (strm, c_p);
+			if (rep_INTERRUPTP)
+			    return rep_NULL;
 			continue;
 		    }
 		}
@@ -972,7 +1059,7 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		case 'o': return skip_chars (strm, "ptional", ex_optional, c_p);
 		case 'r': return skip_chars (strm, "est", ex_rest, c_p);
 		case 'k': return skip_chars (strm, "ey", ex_key, c_p);
-		default:  goto error;
+		default:  return signal_reader_error (Qinvalid_read_syntax, strm, "Unknown #! prefixed identifier");
 		}
 
 	    case ':':
@@ -996,8 +1083,12 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
 		*c_p = '#';
 		goto identifier;
 
-	    default: error:
-		return Fsignal(Qinvalid_read_syntax, rep_LIST_1(strm));
+	    case 'u':
+		return skip_chars (strm, "ndefined", rep_undefined_value, c_p);
+
+	    default:
+		return signal_reader_error (Qinvalid_read_syntax,
+					    strm, "Invalid token");
 	    }
 
 	default: identifier:
@@ -1020,7 +1111,7 @@ readl(repv strm, register int *c_p, repv end_of_stream_error)
     /* not reached */
 
 eof:
-    return Fsignal(end_of_stream_error, rep_LIST_1(strm));
+    return signal_reader_error (end_of_stream_error, rep_LIST_1(strm), 0);
 }
 
 repv
@@ -1074,54 +1165,15 @@ eval_list(repv list)
     return result;
 }
 
-static repv
-copy_to_vector (repv argList, int nargs, repv *args,
-		rep_bool eval_args, rep_bool eval_in_env)
+static inline void
+copy_to_vector (repv argList, int nargs, repv *args)
 {
-    if (eval_args)
+    int i;
+    for (i = 0; i < nargs; i++)
     {
-	repv old_env = rep_env, old_struct = rep_structure;
-	rep_GC_root gc_arglist;
-	rep_GC_n_roots gc_args;
-	rep_GC_root gc_old_env, gc_old_struct;
-	int i;
-	rep_PUSHGC(gc_arglist, argList);
-	rep_PUSHGCN(gc_args, args, 0);
-	if (!eval_in_env)
-	{
-	    rep_env = rep_call_stack->saved_env;
-	    rep_structure = rep_call_stack->saved_structure;
-	}
-	rep_PUSHGC(gc_old_env, old_env);
-	rep_PUSHGC(gc_old_struct, old_struct);
-	for(i = 0; i < nargs; i++)
-	{
-	    if((args[i] = rep_eval(rep_CAR(argList), Qnil)) == rep_NULL)
-	    {
-		rep_POPGC;
-		rep_POPGCN;
-		rep_POPGC; rep_POPGC;
-		return rep_NULL;
-	    }
-	    argList = rep_CDR(argList);
-	    gc_args.count++;
-	}
-	rep_env = old_env;
-	rep_structure = old_struct;
-	rep_POPGC;
-	rep_POPGCN;
-	rep_POPGC; rep_POPGC;
+	args[i] = rep_CAR (argList);
+	argList = rep_CDR (argList);
     }
-    else
-    {
-	int i;
-	for (i = 0; i < nargs; i++)
-	{
-	    args[i] = rep_CAR (argList);
-	    argList = rep_CDR (argList);
-	}
-    }
-    return Qt;
 }
 
 static repv
@@ -1240,7 +1292,7 @@ bind_lambda_list_1 (repv lambdaList, repv *args, int nargs)
 	    key = Fmake_keyword (VAR (nvars, VAR_SYM));
 	    VAR (nvars, VAR_VALUE) = def;
 	    VAR (nvars, VAR_EVALP) = Qt;
-	    for (i = 0; i < nargs - 1; i += 2)
+	    for (i = 0; i < nargs - 1; i++)
 	    {
 		if (args[i] == key && args[i+1] != rep_NULL)
 		{
@@ -1331,28 +1383,22 @@ out:
    IMPORTANT: this expects the top of the call stack to have the
    saved environments in which arguments need to be evaluated */
 static repv
-bind_lambda_list(repv lambdaList, repv argList,
-		 rep_bool eval_args, rep_bool eval_in_env)
+bind_lambda_list(repv lambdaList, repv argList)
 {
-    repv *evalled_args;
-    int evalled_nargs;
+    repv *argv;
+    int argc;
 
-    evalled_nargs = rep_list_length(argList);
-    evalled_args = alloca(sizeof(repv) * evalled_nargs);
+    argc = rep_list_length (argList);
+    argv = alloca (sizeof (repv) * argc);
 
     /* Evaluate arguments, and stick them in the evalled_args array */
-    if (!copy_to_vector (argList, evalled_nargs, evalled_args,
-			 eval_args, eval_in_env))
-    {
-	return rep_NULL;
-    }
+    copy_to_vector (argList, argc, argv);
    
-    return bind_lambda_list_1 (lambdaList, evalled_args, evalled_nargs);
+    return bind_lambda_list_1 (lambdaList, argv, argc);
 }
 
 static repv
-eval_lambda(repv lambdaExp, repv argList, rep_bool eval_args,
-	    rep_bool eval_in_env, repv tail_posn)
+eval_lambda(repv lambdaExp, repv argList, repv tail_posn)
 {
     repv result;
 again:
@@ -1365,8 +1411,7 @@ again:
 
 	rep_PUSHGC(gc_lambdaExp, lambdaExp);
 	rep_PUSHGC(gc_argList, argList);
-	boundlist = bind_lambda_list(rep_CAR(lambdaExp), argList,
-				     eval_args, eval_in_env);
+	boundlist = bind_lambda_list(rep_CAR(lambdaExp), argList);
 	rep_POPGC; rep_POPGC;
 
 	if(boundlist)
@@ -1396,7 +1441,6 @@ again:
 		    rep_USE_FUNARG (func);
 		    lambdaExp = rep_FUNARG (func)->fun;
 		    argList = args;
-		    eval_args = rep_FALSE;
 		    goto again;
 		}
 		else
@@ -1501,7 +1545,7 @@ DEFUN ("load-autoload", Fload_autoload,
 DEFSTRING(max_depth, "max-lisp-depth exceeded, possible infinite recursion?");
 
 static repv
-funcall (repv fun, repv arglist, rep_bool eval_args, repv tail_posn)
+apply (repv fun, repv arglist, repv tail_posn)
 {
     int type;
     repv result = rep_NULL;
@@ -1527,7 +1571,6 @@ funcall (repv fun, repv arglist, rep_bool eval_args, repv tail_posn)
 
     lc.fun = fun;
     lc.args = arglist;
-    lc.args_evalled_p = eval_args ? Qnil : Qt;
     rep_PUSH_CALL (lc);
 
     if(rep_data_after_gc >= rep_gc_threshold)
@@ -1543,15 +1586,8 @@ again:
     {
 	int i, nargs;
 	repv car, argv[5];
-	rep_GC_n_roots gc_argv;
 
     case rep_SubrN:
-	if(eval_args)
-	{
-	    arglist = eval_list(arglist);
-	    if(arglist == rep_NULL)
-		goto end;
-	}
 	if (closure)
 	    rep_USE_FUNARG(closure);
 	result = rep_SUBRNFUN(fun)(arglist);
@@ -1589,30 +1625,16 @@ again:
 	/* FALL THROUGH */
 
     do_subr:
-	if(eval_args)
-	    rep_PUSHGCN(gc_argv, argv, nargs);
 	for(i = 0; i < nargs; i++)
 	{
 	    if(rep_CONSP(arglist))
 	    {
-		if(!eval_args)
-		    argv[i] = rep_CAR(arglist);
-		else
-		{
-		    argv[i] = rep_eval(rep_CAR(arglist), Qnil);
-		    if(argv[i] == rep_NULL)
-		    {
-			rep_POPGCN;
-			goto end;
-		    }
-		}
+		argv[i] = rep_CAR(arglist);
 		arglist = rep_CDR(arglist);
 	    }
 	    else
 		break;
 	}
-	if(eval_args)
-	    rep_POPGCN;
 	if (closure)
 	    rep_USE_FUNARG(closure);
 	switch(type)
@@ -1642,8 +1664,7 @@ again:
 	if(closure && car == Qlambda)
 	{
 	    rep_USE_FUNARG (closure);
-	    result = eval_lambda (fun, arglist, eval_args,
-				  rep_FALSE, tail_posn);
+	    result = eval_lambda (fun, arglist, tail_posn);
 	}
 	else if(closure && car == Qautoload)
 	{
@@ -1672,15 +1693,11 @@ again:
 
 	    nargs = rep_list_length (arglist);
 	    args = alloca (sizeof (repv) * nargs);
-	    if (copy_to_vector (arglist, nargs, args, eval_args, rep_FALSE))
-	    {
-		if (bc_apply == 0)
-		    result = rep_apply_bytecode (fun, nargs, args);
-		else
-		    result = bc_apply (fun, nargs, args);
-	    }
+	    copy_to_vector (arglist, nargs, args);
+	    if (bc_apply == 0)
+		result = rep_apply_bytecode (fun, nargs, args);
 	    else
-		result = rep_NULL;
+		result = bc_apply (fun, nargs, args);
 	    break;
 	}
 	/* FALL THROUGH */
@@ -1693,8 +1710,18 @@ again:
     if(rep_throw_value != rep_NULL)
 	result = rep_NULL;
 
-end:
-    assert (result != rep_NULL || rep_throw_value != rep_NULL);
+    if ((result == rep_NULL && rep_throw_value == rep_NULL)
+	|| (result != rep_NULL && rep_throw_value != rep_NULL))
+    {
+	fprintf (stderr, "rep: function returned both exception and value, or neither!\n");
+	if (lc.fun && Fsubrp (lc.fun) != Qnil
+	    && rep_STRINGP (rep_XSUBR (lc.fun)->name))
+	{
+	    fprintf (stderr, "rep: culprit is subr %s\n",
+		     rep_STR (rep_XSUBR (lc.fun)->name));
+	}
+    }
+
     rep_POP_CALL(lc);
     rep_POPGC; rep_POPGC; rep_POPGC;
     rep_lisp_depth--;
@@ -1707,13 +1734,21 @@ end:
 repv
 rep_funcall(repv fun, repv arglist, rep_bool eval_args)
 {
-    return funcall (fun, arglist, eval_args, Qnil);
+    if (eval_args)
+    {
+	rep_GC_root gc_fun;
+	rep_PUSHGC (gc_fun, fun);
+	arglist = eval_list (arglist);
+	rep_POPGC;
+    }
+
+    return apply (fun, arglist, Qnil);
 }
 
 repv
 rep_apply (repv fun, repv args)
 {
-    return rep_funcall (fun, args, rep_FALSE);
+    return apply (fun, args, Qnil);
 }
 
 DEFUN("funcall", Ffuncall, Sfuncall, (repv args), rep_SubrN) /*
@@ -1726,7 +1761,7 @@ Calls FUNCTION with arguments ARGS... and returns the result.
     if(!rep_CONSP(args))
 	return rep_signal_missing_arg(1);
     else
-	return rep_funcall(rep_CAR(args), rep_CDR(args), rep_FALSE);
+	return apply(rep_CAR(args), rep_CDR(args), Qnil);
 }
 
 DEFUN("apply", Fapply, Sapply, (repv args), rep_SubrN) /*
@@ -1785,14 +1820,23 @@ eval(repv obj, repv tail_posn)
 	    && Fsymbol_value (Qlambda, Qt) == rep_VAL (&Slambda))
 	{
 	    /* inline lambda; don't need to enclose it.. */
+	    rep_GC_root gc_obj;
 	    struct rep_Call lc;
-	    lc.fun = rep_CAR (obj);
-	    lc.args = rep_CDR (obj);
-	    lc.args_evalled_p = Qnil;
-	    rep_PUSH_CALL (lc);
-	    ret = eval_lambda (rep_CAR (obj), rep_CDR (obj),
-			       rep_TRUE, rep_TRUE, tail_posn);
-	    rep_POP_CALL (lc);
+
+	    rep_PUSHGC (gc_obj, obj);
+	    ret = eval_list (rep_CDR (obj));
+	    rep_POPGC;
+
+	    if (ret != rep_NULL)
+	    {
+		lc.fun = rep_CAR (obj);
+		lc.args = ret;
+		rep_PUSH_CALL (lc);
+
+		ret = eval_lambda (rep_CAR (obj), ret, tail_posn);
+
+		rep_POP_CALL (lc);
+	    }
 	}
 	else
 	{
@@ -1857,7 +1901,15 @@ eval(repv obj, repv tail_posn)
 	    else
 	    {
 		rep_lisp_depth--;
-		return funcall (funcobj, rep_CDR(obj), rep_TRUE, tail_posn);
+
+		rep_PUSHGC (gc_obj, funcobj);
+		ret = eval_list (rep_CDR (obj));
+		rep_POPGC;
+
+		if (ret != rep_NULL)
+		    ret = apply (funcobj, ret, tail_posn);
+
+		return ret;
 	    }
 	}
 	rep_lisp_depth--;
@@ -1897,7 +1949,7 @@ rep_eval (repv obj, repv tail_posn)
     {
 	repv dbres;
 	repv dbargs = rep_list_3(obj, rep_MAKE_INT(DbDepth),
-				 rep_box_pointer (rep_call_stack));
+				 rep_MAKE_INT (current_frame_id ()));
 	if(dbargs)
 	{
 	    rep_GC_root gc_dbargs;
@@ -1970,10 +2022,15 @@ one.
 ::end:: */
 {
     repv result = Qnil;
-    rep_GC_root gc_args;
-    rep_PUSHGC(gc_args, args);
-    while(rep_CONSP(args))
+    repv old_current = rep_call_stack != 0 ? rep_call_stack->current_form : 0;
+    rep_GC_root gc_args, gc_old_current;
+    rep_PUSHGC (gc_args, args);
+    rep_PUSHGC (gc_old_current, old_current);
+    while (rep_CONSP (args))
     {
+	if (rep_call_stack != 0)
+	    rep_call_stack->current_form = rep_CAR (args);
+
 	result = rep_eval(rep_CAR(args),
 			  rep_CDR (args) == Qnil ? tail_posn : Qnil);
 	args = rep_CDR(args);
@@ -1981,7 +2038,10 @@ one.
 	if(!result || rep_INTERRUPTP)
 	    break;
     }
-    rep_POPGC;
+    if (rep_call_stack != 0)
+	rep_call_stack->current_form = old_current;
+
+    rep_POPGC; rep_POPGC;
     return result;
 }
 
@@ -1998,7 +2058,6 @@ rep_call_lispn (repv fun, int argc, repv *argv)
 
 	lc.fun = fun;
 	lc.args = rep_void_value;
-	lc.args_evalled_p = Qt;
 	rep_PUSH_CALL (lc);
 	rep_USE_FUNARG (fun);
 	bc_apply = rep_STRUCTURE (rep_structure)->apply_bytecode;
@@ -2161,15 +2220,22 @@ rep_lisp_prin(repv strm, repv obj)
 	break;
 
     case rep_Funarg:
+	rep_stream_puts (strm, "#<closure ", -1, rep_FALSE);
 	if (rep_STRINGP(rep_FUNARG(obj)->name))
 	{
-	    rep_stream_puts (strm, "#<closure ", -1, rep_FALSE);
 	    rep_stream_puts (strm, rep_STR(rep_FUNARG(obj)->name),
 			     -1, rep_FALSE);
-	    rep_stream_putc (strm, '>');
 	}
 	else
-	    rep_stream_puts(strm, "#<closure>", -1, rep_FALSE);
+	{
+#ifdef HAVE_SNPRINTF
+	    snprintf (tbuf, sizeof(tbuf), "%" rep_PTR_SIZED_INT_CONV "x", obj);
+#else
+	    sprintf (tbuf, "%" rep_PTR_SIZED_INT_CONV "x", obj);
+#endif
+	    rep_stream_puts (strm, tbuf, -1, rep_FALSE);
+	}
+	rep_stream_putc (strm, '>');
 	break;
 
     case rep_Void:
@@ -2231,12 +2297,16 @@ rep_string_print(repv strm, repv obj)
 	    {
 	    case '\t':
 	    case '\n':
+	    case '\r':
 	    case '\f':
 		if(!escape_newlines)
 		    OUT (c);
 		else {
 		    OUT ('\\');
-		    c = (c == '\t' ? 't' : ((c == '\n') ? 'n' : 'f'));
+		    c = (c == '\t' ? 't'
+			 : c == '\n' ? 'n'
+			 : c == '\r' ? 'r'
+			 : 'f');
 		    OUT (c);
 		}
 		break;
@@ -2398,9 +2468,9 @@ handler.
 	|| (rep_CONSP(on_error)
 	    && (tmp = Fmemq (error, on_error)) && tmp != Qnil))
     {
-	fprintf (stderr, "\nLisp backtrace:");
+	fprintf (stderr, "\nLisp backtrace:\n");
 	Fbacktrace (Fstderr_file());
-	fputs ("\n\n", stderr);
+	fputs ("\n", stderr);
     }	
 
     errlist = Fcons(error, data);
@@ -2417,8 +2487,7 @@ handler.
 	rep_PUSHGC(gc_on_error, on_error);
 	tmp = (rep_call_with_barrier
 	       (Ffuncall, Fcons (Fsymbol_value (Qdebug_error_entry, Qt),
-				 rep_list_2(errlist,
-					    rep_box_pointer (rep_call_stack))),
+				 rep_list_2(errlist, rep_MAKE_INT (current_frame_id ()))),
 		rep_TRUE, 0, 0, 0));
 	rep_POPGC;
 	Fset(Qdebug_on_error, on_error);
@@ -2499,6 +2568,40 @@ rep_mem_error(void)
 #endif
 }
 
+static int
+current_frame_id (void)
+{
+    int i;
+    struct rep_Call *lc;
+    i = 0;
+    for (lc = rep_call_stack; lc != 0; lc = lc->next)
+	i++;
+    return i - 1;
+}
+
+static struct rep_Call *
+stack_frame_ref (int idx)
+{
+    struct rep_Call *lc;
+    int total, wanted;
+
+    total = 0;
+    for (lc = rep_call_stack; lc != 0; lc = lc->next)
+	total++;
+
+    wanted = (total - 1) - idx;
+    if (wanted < 0)
+	return 0;
+
+    for (lc = rep_call_stack; lc != 0; lc = lc->next)
+    {
+	if (wanted-- == 0)
+	    return lc;
+    }
+
+    return 0;
+}
+
 DEFUN("backtrace", Fbacktrace, Sbacktrace, (repv strm), rep_Subr1) /*
 ::doc:rep.lang.debug#backtrace::
 backtrace [STREAM]
@@ -2511,62 +2614,105 @@ where ARGS-EVALLED-P is either `t' or `nil', depending on whether or not
 ARGLIST had been evaluated or not before being put into the stack.
 ::end:: */
 {
-    struct rep_Call *lc = rep_call_stack;
+    repv old_print_escape = Fsymbol_value (Qprint_escape, Qt);
+    int total_frames, i;
 
     if(rep_NILP(strm) && !(strm = Fsymbol_value(Qstandard_output, Qnil)))
 	return rep_signal_arg_error (strm, 1);
 
-    while (lc != 0)
+    Fset (Qprint_escape, Qt);
+
+    total_frames = current_frame_id () + 1;
+    i = 0;
+
+    for (i = total_frames - 1; i >= 0; i--)
     {
-	rep_stream_putc(strm, '\n');
-	rep_print_val(strm, lc->fun);
-	rep_stream_putc(strm, ' ');
-	rep_print_val(strm, lc->args);
-	rep_stream_putc(strm, ' ');
-	rep_print_val(strm, lc->args_evalled_p);
-	lc = lc->next;
+	struct rep_Call *lc = stack_frame_ref (i);
+	repv function_name = Qnil;
+
+	if (lc == 0)
+	    continue;
+
+	if (rep_FUNARGP (lc->fun))
+	{
+	    if (rep_STRINGP (rep_FUNARG (lc->fun)->name))
+		function_name = rep_FUNARG (lc->fun)->name;
+	}
+	else if (Fsubrp (lc->fun) != Qnil)
+	{
+	    if (rep_STRINGP (rep_XSUBR (lc->fun)->name))
+		function_name = rep_XSUBR (lc->fun)->name;
+	}
+	else if (rep_CONSP (lc->fun) && rep_CAR (lc->fun) == Qlambda
+		 && rep_CONSP (rep_CDR (lc->fun)))
+	{
+	    function_name = rep_list_3 (Qlambda, rep_CADR (lc->fun),
+					Qellipsis);
+	}
+
+	if (function_name != Qnil)
+	{
+	    char buf[16];
+
+	    sprintf (buf, "#%-3d ", i);
+	    rep_stream_puts (strm, buf, -1, rep_FALSE);
+
+	    rep_princ_val (strm, function_name);
+
+	    if (rep_VOIDP (lc->args)
+		|| (rep_STRINGP (function_name)
+		    && strcmp (rep_STR (function_name), "run-byte-code") == 0))
+		rep_stream_puts (strm, " ...", -1, rep_FALSE);
+	    else
+	    {
+		rep_stream_putc (strm, ' ');
+		rep_print_val (strm, lc->args);
+	    }
+
+	    if (lc->current_form != rep_NULL)
+	    {
+		repv origin = Flexical_origin (lc->current_form);
+		if (origin && origin != Qnil)
+		{
+		    char buf[256];
+#ifdef HAVE_SNPRINTF
+		    snprintf (buf, sizeof (buf), " at %s:%d",
+			      rep_STR (rep_CAR (origin)),
+			      rep_INT (rep_CDR (origin)));
+#else
+		    sprintf (buf, " at %s:%d",
+			     rep_STR (rep_CAR (origin)),
+			     rep_INT (rep_CDR (origin)));
+#endif
+		    rep_stream_puts (strm, buf, -1, rep_FALSE);
+		}
+	    }
+
+	    rep_stream_putc (strm, '\n');
+	}
     }
+
+    Fset (Qprint_escape, old_print_escape);
+
     return Qt;
 }
 
-DEFUN("debug-frame-environment", Fdebug_frame_environment,
-      Sdebug_frame_environment, (repv pointer), rep_Subr1)
+DEFUN ("stack-frame-ref", Fstack_frame_ref,
+       Sstack_frame_ref, (repv idx), rep_Subr1)
 {
-    struct rep_Call *fp = rep_call_stack;
-    struct rep_Call *ptr = rep_unbox_pointer (pointer);
-    rep_DECLARE(1, pointer, ptr != 0);
-    while (fp != 0 && fp->next != ptr)
-	fp = fp->next;
-    if (fp != 0)
-	return Fcons (fp->saved_env, fp->saved_structure);
-    else
-	return Qnil;
-}
+    struct rep_Call *lc;
 
-DEFUN ("debug-outer-frame", Fdebug_outer_frame,
-       Sdebug_outer_frame, (repv pointer), rep_Subr1)
-{
-    struct rep_Call *fp = rep_call_stack;
-    struct rep_Call *ptr = rep_unbox_pointer (pointer);
-    rep_DECLARE(1, pointer, ptr != 0);
-    while (fp != 0 && fp != ptr)
-	fp = fp->next;
-    if (fp != 0 && fp->next != 0)
-	return rep_box_pointer (fp->next);
-    else
-	return Qnil;
-}
+    rep_DECLARE1 (idx, rep_INTP);
 
-DEFUN ("debug-inner-frame", Fdebug_inner_frame,
-       Sdebug_inner_frame, (repv pointer), rep_Subr1)
-{
-    struct rep_Call *fp = rep_call_stack;
-    struct rep_Call *ptr = rep_unbox_pointer (pointer);
-    rep_DECLARE(1, pointer, ptr != 0);
-    while (fp != 0 && fp->next != ptr)
-	fp = fp->next;
-    if (fp != 0)
-	return rep_box_pointer (fp);
+    lc = stack_frame_ref (rep_INT (idx));
+
+    if (lc != 0)
+    {
+	return rep_list_5 (lc->fun, rep_VOIDP (lc->args)
+			   ? rep_undefined_value : lc->args,
+			   lc->current_form ? lc->current_form : Qnil,
+			   lc->saved_env, lc->saved_structure);
+    }
     else
 	return Qnil;
 }
@@ -2583,8 +2729,6 @@ too small (you get errors in normal use) set it to something larger.
 {
     return rep_handle_var_int(val, &rep_max_lisp_depth);
 }
-
-DEFSYM(rep_lang_interpreter, "rep.lang.interpreter");
 
 void
 rep_lisp_init(void)
@@ -2629,9 +2773,7 @@ rep_lisp_init(void)
     rep_ADD_SUBR(Sbreak);
     rep_ADD_SUBR_INT(Sstep);
     rep_ADD_SUBR(Sbacktrace);
-    rep_ADD_SUBR(Sdebug_frame_environment);
-    rep_ADD_SUBR(Sdebug_outer_frame);
-    rep_ADD_SUBR(Sdebug_inner_frame);
+    rep_ADD_SUBR(Sstack_frame_ref);
     rep_pop_structure (tem);
 
     /* Stuff for error-handling */
@@ -2681,8 +2823,9 @@ rep_lisp_init(void)
     rep_INTERN(load);
     rep_INTERN(require);
 
+    rep_INTERN(ellipsis);
+
     /* Allow the bootstrap code to work.. */
-    rep_INTERN (rep_lang_interpreter);
     rep_STRUCTURE (rep_default_structure)->imports
 	= Fcons (Qrep_lang_interpreter,
 		 rep_STRUCTURE (rep_default_structure)->imports);

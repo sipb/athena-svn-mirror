@@ -1,6 +1,6 @@
 /* misc.c -- Miscellaneous functions
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: misc.c,v 1.1.1.1 2000-11-12 06:11:48 ghudson Exp $
+   $Id: misc.c,v 1.1.1.2 2002-03-20 04:53:04 ghudson Exp $
 
    This file is part of Jade.
 
@@ -24,9 +24,14 @@
 #include "build.h"
 
 #include <string.h>
+#include <strings.h>		/* needed for strncasecmp () on UnixWare */
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 void (*rep_beep_fun)(void);
 
@@ -173,7 +178,9 @@ is t, all matching ignores character case.
 	if(rep_STRINGP(arg))
 	{
 	    u_char *tmp = rep_STR(arg);
-	    if((rep_NILP(fold) ? strncmp : strncasecmp)(orig, tmp, origlen) == 0)
+	    if((rep_NILP(fold)
+		? strncmp (orig, tmp, origlen)
+		: strncasecmp (orig, tmp, origlen)) == 0)
 	    {
 		if(match)
 		{
@@ -271,14 +278,17 @@ the same conventions as the template to the C library's strftime function.
 	int len = strftime(buf, sizeof(buf), rep_STR(format), loctime);
 	if(len > 0)
 	    return rep_string_dupn(buf, len);
+	else
+	    return rep_null_string ();
     }
     else
     {
 	char *str = ctime(&timestamp);
-	if(str)
-	    return(rep_string_dupn(str, strlen(str) - 1));
+	if(str != 0)
+	    return rep_string_dupn(str, strlen(str) - 1);
+	else
+	    return rep_null_string ();
     }
-    return rep_NULL;
 }
 
 DEFUN("time-later-p", Ftime_later_p, Stime_later_p, (repv t1, repv t2), rep_Subr2) /*
@@ -304,8 +314,9 @@ sleep-for SECONDS [MILLISECONDS]
 Pause for SECONDS (plus the optional MILLISECOND component) length of time.
 ::end:: */
 {
-    rep_DECLARE1(secs, rep_INTP);
-    rep_sleep_for(rep_INT(secs), rep_INTP(msecs) ? rep_INT(msecs) : 0);
+    rep_DECLARE1(secs, rep_NUMERICP);
+    rep_DECLARE2_OPT(msecs, rep_NUMERICP);
+    rep_sleep_for(rep_get_long_int (secs), rep_get_long_int (msecs));
     return Qt;
 }
 
@@ -322,8 +333,10 @@ If neither SECONDS nor MILLISECONDS is defined the command will return
 immediately, using a null timeout.
 ::end:: */
 {
-    return rep_sit_for(((rep_INTP(secs) ? rep_INT(secs) : 0) * 1000)
-		       + (rep_INTP(msecs) ? rep_INT(msecs) : 0));
+    rep_DECLARE1_OPT(secs, rep_NUMERICP);
+    rep_DECLARE2_OPT(msecs, rep_NUMERICP);
+    return rep_sit_for(((rep_get_long_int (secs)) * 1000)
+		       + rep_get_long_int (msecs));
 }
 
 DEFUN("user-login-name", Fuser_login_name, Suser_login_name, (void), rep_Subr0) /*
@@ -345,7 +358,8 @@ the name to return in subsequent calls.
 ::end:: */
 {
     static repv saved_name;
-    if(rep_STRINGP(arg))
+    rep_DECLARE1_OPT (arg, rep_STRINGP);
+    if(arg != Qnil)
     {
 	if(!saved_name)
 	    rep_mark_static(&saved_name);
@@ -363,8 +377,7 @@ Return the path to USER's home directory (a string). When USER is undefined
 the directory of the user who executed Jade is found.
 ::end:: */
 {
-    if(!rep_NILP(user))
-	rep_DECLARE1(user, rep_STRINGP);
+    rep_DECLARE1_OPT(user, rep_STRINGP);
     return rep_user_home_directory(user);
 }
 
@@ -394,71 +407,6 @@ next complete redisplay, unless DISPLAY-NOW is non-nil.
 	    (*rep_message_fun)(rep_redisplay_message);
     }
     return string;
-}
-
-/* Try to work out how many bits of randomness rand() will give.. */
-#ifdef HAVE_LRAND48
-# define RAND_BITS 31
-# define rand lrand48
-# define srand srand48
-#else
-# if RAND_MAX == 32768
-#  define RAND_BITS 15
-# elif RAND_MAX == 2147483647
-#  define RAND_BITS 31
-# else
-#  define RAND_BITS 63
-# endif
-#endif
-
-DEFUN("random", Frandom, Srandom, (repv arg), rep_Subr1) /*
-::doc:rep.lang.math#random::
-random [LIMIT]
-
-Produce a pseudo-random number between zero and LIMIT (or the largest positive
-integer representable). If LIMIT is the symbol `t' the generator is seeded
-with the current time of day.
-::end:: */
-{
-    long limit, divisor, val;
-    if(arg == Qt)
-    {
-	srand(time(0));
-	return Qt;
-    }
-
-    if(rep_INTP(arg))
-    {
-	limit = rep_INT(arg);
-	if (limit <= 0)
-	    limit = rep_LISP_MAX_INT;
-    }
-    else
-	limit = rep_LISP_MAX_INT;
-
-    divisor = rep_LISP_MAX_INT / limit;
-    do {
-	val = rand();
-	if (rep_LISP_INT_BITS-1 > RAND_BITS)
-	{
-	    val = (val << RAND_BITS) | rand();
-	    if (rep_LISP_INT_BITS-1 > 2*RAND_BITS)
-	    {
-		val = (val << RAND_BITS) | rand();
-		if (rep_LISP_INT_BITS-1 > 3*RAND_BITS)
-		{
-		    val = (val << RAND_BITS) | rand();
-		    if (rep_LISP_INT_BITS-1 > 4*RAND_BITS)
-			val = (val << RAND_BITS) | rand();
-		}
-	    }
-	}
-	/* Ensure VAL is positive (assumes twos-complement) */
-	val &= ~(~rep_VALUE_CONST(0) << (rep_LISP_INT_BITS-1));
-	val /= divisor;
-    } while(val >= limit);
-
-    return rep_MAKE_INT(val);
 }
 
 DEFUN("translate-string", Ftranslate_string, Stranslate_string, (repv string, repv table), rep_Subr2) /*
@@ -610,6 +558,33 @@ supplied an error is signalled.
 	return Qnil;
 }
 
+DEFUN ("crypt", Fcrypt, Scrypt, (repv key, repv salt), rep_Subr2) /*
+::doc:rep.system#crypt::
+crypt KEY SALT
+
+The `crypt' function takes a password, KEY, as a string, and a SALT
+character array, and returns a printable ASCII string which starts with
+another salt.  It is believed that, given the output of the function,
+the best way to find a KEY that will produce that output is to guess
+values of KEY until the original value of KEY is found.
+
+See crypt(3) for more information.
+::end:: */
+{
+    const char *output;
+
+    rep_DECLARE1 (key, rep_STRINGP);
+    rep_DECLARE2 (salt, rep_STRINGP);
+
+#ifdef HAVE_CRYPT
+    output = crypt (rep_STR (key), rep_STR (salt));
+    return rep_string_dup (output);
+#else
+    { DEFSTRING (err, "crypt () isn't supported on this system");
+      return Fsignal (Qerror, rep_LIST_1 (rep_VAL (&err))); }
+#endif    
+}
+
 void
 rep_misc_init(void)
 {
@@ -646,6 +621,7 @@ rep_misc_init(void)
     rep_ADD_SUBR(Ssleep_for);
     rep_ADD_SUBR(Ssit_for);
     rep_ADD_SUBR(Sget_command_line_option);
+    rep_ADD_SUBR(Scrypt);
     rep_ADD_SUBR_INT(Ssystem);
     rep_ADD_SUBR(Suser_login_name);
     rep_ADD_SUBR(Suser_full_name);
@@ -695,9 +671,5 @@ rep_misc_init(void)
 	rep_INTERN(flatten_table);
 	Fset (Qflatten_table, flatten);
     }
-    rep_pop_structure (tem);
-
-    tem = rep_push_structure ("rep.lang.math");
-    rep_ADD_SUBR(Srandom);
     rep_pop_structure (tem);
 }

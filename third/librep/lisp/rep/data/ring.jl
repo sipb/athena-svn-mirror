@@ -1,6 +1,6 @@
 #| ring.jl -- ring buffer support
 
-   $Id: ring.jl,v 1.1.1.1 2000-11-12 06:10:49 ghudson Exp $
+   $Id: ring.jl,v 1.1.1.2 2002-03-20 04:54:57 ghudson Exp $
 
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -46,6 +46,7 @@
   (define key (cons))
 
   (define-datum-printer key (lambda (d s)
+			      (declare (unused d))
 			      (write s "#<ring>")))
 
   ;; A ring buffer of size N is defined by a vector with N+2 slots; the

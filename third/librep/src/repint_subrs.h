@@ -1,6 +1,6 @@
 /* repint_subrs.h -- library-local prototypes
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: repint_subrs.h,v 1.1.1.2 2001-03-13 16:43:22 ghudson Exp $
+   $Id: repint_subrs.h,v 1.1.1.3 2002-03-20 04:52:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -90,6 +90,13 @@ extern repv rep_parse_number (char *buf, u_int len, u_int radix,
 			      int sign, u_int type);
 extern void rep_numbers_init (void);
 
+/* from origin.c */
+extern rep_bool rep_record_origins;
+extern void rep_record_origin (repv form, repv stream, long start_line);
+extern repv Flexical_origin (repv form);
+extern void rep_mark_origins (void);
+extern void rep_origin_init (void);
+
 /* from regsub.c */
 extern void rep_default_regsub(int, rep_regsubs *, char *, char *, void *);
 extern int rep_default_regsublen(int, rep_regsubs *, char *, void *);
@@ -99,6 +106,9 @@ extern void rep_streams_init(void);
 
 /* from structures.c */
 extern repv rep_default_structure, rep_specials_structure;
+extern repv Qfeatures, Q_structures, Q_meta, Qrep, Q_specials,
+    Q_user_structure, Qrep_structures, Qrep_lang_interpreter,
+    Qrep_vm_interpreter, Qexternal, Qinternal;
 extern rep_struct_node *rep_search_imports (rep_struct *s, repv var);
 extern repv Fmake_structure (repv, repv, repv, repv);
 extern repv F_structure_ref (repv, repv);
@@ -138,6 +148,13 @@ extern void rep_pre_values_init (void);
 extern void rep_values_init(void);
 extern void rep_values_kill (void);
 extern void rep_dumped_init(char *file);
+
+/* from weak-refs.c */
+extern repv Fmake_weak_ref (repv value);
+extern repv Fweak_ref (repv ref);
+extern repv Fweak_ref_set (repv ref, repv value);
+extern void rep_scan_weak_refs (void);
+extern void rep_weak_refs_init (void);
 
 #ifdef rep_HAVE_UNIX
 

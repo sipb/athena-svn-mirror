@@ -1,6 +1,6 @@
 /* readline.c -- wrap some readline functions when available
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-   $Id: readline.c,v 1.1.1.2 2001-03-13 16:43:18 ghudson Exp $
+   $Id: readline.c,v 1.1.1.3 2002-03-20 04:53:10 ghudson Exp $
 
    This file is part of librep.
 
@@ -77,7 +77,7 @@ completion_generator (char *word, int state)
 }
 
 /* gratuitously stolen from guile, guile-readline/readline.c */
-static void match_paren(int x, int k);
+static int match_paren(int x, int k);
 static int find_matching_paren(int k);
 static void init_bouncing_parens();
 
@@ -130,7 +130,7 @@ find_matching_paren(int k)
   return -1;
 }
 
-static void
+static int
 match_paren(int x, int k)
 {
   int tmp;
@@ -142,7 +142,7 @@ match_paren(int x, int k)
   /* Did we just insert a quoted paren?  If so, then don't bounce.  */
   if (rl_point - 1 >= 1
       && rl_line_buffer[rl_point - 2] == '\\')
-    return;
+    return 0;
 
   /* tmp = 200000 */
   timeout.tv_sec = 0 /* tmp / 1000000 */ ; 
@@ -159,6 +159,8 @@ match_paren(int x, int k)
     }
     rl_point = tmp;
   }
+
+  return 0;
 }
 
 #endif

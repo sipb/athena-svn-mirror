@@ -1,6 +1,6 @@
 #| modules.jl -- module handling for the compiler
 
-   $Id: modules.jl,v 1.1.1.1 2000-11-12 06:11:37 ghudson Exp $
+   $Id: modules.jl,v 1.1.1.2 2002-03-20 04:55:00 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -82,7 +82,7 @@
 
   (define (find-structure name)
     (or (intern-structure name)
-	(compiler-error "Unable to open module" name)))
+	(compiler-error "unable to fund module `%s'" name)))
 
   ;; return t if the module called STRUCT exports a variable called VAR
   (defun module-exports-p (struct var)
@@ -130,6 +130,7 @@
 	  ((and (symbolp var) (fluid current-structure)
 		(structure-bound-p (fluid current-structure) var))
 	   (%structure-ref (fluid current-structure) var))
+	  ((has-local-binding-p var) nil)
 	  (t
 	   (let* ((struct (locate-variable var))
 		  (module (and struct (find-structure struct))))
@@ -178,7 +179,9 @@
 	  prop))))
 
   (defun compiler-macroexpand-1 (form)
-    (when (consp form)
+    (when (and (consp form)
+	       (symbolp (car form))
+	       (not (has-local-binding-p (car form))))
       (let* ((def (assq (car form) (fluid macro-env)))
 	     ;; make #<subr macroexpand> pass us any inner expansions
 	     (macro-environment compiler-macroexpand-1))
@@ -266,7 +269,7 @@
 	    ((intern-structure feature)
 	     (fluid-set open-modules (cons feature (fluid open-modules))))
 
-	    (t (compiler-warning "Unable to require `%s'" feature)))))
+	    (t (compiler-warning "unable to require `%s'" feature)))))
 
   ;; XXX enclose macro defs in the *user-structure*, this is different
   ;; to with interpreted code
@@ -299,7 +302,7 @@
 	      (if (get struct 'compiler-module)
 		  (progn
 		    (or (intern-structure (get struct 'compiler-module))
-			(compiler-error "Can't load module"
+			(compiler-error "unable to load module `%s'"
 					(get struct 'compiler-module)))
 		    (fluid-set current-language struct)
 		    (throw 'out))))
@@ -396,9 +399,11 @@
 	 (var (nth 2 form)))
       (or (memq struct (fluid accessed-modules))
 	  (memq struct (fluid open-modules))
-	  (compiler-error "Referencing non-accessible structure" struct))
+	  (compiler-error
+	   "referencing non-accessible structure `%s'" struct))
       (or (module-exports-p struct var)
-	  (compiler-error "Referencing non-exported variable" struct var))
+	  (compiler-error
+	   "referencing private variable `%s#%s'" struct var))
       (compile-constant struct)
       (compile-constant var)
       (emit-insn '(structure-ref))

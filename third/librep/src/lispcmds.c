@@ -1,6 +1,6 @@
 /* lispcmds.c -- Lots of standard Lisp functions
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: lispcmds.c,v 1.1.1.1 2000-11-12 06:11:43 ghudson Exp $
+   $Id: lispcmds.c,v 1.1.1.2 2002-03-20 04:55:02 ghudson Exp $
 
    This file is part of Jade.
 
@@ -940,10 +940,10 @@ can be a vector or a string. INDEX starts at zero.
 
 DEFUN("make-string", Fmake_string, Smake_string, (repv len, repv init), rep_Subr2) /*
 ::doc:rep.data#make-string::
-make-string LENGTH [INITIAL-repv]
+make-string LENGTH [INITIAL-VALUE]
 
 Returns a new string of length LENGTH, each character is initialised to
-INITIAL-repv, or to space if INITIAL-repv is not given.
+INITIAL-repv, or to space if INITIAL-VALUE is not given.
 ::end:: */
 {
     repv res;
@@ -971,6 +971,7 @@ All indices start at zero.
     int slen;
     rep_DECLARE1(string, rep_STRINGP);
     rep_DECLARE2(start, rep_INTP);
+    rep_DECLARE3_OPT(end, rep_INTP);
     slen = rep_STRING_LEN(string);
     if(rep_INT(start) > slen || rep_INT(start) < 0)
 	return(rep_signal_arg_error(start, 2));
@@ -1277,7 +1278,6 @@ within STRUCTURE. The value of the last form evaluated is returned.
     /* Create the lexical environment for the file. */
     lc.fun = Qnil;
     lc.args = Qnil;
-    lc.args_evalled_p = Qnil;
     rep_PUSH_CALL (lc);
     rep_env = Qnil;
     rep_structure = structure;
@@ -1328,7 +1328,6 @@ DEFUN ("load-dl-file", Fload_dl_file, Sload_dl_file,
     /* Create the lexical environment for the file. */
     lc.fun = Qnil;
     lc.args = Qnil;
-    lc.args_evalled_p = Qnil;
     rep_PUSH_CALL (lc);
     rep_env = Qnil;
     rep_structure = structure;
@@ -1978,14 +1977,14 @@ returned.
 }
 
 DEFUN("call-with-exception-handler", Fcall_with_exception_handler,
-      Scall_with_exception_handler, (repv thunk, repv handler_thunk),
+      Scall_with_exception_handler, (repv thunk, repv handler),
       rep_Subr2) /*
 ::doc:rep.lang.interpreter#call-with-exception-handler::
-call-with-exception-handler THUNK HANDLER-THUNK
+call-with-exception-handler THUNK HANDLER
 
 Call THUNK and return its value. However if an exception of any form
-occurs, call HANDLER-THUNK with a single argument, the exception data,
-and return its value.
+occurs, call HANDLER with a single argument, the exception data, and
+return its value.
 ::end:: */
     /* Non-local exits don't bother with jmp_buf's and the like, they just
        unwind normally through all levels of recursion with a rep_NULL result.
@@ -1995,9 +1994,9 @@ and return its value.
     repv ret;
 
     rep_DECLARE (1, thunk, Ffunctionp (thunk) != Qnil);
-    rep_DECLARE (2, handler_thunk, Ffunctionp (handler_thunk) != Qnil);
+    rep_DECLARE (2, handler, Ffunctionp (handler) != Qnil);
 
-    rep_PUSHGC (gc_handler, handler_thunk);
+    rep_PUSHGC (gc_handler, handler);
     ret = rep_call_lisp0 (thunk);
     rep_POPGC;
     if (ret == rep_NULL)
@@ -2005,7 +2004,7 @@ and return its value.
 	repv data = rep_throw_value;
 	rep_throw_value = rep_NULL;
 	assert (data != rep_NULL);
-	ret = rep_call_lisp1 (handler_thunk, data);
+	ret = rep_call_lisp1 (handler, data);
     }
     return ret;
 }

@@ -1,6 +1,6 @@
 #| bootstrap for rep.lang.interpreter
 
-   $Id: interpreter.jl,v 1.1.1.1 2000-11-12 06:11:27 ghudson Exp $
+   $Id: interpreter.jl,v 1.1.1.2 2002-03-20 04:53:08 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -39,7 +39,9 @@
 (make-binding-immutable '#F)
 (make-binding-immutable '#T)
 
-(export-bindings '(nil t #F #T))
+(%define #undefined '#undefined)
+
+(export-bindings '(nil t #F #T #undefined))
 
 
 ;; function syntax
@@ -169,7 +171,7 @@ functions."
 	     (cond ((consp x) (car x))
 		   (t x))) bindings)
    (mapcar (lambda (x)
-	     (cond ((consp x) (cons 'setq x))
+	     (cond ((consp x) (list 'setq (car x) (cons 'progn (cdr x))))
 		   (t (list 'setq x nil)))) bindings)))
 
 (defmacro let-fluids (bindings . body)
@@ -286,14 +288,19 @@ See also `setq'. Returns the value of the last FORM."
 ;; XXX it would be nice to do the same for setq.. might stress the
 ;; XXX interpreter somewhat..? :-(
 
-;; XXX backwards compatibility crap
-(defmacro define-value (var-form value)
-  (if (eq (car var-form) 'quote)
-      ;; constant symbol
-      (list '%define (nth 1 var-form) value)
-    (error "define-value must take a constant variable")))
+(defmacro define-special-variable (var #!optional value doc)
+  "define-special-variable VARIABLE [VALUE [DOC]]
 
-(export-bindings '(setq-default define-value))
+Declares the symbol VARIABLE as a special variable, then
+unconditionally sets its value to VALUE (or false if VALUE isn't
+defined). If DOC is given it will be installed as the documentation
+string associated with VARIABLE."
+
+  `(progn
+     (defvar ,var nil ,doc)
+     (setq ,var ,value)))
+
+(export-bindings '(setq-default define-special-variable))
 
 
 ;; Misc syntax
@@ -477,11 +484,21 @@ DATA)' while the handler is evaluated (these are the arguments given to
 
 ;; default error handler
 (defun default-error-handler (err data)
-  (beep)
-  (write t (format nil "*** %s: %s"
-		   (or (get err 'error-message) err)
-		   (mapconcat (lambda (x)
-				(format nil "%s" x)) data ", "))))
+  (call-with-exception-handler
+   (lambda ()
+     (beep)
+     (write t (format nil "*** %s: %s"
+		      (or (get err 'error-message) err)
+		      (mapconcat (lambda (x)
+				   (format nil "%s" x)) data ", ")))
+     ;; XXX ugh.. so kludgey..
+     (open-structures '(rep.lang.error-helper))
+     (declare (bound error-helper))
+     (error-helper err data))
+   (lambda (ex)
+     ;; really don't want to have errors happening in here..
+     (unless (eq (car ex) 'error)
+       (raise-exception ex)))))
 
 (defvar error-handler-function default-error-handler)
 
@@ -544,6 +561,7 @@ of THUNK) each function will be called exactly once."
 (defmacro eval-when-compile (form)
   "FORM is evaluated at compile-time *only*. The evaluated value is inserted
 into the compiled program. When interpreted, nil is returned."
+  (declare (unused form))
   nil)
 
 ;; Hide interactive decls

@@ -1,6 +1,6 @@
 /* symbols.c -- Lisp symbol handling
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: symbols.c,v 1.1.1.2 2001-03-13 16:43:29 ghudson Exp $
+   $Id: symbols.c,v 1.1.1.3 2002-03-20 04:55:02 ghudson Exp $
 
    This file is part of Jade.
 
@@ -92,6 +92,8 @@ int rep_allocated_funargs, rep_used_funargs;
 
 /* support for scheme boolean type */
 repv rep_scm_t, rep_scm_f;
+
+repv rep_undefined_value;
 
 
 /* Symbol management */
@@ -569,7 +571,7 @@ rep_call_with_closure (repv closure, repv (*fun)(repv arg), repv arg)
     if (rep_FUNARGP (closure))
     {
 	struct rep_Call lc;
-	lc.fun = lc.args = lc.args_evalled_p = Qnil;
+	lc.fun = lc.args = Qnil;
 	rep_PUSH_CALL (lc);
 	rep_USE_FUNARG (closure);
 	ret = fun (arg);
@@ -665,7 +667,7 @@ rep_add_binding_to_env (repv env, repv sym, repv value)
 
 DEFUN("defvar", Fdefvar, Sdefvar, (repv args, repv tail_posn), rep_SF) /*
 ::doc:rep.lang.interpreter#defvar::
-defvar NAME DEFAULT-VALUE [DOC-STRING]
+defvar NAME [DEFAULT-VALUE [DOC-STRING]]
 
 Define a special variable called NAME whose standard value is DEFAULT-
 VALUE. If NAME is already bound to a value (that's not an autoload
@@ -679,7 +681,7 @@ If DOC-STRING is given, and is a string, it will be used to set the
 variable will be set (if necessary) not the local value.)
 ::end:: */
 {
-    if(rep_CONSP(args) && rep_CONSP(rep_CDR(args)))
+    if(rep_CONSP(args))
     {
 	int spec;
 	repv sym = rep_CAR(args), val;
@@ -687,7 +689,18 @@ variable will be set (if necessary) not the local value.)
 	repv tmp = Fdefault_boundp(sym);
 	if(!tmp)
 	    return rep_NULL;
-	val = rep_CAR(rep_CDR(args));
+
+	if (rep_CONSP(rep_CDR(args)))
+	{
+	    val = rep_CADR(args);
+	    args = rep_CDDR (args);
+	}
+	else
+	{
+	    val = Qnil;
+	    args = Qnil;
+	}
+
 	need_to_eval = rep_TRUE;
 	if(!rep_NILP(tmp))
 	{
@@ -781,9 +794,9 @@ variable will be set (if necessary) not the local value.)
 	    rep_SYM(sym)->car |= rep_SF_WEAK_MOD;
 	}
 
-	if(rep_CONSP(rep_CDR(rep_CDR(args))))
+	if(rep_CONSP(args))
 	{
-	    repv doc = rep_CAR(rep_CDR(rep_CDR(args)));
+	    repv doc = rep_CAR(args);
 	    if (rep_STRINGP (doc))
 	    {
 		if (Fput(sym, Qdocumentation, doc) == rep_NULL)
@@ -793,7 +806,7 @@ variable will be set (if necessary) not the local value.)
 	return sym;
     }
     else
-	return rep_signal_missing_arg(rep_CONSP(args) ? 2 : 1);
+	return rep_signal_missing_arg (1);
 }
 
 DEFUN("symbol-value", Fsymbol_value, Ssymbol_value, (repv sym, repv no_err), rep_Subr2) /*
@@ -1149,7 +1162,7 @@ be overwritten.
 	}
     }
 
-    return value;
+    return rep_undefined_value;
 }
 
 DEFUN("makunbound", Fmakunbound, Smakunbound, (repv sym), rep_Subr1) /*
@@ -1414,6 +1427,7 @@ rep_symbols_init(void)
 {
     DEFSTRING (hash_f, "#f");
     DEFSTRING (hash_t, "#t");
+    DEFSTRING (hash_undefined, "#undefined");
 
     repv tem;
 
@@ -1434,10 +1448,13 @@ rep_symbols_init(void)
 
     rep_scm_f = Fmake_symbol (rep_VAL (&hash_f));
     rep_scm_t = Fmake_symbol (rep_VAL (&hash_t));
+    rep_undefined_value = Fmake_symbol (rep_VAL (&hash_undefined));
     rep_SYM(rep_scm_f)->car |= rep_SF_LITERAL;
     rep_SYM(rep_scm_t)->car |= rep_SF_LITERAL;
+    rep_SYM(rep_undefined_value)->car |= rep_SF_LITERAL;
     rep_mark_static (&rep_scm_f);
     rep_mark_static (&rep_scm_t);
+    rep_mark_static (&rep_undefined_value);
 
     tem = rep_push_structure ("rep.lang.symbols");
     rep_ADD_SUBR(Smake_symbol);

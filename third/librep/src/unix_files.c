@@ -1,6 +1,6 @@
 /* unix_files.c -- Built-in file handler functions for Unix-like files
    Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-   $Id: unix_files.c,v 1.1.1.2 2001-03-13 16:43:14 ghudson Exp $
+   $Id: unix_files.c,v 1.1.1.3 2002-03-20 04:53:00 ghudson Exp $
 
    This file is part of Jade.
 
@@ -53,6 +53,14 @@
 
 #ifndef PATH_MAX
 # define PATH_MAX 256
+#endif
+
+#ifndef S_ISLNK
+#define S_ISLNK(mode)  (((mode) & S_IFMT) == S_IFLNK)
+#endif
+
+#ifndef S_ISSOCK
+#define S_ISSOCK(mode)  (((mode) & S_IFMT) == S_IFSOCK)
 #endif
 
 
@@ -201,24 +209,21 @@ repv
 rep_canonical_file_name(repv file)
 {
     char buf[PATH_MAX];
-    if(realpath(rep_STR(file), buf) != 0)
+    int len;
+
+    if(realpath(rep_STR(file), buf) == 0)
     {
-	rep_bool slashed = (rep_STR(file)[strlen(rep_STR(file)) - 1] == '/');
-	int len = strlen(buf);
-	if (slashed && buf[len-1] != '/')
-	{
-	    buf[len++] = '/';
-	    buf[len] = 0;
-	}
-	else if(!slashed && len > 0 && buf[len-1] == '/')
-	    buf[len--] = 0;
-	return rep_string_dupn(buf, len);
+	/* realpath () failed; copy the source */
+	strncpy (buf, rep_STR (file), sizeof (buf));
     }
-    else
+
+    len = strlen(buf);
+    while (len > 0 && buf[len - 1] == '/')
     {
-	/* Bail out */
-	return file;
+	buf[len - 1] = 0;
+	len--;
     }
+    return rep_string_dupn(buf, len);
 }
 
 repv
@@ -429,7 +434,7 @@ rep_file_size(repv file)
 {
     struct stat *st = stat_file(file);
     if(st != 0)
-	return rep_MAKE_INT(st->st_size);
+	return rep_make_long_uint(st->st_size);
     else
 	return Qnil;
 }

@@ -1,5 +1,5 @@
 /* repgdbm.c -- rep wrapper to libgdbm
-   $Id: repgdbm.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $ */
+   $Id: repgdbm.c,v 1.1.1.2 2002-03-20 04:53:10 ghudson Exp $ */
 
 #define _GNU_SOURCE
 
@@ -152,7 +152,7 @@ gdbm-delete DBM KEY
 
 DEFUN("gdbm-walk", Fgdbm_walk, Sgdbm_walk, (repv fun, repv dbm), rep_Subr2) /*
 ::doc:rep.io.db.gdbm#gdbm-walk::
-gdbm-walk DBM FUN
+gdbm-walk FUN DBM
 ::end:: */
 {
     rep_GC_root gc_dbm, gc_fun;
@@ -260,4 +260,15 @@ rep_dl_init (void)
     rep_ADD_SUBR(Sgdbm_walk);
     rep_ADD_SUBR(Sgdbmp);
     return rep_pop_structure (tem);
+}
+
+void
+rep_dl_kill (void)
+{
+    rep_dbm *db;
+    for (db = dbm_chain; db != 0; db = db->next)
+    {
+	if (db->dbm != 0)
+	    Fgdbm_close (rep_VAL (db));
+    }
 }

@@ -1,6 +1,6 @@
 /* main.c -- Entry point for Jade
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: main.c,v 1.1.1.2 2001-03-13 16:43:13 ghudson Exp $
+   $Id: main.c,v 1.1.1.3 2002-03-20 04:55:08 ghudson Exp $
 
    This file is part of Jade.
 
@@ -145,8 +145,14 @@ get_main_options(char *prog_name, int *argc_p, char ***argv_p)
 
     if (rep_get_option("--batch", 0))
 	Fset (Qbatch_mode, Qt);
+
     if (rep_get_option("--interp", 0))
+    {
 	Fset (Qinterpreted_mode, Qt);
+
+	/* XXX somewhat non-related, but.. */
+	rep_record_origins = rep_TRUE;
+    }
 
     return rep_TRUE;
 }
@@ -229,6 +235,7 @@ rep_init_from_dump(char *prog_name, int *argc, char ***argv,
 
 	rep_lisp_init();
 	rep_values_init();
+	rep_origin_init ();		/* must be after values */
 	rep_macros_init ();
 	rep_lispcmds_init();
 	rep_lispmach_init();
@@ -239,6 +246,7 @@ rep_init_from_dump(char *prog_name, int *argc, char ***argv,
 	rep_files_init();
 	rep_datums_init();
 	rep_fluids_init();
+	rep_weak_refs_init ();
 	rep_sys_os_init();
 
 	/* XXX Assumes that argc is on the stack. I can't think of

@@ -1,6 +1,6 @@
 /* repint.h -- Main include file for library internal objects
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: repint.h,v 1.1.1.1 2000-11-12 06:10:33 ghudson Exp $
+   $Id: repint.h,v 1.1.1.2 2002-03-20 04:55:02 ghudson Exp $
 
    This file is part of Jade.
 
@@ -176,14 +176,14 @@ struct rep_Call {
     struct rep_Call *next;
     repv fun;
     repv args;
-    /* t if `args' is list of *evalled* arguments.  */
-    repv args_evalled_p;
+    repv current_form;			/* used for debugging, set by progn */
     repv saved_env;
     repv saved_structure;
 };
 
 #define rep_PUSH_CALL(lc)		\
     do {				\
+	(lc).current_form = rep_NULL;	\
 	(lc).saved_env = rep_env;	\
 	(lc).saved_structure = rep_structure; \
 	(lc).next = rep_call_stack;	\

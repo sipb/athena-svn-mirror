@@ -58,10 +58,6 @@ Outstanding bugs
 
  ! non-fixnum numbers can't be dumped / dump totally broken re: modules
 
- ! `random' only accepts its range as a fixnum
-
-   GMP 3 has suitable functions, but need to support GMP 2 (e.g. RH 6)
-
  ! it's legal to do (set foo 42) where the contents of foo has a
    lexical binding
 
@@ -75,7 +71,6 @@ Outstanding bugs
  + deprecated:
 
    * 0xNN and 0NN integer syntaxes [0.13+]
-   * define-value [0.13+]
    * &optional and &rest (replaced by #!optional and #!rest) [0.13+]
 
 
@@ -155,7 +150,15 @@ General programming tasks:
 
    (there is now support for waking threads via polling)
 
+   [ I have a patch that adds support for threads to be woken when
+   one of a set of fds is available for writing and reading. It
+   also has a blocking I/O function that suspends the thread while
+   it blocks.. ]
+
  - add regression tests
+
+   [ partially done, there is a test framework now, but only a couple
+   of modules define tests ]
 
  - scheme compilation is worse than rep compilation
 
@@ -222,12 +225,6 @@ General programming tasks:
 
    2. optimize the search (binary search if all clauses have same type
       and are orderable?)
-
- - Implement weak-pairs or equivalent
-
-   could use normal cons types for this, but allocate from a `weak'
-   freelist, then only gc has to differentiate between weak and
-   non-weak pairs
 
  - Use two passes for `concat'; the first pass calculates the new
    string's length, the second builds it

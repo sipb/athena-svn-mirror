@@ -1,5 +1,5 @@
 # rules.mk.sh -- Build dynamically-loadable objects for librep
-# $Id: rules.mk.sh,v 1.1.1.2 2001-03-13 16:43:34 ghudson Exp $
+# $Id: rules.mk.sh,v 1.1.1.3 2002-03-20 04:54:33 ghudson Exp $
 
 repdir=$1
 repcommonexecdir=$2
@@ -11,7 +11,6 @@ cat <<EOF
 repdir=$repdir
 repcommonexecdir=$repcommonexecdir
 rpath_repcommonexecdir=$repcommonexecdir
-repdocfile=$repdocfile
 
 rep_LIBTOOL=\$(repcommonexecdir)/libtool
 rep_INSTALL_ALIASES=\$(repcommonexecdir)/install-aliases

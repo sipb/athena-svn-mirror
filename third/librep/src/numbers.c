@@ -1,6 +1,6 @@
 /* numbers.c -- Implement the tower of numeric types
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
-   $Id: numbers.c,v 1.1.1.2 2001-03-13 16:43:17 ghudson Exp $
+   $Id: numbers.c,v 1.1.1.3 2002-03-20 04:53:12 ghudson Exp $
 
    This file is part of librep.
 
@@ -46,6 +46,7 @@ char *alloca ();
 #include <ctype.h>
 #include <limits.h>
 #include <errno.h>
+#include <time.h>
 
 #ifdef HAVE_LOCALE_H
 # include <locale.h>
@@ -351,7 +352,6 @@ promote_to (repv in, int type)
 	    rep_number_q *q = make_number (rep_NUMBER_RATIONAL);
 	    mpq_init (q->q);
 	    mpq_set_si (q->q, rep_INT(in), 1);
-	    mpq_canonicalize (q->q);
 	    return rep_VAL (q);
 	}
 #endif
@@ -602,18 +602,18 @@ rep_get_long_int (repv in)
 	{
 	case rep_NUMBER_BIGNUM:
 #ifdef HAVE_GMP
-	    return mpz_get_ui (rep_NUMBER(in,z));
+	    return mpz_get_si (rep_NUMBER(in,z));
 #else
 	    return rep_NUMBER (in,z);
 #endif
 
 #ifdef HAVE_GMP
 	case rep_NUMBER_RATIONAL:
-	    return (u_long) mpq_get_d (rep_NUMBER(in,q));
+	    return (long) mpq_get_d (rep_NUMBER(in,q));
 #endif
 
 	case rep_NUMBER_FLOAT:
-	    return (u_long) rep_NUMBER(in,f);
+	    return (long) rep_NUMBER(in,f);
 	}
     }
     else if (rep_CONSP (in)
@@ -846,6 +846,57 @@ number_cmp (repv v1, repv v2)
     return 1;
 }
 
+static const signed int map[] = {
+    0,  1,  2,  3,  4,  5,  6,  7,		/* 0x30 -> 0x37 */
+    8,  9, -1, -1, -1, -1, -1, -1,
+    -1, 10, 11, 12, 13, 14, 15, 16,		/* 0x40 -> 0x48 */
+    17, 18, 19, 20, 21, 22, 23, 24,
+    25, 26, 27, 28, 29, 30, 31, 32,		/* 0x50 -> 0x58 */
+    33, 34, 35, 36
+};
+#define MAP_SIZE 0x2c
+
+#ifndef HAVE_GMP
+static rep_bool
+parse_integer_to_float (char *buf, u_int len, u_int radix,
+			int sign, double *output)
+{
+    double value = 0.0;
+
+    while (len-- > 0)
+    {
+	int d;
+	char c = *buf++;
+	d = toupper (c) - '0';
+	if (d < 0 || d >= MAP_SIZE)
+	    return rep_FALSE;
+	d = map [d];
+	if (d < 0 || d >= radix)
+	    return rep_FALSE;
+	value = value * radix + d;
+    }
+
+    *output = (sign < 0) ? value * -1.0 : value;
+    return rep_TRUE;
+}
+#endif
+
+#define INSTALL_LOCALE(var, type, locale)	\
+    do {					\
+	char *tem = setlocale (type, 0);	\
+	if (tem != 0)				\
+	{					\
+	    int len = strlen (tem);		\
+	    char *copy = alloca (len + 1);	\
+	    memcpy (copy, tem, len);		\
+	    copy[len] = 0;			\
+	    (var) = copy;			\
+	    setlocale (type, locale);		\
+	}					\
+	else					\
+	    (var) = 0;				\
+    } while (0)
+
 repv
 rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 {
@@ -888,15 +939,6 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 	}
 	if (bits < rep_LISP_INT_BITS)
 	{
-	    static const signed int map[] = {
-		 0,  1,  2,  3,  4,  5,  6,  7,		/* 0x30 -> 0x37 */
-		 8,  9, -1, -1, -1, -1, -1, -1,
-		-1, 10, 11, 12, 13, 14, 15, 16,		/* 0x40 -> 0x48 */
-		17, 18, 19, 20, 21, 22, 23, 24,
-		25, 26, 27, 28, 29, 30, 31, 32,		/* 0x50 -> 0x58 */
-		33, 34, 35, 36
-	    };
-#define MAP_SIZE 0x2c
 	    long value = 0;
 	    char c;
 	    if (radix == 10)
@@ -933,7 +975,10 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 	{
 	    z = make_number (rep_NUMBER_BIGNUM);
 #ifdef HAVE_GMP
-	    if (mpz_init_set_str (z->z, buf, radix) == 0)
+	    copy = alloca (len + 1);
+	    memcpy (copy, buf, len);
+	    copy[len] = 0;
+	    if (mpz_init_set_str (z->z, copy, radix) == 0)
 	    {
 		if (sign < 0)
 		    mpz_neg (z->z, z->z);
@@ -954,18 +999,35 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 # else
 		value = strtol (copy, &tail, radix);
 # endif
-		if (errno != 0)
-		    goto do_float;	/* overflow */
-		else if (*tail != 0)
+		if (errno == ERANGE)
+		{
+		    /* Overflow - parse to a double, then try to convert
+		       back to an int.. */
+		    double d;
+		    if (parse_integer_to_float (buf, len, radix, sign, &d))
+		    {
+			if (d > BIGNUM_MIN && d < BIGNUM_MAX)
+			{
+			    z->z = d;
+			    return maybe_demote (rep_VAL (z));
+			}
+			else
+			{
+			    f = make_number (rep_NUMBER_FLOAT);
+			    f->f = d;
+			    return rep_VAL (f);
+			}
+		    }
+		    else
+			goto error;
+		}
+		else if (*tail != 0 || errno != 0)
 		    goto error;		/* not all characters used */
 
-		if (sign < 0)
-		    value = -value;
-
-		z->z = value;
+		z->z = (sign < 0) ? -value : value;
 		return maybe_demote (rep_VAL (z));
 	    }
-#endif
+#endif /* !HAVE_GMP */
 	}
 
     case rep_NUMBER_RATIONAL:
@@ -1005,11 +1067,8 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 #endif
 
     case rep_NUMBER_FLOAT:
-#ifndef HAVE_GMP
-    do_float:
-#endif
 #ifdef HAVE_SETLOCALE
-	old_locale = setlocale (LC_NUMERIC, "C");
+	INSTALL_LOCALE (old_locale, LC_NUMERIC, "C");
 #endif
 	d = strtod (buf, &tem);
 #ifdef HAVE_SETLOCALE
@@ -1105,7 +1164,7 @@ rep_print_number_to_string (repv obj, int radix, int prec)
     case rep_NUMBER_FLOAT:		/* XXX handle radix arg */
 	sprintf (fmt, "%%.%dg", prec < 0 ? 16 : prec);
 #ifdef HAVE_SETLOCALE
-	old_locale = setlocale (LC_NUMERIC, "C");
+	INSTALL_LOCALE (old_locale, LC_NUMERIC, "C");
 #endif
 #ifdef HAVE_SNPRINTF
 	snprintf(buf, sizeof(buf), fmt, rep_NUMBER(obj,f));
@@ -2239,22 +2298,39 @@ Return `e' (the base of natural logarithms) raised to the power X.
     return rep_make_float (exp (rep_get_float (arg)), rep_TRUE);
 }
 
-DEFUN("log", Flog, Slog, (repv arg), rep_Subr1) /*
+DEFUN("log", Flog_, Slog, (repv arg, repv base), rep_Subr2) /*
 ::doc:rep.lang.math#log::
-log X
+log X [BASE]
 
-Return the natural logarithm of X. An arithmetic error is signalled if
-X is less than zero.
+Return the logarithm of X in base BASE. An arithmetic error is
+signalled if X is less than zero. If BASE isn't defined, return the
+natural logarithm of X.
 ::end:: */
 {
-    double d;
+    double d, b;
+
     rep_DECLARE1 (arg, rep_NUMERICP);
+    rep_DECLARE2_OPT (base, rep_NUMERICP);
+
     d = rep_get_float (arg);
-    if (d >= 0)
-	return rep_make_float (log (d), rep_TRUE);
+
+    if (base != Qnil)
+    {
+	b = rep_get_float (base);
+	if (d >= 0 && b >= 0)
+	    return rep_make_float (log (d) / log (b), rep_TRUE);
+    }
     else
-	return Fsignal (Qarith_error, rep_LIST_1 (rep_VAL (&domain_error)));
+    {
+	if (d >= 0)
+	    return rep_make_float (log (d), rep_TRUE);
+    }
+
+    return Fsignal (Qarith_error, rep_LIST_1 (rep_VAL (&domain_error)));
 }
+
+/* XXX compat */
+repv Flog (repv x) { return Flog_ (x, Qnil); }
 
 DEFUN("sin", Fsin, Ssin, (repv arg), rep_Subr1) /*
 ::doc:rep.lang.math#sin::
@@ -2719,6 +2795,139 @@ in base 10.
 }
 
 
+/* Random number generation */
+
+#if defined (HAVE_GMP) && defined (HAVE_GMP_RANDINIT)
+
+static gmp_randstate_t random_state;
+
+static void
+ensure_random_state (void)
+{
+    static rep_bool initialized;
+
+    if (!initialized)
+    {
+	/* Generate the best random numbers up to 128 bits, the
+	   maximum allowed by gmp */
+	gmp_randinit (random_state, GMP_RAND_ALG_DEFAULT, 128);
+
+	/* Initialize to a known seed */
+	gmp_randseed_ui (random_state, 0);
+
+	initialized = rep_TRUE;
+    }
+}
+
+static void
+random_seed (u_long seed)
+{
+    ensure_random_state ();
+    gmp_randseed_ui (random_state, seed);
+}
+
+static repv
+random_new (repv limit_)
+{
+    rep_number_z *z = make_number (rep_NUMBER_BIGNUM);
+    repv limit = promote_to (limit_, rep_NUMBER_BIGNUM);
+
+    ensure_random_state ();
+    mpz_init (z->z);
+    mpz_urandomm (z->z, random_state, rep_NUMBER (limit, z));
+
+    return maybe_demote (rep_VAL (z));
+}
+
+#else /* HAVE_GMP */
+
+/* Try to work out how many bits of randomness rand() will give.. */
+#ifdef HAVE_LRAND48
+# define RAND_BITS 31
+# define rand lrand48
+# define srand srand48
+#else
+# if RAND_MAX == 32768
+#  define RAND_BITS 15
+# elif RAND_MAX == 2147483647
+#  define RAND_BITS 31
+# else
+#  define RAND_BITS 63
+# endif
+#endif
+
+static void
+random_seed (u_long seed)
+{
+    srand (seed);
+}
+
+static repv
+random_new (repv limit_)
+{
+    long limit = rep_get_long_int (limit_);
+    long divisor, val;
+
+    if (limit <= 0 || limit > rep_LISP_MAX_INT)
+	return rep_signal_arg_error (limit_, 1);
+
+    divisor = rep_LISP_MAX_INT / limit;
+    do {
+	val = rand ();
+	if (rep_LISP_INT_BITS-1 > RAND_BITS)
+	{
+	    val = (val << RAND_BITS) | rand ();
+	    if (rep_LISP_INT_BITS-1 > 2*RAND_BITS)
+	    {
+		val = (val << RAND_BITS) | rand ();
+		if (rep_LISP_INT_BITS-1 > 3*RAND_BITS)
+		{
+		    val = (val << RAND_BITS) | rand ();
+		    if (rep_LISP_INT_BITS-1 > 4*RAND_BITS)
+			val = (val << RAND_BITS) | rand ();
+		}
+	    }
+	}
+	/* Ensure VAL is positive (assumes twos-complement) */
+	val &= ~(~rep_VALUE_CONST(0) << (rep_LISP_INT_BITS - 1));
+	val /= divisor;
+    } while (val >= limit);
+
+    return rep_make_long_int (val);
+}
+
+#endif /* !HAVE_GMP */
+
+DEFUN("random", Frandom, Srandom, (repv arg), rep_Subr1) /*
+::doc:rep.lang.math#random::
+random [LIMIT]
+
+Produce a pseudo-random number between zero and LIMIT (or the largest
+positive integer representable). If LIMIT is the symbol `t' the
+generator is seeded with the current time of day.
+::end:: */
+{
+    repv limit;
+
+    if (arg == Qt)
+    {
+	random_seed (time (0));
+	return Qt;
+    }
+
+    rep_DECLARE1_OPT (arg, rep_INTEGERP);
+    if (rep_INTEGERP (arg))
+	limit = arg;
+    else
+	limit = rep_MAKE_INT (rep_LISP_MAX_INT);
+
+    if (rep_compare_numbers (limit, rep_MAKE_INT (0)) <= 0)
+	return rep_signal_arg_error (limit, 1);
+
+    return random_new (limit);
+}
+
+
 /* init */
 
 void
@@ -2786,6 +2995,7 @@ rep_numbers_init (void)
     rep_ADD_SUBR(Smin);
     rep_ADD_SUBR(Sstring_to_number);
     rep_ADD_SUBR(Snumber_to_string);
+    rep_ADD_SUBR(Srandom);
     rep_pop_structure (tem);
 
     tem = rep_push_structure ("rep.data");

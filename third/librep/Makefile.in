@@ -1,6 +1,6 @@
 # Makefile.in for Jade version 4
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.1 2000-11-12 06:11:58 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2002-03-20 04:55:03 ghudson Exp $
 #
 # This file is part of Jade.
 #
@@ -27,8 +27,8 @@ ALL_SUBDIRS = intl src lisp man
 INSTALL_SUBDIRS = src lisp man
 
 all : build.h rules.mk DOC
-	set -e; for dir in $(ALL_SUBDIRS); do \
-	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ); \
+	for dir in $(ALL_SUBDIRS); do \
+	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ) || exit 1; \
 	done
 
 build.h : build-info config.status
@@ -39,14 +39,22 @@ build.h : build-info config.status
 rules.mk : rules.mk.sh config.status
 	$(SHELL) $< '$(repdir)' '$(repcommonexecdir)' '$(repdocfile)' >$@
 
+check :
+	for dir in $(ALL_SUBDIRS); do \
+	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ) || exit 1; \
+	done
+
 install : all installdirs
-	set -e; for dir in $(INSTALL_SUBDIRS); do \
-	  ( cd $$dir && $(MAKE) $@ ); \
+	for dir in $(INSTALL_SUBDIRS); do \
+	  ( cd $$dir && $(MAKE) $@ ) || exit 1; \
 	done
 	$(INSTALL_DATA) DOC $(DESTDIR)$(repexecdir)
+	$(INSTALL_SCRIPT) emulate-gnu-tar $(DESTDIR)$(repexecdir)
 	$(INSTALL_SCRIPT) libtool $(DESTDIR)$(repcommonexecdir)
 	$(INSTALL_DATA) rules.mk $(DESTDIR)$(repcommonexecdir)
 	$(INSTALL_SCRIPT) install-aliases $(DESTDIR)$(repcommonexecdir)
+	$(INSTALL_DATA) rep-debugger.el $(DESTDIR)$(emacssitelispdir)
+
 	@echo "---------------------------------------------------------"
 	@echo "Trying to install rep.m4 in $(DESTDIR)$(aclocaldir);"
 	@echo "if this fails, install it manually in a suitable location"
@@ -56,16 +64,19 @@ install : all installdirs
 installdirs : mkinstalldirs
 	$(SHELL) $< $(DESTDIR)$(repdir)/$(version) \
 	  $(DESTDIR)$(bindir) $(DESTDIR)$(aclocaldir) \
-	  $(DESTDIR)$(repcommonexecdir) $(DESTDIR)$(repexecdir)
+	  $(DESTDIR)$(repcommonexecdir) $(DESTDIR)$(repexecdir) \
+	  $(DESTDIR)$(emacssitelispdir)
 
 uninstall :
-	-set -e; for dir in $(INSTALL_SUBDIRS); do \
-	  ( cd $$dir && $(MAKE) $@ ); \
+	-for dir in $(INSTALL_SUBDIRS); do \
+	  ( cd $$dir && $(MAKE) $@ ) || exit 1; \
 	done
 	rm -rf $(DESTDIR)$(repdir)/$(version)
+	rm -rf $(DESTDIR)$(repexecdir)
 	rm -f $(DESTDIR)$(repcommonexecdir)/rules.mk
 	rm -f $(DESTDIR)$(repcommonexecdir)/install-aliases
 	rm -f $(DESTDIR)$(repcommonexecdir)/libtool
+	rm -f $(DESTDIR)$(emacssitelispdir)/rep-debugger.el
 	rm -f $(DESTDIR)$(aclocaldir)/rep.m4
 
 DOC : src/repdoc
@@ -81,14 +92,14 @@ tar :
 	tar -zcT FILES -f librep.tar.gz
 
 clean :
-	-set -e; for dir in $(ALL_SUBDIRS); do \
-	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ); \
+	-for dir in $(ALL_SUBDIRS); do \
+	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ) || exit 1; \
 	done
 	rm -f *~ NEWS DOC TAGS build.h
 
 distclean :
-	-set -e; for dir in $(ALL_SUBDIRS); do \
-	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ); \
+	-for dir in $(ALL_SUBDIRS); do \
+	  [ -d $$dir ] && ( cd $$dir && $(MAKE) $@ ) || exit 1; \
 	done
 	rm -f config.cache config.h config.log config.status Makefile libtool
 	rm -f *~ NEWS DOC TAGS build.h rules.mk librep.spec

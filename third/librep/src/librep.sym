@@ -62,9 +62,6 @@ Fcurrent_time_string
 Fcurrent_utime
 Fdatum_ref
 Fdatum_set
-Fdebug_frame_environment
-Fdebug_inner_frame
-Fdebug_outer_frame
 Fdefault_boundp
 Fdefault_value
 Fdefine_datum_printer
@@ -724,6 +721,7 @@ rep_type_cmp
 rep_unbind_symbols
 rep_unbound_file_error
 rep_unbox_pointer
+rep_undefined_value
 rep_unix_set_fd_blocking
 rep_unix_set_fd_cloexec
 rep_unix_set_fd_nonblocking

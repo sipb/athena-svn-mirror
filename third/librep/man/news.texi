@@ -3,6 +3,222 @@
 @appendix News
 @cindex News
 
+@heading 0.15
+
+@itemize @bullet
+
+@item Parser can now associate lexical location (file name and line
+number) with parsed objects. Added @code{call-with-lexical-origins} and
+@code{lexical-origin} functions. This adds memory overhead but is only
+enabled in interpreted mode, or other times it could be useful (e.g.
+when compiling)
+
+@item The compiler enables line-numbering, and uses the information
+when it prints errors. It also prints errors in a more standard format
+(intended to mimic GCC), and distinguishes warnings from errors 
+
+@item Debugger is much improved, and supports emacs-style emission of
+line number tokens. Use the included @file{rep-debugger.el} elisp code
+to source-debug rep programs in Emacs!
+
+@item New command line option @samp{--debug}. When given, rep starts up
+in the debugger
+
+@item Reformatted backtrace output. Also backtraces only ever include
+evaluated argument lists now. They also include lexical information
+when possible
+
+@item Syntax errors include error description and line number
+
+@item Now supports weak reference objects. New functions
+@code{make-weak-ref}, @code{weak-ref}, @code{weak-ref-set}. A weak
+reference is a pointer to another object. When that object is garbage
+collected, the pointer in the weak reference is set to false.
+
+@item New `error helper' module. When an error is handled, this module
+is called and tries to print a human-understandable message explaining
+why the error may have occurred
+
+@item REPL commands may now be specified by their shortest unique set
+of leading characters, e.g. @samp{,o} instead of @samp{,open}
+
+@item Added an @code{#undefined} value. Returned by @code{%define} and
+the macros using it (@code{defun}, @code{defmacro}, etc@dots{})
+
+@item New function @code{table-size} in module @code{rep.data.tables}
+
+@item @code{thread-suspend} returns true iff the timeout was reached
+(i.e. return false if @code{thread-wake} was used to unsuspend the
+thread)
+
+@item Objects defined using the @code{object} macro now have an
+implicit @code{self} binding -- the object representing their self (or
+their most derived self)
+
+@item Added @var{timeout} parameter to @code{condition-variable-wait}
+and @code{obtain-mutex} functions
+
+@item New @code{rep.threads.message-port} module, implements a simple
+message queue for threads
+
+@item @code{log} function now optionally accepts a second argument, the
+base of the logarithm
+
+@item Use gmp to generate random numbers when possible (if at least
+version 3 of gmp is found) [disabled in librep 0.15.1 -- gmp seems to
+be buggy?]
+
+@item The @code{string-replace} function may now be given a function as
+its @var{template} parameter
+
+@item Bug fixes:
+
+@itemize @minus
+
+@item Signal an error if writes don't write all characters they were
+asked to. Also, some functions could write fewer characters than they
+were supposed to even if no errors occurred
+
+@item Remembered that file sizes may not fit in fixnums
+
+@item Don't preserve trailing slashes in results of canonical-file-name
+(to make the path canonical)
+
+@item Don't signal an error when end of file is encountered immediately
+after reading @samp{#\X} syntax
+
+@item @code{current-thread} and @code{all-threads} will create a thread
+object for the implicit thread if there isn't one already
+
+@item In C subrs that take optional integer arguments, signal an error
+if the given value isn't an integer or undefined (false). Also, accept
+all types of numbers where it makes sense to do so
+
+@item Signal an error if end of file is read while parsing a block
+comment
+
+@item Don't ever return a null object from @code{current-time-string}
+
+@item Catch errors signalled during command line option processing, and
+pass them to the standard error handler
+
+@item Right hand side of @code{letrec} bindings may now have more than
+one form
+
+@item The @code{object} macro now evaluates its @var{base-object}
+parameter exactly once
+
+@item Finally removed @code{define-value}
+
+@item Ignore null lines (or lines which only have comments) in the repl
+
+@item In the compiler, don't expand macros which have have been
+shadowed by local bindings
+
+@item Don't print some compiler errors/warnings twice
+
+@item Fixes for @code{mips-compaq-nonstopux} architecture (Tom Bates)
+
+@item Fixed @code{,reload} and @code{,unload} repl commands not to try
+to remove non-existent structures
+
+@end itemize
+@end itemize
+
+
+@heading 0.14
+
+@itemize @bullet
+
+@item New module @code{rep.util.md5}, has two functions for generating
+MD5 message digests (of files or strings)
+
+@item Changes to the @code{rep.io.sockets} function:
+
+In the @code{socket-server} function the @var{host} and/or @var{port}
+arguments may be false, meaning to listen on all addresses and to
+choose a random unused port.
+
+New functions @code{socket-peer-address} and @code{socket-peer-port},
+these always returns the details of the far end of the connetion.
+@code{socket-address} and @code{socket-port} have been changed to
+always return the details of the local connection point.
+
+@item New function in @code{rep.system} module, @code{crypt}. A wrapper
+for the system's @code{crypt} function (if it has one)
+
+@item New function in @code{rep.threads} mdoule,
+@code{make-suspended-thread}
+
+@item New module @code{rep.net.rpc}, provides a text-stream based RPC
+mechanism for Lisp programs. Similar in some ways to untyped CORBA.
+(This is still in the experimental stage -- its interface may change in
+forthcoming releases)
+
+@item New functions in @code{rep.data} module, @code{list->vector} and
+@code{vector->list}
+
+@item New macro @code{define-special-form}. A combination of
+@code{defvar} and @code{setq} -- it always makes the variable special
+and it always sets it to the given value
+
+@item New module @code{rep.test.framework} implementing @code{assert},
+@code{check} and @code{test} macros. This provides a framework for
+implementing unit tests in Lisp modules (such that running the
+interpreter with the @samp{--check} option will run all tests that have
+been set up to be autoloaded
+
+@item Bug fixes:
+
+@itemize @minus
+
+@item When reading from strings, don't choke on zero bytes
+
+@item When writing into sockets, be aware that the socket is
+in non-blocking mode
+
+@item SDBM and GDBM modules now close any open databases before the
+interpreter exits
+
+@item Fixed the @code{rep_parse_number} function not to require a
+terminating null character in the string when parsing bignums
+
+@item Only define @code{Qrep_lang_interpreter} once
+
+@item Don't assign vm registers to physical registers on 68000
+architectures -- it's been reported to crash
+
+@item When running asynchronous subprocesses, open and initialize the
+pty slave before forking to avoid a race condition with the child
+process
+
+@item Flush symbols from the module cache at another point
+
+@item Fixes for Unixware
+
+@item When compiling non-top-level @code{defvar} forms, add any doc
+string they have to the database
+
+@end itemize
+@end itemize
+
+
+@heading 0.13.5
+
+@itemize @bullet
+
+@item Tar file handling no longer requires GNU tar
+
+@item The @code{defvar} special form can now take only a single
+argument
+
+@item The reader now treats @code{#\return} characters as white space
+
+@item Other miscellaneous bug fixes@dots{}
+
+@end itemize
+
+
 @heading 0.13.4
 
 @itemize @bullet

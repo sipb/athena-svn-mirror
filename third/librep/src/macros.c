@@ -1,6 +1,6 @@
 /* macros.c -- macroexpand etc
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
-   $Id: macros.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $
+   $Id: macros.c,v 1.1.1.2 2002-03-20 04:55:02 ghudson Exp $
 
    This file is part of librep.
 
@@ -109,7 +109,6 @@ again:
 	    rep_GC_root gc_form, gc_env;
 	    lc.fun = Qnil;
 	    lc.args = Qnil;
-	    lc.args_evalled_p = Qnil;
 
 	    rep_PUSH_CALL (lc);
 	    rep_USE_FUNARG (car);

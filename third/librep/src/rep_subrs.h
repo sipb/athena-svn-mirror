@@ -1,6 +1,6 @@
 /* rep_subrs.h -- mostly LISP subr declarations
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: rep_subrs.h,v 1.1.1.2 2001-03-13 16:43:22 ghudson Exp $
+   $Id: rep_subrs.h,v 1.1.1.3 2002-03-20 04:52:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -327,7 +327,7 @@ enum rep_message {
     rep_restore_message,
     rep_redisplay_message
 };
-void (*rep_message_fun)(enum rep_message fn, ...);
+extern void (*rep_message_fun)(enum rep_message fn, ...);
 
 /* from misc.c */
 extern u_char *rep_str_dupn(const u_char *old, int len);
@@ -453,6 +453,7 @@ extern repv Finput_stream_p(repv arg);
 extern repv Foutput_stream_p(repv arg);
 
 /* from symbols.c */
+extern repv rep_undefined_value;
 extern repv (*rep_deref_local_symbol_fun)(repv sym);
 extern repv (*rep_set_local_symbol_fun)(repv sym, repv val);
 extern void rep_intern_static(repv *, repv);

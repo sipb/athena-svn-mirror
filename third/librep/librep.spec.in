@@ -35,6 +35,12 @@ Link libraries and C header files for librep development.
 %setup -q
 
 %build
+
+LC_ALL=""
+LINGUAS=""
+LANG=""
+export LC_ALL LINGUAS LANG
+
 %configure --with-readline --with-extra-cflags=-fstrength-reduce
 make host_type=%{_target_platform}
 
@@ -70,6 +76,7 @@ fi
 %{_datadir}/rep/%{version}
 %{_libexecdir}/rep/%{version}/%{_target_platform}
 %{_infodir}/librep*
+%{_datadir}/emacs/site-lisp/rep-*
 
 %files devel
 %defattr(-,root,root)

@@ -1,6 +1,6 @@
 /* unix_dl.c -- Dynamic loading of C modules
    Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-   $Id: unix_dl.c,v 1.1.1.1 2000-11-12 06:11:38 ghudson Exp $
+   $Id: unix_dl.c,v 1.1.1.2 2002-03-20 04:54:43 ghudson Exp $
 
    This file is part of Jade.
 
@@ -93,8 +93,12 @@ char *alloca ();
 #  define RTLD_GLOBAL 0
 # endif
 
-#elif defined (HAVE_DL_H)
-# include <dl.h>
+#elif defined (HAVE_DL_H) || defined (HAVE_SYS_DL_H)
+# if defined (HAVE_DL_H)
+#  include <dl.h>
+# else
+#  include <sys/dl.h>
+# endif
 # if ! defined (BIND_IMMEDIATE)
 #  define BIND_IMMEDIATE 0
 # endif

@@ -1,6 +1,6 @@
 #| data.jl -- data type functions
 
-   $Id: data.jl,v 1.1.1.2 2001-03-13 16:43:25 ghudson Exp $
+   $Id: data.jl,v 1.1.1.3 2002-03-20 04:55:01 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -137,7 +137,9 @@
 ;;; numbers
 
   (define number? (make-predicate numberp))
-  (define (complex? obj) #t)
+  (define (complex? obj)
+    (declare (unused obj))
+    #t)
   (define real? (make-predicate realp))
   (define rational? (make-predicate rationalp))
   (define integer? (make-predicate integerp))
@@ -158,6 +160,7 @@
   (define even? (make-predicate evenp))
 
   (define (rationalize x y)
+    (declare (unused x y))
     (error "rationalize is unimplemented"))
 
   (define string->number (make-nil-predicate rep#string->number))

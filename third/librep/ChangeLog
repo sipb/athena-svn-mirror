@@ -1,3 +1,104 @@
+2001-10-28  John Harper  <jsh@unfactored.org>
+
+	* configure.in: version 0.15.2
+
+2001-10-03  John Harper  <jsh@unfactored.org>
+
+	* version 0.15.1
+
+	* build-info: don't try to find domainname, we don't need it
+
+2001-10-01  John Harper  <jsh@unfactored.org>
+
+	* configure.in: version 0.15
+
+	* configure.in: check for __gmp_randinit () if gmp is found,
+	and define HAVE_GMP_RANDINIT if so
+
+2001-09-15  John Harper  <jsh@unfactored.org>
+
+	* config.h.in: removed spurious close-comment from after
+	`#undef HAVE_MEMORY_H'
+
+2001-09-14  John Harper  <jsh@pixelslut.com>
+
+	* configure.in: bumped libcurrent and libage
+
+2001-08-09  John Harper  <jsh@pixelslut.com>
+
+	* rep-debugger.el: fixed for new debugger command line option
+	names
+
+2001-08-07  John Harper  <jsh@pixelslut.com>
+
+	* configure.in, Makedefs.in, Makefile.in, librep.spec.in:
+	install rep-debugger.el into the emacs site-lisp directory (in
+	our $prefix)
+
+	* rep-debugger.el: emacs code to make GUD mode work with rep's
+	new source debugging support
+
+2001-07-02  John Harper  <jsh@pixelslut.com>
+
+	* configure.in: version 0.14, incremented library revision
+	number
+
+2001-06-20  John Harper  <jsh@pixelslut.com>
+
+	* Makefile.in: fixed SUBDIRS commands to exit if an error
+	occurs
+
+2001-06-14  John Harper  <jsh@pixelslut.com>
+
+	* configure.in, config.h.in: check for crypt () in default libs
+	and in -lcrypt
+
+2001-04-16  John Harper  <jsh@eazel.com>
+
+	* configure.in, config.h.in: check for <sys/dl.h> and define
+	HAVE_SYS_DL_H if present (needed on UnixWare)
+
+2001-04-09  John Harper  <jsh@eazel.com>
+
+	* configure.in: changed version string to 0.14-pre now there's
+	a 0.13.6 on a branch
+
+2001-03-26  John Harper  <jsh@eazel.com>
+
+	* Makefile.in, man/Makefile.in: added `check' targets
+
+2001-03-22  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.13.5, bumped library revision number
+
+2001-03-12  John Harper  <jsh@eazel.com>
+
+	* emulate-gnu-tar, Makefile.in: new script, emulates the
+	options of GNU tar that the tar file-handler uses, but using
+	hopefully generic tar options and separate decompression
+	programs. Used tar option combinations are `tvf -' and `xf -
+	[FILE]'
+
+2001-02-20  John Harper  <jsh@eazel.com>
+
+	* configure.in: on Solaris use /usr/ccs/lib/cpp (patch from
+	albert chin <china@thewrittenword.com>)
+
+2001-01-17  John Harper  <jsh@eazel.com>
+
+	* librep.spec.in: unset LC_ALL, LINGUAS and LANG before
+	building
+
+2001-01-15  John Harper  <jsh@eazel.com>
+
+	* configure.in: delete the rules.mk file each time AC_OUTPUT is
+	run (since it can contain stale values, and the rule to rebuild
+	it doesn't work for the top-level Makefile since it's included
+	first)
+
+	* rules.mk.sh: removed repdocfile definition, it's not used by
+	anything and can confuse the librep build process
+
 2001-01-04  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.13.4

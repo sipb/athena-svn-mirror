@@ -1,6 +1,6 @@
 #| rep.jl -- read-eval-print loop
 
-   $Id: user.jl,v 1.1.1.1 2000-11-12 06:11:31 ghudson Exp $
+   $Id: user.jl,v 1.1.1.2 2002-03-20 04:55:04 ghudson Exp $
 
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
 
@@ -30,6 +30,77 @@
 	   rep.io.processes)
      (set-binds))
 
+  (defun do-load (name)
+    (cond ((file-exists-p name)
+	   (load name nil t t))
+	  ((string-match "\\.jlc?$" name)
+	   (load name))
+	  (t (require (intern name)))))
+
+  (defun parse-options ()
+    (let (arg)
+      (condition-case error-data
+	  (while (setq arg (car command-line-args))
+	    (setq command-line-args (cdr command-line-args))
+	    (cond
+	     ((member arg '("--call" "-f"))
+	      (setq arg (car command-line-args))
+	      (setq command-line-args (cdr command-line-args))
+	      ((symbol-value (read-from-string arg))))
+	     ((member arg '("--load" "-l"))
+	      (setq arg (car command-line-args))
+	      (setq command-line-args (cdr command-line-args))
+	      (do-load arg))
+	     ((member arg '("-s" "--scheme"))
+	      (setq arg (car command-line-args))
+	      (setq command-line-args (cdr command-line-args))
+	      (setq batch-mode t)
+	      (if (file-exists-p arg)
+		  (structure () (open scheme) (load arg '() 1 1))
+		(structure () (open scheme) (load arg))))
+	     ((string= arg "--check")
+	      (require 'rep.test.framework)
+	      (run-self-tests-and-exit))
+	     ((string= arg "--help")
+	      (format standard-error "\
+usage: %s [OPTIONS...]
+
+where OPTIONS are any of:
+
+    FILE		load the Lisp file FILE (from the cwd if possible,
+			 implies --batch mode)
+
+    --batch		batch mode: process options and exit
+    --interp		interpreted mode: don't load compiled Lisp files
+    --debug		start in the debugger (implies --interp)
+
+    --call FUNCTION	call the Lisp function FUNCTION
+    --f FUNCTION
+
+    --load FILE		load the file of Lisp forms called FILE
+    -l FILE
+
+    --scheme FILE	load the file of Scheme forms called FILE
+    -s FILE		 (implies --batch mode)
+
+    --check		run self tests and exit
+
+    --version		print version details
+    --no-rc		don't load rc or site-init files
+    --quit, -q		terminate the interpreter process\n" program-name)
+	      (throw 'quit 0))
+	     ((string= arg "--version")
+	      (format standard-output "rep version %s\n" rep-version)
+	      (throw 'quit 0))
+	     ((member arg '("--quit" "-q"))
+	      (throw 'quit 0))
+	     (t
+	      (setq batch-mode t)
+	      (do-load arg))))
+	(error
+	 (error-handler-function (car error-data) (cdr error-data))
+	 (throw 'quit 1)))))
+
   (setq *user-structure* 'user)
 
   ;; Install all autoload hooks.
@@ -54,65 +125,21 @@
        (default-error-handler (car error-data) (cdr error-data)))))
   
   ;; Use all arguments which are left.
-  (let
-      ((do-load (lambda (name)
-		  (cond ((file-exists-p name)
-			 (load name nil t t))
-			((string-match "\\.jlc?$" name)
-			 (load name))
-			(t (require (intern name))))))
-       arg)
-    (while (setq arg (car command-line-args))
-      (setq command-line-args (cdr command-line-args))
-      (cond
-       ((member arg '("--call" "-f"))
-	(setq arg (car command-line-args))
-	(setq command-line-args (cdr command-line-args))
-	((symbol-value (read-from-string arg))))
-       ((member arg '("--load" "-l"))
-	(setq arg (car command-line-args))
-	(setq command-line-args (cdr command-line-args))
-	(do-load arg))
-       ((member arg '("-s" "--scheme"))
-	(setq arg (car command-line-args))
-	(setq command-line-args (cdr command-line-args))
-	(setq batch-mode t)
-	(if (file-exists-p arg)
-	    (structure () (open scheme) (load arg '() 1 1))
-	  (structure () (open scheme) (load arg))))
-       ((string= arg "--help")
-	(format standard-error "\
-usage: %s [OPTIONS...]
-
-where OPTIONS are any of:
-
-    FILE		load the Lisp file FILE (from the cwd if possible,
-			 implies --batch mode)
-
-    --batch		batch mode: process options and exit
-    --interp		interpreted mode: don't load compile Lisp files
-
-    --call FUNCTION	call the Lisp function FUNCTION
-    --f FUNCTION
-
-    --load FILE		load the file of Lisp forms called FILE
-    -l FILE
-
-    --scheme FILE	load the file of Scheme forms called FILE
-    -s FILE		 (implies --batch mode)
-
-    --version		print version details
-    --no-rc		don't load rc or site-init files
-    --quit, -q		terminate the interpreter process\n" program-name)
-	(throw 'quit 0))
-       ((string= arg "--version")
-	(format standard-output "rep version %s\n" rep-version)
-	(throw 'quit 0))
-       ((member arg '("--quit" "-q"))
-	(throw 'quit 0))
-       (t
-	(setq batch-mode t)
-	(do-load arg)))))
+  (if (get-command-line-option "--debug")
+      (progn
+	(require 'rep.lang.debugger)
+	(call-with-lexical-origins
+	 (lambda ()
+	   (setq interpreted-mode t)
+	   (setq debug-on-error '(bad-arg missing-arg invalid-function
+				  void-value invalid-read-syntax
+				  premature-end-of-stream invalid-lambda-list
+				  invalid-macro invalid-autoload no-catcher
+				  file-error invalid-stream setting-constant
+				  process-error arith-error))
+	   (break)
+	   (parse-options))))
+    (parse-options))
 
   (unless batch-mode
     (format standard-output "rep %s, Copyright (C) 1999-2000 John Harper

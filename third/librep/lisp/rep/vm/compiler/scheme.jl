@@ -1,6 +1,6 @@
 #| scheme.jl -- inliners for compiling Scheme code
 
-   $Id: scheme.jl,v 1.1.1.1 2000-11-12 06:11:03 ghudson Exp $
+   $Id: scheme.jl,v 1.1.1.2 2002-03-20 04:55:00 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -86,7 +86,8 @@
 		(remember-lexical-variable (compiler-constant-value name)))
 	       ((and (consp name) (symbolp (car name)))
 		(remember-function (car name) (cdr name)))
-	       (t (compiler-error "Invalid define statement" form)))))
+	       (t (compiler-error
+		   "invalid define statement: `%s'" form)))))
 
       ((begin)
        (setq form (cons 'begin (mapcar do-pass-1 (cdr form))))))
@@ -191,13 +192,13 @@
 	((end-label (make-label)))
       (setq form (cdr form))
       (unless form
-	(compiler-error "No key value in case statement"))
+	(compiler-error "no key value in case statement"))
       ;; XXX if key is constant optimise case away..
       (compile-form-1 (car form))
       (setq form (cdr form))
       (while (consp form)
 	(unless (consp form)
-	  (compiler-error "Badly formed clause in case statement"))
+	  (compiler-error "badly formed clause in case statement"))
 	(let
 	    ((cases (caar form))
 	     (forms (cdar form))
@@ -217,7 +218,8 @@
 		 (emit-insn `(jn ,next-label))
 		 (decrement-stack))
 		((not (eq cases 'else))
-		 (compiler-error "Badly formed clause in case statement")))
+		 (compiler-error
+		  "badly formed clause in case statement")))
 	  (compile-body forms return-follows)
 	  (decrement-stack)
 	  (emit-insn `(jmp ,end-label))
