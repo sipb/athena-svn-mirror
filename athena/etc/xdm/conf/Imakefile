@@ -1,7 +1,8 @@
-# $Id: Imakefile,v 1.8 1991-07-22 01:12:58 probe Exp $
+# $Id: Imakefile,v 1.9 1991-07-22 01:23:23 probe Exp $
 
 USRSCRIPTS=mitvma
 ETCSCRIPTS=machine
+BITMAPS=menu16
 
 create_dir(/etc/athena/login)
 create_dir(/usr/athena/lib/login)
@@ -17,15 +18,22 @@ install::
 		$(INSTALL) -m 0555 $$i $(DESTDIR)/etc/athena/login/$$i; \
 		done
 
+install::
+	-for i in $(BITMAPS); do \
+		$(INSTALL) $(DESTDIR)$(ATHXBITDIR)/$$i \
+			$(DESTDIR)/etc/athena/login/$$i; done
+
+
 #if defined(vax) || defined(ibm032) || defined(ultrix)
 create_dir(/etc/athena/login/fonts)
 
 FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
 FONTSM=	6x13 cursor 9x15
-BITMAPS=menu16
+
 #ifdef ultrix
 DECFONTS75=cursor
 FONTSM=	6x13 9x15
+
 install::
 	-for i in txt dir pag; do \
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/rgb.$$i \
@@ -39,9 +47,6 @@ install::
 	-for i in $(DECFONTS75); do \
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/fonts/decwin/75dpi/$$i.pcf \
 			$(DESTDIR)/etc/athena/login/fonts/$$i.pcf; done
-	-for i in $(BITMAPS); do \
-		$(INSTALL) $(DESTDIR)/usr/athena/lib/X11/bitmaps/$$i \
-			$(DESTDIR)/etc/athena/login/$$i; done
 	-/usr/bin/X11/mkfontdir $(DESTDIR)/etc/athena/login/fonts
 
 #else
@@ -56,9 +61,6 @@ install::
 	-for i in $(FONTS75); do \
 		$(INSTALL) $(DESTDIR)/usr/athena/lib/X11/fonts/75dpi/$$i.snf \
 			$(DESTDIR)/etc/athena/login/fonts/$$i.snf; done
-	-for i in $(BITMAPS); do \
-		$(INSTALL) $(DESTDIR)/usr/athena/lib/X11/bitmaps/$$i \
-			$(DESTDIR)/etc/athena/login/$$i; done
 	-mkfontdir $(DESTDIR)/etc/athena/login/fonts
 #endif /* ultrix */
 
