@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: ifconfig.sh,v 1.1.1.1 2001-10-22 13:05:46 ghudson Exp $
+# $Id: ifconfig.sh,v 1.1.1.2 2002-02-03 04:22:10 ghudson Exp $
 
 #
 # Set up interface aliases for bind9 system tests.
@@ -40,20 +40,14 @@ case "$1" in
 		    *-sun-solaris2.[6-7])
 			ifconfig lo0:$ns 10.53.0.$ns netmask 0xffffffff up
 			;;
-		    *-sun-solaris2.8)
+		    *-*-solaris2.8)
     			ifconfig lo0:$ns plumb
 			ifconfig lo0:$ns 10.53.0.$ns up
 			;;
-		    *-pc-linux-gnu)
+		    *-*-linux*)
 			ifconfig lo:$ns 10.53.0.$ns up netmask 255.255.255.0
 		        ;;
-		    *-unknown-freebsdelf3.[45])
-			ifconfig lo0 10.53.0.$ns alias netmask 0xffffffff
-			;;
-		    *-unknown-freebsdelf4.*)
-			ifconfig lo0 10.53.0.$ns alias netmask 0xffffffff
-			;;
-		    *-UnixWare7*)
+		    *-unknown-freebsd*)
 			ifconfig lo0 10.53.0.$ns alias netmask 0xffffffff
 			;;
 		    *-unknown-netbsd*)
@@ -63,10 +57,13 @@ case "$1" in
 			ifconfig lo0 add 10.53.0.$ns netmask 255.255.255.0
 			;;
 		    *-dec-osf[4-5].*)
-			/sbin/ifconfig lo0 alias 10.53.0.$ns
+			ifconfig lo0 alias 10.53.0.$ns
 			;;
 		    *-sgi-irix6.*)
 			ifconfig lo0 alias 10.53.0.$ns
+			;;
+		    *-*-sysv5uw[7-8]*)
+			ifconfig lo0 10.53.0.$ns alias netmask 0xffffffff
 			;;
 		    *-ibm-aix4.*)
 			ifconfig lo0 alias 10.53.0.$ns
@@ -88,16 +85,14 @@ case "$1" in
 		    *-sun-solaris2.[6-7])
 			ifconfig lo0:$ns 10.53.0.$ns down
 			;;
-		    *-sun-solaris2.8)
+		    *-*-solaris2.8)
 			ifconfig lo0:$ns 10.53.0.$ns down
+			ifconfig lo0:$ns 10.53.0.$ns unplumb
 			;;
-		    *-pc-linux-gnu)
+		    *-*-linux*)
 			ifconfig lo:$ns 10.53.0.$ns down
 		        ;;
-		    *-unknown-freebsdelf3.[45])
-			ifconfig lo0 10.53.0.$ns delete
-			;;
-		    *-unknown-freebsdelf4.*)
+		    *-unknown-freebsd*)
 			ifconfig lo0 10.53.0.$ns delete
 			;;
 		    *-unknown-netbsd*)
@@ -112,7 +107,7 @@ case "$1" in
 		    *-sgi-irix6.*)
 			ifconfig lo0 -alias 10.53.0.$ns
 			;;
-		    *-UnixWare7*)
+		    *-*-sysv5uw[7-8]*)
 			ifconfig lo0 -alias 10.53.0.$ns
 			;;
 		    *-ibm-aix4.*)

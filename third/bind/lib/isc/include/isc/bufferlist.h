@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: bufferlist.h,v 1.1.1.1 2001-10-22 13:09:14 ghudson Exp $ */
+/* $Id: bufferlist.h,v 1.1.1.2 2002-02-03 04:25:36 ghudson Exp $ */
 
 #ifndef ISC_BUFFERLIST_H
 #define ISC_BUFFERLIST_H 1

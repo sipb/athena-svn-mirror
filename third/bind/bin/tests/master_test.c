@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: master_test.c,v 1.1.1.1 2001-10-22 13:07:02 ghudson Exp $ */
+/* $Id: master_test.c,v 1.1.1.2 2002-02-03 04:23:00 ghudson Exp $ */
 
 #include <config.h>
 
@@ -85,8 +85,8 @@ main(int argc, char *argv[]) {
 		dns_rdatacallbacks_init_stdio(&callbacks);
 		callbacks.add = print_dataset;
 
-		result = dns_master_loadfile(argv[1], &origin, &origin, 1,
-					     ISC_FALSE,
+		result = dns_master_loadfile(argv[1], &origin, &origin, 
+					     dns_rdataclass_in, 0,
 					     &callbacks, mctx);
 		fprintf(stdout, "dns_master_loadfile: %s\n",
 			dns_result_totext(result));

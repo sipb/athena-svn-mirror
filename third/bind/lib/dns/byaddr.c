@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: byaddr.c,v 1.1.1.1 2001-10-22 13:07:47 ghudson Exp $ */
+/* $Id: byaddr.c,v 1.1.1.2 2002-02-03 04:24:52 ghudson Exp $ */
 
 #include <config.h>
 
@@ -54,9 +54,8 @@ struct dns_byaddr {
 	isc_boolean_t		canceled;
 };
 
-#define BYADDR_MAGIC			0x42794164U	/* ByAd. */
-#define VALID_BYADDR(b)			((b) != NULL && \
-					 (b)->magic == BYADDR_MAGIC)
+#define BYADDR_MAGIC			ISC_MAGIC('B', 'y', 'A', 'd')
+#define VALID_BYADDR(b)			ISC_MAGIC_VALID(b, BYADDR_MAGIC)
 
 #define MAX_RESTARTS 16
 

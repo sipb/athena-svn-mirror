@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: msgcat.h,v 1.1.1.1 2001-10-22 13:09:17 ghudson Exp $ */
+/* $Id: msgcat.h,v 1.1.1.2 2002-02-03 04:25:38 ghudson Exp $ */
 
 #ifndef ISC_MSGCAT_H
 #define ISC_MSGCAT_H 1

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: validator.c,v 1.1.1.1 2001-10-22 13:08:11 ghudson Exp $ */
+/* $Id: validator.c,v 1.1.1.2 2002-02-03 04:25:16 ghudson Exp $ */
 
 #include <config.h>
 
@@ -40,7 +40,7 @@
 #include <dns/validator.h>
 #include <dns/view.h>
 
-#define VALIDATOR_MAGIC			0x56616c3fU	/* Val?. */
+#define VALIDATOR_MAGIC			ISC_MAGIC('V', 'a', 'l', '?')
 #define VALID_VALIDATOR(v)	 	ISC_MAGIC_VALID(v, VALIDATOR_MAGIC)
 
 #define VALATTR_SHUTDOWN		0x01
@@ -68,7 +68,8 @@ static inline isc_result_t
 proveunsecure(dns_validator_t *val, isc_boolean_t resume);
 
 static void
-validator_log(dns_validator_t *val, int level, const char *fmt, ...);
+validator_log(dns_validator_t *val, int level, const char *fmt, ...)
+     ISC_FORMAT_PRINTF(3, 4);
 
 static void
 validator_done(dns_validator_t *val, isc_result_t result) {
@@ -164,7 +165,7 @@ fetch_callback_validator(isc_task_t *task, isc_event_t *event) {
 		validator_log(val, ISC_LOG_DEBUG(3),
 			      "fetch_callback_validator: got %s",
 			      dns_result_totext(eresult));
-		validator_done(val, eresult);
+		validator_done(val, DNS_R_NOVALIDKEY);
 	}
 
  out:
@@ -283,7 +284,7 @@ fetch_callback_nullkey(isc_task_t *task, isc_event_t *event) {
 		validator_log(val, ISC_LOG_DEBUG(3),
 			      "fetch_callback_nullkey: got %s",
 			      dns_result_totext(eresult));
-		validator_done(val, eresult);
+		validator_done(val, DNS_R_NOVALIDKEY);
 	}
 	UNLOCK(&val->lock);
 
@@ -325,7 +326,7 @@ keyvalidated(isc_task_t *task, isc_event_t *event) {
 	LOCK(&val->lock);
 	if (eresult == ISC_R_SUCCESS) {
 		validator_log(val, ISC_LOG_DEBUG(3),
-			      "keyset with trust %d", &val->frdataset.trust);
+			      "keyset with trust %d", val->frdataset.trust);
 		/*
 		 * Only extract the dst key if the keyset is secure.
 		 */
@@ -895,10 +896,11 @@ issecurityroot(dns_validator_t *val) {
 		if (result != ISC_R_SUCCESS)
 			 continue;
 		keynode = NULL;
-		result = dns_keytable_findkeynode(secroots, name,
-						  dst_key_alg(key),
-						  dst_key_id(key),
-						  &keynode);
+		result = dns_keytable_findkeynode(
+						secroots, name,
+						(dns_secalg_t)dst_key_alg(key),
+						dst_key_id(key),
+						&keynode);
 
 		match = ISC_FALSE;
 		while (result == ISC_R_SUCCESS) {
@@ -1606,6 +1608,10 @@ dns_validator_destroy(dns_validator_t **validatorp) {
 }
 
 
+static void
+validator_logv(dns_validator_t *val, isc_logcategory_t *category,
+	       isc_logmodule_t *module, int level, const char *fmt, va_list ap)
+     ISC_FORMAT_PRINTF(5, 0);
 
 static void
 validator_logv(dns_validator_t *val, isc_logcategory_t *category,

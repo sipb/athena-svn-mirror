@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: t_api.h,v 1.1.1.1 2001-10-22 13:09:51 ghudson Exp $ */
+/* $Id: t_api.h,v 1.1.1.2 2002-02-03 04:26:27 ghudson Exp $ */
 
 #ifndef TESTS_T_API_H
 #define TESTS_T_API_H 1
@@ -24,6 +24,7 @@
 
 #include <isc/lang.h>
 #include <isc/result.h>
+#include <isc/formatcheck.h>
 
 /*
  *
@@ -66,10 +67,11 @@ extern	testspec_t T_testlist[];
 ISC_LANG_BEGINDECLS
 
 void
-t_assert(const char *component, int anum, int class, const char *what, ...);
+t_assert(const char *component, int anum, int class, const char *what, ...)
+     ISC_FORMAT_PRINTF(4, 5);
 
 void
-t_info(const char *format, ...);
+t_info(const char *format, ...) ISC_FORMAT_PRINTF(1, 2);
 
 void
 t_result(int result);

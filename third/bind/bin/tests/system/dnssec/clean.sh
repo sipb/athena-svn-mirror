@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: clean.sh,v 1.1.1.1 2001-10-22 13:02:33 ghudson Exp $
+# $Id: clean.sh,v 1.1.1.2 2002-02-03 04:30:06 ghudson Exp $
 
 rm -f */K* */keyset-* */signedkey-* */*.signed */trusted.conf
 rm -f ns1/root.db ns2/example.db ns3/secure.example.db

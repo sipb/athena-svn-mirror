@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: adb_test.c,v 1.1.1.1 2001-10-22 13:06:58 ghudson Exp $ */
+/* $Id: adb_test.c,v 1.1.1.2 2002-02-03 04:22:57 ghudson Exp $ */
 
 #include <config.h>
 
@@ -61,6 +61,10 @@ ISC_LIST(client_t) clients;
 isc_mutex_t client_lock;
 isc_stdtime_t now;
 dns_adb_t *adb;
+
+static void
+check_result(isc_result_t result, const char *format, ...)
+     ISC_FORMAT_PRINTF(2, 3);
 
 static void
 check_result(isc_result_t result, const char *format, ...) {

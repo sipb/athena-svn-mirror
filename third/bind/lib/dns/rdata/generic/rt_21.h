@@ -18,7 +18,7 @@
 #ifndef GENERIC_RT_21_H
 #define GENERIC_RT_21_H 1
 
-/* $Id: rt_21.h,v 1.1.1.1 2001-10-22 13:08:37 ghudson Exp $ */
+/* $Id: rt_21.h,v 1.1.1.2 2002-02-03 04:25:25 ghudson Exp $ */
 
 /* RFC 1183 */
 

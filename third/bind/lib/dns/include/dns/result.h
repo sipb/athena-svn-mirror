@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: result.h,v 1.1.1.1 2001-10-22 13:08:28 ghudson Exp $ */
+/* $Id: result.h,v 1.1.1.2 2002-02-03 04:24:46 ghudson Exp $ */
 
 #ifndef DNS_RESULT_H
 #define DNS_RESULT_H 1
@@ -98,7 +98,7 @@
 #define DNS_R_NOVALIDSIG		(ISC_RESULTCLASS_DNS + 59)
 #define DNS_R_NOVALIDNXT		(ISC_RESULTCLASS_DNS + 60)
 #define DNS_R_NOTINSECURE		(ISC_RESULTCLASS_DNS + 61)
-/* #define DNS_R_unused			(ISC_RESULTCLASS_DNS + 62) */
+#define DNS_R_UNKNOWNSERVICE		(ISC_RESULTCLASS_DNS + 62)
 #define DNS_R_RECOVERABLE		(ISC_RESULTCLASS_DNS + 63)
 #define DNS_R_UNKNOWNOPT		(ISC_RESULTCLASS_DNS + 64)
 #define DNS_R_UNEXPECTEDID		(ISC_RESULTCLASS_DNS + 65)
@@ -114,8 +114,10 @@
 #define DNS_R_UNKNOWNPROTO		(ISC_RESULTCLASS_DNS + 75)
 #define DNS_R_CLOCKSKEW			(ISC_RESULTCLASS_DNS + 76)
 #define DNS_R_BADIXFR			(ISC_RESULTCLASS_DNS + 77)
+/* #define DNS_R_unused			(ISC_RESULTCLASS_DNS + 78) */
+#define DNS_R_NOVALIDKEY		(ISC_RESULTCLASS_DNS + 79)
 
-#define DNS_R_NRESULTS			78	/* Number of results */
+#define DNS_R_NRESULTS			80	/* Number of results */
 
 /*
  * DNS wire format rcodes.

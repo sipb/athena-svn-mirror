@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: log.h,v 1.1.1.1 2001-10-22 13:09:16 ghudson Exp $ */
+/* $Id: log.h,v 1.1.1.2 2002-02-03 04:25:38 ghudson Exp $ */
 
 #ifndef ISC_LOG_H
 #define ISC_LOG_H 1
@@ -26,6 +26,7 @@
 
 #include <isc/formatcheck.h>
 #include <isc/lang.h>
+#include <isc/platform.h>
 #include <isc/types.h>
 
 /*
@@ -126,9 +127,9 @@ typedef union isc_logdestination {
  * definitions with indexes into its isc_logcategory structure corresponding to
  * the order of the names.
  */
-extern isc_logcategory_t isc_categories[];
-extern isc_log_t *isc_lctx;
-extern isc_logmodule_t isc_modules[];
+LIBISC_EXTERNAL_DATA extern isc_logcategory_t isc_categories[];
+LIBISC_EXTERNAL_DATA extern isc_log_t *isc_lctx;
+LIBISC_EXTERNAL_DATA extern isc_logmodule_t isc_modules[];
 
 /*
  * Do not log directly to DEFAULT.  Use another category.  When in doubt,
@@ -138,6 +139,7 @@ extern isc_logmodule_t isc_modules[];
 #define ISC_LOGCATEGORY_GENERAL	(&isc_categories[1])
 
 #define ISC_LOGMODULE_SOCKET (&isc_modules[0])
+#define ISC_LOGMODULE_TIME (&isc_modules[1])
 
 ISC_LANG_BEGINDECLS
 
@@ -507,7 +509,7 @@ ISC_FORMAT_PRINTF(5, 6);
  * Write a message to the log channels.
  *
  * Notes:
- *	Log message containing natural language text should be logged with
+ *	Log messages containing natural language text should be logged with
  *	isc_log_iwrite() to allow for localization.
  *
  *	lctx can be NULL; this is allowed so that programs which use

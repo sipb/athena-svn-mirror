@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwpacket.h,v 1.1.1.1 2001-10-22 13:09:39 ghudson Exp $ */
+/* $Id: lwpacket.h,v 1.1.1.2 2002-02-03 04:26:15 ghudson Exp $ */
 
 #ifndef LWRES_LWPACKET_H
 #define LWRES_LWPACKET_H 1

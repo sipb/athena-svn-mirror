@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: resultclass.h,v 1.1.1.1 2001-10-22 13:09:18 ghudson Exp $ */
+/* $Id: resultclass.h,v 1.1.1.2 2002-02-03 04:25:40 ghudson Exp $ */
 
 #ifndef ISC_RESULTCLASS_H
 #define ISC_RESULTCLASS_H 1
@@ -45,6 +45,7 @@
 #define	ISC_RESULTCLASS_DST		ISC_RESULTCLASS_FROMNUM(2)
 #define	ISC_RESULTCLASS_DNSRCODE	ISC_RESULTCLASS_FROMNUM(3)
 #define	ISC_RESULTCLASS_OMAPI		ISC_RESULTCLASS_FROMNUM(4)
+#define	ISC_RESULTCLASS_ISCCC		ISC_RESULTCLASS_FROMNUM(5)
 
 /*
  * Result classes >= 1024 and <= 65535 are reserved for application use.

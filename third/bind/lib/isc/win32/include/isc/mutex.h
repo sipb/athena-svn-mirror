@@ -15,16 +15,22 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: mutex.h,v 1.1.1.1 2001-10-22 13:09:36 ghudson Exp $ */
+/* $Id: mutex.h,v 1.1.1.2 2002-02-03 04:26:00 ghudson Exp $ */
 
 #ifndef ISC_MUTEX_H
 #define ISC_MUTEX_H 1
 
+#include <isc/net.h>
 #include <windows.h>
 
 #include <isc/result.h>
 
 typedef CRITICAL_SECTION isc_mutex_t;
+
+/* This definition is here since WINBASE.H omits it for some reason */
+
+WINBASEAPI BOOL WINAPI
+TryEnterCriticalSection(LPCRITICAL_SECTION lpCriticalSection);
 
 #define isc_mutex_init(mp) \
 	(InitializeCriticalSection((mp)), ISC_R_SUCCESS)
@@ -36,5 +42,10 @@ typedef CRITICAL_SECTION isc_mutex_t;
 	(TryEnterCriticalSection((mp)) ? ISC_R_SUCCESS : ISC_R_LOCKBUSY)
 #define isc_mutex_destroy(mp) \
 	(DeleteCriticalSection((mp)), ISC_R_SUCCESS)
+
+/*
+ * This is a placeholder for now since we are not keeping any mutex stats
+ */
+#define isc_mutex_stats(fp)
 
 #endif /* ISC_MUTEX_H */

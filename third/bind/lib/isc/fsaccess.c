@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: fsaccess.c,v 1.1.1.1 2001-10-22 13:09:22 ghudson Exp $ */
+/* $Id: fsaccess.c,v 1.1.1.2 2002-02-03 04:25:45 ghudson Exp $ */
 
 /*
  * This file contains the OS-independent functionality of the API.

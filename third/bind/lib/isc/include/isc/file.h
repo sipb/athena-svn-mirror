@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: file.h,v 1.1.1.1 2001-10-22 13:09:14 ghudson Exp $ */
+/* $Id: file.h,v 1.1.1.2 2002-02-03 04:25:36 ghudson Exp $ */
 
 #ifndef ISC_FILE_H
 #define ISC_FILE_H 1
@@ -166,9 +166,52 @@ isc_file_rename(const char *oldname, const char *newname);
  */
 
 isc_boolean_t
+isc_file_exists(const char *pathname);
+/*
+ * Return ISC_TRUE iff the calling process can tell that the given file exists.
+ * Will not return true if the calling process has insufficient privileges
+ * to search the entire path.
+ */
+
+isc_boolean_t
 isc_file_isabsolute(const char *filename);
 /*
  * Return ISC_TRUE iff the given file name is absolute.
+ */
+
+isc_boolean_t
+isc_file_iscurrentdir(const char *filename);
+/*
+ * Return ISC_TRUE iff the given file name is the current directory (".").
+ */
+
+isc_boolean_t
+isc_file_ischdiridempotent(const char *filename);
+/*
+ * Return ISC_TRUE if calling chdir(filename) multiple times will give
+ * the same result as calling it once.
+ */
+
+const char *
+isc_file_basename(const char *filename);
+/*
+ * Return the final component of the path in the file name.
+ */
+
+isc_result_t
+isc_file_progname(const char *filename, char *buf, size_t buflen);
+/*
+ * Given an operating system specific file name "filename"
+ * referring to a program, return the canonical program name. 
+ * Any directory prefix or executable file name extension (if
+ * used on the OS in case) is stripped.  On systems where program
+ * names are case insensitive, the name is canonicalized to all
+ * lower case.  The name is written to 'buf', an array of 'buflen'
+ * chars, and null terminated.
+ *
+ * Returns:
+ *	ISC_R_SUCCESS
+ *	ISC_R_NOSPACE 	The name did not fit in 'buf'.
  */
 
 isc_result_t
@@ -184,6 +227,12 @@ isc_result_t
 isc_file_renameunique(const char *file, char *templet);
 /*
  * Rename 'file' using 'templet' as a template for the new file name.
+ */
+
+isc_result_t
+isc_file_absolutepath(const char *filename, char *path, size_t pathlen);
+/*
+ * Given a file name, return the fully qualified path to the file.
  */
 
 /*

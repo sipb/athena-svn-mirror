@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: t_db.c,v 1.1.1.1 2001-10-22 13:06:56 ghudson Exp $ */
+/* $Id: t_db.c,v 1.1.1.2 2002-02-03 04:22:55 ghudson Exp $ */
 
 #include <config.h>
 
@@ -563,8 +563,6 @@ t_dns_db_class(char **av) {
 	dns_rdataclass_t	rdataclass;
 	dns_rdataclass_t	db_rdataclass;
 	isc_textregion_t	textregion;
-	isc_buffer_t		isc_buffer;
-	char			buf[CLASSBUFLEN];
 
 	filename = T_ARG(0);
 	class = T_ARG(1);
@@ -612,10 +610,11 @@ t_dns_db_class(char **av) {
 	if (db_rdataclass == rdataclass)
 		result = T_PASS;
 	else {
-		isc_buffer_init(&isc_buffer, buf, CLASSBUFLEN);
-		dns_rdataclass_totext(db_rdataclass, &isc_buffer);
-		t_info("dns_db_class returned %.*s, expected %s\n",
-			isc_buffer.used, isc_buffer.base, class);
+		char classbuf[DNS_RDATACLASS_FORMATSIZE];
+		dns_rdataclass_format(db_rdataclass,
+				      classbuf, sizeof(classbuf));
+		t_info("dns_db_class returned %s, expected %s\n",
+		       classbuf, class);
 		result = T_FAIL;
 	}
 
@@ -1894,7 +1893,7 @@ t_dns_db_closeversion_2(char **av) {
 	    (dns_result == DNS_R_NXDOMAIN) ||
 	    (dns_result == DNS_R_NXRRSET)) {
 
-		t_info("dns_db_find %s returned %d\n", existing_name,
+		t_info("dns_db_find %s returned %s\n", existing_name,
 		       dns_result_totext(dns_result));
 		dns_rdataset_disassociate(&found_rdataset);
 		dns_db_detachnode(db, &nodep);
@@ -2618,7 +2617,7 @@ t17(void) {
 }
 
 static const char *a18 =
-	"A call to dns_db_find() returns DNS_R_ZONECUT when type is "
+	"A call to dns_db_find() returns DNS_R_DELEGATION when type is "
 	"dns_rdatatype_any and the desired node is a zone cut.";
 
 static void

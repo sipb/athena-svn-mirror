@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: msgcat.c,v 1.1.1.1 2001-10-22 13:09:30 ghudson Exp $ */
+/* $Id: msgcat.c,v 1.1.1.2 2002-02-03 04:25:53 ghudson Exp $ */
 
 /*
  * Principal Author: Bob Halley
@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 
+#include <isc/magic.h>
 #include <isc/msgcat.h>
 #include <isc/util.h>
 
@@ -47,9 +48,8 @@ struct isc_msgcat {
 #endif
 };
 
-#define MSGCAT_MAGIC			0x4D436174	/* MCat */
-#define VALID_MSGCAT(m)			((m) != NULL && \
-					 (m)->magic == MSGCAT_MAGIC)
+#define MSGCAT_MAGIC			ISC_MAGIC('M', 'C', 'a', 't')
+#define VALID_MSGCAT(m)			ISC_MAGIC_VALID(m, MSGCAT_MAGIC)
 
 void
 isc_msgcat_open(const char *name, isc_msgcat_t **msgcatp) {

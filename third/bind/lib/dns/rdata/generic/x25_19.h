@@ -18,7 +18,7 @@
 #ifndef GENERIC_X25_19_H
 #define GENERIC_X25_19_H 1
 
-/* $Id: x25_19.h,v 1.1.1.1 2001-10-22 13:08:39 ghudson Exp $ */
+/* $Id: x25_19.h,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 /* RFC 1183 */
 

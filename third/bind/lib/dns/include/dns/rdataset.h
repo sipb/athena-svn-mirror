@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdataset.h,v 1.1.1.1 2001-10-22 13:08:26 ghudson Exp $ */
+/* $Id: rdataset.h,v 1.1.1.2 2002-02-03 04:24:45 ghudson Exp $ */
 
 #ifndef DNS_RDATASET_H
 #define DNS_RDATASET_H 1
@@ -70,7 +70,7 @@ typedef struct dns_rdatasetmethods {
 	unsigned int		(*count)(dns_rdataset_t *rdataset);
 } dns_rdatasetmethods_t;
 
-#define DNS_RDATASET_MAGIC	       0x444E5352U	/* DNSR. */
+#define DNS_RDATASET_MAGIC	       ISC_MAGIC('D','N','S','R')
 #define DNS_RDATASET_VALID(set)	       ISC_MAGIC_VALID(set, DNS_RDATASET_MAGIC)
 
 /*
@@ -278,7 +278,7 @@ isc_result_t
 dns_rdataset_totext(dns_rdataset_t *rdataset,
 		    dns_name_t *owner_name,
 		    isc_boolean_t omit_final_dot,
-		    isc_boolean_t no_rdata_or_ttl,
+		    isc_boolean_t question,
 		    isc_buffer_t *target);
 /*
  * Convert 'rdataset' to text format, storing the result in 'target'.
@@ -286,18 +286,17 @@ dns_rdataset_totext(dns_rdataset_t *rdataset,
  * Notes:
  *	The rdata cursor position will be changed.
  *
- *	The no_rdata_or_ttl should normally be ISC_FALSE.  If it is ISC_TRUE
- *	the ttl and rdata fields are not printed.  This is mainly for use
- *	in the question section.
+ *	The 'question' flag should normally be ISC_FALSE.  If it is 
+ *	ISC_TRUE, the TTL and rdata fields are not printed.  This is 
+ *	for use when printing an rdata representing a question section.
  *
- *	XXX may need to add 'origin' parameter if we go with that in rdata.
+ *	This interface is deprecated; use dns_master_rdatasettottext()
+ * 	and/or dns_master_questiontotext() instead.
  *
  * Requires:
  *	'rdataset' is a valid rdataset.
  *
  *	'rdataset' is not empty.
- *
- * XXX Supply more Requires and Ensures XXX
  */
 
 isc_result_t
@@ -355,6 +354,34 @@ dns_rdataset_towiresorted(dns_rdataset_t *rdataset,
  *	All the requirements of dns_rdataset_towire(), and
  *	that order_arg is NULL if and only if order is NULL.
  */
+
+isc_result_t
+dns_rdataset_towirepartial(dns_rdataset_t *rdataset,
+			   dns_name_t *owner_name,
+			   dns_compress_t *cctx,
+			   isc_buffer_t *target,
+			   dns_rdatasetorderfunc_t order,
+			   void *order_arg,
+			   unsigned int *countp,
+			   void **state);
+/*
+ * Like dns_rdataset_towiresorted() except that a partial rdataset
+ * may be written.
+ *
+ * Requires:
+ *	All the requirements of dns_rdataset_towiresorted().
+ *	If 'state' is non NULL then the current position in the
+ *	rdataset will be remembered if the rdataset in not
+ *	completely written and should be passed on on subsequent
+ *	calls (NOT CURRENTLY IMPLEMENTED).
+ *
+ * Returns:
+ *	ISC_R_SUCCESS if all of the records were written.
+ *	ISC_R_NOSPACE if unable to fit in all of the records. *countp
+ *		      will be updated to reflect the number of records
+ *		      written.
+ */
+
 
 isc_result_t
 dns_rdataset_additionaldata(dns_rdataset_t *rdataset,

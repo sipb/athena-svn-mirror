@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: named-bootconf.sh,v 1.1.1.1 2001-10-22 13:05:07 ghudson Exp $
+# $Id: named-bootconf.sh,v 1.1.1.2 2002-02-03 04:31:51 ghudson Exp $
 
 # $NetBSD: named-bootconf.sh,v 1.5 1998/12/15 01:00:53 tron Exp $
 #

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: log.c,v 1.1.1.1 2001-10-22 13:07:54 ghudson Exp $ */
+/* $Id: log.c,v 1.1.1.2 2002-02-03 04:24:59 ghudson Exp $ */
 
 /* Principal Authors: DCL */
 
@@ -29,11 +29,11 @@
  * When adding a new category, be sure to add the appropriate
  * #define to <dns/log.h>.
  */
-isc_logcategory_t dns_categories[] = {
+LIBDNS_EXTERNAL_DATA isc_logcategory_t dns_categories[] = {
 	{ "notify", 	0 },
 	{ "database", 	0 },
 	{ "security", 	0 },
-	{ "config",	0 },
+	{ "oldconfig",  0 }, /* Placeholder */
 	{ "dnssec",	0 },
 	{ "resolver",	0 },
 	{ "xfer-in",	0 },
@@ -47,7 +47,7 @@ isc_logcategory_t dns_categories[] = {
  * When adding a new module, be sure to add the appropriate
  * #define to <dns/log.h>.
  */
-isc_logmodule_t dns_modules[] = {
+LIBDNS_EXTERNAL_DATA isc_logmodule_t dns_modules[] = {
 	{ "dns/db",	 	0 },
 	{ "dns/rbtdb", 		0 },
 	{ "dns/rbtdb64", 	0 },
@@ -72,10 +72,11 @@ isc_logmodule_t dns_modules[] = {
 	{ "dns/tkey",		0 },
 	{ "dns/sdb",		0 },
 	{ "dns/diff",		0 },
+	{ "dns/hints",		0 },
 	{ NULL, 		0 }
 };
 
-isc_log_t *dns_lctx = NULL;
+LIBDNS_EXTERNAL_DATA isc_log_t *dns_lctx = NULL;
 
 void
 dns_log_init(isc_log_t *lctx) {

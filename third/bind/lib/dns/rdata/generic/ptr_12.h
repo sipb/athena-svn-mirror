@@ -18,7 +18,7 @@
 #ifndef GENERIC_PTR_12_H
 #define GENERIC_PTR_12_H 1
 
-/* $Id: ptr_12.h,v 1.1.1.1 2001-10-22 13:08:36 ghudson Exp $ */
+/* $Id: ptr_12.h,v 1.1.1.2 2002-02-03 04:25:25 ghudson Exp $ */
 
 typedef struct dns_rdata_ptr {
         dns_rdatacommon_t       common;

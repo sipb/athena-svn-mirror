@@ -18,7 +18,7 @@
 #ifndef GENERIC_SIG_24_H
 #define GENERIC_SIG_24_H 1
 
-/* $Id: sig_24.h,v 1.1.1.1 2001-10-22 13:08:37 ghudson Exp $ */
+/* $Id: sig_24.h,v 1.1.1.2 2002-02-03 04:25:26 ghudson Exp $ */
 
 /* RFC 2535 */
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: platform.h.in,v 1.1.1.1 2001-10-22 13:09:40 ghudson Exp $ */
+/* $Id: platform.h.in,v 1.1.1.2 2002-02-03 04:26:17 ghudson Exp $ */
 
 #ifndef LWRES_PLATFORM_H
 #define LWRES_PLATFORM_H 1
@@ -57,9 +57,35 @@
 @LWRES_PLATFORM_NEEDIN6ADDRANY@
 
 /*
+ * If this system is missing in6addr_loopback, 
+ * LWRES_PLATFORM_NEEDIN6ADDRLOOPBACK will be defined.
+ */
+@LWRES_PLATFORM_NEEDIN6ADDRLOOPBACK@
+
+/*
  * If this system has in_addr6, rather than in6_addr,
  * LWRES_PLATFORM_HAVEINADDR6 will be defined.
  */
 @LWRES_PLATFORM_HAVEINADDR6@
+
+/*
+ * Defined if unistd.h does not cause fd_set to be delared.
+ */
+@LWRES_PLATFORM_NEEDSYSSELECTH@
+
+/*
+ * Used to control how extern data is linked; needed for Win32 platforms.
+ */
+@LWRES_PLATFORM_USEDECLSPEC@
+
+#ifndef LWRES_PLATFORM_USEDECLSPEC
+#define LIBLWRES_EXTERNAL_DATA
+#else
+#ifdef LIBLWRES_EXPORTS
+#define LIBLWRES_EXTERNAL_DATA __declspec(dllexport)
+#else
+#define LIBLWRES_EXTERNAL_DATA __declspec(dllimport)
+#endif
+#endif
 
 #endif /* LWRES_PLATFORM_H */

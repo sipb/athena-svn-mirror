@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: sig_24.c,v 1.1.1.1 2001-10-22 13:08:37 ghudson Exp $ */
+/* $Id: sig_24.c,v 1.1.1.2 2002-02-03 04:25:26 ghudson Exp $ */
 
 /* Reviewed: Fri Mar 17 09:05:02 PST 2000 by gson */
 
@@ -40,7 +40,9 @@ fromtext_sig(ARGS_FROMTEXT) {
 
 	REQUIRE(type == 24);
 
+	UNUSED(type);
 	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	/*
 	 * Type covered.
@@ -51,9 +53,9 @@ fromtext_sig(ARGS_FROMTEXT) {
 	if (result != ISC_R_SUCCESS && result != ISC_R_NOTIMPLEMENTED) {
 		i = strtol(token.value.as_pointer, &e, 10);
 		if (i < 0 || i > 65535)
-			return (ISC_R_RANGE);
+			RETTOK(ISC_R_RANGE);
 		if (*e != 0)
-			return (result);
+			RETTOK(result);
 		covered = (dns_rdatatype_t)i;
 	}
 	RETERR(uint16_tobuffer(covered, target));
@@ -63,7 +65,7 @@ fromtext_sig(ARGS_FROMTEXT) {
 	 */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
-	RETERR(dns_secalg_fromtext(&c, &token.value.as_textregion));
+	RETTOK(dns_secalg_fromtext(&c, &token.value.as_textregion));
 	RETERR(mem_tobuffer(target, &c, 1));
 
 	/*
@@ -72,7 +74,7 @@ fromtext_sig(ARGS_FROMTEXT) {
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
 				      ISC_FALSE));
 	if (token.value.as_ulong > 0xff)
-		return (ISC_R_RANGE);
+		RETTOK(ISC_R_RANGE);
 	c = (unsigned char)token.value.as_ulong;
 	RETERR(mem_tobuffer(target, &c, 1));
 
@@ -88,7 +90,7 @@ fromtext_sig(ARGS_FROMTEXT) {
 	 */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
-	RETERR(dns_time32_fromtext(token.value.as_pointer, &time_expire));
+	RETTOK(dns_time32_fromtext(token.value.as_pointer, &time_expire));
 	RETERR(uint32_tobuffer(time_expire, target));
 
 	/*
@@ -96,7 +98,7 @@ fromtext_sig(ARGS_FROMTEXT) {
 	 */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
-	RETERR(dns_time32_fromtext(token.value.as_pointer, &time_signed));
+	RETTOK(dns_time32_fromtext(token.value.as_pointer, &time_signed));
 	RETERR(uint32_tobuffer(time_signed, target));
 
 	/*
@@ -114,7 +116,7 @@ fromtext_sig(ARGS_FROMTEXT) {
 	dns_name_init(&name, NULL);
 	buffer_fromregion(&buffer, &token.value.as_region);
 	origin = (origin != NULL) ? origin : dns_rootname;
-	RETERR(dns_name_fromtext(&name, &buffer, origin, downcase, target));
+	RETTOK(dns_name_fromtext(&name, &buffer, origin, downcase, target));
 
 	/*
 	 * Sig.
@@ -240,9 +242,10 @@ fromwire_sig(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 24);
 
-	dns_decompress_setmethods(dctx, DNS_COMPRESS_NONE);
-
+	UNUSED(type);
 	UNUSED(rdclass);
+
+	dns_decompress_setmethods(dctx, DNS_COMPRESS_NONE);
 
 	isc_buffer_activeregion(source, &sr);
 	/*
@@ -278,6 +281,7 @@ static inline isc_result_t
 towire_sig(ARGS_TOWIRE) {
 	isc_region_t sr;
 	dns_name_t name;
+	dns_offsets_t offsets;
 
 	REQUIRE(rdata->type == 24);
 	REQUIRE(rdata->length != 0);
@@ -299,7 +303,7 @@ towire_sig(ARGS_TOWIRE) {
 	/*
 	 * Signer.
 	 */
-	dns_name_init(&name, NULL);
+	dns_name_init(&name, offsets);
 	dns_name_fromregion(&name, &sr);
 	isc_region_consume(&sr, name_length(&name));
 	RETERR(dns_name_towire(&name, cctx, target));
@@ -361,9 +365,9 @@ fromstruct_sig(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(sig->common.rdtype == type);
 	REQUIRE(sig->common.rdclass == rdclass);
-	REQUIRE((sig->signature != NULL && sig->siglen != 0) ||
-		(sig->signature == NULL && sig->siglen == 0));
+	REQUIRE(sig->signature != NULL || sig->siglen == 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	/*
@@ -480,12 +484,9 @@ tostruct_sig(ARGS_TOSTRUCT) {
 	 * Signature.
 	 */
 	sig->siglen = sr.length;
-	if (sig->siglen > 0) {
-		sig->signature = mem_maybedup(mctx, sr.base, sig->siglen);
-		if (sig->signature == NULL)
-			goto cleanup;
-	} else
-		sig->signature = NULL;
+	sig->signature = mem_maybedup(mctx, sr.base, sig->siglen);
+	if (sig->signature == NULL)
+		goto cleanup;
 
 
 	sig->mctx = mctx;

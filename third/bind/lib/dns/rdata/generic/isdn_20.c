@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: isdn_20.c,v 1.1.1.1 2001-10-22 13:08:33 ghudson Exp $ */
+/* $Id: isdn_20.c,v 1.1.1.2 2002-02-03 04:25:21 ghudson Exp $ */
 
 /* Reviewed: Wed Mar 15 16:53:11 PST 2000 by bwelling */
 
@@ -30,16 +30,18 @@ static inline isc_result_t
 fromtext_isdn(ARGS_FROMTEXT) {
 	isc_token_t token;
 
+	REQUIRE(type == 20);
+
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
-
-	REQUIRE(type == 20);
+	UNUSED(callbacks);
 
 	/* ISDN-address */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_qstring,
 				      ISC_FALSE));
-	RETERR(txt_fromtext(&token.value.as_textregion, target));
+	RETTOK(txt_fromtext(&token.value.as_textregion, target));
 
 	/* sa: optional */
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_qstring,
@@ -49,17 +51,18 @@ fromtext_isdn(ARGS_FROMTEXT) {
 		isc_lex_ungettoken(lexer, &token);
 		return (ISC_R_SUCCESS);
 	}
-	return (txt_fromtext(&token.value.as_textregion, target));
+	RETTOK(txt_fromtext(&token.value.as_textregion, target));
+	return (ISC_R_SUCCESS);
 }
 
 static inline isc_result_t
 totext_isdn(ARGS_TOTEXT) {
 	isc_region_t region;
 
-	UNUSED(tctx);
-
 	REQUIRE(rdata->type == 20);
 	REQUIRE(rdata->length != 0);
+
+	UNUSED(tctx);
 
 	dns_rdata_toregion(rdata, &region);
 	RETERR(txt_totext(&region, target));
@@ -71,11 +74,12 @@ totext_isdn(ARGS_TOTEXT) {
 
 static inline isc_result_t
 fromwire_isdn(ARGS_FROMWIRE) {
+	REQUIRE(type == 20);
+
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(rdclass);
 	UNUSED(downcase);
-
-	REQUIRE(type == 20);
 
 	RETERR(txt_fromwire(source, target));
 	if (buffer_empty(source))
@@ -118,6 +122,7 @@ fromstruct_isdn(ARGS_FROMSTRUCT) {
 	REQUIRE(isdn->common.rdtype == type);
 	REQUIRE(isdn->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	RETERR(uint8_tobuffer(isdn->isdn_len, target));
@@ -143,23 +148,16 @@ tostruct_isdn(ARGS_TOSTRUCT) {
 
 	isdn->isdn_len = uint8_fromregion(&r);
 	isc_region_consume(&r, 1);
-	if (isdn->isdn_len > 0) {
-		isdn->isdn = mem_maybedup(mctx, r.base, isdn->isdn_len);
-		if (isdn->isdn == NULL)
-			return (ISC_R_NOMEMORY);
-		isc_region_consume(&r, isdn->isdn_len);
-	} else
-		isdn->isdn = NULL;
+	isdn->isdn = mem_maybedup(mctx, r.base, isdn->isdn_len);
+	if (isdn->isdn == NULL)
+		return (ISC_R_NOMEMORY);
+	isc_region_consume(&r, isdn->isdn_len);
 
 	isdn->subaddress_len = uint8_fromregion(&r);
 	isc_region_consume(&r, 1);
-	if (isdn->subaddress_len > 0) {
-		isdn->subaddress = mem_maybedup(mctx, r.base,
-						isdn->subaddress_len);
-		if (isdn->subaddress == NULL)
-			goto cleanup;
-	} else
-		isdn->subaddress = NULL;
+	isdn->subaddress = mem_maybedup(mctx, r.base, isdn->subaddress_len);
+	if (isdn->subaddress == NULL)
+		goto cleanup;
 
 	isdn->mctx = mctx;
 	return (ISC_R_SUCCESS);

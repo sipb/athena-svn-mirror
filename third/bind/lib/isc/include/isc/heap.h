@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: heap.h,v 1.1.1.1 2001-10-22 13:09:15 ghudson Exp $ */
+/* $Id: heap.h,v 1.1.1.2 2002-02-03 04:25:37 ghudson Exp $ */
 
 #ifndef ISC_HEAP_H
 #define ISC_HEAP_H 1

@@ -18,7 +18,7 @@
 #ifndef GENERIC_TKEY_249_H
 #define GENERIC_TKEY_249_H 1
 
-/* $Id: tkey_249.h,v 1.1.1.1 2001-10-22 13:08:38 ghudson Exp $ */
+/* $Id: tkey_249.h,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 /* draft-ietf-dnsind-tkey-00.txt */
 

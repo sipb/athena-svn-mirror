@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tkey_249.c,v 1.1.1.1 2001-10-22 13:08:38 ghudson Exp $ */
+/* $Id: tkey_249.c,v 1.1.1.2 2002-02-03 04:25:26 ghudson Exp $ */
 
 /*
  * Reviewed: Thu Mar 16 17:35:30 PST 2000 by halley.
@@ -37,9 +37,11 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	long i;
 	char *e;
 
-	UNUSED(rdclass);
-
 	REQUIRE(type == 249);
+
+	UNUSED(type);
+	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	/*
 	 * Algorithm.
@@ -49,7 +51,7 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	dns_name_init(&name, NULL);
 	buffer_fromregion(&buffer, &token.value.as_region);
 	origin = (origin != NULL) ? origin : dns_rootname;
-	RETERR(dns_name_fromtext(&name, &buffer, origin, downcase, target));
+	RETTOK(dns_name_fromtext(&name, &buffer, origin, downcase, target));
 
 
 	/*
@@ -72,7 +74,7 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
 				      ISC_FALSE));
 	if (token.value.as_ulong > 0xffff)
-		return (ISC_R_RANGE);
+		RETTOK(ISC_R_RANGE);
 	RETERR(uint16_tobuffer(token.value.as_ulong, target));
 
 	/*
@@ -85,9 +87,9 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	{
 		i = strtol(token.value.as_pointer, &e, 10);
 		if (*e != 0)
-			return (DNS_R_UNKNOWN);
+			RETTOK(DNS_R_UNKNOWN);
 		if (i < 0 || i > 0xffff)
-			return (ISC_R_RANGE);
+			RETTOK(ISC_R_RANGE);
 		rcode = (dns_rcode_t)i;
 	}
 	RETERR(uint16_tobuffer(rcode, target));
@@ -98,7 +100,7 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
 				      ISC_FALSE));
 	if (token.value.as_ulong > 0xffff)
-		return (ISC_R_RANGE);
+		RETTOK(ISC_R_RANGE);
 	RETERR(uint16_tobuffer(token.value.as_ulong, target));
 
 	/*
@@ -112,7 +114,7 @@ fromtext_tkey(ARGS_FROMTEXT) {
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_number,
 				      ISC_FALSE));
 	if (token.value.as_ulong > 0xffff)
-		return (ISC_R_RANGE);
+		RETTOK(ISC_R_RANGE);
 	RETERR(uint16_tobuffer(token.value.as_ulong, target));
 
 	/*
@@ -239,9 +241,10 @@ fromwire_tkey(ARGS_FROMWIRE) {
 	unsigned long n;
 	dns_name_t name;
 
-	UNUSED(rdclass);
-
 	REQUIRE(type == 249);
+
+	UNUSED(type);
+	UNUSED(rdclass);
 
 	dns_decompress_setmethods(dctx, DNS_COMPRESS_NONE);
 
@@ -292,6 +295,7 @@ static inline isc_result_t
 towire_tkey(ARGS_TOWIRE) {
 	isc_region_t sr;
 	dns_name_t name;
+	dns_offsets_t offsets;
 
 	REQUIRE(rdata->type == 249);
 	REQUIRE(rdata->length != 0);
@@ -301,7 +305,7 @@ towire_tkey(ARGS_TOWIRE) {
 	 * Algorithm.
 	 */
 	dns_rdata_toregion(rdata, &sr);
-	dns_name_init(&name, NULL);
+	dns_name_init(&name, offsets);
 	dns_name_fromregion(&name, &sr);
 	RETERR(dns_name_towire(&name, cctx, target));
 	isc_region_consume(&sr, name_length(&name));
@@ -348,6 +352,7 @@ fromstruct_tkey(ARGS_FROMSTRUCT) {
 	REQUIRE(tkey->common.rdtype == type);
 	REQUIRE(tkey->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	/*
@@ -454,13 +459,10 @@ tostruct_tkey(ARGS_TOSTRUCT) {
 	/*
 	 * Key.
 	 */
-	if (tkey->keylen > 0) {
-		tkey->key = mem_maybedup(mctx, sr.base, tkey->keylen);
-		if (tkey->key == NULL)
-			goto cleanup;
-		isc_region_consume(&sr, tkey->keylen);
-	} else
-		tkey->key = NULL;
+	tkey->key = mem_maybedup(mctx, sr.base, tkey->keylen);
+	if (tkey->key == NULL)
+		goto cleanup;
+	isc_region_consume(&sr, tkey->keylen);
 
 	/*
 	 * Other size.
@@ -471,12 +473,9 @@ tostruct_tkey(ARGS_TOSTRUCT) {
 	/*
 	 * Other.
 	 */
-	if (tkey->otherlen > 0) {
-		tkey->other = mem_maybedup(mctx, sr.base, tkey->otherlen);
-		if (tkey->other == NULL)
-			goto cleanup;
-	} else
-		tkey->other = NULL;
+	tkey->other = mem_maybedup(mctx, sr.base, tkey->otherlen);
+	if (tkey->other == NULL)
+		goto cleanup;
 
 	tkey->mctx = mctx;
 	return (ISC_R_SUCCESS);

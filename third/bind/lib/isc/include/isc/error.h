@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: error.h,v 1.1.1.1 2001-10-22 13:09:14 ghudson Exp $ */
+/* $Id: error.h,v 1.1.1.2 2002-02-03 04:25:36 ghudson Exp $ */
 
 #ifndef ISC_ERROR_H
 #define ISC_ERROR_H 1

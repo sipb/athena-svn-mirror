@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: byaddr.h,v 1.1.1.1 2001-10-22 13:08:15 ghudson Exp $ */
+/* $Id: byaddr.h,v 1.1.1.2 2002-02-03 04:24:37 ghudson Exp $ */
 
 #ifndef DNS_BYADDR_H
 #define DNS_BYADDR_H 1

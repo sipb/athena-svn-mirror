@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ratelimiter.h,v 1.1.1.1 2001-10-22 13:09:18 ghudson Exp $ */
+/* $Id: ratelimiter.h,v 1.1.1.2 2002-02-03 04:25:40 ghudson Exp $ */
 
 #ifndef ISC_RATELIMITER_H
 #define ISC_RATELIMITER_H 1

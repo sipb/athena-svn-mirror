@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: unspec_103.c,v 1.1.1.1 2001-10-22 13:08:39 ghudson Exp $ */
+/* $Id: unspec_103.c,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 #ifndef RDATA_GENERIC_UNSPEC_103_C
 #define RDATA_GENERIC_UNSPEC_103_C
@@ -27,9 +27,11 @@ fromtext_unspec(ARGS_FROMTEXT) {
 
 	REQUIRE(type == 103);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(origin);
 	UNUSED(downcase);
+	UNUSED(callbacks);
 
 	return (atob_tobuffer(lexer, target));
 }
@@ -50,6 +52,7 @@ fromwire_unspec(ARGS_FROMWIRE) {
 
 	REQUIRE(type == 103);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 	UNUSED(dctx);
 	UNUSED(downcase);
@@ -74,7 +77,7 @@ compare_unspec(ARGS_COMPARE) {
 	isc_region_t r1;
 	isc_region_t r2;
 
-	REQUIRE(rdata1->type == rdata1->type);
+	REQUIRE(rdata1->type == rdata2->type);
 	REQUIRE(rdata1->rdclass == rdata2->rdclass);
 	REQUIRE(rdata1->type == 103);
 
@@ -91,9 +94,9 @@ fromstruct_unspec(ARGS_FROMSTRUCT) {
 	REQUIRE(source != NULL);
 	REQUIRE(unspec->common.rdtype == type);
 	REQUIRE(unspec->common.rdclass == rdclass);
-	REQUIRE((unspec->data != NULL && unspec->datalen != 0) ||
-		(unspec->data == NULL && unspec->datalen == 0));
+	REQUIRE(unspec->data != NULL || unspec->datalen == 0);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	return (mem_tobuffer(target, unspec->data, unspec->datalen));
@@ -113,12 +116,9 @@ tostruct_unspec(ARGS_TOSTRUCT) {
 
 	dns_rdata_toregion(rdata, &r);
 	unspec->datalen = r.length;
-	if (unspec->datalen != 0) {
-		unspec->data = mem_maybedup(mctx, r.base, r.length);
-		if (unspec->data == NULL)
-			return (ISC_R_NOMEMORY);
-	} else
-		unspec->data = NULL;
+	unspec->data = mem_maybedup(mctx, r.base, r.length);
+	if (unspec->data == NULL)
+		return (ISC_R_NOMEMORY);
 
 	unspec->mctx = mctx;
 	return (ISC_R_SUCCESS);

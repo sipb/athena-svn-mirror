@@ -15,12 +15,13 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: symtab.c,v 1.1.1.1 2001-10-22 13:09:28 ghudson Exp $ */
+/* $Id: symtab.c,v 1.1.1.2 2002-02-03 04:25:51 ghudson Exp $ */
 
 #include <config.h>
 
 #include <ctype.h>
 
+#include <isc/magic.h>
 #include <isc/mem.h>
 #include <isc/string.h>
 #include <isc/symtab.h>
@@ -35,9 +36,8 @@ typedef struct elt {
 
 typedef LIST(elt_t)			eltlist_t;
 
-#define SYMTAB_MAGIC			0x53796D54U	/* SymT. */
-#define VALID_SYMTAB(st)		((st) != NULL && \
-					 (st)->magic == SYMTAB_MAGIC)
+#define SYMTAB_MAGIC			ISC_MAGIC('S', 'y', 'm', 'T')
+#define VALID_SYMTAB(st)		ISC_MAGIC_VALID(st, SYMTAB_MAGIC)
 
 struct isc_symtab {
 	/* Unlocked. */
@@ -120,32 +120,22 @@ static inline unsigned int
 hash(const char *key, isc_boolean_t case_sensitive) {
 	const char *s;
 	unsigned int h = 0;
-	unsigned int g;
 	int c;
 
 	/*
-	 * P. J. Weinberger's hash function, adapted from p. 436 of
-	 * _Compilers: Principles, Techniques, and Tools_, Aho, Sethi
-	 * and Ullman, Addison-Wesley, 1986, ISBN 0-201-10088-6.
+	 * This hash function is similar to the one Ousterhout
+	 * uses in Tcl.
 	 */
 
 	if (case_sensitive) {
 		for (s = key; *s != '\0'; s++) {
-			h = ( h << 4 ) + *s;
-			if ((g = ( h & 0xf0000000 )) != 0) {
-				h = h ^ (g >> 24);
-				h = h ^ g;
-			}
+			h += (h << 3) + *s;
 		}
 	} else {
 		for (s = key; *s != '\0'; s++) {
 			c = *s;
 			c = tolower((unsigned char)c);
-			h = ( h << 4 ) + c;
-			if ((g = ( h & 0xf0000000 )) != 0) {
-				h = h ^ (g >> 24);
-				h = h ^ g;
-			}
+			h += (h << 3) + c;
 		}
 	}
 

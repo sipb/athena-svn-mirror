@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gssapi.h,v 1.1.1.1 2001-10-22 13:08:42 ghudson Exp $ */
+/* $Id: gssapi.h,v 1.1.1.2 2002-02-03 04:25:31 ghudson Exp $ */
 
 #ifndef DST_GSSAPI_H
 #define DST_GSSAPI_H 1

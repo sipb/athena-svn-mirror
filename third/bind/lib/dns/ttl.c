@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ttl.c,v 1.1.1.1 2001-10-22 13:08:10 ghudson Exp $ */
+/* $Id: ttl.c,v 1.1.1.2 2002-02-03 04:25:15 ghudson Exp $ */
 
 #include <config.h>
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: update.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: update.h,v 1.1.1.2 2002-02-03 04:22:39 ghudson Exp $ */
 
 #ifndef NAMED_UPDATE_H
 #define NAMED_UPDATE_H 1

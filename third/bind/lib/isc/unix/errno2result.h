@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: errno2result.h,v 1.1.1.1 2001-10-22 13:09:33 ghudson Exp $ */
+/* $Id: errno2result.h,v 1.1.1.2 2002-02-03 04:25:56 ghudson Exp $ */
 
 #ifndef UNIX_ERRNO2RESULT_H
 #define UNIX_ERRNO2RESULT_H 1

@@ -18,13 +18,13 @@
 #ifndef GENERIC_SOA_6_H
 #define GENERIC_SOA_6_H 1
 
-/* $Id: soa_6.h,v 1.1.1.1 2001-10-22 13:08:38 ghudson Exp $ */
+/* $Id: soa_6.h,v 1.1.1.2 2002-02-03 04:25:26 ghudson Exp $ */
 
 typedef struct dns_rdata_soa {
 	dns_rdatacommon_t	common;
 	isc_mem_t		*mctx;
 	dns_name_t		origin;
-	dns_name_t		mname;
+	dns_name_t		contact;
 	isc_uint32_t		serial;		/* host order */
 	isc_uint32_t		refresh;	/* host order */
 	isc_uint32_t		retry;		/* host order */

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: named-checkzone.c,v 1.1.1.1 2001-10-22 13:06:32 ghudson Exp $ */
+/* $Id: named-checkzone.c,v 1.1.1.2 2002-02-03 04:22:30 ghudson Exp $ */
 
 #include <config.h>
 
@@ -61,7 +61,7 @@ static const char *dbtype[] = { "rbt" };
 static void
 usage(void) {
 	fprintf(stderr,
-		"usage: named-checkzone [-dq] [-c class] zone [filename]\n");
+		"usage: named-checkzone [-dqv] [-c class] zonename filename \n");
 	exit(1);
 }
 
@@ -105,6 +105,7 @@ setup(char *zonename, char *filename, char *classname) {
 	ERRRET(result, "dns_rdataclass_fromtext");
 
 	dns_zone_setclass(zone, rdclass);
+	dns_zone_setoption(zone, DNS_ZONEOPT_MANYERRORS, ISC_TRUE);
 
 	result = dns_zone_load(zone);
 
@@ -122,14 +123,12 @@ main(int argc, char **argv) {
 	int c;
 	char *origin = NULL;
 	char *filename = NULL;
-	char *classname;
 	isc_log_t *lctx = NULL;
 	isc_result_t result;
 	char classname_in[] = "IN";
+	char *classname = classname_in;
 
-	classname = classname_in;
-
-	while ((c = isc_commandline_parse(argc, argv, "c:dqs")) != EOF) {
+	while ((c = isc_commandline_parse(argc, argv, "c:dqsv")) != EOF) {
 		switch (c) {
 		case 'c':
 			classname = isc_commandline_argument;
@@ -140,25 +139,27 @@ main(int argc, char **argv) {
 		case 'q':
 			quiet++;
 			break;
+		case 'v':
+			printf(VERSION "\n");
+			exit(0);
 		default:
 			usage();
 		}
 	}
 
-	if (argv[isc_commandline_index] == NULL)
+	if (isc_commandline_index + 2 > argc)
 		usage();
 
 	RUNTIME_CHECK(isc_mem_create(0, 0, &mctx) == ISC_R_SUCCESS);
-	if (!quiet)
+	if (!quiet) {
 		RUNTIME_CHECK(setup_logging(mctx, &lctx) == ISC_R_SUCCESS);
+		dns_log_init(lctx);
+		dns_log_setcontext(lctx);
+	}
 
-	origin = argv[isc_commandline_index];
-	isc_commandline_index++;
-	if (argv[isc_commandline_index] != NULL)
-		filename = argv[isc_commandline_index];
-	else
-		filename = origin;
-	result = setup(origin, filename, (char *)classname);
+	origin = argv[isc_commandline_index++];
+	filename = argv[isc_commandline_index++];
+	result = setup(origin, filename, classname);
 	if (!quiet && result == ISC_R_SUCCESS)
 		fprintf(stdout, "OK\n");
 	destroy();

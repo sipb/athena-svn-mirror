@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwdnoop.c,v 1.1.1.1 2001-10-22 13:06:46 ghudson Exp $ */
+/* $Id: lwdnoop.c,v 1.1.1.2 2002-02-03 04:22:44 ghudson Exp $ */
 
 #include <config.h>
 

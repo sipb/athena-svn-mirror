@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: interfaceiter.c,v 1.1.1.1 2001-10-22 13:09:34 ghudson Exp $ */
+/* $Id: interfaceiter.c,v 1.1.1.2 2002-02-03 04:25:57 ghudson Exp $ */
 
 #include <config.h>
 
@@ -30,10 +30,12 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <isc/magic.h>
 #include <isc/mem.h>
 #include <isc/msgs.h>
 #include <isc/net.h>
 #include <isc/result.h>
+#include <isc/strerror.h>
 #include <isc/string.h>
 #include <isc/types.h>
 #include <isc/interfaceiter.h>

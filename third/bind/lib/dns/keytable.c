@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: keytable.c,v 1.1.1.1 2001-10-22 13:07:54 ghudson Exp $ */
+/* $Id: keytable.c,v 1.1.1.2 2002-02-03 04:24:59 ghudson Exp $ */
 
 #include <config.h>
 
@@ -42,7 +42,7 @@ struct dns_keytable {
 	dns_rbt_t		*table;
 };
 
-#define KEYTABLE_MAGIC			0x4b54626cU	/* KTbl */
+#define KEYTABLE_MAGIC			ISC_MAGIC('K', 'T', 'b', 'l')
 #define VALID_KEYTABLE(kt)	 	ISC_MAGIC_VALID(kt, KEYTABLE_MAGIC)
 
 struct dns_keynode {
@@ -51,7 +51,7 @@ struct dns_keynode {
 	struct dns_keynode *	next;
 };
 
-#define KEYNODE_MAGIC			0x4b4e6f64U	/* KNod */
+#define KEYNODE_MAGIC			ISC_MAGIC('K', 'N', 'o', 'd')
 #define VALID_KEYNODE(kn)	 	ISC_MAGIC_VALID(kn, KEYNODE_MAGIC)
 
 static void
@@ -251,8 +251,8 @@ dns_keytable_findkeynode(dns_keytable_t *keytable, dns_name_t *name,
 	if (result == ISC_R_SUCCESS) {
 		INSIST(data != NULL);
 		for (knode = data; knode != NULL; knode = knode->next) {
-			if (algorithm == (dns_secalg_t)dst_key_alg(knode->key)
-			    && tag == (dns_keytag_t)dst_key_id(knode->key))
+			if (algorithm == dst_key_alg(knode->key)
+			    && tag == dst_key_id(knode->key))
 				break;
 		}
 		if (knode != NULL) {

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tcpmsg.c,v 1.1.1.1 2001-10-22 13:08:08 ghudson Exp $ */
+/* $Id: tcpmsg.c,v 1.1.1.2 2002-02-03 04:25:12 ghudson Exp $ */
 
 #include <config.h>
 
@@ -34,7 +34,7 @@
 #define XDEBUG(x)
 #endif
 
-#define TCPMSG_MAGIC		0x5443506d	/* TCPm */
+#define TCPMSG_MAGIC		ISC_MAGIC('T', 'C', 'P', 'm')
 #define VALID_TCPMSG(foo)	ISC_MAGIC_VALID(foo, TCPMSG_MAGIC)
 
 static void recv_length(isc_task_t *, isc_event_t *);

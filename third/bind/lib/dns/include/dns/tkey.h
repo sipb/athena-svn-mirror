@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tkey.h,v 1.1.1.1 2001-10-22 13:08:28 ghudson Exp $ */
+/* $Id: tkey.h,v 1.1.1.2 2002-02-03 04:24:47 ghudson Exp $ */
 
 #ifndef DNS_TKEY_H
 #define DNS_TKEY_H 1

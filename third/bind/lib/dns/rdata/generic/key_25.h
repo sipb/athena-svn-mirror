@@ -18,7 +18,7 @@
 #ifndef GENERIC_KEY_25_H
 #define GENERIC_KEY_25_H 1
 
-/* $Id: key_25.h,v 1.1.1.1 2001-10-22 13:08:33 ghudson Exp $ */
+/* $Id: key_25.h,v 1.1.1.2 2002-02-03 04:25:21 ghudson Exp $ */
 
 /* RFC 2535 */
 

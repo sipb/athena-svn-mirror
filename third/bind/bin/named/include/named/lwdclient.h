@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwdclient.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: lwdclient.h,v 1.1.1.2 2002-02-03 04:22:38 ghudson Exp $ */
 
 #ifndef NAMED_LWDCLIENT_H
 #define NAMED_LWDCLIENT_H 1
@@ -80,7 +80,6 @@ struct ns_lwdclient {
 	dns_byaddr_t	       *byaddr;
 	unsigned int		options;
 	isc_netaddr_t		na;
-	dns_adbaddrinfo_t      *addrinfo;
 
 	/*
 	 * grbn (get rrset by name) state info.
@@ -225,6 +224,7 @@ void ns_lwdclient_processnoop(ns_lwdclient_t *, lwres_buffer_t *);
 
 void ns_lwdclient_errorpktsend(ns_lwdclient_t *, isc_uint32_t);
 
-void ns_lwdclient_log(int level, const char *format, ...);
+void ns_lwdclient_log(int level, const char *format, ...)
+     ISC_FORMAT_PRINTF(2, 3);
 
 #endif /* NAMED_LWDCLIENT_H */

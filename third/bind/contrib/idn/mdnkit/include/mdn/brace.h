@@ -1,4 +1,4 @@
-/* $Id: brace.h,v 1.1.1.1 2001-10-22 13:07:20 ghudson Exp $ */
+/* $Id: brace.h,v 1.1.1.2 2002-02-03 04:23:31 ghudson Exp $ */
 /*
  * Copyright (c) 2000 Japan Network Information Center.  All rights reserved.
  *  
@@ -70,13 +70,15 @@
 #include <mdn/converter.h>
 
 extern mdn_result_t
-mdn__brace_open(mdn_converter_t ctx, mdn_converter_dir_t dir);
+mdn__brace_open(mdn_converter_t ctx, mdn_converter_dir_t dir, void **privdata);
 
 extern mdn_result_t
-mdn__brace_close(mdn_converter_t ctx, mdn_converter_dir_t dir);
+mdn__brace_close(mdn_converter_t ctx, void *privdata,
+		 mdn_converter_dir_t dir);
 
 extern mdn_result_t
-mdn__brace_convert(mdn_converter_t ctx, mdn_converter_dir_t dir,
-		   const char *from, char *to, size_t tolen);
+mdn__brace_convert(mdn_converter_t ctx, void *privdata,
+		   mdn_converter_dir_t dir, const char *from, char *to,
+		   size_t tolen);
 
 #endif /* MDN_BRACE_H */

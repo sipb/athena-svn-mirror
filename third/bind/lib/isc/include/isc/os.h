@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: os.h,v 1.1.1.1 2001-10-22 13:09:17 ghudson Exp $ */
+/* $Id: os.h,v 1.1.1.2 2002-02-03 04:25:39 ghudson Exp $ */
 
 #ifndef ISC_OS_H
 #define ISC_OS_H 1

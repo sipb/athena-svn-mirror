@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: dnssectool.c,v 1.1.1.1 2001-10-22 13:06:39 ghudson Exp $ */
+/* $Id: dnssectool.c,v 1.1.1.2 2002-02-03 04:22:37 ghudson Exp $ */
 
 #include <config.h>
 
@@ -23,7 +23,6 @@
 
 #include <isc/buffer.h>
 #include <isc/entropy.h>
-#include <isc/keyboard.h>
 #include <isc/string.h>
 #include <isc/time.h>
 #include <isc/util.h>
@@ -43,8 +42,7 @@ extern int verbose;
 extern const char *program;
 
 static isc_entropysource_t *source = NULL;
-static isc_keyboard_t kbd;
-static isc_boolean_t wantkeyboard = ISC_FALSE;
+static fatalcallback_t *fatalcallback = NULL;
 
 void
 fatal(const char *format, ...) {
@@ -55,7 +53,14 @@ fatal(const char *format, ...) {
 	vfprintf(stderr, format, args);
 	va_end(args);
 	fprintf(stderr, "\n");
+	if (fatalcallback != NULL)
+		(*fatalcallback)();
 	exit(1);
+}
+
+void
+setfatalcallback(fatalcallback_t *callback) {
+	fatalcallback = callback;
 }
 
 void
@@ -120,7 +125,7 @@ key_format(const dst_key_t *key, char *cp, unsigned int size) {
 	char algstr[DNS_NAME_FORMATSIZE];
 
 	dns_name_format(dst_key_name(key), namestr, sizeof namestr);
-	alg_format(dst_key_alg(key), algstr, sizeof algstr);
+	alg_format((dns_secalg_t) dst_key_alg(key), algstr, sizeof algstr);
 	snprintf(cp, size, "%s/%s/%d", namestr, algstr, dst_key_id(key));
 }
 
@@ -193,107 +198,30 @@ cleanup_logging(isc_log_t **logp) {
 	logp = NULL;
 }
 
-static isc_result_t
-kbdstart(isc_entropysource_t *source, void *arg, isc_boolean_t blocking) {
-	isc_keyboard_t *kbd = (isc_keyboard_t *)arg;
-	static isc_boolean_t first = ISC_TRUE;
-
-	UNUSED(source);
-
-	if (!blocking)
-		return (ISC_R_NOENTROPY);
-	if (first) {
-		if (!wantkeyboard) {
-			fprintf(stderr, "You must use the keyboard to create "
-				"entropy, since your system is lacking\n");
-			fprintf(stderr, "/dev/random (or equivalent)\n\n");
-		}
-		first = ISC_FALSE;
-	}
-	fprintf(stderr, "start typing:\n");
-	return (isc_keyboard_open(kbd));
-}
-
-static void
-kbdstop(isc_entropysource_t *source, void *arg) {
-	isc_keyboard_t *kbd = (isc_keyboard_t *)arg;
-
-	UNUSED(source);
-
-	if (!isc_keyboard_canceled(kbd))
-		fprintf(stderr, "stop typing.\r\n");
-	(void)isc_keyboard_close(kbd, 3);
-}
-
-static isc_result_t
-kbdget(isc_entropysource_t *source, void *arg, isc_boolean_t blocking) {
-	isc_keyboard_t *kbd = (isc_keyboard_t *)arg;
-	isc_result_t result;
-	isc_time_t t;
-	isc_uint32_t sample;
-	isc_uint32_t extra;
-	unsigned char c;
-
-	if (!blocking)
-		return (ISC_R_NOTBLOCKING);
-
-	result = isc_keyboard_getchar(kbd, &c);
-	if (result != ISC_R_SUCCESS)
-		return (result);
-
-	result = isc_time_now(&t);
-	if (result != ISC_R_SUCCESS)
-		return (result);
-
-	sample = isc_time_nanoseconds(&t);
-	extra = c;
-
-	result = isc_entropy_addcallbacksample(source, sample, extra);
-	if (result != ISC_R_SUCCESS) {
-		fprintf(stderr, "\r\n");
-		return (result);
-	}
-
-	fprintf(stderr, ".");
-	fflush(stderr);
-
-	return (result);
-}
-
 void
 setup_entropy(isc_mem_t *mctx, const char *randomfile, isc_entropy_t **ectx) {
 	isc_result_t result;
+	int usekeyboard = ISC_ENTROPY_KEYBOARDMAYBE;
 
-	result = isc_entropy_create(mctx, ectx);
-	if (result != ISC_R_SUCCESS)
-		fatal("could not create entropy object");
-
-#ifdef PATH_RANDOMDEV
-	if (randomfile == NULL) {
-		result = isc_entropy_createfilesource(*ectx, PATH_RANDOMDEV);
-		if (result == ISC_R_SUCCESS)
-			return;
+	REQUIRE(ectx != NULL);
+	
+	if (*ectx == NULL) {
+		result = isc_entropy_create(mctx, ectx);
+		if (result != ISC_R_SUCCESS)
+			fatal("could not create entropy object");
 	}
-#endif
 
-	if (randomfile != NULL && strcasecmp(randomfile, "keyboard") == 0) {
-		wantkeyboard = ISC_TRUE;
+	if (randomfile != NULL && strcmp(randomfile, "keyboard") == 0) {
+		usekeyboard = ISC_ENTROPY_KEYBOARDYES;
 		randomfile = NULL;
 	}
-		
-	if (randomfile != NULL) {
-		result = isc_entropy_createfilesource(*ectx, randomfile);
-		if (result != ISC_R_SUCCESS)
-			fatal("could not open randomdev %s: %s", randomfile,
-			      isc_result_totext(result));
-	} else {
-		result = isc_entropy_createcallbacksource(*ectx, kbdstart,
-							  kbdget, kbdstop,
-							  &kbd, &source);
-		if (result != ISC_R_SUCCESS)
-			fatal("failed to open keyboard: %s\n",
-			      isc_result_totext(result));
-	}
+
+	result = isc_entropy_usebestsource(*ectx, &source, randomfile,
+					   usekeyboard);
+
+	if (result != ISC_R_SUCCESS)
+		fatal("could not initialize entropy source: %s",
+		      isc_result_totext(result));
 }
 
 void

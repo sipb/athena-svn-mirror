@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: t_api.pl,v 1.1.1.1 2001-10-22 13:02:11 ghudson Exp $
+# $Id: t_api.pl,v 1.1.1.2 2002-02-03 04:29:49 ghudson Exp $
 
 require "getopts.pl";
 

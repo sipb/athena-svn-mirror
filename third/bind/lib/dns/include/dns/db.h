@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: db.h,v 1.1.1.1 2001-10-22 13:08:20 ghudson Exp $ */
+/* $Id: db.h,v 1.1.1.2 2002-02-03 04:24:38 ghudson Exp $ */
 
 #ifndef DNS_DB_H
 #define DNS_DB_H 1
@@ -152,7 +152,7 @@ typedef isc_result_t
 		      unsigned int argc, char *argv[], void *driverarg,
 		      dns_db_t **dbp);
 					
-#define DNS_DB_MAGIC		0x444E5344U		/* DNSD. */
+#define DNS_DB_MAGIC		ISC_MAGIC('D','N','S','D')
 #define DNS_DB_VALID(db)	ISC_MAGIC_VALID(db, DNS_DB_MAGIC)
 
 /*
@@ -713,7 +713,8 @@ dns_db_find(dns_db_t *db, dns_name_t *name, dns_dbversion_t *version,
  *						to return inappropriate glue
  *						to a client.  This result can
  *						only occur if 'db' is a zone
- *						database.
+ *						database and DNS_DBFIND_GLUEOK
+ *						is set.
  *
  *		DNS_R_DNAME			The data requested is beneath
  *						a DNAME.  node, foundname,

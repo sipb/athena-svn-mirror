@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: sortlist.h,v 1.1.1.1 2001-10-22 13:06:41 ghudson Exp $ */
+/* $Id: sortlist.h,v 1.1.1.2 2002-02-03 04:22:39 ghudson Exp $ */
 
 #ifndef NAMED_SORTLIST_H
 #define NAMED_SORTLIST_H 1

@@ -48,7 +48,7 @@
  * SUCH DAMAGE.
  */
 
-/* $Id: gen-win32.h,v 1.1.1.1 2001-10-22 13:07:51 ghudson Exp $ */
+/* $Id: gen-win32.h,v 1.1.1.2 2002-02-03 04:24:57 ghudson Exp $ */
 
 /*
  * Principal Authors: Computer Systems Research Group at UC Berkeley
@@ -80,9 +80,7 @@
 #include <string.h>
 #include <windows.h>
 
-#include <isc/assertions.h>
 #include <isc/boolean.h>
-#include <isc/commandline.h>
 #include <isc/lang.h>
 
 int isc_commandline_index = 1;		/* Index into parent argv vector. */
@@ -91,12 +89,12 @@ int isc_commandline_option;		/* Character checked for validity. */
 char *isc_commandline_argument;		/* Argument associated with option. */
 char *isc_commandline_progname;		/* For printing error messages. */
 
-isc_boolean_t isc_commandline_errprint = 1;	/* Print error messages. */
+isc_boolean_t isc_commandline_errprint = ISC_TRUE;/* Print error messages. */
 isc_boolean_t isc_commandline_reset = ISC_TRUE; /* Reset processing. */
 
-#define	BADOPT	'?'
-#define	BADARG	':'
-#define ENDOPT  ""
+#define BADOPT	'?'
+#define BADARG	':'
+#define ENDOPT	""
 
 ISC_LANG_BEGINDECLS
 
@@ -130,7 +128,7 @@ isc_commandline_parse(int argc, char * const *argv, const char *options) {
 
 		if (place[1] != '\0' && *++place == '-' && place[1] == '\0') {
 			/*
-			 * Found '--' to signal end of options.  Advance
+			 * Found '--' to signal end of options.	 Advance
 			 * index to next argv, the first non-option.
 			 */
 			isc_commandline_index++;
@@ -228,7 +226,7 @@ typedef struct {
 } isc_dir_t;
 
 isc_boolean_t
-start_directory(char *path, isc_dir_t *dir) {
+start_directory(const char *path, isc_dir_t *dir) {
 	char pattern[_MAX_PATH], *p;
 
 	/*

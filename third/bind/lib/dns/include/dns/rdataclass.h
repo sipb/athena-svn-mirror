@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdataclass.h,v 1.1.1.1 2001-10-22 13:08:26 ghudson Exp $ */
+/* $Id: rdataclass.h,v 1.1.1.2 2002-02-03 04:24:45 ghudson Exp $ */
 
 #ifndef DNS_RDATACLASS_H
 #define DNS_RDATACLASS_H 1

@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: setup.sh,v 1.1.1.1 2001-10-22 13:02:16 ghudson Exp $
+# $Id: setup.sh,v 1.1.1.2 2002-02-03 04:29:52 ghudson Exp $
 
 #
 # Run a system test.

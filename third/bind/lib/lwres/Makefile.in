@@ -13,7 +13,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: Makefile.in,v 1.1.1.1 2001-10-22 13:09:40 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2002-02-03 04:26:17 ghudson Exp $
 
 srcdir =	@srcdir@
 VPATH =		@srcdir@
@@ -25,7 +25,8 @@ top_srcdir =	@top_srcdir@
 
 @BIND9_INCLUDES@
 
-CINCLUDES =	-I. -I./include -I${srcdir}/include ${ISC_INCLUDES}
+CINCLUDES =	-I${srcdir}/unix/include \
+		-I. -I./include -I${srcdir}/include ${ISC_INCLUDES}
 CDEFINES =
 CWARNINGS =
 
@@ -45,7 +46,7 @@ SRCS =		context.c gai_strerror.c getaddrinfo.c gethost.c \
 
 LIBS =		@LIBS@
 
-SUBDIRS =	include
+SUBDIRS =	include man unix
 TARGETS =	timestamp
 
 @BIND9_MAKE_RULES@

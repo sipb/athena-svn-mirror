@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: hex.h,v 1.1.1.1 2001-10-22 13:09:15 ghudson Exp $ */
+/* $Id: hex.h,v 1.1.1.2 2002-02-03 04:25:37 ghudson Exp $ */
 
 #ifndef ISC_HEX_H
 #define ISC_HEX_H 1
@@ -54,12 +54,11 @@ isc_hex_totext(isc_region_t *source, int wordlength,
  */
 
 isc_result_t
-isc_hex_decodestring(isc_mem_t *mctx, char *cstr, isc_buffer_t *target);
+isc_hex_decodestring(char *cstr, isc_buffer_t *target);
 /*
  * Decode a null-terminated hex string.
  *
  * Requires:
- * 	'mctx' is non-null.
  *	'cstr' is non-null.
  *	'target' is a valid buffer.
  *

@@ -18,7 +18,7 @@
 #ifndef HS_4_A_1_H
 #define HS_4_A_1_H 1
 
-/* $Id: a_1.h,v 1.1.1.1 2001-10-22 13:08:39 ghudson Exp $ */
+/* $Id: a_1.h,v 1.1.1.2 2002-02-03 04:25:27 ghudson Exp $ */
 
 typedef struct dns_rdata_hs_a {
 	dns_rdatacommon_t	common;

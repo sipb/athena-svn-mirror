@@ -13,7 +13,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: rbt_test.txt,v 1.1.1.1 2001-10-22 13:02:09 ghudson Exp $
+# $Id: rbt_test.txt,v 1.1.1.2 2002-02-03 04:29:47 ghudson Exp $
 
 add a.vix.com
 add b.vix.com

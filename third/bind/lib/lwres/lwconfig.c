@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: lwconfig.c,v 1.1.1.1 2001-10-22 13:09:43 ghudson Exp $ */
+/* $Id: lwconfig.c,v 1.1.1.2 2002-02-03 04:26:22 ghudson Exp $ */
 
 /***
  *** Module for parsing resolv.conf files.
@@ -46,11 +46,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <sys/types.h>
-#include <sys/socket.h>
-
-#include <netinet/in.h>
-
 #include <lwres/lwbuffer.h>
 #include <lwres/lwres.h>
 #include <lwres/net.h>
@@ -67,11 +62,6 @@
 #if ! defined(NS_IN6ADDRSZ)
 #define NS_IN6ADDRSZ	16
 #endif
-
-
-extern int lwres_net_pton(int af, const char *src, void *dst);
-extern const char *lwres_net_ntop(int af, const void *src, char *dst,
-				  size_t size);
 
 static lwres_result_t
 lwres_conf_parsenameserver(lwres_context_t *ctx,  FILE *fp);
@@ -95,7 +85,7 @@ static void
 lwres_resetaddr(lwres_addr_t *addr);
 
 static lwres_result_t
-lwres_create_addr(const char *buff, lwres_addr_t *addr);
+lwres_create_addr(const char *buff, lwres_addr_t *addr, int convert_zero);
 
 static int lwresaddr2af(int lwresaddrtype);
 
@@ -303,7 +293,7 @@ lwres_conf_parsenameserver(lwres_context_t *ctx,  FILE *fp) {
 		return (LWRES_R_FAILURE); /* Extra junk on line. */
 
 	res = lwres_create_addr(word,
-				&confdata->nameservers[confdata->nsnext++]);
+				&confdata->nameservers[confdata->nsnext++], 1);
 	if (res != LWRES_R_SUCCESS)
 		return (res);
 
@@ -331,7 +321,7 @@ lwres_conf_parselwserver(lwres_context_t *ctx,  FILE *fp) {
 		return (LWRES_R_FAILURE); /* Extra junk on line. */
 
 	res = lwres_create_addr(word,
-				&confdata->lwservers[confdata->lwnext++]);
+				&confdata->lwservers[confdata->lwnext++], 1);
 	if (res != LWRES_R_SUCCESS)
 		return (res);
 
@@ -434,23 +424,28 @@ lwres_conf_parsesearch(lwres_context_t *ctx,  FILE *fp) {
 }
 
 static lwres_result_t
-lwres_create_addr(const char *buffer, lwres_addr_t *addr) {
-	unsigned char addrbuff[NS_IN6ADDRSZ];
-	unsigned int len;
+lwres_create_addr(const char *buffer, lwres_addr_t *addr, int convert_zero) {
+	struct in_addr v4;
+	struct in6_addr v6;
 
-	if (lwres_net_pton(AF_INET, buffer, &addrbuff) == 1) {
+	if (lwres_net_aton(buffer, &v4) == 1) {
+		if (convert_zero) {
+			unsigned char zeroaddress[] = {0, 0, 0, 0};
+			unsigned char loopaddress[] = {127, 0, 0, 1};
+			if (memcmp(&v4, zeroaddress, 4) == 0)
+				memcpy(&v4, loopaddress, 4);
+		}
 		addr->family = LWRES_ADDRTYPE_V4;
 		addr->length = NS_INADDRSZ;
-		len = 4;
-	} else if (lwres_net_pton(AF_INET6, buffer, &addrbuff) == 1) {
+		memcpy((void *)addr->address, &v4, NS_INADDRSZ);
+
+	} else if (lwres_net_pton(AF_INET6, buffer, &v6) == 1) {
 		addr->family = LWRES_ADDRTYPE_V6;
 		addr->length = NS_IN6ADDRSZ;
-		len = 16;
+		memcpy((void *)addr->address, &v6, NS_IN6ADDRSZ);
 	} else {
 		return (LWRES_R_FAILURE); /* Unrecognised format. */
 	}
-
-	memcpy((void *)addr->address, addrbuff, len);
 
 	return (LWRES_R_SUCCESS);
 }
@@ -477,13 +472,14 @@ lwres_conf_parsesortlist(lwres_context_t *ctx,  FILE *fp) {
 			*p++ = '\0';
 
 		idx = confdata->sortlistnxt;
-		res = lwres_create_addr(word, &confdata->sortlist[idx].addr);
+		res = lwres_create_addr(word, &confdata->sortlist[idx].addr, 1);
 		if (res != LWRES_R_SUCCESS)
 			return (res);
 
 		if (p != NULL) {
 			res = lwres_create_addr(p,
-						&confdata->sortlist[idx].mask);
+						&confdata->sortlist[idx].mask,
+						0);
 			if (res != LWRES_R_SUCCESS)
 				return (res);
 		} else {

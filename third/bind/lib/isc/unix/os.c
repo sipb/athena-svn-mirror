@@ -15,23 +15,77 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: os.c,v 1.1.1.1 2001-10-22 13:09:35 ghudson Exp $ */
+/* $Id: os.c,v 1.1.1.2 2002-02-03 04:25:58 ghudson Exp $ */
 
 #include <config.h>
 
+#include <isc/os.h>
+
+
+#ifdef HAVE_SYSCONF
+
 #include <unistd.h>
 
-#include <isc/os.h>
+static inline long
+sysconf_ncpus(void) {
+#if defined(_SC_NPROCESSORS_ONLN)
+	return sysconf((_SC_NPROCESSORS_ONLN));
+#elif defined(_SC_NPROC_ONLN)
+	return sysconf((_SC_NPROC_ONLN));
+#else
+	return (0);
+#endif
+}
+#endif /* HAVE_SYSCONF */
+
+
+#ifdef __hpux
+
+#include <sys/pstat.h>
+
+static inline int
+hpux_ncpus(void) {
+	struct pst_dynamic psd;
+	if (pstat_getdynamic(&psd, sizeof(psd), 1, 0) != -1)
+		return (psd.psd_proc_cnt);
+	else
+		return (0);
+}
+
+#endif /* __hpux */
+
+#if defined(HAVE_SYS_SYSCTL_H) && defined(HAVE_SYSCTLBYNAME)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
+static int
+sysctl_ncpus(void) {
+	int ncpu, result;
+	size_t len;
+
+	len = sizeof ncpu;
+	result = sysctlbyname("hw.ncpu", &ncpu, &len , 0, 0);
+	if (result != -1)
+		return (ncpu);
+	return (0);
+}
+#endif
 
 unsigned int
 isc_os_ncpus(void) {
-	long ncpus = 1;
+	long ncpus = 0;
 
-#if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
-	ncpus = sysconf(_SC_NPROCESSORS_ONLN);
+#ifdef __hpux
+	ncpus = hpux_ncpus();
+#elif defined(HAVE_SYSCONF)
+	ncpus = sysconf_ncpus();
+#endif
+#if defined(HAVE_SYS_SYSCTL_H) && defined(HAVE_SYSCTLBYNAME)
+	if (ncpus <= 0)
+		ncpus = sysctl_ncpus();
+#endif
 	if (ncpus <= 0)
 		ncpus = 1;
-#endif
 
 	return ((unsigned int)ncpus);
 }

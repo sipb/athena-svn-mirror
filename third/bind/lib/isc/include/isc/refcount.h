@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: refcount.h,v 1.1.1.1 2001-10-22 13:09:18 ghudson Exp $ */
+/* $Id: refcount.h,v 1.1.1.2 2002-02-03 04:25:40 ghudson Exp $ */
 
 #ifndef ISC_REFCOUNT_H
 #define ISC_REFCOUNT_H 1

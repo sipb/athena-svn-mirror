@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: md5.h,v 1.1.1.1 2001-10-22 13:09:17 ghudson Exp $ */
+/* $Id: md5.h,v 1.1.1.2 2002-02-03 04:25:38 ghudson Exp $ */
 
 /*
  * This is the header file for the MD5 message-digest algorithm.

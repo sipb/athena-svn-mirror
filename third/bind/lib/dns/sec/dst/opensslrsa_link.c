@@ -17,9 +17,9 @@
 
 /*
  * Principal Author: Brian Wellington
- * $Id: opensslrsa_link.c,v 1.1.1.1 2001-10-22 13:08:46 ghudson Exp $
+ * $Id: opensslrsa_link.c,v 1.1.1.2 2002-02-03 04:25:34 ghudson Exp $
  */
-#if defined(OPENSSL)
+#ifdef OPENSSL
 
 #include <config.h>
 
@@ -297,21 +297,27 @@ opensslrsa_fromdns(dst_key_t *key, isc_buffer_t *data) {
 		return (ISC_R_NOMEMORY);
 	rsa->flags &= ~(RSA_FLAG_CACHE_PUBLIC | RSA_FLAG_CACHE_PRIVATE);
 
-	if (r.length < 1)
+	if (r.length < 1) {
+		RSA_free(rsa);
 		return (DST_R_INVALIDPUBLICKEY);
+	}
 	e_bytes = *r.base++;
 	r.length--;
 
 	if (e_bytes == 0) {
-		if (r.length < 2)
+		if (r.length < 2) {
+			RSA_free(rsa);
 			return (DST_R_INVALIDPUBLICKEY);
+		}
 		e_bytes = ((*r.base++) << 8);
 		e_bytes += *r.base++;
 		r.length -= 2;
 	}
 
-	if (r.length < e_bytes)
+	if (r.length < e_bytes) {
+		RSA_free(rsa);
 		return (DST_R_INVALIDPUBLICKEY);
+	}
 	rsa->e = BN_bin2bn(r.base, e_bytes, NULL);
 	r.base += e_bytes;
 	r.length -= e_bytes;
@@ -409,9 +415,7 @@ opensslrsa_tofile(const dst_key_t *key, const char *directory) {
 }
 
 static isc_result_t
-opensslrsa_fromfile(dst_key_t *key, const isc_uint16_t id,
-		    const char *filename)
-{
+opensslrsa_fromfile(dst_key_t *key, const char *filename) {
 	dst_private_t priv;
 	isc_result_t ret;
 	int i;
@@ -420,7 +424,7 @@ opensslrsa_fromfile(dst_key_t *key, const isc_uint16_t id,
 #define DST_RET(a) {ret = a; goto err;}
 
 	/* read private key file */
-	ret = dst__privstruct_parsefile(key, id, filename, mctx, &priv);
+	ret = dst__privstruct_parsefile(key, filename, mctx, &priv);
 	if (ret != ISC_R_SUCCESS)
 		return (ret);
 

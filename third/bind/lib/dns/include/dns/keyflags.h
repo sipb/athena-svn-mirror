@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: keyflags.h,v 1.1.1.1 2001-10-22 13:08:22 ghudson Exp $ */
+/* $Id: keyflags.h,v 1.1.1.2 2002-02-03 04:24:40 ghudson Exp $ */
 
 #ifndef DNS_KEYFLAGS_H
 #define DNS_KEYFLAGS_H 1

@@ -15,13 +15,13 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tsig.h,v 1.1.1.1 2001-10-22 13:08:29 ghudson Exp $ */
+/* $Id: tsig.h,v 1.1.1.2 2002-02-03 04:24:47 ghudson Exp $ */
 
 #ifndef DNS_TSIG_H
 #define DNS_TSIG_H 1
 
 #include <isc/lang.h>
-#include <isc/mutex.h>
+#include <isc/refcount.h>
 #include <isc/rwlock.h>
 #include <isc/stdtime.h>
 
@@ -33,7 +33,7 @@
 /*
  * Algorithms.
  */
-extern dns_name_t *dns_tsig_hmacmd5_name;
+LIBDNS_EXTERNAL_DATA extern dns_name_t *dns_tsig_hmacmd5_name;
 #define DNS_TSIG_HMACMD5_NAME		dns_tsig_hmacmd5_name
 extern dns_name_t *dns_tsig_gssapi_name;
 #define DNS_TSIG_GSSAPI_NAME		dns_tsig_gssapi_name
@@ -63,10 +63,7 @@ struct dns_tsigkey {
 	isc_stdtime_t		inception;	/* start of validity period */
 	isc_stdtime_t		expire;		/* end of validity period */
 	dns_tsig_keyring_t	*ring;		/* the enclosing keyring */
-	isc_mutex_t		lock;
-	/* Locked */
-	isc_uint32_t		refs;		/* reference counter */
-	/* Unlocked */
+	isc_refcount_t		refs;		/* reference counter */
 };
 
 #define dns_tsigkey_identity(tsigkey) \

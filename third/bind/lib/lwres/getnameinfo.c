@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: getnameinfo.c,v 1.1.1.1 2001-10-22 13:09:42 ghudson Exp $ */
+/* $Id: getnameinfo.c,v 1.1.1.2 2002-02-03 04:26:20 ghudson Exp $ */
 
 /*
  * Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
@@ -58,11 +58,6 @@
  */
 
 #include <config.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-
-#include <netinet/in.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -258,7 +253,8 @@ lwres_getnameinfo(const struct sockaddr *sa, size_t salen, char *host,
 			(void) lwres_conf_parse(lwrctx, lwres_resolv_conf);
 
 		if (n == 0)
-			n = lwres_getnamebyaddr(lwrctx, lwf, afd->a_addrlen,
+			n = lwres_getnamebyaddr(lwrctx, lwf,
+						(lwres_uint16_t)afd->a_addrlen,
 						addr, &by);
 		if (n == 0) {
 			if (flags & NI_NOFQDN) {

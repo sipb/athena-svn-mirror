@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: netdb.h.in,v 1.1.1.1 2001-10-22 13:09:40 ghudson Exp $ */
+/* $Id: netdb.h.in,v 1.1.1.2 2002-02-03 04:26:16 ghudson Exp $ */
 
 #ifndef LWRES_NETDB_H
 #define LWRES_NETDB_H 1
@@ -154,6 +154,12 @@ struct addrinfo {
 #define	NI_NUMERICSCOPE	0x00000020	/*2553bis-00*/
 
 /*
+ * Define if <netdb.h> does not declare struct rrsetinfo.
+ */
+@ISC_LWRES_NEEDRRSETINFO@
+
+#ifdef ISC_LWRES_NEEDRRSETINFO
+/*
  * Structures for getrrsetbyname()
  */
 struct rdatainfo {
@@ -186,6 +192,9 @@ struct rrsetinfo {
 #define ERRSET_NOMEMORY		1
 #define ERRSET_FAIL		2
 #define ERRSET_INVAL		3
+#define	ERRSET_NONAME	 	4
+#define	ERRSET_NODATA	 	5
+#endif
 
 /*
  * Define to map into lwres_ namespace.
@@ -445,7 +454,6 @@ void		lwres_herror(const char *);
 const char	*lwres_hstrerror(int);
 
 
-#ifdef _REENTRANT
 struct hostent	*lwres_gethostbyaddr_r(const char *, int, int, struct hostent *,
 					char *, int, int *);
 struct hostent	*lwres_gethostbyname_r(const char *, struct hostent *,
@@ -479,7 +487,6 @@ struct servent	*lwres_getservent_r(struct servent *, char *, int);
 void		lwres_setservent_r(int);
 void		lwres_endservent_r(void);
 #endif	/* notyet */
-#endif	/* _REENTRANT */
 
 LWRES_LANG_ENDDECLS
 

@@ -15,7 +15,7 @@
 # NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
 # WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-# $Id: digcomp.pl,v 1.1.1.1 2001-10-22 13:02:13 ghudson Exp $
+# $Id: digcomp.pl,v 1.1.1.2 2002-02-03 04:29:50 ghudson Exp $
 
 # Compare two files, each with the output from dig, for differences.
 # Ignore "unimportant" differences, like ordering of NS lines, TTL's,

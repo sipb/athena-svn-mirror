@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: aaaa_28.c,v 1.1.1.1 2001-10-22 13:08:40 ghudson Exp $ */
+/* $Id: aaaa_28.c,v 1.1.1.2 2002-02-03 04:25:28 ghudson Exp $ */
 
 /* Reviewed: Thu Mar 16 16:52:50 PST 2000 by bwelling */
 
@@ -37,15 +37,17 @@ fromtext_in_aaaa(ARGS_FROMTEXT) {
 	REQUIRE(type == 28);
 	REQUIRE(rdclass == 1);
 
+	UNUSED(type);
 	UNUSED(origin);
 	UNUSED(downcase);
 	UNUSED(rdclass);
+	UNUSED(callbacks);
 
 	RETERR(isc_lex_getmastertoken(lexer, &token, isc_tokentype_string,
 				      ISC_FALSE));
 
 	if (inet_pton(AF_INET6, token.value.as_pointer, addr) != 1)
-		return (DNS_R_BADAAAA);
+		RETTOK(DNS_R_BADAAAA);
 	isc_buffer_availableregion(target, &region);
 	if (region.length < 16)
 		return (ISC_R_NOSPACE);
@@ -64,13 +66,8 @@ totext_in_aaaa(ARGS_TOTEXT) {
 	REQUIRE(rdata->rdclass == 1);
 	REQUIRE(rdata->length == 16);
 
-	isc_buffer_availableregion(target, &region);
-	if (inet_ntop(AF_INET6, rdata->data,
-		      (char *)region.base, region.length) == NULL)
-		return (ISC_R_NOSPACE);
-
-	isc_buffer_add(target, strlen((char *)region.base));
-	return (ISC_R_SUCCESS);
+	dns_rdata_toregion(rdata, &region);
+	return (inet_totext(AF_INET6, &region, target));
 }
 
 static inline isc_result_t
@@ -81,6 +78,7 @@ fromwire_in_aaaa(ARGS_FROMWIRE) {
 	REQUIRE(type == 28);
 	REQUIRE(rdclass == 1);
 
+	UNUSED(type);
 	UNUSED(dctx);
 	UNUSED(downcase);
 	UNUSED(rdclass);
@@ -143,6 +141,7 @@ fromstruct_in_aaaa(ARGS_FROMSTRUCT) {
 	REQUIRE(aaaa->common.rdtype == type);
 	REQUIRE(aaaa->common.rdclass == rdclass);
 
+	UNUSED(type);
 	UNUSED(rdclass);
 
 	return (mem_tobuffer(target, aaaa->in6_addr.s6_addr, 16));

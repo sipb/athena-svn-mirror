@@ -18,7 +18,7 @@
 #ifndef IN_1_NSAP_22_H
 #define IN_1_NSAP_22_H 1
 
-/* $Id: nsap_22.h,v 1.1.1.1 2001-10-22 13:08:41 ghudson Exp $ */
+/* $Id: nsap_22.h,v 1.1.1.2 2002-02-03 04:25:29 ghudson Exp $ */
 
 /* RFC 1706 */
 

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdatasetiter.c,v 1.1.1.1 2001-10-22 13:08:03 ghudson Exp $ */
+/* $Id: rdatasetiter.c,v 1.1.1.2 2002-02-03 04:25:07 ghudson Exp $ */
 
 #include <config.h>
 

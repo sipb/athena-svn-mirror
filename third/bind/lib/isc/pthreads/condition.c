@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: condition.c,v 1.1.1.1 2001-10-22 13:09:30 ghudson Exp $ */
+/* $Id: condition.c,v 1.1.1.2 2002-02-03 04:25:54 ghudson Exp $ */
 
 #include <config.h>
 
@@ -23,6 +23,7 @@
 
 #include <isc/condition.h>
 #include <isc/msgs.h>
+#include <isc/strerror.h>
 #include <isc/string.h>
 #include <isc/time.h>
 #include <isc/util.h>
@@ -32,11 +33,12 @@ isc_condition_waituntil(isc_condition_t *c, isc_mutex_t *m, isc_time_t *t) {
 	int presult;
 	isc_result_t result;
 	struct timespec ts;
+	char strbuf[ISC_STRERRORSIZE];
 
 	REQUIRE(c != NULL && m != NULL && t != NULL);
 
 	/*
-	 * POSIX defines a timepsec's tv_sec as time_t.
+	 * POSIX defines a timespec's tv_sec as time_t.
 	 */
 	result = isc_time_secondsastimet(t, &ts.tv_sec);
 	if (result != ISC_R_SUCCESS)
@@ -49,17 +51,22 @@ isc_condition_waituntil(isc_condition_t *c, isc_mutex_t *m, isc_time_t *t) {
 	ts.tv_nsec = (long)isc_time_nanoseconds(t);
 
 	do {
+#if ISC_MUTEX_PROFILE
+		presult = pthread_cond_timedwait(c, &m->mutex, &ts);
+#else
 		presult = pthread_cond_timedwait(c, m, &ts);
+#endif
 		if (presult == 0)
 			return (ISC_R_SUCCESS);
 		if (presult == ETIMEDOUT)
 			return (ISC_R_TIMEDOUT);
 	} while (presult == EINTR);
 
+	isc__strerror(presult, strbuf, sizeof(strbuf));
 	UNEXPECTED_ERROR(__FILE__, __LINE__,
 			 "pthread_cond_timedwait() %s %s",
 			 isc_msgcat_get(isc_msgcat, ISC_MSGSET_GENERAL,
 					ISC_MSG_RETURNED, "returned"),
-			 strerror(presult));
+			 strbuf);
 	return (ISC_R_UNEXPECTED);
 }

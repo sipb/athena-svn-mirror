@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: callbacks.h,v 1.1.1.1 2001-10-22 13:08:15 ghudson Exp $ */
+/* $Id: callbacks.h,v 1.1.1.2 2002-02-03 04:24:37 ghudson Exp $ */
 
 #ifndef DNS_CALLBACKS_H
 #define DNS_CALLBACKS_H 1

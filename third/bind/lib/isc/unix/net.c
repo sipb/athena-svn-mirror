@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: net.c,v 1.1.1.1 2001-10-22 13:09:35 ghudson Exp $ */
+/* $Id: net.c,v 1.1.1.2 2002-02-03 04:25:58 ghudson Exp $ */
 
 #include <config.h>
 
@@ -26,11 +26,16 @@
 #include <isc/msgs.h>
 #include <isc/net.h>
 #include <isc/once.h>
+#include <isc/strerror.h>
 #include <isc/string.h>
 #include <isc/util.h>
 
 #if defined(ISC_PLATFORM_HAVEIPV6) && defined(ISC_PLATFORM_NEEDIN6ADDRANY)
 const struct in6_addr isc_net_in6addrany = IN6ADDR_ANY_INIT;
+#endif
+
+#if defined(ISC_PLATFORM_HAVEIPV6) && defined(ISC_PLATFORM_NEEDIN6ADDRLOOPBACK)
+const struct in6_addr isc_net_in6addrloop = IN6ADDR_LOOPBACK_INIT;
 #endif
 
 static isc_once_t 	once = ISC_ONCE_INIT;
@@ -41,6 +46,7 @@ static isc_result_t
 try_proto(int domain) {
 	int s;
 	isc_result_t result = ISC_R_SUCCESS;
+	char strbuf[ISC_STRERRORSIZE];
 
 	s = socket(domain, SOCK_STREAM, 0);
 	if (s == -1) {
@@ -56,13 +62,14 @@ try_proto(int domain) {
 #endif
 			return (ISC_R_NOTFOUND);
 		default:
+			isc__strerror(errno, strbuf, sizeof(strbuf));
 			UNEXPECTED_ERROR(__FILE__, __LINE__,
 					 "socket() %s: %s",
 					 isc_msgcat_get(isc_msgcat,
 							ISC_MSGSET_GENERAL,
 							ISC_MSG_FAILED,
 							"failed"),
-					 strerror(errno));
+					 strbuf);
 			return (ISC_R_UNEXPECTED);
 		}
 	}
@@ -78,10 +85,11 @@ try_proto(int domain) {
 		 * Check to see if IPv6 is broken, as is common on Linux.
 		 */
 		len = sizeof(sin6);
-		if (getsockname(s, (struct sockaddr *)&sin6, (void *)&len) < 0) {
+		if (getsockname(s, (struct sockaddr *)&sin6, (void *)&len) < 0)
+		{
 			isc_log_write(isc_lctx, ISC_LOGCATEGORY_GENERAL,
 				      ISC_LOGMODULE_SOCKET, ISC_LOG_ERROR,
-				      "Retrieving the address of an IPv6 "
+				      "retrieving the address of an IPv6 "
 				      "socket from the kernel failed.");
 			isc_log_write(isc_lctx, ISC_LOGCATEGORY_GENERAL,
 				      ISC_LOGMODULE_SOCKET, ISC_LOG_ERROR,
@@ -134,22 +142,12 @@ initialize(void) {
 
 isc_result_t
 isc_net_probeipv4(void) {
-
-	/*
-	 * Check if the system's kernel supports IPv4.
-	 */
-
 	initialize();
 	return (ipv4_result);
 }
 
 isc_result_t
 isc_net_probeipv6(void) {
-
-	/*
-	 * Check if the system's kernel supports IPv6.
-	 */
-
 	initialize();
 	return (ipv6_result);
 }

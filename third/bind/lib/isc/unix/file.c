@@ -15,18 +15,20 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: file.c,v 1.1.1.1 2001-10-22 13:09:34 ghudson Exp $ */
+/* $Id: file.c,v 1.1.1.2 2002-02-03 04:25:57 ghudson Exp $ */
 
 #include <config.h>
 
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
-#include <unistd.h>            /* Required for mkstemp on NetBSD. */
+#include <time.h>		/* Required for utimes on some platforms. */
+#include <unistd.h>		/* Required for mkstemp on NetBSD. */
 
 #include <sys/stat.h>
 #include <sys/time.h>
 
+#include <isc/dir.h>
 #include <isc/file.h>
 #include <isc/string.h>
 #include <isc/time.h>
@@ -46,6 +48,9 @@ static isc_result_t
 file_stats(const char *file, struct stat *stats) {
 	isc_result_t result = ISC_R_SUCCESS;
 
+	REQUIRE(file != NULL);
+	REQUIRE(stats != NULL);
+
 	if (stat(file, stats) != 0)
 		result = isc__errno2result(errno);
 
@@ -57,7 +62,8 @@ isc_file_getmodtime(const char *file, isc_time_t *time) {
 	isc_result_t result;
 	struct stat stats;
 
-	REQUIRE(file != NULL && time != NULL);
+	REQUIRE(file != NULL);
+	REQUIRE(time != NULL);
 
 	result = file_stats(file, &stats);
 
@@ -125,6 +131,8 @@ isc_file_template(const char *path, const char *templet, char *buf,
 			size_t buflen) {
 	char *s;
 
+	REQUIRE(path != NULL);
+	REQUIRE(templet != NULL);
 	REQUIRE(buf != NULL);
 
 	s = strrchr(templet, '/');
@@ -155,6 +163,9 @@ isc_file_renameunique(const char *file, char *templet) {
 	int fd = -1;
 	int res = 0;
 	isc_result_t result = ISC_R_SUCCESS;
+
+	REQUIRE(file != NULL);
+	REQUIRE(templet != NULL);
 
 	fd = mkstemp(templet);
 	if (fd == -1) {
@@ -206,6 +217,8 @@ isc_result_t
 isc_file_remove(const char *filename) {
 	int r;
 
+	REQUIRE(filename != NULL);
+
 	r = unlink(filename);
 	if (r == 0)
 		return (ISC_R_SUCCESS);
@@ -217,6 +230,9 @@ isc_result_t
 isc_file_rename(const char *oldname, const char *newname) {
 	int r;
 
+	REQUIRE(oldname != NULL);
+	REQUIRE(newname != NULL);
+
 	r = rename(oldname, newname);
 	if (r == 0)
 		return (ISC_R_SUCCESS);
@@ -225,6 +241,75 @@ isc_file_rename(const char *oldname, const char *newname) {
 }
 
 isc_boolean_t
+isc_file_exists(const char *pathname) {
+	struct stat stats;
+
+	REQUIRE(pathname != NULL);
+
+	return (ISC_TF(file_stats(pathname, &stats) == ISC_R_SUCCESS));
+}
+
+isc_boolean_t
 isc_file_isabsolute(const char *filename) {
+	REQUIRE(filename != NULL);
 	return (ISC_TF(filename[0] == '/'));
+}
+
+isc_boolean_t
+isc_file_iscurrentdir(const char *filename) {
+	REQUIRE(filename != NULL);
+	return (ISC_TF(filename[0] == '.' && filename[1] == '\0'));
+}
+
+isc_boolean_t
+isc_file_ischdiridempotent(const char *filename) {
+	REQUIRE(filename != NULL);
+	if (isc_file_isabsolute(filename))
+		return (ISC_TRUE);
+	if (isc_file_iscurrentdir(filename))
+		return (ISC_TRUE);
+	return (ISC_FALSE);
+}
+
+const char *
+isc_file_basename(const char *filename) {
+	char *s;
+
+	REQUIRE(filename != NULL);
+
+	s = strrchr(filename, '/');
+	if (s == NULL)
+		return (filename);
+
+	return (s + 1);
+}
+
+isc_result_t
+isc_file_progname(const char *filename, char *buf, size_t buflen) {
+	const char *base;
+	size_t len;
+
+	REQUIRE(filename != NULL);
+	REQUIRE(buf != NULL);
+
+	base = isc_file_basename(filename);
+	len = strlen(base) + 1;
+
+	if (len > buflen)
+		return (ISC_R_NOSPACE);
+	memcpy(buf, base, len);
+
+	return (ISC_R_SUCCESS);
+}
+
+isc_result_t
+isc_file_absolutepath(const char *filename, char *path, size_t pathlen) {
+	isc_result_t result;
+	result = isc_dir_current(path, pathlen, ISC_TRUE);
+	if (result != ISC_R_SUCCESS)
+		return (result);
+	if (strlen(path) + strlen(filename) + 1 > pathlen)
+		return (ISC_R_NOSPACE);
+	strcat(path, filename);
+	return (ISC_R_SUCCESS);
 }

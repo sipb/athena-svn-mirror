@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: base64.h,v 1.1.1.1 2001-10-22 13:09:13 ghudson Exp $ */
+/* $Id: base64.h,v 1.1.1.2 2002-02-03 04:25:35 ghudson Exp $ */
 
 #ifndef ISC_BASE64_H
 #define ISC_BASE64_H 1
@@ -54,12 +54,11 @@ isc_base64_totext(isc_region_t *source, int wordlength,
  */
 
 isc_result_t
-isc_base64_decodestring(isc_mem_t *mctx, char *cstr, isc_buffer_t *target);
+isc_base64_decodestring(const char *cstr, isc_buffer_t *target);
 /*
  * Decode a null-terminated base64 string.
  *
  * Requires:
- * 	'mctx' is non-null.
  *	'cstr' is non-null.
  *	'target' is a valid buffer.
  *

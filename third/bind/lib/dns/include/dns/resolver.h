@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: resolver.h,v 1.1.1.1 2001-10-22 13:08:27 ghudson Exp $ */
+/* $Id: resolver.h,v 1.1.1.2 2002-02-03 04:24:46 ghudson Exp $ */
 
 #ifndef DNS_RESOLVER_H
 #define DNS_RESOLVER_H 1

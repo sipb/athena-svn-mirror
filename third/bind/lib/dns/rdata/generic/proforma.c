@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: proforma.c,v 1.1.1.1 2001-10-22 13:08:36 ghudson Exp $ */
+/* $Id: proforma.c,v 1.1.1.2 2002-02-03 04:25:24 ghudson Exp $ */
 
 #ifndef RDATA_GENERIC_#_#_C
 #define RDATA_GENERIC_#_#_C

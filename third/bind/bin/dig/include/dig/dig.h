@@ -15,16 +15,19 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: dig.h,v 1.1.1.1 2001-10-22 13:06:33 ghudson Exp $ */
+/* $Id: dig.h,v 1.1.1.2 2002-02-03 04:22:32 ghudson Exp $ */
 
 #ifndef DIG_H
 #define DIG_H
 
 #include <dns/rdatalist.h>
+
 #include <dst/dst.h>
+
 #include <isc/boolean.h>
 #include <isc/buffer.h>
 #include <isc/bufferlist.h>
+#include <isc/formatcheck.h>
 #include <isc/lang.h>
 #include <isc/list.h>
 #include <isc/mem.h>
@@ -37,7 +40,9 @@
 #define MXRD 32
 #define BUFSIZE 512
 #define COMMSIZE 0xffff
-#define RESOLVCONF "/etc/resolv.conf"
+#ifndef RESOLV_CONF
+#define RESOLV_CONF "/etc/resolv.conf"
+#endif
 #define OUTPUTBUF 32767
 #define MAXRRLIMIT 0xffffffff
 #define MAXTIMEOUT 0xffff
@@ -82,16 +87,17 @@ struct dig_lookup {
 	        pending, /* Pending a successful answer */
 		waiting_connect,
 		doing_xfr,
-		ns_search_only,
-		identify,
+		ns_search_only, /* dig +nssearch, host -C */
+		identify, /* Append an "on server <foo>" message */
+		identify_previous_line, /* Prepend a "Nameserver <foo>:"
+					   message, with newline and tab */
 		ignore,
 		recurse,
 		aaonly,
 		adflag,
 		cdflag,
-		trace,
-		trace_root,
-		defname,
+		trace, /* dig +trace */
+		trace_root, /* initial query for either +trace or +nssearch */
 		tcp_mode,
 		nibble,
 		comments,
@@ -107,6 +113,7 @@ struct dig_lookup {
 	char textname[MXNAME]; /* Name we're going to be looking up */
 	char cmdline[MXNAME];
 	dns_rdatatype_t rdtype;
+	dns_rdatatype_t qrdtype;
 	dns_rdataclass_t rdclass;
 	isc_boolean_t rdtypeset;
 	isc_boolean_t rdclassset;
@@ -182,13 +189,13 @@ void
 get_address(char *host, in_port_t port, isc_sockaddr_t *sockaddr);
 
 isc_result_t
-get_reverse(char reverse[MXNAME], char *value, isc_boolean_t nibble);
+get_reverse(char *reverse, char *value, isc_boolean_t nibble);
 
 void
-fatal(const char *format, ...);
+fatal(const char *format, ...) ISC_FORMAT_PRINTF(1, 2);
 
 void
-debug(const char *format, ...);
+debug(const char *format, ...) ISC_FORMAT_PRINTF(1, 2);
 
 void
 check_result(isc_result_t result, const char *msg);
@@ -236,17 +243,29 @@ cancel_all(void);
 void
 destroy_libs(void);
 
+void
+set_search_domain(char *domain);
+
 /*
- * Routines needed in dig.c and host.c.
+ * Routines to be defined in dig.c, host.c, and nslookup.c.
  */
+
 isc_result_t
 printmessage(dig_query_t *query, dns_message_t *msg, isc_boolean_t headers);
+/*
+ * Print the final result of the lookup.
+ */
 
 void
-received(int bytes, int frmsize, char *frm, dig_query_t *query);
+received(int bytes, isc_sockaddr_t *from, dig_query_t *query);
+/*
+ * Print a message about where and when the response
+ * was received from, like the final comment in the
+ * output of "dig".
+ */
 
 void
-trying(int frmsize, char *frm, dig_lookup_t *lookup);
+trying(char *frm, dig_lookup_t *lookup);
 
 void
 dighost_shutdown(void);
