@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="EBookViewListener">
+<refmeta>
+<refentrytitle>EBookViewListener</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBEBOOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EBookViewListener</refname><refpurpose>Listens for call responses and event notifications from EBookView objects.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="EBookViewListener-struct">EBookViewListener</link>;
+struct      <link linkend="EBookViewListenerResponse">EBookViewListenerResponse</link>;
+enum        <link linkend="EBookViewListenerOperation">EBookViewListenerOperation</link>;
+<link linkend="EBookViewListener">EBookViewListener</link>* <link linkend="e-book-view-listener-new">e_book_view_listener_new</link> (void);
+<link linkend="void">void</link>        <link linkend="e-book-view-listener-stop">e_book_view_listener_stop</link>       (<link linkend="EBookViewListener">EBookViewListener</link> *listener);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----EBookViewListener
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="EBookViewListener-response">response</link>&quot;  <link linkend="void">void</link>        user_function      (<link linkend="EBookViewListener">EBookViewListener</link> *ebookviewlistener,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Exposes the Evolution:BookViewListener interface. Contrast with the EBookListener.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EBookViewListener-struct"/>struct EBookViewListener</title>
+<indexterm><primary>EBookViewListener</primary></indexterm><programlisting>struct EBookViewListener;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EBookViewListenerResponse"/>struct EBookViewListenerResponse</title>
+<indexterm><primary>EBookViewListenerResponse</primary></indexterm><programlisting>struct EBookViewListenerResponse {
+
+	EBookViewListenerOperation  op;
+
+	/* For SequenceComplete */
+	EBookViewStatus             status;
+
+	/* For ContactsRemovedEvent */
+	GList                  *ids;
+
+	/* For Contact[sAdded|Modified]Event */
+	GList                  *contacts; /* Of type EContact. */
+
+	/* For StatusMessageEvent */
+	char                   *message;
+	
+};
+</programlisting>
+<para>
+Data sent back to the e-book object.
+</para></refsect2>
+<refsect2>
+<title><anchor id="EBookViewListenerOperation"/>enum EBookViewListenerOperation</title>
+<indexterm><primary>EBookViewListenerOperation</primary></indexterm><programlisting>typedef enum {
+	/* Async events */
+	ContactsAddedEvent,
+	ContactsRemovedEvent,
+	ContactsModifiedEvent,
+	SequenceCompleteEvent,
+	StatusMessageEvent,
+} EBookViewListenerOperation;
+</programlisting>
+<para>
+Asynchronous events that are listened for.
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-book-view-listener-new"/>e_book_view_listener_new ()</title>
+<indexterm><primary>e_book_view_listener_new</primary></indexterm><programlisting><link linkend="EBookViewListener">EBookViewListener</link>* e_book_view_listener_new (void);</programlisting>
+<para>
+Creates and returns a new <link linkend="EBookViewListener"><type>EBookViewListener</type></link>.</para>
+<para>
+Creation function.
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="EBookViewListener"><type>EBookViewListener</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-view-listener-stop"/>e_book_view_listener_stop ()</title>
+<indexterm><primary>e_book_view_listener_stop</primary></indexterm><programlisting><link linkend="void">void</link>        e_book_view_listener_stop       (<link linkend="EBookViewListener">EBookViewListener</link> *listener);</programlisting>
+<para>
+Stops the listener.
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="EBookViewListener-response"/>The &quot;response&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EBookViewListener">EBookViewListener</link> *ebookviewlistener,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ebookviewlistener</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+EBookListener
+EBookTypes
+</para>
+</refsect1>
+
+</refentry>

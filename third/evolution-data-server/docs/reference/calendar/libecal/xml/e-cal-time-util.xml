@@ -1,0 +1,453 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libecal-e-cal-time-util">
+<refmeta>
+<refentrytitle>e-cal-time-util</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBECAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-cal-time-util</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="int">int</link>         <link linkend="time-days-in-month">time_days_in_month</link>              (<link linkend="int">int</link> year,
+                                             <link linkend="int">int</link> month);
+<link linkend="int">int</link>         <link linkend="time-day-of-year">time_day_of_year</link>                (<link linkend="int">int</link> day,
+                                             <link linkend="int">int</link> month,
+                                             <link linkend="int">int</link> year);
+<link linkend="int">int</link>         <link linkend="time-day-of-week">time_day_of_week</link>                (<link linkend="int">int</link> day,
+                                             <link linkend="int">int</link> month,
+                                             <link linkend="int">int</link> year);
+<link linkend="gboolean">gboolean</link>    <link linkend="time-is-leap-year">time_is_leap_year</link>               (<link linkend="int">int</link> year);
+<link linkend="int">int</link>         <link linkend="time-leap-years-up-to">time_leap_years_up_to</link>           (<link linkend="int">int</link> year);
+<link linkend="char">char</link>*       <link linkend="isodate-from-time-t">isodate_from_time_t</link>             (<link linkend="time-t">time_t</link> t);
+<link linkend="time-t">time_t</link>      <link linkend="time-from-isodate">time_from_isodate</link>               (const <link linkend="char">char</link> *str);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-day">time_add_day</link>                    (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> days);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-week">time_add_week</link>                   (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> weeks);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-begin">time_day_begin</link>                  (<link linkend="time-t">time_t</link> t);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-end">time_day_end</link>                    (<link linkend="time-t">time_t</link> t);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-day-with-zone">time_add_day_with_zone</link>          (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> days,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-week-with-zone">time_add_week_with_zone</link>         (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> weeks,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-add-month-with-zone">time_add_month_with_zone</link>        (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> months,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-year-begin-with-zone">time_year_begin_with_zone</link>       (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-month-begin-with-zone">time_month_begin_with_zone</link>      (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-week-begin-with-zone">time_week_begin_with_zone</link>       (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> week_start_day,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-begin-with-zone">time_day_begin_with_zone</link>        (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="time-t">time_t</link>      <link linkend="time-day-end-with-zone">time_day_end_with_zone</link>          (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+<link linkend="void">void</link>        <link linkend="time-to-gdate-with-zone">time_to_gdate_with_zone</link>         (<link linkend="GDate">GDate</link> *date,
+                                             <link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="time-days-in-month"/>time_days_in_month ()</title>
+<indexterm><primary>time_days_in_month</primary></indexterm><programlisting><link linkend="int">int</link>         time_days_in_month              (<link linkend="int">int</link> year,
+                                             <link linkend="int">int</link> month);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>year</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>month</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-of-year"/>time_day_of_year ()</title>
+<indexterm><primary>time_day_of_year</primary></indexterm><programlisting><link linkend="int">int</link>         time_day_of_year                (<link linkend="int">int</link> day,
+                                             <link linkend="int">int</link> month,
+                                             <link linkend="int">int</link> year);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>day</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>month</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>year</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-of-week"/>time_day_of_week ()</title>
+<indexterm><primary>time_day_of_week</primary></indexterm><programlisting><link linkend="int">int</link>         time_day_of_week                (<link linkend="int">int</link> day,
+                                             <link linkend="int">int</link> month,
+                                             <link linkend="int">int</link> year);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>day</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>month</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>year</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-is-leap-year"/>time_is_leap_year ()</title>
+<indexterm><primary>time_is_leap_year</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    time_is_leap_year               (<link linkend="int">int</link> year);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>year</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-leap-years-up-to"/>time_leap_years_up_to ()</title>
+<indexterm><primary>time_leap_years_up_to</primary></indexterm><programlisting><link linkend="int">int</link>         time_leap_years_up_to           (<link linkend="int">int</link> year);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>year</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="isodate-from-time-t"/>isodate_from_time_t ()</title>
+<indexterm><primary>isodate_from_time_t</primary></indexterm><programlisting><link linkend="char">char</link>*       isodate_from_time_t             (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+Creates an ISO 8601 UTC representation from a time value.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
+<listitem><simpara> A time value.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> String with the ISO 8601 representation of the UTC time.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-from-isodate"/>time_from_isodate ()</title>
+<indexterm><primary>time_from_isodate</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_from_isodate               (const <link linkend="char">char</link> *str);</programlisting>
+<para>
+Converts an ISO 8601 UTC time string into a time_t value.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara> Date/time value in ISO 8601 format.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Time_t corresponding to the specified ISO string.
+Note that we only allow UTC times at present.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-add-day"/>time_add_day ()</title>
+<indexterm><primary>time_add_day</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_add_day                    (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> days);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>days</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-add-week"/>time_add_week ()</title>
+<indexterm><primary>time_add_week</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_add_week                   (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> weeks);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>weeks</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-begin"/>time_day_begin ()</title>
+<indexterm><primary>time_day_begin</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_day_begin                  (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-end"/>time_day_end ()</title>
+<indexterm><primary>time_day_end</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_day_end                    (<link linkend="time-t">time_t</link> t);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-add-day-with-zone"/>time_add_day_with_zone ()</title>
+<indexterm><primary>time_add_day_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_add_day_with_zone          (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> days,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>days</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-add-week-with-zone"/>time_add_week_with_zone ()</title>
+<indexterm><primary>time_add_week_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_add_week_with_zone         (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> weeks,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>weeks</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-add-month-with-zone"/>time_add_month_with_zone ()</title>
+<indexterm><primary>time_add_month_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_add_month_with_zone        (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> months,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>months</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-year-begin-with-zone"/>time_year_begin_with_zone ()</title>
+<indexterm><primary>time_year_begin_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_year_begin_with_zone       (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-month-begin-with-zone"/>time_month_begin_with_zone ()</title>
+<indexterm><primary>time_month_begin_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_month_begin_with_zone      (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-week-begin-with-zone"/>time_week_begin_with_zone ()</title>
+<indexterm><primary>time_week_begin_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_week_begin_with_zone       (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="int">int</link> week_start_day,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>week_start_day</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-begin-with-zone"/>time_day_begin_with_zone ()</title>
+<indexterm><primary>time_day_begin_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_day_begin_with_zone        (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-day-end-with-zone"/>time_day_end_with_zone ()</title>
+<indexterm><primary>time_day_end_with_zone</primary></indexterm><programlisting><link linkend="time-t">time_t</link>      time_day_end_with_zone          (<link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="time-to-gdate-with-zone"/>time_to_gdate_with_zone ()</title>
+<indexterm><primary>time_to_gdate_with_zone</primary></indexterm><programlisting><link linkend="void">void</link>        time_to_gdate_with_zone         (<link linkend="GDate">GDate</link> *date,
+                                             <link linkend="time-t">time_t</link> time,
+                                             <link linkend="icaltimezone">icaltimezone</link> *zone);</programlisting>
+<para>
+Converts a time_t value to a <link linkend="GDate"><type>GDate</type></link> structure using the specified timezone.
+This is analogous to <link linkend="g-date-set-time"><function>g_date_set_time()</function></link> but takes the timezone into account.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>date</parameter>&nbsp;:</term>
+<listitem><simpara> Destination <link linkend="GDate"><type>GDate</type></link> value.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>time</parameter>&nbsp;:</term>
+<listitem><simpara> A time value.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>zone</parameter>&nbsp;:</term>
+<listitem><simpara> Desired timezone for destination <parameter>date</parameter>, or NULL if the UTC timezone
+is desired.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

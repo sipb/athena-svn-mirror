@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="EBookListener">
+<refmeta>
+<refentrytitle>EBookListener</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBEBOOK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EBookListener</refname><refpurpose>Listens for call responses and event notifications from EBook objects.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="EBookListener-struct">EBookListener</link>;
+struct      <link linkend="EBookListenerResponse">EBookListenerResponse</link>;
+enum        <link linkend="EBookListenerOperation">EBookListenerOperation</link>;
+<link linkend="EBookListener">EBookListener</link>* <link linkend="e-book-listener-new">e_book_listener_new</link>          (void);
+<link linkend="void">void</link>        <link linkend="e-book-listener-stop">e_book_listener_stop</link>            (<link linkend="EBookListener">EBookListener</link> *listener);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----EBookListener
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="EBookListener-response">response</link>&quot;  <link linkend="void">void</link>        user_function      (<link linkend="EBookListener">EBookListener</link> *ebooklistener,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+<para>
+Exposes the Evolution:BookListener interface. Contrast with EBookViewListener.
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EBookListener-struct"/>struct EBookListener</title>
+<indexterm><primary>EBookListener</primary></indexterm><programlisting>struct EBookListener;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EBookListenerResponse"/>struct EBookListenerResponse</title>
+<indexterm><primary>EBookListenerResponse</primary></indexterm><programlisting>struct EBookListenerResponse {
+
+	EBookListenerOperation  op;
+
+	/* The tag that e_book_* assigned to the operation this is a
+	   response for */
+	guint32                 opid;
+
+	/* For most Response notifications */
+	EBookStatus             status;
+
+	/* For GetBookViewReponse */
+	GNOME_Evolution_Addressbook_BookView      book_view;
+
+	/* For GetSupportedFields/GetSupportedAuthMethods */
+	GList                                    *list;
+
+	/* For ProgressEvent */
+	char                   *msg;
+	short                   percent;
+
+	/* For LinkStatusEvent */
+	gboolean                connected;
+
+	/* For WritableStatusEvent */
+	gboolean                writable;
+
+	/* For Card[Added|Removed|Modified]Event */
+	char                   *id;
+	char                   *vcard;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EBookListenerOperation"/>enum EBookListenerOperation</title>
+<indexterm><primary>EBookListenerOperation</primary></indexterm><programlisting>typedef enum {
+	/* Async responses */
+	OpenBookResponse,
+	RemoveBookResponse,
+	CreateContactResponse,
+	RemoveContactResponse,
+	ModifyContactResponse,
+	GetContactResponse,
+	GetContactListResponse,
+	GetBookViewResponse,
+	GetChangesResponse,
+	AuthenticationResponse,
+	GetSupportedFieldsResponse,
+	GetSupportedAuthMethodsResponse,
+
+	/* Async events */
+	LinkStatusEvent,
+	WritableStatusEvent,
+	ProgressEvent,
+} EBookListenerOperation;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-book-listener-new"/>e_book_listener_new ()</title>
+<indexterm><primary>e_book_listener_new</primary></indexterm><programlisting><link linkend="EBookListener">EBookListener</link>* e_book_listener_new          (void);</programlisting>
+<para>
+Creates and returns a new <link linkend="EBookListener"><type>EBookListener</type></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="EBookListener"><type>EBookListener</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-book-listener-stop"/>e_book_listener_stop ()</title>
+<indexterm><primary>e_book_listener_stop</primary></indexterm><programlisting><link linkend="void">void</link>        e_book_listener_stop            (<link linkend="EBookListener">EBookListener</link> *listener);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>listener</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="EBookListener-response"/>The &quot;response&quot; signal</title>
+<programlisting><link linkend="void">void</link>        user_function                  (<link linkend="EBookListener">EBookListener</link> *ebooklistener,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>ebooklistener</parameter>&nbsp;:</term>
+<listitem><simpara>the object which received the signal.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg1</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data set when the signal handler was connected.</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+</refsect1>
+
+
+
+</refentry>

@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libecal-e-cal-recur">
+<refmeta>
+<refentrytitle>e-cal-recur</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBECAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>e-cal-recur</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    (<link linkend="ECalRecurInstanceFn">*ECalRecurInstanceFn</link>)          (<link linkend="ECalComponent">ECalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> instance_start,
+                                             <link linkend="time-t">time_t</link> instance_end,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="icaltimezone">icaltimezone</link>* (<link linkend="ECalRecurResolveTimezoneFn">*ECalRecurResolveTimezoneFn</link>) (const <link linkend="char">char</link> *tzid,
+                                             <link linkend="gpointer">gpointer</link> data);
+<link linkend="void">void</link>        <link linkend="e-cal-recur-generate-instances">e_cal_recur_generate_instances</link>  (<link linkend="ECalComponent">ECalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="ECalRecurInstanceFn">ECalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data,
+                                             <link linkend="ECalRecurResolveTimezoneFn">ECalRecurResolveTimezoneFn</link> tz_cb,
+                                             <link linkend="gpointer">gpointer</link> tz_cb_data,
+                                             <link linkend="icaltimezone">icaltimezone</link> *default_timezone);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ECalRecurInstanceFn"/>ECalRecurInstanceFn ()</title>
+<indexterm><primary>ECalRecurInstanceFn</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    (*ECalRecurInstanceFn)          (<link linkend="ECalComponent">ECalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> instance_start,
+                                             <link linkend="time-t">time_t</link> instance_end,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>comp</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>instance_start</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>instance_end</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="ECalRecurResolveTimezoneFn"/>ECalRecurResolveTimezoneFn ()</title>
+<indexterm><primary>ECalRecurResolveTimezoneFn</primary></indexterm><programlisting><link linkend="icaltimezone">icaltimezone</link>* (*ECalRecurResolveTimezoneFn) (const <link linkend="char">char</link> *tzid,
+                                             <link linkend="gpointer">gpointer</link> data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>tzid</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="e-cal-recur-generate-instances"/>e_cal_recur_generate_instances ()</title>
+<indexterm><primary>e_cal_recur_generate_instances</primary></indexterm><programlisting><link linkend="void">void</link>        e_cal_recur_generate_instances  (<link linkend="ECalComponent">ECalComponent</link> *comp,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="ECalRecurInstanceFn">ECalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data,
+                                             <link linkend="ECalRecurResolveTimezoneFn">ECalRecurResolveTimezoneFn</link> tz_cb,
+                                             <link linkend="gpointer">gpointer</link> tz_cb_data,
+                                             <link linkend="icaltimezone">icaltimezone</link> *default_timezone);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>comp</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>start</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>end</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cb_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tz_cb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>tz_cb_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>default_timezone</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
