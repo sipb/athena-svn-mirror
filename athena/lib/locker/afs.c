@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.1 1999-02-26 19:04:46 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.2 1999-03-11 04:08:42 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -585,4 +585,13 @@ static int afs_zsubs(locker_context context, locker_attachent *at,
 
   free(path);
   return status;
+}
+
+/* librxkad depends on this symbol in Transarc's des library, which we
+ * can't link with because of conflicts with our krb4 library. It never
+ * gets called though.
+ */
+void des_pcbc_init(void)
+{
+  abort();
 }
