@@ -98,6 +98,7 @@ static void	DoTheRightThing();
 static void	DoTheRightThingInReverse();
 static void	CheckEdscVersion();
 static void	BuildSkeleton();
+static unsigned long GetFontWidth();
 
 /*
 ** Private globals
@@ -230,10 +231,22 @@ char *argv[];
 /*
 ** Set our width to 80 chars wide in the current font.  Min value of 500
 ** means that all the lower buttons will fit.
-*/
+
+original code
 	char_width = (((TextSinkObject) (toptextW->text.sink))->
 				text_sink.font->max_bounds.width);
 
+removed because font parameter is either private or nonexistent (private in
+mit Xaw include files, nonexistent in others).
+
+borrowed code from Xaw/TextSink.c to write a generic GetFontWidth routine.
+rearranged some to use font resource, rather than accessing internals.
+
+mdb 7/26/96
+
+*/
+
+	char_width = (int)GetFontWidth(toptextW);
 	width = 80 * char_width;
 	XtSetArg(args[0], XtNwidth, width < 500 ? 500 : width);
 	XtSetValues(topW, args, 1);
@@ -1776,3 +1789,38 @@ Cardinal *num_params;   /* unused */
 	lasttime = XtLastTimestampProcessed(XtDisplay(w));
 }
 
+/*
+ * Function: GetFontWidth(widget)
+ * based on code from Xaw/TextSink.c
+ * mdb 7/26/96
+ */
+
+static unsigned long
+GetFontWidth(w)
+Widget w;
+{
+  TextSinkObject sink = (TextSinkObject) w;
+  Atom XA_FIGURE_WIDTH;
+  unsigned long figure_width = 0;
+  XFontStruct *font;
+  Arg args[1];
+
+  XtSetArg(args[0], XtNfont, &font);
+  XtGetValues (w, args, 1);
+
+/*
+ * Find the figure width of the current font.
+ */
+
+  XA_FIGURE_WIDTH = XInternAtom(XtDisplayOfObject(w), "FIGURE_WIDTH", FALSE);
+  if ( XA_FIGURE_WIDTH != None && 
+       ( (!XGetFontProperty(font, XA_FIGURE_WIDTH, &figure_width)) ||
+	 (figure_width == 0)) ) 
+    if (font->per_char && font->min_char_or_byte2 <= '$' &&
+	font->max_char_or_byte2 >= '$')
+      figure_width = font->per_char['$' - font->min_char_or_byte2].width;
+    else
+      figure_width = font->max_bounds.width;
+
+  return(figure_width);
+}
