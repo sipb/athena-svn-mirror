@@ -761,3 +761,26 @@ redisplay()
   clear();
   make_display();
 }
+
+contents_file()
+{
+  char contents_path[FILENAME_SIZE];
+
+  make_path(Current_Dir,CONTENTS,contents_path);
+  clear();
+  refresh();
+  call_program("more",contents_path);
+  wait_for_key();
+  clear();
+  make_display();
+}
+
+dir_contents()
+{
+  clear();
+  refresh();
+  call_program("ls",Current_Dir);
+  wait_for_key();
+  clear();
+  make_display();
+}
