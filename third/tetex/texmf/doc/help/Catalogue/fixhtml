@@ -1,7 +1,0 @@
-#!/usr/bin/perl -pi.bak
-$CTAN = "ftp://ftp.dante.de/tex-archive";
-s%((?i)<a href=")\.\./\.\./?(/(macro|info|systems|biblio|fonts|dviware|documentation|language|support|web|tools|indexing|graphics|help|usergrps))%$1$CTAN$2%g;
-s%((?i)<a href=")\.\./\.\./?(/pub)?(/tex)%$1$CTAN%g;
-s%((?i)<a href=")\.\./\.\./\.%$1$CTAN/%g;
-s%((?i)<a href=")\.\./\.\./contrib(/syngen)%$1$CTAN/support$2%g;
-s?<a href="ct texperf.html# texperf">?<a href="ctt.html#texperf">?;
