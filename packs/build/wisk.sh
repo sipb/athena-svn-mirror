@@ -1,4 +1,4 @@
-#!/bin/athena/tcsh 
+#!/bin/athena/tcsh
 
 umask 2
 
@@ -37,7 +37,7 @@ set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third
 
 set libs2=" athena/lib/kerberos2 athena/lib/acl athena/lib/gdb athena/lib/gdss athena/lib/zephyr.p4 athena/lib/moira.dev athena/lib/neos"
 
-set etcs="athena/etc/track athena/etc/rvd athena/etc/nfsc athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
+set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanup athena/etc/ftpd athena/etc/inetd athena/etc/netconfig athena/etc/gettime athena/etc/traceroute athena/etc/xdm athena/etc/scripts athena/etc/timed athena/etc/snmpd"
 
 set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/xps athena/bin/scripts athena/bin/afs-nfs athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xprint athena/bin/xversion athena/bin/viewscribe athena/bin/kerberometer athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/ls athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell"
 
@@ -51,6 +51,15 @@ set SRVD="/srvd"
 set X="X11R4"
 set MOTIF="motif"
 set found=0
+set installonly=0
+
+if ( $#argv > 0 ) then
+  if ( $1 == "-install" ) then
+    set installonly=1
+    shift
+  endif
+endif
+
 echo starting `date` > $outfile
 echo on a $machine >> $outfile
 
@@ -68,9 +77,9 @@ else if ($machine == "rsaix" ) then
 foreach package ( setup $libs1 $tools $third $libs2 $etcs $bins )
 else
 
-# if ($machine == "decmips")...
+# if ($machine == "decmips") then...
 
-foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine )
+foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine athena/etc/nfsc )
 # at the moment, lib/resolv gets built twice...
 
 endif
@@ -85,13 +94,9 @@ endif
 
 switch ($package)
 	case setup
-	(echo in setup >>& $outfile)
+	(echo In setup >>& $outfile)
+
 	mkdir /build/bin
-	mkdir $SRVD/usr/athena
-	mkdir $SRVD/usr/athena/include
-	mkdir $SRVD/usr/athena/lib
-	mkdir $SRVD/usr/athena/bin
-	mkdir $SRVD/bin/athena
 	cd /build/support/imake
 		((make -f Makefile.ini clean >>& $outfile) && \
 			(make -f Makefile.ini >>& $outfile ) && \
@@ -130,12 +135,25 @@ switch ($package)
 # I'm sick of this for now...
 
 	cp -p /afs/athena/system/@sys/srvd.76/usr/athena/bin/makedepend /build/bin
+
+# following used to be below...
+
 	# Probably want this in build/bin... change Imake.tmpl...
-	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh /usr/athena/bin/mkdirhier
+	mkdir $SRVD/usr/athena
+	mkdir $SRVD/usr/athena/bin
+	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 	# Hack...
 	if ($machine == "decmips") then
 		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix /build/bin/mkdep >>& $outfile)
+	endif
 	rehash
+
+	(((cd /build/setup; xmkmf . ) >>& $outfile) && \
+	((cd /build/setup; make install DESTDIR=$SRVD ) >>& $outfile) )
+	if ($status == 1 ) then
+	        echo "We bombed in install" >>& $outfile
+		exit -1
+	endif
 	breaksw
 
 	case decmips/kits/install_srvd
@@ -143,12 +161,19 @@ switch ($package)
 #	Unmount /srvd remove the directory make a link then at the end 
 #	reverse the process.
 #WARNING: There's a newfs here. Make sure it gets changed appropriately.
+
+# Not technically correct, but it's what I want right now.
+if ( $installonly == "1" ) then
+  continue
+endif # installonly
+
 	umount /srvd >>& $outfile
 	rmdir /srvd >>& $outfile
 	ln -s /afs/rel-eng/system/pmax_ul4/srvd /srvd >>& $outfile
 	mkdir /srvd.tmp >>& $outfile
 	newfs /dev/rrz3d fuji2266 >>& $outfile
 	mount /dev/rz3d /srvd.tmp >>& $outfile
+
 	(echo In $package >>& $outfile)
 	( cd /build/$package ; make base update setup1 DESTDIR=/srvd.tmp >>& $outfile )
 	umount /srvd.tmp >>& $outfile
@@ -164,23 +189,53 @@ switch ($package)
 	breaksw
 
 	case decmips
-	case third/supported/tex
 # This is gross. Same as complex, no depend. The Imakefile in
 # decmips/sys is, um, kind of impressive, and can't do a make
-# depend before a make all.
-# Sigh. There are gross interdependencies that can't be resolved
-# at this level, which aren't noticed when you're building from
-# a non-pure machine.
-	((echo In $package : make Makefile  >>& $outfile ) && \
-	(cp -p /source/decmips/sys/fs/nfs/nfs_mapctl.h /usr/include/nfs >>& $outfile) && \
+# depend before a make all. Need to install includes before
+# building.
+
+if ( $installonly == "0" ) then
+	((echo In $package : install headers >>& $outfile ) && \
+	((cd /build/$package/include; make install DESTDIR=$SRVD ) >>& $outfile ) && \
+	(echo In $package : make Makefile >>& $outfile ) && \
 	((cd /build/$package;xmkmf . ) >>& $outfile ) && \
 	(echo In $package : make Makefiles>>& $outfile ) && \
 	((cd /build/$package;make Makefiles) >>& $outfile )  && \
 	(echo In $package : make clean >>& $outfile ) && \
 	((cd /build/$package;make clean) >>& $outfile ) && \
 	(echo In $package : make all >>& $outfile ) && \
-	((cd /build/$package;make all) >> & $outfile ) && \
-	(echo In $package : make install >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed in $package"  >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	((echo In $package : make install >>& $outfile ) && \
+	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed in $package"  >>& $outfile
+		exit -1
+	endif
+	breaksw
+		
+	case third/supported/tex
+# Same as complex, no depend.
+
+if ( $installonly == "0" ) then
+	((echo In $package : make Makefile >>& $outfile ) && \
+	((cd /build/$package;xmkmf . ) >>& $outfile ) && \
+	(echo In $package : make Makefiles>>& $outfile ) && \
+	((cd /build/$package;make Makefiles) >>& $outfile )  && \
+	(echo In $package : make clean >>& $outfile ) && \
+	((cd /build/$package;make clean) >>& $outfile ) && \
+	(echo In $package : make all >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed in $package"  >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	((echo In $package : make install >>& $outfile ) && \
 	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
 	if ($status == 1 ) then
 		echo "We bombed in $package"  >>& $outfile
@@ -189,11 +244,17 @@ switch ($package)
 	breaksw
 		
 	case athena/lib/syslog
+if ( $installonly == "0" ) then
 	((echo In $package : make clean >>& $outfile ) && \
 	((cd /build/$package;make clean) >>& $outfile ) && \
 	(echo In $package : make all >>& $outfile ) && \
-	((cd /build/$package;make all) >> & $outfile ) && \
-	(echo In $package : make install >>& $outfile ) && \
+	((cd /build/$package;make all) >> & $outfile ))
+	if ($status == 1 ) then
+		echo "We bombed in $package"  >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	((echo In $package : make install >>& $outfile ) && \
 	((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
 	if ($status == 1 ) then
 		echo "We bombed in $package"  >>& $outfile
@@ -219,13 +280,17 @@ switch ($package)
 
 	case third/unsupported/sysinfo
 	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
 	( cd /build/$package ; make clean >>& $outfile )
 	( cd /build/$package ; make >>& $outfile )
+endif # installonly
 	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
+	rehash
 	breaksw
 
 	case third/unsupported/top
 	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
 	if ( $machine == "sun4" ) then
 	(cd /build/$package ; cp Makefile.sun4 Makefile)
 	(cd /build/$package ; ln -s machine/m_sunos5.c machine.c )
@@ -237,19 +302,31 @@ switch ($package)
 	else
 		echo " No top on this platform"
 	endif
+endif # installonly
 
 	if ($machine != "rsaix" ) then
+if ( $installonly == "0" ) then
 	( cd /build/$package ; make clean >>& $outfile )
 	( cd /build/$package ; make >>& $outfile )
+endif # installonly
         ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
 	endif
         breaksw
 
+# Ummm... We don't do ls anymore, right?
+# We might like to call it something different and let people
+# alias it? What's the deal here anyway?
 	case athena/bin/ls
 	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
 	(( cd /build/$package ; make clean  >>& $outfile ) && \
-	( cd /build/$package ; make -f Makefile.$machine >>& $outfile) && \
-	( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
+	( cd /build/$package ; make -f Makefile.$machine >>& $outfile))
+        if ( $status == 1 ) then
+                echo "We bombed in $package" >> & $outfile
+                exit -1
+        endif
+endif # installonly
+	( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
         if ( $status == 1 ) then
                 echo "We bombed in $package" >> & $outfile
                 exit -1
@@ -259,10 +336,12 @@ switch ($package)
 
 	case third/supported/tcsh6
 	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
 	( cd /build/$package ; /usr/athena/bin/xmkmf >>& $outfile )
 	( cd /build/$package ; make clean  >>& $outfile )
 	( cd /build/$package ; make config.h >>& $outfile)
 	( cd /build/$package ; make >>& $outfile)
+endif # installonly
 	if ($machine != "decmips" ) then
 		 ( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
 	endif
@@ -272,102 +351,167 @@ switch ($package)
 # There is one thing to note about kerberos
 # kerberos needs afs and afs needs kerberos. this has to be 
 # addressed at some point
-		set package="athena/lib/kerberos"
-		(echo In $package >>& $outfile)
-		((cd /build/$package ; imake -DTOPDIR=. -I./util/imake.includes >>& $outfile ) && \
-		(cd /build/$package ; make Makefiles >>& $outfile) && \
-		(cd /build/$package ; make clean >>& $outfile) && \
-		(cd /build/$package ; make depend SUBDIRS="util include lib admin " >> & $outfile) &&\
-		(cd /build/$package ;make  SUBDIRS="include lib" >>& $outfile) && \
-		(cd /build/$package ; make install SUBDIRS="include lib" DESTDIR=$SRVD >>& $outfile) )
-		if ($status == 1) then
-			echo "We bombed in $package" >>& $outfile
-			exit -1
-		endif
-		breaksw
+	set package="athena/lib/kerberos"
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd /build/$package ; imake -DTOPDIR=. -I./util/imake.includes >>& $outfile ) && \
+	(cd /build/$package ; make Makefiles >>& $outfile) && \
+	(cd /build/$package ; make clean >>& $outfile) && \
+	(cd /build/$package ; make depend SUBDIRS="util include lib admin " >> & $outfile) &&\
+	(cd /build/$package ;make  SUBDIRS="include lib" >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	(cd /build/$package ; make install SUBDIRS="include lib" DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
 
 	case athena/lib/kerberos2
 # There is one thing to note about kerberos
 # kerberos needs afs and afs needs kerberos. this has to be 
 # addressed at some point
-		set package="athena/lib/kerberos"
-		(echo In $package >>& $outfile)
-		((cd /build/$package ;make depend SUBDIRS="appl kuser server slave kadmin man" >>& $outfile) &&\
-		(cd /build/$package ;make all >>& $outfile) && \
-		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile) )
-		if ($status == 1) then
-			echo "We bombed in $package" >>& $outfile
-			exit -1
-		endif
-		breaksw
-	case third/supported/X11R4
-		(echo In $package >> & $outfile) 
-		(cd /build/$package ; make -k World >>& $outfile)  
-		(cd /build/$package ; make -k install SUBDIRS="include lib extensions" DESTDIR=$SRVD >>& $outfile)
-		breaksw
-	case third/supported/motif
-		(echo In $package >> & $outfile)
-		(cd /build/$package ; imake -DTOPDIR=. -I./config/ >>& $outfile)
-		(cd /build/$package ; make -k World >>& $outfile)
-		(cd /build/$package ; make -k install DESTDIR=$SRVD >>& $outfile)
-		breaksw
-	case third/supported/afs
-		(echo In $package >> & $outfile )
-			(cd /build/$package ; xmkmf . >>& $outfile)
-			(cd /build/$package ; make >>& $outfile)
-			cp -rp /build/$package/$AFS/dest/lib /usr/transarc
-			cp -rp /build/$package/$AFS/dest/include /usr/transarc
-	breaksw	
-	case third/supported/X11R5
-		(echo In $package >> & $outfile)
-		if ( $machine == "sun4" ) then
-		(cd /build/$package/mit ; make -f Makefile.ini -k World 'BOOTSTRAPCFLAGS="-DSVR4"' >>& $outfile)
-		else
-		(cd /build/$package/mit ; make -k World >>& $outfile)
-		endif
-		(cd /build/$package/mit ;  make -k install SUBDIRS="clients demos" >>& $outfile)
-		breaksw
-	case athena/bin/ls
-		(echo In $package >> & $outfile)
-		( cd /build/$package ; make clean >>& $outfile )
-		( cd /build/$package ; make all >>& $outfile )
-		( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
+	set package="athena/lib/kerberos"
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd /build/$package ;make depend SUBDIRS="appl kuser server slave kadmin man" >>& $outfile) &&\
+	(cd /build/$package ;make all >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	rehash
 	breaksw
 
+	case third/supported/X11R4
+	(echo In $package >> & $outfile) 
+if ( $installonly == "0" ) then
+	(cd /build/$package ; make -k World >>& $outfile)
+endif # installonly
+	(cd /build/$package ; make -k install SUBDIRS="include lib extensions" DESTDIR=$SRVD >>& $outfile)
+	breaksw
+
+	case third/supported/motif
+	(echo In $package >> & $outfile)
+if ( $installonly == "0" ) then
+	(cd /build/$package ; imake -DTOPDIR=. -I./config/ >>& $outfile)
+	(cd /build/$package ; make -k World >>& $outfile)
+endif # installonly
+	(cd /build/$package ; make -k install DESTDIR=$SRVD >>& $outfile)
+	breaksw
+
+	case third/supported/afs
+	(echo In $package >> & $outfile )
+if ( $installonly == "0" ) then
+	(cd /build/$package ; xmkmf . >>& $outfile)
+	(cd /build/$package ; make >>& $outfile)
+	cp -rp /build/$package/$AFS/dest/lib /usr/transarc
+	cp -rp /build/$package/$AFS/dest/include /usr/transarc
+endif # installonly
+	breaksw	
+
+	case third/supported/X11R5
+	(echo In $package >> & $outfile)
+if ( $installonly == "0" ) then
+	if ( $machine == "sun4" ) then
+	(cd /build/$package/mit ; make -f Makefile.ini -k World 'BOOTSTRAPCFLAGS="-DSVR4"' >>& $outfile)
+	else
+	(cd /build/$package/mit ; make -k World >>& $outfile)
+	endif
+endif # installonly
+	(cd /build/$package/mit ;  make -k install SUBDIRS="util clients demos" DESTDIR=$SRVD >>& $outfile)
+	rehash
+	breaksw
+
+# This is in here a lot for something we don't use...
+#	case athena/bin/ls
+#		(echo In $package >> & $outfile)
+#		( cd /build/$package ; make clean >>& $outfile )
+#		( cd /build/$package ; make all >>& $outfile )
+#		( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
+#	breaksw
+
 	case athena/lib/zephyr.p4
-		(echo In $package >>& $outfile)
-                ((cd /build/$package ; /usr/athena/bin/xmkmf $cwd  >>& $outfile ) && \
-                (cd /build/$package ;make world >>& $outfile) && \
-                (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
-                if ($status == 1) then
-                        echo "We bombed in $package" >>& $outfile
-                        exit -1
-                endif
-                breaksw
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd /build/$package ; /usr/athena/bin/xmkmf $cwd  >>& $outfile ) && \
+	((cd /build/$package;make Makefiles) >>& $outfile )  && \
+	((cd /build/$package;make clean) >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+if ($machine != "decmips") then
+	((cd /build/$package;make depend) >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif
+	((cd /build/$package;make all) >> & $outfile )
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+
+	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
+
 	case athena/bin/olc.dev
-		(echo In $package >>& $outfile)
-                ((cd /build/$package ; imake -DTOPDIR=. -I./config >>& $outfile ) && \
-		(cd /build/$package ; make Makefiles >>& $outfile) && \
-		(cd /build/$package ; make clean >>& $outfile) && \
-		(cd /build/$package ; make world >>& $outfile) && \
-                (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
-                if ($status == 1) then
-                        echo "We bombed in $package" >>& $outfile
-                        exit -1
-                endif
-		breaksw
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd /build/$package ; imake -DTOPDIR=. -I./config >>& $outfile ) && \
+	(cd /build/$package ; make Makefiles >>& $outfile) && \
+	(cd /build/$package ; make clean >>& $outfile) && \
+	(cd /build/$package ; make world >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+        (cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
+
 	case athena/bin/olh
-		(echo In $package >>& $outfile)
-                ((cd /build/$package ; imake -DTOPDIR=. -I./config >>& $outfile ) && \
-		(cd /build/$package ; make Makefiles >>& $outfile) && \
-		(cd /build/$package ; make clean >>& $outfile) && \
-                (cd /build/$package ;make world >>& $outfile))
-                if ($status == 1) then
-                        echo "We bombed in $package" >>& $outfile
-                        exit -1
-                endif
-		breaksw
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+        ((cd /build/$package ; imake -DTOPDIR=. -I./config >>& $outfile ) && \
+	(cd /build/$package ; make Makefiles >>& $outfile) && \
+	(cd /build/$package ; make clean >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	(cd /build/$package ;make world >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
+
 	case third/supported/emacs-18.59
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
 # Temporarily create compat symlinks
 	if ($machine == "decmips") then
 		ln -s /usr/athena/include/X11 $SRVD/usr/include/X11
@@ -376,8 +520,7 @@ switch ($package)
 		((cd /build/$package ; xmkmf . >>& $outfile) &&\
 		(cd /build/$package/etc ; xmkmf >> $outfile) &&\
 		(cd /build/$package ; make clean >>& $outfile) &&\
-		(cd /build/$package ; make all >>& $outfile) &&\
-		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
+		(cd /build/$package ; make all >>& $outfile))
 		if ($status == 1) then
 			echo "We bombed in $package" >>& $outfile
 			exit -1
@@ -385,31 +528,51 @@ switch ($package)
 	if ($machine == "decmips") then
 		rm $SRVD/usr/lib/lib[MWX]* $SRVD/usr/include/X11
 	endif
+endif # installonly
+	(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	rehash
+	breaksw
 
-		breaksw
+# Mark? Are you piping to true??
 	case athena/lib/moira.dev
-		(echo In $package >>& $outfile)
-		((cd /build/$package ; imake -DTOPDIR=. -I./util/imake.includes >>& $outfile) &&\
-		(cd /build/$package; make Makefiles >>& $outfile) &&\
-		(cd /build/$package; make clean >>& $outfile) &&\
-		((cd /build/$package; make depend >>& $outfile) | (true)) &&\
-		(cd /build/$package; make all >>& $outfile) &&\
-		(cd /build/$package; make install SUBDIRS="lib gdb" DESTDIR=$SRVD))
-		if ($status == 1) then
-			echo "We bombed in $package" >>& $outfile
-			exit -1
-		endif
-		breaksw
+	(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+	((cd /build/$package ; imake -DTOPDIR=. -I./util/imake.includes >>& $outfile) &&\
+	(cd /build/$package; make Makefiles >>& $outfile) &&\
+	(cd /build/$package; make clean >>& $outfile) &&\
+	((cd /build/$package; make depend >>& $outfile) | (true)) &&\
+	(cd /build/$package; make all >>& $outfile))
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+endif # installonly
+	(cd /build/$package; make install SUBDIRS="lib gdb" DESTDIR=$SRVD)
+	if ($status == 1) then
+		echo "We bombed in $package" >>& $outfile
+		exit -1
+	endif
+	breaksw
 
 	case athena/bin/tinkerbell
 	if ($machine == "sun4") then
-		((echo In $package >>& $outfile ) && \
-		(cd /build/$package;xmkmf . >>& $outfile ) && \
+		(echo In $package >>& $outfile)
+if ( $installonly == "0" ) then
+		((cd /build/$package;xmkmf . >>& $outfile ) && \
 		(cd /build/$package;make clean >>& $outfile ) && \
 		(cd /build/$package;make depend >>& $outfile) && \
-		(cd /build/$package;make all >>& $outfile ) && \
-		(cd /build/$package;make install DESTDIR=$SRVD >>& $outfile ))
-		if ($status == 1 ) then
+		(cd /build/$package;make all >>& $outfile ))
+		if ( $status == 1 ) then
+			echo "We bombed in $package"  >>& $outfile
+			exit -1
+		endif
+endif # installonly
+		(cd /build/$package;make install DESTDIR=$SRVD >>& $outfile )
+		if ( $status == 1 ) then
 			echo "We bombed in $package"  >>& $outfile
 			exit -1
 		endif
@@ -420,6 +583,7 @@ switch ($package)
 		switch (`cat /build/$package/.rule`)
 
 		case complex
+if ( $installonly == "0" ) then
  ((echo In $package : make Makefile  >>& $outfile ) && \
  ((cd /build/$package;xmkmf . ) >>& $outfile ) && \
  (echo In $package : make Makefiles>>& $outfile ) && \
@@ -429,9 +593,15 @@ switch ($package)
  (echo In $package : make depend >>& $outfile) && \
  ((cd /build/$package;make depend) >>& $outfile) && \
  (echo In $package : make all >>& $outfile ) && \
- ((cd /build/$package;make all) >> & $outfile ) && \
- (echo In $package : make install >>& $outfile ) && \
- ((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))  
+ ((cd /build/$package;make all) >> & $outfile ))
+   if ($status == 1 ) then
+	echo "We bombed in $package"  >>& $outfile
+	exit -1
+   endif
+endif # installonly
+
+ ((echo In $package : make install >>& $outfile ) && \
+ ((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
    if ($status == 1 ) then
 	echo "We bombed in $package"  >>& $outfile
 	exit -1
@@ -440,6 +610,7 @@ switch ($package)
 		breaksw
 		case simple
 		default:
+if ( $installonly == "0" ) then
  ((echo In $package : make Makefile  >>& $outfile ) && \
  ((cd /build/$package;xmkmf . ) >>& $outfile ) && \
  (echo In $package : make clean >>& $outfile ) && \
@@ -447,8 +618,14 @@ switch ($package)
  (echo In $package : make depend >>& $outfile) && \
  ((cd /build/$package;make depend) >>& $outfile) && \
  (echo In $package : make all >>& $outfile ) && \
- ((cd /build/$package;make all) >> & $outfile ) && \
- (echo In $package : make install >>& $outfile ) && \
+ ((cd /build/$package;make all) >> & $outfile ))
+   if ($status == 1 ) then
+        echo "We bombed in $package"  >>& $outfile
+        exit -1
+   endif
+endif # installonly
+
+ ((echo In $package : make install >>& $outfile ) && \
  ((cd /build/$package;make install DESTDIR=$SRVD) >> & $outfile ))
    if ($status == 1 ) then
         echo "We bombed in $package"  >>& $outfile
