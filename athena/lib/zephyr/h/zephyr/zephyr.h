@@ -4,8 +4,8 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
- *	$Author: raeburn $
- *	$Id: zephyr.h,v 1.36 1990-11-17 21:01:39 raeburn Exp $
+ *	$Author: jfc $
+ *	$Id: zephyr.h,v 1.37 1990-12-04 22:43:34 jfc Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -21,6 +21,9 @@
 
 #include <errno.h>
 #include <sys/types.h>
+#if defined(_AIX) && defined(_IBMR2)
+#include <time.h>
+#endif
 #include <sys/time.h>
 #include <stdio.h>
 
@@ -327,4 +330,4 @@ extern "C" {
 }
 #endif
 
-#endif !__ZEPHYR_H__
+#endif
