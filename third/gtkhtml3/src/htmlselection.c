@@ -242,7 +242,7 @@ html_engine_unselect_all (HTMLEngine *e)
 static void
 remove_mark (HTMLEngine *e)
 {
-	if (e->editable) {
+	if (e->editable || e->caret_mode) {
 		if (e->mark == NULL)
 			return;
 
@@ -348,7 +348,12 @@ gboolean
 html_engine_is_selection_active (HTMLEngine *e)
 {
 	html_engine_edit_selection_updater_do_idle (e->selection_updater);
-	return e->selection ? TRUE : FALSE;
+	if (e->selection) {
+		g_return_val_if_fail (!html_engine_get_editable (e) || e->mark, FALSE);
+		return (!html_engine_get_editable (e) || e->mark) ? TRUE : FALSE;
+	}
+
+	return FALSE;
 }
 
 static void

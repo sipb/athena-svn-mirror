@@ -1,3 +1,83 @@
+2004-08-09  Eric Zhao  <eric.zhao@sun.com>
+
+	* text.c: (html_a11y_text_get_text),
+	(html_a11y_text_get_character_at_offset),
+	(html_a11y_text_get_character_count),
+	(html_a11y_text_get_n_selections), (html_a11y_text_get_selection):
+	add missed check, fixes bug #62223.
+
+Sat Jun  5 10:32:30 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* html.c (html_a11y_ref_state_set): Fix missing initialization.
+
+	* hyperlink.c (html_a11y_hyper_link_do_action): Fix shadowing
+	problem and memory leak.
+
+2004-06-04  Radek Doulik  <rodo@ximian.com>
+
+	* text.c: removed unused variables
+	
+
+2004-05-26  Yuedong Du <yuedong.du@sun.com>
+
+	* object.c: (gtk_html_a11y_get_type): GTK_HTML_A11Y change to 
+	inherit from GAIL_WIDGET instead of GAIL_CONTAINER. 
+	fix bug #42867.
+
+2004-04-27  Eric Zhao  <eric.zhao@sun.com>
+
+	fixes #55250.
+
+	* text.c: (html_a11y_text_get_text_after_offset),
+	(html_a11y_text_get_text_at_offset),
+	(html_a11y_text_get_text_before_offset): the gail_text_util doesn't
+	know how we break lines in gtkhtml, so we should implement them by
+	ourselves.
+
+2003-09-05  Yuedong Du  <yuedong.du@sun.com>
+
+	* text.c: (html_a11y_text_get_text_after_offset),
+	(html_a11y_text_get_text_at_offset),
+	(html_a11y_text_get_text_before_offset): re-setup string each time it
+	is required because in composer, the text content is dynamic.
+
+2003-09-01  Yuedong Du  <yuedong.du@sun.com>
+
+	* text.c: (html_a11y_text_get_type), (atk_text_interface_init),
+	(html_a11y_text_class_init), (html_a11y_text_ref_state_set),
+	(html_a11y_text_get_caret_offset),
+	(atk_editable_text_interface_init),
+	(html_a11y_text_set_text_contents), (html_a11y_text_insert_text),
+	(html_a11y_text_copy_text), (html_a11y_text_cut_text),
+	(html_a11y_text_delete_text), (html_a11y_text_paste_text):implemented
+	atk editable text interface
+	* utils.c: (acc_unref), (html_utils_get_accessible): use new data list
+	instead the old ones.
+	* utils.h: ditto
+
+2003-08-06  Yuedong Du  <yuedong.du@sun.com>
+
+	* html.c: (html_a11y_get_parent): use html_utils_get_accessible() to
+	find the a11y parent.
+	* object.c: (gtk_html_a11y_grab_focus_cb), 
+	(gtk_html_a11y_cursor_move_cb), (gtk_html_a11y_new): when focus
+	change, or new gtkhtml a11y object, need to setup or re-setup
+	parent relationship between gtkhtml and corresponding cluev html 
+	object.
+	* text.c: (atk_text_interface_init),
+	(html_a11y_text_get_caret_offset),
+	(html_a11y_text_set_caret_offset): add implementation of get/set
+	_caret_offset method.
+
+2003-07-24  Yuedong Du  <yuedong.du@sun.com>
+
+	* object.c: (gtk_html_a11y_get_focus_object),
+	(gtk_html_a11y_grab_focus_cb), (gtk_html_a11y_cursor_move_cb),
+	(gtk_html_a11y_new): emit atk object when focus move from one 
+	object to another, fix bug #45119
+	* utils.c: (create_accessible), (html_utils_get_accessible):add some
+	check to prevent crash
+
 2002-05-07  Radek Doulik  <rodo@ximian.com>
 
 	* Makefile.am: fixed .la versioning

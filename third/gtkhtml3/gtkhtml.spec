@@ -1,4 +1,4 @@
-%define ver      3.0.9
+%define ver      3.2.1
 
 Summary: gtkhtml library
 Name: gtkhtml

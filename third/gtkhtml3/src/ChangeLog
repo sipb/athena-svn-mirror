@@ -1,17 +1,1462 @@
+2004-08-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmliframe.c (html_iframe_init): load empty iframe if depth > 10
+
+	Fixes #63060
+
+	* htmlgdkpainter.c (begin): fix from Robert McQueen, make sure
+	that our backstore pixmap has colormap
+
+	Fixes #62808
+
+2004-08-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (divide_upto_preferred_width): in case we are
+	extending column missing minimal width completely, set min_fill to
+	to_fill minus added width and not whole preferred width of that
+	column (that lead to negative values before)
+
+2004-08-10  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cursor.c (refresh_under_cursor): do not refresh
+	cursor rectangle with negative width or height
+	(draw_cursor_rectangle): do not draw cursor rectangle with
+	negative width or height
+
+	Fixes (partialy) #62483
+
+	* htmltable.c (calc_lowest_fill): return total filled size
+	(divide_upto_preferred_width): fixed to divide the left space
+	correctly and faster
+
+	Fixes #62557
+
+2004-08-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmlembedded.c (calc_min_width): calc min with for unrealized
+	widgets as well, it's OK to call gtk_widget_size_request. for
+	invissible widgets (hidden) return 0 minimal width
+
+	Fixes #62088
+
+2004-08-03  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_data_received): do not use title from
+	MOZILLA_URL in plaintext mode unless dnd context action >
+	GDK_ACTION_COPY. this means that we paste url in plain text or
+	title similar as in html mode if you press Shift or Meta Shift
+
+	Fixes #59893
+
+	* htmltext.c (html_text_set_style_in_range): avoid setting default
+	font size
+
+	Fixes #62086
+
+2004-07-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: ref embedded widget when pushing it to the
+	embedded stack and unref it when poping back
+
+	Fixes #61997
+
+2004-07-22  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am (AM_CFLAGS, *dir, *_LDADD): Use GTKHTML_API_VERSION
+	* gtkhtml.c (gtk_html_class_init): Use GTKHTML_RELEASE_STRING
+	* libgtkhtml.pc.in: Use GTKHTML_API_VERSION for directory paths
+
+2004-07-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-text.c (set_link): do not leak memory - free
+	url, init url, target to NULL to quiet compiler
+
+2004-07-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlframe.c (html_frame_real_calc_size): as below
+
+	* htmliframe.c (html_iframe_real_calc_size): do not queue size
+	request to avoid infinite loop
+
+	* htmlengine.c (html_engine_stream_end): queue resize after
+	content is loaded
+
+	* htmlembedded.c: set size of requisition to 0x0 before calling
+	size request
+
+	* gtkhtml.c: handle size request, do own size allocate for
+	children widgets. move construct call from _new methods to init so
+	that it's easy to derive widget from us
+
+	* htmltext.c (save_open_attrs): save <TT>
+	(save_close_attrs): save </TT>
+
+2004-06-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-text.c (html_engine_set_link): update it so that
+	it handles the link removals as well
+	(set_link): call html_text_remove_links or html_object_remove_link
+	when complete_url is NULL
+
+	* htmltext.c (html_text_remove_links): new function, removes all
+	links from text object
+
+2004-06-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (show_sized_with_nbsps_replaced): helper function
+	to replace nbsp's before passing text to gnome print as it has
+	problems with printing nbsp;'s to pdf
+	(draw_text): use show_sized_with_nbsps_replaced
+
+	Fixes #60549
+
+2004-06-21  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (reparent_embedded): new helper function to reparent
+	embedded objects from tmp html widget
+	(gtk_html_insert_html_generic): use reparent_embedded
+
+	Fixes #60394
+
+2004-06-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_pango_info): add link format attrs for
+	plain as well
+
+	Fixes #60378
+
+	* htmlengine.c (new_parse_body): if tokenizer returns NULL even if
+	it claims it has more tokens, break the loop
+
+	Should help with #58264
+
+2004-06-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (next_prev_cursor_object): use offset for all
+	containers, not just tables
+
+	* htmlengine.c (html_engine_get_focus_object): remember object's
+	engine as we go down the hierarchy, get focus object offset from
+	that remembered engine
+
+	Fixes #60130
+
+	* htmlframe.c (html_frame_init): as below
+
+	* htmliframe.c (html_iframe_init): set base url and various other
+	fields before calling gtk_html_set_iframe_parent which emits
+	iframe_created signal
+
+	* gtkhtml.c (gtk_html_set_base): remove unused 'priv' variable
+
+	Fixes #60132
+
+2004-06-16  Eric Zhao  <eric.zhao@sun.com>
+
+	* htmlengine.c: (html_engine_update_focus_if_necessary):
+	disable set_focus when in edit_mode, fixes #59935.
+
+2004-06-15  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_data_get): handle MOZILLA_URL, it contains
+	url\ntitle in UCS-2
+
+	Fixes #59844
+
+	* htmltextslave.c (clear_glyphs): new helper function
+	(destroy): call clear_glyphs
+	(get_glyphs): call clear_glyphs so that we don't leak glyphs when
+	recalculating
+
+	This leak fix is from Owen Taylor <owen@redhat.com>
+
+2004-06-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-save.c (html_engine_save_buffer_peek_text_bytes):
+	renamed from html_engine_save_buffer_peek_text_len to avoid
+	confusion
+
+	* htmlclueflow.c (save_plain): init 'bytes' using
+	html_engine_save_buffer_peek_text_bytes
+
+	* gtkhtmldebug.c (dump_object_simple): added more pango log
+	attribute info
+
+	* htmlclueflow.c (save_plain): use
+	html_text_remove_unwanted_line_breaks
+
+	* htmltext.c (html_text_remove_unwanted_line_breaks): new helper
+	method to remove linebreaks around punctuation
+	(html_text_get_pango_info): use
+	html_text_remove_unwanted_line_breaks
+
+	* htmlengine-save.c (html_engine_save_buffer_clear_line_breaks):
+	remove now obsolete method
+
+	Fixes #54852
+
+2004-06-06  Eric Zhao  <eric.zhao@sun.com>
+
+       Fixes #46761, make the caret consistent with focus.
+
+	* gtkhtml.c: (focus): change caret to the focused object.
+	* htmlengine-edit-movement.c: (html_engine_move_cursor),
+	(html_engine_beginning_of_document), (html_engine_end_of_document),
+	(html_engine_beginning_of_line), (html_engine_end_of_line),
+	(html_engine_beginning_of_paragraph),
+	(html_engine_end_of_paragraph), (html_engine_scroll_down),
+	it's focusable.
+	* htmlengine.c: (html_engine_update_focus_if_necessary):
+	* htmlengine.h: set focus to the object if it's focusable.
+
+Sat Jun  5 12:16:00 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* gtkhtml.c (new_obj_from_uri): Fix unitialized variable usage.
+
+	* gtkhtml.c (gtk_html_modify_indent_by_delta)
+	  gtkhtmldebug.c (gtk_html_debug_list_attrs):
+	  htmlimage.c (html_image_pointer_load):
+	  htmltext.c (html_text_remove_link_line_breaks,
+	  html_text_get_attr_list_list, tml_utf8_strnchr): 
+	 Add missing statics.
+
+	* gtkhtmldebug.c (dump_object_simple): Fix aliasing problem.
+	
+	* htmlengine.c (html_element_get_attr): Use a GCC-specific
+	definition of html_element_get_attr to avoid stric-aliasing
+	warnings.
+
+	* htmlengine.c (html_engine_draw_focus_object):
+	Remove unused functions.
+
+	* htmlengine.c (html_element_parse_i18n, html_element_parse_events): 
+	#ifdef out unused functions.
+	
+	* htmlengine.c: Fix subscript/superscript confusion.
+
+	* htmlgdkpainter.c (draw_background, draw_pixmap): Remove usage
+	of deprecated gdk_pixbuf_render_to_drawable_*, remove support
+	for bilevel pixbuf rendering since the underlying GDK functions
+	always do full-alpha.
+
+	* htmlgdkpainter.[ch]: Remove HTMLGdkPainter.alpha member variable.
+	
+	* htmltext.c (html_text_magic_link): Rewrite scan-forward loop
+	to avoid spurious unitialized variable warning.
+
+	* htmltext.c (is_convert_nbsp_needed convert_nbsp): Rewrite
+	loop-over-UTF-8 loops to be more normal, add some comments, fix
+	a spurious unitialized variable warning.
+
+	* Makefile.am (htmlmarshal.c): Add #include htmarshal.h to the
+	top of the generated htmlmarshal.c.
+
+2004-06-04  Radek Doulik  <rodo@ximian.com>
+
+	* added few missing inludes of header files 
+
+	* testgtkhtml.c (main): remove unused variable
+
+	* htmltextslave.c (draw_normal): remove unused variable
+	(calc_offset): ditto
+
+	* htmltext.c (html_text_get_pango_info): remove unused variable
+	(calc_min_width): ditto
+	(save): ditto
+	(convert_nbsp): ditto, change return type to void
+	(html_text_convert_nbsp): ditto
+	(paste_link): ditto
+
+	* htmltable.c (check_page_split): remove unused variable
+
+	* htmlstyle.c: always return value
+
+	* htmlprinter.c (draw_text): remove unused variable
+	(draw_text): ditto
+
+	* htmlimage.c (html_image_pointer_update): removed unused variable
+
+	* htmlgdkpainter.c (text_width): removed unused variable
+
+	* htmlengine.c (current_row_valign): return default return value
+	if table stack is empty
+	(current_row_align): ditto
+	(push_block): removed unused variable
+	(element_parse_iframe): added braces
+	(element_parse_a): removed unused variables
+	(element_parse_img): added braces
+	(element_parse_ol): removed unused variable
+	(element_parse_table): added braces
+	(element_parse_table): removed unused variable
+	(parse_one_token): ditto
+
+	* htmlengine-save.c (get_body): remove unused variable 'margins'
+
+	* htmlengine-print.c (print_with_header_footer): remove unused
+	variable 'prop'
+
+	* htmlengine-edit-fontstyle.c (html_engine_get_document_color):
+	remove unused variable 'index'
+
+	* htmlcluev.c (set_max_height): removed unused variable 'obj'
+
+	* htmlclueflow.c: removed some unused variables and methods
+
+	* gtkhtml.c (gtk_html_set_fonts): remove unused variable 'name'
+	(toplevel_unmap): return FALSE. it wasn't returning any value and
+	we don't want to stop the event propagation
+	(focus): avoid ambiguous else
+	(focus): remove unused 'cur' variable
+	(gtk_html_begin_content): remove unused variable 'handle'
+
+2004-06-03  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (style_set): refresh pango info
+
+	Fixes #59356
+
+	* gtkhtml.c (drag_data_received): looks like Larry's patch from
+	2004-05-06 was broken (wrong version?). Removed uninitialized i
+	variable. Use selection_data->length, pass title to
+	new_obj_from_uri
+	(new_obj_from_uri): added title argument, it's used for link text
+	in case it's non NULL
+
+	Fixes #59467
+
+	* gtkhtml.c (add_bindings): added missing KP_Home, KP_End bindings
+	
+	Fixes #59353
+
+2004-06-01  Radek Doulik  <rodo@ximian.com>
+
+	* htmliframe.c (check_page_split): multiply border height by pixel
+	size
+
+	* htmltext.c (calc_preferred_width): set self->y so that printing
+	is not messed up (wrong return from page_split with invalid text
+	objects where ascent > y)
+
+	* htmlobject.c (html_object_check_page_split): added painter
+	parameter
+
+	Fixes #59102
+
+2004-05-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c: update html_text_calc_text_size calls
+	everywhere
+
+	* htmltext.c (html_text_calc_text_size): pass only
+	start_byte_offset and calculate the text here. we were sometime
+	passing wrong start_byte_offset's. the text and start_byte_offset
+	are complimentary
+	update html_text_calc_text_size calls everywhere
+
+	* htmlprinter.c (text_size): use iterator for all glyph strings,
+	not just 1st one
+	(text_size): process extra item attrs after passed attrs are
+	processed so that links fg color is not lost
+	(text_size): ditto
+	(alloc_font): set italic to TRUE or FALSE, libgnomeprint now acts
+	differently
+
+	* htmltextslave.c (draw_normal): fixed end_index calculation for
+	printer painter
+
+2004-05-27  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (text_size): use double for width calculation to
+	avoid numeric errors
+	(draw_text): ditto
+
+	* htmltextslave.c (update_lb): calculate the printer width the
+	same way as for gdk painters
+	(hts_fit_line): ditto
+
+	* htmlpainter.h: removed color set from painter, we now use only
+	the global one from engine. having own sets in painters caused a
+	lot of pain by having to update those when global one
+	updated. there were still problems with it (wrong selection color
+	in test editor when switched to plain text mode and probably few
+	more). updated everywhere the color set usage
+
+	Might fix #58828
+
+2004-05-26  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_op_copy_helper): update spell errors
+
+	Fixes #50829
+
+2004-05-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-save.c (html_engine_save_buffer_clear_line_breaks):
+	as below
+
+	* htmltext.c (html_text_remove_link_line_breaks): allow line
+	breaks in links on white chars
+
+	* htmltablecell.c (calc_min_width): use parent class min_width
+	method instead of preferred_width
+
+	* htmltable.c (calc_min_width): calculate preffered widths so we
+	can use them when dividing span cells min width, used columnPref
+	in 2nd calc_column_width_template call
+	(calc_preferred_width): always call html_object_calc_min_width to
+	be sure that we have columnPref table ready to use
+
+	Fixes #58871
+
+2004-05-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (save_plain): collect similar items to one long
+	temporary one, call html_engine_save_buffer_clear_line_breaks to
+	avoid breaking in links
+
+	* htmlengine-save.c (html_engine_save_add_nb_interval): new method
+	to add non breaking interval (used when saving plain text as we
+	don't have link info in flow::save_plain)
+	(html_engine_save_buffer_clear_line_breaks): new method to clear
+	line breaks in pango logical attributes in intervals defined while
+	saving plain text
+
+2004-05-21  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c: remove attrs from entries and put it in pango info
+	structure, it simplifies a lot of things
+
+	* htmlclueflow.c (save_plain): updated for new
+	html_text_is_line_break signature
+
+	* htmltext.c (html_text_remove_link_line_breaks): new helper
+	function to remove line breaks in links
+	(html_text_get_pango_info): call html_text_remove_link_line_breaks
+	after the attributes are defined
+	
+	* htmltextslave.c (hts_fit_line): do not break on item boundaries
+
+	* htmltext.c (html_text_is_line_break): do not check for white
+	space before line_break, it breaks other languages as Japanese and
+	others
+	(calc_min_width): do not break on item boundaries
+	(html_text_get_pango_info): call pango break on temporary item
+	which spans across items with the same lang_engine
+
+2004-05-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-save.c (html_engine_save_buffer_peek_text_len): new
+	helper function to get buffer len
+
+	* htmliframe.c (save): use html_engine_save_output_buffer because
+	html_engine_save_output_string uses format string and thus we have
+	to esacape '%' chars or save it as it is with
+	html_engine_save_output_buffer
+	(save_plain): ditto
+
+	* htmlengine-save.c (html_engine_save_output_buffer): new funtion
+	to save unmodified text.
+
+	Fixes #56971
+
+	* htmlselection.c (html_engine_is_selection_active): put back the
+	change Larry reverted and add test for editable so that it doesn't
+	break the non editable mode
+
+2004-05-18  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselection.c (html_engine_is_selection_active): revert the
+	last change because it breaks copy/paste selection handling in the
+	mail view. See #58607
+
+2004-05-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (html_image_pointer_update): check that engine->clue
+	is image's parent before asking for redraw
+
+	* htmlobject.c (op_cut): set change to parent object and set its
+	width to zero to force redraw
+	(merge): ditto
+
+	Fixes #56545
+
+	* htmlgdkpainter.c (alloc_font): as below
+
+	* htmlclueflow.c (pref_right_margin): calculate the width as
+	MAX(width of space, width of e) for plain painter so that we get
+	"better" results in case user sets proportional font for fixed
+	width style
+
+	* htmlprinter.c (alloc_font): as below
+
+	* htmlgdkpainter.c (alloc_font): pass width of 'e' character to
+	html_font_new
+
+	* htmlpainter.c (html_painter_get_e_width): new helper function
+
+	* htmlfontmanager.c (html_font_new): added e_width parameter
+
+	* htmlfontmanager.h: cache width of char 'e'
+
+	Fixes a case when we have a proportional font set for fixed style
+	font, it's only a semisolution but it will save us hopefully a lot
+	of user questions
+
+	* htmlengine.c (element_parse_li): in case we are adding to
+	toplevel blockquote flow, change it's type to unordered list
+	(element_parse_blockquote): pop ID_LI in case we had <LI> items
+	inside blockquote flow
+	(element_parse_ol): moved few lines so that they are consitent
+	with UL and BLOCKQUOTE
+	(element_parse_ul): ditto
+
+	Fixes nested item lists parsing
+
+	* gtkhtmldebug.c (gtk_html_debug_dump_object): print levels
+
+2004-05-14  Radek Doulik  <rodo@ximian.com>
+
+	* htmlselection.c (html_engine_is_selection_active): check for
+	mark as well, it should be non-null, but it looks like in some
+	situations it isn't. I am unable to reproduce that problem
+	occuring in #44521. This change should avoid the crash at least. I
+	hope it may give us some idea how does it happen.
+
+	* htmlengine-edit.c (html_engine_next_cell): move cursor forward
+	after the new row is created
+
+	Fixes #58094
+
+	* gtkhtml.c (destroy): remove monospace_font notify callback
+
+	Fixes #58366
+
+2004-05-13  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_get_image_factory): we can't use the
+	toplevel engine here if we do we break relative urls and image
+	updating from loading and animations.  If we want to preserve
+	ifame factories through reloads we'll have to somethign else.
+
+2004-05-13  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit.c (html_engine_new_text): do not check if color
+	equals link, test just for text default color, link color is not
+	applied anymore
+
+	* htmltext.c (html_text_get_first_color_in_range): do not check if
+	color equals link color, the link color attributes are handled at
+	render time now
+	(html_text_get_first_color_in_range): if no color set, use default
+	Text color
+
+	Fixes #58093
+
+	* htmlengine.c (element_parse_img): set eat_space to FALSE again,
+	it was lost somewhere during parser changes
+
+	Fixes #56543
+	
+2004-05-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (hts_fit_line): use html_text_slave_get_text
+	instead of expensive html_text_get_text call
+
+	* htmltext.c (html_text_calc_part_width): added start parameter to
+	save html_text_get_text calls, updated every caller
+
+	* htmlengine.c (element_parse_a): get attribute "href" to value
+	and not to target - caused uninitialized memory be duplicated
+
+	Fixes #58245
+
+2004-05-10  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (layout_line): do not recalc size for splitted
+	slaves as we only need asc/dsc and this we already know
+
+	* htmltext.c (html_text_calc_part_width): update asc, dsc only
+	when font or language changes
+
+2004-05-09  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (client_notify_monospace_font): test if engine and
+	painter are already created
+
+2004-05-07  Radek Doulik  <rodo@ximian.com>
+
+	* htmlcolorset.c (html_colorset_set_style): use cite_color
+	property for default value or text color from style
+
+	* htmltext.c (html_text_get_pango_info): use Cite color for text
+	objects in HTML_LIST_TYPE_BLOCKQUOTE_CITE flows
+
+	* htmlcolorset.c: set default Cite color
+
+	* gtkhtml.c (gtk_html_class_init): added cite_color property
+
+2004-05-06  David Malcolm  <dmalcolm@redhat.com>
+
+	* htmlimage.c (save): printf-style string should use a "%%" for 
+	a percent sign rather than "\%"
+
+	* htmlengine-save.h (html_engine_save_output_string): add 
+	function attribute G_GNUC_PRINTF
+
+2004-05-06  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (drag_data_received): break instead of return to allow
+	gtk_drag_finish to be called properly.  Do bytewise comparison
+	after we've converted to utf8, I know it will work in ucs2 as well
+	but it makes me cringe.
+
+ 2004-04-27  Suresh Chandrasekharan <suresh.chandrasekharan@sun.com>
+
+ 	#56867 Dnd a UTF-8 url to mail compose and Evolution bombs
+
+	* gtkhtml.c (drag_data_received): Changed the len argument of
+	new_obj_from_uri to -1. This len argument will be passed down to
+	htmltext.c (text_len), which is expecting -1 for determining the 
+	utf8 length.
+
+	#57691 Dnd a non-UTF8 multibyte URL caused [?] in Composer
+
+	* gtkhtml.c (drag_data_received): Changed to accommodate 
+	DND_TARGET_TYPE_MOZILLA_URL, which's cp'ied from gnome_terminal
+	implementation.
+
+	(ucs2_to_utf8_with_bom_check) New function for converting
+	from ucs2 to utf8 with support for BOM to dtermine Big/Little
+	endian ordering of the data.
+
+	(selection_received) Created ucs2_to_utf8_with_bom_check with
+	th existing code from here, so call ucs2_to_utf8_with_bom_check.
+ 
+2004-05-06  Radek Doulik  <rodo@ximian.com>
+
+	* htmlenums.h: added cite color
+
+	* gtkhtml.c (style_set): use html_engine_refresh_fonts
+	(client_notify_monospace_font): ditto
+
+	* htmlengine.c (html_engine_refresh_fonts): new method to refresh
+	the content of widget after fonts were changed
+
+2004-05-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (calc_font_size_filter): set fixed font family here
+	as well.
+
+	* gtkhtml.c (gtk_html_set_fonts): use
+	/desktop/gnome/interface/monospace_font_name gconf key for default
+	monospace font so that we behave as gnome applications
+	(client_notify_monospace_font): when monospace font changes,
+	update appropriately
+	(gtk_html_init): watch for monospace font changes
+
+	* htmltext.c (html_text_change_attrs): add avoid_default_size
+	parameter
+	(html_text_get_pango_info): avoid resetting font size to default
+
+2004-05-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (ref_image_ptr): ref only successfuly loaded images
+	(unref_image_ptr): ditto
+
+2004-04-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_paste_link): new
+	function to paste text links
+
+	* htmlengine-edit-text.c (html_engine_set_link): new function to
+	set link on selection
+	(set_link): helper function which set's link on texts and images
+
+2004-04-27  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c, htmlembedded.c: added few debug printf's to get
+	more info for #56717
+
+	* gtkhtml.c (gtk_html_begin): use gtk_html_begin_full
+	(gtk_html_begin_content): ditto
+
+2004-04-26  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_update_scrollbars_on_resize): do not set
+	adjusments when keep_scroll is set
+	(gtk_html_begin_full): handle new flags
+	(size_allocate): do not set adjusments when keep_scroll is set
+
+	* htmlengine.c (html_engine_stream_end): use new opened_streams
+	counter helper functions instead of accessing that counter
+	directly
+	(html_engine_update_event): do not set adjusments when keep_scroll
+	is set
+	(html_engine_begin): use new opened_streams counter helper
+	functions instead of accessing that counter directly
+
+	* htmlimage.c (html_image_pointer_load): use new opened_streams
+	counter helper functions instead of accessing that counter
+	directly
+	(html_image_factory_end_pixbuf): ditto
+
+	* htmlengine.c (html_engine_opened_streams_increment)
+	(html_engine_opened_streams_decrement)
+	(html_engine_opened_streams_set): new helper functions for setting
+	opened streams counter. it takes also care about new
+	HTMLEngine::keep_scroll flag
+
+	* gtkhtml-enums.h: added GTK_HTML_BEGIN_BLOCK_* flags for blocking
+	progressive updates while loading html document and images
+
+	* gtkhtml.c (gtk_html_begin_full): unref refed images after
+	html_engine_parse instead of doing that before that call as old
+	images are unrefed during it
+	(new_obj_from_uri): use html_engine_get_image_factory
+
+	* htmlengine-edit-cut-and-paste.c (use_pictograms): use
+	html_engine_get_image_factory
+
+	* htmlengine-edit-images.c (html_engine_insert_image): use
+	html_engine_get_image_factory
+
+	* htmlengine.c (html_engine_get_image_factory): help function to
+	get engine's image factory. use the one from top level engine
+	(element_parse_img): use html_engine_get_image_factory
+
+2004-04-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_pango_info): do not use
+	pango_attr_list_splice and use pango_attr_list_change directly
+
+2004-04-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (save_text): use <= end_index in last part - bad typo
+	causing infinite loop
+
+2004-04-21  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (save_link_open): do not bother with underline and
+	color attributes, they are not generated for links anymore
+	(save_link_close): ditto
+	(save): do not handle links here, as we want another tags first
+	(save_text): handle links saving here
+
+	Fixes #57042
+
+2004-04-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-table.c (html_engine_table_goto_col): cursor
+	forward before getting 1st cell
+	(html_engine_table_goto_row): ditto
+
+2004-04-14  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_pango_info): add links and flow
+	attributes only for non plain painters
+
+2004-03-26  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c: replace all parse_color calls with
+	html_parse_color.  Remove duplicate parse_color definition.
+
+	* htmlstyle.c: replace all parse_color calls with
+	html_parse_color.
+
+2004-04-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (cut_links_full): extended cut_links to handle the
+	case when no collapsing of cutted area is wanted (shrink == 0)
+	(cut_links): use cut_links_full
+	(html_text_add_link_full): rewritten, cut links first, then add
+	new link
+
+	* htmlengine.c (apply_attributes): do not apply blue
+	color/underline for links
+	(element_parse_a): do not set color and underline to the style
+
+2004-04-01  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (insert_text): do not merge parent's flow style,
+	it's no more needed
+
+	* htmltext.c (html_text_change_attrs): extracted this new helper
+	function from html_text_set_style_in_range so that we are able to
+	set attributes on attribute lists as well
+	(html_text_get_pango_info): set parent's folder style to attrs
+	before processing
+
+	Fixes #53370
+
+2004-03-31  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_set_style_in_range): always apply size
+	attr so that we can scale
+	(html_pango_attr_font_size_calc): when no size attr is set handle
+	it as default size 3
+	(save_open_attrs): save font size only when necessary
+	(save_close_attrs): ditto
+
+2004-03-26  Radek Doulik  <rodo@ximian.com>
+
+	* htmlstyle.c (parse_color): do not copy more than 7 bytes which
+	we have allocated on stack
+
+2004-03-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (add_line_break): do not check clue->head, it's not
+	necessary and wrong
+	(block_end_pre): finish flow
+	(element_parse_pre): use finish flow instead of close flow so that
+	we don't loose empty paragraph
+	(element_parse_blockquote): ditto
+
+	* htmltokenizer.c (in_tag): do not discard pending LF in pre
+	(insert_paragraph_break): removed unused function
+
+	Fixes #55460
+
+2004-03-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (save): do not write \n after </TABLE>, leave that
+	to clueflow
+
+	* htmlclueflow.c (write_flow_tag): write \n after start tag,
+	doesn't harm for non PRE and is needed fro PRE paragraphs
+	(write_flow_tag): write <BR> or \n if PRE or end of para with
+	different style than the next one, do it before end tag
+	(html_clueflow_contains_table): new helper method
+	(write_flow_tag): do not write <BR> after tables
+
+2004-03-22  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (command): added new commands implementation
+
+	* gtkhtml-properties.c: as below
+
+	* gtkhtml-enums.h: added GTK_HTML_COMMAND_EDITABLE_ON,
+	GTK_HTML_COMMAND_EDITABLE_OFF
+
+2004-03-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_set_editable): call
+	gtk_html_drag_dest_set
+
+	* gtkhtml.c (gtk_html_drag_dest_set): new helper function, sets
+	drag destination depending on editable state
+	(realize): call gtk_html_drag_dest_set
+
+	* htmlengine.c (block_end_cell): make sure the cell doesn't end
+	empty. add new flow with an empty text in that case
+
+	* htmlclue.c (html_clue_is_empty): moved from
+	HTMLTableCell::html_table_cell_is_empty
+
+	Needed to fix #55735
+	
+	* htmltokenizer.c (add_unichar): translate characters from range
+	128 - 159 from win1252 encoding to unicode as other browsers
+	do. yup, we support more brokeness now
+
+	Fixes #55707
+
+2004-03-15  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (thaw_idle): do partial redraw only if widget is
+	already realized
+	(html_engine_unrealize): remove scheduled thaw idle here and don't
+	wait for finalize
+
+2004-03-12  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): remove pkgconfig_DATA
+	(pkgconfig_DATA): create from pkgconfig_in_files
+
+	Fixes #55514
+
+2004-03-09  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (copy): reset selection
+
+	* htmlobject.c (copy): reset selected to FALSE
+
+2004-03-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (search): use is_text instead of calling
+	html_object_is_text again
+	(search_text): fix for utf8, mostly use index instead of characted
+	position and bytes length instead of character length
+	(search_set_info): ditto
+
+	* htmlengine.c (replace): initialize found_bytes instead of
+	found_len
+
+	* htmlsearch.c (set_text): use bytes instead of character length
+	(html_search_new): use text_bytes field
+
+	* htmlsearch.h: len --> bytes
+
+	Fixes #54029
+
+2004-03-04  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (cursor_move): do not proceed if we are not in
+	editable or caret mode
+
+	Fixes #54037
+
+	* htmlclueflow.c (save_plain): use html_text_is_line_break
+	(forward_items): new helper method to travel on text items
+	(backward_items): ditto
+
+	Fixes #54852
+
+2004-03-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (hts_fit_line): use html_text_is_line_break
+
+	* htmltext.c (html_text_is_line_break): new helper function, uses
+	pango log attribute only when there's a white space before line
+	break or there's non NULL pango language engine in item's analysis
+	(calc_min_width): use html_text_is_line_break
+
+2004-03-02    <rodo@ximian.com>
+
+	* htmltext.c (html_text_op_cut_helper): convert nbsp's in rvt as
+	well
+	(is_convert_nbsp_needed): remember changes in changes SList
+	(add_change): new helper method
+	(check_last_white): return value now means if change occured
+	(check_prev_white): ditto
+	(html_text_convert_nbsp): update attributes and links indexes to
+	changes
+	(free_changes): helper method to free changes list
+	(update_links): helper method to change indexes in links
+	(update_attributes): new helper method to change indexes in
+	attributes
+	(update_attributes_filter): attribute filter used to change
+	indexes of one attribute
+	(update_index_interval): update index interval for changes
+
+2004-02-26    <rodo@ximian.com>
+
+	* htmlimage.c (html_image_init): initialize animation_active to
+	FALSE
+	(copy): ditto
+
+	* htmlobject.c (copy): initialize draw_focused to FALSE
+
+2004-02-25    <rodo@ximian.com>
+
+	* add prefix to some static functions for better readability of
+	profile output
+
+	* htmlclueflow.c (layout_line): do not calc size if it was already
+	calculated (cur == begin)
+	(html_clue_flow_layout): remove unused variable end
+
+	Fixes #54818
+	
+	* htmltext.c (html_text_set_style_in_range): create size attr only
+	for sizes != 3 (default)
+
+	* htmlgdkpainter.c (alloc_font): use
+	pango_font_description_set_size when creating from face
+	(alloc_font): use gtk_widget_get_style
+	(html_gdk_painter_real_set_widget): override base method, get
+	pango context here
+
+	* htmlpainter.c (html_painter_set_widget): make the method virtual
+
+	* gtkhtml.c (gtk_html_set_iframe_parent): set iframe painter
+	widget to toplevel gtkhtml, set fonts of iframe
+	(gtk_html_get_top_html): new helper method
+	(gtk_html_set_fonts): get style from top level gtkhtml
+
+	* gtkhtmldebug.c (dump_object_simple): dump [i]frames in simple
+	mode
+
+2004-02-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_element_has_attr): new macro, returns true if
+	element has attr
+	(html_element_get_attr): return true only if *value is non null,
+	update all calls which just checks if attr is available to use
+	has_attr
+
+	Fixes #54555
+	
+2004-02-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_pango_info): use text->text_bytes
+	instead of strlen
+
+	* htmltokenizer.c (add_unichar_validated): use g_unichar_validate
+
+	* htmltext.c (cut_links): fixed for links behind cutted interval
+
+2004-02-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c: when updating link's start_offset,
+	end_offset, update indexes as well (Fixes #50005,#50777)
+
+	* htmltext.c (save_close_attrs): check that closing font tag is
+	neccessary for text size
+
+	* htmlcluev.c (set_max_height): reset curr when setting max height
+	to avoid wrong y positions of children objects (do_layout will
+	continue from curr)
+
+	* htmlclue.c (set_max_height): set max height only if ascent <
+	height
+
+2004-02-09  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (hts_fit_line): do not update lb again if we
+	already did at offset == lbo
+
+2004-02-03  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (get_value_nick): use g_type_class_ref/unref rather
+	than g_type_class_peek
+
+	* htmltext.c (html_text_tail_white_space): fix "\ttext" and offset
+	== 1 problem where we were accessing memory before string begin
+	(save): make sure end_index <= text->text_bytes
+
+2004-02-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_convert_nbsp): update text_bytes
+
+	Fixes #53364
+
+2004-01-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_get_pango_info): set plain text size if
+	necessary
+	(save_open_attrs): check the attr klass before accessing its
+	fields
+	(html_pango_attr_font_size_calc): use fix_size for fixed style
+	(html_text_set_style_in_range): don't mask the size style so that
+	we can identify fixed styles and set fixed size in that case
+
+2003-12-02  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+ 
+ 	* htmlengine-edit-cut-and-paste.c: (use_pictograms): store
+ 	the replaced text as "picto" data in the html image object.
+ 	(html_engine_delete_n): replace the smiley with the original text
+ 	when a smiley is deleted.
+
+2004-01-07  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml-properties.c (get_locale_language): new function, based
+	on e-iconv.c:e_iconv_locale_language
+	(gtk_html_class_properties_new): use new function to remove gal
+	dependency
+
+2004-01-02  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_im_preedit_changed_cb): use extra attributes
+	for preedit string
+
+	* htmltext.c: use extra attributes
+
+	* htmlengine-edit-cut-and-paste.c
+	(html_engine_paste_text_with_extra_attributes): renamed, uses
+	extra attributes instead of the normal ones
+
+	* htmltext.h: added extra pango attributes, which are displayed
+	even in plain text mode
+
+	* gtkhtml.c (gtk_html_im_commit_cb): update im_pre_pos
+	(gtk_html_im_preedit_changed_cb): restore initial position when
+	preedit string deleted
+
+2003-12-18  Dan Winship  <danw@ximian.com>
+
+	* testgtkhtml.c (main): s/soup_session_new/soup_session_async_new/
+
+2003-12-15  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c (text_size): use font metrics for
+	ascent/descent
+
+	* gtkhtml.c (gtk_html_set_fonts): don't scale font size down
+
+2003-12-12  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_im_preedit_changed_cb): updated, should be
+	OK now
+
+	* htmlengine-edit.c (html_engine_selection_stack_top): new
+	function, it gets cursor and mark's positions from top of
+	selection stack
+	(html_engine_selection_stack_top_modify): new function for
+	modifying cursor and mark's positions on top of selection stack
+
+2003-12-10  Yong Sun <Yong.Sun@sun.com>
+
+	* htmlengine-edit-cursor.c: correct the calculation of
+	cursor's height
+
+2003-12-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_op_cut_helper): remove spell errors from
+	outside of cutted text
+
+2003-12-05  Larry Ewing  <lewing@ximian.com>
+
+	* htmltext.c (save_text_part): don't leak the dup'd string.
+
+2003-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_flush): as below
+
+	* gtkhtml.c (gtk_html_flush): new method, does all scheduled
+	parsing
+
+2003-12-04  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_get): explicitly append a string terminator
+	to the buffer to make newer mozillas happy.
+
+2003-12-03  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c:  Use parser_clue whereever the the parser is
+	actively adding elements.  Us the generic clue where the display
+	engine is processing.
+
+	* htmlengine.h: add parser_clue to hold the root of the current
+	block.
+	
+2003-12-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (get_font_size): scale font size down from pango
+	metric
+
+	* htmlgdkpainter.c (alloc_font): don't scale font size up, it's
+	already in pango metric now
+
+	* htmlfontmanager.c (get_real_font_size): keep size in pango
+	metric
+
+	* htmltext.c (html_pango_attr_font_size_calc): pango is using
+	1/PANGO_SCALE and not 1/1000 as stated in documentation - pointed
+	out by ross
+
+2003-12-02  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_pango_attr_font_size_calc): scale down the font
+	size here, before setting to pango attribute, it's already
+	multiplied by 1000
+
+	* htmlfontmanager.c (html_font_manager_init): use PANGO_SCALE for font
+	sizes
+	(get_real_font_size): use PANGO_PIXELS to scale down font sizes
+
+	* gtkhtml.c (gtk_html_set_magnification): use PANGO_SCALE for font
+	sizes
+
+	* gtkhtml-propmanager.c (gtk_html_propmanager_apply): PANGO_SCALE
+	fonts
+
+	* gtkhtml.c (gtk_html_set_fonts): don't scale font size down here
+
+2003-11-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c (item_gc): set a default color
+
+2003-11-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-text.c (upper_lower): use g_utf8 functions to
+	lower/upper string
+
+2003-11-18  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am: enable deprecated gtk stuff. gtkcombo.h is
+	deprecated in gnome2.5. we will require gnome-2.5 soon
+
+2003-11-14  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (process_attrs): set default font fg color
+
+	* htmltextslave.c (update_lb): get the right text portion
+
+2003-11-10  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (D_IM): move all the IM debug spewage into D_IM
+	defines.
+
+2003-11-07  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (paste_link): set link color and underline
+	(html_text_append_link): new method, adds link and sets style and
+	color, use that new method where appropriate, old add_link was
+	renamed to append_link as it may be called only on text object
+	creation and it just appends link to list of links, doesn't care
+	about placing it at the right place in the list and trimming
+	surrounding links
+
+2003-10-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (save_open_attrs): save text size
+
+	* htmlengine-edit.c (html_engine_new_text): apply text attributes
+	(html_engine_new_text): set only non-default colors/styles
+
+2003-10-21  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (save_close_attrs): don't free attrs when save fails
+
+	* htmlgdkpainter.c (draw_spell_error): sum width of all glyphs
+
+	* htmltext.c (save_text): test *l to be non NULL
+
+2003-10-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (save): reverse copied list
+	(save): reverse attrs list here, don't free it in save_close_attrs
+
+2003-10-15  Larry Ewing  <lewing@ximian.com>
+
+	* htmltext.c (html_link_free): null protect this function.
+	(save): NULL protect.
+
+2003-10-15  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* htmlobject.c: (handle_object_data):
+	Close comment when saving object data, part 2 (bug #38589)
+
+2003-10-14  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (select_range): select containers
+
+	* htmlinterval.c (select_object): select range in containers
+
+2003-10-13  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* htmlobject.c: (object_save_data):
+	Close comment when saving object data (bug #38589).
+
+2003-10-06  Larry Ewing  <lewing@ximian.com>
+
+	* htmlobject.c (html_object_fit_line): remove explicit call to
+	calc_size here.
+
+	* htmlengine.c: move more parsers to html_element interface.
+
+	* htmltable.c (html_table_class_init): remove fit_line
+	implementation, it isn't needed ans breaks inline tables.
+
+	* htmlgdkpainter.c: fixup close bracket placement.
+
+2003-10-02  Larry Ewing  <lewing@ximian.com>
+
+	* htmltext.c (select_range): reset the pango info for all the
+	objects who might be affected by the selection change.
+
+	* htmltextslave.c (draw): all drawing is handled by draw_normal
+	since the htmltext passes the selection as pango attributes.
+
+	* htmltext.c (html_text_get_pango_info): add selection drawing here.
+
+2003-09-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmliframe.c (html_iframe_init): as below
+
+	* htmlframe.c (html_frame_init): load content before setting
+	parent
+
+        * use engine->stopped everywhere where we emit url_requested
+	signal
+	
+	* gtkhtml.c (gtk_html_stop): Stop requesting any more data by
+	url_requested signal.
+
+	* htmlengine.c (html_engine_stop): new function, sets stopped flag
+	to this and all children's engines
+
+2003-09-29  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_finalize): use g_source_remove
+	everywhere.
+	(current_bg_color): drop ID_EQ calls.
+
+	* htmlclueflow.c (get_item_marker_str): use ascii only ("* ") for
+	plain painter, always draw glyphs no speacial path for other chars.
+	(get_item_marker_str): don't pass in the len since it is part of
+	the flow.
+
+2003-09-17  Larry Ewing  <lewing@ximian.com>
+
+	* htmlshape.h: remove HTMLLength definition.
+
+	* htmlshape.c: include htmlstyle.h and remove html_length_new
+	since it was a bit heavy.
+
+	* htmlframeset.c: include htmlsyle.h
+
+	* htmlengine.c: use the height and width style props in the table
+	parser.
+
+	* htmstyle.h: add new prototypes and HTMLLength definition.
+	
+	* htmlstyle.c: add height, width and clear settings.
+
+	* htmlenums.h: add HTML_CLEAR_INHERIT.
+
+	* htmltablecell.c (draw): remove ifdefed out code.
+
+2003-09-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (update_lb): don't scale new_ltw by
+	PANGO_PIXELS, it's already in pixels, use new_ltw(width) for new aw
+	instead of new_lwl(len)
+
+	* htmlclueflow.c (save_plain): use pango_itemize and pango_break
+	to decide where break lines
+
+2003-09-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmlpainter.c (html_painter_calc_text_size): remove obsolete
+	g_return_if_fail
+
+2003-09-22  Radek Doulik  <rodo@ximian.com>
+
+	* libgtkhtml.pc.in (Cflags): remove a11y lib reference
+
+	* Makefile.am (libgtkhtml_3_1_la_LIBADD): link against a11y lib,
+	use GAIL libs
+
+2003-09-19  Jeremy Katz  <katzj@redhat.com>
+
+	* htmlengine.c (html_engine_get_type): Use GType instead of guint.
+	* htmlengine.h: Likewise.
+	
+2003-09-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (html_text_set_style_in_range): handle FIXED style
+	(html_text_set_style_in_range): use Monospace font when
+	e->painter->font_manager.fixed.face == NULL
+
+	* htmlengine.c (insert_text): merge parent clueflow style
+
+	* htmlimage.c: take care for images blocking
+
+	* gtkhtml.c (gtk_html_set_images_blocking): added new method,
+	toggles image streams blocking. set_blocking toggles content
+	blocking - when enabled, widget is updated after all content is
+	loaded, images blocking blocks updates until images are fully
+	loaded
+
+2003-09-17  Dan Winship  <danw@ximian.com>
+
+	* testgtkhtml.c: Make this compile with either soup 2.0 or 2.2
+
+2003-09-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmltext.c: remove ;; in several places so it will compile on
+	old compilers.
+
+2003-09-04  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (element_parse_font): parse style
+
+2003-09-11  Larry Ewing  <lewing@ximian.com>
+
+	* htmlstyle.c (html_style_add_background_color): use htmlcolor.
+	(html_style_add_attribute): parse a few more attributes.
+
+	* htmlstyle.h: switch to using htmlcolor instead of gdkcolor.
+
+	* htmlengine.c (element_parse_table): support display:
+	inline-table, move to htmlelement code.
+	(element_parse_tr): move to htmlelement code.
+	(element_parse_cell): combine parse_th and parse_td logic into one
+	function, use htmlelement code.
+
+2003-09-10  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (current_alignment): make alignment only work if we
+	cross a block element.
+	(html_element_push): don't pop the anon pre until we've pushed it.
+
+	* htmlstyle.c (html_style_add_attribute): add some new atttributes
+	to the attribute parsing code.
+	(html_style_add_attribute): fix accidental breakage.
+
+	* htmlengine.c: refactor the inline parsers to use html_element
+	code.
+
+2003-09-06  Larry Ewing  <lewing@ximian.com>
+
+	* htmltablecell.c (save): use the right tag when closing cells
+	(original patch by Roy Rankin).
+
+2003-09-05  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (pop_element_by_type): add new pop element variant
+	that takes the display type as an argument.  This cleans up the
+	places where we use pop_element to restructure the document as
+	little more.
+
 2003-09-05  Antonio Xu  <antonio.xu@sun.com>
 
 	* gtkhtml.c (new_obj_from_uri): Use HTML_IS_PLAIN_PAINTER to judge
 	html edit model, and use g_filename_from_uri to get the image file's
 	real path, fix bug #47988 #47990.
 
+2003-09-04  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (current_font_style): optimize this a little and
+	don't traverse above table cells when looking for the font style
+	(this happens a lot and we might be deep in a table).
+
+	* htmlstyle.c: add html_style_set_display.
+	
+	* htmlstyle.h: add html_style_set_display prototype and
+	HTMLDisplayType enum.
+	
+	* htmlengine.c: add style display type and move from using the id
+	to using the display type for document fixups and style lookups.
+	Remove the level setting as well and only use the display style.
+
 2003-09-03  Dan Winship  <danw@ximian.com>
 
 	* Makefile.am (testgtkhtml_LDFLAGS): Remove -static again
 
-2003-09-01  Maxx Cao  <maxx.cao@sun.com>
+2003-09-02  Maxx Cao  <maxx.cao@sun.com>
+	* gtkhtml.c (focus): reset selection when focus moved
+	(move_selection):  add consideration for caret mode
+	(command): handle selection command for caret mode
+	* htmlengine-edit-cursor.c (clip_cursor): fixed some calculation
+	error
+	* htmlengine-edit.c (html_engine_set_mark): consider caret mode
+	* htmlengine.c (html_engine_draw_real): consider caret mode
+	* htmlselection.c (remove_mark): consider caret mode
 
-	* htmltextslave.c (get_offset_for_pointer): add consideration for
-	one-character text, fix bug #47676.
+2003-09-01  Yuedong Du  <yuedong.du@sun.com>
+
+        * htmlobject.c: (destroy), (copy), (html_object_init),
+        (html_object_get_index), (html_object_set_data_nocp),
+        (html_object_set_data_full_nocp), (html_object_get_data_nocp): add
+        new data list just to avoid copy when duplicate html object.
+        * htmlobject.h: ditto
+
+2003-08-28  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-private.h: add toplevel_unmap_handler.
+
+	* gtkhtml.c (drag_data_received): add back some missing logic.
+
+2003-08-27  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (drag_data_received): use selection_recieved to handle
+	incoming drops and add text/html as a supported drop type.
+
+2003-08-23  Larry Ewing  <lewing@ximian.com>
+
+	* htmlstyle.c (parse_color): fix copy length.
 
 2003-08-15  Antonio Xu  <antonio.xu@sun.com>
 
@@ -25,28 +1470,263 @@
 
 2003-08-12  Antonio Xu  <antonio.xu@sun.com>
 
-	* gtkhtml.c (new_obj_from_uri): Use pixbuf to judge what kind of
-	image type being supported by gtkhtml, fix bug #47543.
+       * gtkhtml.c (new_obj_from_uri): Use pixbuf to judge what kind of
+       image type being supported by gtkhtml, fix bug #47543.
 
 2003-08-07  Larry Ewing  <lewing@ximian.com>
 
-	* gtkhtml.c (key_press_event): only reset the blinking cursor if
-	we are editable.
+	* htmlengine.c: more formatting changes, fix inPre to actually be
+	correct when in a pre block.
+
+2003-08-07  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (get_glyphs): watch for RECALC_PI changes
+
+	* htmlengine.c (html_engine_set_painter): set ALL changes to
+	recreate pango info and glyphs
+
+	* htmltextslave.c (update_lb): extracted function
+	(hts_fit_line): similar changes as in htmltext.c(calc_min_width)
+
+	* htmltext.c (calc_nb_before): fix direction. it doesn't work very
+	well now though, we need to join text objects with different
+	styles badly.
+	(calc_nb_after): likewise
+	(update_mw): new extracted function
+	(calc_min_width): use update_mw, fix line breaking between items
+	inside text
+
+2003-08-06  Radek Doulik  <rodo@ximian.com>
+
+	* htmlpainter.c (shift_glyphs): shift glyphs by 2 list items as it
+	now contains pango item indexes as well
+
+2003-08-05  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_motion): new method, show cursor during drag
+	motion
+	image resize by moving image's right bottom corner
 
 2003-08-01  Radek Doulik  <rodo@ximian.com>
 
+	* introduced html_engine_get_{left|right|top|bottom}_border, use
+	them everywhere
+
+	* htmlengine.c (html_engine_calc_size): force default border
+	widths for plain painter
+
 	* htmlobject.c (get_length): objects not accepting cursor have
 	zero length
+
+2003-07-31  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-save.c (get_body): save margins
+
+	* gtkhtml.c (new_obj_from_uri): use strcasecmp instead of strcmp
+	for image extensions
+	added .svg[z] for Jakub
+
+	* htmlengine-edit.c (html_engine_select_spell_word_editable): fix
+	cittation
+
+2003-07-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c: as below
+
+	* htmltext.c: break text on item boundaries
+
+2003-07-30  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c: fix logic that was causing some extra p breaks on
+	/. move some blocks around.
+	
+	* htmlengine.c: spit up the element parsers into separate
+	functions invoked from the dispatch table.  This causes a lot of
+	code churn but should end up being largely the same functionally.
+	The next step is to combine the simialar functions which should
+	reduce the code size quite a bit.
+
+2003-07-29  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c: change the id from a static enum to a gquark so
+	that we can move towards a dispatch table.  Remove pending_para it
+	was evil and never actually turned on anymore.
+	(parse_one_token): switch to using a dynamic dispatch table for
+	the token parsing.
+
+	* htmlengine.h: remove pending_para it was the wrong way to do
+	this and leads to more trouble than good.
+
+2003-07-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c (draw_text): use str instead of dereferencing
+	list data, list is already shifted at this point
+
+	* htmlplainpainter.c: as below
+
+	* htmlgdkpainter.c: use item intex from glyphs list
+
+	* htmltextslave.c: put item index to glyphs list
 
 2003-07-28  Radek Doulik  <rodo@ximian.com>
 
 	* htmltext.c (get_tags): fix color check to save color attribute
 	for blue text
 
+2003-07-26  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (parse_p): make sure we update the alignment even
+	if we don't start a new flow.
+
+2003-07-25  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (noinst_PROGRAMS): bump version numbers.
+
+2003-07-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (hts_fit_line): don't set width for empty slaves
+	(they need width == 1 to be able to be selected)
+	(get_offset_for_pointer): fix len initialization, fix border
+	conditions
+	(get_offset_for_pointer): extracted calc_offset function, handle
+	slave->posLen < 2 as special case
+	(hts_fit_line): pass start_pointer to split, hinted by Larry
+
+2003-07-24  Larry Ewing  <lewing@ximian.com>
+
+	* htmlvspace.[ch]: remove these files that haven't been in the
+	build for ages.
+	
+	* htmltypes.h: remove vspace reference.
+
+	* htmltype.c (html_type_name): remove vspace reference.
+
+	* htmlenums.h: remove vspace references.
+
+	* htmlengine.c: redo anchor closing logic.  Change dir parsing.
+	
+	* htmlengine.c (parse_d): don't push another level for DT just
+	keep the DL level.  We should however set the item flag but we can
+	do that later.	
+
+2003-07-23  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c:  Rewrite the block stack and move most of the
+	closing element logic into the end functions.  make all the
+	various block elements have the same level.  Redo list parsing.
+	This patch encompasses a lot of changes it probably breaks a few
+	things.
+	(push_block_element): merge the block stack and the span stack
+	into one structure.
+	(block_end_map): a new end function for maps.  This is tested and
+	conforms to what mozilla does.
+	(block_end_option): a nes end function for options, has not yet
+	been tested.
+
+	* htmltypes.h: remove the blockstack element typedef it shouldn't
+	have been here in the first place.
+
+	* htmlengine.h: remove the now unused blockstack.
+
+2003-07-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_set_painter): fix printing, don't
+	reset pango info on painter switching
+
+2003-07-20  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (pop_element): move everything to using the pop
+	element, makr pop_block a special case of the pop_element code.
+	(block_end_heading): make a helper function so that the this
+	closing code can be remove from the parser section.
+	(parse_t): make the <th> and <td> parser get the alignment from
+	after we've fixed up the block stack.
+
+2003-07-19  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c: remove all occurances of push/pop_span, use the
+	element interface directly.  Start work on new element interface.
+
+	* htmlstyle.c (html_style_set_font_size): make sure to mask the
+	whole size when setting the size.
+
+2003-07-17  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (parse_p): still push the element if avoid para is
+	true since we want to pick up alignment changes etc.
+
+2003-07-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (parse_color): no longer zero fill to match
+	mozilla, opera etc.
+	(current_row_align): add hack to get the current row alignment.
+	(parse_t): use current_row_align in th and td.  Also on't
+	explicitly override the aligment in td.
+
+	* htmlstyle.c (parse_color): no longer zero fill because mozilla
+	doesn't (netscape did).
+
+	* htmlengine.c: big refactoring of the parser logic, makes table
+	parse incremental and moves a bunch of the logic into the style
+	code.  Needs more work to make it clean but I want it in CVS now.
+
+	* htmlengine.h: add and remove some members for the new parser.
+
 2003-07-15  Radek Doulik  <rodo@ximian.com>
 
 	* htmlprinter.c (alloc_font): fallback to 1st available font only
 	when default fonts aren't available
+
+2003-07-15  Yuedong Du  <yuedong.du>
+
+	* gtkhtml.c: (set_caret_mode): stop blinking cursor if turn the caret
+	mode off. 
+	(style_set): according to Larry's suggestion, do not widget
+	style to implement caret mode.
+	(gtk_html_class_init): ditto.
+	(gtk_html_set_caret_mode), (gtk_html_get_caret_mode): new function
+	to get/set the caret mode flag.
+
+	* gtkhtml.h: declaration of the new function, and remove duplicate
+	declaration of declaration.
+
+2003-07-10  Larry Ewing  <lewing@ximian.com>
+
+	* htmldrawqueue.c: remove unused function.
+
+	* htmlengine-edit-cursor.c (clip_cursor): rename and do a little
+	cleanup.
+
+2003-07-10  Yuedong Du  <yuedong.du@sun.com>
+
+	* gtkhtml.c (set_caret_mode): new function to enable caret mode.
+	(style_set): set the caret mode flag according to style.
+	(button_press_event): when caret mode is on, mouse click will
+	cause cursor jump to the clicked position. 
+	(gtk_html_class_init): introduce a new style property. 
+	(cursor_move): remove the limitation that curosr can only be moved
+	in html editor.
+
+	* htmlengine-edit-cursor.c (html_engine_hide_cursor): ditto, and
+	when reading html mail, cursor need to be draw on the embedded html
+	widget. So need to find the right widget when drawing. 
+	(html_engine_show_cursor): ditto
+	(clip_rect): don't return false in the case that x1,y1 is equal to 
+	x1+width, y1+height.
+	(html_engine_draw_cursor_in_area): when drawing cursor on embedded 
+	gtkhtml widget, remember the cursor position is actually related to
+	top html widget. So we need sub the offset of embedded html widget.
+
+	* htmlengine-eidt-movement.c (html_engine_scroll_down): fix a small
+	bug that cause the hide count of htmlcursor incorrect.
+
+	* htmlengine.h: introduce new flag into HTMLEngine, to indicate
+	whether caret mode is on.
+
+	* htmlengine.c: setup blinking cursor when caret mode is on.
+
+	* htmliframe.c: initialize the cursor_hide_count in embedded html
+	engine. see bug #44607
 
 2003-07-03  Radek Doulik  <rodo@ximian.com>
 
@@ -57,10 +1737,57 @@
 	* gtkhtml.c (key_press_event): reset blinking cursor if key was
 	used
 
+2003-07-09  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_freeze):  only process the updates on
+	the first freeze, and add some checking to call (to fix the other
+	problem York pointed out on irc.)
+
+2003-07-08  Larry Ewing  <lewing@ximian.com>
+
+	* htmltextslave.c (draw_focus): substitute p with painter (Thanks
+	to York for pointing it out).
+
+	* htmlimage.c (draw_focus): subsitute p with painter.
+
+	* htmlclueflow.c: remove draw_background.
+
+	* htmldrawqueue.c: don't do any drawing directly, simply
+	invalidate the regions, let the expose handler deal with the
+	drawing.  Remove a lot of unused cruft and focus drawing code.
+	
+        * htmlengine.c: make all the draw queues invalidate the regions
+	instead of drawing directly.
+
+	* htmlengine.h: remove draw_focus_object, that is handled by the
+	object's ::draw method now.
+
+	* htmlframe.c: remove draw_background.
+
+	* htmlframeset.c: remove draw_background.
+
+	* htmliframe.c: remove draw_background.
+
+	* htmlimage.c: rework animation timeout handling, make
+	area_updated do something useful.
+
+	* htmlobject.c: remove drawbackgound code.
+
+	* htmlobject.h: add draw_focused boolean.
+
+	* htmltable.c: remove ::draw_background logic that is no longer
+	used.
+	
+	* htmltablecell.c: remove draw_background code that is no longer
+	used.
+
+	* htmltextslave.c (draw_focus): add a method to draw focus here.
+	The drawing routine should be into the painter next.
+
 2003-07-07  Yuedong Du  <yuedong.du@sun.com>
 
-        * gtkhtml.c (add_bindings): remove keybinding for Control+Tab/
-        Shift+Control+Tab, fix bug #45825
+	* gtkhtml.c (add_bindings): remove keybinding for Control+Tab/
+	Shift+Control+Tab, fix bug #45825
 
 2003-06-27  Radek Doulik  <rodo@ximian.com>
 

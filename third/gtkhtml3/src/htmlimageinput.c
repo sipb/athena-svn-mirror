@@ -87,7 +87,7 @@ calc_min_width (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
+html_image_input_real_calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLImageInput *image_input;
 	HTMLObject *image_object;
@@ -164,7 +164,7 @@ html_imageinput_class_init (HTMLImageInputClass *klass,
 	object_class->copy = copy;
 	object_class->draw = draw;
 	object_class->calc_min_width = calc_min_width;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_image_input_real_calc_size;
 
 	parent_class = &html_embedded_class;
 }

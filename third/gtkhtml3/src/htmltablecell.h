@@ -87,6 +87,4 @@ void        html_table_cell_set_position      (HTMLTableCell      *cell,
 					       gint                col);
 gint        html_table_cell_get_fixed_width   (HTMLTableCell      *cell,
 					       HTMLPainter        *painter);
-gboolean    html_table_cell_is_empty          (HTMLTableCell      *cell);
-
 #endif /* _HTMLTABLECELL_H_ */

@@ -42,7 +42,7 @@ copy (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_clue_aligned_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLObject *obj;
 	gboolean changed;
@@ -119,7 +119,7 @@ html_cluealigned_class_init (HTMLClueAlignedClass *klass,
 	/* HTMLObject functions FIXME destroy? */
 
 	object_class->copy = copy;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_clue_aligned_real_calc_size;
 	object_class->set_max_width = set_max_width;
 
 	parent_class = &html_clue_class;

@@ -24,12 +24,16 @@
 #include <libgnome/gnome-i18n.h>
 #include <string.h>
 #include "gtkhtml-compat.h"
+#include "htmlcursor.h"
+#include "htmlengine.h"
+#include "htmlobject.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <gnome.h>
 #include "utils.h"
+#include "properties.h"
 
 GtkWidget *
 color_table_new (GtkSignalFunc f, gpointer data)
@@ -101,17 +105,137 @@ url_requested (GtkHTML *html, const gchar *url, GtkHTMLStream *handle)
 GtkWidget *
 sample_frame (GtkHTML **html)
 {
-	GtkWidget *frame, *scroll_frame;
+	GtkWidget *scroll_frame, *vbox;
 
-	frame = gtk_frame_new (_("Sample"));
 	*html = GTK_HTML (gtk_html_new ());
 	scroll_frame = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll_frame), GTK_SHADOW_IN);
 	gtk_container_set_border_width (GTK_CONTAINER (scroll_frame), 6);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_frame), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_container_add (GTK_CONTAINER (scroll_frame), GTK_WIDGET (*html));
-	gtk_container_add (GTK_CONTAINER (frame), scroll_frame);
+
+	gtk_widget_show (GTK_WIDGET (*html));
+	gtk_widget_show (scroll_frame);
+	vbox = editor_hig_vbox_full (_("Sample"), scroll_frame, TRUE);
+
 	g_signal_connect (*html, "url_requested", G_CALLBACK (url_requested), NULL);
 
-	return frame;
+	return vbox;
+}
+
+GtkWidget *
+editor_hig_vbox_full (gchar *text, GtkWidget *control, gboolean vexpand)
+{
+        GtkWidget *vbox, *hbox, *label;
+        gchar *markup;
+
+        markup = g_strconcat ("<span weight=\"bold\">", text, "</span>", NULL);
+	label = gtk_label_new (markup);
+        g_free (markup);
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label), .0, .5);
+
+	vbox = gtk_vbox_new (FALSE, 12);
+	hbox = gtk_hbox_new (FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0); \
+	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new ("    "), FALSE, FALSE, 0); \
+	gtk_box_pack_start (GTK_BOX (hbox), control, TRUE, TRUE, 0); \
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, vexpand, vexpand, 0); \
+
+	gtk_widget_show (label);
+	gtk_widget_show (hbox);
+	gtk_widget_show (vbox);
+
+	return vbox;
+}
+
+GtkWidget *
+editor_hig_vbox (gchar *text, GtkWidget *control)
+{
+	return editor_hig_vbox_full (text, control, FALSE);
+}
+
+GtkWidget *
+editor_hig_inner_hbox (gchar *text, GtkWidget *control)
+{
+	GtkWidget *hbox, *label;
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	label = gtk_label_new_with_mnemonic (text);
+	gtk_misc_set_alignment (GTK_MISC (label), .0, .5);
+
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), control, FALSE, FALSE, 0);
+
+	gtk_widget_show (label);
+	gtk_widget_show (hbox);
+
+	return hbox;
+}
+
+void
+editor_hig_attach_row (GtkWidget *table, gchar *text, GtkWidget *control, int row)
+{
+	GtkWidget *label;
+
+	label = gtk_label_new_with_mnemonic (text);
+	gtk_misc_set_alignment (GTK_MISC (label), .0, .5);
+
+	gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (table), control, 1, 2, row, row + 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 0, 0);
+}
+
+static gboolean stock_test_url_added = FALSE;
+static GtkStockItem test_url_items [] =
+{
+	{ GTKHTML_STOCK_TEST_URL, N_("_Visit..."), 0, 0, GETTEXT_PACKAGE }
+};
+
+void
+editor_check_stock ()
+{
+	if (!stock_test_url_added) {
+		GdkPixbuf *pixbuf;
+		GError *error = NULL;
+
+		pixbuf = gdk_pixbuf_new_from_file (ICONDIR "/insert-link-16.png", &error);
+		if (!pixbuf) {
+			g_error_free (error);
+		} else {
+			GtkIconSet *test_url_iconset = gtk_icon_set_new_from_pixbuf (pixbuf);
+
+			if (test_url_iconset) {
+				GtkIconFactory *factory = gtk_icon_factory_new ();
+
+				gtk_icon_factory_add (factory, GTKHTML_STOCK_TEST_URL, test_url_iconset);
+				gtk_icon_factory_add_default (factory);
+			}
+			gtk_stock_add_static (test_url_items, G_N_ELEMENTS (test_url_items));
+		}
+		stock_test_url_added = TRUE;
+	}
+}
+
+gboolean
+editor_has_html_object (GtkHTMLControlData *cd, HTMLObject *o)
+{
+	HTMLEngine *e = cd->html->engine;
+	guint position = e->cursor->position;
+
+	if (e->cursor->object != o)
+		if (!o->parent || !html_cursor_jump_to (e->cursor, e, o, 0)) {
+			GtkWidget *dialog;
+			printf ("d: %p\n", cd->properties_dialog);
+			dialog = gtk_message_dialog_new (GTK_WINDOW (cd->properties_dialog->dialog),
+							 GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
+							 _("The editted object was removed from the document.\nCannot apply your changes."));
+			gtk_dialog_run (GTK_DIALOG (dialog));
+			gtk_widget_destroy (dialog);
+			html_cursor_jump_to_position (e->cursor, e, position);
+			return FALSE;
+		}
+
+	html_cursor_jump_to_position (e->cursor, e, position);
+	return TRUE;
 }

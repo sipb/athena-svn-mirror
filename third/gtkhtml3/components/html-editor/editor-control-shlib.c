@@ -41,12 +41,12 @@ editor_shlib_init (void)
 		initialized = TRUE;
 
 		/* Initialize the i18n support */
-		bindtextdomain (GNOME_EXPLICIT_TRANSLATION_DOMAIN, GNOMELOCALEDIR);
-		bind_textdomain_codeset (GNOME_EXPLICIT_TRANSLATION_DOMAIN, "UTF-8");
+		bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+		bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	}
 }
 
-BonoboObject *
+static BonoboObject *
 editor_control_shlib_factory (BonoboGenericFactory *factory, const gchar *component_id, gpointer closure)
 {
 	editor_shlib_init ();

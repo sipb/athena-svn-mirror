@@ -60,8 +60,8 @@ main (int argc, char **argv)
 #endif
 
 	/* Initialize the i18n support */
-	bindtextdomain (GNOME_EXPLICIT_TRANSLATION_DOMAIN, GNOMELOCALEDIR);
-	bind_textdomain_codeset (GNOME_EXPLICIT_TRANSLATION_DOMAIN, "UTF-8");
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	gnome_program_init(PACKAGE, VERSION, LIBGNOMEUI_MODULE, argc, argv, 
 			   GNOME_PROGRAM_STANDARD_PROPERTIES,

@@ -39,7 +39,7 @@
 struct _HTMLGdkPainter {
 	HTMLPainter base;
 	PangoContext *pc;
-	GtkStyle *style;
+	GtkWidget *widget;
 
 	/* GdkWindow to draw on */
 	GdkWindow *window;
@@ -54,7 +54,6 @@ struct _HTMLGdkPainter {
 	GdkColor background;
 	gboolean set_background;
 	gboolean do_clear;
-	gboolean alpha;
 
 	/* Colors used for shading.  */
 	GdkColor dark;
@@ -66,17 +65,17 @@ struct _HTMLGdkPainterClass {
 	HTMLPainterClass base;
 };
 
-GType        html_gdk_painter_get_type                         (void);
-HTMLPainter *html_gdk_painter_new                              (GtkWidget             *widget,
-								gboolean               double_buffer);
-void         html_gdk_painter_realize                          (HTMLGdkPainter        *painter,
-								GdkWindow             *window);
-void         html_gdk_painter_unrealize                        (HTMLGdkPainter        *painter);
-gboolean     html_gdk_painter_realized                         (HTMLGdkPainter        *painter);
-GList       *html_gdk_painter_text_itemize_and_prepare_glyphs  (HTMLGdkPainter        *painter,
-								PangoFontDescription  *desc,
-								const gchar           *text,
-								gint                   bytes,
-								GList                **glyphs);
+GType              html_gdk_painter_get_type                         (void);
+HTMLPainter       *html_gdk_painter_new                              (GtkWidget             *widget,
+								      gboolean               double_buffer);
+void               html_gdk_painter_realize                          (HTMLGdkPainter        *painter,
+								      GdkWindow             *window);
+void               html_gdk_painter_unrealize                        (HTMLGdkPainter        *painter);
+gboolean           html_gdk_painter_realized                         (HTMLGdkPainter        *painter);
+HTMLTextPangoInfo *html_gdk_painter_text_itemize_and_prepare_glyphs  (HTMLGdkPainter        *painter,
+								      PangoFontDescription  *desc,
+								      const gchar           *text,
+								      gint                   bytes,
+								      GList                **glyphs);
 
 #endif /* _HTMLGDKPAINTER_H */

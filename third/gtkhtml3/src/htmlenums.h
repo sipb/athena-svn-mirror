@@ -38,16 +38,17 @@ typedef enum {
 	HTML_CHANGE_MIN_WIDTH = 1 << 0,
 	HTML_CHANGE_PREF_WIDTH = 1 << 1,
 	HTML_CHANGE_SIZE = 1 << 2,
-	HTML_CHANGE_WORD_WIDTH = 1 << 3,
+	HTML_CHANGE_RECALC_PI = 1 << 3,
 	HTML_CHANGE_ALL_CALC = ((HTML_CHANGE_SIZE << 1) - 1),
-	HTML_CHANGE_ALL = ((HTML_CHANGE_WORD_WIDTH << 1) - 1)
+	HTML_CHANGE_ALL = ((HTML_CHANGE_RECALC_PI << 1) - 1)
 } HTMLChangeFlags;
 
 typedef enum {
 	HTML_CLEAR_NONE,
 	HTML_CLEAR_LEFT,
 	HTML_CLEAR_RIGHT,
-	HTML_CLEAR_ALL
+	HTML_CLEAR_ALL,
+	HTML_CLEAR_INHERIT
 } HTMLClearType;
 
 /* Paragraph style.  Notice that the `H*' elements must be consecutive.  */
@@ -76,6 +77,7 @@ typedef enum {
 	HTMLHighlightNFColor,
 	HTMLHighlightTextNFColor,
 	HTMLSpellErrorColor,
+	HTMLCiteColor,
 
 	HTMLColors
 } HTMLColorId;
@@ -185,7 +187,6 @@ typedef enum {
 	HTML_TYPE_TEXTAREA,
 	HTML_TYPE_TEXTINPUT,
 	HTML_TYPE_TEXTSLAVE,
-	HTML_TYPE_VSPACE,
 	HTML_TYPE_IFRAME,
 	HTML_TYPE_FRAME,
 	HTML_TYPE_FRAMESET,

@@ -50,7 +50,7 @@ html_engine_insert_image (HTMLEngine *e,
 	g_return_if_fail (e != NULL);
 	g_return_if_fail (HTML_IS_ENGINE (e));
 
-	image = html_image_new (e->image_factory,
+	image = html_image_new (html_engine_get_image_factory (e),
 				file,
 				url,
 				target,

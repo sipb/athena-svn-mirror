@@ -40,7 +40,6 @@
 
 struct _PageData {
 	GtkHTMLEditPropertyType      type;
-	GtkHTMLEditPropertyApplyFunc apply;
 	GtkHTMLEditPropertyCloseFunc close;
 	gchar *name;
 	gpointer data;
@@ -48,28 +47,9 @@ struct _PageData {
 typedef struct _PageData PageData;
 
 static void
-apply_cb (PageData *pd, GtkHTMLEditPropertiesDialog *d)
-{
-	if (!(*pd->apply) (d->control_data, pd->data))
-		d->all_changes_applied = FALSE;
-}
-
-static void
-apply (GtkHTMLEditPropertiesDialog *d)
-{
-	d->all_changes_applied = TRUE;
-	g_list_foreach (d->page_data, (GFunc) apply_cb, d);
-	if (d->all_changes_applied) {
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 0, FALSE);
-		if (!d->insert)
-			gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 1, FALSE);
-	}
-}
-
-static void
 prop_close (GtkHTMLEditPropertiesDialog *d)
 {
-	gtk_dialog_response (GTK_DIALOG (d->dialog), GTK_RESPONSE_CANCEL);
+	gtk_widget_grab_focus (GTK_WIDGET (d->control_data->html));
 	gtk_html_edit_properties_dialog_destroy (d);
 }
 
@@ -92,7 +72,6 @@ switch_page (GtkWidget *w, GtkNotebookPage *page, gint num, GtkHTMLEditPropertie
 static void
 destroy_dialog (GtkWidget *w, gpointer data)
 {
-	printf ("destroy\n");
 	((GtkHTMLEditPropertiesDialog *) data)->dialog = NULL;
 }
 
@@ -101,59 +80,28 @@ dialog_response (GtkDialog *dialog, gint response_id, GtkHTMLEditPropertiesDialo
 {
 	switch (response_id) {
 	case GTK_RESPONSE_CANCEL:
-		gtk_widget_destroy (GTK_WIDGET (dialog));
-		break;
-	case 0: /* OK */
-		apply (d);
+	case GTK_RESPONSE_CLOSE: /* OK */
 		prop_close (d);
 		break;
-	case 1: /* Insert/Apply */
-		apply (d);
-		if (d->insert)
-			prop_close (d);
 	}
 }
 
-static gboolean stock_insert_added = FALSE;
-#define GTKHTML_STOCK_INSERT "gtkhtml-stock-insert"
-static GtkStockItem insert_items [] =
-{
-	{ GTKHTML_STOCK_INSERT, N_("Insert"), 0, 0, NULL }
-};
-
 GtkHTMLEditPropertiesDialog *
-gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gchar *title, gchar *icon_path)
+gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gchar *title, gchar *icon_path)
 {
 	GtkHTMLEditPropertiesDialog *d = g_new (GtkHTMLEditPropertiesDialog, 1);
 	GtkWidget *vbox;
 	GtkWindow *parent;
 
-	if (insert && !stock_insert_added) {
-		GtkIconSet *jumpto = gtk_icon_factory_lookup_default (GTK_STOCK_JUMP_TO);
-
-		if (jumpto) {
-			GtkIconFactory *factory = gtk_icon_factory_new ();
-
-			gtk_icon_factory_add (factory, GTKHTML_STOCK_INSERT, jumpto);
-			gtk_icon_factory_add_default (factory);
-		}
-		gtk_stock_add_static (insert_items, G_N_ELEMENTS (insert_items));
-		stock_insert_added = TRUE;
-	}
-
 	d->page_data      = NULL;
 	d->title          = g_strdup (title);
-	d->insert         = insert;
 	d->control_data   = cd;
 	parent = get_parent_window (GTK_WIDGET (cd->html));
-	d->dialog         = insert ? gtk_dialog_new_with_buttons (title, parent, 0,
-								  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-								  GTKHTML_STOCK_INSERT, 1,
-								  NULL)
-		:  gtk_dialog_new_with_buttons (title, parent, 0,
-						GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-						GTK_STOCK_OK, 0,
-						NULL);
+
+	d->dialog = gtk_dialog_new_with_buttons (title, parent, 0,
+						 GTK_STOCK_HELP, GTK_RESPONSE_HELP,
+						 GTK_STOCK_CLOSE, GTK_RESPONSE_CANCEL,
+						 NULL);
 
 	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (d->dialog)->vbox), 6);
 	gtk_container_set_border_width (GTK_CONTAINER (d->dialog), 6);
@@ -172,8 +120,6 @@ gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gc
 
 	gnome_window_icon_set_from_file (GTK_WINDOW (d->dialog), icon_path);
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 0, FALSE);
-	if (!insert)
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 1, FALSE);
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (d->dialog)->vbox), 6);
 
 	return d;
@@ -206,7 +152,6 @@ gtk_html_edit_properties_dialog_add_entry (GtkHTMLEditPropertiesDialog *d,
 					   GtkHTMLEditPropertyType t,
 					   const gchar *name,
 					   GtkHTMLEditPropertyCreateFunc create,
-					   GtkHTMLEditPropertyApplyFunc apply_cb,
 					   GtkHTMLEditPropertyCloseFunc close_cb)
 
 {
@@ -214,7 +159,6 @@ gtk_html_edit_properties_dialog_add_entry (GtkHTMLEditPropertiesDialog *d,
 	GtkWidget *page;
 
 	page = (*create) (d->control_data, &pd->data);
-	pd->apply = apply_cb;
 	pd->close = close_cb;
 	pd->type  = t;
 	pd->name  = g_strdup (name);
@@ -240,14 +184,6 @@ gtk_html_edit_properties_dialog_close (GtkHTMLEditPropertiesDialog *d)
 {
 	if (d->dialog)
 		gtk_dialog_response (GTK_DIALOG (d->dialog), GTK_RESPONSE_CANCEL);
-}
-
-void
-gtk_html_edit_properties_dialog_change (GtkHTMLEditPropertiesDialog *d)
-{
-	gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 0, TRUE);
-	if (!d->insert)
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (d->dialog), 1, TRUE);
 }
 
 static gint

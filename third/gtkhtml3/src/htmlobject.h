@@ -66,8 +66,12 @@ struct _HTMLObject {
            is set to TRUE instead of g_free()ing the object.  When the draw
            queue is flushed, the g_free() is performed.  */
 	guint free_pending : 1;
+	
+	/* FIXME add the other dynamic pusedo-classes... */
+	guint draw_focused : 1; 
 
 	GData *object_data;
+	GData *object_data_nocp;
 };
 
 struct _HTMLObjectClearRectangle {
@@ -153,15 +157,14 @@ struct _HTMLObjectClass {
 
 	gboolean (* is_transparent) (HTMLObject *self);
 
-	/* This draws the background only.  If the object is
-           transparent, it should simply forward the method to the
-           parent.  */
-
+	/* Unused ::draw_background method */
 	void (* draw_background) (HTMLObject *o,
 				  HTMLPainter *painter,
 				  gint x, gint y,
 				  gint width, gint height,
 				  gint tx, gint ty);
+	/* remove it later */
+
 	void       (* set_bg_color) (HTMLObject *o, GdkColor *color);
 	GdkColor * (* get_bg_color) (HTMLObject *o, HTMLPainter *p);
 
@@ -180,8 +183,8 @@ struct _HTMLObjectClass {
 
 	void (* reset) (HTMLObject *o);
 
-	const gchar * (* get_url)    (HTMLObject *o);
-	const gchar * (* get_target) (HTMLObject *o);
+	const gchar * (* get_url)    (HTMLObject *o, gint offset);
+	const gchar * (* get_target) (HTMLObject *o, gint offset);
 	const gchar * (* get_src)    (HTMLObject *o);
 
 	HTMLAnchor * (* find_anchor) (HTMLObject *o, const gchar *name, gint *x, gint *y);
@@ -224,7 +227,7 @@ struct _HTMLObjectClass {
 
 	/* Page splitting (for printing).  */
 
-	gint (* check_page_split) (HTMLObject *self, gint y);
+	gint (* check_page_split) (HTMLObject *self, HTMLPainter *p, gint y);
 
 	/* Selection.  */
 	gboolean (* select_range) (HTMLObject *self, HTMLEngine *engine, guint start, gint length,
@@ -314,7 +317,6 @@ gint            html_object_get_right_margin      (HTMLObject            *self,
 						   gboolean               with_aligned);
 void            html_object_set_painter           (HTMLObject            *o,
 						   HTMLPainter           *p);
-void            html_object_clear_word_width      (HTMLObject            *o);
 void            html_object_reset                 (HTMLObject            *o);
 gboolean        html_object_is_text               (HTMLObject            *object);
 gboolean        html_object_is_clue               (HTMLObject            *object);
@@ -348,14 +350,6 @@ gboolean        html_object_search_next           (HTMLObject            *self,
 
 /* Drawing-related stuff.  */
 void            html_object_draw                  (HTMLObject            *o,
-						   HTMLPainter           *p,
-						   gint                   x,
-						   gint                   y,
-						   gint                   width,
-						   gint                   height,
-						   gint                   tx,
-						   gint                   ty);
-void            html_object_draw_background       (HTMLObject            *o,
 						   HTMLPainter           *p,
 						   gint                   x,
 						   gint                   y,
@@ -404,9 +398,12 @@ gboolean        html_object_relayout              (HTMLObject            *obj,
 HTMLVAlignType  html_object_get_valign            (HTMLObject            *self);
 
 /* Links.  */
-const gchar    *html_object_get_url               (HTMLObject            *o);
-const gchar    *html_object_get_target            (HTMLObject            *o);
-gchar          *html_object_get_complete_url      (HTMLObject            *o);
+const gchar    *html_object_get_url               (HTMLObject            *o,
+						   gint                   offset);
+const gchar    *html_object_get_target            (HTMLObject            *o,
+						   gint                   offset);
+gchar          *html_object_get_complete_url      (HTMLObject            *o,
+						   gint                   offset);
 const gchar    *html_object_get_src               (HTMLObject            *o);
 HTMLAnchor     *html_object_find_anchor           (HTMLObject            *o,
 						   const gchar           *name,
@@ -478,10 +475,13 @@ HTMLObject     *html_object_next_cursor           (HTMLObject            *self,
 						   gint                  *offset);
 HTMLObject     *html_object_prev_cursor           (HTMLObject            *self,
 						   gint                  *offset);
+GdkRectangle   *html_object_get_bounds            (HTMLObject            *o,
+						   GdkRectangle          *bounds);
 
 /* Page splitting.  */
-gint  html_object_check_page_split  (HTMLObject *self,
-				     gint        y);
+gint  html_object_check_page_split  (HTMLObject  *self,
+				     HTMLPainter *p,
+				     gint         y);
 
 /* Selection.  */
 gboolean    html_object_select_range             (HTMLObject *self,
@@ -525,6 +525,18 @@ void      html_object_copy_data_from_object  (HTMLObject          *dst,
 					      HTMLObject          *src);
 gboolean  html_object_save_data              (HTMLObject          *self,
 					      HTMLEngineSaveState *state);
+
+/* for acc object */
+void      html_object_set_data_nocp          (HTMLObject          *object,
+					      const gchar         *key,
+					      const gchar         *value);
+void      html_object_set_data_full_nocp     (HTMLObject          *object,
+					      const gchar         *key,
+					      const gpointer       value,
+					      GDestroyNotify       func);
+gpointer  html_object_get_data_nocp          (HTMLObject          *object,
+					      const gchar         *key);
+
 /*
  * editing
 */

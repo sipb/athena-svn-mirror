@@ -24,6 +24,7 @@
 #include <math.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "htmlstyle.h"
 #include "htmlshape.h"
 
 struct _HTMLShape {
@@ -34,25 +35,16 @@ struct _HTMLShape {
 };
 
 static HTMLLength *
-html_length_new (gint val, HTMLLengthType type) {
-	HTMLLength *len = g_new (HTMLLength, 1);
-	
-	len->val = val;
-	len->type = type;
-	
-	return len;
-}
-
-static HTMLLength *
 parse_length (char **str) {
 	char *cur = *str;
-	HTMLLength *len;
+	HTMLLength *len = g_new0 (HTMLLength, 1);
 	
 	/* g_warning ("begin \"%s\"", *str); */
 
 	while (isspace (*cur)) cur++;
 
-	len = html_length_new (atoi (cur), HTML_LENGTH_TYPE_PIXELS);
+	len->val = atoi (cur);
+	len->type = HTML_LENGTH_TYPE_PIXELS;
 
 	while (isdigit (*cur) || *cur == '-') cur++;
 
@@ -189,7 +181,7 @@ html_shape_new (char *type_str, char *coords, char *url, char *target)
 {
 	HTMLShape *shape;
 	HTMLShapeType type = parse_shape_type (type_str);
-	
+
 	if (coords == NULL && type != HTML_SHAPE_DEFAULT)
 		return NULL;
 
@@ -206,15 +198,15 @@ html_shape_new (char *type_str, char *coords, char *url, char *target)
 	case HTML_SHAPE_RECT:
 		while (shape->coords->len < 4)
 			g_ptr_array_add (shape->coords, 
-					 html_length_new (0, HTML_LENGTH_TYPE_PIXELS));
+					 g_new0 (HTMLLength, 1));
 	case HTML_SHAPE_CIRCLE:
 		while (shape->coords->len < 3)
 			g_ptr_array_add (shape->coords, 
-					 html_length_new (0, HTML_LENGTH_TYPE_PIXELS));
+					 g_new0 (HTMLLength, 1));
 	case HTML_SHAPE_POLY:
 		if (shape->coords->len % 2)
 			g_ptr_array_add (shape->coords, 
-					 html_length_new (0, HTML_LENGTH_TYPE_PIXELS));
+					 g_new0 (HTMLLength, 1));
 
 		break;
 	default:

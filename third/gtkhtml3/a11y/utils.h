@@ -28,7 +28,7 @@
 #include "htmlobject.h"
 
 #define ACCESSIBLE_ID "atk-accessible-object"
-#define HTML_OBJECT_ACCESSIBLE(o) ATK_OBJECT (html_object_get_data (HTML_OBJECT (o), ACCESSIBLE_ID))
+#define HTML_OBJECT_ACCESSIBLE(o) ATK_OBJECT (html_object_get_data_nocp (HTML_OBJECT (o), ACCESSIBLE_ID))
 
 AtkObject *html_utils_get_accessible (HTMLObject *o, AtkObject *parent);
 

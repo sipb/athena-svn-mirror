@@ -33,11 +33,11 @@
 #include "htmlpainter.h"
 #include "htmlengine.h"
 
-
 HTMLEmbeddedClass html_embedded_class;
 static HTMLObjectClass *parent_class = NULL;
 
-
+#define d(x)
+
 static void
 copy (HTMLObject *self,
       HTMLObject *dest)
@@ -67,6 +67,7 @@ draw (HTMLObject *o,
 	HTMLEmbedded *element = HTML_EMBEDDED(o);
 	gint new_x, new_y;
 
+	d (printf ("draw embedded %p\n", element));
 	if (!element->widget)
 		return;
 
@@ -75,19 +76,23 @@ draw (HTMLObject *o,
 		new_y = o->y + ty - o->ascent;
 		
 		if (element->widget->parent) {
-			if (new_x != element->abs_x || new_y != element->abs_y)
+			if (new_x != element->abs_x || new_y != element->abs_y) {
+				d (printf ("element: %p moveto: %d,%d shown: %d\n", element, new_x, new_y, GTK_WIDGET_VISIBLE (element->widget)));
 				gtk_layout_move (GTK_LAYOUT(element->parent), element->widget, new_x, new_y);
-			else if (!GTK_HTML (element->parent)->engine->expose)
+			} else if (!GTK_HTML (element->parent)->engine->expose)
 				gtk_widget_queue_draw (element->widget);
 		}
 	
 		element->abs_x = new_x;
 		element->abs_y = new_y;
 		
-		if (!element->widget->parent)
+		if (!element->widget->parent) {
+			d (printf ("element: %p put: %d,%d shown: %d\n", element, new_x, new_y, GTK_WIDGET_VISIBLE (element->widget)));
 			gtk_layout_put (GTK_LAYOUT(element->parent), element->widget, new_x, new_y);
+		}
 	}
 
+	d (printf ("draw embedded %p - call painter\n", element));
 	html_painter_draw_embedded (p, element, tx, ty);
 }
 
@@ -96,6 +101,7 @@ destroy (HTMLObject *o)
 {
 	HTMLEmbedded *element;
 
+	d (printf ("destroy embedded %p\n", o));
 	element = HTML_EMBEDDED (o);
 
 	if(element->name)
@@ -136,9 +142,10 @@ calc_min_width (HTMLObject *self,
 
 	widget = HTML_EMBEDDED (self)->widget;
 
-	if (widget == NULL || !GTK_WIDGET_REALIZED (widget)) 
+	if (widget == NULL || !GTK_WIDGET_VISIBLE (widget))
 		return 0;
      
+	requisition.width = requisition.height = 0;
 	gtk_widget_size_request (widget, &requisition);
 	pixel_size = html_painter_get_pixel_size (painter);
 
@@ -148,7 +155,7 @@ calc_min_width (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
+html_embedded_real_calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	GtkWidget *widget;
 	HTMLEmbedded *emb = HTML_EMBEDDED (self);
@@ -166,6 +173,7 @@ calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 	old_ascent = self->ascent;
 	old_descent = self->descent;
 
+	requisition.width = requisition.height = 0;
 	gtk_widget_size_request (widget, &requisition);
 	
 	if (GTK_IS_HTML_EMBEDDED(widget))
@@ -289,7 +297,7 @@ html_embedded_class_init (HTMLEmbeddedClass *klass,
 	object_class->copy = copy;
 	object_class->draw = draw;
 	object_class->accepts_cursor = accepts_cursor;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_embedded_real_calc_size;
 	object_class->calc_min_width = calc_min_width;
 
 	parent_class = &html_object_class;
@@ -303,6 +311,8 @@ html_embedded_init (HTMLEmbedded *element,
 		   gchar *value)
 {
 	HTMLObject *object;
+
+	d (printf ("embedded %p init\n", element));
 
 	object = HTML_OBJECT (element);
 	html_object_init (object, HTML_OBJECT_CLASS (klass));
@@ -351,6 +361,8 @@ html_embedded_new_widget (GtkWidget *parent, GtkHTMLEmbedded *eb, HTMLEngine *en
 	HTMLEmbedded *em;
 
 	em = g_new0(HTMLEmbedded, 1);
+	d (printf ("embedded %p new widget\n", em));
+
 	html_embedded_init (em, HTML_EMBEDDED_CLASS (&html_embedded_class), parent, eb->name, "");
 	html_embedded_set_widget (em, GTK_WIDGET (eb));
 
@@ -374,8 +386,8 @@ html_embedded_allocate (GtkWidget *w, GtkAllocation  *allocation, HTMLEmbedded *
 		}
 		e->height = allocation->height;
 		
-		g_assert (GTK_IS_HTML (w->parent));
-		html_engine_schedule_update (GTK_HTML (w->parent)->engine);
+		if (GTK_IS_HTML (w->parent))
+			html_engine_schedule_update (GTK_HTML (w->parent)->engine);
 	}
 }
 
@@ -384,6 +396,7 @@ html_embedded_set_widget (HTMLEmbedded *emb, GtkWidget *w)
 {
 	emb->widget = w;
 	
+	d (printf ("set embedded widget: %p widget: %p\n", emb, w));
 	gtk_widget_show (w);
 
 	g_object_set_data (G_OBJECT (w), "embeddedelement", emb);

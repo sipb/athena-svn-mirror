@@ -31,13 +31,25 @@ void  html_engine_insert_rule  (HTMLEngine     *e,
 				gint            size,
 				gboolean        shade,
 				HTMLHAlignType  halign);
-
 void  html_rule_set            (HTMLRule       *rule,
 				HTMLEngine     *e,
 				gint            length,
 				gint            percent,
 				gint            size,
 				gboolean        shade,
+				HTMLHAlignType  halign);
+void  html_rule_set_length     (HTMLRule       *rule,
+				HTMLEngine     *e,
+				gint            length,
+				gint            percent);
+void  html_rule_set_size       (HTMLRule       *rule,
+				HTMLEngine     *e,
+				gint            size);
+void  html_rule_set_shade      (HTMLRule       *rule,
+				HTMLEngine     *e,
+				gboolean        shade);
+void  html_rule_set_align      (HTMLRule       *rule,
+				HTMLEngine     *e,
 				HTMLHAlignType  halign);
 
 #endif

@@ -1,3 +1,7 @@
+2004-07-22  Rodney Dawes  <dobey@novell.com>
+
+	* Makefile.am (iconsdir): Use GTKHTML_API_VERSION
+
 2002-10-09  Radek Doulik  <rodo@ximian.com>
 
 	* Makefile.am (icons_DATA): removed bg1.png, added paper, rect and

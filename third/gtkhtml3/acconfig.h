@@ -23,6 +23,7 @@
 #undef GTKHTML_RELEASE
 #undef GTKHTML_RELEASE_STRING
 #undef GNOME_EXPLICIT_TRANSLATION_DOMAIN
+#undef HAVE_OLD_SOUP
 
 @BOTTOM@
 /* This is from libglade */

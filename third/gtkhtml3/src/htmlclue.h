@@ -98,5 +98,6 @@ void      html_clue_prepend               (HTMLClue      *clue,
 void      html_clue_remove                (HTMLClue      *clue,
 					   HTMLObject    *o);
 void      html_clue_remove_text_slaves    (HTMLClue      *clue);
+gboolean  html_clue_is_empty              (HTMLClue      *clue);
 
 #endif /* HTMLCLUE_H */

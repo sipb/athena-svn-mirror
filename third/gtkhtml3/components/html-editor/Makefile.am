@@ -1,6 +1,6 @@
 # Basic setup
 
-gtkhtml_data = $(datadir)/gtkhtml-@GTKHTML_RELEASE@
+gtkhtml_data = $(datadir)/gtkhtml-@GTKHTML_API_VERSION@
 
 gladedir = $(gtkhtml_data)
 glade_DATA = gtkhtml-editor-properties.glade
@@ -16,10 +16,8 @@ AM_CFLAGS = \
         -DGTKHTML_DATADIR=\""$(gtkhtml_data)"\"		\
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
 	-DGLADE_DATADIR=\"$(gladedir)\"			\
-	-DGTK_DISABLE_DEPRECATED=1 			\
 	-DGDK_DISABLE_DEPRECATED=1			\
 	-DG_DISABLE_DEPRECATED=1			\
-	-DGNOME_DISABLE_DEPRECATED=1			\
 	-DPREFIX=\""$(prefix)"\"			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DDATADIR=\""$(datadir)"\"			\
@@ -55,8 +53,7 @@ $(SPELL_IDL_GENERATED_C): $(SPELL_IDL_GENERATED_H)
 
 
 LDADD =	\
-	$(top_builddir)/src/libgtkhtml-@GTKHTML_RELEASE@.la	\
-	$(top_builddir)/a11y/libgtkhtml-a11y-@GTKHTML_RELEASE@.la	\
+	$(top_builddir)/src/libgtkhtml-@GTKHTML_API_VERSION@.la	\
 	$(EDITOR_LIBS)
 
 # -lpspell-modules -lpspell_aspell -laspell -lpspell -lstdc++
@@ -114,33 +111,44 @@ libgnome_gtkhtml_editor_la_SOURCES =		\
 	toolbar.c				\
 	toolbar.h				\
 	utils.c					\
-	utils.h
+	utils.h					\
+	gi-utils.h				\
+	gi-colors.c				\
+	gi-colors.h				\
+	gi-color-palette.c			\
+	gi-color-palette.h			\
+	gi-color-group.c			\
+	gi-color-group.h			\
+	gi-combo-box.c				\
+	gi-combo-box.h				\
+	gi-color-combo.c			\
+	gi-color-combo.h
 
 if EDITOR_SHLIB
 MY_PRGS =
-MY_LIBS = libgnome-gtkhtml-editor-3.0.la
+MY_LIBS = libgnome-gtkhtml-editor-3.1.la
 location = "${privlibdir}/libgnome-gtkhtml-editor-$(EDITOR_API_VERSION).so"
 else
-MY_PRGS = gnome-gtkhtml-editor-3.0
+MY_PRGS = gnome-gtkhtml-editor-3.1
 MY_LIBS =
 location = "${libexecdir}/$(MY_PRGS)"
 endif
 
-libgnome_gtkhtml_editor_3_0_la_SOURCES =	\
+libgnome_gtkhtml_editor_3_1_la_SOURCES =	\
 	editor-control-shlib.c
 
-libgnome_gtkhtml_editor_3_0_la_LDFLAGS =	\
+libgnome_gtkhtml_editor_3_1_la_LDFLAGS =	\
 	-avoid-version -module
 
-libgnome_gtkhtml_editor_3_0_la_LIBADD =	\
+libgnome_gtkhtml_editor_3_1_la_LIBADD =	\
 	$(LDADD)			\
 	libgnome-gtkhtml-editor.la
 
-gnome_gtkhtml_editor_3_0_LDADD = \
+gnome_gtkhtml_editor_3_1_LDADD = \
 	$(LDADD)			\
 	libgnome-gtkhtml-editor.la
 
-gnome_gtkhtml_editor_3_0_SOURCES = \
+gnome_gtkhtml_editor_3_1_SOURCES = \
 	gnome-gtkhtml-editor.c
 
 noinst_LTLIBRARIES = libgnome-gtkhtml-editor.la
@@ -155,22 +163,23 @@ libexec_PROGRAMS = $(MY_PRGS)
 serverdir = $(libdir)/bonobo/servers
 server_in_files = GNOME_GtkHTML_Editor.server.in.in
 
-server_DATA = $(server_in_files:.server.in.in=.server)
-%.server.in: %.server.in.in Makefile
+server_DATA = $(server_in_files:.server.in.in=-$(EDITOR_API_VERSION).server)
+%-$(EDITOR_API_VERSION).server: %.server
+	mv $< $@
+
+%.server.in: %.server.in.in
 	sed -e "s|\@GNOME_GTKHTML_EDITOR_LOCATION\@|$(location)|g" \
 	-e "s|\@EDITOR_API_VERSION\@|$(EDITOR_API_VERSION)|g" \
 	-e "s|\@GNOME_GTKHTML_EDITOR_TYPE\@|$(GNOME_GTKHTML_EDITOR_TYPE)|g" $< > $@
 
 @INTLTOOL_SERVER_RULE@
 
-GNOME_GtkHTML_Editor.xml: GNOME_GtkHTML_Editor.xml.in Makefile
-	sed -e 's|\@ICONSDIR\@|$(gtkhtml_data)/icons|g' $< > $@
-
-GNOME_GtkHTML_Editor-emacs.xml: GNOME_GtkHTML_Editor-emacs.xml.in Makefile
-	sed -e 's|\@ICONSDIR\@|$(gtkhtml_data)/icons|g' $< > $@
-
 uidir = $(gtkhtml_data)
-ui_DATA = GNOME_GtkHTML_Editor.xml GNOME_GtkHTML_Editor-emacs.xml
+ui_in_files = GNOME_GtkHTML_Editor.xml.in GNOME_GtkHTML_Editor-emacs.xml.in
+ui_DATA = $(ui_in_files:.xml.in=.xml)
+
+%.xml: %.xml.in
+	sed -e 's|\@ICONSDIR\@|$(gtkhtml_data)/icons|g' $< > $@
 
 # The Test program
 
@@ -189,20 +198,20 @@ EXTRA_DIST =					\
 	$(IDLS)					\
 	$(SPELL_IDLS)				\
 	ChangeLog				\
-	$(ui_DATA)				\
-	GNOME_GtkHTML_Editor.xml.in		\
-	GNOME_GtkHTML_Editor-emacs.xml.in	\
 	gtkhtml-editor-properties.glade		\
-	$(server_in_files) $(server_DATA)
+	$(ui_in_files)				\
+	$(server_in_files)
+
 idldir = $(gtkhtml_data)
 idl_DATA = $(IDLS)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
 
-BUILT_SOURCES = $(IDL_GENERATED) $(SPELL_IDL_GENERATED) $(server_DATA)
+BUILT_SOURCES = $(IDL_GENERATED) $(SPELL_IDL_GENERATED)
 
 CLEANFILES = \
-	GNOME_GtkHTML_Editor.xml		\
-	GNOME_GtkHTML_Editor-emacs.xml		\
+	$(ui_DATA)		\
+	$(server_DATA)		\
 	$(BUILT_SOURCES)
+

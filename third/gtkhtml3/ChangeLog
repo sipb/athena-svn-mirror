@@ -1,26 +1,203 @@
-2003-09-15  Larry Ewing  <lewing@ximian.com>
+2004-09-10  JP Rosevear  <jpr@novell.com>
 
-	* configure.in (GTKHTML_MODULES): drop the libbonoboui 2.2.4
-	requirement for now.
+	* configure.in: bump version
 
-2003-09-12  Larry Ewing  <lewing@ximian.com>
+2004-08-27  Radek Doulik  <rodo@ximian.com>
 
-	* configure.in: bump version numbers for release.
+	* configure.in: increment revision number
+
+2004-08-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add «nb» to ALL_LINGUAS.
+
+2004-08-13  JP Rosevear  <jpr@novell.com>
+
+	* configure.in (GTKHTML_API_VERSION): bump version, libtool number
+
+2004-08-13  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: add file chooser check
+
+2004-08-07  Runa Bhattacharjee <runab@redhat.com>
+	* configure.in: Added Bengali(bn) in ALL_LINGUAS.
+
+2004-08-02  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
+2004-07-22  Rodney Dawes  <dobey@novell.com>
+
+	* configure.in:
+	(GTKHTML_RELEASE): Get rid of this variable
+	(GTKHTML_API_VERSION): Define thise variable
+	(EDITOR_API_VERSION): Don't duplicate this, and move it up to
+	where we are defining other similar variables
+	(AM_INIT_AUTOMAKE): Don't use GTKHTML_RELEASE in the version number
+	(AC_PROG_INTLTOOL): Require at least intltool 0.30
+	(GTKHTML_RELEASE_STRING): Use GTKHTML_API_VERSION
+
+2004-07-19  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
+2004-07-16  Alexander Shopov  <ash@contact.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian)
+
+2004-06-25  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool numbers
+
+Sat Jun  5 12:25:46 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in: Add GNOME_COMPILE_WARNINGS(yes)
+
+	* configure.in (GTKHTML_MODULES): Explicitely depend
+	on GTK+ newer than 2.2 for gdk_draw_pixbuf().
+
+2004-06-04  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool number
+
+2004-06-01  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump version, libtool number
+
+2004-05-06  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: check for gnome icon theme module availability
+
+2004-05-19  JP Rosevear  <jpr@novell.com>
+
+	* configure.in: bump libtool number, version 
+
+2004-04-26  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: increase version number. I will need it in evo
+	which is going to use new gtk_html_begin flags
+
+2004-04-21  Rodney Dawes  <dobey@ximian.com>
+
+	* autogen.sh: Require automake 1.6 or neweer, we already do for libsoup
+	and evolution-data-server, there is no reason not to here
+
+2004-04-19  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump libtool number, version
+
+2004-04-02  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump libtool number, version
+
+2004-03-25  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-22  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: increment release (added editable-on/editable-off
+	commands)
+
+2004-03-05  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: bump version, libtool numbers
+
+2004-02-25  Adam Weinberger  <adamw@FreeBSD.org>
+
+	* configure.in: Added 'en_CA' (Canadian English) to ALL_LINGUAS.
+
+2004-02-09  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: bump version, libtool numbers
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-01-30  Yong Sun <Yong.Sun@sun.com>
+
+	* configure.in: add macro AC_DEFINE_UNQUOTED for GETTEXT_PACKAGE
+
+2004-01-26  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bumped version to 3.1.7 for release. 
+
+2004-01-20 Alastair McKinstry <mckinstry@computer.org>
+
+	* configure.in: Added Irish to ALL_LINGUAS
+
+2004-01-12  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: bumped version to 3.1.6 for the new release
+
+	* NEWS: updated for the 3.1.6 release
+
+2003-12-29  JP Rosevear <jpr@ximian.com>
+
+	* configure.in: bump gal, libsoup requirements and libtool numbers
+
+2003-12-07  Larry Ewing  <lewing@ximian.com>
+
+	* NEWS: update news for 3.1.4.
+
+	* configure.in: increase version number for release.
+
+2003-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: increased release minor number, gtk_html_flush added
+
+2003-12-02  Rodney Dawes  <dobey@ximian.com>
+
+	* Makefile.am: Create CLEANFILES rules that clean the right things
+	at the right clean stages
+	* install-sh:
+	* missing:
+	* mkinstalldirs:
+	* stamp.h.in: These four files don't belong in CVS
+
+2003-10-24  Radek Doulik  <rodo@ximian.com>
+
+	* README: updated reired packages versions
+
+2003-09-30  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: increased GTKHTML_CURRENT and also gtkhtml version
+	as gtk_html_stop was added and there is a binary incompatible
+	change as well
+
+2003-09-22  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: increase GTKHTML_CURRENT again, as we don't
+	install a11y lib anymore, we link it to libgtkhtml
+
+2003-09-19  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: incremented GTKHTML_CURRENT as GtkHTML struct
+	changed
+
+2003-09-17  Dan Winship  <danw@ximian.com>
+
+	* configure.in: Check for libsoup-2.2 first, and then soup-2.0 if
+	that's not found. Define HAVE_OLD_SOUP if we find 2.0
 
 2003-09-04  Larry Ewing  <lewing@ximian.com>
 
- 	* Makefile.am: change CLEANFILES to DISTCLEANFILES to fix Ximian
- 	#43015.
+	* Makefile.am: change CLEANFILES to DISTCLEANFILES to fix Ximian
+	#43015.
 
-2003-06-26  Larry Ewing  <lewing@ximian.com>
+2003-08-13  Mike Kestner  <mkestner@ximian.com>
 
-	* configure.in: revert gettext changes as they are unapproved
-	patches to the stable branch.
+	* configure.in : update for gal-2.2
 
 2003-08-12  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Fixed GETTEXT_PACKAGE (ximian #37784), and make sure
 	that newest intltool is used.
+
+2003-07-25  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: bump interface version from 3.0 to 3.1 clear .so
+	version
 
 2003-06-26  Larry Ewing  <lewing@ximian.com>
 

@@ -27,7 +27,6 @@
 #include "control-data.h"
 
 typedef GtkWidget * (*GtkHTMLEditPropertyCreateFunc) (GtkHTMLControlData *cd, gpointer *own_data);
-typedef gboolean    (*GtkHTMLEditPropertyApplyFunc)  (GtkHTMLControlData *cd, gpointer  own_data);
 typedef void        (*GtkHTMLEditPropertyCloseFunc)  (GtkHTMLControlData *cd, gpointer  own_data);
 
 struct _GtkHTMLEditPropertiesDialog {
@@ -36,7 +35,6 @@ struct _GtkHTMLEditPropertiesDialog {
 
 	GList               *page_data;
 	GtkWidget           *notebook;
-	gboolean             insert;
 	gboolean             all_changes_applied;
 	gchar               *title;
 };
@@ -54,7 +52,6 @@ enum _GtkHTMLEditPropertyType {
 };
 
 GtkHTMLEditPropertiesDialog * gtk_html_edit_properties_dialog_new          (GtkHTMLControlData *cd,
-									    gboolean insert,
 									    gchar *title,
 									    gchar *icon_path);
 void                          gtk_html_edit_properties_dialog_destroy      (GtkHTMLEditPropertiesDialog *d);
@@ -63,11 +60,9 @@ void                          gtk_html_edit_properties_dialog_add_entry    (GtkH
 									    GtkHTMLEditPropertyType t,
 									    const gchar *name,
 									    GtkHTMLEditPropertyCreateFunc create,
-									    GtkHTMLEditPropertyApplyFunc apply_cb,
 									    GtkHTMLEditPropertyCloseFunc close_cb);
 void                          gtk_html_edit_properties_dialog_show         (GtkHTMLEditPropertiesDialog *d);
 void                          gtk_html_edit_properties_dialog_close        (GtkHTMLEditPropertiesDialog *d);
-void                          gtk_html_edit_properties_dialog_change       (GtkHTMLEditPropertiesDialog *d);
 void                          gtk_html_edit_properties_dialog_set_page     (GtkHTMLEditPropertiesDialog *d,
 									    GtkHTMLEditPropertyType t);
 

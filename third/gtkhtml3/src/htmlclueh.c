@@ -59,7 +59,7 @@ set_max_width (HTMLObject *o, HTMLPainter *painter, gint w)
 }
 
 static gboolean
-calc_size (HTMLObject *clue, HTMLPainter *painter, GList **changed_objs)
+html_clueh_real_calc_size (HTMLObject *clue, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLObject *obj;
 	gint lmargin = 0;
@@ -176,7 +176,7 @@ html_clueh_class_init (HTMLClueHClass *klass,
 
 	object_class->copy = copy;
 	object_class->set_max_width = set_max_width;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_clueh_real_calc_size;
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
 

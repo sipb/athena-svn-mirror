@@ -51,7 +51,7 @@ html_stream_mem_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);		
 }
 
-HTMLStreamMem *
+static HTMLStreamMem *
 html_stream_mem_construct (HTMLStreamMem *bhtml,
 			   GtkHTMLStream *html_stream)
 {

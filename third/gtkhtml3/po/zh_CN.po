@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-09-07 04:23+0200\n"
-"PO-Revision-Date: 2003-09-07 11:06+0800\n"
+"POT-Creation-Date: 2004-09-10 10:09-0400\n"
+"PO-Revision-Date: 2004-08-26 14:56+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -20,11 +20,125 @@ msgid "<None>"
 msgstr "<无>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:545
-#: components/html-editor/rule.c:316 components/html-editor/table.c:530
-#: components/html-editor/table.c:614 components/html-editor/template.c:272
+#: components/html-editor/cell.c:333 components/html-editor/image.c:350
+#: components/html-editor/link.c:182 components/html-editor/rule.c:174
+#: components/html-editor/table.c:220 components/html-editor/template.c:271
+#: components/html-editor/text.c:159
 msgid "Could not load glade file."
 msgstr "无法装入 glade 文件。"
+
+#: capplet/gtkhtml-capplet.glade.h:1
+msgid "\n"
+msgstr "\n"
+
+#: capplet/gtkhtml-capplet.glade.h:3
+#: components/html-editor/gtkhtml-editor-properties.glade.h:4
+msgid "*"
+msgstr "*"
+
+#: capplet/gtkhtml-capplet.glade.h:4
+msgid "*********************"
+msgstr "*********************"
+
+#: capplet/gtkhtml-capplet.glade.h:5
+msgid "Add Keyboard Shortcuts"
+msgstr "添加快捷键"
+
+#: capplet/gtkhtml-capplet.glade.h:6
+msgid "Automatically detect links"
+msgstr "自动检测链接"
+
+#: capplet/gtkhtml-capplet.glade.h:7
+msgid "Behavior"
+msgstr "行为"
+
+#: capplet/gtkhtml-capplet.glade.h:8
+msgid "Composer Properties"
+msgstr "撰写器属性"
+
+#: capplet/gtkhtml-capplet.glade.h:9
+msgid "Composer Properties planned"
+msgstr "计划中的撰写程序属性"
+
+#: capplet/gtkhtml-capplet.glade.h:10
+msgid "Configure spell checking"
+msgstr "配置拼写检查"
+
+#: capplet/gtkhtml-capplet.glade.h:11
+msgid "Enable spell checking"
+msgstr "允许拼写检查"
+
+#: capplet/gtkhtml-capplet.glade.h:12
+msgid "Fixed width"
+msgstr "固定宽度"
+
+#: capplet/gtkhtml-capplet.glade.h:13
+msgid "Fonts"
+msgstr "字体"
+
+#: capplet/gtkhtml-capplet.glade.h:14
+msgid "For printing"
+msgstr "用于打印"
+
+#: capplet/gtkhtml-capplet.glade.h:15
+msgid "Grab keys"
+msgstr "抓取键盘"
+
+#: capplet/gtkhtml-capplet.glade.h:16
+msgid "Information"
+msgstr "信息"
+
+#: capplet/gtkhtml-capplet.glade.h:17
+msgid "Keyboard Shortcuts"
+msgstr "快捷键"
+
+#: capplet/gtkhtml-capplet.glade.h:18
+msgid "Miscellaneous"
+msgstr "杂项"
+
+#: capplet/gtkhtml-capplet.glade.h:19
+msgid "New shortcut:"
+msgstr "新建快捷方式："
+
+#: capplet/gtkhtml-capplet.glade.h:20
+msgid "On screen"
+msgstr "在屏幕上"
+
+#: capplet/gtkhtml-capplet.glade.h:21
+msgid "Select HTML fixed width font"
+msgstr "选择HTML固定宽度字体"
+
+#: capplet/gtkhtml-capplet.glade.h:22
+msgid "Select HTML fixed width font for printing"
+msgstr "选择HTML固定宽度字体以打印"
+
+#: capplet/gtkhtml-capplet.glade.h:23
+msgid "Select HTML variable width font"
+msgstr "选择HTML变宽度字体"
+
+#: capplet/gtkhtml-capplet.glade.h:24
+msgid "Select HTML variable width font for printing"
+msgstr "选择HTML变宽度字体以打印"
+
+#: capplet/gtkhtml-capplet.glade.h:25
+msgid "Shortcuts _type:"
+msgstr "快捷方式类型(_T)："
+
+#: capplet/gtkhtml-capplet.glade.h:26
+msgid "Show animated images"
+msgstr "显示动画图片"
+
+#: capplet/gtkhtml-capplet.glade.h:27
+msgid "Variable width"
+msgstr "变宽度"
+
+#: capplet/gtkhtml-capplet.glade.h:28
+msgid "_Add"
+msgstr "添加(_A)"
+
+#: capplet/gtkhtml-capplet.glade.h:29
+msgid "_Delete"
+msgstr "删除(_D)"
 
 #: capplet/main.c:226
 msgid ""
@@ -34,474 +148,1624 @@ msgstr ""
 "无法执行 GNOME 拼写控件小程序\n"
 "如果您尚未安装的话，您应该先安装 GNOME 拼写检查程序。"
 
-#: components/html-editor/body.c:66
-msgid "None"
-msgstr "没有"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:1
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:1
+msgid "+0"
+msgstr "+0"
 
-#: components/html-editor/body.c:74
-msgid "Perforated Paper"
-msgstr "打孔纸"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:2
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:2
+#: components/html-editor/gtkhtml-editor-properties.glade.h:5
+msgid "+1"
+msgstr "+1"
 
-#: components/html-editor/body.c:82
-msgid "Blue Ink"
-msgstr "蓝墨水"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:3
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:3
+#: components/html-editor/gtkhtml-editor-properties.glade.h:6
+msgid "+2"
+msgstr "+2"
 
-#: components/html-editor/body.c:90
-msgid "Rectangles"
-msgstr "矩形"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:4
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:4
+#: components/html-editor/gtkhtml-editor-properties.glade.h:7
+msgid "+3"
+msgstr "+3"
 
-#: components/html-editor/body.c:257 components/html-editor/menubar.c:165
-msgid "Template"
-msgstr "模板"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:5
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:5
+#: components/html-editor/gtkhtml-editor-properties.glade.h:9
+msgid "-1"
+msgstr "-1"
 
-#: components/html-editor/body.c:275 src/gtkhtml.c:2555
-msgid "Document Title"
-msgstr "文档标题"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:6
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:6
+#: components/html-editor/gtkhtml-editor-properties.glade.h:10
+msgid "-2"
+msgstr "-2"
 
-#: components/html-editor/body.c:279 components/html-editor/body.c:282
-msgid "Background Image"
-msgstr "背景图像"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:7
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:7
+msgid "A_ddress"
+msgstr "地址(_D)"
 
-#: components/html-editor/body.c:304
-msgid "Colors"
-msgstr "颜色"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:8
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:8
+#: components/html-editor/toolbar.c:53
+msgid "Alphabetical List"
+msgstr "字母顺序列表"
 
-#: components/html-editor/body.c:314 components/html-editor/cell.c:424
-#: components/html-editor/table.c:536 components/html-editor/text.c:296
-#: components/html-editor/toolbar.c:300
-msgid "Automatic"
-msgstr "自动"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:9
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:9
+msgid "Background Color"
+msgstr "背景颜色"
 
-#: components/html-editor/body.c:326
-#: components/html-editor/editor-control-factory.c:207
-#: components/html-editor/menubar.c:338 components/html-editor/popup.c:194
-msgid "Text"
-msgstr "文本"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:10
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:10
+msgid "Blue"
+msgstr "蓝色"
 
-#: components/html-editor/body.c:327 components/html-editor/menubar.c:107
-#: components/html-editor/popup.c:105 components/html-editor/popup.c:201
-#: components/html-editor/popup.c:274
-msgid "Link"
-msgstr "链接"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:11
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:11
+#: components/html-editor/toolbar.c:50
+msgid "Bulleted List"
+msgstr "项目符号列表"
 
-#: components/html-editor/body.c:328
-msgid "Background"
-msgstr "背景"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:12
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:12
+#: components/html-editor/toolbar.c:515
+msgid "Center justifies the paragraphs"
+msgstr "段落居中"
 
-#: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/text.c:108
-msgid "The quick brown fox jumps over the lazy dog."
-msgstr "明日复明日·万事成蹉跎"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:13
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:13
+msgid "Check spelling of the document"
+msgstr "检查文档的拼写"
 
-#: components/html-editor/cell.c:178
-msgid "Other"
-msgstr "其它"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:14
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:14
+msgid "Copy"
+msgstr "复制"
 
-#: components/html-editor/cell.c:679
-msgid ""
-"The editted cell was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的单元格已经从文档中删除了。\n"
-"无法应用您的更改。"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:15
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:15
+msgid "Copy selection to clipboard"
+msgstr "将选择的复制到剪贴板"
 
-#: components/html-editor/editor-control-factory.c:187
-#: components/html-editor/menubar.c:317 components/html-editor/menubar.c:335
-#: components/html-editor/menubar.c:353 components/html-editor/popup.c:186
-#: components/html-editor/popup.c:271
-msgid "Properties"
-msgstr "属性"
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:16
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:16
+msgid "Copy the selection"
+msgstr "复制选中内容"
 
-#: components/html-editor/editor-control-factory.c:198
-#: components/html-editor/menubar.c:91 components/html-editor/popup.c:208
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:17
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:17
+msgid "Cr_ying"
+msgstr "哭泣(_Y)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:18
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:18
+msgid "Cu_t"
+msgstr "剪切(_T)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:19
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:19
+msgid "Cut"
+msgstr "剪切"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:20
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:20
+msgid "Cut selection to clipboard"
+msgstr "剪切选中内容到剪贴板"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:21
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:21
+msgid "Cut the selection"
+msgstr "剪切选中内容"
+
+#. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:22
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:22
+#: components/html-editor/search.c:108 components/html-editor/search.c:166
+msgid "Find"
+msgstr "查找"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:23
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:23
+msgid "Find And Replace"
+msgstr "查找并替换"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:24
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:24
+msgid "Find _Again"
+msgstr "再次查找(_A)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:25
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:25
+msgid "Find again"
+msgstr "再次查找"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:26
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:26
+msgid "Find and Replace"
+msgstr "查找并替换"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:27
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:27
+msgid "For_mat"
+msgstr "格式(_M)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:28
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:28
+msgid "Green"
+msgstr "绿色"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:29
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:29
+msgid "Header _1"
+msgstr "标题 _1"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:30
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:30
+msgid "Header _2"
+msgstr "标题 _2"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:31
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:31
+msgid "Header _3"
+msgstr "标题 _3"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:32
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:32
+msgid "Header _4"
+msgstr "标题 _4"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:33
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:33
+msgid "Header _5"
+msgstr "标题 _5"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:34
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:34
+msgid "Header _6"
+msgstr "标题 _6"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:35
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:35
+#: components/html-editor/editor-control-factory.c:189
+#: components/html-editor/gtkhtml-editor-properties.glade.h:37
+#: components/html-editor/popup.c:207
 msgid "Image"
 msgstr "图像"
 
-#: components/html-editor/editor-control-factory.c:218
-#: components/html-editor/menubar.c:125 components/html-editor/popup.c:229
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:36
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:36
+msgid "Insert Crying smiley into document..."
+msgstr "在文档中插入哭泣的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:37
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:37
+msgid "Insert Frown smiley into document..."
+msgstr "在文档中插入皱眉的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:38
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:38
+msgid "Insert HTML file into document..."
+msgstr "在文档中插入 HTML 文件..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:39
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:39
+msgid "Insert HTML link into document..."
+msgstr "在文档中插入 HTML 链接..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:40
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:40
+msgid "Insert HTML template into document..."
+msgstr "在文档中插入 HTML 模板..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:41
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:41
+msgid "Insert Indifferent smiley into document..."
+msgstr "在文档中插入冷淡的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:42
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:42
+msgid "Insert Laughing smiley into document..."
+msgstr "在文档中插入大笑的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:43
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:43
+msgid "Insert Lick smiley into document..."
+msgstr "在文档中插入舔嘴的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:44
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:44
+msgid "Insert Oh no! smiley into document..."
+msgstr "在文档中插入天哪的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:45
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:46
+msgid "Insert Smile smiley into document..."
+msgstr "在文档中插入微笑的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:46
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:47
+msgid "Insert Surprised smiley into document..."
+msgstr "在文档中插入吃惊的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:47
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:48
+msgid "Insert Undecided smiley into document..."
+msgstr "在文档中插入犹豫的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:48
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:49
+msgid "Insert Wink smiley into document..."
+msgstr "在文档中插入眨眼的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:49
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:50
+msgid "Insert image into document..."
+msgstr "在文档中插入图像..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:50
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:51
+msgid "Insert rule into document..."
+msgstr "在文档中插入标尺..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:51
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:52
+msgid "Insert table into document..."
+msgstr "在文档中插入表格..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:52
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:53
+msgid "Insert text file into document..."
+msgstr "在文档中插入文本文件..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:53
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:54
+#: components/html-editor/toolbar.c:513
+msgid "Left justifies the paragraphs"
+msgstr "段落左对齐"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:54
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:55
+msgid "Li_ck"
+msgstr "舔嘴(_C)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:55
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:56
+#: components/html-editor/menubar.c:136 components/html-editor/popup.c:106
+#: components/html-editor/popup.c:201 components/html-editor/popup.c:267
+msgid "Link"
+msgstr "链接"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:56
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:57
+msgid "Make the current Paragraph style Normal"
+msgstr "将当前段落样式设为标准样式"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:57
+msgid "Make the current Paragraph style Preformat"
+msgstr "将当前段落样式设为预格式化"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:58
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:59
+msgid "Make the current paragraph a bulleted list"
+msgstr "将当前段落列表设为项目符号列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:59
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:60
+msgid "Make the current paragraph a list with roman numerals"
+msgstr "将当前段落以罗马数字列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:60
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:61
+msgid "Make the current paragraph a numbered list"
+msgstr "将当前将段落按数字列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:61
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:62
+msgid "Make the current paragraph an H1 header"
+msgstr "将当前将段落设为标题字体H1"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:62
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:63
+msgid "Make the current paragraph an H2 header"
+msgstr "将当前将段落设为标题字体H2"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:63
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:64
+msgid "Make the current paragraph an H3 header"
+msgstr "将当前将段落设为标题字体H3"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:64
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:65
+msgid "Make the current paragraph an H4 header"
+msgstr "将当前将段落设为标题字体H4"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:65
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:66
+msgid "Make the current paragraph an H5 header"
+msgstr "将当前将段落设为标题字体H5"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:66
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:67
+msgid "Make the current paragraph an H6 header"
+msgstr "将当前将段落设为标题字体H6"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:67
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:68
+msgid "Make the current paragraph an address"
+msgstr "将当前将段落设为地址"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:68
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:69
+msgid "Make the current paragraph an alphabetical list"
+msgstr "将当前将段落字母列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:69
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:70
+#: components/html-editor/paragraph.c:83 components/html-editor/toolbar.c:48
+msgid "Normal"
+msgstr "标准"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:70
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:71
+#: components/html-editor/toolbar.c:51
+msgid "Numbered List"
+msgstr "数字列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:71
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:72
+msgid "Numbered _List"
+msgstr "数字列表(_L)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:72
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:73
+msgid "Oh _no!"
+msgstr "天哪(_N)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:73
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:74
+msgid "Orange"
+msgstr "橙色"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:74
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:75
+msgid "Other..."
+msgstr "其它..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:75
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:76
+msgid "Paste"
+msgstr "粘贴"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:76
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:77
+msgid "Paste _Quotation"
+msgstr "带引用粘贴(_Q)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:77
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:78
+msgid "Paste from clipboard"
+msgstr "从剪贴板粘贴"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:78
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:79
+msgid "Paste the clipboard"
+msgstr "粘贴剪贴板"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:79
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:80
+msgid "Paste the clipboard as a quotation"
+msgstr "将剪贴板粘贴为引用"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:80
+#: components/html-editor/toolbar.c:49
+msgid "Preformat"
+msgstr "预格式化"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:81
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:82
+msgid "Purple"
+msgstr "紫色"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:82
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:83
+msgid "Red"
+msgstr "红色"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:83
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:84
+msgid "Redo"
+msgstr "重做"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:84
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:85
+msgid "Redo previously undone change"
+msgstr "重做先前撤消的更改"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:85
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:86
+msgid "Redo the undone action"
+msgstr "重做撤消的操作"
+
+#. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:86
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:87
+#: components/html-editor/replace.c:161 components/html-editor/replace.c:223
+msgid "Replace"
+msgstr "替换"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:87
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:88
+#: components/html-editor/toolbar.c:517
+msgid "Right justifies the paragraphs"
+msgstr "段落右对齐"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:88
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:89
+msgid "Roman Numeral List"
+msgstr "罗马数字列表"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:89
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:90
+#: components/html-editor/editor-control-factory.c:207
+#: components/html-editor/gtkhtml-editor-properties.glade.h:48
+#: components/html-editor/menubar.c:155 components/html-editor/popup.c:225
 msgid "Rule"
 msgstr "标尺"
 
-#: components/html-editor/editor-control-factory.c:228
-#: components/html-editor/menubar.c:356 components/html-editor/popup.c:215
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:90
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:92
+msgid "Select _All"
+msgstr "全选(_A)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:91
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:93
+msgid "Select the entire contents of the document"
+msgstr "选中文档的全部内容"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:92
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:94
+#: components/html-editor/toolbar.c:545
+msgid "Strikeout"
+msgstr "删除线"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:93
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:95
+msgid "Su_perscript"
+msgstr "上标(_P)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:94
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:96
+msgid "Su_rprised"
+msgstr "吃惊(_R)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:95
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:97
+msgid "Subs_cript"
+msgstr "下标(_C)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:96
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:98
+msgid "Subscript"
+msgstr "下标"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:97
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:99
+msgid "Superscript"
+msgstr "上标"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:98
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:100
+#: components/html-editor/gtkhtml-editor-properties.glade.h:52
+#: components/html-editor/menubar.c:176 components/html-editor/popup.c:231
+#: components/html-editor/popup.c:501 components/html-editor/popup.c:513
+msgid "Table"
+msgstr "表格"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:99
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:101
+msgid "Te_mplate..."
+msgstr "模板(_M)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:100
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:102
+msgid "Te_xt file..."
+msgstr "文本文件(_X)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:101
+#: components/html-editor/gtkhtml-editor-properties.glade.h:53
+#: components/html-editor/menubar.c:198
+msgid "Template"
+msgstr "模板"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:102
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:103
+#: components/html-editor/toolbar.c:537
+msgid "Typewriter"
+msgstr "打字机"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:103
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:104
+msgid "Undo"
+msgstr "撤消"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:104
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:105
+msgid "Undo previous changes"
+msgstr "撤消先前的更改"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:105
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:106
+msgid "Undo the last action"
+msgstr "撤消最后的操作"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:106
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:107
+msgid "Yellow"
+msgstr "黄色"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:107
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:108
+msgid "_Alignment"
+msgstr "对齐方式(_A)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:108
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:109
+msgid "_Alphabetical List"
+msgstr "字母列表(_A)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:109
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:110
+#: components/html-editor/gtkhtml-editor-properties.glade.h:60
+msgid "_Bold"
+msgstr "粗体(_B)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:110
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:111
+msgid "_Bulleted List"
+msgstr "项目符号列表(_B)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:111
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:112
+msgid "_Center"
+msgstr "居中(_C)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:112
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:113
+msgid "_Copy"
+msgstr "复制(_C)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:113
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:114
+msgid "_Decrease Indent"
+msgstr "减少缩进(_D)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:114
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:115
+msgid "_Edit"
+msgstr "编辑(_E)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:115
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:116
+msgid "_Find..."
+msgstr "查找(_F)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:116
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:117
+msgid "_Font Size"
+msgstr "字体大小(_F)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:117
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:118
+msgid "_Frown"
+msgstr "皱眉(_F)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:118
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:119
+msgid "_HTML file..."
+msgstr "HTML 文件(_H)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:119
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:120
+msgid "_Heading"
+msgstr "标题(_H)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:120
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:121
+msgid "_Image..."
+msgstr "图像(_I)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:121
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:122
+msgid "_Increase Indent"
+msgstr "增加缩进(_I)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:122
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:123
+msgid "_Indifferent"
+msgstr "冷淡(_I)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:123
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:124
+msgid "_Insert"
+msgstr "插入(_I)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:124
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:125
+#: components/html-editor/gtkhtml-editor-properties.glade.h:67
+msgid "_Italic"
+msgstr "斜体(_I)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:125
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:126
+msgid "_Laughing"
+msgstr "大笑(_L)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:126
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:127
+msgid "_Left"
+msgstr "左对齐(_L)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:127
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:128
+msgid "_Link..."
+msgstr "链接(_L)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:128
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:129
+msgid "_Normal"
+msgstr "标准(_N)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:129
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:130
+msgid "_Page..."
+msgstr "页面(_P)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:130
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:131
+msgid "_Paragraph..."
+msgstr "段落(_P)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:131
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:132
+msgid "_Paste"
+msgstr "粘贴(_P)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:132
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:133
+msgid "_Plain text"
+msgstr "纯文本(_P)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:133
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:134
+msgid "_Preformat"
+msgstr "预格式化(_P)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:134
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:135
+msgid "_Redo"
+msgstr "重做(_R)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:135
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:136
+msgid "_Replace..."
+msgstr "替换(_R)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:136
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:137
+msgid "_Right"
+msgstr "右对齐(_R)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:137
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:138
+msgid "_Roman Numeral List"
+msgstr "罗马数字列表(_R)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:138
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:139
+msgid "_Rule..."
+msgstr "标尺(_R)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:139
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:140
+msgid "_Smile"
+msgstr "微笑(_S)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:140
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:141
+msgid "_Smiley"
+msgstr "笑脸(_S)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:141
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:142
+msgid "_Spell Check Document..."
+msgstr "检查文档拼写(_S)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:142
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:143
+#: components/html-editor/gtkhtml-editor-properties.glade.h:73
+msgid "_Strikeout"
+msgstr "删除线(_S)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:143
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:144
+msgid "_Style"
+msgstr "样式(_S)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:144
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:145
+msgid "_Table..."
+msgstr "表格(_T)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:145
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:146
+msgid "_Text..."
+msgstr "文本(_T)..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:146
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:147
+msgid "_Undecided"
+msgstr "犹豫(_U)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:147
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:148
+#: components/html-editor/gtkhtml-editor-properties.glade.h:76
+msgid "_Underline"
+msgstr "下划线(_U)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:148
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:149
+msgid "_Undo"
+msgstr "撤消(_U)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:149
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:150
+msgid "_Wink"
+msgstr "眨眼(_W)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor-emacs.xml.in.h:150
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:152
+msgid "etc..."
+msgstr "等等..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:1
+msgid "GNOME HTML Editor"
+msgstr "GNOME HTML 编辑器"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:2
+msgid "GNOME HTML Editor Control"
+msgstr "GNOME HTML 编辑器控制"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.server.in.in.h:3
+msgid "GNOME HTML Editor Factory"
+msgstr "GNOME HTML 编辑工厂"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:45
+msgid "Insert Sick smiley into document..."
+msgstr "在文档中插入生病的笑脸..."
+
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:58
+msgid "Make the current Paragraph style Preformatted"
+msgstr "将当前段落样式设为预格式化"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:81
+#: components/html-editor/paragraph.c:102
+msgid "Preformatted"
+msgstr "预格式化"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:91
+msgid "S_ick"
+msgstr "生病(_I)"
+
+#: components/html-editor/GNOME_GtkHTML_Editor.xml.in.h:151
+msgid "_Wrap Lines"
+msgstr "换行(_W)"
+
+#: components/html-editor/body.c:59
+#: components/html-editor/gtkhtml-editor-properties.glade.h:42
+msgid "None"
+msgstr "无"
+
+#: components/html-editor/body.c:67
+msgid "Perforated Paper"
+msgstr "打孔纸"
+
+#: components/html-editor/body.c:75
+msgid "Blue Ink"
+msgstr "蓝墨水"
+
+#: components/html-editor/body.c:83
+msgid "Paper"
+msgstr "纸张"
+
+#: components/html-editor/body.c:91
+msgid "Ribbon"
+msgstr "缎带"
+
+#: components/html-editor/body.c:99
+msgid "Midnight"
+msgstr "午夜"
+
+#: components/html-editor/body.c:107
+msgid "Confidential"
+msgstr "机密"
+
+#: components/html-editor/body.c:115
+msgid "Draft"
+msgstr "草稿"
+
+#: components/html-editor/body.c:123
+msgid "Graph paper"
+msgstr "图形纸张"
+
+#: components/html-editor/body.c:246
+msgid "T_emplate:"
+msgstr "模板(_E)："
+
+#. data->entry_title = gtk_entry_new ();
+#. if (gtk_html_get_title (data->cd->html)) {
+#. gtk_entry_set_text (GTK_ENTRY (data->entry_title),
+#. gtk_html_get_title (data->cd->html));
+#. }
+#. g_signal_connect (data->entry_title, "changed", G_CALLBACK (entry_changed), data);
+#. editor_hig_attach_row (t1, _("T_itle:"), data->entry_title, 1);
+#: components/html-editor/body.c:256 components/html-editor/paragraph.c:112
+msgid "General"
+msgstr "常规"
+
+#: components/html-editor/body.c:267 components/html-editor/text.c:162
+#: components/html-editor/toolbar.c:301
+msgid "Automatic"
+msgstr "自动"
+
+#: components/html-editor/body.c:279
+msgid "_Text:"
+msgstr "文本(_T)："
+
+#: components/html-editor/body.c:280
+msgid "_Link:"
+msgstr "链接(_L)："
+
+#: components/html-editor/body.c:281
+msgid "_Background:"
+msgstr "背景(_B)："
+
+#: components/html-editor/body.c:283
+#: components/html-editor/gtkhtml-editor-properties.glade.h:30
+msgid "Colors"
+msgstr "颜色"
+
+#: components/html-editor/body.c:285 components/html-editor/body.c:300
+#: components/html-editor/gtkhtml-editor-properties.glade.h:23
+msgid "Background Image"
+msgstr "背景图像"
+
+#: components/html-editor/body.c:298
+#: components/html-editor/gtkhtml-editor-properties.glade.h:71
+msgid "_Source:"
+msgstr "源(_S)："
+
+#: components/html-editor/cell.c:350 components/html-editor/table.c:231
+msgid "Transparent"
+msgstr "透明"
+
+#: components/html-editor/editor-control-factory.c:178
+#: components/html-editor/menubar.c:354 components/html-editor/menubar.c:372
+#: components/html-editor/menubar.c:390 components/html-editor/popup.c:186
+#: components/html-editor/popup.c:264
+msgid "Properties"
+msgstr "属性"
+
+#: components/html-editor/editor-control-factory.c:197
+#: components/html-editor/gtkhtml-editor-properties.glade.h:54
+#: components/html-editor/menubar.c:376 components/html-editor/popup.c:195
+msgid "Text"
+msgstr "文本"
+
+#: components/html-editor/editor-control-factory.c:216
+#: components/html-editor/menubar.c:394 components/html-editor/popup.c:213
 msgid "Paragraph"
 msgstr "段落"
 
-#: components/html-editor/editor-control-factory.c:233
-#: components/html-editor/menubar.c:320 components/html-editor/popup.c:222
+#: components/html-editor/editor-control-factory.c:220
+#: components/html-editor/gtkhtml-editor-properties.glade.h:43
+#: components/html-editor/menubar.c:358 components/html-editor/popup.c:219
 msgid "Page"
 msgstr "页面"
+
+#. This is the default custom color
+#: components/html-editor/gi-color-palette.c:395
+msgid "custom"
+msgstr "自定义"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: components/html-editor/gi-color-palette.c:437
+msgid "Custom Color:"
+msgstr "自定义颜色："
+
+#: components/html-editor/gi-color-palette.c:445
+msgid "Choose Custom Color"
+msgstr "选择自定义颜色"
+
+#: components/html-editor/gi-color-palette.c:578
+msgid "black"
+msgstr "黑色"
+
+#: components/html-editor/gi-color-palette.c:579
+msgid "light brown"
+msgstr "淡棕色"
+
+#: components/html-editor/gi-color-palette.c:580
+msgid "brown gold"
+msgstr "金棕色"
+
+#: components/html-editor/gi-color-palette.c:581
+msgid "dark green #2"
+msgstr "暗绿色 2"
+
+#: components/html-editor/gi-color-palette.c:582
+msgid "navy"
+msgstr "海蓝色"
+
+#: components/html-editor/gi-color-palette.c:583
+#: components/html-editor/gi-color-palette.c:639
+msgid "dark blue"
+msgstr "暗蓝色"
+
+#: components/html-editor/gi-color-palette.c:584
+msgid "purple #2"
+msgstr "紫色 2"
+
+#: components/html-editor/gi-color-palette.c:585
+msgid "very dark gray"
+msgstr "深灰色"
+
+#: components/html-editor/gi-color-palette.c:588
+#: components/html-editor/gi-color-palette.c:644
+msgid "dark red"
+msgstr "暗红色"
+
+#: components/html-editor/gi-color-palette.c:589
+msgid "red-orange"
+msgstr "橙红色"
+
+#: components/html-editor/gi-color-palette.c:590
+msgid "gold"
+msgstr "金色"
+
+#: components/html-editor/gi-color-palette.c:591
+msgid "dark green"
+msgstr "暗绿色"
+
+#: components/html-editor/gi-color-palette.c:592
+#: components/html-editor/gi-color-palette.c:645
+msgid "dull blue"
+msgstr "乌蓝色"
+
+#: components/html-editor/gi-color-palette.c:593
+#: components/html-editor/gi-color-palette.c:646
+msgid "blue"
+msgstr "蓝色"
+
+#: components/html-editor/gi-color-palette.c:594
+msgid "dull purple"
+msgstr "乌紫色"
+
+#: components/html-editor/gi-color-palette.c:595
+msgid "dark grey"
+msgstr "暗灰色"
+
+#: components/html-editor/gi-color-palette.c:598
+msgid "red"
+msgstr "红色"
+
+#: components/html-editor/gi-color-palette.c:599
+msgid "orange"
+msgstr "橙色"
+
+#: components/html-editor/gi-color-palette.c:600
+msgid "lime"
+msgstr "酸橙色"
+
+#: components/html-editor/gi-color-palette.c:601
+msgid "dull green"
+msgstr "乌绿色"
+
+#: components/html-editor/gi-color-palette.c:602
+msgid "dull blue #2"
+msgstr "乌蓝色 2"
+
+#: components/html-editor/gi-color-palette.c:603
+msgid "sky blue #2"
+msgstr "天蓝色 2"
+
+#: components/html-editor/gi-color-palette.c:604
+#: components/html-editor/gi-color-palette.c:643
+msgid "purple"
+msgstr "紫色"
+
+#: components/html-editor/gi-color-palette.c:605
+msgid "gray"
+msgstr "灰色"
+
+#: components/html-editor/gi-color-palette.c:608
+#: components/html-editor/gi-color-palette.c:640
+msgid "magenta"
+msgstr "洋红色"
+
+#: components/html-editor/gi-color-palette.c:609
+msgid "bright orange"
+msgstr "亮橙色"
+
+#: components/html-editor/gi-color-palette.c:610
+#: components/html-editor/gi-color-palette.c:641
+msgid "yellow"
+msgstr "黄色"
+
+#: components/html-editor/gi-color-palette.c:611
+msgid "green"
+msgstr "绿色"
+
+#: components/html-editor/gi-color-palette.c:612
+#: components/html-editor/gi-color-palette.c:642
+msgid "cyan"
+msgstr "青色"
+
+#: components/html-editor/gi-color-palette.c:613
+msgid "bright blue"
+msgstr "亮蓝色"
+
+#: components/html-editor/gi-color-palette.c:614
+#: components/html-editor/gi-color-palette.c:631
+msgid "red purple"
+msgstr "紫红色"
+
+#: components/html-editor/gi-color-palette.c:615
+msgid "light grey"
+msgstr "浅灰色"
+
+#: components/html-editor/gi-color-palette.c:618
+#: components/html-editor/gi-color-palette.c:635
+msgid "pink"
+msgstr "粉色"
+
+#: components/html-editor/gi-color-palette.c:619
+msgid "light orange"
+msgstr "浅橙色"
+
+#: components/html-editor/gi-color-palette.c:620
+#: components/html-editor/gi-color-palette.c:632
+msgid "light yellow"
+msgstr "浅黄色"
+
+#: components/html-editor/gi-color-palette.c:621
+msgid "light green"
+msgstr "浅绿色"
+
+#: components/html-editor/gi-color-palette.c:622
+msgid "light cyan"
+msgstr "浅青色"
+
+#: components/html-editor/gi-color-palette.c:623
+#: components/html-editor/gi-color-palette.c:633
+msgid "light blue"
+msgstr "浅蓝色"
+
+#: components/html-editor/gi-color-palette.c:624
+#: components/html-editor/gi-color-palette.c:637
+msgid "light purple"
+msgstr "浅紫色"
+
+#: components/html-editor/gi-color-palette.c:625
+msgid "white"
+msgstr "白色"
+
+#: components/html-editor/gi-color-palette.c:630
+msgid "purplish blue"
+msgstr "藏蓝色"
+
+#: components/html-editor/gi-color-palette.c:634
+msgid "dark purple"
+msgstr "暗紫色"
+
+#: components/html-editor/gi-color-palette.c:636
+msgid "sky blue"
+msgstr "天蓝色"
 
 #: components/html-editor/gnome-gtkhtml-editor.c:68
 msgid "GtkHTML Editor Control"
 msgstr "GtkHTML 编辑器控件"
 
-#: components/html-editor/image.c:118 components/html-editor/rule.c:93
-#: components/html-editor/table.c:192
-msgid "Plain"
-msgstr "无格式"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:1
+msgid "    "
+msgstr "    "
 
-#: components/html-editor/image.c:120
-msgid ""
-"@link_begin@<img@alt@@width@@height@@align@ "
-"border=@border@@padh@@padv@@src@>@link_end@"
-msgstr ""
-"@link_begin@<img@alt@@width@@height@@align@ "
-"border=@border@@padh@@padv@@src@>@link_end@"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:3
+#, no-c-format
+msgid "%"
+msgstr "%"
 
-#: components/html-editor/image.c:123
-msgid "Frame"
-msgstr "框架"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:8
+msgid "+4"
+msgstr "+4"
 
-#: components/html-editor/image.c:125
-msgid ""
-"<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-"cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-"cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-"table></center>"
-msgstr ""
-"<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-"cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-"cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@alt@@width@@height@align=top border=0></td></tr></table></td></tr></"
-"table></center>"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:11
+msgid "<b>Alignment &amp; Behaviour</b>"
+msgstr "<b>对齐和行为</b>"
 
-#: components/html-editor/image.c:133
-msgid "Caption"
-msgstr "标题"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:12
+msgid "<b>Background</b>"
+msgstr "<b>背景</b>"
 
-#: components/html-editor/image.c:135
-msgid ""
-"<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-"cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-"cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[Place your "
-"comment here]</td></tr></table></td></tr></table></center>"
-msgstr ""
-"<center><table bgcolor=\"#c0c0c0\" cellspacing=\"0\" "
-"cellpadding=@border@><tr><td><table bgcolor=\"#f2f2f2\" cellspacing=\"0\" "
-"cellpadding=\"8\" width=\"100%\"><tr><td align=\"center\"><img "
-"@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[在此输入您"
-"的注释]</td></tr></table></td></tr></table></center>"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:13
+msgid "<b>General</b>"
+msgstr "<b>常规</b>"
 
-#: components/html-editor/image.c:258 components/html-editor/image.c:264
-msgid ""
-"This is sample text, designed to show you how text would flow around this "
-"image if you insert the image into your message."
-msgstr "这仅仅是示范文字，用来为您展示文字绕排图像的效果。"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:14
+msgid "<b>Layout</b>"
+msgstr "<b>布局</b>"
 
-#: components/html-editor/image.c:270
-msgid "No image selected"
-msgstr "没有选中图像"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:15
+msgid "<b>Scope</b>"
+msgstr "<b>范围</b>"
 
-#: components/html-editor/image.c:705
-msgid ""
-"The editted image was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的图像已经从文档中删除了。\n"
-"无法应用您的更改。"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:16
+msgid "<span weight=\"bold\">General</span>"
+msgstr "<span weight=\"bold\">常规</span>"
 
-#: components/html-editor/link.c:85
-msgid "Test URL..."
-msgstr "测试 URL..."
+#: components/html-editor/gtkhtml-editor-properties.glade.h:17
+msgid "<span weight=\"bold\">Layout</span>"
+msgstr "<span weight=\"bold\">布局</span>"
 
-#: components/html-editor/link.c:121
-msgid "Link text"
-msgstr "链接文本"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:18
+msgid "<span weight=\"bold\">Link</span>"
+msgstr "<span weight=\"bold\">链接</span>"
 
-#: components/html-editor/link.c:137 components/html-editor/text.c:246
-msgid "Click will follow this URL"
-msgstr "单击将跟随此 URL"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:19
+msgid "<span weight=\"bold\">Size</span>"
+msgstr "<span weight=\"bold\">大小</span>"
 
-#: components/html-editor/link.c:210
-msgid ""
-"The editted link was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的链接已经从文档中删除了。\n"
-"无法应用您的更改。"
+#: components/html-editor/gtkhtml-editor-properties.glade.h:20
+msgid "<span weight=\"bold\">Style</span>"
+msgstr "<span weight=\"bold\">样式</span>"
 
-#: components/html-editor/menubar.c:88 components/html-editor/menubar.c:104
-#: components/html-editor/menubar.c:122 components/html-editor/menubar.c:139
-#: components/html-editor/menubar.c:162 components/html-editor/popup.c:102
-#: components/html-editor/properties.c:121
+#: components/html-editor/gtkhtml-editor-properties.glade.h:21
+msgid "<span weight=\"bold\">Template</span>"
+msgstr "<span weight=\"bold\">模板</span>"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:22
+#: components/html-editor/paragraph.c:131
+msgid "Alignment"
+msgstr "对齐方式"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:24
+msgid "Bottom"
+msgstr "底部"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:25
+msgid "C_ell"
+msgstr "单元格(_E)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:26
+msgid "C_olor:"
+msgstr "颜色(_O)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:27
+#: components/html-editor/popup.c:237
+msgid "Cell"
+msgstr "单元格"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:28
+#: components/html-editor/paragraph.c:128 components/html-editor/toolbar.c:515
+msgid "Center"
+msgstr "居中"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:29
+msgid "Col_umn"
+msgstr "列(_U)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:31
+msgid "Column span:"
+msgstr "列跨越："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:32
+msgid "Enable"
+msgstr "允许"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:33
+msgid "Hea_der style"
+msgstr "标题样式(_D)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:34
+msgid "Horizontal alignment:"
+msgstr "水平对齐："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:35
+msgid "Horizontal:"
+msgstr "水平："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:36
+msgid "I_mage:"
+msgstr "图像(_M)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:38
+#: components/html-editor/paragraph.c:127
+msgid "Left"
+msgstr "左"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:39
+msgid "Length:"
+msgstr "长度："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:40
+msgid "Link properties"
+msgstr "链接属性"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:41
+msgid "Middle"
+msgstr "中间"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:44
+msgid "Percent"
+msgstr "百分比"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:45
+msgid "Pixels"
+msgstr "像素"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:46
+#: components/html-editor/paragraph.c:129
+msgid "Right"
+msgstr "右"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:47
+msgid "Row span:"
+msgstr "行跨越："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:49
+msgid "Shaded"
+msgstr "阴影"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:50
+msgid "Si_ze:"
+msgstr "大小(_Z)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:51
+msgid "Standard"
+msgstr "标准"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:55
+msgid "Thickness:"
+msgstr "厚度："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:56
+msgid "Top"
+msgstr "顶部"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:57
+msgid "Vertical:"
+msgstr "垂直："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:58
+msgid "Width:"
+msgstr "宽度："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:59
+msgid "_Alignment:"
+msgstr "对齐方式(_A)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:61
+msgid "_Border:"
+msgstr "边框(_B)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:62
+msgid "_Color:"
+msgstr "颜色(_C)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:63
+msgid "_Columns:"
+msgstr "列数(_C)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:64
+msgid "_Description:"
+msgstr "描述(_D)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:65
+msgid "_Height:"
+msgstr "高度(_H)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:66
+msgid "_Image:"
+msgstr "图像(_I)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:68
+msgid "_Padding:"
+msgstr "留空(_P)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:69
+msgid "_Row"
+msgstr "行(_R)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:70
+msgid "_Rows:"
+msgstr "行数(_R)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:72
+msgid "_Spacing:"
+msgstr "间距(_S)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:74
+msgid "_Table"
+msgstr "表格(_T)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:75
+msgid "_URL:"
+msgstr "_URL："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:77
+msgid "_Width:"
+msgstr "宽度(_W)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:78
+msgid "_Wrap Text"
+msgstr "文本换行(_W)"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:79
+msgid "_X-Padding:"
+msgstr "水平留空(_X)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:80
+msgid "_Y-Padding:"
+msgstr "垂直留空(_Y)："
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:81
+msgid "follow"
+msgstr "跟随"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:82
+msgid "px"
+msgstr "px"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:83
+msgid "xxxxxxxxxxxxxx"
+msgstr "xxxxxxxxxxxxxx"
+
+#: components/html-editor/menubar.c:96 components/html-editor/menubar.c:104
+msgid "Insert image"
+msgstr "插入图像"
+
+#: components/html-editor/menubar.c:133 components/html-editor/menubar.c:152
+#: components/html-editor/menubar.c:173 components/html-editor/menubar.c:195
+#: components/html-editor/popup.c:103
 msgid "Insert"
 msgstr "插入"
 
-#: components/html-editor/menubar.c:142 components/html-editor/popup.c:236
-#: components/html-editor/popup.c:517 components/html-editor/popup.c:526
-msgid "Table"
-msgstr "表格"
-
-#: components/html-editor/menubar.c:252
+#: components/html-editor/menubar.c:282
 #, c-format
 msgid "Error loading file '%s': %s"
 msgstr "装入文件“%s”出错：%s"
 
-#: components/html-editor/menubar.c:279
+#: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
 msgid "Insert: HTML File"
 msgstr "插入：HTML 文件"
 
-#: components/html-editor/menubar.c:279
+#: components/html-editor/menubar.c:308 components/html-editor/menubar.c:317
 msgid "Insert: Text File"
 msgstr "插入：文本文件"
 
-#: components/html-editor/paragraph.c:115 components/html-editor/text.c:222
-msgid "Style"
-msgstr "样式"
-
-#: components/html-editor/paragraph.c:129 components/html-editor/toolbar.c:48
-msgid "Normal"
-msgstr "标准"
-
-#: components/html-editor/paragraph.c:130
-msgid "Pre"
-msgstr "预格式化"
-
-#: components/html-editor/paragraph.c:131 components/html-editor/toolbar.c:54
+#: components/html-editor/paragraph.c:86 components/html-editor/toolbar.c:54
 msgid "Header 1"
 msgstr "标题 1"
 
-#: components/html-editor/paragraph.c:132 components/html-editor/toolbar.c:55
+#: components/html-editor/paragraph.c:87 components/html-editor/toolbar.c:55
 msgid "Header 2"
 msgstr "标题 2"
 
-#: components/html-editor/paragraph.c:133 components/html-editor/toolbar.c:56
+#: components/html-editor/paragraph.c:88 components/html-editor/toolbar.c:56
 msgid "Header 3"
 msgstr "标题 3"
 
-#: components/html-editor/paragraph.c:134 components/html-editor/toolbar.c:57
+#: components/html-editor/paragraph.c:89 components/html-editor/toolbar.c:57
 msgid "Header 4"
 msgstr "标题 4"
 
-#: components/html-editor/paragraph.c:135 components/html-editor/toolbar.c:58
+#: components/html-editor/paragraph.c:90 components/html-editor/toolbar.c:58
 msgid "Header 5"
 msgstr "标题 5"
 
-#: components/html-editor/paragraph.c:136 components/html-editor/toolbar.c:59
+#: components/html-editor/paragraph.c:91 components/html-editor/toolbar.c:59
 msgid "Header 6"
 msgstr "标题 6"
 
-#: components/html-editor/paragraph.c:137 components/html-editor/toolbar.c:60
-msgid "Address"
-msgstr "地址"
-
-#: components/html-editor/paragraph.c:138
+#: components/html-editor/paragraph.c:94
 msgid "Dot item"
 msgstr "点项"
 
-#: components/html-editor/paragraph.c:139
+#: components/html-editor/paragraph.c:95
 msgid "Number item"
 msgstr "数字项"
 
-#: components/html-editor/paragraph.c:140
+#: components/html-editor/paragraph.c:96
 msgid "Roman item"
 msgstr "罗马数字项"
 
-#: components/html-editor/paragraph.c:141
+#: components/html-editor/paragraph.c:97
 msgid "Alphabeta item"
 msgstr "字母列表项"
 
-#: components/html-editor/paragraph.c:150
-msgid "Align"
-msgstr "对齐"
+#: components/html-editor/paragraph.c:100 components/html-editor/toolbar.c:60
+msgid "Address"
+msgstr "地址"
 
-#: components/html-editor/paragraph.c:163
-msgid "Left"
-msgstr "左"
+#: components/html-editor/paragraph.c:109
+msgid "_Style:"
+msgstr "样式(_S)："
 
-#: components/html-editor/paragraph.c:164 components/html-editor/toolbar.c:511
-msgid "Center"
-msgstr "居中"
-
-#: components/html-editor/paragraph.c:165
-msgid "Right"
-msgstr "右"
-
-#: components/html-editor/paragraph.c:194
-msgid ""
-"The editted paragraph was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的段落已经从文档中删除了。\n"
-"无法应用您的更改。"
-
-#: components/html-editor/popup.c:243
-msgid "Cell"
-msgstr "单元格"
-
-#: components/html-editor/popup.c:456
+#: components/html-editor/popup.c:438
 msgid "Paste Quotation"
 msgstr "带引用粘贴"
 
-#: components/html-editor/popup.c:459
-msgid "Insert link"
+#: components/html-editor/popup.c:442
+msgid "Insert Link"
 msgstr "插入链接"
 
-#: components/html-editor/popup.c:467
-msgid "Remove link"
+#: components/html-editor/popup.c:449
+msgid "Remove Link"
 msgstr "删除链接"
 
-#: components/html-editor/popup.c:475
+#: components/html-editor/popup.c:456
+msgid "Style"
+msgstr "样式"
+
+#: components/html-editor/popup.c:459
 msgid "Text Style..."
 msgstr "文本样式..."
 
-#: components/html-editor/popup.c:477 components/html-editor/popup.c:483
-#: components/html-editor/popup.c:493
+#: components/html-editor/popup.c:461 components/html-editor/popup.c:467
+#: components/html-editor/popup.c:477
 msgid "Paragraph Style..."
 msgstr "段落样式..."
 
-#: components/html-editor/popup.c:481
+#: components/html-editor/popup.c:465
 msgid "Link Style..."
 msgstr "链接样式..."
 
-#: components/html-editor/popup.c:487
+#: components/html-editor/popup.c:471
 msgid "Rule Style..."
 msgstr "标尺样式..."
 
-#: components/html-editor/popup.c:491
+#: components/html-editor/popup.c:475
 msgid "Image Style..."
 msgstr "图像样式..."
 
-#: components/html-editor/popup.c:502
+#: components/html-editor/popup.c:486
 msgid "Cell Style..."
 msgstr "单元格样式..."
 
-#: components/html-editor/popup.c:505
+#: components/html-editor/popup.c:489
 msgid "Table Style..."
 msgstr "表格样式..."
 
-#: components/html-editor/popup.c:511
+#: components/html-editor/popup.c:495
 msgid "Page Style..."
 msgstr "页面样式..."
 
-#: components/html-editor/popup.c:516
+#: components/html-editor/popup.c:500
 msgid "Table insert"
 msgstr "表格插入"
 
-#: components/html-editor/popup.c:519
+#: components/html-editor/popup.c:503
 msgid "Row above"
 msgstr "行的上面"
 
-#: components/html-editor/popup.c:520
+#: components/html-editor/popup.c:504
 msgid "Row below"
 msgstr "行的下面"
 
-#: components/html-editor/popup.c:522
+#: components/html-editor/popup.c:506
 msgid "Column before"
 msgstr "列的左边"
 
-#: components/html-editor/popup.c:523
+#: components/html-editor/popup.c:507
 msgid "Column after"
 msgstr "列的右边"
 
-#: components/html-editor/popup.c:525
+#: components/html-editor/popup.c:512
 msgid "Table delete"
 msgstr "表格删除"
 
-#: components/html-editor/popup.c:527
+#: components/html-editor/popup.c:514
 msgid "Row"
 msgstr "行"
 
-#: components/html-editor/popup.c:528
+#: components/html-editor/popup.c:515
 msgid "Column"
 msgstr "列"
 
-#: components/html-editor/popup.c:529
+#: components/html-editor/popup.c:516
 msgid "Cell contents"
 msgstr "单元格内容"
 
-#: components/html-editor/popup.c:548
+#: components/html-editor/popup.c:524
+msgid "Check Word Spelling..."
+msgstr "检查单词拼写..."
+
+#: components/html-editor/popup.c:529
+msgid "Add Word to"
+msgstr "添加单词到"
+
+#: components/html-editor/popup.c:533
 #, c-format
 msgid "%s Dictionary"
 msgstr "%s 字典"
 
-#: components/html-editor/replace.c:75
+#: components/html-editor/popup.c:542
+msgid "Add Word to Dictionary"
+msgstr "向字典中添加单词"
+
+#: components/html-editor/popup.c:545
+msgid "Ignore Misspelled Word"
+msgstr "忽略拼错的单词"
+
+#: components/html-editor/popup.c:549
+msgid "Input Methods"
+msgstr "输入法"
+
+#. we use CANCEL response for close, because we want Esc to close the dialog - see gtkdialog.c
+#: components/html-editor/replace.c:77
 msgid "Replace confirmation"
 msgstr "替换确认"
 
-#: components/html-editor/replace.c:76
-msgid "Replace all"
-msgstr "全部替换"
+#: components/html-editor/replace.c:78
+msgid "Replace _All"
+msgstr "全部替换(_A)"
 
-#: components/html-editor/replace.c:77
-msgid "Next"
-msgstr "下一个"
+#: components/html-editor/replace.c:79
+msgid "_Next"
+msgstr "下一个(_N)"
 
-#: components/html-editor/replace.c:79 components/html-editor/replace.c:153
-#: components/html-editor/replace.c:215
-msgid "Replace"
-msgstr "替换"
+#: components/html-editor/replace.c:81
+msgid "_Replace"
+msgstr "替换(_R)"
 
-#: components/html-editor/replace.c:161
+#: components/html-editor/replace.c:169
 msgid "Search _backward"
 msgstr "反向搜索(_B)"
 
-#: components/html-editor/replace.c:162 components/html-editor/search.c:80
+#: components/html-editor/replace.c:170 components/html-editor/search.c:114
 msgid "Case _sensitive"
 msgstr "区分大小写(_S)"
 
-#: components/html-editor/replace.c:172
+#: components/html-editor/replace.c:180
 msgid "Replace:"
 msgstr "替换："
 
-#: components/html-editor/replace.c:175
+#: components/html-editor/replace.c:183
 msgid "With:"
 msgstr "为："
 
-#: components/html-editor/rule.c:98
-msgid "Blue 3D"
-msgstr "立体蓝"
-
-#: components/html-editor/rule.c:110
-msgid "Yellow, flowers"
-msgstr "黄花"
-
-#: components/html-editor/rule.c:422
-msgid ""
-"The editted rule was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的标尺已经从文档中删除了。\n"
-"无法应用您的更改。"
-
-#: components/html-editor/search.c:74 components/html-editor/search.c:126
-msgid "Find"
-msgstr "查找"
-
-#: components/html-editor/search.c:79
+#: components/html-editor/search.c:113
 msgid "_Backward"
 msgstr "反向(_B)"
 
-#: components/html-editor/search.c:126
-msgid "Find Regular Expression"
-msgstr "查找正规表达式"
+#: components/html-editor/search.c:115
+msgid "_Regular Expression"
+msgstr "正则表达式(_R)"
 
-#: components/html-editor/spell.c:274
+#: components/html-editor/spell.c:278
+msgid "No misspelled word found"
+msgstr "没有找到拼错的单词"
+
+#: components/html-editor/spell.c:285
 msgid "Spell checker"
 msgstr "拼写检查器"
 
-#: components/html-editor/spell.c:361
+#: components/html-editor/spell.c:378
 msgid "Current _Languages"
 msgstr "当前语言(_L)"
-
-#: components/html-editor/table.c:200
-msgid "Flat gray"
-msgstr "浅灰"
-
-#: components/html-editor/table.c:209
-msgid "Dark header"
-msgstr "深色标题"
-
-#: components/html-editor/table.c:813
-msgid ""
-"The editted table was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的表格已经从文档中删除了。\n"
-"无法应用您的更改。"
 
 #: components/html-editor/template.c:84
 msgid "Note"
@@ -515,202 +1779,182 @@ msgstr "在此放置您的文字"
 msgid "Image frame"
 msgstr "图像框"
 
-#: components/html-editor/test-html-editor-control.c:317
+#: components/html-editor/template.c:280
+msgid "Labels"
+msgstr "标签"
+
+#: components/html-editor/test-html-editor-control.c:323
 msgid "Open file..."
 msgstr "打开文件..."
 
-#: components/html-editor/test-html-editor-control.c:319
+#: components/html-editor/test-html-editor-control.c:325
 msgid "Save file as..."
 msgstr "文件另存为..."
 
-#: components/html-editor/test-html-editor-control.c:541
+#: components/html-editor/test-html-editor-control.c:557
 msgid "GtkHTML Editor Test Container"
 msgstr "GtkHTML 编辑器测试容器"
-
-#: components/html-editor/text.c:235 components/html-editor/toolbar.c:522
-msgid "Bold"
-msgstr "粗体"
-
-#: components/html-editor/text.c:236 components/html-editor/toolbar.c:524
-msgid "Italic"
-msgstr "斜体"
-
-#: components/html-editor/text.c:237 components/html-editor/toolbar.c:526
-msgid "Underline"
-msgstr "下划线"
-
-#: components/html-editor/text.c:238 components/html-editor/toolbar.c:528
-msgid "Strikeout"
-msgstr "删除线"
-
-#: components/html-editor/text.c:262
-msgid "Size"
-msgstr "大小"
-
-#. color selection
-#: components/html-editor/text.c:292
-msgid "Color"
-msgstr "颜色"
-
-#: components/html-editor/text.c:334
-msgid ""
-"The editted text was removed from the document.\n"
-"Cannot apply your changes."
-msgstr ""
-"编辑的文本已经从文档中删除了。\n"
-"无法应用您的更改。"
-
-#: components/html-editor/toolbar.c:49
-msgid "Preformat"
-msgstr "预格式化"
-
-#: components/html-editor/toolbar.c:50
-msgid "Bulleted List"
-msgstr "项目符号列表"
-
-#: components/html-editor/toolbar.c:51
-msgid "Numbered List"
-msgstr "数字列表"
 
 #: components/html-editor/toolbar.c:52
 msgid "Roman List"
 msgstr "数字列表"
 
-#: components/html-editor/toolbar.c:53
-msgid "Alphabetical List"
-msgstr "字母顺序列表"
-
-#: components/html-editor/toolbar.c:509
+#: components/html-editor/toolbar.c:513
 msgid "Left align"
 msgstr "左对齐"
 
-#: components/html-editor/toolbar.c:509
-msgid "Left justifies the paragraphs"
-msgstr "段落左对齐"
-
-#: components/html-editor/toolbar.c:511
-msgid "Center justifies the paragraphs"
-msgstr "段落居中"
-
-#: components/html-editor/toolbar.c:513
+#: components/html-editor/toolbar.c:517
 msgid "Right align"
 msgstr "右对齐"
 
-#: components/html-editor/toolbar.c:513
-msgid "Right justifies the paragraphs"
-msgstr "段落右对齐"
-
-#: components/html-editor/toolbar.c:520
-msgid "Typewriter"
-msgstr "打字机"
-
-#: components/html-editor/toolbar.c:520
+#: components/html-editor/toolbar.c:537
 msgid "Toggle typewriter font style"
 msgstr "选定打字机字体模式"
 
-#: components/html-editor/toolbar.c:522
+#: components/html-editor/toolbar.c:539
+msgid "Bold"
+msgstr "粗体"
+
+#: components/html-editor/toolbar.c:539
 msgid "Makes the text bold"
 msgstr "设置文本为粗体"
 
-#: components/html-editor/toolbar.c:524
+#: components/html-editor/toolbar.c:541
+msgid "Italic"
+msgstr "斜体"
+
+#: components/html-editor/toolbar.c:541
 msgid "Makes the text italic"
 msgstr "设置文本为斜体"
 
-#: components/html-editor/toolbar.c:526
+#: components/html-editor/toolbar.c:543
+msgid "Underline"
+msgstr "下划线"
+
+#: components/html-editor/toolbar.c:543
 msgid "Underlines the text"
 msgstr "使文本带下划线"
 
-#: components/html-editor/toolbar.c:528
+#: components/html-editor/toolbar.c:545
 msgid "Strikes out the text"
 msgstr "给文本加删除线"
 
-#: components/html-editor/toolbar.c:537
+#: components/html-editor/toolbar.c:554
 msgid "Unindent"
 msgstr "取消缩进"
 
-#: components/html-editor/toolbar.c:537
+#: components/html-editor/toolbar.c:554
 msgid "Indents the paragraphs less"
 msgstr "减少段落的缩进"
 
-#: components/html-editor/toolbar.c:539
+#: components/html-editor/toolbar.c:556
 msgid "Indent"
 msgstr "缩进"
 
-#: components/html-editor/toolbar.c:539
+#: components/html-editor/toolbar.c:556
 msgid "Indents the paragraphs more"
 msgstr "增加段落的缩进"
 
-#: components/html-editor/utils.c:106
+#: components/html-editor/utils.c:119
 msgid "Sample"
 msgstr "样例"
 
-#: src/gtkhtml.c:2548
+#: components/html-editor/utils.c:192
+msgid "_Visit..."
+msgstr "参观(_V)..."
+
+#: components/html-editor/utils.c:232
+msgid ""
+"The editted object was removed from the document.\n"
+"Cannot apply your changes."
+msgstr ""
+"编辑的对象已经从文档中删除了。\n"
+"无法应用您的更改。"
+
+#: src/gtkhtml.c:2531
+#, c-format
+msgid "Mozilla url dropped on Composer had wrong format (%d) or length (%d)\n"
+msgstr "Mozilla URL 拖曳到编写器的格式(%d)或长度(%d)不对\n"
+
+#: src/gtkhtml.c:2853
 msgid "Editable"
 msgstr "可编辑"
 
-#: src/gtkhtml.c:2549
+#: src/gtkhtml.c:2854
 msgid "Whether the html can be edited"
 msgstr "HTML 是否可编辑"
 
-#: src/gtkhtml.c:2556
+#: src/gtkhtml.c:2860
+msgid "Document Title"
+msgstr "文档标题"
+
+#: src/gtkhtml.c:2861
 msgid "The title of the current document"
 msgstr "当前文档的标题"
 
-#: src/gtkhtml.c:2562
+#: src/gtkhtml.c:2867
 msgid "Document Base"
 msgstr "文档基础"
 
-#: src/gtkhtml.c:2563
+#: src/gtkhtml.c:2868
 msgid "The base URL for relative references"
 msgstr "相对引用的基础 URL"
 
-#: src/gtkhtml.c:2569
+#: src/gtkhtml.c:2874
 msgid "Target Base"
 msgstr "目标基础"
 
-#: src/gtkhtml.c:2570
+#: src/gtkhtml.c:2875
 msgid "The base URL of the targe frame"
 msgstr "目标框架的基础 URL"
 
-#: src/gtkhtml.c:2579
+#: src/gtkhtml.c:2884
 msgid "Fixed Width Font"
 msgstr "固定宽度字体"
 
-#: src/gtkhtml.c:2580
+#: src/gtkhtml.c:2885
 msgid "The Monospace font to use for typewriter text"
 msgstr "打字机文字所用的等宽字体"
 
-#: src/gtkhtml.c:2586
+#: src/gtkhtml.c:2891
 msgid "New Link Color"
 msgstr "新链接颜色"
 
-#: src/gtkhtml.c:2587
+#: src/gtkhtml.c:2892
 msgid "The color of new link elements"
 msgstr "新链接元素的颜色"
 
-#: src/gtkhtml.c:2592
+#: src/gtkhtml.c:2897
 msgid "Visited Link Color"
 msgstr "已浏览链接颜色"
 
-#: src/gtkhtml.c:2593
+#: src/gtkhtml.c:2898
 msgid "The color of visited link elements"
 msgstr "已浏览链接元素的颜色"
 
-#: src/gtkhtml.c:2598
+#: src/gtkhtml.c:2903
 msgid "Active Link Color"
 msgstr "激活链接颜色"
 
-#: src/gtkhtml.c:2599
+#: src/gtkhtml.c:2904
 msgid "The color of active link elements"
 msgstr "激活链接元素的颜色"
 
-#: src/gtkhtml.c:2604
+#: src/gtkhtml.c:2909
 msgid "Spelling Error Color"
 msgstr "拼写错误颜色"
 
-#: src/gtkhtml.c:2605
+#: src/gtkhtml.c:2910
 msgid "The color of the spelling error markers"
 msgstr "拼写错误标记的颜色"
+
+#: src/gtkhtml.c:2915
+msgid "Cite Quotation Color"
+msgstr "引用颜色"
+
+#: src/gtkhtml.c:2916
+msgid "The color of the cited text"
+msgstr "引用的颜色"
 
 #: src/html-component.c:219
 msgid "Html"
@@ -769,7 +2013,7 @@ msgid "Reset"
 msgstr "重置"
 
 #. TODO2 dialog instead of warning
-#: src/htmlengine-print.c:193
+#: src/htmlengine-print.c:192
 msgid "Cannot allocate default font for printing\n"
 msgstr "无法分配打印用的默认字体\n"
 
@@ -777,668 +2021,14 @@ msgstr "无法分配打印用的默认字体\n"
 msgid "GtkHTML Test"
 msgstr "GtkHTML 测试"
 
-#: src/testgtkhtml.c:110
+#: src/testgtkhtml.c:117
 msgid "Print pre_view"
 msgstr "打印预览(_V)"
 
-#: src/testgtkhtml.c:110
+#: src/testgtkhtml.c:117
 msgid "Print preview"
 msgstr "打印预览"
 
-#: src/testgtkhtml.c:973
+#: src/testgtkhtml.c:987
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML 测试程序"
-
-#~ msgid "\n"
-#~ msgstr "\n"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "*********************"
-#~ msgstr "*********************"
-
-#~ msgid "Add Keyboard Shortcuts"
-#~ msgstr "添加快捷键"
-
-#~ msgid "Automatically detect links"
-#~ msgstr "自动检测链接"
-
-#~ msgid "Behavior"
-#~ msgstr "行为"
-
-#~ msgid "Composer Properties"
-#~ msgstr "撰写器属性"
-
-#~ msgid "Composer Properties planned"
-#~ msgstr "计划中的撰写程序属性"
-
-#~ msgid "Configure spell checking"
-#~ msgstr "配置拼写检查"
-
-#~ msgid "Enable spell checking"
-#~ msgstr "允许拼写检查"
-
-#~ msgid "Fixed width"
-#~ msgstr "固定宽度"
-
-#~ msgid "Fonts"
-#~ msgstr "字体"
-
-#~ msgid "For printing"
-#~ msgstr "用于打印"
-
-#~ msgid "Grab keys"
-#~ msgstr "抓取键盘"
-
-#~ msgid "Information"
-#~ msgstr "信息"
-
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "快捷键"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "杂项"
-
-#~ msgid "New shortcut:"
-#~ msgstr "新建快捷方式："
-
-#~ msgid "On screen"
-#~ msgstr "在屏幕上"
-
-#~ msgid "Select HTML fixed width font"
-#~ msgstr "选择HTML固定宽度字体"
-
-#~ msgid "Select HTML fixed width font for printing"
-#~ msgstr "选择HTML固定宽度字体以打印"
-
-#~ msgid "Select HTML variable width font"
-#~ msgstr "选择HTML变宽度字体"
-
-#~ msgid "Select HTML variable width font for printing"
-#~ msgstr "选择HTML变宽度字体以打印"
-
-#~ msgid "Shortcuts _type:"
-#~ msgstr "快捷方式类型(_T)："
-
-#~ msgid "Show animated images"
-#~ msgstr "显示动画图片"
-
-#~ msgid "Variable width"
-#~ msgstr "变宽度"
-
-#~ msgid "_Add"
-#~ msgstr "添加(_A)"
-
-#~ msgid "_Delete"
-#~ msgstr "删除(_D)"
-
-#~ msgid "GNOME HTML Editor"
-#~ msgstr "GNOME HTML 编辑器"
-
-#~ msgid "GNOME HTML Editor Control"
-#~ msgstr "GNOME HTML 编辑器控制"
-
-#~ msgid "GNOME HTML Editor Factory"
-#~ msgstr "GNOME HTML 编辑工厂"
-
-#~ msgid "+0"
-#~ msgstr "+0"
-
-#~ msgid "+1"
-#~ msgstr "+1"
-
-#~ msgid "+2"
-#~ msgstr "+2"
-
-#~ msgid "+3"
-#~ msgstr "+3"
-
-#~ msgid "-1"
-#~ msgstr "-1"
-
-#~ msgid "-2"
-#~ msgstr "-2"
-
-#~ msgid "A_ddress"
-#~ msgstr "地址(_D)"
-
-#~ msgid "Background Color"
-#~ msgstr "背景颜色"
-
-#~ msgid "Blue"
-#~ msgstr "蓝色"
-
-#~ msgid "Check spelling of the document"
-#~ msgstr "检查文档的拼写"
-
-#~ msgid "Copy"
-#~ msgstr "复制"
-
-#~ msgid "Copy selection to clipboard"
-#~ msgstr "将选择的复制到剪贴板"
-
-#~ msgid "Copy the selection"
-#~ msgstr "复制选中内容"
-
-#~ msgid "Cr_ying"
-#~ msgstr "哭泣(_Y)"
-
-#~ msgid "Cu_t"
-#~ msgstr "剪切(_T)"
-
-#~ msgid "Cut"
-#~ msgstr "剪切"
-
-#~ msgid "Cut selection to clipboard"
-#~ msgstr "剪切选中内容到剪贴板"
-
-#~ msgid "Cut the selection"
-#~ msgstr "剪切选中内容"
-
-#~ msgid "Find A Regular Expression"
-#~ msgstr "查找正规表达式"
-
-#~ msgid "Find And Replace"
-#~ msgstr "查找并替换"
-
-#~ msgid "Find Regular E_xpression..."
-#~ msgstr "查找正规表达式(_X)..."
-
-#~ msgid "Find _Again"
-#~ msgstr "再次查找(_A)"
-
-#~ msgid "Find again"
-#~ msgstr "再次查找"
-
-#~ msgid "Find and Replace"
-#~ msgstr "查找并替换"
-
-#~ msgid "For_mat"
-#~ msgstr "格式(_M)"
-
-#~ msgid "Green"
-#~ msgstr "绿色"
-
-#~ msgid "Header _1"
-#~ msgstr "标题 _1"
-
-#~ msgid "Header _2"
-#~ msgstr "标题 _2"
-
-#~ msgid "Header _3"
-#~ msgstr "标题 _3"
-
-#~ msgid "Header _4"
-#~ msgstr "标题 _4"
-
-#~ msgid "Header _5"
-#~ msgstr "标题 _5"
-
-#~ msgid "Header _6"
-#~ msgstr "标题 _6"
-
-#~ msgid "Insert Crying smiley into document..."
-#~ msgstr "在文档中插入哭泣的笑脸..."
-
-#~ msgid "Insert Frown smiley into document..."
-#~ msgstr "在文档中插入皱眉的笑脸..."
-
-#~ msgid "Insert HTML file into document..."
-#~ msgstr "在文档中插入 HTML 文件..."
-
-#~ msgid "Insert HTML link into document..."
-#~ msgstr "在文档中插入 HTML 链接..."
-
-#~ msgid "Insert HTML template into document..."
-#~ msgstr "在文档中插入 HTML 模板..."
-
-#~ msgid "Insert Indifferent smiley into document..."
-#~ msgstr "在文档中插入冷淡的笑脸..."
-
-#~ msgid "Insert Laughing smiley into document..."
-#~ msgstr "在文档中插入大笑的笑脸..."
-
-#~ msgid "Insert Lick smiley into document..."
-#~ msgstr "在文档中插入舔嘴的笑脸..."
-
-#~ msgid "Insert Oh no! smiley into document..."
-#~ msgstr "在文档中插入天哪的笑脸..."
-
-#~ msgid "Insert Smile smiley into document..."
-#~ msgstr "在文档中插入微笑的笑脸..."
-
-#~ msgid "Insert Surprised smiley into document..."
-#~ msgstr "在文档中插入吃惊的笑脸..."
-
-#~ msgid "Insert Undecided smiley into document..."
-#~ msgstr "在文档中插入犹豫的笑脸..."
-
-#~ msgid "Insert Wink smiley into document..."
-#~ msgstr "在文档中插入眨眼的笑脸..."
-
-#~ msgid "Insert image into document..."
-#~ msgstr "在文档中插入图像..."
-
-#~ msgid "Insert rule into document..."
-#~ msgstr "在文档中插入标尺..."
-
-#~ msgid "Insert table into document..."
-#~ msgstr "在文档中插入表格..."
-
-#~ msgid "Insert text file into document..."
-#~ msgstr "在文档中插入文本文件..."
-
-#~ msgid "Li_ck"
-#~ msgstr "舔嘴(_C)"
-
-#~ msgid "Make the current Paragraph style Normal"
-#~ msgstr "将当前段落模式设为标准模式"
-
-#~ msgid "Make the current Paragraph style Preformat"
-#~ msgstr "将当前段落模式设为预格式化"
-
-#~ msgid "Make the current paragraph a bulleted list"
-#~ msgstr "将当前段落列表设为项目符号列表"
-
-#~ msgid "Make the current paragraph a list with roman numerals"
-#~ msgstr "将当前段落以罗马数字列表"
-
-#~ msgid "Make the current paragraph a numbered list"
-#~ msgstr "将当前将段落按数字列表"
-
-#~ msgid "Make the current paragraph an H1 header"
-#~ msgstr "将当前将段落设为标题字体H1"
-
-#~ msgid "Make the current paragraph an H2 header"
-#~ msgstr "将当前将段落设为标题字体H2"
-
-#~ msgid "Make the current paragraph an H3 header"
-#~ msgstr "将当前将段落设为标题字体H3"
-
-#~ msgid "Make the current paragraph an H4 header"
-#~ msgstr "将当前将段落设为标题字体H4"
-
-#~ msgid "Make the current paragraph an H5 header"
-#~ msgstr "将当前将段落设为标题字体H5"
-
-#~ msgid "Make the current paragraph an H6 header"
-#~ msgstr "将当前将段落设为标题字体H6"
-
-#~ msgid "Make the current paragraph an address"
-#~ msgstr "将当前将段落设为地址"
-
-#~ msgid "Make the current paragraph an alphabetical list"
-#~ msgstr "将当前将段落字母列表"
-
-#~ msgid "Numbered _List"
-#~ msgstr "数字列表(_L)"
-
-#~ msgid "Oh _no!"
-#~ msgstr "天哪(_N)"
-
-#~ msgid "Orange"
-#~ msgstr "橙色"
-
-#~ msgid "Other..."
-#~ msgstr "其它..."
-
-#~ msgid "Paste"
-#~ msgstr "粘贴"
-
-#~ msgid "Paste _Quotation"
-#~ msgstr "带引用粘贴(_Q)"
-
-#~ msgid "Paste from clipboard"
-#~ msgstr "从剪贴板粘贴"
-
-#~ msgid "Paste the clipboard"
-#~ msgstr "粘贴剪贴板"
-
-#~ msgid "Paste the clipboard as a quotation"
-#~ msgstr "将剪贴板粘贴为引用"
-
-#~ msgid "Purple"
-#~ msgstr "紫色"
-
-#~ msgid "Red"
-#~ msgstr "红色"
-
-#~ msgid "Redo"
-#~ msgstr "重做"
-
-#~ msgid "Redo previously undone change"
-#~ msgstr "重做先前撤消的更改"
-
-#~ msgid "Redo the undone action"
-#~ msgstr "重做撤消的操作"
-
-#~ msgid "Roman Numeral List"
-#~ msgstr "罗马数字列表"
-
-#~ msgid "Select _All"
-#~ msgstr "全选(_A)"
-
-#~ msgid "Select the entire contents of the document"
-#~ msgstr "选中文档的全部内容"
-
-#~ msgid "Su_perscript"
-#~ msgstr "上标(_P)"
-
-#~ msgid "Su_rprised"
-#~ msgstr "吃惊(_R)"
-
-#~ msgid "Subs_cript"
-#~ msgstr "下标(_C)"
-
-#~ msgid "Subscript"
-#~ msgstr "下标"
-
-#~ msgid "Superscript"
-#~ msgstr "上标"
-
-#~ msgid "Te_mplate..."
-#~ msgstr "模板(_M)..."
-
-#~ msgid "Te_xt file..."
-#~ msgstr "文本文件(_X)..."
-
-#~ msgid "Undo"
-#~ msgstr "撤消"
-
-#~ msgid "Undo previous changes"
-#~ msgstr "撤消先前的更改"
-
-#~ msgid "Undo the last action"
-#~ msgstr "撤消最后的操作"
-
-#~ msgid "Yellow"
-#~ msgstr "黄色"
-
-#~ msgid "_Alignment"
-#~ msgstr "对齐方式(_A)"
-
-#~ msgid "_Alphabetical List"
-#~ msgstr "字母列表(_A)"
-
-#~ msgid "_Bold"
-#~ msgstr "粗体(_B)"
-
-#~ msgid "_Bulleted List"
-#~ msgstr "项目符号列表(_B)"
-
-#~ msgid "_Center"
-#~ msgstr "居中(_C)"
-
-#~ msgid "_Copy"
-#~ msgstr "复制(_C)"
-
-#~ msgid "_Decrease Indent"
-#~ msgstr "减少缩进(_D)"
-
-#~ msgid "_Edit"
-#~ msgstr "编辑(_E)"
-
-#~ msgid "_Find..."
-#~ msgstr "查找(_F)..."
-
-#~ msgid "_Font Size"
-#~ msgstr "字体大小(_F)"
-
-#~ msgid "_Frown"
-#~ msgstr "皱眉(_F)"
-
-#~ msgid "_HTML file..."
-#~ msgstr "HTML 文件(_H)..."
-
-#~ msgid "_Heading"
-#~ msgstr "标题(_H)"
-
-#~ msgid "_Image..."
-#~ msgstr "图像(_I)..."
-
-#~ msgid "_Increase Indent"
-#~ msgstr "增加缩进(_I)"
-
-#~ msgid "_Indifferent"
-#~ msgstr "冷淡(_I)"
-
-#~ msgid "_Insert"
-#~ msgstr "插入(_I)"
-
-#~ msgid "_Italic"
-#~ msgstr "斜体(_I)"
-
-#~ msgid "_Laughing"
-#~ msgstr "大笑(_L)"
-
-#~ msgid "_Left"
-#~ msgstr "左对齐(_L)"
-
-#~ msgid "_Link..."
-#~ msgstr "链接(_L)..."
-
-#~ msgid "_Normal"
-#~ msgstr "标准(_N)"
-
-#~ msgid "_Page..."
-#~ msgstr "页面(_P)..."
-
-#~ msgid "_Paragraph..."
-#~ msgstr "段落(_P)..."
-
-#~ msgid "_Paste"
-#~ msgstr "粘贴(_P)"
-
-#~ msgid "_Plain text"
-#~ msgstr "纯文本(_P)"
-
-#~ msgid "_Preformat"
-#~ msgstr "预格式化(_P)"
-
-#~ msgid "_Redo"
-#~ msgstr "重做(_R)"
-
-#~ msgid "_Replace..."
-#~ msgstr "替换(_R)..."
-
-#~ msgid "_Right"
-#~ msgstr "右对齐(_R)"
-
-#~ msgid "_Roman Numeral List"
-#~ msgstr "罗马数字列表(_R)"
-
-#~ msgid "_Rule..."
-#~ msgstr "标尺(_R)..."
-
-#~ msgid "_Smile"
-#~ msgstr "微笑(_S)"
-
-#~ msgid "_Smiley"
-#~ msgstr "笑脸(_S)"
-
-#~ msgid "_Spell Check Document..."
-#~ msgstr "检查文档的拼写(_S)..."
-
-#~ msgid "_Strikeout"
-#~ msgstr "删除线(_S)"
-
-#~ msgid "_Style"
-#~ msgstr "样式(_S)"
-
-#~ msgid "_Table..."
-#~ msgstr "表格(_T)..."
-
-#~ msgid "_Text..."
-#~ msgstr "文本(_T)..."
-
-#~ msgid "_Undecided"
-#~ msgstr "犹豫(_U)"
-
-#~ msgid "_Underline"
-#~ msgstr "下划线(_U)"
-
-#~ msgid "_Undo"
-#~ msgstr "撤消(_U)"
-
-#~ msgid "_Wink"
-#~ msgstr "眨眼(_W)"
-
-#~ msgid "_Wrap Lines"
-#~ msgstr "换行(_W)"
-
-#~ msgid "etc..."
-#~ msgstr "等等..."
-
-#~ msgid "************"
-#~ msgstr "************"
-
-#~ msgid "***text***"
-#~ msgstr "***文字***"
-
-#~ msgid "+4"
-#~ msgstr "+4"
-
-#~ msgid "Alignment"
-#~ msgstr "对齐方式"
-
-#~ msgid "Alignment:"
-#~ msgstr "对齐方式："
-
-#~ msgid "Apply changes to:"
-#~ msgstr "将更改应用到："
-
-#~ msgid "Border"
-#~ msgstr "边框"
-
-#~ msgid "Border:"
-#~ msgstr "边框："
-
-#~ msgid "Bottom"
-#~ msgstr "底部"
-
-#~ msgid "Click will follow this URL:"
-#~ msgstr "单击将跟随此 URL："
-
-#~ msgid "Color:"
-#~ msgstr "颜色："
-
-#~ msgid "Column span:"
-#~ msgstr "列跨越："
-
-#~ msgid "Columns:"
-#~ msgstr "列数："
-
-#~ msgid "Description:"
-#~ msgstr "描述："
-
-#~ msgid "Don't wrap"
-#~ msgstr "不绕排"
-
-#~ msgid "Enable"
-#~ msgstr "允许"
-
-#~ msgid "Follow"
-#~ msgstr "跟随"
-
-#~ msgid "Font size"
-#~ msgstr "字体大小"
-
-#~ msgid "Foreground color"
-#~ msgstr "前景颜色"
-
-#~ msgid "Header"
-#~ msgstr "标题"
-
-#~ msgid "Height:"
-#~ msgstr "高度："
-
-#~ msgid "Horizontal alignment:"
-#~ msgstr "水平对齐："
-
-#~ msgid "Horizontal:"
-#~ msgstr "水平："
-
-#~ msgid "Length:"
-#~ msgstr "长度："
-
-#~ msgid "Link insert"
-#~ msgstr "链接插入"
-
-#~ msgid "Link properties"
-#~ msgstr "链接属性"
-
-#~ msgid "Location"
-#~ msgstr "位置"
-
-#~ msgid "Middle"
-#~ msgstr "中间"
-
-#~ msgid "Padding"
-#~ msgstr "填料"
-
-#~ msgid "Padding:"
-#~ msgstr "填料："
-
-#~ msgid "Percent"
-#~ msgstr "百分比"
-
-#~ msgid "Percent %"
-#~ msgstr "百分比 %"
-
-#~ msgid "Pixels"
-#~ msgstr "像素"
-
-#~ msgid "Pixmap:"
-#~ msgstr "像素图："
-
-#~ msgid "Points"
-#~ msgstr "磅"
-
-#~ msgid "Row span:"
-#~ msgstr "行跨越："
-
-#~ msgid "Rows:"
-#~ msgstr "行数："
-
-#~ msgid "Scope"
-#~ msgstr "范围"
-
-#~ msgid "Shaded"
-#~ msgstr "阴影"
-
-#~ msgid "Spacing"
-#~ msgstr "间距"
-
-#~ msgid "Spacing:"
-#~ msgstr "间距："
-
-#~ msgid "Style:"
-#~ msgstr "样式："
-
-#~ msgid "Table Insert"
-#~ msgstr "表格插入"
-
-#~ msgid "Thickness:"
-#~ msgstr "厚度："
-
-#~ msgid "Top"
-#~ msgstr "顶部"
-
-#~ msgid "Vertical:"
-#~ msgstr "垂直："
-
-#~ msgid "Width:"
-#~ msgstr "宽度："
-
-#~ msgid "Wrap"
-#~ msgstr "环绕"
-
-#~ msgid "Wrapping:"
-#~ msgstr "绕排："
-
-#~ msgid "xxxxxxxxx"
-#~ msgstr "xxxxxxxxx"
-
-#~ msgid "xxxxxxxxxxxxxx"
-#~ msgstr "xxxxxxxxxxxxxx"

@@ -152,7 +152,7 @@ select_object (HTMLObject *o, HTMLEngine *e, gpointer data)
 		gint len;
 
 		len = html_interval_get_length (i, o);
-		if (len)
+		if (len || html_object_is_container (o))
 			html_object_select_range (o, e,
 						  html_interval_get_start (i, o), len,
 						  !html_engine_frozen (e));

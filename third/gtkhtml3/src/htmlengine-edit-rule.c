@@ -61,3 +61,48 @@ html_rule_set (HTMLRule *rule, HTMLEngine *e, gint length, gint percent, gint si
 	if (changed)
 		html_engine_schedule_update (e);
 }
+
+void
+html_rule_set_length (HTMLRule *rule, HTMLEngine *e, gint length, gint percent)
+{
+	gboolean changed = FALSE;
+
+	SET  (length);
+	SETO (percent);
+	
+	if (changed)
+		html_engine_schedule_update (e);
+}
+
+void
+html_rule_set_size (HTMLRule *rule, HTMLEngine *e, gint size)
+{
+	gboolean changed = FALSE;
+
+	SET  (size);
+
+	if (changed)
+		html_engine_schedule_update (e);
+}
+
+void
+html_rule_set_shade (HTMLRule *rule, HTMLEngine *e, gboolean shade)
+{
+	gboolean changed = FALSE;
+
+	SET  (shade);
+
+	if (changed)
+		html_engine_schedule_update (e);
+}
+
+void
+html_rule_set_align (HTMLRule *rule, HTMLEngine *e, HTMLHAlignType halign)
+{
+	gboolean changed = FALSE;
+
+	SET  (halign);
+
+	if (changed)
+		html_engine_schedule_update (e);
+}

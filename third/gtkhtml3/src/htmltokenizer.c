@@ -41,6 +41,8 @@ static guint html_tokenizer_signals[HTML_TOKENIZER_LAST_SIGNAL] = { 0 };
 #define TOKEN_BUFFER_SIZE (1 << 10)
 #define INVALID_CHARACTER_MARKER '?'
 
+#define dt(x)
+
 typedef struct _HTMLBlockingToken HTMLBlockingToken;
 typedef struct _HTMLTokenBuffer   HTMLTokenBuffer;
 typedef	enum { Table }            HTMLTokenType;
@@ -315,6 +317,8 @@ html_token_buffer_append_token (HTMLTokenBuffer * buf, const gchar *token, gint 
 	buf->used += len;
 	buf->data [buf->used] = 0;
 	buf->used ++;
+
+	dt(printf ("html_token_buffer_append_token: '%s'\n", buf->data + buf->used - 1 - len));
 
 	return TRUE;
 }
@@ -753,12 +757,56 @@ in_script_or_style (HTMLTokenizer *t, const gchar **src)
 	}
 }
 
+static gunichar win1252_to_unicode [32] = {
+	0x20ac,
+	0x81,
+	0x201a,
+	0x0192,
+	0x201e,
+	0x2026,
+	0x2020,
+	0x2021,
+	0x02c6,
+	0x2030,
+	0x0160,
+	0x2039,
+	0x0152,
+	0x8d,
+	0x017d,
+	0x8f,
+	0x90,
+	0x2018,
+	0x2019,
+	0x201c,
+	0x201d,
+	0x2022,
+	0x2013,
+	0x2014,
+	0x02dc,
+	0x2122,
+	0x0161,
+	0x203a,
+	0x0153,
+	0x9d,
+	0x017e,
+	0x0178
+};
+
 static void
 add_unichar (HTMLTokenizer *t, gunichar wc)
 {
 	struct _HTMLTokenizerPrivate *p = t->priv;
 
 	p->utf8_length = 0;
+
+	/*
+	  chars in range 128 - 159 are control characters in unicode,
+	  but most browsers treat them as windows 1252
+	  encoded characters and translate them to unicode
+	  it's broken, but we do the same here
+	*/
+	if (wc > 127 && wc < 160)
+		wc = win1252_to_unicode [wc - 128];
 
 	if (wc != '\0') {
 		p->dest += g_unichar_to_utf8 (wc, p->dest);
@@ -809,14 +857,10 @@ flush_entity (HTMLTokenizer *t)
 static gboolean
 add_unichar_validated (HTMLTokenizer *t, gunichar uc)
 {
-	char tmp[8];
-
-	tmp [g_unichar_to_utf8 (uc, tmp)] = '\0';
-
-	if (g_utf8_validate (tmp, -1, NULL)) {
+	if (g_unichar_validate (uc)) {
 		add_unichar (t, uc);
 		return TRUE;
-	} 
+	}
 		
 	g_warning ("invalid character value: x%xd", uc);
 	return FALSE;
@@ -910,7 +954,7 @@ in_tag (HTMLTokenizer *t, const gchar **src)
 
 	p->startTag = FALSE;
 	if (**src == '/') {
-		if (p->pending == LFPending) {
+		if (p->pending == LFPending  && !p->pre) {
 			p->pending = NonePending;
 		}
 	}
@@ -1045,10 +1089,7 @@ end_tag (HTMLTokenizer *t, const gchar **src)
 	else if (strncmp (p->buffer + 2, "/select", 7) == 0) {
 		p->select = FALSE;
 	}
-	else if (strncmp (p->buffer + 2, "cell", 4) == 0) {
-		g_warning ("<cell> tag not supported");
-	}
-	else if (strncmp (p->buffer + 2, "table", 5) == 0) {
+	else if (strncmp (p->buffer + 2, "tablesdkl", 9) == 0) {
 		html_tokenizer_blocking_push (t, Table);
 	}
 	else {
@@ -1276,7 +1317,7 @@ html_tokenizer_blocking_get_name (HTMLTokenizer *t)
 {
 	switch (GPOINTER_TO_INT (t->priv->blocking->data)) {
 	case Table:
-		return "</table";
+		return "</tabledkdk";
 	}
 	
 	return "";

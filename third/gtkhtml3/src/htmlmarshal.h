@@ -71,6 +71,26 @@ extern void html_g_cclosure_marshal_VOID__ENUM_ENUM (GClosure     *closure,
                                                      gpointer      invocation_hint,
                                                      gpointer      marshal_data);
 
+/* VOID:POINTER,BOOL,BOOL,BOOL (htmlclosures.list:9) */
+extern void html_g_cclosure_marshal_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN (GClosure     *closure,
+                                                                           GValue       *return_value,
+                                                                           guint         n_param_values,
+                                                                           const GValue *param_values,
+                                                                           gpointer      invocation_hint,
+                                                                           gpointer      marshal_data);
+#define html_g_cclosure_marshal_VOID__POINTER_BOOL_BOOL_BOOL	html_g_cclosure_marshal_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN
+
+/* POINTER:VOID (htmlclosures.list:10) */
+extern void html_g_cclosure_marshal_POINTER__VOID (GClosure     *closure,
+                                                   GValue       *return_value,
+                                                   guint         n_param_values,
+                                                   const GValue *param_values,
+                                                   gpointer      invocation_hint,
+                                                   gpointer      marshal_data);
+
+/* VOID:VOID (htmlclosures.list:11) */
+#define html_g_cclosure_marshal_VOID__VOID	g_cclosure_marshal_VOID__VOID
+
 G_END_DECLS
 
 #endif /* __html_g_cclosure_marshal_MARSHAL_H__ */

@@ -1,3 +1,4 @@
+#include "htmlmarshal.h"
 
 #include	<glib-object.h>
 
@@ -350,4 +351,84 @@ html_g_cclosure_marshal_VOID__ENUM_ENUM (GClosure     *closure,
             g_marshal_value_peek_enum (param_values + 2),
             data2);
 }
+
+/* VOID:POINTER,BOOL,BOOL,BOOL (htmlclosures.list:9) */
+void
+html_g_cclosure_marshal_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN (GClosure     *closure,
+                                                               GValue       *return_value,
+                                                               guint         n_param_values,
+                                                               const GValue *param_values,
+                                                               gpointer      invocation_hint,
+                                                               gpointer      marshal_data)
+{
+  typedef void (*GMarshalFunc_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN) (gpointer     data1,
+                                                                      gpointer     arg_1,
+                                                                      gboolean     arg_2,
+                                                                      gboolean     arg_3,
+                                                                      gboolean     arg_4,
+                                                                      gpointer     data2);
+  register GMarshalFunc_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+
+  g_return_if_fail (n_param_values == 5);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_VOID__POINTER_BOOLEAN_BOOLEAN_BOOLEAN) (marshal_data ? marshal_data : cc->callback);
+
+  callback (data1,
+            g_marshal_value_peek_pointer (param_values + 1),
+            g_marshal_value_peek_boolean (param_values + 2),
+            g_marshal_value_peek_boolean (param_values + 3),
+            g_marshal_value_peek_boolean (param_values + 4),
+            data2);
+}
+
+/* POINTER:VOID (htmlclosures.list:10) */
+void
+html_g_cclosure_marshal_POINTER__VOID (GClosure     *closure,
+                                       GValue       *return_value,
+                                       guint         n_param_values,
+                                       const GValue *param_values,
+                                       gpointer      invocation_hint,
+                                       gpointer      marshal_data)
+{
+  typedef gpointer (*GMarshalFunc_POINTER__VOID) (gpointer     data1,
+                                                  gpointer     data2);
+  register GMarshalFunc_POINTER__VOID callback;
+  register GCClosure *cc = (GCClosure*) closure;
+  register gpointer data1, data2;
+  gpointer v_return;
+
+  g_return_if_fail (return_value != NULL);
+  g_return_if_fail (n_param_values == 1);
+
+  if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+      data1 = closure->data;
+      data2 = g_value_peek_pointer (param_values + 0);
+    }
+  else
+    {
+      data1 = g_value_peek_pointer (param_values + 0);
+      data2 = closure->data;
+    }
+  callback = (GMarshalFunc_POINTER__VOID) (marshal_data ? marshal_data : cc->callback);
+
+  v_return = callback (data1,
+                       data2);
+
+  g_value_set_pointer (return_value, v_return);
+}
+
+/* VOID:VOID (htmlclosures.list:11) */
 

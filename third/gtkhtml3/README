@@ -34,8 +34,8 @@ mentioned URL or send it to gtkhtml-request@ximian.com.
 Requirements
 ------------
 
-In order to compile GtkHTML, you need gdk-pixbuf 0.8.0 (or later),
-Bonobo 0.32 (or later), gnome-print 0.25 (or later) and GAL 0.7 (or
+In order to compile GtkHTML, you need libgnome[ui] 1.112.1 (or later),
+Bonobo 1.112.1 (or later), gnome-print 2.2.0 (or later) and GAL 2.1.0 (or
 later).
 
 Optionally you may want to install GConf 1.0.7 (or later).

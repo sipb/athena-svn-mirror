@@ -10,7 +10,6 @@
 			<cmd name="EditPasteQuotation" _label="Paste _Quotation" _tip="Paste the clipboard as a quotation"/>
 
 			<cmd name="EditFind" _label="_Find..." pixtype="stock" pixname="Find" _tip="Find"/>
-			<cmd name="EditFindRegex" _label="Find Regular E_xpression..." _tip="Find A Regular Expression"/>
 			<cmd name="EditFindAgain" _label="Find _Again" _tip="Find again"/>
 			<cmd name="EditReplace" _label="_Replace..." _tip="Find and Replace"
 			pixtype="stock" pixname="gtk-find-and-replace"/>
@@ -139,7 +138,6 @@
 			<placeholder name="EditFindReplace">
 				     <menuitem name="EditFind" verb="" accel=""
                                      pixtype="filename" pixname="@ICONSDIR@/search-16.png"/>
-				     <menuitem name="EditFindRegex" verb="" accel=""/>
 				     <menuitem name="EditFindAgain" verb="" accel="*Ctrl*G"/>
 				     <menuitem name="EditReplace" verb="" accel="*Ctrl**Shift*F"
                                      pixtype="filename" pixname="@ICONSDIR@/search-and-replace-16.png"/>

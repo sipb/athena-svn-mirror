@@ -113,7 +113,7 @@ add_clear_area_behind (GList **changed_objs, HTMLObject *o, gint x, gint y, gint
 }
 
 static gboolean
-do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **changed_objs)
+html_cluev_do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **changed_objs)
 {
 	HTMLClueV *cluev;
 	HTMLClue *clue;
@@ -191,6 +191,9 @@ do_layout (HTMLObject *o, HTMLPainter *painter, gboolean calc_size, GList **chan
 			clue->curr->y = html_clue_get_right_clear (clue, clue->curr->y);
 			break;
 		case HTML_CLEAR_NONE:
+			break;
+		case HTML_CLEAR_INHERIT:
+			/* TODO */
 			break;
 		}
 
@@ -293,9 +296,9 @@ copy (HTMLObject *self,
 }
 
 static gboolean
-calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
+html_cluev_real_calc_size (HTMLObject *o, HTMLPainter *painter, GList **changed_objs)
 {
-	return do_layout (o, painter, TRUE, changed_objs);
+	return html_cluev_do_layout (o, painter, TRUE, changed_objs);
 }
 
 static gint
@@ -323,6 +326,18 @@ set_max_width (HTMLObject *o, HTMLPainter *painter, gint max_width)
 	max_width   -= 2 * HTML_CLUEV (o)->padding * html_painter_get_pixel_size (painter);
 	for (obj = HTML_CLUE (o)->head; obj != NULL; obj = obj->next)
 		html_object_set_max_width (obj, painter, max_width);
+}
+
+static void
+set_max_height (HTMLObject *o, HTMLPainter *painter, gint height)
+{
+	HTMLClue *clue = HTML_CLUE (o);
+
+	html_object_calc_size (o, painter, NULL);
+	if (o->ascent < height) {
+		(* HTML_OBJECT_CLASS (parent_class)->set_max_height) (o, painter, height);
+		clue->curr = NULL;
+	}
 }
 
 static void
@@ -490,7 +505,7 @@ relayout (HTMLObject *self,
 	prev_ascent = self->ascent;
 	prev_descent = self->descent;
 
-	changed = do_layout (self, engine->painter, FALSE, FALSE);
+	changed = html_cluev_do_layout (self, engine->painter, FALSE, FALSE);
 	if (changed)
 		html_engine_queue_draw (engine, self);
 
@@ -815,11 +830,12 @@ html_cluev_class_init (HTMLClueVClass *klass,
 	html_clue_class_init (clue_class, type, size);
 
 	object_class->copy = copy;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_cluev_real_calc_size;
 	object_class->calc_min_width = calc_min_width;
 	object_class->calc_preferred_width = calc_preferred_width;
 	object_class->relayout = relayout;
 	object_class->set_max_width = set_max_width;
+	object_class->set_max_height = set_max_height;
 	object_class->reset = reset;
 	object_class->draw = draw;
 	object_class->check_point = check_point;

@@ -31,8 +31,8 @@ struct _HTMLSearch {
 	HTMLEngine *engine;
 	gchar *trans;
 	gchar *text;
-	guint  text_len;
-	guint  found_len;
+	guint  text_bytes;
+	guint  found_bytes;
 
 	gboolean case_sensitive;
 	gboolean forward;

@@ -29,18 +29,6 @@ typedef enum {
 	HTML_SHAPE_POLY
 } HTMLShapeType;
 
-typedef enum {
-	HTML_LENGTH_TYPE_PERCENT,
-	HTML_LENGTH_TYPE_PIXELS,
-	HTML_LENGTH_TYPE_FRACTION
-} HTMLLengthType;
-
-typedef struct _HTMLLength HTMLLength;
-struct _HTMLLength {
-	gint           val;
-	HTMLLengthType type;
-};
-
 typedef struct _HTMLShape HTMLShape;
 
 void         html_length_array_parse   (GPtrArray *array, char *str);

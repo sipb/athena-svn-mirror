@@ -22,9 +22,9 @@ Boston, MA 02111-1307, USA.
 
 #include <config.h>
 #include <string.h>
+#include <locale.h>
 #include <gdk/gdkx.h>
 #include <libgnome/gnome-i18n.h>
-#include <gal/util/e-iconv.h>
 #include "gtkhtml.h"
 #include "gtkhtml-properties.h"
 #include "htmlfontmanager.h"
@@ -34,13 +34,60 @@ Boston, MA 02111-1307, USA.
 
 #define STRINGIZE(x) #x
 
+/* this function is reworked gal:e-iconv.c:e_iconv_locale_language */
+static gchar *
+get_locale_language ()
+{
+	gchar *locale;
+	gchar *locale_language = NULL;
+	
+	locale = setlocale (LC_ALL, NULL);
+	if (locale && strcmp (locale, "C") && strcmp (locale, "POSIX")) {
+		char *codeset, *lang;
+	
+		if ((codeset = strchr (locale, '.')))
+			lang = g_strndup (locale, codeset - locale);
+		else
+			lang = g_strdup (locale);
+	
+		/* validate the language */
+		if (strlen (lang) >= 2) {
+			if (lang[2] == '-' || lang[2] == '_') {
+				/* canonicalise the lang */
+				lang [0] = g_ascii_tolower (lang [0]);
+				lang [1] = g_ascii_tolower (lang [1]);
+			
+				/* validate the country code */
+				if (strlen (lang + 3) > 2) {
+				        /* invalid country code */
+					lang[2] = '\0';
+				} else {
+					lang[2] = '-';
+					lang [3] = g_ascii_toupper (lang [3]);
+					lang [4] = g_ascii_toupper (lang [4]);
+				}
+			} else if (lang[2] != '\0') {
+				/* invalid language */
+				g_free (lang);
+				lang = NULL;
+			}
+		
+			locale_language = lang;
+		} else {
+			/* invalid language */
+			g_free (lang);
+		}
+	}
+
+	return locale_language;
+}
+
 GtkHTMLClassProperties *
 gtk_html_class_properties_new (GtkWidget *widget)
 {
 	GtkHTMLClassProperties *p = g_new0 (GtkHTMLClassProperties, 1);
 
-	/* editing */
-	p->language                = g_strdup (e_iconv_locale_language ());
+	p->language = get_locale_language ();
 
 	return p;
 }
@@ -254,6 +301,8 @@ static GEnumValue _gtk_html_command_values[] = {
 	{ GTK_HTML_COMMAND_CELL_RSPAN_INC, "GTK_HTML_COMMAND_CELL_RSPAN_INC", "rspan-inc" },
 	{ GTK_HTML_COMMAND_CELL_CSPAN_DEC, "GTK_HTML_COMMAND_CELL_CSPAN_DEC", "cspan-dec" },
 	{ GTK_HTML_COMMAND_CELL_RSPAN_DEC, "GTK_HTML_COMMAND_CELL_RSPAN_DEC", "rspan-dec" },
+	{ GTK_HTML_COMMAND_EDITABLE_ON, "GTK_HTML_COMMAND_EDITABLE_ON", "editable-on" },
+	{ GTK_HTML_COMMAND_EDITABLE_OFF, "GTK_HTML_COMMAND_EDITABLE_OFF", "editable-off" },
 	{ 0, NULL, NULL }
 };
 

@@ -62,34 +62,6 @@ clear_element_new (gint            x,
 	return new;
 }
 
-static HTMLDrawQueueClearElement *
-clear_element_new_with_background (gint       x,
-				   gint       y,
-				   guint      width,
-				   guint      height,
-				   GdkPixbuf *background_image,
-				   guint      background_image_x_offset,
-				   guint      background_image_y_offset)
-{
-	HTMLDrawQueueClearElement *new;
-
-	new = g_new (HTMLDrawQueueClearElement, 1);
-
-	new->x = x;
-	new->y = y;
-	new->width = width;
-	new->height = height;
-
-	new->background_image = gdk_pixbuf_ref (background_image);
-
-	new->background_image_x_offset = background_image_x_offset;
-	new->background_image_y_offset = background_image_y_offset;
-
-	new->background_color = NULL;
-
-	return new;
-}
-
 static void
 clear_element_destroy (HTMLDrawQueueClearElement *elem)
 {
@@ -156,6 +128,7 @@ html_draw_queue_add (HTMLDrawQueue *queue, HTMLObject *object)
 	object->redraw_pending = TRUE;
 
 	queue->last = g_list_append (queue->last, object);
+
 	if (queue->elems == NULL && queue->clear_elems == NULL)
 		g_signal_emit_by_name (queue->engine, "draw_pending");
 
@@ -197,70 +170,6 @@ html_draw_queue_add_clear (HTMLDrawQueue *queue,
 	add_clear (queue, new);
 }
 
-void
-html_draw_queue_add_clear_with_background  (HTMLDrawQueue *queue,
-					    gint x,
-					    gint y,
-					    guint width,
-					    guint height,
-					    GdkPixbuf *background_image,
-					    guint background_image_x_offset,
-					    guint background_image_y_offset)
-{
-	HTMLDrawQueueClearElement *new;
-
-	g_return_if_fail (queue != NULL);
-	g_return_if_fail (background_image != NULL);
-
-	new = clear_element_new_with_background (x, y, width, height, background_image,
-						 background_image_x_offset, background_image_y_offset);
-	add_clear (queue, new);
-}
-
-static void
-draw_link_focus (HTMLObject *o, HTMLEngine *e, gint x, gint y)
-{
-	HTMLGdkPainter *p = HTML_GDK_PAINTER (e->painter);
-	GdkColor *c = &html_colorset_get_color (e->settings->color_set, HTMLTextColor)->color;
-	GdkGCValues values;
-	gchar dash [2];
-
-	/* printf ("draw_link_focus\n"); */
-
-	gdk_gc_set_foreground (p->gc, c);
-	gdk_gc_get_values (p->gc, &values);
-
-	dash [0] = 1;
-	dash [1] = 1;
-	gdk_gc_set_line_attributes (p->gc, 1, GDK_LINE_ON_OFF_DASH, values.cap_style, values.join_style);
-	gdk_gc_set_dashes (p->gc, 2, dash, 2);
-	gdk_draw_line (p->pixmap, p->gc, x, y, x + o->width, y);
-	gdk_draw_line (p->pixmap, p->gc, x, y, x, y + o->ascent + 1);
-	gdk_draw_line (p->pixmap, p->gc, x + o->width - 1, y, x + o->width - 1, y + o->ascent + 1);
-	gdk_gc_set_line_attributes (p->gc, 1, values.line_style, values.cap_style, values.join_style);
-}
-
-static void
-draw_image_focus (HTMLObject *o, HTMLEngine *e, gint x, gint y)
-{
-	HTMLGdkPainter *p = HTML_GDK_PAINTER (e->painter);
-	GdkColor *c = &html_colorset_get_color (e->settings->color_set, HTMLTextColor)->color;
-	GdkGCValues values;
-	gchar dash [2];
-
-	/* printf ("draw_image_focus\n"); */
-
-	gdk_gc_set_foreground (p->gc, c);
-	gdk_gc_get_values (p->gc, &values);
-
-	dash [0] = 1;
-	dash [1] = 1;
-	gdk_gc_set_line_attributes (p->gc, 1, GDK_LINE_ON_OFF_DASH, values.cap_style, values.join_style);
-	gdk_gc_set_dashes (p->gc, 2, dash, 2);
-	gdk_draw_rectangle (p->pixmap, p->gc, 0, x, y, o->width - 1, o->ascent + o->descent - 1);
-	gdk_gc_set_line_attributes (p->gc, 1, values.line_style, values.cap_style, values.join_style);
-}
-
 static void
 draw_obj (HTMLDrawQueue *queue,
 	  HTMLObject *obj)
@@ -273,60 +182,19 @@ draw_obj (HTMLDrawQueue *queue,
 		return;
 
 	e = queue->engine;
-	e->clue->x = e->leftBorder;
-	e->clue->y = e->topBorder + e->clue->ascent;
+	e->clue->x = html_engine_get_left_border (e);
+	e->clue->y = html_engine_get_top_border (e) + e->clue->ascent;
 
 	html_object_engine_translation (obj, e, &tx, &ty);
-	if (!html_object_engine_intersection (obj, e, tx, ty, &x1, &y1, &x2, &y2))
-		return;
+	if (html_object_engine_intersection (obj, e, tx, ty, &x1, &y1, &x2, &y2)) {
+		GdkRectangle paint;
 
-	html_painter_begin (e->painter, x1, y1, x2, y2);
-
-	/* FIXME we are duplicating code from HTMLEngine here.
-           Instead, there should be a function in HTMLEngine to paint
-           stuff.  */
-
-	/* Draw the actual object.  */
-
-	if (html_object_is_transparent (obj)) {
-		html_engine_draw_background (e, x1, y1, x2 - x1, y2 - y1);
-		html_object_draw_background (obj, e->painter,
-					     obj->x, obj->y - obj->ascent,
-					     obj->width, obj->ascent + obj->descent,
-					     tx, ty);
-	}
-
-	/* printf ("draw_obj %p\n", obj); */
-	html_object_draw (obj,
-			  e->painter, 
-			  obj->x, obj->y - obj->ascent,
-			  obj->width, obj->ascent + obj->descent,
-			  tx, ty);
-
-#if 0
-	{
-		GdkColor c;
-
-		c.pixel = rand ();
-		html_painter_set_pen (e->painter, &c);
-		html_painter_draw_line (e->painter, x1, y1, x2 - 1, y2 - 1);
-		html_painter_draw_line (e->painter, x2 - 1, y1, x1, y2 - 1);
-	}
-#endif
-
-
-	if (HTML_IS_GDK_PAINTER (queue->engine->painter)) {
-		if (HTML_IS_TEXT_SLAVE (obj) && queue->engine->focus_object == HTML_OBJECT (HTML_TEXT_SLAVE (obj)->owner))
-			draw_link_focus (obj, queue->engine, obj->x + tx - x1, obj->y - obj->ascent + ty - y1);
-		else if (queue->engine->focus_object == obj && HTML_IS_IMAGE (obj))
-			draw_image_focus (obj, queue->engine, obj->x + tx - x1, obj->y - obj->ascent + ty - y1);
-	}
-
-	/* Done.  */
-	html_painter_end (e->painter);
-
-	if (e->editable)
-		html_engine_draw_cursor_in_area (e, x1, y1, x2 - x1, y2 - y1);
+		paint.x = x1;
+		paint.y = y1;
+		paint.width = x2 - x1;
+		paint.height = y2 - y1;
+		gdk_window_invalidate_rect (HTML_GDK_PAINTER (e->painter)->window, &paint, FALSE);
+	} 
 }
 
 static void
@@ -337,8 +205,8 @@ clear (HTMLDrawQueue *queue,
 	gint x1, y1, x2, y2;
 
 	e = queue->engine;
-	e->clue->x = e->leftBorder;
-	e->clue->y = e->topBorder + e->clue->ascent;
+	e->clue->x = html_engine_get_left_border (e);
+	e->clue->y = html_engine_get_top_border (e) + e->clue->ascent;
 
 	x1 = elem->x;
 	y1 = elem->y;
@@ -346,24 +214,15 @@ clear (HTMLDrawQueue *queue,
 	x2 = x1 + elem->width;
 	y2 = y1 + elem->height;
 
-	if (!html_engine_intersection (e, &x1, &y1, &x2, &y2))
-		return;
-				      
-	html_painter_begin (e->painter, x1, y1, x2, y2);
-	if (elem->background_color != NULL) {
-		html_engine_draw_background (e, x1, y1, x2 - x1, y2 - y1);
-	}
+	if (html_engine_intersection (e, &x1, &y1, &x2, &y2)) {
+		GdkRectangle paint;
 
-#if 0
-	html_painter_set_pen (e->painter, html_colorset_get_color_allocated (e->painter, HTMLTextColor));
-	html_painter_draw_line (e->painter, x1, y1, x2 - 1, y2 - 1);
-	html_painter_draw_line (e->painter, x2 - 1, y1, x1, y2 - 1);
-#endif
-
-	html_painter_end (e->painter);
-
-	if (e->editable)
-		html_engine_draw_cursor_in_area (e, x1, y1, x2 - x1, y2 - y1);
+		paint.x = x1;
+		paint.y = y1;
+		paint.width = x2 - x1;
+		paint.height = y2 - y1;
+		gdk_window_invalidate_rect (HTML_GDK_PAINTER (e->painter)->window, &paint, FALSE);
+	} 
 }
 
 void

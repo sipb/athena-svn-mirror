@@ -24,7 +24,7 @@
 #include <config.h>
 #include <atk/atkhyperlink.h>
 
-#include "htmllinktext.h"
+#include "htmltext.h"
 
 #include "object.h"
 #include "html.h"
@@ -138,25 +138,26 @@ static gboolean
 html_a11y_hyper_link_do_action (AtkAction *action, gint i)
 {
 	HTMLA11YHyperLink *hl;
+	gboolean result = FALSE;
 
 	hl = HTML_A11Y_HYPER_LINK (action);
 
 	if (i == 0 && hl->a11y) {
-		HTMLLinkText *link = HTML_LINK_TEXT (HTML_A11Y_HTML (hl->a11y));
+		HTMLText *text = HTML_TEXT (HTML_A11Y_HTML (hl->a11y));
+		gchar *url = html_object_get_complete_url (HTML_OBJECT (text), hl->offset);
 
-		if (link->url && *link->url) {
+		if (url && *url) {
 			GObject *gtkhtml = GTK_HTML_A11Y_GTKHTML_POINTER
 				(html_a11y_get_gtkhtml_parent (HTML_A11Y (hl->a11y)));
-			gchar *url;
 
-			url = g_strconcat (link->url, link->target && *link->target ? "#" : NULL, link->target, NULL);
 			g_signal_emit_by_name (gtkhtml, "link_clicked", url);
-			g_free (url);
-			return TRUE;
+			result = TRUE;
 		}
+		
+		g_free (url);
 	}
 
-	return FALSE;
+	return result;
 }
 
 static gint

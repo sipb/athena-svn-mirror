@@ -142,9 +142,17 @@ gtk_html_debug_dump_object (HTMLObject *obj,
 		 html_type_name (HTML_OBJECT_TYPE (obj)),
 		 obj->x, obj->y, obj->min_width, obj->width, obj->pref_width, obj->max_width, obj->ascent, obj->descent);
 
-	if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_CLUEFLOW)
+	if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_CLUEFLOW) {
 		g_print (" [%s, %d]",
 			 clueflow_style_to_string (HTML_CLUEFLOW (obj)->style), HTML_CLUEFLOW (obj)->levels->len);
+		g_print (" levels: [");
+		for (i = 0; i < HTML_CLUEFLOW (obj)->levels->len; i ++) {
+			g_print ("%d", HTML_CLUEFLOW (obj)->levels->data [i]);
+			if (i < HTML_CLUEFLOW (obj)->levels->len - 1)
+				g_print (" ");
+		}
+		g_print ("]");
+	}
 	else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_TEXTSLAVE) {
 		gchar *sl_text = g_strndup (html_text_get_text (HTML_TEXT (HTML_TEXT_SLAVE (obj)->owner),
 								HTML_TEXT_SLAVE (obj)->posStart),
@@ -221,21 +229,6 @@ gtk_html_debug_dump_tree (HTMLObject *o,
 	}
 }
 
-
-static void
-debug_word_width (HTMLText *t, gint level)
-{
-	guint i;
-
-	for (i = 0; i < level; i++)
-		g_print ("\t");
-
-	printf ("words: %d | ", t->words);
-	for (i = 0; i < t->words; i ++)
-		printf ("%d ", t->word_width [i]);
-	printf ("\n");
-}
-
 static void
 dump_data (GQuark key_id, gpointer data, gpointer user_data)
 {
@@ -257,10 +250,48 @@ dump_object_simple (HTMLObject *obj,
 		g_print ("\t");
 
 	if (html_object_is_text (obj)) {
+		HTMLText *text = HTML_TEXT (obj);
 		g_print ("%s `%s'\n",
 			 html_type_name (HTML_OBJECT_TYPE (obj)),
-			 HTML_TEXT (obj)->text);
-		debug_word_width (HTML_TEXT (obj), level);
+			 text->text);
+		g_print ("len %d bytes %d\n", text->text_len, text->text_bytes);
+		gtk_html_debug_list_links (text);
+		gtk_html_debug_list_text_attrs (text);
+		/* debug_spell_errors (text->spell_errors); */
+		if (text->pi) {
+			for (i =0; i < text->pi->n; i ++)
+				g_print ("item %d offset: %d length: %d\n", i, text->pi->entries [i].item->offset, text->pi->entries [i].item->length);
+				
+			for (i = 0; i < text->text_len; i ++) {
+				union {
+					PangoLogAttr attr;
+					guint as_int;
+				} u;
+				u.attr = text->pi->attrs [i];
+				g_print ("log attrs[%d]: %d\n\t", i, u.as_int & 0x7ff);
+				if (u.attr.is_line_break)
+					g_print ("line break, ");
+				if (u.attr.is_mandatory_break)
+					g_print ("mandatory break, ");
+				if (u.attr.is_char_break)
+					g_print ("char break, ");
+				if (u.attr.is_white)
+					g_print ("white, ");
+				if (u.attr.is_cursor_position)
+					g_print ("cursor position, ");
+				if (u.attr.is_word_start)
+					g_print ("word start, ");
+				if (u.attr.is_word_end)
+					g_print ("word end, ");
+				if (u.attr.is_sentence_boundary)
+					g_print ("sentence boundary, ");
+				if (u.attr.is_sentence_start)
+					g_print ("sentence start, ");
+				if (u.attr.is_sentence_end)
+					g_print ("sentence end, ");
+				g_print ("\n");
+			}
+		}
 	} else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_TEXTSLAVE) {
 		HTMLTextSlave *slave = HTML_TEXT_SLAVE (obj);
 		gchar *text;
@@ -277,6 +308,12 @@ dump_object_simple (HTMLObject *obj,
 	} else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_TABLE) {
 		g_print ("%s %d,%d\n", html_type_name (HTML_OBJECT_TYPE (obj)),
 			 HTML_TABLE (obj)->totalRows, HTML_TABLE (obj)->totalCols);
+	} else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_IFRAME) {
+		g_print ("%s\n", html_type_name (HTML_OBJECT_TYPE (obj)));
+		gtk_html_debug_dump_tree_simple (GTK_HTML (HTML_IFRAME (obj)->html)->engine->clue, level + 1);
+	} else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_FRAME) {
+		g_print ("%s\n", html_type_name (HTML_OBJECT_TYPE (obj)));
+		gtk_html_debug_dump_tree_simple (GTK_HTML (HTML_FRAME (obj)->html)->engine->clue, level + 1);
 	} else
 		g_print ("%s\n", html_type_name (HTML_OBJECT_TYPE (obj)));
 
@@ -334,4 +371,53 @@ gtk_html_debug_dump_list_simple (GList *list,
 
 		dump_object_simple (obj, level);
 	}
+}
+
+#define D_ATTR_TYPE(x, s) if ((attr = pango_attr_iterator_get (iter, PANGO_ATTR_ ## x))) g_print ("%3d-%3d: %s\n", attr->start_index, attr->end_index, s);
+#define D_ATTR_TYPE_INT(x, s) if ((attr = pango_attr_iterator_get (iter, PANGO_ATTR_ ## x))) { g_print ("%3d-%3d: %s %d\n", attr->start_index, attr->end_index, s, ((PangoAttrInt *)attr)->value); }
+
+static void
+gtk_html_debug_list_attrs (PangoAttrList *attrs)
+{
+	PangoAttrIterator *iter = pango_attr_list_get_iterator (attrs);
+	PangoAttribute *attr;
+	
+	do {
+		D_ATTR_TYPE (INVALID, "Invalid");
+		D_ATTR_TYPE (LANGUAGE, "Language");
+		D_ATTR_TYPE (FAMILY, "Family");
+		D_ATTR_TYPE (STYLE, "Style");
+		D_ATTR_TYPE (WEIGHT, "Weight");
+		D_ATTR_TYPE (VARIANT, "Variant");
+		D_ATTR_TYPE (STRETCH, "Stretch");
+		D_ATTR_TYPE_INT (SIZE, "Size");
+		D_ATTR_TYPE (FONT_DESC, "Font Desc");
+		D_ATTR_TYPE (FOREGROUND, "Foreground");
+		D_ATTR_TYPE (BACKGROUND, "Background");
+		D_ATTR_TYPE (UNDERLINE, "Underline");
+		D_ATTR_TYPE (STRIKETHROUGH, "Strikethrough");
+		D_ATTR_TYPE (RISE, "Rise");
+		D_ATTR_TYPE (SHAPE, "Shape");
+		D_ATTR_TYPE (SCALE, "Scale");
+		g_print ("------------\n");
+	} while (pango_attr_iterator_next (iter));
+}
+
+void
+gtk_html_debug_list_text_attrs (HTMLText *text)
+{
+	gtk_html_debug_list_attrs (text->attr_list);
+}
+
+void
+gtk_html_debug_list_links (HTMLText *text)
+{
+	GSList *l;
+
+	for (l = text->links; l; l = l->next)
+		if (l->data) {
+			Link *link = (Link *) l->data;
+
+			g_print ("%d-%d(%d-%d): %s#%s\n", link->start_offset, link->end_offset, link->start_index, link->end_index, link->url, link->target);
+		}
 }

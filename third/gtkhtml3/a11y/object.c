@@ -28,6 +28,7 @@
 #include "object.h"
 #include "paragraph.h"
 #include "utils.h"
+#include "text.h"
 
 static void gtk_html_a11y_class_init (GtkHTMLA11YClass *klass);
 static void gtk_html_a11y_init       (GtkHTMLA11Y *a11y);
@@ -58,12 +59,10 @@ gtk_html_a11y_get_type (void)
 		 * we are deriving from
 		 */
 		AtkObjectFactory *factory;
-		GType derived_type;
 		GTypeQuery query;
 		GType derived_atk_type;
 
-		derived_type = g_type_parent (GTK_TYPE_HTML);
-		factory = atk_registry_get_factory (atk_get_default_registry (), derived_type);
+		factory = atk_registry_get_factory (atk_get_default_registry (), GTK_TYPE_WIDGET);
 		derived_atk_type = atk_object_factory_get_accessible_type (factory);
 		g_type_query (derived_atk_type, &query);
 		tinfo.class_size = query.class_size;
@@ -146,6 +145,62 @@ gtk_html_a11y_init (GtkHTMLA11Y *a11y)
 {
 }
 
+static AtkObject *
+gtk_html_a11y_get_focus_object (GtkWidget * widget)
+{
+	GtkHTML * html;
+	HTMLObject * htmlobj = NULL;
+        AtkObject *obj = NULL;
+
+	html = GTK_HTML(widget);
+	if (html->engine && html->engine->cursor)
+		htmlobj = html->engine->cursor->object;
+	if (htmlobj)
+		obj = html_utils_get_accessible (htmlobj, NULL);
+
+	return obj;
+}
+
+static void
+gtk_html_a11y_grab_focus_cb(GtkWidget * widget)
+{
+        AtkObject *focus_object, *obj, *clue;
+
+
+	 focus_object = gtk_html_a11y_get_focus_object (widget);
+        obj = gtk_widget_get_accessible (widget);
+        g_object_set_data (G_OBJECT(obj), "gail-focus-object", focus_object);
+
+	clue = html_utils_get_accessible(GTK_HTML(widget)->engine->clue, obj);
+	atk_object_set_parent(clue, obj);
+
+        atk_focus_tracker_notify (focus_object);
+
+}
+
+static void
+gtk_html_a11y_cursor_move_cb(GtkWidget *widget,  GtkDirectionType dir_type, GtkHTMLCursorSkipType skip)
+{
+        AtkObject *focus_object, *obj;
+	static AtkObject * prev_object = NULL;
+
+	focus_object = gtk_html_a11y_get_focus_object (widget);
+       obj = gtk_widget_get_accessible (widget);
+	
+	if (prev_object != focus_object) {
+		prev_object = focus_object;
+        	g_object_set_data (G_OBJECT(obj), "gail-focus-object", focus_object);
+        	atk_focus_tracker_notify (focus_object);
+	} else {
+		if (G_IS_HTML_A11Y_TEXT(focus_object)) {
+			gint offset;
+
+			offset = (GTK_HTML(widget))->engine->cursor->offset;
+			g_signal_emit_by_name(focus_object, "text_caret_moved",offset);
+                }
+        }
+}
+
 AtkObject* 
 gtk_html_a11y_new (GtkWidget *widget)
 {
@@ -160,6 +215,13 @@ gtk_html_a11y_new (GtkWidget *widget)
 	atk_object_initialize (accessible, widget);
 
 	accessible->role = ATK_ROLE_HTML_CONTAINER;
+	g_signal_connect_after(widget, "grab_focus", 
+			G_CALLBACK (gtk_html_a11y_grab_focus_cb),
+			NULL);
+	g_signal_connect_after(widget, "cursor_move",
+			G_CALLBACK(gtk_html_a11y_cursor_move_cb),
+			NULL);
+	html_utils_get_accessible(GTK_HTML(widget)->engine->clue, accessible);
 
 	/* printf ("created new gtkhtml accessible object\n"); */
 

@@ -24,7 +24,7 @@
 #include <config.h>
 #include <atk/atkhyperlink.h>
 
-#include "htmllinktext.h"
+#include "htmltext.h"
 
 #include "html.h"
 #include "hyperlink.h"
@@ -120,7 +120,7 @@ html_a11y_link_new (HTMLObject *html_obj)
 	GObject *object;
 	AtkObject *accessible;
 
-	g_return_val_if_fail (HTML_IS_LINK_TEXT (html_obj), NULL);
+	g_return_val_if_fail (HTML_IS_TEXT (html_obj), NULL);
 
 	object = g_object_new (G_TYPE_HTML_A11Y_LINK, NULL);
 
@@ -154,6 +154,7 @@ static gint
 html_a11y_link_get_link_index (AtkHypertext *hypertext, gint char_index)
 {
 	HTMLObject *obj = HTML_A11Y_HTML (hypertext);
+	Link *link = html_text_get_link_at_offset (HTML_TEXT (obj), char_index);
 
-	return HTML_TEXT (obj)->text_len > 0 && char_index >= 0 && char_index < HTML_TEXT (obj)->text_len ? 0 : -1;
+	return link ? link->start_offset : -1;
 }

@@ -27,6 +27,8 @@
 #include "htmlengine-save.h"
 #include "htmlrule.h"
 #include "htmlpainter.h"
+#include "htmlsettings.h"
+#include "gtkhtml.h"
 
 
 HTMLRuleClass html_rule_class;
@@ -92,7 +94,7 @@ fit_line (HTMLObject *o,
 }
 
 static gboolean
-calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
+html_rule_real_calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 {
 	HTMLRule *rule;
 	gint ascent, descent;
@@ -133,7 +135,7 @@ calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 }
 
 static void
-draw (HTMLObject *o,
+html_rule_draw (HTMLObject *o,
       HTMLPainter *p, 
       gint x, gint y,
       gint width, gint height,
@@ -143,6 +145,12 @@ draw (HTMLObject *o,
 	guint w, h;
 	gint xp, yp;
 	gint pixel_size = html_painter_get_pixel_size (p);
+	HTMLEngine *e;
+
+	if (p->widget && GTK_IS_HTML (p->widget))
+		e = GTK_HTML (p->widget)->engine;
+	else
+		return;
 
 	rule = HTML_RULE (o);
 	
@@ -176,10 +184,12 @@ draw (HTMLObject *o,
 	}
 
 	if (rule->shade)
-		html_painter_draw_panel (p, &((html_colorset_get_color (p->color_set, HTMLBgColor))->color),
+		html_painter_draw_panel (p,
+					 &((html_colorset_get_color (e->settings->color_set, HTMLBgColor))->color),
 					 xp, yp, w, h, GTK_HTML_ETCH_IN, 1);
 	else {
-		html_painter_set_pen (p, &html_colorset_get_color_allocated (p, HTMLTextColor)->color);
+		html_painter_set_pen (p, &html_colorset_get_color_allocated (e->settings->color_set, p,
+									     HTMLTextColor)->color);
 		html_painter_fill_rect (p, xp, yp, w, h);
 	}
 }
@@ -252,11 +262,11 @@ html_rule_class_init (HTMLRuleClass *klass,
 	html_object_class_init (object_class, type, object_size);
 
 	object_class->copy = copy;
-	object_class->draw = draw;
+	object_class->draw = html_rule_draw;
 	object_class->set_max_width = set_max_width;
 	object_class->calc_min_width = calc_min_width;
 	object_class->fit_line = fit_line;
-	object_class->calc_size = calc_size;
+	object_class->calc_size = html_rule_real_calc_size;
 	object_class->accepts_cursor = accepts_cursor;
 	object_class->save = save;
 	object_class->save_plain = save_plain;
