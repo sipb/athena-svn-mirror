@@ -2,13 +2,22 @@
  * Disk quota reporting program.
  */
 #include <stdio.h>
-#include <mntent.h>
+#ifdef SOLARIS
+#include <sys/mntent.h> 
+#include <rpcsvc/rquota.h>
+#else
+#include <mntent.h> 
+#endif
 #include <strings.h>
 
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#ifdef SOLARIS
+#include <sys/fs/ufs_quota.h>
+#else
 #include <ufs/quota.h>
+#endif
 
 #include <rpc/rpc.h>
 #include <rpc/pmap_prot.h>
@@ -44,12 +53,34 @@ getnfsquota(host, path, uid, dqp)
 		      (char *) &gq_rslt) != 0) {
 		return (QUOTA_ERROR);
 	}
+#ifdef SOLARIS
+	switch (gq_rslt.status) {
+#else
 	switch (gq_rslt.gqr_status) {
+#endif
 	case Q_OK:
 		{
 		struct timeval tv;
 
 		gettimeofday(&tv, NULL);
+#ifdef SOLARIS
+		dqp->dqb_bhardlimit =
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_bhardlimit *
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_bsize / DEV_BSIZE;
+		dqp->dqb_bsoftlimit =
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_bsoftlimit *
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_bsize / DEV_BSIZE;
+		dqp->dqb_curblocks =
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_curblocks *
+		    gq_rslt.getquota_rslt_u.gqr_rquota.rq_bsize / DEV_BSIZE;
+		dqp->dqb_fhardlimit = gq_rslt.getquota_rslt_u.gqr_rquota.rq_fhardlimit;
+		dqp->dqb_fsoftlimit = gq_rslt.getquota_rslt_u.gqr_rquota.rq_fsoftlimit;
+		dqp->dqb_curfiles = gq_rslt.getquota_rslt_u.gqr_rquota.rq_curfiles;
+		dqp->dqb_btimelimit =
+		    tv.tv_sec + gq_rslt.getquota_rslt_u.gqr_rquota.rq_btimeleft;
+		dqp->dqb_ftimelimit =
+		    tv.tv_sec + gq_rslt.getquota_rslt_u.gqr_rquota.rq_ftimeleft;
+#else
 		dqp->dqb_bhardlimit =
 		    gq_rslt.gqr_rquota.rq_bhardlimit *
 		    gq_rslt.gqr_rquota.rq_bsize / DEV_BSIZE;
@@ -66,6 +97,7 @@ getnfsquota(host, path, uid, dqp)
 		    tv.tv_sec + gq_rslt.gqr_rquota.rq_btimeleft;
 		dqp->dqb_ftimelimit =
 		    tv.tv_sec + gq_rslt.gqr_rquota.rq_ftimeleft;
+#endif
 		return (QUOTA_OK);
 		}
 
