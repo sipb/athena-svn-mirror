@@ -1,4 +1,4 @@
-/* $Id: local.h.sgi,v 1.1 1997-09-29 08:53:22 ghudson Exp $ */
+/* $Id: local.h.sgi,v 1.2 1997-10-01 22:08:18 ghudson Exp $ */
 
 /*
  * WARNING WARNING WARNING
@@ -19,6 +19,9 @@
 #define MINIMENU	/* Display a mini-menu at the bottom of the screen */
 #define NO8BIT		/* Remove this if you use ISO character sets */
 #define USG		/* Define this on System V */
+
+/* IRIX moved /usr/dict/words to /usr/lib/dict/words. */
+#define LANGUAGES "{american,MASTERDICTS=american.med+,HASHFILES=americanmed+.hash,EXTRADICT=/usr/lib/dict/words}"
 
 #define BINDIR	"/usr/athena/bin"
 #define LIBDIR	"/usr/athena/share"
