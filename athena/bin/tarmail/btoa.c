@@ -94,7 +94,7 @@ charout(c) {
 main(argc,argv) 
   char **argv;
 {
-  reg c;
+  reg int c;
   reg long int n;
 
   if (argc != 1) {
