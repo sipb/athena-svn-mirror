@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.19 1999-07-28 00:37:37 danw Exp $
+# $Id: sendbug.sh,v 1.20 2002-11-22 19:36:55 rbasch Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -8,6 +8,7 @@ saved_path="$PATH"
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin:/usr/bsd:/usr/sbin
 export PATH
 
+subject=$1
 bugs_address=bugs@MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
@@ -67,14 +68,17 @@ $SHELL)
     ;;
 esac
 
-fmt << EOF
+if [ -z "$subject" ]; then
+  fmt << EOF
 Please enter the name of the program or locker with which you are
 having problems. You may first want to check with the consultants to
 see if there is a known workaround to this problem; hit ctrl-c now and
 type 'olc' at your athena% prompt to enter a question.
 EOF
-echo -n ' --> '
-read subject
+  echo -n ' --> '
+  read subject
+fi
+
 cat > $report_file << EOF
 To: $bugs_address
 Subject: $machtype $short_version: $subject
