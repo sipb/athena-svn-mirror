@@ -164,7 +164,8 @@ if [ $CUSTOM = Y ]; then
 		echo custom install >> /root/etc/athena/version
 	fi
 fi
-sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
+sed -e 's/RVD/Workstation/' -e 's/Version/Version Install/' \
+	< /srvd/.rvdinfo >> /root/etc/athena/version
 
 echo "Updating vfstab"
 rm -f etc/vfstab
