@@ -552,7 +552,7 @@ install.perl:	all installperl
 	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installperl $(STRIPFLAGS)
 
 install.man:	all installman
-	$(LDLIBPTH) ./perl installman
+	$(LDLIBPTH) DESTDIR=${DESTDIR} ./perl installman
 
 # XXX Experimental. Hardwired values, but useful for testing.
 # Eventually Configure could ask for some of these values.
