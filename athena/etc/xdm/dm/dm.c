@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.21 1992-04-30 14:46:07 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.22 1992-05-03 19:37:48 epeisach Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -19,6 +19,7 @@
 #include <utmp.h>
 #include <ctype.h>
 #include <strings.h>
+#include <errno.h>
 
 #ifdef POSIX
 #include <termios.h>
@@ -38,7 +39,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.21 1992-04-30 14:46:07 lwvanels Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.22 1992-05-03 19:37:48 epeisach Exp $";
 #endif
 
 #ifndef NULL
@@ -708,9 +709,17 @@ char **argv;
 	/* Since we are the session leader, we must initialize the tty */
 #ifdef POSIX
 	(void) tcgetattr(0, &tc);
+#ifdef IMAXBEL
 	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY|IMAXBEL;
+#else
+	tc.c_iflag = ICRNL|BRKINT|ISTRIP|ICRNL|IXON|IXANY;
+#endif
 	tc.c_oflag = OPOST|ONLCR|TAB3;
+#ifdef ECHOCTL
 	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK|ECHOCTL;
+#else
+	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK;
+#endif
 	tc.c_cc[VMIN] = 1;
 	tc.c_cc[VTIME] = 0;
 	tc.c_cc[VERASE] = CERASE;
