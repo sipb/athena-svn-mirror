@@ -5,9 +5,12 @@
 /etc/athena/attach.conf
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
+/etc/aliases
 /etc/ftpusers
 /etc/inetd.conf
+/etc/printcap
 /etc/resolv.conf
+/etc/sendmail.cf
 /etc/services
 /etc/shells
 /etc/syslog.conf
