@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.23 1990-12-09 16:55:32 lwvanels Exp $
+ *	$Id: olcd.h,v 1.24 1990-12-12 15:08:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -49,7 +49,6 @@
 
 /* Important files. */
 
-extern char *DONE_DIR;
 extern char *LOG_DIR;
 extern char *BACKUP_FILE;
 extern char *BACKUP_TEMP;
@@ -63,6 +62,9 @@ extern char *DATABASE_FILE;
 extern char *TOPIC_FILE;
 extern char *MOTD_FILE;
 extern char *MOTD_TIMEOUT_FILE;
+extern char *MACH_TRANS_FILE;
+extern char *LIST_FILE_NAME;
+extern char *LIST_TMP_NAME;
 extern char *SPECIALTY_DIR;
 extern char *ACL_DIR;
 
@@ -145,6 +147,21 @@ typedef struct tUSER
   int    max_answer;
 } USER;
 
+typedef struct tdLIST
+{
+  char	*username;
+  char	*machine;
+  int	instance;
+  int	ustatus;
+  int	kstatus;
+  char	*cusername;
+  int	cinstance;
+  int	cstatus;
+  int	n_consult;
+  char	*topic;
+  long	timestamp;
+  char	*note;
+} D_LIST;
 
 typedef struct tKNUCKLE
 {
@@ -214,12 +231,19 @@ typedef struct t_ACL
   char *name;
 } ACL;
 
+typedef struct tTRANS
+{
+  char orig[80];
+  char trans[80];
+} TRANS;
+
 /* Global variables */
 
 extern KNUCKLE          **Knuckle_List;
 extern TOPIC            **Topic_List;
 extern int              needs_backup;
 extern PROC  Proc_List[];	/* OLC Proceedure Table */
+extern ACL  Acl_List[];
 extern int request_count;
 extern int request_counts[OLC_NUM_REQUESTS];
 extern long start_time;
@@ -326,7 +350,8 @@ ERRCODE send_person P((int fd , PERSON *person ));
 int list_knuckle P((KNUCKLE *knuckle , LIST *data ));
 int list_user_knuckles P((KNUCKLE *knuckle , LIST **data , int *size ));
 int list_redundant P((KNUCKLE *knuckle ));
-int list_queue P((int queue , LIST **data , int queues , int *topics , int stati , char *name , int *size ));
+int list_queue P((LIST **data , int *topics , int stati , char *name , int *size ));
+void dump_list P((void ));
 
 /* log.c */
 void write_line_to_log P((FILE *log , char *line ));
@@ -365,43 +390,43 @@ int authenticate P((REQUEST *request , unsigned long addr ));
 int get_kerberos_ticket P((void ));
 
 /* requests_admin.c */
-ERRCODE olc_load_user P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_dump P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_dump_req_stats P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_dump_ques_stats P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_change_motd P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_change_acl P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_list_acl P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_get_accesses P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_get_dbinfo P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_change_dbinfo P((int fd , REQUEST *request , int auth ));
+ERRCODE olc_load_user P((int fd , REQUEST *request ));
+ERRCODE olc_dump P((int fd , REQUEST *request ));
+ERRCODE olc_dump_req_stats P((int fd , REQUEST *request ));
+ERRCODE olc_dump_ques_stats P((int fd , REQUEST *request ));
+ERRCODE olc_change_motd P((int fd , REQUEST *request ));
+ERRCODE olc_change_acl P((int fd , REQUEST *request ));
+ERRCODE olc_list_acl P((int fd , REQUEST *request ));
+ERRCODE olc_get_accesses P((int fd , REQUEST *request ));
+ERRCODE olc_get_dbinfo P((int fd , REQUEST *request ));
+ERRCODE olc_change_dbinfo P((int fd , REQUEST *request ));
 
 /* requests_olc.c */
-ERRCODE olc_on P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_create_instance P((int fd , REQUEST *request , int auth ));
-int olc_get_connected_info P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_verify_instance P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_default_instance P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_who P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_done P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_cancel P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_ask P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_forward P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_off P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_send P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_comment P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_describe P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_replay P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_show P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_list P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_topic P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_chtopic P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_verify_topic P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_list_topics P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_motd P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_mail P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_startup P((int fd , REQUEST *request , int auth ));
-ERRCODE olc_grab P((int fd , REQUEST *request , int auth ));
+ERRCODE olc_on P((int fd , REQUEST *request ));
+ERRCODE olc_create_instance P((int fd , REQUEST *request ));
+ERRCODE olc_get_connected_info P((int fd , REQUEST *request ));
+ERRCODE olc_verify_instance P((int fd , REQUEST *request ));
+ERRCODE olc_default_instance P((int fd , REQUEST *request ));
+ERRCODE olc_who P((int fd , REQUEST *request ));
+ERRCODE olc_done P((int fd , REQUEST *request ));
+ERRCODE olc_cancel P((int fd , REQUEST *request ));
+ERRCODE olc_ask P((int fd , REQUEST *request ));
+ERRCODE olc_forward P((int fd , REQUEST *request ));
+ERRCODE olc_off P((int fd , REQUEST *request ));
+ERRCODE olc_send P((int fd , REQUEST *request ));
+ERRCODE olc_comment P((int fd , REQUEST *request ));
+ERRCODE olc_describe P((int fd , REQUEST *request ));
+ERRCODE olc_replay P((int fd , REQUEST *request ));
+ERRCODE olc_show P((int fd , REQUEST *request ));
+ERRCODE olc_list P((int fd , REQUEST *request ));
+ERRCODE olc_topic P((int fd , REQUEST *request ));
+ERRCODE olc_chtopic P((int fd , REQUEST *request ));
+ERRCODE olc_verify_topic P((int fd , REQUEST *request ));
+ERRCODE olc_list_topics P((int fd , REQUEST *request ));
+ERRCODE olc_motd P((int fd , REQUEST *request ));
+ERRCODE olc_mail P((int fd , REQUEST *request ));
+ERRCODE olc_startup P((int fd , REQUEST *request ));
+ERRCODE olc_grab P((int fd , REQUEST *request ));
 
 /* statistics.c */
 void dump_request_stats P((char *file ));
@@ -415,8 +440,6 @@ void log_admin P((char *message ));
 void log_debug P((char *message ));
 
 /* utils.c */
-void get_user_status_string P((USER *u , char *status ));
-void get_status_string P((KNUCKLE *k , char *status ));
 void get_list_info P((KNUCKLE *k , LIST *data ));
 
 
