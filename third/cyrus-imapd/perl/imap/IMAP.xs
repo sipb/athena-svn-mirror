@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.1.1.2 2003-02-14 21:38:42 ghudson Exp $ */
+/* $Id: IMAP.xs,v 1.2 2003-04-17 13:48:15 rbasch Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -219,23 +219,31 @@ PROTOTYPES: ENABLE
 
 int
 CONN_NONSYNCLITERAL()
-PPCODE:
+CODE:
 	RETVAL = IMCLIENT_CONN_NONSYNCLITERAL;
+OUTPUT:
+	RETVAL
 
 int
 CONN_INITIALRESPONSE()
-PPCODE:
+CODE:
 	RETVAL = IMCLIENT_CONN_INITIALRESPONSE;
+OUTPUT:
+	RETVAL
 
 int
 CALLBACK_NUMBERED()
-PPCODE:
+CODE:
 	RETVAL = CALLBACK_NUMBERED;
+OUTPUT:
+	RETVAL
 
 int
 CALLBACK_NOLITERAL()
-PPCODE:
+CODE:
 	RETVAL = CALLBACK_NOLITERAL;
+OUTPUT:
+	RETVAL
 
 MODULE = Cyrus::IMAP	PACKAGE = Cyrus::IMAP	PREFIX=imclient_
 PROTOTYPES: ENABLE
@@ -367,9 +375,9 @@ imclient__authenticate(client, mechlist, service, user, auth, password, minssf, 
 	Cyrus_IMAP client
 	char* mechlist
 	char* service
-	char* user
+	char* user = (SvOK(ST(3)) ? SvPV(ST(3), na) : NULL);
 	char* auth
-	char* password
+	char* password = (SvOK(ST(5)) ? SvPV(ST(5), na) : NULL);
 	int minssf
 	int maxssf
 PREINIT:
@@ -381,10 +389,6 @@ CODE:
 	  ST(0) = &sv_no;
 	  return;
 	}
-
-	/* If the user parameter is undef, set user to be NULL */
-	if(!SvOK(ST(3))) user = NULL;
-	if(!SvOK(ST(5))) password = NULL;
 
 	client->username = user; /* AuthZid */
 	client->authname = auth; /* Authid */
