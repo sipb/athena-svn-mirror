@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType internal cache interface (specification).                   */
 /*                                                                         */
-/*  Copyright 2000-2001 by                                                 */
+/*  Copyright 2000-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -18,6 +18,10 @@
 
 #ifndef __FTCCACHE_H__
 #define __FTCCACHE_H__
+
+
+/* define to allow cache lookup inlining */
+#define  FTC_CACHE_USE_INLINE
 
 
 FT_BEGIN_HEADER
@@ -174,8 +178,9 @@ FT_BEGIN_HEADER
     FT_UInt              cache_index;  /* in manager's table         */
     FT_Pointer           cache_data;   /* used by cache node methods */
 
-    FT_UFast             nodes;
-    FT_UFast             size;
+    FT_UFast             p;
+    FT_UFast             mask;
+    FT_Long              slack;
     FTC_Node*            buckets;
 
     FT_LruList_ClassRec  family_class;
@@ -289,7 +294,6 @@ FT_BEGIN_HEADER
                     FTC_Node  *anode );
 
  /* */
-
 
 FT_END_HEADER
 

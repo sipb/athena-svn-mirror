@@ -3,7 +3,7 @@
 #
 
 
-# Copyright 1996-2000 by
+# Copyright 1996-2000, 2001 by
 # David Turner, Robert Wilhelm, and Werner Lemberg.
 #
 # This file is part of the FreeType project, and may only be used, modified,
@@ -28,6 +28,7 @@ CFF_DRV_SRC := $(CFF_DIR_)cffobjs.c   \
                $(CFF_DIR_)cffload.c   \
                $(CFF_DIR_)cffgload.c  \
                $(CFF_DIR_)cffparse.c  \
+               $(CFF_DIR_)cffcmap.c   \
                $(CFF_DIR_)cffdrivr.c
 
 # CFF driver headers

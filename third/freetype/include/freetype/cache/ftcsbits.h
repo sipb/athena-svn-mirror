@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    A small-bitmap cache (specification).                                */
 /*                                                                         */
-/*  Copyright 2000-2001 by                                                 */
+/*  Copyright 2000-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -57,27 +57,29 @@ FT_BEGIN_HEADER
   /*    A very compact structure used to describe a small glyph bitmap.    */
   /*                                                                       */
   /* <Fields>                                                              */
-  /*    width    :: The bitmap width in pixels.                            */
+  /*    width     :: The bitmap width in pixels.                           */
   /*                                                                       */
-  /*    height   :: The bitmap height in pixels.                           */
+  /*    height    :: The bitmap height in pixels.                          */
   /*                                                                       */
-  /*    left     :: The horizontal distance from the pen position to the   */
-  /*                left bitmap border (a.k.a. `left side bearing', or     */
-  /*                `lsb').                                                */
+  /*    left      :: The horizontal distance from the pen position to the  */
+  /*                 left bitmap border (a.k.a. `left side bearing', or    */
+  /*                 `lsb').                                               */
   /*                                                                       */
-  /*    top      :: The vertical distance from the pen position (on the    */
-  /*                baseline) to the upper bitmap border (a.k.a. `top side */
-  /*                bearing').  The distance is positive for upwards       */
-  /*                Y coordinates.                                         */
+  /*    top       :: The vertical distance from the pen position (on the   */
+  /*                 baseline) to the upper bitmap border (a.k.a. `top     */
+  /*                 side bearing').  The distance is positive for upwards */
+  /*                 Y coordinates.                                        */
   /*                                                                       */
-  /*    format   :: The format of the glyph bitmap (monochrome or gray).   */
+  /*    format    :: The format of the glyph bitmap (monochrome or gray).  */
   /*                                                                       */
-  /*    pitch    :: The number of bytes per bitmap line.  May be positive  */
-  /*                or negative.                                           */
+  /*    max_grays :: Maximum gray level value (in the range 1 to 255).     */
   /*                                                                       */
-  /*    xadvance :: The horizontal advance width in pixels.                */
+  /*    pitch     :: The number of bytes per bitmap line.  May be positive */
+  /*                 or negative.                                          */
   /*                                                                       */
-  /*    yadvance :: The vertical advance height in pixels.                 */
+  /*    xadvance  :: The horizontal advance width in pixels.               */
+  /*                                                                       */
+  /*    yadvance  :: The vertical advance height in pixels.                */
   /*                                                                       */
   /*    buffer   :: A pointer to the bitmap pixels.                        */
   /*                                                                       */
@@ -89,7 +91,8 @@ FT_BEGIN_HEADER
     FT_Char   top;
 
     FT_Byte   format;
-    FT_Char   pitch;
+    FT_Byte   max_grays;
+    FT_Short  pitch;
     FT_Char   xadvance;
     FT_Char   yadvance;
 
@@ -110,7 +113,7 @@ FT_BEGIN_HEADER
   /*    implemented by @FTC_ImageCache.                                    */
   /*                                                                       */
   typedef struct FTC_SBitCacheRec_*  FTC_SBitCache;
-  
+
 
   /*************************************************************************/
   /*                                                                       */
@@ -157,7 +160,7 @@ FT_BEGIN_HEADER
   /* <Input>                                                               */
   /*    cache  :: A handle to the source sbit cache.                       */
   /*                                                                       */
-  /*    desc   :: A pointer to the glyph image descriptor.                 */
+  /*    type   :: A pointer to the glyph image type descriptor.            */
   /*                                                                       */
   /*    gindex :: The glyph index.                                         */
   /*                                                                       */
@@ -192,7 +195,7 @@ FT_BEGIN_HEADER
   /*                                                                       */
   FT_EXPORT( FT_Error )
   FTC_SBitCache_Lookup( FTC_SBitCache    cache,
-                        FTC_ImageDesc*   desc,
+                        FTC_ImageType    type,
                         FT_UInt          gindex,
                         FTC_SBit        *sbit,
                         FTC_Node        *anode );

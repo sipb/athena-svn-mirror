@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    CID objects manager (specification).                                 */
 /*                                                                         */
-/*  Copyright 1996-2001 by                                                 */
+/*  Copyright 1996-2001, 2002 by                                           */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -111,43 +111,43 @@ FT_BEGIN_HEADER
   } CID_GlyphSlotRec;
 
 
-  FT_LOCAL void
-  CID_GlyphSlot_Done( CID_GlyphSlot  slot );
+  FT_LOCAL( void )
+  cid_slot_done( CID_GlyphSlot  slot );
 
-  FT_LOCAL FT_Error
-  CID_GlyphSlot_Init( CID_GlyphSlot   slot );
-
-
-  FT_LOCAL void
-  CID_Size_Done( CID_Size  size );
+  FT_LOCAL( FT_Error )
+  cid_slot_init( CID_GlyphSlot   slot );
 
 
-  FT_LOCAL FT_Error
-  CID_Size_Init( CID_Size  size );
+  FT_LOCAL( void )
+  cid_size_done( CID_Size  size );
 
 
-  FT_LOCAL FT_Error
-  CID_Size_Reset( CID_Size  size );
+  FT_LOCAL( FT_Error )
+  cid_size_init( CID_Size  size );
 
 
-  FT_LOCAL FT_Error
-  CID_Face_Init( FT_Stream      stream,
+  FT_LOCAL( FT_Error )
+  cid_size_reset( CID_Size  size );
+
+
+  FT_LOCAL( FT_Error )
+  cid_face_init( FT_Stream      stream,
                  CID_Face       face,
                  FT_Int         face_index,
                  FT_Int         num_params,
                  FT_Parameter*  params );
 
 
-  FT_LOCAL void
-  CID_Face_Done( CID_Face  face );
+  FT_LOCAL( void )
+  cid_face_done( CID_Face  face );
 
 
-  FT_LOCAL FT_Error
-  CID_Driver_Init( CID_Driver  driver );
+  FT_LOCAL( FT_Error )
+  cid_driver_init( CID_Driver  driver );
 
 
-  FT_LOCAL void
-  CID_Driver_Done( CID_Driver  driver );
+  FT_LOCAL( void )
+  cid_driver_done( CID_Driver  driver );
 
 
 FT_END_HEADER

@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType auto hinting outline optimization (body).                   */
 /*                                                                         */
-/*  Copyright 2000-2001 Catharon Productions Inc.                          */
+/*  Copyright 2000-2001, 2002 Catharon Productions Inc.                    */
 /*  Author: David Turner                                                   */
 /*                                                                         */
 /*  This file is part of the Catharon Typography Project and shall only    */
@@ -32,11 +32,11 @@
 
 
 #include <ft2build.h>
-#include FT_INTERNAL_OBJECTS_H        /* for ALLOC_ARRAY() and FREE() */
+#include FT_INTERNAL_OBJECTS_H       /* for FT_ALLOC_ARRAY() and FT_FREE() */
 #include "ahoptim.h"
 
 
-  /* define this macro to use brute force optimisation -- this is slow,  */
+  /* define this macro to use brute force optimization -- this is slow,  */
   /* but a good way to perfect the distortion function `by hand' through */
   /* tweaking                                                            */
 #define AH_BRUTE_FORCE
@@ -61,9 +61,9 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define FLOAT( x )  ( (float)( (x) / 64.0 ) )
+
 
   static void
   optim_log( const char*  fmt, ... )
@@ -157,8 +157,8 @@
 
 
   static int
-  valid_stem_segments( AH_Segment*  seg1,
-                       AH_Segment*  seg2 )
+  valid_stem_segments( AH_Segment  seg1,
+                       AH_Segment  seg2 )
   {
     return seg1->serif == 0                   &&
            seg2                               &&
@@ -173,15 +173,15 @@
   static int
   optim_compute_stems( AH_Optimizer*  optimizer )
   {
-    AH_Outline*  outline = optimizer->outline;
-    FT_Fixed     scale;
-    FT_Memory    memory  = optimizer->memory;
-    FT_Error     error   = 0;
-    FT_Int       dimension;
-    AH_Edge*     edges;
-    AH_Edge*     edge_limit;
-    AH_Stem**    p_stems;
-    FT_Int*      p_num_stems;
+    AH_Outline  outline = optimizer->outline;
+    FT_Fixed    scale;
+    FT_Memory   memory  = optimizer->memory;
+    FT_Error    error   = 0;
+    FT_Int      dimension;
+    AH_Edge     edges;
+    AH_Edge     edge_limit;
+    AH_Stem**   p_stems;
+    FT_Int*     p_num_stems;
 
 
     edges      = outline->horz_edges;
@@ -195,13 +195,13 @@
     {
       AH_Stem*  stems     = 0;
       FT_Int    num_stems = 0;
-      AH_Edge*  edge;
+      AH_Edge   edge;
 
 
       /* first of all, count the number of stems in this direction */
       for ( edge = edges; edge < edge_limit; edge++ )
       {
-        AH_Segment*  seg = edge->first;
+        AH_Segment  seg = edge->first;
 
 
         do
@@ -220,14 +220,14 @@
         AH_Stem*  stem;
 
 
-        if ( ALLOC_ARRAY( stems, num_stems, AH_Stem ) )
+        if ( FT_NEW_ARRAY( stems, num_stems ) )
           goto Exit;
 
         stem = stems;
         for ( edge = edges; edge < edge_limit; edge++ )
         {
-          AH_Segment*  seg = edge->first;
-          AH_Segment*  seg2;
+          AH_Segment  seg = edge->first;
+          AH_Segment  seg2;
 
 
           do
@@ -235,8 +235,8 @@
             seg2 = seg->link;
             if ( valid_stem_segments( seg, seg2 ) )
             {
-              AH_Edge*  edge1 = seg->edge;
-              AH_Edge*  edge2 = seg2->edge;
+              AH_Edge  edge1 = seg->edge;
+              AH_Edge  edge2 = seg2->edge;
 
 
               stem->edge1  = edge1;
@@ -409,7 +409,7 @@
 
 
         /* allocate table of springs */
-        if ( ALLOC_ARRAY( springs, num_springs, AH_Spring ) )
+        if ( FT_NEW_ARRAY( springs, num_springs ) )
           goto Exit;
 
         /* fill the springs table */
@@ -721,8 +721,8 @@
       stem->edge1->pos = pos;
       stem->edge2->pos = pos + stem->width;
 
-      stem->edge1->flags |= ah_edge_done;
-      stem->edge2->flags |= ah_edge_done;
+      stem->edge1->flags |= AH_EDGE_DONE;
+      stem->edge2->flags |= AH_EDGE_DONE;
     }
   }
 
@@ -768,8 +768,8 @@
       stem->edge1->pos = pos;
       stem->edge2->pos = pos + stem->width;
 
-      stem->edge1->flags |= ah_edge_done;
-      stem->edge2->flags |= ah_edge_done;
+      stem->edge1->flags |= AH_EDGE_DONE;
+      stem->edge2->flags |= AH_EDGE_DONE;
     }
   }
 
@@ -796,11 +796,11 @@
       FT_Memory  memory = optimizer->memory;
 
 
-      FREE( optimizer->horz_stems );
-      FREE( optimizer->vert_stems );
-      FREE( optimizer->horz_springs );
-      FREE( optimizer->vert_springs );
-      FREE( optimizer->positions );
+      FT_FREE( optimizer->horz_stems );
+      FT_FREE( optimizer->vert_stems );
+      FT_FREE( optimizer->horz_springs );
+      FT_FREE( optimizer->vert_springs );
+      FT_FREE( optimizer->positions );
     }
   }
 
@@ -808,13 +808,13 @@
   /* loads the outline into the optimizer */
   int
   AH_Optimizer_Init( AH_Optimizer*  optimizer,
-                     AH_Outline*    outline,
+                     AH_Outline     outline,
                      FT_Memory      memory )
   {
     FT_Error  error;
 
 
-    MEM_Set( optimizer, 0, sizeof ( *optimizer ) );
+    FT_MEM_ZERO( optimizer, sizeof ( *optimizer ) );
     optimizer->outline = outline;
     optimizer->memory  = memory;
 
@@ -834,8 +834,7 @@
       if ( max_stems < optimizer->num_vstems )
         max_stems = optimizer->num_vstems;
 
-      if ( ALLOC_ARRAY( optimizer->positions,
-                        max_stems * AH_MAX_CONFIGS, FT_Pos ) )
+      if ( FT_NEW_ARRAY( optimizer->positions, max_stems * AH_MAX_CONFIGS ) )
         goto Fail;
 
       optimizer->num_configs = 0;
