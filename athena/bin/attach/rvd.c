@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.2 1990-04-19 12:15:30 jfc Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.3 1990-07-04 16:26:29 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -65,8 +65,19 @@ rvd_attach(at, mopt, errorout)
     if (rvderrno && rvderrno != RVDEIDA &&
 	rvderrno != EBUSY /* kernel bug */) {
 	if (errorout)
-	    fprintf(stderr, "%s: Error in RVD spinup: %s\n",
-		    at->hesiodname, rvd_error(rvderrno));
+	    fprintf(stderr, "%s: Error in RVD spinup: %d -> %s\n",
+		    at->hesiodname, rvderrno, rvd_error(rvderrno));
+	switch(rvderrno)
+	  {
+	  case RVDENOENT:
+	  case RVDENOTAVAIL:
+	  case RVDEPACK:
+	  case RVDEPNM:
+	    error_status = ERR_ATTACHNOFILSYS;
+	    break;
+	  default:
+	    error_status = ERR_SOMETHING;
+	  }
 	return (FAILURE);
     }
 
