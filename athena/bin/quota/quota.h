@@ -1,4 +1,4 @@
-/* $Id: quota.h,v 1.2 1999-04-24 00:07:20 tb Exp $ */
+/* $Id: quota.h,v 1.3 1999-06-03 14:54:24 danw Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -31,20 +31,37 @@
 #ifdef LINUX
 #include <linux/types.h>
 #include <linux/quota.h>
+#endif
 
-/* Linux defines these fields with different names */
+#ifdef NETBSD
+#include <sys/types.h>
+#include <ufs/ufs/quota.h>
+#define BSD_QUOTACTL
+#endif
+
+#ifdef OSF
+#include <ufs/quota.h>
+#define BSD_QUOTACTL
+#endif
+
+
+/* Deal with structure element naming across OSes. */
+
+#ifdef DQBLK_USES_INODES
 #define dqb_fsoftlimit dqb_isoftlimit
 #define dqb_fhardlimit dqb_ihardlimit
 #define dqb_curfiles dqb_curinodes
 #endif
 
-#ifdef NETBSD
-#include <ufs/ufs/quota.h>
+#ifdef DQBLK_USES_TIME
+#define dqb_btimelimit dqb_btime
+#ifdef DQBLK_USES_INODES
+#define dqb_ftimelimit dqb_itime
+#else
+#define dqb_ftimelimit dqb_ftime
+#endif
 #endif
 
-#ifdef OSF
-#include <ufs/quota.h>
-#endif
 
 struct quota_fs {
   char *device;		/* Device special file, or /afs pathname */

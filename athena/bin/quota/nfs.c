@@ -15,7 +15,7 @@
 
 /* This contains the NFS quota-checking routines. */
 
-static const char rcsid[] = "$Id: nfs.c,v 1.2 1999-03-29 19:14:19 danw Exp $";
+static const char rcsid[] = "$Id: nfs.c,v 1.3 1999-06-03 14:54:24 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -25,7 +25,9 @@ static const char rcsid[] = "$Id: nfs.c,v 1.2 1999-03-29 19:14:19 danw Exp $";
 #include <netinet/in.h>
 
 #include <rpc/rpc.h>
+#ifdef HAVE_RPC_CLNT_SOC_H
 #include <rpc/clnt_soc.h>
+#endif
 #include <rpc/pmap_prot.h>
 #include <rpcsvc/rquota.h>
 
@@ -37,8 +39,11 @@ static const char rcsid[] = "$Id: nfs.c,v 1.2 1999-03-29 19:14:19 danw Exp $";
 
 #include "quota.h"
 
-#ifdef SOLARIS
+#ifndef GQR_RQUOTA_USES_GQR_RQUOTA
 #define gqr_rquota getquota_rslt_u.gqr_rquota
+#endif
+
+#ifndef GQR_RQUOTA_USES_GQR_STATUS
 #define gqr_status status
 #endif
 

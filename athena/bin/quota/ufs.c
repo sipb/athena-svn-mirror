@@ -15,7 +15,7 @@
 
 /* Routines for retrieving local filesystem quotas. */
 
-static const char rcsid[] = "$Id: ufs.c,v 1.1 1999-03-29 19:14:21 danw Exp $";
+static const char rcsid[] = "$Id: ufs.c,v 1.2 1999-06-03 14:54:24 danw Exp $";
 
 #include <errno.h>
 #include <fcntl.h>
@@ -87,8 +87,8 @@ int get_local_quota(struct quota_fs *fs, uid_t uid, int verbose)
 
 int os_quotactl(struct quota_fs *fs, uid_t uid)
 {
-#ifdef USRQUOTA
-  return quotactl(QCMD(Q_GETQUOTA, USRQUOTA), fs->device, uid,
+#ifdef BSD_QUOTACTL
+  return quotactl(fs->mount, QCMD(Q_GETQUOTA, USRQUOTA), uid,
 		  (caddr_t)&fs->dqb);
 #else
   return quotactl(Q_GETQUOTA, fs->device, uid, (caddr_t)&fs->dqb);

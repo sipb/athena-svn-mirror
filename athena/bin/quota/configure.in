@@ -21,12 +21,53 @@ linux*)
 osf*)
 	AC_DEFINE(OSF)
 	;;
+*)
+	AC_MSG_ERROR(Unknown operating system)
+	;;
 esac
+
+AC_CHECK_HEADERS(rpc/clnt_soc.h)
 
 AC_CHECK_LIB(rpcsvc, xdr_getquota_rslt, :,
 	RQUOTA_OBJS=rquota_xdr.o RQUOTA_JUNK="rquota.x rquota_xdr.c rquota.h rquota_clnt.c rquota_svc.c")
 AC_SUBST(RQUOTA_OBJS)
 AC_SUBST(RQUOTA_JUNK)
+
+AC_MSG_CHECKING(if struct dqblk refers to inodes or files)
+AC_TRY_COMPILE([#include "quota.h"],[struct dqblk dqb; dqb.dqb_curinodes = 1; ],
+	[AC_MSG_RESULT(inodes)
+	 AC_DEFINE(DQBLK_USES_INODES)],
+	AC_MSG_RESULT(files))
+AC_MSG_CHECKING(name of struct dqblk block time limit field)
+AC_TRY_COMPILE([#include "quota.h"],[struct dqblk dqb; dqb.dqb_btime = 1; ],
+	[AC_MSG_RESULT(dqb_btime)
+	 AC_DEFINE(DQBLK_USES_TIME)],
+	AC_MSG_RESULT(dqb_btimelimit))
+
+AC_MSG_CHECKING(for gqr_status in struct getquota_rslt)
+AC_TRY_COMPILE([
+#include <rpc/rpc.h>
+#ifdef HAVE_RPC_CLNT_SOC_H
+#include <rpc/clnt_soc.h>
+#endif
+#include <rpc/pmap_prot.h>
+#include <rpcsvc/rquota.h>
+], [struct getquota_rslt gqr; gqr.gqr_status = Q_OK;],
+	[AC_MSG_RESULT(yes)
+	 AC_DEFINE(GQR_RQUOTA_USES_GQR_STATUS)],
+	AC_MSG_RESULT(no))
+AC_MSG_CHECKING(for gqr_rquota in struct getquota_rslt)
+AC_TRY_COMPILE([
+#include <rpc/rpc.h>
+#ifdef HAVE_RPC_CLNT_SOC_H
+#include <rpc/clnt_soc.h>
+#endif
+#include <rpc/pmap_prot.h>
+#include <rpcsvc/rquota.h>
+], [struct getquota_rslt gqr; gqr.gqr_rquota.rq_bsize = 1;],
+	[AC_MSG_RESULT(yes)
+	 AC_DEFINE(GQR_RQUOTA_USES_GQR_RQUOTA)],
+	AC_MSG_RESULT(no))
 
 ATHENA_UTIL_COM_ERR
 ATHENA_AFS_REQUIRED
