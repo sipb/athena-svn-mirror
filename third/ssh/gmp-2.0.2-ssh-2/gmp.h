@@ -594,7 +594,7 @@ mpn_sub (res_ptr, s1_ptr, s1_size, s2_ptr, s2_size)
 #define mpq_denref(Q) (&((Q)->_mp_den))
 
 /* When using GCC, optimize certain common comparisons.  */
-#if defined (__GNUC__)
+#if defined (__GNUC__) && !defined(NeXT)
 #define mpz_cmp_ui(Z,UI) \
   (__builtin_constant_p (UI) && (UI) == 0				\
    ? mpz_sgn (Z) : mpz_cmp_ui (Z,UI))

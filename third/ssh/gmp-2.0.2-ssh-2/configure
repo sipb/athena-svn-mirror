@@ -1802,7 +1802,7 @@ rm -f conftest*
     CFLAGS=$OLD_CFLAGS
     
     ;;
-  cray2-cray-unicos* | [xy]mp-cray-unicos* | [ctj]90-cray-unicos*)
+  cray2-cray-unicos* | [xy]mp-cray-unicos* | [ctj]90-cray-unicos* | t3e-*-*)
     path="cray" 
     ;;
   alphaev5-*-*)

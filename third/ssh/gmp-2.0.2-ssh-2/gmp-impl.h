@@ -254,7 +254,7 @@ extern mp_size_t __gmp_default_fp_limb_precision;
     (q) = _xh - q1;							\
   } while (0)
 
-#if defined (__GNUC__)
+#if defined (__GNUC__) && !defined(NeXT)
 /* Define stuff for longlong.h.  */
 typedef unsigned int UQItype	__attribute__ ((mode (QI)));
 typedef 	 int SItype	__attribute__ ((mode (SI)));

@@ -14,8 +14,12 @@ Cryptographically strong random number generation.
 */
 
 /*
- * $Id: randoms.c,v 1.1.1.1 1997-10-17 22:26:03 danw Exp $
+ * $Id: randoms.c,v 1.1.1.2 1998-05-13 19:11:17 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  1998/04/17 00:39:38  kivinen
+ * 	Removed sys/resource.h including (it is already included in
+ * 	the includes.h).
+ *
  * Revision 1.2  1997/03/26 05:35:54  kivinen
  * 	Added HAVE_NO_TZ_IN_GETTIMEOFDAY support.
  *
@@ -49,7 +53,6 @@ Cryptographically strong random number generation.
 #include "userfile.h"
 
 #ifdef HAVE_GETRUSAGE
-#include <sys/resource.h>
 #ifdef HAVE_RUSAGE_H
 #include <sys/rusage.h>
 #endif /* HAVE_RUSAGE_H */
