@@ -18,7 +18,7 @@
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.2 1990-12-06 16:45:09 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.3 1990-12-20 15:22:13 sao Exp $";
 
 extern char	*RunCommand();
 extern CommandWidget	botbuttons[MAX_BOT_BUTTONS];
@@ -106,10 +106,12 @@ Boolean	update;
 				currentmtglong, first, last, num);
 	PutUpStatusMessage(command);
 
+/*
 	if (num > last) {
 		sprintf (command,"A request was made for transaction #%d of\nmeeting '%s'.  Unfortunately, the last\ntransaction is #%d.", num, currentmtglong, last);
 		PutUpWarning("WARNING", command, True);
 	}
+*/
 
 	if (GetTransactionFile(num) == -1)
 		return (-1);
