@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.14 1990-07-16 09:46:47 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_internal.h,v 1.15 1990-10-19 07:16:17 raeburn Exp $ */
 
 #ifndef __ZINTERNAL_H__
 #define __ZINTERNAL_H__
@@ -103,4 +103,4 @@ extern "C" {
 }
 #endif
 
-#endif !__ZINTERNAL_H__
+#endif /* !__ZINTERNAL_H__ */

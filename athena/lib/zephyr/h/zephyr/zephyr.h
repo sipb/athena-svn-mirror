@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h".
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.32 1990-07-16 09:43:44 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.33 1990-10-19 07:17:24 raeburn Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -277,4 +277,4 @@ extern "C" {
 }
 #endif
 
-#endif !__ZEPHYR_H__
+#endif /* !__ZEPHYR_H__ */
