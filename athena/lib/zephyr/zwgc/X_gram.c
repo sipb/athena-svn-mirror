@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.c,v $
- *      $Author: marc $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.18 1992-08-25 20:47:59 marc Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.19 1994-04-29 11:52:04 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -137,8 +137,7 @@ void x_gram_init(dpy)
     reset_saver =  get_bool_resource("resetSaver", "ResetSaver", 1);
     /* The default here should be 1, but mwm sucks */
     set_transient = get_bool_resource("transient", "Transient", 0);
-    /* This should go away, or become default 1, after a release cycle */
-    enable_delete = get_bool_resource("enableDelete", "EnableDelete", 0);
+    enable_delete = get_bool_resource("enableDelete", "EnableDelete", 1);
 
     temp = get_string_resource("borderWidth", "BorderWidth");
     /* <<<>>> */
