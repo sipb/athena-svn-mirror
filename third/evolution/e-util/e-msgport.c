@@ -201,17 +201,17 @@ EMsg *e_msgport_wait(EMsgPort *mp)
 			mp->condwait--;
 		} else {
 			fd_set rfds;
-			int status;
+			int retry;
 
 			m(printf("wait: waitng on pipe\n"));
+			g_mutex_unlock(mp->lock);
 			do {
 				FD_ZERO(&rfds);
 				FD_SET(mp->pipe.fd.read, &rfds);
-				g_mutex_unlock(mp->lock);
-				status = select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL);
+				retry = (select(mp->pipe.fd.read+1, &rfds, NULL, NULL, NULL) == -1 && errno == EINTR);
 				pthread_testcancel();
-				g_mutex_lock(mp->lock);
-			} while (status == -1 && errno == EINTR);
+			} while (retry);
+			g_mutex_lock(mp->lock);
 			m(printf("wait: got pipe\n"));
 		}
 	}
