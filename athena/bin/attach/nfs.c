@@ -6,7 +6,7 @@
  */
 
 #ifndef lint
-static char rcsid_nfs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.1 1990-04-19 12:11:26 jfc Exp $";
+static char rcsid_nfs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.2 1990-04-19 12:11:30 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -83,7 +83,7 @@ nfs_attach(at, mopt, errorout)
 
 	if ((at->mode != 'n') && do_nfsid)
 		if (nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDMAP,
-			  errorout, at->hesiodname, 1) == FAILURE) {
+			  errorout, at->hesiodname, 1, real_uid) == FAILURE) {
 			if (mopt->flags & M_RDONLY) {
 				printf("%s: Warning, mapping failed, continuing with read-only mount.\n",
 				       at->hesiodname);
@@ -114,7 +114,7 @@ nfs_attach(at, mopt, errorout)
 	if (mountfs(at, fsname, mopt, errorout) == FAILURE) {
 		if ((at->mode != 'n') && do_nfsid)
 			nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP,
-			      errorout, at->hesiodname, 1);
+			      errorout, at->hesiodname, 1, real_uid);
 		return (FAILURE);
 	}
 
@@ -129,7 +129,7 @@ nfs_detach(at)
 {
 	if ((at->mode != 'n') && do_nfsid &&
 	    nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP, 1,
-		  at->hesiodname,0) == FAILURE)
+		  at->hesiodname,0, real_uid) == FAILURE)
 		printf("Couldn't unmap %s, continuing.....\n", at->host);
 
 	if (at->flags & FLAG_PERMANENT) {
