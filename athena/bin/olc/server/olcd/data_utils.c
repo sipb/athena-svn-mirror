@@ -19,18 +19,18 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.42 1993-08-05 19:03:55 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: data_utils.c,v 1.43 1993-08-09 19:39:59 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.42 1993-08-05 19:03:55 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.43 1993-08-09 19:39:59 cfields Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
-#include <olcd.h>
+
 
 #include <ctype.h>
 #include <strings.h>
@@ -40,7 +40,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <pwd.h>
-
+#include <olcd.h>
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -1393,6 +1393,9 @@ verify_topic(topic)
      char *topic;
 {
   TOPIC **t_ptr;
+
+  if (topic == NULL)
+    return(FAILURE);
 
   if (strlen(topic) == 0) 
     return(FAILURE);
