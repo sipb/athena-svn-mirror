@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.21 1993-05-05 12:16:23 miki Exp $
+# $Id: Imakefile,v 1.22 1993-06-18 18:13:17 miki Exp $
 #
 # Remember: most conditionalization should be done in the package, not here.
 
@@ -26,7 +26,6 @@ install::
 	for i in ${SCRIPT}; do \
 		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
 		done
-	$(INSTALL) -m 0755 -o bin cc.sh $(DESTDIR)/usr/ucb/cc; 
 #else
 install::
 	for i in ${SCRIPT}; do \
