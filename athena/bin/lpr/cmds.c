@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9 1995-07-11 15:41:32 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9.2.1 1997-11-04 18:29:41 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9 1995-07-11 15:41:32 miki Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9.2.1 1997-11-04 18:29:41 ghudson Exp $";
 #endif lint
 
 /*
@@ -17,7 +17,7 @@ static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 
 #ifndef lint
 static char sccsid[] = "@(#)cmds.c	5.2 (Berkeley) 3/30/86";
-#endif not lint
+#endif /* not lint */
 
 /*
  * lpc -- line printer control program -- commands:
@@ -1005,7 +1005,7 @@ touch(q)
 
 	tvp.modtime = --mtime;
 	tvp.actime = 0;
-	return(utimes(q->q_name, tvp));
+	return(utime(q->q_name, &tvp));
 }
 #else
 
