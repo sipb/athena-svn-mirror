@@ -1,4 +1,4 @@
-#!/usr/contrib/bin/perl5
+#!/usr/local/bin/perl
 
 # read the lpd.conf file, and set up values from it
 

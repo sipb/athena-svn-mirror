@@ -87,7 +87,9 @@
 ##    'C' - lpc spool control request;
 ## NOTE: when printing (P action), the remote and job check values
 ##   (i.e. - RUSR, JUSR) are identical.
-## 
+## NOTE: the HOST, USER, SAMEUSER and SAMEHOST checks always succeed
+##   when checking permissions for a spool queue;  they are active only when
+##   checking permissions of a spooled job.  
 ## 
 ## The SAMEHOST match checks to see that one (or more) of the
 ##  IP addresses of the host originating the request are the
@@ -154,7 +156,20 @@
 ## of a connection to the LPD server,  or on the actual TCP/IP connection.
 ##
 ## The LPC entry matches an LPC command.  For example LPC=topq would match 
-## when an lpc topq command is being executed.
+## when an lpc topq command is being executed.  You must still have the
+## SERVICE=C entry to trigger this action.
+##
+## Note: the SERVICE=R and SERVICE=P both check the LPR actions
+## of sending a job.  However, SERVICE=R does it when the job is being
+## sent to the LPD server.  Some LPD (and LPR) implementations cannot
+## handle a job being rejected due to lack of permissions,  and sit in
+## an endless loop trying to resend the job.  This is the reason for
+## the SERVICE=P check.  You can accept the job for printing,  and then
+## have the SERVICE=P check remove the job.
+##
+## NOTE: if you do not have an explicit ACCEPT SERVICE=P or
+## DEFAULT ACCEPT action then your print jobs will be accepted
+## and then quietly discarded.
 ## 
 ## Example Permissions
 ## 
@@ -180,12 +195,22 @@
 ## #Do not allow forwarded jobs or requests
 ##   REJECT SERVICE=R,C,M FORWARD
 ## 
+
+## You can make sure that connections come from a privileged port.
+## Default is to allow them from any port so that non-setuid programs
+#  can do printing.
+#  Totally RFC1179
+#REJECT SERVICE=X NOT PORT=1-1023
+#REJECT SERVICE=X NOT PORT=1-1023
+#  Privileged
+#REJECT SERVICE=X NOT PORT=721-731
+#
 # allow root on server to control jobs
 ACCEPT SERVICE=C SERVER REMOTEUSER=root
 # allow anybody to get server, status, and printcap
-ACCEPT LPC=lpd,status,printcap
+ACCEPT SERVICE=C LPC=lpd,status,printcap
 # reject all others
-REJECT LPC=*
+REJECT SERVICE=C
 #
 # allow same user on originating host to remove a job
 ACCEPT SERVICE=M SAMEHOST SAMEUSER

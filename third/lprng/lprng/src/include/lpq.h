@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpq.h,v 1.1.1.1 1999-05-04 18:07:06 danw Exp $
+ * $Id: lpq.h,v 1.1.1.2 1999-10-27 20:10:11 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -13,6 +13,7 @@
 #define _LPQ_H_ 1
 EXTERN int LP_mode;			/* LP mode */
 EXTERN int Longformat;      /* Long format */
+EXTERN int Rawformat;       /* Long format */
 EXTERN int Displayformat;   /* Display format */
 EXTERN int All_printers;    /* show all printers */
 EXTERN int Status_line_count; /* number of status lines */

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: utilities.h,v 1.1.1.2 1999-05-04 18:07:10 danw Exp $
+ * $Id: utilities.h,v 1.1.1.3 1999-10-27 20:10:12 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -39,10 +39,17 @@ plp_sigfunc_t plp_signal (int signo, plp_sigfunc_t func);
 plp_sigfunc_t plp_signal_break (int signo, plp_sigfunc_t func);
 void plp_block_all_signals ( plp_block_mask *oblock );
 void plp_unblock_all_signals ( plp_block_mask *oblock );
+void plp_set_signal_mask ( plp_block_mask *in, plp_block_mask *out );
+void plp_unblock_one_signal ( int sig, plp_block_mask *oblock );
 void plp_block_one_signal( int sig, plp_block_mask *oblock );
 void plp_sigpause( void );
+int safestrcasecmp (const char *s1, const char *s2);
+int safestrncasecmp (const char *s1, const char *s2, int len );
 int safestrcmp( const char *s1, const char *s2 );
-int safestrcasecmp( const char *s1, const char *s2 );
+int safestrncmp( const char *s1, const char *s2, int len );
+char *safestrchr( const char *s1, int c );
+char *safestrrchr( const char *s1, int c );
+char *safestrpbrk( const char *s1, const char *s2 );
 int plp_usleep( int i );
 int plp_sleep( int i );
 int Get_max_servers( void );
@@ -61,6 +68,7 @@ void Clear_timeout( void );
 int To_root(void);
 int To_daemon(void);
 int To_user(void);
+int To_ruid_user(void);
 int To_uid( int uid );
 int setuid_wrapper(int to);
 int Full_daemon_perms(void);
@@ -70,6 +78,6 @@ int Getdaemon(void);
 int Getdaemon_group(void);
 int Setdaemon_group(void);
 void Reset_daemonuid(void);
-unsigned long Space_avail( char *pathname );
+double Space_avail( char *pathname );
 
 #endif

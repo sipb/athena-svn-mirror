@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: checkpc.c,v 1.1.1.1 1999-05-04 18:07:01 danw Exp $";
+"$Id: checkpc.c,v 1.1.1.2 1999-10-27 20:10:05 mwhitson Exp $";
 
 
 
@@ -34,21 +34,21 @@
  int Truncate = -1;
  int Remove;
  int Test;			/* carry out portability tests */
- char *Config_file;
+ char *User_specified_printer;
  time_t Current_time;
+ int Check_path_list( char *plist, int allow_missing );
 
 
 /* pathnames of the spool directory (sd) and control directory (cd) */
 
 int main( int argc, char *argv[], char *envp[] )
 {
-	int i, c, found_pc, fd;
+	int i, c, found_pc;
 	char *path;		/* end of string */
 	int ruid, euid, rgid, egid;
 	char *printcap;
 	char *serial_line = 0;
 	struct line_list values;
-	struct stat statb;
 	char *s, *t;
 
 	s = t = printcap = 0;
@@ -69,7 +69,7 @@ int main( int argc, char *argv[], char *envp[] )
 
 
     /* scan the argument list for a 'Debug' value */
-	while( (c = Getopt( argc, argv, "aflrst:A:CD:PT:V" ) ) != EOF ){
+	while( (c = Getopt( argc, argv, "aflprst:A:CD:P:T:V" ) ) != EOF ){
 		switch( c ){
 			default: usage();
 			case 'a': Noaccount = 1; break;
@@ -94,17 +94,43 @@ int main( int argc, char *argv[], char *envp[] )
 			case 'C': ++Config; break;
 			case 'D': Parse_debug(Optarg,1); break;
 			case 'V': ++Verbose; break;
-			case 'P': ++Printcap; break;
+			case 'p': ++Printcap; break;
+			case 'P': User_specified_printer = Optarg; break;
 			case 'T':
 				To_user();
+				initsetproctitle( argc, argv, envp );
 				Test_port( getuid(), geteuid(), serial_line );
 				exit(0);
 				break;
 		}
 	}
 
+	if( Verbose ){
+		if(Verbose)Msg( "LPRng version " PATCHLEVEL );
+	}
+
 	Initialize(argc, argv, envp);
 	Setup_configuration();
+
+
+	To_root();
+
+	if(Verbose)Msg("Checking for configuration files '%s'", Config_file_DYN);
+	found_pc = Check_path_list( Config_file_DYN, 0 );
+	if( found_pc == 0 ){
+		Warnmsg("No configuration file found in '%s'", Config_file_DYN );
+	}
+
+	if(Verbose)Msg("Checking for printcap files '%s'", Printcap_path_DYN);
+	found_pc = Check_path_list( Printcap_path_DYN, 0 );
+	if( Lpd_printcap_path_DYN ){
+		if(Verbose)Msg("Checking for lpd only printcap files '%s'", Lpd_printcap_path_DYN);
+		found_pc += Check_path_list( Lpd_printcap_path_DYN, 1 );
+	}
+	if( found_pc == 0 ){
+		Warnmsg("No printcap files!!!" );
+	}
+
 	Get_all_printcap_entries();
 
 	euid = geteuid();
@@ -112,9 +138,6 @@ int main( int argc, char *argv[], char *envp[] )
 	egid = getegid();
 	rgid = getgid();
 
-	if( Verbose ){
-		if(Verbose)Msg( "LPRng version " PATCHLEVEL );
-	}
 
 	DEBUG1("Effective UID %d, Real UID %d, Effective GID %d, Real GID %d",
 		euid, ruid, egid, rgid );
@@ -129,86 +152,6 @@ int main( int argc, char *argv[], char *envp[] )
 		Msg("CONFIG END");
 		if( s ) free(s); s = 0;
 	}
-
-	To_root();
-
-	found_pc = 0;
-	Free_line_list(&values);
-	Split(&values,Config_file_DYN,File_sep,0,0,0,0,0);
-	if(Verbose)Msg("Checking for configuration files '%s'", Config_file_DYN);
-	for( i = 0; i < values.count; ++i ){
-		path = values.list[i];
-		if( stat( path, &statb ) == 0 ){
-			if(Verbose)Msg("  found '%s', mod 0%o", path, statb.st_mode );
-			++found_pc;
-			if( (statb.st_mode & 0444) != 0444 ){
-				Warnmsg(" '%s' is not world readable", path );
-				Msg(" this file should have (suggested) 444 permissions, owned by root" );
-			}
-			if( (fd = Checkread( path,&statb ) ) < 0 ){
-				Warnmsg(" '%s' cannot be opened - check path permissions", path );
-			} else {
-				close(fd);
-			}
-		}
-	}
-	if( found_pc == 0 ){
-		Warnmsg("No configuration file found in '%s'", Config_file_DYN );
-	}
-	Free_line_list(&values);
-
-	if(Verbose)Msg("Checking for printcap files '%s'", Printcap_path_DYN);
-	found_pc = 0;
-	Free_line_list(&values);
-	Split(&values,Printcap_path_DYN,File_sep,0,0,0,0,0);
-	for( i = 0; i < values.count; ++i ){
-		path = values.list[i];
-		if( stat( path, &statb ) == 0 ){
-			if(Verbose)Msg("  found '%s', mod 0%o", path, statb.st_mode );
-			++found_pc;
-			if( (statb.st_mode & 0444) != 0444 ){
-				Warnmsg(" '%s' is not world readable", path );
-				Warnmsg(" this file should have (suggested) 544 permissions, owned by root" );
-			}
-			if( (fd = Checkread( path,&statb ) ) < 0 ){
-				Warnmsg(" '%s' cannot be opened - check path permissions", path );
-			} else {
-				close(fd);
-			}
-		}
-	}
-	if( found_pc == 0 ){
-		Warnmsg("No printcap file found in '%s'", Printcap_path_DYN );
-	}
-	Free_line_list(&values);
-
-	if(Verbose)Msg("Checking for lpd only printcap files '%s'", Lpd_printcap_path_DYN);
-	found_pc = 0;
-	Free_line_list(&values);
-	Split(&values,Lpd_printcap_path_DYN,File_sep,0,0,0,0,0);
-	for( i = 0; i < values.count; ++i ){
-		path = values.list[i];
-		if( stat( path, &statb ) == 0 ){
-			if(Verbose)Msg("  found '%s'", path );
-			++found_pc;
-			if( (statb.st_mode & 0444) != 0444 ){
-				Warnmsg(" '%s' is not world readable", path, geteuid() );
-				Msg(" this file should have (suggested) 544 permissions, owned by root" );
-				exit(0);
-			}
-			if( (fd = Checkread( path,&statb ) ) < 0 ){
-				Warnmsg(" '%s' cannot be opened - check path permissions", path );
-			} else {
-				close(fd);
-			}
-		}
-	}
-	if( Verbose && values.count && found_pc == 0 ){
-		Warnmsg("No lpd only printcap file found in '%s'", Lpd_printcap_path_DYN );
-	}
-	Free_line_list(&values);
-
-
 	/* print errors and everything on stdout */
 
 	if( Lockfile_DYN == 0 ){
@@ -216,9 +159,11 @@ int main( int argc, char *argv[], char *envp[] )
 	} else if( Lpd_port_DYN == 0 ){
 		Warnmsg( "Warning: no LPD port" );
 	} else {
+		int oldfile = Spool_file_perms_DYN;
+		Spool_file_perms_DYN = 0644;
 		path = safestrdup3( Lockfile_DYN,".", Lpd_port_DYN, __FILE__, __LINE__ ); 
 		if(Verbose)Msg( "LPD lockfile '%s'", path );
-		if( path[0] != '/' || !(s = strrchr(path,'/')) ){
+		if( path[0] != '/' || !(s = safestrrchr(path,'/')) ){
 			Warnmsg( "Warning: LPD lockfile '%s' not absolute path", path );
 		} else {
 			*s = 0;
@@ -227,17 +172,24 @@ int main( int argc, char *argv[], char *envp[] )
 				path);
 			} else {
 				*s = '/';
+				To_root();
 				Make_write_file( 0, path, 0 );
 			}
 		}
+		Spool_file_perms_DYN = oldfile;
 	}
 
 	if( Verbose ) Show_info();
 
 	if(Verbose)Msg("Checking printcap info");
-	for( i = 0; i < All_line_list.count; ++i ){
-		Set_DYN(&Printer_DYN,All_line_list.list[i]);
+	if( User_specified_printer ){
+		Set_DYN(&Printer_DYN,User_specified_printer);
 		Scan_printer();
+	} else {
+		for( i = 0; i < All_line_list.count; ++i ){
+			Set_DYN(&Printer_DYN,All_line_list.list[i]);
+			Scan_printer();
+		}
 	}
 
 	if(Verbose){
@@ -269,7 +221,7 @@ void Show_info(void)
 	s = t = w = printcap = 0;
 	s = Join_line_list(&PC_names_line_list,"\n :");
 	printcap = safestrdup3("Names","\n :",s,__FILE__,__LINE__);
-	if( (w = strrchr(printcap,' ')) ) *w = 0;
+	if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 	if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 
 	if(s) free(s); s = 0;
@@ -277,7 +229,7 @@ void Show_info(void)
 	if(printcap) free(printcap); printcap = 0;
 	s = Join_line_list(&All_line_list,"\n :");
 	printcap = safestrdup3("All","\n :",s,__FILE__,__LINE__);
-	if( (w = strrchr(printcap,' ')) ) *w = 0;
+	if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 	if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 
 
@@ -291,9 +243,9 @@ void Show_info(void)
 		t = Join_line_list(&PC_alias_line_list,"|");
 		s = Join_line_list(&PC_entry_line_list,"\n :");
 		if( s && t ){
-			if( (w = strrchr(t,'|')) ) *w = 0;
+			if( (w = safestrrchr(t,'|')) ) *w = 0;
 			printcap = safestrdup3(t,"\n :",s,__FILE__,__LINE__);
-			if( (w = strrchr(printcap,' ')) ) *w = 0;
+			if( (w = safestrrchr(printcap,' ')) ) *w = 0;
 			if( Write_fd_str( 1, printcap ) < 0 ) cleanup(0);
 		}
 	}
@@ -340,10 +292,10 @@ void Scan_printer(void)
 	/* check to see if printer defined in database */
 	if( Spool_dir_DYN == 0 ){
 		t = Join_line_list(&PC_alias_line_list,"|");
-		if( t && (w = strrchr(t,'|')) ) *w = 0;
+		if( t && (w = safestrrchr(t,'|')) ) *w = 0;
 		s = Join_line_list(&PC_entry_line_list,"\n :");
 		u = safestrdup3(t,"\n :",s,__FILE__,__LINE__);
-		if( (w = strrchr(u,' ')) ) *w = 0;
+		if( (w = safestrrchr(u,' ')) ) *w = 0;
 		Warnmsg("%s: Bad printcap entry - missing 'sd' or 'client' entry?",
 			Printer_DYN);
 		Msg("%s", u );
@@ -360,10 +312,10 @@ void Scan_printer(void)
 	if( Printcap ){
 		Msg("PRINTCAP START");
 		t = Join_line_list(&PC_alias_line_list,"|");
-		if( t && (w = strrchr(t,'|')) ) *w = 0;
+		if( t && (w = safestrrchr(t,'|')) ) *w = 0;
 		s = Join_line_list(&PC_entry_line_list,"\n :");
 		u = safestrdup3(t,"\n :",s,__FILE__,__LINE__);
-		if( (w = strrchr(u,'\n')) ) *w = 0;
+		if( (w = safestrrchr(u,'\n')) ) *w = 0;
 		Msg("%s", u );
 		if(s) free(s); s = 0;
 		if(t) free(t); t = 0;
@@ -384,8 +336,8 @@ void Scan_printer(void)
 	while( (d = readdir(dir)) ){
 		if(s) free(s); s = 0;
 		cf_name = d->d_name;
-		if( strcmp( cf_name, "." ) == 0
-			|| strcmp( cf_name, ".." ) == 0 ) continue;
+		if( safestrcmp( cf_name, "." ) == 0
+			|| safestrcmp( cf_name, ".." ) == 0 ) continue;
 		DEBUG2("Scan_printer: file '%s'", cf_name );
 		s = Make_pathname(Spool_dir_DYN,cf_name);
 		if( stat(s,&statb) == -1 ){
@@ -394,13 +346,13 @@ void Scan_printer(void)
 			continue;
 		}
 		delta = Current_time - statb.st_mtime;
-		jobfile = ( !strncmp( cf_name,"cf",2 )
-			|| !strncmp( cf_name,"hf",2 )
-			|| !strncmp( cf_name,"df",2 )
-			|| !strncmp( cf_name,"temp",4 ) );
+		jobfile = ( !safestrncmp( cf_name,"cf",2 )
+			|| !safestrncmp( cf_name,"hf",2 )
+			|| !safestrncmp( cf_name,"df",2 )
+			|| !safestrncmp( cf_name,"temp",4 ) );
 		if( delta > Age && statb.st_size == 0 ){
-			if(Verbose)Msg( "  file '%s', size %ld K, unchanged in %ld hours",
-				cf_name, (long)((statb.st_size+1023.0)/1024.0), (long)((delta+3599)/3600) );
+			if(Verbose)Msg( "  file '%s', zero length file unchanged in %ld hours",
+				cf_name, (long)((delta+3599)/3600) );
 			if( Remove ) unlink(s);
 		}
 		if( jobfile ){
@@ -412,18 +364,15 @@ void Scan_printer(void)
 	if(s) free(s); s = 0;
 	Free_line_list(&files);
 
-	s = safestrdup2( "control.", Printer_DYN,__FILE__,__LINE__ );
-	Make_write_file( Spool_dir_DYN, s, 0 );
+	Make_write_file( Spool_dir_DYN, Queue_control_file_DYN, 0 );
 	if( !Find_first_key(&files,s,Value_sep,&n ) ){
 		Remove_line_list(&files,n);
 	}
-	if( s ) free(s); s = 0;
-	s =safestrdup2( "status.", Printer_DYN, __FILE__,__LINE__ );
-	Make_write_file( Spool_dir_DYN, s, 0 );
+
+	Make_write_file( Spool_dir_DYN, Queue_status_file_DYN, 0 );
 	if( !Find_first_key(&files,s,Value_sep,&n ) ){
 		Remove_line_list(&files,n);
 	}
-	if( s ) free(s); s = 0;
 	Fix_clean(Status_file_DYN,Nostatus,&files);
 	Fix_clean(Log_file_DYN,Nolog,&files);
 	Fix_clean(Accounting_file_DYN,Noaccount,&files);
@@ -437,7 +386,7 @@ void Scan_printer(void)
 	for( count = 0; count < Sort_order.count; ++count ){
 		Free_job(&job);
 		s = Sort_order.list[count];
-		if( (s = strchr(Sort_order.list[count],';')) ){
+		if( (s = safestrchr(Sort_order.list[count],';')) ){
 			Split(&job.info,s+1,";",1,Value_sep,1,1,1);
 		}
 		if( Setup_cf_info( Spool_dir_DYN, 0, &job ) ){
@@ -464,7 +413,7 @@ void Scan_printer(void)
 			Remove_line_list(&files,n);
 		}
 		id = Find_str_value(&job.info,HF_NAME,Value_sep);
-		if( (s = strrchr(id,'/')) ){
+		if( (s = safestrrchr(id,'/')) ){
 			++s;
 		} else {
 			s = id;
@@ -475,7 +424,7 @@ void Scan_printer(void)
 		for( datafile = 0; datafile < job.datafiles.count; ++datafile ){
 			lp = (void *)job.datafiles.list[datafile];
 			id = Find_str_value(lp,OPENNAME,Value_sep);
-			if( (s = strrchr(id,'/')) ){
+			if( (s = safestrrchr(id,'/')) ){
 				++s;
 			} else {
 				s = id;
@@ -515,7 +464,7 @@ void Scan_printer(void)
 	if( Server_queue_name_DYN == 0
 		&& RemotePrinter_DYN == 0 && Lp_device_DYN == 0 ){
 		Warnmsg( "Missing 'lp' and 'rp' entry for local printer" );
-	} else if( Lp_device_DYN && strpbrk( Lp_device_DYN, "|%@" ) == 0  ){
+	} else if( Lp_device_DYN && safestrpbrk( Lp_device_DYN, "|%@" ) == 0  ){
 		s = Lp_device_DYN;
 		fd = -1;
 		if( s[0] != '/' ){
@@ -530,7 +479,7 @@ void Scan_printer(void)
 	/* check the filters */
 	strcpy(error,"xf");
 	for( i = 'a'; i <= 'z'; ++i ){
-		if( strchr("afls",i) ) continue;
+		if( safestrchr("afls",i) ) continue;
 		error[0] = i;
 		Free_line_list(&files);
 		s = Find_str_value(&PC_entry_line_list,error,Value_sep);
@@ -540,8 +489,9 @@ void Scan_printer(void)
 			if(Verbose)Msg("  '%s' filter '%s'", error, s );
 			for( j = 0; j < files.count; ++j ){
 				s = files.list[j];
-				if( cval(s) == '$' ) continue;
-				if( !strcasecmp(s,"root") ) continue;
+				if( cval(s) == '|' ) ++s;
+				if( !safestrcasecmp(s,"$-")  ) continue;
+				if( !safestrcasecmp(s,"root") ) continue;
 				break;
 			}
 			if(Verbose)Msg("    executable '%s'", s );
@@ -737,7 +687,7 @@ void Clean_log( int trunc, char  *dpath, char *logfile )
 	int fd, dfd;				/* log file */
 	int k, n;		/* ACME, for integers that COUNT */
 	struct stat statb;	/* for a file */
-	long len;			/* length of file */
+	double len;			/* length of file */
 	char buffer[LARGEBUFFER];
 	char *sx;
 
@@ -758,7 +708,7 @@ void Clean_log( int trunc, char  *dpath, char *logfile )
 		k = (trunc >= 0 && len > trunc);
 		sx = (k)?"needs":"no";
 		plp_snprintf(buffer,sizeof(buffer)," to %d K", trunc );
-		if(Verbose)Msg( "  cleaning '%s' file, %ld bytes long: %s truncation%s",
+		if(Verbose)Msg( "  cleaning '%s' file, %0.0f bytes long: %s truncation%s",
 			logfile, len, sx, (trunc>=0)?buffer:"" );
 		if( k == 0 ) break;
 		if( trunc == 0 ){
@@ -775,7 +725,7 @@ void Clean_log( int trunc, char  *dpath, char *logfile )
 			}
 			while( (n = read(fd,buffer,sizeof(buffer)-1)) >0 ){
 				buffer[n] = 0;
-				if((sx = strchr(buffer,'\n')) ){
+				if((sx = safestrchr(buffer,'\n')) ){
 					*sx++ = 0;
 					Write_fd_str( dfd, sx );
 					break;
@@ -833,9 +783,9 @@ int Check_file( char  *path, int fix, int age, int rmflag )
 			if( Fix_owner( path ) ) err = 2;
 		}
 	}
-	if( 077777 & (statb.st_mode ^ Spool_file_perms_DYN) ){
+	if( 07777 & (statb.st_mode ^ Spool_file_perms_DYN) ){
 		Warnmsg( "permissions of '%s' are 0%o, not 0%o", path,
-			statb.st_mode & 077777, Spool_file_perms_DYN );
+			statb.st_mode & 07777, Spool_file_perms_DYN );
 		if( fix ){
 			if( Fix_perms( path, Spool_file_perms_DYN ) ) err = 1;
 		}
@@ -879,12 +829,14 @@ int Fix_create_dir( char  *path, struct stat *statb )
 	}
 	/* we don't have a directory */
 	if( stat( path, statb ) ){
+		To_root();
 		if( mkdir( path, Spool_dir_perms_DYN ) ){
 			Warnmsg( "mkdir '%s' failed, %s", path, Errormsg(errno) );
 			err = 1;
 		} else {
 			err = Fix_owner( path );
 		}
+		To_user();
 	}
 	return( err );
 }
@@ -998,9 +950,9 @@ int Check_spool_dir( char *path, int owner )
 			if( Fix_owner( path ) ) err = 2;
 		}
 	}
-	if( 077777 & (statb.st_mode ^ Spool_dir_perms_DYN) ){
+	if( 07777 & (statb.st_mode ^ Spool_dir_perms_DYN) ){
 		Warnmsg( "permissions of '%s' are 0%o, not 0%o", path,
-			statb.st_mode & 077777, Spool_dir_perms_DYN );
+			statb.st_mode & 07777, Spool_dir_perms_DYN );
 		err = 1;
 		if( Fix ){
 			if( Fix_perms( path, Spool_dir_perms_DYN ) ) err = 1;
@@ -1035,7 +987,7 @@ void Test_port(int ruid, int euid, char *serial_line )
 	int ttyfd;
 	static pid_t pid, result;
 	plp_status_t status;
-	unsigned long freespace;
+	double freespace;
 	static int fd;
 	static int i, err;
 	struct stat statb;
@@ -1083,8 +1035,8 @@ void Test_port(int ruid, int euid, char *serial_line )
 
 	freespace = Space_avail( "/tmp" );
 
-	fprintf( stderr, "***** Free space '/tmp' = %d Kbytes \n"
-		"   (check using df command)\n", (int)freespace );
+	fprintf( stderr, "***** Free space '/tmp' = %0.0f Kbytes \n"
+		"   (check using df command)\n", (double)freespace );
 
 	/*
 	 * check serial line
@@ -1513,8 +1465,8 @@ void Test_port(int ruid, int euid, char *serial_line )
  * check out the process title
  ***************************************************************************/
 
-	fprintf( stdout, "checking if setting process info to 'XXYYZZ' works\n" );
-	setproctitle( "XXYYZZ" );
+	fprintf( stdout, "checking if setting process info to 'lpd XXYYZZ' works\n" );
+	setproctitle( "lpd %s", "XXYYZZ" );
 	/* try simple test first */
 	i = 0;
 	if( (tf = popen( "ps | grep XXYYZZ | grep -v grep", "r" )) ){
@@ -1572,7 +1524,7 @@ void Test_port(int ruid, int euid, char *serial_line )
 	return;
 }
 
- void send_to_logger (struct job *job,const char *header, char *fmt){;}
+ void send_to_logger (int sdf, int mfd, struct job *job,const char *header, char *fmt){;}
 
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
@@ -1626,4 +1578,44 @@ void Fix_clean( char *s, int no, struct line_list *files )
 int Start_worker( struct line_list *l, int fd )
 {
 	return(1);
+}
+
+int Check_path_list( char *plist, int allow_missing )
+{
+	struct line_list values;
+	char *path, *s;
+	int found_pc = 0, i, fd;
+	struct stat statb;
+
+	Init_line_list(&values);
+	Split(&values,plist,File_sep,0,0,0,0,0);
+	for( i = 0; i < values.count; ++i ){
+		path = values.list[i];
+		if( path[0] == '|' ){
+			++path;
+			while( isspace(cval(path)) ) ++path;
+			if( (s = strpbrk(path,Whitespace)) ) *s = 0;
+		}
+		if( path[0] == '/' ){
+			if( (fd = Checkread( path,&statb ) ) < 0 ){
+				if( stat( path, &statb ) ){
+					if( ! allow_missing ) Warnmsg(" '%s' not present", path );
+				} else {
+					Warnmsg(" '%s' cannot be opened - check path permissions", path );
+				}
+			} else {
+				close(fd);
+				if(Verbose)Msg("  found '%s', mod 0%o", path, statb.st_mode );
+				++found_pc;
+				if( (statb.st_mode & 0444) != 0444 ){
+					Warnmsg(" '%s' is not world readable", path );
+					Warnmsg(" this file should have (suggested) 644 permissions, owned by root" );
+				}
+			}
+		} else {
+			Warnmsg("not absolute pathname '%s' in '%s'", path, plist );
+		}
+	}
+	Free_line_list(&values);
+	return(found_pc);
 }

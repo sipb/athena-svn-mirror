@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpstat.c,v 1.1.1.2 1999-05-24 18:29:21 danw Exp $";
+"$Id: lpstat.c,v 1.1.1.3 1999-10-27 20:09:53 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -63,12 +63,13 @@
 #include "lpstat.h"
 /**** ENDINCLUDE ****/
 
- int P_flag, R_flag, S_flag, a_flag, c_flag, d_flag, f_flag, l_flag,
+ int P_flag, R_flag, S_flag, a_flag, c_flag, d_flag, f_flag, l_flag, n_flag,
 	o_flag, p_flag, r_flag, s_flag, t_flag, u_flag, v_flag, flag_count;
- char *S_val, *a_val, *c_val, *f_val, *o_val, *p_val, *u_val, *v_val;
- struct line_list S_list, a_list, c_list, f_list, o_list, p_list, u_list, v_list;
+ char *S_val, *a_val, *c_val, *f_val, *o_val, *n_val, *p_val, *u_val, *v_val;
+ struct line_list S_list, a_list, c_list, f_list, o_list, p_list, u_list;
 
  struct line_list Lpq_options;
+ int Rawformat;
 
 #define MAX_SHORT_STATUS 6
 
@@ -98,6 +99,8 @@ int main(int argc, char *argv[], char *envp[])
 	 * set up the user state
 	 */
 
+	Status_line_count = 1;
+
 #ifndef NODEBUG
 	Debug = 0;
 #endif
@@ -114,10 +117,10 @@ int main(int argc, char *argv[], char *envp[])
 	Get_all_printcap_entries();
 
 	/* check on printing scheduler is running */
-	if( r_flag || t_flag ){
+	if( r_flag || t_flag || s_flag ){
 		Write_fd_str(1,"scheduler is running\n");
 	}
-	if( d_flag || t_flag ){
+	if( d_flag || t_flag || s_flag ){
 		if( Printer_DYN == 0 ){
 			Write_fd_str(1,"no system default destination\n");
 		} else {
@@ -125,12 +128,22 @@ int main(int argc, char *argv[], char *envp[])
 			Write_fd_str(1,msg);
 		}
 	}
+	if( t_flag && a_flag == 0 ){ a_flag = 1; ++flag_count; }
 	if( s_flag || t_flag || v_flag ){
-		for( i = 0; i < All_line_list.count; ++i ){
-			Set_DYN(&Printer_DYN,All_line_list.list[i] );
-			Fix_Rm_Rp_info();
-			plp_snprintf(msg,sizeof(msg), "system for %s: %s\n", Printer_DYN, RemoteHost_DYN);
-			Write_fd_str(1,msg);
+		if( Printer_list.count ){
+			for( i = 0; i < Printer_list.count; ++i ){
+				Set_DYN(&Printer_DYN,Printer_list.list[i] );
+				Fix_Rm_Rp_info();
+				plp_snprintf(msg,sizeof(msg), "system for %s: %s\n", Printer_DYN, RemoteHost_DYN);
+				Write_fd_str(1,msg);
+			}
+		} else {
+			for( i = 0; i < All_line_list.count; ++i ){
+				Set_DYN(&Printer_DYN,All_line_list.list[i] );
+				Fix_Rm_Rp_info();
+				plp_snprintf(msg,sizeof(msg), "system for %s: %s\n", Printer_DYN, RemoteHost_DYN);
+				Write_fd_str(1,msg);
+			}
 		}
 	}
 
@@ -144,6 +157,7 @@ int main(int argc, char *argv[], char *envp[])
 		return(0);
 	}
 
+	DEBUG1("lpstat: main - All_printers %d", All_printers );
 	Merge_line_list( &request_list, &Printer_list,0,1,1);
 	Free_line_list( &Printer_list );
 	if( t_flag || All_printers ){
@@ -153,9 +167,11 @@ int main(int argc, char *argv[], char *envp[])
 	DEBUG1("lpstat: all printers");
 	for( i = 0; i < request_list.count; ++i ){
 		s = request_list.list[i];
-		if( Find_exists_value( &All_line_list, s, 0 ) ){
+		if( Find_key_in_list( &All_line_list, s, Value_sep, 0 ) == 0 ){
+			DEBUG1("lpstat: printer in list '%s'", s);
 			Add_line_list( &l, s, 0, 1, 1 );
 		} else {
+			DEBUG1("lpstat: option in list '%s'", s);
 			Add_line_list( &options, s, 0, 1, 1 );
 		}
 	}
@@ -174,10 +190,23 @@ int main(int argc, char *argv[], char *envp[])
 	if( options.count && l.count == 0 ){
 		Merge_line_list( &l, &All_line_list,0,1,1);
 	}
+	Free_line_list( &Printer_list );
+	if( a_flag ){
+		for( i = 0; i < l.count; ++i ){
+			s = l.list[i];
+			Set_DYN(&Printer_DYN,s );
+			Show_status(options.list, 0);
+		}
+		a_flag = 0;
+		if( flag_count == 1 ){
+			return(0);
+		}
+	}
+	Free_line_list( &Printer_list );
 	for( i = 0; i < l.count; ++i ){
 		s = l.list[i];
 		Set_DYN(&Printer_DYN,s );
-		Show_status(options.list);
+		Show_status(options.list, 1);
 	}
 
 	DEBUG1("lpstat: done");
@@ -192,7 +221,7 @@ int main(int argc, char *argv[], char *envp[])
 	return(0);
 }
 
-void Show_status(char **argv)
+void Show_status(char **argv, int display_format)
 {
 	int fd;
 	char msg[LINEBUFFER];
@@ -202,11 +231,6 @@ void Show_status(char **argv)
 	Get_printer();
 	Fix_Rm_Rp_info();
 
-	if( s_flag || t_flag || p_flag || o_flag ){
-		plp_snprintf(msg,sizeof(msg), "printer %s unkown state. enabled since %s. available\n",
-			Printer_DYN, Pretty_time(0));
-		Write_fd_str(1,msg);
-	}
 
 	if( Check_for_rg_group( Logname_DYN ) ){
 		plp_snprintf( msg, sizeof(msg),
@@ -218,8 +242,8 @@ void Show_status(char **argv)
 		0, Connect_timeout_DYN, Send_query_rw_timeout_DYN, 1 );
 	if( fd >= 0 ){
 		Read_status_info( RemoteHost_DYN, fd,
-			1, Send_query_rw_timeout_DYN, 0,
-			0 );
+			1, Send_query_rw_timeout_DYN, display_format,
+			Status_line_count );
 		close(fd);
 	}
 	DEBUG1("Show_status: end");
@@ -232,56 +256,179 @@ void Show_status(char **argv)
  * sock  = fd to read status from
  * char *host = host we are reading from
  * int output = output fd
- *  We read the input in blocks,  split up into lines,
- *  and then pass the lines to a lower level routine for processing.
+ *  We read the input in blocks,  split up into lines.
  *  We run the status through the plp_snprintf() routine,  which will
  *   rip out any unprintable characters.  This will prevent magic escape
  *   string attacks by users putting codes in job names, etc.
  ***************************************************************************/
 
 int Read_status_info( char *host, int sock,
-	int output, int timeout, int displayformat,
+	int output, int timeout, int display_format,
 	int status_line_count )
 {
-	int n, status, count;
-	char buffer[LARGEBUFFER];
-	char *s;
+	int i, j, len, n, status, count, index_list, same;
+	char buffer[SMALLBUFFER], header[SMALLBUFFER];
+	char *s, *t;
 	struct line_list l;
+	int look_for_pr = 0;
 
 	Init_line_list(&l);
 
+	header[0] = 0;
 	status = count = 0;
-	buffer[0] = 0;
 	/* long status - trim lines */
 	DEBUG1("Read_status_info: output %d, timeout %d, dspfmt %d",
-		output, timeout, displayformat );
+		output, timeout, display_format );
 	DEBUG1("Read_status_info: status_line_count %d", status_line_count );
+	buffer[0] = 0;
 	do {
+		DEBUG1("Read_status_info: look_for_pr %d, in buffer already '%s'", look_for_pr, buffer );
+		if( DEBUGL2 )Dump_line_list("Read_status_info - starting list", &l );
+		count = strlen(buffer);
 		n = sizeof(buffer)-count-1;
-		if( n <= 0 ){
-			break;
+		status = 1;
+		if( n > 0 ){
+			status = Link_read( host, &sock, timeout,
+				buffer+count, &n );
+			DEBUG1("Read_status_info: Link_read status %d, read %d", status, n );
 		}
-		status = Link_read( host, &sock, timeout,
-			buffer+count, &n );
-		DEBUG1("Read_status_info: Link_read status %d, read %d", status, n );
-		if( status || n == 0 ){
+		if( status || n <= 0 ){
 			status = 1;
+			buffer[count] = 0;
 		} else {
 			buffer[count+n] = 0;
 		}
-		DEBUG3("Read_status_info: got '%s'", buffer );
-		if( (s = strrchr(buffer,'\n')) ){
+		DEBUG1("Read_status_info: got '%s'", buffer );
+		/* now we have to split line up */
+		if( (s = safestrrchr(buffer,'\n')) ){
 			*s++ = 0;
 			/* add the lines */
 			Split(&l,buffer,Line_ends,0,0,0,0,0);
 			memmove(buffer,s,strlen(s)+1);
-			count = strlen(buffer);
 		}
+		if( DEBUGL2 )Dump_line_list("Read_status_info - status after splitting", &l );
+		if( status ){
+			if( buffer[0] ){
+				Add_line_list(&l,buffer,0,0,0);
+				buffer[0] = 0;
+			}
+			Check_max(&l,1);
+			l.list[l.count++] = 0;
+		}
+		index_list = 0;
+ again:
+		DEBUG2("Read_status_info: look_for_pr '%d'", look_for_pr );
+		if( DEBUGL2 )Dump_line_list("Read_status_info - starting, Printer_list",
+			&Printer_list);
+		while( look_for_pr && index_list < l.count ){
+			s = l.list[index_list];
+			if( s == 0 || isspace(cval(s)) || !(t = strstr(s,"Printer:"))
+				|| Find_exists_value(&Printer_list,t,0) ){
+				++index_list;
+			} else {
+				look_for_pr = 0;
+			}
+		}
+		while( index_list < l.count && (s = l.list[index_list]) ){
+			DEBUG2("Read_status_info: checking [%d] '%s', total %d", index_list, s, l.count );
+			if( s && !isspace(cval(s)) && (t = strstr(s,"Printer:")) ){
+				if( Find_exists_value(&Printer_list,t,0) ){
+					look_for_pr = 1;
+					goto again;
+				} else {
+					Add_line_list(&Printer_list,t,0,1,0);
+					/* parse the printer line */
+					if( display_format == 0 ){
+						char msg[SMALLBUFFER];
+						int nospool, noprint; 
+						nospool = (strstr( s, "(spooling disabled)") != 0);
+						noprint = (strstr( s, "(printing disabled)") != 0);
+						/* Write_fd_str( output, "ANALYZE " );
+						if( Write_fd_str( output, s ) < 0
+							|| Write_fd_str( output, "\n" ) < 0 ) return(1);
+						*/
+						if( !nospool ){
+							plp_snprintf(msg,sizeof(msg),
+							"%s accepting requests since %s\n",
+							Printer_DYN, Time_str(0,0) );
+						} else {
+							plp_snprintf(msg,sizeof(msg),
+							"%s not accepting requests since %s -\n\tunknown reason\n",
+							Printer_DYN, Pretty_time(0) );
+						}
+						if( Write_fd_str( output, msg ) < 0 ) return(1);
+						if( (s_flag || t_flag || p_flag || o_flag) ){
+							plp_snprintf(msg,sizeof(msg),
+							"printer %s unknown state. %s since %s. available\n",
+							Printer_DYN, noprint?"disabled":"enabled",
+							Pretty_time(0));
+							if( Write_fd_str( output, msg ) < 0 ) return(1);
+						}
+					} else {
+						if( Write_fd_str( output, s ) < 0
+							|| Write_fd_str( output, "\n" ) < 0 ) return(1);
+					}
+					++index_list;
+					continue;
+				}
+			}
+			if( display_format == 0 ){
+				++index_list;
+				continue;
+			}
+			if( status_line_count > 0 ){
+				/*
+				 * starting at line_index, we take this as the header.
+				 * then we check to see if there are at least status_line_count there.
+				 * if there are,  we will increment status_line_count until we get to
+				 * the end of the reading (0 string value) or end of list.
+				 */
+				header[0] = 0;
+				strncpy( header, s, sizeof(header)-1);
+				header[sizeof(header)-1] = 0;
+				if( (s = strchr(header,':')) ){
+					*++s = 0;
+				}
+				len = strlen(header);
+				/* find the last status_line_count lines */
+				same = 1;
+				for( i = index_list+1; i < l.count ; ++i ){
+					same = !safestrncmp(l.list[i],header,len);
+					DEBUG2("Read_status_info: header '%s', len %d, to '%s', same %d",
+						header, len, l.list[i], same );
+					if( !same ){
+						break;
+					}
+				}
+				/* if they are all the same,  then we save for next pass */
+				/* we print the i - status_line count to i - 1 lines */
+				j = i - status_line_count;
+				if( index_list < j ) index_list = j;
+				DEBUG2("Read_status_info: header '%s', index_list %d, last %d, same %d",
+					header, index_list, i, same );
+				if( same ) break;
+				while( index_list < i ){
+					DEBUG2("Read_status_info: writing [%d] '%s'",
+						index_list, l.list[index_list]);
+					if( Write_fd_str( output, l.list[index_list] ) < 0
+						|| Write_fd_str( output, "\n" ) < 0 ) return(1);
+					++index_list;
+				}
+			} else {
+				if( Write_fd_str( output, s ) < 0
+					|| Write_fd_str( output, "\n" ) < 0 ) return(1);
+				++index_list;
+			}
+		}
+		DEBUG2("Read_status_info: at end index_list %d, count %d", index_list, l.count );
+		for( i = 0; i < l.count && i < index_list; ++i ){
+			if( l.list[i] ) free( l.list[i] ); l.list[i] = 0;
+		}
+		for( i = 0; index_list < l.count ; ++i, ++index_list ){
+			l.list[i] = l.list[index_list];
+		}
+		l.count = i;
 	} while( status == 0 );
-	Check_max(&l,1);
-	l.list[l.count] = 0;
-	if(DEBUGL3)Dump_line_list("Read_status_info - raw status", &l);
-	Remove_excess( &l, 3, 1 );
 	Free_line_list(&l);
 	DEBUG1("Read_status_info: done" );
 	return(0);
@@ -315,7 +462,7 @@ int Read_status_info( char *host, int sock,
 	return;
 }
 
- void send_to_logger (struct job *job,const char *header, char *fmt){;}
+ void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
  void setmessage (struct job *job,const char *header, char *fmt,...)
@@ -344,77 +491,6 @@ int Read_status_info( char *host, int sock,
 	VA_END;
 	return;
 }
-
-
-int Remove_excess( struct line_list *l, int status_line_count, int output )
-{
-	char *s, *t;
-	int i, j, n;
-	/* now we might need to prune these */
-	if(DEBUGL3)Dump_line_list("Remove_excess- starting", l );
-	while(l->count){
-		if( (s = l->list[0]) == 0 ){
-			Remove_line_list(l,0);
-			return(0);
-		}
-		DEBUG3("Remove_excess: checking '%s', total %d", s, l->count );
-		i = 0;
-		if( !isspace(cval(s)) ){
-			if( (t = strstr( s, "Printer:" )) ){
-				DEBUG3("Remove_excess: looking for '%s'", t );
-				if( Find_exists_value(&Printer_list,t,0) ){
-					DEBUG1("Remove_excess: already done '%s'", t );
-					return(1);
-				}
-				DEBUG1("Remove_excess: not done '%s'", t );
-				if( l->count > 1 ){
-					DEBUG1("Remove_excess: adding to done '%s'", t );
-					Add_line_list( &Printer_list, t, 0, 0, 0);
-				}
-			} else {
-				i = 1;
-			}
-		}
-		/* we search for differences */
-		if( i == 0 ){
-			if( (t = strpbrk(s,":")) ){
-				n = t - s;
-			} else {
-				n = strlen(s);
-			}
-			DEBUG2("Remove_excess: checking '%s', length %d", s, n );
-			for( i = 1; i < l->count && (t=l->list[i]) && !strncmp(s,t,n); ++i );
-		}
-		DEBUG2("Remove_excess: found difference at %d", i );
-		n = i - status_line_count;
-		if( i < l->count ){
-			n = i - status_line_count;
-			if( n < 0 ) n = 0;
-			DEBUG2("Remove_excess: skipping %d, doing up to %d", n, i );
-			for( j = n; j < i; ++j ){
-				if( !isspace( cval(l->list[j]) )
-					&& (s_flag || t_flag || p_flag || o_flag)
-					&& Write_fd_str( output, " " ) < 0 ) return(1);
-				if( Write_fd_str( output, l->list[j] ) < 0
-					|| Write_fd_str( output, "\n" ) < 0 ) return(1);
-			}
-			DEBUG2("Remove_excess: removing %d", i );
-			for( j = 0; j < i; ++j ){
-				Remove_line_list(l,0);
-			}
-		} else if( n > 0 ){
-			DEBUG2("Remove_excess: removing surplus %d", n );
-			for( j = 0; j < n; ++j ){
-				Remove_line_list(l,0);
-			}
-		} else {
-			break;
-		}
-	}
-	if(DEBUGL3)Dump_line_list("Remove_excess- now have", l );
-	return(0);
-}
-
 
 int Add_val( char **var, char *val )
 {
@@ -454,7 +530,7 @@ SYNOPSIS
      lpstat [ -d ] [ -r ] [ -R ] [ -s ] [ -t ] [ -a [list] ]
           [ -c [list] ] [ -f [list] [ -l ] ] [ -o [list] ]
           [ -p [list] [ -D ] [ -l ] ] [ -P ] [ -S [list] [ -l ] ]
-          [ -u [login-ID-list] ] [ -v [list] ]
+          [ -u [login-ID-list] ] [ -v [list] ] [-n linecount]
 */
 	flag_count = 0;
 	for( i = 1; i < argc; ++i ){
@@ -463,19 +539,21 @@ SYNOPSIS
 			switch( cval(s+1) ){
 			case 'd': ++flag_count; d_flag = 1; if(cval(s+2)) usage(); break;
 			case 'r': ++flag_count; r_flag = 1; if(cval(s+2)) usage(); break;
-			case 'R': ++flag_count; Rflag = 1; if(cval(s+2)) usage(); break;
+			case 'R': ++flag_count; R_flag = 1; if(cval(s+2)) usage(); break;
 			case 's': ++flag_count; s_flag = 1; if(cval(s+2)) usage(); break;
 			case 't': ++flag_count; t_flag = 1; if(cval(s+2)) usage(); break;
 			case 'l': ++flag_count; l_flag = 1; if(cval(s+2)) usage(); break;
-			case 'P': ++flag_count; Pflag = 1; if(cval(s+2)) usage(); break;
+			case 'P': ++flag_count; P_flag = 1; if(cval(s+2)) usage(); break;
 			case 'a': ++flag_count; a_flag = 1; if( cval(s+2) ) Add_val(&a_val,s+2); else { i += Add_val(&a_val,argv[i+1]); } break;
 			case 'c': ++flag_count; c_flag = 1; if( cval(s+2) ) Add_val(&c_val,s+2); else { i += Add_val(&c_val,argv[i+1]); } break;
 			case 'f': ++flag_count; f_flag = 1; if( cval(s+2) ) Add_val(&f_val,s+2); else { i += Add_val(&f_val,argv[i+1]); } break;
+			case 'n':               n_flag = 1; if( cval(s+2) ) Add_val(&n_val,s+2); else { i += Add_val(&n_val,argv[i+1]); } break;
 			case 'o': ++flag_count; o_flag = 1; if( cval(s+2) ) Add_val(&o_val,s+2); else { i += Add_val(&o_val,argv[i+1]); } break;
 			case 'p': ++flag_count; p_flag = 1; if( cval(s+2) ) Add_val(&p_val,s+2); else { i += Add_val(&p_val,argv[i+1]); } break;
-			case 'S': ++flag_count; Sflag = 1; if( cval(s+2) ) Add_val(&S_val,s+2); else { i += Add_val(&S_val,argv[i+1]); } break;
+			case 'S': ++flag_count; S_flag = 1; if( cval(s+2) ) Add_val(&S_val,s+2); else { i += Add_val(&S_val,argv[i+1]); } break;
 			case 'u': ++flag_count; u_flag = 1; if( cval(s+2) ) Add_val(&u_val,s+2); else { i += Add_val(&u_val,argv[i+1]); } break;
 			case 'v': ++flag_count; v_flag = 1; if( cval(s+2) ) Add_val(&v_val,s+2); else { i += Add_val(&v_val,argv[i+1]); } break;
+			case 'V': Verbose = 1; break;
 			case 'T': Parse_debug( s+2, 1 ); break;
 			}
 		}
@@ -490,6 +568,7 @@ SYNOPSIS
 			logDebug("S_flag %d, S_val '%s'", S_flag, S_val );
 			logDebug("u_flag %d, u_val '%s'", u_flag, u_val );
 			logDebug("v_flag %d, v_val '%s'", v_flag, v_val );
+			logDebug("n_flag %d, n_val '%s'", n_flag, n_val );
 		}
 	}
 	if( a_flag && a_val == 0 ) All_printers = 1; Split(&Printer_list,a_val,", ",1,0,1,1,0);
@@ -499,7 +578,12 @@ SYNOPSIS
 	if( o_flag && o_val == 0 ) All_printers = 1; Split(&Printer_list,o_val,", ",1,0,1,1,0);
 	if( S_flag && S_val == 0 ) S_val = "all"; Split(&S_list,S_val,", ",1,0,1,1,0);
 	if( u_flag && u_val == 0 ) u_val = "all"; Split(&u_list,u_val,", ",1,0,1,1,0);
-	if( v_flag && v_val == 0 ) All_printers = 1; Split(&v_list,v_val,", ",1,0,1,1,0);
+	if( v_flag && v_val == 0 ) All_printers = 1; Split(&Printer_list,v_val,", ",1,0,1,1,0);
+	if( n_val ){
+			char *s = 0;
+			Status_line_count = strtol( n_val, &s, 10);
+			if( s == 0 || *s ) usage();
+	}
 	if( flag_count == 0 ){
 		o_flag = 1;
 		Get_printer();
@@ -510,8 +594,8 @@ SYNOPSIS
 		if( Verbose > 1 ) Printlist( Copyright, stderr );
 	}
 	if(DEBUGL1){
-		logDebug("d_flag %d, r_flag %d, R_flag %d, s_flag %d, t_flag %d, l_flag %d, P_flag %d",
-			d_flag, r_flag, R_flag, s_flag, t_flag, l_flag, P_flag );
+		logDebug("All_printers %d, d_flag %d, r_flag %d, R_flag %d, s_flag %d, t_flag %d, l_flag %d, P_flag %d",
+			All_printers, d_flag, r_flag, R_flag, s_flag, t_flag, l_flag, P_flag );
 		logDebug("a_flag %d, a_val '%s'", a_flag, a_val );
 		logDebug("c_flag %d, c_val '%s'", c_flag, c_val );
 		logDebug("f_flag %d, f_val '%s'", f_flag, f_val );
@@ -520,6 +604,7 @@ SYNOPSIS
 		logDebug("S_flag %d, S_val '%s'", S_flag, S_val );
 		logDebug("u_flag %d, u_val '%s'", u_flag, u_val );
 		logDebug("v_flag %d, v_val '%s'", v_flag, v_val );
+		Dump_line_list("lpstat - Printer_list", &Printer_list);
 	}
 }
 
@@ -527,12 +612,13 @@ SYNOPSIS
 "usage: %s [-d] [-r] [-R] [-s] [-t] [-a [list]]\n\
   [-c [list]] [-f [list] [-l]] [-o [list]]\n\
   [-p [list]] [-P] [-S [list]] [list]\n\
-  [-u [login-ID-list]] [-v [list]]\n\
+  [-u [login-ID-list]] [-v [list]] [-V] [-n linecount]\n\
  list is a list of print queues\n\
  -a [list] destination status *\n\
  -c [list] class status *\n\
  -f [list] forms status *\n\
  -o [list] job or printer status *\n\
+ -n count  number of status lines (default 1), 0 requests all *\n\
  -p [list] printer status *\n\
  -P        paper types - ignored\n\
  -r        scheduler status\n\
@@ -541,6 +627,7 @@ SYNOPSIS
  -t        all status information - long format\n\
  -u [joblist] job status information\n\
  -v [list] printer mapping *\n\
+ -V verbose mode for diagnostics\n\
  * - long status format produced\n";
 
 

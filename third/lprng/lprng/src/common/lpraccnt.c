@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpraccnt.c,v 1.1.1.1 1999-05-04 18:07:01 danw Exp $";
+"$Id: lpraccnt.c,v 1.1.1.2 1999-10-27 20:10:03 mwhitson Exp $";
 
 /*
  * Monitor for Accounting Information
@@ -31,7 +31,6 @@ int tcp_open( char *portnme );
 char buffer[1024];
 char *portname = "3000";
 
-const char * Errormsg ( int err );
 
 extern int Getopt(int argc, char *argv[], char *v), Optind;
 extern char *Optarg;
@@ -187,6 +186,7 @@ int tcp_open( char *portnme )
 	return( fd );
 }
 
+#if 0
 /****************************************************************************
  * Extract the necessary definitions for error message reporting
  ****************************************************************************/
@@ -231,3 +231,38 @@ const char * Errormsg ( int err )
 #endif
     return (cp);
 }
+#endif
+
+/* VARARGS2 */
+#ifdef HAVE_STDARGS
+ void setstatus (struct job *job,char *fmt,...)
+#else
+ void setstatus (va_alist) va_dcl
+#endif
+{
+#ifndef HAVE_STDARGS
+    struct job *job;
+    char *fmt;
+#endif
+	char msg[LARGEBUFFER];
+    VA_LOCAL_DECL
+
+    VA_START (fmt);
+    VA_SHIFT (job, struct job * );
+    VA_SHIFT (fmt, char *);
+
+	msg[0] = 0;
+	(void) plp_vsnprintf( msg, sizeof(msg)-2, fmt, ap);
+	DEBUG4("setstatus: %s", msg );
+	if(  Verbose ){
+		(void) plp_vsnprintf( msg, sizeof(msg)-2, fmt, ap);
+		strcat( msg,"\n" );
+		if( Write_fd_str( 2, msg ) < 0 ) exit(0);
+	} else {
+		Add_line_list(&Status_lines,msg,0,0,0);
+	}
+	VA_END;
+	return;
+}
+
+void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}

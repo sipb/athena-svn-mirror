@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: permission.h,v 1.1.1.2 1999-05-04 18:07:06 danw Exp $
+ * $Id: permission.h,v 1.1.1.3 1999-10-27 20:10:08 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -89,7 +89,7 @@ EXTERN struct perm_check Perm_check;
 char *perm_str( int n );
 int perm_val( char *s );
 int Perms_check( struct line_list *perms, struct perm_check *check,
-	struct job *job );
+	struct job *job, int job_check );
 int match( struct line_list *list, const char *str, int invert );
 int match_host( struct line_list *list, struct host_information *host,
 	int invert );
@@ -98,7 +98,7 @@ int match_range( struct line_list *list, int port, int invert );
 int match_char( struct line_list *list, int value, int invert );
 int match_group( struct line_list *list, const char *str, int invert );
 int ingroup( char *group, const char *user );
-int match_auth( struct line_list *list, struct job *job, int invert );
 void Dump_perm_check( char *title,  struct perm_check *check );
+void Perm_check_to_list( struct line_list *list, struct perm_check *check );
 
 #endif

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: accounting.c,v 1.1.1.1 1999-05-04 18:07:02 danw Exp $";
+"$Id: accounting.c,v 1.1.1.2 1999-10-27 20:10:05 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -23,16 +23,16 @@
 
 int Do_accounting( int end, char *command, struct job *job, int timeout )
 {
-	int i, err, filter, pid, n, errors[2], len;
+	int i, err, filter, pid, n, errors[2], len, tempfd;
 	char msg[SMALLBUFFER];
-	char *s;			/* id for job */
+	char *s, *tempfile;
 	struct line_list args;
 	plp_status_t status;
 
 	Init_line_list(&args);
+	msg[0] = 0;
 
 	DEBUG2("Do_accounting: command '%s'", command );
-
 
 	Split(&args,command,Whitespace,0,0,0,0,0);
 	if( args.count == 0 ) return(0);
@@ -40,6 +40,10 @@ int Do_accounting( int end, char *command, struct job *job, int timeout )
 
 	err = JSUCC;
 	if( filter ){
+		tempfd = 1;
+		if( end == 0 && Accounting_check_DYN ){
+			tempfd = Make_temp_fd( &tempfile );
+		}
 		if( pipe(errors) == -1 ){
 			Errorcode = JFAIL;
 			logerr_die(LOG_INFO,
@@ -48,7 +52,7 @@ int Do_accounting( int end, char *command, struct job *job, int timeout )
 		Free_line_list(&args);
 		Check_max(&args,10);
 		args.list[args.count++] = (void *) 0;
-		args.list[args.count++] = (void *) 1;
+		args.list[args.count++] = (void *) tempfd;
 		args.list[args.count++] = Cast_int_to_voidstar(errors[1]);
 		if( (pid = Make_passthrough( command, Filter_options_DYN, &args, job, 0 )) < 0 ){
 			logerr_die(LOG_INFO,
@@ -62,7 +66,7 @@ int Do_accounting( int end, char *command, struct job *job, int timeout )
 		while( n < sizeof(msg)-1
 			&& (len = read(errors[0],msg+n,sizeof(msg)-1-n)) > 0 ){
 			msg[n+len] = 0;
-			while( (s = strchr(msg,'\n')) ){
+			while( (s = safestrchr(msg,'\n')) ){
 				*s++ = 0;
 				setstatus(job,"ACCOUNTING error '%s'", msg );
 				memmove(msg,s,strlen(s)+1);
@@ -80,39 +84,58 @@ int Do_accounting( int end, char *command, struct job *job, int timeout )
 				n, Sigstr(n));
 			err = JABORT;
 		}
+		msg[0] = 0;
+		if( err == 0 && end == 0 && Accounting_check_DYN ){
+			if( lseek(tempfd,0,SEEK_SET) < 0 ){
+				logerr_die( LOG_INFO,"Do_accounting: lseek tempfile failed");
+			}
+			len = 0;
+			while( len < sizeof(msg)-1
+				&& (n = read(tempfd,msg+len,sizeof(msg)-1-len)) > 0 ){
+				DEBUG1("Do_accounting: read %d, '%s'", n, msg );
+			}
+			if( strlen(msg) == 0 ) safestrncpy(msg,"accept");
+			close(tempfd);
+		}
 	} else if( Accounting_port > 0 ){
 		Fix_dollars(&args, job);
-		command = Join_line_list( &args, " ");
+		command = Join_line_list_with_quotes( &args, " ");
+		DEBUG1( "Do_accounting: expanded command is '%s'", command );
 		s = command+strlen(command)-1;
 		s[0] = '\n';
 		err = 0;
 		if( Write_fd_str( Accounting_port, command ) <  0 ){
 			logerr( LOG_INFO, "Do_accounting: write failed" );
-			plp_snprintf( msg, sizeof(msg), "accounting write failed" );
+			plp_snprintf( msg, sizeof(msg), "accounting port write failed - %s",
+				Errormsg(errno) );
 			err = JFAIL;
 		}
 		if( command ) free( command ); command = 0;
-		if( !err && end == 0 && Accounting_check_DYN ){
+		msg[0] = 0;
+		if( err == 0 && end == 0 && Accounting_check_DYN ){
 			i = sizeof(msg) - 1;
-			msg[0] = 0;
 			err = Link_line_read( "ACCOUNTING SERVER", &Accounting_port,
 				timeout, msg, &i );
 			msg[i] = 0;
-			Free_line_list(&args);
-			Split(&args,msg,Whitespace,0,0,0,0,0);
-			s = "";
-			if( args.count ) s = args.list[0];
-			if( err ){
-				plp_snprintf( msg, sizeof(msg),
-					"read failed from accounting server" );
-				err = JFAIL;
-			} else if( !strcasecmp( s, "hold" ) ){
-				err = JHOLD;
-			} else if( strcasecmp( s, "accept" ) ){
-				plp_snprintf( msg, sizeof(msg),
-					"accounting check failed '%s'", s );
-				err = JREMOVE;
-			}
+		}
+	}
+	if( err == 0 && Accounting_check_DYN ){
+		Free_line_list(&args);
+		s = "";
+		Split(&args,msg,Whitespace,0,0,0,0,0);
+		if( args.count ) s = args.list[0];
+		if( !safestrcasecmp( s, "accept" ) ){
+			err = JSUCC;
+		} else if( !safestrcasecmp( s, "hold" ) ){
+			err = JHOLD;
+		} else if( !safestrcasecmp( s, "remove" ) ){
+			err = JREMOVE;
+		} else if( !safestrcasecmp( s, "fail" ) ){
+			err = JFAIL;
+		} else {
+			plp_snprintf( msg, sizeof(msg),
+				"accounting check failed - status message '%s'", s );
+			err = JABORT;
 		}
 	}
 	Free_line_list(&args);
@@ -146,7 +169,7 @@ int Setup_accounting( struct job *job )
 		if( (error_pid = Start_worker(&args,errors[0])) < 0 ){
 			Errorcode = JFAIL;
 			logerr_die(LOG_INFO,
-				"Do_accounting: could not create ACCT_ERR error loggin process");
+				"Setup_accounting: could not create ACCT_ERR error loggin process");
 		}
 		if( close(errors[0]) == -1 ){
 			logerr_die(LOG_INFO,
@@ -179,11 +202,11 @@ int Setup_accounting( struct job *job )
 				"Setup_accounting: close p[1]=%d failed", p[1] );
 		}
 		Accounting_port = p[0];
-	} else if( strchr( command, '%' ) ){
+	} else if( safestrchr( command, '%' ) ){
 		char *host, *port;
 		/* now try to open a connection to a server */
 		host = safestrdup(command,__FILE__,__LINE__);
-		port = strchr( host, '%' );
+		port = safestrchr( host, '%' );
 		*port++ = 0;
 		
 		DEBUG2("Setup_accounting: connecting to '%s'%'%s'",host,port);
@@ -195,7 +218,7 @@ int Setup_accounting( struct job *job )
 				Accounting_file_DYN, Errormsg(err) );
 		}
 		DEBUG2("Setup_accounting: socket %d", n );
-		if( host ) free(host);
+		if( host ) free(host); host = 0;
 		Accounting_port = n;
 	} else {
 		n = Checkwrite( Accounting_file_DYN, &statb, 0, Create_files_DYN, 0 );

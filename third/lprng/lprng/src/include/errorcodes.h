@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: errorcodes.h,v 1.1.1.2 1999-05-04 18:07:14 danw Exp $
+ * $Id: errorcodes.h,v 1.1.1.3 1999-10-27 20:10:14 mwhitson Exp $
  ***************************************************************************/
 
 

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: controlword.c,v 1.1.1.2 1999-05-04 18:07:02 danw Exp $";
+"$Id: controlword.c,v 1.1.1.3 1999-10-27 20:10:04 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -20,6 +20,7 @@
 { "ABORT", OP_ABORT },
 { "ACTIVE", OP_ACTIVE },
 { "CLASS", OP_CLASS },
+{ "CLIENT", OP_CLIENT },
 { "DEBUG", OP_DEBUG },
 { "DEFAULTQ", OP_DEFAULTQ },
 { "DISABLE", OP_DISABLE },
@@ -28,7 +29,6 @@
 { "HOLD", OP_HOLD },
 { "HOLDALL", OP_HOLDALL },
 { "KILL", OP_KILL },
-{ "LOCAL", OP_LOCAL },
 { "LPD", OP_LPD },
 { "LPQ", OP_LPQ },
 { "LPRM", OP_LPRM },
@@ -46,6 +46,7 @@
 { "TOPQ", OP_TOPQ },
 { "UP", OP_UP },
 { "SERVER", OP_SERVER },
+{ "DEFAULTS", OP_DEFAULTS },
 
 {0}
 };

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpd.h,v 1.1.1.1 1999-05-04 18:07:03 danw Exp $
+ * $Id: lpd.h,v 1.1.1.2 1999-10-27 20:10:06 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -50,7 +50,7 @@ EXTERN int Reread_config;
 EXTERN int Started_server;
 EXTERN int Logger_fd;
 EXTERN int Mail_fd;
-
+EXTERN int Lpd_ack_fd;
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);

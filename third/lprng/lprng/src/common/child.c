@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: child.c,v 1.1.1.1 1999-05-04 18:06:59 danw Exp $";
+"$Id: child.c,v 1.1.1.2 1999-10-27 20:10:02 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -16,6 +16,7 @@
 #include "getopt.h"
 #include "gethostinfo.h"
 #include "proctitle.h"
+#include "linksupport.h"
 #include "child.h"
 /**** ENDINCLUDE ****/
 
@@ -296,7 +297,7 @@ plp_signal_t cleanup_TERM (int passed_signal)
 plp_signal_t cleanup (int passed_signal)
 {
 	plp_block_mask oblock;
-	int i, pid = getpid(), n;
+	int i, n;
 	int signalv = passed_signal;
 	struct exit_info *e;
 
@@ -305,13 +306,20 @@ plp_signal_t cleanup (int passed_signal)
 	DEBUG2("cleanup: signal %s, Errorcode %d, exits %d",
 		Sigstr(passed_signal), Errorcode, Exit_list.count);
 
+	/* shut down all logging stuff */
+	Doing_cleanup = 1;
 	n = Get_max_fd();
-	for( i = 0; i < n; ++i ){
-		if( i != 2 && i != Status_fd ){
-			close(i);
+	/* first we try to close all the output ports */
+	for( i = 3; i < n; ++i ){
+		struct stat statb;
+		if( fstat( i, &statb ) == 0 && S_ISSOCK(statb.st_mode)
+			&& Exit_linger_timeout_DYN > 0 ){
+			Set_linger( i, Exit_linger_timeout_DYN );
 		}
+		close(i);
 	}
 
+	/* then we do exit cleanup */
 	for( i = Exit_list.count-1; i >= 0;  --i ){
 		e = (void *)(Exit_list.list[i]);
 		DEBUG2("exit '%s' 0x%lx, parm 0x%lx", e->name,
@@ -330,12 +338,7 @@ plp_signal_t cleanup (int passed_signal)
 
 	/* kill children of this process */
 	Killchildren( signalv );
-	DEBUG1("cleanup: done, doing killpg then exit(%d)", Errorcode);
-	if( Is_server && getpgrp() == pid ){
-		killpg( pid, signalv );
-		killpg( pid, SIGCONT );
-	}
-
+	DEBUG1("cleanup: done, exit(%d)", Errorcode);
 
 	if( Errorcode == 0 ){
 		Errorcode = passed_signal;
@@ -349,16 +352,16 @@ plp_signal_t cleanup (int passed_signal)
 void Dump_unfreed_mem(char *title)
 {
 #if defined(DMALLOC)
-	extern int dmalloc_outfile;
-	extern char *dmalloc_logpath;
+	extern int _dmalloc_outfile;
+	extern char *_dmalloc_logpath;
 	char buffer[SMALLBUFFER];
 
-	if( dmalloc_logpath && dmalloc_outfile < 0 ){
-		dmalloc_outfile = open( dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if( _dmalloc_logpath && _dmalloc_outfile < 0 ){
+		_dmalloc_outfile = open( _dmalloc_logpath,  O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	}
 	plp_snprintf(buffer,sizeof(buffer),"*** Dump_unfreed_mem: %s, pid %d\n",
 		title, getpid() );
-	Write_fd_str(dmalloc_outfile, buffer );
+	Write_fd_str(_dmalloc_outfile, buffer );
 	if(Outbuf) free(Outbuf); Outbuf = 0;
 	if(Inbuf) free(Inbuf); Inbuf = 0;
 	Clear_tempfile_list();
@@ -371,7 +374,7 @@ void Dump_unfreed_mem(char *title)
     Clear_var_list( Pc_var_list, 0 );
     Clear_var_list( DYN_var_list, 0 );
 	dmalloc_log_unfreed();
-	Write_fd_str(dmalloc_outfile, "***\n" );
+	Write_fd_str(_dmalloc_outfile, "***\n" );
 	exit(Errorcode);
 #endif
 }

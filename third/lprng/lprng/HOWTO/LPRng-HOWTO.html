@@ -15,12 +15,12 @@ Contents
 <H1> LPRng-HOWTO</H1>
 
 <H2>Patrick Powell <CODE>
-<A HREF="mailto:papowell@astart.com">papowell@astart.com</A></CODE></H2> 21 Dec 1998 (For LPRng-3.5.4)
+<A HREF="mailto:papowell@astart.com">papowell@astart.com</A></CODE></H2> 24 Oct 1999 (For LPRng-3.6.11)
 <P><HR>
 <EM>The LPRng software is an enhanced, extended, and portable implementation
 of the Berkeley LPR print spooler functionality. While providing the same
 interface and meeting RFC1179 requirements, the implementation is completely
-independant and provides support for the following features: lightweight (no databases
+independent and provides support for the following features: lightweight (no databases
 needed) lpr, lpc, and lprm programs; dynamic redirection of print queues;
 automatic job holding; highly verbose diagnostics; multiple printers serving
 a single queue; client programs do not need to run SETUID root; greatly enhanced
@@ -34,7 +34,7 @@ page counting and produce accounting information accounting. In addition
 there are a wide variety of filters for page formatting
 and to produce banner pages. For users that require compatibility with the SVR4 lp and lpstat programs,
 the LPRng package provides emulation of these programs.
-In addition, a publically available PCNFSD server
+In addition, a publicly available PCNFSD server
 is distributed with LPRng and interfaces with the PC/DOS/Windows based
 NFS style print spoolers.
 In addition,
@@ -81,10 +81,10 @@ Additional authentication support is extremely simple to add. </EM>
 <H2><A NAME="toc4">4.</A> <A HREF="LPRng-HOWTO-4.html">Installing the Software</A></H2>
 
 <UL>
-<LI><A HREF="LPRng-HOWTO-4.html#ss4.1">4.1 Files and Setup</A>
-<LI><A HREF="LPRng-HOWTO-4.html#ss4.2">4.2 Source Code and Support Programs</A>
-<LI><A HREF="LPRng-HOWTO-4.html#ss4.3">4.3 Configuration and Installation</A>
-<LI><A HREF="LPRng-HOWTO-4.html#ss4.4">4.4 Configuration Options and Problems with Compilation</A>
+<LI><A HREF="LPRng-HOWTO-4.html#ss4.1">4.1 Source Code and Support Programs</A>
+<LI><A HREF="LPRng-HOWTO-4.html#ss4.2">4.2 Configuration</A>
+<LI><A HREF="LPRng-HOWTO-4.html#ss4.3">4.3 Installation</A>
+<LI><A HREF="LPRng-HOWTO-4.html#ss4.4">4.4 Solving Installation Problems</A>
 <LI><A HREF="LPRng-HOWTO-4.html#ss4.5">4.5 Advanced Configuration Options</A>
 <LI><A HREF="LPRng-HOWTO-4.html#ss4.6">4.6 Printcap and lpd.conf files</A>
 <LI><A HREF="LPRng-HOWTO-4.html#ss4.7">4.7 Security, Permissions, and CHECKPC</A>
@@ -101,18 +101,19 @@ Additional authentication support is extremely simple to add. </EM>
 <LI><A HREF="LPRng-HOWTO-5.html#ss5.2">5.2 Solaris, Newsprint and FrameMaker</A>
 <LI><A HREF="LPRng-HOWTO-5.html#ss5.3">5.3 Linux</A>
 <LI><A HREF="LPRng-HOWTO-5.html#ss5.4">5.4 AIX</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.5">5.5 Appletalk Support</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.5">5.5 AppleTalk Support</A>
 <LI><A HREF="LPRng-HOWTO-5.html#ss5.6">5.6 Apple to LPRng Printing</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.7">5.7 LPRng to Appletalk Printing</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.8">5.8 SAMBA Support</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.9">5.9 Printer Specific notes</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.10">5.10 HP Deskjet</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.11">5.11 HP LaserJet IIISiMX</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.12">5.12 HP JetDirect Interface</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.13">5.13 Lexmark Printers</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.14">5.14 Network Base Tektronix Phaser Printers</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.15">5.15 Duplex Printing</A>
-<LI><A HREF="LPRng-HOWTO-5.html#ss5.16">5.16 Test Version  and Portability Testing</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.7">5.7 LPRng to AppleTalk Printing</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.8">5.8 SAMBA, SMB and LPRng</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.9">5.9 Printing to a NetBEUI Printer</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.10">5.10 Printer Specific notes</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.11">5.11 HP Deskjet</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.12">5.12 HP LaserJet IIISiMX</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.13">5.13 HP JetDirect Interface</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.14">5.14 Lexmark Printers</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.15">5.15 Network Base Tektronix Phaser Printers</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.16">5.16 Duplex Printing</A>
+<LI><A HREF="LPRng-HOWTO-5.html#ss5.17">5.17 Test Version  and Portability Testing</A>
 </UL>
 <P>
 <H2><A NAME="toc6">6.</A> <A HREF="LPRng-HOWTO-6.html">The Most Frequently Asked Questions</A></H2>
@@ -242,7 +243,7 @@ Additional authentication support is extremely simple to add. </EM>
 <LI><A HREF="LPRng-HOWTO-15.html#ss15.2">15.2 How HP Printers Implement Page Counters</A>
 <LI><A HREF="LPRng-HOWTO-15.html#ss15.3">15.3 Accounting Printcap Options</A>
 <LI><A HREF="LPRng-HOWTO-15.html#ss15.4">15.4 Accounting File</A>
-<LI><A HREF="LPRng-HOWTO-15.html#ss15.5">15.5 Remote Server Accounting</A>
+<LI><A HREF="LPRng-HOWTO-15.html#ss15.5">15.5 Accounting Using an Accounting Server</A>
 <LI><A HREF="LPRng-HOWTO-15.html#ss15.6">15.6 Using Filters For Accounting</A>
 <LI><A HREF="LPRng-HOWTO-15.html#ss15.7">15.7 Accounting Utility accounting.pl</A>
 </UL>

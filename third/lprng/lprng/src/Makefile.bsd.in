@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.bsd.in,v 1.1.1.3 1999-05-24 18:28:58 danw Exp $
+# $Id: Makefile.bsd.in,v 1.1.1.4 1999-10-27 20:09:49 mwhitson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -25,58 +25,68 @@
 # These are automatically sedded in by the "configure" script, but you
 # may need to change them if you're on a strange version of UNIX.
 
-# any libs that need to be used to get these programs to compile:
-#
-LIBS=@LIBS@
-# LIBS=-lposix -s       # (on A/UX, if the above doesn't work)
-# LIBS=-ldmalloc        # for malloc debugging
 
+
+# where the source directory is
+SRC=@srcdir@
+# which make we are using
+@SET_MAKE@
+
+# what C compiler to use.
+CC:=@CC@
 
 # what command to use to "ranlib" or "lorder" the library.
-#
 RANLIB=@RANLIB@
 
-# the compiler optimisation/debugging flags you wish to use.
-#
-# what C compiler to use.
-#
-CC=@CC@
-
 # what C preprocessor to use.
-#
-CPP=@CPP@ $(CCOPTFLAGS)
+CPP:=@CPP@
 
 # how to install stuff.
-#
 INSTALLCMD=@INSTALL@
-
 # a shell interpreter that's as close to the POSIX shell as possible.
-#
 SHELL_PATH=@SHELL@
 SHELL = @SHELL@
 
-SRC=@srcdir@
-@SET_MAKE@
+# loader for c programs
 LDCC=@LDCC@
 
-# where executables are installed
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir     = @bindir@
-sbindir    = @sbindir@
-libexecdir = @libexecdir@
-libdir     = @libdir@
-localedir = $(prefix)/@DATADIRNAME@/locale
-INSTALL_BIN =     @bindir@
-# where daemons are installed: lpd
-#INSTALL_LIB =     ${prefix}/lib
-INSTALL_LIB =     @LPRNGLPDDIR@
-# where maintenance commands are installed: checkpc, setstatus
-#INSTALL_MAINT =   ${exec_prefix}/bin
-INSTALL_MAINT =   @LPRNGADMINDIR@
+# any libs that need to be used to get these programs to compile:
+LIBS=@LIBS@
+# termlib from configure
+TERMLIB=@TERMLIB@
 
-CF := @CPPFLAGS@ @CFLAGS@ @DEFS@ -DLOCALEDIR=\"$(localedir)\"
-LF := @LDFLAGS@
+### PATHS ####
+# prefix
+prefix=@prefix@
+# exec prefix
+exec_prefix=@exec_prefix@
+# for binaries
+bindir=@bindir@
+# for admin type of binaries
+sbindir=@sbindir@
+# for the filters
+libexecdir=@libexecdir@
+# for the configuration stuff
+sysconfdir=@sysconfdir@
+# locale
+localedir = $(prefix)/@DATADIRNAME@/locale
+
+LPD_DIR=	@LPD_DIR@
+FILTER_DIR=	@FILTER_DIR@
+PRINTCAP_PATH=@PRINTCAP_PATH@
+LPD_PRINTCAP_PATH=@LPD_PRINTCAP_PATH@
+LPD_PERMS_PATH=@LPD_PERMS_PATH@
+LPD_CONF_PATH=@LPD_CONF_PATH@
+REQUIRE_CONFIGFILES=@REQUIRE_CONFIGFILES@
+
+# install options
+FORCE_LOCALHOST=@FORCE_LOCALHOST@
+PERMS=@PERMS@
+
+CFLAGS:= @CPPFLAGS@ @CFLAGS@ @DEFS@ -DLOCALEDIR=\"$(localedir)\"
+LDFLAGS:= @LDFLAGS@
+
+STRIP=@STRIP@
 
 #********************** End of configure modifiable settings ************
 
@@ -95,29 +105,57 @@ LF := @LDFLAGS@
 #  communicate with the existing Kerberos 4 print servers at MIT.
 #
 #  If you still want Kerberos 4,  then uncomment the following line
-# CF := $(CF) -DMIT_KERBEROS4
+# CFLAGS:= $(CFLAGS) -DMIT_KERBEROS4
 
 #### ****** TESTING AND SECURITY LOOPHOLE ******************************
 # Define GETENV to allow the LPD_CONFIG environment
 #  variable to be used as the name of a configuration file.  In non-testing
 #  systems,  this is a security loophole.
-# CF := $(CF) -DGETENV
+# CFLAGS:= $(CFLAGS) -DGETENV
 
-#### ****** LPD_CONF PATHNAME *********
-# Set location of configuration file
+# Set location of configuration, permissions, and printcap file
 #
-CF := $(CF) -DLPD_CONF_PATH=\"$(LPD_CONF_PATH)\"
+.if $(LPD_CONF_PATH) != ""
+CFLAGS:= $(CFLAGS) -DLPD_CONF_PATH=\"$(LPD_CONF_PATH)\"
 .endif
-
-#### ****** PRINTCAP_PATH PATHNAME *********
-# Set location of configuration file
-#
-CF := $(CF) -DPRINTCAP_PATH=\"$(PRINTCAP_PATH)\"
+.if  $(LPD_CONF_PATH) == ""
+CFLAGS:= $(CFLAGS) -DLPD_CONF_PATH=\"$(sysconfdir)/lpd.conf\"
+.endif
+.if $(LPD_PERMS_PATH) != ""
+CFLAGS:= $(CFLAGS) -DLPD_PERMS_PATH=\"$(LPD_PERMS_PATH)\"
+.endif
+.if $(LPD_PERMS_PATH) == ""
+CFLAGS:= $(CFLAGS) -DLPD_PERMS_PATH=\"$(sysconfdir)/lpd.perms\"
+.endif
+.if $(PRINTCAP_PATH) != ""
+CFLAGS:= $(CFLAGS) -DPRINTCAP_PATH=\"$(PRINTCAP_PATH)\"
+.endif
+.if $(PRINTCAP_PATH) == ""
+CFLAGS:= $(CFLAGS) -DPRINTCAP_PATH=\"$(sysconfdir)/printcap\"
+.endif
+.if $(LPD_PRINTCAP_PATH) != ""
+CFLAGS:= $(CFLAGS) -DLPD_PRINTCAP_PATH=\"$(LPD_PRINTCAP_PATH)\"
+.endif
+.if $(PRINTCAP_PATH) == ""
+CFLAGS:= $(CFLAGS) -DLPD_PRINTCAP_PATH=\"$(sysconfdir)/lpd_printcap\"
+.endif
+.if $(FORCE_LOCALHOST) != ""
+CFLAGS:= $(CFLAGS) -DFORCE_LOCALHOST=\"$(FORCE_LOCALHOST)\"
+.endif
+.if $(FORCE_LOCALHOST) == ""
+CFLAGS:= $(CFLAGS) -DFORCE_LOCALHOST="1"
+.endif
+.if $(REQUIRE_CONFIGFILES) != ""
+CFLAGS:= $(CFLAGS) -DREQUIRE_CONFIGFILES=\"$(REQUIRE_CONFIGFILES)\"
+.endif
+.if $(REQUIRE_CONFIGFILES) == ""
+CFLAGS:= $(CFLAGS) -DREQUIRE_CONFIGFILES="1"
 .endif
 
 ##### DMalloc Debugging Package
 #
-#CF := $(CF) -DDMALLOC
+# CFLAGS:= $(CFLAGS) -DDMALLOC
+# LIBS:= $(LIBS) -ldmalloc
 
 
 #********************* OVERRIDING CONFIGURES' GUESSES ******************
@@ -132,19 +170,19 @@ CF := $(CF) -DPRINTCAP_PATH=\"$(PRINTCAP_PATH)\"
 #        STATVFS: to use statvfs(2) (SVR4)
 #     others for system specific cases
 #
-# CF := $(CF) -DMAKE_USE_STATFS=ULTRIX_STATFS
-# CF := $(CF) -DMAKE_USE_STATFS=SVR3_STATFS
-# CF := $(CF) -DMAKE_USE_STATFS=STATVFS
-# CF := $(CF) -DMAKE_USE_STATFS=STATFS
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STATFS=ULTRIX_STATFS
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STATFS=SVR3_STATFS
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STATFS=STATVFS
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STATFS=STATFS
 
 # define MAKE_USE_STTY = 
 #    SGTTYB   to use struct sgttyb and <sgtty.h> (BSD)
 #    TERMIO  to use struct termio and <termio.h> (old sysV)
 #    TERMIOS to use struct termios and <termio.h> (SVR4)
 #
-# CF := $(CF) -DMAKE_USE_STTY=SGTTYB
-# CF := $(CF) -DMAKE_USE_STTY=TERMIO
-# CF := $(CF) -DMAKE_USE_STTY=TERMIOS
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STTY=SGTTYB
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STTY=TERMIO
+# CFLAGS:= $(CFLAGS) -DMAKE_USE_STTY=TERMIOS
 
 # a better way to do this is to edit the "ARGH" section of portable.h,
 # and add the appropriate lines to the section for your OS, or add a new
@@ -156,16 +194,16 @@ CF := $(CF) -DPRINTCAP_PATH=\"$(PRINTCAP_PATH)\"
 # does not work.  Try one of the following to override the
 # configured value: fcntl(), lockf(), flock(), and 0 to suppress locking
 #
-# CF := $(CF) -DLOCK_DEVS=devlock_fcntl
-# CF := $(CF) -DLOCK_DEVS=devlock_lockf
-# CF := $(CF) -DLOCK_DEVS=devlock_flock
-# CF := $(CF) -DLOCK_DEVS=0
+# CFLAGS:= $(CFLAGS) -DLOCK_DEVS=devlock_fcntl
+# CFLAGS:= $(CFLAGS) -DLOCK_DEVS=devlock_lockf
+# CFLAGS:= $(CFLAGS) -DLOCK_DEVS=devlock_flock
+# CFLAGS:= $(CFLAGS) -DLOCK_DEVS=0
 #
 
 # SETPROCTITLE - overwrites the program argument information
 #   when ps is used, displays status.  Used only by LPD
 # if this does not work, define the following
-# CF := $(CF) -DNO_SETPROCTITLE
+# CFLAGS:= $(CFLAGS) -DNO_SETPROCTITLE
 
 
 SRCDIRS=${SRC}/common ${SRC}/AUTHENTICATE
@@ -174,15 +212,14 @@ INCLUDE=.. ${SRC}/include
 .PATH: $(INCLUDE) $(SRCDIRS)
 INCS= $(INCLUDE:S/^/-I/g)
 
-# Compiler flags
-CFLAGS  := $(CF) $(CCOPTFLAGS) -g -DHAVE_CONFIG_H $(INCS)
+CFLAGS:= $(CFLAGS) $(INCS)
 # Loader flags
-LDFLAGS := $(LF) -g $(LDFLAGS)
+LDFLAGS:= $(LF) -g $(LDFLAGS)
 
 #**********************  End of Configurable Part ****************************
 
 TARGET= lpc lpd lpq lpr lprm lpf lpraccnt pclbanner psbanner checkpc lp lpstat \
-	lpbanner monitor lpd.conf
+	lpbanner monitor ../lpd.conf
 
 NONTARGET = sserver sclient
 
@@ -244,7 +281,7 @@ lpd: $(LPD_OBJS) liblpr.a
 lpr: $(LPR_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $> $(LIBS)
 lpq: $(LPQ_OBJS) liblpr.a
-	$(LDCC) $(LDFLAGS) -o $@ $> $(LIBS)
+	$(LDCC) $(LDFLAGS) -o $@ $> $(TERMLIB) $(LIBS)
 lpstat: $(LPSTAT_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $> $(LIBS)
 lprm: $(LPRM_OBJS) liblpr.a
@@ -287,61 +324,50 @@ lp: lpr
 ###########################################################################
 # lpd.conf
 
-lpd.conf: vars.c
-	rm -f lpd.conf.working lpd.conf
-	$(CPP) $(CFLAGS) -C $> >lpd.conf.working
-	${SRC}/../UTILS/make_lpd_conf $> <lpd.conf.working >lpd.conf
-	chmod 644 lpd.conf
+../lpd.conf: Makefile vars.c
+	rm -f $@
+	$(CPP) $(CFLAGS) -C ${SRC}/common/vars.c | /bin/sh ${SRC}/../UTILS/make_lpd_conf $> >$@.tmp
+	mv $@.tmp $@
+	chmod 644 $@
 
 ###########################################################################
-# 
-NORM_PERMS=      0755
-SUID_ROOT_PERMS= 04755 -o root
-PERMS=$(NORM_PERMS)
-# comment out the next line to have LPRng installed non-setuid
-PERMS=$(SUID_ROOT_PERMS)
+#
+NORM_PERMS=0755
+
+.if $(PERMS) == SUID_ROOT_PERMS
+ROOT_PERMS= $(NORM_PERMS)
+.else
+ROOT_PERMS= 04755 -o root
+.endif
+#BSD
+
 ###########################################################################
 
-install: all ${INSTALL_LIB} ${INSTALL_BIN} ${INSTALL_MAINT}
-	${INSTALLCMD} -m $(PERMS) lpq ${INSTALL_BIN}
-	${INSTALLCMD} -m $(PERMS) lprm ${INSTALL_BIN}
-	${INSTALLCMD} -m $(PERMS) lpr ${INSTALL_BIN}
-	${INSTALLCMD} -m $(PERMS) lpstat ${INSTALL_BIN}
-	${INSTALLCMD} -m $(PERMS) lpc ${INSTALL_MAINT}
-	${INSTALLCMD} -m $(NORM_PERMS) lpd ${INSTALL_LIB}
-	${INSTALLCMD} -m $(NORM_PERMS) lpf ${INSTALL_LIB}
-	${INSTALLCMD} -m $(NORM_PERMS) lpbanner ${INSTALL_LIB}
-	${INSTALLCMD} -m $(NORM_PERMS) pclbanner ${INSTALL_LIB}
-	${INSTALLCMD} -m $(NORM_PERMS) psbanner ${INSTALL_LIB}
-	${INSTALLCMD} -m $(NORM_PERMS) checkpc ${INSTALL_MAINT}
-	${INSTALLCMD} -m $(NORM_PERMS) lpraccnt ${INSTALL_MAINT}
-	rm -f ${INSTALL_BIN}/lp;     ln -s lpr  ${INSTALL_BIN}/lp;
-	rm -f ${INSTALL_BIN}/cancel; ln -s lprm ${INSTALL_BIN}/cancel;
-	f=/etc/lpd.conf; \
-	if [ -n "$(LPD_CONF_PATH)" ] ; then f=$(LPD_CONF_PATH); fi; \
-	if [ ! -f "$$f" ] ; then \
-		${INSTALLCMD} -m $(NORM_PERMS) lpd.conf $$f ; \
-	else \
-		${INSTALLCMD} -m $(NORM_PERMS) lpd.conf $$f.sample ; \
-	fi;
+install: all
+	echo "SETUID_ROOT IS ${PERMS}, PERMS $(ROOT_PERMS)";
+	for i in ${bindir} ${sbindir} ${LPD_DIR} ${FILTER_DIR}; do \
+	  if [ ! -d $$i ] ; then ${SRC}/mkinstalldirs $$i ; fi; \
+	done;
 
-${INSTALL_LIB}::
-	${SRC}/mkinstalldirs $@
-${INSTALL_BIN}::
-	${SRC}/mkinstalldirs $@
-${INSTALL_MAINT}::
-	${SRC}/mkinstalldirs $@
-
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpq ${bindir}
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lprm ${bindir}
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpr ${bindir}
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpstat ${bindir}
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpc ${sbindir}
+	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpd ${LPD_DIR}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpf ${FILTER_DIR}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpbanner ${FILTER_DIR}
+	${INSTALLCMD}    -m $(NORM_PERMS) pclbanner ${FILTER_DIR}
+	${INSTALLCMD}    -m $(NORM_PERMS) psbanner ${FILTER_DIR}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) checkpc ${sbindir}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpraccnt ${sbindir}
+	cd ${bindir}; rm -f lp cancel; ln ${STRIP} lpr lp; ln -s lprm cancel;
 
 uninstall:
-	rm -f ${INSTALL_LIB}/lpd
-	rm -f ${INSTALL_LIB}/lpf
-	rm -f ${INSTALL_BIN}/lpq
-	rm -f ${INSTALL_BIN}/lpstat
-	rm -f ${INSTALL_BIN}/lprm
-	rm -f ${INSTALL_BIN}/lpr
-	rm -f ${INSTALL_MAINT}/lpc
-	rm -f ${INSTALL_MAINT}/checkpc
+	rm -f ${LPD_DIR}/lpd
+	cd ${FILTER_DIR}; rm -f lpf lpbanner pclbanner psbanner
+	cd ${bindir}; rm -f lp lpq lpstat lpr lp cancel;
+	cd ${sbindir}; rm -f lpc checkpc lpraccnt;
 
 
 ###########################################################################

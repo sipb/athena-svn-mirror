@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: control.h,v 1.1.1.2 1999-05-04 18:07:08 danw Exp $
+ * $Id: control.h,v 1.1.1.3 1999-10-27 20:10:16 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -37,9 +37,10 @@
 #define  OP_DEFAULTQ	25
 #define  OP_ACTIVE		26
 #define  OP_REDO		27
-#define  OP_LOCAL		28
+#define  OP_CLIENT		28
 #define  OP_SERVER		29
 #define  OP_MSG			30
+#define  OP_DEFAULTS	31
 
 /* PROTOTYPES */
 

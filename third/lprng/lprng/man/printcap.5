@@ -1,4 +1,4 @@
-.ds VE LPRng-3.6.1
+.ds VE LPRng-3.6.11
 .TH PRINTCAP 5 \*(VE "LPRng"
 .SH NAME
 printcap \- printer capability data base
@@ -117,7 +117,7 @@ See lpd.conf(5) for further details.
 .SH "ENTRIES BY ALPHABETICAL ORDER"
 .sp
 .nf
-.ta \w'\0\0\0\0'u +\w'\0\0\0\0'u +\w'Type 'u +\w'Default     'u +4n +4n +4n 8i
+.ta \w'\0\0\0\0'u +\w'\0\0\0\0'u +\w'Type 'u +\w'Default     'u +4n +4n +4n +4n +4n +4n 8i
 \fBFL	Use	Type	Default	Description\fR
 Xf	D	str	NULL	output filter for format X (used by lpd).
 				'filter' sets default filter
@@ -155,6 +155,23 @@ architecture	A	str	(compile time)
 				architecture the software was compiled for. (Obsolete.)
 as	D	str		accounting format for start of job (see also af, la, ar
 				and Accounting)
+auth	R	str	NULL
+				client to server authentication type
+auth_client_filter	A	str	NULL
+				program used by client to do authentication to server
+auth_forward	A	str	NULL
+				server to server authentication type
+auth_forward_id	A	str	NULL
+				remote server id used when doing
+				server to server authentication
+auth_forward_filter	A	str	NULL
+				program used by originating server to do server to server
+				authentication.
+auth_receive_filter	A	str	NULL
+				program used by receiving server to do authentication
+auth_server_id	A	str	NULL
+				server id used when doing
+				client to server or server to server authentication
 be	D	str		banner printing program for end (overrides bp, hl)
 bk	R	bool	false	Berkeley-compatible: be strictly RFC-compliant
 				or more exactly, BSD LPR compatible when sending jobs.
@@ -204,9 +221,6 @@ control_filter	D	str	NULL
 				spool queue.
 db	A	str	NULL	LPD debug options when serving this queue.
 				See lf (log file) entry as well.
-default_auth	R	str	NULL
-				default client to server authentication type
-				used when specificially requested by user.
 default_format	R	str	f
 				default format for printing jobs
 default_permission	D	str	A
@@ -254,9 +268,6 @@ force_queuename	A	str	NULL
 				When :qq: flag or use_queuename configuration is enabled,
 				specifies the queuename to be used for control file Q
 				information.
-forward_auth	A	str	NULL
-				Do server to server authentication when non-null.
-				Use this value for the remote host authentication information.
 fq	D	bool	false	print a form feed when device is closed
 full_time	D	bool detailed time format specification in log messages
 fx	A	str	NULL	valid output filter formats
@@ -284,8 +295,12 @@ la	D	bool	true	write local printer accounting (if af is set)
 ld	D	str	NULL	leader string printed on printer open (see INITIALIZATION)
 lf	D	str	``log''	error and debugging log file (LPD)
 lk	D	bool	false	lock the lp device to force arbitration
-lockfile	D	str	/var/spool/lpd/lpd.lock.%h
-				lpd lock file (used only in lpd.conf)
+lockfile	D	str	/var/spool/lpd/lpd
+				lpd lock file (used only in lpd.conf).
+                The lpd_port value is appended
+                to the lockfile value to provide a unique lockfile
+                even when different versions of LPRng are running
+                on the same system.
 logger_destination	D	str	NULL
 				destination for logging information.  Format is
 				host%port
@@ -339,7 +354,8 @@ min_status_size	D	num	2	minimum size (Kbytes) of status file
 minfree	D	str	0
 				minimum space (in K) for spool directory
 ml	R	num	32	minimum printable characters for printable check
-ms_time_resolution	D	bool	false	log time in milliseconds
+ms_time_resolution	D	bool	false
+				log time in milliseconds
 mx	R	num	0	maximum job size in K, 0 = unlimited
 nb	D	num	0	if non-zero, do a nonblocking open on lp device
 nf	D	str	NULL	DITROFF data filter
@@ -380,10 +396,6 @@ remote_support	A	str	NULL
 				if non-null, specifies allowed operations to remote queue.
 				R=lpr, M=lprm, Q=lpq, V = lpq -v, C=lpc.  For example,
 				remote_support=RM would only allow LPR and LPRM operations.
-remote_user	A	str	NULL
-				when doing authentication,  use this entry for the remote user
-				or remote end of the connection.  This allows you to specify
-				a key or other information.
 report_server_as	A	str	NULL
 				use the str value as the name of the server when reporting
 				LPQ or LPC status.
@@ -418,7 +430,8 @@ router	D	str	NULL	script that dynamically re-routes a job
 				(see README.routing)
 rp	A	str	NULL	remote-queue printer name (with rm)
 rw	D	bool	false	open the printer for reading and writing
-safe_chars	D	str	NULL	additional safe characters for control file contents
+safe_chars	D	str	NULL
+				additional safe characters for control file contents
 save_on_error	D	bool	false
 				Save job when an error occurs to allow post-mortem
 				diagnostics or reprinting.  This should only be set on
@@ -797,11 +810,11 @@ network terminal servers, some TCP/IP-capable
 printers, and just about anything you can hack up a
 communication program for. Read the PLP Manual for more
 details.
-.SH "TY (STTY) OPTIONS"
+.SH "STTY OPTIONS"
 .PP
 The
-.B ty
-(stty) printcap parameter recognises a set of
+.B stty
+printcap parameter recognises a set of
 .IR stty (1)
 options 
 that can be used to set serial line characteristics for the printer.
@@ -1051,25 +1064,11 @@ The debugging information will
 help you to pinpoint the exact cause of failure.
 .fi
 .SH "HISTORY"
-.LP
 LPRng is a enhanced printer spooler system
 with functionality similar to the Berkeley LPR software.
-In 1988 Patrick Powell released
-the PLP (Public Line Printer) software,
-which went through several evolutions.
-Justin Mason (jmason@iona.ie)
-generated PLP4.0 from several older releases of PLP.
-In 1992 Patrick Powell
-release LPRng,
-a completely redesigned and newly written version of the software.
-.LP
-The LPRng mailing list is plp@iona.ie;
-subscribe by sending mail to plp-request@iona.ie with
+The LPRng mailing list is lprng@lprng.com;
+subscribe by sending mail to lprng-request@lprng.com with
 the word subscribe in the body.
-The software is available from ftp://iona.ie/pub/LPRng.
-.LP
-LPRng is distributed under the GNU software license for non-commercial
-use,
-the Artistic License for limited commercial use. 
-Commerical support and licensing is available through
-Patrick Powell <papowell@sdsu.edu>.
+The software is available from ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTHOR"
+Patrick Powell <papowell@astart.com>.

@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: debug.h,v 1.1.1.2 1999-05-04 18:07:06 danw Exp $
+ * $Id: debug.h,v 1.1.1.3 1999-10-27 20:10:08 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -48,16 +48,16 @@ EXTERN int Debug;	/* debug flags */
 EXTERN int DbgFlag;	/* force job number */
 
 /* Debug variable level */
-#define DEBUG1      DEBUGC(1,DNW1|DDB1|DRECV1|DCTRL1)
-#define DEBUGL1     DEBUGL(1,DNW1|DDB1|DRECV1|DCTRL1)
-#define DEBUG2      DEBUGC(2,DNW2|DDB2|DRECV2|DCTRL2)
-#define DEBUGL2     DEBUGL(2,DNW2|DDB2|DRECV2|DCTRL2)
-#define DEBUG3      DEBUGC(3,DNW3|DDB3|DRECV3|DCTRL3)
-#define DEBUGL3     DEBUGL(3,DNW3|DDB3|DRECV3|DCTRL3)
-#define DEBUG4      DEBUGC(4,DNW4|DDB4|DRECV4|DCTRL4)
-#define DEBUGL4     DEBUGL(4,DNW4|DDB4|DRECV4|DCTRL4)
-#define DEBUG5      DEBUGC(5,DNW4|DDB4|DRECV4|DCTRL4)
-#define DEBUGL5     DEBUGL(5,DNW4|DDB4|DRECV4|DCTRL4)
+#define DEBUG1      DEBUGC(1,DRECV1|DCTRL1|DLPQ1|DLPRM1)
+#define DEBUGL1     DEBUGL(1,DRECV1|DCTRL1|DLPQ1|DLPRM1)
+#define DEBUG2      DEBUGC(2,DRECV2|DCTRL2|DLPQ2|DLPRM2)
+#define DEBUGL2     DEBUGL(2,DRECV2|DCTRL2|DLPQ2|DLPRM2)
+#define DEBUG3      DEBUGC(3,DRECV3|DCTRL3|DLPQ3|DLPRM3)
+#define DEBUGL3     DEBUGL(3,DRECV3|DCTRL3|DLPQ3|DLPRM3)
+#define DEBUG4      DEBUGC(4,DRECV4|DCTRL4|DLPQ4|DLPRM4)
+#define DEBUGL4     DEBUGL(4,DRECV4|DCTRL4|DLPQ4|DLPRM4)
+#define DEBUG5      DEBUGC(5,DRECV4|DCTRL4|DLPQ4|DLPRM4)
+#define DEBUGL5     DEBUGL(5,DRECV4|DCTRL4|DLPQ4|DLPRM4)
 #define DEBUG6      DEBUGC(6,0)
 #define DEBUGL6     DEBUGL(6,0)
 
@@ -102,12 +102,12 @@ EXTERN int DbgFlag;	/* force job number */
 #define DCTRL3     ((0x4<<DCTRLSHIFT))
 #define DCTRL4     ((0x8<<DCTRLSHIFT))
 
-#define DMEMSHIFT 20
-#define DMEMMASK  ((0xF<<DMEMSHIFT))
-#define DMEM1     ((0x1<<DMEMSHIFT))
-#define DMEM2     ((0x2<<DMEMSHIFT))
-#define DMEM3     ((0x4<<DMEMSHIFT))
-#define DMEM4     ((0x8<<DMEMSHIFT))
+#define DLPRMSHIFT 20
+#define DLPRMMASK  ((0xF<<DLPRMSHIFT))
+#define DLPRM1     ((0x1<<DLPRMSHIFT))
+#define DLPRM2     ((0x2<<DLPRMSHIFT))
+#define DLPRM3     ((0x4<<DLPRMSHIFT))
+#define DLPRM4     ((0x8<<DLPRMSHIFT))
 
 #define DLPQSHIFT 24
 #define DLPQMASK  ((0xF<<DLPQSHIFT))

@@ -182,7 +182,7 @@ lp2: :lp=pr@10.0.0.1:client
 
 <P>Luckily, LPRng ignores empty options like <CODE>:&nbsp;:</CODE>.
 While it is strongly recommended that <CODE>\</CODE>
-be avoided it may be necessary for compatiblitye with other system utilities.
+be avoided it may be necessary for compatibility with other system utilities.
 </LI>
 <LI>The <CODE>lp=pr@10.0.0.1</CODE> option is an alternate way to
 specify a remote queue and server.
@@ -246,7 +246,7 @@ if it is not.
 <LI> <CODE>cm=</CODE><EM>comment for status</EM></LI>
 <LI> <CODE>if=</CODE><EM>default job file filter </EM></LI>
 <LI> <CODE>lf=</CODE><EM>log file </EM></LI>
-<LI> <CODE>mx#</CODE><EM>maximum job size</EM></LI>
+<LI> <CODE>mx=</CODE><EM>maximum job size</EM></LI>
 <LI> <CODE>lp=</CODE><EM>output device</EM></LI>
 <LI> <CODE>sd=</CODE><EM>spool directory file </EM></LI>
 <LI> <CODE>sh</CODE><EM>&nbsp;&nbsp;suppress headers (banners) </EM></LI>
@@ -269,7 +269,7 @@ lp1|printer
   :sd=/var/spool/lpd/lp1
   :lf=log:af=acct
   :if=/usr/local/sbin/lpf
-  :mx#0:sh:sf
+  :mx=0:sh:sf
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
@@ -317,9 +317,17 @@ printing banner pages.</LI>
 <LI>The <CODE>sf</CODE> <I>suppress form feeds</I> flag will suppress
 form feeds between the files of a multi-file print job.</LI>
 </OL>
-<H2><A NAME="printcapparse"></A> <A NAME="ss8.3">8.3 The Printcap Parsing Rules</A>
+<H2><A NAME="oh"></A> <A NAME="tc"></A> <A NAME="client"></A> <A NAME="server"></A> <A NAME="printcapparse"></A> <A NAME="ss8.3">8.3 The Printcap Parsing Rules</A>
 </H2>
 
+<P>Options used:
+<UL>
+<LI> <CODE>client</CODE><EM>&nbsp;&nbsp; printcap entry valid only for client programs </EM></LI>
+<LI> <CODE>oh</CODE><EM>&nbsp;&nbsp; printcap entry valid only on these hosts </EM></LI>
+<LI> <CODE>server</CODE><EM>&nbsp;&nbsp; printcap entry valid only for lpd server </EM></LI>
+<LI> <CODE>tc</CODE><EM>&nbsp;&nbsp; add named printcap entry contents </EM></LI>
+</UL>
+<P>
 <P>In this section,
 we will discuss the remaining tricky parts of the LPRng printcap
 database:
@@ -364,7 +372,7 @@ will override the ones from the <CODE>tc</CODE> included entries.</LI>
 <LI>Finally,
 each string printcap option with a <I>%X</I> value
 has <I>%X</I> replaced by the following values.
-Unspecifed values will not be modified.
+Unspecified values will not be modified.
 <BLOCKQUOTE><CODE>
 <PRE>
 %P           printcap name
@@ -392,8 +400,8 @@ Here is an example:
 <BLOCKQUOTE><CODE>
 <PRE>
 # seen by both client and server
-lp1:lp=lp@pr1:mx#100
-lp1:sd=/usr/local/spool/lp1:mx#0
+lp1:lp=lp@pr1:mx=100
+lp1:sd=/usr/local/spool/lp1:mx=0
 # seen only by client
 lp2:lp=lp@pr2:client
 # seen only by server
@@ -415,7 +423,7 @@ both client and server will have:
 <BLOCKQUOTE><CODE>
 <PRE>
 lp1:lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -428,7 +436,7 @@ Thus, the LPRng clients will see:
 <PRE>
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :client
@@ -441,7 +449,7 @@ and the server will see:
 <PRE>
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :lp=/dev/lp
@@ -458,27 +466,31 @@ and use the <CODE>tc</CODE> include facility.
 <P>By convention,
 all printer names start with an alphanumeric character and contain only
 alphanumeric values, underscore (<CODE>_</CODE>) or hyphen (<CODE>-</CODE>).
-A printcap entry starting with punctuation such as
-period (<CODE>.</CODE>) or at (<CODE>@</CODE>)  is processed by LPRng
+A printcap entry starting with
+period (<CODE>.</CODE>),
+question mark (<CODE>?</CODE>),
+or
+exclamation mark (<CODE>!</CODE>),
+is processed by LPRng
 but can only be used with the <CODE>tc</CODE> include facility.
 For example:
 <BLOCKQUOTE><CODE>
 <PRE>
 .hp:
   :sd=/usr/local/spool/%P
-  :mx#0:sf:sh
+  :mx=0:sf:sh
 hp1:tc=.hp,.filter
   :lp=lp@10.0.0.1
-hp2:tc=.hp,@filter
+hp2:tc=.hp,.filter
   :lp=lp@10.0.0.2
-@filter
+.filter
   :if=/usr/local/bin/ifhp
   :lpd_bounce
 </PRE>
 </CODE></BLOCKQUOTE>
 
 <OL>
-<LI>The <CODE>.hp</CODE> and <CODE>@filter</CODE> printcap enties will not be used as
+<LI>The <CODE>.hp</CODE> and <CODE>.filter</CODE> printcap entities will not be used as
 real printcaps by LPRng,
 but can be referenced by the <CODE>tc</CODE> printcap include facility.
 After <CODE>tc</CODE> include processing is completed,
@@ -489,15 +501,15 @@ hp1
   :lp=lp@10.0.0.1
   :if=/usr/local/bin/ifhp
   :lpd_bounce
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/%P
   :sf
   :sh
 hp2
-  :lp=lp@10.0.0.1
+  :lp=lp@10.0.0.2
   :if=/usr/local/bin/ifhp
   :lpd_bounce
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/%P
   :sf
   :sh
@@ -511,22 +523,22 @@ so we would have:
 <PRE>
 hp1
   :lp=lp@10.0.0.1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/hp1
   :sf
   :sh
 hp2
-  :lp=lp@10.0.0.1
-  :mx#0
-  :sd=/usr/local/spool/hp1
+  :lp=lp@10.0.0.2
+  :mx=0
+  :sd=/usr/local/spool/hp2
   :sf
   :sh
 </PRE>
 </CODE></BLOCKQUOTE>
 </LI>
 </OL>
-<P>When administring a large number of printers over a large area,
-it is sometimes desireable to have a <I>default</I> printer for
+<P>When administering a large number of printers over a large area,
+it is sometimes desirable to have a <I>default</I> printer for
 each host.
 This default printer may be different for each host,
 and can be selected by using the <CODE>oh</CODE> entry.
@@ -560,7 +572,7 @@ as the <CODE>*.admin.org.com</CODE> glob pattern would match our host name.</LI>
 <LI>if our host name is
 <CODE>booster.dev.org.com</CODE> and our IP address is 10.2.0.1,
 then we would use <CODE>lp=pr1@server1</CODE>,
-as the <CODE>10.0.0.0/16</CODE> ip address would match.</LI>
+as the <CODE>10.2.0.0/16</CODE> ip address would be in the specified address range.</LI>
 </OL>
 <H2><A NAME="ss8.4">8.4 Displaying Printcap Information</A>
 </H2>
@@ -580,7 +592,7 @@ For example:
 #> lpc client all
 lp1
   :lp=lp@pr1
-  :mx#0
+  :mx=0
   :sd=/usr/local/spool/lp1P
 lp2
   :client
@@ -597,7 +609,7 @@ lp2
 <LI> <CODE>rp=</CODE><EM>remote printer (machine)</EM></LI>
 </UL>
 <P>You can have the <CODE>lpd</CODE> server forward jobs to another server
-or print which supports the RFC1179 procol by using the
+or print which supports the RFC1179 protocol by using the
 following printcap:
 <BLOCKQUOTE><CODE>
 <PRE>
@@ -671,7 +683,7 @@ See
 The <CODE>ifhp</CODE> filter will perform the appropriate printer resets,
 translate job information,
 and ensure correct printer operation in the presence of errors.
-It will also produce voluminous error messages and logging information.</LI>
+It will also produce voluminous error messages and status information.</LI>
 </OL>
 <H2><A NAME="ss8.7">8.7 Parallel Printer</A>
 </H2>
@@ -729,7 +741,7 @@ lp:
 This entry will specify that the printer is an HP4,
 and that no status information is available.
 This is usually the case with a parallel port.
-<H2><A NAME="stty"></A> <A NAME="br"></A> <A NAME="rw"></A> <A NAME="ss8.8">8.8 A serial printer queue</A>
+<H2><A NAME="stty"></A> <A NAME="br"></A> <A NAME="ss8.8">8.8 A serial printer queue</A>
 </H2>
 
 <P>Options used:
@@ -749,14 +761,14 @@ lp2
   :sd=/var/spool/lpd/lp2
   :stty=9600 -echo -crmod -raw -oddp -evenp pass8 cbreak ixon
   :if=/usr/local/sbin/lpf
-  :mx#0:sh
+  :mx=0:sh
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>Let's examine the new options:
 <OL>
 <LI>A serial port is usually <EM>bidirectional</EM>,
 and printers will report errors back to the host computer.
-The <CODE>rw</CODE> flag will cause the printer port to be openned 
+The <CODE>rw</CODE> flag will cause the printer port to be opened 
 <CODE>read-write</CODE>,
 and the <CODE>lpd</CODE> server will report status information.</LI>
 <LI>The <CODE>sy</CODE> option specifies the <CODE>stty(1)</CODE>
@@ -819,7 +831,7 @@ information for
 and
 <CODE>pr2</CODE> respectively,
 overriding the common <CODE>lp</CODE> entries.
-<H2><A NAME="translateformat"></A> <A NAME="bouncequeues"></A> <A NAME="bqformat"></A> <A NAME="lpdbounce"></A> <A NAME="bq"></A> <A NAME="ss8.10">8.10 Bounce queues</A>
+<H2><A NAME="bouncequeues"></A> <A NAME="bqformat"></A> <A NAME="lpdbounce"></A> <A NAME="bq"></A> <A NAME="ss8.10">8.10 Bounce queues</A>
 </H2>
 
 <P>Options used:
@@ -853,9 +865,9 @@ processing.
 bounce:lp=bounce@bouncehost
 bounce:server
     :lp=lp@remote
-        :lpd_bounce
-        # LEGACY
-        #bq=lp@remote
+    :lpd_bounce
+    # LEGACY
+    #bq=lp@remote
     :sd=/usr/spool/lpd/%P
     :if=/usr/local/bin/lpf
     :vf=/usr/local/bin/lpf
@@ -898,14 +910,14 @@ The banner generation is done as discussed in
 <LI> <CODE>translate_format=</CODE><EM>format of filtered job</EM></LI>
 </UL>
 <P>A rarely encountered problem is when a job is printed with
-one format but for compatiblity needs to be processed with another.
+one format but for compatibility needs to be processed with another.
 The simple
 <CODE>translate_format=vlxf</CODE>
 option will rename format
 <CODE>x</CODE>
 files to
 <CODE>f</CODE> format.
-<P>This can be used to resolve problems with PC based sofware,
+<P>This can be used to resolve problems with PC based software,
 which spools jobs using the <CODE>v</CODE> format.
 Unfortunately,
 many RCF1179 print spoolers do not understand the
@@ -1053,7 +1065,7 @@ and loop over all the names in the list looking for the "job" that you are inter
 If there is no
 <CODE>destinations</CODE>
 information, the
-<CODE>bq</CODE> information will be usued.
+<CODE>bq</CODE> information will be used.
 <P>Lars Anderson &lt;<CODE>lsa@business.auc.dk</CODE>&gt; supplied this example
 (slightly edited):
 <P>This script will attempt to distribute print jobs evenly on
@@ -1061,20 +1073,20 @@ information, the
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
-hpl5bounce|for PLP/LPRng software - network based HP Jetdirect card:
+hpl5bounce|for PLP/LPRng software - network based HP JetDirect card:
         :lpd_bounce
         #default
         :rp=hpl5b
         :destinations=hp5a,hp5b
         :router=/usr/local/admscripts/bouncer.pl
-hpl5a|for PLP/LPRng software - network based HP Jetdirect card:
+hpl5a|for PLP/LPRng software - network based HP JetDirect card:
         :lp=hpl5a%9100
-        :tc=@hplcommon
-hpl5b|for PLP/LPRng software - network based HP Jetdirect card:
+        :tc=.hplcommon
+hpl5b|for PLP/LPRng software - network based HP JetDirect card:
         :lp=hpl5b%9100
-        :tc=@hplcommon
+        :tc=.hplcommon
 # Common settings
-@hplcommon:
+.hplcommon:
         :sd=/var/spool/lpd/%P
         :rw:sh:ps=status
         :fx=flp
@@ -1088,7 +1100,7 @@ hpl5b|for PLP/LPRng software - network based HP Jetdirect card:
 <PRE>
 #!/usr/bin/perl
 #
-# Script for printjob loadsharing
+# Script for printjob load sharing
 #   This is static, not dynamic balancing
 #
 # Printqueues to check
@@ -1159,9 +1171,9 @@ laser|pi|Room 1359 LaserWriters
     :lf=/usr/adm/laser-log
     :sv=laser1,laser2,laser3,laser4,laser5,laser6
     :sd=/usr/spool/laser
-@commonlaser
+.commonlaser
     :sd=/usr/spool/%P
-    :rw:mx#0:sh
+    :rw:mx=0:sh
     :lf=/usr/adm/laser1-log
     :if=/s/lprng/lib/filters/cappsif
     :of=/s/lprng/depend/cap/bin/papof
@@ -1172,13 +1184,13 @@ laser1|pi1|Room 1359 LaserWriter #1
 laser1|pi1|Room 1359 LaserWriter #1
     :server
     :lp=/dev/laser1
-    :tc=@commonlaser
+    :tc=.commonlaser
 laser2|pi2|Room 1359 LaserWriter #1
     :lp=laser2@server.com
 laser2|pi2|Room 1359 LaserWriter #2
     :server
     :lp=/dev/laser2
-    :tc=@commonlaser
+    :tc=.commonlaser
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>and so on for the other 4 <CODE>laser</CODE><EM>N</EM> queues.
@@ -1210,7 +1222,7 @@ and can be busy or offline.
 server to determine if the spool queue device is available.
 <P>The program is invoked with the standard filter options,
 STDIN and STDOUT connected to <CODE>/dev/null</CODE>,
-and STDERR to the error log.
+and STDERR to the status file.
 <P>The program should make a connection to the remote device or system
 and should determine that the remote device is available for use,
 and then exit with the following status.
@@ -1531,7 +1543,7 @@ lp23a|lp23|lp|main printhost printer - KB, EUCS front Door:\
 lplabel|lpl|TEST - Labels printer:
         :lp=:rm=printhost:rp=lplabel:
         :sd=/usr/spool/lpr/lplabel:
-        :rg=lpadm:mx#1:
+        :rg=lpadm:mx=1:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>To build the NIS printcap.byname map we add the following to
@@ -1616,7 +1628,7 @@ lp1
  :server:oh=servername
  :sd=/var/spool/lpd/lp1
  :lp=/dev/lp1
- :sh:mx#0
+ :sh:mx=0
 ---------- end of /etc/printcap snippet
 </PRE>
 </CODE></BLOCKQUOTE>
@@ -1714,7 +1726,7 @@ if ($#allprinters >=0) {
 <BLOCKQUOTE><CODE>
 <PRE>
 lp1_1 lp1:lp=lp1@server
-lp1_2 lp1:server:oh=servername:sd=/var/spool/lpd/lp1:lp=/dev/lp1:sh:mx#0
+lp1_2 lp1:server:oh=servername:sd=/var/spool/lpd/lp1:lp=/dev/lp1:sh:mx=0
 lp2_1 lp2:lp=lp2@server
 all_1 all:all=lp1,lp2
 </PRE>

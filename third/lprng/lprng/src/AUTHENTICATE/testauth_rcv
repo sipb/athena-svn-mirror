@@ -1,5 +1,4 @@
 #!/usr/local/bin/perl
-# $Id: testauth_rcv,v 1.1.1.1 1999-05-04 18:06:45 danw Exp $
 # 
 # LPRng authorization test program
 # 
@@ -23,12 +22,13 @@
 # 3. Run whatever consistency checks are needed,  and then
 #    decode the transferred file.
 # 4. The transferred file has a header, blank line, and body.
-#    write the header to FD 1,  followed by additional authentication
-#    information.  The ID of the sender (from) is sent as:
+#    write the authentication information to FD 1.
+#    The ID of the sender (from) is sent as:
 #    from=xxxx   where xxx is the appropriate value.
 # 5. close FD 1,  and read information from FD 3 into the tempfile.
 # 6. encode the tempfile,  and then transfer to the remote
 #    host over FD 0.
+# 
 
 use Getopt::Std;
 use FileHandle;
@@ -100,43 +100,43 @@ print STDERR "finished transfer\n" if( $debug );
 
 done:
 
-#  The following illustrates how you can use pgp to decode the
-#  transferred file.  Replace with your own stuff
-#  Note: the PGPPASSFD is a safe way to give PGP the passphrase
-
-$dir = (getpwnam($user))[7];
-if( not defined($dir) ){
-	warn "user does not have home dir\n";
-	exit(1);
-}
-$pwfile = "$dir/.pgp/serverkey";
-$temp ->open("<$pwfile") or die "cannot open '$pwfile'";
-
-print STDERR "server key '" . `cat $pwfile ` . "\n" if $debug;
-$ENV{'PGPPASSFD'} = 5;
-$line = "pgp +force +batch $tempfile -u $args{'n'} -o $tempfile 2>&1 5<$pwfile";
-
-print STDERR "$line\n" if $debug;
-eval{ @lines = `$line`; };
-if( $@ ){
-	print STDERR "eval error '$@'\n";
-	exit(1);
-} elsif( $? ){
-	$line = join( '', @lines);
-	chomp($line);
-	$i = $? >> 8;
-	print STDERR "pgp error '$line'\n";
-	exit(1);
-}
-
-for( $i = 0; $i <@lines; ++$i ){
-	$line = $lines[$i];
-	chomp $line;
-	print STDERR " [$i] = '$line'\n" if $debug;
-	if( $line =~ /^Good signature[^"]*"([^"]*)"/ ){
-		$from = $1;
-	}
-}
+##  The following illustrates how you can use pgp to decode the
+##  transferred file.  Replace with your own stuff
+##  Note: the PGPPASSFD is a safe way to give PGP the passphrase
+#
+#$dir = (getpwnam($user))[7];
+#if( not defined($dir) ){
+#	warn "user does not have home dir\n";
+#	exit(1);
+#}
+#$pwfile = "$dir/.pgp/serverkey";
+#$temp ->open("<$pwfile") or die "cannot open '$pwfile'";
+#
+#print STDERR "server key '" . `cat $pwfile ` . "\n" if $debug;
+#$ENV{'PGPPASSFD'} = 5;
+#$line = "pgp +force +batch $tempfile -u $args{'n'} -o $tempfile 2>&1 5<$pwfile";
+#
+#print STDERR "$line\n" if $debug;
+#eval{ @lines = `$line`; };
+#if( $@ ){
+#	print STDERR "eval error '$@'\n";
+#	exit(1);
+#} elsif( $? ){
+#	$line = join( '', @lines);
+#	chomp($line);
+#	$i = $? >> 8;
+#	print STDERR "pgp error '$line'\n";
+#	exit(1);
+#}
+#
+#for( $i = 0; $i <@lines; ++$i ){
+#	$line = $lines[$i];
+#	chomp $line;
+#	print STDERR " [$i] = '$line'\n" if $debug;
+#	if( $line =~ /^Good signature[^"]*"([^"]*)"/ ){
+#		$from = $1;
+#	}
+#}
 
 $temp->open("<$tempfile") or die "cannot open '$tempfile'";
 
@@ -146,8 +146,13 @@ while( not $done and defined( $line = <$temp> ) ){
 	if( $line ){
 		print STDERR "HEADER '$line'\n" if( $debug );
 		print "$line\n";
+		if( $from == "" && $line =~ /client=(.*)/ ){
+			print STDERR "HEADER FROM '$from'\n" if( $debug );
+			$from = $1;
+		}
 	} else {
 		if( $from ){
+			print STDERR "HEADER SENDING FROM '$from'\n" if( $debug );
 			print "from=$from\n";
 		}
 		close(STDOUT);
