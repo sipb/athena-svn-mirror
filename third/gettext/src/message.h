@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
 
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
@@ -20,8 +20,8 @@
 #ifndef _MESSAGE_H
 #define _MESSAGE_H
 
-#include "po-lex.h"
 #include "str-list.h"
+#include "pos.h"
 
 /* According to Sun's Uniforum proposal the default message domain is
    named `messages'.  */
@@ -38,12 +38,35 @@ enum is_c_format
   impossible
 };
 
+extern enum is_c_format
+       parse_c_format_description_string PARAMS ((const char *s));
+extern int possible_c_format_p PARAMS ((enum is_c_format));
+
+
+/* Is current msgid wrappable?  */
+#if 0
+enum is_wrap
+{
+  undecided,
+  yes,
+  no
+};
+#else /* HACK - C's enum concept is so stupid */
+#define is_wrap is_c_format
+#endif
+
+extern enum is_wrap parse_c_width_description_string PARAMS ((const char *s));
+
+
 typedef struct message_variant_ty message_variant_ty;
 struct message_variant_ty
 {
   const char *domain;
+
   lex_pos_ty pos;
+
   const char *msgstr;
+  size_t msgstr_len;
 };
 
 typedef struct message_ty message_ty;
@@ -66,10 +89,13 @@ struct message_ty
   enum is_c_format is_c_format;
 
   /* Do we want the string to be wrapped in the emitted PO file?  */
-  enum is_c_format do_wrap;
+  enum is_wrap do_wrap;
 
   /* The msgid string.  */
   const char *msgid;
+
+  /* The msgid's plural, if present.  */
+  const char *msgid_plural;
 
   /* The msgstr strings, one for each observed domain in the file.  */
   size_t variant_count;
@@ -84,22 +110,19 @@ struct message_ty
   int obsolete;
 };
 
-message_ty *message_alloc PARAMS ((char *msgid));
+message_ty *message_alloc PARAMS ((char *msgid, const char *msgid_plural));
 void message_free PARAMS ((message_ty *));
 
 message_variant_ty *message_variant_search PARAMS ((message_ty *mp,
 						    const char *domain));
 void message_variant_append PARAMS ((message_ty *mp, const char *domain,
-				     const char *msgstr,
+				     const char *msgstr, size_t msgstr_len,
 				     const lex_pos_ty *pp));
 void message_comment_append PARAMS ((message_ty *, const char *));
 void message_comment_dot_append PARAMS ((message_ty *, const char *));
 message_ty *message_copy PARAMS ((message_ty *));
 message_ty *message_merge PARAMS ((message_ty *def, message_ty *ref));
 void message_comment_filepos PARAMS ((message_ty *, const char *, size_t));
-void message_print_style_indent PARAMS ((void));
-void message_print_style_uniforum PARAMS ((void));
-void message_print_style_escape PARAMS ((int));
 
 
 typedef struct message_list_ty message_list_ty;
@@ -117,13 +140,25 @@ void message_list_delete_nth PARAMS ((message_list_ty *, size_t));
 message_ty *message_list_search PARAMS ((message_list_ty *, const char *));
 message_ty *message_list_search_fuzzy PARAMS ((message_list_ty *,
 					       const char *));
-void message_list_print PARAMS ((message_list_ty *, const char *, int, int));
-void message_list_sort_by_msgid PARAMS ((message_list_ty *));
-void message_list_sort_by_filepos PARAMS ((message_list_ty *));
 
-enum is_c_format parse_c_format_description_string PARAMS ((const char *s));
-enum is_c_format parse_c_width_description_string PARAMS ((const char *s));
-int possible_c_format_p PARAMS ((enum is_c_format));
-void message_page_width_set PARAMS ((size_t width));
+
+typedef struct message_list_list_ty message_list_list_ty;
+struct message_list_list_ty
+{
+  message_list_ty **item;
+  size_t nitems;
+  size_t nitems_max;
+};
+
+message_list_list_ty *message_list_list_alloc PARAMS ((void));
+void message_list_list_free PARAMS ((message_list_list_ty *));
+void message_list_list_append PARAMS ((message_list_list_ty *,
+				       message_list_ty *));
+void message_list_list_append_list PARAMS ((message_list_list_ty *,
+					    message_list_list_ty *));
+message_ty *message_list_list_search PARAMS ((message_list_list_ty *,
+					      const char *));
+message_ty *message_list_list_search_fuzzy PARAMS ((message_list_list_ty *,
+						    const char *));
 
 #endif /* message.h */

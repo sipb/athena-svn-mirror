@@ -1,5 +1,5 @@
 /* Extracts strings from C source file to Uniforum style .po file.
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -28,14 +28,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/types.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <stdlib.h>
+#include <locale.h>
 
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
@@ -52,12 +46,11 @@ extern int errno;
 #include "system.h"
 #include "po.h"
 #include "message.h"
+#include "write-po.h"
 #include "xget-lex.h"
 #include "printf-parse.h"
 
-#include "gettext.h"
-#include "domain.h"
-#include <libintl.h>
+#include "libgettext.h"
 
 #ifndef _POSIX_VERSION
 struct passwd *getpwuid ();
@@ -75,7 +68,7 @@ static int add_all_comments;
 static int line_comment;
 
 /* Tag used in comment of prevailing domain.  */
-static unsigned char *comment_tag;
+static char *comment_tag;
 
 /* Name of default domain file.  If not set defaults to messages.po.  */
 static char *default_domain;
@@ -111,10 +104,6 @@ static int omit_header;
 
 /* String containing name the program is called with.  */
 const char *program_name;
-
-/* String length from with on warning are given for possible problem
-   while exceeding tools limits.  */
-static size_t warn_id_len;
 
 /* Long options.  */
 static const struct option long_options[] =
@@ -165,18 +154,24 @@ static string_list_ty *read_name_from_file PARAMS ((const char *__file_name));
 static void exclude_directive_domain PARAMS ((po_ty *__pop, char *__name));
 static void exclude_directive_message PARAMS ((po_ty *__pop, char *__msgid,
 					       lex_pos_ty *__msgid_pos,
+					       char *__msgid_plural,
 					       char *__msgstr,
+					       size_t __msgstr_len,
 					       lex_pos_ty *__msgstr_pos));
 static void read_exclusion_file PARAMS ((char *__file_name));
-static void remember_a_message PARAMS ((message_list_ty *__mlp,
-					xgettext_token_ty *__tp));
+static message_ty *remember_a_message PARAMS ((message_list_ty *__mlp,
+					       xgettext_token_ty *__tp));
+static void remember_a_message_plural PARAMS ((message_ty *__mp,
+					       xgettext_token_ty *__tp));
 static void scan_c_file PARAMS ((const char *__file_name,
-				 message_list_ty *__mlp,  int __is_cpp_file));
+				 message_list_ty *__mlp));
 static void extract_constructor PARAMS ((po_ty *__that));
 static void extract_directive_domain PARAMS ((po_ty *__that, char *__name));
 static void extract_directive_message PARAMS ((po_ty *__that, char *__msgid,
 					       lex_pos_ty *__msgid_pos,
+					       char *__msgid_plural,
 					       char *__msgstr,
+					       size_t __msgstr_len,
 					       lex_pos_ty *__msgstr_pos));
 static void extract_parse_brief PARAMS ((po_ty *__that));
 static void extract_comment PARAMS ((po_ty *__that, const char *__s));
@@ -195,8 +190,6 @@ static enum is_c_format test_whether_c_format PARAMS ((const char *__s));
    string argument and a message list argument.  */
 typedef void (*scanner_fp) PARAMS ((const char *, message_list_ty *));
 
-static void scanner_c PARAMS ((const char *, message_list_ty *));
-static void scanner_cxx PARAMS ((const char *, message_list_ty *));
 static const char *extension_to_language PARAMS ((const char *));
 static scanner_fp language_to_scanner PARAMS ((const char *));
 
@@ -223,7 +216,6 @@ main (argc, argv)
   /* Set program name for messages.  */
   program_name = argv[0];
   error_print_progname = error_print;
-  warn_id_len = WARN_ID_LEN;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -298,12 +290,7 @@ main (argc, argv)
 	  xgettext_lex_keyword (optarg);
 	break;
       case 'l':
-	{
-	  char *endp;
-	  size_t tmp_val = strtoul (optarg, &endp, 0);
-	  if (endp[0] == '\0')
-	    warn_id_len = tmp_val;
-	}
+	/* Accepted for backward compatibility with 0.10.35.  */
 	break;
       case 'L':
 	scanner = language_to_scanner (optarg);
@@ -386,6 +373,13 @@ main (argc, argv)
     error (EXIT_FAILURE, 0, _("\
 --join-existing cannot be used when output is written to stdout"));
 
+  if (!xgettext_any_keywords ())
+    {
+      error (0, 0, _("\
+xgettext cannot work without keywords to look for"));
+      usage (EXIT_FAILURE);
+    }
+
   /* Version information requested.  */
   if (do_version)
     {
@@ -395,7 +389,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995, 1996, 1997, 1998");
+	      "1995-1998, 2000, 2001");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -421,31 +415,20 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   if (output_dir == NULL)
     output_dir = ".";
 
-  /* Construct the name of the ouput file.  If the default domain has
+  /* Construct the name of the output file.  If the default domain has
      the special name "-" we write to stdout.  */
   if (output_file)
     {
-      if (output_file[0] == '/' ||
-	  strcmp(output_dir, ".") == 0 || strcmp(output_file, "-") == 0)
+      if (IS_ABSOLUTE_PATH (output_file) || strcmp (output_file, "-") == 0)
 	file_name = xstrdup (output_file);
       else
-	{
-	  /* Please do NOT add a .po suffix! */
-	  file_name = xmalloc (strlen (output_dir)
-			       + strlen (default_domain) + 2);
-	  stpcpy (stpcpy (stpcpy (file_name, output_dir), "/"), output_file);
-	}
+	/* Please do NOT add a .po suffix! */
+	file_name = concatenated_pathname (output_dir, output_file, NULL);
     }
   else if (strcmp (default_domain, "-") == 0)
     file_name = "-";
   else
-    {
-      file_name = (char *) xmalloc (strlen (output_dir)
-				    + strlen (default_domain)
-				    + sizeof (".po") + 2);
-      stpcpy (stpcpy (stpcpy (stpcpy (file_name, output_dir), "/"),
-		      default_domain), ".po");
-    }
+    file_name = concatenated_pathname (output_dir, default_domain, ".po");
 
   /* Determine list of files we have to process.  */
   if (files_from != NULL)
@@ -560,13 +543,11 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -j, --join-existing            join messages with existing file\n\
   -k, --keyword[=WORD]           additonal keyword to be looked for (without\n\
                                  WORD means not to use default keywords)\n\
-  -l, --string-limit=NUMBER      set string length limit to NUMBER instead %u\n\
   -L, --language=NAME            recognise the specified language (C, C++, PO),\n\
                                  otherwise is guessed from file extension\n\
   -m, --msgstr-prefix[=STRING]   use STRING or \"\" as prefix for msgstr entries\n\
   -M, --msgstr-suffix[=STRING]   use STRING or \"\" as suffix for msgstr entries\n\
-      --no-location              do not write '#: filename:line' lines\n"),
-	      WARN_ID_LEN);
+      --no-location              do not write '#: filename:line' lines\n"));
       /* xgettext: no-wrap */
       fputs (_("\
   -n, --add-location             generate '#: filename:line' lines (default)\n\
@@ -662,11 +643,14 @@ exclude_directive_domain (pop, name)
 
 
 static void
-exclude_directive_message (pop, msgid, msgid_pos, msgstr, msgstr_pos)
+exclude_directive_message (pop, msgid, msgid_pos, msgid_plural,
+			   msgstr, msgstr_len, msgstr_pos)
      po_ty *pop;
      char *msgid;
      lex_pos_ty *msgid_pos;
+     char *msgid_plural;
      char *msgstr;
+     size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
 {
   message_ty *mp;
@@ -679,7 +663,7 @@ exclude_directive_message (pop, msgid, msgid_pos, msgstr, msgstr_pos)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, msgid_plural);
       /* Do not free msgid.  */
       message_list_append (exclude, mp);
     }
@@ -724,13 +708,13 @@ read_exclusion_file (file_name)
 }
 
 
-static void
+static message_ty *
 remember_a_message (mlp, tp)
      message_list_ty *mlp;
      xgettext_token_ty *tp;
 {
   enum is_c_format is_c_format = undecided;
-  enum is_c_format do_wrap = undecided;
+  enum is_wrap do_wrap = undecided;
   char *msgid;
   message_ty *mp;
   char *msgstr;
@@ -744,7 +728,7 @@ remember_a_message (mlp, tp)
 	 message gets the correct comments.  */
       xgettext_lex_comment_reset ();
 
-      return;
+      return NULL;
     }
 
   /* See if we have seen this message before.  */
@@ -760,7 +744,7 @@ remember_a_message (mlp, tp)
       static lex_pos_ty pos = { __FILE__, __LINE__ };
 
       /* Allocate a new message and append the message to the list.  */
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, NULL);
       /* Do not free msgid.  */
       message_list_append (mlp, mp);
 
@@ -770,13 +754,14 @@ remember_a_message (mlp, tp)
 	{
 	  msgstr = (char *) xmalloc (strlen (msgstr_prefix)
 				     + strlen (msgid)
-				     + strlen(msgstr_suffix) + 1);
+				     + strlen (msgstr_suffix) + 1);
 	  stpcpy (stpcpy (stpcpy (msgstr, msgstr_prefix), msgid),
 		  msgstr_suffix);
 	}
       else
 	msgstr = "";
-      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, &pos);
+      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr,
+			      strlen (msgstr) + 1, &pos);
     }
 
   /* Ask the lexer for the comments it has seen.  Only do this for the
@@ -825,26 +810,85 @@ remember_a_message (mlp, tp)
   /* Tell the lexer to reset its comment buffer, so that the next
      message gets the correct comments.  */
   xgettext_lex_comment_reset ();
+
+  return mp;
 }
 
 
 static void
-scan_c_file(filename, mlp, is_cpp_file)
+remember_a_message_plural (mp, tp)
+     message_ty *mp;
+     xgettext_token_ty *tp;
+{
+  char *msgid_plural;
+  message_variant_ty *mvp;
+  char *msgstr1;
+  size_t msgstr1_len;
+  char *msgstr;
+
+  msgid_plural = tp->string;
+
+  /* See if the message is already a plural message.  */
+  if (mp->msgid_plural == NULL)
+    {
+      mp->msgid_plural = msgid_plural;
+
+      /* Construct the first plural form from the prefix and suffix,
+	 otherwise use the empty string.  The translator will have to
+	 provide additional plural forms.  */
+      mvp = message_variant_search (mp, MESSAGE_DOMAIN_DEFAULT);
+      if (mvp != NULL)
+	{
+	  if (msgstr_prefix)
+	    {
+	      msgstr1 = (char *) xmalloc (strlen (msgstr_prefix)
+					  + strlen (msgid_plural)
+					  + strlen (msgstr_suffix) + 1);
+	      stpcpy (stpcpy (stpcpy (msgstr1, msgstr_prefix), msgid_plural),
+		      msgstr_suffix);
+	    }
+	  else
+	    msgstr1 = "";
+	  msgstr1_len = strlen (msgstr1) + 1;
+	  msgstr = (char *) xmalloc (mvp->msgstr_len + msgstr1_len);
+	  memcpy (msgstr, mvp->msgstr, mvp->msgstr_len);
+	  memcpy (msgstr + mvp->msgstr_len, msgstr1, msgstr1_len);
+	  mvp->msgstr = msgstr;
+	  mvp->msgstr_len = mvp->msgstr_len + msgstr1_len;
+	}
+    }
+  else
+    free (msgid_plural);
+}
+
+
+static void
+scan_c_file (filename, mlp)
      const char *filename;
      message_list_ty *mlp;
-     int is_cpp_file;
 {
   int state;
-
-  /* Inform scanner whether we have C++ files or not.  */
-  if (is_cpp_file)
-    xgettext_lex_cplusplus ();
+  int commas_to_skip = 0;	/* defined only when in states 1 and 2 */
+  int plural_commas = 0;	/* defined only when in states 1 and 2 */
+  message_ty *plural_mp = NULL;	/* defined only when in states 1 and 2 */
+  int paren_nesting = 0;	/* defined only when in state 2 */
 
   /* The file is broken into tokens.  Scan the token stream, looking for
      a keyword, followed by a left paren, followed by a string.  When we
      see this sequence, we have something to remember.  We assume we are
      looking at a valid C or C++ program, and leave the complaints about
-     the grammar to the compiler.  */
+     the grammar to the compiler.
+
+     Normal handling: Look for
+       [A] keyword [B] ( ... [C] ... msgid ... ) [E]
+     Plural handling: Look for
+       [A] keyword [B] ( ... [C] ... msgid ... [D] ... msgid_plural ... ) [E]
+     At point [A]: state == 0.
+     At point [B]: state == 1, commas_to_skip set, plural_mp == NULL.
+     At point [C]: state == 2, commas_to_skip set, plural_mp == NULL.
+     At point [D]: state == 2, commas_to_skip set again, plural_mp != NULL.
+     At point [E]: state == 0.  */
+
   xgettext_lex_open (filename);
 
   /* Start state is 0.  */
@@ -854,66 +898,111 @@ scan_c_file(filename, mlp, is_cpp_file)
    {
      xgettext_token_ty token;
 
-     /* A simple state machine is used to do the recognising:
+     /* A state machine is used to do the recognising:
         State 0 = waiting for something to happen
-        State 1 = seen one of our keywords with string in first parameter
-        State 2 = was in state 1 and now saw a left paren
-	State 3 = seen one of our keywords with string in second parameter
-	State 4 = was in state 3 and now saw a left paren
-	State 5 = waiting for comma after being in state 4
-	State 6 = saw comma after being in state 5  */
+        State 1 = seen one of our keywords
+        State 2 = waiting for part of an argument */
      xgettext_lex (&token);
      switch (token.type)
        {
-       case xgettext_token_type_keyword1:
+       case xgettext_token_type_keyword:
+	 if (!extract_all && state == 2)
+	   {
+	     if (commas_to_skip == 0)
+	       {
+		 error (0, 0,
+			_("%s:%d: warning: keyword nested in keyword arg"),
+			token.file_name, token.line_number);
+		 continue;
+	       }
+
+	     /* Here we should nest properly, but this would require a
+		potentially unbounded stack.  We haven't run across an
+		example that needs this functionality yet.  For now,
+		we punt and forget the outer keyword.  */
+	     error (0, 0,
+		    _("%s:%d: warning: keyword between outer keyword and its arg"),
+		    token.file_name, token.line_number);
+	   }
+	 commas_to_skip = token.argnum1 - 1;
+	 plural_commas = (token.argnum2 > token.argnum1
+			  ? token.argnum2 - token.argnum1 : 0);
+	 plural_mp = NULL;
 	 state = 1;
 	 continue;
 
-       case xgettext_token_type_keyword2:
-	 state = 3;
-	 continue;
-
-       case xgettext_token_type_lp:
+       case xgettext_token_type_lparen:
 	 switch (state)
 	   {
 	   case 1:
+	     paren_nesting = 0;
 	     state = 2;
 	     break;
-	   case 3:
-	     state = 4;
+	   case 2:
+	     paren_nesting++;
 	     break;
-	   default:
-	     state = 0;
 	   }
 	 continue;
 
+       case xgettext_token_type_rparen:
+	 if (state == 2 && paren_nesting != 0)
+	   paren_nesting--;
+	 else
+	   state = 0;
+	 continue;
+
        case xgettext_token_type_comma:
-	 state = state == 5 ? 6 : 0;
+	 if (state == 2 && commas_to_skip != 0)
+	   {
+	     if (paren_nesting == 0)
+	       commas_to_skip--;
+	   }
+	 else
+	   state = 0;
 	 continue;
 
        case xgettext_token_type_string_literal:
-	 if (extract_all || state == 2 || state == 6)
+	 if (extract_all)
+	   remember_a_message (mlp, &token);
+	 else if (state == 2 && commas_to_skip == 0)
 	   {
-	     remember_a_message (mlp, &token);
-	     state = 0;
+	     if (plural_mp == NULL)
+	       {
+		 /* Seen an msgid.  */
+		 if (plural_commas == 0)
+		   remember_a_message (mlp, &token);
+		 else
+		   {
+		     plural_mp = remember_a_message (mlp, &token);
+		     commas_to_skip = plural_commas;
+		     plural_commas = 0;
+		   }
+	       }
+	     else
+	       {
+		 /* Seen an msgid_plural.  */
+		 remember_a_message_plural (plural_mp, &token);
+		 plural_mp = NULL;
+	       }
 	   }
 	 else
 	   {
 	     free (token.string);
-	     state = (state == 4 || state == 5) ? 5 : 0;
+	     if (state == 1)
+	       state = 0;
 	   }
 	 continue;
 
        case xgettext_token_type_symbol:
-	 state = (state == 4 || state == 5) ? 5 : 0;
-	 continue;
-
-       default:
-	 state = 0;
+	 if (state == 1)
+	   state = 0;
 	 continue;
 
        case xgettext_token_type_eof:
 	 break;
+
+       default:
+	 abort ();
        }
      break;
    }
@@ -937,8 +1026,8 @@ struct extract_class_ty
   string_list_ty *comment_dot;
 
   int is_fuzzy;
-  int is_c_format;
-  int do_wrap;
+  enum is_c_format is_c_format;
+  enum is_wrap do_wrap;
 
   int filepos_count;
   lex_pos_ty *filepos;
@@ -972,11 +1061,14 @@ extract_directive_domain (that, name)
 
 
 static void
-extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
+extract_directive_message (that, msgid, msgid_pos, msgid_plural,
+			   msgstr, msgstr_len, msgstr_pos)
      po_ty *that;
      char *msgid;
      lex_pos_ty *msgid_pos;
+     char *msgid_plural;
      char *msgstr;
+     size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
 {
   extract_class_ty *this = (extract_class_ty *)that;
@@ -1017,7 +1109,7 @@ extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, msgid_plural);
       message_list_append (this->mlp, mp);
     }
 
@@ -1058,15 +1150,18 @@ extract_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
 
   /* See if this domain has been seen for this message ID.  */
   mvp = message_variant_search (mp, MESSAGE_DOMAIN_DEFAULT);
-  if (mvp != NULL && strcmp (msgstr, mvp->msgstr) != 0)
+  if (mvp != NULL
+      && (msgstr_len != mvp->msgstr_len
+	  || memcmp (msgstr, mvp->msgstr, msgstr_len) != 0))
     {
-      gram_error_at_line (msgid_pos, _("duplicate message definition"));
-      gram_error_at_line (&mvp->pos, _("\
+      po_gram_error_at_line (msgid_pos, _("duplicate message definition"));
+      po_gram_error_at_line (&mvp->pos, _("\
 ...this is the location of the first definition"));
       free (msgstr);
     }
   else
-    message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_pos);
+    message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_len,
+			    msgstr_pos);
 }
 
 
@@ -1214,7 +1309,7 @@ construct_header ()
   char tz_sign;
   long tz_min;
 
-  mp = message_alloc ("");
+  mp = message_alloc ("", NULL);
 
   if (foreign_user)
     message_comment_append (mp, "\
@@ -1240,13 +1335,13 @@ FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n");
 
   asprintf (&msgstr, "\
 Project-Id-Version: PACKAGE VERSION\n\
-POT-Creation-Date: %d-%02d-%02d %02d:%02d%c%02d%02d\n\
+POT-Creation-Date: %d-%02d-%02d %02d:%02d%c%02ld%02ld\n\
 PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n\
 Last-Translator: FULL NAME <EMAIL@ADDRESS>\n\
 Language-Team: LANGUAGE <LL@li.org>\n\
 MIME-Version: 1.0\n\
 Content-Type: text/plain; charset=CHARSET\n\
-Content-Transfer-Encoding: ENCODING\n",
+Content-Transfer-Encoding: 8bit\n",
 	    local_time.tm_year + TM_YEAR_ORIGIN,
 	    local_time.tm_mon + 1,
 	    local_time.tm_mday,
@@ -1257,7 +1352,8 @@ Content-Transfer-Encoding: ENCODING\n",
   if (msgstr == NULL)
     error (EXIT_FAILURE, errno, _("while preparing output"));
 
-  message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, &pos);
+  message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr,
+			  strlen (msgstr) + 1, &pos);
 
   return mp;
 }
@@ -1284,29 +1380,11 @@ test_whether_c_format (s)
       size_t dummy;
 
       (void) parse_one_spec (s, 0, &spec, &dummy);
-      if (strchr ("iduoxXeEfgGcspnm", spec.info.spec) == NULL)
+      if (strchr ("iduoxXeEfgGcspnm%", spec.info.spec) == NULL)
 	return impossible;
     }
 
   return possible;
-}
-
-
-static void
-  scanner_c (filename, mlp)
-  const char *filename;
-  message_list_ty *mlp;
-{
-  scan_c_file (filename, mlp, 0);
-}
-
-
-static void
-scanner_cxx (filename, mlp)
-  const char *filename;
-  message_list_ty *mlp;
-{
-  scan_c_file (filename, mlp, 1);
 }
 
 
@@ -1327,8 +1405,8 @@ language_to_scanner (name)
 
   static table_ty table[] =
   {
-    { "C", scanner_c, },
-    { "C++", scanner_cxx, },
+    { "C", scan_c_file, },
+    { "C++", scan_c_file, },
     { "PO", read_po_file, },
     /* Here will follow more languages and their scanners: awk, perl,
        etc...  Make sure new scanners honor the --exlude-file option.  */
@@ -1337,10 +1415,8 @@ language_to_scanner (name)
   table_ty *tp;
 
   for (tp = table; tp < ENDOF(table); ++tp)
-  {
-    if (strcasecmp(name, tp->name) == 0)
+    if (strcasecmp (name, tp->name) == 0)
       return tp->func;
-  }
   error (EXIT_FAILURE, 0, _("language `%s' unknown"), name);
   /* NOTREACHED */
   return NULL;
@@ -1365,19 +1441,19 @@ extension_to_language (extension)
     { "c++",    "C++",  },
     { "cc",     "C++",  },
     { "cxx",    "C++",  },
+    { "cpp",    "C++",  },
     { "h",      "C",    },
+    { "hpp",    "C++",  },
     { "po",     "PO",   },
     { "pot",    "PO",   },
     { "pox",    "PO",   },
-    /* Here will follow more file extensions: sh, pl, tcl ... */
+    /* Here will follow more file extensions: sh, pl, tcl, lisp ... */
   };
 
   table_ty *tp;
 
   for (tp = table; tp < ENDOF(table); ++tp)
-  {
-    if (strcmp(extension, tp->extension) == 0)
-    return tp->language;
-  }
+    if (strcmp (extension, tp->extension) == 0)
+      return tp->language;
   return NULL;
 }

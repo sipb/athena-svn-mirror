@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
    This program is free software; you can redistribute it and/or modify
@@ -22,20 +22,14 @@
 
 #include <getopt.h>
 #include <stdio.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <stdlib.h>
+#include <locale.h>
 
 #include "dir-list.h"
 #include "error.h"
 #include "message.h"
 #include <system.h>
-#include <libintl.h>
+#include "libgettext.h"
 #include "po.h"
 #include "str-list.h"
 
@@ -83,7 +77,9 @@ static void compare_destructor PARAMS ((po_ty *__that));
 static void compare_directive_domain PARAMS ((po_ty *__that, char *__name));
 static void compare_directive_message PARAMS ((po_ty *__that, char *__msgid,
 					       lex_pos_ty *msgid_pos,
+					       char *__msgid_plural,
 					       char *__msgstr,
+					       size_t __msgstr_len,
 					       lex_pos_ty *__msgstr_pos));
 static void compare_parse_debrief PARAMS ((po_ty *__that));
 
@@ -145,7 +141,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995, 1996, 1997, 1998");
+	      "1995-1998, 2000, 2001");
       printf (_("Written by %s.\n"), "Peter Miller");
       exit (EXIT_SUCCESS);
     }
@@ -256,15 +252,15 @@ compare (fn1, fn2)
       mp1 = message_list_search_fuzzy (list1, mp2->msgid);
       if (mp1)
 	{
-	  gram_error_at_line (&mp2->variant[0].pos, _("\
+	  po_gram_error_at_line (&mp2->variant[0].pos, _("\
 this message is used but not defined..."));
-	  gram_error_at_line (&mp1->variant[0].pos, _("\
+	  po_gram_error_at_line (&mp1->variant[0].pos, _("\
 ...but this definition is similar"));
 	  mp1->used = 1;
 	}
       else
 	{
-	  gram_error_at_line (&mp2->variant[0].pos, _("\
+	  po_gram_error_at_line (&mp2->variant[0].pos, _("\
 this message is used but not defined in %s"), fn1);
 	}
     }
@@ -277,13 +273,15 @@ this message is used but not defined in %s"), fn1);
       mp1 = list1->item[k];
       if (mp1->used)
 	continue;
-      gram_error_at_line (&mp1->variant[0].pos,
+      po_gram_error_at_line (&mp1->variant[0].pos,
 			   _("warning: this message is not used"));
     }
 
   /* Exit with status 1 on any error.  */
   if (nerrors > 0)
-    error (EXIT_FAILURE, 0, "found %d fatal errors", nerrors);
+    error (EXIT_FAILURE, 0,
+	   ngettext ("found %d fatal error", "found %d fatal errors", nerrors),
+	   nerrors);
 }
 
 
@@ -324,11 +322,14 @@ compare_directive_domain (that, name)
 
 
 static void
-compare_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
+compare_directive_message (that, msgid, msgid_pos, msgid_plural,
+			   msgstr, msgstr_len, msgstr_pos)
      po_ty *that;
      char *msgid;
      lex_pos_ty *msgid_pos;
+     char *msgid_plural;
      char *msgstr;
+     size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
 {
   compare_class_ty *this = (compare_class_ty *) that;
@@ -344,7 +345,7 @@ compare_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, msgid_plural);
       message_list_append (this->mlp, mp);
     }
 
@@ -352,13 +353,13 @@ compare_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
   mvp = message_variant_search (mp, this->domain);
   if (mvp)
     {
-      gram_error_at_line (msgid_pos, _("duplicate message definition"));
-      gram_error_at_line (&mvp->pos, _("\
+      po_gram_error_at_line (msgid_pos, _("duplicate message definition"));
+      po_gram_error_at_line (&mvp->pos, _("\
 ...this is the location of the first definition"));
       free (msgstr);
     }
   else
-    message_variant_append (mp, this->domain, msgstr, msgstr_pos);
+    message_variant_append (mp, this->domain, msgstr, msgstr_len, msgstr_pos);
 }
 
 
@@ -393,7 +394,7 @@ compare_parse_debrief (that)
 		break;
 	    }
 	  if (m >= mp->variant_count)
-	    gram_error_at_line (&mp->variant[0].pos, _("\
+	    po_gram_error_at_line (&mp->variant[0].pos, _("\
 this message has no definition in the \"%s\" domain"), domain_name);
 	}
     }
@@ -429,9 +430,9 @@ grammar (filename)
   po_ty *pop;
   message_list_ty *mlp;
 
-  pop = po_alloc(&compare_methods);
-  po_scan(pop, filename);
+  pop = po_alloc (&compare_methods);
+  po_scan (pop, filename);
   mlp = ((compare_class_ty *)pop)->mlp;
-  po_free(pop);
+  po_free (pop);
   return mlp;
 }

@@ -1,4 +1,4 @@
-/*  Copyright (C) 1991, 1992, 1993, 1995 Free Software Foundation, Inc.
+/*  Copyright (C) 1991-1993, 1995, 2000, 2001 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,12 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <stdio.h>
 #include <sys/types.h>
 
-#ifdef STDC_HEADERS
+#if HAVE_STDDEF_H
 # include <stddef.h>
 #endif
 
 #ifndef PARAMS
-# if __STDC__
+# if defined (__GNUC__) || __STDC__
 #  define PARAMS(args) args
 # else
 #  define PARAMS(args) ()
@@ -40,7 +40,9 @@ struct printf_info
   char spec;			/* Format letter.  */
   unsigned is_long_double:1;	/* L flag.  */
   unsigned is_short:1;		/* h flag.  */
+  unsigned is_char:1;		/* hh flag.  */
   unsigned is_long:1;		/* l flag.  */
+  unsigned is_longlong:1;	/* ll flag.  */
   unsigned alt:1;		/* # flag.  */
   unsigned space:1;		/* Space flag.  */
   unsigned left:1;		/* - flag.  */
@@ -103,6 +105,7 @@ enum
 #define	PA_FLAG_LONG		(1 << 9)
 #define	PA_FLAG_SHORT		(1 << 10)
 #define	PA_FLAG_PTR		(1 << 11)
+#define	PA_FLAG_CHAR		(1 << 12)
 
 
 #endif /* printf.h  */

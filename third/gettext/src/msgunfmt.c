@@ -1,5 +1,5 @@
 /* msgunfmt - converts binary .mo files to Uniforum style .po files
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -26,14 +26,8 @@
 #include <stdio.h>
 #include <sys/param.h>
 #include <sys/types.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
-
-#ifdef HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <stdlib.h>
+#include <locale.h>
 
 #include "hash.h"
 
@@ -43,10 +37,10 @@
 #include <system.h>
 
 #include "gettext.h"
-#include "domain.h"
 #include "hash-string.h"
-#include <libintl.h>
+#include "libgettext.h"
 #include "message.h"
+#include "write-po.h"
 
 #define _(str) gettext (str)
 
@@ -87,7 +81,8 @@ static void usage PARAMS ((int __status));
 static void error_print PARAMS ((void));
 static nls_uint32 read32 PARAMS ((FILE *__fp, const char *__fn));
 static void seek32 PARAMS ((FILE *__fp, const char *__fn, long __offset));
-static char *string32 PARAMS ((FILE *__fp, const char *__fn, long __offset));
+static char *string32 PARAMS ((FILE *__fp, const char *__fn, long __offset,
+			       size_t *lengthp));
 static message_list_ty *read_mo_file PARAMS ((message_list_ty *__mlp,
 					      const char *__fn));
 
@@ -116,7 +111,7 @@ main (argc, argv)
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 
-  while ((optchar = getopt_long (argc, argv, "hio:Vw:", long_options, NULL))
+  while ((optchar = getopt_long (argc, argv, "eEhio:Vw:", long_options, NULL))
 	 != EOF)
     switch (optchar)
       {
@@ -176,7 +171,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995, 1996, 1997, 1998");
+	      "1995-1998, 2000, 2001");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -301,10 +296,11 @@ seek32 (fp, fn, offset)
 
 
 static char *
-string32 (fp, fn, offset)
+string32 (fp, fn, offset, lengthp)
      FILE *fp;
      const char *fn;
      long offset;
+     size_t *lengthp;
 {
   long length;
   char *buffer;
@@ -323,21 +319,26 @@ string32 (fp, fn, offset)
   /* Read in the string.  Complain if there is an error or it comes up
      short.  Add the NUL ourselves.  */
   seek32 (fp, fn, offset);
-  n = fread (buffer, 1, length, fp);
-  if (n != length)
+  n = fread (buffer, 1, length + 1, fp);
+  if (n != length + 1)
     {
       if (ferror (fp))
 	error (EXIT_FAILURE, errno, _("error while reading \"%s\""), fn);
       error (EXIT_FAILURE, 0, _("file \"%s\" truncated"), fn);
     }
-  buffer[length] = 0;
+  if (buffer[length] != '\0')
+    {
+      error (EXIT_FAILURE, 0,
+	     _("file \"%s\" contains a not NUL terminated string"), fn);
+    }
 
   /* Return the string to the caller.  */
+  *lengthp = length + 1;
   return buffer;
 }
 
 
-/* This function reads and existing .mo file.  Return a message list.  */
+/* This function reads an existing .mo file.  Return a message list.  */
 static message_list_ty *
 read_mo_file (mlp, fn)
      message_list_ty *mlp;
@@ -347,8 +348,11 @@ read_mo_file (mlp, fn)
   struct mo_file_header header;
   int j;
 
-  if (strcmp (fn, "-") == 0 || strcmp (fn, "/dev/stdout") == 0)
-    fp = stdin;
+  if (strcmp (fn, "-") == 0 || strcmp (fn, "/dev/stdin") == 0)
+    {
+      fp = stdin;
+      SET_BINARY (fileno (fp));
+    }
   else
     {
       fp = fopen (fn, "rb");
@@ -392,16 +396,22 @@ read_mo_file (mlp, fn)
       static lex_pos_ty pos = { __FILE__, __LINE__ };
       message_ty *mp;
       char *msgid;
+      size_t msgid_len;
       char *msgstr;
+      size_t msgstr_len;
 
       /* Read the msgid.  */
-      msgid = string32 (fp, fn, header.orig_tab_offset + j * 8);
+      msgid = string32 (fp, fn, header.orig_tab_offset + j * 8, &msgid_len);
 
       /* Read the msgstr.  */
-      msgstr = string32 (fp, fn, header.trans_tab_offset + j * 8);
+      msgstr = string32 (fp, fn, header.trans_tab_offset + j * 8, &msgstr_len);
 
-      mp = message_alloc (msgid);
-      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, &pos);
+      mp = message_alloc (msgid,
+			  (strlen (msgid) + 1 < msgid_len
+			   ? msgid + strlen (msgid) + 1
+			   : NULL));
+      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_len,
+			      &pos);
       message_list_append (mlp, mp);
     }
 

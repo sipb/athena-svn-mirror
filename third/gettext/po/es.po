@@ -5,48 +5,49 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU gettext 0.10.34\n"
-"POT-Creation-Date: 1998-04-30 22:50-0700\n"
+"POT-Creation-Date: 2001-05-23 23:03+0200\n"
 "PO-Revision-Date: 1998-04-29 12:04-0500\n"
 "Last-Translator: Max de Mendizábal <max@tirania.nuclecu.unam.mx>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # Nota: El error es del sistema, pero no se sabe cuál es el error,
 # por eso es (además) desconocido.
-#: lib/error.c:103
+#: lib/error.c:115
 msgid "Unknown system error"
 msgstr "Error del sistema desconocido"
 
-#: lib/getopt.c:680
+#: lib/getopt.c:691
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
 msgstr "%s: la opción `%s' es ambigua\n"
 
-#: lib/getopt.c:704
+#: lib/getopt.c:716
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
 msgstr "%s: la opción `--%s' no admite ningún argumento\n"
 
-#: lib/getopt.c:709
+#: lib/getopt.c:721
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
 msgstr "%s: la opción `%c%s' no admite ningún argumento\n"
 
-#: lib/getopt.c:726 lib/getopt.c:899
+#: lib/getopt.c:739 lib/getopt.c:912
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
 msgstr "%s: la opción `%s' requiere un argumento\n"
 
 #. --option
-#: lib/getopt.c:755
+#: lib/getopt.c:768
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
 msgstr "%s: opción no reconocida `--%s'\n"
 
 #. +option or -option
-#: lib/getopt.c:759
+#: lib/getopt.c:772
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
 msgstr "%s: opción no reconocida `%c%s'\n"
@@ -54,38 +55,40 @@ msgstr "%s: opción no reconocida `%c%s'\n"
 # acepto la sugerencia de em en cuanto a que inválida parece cárcel
 # o inútil pero mejor puse inválida
 #. 1003.2 specifies the format of this message.
-#: lib/getopt.c:785
+#: lib/getopt.c:798
 #, c-format
 msgid "%s: illegal option -- %c\n"
 msgstr "%s: opción inválida -- %c\n"
 
-#: lib/getopt.c:788
+#: lib/getopt.c:801
 #, c-format
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: opción inválida -- %c\n"
 
 #. 1003.2 specifies the format of this message.
-#: lib/getopt.c:818 lib/getopt.c:948
+#: lib/getopt.c:831 lib/getopt.c:961
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
 msgstr "%s: la opción requiere un argumento -- %c\n"
 
-#: lib/getopt.c:865
+#: lib/getopt.c:878
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
 msgstr "%s: la opción `-W %s' es ambigua\n"
 
-#: lib/getopt.c:883
+#: lib/getopt.c:896
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: la opción `-W %s' no admite ningún argumento\n"
 
-#: lib/xmalloc.c:82
-msgid "Memory exhausted"
+#: lib/obstack.c:474 lib/xmalloc.c:86 src/po.c:308 src/po.c:381 src/po.c:389
+#: src/po.c:395 src/po.c:415 src/po.c:422 src/po.c:427 src/po.c:444
+#, fuzzy
+msgid "memory exhausted"
 msgstr "Memoria agotada"
 
-#: src/gettextp.c:134 src/msgcmp.c:144 src/msgcomm.c:285 src/msgfmt.c:257
-#: src/msgmerge.c:254 src/msgunfmt.c:175 src/xgettext.c:394
+#: src/gettext.c:140 src/msgcmp.c:140 src/msgcomm.c:279 src/msgfmt.c:270
+#: src/msgmerge.c:255 src/msgunfmt.c:170 src/ngettext.c:120 src/xgettext.c:388
 #, c-format, no-wrap
 msgid ""
 "Copyright (C) %s Free Software Foundation, Inc.\n"
@@ -97,22 +100,22 @@ msgstr ""
 "No hay NINGUNA garantía; ni siquiera de COMERCIABILIDAD o IDONEIDAD PARA UN\n"
 "FIN DETERMINADO.\n"
 
-#: src/gettextp.c:139 src/msgcmp.c:149 src/msgcomm.c:290 src/msgfmt.c:262
-#: src/msgmerge.c:259 src/msgunfmt.c:180 src/xgettext.c:399
+#: src/gettext.c:145 src/msgcmp.c:145 src/msgcomm.c:284 src/msgfmt.c:275
+#: src/msgmerge.c:260 src/msgunfmt.c:175 src/ngettext.c:125 src/xgettext.c:393
 #, c-format
 msgid "Written by %s.\n"
 msgstr "Escrito por %s.\n"
 
-#: src/gettextp.c:154
-msgid "missing arguments"
-msgstr "faltan argumentos"
-
-#: src/gettextp.c:164
+#: src/gettext.c:163 src/ngettext.c:137
 msgid "too many arguments"
 msgstr "demasiados argumentos"
 
-#: src/gettextp.c:228 src/msgcmp.c:181 src/msgcomm.c:395 src/msgfmt.c:361
-#: src/msgmerge.c:301 src/msgunfmt.c:210 src/xgettext.c:532
+#: src/gettext.c:173 src/ngettext.c:149
+msgid "missing arguments"
+msgstr "faltan argumentos"
+
+#: src/gettext.c:245 src/msgcmp.c:177 src/msgcomm.c:377 src/msgfmt.c:387
+#: src/msgmerge.c:315 src/msgunfmt.c:205 src/ngettext.c:204 src/xgettext.c:515
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Pruebe `%s --help' para más información.\n"
@@ -130,7 +133,7 @@ msgstr "Pruebe `%s --help' para más información.\n"
 # Prefiero que se quede como está, pues aunque se repite muestra,
 # es en otra opción en donde aparece. mm
 #
-#: src/gettextp.c:233
+#: src/gettext.c:250
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] [[[TEXTDOMAIN] MSGID] | [-s [MSGID]...]]\n"
@@ -156,7 +159,7 @@ msgstr ""
 
 # Nota: TEXTDOMAIN y TEXTDOMAINDIR son variables de entorno, por lo tanto
 # no se pueden traducir (cuando se refieren a las variables, claro está).
-#: src/gettextp.c:245
+#: src/gettext.c:262
 #, c-format, no-wrap
 msgid ""
 "\n"
@@ -180,39 +183,16 @@ msgstr ""
 "encuentre dentro del catálogo seleccionado.\n"
 "Directorio de búsqueda estándar: %s\n"
 
-#: src/gettextp.c:255 src/msgcmp.c:200 src/msgcomm.c:442 src/msgfmt.c:388
-#: src/msgmerge.c:334 src/msgunfmt.c:234 src/xgettext.c:584
+#: src/gettext.c:272 src/msgcmp.c:196 src/msgcomm.c:424 src/msgfmt.c:414
+#: src/msgmerge.c:350 src/msgunfmt.c:229 src/ngettext.c:228 src/xgettext.c:565
 msgid "Report bugs to <bug-gnu-utils@gnu.org>.\n"
 msgstr "Comunicar `bugs' a <bug-gnu-utils@gnu.org>.\n"
 
-#: src/message.c:784
-#, c-format
-msgid ""
-"internationalized messages should not contain the `\\%c' escape sequence"
-msgstr ""
-"Los mensajes internacionalizados no deben contener la secuencia de escape "
-"`\\%c'"
-
-#: src/message.c:1115
-#, c-format
-msgid "cannot create output file \"%s\""
-msgstr "no se puede crear el fichero de salida \"%s\""
-
-#: src/message.c:1122
-#, no-c-format
-msgid "standard output"
-msgstr "salida estándar"
-
-#: src/message.c:1182
-#, c-format
-msgid "error while writing \"%s\" file"
-msgstr "hubo un error al escribir el fichero \"%s\""
-
-#: src/msgcmp.c:160 src/msgmerge.c:270
+#: src/msgcmp.c:156 src/msgmerge.c:271
 msgid "no input files given"
 msgstr "no se especificaron ficheros de entrada"
 
-#: src/msgcmp.c:165 src/msgmerge.c:275
+#: src/msgcmp.c:161 src/msgmerge.c:276
 msgid "exactly 2 input files required"
 msgstr "se requieren exactamente 2 ficheros de entrada"
 
@@ -276,7 +256,7 @@ msgstr "se requieren exactamente 2 ficheros de entrada"
 # y en otros de otra (la frase no era exactamente igual).
 # 11061996mm: En particular en gettext el letrero es estándar, por lo que
 # prefiero "también son" que, creo suena mejor. Homogeinizo todo.
-#: src/msgcmp.c:186
+#: src/msgcmp.c:182
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] def.po ref.po\n"
@@ -309,64 +289,91 @@ msgstr ""
 "se encuentre un resultado exacto, se utilizará coincidencia difusa, de\n"
 "tal forma que la precisión del diagnóstico sea mejor.\n"
 
-#: src/msgcmp.c:259 src/msgmerge.c:714
+#: src/msgcmp.c:255 src/msgmerge.c:741
 msgid "this message is used but not defined..."
 msgstr "este mensaje se usa pero no está definido..."
 
-#: src/msgcmp.c:261 src/msgmerge.c:716
+#: src/msgcmp.c:257 src/msgmerge.c:743
 msgid "...but this definition is similar"
 msgstr "...pero esta definición es parecida"
 
-#: src/msgcmp.c:267 src/msgmerge.c:743
+#: src/msgcmp.c:263 src/msgmerge.c:770
 #, c-format
 msgid "this message is used but not defined in %s"
 msgstr "este mensaje se usa pero no está definido en %s"
 
-#: src/msgcmp.c:281
+#: src/msgcmp.c:277
 msgid "warning: this message is not used"
 msgstr "atención: este mensaje no se utiliza"
 
+#  Jeje. Bueno , esto me recuerda a una canción de Burning, digo lo
+#  de fatal. Fatal en Castellano es muy malo, o peligrosísimo ... creo que
+#  habrá que dejarlo así, es más convincente. Perdona por estas 3 lineas em
+#
+# ¿Burning? Mi incultura es grave ¿quiénes son esos? mm
+#
+# Son los que cantan lo de 'qué hace una chica como tú en un sitio como este'
+# en una parte de la canción repiten: 'mujer fatal ... ' :) em+
+#
+# ¡Ah! Dirán que soy pocho pero oigo muy poca música en castellano, a lo
+# más que llego es a Sabina y a Mecano y la Orquesta Mondragón cuando
+# existía. Volviendo a la discusión, prefiero lo de fatal: tiene mucho
+# peso. Aunque ... ¿qué tal 'errores imperdonables'? mm+
+#
+# Tal y como yo lo veo, "Error fatal" es el que obliga al programa a detenerse.
+# En inglés se utiliza esta palabra con ese significado.
+# A menos que veamos un libro en español que utilice una palabra distinta
+# para referirse a lo mismo, sugiero dejarlo como está. sv
+#
+# 07061996mm: Mujer fatal es menos que mortal, menos que peligroso e incita a la
+# aventura. Quizá no sea tan malo como dice Enrique, a menos que...
+#: src/msgcmp.c:283 src/po-lex.c:103
+#, fuzzy, c-format
+msgid "found %d fatal error"
+msgid_plural "found %d fatal errors"
+msgstr[0] "se encontraron %d errores fatales"
+
 # Nota: es la definición la que está duplicada.
-#: src/msgcmp.c:355 src/msgfmt.c:632 src/msgmerge.c:493 src/xgettext.c:1063
+#: src/msgcmp.c:356 src/msgfmt.c:667 src/msgmerge.c:512 src/xgettext.c:1157
 msgid "duplicate message definition"
 msgstr "definición del mensaje duplicada"
 
-#: src/msgcmp.c:356 src/msgfmt.c:633 src/msgmerge.c:494 src/xgettext.c:1064
+#: src/msgcmp.c:357 src/msgfmt.c:669 src/msgmerge.c:513 src/xgettext.c:1158
 msgid "...this is the location of the first definition"
 msgstr "...aquí está la primera definición"
 
-#: src/msgcmp.c:396 src/msgmerge.c:542
+#: src/msgcmp.c:397 src/msgmerge.c:561
 #, c-format
 msgid "this message has no definition in the \"%s\" domain"
 msgstr "este mensaje no tiene definición en el dominio \"%s\""
 
 #. We are about to construct the absolute path to the
 #. directory for the output files but asprintf failed.
-#: src/msgcomm.c:238 src/xgettext.c:340 src/xgettext.c:1258
+#: src/msgcomm.c:235 src/xgettext.c:327 src/xgettext.c:1353
 msgid "while preparing output"
 msgstr "mientras se preparaba la salida"
 
-#: src/msgcomm.c:273 src/msgcomm.c:277 src/xgettext.c:378 src/xgettext.c:382
+#: src/msgcomm.c:267 src/msgcomm.c:271 src/xgettext.c:365 src/xgettext.c:369
 #, c-format
 msgid "%s and %s are mutually exclusive"
 msgstr "%s y %s son mutuamente excluyentes"
 
-#: src/msgcomm.c:341
+#: src/msgcomm.c:323
 msgid "at least two files must be specified"
-msgstr ""
+msgstr "se deben especificar por lo menos dos ficheros"
 
-#: src/msgcomm.c:360
+#: src/msgcomm.c:334
 #, c-format
 msgid "impossible selection criteria specified (%d < n < %d)"
-msgstr ""
+msgstr "se especificó un criterio de selección imposible (%d < n < %d)"
 
 # Otra cosa: La línea del debug (la nueva) creo que es demasiado larga.
 # 11061996mm: Es cierto pero en este caso prefiero no ser breve pues la
 # opción de debug hace algo más que simplemente dar más información y es
 # necesario aclarar el punto.
 # 27061996sv: Me refería a lo de las 80 columnas...
-#: src/msgcomm.c:400
-#, fuzzy, c-format, no-wrap
+#: src/msgcomm.c:382
+#, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] INPUTFILE ...\n"
 "Mandatory arguments to long options are mandatory for short options too.\n"
@@ -380,19 +387,8 @@ msgid ""
 "  -h, --help                     display this help and exit\n"
 msgstr ""
 "Modo de empleo: %s [OPCIÓN] FICHERO ...\n"
-"Extrae las cadenas traducibles a partir de los ficheros dados.\n"
-"\n"
 "Los argumentos obligatorios para las opciones largas también son\n"
 "obligatorios para las opciones cortas.\n"
-"  -a, --extract-all              extrae todas las cadenas\n"
-"  -c, --add-comments[=ETIQUETA]  pone un bloque de comentarios con\n"
-"                                 ETIQUETA (o aquellos que preceden\n"
-"                                 líneas de palabras clave) en el fichero\n"
-"                                 de salida\n"
-"  -C, --c++                      abreviatura de --language=C++\n"
-"      --debug                    el resultado de la etapa de reconocimiento\n"
-"                                 de las cadenas de formato se escribe en forma\n"
-"                                 detallada\n"
 "  -d, --default-domain=NOMBRE    utiliza NOMBRE.po para la salida (en vez\n"
 "                                 de messages.po)\n"
 "  -D, --directory=DIRECTORIO     añade el DIRECTORIO a la lista de\n"
@@ -404,9 +400,8 @@ msgstr ""
 "  -f, --files-from=FICHERO       obtiene la lista de los ficheros de entrada\n"
 "                                 de FICHERO\n"
 "      --force-po                 escribe un fichero .po incluso si está vacío\n"
-"      --foreign-user             no muestra el copyright de FSF para usuarios\n"
-"                                 no ingleses\n"
 "  -F, --sort-by-file             ordena la salida por ubicación del fichero\n"
+"  -h, --help                     muestra esta ayuda y finaliza\n"
 
 #
 # 19071996cb:   --omit-header    no escribe la cabecera para la entrada
@@ -417,8 +412,7 @@ msgstr ""
 # hay cosa más incómoda que hacer un `algo --help' y que precisamente lo que
 # nos interese se haya salido de la/el terminal em+
 # Ok. mm+
-#: src/msgcomm.c:412
-#, fuzzy
+#: src/msgcomm.c:394
 msgid ""
 "  -i, --indent                   write the .po file using indented style\n"
 "      --no-location              do not write '#: filename:line' lines\n"
@@ -436,11 +430,14 @@ msgid ""
 "  -u, --unique                   shorthand for --less-than=2, requests\n"
 "                                 that only unique messages be printed\n"
 msgstr ""
+"  -i, --indent                 escribe el fichero .po utilizando el\n"
+"                               estilo de sangrías\n"
+"      --no-location            no escribe líneas `#: fichero:línea'\n"
 "  -n, --add-location           genera líneas `#: fichero:línea' (por "
 "defecto)\n"
 "      --omit-header            no escribe la cabecera con la entrada `msgid "
 "\"\"'\n"
-"      --output=FICHERO         escribe la salida al FICHERO especificado\n"
+"  -o, --output=FICHERO         escribe la salida al FICHERO especificado\n"
 "  -p, --output-dir=DIR         los ficheros de salida se pondrán en el\n"
 "                               directorio DIR\n"
 "  -s, --sort-output            genera la salida ordenada y elimina los\n"
@@ -448,13 +445,10 @@ msgstr ""
 "      --strict                 escribe un fichero .po tipo Uniforum "
 "estricto\n"
 "  -T, --trigraphs              entiende los trigrafos ANSI C en la entrada\n"
-"  -V, --version                informa de la versión y finaliza\n"
-"  -w, --width=NÚMERO           ajusta la anchura de la página de salida\n"
-"  -x, --exclude-file=FICHERO   las entradas de FICHERO no se extraen\n"
-"\n"
-"Si el FICHERO_DE_ENTRADA es -, se lee de la entrada estándar.\n"
+"  -u, --unique                 abreviatura de --less-than=2, solicita\n"
+"                               que sólo los mensajes únicos sean mostrados\n"
 
-#: src/msgcomm.c:425
+#: src/msgcomm.c:407
 msgid ""
 "  -V, --version                  output version information and exit\n"
 "  -w, --width=NUMBER             set output page width\n"
@@ -473,9 +467,27 @@ msgid ""
 "PO file to define them.  File positions from all PO files will be\n"
 "preserved.\n"
 msgstr ""
+"  -V, --version                informa de la versión y finaliza\n"
+"  -w, --width=NÚMERO           ajusta la anchura de la página de salida\n"
+"  -<, --less-than=NÚMERO       muestra los mensajes con menos definiciones\n"
+"                               que NÚMERO, por defecto es infinito\n"
+"  ->, --more-than=NÚMERO       muestra los mensajes con más definiciones\n"
+"                               que NÚMERO, por defecto es 1\n"
+"\n"
+"Busca los mensajes que son comunes a dos o más de los ficheros PO "
+"especificados.\n"
+"Si se utiliza la opción --more-than, se pueden solicitar mayor número de\n"
+"elementos en común antes de que los mensajes sean mostrados.\n"
+"De forma similar, la opción --less-than puede ser utilizada\n"
+"para especificar el mínimo de mensajes en común que serán mostrados (i.e.\n"
+"--less-than=2 sólo mostrá los mensajes únicos). Las traducciones, \n"
+"los comentarios y los comentarios extraídos serán conservados, pero sólo\n"
+"los que provengan del primer fichero PO que los defina. Las posiciones "
+"dentro\n"
+"del fichero de todos los ficheros PO se conservarán.\n"
 
-#: src/msgcomm.c:476 src/msgunfmt.c:357 src/po-lex.c:74 src/xget-lex.c:159
-#: src/xget-lex.c:174 src/xget-lex.c:191 src/xgettext.c:618
+#: src/msgcomm.c:458 src/msgunfmt.c:361 src/po-lex.c:86 src/xget-lex.c:157
+#: src/xget-lex.c:170 src/xget-lex.c:180 src/xgettext.c:599
 #, c-format
 msgid "error while opening \"%s\" for reading"
 msgstr "error al abrir el fichero \"%s\" para lectura"
@@ -511,34 +523,37 @@ msgstr "error al abrir el fichero \"%s\" para lectura"
 # mente el verbo poder en Castellano es mucho más flexible que en otros
 # idiomas. De todas maneras siempre se puede mirar otras traducciones.  em
 # ok. Acepto en 'no puede' a reserva de encontrar nuevos argumentos. mm
-#: src/msgcomm.c:557 src/xgettext.c:660 src/xgettext.c:970
+#: src/msgcomm.c:539 src/xgettext.c:641 src/xgettext.c:1059
 msgid "this file may not contain domain directives"
 msgstr "este fichero no puede contener instrucciones de dominio"
 
 # acepto sugerencia de em pero agrego un "el". mm
-#: src/msgfmt.c:273 src/xgettext.c:410
+#: src/msgfmt.c:286 src/xgettext.c:404
 msgid "no input file given"
 msgstr "no se especificó el fichero de entrada"
 
-#: src/msgfmt.c:321
+#: src/msgfmt.c:337
 #, c-format
 msgid "error while opening \"%s\" for writing"
 msgstr "error al abrir el fichero \"%s\" para escritura"
 
-#: src/msgfmt.c:343
-#, c-format
-msgid "%d translated messages"
-msgstr "%d mensajes traducidos"
+#: src/msgfmt.c:360
+#, fuzzy, c-format
+msgid "%d translated message"
+msgid_plural "%d translated messages"
+msgstr[0] "%d mensajes traducidos"
 
-#: src/msgfmt.c:345
-#, c-format
-msgid ", %d fuzzy translations"
-msgstr ", %d traducciones difusas"
+#: src/msgfmt.c:365
+#, fuzzy, c-format
+msgid ", %d fuzzy translation"
+msgid_plural ", %d fuzzy translations"
+msgstr[0] ", %d traducciones difusas"
 
-#: src/msgfmt.c:347
-#, c-format
-msgid ", %d untranslated messages"
-msgstr ", %d mensajes sin traducir"
+#: src/msgfmt.c:370
+#, fuzzy, c-format
+msgid ", %d untranslated message"
+msgid_plural ", %d untranslated messages"
+msgstr[0] ", %d mensajes sin traducir"
 
 # "enlista" queda "raro", ¿qué te parece "muestra" o algo así? sv
 # ok, puse muestra pero, ¿qué tal `enumera'? mm
@@ -579,8 +594,8 @@ msgstr ", %d mensajes sin traducir"
 #
 # OJO: Si se pone un argumento superior a uno en la opción -v
 # No es así, es "si se utiliza la opción -v más de una vez". sv+
-#: src/msgfmt.c:366
-#, fuzzy, c-format, no-wrap
+#: src/msgfmt.c:392
+#, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] filename.po ...\n"
 "Generate binary message catalog from textual translation description.\n"
@@ -631,21 +646,23 @@ msgstr ""
 "de salida es -, el resultado se escribe en la salida estándar.\n"
 "\n"
 
-#: src/msgfmt.c:409
+#: src/msgfmt.c:435
 msgid "while creating hash table"
 msgstr "mientras se creaba la tabla de `hash'"
 
-#: src/msgfmt.c:451
-#, c-format
-msgid "%s: warning: no header entry found"
-msgstr "%s: atención: no se encontró la línea de cabecera"
+#: src/msgfmt.c:479
+#, fuzzy, c-format
+msgid ""
+"%s: warning: PO file header missing, fuzzy, or invalid\n"
+"%*s  warning: charset conversion will not work"
+msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
 
-#: src/msgfmt.c:473
+#: src/msgfmt.c:503
 #, c-format
 msgid "domain name \"%s\" not suitable as file name"
 msgstr "el nombre de dominio \"%s\" no es válido como nombre de fichero"
 
-#: src/msgfmt.c:478
+#: src/msgfmt.c:508
 #, c-format
 msgid "domain name \"%s\" not suitable as file name: will use prefix"
 msgstr ""
@@ -654,7 +671,7 @@ msgstr ""
 
 #. We don't change the exit status here because this is really
 #. only an information.
-#: src/msgfmt.c:491
+#: src/msgfmt.c:521
 #, c-format
 msgid "`domain %s' directive ignored"
 msgstr "la instrucción `domain %s' no tiene efecto"
@@ -663,36 +680,36 @@ msgstr "la instrucción `domain %s' no tiene efecto"
 # Ignorar es no saber (not to know). "to ignore" es "no hacer caso".
 # Sugerencia: Descartar. sv
 # Excelente palabreja. Me gusta mucho. mm
-#: src/msgfmt.c:519
+#: src/msgfmt.c:551
 msgid "empty `msgstr' entry ignored"
 msgstr "se descarta la línea vacía `msgstr'"
 
 # Lo mismo. sv
 # Ok. mm
-#: src/msgfmt.c:520
+#: src/msgfmt.c:552
 msgid "fuzzy `msgstr' entry ignored"
 msgstr "se descarta la línea difusa `msgstr'"
 
-#: src/msgfmt.c:563
+#: src/msgfmt.c:594
 #, c-format
 msgid "headerfield `%s' missing in header"
 msgstr "no existe el campo `%s' en la cabecera"
 
-#: src/msgfmt.c:566
+#: src/msgfmt.c:597
 #, c-format
 msgid "header field `%s' should start at beginning of line"
 msgstr "el campo `%s' debe comenzar al principio de la línea"
 
-#: src/msgfmt.c:576
+#: src/msgfmt.c:607
 msgid "some header fields still have the initial default value"
 msgstr "algunos campos de cabecera aún tienen el valor inicial"
 
-#: src/msgfmt.c:587
+#: src/msgfmt.c:618
 #, c-format
 msgid "field `%s' still has initial default value"
 msgstr "el campo `%s' aún tiene el valor inicial"
 
-#: src/msgfmt.c:672
+#: src/msgfmt.c:708
 #, c-format
 msgid "%s: warning: source file contains fuzzy translation"
 msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
@@ -713,34 +730,92 @@ msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
 # Sigue pareciendo que deben tenerlo las dos (y no es esa la idea).
 # Si no se te ocurre nada mejor, sugerencia:
 # "Una de las líneas msgid y msgstr comienza con `\\n' y la otra no" sv+
-#: src/msgfmt.c:874
+#: src/msgfmt.c:930
+#, fuzzy
+msgid "`msgid' and `msgid_plural' entries do not both begin with '\\n'"
+msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' inicial"
+
+# ¿qué les parece: "a `msgid' o `msgstr' les falta el `\\n' final"? cb
+# Bien. Mejora. mm
+#
+#
+# Bien, antes decía "las líneas `msgid' y `msgstr' no comienzan con `\\n'"
+# No sé qué es mejor pero no me acaba de gustar: La idea es que *no ambas*
+# comienzan por \\n, no que tengan que hacerlo las dos.
+# Si una lo hace y la otra no, puede ser que falte en una o que sobre en la
+# otra. Yo podnría aquí algo más parecido a lo de antes, pero añadiendo
+# "ambas", o algo así.
+# por ejemplo: "las líneas msgid y msgstr no comienzan ambas con \\n". sv
+# Que te parece a alguna de las líneas ... mm
+#
+# Sigue pareciendo que deben tenerlo las dos (y no es esa la idea).
+# Si no se te ocurre nada mejor, sugerencia:
+# "Una de las líneas msgid y msgstr comienza con `\\n' y la otra no" sv+
+#: src/msgfmt.c:938
+#, fuzzy, c-format
+msgid "`msgid' and `msgstr[%u]' entries do not both begin with '\\n'"
+msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' inicial"
+
+# ¿qué les parece: "a `msgid' o `msgstr' les falta el `\\n' final"? cb
+# Bien. Mejora. mm
+#
+#
+# Bien, antes decía "las líneas `msgid' y `msgstr' no comienzan con `\\n'"
+# No sé qué es mejor pero no me acaba de gustar: La idea es que *no ambas*
+# comienzan por \\n, no que tengan que hacerlo las dos.
+# Si una lo hace y la otra no, puede ser que falte en una o que sobre en la
+# otra. Yo podnría aquí algo más parecido a lo de antes, pero añadiendo
+# "ambas", o algo así.
+# por ejemplo: "las líneas msgid y msgstr no comienzan ambas con \\n". sv
+# Que te parece a alguna de las líneas ... mm
+#
+# Sigue pareciendo que deben tenerlo las dos (y no es esa la idea).
+# Si no se te ocurre nada mejor, sugerencia:
+# "Una de las líneas msgid y msgstr comienza con `\\n' y la otra no" sv+
+#: src/msgfmt.c:948
 msgid "`msgid' and `msgstr' entries do not both begin with '\\n'"
 msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' inicial"
 
 # Lo mismo, no es que a una de las dos le falte, sino que una lo tiene
 # y la otra no, así de sencillo. sv+
-#: src/msgfmt.c:882
+#: src/msgfmt.c:963
+#, fuzzy
+msgid "`msgid' and `msgid_plural' entries do not both end with '\\n'"
+msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' final"
+
+# Lo mismo, no es que a una de las dos le falte, sino que una lo tiene
+# y la otra no, así de sencillo. sv+
+#: src/msgfmt.c:971
+#, fuzzy, c-format
+msgid "`msgid' and `msgstr[%u]' entries do not both end with '\\n'"
+msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' final"
+
+# Lo mismo, no es que a una de las dos le falte, sino que una lo tiene
+# y la otra no, así de sencillo. sv+
+#: src/msgfmt.c:981
 msgid "`msgid' and `msgstr' entries do not both end with '\\n'"
 msgstr "a alguna de las líneas `msgid' y `msgstr' les falta el `\\n' final"
 
-#: src/msgfmt.c:896
+#: src/msgfmt.c:997
 msgid "number of format specifications in `msgid' and `msgstr' does not match"
 msgstr ""
 "el número de especificaciones de formato en `msgid' y 'msgstr' no coincide"
 
-#: src/msgfmt.c:913
-#, c-format
-msgid "format specifications for argument %u are not the same"
+#: src/msgfmt.c:1014
+#, fuzzy, c-format
+msgid "format specifications for argument %lu are not the same"
 msgstr "las especificaciones de formato para el argumento %u no son las mismas"
 
 # Lo mismo en ' informa de la versión...' em
 # Obligatorios.. obligatorios , queda un poco feo. Si lo que se pretende
 # es ser fiel al original, pon 'son tambien obligatorios para...' em+
-#: src/msgmerge.c:306
-#, c-format, no-wrap
+#: src/msgmerge.c:320
+#, fuzzy, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] def.po ref.po\n"
 "Mandatory arguments to long options are mandatory for short options too.\n"
+"  -C, --compendium=FILE       additional library of message translations,\n"
+"                              may be specified more than once\n"
 "  -D, --directory=DIRECTORY   add DIRECTORY to list for input files search\n"
 "  -e, --no-escape             do not use C escapes in output (default)\n"
 "  -E, --escape                use C escapes in output, no extended chars\n"
@@ -775,7 +850,7 @@ msgstr ""
 "  -V, --version              informa de la versión y finaliza\n"
 "  -w, --width=NÚMERO         ajusta la anchura de la página de salida\n"
 
-#: src/msgmerge.c:324
+#: src/msgmerge.c:340
 #, no-wrap
 msgid ""
 "\n"
@@ -801,21 +876,21 @@ msgstr ""
 "para obtener mejores resultados. Los resultados se escribirán en la salida\n"
 "estándar a menos que se especifique un fichero de salida.\n"
 
-#: src/msgmerge.c:772
-#, c-format
+#: src/msgmerge.c:799
+#, fuzzy, c-format
 msgid ""
-"%sRead %d old + %d reference, merged %d, fuzzied %d, missing %d, obsolete "
-"%d.\n"
+"%sRead %ld old + %ld reference, merged %ld, fuzzied %ld, missing %ld, "
+"obsolete %ld.\n"
 msgstr ""
 "%sleídos %d mensajes antiguos + %d mensajes de referencia\n"
 "incorporados %d, convertidos en difusos %d, faltan %d, obsoletos %d.\n"
 
 # Porque no mejor poner simplemente 'fin'? mm++
-#: src/msgmerge.c:778
+#: src/msgmerge.c:806
 msgid " done.\n"
 msgstr " terminado.\n"
 
-#: src/msgunfmt.c:215
+#: src/msgunfmt.c:210
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] [FILE]...\n"
@@ -859,7 +934,7 @@ msgstr ""
 # 30071996sv: Mejor que antes, sí. Pero la palabra "tantos" que César sugiere
 # creo que recoge el sentido de "both" del original. ¿qué te parece? sv
 #
-#: src/msgunfmt.c:229
+#: src/msgunfmt.c:224
 #, no-wrap
 msgid ""
 "\n"
@@ -874,55 +949,120 @@ msgstr ""
 "Si no se da ningún fichero de entrada o es -, se lee de la entrada estándar.\n"
 "Por defecto el resultado se escribe en la salida estándar.\n"
 
-#: src/msgunfmt.c:266 src/msgunfmt.c:330 src/po-lex.c:185 src/xget-lex.c:254
+#: src/msgunfmt.c:261 src/msgunfmt.c:326 src/po-lex.c:216 src/xget-lex.c:243
 #, c-format
 msgid "error while reading \"%s\""
 msgstr "error al leer \"%s\""
 
-#: src/msgunfmt.c:267 src/msgunfmt.c:331
+#: src/msgunfmt.c:262 src/msgunfmt.c:327
 #, c-format
 msgid "file \"%s\" truncated"
 msgstr "el fichero \"%s\" está truncado"
 
-#: src/msgunfmt.c:298
+#: src/msgunfmt.c:293
 #, c-format
 msgid "seek \"%s\" offset %ld failed"
 msgstr "fallo en la lectura \"%s\" en la posición (offset) %ld"
 
-#: src/msgunfmt.c:373
+#: src/msgunfmt.c:332
+#, fuzzy, c-format
+msgid "file \"%s\" contains a not NUL terminated string"
+msgstr "el fichero \"%s\" no está en el formato .mo de GNU"
+
+#: src/msgunfmt.c:377
 #, c-format
 msgid "file \"%s\" is not in GNU .mo format"
 msgstr "el fichero \"%s\" no está en el formato .mo de GNU"
 
-#: ../../src/po-gram.y:83
+# ¿ Y qué te parece informa de la versión y finaliza ?
+# así es cómo lo estoy haciendo en todas las textutils. em
+# No he movido nada porque dudo un poco. Creo que en un
+# msdos de IBM en español decía muestra la versión y por
+# eso lo traduje así. Si encuentro la referencia te informo
+# pero por ahora no me convence eso de `informa de la versión'
+# suena demasiado pomposo. mm
+#
+# Ok, como te parezca, es más que nada por no repetir 'muestra' em+
+#
+# Prefiero que se quede como está, pues aunque se repite muestra,
+# es en otra opción en donde aparece. mm
+#
+#: src/ngettext.c:209
+#, fuzzy, c-format, no-wrap
+msgid ""
+"Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n"
+"  -d, --domain=TEXTDOMAIN   retrieve translated message from TEXTDOMAIN\n"
+"  -e                        enable expansion of some escape sequences\n"
+"  -E                        (ignored for compatibility)\n"
+"  -h, --help                display this help and exit\n"
+"  -V, --version             display version information and exit\n"
+"  [TEXTDOMAIN]              retrieve translated message from TEXTDOMAIN\n"
+"  MSGID MSGID-PLURAL        translate MSGID (singular) / MSGID-PLURAL (plural)\n"
+"  COUNT                     choose singular/plural form based on this value\n"
+msgstr ""
+"Modo de empleo: %s [OPCIÓN] [[[DOMINIOTEXTO] MSGID] | [-s [MSGID]...]]\n"
+"  -d, --domain=DOMINIOTEXTO obtiene los mensajes traducidos de DOMINIOTEXTO\n"
+"  -e                        habilita la expansión de algunas secuencias\n"
+"                            de escape\n"
+"  -E                        (existe por compatibilidad, no tiene efecto)\n"
+"  -h, --help                muestra este texto de ayuda y finaliza\n"
+"  -n                        suprime el carácter de nueva línea\n"
+"  -V, --version             informa de la versión y finaliza\n"
+"  [DOMINIOTEXTO] MSGID      obtiene el mensaje traducido correspondiente\n"
+"                            al MSGID del DOMINIOTEXTO\n"
+
+# Nota: TEXTDOMAIN y TEXTDOMAINDIR son variables de entorno, por lo tanto
+# no se pueden traducir (cuando se refieren a las variables, claro está).
+#: src/ngettext.c:221
+#, fuzzy, c-format, no-wrap
+msgid ""
+"\n"
+"If the TEXTDOMAIN parameter is not given, the domain is determined from the\n"
+"environment variable TEXTDOMAIN.  If the message catalog is not found in the\n"
+"regular directory, another location can be specified with the environment\n"
+"variable TEXTDOMAINDIR.\n"
+"Standard search directory: %s\n"
+msgstr ""
+"\n"
+"Si no se escribe el parámetro DOMINIOTEXTO, el dominio se determina por\n"
+"la variable de entorno TEXTDOMAIN. Si el catálogo de mensajes no está en\n"
+"el directorio por defecto, con la variable de entorno TEXTDOMAINDIR se\n"
+"puede especificar otro lugar.\n"
+"Cuando se utiliza con la opción -s, el programa se comporta como la\n"
+"instrucción `echo', pero no se reduce a hacer simplemente una copia en\n"
+"la salida estándar (stdout) sino que además traduce los mensajes que\n"
+"encuentre dentro del catálogo seleccionado.\n"
+"Directorio de búsqueda estándar: %s\n"
+
+#: src/open-po.c:64
+msgid "<stdin>"
+msgstr ""
+
+#: po-gram-gen.y:87
+msgid "inconsistent use of #~"
+msgstr ""
+
+#: po-gram-gen.y:168
+#, fuzzy
+msgid "missing `msgstr[]' section"
+msgstr "no hay sección `msgstr'"
+
+#: po-gram-gen.y:176
+#, fuzzy
+msgid "missing `msgid_plural' section"
+msgstr "no hay sección `msgstr'"
+
+#: po-gram-gen.y:183
 msgid "missing `msgstr' section"
 msgstr "no hay sección `msgstr'"
 
-#  Jeje. Bueno , esto me recuerda a una canción de Burning, digo lo
-#  de fatal. Fatal en Castellano es muy malo, o peligrosísimo ... creo que
-#  habrá que dejarlo así, es más convincente. Perdona por estas 3 lineas em
-#
-# ¿Burning? Mi incultura es grave ¿quiénes son esos? mm
-#
-# Son los que cantan lo de 'qué hace una chica como tú en un sitio como este'
-# en una parte de la canción repiten: 'mujer fatal ... ' :) em+
-#
-# ¡Ah! Dirán que soy pocho pero oigo muy poca música en castellano, a lo
-# más que llego es a Sabina y a Mecano y la Orquesta Mondragón cuando
-# existía. Volviendo a la discusión, prefiero lo de fatal: tiene mucho
-# peso. Aunque ... ¿qué tal 'errores imperdonables'? mm+
-#
-# Tal y como yo lo veo, "Error fatal" es el que obliga al programa a detenerse.
-# En inglés se utiliza esta palabra con ese significado.
-# A menos que veamos un libro en español que utilice una palabra distinta
-# para referirse a lo mismo, sugiero dejarlo como está. sv
-#
-# 07061996mm: Mujer fatal es menos que mortal, menos que peligroso e incita a la
-# aventura. Quizá no sea tan malo como dice Enrique, a menos que...
-#: src/po-lex.c:84
-#, c-format
-msgid "found %d fatal errors"
-msgstr "se encontraron %d errores fatales"
+#: po-gram-gen.y:228
+msgid "first plural form has nonzero index"
+msgstr ""
+
+#: po-gram-gen.y:230
+msgid "plural form has wrong index"
+msgstr ""
 
 # Abortando queda un poco feo. ¿qué se podría poner en su lugar?
 # Aterrizaje forzoso! el programa no puede continuar. Que te parece? mm.
@@ -957,48 +1097,136 @@ msgstr "se encontraron %d errores fatales"
 # 20071996sv: Eso no seguiría la regla implícita de que el programa no debe
 # hablar en primera persona sino en estilo impersonal.
 # (Esta regla estará en el manual de Enrique, con toda seguridad).
-#: src/po-lex.c:129 src/po-lex.c:168
+#. CAUTION: If you change this macro, you must also make identical
+#. changes to the function of the same name in src/po-lex.c
+#: src/po-lex.c:159 src/po-lex.c:198 src/po-lex.h:85 src/po-lex.h:99
+#: src/po-lex.h:115 src/po-lex.h:129
 msgid "too many errors, aborting"
 msgstr "demasiados errores, programa interrumpido"
 
-#: src/po-lex.c:241
+#: src/po-lex.c:274
 #, c-format
 msgid "keyword \"%s\" unknown"
 msgstr "palabra clave \"%s\" desconocida"
 
-#: src/po-lex.c:332
-msgid "illegal control sequence"
+#: src/po-lex.c:377
+#, fuzzy
+msgid "invalid control sequence"
 msgstr "secuencia de control ilegal"
 
-#: src/po-lex.c:415
-msgid "end-of-line within string"
-msgstr "fin de línea dentro de una cadena"
-
-#: src/po-lex.c:420
+#: src/po-lex.c:480
 msgid "end-of-file within string"
 msgstr "fin de fichero dentro de una cadena"
 
-#: src/xget-lex.c:150
+#: src/po-lex.c:485
+msgid "end-of-line within string"
+msgstr "fin de línea dentro de una cadena"
+
+#: src/po-lex.c:528 src/write-po.c:291 src/write-po.c:373
+#, fuzzy
+msgid "invalid multibyte sequence"
+msgstr "secuencia de control ilegal"
+
+#: src/po.c:302 src/po.c:374 src/po.c:409 src/po.c:439
+#, c-format
+msgid "%s: warning: "
+msgstr ""
+
+#: src/po.c:303
+#, fuzzy, c-format
+msgid ""
+"Charset \"%s\" is not a portable encoding name.\n"
+"Message conversion to user's charset might not work.\n"
+msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
+
+#: src/po.c:370 src/po.c:405
+msgid "Continuing anyway, expect parse errors."
+msgstr ""
+
+#: src/po.c:372
+msgid "Continuing anyway."
+msgstr ""
+
+#: src/po.c:375
+#, c-format
+msgid ""
+"Charset \"%s\" is not supported. %s relies on iconv(),\n"
+"and iconv() does not support \"%s\".\n"
+msgstr ""
+
+#: src/po.c:385 src/po.c:418
+msgid ""
+"Installing GNU libiconv and then reinstalling GNU gettext\n"
+"would fix this problem.\n"
+msgstr ""
+
+#: src/po.c:393 src/po.c:425
+#, c-format
+msgid "%s\n"
+msgstr ""
+
+#: src/po.c:410
+#, c-format
+msgid ""
+"Charset \"%s\" is not supported. %s relies on iconv().\n"
+"This version was built without iconv().\n"
+msgstr ""
+
+#: src/po.c:440
+#, fuzzy
+msgid ""
+"Charset missing in header.\n"
+"Message conversion to user's charset will not work.\n"
+msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
+
+#: src/write-po.c:322
+#, c-format
+msgid ""
+"internationalized messages should not contain the `\\%c' escape sequence"
+msgstr ""
+"Los mensajes internacionalizados no deben contener la secuencia de escape `\\"
+"%c'"
+
+#: src/write-po.c:863
+#, c-format
+msgid "cannot create output file \"%s\""
+msgstr "no se puede crear el fichero de salida \"%s\""
+
+#: src/write-po.c:870
+#, no-c-format
+msgid "standard output"
+msgstr "salida estándar"
+
+#: src/write-po.c:945
+#, c-format
+msgid "error while writing \"%s\" file"
+msgstr "hubo un error al escribir el fichero \"%s\""
+
+#: src/xget-lex.c:148
 msgid "standard input"
 msgstr "entrada estándar"
 
-#: src/xget-lex.c:892
+#: src/xget-lex.c:876
 #, c-format
 msgid "%s:%d: warning: unterminated character constant"
 msgstr "%s:%d: atención: constante de tipo carácter no finalizada"
 
-#: src/xget-lex.c:914
+#: src/xget-lex.c:898
 #, c-format
 msgid "%s:%d: warning: unterminated string literal"
 msgstr "%s:%d: atención: literal de cadena no finalizada"
 
-#: src/xgettext.c:386
+#: src/xgettext.c:373
 msgid "--join-existing cannot be used when output is written to stdout"
 msgstr ""
 "no se puede utilizar --join-existing cuando el resultado se escribe en la\n"
 "salida estándar (stdout)"
 
-#: src/xgettext.c:501
+#: src/xgettext.c:378
+msgid "xgettext cannot work without keywords to look for"
+msgstr ""
+
+#: src/xgettext.c:484
 #, c-format
 msgid "warning: file `%s' extension `%s' is unknown; will try C"
 msgstr ""
@@ -1010,7 +1238,7 @@ msgstr ""
 # opción de debug hace algo más que simplemente dar más información y es
 # necesario aclarar el punto.
 # 27061996sv: Me refería a lo de las 80 columnas...
-#: src/xgettext.c:537
+#: src/xgettext.c:520
 #, c-format, no-wrap
 msgid ""
 "Usage: %s [OPTION] INPUTFILE ...\n"
@@ -1060,15 +1288,14 @@ msgstr ""
 "                                 no ingleses\n"
 "  -F, --sort-by-file             ordena la salida por ubicación del fichero\n"
 
-#: src/xgettext.c:557
-#, c-format, no-wrap
+#: src/xgettext.c:540
+#, fuzzy, no-wrap
 msgid ""
 "  -h, --help                     display this help and exit\n"
 "  -i, --indent                   write the .po file using indented style\n"
 "  -j, --join-existing            join messages with existing file\n"
 "  -k, --keyword[=WORD]           additonal keyword to be looked for (without\n"
 "                                 WORD means not to use default keywords)\n"
-"  -l, --string-limit=NUMBER      set string length limit to NUMBER instead %u\n"
 "  -L, --language=NAME            recognise the specified language (C, C++, PO),\n"
 "                                 otherwise is guessed from file extension\n"
 "  -m, --msgstr-prefix[=STRING]   use STRING or \"\" as prefix for msgstr entries\n"
@@ -1102,7 +1329,7 @@ msgstr ""
 # hay cosa más incómoda que hacer un `algo --help' y que precisamente lo que
 # nos interese se haya salido de la/el terminal em+
 # Ok. mm+
-#: src/xgettext.c:571
+#: src/xgettext.c:552
 #, no-wrap
 msgid ""
 "  -n, --add-location             generate '#: filename:line' lines (default)\n"
@@ -1133,24 +1360,37 @@ msgstr ""
 "\n"
 "Si el FICHERO_DE_ENTRADA es -, se lee de la entrada estándar.\n"
 
-#: src/xgettext.c:1344
+#: src/xgettext.c:914
+#, fuzzy, c-format
+msgid "%s:%d: warning: keyword nested in keyword arg"
+msgstr "%s:%d: atención: literal de cadena no finalizada"
+
+#: src/xgettext.c:924
+#, c-format
+msgid "%s:%d: warning: keyword between outer keyword and its arg"
+msgstr ""
+
+#: src/xgettext.c:1420
 #, c-format
 msgid "language `%s' unknown"
 msgstr "lenguaje `%s' desconocido"
 
-#~ msgid "Report bugs to <bug-gnu-utils@prep.ai.mit.edu>.\n"
-#~ msgstr "Comunicar `bugs' a <bug-gnu-utils@prep.ai.mit.edu>.\n"
+#, fuzzy
+#~ msgid ""
+#~ "%s: warning: charset \"%s\" is not supported by iconv%s\n"
+#~ "%*s  warning: consider installing GNU libiconv and then\n"
+#~ "%*s           reinstalling GNU gettext"
+#~ msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
 
-# suena horrible esto pero no se como romper la cacofonía. mm.
-# Modifico, de acuerdo con la sugerencia de em, con un pequeño cambio. mm
-#~ msgid "this is the location of the first definition"
-#~ msgstr "aquí se define por primera vez"
+#, fuzzy
+#~ msgid ""
+#~ "%s: warning: charset \"%s\" is not supported without iconv%s\n"
+#~ "%*s  warning: consider installing GNU libiconv and then\n"
+#~ "%*s           reinstalling GNU gettext"
+#~ msgstr "%s: atención: el fichero fuente contiene una traducción difusa"
 
-#~ msgid "duplicate message ID"
-#~ msgstr "el ID del mensaje está duplicado"
+#~ msgid "Memory exhausted"
+#~ msgstr "Memoria agotada"
 
-#~ msgid "cannot change to directory \"%s\""
-#~ msgstr "no se puede cambiar al directorio \"%s\""
-
-#~ msgid "cannot change back to directory \"%s\""
-#~ msgstr "no se puede regresar al directorio \"%s\""
+#~ msgid "%s: warning: no header entry found"
+#~ msgstr "%s: atención: no se encontró la línea de cabecera"

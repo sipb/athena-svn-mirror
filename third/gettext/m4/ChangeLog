@@ -1,3 +1,314 @@
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.40 released.
+
+2001-09-13  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Change version determination of bison, so
+	that it also works with bison-1.29.
+	Reported by Karl Berry <karl@gnu.org>.
+
+2001-07-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.39 released.
+
+2001-06-25  Bruno Haible  <haible@clisp.cons.org>
+
+	* mbswidth.m4: Also check for mbsinit. Needed for SCO 3.2v5.0.2.
+
+2001-06-14  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Add support for autoconf-2.50.
+
+2001-06-08  Bruno Haible  <haible@clisp.cons.org>
+
+	* libtool.m4: Upgrade to libtool-1.4.
+
+2001-05-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Look only for GNU msgfmt and GNU xgettext.
+	Set the variables to ":" if not found.
+	* progtest.m4 (AM_PATH_PROG_WITH_TEST): If not found, print "no", not
+	the default value.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.38 released.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* iconv.m4 (AM_ICONV): Accept --with-libiconv-prefix option.
+
+2001-05-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Fix dcgettext test. Always add $LIBICONV
+	when using -lintl, because libintl may be a static library depending
+	on a (static or shared) libiconv.
+
+2001-05-12  Paul Eggert  <eggert@twinsun.com>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Add check for strtoul.
+
+2001-05-14  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Create po/POTFILES right before
+	po/Makefile, at config.status run time. Make it work independently of
+	the subdir name and of the subdir level.
+	(AM_GNU_GETTEXT): Don't create po/POTFILES at configure time.
+
+2001-05-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* glibc21.m4: New file, from fileutils-4.1.
+	* gettext.m4 (AM_GNU_GETTEXT): Require jm_GLIBC21.
+	* Makefile.am (EXTRA_DIST): Add glibc21.m4.
+	(aclocal_DATA): Add glibc21.m4.
+
+2001-05-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Let the GNU gettext package install its
+	libintl when a GNU libintl is already preinstalled.
+
+2001-04-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Also check for the getegid, geteuid,
+	getgid, getuid functions. Needed for mingw32.
+
+2001-04-27  H. J. Lu  <hjl@lucon.org>
+            Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Fix $CONFIG_FILES matching so it deals
+	correctly with tabs. Define INSTOBJEXT and GENCAT for older Makefiles.
+
+2001-04-19  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.37 released.
+
+2001-04-17  Bruno Haible  <haible@clisp.cons.org>
+
+	* mbswidth.m4: Also include <string.h>; this is where AIX 3.2.5
+	declares wcwidth.
+
+2001-04-12  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4: Workaround an automake-1.4 bug: Don't write
+	AM_DISABLE_SHARED, even in comments, because that causes 'aclocal'
+	to pull in the libtool.m4 macros, which causes 'automake' to use
+	@LIBTOOL@ in its rules, even for packages that haven't called
+	AM_PROG_LIBTOOL.
+
+2001-04-12  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Fix syntax error in 'case'. Change
+	whitespace in $CONFIG_FILES to spaces for matching with 'case'.
+	Reported by Thorsten Kukuk <kukuk@suse.de>.
+
+2001-04-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Even if 'msgfmt' is not found in $PATH,
+	set CATOBJEXT=.gmo and use the gettext in libc or libintl.
+
+2001-04-04  Bruno Haible  <haible@clisp.cons.org>
+
+	* mbswidth.m4: New file, from textutils-2.0.13 with modifications.
+	* mbrtowc.m4: Likewise.
+	* mbstate_t.m4: Likewise.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2001-03-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext-0.10.36 released.
+
+2001-03-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Check for bison and set INTLBISON.
+
+2001-03-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* iconv.m4 (AM_ICONV): Recommend GNU libiconv.
+
+2001-03-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Allow po/Makefile.in to be generated from
+	a different file than po/Makefile.in.in.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* getline.m4: New file, from fileutils-4.0.41 with modifications.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-03-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Accept a second argument 'need-ngettext'.
+	If it is given, check for the presence of ngettext() as well.
+
+2001-03-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* signed.m4: Quote first argument of AC_DEFUN.
+
+2001-03-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (aclocal_DATA): Add codeset.m4 and iconv.m4, both needed
+	by gettext.m4.
+
+	* iconv.m4 (AM_ICONV): Cosmetic tweaks.
+	* setlocale.m4 (gt_SETLOCALE): Likewise.
+
+2001-03-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* signed.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-03-03  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Add $LIBICONV to $INTLLIBS.
+
+2001-02-07  Pavel Roskin  <proski@gnu.org>
+
+	* c-bs-a.m4: Quote first argument of AC_DEFUN.
+	* codeset.m4: Likewise.
+	* gettext.m4: Likewise.
+	* iconv.m4: Likewise.
+	* inttypes_h.m4: Likewise.
+	* isc-posix.m4: Likewise.
+	* lcmessage.m4: Likewise.
+	* libtool.m4: Likewise.
+	* progtest.m4: Likewise.
+	* setlocale.m4: Likewise.
+	* uintmax_t.m4: Likewise.
+	* ulonglong.m4: Likewise.
+
+2001-01-21  Bruno Haible  <haible@clisp.cons.org>
+
+	Use libtool.
+	* libtool.m4: New file, from libtool-1.3.5.
+	* Makefile.am (EXTRA_DIST): Add it.
+	* gettext.m4 (AM_WITH_NLS): Accept 'use-libtool' as first argument.
+	New variable BUILD_INCLUDED_LIBINTL. Don't force USE_NLS, force only
+	BUILD_INCLUDED_LIBINTL.
+	Remove unused variable INTLDEPS.
+	Fix value of INTLLIBS to match documentation.
+	Avoid unwanted matches of po/Makefile.in with AC_OUTPUT argument.
+	(AM_GNU_GETTEXT): Accept 'use-libtool' as first argument. Rename
+	variable l to INTL_LIBTOOL_SUFFIX_PREFIX.
+
+2001-01-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Change computation of NEW_LINGUAS to
+	not include catalogs which are not present. Reported by Fredrik
+	Hallenberg. Also include catalogs of which a variant is requested.
+
+2001-01-20  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Add a third argument to AC_DEFINE.
+	* lcmessage.m4 (AM_LC_MESSAGES): Likewise.
+
+2001-01-15  Bruno Haible  <haible@clisp.cons.org>
+
+	* iconv.m4 (AM_ICONV): Also check whether the iconv declaration
+	has const.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Remove third argument. Don't call
+	AC_LINK_FILES. Now done through simple file copy in intl/Makefile.in.
+	(AM_GNU_GETTEXT): Remove GT_NO and GT_YES macros.
+
+2001-01-07  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Assume <locale.h> exists.
+	* setlocale.m4 (gt_SETLOCALE): Likewise.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	Remove catgets fallback code.
+	- It does not handle message clash prevention through domains and
+	  dgettext().
+	- It does not handle message catalog inheritance and the LANGUAGE
+	  environment variable.
+	- It does not handle locale aliases.
+	- It does not handle automatic charset conversion.
+	- It does not handle plural form handling and ngettext().
+	- It uses a slow string to integer conversion.
+	- It is sensitive against installation problems.
+	* gettext.m4 (AM_WITH_NLS): Don't look for catgets any more. Don't
+	define INSTOBJEXT. Don't create intl/po2msg.sed and intl/po2tbl.sed.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* setlocale.m4: New file.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2001-01-06  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Look for GNU gettext in libc and libintl,
+	ignoring Solaris X/Open gettext. Rename cache variables.
+
+2000-12-30  Bruno Haible  <haible@clisp.cons.org>
+
+	* ulonglong.m4: New file, from fileutils-4.0.32.
+	* inttypes_h.m4: Likewise.
+	* uintmax_t.m4: Likewise.
+	* Makefile.am (EXTRA_DIST): Add them.
+
+2000-09-14  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_WITH_NLS): Make the tests for gettext in libc and
+	in libintl similar. If found in libintl, add "-lintl" to $LIBS during
+	subsequent AC_TRY_LINKs and later to INTLLIBS.
+	Reported by Gaël Roualland <gael.roualland@dial.oleane.com>.
+
+2000-08-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* c-bs-a.m4: New file, from sh-utils-2.0j.
+	* Makefile.am (EXTRA_DIST): Add it.
+
+2000-07-29  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.am (EXTRA_DIST): Add codeset.m4, iconv.m4.
+
+2000-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	Drop support for old Linux specific .msg catalog format.
+	* gettext.m4 (AM_GNU_GETTEXT): Assume .cat is always X/Open format.
+	Renamed xopen-msg.sed to po2msg.sin.
+
+2000-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): Renamed po2tbl.sed.in to po2tbl.sin.
+
+2000-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.m4 (AM_GNU_GETTEXT): The sed scripts are in $srcdir/intl,
+	and po2msg.sed, po2tbl.sed must be created in the intl subdir.
+
+2000-06-16  Bruno Haible  <haible@clisp.cons.org>
+
+	* codeset.m4: New file, taken from fileutils-4.0u, with prefix AM.
+	* iconv.m4: New file, taken from fileutils-4.0u, with prefix AM.
+	* gettext.m4 (AM_GNU_GETTEXT): Add check for headers <stddef.h>,
+	<stdlib.h>. Add check for functions feof_unlocked, fgets_unlocked.
+	Invoke AM_ICONV and AM_LANGINFO_CODESET. Require AC_CANONICAL_HOST.
+	Bump to serial 7.
+
+	* isc-posix.m4: Undefine the macro before calling AC_DEFUN, otherwise
+	with autoconf-2.13 we get lots of ***BUG in Autoconf--please report***
+	errors.
+
+2000-05-06  Ulrich Drepper  <drepper@redhat.com>
+
+	* gettext.m4: Add tests for tsearch, iconv, and mempcpy.
+
+	* gettext.m4: Lots of bug fixes.
+
+1998-06-01 22:28  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext.m4: Allow arguments for AM_GNU_GETTEXT to customize for
+	Cygnus trees.
+
+1998-05-01 08:47  Ulrich Drepper  <drepper@cygnus.com>
+
+	* gettext-0.10.35 released.
+
 1998-04-30  Ulrich Drepper  <drepper@cygnus.com>
 
 	* gettext.m4: Add AC_OUTPUT_COMMANDS in AM_GNU_GETTEXT to rewrite

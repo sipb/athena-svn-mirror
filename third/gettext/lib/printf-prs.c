@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <stdio.h>
 #include <printf.h>
-#ifdef STDC_HEADERS
+#if HAVE_STDLIB_H
 # include <stdlib.h>
 #endif
 
@@ -47,14 +47,14 @@ parse_printf_format (fmt, n, argtypes)
       nargs += parse_one_spec (fmt, nargs, &spec, &max_ref_arg);
 
       /* If the width is determined by an argument this is an int.  */
-      if (spec.width_arg != -1 && spec.width_arg < (int) n)
+      if (spec.width_arg != -1 && (size_t) spec.width_arg < n)
 	argtypes[spec.width_arg] = PA_INT;
 
       /* If the precision is determined by an argument this is an int.  */
-      if (spec.prec_arg != -1 && spec.prec_arg < (int) n)
+      if (spec.prec_arg != -1 && (size_t) spec.prec_arg < n)
 	argtypes[spec.prec_arg] = PA_INT;
 
-      if (spec.data_arg < (int) n)
+      if ((size_t) spec.data_arg < n)
 	switch (spec.ndata_args)
 	  {
 	  case 0:		/* No arguments.  */
@@ -67,6 +67,12 @@ parse_printf_format (fmt, n, argtypes)
 	       libc provides printf function registration.  But while
 	       having this feature it also provides this function, so
 	       that using *this* file is not needed.  */
+#if 0
+	    /* We have more than one argument for this format spec.  We must
+	       call the arginfo function again to determine all the types.  */
+	    (void) (*__printf_arginfo_table[spec.info.spec])
+	      (&spec.info, n - spec.data_arg, &argtypes[spec.data_arg]);
+#endif
 	    break;
 	  }
     }

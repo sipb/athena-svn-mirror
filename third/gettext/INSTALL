@@ -119,6 +119,39 @@ find the X include and library files automatically, but if it doesn't,
 you can use the `configure' options `--x-includes=DIR' and
 `--x-libraries=DIR' to specify their locations.
 
+   For packages that use the GNU libiconv library, you can use the
+`configure' option `--with-libiconv-prefix' to specify the prefix you
+used while installing libiconv.
+
+Particular Systems
+==================
+
+   On most systems, the compiler doesn't search include files in
+/usr/local/include, and the linker doesn't search libraries in
+/usr/local/lib.  (A notable exception is GNU/Linux.)  Therefore some
+packages won't find other packages installed earlier.  To overcome this
+problem, it is recommended to use the following options:
+
+     env CPPFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure
+
+   On HP-UX, the default C compiler is not ANSI C compatible.  If GNU CC
+is not installed, it is recommended to use the following options in order
+to use an ANSI C compiler:
+
+     env CC="cc -Ae" ./configure
+
+   On AIX 3, the C include files by default don't define some necessary
+prototype declarations.  If GNU CC is not installed, it is recommended to
+use the following options:
+
+     env CC="xlc -D_ALL_SOURCE" ./configure
+
+   On BeOS, user installed software goes in /boot/home/config, not
+/usr/local.  It is recommended to use the following options:
+
+     CPPFLAGS=-I/boot/home/config/include LDFLAGS=-L/boot/home/config/lib \
+     ./configure --prefix=/boot/home/config
+
 Specifying the System Type
 ==========================
 
@@ -180,3 +213,4 @@ operates.
      script, and exit.
 
 `configure' also accepts some other, not widely useful, options.
+

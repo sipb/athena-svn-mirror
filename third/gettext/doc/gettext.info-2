@@ -1,5 +1,5 @@
-This is Info file gettext.info, produced by Makeinfo version 1.68 from
-the input file gettext.texi.
+This is gettext.info, produced by makeinfo version 4.0 from
+gettext.texi.
 
 INFO-DIR-SECTION GNU Gettext Utilities
 START-INFO-DIR-ENTRY
@@ -13,7 +13,8 @@ END-INFO-DIR-ENTRY
    This file provides documentation for GNU `gettext' utilities.  It
 also serves as a reference for the free Translation Project.
 
-   Copyright (C) 1995, 1996, 1997 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 1997, 1998, 2001 Free Software Foundation,
+Inc.
 
    Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -73,12 +74,12 @@ described here, the others are described in following sections.
 `x'
      Exchange the current entry location with the previously saved one.
 
-   Any GNU Emacs command able to reposition the cursor may be used to
+   Any Emacs command able to reposition the cursor may be used to
 select the current entry in PO mode, including commands which move by
 characters, lines, paragraphs, screens or pages, and search commands.
 However, there is a kind of standard way to display the current entry
-in PO mode, which usual GNU Emacs commands moving the cursor do not
-especially try to enforce.  The command `.'  (`po-current-entry') has
+in PO mode, which usual Emacs commands moving the cursor do not
+especially try to enforce.  The command `.' (`po-current-entry') has
 the sole purpose of redisplaying the current entry properly, after the
 current entry has been changed by means external to PO mode, or the
 Emacs screen otherwise altered.
@@ -86,7 +87,7 @@ Emacs screen otherwise altered.
    It is yet to be decided if PO mode helps the translator, or otherwise
 irritates her, by forcing a rigid window disposition while she is doing
 her work.  We originally had quite precise ideas about how windows
-should behave, but on the other hand, anyone used to GNU Emacs is often
+should behave, but on the other hand, anyone used to Emacs is often
 happy to keep full control.  Maybe a fixed window disposition might be
 offered as a PO mode option that the translator might activate or
 deactivate at will, so it could be offered on an experimental basis.
@@ -94,7 +95,7 @@ If nobody feels a real need for using it, or a compulsion for writing
 it, we should drop this whole idea.  The incentive for doing it should
 come from translators rather than programmers, as opinions from an
 experienced translator are surely more worth to me than opinions from
-programmers *thinking* about how *others* should do translation.
+programmers _thinking_ about how _others_ should do translation.
 
    The commands `n' (`po-next-entry') and `p' (`po-previous-entry')
 move the cursor the entry following, or preceding, the current one.  If
@@ -123,7 +124,7 @@ getting back, or else, use the location ring.
 saved onto a special stack.  The command `m' (`po-push-location')
 merely adds the location of current entry to the stack, pushing the
 already saved locations under the new one.  The command `r'
-(`po-pop-location') consumes the top stack element and reposition the
+(`po-pop-location') consumes the top stack element and repositions the
 cursor to the entry associated with that top element.  This position is
 then lost, for the next `r' will move the cursor to the previously
 saved location, and so on until no locations remain on the stack.
@@ -133,9 +134,9 @@ stack, maybe for taking a look at the entry associated with the top
 element, then go elsewhere with the intent of getting back later, she
 ought to use `m' immediately after `r'.
 
-   The command `x' (`po-exchange-location') simultaneously reposition
+   The command `x' (`po-exchange-location') simultaneously repositions
 the cursor to the entry associated with the top element of the stack of
-saved locations, and replace that top element with the location of the
+saved locations, and replaces that top element with the location of the
 current entry before the move.  Consequently, repeating the `x' command
 toggles alternatively between two entries.  For achieving this, the
 translator will position the cursor on the first entry, use `m', then
@@ -174,8 +175,8 @@ command is available:
 `M-x po-normalize'
      Tidy the whole PO file by making entries more uniform.
 
-   The special command `M-x po-normalize', which has no associate keys,
-revises all entries, ensuring that strings of both original and
+   The special command `M-x po-normalize', which has no associated
+keys, revises all entries, ensuring that strings of both original and
 translated entries use uniform internal quoting in the PO file.  It
 also removes any crumb after the last entry.  This command may be
 useful for PO files freshly imported from elsewhere, or if we ever
@@ -202,11 +203,11 @@ It is easy to make suggested adjustments at a later time, as the
 normalizing command and eventually, other GNU `gettext' tools should
 greatly automate conformance.  A description of the canonical string
 format is given below, for the particular benefit of those not having
-GNU Emacs handy, and who would nevertheless want to handcraft their PO
+Emacs handy, and who would nevertheless want to handcraft their PO
 files in nice ways.
 
    Right now, in PO mode, strings are single line or multi-line.  A
-string goes multi-line if and only if it has *embedded* newlines, that
+string goes multi-line if and only if it has _embedded_ newlines, that
 is, if it matches `[^\n]\n+[^\n]'.  So, we would have:
 
      msgstr "\n\nHello, world!\n\n\n"
@@ -239,7 +240,7 @@ normalization, to be documented in this manual, once these questions
 settle.
 
 
-File: gettext.info,  Node: Sources,  Next: Initial,  Prev: Basics,  Up: Top
+File: gettext.info,  Node: Sources,  Next: Template,  Prev: Basics,  Up: Top
 
 Preparing Program Sources
 *************************
@@ -254,7 +255,7 @@ needing translation.
 
    Presuming that your set of programs, or package, has been adjusted
 so all needed GNU `gettext' files are available, and your `Makefile'
-files are adjusted (*note Maintainers::.), each C module having
+files are adjusted (*note Maintainers::), each C module having
 translated C strings should contain the line:
 
      #include <libintl.h>
@@ -265,7 +266,7 @@ sections of this chapter.
 * Menu:
 
 * Triggering::                  Triggering `gettext' Operations
-* Mark Keywords::               How Marks Appears in Sources
+* Mark Keywords::               How Marks Appear in Sources
 * Marking::                     Marking Translatable Strings
 * c-format::                    Telling something about the following string
 * Special cases::               Special Cases of Translatable Strings
@@ -303,7 +304,7 @@ programs, which process some kind of input language, be wrong.  For
 example this would mean that a source code using the c, (c-cedilla
 character) is runnable in France but not in the U.S.
 
-   Some systems also have problems with parsing number using the
+   Some systems also have problems with parsing numbers using the
 `scanf' functions if an other but the `LC_ALL' locale is used.  The
 standards say that additional formats but the one known in the `"C"'
 locale might be recognized.  But some systems seem to reject numbers in
@@ -319,22 +320,35 @@ code above by a sequence of `setlocale' lines
 
      {
        ...
-       setlocale (LC_TIME, "");
+       setlocale (LC_CTYPE, "");
        setlocale (LC_MESSAGES, "");
        ...
      }
 
-or to switch for and back to the character class in question.  On all
-POSIX conformant systems the locale categories `LC_CTYPE',
+On all POSIX conformant systems the locale categories `LC_CTYPE',
 `LC_COLLATE', `LC_MONETARY', `LC_NUMERIC', and `LC_TIME' are available.
 On some modern systems there is also a locale `LC_MESSAGES' which is
 called on some old, XPG2 compliant systems `LC_RESPONSES'.
 
+   Note that changing the `LC_CTYPE' also affects the functions
+declared in the `<ctype.h>' standard header.  If this is not desirable
+in your application (for example in a compiler's parser), you can use a
+set of substitute functions which hardwire the C locale, such as found
+in the `<c-ctype.h>' and `<c-ctype.c>' files in the gettext source
+distribution.
+
+   It is also possible to switch the locale forth and back between the
+environment dependent locale and the C locale, but this approach is
+normally avoided because a `setlocale' call is expensive, because it is
+tedious to determine the places where a locale switch is needed in a
+large program's source, and because switching a locale is not
+multithread-safe.
+
 
 File: gettext.info,  Node: Mark Keywords,  Next: Marking,  Prev: Triggering,  Up: Sources
 
-How Marks Appears in Sources
-============================
+How Marks Appear in Sources
+===========================
 
    All strings requiring translation should be marked in the C sources.
 Marking is done in such a way that each translatable string appears to
@@ -365,7 +379,7 @@ program sources and produces PO file templates.
    The canonical keyword for marking translatable strings is `gettext',
 it gave its name to the whole GNU `gettext' package.  For packages
 making only light use of the `gettext' keyword, macro or function, it
-is easily used *as is*.  However, for packages using the `gettext'
+is easily used _as is_.  However, for packages using the `gettext'
 interface more heavily, it is usually more convenient to give the main
 keyword a shorter, less obtrusive name.  Indeed, the keyword might
 appear on a lot of strings all over the package, and programmers
@@ -395,7 +409,7 @@ instead of merely using `#include <libintl.h>'.
 you add or modify a string, you will have to ask yourself if the new or
 altered string requires translation, and include it within `_()' if you
 think it should be translated.  `"%s: %d"' is an example of string
-*not* requiring translation!
+_not_ requiring translation!
 
 
 File: gettext.info,  Node: Marking,  Next: c-format,  Prev: Mark Keywords,  Up: Sources
@@ -429,7 +443,7 @@ summarizing the contents using a special file format Emacs can
 understand.
 
    For packages following the GNU coding standards, there is a make
-goal `tags' or `TAGS' which construct the tag files in all directories
+goal `tags' or `TAGS' which constructs the tag files in all directories
 and for all files containing source code.
 
    Once your `TAGS' file is ready, the following commands assist the
@@ -452,8 +466,8 @@ you mark strings as translatable in your program sources.
      possible keywords.  This command with a prefix allows some
      management of these keywords.
 
-   The `,' (`po-tags-search') command search for the next occurrence of
-a string which looks like a possible candidate for translation, and
+   The `,' (`po-tags-search') command searches for the next occurrence
+of a string which looks like a possible candidate for translation, and
 displays the program source in another Emacs window, positioned in such
 a way that the string is near the top of this other window.  If the
 string is too big to fit whole in this window, it is positioned so only
@@ -490,7 +504,7 @@ translatable will be automatically skipped.
 tags commands.  For example, regular `tags-search' or
 `tags-query-replace' commands may be used without disrupting the
 independent `,' search sequence.  However, as implemented, the
-*initial* `,' command (or the `,' command is used with a prefix) might
+_initial_ `,' command (or the `,' command is used with a prefix) might
 also reinitialize the regular Emacs tags searching to the first tags
 file, this reinitialization might be considered spurious.
 
@@ -505,18 +519,18 @@ translation, if you feel like doing it right away).  It is possible
 that the modifications made to the program source by `M-,' or `M-.'
 render some source line longer than 80 columns, forcing you to break
 and re-indent this line differently.  You may use the `O' command from
-PO mode, or any other window changing command from GNU Emacs, to break
-out into the program source window, and do any needed adjustments.  You
+PO mode, or any other window changing command from Emacs, to break out
+into the program source window, and do any needed adjustments.  You
 will have to use some regular Emacs command to return the cursor to the
 PO file window, if you want command `,' for the next string, say.
 
    The `M-.' command has a few built-in speedups, so you do not have to
 explicitly type all keywords all the time.  The first such speedup is
-that you are presented with a *preferred* keyword, which you may accept
+that you are presented with a _preferred_ keyword, which you may accept
 by merely typing `<RET>' at the prompt.  The second speedup is that you
 may type any non-ambiguous prefix of the keyword you really mean, and
 the command will complete it automatically for you.  This also means
-that PO mode has to *know* all your possible keywords, and that it will
+that PO mode has to _know_ all your possible keywords, and that it will
 not accept mistyped keywords.
 
    If you reply `?' to the keyword request, the command gives a list of
@@ -525,9 +539,9 @@ prefixed by an argument (`C-u M-.'), it inhibits updating any program
 source or PO file buffer, and does some simple keyword management
 instead.  In this case, the command asks for a keyword, written in
 full, which becomes a new allowed keyword for later `M-.' commands.
-Moreover, this new keyword automatically becomes the *preferred*
+Moreover, this new keyword automatically becomes the _preferred_
 keyword for later commands.  By typing an already known keyword in
-response to `C-u M-.', one merely changes the *preferred* keyword and
+response to `C-u M-.', one merely changes the _preferred_ keyword and
 does nothing more.
 
    All keywords known for `M-.' are recognized by the `,' command when
@@ -584,7 +598,7 @@ format specifier, but the string is not used in `printf'.
    Therefore the `xgettext' adds a special tag to those messages it
 thinks might be a format string.  There is no absolute rule for this,
 only a heuristic.  In the `.po' file the entry is marked using the
-`c-format' flag in the `#,' comment line (*note PO Files::.).
+`c-format' flag in the `#,' comment line (*note PO Files::).
 
    The careful reader now might say that this again can cause problems.
 The heuristic might guess it wrong.  This is true and therefore
@@ -607,16 +621,16 @@ function will try to access one of the parameter but none exists
 because the original code does not refer to any parameter.
 
    `xgettext' of course could make a wrong decision the other way
-round.  A string marked as a format string is not really a format
+round, i.e. a string marked as a format string actually is not a format
 string.  In this case the `msgfmt' might give too many warnings and
 would prevent translating the `.po' file.  The method to prevent this
 wrong decision is similar to the one used above, only the comment to
 use must contain the string `xgettext:no-c-format'.
 
    If a string is marked with `c-format' and this is not correct the
-user can find out who is responsible for the decision.  *Note xgettext
-Invocation:: to see how the `--debug' option can be used for solving
-this problem.
+user can find out who is responsible for the decision.  See *Note
+xgettext Invocation:: to see how the `--debug' option can be used for
+solving this problem.
 
 
 File: gettext.info,  Node: Special cases,  Prev: c-format,  Up: Sources
@@ -645,7 +659,7 @@ this.  Consider the following case:
    While it is no problem to mark the string `"a default message"' it
 is not possible to mark the string initializers for `messages'.  What
 is to be done?  We have to fulfill two tasks.  First we have to mark the
-strings so that the `xgettext' program (*note xgettext Invocation::.)
+strings so that the `xgettext' program (*note xgettext Invocation::)
 can find them, and second we have to translate the string at runtime
 before printing them.
 
@@ -704,19 +718,20 @@ generally not very difficult.  If it should be in any situation you can
 use this second method in this situation.
 
 
-File: gettext.info,  Node: Initial,  Next: Updating,  Prev: Sources,  Up: Top
+File: gettext.info,  Node: Template,  Next: Creating,  Prev: Sources,  Up: Top
 
-Making the Initial PO File
-**************************
+Making the PO Template File
+***************************
+
+   After preparing the sources, the programmer creates a PO template
+file.  This section explains how to use `xgettext' for this purpose.
 
 * Menu:
 
 * xgettext Invocation::         Invoking the `xgettext' Program
-* C Sources Context::           C Sources Context
-* Compendium::                  Using Translation Compendiums
 
 
-File: gettext.info,  Node: xgettext Invocation,  Next: C Sources Context,  Prev: Initial,  Up: Initial
+File: gettext.info,  Node: xgettext Invocation,  Prev: Template,  Up: Template
 
 Invoking the `xgettext' Program
 ===============================
@@ -738,7 +753,7 @@ Invoking the `xgettext' Program
 
 `--debug'
      Use the flags `c-format' and `possible-c-format' to show who was
-     responsible for marking a message as a format string.  The later
+     responsible for marking a message as a format string.  The latter
      form is used if the `xgettext' program decided, the format form is
      used if the programmer prescribed it.
 
@@ -764,7 +779,7 @@ Invoking the `xgettext' Program
      them from the command line.
 
 `--force'
-     Always write output file even if no message is defined.
+     Always write an output file even if no message is defined.
 
 `-h'
 `--help'
@@ -779,13 +794,23 @@ Invoking the `xgettext' Program
      Join messages with existing file.
 
 `-k WORD'
-`--keyword[=WORD]'
-     Additonal keyword to be looked for (without WORD means not to use
-     default keywords).
+`--keyword[=KEYWORDSPEC]'
+     Additional keyword to be looked for (without KEYWORDSPEC means not
+     to use default keywords).
 
-     The default keywords, which are always looked for if not explicitly
-     disabled, are `gettext', `dgettext', `dcgettext' and
-     `gettext_noop'.
+     If KEYWORDSPEC is a C identifer ID, `xgettext' looks for strings
+     in the first argument of each call to the function or macro ID.
+     If KEYWORDSPEC is of the form `ID:ARGNUM', `xgettext' looks for
+     strings in the ARGNUMth argument of the call.  If KEYWORDSPEC is
+     of the form `ID:ARGNUM1,ARGNUM2', `xgettext' looks for strings in
+     the ARGNUM1st argument and in the ARGNUM2nd argument of the call,
+     and treats them as singular/plural variants for a message with
+     plural handling.
+
+     The default keyword specifications, which are always looked for if
+     not explicitly disabled, are `gettext', `dgettext:2',
+     `dcgettext:2', `ngettext:1,2', `dngettext:2,3', `dcngettext:2,3',
+     and `gettext_noop'.
 
 `-m [STRING]'
 `--msgstr-prefix[=STRING]'
@@ -819,7 +844,7 @@ Invoking the `xgettext' Program
      Generate sorted output and remove duplicates.
 
 `--strict'
-     Write out strict Uniforum conforming PO file.
+     Write out a strict Uniforum conforming PO file.
 
 `-v'
 `--version'
@@ -839,123 +864,163 @@ cases, like strings in preprocessor macros, ANSI concatenation of
 adjacent strings, and escaped end of lines for continued strings.
 
 
-File: gettext.info,  Node: C Sources Context,  Next: Compendium,  Prev: xgettext Invocation,  Up: Initial
+File: gettext.info,  Node: Creating,  Next: Updating,  Prev: Template,  Up: Top
 
-C Sources Context
-=================
+Creating a New PO File
+**********************
 
-   PO mode is particularily powerful when used with PO files created
-through GNU `gettext' utilities, as those utilities insert special
-comments in the PO files they generate.  Some of these special comments
-relate the PO file entry to exactly where the untranslated string
-appears in the program sources.
+   When starting a new translation, the translator copies the
+`PACKAGE.pot' template file to a file called `LANG.po'.  Then she
+modifies the initial comments and the header entry of this file.
 
-   When the translator gets to an untranslated entry, she is fairly
-often faced with an original string which is not as informative as it
-normally should be, being succinct, cryptic, or otherwise ambiguous.
-Before chosing how to translate the string, she needs to understand
-better what the string really means and how tight the translation has
-to be.  Most of times, when problems arise, the only way left to make
-her judgment is looking at the true program sources from where this
-string originated, searching for surrounding comments the programmer
-might have put in there, and looking around for helping clues of *any*
-kind.
+   The initial comments "SOME DESCRIPTIVE TITLE", "YEAR" and "FIRST
+AUTHOR <EMAIL@ADDRESS>, YEAR" ought to be replaced by sensible
+information.  This can be done in any text editor; if Emacs is used and
+it switched to PO mode automatically (because it has recognized the
+file's suffix), you can disable it by typing `M-x fundamental-mode'.
 
-   Surely, when looking at program sources, the translator will receive
-more help if she is a fluent programmer.  However, even if she is not
-versed in programming and feels a little lost in C code, the translator
-should not be shy at taking a look, once in a while.  It is most
-probable that she will still be able to find some of the hints she
-needs.  She will learn quickly to not feel uncomfortable in program
-code, paying more attention to programmer's comments, variable and
-function names (if he dared chosing them well), and overall
-organization, than to programmation itself.
+   Modifying the header entry can already be done using PO mode: in
+Emacs, type `M-x po-mode RET' and then `RET' again to start editing the
+entry.  You should fill in the following fields.
 
-   The following commands are meant to help the translator at getting
-program source context for a PO file entry.
+Project-Id-Version
+     This is the name and version of the package.
 
-`s'
-     Resume the display of a program source context, or cycle through
-     them.
+POT-Creation-Date
+     This has already been filled in by `xgettext'.
 
-`M-s'
-     Display of a program source context selected by menu.
+PO-Revision-Date
+     You don't need to fill this in. It will be filled by the Emacs PO
+     mode when you save the file.
 
-`S'
-     Add a directory to the search path for source files.
+Last-Translator
+     Fill in your name and email address (without double quotes).
 
-`M-S'
-     Delete a directory from the search path for source files.
+Language-Team
+     Fill in the English name of the language, and the email address of
+     the language team you are part of.
 
-   The commands `s' (`po-cycle-reference') and `M-s'
-(`po-select-source-reference') both open another window displaying some
-source program file, and already positioned in such a way that it shows
-an actual use of the string to be translated.  By doing so, the command
-gives source program context for the string.  But if the entry has no
-source context references, or if all references are unresolved along
-the search path for program sources, then the command diagnoses this as
-an error.
+     Before starting a translation, it is a good idea to get in touch
+     with your translation team, not only to make sure you don't do
+     duplicated work, but also to coordinate difficult linguistic
+     issues.
 
-   Even if `s' (or `M-s') opens a new window, the cursor stays in the
-PO file window.  If the translator really wants to get into the program
-source window, she ought to do it explicitly, maybe by using command
-`O'.
+     In the Free Translation Project, each translation team has its own
+     mailing list.  The up-to-date list of teams can be found at the
+     Free Translation Project's homepage,
+     `http://www.iro.umontreal.ca/contrib/po/HTML/', in the "National
+     teams" area.
 
-   When `s' is typed for the first time, or for a PO file entry which
-is different of the last one used for getting source context, then the
-command reacts by giving the first context available for this entry, if
-any.  If some context has already been recently displayed for the
-current PO file entry, and the translator wandered off to do other
-things, typing `s' again will merely resume, in another window, the
-context last displayed.  In particular, if the translator moved the
-cursor away from the context in the source file, the command will bring
-the cursor back to the context.  By using `s' many times in a row, with
-no other commands intervening, PO mode will cycle to the next available
-contexts for this particular entry, getting back to the first context
-once the last has been shown.
+Content-Type
+     Replace `CHARSET' with the character encoding used for your
+     language, in your locale, or UTF-8.  This field is needed for
+     correct operation of the `msgmerge' and `msgfmt' programs, as well
+     as for users whose locale's character encoding differs from yours
+     (see *Note Charset conversion::).
 
-   The command `M-s' behaves differently.  Instead of cycling through
-references, it lets the translator choose of particular reference among
-many, and displays that reference.  It is best used with completion, if
-the translator types `TAB' immediately after `M-s', in response to the
-question, she will be offered a menu of all possible references, as a
-reminder of which are the acceptable answers.  This command is useful
-only where there are really many contexts available for a single string
-to translate.
+     You get the character encoding of your locale by running the shell
+     command `locale charmap'.  If the result is `C' or
+     `ANSI_X3.4-1968', which is equivalent to `ASCII' (= `US-ASCII'),
+     it means that your locale is not correctly configured.  In this
+     case, ask your translation team which charset to use.  `ASCII' is
+     not usable for any language except Latin.
 
-   Program source files are usually found relative to where the PO file
-stands.  As a special provision, when this fails, the file is also
-looked for, but relative to the directory immediately above it.  Those
-two cases take proper care of most PO files.  However, it might happen
-that a PO file has been moved, or is edited in a different place than
-its normal location.  When this happens, the translator should tell PO
-mode in which directory normally sits the genuine PO file.  Many such
-directories may be specified, and all together, they constitute what is
-called the "search path" for program sources.  The command `S'
-(`po-consider-source-path') is used to interactively enter a new
-directory at the front of the search path, and the command `M-S'
-(`po-ignore-source-path') is used to select, with completion, one of
-the directories she does not want anymore on the search path.
+     Because the PO files must be portable to operating systems with
+     less advanced internationalization facilities, the character
+     encodings that can be used are limited to those supported by both
+     GNU `libc' and GNU `libiconv'. These are: `ASCII', `ISO-8859-1',
+     `ISO-8859-2', `ISO-8859-3', `ISO-8859-4', `ISO-8859-5',
+     `ISO-8859-6', `ISO-8859-7', `ISO-8859-8', `ISO-8859-9',
+     `ISO-8859-13', `ISO-8859-15', `KOI8-R', `KOI8-U', `CP850',
+     `CP866', `CP874', `CP932', `CP949', `CP950', `CP1250', `CP1251',
+     `CP1252', `CP1253', `CP1254', `CP1255', `CP1256', `CP1257',
+     `GB2312', `EUC-JP', `EUC-KR', `EUC-TW', `BIG5', `BIG5-HKSCS',
+     `GBK', `GB18030', `SHIFT_JIS', `JOHAB', `TIS-620', `VISCII',
+     `UTF-8'.
+
+     In the GNU system, the following encodings are frequently used for
+     the corresponding languages.
+
+        * `ISO-8859-1' for  Afrikaans, Albanian, Basque, Catalan,
+          Dutch, English, Estonian, Faroese,  Finnish, French,
+          Galician, German, Greenlandic, Icelandic, Indonesian,  Irish,
+          Italian, Malay, Norwegian, Portuguese, Spanish, Swedish,
+
+        * `ISO-8859-2' for  Croatian, Czech, Hungarian, Polish,
+          Romanian, Serbian, Slovak, Slovenian,
+
+        * `ISO-8859-3' for Maltese,
+
+        * `ISO-8859-5' for Macedonian, Serbian,
+
+        * `ISO-8859-6' for Arabic,
+
+        * `ISO-8859-7' for Greek,
+
+        * `ISO-8859-8' for Hebrew,
+
+        * `ISO-8859-9' for Turkish,
+
+        * `ISO-8859-13' for Latvian, Lithuanian,
+
+        * `ISO-8859-15' for  Basque, Catalan, Dutch, English, Finnish,
+          French, Galician, German, Irish,  Italian, Portuguese,
+          Spanish, Swedish,
+
+        * `KOI8-R' for Russian,
+
+        * `KOI8-U' for Ukrainian,
+
+        * `CP1251' for Bulgarian, Byelorussian,
+
+        * `GB2312', `GBK', `GB18030'  for simplified writing of Chinese,
+
+        * `BIG5', `BIG5-HKSCS'  for traditional writing of Chinese,
+
+        * `EUC-JP' for Japanese,
+
+        * `EUC-KR' for Korean,
+
+        * `TIS-620' for Thai,
+
+        * `UTF-8' for any language, including those listed above.
+
+     When single quote characters or double quote characters are used in
+     translations for your language, and your locale's encoding is one
+     of the ISO-8859-* charsets, it is best if you create your PO files
+     in UTF-8 encoding, instead of your locale's encoding.  This is
+     because in UTF-8 the real quote characters can be represented
+     (single quote characters: U+2018, U+2019, double quote characters:
+     U+201C, U+201D), whereas none of ISO-8859-* charsets has them all.
+     Users in UTF-8 locales will see the real quote characters,
+     whereas users in ISO-8859-* locales will see the vertical
+     apostrophe and the vertical double quote instead (because that's
+     what the character set conversion will transliterate them to).
+
+     To enter such quote characters under X11, you can change your
+     keyboard mapping using the `xmodmap' program.  The X11 names of
+     the quote characters are "leftsinglequotemark",
+     "rightsinglequotemark", "leftdoublequotemark",
+     "rightdoublequotemark", "singlelowquotemark", "doublelowquotemark".
+
+     Note that only recent versions of GNU Emacs support the UTF-8
+     encoding: Emacs 20 with Mule-UCS, and Emacs 21.  As of January
+     2001, XEmacs doesn't support the UTF-8 encoding.
+
+     The character encoding name can be written in either upper or
+     lower case.  Usually upper case is preferred.
+
+Content-Transfer-Encoding
+     Set this to `8bit'.
+
+Plural-Forms
+     This field is optional.  It is only needed if the PO file has
+     plural forms.  You can find them by searching for the
+     `msgid_plural' keyword.  The format of the plural forms field is
+     described in *Note Plural forms::.
 
 
-File: gettext.info,  Node: Compendium,  Prev: C Sources Context,  Up: Initial
-
-Using Translation Compendiums
-=============================
-
-   Compendiums are yet to be implemented.
-
-   An incoming PO mode feature will let the translator maintain a
-compendium of already achieved translations.  A "compendium" is a
-special PO file containing a set of translations recurring in many
-different packages.  The translator will be given commands for adding
-entries to her compendium, and later initializing untranslated entries,
-or updating already translated entries, from translations kept in the
-compendium.  For this to work, however, the compendium would have to be
-normalized.  *Note Normalizing::.
-
-
-File: gettext.info,  Node: Updating,  Next: Binaries,  Prev: Initial,  Up: Top
+File: gettext.info,  Node: Updating,  Next: Binaries,  Prev: Creating,  Up: Top
 
 Updating Existing PO Files
 **************************
@@ -963,13 +1028,16 @@ Updating Existing PO Files
 * Menu:
 
 * msgmerge Invocation::         Invoking the `msgmerge' Program
-* Translated Entries::
-* Fuzzy Entries::
+* Translated Entries::          Translated Entries
+* Fuzzy Entries::               Fuzzy Entries
 * Untranslated Entries::        Untranslated Entries
 * Obsolete Entries::            Obsolete Entries
 * Modifying Translations::      Modifying Translations
 * Modifying Comments::          Modifying Comments
+* Subedit::                     Mode for Editing Translations
+* C Sources Context::           C Sources Context
 * Auxiliary::                   Consulting Auxiliary PO Files
+* Compendium::                  Using Translation Compendiums
 
 
 File: gettext.info,  Node: msgmerge Invocation,  Next: Translated Entries,  Prev: Updating,  Up: Updating
@@ -984,11 +1052,10 @@ Translated Entries
 ==================
 
    Each PO file entry for which the `msgstr' field has been filled with
-a translation, and which is not marked as fuzzy (*note Fuzzy
-Entries::.), is a said to be a "translated" entry.  Only translated
-entries will later be compiled by GNU `msgfmt' and become usable in
-programs.  Other entry types will be excluded; translation will not
-occur for them.
+a translation, and which is not marked as fuzzy (*note Fuzzy Entries::),
+is a said to be a "translated" entry.  Only translated entries will
+later be compiled by GNU `msgfmt' and become usable in programs.  Other
+entry types will be excluded; translation will not occur for them.
 
    Some commands are more specifically related to translated entry
 processing.
@@ -1018,10 +1085,10 @@ Fuzzy Entries
 =============
 
    Each PO file entry may have a set of "attributes", which are
-qualities given an name and explicitely associated with the entry
-translation, using a special system comment.  One of these attributes
-has the name `fuzzy', and entries having this attribute are said to
-have a fuzzy translation.  They are called fuzzy entries, for short.
+qualities given a name and explicitely associated with the translation,
+using a special system comment.  One of these attributes has the name
+`fuzzy', and entries having this attribute are said to have a fuzzy
+translation.  They are called fuzzy entries, for short.
 
    Fuzzy entries, even if they account for translated entries for most
 other purposes, usually call for revision by the translator.  Those may
@@ -1046,32 +1113,33 @@ to fuzzy entry processing.
 `M-f'
      Find the previous fuzzy entry.
 
-`TAB'
+`<TAB>'
      Remove the fuzzy attribute of the current entry.
 
    The commands `f' (`po-next-fuzzy') and `M-f' (`po-previous-fuzzy')
 move forwards or backwards, chasing for a fuzzy entry.  If none is
 found, the search is extended and wraps around in the PO file buffer.
 
-   The command `TAB' (`po-unfuzzy') removes the fuzzy attribute
+   The command `<TAB>' (`po-unfuzzy') removes the fuzzy attribute
 associated with an entry, usually leaving it translated.  Further, if
 the variable `po-auto-select-on-unfuzzy' has not the `nil' value, the
-`TAB' command will automatically chase for another interesting entry to
-work on.  The initial value of `po-auto-select-on-unfuzzy' is `nil'.
+`<TAB>' command will automatically chase for another interesting entry
+to work on.  The initial value of `po-auto-select-on-unfuzzy' is `nil'.
 
    The initial value of `po-auto-fuzzy-on-edit' is `nil'.  However, if
 the variable `po-auto-fuzzy-on-edit' is set to `t', any entry edited
-through the `RET' command is marked fuzzy, as a way to ensure some kind
-of double check, later.  In this case, the usual paradigm is that an
-entry becomes fuzzy (if not already) whenever the translator modifies
-it.  If she is satisfied with the translation, she then uses `TAB' to
-pick another entry to work on, clearing the fuzzy attribute on the same
-blow.  If she is not satisfied yet, she merely uses `SPC' to chase
-another entry, leaving the entry fuzzy.
+through the `<RET>' command is marked fuzzy, as a way to ensure some
+kind of double check, later.  In this case, the usual paradigm is that
+an entry becomes fuzzy (if not already) whenever the translator
+modifies it.  If she is satisfied with the translation, she then uses
+`<TAB>' to pick another entry to work on, clearing the fuzzy attribute
+on the same blow.  If she is not satisfied yet, she merely uses `<SPC>'
+to chase another entry, leaving the entry fuzzy.
 
-   The translator may also use the `DEL' command (`po-fade-out-entry')
-over any translated entry to mark it as being fuzzy, when she wants to
-easily leave a trace she wants to later return working at this entry.
+   The translator may also use the `<DEL>' command
+(`po-fade-out-entry') over any translated entry to mark it as being
+fuzzy, when she wants to easily leave a trace she wants to later return
+working at this entry.
 
    Also, when time comes to quit working on a PO file buffer with the
 `q' command, the translator is asked for confirmation, if fuzzy string
@@ -1096,10 +1164,10 @@ entries on the same level as active entries.  Untranslated entries are
 easily recognizable by the fact they end with `msgstr ""'.
 
    The work of the translator might be (quite naively) seen as the
-process of seeking after an untranslated entry, editing a translation
-for it, and repeating these actions until no untranslated entries
-remain.  Some commands are more specifically related to untranslated
-entry processing.
+process of seeking for an untranslated entry, editing a translation for
+it, and repeating these actions until no untranslated entries remain.
+Some commands are more specifically related to untranslated entry
+processing.
 
 `u'
      Find the next untranslated entry.

@@ -1,5 +1,5 @@
 /* GNU gettext - internationalization aids
-   Copyright (C) 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
    This file was written by Peter Miller <millerp@canb.auug.org.au>
 
    This program is free software; you can redistribute it and/or modify
@@ -23,26 +23,16 @@
 #include <getopt.h>
 #include <limits.h>
 #include <stdio.h>
-
-#ifdef STDC_HEADERS
-# include <stdlib.h>
-#endif
-
-#if HAVE_STRING_H
-# include <string.h>
-#else
-# include <strings.h>
-#endif
-
-#if HAVE_LOCALE_H
-# include <locale.h>
-#endif
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
 
 #include "dir-list.h"
 #include "error.h"
 #include "message.h"
+#include "write-po.h"
 #include <system.h>
-#include <libintl.h>
+#include "libgettext.h"
 #include "po.h"
 
 #define _(str) gettext (str)
@@ -72,7 +62,7 @@ struct merge_class_ty
   /* Flags transported in special comments.  */
   int is_fuzzy;
   enum is_c_format is_c_format;
-  enum is_c_format do_wrap;
+  enum is_wrap do_wrap;
 
   /* Accumulate filepos comments for the next message directive.  */
   size_t filepos_count;
@@ -96,10 +86,14 @@ static int line_comment = 1;
 /* Force output of PO file even if empty.  */
 static int force_po;
 
+/* list of user-specified compendiums.  */
+static message_list_list_ty *compendiums;
+
 /* Long options.  */
 static const struct option long_options[] =
 {
   { "add-location", no_argument, &line_comment, 1 },
+  { "compendium", required_argument, NULL, 'C', },
   { "directory", required_argument, NULL, 'D' },
   { "escape", no_argument, NULL, 'E' },
   { "force-po", no_argument, &force_po, 1 },
@@ -128,7 +122,9 @@ static void merge_destructor PARAMS ((po_ty *__that));
 static void merge_directive_domain PARAMS ((po_ty *__that, char *__name));
 static void merge_directive_message PARAMS ((po_ty *__that, char *__msgid,
 					     lex_pos_ty *__msgid_pos,
+					     char *__msgid_plural,
 					     char *__msgstr,
+					     size_t __msgstr_len,
 					     lex_pos_ty *__msgstr_pos));
 static void merge_parse_brief PARAMS ((po_ty *__that));
 static void merge_parse_debrief PARAMS ((po_ty *__that));
@@ -139,6 +135,7 @@ static void merge_comment_filepos PARAMS ((po_ty *__that, const char *__name,
 					   int __line));
 static message_list_ty *grammar PARAMS ((const char *__filename));
 static message_list_ty *merge PARAMS ((const char *__fn1, const char *__fn2));
+static void compendium PARAMS ((const char *__filename));
 
 
 int
@@ -159,7 +156,7 @@ main (argc, argv)
   verbosity_level = 0;
   quiet = 0;
   error_print_progname = error_print;
-  gram_max_allowed_errors = INT_MAX;
+  gram_max_allowed_errors = UINT_MAX;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -176,11 +173,15 @@ main (argc, argv)
   output_file = NULL;
 
   while ((opt
-	  = getopt_long (argc, argv, "D:eEFhio:qsvVw:", long_options, NULL))
+	  = getopt_long (argc, argv, "C:D:eEFhio:qsvVw:", long_options, NULL))
 	 != EOF)
     switch (opt)
       {
       case '\0':		/* Long option.  */
+	break;
+
+      case 'C':
+	compendium (optarg);
 	break;
 
       case 'D':
@@ -255,7 +256,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995, 1996, 1997, 1998");
+	      "1995-1998, 2000, 2001");
       printf (_("Written by %s.\n"), "Peter Miller");
       exit (EXIT_SUCCESS);
     }
@@ -292,6 +293,19 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 }
 
 
+static void
+compendium (filename)
+    const char *filename;
+{
+  message_list_ty *mlp;
+
+  mlp = grammar (filename);
+  if (!compendiums)
+    compendiums = message_list_list_alloc ();
+  message_list_list_append (compendiums, mlp);
+}
+
+
 /* Display usage information and exit.  */
 static void
 usage (status)
@@ -306,6 +320,8 @@ usage (status)
       printf (_("\
 Usage: %s [OPTION] def.po ref.po\n\
 Mandatory arguments to long options are mandatory for short options too.\n\
+  -C, --compendium=FILE       additional library of message translations,\n\
+                              may be specified more than once\n\
   -D, --directory=DIRECTORY   add DIRECTORY to list for input files search\n\
   -e, --no-escape             do not use C escapes in output (default)\n\
   -E, --escape                use C escapes in output, no extended chars\n\
@@ -425,11 +441,14 @@ merge_directive_domain (that, name)
 
 
 static void
-merge_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
+merge_directive_message (that, msgid, msgid_pos, msgid_plural,
+			 msgstr, msgstr_len, msgstr_pos)
      po_ty *that;
      char *msgid;
      lex_pos_ty *msgid_pos;
+     char *msgid_plural;
      char *msgstr;
+     size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
 {
   merge_class_ty *this = (merge_class_ty *) that;
@@ -446,7 +465,7 @@ merge_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
     free (msgid);
   else
     {
-      mp = message_alloc (msgid);
+      mp = message_alloc (msgid, msgid_plural);
       message_list_append (this->mlp, mp);
     }
 
@@ -490,13 +509,13 @@ merge_directive_message (that, msgid, msgid_pos, msgstr, msgstr_pos)
   mvp = message_variant_search (mp, this->domain);
   if (mvp)
     {
-      gram_error_at_line (msgid_pos, _("duplicate message definition"));
-      gram_error_at_line (&mvp->pos, _("\
+      po_gram_error_at_line (msgid_pos, _("duplicate message definition"));
+      po_gram_error_at_line (&mvp->pos, _("\
 ...this is the location of the first definition"));
       free (msgstr);
     }
   else
-    message_variant_append (mp, this->domain, msgstr, msgstr_pos);
+    message_variant_append (mp, this->domain, msgstr, msgstr_len, msgstr_pos);
 }
 
 
@@ -539,7 +558,7 @@ merge_parse_debrief (that)
 		break;
 	    }
 	  if (m >= mp->variant_count)
-	    gram_error_at_line (&mp->variant[0].pos, _("\
+	    po_gram_error_at_line (&mp->variant[0].pos, _("\
 this message has no definition in the \"%s\" domain"), domain_name);
 	}
     }
@@ -658,11 +677,19 @@ merge (fn1, fn2)
   size_t j, k;
   size_t merged, fuzzied, missing, obsolete;
   message_list_ty *result;
+  message_list_list_ty *definitions;
 
   merged = fuzzied = missing = obsolete = 0;
 
   /* This is the definitions file, created by a human.  */
   def = grammar (fn1);
+
+  /* Glue the definition file and the compendiums together, to define
+     the set of places to look for message definitions.  */
+  definitions = message_list_list_alloc ();
+  message_list_list_append (definitions, def);
+  if (compendiums)
+    message_list_list_append_list (definitions, compendiums);
 
   /* This is the references file, created by groping the sources with
      the xgettext program.  */
@@ -683,7 +710,7 @@ merge (fn1, fn2)
       refmsg = ref->item[j];
 
       /* See if it is in the other file.  */
-      defmsg = message_list_search (def, refmsg->msgid);
+      defmsg = message_list_list_search (definitions, refmsg->msgid);
       if (defmsg)
 	{
 	  /* Merge the reference with the definition: take the #. and
@@ -704,16 +731,16 @@ merge (fn1, fn2)
       /* If the message was not defined at all, try to find a very
 	 similar message, it could be a typo, or the suggestion may
 	 help.  */
-      defmsg = message_list_search_fuzzy (def, refmsg->msgid);
+      defmsg = message_list_list_search_fuzzy (definitions, refmsg->msgid);
       if (defmsg)
 	{
 	  message_ty *mp;
 
 	  if (verbosity_level > 1)
 	    {
-	      gram_error_at_line (&refmsg->variant[0].pos, _("\
+	      po_gram_error_at_line (&refmsg->variant[0].pos, _("\
 this message is used but not defined..."));
-	      gram_error_at_line (&defmsg->variant[0].pos, _("\
+	      po_gram_error_at_line (&defmsg->variant[0].pos, _("\
 ...but this definition is similar"));
 	    }
 
@@ -740,7 +767,7 @@ this message is used but not defined..."));
 	  message_ty *mp;
 
 	  if (verbosity_level > 1)
-	      gram_error_at_line (&refmsg->variant[0].pos, _("\
+	      po_gram_error_at_line (&refmsg->variant[0].pos, _("\
 this message is used but not defined in %s"), fn1);
 
 	  mp = message_copy (refmsg);
@@ -752,7 +779,7 @@ this message is used but not defined in %s"), fn1);
 
   /* Look for messages in the definition file, which are not present
      in the reference file, indicating messages which defined but not
-     used in the program.  */
+     used in the program.  Don't scan the compendium(s).  */
   for (k = 0; k < def->nitems; ++k)
     {
       defmsg = def->item[k];
@@ -770,10 +797,11 @@ this message is used but not defined in %s"), fn1);
   /* Report some statistics.  */
   if (verbosity_level > 0)
     fprintf (stderr, _("%s\
-Read %d old + %d reference, \
-merged %d, fuzzied %d, missing %d, obsolete %d.\n"),
+Read %ld old + %ld reference, \
+merged %ld, fuzzied %ld, missing %ld, obsolete %ld.\n"),
 	     !quiet && verbosity_level <= 1 ? "\n" : "",
-	     def->nitems, ref->nitems, merged, fuzzied, missing, obsolete);
+	     (long) def->nitems, (long) ref->nitems,
+	     (long) merged, (long) fuzzied, (long) missing, (long) obsolete);
   else if (!quiet)
     fputs (_(" done.\n"), stderr);
 
