@@ -492,6 +492,19 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
 
 	break;
 
+      case ConfigureNotify:
+      case VisibilityNotify:
+        if (!until_idle_p)
+	{
+	  int i;
+
+	  /* Something happened, and we're no longer the topmost window.
+	   * Forcibly raise ourselves to solve this problem. */
+	  for (i = 0; i < si->nscreens; i++)
+	    XRaiseWindow(si->dpy, si->screens[i].screensaver_window);
+	}
+	break;
+
       default:
 
 #ifdef HAVE_MIT_SAVER_EXTENSION

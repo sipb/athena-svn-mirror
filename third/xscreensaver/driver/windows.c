@@ -827,7 +827,8 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
    */
   attrs.event_mask = (KeyPressMask | KeyReleaseMask |
 		      ButtonPressMask | ButtonReleaseMask |
-		      PointerMotionMask);
+		      PointerMotionMask | StructureNotifyMask |
+		      VisibilityChangeMask);
 
   attrs.backing_store = NotUseful;
   attrs.colormap = ssi->cmap;
