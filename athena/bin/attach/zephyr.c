@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.8 1992-01-06 15:57:00 probe Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.9 1992-07-31 13:24:57 probe Exp $";
 #endif
 
 #include "attach.h"
@@ -43,12 +43,24 @@ static int zephyr_op(func)
     int count, count2;
     ZSubscription_t shortsubs[ZEPHYR_MAXONEPACKET];
     Code_t retval;
-    sig_catch	(*old_sig_func)();
+#ifdef POSIX
+    struct sigaction newsig, oldsig;
+#else
+    sig_catch	(*oldsig)();
+#endif
 
     if (setjmp(timeout))
 	    return 1;		/* We timed out, punt */
 
-    old_sig_func = signal(SIGALRM, zephyr_timeout);
+#ifdef POSIX
+    newsig.sa_handler = zephyr_timeout;
+    sigemptyset(&newsig.sa_mask);
+    sigaddset(&newsig.sa_mask, SIGALRM);
+    newsig.sa_flags = 0;
+    sigaction(SIGALRM, &newsig, &oldsig);
+#else
+    oldsig = signal(SIGALRM, zephyr_timeout);
+#endif
     alarm(ZEPHYR_TIMEOUT);
     
     if (inited < 0)
@@ -86,7 +98,11 @@ static int zephyr_op(func)
 	}
     }
     alarm(0);
-    (void) signal(SIGALRM, old_sig_func);
+#ifdef POSIX
+    sigaction(SIGALRM, &oldsig, (struct sigaction *)0);
+#else
+    (void) signal(SIGALRM, oldsig);
+#endif
     return 0;
 }
 
