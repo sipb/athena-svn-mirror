@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v $
- *	$Author: root $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.25 1988-09-09 14:08:27 root Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.26 1990-05-17 03:09:00 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.25 1988-09-09 14:08:27 root Exp $";
+static char rcsid_ZSendPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.26 1990-05-17 03:09:00 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -29,8 +29,9 @@ Code_t ZSendPacket(packet, len, waitforack)
     int wait_for_hmack();
     Code_t retval;
     struct sockaddr_in dest;
-    struct timeval tv;
-    int i;
+    struct timeval tv, t0;
+    fd_set zfdmask;
+    int i, zfd;
     ZNotice_t notice, acknotice;
 	
     if (!packet || len < 0)
@@ -55,25 +56,47 @@ Code_t ZSendPacket(packet, len, waitforack)
     if ((retval = ZParseNotice(packet, len, &notice)) != ZERR_NONE)
 	return (retval);
     
-    tv.tv_sec = 0;
-    tv.tv_usec = 500000;
-
-    for (i=0;i<HM_TIMEOUT*2;i++) {
-	if (select(0, (fd_set *) 0, (fd_set *) 0, (fd_set *) 0, &tv) < 0)
-	    return (errno);
+    tv.tv_sec = HM_TIMEOUT;
+    tv.tv_usec = 0;
+    /* It is documented in select(2) that future versions of select
+       will adjust the passed timeout to indicate the time remaining.
+       When this is done, the variable t0 and all references to it
+       can be removed.  */
+    gettimeofday(&t0, 0);
+    FD_ZERO(&zfdmask);
+    zfd = ZGetFD();
+    FD_SET(zfd, &zfdmask);
+    while(1) {
+      i = select(zfd + 1, &zfdmask, (fd_set *) 0, (fd_set *) 0, &tv);
+      if(i > 0) {
 	retval = ZCheckIfNotice(&acknotice, (struct sockaddr_in *)0,
 				wait_for_hmack, (char *)&notice.z_uid);
 	if (retval == ZERR_NONE) {
-	    ZFreeNotice(&acknotice);
-	    return (ZERR_NONE);
+	  ZFreeNotice(&acknotice);
+	  return (ZERR_NONE);
 	}
 	if (retval != ZERR_NONOTICE)
-	    return (retval);
+	  return (retval);
+      } else if(i == 0) {	/* time out */
+	return ZERR_HMDEAD;
+      } else if(i < 0 && errno != EINTR) {
+	return errno;
+      }
+      /* Here to end of loop deleted if/when select modifies passed timeout */
+      gettimeofday(&tv, 0);
+      tv.tv_usec = tv.tv_usec - t0.tv_usec;
+      if(tv.tv_usec < 0)
+	{
+	  tv.tv_usec += 1000000;
+	  tv.tv_sec = HM_TIMEOUT - 1 + tv.tv_sec - t0.tv_sec;
+	} else {
+	  tv.tv_sec = HM_TIMEOUT + tv.tv_sec - t0.tv_sec;
+	}
     }
     return (ZERR_HMDEAD);
 }
 
-static wait_for_hmack(notice, uid)
+static int wait_for_hmack(notice, uid)
     ZNotice_t *notice;
     ZUnique_Id_t *uid;
 {
