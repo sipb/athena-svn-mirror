@@ -70,9 +70,9 @@ main(argc, argv)
 	gethostname(host, sizeof(host));
 	if (hp = gethostbyname(host)) strcpy(host, hp -> h_name);
 #ifdef LOG_LPR
-	openlog("lpd", 0, LOG_LPR);
+	openlog("lpq", 0, LOG_LPR);
 #else
-	openlog("lpd", 0);
+	openlog("lpq", 0);
 #endif
 
 	while (--argc) {
