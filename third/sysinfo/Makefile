@@ -1,9 +1,10 @@
 #
-# Copyright (c) 1992-1994 Michael A. Cooper.
-# This software may be freely distributed provided it is not sold for 
-# profit and the author is credited appropriately.
+# Copyright (c) 1992-1996 Michael A. Cooper.
+# This software may be freely used and distributed provided it is not sold 
+# for profit or used for commercial gain and the author is credited 
+# appropriately.
 #
-# $Id: Makefile,v 1.3 1997-09-24 07:34:08 ghudson Exp $
+# $Id: Makefile,v 1.4 1998-02-12 21:35:38 ghudson Exp $
 #
 # Sysinfo Makefile
 #
@@ -109,7 +110,8 @@ LIBKVM		= #-lkvm
 # Do NOT set CC to /usr/ucb/cc for SunOS 5.x.  This enables BSD 
 # compatibility mode in SunC which breaks sysinfo.
 #
-#CC		= gcc
+#CC		= gcc		# Use GCC
+#STATICFLAG	= -static	# Use GCC
 LIBS 		= $(OSLIBS)
 
 #
@@ -221,7 +223,7 @@ metasysinfo: metasysinfo.sh
 # See the file "metasysinfo" for more information on "installmeta".
 #
 installmeta: default metasysinfo
-	@make $(MFLAGS) $(MKPARAMS) install.cf
+	@make $(MFLAGS) $(MKPARAMS) install.cf CONFDIR=${CONFDIR}
 	$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo $(BIN)/$(PROG)
 	@$(INSTALLPROG) -c $(INSTALLOPTS) $(PROG) \
 			$(BIN)/$(PROG)-`uname -m`-`uname -r`; \
@@ -282,7 +284,7 @@ sunos4 solaris1:
 		MISSINGFILES="strcasecmp.o strdup.o strerror.o" \
 		OSDEFINES="-Dsunos -DOSMVER=4 -D`/bin/arch -k`" \
 		OSFILES="${SunOS4-OS-Files}" \
-		OSLDFLAGS="-Bstatic" \
+		OSLDFLAGS="${STATICFLAG}" \
 		OSLIBS="" \
 		PROG=${PROG} \
 		all
@@ -390,7 +392,7 @@ irix5:
 		LIBKVM="" \
 		MISSINGFILES="kvmlib.o" \
 		OPT="-g" \
-		OSDEFINES="-D${OSname} -DOSMVER=${OSmver}" \
+		OSDEFINES="-D${OSname} -DOSMVER=${OSmver} -DOSVER=${OSver}" \
 		OSCFLAGS="-woff 1174 -woff 1552 -woff 1204 -woff 1009" \
 		OSFILES="${IRIX-OS-Files}" \
 		OSLIBS="-lmld -lelf" \
@@ -405,8 +407,9 @@ irix6 irix64:
 		LIBKVM="" \
 		MISSINGFILES="kvmlib.o" \
 		OPT="-g" \
-		OSCFLAGS="-woff 1174 -woff 1552 -woff 1204 -woff 1009" \
-		OSDEFINES="-D${OSname} -DOSMVER=${OSmver}" \
+		OSLDFLAGS="-n32 -mips3" \
+		OSCFLAGS="-n32 -mips3 -woff 1174 -woff 1552 -woff 1204 -woff 1009" \
+		OSDEFINES="-D${OSname} -DOSMVER=${OSmver} -DOSVER=${OSver}" \
 		OSFILES="${IRIX-OS-Files}" \
 		OSLIBS="-lelf" \
 		PROG=${PROG} \
