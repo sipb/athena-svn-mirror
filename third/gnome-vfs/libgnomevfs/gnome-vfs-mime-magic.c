@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /*
  * gnome-vfs-mime-magic.c
  *
@@ -11,14 +13,13 @@
  *    Pavel Cisler <pavel@eazel.com>
  */
 
+#include "gnome-vfs-mime-magic.h"
+
 /* needed for S_ISSOCK with 'gcc -ansi -pedantic' on GNU/Linux */
 #ifndef _BSD_SOURCE
 #  define _BSD_SOURCE 1
 #endif
 #include <sys/types.h>
-
-#include "gnome-vfs-mime-magic.h"
-
 
 #include "gnome-vfs-mime-sniff-buffer-private.h"
 #include "gnome-vfs-mime.h"
@@ -30,7 +31,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/mman.h>
 
 
 static gboolean
@@ -549,62 +549,18 @@ G_LOCK_DEFINE_STATIC (mime_magic_table_mutex);
 
 static GnomeMagicEntry *mime_magic_table = NULL;
 
-/* FIXME bugzilla.eazel.com 2761: This whole mmap optimization may be unnecessary. It complicates
- * this code quite a bit (and slows down "make install"). If it's not buying
- * a noticeable performance improvement we should get rid of it.
- */
-#ifdef _POSIX_MAPPED_FILES
-static gboolean mime_magic_table_is_mapped = FALSE;
-static size_t mime_magic_table_size = 0;
-#endif /* _POSIX_MAPPED_FILES */
-
 static GnomeMagicEntry *
 gnome_vfs_mime_get_magic_table (void)
 {
 	char *filename;
-#ifdef _POSIX_MAPPED_FILES
-	int file;
-	struct stat sbuf;
-	void *mmap_result;
-#endif /* _POSIX_MAPPED_FILES */
 
 	G_LOCK (mime_magic_table_mutex);
 
-#ifdef _POSIX_MAPPED_FILES
 	if (mime_magic_table == NULL) {
-		/* try reading the pre-parsed table */
-
-	        filename = g_strconcat (GNOME_VFS_CONFDIR, "/gnome-vfs-mime-magic.dat", NULL);
-
-		if (filename != NULL) {
-			file = open (filename, O_RDONLY);
-			if (file >= 0) {
-				if (fstat (file, &sbuf) == 0) {
-					mmap_result = (GnomeMagicEntry *) mmap(NULL, 
-									       sbuf.st_size, 
-									       PROT_READ, 
-									       MAP_SHARED, 
-									       file, 0);
-					if (mmap_result != MAP_FAILED) {
-						mime_magic_table_size = sbuf.st_size;
-						mime_magic_table_is_mapped = TRUE;
-						mime_magic_table = (GnomeMagicEntry *) mmap_result;
-					}
-				}
-  				close (file);
-			}
-			g_free(filename);
-		}
-  	}
-#endif /* _POSIX_MAPPED_FILES */
-
-  	if (mime_magic_table == NULL) {
-		/* don't have a pre-parsed table, use original text file */
-
-	        filename = g_strconcat (GNOME_VFS_CONFDIR, "/gnome-vfs-mime-magic", NULL);
+		filename = g_strconcat (GNOME_VFS_CONFDIR, "/gnome-vfs-mime-magic", NULL);
 		mime_magic_table = gnome_vfs_mime_magic_parse (filename, NULL);
 		g_free (filename);
-  	}
+	}
 
 	G_UNLOCK (mime_magic_table_mutex);
 
@@ -718,12 +674,6 @@ void
 gnome_vfs_mime_clear_magic_table (void)
 {
 	G_LOCK (mime_magic_table_mutex);
-#ifdef _POSIX_MAPPED_FILES
-	if (mime_magic_table_is_mapped) {
-		munmap (mime_magic_table, mime_magic_table_size);
-		mime_magic_table = NULL;
-	}
-#endif /* _POSIX_MAPPED_FILES */
   	g_free (mime_magic_table);
   	mime_magic_table = NULL;
 	G_UNLOCK (mime_magic_table_mutex);

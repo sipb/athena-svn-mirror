@@ -5,3 +5,5 @@ incompatible changes.
 
 GNOME VFS is currently used as one of the foundations of the Nautilus
 file manager.
+
+For instructions on submitting patches, etc. check out the 'HACKING' file.

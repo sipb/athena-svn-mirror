@@ -108,11 +108,11 @@ GnomeVFSResult   gnome_vfs_move 		(const gchar *old_text_uri,
 						 const gchar *new_text_uri,
 						 gboolean force_replace);
 
-GnomeVFSResult	 gnome_vfs_check_same_fs_uris	(GnomeVFSURI *a,
-						 GnomeVFSURI *b,
+GnomeVFSResult	 gnome_vfs_check_same_fs_uris	(GnomeVFSURI *source_uri,
+						 GnomeVFSURI *target_uri,
 						 gboolean *same_fs_return);
-GnomeVFSResult	 gnome_vfs_check_same_fs	(const gchar *a,
-						 const gchar *b,
+GnomeVFSResult	 gnome_vfs_check_same_fs	(const gchar *source,
+						 const gchar *target,
 						 gboolean *same_fs_return);
 
 gboolean	 gnome_vfs_uri_exists		(GnomeVFSURI *uri);

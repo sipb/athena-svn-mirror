@@ -134,4 +134,16 @@ GnomeVFSResult gnome_vfs_xfer_private   (const GList *source_uri_list,
 					 GnomeVFSXferProgressCallback sync_progress_callback,
 					 gpointer sync_progress_data);
 
+GnomeVFSResult	gnome_vfs_directory_read_next_cancellable
+					(GnomeVFSDirectoryHandle *handle,
+					 GnomeVFSFileInfo *info,
+					 GnomeVFSContext *context);
+
+GnomeVFSResult  gnome_vfs_directory_open_from_uri_cancellable
+					(GnomeVFSDirectoryHandle **handle,
+					 GnomeVFSURI *uri,
+					 GnomeVFSFileInfoOptions options,
+					 const GnomeVFSDirectoryFilter *filter,
+					 GnomeVFSContext *context);
+
 #endif /* _GNOME_VFS_PRIVATE_OPS_H */

@@ -48,8 +48,8 @@ main (int argc, char **argv)
 	GnomeVFSURI 	 *uri;
 	gchar            *text_uri;
 
-	if (argc != 3) {
-		printf ("Usage: %s (make|remove) <uri>\n", argv[0]);
+	if (argc != 3 && argc != 4) {
+		printf ("Usage: %s make <uri> [mode]\n       %s remove) <uri>\n", argv[0], argv[0]);
 		return 1;
 	}
 
@@ -67,7 +67,12 @@ main (int argc, char **argv)
         text_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 
 	if(!strcmp(argv[1], "make")) {
-		result = gnome_vfs_make_directory_for_uri (uri, 755);
+		int mode = 0755;
+
+		if (argc == 4) {
+			mode = strtol (argv[3], (char **)NULL, 8);
+		}
+		result = gnome_vfs_make_directory_for_uri (uri, mode);
 		show_result (result, "make_directory", text_uri);
 	} else if(!strcmp(argv[1], "remove")) {
 		result = gnome_vfs_remove_directory_from_uri (uri);

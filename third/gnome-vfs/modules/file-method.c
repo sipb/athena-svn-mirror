@@ -1418,8 +1418,8 @@ read_saved_cached_trash_entries (void)
 				}
 			}
 			
-			free (trash_path);
-			free (mount_point);
+			g_free (trash_path);
+			g_free (mount_point);
 		}
 		fclose (cache_file);	
 	}
@@ -1821,10 +1821,7 @@ rename_helper (const gchar *old_full_name,
 				return GNOME_VFS_ERROR_CANCELLED;
 			retval = rmdir (new_full_name);
 			if (retval != 0) {
-				/* FIXME bugzilla.eazel.com 1185:
-				 * Maybe we could be more accurate here?
-				 */
-				return GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY;
+				return gnome_vfs_result_from_errno ();
 			}
 
 			if (gnome_vfs_context_check_cancellation (context))
@@ -1954,35 +1951,42 @@ do_create_symbolic_link (GnomeVFSMethod *method,
 	return result;
 }
 
+/* When checking whether two locations are on the same file system, we are
+   doing this to determine whether we can recursively move or do other
+   sorts of transfers.  When a symbolic link is the "source", its
+   location is the location of the link file, because we want to
+   know about transferring the link, whereas for symbolic links that
+   are "targets", we use the location of the object being pointed to,
+   because that is where we will be moving/copying to. */
 static GnomeVFSResult
 do_check_same_fs (GnomeVFSMethod *method,
-		  GnomeVFSURI *a,
-		  GnomeVFSURI *b,
+		  GnomeVFSURI *source_uri,
+		  GnomeVFSURI *target_uri,
 		  gboolean *same_fs_return,
 		  GnomeVFSContext *context)
 {
-	gchar *full_name_a, *full_name_b;
-	struct stat sa, sb;
+	gchar *full_name_source, *full_name_target;
+	struct stat s_source, s_target;
 	gint retval;
 
-	full_name_a = get_path_from_uri (a);
-	retval = lstat (full_name_a, &sa);
-	g_free (full_name_a);
+	full_name_source = get_path_from_uri (source_uri);
+	retval = lstat (full_name_source, &s_source);
+	g_free (full_name_source);
 
 	if (retval != 0)
 		return gnome_vfs_result_from_errno ();
 
 	if (gnome_vfs_context_check_cancellation (context))
 		return GNOME_VFS_ERROR_CANCELLED;
-
-	full_name_b = get_path_from_uri (b);
-	retval = lstat (full_name_b, &sb);
-	g_free (full_name_b);
+ 
+	full_name_target = get_path_from_uri (target_uri);
+	retval = stat (full_name_target, &s_target);
+	g_free (full_name_target);
 
 	if (retval != 0)
 		return gnome_vfs_result_from_errno ();
 
-	*same_fs_return = (sa.st_dev == sb.st_dev);
+	*same_fs_return = (s_source.st_dev == s_target.st_dev);
 
 	return GNOME_VFS_OK;
 }

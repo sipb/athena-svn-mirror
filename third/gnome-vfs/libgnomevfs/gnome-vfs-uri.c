@@ -268,8 +268,12 @@ split_toplevel_uri (const gchar *path, guint path_len,
 	}
 
 	success = TRUE;
-done:
 
+	if (*host_return != NULL) {
+		g_strdown (*host_return);
+
+	}
+done:
 	/* If we didn't complete our mission, discard all the partials */
 	if (!success) {
 		g_free (*host_return);
@@ -1055,8 +1059,7 @@ gnome_vfs_uri_set_host_name (GnomeVFSURI *uri,
 
 	toplevel = gnome_vfs_uri_get_toplevel (uri);
 
-	if (toplevel->host_name != NULL)
-		g_free (toplevel->host_name);
+	g_free (toplevel->host_name);
 	toplevel->host_name = g_strdup (host_name);
 }
 
@@ -1098,9 +1101,8 @@ gnome_vfs_uri_set_user_name (GnomeVFSURI *uri,
 
 	toplevel = gnome_vfs_uri_get_toplevel (uri);
 
-	if (toplevel->user_name != NULL)
-		g_free (toplevel->user_name);
-	toplevel->host_name = g_strdup (user_name);
+	g_free (toplevel->user_name);
+	toplevel->user_name = g_strdup (user_name);
 }
 
 /**
@@ -1120,9 +1122,8 @@ gnome_vfs_uri_set_password (GnomeVFSURI *uri,
 
 	toplevel = gnome_vfs_uri_get_toplevel (uri);
 
-	if (toplevel->password != NULL)
-		g_free (toplevel->password);
-	toplevel->host_name = g_strdup (password);
+	g_free (toplevel->password);
+	toplevel->password = g_strdup (password);
 }
 
 static gboolean

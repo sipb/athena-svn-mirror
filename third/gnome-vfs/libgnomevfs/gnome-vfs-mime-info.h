@@ -41,6 +41,7 @@ void             gnome_vfs_mime_thaw                            (void);
 void       	 gnome_vfs_mime_info_reload   	  	 	(void);
 
 
+gboolean	 gnome_vfs_mime_type_is_known			(const char *mime_type);
 
 	/* functions which access to the .keys files */
 const char 	*gnome_vfs_mime_get_value        		(const char *mime_type,
@@ -61,8 +62,10 @@ void	         gnome_vfs_mime_registered_mime_type_list_free 	(GList      *list);
 GnomeVFSResult	 gnome_vfs_mime_set_registered_type_key 	(const char *mime_type, 
 							  	 const char *key, 
 							  	 const char *data);
-
-
+GnomeVFSResult   gnome_vfs_mime_set_extensions_list             (const char *mime_type, 
+								 const char *extension_list);
+void             gnome_vfs_mime_registered_mime_type_delete     (const char *mime_type);
+void             gnome_vfs_mime_reset                           (void);
 
 
 #ifdef __cplusplus

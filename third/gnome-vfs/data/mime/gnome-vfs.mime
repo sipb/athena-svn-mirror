@@ -1,22 +1,22 @@
 #
 # Copyright (C) The Free Software Foundation, 1998, 1999, 2000
-# Copyright (C) Eazel, Inc. 2000
+# Copyright (C) Eazel, Inc. 2000, 2001
 # All rights reserved.
 #
 # Mime types as provided by the GNOME libraries for GNOME.
 #
 # Applications can provide more mime types by installing other
-# .mime files in the $share/mime-info directory.
+# .mime files in the PREFIX/share/mime-info directory.
 #
 # The format of this file is:
 #
 # mime-type
-#         ext[,prio]:   list of extensions for this mime-type
-#         regex[,prio]: a regular expression that matches the filename
+#	ext[,prio]:	list of extensions for this mime-type
+#	regex[,prio]:	a regular expression that matches the filename
 #
 # more than one ext: and regex: fields can be present.
 #
-# prio is the priority for the match, the default is 1.  This is required 
+# prio is the priority for the match, the default is 1. This is required
 # to distinguish composed filenames, for example .gz has a priority of 1
 # and .tar.gz has a priority of 2 (thus a file having the filename
 # something.tar.gz will match the mime-type for tar.gz before the mime-type
@@ -26,8 +26,8 @@
 # Please maintain this when adding new types. Also consider adding a
 # human-readable description to gnome-vfs.keys when adding a new type here.
 #
-# Also please do not add illegal mime types, observe the mime standard when
-# adding new types. 
+# Also do please not add illegal mime types, observe the mime standard when
+# adding new types.
 
 application/andrew-inset
 	ext: ez
@@ -60,20 +60,20 @@ application/vnd.ms-excel
 	ext: xls
 
 application/x-applix-spreadsheet
-        ext: as
+	ext: as
 
 application/x-applix-word
-        ext: aw
+	ext: aw
 
 application/x-arj
 	ext: arj
 
 application/x-asp
-        ext: asp
+	ext: asp
 
 application/x-backup
-        ext: bak BAK
-	
+	ext: bak BAK
+
 application/x-bcpio
 	ext: bcpio
 
@@ -84,20 +84,20 @@ application/x-bzip-compressed-tar
 	regex,2: tar\.bz2$
 
 application/x-cgi
-        ext: cgi
+	ext: cgi
 
 application/x-chess-pgn
 	ext: pgn
 
-application/x-class-file
-	ext: class
+application/x-compress
+	ext: Z
 
 application/x-compressed-tar
 	regex,2: tar\.gz$
 	ext: tgz
 
 application/x-core-file
-	regex: core
+	regex: ^core$
 
 application/x-cpio
 	ext: cpio
@@ -112,7 +112,7 @@ application/x-dvi
 	ext: dvi
 
 application/x-e-theme
-        ext: etheme ETHEME
+	ext: etheme ETHEME
 
 application/x-font-afm
 	ext: afm
@@ -150,6 +150,9 @@ application/x-gzip
 application/x-hdf
 	ext: hdf
 
+application/x-java-byte-code
+	ext: class
+
 application/x-kde-app-info
 	ext: kdelnk
 
@@ -168,15 +171,18 @@ application/x-netcdf
 application/x-object-file
 	ext: o
 
+application/x-ogg
+	ext: ogg
+
 application/x-php
-        ext: php php3 php4
+	ext: php php3 php4
 
 application/x-profile
-        regex: gmon\.out$
+	regex: gmon\.out$
 
 application/x-reject
 	ext: rej
-	
+
 application/x-rpm
 	ext: rpm
 
@@ -187,7 +193,7 @@ application/x-shared-library
 	ext: so
 
 application/x-shared-library-la
-        ext: la
+	ext: la
 
 application/x-smil
 	ext: smil smi sml
@@ -211,13 +217,15 @@ application/x-tar
 	ext: tar
 
 application/x-theme
-        ext: theme
+	ext: theme
 
+# FIXME bugzilla.eazel.com 5372: This matches too many file
+# names, including virtually all file names that end in ".1.Z".
 application/x-troff-man-compressed
 	regex: ([^0-9]|^[^\.]*)\.([1-9][a-z]?|n)\.g?[Zz]$
 
 application/x-unix-archive
-	ext: a sa
+	ext: a
 
 application/x-ustar
 	ext: ustar
@@ -240,7 +248,7 @@ audio/x-aiff
 	ext: aif aifc aiff
 
 audio/x-it
-        ext: it IT
+	ext: it IT
 
 audio/x-midi
 	ext: midi mid
@@ -252,12 +260,9 @@ audio/x-mp3
 	ext: mp3
 
 audio/x-mpegurl
-        ext: m3u
+	ext: m3u
 
-audio/x-ogg
-	ext: ogg
-
-audio/x-pn-realaudio
+audio/x-real-audio
 	ext: rm ra ram
 
 audio/x-s3m
@@ -305,16 +310,16 @@ image/tiff
 	ext: tif tiff
 
 image/vnd.dwg
-        ext: dwg
+	ext: dwg
 
 image/vnd.dxf
-        ext: dxf
+	ext: dxf
 
 image/x-3ds
-        ext: 3ds
+	ext: 3ds
 
 image/x-applix-graphic
-        ext: ag
+	ext: ag
 
 image/x-bmp
 	ext: bmp
@@ -330,16 +335,16 @@ image/x-ico
 	ext: ico
 
 image/x-iff
-        ext: iff IFF
+	ext: iff IFF
 
 image/x-ilbm
-        ext: ilbm ILBM
+	ext: ilbm ILBM
 
 image/x-lwo
-        ext: lwo lwob
+	ext: lwo lwob
 
 image/x-lws
-        ext: lws
+	ext: lws
 
 image/x-portable-anymap
 	ext: pnm
@@ -369,7 +374,7 @@ image/x-xcf
 	ext: xcf
 
 image/x-xfig
-        ext: fig
+	ext: fig
 
 image/x-xpixmap
 	ext: xpm
@@ -386,7 +391,6 @@ message/x-gnu-rmail
 
 model/vrml
 	ext: wrl
-
 
 
 
@@ -416,7 +420,7 @@ text/tab-separated-values
 
 text/x-authors
 	regex: AUTHORS
-	
+
 text/x-c
 	ext: c h
 
@@ -427,7 +431,7 @@ text/x-comma-separated-values
 	ext: csv
 
 text/x-copying
-	regex: COPYING	
+	regex: COPYING
 
 text/x-credits
 	regex: CREDITS
@@ -451,10 +455,10 @@ text/x-fortran
 	ext: f
 
 text/x-gtkrc
-        regex: [.|]gtkrc
+	regex: [.|]gtkrc
 
 text/x-idl
-        ext: idl
+	ext: idl
 
 text/x-install
 	regex: INSTALL
@@ -498,12 +502,17 @@ text/x-texinfo
 text/x-troff
 	ext: roff t tr
 
+# FIXME bugzilla.eazel.com 5372: This matches too many file
+# names, including virtually all file names that end in ".1".
 text/x-troff-man
 	regex: (([^0-9]|^[^\.]*)\.([1-9][A-Za-z]*|n)|\.man)$
 	ext: man
 
 text/x-troff-me
 	ext: me
+
+text/x-troff-mm
+	ext: mm
 
 text/x-troff-ms
 	ext: ms
@@ -517,6 +526,8 @@ text/x-vcard
 text/xml
 	ext: xml
 
+
+
 video/mpeg
 	ext: mp2 mpe mpeg mpg
 
@@ -524,7 +535,7 @@ video/quicktime
 	ext: mov qt
 
 video/x-anim
-        ext: anim5 anim7
+	regex: *.anim[1-9j]
 
 video/x-flc
 	ext: flc

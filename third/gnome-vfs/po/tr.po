@@ -5,13 +5,944 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs 0.3.1.0\n"
-"POT-Creation-Date: 2000-11-06 23:37-0800\n"
+"POT-Creation-Date: 2001-01-27 00:33-0800\n"
 "PO-Revision-Date: 2000-10-12 22:59+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: data/mime/gnome-vfs.keys.in.h:1
+msgid "3D Studio image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:2
+msgid "AIFC audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:3
+msgid "AIFF audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:4
+msgid "ANIM animation"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:5
+msgid "AVI video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:6
+msgid "AbiWord document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:7
+msgid "Adobe FrameMaker font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:8
+msgid "Adobe font metrics"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:9
+msgid "Andrew Toolkit inset"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:10
+msgid "ApplixWare Graphics image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:11
+msgid "Applixware Words document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:12
+msgid "Applixware spreadsheet"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:13
+msgid "AutoCAD image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:14
+msgid "BCPIO document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:15
+msgid "BDF font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:16
+msgid "C shell script"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:17
+msgid "C source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:18
+msgid "C++ source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:19
+msgid "CGI program"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:20
+msgid "CGM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:21
+msgid "CMU raster image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:22
+msgid "CPIO archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:23
+msgid "CPIO archive (gzip-compressed)"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:24
+#, fuzzy
+msgid "DCL script"
+msgstr "Anlatým"
+
+#: data/mime/gnome-vfs.keys.in.h:25
+msgid "DOS font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:26
+msgid "DOS/Windows program"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:27
+msgid "DSSSL document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:28
+msgid "DXF vector graphic"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:29
+msgid "Debian package"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:30
+msgid "Dia diagram"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:31
+msgid "Emacs Lisp source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:32
+msgid "Enlightenment theme"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:33
+msgid "FLC animation"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:34
+msgid "FLI animation"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:35
+msgid "FastTracker II audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:36
+msgid "Fortran source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:37
+msgid "FrameMaker interchange document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:38
+msgid "G3 fax image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:39
+msgid "GIF image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:40
+msgid "GIMP document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:41
+msgid "GMC link"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:42
+#, fuzzy
+msgid "GNOME application details"
+msgstr "Uygulama listesini deðiþtir"
+
+#: data/mime/gnome-vfs.keys.in.h:43
+msgid "GNU mail message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:44
+msgid "GTK configuration"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:45
+msgid "Gnumeric spreadsheet"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:46
+msgid "HDF document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:47
+msgid "HTML page"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:48
+msgid "IDL document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:49
+msgid "IEF image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:50
+msgid "IFF image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:51
+msgid "ILBM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:52
+msgid "ISI video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:53
+msgid "Impulse Tracker audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:54
+msgid "JPEG image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:55
+msgid "Java byte code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:56
+msgid "Java source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:57
+#, fuzzy
+msgid "KDE application details"
+msgstr "Uygulama listesini deðiþtir"
+
+#: data/mime/gnome-vfs.keys.in.h:58
+msgid "Korn shell script"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:59
+msgid "LHA archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:60
+msgid "LHARC archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:61
+msgid "LIBGRX font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:62
+msgid "LightWave object"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:63
+msgid "LightWave scene"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:64
+msgid "Linux PSF console font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:65
+msgid "M3 audio URL"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:66
+msgid "MIDI audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:67
+msgid "MOD audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:68
+msgid "MP3 audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:69
+msgid "MP3 audio playlist"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:70
+msgid "MPEG video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:71
+msgid "MS video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:72
+msgid "Macintosh AppleDouble-encoded file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:73
+msgid "Macintosh BinHex-encoded file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:74
+msgid "Macintosh StuffIt archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:75
+msgid "MathML document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:76
+msgid "Microsoft Excel document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:77
+msgid "Microsoft PowerPoint document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:78
+msgid "Microsoft Word document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:79
+msgid "Microsoft video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:80
+msgid "Nautilus link"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:81
+msgid "ODA document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:82
+msgid "PBM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:83
+msgid "PCF font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:84
+msgid "PDF document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:85
+msgid "PEF program"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:86
+msgid "PGM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:87
+msgid "PGN chess game"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:88
+msgid "PGP keys"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:89
+msgid "PGP message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:90
+msgid "PGP signature"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:91
+msgid "PGP-encrypted file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:92
+msgid "PHP script"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:93
+msgid "PN RealAudio document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:94
+msgid "PNG image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:95
+msgid "PNM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:96
+msgid "PPM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:97
+msgid "Palm OS database"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:98
+#, fuzzy
+msgid "Perl script"
+msgstr "Anlatým"
+
+#: data/mime/gnome-vfs.keys.in.h:99
+msgid "Photoshop document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:100
+msgid "PostScript Type 1 font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:101
+msgid "PostScript document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:102
+msgid "Python source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:103
+msgid "QuickTime movie"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:104
+msgid "RAR archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:105
+msgid "README document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:106
+msgid "RGB image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:107
+msgid "RIFF audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:108
+msgid "RPM package"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:109
+msgid "RealAudio/Video document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:110
+msgid "RealVideo video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:111
+msgid "S/MIME file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:112
+msgid "S/MIME signature"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:113
+msgid "SGI video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:114
+msgid "SGML document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:115
+msgid "SMIL script"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:116
+msgid "SQL code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:117
+msgid "SV4 CPIO archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:118
+msgid "SV4 CPIP archive (with CRC)"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:119
+msgid "SVG art"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:120
+msgid "Scheme source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:121
+msgid "Scream Tracker 3 audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:122
+msgid "Scream Tracker audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:123
+msgid "Scream Tracker instrument"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:124
+msgid "Setext document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:125
+msgid "Speech document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:126
+msgid "Speedo font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:127
+msgid "StarOffice Writer document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:128
+msgid "StarOffice presentation"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:129
+msgid "StarOffice spreadsheet"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:130
+msgid "Sun µ-law audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:131
+msgid "SunOS News font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:132
+msgid "TIFF image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:133
+msgid "TarGA image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:134
+msgid "Tcl script"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:135
+msgid "TeX document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:136
+msgid "TeX dvi document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:137
+msgid "TeX font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:138
+msgid "TeX font metrics"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:139
+msgid "TeXInfo document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:140
+msgid "ToutDoux document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:141
+msgid "Troff document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:142
+msgid "TrueType font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:143
+msgid "USENET news message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:144
+msgid "Unidata netCDF document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:145
+msgid "V font"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:146
+msgid "VOC audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:147
+msgid "VRML document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:148
+msgid "Vivo video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:149
+msgid "WAIS source code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:150
+msgid "Wavelet video"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:151
+msgid "Windows bitmap image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:152
+msgid "Windows icon image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:153
+msgid "WordPerfect document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:154
+msgid "X bitmap image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:155
+msgid "X window image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:156
+msgid "XML document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:157
+msgid "XPM image"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:158
+msgid "active server page"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:159
+msgid "address card"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:160
+msgid "ar archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:161
+msgid "arj archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:162
+msgid "authors list"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:163
+msgid "backup file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:164
+msgid "basic audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:165
+msgid "bibliography record"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:166
+msgid "binary program"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:167
+msgid "block device"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:168
+msgid "bzip-compressed file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:169
+msgid "calendar file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:170
+msgid "calendar or event document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:171
+msgid "character device"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:172
+msgid "comma-separated text document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:173
+msgid "compound document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:174
+msgid "compress-compressed file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:175
+msgid "compressed GIMP document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:176
+#, fuzzy
+msgid "directory information file"
+msgstr "Dizin boþ deðil"
+
+#: data/mime/gnome-vfs.keys.in.h:177
+msgid "document type definition"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:178
+msgid "email headers"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:179
+msgid "email message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:180
+msgid "encrypted message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:181
+msgid "enriched text document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:182
+msgid "folder"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:183
+msgid "gtar archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:184
+msgid "gzip-compressed file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:185
+msgid "help page"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:186
+msgid "mail delivery report"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:187
+msgid "mail disposition report"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:188
+msgid "mail system report"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:189
+msgid "makefile"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:190
+msgid "manual page"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:191
+msgid "manual page (compressed)"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:192
+msgid "memory dump"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:193
+msgid "message digest"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:194
+msgid "message in several formats"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:195
+msgid "multi-part message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:196
+msgid "named pipe"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:197
+msgid "object code"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:198
+msgid "ogg audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:199
+msgid "partial email message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:200
+msgid "plain text document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:201
+msgid "profiler results"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:202
+msgid "reference to remote file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:203
+msgid "rejected patch file"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:204
+msgid "rich text document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:205
+msgid "search results"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:206
+msgid "shared library"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:207
+msgid "shell archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:208
+#, fuzzy
+msgid "shell script"
+msgstr "Anlatým"
+
+#: data/mime/gnome-vfs.keys.in.h:209
+msgid "signed message"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:210
+msgid "socket"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:211
+msgid "software author credits"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:212
+msgid "software installation instructions"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:213
+msgid "software license terms"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:214
+msgid "source code patch"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:215
+msgid "style sheet"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:216
+msgid "symbolic link"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:217
+msgid "tab-separated text document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:218
+msgid "tar archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:219
+msgid "tar archive (bzip2-compressed)"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:220
+msgid "tar archive (gzip-compressed)"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:221
+msgid "theme"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:222
+msgid "troff me input document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:223
+msgid "troff mm input document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:224
+msgid "troff ms input document"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:225
+#, fuzzy
+msgid "unknown type"
+msgstr "Tanýnmayan hata"
+
+#: data/mime/gnome-vfs.keys.in.h:226
+msgid "ustar archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:227
+msgid "wave audio"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:228
+msgid "web folder"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:229
+msgid "xfig vector graphic"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:230
+msgid "zip archive"
+msgstr ""
+
+#: data/mime/gnome-vfs.keys.in.h:231
+msgid "zoo archive"
+msgstr ""
 
 #: libgnomevfs/gnome-vfs-configuration.c:187
 #, c-format
@@ -246,32 +1177,37 @@ msgstr "Isim fazalsýndan uzun"
 msgid "Service not available"
 msgstr "Hizmet eriþilir deðil"
 
-#: libgnomevfs/gnome-vfs-result.c:140
+#. GNOME_VFS_ERROR_SERVICE_OBSOLETE
+#: libgnomevfs/gnome-vfs-result.c:78
+msgid "Request obsoletes service's data"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-result.c:141
 msgid "Unknown error"
 msgstr "Tanýnmayan hata"
 
-#: libgnomevfs/gnome-vfs-utils.c:58
+#: libgnomevfs/gnome-vfs-utils.c:65
 msgid "1 byte"
 msgstr "1 bayt"
 
-#: libgnomevfs/gnome-vfs-utils.c:60
+#: libgnomevfs/gnome-vfs-utils.c:67
 #, c-format
 msgid "%u bytes"
 msgstr "%u bayt"
 
-#: libgnomevfs/gnome-vfs-utils.c:67
-#, c-format
-msgid "%.1fK"
+#: libgnomevfs/gnome-vfs-utils.c:74
+#, fuzzy, c-format
+msgid "%.1f K"
 msgstr "%.1f bin"
 
-#: libgnomevfs/gnome-vfs-utils.c:71
-#, c-format
-msgid "%.1fM"
+#: libgnomevfs/gnome-vfs-utils.c:78
+#, fuzzy, c-format
+msgid "%.1f MB"
 msgstr "%.1f milyon"
 
-#: libgnomevfs/gnome-vfs-utils.c:75
-#, c-format
-msgid "%.1fG"
+#: libgnomevfs/gnome-vfs-utils.c:82
+#, fuzzy, c-format
+msgid "%.1f GB"
 msgstr "%.1f milyar"
 
 #: libgnomevfs-corba/gnome-vfs-slave.c:336
@@ -402,63 +1338,74 @@ msgstr "GNOME::VFS::Slave %s'yi öldüremedim -- hata %s"
 msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
 msgstr "GNOME::VFS::Slave ( IOR bilinmiyor ) 'i öldüremedim -- hata %s"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:157
-msgid "Error writing to the wakeup GnomeVFSJob channel."
-msgstr "GnomeVFSJob kanalýný uyandýrmak için yazým yapamadým ."
-
-#: libgnomevfs-pthread/gnome-vfs-job.c:762
-#: libgnomevfs-pthread/gnome-vfs-job.c:1672
-#, c-format
-msgid "Unknown job ID %d"
+#: libgnomevfs-pthread/gnome-vfs-job.c:690
+#, fuzzy, c-format
+msgid "Unknown op type %u"
 msgstr "Tanýnmayan iþlem numarasý %d"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:1061
-#: libgnomevfs-pthread/gnome-vfs-job.c:1189
+#: libgnomevfs-pthread/gnome-vfs-job.c:976
+#: libgnomevfs-pthread/gnome-vfs-job.c:1121
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
 msgstr "%s: GIOChannel açmak için bir boruç yaratamadým "
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:1705
+#: libgnomevfs-pthread/gnome-vfs-job.c:1728
+#, fuzzy, c-format
+msgid "Unknown job ID %u"
+msgstr "Tanýnmayan iþlem numarasý %d"
+
+#: libgnomevfs-pthread/gnome-vfs-job.c:1749
 msgid "Operation stopped"
 msgstr "Iþlem durduruldu"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:333
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:340
 msgid "Edit Applications List"
 msgstr "Uygulama listesini deðiþtir"
 
 #. Add label
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:353
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:360
 #, c-format
 msgid "Select applications to appear in menu for mime type \"%s\""
 msgstr "\"%s\" MIME türü için mönü'de varolacak uygulamalarý seç"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:377
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:384
 msgid "Add Application..."
 msgstr "Uygulama ekle ..."
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:384
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:391
 msgid "Edit Application..."
 msgstr "Uygulamayý deðiþtir ..."
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:390
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:397
 msgid "Delete Application"
 msgstr "Uygulamayý sil ..."
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:423
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:430
 msgid "Edit Components List"
 msgstr "Parçalar listesinin deðiþtir"
 
 #. Add label
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:443
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:450
 #, c-format
 msgid "Select views to appear in menu for mime type \"%s\""
 msgstr "\"%s\" MIME türü için mönü'de varolacak bakýþlarý seç"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:620
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:681
+msgid ""
+"The MIME type entered contained upper case characters. Upper case characters "
+"were changed to lower case for you."
+msgstr ""
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:684
+#, fuzzy
+msgid "Add New MIME Type"
+msgstr "MIME türü ekle"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:708
 msgid "Add Mime Type"
 msgstr "MIME türü ekle"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:621
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:711
 msgid ""
 "Add a new Mime Type\n"
 "For example:  image/tiff; text/x-scheme"
@@ -466,23 +1413,38 @@ msgstr ""
 "Yeni bir MIMe türünü ekle \n"
 "Mesela :      image/tiff; text/x-scheme"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:626
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:717
 msgid "Mime Type:"
 msgstr "MIME türü :"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:638
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:729
 msgid "Type in a description for this mime-type."
 msgstr "Bu MIME türü için bir anlatým ver ."
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:644
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:735
 msgid "Description:"
 msgstr "Anlatým :"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:683
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:885
+#, fuzzy
+msgid "File Extensions "
+msgstr "Sonek"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:905
+#, fuzzy
+msgid "Add..."
+msgstr "Ekle"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:910
+#, fuzzy
+msgid "    Remove    "
+msgstr "Sil"
+
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:981
 msgid "Add New Extension"
 msgstr "Yeni bir sonek ekle"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:684
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:985
 msgid ""
 "Type in the extensions for this mime-type.\n"
 "For example:  .html, .htm"
@@ -490,109 +1452,141 @@ msgstr ""
 "Bu MIME türü için geçerli olan sonekler .\n"
 "Mesela     :  .html .htm"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:689
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:990
 msgid "Extension:"
 msgstr "Sonek :"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:848
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1150
 msgid "New Application"
 msgstr "Yeni uygulama"
 
 #. Application Name label and entry
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:857
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:961
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1159
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1263
 msgid "Application Name:"
 msgstr "Uygulama ismi :"
 
 #. Application Command label and entry
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:865
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:970
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1167
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1272
 msgid "Application Command:"
 msgstr "Uygulama komutasý :"
 
 #. Open Behavior frame
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:873
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:979
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1175
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1281
 msgid "Open Behavior"
 msgstr "Açma heybeti"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:879
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:985
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1181
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1287
 msgid "Can open multiple files"
 msgstr "Çoðu dosyayý ayný anda açamýyorum"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:882
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:989
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1184
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1291
 msgid "Can open from URI"
 msgstr "URI'den açamadým"
 
-#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:952
+#: mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:1254
 #, fuzzy
 msgid "Edit Application"
 msgstr "Uygulamayý deðiþtir ..."
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:349
-msgid "Change Icon"
-msgstr "Simgeyi deðiþtir"
-
-#: mime-type-capplet/nautilus-mime-type-capplet.c:361
-#: mime-type-capplet/nautilus-mime-type-capplet.c:1216
+#: mime-type-capplet/nautilus-mime-type-capplet.c:541
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1532
 msgid "Mime Type"
 msgstr "MIME türü"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:382
-msgid "Add new Mime type..."
-msgstr "Yeni bir MIME türü ekle ..."
+#: mime-type-capplet/nautilus-mime-type-capplet.c:548
+msgid "Change Icon"
+msgstr "Simgeyi deðiþtir"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:389
-msgid "Delete this Mime type..."
-msgstr "Bu MIME türünü sil ..."
+#: mime-type-capplet/nautilus-mime-type-capplet.c:555
+#, fuzzy
+msgid "Change File Extensions"
+msgstr "Yeni bir sonek ekle"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:404
+#: mime-type-capplet/nautilus-mime-type-capplet.c:563
+#, fuzzy
+msgid "Default Action:"
+msgstr "Uygulamayý sil ..."
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:575
 msgid "Use Viewer"
 msgstr "Göstericiyi kullan"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:410
+#: mime-type-capplet/nautilus-mime-type-capplet.c:581
 msgid "Open With Application"
 msgstr "Uygulamayla aç"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:422
+#: mime-type-capplet/nautilus-mime-type-capplet.c:593
 msgid "Edit List"
 msgstr "Listeyi deðiþtir"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:451
-msgid "Add"
-msgstr "Ekle"
+#: mime-type-capplet/nautilus-mime-type-capplet.c:618
+msgid "Add new Mime type..."
+msgstr "Yeni bir MIME türü ekle ..."
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:454
-msgid "Remove"
-msgstr "Sil"
+#: mime-type-capplet/nautilus-mime-type-capplet.c:624
+msgid "Delete this Mime type..."
+msgstr "Bu MIME türünü sil ..."
 
-#. Add default action to fourth column
-#: mime-type-capplet/nautilus-mime-type-capplet.c:640
-#: mime-type-capplet/nautilus-mime-type-capplet.c:784
-#: mime-type-capplet/nautilus-mime-type-capplet.c:919
-#: mime-type-capplet/nautilus-mime-type-capplet.c:1108
+#: mime-type-capplet/nautilus-mime-type-capplet.c:635
+msgid "Revert to System Defaults"
+msgstr ""
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:693
+#, fuzzy
+msgid "No Description"
+msgstr "Anlatým"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:823
+#: mime-type-capplet/nautilus-mime-type-capplet.c:968
 msgid "None"
 msgstr "Yok"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:1215
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1064
+msgid ""
+"Reverting to system settings\n"
+"will lose all your personal \n"
+"Mime configuration.\n"
+"Revert to System Settings ?\n"
+msgstr ""
+
+#. Add default action to fourth column
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1133
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1321
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1445
+#, fuzzy
+msgid "none"
+msgstr "Yok"
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1170
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1351
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1481
+#, c-format
+msgid "View as %s"
+msgstr ""
+
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1531
 msgid "Description"
 msgstr "Anlatým"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:1217
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1533
 msgid "Extension"
 msgstr "Sonek"
 
-#: mime-type-capplet/nautilus-mime-type-capplet.c:1218
-msgid "Action"
-msgstr "Eylem"
+#: mime-type-capplet/nautilus-mime-type-capplet.c:1534
+#, fuzzy
+msgid "Default Action"
+msgstr "Uygulamayý sil ..."
 
-#: mime-type-capplet/nautilus-mime-type-icon-entry.c:267
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:255
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "hbox kutusunu bulamadým, vasat dosya seçim diyaloðunu kullanýyorum"
 
-#: mime-type-capplet/nautilus-mime-type-icon-entry.c:273
+#: mime-type-capplet/nautilus-mime-type-icon-entry.c:261
 msgid "Preview"
 msgstr "Önizleme"
 
@@ -601,22 +1595,22 @@ msgstr "Önizleme"
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Tanýnmayan GnomeVFSSeekPosition verisi %d"
 
-#: modules/http-method.c:1149
+#: modules/http-method.c:1184
 #, c-format
 msgid "%s to retrieve"
 msgstr "%s alýnacaktýr"
 
-#: modules/http-method.c:1514
+#: modules/http-method.c:1589
 #, c-format
 msgid "Closing connection to %s"
 msgstr "`%s''ye olan baðlantýyý kes ."
 
-#: modules/http-method.c:1726
+#: modules/http-method.c:1833
 #, c-format
 msgid "%s of %s read"
 msgstr "%s / %s okundu"
 
-#: modules/http-method.c:1729
+#: modules/http-method.c:1836
 #, c-format
 msgid "%s read"
 msgstr "%s okundu"
@@ -684,3 +1678,9 @@ msgstr "Göster:"
 #: test/gnome-file-selection/gnome-file-selection.c:887
 msgid "Show dotfiles"
 msgstr "Noktayla baþlayan gizli dosyalarý göster"
+
+#~ msgid "Error writing to the wakeup GnomeVFSJob channel."
+#~ msgstr "GnomeVFSJob kanalýný uyandýrmak için yazým yapamadým ."
+
+#~ msgid "Action"
+#~ msgstr "Eylem"

@@ -24,9 +24,9 @@
 #ifndef _GNOME_VFS_DIRECTORY_LIST_H
 #define _GNOME_VFS_DIRECTORY_LIST_H
 
-
 GnomeVFSDirectoryList *
 	 gnome_vfs_directory_list_new		(void);
+
 void 	 gnome_vfs_directory_list_destroy	(GnomeVFSDirectoryList *list);
 void	 gnome_vfs_directory_list_prepend	(GnomeVFSDirectoryList *list,
 						 GnomeVFSFileInfo *info);

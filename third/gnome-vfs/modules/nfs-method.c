@@ -47,8 +47,12 @@
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 
+/* this is a work-around for some systems, which define these 
+ * symbols without guards
+ */
 #undef MIN
 #undef MAX
+
 #include "nfs-method.h"
 #include <netdb.h>
 #include <rpc/rpc.h>
@@ -59,14 +63,24 @@
 
 /* the timeout used when making RPC calls */
 #define NFS_TIMEOUT 10
+/* how many times to retry a given RPC call */
+#define NFS_RETRY 5
+/* define this for verbose debugging */
+// #define NFS_VERBOSE_DEBUG
 
 /* until there's a way to specify this at run time (configuration option)
  * define this at compile time. The run down - use TCP if you're in a bad 
  * environment where UDP packets will go astray (the internet). If you're 
  * on a nice short ethernet then you want UDP.
+ *
+ * Can this be done in gconf? 'expert' users might want to change it.
  */
 #define NFS_PROTO	NFS_UDP
 
+/* a list of all cached server connections
+ * 
+ * any access to this should first attempt to acquire a mutex on it.
+ */
 GList *server_connection_list = NULL;
 G_LOCK_DEFINE_STATIC (server_connection_list);
 
@@ -78,21 +92,76 @@ void            vfs_module_shutdown (GnomeVFSMethod *method);
 static GnomeVFSResult
 nfs_get_attr(GnomeVFSURI *uri, NfsServerConnection *conn, GnomeVFSFileInfo *info);
 
+/* work around for inconsistent paths */
 static void
 nfs_strip_last_slash(char *c)
 {
 	int len;
+	
+	g_assert(c != NULL);
 
 	len = strlen(c);
-	if ((c[len - 1] == '/') && (len != 1)) {
+	if ((len > 1) && (c[len - 1] == '/')) {
 		c[len - 1] = '\0';
 	}
+}
+
+
+/* a wrapper for the RPC function clnt_call. This handles doing a retry on 
+ * certain errors, etc. The final argument, `success', should be a pointer 
+ * to an integer that will be zero if the call was completely successful. 
+ * it may also be NULL, in which case it is ignored.
+ */
+static enum clnt_stat 
+nfs_clnt_call(CLIENT *clnt, u_long procnum, xdrproc_t inproc, char *in,
+	      xdrproc_t outproc, char *out, struct timeval tout, enum nfsstat *success)
+{
+	int retry_count = 0;
+	enum clnt_stat rv = 0;
+
+	while (retry_count < NFS_RETRY) {
+		/* try the call */
+		rv = clnt_call(clnt, procnum, inproc, in, outproc, out, tout);
+		if (rv == RPC_SUCCESS && !*success) {
+			/* all good, break from this loop */
+			break;
+		} else if (*success == ECOMM) {
+			/* this error is evil, only way around it is 
+			   to destroy the RPC connection and start over
+			*/
+
+			/* FIXME
+			 * do something intelligent, don't just fail out
+			 * FIXME
+			 */
+		} else if ((rv == RPC_CANTSEND) || /* can't send */ 
+			   (rv == RPC_CANTRECV) || /* can't receive */
+			   (rv == RPC_TIMEDOUT) || /* timed out */
+			   (rv == RPC_SYSTEMERROR) || /* generic other problem at server */
+			   (rv == RPC_RPCBFAILURE) || /* portmapper failed in its call */
+			   (rv == RPC_CANTDECODEARGS) || /* can't decode arguments */
+			   (rv == RPC_CANTENCODEARGS) || /* can't encode arguments */
+			   (rv == RPC_CANTDECODERES) || /* can't decored results */
+			   (rv == RPC_FAILED) || /* unspecified error */ 
+			   ((success != NULL) && (*success))) /* not okay */ {
+			/* retry... this error is one we can recover from
+			 * something like a lost UDP packet or a cosmic ray :)
+			 */
+			g_print("NFS_METHOD: retrying due to an error (retry_count = %d.\n", retry_count);
+		} else {
+			/* unknown error probably no point retrying, all bad */
+			g_print("Error fatal, giving up.\n");
+			return rv;
+		}
+		retry_count++;
+	}
+	return rv;
 }
 
 static GnomeVFSResult
 rpc_init_udp(NfsServerConnection *c)
 {
-	/* create UDP clients, only support UDP for the moment */
+	/* create UDP clients */
 	if ((c->mount_client = clntudp_create(c->mount_server_addr, 
 					MOUNTPROG, MOUNTVERS, 
 					c->mount_timeval, 
@@ -113,6 +182,7 @@ rpc_init_udp(NfsServerConnection *c)
 static GnomeVFSResult
 rpc_init_tcp(NfsServerConnection *c)
 {
+	/* create TCP clients */
 	if ((c->mount_client = clnttcp_create(c->mount_server_addr,
 					MOUNTPROG, MOUNTVERS,
 					&c->mount_sock, 0, 0)) == NULL) {
@@ -141,6 +211,11 @@ server_connection_acquire(GnomeVFSURI *uri, NfsServerConnection **conn)
 
 	G_LOCK (server_connection_list);
 
+	/* make sure we don't try to contact a NULL host! */
+	if (hostname == NULL || hostname[0] == '\0') {
+		return GNOME_VFS_ERROR_INVALID_URI;
+	}
+	
 	/* examine the available (cached) connections */
 	next = server_connection_list;
 	while (next) {
@@ -176,8 +251,8 @@ server_connection_acquire(GnomeVFSURI *uri, NfsServerConnection **conn)
 		return GNOME_VFS_ERROR_HOST_NOT_FOUND;
 	}
 
-	/* we need two of these, mainly because by having sin_port be zero
-	 * we get auto-magical discovery of the remote port number.
+        /* we need two of these, mainly because by having sin_port be zero
+         * we get auto-magical discovery of the remote port number.
 	 */
 	memcpy((caddr_t)&new->mount_server_addr->sin_addr, 
 			new->hp->h_addr, new->hp->h_length);
@@ -208,6 +283,8 @@ server_connection_acquire(GnomeVFSURI *uri, NfsServerConnection **conn)
 	 * has any sort of auth turned on, you'll need to come out of a 
 	 * low port. Some OSes (Tru64 Unix) won't even let you mount a 
 	 * public export without this.
+	 * 
+	 * TODO: investigate supporting other methods (kerberos?)
 	 */
 	new->mount_client->cl_auth = authunix_create_default();
 	new->nfs_client->cl_auth = authunix_create_default();
@@ -239,10 +316,10 @@ fhandle_recurse_lookup (GnomeVFSURI *uri, NfsServerConnection *conn, NfsFileHand
 	memcpy(args.dir.data, fh->handle.data, NFS_FHSIZE * sizeof(char));
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_LOOKUP, 
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_LOOKUP, 
 			(xdrproc_t)xdr_diropargs, (caddr_t)&args,
 			(xdrproc_t)xdr_diropres, (caddr_t)&res,
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &res.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "lookup");
 		retval = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		goto error;
@@ -357,12 +434,13 @@ fhandle_acquire (GnomeVFSURI *uri, NfsServerConnection *conn, NfsFileHandle **fh
 		 */
 		memset((char *)&s, 0, sizeof(s));
 		g_mutex_lock(conn->mount_sock_mutex);
-		if ((clnt_stat = clnt_call(conn->mount_client, MOUNTPROC_MNT, 
-						(xdrproc_t)xdr_dirpath, 
-						(caddr_t)&path, 
-						(xdrproc_t)xdr_fhstatus, 
-						(caddr_t)&s, 
-						conn->mount_timeval)) != RPC_SUCCESS) {
+		if ((clnt_stat = nfs_clnt_call(conn->mount_client, MOUNTPROC_MNT, 
+					       (xdrproc_t)xdr_dirpath, 
+					       (caddr_t)&path, 
+					       (xdrproc_t)xdr_fhstatus, 
+					       (caddr_t)&s, 
+					       conn->mount_timeval, 
+					       &s.fhs_status)) != RPC_SUCCESS) {
 			clnt_perror(conn->mount_client, "MOUNTPROC_MNT");
 			G_UNLOCK (server_connection_list);
 			retval = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
@@ -451,7 +529,7 @@ nfs_create (GnomeVFSURI *uri,
 	diropres res;
 	enum clnt_stat clnt_stat;
 
-	g_print("nfs_create -- %s\n", gnome_vfs_uri_get_path(uri));
+	g_print("NFS_METHOD: nfs_create -- %s\n", gnome_vfs_uri_get_path(uri));
 	memcpy(c.where.dir.data, fh->handle.data, NFS_FHSIZE * sizeof(char));
 	c.where.name = g_strdup(gnome_vfs_uri_get_basename(uri));
 	c.attributes.mode = perm;
@@ -461,13 +539,13 @@ nfs_create (GnomeVFSURI *uri,
 	gettimeofday((struct timeval *)&c.attributes.atime, (struct timezone *)NULL);
 	gettimeofday((struct timeval *)&c.attributes.mtime, (struct timezone *)NULL);
 	
-	g_print("Creating file: %s\n", c.where.name);
+	g_print("NFS_METHOD: Creating file: %s\n", c.where.name);
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_CREATE,
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_CREATE,
 			(xdrproc_t)xdr_createargs, (caddr_t)&c,
 			(xdrproc_t)xdr_diropres, (caddr_t)&res, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &res.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "create");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(conn->nfs_sock_mutex);
@@ -476,11 +554,11 @@ nfs_create (GnomeVFSURI *uri,
 	g_mutex_unlock(conn->nfs_sock_mutex);
 
 	if(res.status != 0) {
-		g_print("create error... %s\n", strerror(res.status));
+		g_print("NFS_METHOD: create error... %s\n", strerror(res.status));
 		result = gnome_vfs_result_from_errno_code(res.status);
 		goto error;
 	}
-	g_print("File created!\n");
+	g_print("NFS_METHOD: File created!\n");
 	result = GNOME_VFS_OK;
 
 error:
@@ -573,7 +651,15 @@ do_read (GnomeVFSMethod *method,
 	readokres o;
 	fattr f;
 
+
 	h = (NfsOpenHandle *)method_handle;
+
+#ifdef NFS_VERBOSE_DEBUG
+	g_print("NFS_METHOD: do_read %s at offset %d (%lld bytes)\n", 
+			gnome_vfs_uri_to_string(h->uri, 0), 
+			h->position, 
+			(unsigned long long)num_bytes);
+#endif
 
 	memset((char *)&res, 0, sizeof(res));
 	memset((char *)&r, 0, sizeof(r));
@@ -582,10 +668,10 @@ do_read (GnomeVFSMethod *method,
 	r.count = num_bytes;
 
 	g_mutex_lock(h->conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(h->conn->nfs_client, NFSPROC_READ,
+	if ((clnt_stat = nfs_clnt_call(h->conn->nfs_client, NFSPROC_READ,
 		(xdrproc_t)xdr_readargs, (caddr_t)&r,
 		(xdrproc_t)xdr_readres, (caddr_t)&res,
-		h->conn->nfs_timeval)) != RPC_SUCCESS) {
+		h->conn->nfs_timeval, &res.status)) != RPC_SUCCESS) {
 		clnt_perror(h->conn->nfs_client, "read");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(h->conn->nfs_sock_mutex);
@@ -593,7 +679,7 @@ do_read (GnomeVFSMethod *method,
 	}
 	g_mutex_unlock(h->conn->nfs_sock_mutex);
 	if (res.status) {
-		g_print("read error: %s\n", strerror(res.status));
+		g_print("NFS_METHOD: read error: %s\n", strerror(res.status));
 		result = gnome_vfs_result_from_errno_code(res.status);
 		goto error;
 	}
@@ -613,6 +699,14 @@ error:
 	if (result != GNOME_VFS_OK) {
 		*bytes_read = 0;
 	}
+	if (o.data.data_val) {
+		free(o.data.data_val);
+	}
+#ifdef NFS_VERBOSE_DEBUG
+	g_print("NFS_METHOD: do_read %s complete (%lld bytes read)\n", 
+			gnome_vfs_uri_to_string(h->uri, 0), 
+			(unsigned long long)*bytes_read);
+#endif
 	return result;
 }
 
@@ -735,9 +829,9 @@ nfs_export_list(GnomeVFSURI *uri,
 	}
 	client->cl_auth = authunix_create_default();
 	memset(&e, 0, sizeof(e));
-	if (clnt_call(client, MOUNTPROC_EXPORT, 
+	if (nfs_clnt_call(client, MOUNTPROC_EXPORT, 
 		(xdrproc_t)xdr_void, (char *)&argp, 
-		(xdrproc_t)xdr_exports, (char *)&e, timeval) != RPC_SUCCESS) {
+		(xdrproc_t)xdr_exports, (char *)&e, timeval, NULL) != RPC_SUCCESS) {
 		return GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 	}
 	while (e != NULL) {
@@ -760,11 +854,11 @@ nfs_export_list(GnomeVFSURI *uri,
 			GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE |
 			GNOME_VFS_FILE_INFO_FIELDS_FLAGS |
 			GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME;
-		g_print("got: %s (%s) ", e->ex_dir, name);
+		g_print("NFS_METHOD: got: %s (%s) ", e->ex_dir, name);
 		g = e->ex_groups;
 		while (g != NULL) {
 			/* TODO guess permissions */
-			g_print("%s ", g->gr_name);
+			g_print("NFS_METHOD: %s ", g->gr_name);
 			g = g->gr_next;
 		}
 		e = e->ex_next;
@@ -772,7 +866,7 @@ nfs_export_list(GnomeVFSURI *uri,
 
 		*exportlist = g_list_append(*exportlist, info);
 	}
-	printf("And returned.\n");
+	printf("NFS_METHOD: And returned.\n");
 
 	return GNOME_VFS_OK;
 }
@@ -851,17 +945,17 @@ nfs_get_attr(GnomeVFSURI *uri, NfsServerConnection *conn, GnomeVFSFileInfo *info
 	memset((char *)&h, 0, sizeof(nfs_fh));
 	memcpy(h.data, f->handle.data, NFS_FHSIZE * sizeof(char));
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_GETATTR, 
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_GETATTR, 
 			(xdrproc_t)xdr_nfs_fh, (caddr_t)&h,
 			(xdrproc_t)xdr_attrstat, (caddr_t)&a,
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &a.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "getattr");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		goto error;
 	}
 	g_mutex_unlock(conn->nfs_sock_mutex);
 	if (a.status) {
-		g_print("getattr error - %s\n", strerror(a.status));
+		g_print("NFS_METHOD: getattr error - %s\n", strerror(a.status));
 		result = gnome_vfs_result_from_errno_code(a.status);
 		goto error;
 	}
@@ -883,10 +977,10 @@ nfs_lookup(NfsServerConnection *conn, NfsFileHandle *fh, char *name, GnomeVFSFil
 	memcpy(args.dir.data, fh->handle.data, NFS_FHSIZE * sizeof(char));
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_LOOKUP, 
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_LOOKUP, 
 			(xdrproc_t)xdr_diropargs, (caddr_t)&args,
 			(xdrproc_t)xdr_diropres, (caddr_t)&res,
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &res.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "lookup");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(conn->nfs_sock_mutex);
@@ -895,7 +989,7 @@ nfs_lookup(NfsServerConnection *conn, NfsFileHandle *fh, char *name, GnomeVFSFil
 	g_mutex_unlock(conn->nfs_sock_mutex);
 
 	if (res.status) {
-		g_print("lookup error - %s\n", strerror(res.status));
+		g_print("NFS_METHOD: lookup error - %s\n", strerror(res.status));
 		result = gnome_vfs_result_from_errno_code(res.status);
 		goto error;
 	}
@@ -914,6 +1008,7 @@ error:
 //#define DIRSIZE (1024*64)
 #define DIRSIZE (1024*8)
 
+#if 0
 static GnomeVFSResult
 nfs_file_list_do(NfsServerConnection *conn, NfsFileHandle *dir, GList **list, readdirargs *rdargs, readdirres *rdres)
 {
@@ -927,19 +1022,19 @@ nfs_file_list_do(NfsServerConnection *conn, NfsFileHandle *dir, GList **list, re
 
 	/* this code does a READDIR */
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_READDIR,
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_READDIR,
 			(xdrproc_t)xdr_readdirargs, (caddr_t)rdargs,
 			(xdrproc_t)xdr_readdirres, (caddr_t)rdres, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &rdres.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "readdir");
-		g_print("%d - bailing\n", clnt_stat);
+		g_print("NFS_METHOD: %d - bailing\n", clnt_stat);
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(conn->nfs_sock_mutex);
 		goto error;
 	}
 	g_mutex_unlock(conn->nfs_sock_mutex);
 	if(rdres->status != 0) {
-		g_print("readdir error... %s\n", strerror(rdres->status));
+		g_print("NFS_METHOD: readdir error... %s\n", strerror(rdres->status));
 		result = gnome_vfs_result_from_errno_code(rdres->status);
 		goto error;
 	}
@@ -977,7 +1072,9 @@ nfs_file_list_do(NfsServerConnection *conn, NfsFileHandle *dir, GList **list, re
 error:
 	return result;
 }
+#endif
 
+#if 0
 static GnomeVFSResult
 nfs_file_list(NfsServerConnection *conn, NfsFileHandle *dir, GList **list)
 {
@@ -1001,13 +1098,11 @@ nfs_file_list(NfsServerConnection *conn, NfsFileHandle *dir, GList **list)
 error:
 	return result;
 }
+#endif
 
-
-#if 0
 static GnomeVFSResult
 nfs_file_list(NfsServerConnection *conn, NfsFileHandle *dir, GList **list) 
 {
-//GList *gnfs_ls(gnfs *n, char *path) {
 	GnomeVFSResult result;
 	enum clnt_stat clnt_stat;
 	readdirargs *rdargs=g_new(readdirargs, 1);
@@ -1022,72 +1117,75 @@ nfs_file_list(NfsServerConnection *conn, NfsFileHandle *dir, GList **list)
 
 	rdargs->count = DIRSIZE;
 
-loop:
-	bzero(rdres, DIRSIZE);
+	while (1) {
+		bzero(rdres, DIRSIZE);
 
-	/* this code does a READDIR */
-	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_READDIR,
-			(xdrproc_t)xdr_readdirargs, (caddr_t)rdargs,
-			(xdrproc_t)xdr_readdirres, (caddr_t)rdres, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
-		clnt_perror(conn->nfs_client, "readdir");
-		g_print("%d - bailing\n", clnt_stat);
-		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
+		/* this code does a READDIR */
+		g_mutex_lock(conn->nfs_sock_mutex);
+		if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_READDIR,
+					       (xdrproc_t)xdr_readdirargs, 
+					       (caddr_t)rdargs,
+					       (xdrproc_t)xdr_readdirres, 
+					       (caddr_t)rdres, 
+					       conn->nfs_timeval, 
+					       &rdres->status)) != RPC_SUCCESS) {
+			clnt_perror(conn->nfs_client, "readdir");
+			g_print("NFS_METHOD: %d - bailing\n", clnt_stat);
+			result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
+			g_mutex_unlock(conn->nfs_sock_mutex);
+			goto error;
+		}
 		g_mutex_unlock(conn->nfs_sock_mutex);
-		goto error;
-	}
-	g_mutex_unlock(conn->nfs_sock_mutex);
-	if(rdres->status != 0) {
-		g_print("readdir error... %s\n", strerror(rdres->status));
-		result = gnome_vfs_result_from_errno_code(rdres->status);
-		goto error;
-	}
-
-	rddirlist = &rdres->readdirres_u.reply;
-	next = rddirlist->entries;
-	while(next) {
-		GnomeVFSFileInfo *info;
-
-		/* special case; nautilus dies if we return these
-		 * specifically, a do_open_directory is done on '.' and then 
-		 * nautilus dies on a hash table assert.
-		 */
-		if (!strcmp(next->name, ".") || !strcmp(next->name, "..")) {
-			next = next->nextentry;
-			continue;
+		if(rdres->status != 0) {
+			g_print("NFS_METHOD: readdir error... %s\n", strerror(rdres->status));
+			result = gnome_vfs_result_from_errno_code(rdres->status);
+			goto error;
 		}
+
+		rddirlist = &rdres->readdirres_u.reply;
+		next = rddirlist->entries;
+		while(next) {
+			GnomeVFSFileInfo *info;
+
+			/* special case; nautilus dies if we return these
+			 * specifically, a do_open_directory is done on '.' and then 
+			 * nautilus dies on a hash table assert.
+			 */
+			if (!strcmp(next->name, ".") || !strcmp(next->name, "..")) {
+				next = next->nextentry;
+				continue;
+			}
 		
-		info = gnome_vfs_file_info_new();
+			info = gnome_vfs_file_info_new();
 
-		info->name = g_strdup(next->name);
-		nfs_lookup(conn, dir, next->name, info);
-		if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-			info->mime_type = g_strdup("x-directory/normal");
-		} else {
-			info->mime_type = g_strdup( 
-				gnome_vfs_mime_type_from_name_or_default( 
+			info->name = g_strdup(next->name);
+			nfs_lookup(conn, dir, next->name, info);
+			if (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+				info->mime_type = g_strdup("x-directory/normal");
+			} else {
+				info->mime_type = g_strdup( 
+					gnome_vfs_mime_type_from_name_or_default( 
 						next->name, "text/plain"));
+			}
+			info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
+			*list = g_list_append(*list, info);
+			memcpy(rdargs->cookie, &next->cookie, NFS_COOKIESIZE);
+			next = next->nextentry;
 		}
-		info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
-		*list = g_list_append(*list, info);
-		memcpy(rdargs->cookie, &next->cookie, NFS_COOKIESIZE);
-		next = next->nextentry;
-	}
 
-	if(!rddirlist->eof) {
-		goto loop;
+		if(rddirlist->eof) {
+			/* we've finished traversing the directory list */
+			break;
+		}
 	}
-
-	g_free(rdargs);
-	g_free(rdres);
 
 	result = GNOME_VFS_OK;
 
 error:
+	g_free(rdargs);
+	g_free(rdres);
 	return result;
 }
-#endif
 
 static GnomeVFSResult
 do_open_directory (GnomeVFSMethod *method,
@@ -1152,13 +1250,13 @@ do_read_directory (GnomeVFSMethod *method,
 		gnome_vfs_file_info_copy(file_info, 
 				(GnomeVFSFileInfo *)handle->pointer->data);
 		handle->pointer = handle->pointer->next;
-/*
+
 		if (file_info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
 			printf("symbollic link debug: %s\n", file_info->symlink_name);
 		} else {
-			printf("Not a symlink: %s\n", file_info->name);
+//			printf("Not a symlink: %s\n", file_info->name);
 		}
-*/
+
 		return GNOME_VFS_OK;
 	} else {
 		return GNOME_VFS_ERROR_EOF;
@@ -1237,7 +1335,7 @@ do_get_file_info_from_handle (GnomeVFSMethod *method,
 		file_info->valid_fields |= 
 			GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
 	}
-	g_print("get_file_info worked...\n");
+	g_print("NFS_METHOD: get_file_info worked...\n");
 	return GNOME_VFS_OK;
 }
 
@@ -1263,7 +1361,7 @@ nfs_mkdir (GnomeVFSURI *uri,
 	enum clnt_stat clnt_stat;
 
 	memcpy(c.where.dir.data, fh->handle.data, NFS_FHSIZE * sizeof(char));
-	c.where.name = (char *)gnome_vfs_uri_get_basename(uri);
+	c.where.name = g_strdup(gnome_vfs_uri_get_basename(uri));
 	c.attributes.mode = perm;
 	c.attributes.uid = getuid();
 	c.attributes.gid = getgid();
@@ -1273,22 +1371,23 @@ nfs_mkdir (GnomeVFSURI *uri,
 	gettimeofday((struct timeval *)&c.attributes.mtime, (struct timezone *)NULL);
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_MKDIR,
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_MKDIR,
 			(xdrproc_t)xdr_createargs, (caddr_t)&c,
 			(xdrproc_t)xdr_diropres, (caddr_t)&res, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &res.status)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "mkdir");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(conn->nfs_sock_mutex);
 		goto error;
 	}
 	g_mutex_unlock(conn->nfs_sock_mutex);
+	g_free(c.where.name);
 	if (res.status != 0) {
-		g_print("mkdir error... %s\n", strerror(res.status));
+		g_print("NFS_METHOD: mkdir error... %s\n", strerror(res.status));
 		result = gnome_vfs_result_from_errno_code(res.status);
 		goto error;
 	}
-	g_print("Directory created! (%d, %d)\n", res.diropres_u.diropres.attributes.uid, res.diropres_u.diropres.attributes.gid);
+	g_print("NFS_METHOD: Directory created! (%d, %d)\n", res.diropres_u.diropres.attributes.uid, res.diropres_u.diropres.attributes.gid);
 
 	result = GNOME_VFS_OK;
 
@@ -1306,7 +1405,7 @@ do_make_directory (GnomeVFSMethod *method,
 	GnomeVFSResult result;
 	GnomeVFSURI *parent;
 
-	g_print("make directory(%s)\n", gnome_vfs_uri_to_string(uri,0));
+	g_print("NFS_METHOD: make directory(%s)\n", gnome_vfs_uri_to_string(uri,0));
 	if (uri->text == NULL || uri->text[0] == '\0') {
 		/* remove the root? */
 		return GNOME_VFS_ERROR_GENERIC;
@@ -1327,7 +1426,7 @@ do_make_directory (GnomeVFSMethod *method,
 		result = nfs_mkdir(uri, conn, fh, perm);
 		if (result != GNOME_VFS_OK) return result;
 
-		g_print("mkdir worked...\n");
+		g_print("NFS_METHOD: mkdir worked...\n");
 		return GNOME_VFS_OK;
 	}
 }
@@ -1347,10 +1446,10 @@ nfs_rmdir (GnomeVFSURI *uri,
 	d.name = (char *)gnome_vfs_uri_get_basename(uri);
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_RMDIR,
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_RMDIR,
 			(xdrproc_t)xdr_diropargs, (caddr_t)&d,
 			(xdrproc_t)xdr_nfsstat, (caddr_t)&s, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &s)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "readdir");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		g_mutex_unlock(conn->nfs_sock_mutex);
@@ -1358,11 +1457,11 @@ nfs_rmdir (GnomeVFSURI *uri,
 	}
 	g_mutex_unlock(conn->nfs_sock_mutex);
 	if(s != 0) {
-		g_print("rmdir error... %s\n", strerror(s));
+		g_print("NFS_METHOD: rmdir error... %s\n", strerror(s));
 		result = gnome_vfs_result_from_errno_code(s);
 		goto error;
 	}
-	g_print("Directory removed!\n");
+	g_print("NFS_METHOD: Directory removed!\n");
 	result = GNOME_VFS_OK;
 error:
 	return result;
@@ -1376,7 +1475,7 @@ do_remove_directory (GnomeVFSMethod *method,
 	GnomeVFSResult result;
 	GnomeVFSURI *parent;
 
-	g_print("remove directory(%s)\n", gnome_vfs_uri_to_string(uri,0));
+	g_print("NFS_METHOD: remove directory(%s)\n", gnome_vfs_uri_to_string(uri,0));
 	if (uri->text == NULL || uri->text[0] == '\0') {
 		/* remove the root? */
 		return GNOME_VFS_ERROR_GENERIC;
@@ -1397,7 +1496,7 @@ do_remove_directory (GnomeVFSMethod *method,
 		result = nfs_rmdir(uri, conn, fh);
 		if (result != GNOME_VFS_OK) return result;
 
-		g_print("rmdir worked...\n");
+		g_print("NFS_METHOD: rmdir worked...\n");
 		return GNOME_VFS_OK;
 	}
 }
@@ -1430,19 +1529,19 @@ nfs_unlink (GnomeVFSURI *uri,
 	d.name = (char *)gnome_vfs_uri_get_basename(uri);
 
 	g_mutex_lock(conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(conn->nfs_client, NFSPROC_REMOVE,
+	if ((clnt_stat = nfs_clnt_call(conn->nfs_client, NFSPROC_REMOVE,
 			(xdrproc_t)xdr_diropargs, (caddr_t)&d,
 			(xdrproc_t)xdr_nfsstat, (caddr_t)&s, 
-			conn->nfs_timeval)) != RPC_SUCCESS) {
+			conn->nfs_timeval, &s)) != RPC_SUCCESS) {
 		clnt_perror(conn->nfs_client, "readdir");
 		result = GNOME_VFS_ERROR_GENERIC;
 		g_mutex_unlock(conn->nfs_sock_mutex);
 		goto error;
 	}
 	g_mutex_unlock(conn->nfs_sock_mutex);
-	g_print("status = %d\n", s);
+	g_print("NFS_METHOD: status = %d\n", s);
 	if(s != 0) {
-		g_print("remove error... %s\n", strerror(s));
+		g_print("NFS_METHOD: remove error... %s\n", strerror(s));
 		result = gnome_vfs_result_from_errno_code(s);
 		goto error;
 	}
@@ -1460,7 +1559,7 @@ do_unlink (GnomeVFSMethod *method,
 	GnomeVFSResult result;
 	GnomeVFSURI *parent;
 
-	g_print("remove file(%s)\n", gnome_vfs_uri_to_string(uri,0));
+	g_print("NFS_METHOD: remove file(%s)\n", gnome_vfs_uri_to_string(uri,0));
 	if (uri->text == NULL || uri->text[0] == '\0') {
 		/* remove the root? */
 		return GNOME_VFS_ERROR_GENERIC;
@@ -1481,7 +1580,7 @@ do_unlink (GnomeVFSMethod *method,
 		result = nfs_unlink(uri, conn, f);
 		if (result != GNOME_VFS_OK) return result;
 
-		g_print("unlink worked...\n");
+		g_print("NFS_METHOD: unlink worked...\n");
 		return GNOME_VFS_OK;
 	}
 }
@@ -1505,22 +1604,22 @@ nfs_rename (GnomeVFSURI *from, GnomeVFSURI *to,
 	r.to.name = (char *)gnome_vfs_uri_get_basename(to);
 
 	g_mutex_lock(from_conn->nfs_sock_mutex);
-	if ((clnt_stat = clnt_call(from_conn->nfs_client, NFSPROC_RENAME,
+	if ((clnt_stat = nfs_clnt_call(from_conn->nfs_client, NFSPROC_RENAME,
 			(xdrproc_t)xdr_renameargs, (caddr_t)&r,
 			(xdrproc_t)xdr_nfsstat, (caddr_t)&s, 
-			from_conn->nfs_timeval)) != RPC_SUCCESS) {
+			from_conn->nfs_timeval, &s)) != RPC_SUCCESS) {
 		clnt_perror(from_conn->nfs_client, "readdir");
 		result = GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
 		goto error;
 	}
 	g_mutex_unlock(from_conn->nfs_sock_mutex);
-	g_print("status = %d\n", s);
+	g_print("NFS_METHOD: status = %d\n", s);
 	if(s != 0) {
-		g_print("mkdir error... %s\n", strerror(s));
+		g_print("NFS_METHOD: mkdir error... %s\n", strerror(s));
 		result = gnome_vfs_result_from_errno_code(s);
 		goto error;
 	}
-	g_print("File moved!\n");
+	g_print("NFS_METHOD: File moved!\n");
 
 	result = GNOME_VFS_OK;
 error:
@@ -1539,7 +1638,7 @@ do_move (GnomeVFSMethod *method,
 	GnomeVFSURI *from_parent, *to_parent;
 
 
-	g_print("move file(%s) to (%s)\n", gnome_vfs_uri_to_string(old_uri,0), 
+	g_print("NFS_METHOD: move file(%s) to (%s)\n", gnome_vfs_uri_to_string(old_uri,0), 
 		gnome_vfs_uri_to_string(new_uri,0));
 	if ((new_uri->text == NULL || new_uri->text[0] == '\0')
 		|| (old_uri->text == NULL || old_uri->text[0] == '\0')) {
@@ -1572,7 +1671,7 @@ do_move (GnomeVFSMethod *method,
 		result = nfs_rename(old_uri, new_uri, from_conn, to_conn, from_handle, to_handle);
 		if (result != GNOME_VFS_OK) return result;
 
-		g_print("move worked...\n");
+		g_print("NFS_METHOD: move worked...\n");
 		return GNOME_VFS_OK;
 	}
 }
@@ -1619,10 +1718,10 @@ nfs_hash_foreach (gpointer key, gpointer value, gpointer user_data)
 	path = gnome_vfs_uri_get_path(f->uri);
 	if (f->mounted) {
 		/* unmount this */
-		if ((clnt_stat = clnt_call(c->mount_client, MOUNTPROC_UMNT,
+		if ((clnt_stat = nfs_clnt_call(c->mount_client, MOUNTPROC_UMNT,
 			(xdrproc_t)xdr_dirpath, (char *)&path,
 			(xdrproc_t)xdr_void, 0,
-			c->mount_timeval)) != RPC_SUCCESS) {
+			c->mount_timeval, NULL)) != RPC_SUCCESS) {
 			clnt_perror(c->mount_client, "mountproc_umnt");
 		}
 	}

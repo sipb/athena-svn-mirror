@@ -147,7 +147,7 @@ G_STMT_START{					\
 		return __tmp_result;		\
 }G_STMT_END
 
-#define VALID_URI(u) (((u)->text==NULL)||((u)->text[0]=='\0')||(((u)->text[0]=='/')&&((u)->text[1]=='\0')))
+#define VALID_URI(u) ((u)->parent!=NULL&&(((u)->text==NULL)||((u)->text[0]=='\0')||(((u)->text[0]=='/')&&((u)->text[1]=='\0'))))
 
 
 /* GZip handle creation/destruction.  */
@@ -471,7 +471,7 @@ do_open (GnomeVFSMethod *method,
 	_GNOME_VFS_METHOD_PARAM_CHECK (uri != NULL);
 
 	/* Check that the URI is valid.  */
-	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_NOT_FOUND;
+	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_INVALID_URI;
 
 	parent_uri = uri->parent;
 
@@ -722,7 +722,7 @@ do_get_file_info  (GnomeVFSMethod *method,
 		   GnomeVFSContext *context) {
 	GnomeVFSResult result;
 
-	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_NOT_FOUND;
+	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_INVALID_URI;
 
 	result = gnome_vfs_get_file_info_uri(uri->parent, file_info, options);
 	if(result == GNOME_VFS_OK) {

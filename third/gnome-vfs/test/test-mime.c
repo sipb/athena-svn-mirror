@@ -40,6 +40,7 @@ main (int argc, char **argv)
 	gboolean dump_table;
 	const char *result;
 	const char *table_path;
+	char *uri_string;
 	struct stat tmp;
 
 	table_path = NULL;
@@ -52,7 +53,7 @@ main (int argc, char **argv)
 		return 1;
 	}
 
-	if (argc == 1) {
+	if (argc == 1 || strcmp (argv[1], "--help") == 0) {
 		fprintf (stderr, "Usage: %s [--magicOnly | --suffixOnly] [--dumpTable] "
 			" [--loadTable <table path>] fileToCheck1 [fileToCheck2 ...] \n", *argv);
 		return 1;
@@ -94,6 +95,16 @@ main (int argc, char **argv)
 
 	for (; *argv != NULL; argv++) {
 		uri = gnome_vfs_uri_new (*argv);
+		if (uri == NULL) {
+		  uri_string = gnome_vfs_get_uri_from_local_path (*argv);
+		  uri = gnome_vfs_uri_new (uri_string);
+		  g_free (uri_string);
+		}
+
+		if (uri == NULL) {
+		  printf ("%s is not a valid uri or file name\n", *argv);
+		  return 1;
+		}
 
 		if (magic_only) {
 			result = gnome_vfs_get_mime_type_from_file_data (uri);

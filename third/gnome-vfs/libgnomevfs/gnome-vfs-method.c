@@ -167,11 +167,12 @@ load_module (const gchar *module_name, const char *method_name, const char *args
 	GnomeVFSTransformInitFunc transform_function = NULL;
 	GnomeVFSMethodShutdownFunc shutdown_function = NULL;
 
+	*method = NULL;
+	*transform = NULL;
+
 	module = g_module_open (module_name, G_MODULE_BIND_LAZY);
 	if (module == NULL) {
-		gchar *error = g_module_error ();
-		g_warning ("Cannot load module `%s' (%s)", module_name, error);
-		g_free (error);
+		g_warning ("Cannot load module `%s' (%s)", module_name, g_module_error ());
 		return;
 	}
 

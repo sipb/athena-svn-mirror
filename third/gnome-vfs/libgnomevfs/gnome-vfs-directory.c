@@ -190,6 +190,19 @@ gnome_vfs_directory_open_from_uri (GnomeVFSDirectoryHandle **handle,
 	return open_from_uri (handle, uri, options, filter, NULL);
 }
 
+GnomeVFSResult
+gnome_vfs_directory_open_from_uri_cancellable (GnomeVFSDirectoryHandle **handle,
+				   GnomeVFSURI *uri,
+				   GnomeVFSFileInfoOptions options,
+				   const GnomeVFSDirectoryFilter *filter,
+				   GnomeVFSContext *context)
+{
+	g_return_val_if_fail (handle != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (uri != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+
+	return open_from_uri (handle, uri, options, filter, context);
+}
+
 /**
  * gnome_vfs_directory_read_next:
  * @handle: A directory handle
@@ -211,6 +224,20 @@ gnome_vfs_directory_read_next (GnomeVFSDirectoryHandle *handle,
 						    handle->method_handle,
 						    file_info, NULL);
 }
+
+GnomeVFSResult 
+gnome_vfs_directory_read_next_cancellable (GnomeVFSDirectoryHandle *handle,
+					   GnomeVFSFileInfo *file_info,
+					   GnomeVFSContext *context)
+{
+	CHECK_IF_SUPPORTED (handle->uri->method, read_directory);
+
+	gnome_vfs_file_info_clear (file_info);
+	return handle->uri->method->read_directory (handle->uri->method,
+						    handle->method_handle,
+						    file_info, context);
+}
+
 
 /**
  * gnome_vfs_directory_close:

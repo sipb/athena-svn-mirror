@@ -3,6 +3,8 @@ NULL =
 INCLUDES =					\
 	-DGNOME_VFS_CONFDIR=\"$(sysconfdir)\"	\
 	-DGNOME_VFS_DATADIR=\"$(datadir)\"	\
+	-DGNOME_VFS_PREFIX=\"$(prefix)\"	\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/intl			\
 	-I$(top_builddir)			\
 	-I$(top_builddir)/intl			\
@@ -73,6 +75,7 @@ libgnomevfsinclude_HEADERS =			\
 	gnome-vfs-mime-handlers.h		\
 	gnome-vfs-mime-info.h			\
 	gnome-vfs-mime-magic.h			\
+	gnome-vfs-mime-monitor.h		\
 	gnome-vfs-mime-sniff-buffer.h		\
 	gnome-vfs-mime-sniff-buffer-private.h	\
 	gnome-vfs-application-registry.h	\
@@ -109,6 +112,7 @@ libgnomevfs_la_SOURCES =			\
 	gnome-vfs-mime-handlers.c               \
 	gnome-vfs-mime-info.c			\
 	gnome-vfs-mime-magic.c			\
+	gnome-vfs-mime-monitor.c		\
 	gnome-vfs-mime-sniff-buffer.c		\
 	gnome-vfs-application-registry.c	\
 	gnome-vfs-module-shared.c		\
@@ -133,8 +137,3 @@ noinst_HEADERS =				\
 libgnomevfsplatofrmincludedir = $(libdir)/vfs/include
 libgnomevfsplatofrminclude_HEADERS =			\
 	gnome-vfs-file-size.h
-
-bin_PROGRAMS = gnome-vfs-gen-mimedb
-gnome_vfs_gen_mimedb_SOURCES = gnome-vfs-gen-mimedb.c
-gnome_vfs_gen_mimedb_LDFLAGS = -static
-gnome_vfs_gen_mimedb_LDADD = libgnomevfs.la 

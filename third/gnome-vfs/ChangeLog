@@ -1,3 +1,1610 @@
+2001-01-22  Darin Adler  <darin@eazel.com>
+
+	* check-mime.pl: Added lots of white space checks.
+
+2001-01-22  Darin Adler  <darin@eazel.com>
+
+	* check-mime.pl: Added check for i-regular.
+
+2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed bugzilla.eazel.com bug 5498 about
+	symbolic links across file systems caused 
+	copies instead of drags in nautilus.
+	This change makes the order uris are
+	passed to check_same_fs important.
+	The first uri is now the "source
+	uri," and the second is the "target uri."
+	
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-ops.h:
+	Change the argument names of check_same_fs to 
+	reflect the new argument names
+	* modules/file-method.c: (do_check_same_fs):
+	Do a stat on the "target uri" but an lstat
+	on the "source uri"
+	* doc/mime-data-specification.txt:
+	Added bug number references to the 
+	problems that we list in the specification
+
+2001-01-20  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Work on making Search cancellable.
+	
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	(pthread_gnome_vfs_async_cancel), (gnome_vfs_job_cancel):
+	Move the job cancellation outside the job->access_lock to avoid
+	having to have the load_directory call completely finish before
+	cancellation takes effect. Move the setting of the cancelled
+	flag outside gnome_vfs_job_cancel and into the access_lock so that
+	cancellation of the job and cancellation of the callbacks is atomic.
+	
+	* libgnomevfs/gnome-vfs-cancellable-ops.h:
+	* libgnomevfs/gnome-vfs-directory.c:
+	(gnome_vfs_directory_open_from_uri_cancellable),
+	(gnome_vfs_directory_read_next_cancellable):
+	Add new cancellable versions of gnome_vfs_directory_open and
+	gnome_vfs_directory_read_next.
+
+	* libgnomevfs-pthread/gnome-vfs-job.c:
+	(execute_load_directory_not_sorted), 
+	Use the new cancellable open and read_next calls in
+	execute_load_directory_not_sorted. Pass in the cancellation context.
+	
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	* check-mime.pl: Update so it works with the new keys.in file.
+
+2001-01-19  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Michael Engber <engber@eazel.com>
+
+	Fix 1200: count_items_and_size needs to deal with errors.
+	Fix 4577: File copying that fills a partition will cause an unescapable
+	loop of error dialogs.
+	Fix 5518: Nautilus hits assert in build_error_string during some
+	large copy operation.
+
+	* libgnomevfs/gnome-vfs-xfer.c: (handle_name_conflicts),
+	(copy_file_data), (gnome_vfs_xfer_delete_items),
+	(gnome_vfs_xfer_uri_internal):
+	Make copy loop in copy_file_data properly bail when an error happens
+	and retry is not requested.
+	Make count_item_and_size ignore any errors except for cancellations of
+	the copy -- we will deal with all the errors nicely either in the other
+	parts of the preflight or during the copy itself.
+	Pass in the target directory uri to the error handling code that reports
+	that we have no space on the destination.
+	
+	HACKING:
+	Add some more comments.
+
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan  <sullivan@eazel.com>
+
+	Fix bug 5816 (Clicking "Refresh" in View as Image crashes
+	Nautilus) by getting rid of a "free non-malloc'd memory" problem.
+
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	(gnome_vfs_mime_get_all_applications): Fixed problem where the
+	prune function was freeing application IDs that we don't own.
+	(prune_ids_for_nonexistent_applications): Used g_list_free_1 for
+	clarity. The old code used g_list_free, which will also work,
+	since the removed node is a list of length 1.
+
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan  <sullivan@eazel.com>
+
+	* .cvsignore: Ignore the xml-i18n-tools files.
+	* libgnomevfs-pthread/gnome-vfs-async-job-map.c:
+	(callback_map_cancel_one), (gnome_vfs_async_job_cancel_callbacks):
+	Use %u instead of %d to format unsigned ints.
+	* libgnomevfs/gnome-vfs-process.c: (gnome_vfs_process_init): Take
+	advantage of defaults for the hash and key comparison functions.
+	* test/gnome-file-selection/gicon.c: (gicon_init): Take advantage
+	of defaults for the hash and key comparison functions.
+
+2001-01-19  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix 5430: Duplicate a link -> Nautilus won't display without refresh.
+	
+	* libgnomevfs/gnome-vfs-xfer.c: (copy_symlink), (copy_directory),
+	(copy_items):
+	Replaced a call to gnome_vfs_create_link to a new copy_symlink call
+	that properly updates progress and sends notifications about the
+	link being created.
+
+2001-01-18  Kenneth Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added AM_PROG_XML_I18N_TOOLS to support
+	my changes to the i18n system. Requires cvs release of
+	xml-i18n-tools.
+
+2001-01-18  John Sullivan  <sullivan@eazel.com>
+
+	* libgnomevfs/gnome-vfs-utils.c: (gnome_vfs_expand_initial_tilde):
+	Made this new function never return NULL, after discussing with
+	Darin. Now it just returns (a copy of) the original path if it
+	can't expand ~some_user_name/xxx.
+
+2001-01-18  Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-directory-list.c:
+	(gnome_vfs_directory_list_new):
+	Get rid of an unused field.
+
+2001-01-18  Pavel Cisler <pavel@eazel.com>
+
+	Part of fix to 4221 (Pressing Cancel button does not cancel)
+	* libgnomevfs-pthread/gnome-vfs-job.c: (job_notify),
+	(dispatch_xfer_callback), (dispatch_sync_job_callback):
+	Make the xfer job notify callback return the same result
+	when it gets cancelled by gnome_vfs_async_cancel as if
+	the callback requested a cancellation.
+	
+	* libgnomevfs/gnome-vfs-xfer.c: (call_progress),
+	(call_progress_with_current_names), (call_progress_uri),
+	(call_progress_with_uris_often), (remove_file), (empty_directory),
+	(remove_directory):
+	Fixed a lot of white space.
+
+2001-01-18  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	* modules/http-method.c: (sig_gconf_value_changed),
+	(vfs_module_init):
+	Proxy preferences are now split into host and port rather than
+	using one string.
+
+2001-01-17  Pavel Cisler  <pavel@eazel.com>
+
+	* test/test-async-cancel.c: (test_load_directory_cancel),
+	(test_find_directory_callback), (test_find_directory), (main):
+	Add more async tests.
+	
+2001-01-17  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fix 5732 (Cancelling a File Copy dialog crashes Nautilus)
+	* libgnomevfs-pthread/gnome-vfs-job.c: (job_notify):
+	Fix a deadlock and a crash when xfer notify callback gets called
+	repeatedly after the copy operation was cancelled (a separate
+	bug).
+	
+	* libgnomevfs-pthread/gnome-vfs-async-job-map.c:
+	(gnome_vfs_async_job_cancel_callbacks):
+	Fix a debug build problem.
+	
+	* libgnomevfs-pthread/gnome-vfs-job.h:
+	Removed an unused field.
+
+2001-01-17  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed problems that were part of bug 5581 (Can't make
+	StarOffice the default application for file types). There
+	were three problems, of which two are now fixed:
+	(1) Installing StarOffice (at least using Sun's installer)
+	doesn't add its directory to $PATH, and it isn't installed
+	in a directory already in $PATH. This is not fixed.
+	(2) Applications not in $PATH were not stripped from the
+	complete list, but should be since they can't be used (the
+	same reason they are stripped from the short list and
+	default). This is fixed.
+	(3) The code that checked whether applications were in $PATH
+	didn't handle paths starting with ~. This is fixed.
+
+	* libgnomevfs/gnome-vfs-utils.h:
+	* libgnomevfs/gnome-vfs-utils.c:
+	(gnome_vfs_expand_initial_tilde): Function moved here and
+	renamed from expand_tilde in nautilus-file-utilities.c. Next
+	I'll make Nautilus use this function.
+
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	(gnome_vfs_mime_get_all_applications): Prune nonexistent
+	applications (including ones not in the path) from here
+	also, since they can't be used by Nautilus.
+	(executable_in_path): Handle parts of $PATH that start with ~
+
+2001-01-17  Ian McKellar  <ian@eazel.com>
+
+	* test/test-dirop.c: (main):
+	Allow the initial permissions for a directory to be
+	specified on the test tool command line.
+
+2001-01-17  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	(pthread_gnome_vfs_async_cancel):
+	Fix a typo (g_mutex_lock->g_mutex_unlock) that caused a race
+	condition where async callbacks could have been scheduled after
+	a cancellation.
+	
+	* libgnomevfs-pthread/gnome-vfs-job.c:
+	(execute_load_directory_not_sorted):
+	Whitespace tweak.
+
+2001-01-16  Pavel Cisler  <pavel@eazel.com>
+
+	* libgnomevfs-pthread/gnome-vfs-job.c:
+	(dispatch_load_directory_callback),
+	(gnome_vfs_shared_directory_list_unref),
+	(execute_load_directory_not_sorted):
+	Fix several crashes when load directory hits an error and ends
+	up with an empty directory list.
+	
+	* test/test-async-cancel.c: (directory_load_failed_callback),
+	(test_load_directory_fail), (main):
+	Add a test to the test rig that catches the bug I fixed.
+	
+
+2001-01-16  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-application-registry.c: (get_keys_foreach),
+	(gnome_vfs_application_registry_get_applications):
+	* libgnomevfs/gnome-vfs-mime-info.c: (mime_list_sort):
+	
+	Add casts to strcmp's performed on gpointers so they will
+	not generate warnings.
+
+2001-01-16  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+	
+	Fix 5399: Callbacks need a better way to find out if they are still needed.
+	Fix 5401: Decouple async jobs and callbacks.
+	Fix 5402: DGnomeVFSAsyncJob cleanup needs to be simplified.
+	Fix 5677: File copy operation crashes Nautilus.
+	Fix 1129: Storage leak while cancelling an async operation.
+
+	* libgnomevfs-pthread/Makefile.am:
+	* libgnomevfs-pthread/gnome-vfs-async-job-map.c:
+	(gnome_vfs_async_job_map_get_job),
+	(gnome_vfs_async_job_map_add_job),
+	(gnome_vfs_async_job_map_remove_job),
+	(gnome_vfs_async_job_map_destroy), (gnome_vfs_async_job_completed),
+	(gnome_vfs_async_job_map_shutdown), (gnome_vfs_async_job_map_lock),
+	(gnome_vfs_async_job_map_unlock),
+	(gnome_vfs_async_job_map_assert_locked),
+	(gnome_vfs_async_job_callback_valid),
+	(gnome_vfs_async_job_add_callback),
+	(gnome_vfs_async_job_remove_callback), (callback_map_cancel_one),
+	(gnome_vfs_async_job_cancel_callbacks),
+	(async_job_callback_map_destroy):
+	* libgnomevfs-pthread/gnome-vfs-async-job-map.h:
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	Move gnome_vfs_async_job_map calls to their new file.
+	Add a async job callback map.
+	Switch to using a static recursive mutext for locking the job map.
+	Add support for cancelling callbacks.
+	
+	
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	(pthread_gnome_vfs_async_cancel): Handle cancelling of
+	both the job and it's callbacks. 
+	(async_open),
+	(async_open_as_channel), (async_create),
+	(pthread_gnome_vfs_async_create_as_channel),
+	(pthread_gnome_vfs_async_close), (pthread_gnome_vfs_async_read),
+	(pthread_gnome_vfs_async_write),
+	(pthread_gnome_vfs_async_create_symbolic_link),
+	(pthread_gnome_vfs_async_get_file_info),
+	(pthread_gnome_vfs_async_set_file_info),
+	(pthread_gnome_vfs_async_find_directory), (copy_sort_rules),
+	(async_load_directory), (pthread_gnome_vfs_async_xfer),
+	(pthread_gnome_vfs_async_add_status_callback),
+	(pthread_gnome_vfs_async_remove_status_callback):
+	gnome_vfs_job_new now gets called with parameters for the op.
+	Cache the job handle before starting the job to avoid accessing
+	the job structure after it has been unlocked and possibly deleted.
+	Get rid of gnome_vfs_async_job_expired, use gnome_vfs_async_job_completed
+	instead.
+	
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c: (thread_routine),
+	(gnome_vfs_job_create_slave):
+	Redo the way jobs are destroyed after they complete. Pass the
+	job handle instead of the job structure itself to the thread_routine
+	and check for the job being invalid by the time the thread_routine
+	runs.
+	
+	* libgnomevfs-pthread/gnome-vfs-job.h:
+	* libgnomevfs-pthread/gnome-vfs-job.c: (gnome_vfs_job_complete),
+	(job_oneway_notify), (job_notify), (dispatch_open_callback),
+	(dispatch_create_callback), (dispatch_open_as_channel_callback),
+	(dispatch_create_as_channel_callback), (dispatch_close_callback),
+	(dispatch_read_callback), (dispatch_write_callback),
+	(dispatch_load_directory_callback),
+	(dispatch_get_file_info_callback),
+	(dispatch_find_directory_callback),
+	(dispatch_set_file_info_callback), (dispatch_xfer_callback),
+	(empty_close_callback), (handle_cancelled_open),
+	(free_get_file_info_notify_result),
+	(free_find_directory_notify_result),
+	(gnome_vfs_job_destroy_notify_result),
+	(dispatch_sync_job_callback), (dispatch_job_callback),
+	(gnome_vfs_job_set), (gnome_vfs_job_new), (gnome_vfs_job_destroy),
+	(gnome_vfs_op_destroy), (gnome_vfs_job_go), (serve_channel_read),
+	(execute_open), (execute_open_as_channel), (execute_create),
+	(execute_create_symbolic_link), (execute_create_as_channel),
+	(execute_close), (execute_read), (execute_write),
+	(execute_load_directory_not_sorted),
+	(execute_load_directory_sorted), (execute_get_file_info),
+	(execute_set_file_info), (execute_find_directory),
+	(execute_load_directory), (xfer_callback), (execute_xfer),
+	(gnome_vfs_job_execute), (gnome_vfs_job_cancel):
+	Remove most of the synchronization between the async thread and the
+	callbacks, now that the two share no state.
+	Add a mechanism to figure out if a job is to expire after completing the
+	current op or not.
+	Switch to using g_idle_add for scheduling calbacks instead of g_io_channel.
+	Get rid of tons of casts in the notify callback routines.
+	dispatch_job_callback now deals with notify_results that belong to operations
+	that have been canceled while the notification was being dispatched.
+	Handle job cancellation in execute_xfer.
+
+	* test/test-async-cancel.c: (make_asserts_break),
+	(directory_load_callback), (test_open_read_close),
+	(test_open_close), (my_yield), (test_load_directory_cancel),
+	(main):
+	Add more tests.
+
+	* libgnomevfs-pthread/gnome-vfs-thread-pool.c:
+	(gnome_vfs_thread_pool_wait_for_work):
+	Augument profiler results a bit.
+	
+	* libgnomevfs/gnome-vfs-directory-list.c:
+	Some small tweaks.
+
+2001-01-15  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-xfer.c: (move_items),
+	(gnome_vfs_xfer_uri_internal):
+
+	More fun with bug 5250.  Same-filesystem moves that failed from an error
+	during a move would be deleted even if the user "skipped" them.
+
+	move_items no longer gives progress callback GNOME_VFS_XFER_PHASE_MOVING
+	for URI's that are skipped (prevents faulty copying of metadata)
+
+	gnome_vfs_xfer_uri_internal returns an error if both move and link conditions
+	are indicated (obvious contradiction)
+
+	GNOME_VFS_XFER_PHASE_CLEANUP and associated item deletion no longer occurs
+	for move or link case.  I confirmed that this didn't mess up the Nautilus
+	sync_transfer_callback metadata copying and update mechanism.
+	
+
+2001-01-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3229, Clean up appearance of File Types and Programs capplet
+	
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(init_mime_capplet):
+	Adjust positions of widgets for better look and feel.
+
+2001-01-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fix bug 4797, user can choose an icon anywhere on his filesystem
+	to associate it to a given mime type but the icon will not be used.
+	
+	* mime-type-capplet/nautilus-mime-type-icon-entry.c:
+	(entry_changed), (ientry_destroy), (browse_clicked),
+	(nautilus_mime_type_show_icon_selection),
+	(nautilus_mime_type_icon_entry_init),
+	(nautilus_mime_type_icon_entry_set_pixmap_subdir):
+	Remove ability to navigate to directories outside of the
+	shared pixmap path.
+
+2001-01-09  Pavel Cisler  <pavel@eazel.com>
+
+	* libgnomevfs-pthread/gnome-vfs-job.h:
+	Oops, turn off spew that I enabled and checked in by accident.
+
+2001-01-09  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed 5398 (Async callbacks need to be passed over ownership of data)
+
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c: (async_open),
+	(async_open_as_channel), (async_create),
+	(pthread_gnome_vfs_async_create_as_channel),
+	(pthread_gnome_vfs_async_read), (pthread_gnome_vfs_async_write),
+	(pthread_gnome_vfs_async_create_symbolic_link),
+	(pthread_gnome_vfs_async_get_file_info),
+	(pthread_gnome_vfs_async_set_file_info),
+	(pthread_gnome_vfs_async_find_directory), (async_load_directory),
+	(pthread_gnome_vfs_async_xfer):
+	* libgnomevfs-pthread/gnome-vfs-job.c: (wakeup),
+	(job_oneway_notify), (job_notify), (job_oneway_notify_and_close),
+	(job_notify_and_close), (dispatch_open_callback),
+	(dispatch_create_callback), (dispatch_open_as_channel_callback),
+	(dispatch_create_as_channel_callback), (dispatch_close_callback),
+	(dispatch_read_callback), (dispatch_write_callback),
+	(dispatch_load_directory_callback),
+	(free_get_file_info_notify_result),
+	(dispatch_get_file_info_callback),
+	(free_find_directory_notify_result),
+	(dispatch_find_directory_callback),
+	(dispatch_set_file_info_callback), (dispatch_xfer_callback),
+	(gnome_vfs_job_destroy_notify_result), (dispatch_job_callback),
+	(gnome_vfs_job_destroy), (gnome_vfs_op_destroy),
+	(serve_channel_read), (serve_channel_write), (execute_open),
+	(execute_open_as_channel), (execute_create),
+	(execute_create_symbolic_link), (execute_create_as_channel),
+	(execute_close), (execute_read), (execute_write),
+	(execute_load_directory_not_sorted),
+	(execute_load_directory_sorted), (execute_get_file_info),
+	(execute_set_file_info), (execute_find_directory),
+	(execute_load_directory), (xfer_callback), (execute_xfer):
+	* libgnomevfs-pthread/gnome-vfs-job.h:
+	Allocate a new struct for notification results for all async callbacks
+	except for xfer. Pass the notification results as data when waking up
+	the notification callback. Delete the notification results once the
+	callback is done. Remove notification result fields from the different
+	op structures.
+
+2001-01-09  Aaron Brick <aaron@eazel.com>
+
+	* added MIME description guidelines in
+	doc/mime-descriptions-guidelines.txt, superceding old rules
+	in data/mime/gnome-vfs.keys.
+
+	* referred to the new file twice in mime-data-specification.txt
+	and in the comments of data/mime/gnome-vfs.keys.
+
+2001-01-08  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: mfleming@eazel.com
+
+	* modules/ftp-method.h:
+	* modules/ftp-method.c: (ftp_response_to_vfs_result),
+	(get_response), (do_basic_command), (do_path_command_completely),
+	(ftp_connection_release), (do_open), (do_make_directory),
+	(do_remove_directory), (do_move), (do_unlink):
+	The meaning of an FTP 550 response depends on what call was made.
+	The GnomeVFSError to be returned for a 550 may now be specified
+	at a higher level.
+
+	(ftp_connection_create), (ftp_connection_destroy),
+	(internal_get_file_info), (do_open_directory):
+	Store the response of SYST (operating system) for each connection.
+	Don't request server-side symlink expansion for MacOS servers,
+	because they get confused.
+
+	(do_read_directory):
+	Unset the permissions bit of file info valid fields.
+
+2001-01-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3041, "Action" column text is confusing
+
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(add_mime_clicked), (update_mime_list_action),
+	(populate_mime_list), (create_mime_list_and_scroller):
+	Made changes according to input from John and Arlo.
+	Changed "Action" column to "Default Action."
+	Changed action text when a viewer is specified to
+	"View as" preprended to the action type.
+	
+2001-01-08  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: pavel@eazel.com
+
+	* libgnomevfs/gnome-vfs-xfer.c: (xfer_create_target), (copy_file),
+	(copy_directory), (copy_items), (gnome_vfs_xfer_uri_internal):
+
+	Bug 5250 (Hitting "skip" during a move operation across filesystems
+	causes skipped file not to be copied but still to be deleted).
+	
+	The new behaviour builds a list of successfully copied URI's.  It
+	is these files that are deleted, not all of the original source URI's.
+
+	Also: fix bug where files and directories copied from HTTP DAV server
+	to local filesystem would have permissions of 000 set.  Now, files
+	and directories are left with permissions set according to the user's
+	umask
+
+2001-01-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5337 (MIME code hits disk every few seconds
+	to check for changed data)
+
+	I tried a gconf-based approach but was thwarted (see
+	bug 5460). So I just removed the polling code that hits
+	the disk. This leaves behind fairly minor bug 5459. Oh
+	well.
+
+	* libgnomevfs/gnome-vfs-mime-info.c: (gnome_vfs_mime_init),
+	(reload_if_needed_idle_function):
+	Removed the polling mechanism for checking whether data on
+	disk has changed.
+	(gnome_vfs_mime_info_reload): Added numbered FIXME comment
+	about bugs 5459 and 5460.
+
+	* libgnomevfs/gnome-vfs-mime-monitor.c:
+	(gnome_vfs_mime_monitor_emit_data_changed):
+	Removed debugging spam accidentally left in earlier.
+	
+	* modules/http-method.c: (vfs_module_init): Removed FIXME
+	comment for bug that I fixed recently.
+
+2001-01-05  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* doc/mime-data-specification.txt:
+	Add attribution to Darin Adler for his work on the 
+	document.
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	(gnome_vfs_async_job_map_shutdown):
+	Remove a bogus assert that crashed when exiting
+	if no async calls had been made.
+
+2001-01-03  Pavel Cisler  <pavel@eazel.com>
+
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c: (thread_routine):
+
+	Fix a problem in my previous change -- in a certain sequence the
+	job would expire and never call the last callback which in turn
+	would cause the job spawner to try to cancel it or otherwise
+	misbehave.
+
+2001-01-03  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fix bug 5397 (use unique job IDs instead of GnomeVFSAsyncHandles)
+	
+	* libgnomevfs-pthread/gnome-vfs-async-ops.c:
+	* libgnomevfs-pthread/gnome-vfs-job.h:
+	* libgnomevfs-pthread/gnome-vfs-job.c: (dispatch_open_callback),
+	(dispatch_create_callback), (dispatch_open_as_channel_callback),
+	(dispatch_create_as_channel_callback), (dispatch_close_callback),
+	(dispatch_read_callback), (dispatch_write_callback),
+	(dispatch_load_directory_callback),
+	(dispatch_get_file_info_callback),
+	(dispatch_find_directory_callback),
+	(dispatch_set_file_info_callback), (dispatch_xfer_callback),
+	(gnome_vfs_job_new):
+	(gnome_vfs_async_job_map_add_job),
+	(gnome_vfs_async_job_map_destroy), (async_job_map_remove_job),
+	(gnome_vfs_async_job_expired), (async_job_map_get_job),
+	(gnome_vfs_async_job_map_shutdown),
+	(pthread_gnome_vfs_async_cancel), (async_open),
+	(async_open_as_channel), (async_create),
+	(pthread_gnome_vfs_async_create_as_channel),
+	(pthread_gnome_vfs_async_close), (pthread_gnome_vfs_async_read),
+	(pthread_gnome_vfs_async_write),
+	(pthread_gnome_vfs_async_create_symbolic_link),
+	(pthread_gnome_vfs_async_get_file_info),
+	(pthread_gnome_vfs_async_set_file_info),
+	(pthread_gnome_vfs_async_find_directory), (copy_sort_rules),
+	(async_load_directory), (pthread_gnome_vfs_async_load_directory),
+	(pthread_gnome_vfs_async_xfer),
+	(pthread_gnome_vfs_async_add_status_callback),
+	(pthread_gnome_vfs_async_remove_status_callback):
+	assign jobs unique id's. Use a map to map job ids to job structs.
+	
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c: (thread_routine),
+	(gnome_vfs_job_create_slave):
+	Add new jobs to the job id map as they get created. Remove them
+	when a thread expires.
+	
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c:
+	(gnome_vfs_thread_backend_shutdown):
+	Get rid of the job id map when we quit.
+	
+	* libgnomevfs-pthread/gnome-vfs-thread-pool.c:
+	Make some debugging code better.
+	
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c:
+	(gnome_vfs_job_create_slave):
+	Remove some code that was ifdefd out now that new thread pool code
+	seems to be working fine.
+
+2001-01-02  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5339 (http proxy value reset when any Nautilus
+	preference changes). This is a low-priority bug but I
+	was working on another related bug and couldn't help
+	fixing this.
+
+	* libgnomevfs/gnome-vfs-mime-monitor.c: Fixed a copy/paste
+	error in a comment.
+	
+	* modules/http-method.c: (sig_gconf_value_changed):
+	Ignore keys other than the ones we care about.
+
+2001-01-03  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* doc/mime-data-specification.txt:
+
+2000-12-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 3117 (Certain files incorrectly get the core file icon
+	in icon-view mode).
+	
+	* data/mime/gnome-vfs.mime: Changed the regular expression for core
+	files to match only files named "core", not all files with "core" in
+	their names. Added some FIXMEs.
+
+2000-12-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libgnomevfs/gnome-vfs-utils.c:
+	(gnome_vfs_format_file_size_for_display): Changed format from
+	"1.1M" to "1.1 MB". For kilobytes, I decided to do the same thing
+	we did for the Macintosh Finder, and use "123 K" instead of the
+	correct but obscure "123 kB".  These strings are marked for
+	translation as before, so it can be changed for different
+	countries. One reason these have to be changed is that they are
+	currently inconsistent with the hard-drive size numbers displayed
+	in the Nautilus hardware view (so one or the other had to change).
+
+2000-12-22  John Sullivan  <sullivan@eazel.com>
+
+	* modules/http-method.c: (vfs_module_init):
+	Added a FIXME with bug number for a bug I noticed here.
+
+2000-12-22  John Sullivan  <sullivan@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-info.c:
+	(reload_if_needed_idle_function): Saved the terminal by
+	removing a debug g_message.
+
+gno2000-12-22  Pavel Cisler  <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-monitor.c:
+	(gnome_vfs_mime_monitor_emit_data_changed):
+	Save the world by adding a newline to the end of file.
+	New gcc 2.96 is picky about that.
+
+2000-12-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	GNOME_VFS part of fix for bug 4798 (icon changes in MIME
+	type capplet aren't reflected automatically in Nautilus)
+
+	I invented an object that emits signals when the MIME
+	data changes. Clients can connect to the signal to do
+	their evil deeds. Unfortunately, the granularity of the
+	signal is just "some MIME data changed", but we can live
+	with that for now.
+
+	* libgnomevfs/gnome-vfs-mime-monitor.h: 
+	* libgnomevfs/gnome-vfs-mime-monitor.c:
+	(gnome_vfs_mime_monitor_get_type), 
+	(gnome_vfs_mime_monitor_get),
+	(gnome_vfs_mime_monitor_initialize),
+	(gnome_vfs_mime_monitor_initialize_class),
+	(gnome_vfs_mime_monitor_emit_data_changed): 
+	New files that define new class GnomeVFSMIMEMonitor.
+	Its only purpose is to emit signals, and its only
+	public function is gnome_vfs_mime_monitor_get (), which
+	returns the one global GnomeVFSMIMEMonitor object so you
+	can connect to its signals. The only signal it emits is
+	"data_changed".
+
+	* libgnomevfs/gnome-vfs-mime-private.h: Added prototype
+	for gnome_vfs_mime_monitor_emit_data_changed so it can
+	be called by other gnome-vfs-mime code.
+
+	* libgnomevfs/Makefile.am: Add new .c & .h files to build.
+	
+	* libgnomevfs/gnome-vfs-mime-info.c:
+	(reload_if_needed_idle_function), 
+	(gnome_vfs_mime_init): Poll every 5 seconds to reload if
+	any data on disk has changed. It was already checking
+	every time someone asked for data, but this lets clients
+	be notified without them having to ask.
+	(gnome_vfs_mime_info_reload): 
+	Call gnome_vfs_mime_monitor_emit_data_changed
+
+2000-12-21  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libgnomevfs-pthread/Makefile.am:
+	* libgnomevfs-pthread/gnome-vfs-job-slave.c:
+	(gnome_vfs_job_create_slave), (gnome_vfs_thread_backend_shutdown):
+	* libgnomevfs-pthread/gnome-vfs-thread-pool.c: (new_thread_state),
+	(destroy_thread_state), (make_thread_available), (thread_entry),
+	(gnome_vfs_thread_create), (gnome_vfs_thread_pool_shutdown):
+	* libgnomevfs-pthread/gnome-vfs-thread-pool.h:
+	Add a simple thread pool to avoid the overhead of creating new
+	threads. Use the new thread pool calls when creating threads in
+	gnome-vfs-job-slave.
+	Left the old, non-thread pool thread creation in disabled by an
+	#ifdef for now. I'll take it out later when we know everyting is
+	OK about the new code.
+
+2000-12-21  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* data/mime/gnome-vfs.keys: Update IID for the nautilus text
+	component.
+
+	* libgnomevfs/gnome-vfs-utils.c
+	(gnome_vfs_format_file_size_for_display): Fix some bugs Darin
+	pointed out long ago (forgot to check this in somehow).
+
+2000-12-21  Pavel Cisler  <pavel@eazel.com>
+
+	* configure.in:
+	Turn -Werror back on.
+
+	* HACKING:
+	Tell contributors not to turn -Werror off.	
+
+	* libgnomevfs/gnome-vfs-mime-info.c:
+	(gnome_vfs_mime_type_is_known):
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:
+	(display_upper_case_dialog):
+	* modules/ftp-method.c:
+	Fix all the warnings that crept in while -Werror was off.
+
+2000-12-20 Lutz Müller <urc8@rz.uni-karlsruhe.de>
+	
+        * libgnomevfs/gnome-vfs-uri.c: (gnome_vfs_uri_set_host_name),
+	(gnome_vfs_uri_set_user_name), (gnome_vfs_uri_set_password):
+	Fix two copy-paste bugs.
+
+2000-12-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Quick rewrite of pieces of the test module.
+
+	* modules/test-method.c: (get_operation_settings): Changed name
+	and design of the function. Also fixed backwards logic that had
+	this returning results for the last setting that does not match
+	a function name, rather than for the setting that does match.
+	(start_operation), (finish_operation): Moved most of the work
+	of the macros into these functions.
+	(parse_result_text): Separated out the "name not found" result
+	from the error code result.
+	(load_settings): Rewrote the parsing code to be simpler.
+	(do_open), (do_close), (do_read), (do_write), (do_seek),
+	(do_tell), (do_open_directory), (do_close_directory),
+	(do_read_directory), (do_get_file_info),
+	(do_get_file_info_from_handle), (do_make_directory),
+	(do_remove_directory) (do_unlink), (do_set_file_info),
+	(do_truncate), (do_truncate_handle), (do_find_directory),
+	(do_create_symbolic_link): Use new simpler macros. Also got rid of
+	"do_" prefix on names of calls.
+	(do_create), (do_is_local), (do_move), (do_check_same_fs): Update
+	FIXME, since these are still not implemented correctly.
+	(vfs_module_init): Minor style change.
+	(vfs_module_shutdown): Free storage on shutdown.
+
+2000-12-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/mime/gnome-vfs.keys:
+	added explicit i-regular icons to text-oriented mime-types, so
+	you can see embedded text even when the standard gnome icons are
+	present.
+	
+2000-12-18  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed gnome-vfs half of bug 2109 (Images (and any other
+	files) with "execute" bit set will try to be executed
+	instead of viewed when activated). The change here is
+	support for querying whether it makes sense to execute
+	a file of a given MIME type. I'll check in the Nautilus 
+	code that calls this shortly.
+
+	* libgnomevfs/gnome-vfs-mime-info.h:
+	* libgnomevfs/gnome-vfs-mime-info.c:
+	(gnome_vfs_mime_type_is_known): New function, returns
+	TRUE if a given MIME type has an entry in any of the
+	hashtables.
+
+	* libgnomevfs/gnome-vfs-mime-handlers.h:
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	(gnome_vfs_mime_can_be_executable): New function, returns
+	whether or not a file of a given MIME type could sensibly
+	be executable. Default is TRUE for unknown types (so we
+	don't prevent new types from executing), but FALSE for
+	known types (since the vast majority of MIME types cannot
+	be directly executed).
+	(gnome_vfs_mime_set_can_be_executable): New function,
+	setter for this new feature.
+
+	* data/mime/gnome-vfs-mime-magic: Changed 
+	"application/x-executable-file"	to "application/x-executable-binary" 
+	since there are other types of executable files.
+
+	* data/mime/gnome-vfs.keys: Made can-be-executable TRUE for
+	the following MIME types:
+
+	application/octet-stream
+	application/x-csh
+	application/x-executable-binary
+	application/x-perl
+	text/plain
+	text/x-csh
+	text/x-ksh
+	text/x-perl
+
+	Also changed "icon-filename" to "icon_filename" and "vfs-method" to
+	"vfs_method" so we consistently use underscores in MIME data keys.
+	Also improved the instructions at the top of the file a little.
+
+	* test/gnome-file-selection/gicon.c: (get_icon_from_metadata),
+	(gicon_get_icon_for_file_2),
+	* libgnomevfs/gnome-vfs-mime-handlers.c: (gnome_vfs_mime_get_icon),
+	(gnome_vfs_mime_set_icon): Updated for underscore name change.
+	
+2000-12-18  Darin Adler  <darin@eazel.com>
+
+	* modules/bzip2-method.c: (do_open), (do_get_file_info): Applied
+	the same 3 fixes that John Sullivan made to the gzip method to the
+	bzip2 method, since it is just a copy. An example of the evils of
+	copy and paste code.
+
+2000-12-18  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5217 (Nautilus crashes if you type cdda: in the
+	navigation bar.)
+
+	* libgnomevfs/gnome-vfs-method.c: (load_module): Fixed bug where
+	it was freeing the result of g_module_error.
+	* modules/default-modules.conf: Disable both the cdda and the efs
+	modules since compiling them is currently disabled. It's important
+	to keep this file in sync. with the libraries it points to.
+	
+	* libgnomevfs/gnome-vfs-xfer.c:
+	(gnome_vfs_new_directory_with_unique_name): A new directory that
+	we are creating now qualifies as a top-level item. This makes
+	logical sense, and helps the code in Nautilus handle metadata
+	properly. This is a piece of my fix for bug 2199 -- the rest was
+	checked into Nautilus the other day.
+
+2000-12-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5216 (typing "deb:" in the uri text field
+	crashes Nautilus)
+
+	* modules/extfs-method.c: (do_get_file_info):
+
+	Another place in a different module that needed to
+	return GNOME_VFS_ERROR_INVALID_URI when the parent
+	URI is NULL.
+
+2000-12-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+
+	Fixed bug 4810 (typing "gzip:" in the uri text field
+	crashes Nautilus)
+
+	* modules/gzip-method.c: 
+	changed VALID_URI to check uri->parent, since all the code
+	that uses it assumes the parent is good.
+	(do_open), (do_get_file_info): return GNOME_VFS_ERROR_INVALID_URI
+	instead of GNOME_VFS_ERROR_NOT_FOUND, to match other modules'
+	behavior.
+
+2000-12-14  Rebecca Schulman  <rebecka@eazel.com>
+
+	* doc/mime-data-specification.txt:
+	Added initial draft of the mime data
+	specification to the documentation directory.
+
+2000-12-11  Mike Fleming  <mfleming@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-info.c: (hack_getc):
+	Changed to return int instead of char so it won't bust\
+	on systems that default to unsigned chars
+
+2000-12-11  Mike Fleming  <mfleming@eazel.com>
+
+	* modules/http-method.c: (create_handle), (make_propfind_request),
+	(resolve_409):
+
+	Changed all protocol-related error returns to GNOME_VFS_ERROR_GENERIC
+	(they were CORRUPTED_DATA which was clearly wrong)
+
+	Fixed bug in resolve_409 that didn't handle URI's that have no parents.
+
+	Got rid of a FIXME that had been fixed.
+	
+2000-12-11  Mike Fleming  <mfleming@eazel.com>
+
+	* libgnomevfs/gnome-vfs-result.c:
+	* libgnomevfs/gnome-vfs-types.h:
+	* modules/http-method.c: (do_make_directory), (do_move):
+
+	bugzilla.eazel.com 3942 -- renaming file to illegal name produces
+	confusing response.
+
+	do_move now returns GNOME_VFS_ERROR_BAD_PARAMETERS when the destination
+	filename contains invalid characters.  This is really an unfortunate
+	mapping, but it mirrors what Linux's FAT drivers seem to do (they return
+	EINVAL).
+
+2000-12-11  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libgnomevfs/Makefile.am:
+	* libgnomevfs/gnome-vfs-gen-mimedb.c:
+	Removed the source and build rules for the obsolete
+	gen-mime-db tool. We have parsed the MIME text files on
+	when the library first needs the DB instead of saving
+	a preparsed memory image for some time now.
+
+2000-12-08  Pavel Cisler  <pavel@eazel.com>
+
+	* modules/ftp-method.c: (do_read_directory):
+	Oops. Fix the build.
+
+2000-12-08  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime.c: (gnome_vfs_mime_type_from_name),
+	(gnome_vfs_get_mime_type), (gnome_vfs_get_file_mime_type),
+	(gnome_vfs_get_mime_type_from_uri),
+	(gnome_vfs_get_mime_type_from_file_data):
+	* libgnomevfs/gnome-vfs-mime.h:
+	* modules/ftp-method.c: (ls_to_file_info):
+	* modules/gconf-method.c: (set_mime_type_value):
+	* modules/pipe-method.c: (mime_from_uri):
+	* modules/translate-method.c: (tr_apply_default_mime_type):
+	Replace all cases of "application/octet-stream" with a new symbolic
+	name, GNOME_VFS_MIME_TYPE_UNKNOWN.
+
+2000-12-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	* modules/ftp-method.c: (do_read_directory):
+	Removed fixme for bug 3925.  This was fixed in Nautilus.
+	Resolving sym links during a directory read in the ftp module
+	is resource intensive and probably not desired.
+
+2000-12-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 4660, Descrption lost when adding mime types
+
+	Bug was caused by a failure to write out a mime type
+	with caps in the string. I now convert all caps to lower
+	case and inform the user what has happened.
+
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:
+	(find_message_label_callback), (find_message_label),
+	(show_message_box), (display_upper_case_dialog):
+	New routines to display a nice dialog taken from Nautilus.
+	
+	(nautilus_mime_type_capplet_show_new_mime_window):
+	Convert mime string to lower case if caps are present.
+		
+2000-12-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* data/mime/gnome-vfs.keys:
+	replaced all references to the old bonobo-text-plain component
+	with the newer nautilus-text-view component
+	
+2000-12-07  Mike Fleming  <mfleming@eazel.com>
+
+	* modules/http-method.c: (process_propfind_propstat),
+	(vfs_module_init):
+
+	bugzilla.eazel.com 4317, 2795 : Implemented ctime/mtime file
+	attributes for DAV 
+
+2000-12-06  Mike Fleming  <mfleming@eazel.com>
+
+	* modules/ftp-method.c: (ftp_response_to_vfs_result),
+	(do_make_directory):
+
+	Added FIXME.
+
+	Translated error returned from do_make_directory to compensate
+	for bad error mapping deeper in the module.
+
+2000-12-06  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Fixed 4736: Nautilus doesn't respect umask when creating a new
+	folder.
+	* libgnomevfs/gnome-vfs-xfer.c: (create_directory), 
+	Easy fix, we already do respect umask, just need to create new
+	folders with 0777 instead of just 0700.
+
+	Fixed 4324: modification date doesn't get preserved during copy:
+	
+	* libgnomevfs/gnome-vfs-xfer.c: 
+	(copy_file), (copy_directory), (copy_items):
+	Added a gnome_vfs_file_info_set_type to the end of copy_file
+	and copy_items, copying over the mod date, permissions and owner.
+
+2000-12-06  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: pavel@eazel.com
+
+	* modules/ftp-method.c: (do_move):
+
+	bugzilla.eazel.com 4224: 
+		ftp rename always overwrites -- ignores "force" parameter 
+
+	Just a drop in the bucket.
+
+2000-12-05  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+	
+	* libgnomevfs/gnome-vfs-types.h:
+	* libgnomevfs/gnome-vfs-xfer.c: (progress_set_source_target),
+	(remove_file), (empty_directory), (non_recursive_empty_directory),
+	(gnome_vfs_visit_list), (count_each_file_size_one),
+	(handle_name_conflicts), (gnome_vfs_xfer_delete_items_common),
+	(copy_directory), (copy_items) (gnome_vfs_xfer_uri_internal):
+	Part of fix 4894 "Dragging /proc from the tree view to /home causes
+	a file not found".	
+	Part of fix to 3232 "Error message when copying rwx file from
+	r-x folder to rwx folder".	
+	Part of fix to 3237 "No error occurs if move file to folder w/o
+	write access".
+	Part of fix to 3748 "misleading file operation error dialog"
+	Made each of these properly set up the name of the copied item
+	to fix all the cases where we got "Error moving (NULL) ..."
+	messages that I came across while fixing the other bugs.
+	Added a new phase, GNOME_VFS_XFER_CHECKING_DESTINATION and used
+	it in gnome_vfs_xfer_uri_internal so I can distinguish between
+	failures on read and failures on write.
+	
+	* libgnomevfs/gnome-vfs-xfer.c:
+	(copy_directory), (copy_items):
+	Fixed 4895 Copying /dev into my home directory crashes Nautilus.
+	
+	* libgnomevfs/gnome-vfs-xfer.c:
+	(gnome_vfs_xfer_empty_trash), (gnome_vfs_xfer_delete_items),
+	(gnome_vfs_xfer_uri_internal), (gnome_vfs_xfer_private),
+	(gnome_vfs_xfer_uri_list), (gnome_vfs_xfer_delete_list):
+	Moved calls to initial and last call_progress to the calling
+	routine.
+
+
+2000-12-05  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-magic.c: (gnome_vfs_mime_magic_parse):
+	Remove this change: what we fixed this morning avoided the huge leak, but 
+        did not fix the real problem.  This change isn't compatible with the real
+	fix (see Darin's change below), and in fact it was amazing that it worked
+	at all.
+
+2000-12-04  Darin Adler  <darin@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-magic.c:
+	(gnome_vfs_mime_get_magic_table): Added missing NULL check that
+	made gnome_vfs very slow since it kept reading the MIME database
+	over and over again! My apologies.
+
+2000-12-04  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-magic.c: (gnome_vfs_mime_magic_parse):
+	Fix a large leak in gnome-vfs mime, that resulted from not freeing
+	a g_array segment during mime lookups
+
+2000-12-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libgnomevfs/gnome-vfs-utils.c
+	(gnome_vfs_format_file_size_for_display): Changed factor for
+	kilobytes to 1024 from 1000, megabytes to 1024*1024 from 1,000,000
+	and gigabytes to 1024*1024*1024 from 1,000,000,000.
+
+2000-11-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Mike Fleming <mfleming@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-magic.c:
+	(gnome_vfs_mime_get_magic_table),
+	(gnome_vfs_mime_clear_magic_table): Eliminate the unused "mmap"
+	optimization. We haven't been generating the binary file for a
+	while, and we've determined there's no real speed issue.
+
+	* data/mime/gnome-vfs.applications: Use tabs consistently instead
+	of some tabs and some spaces. Get rid of some extra whitespace on
+	some lines. Fix some "can_open_uris" lines that said
+	"can_open_urls" instead.
+	
+	* data/mime/gnome-vfs.keys: Use tabs consistently instead of some
+	tabs and some spaces.
+
+2000-11-29  Pavel Cisler  <pavel@eazel.com>
+
+	* test/test-mime.c: (main):
+	Oops, make it build.
+
+2000-11-29  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* test/test-mime.c: (main):
+	Added a --help argument that lists available arguments,
+	and made the script understand both paths and uris,
+	and report the case where a uri or path is not valid.
+
+2000-11-29  Rebecca Schulman  <rebecka@eazel.com>
+
+	* modules/file-method.c: (rename_helper):
+	Fixed bug 1185, that removing a directory 
+	always returns NOT_EMPTY on an error.
+
+2000-11-22  Michael K. Fleming  <mfleming@eazel.com>
+
+	* modules/http-method.c: (sig_gconf_value_changed):
+	Fixed bug where setting "/system/gnome-vfs/use-http-proxy"
+	wouldn't cause the new http proxy to be used
+
+2000-11-21  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: pavel@eazel.com
+
+	* modules/http-method.c: (cache_add_no_strdup), (cache_add),
+	(cache_add_uri_and_children), (cache_add_uri),
+	(make_propfind_request), (do_open_directory), (do_get_file_info):
+
+	Now caches non-DAV get_file_info's.  Mostly improves the situation
+	by allowing a subsequent do_open_directory to return an error
+	based on the file info in cache.
+
+	Also added more "is_dav" bit to the cache records
+
+2000-11-20  Mathieu Lacage  <mathieu@eazel.com>
+
+	reviewed by: <mjs@eazel.com>
+
+	Fix bug 4812. Also, make the capplet work by fixing
+	random bugs here and there. It was the first time I could test 
+	it for true so, of course, got a bunch of small-border-effect bugs.
+	* libgnomevfs/gnome-vfs-mime-info.c: 
+	(hack_getc): the most evil function I ever wrote.
+	It recursively gets rid of the comment lines before
+	the parsers ever get them. (iunstead of fixing thew parsers....)
+	(load_mime_type_info_from): make it use nerw hack_gets function
+	instead of getc_unlocked.
+	(load_mime_list_info_from): idem.
+	(gnome_vfs_mime_get_extensions_list): avoid returning the extensions
+	of the system settings if the user has set the user extensions.
+	(get_key_name): make it remove duplicates for true.
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:
+	(nautilus_mime_type_capplet_show_new_mime_window): fix bug 4812
+	by replacing "char *text[3]" by "char *text[4]".
+	(nautilus_mime_type_capplet_show_change_extension_window):
+	spaces.
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(update_extensions_list): fix border-effect bugs. (ie: when you
+	have no extension for a mime type for example...)
+	(add_mime_clicked): idem.
+
+2000-11-20  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: pavel@eazel.com
+
+	* modules/http-method.c: (unhex_char), (unescape_unreserved_chars),
+	(process_propfind_response):
+
+	Fix HTTP attribute caching to work correctly with inconsistantly
+	escaped URI strings.  (note that the unescape_unreserved_chars function
+	is ifdef'd out and not used)
+
+2000-11-20  Matt Bissiri  <matt@bissiri.org>
+
+	* libgnomevfs/gnome-vfs-utils.c:
+	(gnome_vfs_icon_path_from_filename):
+	Do not free the return value of g_getenv.
+	(fixes a segfault that occurs if GNOME_PATH is set)
+
+2000-11-19  Michael K. Fleming  <mfleming@eazel.com>
+
+	* modules/http-method.c:
+	oops.  fixed debug macro that didn't have a disabled version
+
+2000-11-19  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 4811
+	* libgnomevfs/gnome-vfs-mime-info.c:
+	(gnome_vfs_mime_set_extensions_list): add new function.
+	Ultimately, I wished we could get rid of the direct access 
+	to the internal hastables but this is at least a first step.
+	* libgnomevfs/gnome-vfs-mime-info.h: add prototype.
+	
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:
+	(add_extension_clicked): implement
+	(remove_extension_clicked): implement
+	(extension_list_selected): grey/ungrey delete button when selecting/unselecting
+	(extension_list_deselected): idem
+	(get_extensions_from_gtk_list): helper function.
+	(nautilus_mime_type_capplet_show_change_extension_window): implement.
+	(nautilus_mime_type_capplet_show_new_extension_window): fix a number of segfaults.
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.h: change prototypes.
+	* mime-type-capplet/nautilus-mime-type-capplet.c: 
+	(get_selected_row_number),helper function.
+	(get_selected_mime_type), helper function (refactoring :)
+	(really_change_icon): fix segfault.
+	(update_extensions_list): update extensions when you change them.
+	(change_file_extensions_clicked): create dialog.
+	(init_mime_capplet): spaces.
+	(nautilus_mime_type_capplet_update_info): make it use get_selected_mime_type.
+
+2000-11-17  Mike Fleming  <mfleming@eazel.com>
+
+	* modules/http-method.c: (my_debug_printf), (get_header),
+	(create_handle), (make_request), (http_handle_close), (do_open),
+	(do_create), (do_close), (do_write), (do_read),
+	(make_propfind_request), (do_open_directory), (do_close_directory),
+	(do_read_directory), (do_get_file_info), (do_make_directory),
+	(do_remove_directory), (do_move), (do_unlink):
+	* test/http-postanalyze.pl:
+
+	Added timing debug code.
+
+2000-11-17  Mathieu Lacage  <mathieu@eazel.com>
+
+	reviewed by: Sullivan
+
+	fix Bug 4768. Reported 3 bugs about separate issues: 4796, 4797, 4798.
+	* data/mime/gnome-vfs.keys: change icon filenames to relative paths.
+	* libgnomevfs/Makefile.am: add GNOME_VFS_PREFIX
+	* libgnomevfs/gnome-vfs-mime-info.c: (gnome_vfs_mime_info_reload):
+	add initialition code if the mime stuff is not initalized when doing 
+	a reload. This avoids a segfault.
+	* libgnomevfs/gnome-vfs-utils.c: (hack_file_exists): new function 
+	copied from gnome-libs: prviously named g_file_exists.
+	(gnome_vfs_icon_path_from_filename): new API function. It looks
+	in GNOME_PATH to find the icons and defaults to the gnome-vfs prefix
+	one. It accepts only relative paths and returns an absolute path.
+	* libgnomevfs/gnome-vfs-utils.h: add prototype.
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(really_change_icon), changes the icon used by a mime type.
+	(gil_icon_selected_cb): changes the icon when you double-click.
+	(change_icon_clicked_cb_real): changes the icon when you click on ok.
+	(change_icon_clicked): connect to the clicked and select_icon signals
+	to know when the user has made up his mind about hte new icon.
+	(nautilus_mime_type_capplet_update_info), spaces.
+	(add_mime_clicked): spaces.
+	(nautilus_mime_type_capplet_update_mime_list_icon): spaces.
+	(capplet_get_icon_pixbuf): spaces.
+	(populate_mime_list): spaces.
+	* mime-type-capplet/nautilus-mime-type-icon-entry.c:
+	(icon_selected_cb): spaces.
+	(nautilus_mime_type_show_icon_selection): spaces.
+	(nautilus_mime_type_icon_entry_get_relative_filename): new function.
+	returns a relative filename instead of an abosulte one.
+	* mime-type-capplet/nautilus-mime-type-icon-entry.h: add relative 
+	function prototype
+
+2000-11-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2966, Fix cancellation support in FTP
+	
+	* modules/ftp-method.c: (do_path_command_completely),
+	(do_transfer_command), (do_path_transfer_command),
+	(host_port_from_string), 
+	(ftp_connection_create), (ftp_connection_acquire), (do_open),
+	(internal_get_file_info), (do_get_file_info), (do_open_directory),
+	(do_make_directory), (do_remove_directory), (do_move), (do_unlink),
+	(vfs_module_init):
+	Modified several functions to allow context to be passed in.
+	We can then check the context for cancellation.
+	
+	* modules/http-method.c: (make_request):
+	Code cleanup.
+
+2000-11-16  Rebecca Schulman  <rebecka@eazel.com>
+
+	* modules/ftp-method.c:
+	Change the formatting of some fixmes so that 
+	check-fixme will keep track of them 
+	
+2000-11-16  Mathieu Lacage  <mathieu@eazel.com>
+
+	fix bug 4769
+	* mime-type-capplet/nautilus-mime-type-capplet-dialogs.c:
+	(nautilus_mime_type_capplet_show_new_mime_window): tweak to
+	look slightly better. fix a potential segfault too.
+	* mime-type-capplet/nautilus-mime-type-capplet.c: (revert_real_cb),
+	(revert_mime_clicked), (add_mime_clicked): add dialog hook.
+
+2000-11-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4528, http method does not listen for
+	'use-http-proxy' preference.
+	
+	* modules/http-method.c: 
+	(vfs_module_init):
+	Listen to changes in 'use-http-proxy' settings.
+	
+	(sig_gconf_value_changed),
+	Check for status of 'use-http-proxy' system setting before
+	setting proxy to new modified value. This allows a user to edit
+	the text of the proxy without actually resetting the proxy to
+	this value if the "Use Proxy" checkbox is unset.	
+
+2000-11-16  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bugs 2767 and 3228
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(nautilus_stop_in_debugger),
+	(nautilus_stop_after_default_log_handler),
+	(nautilus_set_stop_after_default_log_handler),
+	(nautilus_make_warnings_and_criticals_stop_in_debugger), 
+	add debugging functions. They are disabled by default.
+	(main), add call to debuggin funcitons if they are enabled.
+	(change_icon_clicked), implement.
+	(init_mime_capplet), tweaks, cleanups
+	(nautilus_mime_type_capplet_update_info), update icon.
+	(revert_mime_clicked), implement correctly.
+	(delete_mime_clicked), implement correctly.
+	(add_mime_clicked), cleanups
+	(capplet_get_icon_pixbuf), new function to get the pixbuf for 
+	a given mime type
+	(populate_mime_list): use the new function above, refactor.
+	(update_mime_list_action): idem.
+
+2000-11-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(init_mime_capplet), make it look like what Arlo wanted.
+	(revert_mime_clicked): new callback to reset user settings.
+
+2000-11-15  Pavel Cisler  <pavel@eazel.com>
+
+	* test/test-uri.c: (main):
+	Tweak a test to verify that bug 3401 is fixed. No reviewer, sorry.
+
+2000-11-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	* libgnomevfs/gnome-vfs-mime-info.c: 
+	(context_new), cleanups.
+	(load_mime_type_info_from), cleanups
+	(load_mime_list_info_from), cleanups
+	(reload_if_needed), rename from maybe_reload
+	(set_value_real), new function.
+	(gnome_vfs_mime_set_value), make it use funiton above.
+	(get_value_real), new function
+	(gnome_vfs_mime_get_value), make it use funciton above
+	(gnome_vfs_mime_get_key_list), cleanups
+	(gnome_vfs_mime_get_extensions_list), cleanups
+	(gnome_vfs_mime_get_extensions_pretty_string), cleanups
+	(gnome_vfs_get_registered_mime_types), cleanups
+	(gnome_vfs_mime_set_registered_type_key), make it use
+	set_value_real.
+	(gnome_vfs_mime_get_registered_mime_type_key): make it
+	use get_value_real.
+
+2000-11-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	Buddy: pavel <pavel@eazel.com>
+	
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	(gnome_vfs_mime_get_default_action_type): fix a compilation warning.
+	remove a unused variable.
+	* libgnomevfs/gnome-vfs-mime-info.c: 
+	(load_mime_list_info_from), spaces...
+	(get_key_name), add checks not to return deleted mime types and
+	not to return comments as mime types.
+	(gnome_vfs_mime_reset), new API function: resets to system defaults.
+	(gnome_vfs_mime_registered_mime_type_delete), new API fution: deletes 
+	a mime type.
+	(gnome_vfs_mime_get_registered_mime_type_key), new non-exported function.
+	(write_back_mime_user_file_context_callback): spaces...
+	* libgnomevfs/gnome-vfs-mime-info.h: new prototypes.
+	* test/test-mime-info.c: (main): add testing code for teh new API.
+
+2000-11-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	Buddy: pavel <pavel@eazel.com>
+	
+	Fix bug 2650. remove *_without_fallback code.
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	(gnome_vfs_mime_get_default_action_type),
+	(gnome_vfs_mime_get_default_action),
+	(gnome_vfs_mime_get_default_application),
+	(gnome_vfs_mime_get_icon), 
+	(gnome_vfs_mime_get_default_component):
+	remove code trying to test for the supertype 
+	of a mime type because the first lookup always
+	checks for the supertype anyway so the code was
+	useless.
+	* libgnomevfs/gnome-vfs-mime-handlers.h: remove 
+	*_without_fallback functions.
+
+2000-11-14  Pavel Cisler  <pavel@eazel.com>
+
+	Reviewed by: Mathieu Lacage  <mathieu@eazel.com>	
+
+	* libgnomevfs/gnome-vfs-uri.c: (split_toplevel_uri):
+	Fix 820, treating case-insensitive parts of URIs as such.
+	
+	* test/test-uri.c: (test_uri_match), (main):
+	Add test suites for the case-insensitive handling.
+
+	* data/mime/gnome-vfs-mime-magic:
+	Removed an obsolete comment.
+
+	* README:
+	Add some instructions.
+
+2000-11-14  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	* data/mime/gnome-vfs.applications: Remove trailing whitespace
+	from `abiword' and `galeon'.
+	
+	* libgnomevfs/gnome-vfs-application-registry.c
+	(load_application_info_from): strip trailing whitespace from
+	application IDs.
+	(strip_trailing_whitespace): helper function
+
+2000-11-13  Rebecca Schulman  <rebecka@eazel.com>
+
+	Reviewed by: Maciej Stachowiak
+
+	* libgnomevfs/gnome-vfs-result.c:
+	* libgnomevfs/gnome-vfs-types.h:
+	Add a new gnome vfs error, about the problem of the search
+	index being out of date enough that no results could
+	possibly come back, called GNOME_VFS_ERROR_SERVICE_OBSOLETE
+
+2000-11-13  Darin Adler  <darin@eazel.com>
+
+	* gnome-vfs.spec.in: Turn "make check" off again.
+	It doesn't work because the front end can't find the
+	back end when it's not installed.
+
+2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Some more capplet work.  The mime list now updates
+	to reflect changes made to the default action button
+	and menu item list.
+	
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	(application_button_toggled), (viewer_button_toggled),
+	(application_menu_activated), (component_menu_activated),
+	(add_mime_clicked),
+	(nautilus_mime_type_capplet_update_mime_list_icon),
+	(update_mime_list_action), (populate_mime_list):
+	
+	* mime-type-capplet/nautilus-mime-type-icon-entry.c:
+	(entry_changed):
+	Fixed a case where a NULL widget would cause an assertion.
+
+2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3107, Setting na icon for a mime type does not work.
+	
+	* mime-type-capplet/nautilus-mime-type-capplet.c:
+	* mime-type-capplet/nautilus-mime-type-capplet.h:
+	(nautilus_mime_type_capplet_update_mime_list_icon):
+	New function that sets/updates the icon in the mime list.
+	
+	* mime-type-capplet/nautilus-mime-type-icon-entry.c:
+	(icon_selected_cb), (nautilus_mime_type_show_icon_selection):
+	Add call to new nautilus_mime_type_capplet_update_mime_list_icon
+	function.
+
+2000-11-13  Martin Baulig  <baulig@suse.de>
+
+	* modules/file-method.c (read_saved_cached_trash_entries):
+	Use g_free() to free the `trash_path' and `mount_path'.
+
+2000-11-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* mime-type-capplet/nautilus-mime-type.desktop: Added norwegian translation.
+	* mime-type-capplet/nautilus-mime-type-capplet.c: Marked all strings for translation.
+	
+2000-11-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	Part of the fix to 4051.
+	
+	* data/mime/gnome-vfs.applications: Uncomment vi and lynx
+
+	* libgnomevfs/gnome-vfs-mime-handlers.c
+	(gnome_vfs_mime_application_copy): Copy the
+	requires_terminal_flag.
+
+	Unrelated bug fix:
+	
+	* modules/test-method.c: Use usleep(3), not usleep(1).
+
+2000-11-11  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * data/mime/gnome-vfs-mime-magic:
+        * data/mime/gnome-vfs.keys:
+        * data/mime/gnome-vfs.applications:
+        * data/mime/gnome-vfs.mime:
+        Change audio/x-ogg to application/x-ogg
+
+2000-11-09  Darin Adler  <darin@eazel.com>
+
+	* gnome-vfs.spec.in: Turn on "make check" for RPM builds. This is
+	especially good for the Tinderbox.
+	
+	* modules/http-method.c: (process_propfind_propstat),
+	(process_propfind_response), (make_propfind_request),
+	(vfs_module_init):
+	* modules/test-method.c: (load_config_file), (vfs_module_init):
+	Use LIBXML_TEST_VERSION and the new macros to make gnome-vfs
+	ready for gnome-xml 2.X or gnome-xml 1.X, as DV suggests.
+
+	* modules/Makefile.am:
+	* libgnomevfs/gnome-vfs-application-registry.c:
+	* libgnomevfs/gnome-vfs-mime-handlers.c:
+	Formatting tweaks.
+
+2000-11-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed an error where access count was not reset
+	during a close_directory call.
+	
+	* modules/cdda-method.c: (do_open), (do_get_file_info),
+	(do_open_directory), (do_close_directory), (do_read_directory):
+
+2000-11-08  John Sullivan  <sullivan@eazel.com>
+
+	* libgnomevfs-pthread/gnome-vfs-job.c: (execute_find_directory):
+	Changed a g_new to g_new0 to fix problem where result_item->uri
+	was sometimes uninitialized. Darin somehow found this bug when
+	I couldn't figure out why make check in Nautilus was crashing.
+	Hooray!
+
+2000-11-08  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* data/mime/gnome-vfs.applications:
+	XMMS can open uris.
+	
+2000-11-06  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* configure.in: upped development version to 0.4.2.0
+
+2000-11-06  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* configure.in: upped version to 0.4.2
+
 2000-11-06  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in:  upped version 0.4.1.1

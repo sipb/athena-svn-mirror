@@ -74,7 +74,8 @@ static gchar *status_strings[] = {
 	/* GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM */	N_("Read only file system"),
 	/* GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM */	N_("Not on the same file system"),
 	/* GNOME_VFS_ERROR_NAME_TOO_LONG */		N_("Name too long"),
-	/* GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE */     N_("Service not available")
+	/* GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE */     N_("Service not available"),
+	/* GNOME_VFS_ERROR_SERVICE_OBSOLETE */          N_("Request obsoletes service's data")
 };
 
 

@@ -728,8 +728,16 @@ do_get_file_info (GnomeVFSMethod *method,
 {
 	GnomeVFSMethodHandle *method_handle;
 	GnomeVFSResult result;
-	GnomeVFSURI *parent = gnome_vfs_uri_get_parent(uri);
-	gchar *filename = gnome_vfs_uri_extract_short_name(uri);
+	GnomeVFSURI *parent;
+	gchar *filename;
+
+	parent = gnome_vfs_uri_get_parent(uri);
+
+	if (parent == NULL) {
+		return GNOME_VFS_ERROR_INVALID_URI;
+	}
+	
+	filename = gnome_vfs_uri_extract_short_name(uri);
 
 	if(strcmp(parent->method_string, uri->method_string)) {
 		

@@ -32,6 +32,8 @@
 extern "C" {
 #endif /*__cplusplus*/
 
+#define GNOME_VFS_MIME_TYPE_UNKNOWN "application/octet-stream"
+
 void 	     gnome_vfs_mime_shutdown 				(void);
 
 /* do not free any of the returned gchar* values */

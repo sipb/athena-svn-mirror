@@ -133,7 +133,7 @@ G_STMT_START {					\
 		return __tmp_result;		\
 } G_STMT_END
 
-#define VALID_URI(u) (((u)->text==NULL)||((u)->text[0]=='\0')||(((u)->text[0]=='/')&&((u)->text[1]=='\0')))
+#define VALID_URI(u) ((u)->parent!=NULL&&(((u)->text==NULL)||((u)->text[0]=='\0')||(((u)->text[0]=='/')&&((u)->text[1]=='\0'))))
 
 static Bzip2MethodHandle *
 bzip2_method_handle_new (GnomeVFSHandle *parent_handle,
@@ -303,7 +303,7 @@ do_open (GnomeVFSMethod *method,
 	_GNOME_VFS_METHOD_PARAM_CHECK (uri != NULL);
 
 	/* Check that the URI is valid.  */
-	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_NOT_FOUND;
+	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_INVALID_URI;
 
 	if (open_mode & GNOME_VFS_OPEN_WRITE)
 		return GNOME_VFS_ERROR_INVALID_OPEN_MODE;
@@ -530,7 +530,7 @@ do_get_file_info  (GnomeVFSMethod *method,
 	GnomeVFSResult result;
 
 	/* Check that the URI is valid.  */
-	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_NOT_FOUND;
+	if (!VALID_URI(uri)) return GNOME_VFS_ERROR_INVALID_URI;
 
 	result = gnome_vfs_get_file_info_uri(uri->parent, file_info, options);
 

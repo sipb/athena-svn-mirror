@@ -7,6 +7,7 @@ endif
 SUBDIRS = gnome-file-selection
 
 INCLUDES =					\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/intl			\
 	-I$(top_builddir)/intl			\
 	-I$(top_srcdir)/libgnomevfs		\
@@ -66,7 +67,7 @@ libraries =						\
 
 test-async_pthread.o: test-async.c
 	$(COMPILE) -DWITH_PTHREAD -o $@ -c $<
-test_async_pthread_SOURCES =
+test_async_pthread_SOURCES = dummy.c
 test_async_pthread_LDADD =						\
 	test-async_pthread.o						\
 	$(libraries)							\
@@ -75,7 +76,7 @@ test_async_pthread_LDFLAGS =
 
 test-async_corba.o: test-async.c
 	$(COMPILE) -DWITH_CORBA -o $@ -c $<
-test_async_corba_SOURCES =
+test_async_corba_SOURCES = dummy.c
 test_async_corba_LDADD =					\
 	test-async_corba.o					\
 	$(libraries)						\
@@ -84,7 +85,7 @@ test_async_corba_LDFLAGS =
 
 test-async-directory_pthread.o: test-async-directory.c
 	$(COMPILE) -DWITH_PTHREAD -o $@ -c $<
-test_async_directory_pthread_SOURCES =
+test_async_directory_pthread_SOURCES = dummy.c
 test_async_directory_pthread_LDADD =					\
 	test-async-directory_pthread.o					\
 	$(libraries)							\
@@ -93,7 +94,7 @@ test_async_directory_pthread_LDFLAGS =
 
 test-async-directory_corba.o: test-async-directory.c
 	$(COMPILE) -DWITH_CORBA -o $@ -c $<
-test_async_directory_corba_SOURCES =
+test_async_directory_corba_SOURCES = dummy.c
 test_async_directory_corba_LDADD =				\
 	test-async-directory_corba.o				\
 	$(libraries)						\
@@ -102,7 +103,7 @@ test_async_directory_corba_LDFLAGS =
 
 test-channel_corba.o: test-channel.c
 	$(COMPILE) -DWITH_CORBA -o $@ -c $<
-test_channel_corba_SOURCES =
+test_channel_corba_SOURCES = dummy.c
 test_channel_corba_LDADD =					\
 	test-channel_corba.o					\
 	$(libraries)						\
@@ -111,7 +112,7 @@ test_channel_corba_LDFLAGS =
 
 test-channel_pthread.o: test-channel.c
 	$(COMPILE) -DWITH_PTHREAD -o $@ -c $<
-test_channel_pthread_SOURCES =
+test_channel_pthread_SOURCES = dummy.c
 test_channel_pthread_LDADD =					\
 	test-channel_pthread.o					\
 	$(libraries)						\

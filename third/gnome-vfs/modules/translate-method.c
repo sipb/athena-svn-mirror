@@ -36,6 +36,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+#include "gnome-vfs-mime.h"
 #include "gnome-vfs-module.h"
 
 typedef struct {
@@ -93,7 +94,7 @@ tr_apply_default_mime_type(TranslateMethod * tm,
 		}
 			
 	} else {
-		if ((strcmp (file_info->mime_type, "application/octet-stream") == 0) &&
+		if ((strcmp (file_info->mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0) &&
 		    (tm->pa.default_mime_type != NULL)) {
 			g_free (file_info->mime_type);
 			file_info->mime_type =
