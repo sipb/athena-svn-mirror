@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Imakefile,v $
- *   $Author: vanharen $ 
+ *   $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -161,7 +161,6 @@ NormalLibraryTarget(Xj,${OBJS})
 InstallLibrary(Xj,${XJ_LIB_DIR})
 #endif
 
-BuildIncludes($(HEADERS),Xj,..)
 #if defined(InstallXj)
 MakeDirectories(install,$(XJ_INC_DIR)/Xj)
 InstallMultiple($(HEADERS),$(XJ_INC_DIR)/Xj)
@@ -171,7 +170,6 @@ InstallMultiple($(HEADERS),$(XJ_INC_DIR)/Xj)
 NormalProgramTarget(${SINTABLE},${SIN_OBJS},,,${SIN_LIBS})
 
 depend:: sintable.h
-depend:: includes
 
 DependTarget()
 
