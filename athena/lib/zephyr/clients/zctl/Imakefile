@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v 1.1 1988-11-14 11:47:54 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v 1.2 1988-11-22 13:50:20 jtkohl Exp $
 /**/#
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${SS_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${SS_LINTLIB} \
@@ -18,9 +18,6 @@ LINCLUDES=-I$(BUILDTOP)/ss
 
 normal_obj_rule()
 
-command_table(zctl_cmds)
-
 program(zctl,${OBJS},,${LIBS},${CLIENTDIR})
 
-clean::
-	rm -f zctl_cmds.ct.o
+command_table_noprof(zctl_cmds)
