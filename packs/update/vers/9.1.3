@@ -6,9 +6,12 @@ sun4)
     pkgrm -n -a $LIBDIR/noask SUNWski
   fi
   echo "112438-01"					>> "$PATCHES"
+  echo "OSCHANGES=true"					>> "$CONFVARS"
   ;;
 
 sgi)
+  echo "MINIROOT=true"					>> "$CONFVARS"
+  echo "OSCHANGES=true"					>> "$CONFVARS"
   ;;
 esac
 
