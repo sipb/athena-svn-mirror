@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.10 1991-07-18 12:51:31 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.11 1993-04-29 16:12:58 vrt Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.10  91/07/18  12:51:31  epeisach
+ * Under ultrix we try umounting "/" as it has been determined that the
+ * filesystem will not cleanup itself of inodes which are in the text cache
+ * 
  * Revision 4.9  91/06/24  15:18:13  epeisach
  * POSIX dirent handling
  * 
@@ -146,7 +150,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.10 1991-07-18 12:51:31 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.11 1993-04-29 16:12:58 vrt Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -526,7 +530,7 @@ readstat( types) char *types; {
 	 * flush the kernel's text-table,
 	 * to ensure that the vnodes we've freed get scavenged,
 	 */
-#if !defined(ultrix) && !defined(_AIX)
+#if !defined(ultrix) && !defined(_AIX) && !defined(SOLARIS)
 	unmount("/");		/* XXX */
 #endif
 #ifdef ultrix

@@ -1,5 +1,5 @@
 /*
- * $Id: track.h,v 4.7 1992-11-09 15:05:00 probe Exp $
+ * $Id: track.h,v 4.8 1993-04-29 16:14:07 vrt Exp $
  */
 
 #include "bellcore-copyright.h"
@@ -8,9 +8,14 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#ifdef POSIX
+#include <dirent.h>
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/param.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <ctype.h>
 #include <signal.h>
 #include <stdio.h>
