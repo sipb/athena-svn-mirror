@@ -1,4 +1,4 @@
-.\" $Id: update_ws.8,v 1.1 2000-04-28 15:21:52 ghudson Exp $
+.\" $Id: update_ws.8,v 1.2 2001-03-09 20:40:11 ghudson Exp $
 .\"
 .\" Copyright 2000 by the Massachusetts Institute of Technology.
 .\"
@@ -61,9 +61,11 @@ erased.
 If a package in the release list has been upgraded, it will stay
 upgraded until the release list is newer.
 .SH NOTES
-An Athena workstation must have cluster information to take updates.
-To get cluster information centrally assigned for your machine, call
-Athena Cluster Services at x3-1410.
+An Athena workstation should have cluster information to take updates,
+and must have cluster information in order to manually update to a
+full release other than the current one.  To get cluster information
+centrally assigned for your machine, call Athena Cluster Services at
+x3-1410 or send email to register_ws@mit.edu.
 .PP
 The Athena Release Team does not do extensive testing of upgrades
 involving multiple full releases (e.g. 8.2 to 8.4) or of downgrades.
