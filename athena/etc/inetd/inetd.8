@@ -9,7 +9,7 @@
 .SH NAME
 inetd \- internet ``super-server''
 .SH SYNOPSIS
-.B /etc/inetd
+.B /etc/athena/inetd
 [
 .B \-d
 ] [
@@ -17,8 +17,7 @@ inetd \- internet ``super-server''
 ] [ configuration file ]
 .SH DESCRIPTION
 .I Inetd
-should be run at boot time by
-.IR /etc/rc.local .
+should be run at boot time.
 It then listens for connections on certain
 internet sockets.  When a connection is found on one
 of its sockets, it decides what service the socket
@@ -34,7 +33,7 @@ Upon execution,
 .I inetd
 reads its configuration information from a configuration
 file which, by default, is
-.IR /etc/inetd.conf .
+.IR /etc/athena/inetd.conf .
 There must be an entry for each field of the configuration
 file, with entries for each field separated by a tab or
 a space.  Comments are denoted by a ``#'' at the beginning
@@ -151,7 +150,7 @@ rereads its configuration file when it receives a hangup signal, SIGHUP.
 Services may be added, deleted or modified when the configuration file
 is reread.
 .SH FILES
-/etc/inetd.conf
+/etc/athena/inetd.conf
 .SH "SEE ALSO"
 access_on(1), access_off(1), comsat(8C), ftpd(8C), rexecd(8C), rlogind(8C), 
 rshd(8C), telnetd(8C), tftpd(8C)
