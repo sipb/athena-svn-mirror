@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.26 1988-06-24 22:55:21 jtkohl Exp $";
+static char rcsid_uloc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v 1.27 1988-06-25 17:01:20 jtkohl Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -334,9 +334,6 @@ struct sockaddr_in *who;
 		return;
 	}
 	xfree(pkt);			/* free packet */
-	/* the following list of freed items is derived from Zinternal.c
-	 and Z_FormatHeader() */
-	xfree(sense_notice.z_version);
 
 	client = client_which_client(who, &sense_notice);
 	/* transmit the message to the owning port of the location. */
