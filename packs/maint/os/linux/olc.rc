@@ -8,15 +8,14 @@
 # pidfile: /var/athena/olcd.pid
 # pidfile: /var/athena/rpd.pid
 # config: /etc/sysconfig/network
-# config: /etc/sysconfig/athena
-# config: /etc/athena/rc.conf
 
 # Source function library
 . /etc/rc.d/init.d/functions
 
 . /etc/sysconfig/network
-. /etc/sysconfig/athena
-. /etc/athena/rc.conf
+. /etc/sysconfig/olc
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 
 # Check that networking is up.
 if [ ${NETWORKING} = "no" ]

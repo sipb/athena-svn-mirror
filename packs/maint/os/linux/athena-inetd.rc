@@ -9,16 +9,15 @@
 # processname: athena-inetd
 # pidfile: /var/athena/inetd.pid
 # config: /etc/sysconfig/network
-# config: /etc/sysconfig/athena
-# config: /etc/athena/rc.conf
 # config: /etc/athena/inetd.conf
 
 # Source function library
 . /etc/rc.d/init.d/functions
 
 . /etc/sysconfig/network
-. /etc/sysconfig/athena
-. /etc/athena/rc.conf
+. /etc/sysconfig/athena-inetd
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 
 # Check that networking is up.
 if [ ${NETWORKING} = "no" ]

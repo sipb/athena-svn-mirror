@@ -1,19 +1,18 @@
 #!/bin/sh
 #
-# athena-base:	Set up initial Athena workstation state.
+# athena-ws:	Set up initial Athena workstation state.
 #
 # chkconfig: 2345 20 80
 # description: Initial Athena startup.
 #
 # config: /etc/sysconfig/network
-# config: /etc/sysconfig/athena
 # config: /etc/athena/rc.conf
 
 # Source function library
 . /etc/rc.d/init.d/functions
-
-. /etc/sysconfig/athena
 . /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
 
 RETVAL=0
 
@@ -116,7 +115,7 @@ case "$1" in
 
 	echo -n Fixing nologin:
 	if [ -f /etc/nologin.persist ]; then
-		cp /etc/nologin.perset /etc/nologin
+		cp /etc/nologin.persist /etc/nologin
 	else
 		rm -f /etc/nologin
 	fi && success nologin || failure nologin
@@ -136,7 +135,7 @@ case "$1" in
 	;;
 
   *)
-	echo "Usage: athena-base {start|stop|status|restart|reload}"
+	echo "Usage: athena-ws {start|stop|status|restart|reload}"
 	exit 1
 	;;
 esac
