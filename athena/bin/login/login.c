@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.46 1992-05-18 16:43:59 epeisach Exp $
+ * $Id: login.c,v 1.47 1992-05-18 16:54:14 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.46 1992-05-18 16:43:59 epeisach Exp $";
+static char *rcsid = "$Id: login.c,v 1.47 1992-05-18 16:54:14 epeisach Exp $";
 #endif
 
 /*
@@ -1443,8 +1443,14 @@ char *dir;
     return(TRUE);
 #endif
     
-#if (defined(vax) || defined(ibm032)) && !defined(REMOTEDONE)
+#if (defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
 #define REMOTEDONE
+#if defined(vax) || defined(ibm032)
+#define NFS_MAJOR 0xff
+#endif
+#if defined(sun)
+#define NFS_MAJOR 130
+#endif
     int f;
     char c;
     struct stat stbuf;
@@ -1452,7 +1458,7 @@ char *dir;
     if (stat(dir, &stbuf))
 	return(TRUE);
 
-    if ((unsigned short)stbuf.st_dev >= 0xff00)
+    if (major(stbuf.st_dev) == NFS_MAJOR)
 	return(TRUE);
     if (stbuf.st_dev == 0x0001)			/* AFS */
 	return(TRUE);
