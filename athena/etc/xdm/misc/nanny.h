@@ -4,8 +4,8 @@
 #define NANNYPORT "/var/athena/nanny"
 
 #define N_USER		"USER"
-#define N_RMUSER	"REMOVE_USER"
 #define N_TTY		"TTY"
+#define N_PID		"NANNY_PID"
 #define N_LOGGED_IN	"LOGGED_IN"
 #define N_CONSPREF	"XCONSOLE"
 #define N_DEBUG		"DEBUG"
