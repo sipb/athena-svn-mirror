@@ -1,5 +1,0 @@
-NULL=
-
-SUBDIRS =\
-	mime \
-	$(NULL)
