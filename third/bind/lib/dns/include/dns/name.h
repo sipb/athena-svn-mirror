@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1998-2001  Internet Software Consortium.
+ * Copyright (C) 1998-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: name.h,v 1.1.1.2 2002-02-03 04:24:43 ghudson Exp $ */
+/* $Id: name.h,v 1.1.1.3 2002-06-07 05:29:33 ghudson Exp $ */
 
 #ifndef DNS_NAME_H
 #define DNS_NAME_H 1
@@ -209,6 +209,7 @@ struct dns_name {
 #define DNS_NAMEATTR_ANSWER		0x0200		/* Used by resolver. */
 #define DNS_NAMEATTR_NCACHE		0x0400		/* Used by resolver. */
 #define DNS_NAMEATTR_CHAINING		0x0800		/* Used by resolver. */
+#define DNS_NAMEATTR_CHASE		0x1000		/* Used by resolver. */
 
 LIBDNS_EXTERNAL_DATA extern dns_name_t *dns_rootname;
 extern dns_name_t *dns_wildcardname;

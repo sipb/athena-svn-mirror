@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: gssapictx.c,v 1.1.1.2 2002-02-03 04:25:33 ghudson Exp $ */
+/* $Id: gssapictx.c,v 1.1.1.3 2002-06-07 05:24:58 ghudson Exp $ */
 
 #include <config.h>
 
@@ -56,13 +56,13 @@
 	} while (0)
 
 #define REGION_TO_GBUFFER(r, gb)		\
-        do {					\
+	do {					\
 		(gb).length = (r).length;	\
 		(gb).value = (r).base;		\
 	} while (0)
 
 #define GBUFFER_TO_REGION(gb, r)		\
-        do {					\
+	do {					\
 		(r).length = (gb).length;	\
 		(r).base = (gb).value;		\
 	} while (0)

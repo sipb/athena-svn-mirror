@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static const char rcsid[] = "$Id: ns_samedomain.c,v 1.1.1.1 2002-02-03 04:24:26 ghudson Exp $";
+static const char rcsid[] = "$Id: ns_samedomain.c,v 1.1.1.2 2002-06-07 05:24:45 ghudson Exp $";
 #endif
 
 #include "port_before.h"
@@ -125,12 +125,12 @@ ns_samedomain(const char *a, const char *b) {
 	 */
 	escaped = 0;
 	for (i = diff - 2; i >= 0; i--)
-		if (a[i] == '\\')
+		if (a[i] == '\\') {
 			if (escaped)
 				escaped = 0;
 			else
 				escaped = 1;
-		else
+		} else
 			break;
 	if (escaped)
 		return (0);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1998-2001  Internet Software Consortium.
+ * Copyright (C) 1998-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: task.c,v 1.1.1.2 2002-02-03 04:25:52 ghudson Exp $ */
+/* $Id: task.c,v 1.1.1.3 2002-06-07 05:29:35 ghudson Exp $ */
 
 /*
  * Principal Author: Bob Halley
@@ -1211,6 +1211,7 @@ isc_taskmgr_destroy(isc_taskmgr_t **managerp) {
 	UNLOCK(&manager->lock);
 	while (isc__taskmgr_ready())
 		(void)isc__taskmgr_dispatch();
+	INSIST(ISC_LIST_EMPTY(manager->tasks));
 #endif /* ISC_PLATFORM_USETHREADS */
 
 	manager_free(manager);

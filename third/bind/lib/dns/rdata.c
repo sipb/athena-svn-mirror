@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1998-2001  Internet Software Consortium.
+ * Copyright (C) 1998-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: rdata.c,v 1.1.1.2 2002-02-03 04:25:07 ghudson Exp $ */
+/* $Id: rdata.c,v 1.1.1.3 2002-06-07 05:29:22 ghudson Exp $ */
 
 #include <config.h>
 #include <ctype.h>
@@ -191,11 +191,12 @@ getquad(const void *src, struct in_addr *dst,
 	result = inet_aton(src, dst);
 	if (result == 1 && callbacks != NULL &&
 	    inet_pton(AF_INET, src, &tmp) != 1) {
+		const char *name = isc_lex_getsourcename(lexer);
+		if (name == NULL)
+			name = "UNKNOWN";
 		(*callbacks->warn)(callbacks, "%s:%lu: warning \"%s\" "
-			           "is not a decimal dotted quad",
-				   isc_lex_getsourcename(lexer),
-				   isc_lex_getsourceline(lexer),
-				   src);
+				   "is not a decimal dotted quad", name,
+				   isc_lex_getsourceline(lexer), src);
 	}
 	return (result);
 }
@@ -674,15 +675,16 @@ dns_rdata_fromtext(dns_rdata_t *rdata, dns_rdataclass_t rdclass,
 		REQUIRE(DNS_RDATA_INITIALIZED(rdata));
 		REQUIRE(DNS_RDATA_VALIDFLAGS(rdata));
 	}
+	if (callbacks != NULL) {
+		REQUIRE(callbacks->warn != NULL);
+		REQUIRE(callbacks->error != NULL);
+	}
 
 	st = *target;
 
-	if (callbacks == NULL)
-		callback = NULL;
-	else
+	if (callbacks != NULL)
 		callback = callbacks->error;
-
-	if (callback == NULL)
+	else
 		callback = default_fromtext_callback;
 
 	result = isc_lex_getmastertoken(lexer, &token, isc_tokentype_qstring,
@@ -1026,7 +1028,7 @@ isc_result_t
 dns_rdataclass_fromtext(dns_rdataclass_t *classp, isc_textregion_t *source) {
 #define COMPARE(string, rdclass) \
 	if (((sizeof(string) - 1) == source->length) \
-	    && (strcasecmp(source->base, string) == 0)) { \
+	    && (strncasecmp(source->base, string, source->length) == 0)) { \
 		*classp = rdclass; \
 		return (ISC_R_SUCCESS); \
 	}
@@ -1043,12 +1045,18 @@ dns_rdataclass_fromtext(dns_rdataclass_t *classp, isc_textregion_t *source) {
 		 */
 		COMPARE("ch", dns_rdataclass_chaos);
 		COMPARE("chaos", dns_rdataclass_chaos);
+
 		if (source->length > 5 &&
-		    strncasecmp("class", source->base, 5) == 0)
-		{
+		    source->length < (5 + sizeof("65000")) &&
+		    strncasecmp("class", source->base, 5) == 0) {
+			char buf[sizeof("65000")];
 			char *endp;
-			int val = strtol(source->base + 5, &endp, 10);
-			if (*endp == '\0' && val >= 0 && val <= 0xffff) {
+			unsigned int val;
+
+			strncpy(buf, source->base + 5, source->length - 5);
+			buf[source->length - 5] = '\0';
+			val = strtoul(buf, &endp, 10);
+			if (*endp == '\0' && val <= 0xffff) {
 				*classp = (dns_rdataclass_t)val;
 				return (ISC_R_SUCCESS);
 			}
@@ -1142,12 +1150,18 @@ dns_rdatatype_fromtext(dns_rdatatype_t *typep, isc_textregion_t *source) {
 	 * to return a result to the caller if it is a valid (known)
 	 * rdatatype name.
 	 */
-	RDATATYPE_FROMTEXT_SW(hash, source->base, typep);
+	RDATATYPE_FROMTEXT_SW(hash, source->base, n, typep);
 
-	if (source->length > 4 && strncasecmp("type", source->base, 4) == 0) {
+	if (source->length > 4 && source->length < (4 + sizeof("65000")) &&
+	    strncasecmp("type", source->base, 4) == 0) {
+		char buf[sizeof("65000")];
 		char *endp;
-		int val = strtol(source->base + 4, &endp, 10);
-		if (*endp == '\0' && val >= 0 && val <= 0xffff) {
+		unsigned int val;
+
+		strncpy(buf, source->base + 4, source->length - 4);
+		buf[source->length - 4] = '\0';
+		val = strtoul(buf, &endp, 10);
+		if (*endp == '\0' && val <= 0xffff) {
 			*typep = (dns_rdatatype_t)val;
 			return (ISC_R_SUCCESS);
 		}
@@ -1948,11 +1962,14 @@ default_fromtext_callback(dns_rdatacallbacks_t *callbacks, const char *fmt,
 
 static void
 fromtext_warneof(isc_lex_t *lexer, dns_rdatacallbacks_t *callbacks) {
-	if (isc_lex_isfile(lexer) && callbacks != NULL)
+	if (isc_lex_isfile(lexer) && callbacks != NULL) {
+		const char *name = isc_lex_getsourcename(lexer);
+		if (name == NULL)
+			name = "UNKNOWN";
 		(*callbacks->warn)(callbacks,
 				   "%s:%lu: file does not end with newline",
-				    isc_lex_getsourcename(lexer),
-				    isc_lex_getsourceline(lexer));
+				   name, isc_lex_getsourceline(lexer));
+	}
 }
 
 static void

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: ncache.c,v 1.1.1.2 2002-02-03 04:25:03 ghudson Exp $ */
+/* $Id: ncache.c,v 1.1.1.3 2002-06-07 05:25:26 ghudson Exp $ */
 
 #include <config.h>
 
@@ -257,7 +257,7 @@ dns_ncache_towire(dns_rdataset_t *rdataset, dns_compress_t *cctx,
 {
 	dns_rdata_t rdata = DNS_RDATA_INIT;
 	isc_result_t result;
-	isc_region_t remaining, tremaining;
+	isc_region_t remaining, tavailable;
 	isc_buffer_t source, savedbuffer, rdlen;
 	dns_name_t name;
 	dns_rdatatype_t type;
@@ -323,8 +323,8 @@ dns_ncache_towire(dns_rdataset_t *rdataset, dns_compress_t *cctx,
 			 * See if we have space for type, class, ttl, and
 			 * rdata length.  Write the type, class, and ttl.
 			 */
-			isc_buffer_remainingregion(target, &tremaining);
-			if (tremaining.length < 10) {
+			isc_buffer_availableregion(target, &tavailable);
+			if (tavailable.length < 10) {
 				result = ISC_R_NOSPACE;
 				goto rollback;
 			}

@@ -1,5 +1,5 @@
 ##
-## $Id: aclocal.m4,v 1.1.1.2 2002-02-03 04:34:06 ghudson Exp $
+## $Id: aclocal.m4,v 1.1.1.3 2002-06-07 05:25:42 ghudson Exp $
 ##
 dnl
 dnl AC_ACE_PREFIX(ace-name, default)

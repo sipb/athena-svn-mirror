@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001  Internet Software Consortium.
+ * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: named-checkzone.c,v 1.1.1.2 2002-02-03 04:22:30 ghudson Exp $ */
+/* $Id: named-checkzone.c,v 1.1.1.3 2002-06-07 05:25:15 ghudson Exp $ */
 
 #include <config.h>
 
@@ -156,6 +156,8 @@ main(int argc, char **argv) {
 		dns_log_init(lctx);
 		dns_log_setcontext(lctx);
 	}
+
+	dns_result_register();
 
 	origin = argv[isc_commandline_index++];
 	filename = argv[isc_commandline_index++];

@@ -21,4 +21,4 @@ Then go to the top directory and run the following command to compile
 On Windows NT you can run 'mdnsproxy' as a service, while on Windows
 95/98 'mdnsproxy' can be run but not as a service.
 
-; $Id: README.WIN,v 1.1.1.1 2002-02-03 04:34:20 ghudson Exp $
+; $Id: README.WIN,v 1.1.1.2 2002-06-07 05:28:10 ghudson Exp $

@@ -15,7 +15,7 @@
  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: controlconf.c,v 1.1.1.1 2002-02-03 04:22:42 ghudson Exp $ */
+/* $Id: controlconf.c,v 1.1.1.2 2002-06-07 05:24:43 ghudson Exp $ */
 
 #include <config.h>
 
@@ -539,6 +539,7 @@ control_newconn(isc_task_t *task, isc_event_t *event) {
 			      NS_LOGMODULE_CONTROL, ISC_LOG_WARNING,
 			      "rejected command channel message from %s",
 			      socktext);
+		isc_socket_detach(&sock);
 		goto restart;
 	}
 
@@ -550,6 +551,7 @@ control_newconn(isc_task_t *task, isc_event_t *event) {
 			      NS_LOGMODULE_CONTROL, ISC_LOG_WARNING,
 			      "dropped command channel from %s: %s",
 			      socktext, isc_result_totext(result));
+		isc_socket_detach(&sock);
 		goto restart;
 	}
 
