@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.11 1998-01-26 06:23:11 ghudson Exp $
+ * $Id: Imakefile,v 1.11.6.1 1999-11-09 16:15:11 tb Exp $
  */
 
 #define ISUBDIRS doc
@@ -23,6 +23,7 @@ OSLIBS= -lc -lPW
 OSLIBS= -ladm -lmail -lbsd
 #endif
 
+create_dir($(ATHETCDIR))
 SimpleProgram(track,$(OBJS),$(LIBS),$(ATHETCDIR))
 
 y.tab.c : sub_gram.y 
