@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.73 1995-01-20 08:22:28 cfields Exp $
+ * $Id: login.c,v 1.74 1995-01-20 11:23:18 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.73 1995-01-20 08:22:28 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.74 1995-01-20 11:23:18 cfields Exp $";
 #endif
 
 /*
@@ -77,13 +77,19 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #else
 #include <syslog.h>
 #endif
-#include <strings.h>
+#include <string.h>
 #include <krb.h>	
 #include <netdb.h>
 #include <netinet/in.h>
 #include <grp.h>
 #ifdef POSIX
 #include <termios.h>
+#endif
+
+#ifdef KRB5
+#include <krb5/krb5.h>
+#include <krb5/ext-proto.h>
+#include <krb5/los-proto.h>
 #endif
 
 #ifdef ultrix
@@ -150,7 +156,13 @@ typedef int sigtype;
 
 #define KRB_ENVIRON	"KRBTKFILE" /* Ticket file environment variable */
 #define KRB_TK_DIR	"/tmp/tkt_" /* Where to put the ticket */
-#define KRBTKLIFETIME	DEFAULT_TKT_LIFE
+
+#ifdef KRB5
+#define KRB5_ENVIRON	"KRB5CCNAME"
+#define KRB5_TK_DIR	"/tmp/krb5cc_"
+#endif
+
+#define KRBTKLIFETIME	120	/* 10 hours */
 
 #define PROTOTYPE_DIR	"/usr/athena/lib/prototype_tmpuser" /* Source for temp files */
 #define TEMP_DIR_PERM	0755	/* Permission on temporary directories */
@@ -240,9 +252,6 @@ char	term[64];
 
 struct	passwd *pwd;
 struct	passwd *hes_getpwnam();
-#if !defined(sun)
-char	*strcat(), *rindex(), *index(), *malloc(), *realloc();
-#endif
 int	timedout();
 char	*ttyname();
 char	*crypt();
@@ -614,14 +623,28 @@ main(argc, argv)
 	    char *pp, pp2[MAXPWSIZE+1];
 	    int krbval;
 	    char tkfile[32];
+#ifdef KRB5
+	    char tk5file[32];
+#endif
 	    char realm[REALM_SZ];
 	    
 	    /* Set up the ticket file environment variable */
 	    SCPYN(tkfile, KRB_TK_DIR);
-	    strncat(tkfile, rindex(ttyn, '/')+1,
+	    strncat(tkfile, strchr(ttyn+1, '/')+1,
 		    sizeof(tkfile) - strlen(tkfile));
+	    while (pp = strchr((char *)tkfile + strlen(KRB_TK_DIR), '/'))
+		*pp = '_';
 	    (void) unlink (tkfile);
 	    setenv(KRB_ENVIRON, tkfile, 1);
+#ifdef KRB5
+	    SCPYN(tk5file, KRB5_TK_DIR);
+	    strncat(tk5file, strchr(ttyn+1, '/')+1,
+		    sizeof(tk5file) - strlen(tk5file));
+	    while (pp = strchr((char *)tk5file + strlen(KRB5_TK_DIR), '/'))
+		*pp = '_';
+	    (void) unlink (tk5file);
+	    setenv(KRB5_ENVIRON, tk5file, 1);
+#endif
 	    
 	    setpriority(PRIO_PROCESS, 0, -4);
 	    pp = getlongpass("Password:");
@@ -687,6 +710,19 @@ main(argc, argv)
 		lusername[NMAX] = '\0';
 		krbval = krb_get_pw_in_tkt(lusername, "", realm,
 				    "krbtgt", realm, KRBTKLIFETIME, pp2);
+#ifdef KRB5
+		{
+		    krb5_error_code krb5_ret;
+		    char *etext;
+		    
+		    krb5_ret = do_v5_kinit(lusername, "", realm,
+					   KRBTKLIFETIME,
+					   pp2, 0, &etext);
+		    if (krb5_ret) {
+			com_err("login", krb5_ret, etext);
+		    }
+		}
+#endif
 		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
             				    what his administration is doing */
 		switch (krbval) {
@@ -725,6 +761,9 @@ main(argc, argv)
 				tmppwflag = TRUE;
 			}
 			chown(getenv(KRB_ENVIRON), pwd->pw_uid, pwd->pw_gid);
+#ifdef KRB5
+			chown(getenv(KRB5_ENVIRON), pwd->pw_uid, pwd->pw_gid);
+#endif
 			/* If we already have a homedir, use it.
 			 * Otherwise, try to attach.  If that fails,
 			 * try to create.
@@ -837,8 +876,12 @@ leavethis:
 		putchar(c);
 	    fflush(stdout);
 	    sleep(5);
-	    if (krbflag)
-		    (void) dest_tkt();
+	    if (krbflag) {
+		(void) dest_tkt();
+#ifdef KRB5
+		do_v5_kdestroy(0);
+#endif
+	    }
 	    exit(0);
 	}
 #ifdef SYSLOG42
@@ -947,8 +990,12 @@ leavethis:
 	else
 	    perror("quota (Q_SETUID)");
 	sleep(5);
-	if (krbflag)
-		(void) dest_tkt();
+	if (krbflag) {
+	    (void) dest_tkt();
+#ifdef KRB5
+	    do_v5_kdestroy(0);
+#endif
+	}
 	exit(0);
     }
 #endif VFS
@@ -1073,8 +1120,12 @@ leavethis:
     /* This call MUST succeed */
     if(setuid(pwd->pw_uid) < 0) {
 	perror("setuid");
-	if (krbflag)
-		(void) dest_tkt();
+	if (krbflag) {
+	    (void) dest_tkt();
+#ifdef KRB5
+	    do_v5_kdestroy(0);
+#endif
+	}
 	exit(1);
     }
     chdir(pwd->pw_dir);
@@ -1181,8 +1232,12 @@ leavethis:
     execlp(pwd->pw_shell, minusnam, 0);
     perror(pwd->pw_shell);
     printf("No shell\n");
-    if (krbflag)
-	    (void) dest_tkt();
+    if (krbflag) {
+	(void) dest_tkt();
+#ifdef KRB5
+        do_v5_kdestroy(0);
+#endif
+    }
     exit(0);
 }
 
@@ -1544,8 +1599,12 @@ setenv(var, value, clobber)
 	environ = (char **) realloc(environ, sizeof (char *) * (index + 2));
 	if (environ == NULL) {
 		fprintf(stderr, "login: malloc out of memory\n");
-		if (krbflag)
-			(void) dest_tkt();
+		if (krbflag) {
+		    (void) dest_tkt();
+#ifdef KRB5
+		    do_v5_kdestroy(0);
+#endif
+		}
 		exit(1);
 	}
 	environ[index] = malloc(varlen + vallen + 2);
@@ -1615,6 +1674,9 @@ dofork()
 
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
+#ifdef KRB5
+    do_v5_kdestroy(0);
+#endif
 
 #ifdef SETPAG
     /* Destroy any AFS tokens */
@@ -2403,3 +2465,147 @@ EGRESS:
     bzero (&authdata, sizeof (authdata));
     return retval;
 }
+
+#ifdef KRB5
+/*
+ * This routine takes v4 kinit parameters and performs a V5 kinit.
+ * 
+ * name, instance, realm is the v4 principal information
+ *
+ * lifetime is the v4 lifetime (i.e., in units of 5 minutes)
+ * 
+ * password is the password
+ *
+ * ret_cache_name is an optional output argument in case the caller
+ * wants to know the name of the actual V5 credentials cache (to put
+ * into the KRB5CCNAME environment variable)
+ *
+ * etext is a mandatory output variable which is filled in with
+ * additional explanatory text in case of an error.
+ */
+krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
+                           ret_cache_name, etext)
+    char    *name;
+    char    *instance;
+    char    *realm;
+    int     lifetime;
+    char    *password;
+    char    **ret_cache_name;
+    char    **etext;
+{
+    krb5_error_code retval;
+    krb5_principal  me = 0, server = 0;
+    krb5_ccache     ccache = NULL;
+    krb5_creds      my_creds;
+    krb5_timestamp  now;
+    krb5_address    **my_addresses = 0;
+    char            *cache_name = krb5_cc_default_name();
+
+    *etext = 0;
+    if (ret_cache_name)
+	*ret_cache_name = 0;
+    memset((char *)&my_creds, 0, sizeof(my_creds));
+    
+    krb5_init_ets();
+    
+    retval = krb5_425_conv_principal(name, instance, realm, &me);
+    if (retval) {
+	*etext = "while converting V4 principal";
+	goto cleanup;
+    }
+    
+    retval = krb5_cc_resolve (cache_name, &ccache);
+    if (retval) {
+	*etext = "while resolving ccache";
+	goto cleanup;
+    }
+
+    retval = krb5_cc_initialize (ccache, me);
+    if (retval) {
+	*etext = "while initializing cache";
+	goto cleanup;
+    }
+
+    retval = krb5_build_principal_ext(&server,
+				      krb5_princ_realm(me)->length,
+				      krb5_princ_realm(me)->data,
+				      KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
+				      krb5_princ_realm(me)->length,
+				      krb5_princ_realm(me)->data,
+				      0);
+    if (retval)  {
+	*etext = "while building server name";
+	goto cleanup;
+    }
+
+    retval = krb5_os_localaddr(&my_addresses);
+    if (retval) {
+	*etext = "when getting my address";
+	goto cleanup;
+    }
+
+    retval = krb5_timeofday(&now);
+    if (retval) {
+	*etext = "while getting time of day";
+	goto cleanup;
+    }
+       
+    my_creds.client = me;
+    my_creds.server = server;
+    my_creds.times.starttime = 0;
+    my_creds.times.endtime = now + lifetime*5*60;
+    my_creds.times.renew_till = 0;
+       
+    retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
+					   ETYPE_DES_CBC_CRC,
+					   KEYTYPE_DES,
+					   password,
+					   ccache,
+					   &my_creds, 0);
+    if (retval) {
+	*etext = "while calling krb5_get_in_tkt_with_password";
+	goto cleanup;
+    }
+
+    if (ret_cache_name) {
+	*ret_cache_name = malloc(strlen(cache_name)+1);
+	if (!*ret_cache_name) {
+	    retval = ENOMEM;
+	    goto cleanup;
+	}
+	strcpy(*ret_cache_name, cache_name);
+    }
+
+ cleanup:
+    if (me)
+	krb5_free_principal(me);
+    if (server)
+	krb5_free_principal(server);
+    if (my_addresses)
+	krb5_free_addresses(my_addresses);
+    if (ccache)
+	krb5_cc_close(ccache);
+    my_creds.client = 0;
+    my_creds.server = 0;
+    krb5_free_cred_contents(&my_creds);
+    return retval;
+}
+
+krb5_error_code do_v5_kdestroy(cachename)
+    char    *cachename;
+{
+    krb5_error_code retval;
+    krb5_ccache cache;
+    
+    if (!cachename)
+	cachename = krb5_cc_default_name();
+    
+    krb5_init_ets();
+    
+    retval = krb5_cc_resolve (cachename, &cache);
+    if (!retval)
+	retval = krb5_cc_destroy(cache);
+
+    return retval;
+}
+#endif /* KRB5 */
