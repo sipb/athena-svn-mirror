@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.8 1996-10-17 16:17:06 ghudson Exp $
+# $Id: build.sh,v 1.9 1996-11-20 15:25:09 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -29,7 +29,7 @@ end="${2-$1}"
 
 # Determine the platform type.
 case "`uname -a`" in
-	SunOS*sparc)	platform=sun4 ;;
+	SunOS*sparc*)	platform=sun4 ;;
 	IRIX*5.3*)	platform=sgi ;;
 esac
 
