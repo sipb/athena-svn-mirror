@@ -25,7 +25,7 @@ SRCS	= $(srcdir)/ftpd.c ftpcmd.c $(srcdir)/popen.c \
 OBJS	= ftpd.o ftpcmd.o glob.o popen.o vers.o radix.o \
 	  secure.o $(LIBOBJS) $(SETENVOBJ)
 
-ATHLIBS = -L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod -llocker -lzephyr
+ATHLIBS = -lal -lhesiod -llocker -lzephyr
 LOCALINCLUDES = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@
 
 all::	ftpd

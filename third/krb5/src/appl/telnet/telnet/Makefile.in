@@ -30,7 +30,7 @@ LOCALINCLUDES=-I.. -I$(srcdir)/..
 DEFINES = $(AUTH_DEF) $(OTHERDEFS)
 ARPA_TELNET= $(srcdir)/../arpa/telnet.h
 EXTRALIBS=@EXTRALIBS@
-LOCAL_LIBRARIES=-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
+LOCAL_LIBRARIES=-lal -llocker -lzephyr -lhesiod $(EXTRALIBS) ../../../krb524/libkrb524.a
 
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
