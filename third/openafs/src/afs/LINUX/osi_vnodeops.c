@@ -23,7 +23,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.1 2002-01-31 21:33:30 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vnodeops.c,v 1.1.1.1.2.1 2002-06-28 05:21:48 ghudson Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -710,9 +710,18 @@ static int afs_linux_dentry_revalidate(struct dentry *dp)
 
     AFS_GLOCK();
 
+    sysState.allocked = 0;
+
     /* If it's a negative dentry, then there's nothing to do. */
     if (!vcp || !parentvcp)
         goto done;
+
+    /* If it is the AFS root, then there's no chance it needs 
+       revalidating */
+    if (vcp == afs_globalVp) {
+	bad_dentry = 0;
+	goto done;
+    }
 
     if (code = afs_InitReq(&treq, credp))
         goto done;
