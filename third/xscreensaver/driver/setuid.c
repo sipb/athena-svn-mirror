@@ -78,12 +78,13 @@ describe_uids (saver_info *si, FILE *out)
 
 
 static int
-set_ids_by_name (struct passwd *p, struct group *g, char **message_ret)
+set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
 {
-  int uid_errno = 0;
-  int gid_errno = 0;
-  uid_t uid = p->pw_uid;
-  gid_t gid = g->gr_gid;
+  struct passwd *p;
+  struct group *g;
+
+  p = getpwuid (uid);
+  g = getgrgid (gid);
 
   if (message_ret)
     *message_ret = 0;
@@ -110,7 +111,7 @@ set_ids_by_name (struct passwd *p, struct group *g, char **message_ret)
     {
       static char buf [1024];
       sprintf (buf, "changed uid/gid to %s/%s (%ld/%ld).",
-	       p->pw_name, (g ? g->gr_name : "???"),
+	       (p ? p->pw_name : "???"), (g ? g->gr_name : "???"),
 	       (long) uid, (long) gid);
       if (message_ret)
 	*message_ret = buf;
@@ -145,43 +146,6 @@ set_ids_by_name (struct passwd *p, struct group *g, char **message_ret)
 
       return -1;
     }
-}
-
-static int
-set_ids_by_number (uid_t uid, gid_t gid, char **message_ret)
-{
-  struct passwd *p;
-  struct group *g;
-
-  errno = 0;
-  p = getpwuid (uid);
-  if (!p)
-    {
-      char buf [1024];
-      sprintf (buf, "%s: error looking up name of user %d", blurb(),
-	       (long) uid);
-      if (errno)
-	perror (buf);
-      else
-	fprintf (stderr, "%s: unknown error.\n", buf);
-      return -1;
-    }
-
-  errno = 0;
-  g = getgrgid (gid);
-  if (!g)
-    {
-      char buf [1024];
-      sprintf (buf, "%s: error looking up name of group %d", blurb(),
-	       (long) gid);
-      if (errno)
-	perror (buf);
-      else
-	fprintf (stderr, "%s: unknown error.\n", buf);
-      return -1;
-    }
-
-  return set_ids_by_name (p, g, message_ret);
 }
 
 

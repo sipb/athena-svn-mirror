@@ -22,6 +22,7 @@
 #include <pwd.h>
 #include <kadm_err.h>
 #include "kadm.h"
+#include <krb_err.h>
 
 extern void krb_set_tkt_string();
 static int using_preauth = 0;
@@ -60,6 +61,9 @@ main(argc,argv)
 #endif
     int read_long_pw_string();
     
+    init_kadm_err_tbl();
+    init_krb_err_tbl();
+
     memset(name, 0, sizeof(name));
     memset(inst, 0, sizeof(inst));
     memset(realm, 0, sizeof(realm));

@@ -1021,7 +1021,7 @@ echo $ac_n "checking for preserve directory""... $ac_c" 1>&6
 if eval "test \"`echo '$''{'vi_cv_path_preserve'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
-  	dirlist="/var/preserve /var/tmp /usr/tmp"
+  	dirlist="/var/tmp /usr/tmp"
 	vi_cv_path_preserve=no
 	for i in $dirlist; do
 		if test -d $i/vi.recover; then

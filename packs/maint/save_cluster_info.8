@@ -5,7 +5,7 @@ save_cluster_info \- get a workstation's cluster information
 .SH SYNOPSIS
 .B /etc/athena/save_cluster_info
 .SH DESCRIPTION
-This shell script, as part of the reactivatation process,
+This shell script, as part of the reactivation process,
 retrieves the workstation's network
 environment information from the
 .I hesiod
@@ -21,32 +21,31 @@ while the second file sets Bourne shell variables.
 Currently
 .I save_cluster_info
 sets the
-.I ZEPHYR,
 .I LPR,
-.I PRCLUSTER,
-.I USRLIB,
+.I SYSLIB,
+.I SYSPREFIX,
 and
-.I SYSLIB
+.I SYSCONTROL
 shell variables.
 The
-.I ZEPHYR
-variable specifies the workstation's notification server host,
-.I USRLIB
-specifies the name of its
-.I usr
-filesystem,
-and
+.I LPR
+variable specifies the workstation's default printer, and the
 .I SYSLIB
-specifies the name of its
+variable specifies the name of its remote
 .I system
-filesystem
-(The workstation's
-.I activation
+filesystem.
+The workstation's
+.I reactivation
 process uses the
 .I SYSLIB
 information to
 .I attach
-the workstation's default filesystem).
+the workstation's default filesystem.  On platforms that do not use remote
+filesystems for system software, the
+.I SYSPREFIX
+and
+.I SYSCONTROL
+variables are used to determine where to look for system software updates.
 
 .I save_cluster_info
 retrieves its information by calling the
