@@ -63,7 +63,7 @@ install: libpng.a
 	chmod 644 $(DESTDIR)$(prefix)/include/pngconf.h
 	cp libpng.a $(DESTDIR)$(prefix)/lib
 	chmod 644 $(DESTDIR)$(prefix)/lib/libpng.a
-	cp $(SHAREDLIB).$(VER) $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir)$(SHAREDLIB).$(VER)
+	cp $(SHAREDLIB).$(VER) $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir)/$(SHAREDLIB).$(VER)
 	(cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIB).$(VER); then \
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM); \
 	ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB); \
