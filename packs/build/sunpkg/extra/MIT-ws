@@ -61,8 +61,6 @@ cp $1/packs/config/os/$OS/inetd.conf $2$inet
 chmod 644 $2$inet/inetd.conf
 cp $1/packs/config/os/$OS/init $2$default
 chmod 644 $2$default/init
-cp $1/packs/config/os/$OS/inittab $2$etcdir
-chmod 644 $2$etcdir/inittab
 cp $1/packs/config/os/$OS/keytable.map $2$keytables
 chmod 644 $2$keytables/keytable.map
 cp $1/packs/config/os/$OS/logindevperm $2$etcdir

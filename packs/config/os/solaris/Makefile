@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.17 2004-03-06 17:20:29 ghudson Exp $
+# $Id: Makefile,v 1.18 2005-03-30 16:45:51 rbasch Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -62,7 +62,6 @@ install:
 	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 init ${DESTDIR}${DEFAULT}
-	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
 	install -c -m 0644 keytable.map ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 logindevperm ${DESTDIR}${ETCDIR}
 	install -c -m 0644 name_to_sysnum ${DESTDIR}${ETCDIR}
