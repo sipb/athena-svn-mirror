@@ -1,7 +1,7 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: ghudson $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.14 1996-05-14 16:54:23 ghudson Exp $
+.\"     $Author: cfields $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.15 1996-08-20 19:30:56 cfields Exp $
 .TH MACHTYPE 1 "May 14 1996"
 .SH NAME
 machtype \- Print machine type to standard output
@@ -50,12 +50,14 @@ Print out the version of Athena installed on the local system from
 .I /etc/athena/version.
 .TP
 .B -N
-Print out the name of the base operating system; if used with the "-v" flag,
-the version number of the OS will be included as well.  Current values for
-the name of the base OS are "SunOS" and "IRIX".
+Print out the name of the base operating system machtype was compiled
+under; if used with the "-v" flag, the version number of the OS will
+be included as well.  Current values for the name of the base OS are
+"SunOS" and "IRIX".
 .TP
 .B -E
-Print out the version number of the base operating system.
+Print out the version number of the base operating system machtype was
+compiled under.
 .TP
 .B -S
 Print out the "Athena System" name for the current architecture. This
