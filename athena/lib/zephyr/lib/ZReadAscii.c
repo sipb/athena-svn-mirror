@@ -10,25 +10,33 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.1 1987-06-23 16:59:36 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.2 1987-06-29 03:01:08 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-int ZReadAscii(ptr,temp,num)
+int ZReadAscii(ptr,len,field,num)
 	char *ptr;
+	int len;
 	char *temp;
 	int num;
 {
 	int i;
 	char bfr[3];
 
-	for (i=0;i<num;i++) {
-		if (*ptr == ' ')
+	for (i=outlen=0;i<num;i++) {
+		if (*ptr == ' ') {
 			ptr++;
-		if (ptr[0] == '0' && ptr[1] == 'x')
+			if (--len < 1)
+				return (ZERR_BADFIELD);
+		} 
+		if (ptr[0] == '0' && ptr[1] == 'x') {
 			ptr += 2;
+			len -= 2;
+			if (len < 1)
+				return (ZERR_BADFIELD);
+		} 
 		bfr[0] = ptr[0];
 		bfr[1] = ptr[1];
 		bfr[2] = '\0';
@@ -36,6 +44,9 @@ int ZReadAscii(ptr,temp,num)
 			return (ZERR_BADFIELD);
 		sscanf(bfr,"%x",temp+i);
 		ptr += 2;
+		len -= 2;
+		if (len < 1)
+			return (ZERR_BADFIELD);
 	}
 
 	if (*ptr)

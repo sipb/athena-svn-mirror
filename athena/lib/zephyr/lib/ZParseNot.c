@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.6 1987-06-26 03:35:55 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.7 1987-06-29 03:01:26 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,7 +23,7 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 	int		*auth;
 	struct		sockaddr_in *from;
 {
-	char *ptr,*cksum,srcprincipal[ANAME_SZ+INST_SZ+REALM_SZ+4];
+	char *ptr,*end,*cksum,srcprincipal[ANAME_SZ+INST_SZ+REALM_SZ+4];
 	int result;
 	unsigned int temp[3];
 	AUTH_DAT dat;
@@ -32,35 +32,36 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 	CREDENTIALS cred;
 	
 	ptr = buffer;
+	end = buffer+len;
 	
-	if (ZReadAscii(ptr,temp,sizeof(int)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(int)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	ptr += strlen(ptr)+1;
 	
 	if (*temp != ZVERSION)
 		return (ZERR_VERS);
 
-	if (ZReadAscii(ptr,temp,sizeof(int)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(int)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	notice->z_kind = (ZNotice_Kind_t)*temp;
 	ptr += strlen(ptr)+1;
 	
-	if (ZReadAscii(ptr,temp,sizeof(ZUnique_Id_t)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(ZUnique_Id_t)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	bcopy(temp,&notice->z_uid,sizeof(ZUnique_Id_t));
 	ptr += strlen(ptr)+1;
 	
-	if (ZReadAscii(ptr,temp,sizeof(u_short)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(u_short)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	notice->z_port = (u_short)*temp;
 	ptr += strlen(ptr)+1;
 	
-	if (ZReadAscii(ptr,temp,sizeof(int)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(int)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	notice->z_auth = *temp;
 	ptr += strlen(ptr)+1;
 
-	if (ZReadAscii(ptr,temp,sizeof(int)) == ZERR_BADFIELD)
+	if (ZReadAscii(ptr,end-ptr,temp,sizeof(int)) == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	notice->z_authent_len = *temp;
 	ptr += strlen(ptr)+1;
@@ -80,7 +81,7 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 
 	cksum = ptr;
 	
-	if (ZReadAscii(ptr,&notice->z_checksum,sizeof(ZChecksum_t))
+	if (ZReadAscii(ptr,end-ptr,&notice->z_checksum,sizeof(ZChecksum_t))
 	    == ZERR_BADFIELD)
 		return (ZERR_BADPKT);
 	ptr += strlen(ptr)+1;
@@ -96,7 +97,7 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 	}
 	
 	if (__Zephyr_server) {
-		if (ZReadAscii(notice->z_ascii_authent,authent.dat,
+		if (ZReadAscii(notice->z_ascii_authent,end-ptr,authent.dat,
 			       notice->z_authent_len) == ZERR_BADFIELD) {
 			*auth = 0;
 			return (ZERR_NONE);
