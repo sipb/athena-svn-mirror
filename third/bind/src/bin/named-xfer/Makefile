@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.4 1999-03-16 20:34:24 danw Exp $
+# $Id: Makefile,v 1.5 1999-03-21 21:02:54 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -75,8 +75,7 @@ ${DESTDIR}${DESTEXEC}:
 	mkdir -p ${DESTDIR}${DESTEXEC}
 
 install: ${DESTDIR}${DESTEXEC} ${PROG}${EXE}
-	${INSTALL} -s -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTEXEC}/${PROG}${EXE}
-	${INSTALL} -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTEXEC}/${PROG}.unstripped
+	${INSTALL} -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTEXEC}/${PROG}${EXE}
 
 links: FRC
 	@set -e; ln -s SRC/*.[ch] .

@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.6 1999-03-18 22:32:20 danw Exp $
+# $Id: Makefile,v 1.7 1999-03-21 21:02:37 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -125,8 +125,7 @@ ${DESTDIR}${DESTSBIN}:
 	mkdir -p ${DESTDIR}${DESTSBIN}
 
 install: ${DESTDIR}${DESTSBIN} ${PROG}${EXE}
-	${INSTALL} -s -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTSBIN}/${PROG}${EXE}
-	${INSTALL} -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTSBIN}/${PROG}.unstripped
+	${INSTALL} -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTSBIN}/${PROG}${EXE}
 
 links: FRC
 	@ln -s SRC/*.[chy] SRC/test .; rm -f ns_parser.[ch]
