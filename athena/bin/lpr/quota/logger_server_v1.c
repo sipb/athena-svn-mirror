@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v $
- *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.1 1990-06-05 14:02:34 ilham Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.2 1990-07-10 16:05:09 epeisach Exp $
  */
 
 /*
@@ -10,26 +10,26 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.1 1990-06-05 14:02:34 ilham Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.2 1990-07-10 16:05:09 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
 #include "quota.h"
 #include <krb.h>
 #include "quota_limits.h"
-#include "quota_ncs.h"
+#include "quota_ncs_v1.h"
 #include "quota_err.h"
 #include "quota_db.h"
 #include "uuid.h"
 #include "logger.h"
-#include "logger_ncs.h"
+#include "logger_ncs_v1.h"
 char *set_service();
 
 
 
 
-     
-quota_error_code LoggerJournal(h,auth,qid,start,maxnum,flags,numtrans,LogEnts,currency)
+
+quota_error_code LoggerJournal_v1(h,auth,qid,start,maxnum,flags,numtrans,LogEnts,currency)
 handle_t h;
 krb_ktext *auth;
 quota_identifier *qid;
@@ -37,7 +37,7 @@ startingpoint start;
 maxtotransfer maxnum;
 loggerflags flags;
 ndr_$long_int *numtrans;
-LogEnt LogEnts[LOGMAXRETURN];
+LogEnt_v1 LogEnts[LOGMAXRETURN];
 quota_currency currency;
 {
 
@@ -53,7 +53,7 @@ quota_currency currency;
     User_str userin;
     log_header jhead;
     log_entity *ent;
-    LogEnt *lent;
+    LogEnt_v1 *lent;
     int i;
     AUTH_DAT ad;
     char name1[MAX_K_NAME_SZ];
@@ -171,20 +171,20 @@ quota_currency currency;
 
 	lent->func_union.func = ent->func;
 	switch (ent->func) {
-	case LO_ADD:
-	case LO_SUBTRACT:
-	case LO_SET:
-	case LO_DELETEUSER:
-	case LO_DISALLOW:
-	case LO_ALLOW:
-	case LO_ADJUST:
+	case LO_ADD_V1:
+	case LO_SUBTRACT_V1:
+	case LO_SET_V1:
+	case LO_DELETEUSER_V1:
+	case LO_DISALLOW_V1:
+	case LO_ALLOW_V1:
+	case LO_ADJUST_V1:
 	    lent->func_union.tagged_union.offset.amount = ent->trans.offset.amt;
 	    make_kname(logger_num_to_string(ent->trans.offset.name),
 		       logger_num_to_string(ent->trans.offset.inst),
 		       logger_num_to_string(ent->trans.offset.realm),
 		       lent->func_union.tagged_union.offset.wname);
 	    break;
-	case LO_CHARGE:
+	case LO_CHARGE_V1:
 	    lent->func_union.tagged_union.charge.ptime = ent->trans.charge.subtime;
 	    lent->func_union.tagged_union.charge.npages =  ent->trans.charge.npages;
 	    lent->func_union.tagged_union.charge.pcost = ent->trans.charge.med_cost;
@@ -209,7 +209,7 @@ quota_currency currency;
 
 /* Warning these must reflect the idl file */
 static print_logger_v1$epv_t print_logger_v1$mgr_epv = {
-    LoggerJournal
+    LoggerJournal_v1
     };
 
 register_logger_manager_v1()
