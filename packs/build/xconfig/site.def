@@ -24,18 +24,113 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
  *****************************************************************************/
 
 #ifdef BeforeVendorCF
+#define	ATHENA
+#if defined(VaxArchitecture) || defined(sparc) || defined(SparcArchitecture)
+#define	HasGcc	YES
+#endif
 
-/* #define HasGcc YES */
-
+#define	TroffCmd psroff -t
 #endif /* BeforeVendorCF */
 
 #ifdef AfterVendorCF
 
-/*
-#ifdef ProjectRoot
 #undef ProjectRoot
+
+#ifdef PS2Architecture
+#define	ProjectRoot	/mit/x11/ps2
+#define	UsrLibDir	/mit/x11/ps2lib
+#define	BinDir		/mit/x11/ps2bin
+#define ExtraLoadFlags  -T0x400000
+#define	HasSaberC	YES			/* stop jik from flaming */
 #endif
-#define ProjectRoot /usr/X11R5
-*/
+
+#ifdef RtArchitecture
+#define	ProjectRoot	/mit/x11/rt
+#define	UsrLibDir	/mit/x11/rtlib
+#define	BinDir		/mit/x11/rtbin
+#define ExtraLoadFlags  -Z
+#define	BuildPexExt	NO
+#define	StripInstalledPrograms YES
+#endif
+
+#ifdef MipsArchitecture
+#define	ProjectRoot	/mit/x11/ds
+#define	UsrLibDir	/mit/x11/decmipslib
+#define	BinDir		/mit/x11/decmipsbin
+/* Build the Xdec server */
+#define XcfbpmaxServer NO
+/* We have better uses for 100 MB of disk space than to hold mips
+   debugging information.  If you own stock in a disk manufacturer,
+   define KeepHugeSymbols and you will get full size MIPS binaries.  */
+#ifndef KeepHugeSymbols
+#undef	ObjectCompile
+#define	ObjectCompile(options) $(RM) $@					@@\
+	$(CC) -c options $(CFLAGS) $*.c					@@\
+	ld -X -r -o $@.strip $@						@@\
+	mv $@.strip $@
+
+#undef	LibObjCompile
+#define	LibObjCompile(dir,options) $(RM) $@ dir/$@			@@\
+	$(CC) -c options $(CCOPTIONS) $(ALLDEFINES) $*.c		@@\
+	ld -X -r -o dir/$@ $@						@@\
+	$(RM) $@
+
+.c.o:
+	$(CC) -c $(CFLAGS) $*.c
+	ld -X -r -o $@.strip $@
+	mv $@.strip $@
+#endif
+#define	StripInstalledPrograms YES
+#endif
+
+#ifdef RsArchitecture
+#define	ProjectRoot	/mit/x11/rs
+#define	UsrLibDir	/mit/x11/rsaixlib
+#define	BinDir		/mit/x11/rsaixbin
+#define	CcCmd		xlc -D_ALL_SOURCE
+#endif
+
+#ifdef VaxArchitecture
+#define	ProjectRoot	/mit/x11/vax
+#define	UsrLibDir	/mit/x11/vaxlib
+#define	BinDir		/mit/x11/vaxbin
+#define ExtraLoadFlags  -Z
+#define	StripInstalledPrograms YES
+#undef CcCmd
+#define	CcCmd gcc2 -pipe -fpcc-struct-return
+#define OptimizedCDebugFlags -O3
+#endif
+
+#ifdef SparcArchitecture
+#define	ProjectRoot	/mit/x11/sparc
+#define	UsrLibDir	/mit/x11/sun4lib
+#define	BinDir		/mit/x11/sun4bin
+#define	CcCmd		gcc2 -pipe
+#undef SharedLibraryCcCmd
+#define SharedLibraryCcCmd gcc2 -pipe
+#undef XSunMonoServer
+#define	XSunMonoServer	NO
+#define OptimizedCDebugFlags -O2
+#undef PositionIndependentCFlags
+#define	PositionIndependentCFlags -fpic
+#undef ExtraLoadFlags
+#endif
+
+#define	XAppLoadDir /mit/x11/lib/app-defaults
+#define	ConfigDir /mit/x11/lib/config
+#define	TwmDir /mit/x11/lib/twm
+#define	XSharedFilePath /mit/x11/lib
+
+/* MIT Athena path for app-defaults, etc. */
+
+#define XFileSearchPathBase /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
+#define XFileSearchPathDefault /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
+#define	ManDirectoryRoot /mit/x11/man
+
+#define	IncRoot /mit/x11/include
+
+#define MotifBC	YES
 
 #endif /* AfterVendorCF */
+
+#define BuildXInputLib  NO
