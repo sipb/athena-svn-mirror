@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.1 1988-05-17 15:02:44 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.0 1988-05-24 17:39:04 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 3.1 1988-05-17 15:02:44 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.0 1988-05-24 17:39:04 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -49,8 +49,8 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 /* Default directory containing lock files under real root */
 #define DEF_LOCKDIR	"/tmp"
 
-/* Default global exceptions */
-#define DEF_EXCEPT	{ "#*", "*~" }
+/* Default global exceptions: filenames shouldn't contain whitespace */
+#define DEF_EXCEPT	{ "#*", "*~", "*\t*", "* *", "*\n*" }
 
 /* Default shell */
 #define DEF_SHELL	"/bin/sh"
