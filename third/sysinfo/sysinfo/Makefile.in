@@ -1,5 +1,5 @@
 #
-# $Revision: 1.3 $
+# $Revision: 1.4 $
 #
 # Makefile for building sysinfo main program
 #
@@ -112,8 +112,8 @@ install: $(Target) sysinfowrapper
 	fi; \
 	echo $(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(DESTDIR)$(BIN)/$(PROG); \
 	$(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(DESTDIR)$(BIN)/$(PROG); \
-	echo $(INSTALLPROG) -c ${INSTALLOPTS} ${Target} $(DESTDIR)$$PLdir/${Target}; \
-	$(INSTALLPROG) -s -c ${INSTALLOPTS} ${Target} $(DESTDIR)$$PLdir/${Target};
+	echo $(INSTALLPROG) -c ${INSTALLOPTS} ${Target} $$PLdir/${Target}; \
+	$(INSTALLPROG) -s -c ${INSTALLOPTS} ${Target} $$PLdir/${Target};
 
 clean:
 	rm -f *.o ${Target} buildinfo.c
