@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.11 2001-04-04 16:47:51 ghudson Exp $
+# $Id: xsession,v 1.12 2001-05-04 14:52:21 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -99,19 +99,6 @@ endif
 if ((! $?NOCALLS) && (-r ~/.Xresources)) xrdb -merge ~/.Xresources
 
 
-# Start window manager.  To change your default window manager, set the 
-# WINDOW_MANAGER environment variable in your ~/.environment file.
-
-if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
-if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
-
-if ($?NOCALLS) then
-	(sawfish --no-user-rc &)
-else
-	($WINDOW_MANAGER &)
-endif
-
-
 # *******************   ACTIVITY STARTUP   *******************
 
 # Run standard system/user startup activities
@@ -146,6 +133,18 @@ else if (! $?skip_dash) then
 else if (! $?skip_xlogout) then
 	if ($?verbose_login) echo "Creating logout button..."
 	(dash -logout &)
+endif
+
+# Start window manager.  To change your default window manager, set the 
+# WINDOW_MANAGER environment variable in your ~/.environment file.
+
+if (! $?WINDOW_MANAGER) setenv WINDOW_MANAGER $default_windowmanager
+if ($?verbose_login) echo "Starting $WINDOW_MANAGER window manager..."
+
+if ($?NOCALLS) then
+	(sawfish --no-user-rc &)
+else
+	($WINDOW_MANAGER &)
 endif
 
 # Start default initial xterm window.  To skip this, put the command
