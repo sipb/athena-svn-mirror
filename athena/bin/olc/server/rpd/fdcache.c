@@ -4,7 +4,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.7 1990-12-11 09:13:22 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.8 1990-12-31 20:50:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -15,8 +15,6 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 #define CACHESIZE 32
 #define inc_hand (clock_hand = (++clock_hand)&(CACHESIZE-1));
-
-#define LOG_DIRECTORY "/usr/spool/olc"
 
 extern int errno;
 
