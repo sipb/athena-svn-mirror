@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.10 1993-05-10 13:48:37 vrt Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.11 1993-06-29 15:00:02 vrt Exp $";
 #endif
 /* pscomm.c
  *
@@ -81,6 +81,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  93/05/10  13:48:37  vrt
+ * Solaris Port
+ * 
  * Revision 1.9  92/07/23  15:51:44  miki
  * included fcntl.h for sun
  * 
@@ -226,6 +229,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#ifdef _AIX
+#undef _BSD
+#endif
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
