@@ -16,8 +16,8 @@
  *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v 1.2 1989-11-17 14:53:33 tjcoppet Exp $
+ *      $Author: vanharen $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v 1.3 1990-01-17 05:14:28 vanharen Exp $
  */
 
 #include <olc/olc_tty.h>
@@ -30,9 +30,15 @@ char **handle_argument();
 #define MAX_COMMANDS    100             /* Maximum number of commands. */
 #define NOT_UNIQUE      -2              /* Not a unique command match. */
 
+#if __STDC__
+typedef void (*Pfunction)(const char **);
+#else
+typedef void (*Pfunction)();
+#endif
+
 typedef struct tCOMMAND  {
         char            *command_name;          /* Name of the command. */
-        FUNCTION        command_function;       /* Function to execute. */
+        Pfunction       command_function;       /* Function to execute. */
         char            *description;           /* Brief description. */
 } COMMAND;
 
