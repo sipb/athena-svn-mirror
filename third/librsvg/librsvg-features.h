@@ -2,8 +2,8 @@
 #define LIBRSVG_FEATURES_H 1
 
 #define LIBRSVG_MAJOR_VERSION (2)
-#define LIBRSVG_MINOR_VERSION (1)
-#define LIBRSVG_MICRO_VERSION (2)
+#define LIBRSVG_MINOR_VERSION (0)
+#define LIBRSVG_MICRO_VERSION (1)
 #define LIBRSVG_VERSION ""
 
 extern const unsigned int librsvg_major_version, librsvg_minor_version, librsvg_micro_version;
