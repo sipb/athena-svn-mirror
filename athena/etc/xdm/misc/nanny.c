@@ -126,21 +126,22 @@ int process(pc_message *input, disp_state *ds)
   int ret = 0;
   pc_message output;
 
-  fprintf(stderr, "%s\n", input->data);
+  if (debug)
+    syslog(LOG_INFO, "request: %s", input->data);
 
-  if (!strcmp(input->data, "-xup"))
+  if (!strcmp(input->data, "xup"))
     {
       ds->consolePreference = CONS_UP;
       reply = startConsole(ds);
     }
 
-  if (!strcmp(input->data, "-xdown"))
+  if (!strcmp(input->data, "xdown"))
     {
       ds->consolePreference = CONS_DOWN;
       reply = stopConsole(ds);
     }
 
-  if (!strcmp(input->data, "-die"))
+  if (!strcmp(input->data, "die"))
     {
       if (ds->socketSec == SOCK_SECURE)
 	{
@@ -176,6 +177,9 @@ int process(pc_message *input, disp_state *ds)
       output.data = reply;
       output.length = strlen(reply);
       pc_send(&output);
+
+      if (debug)
+	syslog(LOG_INFO, "reply: %s", reply);
     }
 
   return ret;
@@ -218,23 +222,45 @@ int main(int argc, char **argv)
   pc_message *message;
   char *option;
   int ret = 0;
+  int silent = 0;
   long code;
 
-/*  fclose(stdout);
-    fclose(stderr); */
-
-  ds.consolePreference = CONS_DOWN;
-  ds.socketSec = SOCK_SECURE;
-
-  name = argv[0];
+  if (argv[0])
+    {
+      name = strrchr(argv[0], '/');
+      if (name == NULL)
+	name = argv[0];
+      else
+	name++;
+    }
+  else
+    name = "Nanny";
 
   if (argc == 2)
     option = argv[1];
   else
     option = "ping";
 
+  /* Convention: when xdm calls nanny, we can't send anything out
+     to stderr or stdout, because that's the communication pipeline
+     between xdm and xlogin. So we have xdm call nanny with '-' in
+     front of the first option. (Also, when calling us, xdm blocks
+     waiting for both our pid to exit and for stdout to be closed.) */
+  if (option[0] == '-')
+    {
+      fclose(stdout);
+      fclose(stderr);
+      option++;
+    }
+
+  /* Initialize assorted variables. */
+  ds.consolePreference = CONS_DOWN;
+  ds.socketSec = SOCK_SECURE;
+
+  /* Start syslogging. */
   openlog(name, LOG_PID, LOG_USER);
 
+  /* Initialize communications. */
   ds.ps = pc_init();
 
   /* Initialize message to send to nanny. We set source to NULL
@@ -256,7 +282,7 @@ int main(int argc, char **argv)
       message = pc_wait(ds.ps);
       if (message != NULL)
 	{
-	  fprintf(stderr, "%s\n", message->data);
+	  fprintf(stdout, "%s\n", message->data);
 	  pc_freemessage(message);
 	}
       pc_removeport(ds.ps, outport);
@@ -268,10 +294,14 @@ int main(int argc, char **argv)
 
   /* If we're trying to kill the running nanny, we know it doesn't
      exist, so just exit. */
-  if (!strcmp(option, "-die"))
-    exit(0);
+  if (!strcmp(option, "die") || !strcmp(option, "ping"))
+    {
+      fprintf(stdout, "no nanny running\n");
+      exit(0);
+    }
 
-  fprintf(stderr, "no nanny contacted; running\n");
+  fprintf(stdout, "no nanny contacted; running\n");
+  syslog(LOG_INFO, "nanny starting");
 
   /* Initialize needed Athena Login library code. */
   code = ALinit();
@@ -288,6 +318,7 @@ int main(int argc, char **argv)
   if (inport == NULL)
     {
       fprintf(stderr, "couldn't make the port\n");
+      syslog(LOG_ERR, "could not create socket, exiting");
       exit(1);
     }
   pc_addport(ds.ps, inport);
@@ -324,7 +355,7 @@ int main(int argc, char **argv)
   switch(fork())
     {
     case -1:
-      syslog(LOG_INFO, "fork failed with error %d", errno);
+      syslog(LOG_ERR, "fork failed (%m), exiting");
       fprintf(stderr, "%s: initial fork failed\n", name);
       exit(1);
     case 0:
@@ -332,15 +363,6 @@ int main(int argc, char **argv)
     default:
       exit(0);
     }
-
-  /*
-   * Turns out, our caller (xdm) is waiting for a close on stdout,
-   * besides caring for our pid to exit. We could direct our
-   * stdout to stderr here too, but I don't feel like it.
-   * This only matters if xdm is potentially starting us for the
-   * first time; this could go if we start from init.d.
-   */
-  fclose(stdout);
 
   /*
    * Process the command line option as though we have received it
