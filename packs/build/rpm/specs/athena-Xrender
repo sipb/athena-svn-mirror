@@ -1,0 +1,8 @@
+Name: athena-Xrender
+Summary: Xrender extension client library, for Athena
+License: MIT
+Group: System Environment/Libraries
+
+%description
+This package contains a library implementing the client side of the
+Xrender X11R6 extension.
