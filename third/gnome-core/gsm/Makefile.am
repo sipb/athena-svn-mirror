@@ -54,7 +54,8 @@ desktop_DATA = save-session.desktop session.desktop
 sysdir = $(datadir)/control-center/Session
 
 if SESSION
-sys_DATA = session-properties.desktop
+# Disable capplet listing, since Athena doesn't use gsm by default.
+# sys_DATA = session-properties.desktop
 endif
 
 settingsdir = $(datadir)/gnome/apps/Settings/Session
