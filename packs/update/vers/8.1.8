@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	echo "/var/spool/cron/crontabs/lp"	>> "$DEADFILES"
+
+	# The appletalk driver wasn't installed properly in 8.1.0 because
+	# the finish-update script was buggy.  Try again.
+	echo "appletalk"			> "$AUXDEVS"
+	;;
+
+sgi)
+	;;
+esac
