@@ -1,0 +1,524 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
+BONOBO_REQUIRED = @BONOBO_REQUIRED@
+BZ2_LIBS = @BZ2_LIBS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DB2HTML = @DB2HTML@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+ENABLE_PROFILER = @ENABLE_PROFILER@
+EXEEXT = @EXEEXT@
+FAM_LIBS = @FAM_LIBS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_REQUIRED = @GCONF_REQUIRED@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_REQUIRED = @GLIB_REQUIRED@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
+GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
+GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
+GNOME_VFS_DIR = @GNOME_VFS_DIR@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+HTML_DIR = @HTML_DIR@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
+LIBEFS_LIBS = @LIBEFS_LIBS@
+LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
+LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MODULES_CFLAGS = @MODULES_CFLAGS@
+MODULES_FILE_CFLAGS = @MODULES_FILE_CFLAGS@
+MODULES_FILE_LIBS = @MODULES_FILE_LIBS@
+MODULES_GCONF_CFLAGS = @MODULES_GCONF_CFLAGS@
+MODULES_GCONF_LIBS = @MODULES_GCONF_LIBS@
+MODULES_LIBS = @MODULES_LIBS@
+MODULES_XML_CFLAGS = @MODULES_XML_CFLAGS@
+MODULES_XML_GCONF_CFLAGS = @MODULES_XML_GCONF_CFLAGS@
+MODULES_XML_GCONF_LIBS = @MODULES_XML_GCONF_LIBS@
+MODULES_XML_LIBS = @MODULES_XML_LIBS@
+MONIKERS_CFLAGS = @MONIKERS_CFLAGS@
+MONIKERS_LIBS = @MONIKERS_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
+POSUB = @POSUB@
+PTHREAD_LIB = @PTHREAD_LIB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+TEST_CFLAGS = @TEST_CFLAGS@
+TEST_LIBS = @TEST_LIBS@
+TOP_BUILDDIR = @TOP_BUILDDIR@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+VFS_CFLAGS = @VFS_CFLAGS@
+VFS_INCLUDEDIR = @VFS_INCLUDEDIR@
+VFS_LIBDIR = @VFS_LIBDIR@
+VFS_LIBS = @VFS_LIBS@
+VFS_OFFSET = @VFS_OFFSET@
+VFS_OFFSET_IS = @VFS_OFFSET_IS@
+VFS_OFFSET_PRINTF = @VFS_OFFSET_PRINTF@
+VFS_SIZE = @VFS_SIZE@
+VFS_SIZE_IS = @VFS_SIZE_IS@
+VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
+WARN_CFLAGS = @WARN_CFLAGS@
+XML_REQUIRED = @XML_REQUIRED@
+cxxflags_set = @cxxflags_set@
+
+NULL = 
+
+INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				$(MODULES_XML_GCONF_CFLAGS)			$(MODULES_FILE_CFLAGS) 				$(LIBEFS_CFLAGS)				$(VFS_CFLAGS)					-D_FILE_OFFSET_BITS=64				-D_BSD_SOURCE					-D_GNU_SOURCE					-D_LARGEFILE64_SOURCE				-D_POSIX_PTHREAD_SEMANTICS			-D_REENTRANT					-DG_DISABLE_DEPRECATED				-DDATADIR=\"$(datadir)\"			-DPREFIX=\"$(prefix)\"				-DSYSCONFDIR=\"$(sysconfdir)\"			-DG_LOG_DOMAIN=\"gnome-vfs-modules\"		$(TESTS_INCLUDES)				$(NULL)
+
+
+EXTRA_DIST =  	applications-all-users.vfolder-info.in		preferences-all-users.vfolder-info.in		favorites.vfolder-info.in			start-here.vfolder-info.in			server-settings.vfolder-info.in			system-settings.vfolder-info.in				test-vfolder.vfolder-info.in			test-vfolder-parent.vfolder-info.in		test-vfolder-modules.conf
+
+
+###  Module setup
+
+module_flags = -export_dynamic -avoid-version
+modulesdir = $(libdir)/gnome-vfs-2.0/modules
+
+modules_LTLIBRARIES = libvfolder-desktop.la
+
+###  `vfolder-desktop' method
+
+libvfolder_desktop_la_SOURCES =  	vfolder-info.c   		vfolder-util.c   		vfolder-util.h   		vfolder-common.c 		vfolder-common.h 		vfolder-method.c
+
+libvfolder_desktop_la_LDFLAGS = $(module_flags)
+libvfolder_desktop_la_LIBADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la
+
+###  Default .vfolder-info files
+
+vfolderdir = $(sysconfdir)/gnome-vfs-2.0/vfolders
+vfolder_DATA =  	applications-all-users.vfolder-info 		preferences-all-users.vfolder-info		favorites.vfolder-info				start-here.vfolder-info				server-settings.vfolder-info			system-settings.vfolder-info
+
+
+VFOLDER_INFO_CREATE =  	sed -e "s,\@datadir\@,$(datadir),"       	    -e "s,\@sysconfdir\@,$(sysconfdir)," 	    -e "s,\@prefix\@,$(prefix),"         	    -e "s,\@vfolderdir\@,$(vfolderdir)," 	    < $< > $@
+
+
+###  test-vfolder regression test
+
+noinst_PROGRAMS = test-vfolder
+noinst_DATA = test-vfolder-parent.vfolder-info test-vfolder.vfolder-info
+
+module_path =  	$(top_builddir)/modules/vfolder/.libs:$(top_builddir)/modules/.libs
+
+
+TESTS_INCLUDES =  	-DGNOME_VFS_MODULE_PATH=\"$(module_path)\" 			  	-DGNOME_VFS_MODULE_CONFIG_PATH=\"$(top_srcdir)/modules/vfolder\"
+
+
+TESTS = test-vfolder
+
+test_vfolder_SOURCES = test-vfolder.c
+test_vfolder_LDADD = $(top_builddir)/libgnomevfs/libgnomevfs-2.la
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(modules_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+LIBS = @LIBS@
+libvfolder_desktop_la_DEPENDENCIES =  \
+$(top_builddir)/libgnomevfs/libgnomevfs-2.la
+libvfolder_desktop_la_OBJECTS =  vfolder-info.lo vfolder-util.lo \
+vfolder-common.lo vfolder-method.lo
+noinst_PROGRAMS =  test-vfolder$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS)
+
+test_vfolder_OBJECTS =  test-vfolder.$(OBJEXT)
+test_vfolder_DEPENDENCIES =  \
+$(top_builddir)/libgnomevfs/libgnomevfs-2.la
+test_vfolder_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(noinst_DATA) $(vfolder_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in TODO
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(libvfolder_desktop_la_SOURCES) $(test_vfolder_SOURCES)
+OBJECTS = $(libvfolder_desktop_la_OBJECTS) $(test_vfolder_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps modules/vfolder/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-modulesLTLIBRARIES:
+
+clean-modulesLTLIBRARIES:
+	-test -z "$(modules_LTLIBRARIES)" || rm -f $(modules_LTLIBRARIES)
+
+distclean-modulesLTLIBRARIES:
+
+maintainer-clean-modulesLTLIBRARIES:
+
+install-modulesLTLIBRARIES: $(modules_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(modulesdir)
+	@list='$(modules_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(modulesdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(modulesdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-modulesLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(modules_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(modulesdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libvfolder-desktop.la: $(libvfolder_desktop_la_OBJECTS) $(libvfolder_desktop_la_DEPENDENCIES)
+	$(LINK) -rpath $(modulesdir) $(libvfolder_desktop_la_LDFLAGS) $(libvfolder_desktop_la_OBJECTS) $(libvfolder_desktop_la_LIBADD) $(LIBS)
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+test-vfolder$(EXEEXT): $(test_vfolder_OBJECTS) $(test_vfolder_DEPENDENCIES)
+	@rm -f test-vfolder$(EXEEXT)
+	$(LINK) $(test_vfolder_LDFLAGS) $(test_vfolder_OBJECTS) $(test_vfolder_LDADD) $(LIBS)
+
+install-vfolderDATA: $(vfolder_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(vfolderdir)
+	@list='$(vfolder_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(vfolderdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(vfolderdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(vfolderdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(vfolderdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-vfolderDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(vfolder_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(vfolderdir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = modules/vfolder
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am:
+install-exec: install-exec-am
+
+install-data-am: install-modulesLTLIBRARIES install-vfolderDATA
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-modulesLTLIBRARIES uninstall-vfolderDATA
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(modulesdir) $(DESTDIR)$(vfolderdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-modulesLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-modulesLTLIBRARIES clean-compile clean-libtool \
+		clean-noinstPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-modulesLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-modulesLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-modulesLTLIBRARIES distclean-modulesLTLIBRARIES \
+clean-modulesLTLIBRARIES maintainer-clean-modulesLTLIBRARIES \
+uninstall-modulesLTLIBRARIES install-modulesLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-vfolderDATA \
+install-vfolderDATA tags mostlyclean-tags distclean-tags clean-tags \
+maintainer-clean-tags distdir check-TESTS info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+%.vfolder-info: %.vfolder-info.in 
+	$(VFOLDER_INFO_CREATE)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
