@@ -17,14 +17,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.2 1989-11-17 14:01:36 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.3 1990-01-17 03:23:51 vanharen Exp $";
 #endif
-
-#include <olc/olc.h>
 
 #include <sys/types.h>             /* System type declarations. */
 #include <sys/socket.h>            /* Network socket defs. */
@@ -38,6 +36,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
 
+#include <olc/olc.h>
 
 extern char DaemonHost[];			
 extern int errno;
@@ -50,6 +49,11 @@ struct hostent *gethostbyname(); /* Get host entry of a host. */
 
 #define	MIN(a,b)	((a)>(b)?(b):(a))
 
+#if __STDC__
+static ERRCODE write_chars_to_fd (int, char *, int);
+static ERRCODE read_chars_from_fd (int, char *, int);
+#endif
+
 extern int select_timeout;
 
 /*
@@ -59,7 +63,7 @@ extern int select_timeout;
  */
 
 
-send_dbinfo(fd,dbinfo)
+int send_dbinfo(fd,dbinfo)
      int fd;
      DBINFO *dbinfo;
 {
@@ -68,14 +72,14 @@ send_dbinfo(fd,dbinfo)
   dbi = *dbinfo;
   dbi.max_ask    =  (int) htonl((u_long) dbinfo->max_ask);
   dbi.max_answer =  (int) htonl((u_long) dbinfo->max_answer);
-  if (swrite(fd, &dbi, sizeof(DBINFO)) != sizeof(DBINFO))
+  if (swrite(fd, (char *) &dbi, sizeof(DBINFO)) != sizeof(DBINFO))
     return(ERROR);
 
   return(SUCCESS);
 }
 
 
-read_dbinfo(fd,dbinfo)
+int read_dbinfo(fd,dbinfo)
      int fd;
      DBINFO *dbinfo;
 {
@@ -451,7 +455,7 @@ read_text_from_fd(fd)
  *	are written, then write the final set.
  */
 
-ERRCODE
+static ERRCODE
 write_chars_to_fd(fd, buf, nchars)
      int fd;
      char *buf;
@@ -494,7 +498,7 @@ write_chars_to_fd(fd, buf, nchars)
  *	read, then read the final set.
  */
 
-ERRCODE
+static ERRCODE
 read_chars_from_fd(fd, buf, nchars)
      int fd;
      char *buf;
@@ -539,7 +543,7 @@ read_chars_from_fd(fd, buf, nchars)
  *	of bytes and return what read(2) returns.
  */
 
-sread(fd, buf, nbytes)
+int sread(fd, buf, nbytes)
      int fd;
      char *buf;
      int nbytes;
@@ -587,7 +591,7 @@ sread(fd, buf, nbytes)
  *	of bytes and return what write(2) returns.
  */
 
-swrite(fd, buf, nbytes)
+int swrite(fd, buf, nbytes)
      int fd;
      char *buf;
      int nbytes;
