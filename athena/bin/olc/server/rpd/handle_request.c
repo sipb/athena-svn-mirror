@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.3 1990-11-27 15:46:57 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.4 1990-11-30 18:01:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -31,9 +31,12 @@ handle_request(fd, from)
   AUTH_DAT their_info;
   int ltr;
   int auth;
-  char instance_buffer[INST_SZ];
   char principal_buffer[ANAME_SZ+INST_SZ+REALM_SZ];
+  static char instance_buffer[INST_SZ];
 #endif /* KERBEROS */
+
+  if (instance_buffer[0] == '\0')
+    instance_buffer[0] = '*';
 
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
     fprintf(stderr,"Not enough bytes for version (%d received)\n",len);
@@ -86,9 +89,6 @@ handle_request(fd, from)
     punt_connection(fd,from);
     return;
   }
-  their_auth.mbz = 0;
-  instance_buffer[0] = '*';
-  instance_buffer[1] = '\0';
   auth = krb_rd_req(&their_auth,K_SERVICE,instance_buffer,
 		    (unsigned long) from.sin_addr.s_addr,&their_info,"");
   if (auth != RD_AP_OK) {
