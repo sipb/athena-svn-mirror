@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.41 1994-05-04 23:12:07 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.42 1994-05-05 00:22:35 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -268,17 +268,12 @@ main(argc, argv)
   int i;
   unsigned acc = 0;
 #ifdef SOLARIS
-   static char buf[1024];
+  static char buf[1024];
 #endif
+  int pid;
 
 #ifdef POSIX
   sigemptyset(&sig_zero);
-  sigemptyset(&sigact.sa_mask);
-  sigact.sa_flags = 0;
-  sigact.sa_handler = catch_child;
-  sigaction(SIGCHLD, &sigact, NULL);
-#else
-  signal(SIGCHLD, catch_child);
 #endif
 
   /* Have to find this argument before initializing the toolkit.
@@ -312,6 +307,66 @@ main(argc, argv)
   XtGetApplicationResources(appShell, (caddr_t) &resources, 
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal) 0);
+
+  /* Tell the display manager we're ready, just like the X server
+     handshake. This code used to be right before XtMainLoop. However,
+     under Ultrix dm is required to open /dev/xcons and manually pipe
+     it to the console window. It won't start this process until
+     it gets its SIGUSR1 from us. So, if we do output to the console
+     (where our stderr and stdout are directed) before sending the SIGUSR1,
+     it may show up as "black bar" messages. This is suboptimal. Since
+     I have no idea why this handshake is helpful in the first place,
+     beyond knowing the exec of XLogin succeeded, I don't see any reason
+     not to just get it over with and get the console flowing when we
+     need it. We need it now. --- cfields */
+#ifdef POSIX
+  sigaction(SIGUSR1, NULL, &osigact);
+  if (osigact.sa_handler == SIG_IGN)
+    kill(getppid(), SIGUSR1);
+#else
+  if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
+    kill(getppid(), SIGUSR1);
+#endif
+
+  /* Call reactivate with the -prelogin option. This restores /etc/passwd,
+     blows away stray processes, runs access_off, and a couple of other
+     low overhead things (if PUBLIC=true). This is low overhead because
+     we want login to start up ASAP, but we pay the price for what we do
+     to make sure the workstation is as clean as it ought to be with respect
+     to performance and security. This code has to come after the resources
+     are loaded, so we know where the reactivate script is. */
+  pid = fork();
+  switch (pid)
+    {
+    case 0:
+      execl(resources.reactivate_prog, resources.reactivate_prog,
+	    "-prelogin", 0);
+      fprintf(stderr, "XLogin: unable to exec reactivate program \"%s\"\n",
+	      resources.reactivate_prog);
+      _exit(1);
+      break;
+    case -1:
+      fprintf(stderr, "XLogin: unable to fork for reactivatation\n");
+      break;
+    default:
+#ifdef vax
+      while (pid != wait(0));
+#else
+      waitpid(pid, NULL, 0);
+#endif
+      break;
+    }
+
+  /* We set up the signal handler later than we used to because we don't
+     need or want it to be running to handle the prelogin script. */
+#ifdef POSIX
+  sigemptyset(&sigact.sa_mask);
+  sigact.sa_flags = 0;
+  sigact.sa_handler = catch_child;
+  sigaction(SIGCHLD, &sigact, NULL);
+#else
+  signal(SIGCHLD, catch_child);
+#endif
 
   WcRegisterCallback(app, "UnsetFocus", unfocusACT, NULL);
   WcRegisterCallback(app, "runCB", runCB, NULL);
@@ -446,19 +501,6 @@ main(argc, argv)
       XtFree(orig_dpy);
     }
 
-
-  /* tell display manager we're ready, just like X server handshake */
-#ifdef POSIX
-    sigemptyset(&sigact.sa_mask);
-    sigact.sa_flags = 0;
-    sigact.sa_handler = SIG_IGN;
-    sigaction(SIGUSR1, &sigact, &osigact);
-    if (osigact.sa_handler == SIG_IGN)
-      kill(getppid(), SIGUSR1);
-#else
-  if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
-    kill(getppid(), SIGUSR1);
-#endif
   XtMainLoop ( );
 }
 
