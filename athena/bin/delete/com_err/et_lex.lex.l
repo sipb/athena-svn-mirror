@@ -1,7 +1,13 @@
 PC	[^\"]
 AN	[A-Z_a-z0-9]
 %{
+#ifdef SYSV
+#include <string.h>
+#define index strchr
+#define rindex strrchr
+#else
 #include <strings.h>
+#endif /* SYSV */
 %}
 %%
 
@@ -25,5 +31,5 @@ end		return END;
 .		{ return (*yytext); }
 %%
 #ifndef lint
-static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_lex.lex.l,v 1.2 1989-11-07 19:00:35 jik Exp $";
+static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/et_lex.lex.l,v 1.3 1990-06-07 22:53:55 jik Exp $";
 #endif
