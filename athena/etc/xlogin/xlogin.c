@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.19 2001-06-11 04:07:31 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.20 2001-06-20 17:37:49 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -379,11 +379,6 @@ int main(int argc, char **argv)
 			    my_resources, XtNumber(my_resources),
 			    NULL, (Cardinal)0);
 
-  /* No moires any more, I want them to be black. */
-  XSetWindowBackground(dpy, DefaultRootWindow(dpy),
-		       BlackPixel(dpy, DefaultScreen(dpy)));
-  XClearWindow(dpy, DefaultRootWindow(dpy));
-
 #ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
    * handshake. This code used to be right before XtMainLoop. However,
@@ -578,12 +573,6 @@ int main(int argc, char **argv)
 						 root, NULL, 0);
 		      XtAddEventHandler(savershell[i], MASK,
 					FALSE, unsave, (XtPointer)TRUE);
-
-		      /* Clear the moires on all other screens as well. */
-		      XSetWindowBackground(dpy1, DefaultRootWindow(dpy1),
-					   BlackPixel(dpy1,
-						      DefaultScreen(dpy1)));
-		      XClearWindow(dpy1, DefaultRootWindow(dpy1));
 		    }
 		}
 	    }
