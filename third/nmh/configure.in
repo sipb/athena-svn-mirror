@@ -1,7 +1,7 @@
 dnl
 dnl configure.in -- autoconf template for nmh
 dnl
-dnl $Id: configure.in,v 1.2 1999-10-19 17:15:11 ghudson Exp $
+dnl $Id: configure.in,v 1.3 1999-11-08 20:26:35 tb Exp $
 dnl
 
 AC_INIT(h/nmh.h)
@@ -228,7 +228,7 @@ AC_HEADER_STAT
 AC_CHECK_HEADERS(string.h memory.h stdlib.h unistd.h errno.h fcntl.h \
                  limits.h crypt.h termcap.h termio.h termios.h locale.h \
                  sys/param.h sys/time.h sys/utsname.h arpa/inet.h \
-                 arpa/ftp.h)
+                 arpa/ftp.h ndbm.h db.h)
 
 AC_CACHE_CHECK(POSIX termios, nmh_cv_sys_posix_termios,
 [AC_TRY_LINK([#include <sys/types.h>
