@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.25 1993-10-09 18:21:21 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.26 1995-07-11 20:50:37 miki Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.25 1993-10-09 18:21:21 probe Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.26 1995-07-11 20:50:37 miki Exp $";
 #endif
 
 /*
@@ -28,6 +28,12 @@ static char *rcsid_printjob_c = "$Id: printjob.c,v 1.25 1993-10-09 18:21:21 prob
 #include <sys/termio.h>
 #endif
 
+#include <string.h>
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h" /* flock() */
+#else
+#include "nonposix.h" /* EWOULDBLOCK setty() */
+#endif
 #define DORETURN	0	/* absorb fork error */
 #define DOABORT		1	/* abort if dofork fails */
 /*
@@ -113,19 +119,23 @@ int     account_flag = 0;
 printjob()
 {
          struct stat stb;
-
 	 register struct queue_ *q, **qp;
 	 struct queue_ **queue;
 	 register int i, nitems;
 	 long pidoff;
 	 int count = 0;
-	 extern int abortpr();
+	 extern void abortpr();
 
+	
 	 init();					/* set up capabilities */
 	 (void) write(1, "", 1);			/* ack that daemon is started */
 	 setgid(getegid());
 	 pid = getpid();				/* for use with lprm */
-	 setpgrp(0, pid);
+#if defined(POSIX) && !defined(ultrix)
+         setpgrp();
+#else
+	 setpgrp(0, pid); 
+#endif
 	 signal(SIGHUP, abortpr);
 	 signal(SIGINT, abortpr);
 	 signal(SIGQUIT, abortpr);
@@ -147,6 +157,7 @@ printjob()
 		 syslog(LOG_ERR, "%s: %s: %m", printer, LO);
 		 exit(1);
 	 }
+
 	 if (flock(lfd, LOCK_EX|LOCK_NB) < 0) {
 		 if (errno == EWOULDBLOCK)	/* active daemon present */
 			 exit(0);
@@ -154,6 +165,7 @@ printjob()
 		 exit(1);
 	 }
 	 ftruncate(lfd, 0);
+
 	 /*
 	  * write process id for others to know
 	  */
@@ -163,6 +175,7 @@ printjob()
 		 syslog(LOG_ERR, "%s: %s: %m", printer, LO);
 		 exit(1);
 	 }
+
 	 /*
 	  * search the spool directory for work and sort by queue order.
 	  */
@@ -170,6 +183,7 @@ printjob()
 		 syslog(LOG_ERR, "%s: can't scan %s", printer, SD);
 		 exit(1);
 	 }
+
 	 if (nitems == 0)		/* no work to do */
 	   {
 	     if (lflag) syslog(LOG_INFO, "No work on %s.", printer);
@@ -199,6 +213,7 @@ again:
 		 i = strlen(line);
 		 if (write(lfd, line, i) != i)
 			 syslog(LOG_ERR, "%s: %s: %m", printer, LO);
+
 		 if (!remote) 
 			 i = printit(q->q_name);
 		 else
@@ -234,7 +249,7 @@ again:
 			 if (ofilter > 0) {
 				 kill(ofilter, SIGCONT);	/* to be sure */
 				 (void) close(ofd);
-				 while ((i = wait(0)) > 0 && i != ofilter)
+				 while ((i = wait(NULL)) > 0 && i != ofilter)
 					 ;
 				 ofilter = 0;
 			 }
@@ -261,7 +276,7 @@ again:
 			if (TR != NULL)		/* output trailer */
 				(void) write(ofd, TR, strlen(TR));
 		}
-		(void) UNLINK(tpfile);
+		(void) UNLINK(tpfile);  
 		exit(0);
 	}
 	goto again;
@@ -290,7 +305,8 @@ printit(file)
 	/*
 	 * open control file; ignore if no longer there.
 	 */
-	if ((cfp = fopen(file, "r")) == NULL) {
+
+	if ((cfp = fopen(file, "r+")) == NULL) {
 		syslog(LOG_INFO, "%s: %s: %m", printer, file);
 		return(OK);
 	}
@@ -299,6 +315,7 @@ printit(file)
 	 * this file till later
 	 */
 	 if (!network && (flock(fileno(cfp), LOCK_EX|LOCK_NB) < 0)) {
+
 		 if (errno == EWOULDBLOCK) {
 			 /*
 			  * We couldn't get the lock.  Probably lprm
@@ -318,6 +335,7 @@ printit(file)
 	/*
 	 * Reset troff fonts.
 	 */
+
 	for (i = 0; i < 4; i++)
 		strcpy(fonts[i], ifonts[i]);
 	sprintf(&width[2], "%d", PW);
@@ -437,7 +455,7 @@ printit(file)
 			continue;
 
 		case 'L':	/* identification line */
-			if (!SH && !HL)
+			if (!SH && !HL) 
 				banner(line+1, jobname);
 			continue;
 
@@ -502,7 +520,7 @@ pass2:
 	while (getline(cfp))
 		switch (line[0]) {
 		case 'L':	/* identification line */
-			if (!SH && HL)
+			if (!SH && HL) 
 				banner(line+1, jobname);
 			continue;
 
@@ -527,7 +545,7 @@ pass2:
 	 */
 	(void) fclose(cfp);
 	cfp = NULL;
-	(void) UNLINK(file);
+	(void) UNLINK(file); 
 	return(bombed == OK ? OK : ERROR);
 }
 
@@ -550,13 +568,12 @@ print(format, file)
 	int fi, fo;
 	char *av[15], buf[BUFSIZ];
 	int pid, p[2], stopped = 0;
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ultrix)
 	int status;
 #else
 	union wait status;
 #endif
 	struct stat stb;
-
 	if (lstat(file, &stb) < 0 || (fi = open(file, O_RDONLY)) < 0)
 		return(ERROR);
 	/*
@@ -678,7 +695,7 @@ print(format, file)
 			printer, format);
 		return(ERROR);
 	}
-	if ((av[0] = rindex(prog, '/')) != NULL)
+	if ((av[0] = strrchr(prog, '/')) != NULL)
 		av[0]++;
 	else
 		av[0] = prog;
@@ -696,8 +713,8 @@ print(format, file)
 	fo = pfd;
 	if (ofilter > 0) {		/* stop output filter */
 		write(ofd, "\031\1", 2);
-#if defined(POSIX)
-		while ((pid = waitpid(-1,&status, WUNTRACED)) > 0 && pid != ofilter)
+#if defined(POSIX) && !defined(ultrix)
+		while ((pid = waitpid(-1,(int *)&status, WUNTRACED)) > 0 && pid != ofilter)
 #else
 		while ((pid = wait3(&status, WUNTRACED, 0)) > 0 && pid != ofilter)
 #endif
@@ -705,7 +722,7 @@ print(format, file)
 		if (pid == -1 || !WIFSTOPPED(status)) {
 			(void) close(fi);
 			syslog(LOG_WARNING, "%s: output filter died (%d)",
-				printer, status);
+				printer, WEXITSTATUS(status));
 			return(REPRINT);
 		}
 		stopped++;
@@ -725,20 +742,28 @@ start:
 	}
 	(void) close(fi);
 	if (child < 0)
-#if defined(POSIX)
+#if defined(POSIX) && !defined(ultrix)
 	        status= 100;
 #else
 		status.w_retcode = 100;
 #endif
-	else
-		while ((pid = wait(&status)) > 0 && pid != child)
-			;
+	else 
+		while ((pid = waitpid(-1, &status, WUNTRACED)) > 0 && pid != child) ;
 	child = 0;
 	prchild = 0;
+	
 	if (stopped) {		/* restart output filter */
 		if (kill(ofilter, SIGCONT) < 0) {
 			syslog(LOG_ERR, "cannot restart output filter");
 			exit(1);
+		}
+
+		if (isatty(pfd)) {
+		  setty ();
+#if defined(POSIX) && !defined(ultrix)
+		  if (MS)
+		    setms(); 
+#endif
 		}
 	}
 	tof = 0;
@@ -855,7 +880,7 @@ sendit(file)
 	 */
 	(void) fclose(cfp);
 	cfp = NULL;
-	(void) UNLINK(file);
+	(void) UNLINK(file); 
 	return(err);
 }
 
@@ -949,7 +974,7 @@ banner(name1, name2)
 	extern char *ctime();
 
 	time(&tvec);
-	if (!SF && !tof)
+	if (!SF && !tof) 
 		(void) write(ofd, FF, strlen(FF));
 	if (SB) {	/* short banner only */
 		if (class[0]) {
@@ -971,7 +996,7 @@ banner(name1, name2)
 		        register char *cp;
 			(void) write(ofd,"\n\n\n",3);
 			/* Take out domain names, if any */
-			if (cp = index(class, '.')) *cp = '\0';
+			if (cp = strchr(class, '.')) *cp = '\0';
 			scan_out(ofd, class, '\0');
 		}
 		(void) write(ofd, "\n\n\n\n\t\t\t\tJob:     ", 17);
@@ -1100,7 +1125,7 @@ sendmail(user, bombed)
 		dup2(p[0], 0);
 		for (i = 3; i < NOFILE; i++)
 			(void) close(i);
-		if ((cp = rindex(MAIL, '/')) != NULL)
+		if ((cp = strrchr(MAIL, '/')) != NULL)
 			cp++;
 		else
 			cp = MAIL;
@@ -1221,9 +1246,10 @@ dofork(action)
 /*
  * Kill child processes to abort current job.
  */
+void
 abortpr()
 {
-	int	hard_kill();
+	void	hard_kill();
 	
 	/* Drop the lock on the control file, if necessary */
 	if (cfp)
@@ -1231,17 +1257,17 @@ abortpr()
 	/* Drop lock on lock file as well */
 	if (lfd > 0)
 		(void) close(lfd);
-	(void) UNLINK(tpfile);
+	(void) UNLINK(tpfile);  
 	kill(0, SIGINT);
 	if (ofilter > 0)
 		kill(ofilter, SIGCONT);
 	signal(SIGALRM, hard_kill);
 	alarm(30);
-	while (wait(0) > 0)
+	while (wait(NULL) > 0)
 		;
 	exit(0);
 }
-
+void
 hard_kill()
 {
 	kill(0, SIGKILL);
@@ -1299,7 +1325,6 @@ init()
 	sprintf(&pxlength[2], "%d", PY);
 	RM = pgetstr("rm", &bp);
 
-
        /*
         * Figure out whether the local machine is the same as the remote
         * machine entry (if it exists).  If not, then ignore the local
@@ -1334,7 +1359,6 @@ init()
 		      }
 
 	     }
-
      localcheck_done:
 
 	AF = pgetstr("af", &bp);
@@ -1348,6 +1372,7 @@ init()
 	VF = pgetstr("vf", &bp);
 	CF = pgetstr("cf", &bp);
 	TR = pgetstr("tr", &bp);
+	MS = pgetstr("ms", &bp);
 	RS = pgetflag("rs");
 	SF = pgetflag("sf");
 	SH = pgetflag("sh");
@@ -1373,8 +1398,8 @@ openpr()
 {
 	register int i, n;
 	int resp;
-
 	if (lflag)syslog(LOG_INFO, "Opening printer (LP = \"%s\")", LP);
+
 	if (*LP) {
 		for (i = 1; ; i = i < 32 ? i << 1 : i) {
 		        if (LP[0] == '@') {
@@ -1396,8 +1421,14 @@ openpr()
 				status("waiting for %s (%s) to become ready (offline ?)", printer, LP);
 			sleep(i);
 		}
-		if (isatty(pfd))
+		if (isatty(pfd)) {
 			setty();
+#if defined(POSIX) && !defined(ultrix)
+		  if (MS)
+		        setms (); 
+#endif
+              }
+
 		status("%s is ready and printing", printer);
 		/*
 		 * Start up an output filter, if needed.
@@ -1413,7 +1444,7 @@ openpr()
 				dup2(pfd, 1);		/* printer is std out */
 				for (i = 3; i < NOFILE; i++)
 					(void) close(i);
-				if ((cp = rindex(OF, '/')) == NULL)
+				if ((cp = strrchr(OF, '/')) == NULL)
 				  cp = OF;
 				else	
 				  cp++;
@@ -1492,21 +1523,18 @@ struct bauds {
  */
 setty()
 {
-#ifndef POSIX
+#if defined(ultrix) || !defined(POSIX)
 	struct sgttyb ttybuf;
 #else
 	struct termios ttybuf;
 #endif
 	register struct bauds *bp;
-
-#ifndef POSIX
+#if defined(ultrix) || !defined(POSIX)
 	/* I cannot determine if under AUX you can open a line exclusively */
 	if (ioctl(pfd, TIOCEXCL, (char *)0) < 0) {
 		syslog(LOG_ERR, "%s: ioctl(TIOCEXCL): %m", printer);
 		exit(1);
 	}
-#endif
-#ifndef POSIX
 	if (ioctl(pfd, TIOCGETP, (char *)&ttybuf) < 0) {
 		syslog(LOG_ERR, "%s: ioctl(TIOCGETP): %m", printer);
 		exit(1);
@@ -1516,6 +1544,16 @@ setty()
 		syslog(LOG_ERR, "%s: tcgetattr: %m", printer);
 		exit(1);
 	}
+/* put line in RAW mode for POSIX  if printcap does not say how */
+        if (! MS) {
+	  ttybuf.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+          ttybuf.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+          ttybuf.c_cflag &= ~(CSIZE | PARENB);
+          ttybuf.c_cflag |= CS8;
+          ttybuf.c_oflag &= ~(OPOST);
+          ttybuf.c_cc[VMIN] = 1;
+          ttybuf.c_cc[VTIME] = 0; 
+      }
 #endif
 	if (BR > 0) {
 		for (bp = bauds; bp->baud; bp++)
@@ -1525,16 +1563,32 @@ setty()
 			syslog(LOG_ERR, "%s: illegal baud rate %d", printer, BR);
 			exit(1);
 		}
-#ifndef POSIX
+#if defined(ultrix) || !defined(POSIX)
+
 		ttybuf.sg_ispeed = ttybuf.sg_ospeed = bp->speed;
 #else
-		ttybuf.c_cflag &= ~CBAUD;
-		ttybuf.c_cflag |= bp->speed;
-		if (XC) ttybuf.c_lflag &= ~XC;
-		if (XS) ttybuf.c_lflag |=  XS;
+#ifdef SOLARIS
+                cfsetospeed(&ttybuf, bp->speed);
+                cfsetispeed(&ttybuf, bp->speed);
+		if (tcsetattr(pfd, TCSADRAIN, &ttybuf) < 0) {
+		  syslog(LOG_INFO, "SETATTR failed..");
+		  syslog(LOG_ERR, "%s: tcsetattr(TCSNOW): %m", printer);
+		  exit(1);
+		}
+#else   /* AIX */
+                cfgetospeed(&ttybuf);
+                cfsetospeed(&ttybuf, (speed_t)bp->speed);
+                cfgetispeed(&ttybuf);
+                cfsetispeed(&ttybuf, (speed_t)bp->speed);
+		if (tcsetattr(pfd, TCSADRAIN, &ttybuf) < 0) {
+		  syslog(LOG_INFO, "SETATTR failed..");
+		  syslog(LOG_ERR, "%s: tcsetattr(TCSNOW): %m", printer);
+		  exit(1);
+		}
+#endif
 #endif
 	}
-#ifndef POSIX
+#if defined(ultrix) || !defined(POSIX)
 	ttybuf.sg_flags &= ~FC;
 	ttybuf.sg_flags |= FS;
 	if (ioctl(pfd, TIOCSETP, (char *)&ttybuf) < 0) {
@@ -1542,16 +1596,6 @@ setty()
 		syslog(LOG_ERR, "%s: ioctl(TIOCSETP): %m", printer);
 		exit(1);
 	}
-#else
-	ttybuf.c_cflag &= ~FC;
-	ttybuf.c_cflag |= FS;
-	if (tcsetattr(pfd, TCSANOW,&ttybuf) < 0) {
-	        syslog(LOG_INFO, "tcsetattr failed..");
-		syslog(LOG_ERR, "%s: tcsetattr: %m", printer);
-		exit(1);
-	}
-#endif /* POSIX */
-#ifndef POSIX
 	/* AUX does not appear to have old/new line disciplines that 
 	   do anything */
 	if (XC || XS) {
