@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.18 1990-07-16 08:29:58 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: data_utils.c,v 1.19 1990-07-16 10:14:09 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.18 1990-07-16 08:29:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.19 1990-07-16 10:14:09 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -583,15 +583,17 @@ init_dbinfo(user)
 
 int
 #ifdef __STDC__
-init_question(KNUCKLE *k, char *topic, char *text)
+init_question(KNUCKLE *k, char *topic, char *text, char *machinfo)
 #else
-init_question(k,topic,text)
+init_question(k,topic,text, machinfo)
      KNUCKLE *k;
      char *topic;
      char *text;
+     char *machinfo;
 #endif /* STDC */
 {
   struct timeval tp;
+  int i, j;
 
   k->question = (QUESTION *) malloc(sizeof(QUESTION));
   if(k->question == (QUESTION *) NULL)
@@ -607,12 +609,35 @@ init_question(k,topic,text)
   k->queue = ACTIVE_Q;
   k->question->nseen = 0;
   k->question->seen[0] = -1;
-  k->question->note[0] = '\0';
   k->question->comment[0] = '\0';
   k->question->topic_code = verify_topic(topic);
   (void) strcpy(k->title,k->user->title1);
   (void) strcpy(k->question->topic,topic);
-  init_log(k,text);
+  init_log(k, text, machinfo);
+/*
+ * Set the initial description
+ */
+  k->question->note[0] = '*';
+  k->question->note[1] = '*';
+  
+  for (i=0,j=2; ((j < NOTE_SIZE-1) && (text[i] != '\0')); i++)
+    {
+      if ((text[i] == '\t') || (text[i] == '\n') || (text[i] == ' '))
+	{
+	  if (k->question->note[j-1] != ' ')
+	    {
+	      k->question->note[j] = ' ';
+	      j++;
+	    }
+	}
+      else
+	{
+	  k->question->note[j] = text[i];
+	  j++;
+	}
+    }
+  k->question->note[j] = '\0';
+
   return(SUCCESS);
 }
 
