@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1999-03-21 21:01:46 ghudson Exp $
+# $Id: Makefile,v 1.4 1999-03-24 16:34:45 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -13,20 +13,20 @@ all:
 
 check:
 
-# The for loop here detects when a file in ${STRIPFILES} is newer than
-# its .unstripped version.  If so, it updates the .unstripped version,
-# strips the file itself, and touches the .unstripped version to make
-# sure that the .unstripped version is now at least as new.
+# The for loop here detects when a file in ${STRIPFILES} is not
+# stripped.  If so, it updates the .unstripped version and strips the
+# file.
 install:
 	for file in ${STRIPFILES}; do \
 		f=${DESTDIR}$$file; \
 		u=$$f.unstripped; \
-		if [ ! -f $$u -o "`find $$f -newer $$u 2>&1`" = $$f ]; then \
+		case "`file $$f`" in *"not stripped") \
 			rm -f $$u; \
 			cp -p $$f $$u || exit 1; \
-			strip $$f; \
-			touch $$u; \
-		fi; \
+			chmod u+w $$f; \
+			strip $$f || exit 1; \
+			chmod u-w $$f; \
+		;; esac \
 	done
 	mkdir -p ${DESTDIR}${ATHLIBDIR}/stats
 	${DESTDIR}${ATHETCDIR}/track -w -F/os -W${DESTDIR}${ATHLIBDIR} \
