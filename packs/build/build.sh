@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.3 1996-10-06 21:07:18 ghudson Exp $
+# $Id: build.sh,v 1.4 1996-10-07 08:37:07 ghudson Exp $
 
 export ATHENA_SYS HOSTTYPE PATH CONFIG_SITE
 
@@ -79,7 +79,7 @@ packages=`( echo "$HOSTTYPE"; cat "$source/packs/build/packages" ) | awk '
 	/[ \t]/ {
 		split($2, p, ",");
 		build = 0;
-		for (i in p) {
+		for (i = 1; p[i]; i++) {
 			if (p[i] == platform || p[i] == "all")
 				build = 1;
 			if (p[i] == ("-" platform))
