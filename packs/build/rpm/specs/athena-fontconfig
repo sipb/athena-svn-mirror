@@ -1,0 +1,11 @@
+Name: athena-fontconfig
+Summary: Font configuration and customization library, for Athena
+Copyright: MIT
+Group: System Environment/Libraries
+Provides: fontconfig = 2.1
+
+Requires: athena-freetype
+
+%description
+Fontconfig is designed to locate fonts within the system and select
+them according to requirements specified by applications.
