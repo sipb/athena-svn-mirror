@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.12 1998-09-30 21:07:11 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.13 1998-12-27 21:36:03 rbasch Exp $
  *	$Locker:  $
  */
 
@@ -71,58 +71,47 @@ void do_INV_PROCESSOR(inventory_t *i,int verbose)
 {
 if (i->inv_type == INV_CPUBOARD )  {
 	switch (i->inv_state) {
-        case INV_R2300BOARD: 
-                puts(verbose ? "SGI R2300": "R2300");
-                break;
-	case INV_IP4BOARD:
-                puts(verbose ? "SGI IP4": "IP4");
-                break;
-	case INV_IP5BOARD:
-                puts(verbose ? "SGI IP5": "IP5");
-                break;
-	case INV_IP6BOARD:
-                puts(verbose ? "SGI IP6": "IP6");
-                break;
-	case INV_IP7BOARD:
-                puts(verbose ? "SGI IP7": "IP7");
-                break;
-	case INV_IP9BOARD:
-                puts(verbose ? "SGI IP9": "IP9");
-                break;
-	case INV_IP12BOARD:
-                puts(verbose ? "SGI IP12": "IP12");
-                break;
-	case INV_IP15BOARD:
-                puts(verbose ? "SGI IP15": "IP15");
-                break;
-	case INV_IP17BOARD:
-                puts(verbose ? "SGI IP17": "IP17");
-                break;
 	case INV_IP19BOARD:
-                puts(verbose ? "SGI IP19": "IP19");
-                break;
+		puts(verbose ? "SGI IP19": "IP19");
+		break;
 	case INV_IP20BOARD:
-                puts(verbose ? "SGI IP20": "IP20");
-                break;
+		puts(verbose ? "SGI IP20": "IP20");
+		break;
 	case INV_IP21BOARD:
-                puts(verbose ? "SGI IP21": "IP21");
-                break;
+		puts(verbose ? "SGI IP21": "IP21");
+		break;
 	case INV_IP22BOARD:
-                puts(verbose ? "SGI IP22": "IP22");
-                break;
+		puts(verbose ? "SGI IP22": "IP22");
+		break;
+	case INV_IP25BOARD:
+		puts(verbose ? "SGI IP25": "IP25");
+		break;
 	case INV_IP26BOARD:
-                puts(verbose ? "SGI IP26": "IP26");
-                break;
-#ifdef INV_IP32BOARD
+		puts(verbose ? "SGI IP26": "IP26");
+		break;
+	case INV_IP27BOARD:
+		puts(verbose ? "SGI IP27": "IP27");
+		break;
+	case INV_IP28BOARD:
+		puts(verbose ? "SGI IP28": "IP28");
+		break;
+	case INV_IP30BOARD:
+		puts(verbose ? "SGI IP30": "IP30");
+		break;
 	case INV_IP32BOARD:
 		puts(verbose ? "SGI IP32": "IP32");
 		break;
-#endif
-         default:
-           if(verbose)
-                printf("Unknown SGI type %d\n", i->inv_state);
-           else
-                puts("SGI???");
+	case INV_IP33BOARD:
+		puts(verbose ? "SGI IP33": "IP33");
+		break;
+	case INV_IPMHSIMBOARD:
+		puts(verbose ? "SGI IPMHSIM": "IPMHSIM");
+		break;
+	default:
+		if(verbose)
+			printf("Unknown SGI type %d\n", i->inv_state);
+		else
+			puts("SGI???");
 	}
 	} else if (verbose) {
 		if (i->inv_type == INV_CPUCHIP) {
