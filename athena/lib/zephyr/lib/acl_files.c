@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.8 1993-09-24 16:22:26 probe Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.9 1993-11-21 03:13:26 probe Exp $";
 #endif
 
 /*** Routines for manipulating access control list files ***/
@@ -117,7 +117,7 @@ char *canon;
 	canon += len;
 	*canon++ = '\0';
     } 
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
     else if(krb_get_lrealm(canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }

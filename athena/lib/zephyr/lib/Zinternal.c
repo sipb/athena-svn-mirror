@@ -11,11 +11,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.29 1993-11-19 15:15:30 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.30 1993-11-21 03:13:29 probe Exp $ */
 
 #ifndef lint
 static char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.29 1993-11-19 15:15:30 probe Exp $";
+  "$Id: Zinternal.c,v 1.30 1993-11-21 03:13:29 probe Exp $";
 static char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -50,10 +50,6 @@ struct _Z_InputQ *__Q_Head, *__Q_Tail;
 struct sockaddr_in __HM_addr;
 struct sockaddr_in __HM_addr_real;
 int __HM_set;
-#ifdef KERBEROS
-C_Block __Zephyr_session;
-char __Zephyr_realm[REALM_SZ];
-#endif
 int __Zephyr_server;
 ZLocations_t *__locate_list;
 int __locate_num;
@@ -61,6 +57,12 @@ int __locate_next;
 ZSubscription_t *__subscriptions_list;
 int __subscriptions_num;
 int __subscriptions_next;
+
+#ifdef Z_HaveKerberos
+C_Block __Zephyr_session;
+char __Zephyr_realm[REALM_SZ];
+#endif
+
 #ifdef Z_DEBUG
 void (*__Z_debug_print) Zproto((const char *fmt, va_list args, void *closure));
 #endif

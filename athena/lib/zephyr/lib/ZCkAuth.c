@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.17 1993-11-19 15:25:26 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.18 1993-11-21 03:13:15 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZCheckAuthentication_c[] =
@@ -32,7 +32,7 @@ int ZCheckAuthentication(notice, from)
     ZNotice_t *notice;
     struct sockaddr_in *from;
 {	
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
     int result;
     char srcprincipal[ANAME_SZ+INST_SZ+REALM_SZ+4];
     KTEXT_ST authent;

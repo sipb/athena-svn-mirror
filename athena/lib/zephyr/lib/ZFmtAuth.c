@@ -10,17 +10,16 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.14 1993-11-19 15:25:35 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.15 1993-11-21 03:13:25 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.14 1993-11-19 15:25:35 probe Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.15 1993-11-21 03:13:25 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
-
 #include <zephyr/zephyr_internal.h>
 
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
 Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     ZNotice_t *notice;
     register char *buffer;
@@ -44,9 +43,8 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
 #ifdef NOENCRYPTION
     newnotice.z_checksum = 0;
 #else
-    newnotice.z_checksum = (ZChecksum_t)des_quad_cksum(buffer, NULL,
-						       ptr - buffer, 0,
-						       session);
+    newnotice.z_checksum =
+	(ZChecksum_t)des_quad_cksum(buffer, NULL, ptr - buffer, 0, session);
 #endif
     if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
 				    &hdrlen, (char **) 0)) != ZERR_NONE)

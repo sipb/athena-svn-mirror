@@ -4,27 +4,27 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Id: ZMkAuth.c,v 1.12 1991-06-20 14:31:12 jfc Exp $ */
+/* $Id: ZMkAuth.c,v 1.13 1993-11-21 03:13:23 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.12 1991-06-20 14:31:12 jfc Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.13 1993-11-21 03:13:23 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
 #include "krb_err.h"
 static long last_authent_time = 0L;
 static KTEXT_ST last_authent;
 #endif
 
 Code_t ZResetAuthentication () {
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
     last_authent_time = 0L;
 #endif
     return ZERR_NONE;
@@ -36,7 +36,7 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     int buffer_len;
     int *len;
 {
-#ifdef KERBEROS
+#ifdef Z_HaveKerberos
     int retval, result;
     long now,time();
     KTEXT_ST authent;
