@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: syncupdate.c,v 1.2 2000-02-23 16:29:42 ghudson Exp $";
+static const char rcsid[] = "$Id: syncupdate.c,v 1.3 2001-10-23 01:43:24 amb Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -175,4 +175,5 @@ static void open_and_sync(const char *filename)
 static void usage(void)
 {
   fprintf(stderr, "Usage: syncupdate [-c tempfile] source dest\n");
+  exit(1);
 }
