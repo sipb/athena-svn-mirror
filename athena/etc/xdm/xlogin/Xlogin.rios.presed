@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.4 1992-05-26 18:41:03 lwvanels Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.rios.presed,v 1.5 1992-05-26 19:12:07 cfields Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -109,10 +109,10 @@ xlogin.Geometry: 		580x325+205+105
 !  'til it looks ok...
 *version.wcClassName:		Label
 ! there's a space after the version label to make the picture look right
-*version.label:			ATHENA_VERSION 
+*version.label:			ATHENA_VERSION
 *version.horizDistance:		56
 *version.vertDistance:		99
-*version.internalWidth:		0
+*version.internalWidth:		2
 *version.internalHeight:	0
 *version.font:			-adobe-new century schoolbook-bold-r-*-120-*
 
