@@ -16,12 +16,12 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *	$Id: string_utils.c,v 1.12 1990-07-20 21:12:10 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: string_utils.c,v 1.13 1990-08-26 16:18:49 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.12 1990-07-20 21:12:10 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.13 1990-08-26 16:18:49 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -128,13 +128,13 @@ void time_now(time_buf)
 
   (void) time(&current_time);
   time_info = localtime(&current_time);
-  strcpy(time_buf, format_time(time_info));
+  format_time(time_buf,time_info);
 }
 
-char *format_time(time_info)
+char *format_time(time_buf,time_info)
+     char *time_buf;
      struct tm *time_info;
 {
-  char time_buf[BUF_SIZE];
   int hour;
 
   hour = time_info->tm_hour;
