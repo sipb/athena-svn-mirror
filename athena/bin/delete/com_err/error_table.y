@@ -65,7 +65,13 @@ description	:	QUOTED_STRING
  * For copyright info, see sipb-copying.h.
  */
 
+#ifdef SYSV
 #include <string.h>
+#define index strchr
+#define rindex strrchr
+#else
+#include <strings.h>
+#endif
 #include <assert.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -76,7 +82,7 @@ description	:	QUOTED_STRING
 
 #ifndef	lint
 static char const rcsid_error_table_y[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.3 1991-02-28 18:46:06 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.4 1991-03-01 09:26:16 jik Exp $";
 #endif
 
 extern FILE *hfile, *cfile;
