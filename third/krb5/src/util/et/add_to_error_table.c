@@ -1,5 +1,5 @@
 /*
- * $Id: add_to_error_table.c,v 1.1 1999-07-05 17:47:55 danw Exp $
+ * $Id: add_to_error_table.c,v 1.2 1999-10-28 14:21:16 ghudson Exp $
  *
  * Copyright 1987 by the Student Information Processing Board
  * of the Massachusetts Institute of Technology
@@ -7,10 +7,11 @@
  * For copyright info, see "mit-sipb-copyright.h".
  */
 
-static const char rcsid[] = "$Id: add_to_error_table.c,v 1.1 1999-07-05 17:47:55 danw Exp $";
+static const char rcsid[] = "$Id: add_to_error_table.c,v 1.2 1999-10-28 14:21:16 ghudson Exp $";
 
 #include <stdio.h>
 #include <string.h>
+#include "com_err.h"
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
 
