@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_lib.c,v 1.1 1989-11-12 19:27:27 qjb Exp $
+ * $Id: rk_lib.c,v 1.2 1990-07-16 14:15:29 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_lib.c,v $
  * $Author: qjb $
  *
@@ -15,9 +15,9 @@
  * Static functions can be named in any fashion.
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_lib.c,v 1.1 1989-11-12 19:27:27 qjb Exp $";
-#endif lint || SABER
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid = "$Id: rk_lib.c,v 1.2 1990-07-16 14:15:29 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <strings.h>
@@ -28,8 +28,12 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rki
 #include <rkinit_private.h>
 #include <rkinit_err.h>
 
+#ifdef __STDC__
+char *rkinit_errmsg(char *string)
+#else
 char *rkinit_errmsg(string)
   char *string;
+#endif /* __STDC__ */
 {
     static char errmsg[BUFSIZ];
 
@@ -41,11 +45,15 @@ char *rkinit_errmsg(string)
     return(errmsg);
 }
 
+#ifdef __STDC__
+int rkinit(char *host, char *r_krealm, rkinit_info *info, int timeout)
+#else
 int rkinit(host, r_krealm, info, timeout)
   char *host;
   char *r_krealm;
   rkinit_info *info;
   int timeout;
+#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     int version = 0;

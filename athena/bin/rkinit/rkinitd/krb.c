@@ -1,14 +1,14 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.2 1990-06-14 08:40:41 qjb Exp $
+ * $Id: krb.c,v 1.3 1990-07-16 14:16:26 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: qjb $
  *
  * This file contains all of the kerberos part of rkinitd.
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v 1.2 1990-06-14 08:40:41 qjb Exp $";
-#endif lint || SABER
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid = "$Id: krb.c,v 1.3 1990-07-16 14:16:26 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -24,6 +24,8 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rki
 #include <rkinit_private.h>
 #include <rkinit_err.h>
 
+#include "rkinitd.h"
+
 #define FAILURE (!RKINIT_SUCCESS)
 
 extern int errno;
@@ -35,9 +37,13 @@ typedef struct {
     jmp_buf env;
 } rkinitd_intkt_info;
 
+#ifdef __STDC__
+static void this_phost(char *host, int hostlen)
+#else
 static void this_phost(host, hostlen)
   char *host;
   int hostlen;
+#endif /* __STDC__ */
 {
     char this_host[MAXHOSTNAMELEN + 1];
 
@@ -53,6 +59,10 @@ static void this_phost(host, hostlen)
     strncpy(host, krb_get_phost(this_host), hostlen - 1);
 }
 
+#ifdef __STDC__
+static int decrypt_tkt(char *user, char *instance, char *realm, char *arg, 
+		       int (*key_proc)(), KTEXT *cipp)
+#else
 static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
   char *user;
   char *instance;
@@ -60,6 +70,7 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
   char *arg;
   int (*key_proc)();
   KTEXT *cipp;
+#endif /* __STDC__ */
 {
     MSG_DAT msg_data;		/* Message data containing decrypted data */
     KTEXT_ST auth;		/* Authenticator */
@@ -148,12 +159,17 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
     return(status);
 }
 
+#ifdef __STDC__
+static int validate_user(char *aname, char *inst, char *realm, 
+			 char *username, char *errmsg)
+#else
 static int validate_user(aname, inst, realm, username, errmsg)
   char *aname;
   char *inst;
   char *realm;
   char *username;
   char *errmsg;
+#endif /* __STDC__ */
 {
     struct passwd *pwnam;	/* For access_check and uid */
     AUTH_DAT auth_dat;
@@ -212,8 +228,12 @@ static int validate_user(aname, inst, realm, username, errmsg)
     return(RKINIT_SUCCESS);
 }
 
+#ifdef __STDC__
+int get_tickets(int version)
+#else
 int get_tickets(version)
   int version;
+#endif /* __STDC__ */
 {
     rkinit_info info;
     AUTH_DAT auth_dat;

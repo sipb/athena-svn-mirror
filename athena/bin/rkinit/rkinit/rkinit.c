@@ -1,13 +1,14 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v 1.1 1989-11-12 19:34:03 qjb Exp $
+ * $Id: rkinit.c,v 1.2 1990-07-16 14:17:37 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v $
  * $Author: qjb $
  *
+ * This is an rkinit client
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinit/rkinit.c,v 1.1 1989-11-12 19:34:03 qjb Exp $";
-#endif lint || SABER
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid = "$Id: rkinit.c,v 1.2 1990-07-16 14:17:37 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <strings.h>
@@ -26,10 +27,28 @@ static char *rcsid_rkinit_c = "$Header: /afs/dev.mit.edu/source/repository/athen
 #ifndef FALSE
 #define FALSE 0
 #endif
+	
+#ifdef __STDC__
+static void usage(void) 
+#else
+static void usage()
+#endif /* __STDC__ */
+{
+    fprintf(stderr,"Usage: rkinit host options\n");
+    fprintf(stderr,
+      "Options: [-l username] [-k krb_realm] [-p principal] [-f tktfile]\n");
+    fprintf(stderr, "         [-t lifetime] [-notimeout]\n");
+	    
+    exit(1);
+}
 
+#ifdef __STDC__
+main(int argc, char *argv[])
+#else
 main(argc, argv)
   int argc;
   char *argv[];
+#endif /* __STDC__ */
 {
     char *whoami;		/* Name of this program */
 
@@ -169,14 +188,4 @@ main(argc, argv)
     }
 
     exit(0);
-}
-	
-usage() 
-{
-    fprintf(stderr,"Usage: rkinit host options\n");
-    fprintf(stderr,
-      "Options: [-l username] [-k krb_realm] [-p principal] [-f tktfile]\n");
-    fprintf(stderr, "         [-t lifetime] [-notimeout]\n");
-	    
-    exit(1);
 }

@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v 1.1 1989-11-12 19:30:40 qjb Exp $
+ * $Id: rk_krb.c,v 1.2 1990-07-16 14:15:16 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v $
  * $Author: qjb $
  *
@@ -8,9 +8,9 @@
  * conventions used within the rkinit library.
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_krb.c,v 1.1 1989-11-12 19:30:40 qjb Exp $";
-#endif lint || SABER
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid = "$Id: rk_krb.c,v 1.2 1990-07-16 14:15:16 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -34,12 +34,18 @@ typedef struct {
 static char errbuf[BUFSIZ];
 
 /* The compiler complains if this is declared static. */
+#ifdef __STDC__
+int rki_key_proc(char *user, char *instance, char *realm, char *arg, 
+		 des_cblock key)
+#else
 int rki_key_proc(user, instance, realm, arg, key)
   char *user;
   char *instance;
   char *realm;
   char *arg;
   des_cblock key;
+#endif /* __STDC__ */
+
 {
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
     struct sgttyb ttyb;		/* For turning off echo */
@@ -92,6 +98,10 @@ int rki_key_proc(user, instance, realm, arg, key)
     return(KSUCCESS);
 }
 
+#ifdef __STDC__
+static int rki_decrypt_tkt(char *user, char *instance, char *realm, 
+			   char *arg, int (*key_proc)(), KTEXT *cipp)
+#else
 static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
   char *user;
   char *instance;
@@ -99,6 +109,7 @@ static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
   char *arg;
   int (*key_proc)();
   KTEXT *cipp;
+#endif /* __STDC__ */
 {
     KTEXT cip = *cipp;
     C_Block key;		/* Key for decrypting cipher */
@@ -133,11 +144,15 @@ static int rki_decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
     return(0);
 }
 
+#ifdef __STDC__
+int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
+#else
 int rki_get_tickets(version, host, r_krealm, info)
   int version;
   char *host;
   char *r_krealm;
   rkinit_info *info;
+#endif /* __STDC__ */
 {
     int status = RKINIT_SUCCESS;
     KTEXT_ST auth;

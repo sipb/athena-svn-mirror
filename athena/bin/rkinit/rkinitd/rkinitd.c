@@ -1,13 +1,14 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v 1.1 1989-11-12 19:34:58 qjb Exp $
+ * $Id: rkinitd.c,v 1.2 1990-07-16 14:16:34 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v $
  * $Author: qjb $
  *
+ * This is the main source file for rkinit
  */
 
-#if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v 1.1 1989-11-12 19:34:58 qjb Exp $";
-#endif lint || SABER
+#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
+static char *rcsid = "$Id: rkinitd.c,v 1.2 1990-07-16 14:16:34 qjb Exp $";
+#endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
 #include <ctype.h>
@@ -29,18 +30,28 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rki
 #include <rkinit_err.h>
 #include <rkinit_private.h>
 
+#include "rkinitd.h"
+
 extern int errno;
 extern char *sys_errlist[];
 
 static int inetd = TRUE;	/* True if we were started by inetd */
 
-void usage() 
+#ifdef __STDC__
+static void usage(void) 
+#else
+static void usage()
+#endif /* __STDC__ */
 {
     syslog(LOG_ERR, "rkinitd usage: rkinitd [-notimeout]\n");
     exit(1);
 }
 
+#ifdef __STDC__
+void error(void)
+#else
 void error()
+#endif /* __STDC__ */
 {
     char errbuf[BUFSIZ];
     
@@ -51,9 +62,13 @@ void error()
 	fprintf(stderr, "rkinitd: %s\n", errbuf);
 }
 
+#ifdef __STDC__
+main(int argc, char *argv[])
+#else
 main(argc, argv)
   int argc;
   char *argv[];
+#endif /* __STDC__ */
 {
     int version;		/* Version of the transaction */
 
@@ -77,7 +92,7 @@ main(argc, argv)
 #ifdef DEBUG
     /* This only works if the library was compiled with DEBUG defined */
     rki_i_am_server();
-#endif DEBUG
+#endif /* DEBUG */
 
     /* 
      * Make sure that we are running as root or can arrange to be 
