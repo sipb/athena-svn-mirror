@@ -1,0 +1,37 @@
+.TH DESYNC 1 "22 Jul 1995"
+.ds ]W MIT Athena
+.SH NAME
+desync \- desynchronize timed jobs on networks
+.SH SYNOPSIS
+.nf
+desync [offset]
+.fi
+.SH DESCRIPTION
+\fIdesync\fR is a tool which sleeps an ip-address dependent period of
+time (13 * the LSB of the ip address seconds) in order to skew over
+the course of an hour the network load from several machines running
+\fIcron\fR jobs that would otherwise be synchronized.
+
+It would appear something like
+
+     42 * * * *          desync; /usr/lib/sendmail -q
+
+in a crontab.
+.SH OPTIONS
+.TP 8
+.B offset
+This optional offset will be added to the normally computed sleep
+time.
+.SH DIAGNOSTICS
+If \fIdesync\fR fails to acquire the machine's IP address from
+\fIrc.conf\fR, it returns a nonzero exit status and does not sleep.
+.SH FILES
+.TP 25
+.B /etc/athena/rc.conf
+Athena startup configuration file
+.SH SEE ALSO
+cron(1)
+.SH AUTHOR
+Craig Fields, MIT Information Systems
+.br
+Copyright (c) 1995, Massachusetts Institute of Technology
