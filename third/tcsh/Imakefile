@@ -1,5 +1,5 @@
 /**/#
-/**/# $Id: Imakefile,v 1.1.1.1 1996-10-02 06:09:31 ghudson Exp $
+/**/# $Id: Imakefile,v 1.2 1996-10-03 04:31:29 ghudson Exp $
 /**/#
 /**/# Imakefile for for tcsh 6.03
 /**/# Marc Horowitz, MIT SIPB
@@ -449,6 +449,6 @@ depend:: config.h ed.defns.h sh.err.h tc.const.h $(SRCS)
 NormalProgramTarget(tcsh, $(OBJS), ed.defns.h sh.err.h tc.const.h, \
 			/*LOCALLIBS*/, $(HESLIB) $(SYSLIBS))
 
-InstallProgram(tcsh, $(BINDIR));
-InstallManPage(tcsh, $(MANDIR));
+InstallProgram(tcsh,$(BINDIR));
+InstallManPage(tcsh,$(MANDIR));
 DependTarget()
