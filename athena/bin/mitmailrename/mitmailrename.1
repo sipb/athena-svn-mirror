@@ -1,0 +1,39 @@
+.\" 
+.\" $Id: mitmailrename.1,v 1.1 2004-06-30 17:52:05 rbasch Exp $
+.\"
+.TH MITMAILRENAME 1 
+.SH NAME
+mitmailrename \- rename an IMAP mailbox
+.SH SYNOPSIS
+.B mitmailrename
+[
+.B \--debug
+] [
+.B \--help
+] [
+.B \--host
+.I name
+]
+.I existing-mailbox new-mailbox
+.SH DESCRIPTION
+The \fImitmailrename\fR command changes the name of a mailbox on an
+IMAP server.
+.SH OPTIONS
+The
+.I mitmailrename
+command understands the following options:
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.SH ARGUMENTS
+.I mitmailrename
+requires the name of an existing mailbox and a new mailbox name as arguments.
+.SH "SEE ALSO"
+mitmailcreate(1), mitmailremove(1), mailusage(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)
