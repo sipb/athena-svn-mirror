@@ -12,7 +12,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.3 1987-03-19 21:34:51 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.4 1987-03-20 17:02:09 jtkohl Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -47,7 +47,7 @@ typedef struct _ZNotice_t {
 	ZNotice_Kind_t	z_kind;
 	ZChecksum_t	z_checksum;
 	ZUnique_Id_t	z_uid;
-#define z_sender_addr	z_uid.zuid_addr;
+#define z_sender_addr	z_uid.zuid_addr
 	short		z_port;
 	char		*z_class;
 	char		*z_class_inst;
@@ -75,6 +75,9 @@ extern int __Zephyr_port;
 
 	/* External UNIX errors */
 extern int errno;
+
+/* XXX some magic numbers--will need tuning */
+#define	SERVER_KEEPALIVE_INTERVAL	(3*60) /* seconds */
 
 /* Error codes */
 
