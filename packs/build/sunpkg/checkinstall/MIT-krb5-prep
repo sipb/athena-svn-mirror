@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "This package should never be installed; you probably want MIT-krb5."
+
+exit 3
