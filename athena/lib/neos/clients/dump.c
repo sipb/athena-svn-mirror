@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Author: probe $
+ * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.2 1991-06-30 16:26:44 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.3 1992-04-27 12:44:18 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.2 1991-06-30 16:26:44 probe Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.3 1992-04-27 12:44:18 epeisach Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -74,7 +74,7 @@ do_dump(fxp, criterion, flags, string)
   if (count == 0) {
     if (verbose)
       empty_list(criterion);
-    return(0L);
+    goto DUMP_CLEANUP;
   }
 
   /******** main loop through list ********/
@@ -84,7 +84,9 @@ do_dump(fxp, criterion, flags, string)
     if (paperv[i]->modified.tv_sec < criterion->created.tv_sec ||
         paperv[i]->modified.tv_sec > criterion->modified.tv_sec) continue;
 
-    prep_paper(paperv[i], filename, flags);
+    /*** do things particular to pickup or collect ***/
+    if (code=prep_paper(paperv[i], filename, flags)) goto DUMP_CLEANUP;
+
     /*** change spaces to underscores ***/
     for (s=filename; *s != '\0'; s++)
       if (isspace(*s)) *s = '_';
@@ -99,7 +101,8 @@ do_dump(fxp, criterion, flags, string)
 	if (rename(filename, newfilename)) {
 	  sprintf(fxmain_error_context, "renaming %s to %s",
 		  filename, newfilename);
-	  return((long) errno);
+	  code = (long) errno;
+	  goto DUMP_CLEANUP;
 	}
       }
     }
@@ -116,7 +119,7 @@ do_dump(fxp, criterion, flags, string)
       code = fx_retrieve_file(fxp, paperv[i], filename);
       if (code) {
 	sprintf(fxmain_error_context, "while retrieving \"%s\"", filename);
-	return(code);
+	goto DUMP_CLEANUP;
       }
 
       if (!(flags & PRESERVE)) mark_retrieved(fxp, paperv[i]);
@@ -131,8 +134,8 @@ do_dump(fxp, criterion, flags, string)
   }
 
 
-/******** clean up ********/
+ DUMP_CLEANUP:
   fx_list_destroy(&plist);
   free((char *) paperv);
-  return(0L);
+  return(code);
 }
