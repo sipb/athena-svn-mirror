@@ -71,4 +71,8 @@
 #define CD_IDIR "."
 #endif
 
+#if defined(_AIX) && defined(_I386)
+/* They broke their definitions.... /usr/lib/lex/ncform */
+#define _Const
+#endif
 #endif
