@@ -53,7 +53,6 @@
 
 
 #undef DEBUG 
-//#define DEBUG 
 
 #ifdef DEBUG
 #   define DPRINTF(args) fprintf args
@@ -63,7 +62,7 @@
 
 
 #define PID_PROPERTY_NAME "XALF_LAUNCH_PID"
-#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so"
 #define USAGE "\
 Usage: %s [options] command\n\
 options:\n\
@@ -333,7 +332,7 @@ main (int argc, char **argv)
 	}
     
     if (!invisiblewindow_opt && !splash_opt && !cursor_opt && !anim_opt)
-	invisiblewindow_opt = TRUE;
+	cursor_opt = TRUE;
 	
     if (noxalf_opt)
 	execvp (argv[optind], argv+optind); 
@@ -730,32 +729,12 @@ find_in_path (char *filename)
 	    
 	    if (!S_ISREG(statbuf.st_mode))
 		continue;      /* File is not a regular file */
-	    
-	    if (statbuf.st_uid == geteuid ())
-		{
-		    if (statbuf.st_mode & S_IXUSR)
-			{
-			    foundfile = g_strdup (testpath);
-			    break;
-			}
-		    continue;  /* No permission to execute; try next PATH-entry */
-		}
 
-	    if (statbuf.st_gid == getegid ())
-		{
-		    if (statbuf.st_mode & S_IXGRP)
-			{
-			    foundfile = g_strdup (testpath);
-			    break;
-			}
-		    continue;  /* No permission to execute; try next PATH-entry */
-		}
+	    if (access(testpath, X_OK) == -1)
+                continue;      /* File is not executable */
 
-	    if (statbuf.st_mode & S_IXOTH)
-		{
-		    foundfile = g_strdup (testpath);
-		    break;
-		}
+            foundfile = g_strdup (testpath);
+            break;
 	}
     g_free (testpath);
 
