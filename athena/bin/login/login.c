@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.12 1987-08-23 00:23:15 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.13 1987-09-22 14:33:14 dyer Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.12 1987-08-23 00:23:15 treese Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.13 1987-09-22 14:33:14 dyer Exp $";
 #endif	lint
 
 /*
@@ -1159,8 +1159,8 @@ attach_homedir()
 	} 
 	while (wait(&status) != attachpid)
 		;
-	if (status.w_status == ATTACH_OK ||
-	    status.w_status == ATTACH_ERR_ATTACHED) {
+	if (status.w_retcode == ATTACH_OK ||
+	    status.w_retcode == ATTACH_ERR_ATTACHED) {
 		chown(pwd->pw_dir, pwd->pw_uid, pwd->pw_gid);
 		chdir(pwd->pw_dir);
 		return (0);
@@ -1188,7 +1188,7 @@ detach_homedir()
 		while (wait(&status) != pid)
 			;
 #ifdef notdef
-		if (status.w_status == DETACH_OK)
+		if (status.w_retcode == DETACH_OK)
 			return;
 		level = "1";
 		if (i == 1)
@@ -1214,12 +1214,49 @@ detach_homedir()
 #endif notdef
 }
 
+isremotedir(dname)
+char *dname;
+{
+	int fh, c;
+
+	/*
+	 * The following lines rely on the 
+	 * behavior of Sun's NFS (present in 3.0 and 3.2)
+	 * which causes a read on an NFS directory (actually any non-reg file)
+	 * to return -1 with errno set to EISDIR.
+	 *
+	 * This is a fast, cheap way to discover whether a user's
+	 * homedir is a remote NFS filesystem.  Naturally, if the NFS semantics
+	 * change, this must also change.
+	 * 
+	 * We return 1 if it is any remote filesystem so that the
+	 * attach_homedir command will run again (sending an "nfsid map"
+	 * command and cleaning up attachtab, if it happens to be out of sync.)
+	 *
+	 * Might want to handle RVD filesystems at some point...
+	 */
+
+	fh = open(dname, O_RDONLY);
+	if (fh < 0)
+		return(0);
+	if (read(fh, &c, 1) < 0 && errno == EISDIR) {
+		close(fh);
+		return(1);
+	}
+	close(fh);
+	return(0);
+}
+
 goodhomedir()
 {
 	DIR *dp;
 	
 	if (access(pwd->pw_dir,F_OK))
 		return (0);
+
+	if (isremotedir(pwd->pw_dir))
+		return(0);
+
 	dp = opendir(pwd->pw_dir);
 	if (!dp)
 		return (0);
