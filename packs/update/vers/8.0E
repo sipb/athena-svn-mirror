@@ -21,5 +21,8 @@ INDY)
 
 	echo "Removing old Irix 5.2 files..."
 	xargs rm -rf < $LIBDIR/irix52-53
+
+	# Force a MAKEDEV after reboot. See athena.config.
+	touch /dev/MAKEDEV.new
 	;;
 esac
