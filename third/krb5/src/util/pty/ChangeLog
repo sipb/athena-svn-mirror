@@ -1,3 +1,35 @@
+Wed Feb 17 19:47:36 1999  Tom Yu  <tlyu@mit.edu>
+
+	* sane_hostname.c (pty_make_sane_hostname): Remove unused
+	"char *scratch".
+
+Tue Feb 16 20:18:40 1999  Tom Yu  <tlyu@mit.edu>
+
+	* sane_hostname.c: Re-order so that pty-int.h precedes libpty.h to
+	prevent conflicting definitions of struct sockaddr_in
+
+Thu Feb 11 22:24:03 1999  Tom Yu  <tlyu@mit.edu>
+
+	* sane_hostname.c: Force maxlen to be 16 if it's less than 16,
+	since otherwise a numeric IP address won't fit.
+
+	* Makefile.in: Add sane_hostname.{o,c}
+
+	* libpty.h: Add prototype for make_sane_hostname.
+
+	* sane_hostname.c: New file; add function to "sanitize" hostname
+	for logging purposes.
+
+Mon Apr  6 19:35:33 1998  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* update_utmp.c (pty_update_utmp): Don't record LOGIN_PROCESS
+	entries, as they confuse last on some systems. [pty/569]
+
+Thu Mar 12 18:09:25 1998  Tom Yu  <tlyu@mit.edu>
+
+	* update_utmp.c (pty_update_utmp): Fix bogus entry of
+	PTY_LOGIN_PROCESS types on BSD-ish systems. [pty/531]
+
 Sun Dec  7 00:05:28 1997  Tom Yu  <tlyu@mit.edu>
 
 	* getpty.c (pty_getpty): Fix goof in previous, which introduced

@@ -23,7 +23,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: wrap_size_limit.c,v 1.1.1.2 1999-02-09 20:59:33 danw Exp $
+ * $Id: wrap_size_limit.c,v 1.1.1.3 1999-03-25 04:27:34 danw Exp $
  */
 
 /* V2 interface */
@@ -73,7 +73,7 @@ krb5_gss_wrap_size_limit(minor_status, context_handle, conf_req_flag,
 	     * Cannot have trailer length that will cause us to pad over
 	     * our length
 	     */
-	    *max_input_size = (req_output_size - ohlen) & (~7);
+	    *max_input_size = (req_output_size - ohlen - 1) & (~7);
     else
 	    *max_input_size = 0;
     *minor_status = 0;

@@ -55,11 +55,14 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 
     strncpy(ent.ut_line, line+sizeof("/dev/")-1, sizeof(ent.ut_line));
     ent.ut_time = time(0);
-#ifndef NO_UT_PID
+#ifdef NO_UT_PID
+    if (process_type == PTY_LOGIN_PROCESS)
+	return 0;
+#else /* NO_UT_PID */
     ent.ut_pid = pid;
-    switch ( process_type ) {
+    switch (process_type) {
     case PTY_LOGIN_PROCESS:
-	ent . ut_type = LOGIN_PROCESS;
+	ent.ut_type = LOGIN_PROCESS;
 	break;
     case PTY_USER_PROCESS:
 	ent.ut_type = USER_PROCESS;
@@ -191,5 +194,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 
 #endif /* HAVE_SETUTENT */
 
-    return ptyint_update_wtmp(&ent, host, userbuf);
+    /* Don't record LOGIN_PROCESS entries. */
+    if (process_type == PTY_LOGIN_PROCESS)
+      return 0;
+    else
+      return ptyint_update_wtmp(&ent, host, userbuf);
 }

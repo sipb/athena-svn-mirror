@@ -292,7 +292,8 @@ login(host)
 		if (pass == NULL)
 			pass = mygetpass("Password:");
 #ifndef NOENCRYPTION
-		if ((oldlevel = level) == PROT_S) level = PROT_P;
+		oldlevel = level;
+		level = PROT_P;
 #endif
 		n = command("PASS %s", pass);
 #ifndef NOENCRYPTION
@@ -591,7 +592,7 @@ getreply(expecteof)
 		    if (code != 631 && code != 632 && code != 633) {
 			printf("Unknown reply: %d %s\n", code, obuf);
 			n = '5';
-		    } else safe = code;
+		    } else safe = (code == 631);
 		if (obuf[0])	/* if there is a string to decode */
 		    if (!auth_type) {
 			printf("Cannot decode reply:\n%d %s\n", code, obuf);

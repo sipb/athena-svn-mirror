@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-server.c,v 1.1.1.3 1999-02-09 21:02:08 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-server.c,v 1.1.1.4 1999-03-25 04:30:12 danw Exp $";
 #endif
 
 #include <stdio.h>
@@ -494,6 +494,7 @@ main(argc, argv)
 		     /* this return value is not checked, because there's
 			not really anything to do if it fails */
 		     sign_server(s, server_creds);
+		     close(s);
 		 }
 	     } while (!once);
 	 }
