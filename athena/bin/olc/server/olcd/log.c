@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.32 1991-01-08 16:43:46 lwvanels Exp $
+ *	$Id: log.c,v 1.33 1991-03-07 13:34:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.32 1991-01-08 16:43:46 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.33 1991-03-07 13:34:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -539,14 +539,15 @@ dispose_of_log(knuckle)
   int pid;			/* Process ID for fork. */
   char msgbuf[BUF_SIZE];	/* Construct messages to be logged. */
   long time_now;		/* time now, in seconds (a unique number) */
-  char censored_filename[NAME_SIZE];
+  char filename[NAME_SIZE];
   
 #ifdef TEST
   printf("dispose title: %s\n",knuckle->question->title);
 #endif
 
-  sprintf(censored_filename,"%s.censored",knuckle->question->logfile);
-  unlink(censored_filename);
+  sprintf(filename,"%s.censored",knuckle->question->logfile);
+  unlink(filename);
+  unlink(knuckle->question->infofile);
 
   time_now = NOW;
 
