@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.2 1999-11-10 03:54:43 kcr Exp $
+! $Id: Xlogin.sun4.presed,v 1.3 2000-04-27 15:22:23 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -63,7 +63,7 @@ xlogin.Geometry: 		580x325+288+180
 *MenuButton.borderWidth:	1
 *SimpleMenu*borderWidth:	1
 *defaultDistance:		20
-*Font:				-adobe-new century schoolbook-bold-r-*-140-*
+*Font:				-adobe-new century schoolbook-bold-r-*-140-75-*
 
 
 ! ------------------------------------------------------------
@@ -114,14 +114,14 @@ xlogin.Geometry: 		580x325+288+180
 *version.vertDistance:		99
 *version.internalWidth:		2
 *version.internalHeight:	0
-*version.font:			-adobe-new century schoolbook-bold-r-*-120-*
+*version.font:			-adobe-new century schoolbook-bold-r-*-120-75-*
 
 *welcome.wcClassName:		Label
 *welcome.label: 		Welcome to Athena
 *welcome.fromHoriz:		*logo
 *welcome.horizDistance:		35
 *welcome.vertDistance:		45
-*welcome.font:			-adobe-new century schoolbook-bold-r-*-240-*
+*welcome.font:			-adobe-new century schoolbook-bold-r-*-240-75-*
 
 *host.wcClassName:		Label
 *host.label:			hostname.mit.edu
@@ -130,13 +130,13 @@ xlogin.Geometry: 		580x325+288+180
 *host.horizDistance:		5
 *host.vertDistance:		-5
 *host.fromVert:			*welcome
-*host.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*host.font:			-adobe-new century schoolbook-bold-r-*-180-75-*
 *host.resize:			False
 
 *clock.wcClassName:		ClockWidget
 *clock.update:			1
 *clock.analog:			False
-*clock*font:			-adobe-new century schoolbook-medium-r-*-120-*
+*clock*font:			-adobe-new century schoolbook-medium-r-*-120-75-*
 *clock.fromVert:		*host
 *clock.fromHoriz:		*logo
 *clock.horizDistance:		90
@@ -148,7 +148,7 @@ xlogin.Geometry: 		580x325+288+180
 *mesg.horizDistance:		5
 *mesg.vertDistance:		20
 *mesg.fromVert:			*clock
-*mesg.font:			-adobe-new century schoolbook-bold-r-*-240-*
+*mesg.font:			-adobe-new century schoolbook-bold-r-*-240-75-*
 *mesg.label:			Press any key to start . . .
 
 *motdFile:			MOTD_FILE
@@ -164,14 +164,14 @@ xlogin.Geometry: 		580x325+288+180
 *userName.width:		110
 *userName.vertDistance:		72
 *userName.horizDistance:	100
-*userName.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*userName.font:			-adobe-new century schoolbook-bold-r-*-180-75-*
 *userName.label: 		Username:
 
 *name_input.wcClassName:	AsciiText
 *name_input*length:		8
 *name_input.borderColor: 	black
 *name_input*string:		
-*name_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
+*name_input*font:		-adobe-new century schoolbook-bold-r-*-180-75-*
 *name_input*editType:		edit
 *name_input*useStringInPlace:	TRUE
 *name_input.fromVert:		*welcome
@@ -246,7 +246,7 @@ xlogin.Geometry: 		580x325+288+180
 *password.width:		110
 *password.vertDistance:		10
 *password.horizDistance:	100
-*password.font:			-adobe-new century schoolbook-bold-r-*-180-*
+*password.font:			-adobe-new century schoolbook-bold-r-*-180-75-*
 *password*label: 		Password:
 
 *pword_input.wcClassName:	AsciiText
@@ -254,7 +254,7 @@ xlogin.Geometry: 		580x325+288+180
 *pword_input.borderColor: 	white
 *pword_input*length:		128
 *pword_input*string:		
-*pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
+*pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-75-*
 *pword_input*editType:		edit
 *pword_input*useStringInPlace:	TRUE
 *pword_input.displayCaret:	FALSE
@@ -332,7 +332,7 @@ xlogin.Geometry: 		580x325+288+180
 *selection.horizDistance:	35
 *selection.fromVert:		*password
 *selection.vertDistance:	5
-*selection.font:		-adobe-new century schoolbook-bold-r-*-180-*
+*selection.font:		-adobe-new century schoolbook-bold-r-*-180-75-*
 
 *loptions.wcClassName:		MenuButton
 *loptions.vertDistance:		40
@@ -508,7 +508,7 @@ xlogin.Geometry: 		580x325+288+180
 *getsession.wcClassName:	Dialog
 *getsession.icon:		question
 *getsession.label:		Please enter the name of a shell script or program:
-*getsession.label.font:		-adobe-new century schoolbook-bold-r-*-180-*
+*getsession.label.font:		-adobe-new century schoolbook-bold-r-*-180-75-*
 *getsession.wcChildren:		doit, abort
 
 *getsession*value.borderWidth:		2
@@ -589,7 +589,7 @@ xlogin.Geometry: 		580x325+288+180
 *query.wcClassName:		Dialog
 *query.icon:			question
 *query.label:			Login Incomplete
-*query.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*query.label.font:		-adobe-new century schoolbook-bold-r-*-240-75-*
 *query.label.width:		250
 *query.value:			this will be replaced before it is used
 *query.wcChildren:		cont, giveup
@@ -615,7 +615,7 @@ xlogin.Geometry: 		580x325+288+180
 *warning.wcClassName:		Dialog
 *warning.icon:			warning
 *warning.label:			Login Failed
-*warning.label.font:		-adobe-new century schoolbook-bold-r-*-240-*
+*warning.label.font:		-adobe-new century schoolbook-bold-r-*-240-75-*
 *warning.label.width:		200
 *warning.value:			this will be replaced before it is used
 *warning.wcChildren:		continue
