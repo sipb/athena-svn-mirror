@@ -5,51 +5,58 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.26 1991-02-22 07:10:30 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.27 1991-02-22 07:26:16 jik Exp $
 #
 
 DESTDIR=
 TARGETS= 	delete undelete expunge purge lsdel
-INSTALLDIR= 	/bin/athena
+INSTALLDIR= 	/usr/bin
 MANDIR=		/usr/man
 MANSECT=	1
 CC= 		cc
 DEPEND=		/usr/bin/X11/makedepend
 COMPILE_ET= 	compile_et
 LINT= 		lint
-DEFINES=	$(AFSDEFINES)
+DEFINES=	
 
 
 # These variables apply only if you want this program to recognize
 # Andrew File System mount points.  If you don't want to support AFS,
-# then set all the variables starting with "AFS" to nothing.
-AFSBLD=		bld.3.0
-AFSINC=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/include
-AFSLIB=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/lib
-AFSINCS=	-I$(AFSINC)
-AFSLDFLAGS=	-L$(AFSLIB) -L$(AFSLIB)/afs
-AFSLIBS=	-lsys -lrx -llwp $(AFSLIB)/afs/util.a
-AFSDEFINES=	-DAFS_MOUNTPOINTS
+# then they should all be commented out or set to nothing.
+# 
+# AFSINC is the include directory for AFS header files.  
+# AFSLIB is the library directory that contains the AFS libraries.
+# 
+# AFSINC=		
+# AFSLIB=		
+# AFSINCS=	-I$(AFSINC)
+# AFSLDFLAGS=	-L$(AFSLIB) -L$(AFSLIB)/afs
+# AFSLIBS=	-lsys -lrx -llwp $(AFSLIB)/afs/util.a
+# AFSDEFINES=	-DAFS_MOUNTPOINTS
 
 
+# If you install the com_err library and include files in directories
+# that your compiler and linker know how to find, you don't have to
+# set these variables.  Otherwise, you do.
+# 
 # ETINCS is a -I flag pointing to the directory in which the et header
 # files are stored. 
 # ETLDFLAGS is a -L flag pointing to the directory where the et
 # library is stored.
-# ETLIBS lists the et libraries we want to link against
-ETINCS=		-I/usr/include
-ETLDFLAGS=	-L/usr/athena/lib
-ETLIBS=		-lcom_err
+# 
+# ETINCS=		
+# ETLDFLAGS=	
 
 
 # You probably won't have to edit anything below this line.
 
+ETLIBS=		-lcom_err
 INCLUDES=	$(ETINCS) $(AFSINCS)
 LDFLAGS=	$(ETLDFLAGS) $(AFSLDFLAGS) 
 LIBS= 		$(ETLIBS) $(AFSLIBS)
 CDEBUGFLAGS=	-O
-CFLAGS= 	$(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
-LINTFLAGS=	-u $(INCLUDES) $(DEFINES) $(CDEBUGFLAGS)
+CFLAGS= 	$(INCLUDES) $(DEFINES) $(AFSDEFINES) $(CDEBUGFLAGS)
+LINTFLAGS=	-u $(INCLUDES) $(DEFINES) $(AFSDEFINES) $(CDEBUGFLAGS)
 LINTLIBS=	
 
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
