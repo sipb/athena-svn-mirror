@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.22 1996-09-20 02:13:58 ghudson Exp $
+ *	$Id: io.c,v 1.23 1997-04-30 17:35:51 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.22 1996-09-20 02:13:58 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.23 1997-04-30 17:35:51 ghudson Exp $";
 #endif
 #endif
 
@@ -44,15 +44,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <netdb.h>
 #include <signal.h>
 
-
-
-
-/* External Variables. */
-
-extern char DaemonHost[];			/* Name of daemon's machine. */
-extern int errno;
-
-struct hostent *gethostbyname(); /* Get host entry of a host. */
 
 #ifndef MIN
 #define	MIN(a,b)	((a)>(b)?(b):(a))
@@ -110,15 +101,15 @@ send_request(fd, request)
   i = htonl((u_long) request->requester.instance);
   memcpy(net_req.data+20, &i, sizeof(i));
 
-  strncpy((char *) (net_req.data+24), request->requester.username,10);
-  strncpy((char *) (net_req.data+34), request->requester.realname,32);
+  strncpy(net_req.data+24, request->requester.username,  10);
+  strncpy(net_req.data+34, request->requester.realname,  32);
 #ifdef KERBEROS
-  strncpy((char *) (net_req.data+66), request->requester.realm,40);
-  strncpy((char *) (net_req.data+106), request->requester.inst,40);
+  strncpy(net_req.data+66, request->requester.realm,     40);
+  strncpy(net_req.data+106, request->requester.inst,     40);
 #endif
-  strncpy((char *) (net_req.data+146), request->requester.nickname,16);
-  strncpy((char *) (net_req.data+162), request->requester.title,32);
-  strncpy((char *) (net_req.data+194), request->requester.machine,32);
+  strncpy(net_req.data+146, request->requester.nickname, 16);
+  strncpy(net_req.data+162, request->requester.title,    32);
+  strncpy(net_req.data+194, request->requester.machine,  32);
 
   i = htonl((u_long) request->target.uid);
   memcpy(net_req.data+228, &i, sizeof(i));
@@ -126,15 +117,15 @@ send_request(fd, request)
   i = htonl((u_long) request->target.instance);
   memcpy(net_req.data+232, &i, sizeof(i));
 
-  strncpy((char *) (net_req.data+236), request->target.username,10);
-  strncpy((char *) (net_req.data+246), request->target.realname,32);
+  strncpy(net_req.data+236, request->target.username,10);
+  strncpy(net_req.data+246, request->target.realname,32);
 #ifdef KERBEROS
-  strncpy((char *) (net_req.data+278), request->target.realm,40);
-  strncpy((char *) (net_req.data+318), request->target.inst,40);
+  strncpy(net_req.data+278, request->target.realm,40);
+  strncpy(net_req.data+318, request->target.inst,40);
 #endif
-  strncpy((char *) (net_req.data+358), request->target.nickname,16);
-  strncpy((char *) (net_req.data+374), request->target.title,32);
-  strncpy((char *) (net_req.data+406), request->target.machine,32);
+  strncpy(net_req.data+358, request->target.nickname,16);
+  strncpy(net_req.data+374, request->target.title,32);
+  strncpy(net_req.data+406, request->target.machine,32);
 
   if (swrite(fd, (char *) &net_req, sizeof(IO_REQUEST)) != sizeof(IO_REQUEST))
     return(ERROR);
@@ -323,12 +314,12 @@ open_connection_to_named_daemon(request, fd, hostname)
       sin.sin_port = htons (atoi (port_env));
     else {
 #ifdef HESIOD
-      service = hes_getservbyname(OLC_SERVICE, OLC_PROTOCOL);
+      service = hes_getservbyname(client_service_name(), OLC_PROTOCOL);
 #endif
       /* Fall back to /etc/services if no hesiod information avail. */
-      if (service == (struct servent *) NULL) {
-	if ((service = getservbyname(OLC_SERVICE, OLC_PROTOCOL)) ==
-	    (struct servent *) NULL) {
+      if (service == NULL) {
+	service = getservbyname(client_service_name(), OLC_PROTOCOL);
+	if (service == NULL) {
 	  close(*fd);
 	  return(ERROR_SLOC);
 	}
@@ -365,24 +356,26 @@ open_connection_to_nl_daemon(fd)
     }
 
 #ifdef HESIOD
-    service = getservbyname("ols","tcp");
+    service = hes_getservbyname(client_nl_service_name(), OLC_PROTOCOL);
 #endif    
     /* Fall back to /etc/services if no hesiod- */
     if (service == NULL) {
-      if ((service = getservbyname("ols","tcp")) == NULL) {
+      service = getservbyname(client_nl_service_name(), OLC_PROTOCOL);
+      if (service == NULL) {
 	fprintf(stderr,"ols/tcp unknown service\n");
 	return(ERROR);
       }
     }
 
-    memset(&sin,0,sizeof(sin));
-    memcpy(&sin.sin_addr,hp->h_addr,hp->h_length);
+    memset(&sin, 0, sizeof(sin));
+    memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
     sin.sin_family = AF_INET;
     sin.sin_port = service->s_port;
     init = 1;
   }
 
-  if ((*fd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+  *fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (*fd == -1) {
     olc_perror("socket");
     return(ERROR);
   }
