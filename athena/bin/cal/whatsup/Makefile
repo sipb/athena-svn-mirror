@@ -11,8 +11,8 @@
 #
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v $
-#	$Author: shanzer $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.2 1987-10-29 12:36:52 shanzer Exp $
+#	$Author: epeisach $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.3 1989-09-16 13:15:23 epeisach Exp $
 #
 ###########################################################################
 
@@ -61,126 +61,48 @@ TAGS:
 	etags ${SRCS} ${OTHERSRC}
 
 depend: 
-	rm -f makedep eddep 
-	for i in ${SRCS}; do \
-		(${CC} ${CFLAGS} -M $$i  >> makedep); \
-	 done
-	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
-	echo '$$r makedep' >>eddep
-	echo 'w' >>eddep
-	cp Makefile Makefile.bak
-	ed - Makefile < eddep
-	rm eddep makedep 
-	echo '# DEPENDENCIES MUST END AT END OF FILE' >> Makefile
-	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> Makefile
-	echo '# see make depend above' >> Makefile
+	mkdep ${CFLAGS} -I${INCLIB} ${SRCS}
 
-# DO NOT DELETE THIS LINE -- make depend uses it
-# DEPENDENCIES MUST END AT END OF FILE
-whatsup.o: whatsup.c
-whatsup.o: ../include/mit-copyright.h
-whatsup.o: /usr/include/curses.h
-whatsup.o: /usr/include/stdio.h
-whatsup.o: /usr/include/sgtty.h
-whatsup.o: /usr/include/sys/ioctl.h
-whatsup.o: /usr/include/sys/ttychars.h
-whatsup.o: /usr/include/sys/ttydev.h
-whatsup.o: /usr/include/signal.h
-whatsup.o: /usr/include/stdio.h
-whatsup.o: /usr/include/strings.h
-whatsup.o: ../include/whatsup.h
-whatsup.o: /usr/include/gdb.h
-whatsup.o: /usr/include/sys/types.h
-whatsup.o: /usr/include/sys/time.h
-whatsup.o: /usr/include/time.h
-what_ifld.o: what_ifld.c
-what_ifld.o: ../include/mit-copyright.h
-what_ifld.o: /usr/include/curses.h
-what_ifld.o: /usr/include/stdio.h
-what_ifld.o: /usr/include/sgtty.h
-what_ifld.o: /usr/include/sys/ioctl.h
-what_ifld.o: /usr/include/sys/ttychars.h
-what_ifld.o: /usr/include/sys/ttydev.h
-what_ifld.o: /usr/include/stdio.h
-what_ifld.o: /usr/include/ctype.h
-what_ifld.o: ../include/whatsup.h
-what_ifld.o: /usr/include/gdb.h
-what_ifld.o: /usr/include/sys/types.h
-what_ifld.o: /usr/include/sys/time.h
-what_ifld.o: /usr/include/time.h
-what_itm.o: what_itm.c
-what_itm.o: ../include/mit-copyright.h
-what_itm.o: /usr/include/curses.h
-what_itm.o: /usr/include/stdio.h
-what_itm.o: /usr/include/sgtty.h
-what_itm.o: /usr/include/sys/ioctl.h
-what_itm.o: /usr/include/sys/ttychars.h
-what_itm.o: /usr/include/sys/ttydev.h
-what_itm.o: /usr/include/stdio.h
-what_itm.o: /usr/include/strings.h
-what_itm.o: ../include/whatsup.h
-what_itm.o: /usr/include/gdb.h
-what_itm.o: /usr/include/sys/types.h
-what_itm.o: /usr/include/sys/time.h
-what_itm.o: /usr/include/time.h
-what_sel.o: what_sel.c
-what_sel.o: ../include/mit-copyright.h
-what_sel.o: /usr/include/curses.h
-what_sel.o: /usr/include/stdio.h
-what_sel.o: /usr/include/sgtty.h
-what_sel.o: /usr/include/sys/ioctl.h
-what_sel.o: /usr/include/sys/ttychars.h
-what_sel.o: /usr/include/sys/ttydev.h
-what_sel.o: /usr/include/stdio.h
-what_sel.o: /usr/include/strings.h
-what_sel.o: ../include/whatsup.h
-what_sel.o: /usr/include/gdb.h
-what_sel.o: /usr/include/sys/types.h
-what_sel.o: /usr/include/sys/time.h
-what_sel.o: /usr/include/time.h
-what_in.o: what_in.c
-what_in.o: ../include/mit-copyright.h
-what_in.o: /usr/include/curses.h
-what_in.o: /usr/include/stdio.h
-what_in.o: /usr/include/sgtty.h
-what_in.o: /usr/include/sys/ioctl.h
-what_in.o: /usr/include/sys/ttychars.h
-what_in.o: /usr/include/sys/ttydev.h
-what_in.o: /usr/include/stdio.h
-what_in.o: ../include/whatsup.h
-what_in.o: /usr/include/gdb.h
-what_in.o: /usr/include/sys/types.h
-what_in.o: /usr/include/sys/time.h
-what_in.o: /usr/include/time.h
-what_sc.o: what_sc.c
-what_sc.o: ../include/mit-copyright.h
-what_sc.o: /usr/include/curses.h
-what_sc.o: /usr/include/stdio.h
-what_sc.o: /usr/include/sgtty.h
-what_sc.o: /usr/include/sys/ioctl.h
-what_sc.o: /usr/include/sys/ttychars.h
-what_sc.o: /usr/include/sys/ttydev.h
-what_sc.o: /usr/include/stdio.h
-what_sc.o: ../include/whatsup.h
-what_sc.o: /usr/include/gdb.h
-what_sc.o: /usr/include/sys/types.h
-what_sc.o: /usr/include/sys/time.h
-what_sc.o: /usr/include/time.h
-what_time.o: what_time.c
-what_time.o: ../include/mit-copyright.h
-what_time.o: /usr/include/curses.h
-what_time.o: /usr/include/stdio.h
-what_time.o: /usr/include/sgtty.h
-what_time.o: /usr/include/sys/ioctl.h
-what_time.o: /usr/include/sys/ttychars.h
-what_time.o: /usr/include/sys/ttydev.h
-what_time.o: /usr/include/signal.h
-what_time.o: /usr/include/stdio.h
-what_time.o: ../include/whatsup.h
-what_time.o: /usr/include/gdb.h
-what_time.o: /usr/include/sys/types.h
-what_time.o: /usr/include/sys/time.h
-what_time.o: /usr/include/time.h
-# DEPENDENCIES MUST END AT END OF FILE
-# IF YOU PUT STUFF HERE IT WILL GO AWAY
-# see make depend above
+
+# DO NOT DELETE THIS LINE -- mkdep uses it.
+
+whatsup.o: whatsup.c ../include/mit-copyright.h /usr/include/curses.h
+whatsup.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
+whatsup.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
+whatsup.o: /usr/include/signal.h /usr/include/strings.h ../include/whatsup.h
+whatsup.o: /usr/include/gdb.h /usr/include/sys/types.h
+whatsup.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_ifld.o: what_ifld.c ../include/mit-copyright.h /usr/include/curses.h
+what_ifld.o: /usr/include/stdio.h /usr/include/sgtty.h
+what_ifld.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+what_ifld.o: /usr/include/sys/ttydev.h /usr/include/ctype.h
+what_ifld.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_ifld.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_itm.o: what_itm.c ../include/mit-copyright.h /usr/include/curses.h
+what_itm.o: /usr/include/stdio.h /usr/include/sgtty.h
+what_itm.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+what_itm.o: /usr/include/sys/ttydev.h /usr/include/strings.h
+what_itm.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_itm.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_sel.o: what_sel.c ../include/mit-copyright.h /usr/include/curses.h
+what_sel.o: /usr/include/stdio.h /usr/include/sgtty.h
+what_sel.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+what_sel.o: /usr/include/sys/ttydev.h /usr/include/strings.h
+what_sel.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_sel.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_in.o: what_in.c ../include/mit-copyright.h /usr/include/curses.h
+what_in.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
+what_in.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
+what_in.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_in.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_sc.o: what_sc.c ../include/mit-copyright.h /usr/include/curses.h
+what_sc.o: /usr/include/stdio.h /usr/include/sgtty.h /usr/include/sys/ioctl.h
+what_sc.o: /usr/include/sys/ttychars.h /usr/include/sys/ttydev.h
+what_sc.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_sc.o: /usr/include/sys/time.h /usr/include/sys/time.h
+what_time.o: what_time.c ../include/mit-copyright.h /usr/include/curses.h
+what_time.o: /usr/include/stdio.h /usr/include/sgtty.h
+what_time.o: /usr/include/sys/ioctl.h /usr/include/sys/ttychars.h
+what_time.o: /usr/include/sys/ttydev.h /usr/include/signal.h
+what_time.o: ../include/whatsup.h /usr/include/gdb.h /usr/include/sys/types.h
+what_time.o: /usr/include/sys/time.h /usr/include/sys/time.h
