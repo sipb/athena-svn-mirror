@@ -8,7 +8,11 @@ quota \- display disk usage and limits
 [
 .B \-v
 ] [
-user
+.B \-i
+] [
+.B \-g
+] [
+user|group
 ]
 .SH DESCRIPTION
 .IX "quota command"  ""  "\fLquota\fP \(em display disk usage and limits"
@@ -16,9 +20,11 @@ user
 .IX display  "disk usage and limits quota"  ""  "disk usage and limits \(em \fLquota\fP"
 .IX  "limits of disk space quota"  ""  "limits of disk space \(em \fLquota\fP"
 .I Quota
-displays users' disk usage and limits. 
+displays users' and groups' disk usage and limits. 
 Only the super-user may use the optional
 .I user
+or
+.I group
 argument to view the limits of users other than himself.
 .LP
 .I Quota
@@ -26,10 +32,24 @@ without options displays only warnings
 about mounted file systems where usage is over quota.
 .SH OPTIONS
 .IP \fB\-v\fP
-display user's quotas on all mounted file systems where quotas exist.
+Without a username or UID after the -v, this option will display disk
+block usage and quotas for the user and any groups the user is a member
+of on all mounted file systems where quotas exist.
+
+With a username or UID, this option will display user disk block and
+inode usages and quotas for the given user on locally mounted file
+systems.
+.IP \fB\-i\fP
+In combination with the -v option above, this will cause inode usages
+and quotas to be displayed instead of disk block.
+.IP \fB\-g\fP
+With a group name or GID, this option will display group disk block
+and inode usages and limits for the given group on locally mounted
+file systems.  This option is useful only to the super-user.
 .SH FILES
 .ta 2i
 \fIquotas\fP	quota file at the file system root
+\fI/etc/qotab\fP	quota options file
 .DT
 .SH "SEE ALSO"
 quotactl(2), quotaon(8), edquota(8), rquotad(8c)
