@@ -1,6 +1,7 @@
 
 INCLUDES=@LIBWNCK_CFLAGS@ -DG_LOG_DOMAIN=\"Wnck\" -I$(top_srcdir) \
-	-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DWNCK_LOCALEDIR=\"$(wncklocaledir)\"
+	-DWNCK_I_KNOW_THIS_IS_UNSTABLE -DWNCK_LOCALEDIR=\"$(wncklocaledir)\" \
+	-DSN_API_NOT_YET_FROZEN=1
 
 lib_LTLIBRARIES=libwnck-1.la
 
@@ -95,8 +96,11 @@ regenerate-built-sources:
 	&& echo "#include <libwnck/libwnck.h>" > wnck-marshal.c \
         && @GLIB_GENMARSHAL@ --prefix=_wnck_marshal wnck-marshal.list --body >> wnck-marshal.c
 
-IMAGES=default_icon.png
-VARIABLES=default_icon_data $(srcdir)/default_icon.png
+IMAGES=default_icon.png stock_delete.png stock_maximize.png stock_minimize.png
+VARIABLES=default_icon_data $(srcdir)/default_icon.png 		\
+	stock_delete_data $(srcdir)/stock_delete.png 		\
+	stock_maximize_data $(srcdir)/stock_maximize.png 	\
+	stock_minimize_data $(srcdir)/stock_minimize.png
 
 noinst_DATA = inlinepixbufs.h
 CLEANFILES += $(noinst_DATA)

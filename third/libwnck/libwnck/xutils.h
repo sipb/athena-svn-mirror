@@ -30,6 +30,10 @@
 
 G_BEGIN_DECLS
 
+#define WNCK_STOCK_DELETE "wnck-stock-delete"
+#define WNCK_STOCK_MAXIMIZE "wnck-stock-maximize"
+#define WNCK_STOCK_MINIMIZE "wnck-stock-minimize"
+
 #define WNCK_APP_WINDOW_EVENT_MASK (PropertyChangeMask | StructureNotifyMask)
 
 gboolean _wnck_get_cardinal      (Window  xwindow,
@@ -63,6 +67,10 @@ gboolean _wnck_get_cardinal_list (Window   xwindow,
                                   int     *len);
 char**   _wnck_get_utf8_list     (Window   xwindow,
                                   Atom     atom);
+
+void     _wnck_set_utf8_list     (Window   xwindow,
+                                  Atom     atom,
+                                  char   **list);
 
 void _wnck_error_trap_push (void);
 int  _wnck_error_trap_pop  (void);
@@ -109,6 +117,9 @@ void   _wnck_keyboard_move    (Screen *screen,
 
 void   _wnck_keyboard_size    (Screen *screen,
                                Window  xwindow);
+
+void _wnck_toggle_showing_desktop (Screen  *screen,
+                                   gboolean show);
 
 typedef struct _WnckIconCache WnckIconCache;
 
@@ -178,6 +189,8 @@ int      _wnck_try_desktop_layout_manager           (Screen *xscreen,
 void     _wnck_release_desktop_layout_manager       (Screen *xscreen,
                                                      int     current_token);
 gboolean _wnck_desktop_layout_manager_process_event (XEvent *xev);
+
+void _wnck_stock_icons_init (void);
 
 G_END_DECLS
 

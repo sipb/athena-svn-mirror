@@ -1,17 +1,261 @@
-2002-10-31  Havoc Pennington  <hp@redhat.com>
+2003-01-20  Havoc Pennington  <hp@pobox.com>
 
-	* configure.in: 0.18
+	* NEWS: update
 
-2002-10-31  Havoc Pennington  <hp@redhat.com>
+	* configure.in: 2.2.0
 
-        Backport from HEAD
+2003-01-14  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am), Farsi (fa),
+	and Macedonian (mk) to ALL_LINGUAS
+
+2003-01-09  Havoc Pennington  <hp@pobox.com>
+
+	* README: update README
+
+2003-01-02  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/application.c (get_icons): don't add an extra reference
+	to all icons, that was an unfortunate memory leak. Patch from 
+	Arjan van de Ven
+
+2002-12-06  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added Czech (cs) to ALL_LINGUAS
+
+2002-11-30  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: require startup notification 0.4
+
+        * libwnck/application.c (_wnck_application_create): fill in
+	startup_id field
+	(wnck_application_get_startup_id): new function
+
+	* libwnck/tasklist.c (wnck_task_new_from_window): remove any
+	startup sequence buttons as soon as we add a window for that
+	sequence to the tasklist.
+	(wnck_task_get_text): prefer "description" over name if we have 
+	a description.
+
+	* libwnck/window.c (_wnck_window_get_startup_id): new function
+
+	* libwnck/xutils.c (_wnck_get_fallback_icons): allow getting only
+	one of the default icons
+
+	* configure.in: increment to 2.1.5 and bump libtool stuff
+
+	* libwnck/window.c (update_wintype): type SPLASH not SPLASHSCREEN 
+	for the X atom
+
+	* libwnck/tasklist.c (wnck_task_get_icon): load an icon for the
+	task being started up.
+	(wnck_tasklist_set_icon_loader): new function to set an icon load
+	function
+
+Sun Nov 24 18:38:27 2002  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* configure.in: version 2.1.4, and increment libtool versioning
+
+	* libwnck/pager.c (wnck_pager_set_shadow_type): New function.
+	Interprete points on the frame as belonging to the abutting
+	workspace.
+
+	* libwnck/test-pager.c (create_pager_window): Use
+	wnck_pager_set_shadow_type instead of a GtkFrame.
+
+2002-11-03  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/xutils.c (_wnck_set_desktop_layout): XChangeProperty
+	takes number of elements, not number of bytes. Doh. Will probably 
+	fix the window layout issue with metacity.
+
+2002-11-03  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/window.c (wnck_window_activate_transient): don't pass 
+	WnckWindow when expecting an X window
+
+	* configure.in: 2.1.3, and bump libtool versioning for new API
+
+	* libwnck/xutils.c (_wnck_set_utf8_list): new function
+
+	* libwnck/screen.c (_wnck_screen_change_workspace_name): new
+	function
+
+	* libwnck/workspace.c (wnck_workspace_change_name): new function
+
+	* libwnck/screen.c (wnck_screen_change_workspace_count): new
+	function
+
+2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-10-24  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/tasklist.c (wnck_tasklist_activate_task_window): when
+	activating windows, use wnck_window_activate_transient()
+
+	* libwnck/window.c (wnck_window_activate_transient): new function
+
+	* libwnck/tasklist.c: add support for displaying a "starting up"
+	task.
+	(wnck_tasklist_remove): queue a resize on removing a button.
+	Doesn't seem like it should be needed, but apparently it is.
+
+	* libwnck/xutils.c (filter_func): process the startup notification events
+
+	* libwnck/screen.c (_wnck_screen_get_sn_display): new function
+
+	* configure.in: add libstartup-notification optional check
+
+	* libwnck-1.0.pc.in: require libstartup-notification if compiled
+	with it
+
+2002-09-27  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/xutils.c (_wnck_stock_icons_init): fix dumb compilation
+	bug (maybe gcc 3.2 allows variable declarations not at top of
+	function?)
+
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/tasklist.c (wnck_task_get_text): use icon name not 
+	regular name
+
+	* libwnck/window.c (wnck_window_init): init icon name to NULL so
+	we can tell when it's unset and fall back to regular name
+	(update_icon_name): don't use a fallback for icon name
+
+	* libwnck/application.c (wnck_application_get_icon_name): add a
+	FIXME that this doesn't do the right thing
 	
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+        Bug #89373
+	
+	* libwnck/xutils.c (_wnck_set_desktop_layout): set _NET_WM_TOPLEFT
+	part of the desktop layout.
+	(_wnck_set_desktop_layout): fix columns/rows being swapped.
+
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/pager.c (wnck_pager_expose_event): prelight the
+	workspace that we're dragging over. #90869
+
+2002-09-27  Arvind Samptur <arvind.samptur@wipro.com>
+
+        * libwnck/pager.c (workspace_create_callback): connect to
+        name_changed on newly created workspace,
+        (workspace_destroyed_callback): disconnect from name_changed,
+        (workspace_name_changed_callback): new function, we queue a resize
+        when a workspace title has been changed,
+        (wnck_pager_connect_screen): connect to name_changed on current
+        workspaces,
+        (wnck_pager_disconnect_screen): disconnect from name_changed on
+        current workspaces.
+
+        Patch by Kristian Rietveld  <kris@gtk.org>. Fixes #84165.
+
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/window-action-menu.c: Add "put on all spaces" menu item, 
+	patch from Jens Askengren  <jensus@linux.nu>
+
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/window.c (update_state): rework to update HIDDEN state
+	(wnck_window_is_visible_on_workspace): use state HIDDEN
+
+	* libwnck/window.h (WnckWindowState): add WNCK_WINDOW_STATE_HIDDEN
+
+2002-09-27  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/window-action-menu.c (wnck_create_window_action_menu):
+	use stock icons, and reorder menu to match metacity
+	
+	* libwnck/xutils.c (_wnck_stock_icons_init): new function
+
+	* libwnck/Makefile.am: add stock icons
+
+2002-09-26  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in (GETTEXT_PACKAGE): Remove cs until the .po file
+	has been added.
+
+2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+
+	* configure.in: Added cs to ALL_LINGUAS.
+
+2002-09-23  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/test-wnck.c (main): add test stuff for showing desktop
+	feature
+
+	* libwnck/xutils.c (_wnck_toggle_showing_desktop): new function
+	(_wnck_activate_workspace): fix a hardcoded gdk_display, but it
+	looks like there are a lot more
+
+	* libwnck/screen.c (wnck_screen_toggle_showing_desktop):
+	new function
+	(wnck_screen_get_showing_desktop): new function
+
+	* libwnck/workspace-accessible.c: include headers to avoid
+	warnings
+	(wnck_workspace_accessible_get_size): add comment about how this 
+	is totally broken
+
+	* libwnck/pager.c: remove some unused variables
+
+	* configure.in: version to 2.1.1 and bump current/age
+
+	* libwnck/screen.c: monitor _NET_SHOWING_DESKTOP and emit a signal
+	if it changed
+
+2002-09-24  Arvind Samptur  <arvind.samptur@wipro.com>
+	* libwnck/window-action-menu.c (update_menu_state): Replace 
+	strings Shade with Roll Up and Unshade with Unroll.
+
+2002-09-17  Havoc Pennington  <hp@redhat.com>
+
 	* libwnck/window.c (update_transient_for): track a flag for
 	whether we're really transient for an application window, 
 	or just marked transient for the root window.
 	(update_state): only skip taskbar for dialogs that are 
 	really transient for an application (so standalone dialogs
 	are still on the taskbar)
+
+2002-09-17  Naba Kumar <naba@gnome.org>
+
+	* configure.in:  Added hi (Hindi) in ALL_LINGUAS
+
+2002-09-16  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: bump version to 2.1.0 for the unstable branch
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require gtk+ 2.1.0.
+
+	* libwnck/screen.c, libwnck/private.h:
+	(_wnck_screen_get_gdk_screen): impl.
+
+	* libwnck/tasklist.c:
+	(wnck_task_popup_menu), (wnck_task_button_press_event):
+	realise the menu on the correct screen.
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: LIBWNCK_CURRENT++, LIBWNCK_AGE++.
+
+2002-09-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* libwnck/pager.[ch]: (wnck_pager_set_screen): impl.
+
+	* libwnck/tasklist.[ch]: (wnck_tasklist_connect_screen),
+	(wnck_tasklist_disconnect_screen), (wnck_tasklist_set_screen):
+	implement changing the screen the tasklist operates upon.
+	(wnck_tasklist_new): use set_screen
+	(wnck_tasklist_finalize): disconnect screen.
 
 2002-09-03  Christophe Fergeau  <teuf@users.sourceforge.net>
 
