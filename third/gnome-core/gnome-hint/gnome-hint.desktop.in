@@ -1,7 +1,0 @@
-[Desktop Entry]
-_Name=Startup Hint
-_Comment=Browse the startup hints
-Exec=gnome-hint --browse-hints
-Icon=gnome-hint.png
-Terminal=false
-Type=Application
