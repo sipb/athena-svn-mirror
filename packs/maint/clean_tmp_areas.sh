@@ -5,7 +5,7 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
 #	$Author: cfields $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.5 1993-08-16 15:20:18 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.6 1996-05-09 18:23:15 cfields Exp $
 #
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
@@ -25,15 +25,25 @@ set dirs =    (	/tmp/		/usr/tmp/	/usr/spool/rwho/ \
 set timeout = (	"-atime +1"	"-atime +2"	"-mtime +3" \
 		"-mtime +3")
 
-set xdev = -xdev
-set exceptions = "! -type b ! -type c ! -type s"
+set xdev = -mount
+set exceptions = "! -type b ! -type c"
 
 switch($hosttype)
 	case sun4:
-		set exceptions = "! -name ps_data ! -type b ! -type c ! -type p"
+		set exceptions = "$exceptions ! -type p ! -name ps_data"
+		breaksw
+	case sgi:
+		set exceptions = "$exceptions ! -user root"
+#			! -type s ! -name .ps_data ! -name .cadmin*
+#			set noglob (for .cadmin*)
+		breaksw
 	case decmips:
-		set xdev = -mount
-	breaksw
+		set exceptions = "$exceptions ! -type s"
+		breaksw
+	case rsaix:
+		set exceptions = "$exceptions ! -type s"
+		set xdev = -xdev
+		breaksw
 	default:
 endsw
 
