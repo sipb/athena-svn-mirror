@@ -1,7 +1,7 @@
 /*
  * AFS quota routines
  *
- * $Id: afs.c,v 1.12 1993-02-05 19:09:28 probe Exp $
+ * $Id: afs.c,v 1.13 1993-07-25 01:25:10 probe Exp $
  */
 
 #include <stdio.h>
@@ -9,10 +9,15 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 
+#include <sys/ioctl.h>
 #include <afs/param.h>
+#include <afs/vice.h>
 #include <afs/venus.h>
 #include <afs/afsint.h>
 
+#ifdef SOLARIS
+#include <sys/ioccom.h>
+#endif
 #ifdef _IBMR2
 #include <sys/id.h>
 #endif
@@ -41,7 +46,7 @@ getafsquota(path, explicit)
     ibuf.out_size=sizeof(struct VolumeStatus);
     ibuf.in_size=0;
     ibuf.out=(caddr_t) &vs;
-    code = pioctl(path,VIOCGETVOLSTAT,&ibuf,1);
+    code = pioctl(path, VIOCGETVOLSTAT, &ibuf, 1);
     if (code) {
 	if (explicit || ((errno != EACCES) && (errno != EPERM))) {
 	    fprintf(stderr, "Error getting AFS quota: ");
