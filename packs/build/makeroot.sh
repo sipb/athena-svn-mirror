@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.10 2002-04-13 22:01:54 ghudson Exp $
+# $Id: makeroot.sh,v 1.11 2002-06-01 20:11:52 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -13,6 +13,7 @@ case `machtype` in
 linux)
   sysprefix=/afs/.dev.mit.edu/system/rhlinux
   syscontrol=control/control-${ver:-current}
+  pwconv=/usr/sbin/pwconv
 
   mkdir -p "$root/dev"
   /dev/MAKEDEV -d "$root/dev" std
@@ -43,6 +44,8 @@ linux)
   ;;
 
 sun4)
+  pwconv=/usr/sbin/pwconv
+
   # Install packages.
   for i in `cat /install/cdrom/install-local-u`; do
     echo "$i: \c"
@@ -92,6 +95,7 @@ sgi)
   instopts="-r $root -a -N -Vinstmode:normal -Vstartup_script:ignore"
   instopts="$instopts -Vdelay_idb_read:on -Voverlay_mode:silent"
   instopts="$instopts -Vskip_rqs:true -Vverbosity:0"
+  pwconv=/sbin/pwconv
 
   # Install local packages.
   for dist in $dists ; do
@@ -140,6 +144,10 @@ cp /bin/athena/tcsh "$root/bin/athena/tcsh"
 
 # The discuss build needs the discuss user to be in the passwd file.
 grep '^discuss' /etc/passwd >> $root/etc/passwd
+
+# Create the shadow password file, so programs such as passwd get
+# configured properly.
+chroot $root $pwconv
 
 # Prepare the source locker symlinks.
 mkdir -p "$root/mit"
