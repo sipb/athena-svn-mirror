@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.13 2003-07-17 20:58:20 ghudson Exp $
+# $Id: xsession,v 1.14 2003-07-24 18:52:05 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -127,12 +127,14 @@ endif
 
 # Run standard system/user startup activities
 
+set gconftool=/usr/athena/bin/gconftool-2
+
 if ( -r ~/.athena_gnome_convert_failure ) then
   # A previous attempt at converting GNOME preferences failed.  Remove
   # any GNOME 2 preferences so that the user gets the defaults.
-  gconftool-2 --recursive-unset /apps
-  gconftool-2 --recursive-unset /desktop
-  gconftool-2 --recursive-unset /system
+  $gconftool --recursive-unset /apps
+  $gconftool --recursive-unset /desktop
+  $gconftool --recursive-unset /system
   rm -rf ~/.gnome2
   rm -f ~/.athena_gnome_convert_failure
 else if ($?offer_gnome_upgrade) then
@@ -165,18 +167,18 @@ endif
 # This check can probably go away after a few months.
 if ( ! $?NOCALLS && -d ~/.gnome2 ) then
   set pnidlist=/apps/panel/profiles/default/general/panel_id_list
-  set npnids=`gconftool-2 --get-list-size $pnidlist`
+  set npnids=`$gconftool --get-list-size $pnidlist`
   if ( $npnids == 0 || $npnids == "" ) then
     echo "Detected broken panel config, reverting to defaults"
-    gconftool-2 --recursive-unset /apps/panel
+    $gconftool --recursive-unset /apps/panel
   else if ( $npnids == 1 ) then
-    set pnid=`gconftool-2 --get-list-element $pnidlist 0`
+    set pnid=`$gconftool --get-list-element $pnidlist 0`
     set pndir=/apps/panel/profiles/default/panels/$pnid
-    set pntype=`gconftool-2 --get $pndir/panel_type`
-    set pnsize=`gconftool-2 --get $pndir/panel_size`
+    set pntype=`$gconftool --get $pndir/panel_type`
+    set pnsize=`$gconftool --get $pndir/panel_size`
     if ( $pntype == menu-panel && $pnsize == panel-size-x-small ) then
       echo "Detected broken panel config, reverting to defaults"
-      gconftool-2 --recursive-unset /apps/panel
+      $gconftool --recursive-unset /apps/panel
     endif
   endif
   unset pnidlist npnids pnid pndir pntype pnsize
@@ -185,7 +187,7 @@ endif
 if ( ! $?ATHENA_DASH_INTERFACE) then
   # GNOME processes can apparently collide trying to start gconfd, so
   # spawn one before we start any in the background.
-  gconftool-2 --spawn
+  $gconftool --spawn
 
   # Run the GNOME capplets unless the user has chosen to skip them.
   if (! $?skip_capplets) then
