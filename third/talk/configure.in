@@ -10,12 +10,5 @@ AC_CHECK_SIZEOF(long, 4)
 AC_FUNC_CHECK(connect, :, [AC_CHECK_LIB(socket, socket)
 			   AC_CHECK_LIB(nsl, gethostbyname)])
 AC_CHECK_HEADERS(paths.h)
-if test -f /var/run/utmp; then
-	AC_DEFINE(GUESSED_PATH_UTMP, "/var/run/utmp")
-elif test -f /var/adm/utmp; then
-	AC_DEFINE(GUESSED_PATH_UTMP, "/var/adm/utmp")
-else
-	AC_DEFINE(GUESSED_PATH_UTMP, "/etc/utmp")
-fi
 
 AC_OUTPUT(Makefile talk/Makefile talkd/Makefile)
