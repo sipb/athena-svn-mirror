@@ -2551,14 +2551,14 @@ else
 fi
 
 
-echo $ac_n "checking for krb_recvauth in -lkrb""... $ac_c" 1>&6
-echo "configure:2556: checking for krb_recvauth in -lkrb" >&5
-ac_lib_var=`echo krb'_'krb_recvauth | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for krb_recvauth in -lkrb4""... $ac_c" 1>&6
+echo "configure:2556: checking for krb_recvauth in -lkrb4" >&5
+ac_lib_var=`echo krb4'_'krb_recvauth | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lkrb -ldes  $LIBS"
+LIBS="-lkrb4 -ldes425  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 2564 "configure"
 #include "confdefs.h"
@@ -2586,7 +2586,7 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  LIBS="$LIBS -lkrb -ldes"
+  LIBS="$LIBS -lkrb4 -ldes425"
 else
   echo "$ac_t""no" 1>&6
 fi
