@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.7 1990-12-02 13:25:44 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.8 1990-12-02 23:10:25 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/param.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <signal.h>
@@ -14,6 +15,7 @@
 #include <stdio.h>
 #include <strings.h>
 #include <ctype.h>
+#include <syslog.h>
 
 #ifdef KERBEROS
 #include <krb.h>
@@ -34,7 +36,7 @@ struct 	entry {
 };
 
 #define VERSION 	0
-
+#define SYSLOG_FACILITY LOG_LOCAL6
 
 #ifdef __STDC__
 # define        P(s) s
@@ -55,7 +57,6 @@ int acl_exact_match P((char *acl , char *principal ));
 #endif /* KERBEROS */
 
 
-
 /* system */
 int accept P((int s, struct sockaddr *addr, int *addrlen));
 int bind P((int s, struct sockaddr *name, int namelen));
@@ -65,13 +66,16 @@ int close P((int d));
 int exit P((int status));
 int free P((void *ptr));
 int fstat P((int fd, struct stat *buf));
+int getdtablesize P(());
 struct servent *getservbyname P((char *name, char *proto));
 char *index P((char *s, int c));
 char *inet_ntoa P((struct in_addr in));
+void ioctl P((int d, unsigned int request, char *argp));
 int listen P((int s, int backlog));
 off_t lseek P((int d, off_t offset, int whence));
 void *malloc P((unsigned size));
 int open P((char *path, int flags, int mode));
+void openlog P((char *ident, int logopt, int facility));
 #ifdef aix
 void perror P((char *s));
 #else
@@ -87,6 +91,7 @@ int strcmp P((char *s1, char *s2));
 char *strcpy P((char *s1, char *s2));
 int strlen P((char *s));
 char *strncpy P((char *s1, char *s2, int n));
+void syslog P((int priority, char *message, ...));
 int write P((int d, void *buf, int nbytes));
 
 /* rpd.c */
