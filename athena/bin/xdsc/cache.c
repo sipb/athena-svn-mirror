@@ -18,15 +18,17 @@
 
 #define		NUM_CACHED_FILES	5
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.3 1990-12-20 15:22:13 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/cache.c,v 1.4 1991-02-05 08:59:48 sao Exp $";
 
 extern char	*RunCommand();
-extern CommandWidget	botbuttons[MAX_BOT_BUTTONS];
+extern EntryRec		toplevelbuttons[2][MAX_BUTTONS];
 extern TextWidget	bottextW, toptextW;
 extern Boolean	debug;
 extern char	filebase[];
-extern int	whichTopScreen;
+extern int	topscreen;
 extern Widget	topW;
+
+extern char	axis[];
 
 static int	next=0, prev=0, nref=0;
 static int	pref=0, fref=0, lref=0;
@@ -99,7 +101,7 @@ Boolean	update;
 
 	sprintf (filename, "%s-%d", filebase, num);
 
-	if (update && whichTopScreen == LISTTRNS);
+	if (update && topscreen == LISTTRNS);
 		UpdateHighlightedTransaction(num);
 
 	sprintf (command, "Reading %s [%d-%d], #%d...", 
@@ -145,7 +147,7 @@ Boolean	update;
 	if ( current >  highestseen)
 		highestseen = current;
 
-	if (highestseen == last && whichTopScreen == MAIN)
+	if (highestseen == last && topscreen == MAIN)
 		RemoveLetterC();
 DONE:
 	sprintf (command, "Reading %s [%d-%d], #%d", 
@@ -287,8 +289,8 @@ HighestTransaction()
 	retval = RunCommand (command, NULL, NULL, True);
 	if ((int) retval <= 0) return (-1);
 
-	sscanf (retval, "(\"%*[^\"]\" \"%*[^\"]\" \"%*[^\"]\" %d %d %*d %*d \"%*[^\"]\" \"%*[^\"]\" %*d \"%*[^\"]\" %d",
-		&first, &last, &highestseen);
+	sscanf (retval, "(\"%*[^\"]\" \"%*[^\"]\" \"%*[^\"]\" %d %d %*d %*d \"%*[^\"]\" \"%*[^\"]\" %*d \"%[^\"]\" %d",
+		&first, &last, axis, &highestseen);
 
 	oldhighestseen = highestseen;
 			
@@ -405,58 +407,63 @@ CheckButtonSensitivity(mode)
 int mode;
 {
 	static Boolean	sensitive = True;
-	Arg		args[1];
+	Arg		args[2];
 
 	if (mode == BUTTONS_ON) sensitive = True;
 	if (mode == BUTTONS_OFF) sensitive = False;
 
-	if (next && sensitive)
+	if (next && sensitive) {
 		XtSetArg(args[0], XtNsensitive, True);
-	else
+		XtSetArg(args[1], XtNborderWidth, 1);
+	}
+	else {
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[0], args, 1);
+		XtSetArg(args[1], XtNborderWidth, 4);
+	}
+	XtSetValues ((toplevelbuttons[1][0]).button, args, 2);
 
 	if (prev && sensitive)
 		XtSetArg(args[0], XtNsensitive, True);
 	else
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[1], args, 1);
+	XtSetValues ((toplevelbuttons[1][1]).button, args, 1);
 
 	if (nref && sensitive)
 		XtSetArg(args[0], XtNsensitive, True);
 	else
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[2], args, 1);
+	XtSetValues ((toplevelbuttons[1][2]).button, args, 1);
 
 	if (pref && sensitive)
 		XtSetArg(args[0], XtNsensitive, True);
 	else
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[3], args, 1);
+	XtSetValues ((toplevelbuttons[1][3]).button, args, 1);
 
-	if (current && sensitive)
+	if (topscreen == LISTTRNS && sensitive)
 		XtSetArg(args[0], XtNsensitive, True);
 	else
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[4], args, 1);
-	XtSetValues (botbuttons[6], args, 1);
+	XtSetValues ((toplevelbuttons[0][5]).button, args, 1);
 
-	if (*currentmtglong && sensitive)
-		XtSetArg(args[0], XtNsensitive, True);
-	else
+	if (axis[0] == ' ' && axis[6] == ' ')
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[5], args, 1);
+	else
+		XtSetArg(args[0], XtNsensitive, True);
+	XtSetValues ((toplevelbuttons[1][5]).button, args, 1);
 
-	if (first && sensitive)
-		XtSetArg(args[0], XtNsensitive, True);
-	else
+	if (axis[0] == ' ')
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[7], args, 1);
+	else
+		XtSetArg(args[0], XtNsensitive, True);
+	XtSetValues ((toplevelbuttons[1][5]).nextrec->button, args, 1);
 
-	if (last && sensitive)
-		XtSetArg(args[0], XtNsensitive, True);
-	else
+	if (axis[6] == ' ')
 		XtSetArg(args[0], XtNsensitive, False);
-	XtSetValues (botbuttons[8], args, 1);
+	else
+		XtSetArg(args[0], XtNsensitive, True);
+	XtSetValues ((toplevelbuttons[1][5]).nextrec->nextrec->button, args, 1);
+
+	XtSetArg(args[0], XtNsensitive, False);
+	XtSetValues ((toplevelbuttons[1][6]).nextrec->nextrec->button, args, 1);
 }
-
