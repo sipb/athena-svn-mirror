@@ -1,7 +1,7 @@
 #
 # Makefile for uip subdirectory
 #
-# $Id: Makefile.in,v 1.5 1999-05-28 15:41:10 danw Exp $
+# $Id: Makefile.in,v 1.6 1999-09-02 14:42:21 ghudson Exp $
 #
 
 SHELL = /bin/sh
@@ -249,6 +249,8 @@ install-cmds:
 
 # install links
 install-lcmds:
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)/usr/athena/etc
 	rm -f $(DESTDIR)$(bindir)/flists
 	rm -f $(DESTDIR)$(bindir)/folders
 	rm -f $(DESTDIR)$(bindir)/prev
