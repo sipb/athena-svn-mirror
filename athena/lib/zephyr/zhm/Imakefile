@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v 1.6 1989-05-04 21:14:25 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/Imakefile,v 1.7 1989-12-18 13:19:55 jtkohl Exp $
 /**/#
 
 #if defined(DO_SYSLOG) && defined(SYSLOG_COMPAT42)
@@ -22,6 +22,13 @@ HDRS= zhm.h
 
 SRCDIR= ${SRCTOP}/zhm
 CODE= ${HDRS} ${SRCS} Imakefile
+
+/*
+ * The pathname for the pid file.
+ */
+ZHMPIDFILE=$(ETCATHDIR)/zhm.pid
+
+DEFINES=-DPIDFILE=\"$(ZHMPIDFILE)\"
 
 normal_obj_rule()
 

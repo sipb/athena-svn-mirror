@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Id: zhm.c,v 1.42 1989-10-27 10:55:13 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Id: zhm.c,v 1.43 1989-12-18 13:20:06 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -29,6 +29,10 @@ static char rcsid_hm_c[] = "$Id: zhm.c,v 1.42 1989-10-27 10:55:13 jtkohl Exp $";
 #include <hesiod.h>
 #endif HESIOD
 
+#ifndef PIDFILE
+#define	PIDFILE	"/etc/athena/zhm.pid"
+#endif /* PIDFILE */
+
 int hmdebug = 0, rebootflag = 0, errflg = 0, dieflag = 0, inetd = 0, oldpid;
 int no_server = 1, nservchang = 0, nserv = 0, nclt = 0;
 int booting = 1, timeout_type = 0, deactivated = 1;
@@ -42,7 +46,7 @@ int sig_type = 0;
 struct hostent *hp;
 char **clust_info;
 char hostname[MAXHOSTNAMELEN], loopback[4];
-char *PidFile = "/etc/athena/zhm.pid";
+char *PidFile = PIDFILE;
 
 extern int errno;
 extern char *index(), *strcpy(), *sbrk();
