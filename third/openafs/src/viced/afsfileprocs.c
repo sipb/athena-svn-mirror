@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.3 2002-12-13 22:06:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.3.2.1 2003-09-15 19:51:18 ghudson Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -268,13 +268,14 @@ static SetVolumeSync(async, avol)
 static CallPreamble(acall, activecall)
     register struct rx_call **acall;
     int activecall;
-
 {
     struct host *thost;
     struct rx_connection *tconn;
     struct client *tclient;
     int retry_flag=1;
     int code = 0;
+    char hoststr[16];
+
     tconn = rx_ConnectionOf(*acall);
     *acall = (struct rx_call *)tconn;	    /* change it! */
 
@@ -322,11 +323,13 @@ retry:
 	ViceLog(0,("BreakDelayedCallbacks FAILED for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
 	if ( MultiProbeAlternateAddress_r (thost) ) {
 	    ViceLog(0, ("MultiProbe failed to find new address for host %x.%d\n",
-			thost->host, thost->port));
-	    code = -1;
+			afs_inet_ntoa_r(thost->host, hoststr), 
+			ntohs(thost->port)));
+            code = -1;
 	} else {
-	    ViceLog(0, ("MultiProbe found new address for host %x.%d\n",
-			thost->host, thost->port));
+            ViceLog(0, ("MultiProbe found new address for host %s:%d\n",
+                       afs_inet_ntoa_r(thost->host, hoststr), 
+                       ntohs(thost->port)));
 	    if (BreakDelayedCallBacks_r(thost)) {
 		ViceLog(0,("BreakDelayedCallbacks FAILED AGAIN for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
 		code = -1;
