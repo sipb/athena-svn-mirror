@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.6 1989-01-23 10:59:15 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.7 1989-01-23 12:41:42 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -37,7 +37,10 @@
  *    no -- abort
  *    yes -- continue
  * 2. Is the file a directory?
- *    yes -- is the filesonly option set?
+ *    yes -- is it a dotfile?
+ *           yes -- abort
+ *           no -- continue
+ *        -- is the filesonly option set?
  *           yes -- is the recursive option specified?
  *                  yes -- continue
  *                  no -- abort
@@ -52,9 +55,6 @@
  *    no -- is the directoriesonly option set?
  * 	    yes -- abort
  * 	    no -- continue
- *       -- is the file a dot file?
- *          yes -- abort
- *          no -- continue
  * 3. If the file is a file, remove it.
  * 4. If the file is a directory, open it and pass each of its members
  *    (excluding . files) to delete().
@@ -178,6 +178,13 @@ int recursed;
      
      /* is the file a directory? */
      if (stat_buf.st_mode & S_IFDIR) {
+	  /* is the file a dot file? */
+	  if (is_dotfile(filename)) {
+	       if (! force)
+		    fprintf(stderr, "%s: cannot remove `.' or `..'\n",
+			    whoami);
+	       return(ERROR_MASK);
+	  }
 	  /* is the filesonly option set? */
 	  if (filesonly) {
 	       /* is the recursive option specified? */
@@ -229,17 +236,8 @@ int recursed;
 			    filename);
 	       return(ERROR_MASK);
 	  }
-	  else {
-	       /* is the file a dot file? */
-	       if (is_dotfile(filename)) {
-		    if (! force)
-			 fprintf(stderr, "%s: cannot remove `.' or `..'\n",
-				 whoami);
-		    return(ERROR_MASK);
-	       }
-	       else
-		    return(do_move(filename, stat_buf, 0));
-	  }
+	  else
+	       return(do_move(filename, stat_buf, 0));
      }
      return(0);
 }
@@ -320,6 +318,8 @@ int recursed;
      }
      for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	  if (is_dotfile(dp->d_name))
+	       continue;
+	  if (is_deleted(dp->d_name))
 	       continue;
 	  else {
 	       strcpy(newfile, append(filename, dp->d_name, !force));
@@ -488,6 +488,10 @@ char *filename;
 
 	  
 	       
-	  
-     
-	  
+int is_deleted(filename)
+char *filename;
+{
+     return(! strncmp(filename, ".#", 2));
+}
+
+    
