@@ -20,9 +20,18 @@ idl_DATA =				\
 	Bonobo_Zoomable.idl		\
 	Bonobo_Exception.idl		\
 	Bonobo_Clipboard.idl		\
+	Bonobo_Application.idl		\
 	$(NULL)
 
-EXTRA_DIST = $(idl_DATA)
+activation_idldir=$(datadir)/idl/bonobo-activation-2.0
+activation_idl_DATA =                   \
+	Bonobo_Unknown.idl              \
+	Bonobo_GenericFactory.idl       \
+	Bonobo_Activation_types.idl     \
+	Bonobo_ObjectDirectory.idl      \
+	Bonobo_ActivationContext.idl
+
+EXTRA_DIST = $(idl_DATA) $(activation_idl_DATA)
 
 orbittypelib_LTLIBRARIES = Bonobo_module.la
 orbittypelibdir = $(libdir)/orbit-2.0
@@ -34,7 +43,6 @@ IMODULE_SOURCE =	\
 
 idl_flags = \
 	-I$(top_srcdir)/idl \
-	-I $(BONOBO_ACTIVATION_IDL_DIR) \
 	-D__Bonobo_COMPILATION \
 	-D__Bonobo_Unknown_COMPILATION \
 	-D__Bonobo_GenericFactory_COMPILATION \
@@ -51,14 +59,13 @@ Bonobo_module_la_LIBADD = \
 	$(LIBBONOBO_LIBS)
 
 Bonobo_module_la_LDFLAGS = \
-	-export-dynamic -module -avoid-version
+	-export-dynamic -module -avoid-version -no-undefined
 
 $(IMODULE_SOURCE): $(idl_DATA) $(ORBIT_IDL)
 	$(ORBIT_IDL) $(idl_flags) --imodule $(top_srcdir)/idl/Bonobo.idl
 
-DONT_DIST_SOURCE = $(IMODULE_SOURCE)
+BUILT_SOURCES = $(IMODULE_SOURCE)
+CLEANFILES = $(BUILT_SOURCES)
 
 dist-hook:
-	for file in $(DONT_DIST_SOURCE) ; do \
-	    rm -f $(distdir)/$$file ; \
-	done
+	cd $(distdir); rm -f $(BUILT_SOURCES)

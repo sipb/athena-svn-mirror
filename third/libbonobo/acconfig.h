@@ -7,3 +7,7 @@
 #undef HAVE_DLADDR
 #undef ENABLE_ORBIT2
 #undef GETTEXT_PACKAGE
+#undef BONOBO_ACTIVATION_DEBUG
+
+/* Always define if getaddrinfo() is defined on the system. */
+#undef HAVE_GETADDRINFO

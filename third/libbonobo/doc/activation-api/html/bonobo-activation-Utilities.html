@@ -1,0 +1,88 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Utilities</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="up" href="api-reference.html" title="API Reference"><link rel="previous" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="next" href="bonobo-activation-Registration.html" title="Registration"><link rel="chapter" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="chapter" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="architecture.html" title="Bonobo Activation Architecture"><link rel="chapter" href="query-langage.html" title="Bonobo Activation Query Langage"><link rel="chapter" href="server-xml-reference.html" title=".server file format reference"><link rel="chapter" href="migrating.html" title="Migrating from gnorba to Bonobo-activation"><link rel="chapter" href="api-reference.html" title="API Reference"><link rel="refentry" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="refentry" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="refentry" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="refentry" href="bonobo-activation-Registration.html" title="Registration"><link rel="refentry" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="article" href="lgpl.html" title="GNU Lesser General Public License"><link rel="section" href="bonobo-activation-Utilities.html#id2703800" title="Description"><link rel="section" href="bonobo-activation-Utilities.html#id2703809" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="bonobo-activation-Query-and-Activation.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="api-reference.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Bonobo Activation API Reference Manual</th><td><a accesskey="n" href="bonobo-activation-Registration.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="bonobo-activation-Utilities"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Utilities</span></h2><p>Utilities &#8212; Random misc utilities to manipulate Bonobo_ServerInfo structures.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;bonobo-activation/bonobo-activation.h&gt;
+
+
+enum        <a href="bonobo-activation-Utilities.html#Bonobo-ActivationPropertyType">Bonobo_ActivationPropertyType</a>;
+Bonobo_ActivationProperty* <a href="bonobo-activation-Utilities.html#bonobo-server-info-prop-find">bonobo_server_info_prop_find</a>
+                                            (Bonobo_ServerInfo *server,
+                                             const char *prop_name);
+<a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> <a href="bonobo-activation-Utilities.html#bonobo-activation-info-stringify">bonobo_activation_info_stringify</a>
+                                            (const BonoboActivationInfo *actinfo);
+BonoboActivationInfo* <a href="bonobo-activation-Utilities.html#bonobo-activation-servinfo-to-actinfo">bonobo_activation_servinfo_to_actinfo</a>
+                                            (const Bonobo_ServerInfo *servinfo);
+BonoboActivationInfo* <a href="bonobo-activation-Utilities.html#bonobo-activation-id-parse">bonobo_activation_id_parse</a>
+                                            (const CORBA_char *actid);
+BonoboActivationInfo* <a href="bonobo-activation-Utilities.html#bonobo-activation-info-new">bonobo_activation_info_new</a>
+                                            (void);
+void        <a href="bonobo-activation-Utilities.html#bonobo-activation-info-free">bonobo_activation_info_free</a>     (BonoboActivationInfo *actinfo);
+const char* <a href="bonobo-activation-Utilities.html#bonobo-server-info-prop-lookup">bonobo_server_info_prop_lookup</a>  (Bonobo_ServerInfo *server,
+                                             const char *prop_name,
+                                             GSList *i18n_languages);
+typedef     <a href="bonobo-activation-Utilities.html#Bonobo-ServerInfoList">Bonobo_ServerInfoList</a>;
+
+</pre></div><div class="refsect1" lang="en"><a name="id2703800"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2703809"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2703815"></a><h3><a name="Bonobo-ActivationPropertyType"></a>enum Bonobo_ActivationPropertyType</h3><a class="indexterm" name="id2703827"></a><pre class="programlisting">   typedef enum
+   {
+      Bonobo_ACTIVATION_P_STRING,
+      Bonobo_ACTIVATION_P_NUMBER,
+      Bonobo_ACTIVATION_P_BOOLEAN,
+      Bonobo_ACTIVATION_P_STRINGV
+   } Bonobo_ActivationPropertyType;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2703845"></a><h3><a name="bonobo-server-info-prop-find"></a>bonobo_server_info_prop_find ()</h3><a class="indexterm" name="id2703856"></a><pre class="programlisting">Bonobo_ActivationProperty* bonobo_server_info_prop_find
+                                            (Bonobo_ServerInfo *server,
+                                             const char *prop_name);</pre><p>
+Tries to find a server with the given property. Returns
+NULL if not found.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>server</tt></i> :</span></td><td> the server where to seek the data.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>prop_name</tt></i> :</span></td><td> the data to seek in the server.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a pointer to the <tt class="literal">Bonobo_ActivationProperty</tt> structure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2703949"></a><h3><a name="bonobo-activation-info-stringify"></a>bonobo_activation_info_stringify ()</h3><a class="indexterm" name="id2703961"></a><pre class="programlisting"><a href="bonobo-activation-Query-and-Activation.html#Bonobo-ActivationID">Bonobo_ActivationID</a> bonobo_activation_info_stringify
+                                            (const BonoboActivationInfo *actinfo);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_activation_info_stringify</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Serializes <i class="parameter"><tt>actinfo</tt></i> into a char *. Should be freed with <tt class="function">g_free()</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>actinfo</tt></i> :</span></td><td> the <tt class="literal">BonoboActivationInfo</tt> to flatten.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the serialized version of <i class="parameter"><tt>actinfo</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704065"></a><h3><a name="bonobo-activation-servinfo-to-actinfo"></a>bonobo_activation_servinfo_to_actinfo ()</h3><a class="indexterm" name="id2704078"></a><pre class="programlisting">BonoboActivationInfo* bonobo_activation_servinfo_to_actinfo
+                                            (const Bonobo_ServerInfo *servinfo);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_activation_servinfo_to_actinfo</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function converts a <tt class="literal">Bonobo_ServerInfo</tt> structure to a
+<tt class="literal">BonoboActivationInfo</tt> structure. The returned structure should
+be freed with bonobo_activation_info_free.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>servinfo</tt></i> :</span></td><td> An array of <tt class="literal">Bonobo_ServerInfo</tt> structures.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated initialized <tt class="literal">BonoboActivationInfo</tt> structure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704180"></a><h3><a name="bonobo-activation-id-parse"></a>bonobo_activation_id_parse ()</h3><a class="indexterm" name="id2704192"></a><pre class="programlisting">BonoboActivationInfo* bonobo_activation_id_parse
+                                            (const CORBA_char *actid);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_activation_id_parse</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Returns a pointer to a newly allocated <tt class="literal">BonoboActivationInfo</tt>
+structure (to be freed with bonobo_activation_info_free) initialized 
+with the data of <i class="parameter"><tt>actid</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>actid</tt></i> :</span></td><td> the activation id structure.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <tt class="literal">BonoboActivationInfo</tt> corresponding to <i class="parameter"><tt>actid</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704292"></a><h3><a name="bonobo-activation-info-new"></a>bonobo_activation_info_new ()</h3><a class="indexterm" name="id2704303"></a><pre class="programlisting">BonoboActivationInfo* bonobo_activation_info_new
+                                            (void);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_activation_info_new</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function allocates a <tt class="literal">BonoboActicationInfo</tt> structure and returns it.
+Should NOT be called from outside of this code.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated non-initialized <tt class="literal">BonoboActicationInfo</tt> structure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704371"></a><h3><a name="bonobo-activation-info-free"></a>bonobo_activation_info_free ()</h3><a class="indexterm" name="id2704382"></a><pre class="programlisting">void        bonobo_activation_info_free     (BonoboActivationInfo *actinfo);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">bonobo_activation_info_free</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Frees <i class="parameter"><tt>actinfo</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>actinfo</tt></i> :</span></td><td> the <tt class="literal">BonoboActivationInfo</tt> structure to free.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704457"></a><h3><a name="bonobo-server-info-prop-lookup"></a>bonobo_server_info_prop_lookup ()</h3><a class="indexterm" name="id2704469"></a><pre class="programlisting">const char* bonobo_server_info_prop_lookup  (Bonobo_ServerInfo *server,
+                                             const char *prop_name,
+                                             GSList *i18n_languages);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>server</tt></i> :</span></td><td> 
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>prop_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i18n_languages</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2704573"></a><h3><a name="Bonobo-ServerInfoList"></a>Bonobo_ServerInfoList</h3><a class="indexterm" name="id2704584"></a><pre class="programlisting">   typedef CORBA_sequence_Bonobo_ServerInfo Bonobo_ServerInfoList;
+</pre><p>
+
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="bonobo-activation-Query-and-Activation.html"><b>&lt;&lt; Query and Activation</b></a></td><td align="right"><a accesskey="n" href="bonobo-activation-Registration.html"><b>Registration &gt;&gt;</b></a></td></tr></table></body></html>

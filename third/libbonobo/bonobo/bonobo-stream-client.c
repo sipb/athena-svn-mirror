@@ -116,6 +116,7 @@ bonobo_stream_client_write_string (const Bonobo_Stream stream, const char *str,
  * written out to the stream.
  * @ev: A CORBA_Environment pointer.
  * @fmt: The printf format string.
+ * @Varargs: format arguments
  *
  * Processes @fmt and the arguments which follow it to produce a
  * string.  Writes this string out to @stream.  This function will not

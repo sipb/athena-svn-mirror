@@ -20,7 +20,7 @@ Bonobo object factory with OAF, this can be done like this:
     <programlisting>
 BonoboGenericFactory *factory;
 
-factory = bonobo_generic_factory_new_multi (
+factory = bonobo_generic_factory_new (
 	"OAFIID:GNOME_MyApp_myId",
 	my_factory_function, NULL);
 bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
@@ -61,52 +61,24 @@ the Object requestor.
 </para>
 
 <para>
-The generic factory works in two modes, multi and plain,
-it is recommended that the multi mode be used. Also, there
-is a macro that can be used for simple components to remove
-the burden of writing the main function and getting the
-initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
-</para>
+There is a macro that can be used for simple components to remove the
+burden of writing the main function and getting the initialization
+correct, see #BONOBO_ACTIVATION_FACTORY.  </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
 
-<!-- ##### MACRO BONOBO_GENERIC_FACTORY_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboGenericFactoryPrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### STRUCT BonoboGenericFactory ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### USER_FUNCTION BonoboFactoryCallback ##### -->
 <para>
-
+Type of function that is called when it's time for the factory to create a new instance.
 </para>
 
-@factory: 
-@component_id: 
-@closure: 
-@Returns: 
-
-
-<!-- ##### TYPEDEF BonoboGenericFactoryClass ##### -->
-<para>
-
-</para>
+@factory: the factory that invoked this callback
+@component_id: OAFIID of the component that should be activated
+@closure: user data
+@Returns: the newly created #BonoboObject
 
 
 <!-- ##### FUNCTION bonobo_generic_factory_new ##### -->
@@ -118,12 +90,6 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 @factory_cb: 
 @user_data: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@oaf_iid: 
-@factory: 
-@component_id: 
-@data: 
-@goad_id: 
 
 
 <!-- ##### FUNCTION bonobo_generic_factory_new_closure ##### -->
@@ -143,16 +109,10 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 
 @factory: 
 @act_iid: 
-@factory_cb: 
+@factory_closure: 
 @Returns: 
 <!-- # Unused Parameters # -->
-@oaf_iid: 
-@c_factory: 
-@corba_factory: 
-@user_data: 
-@component_id: 
-@data: 
-@goad_id: 
+@factory_cb: 
 
 
 <!-- ##### FUNCTION bonobo_generic_factory_construct_noreg ##### -->
@@ -162,6 +122,8 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 
 @factory: 
 @act_iid: 
+@factory_closure: 
+<!-- # Unused Parameters # -->
 @factory_cb: 
 
 
@@ -176,20 +138,32 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 @Returns: 
 
 
-<!-- ##### MACRO BONOBO_FACTORY_INIT ##### -->
+<!-- ##### FUNCTION bonobo_generic_factory_main_timeout ##### -->
 <para>
 
 </para>
 
-@descr: 
-@version: 
-@argcp: 
-@argv: 
+@act_iid: 
+@factory_cb: 
+@user_data: 
+@quit_timeout: 
+@Returns: 
+
+
+<!-- ##### MACRO BONOBO_FACTORY_INIT ##### -->
+<para>
+Macro that expands to the code need to initialize an exe factory.  Should be placed at the beginning of the main() function.
+</para>
+
+@descr: factory description string
+@version: version string
+@argcp: pointer to main()'s argc
+@argv: main()'s argv
 
 
 <!-- ##### MACRO BONOBO_OAF_FACTORY ##### -->
 <para>
-
+Deprecated; see BONOBO_ACTIVATION_FACTORY().
 </para>
 
 @oafiid: 
@@ -197,13 +171,11 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 @version: 
 @callback: 
 @data: 
-<!-- # Unused Parameters # -->
-@fn: 
 
 
 <!-- ##### MACRO BONOBO_OAF_FACTORY_MULTI ##### -->
 <para>
-
+Deprecated; see BONOBO_ACTIVATION_FACTORY().
 </para>
 
 @oafiid: 
@@ -211,19 +183,32 @@ initialization correct, see #BONOBO_OAF_FACTORY_MULTI.
 @version: 
 @callback: 
 @data: 
-<!-- # Unused Parameters # -->
-@fn: 
 
 
 <!-- ##### MACRO BONOBO_ACTIVATION_FACTORY ##### -->
-<para>
 
+<para>
+    Macro that includes all boiler-plate code necessary to create an exe
+    type factory, including a main() function and a generic factory.
 </para>
 
-@oafiid: 
-@descr: 
-@version: 
-@callback: 
-@data: 
+@oafiid: The factory's OAFIID
+@descr: Description of the factory
+@version: Version string of the factory program
+@callback: Function (#BonoboFactoryCallback) responsible for intantiating components
+@data: Additional data to be passed to the callback
+
+
+<!-- ##### MACRO BONOBO_ACTIVATION_FACTORY_TIMEOUT ##### -->
+<para>
+    Like BONOBO_ACTIVATION_FACTORY(), but has an extra @quit_timeout argument.
+</para>
+
+@oafiid: The factory's OAFIID
+@descr: Description of the factory
+@version: Version string of the factory program
+@callback: Function (#BonoboFactoryCallback) responsible for intantiating components
+@data: Additional data to be passed to the callback
+@quit_timeout: Ammount of time to wait (in milliseconds) before deciding to quit the factory.  A larger value prevents frequent respawning of a new factory process when there are many consecutive one-time requests, so that your factory appears to start faster after the first time.
 
 

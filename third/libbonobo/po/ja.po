@@ -1,19 +1,228 @@
 # libbonobo ja.po
-# Copyright (C) 1999-2002 Free Software Foundation, Inc.
+# Copyright (C) 1999-2004 Free Software Foundation, Inc.
 # Yukihiro Nakai <nacai@iname.com>, 1999.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 1999-2002.
-# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003
+# Takeshi Aihana <aihana@muc.biglobe.ne.jp>, 2000,2003-2004.
+# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo CVS-20030311\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-03-11 17:35+0900\n"
-"Last-Translator: KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>\n"
-"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"Project-Id-Version: libbonobo HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-03-08 23:47+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "どの子プロセスでサーバが登録されたか分かりませんでした"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "活性化 ID が正しくありません"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr ".server ファイルを読み込むディレクトリ"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "DIRECTORY"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"ActivationContextとして振る舞う (デフォルトでは ObjectDirectory としてのみ)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "IOR を書き込むファイル・ディスクリプタ"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "評価する問い合わせの式"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "式"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "CORBA CosNaming サービス"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "ネーム・サービス"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "通知サービス"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "活性化の通知サービス"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+"リモート・プロセスの shlib オブジェクトの活性化は未だ実装されていません"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Bonobo Activatoin 設定ファイルの読み込みに失敗しました (妥当なものか確認して"
+"下さい : %s)"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "サーバ '%s' を活性化する際に競合発生"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "NULL の iid は有効ではありません"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid %s の型が NULL です"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid %s の場所が NULL です"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "不正な文字 '%c' が iid '%s' の中にあります"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "プロパティ '%s' には値がありません"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "おかしな型式の XML ドキュメント %s を解析できませんでした"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "ディレクトリ %s の試行中"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"子プロセスがエラーメッセージを出力しませんでした (不明なエラーが発生しました)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "子プロセスからの読み込みに失敗: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "新規プロセスを fork できませんでした"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "子プロセスがシグナル %u (%s) を受け取りました"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "不明な未終了エラー (状態は %u です)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "bonobo-activation が %s のプロセスグループの設定に失敗: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "%s の実行に失敗: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+"ロケールに対するエイリアスのレベルが多すぎます (検出でループしている可能性あ"
+"り)"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "IOR の出力先のファイル・ディスクリプタ"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "IID の活性化"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "OAF でサーバ登録の禁止"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Bonobo 活性化オプション"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "'%s' の g_module_open に失敗: '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "'%s' でシンボル Bonobo_Plugin_info を発見できません"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "ファクトリ '%s' が '%s' に NIL を返しました"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib '%s' は '%s' を含んでいませんでした"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "名称"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "アプリケーション固有の名前"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "カスタム CORBA POA"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -25,7 +234,7 @@ msgstr "I/O エラー"
 
 #: bonobo/bonobo-exception.c:160
 msgid "Invalid argument value"
-msgstr "おかしな引数の値です"
+msgstr "無効な引数の値です"
 
 #: bonobo/bonobo-exception.c:164
 msgid "Object not found"
@@ -45,11 +254,11 @@ msgstr "ストリームヘアクセスする許可がありません"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "サポートされてないストリームアクションが試みられました"
+msgstr "サポートされてないストリームのアクションが試みられました"
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "ストリームでI/Oエラー"
+msgstr "ストリームで I/O エラー"
 
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
@@ -69,7 +278,7 @@ msgstr "ストレージへの操作が許可されていません"
 
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "サポートされてないストレージアクションが試みられました"
+msgstr "サポートされてないストレージのアクションが試みられました"
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
@@ -89,7 +298,7 @@ msgstr "ユーザインターフェイスを記述した XML が壊れていま�
 
 #: bonobo/bonobo-exception.c:213
 msgid "invalid path to XML user interface element"
-msgstr "XML のユーザーインターフェイス要素へのパスがおかしいです"
+msgstr "XML のユーザーインターフェイス要素へのパスが無効です"
 
 #: bonobo/bonobo-exception.c:216
 msgid "the requested UI attribute didn't exist"
@@ -117,7 +326,7 @@ msgstr "プロパティが見つかりません"
 
 #: bonobo/bonobo-exception.c:236
 msgid "property has invalid type"
-msgstr "プロパティがおかしな型です"
+msgstr "プロパティが無効な型です"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
@@ -129,7 +338,7 @@ msgstr "設定データベースのバックエンドでエラー"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
-msgstr "モニカのインターフェイスが見付かりません"
+msgstr "モニカのインタフェースが見つかりません"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
@@ -145,17 +354,17 @@ msgstr "モニカに不明なモニカ・プリフィックスがあります"
 
 #: bonobo/bonobo-exception.c:279
 msgid "Error checking error; no exception"
-msgstr "エラーチェックでエラー: 例外ではありません"
+msgstr "エラーをチェックする際にエラー: 例外は発生していません"
 
 #: bonobo/bonobo-exception.c:288
 msgid "General activation error with no description"
 msgstr "一般的な活性化エラー(説明なし)"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Bonoboを初期化できません"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
 msgstr "'%s' の解決、あるいは拡張に失敗しました"
@@ -163,6 +372,16 @@ msgstr "'%s' の解決、あるいは拡張に失敗しました"
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "オブジェクトの活性化に失敗しました"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "'%s' 活性化での例外"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "'%s' の活性化に失敗"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -174,7 +393,7 @@ msgstr "ORB IRO 操作モニカ"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:3
 msgid "Standard Moniker factory"
-msgstr "標準モニカファクトリ"
+msgstr "標準モニカのファクトリ"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:4
 msgid "generic Oaf activation moniker"
@@ -186,7 +405,7 @@ msgstr "Oaf 問い合わせ汎用モニカ"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr "ファクトリ 'new' 汎用モニカ"
+msgstr "汎用 'new' モニカのファクトリ"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:7
 msgid "generic item moniker"
@@ -196,23 +415,13 @@ msgstr "アイテム汎用モニカ"
 msgid "stream MonikerExtender"
 msgstr "ストリーム MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:53
-#, c-format
-msgid "Exception activating '%s'"
-msgstr "'%s' の活性化で例外発生"
-
-#: monikers/bonobo-moniker-oaf.c:62
-#, c-format
-msgid "Failed to activate '%s'"
-msgstr "'%s' の活性化に失敗"
-
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr "Bonobo Echo サーバ ファクトリ"
+msgstr "Bonobo Echo サーバ・ファクトリ"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr "Bonobo Echo サーバ サンプル プログラム"
+msgstr "Bonobo Echo サーバ・サンプル・プログラム"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
 msgid "Echo component"
@@ -220,7 +429,7 @@ msgstr "Echo コンポーネント"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr "Echo コンポーネント ファクトリ"
+msgstr "Echo コンポーネント・ファクトリ"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
@@ -235,346 +444,57 @@ msgstr "サンプルの Echo コンポーネントのインスタンスを作成
 msgid "An exception occured '%s'"
 msgstr "例外発生 '%s'"
 
-#~ msgid "Name"
-#~ msgstr "名称"
-
-#~ msgid "Description"
-#~ msgstr "説明"
-
-#~ msgid "The User canceled the save"
-#~ msgstr "ユーザが保存を取り消しました"
-
-#~ msgid "path to menu or toolbar item not found"
-#~ msgstr "メニューあるいはツールバーへのpathが見つかりません"
-
-#~ msgid "internal menu or toolbar exception"
-#~ msgstr "メニューまたはツールバーア内部での例外"
-
-#~ msgid "Select an object"
-#~ msgstr "オブジェクトを選択"
-
-#~ msgid "Can not bind object server to client_site"
-#~ msgstr "object_serverをclient_siteにバインドできません"
-
-#~ msgid "Could not launch Embeddable."
-#~ msgstr "Embeddable を起動できません。"
-
-#~ msgid "Can not bonobo_init"
-#~ msgstr "bonobo_init()の実行に失敗です"
-
-#~ msgid "Could not launch bonobo object."
-#~ msgstr "bonoboオブジェクトを起動できません。"
-
-#~ msgid "_Add a new text/plain component"
-#~ msgstr "新規 text/plainコンポーネントを追加(_A)"
-
-#~ msgid "_Send progressive data to an existing text/plain component"
-#~ msgstr "プログレッシブデータを既存のtext/plainコンポーネントに送る(_S)"
-
-#~ msgid "Add a new _view to an existing text/plain component"
-#~ msgstr "既存のtext/plainコンポーネントにビューを追加(_V)"
-
-#~ msgid "_Add a new simple paint component"
-#~ msgstr "シンプルなペイントコンポーネントを追加(_A)"
-
-#~ msgid "Add a new _view to an existing paint component"
-#~ msgstr "既存のペイントコンポーネントに新しいビューを追加(_V)"
-
-#~ msgid "_Add a new application/x-png component"
-#~ msgstr "application/x-png コンポーネントを追加(_A)"
-
-#~ msgid "Add a new _view to an existing application/x-png component"
-#~ msgstr "既存の application/x-png コンポーネントに新しいビューを追加(_V)"
-
-#~ msgid "_Add a new application/x-pdf component"
-#~ msgstr "新規の application/x-pdf コンポーネントを追加(_A)"
-
-#~ msgid "Add a new Gnumeric instance through monikers"
-#~ msgstr "モニカ経由で新しい Gnumeric のインスタンスを追加"
-
-#~ msgid "Add a new _object"
-#~ msgstr "新規オブジェクトを追加(_O)"
-
-#~ msgid "Add a new Sample-Canvas item on an AA canvas"
-#~ msgstr "AA Canvas に Sample-Canvas アイテムを追加"
-
-#~ msgid "Add a new Sample-Canvas item on a regular canvas"
-#~ msgstr "通常の Canvas に Sample-Canvas アイテムを追加"
-
-#~ msgid "_text/plain"
-#~ msgstr "_text/plain"
-
-#~ msgid "_image/x-png"
-#~ msgstr "_image/x-png"
-
-#~ msgid "_app/x-pdf"
-#~ msgstr "_app/x-pdf"
-
-#~ msgid "paint sample"
-#~ msgstr "ペイントのサンプル"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Canvas-based"
-#~ msgstr "Canvas-based"
-
-#~ msgid ""
-#~ "This program is part of the GNOME project for Linux. Gnome Shell comes "
-#~ "with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome "
-#~ "to redistribute it under the conditions of the GNU General Public "
-#~ "License. Please report bugs to dietmar@maurer-it.com"
-#~ msgstr ""
-#~ "このプログラムは Linux の GNOME プロジェクトの一部です。 Gnome Shell は無"
-#~ "保証です。これはフリーソフトウェアで、 GNU一般公有許諾書の下に再配布するこ"
-#~ "とは歓迎されます。 バグレポートは dietmar@maurer-it.com まで。"
-
-#~ msgid "fatal CORBA exception!  Shutting down..."
-#~ msgstr "致命的な CORBA 例外です!終了します..."
-
-#~ msgid "Could not initialize Bonobo!"
-#~ msgstr "Bonoboを初期化できません!"
-
-#~ msgid ""
-#~ "An exception occured while trying to save data from the component with "
-#~ "PersistFile"
-#~ msgstr ""
-#~ "コンポーネントからデータをPersistFileで保存しようとして例外が発生しました"
-
-#~ msgid ""
-#~ "An exception occured while trying to load data into the component with "
-#~ "PersistFile"
-#~ msgstr ""
-#~ "コンポーネントにデータをPersistFileで読みこもうとして例外が発生しました"
-
-#~ msgid "Could not save file %s"
-#~ msgstr "ファイル %s に保存できません"
-
-#~ msgid ""
-#~ "An exception occured while trying to save data from the component with "
-#~ "PersistStream"
-#~ msgstr ""
-#~ "コンポーネントからデータをPersistStreamで保存しようといて例外が発生しまし"
-#~ "た"
-
-#~ msgid "Could not open file %s"
-#~ msgstr "ファイル %s を開けません"
-
-#~ msgid ""
-#~ "An exception occured while trying to load data into the component with "
-#~ "PersistStream"
-#~ msgstr ""
-#~ "コンポーネントにデータをPersistStreamで読みこもうとして例外が発生しました"
-
-#~ msgid "Open"
-#~ msgstr "開く"
-
-#~ msgid "Save As"
-#~ msgstr "名前を付けて保存"
-
-#~ msgid "Help on GNOME"
-#~ msgstr "GNOMEのヘルプ"
-
-#~ msgid "Spelling"
-#~ msgstr "スペルチェック"
-
-#~ msgid "Calendar"
-#~ msgstr "カレンダー"
-
-#~ msgid "Split Window"
-#~ msgstr "ウインドウを分割"
-
-#~ msgid "One Window"
-#~ msgstr "ウインドウを一つに"
-
-#~ msgid "Zoom..."
-#~ msgstr "拡大..."
-
-#~ msgid "Kill Current Buffer"
-#~ msgstr "カレントバッファを削除"
-
-#~ msgid "_Buffers"
-#~ msgstr "バッファ(_B)"
-
-#~ msgid "_Tools"
-#~ msgstr "ツール(_T)"
-
-#~ msgid "Save"
-#~ msgstr "保存"
-
-#~ msgid "Select drawing color..."
-#~ msgstr "描画色を選択..."
-
-#~ msgid "Set the current drawing color"
-#~ msgstr "カレントの描画色にセット"
-
-#~ msgid "White"
-#~ msgstr "白"
-
-#~ msgid "Set the current drawing color to white"
-#~ msgstr "カレントの描画色を白にセット"
-
-#~ msgid "Red"
-#~ msgstr "赤"
-
-#~ msgid "Set the current drawing color to red"
-#~ msgstr "カレントの描画色を赤にセット"
-
-#~ msgid "Green"
-#~ msgstr "緑"
-
-#~ msgid "Set the current drawing color to green"
-#~ msgstr "カレントの描画色を緑にセット"
-
-#~ msgid "_Clear Image"
-#~ msgstr "画像を消去(_C)"
-
-#~ msgid "Clear the image to black"
-#~ msgstr "画像を黒で消去する"
-
-#~ msgid "_Clear"
-#~ msgstr "消去(_C)"
-
-#~ msgid "Clear the calculator and reset it"
-#~ msgstr "計算機をクリアしリセットする"
-
-#~ msgid "Calculator"
-#~ msgstr "計算機"
-
-#~ msgid "Registration browser"
-#~ msgstr "登録ブラウザ"
-
-#~ msgid "Name service browser"
-#~ msgstr "ネームサービスブラウザ"
-
-#~ msgid "IDL browser"
-#~ msgstr "IDLブラウザ"
-
-#~ msgid "BonoBrowser"
-#~ msgstr "BonoBrowser"
-
-#~ msgid "file selection dialog"
-#~ msgstr "ファイル選択ダイアログ"
-
-#~ msgid "Open IDL File..."
-#~ msgstr "IDLファイルを開く..."
-
-#~ msgid "identifier"
-#~ msgstr "識別子"
-
-#~ msgid "kind"
-#~ msgstr "種類"
-
-#~ msgid "Refresh"
-#~ msgstr "最新の情報に更新"
-
-#~ msgid "server id"
-#~ msgstr "サーバID"
-
-#~ msgid "location info"
-#~ msgstr "場所"
-
-#~ msgid "repo ids"
-#~ msgstr "repo id"
-
-#~ msgid "Register new object..."
-#~ msgstr "新しいオブジェクトを登録..."
-
-#~ msgid "Interface"
-#~ msgstr "インターフェイス"
-
-#~ msgid "Activation Type"
-#~ msgstr "活性化の方法"
-
-#~ msgid "Please fill in the creation type."
-#~ msgstr "生成の種類を入力してください"
-
-#~ msgid "Please fill in the creation method."
-#~ msgstr "作成方法を入力してください"
-
-#~ msgid "The server_id is empty."
-#~ msgstr "server_id が空です"
-
-#~ msgid "Can't open file %s for writing: %s"
-#~ msgstr "%s を書き出しのために開けません: %s"
-
-#~ msgid "The file %s already exists!"
-#~ msgstr "ファイル %s は既に存在します"
-
-#~ msgid "Local"
-#~ msgstr "ローカル"
-
-#~ msgid "New"
-#~ msgstr "新規"
-
-#~ msgid "Add"
-#~ msgstr "追加"
-
-#~ msgid "factory"
-#~ msgstr "ファクトリ(factory)"
-
-#~ msgid "exe"
-#~ msgstr "実行ファイル(exe)"
-
-#~ msgid "shlib"
-#~ msgstr "共有ライブラリ(shlib)"
-
-#~ msgid "Browse"
-#~ msgstr "参照"
-
-#~ msgid "New Object"
-#~ msgstr "新しいオブジェクト"
-
-#~ msgid "Interface(s)"
-#~ msgstr "インターフェイス"
-
-#~ msgid "Server ID"
-#~ msgstr "サーバID"
-
-#~ msgid "Creation method"
-#~ msgstr "作成方法"
-
-#~ msgid "Description:"
-#~ msgstr "説明:"
-
-#~ msgid "Register this object"
-#~ msgstr "このオブジェクトを登録"
-
-#~ msgid "OK"
-#~ msgstr "はい"
-
-#~ msgid "_Add a new Embeddable component"
-#~ msgstr "新しい埋め込みコンポーネントを追加(_A)"
-
-#~ msgid "Print Pre_view"
-#~ msgstr "印刷のプレビュー(_e)"
-
-#~ msgid "The component now claims that it doesn't support PersistFile!"
-#~ msgstr "指定されたコンポーネントは PersistFile をサポートしていません"
-
-#~ msgid "Choose a file to load into the component using PersistFile"
-#~ msgstr "PersistFile でコンポーネントに読み込むファイルを選択してください"
-
-#~ msgid "The component now claims that it doesn't support PersistStream!"
-#~ msgstr "指定されたコンポーネントは PersistStream をサポートしていません"
-
-#~ msgid "Choose a file to load into the component"
-#~ msgstr "コンポーネントに読み込むファイルを選択してください"
-
-#~ msgid "New View"
-#~ msgstr "新しいビュー"
-
-#~ msgid "Load with PersistFile"
-#~ msgstr "PersistFile で読み込み"
-
-#~ msgid "Load with PersistStream"
-#~ msgstr "PersistStream で読み込み"
-
-#~ msgid "Could not launch Embeddable %s!"
-#~ msgstr "Embeddable %s を起動できません!"
-
-#~ msgid "Select an embeddable Bonobo component to add"
-#~ msgstr "追加したい埋め込み Bonobo コンポーネントを選択してください"
-
-#~ msgid "Container encountered a fatal CORBA exception!  Shutting down..."
-#~ msgstr "コンテナは致命的なCORBA例外に遭遇しました!終了します..."
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "設定ファイルを保存できませんでした\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "'%s' への書き込み権限を持っているか確認して下さい\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "設定ファイルの書き出しに成功しました\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"設定ファイル:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s は設定ファイルの中に既に存在しています\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "正しく構造化された設定ファイルがありません\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Bonobo activation 設定ファイルの内容:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "設定ファイルから削除するディレクトリ"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "ディレクトリのパス"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "設定ファイルへ追加するディレクトリ"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "設定ファイル中のディレクトリの表示"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "設定ファイルのパスを表示"

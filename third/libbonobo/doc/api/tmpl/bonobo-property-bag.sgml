@@ -20,7 +20,7 @@ construction time are called, and the code therein must
 supply the property. Similarly, when a property changes
 value inside your object you need to notify the property
 bag's listeners that it has changed with a call to
-<function>bonobo_property_bag_notify_listeners</function>.
+<function>bonobo_event_source_notify_listeners_full</function>.
 </para>
 
 <para>
@@ -126,9 +126,11 @@ signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
 
 	BONOBO_ARG_SET_STRING (arg, gtk_clock_get_color (clock));
 
-	bonobo_property_bag_notify_listeners (
-		pb, "colour", arg, NULL);
-
+	bonobo_event_source_notify_listeners_full (pb->es, 
+					           "Bonobo/Property",
+					           "change",
+						   "colour",
+					           arg, NULL);
 	bonobo_arg_release (arg);
 }
 ...
@@ -144,39 +146,13 @@ signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
 
 </para>
 
-<!-- ##### MACRO BONOBO_PROPERTY_READABLE ##### -->
+<!-- ##### STRUCT BonoboPropertyBagClass ##### -->
 <para>
 
 </para>
 
-
-
-<!-- ##### MACRO BONOBO_PROPERTY_WRITEABLE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_PROPERTY_NO_LISTENING ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_PROPERTY_NO_AUTONOTIFY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboPropertyBagPrivate ##### -->
-<para>
-
-</para>
-
+@parent: 
+@epv: 
 
 <!-- ##### STRUCT BonoboPropertyBag ##### -->
 <para>
@@ -187,61 +163,79 @@ signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
 @priv: 
 @es: 
 
+<!-- ##### MACRO BONOBO_PROPERTY_READABLE ##### -->
+<para>
+    If this flag is set, the property allows consulting its value.
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_WRITEABLE ##### -->
+<para>
+    If this flag is set, the property supports modification of its value.
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_WRITABLE ##### -->
+<para>
+    Misspelling of #BONOBO_PROPERTY_WRITEABLE.
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_NO_LISTENING ##### -->
+<para>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_PROPERTY_NO_AUTONOTIFY ##### -->
+<para>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</para>
+
+
+
 <!-- ##### STRUCT BonoboProperty ##### -->
 <para>
-
+Structure that holds information about a property in a #BonoboPropertyBag.
 </para>
 
-@name: 
-@idx: 
-@type: 
-@default_value: 
-@doctitle: 
-@docstring: 
-@flags: 
-@priv: 
-
-<!-- ##### STRUCT BonoboPropertyPrivate ##### -->
-<para>
-
-</para>
-
+@name: the canonic name of the property
+@idx: unique numeric identifier of the property within the property bag
+@type: type of value contained by this property
+@default_value: the default value
+@doctitle: documentation string title
+@docstring: documentation string
+@flags: property flags (read/write, etc.)
+@priv: implementation private data
 
 <!-- ##### USER_FUNCTION BonoboPropertyGetFn ##### -->
 <para>
-
+Property getter function.
 </para>
 
-@bag: 
-@arg: 
-@arg_id: 
-@ev: 
-@user_data: 
+@bag: the property bag
+@arg: output parameter; the caller must place here the property value
+@arg_id: unique numeric identifier of the property within the property bag
+@ev: the relevant CORBA environment
+@user_data: user data
 
 
 <!-- ##### USER_FUNCTION BonoboPropertySetFn ##### -->
 <para>
-
+Property setter function.
 </para>
 
-@bag: 
-@arg: 
-@arg_id: 
-@ev: 
-@user_data: 
-
-
-<!-- ##### TYPEDEF BonoboPropertyBagClass ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO BONOBO_PROPERTY_BAG_TYPE ##### -->
-<para>
-
-</para>
-
+@bag: the property bag
+@arg: the new property value to be set
+@arg_id: unique numeric identifier of the property within the property bag
+@ev: the relevant CORBA environment
+@user_data: user data
 
 
 <!-- ##### FUNCTION bonobo_property_bag_new ##### -->
@@ -275,9 +269,10 @@ signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
 
 @get_prop: 
 @set_prop: 
-@event_source: 
+@es: 
 @Returns: 
 <!-- # Unused Parameters # -->
+@event_source: 
 @user_data: 
 
 
@@ -289,9 +284,10 @@ signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
 @pb: 
 @get_prop: 
 @set_prop: 
-@event_source: 
+@es: 
 @Returns: 
 <!-- # Unused Parameters # -->
+@event_source: 
 @user_data: 
 
 

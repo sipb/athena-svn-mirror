@@ -1,46 +1,1820 @@
-2003-06-12  Michael Meeks  <michael@ximian.com>
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
-	* Version 2.2.3
+	* configure.in: Version 2.8.0.
 
-2003-06-10  Dan Winship  <danw@ximian.com>
+2004-08-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
-	* bonobo/bonobo-property-bag-client.h: Oops, fix prototype too
+	* bonobo/bonobo-generic-factory.c
+	(bonobo_generic_factory_new_generic)
+	(last_unref_cb): Ignore "last-unref" if it happens during the
+	object creation callback and an object is actually created in the
+	end.  Fixes bug #139140 (Can't get bonobo objects in _init method
+	of bonobo object)
+
+2004-08-23  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* Makefile.am (DISTCLEANFILES): Only clean intltool-* in make
+	distclean, not make clean, since there is no rule to regenerate
+	them from the makefile.  Fixes #144541.
+	
+2004-08-23  Tommi Komulainen  <tommi.komulainen@iki.fi>
+
+	* doc/api/tmpl/bonobo-application.sgml
+	(bonobo_application_register_message): Add a longer description
+	and some examples.
+
+	* bonobo/bonobo-application.c
+	(bonobo_application_register_message): Remove example program from
+	inline documentation (moved to the gtk-doc template file).
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-13  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-object.c (bonobo_object_finalize_servant): Call
+	object's poa_fini_fn.  Patch by Michael Meeks.  Fixes #118117.
+
+2004-08-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-activation/Makefile.am (TESTS_ENVIRONMENT): Set
+	BONOBO_ACTIVATION_DEBUG, since some tests use relative server
+	paths, thus fail if the b-a-s changes dir on startup.
+
+	* activation-server/activation-server-main.c (main): Declare
+	debug_output_env as const, to suppress compiler warning.
+	(main): Unless env. var. BONOBO_ACTIVATION_DEBUG is set,
+	chdir("/") before entering main loop.
+
+	* bonobo/bonobo-running-context.c
+	(bonobo_running_context_trace_objects_T): Add
+	ri->emitted_last_unref = FALSE, missing in debug version of
+	addObject, but present in the non-debug version.
+	(bonobo_running_context_trace_objects_T): Complement the
+	information of the number of alive objects with a list of the
+	interfaces of the alive objects.
+
+2004-08-11  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* activation-server/object-directory-corba.c
+	(od_register_runtime_server_info): We should be returning
+	new_serverinfo instead of old_serverinfo.
+
+2004-08-11  Alexander Larsson  <alexl@redhat.com>
+
+	* bonobo-activation/bonobo-activation-get-language-list.c (read_aliases):
+	Import some fixes from gnome-vfs copy.
+
+2004-08-11  Alexander Larsson  <alexl@redhat.com>
+
+	* bonobo-activation/bonobo-activation-get-language-list.c (read_aliases):
+	Use less memory for alias tables.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* activation-server/client.c: (add_load_path), (remove_load_path),
+	(register_activate_server), (do_query_server_info),
+	(do_activating): Correctly use ANSI argument list.
+	* bonobo-activation/bonobo-activation-base-service.c:
+	(bonobo_activation_registration_iterate): Same..
+	* bonobo-activation/bonobo-activation-fork-server.c:
+	(bonobo_activation_server_by_forking): Use NULL in place of 0
+	* bonobo/bonobo-debug.c: (bonobo_debug_init): ANSI arguments
+	* bonobo/bonobo-generic-factory.c:
+	(bonobo_generic_factory_destroy): NULL vs 0
+	* bonobo/bonobo-item-handler.c: (bonobo_item_handler_finalize):
+	* bonobo/bonobo-listener.c: (bonobo_listener_finalize),
+	(bonobo_listener_init): NULL vs 0
+	* bonobo/bonobo-persist-client.c: (bonobo_object_save_to_stream),
+	(bonobo_object_from_stream): NULL vs 0
+	* bonobo/bonobo-persist.c: (bonobo_persist_finalize): NULL vs 0
+	* bonobo/bonobo-storage-memory.c: (bonobo_storage_mem_create):
+	NULL vs 0.
+	* configure.in: Added nb to ALL_LINGUAS.
+
+2004-08-10  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-activation/Makefile.am (TESTS_ENVIRONMENT): Add
+	$(top_srcdir)/activation-server to BONOBO_ACTIVATION_PATH, so that
+	event source test doesn't fail.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_make_registration_id): g_message instead of
+	g_warning.
+
+2004-08-09  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-activation/Makefile.am: Don't install $(serverfiles).
+	They are not required to be installed for make check. Fixes #145056.
+
+2004-08-08  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* idl/Bonobo_Control.idl: Prepend 'action' parameter name with
+	underscore to avoid clash with type Action, in
+	PropertyControl::notifyAction(). Fixes #118078.
+	
+	* idl/Bonobo_Property.idl: Escape PropertyBag::ReadOnly and
+	ConfigDatabase::DBFlags::DEFAULT with a leading underscore because
+	of clashes with IDL keywords. Fixes #118078.
+
+	* bonobo-activation/Makefile.am (INCLUDES): Define
+	G_LOG_DOMAIN=Bonobo-Activation.
+
+	* bonobo-activation/bonobo-activation-activate.c,
+	* bonobo-activation/bonobo-activation-base-service.c,
+	* bonobo-activation/bonobo-activation-client.c,
+	* bonobo-activation/bonobo-activation-fork-server.c,
+	* bonobo-activation/bonobo-activation-register.c: Turn g_warnings
+	that contain only informational debug messages into g_message, so
+	that we can abort with --g-fatal-warnings in the real strange
+	stituations.
+	
+	* bonobo-activation/bonobo-activation-register.c
+	(registration_result_to_string): Give a g_warning on invalid code
+	instead of aborting.  This is an error, but not fatal by any means.
+
+2004-08-07  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-activation/Makefile.am: Don't install $(serverfiles).
+	They are not required to be installed for make check.
+
+2004-08-04  Greg Hudson  <hudson@mit.edu>
+
+	* bonobo-activation/bonobo-activation-fork-server.c
+	(bonobo_activation_server_by_forking): reset signal mask
+	removing SIGCHLD block for forked child.
+
+2004-07-21  Antonio Xu  <antonio.xu@sun.com>
+
+	* activation-server/object-directory-corba.c
+	(remove_active_server): add judgement to make sure the count
+	of active server is right.
+
+2004-07-09  Tommi Komulainen  <tommi.komulainen@iki.fi>
+
+	* bonobo/bonobo-app-client.c
+	(bonobo_app_client_get_msgdescs): fix array bound
+	checking & Fix API docs.
+
+2004-06-26  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Added "ne" Nepali in ALL_LINGUAS
+
+2004-05-29  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.6.2
+
+2004-05-28  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/activation-server-main.c
+	(main): turn output debug on if we use
+	--register-server
+
+	* bonobo-activation/bonobo-activation-init.c
+	(bonobo_activation_hostname_get): always return
+	localhost - so we don't barf when the hostname
+	changes (DHCP). Slightly bad, but a) this method is
+	deprecated anyway, b) only fools would use it
+	to return the current hostname and c) localhost is
+	often the local host name anyway.
+
+2004-05-26  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.6.1
+
+2004-05-26  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* activation-server/object-directroy.h : Add
+	od_finished_internal_registration () helper function.
+	* activation-server/object-directroy-corba.c
+	(add_active_server): Don't add our internal servers count
+	to n_active_servers.
+	* activation-server/activation-server-main.c (main):  Use
+	od_finished_internal_registration () to indicate that we
+	are done with our internal server registeration.
+	Fixes #139500
+	
+2004-05-14  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-init.c:
+	move sys/types.h include upwards for bsd.
+
+2004-05-06  Michael Wilson  <Michael.Wilson@bull.net>
+
+	* bonobo/bonobo-application.c (message_desc_copy) 
+	(_gtype_to_typecode): bin bogus gnuism: __inline__
+
+2004-05-05  Michael Wilson  <Michael.Wilson@bull.net>
+
+	* bonobo/bonobo-application.c: bin bogus trailing
+	',' and ';' - fix AIX build.
+
+2004-04-16  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-15  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* activation-server/object-directory-corba.c
+	(od_register_runtime_server_info): Do not ever try to update a
+	ServerInfo if there's already another ServerInfo registered for
+	the given IID.  This both improves performance and avoids a
+	possible memory error that I have been unable to track down after
+	much debugging.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-06  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* ChangeLog: converted to UTF-8
+
+2004-03-30  Adam Weinberger <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-17  Tony Arnold  <tonyarnold@users.sourceforge.net>
+
+	* bonobo-activation/bonobo-activation-client.c: ugly hack
+	for Darwin's whacked-out 'environ.
+
+2004-03-16  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-15  Julio M. Merino Vidal  <jmmv@menta.net>
+
+	* bonobo-activation/bonobo-activation-get-language-list.c
+	(unalias_lang): read aliases from the prefix first (NetBSD)
+
+2004-03-08  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.6.0
+
+2004-03-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* bonobo-activation/Makefile.am, bonobo-activation/bonobo-activation-2.0-uninstalled.pc.in:
+	* bonobo/Makefile.am, bonobo/libbonobo-2.0-uninstalled.pc.in, configure.in:
+	Add uninstalled pkg-config files, so that we can link the library without
+	needing to install it.
+
+2004-02-07  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-03  Tomasz Kłoczko <kloczek@pld.org.pl>
+
+	* configure.in: Trival cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are substed
+	  by default.
+
+2004-02-02  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.4
+
+2004-02-02  David Hawthorne  <david.hawthorne@sun.com>
+
+	* autogen.sh: require automake 1.7
+
+2004-02-01  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-app-client.c,
+	* bonobo/bonobo-application.c, 
+	* doc/api/libbonobo-docs.sgml, 
+	* doc/api/libbonobo-sections.txt, 
+	* doc/api/tmpl/bonobo-application.sgml, 
+	* doc/api/tmpl/bonobo-app-client.sgml: Initial
+	BonoboApplication/BonoboAppClient documentation.  Only
+	introductory text is missing.
+
+	* configure.in: Explicitly require GLib >= 2.3.2.
+
+	* tests/test-uniqapp.c (message_quit_cb): Quit after a timeout, so
+	that remote BonoboAppClient has time to unref our
+	BonoboApplication reference.
+
+	* bonobo/bonobo-application.c, bonobo/bonobo-application.h:
+	s/BONOBO_TYPE_APPLICATION_ARGV/G_TYPE_STRV/ (new type available
+	since glib 2.3.2).
+
+	* bonobo/bonobo-app-client.c (bonobo_app_client_finalize):
+	release_unref() the app_server remote object.
+
+	* bonobo/bonobo-application.c
+	(bonobo_application_register_unique): Ref() the application server
+	object returned by b-a-s. Loop a few times trying to register as
+	server, for as long as the ref() operation raises an exception.
+	It should be noted that this situation is very unlikely to happen,
+	though.
+
+2004-01-30  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext): only
+	be cautious about displaying if not in debugging mode,
+	fix failure to compile.
+
+2004-01-27  Rodrigo Moya <rodrigo@ximian.com>
+
+	* activation-server/object-directory-corba.c
+	(object_directory_class_init): removed repeated line.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext): display warning
+	message if there's an exception.
+
+2004-01-26  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/activation-server-main.c
+	(build_src_dir): re-order compile-time prefix so it
+	doesn't screw people (ta. Chris, Dave et. al.).
+
+2004-01-21  Anders Carlsson  <andersca@gnome.org>
+
+	* bonobo-activation/bonobo-activation-init.c:
+	(bonobo_activation_preinit):
+	Fix translation of program arguments. 
+	(#106549, patch by Hidetoshi Tajima).
+
+2004-01-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.3
+
+2004-01-15  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/activation-server-main.c (main): 
+	beef up the --register-server case for debugging.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_timeout_reg_check): add env. check for
+	BONOBO_ACTIVATION_NO_TIMEOUT to disable the timeout.
+
+2004-01-12  Michael Terry  <mterry@fastmail.fm>
+
+	* activation-server/Makefile.am: Define G_LOG_DOMAIN.
+
+	* activation-server/activation-server-main.c (log_handler): New
+	function to handle g_log family calls which sends the message to
+	syslog.  Inspired by Havoc Pennington's GEdit debug code.
+	(redirect_output): Change to use new output_debug global setting.
+	(main): Setup syslog and g_log handler.  Initialize output_debug
+	based on environment variable BONOBO_ACTIVATION_DEBUG_OUTPUT.  Parts
+	of bug 131045.
+
+	* activation-server/object-directory-corba.c
+	(bonobo_object_directory_reload): Fix a debug output to use g_log.
+
+	* activation-server/object-directory-load.c (parse_oaf_server_attrs),
+	(parse_oaf_attribute), (od_load_context), (od_load_directory): Fix up
+	some output calls to use g_log family correctly.
+
+2004-01-14  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/generic-factory.c (generic_factory_cb): take some
+	additional precautions against possible reentrancy.
+
+	* tests/test-generic-factory.sh: unset
+	BONOBO_ACTIVATION_DEBUG_OUTPUT env var to suppress b-a-s errors,
+	instead of filtering the factory output through grep.
+
+2004-01-14  Albert Chin-A-Young  <china@thewrittenword.com>
+
+	* bonobo/bonobo-moniker-util.c (async_activation_cb) 
+	(bonobo_moniker_resolve_async): fix for AIX.
+
+2004-01-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.2
+
+2004-01-09  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(query_cache_lookup): fix undefined 'active' issue.
+
+2004-01-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-property-bag.c
+	(flags_gparam_to_bonobo): fix logic bug, thanks
+	to Dave Jones
+
+2004-01-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: require a decent/recent ORBit2.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext),
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_activate_from_id),
+	(bonobo_activation_activate): check for BAD_OPERATION not
+	NO_IMPLEMENT for backwards compatibility #129841, thanks
+	Crispin.
+
+2004-01-06  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* activation-server/object-directory-load.c (parse_oaf_attribute)
+	(od_EndElement): Allocate all serverinfo members with CORBA typed
+	allocators, so that we can use Bonobo_ServerInfo__freekids to free
+	the serverinfo.
+	(bonobo_server_info_load): Set servers->_maximum equal to
+	servers->_length, so that ORBit_sequence_append works correctly.
+	Removed FIXME comment, since it is already fixed.
+	
+	* activation-server/object-directory-corba.c (od_dump_list): Use
+	-> instead of . to dereference od->attr_servers pointer.
+	(update_registry): CORBA_free old od->attr_servers before creating
+	new one with CORBA dynamic allocation.
+	(impl_Bonobo_ObjectDirectory__get_servers): Dereference
+	od->attr_servers pointer.
+	(od_register_runtime_server_info): Avoid calling
+	update_registry(od, TRUE), which rescans/parses all XML .server
+	files.  Instead, just add/replace new serverinfo in
+	od->attr_servers, od->attr_runtime_servers, and od->by_iid, then
+	notify clients the serverinfo list has changed.
+	(impl_Bonobo_ObjectDirectory_addClientEnv): Use
+	ORBit_small_listen_for_broken instead of (deprecated)
+	ORBit_small_get_connection.
+
+	* activation-server/activation-context-corba.c (ac_update_list):
+	Make a deep copy of the Bonobo_ServerInfoList, instead of keeping
+	a pointer to it.
+
+	* activation-server/object-directory.h (struct _ObjectDirectory):
+	Change attr_servers to a pointer to structure instead of a direct
+	structure, since we need to dynamically allocate it now (in order
+	to be able to use ORBit_sequence_append).
+
+2004-01-04  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* doc/activation-api/server-xml-reference.sgml: l10n fix (see also
+	Bug #122798).
+
+2004-01-01  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* activation-server/object-directory-corba.c (client_cnx_broken)
+	(impl_Bonobo_ObjectDirectory_addClientEnv): Free client
+	environment when client disconnects.
+
+2003-12-31  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-app-client.c (bonobo_app_client_new_instance): Add
+	optional CORBA_Environment parameter, for better error handling.
+	(bonobo_app_client_msg_send): Add CORBA_Environment; Declare a
+	mandatory GType argument, for better compile-time checking, since
+	the function needs at least one GType.
+	(bonobo_app_client_msg_send_valist): idem.
+	(bonobo_app_client_msg_send_argv): idem.
+	(bonobo_app_client_new_instance): Add CORBA_Environment.
+
+	* bonobo/bonobo-application.c
+	(bonobo_application_register_unique): now returns
+	Bonobo_RegistrationResult, receives serverinfo raw description and
+	client interface is returned in an output parameter.
+	(bonobo_application_create_serverinfo): New convenience method to
+	build a XML server description for the app, including a list of
+	cared-for environment variables.
+
+	* bonobo/bonobo-application.h, bonobo/bonobo-app-client.h,
+	* tests/test-uniqapp.c: Update to API changes.
+
+2003-12-25  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-marshal.list, bonobo/bonobo-application.c
+	(bonobo_application_class_init): Changed new-instance signal argv
+	type to BONOBO_TYPE_APPLICATION_ARGV instead of G_TYPE_POINTER, to
+	make it easiear to wrap in language bindings.
+
+	* bonobo/bonobo-application.h, bonobo/bonobo-application.c: Define
+	a BONOBO_TYPE_APPLICATION_ARGV boxed type for a NULL-terminated
+	string array, gchar**.
+
+	* bonobo/bonobo-application.c
+	(bonobo_application_new_instance): Create temporary
+	NULL-terminated string array to pass as signal argument.
+
+	* tests/test-uniqapp.c, bonobo/bonobo-marshal.list: Use the double
+	type instead of float, for interoperability with python.
+
+2003-12-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-uniqapp.c (message_cb, main): Add a string argument
+	to the test message.
+
+	* bonobo/bonobo-arg.c (bonobo_arg_from_gvalue_alloc): Add missing
+	initialization of arg->_type and arg->_value for the G_TYPE_STRING case.
+
+2003-12-18  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* activation-server/object-directory-corba.c
+	(od_merge_client_environment): Make the 'server' parameter const.
+	(impl_Bonobo_ObjectDirectory_register_new_full): Register
+	ServerInfo from description before merging environments, since
+	merging requires the ServerInfo in the first place.
+	(od_merge_client_environment): Tolerate NULL ServerInfo.
+
+2003-12-09  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-client.c
+	(bonobo_activation_register_client): switch to using
+	environ instead - with our own extern for Solaris.
+
+2003-12-08  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.1
+
+	* activation-server/activation-context-corba.c
+	(impl_Bonobo_ActivationContext__get_servers): prune.
+
+2003-12-08  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_query): fix daft snafu.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext):
+	register the full version.
+
+	* bonobo-activation/bonobo-activation-client.c
+	(bonobo_activation_client_get): export internally.
+	(bonobo_activation_register_client): pass the environment.
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_activate_from_id),
+	(bonobo_activation_activate): use new APIs and fallback
+	on exception.
+	(setup_methods): update.
+	(bonobo_activation_activate_from_id_async),
+	(bonobo_activation_activate_async): pass client - no
+	fallbacks though (yet).
+
+	* activation-server/object-directory-corba.c
+	(object_directory_init): upd.
+	(od_merge_client_environment): impl.
+	(impl_Bonobo_ObjectDirectory_activate): add client handle
+	(impl_Bonobo_ObjectDirectory_register_new_full): split/add
+	(impl_Bonobo_ObjectDirectory_register_new),
+	(impl_Bonobo_ObjectDirectory_activate): update.
+	(od_register_runtime_server_info): return the right value.
+	(impl_Bonobo_ObjectDirectory_addClientEnv): add envs.
+	(object_directory_finalize): cleanup envs.
+
+	* activation-server/object-directory-activate.c
+	(od_server_activate_factory): propagate client context.
+
+	* activation-server/client.c (do_activating): do a
+	'Full' activation.
+
+	* activation-server/activation-context-corba.c
+	(activation_context_class_init): expand vtable.
+	(impl_Bonobo_ActivationContext_activateMatchingFull),
+	(impl_Bonobo_ActivationContext_activateFromAidFull): split/add
+	(impl_Bonobo_ActivationContext_activateMatching),
+	(impl_Bonobo_ActivationContext_activateFromAid): update.
+
+2003-12-09  Shmyrev  <nshmyrev@yandex.ru>
+
+	* activation-server/activation-server-main.c (main):
+	create / register the event source.
+
+	* activation-server/object-directory-corba.c
+	(impl_Bonobo_ObjectDirectory_register_new),
+	(impl_Bonobo_ObjectDirectory_unregister): emit
+	notifications.
+
+	* tests/test-activation/Makefile.am: use libbonobo
+	
+	* tests/test-activation/bonobo-activation-test.c (main):
+	add activation notification tests.
+
+	* activation-server/Bonobo_CosNaming_NamingContext.server.in.in:
+	describe the activation event source.
+
+2003-12-08  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(query_cache_lookup): grok for _active, don't use
+	the cache if we're querying on live state.
+	(bonobo_activation_query): don't insert into the
+	cache if _active used.
+
+2003-12-07  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-application.c, bonobo/bonobo-application.h
+	(bonobo_application_register_message_v): new function, like
+	bonobo_application_register_message_va, but takes a vector of
+	GType's instead of va_list, useful for language bindings.
+	(bonobo_application_register_message_va): Calls
+	bonobo_application_register_message_v after collecting arguments.
+
+	* bonobo/bonobo-app-client.c, bonobo/bonobo-app-client.h
+	(bonobo_app_client_msg_send_argv): New message sending function
+	that receives a GValue* vector.  This is mainly for language
+	bindings.
+	(bonobo_app_client_msg_send_valist): Now calls
+	bonobo_app_client_msg_send_argv after collecting values.
+
+2003-12-01  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo-activation/bonobo-activation-client.c
+	(impl_Bonobo_ActivationClient_getVersion):
+	implement Bonobo::ActivationClient::getVersion().
+
+	* activation-server/activation-context-corba.c
+	(impl_Bonobo_ActivationContext_getVersion)
+	(activation_context_class_init):
+	implement Bonobo::ActivationContext::getVersion().
+	
+	* idl/Bonobo_ActivationContext.idl: Added getVersion() method to
+	both ActivationClient and ActivationContext.
+
+2003-11-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-application.c
+	(bonobo_application_register_unique): Build a <oaf_info> XML
+	fragment to pass as description of the server being registered.
+
+	* activation-server/test-performance.c (test_server_info_load):
+	Pass new required parameter to bonobo_server_info_load.
+
+	* activation-server/object-directory.h: New attribute
+	attr_runtime_servers, for servers without .server file, completely
+	defined at run-time.
+
+	* activation-server/object-directory-corba.c (update_registry):
+	Pass in new 'runtime_servers' argument to bonobo_server_info_load.
+	(od_register_runtime_server_info): new function to register new
+	ServerInfo from XML string description.
+	(impl_Bonobo_ObjectDirectory_register_new): Call
+	od_register_runtime_server_info, instead of directly doing
+	hashtable lookup to register ServerInfo from description and at
+	the same time find out if ServerInfo is available (description
+	could be empty).
+	(object_directory_init): Initialize runtime_servers array here.
+
+	* activation-server/server.h: Declare
+	bonobo_parse_server_info_memory; update signature of
+	bonobo_server_info_load.
+
+	* activation-server/object-directory-load.c
+	(bonobo_server_info_load): Add argument 'runtime_servers'; Append
+	elements from runtime_servers to list of servers.
+	(od_load_context): common code from file and string parsing
+	functions.
+	(od_load_file): moved most call to od_load_context; call it here.
+	(bonobo_parse_server_info_memory): like od_load_file, but parses a
+	memory string instead of a file.
+
+2003-11-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-app-client.c, bonobo/bonobo-application.c:
+	s/bonobo_arg_from_gvalue_copy/bonobo_arg_from_gvalue_alloc/
+	s/bonobo_arg_to_gvalue_copy/bonobo_arg_to_gvalue_alloc/
+
+	* bonobo/bonobo-arg.h, bonobo/bonobo-arg.c: Rename
+	bonobo_arg_(to|from)_gvalue_copy to
+	bonobo_arg_(to|from)_gvalue_alloc, in order to confuse less
+	programmers.
+
+2003-11-17  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-marshal.list: Add a few required marshalers.
+
+	* idl/Makefile.am (idl_DATA): Add Bonobo_Application.idl.
+
+	* bonobo/Makefile.am: Add bonobo-application.h and bonobo-application.c
+
+	* tests/test-uniqapp.c: BonoboApplication test program.
+
+	* tests/Makefile.am (check_PROGRAMS): Add BonoboApplication test.
+
+	* bonobo/bonobo-main.c (bonobo_init_full): Call bonobo_arg_init here.
+
+	* bonobo/bonobo-arg.c (bonobo_arg_to_gvalue_copy): like
+	bonobo_arg_to_gvalue, but initializes/allocates return value.
+	(bonobo_arg_from_gvalue_copy): like bonobo_arg_from_gvalue, but
+	initializes/allocates return value.
+	(__bonobo_arg_from_CORBA_ANY, __TC_CORBA_any_to_gvalue): specific
+	functions to convert to/from CORBA_any.
+	(bonobo_arg_register_from_gvalue_converter)
+	(bonobo_arg_register_to_gvalue_converter): argument convertion
+	registration API.
+	(bonobo_arg_init): Function that needs to be called upon bonobo
+	initialization to setup argument converters.
+
+	* bonobo/bonobo-arg.h: declare new argument conversion functions.
+
+	* bonobo/bonobo-app-client.c, bonobo/bonobo-app-client.h:
+	BonoboAppClient -- client interface to BonoboApplication.
+
+	* bonobo/bonobo-application.c, bonobo/bonobo-application.h:
+	BonoboApplication initial implementation.
+
+	* idl/Bonobo.idl: Include Bonobo_Application.idl.
+
+	* idl/Bonobo_Application.idl: IDL Interface for GEP 12 Bonobo
+	Unique Application.
+
+2003-11-10  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* bonobo/bonobo-main.c (bonobo_main_level): Implement.
+
+	* tests/test-main-loop.c, tests/Makefile.am: Test the above.
+
+	* doc/api/libbonobo-sections.txt: Document it.
+
+2003-10-31  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.4.2
+
+2003-11-03  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-base-service.c
+	(bonobo_activation_service_get): print out the exception
+	if build with debugging.
+
+	* tests/test-moniker.c (main): activate before
+	doing misc. calls.
+
+	* activation-server/activation-server-main.c
+	(main): activate the POA manager before we call
+	in-proc methods that can generate transient errors.
+
+2003-10-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_init_activation_env): add XAUTHORITY
+	to the list of uniqueness keys - causing grief for
+	many: #124707
+
+2003-10-31  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-context.c (bonobo_context_shutdown): check
+	that people didn't shut down the ORB before we got called.
+
+2003-10-29  Sebastien Bacher  <seb128@debian.org>
+
+	* utils/bonobo-slay.in: Add --help support, so 'bonobo-slay --help'
+	doesn't slay the processes.
+	Add a '-i' option to ask before slaying.	
+
+2003-10-25  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-main.c (bonobo_poa_get_threadedv): Add support for
+	ORBIT_THREAD_HINT_ON_CONTEXT.
+
+2003-10-10  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.4.1
+
+2003-10-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-item-handler.c:
+	(bonobo_item_handler_finalize): don't leak the get_object
+	closure - we only freed it if the enum_object closure
+	wasn't NULL. Nailed down using valgrind info from Kjartan.
+
+2003-10-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-generic-factory.c: include
+	bonobo-debug.h; thanks to Paolo Maggi.
+
+2003-09-28  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-09-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-generic-factory.c
+	(bonobo_generic_factory_construct): If the env.var BONOBO_DEBUG
+	includes 'lifecycle' and bonobo is configured with --enable-debug,
+	then give a warning when registration fails saying why.
+
+2003-09-23  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/Makefile.am (EXTRA_DIST): Added Test_Generic_Factory.server.
+
+	* tests/test-generic-factory.c (timeout2, run_tests): Use
+	bonobo_activation_query() to activate the server instead of
+	bonobo_get_object(), since during make distcheck the OAFIID moniker
+	is not installed yet when the tests are run.
+
+	* bonobo/bonobo-arg.c (MAKE_FROM_GVALUE, MAKE_TO_GVALUE): Revert
+	the changes of 2003-04-22, since they introduce memory leaks.  It
+	turns out I misunderstood the API.
+
+2003-09-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* bonobo/bonobo-running-context.c:
+	(bonobo_running_context_trace_objects_T): Fix compiler warnings.
+
+2003-09-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/Makefile.am (EXTRA_DIST): Removed non-existent file
+	clean-warnings.sed.
+
+	* doc/activation-api/tutorial.sgml: In the section "The need for a
+	replacement" we should be talking about replacing gnorba, not
+	bonobo activation.
+
+2003-08-28  Michael Meeks  <michael@ximian.com>
+
+	* tests/models/generic-factory.output: bin the 
+	duff stuff from here too.
+
+	* tests/test-generic-factory.sh: add a funky
+	sed script to bin the duplicated / uninteresting
+	bits.
+
+	* tests/models/Makefile.am: add.
+	* tests/Makefile.am (SUBDIRS): upd.
+	* configure.in: add tests/models/Makefile -
+	we wern't distributing the test output.
+
+2003-08-26  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.4.0
+
+	* activation-server/object-directory-corba.c
+	(remove_active_server): don't spew a warning.
+
+2003-08-22  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in:  Added "is" to ALL_LINGUAS.
+	
+2003-08-10  Chris Toshok  <toshok@ximian.com>
+
+	* bonobo-activation/bonobo-activation-base-service.c
+	(bonobo_activation_internal_service_get_extended): fix typo -
+	UNLOCK instead of LOCK.
+
+2003-08-04  Christophe Fergeau  <teuf@gnome.org>
+
+	* doc/activation-api/query-langage.sgml:
+	* doc/api/tmpl/bonobo-generic-factory.sgml:
+	* doc/api/tmpl/bonobo-property-bag.sgml: fixed small inaccuracies
+	  in the doc
+
+2003-08-04  Steve Chaplin  <stevech1097@yahoo.com.au>
+
+	* bonobo-activation/Makefile.am: use AM_LDFLAGS.
+
+2003-07-31  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.6
+	
+	* configure.in: require ORBit2 >= 2.7.5 for the is_a fix.
+
+	* bonobo/bonobo-foreign-object.c
+	(bonobo_foreign_object_new): add the CORBA_Object_is_a
+	check back in.
+
+	* bonobo/bonobo-object.c (do_corba_setup_T):
+	move inheritance trap here, where we have a valid
+	object reference.
+
+2003-07-30  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-object.c (bonobo_object_instance_init):
+	add an inheritance trap.
+
+2003-07-26  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/faq.xml: Added link to the C language mapping spec.
+
+2003-07-17  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-activation/Makefile.am (TESTS_ENVIRONMENT): Define
+	BONOBO_ACTIVATION_PATH here instead, dependent on $(srcdir).
+
+	* tests/test-activation/test.sh (BONOBO_ACTIVATION_PATH): Don't
+	define here.
+
+	* tests/test-activation/Makefile.am: s/noinst_PROGRAMS/check_PROGRAMS/
+
+	* tests/Makefile.am: s/noinst_SCRIPTS/check_SCRIPTS/;
+	s/noinst_PROGRAMS/check_PROGRAMS/; Add check_SCRIPTS to
+	EXTRA_DIST.
+
+2003-07-17  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-fork-server.c
+	(bonobo_activation_server_by_forking): fix leak thanks
+	to Morten.
+
+2003-07-17  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/Makefile.am (TESTS_ENVIRONMENT): Define MODELS_DIR...
+
+	* tests/test-generic-factory.sh: ... and use it here.
+
+	* tests/test-generic-factory.sh (BONOBO_ACTIVATION_PATH): Don't
+	define it here.
+
+	* tests/Makefile.am (noinst_PROGRAMS): Added generic-factory.
+	(TESTS_ENVIRONMENT): Define BONOBO_ACTIVATION_PATH here, to make
+	it dependent on srcdir.
+
+2003-07-15  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-generic-factory.sh: Set TMPDIR to a private
+	directory, to force a private b-a-s.
+
+	* tests/models/generic-factory.output: Reference model changed a bit.
+
+	* tests/Makefile.am: Added back a simplified version of the
+	generic factory test.
+
+	* tests/Test_Generic_Factory.server,
+	* tests/test-generic-factory.sh: added.
+	
+	* tests/Test_Generic_Factory.server.in,
+	* tests/test-generic-factory.sh.in: removed.
+
+2003-07-15  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.5
+
+	* tests/test-activation/Makefile.am,
+	* activation-server/Makefile.am,
+	* bonobo/Makefile.am,
+	* idl/Makefile.am,
+	* Makefile.am: clean up misc. mess new autotools
+	doesn't like.
+
+	* tests/Makefile.am: disable test-generic-foo*
+
+2003-07-13  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-object.c (bonobo_object_finalize_internal_T): Call
+	bonobo_running_context_remove_object_T if it is foreign object,
+	since bonobo_object_corba_deactivate_T isn't called in such case.
+
+	* bonobo/bonobo-foreign-object.c (bonobo_foreign_object_new): Call
+	bonobo_running_context_add_object_T() here, since do_corba_setup()
+	is never called for foreign objects.
+	(bonobo_foreign_object_new): Instantiate with g_object_new instead
+	of g_type_create_instance, otherwise bonobo_object_constructor
+	never gets called and the object isn't completely initialized.
+
+	* bonobo/bonobo-generic-factory.c (startup_timeout)
+	(last_unref_timeout): Clear timeout handle IDs before
+	returning FALSE from the callbacks.
+
+2003-07-09  Antonio Xu <antonio.xu@sun.com>
+
+	* activation-server/client.c: (do_activating): Add the output
+	of Activation ID.
+	(main): Add the output of Query spec.
+
+2003-07-08  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-activation/Makefile.am: disable
+	persistantly failing async tests - bad library
+	location issue rather than anything serious I
+	hope.
+
+	* configure.in: add popt check / POPT_LIBS.
+
+	* tests/test-activation/Makefile.am,
+	* activation-server/Makefile.am,
+	* utils/Makefile.am: link explicitely to popt,
+	thanks to Damien Carbery <damien.carbery@sun.com>
+
+2003-07-04  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Version 2.3.4
+
+2003-06-24  Michael Meeks  <michael@ximian.com>
+
+	* test/test-activation/Makefile.am: resolve linking snafu
+	with bonobo-activation-run-query
+
+	* test/test-activation/test.sh: remove export A=b bash-ism
+
+2003-06-16  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-06-12  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* bonobo/bonobo-main.c: (bonobo_poa_new_from):
+	* bonobo/bonobo-main.h: don't use C++ keyword.
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.3
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* idl/Bonobo_Canvas.idl: use the Gdk::WindowId instead
+	of a long window_id; upgrading the deprecated interface /
+	add more padding.
+
+2003-06-10  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-generic-factory.c
+	(bonobo_generic_factory_destroy): Cancel any pending timeouts,
+	just in case.
+
+2003-06-10  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-property-bag-client.c
+	(bonobo_pbclient_set_boolean): un-roll & sync.
+	with prototype.
 
 2003-06-09  Dan Winship  <danw@ximian.com>
 
 	* bonobo/bonobo-property-bag-client.c
-	(bonobo_pbclient_set_boolean): another gboolean vs CORBA_boolean
-	bug.
+	(bonobo_pbclient_set_boolean): another gboolean
+	vs CORBA_boolean bug.
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.2
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* tests/Makefile.am (EXTRA_DIST): fix.
+
+	* bonobo/bonobo-running-context.c (impl_Bonobo_RunningContext_removeKey) 
+	Rename several methods to _T suffix.
+	(check_empty_T): don't hold the lock over event emissions.
+	Add a slew of guards.
+
+	* bonobo/bonobo-object.c (bonobo_object_init): bin it.
+	(bonobo_object_instance_init, bonobo_object_finalize_internal):
+	hold the guard on total_aggregates arithmetic.
+	(bonobo_object_bag_get_ref, bonobo_object_bag_remove) 
+	(bag_collect_ref_list_cb, bonobo_object_bag_list_ref) 
+	(bag_collect_key_list_cb, bonobo_object_bag_destroy) 
+	(bonobo_object_bag_cleanup_T): impl.
+	(bonobo_object_trace_refs, bonobo_object_ref) 
+	(bonobo_object_unref): hold guards over ref/unref etc.
+	(bonobo_object_ref_T): impl.
+
+	* bonobo/bonobo-main.c (bonobo_init_full): create _bonobo_lock.
+
+	* bonobo/bonobo-shutdown.h: rename to
+	* bonobo/bonobo-private.h: this to better reflect it's role.
+
+2003-06-09  Rodrigo Moya <rodrigo@ximian.com>
+
+	* doc/activation-api/*.sgml: replaced references to OAF
+	with "Bonobo Activation".
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* idl/Bonobo_Activation_types.idl: make 'unset' a flags
+	field instead; just as efficient and more expandable.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(Bonobo_ActivationEnvValue_copy, Bonobo_ActivationEnvValue_set):
+	switch to new unset scheme with flag.
+
+	* bonobo-activation/bonobo-activation-shlib.c
+	(bonobo_activation_activate_shlib_server),
+	(gnome_plugin_unload): hold guard.
+
+	* bonobo-activation/bonobo-activation-get-language-list.c
+	(bonobo_activation_i18n_get_language_list): add guard.
+
+	* bonobo-activation/bonobo-activation-client.c
+	(bonobo_activation_add_reset_notify, reset_caches):
+	guard reset_caches list.
+	(get_lang_list): guard lang list.
+
+	* bonobo-activation/bonobo-activation-base-service.c
+	(bonobo_activation_internal_service_get_extended):
+	guard the activator list - the only real entry
+	point here.
+
+	* bonobo-activation/bonobo-activation-activate.c
+	(query_cache_lookup): guard the cache.
+
+	* activation-server/activation-context-corba.c,
+	* bonobo-activation/bonobo-activation.h,
+	* bonobo-activation/Makefile.am: don't include
+	or install the (deprecated) -base-service.h,
+	or -activation-id.h headers.
+
+	* bonobo-activation/bonobo-activation-init.c
+	(bonobo_activation_orb_init): always initialize
+	the thread safe ORB.
+	(orb_handle_connection, orb_add_connection) 
+	(orb_remove_connection, bonobo_activation_orb_init): 
+	bin ancient, stale USES_GLIB cruft.
+
+	* tests/test-thread.c (main): bin the special
+	case for thread-safe init.
+
+2003-06-09  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-running-context.c
+	(bonobo_running_context_add_object): Set emitted_last_unref =
+	FALSE, just in case.
+
+	* doc/api/tmpl/bonobo-generic-factory.sgm: Documented
+	BONOBO_ACTIVATION_FACTORY_TIMEOUT.
+
+	* doc/api/libbonobo-sections.txt: Added
+	bonobo_generic_factory_main_timeout and
+	BONOBO_ACTIVATION_FACTORY_TIMEOUT.
+
+	* tests/Makefile.am: Build and declare generic factory regression
+	test.
+
+	* tests/models/generic-factory.output: generic factory client
+	model output.
+
+	* tests/models/generic-factory.output: generic factory server
+	model output.
+	
+	* tests/test-generic-factory.sh.in: Regression test script for
+	generic factory.
+
+	* tests/generic-factory.c: generic factory regression test
+	server.
+
+	* tests/test-generic-factory.c: generic factory regression test
+	client.
+
+	* tests/Test_Generic_Factory.server.in: .server file for
+	regression test of generic factory.
+
+	* bonobo/bonobo-generic-factory.h (BONOBO_ACTIVATION_FACTORY_TIMEOUT):
+	New generic factory macro that accepts an extra quit_timeout argument.
+
+	* bonobo/bonobo-generic-factory.c (bonobo_generic_factory_main):
+	Call bonobo_generic_factory_main_timeout with default 2 seconds
+	timeout.
+	(bonobo_generic_factory_main_timeout): New generic factory main
+	mainloop with startup timeout (if somehow the server "forgets" to
+	request an object after one minute) and quit timeout, to avoid
+	quitting immediately after all objects have been released.
+	(bonobo_generic_factory_init): Initialize
+	factory->priv->last_unref_timeout to the default value.
+	(impl_Bonobo_ObjectFactory_createObject): Cancel any pending
+	timeouts.
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump required bits, version.
+
+	* bonobo/bonobo-main.c (bonobo_poa_get_threaded):
+	don't leak a policy (thanks to NotZed).
+	(bonobo_poa_get_threaded, bonobo_poa_get_threadedv):
+	add argv arg.
+
+2003-06-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-object.c
+	(bonobo_object_set_poa): stub.
+
+	* tests/test-thread.c (main): upd.
+
+	* bonobo/bonobo-main.c (bonobo_poa_new_from): impl.
+	helper for creating new poas.
+	(bonobo_poa_get_threaded): use ORBitThreadHint
+	instead & re-hash.
+	
+2003-06-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-fork-server.c
+	(bonobo_activation_server_by_forking): use
+	g_main_context_default not erroneous NULL thing.
+
+	* bonobo-activation/bonobo-activation-init.c
+	(bonobo_activation_hostname_get): yet more
+	simplification.
+
+2003-06-05  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added li to ALL_LINGUAS.
+	
+2003-06-05  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-init.c
+	(bonobo_activation_hostname_get): bin the unnecessary
+	& slow hostname lookup, this causes acute grief on
+	badly configured machines.
+
+2003-06-04  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/server.h: turn off
+	BONOBO_ACTIVATION_DEBUG - it's spewing reams of cruft.
+
+2003-06-02  Shailesh Mittal  <shailesh.mittal@wipro.com>
+
+	* configure.in: Added checks for getaddrinfo().
+
+	* acconfig.h: Added HAVE_GETADDRINFO.
+
+	* bonobo-activation/bonobo-activation-init.c
+	(bonobo_activation_hostname_get): If getaddrinfo is defined on
+	the system, it is used for hostname resolution, otherwise old
+	gethostbyname is used for the purpose.
+
+2003-06-02  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/figures/running-context.png,
+	* doc/api/figures/running-context.dia: Added.
+	
+	* doc/api/figures/Makefile.am (diagrams): Added running-context.dia.
+
+	* doc/api/Makefile.am (HTML_IMAGES): Added figures/running-context.png.
+
+	* doc/api/tmpl/bonobo-running-context.sgml: Added a bit of
+	documentation about this.
+
+	* bonobo/bonobo-item-container.h: Removed the no longer used
+	BonoboClientSiteList typedef.
+
+	* doc/api/libbonobo-docs.sgml: Removed the bonobo-macros and
+	bonobo-xobject sections.
+
+	* doc/api/tmpl/bonobo-macros.sgml,
+	* doc/api/tmpl/bonobo-unused.sgml,
+	* doc/api/tmpl/libbonobo-unused.sgml,
+	* doc/api/tmpl/bonobo-async.sgml,
+	* doc/api/tmpl/bonobo-audio-ulaw.sgml,
+	* doc/api/tmpl/bonobo-object-client.sgml,
+	* doc/api/tmpl/bonobo-selector.sgml,
+	* doc/api/tmpl/bonobo-property-bag-xml.sgml,
+	* doc/api/tmpl/bonobo-wrapper.sgml,
+	* doc/api/tmpl/bonobo-x-object.sgml: removed.
+
+	* doc/api/Makefile.am: ignore bonobo-macros.h, bonobo-x-object.h
+	and bonobo-stream.h.
+
+	* doc/api/libbonobo-docs.sgml,
+	* doc/api/libbonobo-sections.txt,
+	* doc/api/tmpl/bonobo-arg.sgml,
+	* doc/api/tmpl/bonobo-event-source.sgml,
+	* doc/api/tmpl/bonobo-exception.sgml,
+	* doc/api/tmpl/bonobo-generic-factory.sgml,
+	* doc/api/tmpl/bonobo-item-container.sgml,
+	* doc/api/tmpl/bonobo-item-handler.sgml,
+	* doc/api/tmpl/bonobo-listener.sgml,
+	* doc/api/tmpl/bonobo-main.sgml,
+	* doc/api/tmpl/bonobo-moniker-context.sgml,
+	* doc/api/tmpl/bonobo-moniker-extender.sgml,
+	* doc/api/tmpl/bonobo-moniker-simple.sgml,
+	* doc/api/tmpl/bonobo-moniker-util.sgml,
+	* doc/api/tmpl/bonobo-moniker.sgml,
+	* doc/api/tmpl/bonobo-object.sgml,
+	* doc/api/tmpl/bonobo-persist-file.sgml,
+	* doc/api/tmpl/bonobo-persist-stream.sgml,
+	* doc/api/tmpl/bonobo-persist.sgml,
+	* doc/api/tmpl/bonobo-property-bag-client.sgml,
+	* doc/api/tmpl/bonobo-property-bag.sgml,
+	* doc/api/tmpl/bonobo-running-context.sgml,
+	* doc/api/tmpl/bonobo-shlib-factory.sgml,
+	* doc/api/tmpl/bonobo-storage-memory.sgml,
+	* doc/api/tmpl/bonobo-storage.sgml,
+	* doc/api/tmpl/bonobo-stream-memory.sgml,
+	* doc/api/tmpl/bonobo-stream.sgml,
+	* doc/api/tmpl/bonobo-types.sgml: documention update and cleanup.
+
+2003-05-30  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/object-directory.h: add
+	headers for time_t.
+
+	* activation-server/object-directory-activate.c
+	(od_server_activate_exe): use the glib mainloop to
+	poll through.
+
+	* bonobo-activation/bonobo-activation-base-service.c
+	(get_tmpdir): use ORBit_get_temp_dir, and fail noisly
+	if we can't get a secure place to poke.
+	(local_activator): force a local loop.
+
+	* bonobo/bonobo-object.c: add linc locking dummies.
+
+	* bonobo-activation/bonobo-activation-fork-server.c
+	(bonobo_activation_server_by_forking): add 'use_new_loop'
+	argument; create either an inferior loop, or use the
+	glib mainloop - as suits. Only scan with the mainloop.
+	(scan_list): use the mainloop here too.
+	
+	* tests/test-activation/bonobo-activation-test.c
+	(race_empty): use g_main_iteration.
 
 2003-05-29  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-thread.c (test_threads): add a
+	timeout to the glib mainloop for loop graunching.
+
+	* bonobo/bonobo-main.c
+	(bonobo_poa_get_threaded): set the ORB_CTRL_MODEL
+	policy without which this is mostly useless, also
+	activate the poa.
+
+	* tests/test-thread.c: add.
 
 	* bonobo/bonobo-property-bag-client.c
 	(bonobo_pbclient_get_boolean): fix a nasty with
 	CORBA_boolean vs. 'gboolean'.
 
-2003-05-20  Telsa Gwymme  <hobbit@aloss.ukuu.org.uk>
+2003-05-27  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
-	* configure.on: Added cy (Welsh) to ALL_LINGUAS.
+	* doc/api/figures/Makefile.am: Indicate the need to use dia 0.91
+	instead of 0.90.
+
+	* doc/api/figures/*.{dia,png}: Open all dia files with dia 0.91,
+	tune the class fonts, and export as png.  Figures now look nicer.
+
+2003-05-24  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* doc/activation-api/server-xml-reference.sgml: added markup,
+	updated .server snippets for GNOME2, s/OAF/Bonobo Activation in
+	text, went into nautilus code and came back with information about
+	oaf_attributes for nautilus views, written down here
+	
+2003-05-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo-activation/bonobo-activation-fork-server.c
+	(bonobo_activation_server_by_forking): add a nasty hack
+	to handle force_threaded mode; spew FIXMEs.
+
+2003-05-20  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added cy (Welsh) to ALL_LINGUAS
 
 2003-05-19  Michael Meeks  <michael@ximian.com>
 
-	* Version 2.2.2
+	* activation-server/object-directory-corba.c
+	(impl_Bonobo_ObjectDirectory_register_new): update sig.
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext): add a
+	description parameter.
+
+2003-05-13  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/Makefile.am: add object-directory.h
+
+2003-05-12  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/client.c (remove_load_path, add_load_path):
+	handle unknown error cases.
+	(register_activate_server): initialize r_obj always.
+
+	* activation-server/object-directory-corba.c
+	(impl_Bonobo_ObjectDirectory__get_username),
+	(impl_Bonobo_ObjectDirectory__get_hostID): bin.
+	(object_directory_class_init, object_directory_init) 
+	(object_directory_finalize): add.
+	(bonobo_object_directory_init, bonobo_object_directory_shutdown): 
+	substantial update.
+	Large scale re-factoring action towards BonoboObject, and
+	final removal.
+
+2003-05-12  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-activation/Makefile.am: don't install
+	bonobo-activation-emtpy-server, it's a test program.
+	bin NULL bits.
+
+2003-05-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* MAINTAINERS: Declare myself as documentation maintainer.
+
+2003-05-11  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* doc/activation-api/configuring.sgml: update for GNOME2
+
+	* doc/activation-api/bonobo-activation.sgml: changed license blurb
+	to say that there are no Invariant Sections, with permission of the
+	original author, Mathieu Lacage, see 
+	http://mail.gnome.org/archives/gnome-components-list/2003-May/msg00015.html
+
+	* doc/activation-api/bonobo-activation-docs.sgml: ditto
+
+	* bonobo-activation-config.xml: made examples GNOME2-ish 
+
+2003-05-10  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+                                                                                
+        * bonobo-activation-config.xml: Added an example configuration as
+        xml comments.
+                                                                                
+2003-05-09  Martin Kretzschmar  <m_kretzschmar@gmx.net>
+
+	* configure.in: require ORBit2 >= 2.7.1
+
+2003-05-09  Antonio Xu  <antonio.xu@sun.com>
+	
+	* activation-server/client.c (poptOption): add some options
+	for handle add/remove search path in runtime and register
+	server with command line.
+	(add_load_path): add a new function to handle add search
+	path in runtime.
+	(remove_load_path): add a new function to handle remove
+	search patch in runtime.
+	(register_activate_server): add a new function to handle
+	register bonobo server with command line.
+	(do_query_server_info): add a new function to handle query
+	server info with command line.
+	(do_activating): add a new function to handle activating
+	server with command line.
+	(main): clean code.
+	
+	* activation-server/object-directory-corba.c
+	(impl_Bonobo_ObjectDirectory_add_path): add a new function to
+	implement the new method of interface.
+	(impl_Bonobo_ObjectDirectory_remove_path): add a new function
+	to implement the new method of interface.
+	
+	* activation-server/object-directory-load.c
+	(bonobo_server_info_load): add FIXME, servers->_buffer should
+	be freed.
+	
+	* bonobo-activation/bonobo-activation-activate.c
+	(bonobo_activation_dynamic_add_path): add a new function to
+	handle add search path in runtime.
+	(bonobo_activation_dynamic_remove_path): add a new function
+	to handle remove search path in runtime.
+	
+	* bonobo-activation/bonobo-activation-activate.h:
+	(bonobo_activation_dynamic_add_path)
+	(bonobo_activation_dynamic_remove_path): add two new function
+	to handle add and remove search path in runtime.
+	
+	* idl/Bonobo_Activation_types.idl (DynamicPathLoadResult):
+	add new enum for define the result of dynamic path load.
+	
+	* idl/Bonobo_ObjectDirectory.idl (dynamic_add_path)
+	(dynamic_remove_path): add two new function to handle add and
+	remove search path in runtime.
+
+2003-05-08  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/activation-api/Makefile.am: Replace common gtk-doc makefile
+	code with an include.
+	(DOC_SOURCE_DIR): Fixed bonobo-activation directory location.
+
+	* doc/Makefile.am (SUBDIRS): Added activation and activation-api.
+
+	* configure.in: AC_OUTPUT doc/activation/Makefile and
+	doc/activation-api/Makefile.
+
+2003-05-08  Jens Granseuer  <jensgr@gmx.net>
+
+	* Makefile.am (install-data-local): use DESTDIR.
+
+2003-05-06  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.3.1
+
+2003-05-06  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am (install-data-local): fix manual install
+
+	* tests/test-properties.sh: remove the iorfile before run.
+
+	* tests/test-properties-client.c (main): set the orb
+	before using it.
+
+	* tests/test-activation/test.sh: set BONOBO_ACTIVATION_SERVER.
+
+	* bonobo-activation/bonobo-activation-base-service.c: bin od_cmd.
+	(bonobo_activation_base_service_init): clobber the activation
+	server exe, so the tests can run on a non-installed b-a-s.
+
+	* activation-server/Makefile.am
+	(bonobo_activation_server_SOURCES): add activation-context.h
+
+	* Makefile.am (SUBDIRS): add 'util'
+
+	* utils/bonobo-activation-sysconf.c: fixup.
 
 2003-05-05  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added sr and sr@Latn to ALL_LINGUAS.
 
-2003-04-08  Raphael Finkel <raphael@cs.uky.edu>
+2003-04-28  Michael Meeks  <michael@ximian.com>
 
-	* configure.in: Added "yi" in ALL_LINGUAS
+	* doc/activation-api/tmpl/registration.sgml:
+	fix Bonobo_Plugin_info.
+
+2003-04-23  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/Makefile.am (IGNORE_HFILES): Ignore Bonobo.h and
+	bonobo-marshal.h.
+
+	* doc/api/libbonobo-sections.txt: Added missing symbols from
+	libbonobo-unused.txt.
+
+	* bonobo/bonobo-arg.c, bonobo/bonobo-generic-factory.h,
+	* bonobo/bonobo-item-handler.c, bonobo/bonobo-listener.c,
+	* bonobo/bonobo-main.c, bonobo/bonobo-main.h,
+	* bonobo/bonobo-moniker.c, bonobo/bonobo-moniker.h,
+	* bonobo/bonobo-object.c, bonobo/bonobo-persist-file.c,
+	* bonobo/bonobo-persist-stream.h, bonobo/bonobo-persist.c,
+	* bonobo/bonobo-property-bag-client.h, bonobo/bonobo-property-bag.c,
+	* bonobo/bonobo-property-bag.h, bonobo/bonobo-shlib-factory.c,
+	* bonobo/bonobo-shlib-factory.h, bonobo/bonobo-stream-client.c,
+	* bonobo/bonobo-types.c, doc/api/libbonobo-sections.txt: Minor
+	changes (documentation comments, mismatch between parameter names
+	in header files and in the C files) to fix most gtk-doc scanning
+	warnings.
+
+2003-04-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* Makefile.am (EXTRA_DIST): Include bonobo-activation-config.xml,
+	not bonobo-activation-config.xml.in.
+	(install-data-local): Override default
+	bonobo-activation-config.xml installation procedure so that it is
+	not overwritten if it already exists.
+
+2003-04-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/libbonobo.args, doc/api/libbonobo.prerequisistes,
+	doc/api/libbonobo.interfaces: Removed (purely-generated files).
+	
+	* doc/api/libbonobo-sections.txt: Added bonobo_poa_get_threaded
+	and BonoboThreadHint.
+
+	* doc/api/tmpl/bonobo-object.sgml: Added an example of using the
+	"poa" proterty.
+
+	* doc/api/bonobo-api.sgml, doc/api/bonobo.hierarchy,
+	* doc/api/bonobo.signals, doc/api/bonobo.args,
+	* doc/api/bonobo-sections-bad.txt, doc/api/bonobo.types,
+	* doc/api/bonobo-decl.txt, doc/api/bonobo-sections.txt: Removed
+	these unused files (the real files are named libbonobo*)
+
+	* bonobo/bonobo-shutdown.h: Removed one '*' to prevent gtk-doc
+	from trying to parse this as a documentation header.
+
+2003-04-22  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-activation/Makefile.am: do most
+	of the tests
+
+	* tests/test-activation/test.sh: from here.
+
+	* activation-server/activation-context-corba.c
+	(child_od_info_new, child_od_info_free): bin
+	hostname/username bits.
+	(child_od_info_new): bin it.
+	(child_od_info_free): rename to
+	(directory_info_free): this.
+	(child_od_exception): bin.
+	(child_od_update_active): rename to
+	(ac_update_active): this.
+	(child_od_update_list): rename to
+	(ac_update_list, ac_update_list): upd.
+
+2003-04-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/bonobo-sections.txt: Added bonobo_poa_get_threaded to
+	the bonobo-main section.
+
+	* bonobo/bonobo-main.c (bonobo_poa_get_threaded): New function to
+	get a predefined POA for a given threading policy/hint:
+	one-way-at-idle, all-at-idle, and thread-per-request.
+
+	* bonobo/bonobo-main.h: Declare bonobo_poa_get_threaded.  Added
+	G_BEGIN_DECLS/G_END_DECLS.
+
+	* bonobo-activation/bonobo-activation-register.h,
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server): Renamed to
+	bonobo_activation_register_active_server_ext while updating to the
+	new Bonobo::ObjectDirectory::register_new signature, and
+	reimplemented bonobo_activation_register_active_server as an
+	adaptor to avoid breaking existing apps (and also to avoid
+	exposing internal implementation details).
+
+	* bonobo/bonobo-arg.c (MAKE_FROM_GVALUE): Use ORBit_alloc_tcval to
+	allocate space for the value; also initilize the _type and _release
+	fields of the CORBA::any.
+	(MAKE_TO_GVALUE): g_value_init before setting the value.
+
+	* activation-server/object-directory-corba.c
+	(impl_Bonobo_ObjectDirectory_register_new): Update to the new API:
+	return existing object, and honor the
+	Bonobo_REGISTRATION_FLAG_NO_SERVERINFO registration flag.
+
+	* activation-server/activation-server-main.c (main): Update to the
+	new Bonobo_ObjectDirectory_register_new signature.
+
+	* idl/Bonobo_ObjectDirectory.idl
+	(Bonobo::ObjectDirectory::register_new): Added and output variable
+	to return the existing object in case the client tries to register
+	an object which is has already been registered.
+
+	* idl/Bonobo_Activation_types.idl: Define RegistrationFlags with
+	the single value REGISTRATION_FLAG_NO_SERVERINFO.
+
+2003-04-17  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-object.c (main): Removed the foreign object test,
+	since it was broken anyway.
+
+2003-04-17  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-activation/Makefile.am (TESTS_ENVIRONMENT):
+	update test path.
+
+	* bonobo/bonobo-object.c (bonobo_object_get_property) 
+	(bonobo_object_set_property): impl.
+	(bonobo_object_instance_init): chop out do_corba_setup
+	bits and move them into
+	(bonobo_object_constructor): here, where we are sure that
+	we have the poa property in hand.
+	(bonobo_object_get_poa): impl.
+	(bonobo_object_corba_deactivate, do_corba_setup): use it.
+	(bonobo_object_finalize_internal): fix deactivation issue.
+
+2003-04-17  Michael Meeks  <michael@ximian.com>
+
+	* doc/activation-api/server-xml-reference.sgml:
+	update docs.
+
+	* tests/test-activation/plugin.server: ditto.
+
+	* monikers/Bonobo_Moniker_std.server.in.in: bin the
+	.so library suffix.
+
+2003-04-17  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* bonobo/Makefile.am, bonobo-activation/Makefile.am, idl/Makefile.am,
+	monikers/Makefile.am, tests/test-activation/Makefile.am:
+	append -no-undefined to each library's LDFLAGS.
+
+	* monikers/Makefile.am (libmoniker_std_2_la_LIBADD): write dependency
+	libraries explicitly in it.
+
+	* tests/test-activation/Makefile.am (libtest_plugin_la_LIBADD): ditto.
+
+	* activation-server/Makefile.am (LDADD): move -lname-server-2 before
+	$(SERVER_LIBS). because it depends on $(SERVER_LIBS).
+	
+	* samples/echo/Makefile.am (bonobo_echo_2_LDADD, echo_client_2_LDADD):
+	move libEcho.a to the first. because it depends on other libraries.
+
+2003-04-16  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* bonobo/bonobo-object.c (bonobo_object_finalize_internal): Fix
+	stupid bug: compare object type with BONOBO_TYPE_FOREIGN_OBJECT
+	instead of BONOBO_TYPE_OBJECT when deciding if we should call
+	bonobo_object_corba_deactivate.
+
+2003-04-16  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add activation debug flags, and the
+	crucial flex / LEX check ( thanks to Ali Akcaagac)
+
+2003-04-15  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/test-object.c (main): A very lame excuse of a test of
+	BonoboForeignObject.
+
+	* bonobo/bonobo-foreign-object.h, bonobo/bonobo-foreign-object.c:
+	Implement BonoboForeignObject, which GObject-derives from
+	BonoboObject, and allows one to wrap an existing plain
+	CORBA_Object as a BonoboObject, as long as that object implements
+	the interface Bonobo::Unknown.
+
+	* bonobo/bonobo-object.c (bonobo_object_finalize_internal): Don't
+	call bonobo_object_corba_deactivate for BonoboForeignObject
+	instances.
+	(bonobo_object_instance_init): Don't call do_corba_setup for
+	BonoboForeignObject instances.
+
+2003-04-14  Michael Meeks  <michael@ximian.com>
+
+	* idl/Makefile.am (idl_flags): fix.
+
+	* bonobo/Makefile.am (idl_flags): fix.
+
+	* bonobo/libbonobo-2.0.pc.in (idlinclude): fix.
+
+	* configure.in: remove IDL path check from split module.
+	
+	Many thanks to Havoc Pennington <hp@redhat.com> for
+	digging this out.
+
+2003-04-11  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* activation-server/activation-contect-corba.c,
+	bonobo/bonobo-event-source.c, bonobo/bonobo-generic-factory.c,
+	bonobo/bonobo-item-factory.c, bonobo/bonobo-item-handler.c, 
+	bonobo/bonobo-listener.c, bonobo/bonobo-moniker-context.c,
+	bonobo/bonobo-moniker-extender.c, bonobo/bonobo-monikeri.c,
+	bonobo/bonobo-persist-file.c, bonobo/bonobo-persist-stream.c,
+	bonobo/bonobo-persist.c, bonobo/bonobo-property-bag.c,
+	bonobo/bonobo-running-context.c, bonobo/bonobo-storage-memory.c,
+	samples/echo/echo.c:
+	Remove semicolon after macro BONOBO_TYPE_FUNC_FULL; this fixes
+	compiler warning when using FORTE compiler.
+
+2003-04-08  Michael Meeks  <michael@ximian.com>
+
+	* tests/test-activation/Makefile.am:
+	don't link objects into both binaries and
+	libraries in the same directory.
+
+	* autogen.sh, bonobo/Makefile.am, doc/api/Makefile.am:
+	switch back to automake-1.6
+
+2003-04-07  Carlos PerellÃ³ MarÃ­n <carlos@gome.org>
+
+	* configure.in (ALL_LINGUAS): Added ga, hi, wa and yi from
+	bonobo-activation.
+
+2003-04-07  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: install / carry b-a-config.xml
+
+	* activation-server/activation-context-corba.c
+	(activation_context_finalize): trash the multi-directory
+	capability - a horrificly complex non-working feature.
+
+2003-04-07  Michael Meeks  <michael@ximian.com>
+
+	* activation-server/activation-server-main.c
+	(main): upd.
+
+	* activation-server/activation-context-corba.c
+	(activation_context_init): use BonoboObject for a major
+	clean. Much internal cleaning ...
+
+	* activation-server/activation-server-main.c (main):
+	init / shutdown libbonobo.
+	(dump_ior): split from main.
+
+	* tests/test-activation/Makefile.am
+	(TESTS_ENVIRONMENT): run tests in an isolated (by TMPDIR)
+	environment, update path for b-a-s activation.
+
+2003-04-07  Michael Meeks  <michael@ximian.com>
+
+	* Makefile.am: disable doc until we can work with a
+	newer automake that can do conditionals inside an include.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): revert to
+	automake-1.4 which doesn't screw-up with IDL compilation.
+	* bonobo/Makefile.am (LDFLAGS): use just LDFLAGS.
+	* doc/api/Makefile.am (AUTOMAKE_OPTIONS): set to 1.4
+
+	* configure.in: merge in bonobo-slay bits, update dirs.
+
+	* docs/activation: Merge from bonobo-activation/docs
+	* docs/activation-api: Merge from bonobo-activation/api-docs
+	* utils:  Merge from bonobo-activation/utils
+
+2003-04-07  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/Makefile.am (AM_LDFLAGS): upd version info.
+
+	* bonobo-activation/bonobo-activation-version.h.in: upd.
+
+	* idl/Makefile.am: add activation IDL bits.
+
+	* Makefile.am (SUBDIRS): upd.
+
+	* configure.in (SERVER_CFLAGS): add.
+
+	* bonobo-activation/Makefile.am: upd. particularly
+	LT_VERSION_INFO.
+
+	* configure.in (ENABLE_ORBIT2): bin; unused anyway.
+
+	* bonobo-activation: Merge from bonobo-activation/bonobo-activation
+	* activation-server: Merge from bonobo-activation/server
+
+2003-03-24  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* Makefile.am (DISTCHECK_CONFIGURE_FLAGS): Pass --enable-gtk-doc
+	to configure when making distcheck, otherwise it fails.
+	(EXTRA_DIST): Include gtk-doc.make in the distribution.
+
+	* doc/api/figures/Makefile.am: Don't delete the png files when
+	doing make maintainer-clean.
+
+	* bonobo/Makefile.am (AM_LDFLAGS): Define AM_LDFLAGS instead of
+	LDFLAGS to please automake 1.7.
+
+	* doc/api/Makefile.am: Require automake 1.6.  Replaced the generic
+	code with a generic gtk-doc makefile template include.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): Require automake >= 1.6.
+
+	* configure.in: Use the macro GTK_DOC_CHECK to check for gtk-doc.
 
 2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
 
 	* configure.in: Added "ml" in ALL_LINGUAS
-
-2003-03-14  Michael Meeks  <michael@ximian.com>
-
-	* Version 2.2.1
 
 2003-03-11  Martin Kretzschmar  <m_kretzschmar@gmx.net>
 
@@ -56,11 +1830,15 @@
 	* configure.in: Added "eo" to ALL_LINGUAS.
 
 2003-03-07  Bill Haneman <bill.haneman@sun.com>
-
-	* idl/Bonobo.idl:
+	
 	* idl/Bonobo_Property.idl:
-	Replaced #if !defined(FOO) with #ifndef(FOO), for more
-	IDL portability.  Fixes bug #107729.
+	* idl/Bonobo.idl:
+	Replaced #if !defined(FOO) with #ifndef(FOO), etc. for
+	better compatibility with IDL parsers like idlj.
+
+2003-03-04  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-arg.h: update macros.
 
 2003-02-28  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
 
@@ -68,11 +1846,6 @@
 	* bonobo/bonobo-moniker.c (BONOBO_EXPLICIT_TRANSLATION_DOMAIN):
 	* bonobo/bonobo-moniker-util.c (BONOBO_EXPLICIT_TRANSLATION_DOMAIN):
 	use GETTEXT_PACKAGE instead of PACKAGE (#107228).
-	Michael: back-port - got missed somehow.
-
-2003-03-04  Michael Meeks  <michael@ximian.com>
-
-	* bonobo/bonobo-arg.h: update macros.
 
 2003-02-19  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
@@ -412,7 +2185,7 @@
 
 	* idl/*.idl: add dummy padding.
 
-2002-05-27  Gustavo Giráldez  <gustavo.giraldez@gmx.net>
+2002-05-27  Gustavo GirÃ¡ldez  <gustavo.giraldez@gmx.net>
 
 	* configure.in: add a --enable-debug parameter to compile the
 	debugging code.
@@ -635,7 +2408,7 @@
 	(BONOBO_PROPERTY_WRITABLE): add for people who like
 	sueing other people.
 
-2002-02-01  Tomasz K³oczko  <kloczek@pld.org.pl>
+2002-02-01  Tomasz KÂ³oczko  <kloczek@pld.org.pl>
 
 	* monikers/Makefile.am: small fix for automake 1.5.
 
@@ -2372,7 +4145,7 @@ Tue Nov 20 21:14:15 2001  Owen Taylor  <otaylor@redhat.com>
 	* bonobo/bonobo-moniker-util.c (url_to_name): Implemented
 	this for ORBit2.
 
-2001-07-09  Lutz Müller  <urc8@rz.uni-karlsruhe.de>
+2001-07-09  Lutz MÃ¼ller  <urc8@rz.uni-karlsruhe.de>
 
         * bonobo/bonobo-stream-memory.[c,h]: Make mem_[get,set]_info
         functional.
@@ -2657,7 +4430,7 @@ Sat Jun 30 14:53:52 2001  Jonathan Blandford  <jrb@redhat.com>
 	* bonobo/bonobo-property-bag.c (bonobo_property_bag_add_gtk_args): 
 	Update to match new GObject property retrieval API.
 
-2001-06-19  Héctor García Álvarez <hector@scouts-es.org>
+2001-06-19  HÃ©ctor GarcÃ­a Ãlvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 

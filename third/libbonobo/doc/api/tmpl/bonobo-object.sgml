@@ -153,66 +153,76 @@ Returns the #GtkType for the BonoboObject object.
 
 <!-- ##### MACRO BONOBO_OBJREF ##### -->
 <para>
-
+    This macro returns the CORBA object reference inside a #BonoboObject.
 </para>
 
-@o: 
+@o: a #BonoboObject
 
 
 <!-- ##### USER_FUNCTION BonoboObjectPOAFn ##### -->
 <para>
-
+Signature of POA initialization and finalization functions
 </para>
 
-@servant: 
-@ev: 
-
-
-<!-- ##### STRUCT BonoboObjectPrivate ##### -->
-<para>
-   Private information kept by the BonoboObject.  This should not be
-   used by BonoboObject users.
-</para>
-
-
-<!-- ##### TYPEDEF BonoboObjectHeader ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### MACRO BONOBO_OBJECT_HEADER_SIZE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_OBJECT_SIGNATURE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_SERVANT_SIGNATURE ##### -->
-<para>
-
-</para>
-
+@servant: the object's servant
+@ev: CORBA environment
 
 
 <!-- ##### STRUCT BonoboObject ##### -->
 <para>
-
+Implements Bonobo::Unknown.
 </para>
 
 
-<!-- ##### TYPEDEF BonoboObjectClass ##### -->
+<!-- ##### SIGNAL BonoboObject::destroy ##### -->
 <para>
-
+    Signal emitted when the last reference of a BonoboObject has been
+    lost and the object is being destroyed / finalized / deactivated.
 </para>
 
+@bonoboobject: the object which received the signal.
+
+<!-- ##### SIGNAL BonoboObject::system-exception ##### -->
+<para>
+    Signal emitted from bonobo_object_check_env if a system exception is identified.
+</para>
+
+@bonoboobject: the #BonoboObject which received the signal.
+@arg1: the CORBA_Object contained in @bonoboobject.
+@arg2: the exception that has just occurred.
+
+<!-- ##### ARG BonoboObject:poa ##### -->
+<para>
+    Pass this property during construction to specify a custom POA for a BonoboObject. Example:
+    <informalexample>
+	<programlisting>
+BonoboObject * my_bonobo_object_new (void)
+{
+	BonoboObject *object;
+
+	object = g_object_new (MY_TYPE_BONOBO_OBJECT, "poa",
+			       bonobo_poa_get_threaded (BONOBO_POA_ALL_AT_IDLE), NULL);
+	return object;
+}
+	</programlisting>
+    </informalexample>
+</para>
+
+<!-- ##### STRUCT BonoboObjectClass ##### -->
+<para>
+BonoboObject's class.
+</para>
+
+@parent_class: 
+@destroy: 
+@system_exception: 
+@poa_init_fn: 
+@poa_fini_fn: 
+@vepv: 
+@epv_struct_offset: 
+@base_epv: 
+@epv: 
+@dummy: 
 
 <!-- ##### FUNCTION bonobo_object_add_interface ##### -->
 <para>
@@ -239,6 +249,17 @@ Returns the #GtkType for the BonoboObject object.
 </para>
 
 @object: 
+@repo_id: 
+@opt_ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_object_query_remote ##### -->
+<para>
+
+</para>
+
+@unknown: 
 @repo_id: 
 @opt_ev: 
 @Returns: 
@@ -427,6 +448,15 @@ Returns the #GtkType for the BonoboObject object.
 @object: 
 
 
+<!-- ##### FUNCTION bonobo_object_get_poa ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
 <!-- ##### FUNCTION bonobo_type_unique ##### -->
 <para>
 
@@ -455,38 +485,26 @@ Returns the #GtkType for the BonoboObject object.
 
 <!-- ##### MACRO BONOBO_TYPE_FUNC_FULL ##### -->
 <para>
-
+    Macro that includes all the boilerplate code need to register a
+    new BonoboObject-derived class.  The programmer has to define two
+    functions only: @prefix_init and @prefix_class_init.  As a result
+    of the macro expansion, a function named @prefix_get_type() is
+    defined.
 </para>
 
-@class_name: 
-@corba_name: 
-@parent: 
-@prefix: 
+@class_name: Name of the GObject class, LikeThis
+@corba_name: Name of the CORBA interface, with IDL-to-C mapping, Like_This
+@parent: GType of the parent class, LIKE_TYPE_THIS
+@prefix: prefix of the implementation functions
 
 
 <!-- ##### MACRO BONOBO_TYPE_FUNC ##### -->
 <para>
-
+    Like #BONOBO_TYPE_FUNC, but doesn't set POA ini and fini functions.
 </para>
 
 @class_name: 
 @parent: 
 @prefix: 
 
-
-<!-- ##### SIGNAL BonoboObject::destroy ##### -->
-<para>
-
-</para>
-
-@bonoboobject: the object which received the signal.
-
-<!-- ##### SIGNAL BonoboObject::system-exception ##### -->
-<para>
-
-</para>
-
-@bonoboobject: the object which received the signal.
-@arg1: 
-@arg2: 
 

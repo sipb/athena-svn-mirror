@@ -1,22 +1,230 @@
 # Serbian translation of libbonobo
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
-# 
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
 # This file is distributed under the same license as the libbonobo package.
-# 
+#
 # Maintainer: Вељко М. Станојевић <veljko@vms.homelinux.net>
+# Reviewed by: Данило Шеган <dsegan@gmx.net>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-05-02 01:10+0100\n"
-"Last-Translator: Вељко М. Станојевић <veljko@vms.homelinux.net>\n"
-"Language-Team: Serbian (sr) <serbiangnome-@nongnu.org>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-02-03 16:10+0100\n"
+"Last-Translator: Данило Шеган <danilo@prevod.org>\n"
+"Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "Нисам успео да откријем на који подпроцес је сервер уврштен"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "Неважећа идентификација за покретање"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr "Директоријум из којег ће се читати .server датотеке"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "ДИРЕКТОРИЈУМ"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "Служи као ActivationContext (подразумевано је само ObjectDirectory)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "Описник датотеке за уписивање IOR-а"
+
+# Описник датотеке?
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "ОД"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Израз за претрагу који треба вредновати"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "ИЗРАЗ"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "CORBA CosNaming служба."
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Служба именовања"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Служба за обавештења"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Служба обавештавања за активацију"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr "Још немамо начина за руковање shlib објектима у удаљеном процесу"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Датотека са подешавањима за Бонобо активацију није успешно прочитана. "
+"Проверите да ли је исправна у: %s"
+
+# „Race“ је појава када два процеса покушају истовремено да користе један ресурс, с тим што један процес држи оно што је потребно да би други наставио — односно, ниједан не може да настави
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Утркивање при активирању сервера „%s“"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "NULL iid је неважећи"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid %s је NULL врсте"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid %s има NULL локацију"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "неважећи знак „%c“ in iid „%s“"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "Особина „%s“ нема никакву вредност"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "Не могу да обрадим лоше обликован XML документ %s"
+
+# bug: s/dir/directory/
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "Покушавам директоријум %s"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Подпроцес није дао никакву поруку о грешци, догодила се непозната грешка"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Нисам успео да читам из подпроцеса: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Нисам могао до почнем нови процес"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Подпроцес је примио сигнал %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Непозната не-излазна грешка (status is %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "бонобо активација није успела да постави групу процеса %s: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Нисам успео да извршим %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Превише нивоа надимака за локалитет — може указивати на петљу"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "Описник датотеке на којем ће се исписати IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "IID који треба покренути"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Спречи регистровање сервера на OAF-у"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Опције за покретање бонобоа"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open за „%s“ није успео са „%s“"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Не могу да нађем симбол Bonobo_Plugin_info у „%s“"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Творница „%s“ је вратила NIL за „%s“"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib „%s“ не садржи „%s“"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "Име"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Јединствено име програма"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "Прилагођен CORBA POA"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -28,7 +236,7 @@ msgstr "УИ грешка"
 
 #: bonobo/bonobo-exception.c:160
 msgid "Invalid argument value"
-msgstr "Неважећа вредност агргумнта"
+msgstr "Неважећа вредност аргумента"
 
 #: bonobo/bonobo-exception.c:164
 msgid "Object not found"
@@ -36,7 +244,7 @@ msgstr "Објекат није пронађен"
 
 #: bonobo/bonobo-exception.c:167
 msgid "Syntax error in object description"
-msgstr "Синтактичка грешка у опису објекта"
+msgstr "Синтаксна грешка у опису објекта"
 
 #: bonobo/bonobo-exception.c:172
 msgid "Cannot activate object from factory"
@@ -52,7 +260,7 @@ msgstr "Покушај извршења неподржане радње на н�
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "УИ гршка на низу"
+msgstr "УИ грешка на току"
 
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
@@ -76,7 +284,7 @@ msgstr "Покушај извршења неподржане складишне 
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
-msgstr "Објекат није у низу"
+msgstr "Објекат није у току"
 
 #: bonobo/bonobo-exception.c:203
 msgid "Object is not a storage"
@@ -98,29 +306,31 @@ msgstr "неисправна стаза ка XML елементу корисни
 msgid "the requested UI attribute didn't exist"
 msgstr "затражена особина корисничког сучеља не постоји"
 
+# Хм, ово ми сувише личи на функционалне програмске језике и „предикате“, па уместо „глагола“ стављам то...
 #: bonobo/bonobo-exception.c:219
 msgid "Unknown command or verb"
-msgstr "Непозната наредба или глагол"
+msgstr "Непозната наредба или предикат"
 
 #: bonobo/bonobo-exception.c:222
 msgid "Command is insensitive"
 msgstr "Наредба је неосетљива"
 
+# „data“ је множина
 #: bonobo/bonobo-exception.c:226
 msgid "incorrect data type"
-msgstr "неисправна врста податка"
+msgstr "неисправна врста података"
 
 #: bonobo/bonobo-exception.c:229
 msgid "stream not found"
-msgstr "низ није пронађен"
+msgstr "ток није нађен"
 
 #: bonobo/bonobo-exception.c:233
 msgid "property not found"
-msgstr "особина није пронађена"
+msgstr "особина није нађена"
 
 #: bonobo/bonobo-exception.c:236
 msgid "property has invalid type"
-msgstr "особина поседује неважећу врсту"
+msgstr "особина је неважеће врсте"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
@@ -132,82 +342,83 @@ msgstr "грешка у бази са подешавањима"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
-msgstr "није пронађено моникер сучеље"
+msgstr "Нисам нашао спрегу надимака"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
-msgstr "истек времена за активирање моникера"
+msgstr "Истекло је време за активацију надимка"
 
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
-msgstr "Синтактичка грешка у моникеру"
+msgstr "Синтаксна грешка у надимку"
 
 #: bonobo/bonobo-exception.c:255
 msgid "Moniker has an unknown moniker prefix"
-msgstr "Моникер има непознат моникер префикс"
+msgstr "Надимак има непознат предметак за надимке"
 
+# bug: lovely, indeed
 #: bonobo/bonobo-exception.c:279
 msgid "Error checking error; no exception"
 msgstr "Грешка при провери грешке; без изузетка"
 
 #: bonobo/bonobo-exception.c:288
 msgid "General activation error with no description"
-msgstr "Општа грешка без описа при активацији"
+msgstr "Општа грешка при активацији без описа"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Бонобо није могао бити покренут"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Неуспешно одрђење или наставак `%s´"
+msgstr "Неуспешно разрешење или проширење „%s“"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "Неуспех активирања објекта"
 
-#: monikers/Bonobo_Moniker_std.server.in.in.h:1
-msgid "HTTP Moniker"
-msgstr "HTTP моникер"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:2
-msgid "ORB IOR handling moniker"
-msgstr "Моникер за руковање са ORB IOR"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:3
-msgid "Standard Moniker factory"
-msgstr "Стандардна моникер творница"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:4
-msgid "generic Oaf activation moniker"
-msgstr "општи моникер за активацију Oaf-а"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:5
-msgid "generic Oaf query moniker"
-msgstr "општи моникер за претрагу Oaf-а"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:6
-msgid "generic factory 'new' moniker"
-msgstr "општа моникер творнице `new´ "
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:7
-msgid "generic item moniker"
-msgstr "општи моникер за предмете"
-
-#: monikers/Bonobo_Moniker_std.server.in.in.h:8
-msgid "stream MonikerExtender"
-msgstr "низ MonikerExtender"
-
 #: monikers/bonobo-moniker-oaf.c:53
 #, c-format
 msgid "Exception activating '%s'"
-msgstr "Изузеће у активирању `%s´"
+msgstr "Изузеће при активацији „%s“"
 
 #: monikers/bonobo-moniker-oaf.c:62
 #, c-format
 msgid "Failed to activate '%s'"
-msgstr "Неуспело активирање `%s´"
+msgstr "Неуспела активација „%s“"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:1
+msgid "HTTP Moniker"
+msgstr "HTTP надимак"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:2
+msgid "ORB IOR handling moniker"
+msgstr "Надимак за руковање са ORB IOR"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:3
+msgid "Standard Moniker factory"
+msgstr "Стандардна творница надимака"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:4
+msgid "generic Oaf activation moniker"
+msgstr "општи надимак за активацију Oaf-а"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:5
+msgid "generic Oaf query moniker"
+msgstr "општи надимак за упит Oaf-а"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:6
+msgid "generic factory 'new' moniker"
+msgstr "општа творница „new“ надимака"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:7
+msgid "generic item moniker"
+msgstr "општи надимак за ставке"
+
+#: monikers/Bonobo_Moniker_std.server.in.in.h:8
+msgid "stream MonikerExtender"
+msgstr "MonikerExtender тока"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
@@ -227,13 +438,68 @@ msgstr "Творница Echo компоненте"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
-msgstr "Неуспело покретање Бонобо-а"
+msgstr "Не могу да покренем Бонобо"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "Неуспех стварања примера пробне echo компоненте"
+msgstr "Неуспех стварања примерка пробне echo компоненте"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr "Изузетак се догодио `%s´"
+msgstr "Догодио се изузетак „%s“"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Нисам могао да сачувам датотеку са подешавањима.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Проверите да ли имате овлашћења да пишете у „%s“.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Успешно записана датотека са подешавањима.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"датотека са подешавањима је:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s већ постоји у датотеци са подешавањима\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "нема исправно структуиране датотеке са подешавањима\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Датотека са подешавањима за бонобо-активацију садржи:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Директоријум који треба уклонити из датотеке са подешавањима"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "путања директоријума"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Директоријум који треба додати у датотеку са подешавањима"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Прикажи директоријуме у датотеци са подешавањима"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Прикажи путању до датотеке са подешавањима"

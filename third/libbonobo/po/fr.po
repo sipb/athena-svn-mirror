@@ -1,19 +1,230 @@
 # French translation of libbonobo.
-# Copyright (C) 2001-2003 Free Software Foundation, Inc.
-# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2001-2003.
+# Copyright (C) 2001-2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libbonobo package.
+#
+# maintainer: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>, 2001-2004.
 # Christophe Fergeau <teuf@users.sourceforge.net> 2002.
 # Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo 2.1.1\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
-"PO-Revision-Date: 2003-01-02 18:55+0100\n"
+"Project-Id-Version: libbonobo 2.5.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"PO-Revision-Date: 2004-01-17 11:53+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "Impossible de déterminer dans quel fils était listé le serveur"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "N'est pas un ID d'activation valide"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr "Répertoire dans lequel lire les fichiers .server"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "RÉPERTOIRE"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Sert comme ActivationContext (par défaut, uniquement comme ObjectDirectory)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "Descripteur de fichier dans lequel écrire IOR"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Expression de requête à évaluer"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "EXPRESSION"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "Service CORBA CosNaming."
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Service de noms"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Service de notification"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Service de notification pour l'activation"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr ""
+"Nous ne prenons pas encore en charge l'activation d'objets shlib dans un "
+"processus distant"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Échec de lecture du fichier de configuration de l'activation de Bonobo. "
+"Veuillez vérifier qu'il est valide dans : %s"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Condition de compétitivité activant le serveur « %s »"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "un iid NULL n'est pas valide"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "l'iid %s a un type NULL"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "l'iid %s a un emplacement NULL"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "caractère non valide « %c » dans l'iid « %s »"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "La propriété « %s » n'a pas de valeur"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "Impossible d'analyser le document XML mal formé %s"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "Essaie le répertoire %s"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+"Le processus fils n'a pas renvoyé de message d'erreur, une erreur inconnue "
+"s'est produite"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "La lecture depuis le processus fils a échoué : %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Impossible de cloner un nouveau processus"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Le processus fils a reçu le signal %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Erreur de non-sortie inconnue (l'état est %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr ""
+"bonobo-activation n'a pas pu définir le groupe de processus de %s : %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "L'exécution de %s a échoué : %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Trop de niveaux d'alias pour une locale, cela peut indiquer une boucle"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "Descripteur de fichier pour imprimer IOR sur"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "IID à activer"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Empêcher l'enregistrement du serveur avec OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Options d'activation de Bonobo"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open de « %s » a échoué avec « %s »"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "Impossible de trouver le symbole Bonobo_Plugin_info dans « %s »"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "Le fabrique « %s » a renvoyé NIL pour « %s »"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib « %s » ne contenait pas « %s »"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "Nom"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Nom unique de l'application"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "POA Corba personnalisé"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -125,7 +336,7 @@ msgstr "la propriété est en lecture seule"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "échec du moteur de base de données de configuration"
+msgstr "Le moteur de base de données de configuration a échoué"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
@@ -151,18 +362,28 @@ msgstr "Erreur de vérification d'erreur ; pas d'exception"
 msgid "General activation error with no description"
 msgstr "Erreur générale d'activation sans description"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Impossible d'initialiser Bonobo"
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Impossible de résoudre ou d'étendre %s"
+msgstr "La résolution ou l'extension de %s a échoué"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
-msgstr "Impossible d'activer l'objet"
+msgstr "L'activation de l'objet a échoué"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "Exception lors de l'activation de « %s »"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "L'activation de « %s » a échoué"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -196,16 +417,6 @@ msgstr "Moniker d'élément générique"
 msgid "stream MonikerExtender"
 msgstr "MonikerExtender de flux"
 
-#: monikers/bonobo-moniker-oaf.c:53
-#, c-format
-msgid "Exception activating '%s'"
-msgstr "Exception lors de l'activation de « %s »"
-
-#: monikers/bonobo-moniker-oaf.c:62
-#, c-format
-msgid "Failed to activate '%s'"
-msgstr "Impossible d'activer « %s »"
-
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
 msgstr "Fabrique de serveur Bonobo Echo"
@@ -234,6 +445,99 @@ msgstr "Impossible d'instancier le composant d'exemple Echo"
 #, c-format
 msgid "An exception occured '%s'"
 msgstr "Une exception s'est produite « %s »"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Impossible d'enregistrer le fichier de configuration.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr ""
+"Veuillez vous assurez que vous disposez des droits pour écrire sur « %s ».\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Fichier de configuration écrit avec succès.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"fichier de configuration :\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s déjà dans le fichier de configuration.\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "il n'y a pas de fichier de configuration correctement structuré\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Le fichier de configuration de l'activation de Bonobo contient :\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Répertoire à supprimer du fichier de configuration"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "chemin du répertoire"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Répertoire à ajouter au fichier de configuration"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Affiche les répertoires du fichier de configuration"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Affiche le chemin du fichier de configuration"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Aucun serveur correspondant à votre requête"
+
+#~ msgid "Query failed: "
+#~ msgstr "Échec de la requête : "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Échec de l'activation : "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "Impossible d'analyser AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Impossible d'analyser le contexte : "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Impossible d'activer le serveur : "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "Domaine de ObjectDirectory"
+
+#~ msgid "DOMAIN"
+#~ msgstr "DOMAINE"
+
+#~ msgid "Object directory to use when registering servers"
+#~ msgstr "Objet répertoire à utiliser durant l'enregistrement des serveurs"
+
+#~ msgid "OAF options"
+#~ msgstr "Options OAF"
+
+#  liboaf/oaf-registration.c:394
+#~ msgid "Exec failed: %d (%s)\n"
+#~ msgstr "Exec a échoué : %d (%s)\n"
+
+#~ msgid "IID '%s' contains illegal characters; discarding\n"
+#~ msgstr "l'IID « %s » contient des caractères illégaux ; refusé\n"
 
 #~ msgid "The User canceled the save"
 #~ msgstr "L'utilisateur a annulé l'enregistrement"

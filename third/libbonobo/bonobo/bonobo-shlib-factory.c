@@ -33,6 +33,7 @@ struct _BonoboShlibFactoryPrivate {
  * bonobo_shlib_factory_construct:
  * @factory: The object to be initialized.
  * @act_iid: The GOAD id that the new factory will implement.
+ * @poa: the poa.
  * @act_impl_ptr: Activation shlib handle
  * @closure: The closure used to create new GnomeShlib object instances.
  *
@@ -98,7 +99,7 @@ bonobo_shlib_factory_new_closure (const char           *act_iid,
 
 /**
  * bonobo_shlib_factory_new:
- * @act_iid: The GOAD id that this factory implements
+ * @component_id: The GOAD id that this factory implements
  * @poa: the poa.
  * @act_impl_ptr: Activation shlib handle
  * @factory_cb: A callback which is used to create new BonoboObject instances.

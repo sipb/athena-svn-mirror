@@ -1,0 +1,834 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-property-bag-client</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="previous" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="next" href="monikers.html" title="Monikers"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-property-bag-client.html#id2827218" title="Description"><link rel="section" href="libbonobo-bonobo-property-bag-client.html#id2827242" title="Details"><link rel="section" href="libbonobo-bonobo-property-bag-client.html#id2834280" title="See Also"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-arg.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="property-bags.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="monikers.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-property-bag-client"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-property-bag-client</span></h2><p>bonobo-property-bag-client &#8212; simplified property bag client wrapper code</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gchar*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string">bonobo_pbclient_get_string</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-string">bonobo_pbclient_get_default_string</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string-with-default">bonobo_pbclient_get_string_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar *defval,
+                                             gboolean *def);
+gint16      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short">bonobo_pbclient_get_short</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint16      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-short">bonobo_pbclient_get_default_short</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint16      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short-with-default">bonobo_pbclient_get_short_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint16 defval,
+                                             gboolean *def);
+guint16     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort">bonobo_pbclient_get_ushort</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint16     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ushort">bonobo_pbclient_get_default_ushort</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint16     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort-with-default">bonobo_pbclient_get_ushort_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint16 defval,
+                                             gboolean *def);
+gint32      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long">bonobo_pbclient_get_long</a>        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint32      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-long">bonobo_pbclient_get_default_long</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gint32      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long-with-default">bonobo_pbclient_get_long_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint32 defval,
+                                             gboolean *def);
+guint32     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong">bonobo_pbclient_get_ulong</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint32     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ulong">bonobo_pbclient_get_default_ulong</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+guint32     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong-with-default">bonobo_pbclient_get_ulong_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint32 defval,
+                                             gboolean *def);
+gfloat      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float">bonobo_pbclient_get_float</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gfloat      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-float">bonobo_pbclient_get_default_float</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gfloat      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float-with-default">bonobo_pbclient_get_float_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gfloat defval,
+                                             gboolean *def);
+gdouble     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double">bonobo_pbclient_get_double</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gdouble     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-double">bonobo_pbclient_get_default_double</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gdouble     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double-with-default">bonobo_pbclient_get_double_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gdouble defval,
+                                             gboolean *def);
+gboolean    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean">bonobo_pbclient_get_boolean</a>     (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gboolean    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-boolean">bonobo_pbclient_get_default_boolean</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gboolean    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean-with-default">bonobo_pbclient_get_boolean_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gboolean defval,
+                                             gboolean *def);
+gchar       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char">bonobo_pbclient_get_char</a>        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-char">bonobo_pbclient_get_default_char</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+gchar       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char-with-default">bonobo_pbclient_get_char_with_default</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar defval,
+                                             gboolean *def);
+CORBA_any*  <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-value">bonobo_pbclient_get_value</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);
+CORBA_any*  <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-value">bonobo_pbclient_get_default_value</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-string">bonobo_pbclient_set_string</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             const char *value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-short">bonobo_pbclient_set_short</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint16 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ushort">bonobo_pbclient_set_ushort</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint16 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-long">bonobo_pbclient_set_long</a>        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint32 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ulong">bonobo_pbclient_set_ulong</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint32 value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-float">bonobo_pbclient_set_float</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gfloat value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-double">bonobo_pbclient_set_double</a>      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gdouble value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-boolean">bonobo_pbclient_set_boolean</a>     (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gboolean value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-char">bonobo_pbclient_set_char</a>        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-value">bonobo_pbclient_set_value</a>       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-value-async">bonobo_pbclient_set_value_async</a> (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc-title">bonobo_pbclient_get_doc_title</a>   (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc">bonobo_pbclient_get_doc</a>         (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+GList*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-keys">bonobo_pbclient_get_keys</a>        (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-free-keys">bonobo_pbclient_free_keys</a>       (GList *key_list);
+Bonobo_PropertyFlags <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-flags">bonobo_pbclient_get_flags</a>
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set">bonobo_pbclient_set</a>             (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev,
+                                             const char *first_prop,
+                                             ...);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get">bonobo_pbclient_get</a>             (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev,
+                                             const char *first_prop,
+                                             ...);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-setv">bonobo_pbclient_setv</a>            (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *ev,
+                                             const char *first_arg,
+                                             va_list var_args);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-getv">bonobo_pbclient_getv</a>            (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *ev,
+                                             const char *first_arg,
+                                             va_list var_args);
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-setv">bonobo_property_bag_client_setv</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-getv">bonobo_property_bag_client_getv</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-property-type">bonobo_property_bag_client_get_property_type</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gboolean">bonobo_property_bag_client_get_value_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gint">bonobo_property_bag_client_get_value_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-glong">bonobo_property_bag_client_get_value_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gfloat">bonobo_property_bag_client_get_value_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gdouble">bonobo_property_bag_client_get_value_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-string">bonobo_property_bag_client_get_value_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-any">bonobo_property_bag_client_get_value_any</a>(pb, name, ev)
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gboolean">bonobo_property_bag_client_get_default_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gint">bonobo_property_bag_client_get_default_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-glong">bonobo_property_bag_client_get_default_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gfloat">bonobo_property_bag_client_get_default_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gdouble">bonobo_property_bag_client_get_default_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-string">bonobo_property_bag_client_get_default_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-any">bonobo_property_bag_client_get_default_any</a>(pb, name, ev)
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gboolean">bonobo_property_bag_client_set_value_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gint">bonobo_property_bag_client_set_value_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-glong">bonobo_property_bag_client_set_value_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gfloat">bonobo_property_bag_client_set_value_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gdouble">bonobo_property_bag_client_set_value_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-string">bonobo_property_bag_client_set_value_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-any">bonobo_property_bag_client_set_value_any</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-docstring">bonobo_property_bag_client_get_docstring</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-flags">bonobo_property_bag_client_get_flags</a>
+
+</pre></div><div class="refsect1" lang="en"><a name="id2827218"></a><h2>Description</h2><p>
+This code is designed to make the property bag interface slightly
+easier to use, by allowing optional CORBA environments, sensible
+return values on exceptions, and accessors for specific types of
+CORBA_Any. eg. bonobo_property_bag_client_get_value_glong.
+</p><p>
+With the property bag interface, as in all current remote Bonobo
+method invocations, translation issues are very dodgy. Assuming
+that the server process was activated in the correct locale, all
+should be well, however there is no guarantee that ( in a rapidly
+changing locale environment ) the string will be correctly translated.
+It is difficult to know how to solve this problem.
+</p></div><div class="refsect1" lang="en"><a name="id2827242"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2827248"></a><h3><a name="bonobo-pbclient-get-string"></a>bonobo_pbclient_get_string ()</h3><a class="indexterm" name="id2827259"></a><pre class="programlisting">gchar*      bonobo_pbclient_get_string      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a string from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827365"></a><h3><a name="bonobo-pbclient-get-default-string"></a>bonobo_pbclient_get_default_string ()</h3><a class="indexterm" name="id2827378"></a><pre class="programlisting">gchar*      bonobo_pbclient_get_default_string
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827476"></a><h3><a name="bonobo-pbclient-get-string-with-default"></a>bonobo_pbclient_get_string_with_default ()</h3><a class="indexterm" name="id2827488"></a><pre class="programlisting">gchar*      bonobo_pbclient_get_string_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar *defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827609"></a><h3><a name="bonobo-pbclient-get-short"></a>bonobo_pbclient_get_short ()</h3><a class="indexterm" name="id2827621"></a><pre class="programlisting">gint16      bonobo_pbclient_get_short       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 16 bit integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827726"></a><h3><a name="bonobo-pbclient-get-default-short"></a>bonobo_pbclient_get_default_short ()</h3><a class="indexterm" name="id2827738"></a><pre class="programlisting">gint16      bonobo_pbclient_get_default_short
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827837"></a><h3><a name="bonobo-pbclient-get-short-with-default"></a>bonobo_pbclient_get_short_with_default ()</h3><a class="indexterm" name="id2827850"></a><pre class="programlisting">gint16      bonobo_pbclient_get_short_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint16 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2827970"></a><h3><a name="bonobo-pbclient-get-ushort"></a>bonobo_pbclient_get_ushort ()</h3><a class="indexterm" name="id2827982"></a><pre class="programlisting">guint16     bonobo_pbclient_get_ushort      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 16 bit unsigned integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828087"></a><h3><a name="bonobo-pbclient-get-default-ushort"></a>bonobo_pbclient_get_default_ushort ()</h3><a class="indexterm" name="id2828100"></a><pre class="programlisting">guint16     bonobo_pbclient_get_default_ushort
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828199"></a><h3><a name="bonobo-pbclient-get-ushort-with-default"></a>bonobo_pbclient_get_ushort_with_default ()</h3><a class="indexterm" name="id2828211"></a><pre class="programlisting">guint16     bonobo_pbclient_get_ushort_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint16 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828331"></a><h3><a name="bonobo-pbclient-get-long"></a>bonobo_pbclient_get_long ()</h3><a class="indexterm" name="id2828342"></a><pre class="programlisting">gint32      bonobo_pbclient_get_long        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 32 bit integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828448"></a><h3><a name="bonobo-pbclient-get-default-long"></a>bonobo_pbclient_get_default_long ()</h3><a class="indexterm" name="id2828459"></a><pre class="programlisting">gint32      bonobo_pbclient_get_default_long
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828559"></a><h3><a name="bonobo-pbclient-get-long-with-default"></a>bonobo_pbclient_get_long_with_default ()</h3><a class="indexterm" name="id2828571"></a><pre class="programlisting">gint32      bonobo_pbclient_get_long_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint32 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828692"></a><h3><a name="bonobo-pbclient-get-ulong"></a>bonobo_pbclient_get_ulong ()</h3><a class="indexterm" name="id2828703"></a><pre class="programlisting">guint32     bonobo_pbclient_get_ulong       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 32 bit unsigned integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828808"></a><h3><a name="bonobo-pbclient-get-default-ulong"></a>bonobo_pbclient_get_default_ulong ()</h3><a class="indexterm" name="id2828821"></a><pre class="programlisting">guint32     bonobo_pbclient_get_default_ulong
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2828920"></a><h3><a name="bonobo-pbclient-get-ulong-with-default"></a>bonobo_pbclient_get_ulong_with_default ()</h3><a class="indexterm" name="id2828932"></a><pre class="programlisting">guint32     bonobo_pbclient_get_ulong_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint32 defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829052"></a><h3><a name="bonobo-pbclient-get-float"></a>bonobo_pbclient_get_float ()</h3><a class="indexterm" name="id2829065"></a><pre class="programlisting">gfloat      bonobo_pbclient_get_float       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a single precision floating point value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829170"></a><h3><a name="bonobo-pbclient-get-default-float"></a>bonobo_pbclient_get_default_float ()</h3><a class="indexterm" name="id2829183"></a><pre class="programlisting">gfloat      bonobo_pbclient_get_default_float
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829282"></a><h3><a name="bonobo-pbclient-get-float-with-default"></a>bonobo_pbclient_get_float_with_default ()</h3><a class="indexterm" name="id2829295"></a><pre class="programlisting">gfloat      bonobo_pbclient_get_float_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gfloat defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829415"></a><h3><a name="bonobo-pbclient-get-double"></a>bonobo_pbclient_get_double ()</h3><a class="indexterm" name="id2829426"></a><pre class="programlisting">gdouble     bonobo_pbclient_get_double      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a double precision floating point value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829532"></a><h3><a name="bonobo-pbclient-get-default-double"></a>bonobo_pbclient_get_default_double ()</h3><a class="indexterm" name="id2829544"></a><pre class="programlisting">gdouble     bonobo_pbclient_get_default_double
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829643"></a><h3><a name="bonobo-pbclient-get-double-with-default"></a>bonobo_pbclient_get_double_with_default ()</h3><a class="indexterm" name="id2829656"></a><pre class="programlisting">gdouble     bonobo_pbclient_get_double_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gdouble defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829776"></a><h3><a name="bonobo-pbclient-get-boolean"></a>bonobo_pbclient_get_boolean ()</h3><a class="indexterm" name="id2829788"></a><pre class="programlisting">gboolean    bonobo_pbclient_get_boolean     (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a boolean value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2829893"></a><h3><a name="bonobo-pbclient-get-default-boolean"></a>bonobo_pbclient_get_default_boolean ()</h3><a class="indexterm" name="id2829906"></a><pre class="programlisting">gboolean    bonobo_pbclient_get_default_boolean
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830005"></a><h3><a name="bonobo-pbclient-get-boolean-with-default"></a>bonobo_pbclient_get_boolean_with_default ()</h3><a class="indexterm" name="id2830017"></a><pre class="programlisting">gboolean    bonobo_pbclient_get_boolean_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gboolean defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830137"></a><h3><a name="bonobo-pbclient-get-char"></a>bonobo_pbclient_get_char ()</h3><a class="indexterm" name="id2830149"></a><pre class="programlisting">gchar       bonobo_pbclient_get_char        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a 8 bit character value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830255"></a><h3><a name="bonobo-pbclient-get-default-char"></a>bonobo_pbclient_get_default_char ()</h3><a class="indexterm" name="id2830267"></a><pre class="programlisting">gchar       bonobo_pbclient_get_default_char
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830366"></a><h3><a name="bonobo-pbclient-get-char-with-default"></a>bonobo_pbclient_get_char_with_default ()</h3><a class="indexterm" name="id2830379"></a><pre class="programlisting">gchar       bonobo_pbclient_get_char_with_default
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar defval,
+                                             gboolean *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830499"></a><h3><a name="bonobo-pbclient-get-value"></a>bonobo_pbclient_get_value ()</h3><a class="indexterm" name="id2830511"></a><pre class="programlisting">CORBA_any*  bonobo_pbclient_get_value       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get a value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the PropertyBag, or zero on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830638"></a><h3><a name="bonobo-pbclient-get-default-value"></a>bonobo_pbclient_get_default_value ()</h3><a class="indexterm" name="id2830651"></a><pre class="programlisting">CORBA_any*  bonobo_pbclient_get_default_value
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_TypeCode opt_tc,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Get the default value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag object
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the default value contained in the PropertyBag, or zero on error.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830779"></a><h3><a name="bonobo-pbclient-set-string"></a>bonobo_pbclient_set_string ()</h3><a class="indexterm" name="id2830792"></a><pre class="programlisting">void        bonobo_pbclient_set_string      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             const char *value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a string value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2830908"></a><h3><a name="bonobo-pbclient-set-short"></a>bonobo_pbclient_set_short ()</h3><a class="indexterm" name="id2830919"></a><pre class="programlisting">void        bonobo_pbclient_set_short       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint16 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 16 bit integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831035"></a><h3><a name="bonobo-pbclient-set-ushort"></a>bonobo_pbclient_set_ushort ()</h3><a class="indexterm" name="id2831048"></a><pre class="programlisting">void        bonobo_pbclient_set_ushort      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint16 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 16 bit unsigned integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831164"></a><h3><a name="bonobo-pbclient-set-long"></a>bonobo_pbclient_set_long ()</h3><a class="indexterm" name="id2831176"></a><pre class="programlisting">void        bonobo_pbclient_set_long        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gint32 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 32 bit integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831292"></a><h3><a name="bonobo-pbclient-set-ulong"></a>bonobo_pbclient_set_ulong ()</h3><a class="indexterm" name="id2831304"></a><pre class="programlisting">void        bonobo_pbclient_set_ulong       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             guint32 value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 32 bit unsigned integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831421"></a><h3><a name="bonobo-pbclient-set-float"></a>bonobo_pbclient_set_float ()</h3><a class="indexterm" name="id2831433"></a><pre class="programlisting">void        bonobo_pbclient_set_float       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gfloat value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a single precision floating point value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831549"></a><h3><a name="bonobo-pbclient-set-double"></a>bonobo_pbclient_set_double ()</h3><a class="indexterm" name="id2831562"></a><pre class="programlisting">void        bonobo_pbclient_set_double      (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gdouble value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a double precision floating point value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831678"></a><h3><a name="bonobo-pbclient-set-boolean"></a>bonobo_pbclient_set_boolean ()</h3><a class="indexterm" name="id2831690"></a><pre class="programlisting">void        bonobo_pbclient_set_boolean     (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gboolean value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a boolean value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831806"></a><h3><a name="bonobo-pbclient-set-char"></a>bonobo_pbclient_set_char ()</h3><a class="indexterm" name="id2831818"></a><pre class="programlisting">void        bonobo_pbclient_set_char        (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             gchar value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a 8 bit characte value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2831935"></a><h3><a name="bonobo-pbclient-set-value"></a>bonobo_pbclient_set_value ()</h3><a class="indexterm" name="id2831946"></a><pre class="programlisting">void        bonobo_pbclient_set_value       (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832062"></a><h3><a name="bonobo-pbclient-set-value-async"></a>bonobo_pbclient_set_value_async ()</h3><a class="indexterm" name="id2832074"></a><pre class="programlisting">void        bonobo_pbclient_set_value_async (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_any *value,
+                                             CORBA_Environment *opt_ev);</pre><p>
+Set a value on the PropertyBag asynchronously, discarding any
+possible roundtrip exceptions.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832191"></a><h3><a name="bonobo-pbclient-get-doc-title"></a>bonobo_pbclient_get_doc_title ()</h3><a class="indexterm" name="id2832203"></a><pre class="programlisting">char*       bonobo_pbclient_get_doc_title   (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832302"></a><h3><a name="bonobo-pbclient-get-doc"></a>bonobo_pbclient_get_doc ()</h3><a class="indexterm" name="id2832313"></a><pre class="programlisting">char*       bonobo_pbclient_get_doc         (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832411"></a><h3><a name="bonobo-pbclient-get-keys"></a>bonobo_pbclient_get_keys ()</h3><a class="indexterm" name="id2832423"></a><pre class="programlisting">GList*      bonobo_pbclient_get_keys        (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832500"></a><h3><a name="bonobo-pbclient-free-keys"></a>bonobo_pbclient_free_keys ()</h3><a class="indexterm" name="id2832513"></a><pre class="programlisting">void        bonobo_pbclient_free_keys       (GList *key_list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>key_list</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832558"></a><h3><a name="bonobo-pbclient-get-flags"></a>bonobo_pbclient_get_flags ()</h3><a class="indexterm" name="id2832570"></a><pre class="programlisting">Bonobo_PropertyFlags bonobo_pbclient_get_flags
+                                            (Bonobo_PropertyBag bag,
+                                             const char *key,
+                                             CORBA_Environment *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832669"></a><h3><a name="bonobo-pbclient-set"></a>bonobo_pbclient_set ()</h3><a class="indexterm" name="id2832681"></a><pre class="programlisting">void        bonobo_pbclient_set             (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev,
+                                             const char *first_prop,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832783"></a><h3><a name="bonobo-pbclient-get"></a>bonobo_pbclient_get ()</h3><a class="indexterm" name="id2832795"></a><pre class="programlisting">void        bonobo_pbclient_get             (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *opt_ev,
+                                             const char *first_prop,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2832898"></a><h3><a name="bonobo-pbclient-setv"></a>bonobo_pbclient_setv ()</h3><a class="indexterm" name="id2832909"></a><pre class="programlisting">char*       bonobo_pbclient_setv            (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *ev,
+                                             const char *first_arg,
+                                             va_list var_args);</pre><p>
+This function provides the grunt implementation for
+other var-arg functions like bonobo_widget_set_property</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> optional CORBA exception environment or NULL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_arg</tt></i> :</span></td><td> first argument name
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> list of subsequent name / type / value triplets
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an error string on error or NULL on success.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833037"></a><h3><a name="bonobo-pbclient-getv"></a>bonobo_pbclient_getv ()</h3><a class="indexterm" name="id2833049"></a><pre class="programlisting">char*       bonobo_pbclient_getv            (Bonobo_PropertyBag bag,
+                                             CORBA_Environment *ev,
+                                             const char *first_arg,
+                                             va_list var_args);</pre><p>
+This function provides the grunt implementation for
+other var-arg functions like bonobo_widget_get_property.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>bag</tt></i> :</span></td><td> the property bag
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> optional CORBA exception environment or NULL
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_arg</tt></i> :</span></td><td> first argument name
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> list of subsequent name / type / value triplets
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an error string on error or NULL on success.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833177"></a><h3><a name="bonobo-property-bag-client-setv"></a>bonobo_property_bag_client_setv</h3><a class="indexterm" name="id2833189"></a><pre class="programlisting">#define     bonobo_property_bag_client_setv</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833219"></a><h3><a name="bonobo-property-bag-client-getv"></a>bonobo_property_bag_client_getv</h3><a class="indexterm" name="id2833231"></a><pre class="programlisting">#define     bonobo_property_bag_client_getv</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833261"></a><h3><a name="bonobo-property-bag-client-get-property-type"></a>bonobo_property_bag_client_get_property_type</h3><a class="indexterm" name="id2833274"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_property_type</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833305"></a><h3><a name="bonobo-property-bag-client-get-value-gboolean"></a>bonobo_property_bag_client_get_value_gboolean</h3><a class="indexterm" name="id2833318"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gboolean</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833348"></a><h3><a name="bonobo-property-bag-client-get-value-gint"></a>bonobo_property_bag_client_get_value_gint</h3><a class="indexterm" name="id2833361"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gint</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833392"></a><h3><a name="bonobo-property-bag-client-get-value-glong"></a>bonobo_property_bag_client_get_value_glong</h3><a class="indexterm" name="id2833404"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_glong</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833435"></a><h3><a name="bonobo-property-bag-client-get-value-gfloat"></a>bonobo_property_bag_client_get_value_gfloat</h3><a class="indexterm" name="id2833447"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gfloat</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833478"></a><h3><a name="bonobo-property-bag-client-get-value-gdouble"></a>bonobo_property_bag_client_get_value_gdouble</h3><a class="indexterm" name="id2833490"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gdouble</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833521"></a><h3><a name="bonobo-property-bag-client-get-value-string"></a>bonobo_property_bag_client_get_value_string</h3><a class="indexterm" name="id2833534"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_string</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833564"></a><h3><a name="bonobo-property-bag-client-get-value-any"></a>bonobo_property_bag_client_get_value_any()</h3><a class="indexterm" name="id2833577"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_value_any(pb, name, ev)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833647"></a><h3><a name="bonobo-property-bag-client-get-default-gboolean"></a>bonobo_property_bag_client_get_default_gboolean</h3><a class="indexterm" name="id2833660"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gboolean</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833690"></a><h3><a name="bonobo-property-bag-client-get-default-gint"></a>bonobo_property_bag_client_get_default_gint</h3><a class="indexterm" name="id2833703"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gint</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833733"></a><h3><a name="bonobo-property-bag-client-get-default-glong"></a>bonobo_property_bag_client_get_default_glong</h3><a class="indexterm" name="id2833746"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_glong</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833776"></a><h3><a name="bonobo-property-bag-client-get-default-gfloat"></a>bonobo_property_bag_client_get_default_gfloat</h3><a class="indexterm" name="id2833790"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gfloat</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833820"></a><h3><a name="bonobo-property-bag-client-get-default-gdouble"></a>bonobo_property_bag_client_get_default_gdouble</h3><a class="indexterm" name="id2833833"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gdouble</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833864"></a><h3><a name="bonobo-property-bag-client-get-default-string"></a>bonobo_property_bag_client_get_default_string</h3><a class="indexterm" name="id2833877"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_string</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833908"></a><h3><a name="bonobo-property-bag-client-get-default-any"></a>bonobo_property_bag_client_get_default_any()</h3><a class="indexterm" name="id2833921"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_default_any(pb, name, ev)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2833990"></a><h3><a name="bonobo-property-bag-client-set-value-gboolean"></a>bonobo_property_bag_client_set_value_gboolean</h3><a class="indexterm" name="id2834004"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gboolean</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834020"></a><h3><a name="bonobo-property-bag-client-set-value-gint"></a>bonobo_property_bag_client_set_value_gint</h3><a class="indexterm" name="id2834033"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gint</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834049"></a><h3><a name="bonobo-property-bag-client-set-value-glong"></a>bonobo_property_bag_client_set_value_glong</h3><a class="indexterm" name="id2834061"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_glong</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834078"></a><h3><a name="bonobo-property-bag-client-set-value-gfloat"></a>bonobo_property_bag_client_set_value_gfloat</h3><a class="indexterm" name="id2834090"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gfloat</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834106"></a><h3><a name="bonobo-property-bag-client-set-value-gdouble"></a>bonobo_property_bag_client_set_value_gdouble</h3><a class="indexterm" name="id2834120"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gdouble</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834136"></a><h3><a name="bonobo-property-bag-client-set-value-string"></a>bonobo_property_bag_client_set_value_string</h3><a class="indexterm" name="id2834148"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_string</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834164"></a><h3><a name="bonobo-property-bag-client-set-value-any"></a>bonobo_property_bag_client_set_value_any</h3><a class="indexterm" name="id2834177"></a><pre class="programlisting">#define     bonobo_property_bag_client_set_value_any</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2834193"></a><h3><a name="bonobo-property-bag-client-get-docstring"></a>bonobo_property_bag_client_get_docstring</h3><a class="indexterm" name="id2834206"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_docstring</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2834236"></a><h3><a name="bonobo-property-bag-client-get-flags"></a>bonobo_property_bag_client_get_flags</h3><a class="indexterm" name="id2834249"></a><pre class="programlisting">#define     bonobo_property_bag_client_get_flags</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2834280"></a><h2>See Also</h2><p>
+   <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"><span class="type">BonoboPropertyBag</span></a>, <a href="libbonobo-bonobo-property-bag.html#BonoboProperty"><span class="type">BonoboProperty</span></a>, <span class="type">BonoboPropertyControl</span>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-arg.html"><b>&lt;&lt; bonobo-arg</b></a></td><td align="right"><a accesskey="n" href="monikers.html"><b>Monikers &gt;&gt;</b></a></td></tr></table></body></html>

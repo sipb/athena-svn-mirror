@@ -108,7 +108,7 @@ bonobo_persist_stream_init (BonoboPersistStream *ps)
 BONOBO_TYPE_FUNC_FULL (BonoboPersistStream,
 		       Bonobo_PersistStream,
 		       PARENT_TYPE,
-		       bonobo_persist_stream);
+		       bonobo_persist_stream)
 
 /**
  * bonobo_persist_stream_construct:

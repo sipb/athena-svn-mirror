@@ -1,0 +1,109 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboStreamMem</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="streams.html" title="Storages and Streams"><link rel="previous" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="next" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-stream-memory.html#id2866901" title="Object Hierarchy"><link rel="section" href="libbonobo-bonobo-stream-memory.html#id2866928" title="Description"><link rel="section" href="libbonobo-bonobo-stream-memory.html#id2866962" title="Details"><link rel="section" href="libbonobo-bonobo-stream-memory.html#id2867573" title="See Also"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-storage-memory.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="streams.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-storage.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-stream-memory"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">BonoboStreamMem</span></h2><p>BonoboStreamMem &#8212; 
+In-memory implementation of Bonobo::Stream interface.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="BonoboStreamMem"></a><pre class="synopsis">
+
+
+
+struct      <a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem-struct">BonoboStreamMem</a>;
+struct      <a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMemClass">BonoboStreamMemClass</a>;
+<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a>* <a href="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-construct">bonobo_stream_mem_construct</a>
+                                            (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem,
+                                             const char *buffer,
+                                             size_t size,
+                                             gboolean read_only,
+                                             gboolean resizable);
+<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* <a href="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-create">bonobo_stream_mem_create</a>      (const char *buffer,
+                                             size_t size,
+                                             gboolean read_only,
+                                             gboolean resizable);
+const char* <a href="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-buffer">bonobo_stream_mem_get_buffer</a>    (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem);
+size_t      <a href="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-size">bonobo_stream_mem_get_size</a>      (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2866901"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>
+         +----BonoboStreamMem
+</pre></div><div class="refsect1" lang="en"><a name="id2866928"></a><h2>Description</h2><p>
+   The BonoboStreamMem is an implementation of the
+   IDL:Bonobo/Stream:1.0 interface.  This implementation allows an
+   in-memory buffer to be exposed as a IDL:Bonobo/Stream:1.0 to
+   clients.  
+</p><p>
+   Here is a sample way of exposing a C string as an
+   IDL:Bonobo/Stream:1.0:
+
+   </p><div class="example"><a name="id2866944"></a><p class="title"><b>Example 1. Sample BonoboStreamMem usage</b></p><pre class="programlisting">
+BonoboStream *make_bonobo_stream_on_string (char *string)
+{
+    return bonobo_stream_mem_create (string, strlen (string), TRUE, FALSE);
+}
+     </pre></div><p>
+
+   This example will make the string argument be exposed as a CORBA
+   stream.  </p></div><div class="refsect1" lang="en"><a name="id2866962"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2866968"></a><h3><a name="BonoboStreamMem-struct"></a>struct BonoboStreamMem</h3><a class="indexterm" name="id2866979"></a><pre class="programlisting">struct BonoboStreamMem;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2866994"></a><h3><a name="BonoboStreamMemClass"></a>struct BonoboStreamMemClass</h3><a class="indexterm" name="id2867006"></a><pre class="programlisting">struct BonoboStreamMemClass {
+
+	BonoboObjectClass parent_class;
+
+	POA_Bonobo_Stream__epv epv;
+
+	char           *(*get_buffer) (BonoboStreamMem *stream_mem);
+	size_t          (*get_size)   (BonoboStreamMem *stream_mem);
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2867025"></a><h3><a name="bonobo-stream-mem-construct"></a>bonobo_stream_mem_construct ()</h3><a class="indexterm" name="id2867037"></a><pre class="programlisting"><a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a>* bonobo_stream_mem_construct
+                                            (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem,
+                                             const char *buffer,
+                                             size_t size,
+                                             gboolean read_only,
+                                             gboolean resizable);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream_mem</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>read_only</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>resizable</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2867179"></a><h3><a name="bonobo-stream-mem-create"></a>bonobo_stream_mem_create ()</h3><a class="indexterm" name="id2867190"></a><pre class="programlisting"><a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* bonobo_stream_mem_create      (const char *buffer,
+                                             size_t size,
+                                             gboolean read_only,
+                                             gboolean resizable);</pre><p>
+Creates a new BonoboStreamMem object.
+</p><p>
+If <i class="parameter"><tt>buffer</tt></i> is non-<tt class="literal">NULL</tt>, <i class="parameter"><tt>size</tt></i> bytes are copied from it into a new
+buffer. If <i class="parameter"><tt>buffer</tt></i> is <tt class="literal">NULL</tt>, a new buffer of size <i class="parameter"><tt>size</tt></i> is created
+and filled with zero bytes.
+</p><p>
+When data is read out of or (if <i class="parameter"><tt>read_only</tt></i> is FALSE) written into
+the returned BonoboStream object, the <tt class="function">read()</tt> and <tt class="function">write()</tt> operations
+operate on the new buffer. If <i class="parameter"><tt>resizable</tt></i> is TRUE, writing or seeking
+past the end of the buffer will cause the buffer to be expanded (with
+the new space zero-filled for a seek).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> The data for which a BonoboStreamMem object is to be created.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td> The size in bytes of <i class="parameter"><tt>buffer</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>read_only</tt></i> :</span></td><td> Specifies whether or not the returned BonoboStreamMem
+object should allow <tt class="function">write()</tt> operations.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>resizable</tt></i> :</span></td><td> Whether or not the buffer should be resized as needed.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the constructed BonoboStream object
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2867419"></a><h3><a name="bonobo-stream-mem-get-buffer"></a>bonobo_stream_mem_get_buffer ()</h3><a class="indexterm" name="id2867431"></a><pre class="programlisting">const char* bonobo_stream_mem_get_buffer    (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem);</pre><p>
+Returns the buffer associated with a BonoboStreamMem. If the stream
+is set to automatically resize itself, this buffer is only guaranteed
+to stay valid until the next write operation on the stream.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream_mem</tt></i> :</span></td><td> a BonoboStreamMem
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a buffer containing the data written to the stream (or
+the data the stream was initialized with if nothing has been written).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2867498"></a><h3><a name="bonobo-stream-mem-get-size"></a>bonobo_stream_mem_get_size ()</h3><a class="indexterm" name="id2867510"></a><pre class="programlisting">size_t      bonobo_stream_mem_get_size      (<a href="libbonobo-bonobo-stream-memory.html#BonoboStreamMem">BonoboStreamMem</a> *stream_mem);</pre><p>
+Returns the size of the data associated with a BonoboStreamMem
+see bonobo_stream_mem_get_buffer</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>stream_mem</tt></i> :</span></td><td> a BonoboStreamMem
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the size.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2867573"></a><h2>See Also</h2><p>
+  </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="type">BonoboStream</span></span></td><td><p>An abstract class to implement
+      IDL:Bonobo/Streams.</p></td></tr><tr><td><span class="term">IDL:Bonobo/Stream:1.0</span></td><td><p>The CORBA interface implemented .</p></td></tr></tbody></table></div><p>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-storage-memory.html"><b>&lt;&lt; bonobo-storage-memory</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-storage.html"><b>bonobo-storage &gt;&gt;</b></a></td></tr></table></body></html>

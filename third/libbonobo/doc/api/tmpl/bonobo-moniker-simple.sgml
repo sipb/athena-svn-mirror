@@ -79,63 +79,29 @@ bonobo_std_moniker_factory (BonoboGenericFactory *this,
 #BonoboMoniker, #BonoboMonikerSimple, #bonobo-moniker-util, #BonoboMonikerExtender
 </para>
 
-<!-- ##### MACRO BONOBO_MONIKER_SIMPLE_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_TYPE_RESOLVE_FLAG ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO BONOBO_RESOLVE_FLAG_TYPE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### STRUCT BonoboMonikerSimple ##### -->
 <para>
-
+A simplified #BonoboMoniker.
 </para>
 
 
-<!-- ##### STRUCT BonoboMonikerSimplePrivate ##### -->
+<!-- ##### STRUCT BonoboMonikerSimpleClass ##### -->
 <para>
-
+BonoboMonikerSimple's class.
 </para>
 
+@parent_class: 
 
 <!-- ##### USER_FUNCTION BonoboMonikerSimpleResolveFn ##### -->
 <para>
-
+Type of callback function that implements a simple moniker resolution.
 </para>
 
-@moniker: 
-@options: 
-@requested_interface: 
-@ev: 
-@Returns: 
-
-
-<!-- ##### TYPEDEF BonoboMonikerSimpleClass ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### FUNCTION bonobo_moniker_simple_get_type ##### -->
-<para>
-
-</para>
-
-@Returns: 
+@moniker: the moniker
+@options: resolve options
+@requested_interface: the requested interface (repoid string)
+@ev: CORBA environment, in case an exception needs to be raised
+@Returns: a Bonobo_Unknown as the result of the resolution
 
 
 <!-- ##### FUNCTION bonobo_moniker_simple_construct ##### -->

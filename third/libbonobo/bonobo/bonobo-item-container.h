@@ -24,7 +24,6 @@ G_BEGIN_DECLS
 #define BONOBO_IS_ITEM_CONTAINER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), BONOBO_TYPE_ITEM_CONTAINER))
 #define BONOBO_IS_ITEM_CONTAINER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_ITEM_CONTAINER))
 
-typedef GList BonoboClientSiteList;
 
 typedef struct _BonoboItemContainerPrivate BonoboItemContainerPrivate;
 typedef struct _BonoboItemContainer        BonoboItemContainer;

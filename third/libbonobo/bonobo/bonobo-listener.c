@@ -83,7 +83,7 @@ bonobo_listener_finalize (GObject *object)
 
 	if (listener->priv) {
 		g_free (listener->priv);
-		listener->priv = 0;
+		listener->priv = NULL;
 	}
 
 	bonobo_listener_parent_class->finalize (object);
@@ -121,13 +121,13 @@ bonobo_listener_init (GObject *object)
 
 	listener = BONOBO_LISTENER(object);
 	listener->priv = g_new (BonoboListenerPrivate, 1);
-	listener->priv->event_callback = 0;
+	listener->priv->event_callback = NULL;
 }
 
 BONOBO_TYPE_FUNC_FULL (BonoboListener, 
 		       Bonobo_Listener,
 		       PARENT_TYPE,
-		       bonobo_listener);
+		       bonobo_listener)
 
 /**
  * bonobo_listener_new_closure:
@@ -167,7 +167,7 @@ bonobo_listener_new_closure (GClosure *event_closure)
 
 /**
  * bonobo_listener_new:
- * @event_callback: function to be invoked when an event is emitted by the EventSource.
+ * @event_cb: function to be invoked when an event is emitted by the EventSource.
  * @user_data: data passed to the functioned pointed by @event_call.
  *
  * Creates a generic event listener.  The listener calls the @event_callback 

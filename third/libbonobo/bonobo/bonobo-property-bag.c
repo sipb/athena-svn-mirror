@@ -483,8 +483,8 @@ bonobo_property_bag_new_full (GClosure          *get_prop,
 
 /**
  * bonobo_property_bag_new:
- * @get_prop: the property get callback
- * @set_prop: the property set callback
+ * @get_prop_cb: the property get callback
+ * @set_prop_cb: the property set callback
  * @user_data: user data for the callbacks
  *
  * Creates a new property bag with the specified callbacks.
@@ -586,11 +586,11 @@ bonobo_property_bag_finalize (GObject *object)
  * @idx: integer index for fast callback switch statement
  * @type: the CORBA type eg. TC_long
  * @default_value: the default value or NULL
+ * @doctitle: the translated documentation title
  * @docstring: the translated documentation string
  * @flags: various flags
  * @get_prop: a per property get callback
  * @set_prop: a per property set callback
- * @user_data: user data for the callbacks
  * 
  * This adds a property to @pb at the full tilt of complexity.
  **/
@@ -677,10 +677,10 @@ flags_gparam_to_bonobo (guint flags)
 {
 	Bonobo_PropertyFlags f = 0;
 
-	if (!flags & G_PARAM_READABLE)
+	if (!(flags & G_PARAM_READABLE))
 		f |= Bonobo_PROPERTY_READABLE;
 
-	if (!flags & G_PARAM_WRITABLE)
+	if (!(flags & G_PARAM_WRITABLE))
 		f |= Bonobo_PROPERTY_WRITEABLE;
 
 	return f;
@@ -815,7 +815,7 @@ bonobo_property_bag_map_params (BonoboPropertyBag *pb,
  * @idx: integer index for fast callback switch statement
  * @type: the CORBA type eg. TC_long
  * @default_value: the default value or NULL
- * @docstring: the translated documentation string
+ * @doctitle: the translated documentation string
  * @flags: various flags
  * 
  *  Adds a property to the property bag.
@@ -878,4 +878,4 @@ bonobo_property_bag_init (BonoboPropertyBag *pb)
 BONOBO_TYPE_FUNC_FULL (BonoboPropertyBag, 
 		       Bonobo_PropertyBag,
 		       PARENT_TYPE,
-		       bonobo_property_bag);
+		       bonobo_property_bag)

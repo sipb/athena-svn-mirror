@@ -85,6 +85,8 @@ main (int argc, char *argv [])
 	if (!bonobo_init (NULL, NULL))
 		g_error ("Can not bonobo_init");
 
+	bonobo_activate ();
+
 	check_string ("a:", "\\\\", "\\");
 
 	check_string ("a:", "\\#", "#");

@@ -92,24 +92,22 @@ eog_image_data_construct (EogImageData *image_data)
 
 </para>
 
-<!-- ##### MACRO BONOBO_PERSIST_STREAM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboPersistStreamPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT BonoboPersistStream ##### -->
 <para>
 
 </para>
 
+
+<!-- ##### STRUCT BonoboPersistStreamClass ##### -->
+<para>
+
+</para>
+
+@parent_class: 
+@epv: 
+@load: 
+@save: 
+@get_content_types: 
 
 <!-- ##### USER_FUNCTION BonoboPersistStreamIOFn ##### -->
 <para>
@@ -132,12 +130,6 @@ eog_image_data_construct (EogImageData *image_data)
 @closure: 
 @ev: 
 @Returns: 
-
-
-<!-- ##### TYPEDEF BonoboPersistStreamClass ##### -->
-<para>
-
-</para>
 
 
 <!-- ##### FUNCTION bonobo_persist_stream_new ##### -->

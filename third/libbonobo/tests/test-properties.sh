@@ -1,5 +1,7 @@
 #! /bin/sh
 
+rm iorfile
+
 ./test-properties-server &
 
 until test -s iorfile; do sleep 0; done

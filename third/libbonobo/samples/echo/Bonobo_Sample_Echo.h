@@ -5,7 +5,7 @@
 #ifndef Bonobo_Sample_Echo_H
 #define Bonobo_Sample_Echo_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -58,21 +58,18 @@ extern "C"
       void *_private;
       void (*echo) (PortableServer_Servant _servant,
 		    const CORBA_char * message, CORBA_Environment * ev);
-   }
-   POA_Bonobo_Sample_Echo__epv;
+   } POA_Bonobo_Sample_Echo__epv;
    typedef struct
    {
       PortableServer_ServantBase__epv *_base_epv;
       POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
       POA_Bonobo_Sample_Echo__epv *Bonobo_Sample_Echo_epv;
-   }
-   POA_Bonobo_Sample_Echo__vepv;
+   } POA_Bonobo_Sample_Echo__vepv;
    typedef struct
    {
       void *_private;
       POA_Bonobo_Sample_Echo__vepv *vepv;
-   }
-   POA_Bonobo_Sample_Echo;
+   } POA_Bonobo_Sample_Echo;
    extern void POA_Bonobo_Sample_Echo__init(PortableServer_Servant servant,
 					    CORBA_Environment * ev);
    extern void POA_Bonobo_Sample_Echo__fini(PortableServer_Servant servant,

@@ -1,0 +1,120 @@
+<refentry id="libbonobo-bonobo-storage">
+<refmeta>
+<refentrytitle>bonobo-storage</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bonobo-storage</refname><refpurpose>Abstract implementation of the Bonobo::Storage interface</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        <link linkend="bonobo-storage-copy-to">bonobo_storage_copy_to</link>          (<link linkend="Bonobo-Storage">Bonobo_Storage</link> src,
+                                             <link linkend="Bonobo-Storage">Bonobo_Storage</link> dest,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The BonoboStorage C interface is extremely simple, this is since
+the CORBA client interface is where the action occurs. It is
+anticipated that relatively few people need to implement the
+Bonobo/Storage IDL interface.
+</para>
+
+<para>
+The common entry point for BonoboStorage is that of opening a
+storage using the bonobo_storage_open function, perhaps by a
+container to use to persist a compound document:
+  <example>
+     <title>An example storage use case</title>
+     <programlisting>
+void
+container_save (SampleApp         *app,
+                const char        *filename,
+                CORBA_Environment *ev)
+{
+	BonoboStorage *storage;
+	Bonobo_Storage corba_storage;
+	GList *components;
+	int i;
+
+	storage = bonobo_storage_open (STORAGE_TYPE, filename,
+				       Bonobo_Storage_READ |
+				       Bonobo_Storage_WRITE |
+				       Bonobo_Storage_CREATE,
+				       0664);
+	g_return_if_fail (storage);
+
+	corba_storage = BONOBO_OBJREF (storage);
+
+	... 
+	Serialize components to streams created in the storage
+	...
+
+	Bonobo_Storage_commit (corba_storage, ev);
+
+	CORBA_exception_free (ev);
+
+	bonobo_object_unref (BONOBO_OBJECT (storage));
+}
+     </programlisting>
+  </example>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="bonobo-storage-copy-to"/>bonobo_storage_copy_to ()</title>
+<indexterm><primary>bonobo_storage_copy_to</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_storage_copy_to          (<link linkend="Bonobo-Storage">Bonobo_Storage</link> src,
+                                             <link linkend="Bonobo-Storage">Bonobo_Storage</link> dest,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev);</programlisting>
+<para>
+Implements a pure CORBA method for copying one storage into
+another, this is used by several BonoboStorage implemetations
+where a fast case localy copy cannot work.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>src</parameter>&nbsp;:</term>
+<listitem><simpara> the source storage
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara> the destination storage
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
+<listitem><simpara> CORBA exception environment
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="BonoboPersist"><type>BonoboPersist</type></link> <link linkend="BonoboPersistStream"><type>BonoboPersistStream</type></link>
+</para>
+</refsect1>
+
+</refentry>

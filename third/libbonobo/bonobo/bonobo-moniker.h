@@ -66,7 +66,7 @@ const char    *bonobo_moniker_get_name_full      (BonoboMoniker     *moniker);
 char          *bonobo_moniker_get_name_escaped   (BonoboMoniker     *moniker);
 
 void           bonobo_moniker_set_name           (BonoboMoniker     *moniker,
-						  const char        *unescaped_name);
+						  const char        *name);
 
 const char    *bonobo_moniker_get_prefix         (BonoboMoniker     *moniker);
 

@@ -8,9 +8,16 @@
 #undef HAVE_DLADDR
 #undef ENABLE_ORBIT2
 #undef GETTEXT_PACKAGE
+#undef BONOBO_ACTIVATION_DEBUG
+
+/* Always define if getaddrinfo() is defined on the system. */
+#undef HAVE_GETADDRINFO
 
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
+
+/* gettext package name */
+#undef GETTEXT_PACKAGE
 
 /* Defined if debugging code should be compiled */
 #undef G_ENABLE_DEBUG
@@ -20,6 +27,9 @@
 
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
+
+/* whether we have dladdr */
+#undef HAVE_DLADDR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
@@ -38,6 +48,9 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `nanosleep' function. */
+#undef HAVE_NANOSLEEP
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -59,6 +72,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `usleep' function. */
+#undef HAVE_USLEEP
 
 /* Name of package */
 #undef PACKAGE
@@ -83,3 +99,7 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#undef YYTEXT_POINTER

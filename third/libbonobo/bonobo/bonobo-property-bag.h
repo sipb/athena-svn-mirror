@@ -87,13 +87,13 @@ bonobo_property_bag_new_closure   (GClosure          *get_prop,
 BonoboPropertyBag *
 bonobo_property_bag_new_full      (GClosure          *get_prop,
 				   GClosure          *set_prop,
-				   BonoboEventSource *event_source);
+				   BonoboEventSource *es);
 
 BonoboPropertyBag *
 bonobo_property_bag_construct     (BonoboPropertyBag *pb,
 				   GClosure          *get_prop,
 				   GClosure          *set_prop,
-				   BonoboEventSource *event_source);
+				   BonoboEventSource *es);
 
 void                      
 bonobo_property_bag_add           (BonoboPropertyBag   *pb,

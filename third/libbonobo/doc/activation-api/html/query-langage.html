@@ -1,0 +1,26 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Bonobo Activation Query Langage</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="up" href="index.html" title="Bonobo Activation API Reference Manual"><link rel="previous" href="async-activation.html" title="Async Activation"><link rel="next" href="query-syntax.html" title="Syntax"><link rel="chapter" href="tutorial.html" title="Bonobo Activation tutorial"><link rel="chapter" href="configuring.html" title="Configuring Bonobo Activation"><link rel="chapter" href="architecture.html" title="Bonobo Activation Architecture"><link rel="chapter" href="query-langage.html" title="Bonobo Activation Query Langage"><link rel="chapter" href="server-xml-reference.html" title=".server file format reference"><link rel="chapter" href="migrating.html" title="Migrating from gnorba to Bonobo-activation"><link rel="chapter" href="api-reference.html" title="API Reference"><link rel="refentry" href="bonobo-activation-Initialization.html" title="Initialization"><link rel="refentry" href="bonobo-activation-Query-and-Activation.html" title="Query and Activation"><link rel="refentry" href="bonobo-activation-Utilities.html" title="Utilities"><link rel="refentry" href="bonobo-activation-Registration.html" title="Registration"><link rel="refentry" href="bonobo-activation-Debugging.html" title="Debugging"><link rel="article" href="lgpl.html" title="GNU Lesser General Public License"><link rel="section" href="query-langage.html#id2694169" title="The Bonobo Activation query langage"><link rel="section" href="query-syntax.html" title="Syntax"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="async-activation.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Bonobo Activation API Reference Manual</th><td><a accesskey="n" href="query-syntax.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="query-langage"></a>Bonobo Activation Query Langage</h2></div></div><div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="query-langage.html#id2694169">The Bonobo Activation query langage</a></span></dt><dt><span class="sect1"><a href="query-syntax.html">Syntax</a></span></dt><dd><dl><dt><span class="sect2"><a href="query-syntax.html#oaf-query-ref-types">Constants</a></span></dt><dt><span class="sect2"><a href="query-syntax.html#id2695266">Field identifiers</a></span></dt><dt><span class="sect2"><a href="query-syntax.html#id2695292">Variables</a></span></dt><dt><span class="sect2"><a href="query-syntax.html#id2695320">Functions</a></span></dt><dt><span class="sect2"><a href="query-syntax.html#id2695404">Operators</a></span></dt></dl></dd></dl></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id2694169"></a>The Bonobo Activation query langage</h2></div></div><div></div></div><p>
+Bonobo Activation has a query language used to request components with
+specific properties from the Bonobo Activation daemon.
+The API call <tt class="function">bonobo_activation_activate</tt> takes a
+<span class="emphasis"><em>requirements</em></span> parameter which is
+a string containing a specific request in the OAF query 
+langage.
+A simple example is:
+</p><pre class="programlisting">
+CORBA_Object o = bonobo_activation_activate ("repo_ids.has ('IDL:GNOME/Graph/Layout:1.0')",
+                                             NULL, 0, NULL, &amp;ev);
+</pre><p>
+This will ask for a component which supports the GNOME/Graph/Lyout:1.0 interface.
+You can also do much more complicated things.
+</p><pre class="programlisting">
+"(repo_ids.has_all (['IDL:Bonobo/Control:1.0',
+		     'IDL:Nautilus/ContentView:1.0']) OR
+  repo_ids.has_one (['IDL:Bonobo/Control:1.0',
+                     'IDL:Bonobo/Embeddable:1.0'])) AND
+  repo_ids.has('IDL:Bonobo/PersistFile:1.0') AND
+  foo:bar.defined()"
+</pre><p>
+This would get any component with both 'Control' and 'ContentView' or
+with either 'Control' or 'Embeddable' as long as they supported the
+'PersistFile' interface, and defined the attribute 'foo:bar'.
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="async-activation.html"><b>&lt;&lt; Async Activation</b></a></td><td align="right"><a accesskey="n" href="query-syntax.html"><b>Syntax &gt;&gt;</b></a></td></tr></table></body></html>

@@ -734,8 +734,10 @@ async_activation_cb (CORBA_Object activated_object,
 			parse_async_ctx_free (ctx);
 
 		} else {
-			gpointer args [] = { &ctx->name };
+			gpointer args [] = { NULL };
 	
+			args[0] = &ctx->name;
+
 			if (!set_name_method)
 				setup_methods ();
 				
@@ -857,8 +859,11 @@ bonobo_moniker_resolve_async (Bonobo_Moniker         moniker,
 			      gpointer               user_data)
 {
 	resolve_async_ctx_t *ctx;
-	gpointer args [] = { &options, &interface_name };
-	
+	gpointer args [] = { NULL, NULL };
+
+	args[0] = &options;
+	args[1] = &interface_name;
+
 	g_return_if_fail (ev != NULL);
 	g_return_if_fail (cb != NULL);
 	g_return_if_fail (moniker != CORBA_OBJECT_NIL);
@@ -1043,8 +1048,8 @@ bonobo_string_to_CosNaming_Name (const CORBA_char *string,
 	gboolean used = FALSE;
 	GPtrArray *append_to;
 
-	g_ptr_array_add (ids, g_string_new (""));
-	g_ptr_array_add (kinds, g_string_new (""));
+	g_ptr_array_add (ids, g_string_new (NULL));
+	g_ptr_array_add (kinds, g_string_new (NULL));
 
 	append_to = ids;
 
@@ -1060,8 +1065,8 @@ bonobo_string_to_CosNaming_Name (const CORBA_char *string,
 		case '/':
 			if (used) {
 				pos++;
-				g_ptr_array_add (ids, g_string_new (""));
-				g_ptr_array_add (kinds, g_string_new (""));
+				g_ptr_array_add (ids, g_string_new (NULL));
+				g_ptr_array_add (kinds, g_string_new (NULL));
 				g_assert (ids->len == pos + 1 && kinds->len == pos + 1);
 			}
 			used = FALSE;

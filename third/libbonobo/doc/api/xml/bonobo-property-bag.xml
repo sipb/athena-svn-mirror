@@ -1,0 +1,651 @@
+<refentry id="libbonobo-bonobo-property-bag">
+<refmeta>
+<refentrytitle>BonoboPropertyBag</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPropertyBag</refname><refpurpose>Implements a generic property storage interface</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="BonoboPropertyBagClass">BonoboPropertyBagClass</link>;
+struct      <link linkend="BonoboPropertyBag">BonoboPropertyBag</link>;
+#define     <link linkend="BONOBO-PROPERTY-READABLE-CAPS">BONOBO_PROPERTY_READABLE</link>
+#define     <link linkend="BONOBO-PROPERTY-WRITEABLE-CAPS">BONOBO_PROPERTY_WRITEABLE</link>
+#define     <link linkend="BONOBO-PROPERTY-WRITABLE-CAPS">BONOBO_PROPERTY_WRITABLE</link>
+#define     <link linkend="BONOBO-PROPERTY-NO-LISTENING-CAPS">BONOBO_PROPERTY_NO_LISTENING</link>
+#define     <link linkend="BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS">BONOBO_PROPERTY_NO_AUTONOTIFY</link>
+struct      <link linkend="BonoboProperty">BonoboProperty</link>;
+<link linkend="void">void</link>        (<link linkend="BonoboPropertyGetFn">*BonoboPropertyGetFn</link>)          (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *bag,
+                                             <link linkend="BonoboArg">BonoboArg</link> *arg,
+                                             <link linkend="guint">guint</link> arg_id,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        (<link linkend="BonoboPropertySetFn">*BonoboPropertySetFn</link>)          (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *bag,
+                                             const <link linkend="BonoboArg">BonoboArg</link> *arg,
+                                             <link linkend="guint">guint</link> arg_id,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* <link linkend="bonobo-property-bag-new">bonobo_property_bag_new</link>  (<link linkend="BonoboPropertyGetFn">BonoboPropertyGetFn</link> get_prop_cb,
+                                             <link linkend="BonoboPropertySetFn">BonoboPropertySetFn</link> set_prop_cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* <link linkend="bonobo-property-bag-new-closure">bonobo_property_bag_new_closure</link>
+                                            (<link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop);
+<link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* <link linkend="bonobo-property-bag-new-full">bonobo_property_bag_new_full</link>
+                                            (<link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop,
+                                             <link linkend="BonoboEventSource">BonoboEventSource</link> *es);
+<link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* <link linkend="bonobo-property-bag-construct">bonobo_property_bag_construct</link>
+                                            (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             <link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop,
+                                             <link linkend="BonoboEventSource">BonoboEventSource</link> *es);
+<link linkend="void">void</link>        <link linkend="bonobo-property-bag-add">bonobo_property_bag_add</link>         (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="BonoboArgType">BonoboArgType</link> type,
+                                             <link linkend="BonoboArg">BonoboArg</link> *default_value,
+                                             const <link linkend="char">char</link> *doctitle,
+                                             <link linkend="Bonobo-PropertyFlags">Bonobo_PropertyFlags</link> flags);
+<link linkend="void">void</link>        <link linkend="bonobo-property-bag-add-full">bonobo_property_bag_add_full</link>    (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="BonoboArgType">BonoboArgType</link> type,
+                                             <link linkend="BonoboArg">BonoboArg</link> *default_value,
+                                             const <link linkend="char">char</link> *doctitle,
+                                             const <link linkend="char">char</link> *docstring,
+                                             <link linkend="Bonobo-PropertyFlags">Bonobo_PropertyFlags</link> flags,
+                                             <link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop);
+<link linkend="void">void</link>        <link linkend="bonobo-property-bag-remove">bonobo_property_bag_remove</link>      (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>        <link linkend="bonobo-property-bag-map-params">bonobo_property_bag_map_params</link>  (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             <link linkend="GObject">GObject</link> *on_instance,
+                                             const <link linkend="GParamSpec">GParamSpec</link> **pspecs,
+                                             <link linkend="guint">guint</link> n_params);
+<link linkend="GList">GList</link>*      <link linkend="bonobo-property-bag-get-prop-list">bonobo_property_bag_get_prop_list</link>
+                                            (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The PropertyBag is used for many things, particularly for
+the customization of controls. The important thing to
+remember about the BonoboPropertyBag implementation is that
+no live data is stored in the bag. ie. the Model for the 
+properties is your code.
+</para>
+
+<para>
+Consequently when someone requests a properties value,
+or sets a property the callbacks you supply at bag
+construction time are called, and the code therein must
+supply the property. Similarly, when a property changes
+value inside your object you need to notify the property
+bag's listeners that it has changed with a call to
+<function>bonobo_event_source_notify_listeners_full</function>.
+</para>
+
+<para>
+Here is a simple example use of the property bag:
+  <example>
+     <title>PropertyBag Callbacks</title>
+     <programlisting>
+enum {
+	PROP_RUNNING,
+	PROP_COLOUR
+} MyArgs;
+
+static void
+get_prop (BonoboPropertyBag *bag,
+	  BonoboArg         *arg,
+	  guint              arg_id,
+	  CORBA_Environment *ev,
+	  gpointer           user_data)
+{
+	GtkObject *clock = user_data;
+
+	switch (arg_id) {
+
+	case PROP_RUNNING:
+		BONOBO_ARG_SET_BOOLEAN (arg, clock->is_running);
+		break;
+
+	case PROP_COLOUR:
+		BONOBO_ARG_SET_STRING (arg, clock->color);
+		break;
+
+	default:
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
+		break;
+	}
+}
+
+static void
+set_prop (BonoboPropertyBag *bag,
+	  const BonoboArg   *arg,
+	  guint              arg_id,
+	  CORBA_Environment *ev,
+	  gpointer           user_data)
+{
+	GtkClock *clock = user_data;
+
+	switch (arg_id) {
+
+	case PROP_RUNNING: {
+		guint i = BONOBO_ARG_GET_BOOLEAN (arg);
+
+		if (i)
+			gtk_clock_start (clock);
+		else
+			gtk_clock_stop (clock);
+		break;
+	}
+
+	case PROP_COLOUR:
+		gtk_clock_set_color (clock, BONOBO_ARG_GET_STRING (arg));
+
+	default:
+		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
+		break;
+	}
+}
+     </programlisting>
+  </example>
+</para>
+<para>
+Then to instantiate the property bag interface and associate it with
+a control perhaps we do:
+  <example>
+     <title>Adding a PropertyBag to a control</title>
+     <programlisting>
+	BonoboPropertyBag *pb;
+
+	pb = bonobo_property_bag_new (get_prop, set_prop, clock);
+	bonobo_control_set_properties (control, pb);
+
+	bonobo_property_bag_add (pb, "running", PROP_RUNNING,
+				 BONOBO_ARG_BOOLEAN, NULL,
+				 _("Whether or not the clock is running"),
+				 0);
+
+	bonobo_property_bag_add (pb, "colour", PROP_COLOUR,
+				 BONOBO_ARG_STRING, NULL,
+				 _("The colour of the clock face"),
+				 0);
+
+	bonobo_object_unref (BONOBO_OBJECT (pb));
+     </programlisting>
+  </example>
+And finally we need to notify listeners of changes in various properties
+so we could perhaps do:
+  <example>
+     <title>Notifying proterty bag listeners</title>
+     <programlisting>
+static void
+signal_handler (GtkClock *clock, BonoboPropertyBag *pb)
+{
+	BonoboArg *arg = bonobo_arg_new (TC_string);
+
+	BONOBO_ARG_SET_STRING (arg, gtk_clock_get_color (clock));
+
+	bonobo_event_source_notify_listeners_full (pb->es, 
+					           "Bonobo/Property",
+					           "change",
+						   "colour",
+					           arg, NULL);
+	bonobo_arg_release (arg);
+}
+...
+	gtk_signal_connect (GTK_OBJECT (clock), "color_changed",
+			    GTK_SIGNAL_FUNC (signal_handler), pb);
+     </programlisting>
+  </example>
+  See also <link linkend="BonoboArg"><type>BonoboArg</type></link>.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboPropertyBagClass"/>struct BonoboPropertyBagClass</title>
+<indexterm><primary>BonoboPropertyBagClass</primary></indexterm><programlisting>struct BonoboPropertyBagClass {
+
+	BonoboObjectClass        parent;
+
+	POA_Bonobo_PropertyBag__epv epv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPropertyBag"/>struct BonoboPropertyBag</title>
+<indexterm><primary>BonoboPropertyBag</primary></indexterm><programlisting>struct BonoboPropertyBag {
+
+	BonoboObject             parent;
+	BonoboPropertyBagPrivate *priv;
+	BonoboEventSource        *es;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PROPERTY-READABLE-CAPS"/>BONOBO_PROPERTY_READABLE</title>
+<indexterm><primary>BONOBO_PROPERTY_READABLE</primary></indexterm><programlisting>#define BONOBO_PROPERTY_READABLE      Bonobo_PROPERTY_READABLE
+</programlisting>
+<para>
+    If this flag is set, the property allows consulting its value.
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PROPERTY-WRITEABLE-CAPS"/>BONOBO_PROPERTY_WRITEABLE</title>
+<indexterm><primary>BONOBO_PROPERTY_WRITEABLE</primary></indexterm><programlisting>#define BONOBO_PROPERTY_WRITEABLE     Bonobo_PROPERTY_WRITEABLE
+</programlisting>
+<para>
+    If this flag is set, the property supports modification of its value.
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PROPERTY-WRITABLE-CAPS"/>BONOBO_PROPERTY_WRITABLE</title>
+<indexterm><primary>BONOBO_PROPERTY_WRITABLE</primary></indexterm><programlisting>#define BONOBO_PROPERTY_WRITABLE      Bonobo_PROPERTY_WRITEABLE
+</programlisting>
+<para>
+    Misspelling of <link linkend="BONOBO-PROPERTY-WRITEABLE-CAPS"><type>BONOBO_PROPERTY_WRITEABLE</type></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PROPERTY-NO-LISTENING-CAPS"/>BONOBO_PROPERTY_NO_LISTENING</title>
+<indexterm><primary>BONOBO_PROPERTY_NO_LISTENING</primary></indexterm><programlisting>#define BONOBO_PROPERTY_NO_LISTENING  Bonobo_PROPERTY_NO_LISTENING 
+</programlisting>
+<para>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</para></refsect2>
+<refsect2>
+<title><anchor id="BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS"/>BONOBO_PROPERTY_NO_AUTONOTIFY</title>
+<indexterm><primary>BONOBO_PROPERTY_NO_AUTONOTIFY</primary></indexterm><programlisting>#define BONOBO_PROPERTY_NO_AUTONOTIFY Bonobo_PROPERTY_NO_AUTONOTIFY 
+</programlisting>
+<para>
+    If this flag set, when the property changes its value its
+    listeners will *not* be notified.
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboProperty"/>struct BonoboProperty</title>
+<indexterm><primary>BonoboProperty</primary></indexterm><programlisting>struct BonoboProperty {
+
+	char		      *name;
+	int                    idx;
+	BonoboArgType          type;
+	BonoboArg             *default_value;
+	char		      *doctitle;
+	char		      *docstring;
+	Bonobo_PropertyFlags   flags;
+
+	BonoboPropertyPrivate *priv;
+};
+</programlisting>
+<para>
+Structure that holds information about a property in a <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link>.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="char">char</link> *<structfield>name</structfield></term>
+<listitem><simpara>the canonic name of the property
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="int">int</link> <structfield>idx</structfield></term>
+<listitem><simpara>unique numeric identifier of the property within the property bag
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="BonoboArgType">BonoboArgType</link> <structfield>type</structfield></term>
+<listitem><simpara>type of value contained by this property
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="BonoboArg">BonoboArg</link> *<structfield>default_value</structfield></term>
+<listitem><simpara>the default value
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="char">char</link> *<structfield>doctitle</structfield></term>
+<listitem><simpara>documentation string title
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="char">char</link> *<structfield>docstring</structfield></term>
+<listitem><simpara>documentation string
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="Bonobo-PropertyFlags">Bonobo_PropertyFlags</link> <structfield>flags</structfield></term>
+<listitem><simpara>property flags (read/write, etc.)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="BonoboPropertyPrivate">BonoboPropertyPrivate</link> *<structfield>priv</structfield></term>
+<listitem><simpara>implementation private data
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboPropertyGetFn"/>BonoboPropertyGetFn ()</title>
+<indexterm><primary>BonoboPropertyGetFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*BonoboPropertyGetFn)          (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *bag,
+                                             <link linkend="BonoboArg">BonoboArg</link> *arg,
+                                             <link linkend="guint">guint</link> arg_id,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Property getter function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>bag</parameter>&nbsp;:</term>
+<listitem><simpara>the property bag
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg</parameter>&nbsp;:</term>
+<listitem><simpara>output parameter; the caller must place here the property value
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg_id</parameter>&nbsp;:</term>
+<listitem><simpara>unique numeric identifier of the property within the property bag
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
+<listitem><simpara>the relevant CORBA environment
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboPropertySetFn"/>BonoboPropertySetFn ()</title>
+<indexterm><primary>BonoboPropertySetFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*BonoboPropertySetFn)          (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *bag,
+                                             const <link linkend="BonoboArg">BonoboArg</link> *arg,
+                                             <link linkend="guint">guint</link> arg_id,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Property setter function.
+</para><variablelist role="params">
+<varlistentry><term><parameter>bag</parameter>&nbsp;:</term>
+<listitem><simpara>the property bag
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg</parameter>&nbsp;:</term>
+<listitem><simpara>the new property value to be set
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>arg_id</parameter>&nbsp;:</term>
+<listitem><simpara>unique numeric identifier of the property within the property bag
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
+<listitem><simpara>the relevant CORBA environment
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-new"/>bonobo_property_bag_new ()</title>
+<indexterm><primary>bonobo_property_bag_new</primary></indexterm><programlisting><link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* bonobo_property_bag_new  (<link linkend="BonoboPropertyGetFn">BonoboPropertyGetFn</link> get_prop_cb,
+                                             <link linkend="BonoboPropertySetFn">BonoboPropertySetFn</link> set_prop_cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Creates a new property bag with the specified callbacks.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>get_prop_cb</parameter>&nbsp;:</term>
+<listitem><simpara> the property get callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_prop_cb</parameter>&nbsp;:</term>
+<listitem><simpara> the property set callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> user data for the callbacks
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-new-closure"/>bonobo_property_bag_new_closure ()</title>
+<indexterm><primary>bonobo_property_bag_new_closure</primary></indexterm><programlisting><link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* bonobo_property_bag_new_closure
+                                            (<link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop);</programlisting>
+<para>
+Creates a new property bag with the specified callbacks.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>get_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property get closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property set closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-new-full"/>bonobo_property_bag_new_full ()</title>
+<indexterm><primary>bonobo_property_bag_new_full</primary></indexterm><programlisting><link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* bonobo_property_bag_new_full
+                                            (<link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop,
+                                             <link linkend="BonoboEventSource">BonoboEventSource</link> *es);</programlisting>
+<para>
+Creates a new property bag with the specified callbacks.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>get_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property get closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property set closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>es</parameter>&nbsp;:</term>
+<listitem><simpara> an event source to aggregate
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link> object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-construct"/>bonobo_property_bag_construct ()</title>
+<indexterm><primary>bonobo_property_bag_construct</primary></indexterm><programlisting><link linkend="BonoboPropertyBag">BonoboPropertyBag</link>* bonobo_property_bag_construct
+                                            (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             <link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop,
+                                             <link linkend="BonoboEventSource">BonoboEventSource</link> *es);</programlisting>
+<para>
+Constructor, only for use in wrappers and object derivation, please
+refer to the <link linkend="bonobo-property-bag-new"><type>bonobo_property_bag_new</type></link> for normal use.
+</para>
+<para>
+This function returns <parameter>pb</parameter>, or <literal>NULL</literal> in case of error.  If it returns <literal>NULL</literal>,
+the passed in <parameter>pb</parameter> is unrefed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara> <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link> to construct
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property get closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_prop</parameter>&nbsp;:</term>
+<listitem><simpara> the property set closure
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>es</parameter>&nbsp;:</term>
+<listitem><simpara> an event source to aggregate
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>  <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link> pointer or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-add"/>bonobo_property_bag_add ()</title>
+<indexterm><primary>bonobo_property_bag_add</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_property_bag_add         (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="BonoboArgType">BonoboArgType</link> type,
+                                             <link linkend="BonoboArg">BonoboArg</link> *default_value,
+                                             const <link linkend="char">char</link> *doctitle,
+                                             <link linkend="Bonobo-PropertyFlags">Bonobo_PropertyFlags</link> flags);</programlisting>
+<para>
+Adds a property to the property bag.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara> property bag to add to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> name of new property
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara> integer index for fast callback switch statement
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> the CORBA type eg. TC_long
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>default_value</parameter>&nbsp;:</term>
+<listitem><simpara> the default value or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doctitle</parameter>&nbsp;:</term>
+<listitem><simpara> the translated documentation string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> various flags
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-add-full"/>bonobo_property_bag_add_full ()</title>
+<indexterm><primary>bonobo_property_bag_add_full</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_property_bag_add_full    (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="int">int</link> idx,
+                                             <link linkend="BonoboArgType">BonoboArgType</link> type,
+                                             <link linkend="BonoboArg">BonoboArg</link> *default_value,
+                                             const <link linkend="char">char</link> *doctitle,
+                                             const <link linkend="char">char</link> *docstring,
+                                             <link linkend="Bonobo-PropertyFlags">Bonobo_PropertyFlags</link> flags,
+                                             <link linkend="GClosure">GClosure</link> *get_prop,
+                                             <link linkend="GClosure">GClosure</link> *set_prop);</programlisting>
+<para>
+This adds a property to <parameter>pb</parameter> at the full tilt of complexity.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara> property bag to add to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> name of new property
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>idx</parameter>&nbsp;:</term>
+<listitem><simpara> integer index for fast callback switch statement
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara> the CORBA type eg. TC_long
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>default_value</parameter>&nbsp;:</term>
+<listitem><simpara> the default value or NULL
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>doctitle</parameter>&nbsp;:</term>
+<listitem><simpara> the translated documentation title
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>docstring</parameter>&nbsp;:</term>
+<listitem><simpara> the translated documentation string
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> various flags
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_prop</parameter>&nbsp;:</term>
+<listitem><simpara> a per property get callback
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>set_prop</parameter>&nbsp;:</term>
+<listitem><simpara> a per property set callback
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-remove"/>bonobo_property_bag_remove ()</title>
+<indexterm><primary>bonobo_property_bag_remove</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_property_bag_remove      (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+removes the property with <parameter>name</parameter> from <parameter>b</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara> the property bag
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> name of property to remove.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-map-params"/>bonobo_property_bag_map_params ()</title>
+<indexterm><primary>bonobo_property_bag_map_params</primary></indexterm><programlisting><link linkend="void">void</link>        bonobo_property_bag_map_params  (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb,
+                                             <link linkend="GObject">GObject</link> *on_instance,
+                                             const <link linkend="GParamSpec">GParamSpec</link> **pspecs,
+                                             <link linkend="guint">guint</link> n_params);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>on_instance</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pspecs</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>n_params</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-property-bag-get-prop-list"/>bonobo_property_bag_get_prop_list ()</title>
+<indexterm><primary>bonobo_property_bag_get_prop_list</primary></indexterm><programlisting><link linkend="GList">GList</link>*      bonobo_property_bag_get_prop_list
+                                            (<link linkend="BonoboPropertyBag">BonoboPropertyBag</link> *pb);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pb</parameter>&nbsp;:</term>
+<listitem><simpara> A <link linkend="BonoboPropertyBag"><type>BonoboPropertyBag</type></link>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>a <link linkend="GList"><type>GList</type></link> of <link linkend="BonoboProperty"><type>BonoboProperty</type></link> structures.  This function is
+private and should only be used internally, or in a PropertyBag
+persistence implementation.  You should not touch the
+<link linkend="BonoboProperty"><type>BonoboProperty</type></link> structure unless you know what you're doing.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

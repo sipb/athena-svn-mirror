@@ -1,18 +1,226 @@
 # Turkish translation of libbonobo.
 # Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2001.
+# Nilgün Belma Bugüner <nilgun@fide.org>, 2001.
+# Fatih Demir <kabalak@gtranslator.org>, 2001.
 # Arman Aksoy <armish@linux-sevenler.de>, 2003.
+#
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 15:34+0100\n"
 "PO-Revision-Date: 2003-02-10 18:40+0200\n"
-"Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
+"Last-Translator: Baris Cicek <baris@teamforce.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: activation-server/activation-context-corba.c:470
+msgid "Couldn't find which child the server was listed in"
+msgstr "Sunucuyu listeleyen alt süreç bulunamadı"
+
+#: activation-server/activation-context-corba.c:748
+msgid "Not a valid Activation ID"
+msgstr "Hatalı aktivasyon tanımlayıcısı"
+
+#: activation-server/activation-server-main.c:68
+msgid "Directory to read .server files from"
+msgstr ".server dosyalarının okunacağı dizin"
+
+#: activation-server/activation-server-main.c:68
+msgid "DIRECTORY"
+msgstr "DİZİN"
+
+#: activation-server/activation-server-main.c:71
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr ""
+"Bir EtkinlikBağlamı olarak sunuluyor (sadece bir NesneDizini olarak "
+"öntanımlı)"
+
+#: activation-server/activation-server-main.c:75
+msgid "File descriptor to write IOR to"
+msgstr "IOR'un üzerine yazacağı dosya tanımlayıcı"
+
+#: activation-server/activation-server-main.c:75
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "FD"
+msgstr "FD"
+
+#: activation-server/activation-server-main.c:83
+msgid "Query expression to evaluate"
+msgstr "Değerlendirilecek sorgu ifadesi"
+
+#: activation-server/activation-server-main.c:83
+msgid "EXPRESSION"
+msgstr "İFADE"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "CORBA CosNaming Servisi."
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "Servis Adı"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:3
+msgid "Notification service"
+msgstr "Uyarı servisi"
+
+#: activation-server/Bonobo_CosNaming_NamingContext.server.in.in.h:4
+msgid "Notification service for activation"
+msgstr "Etkinleştirme için uyarı servisi"
+
+#: activation-server/object-directory-activate.c:187
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr "Henüz bir uzak süreçteki shlib nesneleri etkinleştirilemiyor"
+
+#: activation-server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"Bonobo Aktivasyon yapılandırma dosyası düzgün okunmadı. Lütfen %s için "
+"geçerliliğini denetleyin."
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: activation-server/object-directory-corba.c:1149
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr "Sınıflandırma konumu '%s' sunucusu açılıyor"
+
+#: activation-server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "Boş bir IID geçerli değildir"
+
+#: activation-server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "IID %s bir NULL veri türü içeriyor"
+
+#: activation-server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "IID %s bir NULL konuma sahip"
+
+#: activation-server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "'%c' karakteri IID '%s' içinde kullanılamaz"
+
+#: activation-server/object-directory-load.c:305
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "'%s' özelliğine değer atanmamış"
+
+#: activation-server/object-directory-load.c:588
+#, c-format
+msgid "Could not parse badly formed XML document %s"
+msgstr "Hatali biçimlenmiş XML belgesi %s ayrıştırılamadı"
+
+#: activation-server/object-directory-load.c:641
+#, c-format
+msgid "Trying dir %s"
+msgstr "%s dizini deneniyor"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Ast süreç bir hata iletisi vermedi, başarısızlık sebebi bilinmiyor"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "Ast süreçten okuma başarısız: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:297
+msgid "Couldn't fork a new process"
+msgstr "Yeni bir süreç ayrıştırılamadı"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:318
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "Alt süreç %u sinyali aldı (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:323
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "Bilinmeyen çıkış engelleme hatası (durum %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:404
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "Bonobo-etkinleştirme %s süreç grubunu belirleyemedi: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:416
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "Çalıştırılamadı: %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:133
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Locale için çok fazla takma ad seviyesi, bir döngüye neden olabilir"
+
+#: bonobo-activation/bonobo-activation-init.c:200
+msgid "File descriptor to print IOR on"
+msgstr "IOR'un üstüne yazdıracağı dosya tanımlayıcı"
+
+#: bonobo-activation/bonobo-activation-init.c:202
+msgid "IID to activate"
+msgstr "Etkinleştirilecek IID"
+
+#: bonobo-activation/bonobo-activation-init.c:204
+msgid "Prevent registering of server with OAF"
+msgstr "Sunucunun OAF ile kaydedilmesini engeller"
+
+#: bonobo-activation/bonobo-activation-init.c:290
+msgid "Bonobo activation options"
+msgstr "Bonobo etkinleştirme seçenekleri"
+
+#: bonobo-activation/bonobo-activation-shlib.c:107
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "`%s' için g_module_open işlevi `%s' ile başarısız"
+
+#: bonobo-activation/bonobo-activation-shlib.c:126
+#: bonobo-activation/bonobo-activation-shlib.c:163
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "`%s' içinde Bonobo_Plugin_info sembolü bulunamıyor"
+
+#: bonobo-activation/bonobo-activation-shlib.c:212
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "`%s' `%s' için NIL ile döndü"
+
+#: bonobo-activation/bonobo-activation-shlib.c:229
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib `%s' `%s' içermiyor"
+
+#: bonobo/bonobo-application.c:352
+msgid "Name"
+msgstr "İsim"
+
+#: bonobo/bonobo-application.c:352
+msgid "Application unique name"
+msgstr "Uygulamanın özel ismi"
+
+#: bonobo/bonobo-object.c:925
+msgid "POA"
+msgstr "POA"
+
+#: bonobo/bonobo-object.c:925
+msgid "Custom CORBA POA"
+msgstr "Özel CORBA POA"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
@@ -150,11 +358,11 @@ msgstr "Hata kontrol hatası; itiraz edilemiyor"
 msgid "General activation error with no description"
 msgstr "Tanımlamasız genel aktifleştirme hatası"
 
-#: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
+#: bonobo/bonobo-generic-factory.h:79 bonobo/bonobo-generic-factory.h:83
 msgid "Could not initialize Bonobo"
 msgstr "Bonobo başlatılamıyor "
 
-#: bonobo/bonobo-moniker.c:353
+#: bonobo/bonobo-moniker.c:352
 #, c-format
 msgid "Failed to resolve, or extend '%s"
 msgstr "'%s etkinleştirmesi başarısız"
@@ -162,6 +370,16 @@ msgstr "'%s etkinleştirmesi başarısız"
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
 msgstr "Nesne etkinleştirme başarısız"
+
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
+msgid "Exception activating '%s'"
+msgstr "'%s' etkinleştirmesi kullanılmayacak"
+
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
+msgid "Failed to activate '%s'"
+msgstr "'%s' etkinleştirmesi başarısız"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -195,16 +413,6 @@ msgstr "Moniker genel öğesi"
 msgid "stream MonikerExtender"
 msgstr "Moniker Kapsamındaki akım"
 
-#: monikers/bonobo-moniker-oaf.c:53
-#, c-format
-msgid "Exception activating '%s'"
-msgstr "'%s' etkinleştirmesi kullanılmayacak"
-
-#: monikers/bonobo-moniker-oaf.c:62
-#, c-format
-msgid "Failed to activate '%s'"
-msgstr "'%s' etkinleştirmesi başarısız"
-
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
 msgstr "Bonobo Echo sunucu üreticisi"
@@ -233,3 +441,85 @@ msgstr "Echo içeriğinin  bir örneği yaratılamıyor"
 #, c-format
 msgid "An exception occured '%s'"
 msgstr "'%s' dışlaması gerçekleşti"
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "Yapılandırma dosyası kaydedilemedi.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "Lütfen '%s' dosyasına yazma izniniz olup olmadığını kontrol edin.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "Yapılandırma dosyası başarıyla kaydedildi.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"Yapılandırma dosyası:\n"
+"    %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s zaten yapılandırma dosyasında\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "Doğru düzenlenmiş bir yapılandırma dosyası yok\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "Bonobo-etkinleştirme yapılandırma dosyasının içeriği:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "Yapılandırma dosyasından kaldırılacak dizin"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "dizin yolu"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "Yapılandırma dosyasına eklenecek dizin"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "Dizinleri yapılandırma dosyasında gösterir"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "Dosya yolunu yapılandırma dosyasında gösterir"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Sorgunuzla ilişkilendirilebilecek bir sunucu yok."
+
+#~ msgid "Query failed: "
+#~ msgstr "Sorgulama başarısız: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Etkinleştirme başarısız: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "AID çözümlenemedi"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Bağlam çözümlenemedi: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Sunucu etkinleştirilemedi: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "NesneDizini Alanı"
+
+#~ msgid "DOMAIN"
+#~ msgstr "BÖLGE"
+
+#~ msgid "Object directory to use when registering servers"
+#~ msgstr "Sunucuları kaydederken kullanılacak nesne dizini"

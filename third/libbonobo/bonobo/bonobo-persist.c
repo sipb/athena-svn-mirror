@@ -68,7 +68,7 @@ bonobo_persist_finalize (GObject *object)
 	{
 		g_free (persist->priv->iid);
 		g_free (persist->priv);
-		persist->priv = 0;
+		persist->priv = NULL;
 	}
 	
 	bonobo_persist_parent_class->finalize (object);
@@ -100,7 +100,7 @@ bonobo_persist_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboPersist, 
 		       Bonobo_Persist,
 		       PARENT_TYPE,
-		       bonobo_persist);
+		       bonobo_persist)
 
 /**
  * bonobo_persist_generate_content_types:
@@ -142,6 +142,8 @@ bonobo_persist_generate_content_types (int num, ...)
  * method in derived implementations, because a BonoboPersist instance
  * doesn't make a lot of sense, but the iid private field has to be
  * set at construction time.
+ *
+ * Returns: the #BonoboPersist.
  */
 BonoboPersist *
 bonobo_persist_construct (BonoboPersist *persist,

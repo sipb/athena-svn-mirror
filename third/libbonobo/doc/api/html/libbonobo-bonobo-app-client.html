@@ -1,0 +1,114 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-app-client</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="next" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-app-client.html#id2786085" title="Description"><link rel="section" href="libbonobo-bonobo-app-client.html#id2786095" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-application.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="factories.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-app-client"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-app-client</span></h2><p>bonobo-app-client &#8212; client interface to remote <span class="type">BonoboApplication</span> objects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="libbonobo-bonobo-app-client.html#BonoboAppClientMsgDesc">BonoboAppClientMsgDesc</a>;
+BonoboAppClient* <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-new">bonobo_app_client_new</a>      (Bonobo_Application app_server);
+gint        <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-new-instance">bonobo_app_client_new_instance</a>  (BonoboAppClient *app_client,
+                                             int argc,
+                                             char *argv[],
+                                             CORBA_Environment *opt_env);
+GValue*     <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-msg-send-valist">bonobo_app_client_msg_send_valist</a>
+                                            (BonoboAppClient *app_client,
+                                             const char *message,
+                                             CORBA_Environment *opt_env,
+                                             GType first_arg_type,
+                                             va_list var_args);
+GValue*     <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-msg-send-argv">bonobo_app_client_msg_send_argv</a> (BonoboAppClient *app_client,
+                                             const char *message,
+                                             const GValue *argv[],
+                                             CORBA_Environment *opt_env);
+GValue*     <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-msg-send">bonobo_app_client_msg_send</a>      (BonoboAppClient *app_client,
+                                             const char *message,
+                                             CORBA_Environment *opt_env,
+                                             GType first_arg_type,
+                                             ...);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2786085"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2786095"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2786100"></a><h3><a name="BonoboAppClientMsgDesc"></a>struct BonoboAppClientMsgDesc</h3><a class="indexterm" name="id2786113"></a><pre class="programlisting">struct BonoboAppClientMsgDesc {
+
+	gchar *name;
+	GType  return_type;
+	GType *types;		/* G_TYPE_NONE-terminated array */
+	gchar *description;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2786129"></a><h3><a name="bonobo-app-client-new"></a>bonobo_app_client_new ()</h3><a class="indexterm" name="id2786140"></a><pre class="programlisting">BonoboAppClient* bonobo_app_client_new      (Bonobo_Application app_server);</pre><p>
+<i class="parameter"><tt>app_server</tt></i>: object reference to a Bonobo::Application; this
+function takes ownership of this reference (use
+<a href="libbonobo-bonobo-object.html#bonobo-object-dup-ref"><tt class="function">bonobo_object_dup_ref()</tt></a> if you want to keep your own reference.)
+</p><p>
+Create an application client object connected to the remote (or
+local) Bonobo::Application object.
+</p><p>
+</p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3>Applications should not use this function. See
+<a href="libbonobo-bonobo-application.html#bonobo-application-register-unique"><tt class="function">bonobo_application_register_unique()</tt></a>.</div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_server</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <span class="type">BonoboAppClient</span> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2786253"></a><h3><a name="bonobo-app-client-new-instance"></a>bonobo_app_client_new_instance ()</h3><a class="indexterm" name="id2786264"></a><pre class="programlisting">gint        bonobo_app_client_new_instance  (BonoboAppClient *app_client,
+                                             int argc,
+                                             char *argv[],
+                                             CORBA_Environment *opt_env);</pre><p>
+Ask the application server to emit a "new-instance" signal
+containing the specified string vector.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_client</tt></i> :</span></td><td> a <span class="type">BonoboAppClient</span>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> length of <i class="parameter"><tt>argv</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> array of command-line arguments
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_env</tt></i> :</span></td><td> a <span class="type">CORBA_Environment</span>, or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the message return value
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2786418"></a><h3><a name="bonobo-app-client-msg-send-valist"></a>bonobo_app_client_msg_send_valist ()</h3><a class="indexterm" name="id2786431"></a><pre class="programlisting">GValue*     bonobo_app_client_msg_send_valist
+                                            (BonoboAppClient *app_client,
+                                             const char *message,
+                                             CORBA_Environment *opt_env,
+                                             GType first_arg_type,
+                                             va_list var_args);</pre><p>
+See <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-msg-send"><tt class="function">bonobo_app_client_msg_send()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_client</tt></i> :</span></td><td> client
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td> message name
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_env</tt></i> :</span></td><td> optional corba environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_arg_type</tt></i> :</span></td><td> first message parameter
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td> remaining parameters
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> return value
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2786591"></a><h3><a name="bonobo-app-client-msg-send-argv"></a>bonobo_app_client_msg_send_argv ()</h3><a class="indexterm" name="id2786603"></a><pre class="programlisting">GValue*     bonobo_app_client_msg_send_argv (BonoboAppClient *app_client,
+                                             const char *message,
+                                             const GValue *argv[],
+                                             CORBA_Environment *opt_env);</pre><p>
+Like <a href="libbonobo-bonobo-app-client.html#bonobo-app-client-msg-send"><tt class="function">bonobo_app_client_msg_send()</tt></a>, except that it receives a single
+argument vector instead of a variable number of arguments.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_client</tt></i> :</span></td><td> client
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td> message name
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> <tt class="literal">NULL</tt>-terminated vector of pointers to GValue, the arguments
+to pass with the message.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_env</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the message return value
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2786748"></a><h3><a name="bonobo-app-client-msg-send"></a>bonobo_app_client_msg_send ()</h3><a class="indexterm" name="id2786760"></a><pre class="programlisting">GValue*     bonobo_app_client_msg_send      (BonoboAppClient *app_client,
+                                             const char *message,
+                                             CORBA_Environment *opt_env,
+                                             GType first_arg_type,
+                                             ...);</pre><p>
+Send a message to the application server. Takes a variable length
+argument list of GType, value pairs, terminated with
+<tt class="literal">G_TYPE_NONE</tt>. Values are direct C values, not GValues! Example:
+</p><div class="informalexample"><pre class="programlisting">
+GValue *retval;
+retval = bonobo_app_client_msg_send (app_client, "openURL",
+                                     G_TYPE_STRING, "http://www.gnome.org",
+                                     G_TYPE_BOOLEAN, TRUE,
+                                     G_TYPE_NONE);
+</pre></div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_client</tt></i> :</span></td><td> the client interface associated with the application
+to which we wish to send a message
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>message</tt></i> :</span></td><td> message name
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_env</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first_arg_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> arguments
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GValue containing the value returned from the
+aplication server.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-application.html"><b>&lt;&lt; bonobo-application</b></a></td><td align="right"><a accesskey="n" href="factories.html"><b>Objects, Factories, Reference Counting &gt;&gt;</b></a></td></tr></table></body></html>

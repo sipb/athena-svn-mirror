@@ -77,4 +77,4 @@ BONOBO_TYPE_FUNC_FULL (
 	Echo,                /* Glib class name */
 	Bonobo_Sample_Echo,  /* CORBA interface name */
 	BONOBO_TYPE_OBJECT,  /* parent type */
-	echo);               /* local prefix ie. 'echo'_class_init */
+	echo)                /* local prefix ie. 'echo'_class_init */

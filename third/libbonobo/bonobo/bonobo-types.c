@@ -429,15 +429,19 @@ bonobo_closure_invoke_va_list (GClosure *closure,
  * @closure: a standard GClosure
  * @return_type: the type of the first va_arg argument in a
  * set of type / arg pairs.
+ * @Varargs: list of type / arg pairs
  *
  * Invokes the closure with the arguments.
  *
- * Example:
- *
+ * Examples:
+ * <informalexample><programlisting>
  *    bonobo_closure_invoke (closure, G_TYPE_NONE, G_TYPE_INT, first_arg, 0);
+ * </programlisting></informalexample>
  *
+ * <informalexample><programlisting>
  *    glong retval;
  *    bonobo_closure_invoke (closure, G_TYPE_LONG, & retval, 0);
+ * </programlisting></informalexample>
  *
  **/
 void
@@ -506,6 +510,8 @@ bonobo_closure_invoke (GClosure *closure,
  * 
  * Does the necessary refcounting magic and returns a directly
  * storable closure
+ *
+ * Returns: @closure.
  **/
 GClosure *
 bonobo_closure_store (GClosure        *closure,

@@ -193,8 +193,7 @@ bonobo_moniker_get_name_escaped (BonoboMoniker *moniker)
 /**
  * bonobo_moniker_set_name:
  * @moniker: the BonoboMoniker to configure.
- * @name: new name for this moniker.
- * @num_chars: number of characters in name to copy.
+ * @name: new, unescaped, name for this moniker.
  *
  * This functions sets the moniker name in @moniker to be @name.
  */
@@ -450,15 +449,12 @@ bonobo_moniker_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboMoniker, 
 		       Bonobo_Moniker,
 		       PARENT_TYPE,
-		       bonobo_moniker);
+		       bonobo_moniker)
 
 /**
  * bonobo_moniker_construct:
  * @moniker: an un-constructed moniker object.
- * @corba_moniker: a CORBA handle inheriting from Bonobo::Moniker, or
- * CORBA_OBJECT_NIL, in which case a base Bonobo::Moniker is created.
  * @prefix: the prefix name of the moniker eg. 'file:', '!' or 'tar:' or NULL
- * @shlib_id:
  * 
  *  Constructs a newly created bonobo moniker with the given arguments.
  * 

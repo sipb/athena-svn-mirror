@@ -1,0 +1,325 @@
+<refentry id="libbonobo-bonobo-persist-file">
+<refmeta>
+<refentrytitle>BonoboPersistFile</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboPersistFile</refname><refpurpose>Interface for anything that can save / load itself from a file.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<anchor id="BonoboPersistFile"/>
+<synopsis>
+
+
+
+struct      <link linkend="BonoboPersistFile-struct">BonoboPersistFile</link>;
+<link linkend="int">int</link>         (<link linkend="BonoboPersistFileIOFn">*BonoboPersistFileIOFn</link>)        (<link linkend="BonoboPersistFile">BonoboPersistFile</link> *pf,
+                                             const <link linkend="CORBA-char">CORBA_char</link> *uri,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="void">void</link> *closure);
+struct      <link linkend="BonoboPersistFileClass">BonoboPersistFileClass</link>;
+<link linkend="BonoboPersistFile">BonoboPersistFile</link>* <link linkend="bonobo-persist-file-new">bonobo_persist_file_new</link>  (<link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> save_fn,
+                                             const <link linkend="gchar">gchar</link> *iid,
+                                             <link linkend="void">void</link> *closure);
+<link linkend="BonoboPersistFile">BonoboPersistFile</link>* <link linkend="bonobo-persist-file-construct">bonobo_persist_file_construct</link>
+                                            (<link linkend="BonoboPersistFile">BonoboPersistFile</link> *pf,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> save_fn,
+                                             const <link linkend="gchar">gchar</link> *iid,
+                                             <link linkend="void">void</link> *closure);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="BonoboObject">BonoboObject</link>
+         +----<link linkend="BonoboPersist">BonoboPersist</link>
+               +----BonoboPersistFile
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The PersistFile interface is a useful interface for Bonoboizing
+legacy applications, however, for new / correct applications it
+is far preferable to implement the <link linkend="BonoboPersistStream"><type>BonoboPersistStream</type></link> interface,
+since this will not only result in a nice clean to your application
+architecture, but also allow the transparent use of local, remote,
+and synthetic streams.
+</para>
+
+<para>
+This interface works by connecting callbacks to the methods, in
+a pretty deprecated fashion, it is probably better nowadays to
+simply sub-class the BonoboXObject and override the epv methods.
+Either way, after all the caveats here is an example use:
+  <example>
+    <title>Persist file implementation</title>
+    <programlisting>
+static gint
+load_from_file (BonoboPersistFile *pf,
+                const CORBA_char  *filename,
+		CORBA_Environment *ev,
+                void              *closure)
+{
+	EogImageData *image_data = closure;
+
+	g_warning ("Load from '<literal>s</literal>'", filename);
+
+	return 0; /* Return 0 on success */
+}
+
+static gint
+save_to_file (BonoboPersistFile *pf,
+              const CORBA_char  *filename,
+              CORBA_Environment *ev,
+              void              *closure)
+{
+	EogImageData *image_data = closure;
+
+	g_warning ("Save to '<literal>s</literal>'", filename);
+
+	return 0; /* Return 0 on success */
+}
+    </programlisting>
+  </example>
+Having implemented the callbacks we then have to register them
+and aggregate the interface to our object:
+  <example>
+     <title>Aggregating a new PersistFile</title>
+    <programlisting>
+EogImageData *
+eog_image_data_construct (EogImageData *image_data)
+{
+	BonoboObject        *retval;
+	BonoboPersistFile   *file;
+
+	file = bonobo_persist_file_new (
+		load_from_file, save_to_file, image_data);
+
+	if (file == NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (image_data));
+		return NULL;
+	}
+
+	bonobo_object_add_interface (BONOBO_OBJECT (image_data),
+				     BONOBO_OBJECT (file));
+
+	return image_data;
+}
+    </programlisting>
+  </example>
+Note again, that you should be writing a BonoboPersistStream
+interface, however if you have already done this you might like
+to just have hooks through so that old apps can use the PersistFile
+interface:
+  <example>
+     <title>Chaining to a <link linkend="PersistStream"><type>PersistStream</type></link> implementation</title>
+     <programlisting>
+static gint
+load_from_file (BonoboPersistFile *pf,
+                const CORBA_char  *filename,
+		CORBA_Environment *ev,
+                void              *closure)
+{
+	Bonobo_PersistStream ps = closure;
+	BonoboStream *stream;
+	
+	stream = bonobo_stream_open (
+		BONOBO_IO_DRIVER_FS,
+		filename, Bonobo_STORAGE_READ,
+		0);
+
+	if (!stream)
+		return 0;
+
+	.. extract content type from file ...
+
+	Bonobo_PersistStream_load (ps, type, ev);
+
+	return 0; /* Return 0 on success */
+}
+
+static gint
+save_to_file (BonoboPersistFile *pf,
+              const CORBA_char  *filename,
+              CORBA_Environment *ev,
+              void              *closure)
+{
+	Bonobo_PersistStream ps = closure;
+	BonoboStream *stream;
+	
+	stream = bonobo_stream_open (
+		BONOBO_IO_DRIVER_FS,
+		filename, Bonobo_STORAGE_WRITE | Bonobo_STORAGE_CREATE,
+		S_IRUSR | S_IWUSR | S_IRGRP);
+
+	if (!stream)
+		return 0;
+
+	.. work out content type we want to save ...
+
+	Bonobo_PersistStream_save (ps, type, ev);
+
+	return 0; /* Return 0 on success */
+}
+     </programlisting>
+  </example>
+  The mime type data can be extracted from gnome-vfs or gnome-mime.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BonoboPersistFile-struct"/>struct BonoboPersistFile</title>
+<indexterm role="deprecated"><primary>BonoboPersistFile</primary></indexterm><programlisting>struct BonoboPersistFile;</programlisting>
+<warning><para><literal>BonoboPersistFile</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistFileIOFn"/>BonoboPersistFileIOFn ()</title>
+<indexterm role="deprecated"><primary>BonoboPersistFileIOFn</primary></indexterm><programlisting><link linkend="int">int</link>         (*BonoboPersistFileIOFn)        (<link linkend="BonoboPersistFile">BonoboPersistFile</link> *pf,
+                                             const <link linkend="CORBA-char">CORBA_char</link> *uri,
+                                             <link linkend="CORBA-Environment">CORBA_Environment</link> *ev,
+                                             <link linkend="void">void</link> *closure);</programlisting>
+<warning><para><literal>BonoboPersistFileIOFn</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pf</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ev</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboPersistFileClass"/>struct BonoboPersistFileClass</title>
+<indexterm role="deprecated"><primary>BonoboPersistFileClass</primary></indexterm><programlisting>struct BonoboPersistFileClass {
+
+	BonoboPersistClass parent_class;
+
+	POA_Bonobo_PersistFile__epv epv;
+
+	/* methods */
+	int   (*load)             (BonoboPersistFile *ps,
+				   const CORBA_char  *uri,
+				   CORBA_Environment *ev);
+
+	int   (*save)             (BonoboPersistFile *ps,
+				   const CORBA_char  *uri,
+				   CORBA_Environment *ev);
+
+	char *(*get_current_file) (BonoboPersistFile *ps,
+				   CORBA_Environment *ev);
+
+};
+</programlisting>
+<warning><para><literal>BonoboPersistFileClass</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-file-new"/>bonobo_persist_file_new ()</title>
+<indexterm role="deprecated"><primary>bonobo_persist_file_new</primary></indexterm><programlisting><link linkend="BonoboPersistFile">BonoboPersistFile</link>* bonobo_persist_file_new  (<link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> save_fn,
+                                             const <link linkend="gchar">gchar</link> *iid,
+                                             <link linkend="void">void</link> *closure);</programlisting>
+<warning><para><literal>bonobo_persist_file_new</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Creates a BonoboPersistFile object.  The <parameter>load_fn</parameter> and <parameter>save_fn</parameter>
+parameters might be NULL.  If this is the case, the load and save 
+operations are performed by the class load and save methods</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>load_fn</parameter>&nbsp;:</term>
+<listitem><simpara> Loading routine
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>save_fn</parameter>&nbsp;:</term>
+<listitem><simpara> Saving routine
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> OAF IID of the object this interface is aggregated to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara> Data passed to IO routines.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboPersistFile"><type>BonoboPersistFile</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-persist-file-construct"/>bonobo_persist_file_construct ()</title>
+<indexterm role="deprecated"><primary>bonobo_persist_file_construct</primary></indexterm><programlisting><link linkend="BonoboPersistFile">BonoboPersistFile</link>* bonobo_persist_file_construct
+                                            (<link linkend="BonoboPersistFile">BonoboPersistFile</link> *pf,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> load_fn,
+                                             <link linkend="BonoboPersistFileIOFn">BonoboPersistFileIOFn</link> save_fn,
+                                             const <link linkend="gchar">gchar</link> *iid,
+                                             <link linkend="void">void</link> *closure);</programlisting>
+<warning><para><literal>bonobo_persist_file_construct</literal> is deprecated and should not be used in newly-written code.</para></warning>
+<para>
+Initializes the BonoboPersistFile object.  The <parameter>load_fn</parameter> and <parameter>save_fn</parameter>
+parameters might be NULL.  If this is the case, the load and save 
+operations are performed by the class load and save methods</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>pf</parameter>&nbsp;:</term>
+<listitem><simpara> A BonoboPersistFile
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>load_fn</parameter>&nbsp;:</term>
+<listitem><simpara> Loading routine
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>save_fn</parameter>&nbsp;:</term>
+<listitem><simpara> Saving routine
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iid</parameter>&nbsp;:</term>
+<listitem><simpara> OAF IID of the object this interface is aggregated to
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
+<listitem><simpara> Data passed to IO routines.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="BonoboPersistFile"><type>BonoboPersistFile</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<link linkend="BonoboPersistStream"><type>BonoboPersistStream</type></link>, <link linkend="BonoboPersist"><type>BonoboPersist</type></link>
+</para>
+</refsect1>
+
+</refentry>

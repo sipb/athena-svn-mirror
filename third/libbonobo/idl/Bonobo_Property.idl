@@ -49,7 +49,7 @@ interface PropertyBag : Bonobo::Unknown {
 
 	exception NotFound {};
 	exception InvalidType {};
-	exception ReadOnly {};
+	exception _ReadOnly {};
 	exception BackendFailed {};
 
 	/**
@@ -151,7 +151,7 @@ interface PropertyBag : Bonobo::Unknown {
 interface ConfigDatabase : PropertyBag {
 
 	enum DBFlags {
-		DEFAULT,
+		_DEFAULT,
 		WRITE,
 		MANDATORY
 	};

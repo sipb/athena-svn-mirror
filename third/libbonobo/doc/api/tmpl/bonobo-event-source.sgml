@@ -92,31 +92,6 @@ suffix.
   #BonoboListener #BonoboArg
 </para>
 
-<!-- ##### MACRO BONOBO_EVENT_SOURCE_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboEventSourcePrivate ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### STRUCT BonoboEventSource ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF BonoboEventSourceClass ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION bonobo_event_source_new ##### -->
 <para>
 
@@ -176,6 +151,16 @@ suffix.
 @opt_ev: 
 @user_data: 
 <!-- # Unused Parameters # -->
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_event_source_has_listener ##### -->
+<para>
+
+</para>
+
+@event_source: 
+@event_name: 
 @Returns: 
 
 

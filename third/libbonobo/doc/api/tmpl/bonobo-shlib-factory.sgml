@@ -14,30 +14,18 @@ bonobo-shlib-factory
 
 </para>
 
-<!-- ##### MACRO BONOBO_SHLIB_FACTORY_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboShlibFactoryPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT BonoboShlibFactory ##### -->
 <para>
 
 </para>
 
 
-<!-- ##### TYPEDEF BonoboShlibFactoryClass ##### -->
+<!-- ##### STRUCT BonoboShlibFactoryClass ##### -->
 <para>
 
 </para>
 
+@parent_class: 
 
 <!-- ##### FUNCTION bonobo_shlib_factory_construct ##### -->
 <para>
@@ -45,11 +33,13 @@ bonobo-shlib-factory
 </para>
 
 @factory: 
-@component_id: 
+@act_iid: 
 @poa: 
 @act_impl_ptr: 
 @closure: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@component_id: 
 
 
 <!-- ##### FUNCTION bonobo_shlib_factory_new ##### -->
@@ -70,11 +60,13 @@ bonobo-shlib-factory
 
 </para>
 
-@component_id: 
+@act_iid: 
 @poa: 
 @act_impl_ptr: 
 @factory_closure: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@component_id: 
 
 
 <!-- ##### FUNCTION bonobo_shlib_factory_std ##### -->
@@ -93,7 +85,7 @@ bonobo-shlib-factory
 
 <!-- ##### MACRO BONOBO_OAF_SHLIB_FACTORY ##### -->
 <para>
-
+Deprecated.  See BONOBO_ACTIVATION_SHLIB_FACTORY().
 </para>
 
 @oafiid: 
@@ -104,7 +96,7 @@ bonobo-shlib-factory
 
 <!-- ##### MACRO BONOBO_OAF_SHLIB_FACTORY_MULTI ##### -->
 <para>
-
+Deprecated.  See BONOBO_ACTIVATION_SHLIB_FACTORY().
 </para>
 
 @oafiid: 
@@ -115,12 +107,13 @@ bonobo-shlib-factory
 
 <!-- ##### MACRO BONOBO_ACTIVATION_SHLIB_FACTORY ##### -->
 <para>
-
+  Macro that includes all boiler-plate code necessary to create an shlib
+  type factory.
 </para>
 
-@oafiid: 
-@descr: 
-@fn: 
-@data: 
+@oafiid: The factory's OAFIID
+@descr: Description of the factory
+@fn: Function (#BonoboFactoryCallback) responsible for intantiating components
+@data: Additional data to be passed to the callback
 
 

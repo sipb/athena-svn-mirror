@@ -1,14 +1,126 @@
-libbonobo 2.2.1
+libbonobo 2.6.0
+
+	+ featurelets
+		+ uninstalled pkg-config files (Glynn Foster)
+		+ configure cleanup (Tomasz Kloczko)
+
+libbonobo 2.5.4
+
+	+ bugs fixed
+		+ application init (Gustavo)
+		+ program arg translation (Anders, Hidetoshi)
+	+ featurelets
+		+ *Application* documentation (Gustavo)
+		+ better activation debugging (Rodrigo, Michael)
+
+libbonobo 2.5.3
+
+	+ bugs fixed
+		+ regression tests problems (Gustavo)
+		+ AIX portability (Albert Chin-A-Young)
+	+ featurelets
+		+ improve b-a-s debug code (Michael)
+		+ use syslog for run-time spew (Michael Terry)
+
+libbonobo 2.5.2
+
+	+ bugs fixed
+		+ _active query cache fix (Michael)
+		+ property bag logic bug fix (Dave Jones)
+		+ backwards compat dameon fix (Michael, Crispin Flowerday)
+		+ object directory fixes (Gustavo)
+		+ l10n docs fix (Martin Kretzschmar)
+		+ BonoboApplication fixes (Gustavo)
+		+ use environ not _environ for Solaris (Michael)
+	+ featurelets (Gustavo)
+		+ b-a-s tracks dead clients
+		+ updated tests
+
+libbonobo 2.5.1
+	+ ...
+
+libbonobo 2.3.6
+
+	+ bugs fixes
+		+ improved tests (Gustavo)
+		+ improved FAQ (Gustavo)
+	+ featurelets
+		+ bogus inheritance trap (Michael)
+
+
+libbonobo 2.3.5
 
 	* Bugs fixed
-		+ macro statement issues with g++ (Martin Kretzschmar)
-		+ IDL pre-processing for portability (Bill Haneman)
-		+ gettext domain issue (Hidetoshi Tajima)
-		+ build fixage (Thomas Vander Stichele)
-	* Features
-		+ very much improved documentation (Gustavo Carneiro)
+		+ reference tracking race (Gustavo Carneiro)
+		+ incompatible activation-client fix (Antonio Xu)
+		+ popt fixage (Michael, Damien Carbery)
+	* Featurelets
+		+ factory regression tests (Gustavo)
+
+libbonobo 2.3.4
+
+	* Bugs fixed
+		+ don't use C++ keyword in C code (Frederic Crozat)
+		+ fix activation test linking and script (Michael)
 	* Translations
-		+ mn, eo, id, ro (Christian Rose, Marius Andreiana)
+		+ az (Metin Amiroff)
+		+ id (Mohammad Damt)
+		+ ml (Guntupalli Karunakar)
+		+ nl (Huib Kleinhout)
+		+ bn (Mahmudur Rahman)
+		+ fi (Pauli Virtanen)
+		+ ru (Russian team, Dmitry G. Mastrukov)
+		+ da (Ole Laursen)
+		+ sr (Serbian team, Danilo Å egan)
+		+ sq (Laurent Dhima)
+
+libbonobo 2.3.3
+	* Features
+		+ use Gdk::WindowId for Bonobo_Canvas (Michael)
+
+	* Bugs fixed
+		+ CORBA_boolean handling in property bag (Dan Winship)
+		+ cancel pending timeouts when destroying factory (Gustavo Carneiro)		
+
+
+libbonobo 2.3.2
+
+	* Features
+		+ very much improved API docs (Gustavo Carneiro,
+		  Martin Kretschmar, Rodrigo Moya)
+		+ dynamic b-a-s path update (Antonio Xu)
+		+ fix DNS reverse-lookup (Shailesh Mittal, Michael) 
+		+ always run in thread-safe mode (Michael)
+		+ tentative BonoboObject locking action (Michael)
+		+ new thread policy APIs (Michael)
+		+ bump default factory timeouts (Gustavo)
+		+ more regression tests (Michael, Gustavo)
+	* Bugs fixed
+		+ de-linc-ization (Michael)
+		+ build fixes (Jens Granseuer, Martin)
+
+libbonobo 2.3.1
+
+	* Features
+		+ lots more API & other doc work (Gustavo)
+		+ selectable BonoboObject POAs (Michael, Gustavo)
+		+ re-factored activation server (Michael)
+		+ merged bonobo-activation (Michael)
+		+ unknown app registration (Gustavo)
+		+ cygwin build fixes (Masahiro Sakai)
+		+ BonoboForeignObject - for bindings (Gustavo, James H)
+	* Bugs fixed
+		+ BonoboArg improvements (Gustavo)
+		+ make check doesn't trash /tmp (Michael)
+		+ remove .so library suffix (Michael)
+		+ trailing ; fixes (Padraig O'Briain)
+		+ C++ BonoboArg bits (Martin Kretzchmar)
+		+ gettext fixes (Hidetoshi Tajima)
+		+ build fixes (Thomas VS, James H, Carlos Marin)
+	* Translations
+		+ am - Daniel Yacob, de, fa, mk, nl - Pablo Saratxaga
+		+ ro - Marius Andreiana, mn, id, eo, sr - Christian Rose
+		+ ml - Guntupalli Karunakar
 
 libbonobo 2.2.0
 
@@ -44,7 +156,7 @@ libbonobo 2.0.0
 
 	* Featurelets
 		+ add BonoboObject padding (Michael)
-		+ add --enable-debug config option (Gustavo Gir�ldez)
+		+ add --enable-debug config option (Gustavo Giráldez)
 
 libbonobo 1.117.1
 

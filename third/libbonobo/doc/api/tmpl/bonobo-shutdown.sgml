@@ -28,13 +28,6 @@ bonobo-shutdown
 
 
 
-<!-- ##### FUNCTION bonobo_object_init ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### FUNCTION bonobo_object_shutdown ##### -->
 <para>
 

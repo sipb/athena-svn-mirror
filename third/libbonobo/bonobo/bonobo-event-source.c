@@ -329,7 +329,7 @@ bonobo_event_source_init (GObject *object)
 BONOBO_TYPE_FUNC_FULL (BonoboEventSource, 
 		       Bonobo_EventSource,
 		       PARENT_TYPE,
-		       bonobo_event_source);
+		       bonobo_event_source)
 
 /**
  * bonobo_event_source_new:

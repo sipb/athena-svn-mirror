@@ -19,16 +19,16 @@ bonobo_echo_2_SOURCES =		\
 	echo.h
 
 bonobo_echo_2_LDADD =				\
+	libEcho.a				\
 	$(top_builddir)/bonobo/libbonobo-2.la	\
 	$(LIBBONOBO_LIBS)			\
-	libEcho.a				\
 	$(INTLLIBS)
 
 echo_client_2_SOURCES = echo-client.c
 echo_client_2_LDADD =				\
+	libEcho.a				\
 	$(top_builddir)/bonobo/libbonobo-2.la	\
 	$(LIBBONOBO_LIBS)			\
-	libEcho.a				\
 	$(INTLLIBS)
 
 ECHO_CORBA_GENERATED =				\
@@ -40,7 +40,7 @@ ECHO_CORBA_GENERATED =				\
 libEcho_a_SOURCES = $(ECHO_CORBA_GENERATED)
 
 $(ECHO_CORBA_GENERATED): Bonobo_Sample_Echo.idl $(ORBIT_IDL)
-	$(ORBIT_IDL) -I$(top_srcdir)/idl -I $(BONOBO_ACTIVATION_IDL_DIR) $(srcdir)/Bonobo_Sample_Echo.idl
+	$(ORBIT_IDL) -I$(top_srcdir)/idl $(srcdir)/Bonobo_Sample_Echo.idl
 
 serverdir = $(libdir)/bonobo/servers
 server_in_files = $(server_dot_in)

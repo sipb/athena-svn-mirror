@@ -77,30 +77,30 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
    #BonoboEventSource #BonoboArg
 </para>
 
-<!-- ##### MACRO BONOBO_LISTENER_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboListenerPrivate ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT BonoboListener ##### -->
 <para>
-
+Implementents Bonobo::Listener.
 </para>
 
 
-<!-- ##### TYPEDEF BonoboListenerClass ##### -->
+<!-- ##### SIGNAL BonoboListener::event-notify ##### -->
 <para>
 
 </para>
 
+@bonobolistener: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### STRUCT BonoboListenerClass ##### -->
+<para>
+#BonoboListener's class
+</para>
+
+@parent_class: 
+@epv: 
+@event_notify: 
 
 <!-- ##### USER_FUNCTION BonoboListenerCallbackFn ##### -->
 <para>
@@ -123,8 +123,6 @@ connect_to_keyboard_source (Bonobo_EventSource *keyboard)
 @event_cb: 
 @user_data: 
 @Returns: 
-<!-- # Unused Parameters # -->
-@event_callback: 
 
 
 <!-- ##### FUNCTION bonobo_listener_new_closure ##### -->

@@ -14,23 +14,21 @@ bonobo-moniker-context
 
 </para>
 
-<!-- ##### STRUCT BonoboMonikerContextPrivate ##### -->
+<!-- ##### STRUCT BonoboMonikerContext ##### -->
 <para>
 
 </para>
 
+@parent: 
+@priv: 
 
-<!-- ##### TYPEDEF BonoboMonikerContext ##### -->
+<!-- ##### STRUCT BonoboMonikerContextClass ##### -->
 <para>
 
 </para>
 
-
-<!-- ##### TYPEDEF BonoboMonikerContextClass ##### -->
-<para>
-
-</para>
-
+@parent: 
+@epv: 
 
 <!-- ##### FUNCTION bonobo_moniker_context_new ##### -->
 <para>

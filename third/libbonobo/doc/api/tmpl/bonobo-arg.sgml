@@ -75,7 +75,7 @@ the boolean type
 
 <!-- ##### MACRO BONOBO_ARG_SHORT ##### -->
 <para>
-
+the short type
 </para>
 
 
@@ -96,7 +96,7 @@ the long type
 
 <!-- ##### MACRO BONOBO_ARG_LONGLONG ##### -->
 <para>
-
+the long long type
 </para>
 
 
@@ -117,7 +117,7 @@ the double type
 
 <!-- ##### MACRO BONOBO_ARG_CHAR ##### -->
 <para>
-
+the char type
 </para>
 
 
@@ -156,8 +156,8 @@ the given CORBA type @t.
 
 <!-- ##### MACRO BONOBO_ARG_GET_BOOLEAN ##### -->
 <para>
-this macro returns a CORBA_boolean from inside a BonoboArg,
-if the BonoboArg's type does not match, the behavior is
+This macro returns a CORBA_boolean from inside a BonoboArg.
+If the BonoboArg's type does not match, the behavior is
 undefined, and may cause faults.
 </para>
 
@@ -175,19 +175,21 @@ This macro sets the value of @a to contain @v
 
 <!-- ##### MACRO BONOBO_ARG_GET_SHORT ##### -->
 <para>
-
+This macro returns a CORBA_short from inside a BonoboArg.
+If the BonoboArg's type does not match, the behavior is
+undefined, and may cause faults.
 </para>
 
-@a: 
+@a: the BonoboArg to extract the value from.
 
 
 <!-- ##### MACRO BONOBO_ARG_SET_SHORT ##### -->
 <para>
-
+This macro sets the value of @a to contain @v
 </para>
 
-@a: 
-@v: 
+@a: the Bonobo arg to insert the value into
+@v: a CORBA_short.
 
 
 <!-- ##### MACRO BONOBO_ARG_GET_INT ##### -->
@@ -230,19 +232,21 @@ This macro sets the value of @a to contain @v
 
 <!-- ##### MACRO BONOBO_ARG_GET_LONGLONG ##### -->
 <para>
-
+this macro returns a CORBA_long_long from from inside a BonoboArg,
+if the BonoboArg's type does not match, the behavior is
+undefined, and may cause faults.
 </para>
 
-@a: 
+@a: the BonoboArg to extract the value from.
 
 
 <!-- ##### MACRO BONOBO_ARG_SET_LONGLONG ##### -->
 <para>
-
+This macro sets the value of @a to contain @v
 </para>
 
-@a: 
-@v: 
+@a: the Bonobo arg to insert the value into
+@v: a CORBA_long_long.
 
 
 <!-- ##### MACRO BONOBO_ARG_GET_FLOAT ##### -->
@@ -266,8 +270,8 @@ This macro sets the value of @a to contain @v
 
 <!-- ##### MACRO BONOBO_ARG_GET_DOUBLE ##### -->
 <para>
-this macro returns a CORBA_double from inside a BonoboArg,
-if the BonoboArg's type does not match, the behavior is
+This macro returns a CORBA_double from inside a BonoboArg.
+If the BonoboArg's type does not match, the behavior is
 undefined, and may cause faults.
 </para>
 
@@ -285,19 +289,21 @@ This macro sets the value of @a to contain @v
 
 <!-- ##### MACRO BONOBO_ARG_GET_CHAR ##### -->
 <para>
-
+This macro returns a CORBA_char from inside a BonoboArg,
+If the BonoboArg's type does not match, the behavior is
+undefined, and may cause faults.
 </para>
 
-@a: 
+@a: the BonoboArg to extract the value from.
 
 
 <!-- ##### MACRO BONOBO_ARG_SET_CHAR ##### -->
 <para>
-
+This macro sets the value of @a to contain @v
 </para>
 
-@a: 
-@v: 
+@a: the Bonobo arg to insert the value into
+@v: a CORBA_char.
 
 
 <!-- ##### MACRO BONOBO_ARG_GET_STRING ##### -->

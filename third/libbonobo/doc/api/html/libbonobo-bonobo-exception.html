@@ -1,0 +1,182 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-exception</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="next" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-exception.html#id2778336" title="Description"><link rel="section" href="libbonobo-bonobo-exception.html#id2778380" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-context.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-application.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-exception"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-exception</span></h2><p>bonobo-exception &#8212; maps CORBA exceptions to user readable text, + helper macros</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-exception.html#bonobo-exception-set">bonobo_exception_set</a>            (opt_ev,repo_id)
+#define     <a href="libbonobo-bonobo-exception.html#bonobo-return-if-fail">bonobo_return_if_fail</a>           (expr,opt_ev)
+#define     <a href="libbonobo-bonobo-exception.html#bonobo-return-val-if-fail">bonobo_return_val_if_fail</a>       (expr,val,opt_ev)
+#define     <a href="libbonobo-bonobo-exception.html#BONOBO-EX-CAPS">BONOBO_EX</a>                       (ev)
+#define     <a href="libbonobo-bonobo-exception.html#BONOBO-USER-EX-CAPS">BONOBO_USER_EX</a>                  (ev,id)
+#define     <a href="libbonobo-bonobo-exception.html#BONOBO-EX-REPOID-CAPS">BONOBO_EX_REPOID</a>                (ev)
+#define     <a href="libbonobo-bonobo-exception.html#BONOBO-RET-EX-CAPS">BONOBO_RET_EX</a>                   (ev)
+#define     <a href="libbonobo-bonobo-exception.html#BONOBO-RET-VAL-EX-CAPS">BONOBO_RET_VAL_EX</a>               (ev,v)
+char*       (<a href="libbonobo-bonobo-exception.html#BonoboExceptionFn">*BonoboExceptionFn</a>)            (CORBA_Environment *ev,
+                                             gpointer user_data);
+char*       <a href="libbonobo-bonobo-exception.html#bonobo-exception-get-text">bonobo_exception_get_text</a>       (CORBA_Environment *ev);
+char*       <a href="libbonobo-bonobo-exception.html#bonobo-exception-repoid-to-text">bonobo_exception_repoid_to_text</a> (const char *repo_id);
+void        <a href="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-str">bonobo_exception_add_handler_str</a>
+                                            (const char *repo_id,
+                                             const char *str);
+void        <a href="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-fn">bonobo_exception_add_handler_fn</a> (const char *repo_id,
+                                             <a href="libbonobo-bonobo-exception.html#BonoboExceptionFn">BonoboExceptionFn</a> fn,
+                                             gpointer user_data,
+                                             GDestroyNotify destroy_fn);
+void        <a href="libbonobo-bonobo-exception.html#bonobo-exception-general-error-set">bonobo_exception_general_error_set</a>
+                                            (CORBA_Environment *ev,
+                                             CORBA_TypeCode opt_deriv,
+                                             const char *format,
+                                             ...);
+const char* <a href="libbonobo-bonobo-exception.html#bonobo-exception-general-error-get">bonobo_exception_general_error_get</a>
+                                            (CORBA_Environment *ev);
+</pre></div><div class="refsect1" lang="en"><a name="id2778336"></a><h2>Description</h2><p>
+This module contains some useful helper functions
+that can be used to set various exceptions inside your
+CORBA methods. It also contains code to map between
+complex CORBA_Environment exceptions and helpful
+strings suitable for display to the user.
+</p><p>
+Typically to test for exceptions the BONOBO_EX macro
+is used thus:
+  </p><div class="example"><a name="id2778353"></a><p class="title"><b>Example 4. Bonobo exception trapping and reporting</b></p><pre class="programlisting">
+int
+do_something (CORBA_Environment *ev)
+{
+	...
+
+	retval = Foo_Baa_method (object, ev);
+
+	if (BONOBO_EX (ev)) {
+		if (BONOBO_USER_EX (ev, ex_CosNaming_NamingContext_NotFound)) {
+		        g_warning ("Not found");
+		} else {
+		        char *str;
+
+			g_warning ("Exception '<tt class="literal">s</tt>' occured",
+				(str = bonobo_exception_get_text (ev)));
+			g_free (str);
+		}
+		return -1;
+	}
+	...
+}
+     </pre></div><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2778380"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2778385"></a><h3><a name="bonobo-exception-set"></a>bonobo_exception_set()</h3><a class="indexterm" name="id2778396"></a><pre class="programlisting">#define     bonobo_exception_set(opt_ev,repo_id)</pre><p>
+This macro sets the stateless user exception with <i class="parameter"><tt>repo_id</tt></i> on
+<i class="parameter"><tt>opt_ev</tt></i> or warns if <i class="parameter"><tt>opt_ev</tt></i> == NULL
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>an optional corba exception environment.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>repo_id</tt></i> :</span></td><td>repoid of the exception to set.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778464"></a><h3><a name="bonobo-return-if-fail"></a>bonobo_return_if_fail()</h3><a class="indexterm" name="id2778475"></a><pre class="programlisting">#define     bonobo_return_if_fail(expr,opt_ev)</pre><p>
+this macro is used for bonobo preconditons on argument types,
+usualy inside skels if <i class="parameter"><tt>expr</tt></i> is FALSE a warning is printed and
+<i class="parameter"><tt>opt_ev</tt></i> is set to ex_Bonobo_BadArg.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>expr</tt></i> :</span></td><td>an expression that should be true
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>an optional corba exception environment.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778538"></a><h3><a name="bonobo-return-val-if-fail"></a>bonobo_return_val_if_fail()</h3><a class="indexterm" name="id2778550"></a><pre class="programlisting">#define     bonobo_return_val_if_fail(expr,val,opt_ev)</pre><p>
+this macro is used for bonobo preconditons on argument types,
+usualy inside skels if <i class="parameter"><tt>expr</tt></i> is FALSE a warning is printed and
+<i class="parameter"><tt>opt_ev</tt></i> is set to ex_Bonobo_BadArg.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>expr</tt></i> :</span></td><td>an expression that should be true
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>val</tt></i> :</span></td><td>a value to return on failure.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_ev</tt></i> :</span></td><td>an optional corba exception environment.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778627"></a><h3><a name="BONOBO-EX-CAPS"></a>BONOBO_EX()</h3><a class="indexterm" name="id2778638"></a><pre class="programlisting">#define BONOBO_EX(ev)         ((ev) &amp;&amp; (ev)-&gt;_major != CORBA_NO_EXCEPTION)
+</pre><p>
+This macro returns TRUE if <i class="parameter"><tt>ev</tt></i> flags an exception.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the exception environment
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778678"></a><h3><a name="BONOBO-USER-EX-CAPS"></a>BONOBO_USER_EX()</h3><a class="indexterm" name="id2778689"></a><pre class="programlisting">#define     BONOBO_USER_EX(ev,id)</pre><p>
+This macro returns TRUE if <i class="parameter"><tt>ev</tt></i> contains a user exception
+of type <i class="parameter"><tt>id</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the exception environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>the repo_id of the exception
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778748"></a><h3><a name="BONOBO-EX-REPOID-CAPS"></a>BONOBO_EX_REPOID()</h3><a class="indexterm" name="id2778760"></a><pre class="programlisting">#define BONOBO_EX_REPOID(ev)  (ev)-&gt;_id
+</pre><p>
+Returns the repoid string of exception <i class="parameter"><tt>ev</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>a CORBA exception
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778800"></a><h3><a name="BONOBO-RET-EX-CAPS"></a>BONOBO_RET_EX()</h3><a class="indexterm" name="id2778810"></a><pre class="programlisting">#define     BONOBO_RET_EX(ev)</pre><p>
+returns if there is an exception flagged in <i class="parameter"><tt>ev</tt></i>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the exception environment
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778850"></a><h3><a name="BONOBO-RET-VAL-EX-CAPS"></a>BONOBO_RET_VAL_EX()</h3><a class="indexterm" name="id2778862"></a><pre class="programlisting">#define     BONOBO_RET_VAL_EX(ev,v)</pre><p>
+returns <i class="parameter"><tt>v</tt></i> if there is an exception flagged in <i class="parameter"><tt>ev</tt></i>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the exception environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>v</tt></i> :</span></td><td>the value to return
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2778920"></a><h3><a name="BonoboExceptionFn"></a>BonoboExceptionFn ()</h3><a class="indexterm" name="id2778931"></a><pre class="programlisting">char*       (*BonoboExceptionFn)            (CORBA_Environment *ev,
+                                             gpointer user_data);</pre><p>
+The prototype for user registerable exception decoders.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>the exception environment
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data to be passed to the function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>a g_malloc'd copy of a translated user readable error string.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779012"></a><h3><a name="bonobo-exception-get-text"></a>bonobo_exception_get_text ()</h3><a class="indexterm" name="id2779023"></a><pre class="programlisting">char*       bonobo_exception_get_text       (CORBA_Environment *ev);</pre><p>
+Returns a user readable description of the exception.  First
+checks <i class="parameter"><tt>ev</tt></i> against builtin Bonobo exceptions, then falls back to
+exception names added through bonobo_exception_add_handler_str
+or bonobo_exception_add_handler_fn.</p><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td> the corba environment.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A g_malloc'd description, which the caller must free.
+NULL is never returned.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779093"></a><h3><a name="bonobo-exception-repoid-to-text"></a>bonobo_exception_repoid_to_text ()</h3><a class="indexterm" name="id2779105"></a><pre class="programlisting">char*       bonobo_exception_repoid_to_text (const char *repo_id);</pre><p>
+This maps builtin bonobo exceptions that the system
+knows about to user readable strings.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>repo_id</tt></i> :</span></td><td> exception repository id
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a user string or NULL for an unknown repo_id
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779167"></a><h3><a name="bonobo-exception-add-handler-str"></a>bonobo_exception_add_handler_str ()</h3><a class="indexterm" name="id2779179"></a><pre class="programlisting">void        bonobo_exception_add_handler_str
+                                            (const char *repo_id,
+                                             const char *str);</pre><p>
+This routine adds a simple string mapping for an exception
+with repository id <i class="parameter"><tt>repo_id</tt></i>, such that when we call
+bonobo_exception_get_text on an exception of id <i class="parameter"><tt>repo_id</tt></i> we
+get <i class="parameter"><tt>str</tt></i> back.</p><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>repo_id</tt></i> :</span></td><td> exception repository id
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>str</tt></i> :</span></td><td> the user readable, translated exception text.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779272"></a><h3><a name="bonobo-exception-add-handler-fn"></a>bonobo_exception_add_handler_fn ()</h3><a class="indexterm" name="id2779285"></a><pre class="programlisting">void        bonobo_exception_add_handler_fn (const char *repo_id,
+                                             <a href="libbonobo-bonobo-exception.html#BonoboExceptionFn">BonoboExceptionFn</a> fn,
+                                             gpointer user_data,
+                                             GDestroyNotify destroy_fn);</pre><p>
+This routine adds a method mapping for an exception
+with repository id <i class="parameter"><tt>repo_id</tt></i>, such that when we call
+bonobo_exception_get_text on an exception of id <i class="parameter"><tt>repo_id</tt></i>
+the <i class="parameter"><tt>fn</tt></i> is called and passed <i class="parameter"><tt>user_data</tt></i>.
+When the handler is removed the <i class="parameter"><tt>destroy_fn</tt></i> is called
+on its <i class="parameter"><tt>user_data</tt></i>.</p><p>
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>repo_id</tt></i> :</span></td><td> exception repository id
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>fn</tt></i> :</span></td><td> function to make exception human readable
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> the user data
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>destroy_fn</tt></i> :</span></td><td> user data destroy function or NULL.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779439"></a><h3><a name="bonobo-exception-general-error-set"></a>bonobo_exception_general_error_set ()</h3><a class="indexterm" name="id2779452"></a><pre class="programlisting">void        bonobo_exception_general_error_set
+                                            (CORBA_Environment *ev,
+                                             CORBA_TypeCode opt_deriv,
+                                             const char *format,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>opt_deriv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>format</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2779555"></a><h3><a name="bonobo-exception-general-error-get"></a>bonobo_exception_general_error_get ()</h3><a class="indexterm" name="id2779568"></a><pre class="programlisting">const char* bonobo_exception_general_error_get
+                                            (CORBA_Environment *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-context.html"><b>&lt;&lt; bonobo-context</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-application.html"><b>bonobo-application &gt;&gt;</b></a></td></tr></table></body></html>

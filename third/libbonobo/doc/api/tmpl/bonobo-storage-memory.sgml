@@ -14,31 +14,6 @@ bonobo-storage-memory
 
 </para>
 
-<!-- ##### MACRO BONOBO_STORAGE_MEM_TYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### STRUCT BonoboStorageMemPriv ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### STRUCT BonoboStorageMem ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF BonoboStorageMemClass ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### FUNCTION bonobo_storage_mem_create ##### -->
 <para>
 

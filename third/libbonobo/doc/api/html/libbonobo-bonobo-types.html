@@ -1,0 +1,228 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-types</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="next" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="chapter" href="general.html" title="General"><link rel="refentry" href="libbonobo-bonobo-main.html" title="bonobo-main"><link rel="refentry" href="libbonobo-bonobo-running-context.html" title="BonoboRunningContext"><link rel="refentry" href="libbonobo-bonobo-shutdown.html" title="bonobo-shutdown"><link rel="refentry" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="refentry" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="refentry" href="libbonobo-bonobo-context.html" title="bonobo-context"><link rel="refentry" href="libbonobo-bonobo-exception.html" title="bonobo-exception"><link rel="refentry" href="libbonobo-bonobo-application.html" title="bonobo-application"><link rel="refentry" href="libbonobo-bonobo-app-client.html" title="bonobo-app-client"><link rel="chapter" href="factories.html" title="Objects, Factories, Reference Counting"><link rel="refentry" href="libbonobo-bonobo-object.html" title="BonoboObject"><link rel="refentry" href="libbonobo-bonobo-generic-factory.html" title="BonoboGenericFactory"><link rel="refentry" href="libbonobo-bonobo-shlib-factory.html" title="bonobo-shlib-factory"><link rel="refentry" href="refcounting.html" title="Reference Counting"><link rel="chapter" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="refentry" href="properties.html" title="Properties"><link rel="refentry" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="refentry" href="libbonobo-bonobo-listener.html" title="bonobo-listener"><link rel="refentry" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"><link rel="refentry" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="refentry" href="libbonobo-bonobo-property-bag-client.html" title="bonobo-property-bag-client"><link rel="chapter" href="monikers.html" title="Monikers"><link rel="refentry" href="monikers-overview.html" title="Monikers in the Bonobo Component System"><link rel="refentry" href="libbonobo-bonobo-moniker.html" title="BonoboMoniker"><link rel="refentry" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="refentry" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="refentry" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"><link rel="refentry" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"><link rel="refentry" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="refentry" href="libbonobo-bonobo-moniker-context.html" title="bonobo-moniker-context"><link rel="chapter" href="streams.html" title="Storages and Streams"><link rel="refentry" href="libbonobo-bonobo-storage-memory.html" title="bonobo-storage-memory"><link rel="refentry" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"><link rel="refentry" href="libbonobo-bonobo-storage.html" title="bonobo-storage"><link rel="refentry" href="libbonobo-bonobo-stream-client.html" title="bonobo-stream-client"><link rel="chapter" href="persist.html" title="Persistency"><link rel="refentry" href="libbonobo-bonobo-persist.html" title="BonoboPersist"><link rel="refentry" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="refentry" href="libbonobo-bonobo-persist-stream.html" title="BonoboPersistStream"><link rel="refentry" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"><link rel="chapter" href="misc.html" title="Miscellaneous"><link rel="refentry" href="debugging.html" title="Debugging"><link rel="refentry" href="libbonobo-faq.html" title="Common Questions"><link rel="refentry" href="libbonobo-bonobo-config-database.html" title="bonobo-config-database"><link rel="section" href="libbonobo-bonobo-types.html#id2772093" title="Description"><link rel="section" href="libbonobo-bonobo-types.html#id2772103" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-i18n.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-context.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-types"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">bonobo-types</span></h2><p>bonobo-types &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+GType       <a href="libbonobo-bonobo-types.html#bonobo-corba-object-type-register-static">bonobo_corba_object_type_register_static</a>
+                                            (const gchar *name,
+                                             const CORBA_TypeCode tc,
+                                             gboolean is_bonobo_unknown);
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-UNKNOWN-CAPS">BONOBO_TYPE_UNKNOWN</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-ANY-CAPS">BONOBO_TYPE_CORBA_ANY</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-OBJECT-CAPS">BONOBO_TYPE_CORBA_OBJECT</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-TYPECODE-CAPS">BONOBO_TYPE_CORBA_TYPECODE</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-EXCEPTION-CAPS">BONOBO_TYPE_CORBA_EXCEPTION</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-STATIC-CORBA-EXCEPTION-CAPS">BONOBO_TYPE_STATIC_CORBA_EXCEPTION</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-STATIC-UNKNOWN-CAPS">BONOBO_TYPE_STATIC_UNKNOWN</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-STATIC-CORBA-ANY-CAPS">BONOBO_TYPE_STATIC_CORBA_ANY</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-STATIC-CORBA-OBJECT-CAPS">BONOBO_TYPE_STATIC_CORBA_OBJECT</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-TYPE-STATIC-CORBA-TYPECODE-CAPS">BONOBO_TYPE_STATIC_CORBA_TYPECODE</a>
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-UNKNOWN-CAPS">BONOBO_VALUE_HOLDS_UNKNOWN</a>      (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS">BONOBO_VALUE_HOLDS_CORBA_ANY</a>    (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS">BONOBO_VALUE_HOLDS_CORBA_OBJECT</a> (value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS">BONOBO_VALUE_HOLDS_CORBA_TYPECODE</a>(value)
+#define     <a href="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS">BONOBO_VALUE_HOLDS_CORBA_EXCEPTION</a>(value)
+Bonobo_Unknown <a href="libbonobo-bonobo-types.html#bonobo-value-get-unknown">bonobo_value_get_unknown</a>     (const GValue *value);
+<a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>*  <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-any">bonobo_value_get_corba_any</a>      (const GValue *value);
+CORBA_Object <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-object">bonobo_value_get_corba_object</a>  (const GValue *value);
+CORBA_TypeCode <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-typecode">bonobo_value_get_corba_typecode</a>
+                                            (const GValue *value);
+const CORBA_Environment* <a href="libbonobo-bonobo-types.html#bonobo-value-get-corba-exception">bonobo_value_get_corba_exception</a>
+                                            (const GValue *value);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-unknown">bonobo_value_set_unknown</a>        (GValue *value,
+                                             const Bonobo_Unknown unknown);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-any">bonobo_value_set_corba_any</a>      (GValue *value,
+                                             const CORBA_any *any);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-object">bonobo_value_set_corba_object</a>   (GValue *value,
+                                             const CORBA_Object object);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-typecode">bonobo_value_set_corba_typecode</a> (GValue *value,
+                                             const CORBA_TypeCode tc);
+void        <a href="libbonobo-bonobo-types.html#bonobo-value-set-corba-environment">bonobo_value_set_corba_environment</a>
+                                            (GValue *value,
+                                             const CORBA_Environment *ev);
+void        <a href="libbonobo-bonobo-types.html#bonobo-closure-invoke-va-list">bonobo_closure_invoke_va_list</a>   (GClosure *closure,
+                                             GValue *return_value,
+                                             va_list var_args);
+void        <a href="libbonobo-bonobo-types.html#bonobo-closure-invoke">bonobo_closure_invoke</a>           (GClosure *closure,
+                                             GType return_type,
+                                             ...);
+GClosure*   <a href="libbonobo-bonobo-types.html#bonobo-closure-store">bonobo_closure_store</a>            (GClosure *closure,
+                                             GClosureMarshal default_marshal);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2772093"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2772103"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2772108"></a><h3><a name="bonobo-corba-object-type-register-static"></a>bonobo_corba_object_type_register_static ()</h3><a class="indexterm" name="id2772120"></a><pre class="programlisting">GType       bonobo_corba_object_type_register_static
+                                            (const gchar *name,
+                                             const CORBA_TypeCode tc,
+                                             gboolean is_bonobo_unknown);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>tc</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>is_bonobo_unknown</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772220"></a><h3><a name="BONOBO-TYPE-UNKNOWN-CAPS"></a>BONOBO_TYPE_UNKNOWN</h3><a class="indexterm" name="id2772231"></a><pre class="programlisting">#define BONOBO_TYPE_UNKNOWN                         (bonobo_unknown_get_type ())
+</pre><p>
+A <span class="type">GType</span> for Bonobo_Unknown object references.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772256"></a><h3><a name="BONOBO-TYPE-CORBA-ANY-CAPS"></a>BONOBO_TYPE_CORBA_ANY</h3><a class="indexterm" name="id2772267"></a><pre class="programlisting">#define BONOBO_TYPE_CORBA_ANY                       (bonobo_corba_any_get_type ())
+</pre><p>
+A <span class="type">GType</span> for CORBA_any.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772291"></a><h3><a name="BONOBO-TYPE-CORBA-OBJECT-CAPS"></a>BONOBO_TYPE_CORBA_OBJECT</h3><a class="indexterm" name="id2772303"></a><pre class="programlisting">#define BONOBO_TYPE_CORBA_OBJECT                    (bonobo_corba_object_get_type ())
+</pre><p>
+A <span class="type">GType</span> for CORBA_Object object references.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772328"></a><h3><a name="BONOBO-TYPE-CORBA-TYPECODE-CAPS"></a>BONOBO_TYPE_CORBA_TYPECODE</h3><a class="indexterm" name="id2772340"></a><pre class="programlisting">#define BONOBO_TYPE_CORBA_TYPECODE                  (bonobo_corba_typecode_get_type ())
+</pre><p>
+A <span class="type">GType</span> for CORBA_TypeCode.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772364"></a><h3><a name="BONOBO-TYPE-CORBA-EXCEPTION-CAPS"></a>BONOBO_TYPE_CORBA_EXCEPTION</h3><a class="indexterm" name="id2772376"></a><pre class="programlisting">#define BONOBO_TYPE_CORBA_EXCEPTION                 (bonobo_corba_exception_get_type ())
+</pre><p>
+A <span class="type">GType</span> for CORBA_Environment.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772400"></a><h3><a name="BONOBO-TYPE-STATIC-CORBA-EXCEPTION-CAPS"></a>BONOBO_TYPE_STATIC_CORBA_EXCEPTION</h3><a class="indexterm" name="id2772412"></a><pre class="programlisting">#define BONOBO_TYPE_STATIC_CORBA_EXCEPTION          (bonobo_corba_exception_get_type () | G_SIGNAL_TYPE_STATIC_SCOPE)
+</pre><p>
+A <span class="type">GType</span> for CORBA_Environment with static scope (see <span class="type">G_SIGNAL_TYPE_STATIC_SCOPE</span>).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772449"></a><h3><a name="BONOBO-TYPE-STATIC-UNKNOWN-CAPS"></a>BONOBO_TYPE_STATIC_UNKNOWN</h3><a class="indexterm" name="id2772460"></a><pre class="programlisting">#define BONOBO_TYPE_STATIC_UNKNOWN                  (bonobo_unknown_get_type () | G_SIGNAL_TYPE_STATIC_SCOPE)
+</pre><p>
+A <span class="type">GType</span> for Bonobo_Unknown object references with static scope (see <span class="type">G_SIGNAL_TYPE_STATIC_SCOPE</span>).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772495"></a><h3><a name="BONOBO-TYPE-STATIC-CORBA-ANY-CAPS"></a>BONOBO_TYPE_STATIC_CORBA_ANY</h3><a class="indexterm" name="id2772506"></a><pre class="programlisting">#define BONOBO_TYPE_STATIC_CORBA_ANY                (bonobo_corba_any_get_type () | G_SIGNAL_TYPE_STATIC_SCOPE)
+</pre><p>
+A <span class="type">GType</span> for CORBA_any with static scope (see <span class="type">G_SIGNAL_TYPE_STATIC_SCOPE</span>).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772540"></a><h3><a name="BONOBO-TYPE-STATIC-CORBA-OBJECT-CAPS"></a>BONOBO_TYPE_STATIC_CORBA_OBJECT</h3><a class="indexterm" name="id2772553"></a><pre class="programlisting">#define BONOBO_TYPE_STATIC_CORBA_OBJECT             (bonobo_corba_object_get_type () | G_SIGNAL_TYPE_STATIC_SCOPE)
+</pre><p>
+A <span class="type">GType</span> for CORBA_Object object references with static scope (see <span class="type">G_SIGNAL_TYPE_STATIC_SCOPE</span>).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772588"></a><h3><a name="BONOBO-TYPE-STATIC-CORBA-TYPECODE-CAPS"></a>BONOBO_TYPE_STATIC_CORBA_TYPECODE</h3><a class="indexterm" name="id2772599"></a><pre class="programlisting">#define BONOBO_TYPE_STATIC_CORBA_TYPECODE           (bonobo_corba_typecode_get_type () | G_SIGNAL_TYPE_STATIC_SCOPE)
+</pre><p>
+A <span class="type">GType</span> for CORBA_TypeCode object references with static scope (see <span class="type">G_SIGNAL_TYPE_STATIC_SCOPE</span>).
+</p></div><hr><div class="refsect2" lang="en"><a name="id2772635"></a><h3><a name="BONOBO-VALUE-HOLDS-UNKNOWN-CAPS"></a>BONOBO_VALUE_HOLDS_UNKNOWN()</h3><a class="indexterm" name="id2772646"></a><pre class="programlisting">#define BONOBO_VALUE_HOLDS_UNKNOWN(value)           (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_UNKNOWN))
+</pre><p>
+Returns true if the <span class="type">GValue</span> contains a Bonobo_Unknown.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772689"></a><h3><a name="BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_ANY()</h3><a class="indexterm" name="id2772701"></a><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_ANY(value)         (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_ANY))
+</pre><p>
+Returns true if the <span class="type">GValue</span> contains a CORBA_any.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772744"></a><h3><a name="BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_OBJECT()</h3><a class="indexterm" name="id2772756"></a><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_OBJECT(value)      (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_OBJECT))
+</pre><p>
+Returns true if the <span class="type">GValue</span> contains a CORBA_Object.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772800"></a><h3><a name="BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_TYPECODE()</h3><a class="indexterm" name="id2772812"></a><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_TYPECODE(value)    (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_TYPECODE))
+</pre><p>
+Returns true if the <span class="type">GValue</span> contains a CORBA_TypeCode.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772856"></a><h3><a name="BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS"></a>BONOBO_VALUE_HOLDS_CORBA_EXCEPTION()</h3><a class="indexterm" name="id2772867"></a><pre class="programlisting">#define BONOBO_VALUE_HOLDS_CORBA_EXCEPTION(value)   (G_TYPE_CHECK_VALUE_TYPE ((value), BONOBO_TYPE_CORBA_EXCEPTION))
+</pre><p>
+Returns true if the <span class="type">GValue</span> contains a CORBA_Environment.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772911"></a><h3><a name="bonobo-value-get-unknown"></a>bonobo_value_get_unknown ()</h3><a class="indexterm" name="id2772922"></a><pre class="programlisting">Bonobo_Unknown bonobo_value_get_unknown     (const GValue *value);</pre><p>
+Get the Bonobo_Unknown value from a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2772987"></a><h3><a name="bonobo-value-get-corba-any"></a>bonobo_value_get_corba_any ()</h3><a class="indexterm" name="id2772999"></a><pre class="programlisting"><a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>*  bonobo_value_get_corba_any      (const GValue *value);</pre><p>
+Get the CORBA_any value from a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773063"></a><h3><a name="bonobo-value-get-corba-object"></a>bonobo_value_get_corba_object ()</h3><a class="indexterm" name="id2773075"></a><pre class="programlisting">CORBA_Object bonobo_value_get_corba_object  (const GValue *value);</pre><p>
+Get the CORBA_Object value from a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773140"></a><h3><a name="bonobo-value-get-corba-typecode"></a>bonobo_value_get_corba_typecode ()</h3><a class="indexterm" name="id2773152"></a><pre class="programlisting">CORBA_TypeCode bonobo_value_get_corba_typecode
+                                            (const GValue *value);</pre><p>
+Get the CORBA_TypeCode value from a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773218"></a><h3><a name="bonobo-value-get-corba-exception"></a>bonobo_value_get_corba_exception ()</h3><a class="indexterm" name="id2773229"></a><pre class="programlisting">const CORBA_Environment* bonobo_value_get_corba_exception
+                                            (const GValue *value);</pre><p>
+Get the CORBA_Environment value from a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773296"></a><h3><a name="bonobo-value-set-unknown"></a>bonobo_value_set_unknown ()</h3><a class="indexterm" name="id2773307"></a><pre class="programlisting">void        bonobo_value_set_unknown        (GValue *value,
+                                             const Bonobo_Unknown unknown);</pre><p>
+Put a <span class="type">Bonobo_Unknow</span> value in a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unknown</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773393"></a><h3><a name="bonobo-value-set-corba-any"></a>bonobo_value_set_corba_any ()</h3><a class="indexterm" name="id2773404"></a><pre class="programlisting">void        bonobo_value_set_corba_any      (GValue *value,
+                                             const CORBA_any *any);</pre><p>
+Put a <span class="type">CORBA_any</span> value in a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>any</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773487"></a><h3><a name="bonobo-value-set-corba-object"></a>bonobo_value_set_corba_object ()</h3><a class="indexterm" name="id2773500"></a><pre class="programlisting">void        bonobo_value_set_corba_object   (GValue *value,
+                                             const CORBA_Object object);</pre><p>
+Put a <span class="type">CORBA_Object</span> value in a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773584"></a><h3><a name="bonobo-value-set-corba-typecode"></a>bonobo_value_set_corba_typecode ()</h3><a class="indexterm" name="id2773596"></a><pre class="programlisting">void        bonobo_value_set_corba_typecode (GValue *value,
+                                             const CORBA_TypeCode tc);</pre><p>
+Put a <span class="type">CORBA_TypeCode</span> value in a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>tc</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773680"></a><h3><a name="bonobo-value-set-corba-environment"></a>bonobo_value_set_corba_environment ()</h3><a class="indexterm" name="id2773692"></a><pre class="programlisting">void        bonobo_value_set_corba_environment
+                                            (GValue *value,
+                                             const CORBA_Environment *ev);</pre><p>
+Put a <span class="type">CORBA_Environment</span> value in a <span class="type">GValue</span>.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773776"></a><h3><a name="bonobo-closure-invoke-va-list"></a>bonobo_closure_invoke_va_list ()</h3><a class="indexterm" name="id2773788"></a><pre class="programlisting">void        bonobo_closure_invoke_va_list   (GClosure *closure,
+                                             GValue *return_value,
+                                             va_list var_args);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>return_value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>var_args</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773877"></a><h3><a name="bonobo-closure-invoke"></a>bonobo_closure_invoke ()</h3><a class="indexterm" name="id2773888"></a><pre class="programlisting">void        bonobo_closure_invoke           (GClosure *closure,
+                                             GType return_type,
+                                             ...);</pre><p>
+Invokes the closure with the arguments.
+</p><p>
+Examples:
+</p><div class="informalexample"><pre class="programlisting">
+   bonobo_closure_invoke (closure, G_TYPE_NONE, G_TYPE_INT, first_arg, 0);
+</pre></div><p>
+</p><p>
+</p><div class="informalexample"><pre class="programlisting">
+   glong retval;
+   bonobo_closure_invoke (closure, G_TYPE_LONG, &amp; retval, 0);
+</pre></div><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td> a standard GClosure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>return_type</tt></i> :</span></td><td> the type of the first va_arg argument in a
+set of type / arg pairs.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td> list of type / arg pairs
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2773999"></a><h3><a name="bonobo-closure-store"></a>bonobo_closure_store ()</h3><a class="indexterm" name="id2774010"></a><pre class="programlisting">GClosure*   bonobo_closure_store            (GClosure *closure,
+                                             GClosureMarshal default_marshal);</pre><p>
+Does the necessary refcounting magic and returns a directly
+storable closure</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>closure</tt></i> :</span></td><td> a standard GClosure
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>default_marshal</tt></i> :</span></td><td> the default marshaller to use
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <i class="parameter"><tt>closure</tt></i>.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-i18n.html"><b>&lt;&lt; bonobo-i18n</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-context.html"><b>bonobo-context &gt;&gt;</b></a></td></tr></table></body></html>

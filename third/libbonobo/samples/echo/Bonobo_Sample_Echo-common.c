@@ -10,6 +10,22 @@
 
 static const CORBA_unsigned_long ORBit_zero_int = 0;
 
+#ifndef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
+void
+_ORBIT_skel_small_Bonobo_Sample_Echo_echo(POA_Bonobo_Sample_Echo * _o_servant,
+					  gpointer _o_retval,
+					  gpointer * _o_args,
+					  CORBA_Context _o_ctx,
+					  CORBA_Environment * _o_ev,
+					  void (*_impl_echo)
+					  (PortableServer_Servant _servant,
+					   const CORBA_char * message,
+					   CORBA_Environment * ev))
+{
+   _impl_echo(_o_servant, *(const CORBA_char * *) _o_args[0], _o_ev);
+}
+
+#endif
 #if ( (TC_IMPL_TC_Bonobo_Sample_Echo_0 == 'B') \
 && (TC_IMPL_TC_Bonobo_Sample_Echo_1 == 'o') \
 && (TC_IMPL_TC_Bonobo_Sample_Echo_2 == 'n') \

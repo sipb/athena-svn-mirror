@@ -18,7 +18,6 @@ module Bonobo {
 
 module Canvas {
 	typedef sequence<octet> pixbuf;
-	typedef unsigned long window_id;
 
 	/* At least 32 bits */
 	typedef long int32;
@@ -87,13 +86,13 @@ module Canvas {
 				in affine aff, in SVP clip_path, in long flags,
 				out double x1, out double y1, out double x2, out double y2);
 
-		void realize (in window_id drawable);
+		void realize (in Gdk::WindowId drawable);
 		void unrealize ();
 		void map ();
 		void unmap ();
 
 		void draw   (in Canvas::State state,
-			     in window_id drawable, 
+			     in Gdk::WindowId drawable, 
 			     in short x, in short y, 
 			     in short width, in short height);
 
@@ -144,6 +143,10 @@ module Canvas {
 		void unImplemented2 ();
 		void unImplemented3 ();
 		void unImplemented4 ();
+		void unImplemented5 ();
+		void unImplemented6 ();
+		void unImplemented7 ();
+		void unImplemented8 ();
 	};
 
 	/*
@@ -190,6 +193,10 @@ module Canvas {
 		void unImplemented2 ();
 		void unImplemented3 ();
 		void unImplemented4 ();
+		void unImplemented5 ();
+		void unImplemented6 ();
+		void unImplemented7 ();
+		void unImplemented8 ();
 	};
 };
 
