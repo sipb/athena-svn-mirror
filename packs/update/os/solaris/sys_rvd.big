@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.6 2003-04-05 23:51:38 ghudson Exp $
+## $Id: sys_rvd.big,v 1.7 2003-06-08 18:52:24 zacheiss Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -9,6 +9,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		.login
 		crontab.root.add
 		default/sulogin
+		default/syslogd
 		driver_aliases.*
 		driver_classes.*
 		ftpusers

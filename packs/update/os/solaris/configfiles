@@ -8,6 +8,7 @@
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
 /etc/default/sulogin
+/etc/default/syslogd
 /etc/inet/inetd.conf
 /etc/inet/services
 /etc/ftpusers

@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.10 2002-11-11 22:18:29 ghudson Exp $
+## $Id: sys_rvd,v 1.11 2003-06-08 18:52:24 zacheiss Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -9,6 +9,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		.login
 		crontab.root.add
 		default/sulogin
+		default/syslogd
 		driver_aliases.*
 		driver_classes.*
 		ftpusers
