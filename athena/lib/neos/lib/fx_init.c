@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.1 1992-04-27 12:58:10 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.2 1992-04-27 12:59:42 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,12 +14,19 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.1 1992-04-27 12:58:10 epeisach Exp $";
+static char rcsid_fx_init_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/fx_init.c,v 1.2 1992-04-27 12:59:42 epeisach Exp $";
 #endif /* lint */
 
 #include <netdb.h>
 #include <strings.h>
+#include <krb.h>
+#include <des.h>
 #include "fxcl.h"
+
+/* Hack!  Ensure we are using the RIGHT version of the RPC
+ * Library. */
+
+extern int link_with_libfxrpc;
 
 /*
  * fx_init -- establish client connection for FX *
@@ -40,6 +47,10 @@ fx_init(fxp, resp)
 #ifndef KERBEROS
   struct passwd *pw;
 #endif /* KERBEROS */
+
+  /* The following line forces us to confirm at link time
+    that we have the right version of the rpc lib linked. */
+  link_with_libfxrpc = 1;
 
   /* establish RPC client connection */
   fxp->cl = clnt_create(fxp->host, FXSERVER, FXVERS, "tcp");
@@ -93,8 +104,7 @@ _fx_get_auth(fxp, authent)
   krb_info_res *res;
   int dummy;
   int opened = 0;
-
-  char pname[ANAME_SZ], pinst[INST_SZ];
+  char pname[ANAME_SZ], pinst[INST_SZ], prealm[REALM_SZ];
 
   res = krb_info_1(&dummy, fxp->cl);
   if (!res) return(_fx_rpc_errno(fxp->cl));
@@ -104,10 +114,19 @@ _fx_get_auth(fxp, authent)
     return(res->errno);
   }
 
+  /*
+   * We must find the realm of the ticket file here before calling
+   * tf_init because since the realm of the ticket file is not
+   * really stored in the principal section of the file, the
+   * routine we use must itself call tf_init and tf_close.
+   */
+  if ((dummy = krb_get_tf_realm((char *)TKT_FILE, prealm)) != KSUCCESS)
+    goto _FX_GET_AUTH_CLEANUP;
+
   dummy = krb_mk_req(authent,
 		     res->krb_info_res_u.info.service,
 		     res->krb_info_res_u.info.instance,
-		     res->krb_info_res_u.info.realm, 0);
+		     krb_realmofhost(fxp->host), 0);
   if (dummy) goto _FX_GET_AUTH_CLEANUP;
 
   /* fill in owner */
@@ -119,7 +138,7 @@ _fx_get_auth(fxp, authent)
   dummy = tf_get_pinst(pinst);
   if (dummy) goto _FX_GET_AUTH_CLEANUP;
   (void) sprintf(fxp->owner, "%s%s%s@%s", pname, (pinst[0]?".":""),
-		 pinst, res->krb_info_res_u.info.realm);
+		 pinst, prealm);
   fxp->extension = index(fxp->owner, '@');
 
  _FX_GET_AUTH_CLEANUP:
