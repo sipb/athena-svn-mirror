@@ -5,7 +5,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm.h,v 1.22 1999-01-22 23:20:03 ghudson Exp $
+ *      $Id: zhm.h,v 1.23 2000-05-08 16:00:06 ghudson Exp $
  *      $Zephyr: /mit/zephyr/src.rw/zhm/RCS/zhm.h,v 1.13 90/10/19 07:11:48 raeburn Exp $
  *
  *      Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
@@ -44,7 +44,6 @@
 
 #define ever (;;)
 
-#define SERV_TIMEOUT 5
 #define BOOTING 1
 #define NOTICES 2
 
