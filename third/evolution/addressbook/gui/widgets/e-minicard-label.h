@@ -21,7 +21,7 @@
 #define __E_MINICARD_LABEL_H__
 
 #include <glib.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,11 +40,11 @@ extern "C" {
  * fieldname    string          RW              text in the fieldname label
  */
 
-#define E_MINICARD_LABEL_TYPE			(e_minicard_label_get_type ())
-#define E_MINICARD_LABEL(obj)			(GTK_CHECK_CAST ((obj), E_MINICARD_LABEL_TYPE, EMinicardLabel))
-#define E_MINICARD_LABEL_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), E_MINICARD_LABEL_TYPE, EMiniCardLabelClass))
-#define E_IS_MINICARD_LABEL(obj)		(GTK_CHECK_TYPE ((obj), E_MINICARD_LABEL_TYPE))
-#define E_IS_MINICARD_LABEL_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), E_MINICARD_LABEL_TYPE))
+#define E_TYPE_MINICARD_LABEL			(e_minicard_label_get_type ())
+#define E_MINICARD_LABEL(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_MINICARD_LABEL, EMinicardLabel))
+#define E_MINICARD_LABEL_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_MINICARD_LABEL, EMiniCardLabelClass))
+#define E_IS_MINICARD_LABEL(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_MINICARD_LABEL))
+#define E_IS_MINICARD_LABEL_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_MINICARD_LABEL))
 
 
 typedef struct _EMinicardLabel       EMinicardLabel;
@@ -69,10 +69,12 @@ struct _EMinicardLabel
 struct _EMinicardLabelClass
 {
 	GnomeCanvasGroupClass parent_class;
+
+	void (* style_set) (EMinicardLabel *label, GtkStyle *previous_style);
 };
 
 
-GtkType    e_minicard_label_get_type (void);
+GType      e_minicard_label_get_type (void);
 GnomeCanvasItem *e_minicard_label_new(GnomeCanvasGroup *parent);
 void e_minicard_label_construct (GnomeCanvasItem *item);
 

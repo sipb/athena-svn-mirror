@@ -106,16 +106,16 @@ folder_type_new (const char *name,
 	if (icon_path == NULL)
 		new->icon_pixbuf = NULL;
 	else
-		new->icon_pixbuf = gdk_pixbuf_new_from_file (icon_path);
+		new->icon_pixbuf = gdk_pixbuf_new_from_file (icon_path, NULL);
 
 	g_free (icon_path);
 
 	icon_path = e_shell_get_icon_path (icon_name, TRUE);
 	if (icon_path != NULL) {
-		new->mini_icon_pixbuf = gdk_pixbuf_new_from_file (icon_path);
+		new->mini_icon_pixbuf = gdk_pixbuf_new_from_file (icon_path, NULL);
 	} else {
 		if (new->icon_pixbuf != NULL)
-			new->mini_icon_pixbuf = gdk_pixbuf_ref (new->icon_pixbuf);
+			new->mini_icon_pixbuf = g_object_ref (new->icon_pixbuf);
 		else
 			new->mini_icon_pixbuf = NULL;
 	}
@@ -134,12 +134,12 @@ folder_type_free (FolderType *folder_type)
 	g_free (folder_type->description);
 
 	if (folder_type->icon_pixbuf != NULL)
-		gdk_pixbuf_unref (folder_type->icon_pixbuf);
+		g_object_unref (folder_type->icon_pixbuf);
 	if (folder_type->mini_icon_pixbuf != NULL)
-		gdk_pixbuf_unref (folder_type->mini_icon_pixbuf);
+		g_object_unref (folder_type->mini_icon_pixbuf);
 
 	if (folder_type->handler != NULL)
-		bonobo_object_unref (BONOBO_OBJECT (folder_type->handler));
+		g_object_unref (folder_type->handler);
 
 	g_free (folder_type);
 }
@@ -199,13 +199,10 @@ set_handler (EFolderTypeRegistry *folder_type_registry,
 	folder_type = get_folder_type (folder_type_registry, name);
 	if (folder_type == NULL)
 		return FALSE;
-	if (folder_type->handler != NULL) {
-		g_warning ("Folder type already has a handler -- %s",
-			   folder_type->name);
+	if (folder_type->handler != NULL)
 		return FALSE;
-	}
 
-	bonobo_object_ref (BONOBO_OBJECT (handler));
+	g_object_ref (handler);
 	folder_type->handler = handler;
 
 	return TRUE;
@@ -226,7 +223,7 @@ hash_forall_free_folder_type (gpointer key,
 }
 
 static void
-destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EFolderTypeRegistry *folder_type_registry;
 	EFolderTypeRegistryPrivate *priv;
@@ -234,25 +231,24 @@ destroy (GtkObject *object)
 	folder_type_registry = E_FOLDER_TYPE_REGISTRY (object);
 	priv = folder_type_registry->priv;
 
-	g_hash_table_foreach (priv->name_to_type,
-			      hash_forall_free_folder_type, NULL);
+	g_hash_table_foreach (priv->name_to_type, hash_forall_free_folder_type, NULL);
 	g_hash_table_destroy (priv->name_to_type);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EFolderTypeRegistryClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref(gtk_object_get_type ());
 }
 
 static void
@@ -281,7 +277,7 @@ e_folder_type_registry_new (void)
 {
 	EFolderTypeRegistry *new;
 
-	new = gtk_type_new (e_folder_type_registry_get_type ());
+	new = g_object_new (e_folder_type_registry_get_type (), NULL);
 
 	e_folder_type_registry_construct (new);
 
@@ -317,10 +313,8 @@ e_folder_type_registry_set_handler_for_type  (EFolderTypeRegistry *folder_type_r
 					      const char *type_name,
 					      EvolutionShellComponentClient *handler)
 {
-	g_return_val_if_fail (folder_type_registry != NULL, FALSE);
 	g_return_val_if_fail (E_IS_FOLDER_TYPE_REGISTRY (folder_type_registry), FALSE);
-	g_return_val_if_fail (handler != NULL, FALSE);
-	g_return_val_if_fail (BONOBO_IS_OBJECT_CLIENT (handler), FALSE);
+	g_return_val_if_fail (EVOLUTION_IS_SHELL_COMPONENT_CLIENT (handler), FALSE);
 
 	return set_handler (folder_type_registry, type_name, handler);
 }
@@ -358,11 +352,8 @@ e_folder_type_registry_unregister_type (EFolderTypeRegistry *folder_type_registr
 	priv = folder_type_registry->priv;
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_unregister_type(): cannot find type `%s'\n",
-			   type_name);
+	if (folder_type == NULL)
 		return;
-	}
 
 	g_hash_table_remove (priv->name_to_type, folder_type->name);
 	folder_type_free (folder_type);
@@ -410,10 +401,8 @@ e_folder_type_registry_get_icon_name_for_type (EFolderTypeRegistry *folder_type_
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_icon_name_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return NULL;
-	}
 
 	return folder_type->icon_name;
 }
@@ -430,10 +419,8 @@ e_folder_type_registry_get_icon_for_type (EFolderTypeRegistry *folder_type_regis
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_icon_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return NULL;
-	}
 
 	if (mini)
 		return folder_type->mini_icon_pixbuf;
@@ -452,10 +439,8 @@ e_folder_type_registry_get_handler_for_type (EFolderTypeRegistry *folder_type_re
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_handler_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return NULL;
-	}
 
 	return folder_type->handler;
 }
@@ -471,10 +456,8 @@ e_folder_type_registry_type_is_user_creatable  (EFolderTypeRegistry *folder_type
 	g_return_val_if_fail (type_name != NULL, FALSE);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_type_is_user_creatable() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return FALSE;
-	}
 
 	return folder_type->user_creatable;
 }
@@ -490,10 +473,8 @@ e_folder_type_registry_get_display_name_for_type (EFolderTypeRegistry *folder_ty
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_type_get_display_name_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return FALSE;
-	}
 
 	return folder_type->display_name;
 }
@@ -509,10 +490,8 @@ e_folder_type_registry_get_description_for_type (EFolderTypeRegistry *folder_typ
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_description_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return FALSE;
-	}
 
 	return folder_type->description;
 }
@@ -529,10 +508,8 @@ e_folder_type_registry_get_exported_dnd_types_for_type (EFolderTypeRegistry *fol
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_exported_dnd_types_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return NULL;
-	}
 
 	return folder_type->exported_dnd_types;
 }
@@ -548,10 +525,8 @@ e_folder_type_registry_get_accepted_dnd_types_for_type (EFolderTypeRegistry *fol
 	g_return_val_if_fail (type_name != NULL, NULL);
 
 	folder_type = get_folder_type (folder_type_registry, type_name);
-	if (folder_type == NULL) {
-		g_warning ("e_folder_type_registry_get_accepted_dnd_types_for_type() -- Unknown type `%s'", type_name);
+	if (folder_type == NULL)
 		return NULL;
-	}
 
 	return folder_type->accepted_dnd_types;
 }

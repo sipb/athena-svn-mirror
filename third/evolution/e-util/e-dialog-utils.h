@@ -23,26 +23,23 @@
 #ifndef E_DIALOG_UTILS_H
 #define E_DIALOG_UTILS_H
 
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkwidget.h>
-#include <libgnomeui/gnome-types.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkmessagedialog.h>
 
-#include <X11/Xlib.h>		/* Window */
+void  e_notice                       (gpointer         parent,
+				      GtkMessageType   type,
+				      const char      *format,
+				      ...);
+void  e_notice_with_xid              (GdkNativeWindow  parent,
+				      GtkMessageType   type,
+				      const char      *format,
+				      ...);
 
-void       e_set_dialog_parent               (GtkWindow          *dialog,
-					      GtkWidget          *parent_widget);
-void       e_set_dialog_parent_from_xid      (GtkWindow          *dialog,
-					      Window              xid);
-void       e_gnome_dialog_set_parent         (GnomeDialog        *dialog,
-					      GtkWindow          *parent);
-GtkWidget *e_gnome_warning_dialog_parented   (const char         *warning,
-					      GtkWindow          *parent);
-GtkWidget *e_gnome_ok_cancel_dialog_parented (const char         *message,
-					      GnomeReplyCallback  callback,
-					      gpointer            data,
-					      GtkWindow          *parent);
-char      *e_file_dialog_save                (const char         *title);
+void  e_dialog_set_transient_for     (GtkWindow       *dialog,
+				      GtkWidget       *parent_widget);
+void  e_dialog_set_transient_for_xid (GtkWindow       *dialog,
+				      GdkNativeWindow  xid);
+
+char *e_file_dialog_save             (const char      *title);
 
 
 #endif

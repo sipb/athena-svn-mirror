@@ -30,22 +30,21 @@ extern "C" {
 #endif
 
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-color-picker.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade.h>
-#include <gtkhtml/gtkhtml-propmanager.h>
 #include <gconf/gconf-client.h>
+#include <libgnomeui/gnome-file-entry.h>
+#include <libgnomeui/gnome-color-picker.h>
+#include <libgnomeui/gnome-font-picker.h>
 
 #include "evolution-config-control.h"
 
 #include <shell/Evolution.h>
 
 #define MAIL_PREFERENCES_TYPE        (mail_preferences_get_type ())
-#define MAIL_PREFERENCES(o)          (GTK_CHECK_CAST ((o), MAIL_PREFERENCES_TYPE, MailPreferences))
-#define MAIL_PREFERENCES_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_PREFERENCES_TYPE, MailPreferencesClass))
-#define IS_MAIL_PREFERENCES(o)       (GTK_CHECK_TYPE ((o), MAIL_PREFERENCES_TYPE))
-#define IS_MAIL_PREFERENCES_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_PREFERENCES_TYPE))
+#define MAIL_PREFERENCES(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MAIL_PREFERENCES_TYPE, MailPreferences))
+#define MAIL_PREFERENCES_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MAIL_PREFERENCES_TYPE, MailPreferencesClass))
+#define IS_MAIL_PREFERENCES(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MAIL_PREFERENCES_TYPE))
+#define IS_MAIL_PREFERENCES_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MAIL_PREFERENCES_TYPE))
 
 typedef struct _MailPreferences MailPreferences;
 typedef struct _MailPreferencesClass MailPreferencesClass;
@@ -80,6 +79,9 @@ struct _MailPreferences {
 	GnomeFileEntry *notify_sound_file;
 	
 	/* HTML Mail tab */
+	GnomeFontPicker *font_variable;
+	GnomeFontPicker *font_fixed;
+	GtkToggleButton *font_share;
 	
 	/* Loading Images */
 	GtkToggleButton *images_always;
@@ -90,9 +92,6 @@ struct _MailPreferences {
 	GtkToggleButton *autodetect_links;
 	GtkToggleButton *prompt_unwanted_html;
 
-	/* GtkHTML Properties */
-	GtkHTMLPropmanager *pman;
-	
 	/* Labels and Colours tab */
 	struct {
 		GtkEntry *name;

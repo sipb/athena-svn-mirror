@@ -27,6 +27,8 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
 
@@ -34,13 +36,13 @@
 #include <time.h>
 
 #include <glib.h>
-#include <gtk/gtk.h>
 
 #include "camel-filter-driver.h"
 #include "camel-filter-search.h"
 
-#include "camel-exception.h"
 #include "camel-service.h"
+#include "camel-stream-fs.h"
+#include "camel-stream-mem.h"
 #include "camel-mime-message.h"
 
 #include "e-util/e-sexp.h"
@@ -107,6 +109,7 @@ struct _CamelFilterDriverPrivate {
 	CamelMessageInfo *info;    /* message summary info */
 	const char *uid;           /* message uid */
 	CamelFolder *source;       /* message source folder */
+	gboolean modified;         /* has the input message been modified? */
 	
 	FILE *logfile;             /* log file */
 	
@@ -142,6 +145,7 @@ static ESExpResult *do_shell (struct _ESExp *f, int argc, struct _ESExpResult **
 static ESExpResult *do_beep (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *play_sound (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 static ESExpResult *do_only_once (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static ESExpResult *pipe_message (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *);
 
 /* these are our filter actions - each must have a callback */
 static struct {
@@ -159,6 +163,7 @@ static struct {
 	{ "set-score",         (ESExpFunc *) do_score,     0 },
 	{ "set-system-flag",   (ESExpFunc *) set_flag,     0 },
 	{ "unset-system-flag", (ESExpFunc *) unset_flag,   0 },
+	{ "pipe-message",      (ESExpFunc *) pipe_message, 0 },
 	{ "shell",             (ESExpFunc *) do_shell,     0 },
 	{ "beep",              (ESExpFunc *) do_beep,      0 },
 	{ "play-sound",        (ESExpFunc *) play_sound,   0 },
@@ -466,7 +471,7 @@ do_copy (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			if (outbox == p->source)
 				break;
 			
-			if (p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
+			if (!p->modified && p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 				GPtrArray *uids;
 				
 				uids = g_ptr_array_new ();
@@ -477,16 +482,14 @@ do_copy (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 				if (p->message == NULL)
 					p->message = camel_folder_get_message (p->source, p->uid, p->ex);
 				
-				if (!p->message) {
-					/* FIXME: exception? */
+				if (!p->message)
 					continue;
-				}
 				
 				camel_folder_append_message (outbox, p->message, p->info, NULL, p->ex);
 			}
 			
 			if (!camel_exception_is_set (p->ex))
-					p->copied = TRUE;
+				p->copied = TRUE;
 			
 			camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Copy to folder %s",
 						 folder);
@@ -517,7 +520,7 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 			if (outbox == p->source)
 				break;
 			
-			if (p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
+			if (!p->modified && p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 				GPtrArray *uids;
 				
 				uids = g_ptr_array_new ();
@@ -528,10 +531,8 @@ do_move (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriv
 				if (p->message == NULL)
 					p->message = camel_folder_get_message (p->source, p->uid, p->ex);
 				
-				if (!p->message) {
-					/* FIXME: exception? */
+				if (!p->message)
 					continue;
-				}
 				
 				camel_folder_append_message (outbox, p->message, p->info, NULL, p->ex);
 			}
@@ -570,7 +571,7 @@ do_colour (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDr
 	d(fprintf (stderr, "setting colour tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_tag(p->source, p->uid, "colour", argv[0]->value.string);
+			camel_folder_set_message_user_tag (p->source, p->uid, "colour", argv[0]->value.string);
 		else
 			camel_tag_set (&p->info->user_tags, "colour", argv[0]->value.string);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set colour to %s", argv[0]->value.string);
@@ -590,7 +591,7 @@ do_score (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDri
 		
 		value = g_strdup_printf ("%d", argv[0]->value.number);
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_tag(p->source, p->uid, "score", value);
+			camel_folder_set_message_user_tag (p->source, p->uid, "score", value);
 		else
 			camel_tag_set (&p->info->user_tags, "score", value);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set score to %d", argv[0]->value.number);
@@ -637,6 +638,160 @@ unset_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterD
 	
 	return NULL;
 }
+
+static int
+pipe_to_system (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+{
+	struct _CamelFilterDriverPrivate *p = _PRIVATE (driver);
+	int result, status, fds[4], i;
+	CamelMimeMessage *message;
+	CamelMimeParser *parser;
+	CamelStream *stream, *mem;
+	pid_t pid;
+	
+	if (argc < 1 || argv[0]->value.string[0] == '\0')
+		return 0;
+	
+	/* make sure we have the message... */
+	if (p->message == NULL) {
+		if (!(p->message = camel_folder_get_message (p->source, p->uid, p->ex)))
+			return -1;
+	}
+	
+	for (i = 0; i < 4; i++)
+		fds[i] = -1;
+	
+	for (i = 0; i < 4; i += 2) {
+		if (pipe (fds + i) == -1) {
+			camel_exception_setv (p->ex, CAMEL_EXCEPTION_SYSTEM,
+					      _("Failed to create pipe to '%s': %s"),
+					      argv[0]->value.string, g_strerror (errno));
+			
+			for (i = 0; i < 4; i++) {
+				if (fds[i] == -1)
+					break;
+				close (fds[i]);
+			}
+			
+			return -1;
+		}
+	}
+	
+	if (!(pid = fork ())) {
+		/* child process */
+		GPtrArray *args;
+		int maxfd, fd;
+		
+		fd = open ("/dev/null", O_WRONLY);
+		
+		if (dup2 (fds[0], STDIN_FILENO) < 0 ||
+		    dup2 (fds[3], STDOUT_FILENO) < 0 ||
+		    dup2 (fd, STDERR_FILENO) < 0)
+			_exit (255);
+		
+		setsid ();
+		
+		maxfd = sysconf (_SC_OPEN_MAX);
+		if (maxfd > 0) {
+			for (fd = 0; fd < maxfd; fd++) {
+				if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO)
+					close (fd);
+			}
+		}
+		
+		args = g_ptr_array_new ();
+		for (i = 0; i < argc; i++)
+			g_ptr_array_add (args, argv[i]->value.string);
+		g_ptr_array_add (args, NULL);
+		
+		execvp (argv[0]->value.string, (char **) args->pdata);
+		
+		g_ptr_array_free (args, TRUE);
+		
+		d(printf ("Could not execute %s: %s\n", argv[0]->value.string, g_strerror (errno)));
+		_exit (255);
+	} else if (pid < 0) {
+		camel_exception_setv (p->ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Failed to create create child process '%s': %s"),
+				      argv[0]->value.string, g_strerror (errno));
+		return -1;
+	}
+	
+	/* parent process */
+	close (fds[0]);
+	fcntl (fds[1], F_SETFL, O_NONBLOCK);
+	close (fds[3]);
+	
+	stream = camel_stream_fs_new_with_fd (fds[1]);
+	camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (p->message), stream);
+	camel_stream_flush (stream);
+	camel_object_unref (stream);
+	
+	stream = camel_stream_fs_new_with_fd (fds[2]);
+	mem = camel_stream_mem_new ();
+	camel_stream_write_to_stream (stream, mem);
+	camel_object_unref (stream);
+	camel_stream_reset (mem);
+	
+	parser = camel_mime_parser_new ();
+	camel_mime_parser_init_with_stream (parser, mem);
+	camel_mime_parser_scan_from (parser, FALSE);
+	camel_object_unref (mem);
+	
+	message = camel_mime_message_new ();
+	if (camel_mime_part_construct_from_parser ((CamelMimePart *) message, parser) == -1) {
+		camel_exception_setv (p->ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Invalid message stream received from %s: %s"),
+				      argv[0]->value.string,
+				      g_strerror (camel_mime_parser_errno (parser)));
+		camel_object_unref (message);
+		message = NULL;
+	} else {
+		camel_object_unref (p->message);
+		p->message = message;
+		p->modified = TRUE;
+	}
+	
+	camel_object_unref (parser);
+	
+	result = waitpid (pid, &status, 0);
+	
+	if (result == -1 && errno == EINTR) {
+		/* child process is hanging... */
+		kill (pid, SIGTERM);
+		sleep (1);
+		result = waitpid (pid, &status, WNOHANG);
+		if (result == 0) {
+			/* ...still hanging, set phasers to KILL */
+			kill (pid, SIGKILL);
+			sleep (1);
+			result = waitpid (pid, &status, WNOHANG);
+		}
+	}
+	
+	if (message && result != -1 && WIFEXITED (status))
+		return WEXITSTATUS (status);
+	else
+		return -1;
+}
+
+static ESExpResult *
+pipe_message (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+{
+	int i;
+	
+	/* make sure all args are strings */
+	for (i = 0; i < argc; i++) {
+		if (argv[i]->type != ESEXP_RES_STRING)
+			return NULL;
+	}
+	
+	camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Piping message to %s", argv[0]->value.string);
+	pipe_to_system (f, argc, argv, driver);
+	
+	return NULL;
+}
+
 
 static ESExpResult *
 do_shell (struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
@@ -857,7 +1012,7 @@ run_only_once (gpointer key, char *action, struct _run_only_once *data)
 	CamelException *ex = data->ex;
 	ESExpResult *r;
 	
-	printf ("evaluating: %s\n\n", action);
+	d(printf ("evaluating: %s\n\n", action));
 	
 	e_sexp_input_text (p->eval, action, strlen (action));
 	if (e_sexp_parse (p->eval) == -1) {
@@ -999,7 +1154,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver, const char *mbox, co
 	}
 	
 	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
-
+	
 	ret = 0;
 fail:
 	g_free (source_url);
@@ -1117,7 +1272,7 @@ get_message_cb (void *data, CamelException *ex)
 	
 	if (p->message) {
 		message = p->message;
-		camel_object_ref (CAMEL_OBJECT (message));
+		camel_object_ref (message);
 	} else {
 		const char *uid;
 		
@@ -1267,7 +1422,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver, CamelMimeMessage 
 		/* copy it to the default inbox */
 		filtered = TRUE;
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Copy to default folder");
-		if (p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
+		if (!p->modified && p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 			GPtrArray *uids;
 			
 			uids = g_ptr_array_new ();

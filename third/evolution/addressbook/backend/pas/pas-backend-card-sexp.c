@@ -25,7 +25,7 @@
 #include <ebook/e-card-simple.h>
 #include <gal/widgets/e-unicode.h>
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 
 typedef struct _SearchContext SearchContext;
 
@@ -104,12 +104,12 @@ compare_category (ECardSimple *card, const char *str,
 	ECard *ecard;
 	gboolean ret_val = FALSE;
 
-	gtk_object_get (GTK_OBJECT (card),
-			"card", &ecard,
-			NULL);
-	gtk_object_get (GTK_OBJECT (ecard),
-			"category_list", &categories,
-			NULL);
+	g_object_get (card,
+		      "card", &ecard,
+		      NULL);
+	g_object_get (ecard,
+		      "category_list", &categories,
+		      NULL);
 
 	for (iterator = e_list_get_iterator(categories); e_iterator_is_valid (iterator); e_iterator_next (iterator)) {
 		const char *category = e_iterator_get (iterator);
@@ -120,8 +120,10 @@ compare_category (ECardSimple *card, const char *str,
 		}
 	}
 
-	gtk_object_unref (GTK_OBJECT (iterator));
+	g_object_unref (iterator);
 	e_card_free_empty_lists (ecard);
+	g_object_unref (categories);
+	g_object_unref (ecard);
 	return ret_val;
 }
 
@@ -134,12 +136,12 @@ compare_arbitrary (ECardSimple *card, const char *str,
 	ECard *ecard;
 	gboolean ret_val = FALSE;
 
-	gtk_object_get (GTK_OBJECT (card),
-			"card", &ecard,
-			NULL);
-	gtk_object_get (GTK_OBJECT (ecard),
-			"arbitrary", &list,
-			NULL);
+	g_object_get (card,
+		      "card", &ecard,
+		      NULL);
+	g_object_get (ecard,
+		      "arbitrary", &list,
+		      NULL);
 
 	for (iterator = e_list_get_iterator(list); e_iterator_is_valid (iterator); e_iterator_next (iterator)) {
 		const ECardArbitrary *arbitrary = e_iterator_get (iterator);
@@ -150,8 +152,10 @@ compare_arbitrary (ECardSimple *card, const char *str,
 		}
 	}
 
-	gtk_object_unref (GTK_OBJECT (iterator));
+	g_object_unref (iterator);
 	e_card_free_empty_lists (ecard);
+	g_object_unref (list);
+	g_object_unref (ecard);
 	return ret_val;
 }
 
@@ -345,15 +349,12 @@ static struct {
 };
 
 gboolean
-pas_backend_card_sexp_match_vcard (PASBackendCardSExp *sexp, const char *vcard)
+pas_backend_card_sexp_match_ecard (PASBackendCardSExp *sexp, ECard *ecard)
 {
-	ECard *card;
 	ESExpResult *r;
 	gboolean retval;
 
-	card = e_card_new ((char*)vcard);
-	sexp->priv->search_context->card = e_card_simple_new (card);
-	gtk_object_unref(GTK_OBJECT(card));
+	sexp->priv->search_context->card = e_card_simple_new (ecard);
 
 	/* if it's not a valid vcard why is it in our db? :) */
 	if (!sexp->priv->search_context->card)
@@ -363,9 +364,24 @@ pas_backend_card_sexp_match_vcard (PASBackendCardSExp *sexp, const char *vcard)
 
 	retval = (r && r->type == ESEXP_RES_BOOL && r->value.bool);
 
-	gtk_object_unref(GTK_OBJECT(sexp->priv->search_context->card));
+	g_object_unref(sexp->priv->search_context->card);
 
 	e_sexp_result_free(sexp->priv->search_sexp, r);
+
+	return retval;
+}
+
+gboolean
+pas_backend_card_sexp_match_vcard (PASBackendCardSExp *sexp, const char *vcard)
+{
+	ECard *card;
+	gboolean retval;
+
+	card = e_card_new ((char*)vcard);
+
+	retval = pas_backend_card_sexp_match_ecard (sexp, card);
+
+	g_object_unref(card);
 
 	return retval;
 }
@@ -378,7 +394,7 @@ pas_backend_card_sexp_match_vcard (PASBackendCardSExp *sexp, const char *vcard)
 PASBackendCardSExp *
 pas_backend_card_sexp_new (const char *text)
 {
-	PASBackendCardSExp *sexp = gtk_type_new (pas_backend_card_sexp_get_type ());
+	PASBackendCardSExp *sexp = g_object_new (PAS_TYPE_BACKEND_CARD_SEXP, NULL);
 	int esexp_error;
 	int i;
 
@@ -398,7 +414,7 @@ pas_backend_card_sexp_new (const char *text)
 	esexp_error = e_sexp_parse(sexp->priv->search_sexp);
 
 	if (esexp_error == -1) {
-		gtk_object_unref (GTK_OBJECT (sexp));
+		g_object_unref (sexp);
 		sexp = NULL;
 	}
 
@@ -406,27 +422,32 @@ pas_backend_card_sexp_new (const char *text)
 }
 
 static void
-pas_backend_card_sexp_destroy (GtkObject *object)
+pas_backend_card_sexp_dispose (GObject *object)
 {
 	PASBackendCardSExp *sexp = PAS_BACKEND_CARD_SEXP (object);
-	e_sexp_unref(sexp->priv->search_sexp);
 
-	g_free (sexp->priv->search_context);
-	g_free (sexp->priv);
+	if (sexp->priv) {
+		e_sexp_unref(sexp->priv->search_sexp);
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);	
+		g_free (sexp->priv->search_context);
+		g_free (sexp->priv);
+		sexp->priv = NULL;
+	}
+
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 pas_backend_card_sexp_class_init (PASBackendCardSExpClass *klass)
 {
-	GtkObjectClass  *object_class = (GtkObjectClass *) klass;
+	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
 	/* Set the virtual methods. */
 
-	object_class->destroy = pas_backend_card_sexp_destroy;
+	object_class->dispose = pas_backend_card_sexp_dispose;
 }
 
 static void
@@ -443,24 +464,25 @@ pas_backend_card_sexp_init (PASBackendCardSExp *sexp)
 /**
  * pas_backend_card_sexp_get_type:
  */
-GtkType
+GType
 pas_backend_card_sexp_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 
 	if (! type) {
-		GtkTypeInfo info = {
-			"PASBackendCardSExp",
-			sizeof (PASBackendCardSExp),
+		GTypeInfo info = {
 			sizeof (PASBackendCardSExpClass),
-			(GtkClassInitFunc)  pas_backend_card_sexp_class_init,
-			(GtkObjectInitFunc) pas_backend_card_sexp_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc)  pas_backend_card_sexp_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (PASBackendCardSExp),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) pas_backend_card_sexp_init
 		};
 
-		type = gtk_type_unique (gtk_object_get_type (), &info);
+		type = g_type_register_static (G_TYPE_OBJECT, "PASBackendCardSExp", &info, 0);
 	}
 
 	return type;

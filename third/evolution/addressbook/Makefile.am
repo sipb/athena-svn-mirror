@@ -3,5 +3,7 @@ CONDUIT_SUBDIR=conduit
 endif
 
 SUBDIRS =	\
-	backend printing gui $(CONDUIT_SUBDIR)
+	backend printing gui tools $(CONDUIT_SUBDIR)
 
+EXTRA_DIST =	\
+	ChangeLog.pre-1-4

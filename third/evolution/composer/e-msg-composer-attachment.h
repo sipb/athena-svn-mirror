@@ -34,17 +34,17 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define E_TYPE_MSG_COMPOSER_ATTACHMENT			(e_msg_composer_attachment_get_type ())
-#define E_MSG_COMPOSER_ATTACHMENT(obj)			(GTK_CHECK_CAST ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT, EMsgComposerAttachment))
-#define E_MSG_COMPOSER_ATTACHMENT_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), E_TYPE_MSG_COMPOSER_ATTACHMENT, EMsgComposerAttachmentClass))
-#define E_IS_MSG_COMPOSER_ATTACHMENT(obj)		(GTK_CHECK_TYPE ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT))
-#define E_IS_MSG_COMPOSER_ATTACHMENT_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT))
+#define E_MSG_COMPOSER_ATTACHMENT(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT, EMsgComposerAttachment))
+#define E_MSG_COMPOSER_ATTACHMENT_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_MSG_COMPOSER_ATTACHMENT, EMsgComposerAttachmentClass))
+#define E_IS_MSG_COMPOSER_ATTACHMENT(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT))
+#define E_IS_MSG_COMPOSER_ATTACHMENT_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_MSG_COMPOSER_ATTACHMENT))
 
 
 typedef struct _EMsgComposerAttachment       EMsgComposerAttachment;
 typedef struct _EMsgComposerAttachmentClass  EMsgComposerAttachmentClass;
 
 struct _EMsgComposerAttachment {
-	GtkObject parent;
+	GObject parent;
 
 	GladeXML *editor_gui;
 
@@ -56,13 +56,13 @@ struct _EMsgComposerAttachment {
 };
 
 struct _EMsgComposerAttachmentClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (*changed)	(EMsgComposerAttachment *msg_composer_attachment);
 };
 
 
-GtkType e_msg_composer_attachment_get_type (void);
+GType e_msg_composer_attachment_get_type (void);
 EMsgComposerAttachment *e_msg_composer_attachment_new (const char *file_name,
 						       const char *disposition,
 						       CamelException *ex);

@@ -18,6 +18,7 @@
 #include <gal/util/e-util.h>
 
 #include "e-select-names-model.h"
+#include "e-select-names-marshal.h"
 #include "addressbook/backend/ebook/e-card-simple.h"
 
 #define MAX_LENGTH 2047
@@ -37,17 +38,6 @@ enum {
 	ARG_CARD,
 };
 
-enum {
-	NAME_DATA_BLANK,
-	NAME_DATA_CARD,
-	NAME_DATA_STRING
-};
-
-enum {
-	NAME_FORMAT_GIVEN_FIRST,
-	NAME_FORMAT_FAMILY_FIRST
-};
-
 struct _ESelectNamesModelPrivate {
 	gchar *id;
 	gchar *title;
@@ -60,87 +50,69 @@ struct _ESelectNamesModelPrivate {
 	gboolean pending_changed;
 };
 
+static GObjectClass *parent_class = NULL;
 
 static void e_select_names_model_init (ESelectNamesModel *model);
 static void e_select_names_model_class_init (ESelectNamesModelClass *klass);
 
-static void e_select_names_model_destroy (GtkObject *object);
-static void e_select_names_model_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void e_select_names_model_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+static void e_select_names_model_dispose (GObject *object);
 
-GtkType
+GType
 e_select_names_model_get_type (void)
 {
-	static GtkType model_type = 0;
+	static GType type = 0;
 
-	if (!model_type) {
-		GtkTypeInfo model_info = {
-			"ESelectNamesModel",
-			sizeof (ESelectNamesModel),
+	if (!type) {
+		static const GTypeInfo info =  {
 			sizeof (ESelectNamesModelClass),
-			(GtkClassInitFunc) e_select_names_model_class_init,
-			(GtkObjectInitFunc) e_select_names_model_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_select_names_model_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (ESelectNamesModel),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_select_names_model_init,
 		};
 
-		model_type = gtk_type_unique (gtk_object_get_type (), &model_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "ESelectNamesModel", &info, 0);
 	}
 
-	return model_type;
+	return type;
 }
-
-typedef void (*GtkSignal_NONE__INT_INT_INT) (GtkObject *object, gint arg1, gint arg2, gint arg3, gpointer user_data);
-static void
-local_gtk_marshal_NONE__INT_INT_INT (GtkObject    *object, 
-				     GtkSignalFunc func, 
-				     gpointer      func_data, 
-				     GtkArg       *args)
-{
-	GtkSignal_NONE__INT_INT_INT rfunc;
-	rfunc = (GtkSignal_NONE__INT_INT_INT) func;
-	(* rfunc) (object,
-		   GTK_VALUE_INT(args[0]),
-		   GTK_VALUE_INT(args[1]),
-		   GTK_VALUE_INT(args[2]),
-		   func_data);
-}
-
 
 static void
 e_select_names_model_class_init (ESelectNamesModelClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS(klass);
+	parent_class = g_type_class_peek_parent (klass);
 
 	e_select_names_model_signals[E_SELECT_NAMES_MODEL_CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ESelectNamesModelClass, changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESelectNamesModelClass, changed),
+			      NULL, NULL,
+			      e_select_names_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_select_names_model_signals[E_SELECT_NAMES_MODEL_RESIZED] =
-		gtk_signal_new ("resized",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ESelectNamesModelClass, resized),
-				local_gtk_marshal_NONE__INT_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
-
-	gtk_object_class_add_signals (object_class, e_select_names_model_signals, E_SELECT_NAMES_MODEL_LAST_SIGNAL);
-
-	gtk_object_add_arg_type ("ESelectNamesModel::card",
-				 GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_CARD);
+		g_signal_new ("resized",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESelectNamesModelClass, resized),
+			      NULL, NULL,
+			      e_select_names_marshal_NONE__INT_INT_INT,
+			      G_TYPE_NONE, 3,
+			      G_TYPE_INT,
+			      G_TYPE_INT,
+			      G_TYPE_INT);
 
 	klass->changed = NULL;
 
-	object_class->destroy = e_select_names_model_destroy;
-	object_class->get_arg = e_select_names_model_get_arg;
-	object_class->set_arg = e_select_names_model_set_arg;
+	object_class->dispose = e_select_names_model_dispose;
 }
 
 /**
@@ -155,52 +127,23 @@ e_select_names_model_init (ESelectNamesModel *model)
 }
 
 static void
-e_select_names_model_destroy (GtkObject *object)
+e_select_names_model_dispose (GObject *object)
 {
 	ESelectNamesModel *model = E_SELECT_NAMES_MODEL (object);
-	
-	g_free (model->priv->title);
-	g_free (model->priv->id);
 
-	g_list_foreach (model->priv->data, (GFunc) gtk_object_unref, NULL);
-	g_list_free (model->priv->data);
+	if (model->priv) {
+		g_free (model->priv->title);
+		g_free (model->priv->id);
 
-	g_free (model->priv);
+		g_list_foreach (model->priv->data, (GFunc) g_object_unref, NULL);
+		g_list_free (model->priv->data);
 
-}
-
-
-/* Set_arg handler for the model */
-static void
-e_select_names_model_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
-{
-	ESelectNamesModel *model;
-	
-	model = E_SELECT_NAMES_MODEL (object);
-
-	switch (arg_id) {
-	case ARG_CARD:
-		break;
-	default:
-		return;
+		g_free (model->priv);
+		model->priv = NULL;
 	}
-}
 
-/* Get_arg handler for the model */
-static void
-e_select_names_model_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
-{
-	ESelectNamesModel *model;
-
-	model = E_SELECT_NAMES_MODEL (object);
-
-	switch (arg_id) {
-	case ARG_CARD:
-		break;
-	default:
-		arg->type = GTK_TYPE_INVALID;
-		break;
-	}
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 
@@ -210,7 +153,7 @@ e_select_names_model_changed (ESelectNamesModel *model)
 	if (model->priv->freeze_count > 0) {
 		model->priv->pending_changed = TRUE;
 	} else {
-		gtk_signal_emit (GTK_OBJECT(model), e_select_names_model_signals[E_SELECT_NAMES_MODEL_CHANGED]);
+		g_signal_emit (model, e_select_names_model_signals[E_SELECT_NAMES_MODEL_CHANGED], 0);
 		model->priv->pending_changed = FALSE;
 	}
 }
@@ -227,14 +170,14 @@ ESelectNamesModel *
 e_select_names_model_new (void)
 {
 	ESelectNamesModel *model;
-	model = E_SELECT_NAMES_MODEL (gtk_type_new (e_select_names_model_get_type ()));
+	model = g_object_new (E_TYPE_SELECT_NAMES_MODEL, NULL);
 	return model;
 }
 
 ESelectNamesModel *
 e_select_names_model_duplicate (ESelectNamesModel *old)
 {
-	ESelectNamesModel *model = E_SELECT_NAMES_MODEL(gtk_type_new(e_select_names_model_get_type()));
+	ESelectNamesModel *model = e_select_names_model_new ();
 	GList *iter;
 
 	model->priv->id = g_strdup (old->priv->id);
@@ -270,16 +213,17 @@ e_select_names_model_get_textification (ESelectNamesModel *model, const char *se
 		
 		while (iter) {
 			EDestination *dest = E_DESTINATION (iter->data);
-			strv[i] = (gchar *) e_destination_get_textrep (dest);
+			strv[i] = (gchar *) e_destination_get_textrep (dest, FALSE);
 			++i;
 			iter = g_list_next (iter);
 		}
 		
 		text = g_strjoinv (separator, strv);
-		
-		if (strlen(text) > MAX_LENGTH) {
-			text[MAX_LENGTH] = '\0';
-			text = g_realloc (text, MAX_LENGTH + 1);
+
+		if (g_utf8_strlen(text, -1) > MAX_LENGTH) {
+			char *p = g_utf8_offset_to_pointer (text, MAX_LENGTH);
+			*p = '\0';
+			text = g_realloc (text, p - text + 1);
 		}
 		
 		g_free (strv);
@@ -450,22 +394,22 @@ e_select_names_model_get_string (ESelectNamesModel *model, gint index)
 
 	dest = e_select_names_model_get_destination (model, index);
 	
-	return dest ? e_destination_get_textrep (dest) : "";
+	return dest ? e_destination_get_textrep (dest, FALSE) : "";
 }
 
 static void
 connect_destination (ESelectNamesModel *model, EDestination *dest)
 {
-	gtk_signal_connect (GTK_OBJECT (dest),
-			    "changed",
-			    destination_changed_proxy,
-			    model);
+	g_signal_connect (dest,
+			  "changed",
+			  G_CALLBACK (destination_changed_proxy),
+			  model);
 }
 
 static void
 disconnect_destination (ESelectNamesModel *model, EDestination *dest)
 {
-	gtk_signal_disconnect_by_func (GTK_OBJECT (dest), destination_changed_proxy, model);
+	g_signal_handlers_disconnect_by_func (dest, destination_changed_proxy, model);
 }
 
 gboolean
@@ -494,7 +438,7 @@ e_select_names_model_insert (ESelectNamesModel *model, gint index, EDestination 
 
 	if (e_select_names_model_at_limit (model)) {
 		/* FIXME: This is bad. */
-		gtk_object_unref (GTK_OBJECT (dest));
+		g_object_unref (dest);
 		return;
 	}
 
@@ -502,8 +446,7 @@ e_select_names_model_insert (ESelectNamesModel *model, gint index, EDestination 
 
 	model->priv->data = g_list_insert (model->priv->data, dest, index);
 	
-	gtk_object_ref (GTK_OBJECT (dest));
-	gtk_object_sink (GTK_OBJECT (dest));
+	g_object_ref (dest);
 
 	e_select_names_model_changed (model);
 }
@@ -516,7 +459,7 @@ e_select_names_model_append (ESelectNamesModel *model, EDestination *dest)
 
 	if (e_select_names_model_at_limit (model)) {
 		/* FIXME: This is bad. */
-		gtk_object_unref (GTK_OBJECT (dest));
+		g_object_unref (dest);
 		return;
 	}
 
@@ -524,8 +467,7 @@ e_select_names_model_append (ESelectNamesModel *model, EDestination *dest)
 
 	model->priv->data = g_list_append (model->priv->data, dest);
 
-	gtk_object_ref  (GTK_OBJECT (dest));
-	gtk_object_sink (GTK_OBJECT (dest));
+	g_object_ref  (dest);
 
 	e_select_names_model_changed (model);
 }
@@ -542,7 +484,7 @@ e_select_names_model_replace (ESelectNamesModel *model, gint index, EDestination
 	g_return_if_fail (model->priv->data == NULL || (0 <= index && index < g_list_length (model->priv->data)));
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	
-	new_str = e_destination_get_textrep (dest);
+	new_str = e_destination_get_textrep (dest, FALSE);
 	new_strlen = new_str ? strlen (new_str) : 0;
 
 	if (model->priv->data == NULL) {
@@ -550,8 +492,7 @@ e_select_names_model_replace (ESelectNamesModel *model, gint index, EDestination
 		connect_destination (model, dest);
 
 		model->priv->data = g_list_append (model->priv->data, dest);
-		gtk_object_ref (GTK_OBJECT (dest));
-		gtk_object_sink (GTK_OBJECT (dest));
+		g_object_ref (dest);
 
 	} else {
 		
@@ -562,21 +503,20 @@ e_select_names_model_replace (ESelectNamesModel *model, gint index, EDestination
 			disconnect_destination (model, E_DESTINATION (node->data));
 			connect_destination (model, dest);
 
-			old_str = e_destination_get_textrep (E_DESTINATION (node->data));
+			old_str = e_destination_get_textrep (E_DESTINATION (node->data), FALSE);
 			old_strlen = old_str ? strlen (old_str) : 0;
 
-			gtk_object_unref (GTK_OBJECT (node->data));
+			g_object_unref (node->data);
 
 			node->data = dest;
-			gtk_object_ref (GTK_OBJECT (dest));
-			gtk_object_sink (GTK_OBJECT (dest));
+			g_object_ref (dest);
 		}
 	}
 
 	e_select_names_model_changed (model);
 
-	gtk_signal_emit (GTK_OBJECT (model), e_select_names_model_signals[E_SELECT_NAMES_MODEL_RESIZED],
-			 index, old_strlen, new_strlen);
+	g_signal_emit (model, e_select_names_model_signals[E_SELECT_NAMES_MODEL_RESIZED], 0,
+		       index, old_strlen, new_strlen);
 }
 
 void
@@ -593,7 +533,7 @@ e_select_names_model_delete (ESelectNamesModel *model, gint index)
 	dest = E_DESTINATION (node->data);
 
 	disconnect_destination (model, dest);
-	gtk_object_unref (GTK_OBJECT (dest));
+	g_object_unref (dest);
 
 	model->priv->data = g_list_remove_link (model->priv->data, node);
 	g_list_free_1 (node);
@@ -624,7 +564,7 @@ e_select_names_model_clean (ESelectNamesModel *model, gboolean clean_last_entry)
 		if (dest == NULL || e_destination_is_empty (dest)) {
 			if (dest) {
 				disconnect_destination (model, dest);
-				gtk_object_unref (GTK_OBJECT (dest));
+				g_object_unref (dest);
 			}
 			model->priv->data = g_list_remove_link (model->priv->data, iter);
 			g_list_free_1 (iter);
@@ -642,7 +582,7 @@ static void
 delete_all_iter (gpointer data, gpointer closure)
 {
 	disconnect_destination (E_SELECT_NAMES_MODEL (closure), E_DESTINATION (data));
-	gtk_object_unref (GTK_OBJECT (data));
+	g_object_unref (data);
 }
 
 void
@@ -710,8 +650,8 @@ e_select_names_model_name_pos (ESelectNamesModel *model, gint seplen, gint index
 	iter = model->priv->data;
 	while (iter && i <= index) {
 		rp += len + (i > 0 ? seplen : 0);
-		str = e_destination_get_textrep (E_DESTINATION (iter->data));
-		len = str ? strlen (str) : 0;
+		str = e_destination_get_textrep (E_DESTINATION (iter->data), FALSE);
+		len = str ? g_utf8_strlen (str, -1) : 0;
 		++i;
 		iter = g_list_next (iter);
 	}
@@ -740,8 +680,8 @@ e_select_names_model_text_pos (ESelectNamesModel *model, gint seplen, gint pos, 
 	iter = model->priv->data;
 
 	while (iter != NULL) {
-		str = e_destination_get_textrep (E_DESTINATION (iter->data));
-		len = str ? strlen (str) : 0;
+		str = e_destination_get_textrep (E_DESTINATION (iter->data), FALSE);
+		len = str ? g_utf8_strlen (str, -1) : 0;
 
 		if (sp <= pos && pos <= sp + len + adj) {
 			break;

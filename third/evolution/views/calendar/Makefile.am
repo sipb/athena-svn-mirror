@@ -1,5 +1,5 @@
-defaultcalendardir = $(datadir)/evolution/views/calendar
+calendarviewsdir = $(viewsdir)/calendar
 
-defaultcalendar_DATA = galview.xml
+calendarviews_DATA = galview.xml
 
-EXTRA_DIST = $(defaultcalendar_DATA)
+EXTRA_DIST = $(calendarviews_DATA)

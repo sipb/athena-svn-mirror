@@ -2,25 +2,13 @@
 #include <config.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 #include <glib.h>
-#include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-init.h>
+#include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-main.h>
-#include <liboaf/liboaf.h>
+#include <libgnome/gnome-init.h>
 
 #include "e-book.h"
-
-static CORBA_Environment ev;
-
-static void
-init_bonobo (int argc, char **argv)
-{
-	if (bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
-		g_error (_("Could not initialize Bonobo"));
-}
 
 static void
 add_card_cb (EBook *book, EBookStatus status, const gchar *id, gpointer closure)
@@ -29,7 +17,7 @@ add_card_cb (EBook *book, EBookStatus status, const gchar *id, gpointer closure)
 	char *vcard = e_card_get_vcard_assume_utf8(card);
 	g_print ("Saved card: %s\n", vcard);
 	g_free(vcard);
-	gtk_object_unref(GTK_OBJECT(card));
+	g_object_unref(card);
 }
 
 static void
@@ -44,16 +32,17 @@ parse_line (EBook *book, char *line)
 	strings = g_strsplit(line, "\t", 3);
 	if (strings[0] && strings[1] && strings[2]) {
 		name = e_card_name_from_string(strings[1]);
-		gtk_object_set(GTK_OBJECT(card),
-			       "nickname", strings[0],
-			       "full_name", strings[1],
-			       "name", name,
-			       NULL);
-		gtk_object_get(GTK_OBJECT(card),
-			       "email", &list,
-			       NULL);
+		g_object_set(card,
+			     "nickname", strings[0],
+			     "full_name", strings[1],
+			     "name", name,
+			     NULL);
+		g_object_get(card,
+			     "email", &list,
+			     NULL);
 		e_list_append(list, strings[2]);
 		e_book_add_card(book, card, add_card_cb, card);
+		g_object_unref(list);
 	}
 	g_strfreev(strings);
 }
@@ -99,8 +88,8 @@ book_open_cb (EBook *book, EBookStatus status, gpointer closure)
 	}
 }
 
-static guint
-ebook_create (void)
+static gboolean
+ebook_create (gpointer data)
 {
 	EBook *book;
 	gchar *path, *uri;
@@ -109,20 +98,19 @@ ebook_create (void)
 
 	if (!book) {
 		printf ("%s: %s(): Couldn't create EBook, bailing.\n",
-			__FILE__,
-			__FUNCTION__);
+			__FILE__, G_GNUC_FUNCTION);
 		return FALSE;
 	}
 	
 
-	path = g_concat_dir_and_file (g_get_home_dir (),
-				      "evolution/local/Contacts/addressbook.db");
+	path = g_build_filename (g_get_home_dir (),
+				 "evolution/local/Contacts/addressbook.db",
+				 NULL);
+
 	uri = g_strdup_printf ("file://%s", path);
 	g_free (path);
 
-	if (! e_book_load_uri (book, uri, book_open_cb, NULL)) {
-		printf ("error calling load_uri!\n");
-	}
+	e_book_load_uri (book, uri, book_open_cb, NULL);
 	g_free(uri);
 
 
@@ -157,14 +145,13 @@ read_file (char *name)
 int
 main (int argc, char **argv)
 {
+	GnomeProgram *program;
 
-	CORBA_exception_init (&ev);
+	program = gnome_program_init ("load-pine-addressbook", VERSION, LIBGNOME_MODULE, argc, argv, 
+				      GNOME_PROGRAM_STANDARD_PROPERTIES,
+				      NULL);
 
-	gnome_init_with_popt_table("blah", "0.0", argc, argv, NULL, 0, NULL);
-	oaf_init (argc, argv);
-	init_bonobo (argc, argv);
-
-	gtk_idle_add ((GtkFunction) ebook_create, NULL);
+	g_idle_add (ebook_create, NULL);
 	
 	bonobo_main ();
 

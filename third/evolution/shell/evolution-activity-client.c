@@ -33,10 +33,15 @@
 
 #include "e-shell-corba-icon-utils.h"
 
+#include "e-shell-marshal.h"
+
+#include <string.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 
 #include <bonobo/bonobo-listener.h>
+#include <bonobo/bonobo-exception.h>
 
 #include <gal/util/e-util.h>
 
@@ -99,11 +104,11 @@ corba_update_progress (EvolutionActivityClient *activity_client,
 						       progress,
 						       &ev);
 
-	if (ev._major == CORBA_NO_EXCEPTION) {
+	if (! BONOBO_EX (&ev)) {
 		retval = TRUE;
 	} else {
 		g_warning ("EvolutionActivityClient: Error updating progress -- %s",
-			   ev._repo_id);
+			   BONOBO_EX_REPOID (&ev));
 		retval = FALSE;
 	}
 
@@ -136,8 +141,8 @@ update_timeout_callback (void *data)
 
 static void
 listener_callback (BonoboListener *listener,
-		   char *event_name, 
-		   CORBA_any *any,
+		   const char *event_name, 
+		   const CORBA_any *any,
 		   CORBA_Environment *ev,
 		   void *data)
 {
@@ -146,18 +151,18 @@ listener_callback (BonoboListener *listener,
 	activity_client = EVOLUTION_ACTIVITY_CLIENT (data);
 
 	if (strcmp (event_name, "ShowDetails") == 0)
-		gtk_signal_emit (GTK_OBJECT (activity_client), signals[SHOW_DETAILS]);
+		g_signal_emit (activity_client, signals[SHOW_DETAILS], 0);
 	else if (strcmp (event_name, "Cancel") == 0)
-		gtk_signal_emit (GTK_OBJECT (activity_client), signals[CANCEL]);
+		g_signal_emit (activity_client, signals[CANCEL], 0);
 	else
 		g_warning ("EvolutionActivityClient: Unknown event from listener -- %s", event_name);
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EvolutionActivityClient *activity_client;
 	EvolutionActivityClientPrivate *priv;
@@ -166,8 +171,10 @@ impl_destroy (GtkObject *object)
 	activity_client = EVOLUTION_ACTIVITY_CLIENT (object);
 	priv = activity_client->priv;
 
-	if (priv->next_update_timeout_id != 0)
+	if (priv->next_update_timeout_id != 0) {
 		g_source_remove (priv->next_update_timeout_id);
+		priv->next_update_timeout_id = 0;
+	}
 
 	CORBA_exception_init (&ev);
 
@@ -175,53 +182,69 @@ impl_destroy (GtkObject *object)
 		GNOME_Evolution_Activity_operationFinished (priv->activity_interface,
 							    priv->activity_id,
 							    &ev);
-		if (ev._major != CORBA_NO_EXCEPTION)
+		if (BONOBO_EX (&ev))
 			g_warning ("EvolutionActivityClient: Error reporting completion of operation -- %s",
-				   ev._repo_id);
+				   BONOBO_EX_REPOID (&ev));
 
 		CORBA_Object_release (priv->activity_interface, &ev);
+
+		priv->activity_interface = CORBA_OBJECT_NIL;
 	}
 
 	CORBA_exception_free (&ev);
 
-	if (priv->listener != NULL)
+	if (priv->listener != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (priv->listener));
+		priv->listener = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EvolutionActivityClient *activity_client;
+	EvolutionActivityClientPrivate *priv;
+
+	activity_client = EVOLUTION_ACTIVITY_CLIENT (object);
+	priv = activity_client->priv;
 
 	g_free (priv->new_information);
-
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EvolutionActivityClientClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	signals[SHOW_DETAILS] 
-		= gtk_signal_new ("show_details",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionActivityClientClass, show_details),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+		= g_signal_new ("show_details",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionActivityClientClass, show_details),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 
 	signals[CANCEL] 
-		= gtk_signal_new ("cancel",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (EvolutionActivityClientClass, cancel),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		= g_signal_new ("cancel",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionActivityClientClass, cancel),
+				NULL, NULL,
+				e_shell_marshal_NONE__NONE,
+				G_TYPE_NONE, 0);
 }
 
 
@@ -324,7 +347,7 @@ evolution_activity_client_new (EvolutionShellClient *shell_client,
 	g_return_val_if_fail (information != NULL, NULL);
 	g_return_val_if_fail (suggest_display_return != NULL, NULL);
 
-	activity_client = gtk_type_new (evolution_activity_client_get_type ());
+	activity_client = g_object_new (evolution_activity_client_get_type (), NULL);
 
 	if (! evolution_activity_client_construct (activity_client,
 						   shell_client,
@@ -333,7 +356,7 @@ evolution_activity_client_new (EvolutionShellClient *shell_client,
 						   information,
 						   cancellable,
 						   suggest_display_return)) {
-		gtk_object_unref (GTK_OBJECT (activity_client));
+		g_object_unref (activity_client);
 		return NULL;
 	}
 
@@ -411,8 +434,8 @@ evolution_activity_client_request_dialog (EvolutionActivityClient *activity_clie
 							 priv->activity_id,
 							 dialog_type,
 							 &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("EvolutionActivityClient: Error requesting a dialog -- %s", ev._repo_id);
+	if (BONOBO_EX (&ev) != CORBA_NO_EXCEPTION) {
+		g_warning ("EvolutionActivityClient: Error requesting a dialog -- %s", BONOBO_EX_REPOID (&ev));
 		retval = GNOME_Evolution_Activity_DIALOG_ACTION_ERROR;
 	}
 

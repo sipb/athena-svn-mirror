@@ -28,9 +28,8 @@
 typedef struct _EMsgComposer       EMsgComposer;
 typedef struct _EMsgComposerClass  EMsgComposerClass;
 
-#include <bonobo/bonobo-win.h>
+#include <bonobo/bonobo-window.h>
 #include <bonobo/bonobo-ui-component.h>
-#include <bonobo-conf/bonobo-config-database.h>
 
 #include "e-msg-composer-attachment-bar.h"
 #include "e-msg-composer-hdrs.h"
@@ -45,10 +44,10 @@ extern "C" {
 
 
 #define E_TYPE_MSG_COMPOSER	       (e_msg_composer_get_type ())
-#define E_MSG_COMPOSER(obj)	       (GTK_CHECK_CAST ((obj), E_TYPE_MSG_COMPOSER, EMsgComposer))
-#define E_MSG_COMPOSER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_MSG_COMPOSER, EMsgComposerClass))
-#define E_IS_MSG_COMPOSER(obj)	       (GTK_CHECK_TYPE ((obj), E_TYPE_MSG_COMPOSER))
-#define E_IS_MSG_COMPOSER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), E_TYPE_MSG_COMPOSER))
+#define E_MSG_COMPOSER(obj)	       (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_MSG_COMPOSER, EMsgComposer))
+#define E_MSG_COMPOSER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_MSG_COMPOSER, EMsgComposerClass))
+#define E_IS_MSG_COMPOSER(obj)	       (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_MSG_COMPOSER))
+#define E_IS_MSG_COMPOSER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_MSG_COMPOSER))
 
 
 
@@ -60,10 +59,12 @@ struct _EMsgComposer {
 	GtkWidget *hdrs;
 	GPtrArray *extra_hdr_names, *extra_hdr_values;
 	
+	GtkWidget *focused_entry;
+	
 	GtkWidget *editor;
 	
 	GtkWidget *attachment_bar;
-	GtkWidget *attachment_scroll_frame;
+	GtkWidget *attachment_scrolled_window;
 	
 	GtkWidget *address_dialog;
 	
@@ -73,8 +74,6 @@ struct _EMsgComposer {
 	BonoboObject            *editor_listener;
 	GHashTable              *inline_images, *inline_images_by_url;
 	GList                   *current_images;
-	
-	Bonobo_ConfigDatabase    config_db;
 	
 	char *mime_type, *mime_body, *charset;
 	
@@ -105,6 +104,8 @@ struct _EMsgComposer {
 	GtkWidget *sig_omenu;
 	
 	CamelMimeMessage *redirect;
+	
+	guint notify_id;
 };
 
 struct _EMsgComposerClass {
@@ -172,9 +173,9 @@ EDestination           **e_msg_composer_get_recipients                   (EMsgCo
 EDestination           **e_msg_composer_get_to                           (EMsgComposer *composer);
 EDestination           **e_msg_composer_get_cc                           (EMsgComposer *composer);
 EDestination           **e_msg_composer_get_bcc                          (EMsgComposer *composer);
-char                    *e_msg_composer_get_subject                      (EMsgComposer *composer);
+const char              *e_msg_composer_get_subject                      (EMsgComposer *composer);
 
-const MailConfigAccount *e_msg_composer_get_preferred_account            (EMsgComposer      *composer);
+EAccount                *e_msg_composer_get_preferred_account            (EMsgComposer      *composer);
 void                     e_msg_composer_clear_inlined_table              (EMsgComposer      *composer);
 char                    *e_msg_composer_guess_mime_type                  (const char        *file_name);
 void                     e_msg_composer_set_changed                      (EMsgComposer      *composer);
@@ -208,6 +209,7 @@ void                     e_msg_composer_ignore                           (EMsgCo
 void                     e_msg_composer_drop_editor_undo                 (EMsgComposer      *composer);
 
 gboolean                 e_msg_composer_request_close_all                (void);
+void			 e_msg_composer_check_autosave			 (GtkWindow *parent);
 
 #ifdef __cplusplus
 }

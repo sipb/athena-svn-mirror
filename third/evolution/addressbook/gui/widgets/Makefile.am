@@ -1,9 +1,8 @@
-INCLUDES =						\
+INCLUDES =										\
 	-DG_LOG_DOMAIN=\"e-minicard\"			\
-	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
-	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
-	-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" \
+	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"	\
+	-DEVOLUTION_GALVIEWSDIR=\""$(viewsdir)"\"	\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/addressbook/backend		\
 	-I$(top_builddir)/addressbook/backend		\
@@ -12,12 +11,35 @@ INCLUDES =						\
 	-I$(top_srcdir)/addressbook/gui/component	\
 	-I$(top_srcdir)/widgets/misc			\
 	-I$(top_builddir)/shell				\
+	-DG_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DLIBGNOME_DISABLE_DEPRECATED			\
+	-DLIBGNOMEUI_DISABLE_DEPRECATED			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LIBRARIES =				\
-	libeminicard.a
+CORBA_COMPOSER_SOURCE_H	=			\
+	Evolution-Composer.h
+CORBA_COMPOSER_SOURCE_C =			\
+	Evolution-Composer-common.c		\
+	Evolution-Composer-skels.c		\
+	Evolution-Composer-stubs.c
+CORBA_COMPOSER_IDL = $(srcdir)/../../../composer/Evolution-Composer.idl
 
-libeminicard_a_SOURCES =			\
+$(CORBA_COMPOSER_SOURCE_H): $(CORBA_COMPOSER_IDL)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(CORBA_COMPOSER_IDL)
+
+$(CORBA_COMPOSER_SOURCE_C): $(CORBA_COMPOSER_SOURCE_H)
+
+CORBA_SOURCE_H = $(CORBA_COMPOSER_SOURCE_H)
+CORBA_SOURCE_C = $(CORBA_COMPOSER_SOURCE_C)
+CORBA_SOURCE = $(CORBA_SOURCE_H) $(CORBA_SOURCE_C)
+
+noinst_LTLIBRARIES =				\
+	libeminicard.la
+
+libeminicard_la_SOURCES =			\
+	$(CORBA_SOURCE)				\
+	e-addressbook-marshal.c			\
 	e-addressbook-reflow-adapter.c		\
 	e-addressbook-reflow-adapter.h		\
 	e-addressbook-table-adapter.c		\
@@ -45,6 +67,33 @@ libeminicard_a_SOURCES =			\
 	gal-view-minicard.c			\
 	gal-view-minicard.h
 
+#TREEVIEW_SOURCES=	e-addressbook-treeview-adapter.c	\
+#			e-addressbook-treeview-adapter.h	\
+#			gal-view-factory-treeview.c		\
+#			gal-view-factory-treeview.h		\
+#			gal-view-treeview.c			\
+#			gal-view-treeview.h
+
+# GLib marshalling cruft
+
+e-addressbook-marshal.h: e-addressbook-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_addressbook_marshal e-addressbook-marshal.list --header > e-addressbook-marshal.tmp \
+	&& mv e-addressbook-marshal.tmp e-addressbook-marshal.h ) \
+	|| ( rm -f e-addressbook-marshal.tmp && exit 1 )
+
+e-addressbook-marshal.c: e-addressbook-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_addressbook_marshal e-addressbook-marshal.list --body > e-addressbook-marshal.tmp \
+	&& mv e-addressbook-marshal.tmp e-addressbook-marshal.c ) \
+	|| ( rm -f e-addressbook-marshal.tmp && exit 1 )
+
+MARSHAL_GENERATED = e-addressbook-marshal.c e-addressbook-marshal.h
+
+BUILT_SOURCES = $(CORBA_SOURCE) $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
+
 #noinst_PROGRAMS =				\
 #	 minicard-widget-test			\
 #	 minicard-label-test			\
@@ -66,16 +115,12 @@ libeminicard_a_SOURCES =			\
 #minicard_test_LDADD =							\
 #	 libeminicard.a							\
 #	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/e-util/libeutil.la				\
-#	 $(top_builddir)/libversit/libversit.la				\
-#	 $(top_builddir)/e-util/ename/libename.la			\
 #	 $(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a \
 #	 $(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a \
 #	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
 #	 $(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
+#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
 #	 $(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
-#	 $(top_builddir)/e-util/libeutil.la				\
 #	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
 #	 libeminicard.a
 #
@@ -85,13 +130,9 @@ libeminicard_a_SOURCES =			\
 #reflow_test_LDADD =							\
 #	 libeminicard.a							\
 #	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/e-util/libeutil.la				\
-#	 $(top_builddir)/libversit/libversit.la				\
-#	 $(top_builddir)/e-util/ename/libename.la			\
 #	 $(top_builddir)/addressbook/contact-editor/libecontacteditor.a	\
 #	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
-#	 $(top_builddir)/e-util/libeutil.la				\
+#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
 #	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 #minicard_view_test_SOURCES = 	\
@@ -101,13 +142,9 @@ libeminicard_a_SOURCES =			\
 #	$(EVOLUTION_ADDRESSBOOK_LIBS)
 #	libeminicard.a							\
 #	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	$(top_builddir)/e-util/libeutil.la				\
-#	$(top_builddir)/libversit/libversit.la				\
-#	$(top_builddir)/addressbook/ename/libename.la			\
 #	$(top_builddir)/addressbook/contact-editor/libecontacteditor.a	\
 #	$(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	$(top_builddir)/widgets/misc/libemiscwidgets.a 			\
-#	$(top_builddir)/e-util/libeutil.la
+#	$(top_builddir)/widgets/misc/libemiscwidgets.la
 #
 #minicard_widget_test_SOURCES = 	\
 #	 e-minicard-widget-test.c
@@ -115,25 +152,16 @@ libeminicard_a_SOURCES =			\
 #minicard_widget_test_LDADD =						\
 #	 libeminicard.a							\
 #	 $(top_builddir)/addressbook/backend/ebook/libebook.la		\
-#	 $(top_builddir)/e-util/libeutil.la				\
-#	 $(top_builddir)/libversit/libversit.la				\
-#	 $(top_builddir)/e-util/ename/libename.la			\
 #	 $(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a \
 #	 $(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a \
 #	 $(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
 #	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
-#	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
-#	 $(top_builddir)/e-util/libeutil.la				\
+#	 $(top_builddir)/widgets/misc/libemiscwidgets.la 			\
 #	 $(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
 #	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-gladedir   = $(datadir)/evolution/glade
-glade_DATA = 
-
-etspecdir  = $(datadir)/evolution/etspec
 etspec_DATA= e-addressbook-view.etspec
 
 EXTRA_DIST = 			\
-	$(glade_DATA)		\
-	$(etspec_DATA)
-	
+	$(etspec_DATA)		\
+	e-addressbook-marshal.list

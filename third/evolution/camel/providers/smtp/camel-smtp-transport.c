@@ -57,7 +57,9 @@
 #include "camel-sasl.h"
 #include "string-utils.h"
 
-#define d(x) x
+
+extern int camel_verbose_debug;
+#define d(x) (camel_verbose_debug ? (x) : 0)
 
 /* Specified in RFC 821 */
 #define SMTP_PORT 25
@@ -81,8 +83,7 @@ static gboolean smtp_auth (CamelSmtpTransport *transport, const char *mech, Came
 static gboolean smtp_mail (CamelSmtpTransport *transport, const char *sender,
 			   gboolean has_8bit_parts, CamelException *ex);
 static gboolean smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException *ex);
-static gboolean smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message,
-			   gboolean has_8bit_parts, CamelException *ex);
+static gboolean smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelException *ex);
 static gboolean smtp_rset (CamelSmtpTransport *transport, CamelException *ex);
 static gboolean smtp_quit (CamelSmtpTransport *transport, CamelException *ex);
 
@@ -228,6 +229,9 @@ smtp_error_string (int error)
 	}
 }
 
+#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
+#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
+
 static gboolean
 connect_to_server (CamelService *service, int try_starttls, CamelException *ex)
 {
@@ -252,11 +256,11 @@ connect_to_server (CamelService *service, int try_starttls, CamelException *ex)
 	
 #ifdef HAVE_SSL
 	if (transport->flags & CAMEL_SMTP_TRANSPORT_USE_SSL) {
-		if (try_starttls)
-			tcp_stream = camel_tcp_stream_ssl_new_raw (service, service->url->host);
-		else {
+		if (try_starttls) {
+			tcp_stream = camel_tcp_stream_ssl_new_raw (service, service->url->host, STARTTLS_FLAGS);
+		} else {
 			port = service->url->port ? service->url->port : 465;
-			tcp_stream = camel_tcp_stream_ssl_new (service, service->url->host);
+			tcp_stream = camel_tcp_stream_ssl_new (service, service->url->host, SSL_PORT_FLAGS);
 		}
 	} else {
 		tcp_stream = camel_tcp_stream_raw_new ();
@@ -499,7 +503,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 		while (!authenticated) {
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
-				camel_session_forget_password (session, service, "password", ex);
+				camel_session_forget_password (session, service, "password", NULL);
 				g_free (service->url->passwd);
 				service->url->passwd = NULL;
 			}
@@ -511,7 +515,7 @@ smtp_connect (CamelService *service, CamelException *ex)
 							  errbuf ? errbuf : "", service->url->user,
 							  service->url->host);
 				
-				service->url->passwd = camel_session_get_password (session, prompt, TRUE,
+				service->url->passwd = camel_session_get_password (session, prompt, FALSE, TRUE,
 										   service, "password", ex);
 				
 				g_free (prompt);
@@ -519,8 +523,6 @@ smtp_connect (CamelService *service, CamelException *ex)
 				errbuf = NULL;
 				
 				if (!service->url->passwd) {
-					camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
-							     _("You didn't enter a password."));
 					camel_service_disconnect (service, TRUE, NULL);
 					return FALSE;
 				}
@@ -721,10 +723,7 @@ smtp_send_to (CamelTransport *transport, CamelMimeMessage *message,
 		}
 	}
 	
-	/* passing in has_8bit_parts saves time as we don't have to
-           recurse through the message all over again if the user is
-           not sending 8bit mime parts */
-	if (!smtp_data (smtp_transport, message, has_8bit_parts, ex)) {
+	if (!smtp_data (smtp_transport, message, ex)) {
 		camel_operation_end (NULL);
 		return FALSE;
 	}
@@ -860,7 +859,7 @@ static gboolean
 smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 {
 	/* say hello to the server */
-	char *name, *cmdbuf, *respbuf = NULL;
+	char *name = NULL, *cmdbuf = NULL, *respbuf = NULL;
 	struct hostent *host;
 	CamelException err;
 	const char *token;
@@ -892,7 +891,7 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 	
 	camel_exception_clear (&err);
 	
-	if (host && host->h_name) {
+	if (host && host->h_name && *host->h_name) {
 		name = g_strdup (host->h_name);
 	} else {
 #ifdef ENABLE_IPv6
@@ -911,7 +910,8 @@ smtp_helo (CamelSmtpTransport *transport, CamelException *ex)
 #endif
 	}
 	
-	camel_free_host (host);
+	if (host)
+		camel_free_host (host);
 	
 	/* hiya server! how are you today? */
 	if (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP)
@@ -1221,26 +1221,23 @@ smtp_rcpt (CamelSmtpTransport *transport, const char *recipient, CamelException 
 }
 
 static gboolean
-smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, gboolean has_8bit_parts, CamelException *ex)
+smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, CamelException *ex)
 {
 	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
+	struct _header_raw *header, *savedbcc, *n, *tail;
 	char *cmdbuf, *respbuf = NULL;
 	CamelStreamFilter *filtered_stream;
 	CamelMimeFilter *crlffilter;
-	struct _header_raw *header;
-	GSList *h, *bcc = NULL;
 	int ret;
 	
-	/* if the message contains 8bit/binary mime parts and the server
-	   doesn't support it, set our required encoding to be 7bit */
-	if (has_8bit_parts && !(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
+	/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
+	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
 		enctype = CAMEL_BESTENC_7BIT;
 	
 	/* FIXME: should we get the best charset too?? */
-	/* Changes the encoding of any 8bit/binary mime parts to fit
-	   within our required encoding type and also force any text
-	   parts with long lines (longer than 998 octets) to wrap by
-	   QP or base64 encoding them. */
+	/* Changes the encoding of all mime parts to fit within our required
+	   encoding type and also force any text parts with long lines (longer
+	   than 998 octets) to wrap by QP or base64 encoding them. */
 	camel_mime_message_set_best_encoding (message, CAMEL_BESTENC_GET_ENCODING, enctype);
 	
 	cmdbuf = g_strdup ("DATA\r\n");
@@ -1284,29 +1281,30 @@ smtp_data (CamelSmtpTransport *transport, CamelMimeMessage *message, gboolean ha
 	camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (crlffilter));
 	camel_object_unref (CAMEL_OBJECT (crlffilter));
 	
-	/* copy and remove the bcc headers */
-	header = CAMEL_MIME_PART (message)->headers;
-	while (header) {
-		if (!g_strcasecmp (header->name, "Bcc"))
-			bcc = g_slist_append (bcc, g_strdup (header->value));
-		header = header->next;
-	}
+	/* unlink the bcc headers */
+	savedbcc = NULL;
+	tail = (struct _header_raw *) &savedbcc;
 	
-	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
+	header = (struct _header_raw *) &CAMEL_MIME_PART (message)->headers;
+	n = header->next;
+	while (n != NULL) {
+		if (!strcasecmp (n->name, "Bcc")) {
+			header->next = n->next;
+			tail->next = n;
+			n->next = NULL;
+			tail = n;
+		} else {
+			header = n;
+		}
+		
+		n = header->next;
+	}
 	
 	/* write the message */
 	ret = camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (message), CAMEL_STREAM (filtered_stream));
 	
-	/* add the bcc headers back */
-	if (bcc) {
-		h = bcc;
-		while (h) {
-			camel_medium_add_header (CAMEL_MEDIUM (message), "Bcc", h->data);
-			g_free (h->data);
-			h = h->next;
-		}
-		g_slist_free (bcc);
-	}
+	/* restore the bcc headers */
+	header->next = savedbcc;
 	
 	if (ret == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,

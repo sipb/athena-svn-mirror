@@ -2,24 +2,26 @@
 # libcal-client
 #
 
-CORBA_GENERATED =				\
+CORBA_GENERATED_C =				\
 	evolution-calendar-common.c		\
 	evolution-calendar-skels.c		\
 	evolution-calendar-stubs.c
-
-CORBA_HEADERS_GENERATED =			\
+CORBA_GENERATED_H =			\
 	evolution-calendar.h
+
+CORBA_GENERATED = $(CORBA_GENERATED_C) $(CORBA_GENERATED_H)
 
 idls =						\
 	$(srcdir)/../idl/evolution-calendar.idl
 
-idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
+idl_flags = $(IDL_INCLUDES)
 
-$(CORBA_GENERATED): $(idls)
+$(CORBA_GENERATED_H): $(idls)
 	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/evolution-calendar.idl
+$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
 
 INCLUDES =						\
-        -DGNOMELOCALEDIR=\""$(localedir)"\"		\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DG_LOG_DOMAIN=\"cal-client\"			\
 	-I$(top_srcdir)/calendar			\
 	-I$(srcdir) -I$(top_srcdir) 			\
@@ -32,12 +34,12 @@ INCLUDES =						\
 	-I$(top_srcdir)/libwombat			\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-lib_LTLIBRARIES = libcal-client.la
+privlib_LTLIBRARIES = libcal-client.la
 
-libcal_clientincludedir = $(includedir)/evolution/cal-client
+libcal_clientincludedir = $(privincludedir)/cal-client
 
 libcal_client_la_SOURCES =	\
-	$(CORBA_GENERATED)	\
+	$(CORBA_GENERATED_C)	\
 	cal-client-multi.c	\
 	cal-client-types.c	\
 	cal-client.c		\
@@ -47,8 +49,13 @@ libcal_client_la_SOURCES =	\
 	query-listener.c	\
 	query-listener.h
 
+libcal_client_la_LIBADD =					\
+	$(top_builddir)/calendar/cal-util/libcal-util.la	\
+	$(top_builddir)/libwombat/libwombat.la			\
+	$(top_builddir)/e-util/libeutil.la
+
 libcal_clientinclude_HEADERS =		\
-	$(CORBA_HEADERS_GENERATED)	\
+	$(CORBA_GENERATED_H)		\
 	cal-client-multi.h		\
 	cal-client-types.h 		\
 	cal-client.h			\
@@ -75,14 +82,9 @@ client_test_INCLUDES =			\
 	$(INCLUDES)			\
 	-DG_LOG_DOMAIN=\"client-test\"
 
-client_test_LDADD =							\
-	$(EVOLUTION_CALENDAR_LIBS)					\
-	$(top_builddir)/e-util/libeutil.la				\
-	$(top_builddir)/calendar/cal-util/libcal-util.la		\
-	$(top_builddir)/libversit/libversit.a				\
-	$(top_builddir)/libical/src/libical/libical-evolution.la	\
-	$(top_builddir)/libwombat/libwombat.la				\
-	libcal-client.la
+client_test_LDADD =			\
+	libcal-client.la		\
+	$(EVOLUTION_CALENDAR_LIBS)
 
 BUILT_SOURCES = $(CORBA_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)

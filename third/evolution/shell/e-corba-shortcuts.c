@@ -33,8 +33,8 @@
 #include <gal/util/e-util.h>
 
 
-#define PARENT_TYPE bonobo_x_object_get_type ()
-static BonoboXObjectClass *parent_class = NULL;
+#define PARENT_TYPE bonobo_object_get_type ()
+static BonoboObjectClass *parent_class = NULL;
 
 struct _ECorbaShortcutsPrivate {
 	EShortcuts *shortcuts;
@@ -84,10 +84,10 @@ shortcut_list_to_corba (const GSList *shortcut_list,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	ECorbaShortcuts *corba_shortcuts;
 	ECorbaShortcutsPrivate *priv;
@@ -95,14 +95,29 @@ impl_destroy (GtkObject *object)
 	corba_shortcuts = E_CORBA_SHORTCUTS (object);
 	priv = corba_shortcuts->priv;
 
-	gtk_object_unref (GTK_OBJECT (priv->shortcuts));
+	if (priv->shortcuts != NULL) {
+		g_object_unref (priv->shortcuts);
+		priv->shortcuts = NULL;
+	}
 
-	g_free (priv);
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+static void
+impl_finalize (GObject *object)
+{
+	ECorbaShortcuts *corba_shortcuts;
+
+	corba_shortcuts = E_CORBA_SHORTCUTS (object);
+
+	g_free (corba_shortcuts->priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
+/* Evolution::Shortcuts CORBA methods.  */
+
 static void
 impl_add (PortableServer_Servant servant,
 	  const CORBA_short group_num,
@@ -277,14 +292,15 @@ impl__get_groups (PortableServer_Servant servant,
 
 
 static void
-class_init (GtkObjectClass *object_class)
+e_corba_shortcuts_class_init (GObjectClass *object_class)
 {
 	ECorbaShortcutsClass *corba_shortcuts_class;
 	POA_GNOME_Evolution_Shortcuts__epv *epv;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	corba_shortcuts_class = E_CORBA_SHORTCUTS_CLASS (object_class);
 
@@ -299,7 +315,7 @@ class_init (GtkObjectClass *object_class)
 }
 
 static void
-init (ECorbaShortcuts *corba_shortcuts)
+e_corba_shortcuts_init (ECorbaShortcuts *corba_shortcuts)
 {
 	ECorbaShortcutsPrivate *priv;
 
@@ -318,16 +334,16 @@ e_corba_shortcuts_new (EShortcuts *shortcuts)
 	g_return_val_if_fail (shortcuts != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHORTCUTS (shortcuts), NULL);
 
-	corba_shortcuts = gtk_type_new (e_corba_shortcuts_get_type ());
+	corba_shortcuts = g_object_new (e_corba_shortcuts_get_type (), NULL);
 
-	gtk_object_ref (GTK_OBJECT (shortcuts));
+	g_object_ref (shortcuts);
 	corba_shortcuts->priv->shortcuts = shortcuts;
 
 	return corba_shortcuts;
 }
 
 
-E_MAKE_X_TYPE (e_corba_shortcuts, "ECorbaShortcuts", ECorbaShortcuts,
-	       class_init, init, PARENT_TYPE,
-	       POA_GNOME_Evolution_Shortcuts__init,
-	       GTK_STRUCT_OFFSET (ECorbaShortcutsClass, epv))
+BONOBO_TYPE_FUNC_FULL (ECorbaShortcuts,
+		       GNOME_Evolution_Shortcuts,
+		       PARENT_TYPE,
+		       e_corba_shortcuts)

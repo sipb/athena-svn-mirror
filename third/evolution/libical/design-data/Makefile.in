@@ -82,6 +82,9 @@ RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
+privlibdir = @privlibdir@
 python_val = @python_val@
 
 EXTRA_DIST =   properties.csv  parameters.csv  restrictions.csv  status.txt  value-types.csv

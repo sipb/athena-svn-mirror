@@ -1,7 +1,7 @@
 <Root>
         <commands>
 		<cmd name="ContactEditorSave" pixtype="pixbuf" accel="*Control*s"/>
-		<cmd name="ContactEditorSaveAs" pixtype="pixbuf" accel="*Control*v"/>
+		<cmd name="ContactEditorSaveAs" pixtype="pixbuf" accel="*Control**Shift*s"/>
 
 		<cmd name="ContactEditorSendAs"/>
 
@@ -73,7 +73,7 @@
 	</menu>
 
 	<dockitem name="Toolbar" relief="none" behavior="exclusive"
-			hlook="text" vlook="icon">
+			hlook="both_horiz" vlook="icon">
 
 	        <toolitem name="ContactEditorSaveClose" verb=""
 		_label="Save and Close" priority="1"  pixtype="pixbuf"/>

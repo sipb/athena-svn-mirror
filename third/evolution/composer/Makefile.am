@@ -19,28 +19,35 @@ HTML_EDITOR_GENERATED =		\
 selectnamesdir = $(top_srcdir)/addressbook/gui/component/select-names
 
 $(IDL_GENERATED): $(IDLS) $(selectnamesdir)/Evolution-Addressbook-SelectNames.idl
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
+	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl $(IDL_INCLUDES) \
 		-I $(selectnamesdir)  $(srcdir)/Composer.idl
 
 Editor-commmon.c: $(GTKHTML_DATADIR)/Editor.idl
 
 $(HTML_EDITOR_GENERATED): $(GTKHTML_DATADIR)/Editor.idl
-	$(ORBIT_IDL) -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` -I $(GTKHTML_DATADIR)/gtkhtml $(GTKHTML_DATADIR)/Editor.idl
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) -I $(GTKHTML_DATADIR)/gtkhtml $(GTKHTML_DATADIR)/Editor.idl
 
 ##
 
-idldir = $(datadir)/idl
+composer-marshal.h: composer-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_msg_composer_marshal composer-marshal.list --header > composer-marshal.tmp \
+	&& mv composer-marshal.tmp composer-marshal.h ) \
+	|| ( rm -f composer-marshal.tmp && exit 1 )
+composer-marshal.c: composer-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_msg_composer_marshal composer-marshal.list --body > composer-marshal.tmp \
+	&& mv composer-marshal.tmp composer-marshal.c ) \
+	|| ( rm -f composer-marshal.tmp && exit 1 )
+
+$(libcomposer_la_OBJECTS): composer-marshal.h
+
+##
+
 idl_DATA = $(IDLS)
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA =					\
 	e-msg-composer-attachment.glade
 
-iconsdir = $(datadir)/images/evolution
-
-libcomposerincludedir = $(includedir)/composer
-
-noinst_LIBRARIES = libcomposer.a
+noinst_LTLIBRARIES = libcomposer.la
 
 INCLUDES =								\
 	-I$(top_srcdir)							\
@@ -55,14 +62,19 @@ INCLUDES =								\
 	-I$(top_builddir)/shell						\
 	-I$(top_srcdir)/shell						\
 	-DEVOLUTION_DATADIR=\"$(datadir)\"				\
-	-DEVOLUTION_ICONSDIR=\"$(iconsdir)\"				\
-	-DE_GLADEDIR=\"$(gladedir)\"					\
+	-DEVOLUTION_IMAGESDIR=\"$(imagesdir)\"				\
+	-DEVOLUTION_UIDIR=\"$(evolutionuidir)\"				\
+	-DEVOLUTION_GLADEDIR=\"$(gladedir)\"				\
+	-DPREFIX=\"$(prefix)\"						\
 	-DG_LOG_DOMAIN=\"composer\"					\
-	$(GNOME_FULL_CFLAGS)
+	-DG_DISABLE_DEPRECATED						\
+	-DGTK_DISABLE_DEPRECATED					\
+	$(EVOLUTION_MAIL_CFLAGS)
 
-libcomposer_a_SOURCES = 			\
+libcomposer_la_SOURCES = 			\
 	$(IDL_GENERATED)			\
 	$(HTML_EDITOR_GENERATED)		\
+	composer-marshal.c			\
 	e-msg-composer-attachment-bar.c		\
 	e-msg-composer-attachment-bar.h		\
 	e-msg-composer-attachment.c		\
@@ -73,8 +85,6 @@ libcomposer_a_SOURCES = 			\
 	e-msg-composer-select-file.h		\
 	e-msg-composer.c			\
 	e-msg-composer.h			\
-	e-icon-list.c				\
-	e-icon-list.h				\
 	evolution-composer.c			\
 	evolution-composer.h			\
 	listener.c				\
@@ -83,6 +93,8 @@ libcomposer_a_SOURCES = 			\
 EXTRA_DIST =					\
 	$(glade_DATA)				\
 	$(IDLS)					\
+	ChangeLog.pre-1-4			\
+	composer-marshal.list			\
 	bad-icon.xpm
 
 BUILT_SOURCES = $(IDL_GENERATED) $(HTML_EDITOR_GENERATED)

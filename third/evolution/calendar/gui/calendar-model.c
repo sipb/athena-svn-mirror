@@ -29,9 +29,10 @@
 #include <ctype.h>
 
 #include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/widgets/e-unicode.h>
+#include <gal/util/e-util.h>
 #include <e-util/e-time-utils.h>
 #include <cal-util/timeutil.h>
 #include "calendar-commands.h"
@@ -97,7 +98,7 @@ struct _CalendarModelPrivate {
 	gchar *default_category;
 
 	/* Addresses for determining icons */
-	GList *addresses;
+	EAccountList *accounts;
 	
 	/* The current timezone. */
 	icaltimezone *zone;
@@ -113,7 +114,7 @@ struct _CalendarModelPrivate {
 
 static void calendar_model_class_init (CalendarModelClass *class);
 static void calendar_model_init (CalendarModel *model);
-static void calendar_model_destroy (GtkObject *object);
+static void calendar_model_finalize (GObject *object);
 
 static int calendar_model_column_count (ETableModel *etm);
 static int calendar_model_row_count (ETableModel *etm);
@@ -144,42 +145,23 @@ static ETableModelClass *parent_class;
  *
  * Return value: The type ID of the #CalendarModel class.
  **/
-GtkType
-calendar_model_get_type (void)
-{
-	static GtkType calendar_model_type = 0;
 
-	if (!calendar_model_type) {
-		static GtkTypeInfo calendar_model_info = {
-			"CalendarModel",
-			sizeof (CalendarModel),
-			sizeof (CalendarModelClass),
-			(GtkClassInitFunc) calendar_model_class_init,
-			(GtkObjectInitFunc) calendar_model_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		calendar_model_type = gtk_type_unique (E_TABLE_MODEL_TYPE, &calendar_model_info);
-	}
-
-	return calendar_model_type;
-}
+E_MAKE_TYPE (calendar_model, "CalendarModel", CalendarModel, calendar_model_class_init,
+	     calendar_model_init, E_TABLE_MODEL_TYPE);
 
 /* Class initialization function for the calendar table model */
 static void
 calendar_model_class_init (CalendarModelClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	ETableModelClass *etm_class;
 
-	object_class = (GtkObjectClass *) class;
+	object_class = (GObjectClass *) class;
 	etm_class = (ETableModelClass *) class;
 
-	parent_class = gtk_type_class (E_TABLE_MODEL_TYPE);
+	parent_class = g_type_class_peek_parent (class);
 
-	object_class->destroy = calendar_model_destroy;
+	object_class->finalize = calendar_model_finalize;
 
 	etm_class->column_count = calendar_model_column_count;
 	etm_class->row_count = calendar_model_row_count;
@@ -234,7 +216,7 @@ calendar_model_init (CalendarModel *model)
 	priv->timeout_id = g_timeout_add (CALENDAR_MODEL_REFRESH_TIMEOUT,
 					  calendar_model_timeout_cb, model);
 
-	priv->addresses = itip_addresses_get ();
+	priv->accounts = itip_addresses_get ();
 	
 	priv->zone = NULL;
 
@@ -295,7 +277,7 @@ free_objects (CalendarModel *model)
 
 		comp = g_array_index (priv->objects, CalComponent *, i);
 		g_assert (comp != NULL);
-		gtk_object_unref (GTK_OBJECT (comp));
+		g_object_unref (comp);
 
 		object_data = &g_array_index (priv->objects_data,
 					      CalendarModelObjectData, i);
@@ -308,7 +290,7 @@ free_objects (CalendarModel *model)
 
 /* Destroy handler for the calendar table model */
 static void
-calendar_model_destroy (GtkObject *object)
+calendar_model_finalize (GObject *object)
 {
 	CalendarModel *model;
 	CalendarModelPrivate *priv;
@@ -327,8 +309,8 @@ calendar_model_destroy (GtkObject *object)
 	/* Free the calendar client interface object */
 
 	if (priv->client) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (priv->client), model);
-		gtk_object_unref (GTK_OBJECT (priv->client));
+		g_signal_handlers_disconnect_matched (priv->client, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, model);
+		g_object_unref (priv->client);
 		priv->client = NULL;
 	}
 
@@ -338,8 +320,9 @@ calendar_model_destroy (GtkObject *object)
 	}
 
 	if (priv->query) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (priv->query), model);
-		gtk_object_unref (GTK_OBJECT (priv->query));
+		g_signal_handlers_disconnect_matched (priv->query, G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL, NULL, model);
+		g_object_unref (priv->query);
 		priv->query = NULL;
 	}
 
@@ -358,10 +341,8 @@ calendar_model_destroy (GtkObject *object)
 
 	g_free (priv->default_category);
 
-	itip_addresses_free (priv->addresses);
-
 	if (priv->activity) {
-		gtk_object_unref (GTK_OBJECT (priv->activity));
+		g_object_unref (priv->activity);
 		priv->activity = NULL;
 	}
 
@@ -370,8 +351,8 @@ calendar_model_destroy (GtkObject *object)
 	g_free (priv);
 	model->priv = NULL;
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -653,9 +634,12 @@ typedef enum {
 static CalendarModelDueStatus
 get_due_status (CalendarModel *model, CalComponent *comp)
 {
+	CalendarModelPrivate *priv;
 	CalComponentDateTime dt;
 	CalendarModelDueStatus retval;
 
+	priv = model->priv;
+	
 	cal_component_get_due (comp, &dt);
 
 	/* First, do we have a due date? */
@@ -679,7 +663,7 @@ get_due_status (CalendarModel *model, CalComponent *comp)
 		if (dt.value->is_date) {
 			int cmp;
 			
-			now_tt = icaltime_today ();
+			now_tt = icaltime_current_time_with_zone (priv->zone);
 			cmp = icaltime_compare_date_only (*dt.value, now_tt);
 			
 			if (cmp < 0)
@@ -690,9 +674,13 @@ get_due_status (CalendarModel *model, CalComponent *comp)
 				retval = CALENDAR_MODEL_DUE_FUTURE;
 		} else {
 			/* Get the current time in the same timezone as the DUE date.*/
-			/* FIXME: TIMEZONES: Handle error. */
 			status = cal_client_get_timezone (model->priv->client, dt.tzid,
 							  &zone);
+			if (status != CAL_CLIENT_GET_SUCCESS) {
+				retval = CALENDAR_MODEL_DUE_FUTURE;
+				goto out;
+			}
+			
 			now_tt = icaltime_current_time_with_zone (zone);
 
 			if (icaltime_compare (*dt.value, now_tt) <= 0) 
@@ -846,7 +834,6 @@ calendar_model_value_at (ETableModel *etm, int col, int row)
 
 	case CAL_COMPONENT_FIELD_ICON:
 	{
-		ItipAddress *ia;		
 		GSList *attendees = NULL, *sl;		
 		gint retval = 0;
 
@@ -860,23 +847,17 @@ calendar_model_value_at (ETableModel *etm, int col, int row)
 		for (sl = attendees; sl != NULL; sl = sl->next) {
 			CalComponentAttendee *ca = sl->data;
 			const char *text;
-			GList *l;
 
 			text = itip_strip_mailto (ca->value);
-			for (l = priv->addresses; l != NULL; l = l->next) {
-				ia = l->data;
-				
-				if (!strcmp (text, ia->address)) {
-					if (ca->delto != NULL)
-						retval = 3;
-					else
-						retval = 2;
-					goto cleanup;
-				}
+			if (e_account_list_find(priv->accounts, E_ACCOUNT_FIND_ID_ADDRESS, text) != NULL) {
+				if (ca->delto != NULL)
+					retval = 3;
+				else
+					retval = 2;
+				break;
 			}
 		}
 
-		cleanup:
 		cal_component_free_attendee_list (attendees);
 		return GINT_TO_POINTER (retval);		
 		break;
@@ -1421,7 +1402,7 @@ calendar_model_append_row (ETableModel *etm, ETableModel *source, gint row)
 		g_message ("calendar_model_append_row(): Could not add new object!");
 	}
 
-	gtk_object_unref (GTK_OBJECT (comp));
+	g_object_unref (comp);
 }
 
 /* Duplicates a string value */
@@ -1487,7 +1468,7 @@ calendar_model_duplicate_value (ETableModel *etm, int col, const void *value)
 		CalComponent *comp;
 
 		comp = CAL_COMPONENT (value);
-		gtk_object_ref (GTK_OBJECT (comp));
+		g_object_ref (comp);
 		return comp;
 	}
 
@@ -1543,7 +1524,7 @@ calendar_model_free_value (ETableModel *etm, int col, void *value)
 
 	case CAL_COMPONENT_FIELD_COMPONENT:
 		if (value)
-			gtk_object_unref (GTK_OBJECT (value));
+			g_object_unref (value);
 		break;
 
 	default:
@@ -1697,7 +1678,7 @@ date_value_to_string (ETableModel *etm, const void *value)
 	e_time_format_date_and_time (&tmp_tm, priv->use_24_hour_format,
 				     TRUE, FALSE,
 				     buffer, sizeof (buffer));
-	return e_utf8_from_locale_string (buffer);
+	return g_strdup (buffer);
 }
 
 
@@ -1725,17 +1706,17 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 
 	case CAL_COMPONENT_FIELD_ICON:
 		if (GPOINTER_TO_INT (value) == 0)
-			return e_utf8_from_locale_string (_("Normal"));
+			return _("Normal");
 		else if (GPOINTER_TO_INT (value) == 1)
-			return e_utf8_from_locale_string (_("Recurring"));
+			return _("Recurring");
 		else
-			return e_utf8_from_locale_string (_("Assigned"));
+			return _("Assigned");
 
 	case CAL_COMPONENT_FIELD_HAS_ALARMS:
 	case CAL_COMPONENT_FIELD_COMPLETE:
 	case CAL_COMPONENT_FIELD_RECURRING:
 	case CAL_COMPONENT_FIELD_OVERDUE:
-		return e_utf8_from_locale_string (value ? _("Yes") : _("No"));
+		return value ? _("Yes") : _("No");
 
 	case CAL_COMPONENT_FIELD_COLOR:
 		return NULL;
@@ -1768,7 +1749,7 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 CalendarModel *
 calendar_model_new (void)
 {
-	return CALENDAR_MODEL (gtk_type_new (TYPE_CALENDAR_MODEL));
+	return CALENDAR_MODEL (g_object_new (TYPE_CALENDAR_MODEL, NULL));
 }
 
 
@@ -1991,8 +1972,9 @@ update_query (CalendarModel *model)
 	priv->query = NULL;
 
 	if (old_query) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (old_query), model);
-		gtk_object_unref (GTK_OBJECT (old_query));
+		g_signal_handlers_disconnect_matched (old_query, G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL, NULL, model);
+		g_object_unref (old_query);
 	}
 
 	g_assert (priv->sexp != NULL);
@@ -2008,14 +1990,14 @@ update_query (CalendarModel *model)
 		return;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (priv->query), "obj_updated",
-			    GTK_SIGNAL_FUNC (query_obj_updated_cb), model);
-	gtk_signal_connect (GTK_OBJECT (priv->query), "obj_removed",
-			    GTK_SIGNAL_FUNC (query_obj_removed_cb), model);
-	gtk_signal_connect (GTK_OBJECT (priv->query), "query_done",
-			    GTK_SIGNAL_FUNC (query_query_done_cb), model);
-	gtk_signal_connect (GTK_OBJECT (priv->query), "eval_error",
-			    GTK_SIGNAL_FUNC (query_eval_error_cb), model);
+	g_signal_connect (priv->query, "obj_updated",
+			  G_CALLBACK (query_obj_updated_cb), model);
+	g_signal_connect (priv->query, "obj_removed",
+			  G_CALLBACK (query_obj_removed_cb), model);
+	g_signal_connect (priv->query, "query_done",
+			  G_CALLBACK (query_query_done_cb), model);
+	g_signal_connect (priv->query, "eval_error",
+			  G_CALLBACK (query_eval_error_cb), model);
 }
 
 /* Callback used when a calendar is opened into the server */
@@ -2087,7 +2069,7 @@ remove_object (CalendarModel *model, const char *uid)
 	calendar_model_free_object_data (model, object_data);
 	g_array_remove_index (priv->objects_data, *idx);
 
-	gtk_object_unref (GTK_OBJECT (orig_comp));
+	g_object_unref (orig_comp);
 
 	n = *idx;
 	g_free (idx);
@@ -2111,7 +2093,7 @@ calendar_model_set_status_message (CalendarModel *model, const char *message)
 
 	if (!message || !*message) {
 		if (priv->activity) {
-			gtk_object_unref (GTK_OBJECT (priv->activity));
+			g_object_unref (priv->activity);
 			priv->activity = NULL;
 		}
 	}
@@ -2120,7 +2102,7 @@ calendar_model_set_status_message (CalendarModel *model, const char *message)
 		char *client_id = g_strdup_printf ("%p", model);
 
 		if (progress_icon[0] == NULL)
-			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_TASKS_PROGRESS_IMAGE);
+			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_TASKS_PROGRESS_IMAGE, NULL);
 		priv->activity = evolution_activity_client_new (
 			global_shell_client, client_id,
 			progress_icon, message, TRUE, &display);
@@ -2179,11 +2161,11 @@ calendar_model_set_cal_client (CalendarModel *model, CalClient *client, CalObjTy
 		return;
 
 	if (client)
-		gtk_object_ref (GTK_OBJECT (client));
+		g_object_ref (client);
 
 	if (priv->client) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (priv->client), model);
-		gtk_object_unref (GTK_OBJECT (priv->client));
+		g_signal_handlers_disconnect_matched (priv->client, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, model);
+		g_object_unref (priv->client);
 	}
 
 	priv->client = client;
@@ -2193,8 +2175,7 @@ calendar_model_set_cal_client (CalendarModel *model, CalClient *client, CalObjTy
 		if (cal_client_get_load_state (priv->client) == CAL_CLIENT_LOAD_LOADED)
 			update_query (model);
 		else
-			gtk_signal_connect (GTK_OBJECT (priv->client), "cal_opened",
-					    GTK_SIGNAL_FUNC (cal_opened_cb), model);
+			g_signal_connect (priv->client, "cal_opened", G_CALLBACK (cal_opened_cb), model);
 	}
 }
 
@@ -2303,7 +2284,7 @@ calendar_model_mark_task_complete (CalendarModel *model,
  **/
 CalComponent *
 calendar_model_get_component (CalendarModel *model,
-			       gint	      row)
+			      gint	      row)
 {
 	CalendarModelPrivate *priv;
 

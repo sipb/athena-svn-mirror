@@ -22,18 +22,15 @@
 #ifndef LISTENER_H_
 #define LISTENER_H_
 
-#include <libgnome/gnome-defs.h>
 #include <bonobo/bonobo-object.h>
 #include "Editor.h"
 #include "e-msg-composer.h"
 
-BEGIN_GNOME_DECLS
-
 #define EDITOR_LISTENER_TYPE        (listener_get_type ())
-#define EDITOR_LISTENER(o)          (GTK_CHECK_CAST ((o), EDITOR_LISTENER_TYPE, EditorListener))
-#define EDITOR_LISTENER_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), EDITOR_LISTENER_TYPE, EditorListenerClass))
-#define IS_EDITOR_LISTENER(o)       (GTK_CHECK_TYPE ((o), EDITOR_LISTENER_TYPE))
-#define IS_EDITOR_LISTENER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), EDITOR_LISTENER_TYPE))
+#define EDITOR_LISTENER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), EDITOR_LISTENER_TYPE, EditorListener))
+#define EDITOR_LISTENER_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), EDITOR_LISTENER_TYPE, EditorListenerClass))
+#define IS_EDITOR_LISTENER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), EDITOR_LISTENER_TYPE))
+#define IS_EDITOR_LISTENER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), EDITOR_LISTENER_TYPE))
 
 typedef struct {
 	BonoboObject parent;
@@ -42,14 +39,13 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_class;
+
+	POA_GNOME_GtkHTML_Editor_Listener__epv epv;
 } EditorListenerClass;
 
 GtkType                                 listener_get_type   (void);
 EditorListener                         *listener_construct  (EditorListener                *listener,
 									GNOME_GtkHTML_Editor_Listener  corba_listener);
 EditorListener                         *listener_new        (EMsgComposer                  *composer);
-POA_GNOME_GtkHTML_Editor_Listener__epv *listener_get_epv    (void);
-
-END_GNOME_DECLS
 
 #endif /* LISTENER_H_ */

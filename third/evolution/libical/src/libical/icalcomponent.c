@@ -2,7 +2,7 @@
   FILE: icalcomponent.c
   CREATOR: eric 28 April 1999
   
-  $Id: icalcomponent.c,v 1.1.1.1 2001-11-02 18:27:51 ghudson Exp $
+  $Id: icalcomponent.c,v 1.1.1.1.4.1 2003-07-14 17:21:53 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -193,7 +193,8 @@ icalcomponent* icalcomponent_new_clone(icalcomponent* component)
 	 itr = pvl_next(itr))
     {	
 	p = (icalproperty*)pvl_data(itr);
-	icalcomponent_add_property(new,icalproperty_new_clone(p));
+	if (p != 0)
+		icalcomponent_add_property(new,icalproperty_new_clone(p));
     }
    
    

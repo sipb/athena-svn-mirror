@@ -28,8 +28,11 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkradiomenuitem.h>
+#include <gtk/gtkcheckmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/widgets/e-gui-utils.h>
 #include "e-day-view-time-item.h"
@@ -101,30 +104,8 @@ enum {
 	ARG_DAY_VIEW
 };
 
-
-GtkType
-e_day_view_time_item_get_type (void)
-{
-	static GtkType e_day_view_time_item_type = 0;
-
-	if (!e_day_view_time_item_type) {
-		GtkTypeInfo e_day_view_time_item_info = {
-			"EDayViewTimeItem",
-			sizeof (EDayViewTimeItem),
-			sizeof (EDayViewTimeItemClass),
-			(GtkClassInitFunc) e_day_view_time_item_class_init,
-			(GtkObjectInitFunc) e_day_view_time_item_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_day_view_time_item_type = gtk_type_unique (gnome_canvas_item_get_type (), &e_day_view_time_item_info);
-	}
-
-	return e_day_view_time_item_type;
-}
-
+E_MAKE_TYPE (e_day_view_time_item, "EDayViewTimeItem", EDayViewTimeItem,
+	     e_day_view_time_item_class_init, e_day_view_time_item_init, GNOME_TYPE_CANVAS_ITEM);
 
 static void
 e_day_view_time_item_class_init (EDayViewTimeItemClass *class)
@@ -132,7 +113,7 @@ e_day_view_time_item_class_init (EDayViewTimeItemClass *class)
 	GtkObjectClass  *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type());
+	parent_class = g_type_class_peek_parent (class);
 
 	object_class = (GtkObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
@@ -200,23 +181,34 @@ e_day_view_time_item_get_column_width (EDayViewTimeItem *dvtmitem)
 {
 	EDayView *day_view;
 	GtkStyle *style;
-	GdkFont *small_font, *large_font;
 	gint digit, large_digit_width, max_large_digit_width = 0;
 	gint max_suffix_width, max_minute_or_suffix_width;
 	gint column_width_default, column_width_60_min_rows;
+	PangoContext *context;
 
 	day_view = dvtmitem->day_view;
 	g_return_val_if_fail (day_view != NULL, 0);
 
-	style = GTK_WIDGET (day_view)->style;
+	style = gtk_widget_get_style (GTK_WIDGET (day_view));
 	g_return_val_if_fail (style != NULL, 0);
-	small_font = style->font;
-	g_return_val_if_fail (small_font != NULL, 0);
-	large_font = day_view->large_font;
-	g_return_val_if_fail (large_font != NULL, 0);
 
+	context = gtk_widget_get_pango_context (GTK_WIDGET (day_view));
+
+	/* Find the maximum width a digit can have. FIXME: We could use pango's
+	 * approximation function, but I worry it won't be precise enough. Also
+	 * it needs a language tag that I don't know where to get. */
 	for (digit = '0'; digit <= '9'; digit++) {
-		large_digit_width = gdk_char_width (large_font, digit);
+		PangoLayout *layout;
+		gchar digit_str [2];
+
+		digit_str [0] = digit;
+		digit_str [1] = '\0';
+
+		layout = gtk_widget_create_pango_layout (GTK_WIDGET (day_view), digit_str);
+		pango_layout_set_font_description (layout, day_view->large_font_desc);
+		pango_layout_get_pixel_size (layout, &large_digit_width, NULL);
+		g_object_unref (layout);
+
 		max_large_digit_width = MAX (max_large_digit_width,
 					     large_digit_width);
 	}
@@ -265,7 +257,6 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 	EDayView *day_view;
 	EDayViewTimeItem *dvtmitem;
 	GtkStyle *style;
-	GdkFont *small_font, *large_font;
 	GdkGC *fg_gc, *dark_gc;
 	gchar buffer[64], *suffix;
 	gint hour, display_hour, minute, row;
@@ -274,14 +265,24 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 	gint large_hour_x2, minute_x2;
 	gint hour_width, minute_width, suffix_width;
 	gint max_suffix_width, max_minute_or_suffix_width;
+	PangoLayout *layout;
+	PangoContext *context;
+	PangoFontDescription *small_font_desc;
+	PangoFontMetrics *large_font_metrics, *small_font_metrics;
 
 	dvtmitem = E_DAY_VIEW_TIME_ITEM (canvas_item);
 	day_view = dvtmitem->day_view;
 	g_return_if_fail (day_view != NULL);
 
-	style = GTK_WIDGET (day_view)->style;
-	small_font = style->font;
-	large_font = day_view->large_font;
+	style = gtk_widget_get_style (GTK_WIDGET (day_view));
+	small_font_desc = style->font_desc;
+
+	context = gtk_widget_get_pango_context (GTK_WIDGET (day_view));
+	large_font_metrics = pango_context_get_metrics (context, day_view->large_font_desc,
+							pango_context_get_language (context));
+	small_font_metrics = pango_context_get_metrics (context, small_font_desc,
+							pango_context_get_language (context));
+
 	fg_gc = style->fg_gc[GTK_STATE_NORMAL];
 	dark_gc = style->dark_gc[GTK_STATE_NORMAL];
 
@@ -322,16 +323,18 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 	minute = day_view->first_minute_shown;
 
 	/* The offset of the large hour string from the top of the row. */
-	large_hour_y_offset = large_font->ascent + E_DVTMI_LARGE_HOUR_Y_PAD;
+	large_hour_y_offset = E_DVTMI_LARGE_HOUR_Y_PAD;
 
 	/* The offset of the small time/minute string from top of row. */
-	small_font_y_offset = small_font->ascent + E_DVTMI_SMALL_FONT_Y_PAD;
+	small_font_y_offset = E_DVTMI_SMALL_FONT_Y_PAD;
 
 	/* Calculate the minimum y position of the first row we need to draw.
 	   This is normally one row height above the 0 position, but if we
 	   are using the large font we may have to go back a bit further. */
 	start_y = 0 - MAX (day_view->row_height,
-			   large_hour_y_offset + large_font->descent);
+			   (pango_font_metrics_get_ascent (large_font_metrics) +
+			    pango_font_metrics_get_descent (large_font_metrics)) / PANGO_SCALE +
+			   E_DVTMI_LARGE_HOUR_Y_PAD);
 
 	/* Step through each row, drawing the times and the horizontal lines
 	   between them. */
@@ -368,11 +371,14 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 				g_snprintf (buffer, sizeof (buffer), "%i %s",
 					    display_hour, suffix);
 			}
-			minute_width = gdk_string_width (small_font, buffer);
-			gdk_draw_string (drawable, small_font, fg_gc,
+
+			layout = gtk_widget_create_pango_layout (GTK_WIDGET (day_view), buffer);
+			pango_layout_get_pixel_size (layout, &minute_width, NULL);
+			gdk_draw_layout (drawable, fg_gc,
 					 minute_x2 - minute_width,
 					 row_y + small_font_y_offset,
-					 buffer);
+					 layout);
+			g_object_unref (layout);
 		} else {
 			/* 5/10/15/30 minute intervals. */
 
@@ -386,12 +392,15 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 
 				g_snprintf (buffer, sizeof (buffer), "%i",
 					    display_hour);
-				hour_width = gdk_string_width (large_font,
-							       buffer);
-				gdk_draw_string (drawable, large_font, fg_gc,
+
+				layout = gtk_widget_create_pango_layout (GTK_WIDGET (day_view), buffer);
+				pango_layout_set_font_description (layout, day_view->large_font_desc);
+				pango_layout_get_pixel_size (layout, &hour_width, NULL);
+				gdk_draw_layout (drawable, fg_gc,
 						 large_hour_x2 - hour_width,
 						 row_y + large_hour_y_offset,
-						 buffer);
+						 layout);
+				g_object_unref (layout);
 			} else {
 				/* Within the hour - draw a short line before
 				   the time. */
@@ -413,18 +422,23 @@ e_day_view_time_item_draw (GnomeCanvasItem *canvas_item,
 					g_snprintf (buffer, sizeof (buffer),
 						    "%02i", minute);
 				}
-				minute_width = gdk_string_width (small_font,
-								 buffer);
-				gdk_draw_string (drawable, small_font, fg_gc,
+
+				layout = gtk_widget_create_pango_layout (GTK_WIDGET (day_view), buffer);
+				pango_layout_get_pixel_size (layout, &minute_width, NULL);
+				gdk_draw_layout (drawable, fg_gc,
 						 minute_x2 - minute_width,
 						 row_y + small_font_y_offset,
-						 buffer);
+						 layout);
+				g_object_unref (layout);
 			}
 		}
 
 		e_day_view_time_item_increment_time (&hour, &minute,
 						     day_view->mins_per_row);
 	}
+
+	pango_font_metrics_unref (large_font_metrics);
+	pango_font_metrics_unref (small_font_metrics);
 }
 
 
@@ -511,7 +525,7 @@ e_day_view_time_item_show_popup_menu (EDayViewTimeItem *dvtmitem,
 	menu = gtk_menu_new ();
 
 	/* Make sure the menu is destroyed when it disappears. */
-	e_auto_kill_popup_menu_on_hide (GTK_MENU (menu));
+	e_auto_kill_popup_menu_on_selection_done (GTK_MENU (menu));
 
 	for (i = 0; i < num_divisions; i++) {
 		g_snprintf (buffer, sizeof (buffer),
@@ -524,12 +538,11 @@ e_day_view_time_item_show_popup_menu (EDayViewTimeItem *dvtmitem,
 		if (current_divisions == divisions[i])
 			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
 
-		gtk_object_set_data (GTK_OBJECT (item), "divisions",
-				     GINT_TO_POINTER (divisions[i]));
+		g_object_set_data (G_OBJECT (item), "divisions",
+				   GINT_TO_POINTER (divisions[i]));
 
-		gtk_signal_connect (GTK_OBJECT (item), "toggled",
-				    e_day_view_time_item_on_set_divisions,
-				    dvtmitem);
+		g_signal_connect (item, "toggled",
+				  G_CALLBACK (e_day_view_time_item_on_set_divisions), dvtmitem);
 	}
 
 	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL,
@@ -547,11 +560,10 @@ e_day_view_time_item_on_set_divisions (GtkWidget *item,
 	day_view = dvtmitem->day_view;
 	g_return_if_fail (day_view != NULL);
 
-	if (!GTK_CHECK_MENU_ITEM (item)->active)
+ 	if (!gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item)))
 		return;
 
-	divisions = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (item),
-							  "divisions"));
+	divisions = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (item), "divisions"));
 	e_day_view_set_mins_per_row (day_view, divisions);
 	calendar_config_set_time_divisions (divisions);
 }

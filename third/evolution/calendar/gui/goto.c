@@ -15,6 +15,7 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkdialog.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <glade/glade.h>
 #include "calendar-commands.h"
@@ -97,7 +98,8 @@ ecal_event (ECalendarItem *calitem, gpointer user_data)
 
 	gnome_calendar_goto (dlg->gcal, et);
 
-	gnome_dialog_close (GNOME_DIALOG (dlg->dialog));
+	gtk_dialog_response (GTK_DIALOG (dlg->dialog), GTK_RESPONSE_NONE);
+	/* gnome_dialog_close (GNOME_DIALOG (dlg->dialog)); */
 }
 
 /* Returns the current time, for the ECalendarItem. */
@@ -183,21 +185,13 @@ goto_dialog_init_widgets (GoToDialog *dlg)
 	
 	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (dlg->month));
 	for (l = GTK_MENU_SHELL (menu)->children; l != NULL; l = l->next)
-		gtk_signal_connect (GTK_OBJECT (menu), "selection_done",
-				    GTK_SIGNAL_FUNC (month_changed), dlg);
+		g_signal_connect (menu, "selection_done", G_CALLBACK (month_changed), dlg);
 
 	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON (dlg->year));
-	gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-			    (GtkSignalFunc) year_changed, dlg);
+	g_signal_connect (adj, "value_changed", G_CALLBACK (year_changed), dlg);
 
-	gtk_signal_connect (GTK_OBJECT (dlg->ecal->calitem),
-			    "date_range_changed",
-			    GTK_SIGNAL_FUNC (ecal_date_range_changed),
-			    dlg);
-	gtk_signal_connect (GTK_OBJECT (dlg->ecal->calitem),
-			    "selection_changed",
-			    (GtkSignalFunc) ecal_event,
-			    dlg);
+	g_signal_connect (dlg->ecal->calitem, "date_range_changed", G_CALLBACK (ecal_date_range_changed), dlg);
+	g_signal_connect (dlg->ecal->calitem, "selection_changed", G_CALLBACK (ecal_event), dlg);
 }
 
 /* Creates a "goto date" dialog and runs it */
@@ -216,7 +210,7 @@ goto_dialog (GnomeCalendar *gcal)
 	dlg = g_new0 (GoToDialog, 1);
 	
 	/* Load the content widgets */
-	dlg->xml = glade_xml_new (EVOLUTION_GLADEDIR "/goto-dialog.glade", NULL);
+	dlg->xml = glade_xml_new (EVOLUTION_GLADEDIR "/goto-dialog.glade", NULL, NULL);
 	if (!dlg->xml) {
 		g_message ("goto_dialog(): Could not load the Glade XML file!");
 		g_free (dlg);
@@ -244,14 +238,16 @@ goto_dialog (GnomeCalendar *gcal)
 
 	goto_dialog_init_widgets (dlg);
 
-	gnome_dialog_set_parent (GNOME_DIALOG (dlg->dialog),
-				 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (gcal))));
+	gtk_window_set_transient_for (GTK_WINDOW (dlg->dialog),
+				      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (gcal))));
 
-	b = gnome_dialog_run_and_close (GNOME_DIALOG (dlg->dialog));
+	b = gtk_dialog_run (GTK_DIALOG (dlg->dialog));
+	gtk_widget_destroy (dlg->dialog);
+
 	if (b == 0)
 		goto_today (dlg);
 
-	gtk_object_unref (GTK_OBJECT (dlg->xml));
+	g_object_unref (dlg->xml);
 	g_free (dlg);
 	dlg = NULL;
 }

@@ -22,20 +22,19 @@
 #ifndef CAL_BACKEND_FILE_H
 #define CAL_BACKEND_FILE_H
 
-#include <libgnome/gnome-defs.h>
 #include "pcs/cal-backend.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_BACKEND_FILE_TYPE            (cal_backend_file_get_type ())
-#define CAL_BACKEND_FILE(obj)            (GTK_CHECK_CAST ((obj), CAL_BACKEND_FILE_TYPE,		\
+#define CAL_BACKEND_FILE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_BACKEND_FILE_TYPE,		\
 					  CalBackendFile))
-#define CAL_BACKEND_FILE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_BACKEND_FILE_TYPE,	\
+#define CAL_BACKEND_FILE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_BACKEND_FILE_TYPE,	\
 					  CalBackendFileClass))
-#define IS_CAL_BACKEND_FILE(obj)         (GTK_CHECK_TYPE ((obj), CAL_BACKEND_FILE_TYPE))
-#define IS_CAL_BACKEND_FILE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_BACKEND_FILE_TYPE))
+#define IS_CAL_BACKEND_FILE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_BACKEND_FILE_TYPE))
+#define IS_CAL_BACKEND_FILE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_BACKEND_FILE_TYPE))
 
 typedef struct _CalBackendFile CalBackendFile;
 typedef struct _CalBackendFileClass CalBackendFileClass;
@@ -53,10 +52,10 @@ struct _CalBackendFileClass {
 	CalBackendClass parent_class;
 };
 
-GtkType cal_backend_file_get_type (void);
+GType cal_backend_file_get_type (void);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

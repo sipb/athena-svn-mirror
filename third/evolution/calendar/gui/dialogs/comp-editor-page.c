@@ -23,7 +23,6 @@
 #endif
 
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
@@ -49,7 +48,7 @@ enum {
 
 static guint comp_editor_page_signals[LAST_SIGNAL];
 
-#define CLASS(page) (COMP_EDITOR_PAGE_CLASS (GTK_OBJECT (page)->klass))
+#define CLASS(page) (COMP_EDITOR_PAGE_CLASS (G_OBJECT_GET_CLASS (page)))
 
 
 
@@ -94,47 +93,43 @@ comp_editor_page_class_init (CompEditorPageClass *class)
 
 	object_class = (GtkObjectClass *) class;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_ref(GTK_TYPE_OBJECT);
 
 	comp_editor_page_signals[CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (CompEditorPageClass,
-						   changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("changed",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (CompEditorPageClass, changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	comp_editor_page_signals[NEEDS_SEND] =
-		gtk_signal_new ("needs_send",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (CompEditorPageClass,
-						   needs_send),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("needs_send",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (CompEditorPageClass, needs_send),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	comp_editor_page_signals[SUMMARY_CHANGED] =
-		gtk_signal_new ("summary_changed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (CompEditorPageClass,
-						   summary_changed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("summary_changed",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (CompEditorPageClass, summary_changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	comp_editor_page_signals[DATES_CHANGED] =
-		gtk_signal_new ("dates_changed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (CompEditorPageClass,
-						   dates_changed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class,
-				      comp_editor_page_signals,
-				      LAST_SIGNAL);
+		g_signal_new ("dates_changed",
+			      G_TYPE_FROM_CLASS (class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (CompEditorPageClass, dates_changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	class->changed = NULL;
 	class->summary_changed = NULL;
@@ -171,7 +166,7 @@ comp_editor_page_destroy (GtkObject *object)
 	page = COMP_EDITOR_PAGE (object);
 
 	if (page->client) {
-		gtk_object_ref (GTK_OBJECT (page->client));
+		g_object_unref (page->client);
 		page->client = NULL;
 	}
 
@@ -278,11 +273,11 @@ comp_editor_page_set_cal_client (CompEditorPage *page, CalClient *client)
         g_return_if_fail (IS_COMP_EDITOR_PAGE (page));
 
 	if (page->client)
-		gtk_object_unref (GTK_OBJECT (client));
+		g_object_unref((client));
 
 	page->client = client;
 	if (page->client)
-		gtk_object_ref (GTK_OBJECT (client));
+		g_object_ref((client));
 }
 
 /**

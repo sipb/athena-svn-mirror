@@ -1,12 +1,11 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 #include <config.h>
 #include <glib.h>
-#include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
+#include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-main.h>
-#include <liboaf/liboaf.h>
+#include <libgnome/gnome-init.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "e-book.h"
 #include "e-book-util.h"
@@ -28,9 +27,9 @@ static CORBA_Environment ev;
 static char *cardstr;
 
 static void
-init_bonobo (int argc, char **argv)
+init_bonobo (int *argc, char **argv)
 {
-	if (bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
+	if (bonobo_init (argc, argv) == FALSE)
 		g_error (_("Could not initialize Bonobo"));
 }
 
@@ -42,7 +41,7 @@ get_cursor_cb (EBook *book, EBookStatus status, ECardCursor *cursor, gpointer cl
 
 	/* we just added a card, so the length should be >1 */
 	printf ("\n%s: %s(): Number of cards is %ld\n",
-		__FILE__, __FUNCTION__, length);
+		__FILE__, G_GNUC_FUNCTION, length);
 	if (length < 1)
 		printf ("*** Why isn't this above zero?? ***\n\n");
 	
@@ -51,8 +50,11 @@ get_cursor_cb (EBook *book, EBookStatus status, ECardCursor *cursor, gpointer cl
 		char *vcard = e_card_get_vcard_assume_utf8(card);
 		printf("Get all cards callback: [%s]\n", vcard);
 		g_free(vcard);
-		gtk_object_unref(GTK_OBJECT(card));
+		g_object_unref(card);
 	}
+
+	g_object_unref (book);
+	exit(0);
 }
 
 static void
@@ -63,10 +65,9 @@ get_card_cb (EBook *book, EBookStatus status, ECard *card, gpointer closure)
 	vcard = e_card_get_vcard_assume_utf8(card);
 	printf ("Card added: [%s]\n", vcard);
 	g_free(vcard);
-	gtk_object_unref(GTK_OBJECT(card));
 
 	printf ("Getting cards..\n");
-	e_book_get_cursor(book, "", get_cursor_cb, NULL);
+	e_book_get_cursor(book, "(contains \"x-evolution-any-field\" \"\")", get_cursor_cb, NULL);
 	printf ("Done getting all cards.\n");	
 }
 
@@ -98,7 +99,7 @@ get_fields_cb (EBook *book, EBookStatus status, EList *fields, gpointer closure)
 			printf (" %s\n", (char*)e_iterator_get (iter));
 		}
 
-		gtk_object_unref(GTK_OBJECT(fields));
+		g_object_unref(fields);
 	}
 	else {
 		printf ("No supported fields?\n");
@@ -121,8 +122,8 @@ book_open_cb (EBook *book, EBookStatus status, gpointer closure)
 	e_book_authenticate_user (book, "username", "password", "auth_method", auth_user_cb, NULL);
 }
 
-static guint
-ebook_create (void)
+static gboolean
+ebook_create (gpointer data)
 {
 	EBook *book;
 	
@@ -131,15 +132,12 @@ ebook_create (void)
 	if (!book) {
 		printf ("%s: %s(): Couldn't create EBook, bailing.\n",
 			__FILE__,
-			__FUNCTION__);
+			G_GNUC_FUNCTION);
 		return FALSE;
 	}
 	
 
-	if (! e_book_load_default_book (book, book_open_cb, NULL)) {
-		printf ("error calling load_uri!\n");
-	}
-
+	e_book_load_default_book (book, book_open_cb, NULL);
 
 	return FALSE;
 }
@@ -174,9 +172,9 @@ main (int argc, char **argv)
 
 	CORBA_exception_init (&ev);
 
-	gnome_init_with_popt_table ("blah", "0.0", argc, argv, NULL, 0, NULL);
-	oaf_init (argc, argv);
-	init_bonobo (argc, argv);
+	gnome_program_init("test-client", "0.0", LIBGNOME_MODULE, argc, argv, NULL);
+
+	init_bonobo (&argc, argv);
 
 	cardstr = NULL;
 	if (argc == 2)
@@ -185,7 +183,7 @@ main (int argc, char **argv)
 	if (cardstr == NULL)
 		cardstr = TEST_VCARD;
 
-	gtk_idle_add ((GtkFunction) ebook_create, NULL);
+	g_idle_add (ebook_create, NULL);
 	
 	bonobo_main ();
 

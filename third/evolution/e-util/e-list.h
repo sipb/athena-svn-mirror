@@ -15,20 +15,22 @@ typedef struct _EListClass EListClass;
 
 #include <stdio.h>
 #include <time.h>
-#include <gtk/gtkobject.h>
+#include <glib.h>
+#include <glib-object.h>
 #include <e-util/e-list-iterator.h>
 
 #define E_TYPE_LIST            (e_list_get_type ())
-#define E_LIST(obj)            (GTK_CHECK_CAST ((obj), E_TYPE_LIST, EList))
-#define E_LIST_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_LIST, EListClass))
-#define E_IS_LIST(obj)         (GTK_CHECK_TYPE ((obj), E_TYPE_LIST))
-#define E_IS_LIST_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_LIST))
+#define E_LIST(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_LIST, EList))
+#define E_LIST_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_LIST, EListClass))
+#define E_IS_LIST(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_LIST))
+#define E_IS_LIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_LIST))
+#define E_LIST_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_LIST, EListClass))
 
 typedef void *(*EListCopyFunc) (const void *data, void *closure);
 typedef void (*EListFreeFunc) (void *data, void *closure);
 
 struct _EList {
-	GtkObject      object;
+	GObject      object;
 	GList         *list;
 	GList         *iterators;
 	EListCopyFunc  copy;
@@ -37,15 +39,21 @@ struct _EList {
 };
 
 struct _EListClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 };
 
 EList     *e_list_new                  (EListCopyFunc  copy, 
 					EListFreeFunc  free,
 					void          *closure);
+void       e_list_construct            (EList         *list,
+					EListCopyFunc  copy, 
+					EListFreeFunc  free,
+					void          *closure);
 EList     *e_list_duplicate            (EList *list);
 EIterator *e_list_get_iterator         (EList         *list);
 void       e_list_append               (EList         *list,
+					const void    *data);
+void       e_list_remove               (EList         *list,
 					const void    *data);
 int        e_list_length               (EList         *list);
 
@@ -57,7 +65,7 @@ void       e_list_remove_iterator      (EList         *list,
 void       e_list_invalidate_iterators (EList         *list,
 					EIterator     *skip);
 
-/* Standard Gtk function */
-GtkType    e_list_get_type             (void);
+/* Standard Glib function */
+GType      e_list_get_type             (void);
 
 #endif /* ! __E_LIST_H__ */

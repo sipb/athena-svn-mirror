@@ -29,7 +29,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-control.h>
 
 #ifdef cplusplus
@@ -134,13 +134,13 @@ struct _EvolutionShellComponentFolderType {
 typedef struct _EvolutionShellComponentFolderType EvolutionShellComponentFolderType;
 
 struct _EvolutionShellComponent {
-	BonoboXObject parent;
+	BonoboObject parent;
 
 	EvolutionShellComponentPrivate *priv;
 };
 
 struct _EvolutionShellComponentClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_ShellComponent__epv epv;
 
@@ -155,7 +155,8 @@ struct _EvolutionShellComponentClass {
 	void (* debug)       (EvolutionShellComponent *shell_component);
 
 	void (* interactive)  (EvolutionShellComponent *shell_component,
-			       gboolean is_interactive);
+			       gboolean is_interactive,
+			       unsigned long new_view_xid);
 
 	void (* handle_external_uri) (EvolutionShellComponent *shell_component,
 				      const char *uri);
@@ -195,6 +196,8 @@ EvolutionShellComponent *evolution_shell_component_new (const EvolutionShellComp
 							EvolutionShellComponentRequestQuitFn                 request_quit_fn,
 							void                                                *closure);
 EvolutionShellClient    *evolution_shell_component_get_owner  (EvolutionShellComponent                            *shell_component);
+
+gulong evolution_shell_component_get_parent_view_xid(EvolutionShellComponent                            *shell_component);
 
 void  evolution_shell_component_add_user_creatable_item  (EvolutionShellComponent *shell_component,
 							  const char              *id,

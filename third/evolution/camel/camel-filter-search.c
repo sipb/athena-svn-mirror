@@ -42,14 +42,9 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
+#include <e-util/e-sexp.h>
 
 #include <gal/util/e-iconv.h>
-
-#include "e-util/e-sexp.h"
 
 #include "camel-mime-message.h"
 #include "camel-provider.h"
@@ -167,8 +162,10 @@ check_header (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMess
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			else {
 				ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
-				if (ct)
-					charset = e_iconv_charset_name(header_content_type_param(ct, "charset"));
+				if (ct) {
+					charset = header_content_type_param (ct, "charset");
+					charset = e_iconv_charset_name (charset);
+				}
 			}
 		}
 		
@@ -519,18 +516,22 @@ run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessa
 	if (!(pid = fork ())) {
 		/* child process */
 		GPtrArray *args;
-		int maxfd, i;
+		int maxfd, fd, i;
 		
-		if (dup2 (in_fds[0], STDIN_FILENO) < 0)
+		fd = open ("/dev/null", O_WRONLY);
+		
+		if (dup2 (in_fds[0], STDIN_FILENO) < 0 ||
+		    dup2 (fd, STDOUT_FILENO) < 0 ||
+		    dup2 (fd, STDERR_FILENO) < 0)
 			_exit (255);
 		
 		setsid ();
 		
 		maxfd = sysconf (_SC_OPEN_MAX);
 		if (maxfd > 0) {
-			for (i = 0; i < maxfd; i++) {
-				if (i != STDIN_FILENO && i != STDOUT_FILENO && i != STDERR_FILENO)
-					close (i);
+			for (fd = 0; fd < maxfd; fd++) {
+				if (fd != STDIN_FILENO && fd != STDOUT_FILENO && fd != STDERR_FILENO)
+					close (fd);
 			}
 		}
 		
@@ -547,7 +548,7 @@ run_command (struct _ESExp *f, int argc, struct _ESExpResult **argv, FilterMessa
 		_exit (255);
 	} else if (pid < 0) {
 		camel_exception_setv (fms->ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Failed to create child process '%s': %s"),
+				      _("Failed to create create child process '%s': %s"),
 				      argv[0]->value.string, g_strerror (errno));
 		return -1;
 	}

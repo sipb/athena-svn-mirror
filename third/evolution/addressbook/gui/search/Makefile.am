@@ -1,4 +1,4 @@
-ruledir = $(datadir)/evolution
+ruledir = $(privdatadir)
 rule_DATA = addresstypes.xml
 
 EXTRA_DIST = addresstypes.xml
@@ -13,11 +13,15 @@ INCLUDES =						\
 	-I$(top_srcdir)/widgets/misc			\
 	-I$(top_builddir)/shell				\
 	-DSEARCH_RULE_DIR=\"$(ruledir)\"		\
+	-DG_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DLIBGNOME_DISABLE_DEPRECATED			\
+	-DLIBGNOMEUI_DISABLE_DEPRECATED			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LIBRARIES =				\
-	libeaddressbooksearch.a
+noinst_LTLIBRARIES =				\
+	libeaddressbooksearch.la
 
-libeaddressbooksearch_a_SOURCES =		\
+libeaddressbooksearch_la_SOURCES =		\
 	e-addressbook-search-dialog.c		\
 	e-addressbook-search-dialog.h

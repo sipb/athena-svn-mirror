@@ -1,20 +1,18 @@
-INCLUDES =						\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/libical/src/libical		\
-	-I$(top_builddir)/libical/src/libical		\
-	-DMAP_DIR=\""$(datadir)/images/evolution"\"	\
-	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
-	-DG_LOG_DOMAIN=__FILE__				\
+INCLUDES =								\
+	-I$(top_srcdir)							\
+	-I$(top_srcdir)/libical/src/libical				\
+	-I$(top_builddir)/libical/src/libical				\
+	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				\
+	-DG_LOG_DOMAIN=__FILE__						\
 	$(GNOME_FULL_CFLAGS)
 
-noinst_LIBRARIES =	\
-	libetimezonedialog.a
+noinst_LTLIBRARIES =	\
+	libetimezonedialog.la
 
-libetimezonedialog_a_SOURCES = 	\
+libetimezonedialog_la_SOURCES =	\
 	e-timezone-dialog.c	\
 	e-timezone-dialog.h
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA = e-timezone-dialog.glade
 
 EXTRA_DIST = $(glade_DATA)

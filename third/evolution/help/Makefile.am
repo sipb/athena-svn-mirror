@@ -1,3 +1,6 @@
-SUBDIRS = C no
+SUBDIRS = C
 
-EXTRA_DIST = sgmldocs.make
+EXTRA_DIST =			\
+	ChangeLog.pre-1-4	\
+	xmldocs.make		\
+	omf.make

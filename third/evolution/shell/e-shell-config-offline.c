@@ -32,11 +32,11 @@
 
 #include "Evolution.h"
 
-#include <bonobo-conf/Bonobo_Config.h>
-#include <bonobo/bonobo-exception.h>
+#include <gconf/gconf-client.h>
 
-#include <gal/widgets/e-scroll-frame.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtksignal.h>
 
 
 struct _PageData {
@@ -50,8 +50,8 @@ typedef struct _PageData PageData;
 /* Callbacks.  */
 
 static void
-config_control_destroy_callback (GtkObject *object,
-				 void *data)
+config_control_destroy_notify (void *data,
+			       GObject *where_the_config_control_was)
 {
 	PageData *page_data;
 
@@ -64,40 +64,23 @@ static void
 config_control_apply_callback (EvolutionConfigControl *config_control,
 			       void *data)
 {
-	CORBA_Environment ev;
-	CORBA_sequence_CORBA_string *paths;
-	CORBA_any any;
+	GConfClient *gconf_client;
 	PageData *page_data;
-	GList *checked_paths;
-	GList *p;
-	int i;
+	GSList *checked_paths;
 
 	page_data = (PageData *) data;
 
 	checked_paths = e_storage_set_view_get_checkboxes_list (E_STORAGE_SET_VIEW (page_data->storage_set_view));
 
-	paths = CORBA_sequence_CORBA_string__alloc ();
-	paths->_maximum = paths->_length = g_list_length (checked_paths);
-	paths->_buffer = CORBA_sequence_CORBA_string_allocbuf (paths->_maximum);
+	gconf_client = gconf_client_get_default ();
 
-	CORBA_sequence_set_release (paths, TRUE);
+	gconf_client_set_list (gconf_client, "/apps/evolution/shell/offline/folder_paths",
+			       GCONF_VALUE_STRING, checked_paths, NULL);
 
-	for (p = checked_paths, i = 0; p != NULL; p = p->next, i ++)
-		paths->_buffer[i] = CORBA_string_dup ((const char *) p->data);
+	g_slist_foreach (checked_paths, (GFunc) g_free, NULL);
+	g_slist_free (checked_paths);
 
-	any._type = TC_CORBA_sequence_CORBA_string;
-	any._value = paths;
-
-	CORBA_exception_init (&ev);
-
-	Bonobo_ConfigDatabase_setValue (e_shell_get_config_db (page_data->shell),
-					"/OfflineFolders/paths", &any, &ev);
-	if (BONOBO_EX (&ev))
-		g_warning ("Cannot set /OfflineFolders/paths from ConfigDatabase -- %s", BONOBO_EX_ID (&ev));
-
-	CORBA_exception_free (&ev);
-
-	g_list_free (checked_paths);
+	g_object_unref (gconf_client);
 }
 
 static void
@@ -117,44 +100,20 @@ static void
 init_storage_set_view_status_from_config (EStorageSetView *storage_set_view,
 					  EShell *shell)
 {
-	Bonobo_ConfigDatabase config_db;
-	CORBA_Environment ev;
-	CORBA_any *any;
-	CORBA_sequence_CORBA_string *sequence;
-	GList *list;
-	int i;
+	GConfClient *gconf_client;
+	GSList *list;
 
-	config_db = e_shell_get_config_db (shell);
-	g_assert (config_db != CORBA_OBJECT_NIL);
+	gconf_client = gconf_client_get_default ();
 
-	CORBA_exception_init (&ev);
-
-	any = Bonobo_ConfigDatabase_getValue (config_db, "/OfflineFolders/paths", "", &ev);
-	if (BONOBO_EX (&ev)) {
-		g_warning ("Cannot get /OfflineFolders/paths from ConfigDatabase -- %s", BONOBO_EX_ID (&ev));
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	if (! CORBA_TypeCode_equal (any->_type, TC_CORBA_sequence_CORBA_string, &ev) || BONOBO_EX (&ev)) {
-		g_warning ("/OfflineFolders/Paths in ConfigDatabase is not the expected type");
-		CORBA_free (any);
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	sequence = (CORBA_sequence_CORBA_string *) any->_value;
-
-	list = NULL;
-	for (i = 0; i < sequence->_length; i ++)
-		list = g_list_prepend (list, sequence->_buffer[i]);
+	list = gconf_client_get_list (gconf_client, "/apps/evolution/shell/offline/folder_paths",
+				      GCONF_VALUE_STRING, NULL);
 
 	e_storage_set_view_set_checkboxes_list (storage_set_view, list);
 
-	g_list_free (list);
-	CORBA_free (any);
+	g_slist_foreach (list, (GFunc) g_free, NULL);
+	g_slist_free (list);
 
-	CORBA_exception_free (&ev);
+	g_object_unref (gconf_client);
 }
 
 static gboolean
@@ -175,7 +134,7 @@ GtkWidget *
 e_shell_config_offline_create_widget (EShell *shell, EvolutionConfigControl *control)
 {
 	PageData *page_data;
-	GtkWidget *scroll_frame;
+	GtkWidget *scrolled_window;
 
 	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
 
@@ -188,22 +147,22 @@ e_shell_config_offline_create_widget (EShell *shell, EvolutionConfigControl *con
 	gtk_widget_show (page_data->storage_set_view);
 
 	init_storage_set_view_status_from_config (E_STORAGE_SET_VIEW (page_data->storage_set_view), shell);
-	gtk_signal_connect (GTK_OBJECT (page_data->storage_set_view), "checkboxes_changed",
-			    GTK_SIGNAL_FUNC (storage_set_view_checkboxes_changed_callback), page_data);
+	g_signal_connect (page_data->storage_set_view, "checkboxes_changed",
+			  G_CALLBACK (storage_set_view_checkboxes_changed_callback), page_data);
 
-	scroll_frame = e_scroll_frame_new (NULL, NULL);
-	e_scroll_frame_set_shadow_type (E_SCROLL_FRAME (scroll_frame), GTK_SHADOW_IN);
-	e_scroll_frame_set_policy (E_SCROLL_FRAME (scroll_frame),
-				   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add (GTK_CONTAINER (scroll_frame), page_data->storage_set_view);
-	gtk_widget_show (scroll_frame);
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (scrolled_window), page_data->storage_set_view);
+	gtk_widget_show (scrolled_window);
 
 	page_data->config_control = control;
 
-	gtk_signal_connect (GTK_OBJECT (page_data->config_control), "destroy",
-			    GTK_SIGNAL_FUNC (config_control_destroy_callback), page_data);
-	gtk_signal_connect (GTK_OBJECT (page_data->config_control), "apply",
-			    GTK_SIGNAL_FUNC (config_control_apply_callback), page_data);
+	g_signal_connect (page_data->config_control, "apply",
+			  G_CALLBACK (config_control_apply_callback), page_data);
 
-	return scroll_frame;
+	g_object_weak_ref (G_OBJECT (page_data->config_control), config_control_destroy_notify, page_data);
+
+	return scrolled_window;
 }

@@ -24,7 +24,7 @@
 #define EVOLUTION_IMPORTER_LISTENER_H
 
 #include <glib.h>
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include <importer/GNOME_Evolution_Importer.h>
 #include "evolution-importer.h"
 
@@ -34,10 +34,10 @@ extern "C" {
 #endif /* cplusplus */
 
 #define EVOLUTION_TYPE_IMPORTER_LISTENER            (evolution_importer_listener_get_type ())
-#define EVOLUTION_IMPORTER_LISTENER(obj)            (GTK_CHECK_CAST ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER, EvolutionImporterListener))
-#define EVOLUTION_IMPORTER_LISTENER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_IMPORTER_LISTENER, EvolutionImporterListenerClass))
-#define EVOLUTION_IS_IMPORTER_LISTENER(obj)         (GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER))
-#define EVOLUTION_IS_IMPORTER_LISTENER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER))
+#define EVOLUTION_IMPORTER_LISTENER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER, EvolutionImporterListener))
+#define EVOLUTION_IMPORTER_LISTENER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_IMPORTER_LISTENER, EvolutionImporterListenerClass))
+#define EVOLUTION_IS_IMPORTER_LISTENER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER))
+#define EVOLUTION_IS_IMPORTER_LISTENER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_IMPORTER_LISTENER))
 
 typedef struct _EvolutionImporterListener        EvolutionImporterListener;
 typedef struct _EvolutionImporterListenerPrivate EvolutionImporterListenerPrivate;
@@ -48,18 +48,18 @@ typedef void (* EvolutionImporterListenerCallback) (EvolutionImporterListener *l
 						    gboolean more_items,
 						    void *closure);
 struct _EvolutionImporterListener {
-	BonoboXObject parent;
+	BonoboObject parent;
 	
 	EvolutionImporterListenerPrivate *priv;
 };
 
 struct _EvolutionImporterListenerClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_ImporterListener__epv epv;
 };
 
-GtkType evolution_importer_listener_get_type (void);
+GType evolution_importer_listener_get_type (void);
 
 EvolutionImporterListener *evolution_importer_listener_new (EvolutionImporterListenerCallback callback,
 							    void *closure);

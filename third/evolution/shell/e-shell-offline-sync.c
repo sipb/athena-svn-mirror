@@ -31,15 +31,16 @@
 
 #include "Evolution.h"
 
-#include <gal/widgets/e-gui-utils.h>
+#include "e-util/e-dialog-utils.h"
+
+#include <gconf/gconf-client.h>
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
 
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <bonobo/bonobo-main.h>
@@ -57,6 +58,9 @@ struct _SyncFolderProgressListenerServant {
 struct _SyncData {
 	/* The shell.  */
 	EShell *shell;
+
+	/* Parent view.  */
+	GtkWindow *parent_window;
 
 	/* The progress dialog.  */
 	GtkWidget *dialog;
@@ -114,8 +118,6 @@ progress_listener_servant_free (SyncFolderProgressListenerServant *servant)
 	PortableServer_POA_deactivate_object (bonobo_poa (), oid, &ev);
 	CORBA_free (oid);
 
-	POA_GNOME_Evolution_SyncFolderProgressListener__fini ((POA_GNOME_Evolution_SyncFolderProgressListener *) servant, &ev);
-
 	CORBA_exception_free (&ev);
 
 	g_free (servant);
@@ -129,7 +131,7 @@ impl_SyncFolderProgressListener_updateProgress (PortableServer_Servant servant,
 	SyncData *sync_data;
 
 	sync_data = ((SyncFolderProgressListenerServant *) servant)->sync_data;
-	gtk_progress_set_percentage (GTK_PROGRESS (sync_data->progress_bar), percent);
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (sync_data->progress_bar), percent);
 }
 
 static void
@@ -157,7 +159,7 @@ impl_SyncFolderProgressListener_reportFailure (PortableServer_Servant servant,
 
 	/* FIXME -- We probably should give the user more of a chance to do
 	   something about it.  */
-	e_notice (GTK_WINDOW (sync_data->dialog),
+	e_notice (sync_data->dialog, GTK_MESSAGE_ERROR,
 		  _("Error synchronizing \"%s\":\n%s"), e_folder_get_name (folder), message);
 
 	sync_data->current_folder_finished = TRUE;
@@ -213,19 +215,10 @@ setup_progress_listener (SyncData *sync_data)
 
 /* Setting up the progress dialog.  */
 
-static int
-progress_dialog_close_callback (GnomeDialog *dialog,
-				void *data)
-{
-	/* Don't allow the dialog to be closed through the window manager close
-	   command.  */
-	return TRUE;
-}
-
 static void
-progress_dialog_clicked_callback (GnomeDialog *dialog,
-				  int button_num,
-				  void *data)
+progress_dialog_response_callback (GtkDialog *dialog,
+				   int response_id,
+				   void *data)
 {
 	SyncData *sync_data;
 
@@ -236,22 +229,23 @@ progress_dialog_clicked_callback (GnomeDialog *dialog,
 static void
 setup_dialog (SyncData *sync_data)
 {
-	sync_data->dialog = gnome_dialog_new (_("Syncing Folder"), GNOME_STOCK_BUTTON_CANCEL, NULL);
-	gtk_widget_set_usize (sync_data->dialog, 300, -1);
-	gtk_window_set_policy (GTK_WINDOW (sync_data->dialog), FALSE, FALSE, FALSE);
+	sync_data->dialog = gtk_dialog_new_with_buttons (_("Syncing Folder"),
+							 sync_data->parent_window,
+							 0,
+							 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+							 NULL);
+	gtk_widget_set_size_request (sync_data->dialog, 300, -1);
+	gtk_window_set_resizable (GTK_WINDOW (sync_data->dialog), FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (sync_data->dialog), "close",
-			    GTK_SIGNAL_FUNC (progress_dialog_close_callback), sync_data);
-	gtk_signal_connect (GTK_OBJECT (sync_data->dialog), "clicked",
-			    GTK_SIGNAL_FUNC (progress_dialog_clicked_callback), sync_data);
+	g_signal_connect (sync_data->dialog, "response",
+			  G_CALLBACK (progress_dialog_response_callback), sync_data);
 
 	sync_data->label = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (sync_data->dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (sync_data->dialog)->vbox),
 			    sync_data->label, FALSE, TRUE, 0);
 
 	sync_data->progress_bar = gtk_progress_bar_new ();
-	gtk_progress_set_activity_mode (GTK_PROGRESS (sync_data->progress_bar), FALSE);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (sync_data->dialog)->vbox),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (sync_data->dialog)->vbox),
 			    sync_data->progress_bar, FALSE, TRUE, 0);
 
 	gtk_widget_show_all (sync_data->dialog);
@@ -316,10 +310,10 @@ sync_folder (SyncData *sync_data,
 
 	msg = g_strdup_printf (_("Synchronizing \"%s\" (%d of %d) ..."),
 			       e_folder_get_name (folder), num, total);
-	gtk_label_set (GTK_LABEL (sync_data->label), msg);
+	gtk_label_set_text (GTK_LABEL (sync_data->label), msg);
 	g_free (msg);
 
-	gtk_progress_set_value (GTK_PROGRESS (sync_data->progress_bar), 0.0);
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (sync_data->progress_bar), 0.0);
 
 	/* Get the data ready.  */
 
@@ -335,7 +329,7 @@ sync_folder (SyncData *sync_data,
 					    sync_data->progress_listener_objref,
 					    &ev);
 	if (BONOBO_EX (&ev)) {
-		g_warning ("Error invoking ::syncFolder -- %s", BONOBO_EX_ID (&ev));
+		g_warning ("Error invoking ::syncFolder -- %s", BONOBO_EX_REPOID (&ev));
 		CORBA_free (corba_folder);
 		CORBA_exception_free (&ev);
 		return;
@@ -348,7 +342,8 @@ sync_folder (SyncData *sync_data,
 
 		/* Check if the user clicked the Cancel button.  */
 		if (sync_data->cancel) {
-			gnome_dialog_set_sensitive (GNOME_DIALOG (sync_data->dialog), 0, FALSE);
+			gtk_dialog_set_response_sensitive (GTK_DIALOG (sync_data->dialog),
+							   GTK_RESPONSE_CANCEL, FALSE);
 
 			GNOME_Evolution_Offline_cancelSyncFolder (offline_interface, corba_folder, &ev);
 
@@ -392,36 +387,20 @@ void
 e_shell_offline_sync_all_folders (EShell *shell,
 				  GtkWindow *parent_window)
 {
-	Bonobo_ConfigDatabase config_db;
-	CORBA_sequence_CORBA_string *folder_path_sequence;
-	CORBA_any *any;
-	CORBA_Environment ev;
+	GConfClient *gconf_client;
 	SyncData *sync_data;
+	GSList *path_list;
+	GSList *p;
 	int i;
 
-	config_db = e_shell_get_config_db (shell);
+	gconf_client = gconf_client_get_default ();
 
-	CORBA_exception_init (&ev);
-
-	/* Get the paths for the folders to sync up.  */
-
-	any = Bonobo_ConfigDatabase_getValue (config_db, "/OfflineFolders/paths", "", &ev);
-	if (BONOBO_EX (&ev)) {
-		g_warning ("Cannot get /OfflineFolders/paths from ConfigDatabase -- %s", BONOBO_EX_ID (&ev));
-		CORBA_exception_free (&ev);
-		return;
-	}
-	if (! CORBA_TypeCode_equal (any->_type, TC_CORBA_sequence_CORBA_string, &ev) || BONOBO_EX (&ev)) {
-		g_warning ("/OfflineFolders/Paths in ConfigDatabase is not the expected type");
-		CORBA_free (any);
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	folder_path_sequence = (CORBA_sequence_CORBA_string *) any->_value;
+	path_list = gconf_client_get_list (gconf_client, "/apps/evolution/shell/offline/folder_paths",
+					   GCONF_VALUE_STRING, NULL);
 
 	sync_data = g_new0 (SyncData, 1);
 	sync_data->shell = shell;
+	sync_data->parent_window = parent_window;
 
 	/* Initialize everything, then go ahead and sync.  */
 
@@ -430,10 +409,12 @@ e_shell_offline_sync_all_folders (EShell *shell,
 
 	setup_dialog (sync_data);
 
-	for (i = 0; i < folder_path_sequence->_length; i ++) {
-		sync_folder (sync_data,
-			     folder_path_sequence->_buffer[i],
-			     i + 1, folder_path_sequence->_length);
+	for (p = path_list, i = 1; p != NULL; p = p->next, i ++) {
+		const char *path;
+
+		path = (const char *) p->data;
+
+		sync_folder (sync_data, path, i, g_slist_length (path_list));
 
 		/* If the operation has been cancelled, stop syncing and
 		   return.  */
@@ -447,6 +428,6 @@ e_shell_offline_sync_all_folders (EShell *shell,
  done:
 	cleanup (sync_data);
 
-	CORBA_free (folder_path_sequence);
-	CORBA_exception_free (&ev);
+	g_slist_foreach (path_list, (GFunc) g_free, NULL);
+	g_slist_free (path_list);
 }

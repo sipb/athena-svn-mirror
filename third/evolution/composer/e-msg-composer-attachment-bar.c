@@ -26,28 +26,23 @@
 #include <config.h>
 #endif
 
-#include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
+#include <string.h>
+#include <gtk/gtk.h>
+#include <glade/glade.h>
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
 #include <libgnomeui/gnome-popup-menu.h>
-#include <libgnomeui/gnome-dialog-util.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <glade/glade.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gdk-pixbuf-loader.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 #include "e-msg-composer.h"
 #include "e-msg-composer-select-file.h"
 #include "e-msg-composer-attachment.h"
 #include "e-msg-composer-attachment-bar.h"
 
-#include "e-icon-list.h"
-
-#include <gal/widgets/e-unicode.h>
+#include <gal/util/e-iconv.h>
 
 #include "camel/camel-data-wrapper.h"
 #include "camel/camel-stream-fs.h"
@@ -56,7 +51,7 @@
 #include "camel/camel-mime-filter-bestenc.h"
 #include "camel/camel-mime-part.h"
 
-
+
 #define ICON_WIDTH 64
 #define ICON_SEPARATORS " /-_"
 #define ICON_SPACING 2
@@ -66,7 +61,7 @@
 #define ICON_TEXT_SPACING 2
 
 
-static EIconListClass *parent_class = NULL;
+static GnomeIconListClass *parent_class = NULL;
 
 struct _EMsgComposerAttachmentBarPrivate {
 	GList *attachments;
@@ -88,10 +83,10 @@ static guint signals[LAST_SIGNAL] = { 0 };
 static void update (EMsgComposerAttachmentBar *bar);
 
 
-static gchar *
+static char *
 size_to_string (gulong size)
 {
-	gchar *size_string;
+	char *size_string;
 	
 	/* FIXME: The following should probably go into a separate module, as
            we might have to do the same thing in other places as well.  Also,
@@ -128,7 +123,7 @@ free_attachment_list (EMsgComposerAttachmentBar *bar)
 	priv = bar->priv;
 	
 	for (p = priv->attachments; p != NULL; p = p->next)
-		gtk_object_unref (GTK_OBJECT (p->data));
+		g_object_unref (p->data);
 	
 	priv->attachments = NULL;
 }
@@ -146,9 +141,9 @@ add_common (EMsgComposerAttachmentBar *bar,
 {
 	g_return_if_fail (attachment != NULL);
 	
-	gtk_signal_connect (GTK_OBJECT (attachment), "changed",
-			    GTK_SIGNAL_FUNC (attachment_changed_cb),
-			    bar);
+	g_signal_connect (attachment, "changed",
+			  G_CALLBACK (attachment_changed_cb),
+			  bar);
 	
 	bar->priv->attachments = g_list_append (bar->priv->attachments,
 						attachment);
@@ -156,7 +151,7 @@ add_common (EMsgComposerAttachmentBar *bar,
 	
 	update (bar);
 	
-	gtk_signal_emit (GTK_OBJECT (bar), signals[CHANGED]);
+	g_signal_emit (bar, signals[CHANGED], 0);
 }
 
 static void
@@ -182,12 +177,12 @@ add_from_file (EMsgComposerAttachmentBar *bar,
 		add_common (bar, attachment);
 	} else {
 		composer = E_MSG_COMPOSER (gtk_widget_get_toplevel (GTK_WIDGET (bar)));
-		
-		dialog = gnome_error_dialog_parented (camel_exception_get_description (&ex),
-						      GTK_WINDOW (composer));
-		
-		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-		
+		dialog = gtk_message_dialog_new(GTK_WINDOW(composer),
+						GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+						"%s", camel_exception_get_description (&ex));
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
 		camel_exception_clear (&ex);
 	}
 }
@@ -200,9 +195,9 @@ remove_attachment (EMsgComposerAttachmentBar *bar,
 						attachment);
 	bar->priv->num_attachments--;
 	
-	gtk_object_unref (GTK_OBJECT (attachment));
+	g_object_unref(attachment);
 	
-	gtk_signal_emit (GTK_OBJECT (bar), signals[CHANGED]);
+	g_signal_emit (bar, signals[CHANGED], 0);
 }
 
 
@@ -222,41 +217,47 @@ pixbuf_for_mime_type (const char *mime_type)
 	    || strcmp (mime_type, "multipart/digest") == 0
 	    || strcmp (mime_type, "message/rfc822") == 0) {
 		char *name;
-
-		name = g_concat_dir_and_file (EVOLUTION_ICONSDIR, "mail.png");
-		pixbuf = gdk_pixbuf_new_from_file (name);
+		
+		name = g_build_filename (EVOLUTION_IMAGESDIR, "mail.png", NULL);
+		pixbuf = gdk_pixbuf_new_from_file (name, NULL);
 		g_free (name);
-
+		
 		if (pixbuf != NULL)
 			return pixbuf;
 	}
-
-	icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
+	
+	icon_name = gnome_vfs_mime_get_icon (mime_type);
 	if (icon_name) {
 		if (*icon_name == '/') {
-			pixbuf = gdk_pixbuf_new_from_file (icon_name);
+			pixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
 			if (pixbuf)
 				return pixbuf;
 		}
 		
-		filename = gnome_pixmap_file (icon_name);
+		filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
 		if (!filename) {
 			char *fm_icon;
 			
 			fm_icon = g_strdup_printf ("nautilus/%s", icon_name);
-			filename = gnome_pixmap_file (fm_icon);
+			filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, fm_icon, TRUE, NULL);
 			if (!filename) {
+				g_free (fm_icon);
 				fm_icon = g_strdup_printf ("mc/%s", icon_name);
-				filename = gnome_pixmap_file (fm_icon);
+				filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, fm_icon, TRUE, NULL);
 			}
 			g_free (fm_icon);
 		}
 	}
 	
-	if (!filename)
-		filename = gnome_pixmap_file ("gnome-unknown.png");
+	if (filename && (pixbuf = gdk_pixbuf_new_from_file (filename, NULL))) {
+		g_free (filename);
+		return pixbuf;
+	}
 	
-	pixbuf = gdk_pixbuf_new_from_file (filename);
+	g_free (filename);
+	filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gnome-unknown.png", TRUE, NULL);
+	
+	pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
 	g_free (filename);
 	
 	return pixbuf;
@@ -266,24 +267,24 @@ static void
 update (EMsgComposerAttachmentBar *bar)
 {
 	EMsgComposerAttachmentBarPrivate *priv;
-	EIconList *icon_list;
+	GnomeIconList *icon_list;
 	GList *p;
 	
 	priv = bar->priv;
-	icon_list = E_ICON_LIST (bar);
+	icon_list = GNOME_ICON_LIST (bar);
 	
-	e_icon_list_freeze (icon_list);
+	gnome_icon_list_freeze (icon_list);
 	
-	e_icon_list_clear (icon_list);
+	gnome_icon_list_clear (icon_list);
 	
 	/* FIXME could be faster, but we don't care.  */
 	for (p = priv->attachments; p != NULL; p = p->next) {
 		EMsgComposerAttachment *attachment;
-		gchar *size_string, *label;
 		CamelContentType *content_type;
+		char *size_string, *label;
 		GdkPixbuf *pixbuf;
 		gboolean image;
-		char *desc;
+		const char *desc;
 		
 		attachment = p->data;
 		content_type = camel_mime_part_get_content_type (attachment->body);
@@ -311,8 +312,7 @@ update (EMsgComposerAttachmentBar *bar)
 			do {
 				t = camel_stream_read (mstream, tmp, 4096);
 				if (t > 0) {
-					error = !gdk_pixbuf_loader_write (loader,
-									  tmp, t);
+					error = !gdk_pixbuf_loader_write (loader, tmp, t, NULL);
 					if (error) {
 						break;
 					}
@@ -357,72 +357,63 @@ update (EMsgComposerAttachmentBar *bar)
 			}
 			
 			/* Destroy everything */
-			gdk_pixbuf_loader_close (loader);
-			gtk_object_unref (GTK_OBJECT (loader));
+			gdk_pixbuf_loader_close (loader, NULL);
+			g_object_unref (loader);
 			camel_stream_close (mstream);
 		}
 		
-		desc = e_utf8_to_gtk_string (GTK_WIDGET (icon_list), camel_mime_part_get_description (attachment->body));
+		desc = camel_mime_part_get_description (attachment->body);
 		if (!desc || *desc == '\0')
-			desc = e_utf8_to_gtk_string (GTK_WIDGET (icon_list),
-						     camel_mime_part_get_filename (attachment->body));
+			desc = camel_mime_part_get_filename (attachment->body);
 		
 		if (!desc)
-			desc = g_strdup (_("attachment"));
+			desc = _("attachment");
 		
-		if (attachment->size) {
-			size_string = size_to_string (attachment->size);
-			if (size_string == NULL) {
-				label = g_strdup (desc);
-			} else {
-				label = g_strdup_printf ("%s (%s)", desc, size_string);
-				g_free (size_string);
-			}
+		if (attachment->size
+		    && (size_string = size_to_string (attachment->size))) {
+			label = g_strdup_printf ("%s (%s)", desc, size_string);
+			g_free (size_string);
 		} else
 			label = g_strdup (desc);
 		
 		if (image) {
-			e_icon_list_append_pixbuf (icon_list, attachment->pixbuf_cache, NULL, label);
+			gnome_icon_list_append_pixbuf (icon_list, attachment->pixbuf_cache, NULL, label);
 		} else {
 			char *mime_type;
 			
 			mime_type = header_content_type_simple (content_type);
 			pixbuf = pixbuf_for_mime_type (mime_type);
 			g_free (mime_type);
-			e_icon_list_append_pixbuf (icon_list, pixbuf, 
-						   NULL, label);
+			gnome_icon_list_append_pixbuf (icon_list, pixbuf, NULL, label);
 			if (pixbuf)
-				gdk_pixbuf_unref (pixbuf);
+				g_object_unref (pixbuf);
 		}
 		
-		g_free (desc);
 		g_free (label);
 	}
 	
-	e_icon_list_thaw (icon_list);
+	gnome_icon_list_thaw (icon_list);
 }
 
 static void
 remove_selected (EMsgComposerAttachmentBar *bar)
 {
-	EIconList *icon_list;
+	GnomeIconList *icon_list;
 	EMsgComposerAttachment *attachment;
-	GList *attachment_list;
-	GList *p;
-	gint num;
+	GList *attachment_list, *p;
+	int num;
 	
-	icon_list = E_ICON_LIST (bar);
+	icon_list = GNOME_ICON_LIST (bar);
 	
 	/* Weee!  I am especially proud of this piece of cheesy code: it is
            truly awful.  But unless one attaches a huge number of files, it
            will not be as greedy as intended.  FIXME of course.  */
 	
 	attachment_list = NULL;
-	p = e_icon_list_get_selection (icon_list);
-	for (; p != NULL; p = p->next) {
+	p = gnome_icon_list_get_selection (icon_list);
+	for ( ; p != NULL; p = p->next) {
 		num = GPOINTER_TO_INT (p->data);
-		attachment = E_MSG_COMPOSER_ATTACHMENT
-			(g_list_nth (bar->priv->attachments, num)->data);
+		attachment = E_MSG_COMPOSER_ATTACHMENT (g_list_nth (bar->priv->attachments, num)->data);
 		attachment_list = g_list_prepend (attachment_list, attachment);
 	}
 	
@@ -437,14 +428,14 @@ remove_selected (EMsgComposerAttachmentBar *bar)
 static void
 edit_selected (EMsgComposerAttachmentBar *bar)
 {
-	EIconList *icon_list;
+	GnomeIconList *icon_list;
 	EMsgComposerAttachment *attachment;
 	GList *selection;
-	gint num;
+	int num;
 	
-	icon_list = E_ICON_LIST (bar);
+	icon_list = GNOME_ICON_LIST (bar);
 	
-	selection = e_icon_list_get_selection (icon_list);
+	selection = gnome_icon_list_get_selection (icon_list);
 	num = GPOINTER_TO_INT (selection->data);
 	attachment = g_list_nth (bar->priv->attachments, num)->data;
 	
@@ -480,8 +471,7 @@ add_from_user (EMsgComposerAttachmentBar *bar)
 /* Callbacks.  */
 
 static void
-add_cb (GtkWidget *widget,
-	gpointer data)
+add_cb (GtkWidget *widget, gpointer data, GtkWidget *for_widget)
 {
 	g_return_if_fail (E_IS_MSG_COMPOSER_ATTACHMENT_BAR (data));
 	
@@ -489,8 +479,7 @@ add_cb (GtkWidget *widget,
 }
 
 static void
-properties_cb (GtkWidget *widget,
-	       gpointer data)
+properties_cb (GtkWidget *widget, gpointer data, GtkWidget *for_widget)
 {
 	EMsgComposerAttachmentBar *bar;
 	
@@ -501,8 +490,7 @@ properties_cb (GtkWidget *widget,
 }
 
 static void
-remove_cb (GtkWidget *widget,
-	   gpointer data)
+remove_cb (GtkWidget *widget, gpointer data, GtkWidget *for_widget)
 {
 	EMsgComposerAttachmentBar *bar;
 	
@@ -530,8 +518,7 @@ get_icon_context_menu (EMsgComposerAttachmentBar *bar)
 	
 	priv = bar->priv;
 	if (priv->icon_context_menu == NULL)
-		priv->icon_context_menu = gnome_popup_menu_new
-			(icon_context_menu_info);
+		priv->icon_context_menu = gnome_popup_menu_new (icon_context_menu_info);
 	
 	return priv->icon_context_menu;
 }
@@ -544,7 +531,7 @@ popup_icon_context_menu (EMsgComposerAttachmentBar *bar,
 	GtkWidget *menu;
 	
 	menu = get_icon_context_menu (bar);
-	gnome_popup_menu_do_popup (menu, NULL, NULL, event, bar);
+	gnome_popup_menu_do_popup (menu, NULL, NULL, event, bar, NULL);
 }
 
 static GnomeUIInfo context_menu_info[] = {
@@ -573,7 +560,7 @@ popup_context_menu (EMsgComposerAttachmentBar *bar,
 	GtkWidget *menu;
 	
 	menu = get_context_menu (bar);
-	gnome_popup_menu_do_popup (menu, NULL, NULL, event, bar);
+	gnome_popup_menu_do_popup (menu, NULL, NULL, event, bar, NULL);
 }
 
 
@@ -586,9 +573,11 @@ destroy (GtkObject *object)
 	
 	bar = E_MSG_COMPOSER_ATTACHMENT_BAR (object);
 	
-	free_attachment_list (bar);
-	
-	g_free (bar->priv);
+	if (bar->priv) {
+		free_attachment_list (bar);
+		g_free (bar->priv);
+		bar->priv = NULL;
+	}
 	
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -602,20 +591,19 @@ button_press_event (GtkWidget *widget,
 		    GdkEventButton *event)
 {
 	EMsgComposerAttachmentBar *bar;
-	EIconList *icon_list;
-	gint icon_number;
+	GnomeIconList *icon_list;
+	int icon_number;
 	
 	bar = E_MSG_COMPOSER_ATTACHMENT_BAR (widget);
-	icon_list = E_ICON_LIST (widget);
+	icon_list = GNOME_ICON_LIST (widget);
 	
 	if (event->button != 3)
-		return GTK_WIDGET_CLASS (parent_class)->button_press_event
-			(widget, event);
+		return GTK_WIDGET_CLASS (parent_class)->button_press_event (widget, event);
 	
-	icon_number = e_icon_list_get_icon_at (icon_list, event->x, event->y);
+	icon_number = gnome_icon_list_get_icon_at (icon_list, event->x, event->y);
 	
 	if (icon_number >= 0) {
-		e_icon_list_select_icon (icon_list, icon_number);
+		gnome_icon_list_select_icon (icon_list, icon_number);
 		popup_icon_context_menu (bar, icon_number, event);
 	} else {
 		popup_context_menu (bar, event);
@@ -628,17 +616,17 @@ button_press_event (GtkWidget *widget,
 /* Initialization.  */
 
 static void
-class_init (EMsgComposerAttachmentBarClass *class)
+class_init (EMsgComposerAttachmentBarClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
-	EIconListClass *icon_list_class;
+	GnomeIconListClass *icon_list_class;
 	
-	object_class = GTK_OBJECT_CLASS (class);
-	widget_class = GTK_WIDGET_CLASS (class);
-	icon_list_class = E_ICON_LIST_CLASS (class);
+	object_class = GTK_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
+	icon_list_class = GNOME_ICON_LIST_CLASS (klass);
 	
-	parent_class = gtk_type_class (e_icon_list_get_type ());
+	parent_class = g_type_class_ref (gnome_icon_list_get_type ());
 	
 	object_class->destroy = destroy;
 	
@@ -647,23 +635,19 @@ class_init (EMsgComposerAttachmentBarClass *class)
 	/* Setup signals.  */
 	
 	signals[CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EMsgComposerAttachmentBarClass,
-						   changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("changed",
+			      E_TYPE_MSG_COMPOSER_ATTACHMENT_BAR,
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EMsgComposerAttachmentBarClass, changed),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 }
 
 static void
 init (EMsgComposerAttachmentBar *bar)
 {
 	EMsgComposerAttachmentBarPrivate *priv;
-	guint icon_size, icon_height;
-	GdkFont *font;
 	
 	priv = g_new (EMsgComposerAttachmentBarPrivate, 1);
 	
@@ -674,37 +658,26 @@ init (EMsgComposerAttachmentBar *bar)
 	priv->num_attachments = 0;
 	
 	bar->priv = priv;
-	
-	/* FIXME partly hardcoded.  We should compute height from the font, and
-           allow at least 2 lines for every item.  */
-	icon_size = ICON_WIDTH + ICON_SPACING + ICON_BORDER + ICON_TEXT_SPACING;
-	
-	font = GTK_WIDGET (bar)->style->font;
-	icon_height = icon_size + ((font->ascent + font->descent) * 2);
-	icon_size += 24;
-	
-	gtk_widget_set_usize (GTK_WIDGET (bar), icon_size * 4, icon_height);
 }
 
 
-GtkType
+GType
 e_msg_composer_attachment_bar_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	
 	if (type == 0) {
-		static const GtkTypeInfo info = {
-			"EMsgComposerAttachmentBar",
-			sizeof (EMsgComposerAttachmentBar),
+		static const GTypeInfo info = {
 			sizeof (EMsgComposerAttachmentBarClass),
-			(GtkClassInitFunc) class_init,
-			(GtkObjectInitFunc) init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
+			NULL, NULL,
+			(GClassInitFunc) class_init,
+			NULL, NULL,
+			sizeof (EMsgComposerAttachmentBar),
+			0,
+			(GInstanceInitFunc) init,
 		};
 		
-		type = gtk_type_unique (e_icon_list_get_type (), &info);
+		type = g_type_register_static (GNOME_TYPE_ICON_LIST, "EMsgComposerAttachmentBar", &info, 0);
 	}
 	
 	return type;
@@ -714,27 +687,58 @@ GtkWidget *
 e_msg_composer_attachment_bar_new (GtkAdjustment *adj)
 {
 	EMsgComposerAttachmentBar *new;
-	EIconList *icon_list;
+	GnomeIconList *icon_list;
+	int width, height, icon_width, window_height;
+	PangoFontMetrics *metrics;
+	PangoContext *context;
 	
-	gdk_rgb_init ();
-	gtk_widget_push_visual (gdk_rgb_get_visual ());
-	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-	new = gtk_type_new (e_msg_composer_attachment_bar_get_type ());
-	gtk_widget_pop_visual ();
-	gtk_widget_pop_colormap ();
+	new = g_object_new (e_msg_composer_attachment_bar_get_type (), NULL);
 	
-	icon_list = E_ICON_LIST (new);
+	icon_list = GNOME_ICON_LIST (new);
 	
-	e_icon_list_construct (icon_list, ICON_WIDTH, 0);
+	context = gtk_widget_get_pango_context ((GtkWidget *) new);
+	metrics = pango_context_get_metrics (context, ((GtkWidget *) new)->style->font_desc, pango_context_get_language (context));
+	width = PANGO_PIXELS (pango_font_metrics_get_approximate_char_width (metrics)) * 15;
+	/* This should be *2, but the icon list creates too much space above ... */
+	height = PANGO_PIXELS (pango_font_metrics_get_ascent (metrics) + pango_font_metrics_get_descent (metrics)) * 3;
+	pango_font_metrics_unref (metrics);
 	
-	e_icon_list_set_separators (icon_list, ICON_SEPARATORS);
-	e_icon_list_set_row_spacing (icon_list, ICON_ROW_SPACING);
-	e_icon_list_set_col_spacing (icon_list, ICON_COL_SPACING);
-	e_icon_list_set_icon_border (icon_list, ICON_BORDER);
-	e_icon_list_set_text_spacing (icon_list, ICON_TEXT_SPACING);
-	e_icon_list_set_selection_mode (icon_list, GTK_SELECTION_MULTIPLE);
+	icon_width = ICON_WIDTH + ICON_SPACING + ICON_BORDER + ICON_TEXT_SPACING;
+	icon_width = MAX (icon_width, width);
+	
+	gnome_icon_list_construct (icon_list, icon_width, adj, 0);
+	
+	window_height = ICON_WIDTH + ICON_SPACING + ICON_BORDER + ICON_TEXT_SPACING + height;
+	gtk_widget_set_size_request (GTK_WIDGET (new), icon_width * 4, window_height);
+	
+	gnome_icon_list_set_separators (icon_list, ICON_SEPARATORS);
+	gnome_icon_list_set_row_spacing (icon_list, ICON_ROW_SPACING);
+	gnome_icon_list_set_col_spacing (icon_list, ICON_COL_SPACING);
+	gnome_icon_list_set_icon_border (icon_list, ICON_BORDER);
+	gnome_icon_list_set_text_spacing (icon_list, ICON_TEXT_SPACING);
+	gnome_icon_list_set_selection_mode (icon_list, GTK_SELECTION_MULTIPLE);
 	
 	return GTK_WIDGET (new);
+}
+
+static const char *
+get_default_charset (void)
+{
+	GConfClient *gconf;
+	const char *charset;
+	char *buf;
+	
+	gconf = gconf_client_get_default ();
+	buf = gconf_client_get_string (gconf, "/apps/evolution/mail/composer/charset", NULL);
+	g_object_unref (gconf);
+	
+	if (buf != NULL) {
+		charset = e_iconv_charset_name (buf);
+		g_free (buf);
+	} else
+		charset = e_iconv_locale_charset ();
+	
+	return charset;
 }
 
 static void
@@ -784,7 +788,7 @@ attach_to_multipart (CamelMultipart *multipart,
 				default_charset = "us-ascii";
 			} else if (!charset) {
 				if (!default_charset)
-					default_charset = mail_config_get_default_charset ();
+					default_charset = get_default_charset ();
 				
 				/* FIXME: We should really check that this fits within the
                                    default_charset and if not find one that does and/or

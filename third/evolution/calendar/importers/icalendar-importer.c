@@ -20,17 +20,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-exception.h>
-#include <gal/util/e-unicode-i18n.h>
 #include <cal-client.h>
 #include <importer/evolution-importer.h>
 #include <importer/evolution-intelligent-importer.h>
@@ -51,7 +52,6 @@ typedef struct {
 	icalcomponent *icalcomp;
 	gboolean folder_contains_events;
 	gboolean folder_contains_tasks;
-	EvolutionShellClient *shell_client;
 } ICalImporter;
 
 typedef struct {
@@ -64,43 +64,21 @@ typedef struct {
  */
 
 static void
-importer_destroy_cb (GtkObject *object, gpointer user_data)
+importer_destroy_cb (gpointer user_data)
 {
 	ICalImporter *ici = (ICalImporter *) user_data;
 
 	g_return_if_fail (ici != NULL);
 
-	gtk_object_unref (GTK_OBJECT (ici->client));
-	gtk_object_unref (GTK_OBJECT (ici->tasks_client));
+	g_object_unref (ici->client);
+	g_object_unref (ici->tasks_client);
 
 	if (ici->icalcomp != NULL) {
 		icalcomponent_free (ici->icalcomp);
 		ici->icalcomp = NULL;
 	}
 
-	if (BONOBO_IS_OBJECT (ici->shell_client)) {
-		bonobo_object_unref (BONOBO_OBJECT (ici->shell_client));
-		ici->shell_client = NULL;
-	}
-
 	g_free (ici);
-}
-
-/* Connects an importer to the Evolution shell */
-static void
-connect_to_shell (ICalImporter *ici)
-{
-	CORBA_Environment ev;
-	GNOME_Evolution_Shell corba_shell;
-
-	CORBA_exception_init (&ev);
-	corba_shell = oaf_activate_from_id (E_SHELL_OAFIID, 0, NULL, &ev);
-	if (BONOBO_EX (&ev)) {
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	ici->shell_client = evolution_shell_client_new (corba_shell);
 }
 
 /* This reads in an entire file and returns it. It returns NULL on error.
@@ -144,107 +122,29 @@ read_file (const char *filename)
 	}
 }
 
-
-/* Returns the URI to load given a folder path. The returned string should be freed. */
-static char*
-get_uri_from_folder_path (ICalImporter *ici, const char *folderpath)
-{
-	GNOME_Evolution_StorageRegistry corba_registry;
-	GNOME_Evolution_StorageRegistry_StorageList *storage_list;
-	GNOME_Evolution_Folder *corba_folder;
-	CORBA_Environment ev;
-	int i;
-	char *uri = NULL;
-
-	corba_registry = evolution_shell_client_get_storage_registry_interface (ici->shell_client);
-	if (!corba_registry) {
-		return g_strdup_printf ("%s/evolution/local/Calendar/calendar.ics",
-					g_get_home_dir ());
-	}
-
-	CORBA_exception_init (&ev);
-	storage_list = GNOME_Evolution_StorageRegistry_getStorageList (corba_registry, &ev);
-	if (BONOBO_EX (&ev)) {
-		g_warning (_("Can't get storage list from registry: %s"), CORBA_exception_id (&ev));
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	for (i = 0; i < storage_list->_length; i++) {
-		CORBA_exception_init (&ev);
-		corba_folder = GNOME_Evolution_Storage_getFolderAtPath (storage_list->_buffer[i],
-									folderpath, &ev);
-		if (BONOBO_EX (&ev)) {
-			g_warning (_("Can't call getFolderAtPath on storage: %s"), CORBA_exception_id (&ev));
-			CORBA_exception_free (&ev);
-			continue;
-		}
-	
-		CORBA_exception_free (&ev);
-
-		if (corba_folder) {
-			ici->folder_contains_events = FALSE;
-			ici->folder_contains_tasks = FALSE;
-
-			if (!strncmp (corba_folder->physicalUri, "file:", 5)) {
-				if (!strcmp (corba_folder->type, "tasks")) {
-					ici->folder_contains_tasks = TRUE;
-					uri = g_strdup_printf ("%s/tasks.ics",
-							       corba_folder->physicalUri);
-				}
-				else if (!strcmp (corba_folder->type, "calendar")) {
-					ici->folder_contains_events = TRUE;
-					uri = g_strdup_printf ("%s/calendar.ics",
-							       corba_folder->physicalUri);
-				}
-			} else {
-				uri = g_strdup (corba_folder->physicalUri);
-
-				if (!strcmp (corba_folder->type, "tasks") ||
-				    !strcmp (corba_folder->type, "tasks/public"))
-					ici->folder_contains_tasks = TRUE;
-				else if (!strcmp (corba_folder->type, "calendar") ||
-					 !strcmp (corba_folder->type, "calendar/public"))
-					ici->folder_contains_events = TRUE;
-			}
-
-			CORBA_free (corba_folder);
-			break;
-		}
-	}
-
-	CORBA_free (storage_list);
-
-	return uri;
-}
-
-
 /* This removes all components except VEVENTs and VTIMEZONEs from the toplevel
    icalcomponent, and returns a GList of the VTODO components. */
 static GList*
 prepare_events (icalcomponent *icalcomp)
 {
-	icalcomponent *subcomp, *next_subcomp;
+	icalcomponent *subcomp;
 	GList *vtodos = NULL;
+	icalcompiter iter;
 
-	subcomp = icalcomponent_get_first_component (icalcomp,
-						     ICAL_ANY_COMPONENT);
-	while (subcomp) {
+	iter = icalcomponent_begin_component (icalcomp, ICAL_ANY_COMPONENT);
+	while ((subcomp = icalcompiter_deref (&iter)) != NULL) {
 		icalcomponent_kind child_kind = icalcomponent_isa (subcomp);
-		next_subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT);
 		if (child_kind != ICAL_VEVENT_COMPONENT
 		    && child_kind != ICAL_VTIMEZONE_COMPONENT) {
 
-			icalcomponent_remove_component (icalcomp,
-							subcomp);
+			icalcomponent_remove_component (icalcomp, subcomp);
 			if (child_kind == ICAL_VTODO_COMPONENT)
 				vtodos = g_list_prepend (vtodos, subcomp);
 			else
 				icalcomponent_free (subcomp);
 		}
-		subcomp = next_subcomp;
+
+		icalcompiter_next (&iter);
 	}
 
 	return vtodos;
@@ -257,20 +157,20 @@ prepare_events (icalcomponent *icalcomp)
 static void
 prepare_tasks (icalcomponent *icalcomp, GList *vtodos)
 {
-	icalcomponent *subcomp, *next_subcomp;
+	icalcomponent *subcomp;
 	GList *elem;
+	icalcompiter iter;
 
-	subcomp = icalcomponent_get_first_component (icalcomp,
-						     ICAL_ANY_COMPONENT);
-	while (subcomp) {
+	iter = icalcomponent_begin_component (icalcomp, ICAL_ANY_COMPONENT);
+	while ((subcomp = icalcompiter_deref (&iter)) != NULL) {
 		icalcomponent_kind child_kind = icalcomponent_isa (subcomp);
-		next_subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT);
 		if (child_kind != ICAL_VTODO_COMPONENT
 		    && child_kind != ICAL_VTIMEZONE_COMPONENT) {
 			icalcomponent_remove_component (icalcomp, subcomp);
 			icalcomponent_free (subcomp);
 		}
-		subcomp = next_subcomp;
+
+		icalcompiter_next (&iter);
 	}
 
 	for (elem = vtodos; elem; elem = elem->next) {
@@ -306,7 +206,7 @@ process_item_fn (EvolutionImporter *importer,
 			TRUE, ev);
 		return;
 	} else if (state != CAL_CLIENT_LOAD_LOADED
-		 || tasks_state != CAL_CLIENT_LOAD_LOADED) {
+		   || tasks_state != CAL_CLIENT_LOAD_LOADED) {
 		GNOME_Evolution_ImporterListener_notifyResult (
 			listener,
 			GNOME_Evolution_ImporterListener_UNSUPPORTED_OPERATION,
@@ -374,18 +274,29 @@ support_format_fn (EvolutionImporter *importer,
 static gboolean
 load_file_fn (EvolutionImporter *importer,
 	      const char *filename,
-	      const char *folderpath,
+	      const char *physical_uri,
+	      const char *folder_type,
 	      void *closure)
 {
-	char *uri_str, *contents;
+	char *contents, *f;
 	gboolean ret = FALSE;
 	ICalImporter *ici = (ICalImporter *) closure;
 
 	g_return_val_if_fail (ici != NULL, FALSE);
 
-	uri_str = get_uri_from_folder_path (ici, folderpath);
-
 	contents = read_file (filename);
+
+	if (!strcmp (folder_type, "calendar")) {
+		ici->folder_contains_events = TRUE;
+		ici->folder_contains_tasks = FALSE;
+
+		f = g_strdup ("calendar.ics");
+	} else {
+		ici->folder_contains_events = FALSE;
+		ici->folder_contains_tasks = TRUE;
+
+		f = g_strdup ("tasks.ics");
+	}
 
 	/* parse the file */
 	if (contents) {
@@ -393,16 +304,26 @@ load_file_fn (EvolutionImporter *importer,
 
 		icalcomp = icalparser_parse_string (contents);
 		if (icalcomp) {
-			if (cal_client_open_calendar (ici->client, uri_str, TRUE)
+			char *real_uri;
+
+			if (!g_strncasecmp (physical_uri, "file", 4) &&
+			    g_strcasecmp (physical_uri + (strlen (physical_uri) - strlen (f)), f)) {
+				real_uri = g_concat_dir_and_file (physical_uri, f);
+			} else
+				real_uri = g_strdup (physical_uri);
+
+			if (cal_client_open_calendar (ici->client, real_uri, TRUE)
 			    && cal_client_open_default_tasks (ici->tasks_client, FALSE)) {
 				ici->icalcomp = icalcomp;
 				ret = TRUE;
 			}
+
+			g_free (real_uri);
 		}
 	}
 
 	g_free (contents);
-	g_free (uri_str);
+	g_free (f);
 
 	return ret;
 }
@@ -421,9 +342,8 @@ ical_importer_new (void)
 						process_item_fn,
 						NULL,
 						ici);
-	connect_to_shell (ici);
-	gtk_signal_connect (GTK_OBJECT (ici->importer), "destroy",
-			    GTK_SIGNAL_FUNC (importer_destroy_cb), ici);
+
+	g_object_weak_ref (G_OBJECT (ici->importer), (GWeakNotify) importer_destroy_cb, ici);
 
 	return BONOBO_OBJECT (ici->importer);
 }
@@ -480,7 +400,7 @@ load_vcalendar_file (const char *filename)
 
 	defaults.alarm_audio_url = "file://" EVOLUTION_SOUNDDIR "/default_alarm.wav";
 	defaults.alarm_audio_fmttype = "audio/x-wav";
-	defaults.alarm_description = (char*) U_("Reminder!!");
+	defaults.alarm_description = (char*) _("Reminder!!");
 
 	contents = read_file (filename);
 
@@ -505,28 +425,49 @@ load_vcalendar_file (const char *filename)
 static gboolean
 vcal_load_file_fn (EvolutionImporter *importer,
 		   const char *filename,
-		   const char *folderpath,
+		   const char *physical_uri,
+		   const char *folder_type,
 		   void *closure)
 {
-	char *uri_str;
 	gboolean ret = FALSE;
+	char *f;
 	ICalImporter *ici = (ICalImporter *) closure;
 	icalcomponent *icalcomp;
 
 	g_return_val_if_fail (ici != NULL, FALSE);
 
-	uri_str = get_uri_from_folder_path (ici, folderpath);
+	if (!strcmp (folder_type, "calendar")) {
+		ici->folder_contains_events = TRUE;
+		ici->folder_contains_tasks = FALSE;
+
+		f = g_strdup ("calendar.ics");
+	} else {
+		ici->folder_contains_events = FALSE;
+		ici->folder_contains_tasks = TRUE;
+
+		f = g_strdup ("tasks.ics");
+	}
 
 	icalcomp = load_vcalendar_file (filename);
 	if (icalcomp) {
-		if (cal_client_open_calendar (ici->client, uri_str, TRUE)
+		char *real_uri;
+
+		if (!g_strncasecmp (physical_uri, "file", 4) &&
+		    g_strcasecmp (physical_uri + (strlen (physical_uri) - strlen (f)), f)) {
+			real_uri = g_concat_dir_and_file (physical_uri, f);
+		} else
+			real_uri = g_strdup (physical_uri);
+
+		if (cal_client_open_calendar (ici->client, real_uri, TRUE)
 		    && cal_client_open_default_tasks (ici->tasks_client, FALSE)) {
 			ici->icalcomp = icalcomp;
 			ret = TRUE;
 		}
+
+		g_free (real_uri);
 	}
 
-	g_free (uri_str);
+	g_free (f);
 
 	return ret;
 }
@@ -545,9 +486,8 @@ vcal_importer_new (void)
 						process_item_fn,
 						NULL,
 						ici);
-	connect_to_shell (ici);
-	gtk_signal_connect (GTK_OBJECT (ici->importer), "destroy",
-			    GTK_SIGNAL_FUNC (importer_destroy_cb), ici);
+
+	g_object_weak_ref (G_OBJECT (ici->importer), (GWeakNotify) importer_destroy_cb, ici);
 
 	return BONOBO_OBJECT (ici->importer);
 }
@@ -558,7 +498,7 @@ vcal_importer_new (void)
 
 
 static void
-gnome_calendar_importer_destroy_cb (GtkObject *object, gpointer user_data)
+gnome_calendar_importer_destroy_cb (gpointer user_data)
 {
 	ICalIntelligentImporter *ici = (ICalIntelligentImporter *) user_data;
 
@@ -672,9 +612,9 @@ gnome_calendar_import_data_fn (EvolutionIntelligentImporter *ii,
 	if (icalcomp)
 		icalcomponent_free (icalcomp);
 	if (calendar_client)
-		gtk_object_unref (GTK_OBJECT (calendar_client));
+		g_object_unref (calendar_client);
 	if (tasks_client)
-		gtk_object_unref (GTK_OBJECT (tasks_client));
+		g_object_unref (tasks_client);
 }
 
 
@@ -695,16 +635,16 @@ create_checkboxes_control (ICalIntelligentImporter *ici)
 	hbox = gtk_hbox_new (FALSE, 2);
 
 	calendar_checkbox = gtk_check_button_new_with_label (_("Calendar Events"));
-	gtk_signal_connect (GTK_OBJECT (calendar_checkbox), "toggled",
-			    GTK_SIGNAL_FUNC (checkbox_toggle_cb),
-			    &ici->do_calendar);
+	g_signal_connect (G_OBJECT (calendar_checkbox), "toggled",
+			  G_CALLBACK (checkbox_toggle_cb),
+			  &ici->do_calendar);
 	gtk_box_pack_start (GTK_BOX (hbox), calendar_checkbox,
 			    FALSE, FALSE, 0);
 
 	tasks_checkbox = gtk_check_button_new_with_label (_("Tasks"));
-	gtk_signal_connect (GTK_OBJECT (tasks_checkbox), "toggled",
-			    GTK_SIGNAL_FUNC (checkbox_toggle_cb),
-			    &ici->do_tasks);
+	g_signal_connect (G_OBJECT (tasks_checkbox), "toggled",
+			  G_CALLBACK (checkbox_toggle_cb),
+			  &ici->do_tasks);
 	gtk_box_pack_start (GTK_BOX (hbox), tasks_checkbox,
 			    FALSE, FALSE, 0);
 
@@ -731,8 +671,7 @@ gnome_calendar_importer_new (void)
 						       ici);
 
 
-	gtk_signal_connect (GTK_OBJECT (importer), "destroy",
-			    GTK_SIGNAL_FUNC (gnome_calendar_importer_destroy_cb), ici);
+	g_object_weak_ref (G_OBJECT (importer), (GWeakNotify) gnome_calendar_importer_destroy_cb, ici);
 
 	control = create_checkboxes_control (ici);
 	bonobo_object_add_interface (BONOBO_OBJECT (importer),

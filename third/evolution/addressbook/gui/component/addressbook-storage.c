@@ -47,18 +47,19 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
+#include <ctype.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <bonobo/bonobo-object.h>
 
-#include <gal/util/e-unicode-i18n.h>
 #include <gal/util/e-util.h>
 #include <gal/util/e-xml-utils.h>
 #include <libgnome/gnome-i18n.h>
@@ -93,17 +94,26 @@ addressbook_storage_setup (EvolutionShellComponent *shell_component,
 		return;
 	}
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 
 	sources = NULL;
 
 	if (storage_path)
 		g_free (storage_path);
-	storage_path = g_concat_dir_and_file (evolution_homedir, ADDRESSBOOK_SOURCES_XML);
+	storage_path = g_build_filename (evolution_homedir, ADDRESSBOOK_SOURCES_XML, NULL);
 #ifdef HAVE_LDAP
 	if (!load_source_data (storage_path))
 		deregister_storage ();
 #endif 
+}
+
+void
+addressbook_storage_cleanup (void)
+{
+	if (storage != NULL) {
+		bonobo_object_unref (storage);
+		storage = NULL;
+	}
 }
 
 #ifdef HAVE_LDAP
@@ -165,13 +175,13 @@ addressbook_get_other_contact_storage (void)
 	EvolutionStorageResult result;
 
 	if (storage == NULL) {
-		storage = evolution_storage_new (U_("Other Contacts"), FALSE);
-		gtk_signal_connect (GTK_OBJECT (storage),
-				    "remove_folder",
-				    GTK_SIGNAL_FUNC(remove_ldap_folder), NULL);
-		gtk_signal_connect (GTK_OBJECT (storage),
-				    "create_folder",
-				    GTK_SIGNAL_FUNC(create_ldap_folder), NULL);
+		storage = evolution_storage_new (_("Other Contacts"), FALSE);
+		g_signal_connect (storage,
+				  "remove_folder",
+				  G_CALLBACK (remove_ldap_folder), NULL);
+		g_signal_connect (storage,
+				  "create_folder",
+				  G_CALLBACK (create_ldap_folder), NULL);
 		result = evolution_storage_register_on_shell (storage, corba_shell);
 		switch (result) {
 		case EVOLUTION_STORAGE_OK:
@@ -370,15 +380,18 @@ addressbook_storage_init_source_uri (AddressbookSource *source)
 
 	str = g_string_new ("ldap://");
 
-	g_string_sprintfa (str, "%s:%s/%s?"/*trigraph prevention*/"?%s",
-			   source->host, source->port, source->rootdn, ldap_unparse_scope (source->scope));
+	g_string_append_printf (str, "%s:%s/%s?"/*trigraph prevention*/"?%s",
+				source->host,
+				source->port,
+				source->rootdn,
+				ldap_unparse_scope (source->scope));
 
-	g_string_sprintfa (str, ";limit=%d", source->limit);
+	g_string_append_printf (str, ";limit=%d", source->limit);
 
-	g_string_sprintfa (str, ";ssl=%s", ldap_unparse_ssl (source->ssl));
+	g_string_append_printf (str, ";ssl=%s", ldap_unparse_ssl (source->ssl));
 
 #if 0
-	g_string_sprintfa (str, ";timeout=%d", source->timeout);
+	g_string_append_printf (str, ";timeout=%d", source->timeout);
 #endif
 
 	source->uri = str->str;
@@ -429,8 +442,8 @@ load_source_data (const char *file_path)
 		return FALSE;
 	}
 
-	for (child = root->childs; child; child = child->next) {
-		char *path;
+	for (child = root->children; child; child = child->next) {
+		char *path, *value;
 		AddressbookSource *source;
 
 		source = g_new0 (AddressbookSource, 1);
@@ -439,12 +452,31 @@ load_source_data (const char *file_path)
 			source->port   = get_string_value (child, "port");
 			source->host   = get_string_value (child, "host");
 			source->rootdn = get_string_value (child, "rootdn");
-			source->scope  = ldap_parse_scope (get_string_value (child, "scope"));
-			source->auth   = ldap_parse_auth (get_string_value (child, "authmethod"));
-			source->ssl    = ldap_parse_ssl (get_string_value (child, "ssl"));
+			value = get_string_value (child, "scope");
+			source->scope  = ldap_parse_scope (value);
+			g_free (value);
+			value = get_string_value (child, "authmethod");
+			source->auth   = ldap_parse_auth (value);
+			g_free (value);
+			value = get_string_value (child, "ssl");
+			source->ssl    = ldap_parse_ssl (value);
+			g_free (value);
 			source->email_addr = get_string_value (child, "emailaddr");
 			source->binddn = get_string_value (child, "binddn");
 			source->limit  = get_integer_value (child, "limit", 100);
+		}
+		else if (!strcmp (child->name, "text")) {
+			if (child->content) {
+				int i;
+				for (i = 0; i < strlen (child->content); i++) {
+					if (!isspace (child->content[i])) {
+						g_warning ("illegal text in contactserver list.");
+						break;
+					}
+				}
+			}
+			g_free (source);
+			continue;
 		}
 		else {
 			g_warning ("unknown node '%s' in %s", child->name, file_path);

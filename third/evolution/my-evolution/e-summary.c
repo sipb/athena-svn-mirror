@@ -31,9 +31,10 @@
 #include <fcntl.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
+
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-url.h>
 
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
@@ -41,23 +42,31 @@
 #include <gtkhtml/htmlselection.h>
 
 #include <gal/util/e-util.h>
-#include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-unicode.h>
 
 #include <bonobo/bonobo-listener.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-ui-component.h>
-#include <bonobo-conf/bonobo-config-database.h>
 
-#include <libgnome/gnome-paper.h>
 #include <libgnome/gnome-url.h>
 
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
+#include <libgnomeprint/gnome-print-job.h>
 
-#include <gui/alarm-notify/alarm.h>
+#include <libgnomeprintui/gnome-print-job-preview.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
+
+#include <gtk/gtkdialog.h>
+
 #include <cal-util/timeutil.h>
+
+#include <gtk/gtkmain.h>
+#include <gtk/gtkscrolledwindow.h>
+
+#include <gconf/gconf-client.h>
+
+#include <string.h>
+#include <unistd.h>
 
 #include "e-summary.h"
 #include "e-summary-preferences.h"
@@ -65,6 +74,7 @@
 #include "Mailer.h"
 
 #include <Evolution.h>
+#include "e-util/e-dialog-utils.h"
 
 #include <time.h>
 
@@ -84,7 +94,7 @@ struct _ESummaryMailFolderInfo {
 };
 
 struct _ESummaryPrivate {
-	GNOME_Evolution_ShellView shell_view_interface;
+	BonoboControl *control;
 
 	GtkWidget *html_scroller;
 	GtkWidget *html;
@@ -95,7 +105,7 @@ struct _ESummaryPrivate {
 
 	guint pending_reload_tag;
 
-	gpointer alarm;
+	guint tomorrow_timeout_id;
 
 	gboolean frozen;
 
@@ -155,10 +165,16 @@ destroy (GtkObject *object)
 	}
 	if (summary->tasks) {
 		e_summary_tasks_free (summary);
+
 	}
 
-	alarm_remove (priv->alarm);
-	alarm_done ();
+	if (summary->priv->control) {
+		g_object_remove_weak_pointer (G_OBJECT (summary->priv->control), (void **) &summary->priv->control);
+		summary->priv->control = NULL;
+	}
+
+	if (priv->tomorrow_timeout_id != 0)
+		g_source_remove (priv->tomorrow_timeout_id);
 
 	if (priv->protocol_hash) {
 		g_hash_table_foreach (priv->protocol_hash, free_protocol, NULL);
@@ -279,8 +295,7 @@ e_pixmap_file (const char *filename)
 	}
 
 	/* Try the evolution images dir */
-	edir = g_concat_dir_and_file (EVOLUTION_DATADIR "/images/evolution",
-				      filename);
+	edir = g_concat_dir_and_file (EVOLUTION_IMAGESDIR, filename);
 
 	if (g_file_exists (edir)) {
 		ret = g_strdup (edir);
@@ -291,8 +306,7 @@ e_pixmap_file (const char *filename)
 	g_free (edir);
 
 	/* Try the evolution button images dir */
-	edir = g_concat_dir_and_file (EVOLUTION_DATADIR "/images/evolution/buttons",
-				      filename);
+	edir = g_concat_dir_and_file (EVOLUTION_BUTTONSDIR, filename);
 
 	if (g_file_exists (edir)) {
 		ret = g_strdup (edir);
@@ -327,7 +341,7 @@ e_summary_url_clicked (GtkHTML *html,
 	protocol_end = strchr (url, ':');
 	if (protocol_end == NULL) {
 		/* No url, let gnome work it out */
-		gnome_url_show (url);
+		gnome_url_show (url, NULL);
 		return;
 	}
 
@@ -339,7 +353,7 @@ e_summary_url_clicked (GtkHTML *html,
 
 	if (protocol_listener == NULL) {
 		/* Again, let gnome work it out */
-		gnome_url_show (url);
+		gnome_url_show (url, NULL);
 		return;
 	}
 
@@ -427,6 +441,7 @@ e_summary_url_requested (GtkHTML *html,
 
 		contents = e_read_file_with_length (filename, &length);
 		if (contents == NULL) {
+			g_free (filename);
 			return;
 		}
 
@@ -439,6 +454,7 @@ e_summary_url_requested (GtkHTML *html,
 
 	gtk_html_stream_write (stream, img->buffer, img->bufsize);
 	gtk_html_stream_close (stream, GTK_HTML_STREAM_OK);
+	g_free (filename);
 }
 
 static void
@@ -454,23 +470,37 @@ e_summary_class_init (GtkObjectClass *object_class)
 {
 	object_class->destroy = destroy;
 
-	e_summary_parent_class = gtk_type_class (PARENT_TYPE);
+	e_summary_parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
+static gboolean tomorrow_timeout (gpointer data);
+
 static void
-alarm_fn (gpointer alarm_id,
-	  time_t trigger,
-	  gpointer data)
+reset_tomorrow_timeout (ESummary *summary)
 {
-	ESummary *summary;
-	time_t t, day_end;
+	time_t now, day_end;
 
-	summary = data;
-	t = time (NULL);
-	day_end = time_day_end_with_zone (t, summary->tz);
-	summary->priv->alarm = alarm_add (day_end, alarm_fn, summary, NULL);
+	now = time (NULL);
+	if (summary->tz)
+		day_end = time_day_end_with_zone (now, summary->tz);
+	else
+		day_end = time_day_end (now);
 
+	/* (Yes, the number of milliseconds in a day is less than UINT_MAX) */
+	summary->priv->tomorrow_timeout_id =
+		g_timeout_add ((day_end - now) * 1000,
+			       tomorrow_timeout, summary);
+}
+
+static gboolean
+tomorrow_timeout (gpointer data)
+{
+	ESummary *summary = data;
+
+	reset_tomorrow_timeout (summary);
 	e_summary_reconfigure (summary);
+
+	return FALSE;
 }
 	
 #define DEFAULT_HTML "<html><head><title>Summary</title></head><body bgcolor=\"#ffffff\">%s</body></html>" 
@@ -478,17 +508,16 @@ alarm_fn (gpointer alarm_id,
 static void
 e_summary_init (ESummary *summary)
 {
-	Bonobo_ConfigDatabase db;
-	CORBA_Environment ev;
+	GConfClient *gconf_client;
 	ESummaryPrivate *priv;
-	GdkColor bgcolor = {0, 0xffff, 0xffff, 0xffff};
-	time_t t, day_end;
-	char *def, *default_utf;
+	char *def;
 
 	summary->priv = g_new (ESummaryPrivate, 1);
 
 	priv = summary->priv;
 
+	priv->control = NULL;
+	
 	priv->frozen = TRUE;
 	priv->pending_reload_tag = 0;
 
@@ -500,17 +529,13 @@ e_summary_init (ESummary *summary)
 	gtk_html_set_editable (GTK_HTML (priv->html), FALSE);
 	gtk_html_set_default_content_type (GTK_HTML (priv->html),
 					   "text/html; charset=utf-8");
-	gtk_html_set_default_background_color (GTK_HTML (priv->html), &bgcolor);
-	def = g_strdup_printf (DEFAULT_HTML, _("Please wait..."));
-	default_utf = e_utf8_from_locale_string (def);
-	gtk_html_load_from_string (GTK_HTML (priv->html), default_utf, strlen (default_utf));
-	g_free (def);
-	g_free (default_utf);
 
-	gtk_signal_connect (GTK_OBJECT (priv->html), "url-requested",
-			    GTK_SIGNAL_FUNC (e_summary_url_requested), summary);
-	gtk_signal_connect (GTK_OBJECT (priv->html), "link-clicked",
-			    GTK_SIGNAL_FUNC (e_summary_url_clicked), summary);
+	def = g_strdup_printf (DEFAULT_HTML, _("Please wait..."));
+	gtk_html_load_from_string (GTK_HTML (priv->html), def, strlen (def));
+	g_free (def);
+
+	g_signal_connect (priv->html, "url-requested", G_CALLBACK (e_summary_url_requested), summary);
+	g_signal_connect (priv->html, "link-clicked", G_CALLBACK (e_summary_url_clicked), summary);
 
 	gtk_container_add (GTK_CONTAINER (priv->html_scroller), priv->html);
 	gtk_widget_show_all (priv->html_scroller);
@@ -520,33 +545,17 @@ e_summary_init (ESummary *summary)
 	priv->protocol_hash = NULL;
 	priv->connections = NULL;
 
-	CORBA_exception_init (&ev);
-	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
-		CORBA_exception_free (&ev);
-		g_warning ("Error getting Wombat. Using defaults");
-		return;
-	}
+	gconf_client = gconf_client_get_default ();
 
-	summary->timezone = bonobo_config_get_string_with_default (db,
-		"/Calendar/Display/Timezone", "UTC", NULL);
+	summary->timezone = gconf_client_get_string (gconf_client, "/apps/evolution/calendar/display/timezone", NULL);
 	if (!summary->timezone || !summary->timezone[0]) {
 		g_free (summary->timezone);
 		summary->timezone = g_strdup ("UTC");
 	}
 	summary->tz = icaltimezone_get_builtin_timezone (summary->timezone);
+	reset_tomorrow_timeout (summary);
 
-	bonobo_object_release_unref (db, NULL);
-	CORBA_exception_free (&ev);
-
-	t = time (NULL);
-	if (summary->tz == NULL) {
-		day_end = time_day_end (t);
-	} else {
-		day_end = time_day_end_with_zone (t, summary->tz);
-	}
-
-	priv->alarm = alarm_add (day_end, alarm_fn, summary, NULL);
+	g_object_unref (gconf_client);
 
 	priv->queued_draw_idle_id = 0;
 }
@@ -555,13 +564,12 @@ E_MAKE_TYPE (e_summary, "ESummary", ESummary, e_summary_class_init,
 	     e_summary_init, PARENT_TYPE);
 
 GtkWidget *
-e_summary_new (const GNOME_Evolution_Shell shell,
-	       ESummaryPrefs *prefs)
+e_summary_new (ESummaryPrefs *prefs)
 {
 	ESummary *summary;
 
 	summary = gtk_type_new (e_summary_get_type ());
-	summary->shell = shell;
+
 	/* Just get a pointer to the global preferences */
 	summary->preferences = prefs;
 	
@@ -573,75 +581,81 @@ e_summary_new (const GNOME_Evolution_Shell shell,
 	e_summary_rdf_init (summary);
 	e_summary_weather_init (summary);
 
-/*  	e_summary_draw (summary); */
-
 	all_summaries = g_list_prepend (all_summaries, summary);
 	return GTK_WIDGET (summary);
 }
 
+BonoboControl *
+e_summary_get_control (ESummary *summary)
+{
+	g_return_val_if_fail (summary != NULL, CORBA_OBJECT_NIL);
+	g_return_val_if_fail (IS_E_SUMMARY (summary), CORBA_OBJECT_NIL);
+
+	return summary->priv->control;
+}
+
+void 
+e_summary_set_control (ESummary *summary, BonoboControl *control)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (IS_E_SUMMARY (summary));
+
+	if (summary->priv->control)
+		g_object_remove_weak_pointer (G_OBJECT (summary->priv->control), (void **) &summary->priv->control);
+	
+	summary->priv->control = control;
+
+	if (summary->priv->control)
+		g_object_add_weak_pointer (G_OBJECT (summary->priv->control), (void **) &summary->priv->control);
+}
+
 static void
-do_summary_print (ESummary *summary,
-		  gboolean preview)
+do_summary_print (ESummary *summary)
 {
 	GnomePrintContext *print_context;
-	GnomePrintMaster *print_master;
-	GnomePrintDialog *gpd;
-	GnomePrinter *printer = NULL;
-	int copies = 1;
-	int collate = FALSE;
+	GnomePrintJob *print_master;
+	GtkWidget *gpd;
+	GnomePrintConfig *config = NULL;
+	GtkWidget *preview_widget;
+	gboolean preview = FALSE;
 
-	if (!preview) {
-		gpd = GNOME_PRINT_DIALOG (gnome_print_dialog_new (_("Print Summary"), GNOME_PRINT_DIALOG_COPIES));
-		gnome_dialog_set_default (GNOME_DIALOG (gpd), GNOME_PRINT_PRINT);
+	gpd = gnome_print_dialog_new (NULL, _("Print Summary"), GNOME_PRINT_DIALOG_COPIES);
 
-		switch (gnome_dialog_run (GNOME_DIALOG (gpd))) {
-		case GNOME_PRINT_PRINT:
-			break;
+	switch (gtk_dialog_run (GTK_DIALOG (gpd))) {
+	case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
+		preview = FALSE;
+		break;
 
-		case GNOME_PRINT_PREVIEW:
-			preview = TRUE;
-			break;
+	case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
+		preview = TRUE;
+		break;
 
-		case -1:
-			return;
-
-		default:
-			gnome_dialog_close (GNOME_DIALOG (gpd));
-			return;
-		}
-
-		gnome_print_dialog_get_copies (gpd, &copies, &collate);
-		printer = gnome_print_dialog_get_printer (gpd);
-		gnome_dialog_close (GNOME_DIALOG (gpd));
+	default:
+		gtk_widget_destroy (gpd);
+		return;
 	}
 
-	print_master = gnome_print_master_new ();
+	config = gnome_print_dialog_get_config (GNOME_PRINT_DIALOG (gpd));
+
+	print_master = gnome_print_job_new (config);
 	
-	if (printer) {
-		gnome_print_master_set_printer (print_master, printer);
-	}
-	gnome_print_master_set_copies (print_master, copies, collate);
-	print_context = gnome_print_master_get_context (print_master);
+	print_context = gnome_print_job_get_context (print_master);
 	gtk_html_print (GTK_HTML (summary->priv->html), print_context);
-	gnome_print_master_close (print_master);
+	gnome_print_job_close (print_master);
+
+	gtk_widget_destroy (gpd);
 
 	if (preview) {
-		gboolean landscape = FALSE;
-		GnomePrintMasterPreview *preview;
-
-		preview = gnome_print_master_preview_new_with_orientation (
-			print_master, _("Print Preview"), landscape);
-		gtk_widget_show (GTK_WIDGET (preview));
+		preview_widget = gnome_print_job_preview_new (print_master, _("Print Preview"));
+		gtk_widget_show (preview_widget);
 	} else {
-		int result = gnome_print_master_print (print_master);
+		int result = gnome_print_job_print (print_master);
 
-		if (result == -1) {
-			e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-				  _("Printing of Summary failed"));
-		}
+		if (result == -1)
+			e_notice (gpd, GTK_MESSAGE_ERROR, _("Printing of Summary failed"));
 	}
 
-	gtk_object_unref (GTK_OBJECT (print_master));
+	g_object_unref (print_master);
 }
 
 void
@@ -651,7 +665,7 @@ e_summary_print (BonoboUIComponent *component,
 {
 	ESummary *summary = userdata;
 
-	do_summary_print (summary, FALSE);
+	do_summary_print (summary);
 }
 
 void
@@ -686,6 +700,31 @@ e_summary_add_protocol_listener (ESummary *summary,
 	g_hash_table_insert (summary->priv->protocol_hash, g_strdup (protocol), old);
 }
 
+static GNOME_Evolution_ShellView
+retrieve_shell_view_interface (BonoboControl *control)
+{
+	Bonobo_ControlFrame control_frame;
+	GNOME_Evolution_ShellView shell_view_interface;
+	CORBA_Environment ev;
+	
+	control_frame = bonobo_control_get_control_frame (control, NULL);
+	
+	if (control_frame == NULL)
+		return CORBA_OBJECT_NIL;
+	
+	CORBA_exception_init (&ev);
+	shell_view_interface = Bonobo_Unknown_queryInterface (control_frame,
+							      "IDL:GNOME/Evolution/ShellView:1.0",
+							      &ev);
+
+	if (BONOBO_EX (&ev))
+		shell_view_interface = CORBA_OBJECT_NIL;
+	
+	CORBA_exception_free (&ev);
+	
+	return shell_view_interface;
+}
+
 void
 e_summary_change_current_view (ESummary *summary,
 			       const char *uri)
@@ -696,14 +735,15 @@ e_summary_change_current_view (ESummary *summary,
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
-	svi = summary->shell_view_interface;
-	if (svi == NULL) {
+	svi = retrieve_shell_view_interface (summary->priv->control);
+	if (svi == CORBA_OBJECT_NIL)
 		return;
-	}
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_ShellView_changeCurrentView (svi, uri, &ev);
 	CORBA_exception_free (&ev);
+
+	bonobo_object_release_unref (svi, NULL);
 }
 
 void
@@ -717,14 +757,15 @@ e_summary_set_message (ESummary *summary,
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
-	svi = summary->shell_view_interface;
-	if (svi == NULL) {
+	svi = retrieve_shell_view_interface (summary->priv->control);
+	if (svi == CORBA_OBJECT_NIL)
 		return;
-	}
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_ShellView_setMessage (svi, message ? message : "", busy, &ev);
 	CORBA_exception_free (&ev);
+
+	bonobo_object_release_unref (svi, NULL);
 }
 
 void
@@ -736,14 +777,15 @@ e_summary_unset_message (ESummary *summary)
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
-	svi = summary->shell_view_interface;
-	if (svi == NULL) {
+	svi = retrieve_shell_view_interface (summary->priv->control);
+	if (svi == CORBA_OBJECT_NIL)
 		return;
-	}
 
 	CORBA_exception_init (&ev);
 	GNOME_Evolution_ShellView_unsetMessage (svi, &ev);
 	CORBA_exception_free (&ev);
+
+	bonobo_object_release_unref (svi, NULL);
 }
 
 void

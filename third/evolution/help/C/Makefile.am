@@ -7,8 +7,9 @@ figs = \
 	figures/exchange-identity.png		\
 	figures/exchange-receive-options.png	\
 	figures/exchange-receive.png		\
-	figures/filter-assist-fig.png		\
+	figures/exchange-delegation.png		\
 	figures/filter-new-fig.png		\
+	figures/folder-bar.png			\
 	figures/full-1.png			\
 	figures/full-2.png			\
 	figures/full-3.png			\
@@ -16,7 +17,6 @@ figs = \
 	figures/full-5.png			\
 	figures/full-6.png			\
 	figures/full-7.png			\
-	figures/mail-composer.png		\
 	figures/mail-druid-pic.png		\
 	figures/mail-inbox.png			\
 	figures/mail-threaded.png		\
@@ -26,31 +26,32 @@ figs = \
 	figures/print-preview.png		\
 	figures/replymsg.png			\
 	figures/schedule.png			\
-	figures/small_desktop.png		\
 	figures/summary.png			\
 	figures/vfolder-createrule-fig.png
-
-docname = evolution
+figdir = figures
+docname = evolution-1.4
 lang = C
-omffile = evolution-C.omf
-sgml_ents =	\
-	apx-authors.sgml	\
-	apx-bugs.sgml		\
-	apx-gloss.sgml		\
-	apx-fdl.sgml		\
-	apx-gpl.sgml		\
-	config-prefs.sgml	\
-	config-sync.sgml	\
-	menuref.sgml		\
-	preface.sgml		\
-	usage-calendar.sgml	\
-	usage-contact.sgml	\
-	usage-exec-summary.sgml	\
-	usage-exchange.sgml	\
-	usage-mail-org.sgml	\
-	usage-mail.sgml		\
-	usage-mainwindow.sgml	\
-	usage-print.sgml	\
-	usage-sync.sgml
-include $(top_srcdir)/help/sgmldocs.make
+omffile = evolution-1.4-C.omf
+entities =	\
+	apx-authors.xml		\
+	apx-bugs.xml		\
+	apx-fdl.xml		\
+	apx-gloss.xml		\
+	apx-gpl.xml		\
+	config-prefs.xml	\
+	config-sync.xml		\
+	legal.xml		\
+	menuref.xml		\
+	preface.xml		\
+	usage-calendar.xml	\
+	usage-contact.xml	\
+	usage-exec-summary.xml	\
+	usage-exchange.xml	\
+	usage-mail-org.xml	\
+	usage-mail.xml		\
+	usage-mainwindow.xml	\
+	usage-print.xml		\
+	usage-sync.xml
+
+include $(top_srcdir)/help/xmldocs.make
 dist-hook: app-dist-hook

@@ -44,7 +44,6 @@
 #include <camel/camel-utf8.h>
 #include <camel/camel-session.h>
 
-#define d(x) x
 
 extern int camel_verbose_debug;
 
@@ -198,7 +197,6 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 	}
 	
 	/* Send the command */
-#if d(!)0
 	if (camel_verbose_debug) {
 		const char *mask;
 		
@@ -213,7 +211,6 @@ imap_command_start (CamelImapStore *store, CamelFolder *folder,
 		
 		fprintf (stderr, "sending : %c%.5d %s\r\n", store->tag_prefix, store->command, mask);
 	}
-#endif
 	
 	nwritten = camel_stream_printf (store->ostream, "%c%.5d %s\r\n",
 					store->tag_prefix, store->command++, cmd);
@@ -301,7 +298,7 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 	
 	switch (*respbuf) {
 	case '*':
-		if (!g_strncasecmp (respbuf, "* BYE", 5)) {
+		if (!strncasecmp (respbuf, "* BYE", 5)) {
 			/* Connection was lost, no more data to fetch */
 			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -319,7 +316,7 @@ camel_imap_command_response (CamelImapStore *store, char **response,
 		respbuf = imap_read_untagged (store, respbuf, ex);
 		if (!respbuf)
 			type = CAMEL_IMAP_RESPONSE_ERROR;
-		else if (!g_strncasecmp(respbuf, "* OK [ALERT]", 12)) {
+		else if (!strncasecmp (respbuf, "* OK [ALERT]", 12)) {
 			char *msg;
 
 			/* for imap ALERT codes, account user@host */
@@ -382,13 +379,13 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 	if (*respbuf == '+')
 		return response;
 	p = strchr (respbuf, ' ');
-	if (p && !g_strncasecmp (p, " OK", 3))
+	if (p && !strncasecmp (p, " OK", 3))
 		return response;
 	
 	/* We should never get BAD, or anything else but +, OK, or NO
 	 * for that matter.
 	 */
-	if (!p || g_strncasecmp (p, " NO", 3) != 0) {
+	if (!p || strncasecmp (p, " NO", 3) != 0) {
 		g_warning ("Unexpected response from IMAP server: %s",
 			   respbuf);
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
@@ -415,7 +412,8 @@ imap_read_response (CamelImapStore *store, CamelException *ex)
 static char *
 imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 {
-	int fulllen, length, ldigits, nread, i;
+	int fulllen, ldigits, nread, i;
+	unsigned int length;
 	GPtrArray *data;
 	GString *str;
 	char *end, *p, *s, *d;
@@ -438,7 +436,7 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 			break;
 		
 		length = strtoul (p + 1, &end, 10);
-		if (*end != '}' || *(end + 1) || end == p + 1)
+		if (*end != '}' || *(end + 1) || end == p + 1 || length >= UINT_MAX - 2)
 			break;
 		ldigits = end - (p + 1);
 		
@@ -448,9 +446,11 @@ imap_read_untagged (CamelImapStore *store, char *line, CamelException *ex)
 		nread = camel_stream_read (store->istream, str->str + 1, length);
 		if (nread == -1) {
 			if (errno == EINTR)
-				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Operation cancelled"));
+				camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+						     _("Operation cancelled"));
 			else
-				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE, g_strerror (errno));
+				camel_exception_set (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+						     g_strerror (errno));
 			camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 			g_string_free (str, TRUE);
 			goto lose;
@@ -552,9 +552,9 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 		if (response->folder) {
 			/* Check if it's something we need to handle. */
 			number = strtoul (resp + 2, &p, 10);
-			if (!g_strcasecmp (p, " EXISTS")) {
+			if (!strcasecmp (p, " EXISTS")) {
 				exists = number;
-			} else if (!g_strcasecmp (p, " EXPUNGE")) {
+			} else if (!strcasecmp (p, " EXPUNGE")) {
 				if (!expunged) {
 					expunged = g_array_new (FALSE, FALSE,
 								sizeof (int));
@@ -639,7 +639,7 @@ camel_imap_response_extract (CamelImapStore *store,
 		if (*resp == ' ')
 			resp = (char *) imap_next_word (resp);
 		
-		if (!g_strncasecmp (resp, type, len))
+		if (!strncasecmp (resp, type, len))
 			break;
 	}
 	
@@ -699,7 +699,7 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 	const char *p, *start;
 	char *out, *outptr, *string;
 	int num, len, i, arglen;
-	
+
 	args = g_ptr_array_new ();
 	
 	/* Determine the length of the data */
@@ -726,6 +726,11 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 		case 'S':
 		case 'F':
 			string = va_arg (ap, char *);
+			if (*p == 'F') {
+				/* NB: this is freed during output */
+				char *s = camel_imap_store_summary_full_from_path(store->summary, string);
+				string = s?s:camel_utf8_utf7(string);
+			}
 			arglen = strlen (string);
 			g_ptr_array_add (args, string);
 			if (imap_is_atom (string)) {
@@ -776,11 +781,6 @@ imap_command_strdup_vprintf (CamelImapStore *store, const char *fmt,
 		case 'S':
 		case 'F':
 			string = args->pdata[i++];
-			if (*p == 'F') {
-				char *s = camel_imap_store_summary_full_from_path(store->summary, string);
-				string = s?s:camel_utf8_utf7(string);
-			}
-			
 			if (imap_is_atom (string)) {
 				outptr += sprintf (outptr, "%s", string);
 			} else {

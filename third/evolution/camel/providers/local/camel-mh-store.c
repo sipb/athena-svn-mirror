@@ -114,15 +114,15 @@ folders_update(const char *root, const char *folder, int mode)
 	char *tmp, *tmpnew, *line = NULL;
 	CamelStream *stream, *in = NULL, *out = NULL;
 
-	tmpnew = alloca(strlen(root)+16);
-	sprintf(tmpnew, "%s.folders~", root);
+	tmpnew = g_alloca (strlen (root) + 16);
+	sprintf (tmpnew, "%s.folders~", root);
 	
 	out = camel_stream_fs_new_with_name(tmpnew, O_WRONLY|O_CREAT|O_TRUNC, 0666);
 	if (out == NULL)
 		goto fail;
 
-	tmp = alloca(strlen(root)+16);
-	sprintf(tmp, "%s.folders", root);
+	tmp = g_alloca (strlen (root) + 16);
+	sprintf (tmp, "%s.folders", root);
 	stream = camel_stream_fs_new_with_name(tmp, O_RDONLY, 0);
 	if (stream) {
 		in = camel_stream_buffer_new(stream, CAMEL_STREAM_BUFFER_READ);
@@ -200,7 +200,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		if (errno != ENOENT) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Could not open folder `%s':\n%s"),
-					     folder_name, g_strerror(errno));
+					     folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
 		}
@@ -214,7 +214,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		if (mkdir(name, 0700) != 0) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 					     _("Could not create folder `%s':\n%s"),
-					     folder_name, g_strerror(errno));
+					     folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
 		}
@@ -248,9 +248,9 @@ static void delete_folder(CamelStore * store, const char *folder_name, CamelExce
 	/* remove folder directory - will fail if not empty */
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	if (rmdir(name) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not delete folder `%s': %s"),
-				     folder_name, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not delete folder `%s': %s"),
+				      folder_name, g_strerror (errno));
 		g_free(name);
 		return;
 	}
@@ -300,14 +300,13 @@ static CamelFolderInfo *folder_info_new(CamelStore *store, const char *root, con
 	fi->unread_message_count = 0;
 
 	/* check unread count if open */
-	CAMEL_STORE_LOCK(store, cache_lock);
-	folder = g_hash_table_lookup(store->folders, path);
+	folder = camel_object_bag_get(store->folders, path);
 	if (folder) {
 		if ((((CamelMhStore *)store)->flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 			camel_folder_refresh_info(folder, NULL);
 		fi->unread_message_count = camel_folder_get_unread_message_count(folder);
+		camel_object_unref(folder);
 	}
-	CAMEL_STORE_UNLOCK(store, cache_lock);
 
 	/* We could: if we have no folder, and FAST isn't specified, perform a full
 	   scan of all messages for their status flags.  But its probably not worth
@@ -339,8 +338,8 @@ static void recursive_scan(CamelStore *store, CamelFolderInfo **fip, CamelFolder
 
 	/* Open the specified directory. */
 	if (path[0]) {
-		fullpath = alloca(strlen(root)+strlen(path)+2);
-		sprintf(fullpath, "%s/%s", root, path);
+		fullpath = alloca (strlen (root) + strlen (path) + 2);
+		sprintf (fullpath, "%s/%s", root, path);
 	} else 
 		fullpath = (char *)root;
 
@@ -408,8 +407,8 @@ folders_scan(CamelStore *store, const char *root, const char *top, CamelFolderIn
 	GHashTable *visited;
 	int len;
 
-	tmp = alloca(strlen(root)+16);
-	sprintf(tmp, "%s/.folders", root);
+	tmp = g_alloca (strlen (root) + 16);
+	sprintf (tmp, "%s/.folders", root);
 	stream = camel_stream_fs_new_with_name(tmp, 0, O_RDONLY);
 	if (stream == NULL)
 		return;

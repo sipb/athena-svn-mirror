@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * A client-side GtkObject which exposes the
+ * A client-side GObject which exposes the
  * Evolution:BookViewListener interface.
  *
  * Author:
@@ -12,12 +12,18 @@
 #ifndef __E_BOOK_VIEW_LISTENER_H__
 #define __E_BOOK_VIEW_LISTENER_H__
 
-#include <libgnome/gnome-defs.h>
 #include <bonobo/bonobo-object.h>
 #include <ebook/e-book-types.h>
 #include <ebook/addressbook.h>
 
-BEGIN_GNOME_DECLS
+#define E_TYPE_BOOK_VIEW_LISTENER           (e_book_view_listener_get_type ())
+#define E_BOOK_VIEW_LISTENER(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_VIEW_LISTENER, EBookViewListener))
+#define E_BOOK_VIEW_LISTENER_CLASS(k)       (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_VIEW_LISTENER, EBookViewListenerClass))
+#define E_IS_BOOK_VIEW_LISTENER(o)          (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_VIEW_LISTENER))
+#define E_IS_BOOK_VIEW_LISTENER_CLASS(k)    (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_VIEW_LISTENER))
+#define E_BOOK_VIEW_LISTENER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_VIEW_LISTENER, EBookViewListenerClass))
+
+G_BEGIN_DECLS
 
 typedef struct _EBookViewListener EBookViewListener;
 typedef struct _EBookViewListenerClass EBookViewListenerClass;
@@ -31,6 +37,8 @@ struct _EBookViewListener {
 struct _EBookViewListenerClass {
 	BonoboObjectClass parent;
 
+	POA_GNOME_Evolution_Addressbook_BookViewListener__epv epv;
+
 	/*
 	 * Signals
 	 */
@@ -40,7 +48,7 @@ struct _EBookViewListenerClass {
 typedef enum {
 	/* Async events */
 	CardAddedEvent,
-	CardRemovedEvent,
+	CardsRemovedEvent,
 	CardModifiedEvent,
 	SequenceCompleteEvent,
 	StatusMessageEvent,
@@ -52,8 +60,8 @@ typedef struct {
 	/* For SequenceComplete */
 	EBookViewStatus             status;
 
-	/* For CardRemovedEvent */
-	char                   *id;
+	/* For CardsRemovedEvent */
+	GList                  *ids;
 
 	/* For Card[Added|Modified]Event */
 	GList                  *cards; /* Of type ECard. */
@@ -66,17 +74,9 @@ typedef struct {
 EBookViewListener         *e_book_view_listener_new            (void);
 int                        e_book_view_listener_check_pending  (EBookViewListener *listener);
 EBookViewListenerResponse *e_book_view_listener_pop_response   (EBookViewListener *listener);
-GtkType                    e_book_view_listener_get_type       (void);
+GType                      e_book_view_listener_get_type       (void);
 void                       e_book_view_listener_stop           (EBookViewListener *listener);
 
-POA_GNOME_Evolution_Addressbook_BookViewListener__epv *e_book_view_listener_get_epv (void);
-
-#define E_BOOK_VIEW_LISTENER_TYPE        (e_book_view_listener_get_type ())
-#define E_BOOK_VIEW_LISTENER(o)          (GTK_CHECK_CAST ((o), E_BOOK_VIEW_LISTENER_TYPE, EBookViewListener))
-#define E_BOOK_VIEW_LISTENER_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), E_BOOK_VIEW_LISTENER_TYPE, EBookViewListenerClass))
-#define E_IS_BOOK_VIEW_LISTENER(o)       (GTK_CHECK_TYPE ((o), E_BOOK_VIEW_LISTENER_TYPE))
-#define E_IS_BOOK_VIEW_LISTENER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_BOOK_VIEW_LISTENER_TYPE))
-
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* ! __E_BOOK_VIEW_LISTENER_H__ */

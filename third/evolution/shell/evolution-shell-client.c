@@ -39,14 +39,16 @@
 
 
 struct _EvolutionShellClientPrivate {
+	GNOME_Evolution_Shell corba_objref;
+
 	GNOME_Evolution_Activity activity_interface;
 	GNOME_Evolution_Shortcuts shortcuts_interface;
 	GNOME_Evolution_StorageRegistry storage_registry_interface;
 	GHashTable *icons;
 };
 
-#define PARENT_TYPE bonobo_object_client_get_type ()
-static BonoboObjectClientClass *parent_class = NULL;
+#define PARENT_TYPE G_TYPE_OBJECT
+static GObjectClass *parent_class = NULL;
 
 
 /* Easy-to-use wrapper for Evolution::user_select_folder.  */
@@ -77,12 +79,12 @@ query_shell_interface (EvolutionShellClient *shell_client,
 
 	CORBA_exception_init (&ev);
 
- 	interface_object = Bonobo_Unknown_queryInterface (bonobo_object_corba_objref (BONOBO_OBJECT (shell_client)),
+ 	interface_object = Bonobo_Unknown_queryInterface (evolution_shell_client_corba_objref (shell_client),
 							  interface_name, &ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION) {
+	if (BONOBO_EX (&ev)) {
 		g_warning ("EvolutionShellClient: Error querying interface %s on %p -- %s",
-			   interface_name, shell_client, ev._repo_id);
+			   interface_name, shell_client, BONOBO_EX_REPOID (&ev));
 		interface_object = CORBA_OBJECT_NIL;
 	} else if (CORBA_Object_is_nil (interface_object, &ev)) {
 		g_warning ("No interface %s for ShellClient %p", interface_name, shell_client);
@@ -227,7 +229,7 @@ user_select_folder (EvolutionShellClient *shell_client,
 
 	CORBA_exception_init (&ev);
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 
 	num_possible_types = count_string_items (possible_types);
 
@@ -257,17 +259,17 @@ user_select_folder (EvolutionShellClient *shell_client,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
 unref_pixbuf (gpointer name, gpointer pixbuf, gpointer data)
 {
 	g_free (name);
-	gdk_pixbuf_unref (pixbuf);
+	g_object_unref (pixbuf);
 }
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EvolutionShellClient *shell_client;
 	EvolutionShellClientPrivate *priv;
@@ -278,13 +280,24 @@ destroy (GtkObject *object)
 
 	CORBA_exception_init (&ev);
 
+	if (priv->corba_objref != CORBA_OBJECT_NIL) {
+		Bonobo_Unknown_unref (priv->corba_objref, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION)
+			g_warning ("EvolutionShellClient::destroy: "
+				   "Error unreffing the ::Shell interface -- %s\n",
+				   BONOBO_EX_REPOID (&ev));
+		CORBA_Object_release (priv->corba_objref, &ev);
+		priv->corba_objref = CORBA_OBJECT_NIL;
+	}
+
 	if (priv->activity_interface != CORBA_OBJECT_NIL) {
 		Bonobo_Unknown_unref (priv->activity_interface, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("EvolutionShellClient::destroy: "
 				   "Error unreffing the ::Activity interface -- %s\n",
-				   ev._repo_id);
+				   BONOBO_EX_REPOID (&ev));
 		CORBA_Object_release (priv->activity_interface, &ev);
+		priv->activity_interface = CORBA_OBJECT_NIL;
 	}
 
 	if (priv->shortcuts_interface != CORBA_OBJECT_NIL) {
@@ -292,8 +305,9 @@ destroy (GtkObject *object)
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("EvolutionShellClient::destroy: "
 				   "Error unreffing the ::Shortcuts interface -- %s\n",
-				   ev._repo_id);
+				   BONOBO_EX_REPOID (&ev));
 		CORBA_Object_release (priv->shortcuts_interface, &ev);
+		priv->shortcuts_interface = CORBA_OBJECT_NIL;
 	}
 
 	if (priv->storage_registry_interface != CORBA_OBJECT_NIL) {
@@ -301,8 +315,9 @@ destroy (GtkObject *object)
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("EvolutionShellClient::destroy: "
 				   "Error unreffing the ::StorageRegistry interface -- %s\n",
-				   ev._repo_id);
+				   BONOBO_EX_REPOID (&ev));
 		CORBA_Object_release (priv->storage_registry_interface, &ev);
+		priv->storage_registry_interface = CORBA_OBJECT_NIL;
 	}
 
 	CORBA_exception_free (&ev);
@@ -310,22 +325,35 @@ destroy (GtkObject *object)
 	g_hash_table_foreach (priv->icons, unref_pixbuf, NULL);
 	g_hash_table_destroy (priv->icons);
 
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EvolutionShellClient *shell_client;
+	EvolutionShellClientPrivate *priv;
+
+	shell_client = EVOLUTION_SHELL_CLIENT (object);
+	priv = shell_client->priv;
+
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EvolutionShellClientClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (bonobo_object_get_type ());
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 
-	object_class->destroy = destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 }
 
 static void
@@ -334,6 +362,7 @@ init (EvolutionShellClient *shell_client)
 	EvolutionShellClientPrivate *priv;
 
 	priv = g_new (EvolutionShellClientPrivate, 1);
+	priv->corba_objref               = CORBA_OBJECT_NIL;
 	priv->activity_interface         = CORBA_OBJECT_NIL;
 	priv->shortcuts_interface        = CORBA_OBJECT_NIL;
 	priv->storage_registry_interface = CORBA_OBJECT_NIL;
@@ -355,15 +384,21 @@ evolution_shell_client_construct (EvolutionShellClient *shell_client,
 				  GNOME_Evolution_Shell corba_shell)
 {
 	EvolutionShellClientPrivate *priv;
+	CORBA_Environment ev;
 
 	g_return_if_fail (shell_client != NULL);
 	g_return_if_fail (EVOLUTION_IS_SHELL_CLIENT (shell_client));
 	g_return_if_fail (corba_shell != CORBA_OBJECT_NIL);
 
-	bonobo_object_construct (BONOBO_OBJECT (shell_client), (CORBA_Object) corba_shell);
-
 	priv = shell_client->priv;
 	g_return_if_fail (priv->activity_interface == CORBA_OBJECT_NIL);
+
+	CORBA_exception_init (&ev);
+
+	priv->corba_objref = CORBA_Object_duplicate (corba_shell, &ev);
+	Bonobo_Unknown_ref (priv->corba_objref, &ev);
+
+	CORBA_exception_free (&ev);
 
 	priv->activity_interface = query_shell_interface (shell_client, "IDL:GNOME/Evolution/Activity:1.0");
 	priv->shortcuts_interface = query_shell_interface (shell_client, "IDL:GNOME/Evolution/Shortcuts:1.0");
@@ -374,8 +409,7 @@ evolution_shell_client_construct (EvolutionShellClient *shell_client,
  * evolution_shell_client_new:
  * @corba_shell: A pointer to the CORBA Evolution::Shell interface.
  * 
- * Create a new client object for @corba_shell. The shell client will
- * free @corba_shell when it is destroyed.
+ * Create a new client object for @corba_shell.
  * 
  * Return value: A pointer to the Evolution::Shell client BonoboObject.
  **/
@@ -384,16 +418,30 @@ evolution_shell_client_new (GNOME_Evolution_Shell corba_shell)
 {
 	EvolutionShellClient *shell_client;
 
-	shell_client = gtk_type_new (evolution_shell_client_get_type ());
+	shell_client = g_object_new (evolution_shell_client_get_type (), NULL);
 
 	evolution_shell_client_construct (shell_client, corba_shell);
 
-	if (bonobo_object_corba_objref (BONOBO_OBJECT (shell_client)) == CORBA_OBJECT_NIL) {
-		bonobo_object_unref (BONOBO_OBJECT (shell_client));
+	if (evolution_shell_client_corba_objref (shell_client) == CORBA_OBJECT_NIL) {
+		g_object_unref (shell_client);
 		return NULL;
 	}
 
 	return shell_client;
+}
+
+/**
+ * evolution_shell_client_corba_objref:
+ * @shell_client: 
+ * 
+ * Return value: Return the CORBA objref associated with this shell client.
+ **/
+GNOME_Evolution_Shell
+evolution_shell_client_corba_objref (EvolutionShellClient *shell_client)
+{
+	g_return_val_if_fail (EVOLUTION_IS_SHELL_CLIENT (shell_client), CORBA_OBJECT_NIL);
+
+	return shell_client->priv->corba_objref;
 }
 
 
@@ -515,7 +563,7 @@ evolution_shell_client_get_local_storage (EvolutionShellClient *shell_client)
 
 	CORBA_exception_init (&ev);
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 	if (corba_shell == CORBA_OBJECT_NIL) {
 		g_warning ("evolution_shell_client_get_local_storage() invoked on an "
 			   "EvolutionShellClient that doesn't have a CORBA objref???");
@@ -525,7 +573,8 @@ evolution_shell_client_get_local_storage (EvolutionShellClient *shell_client)
 
 	corba_local_storage = GNOME_Evolution_Shell_getLocalStorage (corba_shell, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("evolution_shell_client_get_local_storage() failing -- %s ???", ev._repo_id);
+		g_warning ("evolution_shell_client_get_local_storage() failing -- %s ???",
+			   BONOBO_EX_REPOID (&ev));
 		CORBA_exception_free (&ev);
 		return CORBA_OBJECT_NIL;
 	}
@@ -547,7 +596,7 @@ evolution_shell_client_set_line_status (EvolutionShellClient *shell_client,
 
 	CORBA_exception_init (&ev);
 
-	corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 	if (corba_shell == CORBA_OBJECT_NIL)
 		return;
 
@@ -574,7 +623,7 @@ evolution_shell_client_get_pixbuf_for_type (EvolutionShellClient *shell_client,
 				     mini ? "mini" : "large");
 	pixbuf = g_hash_table_lookup (shell_client->priv->icons, hash_name);
 	if (!pixbuf) {
-		corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell_client));
+		corba_shell = evolution_shell_client_corba_objref (shell_client);
 		g_return_val_if_fail (corba_shell != CORBA_OBJECT_NIL, NULL);
 
 		CORBA_exception_init (&ev);
@@ -596,7 +645,7 @@ evolution_shell_client_get_pixbuf_for_type (EvolutionShellClient *shell_client,
 	} else
 		g_free (hash_name);
 
-	gdk_pixbuf_ref (pixbuf);
+	g_object_ref (pixbuf);
 	return pixbuf;
 }
 
@@ -619,11 +668,11 @@ evolution_shell_client_create_storage_set_view (EvolutionShellClient *shell_clie
 	if (ev == NULL)
 		ev = &my_ev;
 
-	corba_shell = BONOBO_OBJREF (shell_client);
+	corba_shell = evolution_shell_client_corba_objref (shell_client);
 
 	control = GNOME_Evolution_Shell_createStorageSetView (corba_shell, ev);
 	if (BONOBO_EX (ev)) {
-		g_warning ("Cannot create StorageSetView -- %s", BONOBO_EX_ID (ev));
+		g_warning ("Cannot create StorageSetView -- %s", BONOBO_EX_REPOID (ev));
 		CORBA_exception_free (&my_ev);
 		return NULL;
 	}

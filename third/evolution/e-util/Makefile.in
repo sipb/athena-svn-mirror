@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,75 +168,76 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 SUBDIRS = . ename
 
-imagesdir = $(datadir)/images/evolution
+eutilincludedir = $(privincludedir)/e-util
+econdincludedir = $(privincludedir)/e-conduit
+edb3includedir = $(privincludedir)/e-db3util
 
-eutilincludedir = $(includedir)/evolution/e-util
-econdincludedir = $(includedir)/evolution/e-conduit
-edb3includedir = $(includedir)/evolution/e-db3util
-
-INCLUDES =  	-I$(top_srcdir)								-DEVOLUTION_IMAGES=\""$(imagesdir)"\"					-DEVOLUTION_CATEGORY_ICONS=\""$(imagesdir)/categories"\"		-DG_LOG_DOMAIN=\"e-utils\"						$(DB3_CFLAGS)								$(PISOCK_CFLAGS)							$(E_UTIL_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)								-DEVOLUTION_IMAGES=\""$(imagesdir)"\"					-DEVOLUTION_CATEGORY_ICONS=\""$(imagesdir)/categories"\"		-DG_LOG_DOMAIN=\"e-utils\"						-DG_DISABLE_DEPRECATED							-DGTK_DISABLE_DEPRECATED						$(DB3_CFLAGS)								$(GNOME_PILOT_CFLAGS)							$(E_UTIL_CFLAGS)
 
 
 privlib_LTLIBRARIES = libeutil.la libedb3util.la libeconduit.la
 noinst_LTLIBRARIES = libeutil-static.la libeconduit-static.la
 
-eutilinclude_HEADERS =  	e-bonobo-factory-util.h				e-categories-master-list-wombat.h		e-categories-config.h				e-component-listener.h				e-config-listener.h				e-corba-utils.h					e-dialog-utils.h				e-dialog-widgets.h				e-gtk-utils.h					e-gui-utils.h					e-host-utils.h					e-html-utils.h					e-iterator.h					e-lang-utils.h					e-list-iterator.h				e-list.h					e-memory.h					e-mktemp.h					e-msgport.h					e-passwords.h					e-path.h					e-proxy.h					e-request.h					e-sexp.h					e-time-utils.h					e-url.h						e-xml-hash-utils.h				md5-utils.h
+eutilinclude_HEADERS =  	e-account-list.h				e-account.h					e-categories-config.h				e-categories-master-list-wombat.h		e-component-listener.h				e-config-listener.h				e-corba-utils.h					e-dialog-utils.h				e-dialog-widgets.h				e-gtk-utils.h					e-gui-utils.h					e-host-utils.h					e-html-utils.h					e-iterator.h					e-lang-utils.h					e-list-iterator.h				e-list.h					e-memory.h					e-meta.h					e-mktemp.h					e-msgport.h					e-passwords.h					e-path.h					e-proxy.h					e-request.h					e-sexp.h					e-time-utils.h					e-trie.h					e-url.h						e-xml-hash-utils.h				md5-utils.h
 
 
-libeutil_la_SOURCES =  	$(eutilinclude_HEADERS)				e-bonobo-factory-util.c				e-categories-master-list-wombat.c		e-categories-config.c				e-component-listener.c				e-config-listener.c				e-corba-utils.c					e-dialog-utils.c				e-dialog-widgets.c				e-gtk-utils.c					e-gui-utils.c					e-host-utils.c					e-html-utils.c					e-iterator.c					e-lang-utils.c					e-list-iterator.c				e-list.c					e-memory.c					e-mktemp.c					e-msgport.c					e-passwords.c					e-path.c					e-proxy.c					e-request.c					e-sexp.c					e-time-utils.c					e-url.c						e-xml-hash-utils.c				md5-utils.c
+libeutil_la_SOURCES =  	$(eutilinclude_HEADERS)				e-account-list.c				e-account.c					e-categories-config.c				e-categories-master-list-wombat.c		e-component-listener.c				e-config-listener.c				e-corba-utils.c					e-dialog-utils.c				e-dialog-widgets.c				e-gtk-utils.c					e-gui-utils.c					e-host-utils.c					e-html-utils.c					e-iterator.c					e-lang-utils.c					e-list-iterator.c				e-list.c					e-memory.c					e-meta.c					e-mktemp.c					e-msgport.c					e-passwords.c					e-path.c					e-proxy.c					e-request.c					e-sexp.c					e-time-utils.c					e-trie.c					e-url.c						e-util-marshal.c				e-xml-hash-utils.c				md5-utils.c
 
+
+MARSHAL_GENERATED = e-util-marshal.c e-util-marshal.h
+
+# FIXME TODO
+#	e-passwords.c
+#       bonobo-factory-util.[ch]
 
 libeutil_la_LIBADD = $(E_UTIL_LIBS)
 
 libeutil_static_la_SOURCES = $(libeutil_la_SOURCES)
 libeutil_static_la_LIBADD = $(libeutil_la_LIBADD)
 libeutil_static_la_LDFLAGS = -all-static
+# Make sure libeutil.la and libeutil-static.la are not built in
+# parallel when using a parallel make; libtool can't handle that.
+libeutil_static_la_DEPENDENCIES = libeutil.la
 
 econdinclude_HEADERS =  	e-pilot-map.h			e-pilot-settings.h		e-pilot-util.h
 
@@ -252,20 +245,24 @@ econdinclude_HEADERS =  	e-pilot-map.h			e-pilot-settings.h		e-pilot-util.h
 pilot_sources =  	$(econdinclude_HEADERS)		e-pilot-map.c			e-pilot-settings.c		e-pilot-util.c
 
 @ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = $(pilot_sources)
-@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = e-pilot-settings.c e-pilot-settings.h
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = 
 
 libeconduit_la_SOURCES = $(pilot_compile)
 
 libeconduit_static_la_SOURCES = $(libeconduit_la_SOURCES)
 libeconduit_static_la_LDFLAGS = -all-static
 
-EXTRA_DIST = $(pilot_sources)
+EXTRA_DIST =  	$(pilot_sources)			ChangeLog.pre-1-4			e-util-marshal.list
+
 
 edb3include_HEADERS =  	e-db3-utils.h				e-dbhash.h
 
 
 libedb3util_la_SOURCES =  	$(edb3include_HEADERS)			e-db3-utils.c				e-dbhash.c
 
+
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -276,31 +273,31 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libeutil_static_la_DEPENDENCIES = 
-libeutil_static_la_OBJECTS =  e-bonobo-factory-util.lo \
-e-categories-master-list-wombat.lo e-categories-config.lo \
+libeutil_static_la_OBJECTS =  e-account-list.lo e-account.lo \
+e-categories-config.lo e-categories-master-list-wombat.lo \
 e-component-listener.lo e-config-listener.lo e-corba-utils.lo \
 e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo e-gui-utils.lo \
 e-host-utils.lo e-html-utils.lo e-iterator.lo e-lang-utils.lo \
-e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
-e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
-e-time-utils.lo e-url.lo e-xml-hash-utils.lo md5-utils.lo
+e-list-iterator.lo e-list.lo e-memory.lo e-meta.lo e-mktemp.lo \
+e-msgport.lo e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
+e-time-utils.lo e-trie.lo e-url.lo e-util-marshal.lo \
+e-xml-hash-utils.lo md5-utils.lo
 libeconduit_static_la_LIBADD = 
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_static_la_OBJECTS =  \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-map.lo e-pilot-settings.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-util.lo
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS =  \
-@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_static_la_OBJECTS = 
 libeutil_la_LDFLAGS = 
 libeutil_la_DEPENDENCIES = 
-libeutil_la_OBJECTS =  e-bonobo-factory-util.lo \
-e-categories-master-list-wombat.lo e-categories-config.lo \
+libeutil_la_OBJECTS =  e-account-list.lo e-account.lo \
+e-categories-config.lo e-categories-master-list-wombat.lo \
 e-component-listener.lo e-config-listener.lo e-corba-utils.lo \
 e-dialog-utils.lo e-dialog-widgets.lo e-gtk-utils.lo e-gui-utils.lo \
 e-host-utils.lo e-html-utils.lo e-iterator.lo e-lang-utils.lo \
-e-list-iterator.lo e-list.lo e-memory.lo e-mktemp.lo e-msgport.lo \
-e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
-e-time-utils.lo e-url.lo e-xml-hash-utils.lo md5-utils.lo
+e-list-iterator.lo e-list.lo e-memory.lo e-meta.lo e-mktemp.lo \
+e-msgport.lo e-passwords.lo e-path.lo e-proxy.lo e-request.lo e-sexp.lo \
+e-time-utils.lo e-trie.lo e-url.lo e-util-marshal.lo \
+e-xml-hash-utils.lo md5-utils.lo
 libedb3util_la_LDFLAGS = 
 libedb3util_la_LIBADD = 
 libedb3util_la_OBJECTS =  e-db3-utils.lo e-dbhash.lo
@@ -308,8 +305,7 @@ libeconduit_la_LDFLAGS =
 libeconduit_la_LIBADD = 
 @ENABLE_PILOT_CONDUITS_TRUE@libeconduit_la_OBJECTS =  e-pilot-map.lo \
 @ENABLE_PILOT_CONDUITS_TRUE@e-pilot-settings.lo e-pilot-util.lo
-@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS =  \
-@ENABLE_PILOT_CONDUITS_FALSE@e-pilot-settings.lo
+@ENABLE_PILOT_CONDUITS_FALSE@libeconduit_la_OBJECTS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -591,33 +587,36 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+e-account-list.lo e-account-list.o : e-account-list.c ../config.h \
+	e-account-list.h e-list.h e-list-iterator.h e-iterator.h \
+	e-list.h e-account.h e-util-marshal.h
+e-account.lo e-account.o : e-account.c ../config.h e-account.h
 e-bonobo-factory-util.lo e-bonobo-factory-util.o : \
 	e-bonobo-factory-util.c ../config.h e-bonobo-factory-util.h
 e-categories-config.lo e-categories-config.o : e-categories-config.c \
-	../config.h e-categories-config.h \
-	e-categories-master-list-wombat.h
+	e-categories-config.h e-categories-master-list-wombat.h
 e-categories-master-list-wombat.lo e-categories-master-list-wombat.o : \
 	e-categories-master-list-wombat.c ../config.h \
-	e-categories-master-list-wombat.h e-categories-config.h
+	e-categories-master-list-wombat.h e-categories-config.h \
+	e-config-listener.h
 e-component-listener.lo e-component-listener.o : e-component-listener.c \
-	../config.h e-component-listener.h
+	e-component-listener.h
 e-config-listener.lo e-config-listener.o : e-config-listener.c \
-	../config.h e-config-listener.h
+	e-config-listener.h
 e-corba-utils.lo e-corba-utils.o : e-corba-utils.c ../config.h \
 	e-corba-utils.h
 e-db3-utils.lo e-db3-utils.o : e-db3-utils.c ../config.h e-db3-utils.h
 e-dbhash.lo e-dbhash.o : e-dbhash.c ../config.h e-dbhash.h md5-utils.h
-e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c ../config.h \
-	e-dialog-utils.h ../widgets/misc/e-bonobo-widget.h
+e-dialog-utils.lo e-dialog-utils.o : e-dialog-utils.c e-dialog-utils.h
 e-dialog-widgets.lo e-dialog-widgets.o : e-dialog-widgets.c ../config.h \
 	e-dialog-widgets.h
 e-gtk-utils.lo e-gtk-utils.o : e-gtk-utils.c ../config.h e-gtk-utils.h
 e-gui-utils.lo e-gui-utils.o : e-gui-utils.c ../config.h e-gui-utils.h
 e-host-utils.lo e-host-utils.o : e-host-utils.c ../config.h \
 	e-host-utils.h
-e-html-utils.lo e-html-utils.o : e-html-utils.c ../config.h \
-	e-html-utils.h
-e-iterator.lo e-iterator.o : e-iterator.c ../config.h e-iterator.h
+e-html-utils.lo e-html-utils.o : e-html-utils.c e-html-utils.h
+e-iterator.lo e-iterator.o : e-iterator.c ../config.h e-iterator.h \
+	e-util-marshal.h
 e-lang-utils.lo e-lang-utils.o : e-lang-utils.c ../config.h \
 	e-lang-utils.h
 e-list-iterator.lo e-list-iterator.o : e-list-iterator.c ../config.h \
@@ -626,22 +625,19 @@ e-list-iterator.lo e-list-iterator.o : e-list-iterator.c ../config.h \
 e-list.lo e-list.o : e-list.c ../config.h e-list.h e-list-iterator.h \
 	e-iterator.h e-list.h e-list-iterator.h
 e-memory.lo e-memory.o : e-memory.c e-memory.h
+e-meta.lo e-meta.o : e-meta.c ../config.h e-meta.h
 e-mktemp.lo e-mktemp.o : e-mktemp.c ../config.h e-mktemp.h
 e-msgport.lo e-msgport.o : e-msgport.c ../config.h e-msgport.h
 e-passwords.lo e-passwords.o : e-passwords.c ../config.h e-passwords.h
 e-path.lo e-path.o : e-path.c ../config.h e-path.h
-e-pilot-map.lo e-pilot-map.o : e-pilot-map.c e-pilot-map.h
-e-pilot-settings.lo e-pilot-settings.o : e-pilot-settings.c ../config.h \
-	e-pilot-settings.h
-e-pilot-util.lo e-pilot-util.o : e-pilot-util.c e-pilot-util.h
 e-proxy.lo e-proxy.o : e-proxy.c ../config.h e-proxy.h
 e-request.lo e-request.o : e-request.c ../config.h e-request.h
-e-sexp.lo e-sexp.o : e-sexp.c e-sexp.h e-memory.h
+e-sexp.lo e-sexp.o : e-sexp.c ../config.h e-sexp.h e-memory.h
 e-time-utils.lo e-time-utils.o : e-time-utils.c ../config.h \
 	e-time-utils.h
-e-unicode-i18n.lo e-unicode-i18n.o : e-unicode-i18n.c ../config.h \
-	e-unicode-i18n.h
+e-trie.lo e-trie.o : e-trie.c ../config.h e-trie.h e-memory.h
 e-url.lo e-url.o : e-url.c ../config.h e-url.h
+e-util-marshal.lo e-util-marshal.o : e-util-marshal.c
 e-xml-hash-utils.lo e-xml-hash-utils.o : e-xml-hash-utils.c ../config.h \
 	e-xml-hash-utils.h
 md5-utils.lo md5-utils.o : md5-utils.c md5-utils.h
@@ -682,12 +678,14 @@ installdirs-am:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-noinstLTLIBRARIES \
 		mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
@@ -741,6 +739,18 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+# GLib marshalling cruft
+
+e-util-marshal.h: e-util-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --header > e-util-marshal.h.tmp \
+	&& mv e-util-marshal.h.tmp e-util-marshal.h ) \
+	|| ( rm -f e-util-marshal.h.tmp && exit 1 )
+
+e-util-marshal.c: e-util-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --body > e-util-marshal.c.tmp \
+	&& mv e-util-marshal.c.tmp e-util-marshal.c ) \
+	|| ( rm -f e-util-marshal.c.tmp && exit 1 )
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -23,6 +23,10 @@
 #include <config.h>
 #endif
 
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -114,9 +118,9 @@ construct (CamelService *service, CamelSession *session, CamelProvider *provider
 	}
 
 	if (stat(service->url->path, &st) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Spool `%s' cannot be opened: %s"),
-				     service->url->path, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				      _("Spool `%s' cannot be opened: %s"),
+				      service->url->path, g_strerror (errno));
 		return;
 	}
 
@@ -137,7 +141,6 @@ static CamelFolder *
 get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelException * ex)
 {
 	CamelFolder *folder = NULL;
-	int fd;
 	struct stat st;
 	char *name;
 
@@ -156,17 +159,18 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 		if (stat(name, &st) == -1) {
 			if (errno != ENOENT) {
-				camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-						     _("Could not open folder `%s':\n%s"),
-						     folder_name, strerror(errno));
+				camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+						      _("Could not open folder `%s':\n%s"),
+						      folder_name, g_strerror (errno));
 			} else if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-				camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-						     _("Folder `%s' does not exist."), folder_name);
+				camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+						      _("Folder `%s' does not exist."),
+						      folder_name);
 			} else {
-				if (creat(name, 0600) == -1) {
-					camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-							     _("Could not create folder `%s':\n%s"),
-							     folder_name, strerror(errno));
+				if (creat (name, 0600) == -1) {
+					camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+							      _("Could not create folder `%s':\n%s"),
+							      folder_name, g_strerror (errno));
 				} else {
 					folder = camel_spool_folder_new(store, folder_name, flags, ex);
 				}
@@ -272,25 +276,25 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 
 	/* look for folders matching the right structure, recursively */
 	if (path) {
-		name = alloca(strlen(root)+strlen(path)+2);
+		name = alloca(strlen(root) + strlen(path) + 2);
 		sprintf(name, "%s/%s", root, path);
 	} else
 		name = root;
 
 	if (stat(name, &st) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not scan folder `%s': %s"),
-				     name, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not scan folder `%s': %s"),
+				      name, g_strerror (errno));
 	} else if (S_ISREG(st.st_mode)) {
 		/* incase we start scanning from a file.  messy duplication :-/ */
 		if (path) {
-			CAMEL_STORE_LOCK(store, cache_lock);
-			folder = g_hash_table_lookup(store->folders, path);
-			if (folder)
+			folder = camel_object_bag_get(store->folders, path);
+			if (folder) {
+				/* should this refresh if ! FAST? */
 				unread = camel_folder_get_unread_message_count(folder);
-			else
+				camel_object_unref(folder);
+			} else
 				unread = -1;
-			CAMEL_STORE_UNLOCK(store, cache_lock);
 			tmp = strrchr(path, '/');
 			if (tmp)
 				tmp++;
@@ -308,9 +312,9 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 
 	dir = opendir(name);
 	if (dir == NULL) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not scan folder `%s': %s"),
-				     name, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not scan folder `%s': %s"),
+				      name, g_strerror (errno));
 		return -1;
 	}
 
@@ -345,13 +349,13 @@ static int scan_dir(CamelStore *store, GHashTable *visited, char *root, const ch
 
 			if (S_ISREG(st.st_mode)) {
 				/* first, see if we already have it open */
-				CAMEL_STORE_LOCK(store, cache_lock);
-				folder = g_hash_table_lookup(store->folders, fname);
-				if (folder)
+				folder = camel_object_bag_get(store->folders, fname);
+				if (folder) {
+					/* should this refresh if ! FAST? */
 					unread = camel_folder_get_unread_message_count(folder);
-				else
+					camel_object_unref(folder);
+				} else
 					unread = -1;
-				CAMEL_STORE_UNLOCK(store, cache_lock);
 
 				/* no?  check its content to see if its a folder or not */
 				if (folder == NULL) {
@@ -456,13 +460,12 @@ get_folder_info_mbox(CamelStore *store, const char *top, guint32 flags, CamelExc
 		fi->name = g_strdup("INBOX");
 		fi->url = g_strdup_printf("%s:%s#%s", service->url->protocol, service->url->path, fi->name);
 
-		CAMEL_STORE_LOCK(store, cache_lock);
-		folder = g_hash_table_lookup(store->folders, fi->full_name);
-		if (folder)
+		folder = camel_object_bag_get(store->folders, fi->full_name);
+		if (folder) {
 			fi->unread_message_count = camel_folder_get_unread_message_count(folder);
-		else
+			camel_object_unref(folder);
+		} else
 			fi->unread_message_count = -1;
-		CAMEL_STORE_UNLOCK(store, cache_lock);
 
 		camel_folder_info_build_path(fi, '/');
 	}

@@ -63,9 +63,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -87,12 +86,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -100,54 +96,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -162,14 +157,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -179,69 +171,65 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-INCLUDES =  	-I$(top_srcdir)						-I$(top_srcdir)/widgets/shortcut-bar			-DMAP_DIR=\""$(datadir)/images/evolution"\"		-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DG_LOG_DOMAIN=__FILE__					$(GNOME_FULL_CFLAGS)
-
-
-privlib_LIBRARIES =  	libemiscwidgets.a
-
-
-widgetsincludedir = $(includedir)/evolution/widgets
-
-widgetsinclude_HEADERS =  	e-bonobo-widget.h		e-calendar.h			e-calendar-item.h		e-cell-date-edit.h		e-cell-percent.h		e-charset-picker.h		e-clipped-label.h		e-config-page.h			e-combo-button.h		e-dateedit.h			e-dropdown-button.h		e-map.h				e-messagebox.h			e-multi-config-dialog.h 	e-search-bar.h			e-title-bar.h			e-url-entry.h
+INCLUDES =  	-I$(top_srcdir)								-I$(top_srcdir)/widgets/shortcut-bar					-DMAP_DIR=\""$(imagesdir)"\"						-DG_LOG_DOMAIN=__FILE__							-DG_DISABLE_DEPRECATED							$(GNOME_FULL_CFLAGS)
 
 
-libemiscwidgets_a_SOURCES =  	$(widgetsinclude_HEADERS) 	e-bonobo-widget.c		e-calendar.c			e-calendar-item.c		e-cell-date-edit.c		e-cell-percent.c		e-charset-picker.c		e-clipped-label.c		e-config-page.c			e-combo-button.c		e-dateedit.c			e-dropdown-button.c		e-map.c				e-messagebox.c			e-multi-config-dialog.c 	e-search-bar.c			e-title-bar.c			e-url-entry.c
+privlib_LTLIBRARIES =  	libemiscwidgets.la
 
 
-libemiscwidgets_a_LIBADD = $(top_builddir)/e-util/libeutil.la
+widgetsincludedir = $(privincludedir)/widgets
 
-noinst_LIBRARIES = libefilterbar.a
+widgetsinclude_HEADERS =  	e-calendar.h					e-calendar-item.h				e-cell-date-edit.h				e-cell-percent.h				e-charset-picker.h				e-clipped-label.h				e-config-page.h					e-combo-button.h				e-dateedit.h					e-dropdown-button.h				e-map.h						e-messagebox.h					e-multi-config-dialog.h				e-search-bar.h					e-title-bar.h					e-url-entry.h
 
-libefilterbar_a_SOURCES =  	e-filter-bar.c			e-filter-bar.h
+
+libemiscwidgets_la_SOURCES =  	$(widgetsinclude_HEADERS)			e-calendar.c					e-calendar-item.c				e-cell-date-edit.c				e-cell-percent.c				e-charset-picker.c				e-clipped-label.c				e-config-page.c					e-combo-button.c				e-dateedit.c					e-dropdown-button.c				e-map.c						e-messagebox.c					e-multi-config-dialog.c				e-search-bar.c					e-title-bar.c					e-url-entry.c					e-util-marshal.c
+
+
+MARSHAL_GENERATED = e-util-marshal.c e-util-marshal.h
+
+libemiscwidgets_la_LIBADD = $(top_builddir)/e-util/libeutil.la
+
+noinst_LTLIBRARIES = libefilterbar.la
+
+libefilterbar_la_SOURCES =  	e-filter-bar.c			e-filter-bar.h
 
 
 noinst_PROGRAMS =  	test-calendar				test-dateedit				test-dropdown-button			test-multi-config-dialog 		test-title-bar
@@ -252,7 +240,7 @@ noinst_PROGRAMS =  	test-calendar				test-dateedit				test-dropdown-button			tes
 test_calendar_SOURCES =  	test-calendar.c
 
 
-test_calendar_LDADD =  	./libemiscwidgets.a						../../e-util/libeutil.la					$(GNOME_FULL_LIBS)
+test_calendar_LDADD =  	./libemiscwidgets.la						../../e-util/libeutil.la					$(GNOME_FULL_LIBS)
 
 
 # test-dateedit
@@ -260,7 +248,7 @@ test_calendar_LDADD =  	./libemiscwidgets.a						../../e-util/libeutil.la					$(
 test_dateedit_SOURCES =  	test-dateedit.c
 
 
-test_dateedit_LDADD =  	./libemiscwidgets.a			../../e-util/libeutil.la		$(GNOME_FULL_LIBS)
+test_dateedit_LDADD =  	./libemiscwidgets.la			../../e-util/libeutil.la		$(GNOME_FULL_LIBS)
 
 
 # test-dropdown-button
@@ -268,7 +256,7 @@ test_dateedit_LDADD =  	./libemiscwidgets.a			../../e-util/libeutil.la		$(GNOME_
 test_dropdown_button_SOURCES =  	test-dropdown-button.c
 
 
-test_dropdown_button_LDADD =  	./libemiscwidgets.a		$(GNOME_FULL_LIBS)
+test_dropdown_button_LDADD =  	./libemiscwidgets.la		$(GNOME_FULL_LIBS)
 
 
 # test-multi-config-dialog
@@ -276,7 +264,7 @@ test_dropdown_button_LDADD =  	./libemiscwidgets.a		$(GNOME_FULL_LIBS)
 test_multi_config_dialog_SOURCES =  	test-multi-config-dialog.c
 
 
-test_multi_config_dialog_LDADD =  	./libemiscwidgets.a			$(GNOME_FULL_LIBS)
+test_multi_config_dialog_LDADD =  	./libemiscwidgets.la			$(GNOME_FULL_LIBS)
 
 
 # test-title-bar
@@ -284,51 +272,55 @@ test_multi_config_dialog_LDADD =  	./libemiscwidgets.a			$(GNOME_FULL_LIBS)
 test_title_bar_SOURCES =  	test-title-bar.c
 
 
-test_title_bar_LDADD =  	./libemiscwidgets.a		$(GNOME_FULL_LIBS)
+test_title_bar_LDADD =  	./libemiscwidgets.la		$(GNOME_FULL_LIBS)
+
+
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST =  	e-util-marshal.list		ChangeLog.pre-1-4
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(noinst_LIBRARIES) $(privlib_LIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES) $(privlib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libefilterbar_a_LIBADD = 
-libefilterbar_a_OBJECTS =  e-filter-bar.$(OBJEXT)
-libemiscwidgets_a_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
-libemiscwidgets_a_OBJECTS =  e-bonobo-widget.$(OBJEXT) \
-e-calendar.$(OBJEXT) e-calendar-item.$(OBJEXT) \
-e-cell-date-edit.$(OBJEXT) e-cell-percent.$(OBJEXT) \
-e-charset-picker.$(OBJEXT) e-clipped-label.$(OBJEXT) \
-e-config-page.$(OBJEXT) e-combo-button.$(OBJEXT) e-dateedit.$(OBJEXT) \
-e-dropdown-button.$(OBJEXT) e-map.$(OBJEXT) e-messagebox.$(OBJEXT) \
-e-multi-config-dialog.$(OBJEXT) e-search-bar.$(OBJEXT) \
-e-title-bar.$(OBJEXT) e-url-entry.$(OBJEXT)
-AR = ar
+libefilterbar_la_LDFLAGS = 
+libefilterbar_la_LIBADD = 
+libefilterbar_la_OBJECTS =  e-filter-bar.lo
+libemiscwidgets_la_LDFLAGS = 
+libemiscwidgets_la_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
+libemiscwidgets_la_OBJECTS =  e-calendar.lo e-calendar-item.lo \
+e-cell-date-edit.lo e-cell-percent.lo e-charset-picker.lo \
+e-clipped-label.lo e-config-page.lo e-combo-button.lo e-dateedit.lo \
+e-dropdown-button.lo e-map.lo e-messagebox.lo e-multi-config-dialog.lo \
+e-search-bar.lo e-title-bar.lo e-url-entry.lo e-util-marshal.lo
 noinst_PROGRAMS =  test-calendar$(EXEEXT) test-dateedit$(EXEEXT) \
 test-dropdown-button$(EXEEXT) test-multi-config-dialog$(EXEEXT) \
 test-title-bar$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 test_calendar_OBJECTS =  test-calendar.$(OBJEXT)
-test_calendar_DEPENDENCIES =  ./libemiscwidgets.a \
+test_calendar_DEPENDENCIES =  ./libemiscwidgets.la \
 ../../e-util/libeutil.la
 test_calendar_LDFLAGS = 
 test_dateedit_OBJECTS =  test-dateedit.$(OBJEXT)
-test_dateedit_DEPENDENCIES =  ./libemiscwidgets.a \
+test_dateedit_DEPENDENCIES =  ./libemiscwidgets.la \
 ../../e-util/libeutil.la
 test_dateedit_LDFLAGS = 
 test_dropdown_button_OBJECTS =  test-dropdown-button.$(OBJEXT)
-test_dropdown_button_DEPENDENCIES =  ./libemiscwidgets.a
+test_dropdown_button_DEPENDENCIES =  ./libemiscwidgets.la
 test_dropdown_button_LDFLAGS = 
 test_multi_config_dialog_OBJECTS =  test-multi-config-dialog.$(OBJEXT)
-test_multi_config_dialog_DEPENDENCIES =  ./libemiscwidgets.a
+test_multi_config_dialog_DEPENDENCIES =  ./libemiscwidgets.la
 test_multi_config_dialog_LDFLAGS = 
 test_title_bar_OBJECTS =  test-title-bar.$(OBJEXT)
-test_title_bar_DEPENDENCIES =  ./libemiscwidgets.a
+test_title_bar_DEPENDENCIES =  ./libemiscwidgets.la
 test_title_bar_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -344,8 +336,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(libefilterbar_a_SOURCES) $(libemiscwidgets_a_SOURCES) $(test_calendar_SOURCES) $(test_dateedit_SOURCES) $(test_dropdown_button_SOURCES) $(test_multi_config_dialog_SOURCES) $(test_title_bar_SOURCES)
-OBJECTS = $(libefilterbar_a_OBJECTS) $(libemiscwidgets_a_OBJECTS) $(test_calendar_OBJECTS) $(test_dateedit_OBJECTS) $(test_dropdown_button_OBJECTS) $(test_multi_config_dialog_OBJECTS) $(test_title_bar_OBJECTS)
+SOURCES = $(libefilterbar_la_SOURCES) $(libemiscwidgets_la_SOURCES) $(test_calendar_SOURCES) $(test_dateedit_SOURCES) $(test_dropdown_button_SOURCES) $(test_multi_config_dialog_SOURCES) $(test_title_bar_SOURCES)
+OBJECTS = $(libefilterbar_la_OBJECTS) $(libemiscwidgets_la_OBJECTS) $(test_calendar_OBJECTS) $(test_dateedit_OBJECTS) $(test_dropdown_button_OBJECTS) $(test_multi_config_dialog_OBJECTS) $(test_title_bar_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -358,45 +350,38 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-noinstLIBRARIES:
+mostlyclean-noinstLTLIBRARIES:
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 
-distclean-noinstLIBRARIES:
+distclean-noinstLTLIBRARIES:
 
-maintainer-clean-noinstLIBRARIES:
+maintainer-clean-noinstLTLIBRARIES:
 
-mostlyclean-privlibLIBRARIES:
+mostlyclean-privlibLTLIBRARIES:
 
-clean-privlibLIBRARIES:
-	-test -z "$(privlib_LIBRARIES)" || rm -f $(privlib_LIBRARIES)
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
 
-distclean-privlibLIBRARIES:
+distclean-privlibLTLIBRARIES:
 
-maintainer-clean-privlibLIBRARIES:
+maintainer-clean-privlibLTLIBRARIES:
 
-install-privlibLIBRARIES: $(privlib_LIBRARIES)
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
-	@list='$(privlib_LIBRARIES)'; for p in $$list; do \
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(privlibdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(privlibdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(privlib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(privlibdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(privlibdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-privlibLIBRARIES:
+uninstall-privlibLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(privlib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(privlibdir)/$$p; \
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
 	done
 
 .c.o:
@@ -443,15 +428,11 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libefilterbar.a: $(libefilterbar_a_OBJECTS) $(libefilterbar_a_DEPENDENCIES)
-	-rm -f libefilterbar.a
-	$(AR) cru libefilterbar.a $(libefilterbar_a_OBJECTS) $(libefilterbar_a_LIBADD)
-	$(RANLIB) libefilterbar.a
+libefilterbar.la: $(libefilterbar_la_OBJECTS) $(libefilterbar_la_DEPENDENCIES)
+	$(LINK)  $(libefilterbar_la_LDFLAGS) $(libefilterbar_la_OBJECTS) $(libefilterbar_la_LIBADD) $(LIBS)
 
-libemiscwidgets.a: $(libemiscwidgets_a_OBJECTS) $(libemiscwidgets_a_DEPENDENCIES)
-	-rm -f libemiscwidgets.a
-	$(AR) cru libemiscwidgets.a $(libemiscwidgets_a_OBJECTS) $(libemiscwidgets_a_LIBADD)
-	$(RANLIB) libemiscwidgets.a
+libemiscwidgets.la: $(libemiscwidgets_la_OBJECTS) $(libemiscwidgets_la_DEPENDENCIES)
+	$(LINK) -rpath $(privlibdir) $(libemiscwidgets_la_LDFLAGS) $(libemiscwidgets_la_OBJECTS) $(libemiscwidgets_la_LIBADD) $(LIBS)
 
 mostlyclean-noinstPROGRAMS:
 
@@ -542,33 +523,46 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 e-bonobo-widget.o: e-bonobo-widget.c ../../config.h e-bonobo-widget.h
-e-calendar-item.o: e-calendar-item.c ../../config.h e-calendar-item.h
-e-calendar.o: e-calendar.c ../../config.h e-calendar.h e-calendar-item.h
-e-cell-date-edit.o: e-cell-date-edit.c ../../config.h e-cell-date-edit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-cell-percent.o: e-cell-percent.c ../../config.h e-cell-percent.h
-e-charset-picker.o: e-charset-picker.c ../../config.h e-charset-picker.h
-e-clipped-label.o: e-clipped-label.c ../../config.h e-clipped-label.h
-e-combo-button.o: e-combo-button.c ../../config.h e-combo-button.h
-e-config-page.o: e-config-page.c ../../config.h e-config-page.h
-e-dateedit.o: e-dateedit.c ../../config.h e-dateedit.h \
-	../../e-util/e-time-utils.h e-calendar.h e-calendar-item.h
-e-dropdown-button.o: e-dropdown-button.c ../../config.h \
-	e-dropdown-button.h
-e-filter-bar.o: e-filter-bar.c ../../config.h e-dropdown-button.h \
-	e-filter-bar.h e-search-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h \
-	../../filter/rule-editor.h
-e-map.o: e-map.c ../../config.h e-map.h
-e-messagebox.o: e-messagebox.c ../../config.h e-messagebox.h
-e-multi-config-dialog.o: e-multi-config-dialog.c ../../config.h \
-	e-multi-config-dialog.h e-config-page.h e-clipped-label.h
-e-search-bar.o: e-search-bar.c ../../config.h e-search-bar.h
-e-title-bar.o: e-title-bar.c ../../config.h e-clipped-label.h \
-	e-title-bar.h
-e-url-entry.o: e-url-entry.c ../../config.h \
-	../../art/connect_to_url-16.xpm e-url-entry.h
+e-calendar-item.lo e-calendar-item.o : e-calendar-item.c ../../config.h \
+	e-calendar-item.h
+e-calendar.lo e-calendar.o : e-calendar.c ../../config.h e-calendar.h \
+	e-calendar-item.h
+e-cell-date-edit.lo e-cell-date-edit.o : e-cell-date-edit.c \
+	../../config.h e-cell-date-edit.h ../../e-util/e-time-utils.h \
+	e-calendar.h e-calendar-item.h
+e-cell-percent.lo e-cell-percent.o : e-cell-percent.c ../../config.h \
+	e-cell-percent.h
+e-charset-picker.lo e-charset-picker.o : e-charset-picker.c \
+	../../config.h e-charset-picker.h ../../e-util/e-dialog-utils.h
+e-clipped-label.lo e-clipped-label.o : e-clipped-label.c ../../config.h \
+	e-clipped-label.h
+e-combo-button.lo e-combo-button.o : e-combo-button.c ../../config.h \
+	e-combo-button.h
+e-config-page.lo e-config-page.o : e-config-page.c ../../config.h \
+	e-config-page.h
+e-dateedit.lo e-dateedit.o : e-dateedit.c ../../config.h e-dateedit.h \
+	e-util-marshal.h ../../e-util/e-time-utils.h e-calendar.h \
+	e-calendar-item.h
+e-dropdown-button.lo e-dropdown-button.o : e-dropdown-button.c \
+	../../config.h e-dropdown-button.h
+e-filter-bar.lo e-filter-bar.o : e-filter-bar.c ../../config.h \
+	e-dropdown-button.h e-filter-bar.h e-search-bar.h \
+	../../filter/rule-context.h ../../filter/filter-part.h \
+	../../filter/filter-input.h ../../filter/filter-element.h \
+	../../filter/filter-rule.h ../../filter/rule-editor.h
+e-map.lo e-map.o : e-map.c ../../config.h e-map.h
+e-messagebox.lo e-messagebox.o : e-messagebox.c ../../config.h \
+	e-messagebox.h
+e-multi-config-dialog.lo e-multi-config-dialog.o : \
+	e-multi-config-dialog.c ../../config.h e-multi-config-dialog.h \
+	e-config-page.h e-clipped-label.h
+e-search-bar.lo e-search-bar.o : e-search-bar.c ../../config.h \
+	e-search-bar.h e-util-marshal.h
+e-title-bar.lo e-title-bar.o : e-title-bar.c ../../config.h \
+	e-clipped-label.h e-title-bar.h
+e-url-entry.lo e-url-entry.o : e-url-entry.c ../../config.h \
+	e-url-entry.h
+e-util-marshal.lo e-util-marshal.o : e-util-marshal.c
 test-calendar.o: test-calendar.c ../../config.h e-calendar.h \
 	e-calendar-item.h
 test-dateedit.o: test-dateedit.c ../../config.h e-dateedit.h
@@ -590,15 +584,17 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-privlibLIBRARIES install-widgetsincludeHEADERS
+install-data-am: install-privlibLTLIBRARIES \
+		install-widgetsincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-privlibLIBRARIES uninstall-widgetsincludeHEADERS
+uninstall-am: uninstall-privlibLTLIBRARIES \
+		uninstall-widgetsincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -610,26 +606,28 @@ installdirs:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-noinstLIBRARIES \
-		mostlyclean-privlibLIBRARIES mostlyclean-compile \
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES \
+		mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
 		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-noinstLIBRARIES clean-privlibLIBRARIES clean-compile \
-		clean-libtool clean-noinstPROGRAMS clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-noinstLTLIBRARIES clean-privlibLTLIBRARIES \
+		clean-compile clean-libtool clean-noinstPROGRAMS \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-noinstLIBRARIES distclean-privlibLIBRARIES \
+distclean-am:  distclean-noinstLTLIBRARIES distclean-privlibLTLIBRARIES \
 		distclean-compile distclean-libtool \
 		distclean-noinstPROGRAMS distclean-tags \
 		distclean-generic clean-am
@@ -637,8 +635,8 @@ distclean-am:  distclean-noinstLIBRARIES distclean-privlibLIBRARIES \
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
-		maintainer-clean-privlibLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
+		maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-generic distclean-am
@@ -647,14 +645,14 @@ maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
-clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
-mostlyclean-privlibLIBRARIES distclean-privlibLIBRARIES \
-clean-privlibLIBRARIES maintainer-clean-privlibLIBRARIES \
-uninstall-privlibLIBRARIES install-privlibLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
 distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-widgetsincludeHEADERS \
 install-widgetsincludeHEADERS tags mostlyclean-tags distclean-tags \
@@ -665,6 +663,18 @@ all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
+
+# GLib marshalling cruft
+
+e-util-marshal.h: e-util-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --header > e-util-marshal.tmp \
+	&& mv e-util-marshal.tmp e-util-marshal.h ) \
+	|| ( rm -f e-util-marshal.tmp && exit 1 )
+
+e-util-marshal.c: e-util-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --body > e-util-marshal.tmp \
+	&& mv e-util-marshal.tmp e-util-marshal.c ) \
+	|| ( rm -f e-util-marshal.tmp && exit 1 )
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

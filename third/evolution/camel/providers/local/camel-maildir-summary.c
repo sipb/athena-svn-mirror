@@ -177,19 +177,19 @@ static struct {
 /* convert the uid + flags into a unique:info maildir format */
 char *camel_maildir_summary_info_to_name(const CamelMessageInfo *info)
 {
+	const char *uid;
 	char *p, *buf;
 	int i;
-	const char *uid;
-
-	uid = camel_message_info_uid(info);
-	buf = alloca(strlen(uid) + strlen(":2,") +  (sizeof(flagbits)/sizeof(flagbits[0])) + 1);
-	p = buf + sprintf(buf, "%s:2,", uid);
-	for (i=0;i<sizeof(flagbits)/sizeof(flagbits[0]);i++) {
+	
+	uid = camel_message_info_uid (info);
+	buf = g_alloca (strlen (uid) + strlen (":2,") +  (sizeof (flagbits) / sizeof (flagbits[0])) + 1);
+	p = buf + sprintf (buf, "%s:2,", uid);
+	for (i = 0; i < sizeof (flagbits) / sizeof (flagbits[0]); i++) {
 		if (info->flags & flagbits[i].flagbit)
 			*p++ = flagbits[i].flag;
 	}
 	*p = 0;
-
+	
 	return g_strdup(buf);
 }
 
@@ -413,7 +413,9 @@ static int maildir_summary_load(CamelLocalSummary *cls, int forceindex, CamelExc
 
 	dir = opendir(cur);
 	if (dir == NULL) {
-		camel_exception_setv(ex, 1, _("Cannot open maildir directory path: %s: %s"), cls->folder_path, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot open maildir directory path: %s: %s"),
+				      cls->folder_path, g_strerror (errno));
 		g_free(cur);
 		return -1;
 	}
@@ -461,7 +463,7 @@ static int camel_maildir_summary_add(CamelLocalSummary *cls, const char *name, i
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1) {
-		g_warning("Cannot summarise/index: %s: %s", filename, strerror(errno));
+		g_warning ("Cannot summarise/index: %s: %s", filename, strerror (errno));
 		g_free(filename);
 		return -1;
 	}
@@ -542,7 +544,9 @@ maildir_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Ca
 	   no longer exist */
 	dir = opendir(cur);
 	if (dir == NULL) {
-		camel_exception_setv(ex, 1, _("Cannot open maildir directory path: %s: %s"), cls->folder_path, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot open maildir directory path: %s: %s"),
+				      cls->folder_path, g_strerror (errno));
 		g_free(cur);
 		g_free(new);
 		camel_operation_end(NULL);

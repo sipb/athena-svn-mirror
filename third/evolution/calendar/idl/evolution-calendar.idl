@@ -200,7 +200,7 @@ module Calendar {
 		 * structures themselves.  
 		 */
 		CalComponentAlarmsSeq getAlarmsInRange (in Time_t start, in Time_t end)
-			raises (InvalidRange);
+			raises (NotFound, InvalidRange);
 
 		/* Returns free/busy objects for the given interval */
 		CalObjSeq getFreeBusy (in UserList users, in Time_t start, in Time_t end)
@@ -213,6 +213,10 @@ module Calendar {
 						       in Time_t start, in Time_t end)
 			raises (NotFound, InvalidRange);
 
+
+		/* Discards an alarm from a given component */
+		void discardAlarm (in CalObjUID uid, in CalAlarmUID auid)
+			raises (NotFound);
 
 		/* Adds or updates one or more VEVENT/VTODO/VTIMEZONE
 		 * components. The calobj should be a string representation of
@@ -229,7 +233,7 @@ module Calendar {
 		 * updated version.
 		 */
 		void updateObjects (in CalObj calobj, in CalObjModType mod)
-			raises (InvalidObject, PermissionDenied);
+			raises (NotFound, InvalidObject, PermissionDenied);
 
 		/* Removes a component */
 		void removeObject (in CalObjUID uid, in CalObjModType mod)

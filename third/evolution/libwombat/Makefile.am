@@ -12,13 +12,13 @@ IDL_GENERATED = \
 $(IDLS): $(ORBIT_IDL)
 
 $(IDL_GENERATED): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl` \
+	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl $(IDL_INCLUDES) \
 		$(top_srcdir)/wombat/Evolution-Wombat.idl
 
 # Wombat library
-lib_LTLIBRARIES = libwombat.la
+privlib_LTLIBRARIES = libwombat.la
 
-wombatincludedir = $(includedir)/evolution/wombat
+wombatincludedir = $(privincludedir)/wombat
 wombatinclude_HEADERS = \
 	wombat-client.h
 
@@ -33,3 +33,8 @@ noinst_LTLIBRARIES = libwombat-static.la
 
 libwombat_static_la_SOURCES = $(libwombat_la_SOURCES)
 libwombat_static_la_LDFLAGS = --all-static
+
+BUILT_SOURCES = $(IDL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = ChangeLog.pre-1-4

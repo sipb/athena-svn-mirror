@@ -27,16 +27,18 @@
 #ifndef __E_DESTINATION_H__
 #define __E_DESTINATION_H__
 
-#include <gtk/gtkobject.h>
+#include <glib.h>
+#include <glib-object.h>
 #include <ebook/e-card.h>
 #include <ebook/e-book.h>
-#include <gnome-xml/tree.h>
+#include <libxml/tree.h>
 
-#define E_TYPE_DESTINATION        (e_destination_get_type ())
-#define E_DESTINATION(o)          (GTK_CHECK_CAST ((o), E_TYPE_DESTINATION, EDestination))
-#define E_DESTINATION_CLASS(k)    (GTK_CHECK_CLASS_CAST ((k), E_TYPE_DESTINATION, EDestinationClass))
-#define E_IS_DESTINATION(o)       (GTK_CHECK_TYPE ((o), E_TYPE_DESTINATION))
-#define E_IS_DESTINATION_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_TYPE_DESTINATION))
+#define E_TYPE_DESTINATION           (e_destination_get_type ())
+#define E_DESTINATION(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DESTINATION, EDestination))
+#define E_DESTINATION_CLASS(k)       (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_DESTINATION, EDestinationClass))
+#define E_IS_DESTINATION(o)          (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DESTINATION))
+#define E_IS_DESTINATION_CLASS(k)    (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DESTINATION))
+#define E_DESTINATION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_DESTINATION, EDestinationClass))
 
 typedef struct _EDestination EDestination;
 typedef struct _EDestinationClass EDestinationClass;
@@ -46,19 +48,19 @@ typedef void (*EDestinationCardCallback) (EDestination *dest, ECard *card, gpoin
 struct _EDestinationPrivate;
 
 struct _EDestination {
-	GtkObject object;
+	GObject object;
 
 	struct _EDestinationPrivate *priv;
 };
 
 struct _EDestinationClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (*changed) (EDestination *dest);	
 	void (*cardified) (EDestination *dest);
 };
 
-GtkType e_destination_get_type (void);
+GType e_destination_get_type (void);
 
 
 EDestination  *e_destination_new                (void);
@@ -94,10 +96,10 @@ gint           e_destination_get_email_num      (const EDestination *);
 
 const gchar   *e_destination_get_name           (const EDestination *);  /* "Jane Smith" */
 const gchar   *e_destination_get_email          (const EDestination *);  /* "jane@assbarn.com" */
-const gchar   *e_destination_get_address        (const EDestination *);  /* "Jane Smith <jane@assbarn.com>" (or a comma-sep set of such for a list) */
+const gchar   *e_destination_get_address        (const EDestination *);;  /* "Jane Smith <jane@assbarn.com>" (or a comma-sep set of such for a list) */
 
 void           e_destination_set_raw            (EDestination *, const gchar *free_form_string);
-const gchar   *e_destination_get_textrep        (const EDestination *);  /* "Jane Smith" or "jane@assbarn.com" */
+const gchar   *e_destination_get_textrep        (const EDestination *, gboolean include_email);  /* "Jane Smith" or "jane@assbarn.com" */
 
 gboolean       e_destination_is_evolution_list   (const EDestination *);
 gboolean       e_destination_list_show_addresses (const EDestination *);

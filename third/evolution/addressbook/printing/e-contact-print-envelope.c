@@ -22,14 +22,13 @@
 #include <config.h>
 #include "addressbook/printing/e-contact-print-envelope.h"
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <time.h>
-#include <libgnome/gnome-paper.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-dialog.h>
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
+#include <libgnomeprint/gnome-print-job.h>
+#include <libgnomeprintui/gnome-print-job-preview.h>
 #include "addressbook/backend/ebook/e-card.h"
 #include "addressbook/backend/ebook/e-card-simple.h"
 
@@ -148,9 +147,9 @@ ecpe_print(GnomePrintContext *pc, ECard *ecard, gboolean as_return)
 	address = e_card_simple_get(card, E_CARD_SIMPLE_FIELD_ADDRESS_BUSINESS);
 	linelist = ecpe_break(address);
 	if (as_return)
-		font = gnome_font_new("Helvetica", 9);
+		font = gnome_font_find ("Helvetica", 9);
 	else
-		font = gnome_font_new("Helvetica", 12);
+		font = gnome_font_find ("Helvetica", 12);
 	ecpe_linelist_dimensions(font, address, linelist, NULL, &y);
 	if (as_return) {
 		x = 36;
@@ -160,7 +159,7 @@ ecpe_print(GnomePrintContext *pc, ECard *ecard, gboolean as_return)
 		y = (ENVELOPE_HEIGHT - y) / 2;
 	}
 	ecpe_linelist_print(pc, font, address, linelist, x, y);
-	gtk_object_unref(GTK_OBJECT(font));
+	g_object_unref(font);
 	g_free(linelist);
 
 	g_free(address);
@@ -168,40 +167,43 @@ ecpe_print(GnomePrintContext *pc, ECard *ecard, gboolean as_return)
 	gnome_print_showpage(pc);
 	gnome_print_context_close(pc);
 
-	gtk_object_unref(GTK_OBJECT(card));
+	g_object_unref(card);
 }
 
 static void
 e_contact_print_envelope_button(GnomeDialog *dialog, gint button, gpointer data)
 {
-	GnomePrintMaster *master;
+	GnomePrintJob *master;
 	GnomePrintContext *pc;
+	GnomePrintConfig *config;
 	ECard *card = NULL;
 	GtkWidget *preview;
 
-	card = gtk_object_get_data(GTK_OBJECT(dialog), "card");
+	card = g_object_get_data(G_OBJECT(dialog), "card");
 
 	switch( button ) {
-	case GNOME_PRINT_PRINT:
-		master = gnome_print_master_new_from_dialog( GNOME_PRINT_DIALOG(dialog) );
-		pc = gnome_print_master_get_context( master );
+	case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
+		config = gnome_print_dialog_get_config (GNOME_PRINT_DIALOG (dialog));
+		master = gnome_print_job_new (config);
+		pc = gnome_print_job_get_context( master );
 
 		ecpe_print(pc, card, FALSE);
 		
-		gnome_print_master_print(master);
+		gnome_print_job_print(master);
 		gnome_dialog_close(dialog);
 		break;
-	case GNOME_PRINT_PREVIEW:
-		master = gnome_print_master_new_from_dialog( GNOME_PRINT_DIALOG(dialog) );
-		pc = gnome_print_master_get_context( master );
+	case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
+		config = gnome_print_dialog_get_config (GNOME_PRINT_DIALOG (dialog));
+		master = gnome_print_job_new (config);
+		pc = gnome_print_job_get_context( master );
 
 		ecpe_print(pc, card, FALSE);
 		
-		preview = GTK_WIDGET(gnome_print_master_preview_new(master, "Print Preview"));
+		preview = GTK_WIDGET(gnome_print_job_preview_new(master, "Print Preview"));
 		gtk_widget_show_all(preview);
 		break;
-	case GNOME_PRINT_CANCEL:
-		gtk_object_unref(GTK_OBJECT(card));
+	case GNOME_PRINT_DIALOG_RESPONSE_CANCEL:
+		g_object_unref(card);
 		gnome_dialog_close(dialog);
 		break;
 	}
@@ -212,14 +214,14 @@ e_contact_print_envelope_dialog_new(ECard *card)
 {
 	GtkWidget *dialog;
 	
-	dialog = gnome_print_dialog_new(_("Print envelope"), GNOME_PRINT_DIALOG_COPIES);
+	dialog = gnome_print_dialog_new(NULL, _("Print envelope"), GNOME_PRINT_DIALOG_COPIES);
 
 	card = e_card_duplicate(card);
-	gtk_object_set_data(GTK_OBJECT(dialog), "card", card);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "clicked", GTK_SIGNAL_FUNC(e_contact_print_envelope_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "close", GTK_SIGNAL_FUNC(e_contact_print_envelope_close), NULL);
+	g_object_set_data(G_OBJECT(dialog), "card", card);
+	g_signal_connect(dialog,
+			 "clicked", G_CALLBACK(e_contact_print_envelope_button), NULL);
+	g_signal_connect(dialog,
+			 "close", G_CALLBACK(e_contact_print_envelope_close), NULL);
 	return dialog;
 }
 
@@ -233,13 +235,13 @@ e_contact_print_envelope_list_dialog_new(GList *list)
 	if (list == NULL)
 		return NULL;
 
-	dialog = gnome_print_dialog_new(_("Print envelope"), GNOME_PRINT_DIALOG_COPIES);
+	dialog = gnome_print_dialog_new(NULL, _("Print envelope"), GNOME_PRINT_DIALOG_COPIES);
 
 	card = e_card_duplicate(list->data);
-	gtk_object_set_data(GTK_OBJECT(dialog), "card", card);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "clicked", GTK_SIGNAL_FUNC(e_contact_print_envelope_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "close", GTK_SIGNAL_FUNC(e_contact_print_envelope_close), NULL);
+	g_object_set_data(G_OBJECT(dialog), "card", card);
+	g_signal_connect(dialog,
+			 "clicked", G_CALLBACK(e_contact_print_envelope_button), NULL);
+	g_signal_connect(dialog,
+			 "close", G_CALLBACK(e_contact_print_envelope_close), NULL);
 	return dialog;
 }

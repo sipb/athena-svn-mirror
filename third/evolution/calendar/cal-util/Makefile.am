@@ -1,7 +1,6 @@
 noinst_PROGRAMS = test-recur
 
 INCLUDES =						\
-        -DGNOMELOCALEDIR=\""$(localedir)"\"		\
 	-DG_LOG_DOMAIN=\"cal-util\"			\
 	-I$(top_srcdir) 				\
 	-I$(top_srcdir)/calendar			\
@@ -16,22 +15,42 @@ INCLUDES =						\
 # cal util library
 #
 
-lib_LTLIBRARIES = libcal-util.la
-privlib_LTLIBRARIES = libcal-util-static.la
+privlib_LTLIBRARIES = libcal-util-static.la libcal-util.la
 
 libcal_util_la_SOURCES = 	\
+	cal-util-marshal.c	\
+	cal-util-marshal.h	\
 	cal-component.c		\
 	cal-recur.c		\
 	cal-util.c		\
 	timeutil.c
 
-libcal_utilincludedir = $(includedir)/evolution/cal-util
+libcal_util_la_LIBADD =		\
+	 $(top_builddir)/libical/src/libical/libical-evolution.la
+
+libcal_utilincludedir = $(privincludedir)/cal-util
 
 libcal_utilinclude_HEADERS =	\
 	cal-component.h		\
 	cal-recur.h		\
 	cal-util.h		\
 	timeutil.h
+
+# GLib marshalling cruft
+
+cal-util-marshal.h: cal-util-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=cal_util_marshal cal-util-marshal.list --header > cal-util-marshal.tmp \
+	&& mv cal-util-marshal.tmp cal-util-marshal.h ) \
+	|| ( rm -f cal-util-marshal.tmp && exit 1 )
+
+cal-util-marshal.c: cal-util-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=cal_util_marshal cal-util-marshal.list --body > cal-util-marshal.tmp \
+	&& mv cal-util-marshal.tmp cal-util-marshal.c ) \
+	|| ( rm -f cal-util-marshal.tmp && exit 1 )
+
+MARSHAL_GENERATED = cal-util-marshal.c cal-util-marshal.h
+
+BUILT_SOURCES = $(MARSHAL_GENERATED)
 
 #
 # static library for use in conduits' shared libraries
@@ -45,6 +64,7 @@ test_recur_SOURCES = 	\
 
 test_recur_LDADD = 							\
 	 libcal-util.la							\
-	 $(top_builddir)/libversit/libversit.a				\
-	 $(top_builddir)/libical/src/libical/libical-evolution.la	\
 	 $(EVOLUTION_CALENDAR_LIBS)
+
+EXTRA_DIST = \
+	cal-util-marshal.list

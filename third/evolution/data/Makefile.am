@@ -1,26 +1,46 @@
-desktopdir = $(datadir)/gnome/apps/Applications
-desktop_in_files = evolution.desktop.in
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-@XML_I18N_MERGE_DESKTOP_RULE@
+desktopdir = $(datadir)/applications
+desktop_in_in_file = evolution.desktop.in.in
+desktop_file = $(desktop_in_in_file:.desktop.in.in=.desktop)
+%.desktop.in: %.desktop.in.in
+	sed -e "s|\@BASE_VERSION\@|$(BASE_VERSION)|" $< > $@
+@INTLTOOL_DESKTOP_RULE@
 
 keysdir = $(datadir)/mime-info
-keys_in_files = evolution.keys.in
-keys_DATA = $(keys_in_files:.keys.in=.keys) 
-@XML_I18N_MERGE_KEYS_RULE@
+keys_in_file = evolution.keys.in
+keys_file = $(keys_in_file:.keys.in=.keys) 
+@INTLTOOL_KEYS_RULE@
 
 mimedir = $(datadir)/mime-info
-mime_DATA = evolution.mime
+mime_file = evolution.mime
 
 if HAVE_KDE_APPLNK
+
 kdedesktopdir = $(KDE_APPLNK_DIR)/Applications
-kdedesktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+kdedesktop_file = $(desktop_in_in_file:.desktop.in.in=.desktop)
+
+install-kde-applnk:
+	$(mkinstalldirs) $(DESTDIR)$(kdedesktopdir);	\
+	$(INSTALL_DATA) $(kdedesktop_file) \
+		        $(DESTDIR)$(kdedesktopdir)/$(kdedesktop_file:.desktop=-$(BASE_VERSION).desktop)
+else
+
+install-kde-applnk:
+
 endif
 
-man_MANS = evolution.1
-
-EXTRA_DIST = $(desktop_in_files) $(keys_in_files) $(mime_DATA) $(man_MANS)
+noinst_MANS = evolution.1
+noinst_DATA = $(keys_file) $(desktop_file)
 
 SUBDIRS = cde_app_root
+
+install-data-local: install-kde-applnk $(desktop_file) $(keys_file) $(mime_file)
+	$(mkinstalldirs) $(DESTDIR)$(desktopdir);							\
+	$(INSTALL_DATA) $(desktop_file)									\
+			$(DESTDIR)$(desktopdir)/$(desktop_file:.desktop.in=-$(BASE_VERSION).desktop) ;	\
+	$(mkinstalldirs) $(DESTDIR)$(keysdir);								\
+	$(INSTALL_DATA) $(keys_file) $(DESTDIR)$(keysdir)/$(keys_file:.keys=-$(BASE_VERSION).keys) ;	\
+	$(mkinstalldirs) $(DESTDIR)$(mimedir);								\
+	$(INSTALL_DATA) $(mime_file) $(DESTDIR)$(mimedir)/$(mime_file:.mime=-$(BASE_VERSION).mime) ;
 
 # CDE Stuff
 
@@ -28,10 +48,18 @@ if HAVE_DTAPPINTEGRATE
 
 # This installs Evolution into the Application Manager on CDE
 dtappintegrate:
-	$(DTAPPINTEGRATE) -s $(prefix)/share/evolution/cde_app_root
+	$(DTAPPINTEGRATE) -s $(privdatadir)/cde_app_root
 
 # ...And this uninstalls it
 dtappunintegrate:
-	$(DTAPPINTEGRATE) -u -s $(prefix)/share/evolution/cde_app_root
+	$(DTAPPINTEGRATE) -u -s $(privdatadir)/cde_app_root
 
 endif
+
+EXTRA_DIST =					\
+	$(desktop_in_in_file)			\
+	$(mime_file)				\
+	$(keys_file)				\
+	$(keys_in_file)				\
+	$(noinst_MANS)
+

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-libcamelnntpincludedir = $(includedir)/camel
+libcamelnntpincludedir = $(privincludedir)/camel
 
 camel_provider_LTLIBRARIES = libcamelnntp.la
 camel_provider_DATA = libcamelnntp.urls
@@ -10,11 +10,11 @@ INCLUDES = -I../..				\
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
-	-I$(includedir)				\
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-nntp-provider\"
+	-DG_LOG_DOMAIN=\"camel-nntp-provider\"	\
+	-DG_DISABLE_DEPRECATED
 
 libcamelnntp_la_SOURCES = 			\
 	camel-nntp-provider.c			\

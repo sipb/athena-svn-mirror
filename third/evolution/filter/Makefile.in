@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,70 +168,65 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA = filter.glade
 
-INCLUDES =  	-I $(top_srcdir)				-I $(top_srcdir)/camel				-I $(top_srcdir)/e-util				-I $(top_srcdir)/shell				-I $(top_srcdir)/camel/providers/mbox		-I $(top_builddir)/shell			-I $(GNOME_INCLUDEDIR)				-DFILTER_GLADEDIR=\"$(gladedir)\"		-DG_LOG_DOMAIN=\"filter\"			$(LIBFILTER_CFLAGS)
+INCLUDES =  	-I $(top_srcdir)				-I $(top_srcdir)/camel				-I $(top_srcdir)/e-util				-I $(top_srcdir)/shell				-DFILTER_GLADEDIR=\"$(gladedir)\"		-DG_LOG_DOMAIN=\"filter\"			-DG_DISABLE_DEPRECATED				-DGTK_DISABLE_DEPRECATED			$(LIBFILTER_CFLAGS)
 
 
 noinst_LTLIBRARIES =  	libfilter.la
 
 
-libfilter_la_SOURCES =  	filter-code.c					filter-code.h					filter-colour.c					filter-colour.h					filter-context.c				filter-context.h				filter-datespec.c				filter-datespec.h				filter-editor.c					filter-editor.h					filter-element.c				filter-element.h				filter-file.c					filter-file.h					filter-filter.c					filter-filter.h					filter-folder.c					filter-folder.h					filter-input.c					filter-input.h					filter-int.c					filter-int.h					filter-label.c					filter-label.h					filter-option.c					filter-option.h					filter-part.c					filter-part.h					filter-rule.c					filter-rule.h					filter-source.h					filter-source.c					rule-context.c					rule-context.h					rule-editor.c					rule-editor.h					score-context.c					score-context.h					score-editor.c					score-editor.h					score-rule.c					score-rule.h					vfolder-context.c				vfolder-context.h				vfolder-editor.c				vfolder-editor.h				vfolder-rule.c					vfolder-rule.h
+libfilter_la_SOURCES =  	filter-code.c					filter-code.h					filter-colour.c					filter-colour.h					filter-context.c				filter-context.h				filter-datespec.c				filter-datespec.h				filter-editor.c					filter-editor.h					filter-element.c				filter-element.h				filter-file.c					filter-file.h					filter-filter.c					filter-filter.h					filter-folder.c					filter-folder.h					filter-input.c					filter-input.h					filter-int.c					filter-int.h					filter-label.c					filter-label.h					filter-marshal.c				filter-marshal.h				filter-option.c					filter-option.h					filter-part.c					filter-part.h					filter-rule.c					filter-rule.h					filter-source.h					filter-source.c					rule-context.c					rule-context.h					rule-editor.c					rule-editor.h					score-context.c					score-context.h					score-editor.c					score-editor.h					score-rule.c					score-rule.h					vfolder-context.c				vfolder-context.h				vfolder-editor.c				vfolder-editor.h				vfolder-rule.c					vfolder-rule.h
 
 
 libfilter_la_DEPENDENCIES = libfilter-i18n.h
 
-EXTRA_DIST = filtertypes.xml vfoldertypes.xml 	$(glade_DATA) libfilter-i18n.h
+EXTRA_DIST =  	$(glade_DATA)					ChangeLog.pre-1-4				filter-marshal.list				filtertypes.xml					libfilter-i18n.h				vfoldertypes.xml
 
 
 # basic rules.
-filterdir = $(datadir)/evolution
+filterdir = $(privdatadir)
 filter_DATA = filtertypes.xml vfoldertypes.xml
+
+MARSHAL_GENERATED = filter-marshal.c filter-marshal.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -255,10 +242,10 @@ libfilter_la_LIBADD =
 libfilter_la_OBJECTS =  filter-code.lo filter-colour.lo \
 filter-context.lo filter-datespec.lo filter-editor.lo filter-element.lo \
 filter-file.lo filter-filter.lo filter-folder.lo filter-input.lo \
-filter-int.lo filter-label.lo filter-option.lo filter-part.lo \
-filter-rule.lo filter-source.lo rule-context.lo rule-editor.lo \
-score-context.lo score-editor.lo score-rule.lo vfolder-context.lo \
-vfolder-editor.lo vfolder-rule.lo
+filter-int.lo filter-label.lo filter-marshal.lo filter-option.lo \
+filter-part.lo filter-rule.lo filter-source.lo rule-context.lo \
+rule-editor.lo score-context.lo score-editor.lo score-rule.lo \
+vfolder-context.lo vfolder-editor.lo vfolder-rule.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -435,8 +422,8 @@ filter-context.lo filter-context.o : filter-context.c ../config.h \
 filter-datespec.lo filter-datespec.o : filter-datespec.c ../config.h \
 	filter-datespec.h filter-element.h ../e-util/e-sexp.h
 filter-editor.lo filter-editor.o : filter-editor.c ../config.h \
-	filter-editor.h rule-editor.h filter-context.h rule-context.h \
-	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	filter-editor.h rule-editor.h rule-context.h filter-part.h \
+	filter-input.h filter-element.h filter-rule.h filter-context.h \
 	filter-filter.h
 filter-element.lo filter-element.o : filter-element.c ../config.h \
 	filter-element.h filter-input.h filter-option.h filter-code.h \
@@ -459,6 +446,7 @@ filter-int.lo filter-int.o : filter-int.c ../config.h ../e-util/e-sexp.h \
 filter-label.lo filter-label.o : filter-label.c ../config.h \
 	filter-label.h filter-option.h filter-element.h \
 	../e-util/e-sexp.h
+filter-marshal.lo filter-marshal.o : filter-marshal.c
 filter-option.lo filter-option.o : filter-option.c ../config.h \
 	filter-option.h filter-element.h filter-part.h filter-input.h \
 	../e-util/e-sexp.h
@@ -466,15 +454,16 @@ filter-part.lo filter-part.o : filter-part.c ../config.h filter-part.h \
 	filter-input.h filter-element.h
 filter-rule.lo filter-rule.o : filter-rule.c ../config.h filter-rule.h \
 	filter-part.h filter-input.h filter-element.h filter-context.h \
-	rule-context.h
-filter-score.lo filter-score.o : filter-score.c ../config.h \
-	../e-util/e-sexp.h filter-score.h filter-element.h
+	rule-context.h filter-marshal.h
 filter-source.lo filter-source.o : filter-source.c ../config.h \
 	filter-source.h filter-element.h ../e-util/e-url.h \
-	../e-util/e-sexp.h ../camel/camel-url.h ../camel/camel-types.h
+	../e-util/e-sexp.h ../e-util/e-account-list.h \
+	../e-util/e-list.h ../e-util/e-list-iterator.h \
+	../e-util/e-iterator.h ../e-util/e-account.h \
+	../camel/camel-url.h ../camel/camel-types.h
 rule-context.lo rule-context.o : rule-context.c ../config.h \
 	rule-context.h filter-part.h filter-input.h filter-element.h \
-	filter-rule.h
+	filter-rule.h filter-marshal.h
 rule-editor.lo rule-editor.o : rule-editor.c ../config.h rule-editor.h \
 	rule-context.h filter-part.h filter-input.h filter-element.h \
 	filter-rule.h
@@ -482,8 +471,8 @@ score-context.lo score-context.o : score-context.c ../config.h \
 	score-context.h rule-context.h filter-part.h filter-input.h \
 	filter-element.h filter-rule.h score-rule.h
 score-editor.lo score-editor.o : score-editor.c ../config.h \
-	score-editor.h rule-editor.h score-context.h rule-context.h \
-	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	score-editor.h rule-editor.h rule-context.h filter-part.h \
+	filter-input.h filter-element.h filter-rule.h score-context.h \
 	score-rule.h
 score-rule.lo score-rule.o : score-rule.c ../config.h score-rule.h \
 	filter-rule.h filter-part.h filter-input.h filter-element.h
@@ -491,13 +480,14 @@ vfolder-context.lo vfolder-context.o : vfolder-context.c ../config.h \
 	vfolder-context.h rule-context.h filter-part.h filter-input.h \
 	filter-element.h filter-rule.h vfolder-rule.h
 vfolder-editor.lo vfolder-editor.o : vfolder-editor.c ../config.h \
-	vfolder-editor.h rule-editor.h vfolder-context.h rule-context.h \
-	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	vfolder-editor.h rule-editor.h rule-context.h filter-part.h \
+	filter-input.h filter-element.h filter-rule.h vfolder-context.h \
 	vfolder-rule.h
 vfolder-rule.lo vfolder-rule.o : vfolder-rule.c ../config.h \
-	vfolder-context.h rule-context.h filter-part.h filter-input.h \
-	filter-element.h filter-rule.h vfolder-rule.h \
-	../shell/evolution-shell-client.h ../shell/Evolution.h
+	../camel/camel-url.h ../camel/camel-types.h vfolder-context.h \
+	rule-context.h filter-part.h filter-input.h filter-element.h \
+	filter-rule.h vfolder-rule.h ../shell/evolution-shell-client.h \
+	../shell/Evolution.h
 
 info-am:
 info: info-am
@@ -581,6 +571,16 @@ libfilter-i18n.h: filtertypes.xml vfoldertypes.xml
 	cat $(srcdir)/filtertypes.xml $(srcdir)/vfoldertypes.xml |	      \
 		sed -n -e 's:.*<title>\(.*\)</title>:char *s = N_("\1");:p' | \
 		sort -u >> $@
+
+filter-marshal.h: filter-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=filter_marshal filter-marshal.list --header > filter-marshal.tmp \
+	&& mv filter-marshal.tmp filter-marshal.h ) \
+	|| ( rm -f filter-marshal.tmp && exit 1 )
+
+filter-marshal.c: filter-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=filter_marshal filter-marshal.list --body > filter-marshal.tmp \
+	&& mv filter-marshal.tmp filter-marshal.c ) \
+	|| ( rm -f filter-marshal.tmp && exit 1 )
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

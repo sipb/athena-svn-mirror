@@ -37,6 +37,9 @@
 #include "../calendar-commands.h"
 #include "../e-tasks.h"
 
+#include <gtk/gtksignal.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtktogglebutton.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <glade/glade.h>
 #include <gal/util/e-util.h>
@@ -134,7 +137,7 @@ cal_prefs_dialog_new (void)
 
 	/* Load the content widgets */
 
-	dialog_data->xml = glade_xml_new (EVOLUTION_GLADEDIR "/cal-prefs-dialog.glade", NULL);
+	dialog_data->xml = glade_xml_new (EVOLUTION_GLADEDIR "/cal-prefs-dialog.glade", NULL, NULL);
 	if (!dialog_data->xml) {
 		g_message ("cal_prefs_dialog_construct(): Could not load the Glade XML file!");
 		return NULL;
@@ -153,10 +156,10 @@ cal_prefs_dialog_new (void)
 	config_control = evolution_config_control_new (dialog_data->page);
 	gtk_widget_unref (dialog_data->page);
 
-	gtk_signal_connect (GTK_OBJECT (config_control), "apply",
-			    GTK_SIGNAL_FUNC (config_control_apply_callback), dialog_data);
-	gtk_signal_connect (GTK_OBJECT (config_control), "destroy",
-			    GTK_SIGNAL_FUNC (config_control_destroy_callback), dialog_data);
+	g_signal_connect((config_control), "apply",
+			    G_CALLBACK (config_control_apply_callback), dialog_data);
+	g_signal_connect((config_control), "destroy",
+			    G_CALLBACK (config_control_destroy_callback), dialog_data);
 
 	setup_changes (dialog_data, config_control);
 
@@ -195,8 +198,8 @@ connect_changed (GtkWidget *widget,
 		 const char *signal_name,
 		 EvolutionConfigControl *config_control)
 {
-	gtk_signal_connect (GTK_OBJECT (widget), signal_name,
-			    GTK_SIGNAL_FUNC (widget_changed_callback), config_control);
+	g_signal_connect((widget), signal_name,
+			    G_CALLBACK (widget_changed_callback), config_control);
 }
 
 static void
@@ -233,10 +236,10 @@ setup_changes (DialogData *dialog_data,
 	connect_changed (GTK_OPTION_MENU (dialog_data->default_reminder_units)->menu, "selection_done", config_control);
 
 	/* These use GnomeColorPicker so we have to use a different signal.  */
-	gtk_signal_connect (GTK_OBJECT (dialog_data->tasks_due_today_color), "color_set",
-			    GTK_SIGNAL_FUNC (color_set_callback), config_control);
-	gtk_signal_connect (GTK_OBJECT (dialog_data->tasks_overdue_color), "color_set",
-			    GTK_SIGNAL_FUNC (color_set_callback), config_control);
+	g_signal_connect((dialog_data->tasks_due_today_color), "color_set",
+			    G_CALLBACK (color_set_callback), config_control);
+	g_signal_connect((dialog_data->tasks_overdue_color), "color_set",
+			    G_CALLBACK (color_set_callback), config_control);
 }
 
 /* Gets the widgets from the XML file and returns if they are all available.
@@ -260,7 +263,9 @@ get_widgets (DialogData *data)
 	data->timezone = GW ("timezone");
 	data->week_start_day = GW ("first_day_of_week");
 	data->start_of_day = GW ("start_of_day");
+	gtk_widget_show (data->start_of_day);
 	data->end_of_day = GW ("end_of_day");
+	gtk_widget_show (data->end_of_day);
 	data->use_12_hour = GW ("use_12_hour");
 	data->use_24_hour = GW ("use_24_hour");
 	data->time_divisions = GW ("time_divisions");
@@ -320,7 +325,7 @@ config_control_destroy_callback (GtkObject *object,
 
 	dialog_data = (DialogData *) data;
 
-	gtk_object_unref (GTK_OBJECT (dialog_data->xml));
+	g_object_unref((dialog_data->xml));
 	
 	g_free (dialog_data);
 }
@@ -358,21 +363,21 @@ cal_prefs_dialog_create_time_edit (void)
 static void
 init_widgets (DialogData *dialog_data)
 {
-	gtk_signal_connect (GTK_OBJECT (dialog_data->use_24_hour), "toggled",
-			    GTK_SIGNAL_FUNC (cal_prefs_dialog_use_24_hour_toggled),
+	g_signal_connect((dialog_data->use_24_hour), "toggled",
+			    G_CALLBACK (cal_prefs_dialog_use_24_hour_toggled),
 			    dialog_data);
 
-	gtk_signal_connect (GTK_OBJECT (dialog_data->start_of_day), "changed",
-			    GTK_SIGNAL_FUNC (cal_prefs_dialog_start_of_day_changed),
+	g_signal_connect((dialog_data->start_of_day), "changed",
+			    G_CALLBACK (cal_prefs_dialog_start_of_day_changed),
 			    dialog_data);
 
-	gtk_signal_connect (GTK_OBJECT (dialog_data->end_of_day), "changed",
-			    GTK_SIGNAL_FUNC (cal_prefs_dialog_end_of_day_changed),
+	g_signal_connect((dialog_data->end_of_day), "changed",
+			    G_CALLBACK (cal_prefs_dialog_end_of_day_changed),
 			    dialog_data);
 
-	gtk_signal_connect (GTK_OBJECT (dialog_data->tasks_hide_completed_checkbutton),
+	g_signal_connect((dialog_data->tasks_hide_completed_checkbutton),
 			    "toggled",
-			    GTK_SIGNAL_FUNC (cal_prefs_dialog_hide_completed_tasks_toggled),
+			    G_CALLBACK (cal_prefs_dialog_hide_completed_tasks_toggled),
 			    dialog_data);
 }
 

@@ -17,6 +17,7 @@
 
 #include <libgnome/gnome-i18n.h>
 #include "e-select-names-manager.h"
+#include "e-select-names-marshal.h"
 #include "e-select-names-model.h"
 #include "e-select-names-text-model.h"
 #include "e-select-names.h"
@@ -25,10 +26,10 @@
 #include "e-folder-list.h"
 #include <addressbook/backend/ebook/e-book-util.h>
 #include <addressbook/backend/ebook/e-destination.h>
-#include <addressbook/gui/component/addressbook.h>
-#include <bonobo-conf/bonobo-config-database.h>
+#include "addressbook/gui/component/addressbook.h"
 #include <bonobo/bonobo-object.h>
-#include <bonobo/bonobo-moniker-util.h>
+
+#define DEFAULT_MINIMUM_QUERY_LENGTH 3
 
 enum {
 	CHANGED,
@@ -39,6 +40,7 @@ enum {
 
 static guint e_select_names_manager_signals[LAST_SIGNAL] = { 0 };
 
+static GObjectClass *parent_class = NULL;
 
 typedef struct {
 	char *id;
@@ -61,7 +63,7 @@ typedef struct {
 static void e_select_names_manager_init (ESelectNamesManager *manager);
 static void e_select_names_manager_class_init (ESelectNamesManagerClass *klass);
 
-static void e_select_names_manager_destroy (GtkObject *object);
+static void e_select_names_manager_dispose (GObject *object);
 
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
@@ -71,10 +73,10 @@ static void
 section_model_changed_cb (ESelectNamesModel *model, gpointer closure)
 {
 	ESelectNamesManagerSection *section = closure;
-	gtk_signal_emit (GTK_OBJECT (section->manager),
-			 e_select_names_manager_signals[CHANGED],
-			 section->id,
-			 FALSE);
+	g_signal_emit (section->manager,
+		       e_select_names_manager_signals[CHANGED], 0,
+		       section->id,
+		       FALSE);
 }
 
 static ESelectNamesManagerSection *
@@ -96,11 +98,11 @@ e_select_names_manager_section_new (ESelectNamesManager *manager,
 	section->manager = manager;
 
 	section->model = model;
-	gtk_object_ref (GTK_OBJECT (section->model));
+	g_object_ref (section->model);
 	section->changed_tag =
-		gtk_signal_connect (GTK_OBJECT (section->model),
+		g_signal_connect (section->model,
 				    "changed",
-				    GTK_SIGNAL_FUNC (section_model_changed_cb),
+				    G_CALLBACK (section_model_changed_cb),
 				    section);
 
 	return section;
@@ -116,12 +118,12 @@ e_select_names_manager_section_free (ESelectNamesManagerSection *section)
 	g_free (section->title);
 
 	if (section->model) {
-		gtk_signal_disconnect (GTK_OBJECT (section->model), section->changed_tag);
-		gtk_object_unref (GTK_OBJECT (section->model));
+		g_signal_handler_disconnect (section->model, section->changed_tag);
+		g_object_unref (section->model);
 	}
 
 	if (section->original_model) {
-		gtk_object_unref (GTK_OBJECT (section->original_model));
+		g_object_unref (section->original_model);
 	}
 
 	g_free (section);
@@ -135,20 +137,20 @@ static ESelectNamesManagerEntry *
 get_entry_info (EEntry *entry)
 {
 	g_return_val_if_fail (E_IS_ENTRY (entry), NULL);
-	return (ESelectNamesManagerEntry *) gtk_object_get_data (GTK_OBJECT (entry), "entry_info");
+	return (ESelectNamesManagerEntry *) g_object_get_data (G_OBJECT (entry), "entry_info");
 }
 
 static void
-popup_cb (EEntry *eentry, GdkEventButton *ev, gint pos, gpointer user_data)
+populate_popup_cb (EEntry *eentry, GdkEventButton *ev, gint pos, GtkWidget *menu, gpointer user_data)
 {
 	ESelectNamesTextModel *text_model;
 
-	gtk_object_get (GTK_OBJECT (eentry),
-			"model", &text_model,
-			NULL);
+	g_object_get (eentry,
+		      "model", &text_model,
+		      NULL);
 	g_assert (E_IS_SELECT_NAMES_TEXT_MODEL (text_model));
 
-	e_select_names_popup (text_model, ev, pos);
+	e_select_names_populate_popup (menu, text_model, ev, pos, GTK_WIDGET (eentry));
 }
 
 #if 0
@@ -169,7 +171,7 @@ focus_in_cb (GtkWidget *w, GdkEventFocus *ev, gpointer user_data)
 	ESelectNamesManagerEntry *entry = user_data;
 
 	if (entry->cleaning_tag) {
-		gtk_timeout_remove (entry->cleaning_tag);
+		g_source_remove (entry->cleaning_tag);
 		entry->cleaning_tag = 0;
 	}
 
@@ -224,11 +226,11 @@ completion_handler (EEntry *entry, ECompletionMatch *match)
 	/* Sometimes I really long for garbage collection.  Reference
            counting makes you feel 31337, but sometimes it is just a
            bitch. */
-	gtk_object_ref (GTK_OBJECT (dest));
+	g_object_ref (dest);
 
-	gtk_object_get (GTK_OBJECT (entry),
-			"model", &text_model,
-			NULL);
+	g_object_get (entry,
+		      "model", &text_model,
+		      NULL);
 	g_assert (E_IS_SELECT_NAMES_TEXT_MODEL (text_model));
 
 	pos = e_entry_get_position (entry);
@@ -254,14 +256,14 @@ e_select_names_manager_entry_new (ESelectNamesManager *manager, ESelectNamesMode
 
 	entry->entry = E_ENTRY (e_entry_new ());
 	text_model = e_select_names_text_model_new (model);
-	gtk_object_set(GTK_OBJECT(entry->entry),
-		       "model",          text_model, /* The entry takes ownership of the text model */
-		       "editable",       TRUE,
-		       "use_ellipsis",   TRUE,
-		       "allow_newlines", FALSE,
-		       NULL);
+	g_object_set(entry->entry,
+		     "model",          text_model, /* The entry takes ownership of the text model */
+		     "editable",       TRUE,
+		     "use_ellipsis",   TRUE,
+		     "allow_newlines", FALSE,
+		     NULL);
 
-	gtk_object_ref (GTK_OBJECT (entry->entry));
+	g_object_ref (entry->entry);
 
 	entry->comp = e_select_names_completion_new (E_SELECT_NAMES_TEXT_MODEL (text_model));
 
@@ -270,37 +272,40 @@ e_select_names_manager_entry_new (ESelectNamesManager *manager, ESelectNamesMode
 		e_select_names_completion_add_book (E_SELECT_NAMES_COMPLETION(entry->comp), book);
 	}
 
+	e_select_names_completion_set_minimum_query_length (E_SELECT_NAMES_COMPLETION(entry->comp),
+							    manager->minimum_query_length);
+
 	e_entry_enable_completion_full (entry->entry, entry->comp, 100, completion_handler);
 		
 	entry->manager = manager;
 
 	entry->model = model;
-	gtk_object_ref (GTK_OBJECT (model));
+	g_object_ref (model);
 	
-	gtk_signal_connect (GTK_OBJECT (entry->entry),
-			    "popup",
-			    GTK_SIGNAL_FUNC (popup_cb),
-			    entry);
+	g_signal_connect (entry->entry,
+			  "populate_popup",
+			  G_CALLBACK (populate_popup_cb),
+			  entry);
 			
-	gtk_signal_connect (GTK_OBJECT (entry->entry->canvas),
-			    "focus_in_event",
-			    GTK_SIGNAL_FUNC (focus_in_cb),
-			    entry);
+	g_signal_connect (entry->entry->canvas,
+			  "focus_in_event",
+			  G_CALLBACK (focus_in_cb),
+			  entry);
 	
-	gtk_signal_connect (GTK_OBJECT (entry->entry->canvas),
-			    "focus_out_event",
-			    GTK_SIGNAL_FUNC (focus_out_cb),
-			    entry);
+	g_signal_connect (entry->entry->canvas,
+			  "focus_out_event",
+			  G_CALLBACK (focus_out_cb),
+			  entry);
 
-	gtk_signal_connect (GTK_OBJECT (entry->entry),
-			    "completion_popup",
-			    GTK_SIGNAL_FUNC (completion_popup_cb),
-			    entry);
+	g_signal_connect (entry->entry,
+			  "completion_popup",
+			  G_CALLBACK (completion_popup_cb),
+			  entry);
 
-	gtk_object_set_data (GTK_OBJECT (entry->entry), "entry_info", entry);
-	gtk_object_set_data (GTK_OBJECT (entry->entry), "select_names_model", model);
-	gtk_object_set_data (GTK_OBJECT (entry->entry), "select_names_text_model", text_model);
-	gtk_object_set_data (GTK_OBJECT (entry->entry), "completion_handler", entry->comp);
+	g_object_set_data (G_OBJECT (entry->entry), "entry_info", entry);
+	g_object_set_data (G_OBJECT (entry->entry), "select_names_model", model);
+	g_object_set_data (G_OBJECT (entry->entry), "select_names_text_model", text_model);
+	g_object_set_data (G_OBJECT (entry->entry), "completion_handler", entry->comp);
 
 	return entry;
 }
@@ -312,11 +317,11 @@ e_select_names_manager_entry_free (ESelectNamesManagerEntry *entry)
 		return;
 
 	g_free (entry->id);
-	gtk_object_unref (GTK_OBJECT (entry->model));
-	gtk_object_unref (GTK_OBJECT (entry->entry));
+	g_object_unref (entry->model);
+	g_object_unref (entry->entry);
 
 	if (entry->cleaning_tag)
-		gtk_timeout_remove (entry->cleaning_tag);
+		g_source_remove (entry->cleaning_tag);
 
 	g_free (entry);
 }
@@ -346,7 +351,7 @@ e_select_names_manager_revert_to_saved_models (ESelectNamesManager *manager)
 		ESelectNamesManagerSection *section = iter->data;
 		if (section->model && section->original_model) {
 			e_select_names_model_overwrite_copy (section->model, section->original_model);
-			gtk_object_unref (GTK_OBJECT (section->original_model));
+			g_object_unref (section->original_model);
 			section->original_model = NULL;
 		}
 	}
@@ -360,7 +365,7 @@ e_select_names_manager_discard_saved_models (ESelectNamesManager *manager)
 	for (iter = manager->sections; iter != NULL; iter = g_list_next (iter)) {
 		ESelectNamesManagerSection *section = iter->data;
 		if (section->original_model) {
-			gtk_object_unref (GTK_OBJECT (section->original_model));
+			g_object_unref (section->original_model);
 			section->original_model = NULL;
 		}
 	}
@@ -380,10 +385,10 @@ open_book_cb (EBook *book, EBookStatus status, ESelectNamesManager *manager)
 		}
 
 		manager->completion_books = g_list_append (manager->completion_books, book);
-		gtk_object_ref (GTK_OBJECT (book));
+		g_object_ref (book);
 	}
 
-	gtk_object_unref (GTK_OBJECT (manager)); /* unref ourself (matches ref before the load_uri call below) */
+	g_object_unref (manager); /* unref ourself (matches ref before the load_uri call below) */
 }
 
 static void
@@ -395,7 +400,7 @@ load_completion_books (ESelectNamesManager *manager)
 	for (f = folders; f && f->physical_uri; f++) {
 		char *uri;
 		EBook *book = e_book_new ();
-		gtk_object_ref (GTK_OBJECT (manager)); /* ref ourself before our async call */
+		g_object_ref (manager); /* ref ourself before our async call */
 
 		uri = e_book_expand_uri (f->physical_uri);
 
@@ -407,49 +412,44 @@ load_completion_books (ESelectNamesManager *manager)
 }
 
 static void
-read_completion_books_from_db (ESelectNamesManager *manager)
+read_completion_settings_from_db (ESelectNamesManager *manager, EConfigListener *db)
 {
-	Bonobo_ConfigDatabase db;
-	CORBA_Environment ev;
 	char *val;
+	long ival;
 
-	CORBA_exception_init (&ev);
-
-	db = addressbook_config_database (&ev);
-		
-	val = bonobo_config_get_string (db, "/Addressbook/Completion/uris", &ev);
-
-	CORBA_exception_free (&ev);
+	val = e_config_listener_get_string (db, "/apps/evolution/addressbook/completion/uris");
 
 	if (val) {
 		g_free (manager->cached_folder_list);
 		manager->cached_folder_list = val;
 		load_completion_books(manager);
 	}
+
+	ival = e_config_listener_get_long (db, "/apps/evolution/addressbook/completion/minimum_query_length");
+	if (ival <= 0) ival = DEFAULT_MINIMUM_QUERY_LENGTH;
+
+	manager->minimum_query_length = ival;
 }
 
 static void
-uris_listener (BonoboListener *listener, char *event_name, 
-	       CORBA_any *any, CORBA_Environment *ev,
-	       gpointer user_data)
+db_listener (EConfigListener *db, const char *key,
+	     ESelectNamesManager *manager)
 {
-	ESelectNamesManager *manager = E_SELECT_NAMES_MANAGER (user_data);
 	GList *l;
-	Bonobo_ConfigDatabase db;
-	char *val;
 
-	db = addressbook_config_database (NULL);
-		
-	val = bonobo_config_get_string (db, "/Addressbook/Completion/uris", NULL);
+	if (!strcmp (key, "/apps/evolution/addressbook/completion/uris")) {
+		char *val = e_config_listener_get_string (db, key);
 
-	if (val) {
+		if (!val)
+			return;
+
 		if (!manager->cached_folder_list || strcmp (val, manager->cached_folder_list)) {
 			for (l = manager->entries; l; l = l->next) {
 				ESelectNamesManagerEntry *entry = l->data;
 				e_select_names_completion_clear_books (E_SELECT_NAMES_COMPLETION (entry->comp));
 			}
 
-			g_list_foreach (manager->completion_books, (GFunc)gtk_object_unref, NULL);
+			g_list_foreach (manager->completion_books, (GFunc)g_object_unref, NULL);
 			g_list_free (manager->completion_books);
 			manager->completion_books = NULL;
 
@@ -458,28 +458,40 @@ uris_listener (BonoboListener *listener, char *event_name,
 			load_completion_books (manager);
 		}
 	}
+	else if (!strcmp (key, "/apps/evolution/addressbook/completion/minimum_query_length")) {
+		long ival = e_config_listener_get_long (db, key);
+
+		if (ival <= 0)
+			ival = DEFAULT_MINIMUM_QUERY_LENGTH;
+
+		manager->minimum_query_length = ival;
+
+		for (l = manager->entries; l; l = l->next) {
+			ESelectNamesManagerEntry *entry = l->data;
+			e_select_names_completion_set_minimum_query_length (E_SELECT_NAMES_COMPLETION(entry->comp),
+									    manager->minimum_query_length);
+		}
+	}
 }
 
 /**
  * e_select_names_manager_new:
- * @VCard: a string in vCard format
  *
- * Returns: a new #ESelectNamesManager that wraps the @VCard.
+ * Returns: a new #ESelectNamesManager
  */
 ESelectNamesManager *
 e_select_names_manager_new (void)
 {
-	ESelectNamesManager *manager = E_SELECT_NAMES_MANAGER(gtk_type_new(e_select_names_manager_get_type()));
-	Bonobo_ConfigDatabase db;
+	ESelectNamesManager *manager = g_object_new (E_TYPE_SELECT_NAMES_MANAGER, NULL);
+	EConfigListener *db;
 
-	db = addressbook_config_database (NULL);
+	db = e_book_get_config_database();
 
-	manager->listener_id = bonobo_event_source_client_add_listener (db, uris_listener,
-									"Bonobo/ConfigDatabase:change/Addressbook/Completion:",
-									NULL,
-									manager);
+	manager->listener_id = g_signal_connect (db,
+						 "key_changed",
+						 G_CALLBACK (db_listener), manager);
 
-	read_completion_books_from_db (manager);
+	read_completion_settings_from_db (manager, db);
 
 	return manager;
 }
@@ -522,7 +534,7 @@ e_select_names_manager_add_section_with_limit (ESelectNamesManager *manager,
 
 	manager->sections = g_list_append (manager->sections, section);
 
-	gtk_object_unref (GTK_OBJECT (model));
+	g_object_unref (model);
 }
 
 ESelectNamesModel *
@@ -566,25 +578,33 @@ e_select_names_manager_create_entry (ESelectNamesManager *manager, const char *i
 }
 
 static void
-e_select_names_clicked(ESelectNames *dialog, gint button, ESelectNamesManager *manager)
+e_select_names_response(ESelectNames *dialog, gint response_id, ESelectNamesManager *manager)
 {
-	gnome_dialog_close(GNOME_DIALOG(dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 
-	switch(button) {
-	case 0:
+	switch(response_id) {
+	case GTK_RESPONSE_OK:
 		e_select_names_manager_discard_saved_models (manager);
-		gtk_signal_emit (GTK_OBJECT (manager), e_select_names_manager_signals[OK]);
+		g_signal_emit (manager, e_select_names_manager_signals[OK], 0);
 		break;
 
-	case 1:
+	case GTK_RESPONSE_CANCEL:
 		e_select_names_manager_revert_to_saved_models (manager);
-		gtk_signal_emit (GTK_OBJECT (manager), e_select_names_manager_signals[CANCEL]);
+		g_signal_emit (manager, e_select_names_manager_signals[CANCEL], 0);
 		break;
 	}
 }
 
+static void
+clear_widget (gpointer data, GObject *where_object_was)
+{
+	GtkWidget **widget_ref = data;
+	*widget_ref = NULL;
+}
+
 void
 e_select_names_manager_activate_dialog (ESelectNamesManager *manager,
+					EvolutionShellClient *shell_client,
 					const char *id)
 {
 	g_return_if_fail (E_IS_SELECT_NAMES_MANAGER (manager));
@@ -601,7 +621,7 @@ e_select_names_manager_activate_dialog (ESelectNamesManager *manager,
 
 		GList *iter;
 
-		manager->names = E_SELECT_NAMES (e_select_names_new ());
+		manager->names = E_SELECT_NAMES (e_select_names_new (shell_client));
 
 		for (iter = manager->sections; iter != NULL; iter = g_list_next (iter)) {
 			ESelectNamesManagerSection *section = iter->data;
@@ -610,15 +630,12 @@ e_select_names_manager_activate_dialog (ESelectNamesManager *manager,
 
 		e_select_names_set_default (manager->names, id);
 
-		gtk_signal_connect(GTK_OBJECT(manager->names), 
-				   "clicked",
-				   GTK_SIGNAL_FUNC(e_select_names_clicked),
-				   manager);
+		g_signal_connect(manager->names, 
+				 "response",
+				 G_CALLBACK(e_select_names_response),
+				 manager);
 
-		gtk_signal_connect(GTK_OBJECT(manager->names),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed), 
-				   &manager->names);
+		g_object_weak_ref (G_OBJECT (manager->names), clear_widget, &manager->names);
 
 		gtk_widget_show(GTK_WIDGET(manager->names));
 	}
@@ -638,7 +655,7 @@ e_select_names_manager_init (ESelectNamesManager *manager)
 }
 
 static void
-e_select_names_manager_destroy (GtkObject *object)
+e_select_names_manager_dispose (GObject *object)
 {
 	ESelectNamesManager *manager;
 	
@@ -649,59 +666,76 @@ e_select_names_manager_destroy (GtkObject *object)
 		manager->names = NULL;
 	}
 
-	g_list_foreach (manager->sections, (GFunc) e_select_names_manager_section_free, NULL);
-	g_list_free (manager->sections);
-	manager->sections = NULL;
+	if (manager->sections) {
+		g_list_foreach (manager->sections, (GFunc) e_select_names_manager_section_free, NULL);
+		g_list_free (manager->sections);
+		manager->sections = NULL;
+	}
 
-	g_list_foreach (manager->entries, (GFunc) e_select_names_manager_entry_free, NULL);
-	g_list_free (manager->entries);
-	manager->entries = NULL;
+	if (manager->entries) {
+		g_list_foreach (manager->entries, (GFunc) e_select_names_manager_entry_free, NULL);
+		g_list_free (manager->entries);
+		manager->entries = NULL;
+	}
 
-	g_list_foreach (manager->completion_books, (GFunc) gtk_object_unref, NULL);
-	g_list_free (manager->completion_books);
-	manager->completion_books = NULL;
+	if (manager->completion_books) {
+		g_list_foreach (manager->completion_books, (GFunc) g_object_unref, NULL);
+		g_list_free (manager->completion_books);
+		manager->completion_books = NULL;
+	}
 
-	bonobo_event_source_client_remove_listener (addressbook_config_database (NULL), manager->listener_id, NULL);
+	if (manager->listener_id) {
+		g_signal_handler_disconnect (e_book_get_config_database(), manager->listener_id);
+		manager->listener_id = 0;
+	}
 
-	g_free (manager->cached_folder_list);
+	if (manager->cached_folder_list) {
+		g_free (manager->cached_folder_list);
+		manager->cached_folder_list = NULL;
+	}
+
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 e_select_names_manager_class_init (ESelectNamesManagerClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS(klass);
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = e_select_names_manager_destroy;
+	object_class->dispose = e_select_names_manager_dispose;
 
 	e_select_names_manager_signals[CHANGED] = 
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ESelectNamesManagerClass, changed),
-				gtk_marshal_NONE__POINTER_INT,
-				GTK_TYPE_NONE, 2,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT);
+		g_signal_new ("changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESelectNamesManagerClass, changed),
+			      NULL, NULL,
+			      e_select_names_marshal_NONE__POINTER_INT,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_POINTER,
+			      G_TYPE_INT);
 
 	e_select_names_manager_signals[OK] =
-		gtk_signal_new ("ok",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ESelectNamesManagerClass, ok),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("ok",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESelectNamesManagerClass, ok),
+			      NULL, NULL,
+			      e_select_names_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_select_names_manager_signals[CANCEL] =
-		gtk_signal_new ("cancel",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ESelectNamesManagerClass, cancel),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, e_select_names_manager_signals, LAST_SIGNAL);
+		g_signal_new ("cancel",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (ESelectNamesManagerClass, cancel),
+			      NULL, NULL,
+			      e_select_names_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 }
 
 /**
@@ -713,24 +747,25 @@ e_select_names_manager_class_init (ESelectNamesManagerClass *klass)
  * 
  * Return value: The type ID of the &ESelectNamesManager class.
  **/
-GtkType
+GType
 e_select_names_manager_get_type (void)
 {
-	static GtkType manager_type = 0;
+	static GType manager_type = 0;
 
 	if (!manager_type) {
-		GtkTypeInfo manager_info = {
-			"ESelectNamesManager",
-			sizeof (ESelectNamesManager),
+		static const GTypeInfo manager_info =  {
 			sizeof (ESelectNamesManagerClass),
-			(GtkClassInitFunc) e_select_names_manager_class_init,
-			(GtkObjectInitFunc) e_select_names_manager_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_select_names_manager_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (ESelectNamesManager),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_select_names_manager_init,
 		};
 
-		manager_type = gtk_type_unique (gtk_object_get_type (), &manager_info);
+		manager_type = g_type_register_static (G_TYPE_OBJECT, "ESelectNamesManager", &manager_info, 0);
 	}
 
 	return manager_type;

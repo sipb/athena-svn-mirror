@@ -58,7 +58,7 @@ static void event_editor_init (EventEditor *ee);
 static void event_editor_set_cal_client (CompEditor *editor, CalClient *client);
 static void event_editor_edit_comp (CompEditor *editor, CalComponent *comp);
 static gboolean event_editor_send_comp (CompEditor *editor, CalComponentItipMethod method);
-static void event_editor_destroy (GtkObject *object);
+static void event_editor_finalize (GObject *object);
 
 static void schedule_meeting_cmd (GtkWidget *widget, gpointer data);
 static void refresh_meeting_cmd (GtkWidget *widget, gpointer data);
@@ -94,47 +94,27 @@ static CompEditorClass *parent_class;
  *
  * Return value: The type ID of the #EventEditor class.
  **/
-GtkType
-event_editor_get_type (void)
-{
-	static GtkType event_editor_type = 0;
 
-	if (!event_editor_type) {
-		static const GtkTypeInfo event_editor_info = {
-			"EventEditor",
-			sizeof (EventEditor),
-			sizeof (EventEditorClass),
-			(GtkClassInitFunc) event_editor_class_init,
-			(GtkObjectInitFunc) event_editor_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		event_editor_type = gtk_type_unique (TYPE_COMP_EDITOR,
-						     &event_editor_info);
-	}
-
-	return event_editor_type;
-}
+E_MAKE_TYPE (event_editor, "EventEditor", EventEditor, event_editor_class_init,
+	     event_editor_init, TYPE_COMP_EDITOR);
 
 /* Class initialization function for the event editor */
 static void
 event_editor_class_init (EventEditorClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
 	CompEditorClass *editor_class;
 	
-	object_class = (GtkObjectClass *) klass;
+	gobject_class = (GObjectClass *) klass;
 	editor_class = (CompEditorClass *) klass;
 
-	parent_class = gtk_type_class (TYPE_COMP_EDITOR);
+	parent_class = g_type_class_ref(TYPE_COMP_EDITOR);
 
 	editor_class->set_cal_client = event_editor_set_cal_client;
 	editor_class->edit_comp = event_editor_edit_comp;
 	editor_class->send_comp = event_editor_send_comp;
 	
-	object_class->destroy = event_editor_destroy;
+	gobject_class->finalize = event_editor_finalize;
 }
 
 static void
@@ -182,12 +162,12 @@ init_widgets (EventEditor *ee)
 
 	priv = ee->priv;
 
-	gtk_signal_connect (GTK_OBJECT (priv->model), "model_row_changed",
-			    GTK_SIGNAL_FUNC (model_row_changed_cb), ee);
-	gtk_signal_connect (GTK_OBJECT (priv->model), "model_rows_inserted",
-			    GTK_SIGNAL_FUNC (row_count_changed_cb), ee);
-	gtk_signal_connect (GTK_OBJECT (priv->model), "model_rows_deleted",
-			    GTK_SIGNAL_FUNC (row_count_changed_cb), ee);
+	g_signal_connect((priv->model), "model_row_changed",
+			    G_CALLBACK (model_row_changed_cb), ee);
+	g_signal_connect((priv->model), "model_rows_inserted",
+			    G_CALLBACK (row_count_changed_cb), ee);
+	g_signal_connect((priv->model), "model_rows_deleted",
+			    G_CALLBACK (row_count_changed_cb), ee);
 }
 
 /* Object initialization function for the event editor */
@@ -212,26 +192,36 @@ event_editor_construct (EventEditor *ee, CalClient *client)
 	priv = ee->priv;
 
 	priv->event_page = event_page_new ();
+	g_object_ref (priv->event_page);
+	gtk_object_sink (GTK_OBJECT (priv->event_page));
 	comp_editor_append_page (COMP_EDITOR (ee), 
 				 COMP_EDITOR_PAGE (priv->event_page),
 				 _("Appointment"));
 
 	priv->alarm_page = alarm_page_new ();
+	g_object_ref (priv->alarm_page);
+	gtk_object_sink (GTK_OBJECT (priv->alarm_page));
 	comp_editor_append_page (COMP_EDITOR (ee),
 				 COMP_EDITOR_PAGE (priv->alarm_page),
 				 _("Reminder"));
 
 	priv->recur_page = recurrence_page_new ();
+	g_object_ref (priv->recur_page);
+	gtk_object_sink (GTK_OBJECT (priv->recur_page));
 	comp_editor_append_page (COMP_EDITOR (ee),
 				 COMP_EDITOR_PAGE (priv->recur_page),
 				 _("Recurrence"));
 	
 	priv->sched_page = schedule_page_new (priv->model);
+	g_object_ref (priv->sched_page);
+	gtk_object_sink (GTK_OBJECT (priv->sched_page));
 	comp_editor_append_page (COMP_EDITOR (ee),
 				 COMP_EDITOR_PAGE (priv->sched_page),
 				 _("Scheduling"));
 
 	priv->meet_page = meeting_page_new (priv->model, client);
+	g_object_ref (priv->meet_page);
+	gtk_object_sink (GTK_OBJECT (priv->meet_page));
 	comp_editor_append_page (COMP_EDITOR (ee),
 				 COMP_EDITOR_PAGE (priv->meet_page),
 				 _("Meeting"));
@@ -294,7 +284,6 @@ event_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 		priv->meeting_shown = FALSE;
 	} else {
 		GSList *l;
-		GList *addresses, *ll;
 		int row;
 
 		if (!priv->meeting_shown) {
@@ -311,25 +300,32 @@ event_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 			EMeetingAttendee *ia;
 
 			ia = E_MEETING_ATTENDEE (e_meeting_attendee_new_from_cal_component_attendee (ca));
-			if (!comp_editor_get_user_org (editor))
+
+			/* If we aren't the organizer or the attendee is just delegating, don't allow editing */
+			if (!comp_editor_get_user_org (editor) || e_meeting_attendee_is_set_delto (ia))
 				e_meeting_attendee_set_edit_level (ia,  E_MEETING_ATTENDEE_EDIT_NONE);
 			e_meeting_model_add_attendee (priv->model, ia);
-			
-			gtk_object_unref (GTK_OBJECT (ia));
+
+			g_object_unref(ia);
 		}
 
 		/* If we aren't the organizer we can still change our own status */
 		if (!comp_editor_get_user_org (editor)) {
-			addresses = itip_addresses_get ();
-			for (ll = addresses; ll != NULL; ll = ll->next) {
+			EAccountList *accounts;
+			EAccount *account;
+			EIterator *it;
+
+			accounts = itip_addresses_get ();
+			for (it = e_list_get_iterator((EList *)accounts);e_iterator_is_valid(it);e_iterator_next(it)) {
 				EMeetingAttendee *ia;
-				ItipAddress *a = ll->data;
-				
-				ia = e_meeting_model_find_attendee (priv->model, a->address, &row);
+
+				account = (EAccount*)e_iterator_get(it);
+
+				ia = e_meeting_model_find_attendee (priv->model, account->id->address, &row);
 				if (ia != NULL)
 					e_meeting_attendee_set_edit_level (ia, E_MEETING_ATTENDEE_EDIT_STATUS);
 			}
-			itip_addresses_free (addresses);
+			g_object_unref(it);
 		} else if (cal_client_get_organizer_must_attend (client)) {
 			EMeetingAttendee *ia;
 
@@ -369,7 +365,7 @@ event_editor_send_comp (CompEditor *editor, CalComponentItipMethod method)
 		
 		client = e_meeting_model_get_cal_client (priv->model);
 		result = itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, comp, client, NULL);
-		gtk_object_unref (GTK_OBJECT (comp));
+		g_object_unref((comp));
 
 		if (!result)
 			return FALSE;
@@ -384,7 +380,7 @@ event_editor_send_comp (CompEditor *editor, CalComponentItipMethod method)
 
 /* Destroy handler for the event editor */
 static void
-event_editor_destroy (GtkObject *object)
+event_editor_finalize (GObject *object)
 {
 	EventEditor *ee;
 	EventEditorPrivate *priv;
@@ -395,19 +391,18 @@ event_editor_destroy (GtkObject *object)
 	ee = EVENT_EDITOR (object);
 	priv = ee->priv;
 
-	gtk_object_unref (GTK_OBJECT (priv->event_page));
-	gtk_object_unref (GTK_OBJECT (priv->alarm_page));
-	gtk_object_unref (GTK_OBJECT (priv->recur_page));
-	gtk_object_unref (GTK_OBJECT (priv->meet_page));
-	gtk_object_unref (GTK_OBJECT (priv->sched_page));
+	g_object_unref((priv->event_page));
+	g_object_unref((priv->alarm_page));
+	g_object_unref((priv->recur_page));
+	g_object_unref((priv->meet_page));
+	g_object_unref((priv->sched_page));
 
-	gtk_object_destroy (GTK_OBJECT (priv->model));
-	gtk_object_unref (GTK_OBJECT (priv->model));
+	g_object_unref (priv->model);
 
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 /**
@@ -424,7 +419,7 @@ event_editor_new (CalClient *client)
 {
 	EventEditor *ee;
 
-	ee = EVENT_EDITOR (gtk_type_new (TYPE_EVENT_EDITOR));
+	ee = EVENT_EDITOR (g_object_new (TYPE_EVENT_EDITOR, NULL));
 	return event_editor_construct (ee, client);
 }
 
@@ -486,7 +481,8 @@ cancel_meeting_cmd (GtkWidget *widget, gpointer data)
 	CalComponent *comp;
 	
 	comp = comp_editor_get_current_comp (COMP_EDITOR (ee));
-	if (cancel_component_dialog (comp_editor_get_cal_client (COMP_EDITOR (ee)), comp, FALSE)) {
+	if (cancel_component_dialog ((GtkWindow *) ee,
+				     comp_editor_get_cal_client (COMP_EDITOR (ee)), comp, FALSE)) {
 		comp_editor_send_comp (COMP_EDITOR (ee), CAL_COMPONENT_METHOD_CANCEL);
 		comp_editor_delete_comp (COMP_EDITOR (ee));
 	}

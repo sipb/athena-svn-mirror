@@ -37,10 +37,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define E_TYPE_MEETING_ATTENDEE			(e_meeting_attendee_get_type ())
-#define E_MEETING_ATTENDEE(obj)			(GTK_CHECK_CAST ((obj), E_TYPE_MEETING_ATTENDEE, EMeetingAttendee))
-#define E_MEETING_ATTENDEE_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), E_TYPE_MEETING_ATTENDEE, EMeetingAttendeeClass))
-#define E_IS_MEETING_ATTENDEE(obj)			(GTK_CHECK_TYPE ((obj), E_TYPE_MEETING_ATTENDEE))
-#define E_IS_MEETING_ATTENDEE_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), E_TYPE_MEETING_ATTENDEE))
+#define E_MEETING_ATTENDEE(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_MEETING_ATTENDEE, EMeetingAttendee))
+#define E_MEETING_ATTENDEE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_MEETING_ATTENDEE, EMeetingAttendeeClass))
+#define E_IS_MEETING_ATTENDEE(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_MEETING_ATTENDEE))
+#define E_IS_MEETING_ATTENDEE_CLASS(klass)		(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_MEETING_ATTENDEE))
 
 
 typedef struct _EMeetingAttendee         EMeetingAttendee;
@@ -78,9 +78,9 @@ struct _EMeetingAttendeeClass {
 };
 
 
-GtkType    e_meeting_attendee_get_type (void);
-GtkObject *e_meeting_attendee_new      (void);
-GtkObject *e_meeting_attendee_new_from_cal_component_attendee (CalComponentAttendee *ca);
+GType      e_meeting_attendee_get_type (void);
+GObject   *e_meeting_attendee_new      (void);
+GObject   *e_meeting_attendee_new_from_cal_component_attendee (CalComponentAttendee *ca);
 
 CalComponentAttendee *e_meeting_attendee_as_cal_component_attendee (EMeetingAttendee *ia);
 

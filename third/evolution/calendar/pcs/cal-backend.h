@@ -24,7 +24,6 @@
 #ifndef CAL_BACKEND_H
 #define CAL_BACKEND_H
 
-#include <libgnome/gnome-defs.h>
 #include <cal-util/cal-util.h>
 #include <cal-util/cal-component.h>
 #include "pcs/evolution-calendar.h"
@@ -32,23 +31,23 @@
 #include "pcs/cal.h"
 #include "pcs/query.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_BACKEND_TYPE            (cal_backend_get_type ())
-#define CAL_BACKEND(obj)            (GTK_CHECK_CAST ((obj), CAL_BACKEND_TYPE, CalBackend))
-#define CAL_BACKEND_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_BACKEND_TYPE,		\
+#define CAL_BACKEND(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_BACKEND_TYPE, CalBackend))
+#define CAL_BACKEND_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_BACKEND_TYPE,		\
 				     CalBackendClass))
-#define IS_CAL_BACKEND(obj)         (GTK_CHECK_TYPE ((obj), CAL_BACKEND_TYPE))
-#define IS_CAL_BACKEND_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_BACKEND_TYPE))
+#define IS_CAL_BACKEND(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_BACKEND_TYPE))
+#define IS_CAL_BACKEND_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_BACKEND_TYPE))
 
 /* Open status values */
 typedef enum {
 	CAL_BACKEND_OPEN_SUCCESS,	/* Loading OK */
 	CAL_BACKEND_OPEN_ERROR,		/* We need better error reporting in libversit */
 	CAL_BACKEND_OPEN_NOT_FOUND,
-	CAL_BACKEND_OPEN_PERMISSION_DENIED
+	CAL_BACKEND_OPEN_PERMISSION_DENIED,
 } CalBackendOpenStatus;
 
 /* Update and Remove result values */
@@ -74,13 +73,16 @@ typedef enum {
 	CAL_BACKEND_GET_ALARMS_INVALID_RANGE
 } CalBackendGetAlarmsForObjectResult;
 
+typedef struct _CalBackendPrivate CalBackendPrivate;
+
 struct _CalBackend {
-	GtkObject object;
-	GList *clients;
+	GObject object;
+
+	CalBackendPrivate *priv;
 };
 
 struct _CalBackendClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Notification signals */
 	void (* last_client_gone) (CalBackend *backend);
@@ -135,6 +137,7 @@ struct _CalBackendClass {
 	GNOME_Evolution_Calendar_CalComponentAlarms *(* get_alarms_for_object) (
 		CalBackend *backend, const char *uid,
 		time_t start, time_t end, gboolean *object_found);
+	CalBackendResult (* discard_alarm) (CalBackend *backend, const char *uid, const char *auid);
 
 	/* Object manipulation virtual methods */
 	CalBackendResult (* update_objects) (CalBackend *backend, const char *calobj, CalObjModType mod);
@@ -150,7 +153,7 @@ struct _CalBackendClass {
 	gboolean (* set_default_timezone) (CalBackend *backend, const char *tzid);
 };
 
-GtkType cal_backend_get_type (void);
+GType cal_backend_get_type (void);
 
 const char *cal_backend_get_uri (CalBackend *backend);
 
@@ -208,6 +211,8 @@ GNOME_Evolution_Calendar_CalComponentAlarms *cal_backend_get_alarms_for_object (
 	time_t start, time_t end,
 	CalBackendGetAlarmsForObjectResult *result);
 
+CalBackendResult cal_backend_discard_alarm (CalBackend *backend, const char *uid, const char *auid);
+
 
 CalBackendResult cal_backend_update_objects (CalBackend *backend, const char *calobj, CalObjModType mod);
 
@@ -225,8 +230,17 @@ void cal_backend_opened (CalBackend *backend, CalBackendOpenStatus status);
 void cal_backend_obj_updated (CalBackend *backend, const char *uid);
 void cal_backend_obj_removed (CalBackend *backend, const char *uid);
 
+void cal_backend_notify_mode      (CalBackend *backend,
+				   GNOME_Evolution_Calendar_Listener_SetModeStatus status, 
+				   GNOME_Evolution_Calendar_CalMode mode);
+void cal_backend_notify_update    (CalBackend *backend, const char *uid);
+void cal_backend_notify_remove    (CalBackend *backend, const char *uid);
+void cal_backend_notify_error     (CalBackend *backend, const char *message);
+void cal_backend_ref_categories   (CalBackend *backend, GSList *categories);
+void cal_backend_unref_categories (CalBackend *backend, GSList *categories);
+
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

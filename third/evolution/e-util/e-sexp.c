@@ -82,15 +82,19 @@
         Execute a sequence.  The last function return is the return type.
 */
 
-#include "e-sexp.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
-#include <glib.h>
+#include "e-sexp.h"
 #include "e-memory.h"
+
 #define p(x)			/* parse debug */
 #define r(x)			/* run debug */
 #define d(x)			/* general debug */
@@ -101,8 +105,8 @@ static struct _ESExpTerm * parse_value(ESExp *f);
 
 static void parse_dump_term(struct _ESExpTerm *t, int depth);
 
-#ifdef E_SEXP_IS_GTK_OBJECT
-static GtkObjectClass *parent_class;
+#ifdef E_SEXP_IS_G_OBJECT
+static GObjectClass *parent_class;
 #endif
 
 static GScannerConfig scanner_config =
@@ -263,9 +267,11 @@ term_eval_and(struct _ESExp *f, int argc, struct _ESExpTerm **argv, void *data)
 			a1 = (char **)r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
 			for (j=0;j<l1;j++) {
+			        gpointer ptr;
 				int n;
-				n = (int)g_hash_table_lookup(ht, a1[j]);
-				g_hash_table_insert(ht, a1[j], (void *)n+1);
+				ptr = g_hash_table_lookup(ht, a1[j]);
+				n = GPOINTER_TO_INT(ptr);
+				g_hash_table_insert(ht, a1[j], GINT_TO_POINTER(n+1));
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
 			bool = bool && r1->value.bool;
@@ -1024,17 +1030,15 @@ parse_list(ESExp *f, int gotbrace)
 
 static void e_sexp_finalise(void *);
 
-#ifdef E_SEXP_IS_GTK_OBJECT
+#ifdef E_SEXP_IS_G_OBJECT
 static void
-e_sexp_class_init (ESExpClass *class)
+e_sexp_class_init (ESExpClass *klass)
 {
-	GtkObjectClass *object_class;
-	
-	object_class = (GtkObjectClass *) class;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
 	object_class->finalize = e_sexp_finalise;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref (g_object_get_type ());
 }
 #endif
 
@@ -1084,8 +1088,8 @@ e_sexp_finalise(void *o)
 	g_scanner_scope_foreach_symbol(s->scanner, 0, free_symbol, 0);
 	g_scanner_destroy(s->scanner);
 
-#ifdef E_SEXP_IS_GTK_OBJECT
-	((GtkObjectClass *)(parent_class))->finalize((GtkObject *)o);
+#ifdef E_SEXP_IS_G_OBJECT
+	G_OBJECT_CLASS (parent_class)->finalize (o);
 #endif
 }
 
@@ -1107,29 +1111,31 @@ e_sexp_init (ESExp *s)
 		}
 	}
 
-#ifndef E_SEXP_IS_GTK_OBJECT
+#ifndef E_SEXP_IS_G_OBJECT
 	s->refcount = 1;
 #endif
 }
 
-#ifdef E_SEXP_IS_GTK_OBJECT
-guint
+#ifdef E_SEXP_IS_G_OBJECT
+GType
 e_sexp_get_type (void)
 {
-	static guint type = 0;
+	static GType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"ESExp",
-			sizeof (ESExp),
+		static const GTypeInfo info = {
 			sizeof (ESExpClass),
-			(GtkClassInitFunc) e_sexp_class_init,
-			(GtkObjectInitFunc) e_sexp_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) e_sexp_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (ESExp),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) e_sexp_init,
 		};
 		
-		type = gtk_type_unique (gtk_object_get_type (), &type_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "ESExp", &info, 0);
 	}
 	
 	return type;
@@ -1139,23 +1145,25 @@ e_sexp_get_type (void)
 ESExp *
 e_sexp_new (void)
 {
-#ifdef E_SEXP_IS_GTK_OBJECT
-	ESExp *f = E_SEXP ( gtk_type_new (e_sexp_get_type ()));
+#ifdef E_SEXP_IS_G_OBJECT
+	ESExp *f = (ESexp *) g_object_new (E_TYPE_SEXP, NULL);
 #else
-	ESExp *f = g_malloc0(sizeof(*f));
-	e_sexp_init(f);
+	ESExp *f = g_malloc0 (sizeof (ESExp));
+	e_sexp_init (f);
 #endif
-
+	
 	return f;
 }
 
-#ifndef E_SEXP_IS_GTK_OBJECT
-void		e_sexp_ref		(ESExp *f)
+#ifndef E_SEXP_IS_G_OBJECT
+void
+e_sexp_ref (ESExp *f)
 {
 	f->refcount++;
 }
 
-void		e_sexp_unref		(ESExp *f)
+void
+e_sexp_unref (ESExp *f)
 {
 	f->refcount--;
 	if (f->refcount == 0) {
@@ -1170,8 +1178,10 @@ e_sexp_add_function(ESExp *f, int scope, char *name, ESExpFunc *func, void *data
 {
 	struct _ESExpSymbol *s;
 
-	g_return_if_fail(FILTER_IS_SEXP(f));
-	g_return_if_fail(name != NULL);
+	g_return_if_fail (IS_E_SEXP (f));
+	g_return_if_fail (name != NULL);
+
+	e_sexp_remove_symbol (f, scope, name);
 
 	s = g_malloc0(sizeof(*s));
 	s->name = g_strdup(name);
@@ -1186,8 +1196,10 @@ e_sexp_add_ifunction(ESExp *f, int scope, char *name, ESExpIFunc *ifunc, void *d
 {
 	struct _ESExpSymbol *s;
 
-	g_return_if_fail(FILTER_IS_SEXP(f));
-	g_return_if_fail(name != NULL);
+	g_return_if_fail (IS_E_SEXP (f));
+	g_return_if_fail (name != NULL);
+
+	e_sexp_remove_symbol (f, scope, name);
 
 	s = g_malloc0(sizeof(*s));
 	s->name = g_strdup(name);
@@ -1202,8 +1214,8 @@ e_sexp_add_variable(ESExp *f, int scope, char *name, ESExpTerm *value)
 {
 	struct _ESExpSymbol *s;
 
-	g_return_if_fail(FILTER_IS_SEXP(f));
-	g_return_if_fail(name != NULL);
+	g_return_if_fail (IS_E_SEXP (f));
+	g_return_if_fail (name != NULL);
 
 	s = g_malloc0(sizeof(*s));
 	s->name = g_strdup(name);
@@ -1218,8 +1230,8 @@ e_sexp_remove_symbol(ESExp *f, int scope, char *name)
 	int oldscope;
 	struct _ESExpSymbol *s;
 
-	g_return_if_fail(FILTER_IS_SEXP(f));
-	g_return_if_fail(name != NULL);
+	g_return_if_fail (IS_E_SEXP (f));
+	g_return_if_fail (name != NULL);
 
 	oldscope = g_scanner_set_scope(f->scanner, scope);
 	s = g_scanner_lookup_symbol(f->scanner, name);
@@ -1234,7 +1246,7 @@ e_sexp_remove_symbol(ESExp *f, int scope, char *name)
 int
 e_sexp_set_scope(ESExp *f, int scope)
 {
-	g_return_val_if_fail(FILTER_IS_SEXP(f), 0);
+	g_return_val_if_fail (IS_E_SEXP (f), 0);
 
 	return g_scanner_set_scope(f->scanner, scope);
 }
@@ -1242,8 +1254,8 @@ e_sexp_set_scope(ESExp *f, int scope)
 void
 e_sexp_input_text(ESExp *f, const char *text, int len)
 {
-	g_return_if_fail(FILTER_IS_SEXP(f));
-	g_return_if_fail(text != NULL);
+	g_return_if_fail (IS_E_SEXP (f));
+	g_return_if_fail (text != NULL);
 
 	g_scanner_input_text(f->scanner, text, len);
 }
@@ -1251,7 +1263,7 @@ e_sexp_input_text(ESExp *f, const char *text, int len)
 void
 e_sexp_input_file (ESExp *f, int fd)
 {
-	g_return_if_fail(FILTER_IS_SEXP(f));
+	g_return_if_fail (IS_E_SEXP (f));
 
 	g_scanner_input_file(f->scanner, fd);
 }
@@ -1260,7 +1272,7 @@ e_sexp_input_file (ESExp *f, int fd)
 int
 e_sexp_parse(ESExp *f)
 {
-	g_return_val_if_fail(FILTER_IS_SEXP(f), -1);
+	g_return_val_if_fail (IS_E_SEXP (f), -1);
 
 	if (setjmp(f->failenv)) {
 		g_warning("Error in parsing: %s", f->error);
@@ -1279,8 +1291,8 @@ e_sexp_parse(ESExp *f)
 struct _ESExpResult *
 e_sexp_eval(ESExp *f)
 {
-	g_return_val_if_fail(FILTER_IS_SEXP(f), NULL);
-	g_return_val_if_fail(f->tree != NULL, NULL);
+	g_return_val_if_fail (IS_E_SEXP (f), NULL);
+	g_return_val_if_fail (f->tree != NULL, NULL);
 
 	if (setjmp(f->failenv)) {
 		g_warning("Error in execution: %s", f->error);

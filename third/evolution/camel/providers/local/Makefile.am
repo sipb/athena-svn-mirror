@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-libcamellocalincludedir = $(includedir)/camel
+libcamellocalincludedir = $(privincludedir)/camel
 
 camel_provider_LTLIBRARIES = libcamellocal.la
 camel_provider_DATA = libcamellocal.urls
@@ -11,11 +11,11 @@ INCLUDES = -I.. \
 	-I$(top_srcdir)/intl			\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
-	-I$(includedir)				\
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-local-provider\"	
+	-DG_LOG_DOMAIN=\"camel-local-provider\"	\
+	-DG_DISABLE_DEPRECATED
 
 libcamellocal_la_SOURCES = 			\
 	camel-local-folder.c			\

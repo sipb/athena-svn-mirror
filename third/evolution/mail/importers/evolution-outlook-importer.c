@@ -206,14 +206,13 @@ support_format_fn (EvolutionImporter *importer,
 }
 
 static void
-importer_destroy_cb (GtkObject *object,
-		     OutlookImporter *oli)
+importer_destroy_cb (void *data, GObject *object)
 {
-	MailImporter *importer;
+	OutlookImporter *oli = data;
+	MailImporter *importer = data;
 
-	importer = (MailImporter *) oli;
 	if (importer->folder)
-		camel_object_unref (CAMEL_OBJECT (importer->folder));
+		camel_object_unref (importer->folder);
 
 	g_free (oli->filename);
 	if (oli->handle)
@@ -225,7 +224,8 @@ importer_destroy_cb (GtkObject *object,
 static gboolean
 load_file_fn (EvolutionImporter *eimporter,
 	      const char *filename,
-	      const char *folderpath,
+	      const char *uri,
+	      const char *folder_type,
 	      void *closure)
 {
 	OutlookImporter *oli;
@@ -264,10 +264,10 @@ load_file_fn (EvolutionImporter *eimporter,
 
 	importer->mstream = NULL;
 
-	if (folderpath == NULL || *folderpath == '\0')
+	if (uri == NULL || *uri == 0)
 		importer->folder = mail_tool_get_local_inbox (NULL);
 	else
-		importer->folder = mail_tool_uri_to_folder (folderpath, CAMEL_STORE_FOLDER_CREATE, NULL);
+		importer->folder = mail_tool_uri_to_folder (uri, 0, NULL);
 
 	if (importer->folder == NULL){
 		g_warning ("Bad folder");
@@ -281,6 +281,7 @@ load_file_fn (EvolutionImporter *eimporter,
 
 static BonoboObject *
 outlook_factory_fn (BonoboGenericFactory *_factory,
+		    const char *cid,
 		    void *closure)
 {
 	EvolutionImporter *importer;
@@ -290,8 +291,7 @@ outlook_factory_fn (BonoboGenericFactory *_factory,
 
 	importer = evolution_importer_new (support_format_fn, load_file_fn, 
 					   process_item_fn, NULL, oli);
-	gtk_signal_connect (GTK_OBJECT (importer), "destroy",
-			    GTK_SIGNAL_FUNC (importer_destroy_cb), oli);
+	g_object_weak_ref((GObject *)importer, importer_destroy_cb, oli);
 
 	return BONOBO_OBJECT (importer);
 }

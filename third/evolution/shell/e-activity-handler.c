@@ -37,9 +37,11 @@
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-popup-menu.h>
 
+#include <bonobo/bonobo-exception.h>
+
 
-#define PARENT_TYPE bonobo_x_object_get_type ()
-static BonoboXObjectClass *parent_class = NULL;
+#define PARENT_TYPE bonobo_object_get_type ()
+static BonoboObjectClass *parent_class = NULL;
 
 
 #define ICON_SIZE 16
@@ -207,9 +209,9 @@ task_widget_button_press_event_callback (GtkWidget *widget,
 	null_value->_type = TC_null;
 
 	Bonobo_Listener_event (activity_info->event_listener, "Clicked", null_value, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION)
+	if (BONOBO_EX (&ev) != CORBA_NO_EXCEPTION)
 		g_warning ("EActivityHandler: Cannot report `Clicked' event -- %s",
-			   ev._repo_id);
+			   BONOBO_EX_REPOID (&ev));
 
 	CORBA_free (null_value);
  
@@ -237,7 +239,7 @@ activity_info_new (const char *component_id,
 	info = g_new (ActivityInfo, 1);
 	info->component_id   = g_strdup (component_id);
 	info->id             = id;
-	info->icon_pixbuf    = gdk_pixbuf_ref (icon);
+	info->icon_pixbuf    = g_object_ref (icon);
 	info->information    = CORBA_string_dup (information);
 	info->cancellable    = cancellable;
 	info->event_listener = CORBA_Object_duplicate (event_listener, &ev);
@@ -258,7 +260,7 @@ activity_info_free (ActivityInfo *info)
 
 	g_free (info->component_id);
 
-	gdk_pixbuf_unref (info->icon_pixbuf);
+	g_object_unref (info->icon_pixbuf);
 	CORBA_free (info->information);
 	CORBA_Object_release (info->event_listener, &ev);
 
@@ -280,8 +282,9 @@ task_widget_new_from_activity_info (ActivityInfo *activity_info)
 				    activity_info->information);
 	gtk_widget_show (widget);
 
-	gtk_signal_connect (GTK_OBJECT (widget), "button_press_event",
-			    GTK_SIGNAL_FUNC (task_widget_button_press_event_callback), activity_info);
+	g_signal_connect (widget, "button_press_event",
+			  G_CALLBACK (task_widget_button_press_event_callback),
+			  activity_info);
 
 	return E_TASK_WIDGET (widget);
 }
@@ -305,30 +308,28 @@ setup_task_bar (EActivityHandler *activity_handler,
 }
 
 static void
-task_bar_destroy_callback (GtkObject *task_bar_object,
-			   void *data)
+task_bar_destroy_notify (void *data,
+			 GObject *task_bar_instance)
 {
-	ETaskBar *task_bar;
 	EActivityHandler *activity_handler;
 	EActivityHandlerPrivate *priv;
-
-	task_bar = E_TASK_BAR (task_bar_object);
 
 	activity_handler = E_ACTIVITY_HANDLER (data);
 	priv = activity_handler->priv;
 
-	priv->task_bars = g_slist_remove (priv->task_bars, task_bar);
+	priv->task_bars = g_slist_remove (priv->task_bars, task_bar_instance);
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EActivityHandler *handler;
 	EActivityHandlerPrivate *priv;
 	GList *p;
+	GSList *sp;
 
 	handler = E_ACTIVITY_HANDLER (object);
 	priv = handler->priv;
@@ -340,10 +341,28 @@ impl_destroy (GtkObject *object)
 		activity_info_free (info);
 	}
 
-	g_free (priv);
-	handler->priv = NULL;
+	g_list_free (priv->activity_infos);
+	priv->activity_infos = NULL;
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	for (sp = priv->task_bars; sp != NULL; sp = sp->next)
+		g_object_weak_unref (G_OBJECT (sp->data), task_bar_destroy_notify, sp->data);
+	priv->task_bars = NULL;
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EActivityHandler *handler;
+	EActivityHandlerPrivate *priv;
+
+	handler = E_ACTIVITY_HANDLER (object);
+	priv = handler->priv;
+
+	g_free (priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -369,9 +388,6 @@ impl_operationStarted (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
-		return;
-
 	priv = activity_handler->priv;
 
 	if (icon->_length == 0) {
@@ -394,7 +410,7 @@ impl_operationStarted (PortableServer_Servant servant,
 		e_task_bar_prepend_task (E_TASK_BAR (p->data),
 					 task_widget_new_from_activity_info (activity_info));
 
-	gdk_pixbuf_unref (icon_pixbuf);
+	g_object_unref (icon_pixbuf);
 
 	priv->activity_infos = g_list_prepend (priv->activity_infos, activity_info);
 
@@ -418,9 +434,6 @@ impl_operationProgressing (PortableServer_Servant servant,
 	/* FIXME?  The complexity in this function sucks.  */
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
-
-	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
-		return;
 
 	priv = activity_handler->priv;
 
@@ -462,9 +475,6 @@ impl_operationFinished (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
-		return;
-
 	priv = activity_handler->priv;
 
 	p = lookup_activity (priv->activity_infos, activity_id, &order_number);
@@ -490,9 +500,6 @@ impl_requestDialog (PortableServer_Servant servant,
 
 	activity_handler = E_ACTIVITY_HANDLER (bonobo_object_from_servant (servant));
 
-	if (GTK_OBJECT_DESTROYED (activity_handler) || activity_handler->priv == NULL)
-		return GNOME_Evolution_Activity_DIALOG_ACTION_ERROR;
-
 	/* FIXME implement.  */
 	g_warning ("Evolution::Activity::requestDialog not implemented");
 
@@ -503,13 +510,14 @@ impl_requestDialog (PortableServer_Servant servant,
 /* GTK+ type stuff.  */
 
 static void
-class_init (GtkObjectClass *object_class)
+e_activity_handler_class_init (GObjectClass *object_class)
 {
 	EActivityHandlerClass *handler_class;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	handler_class = E_ACTIVITY_HANDLER_CLASS (object_class);
 	handler_class->epv.operationStarted     = impl_operationStarted;
@@ -519,7 +527,7 @@ class_init (GtkObjectClass *object_class)
 }
 
 static void
-init (EActivityHandler *activity_handler)
+e_activity_handler_init (EActivityHandler *activity_handler)
 {
 	EActivityHandlerPrivate *priv;
 
@@ -546,7 +554,7 @@ e_activity_handler_new (void)
 {
 	EActivityHandler *activity_handler;
 
-	activity_handler = gtk_type_new (e_activity_handler_get_type ());
+	activity_handler = g_object_new (e_activity_handler_get_type (), 0);
 	e_activity_handler_construct (activity_handler);
 
 	return activity_handler;
@@ -566,9 +574,7 @@ e_activity_handler_attach_task_bar (EActivityHandler *activity_handler,
 
 	priv = activity_handler->priv;
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (task_bar), "destroy",
-					GTK_SIGNAL_FUNC (task_bar_destroy_callback), activity_handler,
-					GTK_OBJECT (activity_handler));
+	g_object_weak_ref (G_OBJECT (task_bar), task_bar_destroy_notify, activity_handler);
 
 	priv->task_bars = g_slist_prepend (priv->task_bars, task_bar);
 
@@ -576,6 +582,7 @@ e_activity_handler_attach_task_bar (EActivityHandler *activity_handler,
 }
 
 
-E_MAKE_X_TYPE (e_activity_handler, "EActivityHandler", EActivityHandler, class_init, init, PARENT_TYPE,
-	       POA_GNOME_Evolution_Activity__init,
-	       GTK_STRUCT_OFFSET (EActivityHandlerClass, epv))
+BONOBO_TYPE_FUNC_FULL (EActivityHandler,
+		       GNOME_Evolution_Activity,
+		       PARENT_TYPE,
+		       e_activity_handler)

@@ -26,24 +26,24 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <math.h>
+#include <string.h>
 #include <time.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtkradiobutton.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-paper.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomeui/gnome-paper-selector.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-copies.h>
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
-#include <libgnomeprint/gnome-print-preview.h>
-#include <libgnomeprint/gnome-printer-dialog.h>
+#include <libgnomeprint/gnome-print-paper.h>
+#include <libgnomeprint/gnome-print-job.h>
+#include <libgnomeprintui/gnome-print-job-preview.h>
+#include <libgnomeprintui/gnome-print-paper-selector.h>
+#include <libgnomeprintui/gnome-print-preview.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
+#include <gal/util/e-util.h>
 #include <e-util/e-dialog-widgets.h>
 #include <e-util/e-time-utils.h>
-#include <gal/util/e-unicode-i18n.h>
 #include <gal/widgets/e-unicode.h>
 #include <cal-util/timeutil.h>
 #include "calendar-commands.h"
@@ -62,8 +62,15 @@
  * what gnome-print uses.
  */
 
-/* The font to use */
-#define DEFAULT_FONT "Times"
+/* GtkHTML prints using a fixed margin. It has code to get the margins from
+ * gnome-print keys, but it's commented out. The corresponding code here
+ * doesn't seem to work either (getting zero margins), so we adopt
+ * gtkhtml's cheat. */
+#define TEMP_MARGIN .05
+
+/* The fonts to use */
+#define REGULAR_FONT "Sans Regular"
+#define BOLD_FONT    "Sans Bold"
 
 /* The font size to use for normal text. */
 #define DAY_NORMAL_FONT_SIZE	12
@@ -165,7 +172,7 @@ struct einfo
 	int count;
 };
 
-static const GnomePaper *paper_info = NULL;
+static GnomePrintConfig *print_config = NULL;
 
 
 /* Convenience function to help the transition to timezone functions.
@@ -258,17 +265,31 @@ get_font_for_size (double h, GnomeFontWeight weight, gboolean italic)
 	GnomeFontFace *face;
 	GnomeFont *font;
 	double asc, desc, size;
-	
-	face = gnome_font_unsized_closest (DEFAULT_FONT, weight, italic);
-	asc = gnome_font_face_get_ascender (face);
-	desc = gnome_font_face_get_descender (face);
-	size = h * 1000 / (asc + desc);
-	g_print ("Print Info: %f, %f, %f\n", asc, desc, size);
-	
-	font = gnome_font_new_closest (DEFAULT_FONT, weight, italic, size);
+	gchar *font_name;
 
-	gtk_object_unref (GTK_OBJECT (face));
-	
+	if (weight <= GNOME_FONT_BOOK)
+		font_name = REGULAR_FONT;
+	else
+		font_name = BOLD_FONT;
+
+	if (italic)
+		font_name = g_strconcat (font_name, " Italic", NULL);
+
+	/* This function is broken in gnome-print (it doesn't find a suitable face).
+	 * face = gnome_font_face_find_closest_from_weight_slant (DEFAULT_FONT, weight, italic); */
+	face = gnome_font_face_find (font_name);
+
+	asc = gnome_font_face_get_ascender (face);
+	desc = abs (gnome_font_face_get_descender (face));
+	size = h * 1000 / (asc + desc);
+
+	/* This function is broken in gnome-print (it doesn't find a suitable font).
+	 * font = gnome_font_find_closest_from_weight_slant (DEFAULT_FONT, weight, italic, size); */
+	font = gnome_font_find_closest (font_name, size);
+
+	g_object_unref (face);
+	if (italic)
+		g_free (font_name);
 	return font;
 }
 
@@ -406,7 +427,7 @@ print_text_size(GnomePrintContext *pc, const char *text,
 
 	font = get_font_for_size (t - b, GNOME_FONT_BOOK, FALSE);
 	print_text(pc, font, text, align, l, r, t, b);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 }
 
 /* gets/frees the font for you, as a bold font */
@@ -418,7 +439,7 @@ print_text_size_bold(GnomePrintContext *pc, const char *text,
 
 	font = get_font_for_size (t - b, GNOME_FONT_BOLD, FALSE);
 	print_text(pc, font, text, align, l, r, t, b);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 }
 
 static void
@@ -471,7 +492,6 @@ format_date(time_t time, int flags, char *buffer, int bufflen)
 	icaltimezone *zone = get_timezone ();
 	char fmt[64];
 	struct tm tm;
-	char *utf_str;
 
 	tm = *convert_timet_to_struct_tm (time, zone);
 
@@ -496,11 +516,9 @@ format_date(time_t time, int flags, char *buffer, int bufflen)
 			strcat(fmt, " ");
 		strcat(fmt, "%Y");
 	}
-	strftime(buffer, bufflen, fmt, &tm);
-	utf_str = e_utf8_from_locale_string (buffer);
-	strncpy (buffer, utf_str, bufflen - 1);
+	e_utf8_strftime(buffer, bufflen, fmt, &tm);
 	buffer[bufflen - 1] = '\0';
-	g_free (utf_str);
+
 	return buffer;
 }
 
@@ -539,7 +557,7 @@ print_month_small (GnomePrintContext *pc, GnomeCalendar *gcal, time_t month,
 	}
 	print_text (pc, font, buf, ALIGN_CENTER, left, right,
 		    top, top - header_size);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	top -= header_size;
 
@@ -581,7 +599,7 @@ print_month_small (GnomePrintContext *pc, GnomeCalendar *gcal, time_t month,
 	week_start_day = calendar_config_get_week_start_day ();
 	weekday = week_start_day;
 	for (x = 0; x < 7; x++) {
-		print_text (pc, font_bold, U_(daynames[weekday]), ALIGN_CENTER,
+		print_text (pc, font_bold, _(daynames[weekday]), ALIGN_CENTER,
 			    left + x * col_width, left + (x + 1) * col_width,
 			    top, top - row_height * 1.4);
 		weekday = (weekday + 1) % 7;
@@ -634,8 +652,8 @@ print_month_small (GnomePrintContext *pc, GnomeCalendar *gcal, time_t month,
 			}
 		}
 	}
-	gtk_object_unref (GTK_OBJECT (font_normal));
-	gtk_object_unref (GTK_OBJECT (font_bold));
+	g_object_unref (font_normal);
+	g_object_unref (font_bold);
 }
 
 
@@ -788,9 +806,9 @@ print_day_background (GnomePrintContext *pc, GnomeCalendar *gcal,
 			minute = "00";
 		} else {
 			if (i < 12)
-				minute = U_("am");
+				minute = _("am");
 			else
-				minute = U_("pm");
+				minute = _("pm");
 
 			hour = i % 12;
 			if (hour == 0)
@@ -821,8 +839,8 @@ print_day_background (GnomePrintContext *pc, GnomeCalendar *gcal,
 		row++;
 	}
 
-	gtk_object_unref (GTK_OBJECT (font_hour));
-	gtk_object_unref (GTK_OBJECT (font_minute));
+	g_object_unref (font_hour);
+	g_object_unref (font_minute);
 }
 
 
@@ -858,7 +876,7 @@ print_day_add_event (CalComponent *comp,
 	end_tt = icaltime_from_timet_with_zone (end, FALSE, zone);
 
 	event.comp = comp;
-	gtk_object_ref (GTK_OBJECT (comp));
+	g_object_ref (comp);
 	event.start = start;
 	event.end = end;
 	event.canvas_item = NULL;
@@ -927,7 +945,7 @@ free_event_array (GArray *array)
 		event = &g_array_index (array, EDayViewEvent, event_num);
 		if (event->canvas_item)
 			gtk_object_destroy (GTK_OBJECT (event->canvas_item));
-		gtk_object_unref (GTK_OBJECT (event->comp));
+		g_object_unref (event->comp);
 	}
 
 	g_array_set_size (array, 0);
@@ -1166,7 +1184,7 @@ print_day_details (GnomePrintContext *pc, GnomeCalendar *gcal, time_t whence,
 		print_day_long_event (pc, font, left, right, top, bottom,
 				      DAY_VIEW_ROW_HEIGHT, event, &pdi);
 	}
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	/* We always leave space for DAY_VIEW_MIN_ROWS_IN_TOP_DISPLAY in the
 	   top display, but we may have more rows than that, in which case
@@ -1203,7 +1221,7 @@ print_day_details (GnomePrintContext *pc, GnomeCalendar *gcal, time_t whence,
 		print_day_event (pc, font, left, right, top, bottom,
 				 event, &pdi);
 	}
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	/* Free everything. */
 	free_event_array (pdi.long_events);
@@ -1243,7 +1261,7 @@ print_week_summary_cb (CalComponent *comp,
 	end_tt = icaltime_from_timet_with_zone (end, FALSE, zone);
 
 	event.comp = comp;
-	gtk_object_ref (GTK_OBJECT (event.comp));
+	g_object_ref (event.comp);
 	event.start = start;
 	event.end = end;
 	event.spans_index = 0;
@@ -1461,7 +1479,7 @@ print_week_view_background (GnomePrintContext *pc, GnomeFont *font,
 	int day, day_x, day_y, day_h;
 	double x1, x2, y1, y2, font_size, fillcolor;
 	struct tm tm;
-	char *format_string, buffer[128], *utf_str;
+	char *format_string, buffer[128];
 
 	font_size = gnome_font_get_size (font);
 
@@ -1508,11 +1526,9 @@ print_week_view_background (GnomePrintContext *pc, GnomeFont *font,
 
 		}
 
-		strftime (buffer, sizeof (buffer), format_string, &tm);
-		utf_str = e_utf8_from_locale_string (buffer);
-		print_text_size (pc, utf_str, ALIGN_RIGHT,
+		e_utf8_strftime (buffer, sizeof (buffer), format_string, &tm);
+		print_text_size (pc, buffer, ALIGN_RIGHT,
 				 x1, x2 - 4, y1 - 2, y1 - 2 - font_size);
-		g_free (utf_str);
 	}
 }
 
@@ -1611,12 +1627,12 @@ print_week_summary (GnomePrintContext *pc, GnomeCalendar *gcal,
 				  cell_width, cell_height, event, spans);
 	}
 
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	/* Free everything. */
 	for (event_num = 0; event_num < psi.events->len; event_num++) {
 		event = &g_array_index (psi.events, EWeekViewEvent, event_num);
-		gtk_object_unref (GTK_OBJECT (event->comp));
+		g_object_unref (event->comp);
 	}
 	g_array_free (psi.events, TRUE);
 	g_array_free (spans, TRUE);
@@ -1715,31 +1731,27 @@ print_month_summary (GnomePrintContext *pc, GnomeCalendar *gcal, time_t whence,
 	y2 = top - font_size * 1.5;
 
 	for (col = 0; col < columns; col++) {
-		char *utf_str;
-
 		if (tm.tm_wday == 6 && compress_weekend) {
-			strftime (buffer, sizeof (buffer), "%a/", &tm);
+			e_utf8_strftime (buffer, sizeof (buffer), "%a/", &tm);
 			len = strlen (buffer);
 			tm.tm_mday++;
 			tm.tm_wday = (tm.tm_wday + 1) % 7;
-			strftime (buffer + len, sizeof (buffer) - len,
+			e_utf8_strftime (buffer + len, sizeof (buffer) - len,
 				  "%a", &tm);
 		} else {
-			strftime (buffer, sizeof (buffer), "%A", &tm);
+			e_utf8_strftime (buffer, sizeof (buffer), "%A", &tm);
 		}
 
 		x1 = left + cell_width * col;
 		x2 = x1 + cell_width;
 
 		print_border (pc, x1, x2, y1, y2, 1.0, -1.0);
-		utf_str = e_utf8_from_locale_string (buffer);
-		print_text_size (pc, utf_str, ALIGN_CENTER, x1, x2, y1, y2);
-		g_free (utf_str);
+		print_text_size (pc, buffer, ALIGN_CENTER, x1, x2, y1, y2);
 
 		tm.tm_mday++;
 		tm.tm_wday = (tm.tm_wday + 1) % 7;
 	}
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	top = y2;
 	print_week_summary (pc, gcal, date, TRUE, 6, month,
@@ -1774,7 +1786,7 @@ print_todo_details (GnomePrintContext *pc, GnomeCalendar *gcal,
 	gnome_print_setrgbcolor (pc, 0, 0, 0);
 	gnome_print_setlinewidth (pc, 0.0);
 
-	titled_box (pc, U_("Tasks"), font_summary, ALIGN_CENTER | ALIGN_BORDER,
+	titled_box (pc, _("Tasks"), font_summary, ALIGN_CENTER | ALIGN_BORDER,
 		    &left, &right, &top, &bottom, 1.0);
 
 	y = top - 3;
@@ -1825,7 +1837,7 @@ print_todo_details (GnomePrintContext *pc, GnomeCalendar *gcal,
 		y -= 3;
 	}
 
-	gtk_object_unref (GTK_OBJECT (font_summary));
+	g_object_unref (font_summary);
 }
 
 
@@ -1860,7 +1872,7 @@ range_selector_new (GtkWidget *dialog, time_t at, int *view)
 
 	/* Day */
 
-	strftime (text, sizeof (text), _("Selected day (%a %b %d %Y)"), &tm);
+	e_utf8_strftime (text, sizeof (text), _("Selected day (%a %b %d %Y)"), &tm);
 	radio = gtk_radio_button_new_with_label (NULL, text);
 	group = gtk_radio_button_group (GTK_RADIO_BUTTON (radio));
 	gtk_box_pack_start (GTK_BOX (box), radio, FALSE, FALSE, 0);
@@ -1885,15 +1897,15 @@ range_selector_new (GtkWidget *dialog, time_t at, int *view)
 	week_end_tm = *convert_timet_to_struct_tm (week_end, zone);
 
 	if (week_begin_tm.tm_mon == week_end_tm.tm_mon) {
-		strftime (str1, sizeof (str1), _("%a %b %d"), &week_begin_tm);
-		strftime (str2, sizeof (str2), _("%a %d %Y"), &week_end_tm);
+		e_utf8_strftime (str1, sizeof (str1), _("%a %b %d"), &week_begin_tm);
+		e_utf8_strftime (str2, sizeof (str2), _("%a %d %Y"), &week_end_tm);
 	} else {
 		if (week_begin_tm.tm_year == week_end_tm.tm_year) {
-			strftime (str1, sizeof (str1), _("%a %b %d"), &week_begin_tm);
-			strftime (str2, sizeof (str2), _("%a %b %d %Y"), &week_end_tm);
+			e_utf8_strftime (str1, sizeof (str1), _("%a %b %d"), &week_begin_tm);
+			e_utf8_strftime (str2, sizeof (str2), _("%a %b %d %Y"), &week_end_tm);
 		} else {
-			strftime (str1, sizeof (str1), _("%a %b %d %Y"), &week_begin_tm);
-			strftime (str2, sizeof (str2), _("%a %b %d %Y"), &week_end_tm);
+			e_utf8_strftime (str1, sizeof (str1), _("%a %b %d %Y"), &week_begin_tm);
+			e_utf8_strftime (str2, sizeof (str2), _("%a %b %d %Y"), &week_end_tm);
 		}
 	}
 
@@ -1905,14 +1917,14 @@ range_selector_new (GtkWidget *dialog, time_t at, int *view)
 
 	/* Month */
 
-	strftime (text, sizeof (text), _("Selected month (%b %Y)"), &tm);
+	e_utf8_strftime (text, sizeof (text), _("Selected month (%b %Y)"), &tm);
 	radio = gtk_radio_button_new_with_label (group, text);
 	group = gtk_radio_button_group (GTK_RADIO_BUTTON (radio));
 	gtk_box_pack_start (GTK_BOX (box), radio, FALSE, FALSE, 0);
 
 	/* Year */
 
-	strftime (text, sizeof (text), _("Selected year (%Y)"), &tm);
+	e_utf8_strftime (text, sizeof (text), _("Selected year (%Y)"), &tm);
 	radio = gtk_radio_button_new_with_label (group, text);
 	group = gtk_radio_button_group (GTK_RADIO_BUTTON (radio));
 	gtk_box_pack_start (GTK_BOX (box), radio, FALSE, FALSE, 0);
@@ -1939,8 +1951,7 @@ print_day_view (GnomePrintContext *pc, GnomeCalendar *gcal, time_t date,
 		todo = (right - left) * 0.75 + left;
 		header = top - HEADER_HEIGHT;
 
-		/* FIXME: What is the name supposed to be for? */
-		gnome_print_beginpage (pc, "Calendar Day View");
+		gnome_print_beginpage (pc, NULL);
 
 		/* Print the main view with all the events in. */
 		print_day_details (pc, gcal, date,
@@ -1998,8 +2009,7 @@ print_week_view (GnomePrintContext *pc, GnomeCalendar *gcal, time_t date,
 
 	header = top - HEADER_HEIGHT;
 
-	/* FIXME: What is the name supposed to be for? */
-	gnome_print_beginpage (pc, "Calendar Week View");
+	gnome_print_beginpage (pc, NULL);
 
 	tm = *convert_timet_to_struct_tm (date, zone);
 	week_start_day = calendar_config_get_week_start_day ();
@@ -2066,8 +2076,7 @@ print_month_view (GnomePrintContext *pc, GnomeCalendar *gcal, time_t date,
 
 	header = top - HEADER_HEIGHT;
 
-	/* FIXME: What is the name supposed to be for? */
-	gnome_print_beginpage (pc, "Calendar Month View");
+	gnome_print_beginpage (pc, NULL);
 
 	/* Print the main month view. */
 	print_month_summary (pc, gcal, date, left, right, header, bottom);
@@ -2102,8 +2111,7 @@ print_year_view (GnomePrintContext *pc, GnomeCalendar *gcal, time_t date,
 {
 	char buf[100];
 
-	/* FIXME: What is the name supposed to be for? */
-	gnome_print_beginpage (pc, "Calendar Year View");
+	gnome_print_beginpage (pc, NULL);
 
 	print_year_summary (pc, gcal, date, left, right, top - 50, bottom,
 			    TRUE);
@@ -2165,7 +2173,7 @@ print_date_label (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 	icaltimezone *start_zone, *end_zone, *due_zone, *completed_zone;
 	CalComponentDateTime datetime;
 	time_t start = 0, end = 0, complete = 0, due = 0;
-	static char buffer[1024], *utf_text;
+	static char buffer[1024];
 
 	cal_component_get_dtstart (comp, &datetime);
 	if (datetime.value) {
@@ -2221,10 +2229,8 @@ print_date_label (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 			write_label_piece (due, buffer, 1024, _("Due "), NULL);
 	}
 
-	utf_text = e_utf8_from_locale_string (buffer);
-	print_text_size_bold (pc, utf_text, ALIGN_LEFT,
+	print_text_size_bold (pc, buffer, ALIGN_LEFT,
 			      left, right, top, top - 15);
-	g_free (utf_text);
 }
 
 static void
@@ -2244,11 +2250,13 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 
 	/* We should only be asked to print VEVENTs or VTODOs. */
 	if (vtype == CAL_COMPONENT_EVENT)
-		title = U_("Appointment");
+		title = _("Appointment");
 	else if (vtype == CAL_COMPONENT_TODO)
-		title = U_("Task");
+		title = _("Task");
 	else
 		return;
+
+	gnome_print_beginpage (pc, NULL);
 
 	/* Print the title in a box at the top of the page. */
 	font = get_font_for_size (18, GNOME_FONT_BOLD, FALSE);
@@ -2257,7 +2265,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 		      1.0, 0.9);
 	print_text (pc, font, title, ALIGN_CENTER, left, right,
 		    top - header_size * 0.1, top - header_size);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	top -= header_size + 10;
 
@@ -2266,7 +2274,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 	cal_component_get_summary (comp, &text);
 	top = bound_text (pc, font, text.value, left, right,
 			  top - 3, bottom, 0);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	/* Date information */
 	print_date_label (pc, comp, client, left, right, top-3, top - 15);
@@ -2287,23 +2295,23 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 		if (status != ICAL_STATUS_NONE) {
 			switch (status) {
 			case ICAL_STATUS_NEEDSACTION:
-				status_string = U_("Not Started");
+				status_string = _("Not Started");
 				break;
 			case ICAL_STATUS_INPROCESS:
-				status_string = U_("In Progress");
+				status_string = _("In Progress");
 				break;
 			case ICAL_STATUS_COMPLETED:
-				status_string = U_("Completed");
+				status_string = _("Completed");
 				break;
 			case ICAL_STATUS_CANCELLED:
-				status_string = U_("Cancelled");
+				status_string = _("Cancelled");
 				break;
 			default:
 				break;
 			}
 
 			if (status_string) {
-				char *text = g_strdup_printf (U_("Status: %s"),
+				char *text = g_strdup_printf (_("Status: %s"),
 							      status_string);
 				top = bound_text (pc, font, text,
 						  left, right, top, bottom, 0);
@@ -2315,19 +2323,16 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 		/* Priority */
 		cal_component_get_priority (comp, &priority);
 		if (priority && *priority >= 0) {
-			char *priority_string, *priority_utf8, *text;
+			char *priority_string, *text;
 
 			priority_string = cal_util_priority_to_string (*priority);
 			cal_component_free_priority (priority);
 
-			priority_utf8 = e_utf8_from_locale_string (priority_string);
-			text = g_strdup_printf (U_("Priority: %s"),
-						priority_utf8);
+			text = g_strdup_printf (_("Priority: %s"), priority_string);
 			top = bound_text (pc, font, text,
 					  left, right, top, bottom, 0);
 			top += gnome_font_get_size (font) - 6;
 			g_free (text);
-			g_free (priority_utf8);
 		}
 
 		/* Percent Complete */
@@ -2335,7 +2340,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 		if (percent) {
 			char *percent_string;
 
-			percent_string = g_strdup_printf (U_("Percent Complete: %i"), *percent);
+			percent_string = g_strdup_printf (_("Percent Complete: %i"), *percent);
 			cal_component_free_percent (percent);
 
 			top = bound_text (pc, font, percent_string,
@@ -2347,7 +2352,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 		/* URL */
 		cal_component_get_url (comp, &url);
 		if (url && url[0]) {
-			char *url_string = g_strdup_printf (U_("URL: %s"),
+			char *url_string = g_strdup_printf (_("URL: %s"),
 							    url);
 
 			top = bound_text (pc, font, url_string,
@@ -2361,7 +2366,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 	/* Categories */
 	cal_component_get_categories (comp, &categories);
 	if (categories && categories[0]) {
-		categories_string = g_strdup_printf (U_("Categories: %s"),
+		categories_string = g_strdup_printf (_("Categories: %s"),
 						     categories);
 		top = bound_text (pc, font, categories_string,
 				  left, right, top, bottom, 0);
@@ -2372,7 +2377,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 	/* Contacts */
 	cal_component_get_contact_list (comp, &contact_list);
 	if (contact_list) {
-		GString *contacts = g_string_new (U_("Contacts: "));
+		GString *contacts = g_string_new (_("Contacts: "));
 		for (elem = contact_list; elem; elem = elem->next) {
 			CalComponentText *t = elem->data;
 			/* Put a comma between contacts. */
@@ -2400,7 +2405,7 @@ print_comp_item (GnomePrintContext *pc, CalComponent *comp, CalClient *client,
 			top = bound_text (pc, font, text->value, left, right, top-3, bottom, 0);
 	}
 	cal_component_free_text_list (desc);
-	gtk_object_unref (GTK_OBJECT (font));
+	g_object_unref (font);
 
 	gnome_print_showpage (pc);
 }
@@ -2409,42 +2414,44 @@ void
 print_calendar (GnomeCalendar *gcal, gboolean preview, time_t date,
 		PrintView default_view)
 {
-	GnomePrinter *printer;
-	GnomePrintMaster *gpm;
+	GnomePrintJob *gpm;
 	GnomePrintContext *pc;
 	int copies, collate;
-	double l, r, t, b;
+	double l, r, t, b, temp_d;
+	gchar *old_orientation;
 
 	g_return_if_fail (gcal != NULL);
 	g_return_if_fail (GNOME_IS_CALENDAR (gcal));
 
-	printer = NULL;
+	if (!print_config)
+		print_config = gnome_print_config_default ();
+
 	copies = 1;
 	collate = FALSE;
+
+	gpm = gnome_print_job_new (print_config);
 
 	if (!preview) {
 		GtkWidget *gpd;
 		GtkWidget *range;
 		int view;
 
-		gpd = gnome_print_dialog_new (_("Print Calendar"),
-					      GNOME_PRINT_DIALOG_RANGE
-					      | GNOME_PRINT_DIALOG_COPIES);
+		gpd = gnome_print_dialog_new (gpm, _("Print"), 0);
 
 		view = (int) default_view;
 		range = range_selector_new (gpd, date, &view);
 		gnome_print_dialog_construct_range_custom (GNOME_PRINT_DIALOG (gpd), range);
 
-		gnome_dialog_set_default (GNOME_DIALOG (gpd),
-					  GNOME_PRINT_PRINT);
+		gtk_dialog_set_default_response (GTK_DIALOG (gpd),
+						 GNOME_PRINT_DIALOG_RESPONSE_PRINT);
 
 		/* Run dialog */
 
-		switch (gnome_dialog_run (GNOME_DIALOG (gpd))) {
-		case GNOME_PRINT_PRINT:
+		switch (gtk_dialog_run (GTK_DIALOG (gpd))) {
+		case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
 			break;
 
-		case GNOME_PRINT_PREVIEW:
+		case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
 			preview = TRUE;
 			break;
 
@@ -2452,41 +2459,38 @@ print_calendar (GnomeCalendar *gcal, gboolean preview, time_t date,
 			return;
 
 		default:
-			gnome_dialog_close (GNOME_DIALOG (gpd));
+			gtk_widget_destroy (gpd);
 			return;
 		}
 
 		e_dialog_get_values (gpd);
 		default_view = (PrintView) view;
 
-		gnome_print_dialog_get_copies (GNOME_PRINT_DIALOG (gpd),
-					       &copies, &collate);
-		printer = gnome_print_dialog_get_printer (GNOME_PRINT_DIALOG (gpd));
-
-		gnome_dialog_close (GNOME_DIALOG (gpd));
+		gtk_widget_destroy (gpd);
 	}
 
-	/* FIXME: allow configuration of paper size */
+	old_orientation = gnome_print_config_get (print_config, GNOME_PRINT_KEY_PAGE_ORIENTATION);
 
-	gpm = gnome_print_master_new ();
+	if (default_view == PRINT_VIEW_MONTH)
+		gnome_print_config_set (print_config, GNOME_PRINT_KEY_PAGE_ORIENTATION, "R90");
 
-	if (paper_info == NULL)
-		paper_info = gnome_paper_with_name (gnome_paper_name_default ());
-	gnome_print_master_set_paper (gpm, paper_info);
+	pc = gnome_print_job_get_context (gpm);
+	gnome_print_config_get_page_size (print_config, &r, &t);
 
-	if (printer)
-		gnome_print_master_set_printer (gpm, printer);
+	/* See top of source for an explanation of this */
 
-	gnome_print_master_set_copies (gpm, copies, collate);
+	/* gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_TOP, &temp_d);
+	 * t -= temp_d;
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT, &temp_d);
+	 * r -= temp_d;
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM, &b);
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_LEFT, &l);
+	 * b = l = TEMP_MARGIN; */
 
-	pc = gnome_print_master_get_context (gpm);
-
-	l = gnome_paper_lmargin (paper_info);
-	r = gnome_paper_pswidth (paper_info)
-		- gnome_paper_rmargin (paper_info);
-	t = gnome_paper_psheight (paper_info)
-		- gnome_paper_tmargin (paper_info);
-	b = gnome_paper_bmargin (paper_info);
+	b = t * TEMP_MARGIN;
+	l = r * TEMP_MARGIN;
+	t *= (1.0 - TEMP_MARGIN);
+	r *= (1.0 - TEMP_MARGIN);
 
 	/* depending on the view, do a different output */
 	switch (default_view) {
@@ -2497,10 +2501,7 @@ print_calendar (GnomeCalendar *gcal, gboolean preview, time_t date,
 		print_week_view (pc, gcal, date, l, r, t, b);
 		break;
 	case PRINT_VIEW_MONTH:
-		gnome_print_rotate (pc, 90);
-		gnome_print_translate (pc, 0,
-				       -gnome_paper_pswidth (paper_info));
-		print_month_view (pc, gcal, date, b, t, r, l);
+		print_month_view (pc, gcal, date, l, r, t, b);
 		break;
 	case PRINT_VIEW_YEAR:
 		print_year_view (pc, gcal, date, l, r, t, b);
@@ -2509,57 +2510,58 @@ print_calendar (GnomeCalendar *gcal, gboolean preview, time_t date,
 		g_assert_not_reached ();
 	}
 
-	gnome_print_master_close (gpm);
+	gnome_print_job_close (gpm);
 
 	if (preview) {
-		GnomePrintMasterPreview *gpmp;
-		gboolean landscape = FALSE;
+		GtkWidget *gpmp;
 
-		if (default_view == PRINT_VIEW_MONTH)
-			landscape = TRUE;
-
-		gpmp = gnome_print_master_preview_new_with_orientation (gpm, _("Print Preview"), landscape);
-		gtk_widget_show (GTK_WIDGET (gpmp));
+		gpmp = gnome_print_job_preview_new (gpm, _("Print Preview"));
+		gtk_widget_show (gpmp);
 	} else {
-		gnome_print_master_print (gpm);
+		gnome_print_job_print (gpm);
 	}
 
-	gtk_object_unref (GTK_OBJECT (gpm));
+	gnome_print_config_set (print_config, GNOME_PRINT_KEY_PAGE_ORIENTATION, old_orientation);
+	g_free (old_orientation);
+	g_object_unref (gpm);
 }
 
 
 void
 print_comp (CalComponent *comp, CalClient *client, gboolean preview)
 {
-	GnomePrinter *printer;
-	GnomePrintMaster *gpm;
+	GnomePrintJob *gpm;
 	GnomePrintContext *pc;
 	int copies, collate;
-	double l, r, t, b;
+	double l, r, t, b, temp_d;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (IS_CAL_COMPONENT (comp));
 
-	printer = NULL;
+	if (!print_config)
+		print_config = gnome_print_config_default ();
+
 	copies = 1;
 	collate = FALSE;
+
+	gpm = gnome_print_job_new (print_config);
 
 	if (!preview) {
 		GtkWidget *gpd;
 
-		gpd = gnome_print_dialog_new (_("Print Item"),
+		gpd = gnome_print_dialog_new (gpm, _("Print Item"),
 					      GNOME_PRINT_DIALOG_COPIES);
 
-		gnome_dialog_set_default (GNOME_DIALOG (gpd),
-					  GNOME_PRINT_PRINT);
+		gtk_dialog_set_default_response (GTK_DIALOG (gpd),
+						 GNOME_PRINT_DIALOG_RESPONSE_PRINT);
 
 		/* Run dialog */
 
-		switch (gnome_dialog_run (GNOME_DIALOG (gpd))) {
-		case GNOME_PRINT_PRINT:
+		switch (gtk_dialog_run (GTK_DIALOG (gpd))) {
+		case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
 			break;
 
-		case GNOME_PRINT_PREVIEW:
+		case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
 			preview = TRUE;
 			break;
 
@@ -2567,80 +2569,77 @@ print_comp (CalComponent *comp, CalClient *client, gboolean preview)
 			return;
 
 		default:
-			gnome_dialog_close (GNOME_DIALOG (gpd));
+			gtk_widget_destroy (gpd);
 			return;
 		}
 
 		e_dialog_get_values (gpd);
-
-		gnome_print_dialog_get_copies (GNOME_PRINT_DIALOG (gpd),
-					       &copies, &collate);
-		printer = gnome_print_dialog_get_printer (GNOME_PRINT_DIALOG (gpd));
-
-		gnome_dialog_close (GNOME_DIALOG (gpd));
+		gtk_widget_destroy (gpd);
 	}
 
-	/* FIXME: allow configuration of paper size */
+	pc = gnome_print_job_get_context (gpm);
+	gnome_print_config_get_page_size (print_config, &r, &t);
 
-	gpm = gnome_print_master_new ();
+	/* See top of source for an explanation of this */
 
-	if (paper_info == NULL)
-		paper_info = gnome_paper_with_name (gnome_paper_name_default ());
-	gnome_print_master_set_paper (gpm, paper_info);
+	/* gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_TOP, &temp_d);
+	 * t -= temp_d;
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT, &temp_d);
+	 * r -= temp_d;
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM, &b);
+	 * gnome_print_config_get_double (print_config, GNOME_PRINT_KEY_PAGE_MARGIN_LEFT, &l);
+	 * b = l = TEMP_MARGIN; */
 
-	if (printer)
-		gnome_print_master_set_printer (gpm, printer);
-
-	gnome_print_master_set_copies (gpm, copies, collate);
-
-	pc = gnome_print_master_get_context (gpm);
-
-	l = gnome_paper_lmargin (paper_info);
-	r = gnome_paper_pswidth (paper_info)
-		- gnome_paper_rmargin (paper_info);
-	t = gnome_paper_psheight (paper_info)
-		- gnome_paper_tmargin (paper_info);
-	b = gnome_paper_bmargin (paper_info);
+	b = t * TEMP_MARGIN;
+	l = r * TEMP_MARGIN;
+	t *= (1.0 - TEMP_MARGIN);
+	r *= (1.0 - TEMP_MARGIN);
 
 	print_comp_item (pc, comp, client, l, r, t, b);
-
-	gnome_print_master_close (gpm);
+	gnome_print_job_close (gpm);
 
 	if (preview) {
-		GnomePrintMasterPreview *gpmp;
+		GtkWidget *gpmp;
 
-		gpmp = gnome_print_master_preview_new (gpm,
-						       _("Print Preview"));
-		gtk_widget_show (GTK_WIDGET (gpmp));
+		gpmp = gnome_print_job_preview_new (gpm, _("Print Preview"));
+		gtk_widget_show (gpmp);
 	} else {
-		gnome_print_master_print (gpm);
+		gnome_print_job_print (gpm);
 	}
 
-	gtk_object_unref (GTK_OBJECT (gpm));
+	g_object_unref (gpm);
 }
 
 void
 print_setup (void)
 {
-	GtkWidget *dlg, *ps;
-	gint btn;
+	GtkWidget *ps;
 
-	ps = gnome_paper_selector_new ();
+	if (!print_config)
+		print_config = gnome_print_config_default ();
+
+	ps = gnome_paper_selector_new (print_config);
 	gtk_widget_show (ps);
 
-	dlg = gnome_dialog_new (_("Print Setup"),
-				GNOME_STOCK_BUTTON_OK,
-				GNOME_STOCK_BUTTON_CANCEL,
-				NULL);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dlg)->vbox), ps, TRUE, TRUE, 2);
+#if 0
+	dlg = gtk_dialog_new_with_buttons (_("Print Setup"),
+					   NULL,  /* FIXME: Set a sensible parent */
+					   0,
+					   GNOME_STOCK_BUTTON_OK,
+					   GNOME_STOCK_BUTTON_CANCEL,
+					   NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), ps, TRUE, TRUE, 2);
 
-	btn = gnome_dialog_run (GNOME_DIALOG (dlg));
+	btn = gtk_dialog_run (GTK_DIALOG (dlg));
 	if (btn == 0) {
 		gchar *name;
+
+		print_config = gnome_paper_selector_get_config (ps);
 
 		name  = gnome_paper_selector_get_name (GNOME_PAPER_SELECTOR (ps));
 		paper_info = gnome_paper_with_name (name);
 	}
 
-	gnome_dialog_close (GNOME_DIALOG (dlg));
+	gtk_widget_destroy (dlg);
+#endif
 }

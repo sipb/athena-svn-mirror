@@ -1,5 +1,9 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"wombat\"			\
+	-DPREFIX=\"$(prefix)\"				\
+	-DSYSCONFDIR=\"$(sysconfdir)\"			\
+	-DDATADIR=\"$(datadir)\"			\
+	-DLIBDIR=\"$(libdir)\"				\
 	-I$(top_srcdir)/e-util				\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/addressbook/backend		\
@@ -9,36 +13,35 @@ INCLUDES =						\
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/libical/src/libical		\
 	-I$(top_builddir)/libical/src/libical		\
-	-DEVOLUTION_DATADIR=\""$(datadir)"\"            \
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	$(WOMBAT_CFLAGS)
 
-bin_PROGRAMS =	\
-	wombat
+IDLS = \
+	Evolution-Wombat.idl
 
-WOMBAT_IDL = Evolution-Wombat.idl
+IDL_GENERATED_H = \
+	Evolution-Wombat.h
 
-WOMBAT_IDL_GENERATED =				\
-	Evolution-Wombat.h			\
+IDL_GENERATED_C =				\
 	Evolution-Wombat-common.c		\
 	Evolution-Wombat-skels.c		\
 	Evolution-Wombat-stubs.c
 
-$(WOMBAT_IDL_GENERATED): $(WOMBAT_IDL)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl` $(WOMBAT_IDL)
+IDL_GENERATED = $(IDL_GENERATED_H) $(IDL_GENERATED_C)
 
-idldir = $(datadir)/idl
+$(IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(srcdir)/Evolution-Wombat.idl
 
-idl_DATA = $(WOMBAT_IDL)
+$(IDL_GENERATED_C): $(IDL_GENERATED_H)
 
-wombat_SOURCES = 			\
-	$(WOMBAT_IDL_GENERATED)		\
+
+privlibexec_PROGRAMS =	\
+	evolution-wombat
+
+evolution_wombat_SOURCES = \
+	$(IDL_GENERATED)		\
 	wombat-interface-check.c	\
 	wombat-interface-check.h	\
-	wombat-moniker.c		\
-	wombat-moniker.h		\
-	wombat-private-moniker.c	\
-	wombat-private-moniker.h	\
 	wombat.c
 
 if ENABLE_LDAP
@@ -47,50 +50,56 @@ LDAP_STUFF =								\
 	$(LDAP_LIBS)
 endif
 
-wombat_LDADD =								\
+evolution_wombat_LDADD =						\
 	$(top_builddir)/addressbook/backend/pas/libpasfile.a		\
 	$(DB3_LDADD)							\
 	$(LDAP_STUFF)							\
 	$(top_builddir)/addressbook/backend/pas/libpas.a		\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
-	$(top_builddir)/camel/libcamel.la				\
-	$(top_builddir)/e-util/ename/libename.la			\
 	$(top_builddir)/calendar/pcs/libpcsfile.a			\
 	$(top_builddir)/calendar/pcs/libpcs.a				\
 	$(top_builddir)/calendar/cal-util/libcal-util.la		\
-	$(top_builddir)/libical/src/libical/libical-evolution.la	\
-	$(top_builddir)/libversit/libversit.a				\
 	$(top_builddir)/e-util/libedb3util.la				\
 	$(top_builddir)/e-util/libeutil.la				\
 	$(top_builddir)/libwombat/libwombat.la				\
 	$(WOMBAT_LIBS)
 
-oafdir = $(datadir)/oaf
-
 if ENABLE_LDAP
-OAF_IN_FILE=GNOME_Evolution_WombatLDAP.oaf.in
+SERVER_IN_FILE=GNOME_Evolution_WombatLDAP.server.in.in
 else
-OAF_IN_FILE=GNOME_Evolution_WombatNOLDAP.oaf.in
+SERVER_IN_FILE=GNOME_Evolution_WombatNOLDAP.server.in.in
 endif
 
-GNOME_Evolution_Wombat.oaf.in: $(OAF_IN_FILE)
+GNOME_Evolution_Wombat.server.in.in: $(SERVER_IN_FILE) Makefile
 	cp $< $@
 
-oaf_in_files = GNOME_Evolution_Wombat.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_in_files = GNOME_Evolution_Wombat.server.in.in
 
-@XML_I18N_MERGE_OAF_RULE@
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(privlibexecdir)|" $< > $@
 
-EXTRA_DIST = $(oaf_DATA) $(oaf_in_files) $(idl_DATA) \
-	     GNOME_Evolution_WombatLDAP.oaf.in GNOME_Evolution_WombatNOLDAP.oaf.in
+@INTLTOOL_SERVER_RULE@
+
+idl_DATA = $(IDLS)
+
+EXTRA_DIST = $(server_DATA)				\
+	$(server_in_files)				\
+	$(idl_DATA)					\
+	ChangeLog.pre-1-4				\
+	GNOME_Evolution_WombatLDAP.server.in.in		\
+	GNOME_Evolution_WombatNOLDAP.server.in.in
+
+BUILT_SOURCES = $(IDL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
 
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 
-all-local: wombat.pure
+all-local: evolution-wombat.pure
 
-wombat.pure: wombat
-	@rm -f wombat.pure
-	$(PLINK) $(wombat_LDFLAGS) $(wombat_OBJECTS) $(wombat_LDADD) $(LIBS)
+evolution-wombat.pure: evolution-wombat
+	@rm -f evolution-wombat.pure
+	$(PLINK) $(evolution_wombat_LDFLAGS) $(evolution_wombat_OBJECTS) $(evolution_wombat_LDADD) $(LIBS)
 
 endif

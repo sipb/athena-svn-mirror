@@ -34,6 +34,8 @@
 #include <bonobo/bonobo-exception.h>
 #include <gal/util/e-util.h>
 
+#include <string.h>
+
 
 #define PARENT_TYPE BONOBO_OBJECT_TYPE
 static BonoboObjectClass *parent_class = NULL;
@@ -46,31 +48,6 @@ struct _ECorbaStorageRegistryPrivate {
 
 
 /* CORBA interface implementation.  */
-
-static POA_GNOME_Evolution_StorageRegistry__vepv storage_registry_vepv;
-
-static POA_GNOME_Evolution_StorageRegistry *
-create_servant (void)
-{
-	POA_GNOME_Evolution_StorageRegistry *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_GNOME_Evolution_StorageRegistry *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &storage_registry_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_GNOME_Evolution_StorageRegistry__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return servant;
-}
 
 static void
 listener_notify (Bonobo_Listener listener,
@@ -96,9 +73,8 @@ listener_notify (Bonobo_Listener listener,
 			   CORBA_exception_id (&ev));
 	}
 
-	CORBA_free (nr.name);
-
 	CORBA_exception_free (&ev);
+        CORBA_free (nr.name);
 }
 
 static GNOME_Evolution_StorageListener
@@ -128,7 +104,7 @@ impl_StorageRegistry_addStorage (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	gtk_object_unref (GTK_OBJECT (storage));
+	g_object_unref (storage);
 
 
        /* FIXME: if we remove a listener while looping through the list we can
@@ -218,10 +194,9 @@ impl_StorageRegistry_getStorageByName (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	corba_storage = CORBA_Object_duplicate (e_corba_storage_get_corba_objref
-						(E_CORBA_STORAGE (storage)), ev);
+	corba_storage = e_corba_storage_get_corba_objref (E_CORBA_STORAGE (storage));
 
-	return corba_storage;
+	return bonobo_object_dup_ref (corba_storage, NULL);
 }
 
 static void
@@ -264,7 +239,7 @@ storage_set_foreach (EStorageSet *set,
 		name = e_storage_get_name (E_STORAGE (p->data));
 
 		listener_notify (listener, GNOME_Evolution_StorageRegistry_STORAGE_CREATED, name);
-		gtk_object_unref (GTK_OBJECT (p->data));
+		g_object_unref (p->data);
 	}
 	
 	g_list_free (storage_list);
@@ -412,10 +387,10 @@ impl_StorageRegistry_getFolderByUri (PortableServer_Servant servant,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	ECorbaStorageRegistry *corba_storage_registry;
 	ECorbaStorageRegistryPrivate *priv;
@@ -423,29 +398,42 @@ destroy (GtkObject *object)
 	corba_storage_registry = E_CORBA_STORAGE_REGISTRY (object);
 	priv = corba_storage_registry->priv;
 
-	if (priv->storage_set != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->storage_set));
+	if (priv->storage_set != NULL) {
+		g_object_unref (priv->storage_set);
+		priv->storage_set = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	ECorbaStorageRegistry *corba_storage_registry;
+	ECorbaStorageRegistryPrivate *priv;
+
+	corba_storage_registry = E_CORBA_STORAGE_REGISTRY (object);
+	priv = corba_storage_registry->priv;
+
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 /* Initialization.  */
 
 static void
-corba_class_init (void)
+e_corba_storage_registry_class_init (ECorbaStorageRegistryClass *klass)
 {
-	POA_GNOME_Evolution_StorageRegistry__vepv *vepv;
+	GObjectClass *object_class;
 	POA_GNOME_Evolution_StorageRegistry__epv *epv;
-	PortableServer_ServantBase__epv *base_epv;
 
-	base_epv = g_new0 (PortableServer_ServantBase__epv, 1);
-	base_epv->_private    = NULL;
-	base_epv->finalize    = NULL;
-	base_epv->default_POA = NULL;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
-	epv = g_new0 (POA_GNOME_Evolution_StorageRegistry__epv, 1);
+	epv = & klass->epv;
 	epv->addStorage          = impl_StorageRegistry_addStorage;
 	epv->getStorageList      = impl_StorageRegistry_getStorageList;
 	epv->getStorageByName    = impl_StorageRegistry_getStorageByName;
@@ -454,27 +442,11 @@ corba_class_init (void)
 	epv->removeListener      = impl_StorageRegistry_removeListener;
 	epv->getFolderByUri      = impl_StorageRegistry_getFolderByUri;
 
-	vepv = &storage_registry_vepv;
-	vepv->_base_epv                     = base_epv;
-	vepv->Bonobo_Unknown_epv            = bonobo_object_get_epv ();
-	vepv->GNOME_Evolution_StorageRegistry_epv = epv;
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 static void
-class_init (ECorbaStorageRegistryClass *klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
-
-	parent_class = gtk_type_class (PARENT_TYPE);
-
-	corba_class_init ();
-}
-
-static void
-init (ECorbaStorageRegistry *corba_storage_registry)
+e_corba_storage_registry_init (ECorbaStorageRegistry *corba_storage_registry)
 {
 	ECorbaStorageRegistryPrivate *priv;
 
@@ -488,20 +460,15 @@ init (ECorbaStorageRegistry *corba_storage_registry)
 
 void
 e_corba_storage_registry_construct (ECorbaStorageRegistry *corba_storage_registry,
-				    GNOME_Evolution_StorageRegistry corba_object,
 				    EStorageSet *storage_set)
 {
 	ECorbaStorageRegistryPrivate *priv;
 
-	g_return_if_fail (corba_storage_registry != NULL);
 	g_return_if_fail (E_IS_CORBA_STORAGE_REGISTRY (corba_storage_registry));
-	g_return_if_fail (corba_object != CORBA_OBJECT_NIL);
-
-	bonobo_object_construct (BONOBO_OBJECT (corba_storage_registry), corba_object);
 
 	priv = corba_storage_registry->priv;
 
-	gtk_object_ref (GTK_OBJECT (storage_set));
+	g_object_ref (storage_set);
 	priv->storage_set = storage_set;
 }
 
@@ -509,25 +476,19 @@ ECorbaStorageRegistry *
 e_corba_storage_registry_new (EStorageSet *storage_set)
 {
 	ECorbaStorageRegistry *corba_storage_registry;
-	POA_GNOME_Evolution_StorageRegistry *servant;
-	GNOME_Evolution_StorageRegistry corba_object;
 
 	g_return_val_if_fail (storage_set != NULL, NULL);
 	g_return_val_if_fail (E_IS_STORAGE_SET (storage_set), NULL);
 
-	servant = create_servant ();
-	if (servant == NULL)
-		return NULL;
+	corba_storage_registry = g_object_new (e_corba_storage_registry_get_type (), NULL);
 
-	corba_storage_registry = gtk_type_new (e_corba_storage_registry_get_type ());
-
-	corba_object = bonobo_object_activate_servant (BONOBO_OBJECT (corba_storage_registry),
-						       servant);
-
-	e_corba_storage_registry_construct (corba_storage_registry, corba_object, storage_set);
+	e_corba_storage_registry_construct (corba_storage_registry, storage_set);
 
 	return corba_storage_registry;
 }
 
 
-E_MAKE_TYPE (e_corba_storage_registry, "ECorbaStorageRegistry", ECorbaStorageRegistry, class_init, init, PARENT_TYPE)
+BONOBO_TYPE_FUNC_FULL (ECorbaStorageRegistry,
+		       GNOME_Evolution_StorageRegistry,
+		       PARENT_TYPE,
+		       e_corba_storage_registry)

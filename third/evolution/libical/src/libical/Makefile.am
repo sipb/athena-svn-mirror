@@ -2,7 +2,7 @@
 #  FILE: Makefile.am
 #  CREATOR: eric 
 #  
-#  $Id: Makefile.am,v 1.1.1.2 2001-11-08 23:20:55 ghudson Exp $
+#  $Id: Makefile.am,v 1.1.1.2.4.1 2003-07-14 17:21:53 ghudson Exp $
 #
 #
 # (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -26,17 +26,21 @@
 DESIGNDATA = $(top_srcdir)/design-data
 ICALSCRIPTS = $(top_srcdir)/scripts
 
-lib_LTLIBRARIES = libical-evolution.la
+privlib_LTLIBRARIES = libical-evolution.la
 
 noinst_LTLIBRARIES = libical-static.la
 libical_static_la_SOURCES = $(libical_evolution_la_SOURCES)
 libical_static_la_LDFLAGS = --all-static
 
+# Make sure libical-evolution.la and libical-static.la are not built in
+# parallel when using a parallel make; libtool can't handle that.
+libical_static_la_DEPENDENCIES = libical-evolution.la
+
 YFLAGS = -d -v -t -pical_yy
 LFLAGS = -Pical_yy
 LEX_OUTPUT_ROOT = lex.ical_yy
 
-CPPFLAGS = -DPACKAGE_DATA_DIR=\""$(datadir)/$(PACKAGE)"\"
+CPPFLAGS = -DPACKAGE_DATA_DIR=\""$(privdatadir)"\"
 
 all: ical.h
 
@@ -99,7 +103,7 @@ libical_evolution_la_SOURCES =	\
 	icallangbind.c
 
 #libicalincludedir = $(includedir)/$(PACKAGE)
-libicalincludedir = $(includedir)/evolution
+libicalincludedir = $(privincludedir)
 
 libicalinclude_HEADERS =  ical.h 
 

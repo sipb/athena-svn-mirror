@@ -112,7 +112,9 @@ struct _EStorageClass {
 					       void *data);
 
 	void         (* async_open_folder)    (EStorage *storage,
-					       const char *path);
+					       const char *path,
+					       EStorageDiscoveryCallback callback,
+					       void *data);
 
 	gboolean     (* supports_shared_folders)       (EStorage *storage);
 	void         (* async_discover_shared_folder)  (EStorage *storage,
@@ -165,8 +167,10 @@ void  e_storage_async_xfer_folder    (EStorage               *storage,
 				      const gboolean          remove_source,
 				      EStorageResultCallback  callback,
 				      void                   *data);
-void  e_storage_async_open_folder    (EStorage               *storage,
-				      const char             *path);
+void  e_storage_async_open_folder    (EStorage                  *storage,
+				      const char                *path,
+				      EStorageDiscoveryCallback  callback,
+				      void                      *data);
 
 const char *e_storage_result_to_string  (EStorageResult result);
 
@@ -191,9 +195,17 @@ char *e_storage_get_path_for_physical_uri  (EStorage   *storage,
 					    const char *physical_uri);
 
 /* Protected.  C++ anyone?  */
-gboolean  e_storage_new_folder      (EStorage *storage, const char *path, EFolder *folder);
-gboolean  e_storage_has_subfolders  (EStorage *storage, const char *path, const char *message);
-gboolean  e_storage_removed_folder  (EStorage *storage, const char *path);
+gboolean e_storage_new_folder             (EStorage   *storage,
+					   const char *path,
+					   EFolder    *folder);
+gboolean e_storage_removed_folder         (EStorage   *storage,
+					   const char *path);
+
+gboolean e_storage_declare_has_subfolders (EStorage   *storage,
+					   const char *path,
+					   const char *message);
+gboolean e_storage_get_has_subfolders     (EStorage   *storage,
+					   const char *path);
 
 #ifdef __cplusplus
 }

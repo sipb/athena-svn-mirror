@@ -34,7 +34,6 @@
 
 #include <time.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "calendar-config.h"
 #include "e-meeting-time-sel-item.h"
@@ -105,30 +104,9 @@ enum {
 	ARG_MEETING_TIME_SELECTOR
 };
 
-
-GtkType
-e_meeting_time_selector_item_get_type (void)
-{
-	static GtkType e_meeting_time_selector_item_type = 0;
-
-	if (!e_meeting_time_selector_item_type) {
-		GtkTypeInfo e_meeting_time_selector_item_info = {
-			"EMeetingTimeSelectorItem",
-			sizeof (EMeetingTimeSelectorItem),
-			sizeof (EMeetingTimeSelectorItemClass),
-			(GtkClassInitFunc) e_meeting_time_selector_item_class_init,
-			(GtkObjectInitFunc) e_meeting_time_selector_item_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_meeting_time_selector_item_type = gtk_type_unique (gnome_canvas_item_get_type (), &e_meeting_time_selector_item_info);
-	}
-
-	return e_meeting_time_selector_item_type;
-}
-
+E_MAKE_TYPE (e_meeting_time_selector_item, "EMeetingTimeSelectorItem", EMeetingTimeSelectorItem,
+	     e_meeting_time_selector_item_class_init, e_meeting_time_selector_item_init,
+	     GNOME_TYPE_CANVAS_ITEM);
 
 static void
 e_meeting_time_selector_item_class_init (EMeetingTimeSelectorItemClass *mts_item_class)
@@ -136,7 +114,7 @@ e_meeting_time_selector_item_class_init (EMeetingTimeSelectorItemClass *mts_item
 	GtkObjectClass  *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type());
+	parent_class = g_type_class_peek_parent (mts_item_class);
 
 	object_class = (GtkObjectClass *) mts_item_class;
 	item_class = (GnomeCanvasItemClass *) mts_item_class;
@@ -187,9 +165,15 @@ e_meeting_time_selector_item_destroy (GtkObject *object)
 
 	mts_item = E_MEETING_TIME_SELECTOR_ITEM (object);
 
-	gdk_cursor_destroy (mts_item->normal_cursor);
-	gdk_cursor_destroy (mts_item->resize_cursor);
-
+	if (mts_item->normal_cursor) {
+		gdk_cursor_destroy (mts_item->normal_cursor);
+		mts_item->normal_cursor = NULL;
+	}
+	if (mts_item->resize_cursor) {
+		gdk_cursor_destroy (mts_item->resize_cursor);
+		mts_item->resize_cursor = NULL;
+	}
+	
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(*GTK_OBJECT_CLASS (parent_class)->destroy)(object);
 }
@@ -430,16 +414,17 @@ e_meeting_time_selector_item_paint_day_top (EMeetingTimeSelectorItem *mts_item,
 {
 	EMeetingTimeSelector *mts;
 	GdkGC *gc;
-	GdkFont *font;
 	gint y, grid_x;
 	gchar buffer[128], *format;
 	gint hour, hour_x, hour_y;
 	GdkRectangle clip_rect;
+	PangoLayout *layout;
 
 	mts = mts_item->mts;
 	gc = mts_item->main_gc;
 
 	gdk_gc_set_foreground (gc, &mts->grid_color);
+	layout = gtk_widget_create_pango_layout (GTK_WIDGET (mts), NULL);
 
 	/* Draw the horizontal lines. */
 	y = mts->row_height - 1 - scroll_y;
@@ -451,7 +436,6 @@ e_meeting_time_selector_item_paint_day_top (EMeetingTimeSelectorItem *mts_item,
 	gdk_draw_line (drawable, gc, x, y, x + mts->day_width - 1, y);
 	y += mts->row_height;
 	gdk_draw_line (drawable, gc, x, y, x + mts->day_width - 1, y);
-
 
 	/* Draw the vertical grid lines. */
 	for (grid_x = mts->col_width - 1;
@@ -468,7 +452,6 @@ e_meeting_time_selector_item_paint_day_top (EMeetingTimeSelectorItem *mts_item,
 
 	/* Draw the date. Set a clipping rectangle so we don't draw over the
 	   next day. */
-	font = GTK_WIDGET (mts)->style->font;
 	if (mts->date_format == E_MEETING_TIME_SELECTOR_DATE_FULL)
 		/* This is a strftime() format string %A = full weekday name,
 		   %B = full month name, %d = month day, %Y = full year. */
@@ -489,27 +472,33 @@ e_meeting_time_selector_item_paint_day_top (EMeetingTimeSelectorItem *mts_item,
 	clip_rect.width = mts->day_width - 2;
 	clip_rect.height = mts->row_height - 2;
 	gdk_gc_set_clip_rectangle (gc, &clip_rect);
-	gdk_draw_string (drawable, font, gc,
-			 x + 2, 4 + font->ascent - scroll_y, buffer);
+	pango_layout_set_text (layout, buffer, -1);
+	gdk_draw_layout (drawable, gc,
+			 x + 2,
+			 4 - scroll_y,
+			 layout);
 	gdk_gc_set_clip_rectangle (gc, NULL);
 
 	/* Draw the hours. */
 	hour = mts->first_hour_shown;
 	hour_x = x + 2;
-	hour_y = mts->row_height + 4 + font->ascent - scroll_y;
+	hour_y = mts->row_height + 4 - scroll_y;
 	while (hour < mts->last_hour_shown) {
 		if (calendar_config_get_24_hour_format ())
-			gdk_draw_string (drawable, font, gc,
-					 hour_x, hour_y,
-					 EMeetingTimeSelectorHours[hour]);
+			pango_layout_set_text (layout, EMeetingTimeSelectorHours [hour], -1);
 		else
-			gdk_draw_string (drawable, font, gc,
-					 hour_x, hour_y,
-					 EMeetingTimeSelectorHours12[hour]);
+			pango_layout_set_text (layout, EMeetingTimeSelectorHours12 [hour], -1);
+
+		gdk_draw_layout (drawable, gc,
+				 hour_x,
+				 hour_y,
+				 layout);
 
 		hour += mts->zoomed_out ? 3 : 1;
 		hour_x += mts->col_width;
 	}
+
+	g_object_unref (layout);
 }
 
 

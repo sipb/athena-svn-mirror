@@ -9,18 +9,19 @@
  */
 
 #include <config.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmarshal.h>
-#include <libgnome/gnome-defs.h>
-#include <liboaf/liboaf.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <string.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 #include "addressbook.h"
 #include "e-card-cursor.h"
 #include "e-book-listener.h"
 #include "e-book.h"
+#include "e-book-marshal.h"
 #include "e-util/e-component-listener.h"
 
-GtkObjectClass *e_book_parent_class;
+static GObjectClass *parent_class;
 
 #define CARDSERVER_OAF_ID "OAFIID:GNOME_Evolution_Wombat_ServerFactory"
 
@@ -33,6 +34,10 @@ typedef enum {
 struct _EBookPrivate {
 	GList *book_factories;
 	GList *iter;
+
+	/* cached capabilites */
+	char *cap;
+	gboolean cap_queried;
 
 	EBookListener	      *listener;
 	EComponentListener    *comp_listener;
@@ -51,6 +56,9 @@ struct _EBookPrivate {
 	guint op_tag;
 
 	gchar *uri;
+
+	gulong listener_signal;
+	gulong died_signal;
 };
 
 enum {
@@ -234,7 +242,7 @@ e_book_do_response_get_vcard (EBook                 *book,
 					((EBookCardCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
 			}
 
-			gtk_object_unref(GTK_OBJECT(card));
+			g_object_unref(card);
 		} else {
 			((EBookCursorCallback) op->cb) (book, resp->status, NULL, op->closure);
 		}
@@ -286,7 +294,7 @@ e_book_do_response_get_cursor (EBook                 *book,
 
 		CORBA_exception_free (&ev);
 
-		gtk_object_unref(GTK_OBJECT(cursor));
+		g_object_unref(cursor);
 	} else {
 		((EBookCursorCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
 	}
@@ -339,7 +347,7 @@ e_book_do_response_get_view (EBook                 *book,
 
 		CORBA_exception_free (&ev);
 
-		gtk_object_unref(GTK_OBJECT(book_view));
+		g_object_unref(book_view);
 	} else {
 		e_book_view_listener_stop (op->listener);
 		((EBookBookViewCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
@@ -390,7 +398,7 @@ e_book_do_response_get_changes (EBook                 *book,
 
 		CORBA_exception_free (&ev);
 
-		gtk_object_unref(GTK_OBJECT(book_view));
+		g_object_unref(book_view);
 	} else {
 		e_book_view_listener_stop (op->listener);
 		((EBookBookViewCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
@@ -405,7 +413,7 @@ backend_died_cb (EComponentListener *cl, gpointer user_data)
 	EBook *book = user_data;
 
 	book->priv->load_state = URINotLoaded;
-        gtk_signal_emit (GTK_OBJECT (book), e_book_signals [BACKEND_DIED]);
+        g_signal_emit (book, e_book_signals [BACKEND_DIED], 0);
 }
 
 static void
@@ -418,9 +426,9 @@ e_book_do_response_open (EBook                 *book,
 		book->priv->corba_book  = resp->book;
 		book->priv->load_state  = URILoaded;
 
-		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book, 0);
-                gtk_signal_connect (GTK_OBJECT (book->priv->comp_listener), "component_died",
-                                    GTK_SIGNAL_FUNC (backend_died_cb), book);
+		book->priv->comp_listener = e_component_listener_new (book->priv->corba_book);
+                book->priv->died_signal = g_signal_connect (book->priv->comp_listener, "component_died",
+							    G_CALLBACK (backend_died_cb), book);
 	}
 
 	op = e_book_pop_op (book);
@@ -440,8 +448,8 @@ static void
 e_book_do_progress_event (EBook                 *book,
 			  EBookListenerResponse *resp)
 {
-	gtk_signal_emit (GTK_OBJECT (book), e_book_signals [OPEN_PROGRESS],
-			 resp->msg, resp->percent);
+	g_signal_emit (book, e_book_signals [OPEN_PROGRESS], 0,
+		       resp->msg, resp->percent);
 
 	g_free (resp->msg);
 }
@@ -450,16 +458,16 @@ static void
 e_book_do_link_event (EBook                 *book,
 		      EBookListenerResponse *resp)
 {
-	gtk_signal_emit (GTK_OBJECT (book), e_book_signals [LINK_STATUS],
-			 resp->connected);
+	g_signal_emit (book, e_book_signals [LINK_STATUS], 0,
+		       resp->connected);
 }
 
 static void
 e_book_do_writable_event (EBook                 *book,
 			  EBookListenerResponse *resp)
 {
-	gtk_signal_emit (GTK_OBJECT (book), e_book_signals [WRITABLE_STATUS],
-			 resp->writable);
+	g_signal_emit (book, e_book_signals [WRITABLE_STATUS], 0,
+		       resp->writable);
 }
 
 static void
@@ -478,12 +486,38 @@ e_book_do_response_get_supported_fields (EBook                 *book,
 
 	if (op->cb) {
 		if (op->active)
-			((EBookFieldsCallback) op->cb) (book, resp->status, resp->fields, op->closure);
+			((EBookFieldsCallback) op->cb) (book, resp->status, resp->list, op->closure);
 		else
 			((EBookFieldsCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
 	}
 
-	gtk_object_unref(GTK_OBJECT(resp->fields));
+	g_object_unref(resp->list);
+
+	e_book_op_free (op);
+}
+
+static void
+e_book_do_response_get_supported_auth_methods (EBook                 *book,
+					       EBookListenerResponse *resp)
+{
+	EBookOp *op;
+
+	op = e_book_pop_op (book);
+
+	if (op == NULL) {
+		g_warning ("e_book_do_response_get_supported_auth_methods: Cannot find operation "
+			   "in local op queue!\n");
+		return;
+	}
+
+	if (op->cb) {
+		if (op->active)
+			((EBookAuthMethodsCallback) op->cb) (book, resp->status, resp->list, op->closure);
+		else
+			((EBookAuthMethodsCallback) op->cb) (book, E_BOOK_STATUS_CANCELLED, NULL, op->closure);
+	}
+
+	g_object_unref(resp->list);
 
 	e_book_op_free (op);
 }
@@ -527,6 +561,9 @@ e_book_check_listener_queue (EBookListener *listener, EBook *book)
 		break;
 	case GetSupportedFieldsResponse:
 		e_book_do_response_get_supported_fields (book, resp);
+		break;
+	case GetSupportedAuthMethodsResponse:
+		e_book_do_response_get_supported_auth_methods (book, resp);
 		break;
 
 	case OpenProgressEvent:
@@ -631,7 +668,7 @@ static gboolean
 activate_factories_for_uri (EBook *book, const char *uri)
 {
 	CORBA_Environment ev;
-	OAF_ServerInfoList *info_list = NULL;
+	Bonobo_ServerInfoList *info_list = NULL;
 	int i;
 	char *protocol, *query, *colon;
 	gboolean retval = FALSE;
@@ -649,10 +686,10 @@ activate_factories_for_uri (EBook *book, const char *uri)
 
 	CORBA_exception_init (&ev);
 	
-	info_list = oaf_query (query, NULL, &ev);
+	info_list = bonobo_activation_query (query, NULL, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Eeek!  Cannot perform OAF query for book factories.");
+		g_warning ("Eeek!  Cannot perform bonobo-activation query for book factories.");
 		CORBA_exception_free (&ev);
 		goto shutdown;
 	}
@@ -666,12 +703,12 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	CORBA_exception_free (&ev);
 
 	for (i = 0; i < info_list->_length; i ++) {
-		const OAF_ServerInfo *info;
+		const Bonobo_ServerInfo *info;
 		GNOME_Evolution_Addressbook_BookFactory factory;
 
 		info = info_list->_buffer + i;
 
-		factory = oaf_activate_from_id (info->iid, 0, NULL, NULL);
+		factory = bonobo_activation_activate_from_id (info->iid, 0, NULL, NULL);
 
 		if (factory == CORBA_OBJECT_NIL)
 			g_warning ("e_book_construct: Could not obtain a handle "
@@ -697,7 +734,7 @@ activate_factories_for_uri (EBook *book, const char *uri)
 	return retval;
 }
 
-gboolean
+void
 e_book_load_uri (EBook                     *book,
 		 const char                *uri,
 		 EBookCallback              open_response,
@@ -706,21 +743,22 @@ e_book_load_uri (EBook                     *book,
 	EBookLoadURIData *load_uri_data;
 	GNOME_Evolution_Addressbook_BookFactory factory;
 
-	g_return_val_if_fail (book != NULL,          FALSE);
-	g_return_val_if_fail (E_IS_BOOK (book),      FALSE);
-	g_return_val_if_fail (uri != NULL,           FALSE);
-	g_return_val_if_fail (open_response != NULL, FALSE);
+	g_return_if_fail (book != NULL);
+	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (uri != NULL);
+	g_return_if_fail (open_response != NULL);
 
 	if (book->priv->load_state != URINotLoaded) {
 		g_warning ("e_book_load_uri: Attempted to load a URI "
 			   "on a book which already has a URI loaded!\n");
-		return FALSE;
+		open_response (book, E_BOOK_STATUS_OTHER_ERROR, closure); /* XXX need a new status code here */
+		return;
 	}
 
 	/* try to find a list of factories that can handle the protocol */
 	if (!activate_factories_for_uri (book, uri)) {
-		open_response (NULL, E_BOOK_STATUS_PROTOCOL_NOT_SUPPORTED, closure);
-		return FALSE;
+		open_response (book, E_BOOK_STATUS_PROTOCOL_NOT_SUPPORTED, closure);
+		return;
 	}
 		
 	g_free (book->priv->uri);
@@ -732,11 +770,12 @@ e_book_load_uri (EBook                     *book,
 	book->priv->listener = e_book_listener_new ();
 	if (book->priv->listener == NULL) {
 		g_warning ("e_book_load_uri: Could not create EBookListener!\n");
-		return FALSE;
+		open_response (NULL, E_BOOK_STATUS_OTHER_ERROR, closure); /* XXX need a new status code here */
+		return;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (book->priv->listener), "responses_queued",
-			    e_book_check_listener_queue, book);
+	book->priv->listener_signal = g_signal_connect (book->priv->listener, "responses_queued",
+							G_CALLBACK (e_book_check_listener_queue), book);
 
 	load_uri_data = g_new (EBookLoadURIData, 1);
 	load_uri_data->open_response = open_response;
@@ -750,10 +789,6 @@ e_book_load_uri (EBook                     *book,
 	e_book_load_uri_from_factory (book, factory, load_uri_data);
 
 	book->priv->load_state = URILoading;
-
-	/* Now we play the waiting game. */
-
-	return TRUE;
 }
 
 /**
@@ -807,32 +842,52 @@ e_book_get_uri (EBook *book)
 char *
 e_book_get_static_capabilities (EBook *book)
 {
-	CORBA_Environment ev;
-	char *temp;
-	char *ret_val;
+	if (!book->priv->cap_queried) {
+		CORBA_Environment ev;
+		char *temp;
 
-	CORBA_exception_init (&ev);
+		CORBA_exception_init (&ev);
 
-	if (book->priv->load_state != URILoaded) {
-		g_warning ("e_book_unload_uri: No URI is loaded!\n");
-		return g_strdup("");
-	}
+		if (book->priv->load_state != URILoaded) {
+			g_warning ("e_book_unload_uri: No URI is loaded!\n");
+			return g_strdup("");
+		}
 
-	temp = GNOME_Evolution_Addressbook_Book_getStaticCapabilities(book->priv->corba_book, &ev);
+		temp = GNOME_Evolution_Addressbook_Book_getStaticCapabilities(book->priv->corba_book, &ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("e_book_get_static_capabilities: Exception "
-			   "during get_static_capabilities!\n");
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_warning ("e_book_get_static_capabilities: Exception "
+				   "during get_static_capabilities!\n");
+			CORBA_exception_free (&ev);
+			return g_strdup("");
+		}
+
+		book->priv->cap = g_strdup(temp);
+		book->priv->cap_queried = TRUE;
+
+		CORBA_free(temp);
+
 		CORBA_exception_free (&ev);
-		return g_strdup("");
 	}
 
-	ret_val = g_strdup(temp);
-	CORBA_free(temp);
+	return g_strdup (book->priv->cap);
+}
 
-	CORBA_exception_free (&ev);
+gboolean
+e_book_check_static_capability  (EBook *book, const char *cap)
+{
+	gboolean rv = FALSE;
+	char *caps = e_book_get_static_capabilities (book);
+	if (!caps)
+		return FALSE;
 
-	return ret_val;
+	/* XXX this is an inexact test but it works for our use */
+	if (strstr (caps, cap))
+		rv = TRUE;
+
+	g_free (caps);
+
+	return rv;
 }
 
 guint
@@ -867,6 +922,38 @@ e_book_get_supported_fields (EBook              *book,
 	return tag;
 }
 
+guint
+e_book_get_supported_auth_methods (EBook                   *book,
+				   EBookAuthMethodsCallback cb,
+				   gpointer                 closure)
+{
+	CORBA_Environment ev;
+	guint tag;
+
+	CORBA_exception_init (&ev);
+
+	if (book->priv->load_state != URILoaded) {
+		g_warning ("e_book_unload_uri: No URI is loaded!\n");
+		return 0;
+	}
+
+	tag = e_book_queue_op (book, cb, closure, NULL);
+
+	GNOME_Evolution_Addressbook_Book_getSupportedAuthMethods(book->priv->corba_book, &ev);
+
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_warning ("e_book_get_supported_auth_methods: Exception "
+			   "during get_supported_auth_methods!\n");
+		CORBA_exception_free (&ev);
+		e_book_unqueue_op (book);
+		return 0;
+	}
+
+	CORBA_exception_free (&ev);
+
+	return tag;
+}
+
 static gboolean
 e_book_construct (EBook *book)
 {
@@ -886,10 +973,10 @@ e_book_new (void)
 {
 	EBook *book;
 
-	book = gtk_type_new (E_BOOK_TYPE);
+	book = g_object_new (E_TYPE_BOOK, NULL);
 
 	if (! e_book_construct (book)) {
-		gtk_object_unref (GTK_OBJECT (book));
+		g_object_unref (book);
 		return NULL;
 	}
 
@@ -1016,11 +1103,32 @@ e_book_remove_card_by_id (EBook         *book,
 			  gpointer       closure)
 
 {
+	GList *list = NULL;
+	gboolean rv;
+
+	list = g_list_prepend (list, (char*)id);
+	
+	rv = e_book_remove_cards (book, list, cb, closure);
+
+	g_list_free (list);
+
+	return rv;
+}
+
+gboolean
+e_book_remove_cards (EBook         *book,
+		     GList         *ids,
+		     EBookCallback cb,
+		     gpointer      closure)
+{
+	GNOME_Evolution_Addressbook_CardIdList idlist;
 	CORBA_Environment ev;
+	GList *l;
+	int num_ids, i;
 
 	g_return_val_if_fail (book != NULL,     FALSE);
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-	g_return_val_if_fail (id != NULL,       FALSE);
+	g_return_val_if_fail (ids != NULL,     FALSE);
 
 	if (book->priv->load_state != URILoaded) {
 		g_warning ("e_book_remove_card_by_id: No URI loaded!\n");
@@ -1031,8 +1139,16 @@ e_book_remove_card_by_id (EBook         *book,
 
 	e_book_queue_op (book, cb, closure, NULL);
 
-	GNOME_Evolution_Addressbook_Book_removeCard (
-		book->priv->corba_book, (const GNOME_Evolution_Addressbook_CardId) id, &ev);
+	num_ids = g_list_length (ids);
+	idlist._buffer = CORBA_sequence_GNOME_Evolution_Addressbook_CardId_allocbuf (num_ids);
+	idlist._maximum = num_ids;
+	idlist._length = num_ids;
+
+	for (l = ids, i = 0; l; l=l->next, i ++) {
+		idlist._buffer[i] = CORBA_string_dup (l->data);
+	}
+
+	GNOME_Evolution_Addressbook_Book_removeCards (book->priv->corba_book, &idlist, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("e_book_remove_card_by_id: CORBA exception "
@@ -1044,8 +1160,11 @@ e_book_remove_card_by_id (EBook         *book,
 	
 	CORBA_exception_free (&ev);
 
+	CORBA_free(idlist._buffer);
+
 	return TRUE;
 }
+
 
 /* Adding cards. */
 
@@ -1083,10 +1202,7 @@ e_book_add_card (EBook           *book,
 
 	g_free (vcard);
 
-	if (card->book && card->book != book)
-		gtk_object_unref (GTK_OBJECT (card->book));
-	card->book = book;
-	gtk_object_ref (GTK_OBJECT (card->book));
+	e_card_set_book (card, book);
 
 	return retval;
 }
@@ -1166,10 +1282,7 @@ e_book_commit_card (EBook         *book,
 
 	g_free (vcard);
 
-	if (card->book && card->book != book)
-		gtk_object_unref (GTK_OBJECT (card->book));
-	card->book = book;
-	gtk_object_ref (GTK_OBJECT (card->book));
+	e_card_set_book (card, book);
 
 	return retval;
 }
@@ -1471,100 +1584,116 @@ e_book_init (EBook *book)
 }
 
 static void
-e_book_destroy (GtkObject *object)
+e_book_dispose (GObject *object)
 {
 	EBook             *book = E_BOOK (object);
-	CORBA_Environment  ev;
-	GList *l;
 
-	if (book->priv->load_state == URILoaded)
-		e_book_unload_uri (book);
+	if (book->priv) {
+		CORBA_Environment  ev;
+		GList *l;
 
-	CORBA_exception_init (&ev);
+		if (book->priv->load_state == URILoaded)
+			e_book_unload_uri (book);
 
-	for (l = book->priv->book_factories; l; l = l->next) {
-		CORBA_Object_release ((CORBA_Object)l->data, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
-			g_warning ("EBook: Exception while releasing BookFactory\n");
+		CORBA_exception_init (&ev);
 
-			CORBA_exception_free (&ev);
-			CORBA_exception_init (&ev);
+		for (l = book->priv->book_factories; l; l = l->next) {
+			CORBA_Object_release ((CORBA_Object)l->data, &ev);
+			if (ev._major != CORBA_NO_EXCEPTION) {
+				g_warning ("EBook: Exception while releasing BookFactory\n");
+
+				CORBA_exception_free (&ev);
+				CORBA_exception_init (&ev);
+			}
 		}
+		
+		CORBA_exception_free (&ev);
+
+		if (book->priv->listener) {
+			g_signal_handler_disconnect (book->priv->comp_listener, book->priv->listener_signal);
+			bonobo_object_unref (book->priv->listener);
+			book->priv->listener = NULL;
+		}
+		
+		if (book->priv->comp_listener) {
+			g_signal_handler_disconnect (book->priv->comp_listener, book->priv->died_signal);
+			g_object_unref (book->priv->comp_listener);
+			book->priv->comp_listener = NULL;
+		}
+
+		g_free (book->priv->cap);
+
+		g_free (book->priv->uri);
+
+		g_free (book->priv);
+		book->priv = NULL;
 	}
 
-        if (book->priv->comp_listener) {
-                gtk_signal_disconnect_by_data (GTK_OBJECT (book->priv->comp_listener), book);
-                gtk_object_unref (GTK_OBJECT (book->priv->comp_listener));
-                book->priv->comp_listener = NULL;
-        }
-
-	g_free (book->priv->uri);
-
-	g_free (book->priv);
-
-	GTK_OBJECT_CLASS (e_book_parent_class)->destroy (object);
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 e_book_class_init (EBookClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	e_book_parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
 	e_book_signals [LINK_STATUS] =
-		gtk_signal_new ("link_status",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EBookClass, link_status),
-				gtk_marshal_NONE__BOOL,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_BOOL);
+		g_signal_new ("link_status",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookClass, link_status),
+			      NULL, NULL,
+			      e_book_marshal_NONE__BOOL,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_BOOLEAN);
 
 	e_book_signals [WRITABLE_STATUS] =
-		gtk_signal_new ("writable_status",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EBookClass, writable_status),
-				gtk_marshal_NONE__BOOL,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_BOOL);
+		g_signal_new ("writable_status",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookClass, writable_status),
+			      NULL, NULL,
+			      e_book_marshal_NONE__BOOL,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_BOOLEAN);
 
 	e_book_signals [BACKEND_DIED] =
-		gtk_signal_new ("backend_died",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EBookClass, backend_died),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("backend_died",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookClass, backend_died),
+			      NULL, NULL,
+			      e_book_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, e_book_signals,
-				      LAST_SIGNAL);
-
-	object_class->destroy = e_book_destroy;
+	object_class->dispose = e_book_dispose;
 }
 
 /**
  * e_book_get_type:
  */
-GtkType
+GType
 e_book_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 
 	if (! type) {
-		GtkTypeInfo info = {
-			"EBook",
-			sizeof (EBook),
+		GTypeInfo info = {
 			sizeof (EBookClass),
-			(GtkClassInitFunc)  e_book_class_init,
-			(GtkObjectInitFunc) e_book_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc)  e_book_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (EBook),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) e_book_init
 		};
 
-		type = gtk_type_unique (gtk_object_get_type (), &info);
+		type = g_type_register_static (G_TYPE_OBJECT, "EBook", &info, 0);
 	}
 
 	return type;

@@ -2,7 +2,7 @@
   FILE: icalvcal.c
   CREATOR: eric 25 May 00
   
-  $Id: icalvcal.c,v 1.1.1.3 2002-12-19 15:20:29 ghudson Exp $
+  $Id: icalvcal.c,v 1.1.1.3.2.1 2003-07-14 17:21:54 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -149,10 +149,10 @@ static void convert_floating_time_to_utc (struct icaltimetype *itt)
 }
 
 
-static void icalvcal_traverse_objects(VObject *object,
-				      icalcomponent* last_comp,
-				      icalproperty* last_prop,
-				      icalvcal_defaults *defaults)
+static int icalvcal_traverse_objects(VObject *object,
+				     icalcomponent* last_comp,
+				     icalproperty* last_prop,
+				     icalvcal_defaults *defaults)
 {
     VObjectIterator iterator;
     char* name = "[No Name]";
@@ -161,8 +161,7 @@ static void icalvcal_traverse_objects(VObject *object,
     
     if ( vObjectName(object)== 0){
 	printf("ERROR, object has no name");
-	assert(0);
-	return;
+	return 0;
     }
 
     name = (char*)vObjectName(object);
@@ -185,8 +184,7 @@ static void icalvcal_traverse_objects(VObject *object,
 	   icalproperty_set_x_name(prop,name);
 	   icalcomponent_add_property(last_comp,prop);
 	} else {
-	    assert(0);
-	    return;
+	    return 0;
 	}
 
     } else {
@@ -276,12 +274,16 @@ static void icalvcal_traverse_objects(VObject *object,
            should use it as the 'last_comp' */
 
 	if(subc!=0){
-	    icalvcal_traverse_objects(eachProp,subc,last_prop,defaults);
+	    if (!icalvcal_traverse_objects(eachProp,subc,last_prop,defaults))
+	        return 0;
 	
 	} else {
-	    icalvcal_traverse_objects(eachProp,last_comp,last_prop,defaults);
+	    if (!icalvcal_traverse_objects(eachProp,last_comp,last_prop,defaults))
+		return 0;
 	}
     }
+
+    return 1;
 }
 
 icalcomponent* icalvcal_convert_with_defaults (VObject *object,
@@ -307,7 +309,8 @@ icalcomponent* icalvcal_convert_with_defaults (VObject *object,
    printf ("===========================================\n");
 #endif
 
-   icalvcal_traverse_objects(object,container,0,defaults);
+   if (!icalvcal_traverse_objects(object,container,0,defaults))
+	   return 0;
    
    /* HACK. I am using the extra 'container' component because I am
       lazy. I know there is a way to get rid of it, but I did not care

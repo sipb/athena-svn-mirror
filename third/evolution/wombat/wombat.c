@@ -17,13 +17,15 @@
 #ifdef DEBUG_BACKENDS
 #include <sys/signal.h>
 #endif
+
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
-#include <liboaf/liboaf.h>
+#include <libgnome/gnome-init.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-i18n.h>
+#include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-generic-factory.h>
 
 #include "pas/pas-book-factory.h"
 #include "pas/pas-backend-file.h"
@@ -31,12 +33,11 @@
 #include "calendar/pcs/cal-factory.h"
 #include "calendar/pcs/cal-backend-file.h"
 
+#include "wombat-interface-check.h"
+
 #ifdef HAVE_LDAP
 #include "pas/pas-backend-ldap.h"
 #endif
-
-#include "wombat-moniker.h"
-#include "wombat-private-moniker.h"
 
 #define CAL_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_CalendarFactory"
 #define PAS_BOOK_FACTORY_OAF_ID "OAFIID:GNOME_Evolution_Wombat_ServerFactory"
@@ -44,6 +45,7 @@
 /* The and addressbook calendar factories */
 
 static CalFactory *cal_factory;
+
 static PASBookFactory *pas_book_factory;
 
 /* Timeout interval in milliseconds for termination */
@@ -62,10 +64,11 @@ static guint termination_handler_id;
 static gboolean
 termination_handler (gpointer data)
 {
-	if (cal_factory_get_n_backends (cal_factory) == 0
-	    && pas_book_factory_get_n_backends (pas_book_factory) == 0) {
+	if (
+	    cal_factory_get_n_backends (cal_factory) == 0 &&
+	    pas_book_factory_get_n_backends (pas_book_factory) == 0) {
 		fprintf (stderr, "termination_handler(): Terminating the Wombat.  Have a nice day.\n");
-		gtk_main_quit ();
+		bonobo_main_quit ();
 	}
 
 	termination_handler_id = 0;
@@ -91,7 +94,7 @@ last_book_gone_cb (PASBookFactory *factory, gpointer data)
 }
 
 static gboolean
-setup_pas (int argc, char **argv)
+setup_pas (void)
 {
 	pas_book_factory = pas_book_factory_new ();
 
@@ -106,10 +109,10 @@ setup_pas (int argc, char **argv)
 		pas_book_factory, "ldap", pas_backend_ldap_new);
 #endif
 
-	gtk_signal_connect (GTK_OBJECT (pas_book_factory),
-			    "last_book_gone",
-			    GTK_SIGNAL_FUNC (last_book_gone_cb),
-			    NULL);
+	g_signal_connect (pas_book_factory,
+			  "last_book_gone",
+			  G_CALLBACK (last_book_gone_cb),
+			  NULL);
 
 	if (!pas_book_factory_activate (pas_book_factory, PAS_BOOK_FACTORY_OAF_ID)) {
 		bonobo_object_unref (BONOBO_OBJECT (pas_book_factory));
@@ -121,7 +124,6 @@ setup_pas (int argc, char **argv)
 }
 
 
-
 /* Personal calendar server */
 
 /* Callback used when the calendar factory has no more running backends */
@@ -133,7 +135,7 @@ last_calendar_gone_cb (CalFactory *factory, gpointer data)
 
 /* Creates the calendar factory object and registers it */
 static gboolean
-setup_pcs (int argc, char **argv)
+setup_pcs (void)
 {
 	cal_factory = cal_factory_new ();
 
@@ -150,82 +152,31 @@ setup_pcs (int argc, char **argv)
 		return FALSE;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (cal_factory),
-			    "last_calendar_gone",
-			    GTK_SIGNAL_FUNC (last_calendar_gone_cb),
-			    NULL);
+	g_signal_connect (G_OBJECT (cal_factory),
+			  "last_calendar_gone",
+			  G_CALLBACK (last_calendar_gone_cb),
+			  NULL);
 
 	return TRUE;
 }
 
 
+/* Interface check iface.  */
 
 static gboolean
-setup_config (int argc, char **argv)
+setup_interface_check (void)
 {
-	BonoboGenericFactory *factory;
-	char *oafiid = "OAFIID:Bonobo_Moniker_wombat_Factory";
+	WombatInterfaceCheck *interface_check_iface = wombat_interface_check_new ();
+	int result;
 
-	factory = bonobo_generic_factory_new_multi (oafiid, 
-						    wombat_moniker_factory,
-						    NULL);
-       
-	// bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
-       
+	result = bonobo_activation_active_server_register ("OAFIID:GNOME_Evolution_Wombat_InterfaceCheck",
+							   BONOBO_OBJREF (interface_check_iface));
 
-	return TRUE;
+	return result == Bonobo_ACTIVATION_REG_SUCCESS;
 }
 
-static gboolean
-setup_private (int argc, char **argv)
-{
-	BonoboGenericFactory *factory;
-	char *oafiid = "OAFIID:Bonobo_Moniker_wombat_private_Factory";
-
-	factory = bonobo_generic_factory_new_multi (oafiid, 
-						    wombat_private_moniker_factory,
-						    NULL);
-       
-	// bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
-       
-
-	return TRUE;
-}
-
-static void
-setup_vfs (int argc, char **argv)
-{
-	if (!gnome_vfs_init ()) {
-		g_message (_("setup_vfs(): could not initialize GNOME-VFS"));
-		exit (EXIT_FAILURE);
-	}
-}
 
 
-
-static void
-init_corba (int *argc, char **argv)
-{
-	if (gnome_init_with_popt_table ("wombat", VERSION,
-					*argc, argv, oaf_popt_options, 0, NULL) != 0) {
-		g_message (_("init_corba(): could not initialize GNOME"));
-		exit (EXIT_FAILURE);
-	}
-
-	oaf_init (*argc, argv);
-}
-
-static void
-init_bonobo (int *argc, char **argv)
-{
-	init_corba (argc, argv);
-
-	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL)) {
-		g_message (_("init_bonobo(): could not initialize Bonobo"));
-		exit (EXIT_FAILURE);
-	}
-}
-
 #ifdef DEBUG_BACKENDS
 static void
 dump_backends (int signal)
@@ -238,10 +189,10 @@ dump_backends (int signal)
 int
 main (int argc, char **argv)
 {
-	gboolean did_pas=FALSE, did_pcs=FALSE, did_config=FALSE, did_private=FALSE;
+	gboolean did_pas=FALSE, did_pcs=FALSE;
 
-	bindtextdomain (PACKAGE, EVOLUTION_LOCALEDIR);
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, EVOLUTION_LOCALEDIR);
+	textdomain (GETTEXT_PACKAGE);
 
 	g_message ("Starting wombat");
 
@@ -249,30 +200,26 @@ main (int argc, char **argv)
 	signal (SIGUSR2, dump_backends);
 #endif
 
-	init_bonobo (&argc, argv);
-	setup_vfs (argc, argv);
+       	gnome_program_init ("Wombat", VERSION,
+			    LIBGNOME_MODULE,
+			    argc, argv,
+			    GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 
-	/*g_log_set_always_fatal (G_LOG_LEVEL_ERROR |
-				G_LOG_LEVEL_CRITICAL |
-				G_LOG_LEVEL_WARNING);*/
+	bonobo_init_full (&argc, argv,
+			  bonobo_activation_orb_get(),
+			  CORBA_OBJECT_NIL,
+			  CORBA_OBJECT_NIL);
 
-	if (!( (did_pas = setup_pas (argc, argv))
-	       && (did_pcs = setup_pcs (argc, argv))
-	       && (did_private = setup_private (argc, argv))
-	       /* WARNING: Do not change the order here.  `setup_config()' must
-		  come last, to work around an OAF race condition.  */
-	       && (did_config = setup_config (argc, argv)))) {
+	if (!( (did_pas = setup_pas ())
+	       && (did_pcs = setup_pcs ())
+		    )) {
 
 		const gchar *failed = NULL;
 
 		if (!did_pas)
-		  failed = "PAS";
+			failed = "PAS";
 		else if (!did_pcs)
-		  failed = "PCS";
-		else if (!did_config)
-		  failed = "Config";
-		else if (!did_private)
-		  failed = "Private Config";
+			failed = "PCS";
 
 		g_message ("main(): could not initialize Wombat service \"%s\"; terminating", failed);
 
@@ -285,7 +232,11 @@ main (int argc, char **argv)
 			bonobo_object_unref (BONOBO_OBJECT (cal_factory));
 			cal_factory = NULL;
 		}
+		exit (EXIT_FAILURE);
+	}
 
+	if (! setup_interface_check ()) {
+		g_message ("Cannot register Wombat::InterfaceCheck object");
 		exit (EXIT_FAILURE);
 	}
 

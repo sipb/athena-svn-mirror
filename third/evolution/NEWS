@@ -1,850 +1,824 @@
-Evolution 1.2.3, 2003-03-31
+Evolution 1.4.3, 2003-07-08
 ---------------------------
 
-New features:
+Bugs fixed:
 
-  * Mail
+  * Addresbook
 
-    - Added support for Kerberos 5 authentication using GSSAPI.
-
-Updated translations:
-
-  - es (Francisco Javier Fernandez)
-  - it (Marco Ciampa)
-  - no (Kjartan Maraas)
-  - pl (Zbigniew Chyla)
-  - pt (Duarte Loreto)
-  - pt_BR (Gustavo Maciel Dias Vieira)
-  - sv (Christian Rose)
-  - zh_TW (Abel Cheung)
-
-
-Evolution 1.2.3, 2003-03-17
----------------------------
-
-Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
-
-  * Mail
- 
-    #35123 -- The new/post button chooses a different default account
-              to the new message menu.  (Leon Zhang)
-    #33267 -- Filters on source account always match all messages when
-              applied to a local folder.  (Michael)
-    #38418 -- Set the local provider name to non-NULL to prevent a
-              crash on Solaris.  (Jeff)
-    #38499 -- Header display should not collapse whitespace.  (Jeff)
-    #37854 -- Re-Allow users to send to address-lists.  (Jeff)
-    #36453 -- Text render bug in PGP passphrase prompt.  (Jeff)
-    #39138 -- GPG signed part of message has extra blank line 
-              after signing when sent via sendmail.  (Jeff)
-    #38073 -- Unimplemented option in Advanced Search dialog.  (Jeff)
-
-Other fixes:
-
-  * Addressbook
-
-    - support icsCalendar property and corrected a problem with
-      fetching card properties via  select names
+    - Fixed a race condition that could cause a crash on exit and some
+      memory leaks.  (Dan)
 
   * Calendar
 
-    - Various changes to allow the backend to alter the GUI and to
-      handle RECURRENCE-IDS in events
-
-  * Mailer
-
-    - Fixed a memory leak when using Mark All As Read.  (Jeff)
-    - Make the inline uuencode handler more robust.  (Jeff)
-    - Make the content-id parser more strict to prevent malicious
-      messages from being able to bypass the user's "load http images"
-      preference.  (Jeff)
-    - Strip all Bcc headers before passing the message to the local
-      sendmail.  (Jeff)
-    - Fixed a type-o in the IPv6 support code.  (Jeff)
-
-  * Shell
-
-    - Fixed IDL #includes.  (Rodney)
-
-  * Other
-
-    - Backported XML hash utilities.
+    - Make it compile against GTK 2.0 again.  (Rodrigo)
 
 Updated translations:
 
-  - cs (Michal Bukovjan)    
-  - es (Francisco Javier Fernandez)
-  - fr (Christophe Merlet)
-  - it (Marco Ciampa)
-  - pt_BR (Gustavo Maciel Dias Vieira)
-  - ru (Russian translation team)
-  - sv (Christian Rose)
-
-
-Evolution 1.2.2, 2002-02-04
----------------------------
-
-Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
-
-  * Calendar
-
-    #34927 -- Crash when entreing wrong URL of attendee in
-             "Collaboration" tab.  (Jack Jia)
-    #34933 -- The question window "Send an update version" pops up
-              inappropriately.  (Jack Jia)
-    #35003 -- Passwords sometimes displayed on the status
-              bar. (Rodrigo)
-
-  * Addressbook
-
-    #25541 -- Sensitivity issues in the contact editor.  (Toshok)
-    #33672 -- Folder deletion. (Jack Jia)
-    #34883 -- Do anonymous bind initially in ldap backend. (Toshok)
-    #34897 -- Address book crash when search. (Toshok)
-    #34898 -- Handle modifications of contact list members in the
-              minicard view.  (Sean Gao)
-    #34900 -- Hang when closing file selector using the window manager.
-              (Jack Jia)
-    #35153 -- Changing default contact folder requires restart.  (Toshok)
-    #36375 -- Fix typo in ldap backend that was keeping "other_fax" from 
-              working.  (Sean Gao)
-
-  * Summary
-
-    #36557 -- Adding a mail folder to the Summary sometimes crashes
-              it.  (Harry Lu)
-
-  * Mailer
-
-    #36862 -- Fix the account creation wizard so that deleting the
-              SASL AUTH username and then unchecking the 
-              "Needs authentication" checkbox won't disallow 
-              continuing with the account creation.  (Jeff)
-
-    #33525 -- Trying to delete "unmatched" vfolder crashed evolution.
-              (Antonio Xu)
-
-Other fixes:
-
-  * Mailer
-
-    - Do more sanity checking to make sure the addressbook didn't give
-      us recipients with empty addresses.  (Jeff)
-    - Fixed a possible crash when deleting IMAP folders.  (Jeff)
-    - Correctly create the x-evolution-messages drag-n-drop clipboard
-      buffer.  (Jeff)
-    - Fixed a bug in the PGP/MIME code that would sometimes duplicate
-      the last line of text being signed.  (Jeff)
-    - Don't canonicalize any MIME parts that we are attempting to
-      verify using PGP/MIME.  (Jeff)
-
-  * Summary
-
-    - Added Finland locations to the weather station list (Pekka
-      Pietikainen).
-
-  * Other
-
-    - Fixed a problem compiling Evolution without conduit support on
-      MacOS X.  (Ettore)
-    - Use $(DESTDIR) appropriately when installing the default_user
-      directory.  (Max Horn)
-    - Updated docs.  (Aaron)
-
-Updated translations:
-
-  - es (Pablo Gonzalo del Campo)
-  - et (TÃµivo LeedjÃ¤rv)
+  - cs (Miloslav Trmac)
   - hu (Andras Timar)
-  - it (Marco Ciampa, Alessio Frusciante)
-  - lv (Peteris Krisjanis)
-  - no (Kjartan Maraas)
-  - pt_BR (Gustavo Maciel Dias Vieira)
-  - ru (Andrew V. Samoilov)
-  - sk (Stanislav Visnovsky)
-  - sv (Christian Rose)
-  - tr (Fatih Demir)
-  - uk (Andrew V. Samoilov)
-  - zh_CN (Yuedong Du)
 
 
-Evolution 1.2.1, 2002-12-05
+Evolution 1.4.2, 2003-06-30
 ---------------------------
 
-Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
-
-  * Addressbook
-
-    #16870 -- Fix CR/LF check for empty lines in LDIF importer.  (Sean Gao)
-    #28945 -- Contact lists saved as invalid vCards.  (Toshok)
-    #31763 -- Find button missing from Select Contacts from Addressbook
-              dialog.  (Toshok)
-    #32352 -- The LDAP backend should be much more robust in the face of more
-              restrictive ACL's.  (Toshok)
-    #33097 -- Fix crash when changing autocomplete folder list.  Also
-              fixes #30323, #33930, and #33332.  (Toshok)
-    #34254 -- Fix case sensitive nature of vCard importer.  (Sean Gao)
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
 
   * Calendar
 
-    #30993 -- Meeting request for recurring meeting should describe
-              the recurrence.  (Dan)
+    #44719 - Alarm Notify window is not sticky any more (Rodrigo)
+    #44723 - Alarm Notify - Displays _originally entered_ summary (Rodrigo)
+    #45276 - Use the key "Esc" to escape editing current event and give focusi
+             to day/week view (Bolian Yin)
 
-  * Mail
-
-    #32932 -- Reopening  a Draft loses References/In-Reply-To headers.
-              (Jeff)
-    #33309 -- Errror while 'Scanning folders in "IMAP server
-              exchange.xxx.xxx"' (Michael)
-    #33933 -- Sorting by subject does not result in expected order  (Jeff)
-    #34975 -- Unable to see Inbox on SunOne IMAP server.  (Jeff)
-    #34882 -- Forwarded messages use the wrong account.  (Jeff)
-    #34315 -- Files silently lost when doing Drag and Drop.  (Jeff)
-    #34327 -- Dragging doesn't work for non-inline attachments. (Harry Lu)
-    #34975 -- Unable to view Inbox on SunOne IMAP server  (Jeff)
-
-Other fixes:
-
-  * Addressbook
-
-    - Fix scope problem where scopes would be saved as "base" and
-      "one" instead of "one" and "sub" repectively.  (Toshok)
-    - Fixed a possible (and very probable) crash involving the
-      minicard view.  (Toshok)
-    - Fixed a crash in the file backend.  (Toshok)
+Other bugs
 
   * Calendar
 
-    - Fixed a bunch of memory leaks related to email meeting
-      scheduling.  (Hans)
-    - Make the libical grammar files work with newer versions of
-      Bison.
+    - Made all dialogs be centered on the Evolution window (Rodrigo)
 
   * Mail
 
-    - Make the stop button work better when using SSL connections.
-      (Michael)
+    - Fixed a charset handling problem in the message composer, which
+      was introduced in 1.4.1.
+
+
+Evolution 1.4.1, 2003-06-25
+---------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+
+    #41826 - Focus the first minicard when focusing the view for the
+             first time (gilbert.fang@sun.com)
+    #43841 - Contact editor will not save Web Page address (Toshok)
+    #44477 - Make sure the master category list is upgraded (Toshok)
+
+  * Calendar
+
+    #41582 - Display incorrect after switching between week and day
+             view (Rodrigo)
+    #43585 - Ugly tasks printout (Hans Petter)
+    #45273 - Tab through events in day view (Bolian Yin)
+    #45275 - Shift+F10 to activate Popup menu in ToDo List (Bolian Yin)
+    #45423 - Provide shortcus for "Go to today" and "Go to date" (Bolian Yin)
+
+  * Mail
+
+    #22542 - Creating a folder in the vFolder store fails with a
+             meaningless message (Michael)
+    #31745 - Cannot view mails under '#mh' namespace.  Temporary
+             workaround, strip #'s (Michael)
+    #33593 - Message remains displayed after last message removed from
+             list (Michael)
+    #40788 - Broken POP3 server causing evolution to hang/crash (Jeff)
+    #42630 - collapsed thread always shows as unread (Jeff)
+    #43917 - ECharsetPicker doesn't save user-specified charset strings
+             properly (Jeff)
+    #43972 - Invert selection doesn't work (Jeff)
+    #43974 - Cannot retrieve "Local Delivery" mail (Michael)
+    #44121 - Invalid multipart/signed message showing empty (Michael)
+    #44139 - Composer spacing is not HIG compliant (Jeff)
+    #44322 - Evolution crash with weird IMAP foldername (Michael)
+    #44344 - Dont use quoted-printable encoding on anything but text/*
+             parts, interoperation with Lookout and others (Jeff)
+    #44457 - Crash viewing video content as inline-text (Jeff)
+    #44519 - Popup message view redraws when new mail arrives (Michael)
+    #44609 - HIG issue with vFolder properties editor (Michael)
+    #44991 - Cannot send mail in GB-2312 (Jeff)
+    #45082 - GB18030 BIG5HKSCS and EUC-TW charsets not supported in
+             evolution mail (suresh.chandrasekharan@sun.com)
+    #45063 - Message display refreshes when new mail arrives,
+    	     introducted by #33593 (Michael)
+    #45386 - Warnings when sending mail (Michael)
+    #45368 - Crash when closing the folder browser
+
+  * Summary
+
+    #44111 - Crash on exit (Ettore)
+    #44798 - Crash when closing print preview dialog (Ettore)
+
+  * All
+
+    #42691 - Build, make clean doesn't rebuild bonobo-activation
+             .server files (Michael)
+    #44717 - Tarball cointains generated files (Frederic Crozat)
+
+Other bugs
+
+  * Calendar
+
+    - Fix invalid shared use of list of calendar factories (Rodrigo)
+    - Make the calendar editor window title reflect the summary contents (Rodrigo)
+
+  * Mail
+
+    - Fix bug in indexer string normalisation (they weren't) (Larry)
+    - Major memory leak in message-threading (Larry)
+    - Only try to snoop a content-type if its application/octet-stream
+      when displaying mail parts (Jeff)
+    - Major memory leak in filter-file based filters (Jeff)
+    - Try to make asynchronous dns lookup more asynchronously
+      cancellable (Michael)
+    - Fix a degenerate algorithm case in vFolder shutdown which could
+      cause excessive exit cpu usage (Michael)
 
   * Shell
 
-    - Kill old wombat processes to avoid problems for users who
-      upgrade.  (Ettore)
-    - Fixed some localization problems.  (Dan)
-    - Fixed the leaks in the settings dialog.  (Ettore)
+    - Wrong version number used for configuration upgrade (Michael)
 
-  * Other
+  * All
 
-    - Fixed compliance of the .omf files with the OMF 1.0 DTD.
-      (Frederic Crozat)
-
-  * Mailer
-
-    - Fixed SSL streams to have cancellable reads and writes.
-    - Auto-subscribe the user to his/her IMAP INBOX
-
-New features:
-
-  - evolution-launch-composer command-line tool to open up the
-    composer with attachments.  (Chris Lahey, Federico)
+    - Lots of miscellaneous memory leaks
 
 Updated translations:
 
-  - de (Christian Neumair)
-  - et (Tõivo Leedjärv)
-  - fr (Joaquim Fellmann)
+  - cs (Miloslav Trmac, Stanislav Brabec)
+  - el (Kostas Papadimas)
+  - es (Francisco Javier F. Serrador)
+  - hu (Andras Timar)
+  - it (Marco Ciampa)
+  - ko (Kan Jeong-Hee)
+  - mk (Ivan Stojmirov)
+  - nl (Vincent van Adrighem)
   - pt_BR (Gustavo Maciel Dias Vieira)
+  - sr, sr@Latn (prevod.org)
+  - sv (Christian Rose)
+  - tr (Gorkem Cetin)
+  - zh_CN (Wang Li, Funda Wang)
 
 
-Evolution 1.2.0, 2002-11-06
----------------------------
+Evolution 1.4, 2003-06-02
+-------------------------
 
-Changes since 1.1.90:
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
 
-  - Made the default width of the mail filter editing dialog larger.
-    (Dan)
+  * Calendar
+  
+    #43388 - Problems importing appointments  (Rodrigo)
+    #43455 - Crash on exit  (Rodrigo)
+    #43763 - 2 right mouse menus appear in Week & Month views  (Rodrigo)
+    #43775 - Crash under Chinese locale  (JP)
 
-  - Removed the development warning at startup.  (Ettore)
+  * Mail
+
+    #42854 - Copying files from one IMAP folder to another makes
+             multiple copies of file  (Jeff)
+    #43862 - First run imap account won't load folders until account
+             is disabled and re-enabled  (Jeff, Michael)
+    #42691 - Server files not regenerated after distclean  (Michael)
+    #43805 - Evolution locked while editing reply to an mail  (Jeff)
+    #43410 - Flag for Followup dialog opens up too small in Evo  (Michael)
+    #43688 - Can't save signatures  (Michael)
+
+  * Summary
+
+    #43506 - Spontaneous crash  (Ettore)
+
+  * Misc
+
+    #43596 - Symlink icon file so it doesn't break existing panel
+             setups  (Ettore)
+
+Other bugs fixed:
+
+  * Addressbook
+
+    - Removed conflicting shortcut for the Print Preview menu item
+      (Rodney)
+
+  * Misc
+
+    - Corrected some problems in the pkgconfig files  (Rodney)
+    - Fixed an issue with GConf schema file installation  (Joe Marcus
+      Clarke)
+
+Updated translations:
+
+  - nl (Vincent van Adrighem)
+  - ru (GNOME Russian Team)
+  - be (GNOME Belarusian Team)
+  - es (Francisco Javier F. Serrador)
 
 
-Evolution 1.1.90, 2002-10-28
+Evolution 1.3.92, 2003-05-22
 ----------------------------
 
-Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
 
   * Addressbook
 
-    #25477 -- Crash.  (Toshok)
-    #29067 -- Editing an address entry causes it to disappear.  (Toshok)
-    #29144 -- Selection problem in directory servers page of
-              preferences dialog.  (Toshok)
-    #32144 -- Incorrect filename when saving contact with 8-bit ascii
-              characters.  (Toshok)
+    #38084 - Rename local folder issue in contacts  (sean.gao@sun.com)
+    #41130 - HIG compliance  (Anna)
+    #41137 - HIG compliance  (Anna)
+    #41140 - HIG compliance  (Anna)
+    #41144 - Use stock buttons in the ldap config page  (Toshok)
+    #41211 - Add icon to "Add" button in "Add to Contacts" dialog  (Toshok)
+    #41229 - HIG compliance  (Anna)
+    #41231 - HIG compliance  (Anna)
+    #41232 - HIG compliance  (Anna)
+    #41245 - HIG compliance  (Toshok)
+    #41248 - HIG compliance  (Anna)
+    #41249 - HIG compliance  (Anna)
+    #41250 - HIG compliance  (Anna)
+    #41251 - HIG compliance  (Anna)
+    #41254 - HIG compliance  (Anna)
+    #41255 - Use stock Add/Remove icons in the contact list editor  (Toshok)
+    #41910 - Crash when deleting addresses from long contact lists  (Toshok)
+    #42048 - "Print" not hooked up in etable view  (Toshok)
+    #42177 - Cannot tab out of date edit widgets in contact editor  (Toshok)
+    #42472 - Selecting a field in a contact highlights entire row  (Toshok)
+    #42596 - Selecting text in a contact address field selects all
+             rows of text (Toshok)
+    #42604 - Display not shifted when cursor moved to next address
+             line (Toshok)
+    #42606 - Not saving information entered in Notes field of Contact
+             editor (Toshok)
+    #42620 - Crash related to mailing address checkbox  (Toshok)
+    #42625 - Clicking in white space of contact brings up empty
+             contact editor  (Toshok)
+    #42780 - Crash on solaris due to missing NULL in g_guild_filename.
+             (sean.gao@sun.com)
+    #42825 - clicking on letters in LDAP address card view does not
+             load selected letter (Dan, Toshok)
+    #43005 - Crash on reply  (Toshok)
+    #43016 - Crash when adding duplicate contact  (Toshok)
+    #43023 - All contacts have disappeared  (Toshok)
+    #43090 - GalView menu missing from the addressbook  (Toshok)
+    #43175 - Evolution crashed pasting large amount of text into
+             address field  (Toshok)
+    #43213 - auto-completion folder list wasn't populated correctly on
+             fresh install  (Toshok)
 
   * Calendar
 
-    #11434 -- Closing event/task editor & committing fields.  (Rodrigo)
-    #16036 -- The work week view goes stupid whrn you scroll through
-              the months.  (JP)
-    #19159 -- Application "evolution-alarm-notify" has crashed.
-              (Rodrigo)
-    #25153 -- Crash on iCalendar entry.  (Rodrigo)
-    #28951 -- CDO doesn't understand UNTIL=date in RRULE.  (JP)
-    #31774 -- Reselecting options for reminder crashes calendar.
-              (Rodrigo)
-    #31812 -- "Day begins" in Settings should respect 12/24 time pref.
-              (JP)
-    #32613 -- "New Appointment" uses local calendar instead of default
-              calendar.  (Rodrigo)
-    #32276 -- My custom task view crashes task and calender views
-              every time.  (JP)
-    #32371 -- Crash on close/save on calender.  (Rodrigo)
+    #40972 - connector crashed while evolution was idle  (Rodrigo)
+    #41234 - button order of "Enter Delegate" dialog (Rodrigo)
+    #41329 - Changing Options in scheduling tab causes display time to shift
+    #41579 - Double clicked on meeting in Exchange calendar, Evo
+             crashed  (Rodrigo)
+    #41760 - Alarm dialog does not reappear after snoozing Exchange
+             alarm  (Rodrigo)
+    #41811 - Calendar update failing and crashing  (JP)
+    #41930 - Warning while running gdb includes: "Some clown returned
+             undeclared exception"  (JP)
+    #41935 - day view ignores scroll wheel  (JP)
+    #42056 - Accelerators in meeting selector not working/looks bad
+             (Hans Petter)
+    #42220 - calendar not refreshing correctly after changing meeting
+             times  (Rodrigo)
+    #43029 - When running under valgrind Evolution crashed while
+             exiting  (JP)
+    #43308 - scheduling page alignment (JP)
 
   * Mail
 
-    #5529  -- Omit signature when quoting.  (Jeff)
-    #15966 -- Visual bug in moving a message to a folder.  (Michael)
-    #28735 -- Reply to list isn't looking in Cc: for recipients.
-              (Jeff)
-    #30045 -- Possible man-in-the-middle attack when using SSL -
-              assuming that the forged certificate had an identical 
-              md5sum of the real certificate.  (Michael)
-    #31456 -- Evolution doesn't see certain IMAP mailboxes.
+    #40074 - Thread expansion state not remembered  (Jeff)
+    #41748 - Send/Recv not sending mail in connector Outbox  (Michael)
+    #42000 - Crash selecting a non-selectable folder  (Michael)
+    #42045 - Another workaround for mailers sending out invalid date
+	     formats  (Jeff)
+    #42118 - Edit->Mark as unread doesn't behave the same as right
+	     click->mark as unread  (Jeff)
+    #42170 - Thread expansion state lost on deleting messages  (Jeff)
+    #42212 - Crash entering address in composer  (Rodrigo)
+    #42294 - Custom fixed font setting not applying to composer
               (Michael)
-    #31647 -- Subscribe dialog is broken.  (Michael)
-    #31667 -- IMAP filtering can drop out before completion or run
-              multiple times.  (Michael)
-    #31788 -- Redundant string in translation.  (Jeff)
-    #31789 -- Redundant string in translation.  (Jeff)
-    #31891 -- Setup Assistant looses account name if you go back.
+    #42333 - Crash opening a mail again that was still being opened
               (Jeff)
-    #32002 -- Crash when creating folder.  (Jeff)
-    #32229 -- Mail quits when attempting to open a PGP icon in the
-    	      message.  (Jeff)
-    #32230 -- Preferences crashes the mail component.  (Jeff)
-    #32268 -- Filters on source account fail.  (Jeff)
-    #32270 -- Passwords are lost when pressing "cancel all" on
-              send/receive.  (Jeff)
-    #32293 -- Can't select PGP; it keeps reverting to GPG.  (Jeff)
-    #32328 -- New email message sound notification poblem.  (Jeff)
+    #42356 - Adding colour from not working properly  (Jeff)
+    #42456 - Spelling preferences Enable/Disable button inconsisency
+              (Michael)
+    #42540 - Crash when pressing send/recv too quickly  (Michael)
+    #42710 - Invalid 8 bit header data getting to the UI layer
+             generating warnings  (Michael)
+    #42763 - Crash deleting local folder with indexing turned off
+              (Jeff)
+    #42838 - Crash setting up local mail account  (Michael)
+    #42854 - Copying many messages between IMAP folders results in
+             several duplicates  (Jeff)
+    #43214 - changing server settings enables the account  (Jeff)
+    #43234 - crash reading mail  (Michael)
+    #42748 - Check spelling while I type - broken (Larry)
+    #42749 - Composer ignores color for misspelled words (Larry)
+    #43392 - Reproducible crash after searching mail w/ attachment and
+             closing (Jeff)
+    #43406 - Evo crashed during POP download/filtering  (Jeff)
 
   * Shell
 
-    #25891 -- Crash when notifying a CORBA exception.  (Ettore)
-    #27735 -- Missing Cancel button in "Open Other User's Folder"
-              dialog.  (Ettore)
-    #30950 -- Crash when trying to delete a toplevel folder bar node.
+    #36956 - Window title too long  (Ettore)
+    #40391 - Updated contributor list in the about box  (Michael)
+    #42038 - Crash hitting escape or closing window on rename box
+              (Michael, Ettore)
+    #42342 - Send/receive sensitive when startedi in offline mode
               (Ettore)
-    #31303 -- X locked when opening a folder bar node that requires a
-              password.  (Ettore)
-    #31564 -- 8-bit characters not respected in the "Open Other User's
-              Folder" dialog.  (Ettore)
-    #32032 -- Autocompletion folder list doesn't respect 8-bit
-              characters.  (Ettore)
+    #42465 - Unread count problem in the shortcut bar  (Ettore)
+    #42491 - Compilation problems on Forte  (Antonio Xu)
+    #42518 - Folder bar selection lost on folder delete  (Ettore)
+    #43079 - Don't crash when an invalid "default:" URI is given on
+    	     the command-line  (Ettore)
+    #43119 - Memory corruption problem in settings dialog  (Ettore)
+    #43216 - Crash on exit  (Ettore)
+    #43322 - Crash on exit  (Ettore)
 
   * Summary
 
-    #31581 -- Gnotices news feed doesn't work.  (Ettore)
-    #31607 -- Appointments and tasks not listed.  (Ettore)
-    #31616 -- Appointments and tasks not listed.  (Ettore)
-    #31639 -- Crash when changing preferences.  (Ettore)
+    #41131 - HIG compliance  (Anna)
+    #41133 - HIG compliance  (Anna)
+    #41849 - Charsets not respected in news feed display  (Michael)
+    #43101 - Crash on exit  (JP)
+    #43117 - Crash on exit  (Ettore)
 
-Other fixes:
-
-  * Addressbook
-
-    - The "Select Names" dialog remembers what folder you were in
-      between uses now, which is useful for people who normally select
-      names out of an LDAP directory. (Dan)
-
-  * Calendar
-
-    - Make sure configuration info can be applied in units changed for
-      task hide option.  (JP)
-
-  * Shell
-
-    - Fix settings dialog size for smaller fonts.  (Ettore)
-
-
-Evolution 1.1.2, 2002-10-07
----------------------------
-
-Bugzilla Bugs Fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+Other bugs:
 
   * Addressbook
 
-    #17336 -- Evolution mixes up First and Last names sometimes.
-              (Toshok)
-    #27521 -- Crash: exiting from evolution after adding to address
-              book.  (Toshok)
-    #28165 -- Contacts crashed when selecting offline IMAP folders.
-              (Toshok)
-    #28392 -- Crash when adding a new contact.  (Toshok)
-    #30208 -- LDAP authentication issues.  (Toshok)
-    #30481 -- Select contacts dialog not using default contact folder.
-              (Toshok)
-    #30483 -- LDAP folders do not work as an autocompletion folder.
-              (Toshok)
-    #31321 -- Missing VERSION property in exported vCards.  (Toshok)
-    #31434 -- Only sends email to first three addresses on contact
-              list.  (Toshok)
-    #29171 -- Crash after selecting other user's folder for Offline.
-              (Toshok)
-    #30250 -- Addressbook crashes or hangs after selecting LDAP
-              folder.  (Toshok)
+    - 64bit cleanup and warning fixes  (Jeremy Katz)
+    - Fixed some probable memory corruption (Toshok, Sean Gao)
 
   * Calendar
 
-    #14111 -- Gives "are you sure you want to" prompt when no such
-              action has occurred.  (JP)
-    #15710 -- Automatically-created reminder always says "Untitled
-              Appointment".  (Rodrigo)
-    #15892 -- Running out of disk space can cause loss of calender
-              entries and tasks.  (Rodrigo)
-    #18162 -- Double-click on calendar week/month view shouldn't do
-              all-day event.  (JP)
-    #19159 -- evolution-alarm-notify crash.  (Rodrigo)
-    #24210 -- Calendar is slow.  (Rodrigo)
-    #27961 -- vcalendar LAST-MODIFIED field not updated on change.
-              (Rodrigo)
-    #28310 -- Calendar re-runs alarms.  (Rodrigo)
-    #28853 -- Crash when deleting tasks in task editor.  (Mike)
-    #29983 -- New appointments use 25 hour day.  (JP)
-    #30057 -- Calendar GUI does not allow for read-only folders.
-              (Rodrigo)
-    #30290 -- Importer Not Ready when importing .ics Ical file.
-              (Rodrigo)
-    #30381 -- Calendar recurrences "off-by-one".  (JP)
-    #31774 -- Reselecting options for remider crashes calendar.
-              (Rodrigo)
-
-  * Conduits
-
-    #21631 -- Palm calendar event with no time should appear as "All
-              day event".  (JP)
-    #23763 -- Problem with appointments that cross a day boundary and
-              pilot sync.  (JP)
+    - Fixed crash in cal_client_discard_alarm  (Rodrigo)
+    - Fixed Bonobo unrefing problems on components  (JP)
+    - Fixed multiple initialization in calendar factory  (Rodrigo)
 
   * Mail
 
-    #236   -- Composer attachment bar wraps lines annoyingly.  (Ettore)
-    #4224  -- camel-imap-cache needs better error checking.  (Jeff)
-    #20849 -- Folder Properties should be on right click menu.
-              (Michael)
-    #21027 -- Accept broken content-ids.  (Jeff)
-    #22496 -- Evolution does not appear to support ALERT messages.
-              (Michael)
-    #24179 -- Character set conversion problem under tr_TR
-              locale. (Radek)
-    #24732 -- Importing mailman mbox files doesn't work.  (Ettore)
-    #27391 -- New Message Count not updated in vFolders.  (Michael)
-    #28453 -- Forwarding PGP-signed message inline should discard
-              signature.  (Jeff)
-    #28209 -- Error messages for Offline folder operations
-              misleading.  (Michael)
-    #28834 -- Threaded + hide deleted messes up clear search.
-              (Michael)
-    #29293 -- Back button on final page of new account doesn't work.
-              (Michael)
-    #29625 -- Cannot clear a saved search.  (Michael)
-    #29731 -- Crash in libsoup.  (Michael)
-    #29808 -- Control-K to mark read broken when preview not shown.
-              (Michael)
-    #29933 -- Mail component forgets pane size sometimes.  (Dan)
-    #29965 -- Crash.  (Jeff)
-    #30183 -- Advanced search broken.  (Jeff)
-    #30269 -- Crash appending to an mbox that is too large (>2GB).
-              (Jeff)
-    #30399 -- Vfolders of imap do not update.  (Michael)
-    #30580 -- Closing drafts message asks to save again.  (Jeff)
-    #30731 -- "automatically detect links" checkbox doesn't work.
-              (Jeff)
-    #30827 -- Delete on Deleted Message Does not move to next.
-              (Jeff)
-    #30877 -- Improper IMAP folder behavior.  (Michael)
-    #30873 -- Cannot display many mails in zh_CN.GB2312.  (Jeff)
-    #30876 -- Drag and drop a mail from Trash duplicates it.  (Jeff)
-    #30915 -- Crash when upgrading from 1.0.x to 1.1.1.  (Jeff)
-    #31000 -- evolution-mail random core dumps.  (Michael)
-    #31031 -- Random crashes -- possible memory corruption bug on
-              SMP box.  (Michael)
-    #31060 -- Advanced Search no longer works.  (Michael)
-    #31087 -- Mailing list filters fail for yahoogroups.com.  (Michael)
-    #31331 -- Crash upon opening a mail message.  (Michael)
-    #31365 -- Enter password dialog not displaying extended ASCII
-              chars correctly.  (Michael)
-    #31379 -- Can't see encrypted mail to myself (and maybe others?)
-              (Jeff)
-    #31456 -- Evolution does not see IMAP mailboxes.  (Jeff)
-    #31547 -- Quote the decrypted text when replying to encrypted
-              messages.  (Jeff)
-    #31553 -- Next button disabled in Identity window of setup
-              assistant.  (Jeff)
-    #31554 -- Cannot run evolution if Reply-to: is set to an invalid
-              address.  (Jeff)
-    #31555 -- Account editor mangling reply-to: extended ASCII
-              characters.  (Jeff)
-    #31559 -- Evolution crashes when going to Tools -> Preferences.
-              (Jeff)
-    #31655 -- Do not strip 8bit characters from text attachments.
-              (Jeff)
-    #31681 -- Mail filter problem in 1.1.1.99.  (Jeff)
-    #31693 -- Try harder to pick the correct From-account to use
-              when replying.  (Jeff)
-    #31572 -- valgrind detects a deadlock.  (Michael)
-    #31752 -- No EHLO to re-check AUTH capabilities after a STARTTLS
-              has been issued. (Jeff)
+    - Crash on exit if password dialog was open  (Ettore)
+    - Make Ok the default response on the password dialog  (Ettore)
+    - Crash in SMTP if unable to resolve the remote host name  (Jeff)
+    - Fix an automake 1.6 issues with camel-lock-helper  (Dan)
+    - Reload page if citation color changes (Larry)
+    - Made all the composer preferences work (Larry)
+    - Made newly created HTML signatures work again (Radek)
 
   * Shell
 
-    #11645 -- Shortcuts are not updated when a folder is moved.
-              (Ettore)
-    #14019 -- Cannot access the conduit settings directly from
-              Evolution.  (Ettore)
-    #16556 -- Start-up wizard doesn't propmpt for IMAP password.
-              (Ettore)
-    #19899 -- First-run code uses free() instead of g_free().
-              (Ettore)
-    #24062 -- When removing a folder with unread messages, sometimes
-              its parent folder stays highlighted even when it
-              shouldn't be.  (Ettore)
-    #27662 -- Unread count in shortcut bar doesn't update properly.
-              (Ettore)
-    #27855 -- Send/Receive should be disabled when offline.
-              (Ettore)
-    #24879 -- Crash on folder change.  (Mike)
-    #28232 -- Default type for the folder creation dialog is
-              sometimes "Contacts" instead of "mail".  (Ettore)
-    #28317 -- File->Close doesn't work.  (Ettore)
-    #28451 -- Renaming causes incorrect sorting in the folder tree.
-              (Ettore)
-    #28495 -- Settings dialog resizes when you switch pages.
-              (Ettore)
-    #28591 -- Crash on startup w/ connector installed.  (Mike)
-    #29293 -- Back button on final page of new account doesn't work.
-              (Michael)
-    #30248 -- Folder selection dialog crash.  (Mike)
-    #30533 -- The folder creation dialog changes the parent folder
-              selection if you specify a name that already exists.
-              (Ettore)
-    #31360 -- Crash when using the folder selection button.  (Dan)
-    #31690 -- Importer crash.  (Ettore)
+    - HIGified config settings dialog a bit more  (Anna)
+    - Fixed a bunch of reference count problems  (JP)
+    - Improved the look of the "open other user's folder" dialog
+      (Dan)
 
   * Summary
 
-    #15101 -- "My Weather" section shows up when it shouldn't.
-              (Ettore)
-    #20737 -- Israel missing from the weather station list.
-              (Sam Popper)
-    #28481 -- Crash during start-up.  (Ettore)
-    #28903 -- Unread message counts not reported correctly.
-              (Ettore)
+    - Fixed a typo that caused the summary to not see the default
+      calendar folder  (Ettore)
+    - Made the print dialog close properly  (Ettore)
+    - Reference count fixes  (JP)
 
-  * gtkhtml-1.1.3
+  * All
 
-Other fixes:
-
-  * Addressbook
-
-    - Fixed some memory leaks.  (Toshok)
-
-  * Calendar
-
-    - Do not allow empty attendee addresses for meetings.  (JP)
-    - Better alarm daemon activation.  (Rodrigo)
-    - Notification of calendar query errors.  (Rodrigo)
-    - Added status messages for all operations.  (Rodrigo)
-
-  * Conduits
-
-    - Fixed linking issues.  (JP)
-
-  * Shell
-
-    - Some strings that were not translated properly before now are.
-      (Kjartan Maraas)
-    - Sensitivity problem when using the folder selector.  (Toshok)
-    - Changed the way shared folders work with Connector.  (Dan)
-    - Allow accessing local folders even if some folders with
-      unknown/corrupted metadata type are found in ~/evolution/local.
-      (Ettore)
-    - Importer dialog browse entry now has history dropdown.  (Rodrigo)
-    - We no longer allow selecting a folder of a non-allowed type with
-      a double-click in the folder selection dialog.  (Dan)
+    - Various container referencing issues  (JPR)
+    - 64 bit and portability fixups  (Jeremy Katz)
+    - Cleaned up lots of compile time warnings and run-time debugging
+      output  (everyone)
 
 Updated translations:
 
-    - ko (Young-Ho Cha, Changwoo Ryu)
-    - nn (Roy-Magne Mo)
-    - no (Kjartan Maraas)
-    - pl (Zbigniew Chyla)
-    - vi (Pablo Saratxaga)
-    - tr (Gorkem)
+  - cs (Miloslav Trmac)
+  - da (Kenneth Rode Christiansen)
+  - de (Christian Neumair)
+  - es (Francisco Javier Fernandez)
+  - fr (Christophe Fergeau)
+  - it (Marco Ciampa)
+  - ja (Takuo Kitame)
+  - no (Kjartan Maraas)
+  - pt (Duarte Loreto)
+  - pt_BR (Gustavo Maciel Das Vieira)
+  - ru (GNOME Russian Team)
+  - sv (Christian Rose, Anders Carlsson)
+
+  - Fixed encoding of the ca, en_AU, en_CB, et, eu, ro catalogs (Abel
+    Cheung)
 
 
-Evolution 1.1.1, 2002-09-09
+Evolution 1.3.3, 2003-04-29
 ---------------------------
 
-New features:
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
 
-  * General
+  * Addressbook
 
-    - The toolbar now includes a "New" dropdown menu/button from which
-      you can create messages, appointments, etc. from within any
-      folder.
-
-    - A new, integrated configuration dialog for all of Evolution is
-      now provided.
-
-    - When you use the folder selection dialog, you can now jump to a
-      folder just by typing its name and hitting Enter (instead of
-      using the arrows or the mouse).
-
-    - You can now specify your default mail, calendar, tasks and
-      contacts folders.  The shortcuts in the shortcut bar will always
-      point to the default folder; so for example if you have an IMAP
-      account you can specify that the INBOX on the IMAP account is
-      default and clicking on the Inbox icon on the shortcut bar will
-      take you to the INBOX on the IMAP account.
-
-    - Fonts for displaying of HTML mail can now be configured from
-      within Evolution (instead of having to use GNOME Control
-      Center).
-
-    - You can now make Evolution play a sound, beep, or display a
-      message when new mail arrives.  It is also possible to trigger
-      these actions based on a filter rule.
-
-    - The behavior of the search bar has been improved, and the UI has
-      been integrated better with the menu bar and the rest of the
-      system.
-
-    - For the table-based views, you can now define, save and reuse
-      view settings using the "View" menu.
-
-    - The Send/Receive button is now always accessible from any
-      folder.
-
-    - Easier to build on non-GNU, and non-GCC systems (e.g. MacOS/X,
-      HP/UX, Solaris).
-
-    - Now installs some libraries and headers required for external
-      module development.
-
-    - You now can drop objects (eg. mail messages, appointments)
-      directly to the folders on the shortcut bar (in 1.0.x, you could
-      only drop them in the folder folder bar).
+    #37351 - Contact List drag-n-drop broken from sorted list view  (Toshok)
+    #40954 - Wombat crashes when opening an appointment  (Toshok)
+    #41843 - Don't use localized field names in the csv exporter  (Gilbert Fang)
+    #41779 - Fix crash when adding emails to existing contacts  (Toshok)
 
   * Calendar
 
-    - Loading speed has been improved.
-
-    - When you receive an appointment through email, you can choose
-      which calendar to update, and if its for an existing appointment
-      the folder is automatically detected
-
-    - Calendar importer now supports importing to remote folders.
-
-    - Calendar GUI and alarm daemon now use listeners for the
-      configuration.
-
-    - Reaction to calendar backends crashing has been improved.
-
-    - Show status messages for all long calendar operations.
-
-    - Fixed default reminders description (was 'Untitled
-      appointment').
-
-    - Included timezone information on VCALENDAR's used in copy/paste.
-
-    - Removed extra space that was displayed for categories without
-      icons.
-
-    - Fixed crashes in the alarm daemon.
-
-    - Fixed crashes in calendar related to creating new evolution
-      windows.
-
-    - When right clicking, correctly select the underlying date/time.
-
-    - Meeting scheduling improvements; sends replies when you update
-      your attendance status, warnings if the user changes a meeting
-      they didn't create.
-
-    - Deleting a meeting with a right click will now offer to send a
-      cancellation notice.
-
-    - Can accept meeting replies from non-attendees (they become
-      attendees).
-
-    - Fixed work day so start can't be before end, its minimum 1 hour
-      and the unshaded zone is not rounded to the nearest time
-      division (allowing the work hours to be 0:00 to 23:59).
-
-    - Fixed task view to update completion status the same as the
-      editor.
-
-    - Fixed leap year problem with day of week.
-      
-    - Handle "last day of the month" and "last Tuesday of the month"
-      type recurrences.
-
-  * Contacts
-
-    - It is now possible to specify which folders are used for
-      autocompletion globally.
-
-    - Improved address selection dialog (for sending mail and meeting
-      requests).
-
-    - Improved feedback for search results for all backends and the
-      UI.
-
-    - SSL/STARTTLS suport for LDAP has been added.
-
-    - Caches are built for local addressbooks to speed up
-      autocompletion.
-
-    - Fixed wombat/addressbook crashes dealing with autocompletion, it
-      should be much more stable now.
-
-    - Categories on LDAP are now stored using a multivalued attribute
-      (category) instead of a comma separated list (categories), so
-      searches on categories in ldap actually work.  The old attribute
-      is deprecated and should not be used.
-
-    - Standardized some of the static properties of addressbooks, and
-      removed some local addressbook logic from the frontend.
-
-    - When editing contacts from the composer entries (To:, CC:), pop
-      up the right kind of editor based on the contact type.
-
-    - Much improved LDAP backend responsiveness and performance.
+    #21499 - No docs in snaps (Rodney)
+    #22444 - Deleting recurring meetings menu option (Rodrigo)
+    #34498 - alarm-notify not noticing meetings canceled by organizer (Rodrigo)
+    #35814 - same mnemonic for File:New:Mail Message and :Meeting (Rodney)
+    #37552 - GUI doesn't notice Connector failed to delete task (JP)
+    #39735 - Calendar View settings not persistent between sessions (JP)
+    #40257 - selecting day from calendar control causes window resize (JP)
+    #41129, #41215, #41221, #41256, #41148, #41216, #41235 - gui spacing (Rodrigo, Anna)
+    #41230 - forwarded tasks blank when viewed in a separate window (JP)
+    #41458 - Crash sending meeting invite (Dan)
+    #41459 - remove "Delegate to..." from right click menu in meeting dialog (JP)
+    #41641 - crash opening calendar for the first time (Hans)
+    #41661 - Only one popup dialog for repeated message alarm (Rodrigo)
+    #41671 - audio alarms pop up message dialog instead of playing tune (Rodrigo)
 
   * Mail
 
-    - New, much faster indexing engine.  This results in faster mail
-      incorporation, faster mail display, and faster searches.
-      Overall, the new engine should work much better for larger
-      folders, and take considerably less space on the disk.
+    #21499 - No docs in snaps  (Rodney)
+    #38927 - Signature editor help brings up composer help
+    #40694 - Focus not in To field of new message when From field is
+             visible. (Toshok)
+    #40989 - Deleted sub-folders hang around  (Michael)
+    #41043 - Send/receive accelerators broken  (Michael)
+    #41142 - Message search dialog has questionable button order  (Jeff)
+    #41149 - Spacing/padding of "Filters" dialog  (Jeff)
+    #41150 - Use stock buttons in "Filters" dialog  (Jeff)
+    #41151 - Spacing/padding of "Add/Edit Filters" window  (Jeff)
+    #41152 - Spacing/padding of "Vfolders" dialog  (Jeff)
+    #41153 - Use stock buttons in "VFolders" window  (Jeff)
+    #41155 - Spacing/padding in "Add/Edit Vfolders" dialog  (Jeff)
+    #41156 - Use stock** buttons in "add/edit vfolders" dialog  (Jeff)
+    #41163 - Forwarding HTML mail with inline images results in 
+             misformatted mail  (Michael)
+    #41164 - Can't import mails at all  (Michael)
+    #41190 - Crash cursor navigating Inbox  (Michael)
+    #41199 - Subscribe dialog's toolbar -- why? :)  (Michael)
+    #41205 - Use icons on Add/Edit/Delete buttons in "Search Editor"  (Jeff)
+    #41208 - Spacing/padding in "advanced search" dialog  (Jeff)
+    #41209 - Spacing/padding of "Create VFolder from Search" dialog  (Jeff)
+    #41238 - Crash when opening "attachment properties"  (Jeff)
+    #41239 - Spacing/padding of "attachment properties"  (Jeff)
+    #41241 - Title capitalisation of "Attachment Properties"  (Jeff)
+    #41244 - Spacing/padding of "Reformat Mailbox" dialog  (Jeff)
+    #41389 - Crash creating new Exchange acct  (Jeff)
+    #41398 - vFolder Sources IMAP folder names not being unencoded 
+             correctly  (Michael)
+    #41419 - Variable font key has trailing slash  (katzj@redhat.com)
+    #41448 - Crash on startup  (Michael)
+    #41461 - camel_text_to_html doesn't do as good a job with URLs as 
+             e_text_to_html  (Jeff)
+    #41513 - Plain text attachments not showing up in the composer  (Jeff)
+    #41578 - Up/down buttons broken in vfolder list  (Jeff)
+    #41648 - 1.2 -> 1.3 vfolder conversion  (Michael)
+    #41730 - Empty "Organization" headers  (Jeff)
+    #41789 - Bonobo components can pause/freeze the gui  (Jeff)
+    #41972 - Searching on labels is broken  (Michael)
+    #42024 - Improper use of Error dialog  (Jeff)
 
-    - Faster POP3 download, using the server's pipeline extensions if
-      available.
+  * Shell
 
-    - If you type multiple words in the search bar for the
-      "... Contains" rules, Evolution will search messages that
-      contain all of the words you specified, in any order.
-
-    - More consistent search results for indexed, non-indexed and
-      remote folders.
-
-    - UTF8 (Unicode) used for all searches, even with IMAP servers.
-
-    - It is now possible to mark messages for follow-up and other
-      flags.  It is also possible to change the color in which a
-      specific message is displayed in the mail list.
-
-    - When the message list is sorted by a certain field, it is possible
-      to jump to the first item in the list that matches a certain
-      string by just typing the first few characters.
-                                                        
-    - Filters are now updated automatically when the destination folder
-      gets moved or removed.
-
-    - A new filter rule allows you to pipe mail through an external
-      process to find out whether or not to filter it.
-
-    - You can now specify which folders get synced when switching to
-      offline mode.
-
-    - All previously read messages are automatically downloaded for
-      offline use.
-
-    - Offline state is preserved between sessions.  Generally, offline
-      mode is more stable and complete.
-
-    - STARTTLS support for POP, SMTP and IMAP has been added.
-
-    - IMAP can now handle folder names containing &, -, and UTF-8
-      characters.
-
-    - You can have all of your mail Auto-Cc:ed or auto-Bcc:ed to a
-      specified set of recipients.
-
-    - SMTP error reporting has been improved.
-
-    - Much improved GnuPG support.  Better pgp/mime interoperability.
-
-    - Improved support for external Maildir, MH, and mailbox folders,
-      and trees of folders.  Internally they share more code now and
-      are easier to maintain.
-
-    - External mailbox folders can interoperate with pine/mutt/elm
-      status flags directly (at slightly performance penalty).  See
-      options on the "spool" provider.
-
-    - Many IMAP related bugs fixed.  IMAP now passes current folder
-      regression tests.
-
-    - IMAP body search results are now cached.  Vastly improving
-      body search vFolder performance with IMAP sources.
-
-    - Optional IPv6 support.
-
-    - Progress bar added to subscribe dialogue.
-
-    - Camel's multithread safe object system streamlined and
-      improved.  Many other internal cleanups inside Camel.
-
-    - vFolders can now have an additional column which shows the
-      original location of the message.  Particularly useful for Trash
-      folder.
-
-    - New messages dont "upset" the thread view as much, if no sorting
-      is used.
-
-    - Various vFolder tweaks and fixes.
-
-    - Remote inline HTML images are now downloaded incrementally using
-      libsoup and are fully cancellable.
-
-    - Improved quotation display for format=flowed messages.
-
-  * Mail Composer
-
-    - You can now edit a set of signatures within Evolution, and pick
-      which signature you want when composing a message.
-
-    - Handling of replies has been improved; in particular, you can
-      now paste any text as a quotation, and quotation formatting is
-      preserved when switching between HTML and non-HTML mode.
-
-    - Evolution can now generate graphical smileys automatically as
-      you type.
-
-    - Quotation logic has been improved, rewrapping long lines in
-      replies now preserves quotation marks.
-
-    - Multiple simulataneous language support in the spell checker.
-
-    - Cut & Paste support for html between netscape/mozilla/evolution.
-
-    - Optimized rendering of long messages.
-
-    - Improved html rendering, including support for the clear
-      attribute in <br> elements.
+    #21499 - Documentation not working in the snapshots  (Rodney)
+    #33919 - Crash when opening other user's folder  (Dan)
+    #41002 - Default folder bar size too narrow  (Ettore)
+    #41008 - HIG compliance  (Anna)
+    #41010 - HIG compliance  (Anna)
+    #41022 - HIG compliance  (Anna)
+    #41024 - HIG compliance  (Anna)
+    #41025 - HIG compliance  (Anna)
+    #41036 - HIG compliance  (Anna)
+    #41059 - Crash connecting to other user's folder  (Ettore)
+    #41013 - Startup wizard display problems  (Michael)
+    #41128 - HIG compliance  (Anna)
+    #41145 - HIG compliance  (Anna)
+    #41146 - HIG compliance  (Anna)
+    #41147 - HIG compliance  (Anna)
+    #41225 - HIG compliance  (Anna)
+    #41227 - HIG compliance  (Anna)
+    #41242 - HIG compliance  (Anna)
+    #41304 - Missing dialog title  (Michael)
+    #41392 - HIG compliance  (Anna)
+    #41413 - Creating folder needs to make sure parent folder is
+             expanded  (Dan)
+    #41468 - New Exchange public folders do not follow type of parent
+             folder  (Dan)
+    #41469 - Upgrade routine crashing on Solaris  (Jeff)
+    #41484 - Make proxies work  (Sanshao Jiang)
+    #41567 - HIG compliance  (Anna)
+    #41569 - HIG compliance  (Anna)
+    #41648 - Vfolder upgrade problem  (Michael)
+    #41916 - Memory corruption in Storage interface  (Rodrigo)
 
   * Summary
 
-    - Can have non-local mail folders displayed on the summary.
+    #39693 - Summary weather settings annoyances  (Ettore)
+    #40902 - HIG compliance  (Ettore)
 
-    - Improved Calendar and Tasks displayed. Displays overdue and todays
-      tasks in colours.
+Other bugs:
 
-    - Uses Soup for HTTP downloading news feeds and weather info.
+  * Addressbook
 
-    - Better folder selector.
+    - Mostly, if not completely, fixed 33708  (Dan, Toshok)
+    - Fix duplicate entry in exported CSV  (Gilbert Fang)
+    - Use stock buttons  (Rodney)
 
-    - Better Weather/News Feed selector.
+  * Misc
 
-    - Can delete user added news feeds.
+    - Made Solaris/CDE integration work again  (Rodney)
+    - Removed some debugging spewage  (everyone)
+    - Don't crash on malformed GConf folder settings  (Toshok)
+    - Don't error out if the directory already exists when creating a
+      new folder  (Ettore)
+    - Fixed various memory leaks all over the place  (Hans)
+
+Updated translations:
+
+  - cs (Miloslav Trmac)
+  - de (Christian Neumair)
+  - es (Francisco Javier Fernandez)
+  - it (Marco Ciampa)
+  - nl (Vincent van Adrighem)
+  - no (Kjartan Maraas)
+  - pt (Duarte Loreto)
+  - sv (Christian Rose)
+  - zh_CN (Wang Jian)
+
+
+Evolution 1.3.2, 2003-04-11
+---------------------------
+
+Bugzilla bugs fixed (see http://bugzilla.ximian.com/show_bug.cgi):
+
+  * Addressbook
+
+    #7103  - Addressbook doesn't play nice with dark themes.  (Toshok)
+    #19178 - importers only target default contact folder.  (Toshok)
+    #20210 - Cannot save changes when invoked from mailer.  (Toshok)
+    #23036 - Export Contact Data to CSV, XLS, etc.  (for mail merge,
+             etc.) (Gilbert Fang)
+    #25148 - Selected contacts fields are not scrolling properly.
+             (Toshok)
+    #31786 - LDAP config dialog not properly internationalized.
+             (Toshok)
+    #32113 - Problem with UTF8 and contact list.  (Toshok)
+    #34085 - drag+drop not finalizing.  (Toshok)
+    #34651 - Searches with 8bit ascii char. not working in Select
+             Contacts.  (Toshok)
+    #37204 - Ximian, Inc. contact info update.  (Michael)
+    #38202 - Evolution crashed when I clicked the send button.  (Michael)
+    #39170 - void function should not has a 'return' keyword.  (Philip
+             Zhao)
+    #39256 - "Forward Contact", "Send Message to Contact" don't
+             work.  (Michael)
+    #39381 - crash when adding an address from an email to addressbook.
+             (Toshok)
+    #39507 - Select-names search broken.  (Toshok)
+    #39730 - Search Base Callback Not Working.  (Toshok).
+    #39763 - Pasting text into "To:" field doesn't work.  (Toshok)
+    #39788 - Can't add email address to contact.  (Toshok)
+    #40026 - Using pulldown to view multiple emails changes email to
+             random characters.  (Toshok)
+    #40046 - To: and Cc: fields not accepting accented letters.
+             (Toshok)
+    #40403 - can't edit contact lists.  (Toshok)
+    #40715 - Merge email address dialog non functional when adding
+             contact that already exists. .  (Toshok)
+    #40727 - email autocompletion not listing all names.  (Toshok)
+    #40841 - Ctrl-v was being used for both "Save As VCard" and
+             "Paste".  (Toshok)
+    #40901 - HIG-ify the LDAP server editor dialog's button
+             layout.   (Toshok)
+
+  * Calendar
+
+    #17231 - Private settings not retained.  (JP)
+    #31382 - Free/busy retrieval didn't work for http source.  (Rodrigo)
+    #31660 - Appointments with "for" recurrence synced with no end date.
+             (JP)
+    #32248 - Todo items imported from pilot have time set to 00:00.  (JP)
+    #34095 - Memory leaks.  (Hans Petter)
+    #34505 - Duplicate alarm dialogs for appts in exchange calendar.
+             (Rodrigo)
+    #35926 - Contacts entry in appointment editor to be removed.
+             (Hans Petter, Dan)
+    #37935 - Drawing problems in mini-calendar.  (Hans Petter)
+    #39262 - Crash when importing an ics file to local calendar.  (Rodrigo)
+    #39356 - New evo users didn't get calendar.  (Rodrigo)
+    #39692 - File type names should not be OAF component types.  (Ettore)
+    #39735 - View settings not persistent between sessions.  (Jeff)
+    #39736 - Times in day view too large.  (Hans Petter)
+    #39740 - Crash clicking in Attendees field when creating new
+             meeting.  (Rodrigo)
+    #39757 - Couldn't delete reminder for appointment.  (Hans Petter)
+    #39770 - Not meeting request sent.  (Rodrigo)
+    #39803 - Bottom part of text cut off in month view.  (Hans Petter)
+    #39895 - Selection vanishes when day view loses focus.  (Michael/Hans)
+    #39954 - Crash when setting recurrence rule for an appointment.
+             (Hans Petter)
+    #39955 - Crash when forwarding an appointment as icalendar.  (JP)
+    #39961 - Appointment schedule autopick menu displays under File.
+             (Rodrigo)
+    #40133 - wombat startup error. (Toshok)
+    #40195 - Cannot create new calendar folders (JP)
+    #40252 - LOG(e...) syntax error (Michael)
+    #40258 - Recurring event displayed truncated description.  (Hans Petter)
+    #40578 - Event summaries cut off in month view.  (Hans Petter)
+    #40655 - Mini-calendar always showed January 1970.  (Hans Petter)
+    #40661 - Missing header for Forte compilation.  (Rodrigo)
+    #40722 - Crash when closing a meeting.  (JP)
+    #40789 - Didn't remember reminder text.  (JP)
+    #40790 - Didn't launch programs added as reminders.  (JP)
+    #40792 - Buttons in Select File dialog for sound reminder didn't
+             work.  (Ettore)
+    #40876 - Cannot create a meeting with a resource in Exchange 
+	     calendar (JP)
+    #40894 - calendar switching weeks selected in small right subcalendars 
+	     (JP)
+    #41127 - Evolution crashed when sending new meeting invitation (JP)
+
+  * Mail
+
+    #29564 - Message list loses focus when you expunge.  (Michael)
+    #33786 - Crash when invalid expression fed to vFolder.  (Michael)
+    #36245 - Translation string context problem.  (Dan)
+    #37084 - Mailer forgets message list pane size on startup.
+             (Michael)
+    #38227 - Button spacing issues.  (Ettore)
+    #38461 - Mail importers cannot import to non-local folders.
+             (Michael)
+    #38659 - RFC2047 word encoding errors.  (Jeff)
+    #38926 - Configuration dialogs overlap each other. (Ettore, Jeff)
+    #39165 - Losing all vFolder rules after editing them, until
+             restart.  (Michael)
+    #39168 - compiler compatability, empty structs.  (Jeff)
+    #39170 - Compiler compatibility, returning a void return value.
+             (Jeff)
+    #39173 - prototype mismatch.  (Jeff)
+    #39204 - Charset handling problems with broken mails.  (Jeff)
+    #39256 - Send message to contact/forward contact doesn't work.
+             (Michael)
+    #39325 - Allow user to enable/disable account from account list.
+             (Jeff)
+    #39382 - Signature editor dialog buttons messed up.  (Jeff)
+    #39464 - Trying to remove a duplicate vfolder crashes.  (Michael)
+    #39486 - Cancelling send/receive could cause a crash.  (Michael)
+    #39654 - vFolder source remove button doesn't work.  (Jeff)
+    #39696 - Default composer window title is meaningless. (Jeff)
+    #39741 - Configuration dialogs overlap each other. (Ettore, Jeff)
+    #39744 - Sending 8 bit mime to a smtp server which doesn't say it
+             supports it. (Jeff)
+    #39759 - Crash using search dialog.  (Michael)
+    #39800 - Make To: have focus on a new message.  (Jeff)
+    #39809 - Dialog's don't match gnome 2 layout.  (Jeff)
+    #39813 - Crash/noop adding signature script.  (Jeff)
+    #39870 - Message browser button sensitivity not correct.  (Jeff)
+    #39914 - Configuration dialogs overlap each other. (Ettore, Jeff)
+    #39924, and many others - Subject entry box didn't work
+             properly/support i18n very well.  (Jeff)
+    #40043 - A warning dialog wont go away.  (Jeff)
+    #40074 - Threads always open expanded.  (Jeff)
+    #40083 - Search box doesn't work on subscription dialog - it was
+             removed.  (Jeff)
+    #40103 - Deadlock at startup.  (Michael)
+    #40124 - Cannot unsubscribe from folders that aren't selectable.
+             (Jeff)
+    #40188 - Context menu on addresses crashes.  (Michael)
+    #40300 - Files are only detected for recovery when you start an
+             editor.  (Michael)
+    #40314 - Some folders not expandable in subscriptions dialog.
+             (Jeff)
+    #40472 - Crash after entering password.  (Michael)
+    #40522 - Two passphrase dialogues viewing encrypted mail.  (Michael)
+    #40536 - Send/receive dialogue should transient for parent.
+             (Michael)
+    #40608 - Crash saving attachment.  (Jeff)
+    #40679 - Composer crash browsing files to attach.  (Jeff)
+    #40728 - Crash while scrolling.  (Jeff)
+    #40764 - Composer backs up drafts too often.  (Jeff)
+    #40778 - incorrect IMAP BODY parsing/display  (Jeff)
+    #40900 - vfolder creation dialog has wrong button order.  (Michael)
+    #40904 - Spontaneous crash.  (Jeff)
+    #40921 - Cancel subscription dialogue while busy -> crash.  (Michael)
+    #41004 - HIG compliance.  (Jeff)
+
+  * Shell
+
+    #17034 - Use UTF-8 in about box.  (Michael)
+    #34371 - Tries to open other user's folder with blank user field.
+    	     (Ettore)
+    #38775 - Version number hardcoded in warning dialog text.  (Michael)
+    #38974 - Xlib dependency causing linking error on Solaris.  (Ettore)
+    #39096 - Start-up crash on Solaris.  (Ettore) 
+    #39467 - Crash when splash image not found.  (Michael)
+    #39599 - Crash when folder icons missing.  (Ettore)
+    #39692 - OAFIIDs being shown in the importer dialog.  (Ettore)
+    #39706 - Settings window too big.  (Michael)
+    #40377 - Old stale wombat servers not being killed.  (Ettore)
+    #40413 - Problem with closing the folder selector dialog.  (Ettore)
+    #40474 - Summary settings not imported from 1.2.  (Michael)
+    #40590 - Signature settings upgrade problem.  (Michael)    
+    #40652 - Folder bar not resizing after resizing Evolution window.
+            (Michael)
+    #40748 - Cannot resize icons in the shortcut bar.  (Ettore)
+    #40854 - Problem with selecting other user's folder.  (Dan)
+    #40888 - Crash when selecting other user's folder.  (Dan)
+
+  * Summary
+
+     #5344  - Missing weather locations.  (Marten Woxberg)
+     #7153  - Stock folder names not translated.  (Ettore)
+     #12066 - Missing weather locations.  (Dan)
+     #15740 - Missing weather locations.  (Dan)
+     #18015 - Missing weather locations.  (Dan)
+     #19957 - AM/PM setting not being honoured.  (Ettore)
+     #40358 - Summary page not showing properly in non-C locales.
+              (Ettore)
+     #40141 - Preferences settings inconsistency when clicking "Close".
+              (Michael)
+     #32027 - Missing locations.  (Dan)
+
+Other bugs:
+
+  * Addressbook
+
+    - HIG'ify the e-address-popup's buttons layout.  (Toshok)
+    - Add input method support to the minicard view.  (Toshok)
+    - Make the minicard view listen for style changes.  (Toshok)
+    - Fix the select names component to be more friendly to non-shlib
+      components.  (Dan)
+    - Fix various errors in the contact editor caused by parsing
+      addresses when we don't need to - especially after the user has
+      explicitly entered the elements of the address
+      themselves.  (Toshok)
+    - Replace GtkImage based arrow buttons in the contact editor with
+      GtkArrow.  (Toshok)
+
+  * Calendar
+
+    - Replaced all references to GdkFont deprecatedness with Pango.
+      (Hans Petter)
+    - Alarm notification fixes.  (Rodrigo)
+    - Timezone dialog fix.  (Dan)
+    - Use weak refs instead of destroy signal.  (Rodrigo, Hans Petter)
+    - Use GtkMessageDialogs for meeting-related questions.  (Rodrigo)
+    - GtkObject -> GObject fixes.  (Everyone)
+    - Connector-related fixes.  (Dan)
+    - Made meeting/scheduling work correctly.  (JP)
+    - Only remove alarms for backends that request it (Rodrigo)
+    - HIG'ify dialogs (Ettore)
+
+  * Mail
+
+    - Clear passwords didn't work.  (Michael)
+    - Show preview and view threaded were made per-folder, as in
+      1.2.x, 1.3.1 had them global.  (Michael)
+    - Make the printing dialog, and account editor transient for the
+      parent.  (Larry, Jeff)
+    - Check for unique filter/vFolder names in all cases.  (Michael)
+    - Most warnings removed.  (Jeff, Michael)
+    - some text/plain mails detected as text/html, re-do the fix for
+      #16817 to make it pickier.  (Michael)
+    - Imap buffer overflow potential.  (Timo Sirainen)
+    - GSSAPI SASL support.  (Jeff)
+    - Handle broken header charset checking similarly to badly
+      labelled/broken body content.  (Dan)
+    - Various glib deprecation issues, and use non-locale specific
+      string compares in various places.  (Jeff, Michael)
+    - Mail piped to the sendmail transport is canoncalised into Un*x
+      format, using network format (CRLF) confuses some versions of
+      postfix.  (Jeff)
+    - Some work on fixing cut and paste shortcuts in composer.  (Jeff)
+    - Made the EvolutionComposer corba interfaces work again/port to
+      GNOME 2.  (Michael)
+
+  * Shell
+
+    - Fixed some problems with the folder dialogs.  (Dan)
+    - Fixed shell .server files.  (Dan)
+    - Added --force-shutdown to the shell as a killev replacement.
+      (Dan)
+    - Make Evolution use large WM icons.  (Ettore)
+    - Made the offline dialog work again.  (Ettore)
+    - Fixed importer framework to support non-local folders.  (Ettore)
+
+  * Summary
+
+    - Make creation of the summary settings page faster.  (Dan)
+
+  * All
+
+    - A number of compiler portability fixes, varadic macro's,
+      __FUNCTION__ -> G_GNUC_FUNCTION, inline usage, void returns, etc
+      (Everyone)
+    - Fixed druid colors.  (Dan)
+
+Updated translations:
+
+  - cs (Miloslav Trmac)
+  - de (Christian Neumair)
+  - es (Francisco Javier Fernandez)
+  - fi (Sami Pesonen)
+  - hu (Andras Timar)
+  - it (Marco Ciampa)
+  - no (Kjartan Maraas)
+  - pt (Duarte Loreto)
+  - pt_BR (Gustavo Maciel Dias Vieira)
+  - sk (Stanislav Visnovsky)
+  - sv (Christian Rose)
+  - uk (Yuriy Syrota)
+  - zh_TW (Chao-Hsiung Liao)
+
+
+Evolution 1.3.1, 2003-03-05
+---------------------------
+
+First release based on GNOME 2.

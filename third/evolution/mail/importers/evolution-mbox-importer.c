@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-generic-factory.h>
@@ -47,8 +48,8 @@
 
 /*  #define IMPORTER_DEBUG */
 #ifdef IMPORTER_DEBUG
-#define IN g_print ("=====> %s (%d)\n", __FUNCTION__, __LINE__)
-#define OUT g_print ("<==== %s (%d)\n", __FUNCTION__, __LINE__)
+#define IN g_print ("=====> %s (%d)\n", G_GNUC_FUNCTION, __LINE__)
+#define OUT g_print ("<==== %s (%d)\n", G_GNUC_FUNCTION, __LINE__)
 #else
 #define IN
 #define OUT
@@ -61,6 +62,8 @@ typedef struct {
 
 	char *filename;
 	int num;
+	GNOME_Evolution_Storage_Result create_result;
+
 	CamelMimeParser *mp;
 	gboolean is_folder;
 } MboxImporter;
@@ -118,9 +121,8 @@ process_item_fn (EvolutionImporter *eimporter,
 
 	if (importer->folder == NULL) {
 		GNOME_Evolution_ImporterListener_notifyResult (listener,
-							       GNOME_Evolution_ImporterListener_NOT_READY,
-							       TRUE, ev);
-		return;
+							       GNOME_Evolution_ImporterListener_BAD_FILE,
+							       FALSE, ev);
 	}
 
 	if (mbi->is_folder == TRUE) {
@@ -146,7 +148,6 @@ process_item_fn (EvolutionImporter *eimporter,
 		} else {
 			mozilla_status = camel_medium_get_header (CAMEL_MEDIUM (msg), "X-Mozilla-Status");
 			if (mozilla_status != NULL) {
-				g_print ("Got Mozilla status header: %s\n", mozilla_status);
 				info = get_info_from_mozilla (mozilla_status, &deleted);
 			} else {
 				deleted = FALSE;
@@ -161,7 +162,7 @@ process_item_fn (EvolutionImporter *eimporter,
 			if (info)
 				camel_message_info_free (info);
 			
-			camel_object_unref (CAMEL_OBJECT (msg));
+			camel_object_unref (msg);
 			if (camel_exception_is_set (ex)) {
 				g_warning ("Failed message %d", mbi->num);
 				done = TRUE;
@@ -182,6 +183,7 @@ process_item_fn (EvolutionImporter *eimporter,
 		camel_mime_parser_step (mbi->mp, 0, 0);
 	
 	camel_exception_free (ex);
+
 	GNOME_Evolution_ImporterListener_notifyResult (listener,
 						       GNOME_Evolution_ImporterListener_OK,
 						       !done, ev);
@@ -214,71 +216,36 @@ support_format_fn (EvolutionImporter *importer,
 }
 
 static void
-importer_destroy_cb (GtkObject *object,
-		     MboxImporter *mbi)
+importer_destroy_cb (void *data, GObject *object)
 {
-	MailImporter *importer;
+	MboxImporter *mbi = data;
+	MailImporter *importer = data;
 
-	importer = (MailImporter *) mbi;
-	if (importer->frozen) {
-		camel_folder_sync (importer->folder, FALSE, NULL);
-		camel_folder_thaw (importer->folder);
+	if (importer->folder) {
+		if (importer->frozen) {
+			camel_folder_sync (importer->folder, FALSE, NULL);
+			camel_folder_thaw (importer->folder);
+		}
+
+		camel_object_unref (importer->folder);
 	}
-
-	if (importer->folder)
-		camel_object_unref (CAMEL_OBJECT (importer->folder));
 
 	g_free (mbi->filename);
 	if (mbi->mp)
-		camel_object_unref (CAMEL_OBJECT (mbi->mp));
+		camel_object_unref (mbi->mp);
 
 	g_free (mbi);
-}
-
-static void
-folder_created_cb (BonoboListener *listener,
-		   const char *event_name,
-		   const BonoboArg *event_data,
-		   CORBA_Environment *ev,
-		   MailImporter *importer)
-{
-	char *fullpath;
-	GNOME_Evolution_Storage_FolderResult *result;
-	CamelException *ex;
-
-	if (strcmp (event_name, "evolution-shell:folder_created") != 0) {
-		return; /* Unknown event */
-	}
-
-	result = event_data->_value;
-	fullpath = g_strconcat ("file://", result->path, NULL);
-
-	ex = camel_exception_new ();
-	importer->folder = mail_tool_uri_to_folder (fullpath, CAMEL_STORE_FOLDER_CREATE, ex);
-	if (camel_exception_is_set (ex)) {
-		g_warning ("Error opening %s", fullpath);
-		camel_exception_free (ex);
-
-		g_free (fullpath);
-		return;
-	}
-
-	camel_folder_freeze (importer->folder);
-	importer->frozen = TRUE;
-
-	g_free (fullpath);
-	bonobo_object_unref (BONOBO_OBJECT (listener));
 }
 
 static gboolean
 load_file_fn (EvolutionImporter *eimporter,
 	      const char *filename,
-	      const char *folderpath,
+	      const char *uri,
+	      const char *folder_type,
 	      void *closure)
 {
 	MboxImporter *mbi;
 	MailImporter *importer;
-	gboolean delayed = FALSE;
 	struct stat buf;
 	int fd;
 
@@ -307,52 +274,12 @@ load_file_fn (EvolutionImporter *eimporter,
 	}
 
 	importer->mstream = NULL;
-	if (folderpath == NULL || *folderpath == '\0') {
+	if (uri == NULL || *uri == '\0')
 		importer->folder = mail_tool_get_local_inbox (NULL);
-	} else {
-		char *parent, *tmp, *fullpath, *homedir;
-		const char *name;
-		BonoboListener *listener;
-		CamelException *ex;
-		
-		tmp = gnome_util_prepend_user_home ("evolution/local");
-		homedir = g_strconcat ("file://", tmp, NULL);
-		g_free (tmp);
+	else
+		importer->folder = mail_tool_uri_to_folder(uri, 0, NULL);
 
-		fullpath = e_path_to_physical (homedir, folderpath);
-		ex = camel_exception_new ();
-		importer->folder = mail_tool_uri_to_folder (fullpath, 0, ex);
-		g_free (homedir);
-	
-		if (camel_exception_is_set (ex) || importer->folder == NULL) {
-			/* Make a new directory */
-			name = strrchr (folderpath, '/');
-			if (name == NULL) {
-				parent = g_strdup ("/");
-				name = folderpath;
-			} else {
-				name += 1;
-				parent = g_dirname (folderpath);
-			}
-			
-			listener = bonobo_listener_new (NULL, NULL);
-			gtk_signal_connect (GTK_OBJECT (listener), "event-notify",
-					    GTK_SIGNAL_FUNC (folder_created_cb),
-					    importer);
-			
-			mail_importer_create_folder (parent, name, NULL, listener);
-			camel_exception_free (ex);
-			ex = camel_exception_new ();
-			importer->folder = NULL;
-			g_print ("No folder yet\n");
-			delayed = TRUE;
-			g_free (parent);
-		}
-		camel_exception_free (ex);
-		g_free (fullpath);
-	}
-
-	if (importer->folder == NULL && delayed == FALSE){
+	if (importer->folder == NULL) {
 		g_warning ("Bad folder\n");
 		goto fail;
 	}
@@ -365,7 +292,7 @@ load_file_fn (EvolutionImporter *eimporter,
 	return TRUE;
 
  fail:
-	camel_object_unref (CAMEL_OBJECT (mbi->mp));
+	camel_object_unref (mbi->mp);
 	mbi->mp = NULL;
 
 	return FALSE;
@@ -373,6 +300,7 @@ load_file_fn (EvolutionImporter *eimporter,
 
 static BonoboObject *
 mbox_factory_fn (BonoboGenericFactory *_factory,
+		 const char *cid,
 		 void *closure)
 {
 	EvolutionImporter *importer;
@@ -381,9 +309,8 @@ mbox_factory_fn (BonoboGenericFactory *_factory,
 	mbox = g_new0 (MboxImporter, 1);
 	importer = evolution_importer_new (support_format_fn, load_file_fn,
 					   process_item_fn, NULL, mbox);
-	gtk_signal_connect (GTK_OBJECT (importer), "destroy",
-			    GTK_SIGNAL_FUNC (importer_destroy_cb), mbox);
-
+	g_object_weak_ref(G_OBJECT(importer), importer_destroy_cb, mbox);
+	
 	return BONOBO_OBJECT (importer);
 }
 
@@ -401,7 +328,7 @@ mail_importer_module_init (void)
 					      mbox_factory_fn, NULL);
 
 	if (factory == NULL)
-		g_warning ("Could not initialise Outlook importer factory.");
+		g_warning ("Could not initialise mbox importer factory.");
 
 	initialised = TRUE;
 }

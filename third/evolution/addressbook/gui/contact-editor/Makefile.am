@@ -1,27 +1,32 @@
-INCLUDES =					\
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/addressbook/		\
-	-I$(top_srcdir)/addressbook/backend	\
-	-I$(top_builddir)/addressbook/backend	\
-	-I$(top_srcdir)/addressbook/gui/merging	\
-	-I$(top_srcdir)/widgets/e-table		\
-	-I$(top_builddir)/shell			\
-	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"	\
-	-DDATADIR=\""$(datadir)"\"		\
-	-DEVOLUTION_DATADIR=\""$(datadir)"\"	\
-	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"	\
-	-DEVOLUTIONDIR=\""$(evolutiondir)"\"	\
-	-DG_LOG_DOMAIN=\"contact-editor\"	\
+INCLUDES =						\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/addressbook/			\
+	-I$(top_srcdir)/addressbook/backend		\
+	-I$(top_builddir)/addressbook/backend		\
+	-I$(top_srcdir)/addressbook/gui/merging		\
+	-I$(top_srcdir)/widgets/e-table			\
+	-I$(top_builddir)/shell				\
+	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
+	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"	\
+	-DEVOLUTION_UIDIR=\""$(evolutionuidir)\""	\
+	-DPREFIX=\""$(prefix)"\"			\
+	-DG_LOG_DOMAIN=\"contact-editor\"		\
+	-DG_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED			\
+	-DLIBGNOME_DISABLE_DEPRECATED			\
+	-DLIBGNOMEUI_DISABLE_DEPRECATED			\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-noinst_LIBRARIES =				\
-	libecontacteditor.a
+noinst_LTLIBRARIES =				\
+	libecontacteditor.la
 
-libecontacteditor_a_SOURCES = 			\
+libecontacteditor_la_SOURCES = 			\
 	e-contact-editor-address.c		\
 	e-contact-editor-address.h		\
 	e-contact-editor-fullname.c		\
 	e-contact-editor-fullname.h		\
+	e-contact-editor-marshal.c		\
 	e-contact-editor.c			\
 	e-contact-editor.h			\
 	e-contact-save-as.c			\
@@ -29,20 +34,27 @@ libecontacteditor_a_SOURCES = 			\
 	e-contact-quick-add.c			\
 	e-contact-quick-add.h
 
-evolutiondir = $(datadir)/evolution
+# GLib marshalling cruft
 
-evolution_DATA = arrow.png
+e-contact-editor-marshal.h: e-contact-editor-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=ece_marshal e-contact-editor-marshal.list --header > e-contact-editor-marshal.tmp \
+	&& mv e-contact-editor-marshal.tmp e-contact-editor-marshal.h ) \
+	|| ( rm -f e-contact-editor-marshal.tmp && exit 1 )
 
-iconsdir = $(datadir)/images/evolution
+e-contact-editor-marshal.c: e-contact-editor-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=ece_marshal e-contact-editor-marshal.list --body > e-contact-editor-marshal.tmp \
+	&& mv e-contact-editor-marshal.tmp e-contact-editor-marshal.c ) \
+	|| ( rm -f e-contact-editor-marshal.tmp && exit 1 )
 
-gladedir   = $(datadir)/evolution/glade
+MARSHAL_GENERATED = e-contact-editor-marshal.c e-contact-editor-marshal.h
 
 glade_DATA = 				\
 	contact-editor.glade		\
 	fulladdr.glade			\
-	fullname.glade			\
-	file-exists.glade		\
-	e-contact-editor-confirm-delete.glade
+	fullname.glade
 
-EXTRA_DIST = $(evolution_DATA)		\
-	$(glade_DATA)
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST=	$(glade_DATA)		\
+		e-contact-editor-marshal.list

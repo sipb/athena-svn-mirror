@@ -1,8 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* e-summary-calendar.c
  *
- * Copyright (C) 2001 Ximian, Inc.
- * Copyright (C) 2002 Ximian, Inc.
+ * Copyright (C) 2001, 2002, 2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -31,16 +30,13 @@
 #include "e-summary-calendar.h"
 #include "e-summary.h"
 
-#include "e-util/e-config-listener.h"
-
 #include <cal-client/cal-client.h>
 #include <cal-util/timeutil.h>
 
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
-#include <bonobo-conf/bonobo-config-database.h>
 
-#include <liboaf/liboaf.h>
+#include <gconf/gconf-client.h>
 
 #include <ical.h>
 
@@ -54,7 +50,8 @@ struct _ESummaryCalendar {
 
 	char *default_uri;
 
-	EConfigListener *config_listener;
+	GConfClient *gconf_client;
+	int gconf_value_changed_handler_id;
 
 	int cal_open_reload_timeout_id;
 	int reload_count;
@@ -246,7 +243,7 @@ add_recurrances (CalComponent *comp,
 	event->uid = g_strdup (recur->event->uid);
 	event->zone = recur->summary->tz;
 
-	gtk_object_ref (GTK_OBJECT (comp));
+	g_object_ref (comp);
 
 	g_ptr_array_add (recur->array, event);
 	return TRUE;
@@ -299,7 +296,7 @@ uids_to_array (ESummary *summary,
 			
 			status = cal_client_get_timezone (client, event->dt.tzid, &event->zone);
 			if (status != CAL_CLIENT_GET_SUCCESS) {
-				gtk_object_unref (GTK_OBJECT (event->comp));
+				g_object_unref (event->comp);
 				g_free (event);
 				continue;
 			}
@@ -324,7 +321,7 @@ free_event_array (GPtrArray *array)
 		
 		event = array->pdata[i];
 		g_free (event->uid);
-		gtk_object_unref (GTK_OBJECT (event->comp));
+		g_object_unref (event->comp);
 	}
 
 	g_ptr_array_free (array, TRUE);
@@ -375,33 +372,24 @@ generate_html (gpointer data)
 
 	uids = cal_client_get_objects_in_range (calendar->client, 
 						CALOBJ_TYPE_EVENT, begin, end);
+	string = g_string_new ("<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
+			       "alt=\"\" width=\"48\" height=\"48\"> <b>");
+
+	if (calendar->default_uri != NULL)
+		g_string_append_printf (string, "<a href=\"%s\">", calendar->default_uri);
+
+	g_string_append (string, _("Appointments"));
+
+	if (calendar->default_uri != NULL)
+		g_string_append (string, "</a>");
+
+	g_string_append (string, "</b></dt><dd>");
+
 	if (uids == NULL) {
-		char *s1, *s2;
-
-		s1 = e_utf8_from_locale_string (_("Appointments"));
-		s2 = e_utf8_from_locale_string (_("No appointments"));
-		g_free (calendar->html);
-		calendar->html = g_strconcat ("<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
-		                              "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"", calendar->default_uri, "\">",
-		                              s1, "</a></b></dt><dd><b>", s2, "</b></dd></dl>", NULL);
-		g_free (s1);
-		g_free (s2);
-
- 		e_summary_draw (summary);
-		return FALSE;
-	} else {
+		g_string_append (string, _("No appointments."));
+	} else { 
 		GPtrArray *uidarray;
 		int i;
-		char *s;
-
-		string = g_string_new (NULL);
-		g_string_sprintf (string, "<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
-			      "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"%s\">",
-			      calendar->default_uri);
-		s = e_utf8_from_locale_string (_("Appointments"));
-		g_string_append (string, s);
-		g_free (s);
-		g_string_append (string, "</a></b></dt><dd>");
 
 		uidarray = uids_to_array (summary, calendar->client, uids, begin, end);
 		for (i = 0; i < uidarray->len; i++) {
@@ -417,7 +405,7 @@ generate_html (gpointer data)
 			if (calendar->wants24hr == TRUE) {
 				strftime (start_str, sizeof start_str, _("%k:%M %d %B"), &start_tm);
 			} else {
-				strftime (start_str, sizeof start_str, _("%l:%M %d %B"), &start_tm);
+				strftime (start_str, sizeof start_str, _("%l:%M%P %d %B"), &start_tm);
 			}
 
 			if (cal_component_has_alarms (event->comp)) {
@@ -443,8 +431,9 @@ generate_html (gpointer data)
 		}
 
 		free_event_array (uidarray);
-		g_string_append (string, "</dd></dl>");
 	}
+
+	g_string_append (string, "</dd></dl>");
 
 	if (calendar->html) {
 		g_free (calendar->html);
@@ -510,10 +499,10 @@ e_summary_calendar_protocol (ESummary *summary,
 
 	/* Get the factory */
 	CORBA_exception_init (&ev);
-	factory = oaf_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_CompEditorFactory", 0, NULL, &ev);
+	factory = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_CompEditorFactory", 0, NULL, &ev);
 	if (BONOBO_EX (&ev)) {
-		g_message ("%s: Could not activate the component editor factory (%s)", __FUNCTION__,
-			   CORBA_exception_id (&ev));
+		g_message ("%s: Could not activate the component editor factory (%s)",
+			   G_GNUC_FUNCTION, CORBA_exception_id (&ev));
 		CORBA_exception_free (&ev);
 		return;
 	}
@@ -521,22 +510,12 @@ e_summary_calendar_protocol (ESummary *summary,
 	GNOME_Evolution_Calendar_CompEditorFactory_editExisting (factory, comp_uri, (char *)uri + 10, &ev);
 
 	if (BONOBO_EX (&ev)) {
-		g_message ("%s: Execption while editing the component (%s)", __FUNCTION__, 
+		g_message ("%s: Execption while editing the component (%s)", G_GNUC_FUNCTION, 
 			   CORBA_exception_id (&ev));
 	}
 
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (factory, NULL);
-}
-
-static gboolean
-locale_uses_24h_time_format (void)
-{
-	char s[16];
-	time_t t = 0;
-
-	strftime (s, sizeof s, "%p", gmtime (&t));
-	return s[0] == '\0';
 }
 
 static void
@@ -554,51 +533,50 @@ setup_calendar (ESummary *summary)
 	}
 
 	if (calendar->client != NULL)
-		gtk_object_unref (GTK_OBJECT (calendar->client));
+		g_object_unref (calendar->client);
 
 	calendar->client = cal_client_new ();
 
-	gtk_signal_connect (GTK_OBJECT (calendar->client), "cal-opened",
-			    GTK_SIGNAL_FUNC (cal_opened_cb), summary);
-	gtk_signal_connect (GTK_OBJECT (calendar->client), "obj-updated",
-			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
-	gtk_signal_connect (GTK_OBJECT (calendar->client), "obj-removed",
-			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
+	g_signal_connect (calendar->client, "cal-opened", G_CALLBACK (cal_opened_cb), summary);
+	g_signal_connect (calendar->client, "obj-updated", G_CALLBACK (obj_changed_cb), summary);
+	g_signal_connect (calendar->client, "obj-removed", G_CALLBACK (obj_changed_cb), summary);
 
 	if (! cal_client_open_default_calendar (calendar->client, FALSE))
 		g_message ("Open calendar failed");
 
-	calendar->wants24hr = e_config_listener_get_boolean_with_default (calendar->config_listener,
-									  "/Calendar/Display/Use24HourFormat",
-									  locale_uses_24h_time_format (), NULL);
-	calendar->default_uri = e_config_listener_get_string_with_default (calendar->config_listener,
-									   "/DefaultFolders/calendar_path",
-									   "evolution:/local/Calendar", NULL);
+	calendar->wants24hr = gconf_client_get_bool (calendar->gconf_client,
+						     "/apps/evolution/calendar/display/use_24h_format", NULL);
+	calendar->default_uri = gconf_client_get_string (calendar->gconf_client,
+							 "/apps/evolution/shell/default_folders/calendar_path",
+							 NULL);
 }
 
 static void
-config_listener_key_changed_cb (EConfigListener *listener,
-				const char *key,
-				void *user_data)
+gconf_client_value_changed_cb (GConfClient *client,
+			       const char *key,
+			       GConfValue *value,
+			       void *user_data)
 {
 	setup_calendar (E_SUMMARY (user_data));
 	generate_html (user_data);
 }
 
 static void
-setup_config_listener (ESummary *summary)
+setup_gconf_client (ESummary *summary)
 {
 	ESummaryCalendar *calendar;
 
 	calendar = summary->calendar;
 	g_assert (calendar != NULL);
 
-	calendar->config_listener = e_config_listener_new ();
+	calendar->gconf_client = gconf_client_get_default ();
 
-	gtk_signal_connect (GTK_OBJECT (calendar->config_listener), "key_changed",
-			    GTK_SIGNAL_FUNC (config_listener_key_changed_cb), summary);
+	calendar->gconf_value_changed_handler_id
+		= g_signal_connect (calendar->gconf_client, "value_changed",
+				    G_CALLBACK (gconf_client_value_changed_cb), summary);
 
-	setup_calendar (summary);
+	gconf_client_add_dir (calendar->gconf_client, "/apps/evolution/calendar", FALSE, NULL);
+	gconf_client_add_dir (calendar->gconf_client, "/apps/evolution/shell/default_folders", FALSE, NULL);
 }
 
 void
@@ -612,7 +590,7 @@ e_summary_calendar_init (ESummary *summary)
 	summary->calendar = calendar;
 	calendar->html = NULL;
 
-	setup_config_listener (summary);
+	setup_gconf_client (summary);
 	setup_calendar (summary);
 
 	e_summary_add_protocol_listener (summary, "calendar", e_summary_calendar_protocol, calendar);
@@ -638,10 +616,15 @@ e_summary_calendar_free (ESummary *summary)
 	if (calendar->cal_open_reload_timeout_id != 0)
 		g_source_remove (calendar->cal_open_reload_timeout_id);
 
-	gtk_object_unref (GTK_OBJECT (calendar->client));
+	g_object_unref (calendar->client);
 	g_free (calendar->html);
 	g_free (calendar->default_uri);
-	
+
+	if (calendar->gconf_value_changed_handler_id != 0)
+		g_signal_handler_disconnect (calendar->gconf_client,
+					     calendar->gconf_value_changed_handler_id);
+	g_object_unref (calendar->gconf_client);
+
 	g_free (calendar);
 	summary->calendar = NULL;
 }

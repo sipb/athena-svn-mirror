@@ -21,21 +21,24 @@
 #ifndef CAL_CLIENT_H
 #define CAL_CLIENT_H
 
-#include <libgnome/gnome-defs.h>
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 #include <cal-util/cal-recur.h>
 #include <cal-util/cal-util.h>
 #include <cal-client/cal-query.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define CAL_CLIENT_TYPE            (cal_client_get_type ())
-#define CAL_CLIENT(obj)            (GTK_CHECK_CAST ((obj), CAL_CLIENT_TYPE, CalClient))
-#define CAL_CLIENT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), CAL_CLIENT_TYPE, CalClientClass))
-#define IS_CAL_CLIENT(obj)         (GTK_CHECK_TYPE ((obj), CAL_CLIENT_TYPE))
-#define IS_CAL_CLIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), CAL_CLIENT_TYPE))
+#define CAL_CLIENT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), CAL_CLIENT_TYPE, CalClient))
+#define CAL_CLIENT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), CAL_CLIENT_TYPE, CalClientClass))
+#define IS_CAL_CLIENT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CAL_CLIENT_TYPE))
+#define IS_CAL_CLIENT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CAL_CLIENT_TYPE))
+
+#define CAL_CLIENT_OPEN_STATUS_ENUM_TYPE     (cal_client_open_status_enum_get_type ())
+#define CAL_CLIENT_SET_MODE_STATUS_ENUM_TYPE (cal_client_set_mode_status_enum_get_type ())
+#define CAL_MODE_ENUM_TYPE                   (cal_mode_enum_get_type ())
 
 typedef struct _CalClient CalClient;
 typedef struct _CalClientClass CalClientClass;
@@ -90,14 +93,14 @@ typedef enum {
 } CalClientLoadState;
 
 struct _CalClient {
-	GtkObject object;
+	GObject object;
 
 	/* Private data */
 	CalClientPrivate *priv;
 };
 
 struct _CalClientClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Notification signals */
 
@@ -121,7 +124,11 @@ typedef gchar * (* CalClientAuthFunc) (CalClient *client,
                                       const gchar *key,
                                       gpointer user_data);
 
-GtkType cal_client_get_type (void);
+GType cal_client_get_type (void);
+
+GType cal_client_open_status_enum_get_type (void);
+GType cal_client_set_mode_status_enum_get_type (void);
+GType cal_mode_enum_get_type (void);
 
 CalClient *cal_client_construct (CalClient *client);
 
@@ -193,6 +200,8 @@ gboolean cal_client_get_alarms_for_object (CalClient *client, const char *uid,
 					   time_t start, time_t end,
 					   CalComponentAlarms **alarms);
 
+CalClientResult cal_client_discard_alarm (CalClient *client, CalComponent *comp, const char *auid);
+
 /* Add or update a single object. When adding an object only builtin timezones
    are allowed. To use external VTIMEZONE data call update_objects() instead.*/
 CalClientResult cal_client_update_object (CalClient *client, CalComponent *comp);
@@ -221,6 +230,6 @@ char* cal_client_get_component_as_string (CalClient *client,
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

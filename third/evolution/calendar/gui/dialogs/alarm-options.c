@@ -24,17 +24,19 @@
 
 #include <string.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkcheckbutton.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkhbox.h>
-#include <liboaf/liboaf.h>
+#include <gtk/gtktextbuffer.h>
+#include <gtk/gtktextview.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-widget.h>
+#include <libgnomeui/gnome-file-entry.h>
 #include <glade/glade.h>
 #include <ebook/e-destination.h>
 #include "Evolution-Addressbook-SelectNames.h"
@@ -44,18 +46,11 @@
 
 
 typedef struct {
-	/* Whether the dialog was accepted or canceled */
-	gboolean canceled;
-
 	/* Glade XML data */
 	GladeXML *xml;
 
 	/* Toplevel */
 	GtkWidget *toplevel;
-
-	/* Buttons */
-	GtkWidget *button_ok;
-	GtkWidget *button_cancel;
 
 	/* Alarm repeat widgets */
 	gboolean repeat;
@@ -101,9 +96,6 @@ get_widgets (Dialog *dialog)
 
 	dialog->toplevel = GW ("alarm-options-toplevel");
 
-	dialog->button_ok = GW ("button-ok");
-	dialog->button_cancel = GW ("button-cancel");
-
 	dialog->repeat_toggle = GW ("repeat-toggle");
 	dialog->repeat_group = GW ("repeat-group");
 	dialog->repeat_quantity = GW ("repeat-quantity");
@@ -126,8 +118,6 @@ get_widgets (Dialog *dialog)
 	dialog->palarm_args = GW ("palarm-args");
 
 	return (dialog->toplevel
-		&& dialog->button_ok
-		&& dialog->button_cancel
 		&& dialog->repeat_toggle
 		&& dialog->repeat_group
 		&& dialog->repeat_quantity
@@ -168,7 +158,7 @@ setup_select_names (Dialog *dialog)
 	
 	CORBA_exception_init (&ev);
 	
-	dialog->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
+	dialog->corba_select_names = bonobo_activation_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
 	if (BONOBO_EX (&ev))
 		return FALSE;
 	
@@ -195,44 +185,6 @@ setup_select_names (Dialog *dialog)
 	return TRUE;
 }
 
-/* Closes the dialog by terminating its main loop */
-static void
-close_dialog (Dialog *dialog, gboolean canceled)
-{
-	dialog->canceled = canceled;
-	gtk_main_quit ();
-}
-
-/* Callback used when the toplevel window is deleted */
-static guint
-toplevel_delete_event_cb (GtkWidget *widget, GdkEventAny *event, gpointer data)
-{
-	Dialog *dialog;
-
-	dialog = data;
-	close_dialog (dialog, TRUE);
-	return TRUE;
-}
-
-/* Callback used when the OK button is clicked */
-static void
-button_ok_clicked_cb (GtkWidget *button, gpointer data)
-{
-	Dialog *dialog;
-
-	dialog = data;
-	close_dialog (dialog, FALSE);
-}
-
-/* Callback used when the Cancel button is clicked */
-static void
-button_cancel_clicked_cb (GtkWidget *button, gpointer data)
-{
-	Dialog *dialog;
-
-	dialog = data;
-	close_dialog (dialog, TRUE);
-}
 
 /* Callback used when the repeat toggle button is toggled.  We sensitize the
  * repeat group options as appropriate.
@@ -254,23 +206,10 @@ repeat_toggle_toggled_cb (GtkToggleButton *toggle, gpointer data)
 static void
 init_widgets (Dialog *dialog)
 {
-	/* Toplevel, buttons */
-
-	dialog->canceled = TRUE;
-
-	gtk_signal_connect (GTK_OBJECT (dialog->toplevel), "delete_event",
-			    GTK_SIGNAL_FUNC (toplevel_delete_event_cb), dialog);
-
-	gtk_signal_connect (GTK_OBJECT (dialog->button_ok), "clicked",
-			    GTK_SIGNAL_FUNC (button_ok_clicked_cb), dialog);
-
-	gtk_signal_connect (GTK_OBJECT (dialog->button_cancel), "clicked",
-			    GTK_SIGNAL_FUNC (button_cancel_clicked_cb), dialog);
-
 	/* Alarm repeat */
 
-	gtk_signal_connect (GTK_OBJECT (dialog->repeat_toggle), "toggled",
-			    GTK_SIGNAL_FUNC (repeat_toggle_toggled_cb), dialog);
+	g_signal_connect((dialog->repeat_toggle), "toggled",
+			    G_CALLBACK (repeat_toggle_toggled_cb), dialog);
 }
 
 /* Fills the audio alarm widgets with the values from the alarm component */
@@ -306,10 +245,12 @@ static void
 alarm_to_dalarm_widgets (Dialog *dialog, CalComponentAlarm *alarm)
 {
 	CalComponentText description;
-
+	GtkTextBuffer *text_buffer;
+	
 	cal_component_alarm_get_description (alarm, &description);
 
-	e_dialog_editable_set (dialog->dalarm_description, description.value);
+	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (dialog->dalarm_description));
+	gtk_text_buffer_set_text (text_buffer, description.value ? description.value : "", -1);
 }
 
 /* Fills the mail alarm widgets with the values from the alarm component */
@@ -317,6 +258,7 @@ static void
 alarm_to_malarm_widgets (Dialog *dialog, CalComponentAlarm *alarm)
 {
 	CalComponentText description;
+	GtkTextBuffer *text_buffer;	
 	GSList *attendee_list, *l;
 	EDestination **destv;
 	int len, i;
@@ -352,14 +294,16 @@ alarm_to_malarm_widgets (Dialog *dialog, CalComponentAlarm *alarm)
 				    "destinations", e_destination_exportv (destv), NULL);
 
 	for (i = 0; i < len; i++)
-		gtk_object_unref (GTK_OBJECT (destv[i]));
+		g_object_unref (GTK_OBJECT (destv[i]));
 	g_free (destv);
 
 	cal_component_free_attendee_list (attendee_list);
 
 	/* Description */
 	cal_component_alarm_get_description (alarm, &description);
-	e_dialog_editable_set (dialog->malarm_description, description.value);
+
+	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (dialog->malarm_description));
+	gtk_text_buffer_set_text (text_buffer, description.value ? description.value : "", -1);
 }
 
 /* Fills the procedure alarm widgets with the values from the alarm component */
@@ -435,7 +379,7 @@ alarm_to_repeat_widgets (Dialog *dialog, CalComponentAlarm *alarm)
 
 	/* Sensitivity */
 
-	if (dialog->repeat || repeat.repetitions == 0) {
+	if (!dialog->repeat || repeat.repetitions == 0) {
 		gtk_widget_set_sensitive (dialog->repeat_toggle, dialog->repeat);
 		gtk_widget_set_sensitive (dialog->repeat_group, FALSE);
 		e_dialog_toggle_set (dialog->repeat_toggle, FALSE);
@@ -455,6 +399,7 @@ alarm_to_repeat_widgets (Dialog *dialog, CalComponentAlarm *alarm)
 	e_dialog_spin_set (dialog->repeat_value, value);
 	e_dialog_option_menu_set (dialog->repeat_unit, units, duration_units_map);
 }
+
 
 /* Fills the widgets with the values from the alarm component */
 static void
@@ -577,10 +522,16 @@ dalarm_widgets_to_alarm (Dialog *dialog, CalComponentAlarm *alarm)
 {
 	char *str;
 	CalComponentText description;
+	GtkTextBuffer *text_buffer;
+	GtkTextIter text_iter_start, text_iter_end;
 	icalcomponent *icalcomp;
 	icalproperty *icalprop;
 
-	str = e_dialog_editable_get (dialog->dalarm_description);
+	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (dialog->dalarm_description));
+	gtk_text_buffer_get_start_iter (text_buffer, &text_iter_start);
+	gtk_text_buffer_get_end_iter   (text_buffer, &text_iter_end);
+	str = gtk_text_buffer_get_text (text_buffer, &text_iter_start, &text_iter_end, FALSE);
+
 	description.value = str;
 	description.altrep = NULL;
 
@@ -612,13 +563,15 @@ malarm_widgets_to_alarm (Dialog *dialog, CalComponentAlarm *alarm)
 	CalComponentText description;
 	GSList *attendee_list = NULL;
 	EDestination **destv;
+	GtkTextBuffer *text_buffer;
+	GtkTextIter text_iter_start, text_iter_end;
 	icalcomponent *icalcomp;
 	icalproperty *icalprop;
 	int i;
 	
 	/* Attendees */
 	bonobo_widget_get_property (BONOBO_WIDGET (dialog->malarm_addresses), "destinations", 
-				    &str, NULL);
+				    TC_CORBA_string, &str, NULL);
 	destv = e_destination_importv (str);
 	g_free (str);
 	
@@ -641,7 +594,11 @@ malarm_widgets_to_alarm (Dialog *dialog, CalComponentAlarm *alarm)
 	e_destination_freev (destv);	
 
 	/* Description */
-	str = e_dialog_editable_get (dialog->malarm_description);
+	text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (dialog->dalarm_description));
+	gtk_text_buffer_get_start_iter (text_buffer, &text_iter_start);
+	gtk_text_buffer_get_end_iter   (text_buffer, &text_iter_end);
+	str = gtk_text_buffer_get_text (text_buffer, &text_iter_start, &text_iter_end, FALSE);
+
 	description.value = str;
 	description.altrep = NULL;
 
@@ -760,39 +717,40 @@ gboolean
 alarm_options_dialog_run (CalComponentAlarm *alarm, const char *email, gboolean repeat)
 {
 	Dialog dialog;
+	int response_id;
 
 	g_return_val_if_fail (alarm != NULL, FALSE);
 
-	dialog.repeat = repeat;
-	dialog.email = email;
-	dialog.xml = glade_xml_new (EVOLUTION_GLADEDIR "/alarm-options.glade", NULL);
+ 	dialog.repeat = repeat;
+ 	dialog.email = email;
+	dialog.xml = glade_xml_new (EVOLUTION_GLADEDIR "/alarm-options.glade", NULL, NULL);
 	if (!dialog.xml) {
 		g_message ("alarm_options_dialog_new(): Could not load the Glade XML file!");
 		return FALSE;
 	}
 
 	if (!get_widgets (&dialog)) {
-		gtk_object_unref (GTK_OBJECT (dialog.xml));
+		g_object_unref(dialog.xml);
 		return FALSE;
 	}
-	
+
 	if (!setup_select_names (&dialog)) {
-		gtk_object_unref (GTK_OBJECT (dialog.xml));
-		return FALSE;
-	}
+  		g_object_unref (dialog.xml);
+  		return FALSE;
+  	}
 
 	init_widgets (&dialog);
 
 	alarm_to_dialog (&dialog, alarm);
 
-	gtk_widget_show (dialog.toplevel);
-	gtk_main ();
+	response_id = gtk_dialog_run (GTK_DIALOG (dialog.toplevel));
+	gtk_widget_hide (dialog.toplevel);
 
-	if (!dialog.canceled)
+	if (response_id == GTK_RESPONSE_OK)
 		dialog_to_alarm (&dialog, alarm);
 
 	gtk_widget_destroy (dialog.toplevel);
-	gtk_object_unref (GTK_OBJECT (dialog.xml));
+	g_object_unref(dialog.xml);
 
 	return TRUE;
 }

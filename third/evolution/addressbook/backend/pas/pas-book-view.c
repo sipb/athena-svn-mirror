@@ -7,10 +7,10 @@
 
 #include <config.h>
 #include <glib.h>
+#include <bonobo/bonobo-main.h>
 #include "pas-book-view.h"
 
 static BonoboObjectClass *pas_book_view_parent_class;
-POA_GNOME_Evolution_Addressbook_BookView__vepv pas_book_view_vepv;
 
 struct _PASBookViewPrivate {
 	GNOME_Evolution_Addressbook_BookViewListener  listener;
@@ -64,19 +64,46 @@ pas_book_view_notify_change_1 (PASBookView *book_view,
  * pas_book_view_notify_remove:
  */
 void
-pas_book_view_notify_remove (PASBookView                *book_view,
-			     const char                 *id)
+pas_book_view_notify_remove_1 (PASBookView                *book_view,
+			       const char                 *id)
 {
+	GList *ids = NULL;
+
+	ids = g_list_prepend (ids, (char*)id);
+
+	pas_book_view_notify_remove (book_view, ids);
+
+	g_list_free (ids);
+}
+
+void
+pas_book_view_notify_remove (PASBookView  *book_view,
+			     const GList  *ids)
+{
+	GNOME_Evolution_Addressbook_CardIdList idlist;
 	CORBA_Environment ev;
+	const GList *l;
+	int num_ids, i;
 
 	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Addressbook_BookViewListener_notifyCardRemoved (
-		book_view->priv->listener, (GNOME_Evolution_Addressbook_CardId) id, &ev);
+	num_ids = g_list_length ((GList*)ids);
+	idlist._buffer = CORBA_sequence_GNOME_Evolution_Addressbook_CardId_allocbuf (num_ids);
+	idlist._maximum = num_ids;
+	idlist._length = num_ids;
+
+	for (l = ids, i = 0; l; l=l->next, i ++) {
+		idlist._buffer[i] = CORBA_string_dup (l->data);
+	}
+
+	GNOME_Evolution_Addressbook_BookViewListener_notifyCardsRemoved (
+		book_view->priv->listener, &idlist, &ev);
 
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("pas_book_view_notify_remove: Exception signaling BookViewListener!\n");
 	}
+
+	CORBA_free(idlist._buffer);
 
 	CORBA_exception_free (&ev);
 }
@@ -161,53 +188,30 @@ pas_book_view_notify_status_message (PASBookView *book_view,
 	CORBA_exception_free (&ev);
 }
 
-static gboolean
+static void
 pas_book_view_construct (PASBookView                *book_view,
 			 GNOME_Evolution_Addressbook_BookViewListener  listener)
 {
-	POA_GNOME_Evolution_Addressbook_BookView *servant;
-	CORBA_Environment   ev;
-	CORBA_Object        obj;
+	PASBookViewPrivate *priv;
+	CORBA_Environment ev;
 
-	g_assert (book_view      != NULL);
-	g_assert (PAS_IS_BOOK_VIEW (book_view));
-	g_assert (listener  != CORBA_OBJECT_NIL);
+	g_return_if_fail (book_view != NULL);
+	g_return_if_fail (listener != CORBA_OBJECT_NIL);
 
-	servant = (POA_GNOME_Evolution_Addressbook_BookView *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &pas_book_view_vepv;
+	priv = book_view->priv;
 
 	CORBA_exception_init (&ev);
-
-	POA_GNOME_Evolution_Addressbook_BookView__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		CORBA_exception_free (&ev);
-
-		return FALSE;
-	}
 
 	bonobo_object_dup_ref (listener, &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning("Unable to duplicate & ref listener object in pas-book-view.c\n");
 		CORBA_exception_free (&ev);
-
-		return FALSE;
+		return;
 	}
 
 	CORBA_exception_free (&ev);
 
-	obj = bonobo_object_activate_servant (BONOBO_OBJECT (book_view), servant);
-	if (obj == CORBA_OBJECT_NIL) {
-		g_free (servant);
-
-		return FALSE;
-	}
-
-	bonobo_object_construct (BONOBO_OBJECT (book_view), obj);
-
-	book_view->priv->listener  = listener;
-
-	return TRUE;
+	priv->listener  = listener;
 }
 
 /**
@@ -218,67 +222,37 @@ pas_book_view_new (GNOME_Evolution_Addressbook_BookViewListener  listener)
 {
 	PASBookView *book_view;
 
-	g_return_val_if_fail (listener  != CORBA_OBJECT_NIL, NULL);
-
-	book_view = gtk_type_new (pas_book_view_get_type ());
-
-	if (! pas_book_view_construct (book_view, listener)) {
-		gtk_object_unref (GTK_OBJECT (book_view));
-
-		return NULL;
-	}
+	book_view = g_object_new (PAS_TYPE_BOOK_VIEW, NULL);
+	
+	pas_book_view_construct (book_view, listener);
 
 	return book_view;
 }
 
 static void
-pas_book_view_destroy (GtkObject *object)
+pas_book_view_dispose (GObject *object)
 {
 	PASBookView *book_view = PAS_BOOK_VIEW (object);
-	CORBA_Environment   ev;
 
-	CORBA_exception_init (&ev);
-	bonobo_object_release_unref (book_view->priv->listener, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		CORBA_exception_free (&ev);
+	if (book_view->priv) {
+		bonobo_object_release_unref (book_view->priv->listener, NULL);
 
-		return;
+		g_free (book_view->priv);
+		book_view->priv = NULL;
 	}
-	CORBA_exception_free (&ev);
 
-	g_free (book_view->priv);
-
-	GTK_OBJECT_CLASS (pas_book_view_parent_class)->destroy (object);	
-}
-
-static POA_GNOME_Evolution_Addressbook_BookView__epv *
-pas_book_view_get_epv (void)
-{
-	POA_GNOME_Evolution_Addressbook_BookView__epv *epv;
-
-	epv = g_new0 (POA_GNOME_Evolution_Addressbook_BookView__epv, 1);
-
-	return epv;
-	
-}
-
-static void
-pas_book_view_corba_class_init (void)
-{
-	pas_book_view_vepv.Bonobo_Unknown_epv     = bonobo_object_get_epv ();
-	pas_book_view_vepv.GNOME_Evolution_Addressbook_BookView_epv = pas_book_view_get_epv ();
+	if (G_OBJECT_CLASS (pas_book_view_parent_class)->dispose)
+		G_OBJECT_CLASS (pas_book_view_parent_class)->dispose (object);	
 }
 
 static void
 pas_book_view_class_init (PASBookViewClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	pas_book_view_parent_class = gtk_type_class (bonobo_object_get_type ());
+	pas_book_view_parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = pas_book_view_destroy;
-
-	pas_book_view_corba_class_init ();
+	object_class->dispose = pas_book_view_dispose;
 }
 
 static void
@@ -288,29 +262,8 @@ pas_book_view_init (PASBookView *book_view)
 	book_view->priv->listener = CORBA_OBJECT_NIL;
 }
 
-/**
- * pas_book_view_get_type:
- */
-GtkType
-pas_book_view_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (! type) {
-		GtkTypeInfo info = {
-			"PASBookView",
-			sizeof (PASBookView),
-			sizeof (PASBookViewClass),
-			(GtkClassInitFunc)  pas_book_view_class_init,
-			(GtkObjectInitFunc) pas_book_view_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
-
+BONOBO_TYPE_FUNC_FULL (
+		       PASBookView,
+		       GNOME_Evolution_Addressbook_BookView,
+		       BONOBO_TYPE_OBJECT,
+		       pas_book_view);

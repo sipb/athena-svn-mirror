@@ -25,21 +25,19 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
 #include <glib.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <libgnome/gnome-util.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-paper.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <libgnomeprint/gnome-print.h>
-#include <libgnomeprint/gnome-print-dialog.h>
-#include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
-#include <libgnomeprint/gnome-print-multipage.h>
-#include <gal/widgets/e-unicode.h>
-#include <gal/unicode/gunicode.h>
+#include <libgnomeprint/gnome-font.h>
+#include <libgnomeprint/gnome-print-job.h>
+#include <libgnomeprintui/gnome-print-dialog.h>
+#include <libgnomeprintui/gnome-print-job-preview.h>
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-card.h>
 #include <addressbook/backend/ebook/e-card-simple.h>
@@ -54,7 +52,7 @@ typedef struct _EContactPrintContext EContactPrintContext;
 struct _EContactPrintContext
 {
 	GnomePrintContext *pc;
-	GnomePrintMaster *master;
+	GnomePrintJob     *master;
 	gdouble x;
 	gdouble y;
 	gint column;
@@ -398,6 +396,8 @@ e_contact_start_new_page(EContactPrintContext *ctxt)
 		e_contact_print_letter_tab(ctxt);
 	gnome_print_showpage(ctxt->pc);
 
+	gnome_print_beginpage (ctxt->pc, NULL);
+
 	ctxt->first_char_on_page = ctxt->last_char_on_page + 1;
 }
 
@@ -417,10 +417,12 @@ e_contact_get_card_size(ECardSimple *simple, EContactPrintContext *ctxt)
 
 	height += gnome_font_get_size (ctxt->style->headings_font) * .2;
 
-	gtk_object_get(GTK_OBJECT(simple->card),
-		       "file_as", &file_as,
-		       NULL);
+	g_object_get(simple->card,
+		     "file_as", &file_as,
+		     NULL);
 	height += e_contact_text_height(ctxt->pc, ctxt->style->headings_font, column_width - 4, file_as);
+	g_free (file_as);
+
 	height += gnome_font_get_size (ctxt->style->headings_font) * .2;
 
 	height += gnome_font_get_size (ctxt->style->headings_font) * .2;
@@ -459,18 +461,18 @@ e_contact_print_card (ECardSimple *simple, EContactPrintContext *ctxt)
 	gnome_print_gsave(ctxt->pc);
 
 	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
-
 	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
 
-	gtk_object_get(GTK_OBJECT(simple->card),
-		       "file_as", &file_as,
-		       NULL);
+	g_object_get(simple->card,
+		     "file_as", &file_as,
+		     NULL);
 	if (ctxt->style->print_using_grey)
 		e_contact_rectangle(ctxt->pc, ctxt->x, ctxt->y + gnome_font_get_size (ctxt->style->headings_font) * .3, ctxt->x + column_width, ctxt->y - e_contact_text_height(ctxt->pc, ctxt->style->headings_font, column_width - 4, file_as) - gnome_font_get_size (ctxt->style->headings_font) * .3, .85, .85, .85);
 	e_contact_output(ctxt->pc, ctxt->style->headings_font, ctxt->x + 2, ctxt->y, column_width - 4, file_as);
 	ctxt->y -= e_contact_text_height(ctxt->pc, ctxt->style->headings_font, column_width - 4, file_as);
-	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
+	g_free (file_as);
 
+	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
 	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
 	
 	for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST_SIMPLE_STRING; field++) {
@@ -483,7 +485,7 @@ e_contact_print_card (ECardSimple *simple, EContactPrintContext *ctxt)
 				gchar *new_string = g_strdup (e_destination_get_address (dest));
 				g_free (string);
 				string = new_string;
-				gtk_object_unref (GTK_OBJECT (dest));
+				g_object_unref (dest);
 			}
 		}
 
@@ -537,15 +539,17 @@ complete_sequence(EBookView *book_view, EBookViewStatus status, EContactPrintCon
 	
 	ctxt->first_char_on_page = 'A' - 1;
 
+	gnome_print_beginpage (ctxt->pc, NULL);
+
 	for(; cards; cards = cards->next) {
 		ECard *card = cards->data;
 		ECardSimple *simple = e_card_simple_new(card);
 		guchar *file_as;
 		gchar *letter_str = NULL;
 
-		gtk_object_get(GTK_OBJECT(card),
-			       "file_as", &file_as,
-			       NULL);
+		g_object_get(card,
+			     "file_as", &file_as,
+			     NULL);
 		if (file_as != NULL) {
 			letter_str = g_strndup (file_as, g_utf8_next_char (file_as) - (gchar *) file_as);
 		}
@@ -572,7 +576,7 @@ complete_sequence(EBookView *book_view, EBookViewStatus status, EContactPrintCon
 			ctxt->first_char_on_page = ctxt->last_char_on_page;
 		e_contact_print_card(simple, ctxt);
 		ctxt->first_contact = FALSE;
-		gtk_object_unref(GTK_OBJECT(simple));
+		g_object_unref(simple);
 	}
 	ctxt->last_char_on_page = 'Z';
 	if ( ctxt->style->letter_tabs )
@@ -581,51 +585,58 @@ complete_sequence(EBookView *book_view, EBookViewStatus status, EContactPrintCon
 	gnome_print_context_close(ctxt->pc);
 	g_free(ctxt->character);
 	if (book_view)
-		gtk_object_unref(GTK_OBJECT(book_view));
-	if (ctxt->type == GNOME_PRINT_PREVIEW) {
+		g_object_unref(book_view);
+	if (ctxt->type == GNOME_PRINT_DIALOG_RESPONSE_PREVIEW) {
 		GtkWidget *preview;
-		preview = GTK_WIDGET(gnome_print_master_preview_new(ctxt->master, "Print Preview"));
+		preview = GTK_WIDGET(gnome_print_job_preview_new(ctxt->master, "Print Preview"));
 		gtk_widget_show_all(preview);
 	} else {
-		gnome_print_master_print(ctxt->master);
+		gnome_print_job_print(ctxt->master);
 	}
-	gtk_object_unref(GTK_OBJECT(ctxt->pc));
-	gtk_object_unref(GTK_OBJECT(ctxt->master));
+	g_object_unref(ctxt->pc);
+	g_object_unref(ctxt->master);
 	if (ctxt->book)
-		gtk_object_unref(GTK_OBJECT(ctxt->book));
+		g_object_unref(ctxt->book);
 	g_free(ctxt->query);
-	g_list_foreach(ctxt->cards, (GFunc) gtk_object_unref, NULL);
+	g_list_foreach(ctxt->cards, (GFunc) g_object_unref, NULL);
 	g_list_free(ctxt->cards);
-	gtk_object_unref(GTK_OBJECT(ctxt->style->headings_font));
-	gtk_object_unref(GTK_OBJECT(ctxt->style->body_font));
-	gtk_object_unref(GTK_OBJECT(ctxt->style->header_font));
-	gtk_object_unref(GTK_OBJECT(ctxt->style->footer_font));
-	gtk_object_unref(GTK_OBJECT(ctxt->letter_heading_font));
-	gtk_object_unref(GTK_OBJECT(ctxt->letter_tab_font));
+	g_object_unref(ctxt->style->headings_font);
+	g_object_unref(ctxt->style->body_font);
+	g_object_unref(ctxt->style->header_font);
+	g_object_unref(ctxt->style->footer_font);
+	g_object_unref(ctxt->letter_heading_font);
+	g_object_unref(ctxt->letter_tab_font);
 	g_free(ctxt->style);
 	g_free(ctxt);
 }
 
 static int
 card_compare (ECard *card1, ECard *card2) {
+	int cmp = 0;
+
 	if (card1 && card2) {
 		char *file_as1, *file_as2;
-		gtk_object_get(GTK_OBJECT(card1),
-			       "file_as", &file_as1,
-			       NULL);
-		gtk_object_get(GTK_OBJECT(card2),
-			       "file_as", &file_as2,
-			       NULL);
+
+		g_object_get(card1,
+			     "file_as", &file_as1,
+			     NULL);
+		g_object_get(card2,
+			     "file_as", &file_as2,
+			     NULL);
 		if (file_as1 && file_as2)
-			return g_utf8_collate(file_as1, file_as2);
-		if (file_as1)
-			return -1;
-		if (file_as2)
-			return 1;
-		return strcmp(e_card_get_id(card1), e_card_get_id(card2));
-	} else {
-		return 0;
+			cmp = g_utf8_collate(file_as1, file_as2);
+		else if (file_as1)
+			cmp = -1;
+		else if (file_as2)
+			cmp = 1;
+		else 
+			cmp = strcmp(e_card_get_id(card1), e_card_get_id(card2));
+
+		g_free (file_as2);
+		g_free (file_as1);
+
 	}
+	return cmp;
 }
 
 static void
@@ -633,7 +644,7 @@ create_card(EBookView *book_view, const GList *cards, EContactPrintContext *ctxt
 {
 	for(; cards; cards = cards->next) {
 		ECard *card = cards->data;
-		gtk_object_ref(GTK_OBJECT(card));
+		g_object_ref(card);
 		ctxt->cards = g_list_insert_sorted(ctxt->cards, card, (GCompareFunc) card_compare);
 	}
 }
@@ -641,17 +652,17 @@ create_card(EBookView *book_view, const GList *cards, EContactPrintContext *ctxt
 static void
 book_view_loaded (EBook *book, EBookStatus status, EBookView *book_view, EContactPrintContext *ctxt)
 {
-	gtk_object_ref(GTK_OBJECT(book_view));
+	g_object_ref(book_view);
 
-	gtk_signal_connect(GTK_OBJECT(book_view),
-			   "card_added",
-			   GTK_SIGNAL_FUNC(create_card),
-			   ctxt);
+	g_signal_connect(book_view,
+			 "card_added",
+			 G_CALLBACK(create_card),
+			 ctxt);
 
-	gtk_signal_connect(GTK_OBJECT(book_view),
-			   "sequence_complete",
-			   GTK_SIGNAL_FUNC(complete_sequence),
-			   ctxt);
+	g_signal_connect(book_view,
+			 "sequence_complete",
+			 G_CALLBACK(complete_sequence),
+			 ctxt);
 }
 
 static void
@@ -705,7 +716,6 @@ e_contact_print_phone_list (ECard *card, EContactPrintContext *ctxt)
 	gnome_print_gsave(ctxt->pc);
 
 	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
-
 	ctxt->y -= gnome_font_get_size (ctxt->style->headings_font) * .2;
 
 	e_contact_output(ctxt->pc, ctxt->style->body_font, ctxt->x, ctxt->y, -1, e_card_get_string_fileas(card));
@@ -785,6 +795,7 @@ e_contact_do_print_phone_list (EBook *book, char *query, EContactPrintContext *c
 			ctxt->first_char_on_page = ctxt->last_char_on_page;
 		e_contact_print_phone_list(card, ctxt, shown_fields);
 		first_contact = FALSE;
+		g_free (file_as);
 	}
 	ctxt->last_char_on_page = 'Z';
 	if ( ctxt->style->letter_tabs )
@@ -855,9 +866,9 @@ static double get_float( char *data )
 static void get_font( char *data, GnomeFont **variable )
 {
 	if ( data ) {
-		GnomeFont *font = gnome_font_new_from_full_name( data );
+		GnomeFont *font = gnome_font_find_from_full_name( data );
 		if ( font ) {
-			gtk_object_unref( GTK_OBJECT(*variable) );
+			g_object_unref(*variable);
 			*variable = font;
 		}
 	}
@@ -869,6 +880,7 @@ e_contact_build_style(EContactPrintStyle *style)
 {
 	xmlDocPtr styledoc;
 	gchar *filename;
+
 	style->title = g_strdup("");
 	style->type = E_CONTACT_PRINT_TYPE_CARDS;
 	style->sections_start_new_page = TRUE;
@@ -877,8 +889,8 @@ e_contact_build_style(EContactPrintStyle *style)
 	style->letter_tabs = TRUE;
 	style->letter_headings = FALSE;
 
-	style->headings_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOLD, FALSE, 8);
-	style->body_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+	style->headings_font = gnome_font_find_closest_from_weight_slant ("Helvetica", GNOME_FONT_BOLD, FALSE, 8);
+	style->body_font = gnome_font_find_closest_from_weight_slant ("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
 
 	style->print_using_grey = TRUE;
 	style->paper_type = 0;
@@ -902,13 +914,13 @@ e_contact_build_style(EContactPrintStyle *style)
 #endif
 	style->orientation_portrait = FALSE;
 
-	style->header_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+	style->header_font = gnome_font_find_closest_from_weight_slant ("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
 
 	style->left_header = g_strdup("");
 	style->center_header = g_strdup("");
 	style->right_header = g_strdup("");
 
-	style->footer_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+	style->footer_font = gnome_font_find_closest_from_weight_slant ("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
 
 	style->left_footer = g_strdup("");
 	style->center_footer = g_strdup("");
@@ -920,7 +932,7 @@ e_contact_build_style(EContactPrintStyle *style)
 	if (styledoc) {
 		xmlNodePtr stylenode = xmlDocGetRootElement(styledoc);
 		xmlNodePtr node;
-		for (node = stylenode->childs; node; node = node->next) {
+		for (node = stylenode->children; node; node = node->next) {
 			char *data = xmlNodeGetContent ( node );
 			if ( !strcmp( node->name, "title" ) ) {
 				get_string(data, &(style->title));
@@ -1004,27 +1016,31 @@ e_contact_print_close(GnomeDialog *dialog, gpointer data)
 }
 
 static void
-e_contact_print_button(GnomeDialog *dialog, gint button, gpointer data)
+e_contact_print_response(GtkWidget *dialog, gint response_id, gpointer data)
 {
 	EContactPrintContext *ctxt = g_new(EContactPrintContext, 1);
 	EContactPrintStyle *style = g_new(EContactPrintStyle, 1);
-	GnomePrintMaster *master;
+	GnomePrintJob *master;
+	GnomePrintConfig *config;
 	GnomePrintContext *pc;
-	gboolean uses_book = (gint) gtk_object_get_data(GTK_OBJECT(dialog), "uses_book");
+	gboolean uses_book = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(dialog), "uses_book"));
 	EBook *book = NULL;
 	char *query = NULL;
 	ECard *card = NULL;
 	gdouble font_size;
+
+
 	if (uses_book) {
-		book = gtk_object_get_data(GTK_OBJECT(dialog), "book");
-		query = gtk_object_get_data(GTK_OBJECT(dialog), "query");
+		book = g_object_get_data(G_OBJECT(dialog), "book");
+		query = g_object_get_data(G_OBJECT(dialog), "query");
 	} else {
-		card = gtk_object_get_data(GTK_OBJECT(dialog), "card");
+		card = g_object_get_data(G_OBJECT(dialog), "card");
 	}
-	switch( button ) {
-	case GNOME_PRINT_PRINT:
-		master = gnome_print_master_new_from_dialog( GNOME_PRINT_DIALOG(dialog) );
-		pc = gnome_print_master_get_context( master );
+	switch( response_id ) {
+	case GNOME_PRINT_DIALOG_RESPONSE_PRINT:
+		config = gnome_print_dialog_get_config (GNOME_PRINT_DIALOG(dialog));
+		master = gnome_print_job_new( config );
+		pc = gnome_print_job_get_context( master );
 		e_contact_build_style(style);
 		
 		ctxt->x = 0;
@@ -1034,17 +1050,21 @@ e_contact_print_button(GnomeDialog *dialog, gint button, gpointer data)
 		ctxt->master = master;
 		ctxt->first_section = TRUE;
 		ctxt->first_char_on_page = 'A' - 1;
-		ctxt->type = GNOME_PRINT_PRINT;
+		ctxt->type = GNOME_PRINT_DIALOG_RESPONSE_PRINT;
 
 		font_size = 72 * ctxt->style->page_height / 27.0 / 2.0;
-		ctxt->letter_heading_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
-		ctxt->letter_tab_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), font_size);
+		ctxt->letter_heading_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
+		ctxt->letter_tab_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), font_size);
 	
+		ctxt->pc = pc;
+#warning FIXME gnome_print_multipage_new_from_sizes
+#if 0
 		ctxt->pc = GNOME_PRINT_CONTEXT(gnome_print_multipage_new_from_sizes(pc, 
 										   72 * style->paper_width, 
 										   72 * style->paper_height,
 										   72 * style->page_width,
 										   72 * style->page_height));
+#endif
 		
 		ctxt->book = book;
 		ctxt->query = query;
@@ -1055,11 +1075,12 @@ e_contact_print_button(GnomeDialog *dialog, gint button, gpointer data)
 			ctxt->cards = g_list_append(NULL, card);
 			complete_sequence(NULL, E_BOOK_VIEW_STATUS_SUCCESS, ctxt);
 		}
-		gnome_dialog_close(dialog);
+		gtk_widget_destroy (dialog);
 		break;
-	case GNOME_PRINT_PREVIEW:
-		master = gnome_print_master_new_from_dialog( GNOME_PRINT_DIALOG(dialog) );
-		pc = gnome_print_master_get_context( master );
+	case GNOME_PRINT_DIALOG_RESPONSE_PREVIEW:
+		config = gnome_print_dialog_get_config (GNOME_PRINT_DIALOG(dialog));
+		master = gnome_print_job_new( config );
+		pc = gnome_print_job_get_context( master );
 		e_contact_build_style(style);
 		
 		ctxt->x = 0;
@@ -1069,37 +1090,40 @@ e_contact_print_button(GnomeDialog *dialog, gint button, gpointer data)
 		ctxt->master = master;
 		ctxt->first_section = TRUE;
 		ctxt->first_char_on_page = 'A' - 1;
-		ctxt->type = GNOME_PRINT_PREVIEW;
+		ctxt->type = GNOME_PRINT_DIALOG_RESPONSE_PREVIEW;
 
 		font_size = 72 * ctxt->style->page_height / 27.0 / 2.0;
-		ctxt->letter_heading_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
-		ctxt->letter_tab_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), font_size);
+		ctxt->letter_heading_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
+		ctxt->letter_tab_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), font_size);
 		
+		ctxt->pc = pc;
+#warning FIXME gnome_print_multipage_new_from_sizes
+#if 0
 		ctxt->pc = GNOME_PRINT_CONTEXT(gnome_print_multipage_new_from_sizes(pc, 
 										   72 * style->paper_width, 
 										   72 * style->paper_height,
 										   72 * style->page_width,
 										   72 * style->page_height));
-		
+#endif
 		ctxt->book = book;
 		ctxt->query = g_strdup(query);
 		if (uses_book) {
 			ctxt->cards = NULL;
-			gtk_object_ref(GTK_OBJECT(book));
+			g_object_ref(book);
 			e_contact_do_print(book, ctxt->query, ctxt);
 		} else {
 			ctxt->cards = g_list_append(NULL, card);
-			gtk_object_ref(GTK_OBJECT(card));
+			g_object_ref(card);
 			complete_sequence(NULL, E_BOOK_VIEW_STATUS_SUCCESS, ctxt);
 		}
 		break;
-	case GNOME_PRINT_CANCEL:
+	case GNOME_PRINT_DIALOG_RESPONSE_CANCEL:
 		if (uses_book)
-			gtk_object_unref(GTK_OBJECT(book));
+			g_object_unref(book);
 		else
-			gtk_object_unref(GTK_OBJECT(card));
+			g_object_unref(card);
 		g_free(query);
-		gnome_dialog_close(dialog);
+		gtk_widget_destroy (dialog);
 		g_free(style);
 		g_free(ctxt);
 		break;
@@ -1112,18 +1136,18 @@ e_contact_print_dialog_new(EBook *book, char *query)
 	GtkWidget *dialog;
 	
 	
-	dialog = gnome_print_dialog_new(_("Print cards"), GNOME_PRINT_DIALOG_RANGE | GNOME_PRINT_DIALOG_COPIES);
+	dialog = gnome_print_dialog_new(NULL, _("Print cards"), GNOME_PRINT_DIALOG_RANGE | GNOME_PRINT_DIALOG_COPIES);
 	gnome_print_dialog_construct_range_any(GNOME_PRINT_DIALOG(dialog), GNOME_PRINT_RANGE_ALL | GNOME_PRINT_RANGE_SELECTION,
 					       NULL, NULL, NULL);
 
-	gtk_object_ref(GTK_OBJECT(book));
-	gtk_object_set_data(GTK_OBJECT(dialog), "uses_book", (void *) 1);
-	gtk_object_set_data(GTK_OBJECT(dialog), "book", book);
-	gtk_object_set_data(GTK_OBJECT(dialog), "query", g_strdup(query));
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "clicked", GTK_SIGNAL_FUNC(e_contact_print_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "close", GTK_SIGNAL_FUNC(e_contact_print_close), NULL);
+	g_object_ref(book);
+	g_object_set_data(G_OBJECT(dialog), "uses_book", (void *) 1);
+	g_object_set_data(G_OBJECT(dialog), "book", book);
+	g_object_set_data(G_OBJECT(dialog), "query", g_strdup(query));
+	g_signal_connect(dialog,
+			 "response", G_CALLBACK(e_contact_print_response), NULL);
+	g_signal_connect(dialog,
+			 "close", G_CALLBACK(e_contact_print_close), NULL);
 	return dialog;
 }
 
@@ -1132,13 +1156,15 @@ e_contact_print_preview(EBook *book, char *query)
 {
 	EContactPrintContext *ctxt = g_new(EContactPrintContext, 1);
 	EContactPrintStyle *style = g_new(EContactPrintStyle, 1);
-	GnomePrintMaster *master;
+	GnomePrintJob *master;
 	GnomePrintContext *pc;
+	GnomePrintConfig *config;
 	gdouble font_size;
 
-	master = gnome_print_master_new();
-	gnome_print_master_set_copies (master, 1, FALSE);
-	pc = gnome_print_master_get_context (master);
+	master = gnome_print_job_new(NULL);
+	config = gnome_print_job_get_config (master);
+	gnome_print_config_set_int (config, GNOME_PRINT_KEY_NUM_COPIES, 1);
+	pc = gnome_print_job_get_context (master);
 	e_contact_build_style (style);
 
 	ctxt->x = 0;
@@ -1148,22 +1174,25 @@ e_contact_print_preview(EBook *book, char *query)
 	ctxt->master = master;
 	ctxt->first_section = TRUE;
 	ctxt->first_char_on_page = 'A' - 1;
-	ctxt->type = GNOME_PRINT_PREVIEW;
+	ctxt->type = GNOME_PRINT_DIALOG_RESPONSE_PREVIEW;
 
 	font_size = 72 * ctxt->style->page_height / 27.0 / 2.0;
-	ctxt->letter_heading_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
-	ctxt->letter_tab_font = gnome_font_new(gnome_font_get_name(ctxt->style->headings_font), font_size);
+	ctxt->letter_heading_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), gnome_font_get_size (ctxt->style->headings_font) * 1.5);
+	ctxt->letter_tab_font = gnome_font_find (gnome_font_get_name(ctxt->style->headings_font), font_size);
 
+		ctxt->pc = pc;
+#warning FIXME gnome_print_multipage_new_from_sizes
+#if 0
 	ctxt->pc = GNOME_PRINT_CONTEXT(gnome_print_multipage_new_from_sizes(pc, 
 									    72 * style->paper_width, 
 									    72 * style->paper_height,
 									    72 * style->page_width,
 									    72 * style->page_height));
-
+#endif
 	ctxt->book = book;
 	ctxt->query = g_strdup(query);
 	ctxt->cards = NULL;
-	gtk_object_ref(GTK_OBJECT(book));
+	g_object_ref(book);
 	e_contact_do_print(book, ctxt->query, ctxt);
 }
 
@@ -1172,15 +1201,15 @@ e_contact_print_card_dialog_new(ECard *card)
 {
 	GtkWidget *dialog;
 	
-	dialog = gnome_print_dialog_new(_("Print card"), GNOME_PRINT_DIALOG_COPIES);
+	dialog = gnome_print_dialog_new(NULL, _("Print card"), GNOME_PRINT_DIALOG_COPIES);
 
 	card = e_card_duplicate(card);
-	gtk_object_set_data(GTK_OBJECT(dialog), "card", card);
-	gtk_object_set_data(GTK_OBJECT(dialog), "uses_book", (void *) 0);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "clicked", GTK_SIGNAL_FUNC(e_contact_print_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "close", GTK_SIGNAL_FUNC(e_contact_print_close), NULL);
+	g_object_set_data(G_OBJECT(dialog), "card", card);
+	g_object_set_data(G_OBJECT(dialog), "uses_book", (void *) 0);
+	g_signal_connect(dialog,
+			 "response", G_CALLBACK(e_contact_print_response), NULL);
+	g_signal_connect(dialog,
+			 "close", G_CALLBACK(e_contact_print_close), NULL);
 	return dialog;
 }
 
@@ -1194,14 +1223,14 @@ e_contact_print_card_list_dialog_new(GList *list)
 	if (list == NULL)
 		return NULL;
 	
-	dialog = gnome_print_dialog_new(_("Print card"), GNOME_PRINT_DIALOG_COPIES);
+	dialog = gnome_print_dialog_new(NULL, _("Print card"), GNOME_PRINT_DIALOG_COPIES);
 
 	card = e_card_duplicate(list->data);
-	gtk_object_set_data(GTK_OBJECT(dialog), "card", card);
-	gtk_object_set_data(GTK_OBJECT(dialog), "uses_book", (void *) 0);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "clicked", GTK_SIGNAL_FUNC(e_contact_print_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog),
-			   "close", GTK_SIGNAL_FUNC(e_contact_print_close), NULL);
+	g_object_set_data(G_OBJECT(dialog), "card", card);
+	g_object_set_data(G_OBJECT(dialog), "uses_book", (void *) 0);
+	g_signal_connect(dialog,
+			 "response", G_CALLBACK(e_contact_print_response), NULL);
+	g_signal_connect(dialog,
+			 "close", G_CALLBACK(e_contact_print_close), NULL);
 	return dialog;
 }

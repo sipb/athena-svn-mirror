@@ -37,6 +37,7 @@ extern "C" {
 
 #include "evolution-storage.h"	/*EvolutionStorage */
 #include "e-util/e-msgport.h"
+#include "e-util/e-account.h"
 
 void mail_append_mail (CamelFolder *folder, CamelMimeMessage *message, CamelMessageInfo *info,
 		       void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok,
@@ -87,6 +88,10 @@ void mail_refresh_folder (CamelFolder *folder,
 void mail_expunge_folder (CamelFolder *folder,
 			  void (*done) (CamelFolder *folder, void *data),
 			  void *data);
+
+void mail_empty_trash (EAccount *account,
+		       void (*done) (EAccount *account, void *data),
+		       void *data);
 
 /* get folder info asynchronously */
 int mail_get_folderinfo (CamelStore *store,
@@ -151,9 +156,9 @@ void mail_filter_on_demand (CamelFolder *folder, GPtrArray *uids);
 void mail_prep_offline(const char *uri, CamelOperation *cancel,
 		       void (*done)(const char *, void *data),
 		       void *data);
-void mail_store_set_offline(CamelStore *store, gboolean offline,
-			    void (*done)(CamelStore *, void *data),
-			    void *data);
+int mail_store_set_offline(CamelStore *store, gboolean offline,
+			   void (*done)(CamelStore *, void *data),
+			   void *data);
 
 /* filter driver execute shell command async callback */
 void mail_execute_shell_command (CamelFilterDriver *driver, int argc, char **argv, void *data);

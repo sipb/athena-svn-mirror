@@ -12,16 +12,16 @@
 #include "gal-view-menus.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <gtk/gtksignal.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gal/util/e-util.h>
 #include <gal/util/e-xml-utils.h>
 #include <gal/menus/gal-define-views-dialog.h>
-#include <gal/widgets/e-unicode.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <e-util/e-list.h>
 
@@ -42,9 +42,9 @@ typedef struct {
 	int ref_count;
 } ListenerClosure;
 
-#define PARENT_TYPE (gtk_object_get_type())
+#define PARENT_TYPE G_TYPE_OBJECT
 
-static GtkObjectClass *gvm_parent_class;
+static GObjectClass *gvm_parent_class;
 static void collection_changed (GalViewCollection *collection,
 				GalViewMenus *gvm);
 static void instance_changed (GalViewInstance *instance,
@@ -61,7 +61,7 @@ closure_free (void *data, void *user_data)
 
 	closure->ref_count --;
 	if (closure->ref_count == 0) {
-		gtk_object_unref(GTK_OBJECT(closure->instance));
+		g_object_unref (closure->instance);
 
 		bonobo_ui_component_remove_listener (gvm->priv->component, closure->id);
 		g_free (closure);
@@ -80,9 +80,9 @@ closure_copy (const void *data, void *user_data)
 static void
 remove_listeners (GalViewMenus *gvm)
 {
-	if (gvm->priv->listenerClosures) {
-		gtk_object_unref (GTK_OBJECT(gvm->priv->listenerClosures));
-	}
+	if (gvm->priv->listenerClosures)
+		g_object_unref (gvm->priv->listenerClosures);
+
 	gvm->priv->listenerClosures = NULL;
 }
 
@@ -96,17 +96,17 @@ remove_instance (GalViewMenus *gvm)
 {
 	if (gvm->priv->instance) {
 		if (gvm->priv->instance_changed_id != 0)
-			gtk_signal_disconnect(GTK_OBJECT(gvm->priv->instance), gvm->priv->instance_changed_id);
+			g_signal_handler_disconnect (gvm->priv->instance, gvm->priv->instance_changed_id);
 		
 		if (gvm->priv->instance->collection && gvm->priv->collection_changed_id != 0)
-			gtk_signal_disconnect(GTK_OBJECT(gvm->priv->instance->collection), gvm->priv->collection_changed_id);
+			g_signal_handler_disconnect (gvm->priv->instance->collection, gvm->priv->collection_changed_id);
 	}
 
 	gvm->priv->instance_changed_id = 0;
 	gvm->priv->collection_changed_id = 0;
 
 	if (gvm->priv->instance)
-		gtk_object_unref(GTK_OBJECT(gvm->priv->instance));
+		g_object_unref (gvm->priv->instance);
 
         remove_listeners(gvm);
 	remove_xml(gvm);
@@ -116,7 +116,7 @@ static void
 add_instance (GalViewMenus *gvm,
 	      GalViewInstance *instance)
 {
-	gtk_object_ref(GTK_OBJECT(instance));
+	g_object_ref (instance);
 
 	if (gvm->priv->instance != NULL)
 		remove_instance (gvm);
@@ -125,24 +125,22 @@ add_instance (GalViewMenus *gvm,
 
 	gal_view_instance_load (gvm->priv->instance);
 
-	gvm->priv->instance_changed_id = gtk_signal_connect
-		(GTK_OBJECT(instance), "changed",
-		 GTK_SIGNAL_FUNC(instance_changed), gvm);
-	gvm->priv->collection_changed_id = gtk_signal_connect
-		(GTK_OBJECT(instance->collection), "changed",
-		 GTK_SIGNAL_FUNC(collection_changed), gvm);
-
+	gvm->priv->instance_changed_id = g_signal_connect (instance, "changed",
+							   G_CALLBACK (instance_changed), gvm);
+	gvm->priv->collection_changed_id = g_signal_connect (instance->collection, "changed",
+							     G_CALLBACK (collection_changed), gvm);
 }
 
 static void
-clear_define_views_dialog (gpointer data)
+clear_define_views_dialog (gpointer data,
+			   GObject *where_the_object_was)
 {
 	GalViewMenus *gvm = GAL_VIEW_MENUS (data);
 	gvm->priv->define_views_dialog = NULL;
 }
 
 static void
-gvm_destroy (GtkObject *object)
+gvm_finalize (GObject *object)
 {
 	GalViewMenus *gvm = GAL_VIEW_MENUS (object);
 
@@ -150,23 +148,23 @@ gvm_destroy (GtkObject *object)
 
 	gal_view_menus_unmerge (gvm, NULL);
 
-	if (gvm->priv->define_views_dialog) {
-		gtk_object_weakunref (GTK_OBJECT (gvm->priv->define_views_dialog),
-				      clear_define_views_dialog,
-				      gvm);
-	}
-	g_free(gvm->priv);
-	gvm->priv = NULL;
+	if (gvm->priv->component)
+		bonobo_object_unref (gvm->priv->component);
+	
+	if (gvm->priv->define_views_dialog)
+		g_object_weak_unref (G_OBJECT (gvm->priv->define_views_dialog), clear_define_views_dialog, gvm);
 
-	GTK_OBJECT_CLASS (gvm_parent_class)->destroy (object);
+	g_free(gvm->priv);
+
+	(* G_OBJECT_CLASS (gvm_parent_class)->finalize) (object);
 }
 
 static void
-gvm_class_init (GtkObjectClass *klass)
+gvm_class_init (GObjectClass *klass)
 {
 	gvm_parent_class = gtk_type_class (PARENT_TYPE);
 	
-	klass->destroy = gvm_destroy;
+	klass->finalize = gvm_finalize;
 }
 
 static void
@@ -192,7 +190,7 @@ gal_view_menus_new (GalViewInstance *instance)
 	g_return_val_if_fail (instance != NULL, NULL);
 	g_return_val_if_fail (GAL_IS_VIEW_INSTANCE (instance), NULL);
 
-	gvm = gtk_type_new (GAL_VIEW_MENUS_TYPE);
+	gvm = g_object_new (GAL_VIEW_MENUS_TYPE, NULL);
 	gal_view_menus_construct(gvm, instance);
 
 	return gvm;
@@ -213,12 +211,12 @@ gal_view_menus_construct (GalViewMenus      *gvm,
 }
 
 static void
-dialog_clicked(GtkWidget *dialog, int button, GalViewMenus *menus)
+dialog_response(GtkWidget *dialog, int id, GalViewMenus *menus)
 {
-	if (button == 0) {
+	if (id == GTK_RESPONSE_OK) {
 		gal_view_collection_save(menus->priv->instance->collection);
 	}
-	gnome_dialog_close(GNOME_DIALOG(dialog));
+	gtk_widget_destroy(dialog);
 }
 
 static void
@@ -231,12 +229,9 @@ define_views(BonoboUIComponent *component,
 	} else {
 		GtkWidget *dialog = gal_define_views_dialog_new(menus->priv->instance->collection);
 
-		gtk_signal_connect(GTK_OBJECT(dialog), "clicked",
-				   GTK_SIGNAL_FUNC(dialog_clicked), menus);
+		g_signal_connect (dialog, "response", G_CALLBACK (dialog_response), menus);
 		menus->priv->define_views_dialog = dialog;
-		gtk_object_weakref (GTK_OBJECT (dialog),
-				    clear_define_views_dialog,
-				    menus);
+		g_object_weak_ref (G_OBJECT (dialog), clear_define_views_dialog, menus);
 		gtk_widget_show(dialog);
 	}
 }
@@ -302,10 +297,10 @@ build_menus(GalViewMenus *menus)
         menus->priv->listenerClosures = e_list_new (closure_copy, closure_free, menus);
 
 	for (i = 0; i < length; i++) {
-		char *label, *encoded_label;
 		GalViewCollectionItem *item = gal_view_collection_get_view_item(collection, i);
 		ListenerClosure *closure;
-
+		char *label;
+		
 		menuitem = bonobo_ui_node_new_child(submenu, "menuitem");
 		bonobo_ui_node_set_attr(menuitem, "name", item->id);
 		bonobo_ui_node_set_attr(menuitem, "id", item->id);
@@ -316,11 +311,8 @@ build_menus(GalViewMenus *menus)
 		bonobo_ui_node_set_attr(command, "name", item->id);
                 bonobo_ui_node_set_attr(command, "group", "GalViewMenus");
 
-		/* bonobo displays this string so it must be in locale */
-		label = e_utf8_to_locale_string(item->title);
-		encoded_label = bonobo_ui_util_encode_str (label);
-		bonobo_ui_node_set_attr(menuitem, "label", encoded_label);
-		g_free (encoded_label);
+		label = bonobo_ui_util_encode_str (item->title);
+		bonobo_ui_node_set_attr(menuitem, "label", label);
 		g_free (label);
 
 		closure            = g_new (ListenerClosure, 1);
@@ -332,7 +324,7 @@ build_menus(GalViewMenus *menus)
 			found = TRUE;
 		}
 
-		gtk_object_ref (GTK_OBJECT(closure->instance));
+		g_object_ref (closure->instance);
 
                 bonobo_ui_component_add_listener (menus->priv->component, item->id, toggled_cb, closure);
                 e_list_append (menus->priv->listenerClosures, closure);
@@ -363,7 +355,7 @@ build_menus(GalViewMenus *menus)
 
 			menuitem = bonobo_ui_node_new_child(submenu, "menuitem");
 			bonobo_ui_node_set_attr(menuitem, "name", "SaveCurrentView");
-			bonobo_ui_node_set_attr(menuitem, "_label", N_("Save Custom View"));
+			bonobo_ui_node_set_attr(menuitem, "_label", N_("Save Custom View..."));
 			bonobo_ui_node_set_attr(menuitem, "verb", "");
 
 			command = bonobo_ui_node_new_child(commands, "cmd");
@@ -376,7 +368,7 @@ build_menus(GalViewMenus *menus)
 
 		menuitem = bonobo_ui_node_new_child(submenu, "menuitem");
 		bonobo_ui_node_set_attr(menuitem, "name", "DefineViews");
-		bonobo_ui_node_set_attr(menuitem, "_label", N_("Define Views"));
+		bonobo_ui_node_set_attr(menuitem, "_label", N_("Define Views..."));
 		bonobo_ui_node_set_attr(menuitem, "verb", "");
 
 		command = bonobo_ui_node_new_child(commands, "cmd");
@@ -406,8 +398,8 @@ static void
 set_state (GalViewMenus *gvm, char *path, CORBA_Environment *ev)
 {
 	char *full_path = g_strdup_printf ("/commands/%s", path);
+
 	bonobo_ui_component_set_prop (gvm->priv->component, full_path, "state", "1", ev);
-	g_print ("set_prop path: %s\n", full_path);
 	g_free (full_path);
 }
 
@@ -433,7 +425,7 @@ build_stuff (GalViewMenus      *gvm,
 {
 	char *xml;
 
-	gtk_object_ref (gvm);
+	g_object_ref (gvm);
 
 	gal_view_menus_unmerge (gvm, ev);
 
@@ -447,7 +439,7 @@ build_stuff (GalViewMenus      *gvm,
 
 	set_radio (gvm, ev);
 
-	gtk_object_unref (gvm);
+	g_object_unref (gvm);
 }
 
 void
@@ -493,9 +485,10 @@ void
 gal_view_menus_unmerge   (GalViewMenus      *gvm,
 			  CORBA_Environment *opt_ev)
 {
-	d(g_print ("%s:\n", __FUNCTION__));
-	if (bonobo_ui_component_path_exists  (gvm->priv->component, CURRENT_VIEW_PATH, opt_ev)) {
-		d(g_print ("%s: Removing path\n", __FUNCTION__));
+	d(g_print ("%s:\n", G_GNUC_FUNCTION));
+	if (bonobo_ui_component_get_container (gvm->priv->component) != NULL
+	    && bonobo_ui_component_path_exists  (gvm->priv->component, CURRENT_VIEW_PATH, opt_ev)) {
+		d(g_print ("%s: Removing path\n", G_GNUC_FUNCTION));
 		bonobo_ui_component_rm (gvm->priv->component, CURRENT_VIEW_PATH, opt_ev);
 	}
 }

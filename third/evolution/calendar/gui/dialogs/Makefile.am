@@ -1,13 +1,12 @@
 IDLS = $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
-IDL_GENERATED =                 			\
-	Evolution-Addressbook-SelectNames.h		\
-	Evolution-Addressbook-SelectNames-common.c	\
-	Evolution-Addressbook-SelectNames-skels.c	\
-	Evolution-Addressbook-SelectNames-stubs.c
+IDL_GENERATED_H =                 			\
+	Evolution-Addressbook-SelectNames.h
+IDL_GENERATED = $(IDL_GENERATED_H)
 
-$(IDL_GENERATED): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`   \
+$(IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES)	\
+		--nostubs --noskels --nocommon		\
                 $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
 BUILT_SOURCES = $(IDL_GENERATED)
@@ -24,17 +23,17 @@ INCLUDES = 								\
 	-I$(top_srcdir)/shell						\
 	-I$(top_srcdir)/addressbook/backend				\
 	-I$(top_builddir)/addressbook/backend				\
-	-I$(includedir)							\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"				\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				\
-	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"				\
+	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"			\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"			\
-        -DGNOMELOCALEDIR=\""$(localedir)"\"				\
+	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"			\
+	-DPREFIX=\""$(prefix)"\"					\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-noinst_LIBRARIES = libcal-dialogs.a
+noinst_LTLIBRARIES = libcal-dialogs.la
 
-libcal_dialogs_a_SOURCES =	\
+libcal_dialogs_la_SOURCES =	\
 	$(IDL_GENERATED)	\
 	alarm-options.c		\
 	alarm-options.h		\
@@ -54,6 +53,8 @@ libcal_dialogs_a_SOURCES =	\
 	comp-editor-util.h	\
 	delete-comp.c		\
 	delete-comp.h		\
+	delete-error.c		\
+	delete-error.h		\
 	e-delegate-dialog.c	\
 	e-delegate-dialog.h	\
 	event-editor.c		\
@@ -79,9 +80,6 @@ libcal_dialogs_a_SOURCES =	\
 	task-page.c		\
 	task-page.h
 
-iconsdir = $(datadir)/images/evolution
-
-gladedir = $(datadir)/evolution/glade
 glade_DATA =				\
 	alarm-options.glade		\
 	alarm-page.glade		\
@@ -94,7 +92,6 @@ glade_DATA =				\
 	task-details-page.glade		\
 	task-page.glade
 
-etspecdir = $(datadir)/evolution/etspec/
 etspec_DATA = meeting-page.etspec
 
 CLEANFILES = $(BUILT_SOURCES)

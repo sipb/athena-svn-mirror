@@ -55,7 +55,7 @@ schema_handler_new (const char *schema,
 	handler->schema    = g_strdup (schema);
 	handler->component = component;
 
-	bonobo_object_ref (BONOBO_OBJECT (component));
+	g_object_ref (component);
 
 	return handler;
 }
@@ -64,7 +64,7 @@ static void
 schema_handler_free (SchemaHandler *handler)
 {
 	g_free (handler->schema);
-	bonobo_object_unref (BONOBO_OBJECT (handler->component));
+	g_object_unref (handler->component);
 
 	g_free (handler);
 }
@@ -82,7 +82,7 @@ schema_to_handler_destroy_foreach_callback (void *key,
 /* GtkObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EUriSchemaRegistry *registry;
 	EUriSchemaRegistryPrivate *priv;
@@ -94,16 +94,16 @@ impl_destroy (GtkObject *object)
 	g_hash_table_destroy (priv->schema_to_handler);
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
-class_init (GtkObjectClass *object_class)
+class_init (GObjectClass *object_class)
 {
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->finalize = impl_finalize;
 }
 
 static void
@@ -125,7 +125,7 @@ e_uri_schema_registry_new (void)
 {
 	EUriSchemaRegistry *registry;
 
-	registry = gtk_type_new (e_uri_schema_registry_get_type ());
+	registry = g_object_new (e_uri_schema_registry_get_type (), NULL);
 
 	return registry;
 }

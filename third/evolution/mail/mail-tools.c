@@ -30,32 +30,42 @@
 #include <pthread.h>
 #include <ctype.h>
 #include <errno.h>
-#include <gal/widgets/e-unicode.h>
-#include "camel/camel.h"
-#include "camel/camel-vee-folder.h"
-#include "mail-vfolder.h"
-#include "filter/vfolder-rule.h"
-#include "filter/vfolder-context.h"
-#include "filter/filter-option.h"
-#include "filter/filter-input.h"
+#include <string.h>
+
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+
+#include <camel/camel.h>
+#include <camel/camel-vee-folder.h>
+
+#include <filter/vfolder-rule.h>
+#include <filter/vfolder-context.h>
+#include <filter/filter-option.h>
+#include <filter/filter-input.h>
+
+#include "e-util/e-meta.h"
+
 #include "mail.h" /*session*/
+#include "mail-config.h"
+#include "mail-vfolder.h"
+#include "mail-format.h"
 #include "mail-tools.h"
 #include "mail-local.h"
 #include "mail-mt.h"
 #include "mail-folder-cache.h"
-#include "e-util/e-html-utils.h"
 
 /* **************************************** */
 
 CamelFolder *
 mail_tool_get_local_inbox (CamelException *ex)
 {
-	gchar *url;
 	CamelFolder *folder;
-
+	char *url;
+	
 	url = g_strdup_printf("file://%s/local/Inbox", evolution_dir);
 	folder = mail_tool_uri_to_folder (url, 0, ex);
 	g_free (url);
+	
 	return folder;
 }
 
@@ -64,14 +74,14 @@ mail_tool_get_inbox (const gchar *url, CamelException *ex)
 {
 	CamelStore *store;
 	CamelFolder *folder;
-
+	
 	store = camel_session_get_store (session, url, ex);
 	if (!store)
 		return NULL;
-
+	
 	folder = camel_store_get_inbox (store, ex);
-	camel_object_unref (CAMEL_OBJECT (store));
-
+	camel_object_unref (store);
+	
 	return folder;
 }
 
@@ -80,21 +90,21 @@ mail_tool_get_trash (const gchar *url, int connect, CamelException *ex)
 {
 	CamelStore *store;
 	CamelFolder *trash;
-
+	
 	if (connect)
 		store = camel_session_get_store (session, url, ex);
 	else
-		store = (CamelStore *)camel_session_get_service(session, url, CAMEL_PROVIDER_STORE, ex);
-
+		store = (CamelStore *) camel_session_get_service (session, url, CAMEL_PROVIDER_STORE, ex);
+	
 	if (!store)
 		return NULL;
 	
-	if (connect || ((CamelService *)store)->status == CAMEL_SERVICE_CONNECTED)
+	if (connect || ((CamelService *) store)->status == CAMEL_SERVICE_CONNECTED)
 		trash = camel_store_get_trash (store, ex);
 	else
 		trash = NULL;
-
-	camel_object_unref (CAMEL_OBJECT (store));
+	
+	camel_object_unref (store);
 	
 	return trash;
 }
@@ -116,27 +126,33 @@ mail_tool_get_local_movemail_path (const unsigned char *uri)
 	return path;
 }
 
-/* why is this function so stupidly complex when allthe work is done elsehwere? */
 char *
 mail_tool_do_movemail (const char *source_url, CamelException *ex)
 {
 	char *dest_path;
-	const char *source;
 	struct stat sb;
-	
-	g_return_val_if_fail (strncmp (source_url, "mbox:", 5) == 0, NULL);
+	CamelURL *uri;
+
+	uri = camel_url_new(source_url, ex);
+	if (uri == NULL)
+		return NULL;
+
+	if (strcmp(uri->protocol, "mbox") != 0) {
+		/* FIXME: use right text here post 1.4 */
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_URL_INVALID,
+				      _("Could not parse URL `%s'"),
+				      source_url);
+		camel_url_free(uri);
+		return NULL;
+	}
 	
 	/* Set up our destination. */
 	dest_path = mail_tool_get_local_movemail_path (source_url);
 	
-	/* Skip over "mbox:" plus host part (if any) of url. */
-	source = source_url + 5;
-	if (!strncmp (source, "//", 2))
-		source = strchr (source + 2, '/');
-	
 	/* Movemail from source (source_url) to dest_path */
-	camel_movemail (source, dest_path, ex);
-	
+	camel_movemail (uri->path, dest_path, ex);
+	camel_url_free(uri);
+
 	if (stat (dest_path, &sb) < 0 || sb.st_size == 0) {
 		unlink (dest_path); /* Clean up the movemail.foo file. */
 		g_free (dest_path);
@@ -256,15 +272,10 @@ mail_tool_make_message_attachment (CamelMimeMessage *message)
 	char *desc;
 	
 	subject = camel_mime_message_get_subject (message);
-	if (subject) {
-		char *fmt;
-		
-		fmt = e_utf8_from_locale_string (_("Forwarded message - %s"));
-		desc = g_strdup_printf (fmt, subject);
-		g_free (fmt);
-	} else {
-		desc = e_utf8_from_locale_string (_("Forwarded message"));
-	}
+	if (subject)
+		desc = g_strdup_printf (_("Forwarded message - %s"), subject);
+	else
+		desc = g_strdup (_("Forwarded message"));
 	
 	/* rip off the X-Evolution headers */
 	xev = mail_tool_remove_xevolution_headers (message);
@@ -323,7 +334,7 @@ mail_tool_uri_to_folder (const char *uri, guint32 flags, CamelException *ex)
 			folder = camel_store_get_trash (store, ex);
 		else
 			folder = camel_store_get_folder (store, name, flags, ex);
-		camel_object_unref (CAMEL_OBJECT (store));
+		camel_object_unref (store);
 	}
 	
 	if (folder)
@@ -347,7 +358,10 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 {
 	CamelDataWrapper *contents;
 	gboolean want_plain;
-	gchar *text;
+	char *text, *colour;
+	GConfClient *gconf;
+	
+	gconf = mail_config_get_gconf_client ();
 	
 	contents = camel_medium_get_content_object (CAMEL_MEDIUM (message));
 	/* We pass "want_plain" for "cite", since if it's HTML, we'll
@@ -381,16 +395,21 @@ mail_tool_quote_message (CamelMimeMessage *message, const char *fmt, ...)
 			va_end (ap);
 		}
 		
+		colour = gconf_client_get_string (gconf, "/apps/evolution/mail/display/citation_colour", NULL);
+		
 		ret_text = g_strdup_printf ("%s<!--+GtkHTML:<DATA class=\"ClueFlow\" key=\"orig\" value=\"1\">-->"
-					    "<font color=\"%06x\">\n%s%s%s</font>"
+					    "<font color=\"%s\">\n%s%s%s</font>"
 					    "<!--+GtkHTML:<DATA class=\"ClueFlow\" clear=\"orig\">-->",
 					    credits ? credits : "",
-					    mail_config_get_citation_color (),
+					    colour ? colour : "#737373",
 					    want_plain ? "" : "<blockquote type=cite><i>",
 					    text,
 					    want_plain ? "" : "</i></blockquote>");
+		
 		g_free (text);
+		g_free (colour);
 		g_free (credits);
+		
 		return ret_text;
 	}
 	
@@ -409,14 +428,17 @@ gchar *
 mail_tool_forward_message (CamelMimeMessage *message, gboolean quoted)
 {
 	char *title, *body, *ret;
+	gboolean send_html;
+	GConfClient *gconf;
 	
-	body = mail_get_message_body (CAMEL_DATA_WRAPPER (message),
-				      !mail_config_get_send_html (),
-				      quoted);
-	title = e_utf8_from_locale_string (_("Forwarded Message"));
+	gconf = mail_config_get_gconf_client ();
+	send_html = gconf_client_get_bool (gconf, "/apps/evolution/mail/composer/send_html", NULL);
+	
+	body = mail_get_message_body (CAMEL_DATA_WRAPPER (message), !send_html, quoted);
+	title = _("Forwarded Message");
 	ret = g_strdup_printf ("-----%s-----<br>%s", title, body ? body : "");
-	g_free (title);
 	g_free (body);
+	
 	return ret;
 }
 
@@ -483,4 +505,80 @@ mail_tools_folder_to_url (CamelFolder *folder)
 	g_free (service_url);
 	
 	return url;
+}
+
+static char *meta_data_key(const char *uri, char **pathp)
+{
+	CamelURL *url;
+	GString *path;
+	const char *key;
+	char *p, c;
+
+	url = camel_url_new(uri, NULL);
+
+	if (url == NULL) {
+		g_warning("Trying to retrieve meta-data for unparsable uri: %s", uri);
+		*pathp = g_build_path(evolution_dir, "meta/unknown", NULL);
+
+		return g_strdup("folder");
+	}
+
+	path = g_string_new(evolution_dir);
+	g_string_append_printf(path, "/meta/%s/", url->protocol);
+
+	if (url->host && url->host[0]) {
+		if (url->user)
+			g_string_append_printf(path, "%s@", url->user);
+		g_string_append(path, url->host);
+		if (url->port)
+			g_string_append_printf(path, ":%d", url->port);
+		key = url->path;
+	} else if (url->path) {
+		if (url->fragment) {
+			p = url->path;
+			while ((c = *p++)) {
+				if (c == '/')
+					c = '_';
+				g_string_append_c(path, c);
+			}
+			key = url->fragment;
+		} else {
+			key = url->path;
+		}
+	}
+
+	if (key == NULL)
+		key = uri;
+
+	p = g_strdup(key);
+	camel_url_free(url);
+	*pathp = path->str;
+	g_string_free(path, FALSE);
+
+	return p;
+}
+
+EMeta *
+mail_tool_get_meta_data(const char *uri)
+{
+	char *path, *key;
+	EMeta *meta;
+
+	key = meta_data_key(uri, &path);
+	meta = e_meta_data_find(path, key);
+	g_free(key);
+	g_free(path);
+
+	return meta;
+}
+
+void
+mail_tool_delete_meta_data(const char *uri)
+{
+	char *path, *key;
+
+	key = meta_data_key(uri, &path);
+	e_meta_data_delete(path, key);
+	g_free(key);
+	g_free(path);
 }

@@ -10,8 +10,9 @@
  */
 
 #include <config.h>
-#include <gtk/gtksignal.h>
+#include <bonobo/bonobo-main.h>
 #include "e-book-listener.h"
+#include "e-book-marshal.h"
 
 static EBookStatus e_book_listener_convert_status (GNOME_Evolution_Addressbook_BookListener_CallStatus status);
 
@@ -22,8 +23,7 @@ enum {
 
 static guint e_book_listener_signals [LAST_SIGNAL];
 
-static BonoboObjectClass          *e_book_listener_parent_class;
-POA_GNOME_Evolution_Addressbook_BookListener__vepv  e_book_listener_vepv;
+static BonoboObjectClass          *parent_class;
 
 struct _EBookListenerPrivate {
 	GList   *response_queue;
@@ -102,7 +102,7 @@ e_book_listener_check_queue (EBookListener *listener)
 	listener->priv->timeout_lock = TRUE;
 
 	if (listener->priv->response_queue != NULL && !listener->priv->stopped) {
-		gtk_signal_emit (GTK_OBJECT (listener), e_book_listener_signals [RESPONSES_QUEUED]);
+		g_signal_emit (listener, e_book_listener_signals [RESPONSES_QUEUED], 0);
 	}
 
 	if (listener->priv->response_queue == NULL || listener->priv->stopped) {
@@ -360,10 +360,34 @@ e_book_listener_queue_get_supported_fields_response (EBookListener *listener,
 
 	resp->op     = GetSupportedFieldsResponse;
 	resp->status = status;
-	resp->fields = e_list_new ((EListCopyFunc)g_strdup, (EListFreeFunc)g_free, NULL);
+	resp->list   = e_list_new ((EListCopyFunc)g_strdup, (EListFreeFunc)g_free, NULL);
 
 	for (i = 0; i < fields->_length; i ++) {
-		e_list_append (resp->fields, fields->_buffer[i]);
+		e_list_append (resp->list, fields->_buffer[i]);
+	}
+
+	e_book_listener_queue_response (listener, resp);
+}
+
+static void
+e_book_listener_queue_get_supported_auth_methods_response (EBookListener *listener,
+							   EBookStatus status,
+							   const GNOME_Evolution_Addressbook_stringlist *auth_methods)
+{
+	EBookListenerResponse *resp;
+	int i;
+
+	if (listener->priv->stopped)
+		return;
+
+	resp = g_new0 (EBookListenerResponse, 1);
+
+	resp->op     = GetSupportedAuthMethodsResponse;
+	resp->status = status;
+	resp->list   = e_list_new ((EListCopyFunc)g_strdup, (EListFreeFunc)g_free, NULL);
+
+	for (i = 0; i < auth_methods->_length; i ++) {
+		e_list_append (resp->list, auth_methods->_buffer[i]);
 	}
 
 	e_book_listener_queue_response (listener, resp);
@@ -372,10 +396,10 @@ e_book_listener_queue_get_supported_fields_response (EBookListener *listener,
 static void
 impl_BookListener_respond_create_card (PortableServer_Servant                   servant,
 				       const GNOME_Evolution_Addressbook_BookListener_CallStatus  status,
-				       const GNOME_Evolution_Addressbook_CardId id,
+				       const CORBA_char* id,
 				       CORBA_Environment                       *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_create_card_response (
 		listener,
@@ -384,11 +408,11 @@ impl_BookListener_respond_create_card (PortableServer_Servant                   
 }
 
 static void
-impl_BookListener_respond_remove_card (PortableServer_Servant servant,
-				       const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
-				       CORBA_Environment *ev)
+impl_BookListener_respond_remove_cards (PortableServer_Servant servant,
+					const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
+					CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_generic_response (
 		listener, RemoveCardResponse,
@@ -400,7 +424,7 @@ impl_BookListener_respond_modify_card (PortableServer_Servant servant,
 				       const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
 				       CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_generic_response (
 		listener, ModifyCardResponse,
@@ -410,10 +434,10 @@ impl_BookListener_respond_modify_card (PortableServer_Servant servant,
 static void
 impl_BookListener_respond_get_vcard (PortableServer_Servant servant,
 				     const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
-				     const GNOME_Evolution_Addressbook_VCard card,
+				     const CORBA_char* card,
 				     CORBA_Environment *ev)
 {
-	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_get_vcard_response (
 		listener,
@@ -427,7 +451,7 @@ impl_BookListener_respond_get_cursor (PortableServer_Servant servant,
 				      const GNOME_Evolution_Addressbook_CardCursor cursor,
 				      CORBA_Environment *ev)
 {
-	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	GNOME_Evolution_Addressbook_CardCursor  cursor_copy;
 
 	cursor_copy = bonobo_object_dup_ref (cursor, ev);
@@ -449,7 +473,7 @@ impl_BookListener_respond_get_view (PortableServer_Servant servant,
 				    const GNOME_Evolution_Addressbook_BookView book_view,
 				    CORBA_Environment *ev)
 {
-	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	GNOME_Evolution_Addressbook_BookView    book_view_copy;
 
 	book_view_copy = bonobo_object_dup_ref (book_view, ev);
@@ -471,7 +495,7 @@ impl_BookListener_respond_get_changes (PortableServer_Servant servant,
 				       const GNOME_Evolution_Addressbook_BookView book_view,
 				       CORBA_Environment *ev)
 {
-	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener        *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	GNOME_Evolution_Addressbook_BookView    book_view_copy;
 
 	book_view_copy = bonobo_object_dup_ref (book_view, ev);
@@ -493,7 +517,7 @@ impl_BookListener_respond_open_book (PortableServer_Servant servant,
 				     const GNOME_Evolution_Addressbook_Book book,
 				     CORBA_Environment *ev)
 {
-	EBookListener  *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener  *listener = E_BOOK_LISTENER (bonobo_object (servant));
 	GNOME_Evolution_Addressbook_Book  book_copy;
 
 	book_copy = bonobo_object_dup_ref (book, ev);
@@ -515,7 +539,7 @@ impl_BookListener_report_open_book_progress (PortableServer_Servant servant,
 					     const CORBA_short percent,
 					     CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_open_progress (
 		listener, status_message, percent);
@@ -526,7 +550,7 @@ impl_BookListener_respond_authentication_result (PortableServer_Servant servant,
 						 const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
 						 CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_authentication_response (
 				       listener, status);
@@ -538,10 +562,22 @@ impl_BookListener_response_get_supported_fields (PortableServer_Servant servant,
 						 const GNOME_Evolution_Addressbook_stringlist *fields,
 						 CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_get_supported_fields_response (
 				     listener, status, fields);
+}
+
+static void
+impl_BookListener_response_get_supported_auth_methods (PortableServer_Servant servant,
+						       const GNOME_Evolution_Addressbook_BookListener_CallStatus status,
+						       const GNOME_Evolution_Addressbook_stringlist *auth_methods,
+						       CORBA_Environment *ev)
+{
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
+
+	e_book_listener_queue_get_supported_auth_methods_response (
+				     listener, status, auth_methods);
 }
 
 static void
@@ -549,7 +585,7 @@ impl_BookListener_report_connection_status (PortableServer_Servant servant,
 					    const CORBA_boolean connected,
 					    CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_link_status (
 		listener, connected);
@@ -560,7 +596,7 @@ impl_BookListener_report_writable (PortableServer_Servant servant,
 				   const CORBA_boolean writable,
 				   CORBA_Environment *ev)
 {
-	EBookListener *listener = E_BOOK_LISTENER (bonobo_object_from_servant (servant));
+	EBookListener *listener = E_BOOK_LISTENER (bonobo_object (servant));
 
 	e_book_listener_queue_writable_status (listener, writable);
 }
@@ -646,41 +682,10 @@ e_book_listener_convert_status (const GNOME_Evolution_Addressbook_BookListener_C
 	}
 }
 
-static EBookListener *
+static void
 e_book_listener_construct (EBookListener *listener)
 {
-	POA_GNOME_Evolution_Addressbook_BookListener *servant;
-	CORBA_Environment           ev;
-	CORBA_Object                obj;
-
-	g_assert (listener != NULL);
-	g_assert (E_IS_BOOK_LISTENER (listener));
-
-	servant = (POA_GNOME_Evolution_Addressbook_BookListener *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &e_book_listener_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_GNOME_Evolution_Addressbook_BookListener__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		CORBA_exception_free (&ev);
-
-		return NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	obj = bonobo_object_activate_servant (BONOBO_OBJECT (listener), servant);
-	if (obj == CORBA_OBJECT_NIL) {
-		g_free (servant);
-
-		return NULL;
-	}
-
-	bonobo_object_construct (BONOBO_OBJECT (listener), obj);
-
-	return listener;
+	/* nothing to do here */
 }
 
 /**
@@ -695,20 +700,12 @@ EBookListener *
 e_book_listener_new ()
 {
 	EBookListener *listener;
-	EBookListener *retval;
 
-	listener = gtk_type_new (E_BOOK_LISTENER_TYPE);
+	listener = g_object_new (E_TYPE_BOOK_LISTENER, NULL);
 
-	retval = e_book_listener_construct (listener);
+	e_book_listener_construct (listener);
 
-	if (retval == NULL) {
-		g_warning ("e_book_listener_new: Error constructing "
-			   "EBookListener!\n");
-		bonobo_object_unref (BONOBO_OBJECT (listener));
-		return NULL;
-	}
-
-	return retval;
+	return listener;
 }
 
 static void
@@ -726,109 +723,75 @@ e_book_listener_stop (EBookListener *listener)
 }
 
 static void
-e_book_listener_destroy (GtkObject *object)
+e_book_listener_dispose (GObject *object)
 {
 	EBookListener *listener = E_BOOK_LISTENER (object);
-	GList *l;
 
-	/* Remove our response queue handler: In theory, this can never happen since we
-	 always hold a reference to the listener while the timeout is running. */
-	if (listener->priv->timeout_id) {
-		g_source_remove (listener->priv->timeout_id);
+	if (listener->priv) {
+		GList *l;
+
+		/* Remove our response queue handler: In theory, this
+		   can never happen since we always hold a reference
+		   to the listener while the timeout is running. */
+		if (listener->priv->timeout_id) {
+			g_source_remove (listener->priv->timeout_id);
+		}
+
+		/* Clean up anything still sitting in response_queue */
+		for (l = listener->priv->response_queue; l != NULL; l = l->next) {
+			EBookListenerResponse *resp = l->data;
+
+			response_free (resp);
+		}
+		g_list_free (listener->priv->response_queue);
+
+		g_free (listener->priv);
+
+		listener->priv = NULL;
 	}
 
-	/* Clean up anything still sitting in response_queue */
-	for (l = listener->priv->response_queue; l != NULL; l = l->next) {
-		EBookListenerResponse *resp = l->data;
-
-		response_free (resp);
-	}
-	g_list_free (listener->priv->response_queue);
-
-	g_free (listener->priv);
-	
-	GTK_OBJECT_CLASS (e_book_listener_parent_class)->destroy (object);
-}
-
-POA_GNOME_Evolution_Addressbook_BookListener__epv *
-e_book_listener_get_epv (void)
-{
-	POA_GNOME_Evolution_Addressbook_BookListener__epv *epv;
-
-	epv                             = g_new0 (POA_GNOME_Evolution_Addressbook_BookListener__epv, 1);
-
-	epv->notifyOpenBookProgress     = impl_BookListener_report_open_book_progress;
-	epv->notifyBookOpened           = impl_BookListener_respond_open_book;
-
-	epv->notifyCardCreated          = impl_BookListener_respond_create_card;
-	epv->notifyCardRemoved          = impl_BookListener_respond_remove_card;
-	epv->notifyCardModified         = impl_BookListener_respond_modify_card;
-
-	epv->notifyAuthenticationResult = impl_BookListener_respond_authentication_result;
-	epv->notifySupportedFields      = impl_BookListener_response_get_supported_fields;
-
-	epv->notifyCardRequested        = impl_BookListener_respond_get_vcard;
-	epv->notifyCursorRequested      = impl_BookListener_respond_get_cursor;
-	epv->notifyViewRequested        = impl_BookListener_respond_get_view;
-	epv->notifyChangesRequested     = impl_BookListener_respond_get_changes;
-
-	epv->notifyConnectionStatus     = impl_BookListener_report_connection_status;
-	epv->notifyWritable             = impl_BookListener_report_writable;
-
-	return epv;
-}
-
-static void
-e_book_listener_corba_class_init (void)
-{
-	e_book_listener_vepv.Bonobo_Unknown_epv          = bonobo_object_get_epv ();
-	e_book_listener_vepv.GNOME_Evolution_Addressbook_BookListener_epv = e_book_listener_get_epv ();
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
 e_book_listener_class_init (EBookListenerClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	POA_GNOME_Evolution_Addressbook_BookListener__epv *epv;
 
-	e_book_listener_parent_class = gtk_type_class (bonobo_object_get_type ());
+	parent_class = g_type_class_ref (BONOBO_TYPE_OBJECT);
 
 	e_book_listener_signals [RESPONSES_QUEUED] =
-		gtk_signal_new ("responses_queued",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EBookListenerClass, responses_queued),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("responses_queued",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EBookListenerClass, responses_queued),
+			      NULL, NULL,
+			      e_book_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, e_book_listener_signals, LAST_SIGNAL);
+	object_class->dispose = e_book_listener_dispose;
 
-	object_class->destroy = e_book_listener_destroy;
-
-	e_book_listener_corba_class_init ();
+	epv = &klass->epv;
+	epv->notifyOpenBookProgress     = impl_BookListener_report_open_book_progress;
+	epv->notifyBookOpened           = impl_BookListener_respond_open_book;
+	epv->notifyCardCreated          = impl_BookListener_respond_create_card;
+	epv->notifyCardsRemoved         = impl_BookListener_respond_remove_cards;
+	epv->notifyCardModified         = impl_BookListener_respond_modify_card;
+	epv->notifyAuthenticationResult = impl_BookListener_respond_authentication_result;
+	epv->notifySupportedFields      = impl_BookListener_response_get_supported_fields;
+	epv->notifySupportedAuthMethods = impl_BookListener_response_get_supported_auth_methods;
+	epv->notifyCardRequested        = impl_BookListener_respond_get_vcard;
+	epv->notifyCursorRequested      = impl_BookListener_respond_get_cursor;
+	epv->notifyViewRequested        = impl_BookListener_respond_get_view;
+	epv->notifyChangesRequested     = impl_BookListener_respond_get_changes;
+	epv->notifyConnectionStatus     = impl_BookListener_report_connection_status;
+	epv->notifyWritable             = impl_BookListener_report_writable;
 }
 
-/**
- * e_book_listener_get_type:
- */
-GtkType
-e_book_listener_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (! type) {
-		GtkTypeInfo info = {
-			"EBookListener",
-			sizeof (EBookListener),
-			sizeof (EBookListenerClass),
-			(GtkClassInitFunc)  e_book_listener_class_init,
-			(GtkObjectInitFunc) e_book_listener_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
+BONOBO_TYPE_FUNC_FULL (
+		       EBookListener,
+		       GNOME_Evolution_Addressbook_BookListener,
+		       BONOBO_TYPE_OBJECT,
+		       e_book_listener);

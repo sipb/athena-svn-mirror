@@ -31,11 +31,10 @@ extern "C" {
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include <libgnomeui/gnome-color-picker.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-file-entry.h>
 #include <gtkhtml/gtkhtml.h>
-#include <gtkhtml/gtkhtml-propmanager.h>
+
+#include <libgnomeui/gnome-color-picker.h>
+#include <libgnomeui/gnome-file-entry.h>
 #include <gconf/gconf-client.h>
 
 #include "mail-signature-editor.h"
@@ -46,10 +45,10 @@ extern "C" {
 #include "Spell.h"
 
 #define MAIL_COMPOSER_PREFS_TYPE        (mail_composer_prefs_get_type ())
-#define MAIL_COMPOSER_PREFS(o)          (GTK_CHECK_CAST ((o), MAIL_COMPOSER_PREFS_TYPE, MailComposerPrefs))
-#define MAIL_COMPOSER_PREFS_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_COMPOSER_PREFS_TYPE, MailComposerPrefsClass))
-#define IS_MAIL_COMPOSER_PREFS(o)       (GTK_CHECK_TYPE ((o), MAIL_COMPOSER_PREFS_TYPE))
-#define IS_MAIL_COMPOSER_PREFS_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_COMPOSER_PREFS_TYPE))
+#define MAIL_COMPOSER_PREFS(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MAIL_COMPOSER_PREFS_TYPE, MailComposerPrefs))
+#define MAIL_COMPOSER_PREFS_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MAIL_COMPOSER_PREFS_TYPE, MailComposerPrefsClass))
+#define IS_MAIL_COMPOSER_PREFS(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MAIL_COMPOSER_PREFS_TYPE))
+#define IS_MAIL_COMPOSER_PREFS_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MAIL_COMPOSER_PREFS_TYPE))
 
 typedef struct _MailComposerPrefs MailComposerPrefs;
 typedef struct _MailComposerPrefsClass MailComposerPrefsClass;
@@ -58,9 +57,9 @@ struct _MailComposerPrefs {
 	GtkVBox parent_object;
 	
 	EvolutionConfigControl *control;
-
+	
 	GConfClient *gconf;
-
+	
 	GladeXML *gui;
 	
 	/* General tab */
@@ -72,22 +71,19 @@ struct _MailComposerPrefs {
 	GtkToggleButton *prompt_bcc_only;
 	GtkOptionMenu *charset;
 	
-	/* Spell Checking */
-	GtkHTMLPropmanager *pman;
 	GtkToggleButton *spell_check;
 	GnomeColorPicker *colour;
-	GtkCList *language;
+	GtkTreeView *language;
 	CORBA_sequence_GNOME_Spell_Language *language_seq;
 	gboolean spell_active;
-	gchar *language_str;
-	gchar *language_str_orig;
+	char *language_str;
+	char *language_str_orig;
 	GdkColor spell_error_color;
 	GdkColor spell_error_color_orig;
 	GdkPixmap *mark_pixmap;
 	GdkBitmap *mark_bitmap;
 	GdkPixbuf *enabled_pixbuf;
 	GtkWidget *spell_able_button;
-
 	
 	/* Forwards and Replies */
 	GtkOptionMenu *forward_style;
@@ -95,10 +91,9 @@ struct _MailComposerPrefs {
 	
 	/* Keyboard Shortcuts */
 	GtkOptionMenu *shortcuts_type;
-	GtkCList *keybindings;
 	
 	/* Signatures */
-	GtkCList *sig_clist;
+	GtkTreeView *sig_list;
 	GtkButton *sig_add;
 	GtkButton *sig_edit;
 	GtkButton *sig_delete;
@@ -117,14 +112,13 @@ struct _MailComposerPrefsClass {
 };
 
 
-GtkType mail_composer_prefs_get_type (void);
+GType mail_composer_prefs_get_type (void);
 
 GtkWidget *mail_composer_prefs_new (void);
 
 void mail_composer_prefs_apply (MailComposerPrefs *prefs);
 
-
-MailConfigSignature *mail_composer_prefs_new_signature (MailComposerPrefs *prefs, gboolean html, const gchar *script);
+MailConfigSignature *mail_composer_prefs_new_signature (GtkWindow *parent, gboolean html, const char *script);
 
 /* needed by global config */
 #define MAIL_COMPOSER_PREFS_CONTROL_ID "OAFIID:GNOME_Evolution_Mail_ComposerPrefs_ConfigControl"

@@ -28,12 +28,36 @@
 #include <gtk/gtklayout.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkalignment.h>
 
 #include <gdk/gdkx.h>
 
 #include <X11/Xlib.h>
 
 #include "e-gtk-utils.h"
+
+
+void
+e_signal_connect_while_alive (void *instance,
+			      const char *name,
+			      GCallback callback,
+			      void *callback_data,
+			      void *alive_instance)
+{
+	GClosure *closure;
+
+	g_return_if_fail (GTK_IS_OBJECT (instance));
+
+	closure = g_cclosure_new (callback, callback_data, NULL);
+	g_object_watch_closure (alive_instance, closure);
+	g_signal_connect_closure_by_id (instance, g_signal_lookup (name, G_OBJECT_TYPE (instance)), 0,
+					closure, FALSE);
+}
 
 
 /* (Cut and pasted from Gtk.)  */
@@ -53,10 +77,10 @@ alive_disconnecter (GtkObject *object,
 		    DisconnectInfo *info)
 {
 	g_assert (info != NULL);
-
-	gtk_signal_disconnect (info->object1, info->disconnect_handler1);
-	gtk_signal_disconnect (info->object1, info->signal_handler);
-	gtk_signal_disconnect (info->object2, info->disconnect_handler2);
+	
+	g_signal_handler_disconnect (info->object1, info->disconnect_handler1);
+	g_signal_handler_disconnect (info->object1, info->signal_handler);
+	g_signal_handler_disconnect (info->object2, info->disconnect_handler2);
 	
 	g_free (info);
 	
@@ -79,37 +103,37 @@ alive_disconnecter (GtkObject *object,
  * params like `gtk_signal_connect_full()'.
  **/
 void
-e_gtk_signal_connect_full_while_alive (GtkObject *object,
-				       const char *name,
-				       GtkSignalFunc func,
-				       GtkCallbackMarshal marshal,
-				       void *data,
-				       GtkDestroyNotify destroy_func,
-				       gboolean object_signal,
-				       gboolean after,
-				       GtkObject *alive_object)
+e_signal_connect_full_while_alive (void *instance,
+				   const char *name,
+				   GtkSignalFunc func,
+				   GtkCallbackMarshal marshal,
+				   void *data,
+				   GtkDestroyNotify destroy_func,
+				   gboolean instance_signal,
+				   gboolean after,
+				   void *alive_instance)
 {
 	DisconnectInfo *info;
 	
-	g_return_if_fail (GTK_IS_OBJECT (object));
+	g_return_if_fail (GTK_IS_OBJECT (instance));
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (func != NULL);
-	g_return_if_fail (GTK_IS_OBJECT (alive_object));
+	g_return_if_fail (GTK_IS_OBJECT (alive_instance));
 	
 	info = g_new (DisconnectInfo, 1);
 
-	info->signal_handler = gtk_signal_connect_full (object, name,
+	info->signal_handler = gtk_signal_connect_full (instance, name,
 							func, marshal, data,
 							destroy_func,
-							object_signal, after);
+							instance_signal, after);
 
-	info->object1 = object;
-	info->disconnect_handler1 = gtk_signal_connect (object, "destroy",
-							GTK_SIGNAL_FUNC (alive_disconnecter), info);
+	info->object1 = instance;
+	info->disconnect_handler1 = g_signal_connect (instance, "destroy",
+						      G_CALLBACK (alive_disconnecter), info);
 
-	info->object2 = alive_object;
-	info->disconnect_handler2 = gtk_signal_connect (alive_object, "destroy",
-							GTK_SIGNAL_FUNC (alive_disconnecter), info);
+	info->object2 = alive_instance;
+	info->disconnect_handler2 = g_signal_connect (alive_instance, "destroy",
+						      G_CALLBACK (alive_disconnecter), info);
 }
 
 
@@ -147,6 +171,46 @@ widget_realize_callback_for_backing_store (GtkWidget *widget,
 void
 e_make_widget_backing_stored  (GtkWidget *widget)
 {
-	gtk_signal_connect (GTK_OBJECT (widget), "realize",
-			    GTK_SIGNAL_FUNC (widget_realize_callback_for_backing_store), NULL);
+	g_signal_connect (widget, "realize", G_CALLBACK (widget_realize_callback_for_backing_store), NULL);
+}
+
+
+/**
+ * e_gtk_button_new_with_icon:
+ * @text: The mnemonic text for the label.
+ * @stock: The name of the stock item to get the icon from.
+ * 
+ * Create a gtk button with a custom label and a stock icon.
+ *
+ * 
+ * Return value: The widget.
+ **/
+GtkWidget *
+e_gtk_button_new_with_icon(const char *text, const char *stock)
+{
+	GtkWidget *button, *label;
+	GtkStockItem item;
+
+	button = gtk_button_new();
+	label = gtk_label_new_with_mnemonic(text);
+	gtk_label_set_mnemonic_widget((GtkLabel *)label, button);
+
+	if (gtk_stock_lookup(stock, &item)) {
+		GtkWidget *image, *hbox, *align;
+
+		image = gtk_image_new_from_stock(stock, GTK_ICON_SIZE_BUTTON);
+		hbox = gtk_hbox_new(FALSE, 2);
+		align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
+		gtk_box_pack_start((GtkBox *)hbox, image, FALSE, FALSE, 0);
+		gtk_box_pack_end((GtkBox *)hbox, label, FALSE, FALSE, 0);
+		gtk_container_add((GtkContainer *)align, hbox);
+		gtk_container_add((GtkContainer *)button, align);
+		gtk_widget_show_all(align);
+	} else {
+		gtk_misc_set_alignment((GtkMisc *)label, 0.5, 0.5);
+		gtk_container_add((GtkContainer *)button, label);
+		gtk_widget_show(label);
+	}
+
+	return button;
 }

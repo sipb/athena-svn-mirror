@@ -7,7 +7,6 @@ INCLUDES =						\
 	-I$(top_builddir)/libical/src/libical		\
 	-I$(top_srcdir)/libwombat			\
 	-I$(top_builddir)/libwombat			\
-        -DGNOMELOCALEDIR=\""$(localedir)"\"		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
 CORBA_GENERATED_H =				\
@@ -23,12 +22,14 @@ CORBA_GENERATED = $(CORBA_GENERATED_H) $(CORBA_GENERATED_C)
 idls =						\
 	$(srcdir)/../idl/evolution-calendar.idl
 
-idl_flags = -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
+idl_flags = -I $(srcdir) $(IDL_INCLUDES)
 
-$(CORBA_GENERATED): $(idls)
+$(CORBA_GENERATED_H): $(idls)
 	$(ORBIT_IDL) $(idl_flags) $(srcdir)/../idl/evolution-calendar.idl
 
-pcsincludedir = $(includedir)/evolution/pcs
+$(CORBA_GENERATED_C): $(CORBA_GENERATED_H)
+
+pcsincludedir = $(privincludedir)/pcs
 
 privlib_LIBRARIES = libpcs.a
 noinst_LIBRARIES = libpcsfile.a

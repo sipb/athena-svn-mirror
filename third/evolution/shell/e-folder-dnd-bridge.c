@@ -31,10 +31,12 @@
 #include "e-storage-set-view.h"
 #include "e-shell-constants.h"
 
-#include <gal/widgets/e-gui-utils.h>
+#include "e-util/e-dialog-utils.h"
 
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+
+#include <string.h>
 
 
 /* Callbacks for folder operations.  */
@@ -50,7 +52,7 @@ folder_xfer_callback (EStorageSet *storage_set,
 		return;
 
 	parent = GTK_WINDOW (data);
-	e_notice (parent, GNOME_MESSAGE_BOX_ERROR, _("Cannot transfer folder:\n%s"),
+	e_notice (parent, GTK_MESSAGE_ERROR, _("Cannot transfer folder:\n%s"),
 		  e_storage_result_to_string (result));
 }
 
@@ -157,12 +159,12 @@ find_matching_target_for_drag_context (EStorageSet *storage_set,
 	for (p = drag_context->targets; p != NULL; p = p->next) {
 		char *possible_type;
 
-		possible_type = gdk_atom_name (GPOINTER_TO_INT (p->data));
+		possible_type = gdk_atom_name (p->data);
 		if (strcmp (possible_type, E_FOLDER_DND_PATH_TARGET_TYPE) == 0) {
 			g_free (possible_type);
 
 			if (atom_return != NULL)
-				*atom_return = GPOINTER_TO_INT (p->data);
+				*atom_return = p->data;
 
 			return E_FOLDER_DND_PATH_TARGET_TYPE;
 		}
@@ -175,7 +177,7 @@ find_matching_target_for_drag_context (EStorageSet *storage_set,
 				g_free (possible_type);
 
 				if (atom_return != NULL)
-					*atom_return = GPOINTER_TO_INT (p->data);
+					*atom_return = p->data;
 
 				return accepted_type;
 			}
@@ -218,6 +220,7 @@ handle_evolution_path_drag_motion (EStorageSet *storage_set,
 				EFolder *folder;
 				int source_path_len;
 				char *destination_path;
+				char *base_name;
 
 				folder = e_storage_set_get_folder (storage_set, source_path);
 				if (folder != NULL && e_folder_get_is_stock (folder))
@@ -227,7 +230,10 @@ handle_evolution_path_drag_motion (EStorageSet *storage_set,
 				if (strcmp (path, source_path) == 0)
 					return FALSE;
 
-				destination_path = g_strconcat (path, "/", g_basename (source_path), NULL);
+				base_name = g_path_get_basename (source_path);
+				destination_path = g_strconcat (path, "/", base_name, NULL);
+				g_free (base_name);
+
 				if (strncmp (destination_path, source_path, source_path_len) == 0) {
 					g_free (destination_path);
 					return FALSE;
@@ -346,6 +352,7 @@ handle_data_received_path (GdkDragContext *context,
 {
 	const char *source_path;
 	char *destination_path;
+	char *base_name;
 	gboolean handled;
 
 	source_path = (const char *) selection_data->data;
@@ -354,7 +361,9 @@ handle_data_received_path (GdkDragContext *context,
 	if (source_path == NULL || source_path[0] != E_PATH_SEPARATOR || source_path[1] == '\0')
 		return FALSE;
 
-	destination_path = g_concat_dir_and_file (path, g_basename (source_path));
+	base_name = g_path_get_basename (source_path);
+	destination_path = g_build_filename (path, base_name, NULL);
+	g_free (base_name);
 
 	switch (context->action) {
 	case GDK_ACTION_MOVE:
@@ -416,7 +425,7 @@ handle_data_received_non_path (GdkDragContext *context,
 	corba_context.suggestedAction = convert_gdk_drag_action_to_corba (context->suggested_action);
 
 	corba_data.format = selection_data->format;
-	corba_data.target = selection_data->target;
+	corba_data.target = gdk_atom_name (selection_data->target);
 
 	corba_data.bytes._release = FALSE;
 

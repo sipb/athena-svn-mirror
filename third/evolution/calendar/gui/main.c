@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* control-factory.c
+/* main.c
  *
- * Copyright (C) 2000  Ximian, Inc.
+ * Copyright (C) 2000, 2001, 2002, 2003  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -25,28 +25,38 @@
 #endif
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnome/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <glade/glade.h>
 
-#include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
-#include <bonobo/bonobo-generic-factory.h>
+#include <bonobo/bonobo-shlib-factory.h>
 #include <bonobo/bonobo-exception.h>
 
 #include <gal/widgets/e-cursors.h>
 
-#include "alarm-notify/alarm.h"
+#include <evolution-shell-client.h>
+
+#include "dialogs/cal-prefs-dialog.h"
 #include "calendar-commands.h"
 #include "calendar-config.h"
-#include "component-factory.h"
+#include "calendar-component.h"
 #include "e-comp-editor-registry.h"
 #include "comp-editor-factory.h"
 #include "control-factory.h"
-#include "itip-control-factory.h"
-#include "tasks-control-factory.h"
+#include "itip-bonobo-control.h"
+#include "tasks-control.h"
+
+
+#define FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_Factory"
+
+#define CALENDAR_COMPONENT_ID  "OAFIID:GNOME_Evolution_Calendar_ShellComponent"
+#define CALENDAR_CONTROL_ID    "OAFIID:GNOME_Evolution_Calendar_Control"
+#define TASKS_CONTROL_ID       "OAFIID:GNOME_Evolution_Tasks_Control"
+#define ITIP_CONTROL_ID        "OAFIID:GNOME_Evolution_Calendar_iTip_Control"
+#define CONFIG_CONTROL_ID      "OAFIID:GNOME_Evolution_Calendar_ConfigControl"
+#define COMP_EDITOR_FACTORY_ID "OAFIID:GNOME_Evolution_Calendar_CompEditorFactory"
 
 ECompEditorRegistry *comp_editor_registry = NULL;
 
@@ -54,27 +64,11 @@ ECompEditorRegistry *comp_editor_registry = NULL;
 static CompEditorFactory *comp_editor_factory = NULL;
 
 
-static void
-init_bonobo (int argc, char **argv)
-{
-	if (gnome_init_with_popt_table ("evolution-calendar", VERSION, argc, argv,
-					oaf_popt_options, 0, NULL) != 0)
-		g_error (_("Could not initialize GNOME"));
-
-	oaf_init (argc, argv);
-
-	if (bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
-		g_error (_("Could not initialize Bonobo"));
-
-	if (!bonobo_activate ())
-		g_error (_("Could not activate Bonobo"));
-}
-
 /* Factory function for the calendar component factory; just creates and
  * references a singleton service object.
  */
 static BonoboObject *
-comp_editor_factory_fn (BonoboGenericFactory *factory, void *data)
+comp_editor_factory_fn (void)
 {
 	if (!comp_editor_factory) {
 		comp_editor_factory = comp_editor_factory_new ();
@@ -86,18 +80,6 @@ comp_editor_factory_fn (BonoboGenericFactory *factory, void *data)
 	return BONOBO_OBJECT (comp_editor_factory);
 }
 
-/* Creates and registers the component editor factory */
-static void
-component_editor_factory_init (void)
-{
-	BonoboGenericFactory *factory;
-
-	factory = bonobo_generic_factory_new (
-		"OAFIID:GNOME_Evolution_Calendar_CompEditorFactory_Factory",
-		comp_editor_factory_fn, NULL);
-	if (!factory)
-		g_error (_("Could not create the component editor factory"));
-}
 
 /* Does a simple activation and unreffing of the alarm notification service so
  * that the daemon will be launched if it is not running yet.
@@ -115,7 +97,7 @@ launch_alarm_daemon_cb (gpointer data)
 
 	/* activate the alarm daemon */
 	CORBA_exception_init (&ev);
-	an = oaf_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify", 0, NULL, &ev);
+	an = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_AlarmNotify", 0, NULL, &ev);
 
 	if (BONOBO_EX (&ev)) {
 		g_message ("launch_alarm_daemon_cb(): Could not activate the alarm notification service");
@@ -145,49 +127,55 @@ launch_alarm_daemon (void)
 	*idle_id = g_idle_add ((GSourceFunc) launch_alarm_daemon_cb, idle_id);
 }
 
-int
-main (int argc, char **argv)
+static void
+initialize (void)
 {
-	free (malloc (8));
-
-	bindtextdomain(PACKAGE, EVOLUTION_LOCALEDIR);
-	textdomain(PACKAGE);
-
-	init_bonobo (argc, argv);
-
-	if (!gnome_vfs_init ())
-		g_error (_("Could not initialize gnome-vfs"));
-
-	glade_gnome_init ();
-	e_cursors_init ();
-
-#if 0
-	//g_log_set_always_fatal ((GLogLevelFlags) 0xFFFF);
-	g_log_set_always_fatal (G_LOG_LEVEL_ERROR |
-				G_LOG_LEVEL_CRITICAL |
-				G_LOG_LEVEL_WARNING);
-#endif
-
 	comp_editor_registry = E_COMP_EDITOR_REGISTRY (e_comp_editor_registry_new ());
 	
 	calendar_config_init ();
 
-	control_factory_init ();
-	component_factory_init ();
+#if 0
 	itip_control_factory_init ();
-	tasks_control_factory_init ();
 	component_editor_factory_init ();
+#endif
 
 	launch_alarm_daemon ();
-
-	gtk_widget_push_visual (gdk_rgb_get_visual ());
-	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-
-	bonobo_main ();
-
-	alarm_done ();
-
-	gnome_vfs_shutdown ();
-
-	return 0;
 }
+
+
+static BonoboObject *
+factory (BonoboGenericFactory *factory,
+	 const char *component_id,
+	 void *closure)
+{
+	static gboolean initialized = FALSE;
+
+	if (! initialized) {
+		initialize ();
+		initialized = TRUE;
+	}
+
+	if (strcmp (component_id, CALENDAR_COMPONENT_ID) == 0)
+		return calendar_component_get_object ();
+	if (strcmp (component_id, CALENDAR_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (control_factory_new_control ());
+	if (strcmp (component_id, TASKS_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (tasks_control_new ());
+	if (strcmp (component_id, ITIP_CONTROL_ID) == 0)
+		return BONOBO_OBJECT (itip_bonobo_control_new ());
+	if (strcmp (component_id, CONFIG_CONTROL_ID) == 0) {
+		extern EvolutionShellClient *global_shell_client; /* FIXME ugly */
+
+		if (global_shell_client == NULL)
+			return NULL;
+		else
+			return BONOBO_OBJECT (cal_prefs_dialog_new ());
+	}
+	if (strcmp (component_id, COMP_EDITOR_FACTORY_ID) == 0)
+		return BONOBO_OBJECT (comp_editor_factory_fn ());
+
+	g_warning (FACTORY_ID ": Don't know what to do with %s", component_id);
+	return NULL;
+}
+
+BONOBO_ACTIVATION_SHLIB_FACTORY (FACTORY_ID, "Evolution Calendar component factory", factory, NULL)

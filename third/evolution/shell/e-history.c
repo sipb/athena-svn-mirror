@@ -40,10 +40,10 @@ struct _EHistoryPrivate {
 };
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EHistory *history;
 	EHistoryPrivate *priv;
@@ -59,16 +59,16 @@ impl_destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
-class_init (GtkObjectClass *object_class)
+class_init (GObjectClass *object_class)
 {
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
-	object_class->destroy = impl_destroy;
+	object_class->finalize = impl_finalize;
 }
 
 static void
@@ -105,7 +105,7 @@ e_history_new (EHistoryItemFreeFunc item_free_function)
 {
 	EHistory *history;
 
-	history = gtk_type_new (e_history_get_type ());
+	history = g_object_new (e_history_get_type (), NULL);
 	e_history_construct (history, item_free_function);
 
 	return history;

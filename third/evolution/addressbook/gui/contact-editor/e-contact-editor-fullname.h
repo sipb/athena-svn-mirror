@@ -20,14 +20,11 @@
 #ifndef __E_CONTACT_EDITOR_FULLNAME_H__
 #define __E_CONTACT_EDITOR_FULLNAME_H__
 
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 #include <glade/glade.h>
 #include <ebook/e-card.h>
 
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* EContactEditorFullname - A dialog displaying information about a contact.
  *
@@ -38,11 +35,11 @@ extern "C" {
  * name         ECardName *     RW              The card currently being edited. Returns a copy.
  */
 
-#define E_CONTACT_EDITOR_FULLNAME_TYPE			(e_contact_editor_fullname_get_type ())
-#define E_CONTACT_EDITOR_FULLNAME(obj)			(GTK_CHECK_CAST ((obj), E_CONTACT_EDITOR_FULLNAME_TYPE, EContactEditorFullname))
-#define E_CONTACT_EDITOR_FULLNAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), E_CONTACT_EDITOR_FULLNAME_TYPE, EContactEditorFullnameClass))
-#define E_IS_CONTACT_EDITOR_FULLNAME(obj)		(GTK_CHECK_TYPE ((obj), E_CONTACT_EDITOR_FULLNAME_TYPE))
-#define E_IS_CONTACT_EDITOR_FULLNAME_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), E_CONTACT_EDITOR_FULLNAME_TYPE))
+#define E_TYPE_CONTACT_EDITOR_FULLNAME			(e_contact_editor_fullname_get_type ())
+#define E_CONTACT_EDITOR_FULLNAME(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CONTACT_EDITOR_FULLNAME, EContactEditorFullname))
+#define E_CONTACT_EDITOR_FULLNAME_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CONTACT_EDITOR_FULLNAME, EContactEditorFullnameClass))
+#define E_IS_CONTACT_EDITOR_FULLNAME(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CONTACT_EDITOR_FULLNAME))
+#define E_IS_CONTACT_EDITOR_FULLNAME_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_TYPE_CONTACT_EDITOR_FULLNAME))
 
 
 typedef struct _EContactEditorFullname       EContactEditorFullname;
@@ -50,7 +47,7 @@ typedef struct _EContactEditorFullnameClass  EContactEditorFullnameClass;
 
 struct _EContactEditorFullname
 {
-	GnomeDialog parent;
+	GtkDialog parent;
 	
 	/* item specific fields */
 	ECardName *name;
@@ -62,16 +59,13 @@ struct _EContactEditorFullname
 
 struct _EContactEditorFullnameClass
 {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 };
 
 
 GtkWidget *e_contact_editor_fullname_new(const ECardName *name);
-GtkType    e_contact_editor_fullname_get_type (void);
+GType      e_contact_editor_fullname_get_type (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __E_CONTACT_EDITOR_FULLNAME_H__ */

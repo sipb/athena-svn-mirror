@@ -26,6 +26,8 @@
 
 #include "evolution-config-control.h"
 
+#include "e-shell-marshal.h"
+
 #include <gal/util/e-util.h>
 
 #include <gtk/gtksignal.h>
@@ -34,8 +36,8 @@
 #include <bonobo/bonobo-event-source.h>
 
 
-#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
-static BonoboXObjectClass *parent_class = NULL;
+#define PARENT_TYPE BONOBO_OBJECT_TYPE
+static BonoboObjectClass *parent_class = NULL;
 
 struct _EvolutionConfigControlPrivate {
 	gboolean changed;
@@ -50,10 +52,10 @@ enum {
 static int signals[LAST_SIGNAL] = { 0 };
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EvolutionConfigControl *config_control;
 	EvolutionConfigControlPrivate *priv;
@@ -61,15 +63,31 @@ impl_destroy (GtkObject *object)
 	config_control = EVOLUTION_CONFIG_CONTROL (object);
 	priv = config_control->priv;
 
-	if (priv != NULL) {
+	if (priv->control != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (priv->control));
-		bonobo_object_unref (BONOBO_OBJECT (priv->event_source));
-
-		g_free (priv);
-		config_control->priv = NULL;
+		priv->control = NULL;
 	}
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (priv->event_source != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (priv->event_source));
+		priv->event_source = NULL;
+	}
+
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EvolutionConfigControl *config_control;
+	EvolutionConfigControlPrivate *priv;
+
+	config_control = EVOLUTION_CONFIG_CONTROL (object);
+	priv = config_control->priv;
+
+	g_free (priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -85,7 +103,7 @@ impl_apply (PortableServer_Servant servant,
 	config_control = EVOLUTION_CONFIG_CONTROL (bonobo_object_from_servant (servant));
 	priv = config_control->priv;
 
-	gtk_signal_emit (GTK_OBJECT (config_control), signals[APPLY]);
+	g_signal_emit (config_control, signals[APPLY], 0);
 
 	priv->changed = FALSE;
 }
@@ -122,32 +140,33 @@ impl__get_eventSource (PortableServer_Servant servant,
 
 
 static void
-class_init (EvolutionConfigControlClass *class)
+evolution_config_control_class_init (EvolutionConfigControlClass *class)
 {
 	POA_GNOME_Evolution_ConfigControl__epv *epv;
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	epv = &class->epv;
 	epv->apply            = impl_apply;
 	epv->_get_control     = impl__get_control;
 	epv->_get_eventSource = impl__get_eventSource;
 
-	signals[APPLY] = gtk_signal_new ("apply", GTK_RUN_FIRST,
-					 object_class->type,
-					 GTK_SIGNAL_OFFSET (EvolutionConfigControlClass, apply),
-					 gtk_marshal_NONE__NONE,
-					 GTK_TYPE_NONE, 0);
+	signals[APPLY] = g_signal_new ("apply",
+				       G_OBJECT_CLASS_TYPE (object_class),
+				       G_SIGNAL_RUN_FIRST,
+				       G_STRUCT_OFFSET (EvolutionConfigControlClass, apply),
+				       NULL, NULL,
+				       e_shell_marshal_NONE__NONE,
+				       G_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref (PARENT_TYPE);
 }
 
 static void
-init (EvolutionConfigControl *config_control)
+evolution_config_control_init (EvolutionConfigControl *config_control)
 {
 	EvolutionConfigControlPrivate *priv;
 
@@ -181,7 +200,7 @@ evolution_config_control_new (GtkWidget *widget)
 
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
-	new = gtk_type_new (evolution_config_control_get_type ());
+	new = g_object_new (evolution_config_control_get_type (), NULL);
 	evolution_config_control_construct (new, widget);
 
 	return new;
@@ -216,7 +235,7 @@ evolution_config_control_changed (EvolutionConfigControl *config_control)
 }
 
 
-E_MAKE_X_TYPE (evolution_config_control, "EvolutionConfigControl", EvolutionConfigControl,
-	       class_init, init, PARENT_TYPE,
-	       POA_GNOME_Evolution_ConfigControl__init,
-	       GTK_STRUCT_OFFSET (EvolutionConfigControlClass, epv))
+BONOBO_TYPE_FUNC_FULL (EvolutionConfigControl,
+		       GNOME_Evolution_ConfigControl,
+		       PARENT_TYPE,
+		       evolution_config_control)

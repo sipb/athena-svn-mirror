@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,83 +168,56 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-RESOLV_LIBS = @RESOLV_LIBS@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-libcamelpop3includedir = $(includedir)/camel
+libcamelpop3includedir = $(privincludedir)/camel
 
 camel_provider_LTLIBRARIES = libcamelpop3.la
 camel_provider_DATA = libcamelpop3.urls
 
-INCLUDES = \
-	-I..					\
-	-I$(srcdir)/..				\
-	-I$(srcdir)/../../..			\
-        -I$(includedir)				\
-	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/camel			\
-	-I$(top_srcdir)/e-util			\
-	$(CAMEL_CFLAGS)				\
-	$(GNOME_INCLUDEDIR)			\
-	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-pop3-provider\"
+INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..				-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-pop3-provider\"		-DG_DISABLE_DEPRECATED
 
 
-libcamelpop3_la_SOURCES = \
-	camel-pop3-engine.c			\
-	camel-pop3-folder.c			\
-	camel-pop3-provider.c			\
-	camel-pop3-stream.c			\
-	camel-pop3-store.c
+libcamelpop3_la_SOURCES =  	camel-pop3-engine.c				camel-pop3-folder.c				camel-pop3-provider.c				camel-pop3-stream.c				camel-pop3-store.c
 
 
-libcamelpop3include_HEADERS = \
-	camel-pop3-engine.h			\
-	camel-pop3-folder.h			\
-	camel-pop3-stream.h			\
-	camel-pop3-store.h
+libcamelpop3include_HEADERS =  	camel-pop3-engine.h				camel-pop3-folder.h				camel-pop3-stream.h				camel-pop3-store.h
 
 
 libcamelpop3_la_LDFLAGS = -avoid-version -module
@@ -287,7 +252,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libcamelpop3_la_SOURCES)
 OBJECTS = $(libcamelpop3_la_OBJECTS)
@@ -427,7 +392,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -453,6 +418,84 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+camel-pop3-engine.lo camel-pop3-engine.o : camel-pop3-engine.c \
+	../../../config.h camel-pop3-engine.h \
+	../../../camel/camel-object.h ../../../camel/camel-arg.h \
+	../../../camel/camel-types.h ../../../camel/camel-i18n.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-operation.h ../../../camel/camel-sasl.h
+camel-pop3-folder.lo camel-pop3-folder.o : camel-pop3-folder.c \
+	../../../config.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-types.h \
+	../../../camel/camel-i18n.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../camel/camel-index.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def camel-pop3-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream-mem.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-data-cache.h ../../../e-util/md5-utils.h
+camel-pop3-provider.lo camel-pop3-provider.o : camel-pop3-provider.c \
+	../../../config.h camel-pop3-store.h \
+	../../../camel/camel-types.h ../../../camel/camel-store.h \
+	../../../camel/camel-object.h ../../../camel/camel-arg.h \
+	../../../camel/camel-i18n.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-operation.h camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h ../../../camel/camel-session.h \
+	../../../camel/camel-sasl.h
+camel-pop3-store.lo camel-pop3-store.o : camel-pop3-store.c \
+	../../../config.h ../../../camel/camel-operation.h \
+	camel-pop3-store.h ../../../camel/camel-types.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-i18n.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h ../../../camel/camel-index.h \
+	../../../camel/camel-stream-buffer.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-session.h ../../../e-util/md5-utils.h \
+	../../../camel/camel-sasl.h ../../../camel/camel-data-cache.h \
+	../../../camel/camel-tcp-stream.h \
+	../../../camel/camel-tcp-stream-raw.h \
+	../../../camel/camel-tcp-stream-ssl.h
+camel-pop3-stream.lo camel-pop3-stream.o : camel-pop3-stream.c \
+	../../../config.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-types.h \
+	../../../camel/camel-i18n.h
+
 info-am:
 info: info-am
 dvi-am:

@@ -32,9 +32,9 @@
 
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <gal/util/e-util.h>
 #include <libgnomeui/gnome-messagebox.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnome/gnome-i18n.h>
 
 #include "e-cell-percent.h"
@@ -119,7 +119,7 @@ e_cell_percent_class_init (GtkObjectClass *object_class)
 {
 	ECellTextClass *ectc = (ECellTextClass *) object_class;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
 	ectc->get_text  = ecp_get_text;
 	ectc->free_text = ecp_free_text;
@@ -147,7 +147,7 @@ e_cell_percent_init (GtkObject *object)
 ECell *
 e_cell_percent_new (const char *fontname, GtkJustification justify)
 {
-	ECellPercent *ecn = gtk_type_new (e_cell_percent_get_type ());
+	ECellPercent *ecn = g_object_new (E_CELL_PERCENT_TYPE, NULL);
 
 	e_cell_text_construct (E_CELL_TEXT(ecn), fontname, justify);
       

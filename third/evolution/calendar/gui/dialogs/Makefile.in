@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,72 +168,63 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 IDLS = $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
-IDL_GENERATED =  	Evolution-Addressbook-SelectNames.h			Evolution-Addressbook-SelectNames-common.c		Evolution-Addressbook-SelectNames-skels.c		Evolution-Addressbook-SelectNames-stubs.c
+IDL_GENERATED_H =  	Evolution-Addressbook-SelectNames.h
 
+IDL_GENERATED = $(IDL_GENERATED_H)
 
 BUILT_SOURCES = $(IDL_GENERATED)
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"calendar-gui\"						-I$(top_srcdir)								-I$(top_srcdir)/calendar						-I$(top_srcdir)/calendar/cal-client					-I$(top_builddir)/calendar/cal-client					-I$(top_srcdir)/libical/src/libical					-I$(top_builddir)/libical/src/libical					-I$(top_builddir)/shell							-I$(top_srcdir)/shell							-I$(top_srcdir)/addressbook/backend					-I$(top_builddir)/addressbook/backend					-I$(includedir)								-DEVOLUTION_DATADIR=\""$(datadir)"\"					-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"					-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"					-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"			        -DGNOMELOCALEDIR=\""$(localedir)"\"					$(EVOLUTION_CALENDAR_CFLAGS)
+INCLUDES =  	-DG_LOG_DOMAIN=\"calendar-gui\"						-I$(top_srcdir)								-I$(top_srcdir)/calendar						-I$(top_srcdir)/calendar/cal-client					-I$(top_builddir)/calendar/cal-client					-I$(top_srcdir)/libical/src/libical					-I$(top_builddir)/libical/src/libical					-I$(top_builddir)/shell							-I$(top_srcdir)/shell							-I$(top_srcdir)/addressbook/backend					-I$(top_builddir)/addressbook/backend					-DEVOLUTION_DATADIR=\""$(datadir)"\"					-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"					-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"				-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"				-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"				-DPREFIX=\""$(prefix)"\"						$(EVOLUTION_CALENDAR_CFLAGS)
 
 
-noinst_LIBRARIES = libcal-dialogs.a
+noinst_LTLIBRARIES = libcal-dialogs.la
 
-libcal_dialogs_a_SOURCES =  	$(IDL_GENERATED)		alarm-options.c			alarm-options.h			alarm-page.c			alarm-page.h			cal-prefs-dialog.c		cal-prefs-dialog.h		cancel-comp.c			cancel-comp.h			changed-comp.c			changed-comp.h			comp-editor.c			comp-editor.h			comp-editor-page.c		comp-editor-page.h		comp-editor-util.c		comp-editor-util.h		delete-comp.c			delete-comp.h			e-delegate-dialog.c		e-delegate-dialog.h		event-editor.c			event-editor.h			event-page.c			event-page.h			meeting-page.c			meeting-page.h			recurrence-page.c		recurrence-page.h		recur-comp.c			recur-comp.h			save-comp.c			save-comp.h			schedule-page.c			schedule-page.h			send-comp.c			send-comp.h			task-editor.c			task-editor.h			task-details-page.c		task-details-page.h		task-page.c			task-page.h
+libcal_dialogs_la_SOURCES =  	$(IDL_GENERATED)		alarm-options.c			alarm-options.h			alarm-page.c			alarm-page.h			cal-prefs-dialog.c		cal-prefs-dialog.h		cancel-comp.c			cancel-comp.h			changed-comp.c			changed-comp.h			comp-editor.c			comp-editor.h			comp-editor-page.c		comp-editor-page.h		comp-editor-util.c		comp-editor-util.h		delete-comp.c			delete-comp.h			delete-error.c			delete-error.h			e-delegate-dialog.c		e-delegate-dialog.h		event-editor.c			event-editor.h			event-page.c			event-page.h			meeting-page.c			meeting-page.h			recurrence-page.c		recurrence-page.h		recur-comp.c			recur-comp.h			save-comp.c			save-comp.h			schedule-page.c			schedule-page.h			send-comp.c			send-comp.h			task-editor.c			task-editor.h			task-details-page.c		task-details-page.h		task-page.c			task-page.h
 
 
-iconsdir = $(datadir)/images/evolution
-
-gladedir = $(datadir)/evolution/glade
 glade_DATA =  	alarm-options.glade			alarm-page.glade			cal-prefs-dialog.glade			e-delegate-dialog.glade			event-page.glade			meeting-page.glade			recurrence-page.glade			schedule-page.glade			task-details-page.glade			task-page.glade
 
 
-etspecdir = $(datadir)/evolution/etspec/
 etspec_DATA = meeting-page.etspec
 
 CLEANFILES = $(BUILT_SOURCES)
@@ -251,27 +234,21 @@ EXTRA_DIST =  	$(glade_DATA)			$(etspec_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(noinst_LIBRARIES)
+LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libcal_dialogs_a_LIBADD = 
-libcal_dialogs_a_OBJECTS =  \
-Evolution-Addressbook-SelectNames-common.$(OBJEXT) \
-Evolution-Addressbook-SelectNames-skels.$(OBJEXT) \
-Evolution-Addressbook-SelectNames-stubs.$(OBJEXT) \
-alarm-options.$(OBJEXT) alarm-page.$(OBJEXT) cal-prefs-dialog.$(OBJEXT) \
-cancel-comp.$(OBJEXT) changed-comp.$(OBJEXT) comp-editor.$(OBJEXT) \
-comp-editor-page.$(OBJEXT) comp-editor-util.$(OBJEXT) \
-delete-comp.$(OBJEXT) e-delegate-dialog.$(OBJEXT) \
-event-editor.$(OBJEXT) event-page.$(OBJEXT) meeting-page.$(OBJEXT) \
-recurrence-page.$(OBJEXT) recur-comp.$(OBJEXT) save-comp.$(OBJEXT) \
-schedule-page.$(OBJEXT) send-comp.$(OBJEXT) task-editor.$(OBJEXT) \
-task-details-page.$(OBJEXT) task-page.$(OBJEXT)
-AR = ar
+libcal_dialogs_la_LDFLAGS = 
+libcal_dialogs_la_LIBADD = 
+libcal_dialogs_la_OBJECTS =  alarm-options.lo alarm-page.lo \
+cal-prefs-dialog.lo cancel-comp.lo changed-comp.lo comp-editor.lo \
+comp-editor-page.lo comp-editor-util.lo delete-comp.lo delete-error.lo \
+e-delegate-dialog.lo event-editor.lo event-page.lo meeting-page.lo \
+recurrence-page.lo recur-comp.lo save-comp.lo schedule-page.lo \
+send-comp.lo task-editor.lo task-details-page.lo task-page.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -286,8 +263,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(libcal_dialogs_a_SOURCES)
-OBJECTS = $(libcal_dialogs_a_OBJECTS)
+SOURCES = $(libcal_dialogs_la_SOURCES)
+OBJECTS = $(libcal_dialogs_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -300,14 +277,14 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-noinstLIBRARIES:
+mostlyclean-noinstLTLIBRARIES:
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+clean-noinstLTLIBRARIES:
+	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
 
-distclean-noinstLIBRARIES:
+distclean-noinstLTLIBRARIES:
 
-maintainer-clean-noinstLIBRARIES:
+maintainer-clean-noinstLTLIBRARIES:
 
 .c.o:
 	$(COMPILE) -c $<
@@ -353,10 +330,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libcal-dialogs.a: $(libcal_dialogs_a_OBJECTS) $(libcal_dialogs_a_DEPENDENCIES)
-	-rm -f libcal-dialogs.a
-	$(AR) cru libcal-dialogs.a $(libcal_dialogs_a_OBJECTS) $(libcal_dialogs_a_LIBADD)
-	$(RANLIB) libcal-dialogs.a
+libcal-dialogs.la: $(libcal_dialogs_la_OBJECTS) $(libcal_dialogs_la_DEPENDENCIES)
+	$(LINK)  $(libcal_dialogs_la_LDFLAGS) $(libcal_dialogs_la_OBJECTS) $(libcal_dialogs_la_LIBADD) $(LIBS)
 
 install-etspecDATA: $(etspec_DATA)
 	@$(NORMAL_INSTALL)
@@ -441,7 +416,7 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-alarm-options.o: alarm-options.c ../../../config.h \
+alarm-options.lo alarm-options.o : alarm-options.c ../../../config.h \
 	../../../addressbook/backend/ebook/e-destination.h \
 	../../../addressbook/backend/ebook/e-card.h \
 	../../../addressbook/backend/ebook/e-card-types.h \
@@ -457,7 +432,7 @@ alarm-options.o: alarm-options.c ../../../config.h \
 	../../../e-util/e-dialog-widgets.h alarm-options.h \
 	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h
-alarm-page.o: alarm-page.c ../../../config.h \
+alarm-page.lo alarm-page.o : alarm-page.c ../../../config.h \
 	../../../e-util/e-dialog-widgets.h \
 	../../../e-util/e-time-utils.h \
 	../../../calendar/cal-util/cal-util.h \
@@ -472,10 +447,11 @@ alarm-page.o: alarm-page.c ../../../config.h \
 	../calendar-model.h ../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
-	comp-editor-util.h Evolution-Addressbook-SelectNames.h \
-	comp-editor-page.h alarm-options.h alarm-page.h
-cal-prefs-dialog.o: cal-prefs-dialog.c ../../../config.h \
-	../e-timezone-entry.h ../../../calendar/cal-client/cal-client.h \
+	comp-editor-util.h comp-editor-page.h alarm-options.h \
+	../e-alarm-list.h alarm-page.h
+cal-prefs-dialog.lo cal-prefs-dialog.o : cal-prefs-dialog.c \
+	../../../config.h ../e-timezone-entry.h \
+	../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
 	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
@@ -490,27 +466,28 @@ cal-prefs-dialog.o: cal-prefs-dialog.c ../../../config.h \
 	../../../widgets/misc/e-cell-date-edit.h ../e-calendar-table.h \
 	../calendar-model.h ../calendar-commands.h ../gnome-cal.h \
 	../e-tasks.h ../../../e-util/e-dialog-widgets.h
-cancel-comp.o: cancel-comp.c ../../../config.h cancel-comp.h \
-	../../../calendar/cal-client/cal-client.h \
+cancel-comp.lo cancel-comp.o : cancel-comp.c ../../../config.h \
+	cancel-comp.h ../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
 	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h
-changed-comp.o: changed-comp.c ../../../config.h changed-comp.h \
-	../../../calendar/cal-util/cal-component.h \
+changed-comp.lo changed-comp.o : changed-comp.c ../../../config.h \
+	changed-comp.h ../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h
-comp-editor-page.o: comp-editor-page.c ../../../config.h \
-	comp-editor-page.h ../../../calendar/cal-util/cal-component.h \
+comp-editor-page.lo comp-editor-page.o : comp-editor-page.c \
+	../../../config.h comp-editor-page.h \
+	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
 	../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h
-comp-editor-util.o: comp-editor-util.c ../../../config.h \
-	../../../libical/src/libical/ical.h \
+comp-editor-util.lo comp-editor-util.o : comp-editor-util.c \
+	../../../config.h ../../../libical/src/libical/ical.h \
 	../../../addressbook/backend/ebook/e-destination.h \
 	../../../addressbook/backend/ebook/e-card.h \
 	../../../addressbook/backend/ebook/e-card-types.h \
@@ -534,9 +511,8 @@ comp-editor-util.o: comp-editor-util.c ../../../config.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
-	comp-editor-util.h Evolution-Addressbook-SelectNames.h \
-	comp-editor-page.h
-comp-editor.o: comp-editor.c ../../../config.h \
+	comp-editor-util.h comp-editor-page.h
+comp-editor.lo comp-editor.o : comp-editor.c ../../../config.h \
 	../../../e-util/e-dialog-utils.h \
 	../../../shell/evolution-shell-component-utils.h ../print.h \
 	../gnome-cal.h ../../../widgets/misc/e-calendar.h \
@@ -551,10 +527,12 @@ comp-editor.o: comp-editor.c ../../../config.h \
 	../e-calendar-table.h ../../../widgets/misc/e-cell-date-edit.h \
 	../calendar-model.h save-comp.h delete-comp.h send-comp.h \
 	changed-comp.h cancel-comp.h recur-comp.h comp-editor.h \
-	../itip-utils.h comp-editor-page.h
-delete-comp.o: delete-comp.c ../../../config.h \
-	../../../widgets/misc/e-messagebox.h ../calendar-config.h \
-	../../../widgets/misc/e-calendar.h \
+	../itip-utils.h ../../../e-util/e-account-list.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h ../../../e-util/e-account.h \
+	comp-editor-page.h
+delete-comp.lo delete-comp.o : delete-comp.c ../../../config.h \
+	../calendar-config.h ../../../widgets/misc/e-calendar.h \
 	../../../widgets/misc/e-calendar-item.h \
 	../../../widgets/misc/e-dateedit.h \
 	../../../widgets/misc/e-cell-date-edit.h ../e-calendar-table.h \
@@ -565,8 +543,16 @@ delete-comp.o: delete-comp.c ../../../config.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h delete-comp.h
-e-delegate-dialog.o: e-delegate-dialog.c ../../../config.h \
+delete-error.lo delete-error.o : delete-error.c ../../../config.h \
+	delete-error.h ../../../calendar/cal-client/cal-client.h \
+	../../../calendar/cal-util/cal-recur.h \
+	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
+	../../../calendar/cal-util/cal-util.h \
+	../../../calendar/cal-client/cal-query.h \
+	../../../calendar/cal-client/evolution-calendar.h
+e-delegate-dialog.lo e-delegate-dialog.o : e-delegate-dialog.c \
+	../../../config.h ../../../libical/src/libical/ical.h \
 	../../../widgets/misc/e-map.h \
 	../../../addressbook/backend/ebook/e-destination.h \
 	../../../addressbook/backend/ebook/e-card.h \
@@ -580,7 +566,7 @@ e-delegate-dialog.o: e-delegate-dialog.c ../../../config.h \
 	../../../addressbook/backend/ebook/e-book-view-listener.h \
 	../../../addressbook/backend/ebook/e-book-types.h \
 	Evolution-Addressbook-SelectNames.h e-delegate-dialog.h
-event-editor.o: event-editor.c ../../../config.h \
+event-editor.lo event-editor.o : event-editor.c ../../../config.h \
 	../../../widgets/misc/e-dateedit.h event-page.h \
 	comp-editor-page.h ../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
@@ -591,9 +577,12 @@ event-editor.o: event-editor.c ../../../config.h \
 	../../../calendar/cal-client/evolution-calendar.h alarm-page.h \
 	recurrence-page.h meeting-page.h ../e-meeting-model.h \
 	../e-meeting-attendee.h ../e-meeting-types.h ../itip-utils.h \
-	schedule-page.h cancel-comp.h event-editor.h comp-editor.h \
+	../../../e-util/e-account-list.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	../../../e-util/e-account.h schedule-page.h cancel-comp.h \
+	event-editor.h comp-editor.h \
 	../../../shell/evolution-shell-component-utils.h
-event-page.o: event-page.c ../../../config.h \
+event-page.lo event-page.o : event-page.c ../../../config.h \
 	../../../e-util/e-categories-config.h \
 	../../../e-util/e-dialog-widgets.h \
 	../../../widgets/misc/e-dateedit.h \
@@ -608,8 +597,7 @@ event-page.o: event-page.c ../../../config.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
-	../e-timezone-entry.h comp-editor-util.h \
-	Evolution-Addressbook-SelectNames.h comp-editor-page.h \
+	../e-timezone-entry.h comp-editor-util.h comp-editor-page.h \
 	event-page.h
 Evolution-Addressbook-SelectNames-common.o: \
 	Evolution-Addressbook-SelectNames-common.c \
@@ -620,9 +608,10 @@ Evolution-Addressbook-SelectNames-skels.o: \
 Evolution-Addressbook-SelectNames-stubs.o: \
 	Evolution-Addressbook-SelectNames-stubs.c \
 	Evolution-Addressbook-SelectNames.h
-meeting-page.o: meeting-page.c ../../../config.h \
+meeting-page.lo meeting-page.o : meeting-page.c ../../../config.h \
 	../../../widgets/misc/e-dateedit.h \
-	../../../e-util/e-dialog-widgets.h ../component-factory.h \
+	../../../e-util/e-dialog-utils.h \
+	../../../e-util/e-dialog-widgets.h ../calendar-component.h \
 	../e-meeting-attendee.h \
 	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h ../e-meeting-types.h \
@@ -631,35 +620,35 @@ meeting-page.o: meeting-page.c ../../../config.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
-	../itip-utils.h comp-editor-util.h \
-	Evolution-Addressbook-SelectNames.h comp-editor-page.h \
-	e-delegate-dialog.h meeting-page.h
-recur-comp.o: recur-comp.c ../../../config.h \
-	../../../widgets/misc/e-messagebox.h recur-comp.h \
+	../itip-utils.h ../../../e-util/e-account-list.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h ../../../e-util/e-account.h \
+	comp-editor-util.h comp-editor-page.h e-delegate-dialog.h \
+	meeting-page.h
+recur-comp.lo recur-comp.o : recur-comp.c ../../../config.h recur-comp.h \
 	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-util/cal-recur.h
-recurrence-page.o: recurrence-page.c ../../../config.h \
-	../../../e-util/e-dialog-widgets.h \
+recurrence-page.lo recurrence-page.o : recurrence-page.c \
+	../../../config.h ../../../e-util/e-dialog-widgets.h \
 	../../../e-util/e-time-utils.h \
 	../../../widgets/misc/e-dateedit.h \
-	../../../calendar/cal-util/timeutil.h \
-	../../../libical/src/libical/ical.h ../calendar-config.h \
+	../../../calendar/cal-util/cal-recur.h \
+	../../../calendar/cal-util/cal-component.h \
+	../../../libical/src/libical/ical.h \
+	../../../calendar/cal-util/timeutil.h ../calendar-config.h \
 	../../../widgets/misc/e-calendar.h \
 	../../../widgets/misc/e-calendar-item.h \
 	../../../widgets/misc/e-cell-date-edit.h ../e-calendar-table.h \
 	../calendar-model.h ../../../calendar/cal-client/cal-client.h \
-	../../../calendar/cal-util/cal-recur.h \
-	../../../calendar/cal-util/cal-component.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
 	../tag-calendar.h ../weekday-picker.h comp-editor-util.h \
-	Evolution-Addressbook-SelectNames.h comp-editor-page.h \
-	recurrence-page.h
-save-comp.o: save-comp.c ../../../config.h save-comp.h
-schedule-page.o: schedule-page.c ../../../config.h \
+	comp-editor-page.h ../e-date-time-list.h recurrence-page.h
+save-comp.lo save-comp.o : save-comp.c ../../../config.h save-comp.h
+schedule-page.lo schedule-page.o : schedule-page.c ../../../config.h \
 	../../../widgets/misc/e-dateedit.h \
 	../../../e-util/e-dialog-widgets.h ../calendar-config.h \
 	../../../widgets/misc/e-calendar.h \
@@ -674,9 +663,11 @@ schedule-page.o: schedule-page.c ../../../config.h \
 	../../../calendar/cal-client/evolution-calendar.h \
 	../e-meeting-time-sel.h ../e-meeting-model.h \
 	../e-meeting-attendee.h ../e-meeting-types.h ../itip-utils.h \
-	comp-editor-util.h Evolution-Addressbook-SelectNames.h \
+	../../../e-util/e-account-list.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	../../../e-util/e-account.h comp-editor-util.h \
 	comp-editor-page.h e-delegate-dialog.h schedule-page.h
-send-comp.o: send-comp.c ../../../config.h send-comp.h \
+send-comp.lo send-comp.o : send-comp.c ../../../config.h send-comp.h \
 	../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
 	../../../calendar/cal-util/cal-component.h \
@@ -684,8 +675,8 @@ send-comp.o: send-comp.c ../../../config.h send-comp.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h
-task-details-page.o: task-details-page.c ../../../config.h \
-	../../../widgets/misc/e-dateedit.h \
+task-details-page.lo task-details-page.o : task-details-page.c \
+	../../../config.h ../../../widgets/misc/e-dateedit.h \
 	../../../widgets/misc/e-url-entry.h \
 	../../../e-util/e-dialog-widgets.h ../calendar-config.h \
 	../../../widgets/misc/e-calendar.h \
@@ -698,11 +689,11 @@ task-details-page.o: task-details-page.c ../../../config.h \
 	../../../calendar/cal-util/cal-util.h \
 	../../../calendar/cal-client/cal-query.h \
 	../../../calendar/cal-client/evolution-calendar.h \
-	../e-timezone-entry.h comp-editor-util.h \
-	Evolution-Addressbook-SelectNames.h comp-editor-page.h \
+	../e-timezone-entry.h comp-editor-util.h comp-editor-page.h \
 	task-details-page.h
-task-editor.o: task-editor.c ../../../config.h task-page.h \
-	comp-editor-page.h ../../../calendar/cal-util/cal-component.h \
+task-editor.lo task-editor.o : task-editor.c ../../../config.h \
+	task-page.h comp-editor-page.h \
+	../../../calendar/cal-util/cal-component.h \
 	../../../libical/src/libical/ical.h \
 	../../../calendar/cal-client/cal-client.h \
 	../../../calendar/cal-util/cal-recur.h \
@@ -711,9 +702,11 @@ task-editor.o: task-editor.c ../../../config.h task-page.h \
 	../../../calendar/cal-client/evolution-calendar.h \
 	task-details-page.h meeting-page.h ../e-meeting-model.h \
 	../e-meeting-attendee.h ../e-meeting-types.h ../itip-utils.h \
-	cancel-comp.h task-editor.h comp-editor.h \
-	../../../shell/evolution-shell-component-utils.h
-task-page.o: task-page.c ../../../config.h \
+	../../../e-util/e-account-list.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	../../../e-util/e-account.h cancel-comp.h task-editor.h \
+	comp-editor.h ../../../shell/evolution-shell-component-utils.h
+task-page.lo task-page.o : task-page.c ../../../config.h \
 	../../../widgets/misc/e-dateedit.h \
 	../../../e-util/e-dialog-widgets.h \
 	../../../e-util/e-categories-config.h ../e-timezone-entry.h \
@@ -727,8 +720,7 @@ task-page.o: task-page.c ../../../config.h \
 	../calendar-config.h ../../../widgets/misc/e-calendar.h \
 	../../../widgets/misc/e-calendar-item.h \
 	../../../widgets/misc/e-cell-date-edit.h ../e-calendar-table.h \
-	../calendar-model.h comp-editor-util.h \
-	Evolution-Addressbook-SelectNames.h comp-editor-page.h \
+	../calendar-model.h comp-editor-util.h comp-editor-page.h \
 	task-page.h
 
 info-am:
@@ -750,7 +742,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-etspecDATA uninstall-gladeDATA
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES) $(DATA)
+all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -769,25 +761,25 @@ distclean-generic:
 
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-noinstLIBRARIES mostlyclean-compile \
+mostlyclean-am:  mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-noinstLIBRARIES clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-noinstLTLIBRARIES clean-compile clean-libtool \
+		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-noinstLIBRARIES distclean-compile \
+distclean-am:  distclean-noinstLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
+maintainer-clean-am:  maintainer-clean-noinstLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -796,8 +788,8 @@ maintainer-clean-am:  maintainer-clean-noinstLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-noinstLIBRARIES distclean-noinstLIBRARIES \
-clean-noinstLIBRARIES maintainer-clean-noinstLIBRARIES \
+.PHONY: mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
+clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-etspecDATA \
@@ -810,8 +802,9 @@ installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-$(IDL_GENERATED): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`   \
+$(IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES)	\
+		--nostubs --noskels --nocommon		\
                 $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
 dist-hook:

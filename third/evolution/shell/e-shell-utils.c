@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
+
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 
@@ -43,9 +43,9 @@ get_icon_path (const char *icon_name)
 	if (g_path_is_absolute (icon_name))
 		icon_path = g_strdup (icon_name);
 	else
-		icon_path = g_concat_dir_and_file (EVOLUTION_IMAGES, icon_name);
+		icon_path = g_build_filename (EVOLUTION_IMAGES, icon_name, NULL);
 
-	if (g_file_exists (icon_path)) {
+	if (g_file_test (icon_path, G_FILE_TEST_EXISTS)) {
 		return icon_path;
 	} else {
 		g_free (icon_path);
@@ -57,11 +57,11 @@ static char *
 get_mini_name (const char *icon_name)
 {
 	const char *dot_ptr;
-	const char *basename;
+	char *basename;
 	char *name_without_extension;
 	char *mini_name;
 
-	basename = g_basename (icon_name);
+	basename = g_path_get_basename (icon_name);
 	if (basename == NULL)
 		return NULL;
 
@@ -69,14 +69,16 @@ get_mini_name (const char *icon_name)
 
 	if (dot_ptr == NULL) {
 		/* No extension.  */
+		g_free (basename);
 		return g_strconcat (icon_name, E_SHELL_MINI_ICON_SUFFIX, NULL);
 	}
 
-	name_without_extension = g_strndup (icon_name, dot_ptr - icon_name);
+	name_without_extension = g_strndup (icon_name, dot_ptr - basename);
 	mini_name = g_strconcat (name_without_extension, E_SHELL_MINI_ICON_SUFFIX,
 				 dot_ptr, NULL);
 	g_free (name_without_extension);
 
+	g_free (basename);
 	return mini_name;
 }
 
@@ -124,10 +126,16 @@ e_shell_folder_name_is_valid (const char *name,
 	
 	if (strchr (name, E_PATH_SEPARATOR) != NULL) {
 		if (reason_return != NULL)
-			*reason_return = _("Folder name cannot contain slashes.");
+			*reason_return = _("Folder name cannot contain the character \"/\".");
 		return FALSE;
 	}
-	
+
+	if (strchr (name, '#') != NULL) {
+		if (reason_return != NULL)
+			*reason_return = _("Folder name cannot contain the character \"#\".");
+		return FALSE;
+	}
+
 	if (strcmp (name, ".") == 0 || strcmp (name, "..") == 0) {
 		if (reason_return != NULL)
 			*reason_return = _("'.' and '..' are reserved folder names.");

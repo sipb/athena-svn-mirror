@@ -28,18 +28,17 @@
 #define __E_ADDRESS_POPUP_H__
 
 #include <gtk/gtk.h>
-#include <libgnome/gnome-defs.h>
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-card.h>
 #include <bonobo/bonobo-event-source.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
-#define E_ADDRESS_POPUP_TYPE        (e_address_popup_get_type ())
-#define E_ADDRESS_POPUP(o)          (GTK_CHECK_CAST ((o), E_ADDRESS_POPUP_TYPE, EAddressPopup))
-#define E_ADDRESS_POPUP_CLASS(k)    (GTK_CHECK_CLASS_CAST ((k), E_ADDRESS_POPUP_TYPE, EAddressPopupClass))
-#define E_IS_ADDRESS_POPUP(o)       (GTK_CHECK_TYPE ((o), E_ADDRESS_POPUP_TYPE))
-#define E_IS_ADDRESS_POPUP_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_ADDRESS_POPUP_TYPE))
+#define E_TYPE_ADDRESS_POPUP        (e_address_popup_get_type ())
+#define E_ADDRESS_POPUP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_ADDRESS_POPUP, EAddressPopup))
+#define E_ADDRESS_POPUP_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_ADDRESS_POPUP, EAddressPopupClass))
+#define E_IS_ADDRESS_POPUP(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_ADDRESS_POPUP))
+#define E_IS_ADDRESS_POPUP_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_ADDRESS_POPUP))
 
 typedef struct _EAddressPopup EAddressPopup;
 typedef struct _EAddressPopupClass EAddressPopupClass;
@@ -73,7 +72,7 @@ struct _EAddressPopupClass {
 	GtkEventBoxClass parent_class;
 };
 
-GtkType e_address_popup_get_type (void);
+GType e_address_popup_get_type (void);
 
 void e_address_popup_set_name  (EAddressPopup *, const gchar *name);
 void e_address_popup_set_email (EAddressPopup *, const gchar *email);
@@ -81,9 +80,9 @@ void e_address_popup_set_email (EAddressPopup *, const gchar *email);
 void e_address_popup_construct (EAddressPopup *);
 GtkWidget *e_address_popup_new (void);
 
-void e_address_popup_factory_init (void);
+BonoboControl *e_address_popup_new_control (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* __E_ADDRESS_POPUP_H__ */
 
