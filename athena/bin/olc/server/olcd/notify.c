@@ -16,12 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.17 1990-03-01 18:28:28 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.18 1990-04-25 16:04:18 vanharen Exp $";
 #endif
 
 
@@ -60,7 +60,9 @@ extern "C" {
 
 extern char DaemonHost[];	/* Name of daemon's machine. */
 
-int use_zephyr = 1;
+static int punt_zephyr = 0;
+static long zpunt_time;
+
 
 #if __STDC__
 int notice_timeout(int a);
@@ -113,6 +115,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	struct hostent *host;	/* Host entry for receiver. */
 	struct sockaddr_in sin;	/* Socket address. */
 	int flag = 0;
+	long time_now;
 
 	if (touser == (char *)NULL) /* User sanity check. */
 		return(ERROR);
@@ -121,9 +124,24 @@ write_message(touser, tomachine, fromuser, frommachine, message)
  	/* First try using Zephyr write.  If return status is anything
 	 * but SUCCESS, try again using Unix write.
 	 */
-	if (zwrite_message(touser, message) == SUCCESS)
-	  return(SUCCESS);
-#endif ZEPHYR
+
+	if (punt_zephyr)	/* If we've punted zephyr for more than */
+				/* 15 minutes, try using it again. */
+	  {
+	    (void) time(&time_now);
+	    if ((time_now - zpunt_time) > 15*60)
+	      {
+		log_error("Attempting to unpunt zephyr...");
+		punt_zephyr = 0;
+	      }
+	  }
+
+	if (!punt_zephyr)
+	  {
+	    if (zwrite_message(touser, message) == SUCCESS)
+	      return(SUCCESS);
+	  }
+#endif
 
 	if (write_port == 0) {
 		struct servent *service;
@@ -161,12 +179,14 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 		  fclose(tf);
 		close(fds);
                 alarm(0);
+		signal(SIGALRM, SIG_IGN);
                 return(ERROR);
         }
 
 
 	if (connect(fds, (struct sockaddr *) &sin, sizeof (sin)) < 0) {
 	  alarm(0);
+	  signal(SIGALRM, SIG_IGN);
 	  (void) close(fds);
 	  return(MACHINE_DOWN);
 	}
@@ -180,10 +200,11 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	flag++;
 	while (1) {
 		if (fgets(buf, sizeof(buf), tf) == (char *)NULL) {
-			(void) fclose(tf);
-			(void) close(fds);
-			alarm(0);
-			return(LOGGED_OUT);
+		  (void) fclose(tf);
+		  (void) close(fds);
+		  alarm(0);
+		  signal(SIGALRM, SIG_IGN);
+		  return(LOGGED_OUT);
 		}
 		if (buf[0] == '\n')
 			break;
@@ -194,6 +215,7 @@ write_message(touser, tomachine, fromuser, frommachine, message)
 	(void) fclose(tf);
 	(void) close(fds);
 	alarm(0);
+	signal(SIGALRM, SIG_IGN);
 	return(SUCCESS);
 }
 
@@ -296,12 +318,27 @@ write_message_to_user(k, message, flags)
 #define PERSONAL_INSTANCE "PERSONAL"
 
 #define OLC_CLASS    "OLC"
+
 #ifdef OLZ
+#undef  OLC_CLASS
 #define OLC_CLASS    "OLZ"
 #endif
+
 #ifdef OLTA
+#undef  OLC_CLASS
 #define OLC_CLASS    "OLTA"
 #endif
+
+
+/*
+ * Function:	olc_broadcast_message(instance, message, code)
+ *		Broadcasts a zephyr message to a specified instance.
+ * Arguments:	instance:	Zephyr instance to broadcast to.
+ *		message:	Message to send.
+ *		code:		Zephyr Opcode to tack onto message.
+ * Returns:	SUCCESS if message sent successfully, else ERROR.
+ *
+ */
 
 ERRCODE
 #if __STDC__
@@ -313,14 +350,18 @@ olc_broadcast_message(instance, message, code)
 #endif
 {
 #ifdef ZEPHYR  
+  if (punt_zephyr)
+    return(ERROR);
+
   if(zsend_message(OLC_CLASS,instance,code,"",message,0) == ERROR)
     return(ERROR);
-#endif ZEPHYR
+#endif
 
   return(SUCCESS);
 }
 
 #ifdef ZEPHYR
+
 
 /*
  * Function:	zwrite_message(username, message) writes a message to the
@@ -375,7 +416,7 @@ zsend_message(c_class, instance, opcode, username, message, flags)
 #endif
 {
   ZNotice_t notice;		/* Zephyr notice */
-  int ret, len;			/* return value, length */
+  int ret;			/* return value */
   char error[ERROR_SIZE];
   char buf[BUF_SIZE];
   char *signature = "From: OLC Service\n";
@@ -383,9 +424,6 @@ zsend_message(c_class, instance, opcode, username, message, flags)
 #ifdef lint
   flags = flags;
 #endif lint;
-
-  if (!use_zephyr)
-      return ERROR;
 
   if ((ret = ZInitialize()) != ZERR_NONE) {
       com_err ("zwrite_message", ret, "couldn't ZInitialize");
@@ -403,7 +441,6 @@ zsend_message(c_class, instance, opcode, username, message, flags)
   notice.z_class = (char *) c_class;
   notice.z_class_inst = (char *) instance;
   notice.z_sender = 0;
-  notice.z_message_len = 0;
   notice.z_recipient = (char *) username;
   notice.z_default_format = "Message $message";
   notice.z_opcode = (char *) opcode;
@@ -412,13 +449,12 @@ zsend_message(c_class, instance, opcode, username, message, flags)
       return ERROR;
   (void) strcpy(buf,signature);
   (void) strcat(buf,message);
-  len = strlen (buf);
-  if (buf[len-1] != '\n')
-      buf[len++] = '\n';
+  if (buf[strlen(buf)-1] != '\n')
+    strcat(buf, "\n");
 
   /* Watch the moving pointer.... */
   notice.z_message = buf;     
-  notice.z_message_len = len + 1;
+  notice.z_message_len = strlen(buf);
   ret = zsend(&notice); /* send real message */
 
   return(ret);  
@@ -441,16 +477,35 @@ zsend(notice)
   int ret;
   ZNotice_t retnotice;
 
+  signal(SIGALRM, notice_timeout);
+  alarm(6 * OLCD_TIMEOUT);	/* Longer timeout than for "write". */
+
+  if(setjmp(env) != 0)
+    {
+      punt_zephyr = 1;
+      (void) time(&zpunt_time);
+      log_error("Unable to send message via zephyr.  Punting.");
+      alarm(0);
+      signal(SIGALRM, SIG_IGN);
+      return(ERROR);
+    }
+
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
       fprintf(stderr, "zsend: error %s from ZSendNotice\n",
 	      error_message (ret));
+      alarm(0);
+      signal(SIGALRM, SIG_IGN);
       return(ERROR);
     }
 
   if(notice->z_kind != ACKED)
-    return(SUCCESS);
+    {
+      alarm(0);			/* If notice isn't acked, no need to wait. */
+      signal(SIGALRM, SIG_IGN);
+      return(SUCCESS);
+    }
 
   if ((ret = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
 		       ZCompareUIDPred, (char *) &notice->z_uid)) !=
@@ -460,8 +515,13 @@ zsend(notice)
       fprintf(stderr, "zsend: error %s from ZIfNotice\n",
 	      error_message (ret));
       ZFreeNotice(&retnotice);
+      alarm(0);
+      signal(SIGALRM, SIG_IGN);
       return(ERROR);
     }
+
+  alarm(0);			/* If ZIfNotice came back, shut off alarm. */
+  signal(SIGALRM, SIG_IGN);
 
   if (retnotice.z_kind == SERVNAK)
     {
