@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <bstring.h>
 #include <sys/time.h>
 #include <sys/socket.h>
@@ -125,6 +126,61 @@ long pc_removefd(pc_state *s, pc_fd *fd)
 
   return 0L;
 }
+
+/* Flush any pending input on the given descriptor.  If outfile
+ * is non-NULL, it will be opened for non-blocking output, and
+ * any input will be copied to it.
+ */
+void pc_flushinput(int infd, char *outfile)
+{
+  int outfd = -1;
+  fd_set readfds;
+  struct timeval tv;
+  int ret;
+  char buf[512];
+  int count;
+
+  if (infd < 0)
+    return;
+
+  /* Loop to poll for pending input. */
+  while (1)
+    {
+      FD_ZERO(&readfds);
+      FD_SET(infd, &readfds);
+      tv.tv_sec = 0;
+      tv.tv_usec = 0;
+      ret = select(infd + 1, &readfds, NULL, NULL, &tv);
+      if (ret == 0)
+	break;
+      else if (ret == -1)
+	{
+	  if (errno == EINTR)
+	    continue;
+	  else
+	    {
+	      syslog(LOG_INFO, "Select failed in flush (%m)");
+	      break;
+	    }
+	}
+      count = read(infd, buf, sizeof(buf));
+      if (count <= 0)
+	break;
+      if (outfile != NULL && outfd == -1)
+	{
+	  outfd = open(outfile, O_WRONLY | O_NONBLOCK);
+	  if (outfd == -1)
+	    outfile = NULL;
+	}	
+      if (outfd >= 0)
+	write(outfd, buf, count);
+    }
+
+  if (outfd >= 0)
+    close(outfd);
+  return;
+}
+
 
 /* Should probably make it fail if chown or chmod fail. */
 long pc_makeport(pc_port **pp, char *name, int flags,
@@ -355,20 +411,20 @@ long pc_wait(pc_message **mm, pc_state *s)
   if (mm == NULL || s == NULL)
     return PCerrNullArg;
 
-  r = s->readfds;
-  w = s->writefds;
-
   m = calloc(1, sizeof(pc_message));
   if (m == NULL)
     return PCerrNoMem;
 
-  ret = select(s->nfds, &r, &w, NULL, NULL);
+  do
+    {
+      r = s->readfds;
+      w = s->writefds;
+      ret = select(s->nfds, &r, &w, NULL, NULL);
+    } while ((ret == -1) && (errno == EINTR));
+
   if (ret == -1)
     {
-      if (errno == EINTR)
-	m->type = PC_SIGNAL;
-      else
-	m->type = PC_BROKEN;
+      m->type = PC_BROKEN;
       *mm = m;
       return 0L;
     }

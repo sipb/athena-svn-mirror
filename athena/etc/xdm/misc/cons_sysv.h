@@ -12,6 +12,8 @@ typedef struct _cons_state {
   int fd[2];
 } cons_state;
 
+#define CONSOLE_DEVICE "/dev/console"
+
 #include "cons.h"
 
 #endif /* _CONS_SYSV_H_ */

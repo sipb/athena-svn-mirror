@@ -5,6 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <grp.h>
 #include <errno.h>
 #ifdef SYSV /* for utime */
@@ -44,6 +46,7 @@ typedef struct disp_state {
 
 #define DPYNAME ":0.0"
 char *dpyenv = "DISPLAY=" DPYNAME;
+int cinfo_in, cinfo_out;
 char *name;
 int debug = 0;
 
@@ -58,6 +61,10 @@ typedef struct {
 #define NONE 0
 #define READ_ONLY 1
 #define SECURE_SET 2
+
+void init_cinfo(disp_state *ds);
+void process_child(disp_state *ds);
+void relinquish_console(disp_state *ds);
 
 char *setUser(disp_state *ds, char *name, varlist *vin, varlist *vout)
 {
@@ -254,7 +261,12 @@ char *do_logout(disp_state *ds)
   /* Let the login library do any necessary cleanup. Note that xlogin
    * uses our pid when calling al_acct_create.
    */
-  al_acct_revert(ds->user, getpid());
+  if (ds->user != NULL)
+    {
+      al_acct_revert(ds->user, getpid());
+      free(ds->user);
+      ds->user = NULL;
+    }
 
   ds->comSecNew = COM_SECURE;
   return "logged out";
@@ -297,7 +309,6 @@ char *startConsole(disp_state *ds)
 {
   pc_fd fd;
 
-  cons_grabcons(ds->cs);
   if (cons_start(ds->cs))
     {
       syslog(LOG_ERR, "failed to start console");
@@ -305,6 +316,8 @@ char *startConsole(disp_state *ds)
     }
   else
     {
+      if (cons_grabcons(ds->cs) != 0)
+	syslog(LOG_INFO, "Failed to grab console I/O (%m)");
       fd.fd = cons_fd(ds->cs);
       fd.events = PC_READ;
       pc_addfd(ds->ps, &fd);
@@ -312,17 +325,36 @@ char *startConsole(disp_state *ds)
     }
 }
 
-char *stopConsole(disp_state *ds)
+/* Relinquish our handling of console I/O. */
+void relinquish_console(disp_state *ds)
 {
   pc_fd fd;
+  char *consdev;
 
+  if (cons_ungrabcons(ds->cs) != 0)
+    syslog(LOG_INFO, "Failed to relinquish console I/O (%m)");
+
+  /* Stop reading the pty. */
+  fd.fd = cons_fd(ds->cs);
+  fd.events = PC_READ;
+  pc_removefd(ds->ps, &fd);
+
+  /* Dispose of any pending input on the read side of the
+   * console pipe, and on the console (tty) itself, by
+   * copying to the console device.
+   */
+  consdev = cons_dev();
+  pc_flushinput(cons_fd_read(ds->cs), consdev);
+  pc_flushinput(cons_fd(ds->cs), consdev);
+}
+
+char *stopConsole(disp_state *ds)
+{
   if (cons_stop(ds->cs))
     return "console stop failed";
   else
     {
-      fd.fd = cons_fd(ds->cs);
-      fd.events = PC_READ;
-      pc_removefd(ds->ps, &fd);
+      relinquish_console(ds);
       return "console stopped";
     }
 }
@@ -456,12 +488,15 @@ char *setNannyMode(disp_state *ds, char *name, varlist *vin, varlist *vout)
 	}
 
       /* Any change in mode means we want to shut down whatever's running. */
-      if (!strcmp(current, N_X)) /* XXX should shut down X console first */
-	if (dpy_stopX(ds->dpy))
-	  {
-	    var_setString(vout, name, "X shutdown failed");
-	    return;
-	  }
+      if (!strcmp(current, N_X))
+	{
+	  stopConsole(ds);
+	  if (dpy_stopX(ds->dpy))
+	    {
+	      var_setString(vout, name, "X shutdown failed");
+	      return;
+	    }
+	}
 
       if (!strcmp(current, N_CONSOLE))
 	if (dpy_stopCons(ds->dpy))
@@ -615,6 +650,40 @@ int process(pc_message *input, disp_state *ds)
     }
 }
 
+/* Initialize the child info pipe. */
+void init_cinfo(disp_state *ds)
+{
+  int fds[2];
+  pc_fd pcfd;
+  int flags;
+
+  /* Create the child info pipe. */
+  if (pipe(fds) != 0)
+    {
+      syslog(LOG_ERR, "Cannot create child info pipe (%m), exiting");
+      fprintf(stderr, "%s: Cannot create child info pipe\n", name);
+      exit(1);
+    }
+
+  /* Set both ends of the pipe to be closed on exec. */
+  flags = fcntl(fds[0], F_GETFD);
+  fcntl(fds[0], F_SETFD, flags | FD_CLOEXEC);
+  flags = fcntl(fds[1], F_GETFD);
+  fcntl(fds[1], F_SETFD, flags | FD_CLOEXEC);
+
+  /* Set the write end to be non-blocking. */
+  flags = fcntl(fds[1], F_GETFL);
+  fcntl(fds[1], F_SETFL, flags | O_NONBLOCK);
+
+  cinfo_in = fds[0];
+  cinfo_out = fds[1];
+
+  /* Add the read end to the set of descriptors of interest. */
+  pcfd.fd = cinfo_in;
+  pcfd.events = PC_READ;
+  pc_addfd(ds->ps, &pcfd);
+}
+
 char *signalStr(void *stat)
 {
   static char buf[100];
@@ -634,27 +703,83 @@ typedef struct _cinfo {
   int status;
 } cinfo;
 
-#define MAXCSTACK 10
-int numc = 0;
-cinfo cstack[MAXCSTACK];
-
 void children(int sig, int code, struct sigcontext *sc)
 {
   pid_t ret;
   int status;
+  cinfo cinfo;
 
   while (ret = waitpid(-1, &status, WNOHANG))
     {
       if (ret == -1)
 	return;
 
-      if (numc < MAXCSTACK)
-	{
-	  cstack[numc].pid = ret;
-	  cstack[numc++].status = status;
-	}
+      cinfo.pid = ret;
+      cinfo.status = status;
+      if (write(cinfo_out, (char *) &cinfo, sizeof(cinfo)) != sizeof(cinfo))
+	syslog(LOG_ERR, "Child info write failed (%m)");
     }
 }
+
+/* Handle a deceased child. */
+void process_child(disp_state *ds)
+{
+  cinfo cinfo;
+  int cons_session_end;
+  int len;
+
+  len = read(cinfo_in, (char *) &cinfo, sizeof(cinfo));
+  if (len != sizeof(cinfo))
+    {
+      if (len == -1)
+	syslog(LOG_ERR, "Error reading child info (%m)");
+      else
+	syslog(LOG_ERR, "Malformed child info message, length %d", len);
+      return;
+    }
+
+  syslog(LOG_DEBUG, "Process child %d, status %d", cinfo.pid, cinfo.status);
+
+  /* Needed to detect and log when the console dies. */
+  ds->consoleStatus = cons_status(ds->cs);
+
+  cons_session_end = 0;
+
+  if (cons_child(ds->cs, cinfo.pid, &cinfo.status) != 0)
+    {
+      if (dpy_child(ds->dpy, cinfo.pid, &cinfo.status) == 0)
+	++cons_session_end;
+    }
+
+  switch(cons_status(ds->cs))
+    {
+    case CONS_DOWN:
+      if (ds->consolePreference == CONS_UP)
+	startConsole(ds);
+      break;
+    case CONS_FROZEN:
+      /* Note: we do not restart the console automatically
+	 in this case for fear it will continue to die, and
+	 we will loop forever. In this case, the user can
+	 either manually ask nanny to restart the console,
+	 or we can write some clever code that watches out
+	 for this. */
+      if (ds->consoleStatus != CONS_FROZEN)
+	{
+	  relinquish_console(ds);
+	  syslog(LOG_ERR, "console died: %s",
+		 signalStr(cons_exitStatus(ds->cs)));
+	}
+      break;
+    }
+
+  if (cons_session_end)
+    clear_consutmp(ds);
+  if (dpy_status(ds->dpy) == DPY_NONE)
+    update_dpy(ds);
+  return;
+}
+
 
 void dumpMessage(pc_message *message)
 {
@@ -720,7 +845,6 @@ char *pingtrans[] = {
 int main(int argc, char **argv)
 {
   struct sigaction sigact;
-  sigset_t mask, omask;
   disp_state ds;
   pc_port *inport, *outport;
   pc_message *message, retry;
@@ -787,6 +911,7 @@ int main(int argc, char **argv)
 
   var_setString(ds.vars, N_MODE, N_NONE);
   var_setString(ds.vars, N_LOGGED_IN, N_FALSE);
+  ds.user = NULL;
 
   retry.data = N_RETRY "=" N_TRUE;
   retry.length = strlen(retry.data) + 1;
@@ -878,15 +1003,20 @@ int main(int argc, char **argv)
   /* Initialize display handling. */
   ds.dpy = dpy_init();
 
+  /* Initialize child info handler. */
+  init_cinfo(&ds);
+
   /* Signal handlers. */
   sigact.sa_flags = SA_NOCLDSTOP;
   sigemptyset(&sigact.sa_mask);
   sigact.sa_handler = children;
   sigaction(SIGCHLD, &sigact, NULL);
 
-  /* Init once here for when we block chld later. */
-  sigemptyset(&mask);
-  sigaddset(&mask, SIGCHLD);
+  /* Ignore SIGPIPE. */
+  sigact.sa_flags = 0;
+  sigemptyset(&sigact.sa_mask);
+  sigact.sa_handler = SIG_IGN;
+  sigaction(SIGPIPE, &sigact, NULL);
 
   /*
    * fork() here to let the caller continue on. We actually need to
@@ -944,58 +1074,11 @@ int main(int argc, char **argv)
 	  ds.comSec = ds.comSecNew;
 
 	  break;
-	case PC_SIGNAL:
-	  if (numc) /* then there are numc children signals */
-	    {
-	      int cons_session_end;
-
-	      /* Needed to detect and log when the console dies. */
-	      ds.consoleStatus = cons_status(ds.cs);
-
-	      cons_session_end = 0;
-
-	      sigprocmask(SIG_BLOCK, &mask, &omask);
-	      while (numc)
-		{
-		  if (cons_child(ds.cs, cstack[numc-1].pid,
-				 &cstack[numc-1].status))
-		    {
-		      if (dpy_child(ds.dpy, cstack[numc-1].pid,
-				    &cstack[numc-1].status) == 0)
-			++cons_session_end;
-		    }
-		  numc--;
-		}
-	      sigprocmask(SIG_SETMASK, &omask, NULL);
-
-	      switch(cons_status(ds.cs))
-		{
-		case CONS_DOWN:
-		  if (ds.consolePreference == CONS_UP)
-		    startConsole(&ds);
-		  break;
-		case CONS_FROZEN:
-		  /* Note: we do not restart the console automatically
-		     in this case for fear it will continue to die, and
-		     we will loop forever. In this case, the user can
-		     either manually ask nanny to restart the console,
-		     or we can write some clever code that watches out
-		     for this. */
-		  if (ds.consoleStatus != CONS_FROZEN)
-		    syslog(LOG_ERR, "console died: %s",
-			   signalStr(cons_exitStatus(ds.cs)));
-		  break;
-		}
-
-	      if (cons_session_end)
-		clear_consutmp(&ds);
-	      if (dpy_status(ds.dpy) == DPY_NONE)
-		update_dpy(&ds);
-	    }
-	  break;
 	case PC_FD:
 	  if (message->fd == cons_fd(ds.cs))
 	    cons_io(ds.cs);
+	  else if (message->fd == cinfo_in)
+	    process_child(&ds);
 	  break;
 	default:
 	  fprintf(stderr, "type=%d\n", message->type);
