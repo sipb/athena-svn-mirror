@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.16 1992-01-06 15:50:30 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.17 1992-01-27 03:10:43 probe Exp $";
 #endif
 
 #include "attach.h"
@@ -278,7 +278,7 @@ try_attach(name, hesline, errorout)
 	    }
     }
     
-    if (atp=attachtab_lookup_mntpt(at.mntpt)) {
+    if (at.fs->flags & AT_FS_MNTPT && (atp=attachtab_lookup_mntpt(at.mntpt))) {
 	    fprintf(stderr,"%s: Filesystem %s is already mounted on %s\n",
 		    at.hesiodname, atp->hesiodname, at.mntpt);
 	    error_status = ERR_ATTACHDIRINUSE;
