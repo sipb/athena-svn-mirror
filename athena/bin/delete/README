@@ -1,6 +1,6 @@
 			       OVERVIEW
 
-This archives contains the sources for five programs (well, actually,
+This archive contains the sources for five programs (well, actually,
 four, since one is a symbolic link):
 
 	delete
@@ -47,10 +47,10 @@ make the Makefile work for you.
 
 2. Change the "-I/usr/include" to point to the et subdirectory if you
    have not installed the com_err header file in a standard location,
-   or to whereever you have installed it.  Change the COMPILE_ET
+   or to wherever you have installed it.  Change the COMPILE_ET
    variable to use et/compile_et if you haven't installed the
    compile_et utility.  Change the -L/usr/athena/lib flag to point to
-   whereever you have installed the library, or to the et subdirectory
+   wherever you have installed the library, or to the et subdirectory
    if you have not.
 
 3. Deal with the AFS_MOUNTPOINTS flag, which specifies whether
@@ -61,8 +61,8 @@ make the Makefile work for you.
       includes and libraries, and remove the "-lsys" from the LIBS
       variable.
 
-   b. If you lave it defined, change the -I and -L flags to point to
-      whereever you keep your AFS includes and libraries.
+   b. If you leave it defined, change the -I and -L flags to point to
+      wherever you keep your AFS includes and libraries.
 
 
 			   COM_ERR LIBRARY
