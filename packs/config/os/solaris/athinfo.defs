@@ -20,8 +20,10 @@ version		cat /etc/athena/version
 rvdinfo		cat /srvd/.rvdinfo
 clusterinfo	test -r /var/athena/clusterinfo && cat /var/athena/clusterinfo 
 clusterinfo.bsh	test -r /var/athena/clusterinfo.bsh && cat /var/athena/clusterinfo.bsh 
+update.desync	test -r /var/athena/update.desync && cat /var/athena/update.desync
 services	test -r /var/server/.services && cat /var/server/.services
 update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.log && cat /var/athena/update.log
+update.pkglog	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena/update.pkglog && cat /var/athena/update.pkglog
 date		date
 uptime		uptime
 partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
