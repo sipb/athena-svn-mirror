@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.8 2003-04-10 20:57:29 ghudson Exp $
+# $Id: athchanges,v 1.9 2003-05-03 15:24:20 ghudson Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 umask 022
@@ -12,9 +12,9 @@ rm -rf $gdir/gconf.xml.defaults
 mkdir $gdir/gconf.xml.defaults
 GCONF_CONFIG_SOURCE=xml::$gdir/gconf.xml.defaults
 export GCONF_CONFIG_SOURCE
-# athena-panel-config.schemas has to be installed last, since it
-# overlaps with panel-per-panel-config.schemas right now.
-for f in $gdir/schemas/*.schemas $gdir/schemas/athena-panel-config.schemas; do
+# athena.schemas has to be installed last in order to override
+# standard GNOME defaults.
+for f in $gdir/schemas/*.schemas $gdir/schemas/athena.schemas; do
   gconftool-2 --makefile-install-rule $f > /dev/null 2>&1
 done
 
