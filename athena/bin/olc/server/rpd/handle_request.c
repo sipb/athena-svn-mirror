@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.4 1990-11-30 18:01:41 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.5 1990-12-02 13:33:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -83,7 +83,7 @@ handle_request(fd, from)
   bzero(their_auth.dat,sizeof(their_auth.dat));
   ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	   sizeof(their_auth.dat));
-  if ((len = sread(fd,&their_auth.dat,ltr)) != ltr) {
+  if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
     fprintf(stderr,"Error reading kerberos ticket (%d)\n",len);
     perror("read: kdata");
     punt_connection(fd,from);

@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.4 1990-11-27 15:47:30 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.5 1990-12-02 13:33:23 lwvanels Exp $";
 #endif
 #endif
 
@@ -137,7 +137,7 @@ main(argc,argv)
 #ifdef KERBEROS
   my_auth.length = htonl(my_auth.length);
   write(sock,&(my_auth.length),sizeof(my_auth.length));
-  write(sock,&(my_auth.dat),ntohl(my_auth.length));
+  write(sock,my_auth.dat,ntohl(my_auth.length));
 #endif KERBEROS
 
   read(sock,&len,sizeof(len));
