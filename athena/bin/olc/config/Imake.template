@@ -318,7 +318,7 @@
 #endif
 
 #ifndef StripInstalledPrograms
-#define StripInstalledPrograms NO	/* leave symbol table just in case */
+#define StripInstalledPrograms YES
 #endif
 
 #ifndef DestDir
