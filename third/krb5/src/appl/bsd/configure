@@ -1056,20 +1056,20 @@ if test $with_afs != no; then
 EOF
 
 	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
-	echo $ac_n "checking for bcopy""... $ac_c" 1>&6
-if eval "test \"`echo '$''{'ac_cv_func_bcopy'+set}'`\" = set"; then
+	echo $ac_n "checking for sigvec""... $ac_c" 1>&6
+if eval "test \"`echo '$''{'ac_cv_func_sigvec'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
 #line 1065 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
-    which can conflict with char bcopy(); below.  */
+    which can conflict with char sigvec(); below.  */
 #include <assert.h>
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
     builtin and then its argument prototype would still apply.  */
-char bcopy();
+char sigvec();
 
 int main() { return 0; }
 int t() {
@@ -1077,31 +1077,31 @@ int t() {
 /* The GNU C library defines this for functions which it implements
     to always fail with ENOSYS.  Some functions are actually named
     something starting with __ and the normal name is an alias.  */
-#if defined (__stub_bcopy) || defined (__stub___bcopy)
+#if defined (__stub_sigvec) || defined (__stub___sigvec)
 choke me
 #else
-bcopy();
+sigvec();
 #endif
 
 ; return 0; }
 EOF
 if { (eval echo configure:1089: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
   rm -rf conftest*
-  eval "ac_cv_func_bcopy=yes"
+  eval "ac_cv_func_sigvec=yes"
 else
   rm -rf conftest*
-  eval "ac_cv_func_bcopy=no"
+  eval "ac_cv_func_sigvec=no"
 fi
 rm -f conftest*
 
 fi
-if eval "test \"`echo '$ac_cv_func_'bcopy`\" = yes"; then
+if eval "test \"`echo '$ac_cv_func_'sigvec`\" = yes"; then
   echo "$ac_t""yes" 1>&6
   :
 else
   echo "$ac_t""no" 1>&6
 echo $ac_n "checking for -lucb""... $ac_c" 1>&6
-ac_lib_var=`echo ucb'_'bcopy | tr './+\055' '__p_'`
+ac_lib_var=`echo ucb'_'sigvec | tr './+\055' '__p_'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1113,11 +1113,11 @@ cat > conftest.$ac_ext <<EOF
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
     builtin and then its argument prototype would still apply.  */
-char bcopy();
+char sigvec();
 
 int main() { return 0; }
 int t() {
-bcopy()
+sigvec()
 ; return 0; }
 EOF
 if { (eval echo configure:1124: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then

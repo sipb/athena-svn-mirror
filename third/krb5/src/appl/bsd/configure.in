@@ -8,8 +8,8 @@ AC_ARG_WITH([afs],
 if test $with_afs != no; then
 	AC_DEFINE(SETPAG)
 	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
-	AC_CHECK_FUNC(bcopy, :,
-		      [AC_CHECK_LIB(ucb, bcopy,
+	AC_CHECK_FUNC(sigvec, :,
+		      [AC_CHECK_LIB(ucb, sigvec,
 				    [LOGINLIBS="$LOGINLIBS -lucb"])])
 	AC_CHECK_FUNC(insque, :,
 		      [AC_CHECK_LIB(compat, insque,
