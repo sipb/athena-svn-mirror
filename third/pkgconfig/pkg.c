@@ -203,6 +203,12 @@ package_init ()
       
       g_slist_foreach (search_dirs, (GFunc)scan_dir, NULL);
       scan_dir (pkglibdir);
+
+      /* Athena local hack: scan native pkgconfig directories. */
+      scan_dir ("/usr/lib/pkgconfig");
+#ifdef sun
+      scan_dir ("/usr/sfw/lib/pkgconfig");
+#endif
     }
 }
 
