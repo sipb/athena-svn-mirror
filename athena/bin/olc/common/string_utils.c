@@ -19,7 +19,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.5 1990-01-17 03:24:51 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.6 1990-02-14 14:56:16 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -131,10 +131,18 @@ void time_now(time_buf)
 {
   long current_time;     	/* Current time. */
   struct tm *time_info;
-  int hour;
 
   (void) time(&current_time);
   time_info = localtime(&current_time);
+  strcpy(time_buf, format_time(time_info));
+}
+
+char *format_time(time_info)
+     struct tm *time_info;
+{
+  char time_buf[BUF_SIZE];
+  int hour;
+
   hour = time_info->tm_hour;
   if(hour > 12)
     hour -= 12;
@@ -151,6 +159,7 @@ void time_now(time_buf)
 		 time_info->tm_min > 9 ? "" : "0", 
 		 time_info->tm_min,
 		 time_info->tm_hour > 11 ? "pm" : "am");
+  return(time_buf);
 }
 
 
