@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *	$Id: list.c,v 1.7 1991-08-23 12:57:33 raek Exp $
- *	$Author: raek $
+ *	$Id: list.c,v 1.8 1992-01-28 20:40:00 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.7 1991-08-23 12:57:33 raek Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.8 1992-01-28 20:40:00 lwvanels Exp $";
 #endif
 #endif
 
@@ -122,7 +122,7 @@ OReadList(fd,list, size)
   for(i=0;i<size;i++)
     {
       status = read_list(fd, l);
-      if(status == ERROR)
+      if(status == FATAL)
 	{
 	  i--;   ++errflag;
 	  if(errflag > 3)
