@@ -3,32 +3,27 @@
 .SH NAME
 add - attach a filesystem, add it to your path and manpath
 .SH SYNOPSIS
-add filesystemname
+add [-v] filesystemname
 .SH DESCRIPTION
 \fIadd\fR is an alias provided by the standard Athena dotfiles.  It is
 intended to make the process of using software that is stored in remote
-filesystems easier.  It takes one argument, the name of a filesystem to
-\fIadd\fR.
+filesystems easier.  It requires one argument, the name of a filesystem to
+\fIadd\fR.  It also has an optional argument, \fI-v\fR, which will
+cause it to be verbose and print out what it is doing.
 
-Typing "alias add" will reveal that add simply executes the series
-of commands:
+\fIadd\fR may be used interactively while logged in, or in your
+~/.environment file.
 
-.ti 10
-set dir = `attach -p \!*` && \\
-.ti 12
-        if ("$PATH" =~ *"$dir/$bindir"*) rehash && \\
-.ti 12
-        extend PATH $dir/$bindir && \\
-.ti 12
-        extend MANPATH $dir/man && \\
-.ti 12
-        unset dir
-
-The alias first \fIattach\fRes the filesytem named on the command-line,
-finds out where it attaches to (using the -p option to \fIattach\fR),
-adds that path with the appropriate binary directory (vaxbin, rtbin,
-etc.) to your search path, and adds the man dir to your MANPATH, so that
-\fIman\fR can find manpages that may be installed in that filesystem.
+Typing "alias add" will reveal that add is some shell script which
+uses \fIattach\fR and modifies your PATH and MANPATH environment
+variables.  It makes use of \fIextend\fR which is another alias
+provided by Athena.  \fIAdd\fR first parses its arguments.  Then it
+invokes \fIattach\fR.  If it is to be verbose, it will invoke it
+twice: once to display the message, and again to find out where the
+locker is mounted.  Next it adds the appropriate binary directory
+(vaxbin, etc) to your search path so that you can find programs in the
+locker, and adds the man directory to your MANPATH so that \fIman\fR
+can find manpages that may be installed in that filesystem.
 .SH FILES
 .PP
 /usr/athena/lib/init/cshrc    global Athena cshrc file
