@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.65 1998-06-11 18:04:52 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66 1998-06-11 18:09:52 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.65 1998-06-11 18:04:52 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66 1998-06-11 18:09:52 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -338,6 +338,8 @@ int main(int argc, char **argv)
     for (tries = 0; tries < 3; tries++) {
 	syslog(LOG_DEBUG, "Starting X, try #%d", tries + 1);
 	x_running = STARTUP;
+	sigact.sa_handler = xready;
+	sigaction(SIGUSR1, &sigact, NULL);
 	switch (fork_and_store(&xpid)) {
 	case 0:
 	    if(fcntl(2, F_SETFD, 1) == -1)
@@ -359,8 +361,6 @@ int main(int argc, char **argv)
 		    strerror(errno));
 	    break;
 	default:
-	    sigact.sa_handler = xready;
-	    sigaction(SIGUSR1, &sigact, NULL);
 	    sprintf(xpidf, xpids, dpynum);
 	    if ((file = open(xpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
 		write(file, number(xpid), strlen(number(xpid)));
@@ -378,6 +378,12 @@ int main(int argc, char **argv)
 		  fprintf(stderr,"dm: Unable to start X\n");
 		else
 		  fprintf(stderr,"dm: X failed to become ready\n");
+
+		/* If X wouldn't run, it could be that an existing X
+		 * process hasn't shut down.  Wait X_STOP_WAIT seconds
+		 * for that to happen.
+		 */
+		sleep(X_STOP_WAIT);
 	    }
 	    sigact.sa_handler = SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
@@ -907,30 +913,32 @@ static void child(int signo)
     sigact.sa_flags = 0;
     sigact.sa_handler = child;
     sigaction(SIGCHLD, &sigact, NULL);
-    pid = waitpid(-1, &status, WNOHANG);
-    if (pid == 0 || pid == -1) {
-	syslog(LOG_DEBUG, "Received SIGCHLD but waitpid returned %d", pid);
-	return;
-    }
 
-    if (pid == xpid) {
-	syslog(LOG_DEBUG, "Received SIGCHLD for xpid (%d), status %d", pid,
-	       status);
-	x_running = NONEXISTENT;
-    } else if (pid == consolepid) {
-	syslog(LOG_DEBUG, "Received SIGCHLD for consolepid (%d), status %d",
-	       pid, status);
-	console_running = NONEXISTENT;
-    } else if (pid == loginpid) {
-	syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
-	       pid, status);
-        if (WEXITSTATUS(status) == CONSOLELOGIN)
-	  login_running = STARTUP;
-	else
-	  login_running = NONEXISTENT;
-    } else {
-	syslog(LOG_DEBUG, "Received SIGCHLD for unknown pid %d", pid);
-	fprintf(stderr,"dm: Unexpected SIGCHLD from pid %d\n",pid);
+    while (1) {
+	pid = waitpid(-1, &status, WNOHANG);
+	if (pid == 0 || pid == -1)
+	    return;
+
+	if (pid == xpid) {
+	    syslog(LOG_DEBUG, "Received SIGCHLD for xpid (%d), status %d", pid,
+		   status);
+	    x_running = NONEXISTENT;
+	} else if (pid == consolepid) {
+	    syslog(LOG_DEBUG,
+		   "Received SIGCHLD for consolepid (%d), status %d", pid,
+		   status);
+	    console_running = NONEXISTENT;
+	} else if (pid == loginpid) {
+	    syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
+		   pid, status);
+	    if (WEXITSTATUS(status) == CONSOLELOGIN)
+		login_running = STARTUP;
+	    else
+		login_running = NONEXISTENT;
+	} else {
+	    syslog(LOG_DEBUG, "Received SIGCHLD for unknown pid %d", pid);
+	    fprintf(stderr,"dm: Unexpected SIGCHLD from pid %d\n",pid);
+	}
     }
 }
 
