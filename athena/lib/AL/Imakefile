@@ -2,16 +2,16 @@
  * Imakefile for the Athena Login library
  *
  * $Author: brlewis $
- * $Id: Imakefile,v 1.1 1994-03-28 13:35:22 brlewis Exp $
+ * $Id: Imakefile,v 1.2 1994-05-12 15:46:49 brlewis Exp $
  *
  * Copyright 1994 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  */
 
-SRC=	etale.c	setuser.c	passwd.c
+SRC=etale.c etalw.c setuser.c passwd.c modify.c group.c start.c homedir.c
 
-OBJ=	etale.o	setuser.o	passwd.o
+OBJ=etale.o etalw.o setuser.o passwd.o modify.o group.o start.o homedir.o
 
 LIB=-lcom_err -lkrb -ldes -lhesiod
 
@@ -23,9 +23,15 @@ AnsiCC()
 
 error_table(etale)
 
+error_table(etalw)
+
 build_library(AL,${OBJ})
 
 build_program(testpw,testpw.o,,-L. -lAL ${LIB})
+build_program(testgr,testgr.o,,-L. -lAL ${LIB})
+
+ptypes.h: ${SRC}
+	mkptypes ${SRC} > ptypes.h
 
 #if defined(ultrix) || defined(sun)
 saber_src:
