@@ -259,7 +259,7 @@ mdb 7/26/96
 	if (debug)
 		fprintf (stderr, "Debugging is on\n");
 
-	sprintf (filebase,"/usr/tmp/xdsc%d",getpid());
+	sprintf (filebase,"/var/tmp/xdsc%d",getpid());
 
 	if (debug)
 		fprintf (stderr, "filebase is %s\n", filebase);
