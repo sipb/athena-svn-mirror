@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v 1.2 1990-04-25 11:48:29 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v 1.3 1990-07-11 10:35:50 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_db.h,v $ */
 /* $Author: epeisach $ */
 
@@ -33,36 +33,40 @@ extern char AuthenticName[];
 
 
 /* Arguments to quota_dbl_lock() */
-
 #define QUOTA_DBL_EXCLUSIVE 1
 #define QUOTA_DBL_SHARED 0
 
 /* arguments to quota_db_set_lockmode() */
-
 #define QUOTA_DBL_BLOCKING 0
 #define QUOTA_DBL_NONBLOCKING 1
 
+/* Constants used in quota_db_generate_uid */
+#define QUOTA_UID_NAME     "_uid_"
+#define QUOTA_UID_INSTANCE "_uid_"
+#define QUOTA_UID_REALM    "_uid_"
+#define QUOTA_UID_SERVICE  "_uid_"
 
-/* typedef QuotaValue  PDquota_amount; */
-/* typedef Integer     PDquota_allowed; */
-/* typedef UTCTime     PDquota_time;    */
-
+/* typedefs used in user quota struct */
 typedef int     quota_amount;
 typedef int     quota_allowed;
 typedef u_long  quota_time;
 typedef int     quota_deleted;
 
+/* User quota structure */
 typedef struct {
 	char 		name[ANAME_SZ];		/* Kerb. name */
 	char		instance[INST_SZ];	/* Kerb. instance */
 	char 		realm[REALM_SZ];	/* Kerb. realm */
 	char 		service[SERV_SZ];	/* Printer service type */
+	long            uid;                    /* Unique ID */
 	quota_amount	quotaAmount;		/* Total usage */
 	quota_amount	quotaLimit;		/* Max usage */
 	quota_time    lastBilling;
-	quota_amount  lastCharge;
-	quota_amount  pendingCharge;
-	quota_amount  lastQuotaAmount;
+	quota_amount  lastCharge;		/* Amount on statement */
+	quota_amount  pendingCharge;		/* Amount supposed to 
+						   have been billed, but
+						   couldn't for $5 min */
+	quota_amount  lastQuotaAmount;		/* Quota amt at statement */
 	quota_amount  yearToDateCharge;
 	quota_allowed allowedToPrint;
 	quota_deleted deleted;
