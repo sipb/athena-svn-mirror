@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v $
- *	$Author: raeburn $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.28 1988-10-19 22:43:07 raeburn Exp $";
+static char rcsid_dispatch_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/dispatch.c,v 1.29 1989-05-04 17:36:32 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -709,6 +709,7 @@ ZServerDesc_t *server;
 	ZClient_t *client;
 	ZHostList_t *host;
 	Code_t retval;
+	int wantdefs;
 
 	/*
 	 * ZEPHYR_CTL Opcodes expected are:
@@ -749,13 +750,15 @@ ZServerDesc_t *server;
 	if (host && host->zh_locked)
 		return(ZSRV_REQUEUE);
 
-	if (!strcmp(opcode, CLIENT_SUBSCRIBE)) {
+	wantdefs = strcmp(opcode, CLIENT_SUBSCRIBE_NODEFS);
+	if (!wantdefs || !strcmp(opcode, CLIENT_SUBSCRIBE)) {
 		/* subscription notice */
 		if (!(client = client_which_client(who, notice))) {
 			if ((retval = client_register(notice,
 						      who,
 						      &client,
-						      server)) != ZERR_NONE)
+						      server,
+						      wantdefs)) != ZERR_NONE)
 			{
 				syslog(LOG_WARNING,
 				       "subscr. register failed: %s",

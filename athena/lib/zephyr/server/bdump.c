@@ -15,7 +15,7 @@
  
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.30 1989-03-23 09:28:13 jtkohl Exp $";
+static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.31 1989-05-04 17:36:06 jtkohl Exp $";
 #endif /* SABER */
 #endif /* lint */
  
@@ -840,7 +840,8 @@ ZServerDesc_t *server;
 			if ((retval = client_register(&notice,
 						      &current_who,
 						      &client,
-						      server)) != ZERR_NONE) {
+						      server,
+						      0)) != ZERR_NONE) {
 				syslog(LOG_ERR,"brl register failed: %s",
 				       error_message(retval));
 				return(retval);
