@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.35 1992-12-06 15:39:36 probe Exp $
+# $Id: xsession,v 1.36 1993-02-23 15:01:02 mar Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -55,9 +55,13 @@ setenv XSESSION $$
 # These are only set for "slow" machines.  They can be overridden in
 # the ~/.cshrc.mine or ~/.environment files. 
 
+set sleep_time=1
 switch ("`machtype -c`")
     case VAXSTAR:
 	set sleep_time=10
+	breaksw
+    case CVAXSTAR:
+	set sleep_time=3
 	breaksw
     case MVAX-II:
 	set sleep_time=10
