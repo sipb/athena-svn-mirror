@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.6 1990-06-26 13:54:09 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.7 1990-07-13 13:30:44 ilham Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
-/* $Author: epeisach $ */
+/* $Author: ilham $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.6 1990-06-26 13:54:09 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.7 1990-07-13 13:30:44 ilham Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -107,6 +107,8 @@ char **argv;
     char *service = NULL;
     char *savestr(), *getname(), *krb_get_phost(), *krb_realmofhost();
     char krb_realm[REALM_SZ];
+    char kname[ANAME_SZ], kinst[REALM_SZ], krealm[INST_SZ];
+    char kfullname[MAX_K_NAME_SZ];
     char buf[BUFSIZ];
     struct servent *servname;
     int port;
@@ -407,11 +409,13 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 	    fatal("require a username for the group account operation");
     } else {
 	if (username == NULL) {
-	    username = savestr(getuser());
-	    if (!strcmp(username,"???")) {
-		fprintf(stderr,"Who are you?");
+	    if ((ret = krb_get_tf_fullname(TKT_FILE, kname, kinst, krealm)) !=
+		KSUCCESS) {
+		fprintf(stderr, "%s\n", krb_err_txt[ret]);
 		exit(1);
 	    }
+	    make_kname(kname, kinst, krealm, kfullname);
+	    username = (char *)kfullname;
 	}
     }
 
@@ -628,7 +632,24 @@ int n;
 
 usage()
 {
-    fprintf(stderr, "%s [-Q quotaserver] [-P printer] [-S service] [-c] [-q]\n\t[-l] [-f allowed] [-i amount] [-d amount] [-s amount]\n\t[-a amount] [username]\n",progname);
+    fprintf(stderr, "Usage: %s options... [username]\n", progname);
+    fprintf(stderr, "   where options are :\n");
+    fprintf(stderr, "\t [-Q quotaserver] - Name of quotaserver\n");
+    fprintf(stderr, "\t [-P printer]     - Name of printer\n");
+    fprintf(stderr, "\t [-S service]     - Name of service\n");
+    fprintf(stderr, "\t [-g group_no]    - Group account number\n");
+    fprintf(stderr, "\t [-c]             - Create new user or group account\n");
+    fprintf(stderr, "\t [-q]             - Display user or group usage\n");
+    fprintf(stderr, "\t [-l]             - Display user or group logs\n");
+    fprintf(stderr, "\t [-f allowed]     - Enable/Disable printing\n");
+    fprintf(stderr, "\t [-i amount]      - Increase quota by amount\n");
+    fprintf(stderr, "\t [-d amount]      - Decrease quota by amount\n");
+    fprintf(stderr, "\t [-s amount]      - Set quota to amount\n");
+    fprintf(stderr, "\t [-a amount]      - Credit usage by amount (adjustment)\n");
+    fprintf(stderr, "\t [+A]             - Add user to group admin list\n");
+    fprintf(stderr, "\t [-A]             - Remove user from group admin list\n");
+    fprintf(stderr, "\t [+U]             - Add user from group user list\n");
+    fprintf(stderr, "\t [-U]             - Remove user from group user list\n");
     exit(1);
 }
 
@@ -650,7 +671,7 @@ krb_ktext *auth;
     if((qerr=QuotaQuery(h,auth,qid,&qret)))
 	return quota_error(qerr);
 
-    printf("Username\t: %s  \t(Uid: %d)\n", qid->username, qret.uid);
+    printf("Username\t: %s\n", qid->username);
     printf("Service\t\t: %s\n", qid->service);
     if(strcmp((char *) qret.currency, "cents")) {
 	printf("Usage:  %d %s	limit:	%d %s\n", 
@@ -687,7 +708,7 @@ krb_ktext *auth;
     int count_user, count_admin;
     Principal admin[GQUOTA_MAX_ADMIN+1], user[GQUOTA_MAX_USER+1];
     int first_run = 1;
-    int column, i, len;
+    int i;
 
     /* Initialize */
     startadmin = startuser = 0;
@@ -753,12 +774,12 @@ krb_ktext *auth;
     }
     /* Now display the admin and users */
     if (count_admin > 1) {
-	printf("\nList of group account administrators :\n");
+	printf("List of group account administrators :\n");
 	for(i = 1; i < count_admin; i++)
 	    printf("\t%s\n", admin[i]);
     }
     if (count_user > 1) {
-	printf("\nList of group account users :\n");
+	printf("List of group account users :\n");
 	for(i = 1; i < count_user; i++)
 	    printf("\t%s\n", user[i]);
     }
@@ -856,8 +877,12 @@ krb_ktext *auth;
 		(void) strcpy(who, (char *) lent->offset.wname);
 		
 		if (lent->func == LO_DELETEUSER) {
-		    printf("%.24s user quota was deleted by %s\n",
+		    if (qid->account == 0)
+			printf("%.24s user quota was deleted by %s\n",
 			   ctime(&(lent->time)), who);
+		    else
+			printf("%.24s group account quota was deleted by %s\n",
+			   ctime(&(lent->time)), who);			
 		} else if (lent->func == LO_ALLOW || 
 			   lent->func == LO_DISALLOW) {
 		    printf("%.24s printing was %s by %s\n",
@@ -937,9 +962,10 @@ long acct;
 quota_identifier *qid;
 krb_ktext *auth;
 
-    {
-    return 0;
-    }
+{
+	qid->account = acct;
+	return(query_logs(h, qid, auth));
+}
 
 
 /*VARARGS1*/
@@ -950,4 +976,26 @@ fatal(msg, a1, a2, a3)
 	printf(msg, a1, a2, a3);
 	(void) putchar('\n');
 	exit(1);
+}
+
+
+/* Form a complete string name consisting of principal,
+ * instance and realm
+ */
+make_kname(principal, instance, realm, out_name)
+char *principal, *instance, *realm, *out_name;
+{
+    if ((instance[0] == '\0') && (realm[0] == '\0'))
+        (void) strcpy(out_name, principal);
+    else {
+        if (realm[0] == '\0')
+            (void) sprintf(out_name, "%s.%s", principal, instance);
+        else {
+            if (instance[0] == '\0')
+                (void) sprintf(out_name, "%s@%s", principal, realm);
+            else
+                (void) sprintf(out_name, "%s.%s@%s", principal,
+                        instance, realm);
+        }
+    }
 }
