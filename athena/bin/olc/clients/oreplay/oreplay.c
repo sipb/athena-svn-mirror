@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.21 1991-04-11 09:24:00 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.22 1991-04-14 17:17:08 lwvanels Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ void punt P((int fd , char *filename ));
 
 #undef P
 
-char DaemonHost[MAXHOSTNAMELEN];
+extern char DaemonHost[];
 
 main(argc,argv)
      int argc;
