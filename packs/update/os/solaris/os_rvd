@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.1 1998-12-25 19:34:04 ghudson Exp $
+## $Id: os_rvd,v 1.2 1999-01-10 21:45:20 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -134,7 +134,7 @@ GLOBAL : *.CKP *.local *.pid :
 		bin
 		ccs
 		-> demo
-		dt
+		-> dt
 		-> games
 		-> include
 		kernel
@@ -179,22 +179,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> w*
 		-> y*
 		:
-	/usr/dt:::
-		-> app-defaults
-		-> appconfig
-		-> config
-		-> dthelp
-		-> include
-		lib
-		-> man
-		-> bin
-		-> share
-		:
-	/usr/dt/lib:::
-		-> bindings
-		-> *_d*
-		-> lib*Dt*
-		:		
 	/usr/sbin:::
 		-> accept
 		-> add_drv
@@ -496,6 +480,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> unexpand
 		-> units
 		-> unix2dos
+		-> unzip
 		-> uu*
 		-> vacation
 		-> vmstat
@@ -532,10 +517,13 @@ GLOBAL : *.CKP *.local *.pid :
 		-> lib.b
 		-> lib*.a
 		-> libkrb.so*
+		-> libld.so*
+		-> liblddbg.so*
 		-> libnisdb.so*
 		-> *help
 		-> lp*
 		-> locale
+		-> mail
 		-> netsvc
 		-> nfs
 		-> nis
