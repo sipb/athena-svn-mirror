@@ -3,13 +3,11 @@
 ### This is the first script file in the installation program for
 ### installing Athena software on Solaris2.1
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/athenainstall,v 1.1 1993-10-12 05:03:43 probe Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/athenainstall,v 1.2 1994-01-05 12:08:39 miki Exp $
 ### $Locker:  $
 
 
 # Define some variables
-TR_SERVER=atalanta; export TR_SERVER
-PACK=/afs/.rel-eng/system/sun4c_51/srvd.75; export PACK
 hostname=`cat /etc/nodename`
 netaddr=`cat /etc/myIPaddr`
 gateway=`cat /etc/defaultrouter`
@@ -37,9 +35,10 @@ umask 022
 
 stty sane	# Flush terminal input.
 
+# No more needed as we are using AFS for install
 # Mounting the install srvd
-	mount  $TR_SERVER:$PACK /srvd
+#	mount  $TR_SERVER:$PACK /srvd
 
 echo "Starting script on  srvd..."
-#sh /srvd/install/phase2.sh
+sh /srvd/install/phase2.sh
 exit 1
