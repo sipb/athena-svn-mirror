@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_dispatch_c[] =
-    "$Id: dispatch.c,v 1.45 1993-03-23 03:10:19 probe Exp $";
+    "$Id: dispatch.c,v 1.46 1993-09-24 21:16:44 probe Exp $";
 #endif
 #endif
 
@@ -209,7 +209,7 @@ handle_packet()
 		/* we need to parse twice--once to get
 		   the source addr, second to check
 		   authentication */
-		bzero((caddr_t) &input_sin,
+		_BZERO((caddr_t) &input_sin,
 		      sizeof(input_sin));
 		input_sin.sin_addr.s_addr = new_notice.z_sender_addr.s_addr;
 		input_sin.sin_port = new_notice.z_port;
@@ -491,7 +491,7 @@ xmit_frag(notice, buf, len, waitforack)
 		return(ENOMEM);
 	}
 
-	(void) bcopy(buf, savebuf, len);
+	(void) _BCOPY(buf, savebuf, len);
 
 	nacked->na_rexmits = 0;
 	nacked->na_packet = savebuf;
@@ -935,7 +935,7 @@ control_dispatch(notice, auth, who, server)
 			return(ZERR_NONE);
 		}
 #ifdef KERBEROS
-		bcopy((caddr_t) ZGetSession(), /* in case it's changed */
+		_BCOPY((caddr_t) ZGetSession(), /* in case it's changed */
 		      (caddr_t) client->zct_cblock,
 		      sizeof(C_Block));
 #endif /* KERBEROS */
