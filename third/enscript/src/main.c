@@ -644,7 +644,6 @@ unsigned int slice = 1;
  * Print Table of Contents page.
  */
 int toc = 0;
-char toc_fname[512];
 FILE *toc_fp;
 char *toc_fmt_string;
 
@@ -1431,19 +1430,10 @@ name             width\theight\tllx\tlly\turx\tury\n\
       /* Table of Contents. */
       if (toc)
 	{
-	  cp = tmpnam (toc_fname);
-	  if (cp == NULL)
+	  toc_fp = tmpfile ();
+	  if (toc_fp == NULL)
 	    FATAL ((stderr, _("couldn't create toc file name: %s"),
 		    strerror (errno)));
-
-	  toc_fp = fopen (toc_fname, "w+b");
-	  if (toc_fp == NULL)
-	    FATAL ((stderr, _("couldn't create toc file \"%s\": %s"),
-		    toc_fname, strerror (errno)));
-
-	  if (remove (toc_fname) == 0)
-	    /* Remove successfull, no need to remove file at exit. */
-	    toc_fname[0] = '\0';
 	}
 
 
@@ -1521,10 +1511,6 @@ name             width\theight\tllx\tlly\turx\tury\n\
 
 	  /* Clean up toc file. */
 	  fclose (toc_fp);
-
-	  /* Do we have to remove the toc file? */
-	  if (toc_fname[0])
-	    (void) remove (toc_fname);
 	}
 
       /* Give trailer a chance to dump itself. */
