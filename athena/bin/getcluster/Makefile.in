@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-11-30 15:24:24 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-12-25 19:38:07 rbasch Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -9,6 +9,7 @@ top_srcdir=@top_srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+lbindir=@lbindir@
 mandir=@mandir@
 
 CC=@CC@
@@ -31,9 +32,9 @@ check:
 	sh ${srcdir}/tests.sh
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} getcluster ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} getcluster ${DESTDIR}${lbindir}
 	${INSTALL} -m 444 ${srcdir}/getcluster.1 ${DESTDIR}${mandir}/man1
 
 clean:
