@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.30 1991-03-11 18:40:59 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.31 1991-06-04 20:37:09 jik Exp $
 #
 
 # If you are compiling on a system that has an st_blocks field in
@@ -191,7 +191,7 @@ depend:: $(SRCS) $(INCS) $(ETS)
 	$(DEPEND) -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
 
 block-test: block-test.sh
-	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . block-test.sh
+	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . ./block-test.sh
 
 $(DELETEOBJS): delete_errs.h
 $(EXPUNGEOBJS): delete_errs.h

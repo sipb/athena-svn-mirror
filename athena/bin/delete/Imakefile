@@ -6,7 +6,7 @@
  *
  *     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
  *     $Author: jik $
- *     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.9 1991-06-03 22:08:02 jik Exp $
+ *     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.10 1991-06-04 20:36:58 jik Exp $
  *
  */
 
@@ -131,4 +131,4 @@ patch: $(ARCHIVE)
 	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
 
 block-test: block-test.sh
-	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . block-test.sh
+	CC=$(CC); TMPDIR=$(TMPDIR); export CC TMPDIR; . ./block-test.sh
