@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.13 1990-10-22 06:34:37 raeburn Exp $";
+static char rcsid_X_gram_c[] = "$Id: X_gram.c,v 1.14 1990-11-07 19:00:18 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -120,7 +120,7 @@ void x_gram_init(dpy)
     if (temp = get_string_resource("borderColor","BorderColor"))
       default_bordercolor = x_string_to_color(temp,default_bordercolor);
 
-    temp = get_string_resource("timeToLive","TimeToLive");
+    temp = get_string_resource("minTimeToLive","MinTimeToLive");
     if (temp && atoi(temp)>=0)
        ttl = atoi(temp);
 
