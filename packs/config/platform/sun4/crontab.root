@@ -1,4 +1,0 @@
-05 3 * * *	/etc/athena/desync; /etc/athena/newsyslog
-20 4 * * *	/etc/athena/clean_tmp_areas
-37 * * * *	/etc/athena/desync; /usr/lib/sendmail -q
-45 0,12 * * *	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB > /dev/null
