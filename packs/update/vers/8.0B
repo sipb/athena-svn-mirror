@@ -3,9 +3,17 @@
 
 case ${MACH} in
 SUN*)
+	# Delete /sun4 symlink in case anyone still has it around (people
+	# who took the 8.0A update before it was fixed there).
 	rm -f /sun4
 
+	# inetd.conf now enables admind so "showrev" works.
 	echo "/etc/inet/inetd.conf"		>> ${CONFCHG}
+
+	# Overwrite ${AUXDEVS} with just D20appletalk.  One of the
+	# 7.7 updates also specified D10audio, which is no longer
+	# necessary.
+	echo "D20appletalk"			> ${AUXDEVS}
 	;;
 
 INDY)
