@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1999-12-24 16:01:16 ghudson Exp $
+# $Id: Makefile,v 1.6 2000-02-03 17:35:59 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -19,18 +19,10 @@ install:
 	-mkdir -p $(DESTDIR)/etc/rc.d/init.d
 	-mkdir -p $(DESTDIR)/etc/sysconfig
 	-mkdir -p $(DESTDIR)/usr/vice/cache
-	install -c -m 444 libafs-2.2.0.mp.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.1.mp.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.2.mp.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.3.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.5-15.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.10.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.12.mp.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.12-20smp.mp.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.0.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.1.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.2.o $(DESTDIR)$(VICE)/modload
-	install -c -m 444 libafs-2.2.3.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.5-15.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.10.o $(DESTDIR)$(VICE)/modload
 	install -c -m 444 libafs-2.2.12.o $(DESTDIR)$(VICE)/modload
