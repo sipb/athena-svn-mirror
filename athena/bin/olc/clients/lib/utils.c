@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.23 1996-09-20 02:14:00 ghudson Exp $
+ *	$Id: utils.c,v 1.24 1997-04-30 17:37:21 ghudson Exp $
  *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.23 1996-09-20 02:14:00 ghudson Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.24 1997-04-30 17:37:21 ghudson Exp $";
 #endif
 #endif
 
@@ -80,7 +80,8 @@ fill_request(req)
 		 sizeof(req->requester.machine));
 
 #ifdef KERBEROS
-  if((status = krb_get_cred("krbtgt",REALM,REALM, &k_cred)) == KSUCCESS)
+  status = krb_get_cred("krbtgt",REALM,REALM, &k_cred);
+  if(status == KSUCCESS)
     {
       (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
       (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
@@ -215,23 +216,22 @@ call_program(program, argument)
      char *argument;		/* Argument to be passed to program. */
 {
   int pid;		/* Process id for forking. */
-#if defined(VOID_SIGRET) && !defined(POSIX)
-#ifdef __STDC__
-  void (*func)(int);
-#else
-  void (*func)();
-#endif /* STDC */
-#else
-  int (*func)();
-#endif
 #ifdef POSIX
   struct sigaction sa, osa;
-#endif
+#else /* not POSIX */
+#ifdef VOID_SIGRET
+  void (*func)(int);
+#else /* not VOID_SIGRET */
+  int (*func)();
+#endif /* not VOID_SIGRET */
+#endif /* not POSIX */
+
 #ifdef NO_VFORK
-  if ((pid = fork()) == -1) 
+  pid = fork();
 #else
-  if ((pid = vfork()) == -1)
+  pid = vfork();
 #endif
+  if (pid == -1)
     {
       olc_perror("call_program");
       return(ERROR);
@@ -248,11 +248,11 @@ call_program(program, argument)
 #ifdef POSIX
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sa.sa_handler= (void (*)()) SIG_IGN;
+	sa.sa_handler= SIG_IGN;
 	(void) sigaction(SIGINT, &sa, &osa);
-#else
+#else /* not POSIX */
 	func = signal(SIGINT, SIG_IGN);
-#endif
+#endif /* not POSIX */
 	while (wait(0) != pid) 
 	  {
 			/* ho hum ... (yawn) */
@@ -260,9 +260,9 @@ call_program(program, argument)
 	  };
 #ifdef POSIX
 	(void) sigaction(SIGINT, &osa, NULL);
-#else
+#else /* not POSIX */
 	signal(SIGINT, func);
-#endif
+#endif /* not POSIX */
 	return(SUCCESS);
       }
 }
