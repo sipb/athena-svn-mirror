@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.37 1998-06-02 17:45:39 ghudson Exp $
+# $Id: update_ws.sh,v 1.38 1998-06-08 14:12:04 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -36,7 +36,7 @@ trap "" 1 15
 export CONFDIR LIBDIR PATH HOSTTYPE
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
-PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
+PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/etc/athena:/bin/athena:/os/usr/bin:/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
 HOSTTYPE=`/bin/athena/machtype`
 
 case "$0" in
