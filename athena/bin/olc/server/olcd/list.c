@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v $
- *	$Id: list.c,v 1.11 1990-12-12 15:14:32 lwvanels Exp $
+ *	$Id: list.c,v 1.12 1991-01-01 20:57:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.11 1990-12-12 15:14:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/list.c,v 1.12 1991-01-01 20:57:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -250,7 +250,7 @@ dump_list()
     log_error("dump_list: unable to open list file");
     return;
   }
-  put_queue(f,pending_q,n_pending,"pending");
+  put_queue(f,pending_q,n_pending,"active");
   put_queue(f,pickup_q,n_pickup,"pickup");
   put_queue(f,refer_q,n_refer,"refer");
   fclose(f);
@@ -278,10 +278,17 @@ KNUCKLE *k;
     item->cinstance = -1;
     item->cstatus = -1;
   }
-  item->n_consult = k->question->nseen;
-  item->topic = k->question->topic;
+  if (k->question == NULL) {
+    item->n_consult = 0;
+    item->topic = "on-duty";
+    item->note = "This consultant is on duty";
+  }
+  else {
+    item->n_consult = k->question->nseen;
+    item->topic = k->question->topic;
+    item->note = k->question->note;
+  }
   item->timestamp = k->timestamp;
-  item->note = k->question->note;
 }
 
 static void
@@ -307,12 +314,14 @@ char *name;
       else if (q[i].ustatus & REFERRED)
 	fprintf(f,"refer\n");
     }
-    OGetStatusString(q[i].kstatus,st);
-    if (q[i].ustatus & LOGGED_OUT)
-      fprintf(f,"logout\n");
-    else
-      fprintf(f,"%s\n",st);
-    
+    else {
+      OGetStatusString(q[i].kstatus,st);
+      if (q[i].ustatus & LOGGED_OUT)
+	fprintf(f,"logout\n");
+      else
+	fprintf(f,"%s\n",st);
+    }
+
     fprintf(f,"%s\n%d\n",q[i].cusername, q[i].cinstance);
     OGetStatusString(q[i].cstatus,st);
     if (q[i].cstatus = OFF)
@@ -322,8 +331,10 @@ char *name;
     
     t = localtime(&q[i].timestamp);
 
+/* Why month + 1?  Because the months are numbered from 0-11, of course.. */
+
     fprintf(f,"%d\n%s\n%02d/%02d\n%02d%02d\n", q[i].n_consult, q[i].topic,
-	    t->tm_mon, t->tm_mday, t->tm_hour, t->tm_min);
+	    t->tm_mon +1 , t->tm_mday, t->tm_hour, t->tm_min);
     fprintf(f,"%s\n",q[i].note);
   }
 }
