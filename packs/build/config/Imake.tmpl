@@ -20,7 +20,7 @@
 #define TOPDIR .
 #endif
 #ifndef ConfDir
-#define ConfDir SRCDIR/packs/build/config
+#define ConfDir TOPDIR/packs/build/config
 #endif
 #ifndef NEWTOP
 #define NEWTOP .
@@ -161,8 +161,8 @@ PTOP = $(TOP)/ProjectTop
 
 #ifdef UseInstalled
 IMAKE= imake
-IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR -DSRCDIR=SRCDIR
-XIFLAGS= -I$(IRULESRC)/../xconfig -DUseInstalled -DTOPDIR=TOPDIR -DSRCDIR=SRCDIR
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR
+XIFLAGS= -I$(IRULESRC)/../xconfig -DUseInstalled -DTOPDIR=. -DSRCDIR=TOPDIR
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
@@ -175,7 +175,7 @@ ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
 MKDIRHIER= mkdirhier
 
-ATHVERS = SRCDIR/packs/build/version
+ATHVERS = TOPDIR/packs/build/version
 
 ATHBASEDIR=/usr/athena
 
