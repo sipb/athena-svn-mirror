@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.28 2000-05-08 15:57:39 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.29 2000-12-18 08:44:50 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -50,8 +50,9 @@ static const char rcsid[] = "$Id: cleanup.c,v 2.28 2000-05-08 15:57:39 ghudson E
 #include <sys/param.h>
 #include <sys/time.h>
 #include <sys/proc.h>
-#include <kvm.h>
+#include <procfs.h>
 #include <fcntl.h>
+#define PATH_PINFO "/proc"
 #endif
 
 #ifdef IRIX
@@ -146,41 +147,49 @@ static struct process *get_processes(int *nprocs)
   int psize = 256, n = 0;
 
 #ifdef SOLARIS
-  kvm_t *kv;
-  struct proc *p;
-  struct pid pid_buf;
-  struct cred cred_buf;
+  DIR *procdir;
+  struct dirent *entry;
 
-  /* Open the kernel address space and prepare for process iteration. */
-  kv = kvm_open(NULL, NULL, NULL, O_RDONLY, NULL);
-  if (kv == NULL)
+  /* Open the process info directory. */
+  procdir = opendir(PATH_PINFO);
+  if (!procdir)
     {
-      fprintf(stderr, "Can't open kvm.\n");
-      exit(1);
-    }
-  if (kvm_setproc(kv) == -1)
-    {
-      fprintf(stderr, "kvm_setproc failed.\n");
+      fprintf(stderr, "Can't open %s: %s\n", PATH_PINFO, strerror(errno));
       exit(1);
     }
 
-  while ((p = kvm_nextproc(kv)) != NULL)
+  /* Step through the directory and read off the processes. */
+  while ((entry = readdir(procdir)) != NULL)
     {
-      kvm_read(kv, (unsigned long) p->p_pidp, (char *) &pid_buf,
-	       sizeof(struct pid));
-      kvm_read(kv, (unsigned long) p->p_cred, (char *) &cred_buf,
-	       sizeof(struct cred));
-      if (pid_buf.pid_id != 0)
+      psinfo_t procinfo;
+      char buf[64];
+      int fd;
+
+      /* Skip the current and parent directory entries. */
+      if (entry->d_name[0] == '.')
+	continue;
+
+      snprintf(buf, sizeof(buf), "%s/%s/psinfo", PATH_PINFO, entry->d_name);
+
+      if ((fd = open(buf, O_RDONLY)) < 0)
+	continue;
+
+      if (read(fd, &procinfo, sizeof(psinfo_t)) != sizeof(psinfo_t))
 	{
-	  check_plist(n, &plist, &psize);
-	  plist[n].pid = pid_buf.pid_id;
-	  plist[n].ppid = p->p_ppid;
-	  plist[n].ruid = cred_buf.cr_ruid;
-	  n++;
+	  close(fd);
+	  continue;
 	}
+
+      check_plist(n, &plist, &psize);
+      plist[n].pid = procinfo.pr_pid;
+      plist[n].ppid = procinfo.pr_ppid;
+      plist[n].ruid = procinfo.pr_uid;
+      n++;
+
+      close(fd);
     }
 
-  kvm_close(kv);
+  closedir(procdir);
 #endif
 
 #if defined(IRIX) || defined(OSF)
@@ -194,7 +203,7 @@ static struct process *get_processes(int *nprocs)
   procdir = opendir(PATH_PINFO);
   if (!procdir)
     {
-      fprintf(stderr, "Can't open /proc/pinfo: %s\n", strerror(errno));
+      fprintf(stderr, "Can't open %s: %s\n", PATH_PINFO, strerror(errno));
       exit(1);
     }
 
